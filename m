@@ -2,221 +2,232 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 523C0A13FE
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2019 10:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4F2A18D4
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Aug 2019 13:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726038AbfH2IpG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Aug 2019 04:45:06 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:45110 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725939AbfH2IpG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 29 Aug 2019 04:45:06 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id CF96C3EDE1A825363B9D;
-        Thu, 29 Aug 2019 16:45:00 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.439.0; Thu, 29 Aug 2019 16:44:54 +0800
-From:   Weihang Li <liweihang@hisilicon.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next 2/2] RDMA/hns: Package operations of rq inline buffer into separate functions
-Date:   Thu, 29 Aug 2019 16:41:42 +0800
-Message-ID: <1567068102-56919-3-git-send-email-liweihang@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1567068102-56919-1-git-send-email-liweihang@hisilicon.com>
-References: <1567068102-56919-1-git-send-email-liweihang@hisilicon.com>
+        id S1727403AbfH2LgB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Aug 2019 07:36:01 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:41273 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725990AbfH2LgB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Aug 2019 07:36:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1567078559; x=1598614559;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=yGaVbFiHKaF/jKjm5DbJFrBzUyutIiokxG2qx6WiTDs=;
+  b=gxqKaWazLELiqnFntOoOh0yrNx4aYbTPXOcfZ9vNPzI5SDZUzduHGsoZ
+   7zPQbU9XQA1zU0g33vlErCgKFDVeNCugJ70AfdoTG5W0Ez5w6DhIXsrTB
+   lzLBGRWwsYuNrjCLYGXvtUOvUjcq1O+qaU5AgUlC9sh69GsBCm30fbQ1f
+   g=;
+X-IronPort-AV: E=Sophos;i="5.64,442,1559520000"; 
+   d="scan'208";a="412547650"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 29 Aug 2019 11:35:57 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id 6447C222676;
+        Thu, 29 Aug 2019 11:35:56 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Thu, 29 Aug 2019 11:35:55 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.242) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Thu, 29 Aug 2019 11:35:50 +0000
+Subject: Re: [PATCH v8 rdma-next 2/7] RDMA/core: Create mmap database and
+ cookie helper functions
+To:     Michal Kalderon <michal.kalderon@marvell.com>
+CC:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
+        <dledford@redhat.com>, <bmt@zurich.ibm.com>, <sleybo@amazon.com>,
+        <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        Ariel Elior <ariel.elior@marvell.com>
+References: <20190827132846.9142-1-michal.kalderon@marvell.com>
+ <20190827132846.9142-3-michal.kalderon@marvell.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <4d80bab8-d48c-70b3-52ba-494c98e8a349@amazon.com>
+Date:   Thu, 29 Aug 2019 14:35:45 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20190827132846.9142-3-michal.kalderon@marvell.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.242]
+X-ClientProxiedBy: EX13D15UWA004.ant.amazon.com (10.43.160.219) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lijun Ou <oulijun@huawei.com>
+On 27/08/2019 16:28, Michal Kalderon wrote:
+> +/**
+> + * rdma_user_mmap_entry_get() - Get an entry from the mmap_xa.
+> + *
+> + * @ucontext: associated user context.
+> + * @key: the key received from rdma_user_mmap_entry_insert which
+> + *     is provided by user as the address to map.
+> + * @len: the length the user wants to map.
+> + * @vma: the vma related to the current mmap call.
+> + *
+> + * This function is called when a user tries to mmap a key it
+> + * initially received from the driver. The key was created by
+> + * the function rdma_user_mmap_entry_insert. The function should
+> + * be called only once per mmap. It initializes the vma and
+> + * increases the entries ref-count. Once the memory is unmapped
+> + * the ref-count will decrease. When the refcount reaches zero
+> + * the entry will be deleted.
+> + *
+> + * Return an entry if exists or NULL if there is no match.
+> + */
+> +struct rdma_user_mmap_entry *
+> +rdma_user_mmap_entry_get(struct ib_ucontext *ucontext, u64 key, u64 len,
+> +			 struct vm_area_struct *vma)
+> +{
+> +	struct rdma_user_mmap_entry *entry;
+> +	u64 mmap_page;
+> +
+> +	mmap_page = key >> PAGE_SHIFT;
+> +	if (mmap_page > U32_MAX)
+> +		return NULL;
+> +
+> +	entry = xa_load(&ucontext->mmap_xa, mmap_page);
+> +	if (!entry)
+> +		return NULL;
 
-Here packages the codes of allocating and freeing rq inline buffer
-in hns_roce_create_qp_common function in order to reduce the
-complexity.
+I'm probably missing something, what happens if an insertion is done, a get is
+called and right at this point (before kref_get) the entry is being removed (and
+freed by the driver)?
 
-Signed-off-by: Lijun Ou <oulijun@huawei.com>
-Signed-off-by: Weihang Li <liweihang@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_qp.c | 95 +++++++++++++++++++--------------
- 1 file changed, 56 insertions(+), 39 deletions(-)
+> +
+> +	kref_get(&entry->ref);
+> +	rdma_umap_priv_init(vma, entry);
+> +
+> +	ibdev_dbg(ucontext->device,
+> +		  "mmap: key[%#llx] npages[%#x] returned\n",
+> +		  key, entry->npages);
+> +
+> +	return entry;
+> +}
+> +EXPORT_SYMBOL(rdma_user_mmap_entry_get);
+> +
+> +void rdma_user_mmap_entry_free(struct kref *kref)
+> +{
+> +	struct rdma_user_mmap_entry *entry =
+> +		container_of(kref, struct rdma_user_mmap_entry, ref);
+> +	struct ib_ucontext *ucontext = entry->ucontext;
+> +	unsigned long i;
+> +
+> +	/* need to erase all entries occupied... */
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 8868172..bd78ff9 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -635,6 +635,50 @@ static int hns_roce_qp_has_rq(struct ib_qp_init_attr *attr)
- 	return 1;
- }
- 
-+static int alloc_rq_inline_buf(struct hns_roce_qp *hr_qp,
-+			       struct ib_qp_init_attr *init_attr)
-+{
-+	u32 max_recv_sge = init_attr->cap.max_recv_sge;
-+	struct hns_roce_rinl_wqe *wqe_list;
-+	u32 wqe_cnt = hr_qp->rq.wqe_cnt;
-+	int i;
-+
-+	/* allocate recv inline buf */
-+	wqe_list = kcalloc(wqe_cnt, sizeof(struct hns_roce_rinl_wqe),
-+			   GFP_KERNEL);
-+
-+	if (!wqe_list)
-+		goto err;
-+
-+	/* Allocate a continuous buffer for all inline sge we need */
-+	wqe_list[0].sg_list = kcalloc(wqe_cnt, (max_recv_sge *
-+				      sizeof(struct hns_roce_rinl_sge)),
-+				      GFP_KERNEL);
-+	if (!wqe_list[0].sg_list)
-+		goto err_wqe_list;
-+
-+	/* Assign buffers of sg_list to each inline wqe */
-+	for (i = 1; i < wqe_cnt; i++)
-+		wqe_list[i].sg_list = &wqe_list[0].sg_list[i * max_recv_sge];
-+
-+	hr_qp->rq_inl_buf.wqe_list = wqe_list;
-+	hr_qp->rq_inl_buf.wqe_cnt = wqe_cnt;
-+
-+	return 0;
-+
-+err_wqe_list:
-+	kfree(wqe_list);
-+
-+err:
-+	return -ENOMEM;
-+}
-+
-+static void free_rq_inline_buf(struct hns_roce_qp *hr_qp)
-+{
-+	kfree(hr_qp->rq_inl_buf.wqe_list[0].sg_list);
-+	kfree(hr_qp->rq_inl_buf.wqe_list);
-+}
-+
- static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 				     struct ib_pd *ib_pd,
- 				     struct ib_qp_init_attr *init_attr,
-@@ -676,33 +720,11 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 
- 	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
- 	    hns_roce_qp_has_rq(init_attr)) {
--		/* allocate recv inline buf */
--		hr_qp->rq_inl_buf.wqe_list = kcalloc(hr_qp->rq.wqe_cnt,
--					       sizeof(struct hns_roce_rinl_wqe),
--					       GFP_KERNEL);
--		if (!hr_qp->rq_inl_buf.wqe_list) {
--			ret = -ENOMEM;
-+		ret = alloc_rq_inline_buf(hr_qp, init_attr);
-+		if (ret) {
-+			dev_err(dev, "allocate receive inline buffer failed\n");
- 			goto err_out;
- 		}
--
--		hr_qp->rq_inl_buf.wqe_cnt = hr_qp->rq.wqe_cnt;
--
--		/* Firstly, allocate a list of sge space buffer */
--		hr_qp->rq_inl_buf.wqe_list[0].sg_list =
--					kcalloc(hr_qp->rq_inl_buf.wqe_cnt,
--					       init_attr->cap.max_recv_sge *
--					       sizeof(struct hns_roce_rinl_sge),
--					       GFP_KERNEL);
--		if (!hr_qp->rq_inl_buf.wqe_list[0].sg_list) {
--			ret = -ENOMEM;
--			goto err_wqe_list;
--		}
--
--		for (i = 1; i < hr_qp->rq_inl_buf.wqe_cnt; i++)
--			/* Secondly, reallocate the buffer */
--			hr_qp->rq_inl_buf.wqe_list[i].sg_list =
--				&hr_qp->rq_inl_buf.wqe_list[0].sg_list[i *
--				init_attr->cap.max_recv_sge];
- 	}
- 
- 	page_shift = PAGE_SHIFT + hr_dev->caps.mtt_buf_pg_sz;
-@@ -710,14 +732,14 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 		if (ib_copy_from_udata(&ucmd, udata, sizeof(ucmd))) {
- 			dev_err(dev, "ib_copy_from_udata error for create qp\n");
- 			ret = -EFAULT;
--			goto err_rq_sge_list;
-+			goto err_alloc_rq_inline_buf;
- 		}
- 
- 		ret = hns_roce_set_user_sq_size(hr_dev, &init_attr->cap, hr_qp,
- 						&ucmd);
- 		if (ret) {
- 			dev_err(dev, "hns_roce_set_user_sq_size error for create qp\n");
--			goto err_rq_sge_list;
-+			goto err_alloc_rq_inline_buf;
- 		}
- 
- 		hr_qp->umem = ib_umem_get(udata, ucmd.buf_addr,
-@@ -725,7 +747,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 		if (IS_ERR(hr_qp->umem)) {
- 			dev_err(dev, "ib_umem_get error for create qp\n");
- 			ret = PTR_ERR(hr_qp->umem);
--			goto err_rq_sge_list;
-+			goto err_alloc_rq_inline_buf;
- 		}
- 		hr_qp->region_cnt = split_wqe_buf_region(hr_dev, hr_qp,
- 				hr_qp->regions, ARRAY_SIZE(hr_qp->regions),
-@@ -786,13 +808,13 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 		    IB_QP_CREATE_BLOCK_MULTICAST_LOOPBACK) {
- 			dev_err(dev, "init_attr->create_flags error!\n");
- 			ret = -EINVAL;
--			goto err_rq_sge_list;
-+			goto err_alloc_rq_inline_buf;
- 		}
- 
- 		if (init_attr->create_flags & IB_QP_CREATE_IPOIB_UD_LSO) {
- 			dev_err(dev, "init_attr->create_flags error!\n");
- 			ret = -EINVAL;
--			goto err_rq_sge_list;
-+			goto err_alloc_rq_inline_buf;
- 		}
- 
- 		/* Set SQ size */
-@@ -800,7 +822,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 						  hr_qp);
- 		if (ret) {
- 			dev_err(dev, "hns_roce_set_kernel_sq_size error!\n");
--			goto err_rq_sge_list;
-+			goto err_alloc_rq_inline_buf;
- 		}
- 
- 		/* QP doorbell register address */
-@@ -814,7 +836,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 			ret = hns_roce_alloc_db(hr_dev, &hr_qp->rdb, 0);
- 			if (ret) {
- 				dev_err(dev, "rq record doorbell alloc failed!\n");
--				goto err_rq_sge_list;
-+				goto err_alloc_rq_inline_buf;
- 			}
- 			*hr_qp->rdb.db_record = 0;
- 			hr_qp->rdb_en = 1;
-@@ -980,15 +1002,10 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 	    (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB))
- 		hns_roce_free_db(hr_dev, &hr_qp->rdb);
- 
--err_rq_sge_list:
--	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
--	     hns_roce_qp_has_rq(init_attr))
--		kfree(hr_qp->rq_inl_buf.wqe_list[0].sg_list);
--
--err_wqe_list:
-+err_alloc_rq_inline_buf:
- 	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
- 	     hns_roce_qp_has_rq(init_attr))
--		kfree(hr_qp->rq_inl_buf.wqe_list);
-+		free_rq_inline_buf(hr_qp);
- 
- err_out:
- 	return ret;
--- 
-2.8.1
+To be clear, this erases all pages of a single entry right? The comment is
+confusing.
 
+> +	for (i = 0; i < entry->npages; i++) {
+> +		xa_erase(&ucontext->mmap_xa, entry->mmap_page + i);
+> +
+> +		ibdev_dbg(ucontext->device,
+> +			  "mmap: key[%#llx] npages[%#x] removed\n",
+> +			  rdma_user_mmap_get_key(entry),
+> +			  entry->npages);
+
+This print can be outside of the loop, it doesn't change between iterations.
+
+> +	}
+> +	if (ucontext->device->ops.mmap_free)
+> +		ucontext->device->ops.mmap_free(entry);
+> +}
+> +/**
+> + * rdma_user_mmap_entry_insert() - Allocate and insert an entry to the mmap_xa.
+> + *
+> + * @ucontext: associated user context.
+> + * @entry: the entry to insert into the mmap_xa
+> + * @length: length of the address that will be mmapped
+> + *
+> + * This function should be called by drivers that use the rdma_user_mmap
+> + * interface for handling user mmapped addresses. The database is handled in
+> + * the core and helper functions are provided to insert entries into the
+> + * database and extract entries when the user call mmap with the given key.
+> + * The function returns a unique key that should be provided to user, the user
+> + * will use the key to retrieve information such as address to
+> + * be mapped and how.
+> + *
+> + * Return: unique key or RDMA_USER_MMAP_INVALID if entry was not added.
+> + */
+> +u64 rdma_user_mmap_entry_insert(struct ib_ucontext *ucontext,
+> +				struct rdma_user_mmap_entry *entry,
+> +				u64 length)
+> +{
+> +	struct ib_uverbs_file *ufile = ucontext->ufile;
+> +	XA_STATE(xas, &ucontext->mmap_xa, 0);
+> +	u32 xa_first, xa_last, npages;
+> +	int err, i;
+> +
+> +	if (!entry)
+> +		return RDMA_USER_MMAP_INVALID;
+> +
+> +	kref_init(&entry->ref);
+> +	entry->ucontext = ucontext;
+> +
+> +	/* We want the whole allocation to be done without interruption
+> +	 * from a different thread. The allocation requires finding a
+> +	 * free range and storing. During the xa_insert the lock could be
+> +	 * released, we don't want another thread taking the gap.
+> +	 */
+> +	mutex_lock(&ufile->umap_lock);
+> +
+> +	xa_lock(&ucontext->mmap_xa);
+
+Doesn't the mutex replace the xa_lock?
+
+> +
+> +	/* We want to find an empty range */
+> +	npages = (u32)DIV_ROUND_UP(length, PAGE_SIZE);
+> +	entry->npages = npages;
+> +	do {
+> +		/* First find an empty index */
+> +		xas_find_marked(&xas, U32_MAX, XA_FREE_MARK);
+> +		if (xas.xa_node == XAS_RESTART)
+> +			goto err_unlock;
+> +
+> +		xa_first = xas.xa_index;
+> +
+> +		/* Is there enough room to have the range? */
+> +		if (check_add_overflow(xa_first, npages, &xa_last))
+> +			goto err_unlock;
+> +
+> +		/* Now look for the next present entry. If such doesn't
+> +		 * exist, we found an empty range and can proceed
+> +		 */
+> +		xas_next_entry(&xas, xa_last - 1);
+> +		if (xas.xa_node == XAS_BOUNDS || xas.xa_index >= xa_last)
+> +			break;
+> +		/* o/w look for the next free entry */
+> +	} while (true);
+> +
+> +	for (i = xa_first; i < xa_last; i++) {
+> +		err = __xa_insert(&ucontext->mmap_xa, i, entry, GFP_KERNEL);
+> +		if (err)
+> +			goto err_undo;
+> +	}
+> +
+> +	entry->mmap_page = xa_first;
+> +	xa_unlock(&ucontext->mmap_xa);
+> +
+> +	mutex_unlock(&ufile->umap_lock);
+> +	ibdev_dbg(ucontext->device,
+> +		  "mmap: key[%#llx] npages[%#x] inserted\n",
+> +		  rdma_user_mmap_get_key(entry), npages);
+> +
+> +	return rdma_user_mmap_get_key(entry);
+> +
+> +err_undo:
+> +	for (; i > xa_first; i--)
+> +		__xa_erase(&ucontext->mmap_xa, i - 1);
+> +
+> +err_unlock:
+> +	xa_unlock(&ucontext->mmap_xa);
+> +	mutex_unlock(&ufile->umap_lock);
+> +	return RDMA_USER_MMAP_INVALID;
+> +}
