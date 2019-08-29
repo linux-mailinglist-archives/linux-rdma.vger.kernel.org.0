@@ -2,135 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7DEA2AF4
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Aug 2019 01:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00308A2B13
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Aug 2019 01:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbfH2XeK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Aug 2019 19:34:10 -0400
-Received: from mga01.intel.com ([192.55.52.88]:30261 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725847AbfH2XeK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 29 Aug 2019 19:34:10 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Aug 2019 16:34:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,445,1559545200"; 
-   d="scan'208";a="172060373"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga007.jf.intel.com with ESMTP; 29 Aug 2019 16:34:08 -0700
-Date:   Thu, 29 Aug 2019 16:34:08 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 02/19] fs/locks: Add Exclusive flag to user Layout
- lease
-Message-ID: <20190829233408.GD18249@iweiny-DESK2.sc.intel.com>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190809225833.6657-3-ira.weiny@intel.com>
- <fde2959db776616008fc5d31df700f5d7d899433.camel@kernel.org>
- <20190814215630.GQ6129@dread.disaster.area>
- <e6f4f619967f4551adb5003d0364770fde2b8110.camel@kernel.org>
+        id S1726991AbfH2Xmc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Aug 2019 19:42:32 -0400
+Received: from mail-eopbgr150089.outbound.protection.outlook.com ([40.107.15.89]:7907
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725826AbfH2Xmc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 29 Aug 2019 19:42:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eBYLpIVxBHPzyg7WjrfeH4n1xXtd4kOARjayxOeh7y81mT8qZ2xQvQd3WLZGLo71jw12a9Jr0SedHxwy4VmgLHYksY7LDbRhCvHWlIuavC8q0C2U5jEmPFMyRfWsKJRqmjgNQLEM+rITQBBP1aAlEyd9ZsE8k9IinoJ5VAduvnKPSTHocxX1OD8ujpAm4cqIqhTer0bSKL6VmognyuuVmmsgHgz7hUrQ4T4jy8i2rL4sPk83rwwYqhBTqqQIsaf3W15C6G86tue0iaW8MBaWKdmEHUF1zrrfetUtx+rALxgt7h1ZBnNR23rpjEGyxbzksWqHWoem5QogBns+yZjvmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YLSH0Bw29VnSwNOr7/K66wJuGRDxjr3joqnFbamSS/0=;
+ b=VNWwPUtdFJLH6tdRQQXYUuxZz46QvK34xZ2pYRyKJN3vW6J/ba4acK7h3eks/1/2dSnivbZEad16onsvfZUF7+ivnXuS4a0BeYOJRtfNnbrABUnuuVFLELIgSnqoZGDJPamPaPVFP7E9hZROSAxcpFO7tRuR7rnoOAUpyxbf4FaUSZLE13Cdl5XTGzomoF9rcjO2ZuM30xM/v6RDI0UubEtrLoY6P6vaZzHBbWJMvevKCx2DlGzwtuPIg+/oGD+3vCVxyL3G9SB3TBkcMg8Tvr1/vk+8JEmhZkPC8iFdKN4qIWSrqLfz1IG2UGdA/KipvVyvBgCVU2NfGfsYsDKOCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YLSH0Bw29VnSwNOr7/K66wJuGRDxjr3joqnFbamSS/0=;
+ b=QnYlafVCbMzYcJbMFRe7kqZEwHXGH+NYmabp79msIlybkmz+nybAnMLZhUfnLni+ZelI7uWEe1xTWXpyLvhz1cpW+dfhZkVeoRAmtP4o6ABnLJXVB5qq97FIe3zn+U1HSPqz/tHjrW5sHuQAbLroWYPz9DCr92EYfpSgYkblnlI=
+Received: from VI1PR0501MB2765.eurprd05.prod.outlook.com (10.172.11.140) by
+ VI1PR0501MB2333.eurprd05.prod.outlook.com (10.169.135.147) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2199.21; Thu, 29 Aug 2019 23:42:28 +0000
+Received: from VI1PR0501MB2765.eurprd05.prod.outlook.com
+ ([fe80::5cab:4f5c:d7ed:5e27]) by VI1PR0501MB2765.eurprd05.prod.outlook.com
+ ([fe80::5cab:4f5c:d7ed:5e27%6]) with mapi id 15.20.2199.021; Thu, 29 Aug 2019
+ 23:42:28 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: [PATCH mlx5-next 0/5] Mellanox, mlx5 next updates 2019-09-29
+Thread-Topic: [PATCH mlx5-next 0/5] Mellanox, mlx5 next updates 2019-09-29
+Thread-Index: AQHVXsNqTpgpI39FF0GNuR1TlVUVtA==
+Date:   Thu, 29 Aug 2019 23:42:27 +0000
+Message-ID: <20190829234151.9958-1-saeedm@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: git-send-email 2.21.0
+x-originating-ip: [209.116.155.178]
+x-clientproxiedby: BY5PR04CA0018.namprd04.prod.outlook.com
+ (2603:10b6:a03:1d0::28) To VI1PR0501MB2765.eurprd05.prod.outlook.com
+ (2603:10a6:800:9a::12)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b7d06c3a-e5d3-4e70-9335-08d72cda8cf1
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR0501MB2333;
+x-ms-traffictypediagnostic: VI1PR0501MB2333:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR0501MB2333C910469EC41E9BB33AD4BEA20@VI1PR0501MB2333.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-forefront-prvs: 0144B30E41
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(346002)(396003)(136003)(39860400002)(376002)(199004)(189003)(53754006)(476003)(486006)(450100002)(4326008)(478600001)(2906002)(81156014)(6636002)(110136005)(71200400001)(36756003)(54906003)(71190400001)(305945005)(8676002)(81166006)(7736002)(14444005)(8936002)(5660300002)(50226002)(256004)(2616005)(64756008)(66446008)(186003)(15650500001)(66946007)(14454004)(6116002)(3846002)(316002)(1076003)(6512007)(6486002)(53936002)(6506007)(102836004)(6436002)(386003)(25786009)(99286004)(52116002)(86362001)(26005)(66066001)(66556008)(66476007);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0501MB2333;H:VI1PR0501MB2765.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: mN+/Si0zkf2XvL38Fd+Qg1nmN6qqXUffLb038m9gZviO3fiCKFswzoaWyYZevI7Dd2+GEKUKyAtn4SvnosJa+x69so5FheGWdWgu/VI2D+JHPoIKdio2Is7B3EVAlQ+d/mdW97PbznekzfAXvKI2CjkBXQ6UK1Odvbbit0uJOv5whvKT4dkjPgNM5lAaXa4K49mp7oiwCgLC6ChXOUnc9e/jrR0iZdjuFH16Mu50xK1KV9Z7ojtgYSVcOzoRmL6I+QGCjaNV68bBj9wpjvY9i93umlblLZJnCGCVK6khzo5W+dsJyOCQkObKsQz2klnxdrnTP9+fIHox1NNjX9HTJyapYxyCLfr5suu/8COG+M0JWpN2NB9DiBEz7CFU6eDOMskWM3E/EMaTvFrVQQqNmkw5agPa/50Nw4/4JKGLYKk=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e6f4f619967f4551adb5003d0364770fde2b8110.camel@kernel.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b7d06c3a-e5d3-4e70-9335-08d72cda8cf1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Aug 2019 23:42:28.0666
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 15mkhmViNeZTAXndXq2I7XsNP7qARBId6AdQ5wJ84QZ2P4B9wROSsYcwQx52MJ4ol/gIqGzeBdVeD0nlbxyb8g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0501MB2333
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Missed this.  sorry.
+Hi All,
 
-On Mon, Aug 26, 2019 at 06:41:07AM -0400, Jeff Layton wrote:
-> On Thu, 2019-08-15 at 07:56 +1000, Dave Chinner wrote:
-> > On Wed, Aug 14, 2019 at 10:15:06AM -0400, Jeff Layton wrote:
-> > > On Fri, 2019-08-09 at 15:58 -0700, ira.weiny@intel.com wrote:
-> > > > From: Ira Weiny <ira.weiny@intel.com>
-> > > > 
-> > > > Add an exclusive lease flag which indicates that the layout mechanism
-> > > > can not be broken.
-> > > > 
-> > > > Exclusive layout leases allow the file system to know that pages may be
-> > > > GUP pined and that attempts to change the layout, ie truncate, should be
-> > > > failed.
-> > > > 
-> > > > A process which attempts to break it's own exclusive lease gets an
-> > > > EDEADLOCK return to help determine that this is likely a programming bug
-> > > > vs someone else holding a resource.
-> > .....
-> > > > diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
-> > > > index baddd54f3031..88b175ceccbc 100644
-> > > > --- a/include/uapi/asm-generic/fcntl.h
-> > > > +++ b/include/uapi/asm-generic/fcntl.h
-> > > > @@ -176,6 +176,8 @@ struct f_owner_ex {
-> > > >  
-> > > >  #define F_LAYOUT	16      /* layout lease to allow longterm pins such as
-> > > >  				   RDMA */
-> > > > +#define F_EXCLUSIVE	32      /* layout lease is exclusive */
-> > > > +				/* FIXME or shoudl this be F_EXLCK??? */
-> > > >  
-> > > >  /* operations for bsd flock(), also used by the kernel implementation */
-> > > >  #define LOCK_SH		1	/* shared lock */
-> > > 
-> > > This interface just seems weird to me. The existing F_*LCK values aren't
-> > > really set up to be flags, but are enumerated values (even if there are
-> > > some gaps on some arches). For instance, on parisc and sparc:
-> > 
-> > I don't think we need to worry about this - the F_WRLCK version of
-> > the layout lease should have these exclusive access semantics (i.e
-> > other ops fail rather than block waiting for lease recall) and hence
-> > the API shouldn't need a new flag to specify them.
-> > 
-> > i.e. the primary difference between F_RDLCK and F_WRLCK layout
-> > leases is that the F_RDLCK is a shared, co-operative lease model
-> > where only delays in operations will be seen, while F_WRLCK is a
-> > "guarantee exclusive access and I don't care what it breaks"
-> > model... :)
-> > 
-> 
-> Not exactly...
-> 
-> F_WRLCK and F_RDLCK leases can both be broken, and will eventually time
-> out if there is conflicting access. The F_EXCLUSIVE flag on the other
-> hand is there to prevent any sort of lease break from 
+This series includes misc updates for mlx5-next shared branch required
+for upcoming software steering feature.
 
-Right EXCLUSIVE will not break for any reason.  It will fail truncate and hole
-punch as we discussed back in June.  This is for the use case where the user
-has handed this file/pages off to some hardware for which removing the lease
-would be impossible.  _And_ we don't anticipate any valid use case that someone
-will need to truncate short of killing the process to free up file system
-space.
+1) Alex adds HW bits and definitions required for SW steering
+2) Ariel moves device memory management to mlx5_core (From mlx5_ib)
+3) Maor, Cleanups and fixups for eswitch mode and RoCE
+4) Mar, Set only stag for match untagged packets
 
-> 
-> I'm guessing what Ira really wants with the F_EXCLUSIVE flag is
-> something akin to what happens when we set fl_break_time to 0 in the
-> nfsd code. nfsd never wants the locks code to time out a lease of any
-> sort, since it handles that timeout itself.
-> 
-> If you're going to add this functionality, it'd be good to also convert
-> knfsd to use it as well, so we don't end up with multiple ways to deal
-> with that situation.
-
-Could you point me at the source for knfsd?  I looked in 
-
-git://git.linux-nfs.org/projects/steved/nfs-utils.git
-
-but I don't see anywhere leases are used in that source?
+In case of no objection this series will be applied to mlx5-next branch
+and sent later as pull request to both rdma-next and net-next branches.
 
 Thanks,
-Ira
+Saeed.
+
+---
+
+Alex Vesker (1):
+  net/mlx5: Add HW bits and definitions required for SW steering
+
+Ariel Levkovich (1):
+  net/mlx5: Move device memory management to mlx5_core
+
+Maor Gottlieb (2):
+  net/mlx5: Avoid disabling RoCE when uninitialized
+  net/mlx5: Add stub for mlx5_eswitch_mode
+
+Mark Bloch (1):
+  net/mlx5: Set only stag for match untagged packets
+
+ drivers/infiniband/hw/mlx5/cmd.c              | 130 ----------
+ drivers/infiniband/hw/mlx5/cmd.h              |   4 -
+ drivers/infiniband/hw/mlx5/main.c             | 102 +++-----
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |   2 -
+ .../net/ethernet/mellanox/mlx5/core/Makefile  |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_tc.c   |   5 +-
+ .../net/ethernet/mellanox/mlx5/core/lib/dm.c  | 223 +++++++++++++++++
+ .../net/ethernet/mellanox/mlx5/core/main.c    |   5 +
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |   3 +
+ .../net/ethernet/mellanox/mlx5/core/rdma.c    |   8 +-
+ include/linux/mlx5/device.h                   |   7 +
+ include/linux/mlx5/driver.h                   |  14 ++
+ include/linux/mlx5/eswitch.h                  |   8 +-
+ include/linux/mlx5/mlx5_ifc.h                 | 235 +++++++++++++++---
+ 14 files changed, 497 insertions(+), 251 deletions(-)
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/lib/dm.c
+
+--=20
+2.21.0
 
