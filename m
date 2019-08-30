@@ -2,200 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BCAA31FB
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Aug 2019 10:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39786A3326
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Aug 2019 10:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727156AbfH3IQb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 30 Aug 2019 04:16:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725780AbfH3IQb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 30 Aug 2019 04:16:31 -0400
-Received: from localhost (unknown [77.137.115.125])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C91EC21726;
-        Fri, 30 Aug 2019 08:16:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567152990;
-        bh=0vpd9ZOrBdCtR8xSNAKN5Me/MRlHvYlMx8HhPhQOeNU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SCe2AEY09+HCUHx0XsUb70r+HEHNlPV3+BSRPc1AWI2Qy4nl4LunGk02n4YpcUL8T
-         DA8j464oILeD3MrAZBpUl9KxqAAb21cz6NTAWFPKn+kFoCUiml74voIHg0n5dH0f5b
-         V1twQysP73BYq2s82qmtHPaKOaDu2xZbpmUFOu0U=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Erez Alfasi <ereza@mellanox.com>
-Subject: [PATCH rdma-next v1 4/4] RDMA/mlx5: Return ODP type per MR
-Date:   Fri, 30 Aug 2019 11:16:12 +0300
-Message-Id: <20190830081612.2611-5-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190830081612.2611-1-leon@kernel.org>
-References: <20190830081612.2611-1-leon@kernel.org>
+        id S1727307AbfH3IyS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 30 Aug 2019 04:54:18 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:57912 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727294AbfH3IyS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 30 Aug 2019 04:54:18 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 187238F30301A26F8A09;
+        Fri, 30 Aug 2019 16:54:16 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.439.0; Fri, 30 Aug 2019 16:54:07 +0800
+From:   Weihang Li <liweihang@hisilicon.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Add UD support for hip08
+Date:   Fri, 30 Aug 2019 16:50:56 +0800
+Message-ID: <1567155056-38660-1-git-send-email-liweihang@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Erez Alfasi <ereza@mellanox.com>
+From: Lijun Ou <oulijun@huawei.com>
 
-Provide an ODP explicit/implicit type as part
-of 'rdma -dd resource show mr' dump.
+This patch aims to let hip08 support communication of Unreliable
+Datagram.
 
-For example:
-~$: rdma -dd resource show mr
-dev mlx5_0 mrn 1 rkey 0xa99a lkey 0xa99a mrlen 50000000
-pdn 9 pid 7372 comm ibv_rc_pingpong drv_odp explicit
-
-For non-ODP MRs, we won't print "drv_odp ..." at all.
-
-Signed-off-by: Erez Alfasi <ereza@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Lijun Ou <oulijun@huawei.com>
+Signed-off-by: Weihang Li <liweihang@hisilicon.com>
 ---
- drivers/infiniband/core/nldev.c       | 13 ++++++++
- drivers/infiniband/hw/mlx5/Makefile   |  2 +-
- drivers/infiniband/hw/mlx5/main.c     |  1 +
- drivers/infiniband/hw/mlx5/mlx5_ib.h  |  2 ++
- drivers/infiniband/hw/mlx5/restrack.c | 48 +++++++++++++++++++++++++++
- include/rdma/restrack.h               |  3 ++
- 6 files changed, 68 insertions(+), 1 deletion(-)
- create mode 100644 drivers/infiniband/hw/mlx5/restrack.c
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 17 ++++++++++-------
+ drivers/infiniband/hw/hns/hns_roce_qp.c    |  5 +++++
+ 2 files changed, 15 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index 47fee3d68cb9..82ed8e339d8f 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -181,6 +181,19 @@ static int _rdma_nl_put_driver_u64(struct sk_buff *msg, const char *name,
- 	return 0;
- }
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 206dfdb..e27d864a 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -296,7 +296,7 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
+ 		tmp_len = 0;
  
-+int rdma_nl_put_driver_string(struct sk_buff *msg, const char *name,
-+			      const char *str)
-+{
-+	if (put_driver_name_print_type(msg, name,
-+				       RDMA_NLDEV_PRINT_TYPE_UNSPEC))
-+		return -EMSGSIZE;
-+	if (nla_put_string(msg, RDMA_NLDEV_ATTR_DRIVER_STRING, str))
-+		return -EMSGSIZE;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(rdma_nl_put_driver_string);
-+
- int rdma_nl_put_driver_u32(struct sk_buff *msg, const char *name, u32 value)
+ 		/* Corresponding to the QP type, wqe process separately */
+-		if (ibqp->qp_type == IB_QPT_GSI) {
++		if (ibqp->qp_type == IB_QPT_GSI || ibqp->qp_type == IB_QPT_UD) {
+ 			ud_sq_wqe = wqe;
+ 			memset(ud_sq_wqe, 0, sizeof(*ud_sq_wqe));
+ 
+@@ -420,8 +420,7 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
+ 			roce_set_field(ud_sq_wqe->byte_48,
+ 				       V2_UD_SEND_WQE_BYTE_48_SGID_INDX_M,
+ 				       V2_UD_SEND_WQE_BYTE_48_SGID_INDX_S,
+-				       hns_get_gid_index(hr_dev, qp->phy_port,
+-							 ah->av.gid_index));
++				       ah->av.gid_index);
+ 
+ 			memcpy(&ud_sq_wqe->dgid[0], &ah->av.dgid[0],
+ 			       GID_LEN_V2);
+@@ -3130,7 +3129,8 @@ static void set_qpc_wqe_cnt(struct hns_roce_qp *hr_qp,
+ 			    struct hns_roce_v2_qp_context *context,
+ 			    struct hns_roce_v2_qp_context *qpc_mask)
  {
- 	return _rdma_nl_put_driver_u32(msg, name, RDMA_NLDEV_PRINT_TYPE_UNSPEC,
-diff --git a/drivers/infiniband/hw/mlx5/Makefile b/drivers/infiniband/hw/mlx5/Makefile
-index 9924be8384d8..d0a043ccbe58 100644
---- a/drivers/infiniband/hw/mlx5/Makefile
-+++ b/drivers/infiniband/hw/mlx5/Makefile
-@@ -3,7 +3,7 @@ obj-$(CONFIG_MLX5_INFINIBAND)	+= mlx5_ib.o
+-	if (hr_qp->ibqp.qp_type == IB_QPT_GSI)
++	if (hr_qp->ibqp.qp_type == IB_QPT_GSI ||
++	    hr_qp->ibqp.qp_type == IB_QPT_UD)
+ 		roce_set_field(context->byte_4_sqpn_tst,
+ 			       V2_QPC_BYTE_4_SGE_SHIFT_M,
+ 			       V2_QPC_BYTE_4_SGE_SHIFT_S,
+@@ -3650,8 +3650,9 @@ static int modify_qp_init_to_rtr(struct ib_qp *ibqp,
+ 	roce_set_field(context->byte_20_smac_sgid_idx,
+ 		       V2_QPC_BYTE_20_SGE_HOP_NUM_M,
+ 		       V2_QPC_BYTE_20_SGE_HOP_NUM_S,
+-		       ((ibqp->qp_type == IB_QPT_GSI) ||
+-		       hr_qp->sq.max_gs > HNS_ROCE_V2_UC_RC_SGE_NUM_IN_WQE) ?
++		       ((ibqp->qp_type == IB_QPT_GSI ||
++			ibqp->qp_type == IB_QPT_UD) ||
++			hr_qp->sq.max_gs > HNS_ROCE_V2_UC_RC_SGE_NUM_IN_WQE) ?
+ 		       hr_dev->caps.wqe_sge_hop_num : 0);
+ 	roce_set_field(qpc_mask->byte_20_smac_sgid_idx,
+ 		       V2_QPC_BYTE_20_SGE_HOP_NUM_M,
+@@ -4564,7 +4565,9 @@ static int hns_roce_v2_destroy_qp_common(struct hns_roce_dev *hr_dev,
+ 	struct ib_device *ibdev = &hr_dev->ib_dev;
+ 	int ret;
  
- mlx5_ib-y :=	main.o cq.o doorbell.o qp.o mem.o srq_cmd.o \
- 		srq.o mr.o ah.o mad.o gsi.o ib_virt.o cmd.o \
--		cong.o
-+		cong.o restrack.o
- mlx5_ib-$(CONFIG_INFINIBAND_ON_DEMAND_PAGING) += odp.o
- mlx5_ib-$(CONFIG_MLX5_ESWITCH) += ib_rep.o
- mlx5_ib-$(CONFIG_INFINIBAND_USER_ACCESS) += devx.o
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 05095fda03cc..084145757549 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -6328,6 +6328,7 @@ static const struct ib_device_ops mlx5_ib_dev_ops = {
- 	.disassociate_ucontext = mlx5_ib_disassociate_ucontext,
- 	.drain_rq = mlx5_ib_drain_rq,
- 	.drain_sq = mlx5_ib_drain_sq,
-+	.fill_res_entry = mlx5_ib_fill_res_entry,
- 	.get_dev_fw_str = get_dev_fw_str,
- 	.get_dma_mr = mlx5_ib_get_dma_mr,
- 	.get_link_layer = mlx5_ib_port_link_layer,
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 6abfbf3a69b7..c67ede31d7dc 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1334,6 +1334,8 @@ struct mlx5_core_dev *mlx5_ib_get_native_port_mdev(struct mlx5_ib_dev *dev,
- 						   u8 *native_port_num);
- void mlx5_ib_put_native_port_mdev(struct mlx5_ib_dev *dev,
- 				  u8 port_num);
-+int mlx5_ib_fill_res_entry(struct sk_buff *msg,
-+			   struct rdma_restrack_entry *res);
+-	if (hr_qp->ibqp.qp_type == IB_QPT_RC && hr_qp->state != IB_QPS_RESET) {
++	if ((hr_qp->ibqp.qp_type == IB_QPT_RC ||
++	     hr_qp->ibqp.qp_type == IB_QPT_UD) &&
++	    hr_qp->state != IB_QPS_RESET) {
+ 		/* Modify qp to reset before destroying qp */
+ 		ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, NULL, 0,
+ 					    hr_qp->state, IB_QPS_RESET);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index ba81768..5374cd0 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -377,6 +377,10 @@ static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
+ 		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp->sq.wqe_cnt *
+ 							(hr_qp->sq.max_gs - 2));
  
- #if IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS)
- int mlx5_ib_devx_create(struct mlx5_ib_dev *dev, bool is_user);
-diff --git a/drivers/infiniband/hw/mlx5/restrack.c b/drivers/infiniband/hw/mlx5/restrack.c
-new file mode 100644
-index 000000000000..427011d20250
---- /dev/null
-+++ b/drivers/infiniband/hw/mlx5/restrack.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+/*
-+ * Copyright (c) 2019, Mellanox Technologies inc.  All rights reserved.
-+ */
++	if (hr_qp->ibqp.qp_type == IB_QPT_UD)
++		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp->sq.wqe_cnt *
++						       hr_qp->sq.max_gs);
 +
-+#include <uapi/rdma/rdma_netlink.h>
-+#include <rdma/ib_umem_odp.h>
-+#include <rdma/restrack.h>
-+#include "mlx5_ib.h"
-+
-+static int fill_res_mr_entry(struct sk_buff *msg,
-+			     struct rdma_restrack_entry *res)
-+{
-+	struct ib_mr *ibmr = container_of(res, struct ib_mr, res);
-+	struct mlx5_ib_mr *mr = to_mmr(ibmr);
-+	struct nlattr *table_attr;
-+
-+	if (!is_odp_mr(mr))
-+		return 0;
-+
-+	table_attr = nla_nest_start(msg, RDMA_NLDEV_ATTR_DRIVER);
-+	if (!table_attr)
-+		goto err;
-+
-+	if (to_ib_umem_odp(mr->umem)->is_implicit_odp) {
-+		if (rdma_nl_put_driver_string(msg, "odp", "implicit"))
-+			goto err;
-+	} else {
-+		if (rdma_nl_put_driver_string(msg, "odp", "explicit"))
-+			goto err;
-+	}
-+
-+	nla_nest_end(msg, table_attr);
-+	return 0;
-+
-+err:
-+	nla_nest_cancel(msg, table_attr);
-+	return -EMSGSIZE;
-+}
-+
-+int mlx5_ib_fill_res_entry(struct sk_buff *msg,
-+			   struct rdma_restrack_entry *res)
-+{
-+	if (res->type == RDMA_RESTRACK_MR)
-+		return fill_res_mr_entry(msg, res);
-+
-+	return 0;
-+}
-diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
-index b0fc6b26bdf5..cb779b311703 100644
---- a/include/rdma/restrack.h
-+++ b/include/rdma/restrack.h
-@@ -157,6 +157,9 @@ int rdma_nl_put_driver_u32_hex(struct sk_buff *msg, const char *name,
- int rdma_nl_put_driver_u64(struct sk_buff *msg, const char *name, u64 value);
- int rdma_nl_put_driver_u64_hex(struct sk_buff *msg, const char *name,
- 			       u64 value);
-+int rdma_nl_put_driver_string(struct sk_buff *msg, const char *name,
-+			      const char *str);
-+
- struct rdma_restrack_entry *rdma_restrack_get_byid(struct ib_device *dev,
- 						   enum rdma_restrack_type type,
- 						   u32 id);
+ 	if ((hr_qp->sq.max_gs > 2) && (hr_dev->pci_dev->revision == 0x20)) {
+ 		if (hr_qp->sge.sge_cnt > hr_dev->caps.max_extend_sg) {
+ 			dev_err(hr_dev->dev,
+@@ -1005,6 +1009,7 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
+ 	int ret;
+ 
+ 	switch (init_attr->qp_type) {
++	case IB_QPT_UD:
+ 	case IB_QPT_RC: {
+ 		hr_qp = kzalloc(sizeof(*hr_qp), GFP_KERNEL);
+ 		if (!hr_qp)
 -- 
-2.20.1
+2.8.1
 
