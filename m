@@ -2,137 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19246A3DB3
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Aug 2019 20:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0B5A3FC4
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Aug 2019 23:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbfH3S36 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 30 Aug 2019 14:29:58 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:44518 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727959AbfH3S35 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Aug 2019 14:29:57 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7UITZJx130598;
-        Fri, 30 Aug 2019 18:29:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2019-08-05; bh=UROzgxy4gwf+lssO4y/eZXZsSZiY/0z4fQU2UC97ndA=;
- b=Lf4dnyCzWL3fS3f0gm1PAaWpm7EUKZKbnVRev2it3WLu4t0oqrNaZKZ9sHbqyaLn9X+y
- +Thg3BVXbHuRHTNG4STdIU9CPCMfUot9gnEtdzJutnsxvhtJTjDFMGtBvMBsLefG6fRi
- vjT8xr7s4i4zZuipMYaj4jLDwkhwoy6Uelj25jpAenZRKtvg8i6fLp7suQpGd0zFjwkP
- A/gd4kBBfLZc8xIXXgqP/VeROgA6XJ4T/jeLhT3g5cSCpkwMwsLcGNx2M7vq0eeephII
- F6StdMwKBz4MYm8sEBdNhUjBiNbR/dKYiRdFwsUkm9AT1Y2tP/uhsFVpRWy7TPYYp/Ih TQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2uq94j800t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Aug 2019 18:29:55 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7UIIOuG152476;
-        Fri, 30 Aug 2019 18:27:51 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2upc8xsufx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Aug 2019 18:27:51 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7UIRogF011053;
-        Fri, 30 Aug 2019 18:27:51 GMT
-Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 30 Aug 2019 11:27:50 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: qedr memory leak report
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <93085620-9DAA-47A3-ACE1-932F261674AC@oracle.com>
-Date:   Fri, 30 Aug 2019 14:27:49 -0400
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <13F323F2-D618-46C3-BE1B-106FD2BEE7F4@oracle.com>
-References: <93085620-9DAA-47A3-ACE1-932F261674AC@oracle.com>
-To:     Michal Kalderon <Michal.Kalderon@cavium.com>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9365 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908300177
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9365 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908300177
+        id S1728143AbfH3Vnj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 30 Aug 2019 17:43:39 -0400
+Received: from mail-eopbgr20064.outbound.protection.outlook.com ([40.107.2.64]:31559
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728079AbfH3Vnj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 30 Aug 2019 17:43:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ve9wBmZeY0y89Z49JFRwcIiqIhqvOvHENLFka/ykd/5F8hE/OoHyedRQ9OTWvuQOjss9dmTxLgRMYKMfbFUJfU+Oca+NLiz4KsKdcvq5bMGf1JVzmwGhVRidCxsPicFCKnmjghxenLw/arSQjbvPAQ+fmxVyfSo04/Tszc5GnvaS9/CDxW/wsq5ECcHSmKfRni35gX6HAwpTy8iDb5lG8G2ZFPhKdDtKlAjpdSd8OTHo7CZFEAiLW9nzUXo92Tl4t6cjoWqNNyT/1RhPmCxudMxawMHSa5dcvWAyOfB72B/MYalvXLDvzxZ4jqOW/GXEfE9JeiOHcxNcAS6bRha+wA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VSEsD5C0xT1UCKbxVlBzi7i8s3cEmVVtXg3dOehKOws=;
+ b=k/7muPa8KNX75n9vSiR/+OlvOJ7hTuKKtKv9TMTr5YWfJe96GVqRIQlbG0exZRWb9tKPoZN9Zm+NSFGSGXoinfdjJlvZuMonAgTwi8qAqtdMLk6U1fKKlaY80TSCJtpwtok7w2+qr2E5vurzxnOwZp1U/4xaBYcKcZ3jNqJ9wVEX+/r8XvZGgpgnP7sFTq08pV70suokc7rzbjvVzAO3U96HP61UkCnMv/FIdlIlJZsRGpcMEX276jMf+v3GHkJDvBETeYSUIvtdx6mHVcZaTocsLFG01vSHjgC9e9PQwGTXHZE+ow9d7ChPY/UB9SnyNwPQ2edIZ5b/GyGdwRJ1fA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VSEsD5C0xT1UCKbxVlBzi7i8s3cEmVVtXg3dOehKOws=;
+ b=HHg/iutjFor41F8xHxxPCazlGq/Bdot2OGzKS83XUEy3SZ39E8WtaDDNlprKbNO5mNourENRpgBqAft7hHcFbWpROFXTHcnr+Jj0y0EFJKKFjNfxGx3ChlUOyLNLE1xh+maPcQTNYBzHHnj5GX1/+gtjPxnyP8KHmLpL3mkJAA8=
+Received: from AM4PR0501MB2756.eurprd05.prod.outlook.com (10.172.216.138) by
+ AM4PR0501MB2322.eurprd05.prod.outlook.com (10.165.82.151) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2199.21; Fri, 30 Aug 2019 21:43:34 +0000
+Received: from AM4PR0501MB2756.eurprd05.prod.outlook.com
+ ([fe80::58d1:d1d6:dbda:3576]) by AM4PR0501MB2756.eurprd05.prod.outlook.com
+ ([fe80::58d1:d1d6:dbda:3576%4]) with mapi id 15.20.2220.020; Fri, 30 Aug 2019
+ 21:43:34 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     "davem@davemloft.net" <davem@davemloft.net>,
+        "maowenan@huawei.com" <maowenan@huawei.com>,
+        "leon@kernel.org" <leon@kernel.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] net: mlx5: Kconfig: Fix MLX5_CORE_EN dependencies
+Thread-Topic: [PATCH -next] net: mlx5: Kconfig: Fix MLX5_CORE_EN dependencies
+Thread-Index: AQHVXITcCNibTH++QEWLgS4IcRgEMqcUPuUA
+Date:   Fri, 30 Aug 2019 21:43:34 +0000
+Message-ID: <ef0ab9738f6afa81c709f56cffe4bcad13bec654.camel@mellanox.com>
+References: <20190827031251.98881-1-maowenan@huawei.com>
+In-Reply-To: <20190827031251.98881-1-maowenan@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-originating-ip: [209.116.155.178]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f60d379a-bbff-4052-d67c-08d72d931bc4
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:AM4PR0501MB2322;
+x-ms-traffictypediagnostic: AM4PR0501MB2322:
+x-microsoft-antispam-prvs: <AM4PR0501MB23222E9C357FBA42C2C56DA1BEBD0@AM4PR0501MB2322.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:765;
+x-forefront-prvs: 0145758B1D
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(376002)(366004)(39850400004)(136003)(346002)(189003)(199004)(91956017)(66946007)(76116006)(6506007)(229853002)(478600001)(102836004)(7736002)(2501003)(3846002)(5660300002)(4744005)(14454004)(6116002)(316002)(36756003)(256004)(8936002)(4326008)(305945005)(6436002)(53936002)(81156014)(6246003)(2906002)(99286004)(58126008)(71190400001)(71200400001)(6512007)(110136005)(26005)(66476007)(476003)(6486002)(66066001)(446003)(486006)(64756008)(66556008)(11346002)(81166006)(25786009)(186003)(2616005)(66446008)(2201001)(118296001)(54906003)(86362001)(76176011)(8676002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR0501MB2322;H:AM4PR0501MB2756.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: fOz+0qMSq0dz0GBGW24BUxfjFi7TQBUMoCp2H1H8Q+XkqtsSCN5zMYwHSekCcSGtxsU6TA6FGUrn2volZnl0MyJ4ASVfXiNd0McXMANei6jvOGqBWcG7iE4KdlqJ+luWhwv2ymUjmZkS0S1TMXrH8wT/2GnIXHn8Wai76cglrRvkj5hgWvr9sHBt3J2UHFpG32oFYTANXuWKbZe1GIWwJmIpJa3cX00c/sTjcwnMOmX2G5ThX2PRMVEUwG/NifhBxjmgD8/EID6dQmpOAtul7Ik+33vbER3CGHK4jSUxtAjnS+qIXDP6LkMybMTVkqJ/LMJuB4XA+z/mcRZ10Ms72F1XioYWFdgRxTJNnD4HBQkYxGRRO4nbncN5uW1vMpzRWcz3CSYINM7LF7B6zCTRA2Yg394xFq2fqxC4wr7ZzX4=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4C49BF789E69254DAFCD77FA47F5257D@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f60d379a-bbff-4052-d67c-08d72d931bc4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2019 21:43:34.4512
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hTEVswJTAcPsn6Jq6HbEL7G5LjS87p+qS2JW02k32qrPKD97rSxqYsWe17qP9j1k8/lX8m9K+S3CZIUKe7/nrA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR0501MB2322
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-> On Aug 30, 2019, at 2:03 PM, Chuck Lever <chuck.lever@oracle.com> wrote:
-> 
-> Hi Michal-
-> 
-> In the middle of some other testing, I got this kmemleak report
-> while testing with FastLinq cards in iWARP mode:
-> 
-> unreferenced object 0xffff888458923340 (size 32):
->  comm "mount.nfs", pid 2294, jiffies 4298338848 (age 1144.337s)
->  hex dump (first 32 bytes):
->    20 1d 69 63 88 88 ff ff 20 1d 69 63 88 88 ff ff   .ic.... .ic....
->    00 60 7a 69 84 88 ff ff 00 60 82 f9 00 00 00 00  .`zi.....`......
->  backtrace:
->    [<000000000df5bfed>] __kmalloc+0x128/0x176
->    [<0000000020724641>] qedr_alloc_pbl_tbl.constprop.44+0x3c/0x121 [qedr]
->    [<00000000a361c591>] init_mr_info.constprop.41+0xaf/0x21f [qedr]
->    [<00000000e8049714>] qedr_alloc_mr+0x95/0x2c1 [qedr]
->    [<000000000e6102bc>] ib_alloc_mr_user+0x31/0x96 [ib_core]
->    [<00000000d254a9fb>] frwr_init_mr+0x23/0x121 [rpcrdma]
->    [<00000000a0364e35>] rpcrdma_mrs_create+0x45/0xea [rpcrdma]
->    [<00000000fd6bf282>] rpcrdma_buffer_create+0x9e/0x1c9 [rpcrdma]
->    [<00000000be3a1eba>] xprt_setup_rdma+0x109/0x279 [rpcrdma]
->    [<00000000b736b88f>] xprt_create_transport+0x39/0x19a [sunrpc]
->    [<000000001024e4dc>] rpc_create+0x118/0x1ab [sunrpc]
->    [<00000000cca43a49>] nfs_create_rpc_client+0xf8/0x15f [nfs]
->    [<00000000073c962c>] nfs_init_client+0x1a/0x3b [nfs]
->    [<00000000b03964c4>] nfs_init_server+0xc1/0x212 [nfs]
->    [<000000001c71f609>] nfs_create_server+0x74/0x1a4 [nfs]
->    [<000000004dc919a1>] nfs3_create_server+0xb/0x25 [nfsv3]
-> 
-> It's repeated many times.
-> 
-> The workload was an unremarkable software build and regression test
-> suite on an NFSv3 mount with RDMA.
-
-Also seeing one of these per NFS mount:
-
-unreferenced object 0xffff888869f39b40 (size 64):
-  comm "kworker/u28:0", pid 17569, jiffies 4299267916 (age 1592.907s)
-  hex dump (first 32 bytes):
-    00 80 53 6d 88 88 ff ff 00 00 00 00 00 00 00 00  ..Sm............
-    00 48 e2 66 84 88 ff ff 00 00 00 00 00 00 00 00  .H.f............
-  backtrace:
-    [<0000000063e652dd>] kmem_cache_alloc_trace+0xed/0x133
-    [<0000000083b1e912>] qedr_iw_connect+0xf9/0x3c8 [qedr]
-    [<00000000553be951>] iw_cm_connect+0xd0/0x157 [iw_cm]
-    [<00000000b086730c>] rdma_connect+0x54e/0x5b0 [rdma_cm]
-    [<00000000d8af3cf2>] rpcrdma_ep_connect+0x22b/0x360 [rpcrdma]
-    [<000000006a413c8d>] xprt_rdma_connect_worker+0x24/0x88 [rpcrdma]
-    [<000000001c5b049a>] process_one_work+0x196/0x2c6
-    [<000000007e3403ba>] worker_thread+0x1ad/0x261
-    [<000000001daaa973>] kthread+0xf4/0xf9
-    [<0000000014987b31>] ret_from_fork+0x24/0x30
-
-Looks like this one is not being freed:
-
-514         ep = kzalloc(sizeof(*ep), GFP_KERNEL);
-515         if (!ep)
-516                 return -ENOMEM;
-
-
---
-Chuck Lever
-
-
-
+T24gVHVlLCAyMDE5LTA4LTI3IGF0IDExOjEyICswODAwLCBNYW8gV2VuYW4gd3JvdGU6DQo+IFdo
+ZW4gTUxYNV9DT1JFX0VOPXkgYW5kIFBDSV9IWVBFUlZfSU5URVJGQUNFIGlzIG5vdCBzZXQsIGJl
+bG93IGVycm9ycw0KDQpUaGUgaXNzdWUgaGFwcGVucyB3aGVuIFBDSV9IWVBFUlZfSU5URVJGQUNF
+IGlzIGEgbW9kdWxlIGFuZCBtbHg1X2NvcmUNCmlzIGJ1aWx0LWluLg0KDQo+IGFyZSBmb3VuZDoN
+Cj4gZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX21haW4ubzogSW4g
+ZnVuY3Rpb24NCj4gYG1seDVlX25pY19lbmFibGUnOg0KPiBlbl9tYWluLmM6KC50ZXh0KzB4YjY0
+OSk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8NCj4gYG1seDVlX2h2X3ZoY2Ffc3RhdHNfY3JlYXRl
+Jw0KPiBkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW5fbWFpbi5vOiBJ
+biBmdW5jdGlvbg0KPiBgbWx4NWVfbmljX2Rpc2FibGUnOg0KPiBlbl9tYWluLmM6KC50ZXh0KzB4
+YjhjNCk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8NCj4gYG1seDVlX2h2X3ZoY2Ffc3RhdHNfZGVz
+dHJveScNCj4gDQo+IFRoaXMgYmVjYXVzZSBDT05GSUdfUENJX0hZUEVSVl9JTlRFUkZBQ0UgaXMg
+bmV3bHkgaW50cm9kdWNlZCBieQ0KPiAnY29tbWl0IDM0OGRkOTNlNDBjMQ0KPiAoIlBDSTogaHY6
+IEFkZCBhIEh5cGVyLVYgUENJIGludGVyZmFjZSBkcml2ZXIgZm9yIHNvZnR3YXJlDQo+IGJhY2tj
+aGFubmVsIGludGVyZmFjZSIpLA0KPiBGaXggdGhpcyBieSBtYWtpbmcgTUxYNV9DT1JFX0VOIGlt
+cGx5IFBDSV9IWVBFUlZfSU5URVJGQUNFLg0KPiANCg0KdGhlIGltcGx5IHNob3VsZCBiZSBpbiBN
+TFg1X0NPUkUgbm90IE1MWDVfQ09SRV9FTiBzaW5jZSB0aGUNCmltcGxlbWVudGF0aW9uIGFsc28g
+aW52b2x2ZXMgTUxYNV9DT1JFLiANCg0KSSB3aWxsIHByZXBhcmUgYSBwYXRjaCB3aXRoIHRoZXNl
+IGZpeHVwcy4NCg0KVGhhbmtzLA0KU2FlZWQuDQoNCg==
