@@ -2,640 +2,452 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65BF3A365A
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Aug 2019 14:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C632AA36F2
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Aug 2019 14:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728330AbfH3MIG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 30 Aug 2019 08:08:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12992 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727726AbfH3MIF (ORCPT
+        id S1727770AbfH3Mmh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 30 Aug 2019 08:42:37 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:14982 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727826AbfH3Mmh (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 30 Aug 2019 08:08:05 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7UC2sIY038174
-        for <linux-rdma@vger.kernel.org>; Fri, 30 Aug 2019 08:08:02 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.119])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2uq2s89vp0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Fri, 30 Aug 2019 08:08:02 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Fri, 30 Aug 2019 12:08:01 -0000
-Received: from us1b3-smtp08.a3dr.sjc01.isc4sb.com (10.122.203.190)
-        by smtp.notes.na.collabserv.com (10.122.182.123) with smtp.notes.na.collabserv.com ESMTP;
-        Fri, 30 Aug 2019 12:07:52 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp08.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2019083012075193-316989 ;
-          Fri, 30 Aug 2019 12:07:51 +0000 
-In-Reply-To: <20190827132846.9142-5-michal.kalderon@marvell.com>
-Subject: Re: [PATCH v8 rdma-next 4/7] RDMA/siw: Use the common mmap_xa helpers
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Michal Kalderon" <michal.kalderon@marvell.com>
-Cc:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
-        <dledford@redhat.com>, <galpress@amazon.com>, <sleybo@amazon.com>,
-        <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        "Ariel Elior" <ariel.elior@marvell.com>
-Date:   Fri, 30 Aug 2019 12:07:51 +0000
-MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
+        Fri, 30 Aug 2019 08:42:37 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x7UCZKbY010637;
+        Fri, 30 Aug 2019 05:42:30 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt0818;
+ bh=APxgkpXf0JFaujEHI46ren+i4KiVlL+RrKqJJjE24TU=;
+ b=ZPg3jbIKWLTm3aeedEvLqTXzTra5CM3s4kAbIQkj55Kp6Ho60kBWztpQ2sB/U2KHToBj
+ 4NzsgM+PtmgEmX2/4jCuHhXrlPkeotN7fgR+S3mDkkN2Swu2bq5qCT8dBZoSyihvWEed
+ rfk+LcbomocSi4zPczP0CUZJEYBl/eoEzr5i+/QSEWc24vl9Cx3j2GLauWNdVNXRdeg4
+ M1NEclhbTyvfG+DfzRzkj8tMtRfEuUQtxQgVWscA/hHDLZ9eC2Z34xgOA6u45sNEi0M5
+ /jUwTh5tg78ixQUg2yta8FBkgFFOYiH3ifTP3jjbxapSxBFFWMSpbvoPJAqitFx2599D gQ== 
+Received: from sc-exch04.marvell.com ([199.233.58.184])
+        by mx0a-0016f401.pphosted.com with ESMTP id 2upmepk7ts-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 30 Aug 2019 05:42:30 -0700
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Fri, 30 Aug
+ 2019 05:42:28 -0700
+Received: from NAM01-SN1-obe.outbound.protection.outlook.com (104.47.32.52) by
+ SC-EXCH03.marvell.com (10.93.176.83) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Fri, 30 Aug 2019 05:42:28 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fqr/YOKUr7tlj0PuqZ9Cajr/qgm05qxhMp8RXrxWG0kIs4hdVjuRPsQMr98ZEUdwYTjrWM3RoOoE5ims2THXX8WroPU6YMgMAdbeY06X946TDFp8YnVI2I0IwITF7hZnkEnUx/BQFu5oH2n5l19ew85uCim/ASgnN2IFmZ4ciyqDa4DiPM75MEB74ACYDh+dwpJd7Y/y9vpkFE7SLqw1FH7VaZ6s9n0/02lUtpF7NfKxLYBvN8KnV7L6VfHzepbN68ieRiYocDPhQ1IHyrdJgj86bf5F9JNw01r/klF6n1r3Uin/LC1KR2TWVEPGH3K9PzTwmcBqgO7GErOAw+KarQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=APxgkpXf0JFaujEHI46ren+i4KiVlL+RrKqJJjE24TU=;
+ b=TLi1bNlVey+fWiH9TsQcA/BTc6bO95RP7Gu1VrHUbiN92jb5mQRlUvDjYyHRtO7c3L3gmXwLXv0dwq0aLZrTtVXOObCj3S41aRhNyOQA3mocg7ynVmpdunnLDAJcPUeqw2odov6uytuDYx0n+Zuz2XfT3mpH3M7kIBch0b21TO6wHRWmhF03GnauB9gTzi5NQl4QQeAhBGqLF0/qNt1ONyPtbMf4wslOzcRxhkIpxseKgFKinPJCQphsSj/uI99TBhEzIXrDROJ/daw2Qi18IGQcEnr/kfqqrT4ykteLKJGIMtR8UZpSDI0eOtfGGrXMFGqq0WXDbv8wUVzxd4CFVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector2-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=APxgkpXf0JFaujEHI46ren+i4KiVlL+RrKqJJjE24TU=;
+ b=ft/SW4zAPc970xP+QMTeAKHc2OLvEL4LHs7NbLOa+69kRz8HNNuDPzM1p81SVoZeGbkxz9t8z9vS9KquQhQJkYiAXy7aENptMBugSJcnRGLwjcybZJhLM0qDAhtvwGTHDMBPC0Kk/CTOFwS+VuLjeH1RNwyoUSUWXsV5uvsXAXU=
+Received: from MN2PR18MB3182.namprd18.prod.outlook.com (10.255.236.143) by
+ MN2PR18MB2847.namprd18.prod.outlook.com (20.179.20.87) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2220.19; Fri, 30 Aug 2019 12:42:26 +0000
+Received: from MN2PR18MB3182.namprd18.prod.outlook.com
+ ([fe80::f001:1b96:3396:1781]) by MN2PR18MB3182.namprd18.prod.outlook.com
+ ([fe80::f001:1b96:3396:1781%5]) with mapi id 15.20.2199.021; Fri, 30 Aug 2019
+ 12:42:26 +0000
+From:   Michal Kalderon <mkalderon@marvell.com>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+CC:     Ariel Elior <aelior@marvell.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "sleybo@amazon.com" <sleybo@amazon.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Ariel Elior <aelior@marvell.com>
+Subject: RE: [EXT] Re: [PATCH v8 rdma-next 4/7] RDMA/siw: Use the common
+ mmap_xa helpers
+Thread-Topic: [EXT] Re: [PATCH v8 rdma-next 4/7] RDMA/siw: Use the common
+ mmap_xa helpers
+Thread-Index: AQHVXNvBsBWJLPJoZk2QlZBxyqYUlacTnV+AgAAHP4A=
+Date:   Fri, 30 Aug 2019 12:42:26 +0000
+Message-ID: <MN2PR18MB318291264841FC40885F4B42A1BD0@MN2PR18MB3182.namprd18.prod.outlook.com>
 References: <20190827132846.9142-5-michal.kalderon@marvell.com>,<20190827132846.9142-1-michal.kalderon@marvell.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
-X-KeepSent: ED447099:CC1C35E8-00258466:003FD3A8;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 27555
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19083012-3975-0000-0000-0000003D1849
-X-IBM-SpamModules-Scores: BY=0.045472; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.035428
-X-IBM-SpamModules-Versions: BY=3.00011684; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01254222; UDB=6.00662494; IPR=6.01035842;
- MB=3.00028390; MTD=3.00000008; XFM=3.00000015; UTC=2019-08-30 12:07:58
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-08-30 10:49:47 - 6.00010348
-x-cbparentid: 19083012-3976-0000-0000-000000621991
-Message-Id: <OFED447099.CC1C35E8-ON00258466.003FD3A8-00258466.0042A33D@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-30_05:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+ <OFED447099.CC1C35E8-ON00258466.003FD3A8-00258466.0042A33D@notes.na.collabserv.com>
+In-Reply-To: <OFED447099.CC1C35E8-ON00258466.003FD3A8-00258466.0042A33D@notes.na.collabserv.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [79.177.63.148]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d1888fb5-1a53-4c20-1a33-08d72d478330
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MN2PR18MB2847;
+x-ms-traffictypediagnostic: MN2PR18MB2847:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR18MB28479FFF5AF61ED8C3B68D19A1BD0@MN2PR18MB2847.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 0145758B1D
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(376002)(346002)(136003)(39860400002)(396003)(199004)(189003)(30864003)(8936002)(81156014)(8676002)(476003)(6436002)(5660300002)(486006)(229853002)(74316002)(11346002)(446003)(52536014)(7736002)(305945005)(66066001)(81166006)(86362001)(3846002)(6116002)(14454004)(71200400001)(256004)(14444005)(71190400001)(64756008)(66446008)(66476007)(66946007)(66556008)(99286004)(25786009)(26005)(7696005)(6506007)(76176011)(6246003)(4326008)(9686003)(55016002)(107886003)(53936002)(6916009)(186003)(53946003)(54906003)(478600001)(316002)(2906002)(102836004)(76116006)(33656002)(79990200002);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR18MB2847;H:MN2PR18MB3182.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: marvell.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: quOgjBZBoVNc/POvOkKwBfaSi2utjJVemZ6zV8KMIJwW/Puxd+oYJwJB6AscJwGGlW4SDzlD7NS7HR6Pd3VHVn5cpDFrOInUMj/LZAdTIvGnS12EH64x/ylUNj9p8BjTNcCgE+m8vqeMbEIjnNtzMhMW62wVwUpcnCG7llRUuCouLTDXUtWJXbIWXT7B63Pf9abjd+hp/2EpyWhA5KNDkqar8BhXAtb20FzTUnFjvSW6zKOfNZsQkWm9/iEB69Uq7DxMeur+feg+Bq4gJAAfGc3bMVUiRqm6D8PiwNETxl+EgNYi2JHkrcMxmEk4CbnrlPeB40sBU/p351JsIpAWYaTU4mwGnrOXP72qfahtWLeOoNEv4Mi82/kXKzkjB2zHXzFQCWioxIMrt2AVC2R0kIh9AK0vXogfLCnij7OU5dfHlmkQxVqCuWrf6ZYvs4xf/PpMuIOn24aH78AadJc8hQ==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: d1888fb5-1a53-4c20-1a33-08d72d478330
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2019 12:42:26.1890
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LrLjdqHm/kSH9NLq0ntvJgbuqb/0xLB8H7bcG4pOVn3nOb3aQk0HmTJ4Quk8RSnkHA5I+FY/WFZxUv6DGcWtFQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB2847
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
+ definitions=2019-08-30_05:2019-08-29,2019-08-30 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Michal Kalderon" <michal.kalderon@marvell.com> wrote: -----
-
-Hi Michael,
-
-I tried this patch. It unfortunately panics immediately
-when siw gets used. I'll investigate further. Some comments in line.
-
-Thanks
-Bernard.
-
->To: <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
-><dledford@redhat.com>, <bmt@zurich.ibm.com>, <galpress@amazon.com>,
-><sleybo@amazon.com>, <leon@kernel.org>
->From: "Michal Kalderon" <michal.kalderon@marvell.com>
->Date: 08/27/2019 03:31PM
->Cc: <linux-rdma@vger.kernel.org>, "Michal Kalderon"
-><michal.kalderon@marvell.com>, "Ariel Elior"
-><ariel.elior@marvell.com>
->Subject: [EXTERNAL] [PATCH v8 rdma-next 4/7] RDMA/siw: Use the common
->mmap_xa helpers
->
->Remove the functions related to managing the mmap_xa database.
->This code is now common in ib_core. Use the common API's instead.
->
->Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
->Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
->---
-> drivers/infiniband/sw/siw/siw.h       |  20 ++-
-> drivers/infiniband/sw/siw/siw_main.c  |   1 +
-> drivers/infiniband/sw/siw/siw_verbs.c | 223
->+++++++++++++++++++---------------
-> drivers/infiniband/sw/siw/siw_verbs.h |   1 +
-> 4 files changed, 144 insertions(+), 101 deletions(-)
->
->diff --git a/drivers/infiniband/sw/siw/siw.h
->b/drivers/infiniband/sw/siw/siw.h
->index 77b1aabf6ff3..d48cd42ae43e 100644
->--- a/drivers/infiniband/sw/siw/siw.h
->+++ b/drivers/infiniband/sw/siw/siw.h
->@@ -220,7 +220,7 @@ struct siw_cq {
-> 	u32 cq_get;
-> 	u32 num_cqe;
-> 	bool kernel_verbs;
->-	u32 xa_cq_index; /* mmap information for CQE array */
->+	u64 cq_key; /* mmap information for CQE array */
-> 	u32 id; /* For debugging only */
-> };
-> 
->@@ -263,7 +263,7 @@ struct siw_srq {
-> 	u32 rq_put;
-> 	u32 rq_get;
-> 	u32 num_rqe; /* max # of wqe's allowed */
->-	u32 xa_srq_index; /* mmap information for SRQ array */
->+	u64 srq_key; /* mmap information for SRQ array */
-> 	char armed; /* inform user if limit hit */
-> 	char kernel_verbs; /* '1' if kernel client */
-> };
->@@ -477,8 +477,8 @@ struct siw_qp {
-> 		u8 layer : 4, etype : 4;
-> 		u8 ecode;
-> 	} term_info;
->-	u32 xa_sq_index; /* mmap information for SQE array */
->-	u32 xa_rq_index; /* mmap information for RQE array */
->+	u64 sq_key; /* mmap information for SQE array */
->+	u64 rq_key; /* mmap information for RQE array */
-> 	struct rcu_head rcu;
-> };
-> 
->@@ -503,6 +503,12 @@ struct iwarp_msg_info {
-> 	int (*rx_data)(struct siw_qp *qp);
-> };
-> 
->+struct siw_user_mmap_entry {
->+	struct rdma_user_mmap_entry rdma_entry;
->+	u64 address;
->+	u64 length;
-
-This unsigned 64 range for an mmap length seems to be quite
-ambitious. I do not expect we are mmapping objects of
-that size. That range would be also not supported by 32bit
-architectures  - a user cannot mmap more than size_t.
-So size_t might be more appropriate? This throughout
-all the proposed mmap_xa helpers.
-
->+};
->+
-> /* Global siw parameters. Currently set in siw_main.c */
-> extern const bool zcopy_tx;
-> extern const bool try_gso;
->@@ -607,6 +613,12 @@ static inline struct siw_mr *to_siw_mr(struct
->ib_mr *base_mr)
-> 	return container_of(base_mr, struct siw_mr, base_mr);
-> }
-> 
->+static inline struct siw_user_mmap_entry *
->+to_siw_mmap_entry(struct rdma_user_mmap_entry *rdma_mmap)
->+{
->+	return container_of(rdma_mmap, struct siw_user_mmap_entry,
->rdma_entry);
->+}
->+
-> static inline struct siw_qp *siw_qp_id2obj(struct siw_device *sdev,
->int id)
-> {
-> 	struct siw_qp *qp;
->diff --git a/drivers/infiniband/sw/siw/siw_main.c
->b/drivers/infiniband/sw/siw/siw_main.c
->index 05a92f997f60..46c0bb59489d 100644
->--- a/drivers/infiniband/sw/siw/siw_main.c
->+++ b/drivers/infiniband/sw/siw/siw_main.c
->@@ -298,6 +298,7 @@ static const struct ib_device_ops siw_device_ops
->= {
-> 	.iw_rem_ref = siw_qp_put_ref,
-> 	.map_mr_sg = siw_map_mr_sg,
-> 	.mmap = siw_mmap,
->+	.mmap_free = siw_mmap_free,
-> 	.modify_qp = siw_verbs_modify_qp,
-> 	.modify_srq = siw_modify_srq,
-> 	.poll_cq = siw_poll_cq,
->diff --git a/drivers/infiniband/sw/siw/siw_verbs.c
->b/drivers/infiniband/sw/siw/siw_verbs.c
->index 03176a3d1e18..9e049241051e 100644
->--- a/drivers/infiniband/sw/siw/siw_verbs.c
->+++ b/drivers/infiniband/sw/siw/siw_verbs.c
->@@ -34,44 +34,21 @@ static char ib_qp_state_to_string[IB_QPS_ERR +
->1][sizeof("RESET")] = {
-> 	[IB_QPS_ERR] = "ERR"
-> };
-> 
->-static u32 siw_create_uobj(struct siw_ucontext *uctx, void *vaddr,
->u32 size)
->+void siw_mmap_free(struct rdma_user_mmap_entry *rdma_entry)
-> {
->-	struct siw_uobj *uobj;
->-	struct xa_limit limit = XA_LIMIT(0, SIW_UOBJ_MAX_KEY);
->-	u32 key;
->+	struct siw_user_mmap_entry *entry = to_siw_mmap_entry(rdma_entry);
-> 
->-	uobj = kzalloc(sizeof(*uobj), GFP_KERNEL);
->-	if (!uobj)
->-		return SIW_INVAL_UOBJ_KEY;
->-
->-	if (xa_alloc_cyclic(&uctx->xa, &key, uobj, limit,
->&uctx->uobj_nextkey,
->-			    GFP_KERNEL) < 0) {
->-		kfree(uobj);
->-		return SIW_INVAL_UOBJ_KEY;
->-	}
->-	uobj->size = PAGE_ALIGN(size);
->-	uobj->addr = vaddr;
->-
->-	return key;
->-}
->-
->-static struct siw_uobj *siw_get_uobj(struct siw_ucontext *uctx,
->-				     unsigned long off, u32 size)
->-{
->-	struct siw_uobj *uobj = xa_load(&uctx->xa, off);
->-
->-	if (uobj && uobj->size == size)
->-		return uobj;
->-
->-	return NULL;
->+	vfree((void *)entry->address);
->+	kfree(entry);
-> }
-> 
-> int siw_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma)
-> {
-> 	struct siw_ucontext *uctx = to_siw_ctx(ctx);
->-	struct siw_uobj *uobj;
->-	unsigned long off = vma->vm_pgoff;
->+	unsigned long off = vma->vm_pgoff << PAGE_SHIFT;
->+	struct rdma_user_mmap_entry *rdma_entry;
-> 	int size = vma->vm_end - vma->vm_start;
->+	struct siw_user_mmap_entry *entry;
-> 	int rv = -EINVAL;
-> 
-> 	/*
->@@ -81,15 +58,26 @@ int siw_mmap(struct ib_ucontext *ctx, struct
->vm_area_struct *vma)
-> 		pr_warn("siw: mmap not page aligned\n");
-> 		goto out;
-> 	}
->-	uobj = siw_get_uobj(uctx, off, size);
->-	if (!uobj) {
->+	rdma_entry = rdma_user_mmap_entry_get(&uctx->base_ucontext, off,
->+					      size, vma);
->+	if (!rdma_entry) {
-> 		siw_dbg(&uctx->sdev->base_dev, "mmap lookup failed: %lu, %u\n",
-> 			off, size);
-> 		goto out;
-> 	}
->-	rv = remap_vmalloc_range(vma, uobj->addr, 0);
->-	if (rv)
->+	entry = to_siw_mmap_entry(rdma_entry);
->+	if (entry->length != size) {
->+		siw_dbg(&uctx->sdev->base_dev,
->+			"key[%#lx] does not have valid length[%#x] expected[%#llx]\n",
->+			off, size, entry->length);
->+		return -EINVAL;
->+	}
->+
->+	rv = remap_vmalloc_range(vma, (void *)entry->address, 0);
->+	if (rv) {
-> 		pr_warn("remap_vmalloc_range failed: %lu, %u\n", off, size);
->+		rdma_user_mmap_entry_put(&uctx->base_ucontext, rdma_entry);
->+	}
-> out:
-> 	return rv;
-> }
->@@ -105,7 +93,7 @@ int siw_alloc_ucontext(struct ib_ucontext
->*base_ctx, struct ib_udata *udata)
-> 		rv = -ENOMEM;
-> 		goto err_out;
-> 	}
->-	xa_init_flags(&ctx->xa, XA_FLAGS_ALLOC);
->+
-> 	ctx->uobj_nextkey = 0;
-> 	ctx->sdev = sdev;
-> 
->@@ -135,19 +123,7 @@ int siw_alloc_ucontext(struct ib_ucontext
->*base_ctx, struct ib_udata *udata)
-> void siw_dealloc_ucontext(struct ib_ucontext *base_ctx)
-> {
-> 	struct siw_ucontext *uctx = to_siw_ctx(base_ctx);
->-	void *entry;
->-	unsigned long index;
-> 
->-	/*
->-	 * Make sure all user mmap objects are gone. Since QP, CQ
->-	 * and SRQ destroy routines destroy related objects, nothing
->-	 * should be found here.
->-	 */
->-	xa_for_each(&uctx->xa, index, entry) {
->-		kfree(xa_erase(&uctx->xa, index));
->-		pr_warn("siw: dropping orphaned uobj at %lu\n", index);
->-	}
->-	xa_destroy(&uctx->xa);
-> 	atomic_dec(&uctx->sdev->num_ctx);
-> }
-> 
->@@ -293,6 +269,28 @@ void siw_qp_put_ref(struct ib_qp *base_qp)
-> 	siw_qp_put(to_siw_qp(base_qp));
-> }
-> 
->+static int siw_user_mmap_entry_insert(struct ib_ucontext *ucontext,
->+				      u64 address, u64 length,
->+				      u64 *key)
->+{
->+	struct siw_user_mmap_entry *entry = kzalloc(sizeof(*entry),
->GFP_KERNEL);
->+
->+	if (!entry)
->+		return -ENOMEM;
->+
->+	entry->address = address;
->+	entry->length = length;
->+
->+	*key = rdma_user_mmap_entry_insert(ucontext, &entry->rdma_entry,
->+					   length);
->+	if (*key == RDMA_USER_MMAP_INVALID) {
->+		kfree(entry);
->+		return -ENOMEM;
->+	}
->+
->+	return 0;
->+}
->+
-> /*
->  * siw_create_qp()
->  *
->@@ -317,6 +315,8 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
-> 	struct siw_cq *scq = NULL, *rcq = NULL;
-> 	unsigned long flags;
-> 	int num_sqe, num_rqe, rv = 0;
->+	u64 length;
->+	u64 key;
-> 
-> 	siw_dbg(base_dev, "create new QP\n");
-> 
->@@ -380,8 +380,8 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
-> 	spin_lock_init(&qp->orq_lock);
-> 
-> 	qp->kernel_verbs = !udata;
->-	qp->xa_sq_index = SIW_INVAL_UOBJ_KEY;
->-	qp->xa_rq_index = SIW_INVAL_UOBJ_KEY;
->+	qp->sq_key = RDMA_USER_MMAP_INVALID;
->+	qp->rq_key = RDMA_USER_MMAP_INVALID;
-> 
-> 	rv = siw_qp_add(sdev, qp);
-> 	if (rv)
->@@ -459,26 +459,41 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
-> 		uresp.qp_id = qp_id(qp);
-> 
-> 		if (qp->sendq) {
->-			qp->xa_sq_index =
->-				siw_create_uobj(uctx, qp->sendq,
->-					num_sqe * sizeof(struct siw_sqe));
->+			length = num_sqe * sizeof(struct siw_sqe);
->+			rv = siw_user_mmap_entry_insert(&uctx->base_ucontext,
->+							(uintptr_t)qp->sendq,
->+							length, &key);
->+			if (!rv)
-
-Shall be 'if (rv)'
-The new 'siw_user_mmap_entry_insert()' seem to return zero
-for success. Same issue afrer all other invocations of
-siw_user_mmap_entry_insert() further down in that file.
-
->+				goto err_out_xa;
->+
->+			/* If entry was inserted successfully, qp->sendq
->+			 * will be freed by siw_mmap_free
->+			 */
->+			qp->sendq = NULL;
-
-qp->sendq points to the SQ array. Zeroing this pointer will leave
-siw with no idea where the WQE's are. It will panic de-referencing
-[NULL + current position in ring buffer]. Same for RQ, SRQ and CQ.
-
- 
->+			qp->sq_key = key;
-> 		}
->+
-> 		if (qp->recvq) {
->-			qp->xa_rq_index =
->-				 siw_create_uobj(uctx, qp->recvq,
->-					num_rqe * sizeof(struct siw_rqe));
->-		}
->-		if (qp->xa_sq_index == SIW_INVAL_UOBJ_KEY ||
->-		    qp->xa_rq_index == SIW_INVAL_UOBJ_KEY) {
->-			rv = -ENOMEM;
->-			goto err_out_xa;
->+			length = num_rqe * sizeof(struct siw_rqe);
->+			rv = siw_user_mmap_entry_insert(&uctx->base_ucontext,
->+							(uintptr_t)qp->recvq,
->+							length, &key);
->+			if (!rv)
->+				goto err_out_mmap_rem;
->+
->+			/* If entry was inserted successfully, qp->recvq will
->+			 * be freed by siw_mmap_free
->+			 */
->+			qp->recvq = NULL;
-
-see above
-
->+			qp->rq_key = key;
-> 		}
->-		uresp.sq_key = qp->xa_sq_index << PAGE_SHIFT;
->-		uresp.rq_key = qp->xa_rq_index << PAGE_SHIFT;
-
-Changes here would require changes to the siw user lib
-
->+
->+		uresp.sq_key = qp->sq_key;
->+		uresp.rq_key = qp->rq_key;
-> 
-> 		if (udata->outlen < sizeof(uresp)) {
-> 			rv = -EINVAL;
->-			goto err_out_xa;
->+			goto err_out_mmap_rem;
-> 		}
-> 		rv = ib_copy_to_udata(udata, &uresp, sizeof(uresp));
-> 		if (rv)
->@@ -496,21 +511,23 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
-> 
-> 	return qp->ib_qp;
-> 
->+err_out_mmap_rem:
->+	if (udata) {
->+		rdma_user_mmap_entry_remove(&uctx->base_ucontext, qp->sq_key);
->+		rdma_user_mmap_entry_remove(&uctx->base_ucontext, qp->rq_key);
->+	}
->+
-> err_out_xa:
-> 	xa_erase(&sdev->qp_xa, qp_id(qp));
-> err_out:
-> 	kfree(siw_base_qp);
-> 
-> 	if (qp) {
->-		if (qp->xa_sq_index != SIW_INVAL_UOBJ_KEY)
->-			kfree(xa_erase(&uctx->xa, qp->xa_sq_index));
->-		if (qp->xa_rq_index != SIW_INVAL_UOBJ_KEY)
->-			kfree(xa_erase(&uctx->xa, qp->xa_rq_index));
->-
-> 		vfree(qp->sendq);
-> 		vfree(qp->recvq);
-> 		kfree(qp);
-> 	}
->+
-> 	atomic_dec(&sdev->num_qp);
-> 
-> 	return ERR_PTR(rv);
->@@ -620,10 +637,10 @@ int siw_destroy_qp(struct ib_qp *base_qp,
->struct ib_udata *udata)
-> 	qp->attrs.flags |= SIW_QP_IN_DESTROY;
-> 	qp->rx_stream.rx_suspend = 1;
-> 
->-	if (uctx && qp->xa_sq_index != SIW_INVAL_UOBJ_KEY)
->-		kfree(xa_erase(&uctx->xa, qp->xa_sq_index));
->-	if (uctx && qp->xa_rq_index != SIW_INVAL_UOBJ_KEY)
->-		kfree(xa_erase(&uctx->xa, qp->xa_rq_index));
->+	if (uctx) {
->+		rdma_user_mmap_entry_remove(&uctx->base_ucontext, qp->sq_key);
->+		rdma_user_mmap_entry_remove(&uctx->base_ucontext, qp->rq_key);
->+	}
-> 
-> 	down_write(&qp->state_lock);
-> 
->@@ -993,8 +1010,8 @@ void siw_destroy_cq(struct ib_cq *base_cq,
->struct ib_udata *udata)
-> 
-> 	siw_cq_flush(cq);
-> 
->-	if (ctx && cq->xa_cq_index != SIW_INVAL_UOBJ_KEY)
->-		kfree(xa_erase(&ctx->xa, cq->xa_cq_index));
->+	if (ctx)
->+		rdma_user_mmap_entry_remove(&ctx->base_ucontext, cq->cq_key);
-> 
-> 	atomic_dec(&sdev->num_cq);
-> 
->@@ -1031,7 +1048,7 @@ int siw_create_cq(struct ib_cq *base_cq, const
->struct ib_cq_init_attr *attr,
-> 	size = roundup_pow_of_two(size);
-> 	cq->base_cq.cqe = size;
-> 	cq->num_cqe = size;
->-	cq->xa_cq_index = SIW_INVAL_UOBJ_KEY;
->+	cq->cq_key = RDMA_USER_MMAP_INVALID;
-> 
-> 	if (!udata) {
-> 		cq->kernel_verbs = 1;
->@@ -1057,16 +1074,21 @@ int siw_create_cq(struct ib_cq *base_cq,
->const struct ib_cq_init_attr *attr,
-> 		struct siw_ucontext *ctx =
-> 			rdma_udata_to_drv_context(udata, struct siw_ucontext,
-> 						  base_ucontext);
->+		u64 length = size * sizeof(struct siw_cqe) +
->+			     sizeof(struct siw_cq_ctrl);
-> 
->-		cq->xa_cq_index =
->-			siw_create_uobj(ctx, cq->queue,
->-					size * sizeof(struct siw_cqe) +
->-						sizeof(struct siw_cq_ctrl));
->-		if (cq->xa_cq_index == SIW_INVAL_UOBJ_KEY) {
->-			rv = -ENOMEM;
->+		rv = siw_user_mmap_entry_insert(&ctx->base_ucontext,
->+						(uintptr_t)cq->queue,
->+						length, &cq->cq_key);
->+		if (!rv)
-
-if (rv)
-> 			goto err_out;
->-		}
->-		uresp.cq_key = cq->xa_cq_index << PAGE_SHIFT;
->+
->+		/* If entry was inserted successfully, cq->queue will be freed
->+		 * by siw_mmap_free
->+		 */
->+		cq->queue = NULL;
-
-causes panic
->+
->+		uresp.cq_key = cq->cq_key;
-> 		uresp.cq_id = cq->id;
-> 		uresp.num_cqe = size;
-> 
->@@ -1087,8 +1109,9 @@ int siw_create_cq(struct ib_cq *base_cq, const
->struct ib_cq_init_attr *attr,
-> 		struct siw_ucontext *ctx =
-> 			rdma_udata_to_drv_context(udata, struct siw_ucontext,
-> 						  base_ucontext);
->-		if (cq->xa_cq_index != SIW_INVAL_UOBJ_KEY)
->-			kfree(xa_erase(&ctx->xa, cq->xa_cq_index));
->+		if (udata)
->+			rdma_user_mmap_entry_remove(&ctx->base_ucontext,
->+						    cq->cq_key);
-> 		vfree(cq->queue);
-> 	}
-> 	atomic_dec(&sdev->num_cq);
->@@ -1490,7 +1513,7 @@ int siw_create_srq(struct ib_srq *base_srq,
-> 	}
-> 	srq->max_sge = attrs->max_sge;
-> 	srq->num_rqe = roundup_pow_of_two(attrs->max_wr);
->-	srq->xa_srq_index = SIW_INVAL_UOBJ_KEY;
->+	srq->srq_key = RDMA_USER_MMAP_INVALID;
-> 	srq->limit = attrs->srq_limit;
-> 	if (srq->limit)
-> 		srq->armed = 1;
->@@ -1509,15 +1532,19 @@ int siw_create_srq(struct ib_srq *base_srq,
-> 	}
-> 	if (udata) {
-> 		struct siw_uresp_create_srq uresp = {};
->+		u64 length = srq->num_rqe * sizeof(struct siw_rqe);
-> 
->-		srq->xa_srq_index = siw_create_uobj(
->-			ctx, srq->recvq, srq->num_rqe * sizeof(struct siw_rqe));
->-
->-		if (srq->xa_srq_index == SIW_INVAL_UOBJ_KEY) {
->-			rv = -ENOMEM;
->+		rv = siw_user_mmap_entry_insert(&ctx->base_ucontext,
->+						(uintptr_t)srq->recvq,
->+						length, &srq->srq_key);
->+		if (!rv)
-
-if (rv)
-
-> 			goto err_out;
->-		}
->-		uresp.srq_key = srq->xa_srq_index;
->+
->+		/* If entry was inserted successfully, srq->recvq will be freed
->+		 * by siw_mmap_free
->+		 */
->+		srq->recvq = NULL;
-
-causes panic
-
->+		uresp.srq_key = srq->srq_key;
-> 		uresp.num_rqe = srq->num_rqe;
-> 
-> 		if (udata->outlen < sizeof(uresp)) {
->@@ -1536,8 +1563,9 @@ int siw_create_srq(struct ib_srq *base_srq,
-> 
-> err_out:
-> 	if (srq->recvq) {
->-		if (ctx && srq->xa_srq_index != SIW_INVAL_UOBJ_KEY)
->-			kfree(xa_erase(&ctx->xa, srq->xa_srq_index));
->+		if (udata)
->+			rdma_user_mmap_entry_remove(&ctx->base_ucontext,
->+						    srq->srq_key);
-> 		vfree(srq->recvq);
-> 	}
-> 	atomic_dec(&sdev->num_srq);
->@@ -1623,8 +1651,9 @@ void siw_destroy_srq(struct ib_srq *base_srq,
->struct ib_udata *udata)
-> 		rdma_udata_to_drv_context(udata, struct siw_ucontext,
-> 					  base_ucontext);
-> 
->-	if (ctx && srq->xa_srq_index != SIW_INVAL_UOBJ_KEY)
->-		kfree(xa_erase(&ctx->xa, srq->xa_srq_index));
->+	if (ctx)
->+		rdma_user_mmap_entry_remove(&ctx->base_ucontext,
->+					    srq->srq_key);
-> 
-> 	vfree(srq->recvq);
-> 	atomic_dec(&sdev->num_srq);
->diff --git a/drivers/infiniband/sw/siw/siw_verbs.h
->b/drivers/infiniband/sw/siw/siw_verbs.h
->index 1910869281cb..1a731989fad6 100644
->--- a/drivers/infiniband/sw/siw/siw_verbs.h
->+++ b/drivers/infiniband/sw/siw/siw_verbs.h
->@@ -83,6 +83,7 @@ void siw_destroy_srq(struct ib_srq *base_srq,
->struct ib_udata *udata);
-> int siw_post_srq_recv(struct ib_srq *base_srq, const struct
->ib_recv_wr *wr,
-> 		      const struct ib_recv_wr **bad_wr);
-> int siw_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma);
->+void siw_mmap_free(struct rdma_user_mmap_entry *rdma_entry);
-> void siw_qp_event(struct siw_qp *qp, enum ib_event_type type);
-> void siw_cq_event(struct siw_cq *cq, enum ib_event_type type);
-> void siw_srq_event(struct siw_srq *srq, enum ib_event_type type);
->-- 
->2.14.5
->
->
-
+PiBGcm9tOiBCZXJuYXJkIE1ldHpsZXIgPEJNVEB6dXJpY2guaWJtLmNvbT4NCj4gU2VudDogRnJp
+ZGF5LCBBdWd1c3QgMzAsIDIwMTkgMzowOCBQTQ0KPiANCj4gRXh0ZXJuYWwgRW1haWwNCj4gDQo+
+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0NCj4gLS0tLS0iTWljaGFsIEthbGRlcm9uIiA8bWljaGFsLmthbGRlcm9u
+QG1hcnZlbGwuY29tPiB3cm90ZTogLS0tLS0NCj4gDQo+IEhpIE1pY2hhZWwsDQo+IA0KPiBJIHRy
+aWVkIHRoaXMgcGF0Y2guIEl0IHVuZm9ydHVuYXRlbHkgcGFuaWNzIGltbWVkaWF0ZWx5IHdoZW4g
+c2l3IGdldHMgdXNlZC4gSSdsbA0KPiBpbnZlc3RpZ2F0ZSBmdXJ0aGVyLiBTb21lIGNvbW1lbnRz
+IGluIGxpbmUuDQpUaGFua3MgZm9yIHRlc3RpbmcsIA0KDQo+IA0KPiBUaGFua3MNCj4gQmVybmFy
+ZC4NCj4gDQo+ID5UbzogPG1rYWxkZXJvbkBtYXJ2ZWxsLmNvbT4sIDxhZWxpb3JAbWFydmVsbC5j
+b20+LCA8amdnQHppZXBlLmNhPiwNCj4gPjxkbGVkZm9yZEByZWRoYXQuY29tPiwgPGJtdEB6dXJp
+Y2guaWJtLmNvbT4sDQo+IDxnYWxwcmVzc0BhbWF6b24uY29tPiwNCj4gPjxzbGV5Ym9AYW1hem9u
+LmNvbT4sIDxsZW9uQGtlcm5lbC5vcmc+DQo+ID5Gcm9tOiAiTWljaGFsIEthbGRlcm9uIiA8bWlj
+aGFsLmthbGRlcm9uQG1hcnZlbGwuY29tPg0KPiA+RGF0ZTogMDgvMjcvMjAxOSAwMzozMVBNDQo+
+ID5DYzogPGxpbnV4LXJkbWFAdmdlci5rZXJuZWwub3JnPiwgIk1pY2hhbCBLYWxkZXJvbiINCj4g
+PjxtaWNoYWwua2FsZGVyb25AbWFydmVsbC5jb20+LCAiQXJpZWwgRWxpb3IiDQo+ID48YXJpZWwu
+ZWxpb3JAbWFydmVsbC5jb20+DQo+ID5TdWJqZWN0OiBbRVhURVJOQUxdIFtQQVRDSCB2OCByZG1h
+LW5leHQgNC83XSBSRE1BL3NpdzogVXNlIHRoZQ0KPiBjb21tb24NCj4gPm1tYXBfeGEgaGVscGVy
+cw0KPiA+DQo+ID5SZW1vdmUgdGhlIGZ1bmN0aW9ucyByZWxhdGVkIHRvIG1hbmFnaW5nIHRoZSBt
+bWFwX3hhIGRhdGFiYXNlLg0KPiA+VGhpcyBjb2RlIGlzIG5vdyBjb21tb24gaW4gaWJfY29yZS4g
+VXNlIHRoZSBjb21tb24gQVBJJ3MgaW5zdGVhZC4NCj4gPg0KPiA+U2lnbmVkLW9mZi1ieTogQXJp
+ZWwgRWxpb3IgPGFyaWVsLmVsaW9yQG1hcnZlbGwuY29tPg0KPiA+U2lnbmVkLW9mZi1ieTogTWlj
+aGFsIEthbGRlcm9uIDxtaWNoYWwua2FsZGVyb25AbWFydmVsbC5jb20+DQo+ID4tLS0NCj4gPiBk
+cml2ZXJzL2luZmluaWJhbmQvc3cvc2l3L3Npdy5oICAgICAgIHwgIDIwICsrLQ0KPiA+IGRyaXZl
+cnMvaW5maW5pYmFuZC9zdy9zaXcvc2l3X21haW4uYyAgfCAgIDEgKw0KPiA+IGRyaXZlcnMvaW5m
+aW5pYmFuZC9zdy9zaXcvc2l3X3ZlcmJzLmMgfCAyMjMNCj4gPisrKysrKysrKysrKysrKysrKyst
+LS0tLS0tLS0tLS0tLS0NCj4gPiBkcml2ZXJzL2luZmluaWJhbmQvc3cvc2l3L3Npd192ZXJicy5o
+IHwgICAxICsNCj4gPiA0IGZpbGVzIGNoYW5nZWQsIDE0NCBpbnNlcnRpb25zKCspLCAxMDEgZGVs
+ZXRpb25zKC0pDQo+ID4NCj4gPmRpZmYgLS1naXQgYS9kcml2ZXJzL2luZmluaWJhbmQvc3cvc2l3
+L3Npdy5oDQo+ID5iL2RyaXZlcnMvaW5maW5pYmFuZC9zdy9zaXcvc2l3LmgNCj4gPmluZGV4IDc3
+YjFhYWJmNmZmMy4uZDQ4Y2Q0MmFlNDNlIDEwMDY0NA0KPiA+LS0tIGEvZHJpdmVycy9pbmZpbmli
+YW5kL3N3L3Npdy9zaXcuaA0KPiA+KysrIGIvZHJpdmVycy9pbmZpbmliYW5kL3N3L3Npdy9zaXcu
+aA0KPiA+QEAgLTIyMCw3ICsyMjAsNyBAQCBzdHJ1Y3Qgc2l3X2NxIHsNCj4gPiAJdTMyIGNxX2dl
+dDsNCj4gPiAJdTMyIG51bV9jcWU7DQo+ID4gCWJvb2wga2VybmVsX3ZlcmJzOw0KPiA+LQl1MzIg
+eGFfY3FfaW5kZXg7IC8qIG1tYXAgaW5mb3JtYXRpb24gZm9yIENRRSBhcnJheSAqLw0KPiA+Kwl1
+NjQgY3Ffa2V5OyAvKiBtbWFwIGluZm9ybWF0aW9uIGZvciBDUUUgYXJyYXkgKi8NCj4gPiAJdTMy
+IGlkOyAvKiBGb3IgZGVidWdnaW5nIG9ubHkgKi8NCj4gPiB9Ow0KPiA+DQo+ID5AQCAtMjYzLDcg
+KzI2Myw3IEBAIHN0cnVjdCBzaXdfc3JxIHsNCj4gPiAJdTMyIHJxX3B1dDsNCj4gPiAJdTMyIHJx
+X2dldDsNCj4gPiAJdTMyIG51bV9ycWU7IC8qIG1heCAjIG9mIHdxZSdzIGFsbG93ZWQgKi8NCj4g
+Pi0JdTMyIHhhX3NycV9pbmRleDsgLyogbW1hcCBpbmZvcm1hdGlvbiBmb3IgU1JRIGFycmF5ICov
+DQo+ID4rCXU2NCBzcnFfa2V5OyAvKiBtbWFwIGluZm9ybWF0aW9uIGZvciBTUlEgYXJyYXkgKi8N
+Cj4gPiAJY2hhciBhcm1lZDsgLyogaW5mb3JtIHVzZXIgaWYgbGltaXQgaGl0ICovDQo+ID4gCWNo
+YXIga2VybmVsX3ZlcmJzOyAvKiAnMScgaWYga2VybmVsIGNsaWVudCAqLyAgfTsgQEAgLTQ3Nyw4
+ICs0NzcsOCBAQA0KPiA+c3RydWN0IHNpd19xcCB7DQo+ID4gCQl1OCBsYXllciA6IDQsIGV0eXBl
+IDogNDsNCj4gPiAJCXU4IGVjb2RlOw0KPiA+IAl9IHRlcm1faW5mbzsNCj4gPi0JdTMyIHhhX3Nx
+X2luZGV4OyAvKiBtbWFwIGluZm9ybWF0aW9uIGZvciBTUUUgYXJyYXkgKi8NCj4gPi0JdTMyIHhh
+X3JxX2luZGV4OyAvKiBtbWFwIGluZm9ybWF0aW9uIGZvciBSUUUgYXJyYXkgKi8NCj4gPisJdTY0
+IHNxX2tleTsgLyogbW1hcCBpbmZvcm1hdGlvbiBmb3IgU1FFIGFycmF5ICovDQo+ID4rCXU2NCBy
+cV9rZXk7IC8qIG1tYXAgaW5mb3JtYXRpb24gZm9yIFJRRSBhcnJheSAqLw0KPiA+IAlzdHJ1Y3Qg
+cmN1X2hlYWQgcmN1Ow0KPiA+IH07DQo+ID4NCj4gPkBAIC01MDMsNiArNTAzLDEyIEBAIHN0cnVj
+dCBpd2FycF9tc2dfaW5mbyB7DQo+ID4gCWludCAoKnJ4X2RhdGEpKHN0cnVjdCBzaXdfcXAgKnFw
+KTsNCj4gPiB9Ow0KPiA+DQo+ID4rc3RydWN0IHNpd191c2VyX21tYXBfZW50cnkgew0KPiA+Kwlz
+dHJ1Y3QgcmRtYV91c2VyX21tYXBfZW50cnkgcmRtYV9lbnRyeTsNCj4gPisJdTY0IGFkZHJlc3M7
+DQo+ID4rCXU2NCBsZW5ndGg7DQo+IA0KPiBUaGlzIHVuc2lnbmVkIDY0IHJhbmdlIGZvciBhbiBt
+bWFwIGxlbmd0aCBzZWVtcyB0byBiZSBxdWl0ZSBhbWJpdGlvdXMuIEkgZG8NCj4gbm90IGV4cGVj
+dCB3ZSBhcmUgbW1hcHBpbmcgb2JqZWN0cyBvZiB0aGF0IHNpemUuIFRoYXQgcmFuZ2Ugd291bGQg
+YmUgYWxzbw0KPiBub3Qgc3VwcG9ydGVkIGJ5IDMyYml0IGFyY2hpdGVjdHVyZXMgIC0gYSB1c2Vy
+IGNhbm5vdCBtbWFwIG1vcmUgdGhhbiBzaXplX3QuDQo+IFNvIHNpemVfdCBtaWdodCBiZSBtb3Jl
+IGFwcHJvcHJpYXRlPyBUaGlzIHRocm91Z2hvdXQgYWxsIHRoZSBwcm9wb3NlZA0KPiBtbWFwX3hh
+IGhlbHBlcnMuDQpJIHdpbGwgdGFrZSBhIGxvb2sgYnV0IHNpemVfdCBpcyA2NCBiaXRzIGFueXdh
+eSBvbiBhIDY0IGJpdCBzeXN0ZW0uDQoNCj4gDQo+ID4rfTsNCj4gPisNCj4gPiAvKiBHbG9iYWwg
+c2l3IHBhcmFtZXRlcnMuIEN1cnJlbnRseSBzZXQgaW4gc2l3X21haW4uYyAqLyAgZXh0ZXJuIGNv
+bnN0DQo+ID5ib29sIHpjb3B5X3R4OyAgZXh0ZXJuIGNvbnN0IGJvb2wgdHJ5X2dzbzsgQEAgLTYw
+Nyw2ICs2MTMsMTIgQEAgc3RhdGljDQo+ID5pbmxpbmUgc3RydWN0IHNpd19tciAqdG9fc2l3X21y
+KHN0cnVjdCBpYl9tciAqYmFzZV9tcikNCj4gPiAJcmV0dXJuIGNvbnRhaW5lcl9vZihiYXNlX21y
+LCBzdHJ1Y3Qgc2l3X21yLCBiYXNlX21yKTsgIH0NCj4gPg0KPiA+K3N0YXRpYyBpbmxpbmUgc3Ry
+dWN0IHNpd191c2VyX21tYXBfZW50cnkgKiB0b19zaXdfbW1hcF9lbnRyeShzdHJ1Y3QNCj4gPity
+ZG1hX3VzZXJfbW1hcF9lbnRyeSAqcmRtYV9tbWFwKSB7DQo+ID4rCXJldHVybiBjb250YWluZXJf
+b2YocmRtYV9tbWFwLCBzdHJ1Y3Qgc2l3X3VzZXJfbW1hcF9lbnRyeSwNCj4gPnJkbWFfZW50cnkp
+Ow0KPiA+K30NCj4gPisNCj4gPiBzdGF0aWMgaW5saW5lIHN0cnVjdCBzaXdfcXAgKnNpd19xcF9p
+ZDJvYmooc3RydWN0IHNpd19kZXZpY2UgKnNkZXYsDQo+ID5pbnQgaWQpICB7DQo+ID4gCXN0cnVj
+dCBzaXdfcXAgKnFwOw0KPiA+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW5maW5pYmFuZC9zdy9zaXcv
+c2l3X21haW4uYw0KPiA+Yi9kcml2ZXJzL2luZmluaWJhbmQvc3cvc2l3L3Npd19tYWluLmMNCj4g
+PmluZGV4IDA1YTkyZjk5N2Y2MC4uNDZjMGJiNTk0ODlkIDEwMDY0NA0KPiA+LS0tIGEvZHJpdmVy
+cy9pbmZpbmliYW5kL3N3L3Npdy9zaXdfbWFpbi5jDQo+ID4rKysgYi9kcml2ZXJzL2luZmluaWJh
+bmQvc3cvc2l3L3Npd19tYWluLmMNCj4gPkBAIC0yOTgsNiArMjk4LDcgQEAgc3RhdGljIGNvbnN0
+IHN0cnVjdCBpYl9kZXZpY2Vfb3BzIHNpd19kZXZpY2Vfb3BzID0NCj4gPnsNCj4gPiAJLml3X3Jl
+bV9yZWYgPSBzaXdfcXBfcHV0X3JlZiwNCj4gPiAJLm1hcF9tcl9zZyA9IHNpd19tYXBfbXJfc2cs
+DQo+ID4gCS5tbWFwID0gc2l3X21tYXAsDQo+ID4rCS5tbWFwX2ZyZWUgPSBzaXdfbW1hcF9mcmVl
+LA0KPiA+IAkubW9kaWZ5X3FwID0gc2l3X3ZlcmJzX21vZGlmeV9xcCwNCj4gPiAJLm1vZGlmeV9z
+cnEgPSBzaXdfbW9kaWZ5X3NycSwNCj4gPiAJLnBvbGxfY3EgPSBzaXdfcG9sbF9jcSwNCj4gPmRp
+ZmYgLS1naXQgYS9kcml2ZXJzL2luZmluaWJhbmQvc3cvc2l3L3Npd192ZXJicy5jDQo+ID5iL2Ry
+aXZlcnMvaW5maW5pYmFuZC9zdy9zaXcvc2l3X3ZlcmJzLmMNCj4gPmluZGV4IDAzMTc2YTNkMWUx
+OC4uOWUwNDkyNDEwNTFlIDEwMDY0NA0KPiA+LS0tIGEvZHJpdmVycy9pbmZpbmliYW5kL3N3L3Np
+dy9zaXdfdmVyYnMuYw0KPiA+KysrIGIvZHJpdmVycy9pbmZpbmliYW5kL3N3L3Npdy9zaXdfdmVy
+YnMuYw0KPiA+QEAgLTM0LDQ0ICszNCwyMSBAQCBzdGF0aWMgY2hhciBpYl9xcF9zdGF0ZV90b19z
+dHJpbmdbSUJfUVBTX0VSUiArDQo+ID4xXVtzaXplb2YoIlJFU0VUIildID0gew0KPiA+IAlbSUJf
+UVBTX0VSUl0gPSAiRVJSIg0KPiA+IH07DQo+ID4NCj4gPi1zdGF0aWMgdTMyIHNpd19jcmVhdGVf
+dW9iaihzdHJ1Y3Qgc2l3X3Vjb250ZXh0ICp1Y3R4LCB2b2lkICp2YWRkciwNCj4gPnUzMiBzaXpl
+KQ0KPiA+K3ZvaWQgc2l3X21tYXBfZnJlZShzdHJ1Y3QgcmRtYV91c2VyX21tYXBfZW50cnkgKnJk
+bWFfZW50cnkpDQo+ID4gew0KPiA+LQlzdHJ1Y3Qgc2l3X3VvYmogKnVvYmo7DQo+ID4tCXN0cnVj
+dCB4YV9saW1pdCBsaW1pdCA9IFhBX0xJTUlUKDAsIFNJV19VT0JKX01BWF9LRVkpOw0KPiA+LQl1
+MzIga2V5Ow0KPiA+KwlzdHJ1Y3Qgc2l3X3VzZXJfbW1hcF9lbnRyeSAqZW50cnkgPQ0KPiB0b19z
+aXdfbW1hcF9lbnRyeShyZG1hX2VudHJ5KTsNCj4gPg0KPiA+LQl1b2JqID0ga3phbGxvYyhzaXpl
+b2YoKnVvYmopLCBHRlBfS0VSTkVMKTsNCj4gPi0JaWYgKCF1b2JqKQ0KPiA+LQkJcmV0dXJuIFNJ
+V19JTlZBTF9VT0JKX0tFWTsNCj4gPi0NCj4gPi0JaWYgKHhhX2FsbG9jX2N5Y2xpYygmdWN0eC0+
+eGEsICZrZXksIHVvYmosIGxpbWl0LA0KPiA+JnVjdHgtPnVvYmpfbmV4dGtleSwNCj4gPi0JCQkg
+ICAgR0ZQX0tFUk5FTCkgPCAwKSB7DQo+ID4tCQlrZnJlZSh1b2JqKTsNCj4gPi0JCXJldHVybiBT
+SVdfSU5WQUxfVU9CSl9LRVk7DQo+ID4tCX0NCj4gPi0JdW9iai0+c2l6ZSA9IFBBR0VfQUxJR04o
+c2l6ZSk7DQo+ID4tCXVvYmotPmFkZHIgPSB2YWRkcjsNCj4gPi0NCj4gPi0JcmV0dXJuIGtleTsN
+Cj4gPi19DQo+ID4tDQo+ID4tc3RhdGljIHN0cnVjdCBzaXdfdW9iaiAqc2l3X2dldF91b2JqKHN0
+cnVjdCBzaXdfdWNvbnRleHQgKnVjdHgsDQo+ID4tCQkJCSAgICAgdW5zaWduZWQgbG9uZyBvZmYs
+IHUzMiBzaXplKQ0KPiA+LXsNCj4gPi0Jc3RydWN0IHNpd191b2JqICp1b2JqID0geGFfbG9hZCgm
+dWN0eC0+eGEsIG9mZik7DQo+ID4tDQo+ID4tCWlmICh1b2JqICYmIHVvYmotPnNpemUgPT0gc2l6
+ZSkNCj4gPi0JCXJldHVybiB1b2JqOw0KPiA+LQ0KPiA+LQlyZXR1cm4gTlVMTDsNCj4gPisJdmZy
+ZWUoKHZvaWQgKillbnRyeS0+YWRkcmVzcyk7DQo+ID4rCWtmcmVlKGVudHJ5KTsNCj4gPiB9DQo+
+ID4NCj4gPiBpbnQgc2l3X21tYXAoc3RydWN0IGliX3Vjb250ZXh0ICpjdHgsIHN0cnVjdCB2bV9h
+cmVhX3N0cnVjdCAqdm1hKSAgew0KPiA+IAlzdHJ1Y3Qgc2l3X3Vjb250ZXh0ICp1Y3R4ID0gdG9f
+c2l3X2N0eChjdHgpOw0KPiA+LQlzdHJ1Y3Qgc2l3X3VvYmogKnVvYmo7DQo+ID4tCXVuc2lnbmVk
+IGxvbmcgb2ZmID0gdm1hLT52bV9wZ29mZjsNCj4gPisJdW5zaWduZWQgbG9uZyBvZmYgPSB2bWEt
+PnZtX3Bnb2ZmIDw8IFBBR0VfU0hJRlQ7DQo+ID4rCXN0cnVjdCByZG1hX3VzZXJfbW1hcF9lbnRy
+eSAqcmRtYV9lbnRyeTsNCj4gPiAJaW50IHNpemUgPSB2bWEtPnZtX2VuZCAtIHZtYS0+dm1fc3Rh
+cnQ7DQo+ID4rCXN0cnVjdCBzaXdfdXNlcl9tbWFwX2VudHJ5ICplbnRyeTsNCj4gPiAJaW50IHJ2
+ID0gLUVJTlZBTDsNCj4gPg0KPiA+IAkvKg0KPiA+QEAgLTgxLDE1ICs1OCwyNiBAQCBpbnQgc2l3
+X21tYXAoc3RydWN0IGliX3Vjb250ZXh0ICpjdHgsIHN0cnVjdA0KPiA+dm1fYXJlYV9zdHJ1Y3Qg
+KnZtYSkNCj4gPiAJCXByX3dhcm4oInNpdzogbW1hcCBub3QgcGFnZSBhbGlnbmVkXG4iKTsNCj4g
+PiAJCWdvdG8gb3V0Ow0KPiA+IAl9DQo+ID4tCXVvYmogPSBzaXdfZ2V0X3VvYmoodWN0eCwgb2Zm
+LCBzaXplKTsNCj4gPi0JaWYgKCF1b2JqKSB7DQo+ID4rCXJkbWFfZW50cnkgPSByZG1hX3VzZXJf
+bW1hcF9lbnRyeV9nZXQoJnVjdHgtPmJhc2VfdWNvbnRleHQsDQo+IG9mZiwNCj4gPisJCQkJCSAg
+ICAgIHNpemUsIHZtYSk7DQo+ID4rCWlmICghcmRtYV9lbnRyeSkgew0KPiA+IAkJc2l3X2RiZygm
+dWN0eC0+c2Rldi0+YmFzZV9kZXYsICJtbWFwIGxvb2t1cCBmYWlsZWQ6ICVsdSwNCj4gJXVcbiIs
+DQo+ID4gCQkJb2ZmLCBzaXplKTsNCj4gPiAJCWdvdG8gb3V0Ow0KPiA+IAl9DQo+ID4tCXJ2ID0g
+cmVtYXBfdm1hbGxvY19yYW5nZSh2bWEsIHVvYmotPmFkZHIsIDApOw0KPiA+LQlpZiAocnYpDQo+
+ID4rCWVudHJ5ID0gdG9fc2l3X21tYXBfZW50cnkocmRtYV9lbnRyeSk7DQo+ID4rCWlmIChlbnRy
+eS0+bGVuZ3RoICE9IHNpemUpIHsNCj4gPisJCXNpd19kYmcoJnVjdHgtPnNkZXYtPmJhc2VfZGV2
+LA0KPiA+KwkJCSJrZXlbJSNseF0gZG9lcyBub3QgaGF2ZSB2YWxpZCBsZW5ndGhbJSN4XQ0KPiBl
+eHBlY3RlZFslI2xseF1cbiIsDQo+ID4rCQkJb2ZmLCBzaXplLCBlbnRyeS0+bGVuZ3RoKTsNCj4g
+PisJCXJldHVybiAtRUlOVkFMOw0KPiA+Kwl9DQo+ID4rDQo+ID4rCXJ2ID0gcmVtYXBfdm1hbGxv
+Y19yYW5nZSh2bWEsICh2b2lkICopZW50cnktPmFkZHJlc3MsIDApOw0KPiA+KwlpZiAocnYpIHsN
+Cj4gPiAJCXByX3dhcm4oInJlbWFwX3ZtYWxsb2NfcmFuZ2UgZmFpbGVkOiAlbHUsICV1XG4iLCBv
+ZmYsDQo+IHNpemUpOw0KPiA+KwkJcmRtYV91c2VyX21tYXBfZW50cnlfcHV0KCZ1Y3R4LT5iYXNl
+X3Vjb250ZXh0LA0KPiByZG1hX2VudHJ5KTsNCj4gPisJfQ0KPiA+IG91dDoNCj4gPiAJcmV0dXJu
+IHJ2Ow0KPiA+IH0NCj4gPkBAIC0xMDUsNyArOTMsNyBAQCBpbnQgc2l3X2FsbG9jX3Vjb250ZXh0
+KHN0cnVjdCBpYl91Y29udGV4dCAqYmFzZV9jdHgsDQo+ID5zdHJ1Y3QgaWJfdWRhdGEgKnVkYXRh
+KQ0KPiA+IAkJcnYgPSAtRU5PTUVNOw0KPiA+IAkJZ290byBlcnJfb3V0Ow0KPiA+IAl9DQo+ID4t
+CXhhX2luaXRfZmxhZ3MoJmN0eC0+eGEsIFhBX0ZMQUdTX0FMTE9DKTsNCj4gPisNCj4gPiAJY3R4
+LT51b2JqX25leHRrZXkgPSAwOw0KPiA+IAljdHgtPnNkZXYgPSBzZGV2Ow0KPiA+DQo+ID5AQCAt
+MTM1LDE5ICsxMjMsNyBAQCBpbnQgc2l3X2FsbG9jX3Vjb250ZXh0KHN0cnVjdCBpYl91Y29udGV4
+dA0KPiA+KmJhc2VfY3R4LCBzdHJ1Y3QgaWJfdWRhdGEgKnVkYXRhKSAgdm9pZCBzaXdfZGVhbGxv
+Y191Y29udGV4dChzdHJ1Y3QNCj4gPmliX3Vjb250ZXh0ICpiYXNlX2N0eCkgIHsNCj4gPiAJc3Ry
+dWN0IHNpd191Y29udGV4dCAqdWN0eCA9IHRvX3Npd19jdHgoYmFzZV9jdHgpOw0KPiA+LQl2b2lk
+ICplbnRyeTsNCj4gPi0JdW5zaWduZWQgbG9uZyBpbmRleDsNCj4gPg0KPiA+LQkvKg0KPiA+LQkg
+KiBNYWtlIHN1cmUgYWxsIHVzZXIgbW1hcCBvYmplY3RzIGFyZSBnb25lLiBTaW5jZSBRUCwgQ1EN
+Cj4gPi0JICogYW5kIFNSUSBkZXN0cm95IHJvdXRpbmVzIGRlc3Ryb3kgcmVsYXRlZCBvYmplY3Rz
+LCBub3RoaW5nDQo+ID4tCSAqIHNob3VsZCBiZSBmb3VuZCBoZXJlLg0KPiA+LQkgKi8NCj4gPi0J
+eGFfZm9yX2VhY2goJnVjdHgtPnhhLCBpbmRleCwgZW50cnkpIHsNCj4gPi0JCWtmcmVlKHhhX2Vy
+YXNlKCZ1Y3R4LT54YSwgaW5kZXgpKTsNCj4gPi0JCXByX3dhcm4oInNpdzogZHJvcHBpbmcgb3Jw
+aGFuZWQgdW9iaiBhdCAlbHVcbiIsIGluZGV4KTsNCj4gPi0JfQ0KPiA+LQl4YV9kZXN0cm95KCZ1
+Y3R4LT54YSk7DQo+ID4gCWF0b21pY19kZWMoJnVjdHgtPnNkZXYtPm51bV9jdHgpOw0KPiA+IH0N
+Cj4gPg0KPiA+QEAgLTI5Myw2ICsyNjksMjggQEAgdm9pZCBzaXdfcXBfcHV0X3JlZihzdHJ1Y3Qg
+aWJfcXAgKmJhc2VfcXApDQo+ID4gCXNpd19xcF9wdXQodG9fc2l3X3FwKGJhc2VfcXApKTsNCj4g
+PiB9DQo+ID4NCj4gPitzdGF0aWMgaW50IHNpd191c2VyX21tYXBfZW50cnlfaW5zZXJ0KHN0cnVj
+dCBpYl91Y29udGV4dCAqdWNvbnRleHQsDQo+ID4rCQkJCSAgICAgIHU2NCBhZGRyZXNzLCB1NjQg
+bGVuZ3RoLA0KPiA+KwkJCQkgICAgICB1NjQgKmtleSkNCj4gPit7DQo+ID4rCXN0cnVjdCBzaXdf
+dXNlcl9tbWFwX2VudHJ5ICplbnRyeSA9IGt6YWxsb2Moc2l6ZW9mKCplbnRyeSksDQo+ID5HRlBf
+S0VSTkVMKTsNCj4gPisNCj4gPisJaWYgKCFlbnRyeSkNCj4gPisJCXJldHVybiAtRU5PTUVNOw0K
+PiA+Kw0KPiA+KwllbnRyeS0+YWRkcmVzcyA9IGFkZHJlc3M7DQo+ID4rCWVudHJ5LT5sZW5ndGgg
+PSBsZW5ndGg7DQo+ID4rDQo+ID4rCSprZXkgPSByZG1hX3VzZXJfbW1hcF9lbnRyeV9pbnNlcnQo
+dWNvbnRleHQsICZlbnRyeS0NCj4gPnJkbWFfZW50cnksDQo+ID4rCQkJCQkgICBsZW5ndGgpOw0K
+PiA+KwlpZiAoKmtleSA9PSBSRE1BX1VTRVJfTU1BUF9JTlZBTElEKSB7DQo+ID4rCQlrZnJlZShl
+bnRyeSk7DQo+ID4rCQlyZXR1cm4gLUVOT01FTTsNCj4gPisJfQ0KPiA+Kw0KPiA+KwlyZXR1cm4g
+MDsNCj4gPit9DQo+ID4rDQo+ID4gLyoNCj4gPiAgKiBzaXdfY3JlYXRlX3FwKCkNCj4gPiAgKg0K
+PiA+QEAgLTMxNyw2ICszMTUsOCBAQCBzdHJ1Y3QgaWJfcXAgKnNpd19jcmVhdGVfcXAoc3RydWN0
+IGliX3BkICpwZCwNCj4gPiAJc3RydWN0IHNpd19jcSAqc2NxID0gTlVMTCwgKnJjcSA9IE5VTEw7
+DQo+ID4gCXVuc2lnbmVkIGxvbmcgZmxhZ3M7DQo+ID4gCWludCBudW1fc3FlLCBudW1fcnFlLCBy
+diA9IDA7DQo+ID4rCXU2NCBsZW5ndGg7DQo+ID4rCXU2NCBrZXk7DQo+ID4NCj4gPiAJc2l3X2Ri
+ZyhiYXNlX2RldiwgImNyZWF0ZSBuZXcgUVBcbiIpOw0KPiA+DQo+ID5AQCAtMzgwLDggKzM4MCw4
+IEBAIHN0cnVjdCBpYl9xcCAqc2l3X2NyZWF0ZV9xcChzdHJ1Y3QgaWJfcGQgKnBkLA0KPiA+IAlz
+cGluX2xvY2tfaW5pdCgmcXAtPm9ycV9sb2NrKTsNCj4gPg0KPiA+IAlxcC0+a2VybmVsX3ZlcmJz
+ID0gIXVkYXRhOw0KPiA+LQlxcC0+eGFfc3FfaW5kZXggPSBTSVdfSU5WQUxfVU9CSl9LRVk7DQo+
+ID4tCXFwLT54YV9ycV9pbmRleCA9IFNJV19JTlZBTF9VT0JKX0tFWTsNCj4gPisJcXAtPnNxX2tl
+eSA9IFJETUFfVVNFUl9NTUFQX0lOVkFMSUQ7DQo+ID4rCXFwLT5ycV9rZXkgPSBSRE1BX1VTRVJf
+TU1BUF9JTlZBTElEOw0KPiA+DQo+ID4gCXJ2ID0gc2l3X3FwX2FkZChzZGV2LCBxcCk7DQo+ID4g
+CWlmIChydikNCj4gPkBAIC00NTksMjYgKzQ1OSw0MSBAQCBzdHJ1Y3QgaWJfcXAgKnNpd19jcmVh
+dGVfcXAoc3RydWN0IGliX3BkICpwZCwNCj4gPiAJCXVyZXNwLnFwX2lkID0gcXBfaWQocXApOw0K
+PiA+DQo+ID4gCQlpZiAocXAtPnNlbmRxKSB7DQo+ID4tCQkJcXAtPnhhX3NxX2luZGV4ID0NCj4g
+Pi0JCQkJc2l3X2NyZWF0ZV91b2JqKHVjdHgsIHFwLT5zZW5kcSwNCj4gPi0JCQkJCW51bV9zcWUg
+KiBzaXplb2Yoc3RydWN0IHNpd19zcWUpKTsNCj4gPisJCQlsZW5ndGggPSBudW1fc3FlICogc2l6
+ZW9mKHN0cnVjdCBzaXdfc3FlKTsNCj4gPisJCQlydiA9IHNpd191c2VyX21tYXBfZW50cnlfaW5z
+ZXJ0KCZ1Y3R4LQ0KPiA+YmFzZV91Y29udGV4dCwNCj4gPisJCQkJCQkJKHVpbnRwdHJfdClxcC0N
+Cj4gPnNlbmRxLA0KPiA+KwkJCQkJCQlsZW5ndGgsICZrZXkpOw0KPiA+KwkJCWlmICghcnYpDQo+
+IA0KPiBTaGFsbCBiZSAnaWYgKHJ2KScNCj4gVGhlIG5ldyAnc2l3X3VzZXJfbW1hcF9lbnRyeV9p
+bnNlcnQoKScgc2VlbSB0byByZXR1cm4gemVybyBmb3Igc3VjY2Vzcy4NCj4gU2FtZSBpc3N1ZSBh
+ZnJlciBhbGwgb3RoZXIgaW52b2NhdGlvbnMgb2YNCj4gc2l3X3VzZXJfbW1hcF9lbnRyeV9pbnNl
+cnQoKSBmdXJ0aGVyIGRvd24gaW4gdGhhdCBmaWxlLg0KUGVyaGFwcyB0aGlzIGlzIGNhdXNpbmcg
+dGhlIHBhbmljIHlvdSdyZSBzZWVpbmcgPyANCg0KPiANCj4gPisJCQkJZ290byBlcnJfb3V0X3hh
+Ow0KPiA+Kw0KPiA+KwkJCS8qIElmIGVudHJ5IHdhcyBpbnNlcnRlZCBzdWNjZXNzZnVsbHksIHFw
+LT5zZW5kcQ0KPiA+KwkJCSAqIHdpbGwgYmUgZnJlZWQgYnkgc2l3X21tYXBfZnJlZQ0KPiA+KwkJ
+CSAqLw0KPiA+KwkJCXFwLT5zZW5kcSA9IE5VTEw7DQo+IA0KPiBxcC0+c2VuZHEgcG9pbnRzIHRv
+IHRoZSBTUSBhcnJheS4gWmVyb2luZyB0aGlzIHBvaW50ZXIgd2lsbCBsZWF2ZQ0KPiBzaXcgd2l0
+aCBubyBpZGVhIHdoZXJlIHRoZSBXUUUncyBhcmUuIEl0IHdpbGwgcGFuaWMgZGUtcmVmZXJlbmNp
+bmcgW05VTEwgKw0KPiBjdXJyZW50IHBvc2l0aW9uIGluIHJpbmcgYnVmZmVyXS4gU2FtZSBmb3Ig
+UlEsIFNSUSBhbmQgQ1EuDQpRcC0+c2VuZHEgaXMgb25seSB1c2VkIGluIGtlcm5lbCBtb2RlLCBh
+bmQgb25seSBzZXQgdG8gTlVMTCBpcyB1c2VyLXNwYWNlIG1vZGUNCldoZXJlIGl0IGlzIGFsbG9j
+YXRlZCBhbmQgbWFwcGVkIGluIHVzZXIsIHNvIHRoZSB1c2VyIHdpbGwgYmUgdGhlIG9uZSBhY2Nl
+c3NpbmcgdGhlIHJpbmdzDQpBbmQgbm90IGtlcm5lbCwgdW5sZXNzIEknbSBtaXNzaW5nIHNvbWV0
+aGluZy4gDQo+IA0KPiANCj4gPisJCQlxcC0+c3Ffa2V5ID0ga2V5Ow0KPiA+IAkJfQ0KPiA+Kw0K
+PiA+IAkJaWYgKHFwLT5yZWN2cSkgew0KPiA+LQkJCXFwLT54YV9ycV9pbmRleCA9DQo+ID4tCQkJ
+CSBzaXdfY3JlYXRlX3VvYmoodWN0eCwgcXAtPnJlY3ZxLA0KPiA+LQkJCQkJbnVtX3JxZSAqIHNp
+emVvZihzdHJ1Y3Qgc2l3X3JxZSkpOw0KPiA+LQkJfQ0KPiA+LQkJaWYgKHFwLT54YV9zcV9pbmRl
+eCA9PSBTSVdfSU5WQUxfVU9CSl9LRVkgfHwNCj4gPi0JCSAgICBxcC0+eGFfcnFfaW5kZXggPT0g
+U0lXX0lOVkFMX1VPQkpfS0VZKSB7DQo+ID4tCQkJcnYgPSAtRU5PTUVNOw0KPiA+LQkJCWdvdG8g
+ZXJyX291dF94YTsNCj4gPisJCQlsZW5ndGggPSBudW1fcnFlICogc2l6ZW9mKHN0cnVjdCBzaXdf
+cnFlKTsNCj4gPisJCQlydiA9IHNpd191c2VyX21tYXBfZW50cnlfaW5zZXJ0KCZ1Y3R4LQ0KPiA+
+YmFzZV91Y29udGV4dCwNCj4gPisJCQkJCQkJKHVpbnRwdHJfdClxcC0+cmVjdnEsDQo+ID4rCQkJ
+CQkJCWxlbmd0aCwgJmtleSk7DQo+ID4rCQkJaWYgKCFydikNCj4gPisJCQkJZ290byBlcnJfb3V0
+X21tYXBfcmVtOw0KPiA+Kw0KPiA+KwkJCS8qIElmIGVudHJ5IHdhcyBpbnNlcnRlZCBzdWNjZXNz
+ZnVsbHksIHFwLT5yZWN2cSB3aWxsDQo+ID4rCQkJICogYmUgZnJlZWQgYnkgc2l3X21tYXBfZnJl
+ZQ0KPiA+KwkJCSAqLw0KPiA+KwkJCXFwLT5yZWN2cSA9IE5VTEw7DQo+IA0KPiBzZWUgYWJvdmUN
+CnNhbWUNCj4gDQo+ID4rCQkJcXAtPnJxX2tleSA9IGtleTsNCj4gPiAJCX0NCj4gPi0JCXVyZXNw
+LnNxX2tleSA9IHFwLT54YV9zcV9pbmRleCA8PCBQQUdFX1NISUZUOw0KPiA+LQkJdXJlc3AucnFf
+a2V5ID0gcXAtPnhhX3JxX2luZGV4IDw8IFBBR0VfU0hJRlQ7DQo+IA0KPiBDaGFuZ2VzIGhlcmUg
+d291bGQgcmVxdWlyZSBjaGFuZ2VzIHRvIHRoZSBzaXcgdXNlciBsaWINClRoZSBrZXkgcmVjZWl2
+ZWQgZnJvbSB0aGUgQVBJIGlzIHNoaWZlZCBieSBQQUdFX1NISUZUIGFscmVhZHksIHNvIHlvdSdy
+ZSBsZWZ0IHdpdGggdGhlIHNhbWUgaW50ZXJmYWNlLCANClRoZXJlIGFyZSBubyBjaGFuZ2VzIHJl
+cXVpcmVkIGZvciBzaXcgbGliLg0KDQo+IA0KPiA+Kw0KPiA+KwkJdXJlc3Auc3Ffa2V5ID0gcXAt
+PnNxX2tleTsNCj4gPisJCXVyZXNwLnJxX2tleSA9IHFwLT5ycV9rZXk7DQo+ID4NCj4gPiAJCWlm
+ICh1ZGF0YS0+b3V0bGVuIDwgc2l6ZW9mKHVyZXNwKSkgew0KPiA+IAkJCXJ2ID0gLUVJTlZBTDsN
+Cj4gPi0JCQlnb3RvIGVycl9vdXRfeGE7DQo+ID4rCQkJZ290byBlcnJfb3V0X21tYXBfcmVtOw0K
+PiA+IAkJfQ0KPiA+IAkJcnYgPSBpYl9jb3B5X3RvX3VkYXRhKHVkYXRhLCAmdXJlc3AsIHNpemVv
+Zih1cmVzcCkpOw0KPiA+IAkJaWYgKHJ2KQ0KPiA+QEAgLTQ5NiwyMSArNTExLDIzIEBAIHN0cnVj
+dCBpYl9xcCAqc2l3X2NyZWF0ZV9xcChzdHJ1Y3QgaWJfcGQgKnBkLA0KPiA+DQo+ID4gCXJldHVy
+biBxcC0+aWJfcXA7DQo+ID4NCj4gPitlcnJfb3V0X21tYXBfcmVtOg0KPiA+KwlpZiAodWRhdGEp
+IHsNCj4gPisJCXJkbWFfdXNlcl9tbWFwX2VudHJ5X3JlbW92ZSgmdWN0eC0+YmFzZV91Y29udGV4
+dCwNCj4gcXAtPnNxX2tleSk7DQo+ID4rCQlyZG1hX3VzZXJfbW1hcF9lbnRyeV9yZW1vdmUoJnVj
+dHgtPmJhc2VfdWNvbnRleHQsDQo+IHFwLT5ycV9rZXkpOw0KPiA+Kwl9DQo+ID4rDQo+ID4gZXJy
+X291dF94YToNCj4gPiAJeGFfZXJhc2UoJnNkZXYtPnFwX3hhLCBxcF9pZChxcCkpOw0KPiA+IGVy
+cl9vdXQ6DQo+ID4gCWtmcmVlKHNpd19iYXNlX3FwKTsNCj4gPg0KPiA+IAlpZiAocXApIHsNCj4g
+Pi0JCWlmIChxcC0+eGFfc3FfaW5kZXggIT0gU0lXX0lOVkFMX1VPQkpfS0VZKQ0KPiA+LQkJCWtm
+cmVlKHhhX2VyYXNlKCZ1Y3R4LT54YSwgcXAtPnhhX3NxX2luZGV4KSk7DQo+ID4tCQlpZiAocXAt
+PnhhX3JxX2luZGV4ICE9IFNJV19JTlZBTF9VT0JKX0tFWSkNCj4gPi0JCQlrZnJlZSh4YV9lcmFz
+ZSgmdWN0eC0+eGEsIHFwLT54YV9ycV9pbmRleCkpOw0KPiA+LQ0KPiA+IAkJdmZyZWUocXAtPnNl
+bmRxKTsNCj4gPiAJCXZmcmVlKHFwLT5yZWN2cSk7DQo+ID4gCQlrZnJlZShxcCk7DQo+ID4gCX0N
+Cj4gPisNCj4gPiAJYXRvbWljX2RlYygmc2Rldi0+bnVtX3FwKTsNCj4gPg0KPiA+IAlyZXR1cm4g
+RVJSX1BUUihydik7DQo+ID5AQCAtNjIwLDEwICs2MzcsMTAgQEAgaW50IHNpd19kZXN0cm95X3Fw
+KHN0cnVjdCBpYl9xcCAqYmFzZV9xcCwgc3RydWN0DQo+ID5pYl91ZGF0YSAqdWRhdGEpDQo+ID4g
+CXFwLT5hdHRycy5mbGFncyB8PSBTSVdfUVBfSU5fREVTVFJPWTsNCj4gPiAJcXAtPnJ4X3N0cmVh
+bS5yeF9zdXNwZW5kID0gMTsNCj4gPg0KPiA+LQlpZiAodWN0eCAmJiBxcC0+eGFfc3FfaW5kZXgg
+IT0gU0lXX0lOVkFMX1VPQkpfS0VZKQ0KPiA+LQkJa2ZyZWUoeGFfZXJhc2UoJnVjdHgtPnhhLCBx
+cC0+eGFfc3FfaW5kZXgpKTsNCj4gPi0JaWYgKHVjdHggJiYgcXAtPnhhX3JxX2luZGV4ICE9IFNJ
+V19JTlZBTF9VT0JKX0tFWSkNCj4gPi0JCWtmcmVlKHhhX2VyYXNlKCZ1Y3R4LT54YSwgcXAtPnhh
+X3JxX2luZGV4KSk7DQo+ID4rCWlmICh1Y3R4KSB7DQo+ID4rCQlyZG1hX3VzZXJfbW1hcF9lbnRy
+eV9yZW1vdmUoJnVjdHgtPmJhc2VfdWNvbnRleHQsDQo+IHFwLT5zcV9rZXkpOw0KPiA+KwkJcmRt
+YV91c2VyX21tYXBfZW50cnlfcmVtb3ZlKCZ1Y3R4LT5iYXNlX3Vjb250ZXh0LA0KPiBxcC0+cnFf
+a2V5KTsNCj4gPisJfQ0KPiA+DQo+ID4gCWRvd25fd3JpdGUoJnFwLT5zdGF0ZV9sb2NrKTsNCj4g
+Pg0KPiA+QEAgLTk5Myw4ICsxMDEwLDggQEAgdm9pZCBzaXdfZGVzdHJveV9jcShzdHJ1Y3QgaWJf
+Y3EgKmJhc2VfY3EsIHN0cnVjdA0KPiA+aWJfdWRhdGEgKnVkYXRhKQ0KPiA+DQo+ID4gCXNpd19j
+cV9mbHVzaChjcSk7DQo+ID4NCj4gPi0JaWYgKGN0eCAmJiBjcS0+eGFfY3FfaW5kZXggIT0gU0lX
+X0lOVkFMX1VPQkpfS0VZKQ0KPiA+LQkJa2ZyZWUoeGFfZXJhc2UoJmN0eC0+eGEsIGNxLT54YV9j
+cV9pbmRleCkpOw0KPiA+KwlpZiAoY3R4KQ0KPiA+KwkJcmRtYV91c2VyX21tYXBfZW50cnlfcmVt
+b3ZlKCZjdHgtPmJhc2VfdWNvbnRleHQsDQo+IGNxLT5jcV9rZXkpOw0KPiA+DQo+ID4gCWF0b21p
+Y19kZWMoJnNkZXYtPm51bV9jcSk7DQo+ID4NCj4gPkBAIC0xMDMxLDcgKzEwNDgsNyBAQCBpbnQg
+c2l3X2NyZWF0ZV9jcShzdHJ1Y3QgaWJfY3EgKmJhc2VfY3EsIGNvbnN0DQo+ID5zdHJ1Y3QgaWJf
+Y3FfaW5pdF9hdHRyICphdHRyLA0KPiA+IAlzaXplID0gcm91bmR1cF9wb3dfb2ZfdHdvKHNpemUp
+Ow0KPiA+IAljcS0+YmFzZV9jcS5jcWUgPSBzaXplOw0KPiA+IAljcS0+bnVtX2NxZSA9IHNpemU7
+DQo+ID4tCWNxLT54YV9jcV9pbmRleCA9IFNJV19JTlZBTF9VT0JKX0tFWTsNCj4gPisJY3EtPmNx
+X2tleSA9IFJETUFfVVNFUl9NTUFQX0lOVkFMSUQ7DQo+ID4NCj4gPiAJaWYgKCF1ZGF0YSkgew0K
+PiA+IAkJY3EtPmtlcm5lbF92ZXJicyA9IDE7DQo+ID5AQCAtMTA1NywxNiArMTA3NCwyMSBAQCBp
+bnQgc2l3X2NyZWF0ZV9jcShzdHJ1Y3QgaWJfY3EgKmJhc2VfY3EsIGNvbnN0DQo+ID5zdHJ1Y3Qg
+aWJfY3FfaW5pdF9hdHRyICphdHRyLA0KPiA+IAkJc3RydWN0IHNpd191Y29udGV4dCAqY3R4ID0N
+Cj4gPiAJCQlyZG1hX3VkYXRhX3RvX2Rydl9jb250ZXh0KHVkYXRhLCBzdHJ1Y3QNCj4gc2l3X3Vj
+b250ZXh0LA0KPiA+IAkJCQkJCSAgYmFzZV91Y29udGV4dCk7DQo+ID4rCQl1NjQgbGVuZ3RoID0g
+c2l6ZSAqIHNpemVvZihzdHJ1Y3Qgc2l3X2NxZSkgKw0KPiA+KwkJCSAgICAgc2l6ZW9mKHN0cnVj
+dCBzaXdfY3FfY3RybCk7DQo+ID4NCj4gPi0JCWNxLT54YV9jcV9pbmRleCA9DQo+ID4tCQkJc2l3
+X2NyZWF0ZV91b2JqKGN0eCwgY3EtPnF1ZXVlLA0KPiA+LQkJCQkJc2l6ZSAqIHNpemVvZihzdHJ1
+Y3Qgc2l3X2NxZSkgKw0KPiA+LQkJCQkJCXNpemVvZihzdHJ1Y3Qgc2l3X2NxX2N0cmwpKTsNCj4g
+Pi0JCWlmIChjcS0+eGFfY3FfaW5kZXggPT0gU0lXX0lOVkFMX1VPQkpfS0VZKSB7DQo+ID4tCQkJ
+cnYgPSAtRU5PTUVNOw0KPiA+KwkJcnYgPSBzaXdfdXNlcl9tbWFwX2VudHJ5X2luc2VydCgmY3R4
+LT5iYXNlX3Vjb250ZXh0LA0KPiA+KwkJCQkJCSh1aW50cHRyX3QpY3EtPnF1ZXVlLA0KPiA+KwkJ
+CQkJCWxlbmd0aCwgJmNxLT5jcV9rZXkpOw0KPiA+KwkJaWYgKCFydikNCj4gDQo+IGlmIChydikN
+Cj4gPiAJCQlnb3RvIGVycl9vdXQ7DQo+ID4tCQl9DQo+ID4tCQl1cmVzcC5jcV9rZXkgPSBjcS0+
+eGFfY3FfaW5kZXggPDwgUEFHRV9TSElGVDsNCj4gPisNCj4gPisJCS8qIElmIGVudHJ5IHdhcyBp
+bnNlcnRlZCBzdWNjZXNzZnVsbHksIGNxLT5xdWV1ZSB3aWxsIGJlIGZyZWVkDQo+ID4rCQkgKiBi
+eSBzaXdfbW1hcF9mcmVlDQo+ID4rCQkgKi8NCj4gPisJCWNxLT5xdWV1ZSA9IE5VTEw7DQo+IA0K
+PiBjYXVzZXMgcGFuaWMNClNob3VsZCBiZSBzZXQgdG8gbnVsbCBvbmx5IGlmIHRoZXJlIGlzIHVk
+YXRhLiBJIHdpbGwgZml4LiANCg0KPiA+Kw0KPiA+KwkJdXJlc3AuY3Ffa2V5ID0gY3EtPmNxX2tl
+eTsNCj4gPiAJCXVyZXNwLmNxX2lkID0gY3EtPmlkOw0KPiA+IAkJdXJlc3AubnVtX2NxZSA9IHNp
+emU7DQo+ID4NCj4gPkBAIC0xMDg3LDggKzExMDksOSBAQCBpbnQgc2l3X2NyZWF0ZV9jcShzdHJ1
+Y3QgaWJfY3EgKmJhc2VfY3EsIGNvbnN0DQo+ID5zdHJ1Y3QgaWJfY3FfaW5pdF9hdHRyICphdHRy
+LA0KPiA+IAkJc3RydWN0IHNpd191Y29udGV4dCAqY3R4ID0NCj4gPiAJCQlyZG1hX3VkYXRhX3Rv
+X2Rydl9jb250ZXh0KHVkYXRhLCBzdHJ1Y3QNCj4gc2l3X3Vjb250ZXh0LA0KPiA+IAkJCQkJCSAg
+YmFzZV91Y29udGV4dCk7DQo+ID4tCQlpZiAoY3EtPnhhX2NxX2luZGV4ICE9IFNJV19JTlZBTF9V
+T0JKX0tFWSkNCj4gPi0JCQlrZnJlZSh4YV9lcmFzZSgmY3R4LT54YSwgY3EtPnhhX2NxX2luZGV4
+KSk7DQo+ID4rCQlpZiAodWRhdGEpDQo+ID4rCQkJcmRtYV91c2VyX21tYXBfZW50cnlfcmVtb3Zl
+KCZjdHgtDQo+ID5iYXNlX3Vjb250ZXh0LA0KPiA+KwkJCQkJCSAgICBjcS0+Y3Ffa2V5KTsNCj4g
+PiAJCXZmcmVlKGNxLT5xdWV1ZSk7DQo+ID4gCX0NCj4gPiAJYXRvbWljX2RlYygmc2Rldi0+bnVt
+X2NxKTsNCj4gPkBAIC0xNDkwLDcgKzE1MTMsNyBAQCBpbnQgc2l3X2NyZWF0ZV9zcnEoc3RydWN0
+IGliX3NycSAqYmFzZV9zcnEsDQo+ID4gCX0NCj4gPiAJc3JxLT5tYXhfc2dlID0gYXR0cnMtPm1h
+eF9zZ2U7DQo+ID4gCXNycS0+bnVtX3JxZSA9IHJvdW5kdXBfcG93X29mX3R3byhhdHRycy0+bWF4
+X3dyKTsNCj4gPi0Jc3JxLT54YV9zcnFfaW5kZXggPSBTSVdfSU5WQUxfVU9CSl9LRVk7DQo+ID4r
+CXNycS0+c3JxX2tleSA9IFJETUFfVVNFUl9NTUFQX0lOVkFMSUQ7DQo+ID4gCXNycS0+bGltaXQg
+PSBhdHRycy0+c3JxX2xpbWl0Ow0KPiA+IAlpZiAoc3JxLT5saW1pdCkNCj4gPiAJCXNycS0+YXJt
+ZWQgPSAxOw0KPiA+QEAgLTE1MDksMTUgKzE1MzIsMTkgQEAgaW50IHNpd19jcmVhdGVfc3JxKHN0
+cnVjdCBpYl9zcnEgKmJhc2Vfc3JxLA0KPiA+IAl9DQo+ID4gCWlmICh1ZGF0YSkgew0KPiA+IAkJ
+c3RydWN0IHNpd191cmVzcF9jcmVhdGVfc3JxIHVyZXNwID0ge307DQo+ID4rCQl1NjQgbGVuZ3Ro
+ID0gc3JxLT5udW1fcnFlICogc2l6ZW9mKHN0cnVjdCBzaXdfcnFlKTsNCj4gPg0KPiA+LQkJc3Jx
+LT54YV9zcnFfaW5kZXggPSBzaXdfY3JlYXRlX3VvYmooDQo+ID4tCQkJY3R4LCBzcnEtPnJlY3Zx
+LCBzcnEtPm51bV9ycWUgKiBzaXplb2Yoc3RydWN0DQo+IHNpd19ycWUpKTsNCj4gPi0NCj4gPi0J
+CWlmIChzcnEtPnhhX3NycV9pbmRleCA9PSBTSVdfSU5WQUxfVU9CSl9LRVkpIHsNCj4gPi0JCQly
+diA9IC1FTk9NRU07DQo+ID4rCQlydiA9IHNpd191c2VyX21tYXBfZW50cnlfaW5zZXJ0KCZjdHgt
+PmJhc2VfdWNvbnRleHQsDQo+ID4rCQkJCQkJKHVpbnRwdHJfdClzcnEtPnJlY3ZxLA0KPiA+KwkJ
+CQkJCWxlbmd0aCwgJnNycS0+c3JxX2tleSk7DQo+ID4rCQlpZiAoIXJ2KQ0KPiANCj4gaWYgKHJ2
+KQ0KPiANCj4gPiAJCQlnb3RvIGVycl9vdXQ7DQo+ID4tCQl9DQo+ID4tCQl1cmVzcC5zcnFfa2V5
+ID0gc3JxLT54YV9zcnFfaW5kZXg7DQo+ID4rDQo+ID4rCQkvKiBJZiBlbnRyeSB3YXMgaW5zZXJ0
+ZWQgc3VjY2Vzc2Z1bGx5LCBzcnEtPnJlY3ZxIHdpbGwgYmUgZnJlZWQNCj4gPisJCSAqIGJ5IHNp
+d19tbWFwX2ZyZWUNCj4gPisJCSAqLw0KPiA+KwkJc3JxLT5yZWN2cSA9IE5VTEw7DQo+IA0KPiBj
+YXVzZXMgcGFuaWMNCj4gDQo+ID4rCQl1cmVzcC5zcnFfa2V5ID0gc3JxLT5zcnFfa2V5Ow0KPiA+
+IAkJdXJlc3AubnVtX3JxZSA9IHNycS0+bnVtX3JxZTsNCj4gPg0KPiA+IAkJaWYgKHVkYXRhLT5v
+dXRsZW4gPCBzaXplb2YodXJlc3ApKSB7IEBAIC0xNTM2LDggKzE1NjMsOSBAQA0KPiBpbnQNCj4g
+PnNpd19jcmVhdGVfc3JxKHN0cnVjdCBpYl9zcnEgKmJhc2Vfc3JxLA0KPiA+DQo+ID4gZXJyX291
+dDoNCj4gPiAJaWYgKHNycS0+cmVjdnEpIHsNCj4gPi0JCWlmIChjdHggJiYgc3JxLT54YV9zcnFf
+aW5kZXggIT0gU0lXX0lOVkFMX1VPQkpfS0VZKQ0KPiA+LQkJCWtmcmVlKHhhX2VyYXNlKCZjdHgt
+PnhhLCBzcnEtPnhhX3NycV9pbmRleCkpOw0KPiA+KwkJaWYgKHVkYXRhKQ0KPiA+KwkJCXJkbWFf
+dXNlcl9tbWFwX2VudHJ5X3JlbW92ZSgmY3R4LQ0KPiA+YmFzZV91Y29udGV4dCwNCj4gPisJCQkJ
+CQkgICAgc3JxLT5zcnFfa2V5KTsNCj4gPiAJCXZmcmVlKHNycS0+cmVjdnEpOw0KPiA+IAl9DQo+
+ID4gCWF0b21pY19kZWMoJnNkZXYtPm51bV9zcnEpOw0KPiA+QEAgLTE2MjMsOCArMTY1MSw5IEBA
+IHZvaWQgc2l3X2Rlc3Ryb3lfc3JxKHN0cnVjdCBpYl9zcnEgKmJhc2Vfc3JxLA0KPiA+c3RydWN0
+IGliX3VkYXRhICp1ZGF0YSkNCj4gPiAJCXJkbWFfdWRhdGFfdG9fZHJ2X2NvbnRleHQodWRhdGEs
+IHN0cnVjdCBzaXdfdWNvbnRleHQsDQo+ID4gCQkJCQkgIGJhc2VfdWNvbnRleHQpOw0KPiA+DQo+
+ID4tCWlmIChjdHggJiYgc3JxLT54YV9zcnFfaW5kZXggIT0gU0lXX0lOVkFMX1VPQkpfS0VZKQ0K
+PiA+LQkJa2ZyZWUoeGFfZXJhc2UoJmN0eC0+eGEsIHNycS0+eGFfc3JxX2luZGV4KSk7DQo+ID4r
+CWlmIChjdHgpDQo+ID4rCQlyZG1hX3VzZXJfbW1hcF9lbnRyeV9yZW1vdmUoJmN0eC0+YmFzZV91
+Y29udGV4dCwNCj4gPisJCQkJCSAgICBzcnEtPnNycV9rZXkpOw0KPiA+DQo+ID4gCXZmcmVlKHNy
+cS0+cmVjdnEpOw0KPiA+IAlhdG9taWNfZGVjKCZzZGV2LT5udW1fc3JxKTsNCj4gPmRpZmYgLS1n
+aXQgYS9kcml2ZXJzL2luZmluaWJhbmQvc3cvc2l3L3Npd192ZXJicy5oDQo+ID5iL2RyaXZlcnMv
+aW5maW5pYmFuZC9zdy9zaXcvc2l3X3ZlcmJzLmgNCj4gPmluZGV4IDE5MTA4NjkyODFjYi4uMWE3
+MzE5ODlmYWQ2IDEwMDY0NA0KPiA+LS0tIGEvZHJpdmVycy9pbmZpbmliYW5kL3N3L3Npdy9zaXdf
+dmVyYnMuaA0KPiA+KysrIGIvZHJpdmVycy9pbmZpbmliYW5kL3N3L3Npdy9zaXdfdmVyYnMuaA0K
+PiA+QEAgLTgzLDYgKzgzLDcgQEAgdm9pZCBzaXdfZGVzdHJveV9zcnEoc3RydWN0IGliX3NycSAq
+YmFzZV9zcnEsIHN0cnVjdA0KPiA+aWJfdWRhdGEgKnVkYXRhKTsgIGludCBzaXdfcG9zdF9zcnFf
+cmVjdihzdHJ1Y3QgaWJfc3JxICpiYXNlX3NycSwgY29uc3QNCj4gPnN0cnVjdCBpYl9yZWN2X3dy
+ICp3ciwNCj4gPiAJCSAgICAgIGNvbnN0IHN0cnVjdCBpYl9yZWN2X3dyICoqYmFkX3dyKTsgIGlu
+dCBzaXdfbW1hcChzdHJ1Y3QNCj4gPmliX3Vjb250ZXh0ICpjdHgsIHN0cnVjdCB2bV9hcmVhX3N0
+cnVjdCAqdm1hKTsNCj4gPit2b2lkIHNpd19tbWFwX2ZyZWUoc3RydWN0IHJkbWFfdXNlcl9tbWFw
+X2VudHJ5ICpyZG1hX2VudHJ5KTsNCj4gPiB2b2lkIHNpd19xcF9ldmVudChzdHJ1Y3Qgc2l3X3Fw
+ICpxcCwgZW51bSBpYl9ldmVudF90eXBlIHR5cGUpOyAgdm9pZA0KPiA+c2l3X2NxX2V2ZW50KHN0
+cnVjdCBzaXdfY3EgKmNxLCBlbnVtIGliX2V2ZW50X3R5cGUgdHlwZSk7ICB2b2lkDQo+ID5zaXdf
+c3JxX2V2ZW50KHN0cnVjdCBzaXdfc3JxICpzcnEsIGVudW0gaWJfZXZlbnRfdHlwZSB0eXBlKTsN
+Cj4gPi0tDQo+ID4yLjE0LjUNCj4gPg0KPiA+DQoNCg==
