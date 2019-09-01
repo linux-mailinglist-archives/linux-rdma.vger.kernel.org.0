@@ -2,162 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6630AA4802
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Sep 2019 08:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FA9A4987
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Sep 2019 15:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728777AbfIAG5L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 1 Sep 2019 02:57:11 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:61206 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728776AbfIAG5L (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 1 Sep 2019 02:57:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1567321029; x=1598857029;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=j01AUuTTf/NvC++ABIVmbkBI2juIrLkkmIluvfVwQ+o=;
-  b=LtH+S0L8TkobENhKxWMsYvArwd37j8h1n1kDeGBqRqi2DcSUsXI7u3lm
-   zbeR6dqcijXcEe8s0Mnjf6GRg5GxYmyhyufwWHL0d3g+Zkfz9/k75xQE5
-   7VmGkjsChtzjr1mQIbq49Z3JmJG+pucuC4tsy0ReGa4tCg6IlZq2ucx+U
-   0=;
-X-IronPort-AV: E=Sophos;i="5.64,454,1559520000"; 
-   d="scan'208";a="825997287"
-Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-2a-e7be2041.us-west-2.amazon.com) ([10.47.22.34])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 01 Sep 2019 06:57:08 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-e7be2041.us-west-2.amazon.com (Postfix) with ESMTPS id C676CA07D1;
-        Sun,  1 Sep 2019 06:57:07 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Sun, 1 Sep 2019 06:57:07 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.242) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Sun, 1 Sep 2019 06:57:02 +0000
-Subject: Re: [PATCH v8 rdma-next 3/7] RDMA/efa: Use the common mmap_xa helpers
-To:     Michal Kalderon <mkalderon@marvell.com>
-CC:     Ariel Elior <aelior@marvell.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "bmt@zurich.ibm.com" <bmt@zurich.ibm.com>,
-        "sleybo@amazon.com" <sleybo@amazon.com>,
+        id S1728523AbfIANLU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 1 Sep 2019 09:11:20 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:33400 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727642AbfIANLU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 1 Sep 2019 09:11:20 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x81D8jXC046237;
+        Sun, 1 Sep 2019 13:11:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=l/ZQp9vj0JVMEroeDZ+glysxI+ThLE4C6MaMwhGGIoY=;
+ b=KoRb68fFJMudBPrqhBs68dsDoXWDjcBqS5zh4ofmDb7bxVPFovsJSlwXlb3BGj7gpVqp
+ lFnlGDrWp0MzJG6O/LNHwV3T45tts2XQaD1tX8Z+3V+e8AT9OoBSchbRIP7yCsZFPzoU
+ ZydEKr1hkz5fwk04YGRJzo0DseiImbSwkSAPnqnzLHCtWcdQ4ERrW88fxGiJNOoZxAj6
+ fLZ1mn3w1mAugkf07Ti3RDfx6IBI4XEDDVocvplxTnQjH0hcvv6E/2l/QCgaBKAAriy1
+ 0JnUs2sqHz7hOwUA7O7ZQd4Efmdw269Ntjjh52Kn3jiPOVPjkNejG/s61H1fM7Eo4nnO hQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 2ureg1g16r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 01 Sep 2019 13:11:01 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x81D3WqM027467;
+        Sun, 1 Sep 2019 13:11:01 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2uqgqjneg6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 01 Sep 2019 13:11:01 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x81DB0II005685;
+        Sun, 1 Sep 2019 13:11:00 GMT
+Received: from lap1 (/77.138.183.59)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 01 Sep 2019 06:10:59 -0700
+Date:   Sun, 1 Sep 2019 16:10:52 +0300
+From:   Yuval Shaia <yuval.shaia@oracle.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     "dledford@redhat.com" <dledford@redhat.com>,
+        "oulijun@huawei.com" <oulijun@huawei.com>,
+        "xavier.huwei@huawei.com" <xavier.huwei@huawei.com>,
         "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20190827132846.9142-1-michal.kalderon@marvell.com>
- <20190827132846.9142-4-michal.kalderon@marvell.com>
- <c8781373-53ec-649e-1f1d-56cc17c229f9@amazon.com>
- <MN2PR18MB31820C96A5906F9054AE23D6A1BD0@MN2PR18MB3182.namprd18.prod.outlook.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <61cf039c-793e-e9e6-60e0-cd93b6da4815@amazon.com>
-Date:   Sun, 1 Sep 2019 09:56:58 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+        Parav Pandit <parav@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>,
+        "swise@opengridcomputing.com" <swise@opengridcomputing.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        Israel Rukshin <israelr@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        "kamalheib1@gmail.com" <kamalheib1@gmail.com>,
+        Denis Drozdov <denisd@mellanox.com>,
+        Yuval Avnery <yuvalav@mellanox.com>,
+        "dennis.dalessandro@intel.com" <dennis.dalessandro@intel.com>,
+        Erez Alfasi <ereza@mellanox.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "srabinov7@gmail.com" <srabinov7@gmail.com>,
+        "santosh.shilimkar@oracle.com" <santosh.shilimkar@oracle.com>,
+        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>
+Subject: Re: [PATCH v1 5/5] RDMA/nldev: ib_pd can be pointed by multiple
+ ib_ucontext
+Message-ID: <20190901131052.GA19343@lap1>
+References: <20190828091533.3129-1-yuval.shaia@oracle.com>
+ <20190828091533.3129-6-yuval.shaia@oracle.com>
+ <20190828135307.GH914@mellanox.com>
+ <20190828185645.GA4799@lap1>
+ <20190828192818.GR914@mellanox.com>
+ <20190829071303.GA3339@lap1>
+ <20190829142708.GD17101@mellanox.com>
 MIME-Version: 1.0
-In-Reply-To: <MN2PR18MB31820C96A5906F9054AE23D6A1BD0@MN2PR18MB3182.namprd18.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.242]
-X-ClientProxiedBy: EX13D15UWA004.ant.amazon.com (10.43.160.219) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190829142708.GD17101@mellanox.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9366 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1909010153
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9366 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1909010154
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 30/08/2019 9:15, Michal Kalderon wrote:
->> From: Gal Pressman <galpress@amazon.com>
->> Sent: Thursday, August 29, 2019 5:21 PM
->>
->> On 27/08/2019 16:28, Michal Kalderon wrote:
->>> +static void efa_qp_user_mmap_entries_remove(struct efa_ucontext
->> *ucontext,
->>> +					    struct efa_qp *qp)
->>> +{
->>> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext, qp-
->>> sq_db_mmap_key);
->>> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext,
->>> +				    qp->llq_desc_mmap_key);
->>> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext, qp-
->>> rq_mmap_key);
->>> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext,
->>> +qp->rq_db_mmap_key);
->>
->> Please remove the entries in reverse insertion order.
-> I don't mind fixing, but why ? 
-
-So the flows will be symmetric.
-
->>
->>> +}
->>> +
->>> @@ -767,15 +726,17 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
->>>
->>>  	return &qp->ibqp;
->>>
->>> +err_remove_mmap_entries:
->>> +	efa_qp_user_mmap_entries_remove(ucontext, qp);
->>>  err_destroy_qp:
->>>  	efa_destroy_qp_handle(dev, create_qp_resp.qp_handle);
->>>  err_free_mapped:
->>> -	if (qp->rq_size) {
->>> +	if (qp->rq_dma_addr)
->>
->> What's the difference?
-> Seemed a better query since it now only covers the rq_dma_addr unmapping. 
+On Thu, Aug 29, 2019 at 02:27:13PM +0000, Jason Gunthorpe wrote:
+> On Thu, Aug 29, 2019 at 10:13:03AM +0300, Yuval Shaia wrote:
+> > On Wed, Aug 28, 2019 at 07:28:23PM +0000, Jason Gunthorpe wrote:
+> > > On Wed, Aug 28, 2019 at 09:56:46PM +0300, Yuval Shaia wrote:
+> > > > On Wed, Aug 28, 2019 at 01:53:12PM +0000, Jason Gunthorpe wrote:
+> > > > > On Wed, Aug 28, 2019 at 12:15:33PM +0300, Yuval Shaia wrote:
+> > > > > >  static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
+> > > > > >  			     struct rdma_restrack_entry *res, uint32_t port)
+> > > > > >  {
+> > > > > >  	struct ib_pd *pd = container_of(res, struct ib_pd, res);
+> > > > > >  	struct ib_device *dev = pd->device;
+> > > > > > +	struct nlattr *table_attr = NULL;
+> > > > > > +	struct nlattr *entry_attr = NULL;
+> > > > > > +	struct context_id *ctx_id;
+> > > > > > +	struct context_id *tmp;
+> > > > > > +	LIST_HEAD(pd_context_ids);
+> > > > > > +	int ctx_count = 0;
+> > > > > >  
+> > > > > >  	if (has_cap_net_admin) {
+> > > > > >  		if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_LOCAL_DMA_LKEY,
+> > > > > > @@ -633,10 +709,38 @@ static int fill_res_pd_entry(struct sk_buff *msg, bool has_cap_net_admin,
+> > > > > >  	if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PDN, res->id))
+> > > > > >  		goto err;
+> > > > > >  
+> > > > > > -	if (!rdma_is_kernel_res(res) &&
+> > > > > > -	    nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_CTXN,
+> > > > > > -			pd->uobject->context->res.id))
+> > > > > > -		goto err;
+> > > > > 
+> > > > > How do earlier patches compile?
+> > > > 
+> > > > They did not
+> > > 
+> > > That is not OK
+> > 
+> > Sorry, i probably misunderstood you, what patches are you referring to?
 > 
->>
->>>  		dma_unmap_single(&dev->pdev->dev, qp->rq_dma_addr,
->> qp->rq_size,
->>>  				 DMA_TO_DEVICE);
->>> -		if (!rq_entry_inserted)
->>> -			free_pages_exact(qp->rq_cpu_addr, qp->rq_size);
->>> -	}
->>> +
->>> +	if (qp->rq_mmap_key == RDMA_USER_MMAP_INVALID)
->>> +		free_pages_exact(qp->rq_cpu_addr, qp->rq_size);
->>
->> This should be inside the previous if statement, otherwise it might try to free
->> pages that weren't allocated.
-> If they weren't allocated the key will be INVALID and they won't be freed.
+> Just make sure every patch in the series compiles.
 
-If the key is INVALID you call free_pages_exact, but rq_cpu_addr might have
-never been allocated (if RQ is of size zero).
+Ok got it.
+Will change the order of the patches in the set and send v2.
 
 > 
->>
->>>  err_free_qp:
->>>  	kfree(qp);
->>>  err_out:
->>> @@ -887,6 +848,7 @@ static int efa_destroy_cq_idx(struct efa_dev *dev,
->>> int cq_idx)
->>>
->>>  void efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)  {
->>> +	struct efa_ucontext *ucontext;
->>
->> Reverse xmas tree.
-> ok
->>
->>>  	struct efa_dev *dev = to_edev(ibcq->device);
->>>  	struct efa_cq *cq = to_ecq(ibcq);
->>>
->>> @@ -894,20 +856,33 @@ void efa_destroy_cq(struct ib_cq *ibcq, struct
->> ib_udata *udata)
->>>  		  "Destroy cq[%d] virt[0x%p] freed: size[%lu], dma[%pad]\n",
->>>  		  cq->cq_idx, cq->cpu_addr, cq->size, &cq->dma_addr);
->>>
->>> +	ucontext = rdma_udata_to_drv_context(udata, struct efa_ucontext,
->>> +					     ibucontext);
->>>  	efa_destroy_cq_idx(dev, cq->cq_idx);
->>>  	dma_unmap_single(&dev->pdev->dev, cq->dma_addr, cq->size,
->>>  			 DMA_FROM_DEVICE);
->>> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext,
->>> +				    cq->mmap_key);
->>
->> Entry removal should be first.
-> Why ? removing can lead to freeing, why would we want that before unmapping ? 
-
-Makes sense, thanks.
-
->>
->>>  }
->>>
+> Jason
