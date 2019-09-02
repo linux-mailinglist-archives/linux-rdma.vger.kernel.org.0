@@ -2,101 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 731B2A5067
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2019 09:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B92EA508B
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2019 10:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729907AbfIBHxi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Sep 2019 03:53:38 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:10568 "EHLO
+        id S1729964AbfIBIAP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Sep 2019 04:00:15 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:31372 "EHLO
         mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729457AbfIBHxi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Sep 2019 03:53:38 -0400
+        by vger.kernel.org with ESMTP id S1729535AbfIBIAP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Sep 2019 04:00:15 -0400
 Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x827npsx015734
-        for <linux-rdma@vger.kernel.org>; Mon, 2 Sep 2019 00:53:36 -0700
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x82806rx025148;
+        Mon, 2 Sep 2019 01:00:06 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : references : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=pfpt0818;
- bh=tAULmEGCExiXXcA8F0pGuIIYOussm/3bNqakFMsWHTA=;
- b=umqD35AT0g7V2YU6DeWwmhrjZJE0tgL4zWY/6WyXs5Rp1nM/CTj1ldQyaZm0CjDltYVY
- rBIFpe06DpiJdxc4mYHUsdpM0sIQAiPFf9PwwXJCHSkoeBW1639d3wSxwDLGu7f4emjs
- d+7LqruE/qP24eEWU9QAKHTasH4gZ+5RJaVo3Zxt4OEcNhitfJJ0DQ2mkF3ShHt39ewr
- nM1UdMqmtrpWiiZ7pEroZU5ikZLWlczwG30ChntT2X+/8/bfn+UMJpVhomXJbLOwonr+
- ndFPCuVvABOXvvU6n0pAaf4lkg8tR+RetSWEoTi77KPM2fBHrThu9XTnARRu6b53otnB oA== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 2uqrdm5ams-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Sep 2019 00:53:36 -0700
-Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Mon, 2 Sep
- 2019 00:53:34 -0700
-Received: from NAM03-DM3-obe.outbound.protection.outlook.com (104.47.41.51) by
+ bh=vaKr9UiqGDQwdhtrsQdmgFpPaQIABToScKshkgYmpUc=;
+ b=PqYive20Yz2vukQ1iws4V6eFHwmVOL7kgm83hgSq1oLBi/YDyPxiDJxyfH6RF40DPwSj
+ ImrMg192Gs5wZa8xkTirxiufjeYKKW6nk5qShUe0qxvP80yjSEW/gfz42m57SDZH+SgC
+ CchpLaC1al8oYRHvtwCKqT6ZPtaqp59xwMT/lyL35Viv1Il1izRVFiR1+MlfG+D64dVz
+ aNvfD3hzQi5mhd7szeOHJe7c5uJCIu1r/JMIRqpET4Or9PgcBh7PHN8/B6fibsThdjiS
+ vy0GM2Kig4Vu6azPK84VuXRpq/CzKH5h5aq0wVLUxWplp2jLoudzEn/r1AkuUOBI4mPG Aw== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0b-0016f401.pphosted.com with ESMTP id 2uqrdm5b5p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 02 Sep 2019 01:00:06 -0700
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Mon, 2 Sep
+ 2019 01:00:04 -0700
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.59) by
  SC-EXCH03.marvell.com (10.93.176.83) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Mon, 2 Sep 2019 00:53:33 -0700
+ 15.0.1367.3 via Frontend Transport; Mon, 2 Sep 2019 01:00:04 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AUhVqoelgQ3EfIOrJQRi+AUNNAf/JVYFKSnLBdukS9mZbs/yxIThn/WovxcyZ+3Kb4aT9Z63pamEUgHJDqXWs1PZDiuo1ywzfb2SBBdAOek0E6vIy5WeTyb91bmEkyPB/qLZ8C+X2NxifTZumA1nXJUFTpUajD84FJu8dmWQpuYaBAwFxy2+LKGqRoioOL3XomBEcNmWGT9uR20VFsnOS9tPMlyA5kKa5c/RHpud8BqIU7E+dtFg/YK36uXPyh0Y2FQbiBE14UHZevbAGFmBt+CePozcsMqI4EcbrwFsiSIAesGZQZT0GaPggDwS3StsF+3E0th5lhBo5h3XlieK6g==
+ b=FHfudN+QglfmS417d2nYzeNuFMP5E42RJXUvwYXf5vg7BzTBIi8fHzJPlP4EJI/l1Qqr06+xhhO+2zDeqVE5m54bRk6s5PHNWxMOrBhGyxOlWRTlgDOfmhQ8VL7CvzCdMkPwvE2gYTNp+vYXhg6o7FpXpl2tFDsJF7OjYiBjP3lz1GVHAUHfCEYWyuhB7QPtFnOGCpfLcxas0HYF07sTccTdKVNYi6uIaiNYE/G46+3G1+IohqvGv7UCru9Af73PqTxf4zZQRxKo1KD3tQ/nIvnQ0opJgS3i5vVV5qGIUlYXLoQ3aG/pfVqLjE0mMbzmUo+Zzz4e+4JQ41psiI6NQw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tAULmEGCExiXXcA8F0pGuIIYOussm/3bNqakFMsWHTA=;
- b=KM2d0ubwMA/F79gpv9KfgckjLsoncS8bRSyB0y/j3iQWhaO0cJAN0bKXaxm+AhpGGcfVByILgR9l4Gkf6dcKgRag7QdjJlgmq0mtTVG5qNaCYBXTHwTXPEjfZ/hFmCeFbvOJx2uYAki1aPA1IWSS2x+UmVbpE+uiJk7F2cG3R0uYkzGiZ9SB92um952CyqMBjh9huVrEK9va4OGeDEv8rdx/gAZhX0/DC5QUl8s2oXQCT2Qn3xYwsx6hbd14wU2KU0ewh+as1OfFy/4x2CaqZDsNrvML6JdSY4oeVZP3sGxt1tH6nX2uPcEWZcNvWvpz1HKNZe5vhPV+cSqqjrox6w==
+ bh=vaKr9UiqGDQwdhtrsQdmgFpPaQIABToScKshkgYmpUc=;
+ b=hA1iWe/Bjeq4nQf794b0ZvZz5lXJwOLQqQ95EVg9v4RMMwcYwGLmCkJtTy5TDdQhKNljuBDato0atJElyofSQKxxaETaJwdeGX0eCf2V0WjJnDMLhEc4R9N0tKaIysFIjdUVAIJjL1he0+DA3+vd1GtVLxxOc2AGvOaOjBMMrHYJz2tvprRc4nv/Ib1tvP4m0lFBgl/n11YQQdF2l1501te59INZqoXkKwtiS2Ii82WAaJzKPAbJ2fmAOwq4SaaZmFsduvT+pyiAgPBdLszTiSRz9lVw8wvLPEvn3rzIPcNEZLygJF5rC2UbRwWSbT2GmRllLSgL48Vh4mqxZIZRVQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
  dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=marvell.onmicrosoft.com; s=selector2-marvell-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tAULmEGCExiXXcA8F0pGuIIYOussm/3bNqakFMsWHTA=;
- b=vn3INkU0tALvRMBeBCllEqCppQWW3Hki9Zfgh8Rb3obMQwBS+lvjtJDAS1U01DMCeir1seqkuBdOHu9Vp1frM3fca8Q5T3kvNKpSiCzaAu87o+GDmU5acZ7sgOsdet470jy9VfTxFXNBCs7ouP378HJFGSSzECrOSB3Poo9GtvY=
+ bh=vaKr9UiqGDQwdhtrsQdmgFpPaQIABToScKshkgYmpUc=;
+ b=SLaYB9KL7VYVXrX9u5jnCnkuV5VUAXVnIqG+wPnGpeXUrKVtFLmRUNKwPfoiX+f4cQLqLNoPC1i+I7/2ZucWVSLHzzzaIMxLWgmcZtHk/JD6+/oVehzJ1MAyh6gXCh/Ax7tr46b4rXMTILC+svpBbxXGPIVeeB6WxHK0VnvFRlE=
 Received: from MN2PR18MB3182.namprd18.prod.outlook.com (10.255.236.143) by
- MN2PR18MB2640.namprd18.prod.outlook.com (20.179.81.96) with Microsoft SMTP
+ MN2PR18MB3295.namprd18.prod.outlook.com (10.255.237.160) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2220.21; Mon, 2 Sep 2019 07:53:32 +0000
+ 15.20.2220.21; Mon, 2 Sep 2019 08:00:02 +0000
 Received: from MN2PR18MB3182.namprd18.prod.outlook.com
  ([fe80::9d49:7d09:abb5:34e8]) by MN2PR18MB3182.namprd18.prod.outlook.com
  ([fe80::9d49:7d09:abb5:34e8%7]) with mapi id 15.20.2220.021; Mon, 2 Sep 2019
- 07:53:32 +0000
+ 08:00:02 +0000
 From:   Michal Kalderon <mkalderon@marvell.com>
-To:     Chuck Lever <chuck.lever@oracle.com>,
-        Michal Kalderon <Michal.Kalderon@cavium.com>
-CC:     linux-rdma <linux-rdma@vger.kernel.org>
-Subject: RE: [EXT] Re: qedr memory leak report
-Thread-Topic: [EXT] Re: qedr memory leak report
-Thread-Index: AQHVX2DvoXeiSJn6HkmzxE71NT3G+qcYB+gw
-Date:   Mon, 2 Sep 2019 07:53:31 +0000
-Message-ID: <MN2PR18MB3182C84B8B623A8AE9A7FCBEA1BE0@MN2PR18MB3182.namprd18.prod.outlook.com>
-References: <93085620-9DAA-47A3-ACE1-932F261674AC@oracle.com>
- <13F323F2-D618-46C3-BE1B-106FD2BEE7F4@oracle.com>
-In-Reply-To: <13F323F2-D618-46C3-BE1B-106FD2BEE7F4@oracle.com>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+CC:     Ariel Elior <aelior@marvell.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "sleybo@amazon.com" <sleybo@amazon.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: RE: [EXT] Re: [PATCH v8 rdma-next 4/7] RDMA/siw: Use the common
+ mmap_xa helpers
+Thread-Topic: RE: [EXT] Re: [PATCH v8 rdma-next 4/7] RDMA/siw: Use the common
+ mmap_xa helpers
+Thread-Index: AQHVXNvBsBWJLPJoZk2QlZBxyqYUlacTnV+AgAAHP4CAAAzGAIAEXNwA
+Date:   Mon, 2 Sep 2019 08:00:02 +0000
+Message-ID: <MN2PR18MB31820E898CC0C39E7A347B62A1BE0@MN2PR18MB3182.namprd18.prod.outlook.com>
+References: <MN2PR18MB318291264841FC40885F4B42A1BD0@MN2PR18MB3182.namprd18.prod.outlook.com>,<20190827132846.9142-5-michal.kalderon@marvell.com>,<20190827132846.9142-1-michal.kalderon@marvell.com>
+ <OFED447099.CC1C35E8-ON00258466.003FD3A8-00258466.0042A33D@notes.na.collabserv.com>
+ <OFDCD94E77.5EF5EBC2-ON00258466.0048FF97-00258466.00493280@notes.na.collabserv.com>
+In-Reply-To: <OFDCD94E77.5EF5EBC2-ON00258466.0048FF97-00258466.00493280@notes.na.collabserv.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 x-originating-ip: [212.199.69.1]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e01348c6-3936-40f0-b0c8-08d72f7aa672
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MN2PR18MB2640;
-x-ms-traffictypediagnostic: MN2PR18MB2640:
-x-microsoft-antispam-prvs: <MN2PR18MB264016E8A631247E42142F87A1BE0@MN2PR18MB2640.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-office365-filtering-correlation-id: 27e9c5a1-9c38-4953-df3b-08d72f7b8f21
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MN2PR18MB3295;
+x-ms-traffictypediagnostic: MN2PR18MB3295:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR18MB3295ACB047A23AFF2B27C2C7A1BE0@MN2PR18MB3295.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
 x-forefront-prvs: 01480965DA
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(979002)(4636009)(376002)(396003)(39850400004)(366004)(346002)(136003)(43544003)(199004)(189003)(486006)(476003)(6116002)(3846002)(66066001)(2906002)(74316002)(305945005)(7736002)(66476007)(66556008)(64756008)(66446008)(5660300002)(66946007)(76116006)(86362001)(8936002)(256004)(229853002)(71200400001)(71190400001)(110136005)(25786009)(9686003)(99286004)(186003)(6436002)(76176011)(6506007)(14454004)(81166006)(81156014)(8676002)(53936002)(446003)(11346002)(6246003)(26005)(102836004)(478600001)(4326008)(33656002)(316002)(7696005)(53546011)(52536014)(55016002)(969003)(989001)(999001)(1009001)(1019001);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR18MB2640;H:MN2PR18MB3182.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(376002)(366004)(39850400004)(136003)(396003)(189003)(199004)(4326008)(186003)(26005)(7696005)(478600001)(8936002)(7736002)(305945005)(71190400001)(71200400001)(55016002)(9686003)(14454004)(6436002)(81166006)(81156014)(256004)(8676002)(53936002)(316002)(102836004)(6246003)(33656002)(74316002)(76176011)(2906002)(54906003)(5660300002)(6506007)(86362001)(3846002)(6116002)(52536014)(476003)(99286004)(486006)(76116006)(66476007)(66946007)(66446008)(66066001)(11346002)(66556008)(64756008)(229853002)(446003)(6916009)(25786009);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR18MB3295;H:MN2PR18MB3182.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: marvell.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: vCAUsRdxjVIfKnmCK2MwOOv4j02zQAWVjbxH2TTfaDAHWFzJlv4LhLO6U5h4M244ZhGv/HNkxCyNn+o/svawd2CZ0gXd0kpVBGQHmCXOPIDiCZO5HtabOfEA0c8EePQg9m37xiTrLeirEKGnidSc6cFrS4235b08dstwYXwL1CFJ2PddnG4M+/IMo+m3JYcQd8mzz2fCAjCd1ZbC3Rfp09IxOy8XH9Qv//pAHksxcHiYM7bOpKCNf+AsmmIYV3AVKzMYh57nEKl0ne7NrF6Z76fTGL27gyd53HKn07d7aPW1n90zYpviUcBiGWTxC8rTSJK5rT5qRjOZWDL8CInrAtj/BiS6PuEKvsKJED5u3I/xmr1QfNkeM6izcQmEKEpqsatZfw0emS37TINhEMZHEJpsY+oR7Sc4yooCxJMRPEA=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+x-microsoft-antispam-message-info: nUu/X8isDNPQedegc170GLR387uT5kNTkhmN47flr7TBV2RmhP7tPCVpZoJxxiCI9bv0MbTY/+VuqNHzwT8EegC0IIemmMPzZQNHlaDEknu5i87rLGXmKL/WUH0A8sreIz11maXpZNe9PQzddwNOS9XTA3atSs5pWuoEIXcElbbHU5S6Ux+r9uzhm6Dv0hxHx0LjBNgt8WGCB4I4m7unwuSmXrsrOwzg5/D/e+BmSQM73J5ycRpPn15kPePfkuS+mmUTDOE/YpmueQX371twcuuhoj6Yh4tU/8aQaeiWSSv20RYvZUVbC9UwpSQqH/iCKC0DblLRWtdcCKf8c1IFlGgSH7h1C2cpkLtQqIcGT7+dpVNDTvoWWxcNputsmkpCMzavrmtet3aITX69e8LaXJFrvW1RDUtkOUc8NYy6uC4=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: e01348c6-3936-40f0-b0c8-08d72f7aa672
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2019 07:53:31.9825
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27e9c5a1-9c38-4953-df3b-08d72f7b8f21
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2019 08:00:02.2490
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8i8pSPuTjILeMA5FoG5NnXJcUZgCCPYw1cUPuMoMhDgu50K77ruqkNn6UmNcIyggCtLfUZ1Smybs+FchiCvdmg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB2640
+X-MS-Exchange-CrossTenant-userprincipalname: rNNqId/1KmnbFyGpLWUmerUUiqqeTgT4Z7m7ZpY7ezvl3ESQZpYe4c/WGHreoXoUmMdFNggu2iRijjWvL9bKVg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB3295
 X-OriginatorOrg: marvell.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
  definitions=2019-09-02_02:2019-08-29,2019-09-02 signatures=0
@@ -105,83 +112,66 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> From: Chuck Lever <chuck.lever@oracle.com>
-> Sent: Friday, August 30, 2019 9:28 PM
->=20
-> External Email
->=20
-> ----------------------------------------------------------------------
->=20
-> > On Aug 30, 2019, at 2:03 PM, Chuck Lever <chuck.lever@oracle.com>
-> wrote:
-> >
-> > Hi Michal-
-> >
-> > In the middle of some other testing, I got this kmemleak report while
-> > testing with FastLinq cards in iWARP mode:
-> >
-> > unreferenced object 0xffff888458923340 (size 32):
-> >  comm "mount.nfs", pid 2294, jiffies 4298338848 (age 1144.337s)  hex
-> > dump (first 32 bytes):
-> >    20 1d 69 63 88 88 ff ff 20 1d 69 63 88 88 ff ff   .ic.... .ic....
-> >    00 60 7a 69 84 88 ff ff 00 60 82 f9 00 00 00 00  .`zi.....`......
-> >  backtrace:
-> >    [<000000000df5bfed>] __kmalloc+0x128/0x176
-> >    [<0000000020724641>] qedr_alloc_pbl_tbl.constprop.44+0x3c/0x121
-> [qedr]
-> >    [<00000000a361c591>] init_mr_info.constprop.41+0xaf/0x21f [qedr]
-> >    [<00000000e8049714>] qedr_alloc_mr+0x95/0x2c1 [qedr]
-> >    [<000000000e6102bc>] ib_alloc_mr_user+0x31/0x96 [ib_core]
-> >    [<00000000d254a9fb>] frwr_init_mr+0x23/0x121 [rpcrdma]
-> >    [<00000000a0364e35>] rpcrdma_mrs_create+0x45/0xea [rpcrdma]
-> >    [<00000000fd6bf282>] rpcrdma_buffer_create+0x9e/0x1c9 [rpcrdma]
-> >    [<00000000be3a1eba>] xprt_setup_rdma+0x109/0x279 [rpcrdma]
-> >    [<00000000b736b88f>] xprt_create_transport+0x39/0x19a [sunrpc]
-> >    [<000000001024e4dc>] rpc_create+0x118/0x1ab [sunrpc]
-> >    [<00000000cca43a49>] nfs_create_rpc_client+0xf8/0x15f [nfs]
-> >    [<00000000073c962c>] nfs_init_client+0x1a/0x3b [nfs]
-> >    [<00000000b03964c4>] nfs_init_server+0xc1/0x212 [nfs]
-> >    [<000000001c71f609>] nfs_create_server+0x74/0x1a4 [nfs]
-> >    [<000000004dc919a1>] nfs3_create_server+0xb/0x25 [nfsv3]
-> >
-> > It's repeated many times.
-> >
-> > The workload was an unremarkable software build and regression test
-> > suite on an NFSv3 mount with RDMA.
->=20
-> Also seeing one of these per NFS mount:
->=20
-> unreferenced object 0xffff888869f39b40 (size 64):
->   comm "kworker/u28:0", pid 17569, jiffies 4299267916 (age 1592.907s)
->   hex dump (first 32 bytes):
->     00 80 53 6d 88 88 ff ff 00 00 00 00 00 00 00 00  ..Sm............
->     00 48 e2 66 84 88 ff ff 00 00 00 00 00 00 00 00  .H.f............
->   backtrace:
->     [<0000000063e652dd>] kmem_cache_alloc_trace+0xed/0x133
->     [<0000000083b1e912>] qedr_iw_connect+0xf9/0x3c8 [qedr]
->     [<00000000553be951>] iw_cm_connect+0xd0/0x157 [iw_cm]
->     [<00000000b086730c>] rdma_connect+0x54e/0x5b0 [rdma_cm]
->     [<00000000d8af3cf2>] rpcrdma_ep_connect+0x22b/0x360 [rpcrdma]
->     [<000000006a413c8d>] xprt_rdma_connect_worker+0x24/0x88 [rpcrdma]
->     [<000000001c5b049a>] process_one_work+0x196/0x2c6
->     [<000000007e3403ba>] worker_thread+0x1ad/0x261
->     [<000000001daaa973>] kthread+0xf4/0xf9
->     [<0000000014987b31>] ret_from_fork+0x24/0x30
->=20
-> Looks like this one is not being freed:
->=20
-> 514         ep =3D kzalloc(sizeof(*ep), GFP_KERNEL);
-> 515         if (!ep)
-> 516                 return -ENOMEM;
->=20
->=20
-Thanks Chuck! I'll take care of this. Is there an easy repro for getting th=
-e leak ?=20
-Thanks,
-Michal
-
-> --
-> Chuck Lever
->=20
->=20
-
+PiBGcm9tOiBsaW51eC1yZG1hLW93bmVyQHZnZXIua2VybmVsLm9yZyA8bGludXgtcmRtYS0NCj4g
+b3duZXJAdmdlci5rZXJuZWwub3JnPiBPbiBCZWhhbGYgT2YgQmVybmFyZCBNZXR6bGVyDQo+IA0K
+PiAtLS0tLSJNaWNoYWwgS2FsZGVyb24iIDxta2FsZGVyb25AbWFydmVsbC5jb20+IHdyb3RlOiAt
+LS0tLQ0KPiANCj4gPlRvOiAiQmVybmFyZCBNZXR6bGVyIiA8Qk1UQHp1cmljaC5pYm0uY29tPg0K
+PiA+RnJvbTogIk1pY2hhbCBLYWxkZXJvbiIgPG1rYWxkZXJvbkBtYXJ2ZWxsLmNvbT4NCj4gPkRh
+dGU6IDA4LzMwLzIwMTkgMDI6NDJQTQ0KPiA+Q2M6ICJBcmllbCBFbGlvciIgPGFlbGlvckBtYXJ2
+ZWxsLmNvbT4sICJqZ2dAemllcGUuY2EiDQo+ID48amdnQHppZXBlLmNhPiwgImRsZWRmb3JkQHJl
+ZGhhdC5jb20iIDxkbGVkZm9yZEByZWRoYXQuY29tPiwNCj4gPiJnYWxwcmVzc0BhbWF6b24uY29t
+IiA8Z2FscHJlc3NAYW1hem9uLmNvbT4sDQo+ICJzbGV5Ym9AYW1hem9uLmNvbSINCj4gPjxzbGV5
+Ym9AYW1hem9uLmNvbT4sICJsZW9uQGtlcm5lbC5vcmciIDxsZW9uQGtlcm5lbC5vcmc+LA0KPiA+
+ImxpbnV4LXJkbWFAdmdlci5rZXJuZWwub3JnIiA8bGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmc+
+LCAiQXJpZWwNCj4gPkVsaW9yIiA8YWVsaW9yQG1hcnZlbGwuY29tPg0KPiA+U3ViamVjdDogW0VY
+VEVSTkFMXSBSRTogW0VYVF0gUmU6IFtQQVRDSCB2OCByZG1hLW5leHQgNC83XSBSRE1BL3NpdzoN
+Cj4gPlVzZSB0aGUgY29tbW9uIG1tYXBfeGEgaGVscGVycw0KPiA+DQo+ID4+IEZyb206IEJlcm5h
+cmQgTWV0emxlciA8Qk1UQHp1cmljaC5pYm0uY29tPg0KPiA+PiBTZW50OiBGcmlkYXksIEF1Z3Vz
+dCAzMCwgMjAxOSAzOjA4IFBNDQo+ID4+DQo+ID4+IEV4dGVybmFsIEVtYWlsDQo+ID4+DQo+ID4+
+DQo+ID4tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0NCj4gPi0NCj4gPj4gLS0tLS0iTWljaGFsIEthbGRlcm9uIiA8bWlj
+aGFsLmthbGRlcm9uQG1hcnZlbGwuY29tPiB3cm90ZTogLS0tLS0NCj4gPj4NCj4gPj4gSGkgTWlj
+aGFlbCwNCj4gPj4NCj4gPj4gSSB0cmllZCB0aGlzIHBhdGNoLiBJdCB1bmZvcnR1bmF0ZWx5IHBh
+bmljcyBpbW1lZGlhdGVseSB3aGVuIHNpdw0KPiA+Z2V0cyB1c2VkLiBJJ2xsDQo+ID4+IGludmVz
+dGlnYXRlIGZ1cnRoZXIuIFNvbWUgY29tbWVudHMgaW4gbGluZS4NCj4gPlRoYW5rcyBmb3IgdGVz
+dGluZywNCj4gPg0KPiA+Pg0KPiA+PiBUaGFua3MNCj4gPj4gQmVybmFyZC4NCj4gPj4NCj4gPj4g
+PlRvOiA8bWthbGRlcm9uQG1hcnZlbGwuY29tPiwgPGFlbGlvckBtYXJ2ZWxsLmNvbT4sDQo+IDxq
+Z2dAemllcGUuY2E+LA0KPiA+PiA+PGRsZWRmb3JkQHJlZGhhdC5jb20+LCA8Ym10QHp1cmljaC5p
+Ym0uY29tPiwNCj4gPj4gPGdhbHByZXNzQGFtYXpvbi5jb20+LA0KPiA+PiA+PHNsZXlib0BhbWF6
+b24uY29tPiwgPGxlb25Aa2VybmVsLm9yZz4NCj4gPj4gPkZyb206ICJNaWNoYWwgS2FsZGVyb24i
+IDxtaWNoYWwua2FsZGVyb25AbWFydmVsbC5jb20+DQo+ID4+ID5EYXRlOiAwOC8yNy8yMDE5IDAz
+OjMxUE0NCj4gPj4gPkNjOiA8bGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmc+LCAiTWljaGFsIEth
+bGRlcm9uIg0KPiA+PiA+PG1pY2hhbC5rYWxkZXJvbkBtYXJ2ZWxsLmNvbT4sICJBcmllbCBFbGlv
+ciINCj4gPj4gPjxhcmllbC5lbGlvckBtYXJ2ZWxsLmNvbT4NCj4gPj4gPlN1YmplY3Q6IFtFWFRF
+Uk5BTF0gW1BBVENIIHY4IHJkbWEtbmV4dCA0LzddIFJETUEvc2l3OiBVc2UgdGhlDQo+ID4+IGNv
+bW1vbg0KPiA+PiA+bW1hcF94YSBoZWxwZXJzDQo+ID4+ID4NCj4gPj4gPlJlbW92ZSB0aGUgZnVu
+Y3Rpb25zIHJlbGF0ZWQgdG8gbWFuYWdpbmcgdGhlIG1tYXBfeGEgZGF0YWJhc2UuDQo+ID4+ID5U
+aGlzIGNvZGUgaXMgbm93IGNvbW1vbiBpbiBpYl9jb3JlLiBVc2UgdGhlIGNvbW1vbiBBUEkncyBp
+bnN0ZWFkLg0KPiA+PiA+DQo+ID4+ID5TaWduZWQtb2ZmLWJ5OiBBcmllbCBFbGlvciA8YXJpZWwu
+ZWxpb3JAbWFydmVsbC5jb20+DQo+ID4+ID5TaWduZWQtb2ZmLWJ5OiBNaWNoYWwgS2FsZGVyb24g
+PG1pY2hhbC5rYWxkZXJvbkBtYXJ2ZWxsLmNvbT4NCj4gPj4gPi0tLQ0KPiA+PiA+IGRyaXZlcnMv
+aW5maW5pYmFuZC9zdy9zaXcvc2l3LmggICAgICAgfCAgMjAgKystDQo+ID4+ID4gZHJpdmVycy9p
+bmZpbmliYW5kL3N3L3Npdy9zaXdfbWFpbi5jICB8ICAgMSArDQo+ID4+ID4gZHJpdmVycy9pbmZp
+bmliYW5kL3N3L3Npdy9zaXdfdmVyYnMuYyB8IDIyMw0KPiA+PiA+KysrKysrKysrKysrKysrKysr
+Ky0tLS0tLS0tLS0tLS0tLQ0KPiA+PiA+IGRyaXZlcnMvaW5maW5pYmFuZC9zdy9zaXcvc2l3X3Zl
+cmJzLmggfCAgIDEgKw0KPiA+PiA+IDQgZmlsZXMgY2hhbmdlZCwgMTQ0IGluc2VydGlvbnMoKyks
+IDEwMSBkZWxldGlvbnMoLSkNCj4gPj4gPg0KPiA+PiA+KwkJCS8qIElmIGVudHJ5IHdhcyBpbnNl
+cnRlZCBzdWNjZXNzZnVsbHksIHFwLT5zZW5kcQ0KPiA+PiA+KwkJCSAqIHdpbGwgYmUgZnJlZWQg
+Ynkgc2l3X21tYXBfZnJlZQ0KPiA+PiA+KwkJCSAqLw0KPiA+PiA+KwkJCXFwLT5zZW5kcSA9IE5V
+TEw7DQo+ID4+DQo+ID4+IHFwLT5zZW5kcSBwb2ludHMgdG8gdGhlIFNRIGFycmF5LiBaZXJvaW5n
+IHRoaXMgcG9pbnRlciB3aWxsIGxlYXZlDQo+ID4+IHNpdyB3aXRoIG5vIGlkZWEgd2hlcmUgdGhl
+IFdRRSdzIGFyZS4gSXQgd2lsbCBwYW5pYyBkZS1yZWZlcmVuY2luZw0KPiA+W05VTEwgKw0KPiA+
+PiBjdXJyZW50IHBvc2l0aW9uIGluIHJpbmcgYnVmZmVyXS4gU2FtZSBmb3IgUlEsIFNSUSBhbmQg
+Q1EuDQo+ID5RcC0+c2VuZHEgaXMgb25seSB1c2VkIGluIGtlcm5lbCBtb2RlLCBhbmQgb25seSBz
+ZXQgdG8gTlVMTCBpcw0KPiA+dXNlci1zcGFjZSBtb2RlDQo+ID5XaGVyZSBpdCBpcyBhbGxvY2F0
+ZWQgYW5kIG1hcHBlZCBpbiB1c2VyLCBzbyB0aGUgdXNlciB3aWxsIGJlIHRoZSBvbmUNCj4gPmFj
+Y2Vzc2luZyB0aGUgcmluZ3MgQW5kIG5vdCBrZXJuZWwsIHVubGVzcyBJJ20gbWlzc2luZyBzb21l
+dGhpbmcuDQo+IA0KPiBUaGVzZSBwb2ludGVycyBhcmUgcG9pbnRpbmcgdG8gdGhlIGFsbG9jYXRl
+ZCB3b3JrIHF1ZXVlcy4NCj4gVGhlc2UgcXVldWVzL2FycmF5cyBhcmUgaG9sZGluZyB0aGUgYWN0
+dWFsIHNlbmQvcmVjdi9jb21wbGV0ZS9zcnEgd29yaw0KPiBxdWV1ZSBlbGVtZW50cy4gSXQgaXMg
+YSBzaGFyZWQgYXJyYXkuIFRoYXQgaXMgd2h5IHdlIG5lZWQgbW1hcCBhdCBhbGwuDQo+IA0KPiBl
+LmcuLA0KPiANCj4gc3RydWN0IHNpd19zcWUgKnNxZSA9ICZxcC0+c2VuZHFbcXAtPnNxX2dldCAl
+IHFwLT5hdHRycy5zcV9zaXplXTsNCj4gDQo+IA0KT2sgZ290IGl0LCBJJ20gSFcgb3JpZW50ZWQu
+Li4gc28gdXNlciBjaGFpbnMgYW5kIGtlcm5lbCBhcmUgdG90YWxseSBzZXBhcmF0ZWQuIA0KV2ls
+bCBhZGQgYSBmbGFnIHdoZXRoZXIgdG8gZnJlZSBvciBub3QgYW5kIHJlbW92ZSBzZXR0aW5nIHRv
+IE5VTEwuIA0KVGhhbmtzLA0KTWljaGFsDQoNCg0K
