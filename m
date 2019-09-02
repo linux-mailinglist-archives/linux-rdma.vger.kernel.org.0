@@ -2,246 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A3FA5916
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2019 16:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF42A5918
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2019 16:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730571AbfIBOSF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 2 Sep 2019 10:18:05 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57208 "EHLO
+        id S1727422AbfIBOTI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Sep 2019 10:19:08 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45098 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726438AbfIBOSE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Sep 2019 10:18:04 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x82EHOJj130019
-        for <linux-rdma@vger.kernel.org>; Mon, 2 Sep 2019 10:18:04 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.82])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2us3rnj0pg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Sep 2019 10:18:03 -0400
+        by vger.kernel.org with ESMTP id S1726438AbfIBOTI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Sep 2019 10:19:08 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x82EH2Il110444
+        for <linux-rdma@vger.kernel.org>; Mon, 2 Sep 2019 10:19:07 -0400
+Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2us1um5xsy-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Sep 2019 10:19:07 -0400
 Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Mon, 2 Sep 2019 14:18:03 -0000
-Received: from us1a3-smtp01.a3.dal06.isc4sb.com (10.106.154.95)
-        by smtp.notes.na.collabserv.com (10.106.227.105) with smtp.notes.na.collabserv.com ESMTP;
-        Mon, 2 Sep 2019 14:17:54 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp01.a3.dal06.isc4sb.com
-          with ESMTP id 2019090214175462-483988 ;
-          Mon, 2 Sep 2019 14:17:54 +0000 
-In-Reply-To: <MN2PR18MB3182D298F0F29DBD4144AAD8A1BE0@MN2PR18MB3182.namprd18.prod.outlook.com>
-Subject: Re: RE: RE: [EXT] Re: [PATCH v8 rdma-next 4/7] RDMA/siw: Use the common
- mmap_xa helpers
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Michal Kalderon" <mkalderon@marvell.com>
-Cc:     "Ariel Elior" <aelior@marvell.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "galpress@amazon.com" <galpress@amazon.com>,
-        "sleybo@amazon.com" <sleybo@amazon.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Date:   Mon, 2 Sep 2019 14:17:53 +0000
-MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <MN2PR18MB3182D298F0F29DBD4144AAD8A1BE0@MN2PR18MB3182.namprd18.prod.outlook.com>,<MN2PR18MB31820E898CC0C39E7A347B62A1BE0@MN2PR18MB3182.namprd18.prod.outlook.com>,<MN2PR18MB318291264841FC40885F4B42A1BD0@MN2PR18MB3182.namprd18.prod.outlook.com>,<20190827132846.9142-5-michal.kalderon@marvell.com>,<20190827132846.9142-1-michal.kalderon@marvell.com>
- <OFED447099.CC1C35E8-ON00258466.003FD3A8-00258466.0042A33D@notes.na.collabserv.com>
- <OFDCD94E77.5EF5EBC2-ON00258466.0048FF97-00258466.00493280@notes.na.collabserv.com>
- <OF7D03AEB5.CF6450C1-ON00258469.003DDB8B-00258469.003E1DF8@notes.na.collabserv.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
-X-LLNOutbound: False
-X-Disclaimed: 21455
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19090214-9463-0000-0000-000000B074B6
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.049789
-X-IBM-SpamModules-Versions: BY=3.00011704; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000287; SDB=6.01255666; UDB=6.00663384; IPR=6.01037326;
- MB=3.00028435; MTD=3.00000008; XFM=3.00000015; UTC=2019-09-02 14:18:00
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-09-02 11:36:30 - 6.00010360
-x-cbparentid: 19090214-9464-0000-0000-0000285983E0
-Message-Id: <OF13BEA9AF.D2A0C48C-ON00258469.004C9751-00258469.004E8AF6@notes.na.collabserv.com>
+        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
+        Mon, 2 Sep 2019 15:19:03 +0100
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 2 Sep 2019 15:19:00 +0100
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x82EIxgU48562282
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 2 Sep 2019 14:18:59 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0912611C04C;
+        Mon,  2 Sep 2019 14:18:59 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D57AA11C04A;
+        Mon,  2 Sep 2019 14:18:58 +0000 (GMT)
+Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  2 Sep 2019 14:18:58 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     mkalderon@marvell.com, Bernard Metzler <bmt@zurich.ibm.com>
+Subject: [RFC] RDMA/siw: Fix xa_mmap helper patch
+Date:   Mon,  2 Sep 2019 16:18:54 +0200
+X-Mailer: git-send-email 2.17.2
+X-TM-AS-GCONF: 00
+x-cbid: 19090214-0016-0000-0000-000002A5BA8F
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19090214-0017-0000-0000-000033061D43
+Message-Id: <20190902141854.19822-1-bmt@zurich.ibm.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-02_05:,,
  signatures=0
-X-Proofpoint-Spam-Reason: safe
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1909020161
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Michal Kalderon" <mkalderon@marvell.com> wrote: -----
-
->To: "Bernard Metzler" <BMT@zurich.ibm.com>
->From: "Michal Kalderon" <mkalderon@marvell.com>
->Date: 09/02/2019 03:16PM
->Cc: "Ariel Elior" <aelior@marvell.com>, "jgg@ziepe.ca"
-><jgg@ziepe.ca>, "dledford@redhat.com" <dledford@redhat.com>,
->"galpress@amazon.com" <galpress@amazon.com>, "sleybo@amazon.com"
-><sleybo@amazon.com>, "leon@kernel.org" <leon@kernel.org>,
->"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
->Subject: [EXTERNAL] RE: RE: [EXT] Re: [PATCH v8 rdma-next 4/7]
->RDMA/siw: Use the common mmap_xa helpers
->
->> From: linux-rdma-owner@vger.kernel.org <linux-rdma-
->> owner@vger.kernel.org> On Behalf Of Bernard Metzler
->> 
->> -----"Michal Kalderon" <mkalderon@marvell.com> wrote: -----
->> 
->> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
->> >From: "Michal Kalderon" <mkalderon@marvell.com>
->> >Date: 09/02/2019 10:01AM
->> >Cc: "Ariel Elior" <aelior@marvell.com>, "jgg@ziepe.ca"
->> ><jgg@ziepe.ca>, "dledford@redhat.com" <dledford@redhat.com>,
->> >"galpress@amazon.com" <galpress@amazon.com>,
->> "sleybo@amazon.com"
->> ><sleybo@amazon.com>, "leon@kernel.org" <leon@kernel.org>,
->> >"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
->> >Subject: [EXTERNAL] RE: RE: [EXT] Re: [PATCH v8 rdma-next 4/7]
->> >RDMA/siw: Use the common mmap_xa helpers
->> >
->> >> From: linux-rdma-owner@vger.kernel.org <linux-rdma-
->> >> owner@vger.kernel.org> On Behalf Of Bernard Metzler
->> >>
->> >> -----"Michal Kalderon" <mkalderon@marvell.com> wrote: -----
->> >>
->> >> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
->> >> >From: "Michal Kalderon" <mkalderon@marvell.com>
->> >> >Date: 08/30/2019 02:42PM
->> >> >Cc: "Ariel Elior" <aelior@marvell.com>, "jgg@ziepe.ca"
->> >> ><jgg@ziepe.ca>, "dledford@redhat.com" <dledford@redhat.com>,
->> >> >"galpress@amazon.com" <galpress@amazon.com>,
->> >> "sleybo@amazon.com"
->> >> ><sleybo@amazon.com>, "leon@kernel.org" <leon@kernel.org>,
->> >> >"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
->"Ariel
->> >> >Elior" <aelior@marvell.com>
->> >> >Subject: [EXTERNAL] RE: [EXT] Re: [PATCH v8 rdma-next 4/7]
->> >RDMA/siw:
->> >> >Use the common mmap_xa helpers
->> >> >
->> >> >> From: Bernard Metzler <BMT@zurich.ibm.com>
->> >> >> Sent: Friday, August 30, 2019 3:08 PM
->> >> >>
->> >> >> External Email
->> >> >>
->> >> >>
->> >>
->>
->>>-------------------------------------------------------------------
->-
->> >-
->> >> >-
->> >> >> -----"Michal Kalderon" <michal.kalderon@marvell.com> wrote:
->> >-----
->> >> >>
->> >> >> Hi Michael,
->> >> >>
->> >> >> I tried this patch. It unfortunately panics immediately when
->siw
->> >> >gets used. I'll
->> >> >> investigate further. Some comments in line.
->> >> >Thanks for testing,
->> >> >
->> >> >>
->> >> >> Thanks
->> >> >> Bernard.
->> >> >>
->> >> >> >To: <mkalderon@marvell.com>, <aelior@marvell.com>,
->> >> <jgg@ziepe.ca>,
->> >> >> ><dledford@redhat.com>, <bmt@zurich.ibm.com>,
->> >> >> <galpress@amazon.com>,
->> >> >> ><sleybo@amazon.com>, <leon@kernel.org>
->> >> >> >From: "Michal Kalderon" <michal.kalderon@marvell.com>
->> >> >> >Date: 08/27/2019 03:31PM
->> >> >> >Cc: <linux-rdma@vger.kernel.org>, "Michal Kalderon"
->> >> >> ><michal.kalderon@marvell.com>, "Ariel Elior"
->> >> >> ><ariel.elior@marvell.com>
->> >> >> >Subject: [EXTERNAL] [PATCH v8 rdma-next 4/7] RDMA/siw: Use
->the
->> >> >> common
->> >> >> >mmap_xa helpers
->> >> >> >
->> >> >> >Remove the functions related to managing the mmap_xa
->database.
->> >> >> >This code is now common in ib_core. Use the common API's
->> >instead.
->> >> >> >
->> >> >> >Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
->> >> >> >Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
->> >> >> >---
->> >> >> > drivers/infiniband/sw/siw/siw.h       |  20 ++-
->> >> >> > drivers/infiniband/sw/siw/siw_main.c  |   1 +
->> >> >> > drivers/infiniband/sw/siw/siw_verbs.c | 223
->> >> >> >+++++++++++++++++++---------------
->> >> >> > drivers/infiniband/sw/siw/siw_verbs.h |   1 +
->> >> >> > 4 files changed, 144 insertions(+), 101 deletions(-)
->> >> >> >
->> >> >> >+			/* If entry was inserted successfully, qp-
->> >sendq
->> >> >> >+			 * will be freed by siw_mmap_free
->> >> >> >+			 */
->> >> >> >+			qp->sendq = NULL;
->> >> >>
->> >> >> qp->sendq points to the SQ array. Zeroing this pointer will
->> >leave
->> >> >> siw with no idea where the WQE's are. It will panic
->> >de-referencing
->> >> >[NULL +
->> >> >> current position in ring buffer]. Same for RQ, SRQ and CQ.
->> >> >Qp->sendq is only used in kernel mode, and only set to NULL is
->> >> >user-space mode
->> >> >Where it is allocated and mapped in user, so the user will be
->the
->> >one
->> >> >accessing the rings And not kernel, unless I'm missing
->something.
->> >>
->> >> These pointers are pointing to the allocated work queues.
->> >> These queues/arrays are holding the actual
->send/recv/complete/srq
->> >work
->> >> queue elements. It is a shared array. That is why we need mmap
->at
->> >all.
->> >>
->> >> e.g.,
->> >>
->> >> struct siw_sqe *sqe = &qp->sendq[qp->sq_get %
->qp->attrs.sq_size];
->> >>
->> >>
->> >Ok got it, I'm HW oriented... so user chains and kernel are
->totally
->> >separated.
->> >Will add a flag whether to free or not and remove setting to NULL.
->> 
->> Forget my last reply. I was under the impression the RDMA core
->mmap_xa
->> helper stuff would free the resource. Sorry about that. So just do
->not free
->> the resource in siw_mmap_free().
->OK, will leave the logic exactly as it was before, just use the
->common mmap helper
->Functions. 
->thanks
->
-Hi Michal,
-
-Let me send a short patch to the list which should
-fix it for siw. There were a few more nits:
-
 - make the siw_user_mmap_entry.address a void *, which
   naturally fits with remap_vmalloc_range. also avoids
   other casting during resource address assignment.
-    
+
 - do not kfree SQ/RQ/CQ/SRQ in preparation of mmap.
   Those resources are always further needed ;)
-    
+
 - Fix check for correct mmap range in siw_mmap().
   - entry->length is the object length. We have to
     expand to PAGE_ALIGN(entry->length), since mmap
@@ -250,16 +77,163 @@ fix it for siw. There were a few more nits:
   - put mmap_entry if that check fails. Otherwise
     entry object ref counting screws up, and later
     crashes during context close.
-    
+
 - simplify siw_mmap_free() - it must just free
   the entry.
+---
+ drivers/infiniband/sw/siw/siw.h       |  2 +-
+ drivers/infiniband/sw/siw/siw_verbs.c | 59 +++++++++------------------
+ 2 files changed, 20 insertions(+), 41 deletions(-)
 
-
-I think we shall further really change the size of
-the to be mmapped object to size_t. That perfectly
-reflects the user API mmap() call and is the right
-type for both 64bit and 32bit architectures.
-
-Best regards
-Bernard.
+diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
+index d48cd42ae43e..d62f18f49ac5 100644
+--- a/drivers/infiniband/sw/siw/siw.h
++++ b/drivers/infiniband/sw/siw/siw.h
+@@ -505,7 +505,7 @@ struct iwarp_msg_info {
+ 
+ struct siw_user_mmap_entry {
+ 	struct rdma_user_mmap_entry rdma_entry;
+-	u64 address;
++	void *address;
+ 	u64 length;
+ };
+ 
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index 9e049241051e..24bdf5b508e6 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -36,10 +36,7 @@ static char ib_qp_state_to_string[IB_QPS_ERR + 1][sizeof("RESET")] = {
+ 
+ void siw_mmap_free(struct rdma_user_mmap_entry *rdma_entry)
+ {
+-	struct siw_user_mmap_entry *entry = to_siw_mmap_entry(rdma_entry);
+-
+-	vfree((void *)entry->address);
+-	kfree(entry);
++	kfree(rdma_entry);
+ }
+ 
+ int siw_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma)
+@@ -56,29 +53,28 @@ int siw_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma)
+ 	 */
+ 	if (vma->vm_start & (PAGE_SIZE - 1)) {
+ 		pr_warn("siw: mmap not page aligned\n");
+-		goto out;
++		return -EINVAL;
+ 	}
+ 	rdma_entry = rdma_user_mmap_entry_get(&uctx->base_ucontext, off,
+ 					      size, vma);
+ 	if (!rdma_entry) {
+ 		siw_dbg(&uctx->sdev->base_dev, "mmap lookup failed: %lu, %u\n",
+ 			off, size);
+-		goto out;
++		return -EINVAL;
+ 	}
+ 	entry = to_siw_mmap_entry(rdma_entry);
+-	if (entry->length != size) {
++	if (PAGE_ALIGN(entry->length) != size) {
+ 		siw_dbg(&uctx->sdev->base_dev,
+ 			"key[%#lx] does not have valid length[%#x] expected[%#llx]\n",
+ 			off, size, entry->length);
++		rdma_user_mmap_entry_put(&uctx->base_ucontext, rdma_entry);
+ 		return -EINVAL;
+ 	}
+-
+-	rv = remap_vmalloc_range(vma, (void *)entry->address, 0);
++	rv = remap_vmalloc_range(vma, entry->address, 0);
+ 	if (rv) {
+ 		pr_warn("remap_vmalloc_range failed: %lu, %u\n", off, size);
+ 		rdma_user_mmap_entry_put(&uctx->base_ucontext, rdma_entry);
+ 	}
+-out:
+ 	return rv;
+ }
+ 
+@@ -270,7 +266,7 @@ void siw_qp_put_ref(struct ib_qp *base_qp)
+ }
+ 
+ static int siw_user_mmap_entry_insert(struct ib_ucontext *ucontext,
+-				      u64 address, u64 length,
++				      void *address, u64 length,
+ 				      u64 *key)
+ {
+ 	struct siw_user_mmap_entry *entry = kzalloc(sizeof(*entry), GFP_KERNEL);
+@@ -461,30 +457,22 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+ 		if (qp->sendq) {
+ 			length = num_sqe * sizeof(struct siw_sqe);
+ 			rv = siw_user_mmap_entry_insert(&uctx->base_ucontext,
+-							(uintptr_t)qp->sendq,
+-							length, &key);
+-			if (!rv)
++							qp->sendq, length,
++							&key);
++			if (rv)
+ 				goto err_out_xa;
+ 
+-			/* If entry was inserted successfully, qp->sendq
+-			 * will be freed by siw_mmap_free
+-			 */
+-			qp->sendq = NULL;
+ 			qp->sq_key = key;
+ 		}
+ 
+ 		if (qp->recvq) {
+ 			length = num_rqe * sizeof(struct siw_rqe);
+ 			rv = siw_user_mmap_entry_insert(&uctx->base_ucontext,
+-							(uintptr_t)qp->recvq,
+-							length, &key);
+-			if (!rv)
++							qp->recvq, length,
++							&key);
++			if (rv)
+ 				goto err_out_mmap_rem;
+ 
+-			/* If entry was inserted successfully, qp->recvq will
+-			 * be freed by siw_mmap_free
+-			 */
+-			qp->recvq = NULL;
+ 			qp->rq_key = key;
+ 		}
+ 
+@@ -1078,16 +1066,11 @@ int siw_create_cq(struct ib_cq *base_cq, const struct ib_cq_init_attr *attr,
+ 			     sizeof(struct siw_cq_ctrl);
+ 
+ 		rv = siw_user_mmap_entry_insert(&ctx->base_ucontext,
+-						(uintptr_t)cq->queue,
+-						length, &cq->cq_key);
+-		if (!rv)
++						cq->queue, length,
++						&cq->cq_key);
++		if (rv)
+ 			goto err_out;
+ 
+-		/* If entry was inserted successfully, cq->queue will be freed
+-		 * by siw_mmap_free
+-		 */
+-		cq->queue = NULL;
+-
+ 		uresp.cq_key = cq->cq_key;
+ 		uresp.cq_id = cq->id;
+ 		uresp.num_cqe = size;
+@@ -1535,15 +1518,11 @@ int siw_create_srq(struct ib_srq *base_srq,
+ 		u64 length = srq->num_rqe * sizeof(struct siw_rqe);
+ 
+ 		rv = siw_user_mmap_entry_insert(&ctx->base_ucontext,
+-						(uintptr_t)srq->recvq,
+-						length, &srq->srq_key);
+-		if (!rv)
++						srq->recvq, length,
++						&srq->srq_key);
++		if (rv)
+ 			goto err_out;
+ 
+-		/* If entry was inserted successfully, srq->recvq will be freed
+-		 * by siw_mmap_free
+-		 */
+-		srq->recvq = NULL;
+ 		uresp.srq_key = srq->srq_key;
+ 		uresp.num_rqe = srq->num_rqe;
+ 
+-- 
+2.17.2
 
