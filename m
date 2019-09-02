@@ -2,186 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2E6A5B4C
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2019 18:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C326FA5DCC
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2019 00:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726411AbfIBQZh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Sep 2019 12:25:37 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:50808 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726415AbfIBQZh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Sep 2019 12:25:37 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x82GPEkn023001;
-        Mon, 2 Sep 2019 09:25:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0818; bh=Ii5dfxpMJatjvnacwJ+dlzeD4jiojVstksmhZz86nZ8=;
- b=SHq8kk638hslU1pFjx+E2DZ0DbwXJWO30001babQZhoFqN3/InJl55Ux8E5h8/B9bfNu
- 2z1OQTJWAfVNEnYwgPdNrnrtqmZzrNHX9b8vJfx3Joz9T8OyOnS81Vfgqgf0JDozYTkS
- wxMOYQK0dPivIa13E2in3zoRQpkwVQf40pnywLk3SxLV5ChRArQIKCcbnThVrDR2psIy
- G7j05lR38orFXobDzxk8hmQeOdvm6wYZ/Z/v32hjdFwVJt0Fwe04ThMDHAcw5/iiex/P
- SjvNsPPYpn6u1bsfbxzNw4JsqG4nk0jTgiMm8VwPpQxH0Dy1dWsEg50cxsA4eFN8H8ro qw== 
-Received: from sc-exch04.marvell.com ([199.233.58.184])
-        by mx0a-0016f401.pphosted.com with ESMTP id 2uqp8p762b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 02 Sep 2019 09:25:33 -0700
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Mon, 2 Sep
- 2019 09:25:31 -0700
-Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Mon, 2 Sep 2019 09:25:31 -0700
-Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id D2AC53F7043;
-        Mon,  2 Sep 2019 09:25:27 -0700 (PDT)
-From:   Michal Kalderon <michal.kalderon@marvell.com>
-To:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
-        <dledford@redhat.com>, <bmt@zurich.ibm.com>, <galpress@amazon.com>,
-        <sleybo@amazon.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        Ariel Elior <ariel.elior@marvell.com>
-Subject: [PATCH v9 rdma-next 7/7] RDMA/qedr: Add iWARP doorbell recovery support
-Date:   Mon, 2 Sep 2019 19:23:14 +0300
-Message-ID: <20190902162314.17508-8-michal.kalderon@marvell.com>
-X-Mailer: git-send-email 2.14.5
-In-Reply-To: <20190902162314.17508-1-michal.kalderon@marvell.com>
-References: <20190902162314.17508-1-michal.kalderon@marvell.com>
+        id S1727530AbfIBW03 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Sep 2019 18:26:29 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:58860 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727454AbfIBW03 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Sep 2019 18:26:29 -0400
+Received: from dread.disaster.area (pa49-181-255-194.pa.nsw.optusnet.com.au [49.181.255.194])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 16DDF43D911;
+        Tue,  3 Sep 2019 08:26:19 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1i4umA-0003Ym-4t; Tue, 03 Sep 2019 08:26:18 +1000
+Date:   Tue, 3 Sep 2019 08:26:18 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
+Message-ID: <20190902222618.GR1119@dread.disaster.area>
+References: <20190821181343.GH8653@ziepe.ca>
+ <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
+ <20190821194810.GI8653@ziepe.ca>
+ <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
+ <20190823032345.GG1119@dread.disaster.area>
+ <20190823120428.GA12968@ziepe.ca>
+ <20190824001124.GI1119@dread.disaster.area>
+ <20190824050836.GC1092@iweiny-DESK2.sc.intel.com>
+ <20190826055510.GL1119@dread.disaster.area>
+ <20190829020230.GA18249@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
- definitions=2019-09-02_06:2019-08-29,2019-09-02 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190829020230.GA18249@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0
+        a=YO9NNpcXwc8z/SaoS+iAiA==:117 a=YO9NNpcXwc8z/SaoS+iAiA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=J70Eh1EUuV4A:10
+        a=7-415B0cAAAA:8 a=uquYBjWIGtznz3R1yhAA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch adds the iWARP specific doorbells to the doorbell
-recovery mechanism
+On Wed, Aug 28, 2019 at 07:02:31PM -0700, Ira Weiny wrote:
+> On Mon, Aug 26, 2019 at 03:55:10PM +1000, Dave Chinner wrote:
+> > On Fri, Aug 23, 2019 at 10:08:36PM -0700, Ira Weiny wrote:
+> > > On Sat, Aug 24, 2019 at 10:11:24AM +1000, Dave Chinner wrote:
+> > > > On Fri, Aug 23, 2019 at 09:04:29AM -0300, Jason Gunthorpe wrote:
+> > > "Leases are associated with an open file description (see open(2)).  This means
+> > > that duplicate file descriptors (created by, for example, fork(2) or dup(2))
+> > > refer to the same lease, and this lease may be modified or released using any
+> > > of these descriptors.  Furthermore,  the lease is released by either an
+> > > explicit F_UNLCK operation on any of these duplicate file descriptors, or when
+> > > all such file descriptors have been closed."
+> > 
+> > Right, the lease is attached to the struct file, so it follows
+> > where-ever the struct file goes. That doesn't mean it's actually
+> > useful when the struct file is duplicated and/or passed to another
+> > process. :/
+> > 
+> > AFAICT, the problem is that when we take another reference to the
+> > struct file, or when the struct file is passed to a different
+> > process, nothing updates the lease or lease state attached to that
+> > struct file.
+> 
+> Ok, I probably should have made this more clear in the cover letter but _only_
+> the process which took the lease can actually pin memory.
 
-Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
----
- drivers/infiniband/hw/qedr/qedr.h  | 12 +++++++-----
- drivers/infiniband/hw/qedr/verbs.c | 37 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 43 insertions(+), 6 deletions(-)
+Sure, no question about that.
 
-diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
-index 04f6f4fbe276..7661d767815c 100644
---- a/drivers/infiniband/hw/qedr/qedr.h
-+++ b/drivers/infiniband/hw/qedr/qedr.h
-@@ -237,6 +237,11 @@ struct qedr_ucontext {
- 	bool db_rec;
- };
- 
-+union db_prod32 {
-+	struct rdma_pwm_val16_data data;
-+	u32 raw;
-+};
-+
- union db_prod64 {
- 	struct rdma_pwm_val32_data data;
- 	u64 raw;
-@@ -268,6 +273,8 @@ struct qedr_userq {
- 	struct qedr_user_db_rec *db_rec_data;
- 	u64 db_rec_phys;
- 	u64 db_rec_key;
-+	void __iomem *db_rec_db2_addr;
-+	union db_prod32 db_rec_db2_data;
- };
- 
- struct qedr_cq {
-@@ -303,11 +310,6 @@ struct qedr_pd {
- 	struct qedr_ucontext *uctx;
- };
- 
--union db_prod32 {
--	struct rdma_pwm_val16_data data;
--	u32 raw;
--};
--
- struct qedr_qp_hwq_info {
- 	/* WQE Elements */
- 	struct qed_chain pbl;
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 922c203ca0ea..524dd3682d8d 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -1738,6 +1738,10 @@ static void qedr_cleanup_user(struct qedr_dev *dev,
- 		rdma_user_mmap_entry_remove(&ctx->ibucontext,
- 					    qp->urq.db_rec_key);
- 	}
-+
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1))
-+		qedr_db_recovery_del(dev, qp->urq.db_rec_db2_addr,
-+				     &qp->urq.db_rec_db2_data);
- }
- 
- static int qedr_create_user_qp(struct qedr_dev *dev,
-@@ -1812,6 +1816,17 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 	qp->usq.db_addr = ctx->dpi_addr + uresp.sq_db_offset;
- 	qp->urq.db_addr = ctx->dpi_addr + uresp.rq_db_offset;
- 
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
-+		qp->urq.db_rec_db2_addr = ctx->dpi_addr + uresp.rq_db2_offset;
-+
-+		/* calculate the db_rec_db2 data since it is constant so no
-+		 *  need to reflect from user
-+		 */
-+		qp->urq.db_rec_db2_data.data.icid = cpu_to_le16(qp->icid);
-+		qp->urq.db_rec_db2_data.data.value =
-+			cpu_to_le16(DQ_TCM_IWARP_POST_RQ_CF_CMD);
-+	}
-+
- 	rc = qedr_db_recovery_add(dev, qp->usq.db_addr,
- 				  &qp->usq.db_rec_data->db_data,
- 				  DB_REC_WIDTH_32B,
-@@ -1825,6 +1840,15 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 				  DB_REC_USER);
- 	if (rc)
- 		goto err;
-+
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
-+		rc = qedr_db_recovery_add(dev, qp->urq.db_rec_db2_addr,
-+					  &qp->urq.db_rec_db2_data,
-+					  DB_REC_WIDTH_32B,
-+					  DB_REC_USER);
-+		if (rc)
-+			goto err;
-+	}
- 	qedr_qp_user_print(dev, qp);
- 
- 	return rc;
-@@ -1865,7 +1889,13 @@ static int qedr_set_iwarp_db_info(struct qedr_dev *dev, struct qedr_qp *qp)
- 				  &qp->rq.db_data,
- 				  DB_REC_WIDTH_32B,
- 				  DB_REC_KERNEL);
-+	if (rc)
-+		return rc;
- 
-+	rc = qedr_db_recovery_add(dev, qp->rq.iwarp_db2,
-+				  &qp->rq.iwarp_db2_data,
-+				  DB_REC_WIDTH_32B,
-+				  DB_REC_KERNEL);
- 	return rc;
- }
- 
-@@ -1994,8 +2024,13 @@ static void qedr_cleanup_kernel(struct qedr_dev *dev, struct qedr_qp *qp)
- 
- 	qedr_db_recovery_del(dev, qp->sq.db, &qp->sq.db_data);
- 
--	if (!qp->srq)
-+	if (!qp->srq) {
- 		qedr_db_recovery_del(dev, qp->rq.db, &qp->rq.db_data);
-+
-+		if (rdma_protocol_iwarp(&dev->ibdev, 1))
-+			qedr_db_recovery_del(dev, qp->rq.iwarp_db2,
-+					     &qp->rq.iwarp_db2_data);
-+	}
- }
- 
- static int qedr_create_kernel_qp(struct qedr_dev *dev,
+> That pinned memory _can_ be passed to another process but those sub-process' can
+> _not_ use the original lease to pin _more_ of the file.  They would need to
+> take their own lease to do that.
+
+Yes, they would need a new lease to extend it. But that ignores the
+fact they don't have a lease on the existing pins they are using and
+have no control over the lease those pins originated under.  e.g.
+the originating process dies (for whatever reason) and now we have
+pins without a valid lease holder.
+
+If something else now takes an exclusive lease on the file (because
+the original exclusive lease no longer exists), it's not going to
+work correctly because of the zombied page pins caused by closing
+the exclusive lease they were gained under. IOWs, pages pinned under
+an exclusive lease are no longer "exclusive" the moment the original
+exclusive lease is dropped, and pins passed to another process are
+no longer covered by the original lease they were created under.
+
+> Sorry for not being clear on that.
+
+I know exactly what you are saying. What I'm failing to get across
+is that file layout leases don't actually allow the behaviour you
+want to have.
+
+> > As such, leases that require callbacks to userspace are currently
+> > only valid within the process context the lease was taken in.
+> 
+> But for long term pins we are not requiring callbacks.
+
+Regardless, we still require an active lease for long term pins so
+that other lease holders fail operations appropriately. And that
+exclusive lease must follow the process that pins the pages so that
+the life cycle is the same...
+
+> > Indeed, even closing the fd the lease was taken on without
+> > F_UNLCKing it first doesn't mean the lease has been torn down if
+> > there is some other reference to the struct file. That means the
+> > original lease owner will still get SIGIO delivered to that fd on a
+> > lease break regardless of whether it is open or not. ANd if we
+> > implement "layout lease not released within SIGIO response timeout"
+> > then that process will get killed, despite the fact it may not even
+> > have a reference to that file anymore.
+> 
+> I'm not seeing that as a problem.  This is all a result of the application
+> failing to do the right thing.
+
+How is that not a problem?
+
+Cheers,
+
+Dave.
 -- 
-2.14.5
-
+Dave Chinner
+david@fromorbit.com
