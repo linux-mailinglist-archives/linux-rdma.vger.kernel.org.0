@@ -2,49 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82234A5B46
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2019 18:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEA20A5B47
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Sep 2019 18:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726036AbfIBQZO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Sep 2019 12:25:14 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:64056 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725988AbfIBQZO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Sep 2019 12:25:14 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x82GP9tR022606;
-        Mon, 2 Sep 2019 09:25:09 -0700
+        id S1726124AbfIBQZR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Sep 2019 12:25:17 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:34772 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725988AbfIBQZQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Sep 2019 12:25:16 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x82GJvj9031147;
+        Mon, 2 Sep 2019 09:25:11 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0818;
- bh=Mp5B/tWx+fNwtRZYfu7cJgqp3/8kwAKgJQQIDWY0k0M=;
- b=aNVY7ACuevSaQvsb3OLf+04bE3qp5JqTlUfdHQ8deA9pfmXdndn54BXGvX7WEoDXyzSC
- ab4Ax60iqTzr5cqTEv7hZB+cDtTnRgGn6Ro5JAyD0J9GGmtqRLhFyjD7VPILaI+Z+Iiy
- e7kkA2pkQnmTRM/w4XgJNcCy8J4gw6YytpyBzbPVjo5QRxUsn+/258efkmdIkzywKoRi
- UkNXbkH5NiycRpcy2GJ2rNvGNRztoPWu7POPXfBQjx/7wISIcaXHX4ZT1+qzqU/4Uo7/
- EALuik9Y4mbueWTM/D2FCqD3rhVmHFsI9ji1KO7tPidMdaXPHtT4n8WLd/+33d2MVEGR QA== 
-Received: from sc-exch04.marvell.com ([199.233.58.184])
-        by mx0a-0016f401.pphosted.com with ESMTP id 2uqp8p761f-1
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=pfpt0818; bh=HMx3TPwtlpCG08Zr7DCgQJQq95fgKCfHPEi3Q9uEsn8=;
+ b=MZkA3Gh1phKAO3NeHo0RO/q6MQxqELvbVnLZeGPIXOzrTJt4gVvjEaqJeQP8f2pAg/uy
+ u6QYvU4t8yiUEhvnVG2GJs4rusDiV75jcDiLK4eWd7OluBEAkX3pmaiw8qZUGeofRx1v
+ yaxAImYq5x1e9PQqiDKmmVQMZ039FJawxGThFuK+/iYUZ0VHLb5JOK3fbcvdj2DgnkvH
+ obKqw07BaEiCR8zWXO2s7VldP83SCiB/eK41aNpP0wfKFXbpaGIHyQudXlLG/eFpPFhc
+ rS0c8ane8Nn+qiKb1yf0CrzLTy5VedVKv4fRMpssG2etqN4R+hB1SNmcjQMH7BI/WfE7 0g== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 2uqrdm6jse-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 02 Sep 2019 09:25:09 -0700
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Mon, 2 Sep
- 2019 09:25:04 -0700
+        Mon, 02 Sep 2019 09:25:11 -0700
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Mon, 2 Sep
+ 2019 09:25:08 -0700
 Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
  (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Mon, 2 Sep 2019 09:25:04 -0700
+ Transport; Mon, 2 Sep 2019 09:25:08 -0700
 Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id 2D5953F7040;
-        Mon,  2 Sep 2019 09:25:00 -0700 (PDT)
+        by maili.marvell.com (Postfix) with ESMTP id A7CED3F7043;
+        Mon,  2 Sep 2019 09:25:04 -0700 (PDT)
 From:   Michal Kalderon <michal.kalderon@marvell.com>
 To:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
         <dledford@redhat.com>, <bmt@zurich.ibm.com>, <galpress@amazon.com>,
         <sleybo@amazon.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>,
-        Michal Kalderon <michal.kalderon@marvell.com>
-Subject: [PATCH v9 rdma-next 0/7] RDMA/qedr: Use the doorbell overflow recovery mechanism for RDMA
-Date:   Mon, 2 Sep 2019 19:23:07 +0300
-Message-ID: <20190902162314.17508-1-michal.kalderon@marvell.com>
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        Ariel Elior <ariel.elior@marvell.com>
+Subject: [PATCH v9 rdma-next 1/7] RDMA/core: Move core content from ib_uverbs to ib_core
+Date:   Mon, 2 Sep 2019 19:23:08 +0300
+Message-ID: <20190902162314.17508-2-michal.kalderon@marvell.com>
 X-Mailer: git-send-email 2.14.5
+In-Reply-To: <20190902162314.17508-1-michal.kalderon@marvell.com>
+References: <20190902162314.17508-1-michal.kalderon@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
@@ -54,178 +57,239 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch series uses the doorbell overflow recovery mechanism
-introduced in
-commit 36907cd5cd72 ("qed: Add doorbell overflow recovery mechanism")
-for rdma ( RoCE and iWARP )
+Move functionality that is called by the driver, which is
+related to umap, to a new file that will be linked in ib_core.
+This is a first step in later enabling ib_uverbs to be optional.
+vm_ops is now initialized in ib_uverbs_mmap instead of
+priv_init to avoid having to move all the rdma_umap functions
+as well.
 
-The first five patches modify the core code to contain helper
-functions for managing mmap_xa inserting, getting and freeing
-entries. The code was based on the code from efa driver.
-There is still an open discussion on whether we should take
-this even further and make the entire mmap generic. Until a
-decision is made, I only created the database API and modified
-the efa, qedr, siw driver to use it. The functions are integrated
-with the umap mechanism.
-
-The doorbell recovery code is based on the common code.
-
-Efa driver was compile tested and checked only modprobe/rmmod.
-SIW was compile tested and checked only modprobe/rmmod.
-
-rdma-core pull request #493
-
-Changes from V8:
-- CORE changes
-  - Fix race between getting an entry and deleting it. Increase
-    the refcount under the lock only if it is not zero.  Erase all entries
-    with __xa_erase instead of xa_erase and take the lock outside the loop.
-  - Fix comment when erasing all the xa_entries of a single mmap_entry.
-  - Take comment out of loop
-  - Change length field in driver structures to be size_t instead of u64
-    suggested by Bernard Metzler
-  - Change do..while(true) to while(true)
-- COMMON driver changes
-  - Change mmap length to be size_t instead of u64.
-  - In mmap, call put_entry if there is a length error.
-- EFA changes:
-  - Reverse mmap entries remove order.
-  - Give meaningful label names in create_qp error flows.
-  - In error flow undo change that frees pages based only on key and
-    make sure rq_size > 0 first.
-  - Fix xmas tree alignment, move ucontext initialization to declaration
-    line.
-- SIW changes:
-  - Changes received from Bernard Metzler
-	- make the siw_user_mmap_entry.address a void *, which
-	  naturally fits with remap_vmalloc_range. also avoids
-	  other casting during resource address assignment.
-	- do not kfree SQ/RQ/CQ/SRQ in preparation of mmap.
-	  Those resources are always further needed ;)
-	- Fix check for correct mmap range in siw_mmap().
-	  - entry->length is the object length. We have to
-	    expand to PAGE_ALIGN(entry->length), since mmap
-	    comes with complete page(s) containing the
-	    object.
-	  - put mmap_entry if that check fails. Otherwise
-	    entry object ref counting screws up, and later
-	    crashes during context close.
-	- simplify siw_mmap_free() - it must just free
-	  the entry.
-  - Change length to size_t instead of u64
-
-Changes from V7:
-- Remove license text, SPDX id should suffice.
-- Fix some comments text.
-- Add comment regarding vm_ops being set in ib_uverbs_mmap.
-- Allocate the rdma_user_mmap_entry in the driver and not in the
-  ib_core_uverbs. This lead to defining three new structures per driver
-  and seperating the fields between the driver private structures and
-  the common rdma_user_mmap_entry. Freeing the entry was also moved
-  to the drivers.
-- Fix bug found by Gal Pressman. Call mmap_free only once per entry.
-- Add a mutex around xa_mmap insert to assure threads won't intefere
-  while the xa lock is released when inserting an entry into the range.
-- Modify the insert algorithm to be more elegant using the
-  xas_next_entry instead of foreach.
-- Remove the rdma_user_mmap_entries_remove_free function, now that umap.
-  and mmap_xa are integrated we should not have any entries in the mmap_xa
-  when ucontext is released. Replace the function with a WARN_ON(!xa_empty).
-- Rdma_umap_open needs to reset the vm_private_data before initializing it.
-- Decrease rdma_user_mmap_entry reference count on mmap disassociate.
-- Remove WARN_ON(!kref_read) this is checked when kref debug is on.
-- Remove some redundant defines from ib_verbs.h.
-- Better error handling for efa create qp flow.
-- Add a function that wraps the entry allocation and rdma_user_mmap_entry_insert
-  which is used in all places that need to add an entry to the xarray.
-- Remove rq_entry_inserted field in efa create qp flow.
-- Add mmap_free to siw and free the memory only on mmap free and not before.
-
-Changes from V6:
-- Modified series description to be closer to what the series is now.
-- Create a new file for the new rdma_user_mmap function. The file
-  is called ib_uverbs_core. This file should contain functions related
-  to user which are called by hw to eventually enable ib_uverbs to be
-  optional.
-- Modify SIW driver to use new mmap api.
-- When calculating number of pages, need to round it up to PAGE_SIZE.
-- Integrate the mmap_xa and umap mechanism so that the entries in
-  mmap_xa now have a reference count and can be removed. Previously
-  entries existed until context was destroyed. This modified the
-  algorithm for allocating a free page range.
-- Modify algorithm for inserting an entry into the mmap_xa.
-- Rdma_umap_priv is now also used for all mmaps done using the
-  mmap_xa helpers.
-- Move remove_free header to core_priv.
-- Rdma_user_mmap_entry now has a kref that is increase on mmap
-  and umap_open and decreased on umap_close.
-- Modify efa + qedr to remove the entry from xa_map. This will
-  decrease the refcnt and free memory only if refcnt is zero.
-- Rdma_user_mmap_io slightly modified to enable drivers not using
-  the xa_mmap API to continue using it.
-- Modify page allocation for user to use GFP_USER instead of GFP_KERNEL
-
-Changes from V5:
-- Switch between driver dealloc_ucontext and mmap_entries_remove call.
-- No need to verify the key after using the key to load an entry from
-  the mmap_xa.
-- Change mmap_free api to pass an 'entry' object.
-- Add documentation for mmap_free and for newly exported functions.
-- Fix some extra/missing line breaks.
-
-Changes from V4:
-- Add common mmap database and cookie helper functions.
-
-Changes from V3:
-- Remove casts from void to u8. Pointer arithmetic can be done on void
-- rebase to tip of rdma-next
-
-Changes from V2:
-- Don't use long-lived kmap. Instead use user-trigger mmap for the
-  doorbell recovery entries.
-- Modify dpi_addr to be denoted with __iomem and avoid redundant
-  casts
-
-Changes from V1:
-- call kmap to map virtual address into kernel space
-- modify db_rec_delete to be void
-- remove some cpu_to_le16 that were added to previous patch which are
-  correct but not related to the overflow recovery mechanism. Will be
-  submitted as part of a different patch
-
-
-Michal Kalderon (7):
-  RDMA/core: Move core content from ib_uverbs to ib_core
-  RDMA/core: Create mmap database and cookie helper functions
-  RDMA/efa: Use the common mmap_xa helpers
-  RDMA/siw: Use the common mmap_xa helpers
-  RDMA/qedr: Use the common mmap API
-  RDMA/qedr: Add doorbell overflow recovery support
-  RDMA/qedr: Add iWARP doorbell recovery support
-
- drivers/infiniband/core/Makefile         |   2 +-
- drivers/infiniband/core/core_priv.h      |  16 +
- drivers/infiniband/core/device.c         |   1 +
- drivers/infiniband/core/ib_core_uverbs.c | 353 ++++++++++++++++++++
- drivers/infiniband/core/rdma_core.c      |   1 +
- drivers/infiniband/core/uverbs_cmd.c     |   1 +
- drivers/infiniband/core/uverbs_main.c    |  97 +-----
- drivers/infiniband/hw/efa/efa.h          |  18 +-
- drivers/infiniband/hw/efa/efa_main.c     |   1 +
- drivers/infiniband/hw/efa/efa_verbs.c    | 360 ++++++++++----------
- drivers/infiniband/hw/qedr/main.c        |   1 +
- drivers/infiniband/hw/qedr/qedr.h        |  45 ++-
- drivers/infiniband/hw/qedr/verbs.c       | 544 ++++++++++++++++++++++---------
- drivers/infiniband/hw/qedr/verbs.h       |   3 +-
- drivers/infiniband/sw/siw/siw.h          |  20 +-
- drivers/infiniband/sw/siw/siw_main.c     |   1 +
- drivers/infiniband/sw/siw/siw_verbs.c    | 216 ++++++------
- drivers/infiniband/sw/siw/siw_verbs.h    |   1 +
- include/rdma/ib_verbs.h                  |  37 ++-
- include/uapi/rdma/qedr-abi.h             |  25 ++
- 20 files changed, 1196 insertions(+), 547 deletions(-)
+Suggested-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
+Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+---
+ drivers/infiniband/core/Makefile         |  2 +-
+ drivers/infiniband/core/core_priv.h      |  9 ++++
+ drivers/infiniband/core/ib_core_uverbs.c | 73 +++++++++++++++++++++++++++++++
+ drivers/infiniband/core/uverbs_main.c    | 74 ++------------------------------
+ 4 files changed, 86 insertions(+), 72 deletions(-)
  create mode 100644 drivers/infiniband/core/ib_core_uverbs.c
 
+diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
+index 09881bd5f12d..9a8871e21545 100644
+--- a/drivers/infiniband/core/Makefile
++++ b/drivers/infiniband/core/Makefile
+@@ -11,7 +11,7 @@ ib_core-y :=			packer.o ud_header.o verbs.o cq.o rw.o sysfs.o \
+ 				device.o fmr_pool.o cache.o netlink.o \
+ 				roce_gid_mgmt.o mr_pool.o addr.o sa_query.o \
+ 				multicast.o mad.o smi.o agent.o mad_rmpp.o \
+-				nldev.o restrack.o counters.o
++				nldev.o restrack.o counters.o ib_core_uverbs.o
+ 
+ ib_core-$(CONFIG_SECURITY_INFINIBAND) += security.o
+ ib_core-$(CONFIG_CGROUP_RDMA) += cgroup.o
+diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
+index 3a8b0911c3bc..0252da9560f4 100644
+--- a/drivers/infiniband/core/core_priv.h
++++ b/drivers/infiniband/core/core_priv.h
+@@ -387,4 +387,13 @@ int ib_device_set_netns_put(struct sk_buff *skb,
+ 
+ int rdma_nl_net_init(struct rdma_dev_net *rnet);
+ void rdma_nl_net_exit(struct rdma_dev_net *rnet);
++
++struct rdma_umap_priv {
++	struct vm_area_struct *vma;
++	struct list_head list;
++};
++
++void rdma_umap_priv_init(struct rdma_umap_priv *priv,
++			 struct vm_area_struct *vma);
++
+ #endif /* _CORE_PRIV_H */
+diff --git a/drivers/infiniband/core/ib_core_uverbs.c b/drivers/infiniband/core/ib_core_uverbs.c
+new file mode 100644
+index 000000000000..b74d2a2fb342
+--- /dev/null
++++ b/drivers/infiniband/core/ib_core_uverbs.c
+@@ -0,0 +1,73 @@
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
++/*
++ * Copyright (c) 2005 Mellanox Technologies. All rights reserved.
++ * Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2019 Marvell. All rights reserved.
++ */
++#include <linux/xarray.h>
++#include "uverbs.h"
++#include "core_priv.h"
++
++/*
++ * Each time we map IO memory into user space this keeps track of the mapping.
++ * When the device is hot-unplugged we 'zap' the mmaps in user space to point
++ * to the zero page and allow the hot unplug to proceed.
++ *
++ * This is necessary for cases like PCI physical hot unplug as the actual BAR
++ * memory may vanish after this and access to it from userspace could MCE.
++ *
++ * RDMA drivers supporting disassociation must have their user space designed
++ * to cope in some way with their IO pages going to the zero page.
++ */
++void rdma_umap_priv_init(struct rdma_umap_priv *priv,
++			 struct vm_area_struct *vma)
++{
++	struct ib_uverbs_file *ufile = vma->vm_file->private_data;
++
++	priv->vma = vma;
++	vma->vm_private_data = priv;
++	/* vm_ops is setup in ib_uverbs_mmap() to avoid module dependencies */
++
++	mutex_lock(&ufile->umap_lock);
++	list_add(&priv->list, &ufile->umaps);
++	mutex_unlock(&ufile->umap_lock);
++}
++EXPORT_SYMBOL(rdma_umap_priv_init);
++
++/*
++ * Map IO memory into a process. This is to be called by drivers as part of
++ * their mmap() functions if they wish to send something like PCI-E BAR memory
++ * to userspace.
++ */
++int rdma_user_mmap_io(struct ib_ucontext *ucontext, struct vm_area_struct *vma,
++		      unsigned long pfn, unsigned long size, pgprot_t prot)
++{
++	struct ib_uverbs_file *ufile = ucontext->ufile;
++	struct rdma_umap_priv *priv;
++
++	if (!(vma->vm_flags & VM_SHARED))
++		return -EINVAL;
++
++	if (vma->vm_end - vma->vm_start != size)
++		return -EINVAL;
++
++	/* Driver is using this wrong, must be called by ib_uverbs_mmap */
++	if (WARN_ON(!vma->vm_file ||
++		    vma->vm_file->private_data != ufile))
++		return -EINVAL;
++	lockdep_assert_held(&ufile->device->disassociate_srcu);
++
++	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	vma->vm_page_prot = prot;
++	if (io_remap_pfn_range(vma, vma->vm_start, pfn, size, prot)) {
++		kfree(priv);
++		return -EAGAIN;
++	}
++
++	rdma_umap_priv_init(priv, vma);
++	return 0;
++}
++EXPORT_SYMBOL(rdma_user_mmap_io);
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index 02b57240176c..180a5e0f70e4 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -772,6 +772,8 @@ static ssize_t ib_uverbs_write(struct file *filp, const char __user *buf,
+ 	return (ret) ? : count;
+ }
+ 
++static const struct vm_operations_struct rdma_umap_ops;
++
+ static int ib_uverbs_mmap(struct file *filp, struct vm_area_struct *vma)
+ {
+ 	struct ib_uverbs_file *file = filp->private_data;
+@@ -785,45 +787,13 @@ static int ib_uverbs_mmap(struct file *filp, struct vm_area_struct *vma)
+ 		ret = PTR_ERR(ucontext);
+ 		goto out;
+ 	}
+-
++	vma->vm_ops = &rdma_umap_ops;
+ 	ret = ucontext->device->ops.mmap(ucontext, vma);
+ out:
+ 	srcu_read_unlock(&file->device->disassociate_srcu, srcu_key);
+ 	return ret;
+ }
+ 
+-/*
+- * Each time we map IO memory into user space this keeps track of the mapping.
+- * When the device is hot-unplugged we 'zap' the mmaps in user space to point
+- * to the zero page and allow the hot unplug to proceed.
+- *
+- * This is necessary for cases like PCI physical hot unplug as the actual BAR
+- * memory may vanish after this and access to it from userspace could MCE.
+- *
+- * RDMA drivers supporting disassociation must have their user space designed
+- * to cope in some way with their IO pages going to the zero page.
+- */
+-struct rdma_umap_priv {
+-	struct vm_area_struct *vma;
+-	struct list_head list;
+-};
+-
+-static const struct vm_operations_struct rdma_umap_ops;
+-
+-static void rdma_umap_priv_init(struct rdma_umap_priv *priv,
+-				struct vm_area_struct *vma)
+-{
+-	struct ib_uverbs_file *ufile = vma->vm_file->private_data;
+-
+-	priv->vma = vma;
+-	vma->vm_private_data = priv;
+-	vma->vm_ops = &rdma_umap_ops;
+-
+-	mutex_lock(&ufile->umap_lock);
+-	list_add(&priv->list, &ufile->umaps);
+-	mutex_unlock(&ufile->umap_lock);
+-}
+-
+ /*
+  * The VMA has been dup'd, initialize the vm_private_data with a new tracking
+  * struct
+@@ -931,44 +901,6 @@ static const struct vm_operations_struct rdma_umap_ops = {
+ 	.fault = rdma_umap_fault,
+ };
+ 
+-/*
+- * Map IO memory into a process. This is to be called by drivers as part of
+- * their mmap() functions if they wish to send something like PCI-E BAR memory
+- * to userspace.
+- */
+-int rdma_user_mmap_io(struct ib_ucontext *ucontext, struct vm_area_struct *vma,
+-		      unsigned long pfn, unsigned long size, pgprot_t prot)
+-{
+-	struct ib_uverbs_file *ufile = ucontext->ufile;
+-	struct rdma_umap_priv *priv;
+-
+-	if (!(vma->vm_flags & VM_SHARED))
+-		return -EINVAL;
+-
+-	if (vma->vm_end - vma->vm_start != size)
+-		return -EINVAL;
+-
+-	/* Driver is using this wrong, must be called by ib_uverbs_mmap */
+-	if (WARN_ON(!vma->vm_file ||
+-		    vma->vm_file->private_data != ufile))
+-		return -EINVAL;
+-	lockdep_assert_held(&ufile->device->disassociate_srcu);
+-
+-	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+-	if (!priv)
+-		return -ENOMEM;
+-
+-	vma->vm_page_prot = prot;
+-	if (io_remap_pfn_range(vma, vma->vm_start, pfn, size, prot)) {
+-		kfree(priv);
+-		return -EAGAIN;
+-	}
+-
+-	rdma_umap_priv_init(priv, vma);
+-	return 0;
+-}
+-EXPORT_SYMBOL(rdma_user_mmap_io);
+-
+ void uverbs_user_mmap_disassociate(struct ib_uverbs_file *ufile)
+ {
+ 	struct rdma_umap_priv *priv, *next_priv;
 -- 
 2.14.5
 
