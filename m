@@ -2,36 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA36A6FDB
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2019 18:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96C2A6FBC
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2019 18:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730747AbfICQ05 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Sep 2019 12:26:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48056 "EHLO mail.kernel.org"
+        id S1731006AbfICQ2A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Sep 2019 12:28:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730739AbfICQ05 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 3 Sep 2019 12:26:57 -0400
+        id S1730528AbfICQ17 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 3 Sep 2019 12:27:59 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 490CF23431;
-        Tue,  3 Sep 2019 16:26:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6B9F238C6;
+        Tue,  3 Sep 2019 16:27:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567528016;
-        bh=U8Q/brz7/SXnxP9IztjpaNyjAEnLVU06LFBDqXK0GF0=;
+        s=default; t=1567528078;
+        bh=tUGdMBJf65IiFRyiMd6tSnbbwmB1wNqA8i8OFvyBO9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jw3vXNMqZPJLgD/bnNxDtJDWhSWwWVFunfwErW1UOyO0Pp2ODOuV1OD1e0a/0CHZ3
-         Qthyq1NpPaMsysDR/MauQmVQ+ctjXpjolJSSNqz7CdpbQBT0epV3W7CrhQ6Dw7CSzR
-         XLY+YtvKi0GAHvdxBGJGoR+SuNTz1x5FtsYB+5Qg=
+        b=CY3XEip6PGTrxekHChuxHvldQmPbs5LU0quYXHi4SHgtVlSGK4FuHI91smmHlpLUS
+         ttZdEKkUBPn4om+dk5qGH9oUaA7Gb2QVbfL6HRfoenYMaqU1zXU5HFcPlq8RsBPr8R
+         VUnmo4te8qLC/LFRawLbXA8PC5HCjm6TYQlOOx9U=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yishai Hadas <yishaih@mellanox.com>,
+Cc:     Moni Shoua <monis@mellanox.com>,
+        Jerome Glisse <jglisse@redhat.com>,
         Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 054/167] IB/uverbs: Fix OOPs upon device disassociation
-Date:   Tue,  3 Sep 2019 12:23:26 -0400
-Message-Id: <20190903162519.7136-54-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 091/167] IB/mlx5: Reset access mask when looping inside page fault handler
+Date:   Tue,  3 Sep 2019 12:24:03 -0400
+Message-Id: <20190903162519.7136-91-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190903162519.7136-1-sashal@kernel.org>
 References: <20190903162519.7136-1-sashal@kernel.org>
@@ -44,101 +45,46 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yishai Hadas <yishaih@mellanox.com>
+From: Moni Shoua <monis@mellanox.com>
 
-[ Upstream commit 425784aa5b029eeb80498c73a68f62c3ad1d3b3f ]
+[ Upstream commit 1abe186ed8a6593069bc122da55fc684383fdc1c ]
 
-The async_file might be freed before the disassociation has been ended,
-causing qp shutdown to use after free on it.
+If page-fault handler spans multiple MRs then the access mask needs to
+be reset before each MR handling or otherwise write access will be
+granted to mapped pages instead of read-only.
 
-Since uverbs_destroy_ufile_hw is not a fence, it returns if a
-disassociation is ongoing in another thread. It has to be written this way
-to avoid deadlock. However this means that the ufile FD close cannot
-destroy anything that may still be used by an active kref, such as the the
-async_file.
-
-To fix that move the kref_put() to be in ib_uverbs_release_file().
-
- BUG: unable to handle kernel paging request at ffffffffba682787
- PGD bc80e067 P4D bc80e067 PUD bc80f063 PMD 1313df163 PTE 80000000bc682061
- Oops: 0003 [#1] SMP PTI
- CPU: 1 PID: 32410 Comm: bash Tainted: G           OE 4.20.0-rc6+ #3
- Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
- RIP: 0010:__pv_queued_spin_lock_slowpath+0x1b3/0x2a0
- Code: 98 83 e2 60 49 89 df 48 8b 04 c5 80 18 72 ba 48 8d
-		ba 80 32 02 00 ba 00 80 00 00 4c 8d 65 14 41 bd 01 00 00 00 48 01 c7 85
-		d2 <48> 89 2f 48 89 fb 74 14 8b 45 08 85 c0 75 42 84 d2 74 6b f3 90 83
- RSP: 0018:ffffc1bbc064fb58 EFLAGS: 00010006
- RAX: ffffffffba65f4e7 RBX: ffff9f209c656c00 RCX: 0000000000000001
- RDX: 0000000000008000 RSI: 0000000000000000 RDI: ffffffffba682787
- RBP: ffff9f217bb23280 R08: 0000000000000001 R09: 0000000000000000
- R10: ffff9f209d2c7800 R11: ffffffffffffffe8 R12: ffff9f217bb23294
- R13: 0000000000000001 R14: 0000000000000000 R15: ffff9f209c656c00
- FS:  00007fac55aad740(0000) GS:ffff9f217bb00000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: ffffffffba682787 CR3: 000000012f8e0000 CR4: 00000000000006e0
- Call Trace:
-  _raw_spin_lock_irq+0x27/0x30
-  ib_uverbs_release_uevent+0x1e/0xa0 [ib_uverbs]
-  uverbs_free_qp+0x7e/0x90 [ib_uverbs]
-  destroy_hw_idr_uobject+0x1c/0x50 [ib_uverbs]
-  uverbs_destroy_uobject+0x2e/0x180 [ib_uverbs]
-  __uverbs_cleanup_ufile+0x73/0x90 [ib_uverbs]
-  uverbs_destroy_ufile_hw+0x5d/0x120 [ib_uverbs]
-  ib_uverbs_remove_one+0xea/0x240 [ib_uverbs]
-  ib_unregister_device+0xfb/0x200 [ib_core]
-  mlx5_ib_remove+0x51/0xe0 [mlx5_ib]
-  mlx5_remove_device+0xc1/0xd0 [mlx5_core]
-  mlx5_unregister_device+0x3d/0xb0 [mlx5_core]
-  remove_one+0x2a/0x90 [mlx5_core]
-  pci_device_remove+0x3b/0xc0
-  device_release_driver_internal+0x16d/0x240
-  unbind_store+0xb2/0x100
-  kernfs_fop_write+0x102/0x180
-  __vfs_write+0x36/0x1a0
-  ? __alloc_fd+0xa9/0x170
-  ? set_close_on_exec+0x49/0x70
-  vfs_write+0xad/0x1a0
-  ksys_write+0x52/0xc0
-  do_syscall_64+0x5b/0x180
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
- RIP: 0033:0x7fac551aac60
-
-Cc: <stable@vger.kernel.org> # 4.2
-Fixes: 036b10635739 ("IB/uverbs: Enable device removal when there are active user space applications")
-Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+Cc: <stable@vger.kernel.org> # 3.19
+Fixes: 7bdf65d411c1 ("IB/mlx5: Handle page faults")
+Reported-by: Jerome Glisse <jglisse@redhat.com>
+Signed-off-by: Moni Shoua <monis@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/uverbs_main.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/mlx5/odp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index 50152c1b10045..357de3b4fdddf 100644
---- a/drivers/infiniband/core/uverbs_main.c
-+++ b/drivers/infiniband/core/uverbs_main.c
-@@ -265,6 +265,9 @@ void ib_uverbs_release_file(struct kref *ref)
- 	if (atomic_dec_and_test(&file->device->refcount))
- 		ib_uverbs_comp_dev(file->device);
+diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
+index 9e1cac8cb2609..453e5c4ac19f4 100644
+--- a/drivers/infiniband/hw/mlx5/odp.c
++++ b/drivers/infiniband/hw/mlx5/odp.c
+@@ -497,7 +497,7 @@ void mlx5_ib_free_implicit_mr(struct mlx5_ib_mr *imr)
+ static int pagefault_mr(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr,
+ 			u64 io_virt, size_t bcnt, u32 *bytes_mapped)
+ {
+-	u64 access_mask = ODP_READ_ALLOWED_BIT;
++	u64 access_mask;
+ 	int npages = 0, page_shift, np;
+ 	u64 start_idx, page_mask;
+ 	struct ib_umem_odp *odp;
+@@ -522,6 +522,7 @@ static int pagefault_mr(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr,
+ 	page_shift = mr->umem->page_shift;
+ 	page_mask = ~(BIT(page_shift) - 1);
+ 	start_idx = (io_virt - (mr->mmkey.iova & page_mask)) >> page_shift;
++	access_mask = ODP_READ_ALLOWED_BIT;
  
-+	if (file->async_file)
-+		kref_put(&file->async_file->ref,
-+			 ib_uverbs_release_async_event_file);
- 	kobject_put(&file->device->kobj);
- 	kfree(file);
- }
-@@ -915,10 +918,6 @@ static int ib_uverbs_close(struct inode *inode, struct file *filp)
- 	}
- 	mutex_unlock(&file->device->lists_mutex);
- 
--	if (file->async_file)
--		kref_put(&file->async_file->ref,
--			 ib_uverbs_release_async_event_file);
--
- 	kref_put(&file->ref, ib_uverbs_release_file);
- 
- 	return 0;
+ 	if (mr->umem->writable)
+ 		access_mask |= ODP_WRITE_ALLOWED_BIT;
 -- 
 2.20.1
 
