@@ -2,35 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C03A6EED
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2019 18:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA36A6FDB
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2019 18:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730397AbfICQ3f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Sep 2019 12:29:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51856 "EHLO mail.kernel.org"
+        id S1730747AbfICQ05 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Sep 2019 12:26:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731310AbfICQ3N (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 3 Sep 2019 12:29:13 -0400
+        id S1730739AbfICQ05 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 3 Sep 2019 12:26:57 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 964752343A;
-        Tue,  3 Sep 2019 16:29:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 490CF23431;
+        Tue,  3 Sep 2019 16:26:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567528152;
-        bh=hBx5ImkVQqYWq+cF/CW/LVs6pWNQ4sgiXx/pajQkoCk=;
+        s=default; t=1567528016;
+        bh=U8Q/brz7/SXnxP9IztjpaNyjAEnLVU06LFBDqXK0GF0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xC5hQCHGH2YIDhB6uD1Hp8sQ3MlC0vL2SgDiWNhGg9qNxzCIjl8QxSx9n/801upWL
-         EFHQKSeuU8zTUCUOYeoKfwQ1HGD6Uhmzrmy9HJdOHaknh4DleOum93Xnm44O+VhZlR
-         /SF1mjGFTPyRUt3/3Y9AVCun89HQ2Haje9lJ115w=
+        b=jw3vXNMqZPJLgD/bnNxDtJDWhSWwWVFunfwErW1UOyO0Pp2ODOuV1OD1e0a/0CHZ3
+         Qthyq1NpPaMsysDR/MauQmVQ+ctjXpjolJSSNqz7CdpbQBT0epV3W7CrhQ6Dw7CSzR
+         XLY+YtvKi0GAHvdxBGJGoR+SuNTz1x5FtsYB+5Qg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bart Van Assche <bvanassche@acm.org>,
+Cc:     Yishai Hadas <yishaih@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 140/167] RDMA/srp: Accept again source addresses that do not have a port number
-Date:   Tue,  3 Sep 2019 12:24:52 -0400
-Message-Id: <20190903162519.7136-140-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 054/167] IB/uverbs: Fix OOPs upon device disassociation
+Date:   Tue,  3 Sep 2019 12:23:26 -0400
+Message-Id: <20190903162519.7136-54-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190903162519.7136-1-sashal@kernel.org>
 References: <20190903162519.7136-1-sashal@kernel.org>
@@ -43,91 +44,101 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Yishai Hadas <yishaih@mellanox.com>
 
-[ Upstream commit bcef5b7215681250c4bf8961dfe15e9e4fef97d0 ]
+[ Upstream commit 425784aa5b029eeb80498c73a68f62c3ad1d3b3f ]
 
-The function srp_parse_in() is used both for parsing source address
-specifications and for target address specifications. Target addresses
-must have a port number. Having to specify a port number for source
-addresses is inconvenient. Make sure that srp_parse_in() supports again
-parsing addresses with no port number.
+The async_file might be freed before the disassociation has been ended,
+causing qp shutdown to use after free on it.
 
-Cc: <stable@vger.kernel.org>
-Fixes: c62adb7def71 ("IB/srp: Fix IPv6 address parsing")
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Since uverbs_destroy_ufile_hw is not a fence, it returns if a
+disassociation is ongoing in another thread. It has to be written this way
+to avoid deadlock. However this means that the ufile FD close cannot
+destroy anything that may still be used by an active kref, such as the the
+async_file.
+
+To fix that move the kref_put() to be in ib_uverbs_release_file().
+
+ BUG: unable to handle kernel paging request at ffffffffba682787
+ PGD bc80e067 P4D bc80e067 PUD bc80f063 PMD 1313df163 PTE 80000000bc682061
+ Oops: 0003 [#1] SMP PTI
+ CPU: 1 PID: 32410 Comm: bash Tainted: G           OE 4.20.0-rc6+ #3
+ Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
+ RIP: 0010:__pv_queued_spin_lock_slowpath+0x1b3/0x2a0
+ Code: 98 83 e2 60 49 89 df 48 8b 04 c5 80 18 72 ba 48 8d
+		ba 80 32 02 00 ba 00 80 00 00 4c 8d 65 14 41 bd 01 00 00 00 48 01 c7 85
+		d2 <48> 89 2f 48 89 fb 74 14 8b 45 08 85 c0 75 42 84 d2 74 6b f3 90 83
+ RSP: 0018:ffffc1bbc064fb58 EFLAGS: 00010006
+ RAX: ffffffffba65f4e7 RBX: ffff9f209c656c00 RCX: 0000000000000001
+ RDX: 0000000000008000 RSI: 0000000000000000 RDI: ffffffffba682787
+ RBP: ffff9f217bb23280 R08: 0000000000000001 R09: 0000000000000000
+ R10: ffff9f209d2c7800 R11: ffffffffffffffe8 R12: ffff9f217bb23294
+ R13: 0000000000000001 R14: 0000000000000000 R15: ffff9f209c656c00
+ FS:  00007fac55aad740(0000) GS:ffff9f217bb00000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: ffffffffba682787 CR3: 000000012f8e0000 CR4: 00000000000006e0
+ Call Trace:
+  _raw_spin_lock_irq+0x27/0x30
+  ib_uverbs_release_uevent+0x1e/0xa0 [ib_uverbs]
+  uverbs_free_qp+0x7e/0x90 [ib_uverbs]
+  destroy_hw_idr_uobject+0x1c/0x50 [ib_uverbs]
+  uverbs_destroy_uobject+0x2e/0x180 [ib_uverbs]
+  __uverbs_cleanup_ufile+0x73/0x90 [ib_uverbs]
+  uverbs_destroy_ufile_hw+0x5d/0x120 [ib_uverbs]
+  ib_uverbs_remove_one+0xea/0x240 [ib_uverbs]
+  ib_unregister_device+0xfb/0x200 [ib_core]
+  mlx5_ib_remove+0x51/0xe0 [mlx5_ib]
+  mlx5_remove_device+0xc1/0xd0 [mlx5_core]
+  mlx5_unregister_device+0x3d/0xb0 [mlx5_core]
+  remove_one+0x2a/0x90 [mlx5_core]
+  pci_device_remove+0x3b/0xc0
+  device_release_driver_internal+0x16d/0x240
+  unbind_store+0xb2/0x100
+  kernfs_fop_write+0x102/0x180
+  __vfs_write+0x36/0x1a0
+  ? __alloc_fd+0xa9/0x170
+  ? set_close_on_exec+0x49/0x70
+  vfs_write+0xad/0x1a0
+  ksys_write+0x52/0xc0
+  do_syscall_64+0x5b/0x180
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ RIP: 0033:0x7fac551aac60
+
+Cc: <stable@vger.kernel.org> # 4.2
+Fixes: 036b10635739 ("IB/uverbs: Enable device removal when there are active user space applications")
+Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/srp/ib_srp.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ drivers/infiniband/core/uverbs_main.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index 9da30d88a615e..bc6a44a16445c 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -3404,13 +3404,14 @@ static const match_table_t srp_opt_tokens = {
-  * @net:	   [in]  Network namespace.
-  * @sa:		   [out] Address family, IP address and port number.
-  * @addr_port_str: [in]  IP address and port number.
-+ * @has_port:	   [out] Whether or not @addr_port_str includes a port number.
-  *
-  * Parse the following address formats:
-  * - IPv4: <ip_address>:<port>, e.g. 1.2.3.4:5.
-  * - IPv6: \[<ipv6_address>\]:<port>, e.g. [1::2:3%4]:5.
-  */
- static int srp_parse_in(struct net *net, struct sockaddr_storage *sa,
--			const char *addr_port_str)
-+			const char *addr_port_str, bool *has_port)
- {
- 	char *addr_end, *addr = kstrdup(addr_port_str, GFP_KERNEL);
- 	char *port_str;
-@@ -3419,9 +3420,12 @@ static int srp_parse_in(struct net *net, struct sockaddr_storage *sa,
- 	if (!addr)
- 		return -ENOMEM;
- 	port_str = strrchr(addr, ':');
--	if (!port_str)
--		return -EINVAL;
--	*port_str++ = '\0';
-+	if (port_str && strchr(port_str, ']'))
-+		port_str = NULL;
-+	if (port_str)
-+		*port_str++ = '\0';
-+	if (has_port)
-+		*has_port = port_str != NULL;
- 	ret = inet_pton_with_scope(net, AF_INET, addr, port_str, sa);
- 	if (ret && addr[0]) {
- 		addr_end = addr + strlen(addr) - 1;
-@@ -3443,6 +3447,7 @@ static int srp_parse_options(struct net *net, const char *buf,
- 	char *p;
- 	substring_t args[MAX_OPT_ARGS];
- 	unsigned long long ull;
-+	bool has_port;
- 	int opt_mask = 0;
- 	int token;
- 	int ret = -EINVAL;
-@@ -3541,7 +3546,8 @@ static int srp_parse_options(struct net *net, const char *buf,
- 				ret = -ENOMEM;
- 				goto out;
- 			}
--			ret = srp_parse_in(net, &target->rdma_cm.src.ss, p);
-+			ret = srp_parse_in(net, &target->rdma_cm.src.ss, p,
-+					   NULL);
- 			if (ret < 0) {
- 				pr_warn("bad source parameter '%s'\n", p);
- 				kfree(p);
-@@ -3557,7 +3563,10 @@ static int srp_parse_options(struct net *net, const char *buf,
- 				ret = -ENOMEM;
- 				goto out;
- 			}
--			ret = srp_parse_in(net, &target->rdma_cm.dst.ss, p);
-+			ret = srp_parse_in(net, &target->rdma_cm.dst.ss, p,
-+					   &has_port);
-+			if (!has_port)
-+				ret = -EINVAL;
- 			if (ret < 0) {
- 				pr_warn("bad dest parameter '%s'\n", p);
- 				kfree(p);
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index 50152c1b10045..357de3b4fdddf 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -265,6 +265,9 @@ void ib_uverbs_release_file(struct kref *ref)
+ 	if (atomic_dec_and_test(&file->device->refcount))
+ 		ib_uverbs_comp_dev(file->device);
+ 
++	if (file->async_file)
++		kref_put(&file->async_file->ref,
++			 ib_uverbs_release_async_event_file);
+ 	kobject_put(&file->device->kobj);
+ 	kfree(file);
+ }
+@@ -915,10 +918,6 @@ static int ib_uverbs_close(struct inode *inode, struct file *filp)
+ 	}
+ 	mutex_unlock(&file->device->lists_mutex);
+ 
+-	if (file->async_file)
+-		kref_put(&file->async_file->ref,
+-			 ib_uverbs_release_async_event_file);
+-
+ 	kref_put(&file->ref, ib_uverbs_release_file);
+ 
+ 	return 0;
 -- 
 2.20.1
 
