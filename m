@@ -2,144 +2,293 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B1587A6539
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2019 11:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41146A6785
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2019 13:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728366AbfICJbt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Sep 2019 05:31:49 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:4438 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727077AbfICJbr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Sep 2019 05:31:47 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x839ToMV006652;
-        Tue, 3 Sep 2019 02:31:43 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pfpt0818;
- bh=aACiXf8Kg++ReAyAMtQ0aJcqMXJErnZmlG2VOGG1Oro=;
- b=YRsZ/n5Gb4p6offnpx7Vt9YXFVDKKOAslpTm0xwc0jeDRbE0y7TdNyiOTP3ne8RmJZrL
- yFFrDWOAvhmdv6OAwr5keBb7+7qNdYtK+7HhCObcMArLUBzYAjl5NKrrkLGVJvjzUov7
- Ksz+nfalbVJCdiQEG7jJqSf1L2MhmYRq+zSOrxF+EpDxd77H7aM+7j0Zgrh25Y4td/K1
- xJZ7ZNWy1ZBkqAR029JU6yyItRn607m+BXPOYz4bBg7rCDR8wfkVGp6A3qNpWugnIqYA
- pQSaYe6EB+tol13PbBXQPJogRUOKdh+hYM9eMWh5XzA/hOhDOXOWe4fowvaUB9cb4XYz ZQ== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0a-0016f401.pphosted.com with ESMTP id 2uqp8p9jd4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 03 Sep 2019 02:31:43 -0700
-Received: from SC-EXCH02.marvell.com (10.93.176.82) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Tue, 3 Sep
- 2019 02:31:41 -0700
-Received: from NAM03-BY2-obe.outbound.protection.outlook.com (104.47.42.53) by
- SC-EXCH02.marvell.com (10.93.176.82) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Tue, 3 Sep 2019 02:31:41 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QxO0k4b4d8W2BHeiz9MixSrdLZ1Or6Cb74eCa8nLBm9FPxKbhtjHna6esmZRQj0fbGuyjQi+PgkxYc+m+vs41JlZYYPnnfoZkXnx2h4Sr9MtsL7/hGNOSglbcl0ARLqm6NtUFjOKKRoc0B6GcRjFa7q9Yh11w8t4SZsYsVr2xSA6ifQuS4OibK1u1KXgTM5tNQcJvc4tg77nzjdrvAy2PibylcUCwIQVJV+VZgvAKDfLAksbgfu2wPYKv0Q5hxGTpEVXq4b23XOx58cyBuPrB2RvCifPka+O+Qoj3jaDPMxJgzEf9Kuf0d4DNSty9v6x9TykYzU7iwj/cq+yIjEuDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aACiXf8Kg++ReAyAMtQ0aJcqMXJErnZmlG2VOGG1Oro=;
- b=UXHqIs0nP7NFjwkPPRm1/G0TrBjBsomlKAkH6bpZYYBOEH8IcYEK9uBkpOut/P0cXymQC1W+D417tPtrfBgT3MjWNAzY/3RsSLg+tZccBJIrjS81Cv0rW+hEUePVM5jNFMt3Df4qM8GgTL2JxpfjviPrpr9twg6xDyML60ipkn9OD+Y9/U5XWnuB51IT4JlVJKXO4qZpWZ0Gv2Ea+tLytiRw5RjwCSk2BOb8I/i4/E+YKmMo/kyV9WME4DxJ9oB1axTcGTcGAvb8hYZPtyeZRR4d9B5KWvFu3Yw4ANx6HT9nJdVtnjHpkBhNuLH6jgTn6+baMmzs4YfNPyMZOpZkJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector2-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aACiXf8Kg++ReAyAMtQ0aJcqMXJErnZmlG2VOGG1Oro=;
- b=RSWy+2S0Pp1ZnuI3X53xy3Erh5BlngVqPAFyKHW8xuAfOjedA0QnTPpl5YJWgywCH4H9EVhkyA49c+JplcurF5lrgHVt25qx43HaZnFSbDMXQuZMhkCoHFkj9GK/56QhA8zHKxBJ6gPMAA8dfI3Fq4BeMo3m9BZbeMVjoWHUzro=
-Received: from MN2PR18MB3182.namprd18.prod.outlook.com (10.255.236.143) by
- MN2PR18MB3103.namprd18.prod.outlook.com (10.255.86.28) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2199.20; Tue, 3 Sep 2019 09:31:19 +0000
-Received: from MN2PR18MB3182.namprd18.prod.outlook.com
- ([fe80::9d49:7d09:abb5:34e8]) by MN2PR18MB3182.namprd18.prod.outlook.com
- ([fe80::9d49:7d09:abb5:34e8%7]) with mapi id 15.20.2220.021; Tue, 3 Sep 2019
- 09:31:19 +0000
-From:   Michal Kalderon <mkalderon@marvell.com>
-To:     Gal Pressman <galpress@amazon.com>
-CC:     Ariel Elior <aelior@marvell.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "bmt@zurich.ibm.com" <bmt@zurich.ibm.com>,
-        "sleybo@amazon.com" <sleybo@amazon.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Ariel Elior <aelior@marvell.com>
-Subject: RE: [PATCH v9 rdma-next 3/7] RDMA/efa: Use the common mmap_xa helpers
-Thread-Topic: [PATCH v9 rdma-next 3/7] RDMA/efa: Use the common mmap_xa
- helpers
-Thread-Index: AQHVYasE9IckMm8hhkyxDQ4T8KGJo6cZpSsAgAALhHA=
-Date:   Tue, 3 Sep 2019 09:31:18 +0000
-Message-ID: <MN2PR18MB31827812160980AA00992B92A1B90@MN2PR18MB3182.namprd18.prod.outlook.com>
-References: <20190902162314.17508-1-michal.kalderon@marvell.com>
- <20190902162314.17508-4-michal.kalderon@marvell.com>
- <c6a758ce-3b9e-5e95-5a44-d8add311d976@amazon.com>
-In-Reply-To: <c6a758ce-3b9e-5e95-5a44-d8add311d976@amazon.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [79.177.63.148]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 36f1506a-51b4-42fb-a07a-08d7305179db
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MN2PR18MB3103;
-x-ms-traffictypediagnostic: MN2PR18MB3103:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR18MB31032D38452E0CA0F6F7E870A1B90@MN2PR18MB3103.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3513;
-x-forefront-prvs: 01494FA7F7
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(396003)(376002)(39850400004)(136003)(366004)(199004)(189003)(66946007)(486006)(7736002)(8936002)(81166006)(81156014)(446003)(229853002)(53936002)(86362001)(2906002)(186003)(305945005)(53546011)(11346002)(74316002)(9686003)(64756008)(14454004)(4326008)(52536014)(316002)(6916009)(256004)(76176011)(102836004)(71190400001)(71200400001)(7696005)(54906003)(33656002)(6436002)(107886003)(476003)(66066001)(26005)(6246003)(3846002)(6116002)(8676002)(25786009)(5660300002)(478600001)(76116006)(66446008)(6506007)(99286004)(55016002)(66556008)(66476007);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR18MB3103;H:MN2PR18MB3182.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: marvell.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: PkIuDO7j9C4WEq3MxGvHmdYoWB9EaPwEb5eYrlfyFY74Fu+yHjxGKVUufCtjmsBTASYbsOcj6pk4u59J29Gp/oeiamPCLc1ehsR9vbozS1TX1oALRa29zgMwF+nNKRyJSacNrpvx/CEEzFz58xOlyXq8TOHXLhLk2QzeyhC9Y4BMidzcPxD6ks2/i2MPy3FqO/GzMQ9xnuqdFhnLo9ZL4v9lw65Rvzoqf6S+n0qu4P8eaFl4QXTNsI8y3ZKsozJib4S54b0dfkgeENUM0JQPowlSCxl3I833A/zL9VR5LH5r/qVEtjtv+6lDFrcpkVLjyEK/PmcKGzq4whrJl/JkiSvg4xq2BYRIOi/DR71mfTJ6vQidQQrG6DneqIC0YWdNKRfXITEcq2QuJ/SD3jZogPCTB2ViVWIuejtuQuaC1TM=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1727639AbfICLhw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 3 Sep 2019 07:37:52 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44416 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728587AbfICLhw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Sep 2019 07:37:52 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x83Bbnk8042923
+        for <linux-rdma@vger.kernel.org>; Tue, 3 Sep 2019 07:37:50 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.114])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2usmc6pgsf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Sep 2019 07:37:48 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 3 Sep 2019 11:37:20 -0000
+Received: from us1b3-smtp06.a3dr.sjc01.isc4sb.com (10.122.203.184)
+        by smtp.notes.na.collabserv.com (10.122.47.58) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 3 Sep 2019 11:37:13 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp06.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019090311371292-342264 ;
+          Tue, 3 Sep 2019 11:37:12 +0000 
+In-Reply-To: <20190902162314.17508-1-michal.kalderon@marvell.com>
+Subject: Re: [PATCH v9 rdma-next 0/7] RDMA/qedr: Use the doorbell overflow recovery
+ mechanism for RDMA
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Michal Kalderon" <michal.kalderon@marvell.com>
+Cc:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
+        <dledford@redhat.com>, <galpress@amazon.com>, <sleybo@amazon.com>,
+        <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+Date:   Tue, 3 Sep 2019 11:37:13 +0000
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 36f1506a-51b4-42fb-a07a-08d7305179db
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Sep 2019 09:31:18.9316
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 96wFzZpTf5ULHAOkJF/jLjOaFHUiUPkgnXg0eCC+KuNC7neHa7kp0lvp1yPUuzw2tDIydzcspQ9H8BzDyfjYNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB3103
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
- definitions=2019-09-03_01:2019-09-03,2019-09-03 signatures=0
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20190902162314.17508-1-michal.kalderon@marvell.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
+X-KeepSent: 54E87903:EA13ABB5-0025846A:003EBEF2;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 54671
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19090311-1639-0000-0000-0000004F13F2
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.415104; ST=0; TS=0; UL=0; ISC=; MB=0.315424
+X-IBM-SpamModules-Versions: BY=3.00011709; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000287; SDB=6.01256085; UDB=6.00663640; IPR=6.01037752;
+ MB=3.00028449; MTD=3.00000008; XFM=3.00000015; UTC=2019-09-03 11:37:19
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-09-03 05:39:54 - 6.00010363
+x-cbparentid: 19090311-1640-0000-0000-0000007E14D6
+Message-Id: <OF54E87903.EA13ABB5-ON0025846A.003EBEF2-0025846A.003FD51F@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-03_01:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-PiBGcm9tOiBsaW51eC1yZG1hLW93bmVyQHZnZXIua2VybmVsLm9yZyA8bGludXgtcmRtYS0NCj4g
-b3duZXJAdmdlci5rZXJuZWwub3JnPiBPbiBCZWhhbGYgT2YgR2FsIFByZXNzbWFuDQo+IA0KPiBP
-biAwMi8wOS8yMDE5IDE5OjIzLCBNaWNoYWwgS2FsZGVyb24gd3JvdGU6DQo+ID4gIGludCBlZmFf
-ZGVzdHJveV9xcChzdHJ1Y3QgaWJfcXAgKmlicXAsIHN0cnVjdCBpYl91ZGF0YSAqdWRhdGEpICB7
-DQo+ID4gKwlzdHJ1Y3QgZWZhX3Vjb250ZXh0ICp1Y29udGV4dCA9DQo+IHJkbWFfdWRhdGFfdG9f
-ZHJ2X2NvbnRleHQodWRhdGEsDQo+ID4gKwkJc3RydWN0IGVmYV91Y29udGV4dCwgaWJ1Y29udGV4
-dCk7DQo+ID4gIAlzdHJ1Y3QgZWZhX2RldiAqZGV2ID0gdG9fZWRldihpYnFwLT5wZC0+ZGV2aWNl
-KTsNCj4gPiAgCXN0cnVjdCBlZmFfcXAgKnFwID0gdG9fZXFwKGlicXApOw0KPiA+ICAJaW50IGVy
-cjsNCj4gPg0KPiA+ICAJaWJkZXZfZGJnKCZkZXYtPmliZGV2LCAiRGVzdHJveSBxcFsldV1cbiIs
-IGlicXAtPnFwX251bSk7DQo+ID4gKw0KPiA+ICsJZWZhX3FwX3VzZXJfbW1hcF9lbnRyaWVzX3Jl
-bW92ZSh1Y29udGV4dCwgcXApOw0KPiA+ICsNCj4gPiAgCWVyciA9IGVmYV9kZXN0cm95X3FwX2hh
-bmRsZShkZXYsIHFwLT5xcF9oYW5kbGUpOw0KPiA+ICAJaWYgKGVycikNCj4gPiAgCQlyZXR1cm4g
-ZXJyOw0KPiA+IEBAIC01MDksNTcgKzQxMiwxMTQgQEAgaW50IGVmYV9kZXN0cm95X3FwKHN0cnVj
-dCBpYl9xcCAqaWJxcCwgc3RydWN0DQo+IGliX3VkYXRhICp1ZGF0YSkNCj4gPiAgCXJldHVybiAw
-Ow0KPiA+ICB9DQo+ID4NCj4gPiAgdm9pZCBlZmFfZGVzdHJveV9jcShzdHJ1Y3QgaWJfY3EgKmli
-Y3EsIHN0cnVjdCBpYl91ZGF0YSAqdWRhdGEpICB7DQo+ID4gKwlzdHJ1Y3QgZWZhX3Vjb250ZXh0
-ICp1Y29udGV4dCA9DQo+IHJkbWFfdWRhdGFfdG9fZHJ2X2NvbnRleHQodWRhdGEsDQo+ID4gKwkJ
-CXN0cnVjdCBlZmFfdWNvbnRleHQsIGlidWNvbnRleHQpOw0KPiA+ICsNCj4gPiAgCXN0cnVjdCBl
-ZmFfZGV2ICpkZXYgPSB0b19lZGV2KGliY3EtPmRldmljZSk7DQo+ID4gIAlzdHJ1Y3QgZWZhX2Nx
-ICpjcSA9IHRvX2VjcShpYmNxKTsNCj4gPg0KPiA+IEBAIC04OTcsMTcgKzg2MiwyOCBAQCB2b2lk
-IGVmYV9kZXN0cm95X2NxKHN0cnVjdCBpYl9jcSAqaWJjcSwgc3RydWN0DQo+IGliX3VkYXRhICp1
-ZGF0YSkNCj4gPiAgCWVmYV9kZXN0cm95X2NxX2lkeChkZXYsIGNxLT5jcV9pZHgpOw0KPiA+ICAJ
-ZG1hX3VubWFwX3NpbmdsZSgmZGV2LT5wZGV2LT5kZXYsIGNxLT5kbWFfYWRkciwgY3EtPnNpemUs
-DQo+ID4gIAkJCSBETUFfRlJPTV9ERVZJQ0UpOw0KPiA+ICsJcmRtYV91c2VyX21tYXBfZW50cnlf
-cmVtb3ZlKCZ1Y29udGV4dC0+aWJ1Y29udGV4dCwNCj4gPiArCQkJCSAgICBjcS0+bW1hcF9rZXkp
-Ow0KPiANCj4gSG93IGNvbWUgaW4gZGVzdHJveV9xcCB3ZSBkbyBlbnRyeSByZW1vdmFsIGZpcnN0
-LCBidXQgaW4gZGVzdHJveV9jcSBpdCdzDQo+IGxhc3Q/DQo+IFNob3VsZG4ndCBpdCBiZSB0aGUg
-c2FtZT8NClllcywgeW91J3JlIHJpZ2h0LCBpdCBzaG91bGQgYmUgZG9uZSBhZnRlciBtZW1vcnkg
-aXMgdW5tYXBwZWQsIEknbGwgbW92ZSBpdCBkb3duDQpJbiB0aGUgZGVzdHJveSBxcCBmbG93LiBJ
-cyB0aGlzIHRoZSBvbmx5IGNvbW1lbnQgb24gdGhpcyBzZXJpZXMgPyANClRoYW5rcywNCk1pY2hh
-bCANCg0KDQo=
+-----"Michal Kalderon" <michal.kalderon@marvell.com> wrote: -----
+
+>To: <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
+><dledford@redhat.com>, <bmt@zurich.ibm.com>, <galpress@amazon.com>,
+><sleybo@amazon.com>, <leon@kernel.org>
+>From: "Michal Kalderon" <michal.kalderon@marvell.com>
+>Date: 09/02/2019 06:25PM
+>Cc: <linux-rdma@vger.kernel.org>, "Michal Kalderon"
+><michal.kalderon@marvell.com>
+>Subject: [EXTERNAL] [PATCH v9 rdma-next 0/7] RDMA/qedr: Use the
+>doorbell overflow recovery mechanism for RDMA
+>
+>This patch series uses the doorbell overflow recovery mechanism
+>introduced in
+>commit 36907cd5cd72 ("qed: Add doorbell overflow recovery mechanism")
+>for rdma ( RoCE and iWARP )
+>
+
+
+Hi Michal,
+
+I wanted to try out things -- can you please help me:
+Where would that patch apply to? I tried rdma-next
+master and for-next. I am getting conflicts in
+drivers/infiniband/core/ib_core_uverbs.c. Is there
+any previous patch needed for this series?
+
+Thanks very much and best regards,
+Bernard.
+
+
+>The first five patches modify the core code to contain helper
+>functions for managing mmap_xa inserting, getting and freeing
+>entries. The code was based on the code from efa driver.
+>There is still an open discussion on whether we should take
+>this even further and make the entire mmap generic. Until a
+>decision is made, I only created the database API and modified
+>the efa, qedr, siw driver to use it. The functions are integrated
+>with the umap mechanism.
+>
+>The doorbell recovery code is based on the common code.
+>
+>Efa driver was compile tested and checked only modprobe/rmmod.
+>SIW was compile tested and checked only modprobe/rmmod.
+>
+>rdma-core pull request #493
+>
+>Changes from V8:
+>- CORE changes
+>  - Fix race between getting an entry and deleting it. Increase
+>    the refcount under the lock only if it is not zero.  Erase all
+>entries
+>    with __xa_erase instead of xa_erase and take the lock outside the
+>loop.
+>  - Fix comment when erasing all the xa_entries of a single
+>mmap_entry.
+>  - Take comment out of loop
+>  - Change length field in driver structures to be size_t instead of
+>u64
+>    suggested by Bernard Metzler
+>  - Change do..while(true) to while(true)
+>- COMMON driver changes
+>  - Change mmap length to be size_t instead of u64.
+>  - In mmap, call put_entry if there is a length error.
+>- EFA changes:
+>  - Reverse mmap entries remove order.
+>  - Give meaningful label names in create_qp error flows.
+>  - In error flow undo change that frees pages based only on key and
+>    make sure rq_size > 0 first.
+>  - Fix xmas tree alignment, move ucontext initialization to
+>declaration
+>    line.
+>- SIW changes:
+>  - Changes received from Bernard Metzler
+>	- make the siw_user_mmap_entry.address a void *, which
+>	  naturally fits with remap_vmalloc_range. also avoids
+>	  other casting during resource address assignment.
+>	- do not kfree SQ/RQ/CQ/SRQ in preparation of mmap.
+>	  Those resources are always further needed ;)
+>	- Fix check for correct mmap range in siw_mmap().
+>	  - entry->length is the object length. We have to
+>	    expand to PAGE_ALIGN(entry->length), since mmap
+>	    comes with complete page(s) containing the
+>	    object.
+>	  - put mmap_entry if that check fails. Otherwise
+>	    entry object ref counting screws up, and later
+>	    crashes during context close.
+>	- simplify siw_mmap_free() - it must just free
+>	  the entry.
+>  - Change length to size_t instead of u64
+>
+>Changes from V7:
+>- Remove license text, SPDX id should suffice.
+>- Fix some comments text.
+>- Add comment regarding vm_ops being set in ib_uverbs_mmap.
+>- Allocate the rdma_user_mmap_entry in the driver and not in the
+>  ib_core_uverbs. This lead to defining three new structures per
+>driver
+>  and seperating the fields between the driver private structures and
+>  the common rdma_user_mmap_entry. Freeing the entry was also moved
+>  to the drivers.
+>- Fix bug found by Gal Pressman. Call mmap_free only once per entry.
+>- Add a mutex around xa_mmap insert to assure threads won't intefere
+>  while the xa lock is released when inserting an entry into the
+>range.
+>- Modify the insert algorithm to be more elegant using the
+>  xas_next_entry instead of foreach.
+>- Remove the rdma_user_mmap_entries_remove_free function, now that
+>umap.
+>  and mmap_xa are integrated we should not have any entries in the
+>mmap_xa
+>  when ucontext is released. Replace the function with a
+>WARN_ON(!xa_empty).
+>- Rdma_umap_open needs to reset the vm_private_data before
+>initializing it.
+>- Decrease rdma_user_mmap_entry reference count on mmap disassociate.
+>- Remove WARN_ON(!kref_read) this is checked when kref debug is on.
+>- Remove some redundant defines from ib_verbs.h.
+>- Better error handling for efa create qp flow.
+>- Add a function that wraps the entry allocation and
+>rdma_user_mmap_entry_insert
+>  which is used in all places that need to add an entry to the
+>xarray.
+>- Remove rq_entry_inserted field in efa create qp flow.
+>- Add mmap_free to siw and free the memory only on mmap free and not
+>before.
+>
+>Changes from V6:
+>- Modified series description to be closer to what the series is now.
+>- Create a new file for the new rdma_user_mmap function. The file
+>  is called ib_uverbs_core. This file should contain functions
+>related
+>  to user which are called by hw to eventually enable ib_uverbs to be
+>  optional.
+>- Modify SIW driver to use new mmap api.
+>- When calculating number of pages, need to round it up to PAGE_SIZE.
+>- Integrate the mmap_xa and umap mechanism so that the entries in
+>  mmap_xa now have a reference count and can be removed. Previously
+>  entries existed until context was destroyed. This modified the
+>  algorithm for allocating a free page range.
+>- Modify algorithm for inserting an entry into the mmap_xa.
+>- Rdma_umap_priv is now also used for all mmaps done using the
+>  mmap_xa helpers.
+>- Move remove_free header to core_priv.
+>- Rdma_user_mmap_entry now has a kref that is increase on mmap
+>  and umap_open and decreased on umap_close.
+>- Modify efa + qedr to remove the entry from xa_map. This will
+>  decrease the refcnt and free memory only if refcnt is zero.
+>- Rdma_user_mmap_io slightly modified to enable drivers not using
+>  the xa_mmap API to continue using it.
+>- Modify page allocation for user to use GFP_USER instead of
+>GFP_KERNEL
+>
+>Changes from V5:
+>- Switch between driver dealloc_ucontext and mmap_entries_remove
+>call.
+>- No need to verify the key after using the key to load an entry from
+>  the mmap_xa.
+>- Change mmap_free api to pass an 'entry' object.
+>- Add documentation for mmap_free and for newly exported functions.
+>- Fix some extra/missing line breaks.
+>
+>Changes from V4:
+>- Add common mmap database and cookie helper functions.
+>
+>Changes from V3:
+>- Remove casts from void to u8. Pointer arithmetic can be done on
+>void
+>- rebase to tip of rdma-next
+>
+>Changes from V2:
+>- Don't use long-lived kmap. Instead use user-trigger mmap for the
+>  doorbell recovery entries.
+>- Modify dpi_addr to be denoted with __iomem and avoid redundant
+>  casts
+>
+>Changes from V1:
+>- call kmap to map virtual address into kernel space
+>- modify db_rec_delete to be void
+>- remove some cpu_to_le16 that were added to previous patch which are
+>  correct but not related to the overflow recovery mechanism. Will be
+>  submitted as part of a different patch
+>
+>
+>Michal Kalderon (7):
+>  RDMA/core: Move core content from ib_uverbs to ib_core
+>  RDMA/core: Create mmap database and cookie helper functions
+>  RDMA/efa: Use the common mmap_xa helpers
+>  RDMA/siw: Use the common mmap_xa helpers
+>  RDMA/qedr: Use the common mmap API
+>  RDMA/qedr: Add doorbell overflow recovery support
+>  RDMA/qedr: Add iWARP doorbell recovery support
+>
+> drivers/infiniband/core/Makefile         |   2 +-
+> drivers/infiniband/core/core_priv.h      |  16 +
+> drivers/infiniband/core/device.c         |   1 +
+> drivers/infiniband/core/ib_core_uverbs.c | 353 ++++++++++++++++++++
+> drivers/infiniband/core/rdma_core.c      |   1 +
+> drivers/infiniband/core/uverbs_cmd.c     |   1 +
+> drivers/infiniband/core/uverbs_main.c    |  97 +-----
+> drivers/infiniband/hw/efa/efa.h          |  18 +-
+> drivers/infiniband/hw/efa/efa_main.c     |   1 +
+> drivers/infiniband/hw/efa/efa_verbs.c    | 360 ++++++++++----------
+> drivers/infiniband/hw/qedr/main.c        |   1 +
+> drivers/infiniband/hw/qedr/qedr.h        |  45 ++-
+> drivers/infiniband/hw/qedr/verbs.c       | 544
+>++++++++++++++++++++++---------
+> drivers/infiniband/hw/qedr/verbs.h       |   3 +-
+> drivers/infiniband/sw/siw/siw.h          |  20 +-
+> drivers/infiniband/sw/siw/siw_main.c     |   1 +
+> drivers/infiniband/sw/siw/siw_verbs.c    | 216 ++++++------
+> drivers/infiniband/sw/siw/siw_verbs.h    |   1 +
+> include/rdma/ib_verbs.h                  |  37 ++-
+> include/uapi/rdma/qedr-abi.h             |  25 ++
+> 20 files changed, 1196 insertions(+), 547 deletions(-)
+> create mode 100644 drivers/infiniband/core/ib_core_uverbs.c
+>
+>-- 
+>2.14.5
+>
+>
+
