@@ -2,142 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E92A70B2
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2019 18:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2754A7397
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2019 21:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730046AbfICQkq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Sep 2019 12:40:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730213AbfICQY7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 3 Sep 2019 12:24:59 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B30F23431;
-        Tue,  3 Sep 2019 16:24:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567527898;
-        bh=bNbMGqAe9otMXDvcbH3us16H3ybiZym4a+BXb5+wTts=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HIg1gI5BKNw/+JAjJjJ60HpubgWrgdrioNZSwWdCuFS10/TPQJz59vRit8q2OewFO
-         UjRfTt0TKEBj+vMeXxUCTTrg65cmGm/2+bJyUaimHTvwSzwSnpNCtb0NOW1NHantv+
-         TfEdCrUEqZlsRVkS6kBhDb/h4jQLzUq9kmBKcQVg=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kaike Wan <kaike.wan@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 11/23] IB/hfi1: Unreserve a flushed OPFN request
-Date:   Tue,  3 Sep 2019 12:24:12 -0400
-Message-Id: <20190903162424.6877-11-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190903162424.6877-1-sashal@kernel.org>
-References: <20190903162424.6877-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1726179AbfICTWZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Sep 2019 15:22:25 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:40080 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbfICTWY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Sep 2019 15:22:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Message-Id:Date:Subject:Cc:To:From:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=rOgj+Udj/SVslBo/wGoCPgqIw1KOQxB8hV1eV7Z2miA=; b=GmwS5TWqrEtYXxR842AsUVQYL
+        xseCOLMrFSnDM+ac9wXElaUWnFiBr+v9qJrop7yORQpXo/m+Dg2FwdLwPKtMqYnUhEH1+xh1O3yV7
+        jLsNoRsgp2cj5b2yQP67hDnVeVfOVnGxtmAiXFaqkvBtHgvWvPXltGyD0ZwV+D1YZBfms8g5e6LuC
+        28QbbxyA8TmxtgQ6ibKbU7XA+Op2mRDCHRbjG4lUguJxrnv+gUmBQ1C4LRUBmN+ovObxaUvKY5RHb
+        OQWPSgfjTbHT0do6QRFw9dFiQsVap2AH4jVV13bGQj8BkWYealDLr3eImr3KQjlpsZ2KD/x2eJyrL
+        rYCl8jqLQ==;
+Received: from [2600:1700:65a0:78e0:514:7862:1503:8e4d] (helo=sagi-Latitude-E7470.lbits)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1i5ENk-0007iu-6f; Tue, 03 Sep 2019 19:22:24 +0000
+From:   Sagi Grimberg <sagi@grimberg.me>
+To:     linux-rdma@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>
+Subject: [PATCH] iwcm: don't hold the irq disabled lock on iw_rem_ref
+Date:   Tue,  3 Sep 2019 12:22:23 -0700
+Message-Id: <20190903192223.17342-1-sagi@grimberg.me>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Kaike Wan <kaike.wan@intel.com>
+This may be the final put on a qp and result in freeing
+resourcesand should not be done with interrupts disabled.
 
-When an OPFN request is flushed, the request is completed without
-unreserving itself from the send queue. Subsequently, when a new
-request is post sent, the following warning will be triggered:
+Produce the following warning:
+--
+[  317.026048] WARNING: CPU: 1 PID: 443 at kernel/smp.c:425 smp_call_function_many+0xa0/0x260
+[  317.026131] Call Trace:
+[  317.026159]  ? load_new_mm_cr3+0xe0/0xe0
+[  317.026161]  on_each_cpu+0x28/0x50
+[  317.026183]  __purge_vmap_area_lazy+0x72/0x150
+[  317.026200]  free_vmap_area_noflush+0x7a/0x90
+[  317.026202]  remove_vm_area+0x6f/0x80
+[  317.026203]  __vunmap+0x71/0x210
+[  317.026211]  siw_free_qp+0x8d/0x130 [siw]
+[  317.026217]  destroy_cm_id+0xc3/0x200 [iw_cm]
+[  317.026222]  rdma_destroy_id+0x224/0x2b0 [rdma_cm]
+[  317.026226]  nvme_rdma_reset_ctrl_work+0x2c/0x70 [nvme_rdma]
+[  317.026235]  process_one_work+0x1f4/0x3e0
+[  317.026249]  worker_thread+0x221/0x3e0
+[  317.026252]  ? process_one_work+0x3e0/0x3e0
+[  317.026256]  kthread+0x117/0x130
+[  317.026264]  ? kthread_create_worker_on_cpu+0x70/0x70
+[  317.026275]  ret_from_fork+0x35/0x40
+--
 
-WARNING: CPU: 4 PID: 8130 at rdmavt/qp.c:1761 rvt_post_send+0x72a/0x880 [rdmavt]
-Call Trace:
-[<ffffffffbbb61e41>] dump_stack+0x19/0x1b
-[<ffffffffbb497688>] __warn+0xd8/0x100
-[<ffffffffbb4977cd>] warn_slowpath_null+0x1d/0x20
-[<ffffffffc01c941a>] rvt_post_send+0x72a/0x880 [rdmavt]
-[<ffffffffbb4dcabe>] ? account_entity_dequeue+0xae/0xd0
-[<ffffffffbb61d645>] ? __kmalloc+0x55/0x230
-[<ffffffffc04e1a4c>] ib_uverbs_post_send+0x37c/0x5d0 [ib_uverbs]
-[<ffffffffc04e5e36>] ? rdma_lookup_put_uobject+0x26/0x60 [ib_uverbs]
-[<ffffffffc04dbce6>] ib_uverbs_write+0x286/0x460 [ib_uverbs]
-[<ffffffffbb6f9457>] ? security_file_permission+0x27/0xa0
-[<ffffffffbb641650>] vfs_write+0xc0/0x1f0
-[<ffffffffbb64246f>] SyS_write+0x7f/0xf0
-[<ffffffffbbb74ddb>] system_call_fastpath+0x22/0x27
-
-This patch fixes the problem by moving rvt_qp_wqe_unreserve() into
-rvt_qp_complete_swqe() to simplify the code and make it less
-error-prone.
-
-Fixes: ca95f802ef51 ("IB/hfi1: Unreserve a reserved request when it is completed")
-Link: https://lore.kernel.org/r/20190715164528.74174.31364.stgit@awfm-01.aw.intel.com
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Signed-off-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
 ---
- drivers/infiniband/hw/hfi1/rc.c | 2 --
- include/rdma/rdmavt_qp.h        | 9 ++++-----
- 2 files changed, 4 insertions(+), 7 deletions(-)
+ drivers/infiniband/core/iwcm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/infiniband/hw/hfi1/rc.c b/drivers/infiniband/hw/hfi1/rc.c
-index 235bdbc706acc..5c0d90418e8c4 100644
---- a/drivers/infiniband/hw/hfi1/rc.c
-+++ b/drivers/infiniband/hw/hfi1/rc.c
-@@ -1835,7 +1835,6 @@ void hfi1_rc_send_complete(struct rvt_qp *qp, struct hfi1_opa_header *opah)
- 		    cmp_psn(qp->s_sending_psn, qp->s_sending_hpsn) <= 0)
- 			break;
- 		trdma_clean_swqe(qp, wqe);
--		rvt_qp_wqe_unreserve(qp, wqe);
- 		trace_hfi1_qp_send_completion(qp, wqe, qp->s_last);
- 		rvt_qp_complete_swqe(qp,
- 				     wqe,
-@@ -1882,7 +1881,6 @@ struct rvt_swqe *do_rc_completion(struct rvt_qp *qp,
- 	if (cmp_psn(wqe->lpsn, qp->s_sending_psn) < 0 ||
- 	    cmp_psn(qp->s_sending_psn, qp->s_sending_hpsn) > 0) {
- 		trdma_clean_swqe(qp, wqe);
--		rvt_qp_wqe_unreserve(qp, wqe);
- 		trace_hfi1_qp_send_completion(qp, wqe, qp->s_last);
- 		rvt_qp_complete_swqe(qp,
- 				     wqe,
-diff --git a/include/rdma/rdmavt_qp.h b/include/rdma/rdmavt_qp.h
-index 84d0f36afc2f7..85544777587db 100644
---- a/include/rdma/rdmavt_qp.h
-+++ b/include/rdma/rdmavt_qp.h
-@@ -540,7 +540,7 @@ static inline void rvt_qp_wqe_reserve(
- /**
-  * rvt_qp_wqe_unreserve - clean reserved operation
-  * @qp - the rvt qp
-- * @wqe - the send wqe
-+ * @flags - send wqe flags
-  *
-  * This decrements the reserve use count.
-  *
-@@ -552,11 +552,9 @@ static inline void rvt_qp_wqe_reserve(
-  * the compiler does not juggle the order of the s_last
-  * ring index and the decrementing of s_reserved_used.
-  */
--static inline void rvt_qp_wqe_unreserve(
--	struct rvt_qp *qp,
--	struct rvt_swqe *wqe)
-+static inline void rvt_qp_wqe_unreserve(struct rvt_qp *qp, int flags)
- {
--	if (unlikely(wqe->wr.send_flags & RVT_SEND_RESERVE_USED)) {
-+	if (unlikely(flags & RVT_SEND_RESERVE_USED)) {
- 		atomic_dec(&qp->s_reserved_used);
- 		/* insure no compiler re-order up to s_last change */
- 		smp_mb__after_atomic();
-@@ -743,6 +741,7 @@ rvt_qp_complete_swqe(struct rvt_qp *qp,
- 	u32 byte_len, last;
- 	int flags = wqe->wr.send_flags;
- 
-+	rvt_qp_wqe_unreserve(qp, flags);
- 	rvt_put_qp_swqe(qp, wqe);
- 
- 	need_completion =
+diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+index 72141c5b7c95..94566271dbff 100644
+--- a/drivers/infiniband/core/iwcm.c
++++ b/drivers/infiniband/core/iwcm.c
+@@ -427,7 +427,9 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
+ 		break;
+ 	}
+ 	if (cm_id_priv->qp) {
++		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+ 		cm_id_priv->id.device->ops.iw_rem_ref(cm_id_priv->qp);
++		spin_lock_irqsave(&cm_id_priv->lock, flags);
+ 		cm_id_priv->qp = NULL;
+ 	}
+ 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
 -- 
-2.20.1
+2.17.1
 
