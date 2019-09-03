@@ -2,124 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF76A6C7D
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2019 17:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805C0A6EDC
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Sep 2019 18:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728679AbfICPIW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Sep 2019 11:08:22 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:15407 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729812AbfICPHh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Sep 2019 11:07:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1567523256; x=1599059256;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=/8qtzK4hbsE5iw1VGCKr0kfHebH2HzCsuE0OkwjZ1KU=;
-  b=jae1imQX+XBgTTphCCfiX5f/pXKmswnA4e5Pr8ulzRlwY4yxjocEmCKF
-   j3x+UZWm9jd49d32zoWl0ZPADCOVMHzsejr0b7AyXPh5Qm1E6u1h66Ihc
-   lwuMo9b2bnRvNXBWvApMneOLmcv1wEBzhb0Nl9LVrtXddQF78lkEziEJI
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.64,463,1559520000"; 
-   d="scan'208";a="826785236"
-Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.47.22.34])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 03 Sep 2019 15:07:34 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id 46769A2261;
-        Tue,  3 Sep 2019 15:07:31 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 3 Sep 2019 15:07:31 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.20) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 3 Sep 2019 15:07:26 +0000
-Subject: Re: [PATCH v9 rdma-next 3/7] RDMA/efa: Use the common mmap_xa helpers
-To:     Michal Kalderon <mkalderon@marvell.com>
-CC:     Ariel Elior <aelior@marvell.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "bmt@zurich.ibm.com" <bmt@zurich.ibm.com>,
-        "sleybo@amazon.com" <sleybo@amazon.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20190902162314.17508-1-michal.kalderon@marvell.com>
- <20190902162314.17508-4-michal.kalderon@marvell.com>
- <c6a758ce-3b9e-5e95-5a44-d8add311d976@amazon.com>
- <MN2PR18MB31827812160980AA00992B92A1B90@MN2PR18MB3182.namprd18.prod.outlook.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <47b5d22f-e208-0ed2-19d3-b1beb22cf806@amazon.com>
-Date:   Tue, 3 Sep 2019 18:07:22 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+        id S1731319AbfICQ3N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Sep 2019 12:29:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51830 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730090AbfICQ3M (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 3 Sep 2019 12:29:12 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 506C8238CD;
+        Tue,  3 Sep 2019 16:29:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1567528151;
+        bh=sCWWtZ/2SA16IOUYZsBLM7a63wm5H+Q88Mz4isz8S1k=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lYxWfVaoW4rQTaMlLyJWuB6lwJEuapdmTqjmxK2U8zz5mk6Pv0PAFx/JHhTJzyoRi
+         jjgmcZnsOPDNLm4YNLibQ5oIrOgwopC6r8NAga6HSF3yjI9DXQEZMPebRHcxXPYAMh
+         TWOCulwaDscvPEuMide68EZD23neaY/AbZ6gpPTc=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Sergey Gorenko <sergeygo@mellanox.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 139/167] RDMA/srp: Document srp_parse_in() arguments
+Date:   Tue,  3 Sep 2019 12:24:51 -0400
+Message-Id: <20190903162519.7136-139-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190903162519.7136-1-sashal@kernel.org>
+References: <20190903162519.7136-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <MN2PR18MB31827812160980AA00992B92A1B90@MN2PR18MB3182.namprd18.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.20]
-X-ClientProxiedBy: EX13D24UWA003.ant.amazon.com (10.43.160.195) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 03/09/2019 12:31, Michal Kalderon wrote:
->> From: linux-rdma-owner@vger.kernel.org <linux-rdma-
->> owner@vger.kernel.org> On Behalf Of Gal Pressman
->>
->> On 02/09/2019 19:23, Michal Kalderon wrote:
->>>  int efa_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)  {
->>> +	struct efa_ucontext *ucontext =
->> rdma_udata_to_drv_context(udata,
->>> +		struct efa_ucontext, ibucontext);
->>>  	struct efa_dev *dev = to_edev(ibqp->pd->device);
->>>  	struct efa_qp *qp = to_eqp(ibqp);
->>>  	int err;
->>>
->>>  	ibdev_dbg(&dev->ibdev, "Destroy qp[%u]\n", ibqp->qp_num);
->>> +
->>> +	efa_qp_user_mmap_entries_remove(ucontext, qp);
->>> +
->>>  	err = efa_destroy_qp_handle(dev, qp->qp_handle);
->>>  	if (err)
->>>  		return err;
->>> @@ -509,57 +412,114 @@ int efa_destroy_qp(struct ib_qp *ibqp, struct
->> ib_udata *udata)
->>>  	return 0;
->>>  }
->>>
->>>  void efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)  {
->>> +	struct efa_ucontext *ucontext =
->> rdma_udata_to_drv_context(udata,
->>> +			struct efa_ucontext, ibucontext);
->>> +
->>>  	struct efa_dev *dev = to_edev(ibcq->device);
->>>  	struct efa_cq *cq = to_ecq(ibcq);
->>>
->>> @@ -897,17 +862,28 @@ void efa_destroy_cq(struct ib_cq *ibcq, struct
->> ib_udata *udata)
->>>  	efa_destroy_cq_idx(dev, cq->cq_idx);
->>>  	dma_unmap_single(&dev->pdev->dev, cq->dma_addr, cq->size,
->>>  			 DMA_FROM_DEVICE);
->>> +	rdma_user_mmap_entry_remove(&ucontext->ibucontext,
->>> +				    cq->mmap_key);
->>
->> How come in destroy_qp we do entry removal first, but in destroy_cq it's
->> last?
->> Shouldn't it be the same?
-> Yes, you're right, it should be done after memory is unmapped, I'll move it down
-> In the destroy qp flow. Is this the only comment on this series ? 
+From: Bart Van Assche <bvanassche@acm.org>
 
-Other than that the patch looks good to me,
-Acked-by: Gal Pressman <galpress@amazon.com>
+[ Upstream commit e37df2d5b569390e3b80ebed9a73fd5b9dcda010 ]
 
-A few nits (feel free to ignore):
-* The rdma_user_mmap_entry is always referred to as rdma_entry except in
-efa_mmap_free declaration and to_emmap.
-* efa_qp_user_mmap_entries_remove isn't really in reverse insertion order but OK :).
-* In case of length mismatch in __efa_mmap two error messages are printed,
-consider keeping the "Couldn't mmap address ..." print in the if (not part of
-the goto label).
+This patch avoids that a warning is reported when building with W=1.
 
-Thanks for doing this!
+Cc: Sergey Gorenko <sergeygo@mellanox.com>
+Cc: Max Gurtovoy <maxg@mellanox.com>
+Cc: Laurence Oberman <loberman@redhat.com>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Doug Ledford <dledford@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/ulp/srp/ib_srp.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
+index 2c1114ee0c6da..9da30d88a615e 100644
+--- a/drivers/infiniband/ulp/srp/ib_srp.c
++++ b/drivers/infiniband/ulp/srp/ib_srp.c
+@@ -3401,6 +3401,9 @@ static const match_table_t srp_opt_tokens = {
+ 
+ /**
+  * srp_parse_in - parse an IP address and port number combination
++ * @net:	   [in]  Network namespace.
++ * @sa:		   [out] Address family, IP address and port number.
++ * @addr_port_str: [in]  IP address and port number.
+  *
+  * Parse the following address formats:
+  * - IPv4: <ip_address>:<port>, e.g. 1.2.3.4:5.
+-- 
+2.20.1
+
