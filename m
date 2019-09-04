@@ -2,143 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 824FBA83F5
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2019 15:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FDDA8474
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2019 15:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730115AbfIDMwv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Sep 2019 08:52:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727083AbfIDMwv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 4 Sep 2019 08:52:51 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B30F21883;
-        Wed,  4 Sep 2019 12:52:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567601569;
-        bh=XG+z6BHhOmv9W2OyuDcqw63mHyObz78oeswsmfEdF1U=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=QOvybiJzp85IlBNCfwgLsBnLV9DR4UQ+d3iO+92iuV9rSa0S6OBqWysT1ufEq9jPg
-         Uc8pw3mW3WhdRGHShvIhIShiLbWPqR1oIpH89892Mb1phi9Lqta58kkyAJU+pCa6lo
-         XwT3v0mpqc9uUS8Hbn+5AeFK7k62BlqLx2/zGjmo=
-Message-ID: <2227b44d9e36f9bd129c73ee77c03b35d023236a.camel@kernel.org>
-Subject: Re: [RFC PATCH v2 02/19] fs/locks: Add Exclusive flag to user
- Layout lease
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Date:   Wed, 04 Sep 2019 08:52:47 -0400
-In-Reply-To: <20190829233408.GD18249@iweiny-DESK2.sc.intel.com>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
-         <20190809225833.6657-3-ira.weiny@intel.com>
-         <fde2959db776616008fc5d31df700f5d7d899433.camel@kernel.org>
-         <20190814215630.GQ6129@dread.disaster.area>
-         <e6f4f619967f4551adb5003d0364770fde2b8110.camel@kernel.org>
-         <20190829233408.GD18249@iweiny-DESK2.sc.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1729809AbfIDNYo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Sep 2019 09:24:44 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:20789 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727675AbfIDNYo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Sep 2019 09:24:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1567603483; x=1599139483;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=TTBAAnDlNpf7jBV5LeavOK7xqu+EpQhsDbOsV7StXlM=;
+  b=G/fteARJEjqHBNILx+EZAL3VaalwKRBN7EPteENNtF1I0nplLTHAm31M
+   qVW5qFspIUeWSybUZ5dwHKVUlpzwWhyF7dj6bJCVmEAICqQf0l+JEG39e
+   uhPImk2/UDP1JTtDJrrSQp+JUD7rORXNaEDDGgYdNRLWvj+k3Ts0GEX8v
+   g=;
+X-IronPort-AV: E=Sophos;i="5.64,467,1559520000"; 
+   d="scan'208";a="827202219"
+Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-1e-57e1d233.us-east-1.amazon.com) ([10.47.22.34])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 04 Sep 2019 13:24:40 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1e-57e1d233.us-east-1.amazon.com (Postfix) with ESMTPS id 19396141C83;
+        Wed,  4 Sep 2019 13:24:37 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 4 Sep 2019 13:24:37 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.218) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 4 Sep 2019 13:24:32 +0000
+Subject: Re: [PATCH v10 rdma-next 3/7] RDMA/efa: Use the common mmap_xa
+ helpers
+To:     Michal Kalderon <michal.kalderon@marvell.com>
+CC:     <mkalderon@marvell.com>, <aelior@marvell.com>, <jgg@ziepe.ca>,
+        <dledford@redhat.com>, <bmt@zurich.ibm.com>, <galpress@amazon.com>,
+        <sleybo@amazon.com>, <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>,
+        "Ariel Elior" <ariel.elior@marvell.com>
+References: <20190904071507.8232-1-michal.kalderon@marvell.com>
+ <20190904071507.8232-4-michal.kalderon@marvell.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <d6e4d513-556f-d2a4-f5c6-42a54c0ae7f1@amazon.com>
+Date:   Wed, 4 Sep 2019 16:24:27 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <20190904071507.8232-4-michal.kalderon@marvell.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.218]
+X-ClientProxiedBy: EX13D31UWC004.ant.amazon.com (10.43.162.27) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 2019-08-29 at 16:34 -0700, Ira Weiny wrote:
-> Missed this.  sorry.
-> 
-> On Mon, Aug 26, 2019 at 06:41:07AM -0400, Jeff Layton wrote:
-> > On Thu, 2019-08-15 at 07:56 +1000, Dave Chinner wrote:
-> > > On Wed, Aug 14, 2019 at 10:15:06AM -0400, Jeff Layton wrote:
-> > > > On Fri, 2019-08-09 at 15:58 -0700, ira.weiny@intel.com wrote:
-> > > > > From: Ira Weiny <ira.weiny@intel.com>
-> > > > > 
-> > > > > Add an exclusive lease flag which indicates that the layout mechanism
-> > > > > can not be broken.
-> > > > > 
-> > > > > Exclusive layout leases allow the file system to know that pages may be
-> > > > > GUP pined and that attempts to change the layout, ie truncate, should be
-> > > > > failed.
-> > > > > 
-> > > > > A process which attempts to break it's own exclusive lease gets an
-> > > > > EDEADLOCK return to help determine that this is likely a programming bug
-> > > > > vs someone else holding a resource.
-> > > .....
-> > > > > diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
-> > > > > index baddd54f3031..88b175ceccbc 100644
-> > > > > --- a/include/uapi/asm-generic/fcntl.h
-> > > > > +++ b/include/uapi/asm-generic/fcntl.h
-> > > > > @@ -176,6 +176,8 @@ struct f_owner_ex {
-> > > > >  
-> > > > >  #define F_LAYOUT	16      /* layout lease to allow longterm pins such as
-> > > > >  				   RDMA */
-> > > > > +#define F_EXCLUSIVE	32      /* layout lease is exclusive */
-> > > > > +				/* FIXME or shoudl this be F_EXLCK??? */
-> > > > >  
-> > > > >  /* operations for bsd flock(), also used by the kernel implementation */
-> > > > >  #define LOCK_SH		1	/* shared lock */
-> > > > 
-> > > > This interface just seems weird to me. The existing F_*LCK values aren't
-> > > > really set up to be flags, but are enumerated values (even if there are
-> > > > some gaps on some arches). For instance, on parisc and sparc:
-> > > 
-> > > I don't think we need to worry about this - the F_WRLCK version of
-> > > the layout lease should have these exclusive access semantics (i.e
-> > > other ops fail rather than block waiting for lease recall) and hence
-> > > the API shouldn't need a new flag to specify them.
-> > > 
-> > > i.e. the primary difference between F_RDLCK and F_WRLCK layout
-> > > leases is that the F_RDLCK is a shared, co-operative lease model
-> > > where only delays in operations will be seen, while F_WRLCK is a
-> > > "guarantee exclusive access and I don't care what it breaks"
-> > > model... :)
-> > > 
-> > 
-> > Not exactly...
-> > 
-> > F_WRLCK and F_RDLCK leases can both be broken, and will eventually time
-> > out if there is conflicting access. The F_EXCLUSIVE flag on the other
-> > hand is there to prevent any sort of lease break from 
-> 
-> Right EXCLUSIVE will not break for any reason.  It will fail truncate and hole
-> punch as we discussed back in June.  This is for the use case where the user
-> has handed this file/pages off to some hardware for which removing the lease
-> would be impossible.  _And_ we don't anticipate any valid use case that someone
-> will need to truncate short of killing the process to free up file system
-> space.
-> 
-> > I'm guessing what Ira really wants with the F_EXCLUSIVE flag is
-> > something akin to what happens when we set fl_break_time to 0 in the
-> > nfsd code. nfsd never wants the locks code to time out a lease of any
-> > sort, since it handles that timeout itself.
-> > 
-> > If you're going to add this functionality, it'd be good to also convert
-> > knfsd to use it as well, so we don't end up with multiple ways to deal
-> > with that situation.
-> 
-> Could you point me at the source for knfsd?  I looked in 
-> 
-> git://git.linux-nfs.org/projects/steved/nfs-utils.git
-> 
-> but I don't see anywhere leases are used in that source?
-> 
+On 04/09/2019 10:15, Michal Kalderon wrote:
+>  static int __efa_mmap(struct efa_dev *dev, struct efa_ucontext *ucontext,
+> -		      struct vm_area_struct *vma, u64 key, u64 length)
+> +		      struct vm_area_struct *vma, u64 key, size_t length)
+>  {
+> -	struct efa_mmap_entry *entry;
+> +	struct rdma_user_mmap_entry *rdma_entry;
+> +	struct efa_user_mmap_entry *entry;
+>  	unsigned long va;
+>  	u64 pfn;
+>  	int err;
+>  
+> -	entry = mmap_entry_get(dev, ucontext, key, length);
+> -	if (!entry) {
+> +	rdma_entry = rdma_user_mmap_entry_get(&ucontext->ibucontext, key,
+> +					      length, vma);
+> +	if (!rdma_entry) {
+>  		ibdev_dbg(&dev->ibdev, "key[%#llx] does not have valid entry\n",
+>  			  key);
+>  		return -EINVAL;
+>  	}
+> +	entry = to_emmap(rdma_entry);
+> +	if (entry->length != length) {
+> +		ibdev_dbg(&dev->ibdev,
+> +			  "key[%#llx] does not have valid length[%#zx] expected[%#zx]\n",
+> +			  key, length, entry->length);
+> +		err = -EINVAL;
+> +		goto err;
+> +	}
+>  
+>  	ibdev_dbg(&dev->ibdev,
+> -		  "Mapping address[%#llx], length[%#llx], mmap_flag[%d]\n",
+> -		  entry->address, length, entry->mmap_flag);
+> +		  "Mapping address[%#llx], length[%#zx], mmap_flag[%d]\n",
+> +		  entry->address, entry->length, entry->mmap_flag);
+>  
+>  	pfn = entry->address >> PAGE_SHIFT;
+>  	switch (entry->mmap_flag) {
+> @@ -1630,15 +1623,16 @@ static int __efa_mmap(struct efa_dev *dev, struct efa_ucontext *ucontext,
+>  		err = -EINVAL;
+>  	}
+>  
+> -	if (err) {
+> -		ibdev_dbg(
+> -			&dev->ibdev,
+> -			"Couldn't mmap address[%#llx] length[%#llx] mmap_flag[%d] err[%d]\n",
+> -			entry->address, length, entry->mmap_flag, err);
+> -		return err;
+> -	}
+> +	if (err)
+> +		goto err;
 
-Ahh sorry that wasn't clear. It's the fs/nfsd directory in the Linux
-kernel sources. See nfsd4_layout_lm_break and nfsd_break_deleg_cb in
-particular.
+Thanks Michal,
+Acked-by: Gal Pressman <galpress@amazon.com>
 
--- 
-Jeff Layton <jlayton@kernel.org>
+If you're planning on doing another cycle, this error path now prints nothing, I
+meant move the print from the goto inside this if (before goto err).
 
+>  
+>  	return 0;
+> +
+> +err:
+> +	rdma_user_mmap_entry_put(&ucontext->ibucontext,
+> +				 rdma_entry);
+> +
+> +	return err;
+>  }
