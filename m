@@ -2,164 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2576DA7A8E
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2019 07:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37895A7AD8
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2019 07:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728556AbfIDFFI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Sep 2019 01:05:08 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:42532 "EHLO
+        id S1728196AbfIDFpv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Sep 2019 01:45:51 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:50584 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbfIDFFI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Sep 2019 01:05:08 -0400
+        with ESMTP id S1726061AbfIDFpv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Sep 2019 01:45:51 -0400
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x845402G060270;
-        Wed, 4 Sep 2019 05:04:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=oi/ab2uw6R0FfymF44zNtlUTpBXlBjgUdhtyJfnaM/E=;
- b=WFh3ouU4a7jWuVeopL+C8ZUE1R+qm12fjKZUyBs/OvfLgNElqaDWBhUTwr84Z0eMhbqE
- Kwcw8m24O6jxSNbVQg41L7uNc6t6Dg+NLlD76vvjMOAGSWLbA1BvDttbaHe1jG1RH8c3
- jJT/46vcLBpzuHPnBepcFBjRbIfGzfUMJLqCnhAMVcE7y+QeI4ZwSm49+aRdCsR5TVco
- Cn2z3we/uePW7plV5xls3ickQyxz82/wuUEHSkOjAJlg/vB+8n38qxChpxriLCWFNzCm
- DREszKE0sI1epF+TI8c+fOuU1obT4bxYI6Z6w+1XgjPneMk/9ELDJckSU/C4rRyPexwd hg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 2ut6rx00df-1
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x845jNF7093150;
+        Wed, 4 Sep 2019 05:45:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2019-08-05; bh=exRf/gRsNataBWsLI7/klYESrGvL0Ww8aGZ4Z04ppok=;
+ b=BujNk1RuNtqgjXFoAuy2M/6H2NrNX5N+bpVSo/3+/WFzw1Q3eA5yb67c/KYdjNks0cu4
+ Xp6j0XsnzciKBgv6isCePBQnNlkhu2K+X+e68LQ+xVLXYONKX4Vb4xrGkNcgCpTuyXht
+ DwMq3KBV4UpnFHTXDLAo06sJlRSSJc9E3Sm6H6kSDWlY2fEbHFOAFSbeHNXL5vbNqaVq
+ 6kufxJD6mOEYinL6Jbf1wiolYF8oHEYC/eB5V5mhG4JaxbhlbXrn0EMiOJ2E13QMTjp1
+ CeC7V2hWlx2W2REb+ZodSbHzLOwS+I/J0GHeTjBC+xTZz4ZhDcX7nrklkrpZeFn674bL 9A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2ut7d0r03r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 04 Sep 2019 05:04:49 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8453MYM100461;
-        Wed, 4 Sep 2019 05:04:48 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 2ut1hmurtp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 04 Sep 2019 05:04:48 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x8454msh104844;
-        Wed, 4 Sep 2019 05:04:48 GMT
+        Wed, 04 Sep 2019 05:45:44 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x845iPkn132920;
+        Wed, 4 Sep 2019 05:45:44 GMT
 Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2ut1hmursx-1
+        by userp3030.oracle.com with ESMTP id 2usu52e9ah-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 04 Sep 2019 05:04:48 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x8454l1k016346;
-        Wed, 4 Sep 2019 05:04:47 GMT
-Received: from [10.182.71.192] (/10.182.71.192)
+        Wed, 04 Sep 2019 05:45:44 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x845jgZq011253;
+        Wed, 4 Sep 2019 05:45:42 GMT
+Received: from lap1.lan (/77.138.183.59)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 03 Sep 2019 22:04:46 -0700
-Subject: Re: [PATCHv2 1/1] net: rds: add service level support in rds-info
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        santosh.shilimkar@oracle.com, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, gerd.rausch@oracle.com
-References: <1566608656-30836-1-git-send-email-yanjun.zhu@oracle.com>
- <4422c894-4182-18ba-efa2-f86a1f14a3a6@embeddedor.com>
-From:   Zhu Yanjun <yanjun.zhu@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <568fde9c-8838-330b-1b41-f61c14edac90@oracle.com>
-Date:   Wed, 4 Sep 2019 13:08:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        with ESMTP ; Tue, 03 Sep 2019 22:45:42 -0700
+From:   Yuval Shaia <yuval.shaia@oracle.com>
+To:     bmt@zurich.ibm.com, galpress@amazon.com, yishaih@mellanox.com,
+        jgg@mellanox.com, matanb@mellanox.com, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     Yuval Shaia <yuval.shaia@oracle.com>
+Subject: [PATCH] kernel-headers: Update comment to reflect changes
+Date:   Wed,  4 Sep 2019 08:45:30 +0300
+Message-Id: <20190904054530.4391-1-yuval.shaia@oracle.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <4422c894-4182-18ba-efa2-f86a1f14a3a6@embeddedor.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9369 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1909040061
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9369 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1909040053
+ definitions=main-1909040061
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Following change made in commit 08536105d93f ("docs: ioctl-number.txt:
+convert it to ReST format") change the comment that refers to
+ioctl-number.txt file.
 
-On 2019/9/3 9:58, Gustavo A. R. Silva wrote:
-> Hi,
->
-> On 8/23/19 8:04 PM, Zhu Yanjun wrote:
->
-> [..]
->
->> diff --git a/net/rds/ib.c b/net/rds/ib.c
->> index ec05d91..45acab2 100644
->> --- a/net/rds/ib.c
->> +++ b/net/rds/ib.c
->> @@ -291,7 +291,7 @@ static int rds_ib_conn_info_visitor(struct rds_connection *conn,
->>   				    void *buffer)
->>   {
->>   	struct rds_info_rdma_connection *iinfo = buffer;
->> -	struct rds_ib_connection *ic;
->> +	struct rds_ib_connection *ic = conn->c_transport_data;
->>   
->>   	/* We will only ever look at IB transports */
->>   	if (conn->c_trans != &rds_ib_transport)
->> @@ -301,15 +301,16 @@ static int rds_ib_conn_info_visitor(struct rds_connection *conn,
->>   
->>   	iinfo->src_addr = conn->c_laddr.s6_addr32[3];
->>   	iinfo->dst_addr = conn->c_faddr.s6_addr32[3];
->> -	iinfo->tos = conn->c_tos;
->> +	if (ic) {
-> Is this null-check actually necessary? (see related comments below...)
->
->> +		iinfo->tos = conn->c_tos;
->> +		iinfo->sl = ic->i_sl;
->> +	}
->>   
->>   	memset(&iinfo->src_gid, 0, sizeof(iinfo->src_gid));
->>   	memset(&iinfo->dst_gid, 0, sizeof(iinfo->dst_gid));
->>   	if (rds_conn_state(conn) == RDS_CONN_UP) {
->>   		struct rds_ib_device *rds_ibdev;
->>   
->> -		ic = conn->c_transport_data;
->> -
->>   		rdma_read_gids(ic->i_cm_id, (union ib_gid *)&iinfo->src_gid,
-> Notice that *ic* is dereferenced here without null-checking it. More
-> comments below...
->
->>   			       (union ib_gid *)&iinfo->dst_gid);
->>   
->> @@ -329,7 +330,7 @@ static int rds6_ib_conn_info_visitor(struct rds_connection *conn,
->>   				     void *buffer)
->>   {
->>   	struct rds6_info_rdma_connection *iinfo6 = buffer;
->> -	struct rds_ib_connection *ic;
->> +	struct rds_ib_connection *ic = conn->c_transport_data;
->>   
->>   	/* We will only ever look at IB transports */
->>   	if (conn->c_trans != &rds_ib_transport)
->> @@ -337,6 +338,10 @@ static int rds6_ib_conn_info_visitor(struct rds_connection *conn,
->>   
->>   	iinfo6->src_addr = conn->c_laddr;
->>   	iinfo6->dst_addr = conn->c_faddr;
->> +	if (ic) {
->> +		iinfo6->tos = conn->c_tos;
->> +		iinfo6->sl = ic->i_sl;
->> +	}
->>   
->>   	memset(&iinfo6->src_gid, 0, sizeof(iinfo6->src_gid));
->>   	memset(&iinfo6->dst_gid, 0, sizeof(iinfo6->dst_gid));
->> @@ -344,7 +349,6 @@ static int rds6_ib_conn_info_visitor(struct rds_connection *conn,
->>   	if (rds_conn_state(conn) == RDS_CONN_UP) {
->>   		struct rds_ib_device *rds_ibdev;
->>   
->> -		ic = conn->c_transport_data;
->>   		rdma_read_gids(ic->i_cm_id, (union ib_gid *)&iinfo6->src_gid,
-> Again, *ic* is being dereferenced here without a previous null-check.
+Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
+---
+ kernel-headers/rdma/rdma_user_ioctl_cmds.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please  check when this "rds_conn_state(conn) = RDS_CONN_UP".
+diff --git a/kernel-headers/rdma/rdma_user_ioctl_cmds.h b/kernel-headers/rdma/rdma_user_ioctl_cmds.h
+index 64c14cb0..b8bb285f 100644
+--- a/kernel-headers/rdma/rdma_user_ioctl_cmds.h
++++ b/kernel-headers/rdma/rdma_user_ioctl_cmds.h
+@@ -36,7 +36,7 @@
+ #include <linux/types.h>
+ #include <linux/ioctl.h>
+ 
+-/* Documentation/ioctl/ioctl-number.txt */
++/* Documentation/ioctl/ioctl-number.rst */
+ #define RDMA_IOCTL_MAGIC	0x1b
+ #define RDMA_VERBS_IOCTL \
+ 	_IOWR(RDMA_IOCTL_MAGIC, 1, struct ib_uverbs_ioctl_hdr)
+-- 
+2.20.1
 
-Thanks a lot.
-
-Zhu Yanjun
-
->
->>   			       (union ib_gid *)&iinfo6->dst_gid);
->>   		rds_ibdev = ic->rds_ibdev;
->
-> --
-> Gustavo
->
