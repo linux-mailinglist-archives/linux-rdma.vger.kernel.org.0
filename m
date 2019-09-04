@@ -2,92 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37895A7AD8
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2019 07:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B667CA7B19
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2019 08:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728196AbfIDFpv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Sep 2019 01:45:51 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:50584 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726061AbfIDFpv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Sep 2019 01:45:51 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x845jNF7093150;
-        Wed, 4 Sep 2019 05:45:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2019-08-05; bh=exRf/gRsNataBWsLI7/klYESrGvL0Ww8aGZ4Z04ppok=;
- b=BujNk1RuNtqgjXFoAuy2M/6H2NrNX5N+bpVSo/3+/WFzw1Q3eA5yb67c/KYdjNks0cu4
- Xp6j0XsnzciKBgv6isCePBQnNlkhu2K+X+e68LQ+xVLXYONKX4Vb4xrGkNcgCpTuyXht
- DwMq3KBV4UpnFHTXDLAo06sJlRSSJc9E3Sm6H6kSDWlY2fEbHFOAFSbeHNXL5vbNqaVq
- 6kufxJD6mOEYinL6Jbf1wiolYF8oHEYC/eB5V5mhG4JaxbhlbXrn0EMiOJ2E13QMTjp1
- CeC7V2hWlx2W2REb+ZodSbHzLOwS+I/J0GHeTjBC+xTZz4ZhDcX7nrklkrpZeFn674bL 9A== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2ut7d0r03r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 04 Sep 2019 05:45:44 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x845iPkn132920;
-        Wed, 4 Sep 2019 05:45:44 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 2usu52e9ah-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 04 Sep 2019 05:45:44 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x845jgZq011253;
-        Wed, 4 Sep 2019 05:45:42 GMT
-Received: from lap1.lan (/77.138.183.59)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 03 Sep 2019 22:45:42 -0700
-From:   Yuval Shaia <yuval.shaia@oracle.com>
-To:     bmt@zurich.ibm.com, galpress@amazon.com, yishaih@mellanox.com,
-        jgg@mellanox.com, matanb@mellanox.com, leon@kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     Yuval Shaia <yuval.shaia@oracle.com>
-Subject: [PATCH] kernel-headers: Update comment to reflect changes
-Date:   Wed,  4 Sep 2019 08:45:30 +0300
-Message-Id: <20190904054530.4391-1-yuval.shaia@oracle.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726045AbfIDGDx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Sep 2019 02:03:53 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:33315 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726004AbfIDGDw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Sep 2019 02:03:52 -0400
+Received: by mail-wm1-f65.google.com with SMTP id r17so1659283wme.0
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Sep 2019 23:03:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=y/z0hlgT57PCDtEPbb3IoLHEKNEUuUEoJM+5ocU0Lr0=;
+        b=fYZyw03bg37JCEMyYALuI6ZLz5yYH+ZAybZj8FyHIvD7Too31OOxU6inIS2RlOj25b
+         fZbVOsqDm1OjT+sqHTWdulZkaS7XECK9gyNhXsBH4qFdhSQP/Q3UkpwxjXsTwtk6VowN
+         9yufWceLJDjbPJ288Um0odSQEVvW35HwUGYFXFDl4e1bWVQhS5IymhRXnntKn8HrIWkw
+         hp0dqEuJZicxhx2gPhMQqqVbhKKMCWwohev8CPC2f/jHi1qKb5yTGLKFlWwIYqx9TsaI
+         BmzQ1+5yBtNJMrMjWGrQX9JVfz9KuI6gte0GjpQxaIZMJ6xn7EiQiaEg3VKVUvMBcjdu
+         8fjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=y/z0hlgT57PCDtEPbb3IoLHEKNEUuUEoJM+5ocU0Lr0=;
+        b=aFo8GmksEK+uq8ljIpskDDe5s87DffSt4/7ityIfnNkzLDGQUt3q+cZqrLiSK3HSvX
+         DUqG68gonkAEPni69VsSbat30j5+Ow3jZEbS6nAKSfuw89hx6e4odL5TcWrQbGwle89v
+         iUsLt/NXqBFSDmiBqTBgl2XwqOv7h9+xt4OeK6GV7aFDpYVDOo2FPqg6RQUu7tvmkN0i
+         jVy2nXfRVmPeqPNGpB5r+RUomhA32uc9HCaS330foXmATKxiCJp0X6ZdAvNKO3oai68Z
+         6GIjXmzQaIPFpqp/ctXdHss5t/wUJfQPaamCihV+5Zm3oGN3Q0nVWTKrQPT/XezW7RIb
+         mfgg==
+X-Gm-Message-State: APjAAAXynDe6TersHPrzBnfvhizwqyNNQx9S2fJC2Yays6W+eUEVH967
+        nZgKm9VtKshfaQpc3TCwnojodg==
+X-Google-Smtp-Source: APXvYqzIDc00fhxkG0ty7LD1Q2IkZIrsWP9WrWV4gUOTvZLRa0e1BYjIoxpiDjtiQtitrK99IHCOSw==
+X-Received: by 2002:a1c:ca02:: with SMTP id a2mr2957344wmg.127.1567577030768;
+        Tue, 03 Sep 2019 23:03:50 -0700 (PDT)
+Received: from ziepe.ca ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id f186sm4080443wmg.21.2019.09.03.23.03.50
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 03 Sep 2019 23:03:50 -0700 (PDT)
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1i5OOS-0001Bm-C7; Wed, 04 Sep 2019 03:03:48 -0300
+Date:   Wed, 4 Sep 2019 03:03:48 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Mark Bloch <markb@mellanox.com>
+Cc:     Sagi Grimberg <sagi@grimberg.me>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] iwcm: don't hold the irq disabled lock on iw_rem_ref
+Message-ID: <20190904060348.GB3936@ziepe.ca>
+References: <20190903192223.17342-1-sagi@grimberg.me>
+ <3859b00b-9963-32c5-b6ed-8433fc4ec409@mellanox.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9369 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1909040061
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9369 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1909040061
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3859b00b-9963-32c5-b6ed-8433fc4ec409@mellanox.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Following change made in commit 08536105d93f ("docs: ioctl-number.txt:
-convert it to ReST format") change the comment that refers to
-ioctl-number.txt file.
+On Tue, Sep 03, 2019 at 07:33:08PM +0000, Mark Bloch wrote:
+> 
+> 
+> On 9/3/19 12:22 PM, Sagi Grimberg wrote:
+> > This may be the final put on a qp and result in freeing
+> > resourcesand should not be done with interrupts disabled.
+> > 
+> > Produce the following warning:
+> 
+> Shouldn't you first do cm_id_priv->qp = NULL and only then
+> unlock and destroy the qp?
+> 
+> Mark
+> >  	}
+> >  	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
 
-Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
----
- kernel-headers/rdma/rdma_user_ioctl_cmds.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Would avoid the sketchy unlock too.. But does it work?
 
-diff --git a/kernel-headers/rdma/rdma_user_ioctl_cmds.h b/kernel-headers/rdma/rdma_user_ioctl_cmds.h
-index 64c14cb0..b8bb285f 100644
---- a/kernel-headers/rdma/rdma_user_ioctl_cmds.h
-+++ b/kernel-headers/rdma/rdma_user_ioctl_cmds.h
-@@ -36,7 +36,7 @@
- #include <linux/types.h>
- #include <linux/ioctl.h>
+Jason
  
--/* Documentation/ioctl/ioctl-number.txt */
-+/* Documentation/ioctl/ioctl-number.rst */
- #define RDMA_IOCTL_MAGIC	0x1b
- #define RDMA_VERBS_IOCTL \
- 	_IOWR(RDMA_IOCTL_MAGIC, 1, struct ib_uverbs_ioctl_hdr)
--- 
-2.20.1
-
