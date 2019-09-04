@@ -2,158 +2,437 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9CAA887C
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2019 21:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35644A8903
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Sep 2019 21:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730983AbfIDOJb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Sep 2019 10:09:31 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:57764 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730552AbfIDOJb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Sep 2019 10:09:31 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x84DxaCQ019533;
-        Wed, 4 Sep 2019 07:09:24 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pfpt0818;
- bh=NGoAxA6EspSO5g97eqy9rLCKqRSLHx4WUV8DVnXmXv4=;
- b=pVarx3Wk9Gxx/Y0PEByGk45SgvTO4EvddGDIN2WA+aU/umFo/r2ryU/6Y8OOn5ey6zeZ
- LDZz8NeB0pDepUveiI0PFVsvaQe/udWzIU8I02rHv90zIsCwpomdo0AMO61cjTkBamTj
- oz4zcCV970oqoEFuMKKUryB+ajk/G83Og3HVsMCnBUGfcFno+DUk8Ypgq+XCa6zJfgIa
- CyKuSkwaT5QMEBqFuB5MoCztEaldfeXI0UmgGBOmJ1WxdJncWk84EEybvzqxxTKtcs/z
- RAq0VeaoO59puHTEOFIOnaNALpnMNbV5hCiHL9pNSzodc7Jj2WkhI3VvcDcMMcGlet3m wg== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 2uqrdme41c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 04 Sep 2019 07:09:24 -0700
-Received: from SC-EXCH02.marvell.com (10.93.176.82) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Wed, 4 Sep
- 2019 07:09:22 -0700
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (104.47.46.54) by
- SC-EXCH02.marvell.com (10.93.176.82) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Wed, 4 Sep 2019 07:09:21 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=beUglQBE9spZELxdwSYODjZ5iAT6L7vHatkdEquRmsLExBZkMZQ3m8VhSL9ZaEQqN3pQteID9ZH4FJfVrUadITRDzSXmqh1gykdJ8u3lEpXdHn7D2RbHY7nkEl48TtWB6PfC+Dwn8BEfwry2FXWASROZ8HG3IHg6GgJ7RDkn/I7gVcstk4WljHCB6Gp+smIg97PYsUw7eDoM0rIZQSACYvWGj/iFrAcbz1OaQgQ3Vh+RDvxzsyHmECQfCbYXGSyzaWzUstjEMLs93rdEiuzb7/hAI1RLY+nB3cxlBDg91SwG+nTM/IMBk23LVTherkW7OR0FEBzoqXldE4O0Th0NFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NGoAxA6EspSO5g97eqy9rLCKqRSLHx4WUV8DVnXmXv4=;
- b=MsJ0H7+uoe4dMeN3LBNkcyJyEGsQuvBuGH/ZHMupQbOvbVBmVeZ7U5+mxAhgNEOJd1k/mfzl6z2SGvM53nYjee0qPWX8ODFZadxHm2zIYbG4lYTDqrdPJxQMS/wjys7RUAMMKzjwFJmiq/RI6KWCbUocW8x06KLcmCXVSyYn8dzBWGPZxhAVW8N2Xr8/IHEUUy1dC7dDrsjWJ10sZoPxXZt4xK3og3AenBRBnH2HDZtWzvCRvd8VGGtm/GuDz3r5MkXyoh9RuCHF+OPwd+4uF5snQXutafBAXoZxBoOjgAmGnaOmOr/YjoUa4hqcA3600cFRJCo6A7fmfjIVXamLEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+        id S1730310AbfIDOwr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Sep 2019 10:52:47 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:34849 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727929AbfIDOwq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Sep 2019 10:52:46 -0400
+Received: by mail-pf1-f194.google.com with SMTP id 205so10947677pfw.2
+        for <linux-rdma@vger.kernel.org>; Wed, 04 Sep 2019 07:52:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector2-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NGoAxA6EspSO5g97eqy9rLCKqRSLHx4WUV8DVnXmXv4=;
- b=AbkYK/bXup0vyczhtlaGB/iWANx8ASoyHxLYpakOVr4FdNCKJpmzonIoVoTGMY3EbnO4SjDKgYui3wXWF8O5q9TPU3i84AccoFOZzne7ROKIsC+OT/aWTU82dg7g0MDUhe61kONvFapNko6st+hWo2W6/FGlx3wBJJANv0D7274=
-Received: from MN2PR18MB3182.namprd18.prod.outlook.com (10.255.236.143) by
- MN2PR18MB3328.namprd18.prod.outlook.com (10.255.238.17) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2241.14; Wed, 4 Sep 2019 14:09:19 +0000
-Received: from MN2PR18MB3182.namprd18.prod.outlook.com
- ([fe80::9d49:7d09:abb5:34e8]) by MN2PR18MB3182.namprd18.prod.outlook.com
- ([fe80::9d49:7d09:abb5:34e8%7]) with mapi id 15.20.2220.021; Wed, 4 Sep 2019
- 14:09:19 +0000
-From:   Michal Kalderon <mkalderon@marvell.com>
-To:     Gal Pressman <galpress@amazon.com>
-CC:     Ariel Elior <aelior@marvell.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "bmt@zurich.ibm.com" <bmt@zurich.ibm.com>,
-        "sleybo@amazon.com" <sleybo@amazon.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Ariel Elior <aelior@marvell.com>
-Subject: RE: [PATCH v10 rdma-next 3/7] RDMA/efa: Use the common mmap_xa
- helpers
-Thread-Topic: [PATCH v10 rdma-next 3/7] RDMA/efa: Use the common mmap_xa
- helpers
-Thread-Index: AQHVYvDPgWqW+QOk/Uau4vPgxrtri6cbgkSAgAAI9WA=
-Date:   Wed, 4 Sep 2019 14:09:18 +0000
-Message-ID: <MN2PR18MB318225B7C3799584D2C7CF28A1B80@MN2PR18MB3182.namprd18.prod.outlook.com>
-References: <20190904071507.8232-1-michal.kalderon@marvell.com>
- <20190904071507.8232-4-michal.kalderon@marvell.com>
- <d6e4d513-556f-d2a4-f5c6-42a54c0ae7f1@amazon.com>
-In-Reply-To: <d6e4d513-556f-d2a4-f5c6-42a54c0ae7f1@amazon.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [212.199.69.1]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a1da285c-1acb-42cf-d888-08d731417a5e
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MN2PR18MB3328;
-x-ms-traffictypediagnostic: MN2PR18MB3328:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR18MB3328539930F25360C5D04B91A1B80@MN2PR18MB3328.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 0150F3F97D
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(136003)(39860400002)(396003)(376002)(346002)(189003)(199004)(33656002)(71200400001)(71190400001)(64756008)(66446008)(66556008)(5660300002)(14454004)(66476007)(478600001)(256004)(8936002)(8676002)(446003)(81156014)(81166006)(476003)(486006)(7736002)(3846002)(6116002)(2906002)(11346002)(86362001)(66066001)(76176011)(53936002)(9686003)(229853002)(74316002)(53546011)(305945005)(6506007)(26005)(186003)(6916009)(102836004)(6436002)(52536014)(55016002)(66946007)(76116006)(7696005)(6246003)(25786009)(107886003)(4326008)(99286004)(316002)(54906003);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR18MB3328;H:MN2PR18MB3182.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: marvell.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: alAvjc0g1uxmreKDSYh8VmNEzmTnvKKRYJBhHeP3xu6DOu2+/9hVxj4mvrqlW9E4owg/sViWCn3Dfreq6bBSKqjLg6Gcm3tcflaUlggPjjbQAVDBXgAmtnNVdyT6nNA/HyPkDSYEyM9LI6+fGAfGU1m26ds3WIzzSzFLxzf0Jg0i9SIa/I1kXnnKkZdFEnu20CIcMER5vIqoAvC3eOGoO+OM4xcJ7of0IvWW23EMZP1CBO2RGK9qa4baceJhJSBnZH5fLbDvqhN/X4JUIZCmWrvyvj5SmCeUcR4gSWNIQI7YuZBd235i2uICyZ1rMDq5EhFX1liebsf6TrVky7qRUBJfvdeyEpkNEnPiq+uXn1sWVlVNQtAjCs32zCOX/eAQdZ5abkLl0t9i8PTvqAEpqdqihInO8rQHd8go5EUS9Kw=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qo9btwDVywt5Z4ijSkpPcdJcIxoBud+XrMQP8DLBtZA=;
+        b=sFYGsFaeqOIttaX75Mh0Jt6LsiFSSow8MH7y6a52jVXYkPlB1jD+rvA4kSYVmUJSrq
+         ojaEis6BbnDlau6vVkJKwiWkmN6zMu//M8lERzORRYA28oks7bKvz+fi2QSu5aHhBXJm
+         O/PmjUuBojgWEQa6N+q6OiUTmJ5L9TMtAmd+gBA/NdlmY1MODkn3rLfzDaOCv9tRsacx
+         4dmkg20CXiWx+J7ZAz0xREJaTi8oA5eF/vV3VC3sYSLhW9lwFJRkFdCbQjsqOmODrC3r
+         Jc7rxpY3eSw3R+jZ29b3q93JyDXmqBWLrqLsbJmUM1evPQg9JO6Jb87uqDCH8BQY1hzb
+         0PwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qo9btwDVywt5Z4ijSkpPcdJcIxoBud+XrMQP8DLBtZA=;
+        b=S1L3Np0zHasT4mSVxAm6p7l98oY+SYGlC6sOowZ1CQHW/Yqk7idCv+xk6pWnUB+fV+
+         xDHAkCY5ePYziMRL6VKGS5tAdOTm5mjDl3Cg78HhqQbih+QZPJIqSW1j5AeMb6aenD8j
+         mLrt4TthTpzmn3z51SAIrfNb3AyZMkQFfUDJZ4x6aPMYwbD1WaEt1BDkeflZrPwEAoUd
+         CXIW8ugjj5HE5zDJJ/CPDdmSbkgqvOcfbaL6yCCaWnhmqAAYTsSwRyo/f+xKqM0Gi7q2
+         m5SsFsQTsVTCBEYurtofNheVfwLwzgGRqO8VrvJNPdhPa+qgVNwjM+t9EE9INIajhiIN
+         VWVw==
+X-Gm-Message-State: APjAAAUtcI/YhYBmXLzyyQSfViDq+KDo9wAhW1i8YsHFZN1SOA/Sz9Od
+        6woteuQcixGsvS3FzghAoW4Kjy7NAKVw1IffuCyrpw==
+X-Google-Smtp-Source: APXvYqwZikXx2qjQtQDGtXVxmy03OmbTt42Hq77Y/o/GV+iGPZsxsZsTVPVlPZ5ZZxAgajR2zq/oq6os3dIlpFoD/6c=
+X-Received: by 2002:a62:db84:: with SMTP id f126mr21108068pfg.25.1567608765533;
+ Wed, 04 Sep 2019 07:52:45 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1da285c-1acb-42cf-d888-08d731417a5e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Sep 2019 14:09:19.0736
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HoeZ2o1I73VJ1ir3VnMpsKdmDR2rl5Gp+p4NX+uk9GWjlHYvLcWiyGlalD+4rgllD7mBcgiiKMRNdsLc4wRH/g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB3328
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
- definitions=2019-09-04_04:2019-09-04,2019-09-04 signatures=0
+References: <cover.1561386715.git.andreyknvl@google.com> <0999c80cd639b78ae27c0674069d552833227564.1561386715.git.andreyknvl@google.com>
+ <6af3f619-4356-2f67-ed76-92beceb1e0a0@arm.com> <CAAeHK+yhbUcuLhoetjGUbqM4j9fX84hbwmxzNPF+e1zXj6nKNw@mail.gmail.com>
+ <d6bc5c4b-68b5-0a58-0f52-8bce20986dcf@arm.com>
+In-Reply-To: <d6bc5c4b-68b5-0a58-0f52-8bce20986dcf@arm.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Wed, 4 Sep 2019 16:52:34 +0200
+Message-ID: <CAAeHK+xXN_oHt0rAcWdTs0XhkYRhWqf3iv-n+dYmY075xosJnw@mail.gmail.com>
+Subject: Re: [PATCH v18 15/15] selftests, arm64: add a selftest for passing
+ tagged pointers to kernel
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        kvm@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>, enh <enh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Evgeniy Stepanov <eugenis@google.com>,
+        Lee Smith <Lee.Smith@arm.com>,
+        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
+        Jacob Bramley <Jacob.Bramley@arm.com>,
+        Ruben Ayrapetyan <Ruben.Ayrapetyan@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-PiBGcm9tOiBHYWwgUHJlc3NtYW4gPGdhbHByZXNzQGFtYXpvbi5jb20+DQo+IFNlbnQ6IFdlZG5l
-c2RheSwgU2VwdGVtYmVyIDQsIDIwMTkgNDoyNCBQTQ0KPiANCj4gT24gMDQvMDkvMjAxOSAxMDox
-NSwgTWljaGFsIEthbGRlcm9uIHdyb3RlOg0KPiA+ICBzdGF0aWMgaW50IF9fZWZhX21tYXAoc3Ry
-dWN0IGVmYV9kZXYgKmRldiwgc3RydWN0IGVmYV91Y29udGV4dA0KPiAqdWNvbnRleHQsDQo+ID4g
-LQkJICAgICAgc3RydWN0IHZtX2FyZWFfc3RydWN0ICp2bWEsIHU2NCBrZXksIHU2NCBsZW5ndGgp
-DQo+ID4gKwkJICAgICAgc3RydWN0IHZtX2FyZWFfc3RydWN0ICp2bWEsIHU2NCBrZXksIHNpemVf
-dCBsZW5ndGgpDQo+ID4gIHsNCj4gPiAtCXN0cnVjdCBlZmFfbW1hcF9lbnRyeSAqZW50cnk7DQo+
-ID4gKwlzdHJ1Y3QgcmRtYV91c2VyX21tYXBfZW50cnkgKnJkbWFfZW50cnk7DQo+ID4gKwlzdHJ1
-Y3QgZWZhX3VzZXJfbW1hcF9lbnRyeSAqZW50cnk7DQo+ID4gIAl1bnNpZ25lZCBsb25nIHZhOw0K
-PiA+ICAJdTY0IHBmbjsNCj4gPiAgCWludCBlcnI7DQo+ID4NCj4gPiAtCWVudHJ5ID0gbW1hcF9l
-bnRyeV9nZXQoZGV2LCB1Y29udGV4dCwga2V5LCBsZW5ndGgpOw0KPiA+IC0JaWYgKCFlbnRyeSkg
-ew0KPiA+ICsJcmRtYV9lbnRyeSA9IHJkbWFfdXNlcl9tbWFwX2VudHJ5X2dldCgmdWNvbnRleHQt
-DQo+ID5pYnVjb250ZXh0LCBrZXksDQo+ID4gKwkJCQkJICAgICAgbGVuZ3RoLCB2bWEpOw0KPiA+
-ICsJaWYgKCFyZG1hX2VudHJ5KSB7DQo+ID4gIAkJaWJkZXZfZGJnKCZkZXYtPmliZGV2LCAia2V5
-WyUjbGx4XSBkb2VzIG5vdCBoYXZlIHZhbGlkDQo+IGVudHJ5XG4iLA0KPiA+ICAJCQkgIGtleSk7
-DQo+ID4gIAkJcmV0dXJuIC1FSU5WQUw7DQo+ID4gIAl9DQo+ID4gKwllbnRyeSA9IHRvX2VtbWFw
-KHJkbWFfZW50cnkpOw0KPiA+ICsJaWYgKGVudHJ5LT5sZW5ndGggIT0gbGVuZ3RoKSB7DQo+ID4g
-KwkJaWJkZXZfZGJnKCZkZXYtPmliZGV2LA0KPiA+ICsJCQkgICJrZXlbJSNsbHhdIGRvZXMgbm90
-IGhhdmUgdmFsaWQgbGVuZ3RoWyUjenhdDQo+IGV4cGVjdGVkWyUjenhdXG4iLA0KPiA+ICsJCQkg
-IGtleSwgbGVuZ3RoLCBlbnRyeS0+bGVuZ3RoKTsNCj4gPiArCQllcnIgPSAtRUlOVkFMOw0KPiA+
-ICsJCWdvdG8gZXJyOw0KPiA+ICsJfQ0KPiA+DQo+ID4gIAlpYmRldl9kYmcoJmRldi0+aWJkZXYs
-DQo+ID4gLQkJICAiTWFwcGluZyBhZGRyZXNzWyUjbGx4XSwgbGVuZ3RoWyUjbGx4XSwNCj4gbW1h
-cF9mbGFnWyVkXVxuIiwNCj4gPiAtCQkgIGVudHJ5LT5hZGRyZXNzLCBsZW5ndGgsIGVudHJ5LT5t
-bWFwX2ZsYWcpOw0KPiA+ICsJCSAgIk1hcHBpbmcgYWRkcmVzc1slI2xseF0sIGxlbmd0aFslI3p4
-XSwNCj4gbW1hcF9mbGFnWyVkXVxuIiwNCj4gPiArCQkgIGVudHJ5LT5hZGRyZXNzLCBlbnRyeS0+
-bGVuZ3RoLCBlbnRyeS0+bW1hcF9mbGFnKTsNCj4gPg0KPiA+ICAJcGZuID0gZW50cnktPmFkZHJl
-c3MgPj4gUEFHRV9TSElGVDsNCj4gPiAgCXN3aXRjaCAoZW50cnktPm1tYXBfZmxhZykgew0KPiA+
-IEBAIC0xNjMwLDE1ICsxNjIzLDE2IEBAIHN0YXRpYyBpbnQgX19lZmFfbW1hcChzdHJ1Y3QgZWZh
-X2RldiAqZGV2LA0KPiBzdHJ1Y3QgZWZhX3Vjb250ZXh0ICp1Y29udGV4dCwNCj4gPiAgCQllcnIg
-PSAtRUlOVkFMOw0KPiA+ICAJfQ0KPiA+DQo+ID4gLQlpZiAoZXJyKSB7DQo+ID4gLQkJaWJkZXZf
-ZGJnKA0KPiA+IC0JCQkmZGV2LT5pYmRldiwNCj4gPiAtCQkJIkNvdWxkbid0IG1tYXAgYWRkcmVz
-c1slI2xseF0gbGVuZ3RoWyUjbGx4XQ0KPiBtbWFwX2ZsYWdbJWRdIGVyclslZF1cbiIsDQo+ID4g
-LQkJCWVudHJ5LT5hZGRyZXNzLCBsZW5ndGgsIGVudHJ5LT5tbWFwX2ZsYWcsIGVycik7DQo+ID4g
-LQkJcmV0dXJuIGVycjsNCj4gPiAtCX0NCj4gPiArCWlmIChlcnIpDQo+ID4gKwkJZ290byBlcnI7
-DQo+IA0KPiBUaGFua3MgTWljaGFsLA0KPiBBY2tlZC1ieTogR2FsIFByZXNzbWFuIDxnYWxwcmVz
-c0BhbWF6b24uY29tPg0KdGhhbmtzDQo+IA0KPiBJZiB5b3UncmUgcGxhbm5pbmcgb24gZG9pbmcg
-YW5vdGhlciBjeWNsZSwgdGhpcyBlcnJvciBwYXRoIG5vdyBwcmludHMgbm90aGluZywgSQ0KPiBt
-ZWFudCBtb3ZlIHRoZSBwcmludCBmcm9tIHRoZSBnb3RvIGluc2lkZSB0aGlzIGlmIChiZWZvcmUg
-Z290byBlcnIpLg0KWWVzLCBJJ2xsIG5lZWQgdG8gc2VuZCBhIHYxMSBiZWNhdXNlIG9mIGEgc2l3
-IGlzc3VlLiBJJ2xsIHNlbmQgeW91IHRoZSBwYXRjaCBiZWZvcmUgSSBzZW5kIGl0IG91dCBmb3Ig
-cmV2aWV3IGJlZm9yZSBJIHNlbmQgdjExLg0KVGhhbmtzLA0KTWljaGFsDQoNCj4gDQo+ID4NCj4g
-PiAgCXJldHVybiAwOw0KPiA+ICsNCj4gPiArZXJyOg0KPiA+ICsJcmRtYV91c2VyX21tYXBfZW50
-cnlfcHV0KCZ1Y29udGV4dC0+aWJ1Y29udGV4dCwNCj4gPiArCQkJCSByZG1hX2VudHJ5KTsNCj4g
-PiArDQo+ID4gKwlyZXR1cm4gZXJyOw0KPiA+ICB9DQo=
+On Fri, Aug 23, 2019 at 7:49 PM Cristian Marussi
+<cristian.marussi@arm.com> wrote:
+>
+>
+> Hi
+>
+> On 23/08/2019 18:16, Andrey Konovalov wrote:
+> > On Fri, Aug 23, 2019 at 3:56 PM Cristian Marussi
+> > <cristian.marussi@arm.com> wrote:
+> >>
+> >> Hi Andrey
+> >>
+> >> On 24/06/2019 15:33, Andrey Konovalov wrote:
+> >>> This patch is a part of a series that extends kernel ABI to allow to =
+pass
+> >>> tagged user pointers (with the top byte set to something else other t=
+han
+> >>> 0x00) as syscall arguments.
+> >>>
+> >>> This patch adds a simple test, that calls the uname syscall with a
+> >>> tagged user pointer as an argument. Without the kernel accepting tagg=
+ed
+> >>> user pointers the test fails with EFAULT.
+> >>>
+> >>> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> >>> ---
+> >>>  tools/testing/selftests/arm64/.gitignore      |  1 +
+> >>>  tools/testing/selftests/arm64/Makefile        | 11 +++++++
+> >>>  .../testing/selftests/arm64/run_tags_test.sh  | 12 ++++++++
+> >>>  tools/testing/selftests/arm64/tags_test.c     | 29 +++++++++++++++++=
+++
+> >>>  4 files changed, 53 insertions(+)
+> >>>  create mode 100644 tools/testing/selftests/arm64/.gitignore
+> >>>  create mode 100644 tools/testing/selftests/arm64/Makefile
+> >>>  create mode 100755 tools/testing/selftests/arm64/run_tags_test.sh
+> >>>  create mode 100644 tools/testing/selftests/arm64/tags_test.c
+> >>
+> >> After building a fresh Kernel from arm64/for-next-core from scratch at=
+:
+> >>
+> >> commit 239ab658bea3b387424501e7c416640d6752dc0c
+> >> Merge: 6bfa3134bd3a 42d038c4fb00 1243cb6a676f d55c5f28afaf d06fa5a118f=
+1 34b5560db40d
+> >> Author: Will Deacon <will@kernel.org>
+> >> Date:   Thu Aug 22 18:23:53 2019 +0100
+> >>
+> >>     Merge branches 'for-next/error-injection', 'for-next/tbi', 'for-ne=
+xt/psci-cpuidle', 'for-next/cpu-topology' and 'for-next/52-bit-kva' into fo=
+r-next/core
+> >>
+> >>
+> >> KSFT arm64 tests build is broken for me, both setting or not KBUILD_OU=
+TPUT=3D
+> >>
+> >> 13:30 $ make TARGETS=3Darm64 kselftest-clean
+> >> make[1]: Entering directory '/home/crimar01/ARM/dev/src/pdsw/out_linux=
+'
+> >> rm -f -r /home/crimar01/ARM/dev/src/pdsw/out_linux//kselftest/arm64/ta=
+gs_test
+> >> make[1]: Leaving directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
+> >>
+> >> =E2=9C=94 ~/ARM/dev/src/pdsw/linux [arm64_for_next_core|=E2=80=A68=E2=
+=9A=91 23]
+> >>
+> >> 13:30 $ make TARGETS=3Darm64 kselftest
+> >> make[1]: Entering directory '/home/crimar01/ARM/dev/src/pdsw/out_linux=
+'
+> >> arch/arm64/Makefile:56: CROSS_COMPILE_COMPAT not defined or empty, the=
+ compat vDSO will not be built
+> >> make --no-builtin-rules INSTALL_HDR_PATH=3D$BUILD/usr \
+> >>         ARCH=3Darm64 -C ../../.. headers_install
+> >>   HOSTCC  scripts/basic/fixdep
+> >>   HOSTCC  scripts/unifdef
+> >> ...
+> >> ...
+> >>   HDRINST usr/include/asm/msgbuf.h
+> >>   HDRINST usr/include/asm/shmbuf.h
+> >>   INSTALL /home/crimar01/ARM/dev/src/pdsw/out_linux//kselftest/usr/inc=
+lude
+> >> /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch=
+64-linux-gnu-gcc     tags_test.c  -o /home/crimar01/ARM/dev/src/pdsw/out_li=
+nux//kselftest/arm64/tags_test
+> >> tags_test.c: In function =E2=80=98main=E2=80=99:
+> >> tags_test.c:21:12: error: =E2=80=98PR_SET_TAGGED_ADDR_CTRL=E2=80=99 un=
+declared (first use in this function); did you mean =E2=80=98PR_GET_TID_ADD=
+RESS=E2=80=99?
+> >>   if (prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE, 0, 0, 0) =
+=3D=3D 0)
+> >>             ^~~~~~~~~~~~~~~~~~~~~~~
+> >>             PR_GET_TID_ADDRESS
+> >> tags_test.c:21:12: note: each undeclared identifier is reported only o=
+nce for each function it appears in
+> >> tags_test.c:21:37: error: =E2=80=98PR_TAGGED_ADDR_ENABLE=E2=80=99 unde=
+clared (first use in this function); did you mean =E2=80=98PR_GET_DUMPABLE=
+=E2=80=99?
+> >>   if (prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE, 0, 0, 0) =
+=3D=3D 0)
+> >>                                      ^~~~~~~~~~~~~~~~~~~~~
+> >>                                      PR_GET_DUMPABLE
+> >> ../lib.mk:138: recipe for target '/home/crimar01/ARM/dev/src/pdsw/out_=
+linux//kselftest/arm64/tags_test' failed
+> >> make[3]: *** [/home/crimar01/ARM/dev/src/pdsw/out_linux//kselftest/arm=
+64/tags_test] Error 1
+> >> Makefile:136: recipe for target 'all' failed
+> >> make[2]: *** [all] Error 2
+> >> /home/crimar01/ARM/dev/src/pdsw/linux/Makefile:1237: recipe for target=
+ 'kselftest' failed
+> >> make[1]: *** [kselftest] Error 2
+> >> make[1]: Leaving directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
+> >> Makefile:179: recipe for target 'sub-make' failed
+> >> make: *** [sub-make] Error 2
+> >>
+> >> Despite seeing KSFT installing Kernel Headers, they cannot be found.
+> >>
+> >> Fixing this patch like this make it work for me:
+> >>
+> >> diff --git a/tools/testing/selftests/arm64/Makefile b/tools/testing/se=
+lftests/arm64/Makefile
+> >> index a61b2e743e99..f9f79fb272f0 100644
+> >> --- a/tools/testing/selftests/arm64/Makefile
+> >> +++ b/tools/testing/selftests/arm64/Makefile
+> >> @@ -4,6 +4,7 @@
+> >>  ARCH ?=3D $(shell uname -m 2>/dev/null || echo not)
+> >>
+> >>  ifneq (,$(filter $(ARCH),aarch64 arm64))
+> >> +CFLAGS +=3D -I../../../../usr/include/
+> >>  TEST_GEN_PROGS :=3D tags_test
+> >>  TEST_PROGS :=3D run_tags_test.sh
+> >>  endif
+> >>
+> >> but is not really a proper fix since it does NOT account for case in w=
+hich you have
+> >> installed the Kernel Headers in a non standard location like when you =
+use KBUILD_OUTPUT.
+> >>
+> >> Am I missing something ?
+> >
+> > Hm, PR_SET_TAGGED_ADDR_CTRL is defined in include/uapi/linux/prctl.h,
+> > and the test has #include <sys/prctl.h> so as long as you've updated
+> > your kernel headers this should work.
+> >
+> > (I'm OOO next week, I'll see if I can reproduce this once I'm back).
+>
+> Ok. Thanks for the reply.
+>
+> I think I've got it in my local tree having cloned arm64/for-next-core:
+>
+> 18:32 $ egrep -A 10 PR_SET_TAG ./include/uapi/linux/prctl.h
+> #define PR_SET_TAGGED_ADDR_CTRL         55
+> #define PR_GET_TAGGED_ADDR_CTRL         56
+> # define PR_TAGGED_ADDR_ENABLE          (1UL << 0)
+>
+> #endif /* _LINUX_PRCTL_H */
+>
+> and Kernel header are locally installed in my kernel src dir (by KSFT ind=
+eed)
+>
+> 18:34 $ egrep -RA 10 PR_SET_TAG usr/include/
+> usr/include/linux/prctl.h:#define PR_SET_TAGGED_ADDR_CTRL               5=
+5
+> usr/include/linux/prctl.h-#define PR_GET_TAGGED_ADDR_CTRL               5=
+6
+> usr/include/linux/prctl.h-# define PR_TAGGED_ADDR_ENABLE                (=
+1UL << 0)
+> usr/include/linux/prctl.h-
+> usr/include/linux/prctl.h-#endif /* _LINUX_PRCTL_H */
+>
+> but how are they supposed to be found if nor the test Makefile
+> neither the KSFT Makefile who installs them pass any -I options to the
+> compiler ?
+> I suppose <sys/prctl.h> tries to include arch specific headers from the r=
+egular system path,
+> but when you are cross-compiling ?
+>
+> 18:34 $ make TARGETS=3Darm64 kselftest
+> make[1]: Entering directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
+> arch/arm64/Makefile:56: CROSS_COMPILE_COMPAT not defined or empty, the co=
+mpat vDSO will not be built
+> make --no-builtin-rules INSTALL_HDR_PATH=3D$BUILD/usr \
+>         ARCH=3Darm64 -C ../../.. headers_install
+>   INSTALL /home/crimar01/ARM/dev/src/pdsw/out_linux/kselftest/usr/include
+> /opt/toolchains/gcc-arm-8.3-2019.03-x86_64-aarch64-linux-gnu/bin/aarch64-=
+linux-gnu-gcc -Wall -O2 -g    tags_test.c  -o /home/crimar01/ARM/dev/src/pd=
+sw/out_linux/kselftest/arm64/tags/tags_test
+> tags_test.c: In function =E2=80=98main=E2=80=99:
+> tags_test.c:20:12: error: =E2=80=98PR_SET_TAGGED_ADDR_CTRL=E2=80=99 undec=
+lared (first use in this function); did you mean =E2=80=98PR_GET_TID_ADDRES=
+S=E2=80=99?
+>   if (prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE, 0, 0, 0) =3D=
+=3D 0)
+>             ^~~~~~~~~~~~~~~~~~~~~~~
+>             PR_GET_TID_ADDRESS
+> tags_test.c:20:12: note: each undeclared identifier is reported only once=
+ for each function it appears in
+> tags_test.c:20:37: error: =E2=80=98PR_TAGGED_ADDR_ENABLE=E2=80=99 undecla=
+red (first use in this function); did you mean =E2=80=98PR_GET_DUMPABLE=E2=
+=80=99?
+>   if (prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE, 0, 0, 0) =3D=
+=3D 0)
+>                                      ^~~~~~~~~~~~~~~~~~~~~
+>                                      PR_GET_DUMPABLE
+> ../../lib.mk:138: recipe for target '/home/crimar01/ARM/dev/src/pdsw/out_=
+linux/kselftest/arm64/tags/tags_test' failed
+> make[4]: *** [/home/crimar01/ARM/dev/src/pdsw/out_linux/kselftest/arm64/t=
+ags/tags_test] Error 1
+> Makefile:19: recipe for target 'all' failed
+> make[3]: *** [all] Error 2
+> Makefile:137: recipe for target 'all' failed
+> make[2]: *** [all] Error 2
+> /home/crimar01/ARM/dev/src/pdsw/linux/Makefile:1236: recipe for target 'k=
+selftest' failed
+> make[1]: *** [kselftest] Error 2
+> make[1]: Leaving directory '/home/crimar01/ARM/dev/src/pdsw/out_linux'
+> Makefile:179: recipe for target 'sub-make' failed
+> make: *** [sub-make] Error 2
+>
+>
+> In fact many KSFT testcases seems to brutally add default headers path:
+>
+> tools/testing/selftests/memfd/Makefile:CFLAGS +=3D -I../../../../include/=
+uapi/
+> tools/testing/selftests/memfd/Makefile:CFLAGS +=3D -I../../../../include/
+> tools/testing/selftests/memfd/Makefile:CFLAGS +=3D -I../../../../usr/incl=
+ude/
+> tools/testing/selftests/net/Makefile:CFLAGS +=3D -I../../../../usr/includ=
+e/
+> tools/testing/selftests/membarrier/Makefile:CFLAGS +=3D -g -I../../../../=
+usr/include/
+> ...
+
+Hi Cristian!
+
+Indeed, I can reproduce the issue. I don't know what's the proper way
+to resolve this. Adding "CFLAGS +=3D -I../../../../usr/include/" looks
+good to me. AFAICS your series resolves this issue in a similar way,
+but I think we should fix this before the current rc is released. Do
+you want to submit a patch that adds this simple fix or should I do
+that?
+
+Thanks!
+
+>
+> Cheers
+>
+> Cristian
+> >
+> >
+> >
+> >>
+> >> Thanks
+> >>
+> >> Cristian
+> >>
+> >>>
+> >>> diff --git a/tools/testing/selftests/arm64/.gitignore b/tools/testing=
+/selftests/arm64/.gitignore
+> >>> new file mode 100644
+> >>> index 000000000000..e8fae8d61ed6
+> >>> --- /dev/null
+> >>> +++ b/tools/testing/selftests/arm64/.gitignore
+> >>> @@ -0,0 +1 @@
+> >>> +tags_test
+> >>> diff --git a/tools/testing/selftests/arm64/Makefile b/tools/testing/s=
+elftests/arm64/Makefile
+> >>> new file mode 100644
+> >>> index 000000000000..a61b2e743e99
+> >>> --- /dev/null
+> >>> +++ b/tools/testing/selftests/arm64/Makefile
+> >>> @@ -0,0 +1,11 @@
+> >>> +# SPDX-License-Identifier: GPL-2.0
+> >>> +
+> >>> +# ARCH can be overridden by the user for cross compiling
+> >>> +ARCH ?=3D $(shell uname -m 2>/dev/null || echo not)
+> >>> +
+> >>> +ifneq (,$(filter $(ARCH),aarch64 arm64))
+> >>> +TEST_GEN_PROGS :=3D tags_test
+> >>> +TEST_PROGS :=3D run_tags_test.sh
+> >>> +endif
+> >>> +
+> >>> +include ../lib.mk
+> >>> diff --git a/tools/testing/selftests/arm64/run_tags_test.sh b/tools/t=
+esting/selftests/arm64/run_tags_test.sh
+> >>> new file mode 100755
+> >>> index 000000000000..745f11379930
+> >>> --- /dev/null
+> >>> +++ b/tools/testing/selftests/arm64/run_tags_test.sh
+> >>> @@ -0,0 +1,12 @@
+> >>> +#!/bin/sh
+> >>> +# SPDX-License-Identifier: GPL-2.0
+> >>> +
+> >>> +echo "--------------------"
+> >>> +echo "running tags test"
+> >>> +echo "--------------------"
+> >>> +./tags_test
+> >>> +if [ $? -ne 0 ]; then
+> >>> +     echo "[FAIL]"
+> >>> +else
+> >>> +     echo "[PASS]"
+> >>> +fi
+> >>> diff --git a/tools/testing/selftests/arm64/tags_test.c b/tools/testin=
+g/selftests/arm64/tags_test.c
+> >>> new file mode 100644
+> >>> index 000000000000..22a1b266e373
+> >>> --- /dev/null
+> >>> +++ b/tools/testing/selftests/arm64/tags_test.c
+> >>> @@ -0,0 +1,29 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0
+> >>> +
+> >>> +#include <stdio.h>
+> >>> +#include <stdlib.h>
+> >>> +#include <unistd.h>
+> >>> +#include <stdint.h>
+> >>> +#include <sys/prctl.h>
+> >>> +#include <sys/utsname.h>
+> >>> +
+> >>> +#define SHIFT_TAG(tag)               ((uint64_t)(tag) << 56)
+> >>> +#define SET_TAG(ptr, tag)    (((uint64_t)(ptr) & ~SHIFT_TAG(0xff)) |=
+ \
+> >>> +                                     SHIFT_TAG(tag))
+> >>> +
+> >>> +int main(void)
+> >>> +{
+> >>> +     static int tbi_enabled =3D 0;
+> >>> +     struct utsname *ptr, *tagged_ptr;
+> >>> +     int err;
+> >>> +
+> >>> +     if (prctl(PR_SET_TAGGED_ADDR_CTRL, PR_TAGGED_ADDR_ENABLE, 0, 0,=
+ 0) =3D=3D 0)
+> >>> +             tbi_enabled =3D 1;
+> >>> +     ptr =3D (struct utsname *)malloc(sizeof(*ptr));
+> >>> +     if (tbi_enabled)
+> >>> +             tagged_ptr =3D (struct utsname *)SET_TAG(ptr, 0x42);
+> >>> +     err =3D uname(tagged_ptr);
+> >>> +     free(ptr);
+> >>> +
+> >>> +     return err;
+> >>> +}
+> >>>
+> >>
+>
