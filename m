@@ -2,101 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E762AAC17
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Sep 2019 21:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DCCAB449
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2019 10:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390754AbfIETh5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Sep 2019 15:37:57 -0400
-Received: from mail-eopbgr40081.outbound.protection.outlook.com ([40.107.4.81]:17824
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726626AbfIETh5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Sep 2019 15:37:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UFlP62oWxhllb/bIASTzlNHztRWF7LroF5M+S7M+gd63/apsmM3HjksAG9DVytsfjKygS9HTFkTMjS459zlDkSwiN7CglAoKwnASDz9bCL2+mZROyEHbp66RxFR2BEQdvEUO6HJU6AIBH8OTDqPog/s9qV233vjSC+6ransuyw06dHxQndBLRHK+4AwbAVgRnaaNB19JaeQ9f/mhilmviSUyUYm6px5IP8Fuodhf5zzZNPfZwN63Ee9K/r8iQq8Thzcuc+HGetxEAOW1EstsDdX4OnZgVGKyPG31kxnHhdu2Bb9XmGjw68Y8JXPYGKDjoDHz54StVfQfLo3CJpngjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qbYJiFqwhCsm3QJHjOrB3hO5E3DVf1d0kBPZJfVeo/o=;
- b=Sqh5uBKB6ZhbMccUisRI59nq3Q9YH7rVyu15OLQl1rbEQ2RTnDrQUwbqZa0KR3YOQ2gXyLamJIdC1QE+r/IAulXlK42axqNxkmR239tsVj2a5ZD/3OoEG57p/oXBEioDEFtACTftVcy+6O4g+/WtmRKxfD6dw15xscKSNEFU0IJlvVSxty8K4BDwSdlTbu42isahRrbxIGQki1keFsf4JvNFHSxyMNEkduL6CCBXexcCjJTl01MmozhYC/263vkT3medOCOeuD+CQCiyZJFgtuvtcKOTwIZNVVFegFd+LMnuRj+Ax443CvZxOIWA6UvylUfqDMHCijjFCR3RvRNP4A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qbYJiFqwhCsm3QJHjOrB3hO5E3DVf1d0kBPZJfVeo/o=;
- b=D/2XolGnHane1ye5PU2dGyIg7HbzmWgOfkLnir1xSmhh7QTYzHokzWc2MENSZBYT/Ui8apKcMrkX+cOE5b6HEfVC/6E6Oc8XMhnqILGqLy7jfzgnDYxd0/ZwGkmErGYmpbPYdekPWFrWeV8qFoTpHJ7lByf2XjSLbCvSub9w4sY=
-Received: from VI1PR0501MB2765.eurprd05.prod.outlook.com (10.172.11.140) by
- VI1PR0501MB2528.eurprd05.prod.outlook.com (10.168.138.139) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2220.21; Thu, 5 Sep 2019 19:37:53 +0000
-Received: from VI1PR0501MB2765.eurprd05.prod.outlook.com
- ([fe80::c4f0:4270:5311:f4b9]) by VI1PR0501MB2765.eurprd05.prod.outlook.com
- ([fe80::c4f0:4270:5311:f4b9%5]) with mapi id 15.20.2220.022; Thu, 5 Sep 2019
- 19:37:53 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     Erez Shitrit <erezsh@mellanox.com>,
-        "weiyongjun1@huawei.com" <weiyongjun1@huawei.com>,
-        Mark Bloch <markb@mellanox.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Alex Vesker <valex@mellanox.com>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net-next] net/mlx5: DR, Fix error return code in
- dr_domain_init_resources()
-Thread-Topic: [PATCH net-next] net/mlx5: DR, Fix error return code in
- dr_domain_init_resources()
-Thread-Index: AQHVY82oshc0j/9jWk+M6+lFVJzxvKcdezOA
-Date:   Thu, 5 Sep 2019 19:37:53 +0000
-Message-ID: <c89c55e6b443996a9cf83f160e2a6babd37437e9.camel@mellanox.com>
-References: <20190905095600.127371-1-weiyongjun1@huawei.com>
-In-Reply-To: <20190905095600.127371-1-weiyongjun1@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.32.4 (3.32.4-1.fc30) 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-originating-ip: [209.116.155.178]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4135777d-9f17-4620-81bc-08d732388bac
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR0501MB2528;
-x-ms-traffictypediagnostic: VI1PR0501MB2528:|VI1PR0501MB2528:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR0501MB252874E2C24B9FB07517F770BEBB0@VI1PR0501MB2528.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 015114592F
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(346002)(376002)(136003)(396003)(39850400004)(199004)(189003)(102836004)(8936002)(2906002)(6246003)(5660300002)(53936002)(6506007)(86362001)(99286004)(76176011)(6486002)(316002)(229853002)(3846002)(14454004)(58126008)(2501003)(25786009)(54906003)(110136005)(6636002)(6116002)(4326008)(36756003)(478600001)(64756008)(4744005)(66446008)(7736002)(305945005)(71190400001)(486006)(476003)(71200400001)(2616005)(6436002)(91956017)(446003)(76116006)(66066001)(81166006)(11346002)(118296001)(66476007)(66556008)(186003)(66946007)(8676002)(6512007)(26005)(81156014)(256004);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0501MB2528;H:VI1PR0501MB2765.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: OQZYdob1JKJ4kDTC7ducJzAFa2b1c74QeLSJXX54Rg53+5AbE3AF1O7Azjb/nTdMp8UmfHH4VAIiqPUg8dGfIGXSi/qQeZCrNFxcRJye8iaKzcVFx+wCTuZnbCF3zKlFYfiKAkWDorloLkoNfMyTtnrYhnxggHzcuzw/3bs4qYa+BcmqU67ASIpPZsDwCItQo94aYrJgHCZFP5Zo8yr7DQh/Se3MpZ/0aC9gr7IQ3dcSXggEInMCQmsu+ndgBbe1LXbogV0JI0qhRZSI7JQfppZZFSzldjVdJzUhZBX41T1ck9+YHGJBCIYNU0cbC2eImwZ+8vrm8BJQKpqNsouo3rJgGHz26mHCpM8OWy5iWfHtTudKGitfL8huazol8bsec+wW201XgRMSZo7Cs5azvPLx5bY8YWVbMSlKzgGziWM=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9C29A2B9572C6E4EAF16BD59A9037024@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4135777d-9f17-4620-81bc-08d732388bac
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Sep 2019 19:37:53.7885
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: oBI5AgUfDqXA9DwqY+48W3T2qot90Jw3UXql+i0jJ6etHzvfs0mLGjHC0f0ioIHoEdblmnrEIe68/mJYxj8G6A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0501MB2528
+        id S2391808AbfIFIp5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 Sep 2019 04:45:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9086 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391750AbfIFIp4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Sep 2019 04:45:56 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x868gS2S132617
+        for <linux-rdma@vger.kernel.org>; Fri, 6 Sep 2019 04:45:55 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2uujt4b3rq-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Fri, 06 Sep 2019 04:45:55 -0400
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
+        Fri, 6 Sep 2019 09:45:53 +0100
+Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Fri, 6 Sep 2019 09:45:49 +0100
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x868jPEQ42271198
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 6 Sep 2019 08:45:25 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C76CAA404D;
+        Fri,  6 Sep 2019 08:45:48 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 89E93A4040;
+        Fri,  6 Sep 2019 08:45:48 +0000 (GMT)
+Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  6 Sep 2019 08:45:48 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     krishna2@chelsio.com, dledford@redhat.com,
+        Bernard Metzler <bmt@zurich.ibm.com>
+Subject: [PATCH] RDMA/siw: Fix page address mapping in TX path
+Date:   Fri,  6 Sep 2019 10:45:44 +0200
+X-Mailer: git-send-email 2.17.2
+X-TM-AS-GCONF: 00
+x-cbid: 19090608-0012-0000-0000-0000034766BD
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19090608-0013-0000-0000-00002181C00A
+Message-Id: <20190906084544.26103-1-bmt@zurich.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-06_04:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=911 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1909060092
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gVGh1LCAyMDE5LTA5LTA1IGF0IDA5OjU2ICswMDAwLCBXZWkgWW9uZ2p1biB3cm90ZToNCj4g
-Rml4IHRvIHJldHVybiBuZWdhdGl2ZSBlcnJvciBjb2RlIC1FTk9NRU0gZnJvbSB0aGUgZXJyb3Ig
-aGFuZGxpbmcNCj4gY2FzZSBpbnN0ZWFkIG9mIDAsIGFzIGRvbmUgZWxzZXdoZXJlIGluIHRoaXMg
-ZnVuY3Rpb24uDQo+IA0KPiBGaXhlczogNGVjOWU3YjAyNjk3ICgibmV0L21seDU6IERSLCBFeHBv
-c2Ugc3RlZXJpbmcgZG9tYWluDQo+IGZ1bmN0aW9uYWxpdHkiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBX
-ZWkgWW9uZ2p1biA8d2VpeW9uZ2p1bjFAaHVhd2VpLmNvbT4NCj4gDQoNCkFwcGxpZWQgdG8gbmV0
-LW5leHQtbWx4NS4NClRoYW5rcyAhDQoNCg==
+Use the correct kmap()/kunmap() flow to determine page
+address used for CRC computation. Using page_address()
+is wrong, since page might be in highmem.
+
+Reported-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+Fixes: b9be6f18cf9e rdma/siw: transmit path
+Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+---
+ drivers/infiniband/sw/siw/siw_qp_tx.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
+index 438a2917a47c..8e72f955921d 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+@@ -518,11 +518,12 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 							c_tx->mpa_crc_hd,
+ 							iov[seg].iov_base,
+ 							plen);
+-				} else if (do_crc)
+-					crypto_shash_update(
+-						c_tx->mpa_crc_hd,
+-						page_address(p) + fp_off,
+-						plen);
++				} else if (do_crc) {
++					crypto_shash_update(c_tx->mpa_crc_hd,
++							    kmap(p) + fp_off,
++							    plen);
++					kunmap(p);
++				}
+ 			} else {
+ 				u64 va = sge->laddr + sge_off;
+ 
+-- 
+2.17.2
+
