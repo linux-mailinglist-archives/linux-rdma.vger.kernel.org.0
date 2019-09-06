@@ -2,112 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36171ABBE6
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2019 17:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CD6ABCCD
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2019 17:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387559AbfIFPLe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 6 Sep 2019 11:11:34 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:60621 "EHLO
+        id S2394899AbfIFPnD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 Sep 2019 11:43:03 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:35393 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbfIFPLe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Sep 2019 11:11:34 -0400
+        with ESMTP id S2394896AbfIFPnD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Sep 2019 11:43:03 -0400
 Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MpDa5-1iVMm21VU7-00qmuU; Fri, 06 Sep 2019 17:11:25 +0200
+ (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1M7sYM-1i1IIg2adW-0051I2; Fri, 06 Sep 2019 17:42:44 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     Saeed Mahameed <saeedm@mellanox.com>,
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
         Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Feras Daoud <ferasda@mellanox.com>,
-        Erez Shitrit <erezsh@mellanox.com>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Eran Ben Elisha <eranbe@mellanox.com>, Qian Cai <cai@lca.pw>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx5: reduce stack usage in FW tracer
-Date:   Fri,  6 Sep 2019 17:11:16 +0200
-Message-Id: <20190906151123.1088455-1-arnd@arndb.de>
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ib_umem: fix type mismatch
+Date:   Fri,  6 Sep 2019 17:42:37 +0200
+Message-Id: <20190906154243.2282560-1-arnd@arndb.de>
 X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:p/b8Nl+a8dcOBXe1E3zEBq4jgiU9iqZOcICuoVMvko8jH0U4ryo
- FeR6Q+0c1vFSlpCFpWhwUSHP5Li2ZMgA2Klua6mVw68Z5Zcfnc1az5h+1qXOAk0xALJ53XG
- h4sI7EmaaRERYBnBrNJzSaKMDw5civlTahWbDF3P+hM9NjqgalSlPwKZ8FW7Y7ixhwuntGt
- lRyvkrcRvkOThH77r5nTg==
+X-Provags-ID: V03:K1:K9/EFzvNoMru8L8s9TvbI42t5t0VeGJl4YOAHC+qXPJKsxIG/QA
+ bEgBPhwyGxE+wquiLrWWz8BfpIOA1qoMHUsgMxn8reqteYVqxOkOrBR1WF0y8WFmxxW2H29
+ ZqeVIFEJYcMo8KnMJbVojzk5fgRNUubK1bCSkOHVxVvpJj9WidxK0gW/m5BNUGZBpq7LW1z
+ 4fisvxaYts59Sf/GnB6vA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+SyaHs2zKCE=:FWX7FWPQbNudZ9Cz9qFnPg
- Fs53G8kwE94rvxELM3px1JcfUxQ/T4jLokQZo3lwKyL9WRYGqYhdHklF826KN0DTpBwLQfmTL
- ZqD86Su8i2y2Z5fUniTOK3C4qKDPEzHuQgK9kcifrdrILQ0nbIjfZVahyfRJYH5+Z6nQ6qg9P
- W6kkw8COj9cTmCn5mDXVNZDk+Nep7+KZy49DSLiDAoy0+O3cuB6x47k7YwgrR0Z/VQEfFnMMH
- kMHeJDZPYSMrsHx25JOX2eJW6jdEOuvY+XWD93QjfK0POa22sgfgNzPEJr3njRGG+6p19iHgh
- WOhcYYPk2oadqUlbyvRbtmrc0rYtMhPpBgPX2MndGZndS1jQbMw9QJxy5gPKISd3odlIiG872
- pXSuhMki2Rq8ufRvjE1c/2McMT6zbX3d8NNlMqCY+1hFBUIw7BNYdYaDkgLFFFmwPxysSpRdk
- qoeSlgC2w1zcqwn28yMoccOihwRnAE4tleAIjplz84I/43c8QwEetomB/qwD1pxxrYbc+tNt2
- n0zbjxmoFJfG5baeTr6cTvvnIBAcdCcPO+4l5JPt8DYQvQ6V3E7+acMsgAz3YFzFyT6iAv0Vl
- 0jVMtognsqRNePtAjZMQVAtvqfWNNsZoYIaDOgp5fHahwAivQrQkuemwOasukqgAMX9GO4JXi
- 89ytPfAnoq6wr+NgAIc97qaQmCG7cRlmypofPkqoNp3/x0KHhXtoqB/pQ9ziee2/tyZQUIJj5
- 57G/C17D/Pdc43BkugGMwW0hRaXsJoBMhCZ7eohEHGF7y58GdZAf3/fAw+hHdWyRnYocwj5zj
- DGpBksL6TcusCqZ3FqmMbIShtjlihFhYrXYNRk2IOfJBIt2fIA=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Kyijkn+kpMo=:Wac2vwJV0iJeEqlNcjo4j1
+ zm8eeRR5mt+6Q6HO46u2FdC1Y3sVIh/19vmOZWnfRe2lpXHNyvls5Fvlaf66ONwQ3/GXysnpi
+ ATt0dPjRld7KpPQgUHdgQ5UzdoaML140C/vIg2bTb4wSySIo/q7kCWoKhxaZYO5HpggnPH6My
+ PyqhzH6cSCk900ikNXkTmr0apvmsCqwXob7nd2e32mq4YeZsK1tt2vnNYasbC/PLCii2X28pR
+ TGOE1plLFgqq9PXHB1LsD7Jl75zgzwhgXRTOZOvlGt2NzRVPoELox4oPZkbF6iVKGByhdlpMe
+ FfaWatXY0Ja4tbJZZ1E9zt0upGOm5Tf7AF0ISBO2YJ403u/G/cC7HqkgIC3tLOMoPTANR/cbJ
+ 719XvwmwW07OQ+iSfwkLHWCMsF17pHrq5BCqa4TcgvLCmvhEVrOSjzQD9AUxolWgcNMqD7Ms0
+ cp6tftCjFzO/87vfR+2mD07A+rlvccPXgSQutYjZg3l9zRUggczDW84PS7zlLKlwcOpcqszQg
+ 0O3h7J5cLuShM31elfxcg/ksQ3VOkj98pgOhv1TMfCaQkDH0PSMlh7NSF/Q8T7yUJvzAyzddp
+ B8N28+S1uAa7NNJLDTsKl4kr97ItRbWkA+aDm1LWIcwvt+gusBhYXf/jQy6aH8druY2scKimv
+ QkRAa2JSUizS8bbsHHK4VwU2sUC9auc1OyLP9MNRIXVYsDmAc2qVFLVUcolMP8M+lwjew9BRK
+ hCBXN4yEzuq9jFTB9dfyEREwcxHjsGAdMdJNL9sO7IF+vjrSF9xDrjGGwwudk5c43HzF2UZX6
+ pvkoAl/nKG3wlJV4nM6Ipna7Saa7KW3T0iQp0/piQO/uDPkWtk=
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-It's generally not ok to put a 512 byte buffer on the stack, as kernel
-stack is a scarce resource:
+On some 32-bit architectures, size_t is defined as 'int' rather
+than 'long', causing a harmless warning:
 
-drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:660:13: error: stack frame size of 1032 bytes in function 'mlx5_fw_tracer_handle_traces' [-Werror,-Wframe-larger-than=]
+drivers/infiniband/core/umem_odp.c:220:7: error: comparison of distinct pointer types ('typeof (umem_odp->umem.address) *' (aka 'unsigned long *') and 'typeof (umem_odp->umem.length) *' (aka 'unsigned int *')) [-Werror,-Wcompare-distinct-pointer-types]
+                if (check_add_overflow(umem_odp->umem.address,
+                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/overflow.h:59:15: note: expanded from macro 'check_add_overflow'
+        (void) (&__a == &__b);                  \
+                ~~~~ ^  ~~~~
 
-This is done in a context that is allowed to sleep, so using
-dynamic allocation is ok as well. I'm not too worried about
-runtime overhead, as this already contains an snprintf() and
-other expensive functions.
+As size_t is always the same length as unsigned long in all supported
+architectures, change the structure definition to use the unsigned long
+type for both.
 
-Fixes: 70dd6fdb8987 ("net/mlx5: FW tracer, parse traces and kernel tracing support")
+Fixes: 204e3e5630c5 ("RDMA/odp: Check for overflow when computing the umem_odp end")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- .../mellanox/mlx5/core/diag/fw_tracer.c       | 21 ++++++++++---------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ include/rdma/ib_umem.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-index 2011eaf15cc5..d81e78060f9f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-@@ -557,16 +557,16 @@ static void mlx5_tracer_print_trace(struct tracer_string_format *str_frmt,
- 				    struct mlx5_core_dev *dev,
- 				    u64 trace_timestamp)
- {
--	char	tmp[512];
--
--	snprintf(tmp, sizeof(tmp), str_frmt->string,
--		 str_frmt->params[0],
--		 str_frmt->params[1],
--		 str_frmt->params[2],
--		 str_frmt->params[3],
--		 str_frmt->params[4],
--		 str_frmt->params[5],
--		 str_frmt->params[6]);
-+	char *tmp = kasprintf(GFP_KERNEL, str_frmt->string,
-+			      str_frmt->params[0],
-+			      str_frmt->params[1],
-+			      str_frmt->params[2],
-+			      str_frmt->params[3],
-+			      str_frmt->params[4],
-+			      str_frmt->params[5],
-+			      str_frmt->params[6]);
-+	if (!tmp)
-+		return;
- 
- 	trace_mlx5_fw(dev->tracer, trace_timestamp, str_frmt->lost,
- 		      str_frmt->event_id, tmp);
-@@ -576,6 +576,7 @@ static void mlx5_tracer_print_trace(struct tracer_string_format *str_frmt,
- 
- 	/* remove it from hash */
- 	mlx5_tracer_clean_message(str_frmt);
-+	kfree(tmp);
- }
- 
- static int mlx5_tracer_handle_string_trace(struct mlx5_fw_tracer *tracer,
+diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
+index a91b2af64ec4..5dffe05402ef 100644
+--- a/include/rdma/ib_umem.h
++++ b/include/rdma/ib_umem.h
+@@ -44,7 +44,7 @@ struct ib_umem_odp;
+ struct ib_umem {
+ 	struct ib_device       *ibdev;
+ 	struct mm_struct       *owning_mm;
+-	size_t			length;
++	unsigned long		length;
+ 	unsigned long		address;
+ 	u32 writable : 1;
+ 	u32 is_odp : 1;
 -- 
 2.20.0
 
