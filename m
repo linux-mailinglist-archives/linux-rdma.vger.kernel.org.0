@@ -2,69 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A9AABA2B
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2019 16:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE19CABA94
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Sep 2019 16:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731251AbfIFOEW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 6 Sep 2019 10:04:22 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:55342 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727970AbfIFOEW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Sep 2019 10:04:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1567778662; x=1599314662;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=bIdnw9uuPcDo9ihD6iyWVZQQ5/HK01tfKep+VXopx/4=;
-  b=VmXJAFC8Ft2b2PcQve9QQpah5phAeVctyaGQPCDJaeNoEX6R2wkA+Vg3
-   zR/62RfYxyg7S6CJBTvomdcyi6lPY4SAhwPOwqHx3sWps7oLAGho0rFT9
-   utTR9V7BpRVq+A84smLsfh6i3FCGoS//mpQ0Nh+/5sgodnmjDibXq9Sja
-   8=;
-X-IronPort-AV: E=Sophos;i="5.64,473,1559520000"; 
-   d="scan'208";a="749389855"
-Received: from iad6-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-81e76b79.us-west-2.amazon.com) ([10.124.125.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 06 Sep 2019 14:04:15 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2b-81e76b79.us-west-2.amazon.com (Postfix) with ESMTPS id 0FE0BA2297;
-        Fri,  6 Sep 2019 14:04:15 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Fri, 6 Sep 2019 14:04:14 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.82) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Fri, 6 Sep 2019 14:04:11 +0000
-Subject: Re: [PATCH] RDMA/siw: Fix page address mapping in TX path
-To:     Bernard Metzler <bmt@zurich.ibm.com>
-CC:     <linux-rdma@vger.kernel.org>, <krishna2@chelsio.com>,
-        <dledford@redhat.com>
-References: <20190906084544.26103-1-bmt@zurich.ibm.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <bd025563-e1e0-4d87-2150-b4cb7fc5a816@amazon.com>
-Date:   Fri, 6 Sep 2019 17:04:06 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+        id S2394263AbfIFORs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 Sep 2019 10:17:48 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:41046 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2392868AbfIFORs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 6 Sep 2019 10:17:48 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 893DF1D8CAAEA04C5933;
+        Fri,  6 Sep 2019 22:17:45 +0800 (CST)
+Received: from localhost (10.133.213.239) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.439.0; Fri, 6 Sep 2019
+ 22:17:36 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <oulijun@huawei.com>, <xavier.huwei@huawei.com>,
+        <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] RDMA/hns: use devm_platform_ioremap_resource() to simplify code
+Date:   Fri, 6 Sep 2019 22:17:27 +0800
+Message-ID: <20190906141727.26552-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20190906084544.26103-1-bmt@zurich.ibm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.82]
-X-ClientProxiedBy: EX13P01UWA004.ant.amazon.com (10.43.160.127) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain
+X-Originating-IP: [10.133.213.239]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 06/09/2019 11:45, Bernard Metzler wrote:
-> Use the correct kmap()/kunmap() flow to determine page
-> address used for CRC computation. Using page_address()
-> is wrong, since page might be in highmem.
-> 
-> Reported-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
-> Fixes: b9be6f18cf9e rdma/siw: transmit path
+Use devm_platform_ioremap_resource() to simplify the code a bit.
+This is detected by coccinelle.
 
-Hi Bernard,
-The format of the fixes line should be:
-Fixes: b9be6f18cf9e ("rdma/siw: transmit path")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+index dc9a1cd..5f74bf5 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+@@ -4511,7 +4511,6 @@ static int hns_roce_get_cfg(struct hns_roce_dev *hr_dev)
+ 	struct platform_device *pdev = NULL;
+ 	struct net_device *netdev = NULL;
+ 	struct device_node *net_node;
+-	struct resource *res;
+ 	int port_cnt = 0;
+ 	u8 phy_port;
+ 	int ret;
+@@ -4550,8 +4549,7 @@ static int hns_roce_get_cfg(struct hns_roce_dev *hr_dev)
+ 	}
+ 
+ 	/* get the mapped register base address */
+-	res = platform_get_resource(hr_dev->pdev, IORESOURCE_MEM, 0);
+-	hr_dev->reg_base = devm_ioremap_resource(dev, res);
++	hr_dev->reg_base = devm_platform_ioremap_resource(hr_dev->pdev, 0);
+ 	if (IS_ERR(hr_dev->reg_base))
+ 		return PTR_ERR(hr_dev->reg_base);
+ 
+-- 
+2.7.4
+
+
