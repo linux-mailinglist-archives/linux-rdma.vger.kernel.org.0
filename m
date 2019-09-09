@@ -2,136 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C578EAD602
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Sep 2019 11:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E3BAD641
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Sep 2019 12:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729179AbfIIJqp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Sep 2019 05:46:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59254 "EHLO mail.kernel.org"
+        id S1729386AbfIIKAN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Sep 2019 06:00:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728701AbfIIJqp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 9 Sep 2019 05:46:45 -0400
+        id S1729331AbfIIKAN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 9 Sep 2019 06:00:13 -0400
 Received: from localhost (unknown [148.69.85.38])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 258E1206A1;
-        Mon,  9 Sep 2019 09:46:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E71CD2086D;
+        Mon,  9 Sep 2019 10:00:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568022404;
-        bh=jR7maaGH/KcGHteR7nCkk9JujZ8WwvgZHlZI4x7S9ZQ=;
+        s=default; t=1568023211;
+        bh=ufHXaGgkjrnR3cDSJFUXOTlHYPFvFP3VNj4glNENtPM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sU5KLCFyfBmsMLmWEsdTTL517uE5UAKqA7UMWLxt/efiz/HBWL/kAeGRUNftn6Sw7
-         FyGCxdT6zoaLCYV69WHMvUvS3w/pv4Lt6qGm6qGP5gA5Iu/jMgElGFk8jRt1vaVyNQ
-         n2Mt6wFh6AUdXsCzgl32IfUxVNemdhTQ5hJGje+U=
-Date:   Mon, 9 Sep 2019 12:46:41 +0300
+        b=LHFdyf80YPxaWGsNyRsjsrdliOHXxSAw/8J7p6d0lhsr9lfWgJgX04oXWE0lctqOe
+         WQaL2DuOVAJaRORSMh2ImSmrOLL9wGwggmv3EoXJPsCyc7Fkx3qA2r8YzJQSYmF39d
+         2vlPEd0SGv6q07ZtAympsZPGDR3WRbzva4qou1ow=
+Date:   Mon, 9 Sep 2019 13:00:02 +0300
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@mellanox.com>
 Cc:     Doug Ledford <dledford@redhat.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Erez Alfasi <ereza@mellanox.com>
-Subject: Re: [PATCH rdma-next v1 2/4] RDMA/nldev: Allow different fill
- function per resource
-Message-ID: <20190909094641.GB6601@unreal>
+Subject: Re: [PATCH rdma-next v1 3/4] RDMA/nldev: Provide MR statistics
+Message-ID: <20190909100002.GC6601@unreal>
 References: <20190830081612.2611-1-leon@kernel.org>
- <20190830081612.2611-3-leon@kernel.org>
- <20190909084807.GC2843@mellanox.com>
+ <20190830081612.2611-4-leon@kernel.org>
+ <20190909085148.GD2843@mellanox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190909084807.GC2843@mellanox.com>
+In-Reply-To: <20190909085148.GD2843@mellanox.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 09, 2019 at 08:48:09AM +0000, Jason Gunthorpe wrote:
-> On Fri, Aug 30, 2019 at 11:16:10AM +0300, Leon Romanovsky wrote:
+On Mon, Sep 09, 2019 at 08:51:50AM +0000, Jason Gunthorpe wrote:
+> On Fri, Aug 30, 2019 at 11:16:11AM +0300, Leon Romanovsky wrote:
 > > From: Erez Alfasi <ereza@mellanox.com>
 > >
-> > So far res_get_common_{dumpit, doit} was using the default
-> > resource fill function which was defined as part of the
-> > nldev_fill_res_entry fill_entries.
+> > Add RDMA nldev netlink interface for dumping MR
+> > statistics information.
 > >
-> > Add a fill function pointer as an argument allows us to use
-> > different fill function in case we want to dump different
-> > values then 'rdma resource' flow do, but still use the same
-> > existing general resources dumping flow.
+> > Output example:
+> > ereza@dev~$: ./ibv_rc_pingpong -o -P -s 500000000
+> >   local address:  LID 0x0001, QPN 0x00008a, PSN 0xf81096, GID ::
 > >
-> > If a NULL value is passed, it will be using the default
-> > fill function that was defined in 'fill_entries' for a
-> > given resource type.
+> > ereza@dev~$: rdma stat show mr
+> > dev mlx5_0 mrn 2 page_faults 122071 page_invalidations 0
+> > prefetched_pages 122071
 > >
 > > Signed-off-by: Erez Alfasi <ereza@mellanox.com>
 > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> >  drivers/infiniband/core/nldev.c | 42 +++++++++++++++++++++++----------
-> >  1 file changed, 29 insertions(+), 13 deletions(-)
+> >  drivers/infiniband/core/device.c  |  1 +
+> >  drivers/infiniband/core/nldev.c   | 54 +++++++++++++++++++++++++++++--
+> >  drivers/infiniband/hw/mlx5/main.c | 16 +++++++++
+> >  include/rdma/ib_verbs.h           |  9 ++++++
+> >  4 files changed, 78 insertions(+), 2 deletions(-)
 > >
-> > diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-> > index cc08218f1ef7..47f7fe5432db 100644
-> > +++ b/drivers/infiniband/core/nldev.c
-> > @@ -1181,7 +1181,10 @@ static const struct nldev_fill_res_entry fill_entries[RDMA_RESTRACK_MAX] = {
-> >
-> >  static int res_get_common_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
-> >  			       struct netlink_ext_ack *extack,
-> > -			       enum rdma_restrack_type res_type)
-> > +			       enum rdma_restrack_type res_type,
-> > +			       int (*fill_func)(struct sk_buff*, bool,
-> > +						struct rdma_restrack_entry*,
-> > +						uint32_t))
+> > diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> > index 99c4a55545cf..34a9e37c5c61 100644
+> > +++ b/drivers/infiniband/core/device.c
+> > @@ -2610,6 +2610,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+> >  	SET_DEVICE_OP(dev_ops, get_dma_mr);
+> >  	SET_DEVICE_OP(dev_ops, get_hw_stats);
+> >  	SET_DEVICE_OP(dev_ops, get_link_layer);
+> > +	SET_DEVICE_OP(dev_ops, fill_odp_stats);
+> >  	SET_DEVICE_OP(dev_ops, get_netdev);
+> >  	SET_DEVICE_OP(dev_ops, get_port_immutable);
+> >  	SET_DEVICE_OP(dev_ops, get_vector_affinity);
 >
-> Use a typedef?
+> I'm now curious what motivated placing the line here, apparently
+> randomly in a sorted list?
 
-I'll take a look on that, but it is not fully clear to me what are the
-gains here.
+desire to be different and express yourself?
 
 >
-> >  {
-> >  	const struct nldev_fill_res_entry *fe = &fill_entries[res_type];
-> >  	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
-> > @@ -1244,7 +1247,12 @@ static int res_get_common_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
-> >  	}
-> >
-> >  	has_cap_net_admin = netlink_capable(skb, CAP_NET_ADMIN);
-> > -	ret = fe->fill_res_func(msg, has_cap_net_admin, res, port);
+> > +static int fill_stat_mr_entry(struct sk_buff *msg, bool has_cap_net_admin,
+> > +			      struct rdma_restrack_entry *res, uint32_t port)
+> > +{
+> > +	struct ib_mr *mr = container_of(res, struct ib_mr, res);
+> > +	struct ib_device *dev = mr->pd->device;
+> > +	struct ib_odp_counters odp_stats;
+> > +	struct nlattr *table_attr;
 > > +
-> > +	if (fill_func)
-> > +		ret = fill_func(msg, has_cap_net_admin, res, port);
-> > +	else
-> > +		ret = fe->fill_res_func(msg, has_cap_net_admin, res, port);
+> > +	if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_MRN, res->id))
+> > +		goto err;
+> > +
+> > +	if (!dev->ops.fill_odp_stats)
+> > +		return 0;
+> > +
+> > +	if (!dev->ops.fill_odp_stats(mr, &odp_stats))
+> > +		return 0;
 >
-> Weird to now be choosing between two function pointers
+> As Parav says this seems to be wrong for !ODP MRs. Can we even detect
+> !ODP at this point?
 
-I didn't like this either, but we didn't find an easy solution to do
-chains of fill functions. In our case, we are requesting COUNTER object
-which will call to MR object to fill statistic.
+ODP is decided on UMEM level which you said should be driver property
+and it means that driver should distinguish between odp/not-odp.
 
 >
-> > -#define RES_GET_FUNCS(name, type)                                              \
-> > -	static int nldev_res_get_##name##_dumpit(struct sk_buff *skb,          \
-> > +#define RES_GET_FUNCS(name, type)					       \
-> > +	static int nldev_res_get_##name##_dumpit(struct sk_buff *skb,	       \
-> >  						 struct netlink_callback *cb)  \
-> > -	{                                                                      \
-> > -		return res_get_common_dumpit(skb, cb, type);                   \
-> > -	}                                                                      \
-> > -	static int nldev_res_get_##name##_doit(struct sk_buff *skb,            \
-> > -					       struct nlmsghdr *nlh,           \
-> > +	{								       \
-> > +		return res_get_common_dumpit(skb, cb, type, NULL);	       \
-> > +	}								       \
-> > +	static int nldev_res_get_##name##_doit(struct sk_buff *skb,	       \
-> > +					       struct nlmsghdr *nlh,	       \
-> >  					       struct netlink_ext_ack *extack) \
-> > -	{                                                                      \
-> > -		return res_get_common_doit(skb, nlh, extack, type);            \
-> > +	{								       \
-> > +		return res_get_common_doit(skb, nlh, extack, type, NULL);      \
-> >  	}
+> > +
+> > +	table_attr = nla_nest_start(msg,
+> > +				    RDMA_NLDEV_ATTR_STAT_HWCOUNTERS);
+> > +
+> > +	if (!table_attr)
+> > +		return -EMSGSIZE;
+> > +
+> > +	if (fill_stat_hwcounter_entry(msg, "page_faults",
+> > +				      (u64)atomic64_read(&odp_stats.faults)))
 >
-> ie the NULL should be fill_entries[type]->fill_res_func?
+> Why the cast?
 
-The "if (fill_func) " above will do the trick.
+atomic64_read returns s64 and not u64, I didn't see need to investigate
+if s64 == u64 in all architectures.
+>
+>
+> > +static bool mlx5_ib_fill_odp_stats(struct ib_mr *ibmr,
+> > +				   struct ib_odp_counters *cnt)
+> > +{
+> > +	struct mlx5_ib_mr *mr = to_mmr(ibmr);
+> > +
+> > +	if (!is_odp_mr(mr))
+> > +		return false;
+> > +
+> > +	memcpy(cnt, &to_ib_umem_odp(mr->umem)->odp_stats,
+> > +	       sizeof(struct ib_odp_counters));
+>
+> Can't memcpy atomic64, have to open code a copy using atomic64_read.
 
+Right
+
+>
+> > @@ -6316,6 +6331,7 @@ static const struct ib_device_ops mlx5_ib_dev_ops = {
+> >  	.get_dev_fw_str = get_dev_fw_str,
+> >  	.get_dma_mr = mlx5_ib_get_dma_mr,
+> >  	.get_link_layer = mlx5_ib_port_link_layer,
+> > +	.fill_odp_stats = mlx5_ib_fill_odp_stats,
+>
+> Randomly again..
 >
 > Jason
