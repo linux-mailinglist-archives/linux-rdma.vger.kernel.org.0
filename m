@@ -2,90 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC9EAE000
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Sep 2019 22:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD31AE033
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Sep 2019 23:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391690AbfIIUnF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Sep 2019 16:43:05 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:42355 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728204AbfIIUnF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Sep 2019 16:43:05 -0400
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MQ5aw-1hlTmW3fuq-00M5vK; Mon, 09 Sep 2019 22:42:05 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-rdma@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: add dummy can_do_mlock() helper
-Date:   Mon,  9 Sep 2019 22:41:40 +0200
-Message-Id: <20190909204201.931830-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.20.0
+        id S2391641AbfIIVOf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Sep 2019 17:14:35 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:42892 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732315AbfIIVOf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Sep 2019 17:14:35 -0400
+Received: by mail-pf1-f194.google.com with SMTP id w22so10097878pfi.9
+        for <linux-rdma@vger.kernel.org>; Mon, 09 Sep 2019 14:14:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SWyrMvKoZeJUW2jP4aEz7GUGLNj1qlvRlvfndO0mMoU=;
+        b=n/dhLxtIN4ODtKqmA0oAPdULbY5nCAefsuwhiWri29IT2iqWDPDfmAaLQnFIdhpG77
+         zvT2u5JlUG36JPdNQwIAQ7m6WYev/uOxL1+8DLrue694/L+6S0RgwvwvGgpz5ILPz/Q3
+         cAGwLymgmkNt49JM1aTwXIlFfG4Z3VSmS39p6ppM9H2534pwbWIeJnJpZ8Tlh289Pynq
+         0Rg7pytasouwqHvI/z0mffZkOAwBAQnwNHUTulwZ4O+TRZYtsA3VqBeori3JVnaR9gJD
+         Yh1exiYV6hBwGL7DXvlRd30A75CCYem0VmBoTmjGy4kaqz1Tneio3SsHHA3p2r3PfS2v
+         7aIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SWyrMvKoZeJUW2jP4aEz7GUGLNj1qlvRlvfndO0mMoU=;
+        b=S1d9CtiI9HkYU7jVVDTcTiHQqrOKa5Z+jlCmfVAxzDrpumhLvkBv94sEnPlUJ37MYQ
+         70gdlyMzzK1NiqVAzkxq+Gkf5AAESxPPmi7P2IyvSQaVh4HbKWzklkrn3C0l+iOjgB3H
+         raCxEPPd8xdaweZQOyZEVETl+dQ0YAH9vh+DUddXMw/Ja38kenpOtH00c+gRkrNzCen3
+         bKgJgKfmYWSGJlR/Rs/6wA5C2i9QBbLedmLSUO6mCSqg7dN7wjr+2Vllscmginq6IScU
+         7BO8dn42ZaX8uWQL16vTsi4mYgdzCU5pKF/k+n6k5sR+gH0f4tEi4gcrSy6D+uTFKT9G
+         dCMQ==
+X-Gm-Message-State: APjAAAWdcPJFhAr7EQeCZ+8IhZ29DI9IUZNqzf5gXJzoXHRslM1g1kEx
+        uiUEGSs65ltFNbOFyKrUNrd4mKYhODV8XcWvZi6dvg==
+X-Google-Smtp-Source: APXvYqxkgk8vOif4+8dDVnGLiySdf3fh7WZMI0FF72SbNFcx1ZGNeTcmlZ2ofHtixjJ67n/0RGa9si6mjZLNF9PFjkQ=
+X-Received: by 2002:a63:6193:: with SMTP id v141mr24350262pgb.263.1568063673765;
+ Mon, 09 Sep 2019 14:14:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:NMgxzMZvNg4wYSfExpvmPgKHwnZ0vKKpKYsDNKfr1gaPuEOGj13
- 9spfXcxohF5+owmMJ9nammIJCCQiu7DMpfXvuT2coJGiGarzO6vb/d3lF1fiLXjkdyRuL7M
- tOCQm7mRyhjjH61yIGaillDR5bdbqL0qWLgzJzWUMrVI0NVSW5RZF6brCLUjDNp06qKNCG5
- AiUHc8vd8nnf6RnUW6KSg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:e9wc4PuIlN8=:VQHamnwdDmOvm/t4sXsE4K
- rFPAvU6xvFooY2/BKW+q0CLtqQf4ht8iY6czqafmpju4onzJuZ7IQSatMoHAJYgqmI2TB+ZCM
- B8L0UDhX5J8JjL9khFaDkn/txs8rMFW6Mn/8sLWKz7PtYrHt+4BFO4b08zwzMm3xa1itXbzeX
- hYaBO7eNdiw92POSkthjxYpJwGeL596Z0fRcjczrM1pkOU9cIKkrI4Db+Ut2schd8k4n8NBRm
- IJGnm0qpCFT3T4Y7dwaJNSV3G06nxWpuex2MpCyKLycwLNnQdEmreptjIvQ3lapztT0TPCdJG
- f3Z2vt45S6MzHt9ueOqep8VNzKJoCFBei6oo6a5bASDfldb2rFnjdV1IndtVa8/qDiBdePISs
- uH2nwA2yI7tNl50aNnVQyEvoYqyFMIcIxdHzNHCveSz6kqZlpKllRJGH2MJIF/RP0OV8ldsTh
- 6KiRzEGwHm+QakSYpHSXlsNJkywC2R/kni9Me5LPxdG1h+jFXIar+YWb1Zx5JNmjvohRHzWYY
- Dgpe3/RHod2rQ0l3dgqXd1P0OWKb4EhuNbeWxILBuD73L2pu1Eh2Hs1YpRxmv+i1dmaslP83p
- koFevhO1UWPRbckA4ZxUkZOHLLWJtUilwTgKgtdCnllLQPjnFHsfQ4yv7mZzwpO5XziAZSWDz
- lg29yZOQyABLlNLZxpohs4FYc/FuKdHlS9jDFuh/425QhrYxkTWZpdZ/+iKxY2wpRcTDFRndL
- CnezSza2f0Np3nj3lo/SPBgwR3zs4sn2A/AkHDkoOIuw/OGkv7mPODwbd8l6mKxbuKiv/SZ0e
- RO3slh3ultmVdWp3eD8T31Z2dLgLVAY5FuUz5UqLV9e7exCahI=
+References: <20190909195024.3268499-1-arnd@arndb.de> <20190909195513.GA94662@archlinux-threadripper>
+In-Reply-To: <20190909195513.GA94662@archlinux-threadripper>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 9 Sep 2019 14:14:23 -0700
+Message-ID: <CAKwvOdn5pR_j=NEUtrVSS_uZYtdwVuPAAd6CqF1BOL8akSFhcQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/2] mlx5: steering: use correct enum type
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alex Vesker <valex@mellanox.com>,
+        Erez Shitrit <erezsh@mellanox.com>,
+        Mark Bloch <markb@mellanox.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On kernels without CONFIG_MMU, we get a link error for the siw
-driver:
+On Mon, Sep 9, 2019 at 12:55 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Mon, Sep 09, 2019 at 09:50:08PM +0200, Arnd Bergmann wrote:
+> > The newly added code triggers a harmless warning with
+> > clang:
+> >
+> > drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c:1080:9: error: implicit conversion from enumeration type 'enum mlx5_reformat_ctx_type' to different enumeration type 'enum mlx5dr_action_type' [-Werror,-Wenum-conversion]
+> >                         rt = MLX5_REFORMAT_TYPE_L2_TO_L2_TUNNEL;
+> >                            ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c:1084:51: error: implicit conversion from enumeration type 'enum mlx5dr_action_type' to different enumeration type 'enum mlx5_reformat_ctx_type' [-Werror,-Wenum-conversion]
+> >                 ret = mlx5dr_cmd_create_reformat_ctx(dmn->mdev, rt, data_sz, data,
+> >                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~            ^~
+> >
+> > Change it to use mlx5_reformat_ctx_type instead of mlx5dr_action_type.
+> >
+> > Fixes: 9db810ed2d37 ("net/mlx5: DR, Expose steering action functionality")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> I sent the same fix a couple of days ago:
+>
+> https://lore.kernel.org/netdev/20190905014733.17564-1-natechancellor@gmail.com/
+>
+> I don't care which patch goes in since they are the same thing so:
+>
+> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
-drivers/infiniband/sw/siw/siw_mem.o: In function `siw_umem_get':
-siw_mem.c:(.text+0x4c8): undefined reference to `can_do_mlock'
-
-This is probably not the only driver that needs the function
-and could otherwise build correctly without CONFIG_MMU, so
-add a dummy variant that always returns false.
-
-Fixes: 2251334dcac9 ("rdma/siw: application buffer management")
-Suggested-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- include/linux/mm.h | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 66f296181bcc..cc292273e6ba 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1424,7 +1424,11 @@ extern void pagefault_out_of_memory(void);
- 
- extern void show_free_areas(unsigned int flags, nodemask_t *nodemask);
- 
-+#ifdef CONFIG_MMU
- extern bool can_do_mlock(void);
-+#else
-+static inline bool can_do_mlock(void) { return false; }
-+#endif
- extern int user_shm_lock(size_t, struct user_struct *);
- extern void user_shm_unlock(size_t, struct user_struct *);
- 
+GCC recently gained support (via me scanning the commit logs for an
+unrelated feature) for -Wenum-warnings (though I think it's off by
+default) so hopefully these kinds of issues will taper off over time.
 -- 
-2.20.0
-
+Thanks,
+~Nick Desaulniers
