@@ -2,86 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C706AE44D
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2019 09:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B0EAE4B2
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2019 09:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406567AbfIJHKd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Sep 2019 03:10:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39702 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2406564AbfIJHKd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Sep 2019 03:10:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 523C0AFF5;
-        Tue, 10 Sep 2019 07:10:31 +0000 (UTC)
-Date:   Tue, 10 Sep 2019 09:10:30 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>,
+        id S1729025AbfIJHb1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Sep 2019 03:31:27 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:42784 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726008AbfIJHb1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Sep 2019 03:31:27 -0400
+Received: by mail-qk1-f193.google.com with SMTP id f13so15970214qkm.9;
+        Tue, 10 Sep 2019 00:31:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J4aIbTcgYnsL2jAn60izorNqL2E+CEoVtmdgC/gCJ2A=;
+        b=rA+YV42bahdlJ80KZYTG6Br/IowEbQmS5Ti/4npAstLMK+yviYQ3Bcgsz2fq/TGbHF
+         duOfieiqXaTGK/YC7wEM4gL5Ut1F+JJLXs52bePD3n4DwilGs/viE8ttiv/u6yfyMhbw
+         EocqobjA5Ha8Nz2wmUdnJgTK63rWAVTHOn32mldsL+EvLjzmbvuiPj09PK3usQHrQRmT
+         3DtD78DOZUrmTj5lW1I1iWt3yhF0SGgNcNJV8NyCSz4Dg2/Jt3ahMSivNgLJj4Y7jTr+
+         +MFWsPyxBUteSGgfjj0iw7OavAjdw0wZo9P4LiSNITPNtYEN3FeXJg8Ac9awCOkvYIV3
+         zvpg==
+X-Gm-Message-State: APjAAAVWDyJebX/TmJ1XHcnUIxtqbEOQXJ+KeokVomo0nL6OF9Jcdwxy
+        6487PwdIIbFFrZaumE168c6hrZQka8yHHtLSmRlR9Yp1
+X-Google-Smtp-Source: APXvYqzxfu9hm0NXuOKA2ZPbbiK1FbMXuncwD0ThgVH5KBnNGFfYb5fTYOiTxWRMVJbtLh9Ew4O+xiYHL4ZLpkip+vI=
+X-Received: by 2002:ae9:ef8c:: with SMTP id d134mr27834191qkg.286.1568100685778;
+ Tue, 10 Sep 2019 00:31:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190909204201.931830-1-arnd@arndb.de> <20190910071030.GG2063@dhcp22.suse.cz>
+In-Reply-To: <20190910071030.GG2063@dhcp22.suse.cz>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 10 Sep 2019 09:31:09 +0200
+Message-ID: <CAK8P3a2_nuy-nxYapRbkZfAa+xABGUSPekEOwTunu4G-=V2cCA@mail.gmail.com>
+Subject: Re: [PATCH] mm: add dummy can_do_mlock() helper
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Bernard Metzler <bmt@zurich.ibm.com>,
         "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: add dummy can_do_mlock() helper
-Message-ID: <20190910071030.GG2063@dhcp22.suse.cz>
-References: <20190909204201.931830-1-arnd@arndb.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190909204201.931830-1-arnd@arndb.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon 09-09-19 22:41:40, Arnd Bergmann wrote:
-> On kernels without CONFIG_MMU, we get a link error for the siw
-> driver:
-> 
-> drivers/infiniband/sw/siw/siw_mem.o: In function `siw_umem_get':
-> siw_mem.c:(.text+0x4c8): undefined reference to `can_do_mlock'
-> 
-> This is probably not the only driver that needs the function
-> and could otherwise build correctly without CONFIG_MMU, so
-> add a dummy variant that always returns false.
-> 
-> Fixes: 2251334dcac9 ("rdma/siw: application buffer management")
-> Suggested-by: Jason Gunthorpe <jgg@mellanox.com>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Tue, Sep 10, 2019 at 9:10 AM Michal Hocko <mhocko@kernel.org> wrote:
 
-Makes sense
-Acked-by: Michal Hocko <mhocko@suse.com>
+> but IB on nonMMU? Whut? Is there any HW that actually supports this?
+> Just wondering...
 
-but IB on nonMMU? Whut? Is there any HW that actually supports this?
-Just wondering...
+Probably not, but I can't think of a good reason to completely disable
+it in Kconfig.
+Almost everything can be built without MMU at the moment, but the subset
+of things that are actually useful is hard to know.
 
-> ---
->  include/linux/mm.h | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 66f296181bcc..cc292273e6ba 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -1424,7 +1424,11 @@ extern void pagefault_out_of_memory(void);
->  
->  extern void show_free_areas(unsigned int flags, nodemask_t *nodemask);
->  
-> +#ifdef CONFIG_MMU
->  extern bool can_do_mlock(void);
-> +#else
-> +static inline bool can_do_mlock(void) { return false; }
-> +#endif
->  extern int user_shm_lock(size_t, struct user_struct *);
->  extern void user_shm_unlock(size_t, struct user_struct *);
->  
-> -- 
-> 2.20.0
-> 
-
--- 
-Michal Hocko
-SUSE Labs
+         Arnd
