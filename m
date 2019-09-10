@@ -2,266 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C63AF1D1
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2019 21:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB14AF20E
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2019 21:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727947AbfIJTWX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Sep 2019 15:22:23 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:21589 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727131AbfIJTWX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Sep 2019 15:22:23 -0400
-Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x8AJLxj8004459;
-        Tue, 10 Sep 2019 12:22:01 -0700
-Date:   Wed, 11 Sep 2019 00:51:59 +0530
-From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
-To:     Sagi Grimberg <sagi@grimberg.me>,
-        Steve Wise <larrystevenwise@gmail.com>,
-        Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH v3] iwcm: don't hold the irq disabled lock on iw_rem_ref
-Message-ID: <20190910192157.GA5954@chelsio.com>
-References: <20190904212531.6488-1-sagi@grimberg.me>
- <20190910111759.GA5472@chelsio.com>
- <5cc42f23-bf60-ca8d-f40c-cbd8875f5756@grimberg.me>
+        id S1725916AbfIJTwL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Sep 2019 15:52:11 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:39156 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725880AbfIJTwK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Sep 2019 15:52:10 -0400
+Received: by mail-qk1-f194.google.com with SMTP id 4so18328578qki.6;
+        Tue, 10 Sep 2019 12:52:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RR/8LQYEhemm58mBqc6PRWMnQiy34VPyY85MVE0Ja8g=;
+        b=NWS/07d31j6nd/4JnxIxVkXAE7O5ZtqcRBXUt9//h8DzdAuEgciW7Tv4mGaFPoKaDp
+         kqhU/W87zLpi1Gcw3xFKFKL961DJ3HnvWtcVKG/J3peZAQT72JG9Qp856lZYT26u4KsU
+         WN6H59lPIcSu08x/lxFvgNeBu3MxXuxaD2db5pB8z+FxrrNBIFmwpWrxJ3WChKz7Yq+5
+         PDlItoU2s8yWaDZxgQxSvE18sIzYuXuE0XwvDV4TFVqaqPTT/6wDhpnIS+/krm05wTV0
+         MwoNslO44WxdYcgg4UUTuZZOlTYY+NUu1JMe7f0J2HCM3XdXEIt/deEJvPtbl1YfyCGk
+         cZ2Q==
+X-Gm-Message-State: APjAAAVoZ4Rg2sihvH8rck1T5/y3xcRbIbZG3I60u5/wCfkQbP1EzRYZ
+        9mUvD3bi0Isy1udVTOQz8VdT4UvupDfKT3kVpb9gl4Tj
+X-Google-Smtp-Source: APXvYqzEex4e0zJt+OCqc4YJRDYS66/waGOw4gnYnBMJkY0zuoeULENx7qUHKj2mxeWsuaUYforX1fiftvmZSvBsu2Q=
+X-Received: by 2002:a37:8044:: with SMTP id b65mr9509831qkd.138.1568145129659;
+ Tue, 10 Sep 2019 12:52:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5cc42f23-bf60-ca8d-f40c-cbd8875f5756@grimberg.me>
-User-Agent: Mutt/1.9.3 (20180206.02d571c2)
+References: <20190909195024.3268499-1-arnd@arndb.de> <20190909195024.3268499-2-arnd@arndb.de>
+ <8311cb643690d3e80dddd5d4f2f6a7d923b9fbbc.camel@mellanox.com>
+In-Reply-To: <8311cb643690d3e80dddd5d4f2f6a7d923b9fbbc.camel@mellanox.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 10 Sep 2019 21:51:53 +0200
+Message-ID: <CAK8P3a3CFYrQ53as4+xAmxHfa67E25mhN8q1NZwhQ50iSavp+Q@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/2] mlx5: fix type mismatch
+To:     Saeed Mahameed <saeedm@mellanox.com>
+Cc:     "dledford@redhat.com" <dledford@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Mark Bloch <markb@mellanox.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Erez Shitrit <erezsh@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alex Vesker <valex@mellanox.com>,
+        Ariel Levkovich <lariel@mellanox.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Please review the below patch, I will resubmit this in patch-series
-after review.
-- As kput_ref handler(siw_free_qp) uses vfree, iwcm can't call
-  iw_rem_ref() with spinlocks held. Doing so can cause vfree() to sleep
-  with irq disabled.
-  Two possible solutions:
-  1)With spinlock acquired, take a copy of "cm_id_priv->qp" and update
-    it to NULL. And after releasing lock use the copied qp pointer for
-    rem_ref().
-  2)Replacing issue causing vmalloc()/vfree to kmalloc()/kfree in SIW
-    driver, may not be a ideal solution.
-  
-  Solution 2 may not be ideal as allocating huge contigous memory for
-   SQ & RQ doesn't look appropriate.
-  
-- The structure "siw_base_qp" is getting freed in siw_destroy_qp(), but
-  if cm_close_handler() holds the last reference, then siw_free_qp(),
-  via cm_close_handler(), tries to get already freed "siw_base_qp" from
-  "ib_qp". 
-   Hence, "siw_base_qp" should be freed at the end of siw_free_qp().
+On Tue, Sep 10, 2019 at 7:56 PM Saeed Mahameed <saeedm@mellanox.com> wrote:
+>
+> On Mon, 2019-09-09 at 21:50 +0200, Arnd Bergmann wrote:
+> > In mlx5, pointers to 'phys_addr_t' and 'u64' are mixed since the
+> > addition
+> > of the pool memory allocator, leading to incorrect behavior on 32-bit
+> > architectures and this compiler warning:
+> >
+> > drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c:121:8:
+> > error: incompatible pointer types passing 'u64 *' (aka 'unsigned long
+> > long *') to parameter of type 'phys_addr_t *' (aka 'unsigned int *')
+> > [-Werror,-Wincompatible-pointer-types]
+> >                                    &icm_mr->dm.addr, &icm_mr-
+> > >dm.obj_id);
+> >                                    ^~~~~~~~~~~~~~~~
+> > include/linux/mlx5/driver.h:1092:39: note: passing argument to
+> > parameter 'addr' here
+> >                          u64 length, u16 uid, phys_addr_t *addr, u32
+> > *obj_id);
+> >
+> > Change the code to use 'u64' consistently in place of 'phys_addr_t'
+> > to
+> > fix this. The alternative of using phys_addr_t more would require a
+> > larger
+> > rework.
+> >
+> > Fixes: 29cf8febd185 ("net/mlx5: DR, ICM pool memory allocator")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> Hi Arnd,
+>
+> Nathan Chancellor Already submitted a patch to fix this and it is more
+> minimal:
+> https://patchwork.ozlabs.org/patch/1158177/
+>
+> I would like to use that patch if it is ok with you..
 
+Yes, please do. I think I had tried something like that
+initially and concluded it wasn't quite right before I went
+into a different direction with my patch.
 
-diff --git a/drivers/infiniband/core/iwcm.c
-b/drivers/infiniband/core/iwcm.c
-index 72141c5b7c95..d5ab69fa598a 100644
---- a/drivers/infiniband/core/iwcm.c
-+++ b/drivers/infiniband/core/iwcm.c
-@@ -373,6 +373,7 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
- {
-        struct iwcm_id_private *cm_id_priv;
-        unsigned long flags;
-+       struct ib_qp *qp;
+Looking at the two versions now, I also prefer Nathan's,
+and I just confirmed that it fixes all the randconfig failures
+I ran into.
 
-        cm_id_priv = container_of(cm_id, struct iwcm_id_private, id);
-        /*
-@@ -389,6 +390,9 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
-        set_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags);
-
-        spin_lock_irqsave(&cm_id_priv->lock, flags);
-+       qp = cm_id_priv->qp;
-+       cm_id_priv->qp = NULL;
-+
-        switch (cm_id_priv->state) {
-        case IW_CM_STATE_LISTEN:
-                cm_id_priv->state = IW_CM_STATE_DESTROYING;
-@@ -401,7 +405,7 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
-                cm_id_priv->state = IW_CM_STATE_DESTROYING;
-                spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-                /* Abrupt close of the connection */
--               (void)iwcm_modify_qp_err(cm_id_priv->qp);
-+               (void)iwcm_modify_qp_err(qp);
-                spin_lock_irqsave(&cm_id_priv->lock, flags);
-                break;
-        case IW_CM_STATE_IDLE:
-@@ -426,11 +430,9 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
-                BUG();
-                break;
-        }
--       if (cm_id_priv->qp) {
--               cm_id_priv->id.device->ops.iw_rem_ref(cm_id_priv->qp);
--               cm_id_priv->qp = NULL;
--       }
-        spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-+       if (qp)
-+               cm_id_priv->id.device->ops.iw_rem_ref(qp);
-
-        if (cm_id->mapped) {
-                iwpm_remove_mapinfo(&cm_id->local_addr,
-&cm_id->m_local_addr);
-@@ -671,11 +673,11 @@ int iw_cm_accept(struct iw_cm_id *cm_id,
-                BUG_ON(cm_id_priv->state != IW_CM_STATE_CONN_RECV);
-                cm_id_priv->state = IW_CM_STATE_IDLE;
-                spin_lock_irqsave(&cm_id_priv->lock, flags);
--               if (cm_id_priv->qp) {
--                       cm_id->device->ops.iw_rem_ref(qp);
--                       cm_id_priv->qp = NULL;
--               }
-+               qp = cm_id_priv->qp;
-+               cm_id_priv->qp = NULL;
-                spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-+               if (qp)
-+                       cm_id->device->ops.iw_rem_ref(qp);
-                clear_bit(IWCM_F_CONNECT_WAIT, &cm_id_priv->flags);
-                wake_up_all(&cm_id_priv->connect_wait);
-        }
-@@ -730,13 +732,13 @@ int iw_cm_connect(struct iw_cm_id *cm_id, struct
-iw_cm_conn_param *iw_param)
-                return 0;       /* success */
-
-        spin_lock_irqsave(&cm_id_priv->lock, flags);
--       if (cm_id_priv->qp) {
--               cm_id->device->ops.iw_rem_ref(qp);
--               cm_id_priv->qp = NULL;
--       }
-+       qp = cm_id_priv->qp;
-+       cm_id_priv->qp = NULL;
-        cm_id_priv->state = IW_CM_STATE_IDLE;
- err:
-        spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-+       if (qp)
-+               cm_id->device->ops.iw_rem_ref(qp);
-        clear_bit(IWCM_F_CONNECT_WAIT, &cm_id_priv->flags);
-        wake_up_all(&cm_id_priv->connect_wait);
-        return ret;
-@@ -880,6 +882,7 @@ static int cm_conn_rep_handler(struct
-iwcm_id_private *cm_id_priv,
- {
-        unsigned long flags;
-        int ret;
-+       struct ib_qp *qp = NULL;
-
-        spin_lock_irqsave(&cm_id_priv->lock, flags);
-        /*
-@@ -896,11 +899,13 @@ static int cm_conn_rep_handler(struct
-iwcm_id_private *cm_id_priv,
-                cm_id_priv->state = IW_CM_STATE_ESTABLISHED;
-        } else {
-                /* REJECTED or RESET */
--               cm_id_priv->id.device->ops.iw_rem_ref(cm_id_priv->qp);
-+               qp = cm_id_priv->qp;
-                cm_id_priv->qp = NULL;
-                cm_id_priv->state = IW_CM_STATE_IDLE;
-        }
-        spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-+       if (qp)
-+               cm_id_priv->id.device->ops.iw_rem_ref(qp);
-        ret = cm_id_priv->id.cm_handler(&cm_id_priv->id, iw_event);
-
-        if (iw_event->private_data_len)
-@@ -944,12 +949,12 @@ static int cm_close_handler(struct iwcm_id_private
-*cm_id_priv,
- {
-        unsigned long flags;
-        int ret = 0;
-+       struct ib_qp *qp;
-+
-        spin_lock_irqsave(&cm_id_priv->lock, flags);
-+       qp = cm_id_priv->qp;
-+       cm_id_priv->qp = NULL;
-
--       if (cm_id_priv->qp) {
--               cm_id_priv->id.device->ops.iw_rem_ref(cm_id_priv->qp);
--               cm_id_priv->qp = NULL;
--       }
-        switch (cm_id_priv->state) {
-        case IW_CM_STATE_ESTABLISHED:
-        case IW_CM_STATE_CLOSING:
-@@ -965,6 +970,8 @@ static int cm_close_handler(struct iwcm_id_private
-*cm_id_priv,
-        }
-        spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-
-+       if (qp)
-+               cm_id_priv->id.device->ops.iw_rem_ref(qp);
-        return ret;
- }
-
-diff --git a/drivers/infiniband/sw/siw/siw_qp.c
-b/drivers/infiniband/sw/siw/siw_qp.c
-index 430314c8abd9..cb177688a49f 100644
---- a/drivers/infiniband/sw/siw/siw_qp.c
-+++ b/drivers/infiniband/sw/siw/siw_qp.c
-@@ -1307,6 +1307,7 @@ void siw_free_qp(struct kref *ref)
-        struct siw_qp *found, *qp = container_of(ref, struct siw_qp,
-ref);
-        struct siw_device *sdev = qp->sdev;
-        unsigned long flags;
-+       struct siw_base_qp *siw_base_qp = to_siw_base_qp(qp->ib_qp);
-
-        if (qp->cep)
-                siw_cep_put(qp->cep);
-@@ -1327,4 +1328,5 @@ void siw_free_qp(struct kref *ref)
-        atomic_dec(&sdev->num_qp);
-        siw_dbg_qp(qp, "free QP\n");
-        kfree_rcu(qp, rcu);
-+       kfree(siw_base_qp);
- }
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c
-b/drivers/infiniband/sw/siw/siw_verbs.c
-index da52c90e06d4..ac08d84d84cb 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -603,7 +603,6 @@ int siw_verbs_modify_qp(struct ib_qp *base_qp,
-struct ib_qp_attr *attr,
- int siw_destroy_qp(struct ib_qp *base_qp, struct ib_udata *udata)
- {
-        struct siw_qp *qp = to_siw_qp(base_qp);
--       struct siw_base_qp *siw_base_qp = to_siw_base_qp(base_qp);
-        struct siw_ucontext *uctx =
-                rdma_udata_to_drv_context(udata, struct siw_ucontext,
-                                          base_ucontext);
-@@ -640,7 +639,6 @@ int siw_destroy_qp(struct ib_qp *base_qp, struct
-ib_udata *udata)
-        qp->scq = qp->rcq = NULL;
-
-        siw_qp_put(qp);
--       kfree(siw_base_qp);
-
-        return 0;
- }
-
-
-On Tuesday, September 09/10/19, 2019 at 22:23:13 +0530, Sagi Grimberg wrote:
-> 
-> >> This may be the final put on a qp and result in freeing
-> >> resourcesand should not be done with interrupts disabled.
-> > 
-> > Hi Sagi,
-> > 
-> > Few things to consider in fixing this completely:
-> >    - there are some other places where iw_rem_ref() should be called
-> >      after spinlock critical section. eg: in cm_close_handler(),
-> > iw_cm_connect(),...
-> >    - Any modifications to "cm_id_priv" should be done with in spinlock
-> >      critical section, modifying cm_id_priv->qp outside spinlocks, even
-> > with atomic xchg(), might be error prone.
-> >    - the structure "siw_base_qp" is getting freed in siw_destroy_qp(),
-> >      but it should be done at the end of siw_free_qp().
-> 
-> Not sure why you say that, at the end of this function ->qp will be null
-> anyways...
- Hope the above description and patch answers this.
-> 
-> >    
-> > I am about to finish writing a patch that cover all the above issues.
-> > Will test it and submit here by EOD.
-> 
-> Sure, you take it. Just stumbled on it so thought I'd go ahead and send
-> a patch...
+       Arnd
