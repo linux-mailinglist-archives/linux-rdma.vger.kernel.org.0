@@ -2,82 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 363BEAEEA5
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2019 17:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5624AEFFC
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2019 18:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393933AbfIJPib (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Sep 2019 11:38:31 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([146.101.78.151]:41937 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388366AbfIJPia (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Sep 2019 11:38:30 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-165-ivUePp4GPIuX29LloUIPJQ-1; Tue, 10 Sep 2019 16:38:28 +0100
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 10 Sep 2019 16:38:27 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 10 Sep 2019 16:38:27 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@arndb.de>,
-        Saeed Mahameed <saeedm@mellanox.com>
-CC:     "cai@lca.pw" <cai@lca.pw>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Feras Daoud <ferasda@mellanox.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Eran Ben Elisha" <eranbe@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Erez Shitrit <erezsh@mellanox.com>
-Subject: RE: [PATCH] net/mlx5: reduce stack usage in FW tracer
-Thread-Topic: [PATCH] net/mlx5: reduce stack usage in FW tracer
-Thread-Index: AQHVZ6/gotndlflYLEiLmwBbeCyLo6clCo3w
-Date:   Tue, 10 Sep 2019 15:38:27 +0000
-Message-ID: <d50f78334e64476bad033862035c734c@AcuMS.aculab.com>
-References: <20190906151123.1088455-1-arnd@arndb.de>
- <383db08b6001503ac45c2e12ac514208dc5a4bba.camel@mellanox.com>
- <CAK8P3a0_VhZ9hYmc6P3Qx+Z6WSHh3PVZ7JZh7Tr=R1CAKvqWmA@mail.gmail.com>
- <5abccf6452a9d4efa2a1593c0af6d41703d4f16f.camel@mellanox.com>
- <CAK8P3a3q4NqiU-OydMqU3J=gT-8eBmsiL5tPsyJb1PNgR+48hA@mail.gmail.com>
-In-Reply-To: <CAK8P3a3q4NqiU-OydMqU3J=gT-8eBmsiL5tPsyJb1PNgR+48hA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S2436809AbfIJQx1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Sep 2019 12:53:27 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:46797 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436760AbfIJQx1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Sep 2019 12:53:27 -0400
+Received: by mail-oi1-f196.google.com with SMTP id x7so11682303oie.13
+        for <linux-rdma@vger.kernel.org>; Tue, 10 Sep 2019 09:53:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=f6iE1c6CXUGncD8Q4Pu/U5EESbOs15rh39kVxVhwmyo=;
+        b=DZCA6s/d9IRX3Q/Rpav8obDu79GKInMA21A23V+H5YWalY/yxRevy6J252nWlNIjxW
+         616Lg83rDCuupimm92r6/Q6+ojIwHgJRBFR5DEGQ9sKcIMvL7VvToE/Z+s9XgkcJYULS
+         dNzNT2i1sV0YmCiJouH/kDmoaCSgM46MLorKAVWdKRmgYMKy0bFTrFktymIE+IGA/qhW
+         fUb8Np4H3uoZhJDN23ETrZ49XwutCsYcDyVv+hpjsB4jojrydilG6be98Ole+YyG9xTy
+         cVjkcr6mdgvpZhoHvpArK5zKDE/sO8+2Q2ZWl/YgfT+shmIqZiflsH7+/xP5raS6EX1A
+         G+Bg==
+X-Gm-Message-State: APjAAAWn0SivhktPAIJQ7H5spK9WNQa0IKdtbOUnKKxhawTiAHsOlS9c
+        NLqat1x8vsjbIdm1ifZfVi4=
+X-Google-Smtp-Source: APXvYqxxS2F41kvbTuXur19PvWEmylOyj3O3TRljXxP90nkWonwHShh4LxBqgnEzD6G3kEMle86cKg==
+X-Received: by 2002:aca:5697:: with SMTP id k145mr384138oib.101.1568134405178;
+        Tue, 10 Sep 2019 09:53:25 -0700 (PDT)
+Received: from ?IPv6:2600:1700:65a0:78e0:514:7862:1503:8e4d? ([2600:1700:65a0:78e0:514:7862:1503:8e4d])
+        by smtp.gmail.com with ESMTPSA id l4sm1461017oia.51.2019.09.10.09.53.23
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Sep 2019 09:53:24 -0700 (PDT)
+Subject: Re: [PATCH v3] iwcm: don't hold the irq disabled lock on iw_rem_ref
+To:     Krishnamraju Eraparaju <krishna2@chelsio.com>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>
+References: <20190904212531.6488-1-sagi@grimberg.me>
+ <20190910111759.GA5472@chelsio.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <5cc42f23-bf60-ca8d-f40c-cbd8875f5756@grimberg.me>
+Date:   Tue, 10 Sep 2019 09:53:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-MC-Unique: ivUePp4GPIuX29LloUIPJQ-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+In-Reply-To: <20190910111759.GA5472@chelsio.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAxMCBTZXB0ZW1iZXIgMjAxOSAwOToxNQ0KLi4u
-DQo+ID4gSSBhbSBub3Qgc3VyZSBob3cgdGhpcyB3b3VsZCB3b3JrLCBzaW5jZSB0aGUgZm9ybWF0
-IHBhcmFtZXRlcnMgY2FuDQo+ID4gY2hhbmdlcyBkZXBlbmRpbmcgb24gdGhlIEZXIHN0cmluZyBh
-bmQgdGhlIHNwZWNpZmljIHRyYWNlcy4NCj4gDQo+IEFoLCBzbyB0aGUgZm9ybWF0IHN0cmluZyBj
-b21lcyBmcm9tIHRoZSBmaXJtd2FyZT8gSSBkaWRuJ3QgbG9vaw0KPiBhdCB0aGUgY29kZSBpbiBl
-bm91Z2ggZGV0YWlsIHRvIHVuZGVyc3RhbmQgd2h5IGl0J3MgZG9uZSBsaWtlIHRoaXMsDQo+IG9u
-bHkgZW5vdWdoIHRvIG5vdGljZSB0aGF0IGl0J3MgcmF0aGVyIHVudXN1YWwuDQoNCklmIHRoZSBm
-b3JtYXQgc3RyaW5nIGNvbWVzIGZyb20gdGhlIGZpcm13YXJlIHlvdSByZWFsbHkgc2hvdWxkbid0
-DQpwYXNzIGl0IHRvIGFueSBzdGFuZGFyZCBwcmludGYgZnVuY3Rpb24uDQpZb3UgbXVzdCBlbnN1
-cmUgdGhhdCBpdCBkb2Vzbid0IGNvbnRhaW4gYW55IGZvcm1hdCBlZmZlY3RvcnMNCnRoYXQgbWln
-aHQgZGVyZWZlcmVuY2UgcGFyYW1ldGVycy4NCihUaGUgY29kZSBtaWdodCB0cnkgdG8gZG8gdGhh
-dC4pDQoNCkdpdmVuIHRoYXQgJ3BvaW50ZXInIGZvcm1hdCBlZmZlY3RvcnMgY2FuJ3QgYmUgdXNl
-ZCwgdGhlIGZpcm13YXJlDQptdXN0IGFsc28gc3VwcGx5IHRoZSByZWxldmFudCBpbnRlZ2VyIG9u
-ZXM/DQpUaGlzIHNob3VsZCBtZWFuIHRoYXQgYWxsIHRoZSBwcm9jZXNzaW5nIGlzIGRlZmVycmFi
-bGUgdW50aWwgdGhlDQp0cmFjZSByZWNvcmQgaXMgcmVhZC4NCg0KJ25vaW5saW5lJyBqdXN0IHBh
-cGVycyBvdmVyIHRoZSBjcmFja3MuDQpFc3BlY2lhbGx5IHNpbmNlIHZhc3ByaW50ZigpIGlzIGxp
-a2VseSB0byB1c2UgYSBsb3Qgb2Ygc3RhY2suDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFk
-ZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywg
-TUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
+>> This may be the final put on a qp and result in freeing
+>> resourcesand should not be done with interrupts disabled.
+> 
+> Hi Sagi,
+> 
+> Few things to consider in fixing this completely:
+>    - there are some other places where iw_rem_ref() should be called
+>      after spinlock critical section. eg: in cm_close_handler(),
+> iw_cm_connect(),...
+>    - Any modifications to "cm_id_priv" should be done with in spinlock
+>      critical section, modifying cm_id_priv->qp outside spinlocks, even
+> with atomic xchg(), might be error prone.
+>    - the structure "siw_base_qp" is getting freed in siw_destroy_qp(),
+>      but it should be done at the end of siw_free_qp().
+
+Not sure why you say that, at the end of this function ->qp will be null
+anyways...
+
+>    
+> I am about to finish writing a patch that cover all the above issues.
+> Will test it and submit here by EOD.
+
+Sure, you take it. Just stumbled on it so thought I'd go ahead and send
+a patch...
