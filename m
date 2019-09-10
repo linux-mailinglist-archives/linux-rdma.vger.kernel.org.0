@@ -2,104 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E99AE6E6
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2019 11:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4710EAE8F9
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Sep 2019 13:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731098AbfIJJ1j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Sep 2019 05:27:39 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:40429 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbfIJJ1j (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Sep 2019 05:27:39 -0400
-Received: by mail-pl1-f195.google.com with SMTP id y10so8283209pll.7;
-        Tue, 10 Sep 2019 02:27:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=3I/RwDNyR0c5I8Mzz7CZb34k+5TRodcyDN5J9yOyCXE=;
-        b=SiDG9nvjNzi0fPg0DDKoqEXUP2gPz23dm1mJWP5Mz/FIdMA1Xpwo+P/ZbwXureAaM1
-         U0QhNAcKvliifokLQsrURc30rUGlQ6TjGuGc5cmgd0j0+mRGEmRzXE5O1A0SV5BhnzBU
-         wvPpQyshUktQHKwZUlTh5NLAVh9mVapbBVdr9rr2KZC2BPs4amn+vY16W6q2996pttxQ
-         4LMMNNyjfL0CmD708OZX9aZYtwfQvm63inrXpLCqfDf/xEHaudP3C0164n4lAt8aoe5k
-         mksh9fDqXIlBcGzT2gcHM/p/0sIq6+Nvv3V/myjwjDSkX7at5CcBXk28hJFBvf3JIyEb
-         bw0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=3I/RwDNyR0c5I8Mzz7CZb34k+5TRodcyDN5J9yOyCXE=;
-        b=r2roY8ljo/X9T8x6YtdMWyWXRKd8icjdrjigoWj+7/X3s+qo20J0etPBhTc/jTCq/o
-         cosQe85lZJYw8y4sRUYp+awqmU/uYBR/FT+fYNUl6deHVLsNAVpuxgFc5pVUMgfulClA
-         tOLIcI+sAvNLwtzz9ZfZ4cUNRww/QNd9Z889Yeb5h17CY84PdB+lthH37NzeBg32zqcS
-         WNL7z+EGIoKyBAb+XxSkYzHESQkImcKoqlZJCZ/0lJlu74ku4usx+F1IdV7E89kXJFJy
-         LJ33bWiuFjCHL97tQaXzpTK5wNKXwrssLX0GMlQ2jfYap7j+wTcwbchnsTDOUUtt3oI2
-         N//Q==
-X-Gm-Message-State: APjAAAWqOIQdKbkOcJ3PDrNCswh9HJ5rpOlZ/Q94LFjNiq1rE94wxzXl
-        /oDapYOqd87PT4QivHhxNys=
-X-Google-Smtp-Source: APXvYqwzF/G7K8Q482wfDKwY0BEHlU4ukFMULym2qfUCvsJjMbmPGafbQntqaDb8HAKjNh3waQTEsw==
-X-Received: by 2002:a17:902:76c2:: with SMTP id j2mr30004606plt.305.1568107657101;
-        Tue, 10 Sep 2019 02:27:37 -0700 (PDT)
-Received: from LGEARND20B15 ([27.122.242.75])
-        by smtp.gmail.com with ESMTPSA id y15sm21142300pfp.111.2019.09.10.02.27.34
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Sep 2019 02:27:36 -0700 (PDT)
-Date:   Tue, 10 Sep 2019 18:27:31 +0900
-From:   Austin Kim <austindh.kim@gmail.com>
-To:     saeedm@mellanox.com, leon@kernel.org
-Cc:     davem@davemloft.net, valex@mellanox.com, erezsh@mellanox.com,
-        markb@mellanox.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        austindh.kim@gmail.com
-Subject: [PATCH] net/mlx5: Declare 'rt' as corresponding enum type
-Message-ID: <20190910092731.GA173476@LGEARND20B15>
+        id S2403960AbfIJLSX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Sep 2019 07:18:23 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:51523 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403952AbfIJLSX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Sep 2019 07:18:23 -0400
+Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x8ABI2nd002030;
+        Tue, 10 Sep 2019 04:18:03 -0700
+Date:   Tue, 10 Sep 2019 16:48:02 +0530
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH v3] iwcm: don't hold the irq disabled lock on iw_rem_ref
+Message-ID: <20190910111759.GA5472@chelsio.com>
+References: <20190904212531.6488-1-sagi@grimberg.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20190904212531.6488-1-sagi@grimberg.me>
+User-Agent: Mutt/1.9.3 (20180206.02d571c2)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When building kernel with clang, we can observe below warning message:
+On Wednesday, September 09/04/19, 2019 at 14:25:31 -0700, Sagi Grimberg wrote:
+> This may be the final put on a qp and result in freeing
+> resourcesand should not be done with interrupts disabled.
 
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c:1080:9:
-warning: implicit conversion from enumeration type 'enum mlx5_reformat_ctx_type'
-to different enumeration type 'enum mlx5dr_action_type' [-   Wenum-conversion]
-	rt = MLX5_REFORMAT_TYPE_L2_TO_L2_TUNNEL;
-       			  ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c:1082:9:
-warning: implicit conversion from enumeration type 'enum mlx5_reformat_ctx_type'
-to different enumeration type 'enum mlx5dr_action_type' [-   Wenum-conversion]
-	rt = MLX5_REFORMAT_TYPE_L2_TO_L3_TUNNEL;
-        ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c:1084:51:
-warning: implicit conversion from enumeration type 'enum mlx5dr_action_type'
-to different enumeration type 'enum mlx5_reformat_ctx_type' [-  Wenum-conversion]
-	ret = mlx5dr_cmd_create_reformat_ctx(dmn->mdev, rt, data_sz, data,
-         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~            ^~
+Hi Sagi,
 
-Declare 'rt' as corresponding enum mlx5_reformat_ctx_type type.
+Few things to consider in fixing this completely:
+  - there are some other places where iw_rem_ref() should be called
+    after spinlock critical section. eg: in cm_close_handler(),
+iw_cm_connect(),...
+  - Any modifications to "cm_id_priv" should be done with in spinlock
+    critical section, modifying cm_id_priv->qp outside spinlocks, even
+with atomic xchg(), might be error prone.
+  - the structure "siw_base_qp" is getting freed in siw_destroy_qp(),
+    but it should be done at the end of siw_free_qp().
+  
+I am about to finish writing a patch that cover all the above issues.
+Will test it and submit here by EOD.
 
-Signed-off-by: Austin Kim <austindh.kim@gmail.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
-index a02f87f..7d81a77 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
-@@ -1074,7 +1074,7 @@ dr_action_create_reformat_action(struct mlx5dr_domain *dmn,
- 	case DR_ACTION_TYP_L2_TO_TNL_L2:
- 	case DR_ACTION_TYP_L2_TO_TNL_L3:
- 	{
--		enum mlx5dr_action_type rt;
-+		enum mlx5_reformat_ctx_type rt;
- 
- 		if (action->action_type == DR_ACTION_TYP_L2_TO_TNL_L2)
- 			rt = MLX5_REFORMAT_TYPE_L2_TO_L2_TUNNEL;
--- 
-2.6.2
-
+Regards,
+Krishna.
+> 
+> Produce the following warning:
+> --
+> [  317.026048] WARNING: CPU: 1 PID: 443 at kernel/smp.c:425 smp_call_function_many+0xa0/0x260
+> [  317.026131] Call Trace:
+> [  317.026159]  ? load_new_mm_cr3+0xe0/0xe0
+> [  317.026161]  on_each_cpu+0x28/0x50
+> [  317.026183]  __purge_vmap_area_lazy+0x72/0x150
+> [  317.026200]  free_vmap_area_noflush+0x7a/0x90
+> [  317.026202]  remove_vm_area+0x6f/0x80
+> [  317.026203]  __vunmap+0x71/0x210
+> [  317.026211]  siw_free_qp+0x8d/0x130 [siw]
+> [  317.026217]  destroy_cm_id+0xc3/0x200 [iw_cm]
+> [  317.026222]  rdma_destroy_id+0x224/0x2b0 [rdma_cm]
+> [  317.026226]  nvme_rdma_reset_ctrl_work+0x2c/0x70 [nvme_rdma]
+> [  317.026235]  process_one_work+0x1f4/0x3e0
+> [  317.026249]  worker_thread+0x221/0x3e0
+> [  317.026252]  ? process_one_work+0x3e0/0x3e0
+> [  317.026256]  kthread+0x117/0x130
+> [  317.026264]  ? kthread_create_worker_on_cpu+0x70/0x70
+> [  317.026275]  ret_from_fork+0x35/0x40
+> --
+> 
+> Fix this by exchanging the qp pointer early on and safely destroying
+> it.
+> 
+> Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+> ---
+> Changes from v2:
+> - store the qp locally so we don't need to unlock the cm_id_priv lock when
+>   destroying the qp
+> 
+> Changes from v1:
+> - don't release the lock before qp pointer is cleared.
+> 
+>  drivers/infiniband/core/iwcm.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+> index 72141c5b7c95..c64707f68d22 100644
+> --- a/drivers/infiniband/core/iwcm.c
+> +++ b/drivers/infiniband/core/iwcm.c
+> @@ -373,8 +373,10 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
+>  {
+>  	struct iwcm_id_private *cm_id_priv;
+>  	unsigned long flags;
+> +	struct ib_qp *qp;
+>  
+>  	cm_id_priv = container_of(cm_id, struct iwcm_id_private, id);
+> +	qp = xchg(&cm_id_priv->qp, NULL);
+>  	/*
+>  	 * Wait if we're currently in a connect or accept downcall. A
+>  	 * listening endpoint should never block here.
+> @@ -401,7 +403,7 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
+>  		cm_id_priv->state = IW_CM_STATE_DESTROYING;
+>  		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+>  		/* Abrupt close of the connection */
+> -		(void)iwcm_modify_qp_err(cm_id_priv->qp);
+> +		(void)iwcm_modify_qp_err(qp);
+>  		spin_lock_irqsave(&cm_id_priv->lock, flags);
+>  		break;
+>  	case IW_CM_STATE_IDLE:
+> @@ -426,11 +428,9 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
+>  		BUG();
+>  		break;
+>  	}
+> -	if (cm_id_priv->qp) {
+> -		cm_id_priv->id.device->ops.iw_rem_ref(cm_id_priv->qp);
+> -		cm_id_priv->qp = NULL;
+> -	}
+>  	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+> +	if (qp)
+> +		cm_id_priv->id.device->ops.iw_rem_ref(qp);
+>  
+>  	if (cm_id->mapped) {
+>  		iwpm_remove_mapinfo(&cm_id->local_addr, &cm_id->m_local_addr);
+> -- 
+> 2.17.1
+> 
