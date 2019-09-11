@@ -2,75 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7BFAFCF5
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2019 14:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C3FAFD24
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2019 14:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727954AbfIKMlF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 11 Sep 2019 08:41:05 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:50876 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726928AbfIKMlF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 11 Sep 2019 08:41:05 -0400
-Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.53])
-        by Forcepoint Email with ESMTP id 42396EE4EAF17BAA33B9;
-        Wed, 11 Sep 2019 20:41:02 +0800 (CST)
-Received: from DGGEML522-MBX.china.huawei.com ([169.254.7.213]) by
- DGGEML403-HUB.china.huawei.com ([fe80::74d9:c659:fbec:21fa%31]) with mapi id
- 14.03.0439.000; Wed, 11 Sep 2019 20:40:54 +0800
-From:   liweihang <liweihang@hisilicon.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: RE: [PATCH rdma-core 5/5] libhns: Support configuring loopback mode
- by user
-Thread-Topic: [PATCH rdma-core 5/5] libhns: Support configuring loopback
- mode by user
-Thread-Index: AQHVZ9K10ToxRyH8Ikm3MUtNvGR+d6clkyIAgACIbJA=
-Date:   Wed, 11 Sep 2019 12:40:54 +0000
-Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A0207E95E@DGGEML522-MBX.china.huawei.com>
-References: <1568118052-33380-1-git-send-email-liweihang@hisilicon.com>
- <1568118052-33380-6-git-send-email-liweihang@hisilicon.com>
- <20190911074222.GD6601@unreal>
-In-Reply-To: <20190911074222.GD6601@unreal>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.40.168.149]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+        id S1727664AbfIKMyD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Sep 2019 08:54:03 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:53139 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727302AbfIKMyC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Sep 2019 08:54:02 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from sergeygo@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 11 Sep 2019 15:53:59 +0300
+Received: from rsws38.mtr.labs.mlnx (rsws38.mtr.labs.mlnx [10.209.40.117])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x8BCrxr5023616;
+        Wed, 11 Sep 2019 15:53:59 +0300
+From:   Sergey Gorenko <sergeygo@mellanox.com>
+To:     sagi@grimberg.me
+Cc:     maxg@mellanox.com, linux-rdma@vger.kernel.org,
+        Sergey Gorenko <sergeygo@mellanox.com>
+Subject: [PATCH] IB/iser: Support up to 16MB data transfer in a single command
+Date:   Wed, 11 Sep 2019 12:53:40 +0000
+Message-Id: <20190911125340.19017-1-sergeygo@mellanox.com>
+X-Mailer: git-send-email 2.17.2
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Maximum supported IO size is 8MB for the iSER driver. The
+current value is limited by the ISCSI_ISER_MAX_SG_TABLESIZE
+macro. But the driver is able to handle 16MB IOs without any
+significant changes. Increasing this limit can be useful for
+the storage arrays which are fine tuned for IOs larger than
+8 MB.
 
+This commit allows to configure maximum IO size up to 16MB
+using the max_sectors module parameter.
 
-> -----Original Message-----
-> From: Leon Romanovsky [mailto:leon@kernel.org]
-> Sent: Wednesday, September 11, 2019 3:42 PM
-> To: liweihang <liweihang@hisilicon.com>
-> Cc: dledford@redhat.com; jgg@ziepe.ca; linux-rdma@vger.kernel.org;
-> Linuxarm <linuxarm@huawei.com>
-> Subject: Re: [PATCH rdma-core 5/5] libhns: Support configuring loopback
-> mode by user
-> 
-> On Tue, Sep 10, 2019 at 08:20:52PM +0800, Weihang Li wrote:
-> > User can configure whether hardware working on loopback mode or not by
-> > export an environment variable "HNS_ROCE_LOOPBACK".
-> 
-> It is definitely wrong interface to configure behaviour of application.
-> Environment variables make sense if you need to change library behaviour.
-> 
-> Thanks
+Signed-off-by: Sergey Gorenko <sergeygo@mellanox.com>
+Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
+---
+ drivers/infiniband/ulp/iser/iscsi_iser.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Hi Leon,
+diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.h b/drivers/infiniband/ulp/iser/iscsi_iser.h
+index 39bf213444cb..fe478c576846 100644
+--- a/drivers/infiniband/ulp/iser/iscsi_iser.h
++++ b/drivers/infiniband/ulp/iser/iscsi_iser.h
+@@ -103,8 +103,8 @@
+ /* Default support is 512KB I/O size */
+ #define ISER_DEF_MAX_SECTORS		1024
+ #define ISCSI_ISER_DEF_SG_TABLESIZE	((ISER_DEF_MAX_SECTORS * 512) >> SHIFT_4K)
+-/* Maximum support is 8MB I/O size */
+-#define ISCSI_ISER_MAX_SG_TABLESIZE	((16384 * 512) >> SHIFT_4K)
++/* Maximum support is 16MB I/O size */
++#define ISCSI_ISER_MAX_SG_TABLESIZE	((32768 * 512) >> SHIFT_4K)
+ 
+ #define ISER_DEF_XMIT_CMDS_DEFAULT		512
+ #if ISCSI_DEF_XMIT_CMDS_MAX > ISER_DEF_XMIT_CMDS_DEFAULT
+-- 
+2.17.2
 
-Could you please give some advices on how to get configurations from users?
-
-Thanks,
-Weihang
