@@ -2,64 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C3FAFD24
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2019 14:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B60DAFD8D
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2019 15:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727664AbfIKMyD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Sep 2019 08:54:03 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:53139 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727302AbfIKMyC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Sep 2019 08:54:02 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from sergeygo@mellanox.com)
-        with ESMTPS (AES256-SHA encrypted); 11 Sep 2019 15:53:59 +0300
-Received: from rsws38.mtr.labs.mlnx (rsws38.mtr.labs.mlnx [10.209.40.117])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x8BCrxr5023616;
-        Wed, 11 Sep 2019 15:53:59 +0300
-From:   Sergey Gorenko <sergeygo@mellanox.com>
-To:     sagi@grimberg.me
-Cc:     maxg@mellanox.com, linux-rdma@vger.kernel.org,
-        Sergey Gorenko <sergeygo@mellanox.com>
-Subject: [PATCH] IB/iser: Support up to 16MB data transfer in a single command
-Date:   Wed, 11 Sep 2019 12:53:40 +0000
-Message-Id: <20190911125340.19017-1-sergeygo@mellanox.com>
-X-Mailer: git-send-email 2.17.2
+        id S1727659AbfIKNRf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Sep 2019 09:17:35 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:43158 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726341AbfIKNRf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 11 Sep 2019 09:17:35 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id DA992AC9DFD9A5B38BE2;
+        Wed, 11 Sep 2019 21:17:31 +0800 (CST)
+Received: from [127.0.0.1] (10.74.223.196) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.439.0; Wed, 11 Sep 2019
+ 21:17:22 +0800
+Subject: Re: [PATCH for-next] RDMA/hns: Bugfix for flush cqe in case softirq
+ and multi-process
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Weihang Li <liweihang@hisilicon.com>, <linux-rdma@vger.kernel.org>,
+        <jgg@ziepe.ca>, <dledford@redhat.com>, <linuxarm@huawei.com>
+References: <1567686671-4331-1-git-send-email-liweihang@hisilicon.com>
+ <20190908080303.GC26697@unreal>
+ <f8f29a6a-b473-6c89-8ec7-092fd53aea16@huawei.com>
+ <20190910075216.GX6601@unreal>
+From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
+Message-ID: <94ad1f56-afc6-ec78-4aa2-85d03c644031@huawei.com>
+Date:   Wed, 11 Sep 2019 21:17:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.1
+MIME-Version: 1.0
+In-Reply-To: <20190910075216.GX6601@unreal>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.223.196]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Maximum supported IO size is 8MB for the iSER driver. The
-current value is limited by the ISCSI_ISER_MAX_SG_TABLESIZE
-macro. But the driver is able to handle 16MB IOs without any
-significant changes. Increasing this limit can be useful for
-the storage arrays which are fine tuned for IOs larger than
-8 MB.
 
-This commit allows to configure maximum IO size up to 16MB
-using the max_sectors module parameter.
 
-Signed-off-by: Sergey Gorenko <sergeygo@mellanox.com>
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
----
- drivers/infiniband/ulp/iser/iscsi_iser.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 2019/9/10 15:52, Leon Romanovsky wrote:
+> On Tue, Sep 10, 2019 at 02:40:20PM +0800, Liuyixian (Eason) wrote:
+>>
+>>
+>> On 2019/9/8 16:03, Leon Romanovsky wrote:
+>>> On Thu, Sep 05, 2019 at 08:31:11PM +0800, Weihang Li wrote:
+>>>> From: Yixian Liu <liuyixian@huawei.com>
+>>>>
+>>>> Hip08 has the feature flush cqe, which help to flush wqe in workqueue
+>>>> (sq and rq) when error happened by transmitting producer index with
+>>>> mailbox to hardware. Flush cqe is emplemented in post send and recv
+>>>> verbs. However, under NVMe cases, these verbs will be called under
+>>>> softirq context, and it will lead to following calltrace with
+>>>> current driver as mailbox used by flush cqe can go to sleep.
+>>>>
+>>>> This patch solves this problem by using workqueue to do flush cqe,
+>>>
+>>> Unbelievable, almost every bug in this driver is solved by introducing
+>>> workqueue. You should fix "sleep in flush path" issue and not by adding
+>>> new workqueue.
+>>>
+>> Hi Leon,
+>>
+>> Thanks for the comment.
+>> Up to now, for hip08, only one place use workqueue in hns_roce_hw_v2.c
+>> where for irq prints.
+> 
+> Thanks to our lack of desire to add more workqueues and previous patches
+> which removed extra workqueues from the driver.
+> 
+Thanks, I see.
 
-diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.h b/drivers/infiniband/ulp/iser/iscsi_iser.h
-index 39bf213444cb..fe478c576846 100644
---- a/drivers/infiniband/ulp/iser/iscsi_iser.h
-+++ b/drivers/infiniband/ulp/iser/iscsi_iser.h
-@@ -103,8 +103,8 @@
- /* Default support is 512KB I/O size */
- #define ISER_DEF_MAX_SECTORS		1024
- #define ISCSI_ISER_DEF_SG_TABLESIZE	((ISER_DEF_MAX_SECTORS * 512) >> SHIFT_4K)
--/* Maximum support is 8MB I/O size */
--#define ISCSI_ISER_MAX_SG_TABLESIZE	((16384 * 512) >> SHIFT_4K)
-+/* Maximum support is 16MB I/O size */
-+#define ISCSI_ISER_MAX_SG_TABLESIZE	((32768 * 512) >> SHIFT_4K)
- 
- #define ISER_DEF_XMIT_CMDS_DEFAULT		512
- #if ISCSI_DEF_XMIT_CMDS_MAX > ISER_DEF_XMIT_CMDS_DEFAULT
--- 
-2.17.2
+>>
+>> The solution for flush cqe in this patch is as follow:
+>> While flush cqe should be implement, the driver should modify qp to error state
+>> through mailbox with the newest product index of sq and rq, the hardware then
+>> can flush all outstanding wqes in sq and rq.
+>>
+>> That's the whole mechanism of flush cqe, also is the flush path. We can't
+>> change neither mailbox sleep attribute or flush cqe occurred in post send/recv.
+>> To avoid the calltrace of flush cqe in post verbs under NVMe softirq,
+>> use workqueue for flush cqe seems reasonable.
+>>
+>> As far as I know, there is no other alternative solution for this situation.
+>> I will be very grateful if you reminder me more information.
+> 
+> ib_drain_rq/ib_drain_sq/ib_drain_qp????
+> 
+Hi Leon,
+
+I think these interfaces are designed for application to check that all wqes
+have been processed by hardware, so called drain or flush. However, it is not
+the same as the flush in this patch. The solution in this patch is used
+to help the hardware generate flush cqes for outstanding wqes while qp error.
+
+>>
+>> Thanks
+>>
+>>> _______________________________________________
+>>> Linuxarm mailing list
+>>> Linuxarm@huawei.com
+>>> http://hulk.huawei.com/mailman/listinfo/linuxarm
+>>>
+>>>
+>>
+> 
+> .
+> 
 
