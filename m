@@ -2,103 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C95FB00B2
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2019 17:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7476DB0229
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2019 18:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728872AbfIKP6l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Sep 2019 11:58:41 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:22282 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728266AbfIKP6l (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Sep 2019 11:58:41 -0400
-Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x8BFwHoS011088;
-        Wed, 11 Sep 2019 08:58:18 -0700
-Date:   Wed, 11 Sep 2019 21:28:16 +0530
-From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
-To:     Steve Wise <larrystevenwise@gmail.com>,
-        Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: Re: [PATCH v3] iwcm: don't hold the irq disabled lock on
- iw_rem_ref
-Message-ID: <20190911155814.GA12639@chelsio.com>
-References: <20190904212531.6488-1-sagi@grimberg.me>
- <20190910111759.GA5472@chelsio.com>
- <5cc42f23-bf60-ca8d-f40c-cbd8875f5756@grimberg.me>
- <20190910192157.GA5954@chelsio.com>
- <OF00E4DFD9.0EEF58A6-ON00258472.0032F9AC-00258472.0034FEAA@notes.na.collabserv.com>
- <CADmRdJcCENJx==LaaJQYU_kMv5rSgD69Z6s+ubCKWjprZmPQpA@mail.gmail.com>
+        id S1729028AbfIKQyS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Sep 2019 12:54:18 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:37846 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729310AbfIKQyS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Sep 2019 12:54:18 -0400
+Received: by mail-oi1-f193.google.com with SMTP id v7so14714230oib.4
+        for <linux-rdma@vger.kernel.org>; Wed, 11 Sep 2019 09:54:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZKhathfiPuOjPFL51F2PCjfSbT+jNYYwCEKs6TZJ+8s=;
+        b=jO99p9yV/MA+eASPkT439ttbtf4KNUwBkW54rzvgAKGZ+TllSjpkdc8Gez7SmGl6PO
+         bxgiEazh9KunW0v626toM6M8pYHHKXCuiVGfKWSYB/PUj35WVO6hg+VcrUrq3nc+HFMG
+         dikZxQq1tP3QfPKDJ/A+P09M9XFRikgVWfBUVAs0GpYsF/CTcBDEoCskLBcUUozEEl8d
+         8bCO89HtmG4xsGF+L3UMq+/wLg5dqqq5FWFFG/PszQBrOtvDi3wcAoVkdD4m3pKFNB1l
+         0NvGNzNEieHGufJWBlV632tHKsGvs2MCoG/6AX2hOutrp89pP6ZxDR0KNV5WYFWZl4cu
+         xiEA==
+X-Gm-Message-State: APjAAAVlFfP06G4gjX4g0JKZPkmdMaIrTQNnLdyevYXcpR3s/BJx8+MH
+        2jLE6IKdH5y9f4J1Rykccau9eaMh
+X-Google-Smtp-Source: APXvYqwjZnIzkUWyWtqVuw+fzvU+Y9TMqWwLmBF+emumgKKV+eHl8a0+drbDwenCRRy+02A/zBD2+A==
+X-Received: by 2002:a54:418a:: with SMTP id 10mr2137078oiy.88.1568220856951;
+        Wed, 11 Sep 2019 09:54:16 -0700 (PDT)
+Received: from ?IPv6:2600:1700:65a0:78e0:514:7862:1503:8e4d? ([2600:1700:65a0:78e0:514:7862:1503:8e4d])
+        by smtp.gmail.com with ESMTPSA id 34sm9003215ots.47.2019.09.11.09.54.15
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 11 Sep 2019 09:54:16 -0700 (PDT)
+Subject: Re: [PATCH] IB/iser: Support up to 16MB data transfer in a single
+ command
+To:     Sergey Gorenko <sergeygo@mellanox.com>
+Cc:     maxg@mellanox.com, linux-rdma@vger.kernel.org
+References: <20190911125340.19017-1-sergeygo@mellanox.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <e5e9db43-a2cc-13a9-d470-60efbd3ea985@grimberg.me>
+Date:   Wed, 11 Sep 2019 09:54:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADmRdJcCENJx==LaaJQYU_kMv5rSgD69Z6s+ubCKWjprZmPQpA@mail.gmail.com>
-User-Agent: Mutt/1.9.3 (20180206.02d571c2)
+In-Reply-To: <20190911125340.19017-1-sergeygo@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Steve & Bernard,
 
-Thanks for the review comments.
-I will do those formating changes.
+> Maximum supported IO size is 8MB for the iSER driver. The
+> current value is limited by the ISCSI_ISER_MAX_SG_TABLESIZE
+> macro. But the driver is able to handle 16MB IOs without any
+> significant changes. Increasing this limit can be useful for
+> the storage arrays which are fine tuned for IOs larger than
+> 8 MB.
+> 
+> This commit allows to configure maximum IO size up to 16MB
+> using the max_sectors module parameter.
+> 
+> Signed-off-by: Sergey Gorenko <sergeygo@mellanox.com>
+> Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
+> ---
+>   drivers/infiniband/ulp/iser/iscsi_iser.h | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.h b/drivers/infiniband/ulp/iser/iscsi_iser.h
+> index 39bf213444cb..fe478c576846 100644
+> --- a/drivers/infiniband/ulp/iser/iscsi_iser.h
+> +++ b/drivers/infiniband/ulp/iser/iscsi_iser.h
+> @@ -103,8 +103,8 @@
+>   /* Default support is 512KB I/O size */
+>   #define ISER_DEF_MAX_SECTORS		1024
+>   #define ISCSI_ISER_DEF_SG_TABLESIZE	((ISER_DEF_MAX_SECTORS * 512) >> SHIFT_4K)
+> -/* Maximum support is 8MB I/O size */
+> -#define ISCSI_ISER_MAX_SG_TABLESIZE	((16384 * 512) >> SHIFT_4K)
+> +/* Maximum support is 16MB I/O size */
+> +#define ISCSI_ISER_MAX_SG_TABLESIZE	((32768 * 512) >> SHIFT_4K)
 
-Thanks,
-Krishna.
-On Wednesday, September 09/11/19, 2019 at 20:12:43 +0530, Steve Wise wrote:
-> On Wed, Sep 11, 2019 at 4:38 AM Bernard Metzler <BMT@zurich.ibm.com> wrote:
-> >
-> > -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
-> >
-> > >To: "Sagi Grimberg" <sagi@grimberg.me>, "Steve Wise"
-> > ><larrystevenwise@gmail.com>, "Bernard Metzler" <BMT@zurich.ibm.com>
-> > >From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
-> > >Date: 09/10/2019 09:22PM
-> > >Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "Jason
-> > >Gunthorpe" <jgg@ziepe.ca>
-> > >Subject: [EXTERNAL] Re: [PATCH v3] iwcm: don't hold the irq disabled
-> > >lock on iw_rem_ref
-> > >
-> > >Please review the below patch, I will resubmit this in patch-series
-> > >after review.
-> > >- As kput_ref handler(siw_free_qp) uses vfree, iwcm can't call
-> > >  iw_rem_ref() with spinlocks held. Doing so can cause vfree() to
-> > >sleep
-> > >  with irq disabled.
-> > >  Two possible solutions:
-> > >  1)With spinlock acquired, take a copy of "cm_id_priv->qp" and
-> > >update
-> > >    it to NULL. And after releasing lock use the copied qp pointer
-> > >for
-> > >    rem_ref().
-> > >  2)Replacing issue causing vmalloc()/vfree to kmalloc()/kfree in SIW
-> > >    driver, may not be a ideal solution.
-> > >
-> > >  Solution 2 may not be ideal as allocating huge contigous memory for
-> > >   SQ & RQ doesn't look appropriate.
-> > >
-> > >- The structure "siw_base_qp" is getting freed in siw_destroy_qp(),
-> > >but
-> > >  if cm_close_handler() holds the last reference, then siw_free_qp(),
-> > >  via cm_close_handler(), tries to get already freed "siw_base_qp"
-> > >from
-> > >  "ib_qp".
-> > >   Hence, "siw_base_qp" should be freed at the end of siw_free_qp().
-> > >
-> >
-> > Regarding the siw driver, I am fine with that proposed
-> > change. Delaying freeing the base_qp is OK. In fact,
-> > I'd expect the drivers soon are passing that responsibility
-> > to the rdma core anyway -- like for CQ/SRQ/PD/CTX objects,
-> > which are already allocated and freed up there.
-> >
-> > The iwcm changes look OK to me as well.
-> >
-> 
-> Hey Krishna,  Since the iwcm struct/state is still correctly being
-> manipulated under the lock, then I think it this patch correct.  Test
-> the heck out of it. :)
-> 
-> Steve.
+Maybe while we're at it, we can change 512 to SECTOR_SIZE.
+
+Other than that, looks good,
+
+Acked-by: Sagi Grimberg <sagi@grimberg.me>
