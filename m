@@ -2,115 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B60DAFD8D
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2019 15:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0667CAFE89
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Sep 2019 16:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727659AbfIKNRf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Sep 2019 09:17:35 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:43158 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726341AbfIKNRf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 11 Sep 2019 09:17:35 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id DA992AC9DFD9A5B38BE2;
-        Wed, 11 Sep 2019 21:17:31 +0800 (CST)
-Received: from [127.0.0.1] (10.74.223.196) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.439.0; Wed, 11 Sep 2019
- 21:17:22 +0800
-Subject: Re: [PATCH for-next] RDMA/hns: Bugfix for flush cqe in case softirq
- and multi-process
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Weihang Li <liweihang@hisilicon.com>, <linux-rdma@vger.kernel.org>,
-        <jgg@ziepe.ca>, <dledford@redhat.com>, <linuxarm@huawei.com>
-References: <1567686671-4331-1-git-send-email-liweihang@hisilicon.com>
- <20190908080303.GC26697@unreal>
- <f8f29a6a-b473-6c89-8ec7-092fd53aea16@huawei.com>
- <20190910075216.GX6601@unreal>
-From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
-Message-ID: <94ad1f56-afc6-ec78-4aa2-85d03c644031@huawei.com>
-Date:   Wed, 11 Sep 2019 21:17:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.1
+        id S1727873AbfIKOSP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Sep 2019 10:18:15 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:58307 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725981AbfIKOSO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Sep 2019 10:18:14 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1i83Rj-00084o-Kb; Wed, 11 Sep 2019 14:18:11 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Tariq Toukan <tariqt@mellanox.com>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mlx4: fix spelling mistake "veify" -> "verify"
+Date:   Wed, 11 Sep 2019 15:18:11 +0100
+Message-Id: <20190911141811.8370-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20190910075216.GX6601@unreal>
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.223.196]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
+There is a spelling mistake in a mlx4_err error message. Fix it.
 
-On 2019/9/10 15:52, Leon Romanovsky wrote:
-> On Tue, Sep 10, 2019 at 02:40:20PM +0800, Liuyixian (Eason) wrote:
->>
->>
->> On 2019/9/8 16:03, Leon Romanovsky wrote:
->>> On Thu, Sep 05, 2019 at 08:31:11PM +0800, Weihang Li wrote:
->>>> From: Yixian Liu <liuyixian@huawei.com>
->>>>
->>>> Hip08 has the feature flush cqe, which help to flush wqe in workqueue
->>>> (sq and rq) when error happened by transmitting producer index with
->>>> mailbox to hardware. Flush cqe is emplemented in post send and recv
->>>> verbs. However, under NVMe cases, these verbs will be called under
->>>> softirq context, and it will lead to following calltrace with
->>>> current driver as mailbox used by flush cqe can go to sleep.
->>>>
->>>> This patch solves this problem by using workqueue to do flush cqe,
->>>
->>> Unbelievable, almost every bug in this driver is solved by introducing
->>> workqueue. You should fix "sleep in flush path" issue and not by adding
->>> new workqueue.
->>>
->> Hi Leon,
->>
->> Thanks for the comment.
->> Up to now, for hip08, only one place use workqueue in hns_roce_hw_v2.c
->> where for irq prints.
-> 
-> Thanks to our lack of desire to add more workqueues and previous patches
-> which removed extra workqueues from the driver.
-> 
-Thanks, I see.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/mellanox/mlx4/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->>
->> The solution for flush cqe in this patch is as follow:
->> While flush cqe should be implement, the driver should modify qp to error state
->> through mailbox with the newest product index of sq and rq, the hardware then
->> can flush all outstanding wqes in sq and rq.
->>
->> That's the whole mechanism of flush cqe, also is the flush path. We can't
->> change neither mailbox sleep attribute or flush cqe occurred in post send/recv.
->> To avoid the calltrace of flush cqe in post verbs under NVMe softirq,
->> use workqueue for flush cqe seems reasonable.
->>
->> As far as I know, there is no other alternative solution for this situation.
->> I will be very grateful if you reminder me more information.
-> 
-> ib_drain_rq/ib_drain_sq/ib_drain_qp????
-> 
-Hi Leon,
-
-I think these interfaces are designed for application to check that all wqes
-have been processed by hardware, so called drain or flush. However, it is not
-the same as the flush in this patch. The solution in this patch is used
-to help the hardware generate flush cqes for outstanding wqes while qp error.
-
->>
->> Thanks
->>
->>> _______________________________________________
->>> Linuxarm mailing list
->>> Linuxarm@huawei.com
->>> http://hulk.huawei.com/mailman/listinfo/linuxarm
->>>
->>>
->>
-> 
-> .
-> 
+diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+index 07c204bd3fc4..a48a40c1278e 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/main.c
++++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+@@ -2240,7 +2240,7 @@ static int mlx4_validate_optimized_steering(struct mlx4_dev *dev)
+ 	for (i = 1; i <= dev->caps.num_ports; i++) {
+ 		if (mlx4_dev_port(dev, i, &port_cap)) {
+ 			mlx4_err(dev,
+-				 "QUERY_DEV_CAP command failed, can't veify DMFS high rate steering.\n");
++				 "QUERY_DEV_CAP command failed, can't verify DMFS high rate steering.\n");
+ 		} else if ((dev->caps.dmfs_high_steer_mode !=
+ 			    MLX4_STEERING_DMFS_A0_DEFAULT) &&
+ 			   (port_cap.dmfs_optimized_state ==
+-- 
+2.20.1
 
