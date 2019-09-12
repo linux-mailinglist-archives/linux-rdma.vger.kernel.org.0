@@ -2,93 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D61CB15FD
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Sep 2019 23:45:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B417B16AB
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Sep 2019 01:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbfILVpq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Sep 2019 17:45:46 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:44668 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725775AbfILVpq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Sep 2019 17:45:46 -0400
-Received: by mail-ot1-f65.google.com with SMTP id 21so27519625otj.11
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Sep 2019 14:45:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3rRwpJFwBPUulMQVtfgTqxnlFgmWXlBO+OampqTZSEk=;
-        b=iLniVTVf0XWXkqJOUDUNYRHGKlibMgnbXrlTHCdRTrboTL1Q7O3vrhF2i2Qd2VcmDM
-         8pjgsm694fr4xb1+pcYwfGbuMOniApvEGbCDkpp+AMypDT10kZaEEsS7wg1z2VO9xjAW
-         TmuKMaT7tLm4+2ZxIX3nwZtMxBRZfEo1twJ9soJncMZZL4c2tco9tzOQR/vqO5lsnogq
-         uflg3vBjjx0imJj0c+AiUVJHW8RM39X3bFl5ySe8gtNNSbtw9CtgmJ7QqJ3+PzDvz4kf
-         Ne0/1rP8cEbjVP5BehoLfEE7RUradgYv2F/CaXMU8EOsIDKsNUzZ52JiGV9k7wHTVQXw
-         APYg==
-X-Gm-Message-State: APjAAAUfS05+G8v6hrVy5RPkxvvPxgoUMPkZZM226BJpAEiEB30Vby5e
-        wqwTZ/I3fbpD4HcaSbuAVpNOBvHD
-X-Google-Smtp-Source: APXvYqyCS3wiu/iGVRS4Ag6S1k5Eluti1hRAsaPYJR9/19MVWk9ehXqmkFQ3/YQDwZheSPEqwO9ctw==
-X-Received: by 2002:a05:6830:1d0:: with SMTP id r16mr34962367ota.143.1568324743459;
-        Thu, 12 Sep 2019 14:45:43 -0700 (PDT)
-Received: from ?IPv6:2600:1700:65a0:78e0:514:7862:1503:8e4d? ([2600:1700:65a0:78e0:514:7862:1503:8e4d])
-        by smtp.gmail.com with ESMTPSA id c24sm8978079otd.57.2019.09.12.14.45.41
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 12 Sep 2019 14:45:42 -0700 (PDT)
-Subject: Re: [PATCH v1] IB/iser: Support up to 16MB data transfer in a single
- command
-To:     Max Gurtovoy <maxg@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sergey Gorenko <sergeygo@mellanox.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20190912103534.18210-1-sergeygo@mellanox.com>
- <20190912151931.GA15637@mellanox.com>
- <b49453d9-d419-f804-35a9-757a9b8206b9@mellanox.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <31f80a22-04dc-d144-7bac-940eb8f2b97d@grimberg.me>
-Date:   Thu, 12 Sep 2019 14:45:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        id S1727832AbfILXbU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Sep 2019 19:31:20 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:52814 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727823AbfILXbU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Sep 2019 19:31:20 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8CNSaHI084763;
+        Thu, 12 Sep 2019 23:31:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
+ message-id : date : from : to : cc : subject : content-type :
+ content-transfer-encoding; s=corp-2019-08-05;
+ bh=/9sIj4dvAR1BKS4gbx0wdRTSu2BNoh+AO6pNLf/eWyE=;
+ b=NFX53ckkgKQjqkJtCded2I011RBJljXGCVyqvq/oH1fms2D7J7CkJdzbykIvQsvCVSA3
+ N5lGyo5J7MGWytyO88XfoyFUQ4EV8nGZpbD3zxpt/M2fITcwbqdauB3QAU2utCuLuQ1R
+ bORw1Et2QvH/M5lHy+jHjN7ymRkOCKxsnlcBsynE3XawioI076u6HOgAbWItK/lTJ4mH
+ vn+yerpktb1dnn5tQmu+gEnCT1ZiXVId0QuPekrb8elIwjLJhzdkoc8u6Z0pf8P7OB0F
+ NcjbJ5yofqleGdmVJVCEctrZYg0ds0t/6dpedLGjtPReM3gIDYLHoUpIjIM5GzJySrFG 6w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 2uytd3hffj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Sep 2019 23:31:12 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8CNSZOj097043;
+        Thu, 12 Sep 2019 23:31:11 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 2uytdw25vj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Sep 2019 23:31:11 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x8CNVBLe104389;
+        Thu, 12 Sep 2019 23:31:11 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 2uytdw25v2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Sep 2019 23:31:11 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x8CNV9TZ022624;
+        Thu, 12 Sep 2019 23:31:09 GMT
+Received: from [10.211.54.129] (/10.211.54.129) by default (Oracle Beehive
+ Gateway v4.0) with ESMTP ; Thu, 12 Sep 2019 13:49:57 -0700
+USER-AGENT: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <b49453d9-d419-f804-35a9-757a9b8206b9@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+MIME-Version: 1.0
+Message-ID: <914b48be-2373-5b38-83f5-e0d917dd139d@oracle.com>
+Date:   Thu, 12 Sep 2019 13:49:41 -0700 (PDT)
+From:   Gerd Rausch <gerd.rausch@oracle.com>
+To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com
+Cc:     David Miller <davem@davemloft.net>
+Subject: [PATCH net] net/rds: Fix 'ib_evt_handler_call' element in
+ 'rds_ib_stat_names'
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9378 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1909120240
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+All entries in 'rds_ib_stat_names' are stringified versions
+of the corresponding "struct rds_ib_statistics" element
+without the "s_"-prefix.
 
->>> Maximum supported IO size is 8MB for the iSER driver. The
->>> current value is limited by the ISCSI_ISER_MAX_SG_TABLESIZE
->>> macro. But the driver is able to handle 16MB IOs without any
->>> significant changes. Increasing this limit can be useful for
->>> the storage arrays which are fine tuned for IOs larger than
->>> 8 MB.
->>>
->>> This commit allows to configure maximum IO size up to 16MB
->>> using the max_sectors module parameter.
->>>
->>> Signed-off-by: Sergey Gorenko <sergeygo@mellanox.com>
->>> Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
->>> Acked-by: Sagi Grimberg <sagi@grimberg.me>
->>> ---
->>> Changes from v0:
->>> - Change 512 to SECTOR_SIZE (suggested by Sagi)
-> 
-> is this always true ? 512 == SECTOR_SIZE ?
+Fix entry 'ib_evt_handler_call' to do the same.
 
- From the documentation it is, and nothing suggest otherwise.
-/*
-  * The basic unit of block I/O is a sector. It is used in a number of 
-contexts
-  * in Linux (blk, bio, genhd). The size of one sector is 512 = 2**9
-  * bytes. Variables of type sector_t represent an offset or size that is a
-  * multiple of 512 bytes. Hence these two constants.
-  */
-#ifndef SECTOR_SHIFT
-#define SECTOR_SHIFT 9
-#endif
-#ifndef SECTOR_SIZE
-#define SECTOR_SIZE (1 << SECTOR_SHIFT)
-#endif
+Fixes: f4f943c958a2 ("RDS: IB: ack more receive completions to improve performance")
+Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+---
+ net/rds/ib_stats.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/rds/ib_stats.c b/net/rds/ib_stats.c
+index 9252ad126335..ac46d8961b61 100644
+--- a/net/rds/ib_stats.c
++++ b/net/rds/ib_stats.c
+@@ -42,7 +42,7 @@ DEFINE_PER_CPU_SHARED_ALIGNED(struct rds_ib_statistics, rds_ib_stats);
+ static const char *const rds_ib_stat_names[] = {
+ 	"ib_connect_raced",
+ 	"ib_listen_closed_stale",
+-	"s_ib_evt_handler_call",
++	"ib_evt_handler_call",
+ 	"ib_tasklet_call",
+ 	"ib_tx_cq_event",
+ 	"ib_tx_ring_full",
+-- 
+2.22.1
+
