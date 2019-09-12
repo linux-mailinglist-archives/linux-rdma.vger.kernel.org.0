@@ -2,119 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBC9B1048
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Sep 2019 15:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC433B1171
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Sep 2019 16:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732241AbfILNrm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Sep 2019 09:47:42 -0400
-Received: from mail-eopbgr150040.outbound.protection.outlook.com ([40.107.15.40]:22148
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        id S1732708AbfILOu1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Sep 2019 10:50:27 -0400
+Received: from mail-eopbgr80081.outbound.protection.outlook.com ([40.107.8.81]:8067
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731791AbfILNrl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Sep 2019 09:47:41 -0400
+        id S1732732AbfILOu1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Sep 2019 10:50:27 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jsMlnE8I4y69ofQ+bww3gcIhDjvhPMpL0H0s4DkQt63eS+8jAZLoMtZKovD5c1jzFrSPlD7GlyL5FHRZcaNocf8Fhcahwr0erkz3pLhXDOtcRUO6YANWoUMhM5VWjcSfJQWqtkxCe5k7xDxOE5eDH9GkhSN7ygRs9sJFJiZQWfGJ8rWYuFCJFP2RDNoQfkH+6VLpDdLxq/T4Y5bEWh7K0F5cFhx59j7O+y+WG+TowOgOAP3lKDzGb6PPK8FZFPHAX2Jrf/AidUQ5hRgvENre3Mt8a9iL9q2tf2gX3SuM/hlYvYEYZDQPmnF9VjePWNCximdOJ5LCyH19retg8WNuVw==
+ b=Yu/ZfWTHS4WEB0kMwX/k8aZz779ZRXAMcJQMVxjPZbfWbY0crqrsHzxmizN6i8rFXWTDfjb+TxyfPzz9lLoIlkVYG/oXDFtYCGDwUEwPEYzc5FXb2SKrxVECAftH/PhOdnGxlQ8eGWvGN1RIyECGgqXaVTciuOpuFUTvlA1b+8waJgBb+kLuljoW9iJFgS895iqqxLzl2eAFcRKbF6UdiThY0o5N1HrCPeAp9Ml8UeAmt0StaMd5sl7BkgkMZk+PitG2abfUzNKqmHGQgqBDivUtt1GNkWCroUy0HAttxywwGL9Iiw/Pk8Zu2uoVTdPaucaLVKURnolVDYZjQOhuWw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=beQ2ixoiMFV8S1fh/naEBwOmLD+W/VJj0EMKmfOHUvs=;
- b=F+ENJyhdt2Shg83oiz8dZ1py04FxI0+NQpZA0U6Nkm1S3T1S1iXc3ArAvItZmEE4EKhXD0EPBQY+kFvWKVoHgiM0ztTxXfWuupjr92gFV+9rNGavEsh+DQpIagVARZsjc2UIMvZ/RvbN+v0aBfQW0SUMZn40IiWmes7T3PoLFraYA/Mpc4oyzG6t2ndvYjDfuzTRVypRfL/+PYqHmp6MLlYB6VihGmKmPPna/NeP/gvsMM6AXtuIUK38VDhC8Nv9Rk0KDcARN9G98eq9JqEsISJ2Iok3bTNfTf9XcntLivXnqcI7rpL+XT6OgcHvEaSo23rWzCboGI02A6iPx6/DFg==
+ bh=t4Vcd7xFRxXUttg1i7j3ZZfnYux5t8w8UiBfnqcKijY=;
+ b=EsqMPFRAF4wox3hHj8z9yLSl2nx+rIYer2SqmPRFAKinIW2i2qa6SE/3TMqz6UYPhSeKnMYk6nZXw3+UXKaDrJ7lmk04c6gJYVE8gpU1s0swPaZ/tEPT259cvvxOqseYzEWFWMW5SBf7KmpV1woQEolLfcparUhT3g3D4s8NG6SHC6RPKGNCkazgiwrBY6k15y0usjudfK+fo/uTuATEXVUH6qVg7PHLxJN3u4c2seVxlHyCkOe3SORJqd5JhDlKvtu76Ph5mRIz2OJc0t4YZRE3AFyzVIXWUTpRWXakOm7ZzMYTp4dxW+OQxYJIkpv/ng1f68GFhjP571TGEUiHTA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=beQ2ixoiMFV8S1fh/naEBwOmLD+W/VJj0EMKmfOHUvs=;
- b=QcbB8wjkuGJbMnbXOlJSu0BVU1Rk0BKYCi6Bouq4QQpfzCAYZSuGebm2ogsTKVGVckm7DJOqCVTAHWnVR0ye6GDxz4MZLKfCs534NStcEKHnw2OUopT3g9F+eveEH9GExp+HtUK8MWM/jhMkgKQcyhZoIbPhpi2pkl+ZbV4EuCo=
+ bh=t4Vcd7xFRxXUttg1i7j3ZZfnYux5t8w8UiBfnqcKijY=;
+ b=qDejNkyaq5CjcrzmotWNSjCkRAI65xGwwi3Xzn2Ajc2jXyBznlrMltFtqazRfQyIUn3BX2Pm3pMAJTi6NWWhhlKNnW36lFJ5BP30RXR7lMhcQYJrkxnJcni5zuy6zrLhacXjk/fujp8TizU/bAFcd668C3AYX6KSA7HKmRLv820=
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB4687.eurprd05.prod.outlook.com (20.176.3.160) with Microsoft SMTP
+ VI1PR05MB5967.eurprd05.prod.outlook.com (20.178.126.225) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2263.14; Thu, 12 Sep 2019 13:47:38 +0000
+ 15.20.2263.15; Thu, 12 Sep 2019 14:50:24 +0000
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::79a3:d971:d1f3:ab6f]) by VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::79a3:d971:d1f3:ab6f%7]) with mapi id 15.20.2241.022; Thu, 12 Sep 2019
- 13:47:38 +0000
+ 14:50:24 +0000
 From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Parvi Kaustubhi <pkaustub@cisco.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Gal Pressman <galpress@amazon.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Kamal Heib <kamalheib1@gmail.com>,
-        Florian Westphal <fw@strlen.de>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usnic: avoid overly large buffers on stack
-Thread-Topic: [PATCH] usnic: avoid overly large buffers on stack
-Thread-Index: AQHVaXCjw/Ut2E8kMkCNr8L8Y0rqrA==
-Date:   Thu, 12 Sep 2019 13:47:37 +0000
-Message-ID: <20190912134722.GA26019@mellanox.com>
-References: <20190906155730.2750200-1-arnd@arndb.de>
-In-Reply-To: <20190906155730.2750200-1-arnd@arndb.de>
+To:     Bernard Metzler <bmt@zurich.ibm.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "krishna2@chelsio.com" <krishna2@chelsio.com>,
+        "dledford@redhat.com" <dledford@redhat.com>
+Subject: Re: [PATCH v1 for-rc] RDMA/siw: Fix page address mapping in TX path
+Thread-Topic: [PATCH v1 for-rc] RDMA/siw: Fix page address mapping in TX path
+Thread-Index: AQHVaXlohnWhDIBRVUyzJfbEC8ov4Q==
+Date:   Thu, 12 Sep 2019 14:50:24 +0000
+Message-ID: <20190912145009.GA8524@mellanox.com>
+References: <20190909132427.30264-1-bmt@zurich.ibm.com>
+In-Reply-To: <20190909132427.30264-1-bmt@zurich.ibm.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: DM5PR19CA0028.namprd19.prod.outlook.com
- (2603:10b6:3:9a::14) To VI1PR05MB4141.eurprd05.prod.outlook.com
+x-clientproxiedby: DM6PR14CA0003.namprd14.prod.outlook.com
+ (2603:10b6:5:a8::16) To VI1PR05MB4141.eurprd05.prod.outlook.com
  (2603:10a6:803:4d::16)
 authentication-results: spf=none (sender IP is )
  smtp.mailfrom=jgg@mellanox.com; 
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [199.167.24.153]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b4d6389d-f3f4-4d99-10d3-08d73787c5ff
+x-ms-office365-filtering-correlation-id: b8eca86f-d540-45c0-e229-08d737908ad2
 x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB4687;
-x-ms-traffictypediagnostic: VI1PR05MB4687:|VI1PR05MB4687:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB468735F7649FA05A5BC7D3CDCFB00@VI1PR05MB4687.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5967;
+x-ms-traffictypediagnostic: VI1PR05MB5967:
+x-microsoft-antispam-prvs: <VI1PR05MB5967BB40C9920C66F41E8C89CFB00@VI1PR05MB5967.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
 x-forefront-prvs: 01583E185C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(39860400002)(136003)(376002)(346002)(396003)(199004)(189003)(8676002)(81166006)(86362001)(81156014)(14454004)(6916009)(256004)(305945005)(6486002)(7736002)(33656002)(2616005)(3846002)(54906003)(476003)(6116002)(25786009)(6506007)(26005)(386003)(6246003)(186003)(486006)(8936002)(446003)(53936002)(229853002)(6512007)(36756003)(52116002)(102836004)(11346002)(66066001)(76176011)(4744005)(478600001)(316002)(2906002)(1076003)(66946007)(64756008)(66446008)(66476007)(5660300002)(4326008)(99286004)(71200400001)(71190400001)(6436002)(7416002)(66556008);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4687;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(136003)(39860400002)(366004)(376002)(346002)(199004)(189003)(81166006)(99286004)(52116002)(36756003)(71190400001)(71200400001)(1076003)(6916009)(229853002)(6486002)(5660300002)(86362001)(54906003)(316002)(4744005)(6512007)(256004)(6436002)(2906002)(66066001)(53936002)(478600001)(8936002)(25786009)(102836004)(3846002)(386003)(26005)(2616005)(476003)(446003)(14454004)(6246003)(186003)(486006)(4326008)(66946007)(76176011)(66446008)(305945005)(66556008)(7736002)(66476007)(64756008)(6506007)(6116002)(33656002)(8676002)(81156014)(11346002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5967;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 1WItz+RTZg/Nu0iunuK7QWWH7MMUJkNnVnMIYWf/fuKthkwSA/1ACrKUSvCiirNc9PBEaAQJ26zVigssjbek6aHXNvDqwdEyeHB6TFpOVNIWjKhc5W7UlPJhe+6oze+t9tOPCW9qdfgimjKTg1/U3BKOeisYTQ5h2K6GZVJ6sCLpkAaRCirt7UCVJZSsVwIGkNQnRYv9jJh7zCxKj7+CMhhfKcULea+THOSx35hIHuLjdHTIzjf2patHf5VIDCr0q8j1bykiqYQbQZ5NIanMtcqRsV/LSq2ZCdKQeIec6jXQq1jyOgChtWL4K/VRhCjKOF1OKi2gbDpQ6pYDOoGaMMCaLkh9roQrXvgJdPIU1cSIfe6TyWWq1i+SfQ+7yy6wjIndZJMqC0F6iTk8FDhdpibJQQcvyvCmUe62ALtnZOo=
+x-microsoft-antispam-message-info: v63h0HnqDUS4NTh1asEz5Lah78KzhteAYquZwP9jI88EozKT/IKf1CIUCBXX/axhqY/tfDlwpSLgDEYgsAYIxCUxXNnQ+cy+0sN7mh4Fg1/SNhFPsTUYspZR8bHCQYF7Fy8M2BLw/Vm5SwfFkx24PXoX/bGBnvAP+oNYZy+cTgmt0H6QS5sxSjKreOOUrYqIJbXLYrK/X++NJyVMzvM7lSagQeHZW4+qqom7U7aXXyDn0WTNkUVpGXXuKQAHsjrG4hxP5gqj1y0ELj8k1RVIn6+pQOu1cDKIYC86Nzn231BvzT4iOtyfpgJdPWq60hhki3aXFix15RWjv+LszW/BLv7rqBH2tUjcu4rZSZa/cAS6hmEv5NyhEad/cegl9ItLmFzyCvh0Au9VVCz9DGLW8US7ZOqyAGjNq8B2jwJJtvg=
+x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <93998CD44856FA42A74BA038E083679E@eurprd05.prod.outlook.com>
+Content-ID: <BBBD75D58D4FAA428D7B6F8B7D9B4890@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4d6389d-f3f4-4d99-10d3-08d73787c5ff
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2019 13:47:38.0173
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8eca86f-d540-45c0-e229-08d737908ad2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2019 14:50:24.2177
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3LeTZNFM5B3TFBrhY13011avW4EvC6NSumKXvAYxbhygp9F41/CzkgYtGvYGczhHjwHXXsmMreUg83s2earFkg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4687
+X-MS-Exchange-CrossTenant-userprincipalname: 2YCSK8xTEbE8DJS+j+2LmtG+rU8A4lpN0/iM4X6AFmsk9nog2BnC/7xxpzzuNynfxASf30AQt5ivaSGOKdIVXQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5967
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 06, 2019 at 05:57:17PM +0200, Arnd Bergmann wrote:
-> It's never a good idea to put a 1000-byte buffer on the kernel
-> stack. The compiler warns about this instance when usnic_ib_log_vf()
-> gets inlined into usnic_ib_pci_probe():
+On Mon, Sep 09, 2019 at 03:24:27PM +0200, Bernard Metzler wrote:
+> Use the correct kmap()/kunmap() flow to determine page
+> address used for CRC computation. Using page_address()
+> is wrong, since page might be in highmem.
 >=20
-> drivers/infiniband/hw/usnic/usnic_ib_main.c:543:12: error: stack frame si=
-ze of 1044 bytes in function 'usnic_ib_pci_probe' [-Werror,-Wframe-larger-t=
-han=3D]
->=20
-> As this is only called for debugging purposes in the setup path,
-> it's trivial to convert to a dynamic allocation.
->=20
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Reported-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+> Fixes: b9be6f18cf9e rdma/siw: transmit path
+> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
 > ---
->  drivers/infiniband/hw/usnic/usnic_ib_main.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
+>  drivers/infiniband/sw/siw/siw_qp_tx.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
 
 Applied to for-next, thanks
 
