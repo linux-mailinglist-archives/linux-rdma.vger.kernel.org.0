@@ -2,107 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E01B100B
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Sep 2019 15:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B8EB1027
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Sep 2019 15:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731687AbfILNeD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Sep 2019 09:34:03 -0400
-Received: from mail-eopbgr60051.outbound.protection.outlook.com ([40.107.6.51]:26094
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        id S1732219AbfILNjk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Sep 2019 09:39:40 -0400
+Received: from mail-eopbgr50066.outbound.protection.outlook.com ([40.107.5.66]:56197
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731283AbfILNeD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Sep 2019 09:34:03 -0400
+        id S1732202AbfILNjk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Sep 2019 09:39:40 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZpNxVRzbX1daP5Gu6kRGhdgznvzcxIPu+IvMnnuzTo2tBmy7L30Fgy62zqlASx8yBXR423ZWVh0tnT5lbM4FPlg4ApCaFx5AapW4A4BAyx276QmjXc46p+8Q7ab71HsBwRNCfD00maWBmJx6mUs8T03gjZobTD9EdeqNf5+Lp2nbxfYOa7eDBbPsygd59edy4Dujs/jHQvs3LLQUD6xJNZpnwSngr5NSNgkzwTB4D2PW+GZKEkTSny3X3r0ghNrkFJQYFeJ8KiOfMBySw03gzwrS1NwEpujWFS9DxHtCoPaxQSFfKiO4YS+sNAKJJANLgmcBJqHquv28Fa28HK9AiA==
+ b=hj9KdIXjXR3ksLFC+mZqw4Ny6DqTJdvaeqjj8yTTsed69W+6UvWYuc4IXMTDQ3ONi5ykqP11AZLTvvesP97oTqGfRILxOFyhZUAxDYixKyOGjeWO+YJ7lzYiRiD8QW182FywtkCSPm+25jzGLkNwO8lXnwDjB2JM85AOMWK3xQyPF4Su7U7NSaX3LWLPfCVDlI/Uvpud0lCZENaaO7OsXecCLUuk5ioxU3JS/XdeK8EyWdM6YvDlG0nKI5PlxCEIKpc/623DJnSQWccM46C5+iEdY5bj3SW2FOPJBGHsaUZq58nrO+RFPaT3WZN8oRtbSR4ghYXY/XVf0sz6ndu9sA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WwhcLkSHz5EqoKR5CKMYsi9927G2ByeLcmBIIjZm3aw=;
- b=obdCcCzm7PJGXfGQ4xFVXSZM2hOk25eu4jPub5bFUeDUF3MrBHBBhc+hS29Wy886ojIxsIVYRMREHil6b/32XX+ddmpFXq4uukBc7NsNgZvim7bbglJWvohc5bHAL68R8YOvg5wcEf5OBajluXDbpb+Iob/vXklpuO0KHxvbP5I7N/h2gEjXL5AkoRzoASL2HFZzD01bk4rKs8fN8dkqu5g+bF63WuBb2OibLxqQjPk9GQyOuG/SO6nndve050blIu6osIIFB6LYpKdBtW66EPH+4wP47sLItgFB5O26ZWR9anl2rkMz6DEBouGal/ZBYCtMliPv71Owo/kN/p1pAA==
+ bh=01Ooo3eb00QyAlLdOjKwSonviTYyGSQTLeRXCp99Pg4=;
+ b=DukYV8Ebh5JVGCW09vQ6MjdCZAMKCj7lUVRz3WmRKIKJiTj0xdy4q+zt2po3e9dUwUelC73sTfFneOB5YRlzbnwiEhgXnG1XnKCKGLUP3SqJWiiOSqqtJWZsLv6ac3scZGf+dtGTWzR586OavGEG77ahOslyT4gciwuaWZ4q/VcG8RcCRIBXXxKLbqYGkEH8gP6BCQEuAP3LW29sfLNOfBoGfXNpgTg6Hz0YdmF8r9OxBMCGjYuolV1AalFeaAvieLAY8pWODQsYf5T+/gkkyO1NQ7FWNTuhXnYTD61s9lk7WHTlMYpeVlqyfFQJPy/SkBpVO7Ouq5mt6YVUsGx0/A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WwhcLkSHz5EqoKR5CKMYsi9927G2ByeLcmBIIjZm3aw=;
- b=ejfgE2HfM+hDo06czcerKUr1LJEBP4fLRVOMp/fvtRLo80EBJ0pHktYPPwC7SZZyNCvTq6MugeE01v3Hx88xBGfoFqyhIOBUTeAL/+oQBQn+Ap7B+a4n1ei2G/cP3m/dbszUSSUm0keCjz6eoSL6FUt8Ztr/8Nqg5XHBoYX28AQ=
+ bh=01Ooo3eb00QyAlLdOjKwSonviTYyGSQTLeRXCp99Pg4=;
+ b=RCuqNahcPs80WIYJpKTUa5HNZsl19NiRSwi6pNlFZRmKTbQlKhayJ765eFjtnmlQnKfsxl/1COLWFuw4dBv7zT/8Fimx/QdIxzatqsg3FpZH4Au0HbdqZp4XtiuAInl2B/RktaMVArUkGDF9zkerKWH8T7RJiboNnRby+70HHlE=
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB5678.eurprd05.prod.outlook.com (20.178.121.20) with Microsoft SMTP
+ VI1PR05MB5646.eurprd05.prod.outlook.com (20.178.120.152) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2241.14; Thu, 12 Sep 2019 13:33:58 +0000
+ 15.20.2263.17; Thu, 12 Sep 2019 13:39:36 +0000
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::79a3:d971:d1f3:ab6f]) by VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::79a3:d971:d1f3:ab6f%7]) with mapi id 15.20.2241.022; Thu, 12 Sep 2019
- 13:33:58 +0000
+ 13:39:36 +0000
 From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-CC:     "oulijun@huawei.com" <oulijun@huawei.com>,
-        "xavier.huwei@huawei.com" <xavier.huwei@huawei.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] RDMA/hns: use devm_platform_ioremap_resource() to
- simplify code
-Thread-Topic: [PATCH -next] RDMA/hns: use devm_platform_ioremap_resource() to
- simplify code
-Thread-Index: AQHVaW667lKcy6TDPE+jh2Hg5etsyQ==
-Date:   Thu, 12 Sep 2019 13:33:58 +0000
-Message-ID: <20190912133342.GA25365@mellanox.com>
-References: <20190906141727.26552-1-yuehaibing@huawei.com>
-In-Reply-To: <20190906141727.26552-1-yuehaibing@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: Re: [PATCH rdma-next] RDMA/odp: Add missing cast for 32 bit
+Thread-Topic: [PATCH rdma-next] RDMA/odp: Add missing cast for 32 bit
+Thread-Index: AQHVZhx5RqWyZcR+dEmdfVWpab+Au6coErcA
+Date:   Thu, 12 Sep 2019 13:39:36 +0000
+Message-ID: <20190912133916.GA25528@mellanox.com>
+References: <20190908080726.30017-1-leon@kernel.org>
+In-Reply-To: <20190908080726.30017-1-leon@kernel.org>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: DM5PR06CA0106.namprd06.prod.outlook.com
- (2603:10b6:4:3a::47) To VI1PR05MB4141.eurprd05.prod.outlook.com
+x-clientproxiedby: DM5PR21CA0048.namprd21.prod.outlook.com
+ (2603:10b6:3:ed::34) To VI1PR05MB4141.eurprd05.prod.outlook.com
  (2603:10a6:803:4d::16)
 authentication-results: spf=none (sender IP is )
  smtp.mailfrom=jgg@mellanox.com; 
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [199.167.24.153]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f5c2336d-de66-4f92-1e14-08d73785dd66
+x-ms-office365-filtering-correlation-id: df8112ba-0829-4c8d-26e0-08d73786a72d
 x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5678;
-x-ms-traffictypediagnostic: VI1PR05MB5678:
-x-microsoft-antispam-prvs: <VI1PR05MB5678F7732E9902A9CB48963DCFB00@VI1PR05MB5678.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600166)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:VI1PR05MB5646;
+x-ms-traffictypediagnostic: VI1PR05MB5646:|VI1PR05MB5646:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB5646621A1743D4AFF1E22AABCFB00@VI1PR05MB5646.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2331;
 x-forefront-prvs: 01583E185C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(396003)(346002)(366004)(39860400002)(136003)(199004)(189003)(25786009)(6116002)(256004)(71190400001)(6916009)(4326008)(71200400001)(3846002)(1076003)(33656002)(36756003)(4744005)(6246003)(26005)(2906002)(7736002)(11346002)(102836004)(81166006)(476003)(186003)(86362001)(5660300002)(6506007)(386003)(81156014)(486006)(446003)(8676002)(478600001)(53936002)(8936002)(6436002)(6512007)(14454004)(54906003)(76176011)(2616005)(229853002)(305945005)(99286004)(6486002)(66476007)(66446008)(316002)(66066001)(52116002)(64756008)(66946007)(66556008);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5678;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(136003)(396003)(346002)(366004)(39860400002)(189003)(199004)(478600001)(229853002)(6486002)(25786009)(3846002)(6116002)(53936002)(107886003)(6246003)(6436002)(476003)(14444005)(4326008)(6512007)(256004)(5660300002)(4744005)(86362001)(71190400001)(71200400001)(1076003)(11346002)(316002)(54906003)(2616005)(446003)(7736002)(14454004)(6506007)(386003)(52116002)(102836004)(76176011)(186003)(26005)(99286004)(486006)(305945005)(33656002)(81156014)(8936002)(8676002)(36756003)(2906002)(81166006)(66066001)(66446008)(64756008)(66556008)(66476007)(66946007)(6916009);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5646;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: BQgR1yjR4OflZSwkowXyaODBA7FFBzF2dk4odBbVZ6qEOF0742n7K74dLFBsmoCoWQT0WywNUYa0ah3B03M9YyIiCKbljhaIDZpoNVNygqpXFIFfPgADmT2s+wEyCnApVpjGn7HtIxmwGI0jIllj7MI/3MXxymJ/YzNeStL8024VHn3tH1hCm0zFI39QLAhzGUsIPtC04j2iscoQ+XAhKw/fHkma/wM1RLbIMme46NdEOftO1TK2sjYWaPUz8mR4XgqqnjITdirC9Pr5AQoBlzsuhlppU4MMclw5wcF9DD9epr2BniGPpg6hFzvDnlqFIPPRk2EW4nhrxpxZPXZH/JftVpLI6tq5UdIpWSAOYEQJybNHw4oMoK/SMn8/ntP/e6SLwkfjFl7u+Wwvi0H7g6YRXwSlOQhWZA9BPRRJKsw=
-x-ms-exchange-transport-forked: True
+x-microsoft-antispam-message-info: tvu13rXZ5X3HOgxGtRNa2XYmOjuCjiwiy+8VRleuoaiew5nk8zDGmDJzH11+z5YMuX3Cc9LKL1e0UaDWEOXekcsa4T+AoqF+Ets9HG7f/zyuWRDgBf09sqGhP+woQqEvVtgah/iSLbbYmkm2cWDe4UDqhNx9eXa0jTqesjPIuQYK5Fuc8Y8+LRpd/EoJrIv9rc2KngpvspP90RxWkFIWoCjXXSiitxOLSbA9uT5zAYQSfoc4rLDVqbfOughmaOOXkm2fhkJAxdGBMxvNysuHIm9h8d/huJnMzxYStNs5arPszd3wSeoGI1GS1VJ5WP0VmSKfrZQDwTFfIvHz6GkdqzxnWexMqCNhL+7UMkOP0Nlq/M1UByESsNAOrU9SNtbTbwxt9gr4AmWTjTqaO/sLNd0cVOXjGHGOC5bz2kE4V0I=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B6C28169A4C8254FA4A97DB6D91F566D@eurprd05.prod.outlook.com>
+Content-ID: <86E574C32743EF418745D06D7F6F0FAC@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f5c2336d-de66-4f92-1e14-08d73785dd66
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2019 13:33:58.4637
+X-MS-Exchange-CrossTenant-Network-Message-Id: df8112ba-0829-4c8d-26e0-08d73786a72d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2019 13:39:36.7393
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: w6mrDxFZdUmmb1kZVbw3NkHzNmbRXK056epvEws9h9wvgUGKXuxx+xpNuriExG1Muvi3NOPygkb5m63FRcWYEw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5678
+X-MS-Exchange-CrossTenant-userprincipalname: zEQevz62I58Vo0sCL7RBSuiAQ40fu04/dTb0ikkhb7i/QC41v9Oif0C/aEBb31QccVcZOSgLSrZED+fflt4x0w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5646
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 06, 2019 at 10:17:27PM +0800, YueHaibing wrote:
-> Use devm_platform_ioremap_resource() to simplify the code a bit.
-> This is detected by coccinelle.
+On Sun, Sep 08, 2019 at 11:07:26AM +0300, Leon Romanovsky wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
 >=20
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> length is a size_t which is unsigned int on 32 bit:
+>=20
+> ../drivers/infiniband/core/umem_odp.c: In function 'ib_init_umem_odp':
+> ../include/linux/overflow.h:59:15: warning: comparison of distinct pointe=
+r types lacks a cast
+>    59 |  (void) (&__a =3D=3D &__b);   \
+>       |               ^~
+> ../drivers/infiniband/core/umem_odp.c:220:7: note: in expansion of macro =
+'check_add_overflow'
+>=20
+> Fixes: 204e3e5630c5 ("RDMA/odp: Check for overflow when computing the ume=
+m_odp end")
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 > ---
->  drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+>  drivers/infiniband/core/umem_odp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied to for-next, thanks
+Applied to for-next
 
 Jason
