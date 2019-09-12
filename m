@@ -2,106 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC433B1171
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Sep 2019 16:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D767B11D6
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Sep 2019 17:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732708AbfILOu1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Sep 2019 10:50:27 -0400
-Received: from mail-eopbgr80081.outbound.protection.outlook.com ([40.107.8.81]:8067
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        id S1732938AbfILPKS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Sep 2019 11:10:18 -0400
+Received: from mail-eopbgr150043.outbound.protection.outlook.com ([40.107.15.43]:20316
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732732AbfILOu1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Sep 2019 10:50:27 -0400
+        id S1732715AbfILPKR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Sep 2019 11:10:17 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yu/ZfWTHS4WEB0kMwX/k8aZz779ZRXAMcJQMVxjPZbfWbY0crqrsHzxmizN6i8rFXWTDfjb+TxyfPzz9lLoIlkVYG/oXDFtYCGDwUEwPEYzc5FXb2SKrxVECAftH/PhOdnGxlQ8eGWvGN1RIyECGgqXaVTciuOpuFUTvlA1b+8waJgBb+kLuljoW9iJFgS895iqqxLzl2eAFcRKbF6UdiThY0o5N1HrCPeAp9Ml8UeAmt0StaMd5sl7BkgkMZk+PitG2abfUzNKqmHGQgqBDivUtt1GNkWCroUy0HAttxywwGL9Iiw/Pk8Zu2uoVTdPaucaLVKURnolVDYZjQOhuWw==
+ b=NJ6sSftcgdjM8LTkcnIP5/LzQR+1LZQFgnMp2mP54xU55py8W0ob5piwgS15eqqxbkL8g4qAwBV4CsMOCHh33iS+2fMmppDoLlza66N5og98ZIpzbkZP5ihPmhnqCs790jwGEW5NRzEc1HbtmEIw8K1T/DOnxd9d+DLTcSao/twN0dMg8AKDoHLWQ1B8Fatc4xy7nGxQ6+DYSVecBRw2cQIlKB3pB/R8XQ8EwaJhh+3UB49cpocTTWsCiJ34nyfSZxKvkDCnrpQuH3jj6gMH0jaN/V+KwlTv0vxk3d3tOTcGsiK65Kct6aAIU7JO+WYKGcka84AEQCrWCffGTdROGg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t4Vcd7xFRxXUttg1i7j3ZZfnYux5t8w8UiBfnqcKijY=;
- b=EsqMPFRAF4wox3hHj8z9yLSl2nx+rIYer2SqmPRFAKinIW2i2qa6SE/3TMqz6UYPhSeKnMYk6nZXw3+UXKaDrJ7lmk04c6gJYVE8gpU1s0swPaZ/tEPT259cvvxOqseYzEWFWMW5SBf7KmpV1woQEolLfcparUhT3g3D4s8NG6SHC6RPKGNCkazgiwrBY6k15y0usjudfK+fo/uTuATEXVUH6qVg7PHLxJN3u4c2seVxlHyCkOe3SORJqd5JhDlKvtu76Ph5mRIz2OJc0t4YZRE3AFyzVIXWUTpRWXakOm7ZzMYTp4dxW+OQxYJIkpv/ng1f68GFhjP571TGEUiHTA==
+ bh=HClE9pg+iaUzcloG3yF69u+OwIYyr3ZX25d4/JnowfE=;
+ b=TJTgDtl8cuiM9qLWx9WvOdvSM4a0nbzrw0j89JhhwqQlwMJuqDMP4AHxqBrN+78jHPThZe6fW7Ay3M5COx58DHGIyFBb+LRDcrtfJv4c1eqnDKcOww56t/mcsSwgBduh97aq9FHrCb1W7PSrSv1njmW7lJRijuB62P60uHtjDAWnWaGRyPmxzIBRybUimC/OQQUpHq7j02LGOvXk2bZqxSO4fqR0ioy9kEse7/nElA3tnJ54SJuo02RTvMwHU5YoQKOpjpNF3J+UEvbw21hsOsemt8dLgIGGBLOHUQ2ccVw41NsNpp72K3V+dWJ/praPMAOqQ8Y9QogVcYixqiL8Fg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t4Vcd7xFRxXUttg1i7j3ZZfnYux5t8w8UiBfnqcKijY=;
- b=qDejNkyaq5CjcrzmotWNSjCkRAI65xGwwi3Xzn2Ajc2jXyBznlrMltFtqazRfQyIUn3BX2Pm3pMAJTi6NWWhhlKNnW36lFJ5BP30RXR7lMhcQYJrkxnJcni5zuy6zrLhacXjk/fujp8TizU/bAFcd668C3AYX6KSA7HKmRLv820=
+ bh=HClE9pg+iaUzcloG3yF69u+OwIYyr3ZX25d4/JnowfE=;
+ b=iaKWGezUh6YkWP/CgMHTlOSHZPakrgRwFdCBqGPqdB7vOzhLh6oGlQVHGzHyLGoVTYHsMS6idgqq/8pEAgYX7hvlZqOsRDWudzvAvQuRyn6CHliM8R13amiFedPPYhhBBAQ341MMo+7RCwNFc6P7HoCwSkFvVVAPGA80i9G2tl8=
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB5967.eurprd05.prod.outlook.com (20.178.126.225) with Microsoft SMTP
+ VI1PR05MB5616.eurprd05.prod.outlook.com (20.177.203.92) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2263.15; Thu, 12 Sep 2019 14:50:24 +0000
+ 15.20.2263.15; Thu, 12 Sep 2019 15:10:12 +0000
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::79a3:d971:d1f3:ab6f]) by VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::79a3:d971:d1f3:ab6f%7]) with mapi id 15.20.2241.022; Thu, 12 Sep 2019
- 14:50:24 +0000
+ 15:10:12 +0000
 From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Bernard Metzler <bmt@zurich.ibm.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "krishna2@chelsio.com" <krishna2@chelsio.com>,
-        "dledford@redhat.com" <dledford@redhat.com>
-Subject: Re: [PATCH v1 for-rc] RDMA/siw: Fix page address mapping in TX path
-Thread-Topic: [PATCH v1 for-rc] RDMA/siw: Fix page address mapping in TX path
-Thread-Index: AQHVaXlohnWhDIBRVUyzJfbEC8ov4Q==
-Date:   Thu, 12 Sep 2019 14:50:24 +0000
-Message-ID: <20190912145009.GA8524@mellanox.com>
-References: <20190909132427.30264-1-bmt@zurich.ibm.com>
-In-Reply-To: <20190909132427.30264-1-bmt@zurich.ibm.com>
+To:     Colin King <colin.king@canonical.com>
+CC:     Selvin Xavier <selvin.xavier@broadcom.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] RDMA/bnxt_re: fix spelling mistake "missin_resp" ->
+ "missing_resp"
+Thread-Topic: [PATCH] RDMA/bnxt_re: fix spelling mistake "missin_resp" ->
+ "missing_resp"
+Thread-Index: AQHVaXws6N6XSST4B0exfPzef9SRcQ==
+Date:   Thu, 12 Sep 2019 15:10:12 +0000
+Message-ID: <20190912150957.GA9160@mellanox.com>
+References: <20190911092856.11146-1-colin.king@canonical.com>
+In-Reply-To: <20190911092856.11146-1-colin.king@canonical.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: DM6PR14CA0003.namprd14.prod.outlook.com
- (2603:10b6:5:a8::16) To VI1PR05MB4141.eurprd05.prod.outlook.com
+x-clientproxiedby: DM5PR1401CA0007.namprd14.prod.outlook.com
+ (2603:10b6:4:4a::17) To VI1PR05MB4141.eurprd05.prod.outlook.com
  (2603:10a6:803:4d::16)
 authentication-results: spf=none (sender IP is )
  smtp.mailfrom=jgg@mellanox.com; 
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [199.167.24.153]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b8eca86f-d540-45c0-e229-08d737908ad2
+x-ms-office365-filtering-correlation-id: 631c54bd-6dc9-4e11-8fea-08d737934f06
 x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5967;
-x-ms-traffictypediagnostic: VI1PR05MB5967:
-x-microsoft-antispam-prvs: <VI1PR05MB5967BB40C9920C66F41E8C89CFB00@VI1PR05MB5967.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5616;
+x-ms-traffictypediagnostic: VI1PR05MB5616:
+x-microsoft-antispam-prvs: <VI1PR05MB561626A0E3A6BC22BC665347CFB00@VI1PR05MB5616.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1850;
 x-forefront-prvs: 01583E185C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(136003)(39860400002)(366004)(376002)(346002)(199004)(189003)(81166006)(99286004)(52116002)(36756003)(71190400001)(71200400001)(1076003)(6916009)(229853002)(6486002)(5660300002)(86362001)(54906003)(316002)(4744005)(6512007)(256004)(6436002)(2906002)(66066001)(53936002)(478600001)(8936002)(25786009)(102836004)(3846002)(386003)(26005)(2616005)(476003)(446003)(14454004)(6246003)(186003)(486006)(4326008)(66946007)(76176011)(66446008)(305945005)(66556008)(7736002)(66476007)(64756008)(6506007)(6116002)(33656002)(8676002)(81156014)(11346002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5967;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(396003)(136003)(376002)(366004)(346002)(189003)(199004)(229853002)(8936002)(66066001)(26005)(6916009)(256004)(14444005)(316002)(2906002)(36756003)(186003)(6116002)(3846002)(4744005)(1076003)(386003)(14454004)(5660300002)(102836004)(6506007)(6436002)(54906003)(6486002)(476003)(66556008)(52116002)(11346002)(66446008)(71200400001)(66946007)(25786009)(64756008)(478600001)(446003)(86362001)(71190400001)(6512007)(81166006)(99286004)(2616005)(76176011)(4326008)(6246003)(53936002)(33656002)(81156014)(8676002)(66476007)(486006)(7736002)(305945005);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5616;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: v63h0HnqDUS4NTh1asEz5Lah78KzhteAYquZwP9jI88EozKT/IKf1CIUCBXX/axhqY/tfDlwpSLgDEYgsAYIxCUxXNnQ+cy+0sN7mh4Fg1/SNhFPsTUYspZR8bHCQYF7Fy8M2BLw/Vm5SwfFkx24PXoX/bGBnvAP+oNYZy+cTgmt0H6QS5sxSjKreOOUrYqIJbXLYrK/X++NJyVMzvM7lSagQeHZW4+qqom7U7aXXyDn0WTNkUVpGXXuKQAHsjrG4hxP5gqj1y0ELj8k1RVIn6+pQOu1cDKIYC86Nzn231BvzT4iOtyfpgJdPWq60hhki3aXFix15RWjv+LszW/BLv7rqBH2tUjcu4rZSZa/cAS6hmEv5NyhEad/cegl9ItLmFzyCvh0Au9VVCz9DGLW8US7ZOqyAGjNq8B2jwJJtvg=
+x-microsoft-antispam-message-info: eL3jK6/RTYrzkfxEkwxW8HPzHLIlEHzwVFbpkGOQI8WwsSLsEqd2L0jGrEJH/+qMCJ/ferGchYkFjcm41m3Imt5nO0J7cYjJ1tWbI5iVw7MtkhUMMSuhWVCKj1i/vBIxkL41kNu7W6iJNn2zeY3+j+QNpX8dFBuB1LNizEFgWmbcJS382o08GzOr6H4ryN3/2H4J9a8pTX4SiPboqgQDj7OF80WBqp/f3yjg/nUA4+eOHbIVK9+Kd6J8ZYUDGgGKKF1Hdo8uccqQL8qjWp/JlHeoDVVpTqjoEHHyk7BQBOItgwAzV9G9uAnN8rTFl9Bn1Ljw15MKzNAFN/g+8oiL2tUiucfapivrCVBONZhEFqcbUtVRzgyRUoOX8HPSccXAebWF5Pn2qu0gvhFBxvf1HkAPQ2k2UzRwKYLVPAuRF1Y=
 x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <BBBD75D58D4FAA428D7B6F8B7D9B4890@eurprd05.prod.outlook.com>
+Content-ID: <F312E810625BCB45B0A68D063AFAB0B9@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b8eca86f-d540-45c0-e229-08d737908ad2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2019 14:50:24.2177
+X-MS-Exchange-CrossTenant-Network-Message-Id: 631c54bd-6dc9-4e11-8fea-08d737934f06
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2019 15:10:12.3403
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2YCSK8xTEbE8DJS+j+2LmtG+rU8A4lpN0/iM4X6AFmsk9nog2BnC/7xxpzzuNynfxASf30AQt5ivaSGOKdIVXQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5967
+X-MS-Exchange-CrossTenant-userprincipalname: dqs8FfpgKARC94iuGywyWD5z6oeRfeiYmQ3o0VLaFcpqD/QV0ZAR114E3SH+qW1FyOqiA5mhCFLACIQfwlK1Xw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5616
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 09, 2019 at 03:24:27PM +0200, Bernard Metzler wrote:
-> Use the correct kmap()/kunmap() flow to determine page
-> address used for CRC computation. Using page_address()
-> is wrong, since page might be in highmem.
+On Wed, Sep 11, 2019 at 10:28:56AM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 >=20
-> Reported-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
-> Fixes: b9be6f18cf9e rdma/siw: transmit path
-> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+> There is a spelling mistake in a literal string, fix it.
+>=20
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  drivers/infiniband/sw/siw/siw_qp_tx.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
+>  drivers/infiniband/hw/bnxt_re/hw_counters.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/infiniband/hw/bnxt_re/hw_counters.c b/drivers/infini=
+band/hw/bnxt_re/hw_counters.c
+> index 604b71875f5f..3421a0b15983 100644
+> --- a/drivers/infiniband/hw/bnxt_re/hw_counters.c
+> +++ b/drivers/infiniband/hw/bnxt_re/hw_counters.c
+> @@ -74,7 +74,7 @@ static const char * const bnxt_re_stat_name[] =3D {
+>  	[BNXT_RE_SEQ_ERR_NAKS_RCVD]     =3D "seq_err_naks_rcvd",
+>  	[BNXT_RE_MAX_RETRY_EXCEEDED]    =3D "max_retry_exceeded",
+>  	[BNXT_RE_RNR_NAKS_RCVD]         =3D "rnr_naks_rcvd",
+> -	[BNXT_RE_MISSING_RESP]          =3D "missin_resp",
+> +	[BNXT_RE_MISSING_RESP]          =3D "missing_resp",
 
-Applied to for-next, thanks
+Broadcom folks, can you confirm if this is OK? Is the string ABI for
+this driver?
 
 Jason
