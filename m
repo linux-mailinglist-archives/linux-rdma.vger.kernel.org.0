@@ -2,109 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D4FB0FFA
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Sep 2019 15:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E01B100B
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Sep 2019 15:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732128AbfILNbO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Sep 2019 09:31:14 -0400
-Received: from mail-eopbgr40063.outbound.protection.outlook.com ([40.107.4.63]:14914
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        id S1731687AbfILNeD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Sep 2019 09:34:03 -0400
+Received: from mail-eopbgr60051.outbound.protection.outlook.com ([40.107.6.51]:26094
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732166AbfILNbO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Sep 2019 09:31:14 -0400
+        id S1731283AbfILNeD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Sep 2019 09:34:03 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LkLs6bNVcRJrnERvAU9KujVmrVvGjUrnHss1sexQi7a5P/+6cRn12C8ApwnoEDkFNmubYXzjKiDcvY2VYV2MXTO04TyY8bufXDsf27oQMY+gWaUTu82Msy0/j+L6XLVHSfm5nk+IEMO7YMoX3H9kZ0UNlTPQa1oIlbRXxVmRjAq/NutnjFGZgwBkmwTXXinOCfE+Nkl3rggHF4y52eLwFJVgJRojhQDPmv8xeahYMoaPvIUwfeqwAB9+n53ZVlI03tW9Z+Wet0BcccuuXl3JUJyKzxfPJjzvjYyaMm/ByD1WHOkvAPko8kPUZy+Q070iq0mY0N9+4RSsR7X2SESEcQ==
+ b=ZpNxVRzbX1daP5Gu6kRGhdgznvzcxIPu+IvMnnuzTo2tBmy7L30Fgy62zqlASx8yBXR423ZWVh0tnT5lbM4FPlg4ApCaFx5AapW4A4BAyx276QmjXc46p+8Q7ab71HsBwRNCfD00maWBmJx6mUs8T03gjZobTD9EdeqNf5+Lp2nbxfYOa7eDBbPsygd59edy4Dujs/jHQvs3LLQUD6xJNZpnwSngr5NSNgkzwTB4D2PW+GZKEkTSny3X3r0ghNrkFJQYFeJ8KiOfMBySw03gzwrS1NwEpujWFS9DxHtCoPaxQSFfKiO4YS+sNAKJJANLgmcBJqHquv28Fa28HK9AiA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fD3NOALZj1epQP0BrKna9gwqJPqs9pgVDCPc3kjl3Q8=;
- b=ZYwQB7acBQr0ocxQU3QlpSLjmsFLUCALNHi/pVpgBA8m5nSfiQH7mczxb4AifT8Dia8JhqW0FTjSZs+6SMoFxcUAOc7Dddl5N4oJ7Rarh1Jv+IFavucg45hYmS+QtPM0viANBxlg2mg9XgrATu+yiHqP6yfpIdxqPmYI7+TYjuIFCLwZ3MwY5iS5xn5nW8Aul5yTHH4oKdd+9JfBOs6vkJUsIagLinwoNtBgkLYNzX0qhgnY4cfgWleECBq7J34wtcnsQOvmx7j6mKvSPzllCD5izgjrhs6etRH+dP2W4cOD09X6kc7DkA1n91i2HHTfBnHvtuC9Y8V2KLZ1RS01YQ==
+ bh=WwhcLkSHz5EqoKR5CKMYsi9927G2ByeLcmBIIjZm3aw=;
+ b=obdCcCzm7PJGXfGQ4xFVXSZM2hOk25eu4jPub5bFUeDUF3MrBHBBhc+hS29Wy886ojIxsIVYRMREHil6b/32XX+ddmpFXq4uukBc7NsNgZvim7bbglJWvohc5bHAL68R8YOvg5wcEf5OBajluXDbpb+Iob/vXklpuO0KHxvbP5I7N/h2gEjXL5AkoRzoASL2HFZzD01bk4rKs8fN8dkqu5g+bF63WuBb2OibLxqQjPk9GQyOuG/SO6nndve050blIu6osIIFB6LYpKdBtW66EPH+4wP47sLItgFB5O26ZWR9anl2rkMz6DEBouGal/ZBYCtMliPv71Owo/kN/p1pAA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fD3NOALZj1epQP0BrKna9gwqJPqs9pgVDCPc3kjl3Q8=;
- b=CYOz2jOzuIHr9YoeVEF9Fdm2iReC/PDCR7xoWyjW3ieztpdAZAg3ggoMEDDzv0FSPv5QRS7WKtuU+6BYrJbINQlCcFsfFKUYh9MC+uy3f6fzfQenN29/+DhDgwBN3wUUMVC5YtgsKwrNP/mjmTsTkoramp8FmbIXY9q4QX97im8=
+ bh=WwhcLkSHz5EqoKR5CKMYsi9927G2ByeLcmBIIjZm3aw=;
+ b=ejfgE2HfM+hDo06czcerKUr1LJEBP4fLRVOMp/fvtRLo80EBJ0pHktYPPwC7SZZyNCvTq6MugeE01v3Hx88xBGfoFqyhIOBUTeAL/+oQBQn+Ap7B+a4n1ei2G/cP3m/dbszUSSUm0keCjz6eoSL6FUt8Ztr/8Nqg5XHBoYX28AQ=
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB6221.eurprd05.prod.outlook.com (20.178.124.16) with Microsoft SMTP
+ VI1PR05MB5678.eurprd05.prod.outlook.com (20.178.121.20) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2263.17; Thu, 12 Sep 2019 13:31:11 +0000
+ 15.20.2241.14; Thu, 12 Sep 2019 13:33:58 +0000
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::79a3:d971:d1f3:ab6f]) by VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::79a3:d971:d1f3:ab6f%7]) with mapi id 15.20.2241.022; Thu, 12 Sep 2019
- 13:31:11 +0000
+ 13:33:58 +0000
 From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Yuval Shaia <yuval.shaia@oracle.com>
-CC:     "bmt@zurich.ibm.com" <bmt@zurich.ibm.com>,
-        "galpress@amazon.com" <galpress@amazon.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Matan Barak <matanb@mellanox.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH] kernel-headers: Update comment to reflect changes
-Thread-Topic: [PATCH] kernel-headers: Update comment to reflect changes
-Thread-Index: AQHVYuQC32KnJMGEtkaMXJpOGcQqpKcoFtWA
-Date:   Thu, 12 Sep 2019 13:31:11 +0000
-Message-ID: <20190912133057.GA19091@mellanox.com>
-References: <20190904054530.4391-1-yuval.shaia@oracle.com>
-In-Reply-To: <20190904054530.4391-1-yuval.shaia@oracle.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+CC:     "oulijun@huawei.com" <oulijun@huawei.com>,
+        "xavier.huwei@huawei.com" <xavier.huwei@huawei.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] RDMA/hns: use devm_platform_ioremap_resource() to
+ simplify code
+Thread-Topic: [PATCH -next] RDMA/hns: use devm_platform_ioremap_resource() to
+ simplify code
+Thread-Index: AQHVaW667lKcy6TDPE+jh2Hg5etsyQ==
+Date:   Thu, 12 Sep 2019 13:33:58 +0000
+Message-ID: <20190912133342.GA25365@mellanox.com>
+References: <20190906141727.26552-1-yuehaibing@huawei.com>
+In-Reply-To: <20190906141727.26552-1-yuehaibing@huawei.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: DM6PR10CA0001.namprd10.prod.outlook.com
- (2603:10b6:5:60::14) To VI1PR05MB4141.eurprd05.prod.outlook.com
+x-clientproxiedby: DM5PR06CA0106.namprd06.prod.outlook.com
+ (2603:10b6:4:3a::47) To VI1PR05MB4141.eurprd05.prod.outlook.com
  (2603:10a6:803:4d::16)
 authentication-results: spf=none (sender IP is )
  smtp.mailfrom=jgg@mellanox.com; 
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [199.167.24.153]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1429895f-217f-4ac9-cc81-08d7378579da
+x-ms-office365-filtering-correlation-id: f5c2336d-de66-4f92-1e14-08d73785dd66
 x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB6221;
-x-ms-traffictypediagnostic: VI1PR05MB6221:|VI1PR05MB6221:
-x-ld-processed: a652971c-7d2e-4d9b-a6a4-d149256f461b,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB6221BA93312AFBD9AD8D7AABCFB00@VI1PR05MB6221.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:243;
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:VI1PR05MB5678;
+x-ms-traffictypediagnostic: VI1PR05MB5678:
+x-microsoft-antispam-prvs: <VI1PR05MB5678F7732E9902A9CB48963DCFB00@VI1PR05MB5678.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
 x-forefront-prvs: 01583E185C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(346002)(366004)(39860400002)(396003)(136003)(189003)(199004)(386003)(66556008)(66476007)(64756008)(66946007)(6506007)(476003)(26005)(6916009)(66446008)(99286004)(66066001)(102836004)(52116002)(14444005)(76176011)(71190400001)(256004)(54906003)(71200400001)(2616005)(446003)(11346002)(316002)(4744005)(1076003)(5660300002)(86362001)(305945005)(486006)(36756003)(33656002)(186003)(7736002)(8676002)(3846002)(478600001)(6116002)(6486002)(25786009)(81156014)(81166006)(14454004)(53936002)(229853002)(6512007)(2906002)(15650500001)(6436002)(4326008)(8936002)(6246003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6221;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(396003)(346002)(366004)(39860400002)(136003)(199004)(189003)(25786009)(6116002)(256004)(71190400001)(6916009)(4326008)(71200400001)(3846002)(1076003)(33656002)(36756003)(4744005)(6246003)(26005)(2906002)(7736002)(11346002)(102836004)(81166006)(476003)(186003)(86362001)(5660300002)(6506007)(386003)(81156014)(486006)(446003)(8676002)(478600001)(53936002)(8936002)(6436002)(6512007)(14454004)(54906003)(76176011)(2616005)(229853002)(305945005)(99286004)(6486002)(66476007)(66446008)(316002)(66066001)(52116002)(64756008)(66946007)(66556008);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5678;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: IFyU3zPuh9bupT27g8IlUYnNnPqarRZ/AMXlBuA3vwRBWeA1urVcPRBbDJxltZLpFI6+nEPxh+hfqeDDOGUoqsyaQMV05yBPNPm9bkDWFHLb6x/UimXXtwJU+GfbG2d/7eWJW3sux5oNA9I/qxGmeBpziztCPrCLB/rMGCY87VxOPmS2HsoCu0VxZ6X9dCpNzetOXmPHdRL176a2ll4BwYxWiDICylq0bmm/CkjuSbO3kc37SLjUdlyFEZrzPi/JNHhosAWDL2DRWQ/iXmlB4V8MBkTeOemZ+0QQRKLmsAmV7FJZbsujMOJGKuU9UPmN2Gl5A+SRxm7COqjytUiuE6wGImADO1DUCcaZGd7utdjTwh5SbUliPZ4raXWcIIJlhHdTMxLnty0F272X83wrBPN7AQvSkTxp4SHf1EAllxQ=
+x-microsoft-antispam-message-info: BQgR1yjR4OflZSwkowXyaODBA7FFBzF2dk4odBbVZ6qEOF0742n7K74dLFBsmoCoWQT0WywNUYa0ah3B03M9YyIiCKbljhaIDZpoNVNygqpXFIFfPgADmT2s+wEyCnApVpjGn7HtIxmwGI0jIllj7MI/3MXxymJ/YzNeStL8024VHn3tH1hCm0zFI39QLAhzGUsIPtC04j2iscoQ+XAhKw/fHkma/wM1RLbIMme46NdEOftO1TK2sjYWaPUz8mR4XgqqnjITdirC9Pr5AQoBlzsuhlppU4MMclw5wcF9DD9epr2BniGPpg6hFzvDnlqFIPPRk2EW4nhrxpxZPXZH/JftVpLI6tq5UdIpWSAOYEQJybNHw4oMoK/SMn8/ntP/e6SLwkfjFl7u+Wwvi0H7g6YRXwSlOQhWZA9BPRRJKsw=
+x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <9F4E17563F9D5349BA89308B570CE590@eurprd05.prod.outlook.com>
+Content-ID: <B6C28169A4C8254FA4A97DB6D91F566D@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1429895f-217f-4ac9-cc81-08d7378579da
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2019 13:31:11.3233
+X-MS-Exchange-CrossTenant-Network-Message-Id: f5c2336d-de66-4f92-1e14-08d73785dd66
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2019 13:33:58.4637
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8nrWvoOiJG9/eaNGgVMRTa8uxF99aqjWS4Nm6AuRiYUntD8GTN1nMYolYVneod0TTXAak3L2vSrk/vROcHDzqg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6221
+X-MS-Exchange-CrossTenant-userprincipalname: w6mrDxFZdUmmb1kZVbw3NkHzNmbRXK056epvEws9h9wvgUGKXuxx+xpNuriExG1Muvi3NOPygkb5m63FRcWYEw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5678
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 04, 2019 at 08:45:30AM +0300, Yuval Shaia wrote:
-> Following change made in commit 08536105d93f ("docs: ioctl-number.txt:
-> convert it to ReST format") change the comment that refers to
-> ioctl-number.txt file.
+On Fri, Sep 06, 2019 at 10:17:27PM +0800, YueHaibing wrote:
+> Use devm_platform_ioremap_resource() to simplify the code a bit.
+> This is detected by coccinelle.
 >=20
-> Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 > ---
->  kernel-headers/rdma/rdma_user_ioctl_cmds.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 
-rdma-core kernel-headers/ is automatically sync'd, this will come the
-next time someone needs to update it.
+Applied to for-next, thanks
 
 Jason
