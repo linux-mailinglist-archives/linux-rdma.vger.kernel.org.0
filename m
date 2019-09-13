@@ -2,73 +2,257 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B620FB1DD5
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Sep 2019 14:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161A7B2824
+	for <lists+linux-rdma@lfdr.de>; Sat, 14 Sep 2019 00:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729863AbfIMMnq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 13 Sep 2019 08:43:46 -0400
-Received: from mga14.intel.com ([192.55.52.115]:34090 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726771AbfIMMnp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 13 Sep 2019 08:43:45 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Sep 2019 05:43:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,492,1559545200"; 
-   d="scan'208";a="187805348"
-Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
-  by orsmga003.jf.intel.com with ESMTP; 13 Sep 2019 05:43:44 -0700
-Received: from fmsmsx162.amr.corp.intel.com (10.18.125.71) by
- FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Fri, 13 Sep 2019 05:43:44 -0700
-Received: from fmsmsx120.amr.corp.intel.com ([169.254.15.9]) by
- fmsmsx162.amr.corp.intel.com ([169.254.5.238]) with mapi id 14.03.0439.000;
- Fri, 13 Sep 2019 05:43:43 -0700
-From:   "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Wan, Kaike" <kaike.wan@intel.com>
-Subject: RE: [PATCH for-next 3/3] IB/hfi1: Define variables as unsigned long
- to fix KASAN warning
-Thread-Topic: [PATCH for-next 3/3] IB/hfi1: Define variables as unsigned
- long to fix KASAN warning
-Thread-Index: AQHVaJRhDW39fYtHH0mWXMwbuDsZn6cp+x8A//+U3/A=
-Date:   Fri, 13 Sep 2019 12:43:43 +0000
-Message-ID: <32E1700B9017364D9B60AED9960492BC70EB553C@fmsmsx120.amr.corp.intel.com>
-References: <20190911112912.126040.72184.stgit@awfm-01.aw.intel.com>
- <20190911113053.126040.47327.stgit@awfm-01.aw.intel.com>
- <20190912161219.GA15092@mellanox.com>
-In-Reply-To: <20190912161219.GA15092@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiZmY0YTY5NWItMjQxMS00OTNjLTg4Y2ItMjIzNTUzMDhmNGQzIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoidmMwM1d1U3dRQnl0Zlc4YmhOd1wvUDU5Z0lCcERwbEI5eFpRTzBoMEdQb3hVWVwvYnhDb3ExTjBnUU5Zbk5NRmlUIn0=
-x-ctpclassification: CTP_NT
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.107]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S2403901AbfIMWKR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Sep 2019 18:10:17 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:45050 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403839AbfIMWKR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Sep 2019 18:10:17 -0400
+Received: by mail-pl1-f193.google.com with SMTP id k1so13834018pls.11;
+        Fri, 13 Sep 2019 15:10:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jllUiuaA02Uc7cmGfjyqP4d52QG2Uo5CdP6bwgOrw04=;
+        b=dEB+hGSZiD181ogI4XuDXH+L/FClpX7XhBh3AN6pT8YyE3pB2PbAm2ogQjUu4wNwLb
+         cMTjvEwYeH9sPZKBGpqAKFxlMoq2182ZsD1xQzXAT/JD0F1BVQacj+tyTrPmL+T+vgsi
+         V+pOwkPWpVtOOdhwT8YwVo5Y5JvdyCHbANGpyMadauODAwui6vT7wGL74mrVCXjF4Lci
+         NnpTvGW/c+WvpOMnlnEhGKMzIdOmAfJmSclX1ZuAIhFeiare4IGOYDjJ3IqWe788oWfW
+         BvqL2EiUmA1axUadNxlNXPIAMbeSqbx5Sk09fwCLcHt+4TH2avORG4YroyZm7muQ5/bC
+         4fpw==
+X-Gm-Message-State: APjAAAW5XM+6RzZieuwsgkBE/7PJxmvp0Yx6NXGZB7jDCShqvK66q2IG
+        UAGmAHHCaQ3bGcV+IlKlvk4=
+X-Google-Smtp-Source: APXvYqwigthOKaPuSvWb9V7tIFp44obXARsFRnZBN847hUpWt/KtVsdpB7BFzBeth0tVuD8u8jb2KQ==
+X-Received: by 2002:a17:902:9884:: with SMTP id s4mr29767476plp.104.1568412615948;
+        Fri, 13 Sep 2019 15:10:15 -0700 (PDT)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id b18sm3013047pju.16.2019.09.13.15.10.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Sep 2019 15:10:15 -0700 (PDT)
+Subject: Re: [PATCH v4 15/25] ibnbd: private headers with IBNBD protocol
+ structs and helpers
+To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
+        jgg@mellanox.com, dledford@redhat.com,
+        danil.kipnis@cloud.ionos.com, rpenyaev@suse.de,
+        Roman Pen <roman.penyaev@profitbricks.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>
+References: <20190620150337.7847-1-jinpuwang@gmail.com>
+ <20190620150337.7847-16-jinpuwang@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <4fbad80b-f551-131e-9a5c-a24f1fa98fea@acm.org>
+Date:   Fri, 13 Sep 2019 15:10:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <20190620150337.7847-16-jinpuwang@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> > Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-> 
-> This needs a fixes line, can you tell me what it is?
+On 6/20/19 8:03 AM, Jack Wang wrote:
+> +#define ibnbd_log(fn, dev, fmt, ...) ({				\
+> +	__builtin_choose_expr(						\
+> +		__builtin_types_compatible_p(				\
+> +			typeof(dev), struct ibnbd_clt_dev *),		\
+> +		fn("<%s@%s> " fmt, (dev)->pathname,			\
+> +		(dev)->sess->sessname,					\
+> +		   ##__VA_ARGS__),					\
+> +		__builtin_choose_expr(					\
+> +			__builtin_types_compatible_p(typeof(dev),	\
+> +					struct ibnbd_srv_sess_dev *),	\
+> +			fn("<%s@%s>: " fmt, (dev)->pathname,		\
+> +			   (dev)->sess->sessname, ##__VA_ARGS__),	\
+> +			unknown_type()));				\
+> +})
 
-This is day 1 bug:
+Please remove the __builtin_choose_expr() / 
+__builtin_types_compatible_p() construct and split this macro into two 
+macros or inline functions: one for struct ibnbd_clt_dev and another one 
+for struct ibnbd_srv_sess_dev.
 
-Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+> +#define IBNBD_PROTO_VER_MAJOR 2
+> +#define IBNBD_PROTO_VER_MINOR 0
+> +
+> +#define IBNBD_PROTO_VER_STRING __stringify(IBNBD_PROTO_VER_MAJOR) "." \
+> +			       __stringify(IBNBD_PROTO_VER_MINOR)
+> +
+> +#ifndef IBNBD_VER_STRING
+> +#define IBNBD_VER_STRING __stringify(IBNBD_PROTO_VER_MAJOR) "." \
+> +			 __stringify(IBNBD_PROTO_VER_MINOR)
 
-Mike
+Upstream code should not have a version number.
+
+> +/* TODO: should be configurable */
+> +#define IBTRS_PORT 1234
+
+How about converting this macro into a kernel module parameter?
+
+> +enum ibnbd_access_mode {
+> +	IBNBD_ACCESS_RO,
+> +	IBNBD_ACCESS_RW,
+> +	IBNBD_ACCESS_MIGRATION,
+> +};
+
+Some more information about what IBNBD_ACCESS_MIGRATION represents would 
+be welcome.
+
+> +#define _IBNBD_FILEIO  0
+> +#define _IBNBD_BLOCKIO 1
+> +#define _IBNBD_AUTOIO  2
+ >
+> +enum ibnbd_io_mode {
+> +	IBNBD_FILEIO = _IBNBD_FILEIO,
+> +	IBNBD_BLOCKIO = _IBNBD_BLOCKIO,
+> +	IBNBD_AUTOIO = _IBNBD_AUTOIO,
+> +};
+
+Since the IBNBD_* and _IBNBD_* constants have the same numerical value, 
+are the former constants really necessary?
+
+> +/**
+> + * struct ibnbd_msg_sess_info - initial session info from client to server
+> + * @hdr:		message header
+> + * @ver:		IBNBD protocol version
+> + */
+> +struct ibnbd_msg_sess_info {
+> +	struct ibnbd_msg_hdr hdr;
+> +	u8		ver;
+> +	u8		reserved[31];
+> +};
+
+Since the wire protocol is versioned, is it really necessary to add 31 
+reserved bytes?
+
+> +struct ibnbd_msg_sess_info_rsp {
+> +	struct ibnbd_msg_hdr hdr;
+> +	u8		ver;
+> +	u8		reserved[31];
+> +};
+
+Same comment here.
+
+> +/**
+> + * struct ibnbd_msg_open_rsp - response message to IBNBD_MSG_OPEN
+> + * @hdr:		message header
+> + * @nsectors:		number of sectors
+
+What is the size of a single sector?
+
+> + * @device_id:		device_id on server side to identify the device
+
+Please use the same order for the members in the kernel-doc header as in 
+the structure.
+
+> + * @queue_flags:	queue_flags of the device on server side
+
+Where is the queue_flags member?
+
+> + * @discard_granularity: size of the internal discard allocation unit
+> + * @discard_alignment: offset from internal allocation assignment
+> + * @physical_block_size: physical block size device supports
+> + * @logical_block_size: logical block size device supports
+
+What is the unit for these four members?
+
+> + * @max_segments:	max segments hardware support in one transfer
+
+Does 'hardware' refer to the RDMA adapter that transfers the IBNBD 
+message or to the storage device? In the latter case, I assume that 
+transfer refers to a DMA transaction?
+
+> + * @io_mode:		io_mode device is opened.
+
+Should a reference to enum ibnbd_io_mode be added?
+
+> +	u8			__padding[10];
+
+Why ten padding bytes? Does alignment really matter for a data structure 
+like this one?
+
+> +/**
+> + * struct ibnbd_msg_io_old - message for I/O read/write for
+> + * ver < IBNBD_PROTO_VER_MAJOR
+> + * This structure is there only to know the size of the "old" message format
+> + * @hdr:	message header
+> + * @device_id:	device_id on server side to find the right device
+> + * @sector:	bi_sector attribute from struct bio
+> + * @rw:		bitmask, valid values are defined in enum ibnbd_io_flags
+> + * @bi_size:    number of bytes for I/O read/write
+> + * @prio:       priority
+> + */
+> +struct ibnbd_msg_io_old {
+> +	struct ibnbd_msg_hdr hdr;
+> +	__le32		device_id;
+> +	__le64		sector;
+> +	__le32		rw;
+> +	__le32		bi_size;
+> +};
+
+Since this is the first version of IBNBD that is being sent upstream, I 
+think that ibnbd_msg_io_old should be left out.
+
+> +
+> +/**
+> + * struct ibnbd_msg_io - message for I/O read/write
+> + * @hdr:	message header
+> + * @device_id:	device_id on server side to find the right device
+> + * @sector:	bi_sector attribute from struct bio
+> + * @rw:		bitmask, valid values are defined in enum ibnbd_io_flags
+
+enum ibnbd_io_flags doesn't look like a bitmask but rather like a bit 
+field (https://en.wikipedia.org/wiki/Bit_field)?
+
+> +static inline u32 ibnbd_to_bio_flags(u32 ibnbd_flags)
+> +{
+> +	u32 bio_flags;
+
+The names ibnbd_flags and bio_flags are confusing since these two 
+variables not only contain flags but also an operation. How about 
+changing 'flags' into 'opf' or 'op_flags'?
+
+> +static inline const char *ibnbd_io_mode_str(enum ibnbd_io_mode mode)
+> +{
+> +	switch (mode) {
+> +	case IBNBD_FILEIO:
+> +		return "fileio";
+> +	case IBNBD_BLOCKIO:
+> +		return "blockio";
+> +	case IBNBD_AUTOIO:
+> +		return "autoio";
+> +	default:
+> +		return "unknown";
+> +	}
+> +}
+> +
+> +static inline const char *ibnbd_access_mode_str(enum ibnbd_access_mode mode)
+> +{
+> +	switch (mode) {
+> +	case IBNBD_ACCESS_RO:
+> +		return "ro";
+> +	case IBNBD_ACCESS_RW:
+> +		return "rw";
+> +	case IBNBD_ACCESS_MIGRATION:
+> +		return "migration";
+> +	default:
+> +		return "unknown";
+> +	}
+> +}
+
+These two functions are not in the hot path and hence should not be 
+inline functions.
+
+Note: I plan to review the entire patch series but it may take some time 
+before I have finished reviewing the entire patch series.
+
+Bart.
