@@ -2,51 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FBD2B3183
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Sep 2019 20:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B97B32F9
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Sep 2019 03:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbfIOS4g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 15 Sep 2019 14:56:36 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:40122 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725270AbfIOS4g (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 15 Sep 2019 14:56:36 -0400
-Received: from localhost (93-63-141-166.ip28.fastwebnet.it [93.63.141.166])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id A8E02153ECDAF;
-        Sun, 15 Sep 2019 11:56:34 -0700 (PDT)
-Date:   Sun, 15 Sep 2019 19:56:33 +0100 (WEST)
-Message-Id: <20190915.195633.37793800195155580.davem@davemloft.net>
-To:     gerd.rausch@oracle.com
-Cc:     santosh.shilimkar@oracle.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: Re: [PATCH net] net/rds: Fix 'ib_evt_handler_call' element in
- 'rds_ib_stat_names'
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <914b48be-2373-5b38-83f5-e0d917dd139d@oracle.com>
-References: <914b48be-2373-5b38-83f5-e0d917dd139d@oracle.com>
-X-Mailer: Mew version 6.8 on Emacs 26.2
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sun, 15 Sep 2019 11:56:35 -0700 (PDT)
+        id S1727226AbfIPBeJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 15 Sep 2019 21:34:09 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:44498 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727224AbfIPBeJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 15 Sep 2019 21:34:09 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id F34453082B5F
+        for <linux-rdma@vger.kernel.org>; Mon, 16 Sep 2019 01:34:08 +0000 (UTC)
+Received: from dhcp-128-227.nay.redhat.com (unknown [10.66.128.227])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E09C01053B32;
+        Mon, 16 Sep 2019 01:34:07 +0000 (UTC)
+From:   Honggang LI <honli@redhat.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Honggang Li <honli@redhat.com>
+Subject: [PATCH] redhat: BuildRequires python3
+Date:   Mon, 16 Sep 2019 09:33:45 +0800
+Message-Id: <20190916013345.8489-1-honli@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Mon, 16 Sep 2019 01:34:09 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gerd Rausch <gerd.rausch@oracle.com>
-Date: Thu, 12 Sep 2019 13:49:41 -0700 (PDT)
+From: Honggang Li <honli@redhat.com>
 
-> All entries in 'rds_ib_stat_names' are stringified versions
-> of the corresponding "struct rds_ib_statistics" element
-> without the "s_"-prefix.
-> 
-> Fix entry 'ib_evt_handler_call' to do the same.
-> 
-> Fixes: f4f943c958a2 ("RDS: IB: ack more receive completions to improve performance")
-> Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+python2 is obsoleted by python3 in RHEL8 and Fedora-30.
 
-Applied, thanks.
+Signed-off-by: Honggang Li <honli@redhat.com>
+---
+ redhat/rdma-core.spec | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/redhat/rdma-core.spec b/redhat/rdma-core.spec
+index f07919cc..731a4e10 100644
+--- a/redhat/rdma-core.spec
++++ b/redhat/rdma-core.spec
+@@ -29,8 +29,12 @@ BuildRequires: systemd-devel
+ BuildRequires: python3-devel
+ BuildRequires: python3-Cython
+ %else
++%if 0%{?rhel} == 8 || 0%{?fedora} >= 30
++BuildRequires: python3
++%else
+ BuildRequires: python
+ %endif
++%endif
+ %if 0%{?fedora} >= 21
+ BuildRequires: perl-generators
+ %endif
+-- 
+2.21.0
+
