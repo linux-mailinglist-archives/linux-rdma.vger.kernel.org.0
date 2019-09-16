@@ -2,99 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA42B3F96
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Sep 2019 19:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30216B3FA1
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Sep 2019 19:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729523AbfIPRZQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Sep 2019 13:25:16 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:41225 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727987AbfIPRZQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Sep 2019 13:25:16 -0400
-Received: by mail-pg1-f196.google.com with SMTP id x15so371409pgg.8;
-        Mon, 16 Sep 2019 10:25:16 -0700 (PDT)
+        id S1730835AbfIPRhD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Sep 2019 13:37:03 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:37527 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726569AbfIPRhC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Sep 2019 13:37:02 -0400
+Received: by mail-qk1-f194.google.com with SMTP id u184so838028qkd.4
+        for <linux-rdma@vger.kernel.org>; Mon, 16 Sep 2019 10:37:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=KqihZYusEoDXPDdbUnjj9b3nmScP5PAsRt0HIcG3BJo=;
+        b=VYFK9Xvj5S7UF4bE+xJ7vxeUaeiKWy0/knxN54NdIePxP5FIvFm4J46YcFzkpWEhS0
+         3yurat+4ygCBB8WuelCmaiHetiozkzI5VDT+zwXDzNZ9xRSxTloxiZ0v6Hol+ceXc5Jd
+         7gyqXGOF2d+gfj6pKmlIXFQSOVBkKfpuAlv3VdWyRCzZfNYncpLylUmHapxVwkn2EjIC
+         DotJcGX/mhvu1d24x166YuRNUbrOx5dIgCff2aYHPGJBSvMGOxqTCwsdxBrIcHRYh1aC
+         VPJKS3inLXJxTNxe/3QjhsIQSbrFp0cm8yp+eIhRq0rHU39QUe1Fa9GpjkB5JdtEuwXv
+         zpqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zsVhWs+rZSQ9pmPp93CkIV3JOWjcR8BN6wXm6TfggU4=;
-        b=ggpj5aZB0HsJ6jCKeDm+N/L3I0GQOmS9TWQj6HZZpI/NyM3i7TV+KcvffJIVnPSqK3
-         nvFsw9IN7SUBW2PKC/uyDT29dpWUqt/lLjSHBI6j073cZbwBxN7GAZCxkVmpQVWAmuTD
-         aXtIgJbHXFnBEKrbtD7awjANd5gphLNszCEcqtF1iLzm+j72X5VAiiAM0VGYtJHeUYjN
-         +JOG4c8p+VIziZFT4h4GWmJ95+AXEu7J0+kjLADrzgGk0Twjj2ONGULSGr5edcAAKRZA
-         r2Lqtmx1XMSuDxJrj/UGBjToxCkzvIFn3BaKTBD56Xg0XF2kKImyO+Rd6BD6385OaODW
-         WRQA==
-X-Gm-Message-State: APjAAAUPzDf+1uH6SxBfvBRUidi8pkhs67PRoYcnZUziQ38i6EUBgkGU
-        /1hFFSIAyM9KdjWQhkQk96s=
-X-Google-Smtp-Source: APXvYqxT2OZ8W+ffke5agKcEDwOXkz6O6frQr2306GKIMGIjlZ5J2dLWhPTweusEJaFXPupFvDr7kQ==
-X-Received: by 2002:aa7:8189:: with SMTP id g9mr440437pfi.78.1568654715966;
-        Mon, 16 Sep 2019 10:25:15 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id f188sm52105937pfa.170.2019.09.16.10.25.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Sep 2019 10:25:14 -0700 (PDT)
-Subject: Re: [PATCH v4 15/25] ibnbd: private headers with IBNBD protocol
- structs and helpers
-To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de,
-        Roman Pen <roman.penyaev@profitbricks.com>
-References: <20190620150337.7847-1-jinpuwang@gmail.com>
- <20190620150337.7847-16-jinpuwang@gmail.com>
- <4fbad80b-f551-131e-9a5c-a24f1fa98fea@acm.org>
- <CAMGffEnVFHpmDCiazHFX1jwi4=p401T9goSkes3j1AttV0t1Ng@mail.gmail.com>
- <CAMGffEmnTG4ixN1Hfy7oY93TgG3qQtF9TkpGzi=BxWm5a2i3Eg@mail.gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <a7d4b3eb-d0c7-0c9d-ce64-da37a732564a@acm.org>
-Date:   Mon, 16 Sep 2019 10:25:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KqihZYusEoDXPDdbUnjj9b3nmScP5PAsRt0HIcG3BJo=;
+        b=heYiBgIz++++c3LQ84SiVgKnJTZ9f2fS2rjA9GBbrMkcpB/1etfjH+SonaCUfP6fRu
+         0wC3hmWh+z5Ek94F2XG8qAh4OeA4FvV4fdFW2GCWKZjM680ZFzn29gVS0FAd+uxUfiMy
+         7Xih9mZRDDGo9eBo7Egp4n4ngy1gC0c4SuhrHMVKhxPKXjN0TSeik27dsIAmJGPPR0HL
+         Rtykp5LbDYkSzlFbGSwXfc+K3JP9upPnKwJ8rbIGkCc0xVekCIC7v+pK4PNtdduIf244
+         AFV38EolyvuY91eybz10tUTwNAALaUO7rXXKStBOdL4M6VxZmvXLYRMjYlQnzPv9FTac
+         jKPg==
+X-Gm-Message-State: APjAAAWjMQjWiUeB6CMM2KXEZpvfUDpLpYWJ7HLJCIICA4KzphaFGIcw
+        y16Pbu9lj5D5kg4vJ/WxePpeOA==
+X-Google-Smtp-Source: APXvYqw/Js5iEidU9/BJqgWSA3nDgSQHEfkZhc36g1ufgz+J9w16WHJG2JPJku9qibPiKX3skHao0w==
+X-Received: by 2002:a37:9e0d:: with SMTP id h13mr1135336qke.473.1568655422028;
+        Mon, 16 Sep 2019 10:37:02 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-167-223-10.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.223.10])
+        by smtp.gmail.com with ESMTPSA id a4sm25100816qtb.17.2019.09.16.10.37.01
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 16 Sep 2019 10:37:01 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1i9uvs-0001he-LU; Mon, 16 Sep 2019 14:37:00 -0300
+Date:   Mon, 16 Sep 2019 14:37:00 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Daniel Kranzdorf <dkkranzd@amazon.com>,
+        Firas JahJah <firasj@amazon.com>
+Subject: Re: [PATCH for-next 1/4] RDMA/efa: Fix incorrect error print
+Message-ID: <20190916173700.GA6516@ziepe.ca>
+References: <20190910134301.4194-1-galpress@amazon.com>
+ <20190910134301.4194-2-galpress@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMGffEmnTG4ixN1Hfy7oY93TgG3qQtF9TkpGzi=BxWm5a2i3Eg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190910134301.4194-2-galpress@amazon.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/16/19 7:57 AM, Jinpu Wang wrote:
->>>> +#define _IBNBD_FILEIO  0
->>>> +#define _IBNBD_BLOCKIO 1
->>>> +#define _IBNBD_AUTOIO  2
->>>>
->>>> +enum ibnbd_io_mode {
->>>> +     IBNBD_FILEIO = _IBNBD_FILEIO,
->>>> +     IBNBD_BLOCKIO = _IBNBD_BLOCKIO,
->>>> +     IBNBD_AUTOIO = _IBNBD_AUTOIO,
->>>> +};
->>>
->>> Since the IBNBD_* and _IBNBD_* constants have the same numerical value,
->>> are the former constants really necessary?
- >>
->> Seems we can remove _IBNBD_*.
- >
-> Sorry, checked again,  we defined _IBNBD_* constants to show the right
-> value for def_io_mode description.
-> If we remove the _IBNBD_*, then the modinfo shows:
-> def_io_mode:By default, export devices in blockio(IBNBD_BLOCKIO) or
-> fileio(IBNBD_FILEIO) mode. (default: IBNBD_BLOCKIO (blockio))
-> instead of:
-> parm:           def_io_mode:By default, export devices in blockio(1)
-> or fileio(0) mode. (default: 1 (blockio))
+On Tue, Sep 10, 2019 at 02:42:58PM +0100, Gal Pressman wrote:
+> The error print should indicate that it failed to get the queue
+> attributes, not network attributes.
+> 
+> Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
+> Reviewed-by: Firas JahJah <firasj@amazon.com>
+> Signed-off-by: Gal Pressman <galpress@amazon.com>
+>  drivers/infiniband/hw/efa/efa_com_cmd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-So the user is required to enter def_io_mode as a number? Wouldn't it be 
-more friendly towards users to change that parameter from a number into 
-a string?
+Safe enough to apply to for-next, thanks
 
-Thanks,
-
-Bart.
-
+Jason
