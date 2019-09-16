@@ -2,128 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 177D0B3F93
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Sep 2019 19:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA42B3F96
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Sep 2019 19:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729490AbfIPRYF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Sep 2019 13:24:05 -0400
-Received: from mail-eopbgr30078.outbound.protection.outlook.com ([40.107.3.78]:3552
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727987AbfIPRYE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 16 Sep 2019 13:24:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JQ6/kj2qZoTaHY19zrxb5TmINj8XnrzXHg+YviWOquIu8M+cu0H/t0q6Ga0HC2hR4i5pUlmaJoj6YdzPG57655YQ22WEyX5GpBHIIvr7KCxdx/i7YVeYYOxi9kzJfmfHDV5gUGZ8HjRfUWoMB9Yc/ZgO5epv7rGxOqEE4TREWFeTOAUSNCMwl9qI0MZLohHicXx3leuz5Dpnxu/BZfleL7eKkC7dyD46JfR+b5gyTsTY+Z8Xn7dIo6KjJ7aotOsTXv+T9Yn7TeQ0n5HtwWcaYTdMDl8xMEvGN6ODoEkkaOJTL2tnbwoYl1uZCI2ytiixBAcG5BnNj/SmrvJyENYzMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=khzErD073lR/FTjtRZRcbfMLeppF1yjWoQWzSevV1MU=;
- b=NlXtE+43zcrxrFr3O3tgHPCDsaDWGTvM3w7FxMv2dap0QCcLG27gq6du01vBQH8di14kPqMt8kpjFE4sZqiMe6Tp4qBIEfdQv90zJPXHJFrkrSe5CNuaqKeuHNws123kd/d7hmuvTPEefua0TLHPdrf5KT3A6I2BJbCbyYE34KV+zwLf88cGAOrch9eLLedE75sXIceOwct62Jszcz8jwhiAfNxJ5vPLgkULii5Yrd1p/mCVCNeVcqdYEKsaDdm+7YgclJ5LP/Ot+O7Ty8rOmY45zFl9ykpqf5NLLy+vLVX++xO967Tr5Bps38qxFKz32Rh0RzELUc5hoaMVRErnLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=khzErD073lR/FTjtRZRcbfMLeppF1yjWoQWzSevV1MU=;
- b=Ls0Q1+dknBzAMsM422GBkkLjBXl0+J4mLCiF6ltXpQxqnIj0Tk+bTQX1u3SJotHvfv2XZeIoc+sJtf5L/H4jLbrm/5qkMAjjpmKqcgcLPf9ljA2KxpLXTQ0a1QO4+zUubm8JgWer5FS28+u5eTS+jHoTNuKnu5VmbMlGGTxRn3I=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (10.171.182.144) by
- VI1PR05MB4670.eurprd05.prod.outlook.com (20.176.3.155) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2263.17; Mon, 16 Sep 2019 17:23:59 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::79a3:d971:d1f3:ab6f]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::79a3:d971:d1f3:ab6f%7]) with mapi id 15.20.2263.023; Mon, 16 Sep 2019
- 17:23:59 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        Danit Goldberg <danitg@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH 2/2] IB/mlx5: Free mpi in mp_slave mode
-Thread-Topic: [PATCH 2/2] IB/mlx5: Free mpi in mp_slave mode
-Thread-Index: AQHVbFrC1fO1CpNws0Wyj0deQHR6fqcujlCA
-Date:   Mon, 16 Sep 2019 17:23:59 +0000
-Message-ID: <20190916172353.GD2585@mellanox.com>
-References: <20190916064818.19823-1-leon@kernel.org>
- <20190916064818.19823-3-leon@kernel.org>
-In-Reply-To: <20190916064818.19823-3-leon@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: YQBPR0101CA0049.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00:1::26) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:4d::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [142.167.223.10]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 04919a0c-69b4-4a2b-57f2-08d73acaa8ae
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600167)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:VI1PR05MB4670;
-x-ms-traffictypediagnostic: VI1PR05MB4670:|VI1PR05MB4670:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB46701FDC84CE2B21D9FBE61CCF8C0@VI1PR05MB4670.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 0162ACCC24
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(39860400002)(396003)(376002)(346002)(366004)(199004)(189003)(66446008)(64756008)(66556008)(229853002)(26005)(76176011)(386003)(6916009)(446003)(3846002)(71200400001)(6506007)(476003)(486006)(99286004)(71190400001)(33656002)(7736002)(305945005)(186003)(6116002)(53936002)(107886003)(6246003)(2616005)(1076003)(11346002)(4326008)(316002)(5660300002)(54906003)(8676002)(81156014)(81166006)(66476007)(8936002)(6512007)(66066001)(36756003)(102836004)(256004)(14454004)(86362001)(52116002)(66946007)(6486002)(478600001)(2906002)(6436002)(25786009);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4670;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 1yUSouerJtamlvARYCmb+xtrdlr/w8LtgqhOKyyT3r0JCbGTnMhkUQwKLqAXCO0trQj6VceYRCMkWl/qfE17EokZTXygyBWplSFbE1YWX2WbHfKlgAJPAk90I8eV75VYtsIDuUyqTvnekiXJgpnxyRaxSzIZfLNC3t7iG+bx+Mnw208LDPFsVXhH2dRqQhQPVSzZwmHyyThcW3nodrpIl77tu+Zq/R3in/kRDJ9KpwuI4FtJGBKQOV6sDmDvLcC3bushfD9yJaOaB8oV20QAfMDwgkcU/7DUMrVe3qcgTb2gYvisM4s0OnS08AiU7RnUeeO62CacXvtJNbtm+1G7mHma5lj6MaoPIfb+ioDAkycrOlfr7d9oJUEJvFd7aZsgsJQZWAdiTv9lm+rLBz/p5/oO5ia4O4Oh5b43YkDCmUk=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <01A991971721F64F96A13574181DB306@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1729523AbfIPRZQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Sep 2019 13:25:16 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:41225 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727987AbfIPRZQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Sep 2019 13:25:16 -0400
+Received: by mail-pg1-f196.google.com with SMTP id x15so371409pgg.8;
+        Mon, 16 Sep 2019 10:25:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zsVhWs+rZSQ9pmPp93CkIV3JOWjcR8BN6wXm6TfggU4=;
+        b=ggpj5aZB0HsJ6jCKeDm+N/L3I0GQOmS9TWQj6HZZpI/NyM3i7TV+KcvffJIVnPSqK3
+         nvFsw9IN7SUBW2PKC/uyDT29dpWUqt/lLjSHBI6j073cZbwBxN7GAZCxkVmpQVWAmuTD
+         aXtIgJbHXFnBEKrbtD7awjANd5gphLNszCEcqtF1iLzm+j72X5VAiiAM0VGYtJHeUYjN
+         +JOG4c8p+VIziZFT4h4GWmJ95+AXEu7J0+kjLADrzgGk0Twjj2ONGULSGr5edcAAKRZA
+         r2Lqtmx1XMSuDxJrj/UGBjToxCkzvIFn3BaKTBD56Xg0XF2kKImyO+Rd6BD6385OaODW
+         WRQA==
+X-Gm-Message-State: APjAAAUPzDf+1uH6SxBfvBRUidi8pkhs67PRoYcnZUziQ38i6EUBgkGU
+        /1hFFSIAyM9KdjWQhkQk96s=
+X-Google-Smtp-Source: APXvYqxT2OZ8W+ffke5agKcEDwOXkz6O6frQr2306GKIMGIjlZ5J2dLWhPTweusEJaFXPupFvDr7kQ==
+X-Received: by 2002:aa7:8189:: with SMTP id g9mr440437pfi.78.1568654715966;
+        Mon, 16 Sep 2019 10:25:15 -0700 (PDT)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id f188sm52105937pfa.170.2019.09.16.10.25.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Sep 2019 10:25:14 -0700 (PDT)
+Subject: Re: [PATCH v4 15/25] ibnbd: private headers with IBNBD protocol
+ structs and helpers
+To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de,
+        Roman Pen <roman.penyaev@profitbricks.com>
+References: <20190620150337.7847-1-jinpuwang@gmail.com>
+ <20190620150337.7847-16-jinpuwang@gmail.com>
+ <4fbad80b-f551-131e-9a5c-a24f1fa98fea@acm.org>
+ <CAMGffEnVFHpmDCiazHFX1jwi4=p401T9goSkes3j1AttV0t1Ng@mail.gmail.com>
+ <CAMGffEmnTG4ixN1Hfy7oY93TgG3qQtF9TkpGzi=BxWm5a2i3Eg@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <a7d4b3eb-d0c7-0c9d-ce64-da37a732564a@acm.org>
+Date:   Mon, 16 Sep 2019 10:25:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04919a0c-69b4-4a2b-57f2-08d73acaa8ae
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Sep 2019 17:23:59.2042
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dpIXDvZKUKlhoT9+Y8vr+3V22JLpMyCEkftQSU53TGVF+ccsO6ZYXe3/WpZtitd0o8IcoriHCD70pl8sFr91uw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4670
+In-Reply-To: <CAMGffEmnTG4ixN1Hfy7oY93TgG3qQtF9TkpGzi=BxWm5a2i3Eg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 16, 2019 at 09:48:18AM +0300, Leon Romanovsky wrote:
-> From: Danit Goldberg <danitg@mellanox.com>
->=20
-> ib_add_slave_port() allocates a multiport struct but never frees it.
-> Don't leak memory, free the allocated mpi struct during driver unload.
->=20
-> Fixes: 32f69e4be269 ("{net, IB}/mlx5: Manage port association for multipo=
-rt RoCE")
-> Signed-off-by: Danit Goldberg <danitg@mellanox.com>
->  drivers/infiniband/hw/mlx5/main.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/ml=
-x5/main.c
-> index 0569bcab02d4..14807ea8dc3f 100644
-> +++ b/drivers/infiniband/hw/mlx5/main.c
-> @@ -6959,6 +6959,7 @@ static void mlx5_ib_remove(struct mlx5_core_dev *md=
-ev, void *context)
->  			mlx5_ib_unbind_slave_port(mpi->ibdev, mpi);
->  		list_del(&mpi->list);
->  		mutex_unlock(&mlx5_ib_multiport_mutex);
-> +		kfree(mpi);
->  		return;
->  	}
+On 9/16/19 7:57 AM, Jinpu Wang wrote:
+>>>> +#define _IBNBD_FILEIO  0
+>>>> +#define _IBNBD_BLOCKIO 1
+>>>> +#define _IBNBD_AUTOIO  2
+>>>>
+>>>> +enum ibnbd_io_mode {
+>>>> +     IBNBD_FILEIO = _IBNBD_FILEIO,
+>>>> +     IBNBD_BLOCKIO = _IBNBD_BLOCKIO,
+>>>> +     IBNBD_AUTOIO = _IBNBD_AUTOIO,
+>>>> +};
+>>>
+>>> Since the IBNBD_* and _IBNBD_* constants have the same numerical value,
+>>> are the former constants really necessary?
+ >>
+>> Seems we can remove _IBNBD_*.
+ >
+> Sorry, checked again,  we defined _IBNBD_* constants to show the right
+> value for def_io_mode description.
+> If we remove the _IBNBD_*, then the modinfo shows:
+> def_io_mode:By default, export devices in blockio(IBNBD_BLOCKIO) or
+> fileio(IBNBD_FILEIO) mode. (default: IBNBD_BLOCKIO (blockio))
+> instead of:
+> parm:           def_io_mode:By default, export devices in blockio(1)
+> or fileio(0) mode. (default: 1 (blockio))
 
-Personally I think the way this code was written to try to share the
-struct mlx5_interface between two completely different usages, with
-totally different opaque structs is really obtuse.=20
+So the user is required to enter def_io_mode as a number? Wouldn't it be 
+more friendly towards users to change that parameter from a number into 
+a string?
 
-Two interfaces callback blocks for the two parallel uses would have
-been cleaner and might have made this missing kfree clearer.
+Thanks,
 
-Jason
+Bart.
+
