@@ -2,85 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C5EB3EF7
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Sep 2019 18:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3EF3B3F32
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Sep 2019 18:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729465AbfIPQ2c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Sep 2019 12:28:32 -0400
-Received: from mail-qt1-f169.google.com ([209.85.160.169]:39864 "EHLO
-        mail-qt1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729041AbfIPQ2b (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Sep 2019 12:28:31 -0400
-Received: by mail-qt1-f169.google.com with SMTP id n7so534886qtb.6
-        for <linux-rdma@vger.kernel.org>; Mon, 16 Sep 2019 09:28:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vftTdeyyPMP6ofviu+1siXoLyVzqbLDXEdAlSQ4iJIs=;
-        b=XUBc6ghQG2OqYNh7hKkdIMVs5pnRd4PgzKZ83QmpXsE1xmaApbJhBRa9UE5HY8J5g9
-         JqTaPKexstmGWix4orNjDBdovBFfR261yeD07Me+nW5p3frVAvROjYq9Tx5buL9O+7Y0
-         k8coApRfxZNczvPr0lgx2obLxw9nNJHFIOPy/z+WB8E5quA+0Wl8gmyqLNXNwoTEmQnv
-         tC0rGrkNtAA0vSs4sPT1V8VxymYM5ENzh65AkaF0xYQp1UiqhlfyHNHNBlEdBeCB4AsH
-         DGz5t5ZUxNt7IVo2r1DAV0jogZtGyWu03iHWc/BXIJOBpCqlJxn7dz2d0tyU0ZH8uN5F
-         tUZw==
+        id S1731624AbfIPQq0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Sep 2019 12:46:26 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:33082 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728172AbfIPQq0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Sep 2019 12:46:26 -0400
+Received: by mail-pg1-f194.google.com with SMTP id n190so338598pgn.0;
+        Mon, 16 Sep 2019 09:46:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vftTdeyyPMP6ofviu+1siXoLyVzqbLDXEdAlSQ4iJIs=;
-        b=RZDfOlyX8tRm19PLKwHFwD2E9pAxkrQQ9IKG2zQx/mp0bpIQCLf3lc5PUYNKT9e2+5
-         jo9IabejdcoSDnl/3LbG/WyyR16F6BcdIKQMOMfobnxZR9V71qXE1R8QT770R4/oak7h
-         /nn6w7E47DA/DWj4ERUZ+EyyyPJ/CJh11jv+a+WTiPftzLT61BP6EuUvTT5u64HAzsrO
-         MdgE3D+MJ3EOsb6GZCjiYYY9gytDFLhlz3CB6YcCyb+hN0kNOs4ASnmBb1Yi1vQ6B4Ji
-         9H2OkbZYDkCCOB/9QhRXfBPaT9TQBPz33SfMXNQYLsY1gd//2bMKjUj8Ws8N4hdcLrSo
-         2ogA==
-X-Gm-Message-State: APjAAAW/a7zUbwSNi/eCujH//eOKqyoebs1258CJ+ZOr6It9h5pXQLpG
-        f9AQSNAe+pkLN98/wSqgaOPTbg==
-X-Google-Smtp-Source: APXvYqxs/fkFgFQVBcGV3Z7tX7mLIOPnssv6iwOMwyS7KC13Ply0LXlbcBx7fcsIhHYOBeBGdxVvCA==
-X-Received: by 2002:ac8:6684:: with SMTP id d4mr464860qtp.286.1568651311043;
-        Mon, 16 Sep 2019 09:28:31 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-167-223-10.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.223.10])
-        by smtp.gmail.com with ESMTPSA id f11sm623952qkk.76.2019.09.16.09.28.30
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 16 Sep 2019 09:28:30 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1i9trZ-0005qG-TN; Mon, 16 Sep 2019 13:28:29 -0300
-Date:   Mon, 16 Sep 2019 13:28:29 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Krishnamraju Eraparaju <krishna2@chelsio.com>
-Cc:     Steve Wise <larrystevenwise@gmail.com>,
-        Bernard Metzler <BMT@zurich.ibm.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wEkeJ052ZX1ngLqI2odICGwwwz3h/3/oT5mtOI36tmM=;
+        b=qPHwROhyHtgXkylFnO96XRstqPHM5aZLdIaBGeBwaaExn5DT1HWrFkQ7X6LEfvu1qM
+         6Sssd12NaluA2uF/NxPdkGqHHOoj6stNLmombq61lr1040uvS6yXJa9dCRH+gmEWJA/h
+         DlmrU79+TO1Nr6Tv7h4CNbEdutJX4d7mqSenKmdmtzAC+0TqjK6YpLytJjVVd7gYBX81
+         cyqhVL/2Sn4OJL0UjMST5NbgizJPpDZeHn8yPAywQd9wTFsIfYuGVCayLYQ6ppTdrpue
+         cDPZBUz8i5CPzgPxDmw/qtAj3lTcfhbHRJeLk/AAsAaJwV87WUVjBx/oawMKTWf/e6bx
+         Hi8Q==
+X-Gm-Message-State: APjAAAV18dpxvqsN5i2NDloHPoMgO97KtKFdqcodKJH3RpePb9BitOno
+        uUIg5iDPJxpmC19hQ4nLJxY=
+X-Google-Smtp-Source: APXvYqyy9sPBI2EU1kaxLg8ZrmSHsRE1OtaiYTIlBwjlTuHc11KgivHlm/nWhIF8aYg7uS5YZHy5Gg==
+X-Received: by 2002:a17:90a:9f0b:: with SMTP id n11mr156821pjp.102.1568652384943;
+        Mon, 16 Sep 2019 09:46:24 -0700 (PDT)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id f128sm56403828pfg.143.2019.09.16.09.46.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Sep 2019 09:46:23 -0700 (PDT)
+Subject: Re: [PATCH v4 17/25] ibnbd: client: main functionality
+To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
         Sagi Grimberg <sagi@grimberg.me>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: Re: [PATCH v3] iwcm: don't hold the irq disabled lock on
- iw_rem_ref
-Message-ID: <20190916162829.GA22329@ziepe.ca>
-References: <20190904212531.6488-1-sagi@grimberg.me>
- <20190910111759.GA5472@chelsio.com>
- <5cc42f23-bf60-ca8d-f40c-cbd8875f5756@grimberg.me>
- <20190910192157.GA5954@chelsio.com>
- <OF00E4DFD9.0EEF58A6-ON00258472.0032F9AC-00258472.0034FEAA@notes.na.collabserv.com>
- <CADmRdJcCENJx==LaaJQYU_kMv5rSgD69Z6s+ubCKWjprZmPQpA@mail.gmail.com>
- <20190911155814.GA12639@chelsio.com>
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, rpenyaev@suse.de,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Roman Pen <r.peniaev@gmail.com>
+References: <20190620150337.7847-1-jinpuwang@gmail.com>
+ <20190620150337.7847-18-jinpuwang@gmail.com>
+ <bd8963e2-d186-dbd0-fe39-7f4a518f4177@acm.org>
+ <CAHg0HuwzHnzPQAqjtYFTZb7BhzFagJ0NJ=pW=VkTqn5HML-0Vw@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <5c5ff7df-2cce-ec26-7893-55911e4d8595@acm.org>
+Date:   Mon, 16 Sep 2019 09:46:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190911155814.GA12639@chelsio.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAHg0HuwzHnzPQAqjtYFTZb7BhzFagJ0NJ=pW=VkTqn5HML-0Vw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 11, 2019 at 09:28:16PM +0530, Krishnamraju Eraparaju wrote:
-> Hi Steve & Bernard,
-> 
-> Thanks for the review comments.
-> I will do those formating changes.
+On 9/16/19 7:17 AM, Danil Kipnis wrote:
+> On Sat, Sep 14, 2019 at 1:46 AM Bart Van Assche <bvanassche@acm.org> wrote:
+>> On 6/20/19 8:03 AM, Jack Wang wrote:
+>>> +/*
+>>> + * This is for closing devices when unloading the module:
+>>> + * we might be closing a lot (>256) of devices in parallel
+>>> + * and it is better not to use the system_wq.
+>>> + */
+>>> +static struct workqueue_struct *unload_wq;
+>>
+>> I think that a better motivation is needed for the introduction of a new
+>> workqueue.
+ >
+> We didn't want to pollute the system workqueue when unmapping a big
+> number of devices at once in parallel. Will reiterate on it.
 
-I don't see anything in patchworks, but the consensus is to drop
-Sagi's patch pending this future patch?
+There are multiple system workqueues. From <linux/workqueue.h>:
 
-Jason
+extern struct workqueue_struct *system_wq;
+extern struct workqueue_struct *system_highpri_wq;
+extern struct workqueue_struct *system_long_wq;
+extern struct workqueue_struct *system_unbound_wq;
+extern struct workqueue_struct *system_freezable_wq;
+extern struct workqueue_struct *system_power_efficient_wq;
+extern struct workqueue_struct *system_freezable_power_efficient_wq;
+
+Has it been considered to use e.g. system_long_wq?
+
+>> A more general question is why ibnbd needs its own queue management
+>> while no other block driver needs this?
+>
+> Each IBNBD device promises to have a queue_depth (of say 512) on each
+> of its num_cpus hardware queues. In fact we can only process a
+> queue_depth inflights at once on the whole ibtrs session connecting a
+> given client with a given server. Those 512 inflights (corresponding
+> to the number of buffers reserved by the server for this particular
+> client) have to be shared among all the devices mapped on this
+> session. This leads to the situation, that we receive more requests
+> than we can process at the moment. So we need to stop queues and start
+> them again later in some fair fashion.
+
+Can a single CPU really sustain a queue depth of 512 commands? Is it 
+really necessary to have one hardware queue per CPU or is e.g. four 
+queues per NUMA node sufficient? Has it been considered to send the 
+number of hardware queues that the initiator wants to use and also the 
+command depth per queue during login to the target side? That would 
+allow the target side to allocate an independent set of buffers for each 
+initiator hardware queue and would allow to remove the queue management 
+at the initiator side. This might even yield better performance.
+
+>>> +static void msg_conf(void *priv, int errno)
+>>> +{
+>>> +     struct ibnbd_iu *iu = (struct ibnbd_iu *)priv;
+>>
+>> The kernel code I'm familiar with does not cast void pointers explicitly
+>> into another type. Please follow that convention and leave the cast out
+>> from the above and also from similar statements.
+> msg_conf() is a callback which IBNBD passes down with a request to
+> IBTRS when calling ibtrs_clt_request(). msg_conf() is called when a
+> request is completed with a pointer to a struct defined in IBNBD. So
+> IBTRS as transport doesn't know what's inside the private pointer
+> which IBNBD passed down with the request, it's opaque, since struct
+> ibnbd_iu is not visible in IBTRS. I will try to find how others avoid
+> a cast in similar situations.
+
+Are you aware that the C language can cast a void pointer into a 
+non-void pointer implicitly, that means, without having to use a cast?
+
+
+>>> +static void wait_for_ibtrs_disconnection(struct ibnbd_clt_session *sess)
+>>> +__releases(&sess_lock)
+>>> +__acquires(&sess_lock)
+>>> +{
+>>> +     DEFINE_WAIT_FUNC(wait, autoremove_wake_function);
+>>> +
+>>> +     prepare_to_wait(&sess->ibtrs_waitq, &wait, TASK_UNINTERRUPTIBLE);
+>>> +     if (IS_ERR_OR_NULL(sess->ibtrs)) {
+>>> +             finish_wait(&sess->ibtrs_waitq, &wait);
+>>> +             return;
+>>> +     }
+>>> +     mutex_unlock(&sess_lock);
+>>> +     /* After unlock session can be freed, so careful */
+>>> +     schedule();
+>>> +     mutex_lock(&sess_lock);
+>>> +}
+>>
+>> This doesn't look right: any random wake_up() call can wake up this
+>> function. Shouldn't there be a loop in this function that causes the
+>> schedule() call to be repeated until the disconnect has happened?
+> The loop is inside __find_and_get_sess(), which is calling that
+> function. We need to schedule() here in order for another thread to be
+> able to remove the dying session we just found and tried to get
+> reference to from the list of sessions, so that we can go over the
+> list again in __find_and_get_sess().
+
+Thanks for the clarification.
+
+Bart.
