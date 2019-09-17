@@ -2,101 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F43BB4DC9
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Sep 2019 14:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B15AB4E60
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Sep 2019 14:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725901AbfIQM2L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Sep 2019 08:28:11 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:43957 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726946AbfIQM2K (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Sep 2019 08:28:10 -0400
-Received: by mail-wr1-f68.google.com with SMTP id q17so2919634wrx.10
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Sep 2019 05:28:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M6NXDdLeZOMJf3cWxByu2Fry9FRYrZl4lG8kh5/SBho=;
-        b=AVkaPP6Mpl4j71cXN8IpXyWDgUzST5dWUXU0NMDqQVHhyWAb5m7SG7EItPJQcZiRlh
-         ZPQlRxvFAVoBk9dkeAitNVMihPK4V6rhWhIBN0/ZGAyKPk1/H/u282vCwEA5edlb1X8n
-         k6qq5B0YRb0MVAMlatwPEmtwRQ2oH2sMl86msTGh1mmQydfvQLX8aAE+rO9BVwVXtorc
-         auSJ60RsRWPlQkNy7n2MaOJ7bYI77WhtKyUTTwAPa9bEMUL7i/c+x399rsQyoUksXepv
-         eAUXOrs/w85oltCckaEF6pt2m+GH3l57xduT+eOySRlcE/UjuWAUkKx0GPwwx3kJGI5p
-         IN3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M6NXDdLeZOMJf3cWxByu2Fry9FRYrZl4lG8kh5/SBho=;
-        b=olKuBVSGYbUwmdXTwP15hscsovNVSaDOe1SKXW0K3jpijjoLRnV8pFPxl6JLd9CHor
-         RFmoM7miprKBj3tXeM7mP+OS/RQDFIRYPkvIuHSE5mbDXG52PIDbJujQb5D+gV/M1raL
-         eHwg+wnHiY8PsYmfXXQFxBeXJgTutHxJA/Wuyk3G3x1VG4CIZ1T/ktzQvZ1Wktqcz9Ls
-         25FQ6s1JWJWvvkz8+G0MCClpBf5BV8Z8//jhbWdnK8TAED1TR7XKxeqGyrdoLeeTaklj
-         jIRj+NEUtQ9YbwhjOUXrJS++G13QNM9+VKuTPNQDhW5u+YQAi13p/c6OJfPoGcLr5ROO
-         COxw==
-X-Gm-Message-State: APjAAAWgKTzP2yzk2eWeh7SkIEsWaMruh4dg2DmraDVBTX3i0uKXDdht
-        3gKFKD85K8Bq2egz4Sw5vioxYVvoRJrGsMdWfMNHMg==
-X-Google-Smtp-Source: APXvYqx/40G6xULaZQt9FoNPnqJkzaL4lnpeUgH+w8N1XVGQ1YZ7NmPaQfVpLZNwcd8jKY6MwNxe2RDiB9Oo5bmaMdc=
-X-Received: by 2002:a5d:4744:: with SMTP id o4mr2762494wrs.95.1568723287328;
- Tue, 17 Sep 2019 05:28:07 -0700 (PDT)
+        id S1728488AbfIQMrz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Sep 2019 08:47:55 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:7504 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728177AbfIQMrz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Sep 2019 08:47:55 -0400
+Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x8HClLeg026576;
+        Tue, 17 Sep 2019 05:47:22 -0700
+Date:   Tue, 17 Sep 2019 18:17:20 +0530
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     Bernard Metzler <BMT@zurich.ibm.com>,
+        Steve Wise <larrystevenwise@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Sagi Grimberg <sagi@grimberg.me>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Nirranjan Kirubaharan <nirranjan@chelsio.com>
+Subject: Re: Re: Re: [PATCH v3] iwcm: don't hold the irq disabled lock on
+ iw_rem_ref
+Message-ID: <20190917124719.GA11070@chelsio.com>
+References: <20190916162829.GA22329@ziepe.ca>
+ <20190904212531.6488-1-sagi@grimberg.me>
+ <20190910111759.GA5472@chelsio.com>
+ <5cc42f23-bf60-ca8d-f40c-cbd8875f5756@grimberg.me>
+ <20190910192157.GA5954@chelsio.com>
+ <OF00E4DFD9.0EEF58A6-ON00258472.0032F9AC-00258472.0034FEAA@notes.na.collabserv.com>
+ <CADmRdJcCENJx==LaaJQYU_kMv5rSgD69Z6s+ubCKWjprZmPQpA@mail.gmail.com>
+ <20190911155814.GA12639@chelsio.com>
+ <OFAEAC1AA7.9611AF4F-ON00258478.002E162F-00258478.0031D798@notes.na.collabserv.com>
 MIME-Version: 1.0
-References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-16-jinpuwang@gmail.com>
- <4fbad80b-f551-131e-9a5c-a24f1fa98fea@acm.org> <CAMGffEnVFHpmDCiazHFX1jwi4=p401T9goSkes3j1AttV0t1Ng@mail.gmail.com>
- <CAMGffEmnTG4ixN1Hfy7oY93TgG3qQtF9TkpGzi=BxWm5a2i3Eg@mail.gmail.com> <a7d4b3eb-d0c7-0c9d-ce64-da37a732564a@acm.org>
-In-Reply-To: <a7d4b3eb-d0c7-0c9d-ce64-da37a732564a@acm.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Tue, 17 Sep 2019 14:27:56 +0200
-Message-ID: <CAMGffE=J2-jmpTcRr14ndwHPncr9PV-NvX1mJ+M0tEne6oJD9Q@mail.gmail.com>
-Subject: Re: [PATCH v4 15/25] ibnbd: private headers with IBNBD protocol
- structs and helpers
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OFAEAC1AA7.9611AF4F-ON00258478.002E162F-00258478.0031D798@notes.na.collabserv.com>
+User-Agent: Mutt/1.9.3 (20180206.02d571c2)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 16, 2019 at 7:25 PM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 9/16/19 7:57 AM, Jinpu Wang wrote:
-> >>>> +#define _IBNBD_FILEIO  0
-> >>>> +#define _IBNBD_BLOCKIO 1
-> >>>> +#define _IBNBD_AUTOIO  2
-> >>>>
-> >>>> +enum ibnbd_io_mode {
-> >>>> +     IBNBD_FILEIO = _IBNBD_FILEIO,
-> >>>> +     IBNBD_BLOCKIO = _IBNBD_BLOCKIO,
-> >>>> +     IBNBD_AUTOIO = _IBNBD_AUTOIO,
-> >>>> +};
-> >>>
-> >>> Since the IBNBD_* and _IBNBD_* constants have the same numerical value,
-> >>> are the former constants really necessary?
->  >>
-> >> Seems we can remove _IBNBD_*.
->  >
-> > Sorry, checked again,  we defined _IBNBD_* constants to show the right
-> > value for def_io_mode description.
-> > If we remove the _IBNBD_*, then the modinfo shows:
-> > def_io_mode:By default, export devices in blockio(IBNBD_BLOCKIO) or
-> > fileio(IBNBD_FILEIO) mode. (default: IBNBD_BLOCKIO (blockio))
-> > instead of:
-> > parm:           def_io_mode:By default, export devices in blockio(1)
-> > or fileio(0) mode. (default: 1 (blockio))
->
-> So the user is required to enter def_io_mode as a number? Wouldn't it be
-> more friendly towards users to change that parameter from a number into
-> a string?
->
-Ok, it's a bit more code, will change to allow user to set "blockio"
-or "fileio" as string.
+On Tuesday, September 09/17/19, 2019 at 14:34:24 +0530, Bernard Metzler wrote:
+> -----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
+> 
+> >To: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+> >Date: 09/16/2019 06:28PM
+> >Cc: "Steve Wise" <larrystevenwise@gmail.com>, "Bernard Metzler"
+> ><BMT@zurich.ibm.com>, "Sagi Grimberg" <sagi@grimberg.me>,
+> >"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+> >Subject: [EXTERNAL] Re: Re: [PATCH v3] iwcm: don't hold the irq
+> >disabled lock on iw_rem_ref
+> >
+> >On Wed, Sep 11, 2019 at 09:28:16PM +0530, Krishnamraju Eraparaju
+> >wrote:
+> >> Hi Steve & Bernard,
+> >> 
+> >> Thanks for the review comments.
+> >> I will do those formating changes.
+> >
+> >I don't see anything in patchworks, but the consensus is to drop
+> >Sagi's patch pending this future patch?
+> >
+> >Jason
+> >
+> This is my impression as well. But consensus should be
+> explicit...Sagi, what do you think?
+> 
+> Best regards,
+> Bernard.
+> 
+While testing iSER(with my proposed patch applied) I see Chelsio iwarp
+driver is hitting the below deadlock issue. This is due to iw_rem_ref
+reordering changes in IWCM.
 
-Thanks,
-Jinpu
+Bernard, how about replacing vmalloc/vfree with kmalloc/kfree,
+such that freeing of SIW qp resources can be done with spinlocks held?
+to fix the orginal vfree issue less invasively..
+
+Steve, any suggestions?
+
+
+[ 1230.161871] INFO: task kworker/u12:0:11291 blocked for more than 122
+seconds.
+[ 1230.162147]       Not tainted 5.3.0-rc5+ #19
+[ 1230.162417] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+disables this message.
+[ 1230.162911] kworker/u12:0   D13000 11291      2 0x80004080
+[ 1230.163186] Workqueue: iw_cm_wq cm_work_handler
+[ 1230.163456] Call Trace:
+[ 1230.163718]  ? __schedule+0x297/0x510
+[ 1230.163986]  schedule+0x2e/0x90
+[ 1230.164253]  schedule_timeout+0x1c0/0x280
+[ 1230.164520]  ? xas_store+0x23e/0x500
+[ 1230.164789]  wait_for_completion+0xa2/0x110
+[ 1230.165067]  ? wake_up_q+0x70/0x70
+[ 1230.165336]  c4iw_destroy_qp+0x141/0x260 [iw_cxgb4]
+[ 1230.165611]  ? xas_store+0x23e/0x500
+[ 1230.165893]  ? _cond_resched+0x10/0x20
+[ 1230.166160]  ? wait_for_completion+0x2e/0x110
+[ 1230.166432]  ib_destroy_qp_user+0x142/0x230
+[ 1230.166699]  rdma_destroy_qp+0x1f/0x40
+[ 1230.166966]  iser_free_ib_conn_res+0x52/0x190 [ib_iser]
+[ 1230.167241]  iser_cleanup_handler.isra.15+0x32/0x60 [ib_iser]
+[ 1230.167510]  iser_cma_handler+0x23b/0x730 [ib_iser]
+[ 1230.167776]  cma_iw_handler+0x154/0x1e0
+[ 1230.168037]  cm_work_handler+0xb4c/0xd60
+[ 1230.168302]  process_one_work+0x155/0x380
+[ 1230.168564]  worker_thread+0x41/0x3b0
+[ 1230.168827]  kthread+0xf3/0x130
+[ 1230.169086]  ? process_one_work+0x380/0x380
+[ 1230.169350]  ? kthread_bind+0x10/0x10
+[ 1230.169615]  ret_from_fork+0x35/0x40
+[ 1230.169885] NMI backtrace for cpu 3
+
