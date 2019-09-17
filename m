@@ -2,106 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A55B51D0
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Sep 2019 17:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8403DB5321
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Sep 2019 18:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729805AbfIQPwl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Sep 2019 11:52:41 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:36091 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729765AbfIQPwk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Sep 2019 11:52:40 -0400
-Received: by mail-wm1-f68.google.com with SMTP id t3so3793837wmj.1
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Sep 2019 08:52:39 -0700 (PDT)
+        id S1730571AbfIQQgV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Sep 2019 12:36:21 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:53391 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728158AbfIQQgV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Sep 2019 12:36:21 -0400
+Received: by mail-wm1-f67.google.com with SMTP id i16so2135290wmd.3
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Sep 2019 09:36:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qKP299nn9dAVscWnwEGtfjquUeakNIYf9tui2aZbZM0=;
-        b=jdDgDADtN8x3yMOTTXEl9p6of/mhIZcOuq9lDQNLJcyuXfxihEU4kmzF2DeCj3kQcG
-         S0ug0mzOtlb/Q7emX2Apa9kF62FVkKObR8J8SrA7J1xJNb0/n6K/jdht9LXmqko5ENrP
-         ZzUEiVrKILWSr9+l/tn/pxMxtVtCPxeECujoaFGm5FnCzVFbwDRK3/W3JDH8D+jFteIw
-         3/ETBijHdcvNoG933pa6SSs9a0MNM9ZEO6Il/U746bYeateMui/HpGXZD0dc0uMgHOtm
-         sCv+06raWPUJw2NH/teoQp+SSM6CJ92nDDXX384+/qypnbECAtweqmMIye5iKsztRoos
-         trHg==
+        bh=LZ5ZTEmaTIYuHEPVaWnnIRDnM1ExQsI9I+rDX1pKJz8=;
+        b=GK/UJUraSZrbI1Lrp0bAU5iDgY0SxP7ZBolbRWrNz0P64V7oibEZuEsHfPeEk7Q9rp
+         xhKWgfwpDAv9qYOVv6Lu65MVkEs9ocMl4F8rzRMcf4TAMZXseKp5mUfkpdh52L+D24fd
+         Zw3UoMsuMTG1cFp2itr1rAVedM4yrpQicL+poeScKS4ldGYiEciH3AdcO38PP7cVzQ0p
+         Mf8KYDaR+d/5Lc91n2Q5RZF3NnYoEVuQQkGAS7Sl3VZcMwR5VjQ531kNfvT/JqP3T2P/
+         DpiF1/Oeke/GK4IBiRrKuJR3aRd3fnYslFM2HN5xTwAO/PwnU3hattLWrkS+zPAbdC40
+         Ax9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qKP299nn9dAVscWnwEGtfjquUeakNIYf9tui2aZbZM0=;
-        b=crnIfCmfMCmFxOMV6jyClylD9GvNpkMtFzi9bUyS5L2tFucCKC0HOl06Z6wWwzLRqj
-         6o0yLSnkqlIFqMBy+hCkJg/Dgdp9BSyVtRhbRanj32GhOvulwROa2hluPG8Z3GvSmBBu
-         PAqgeYio7FlGBnez2nNrx7FGk+lmeAT+1EFEEx2Bj2MVLnQDQ9VC5CL7mejkDbUXdkKD
-         zbdC4XgtAygKgnd/EfKKyhCrctWk3kSB0PUnLBD33hV0TdglBITJ0V/7yuGOjCkmwf3k
-         ZqUxN6cVC79JvlXE73C+SfYEeS+Iu0BkDUpv4Z5Doxe3+YQZDtnYwLIahGHTZvVznvQK
-         cidA==
-X-Gm-Message-State: APjAAAX+NUzPZ/mzI+1+AXmvUTuKt8qxEASyeOyo8foaBA5rx/0BAAwg
-        qh3tCDuGLU5P4KUynClF/vmoDtQviB7IpS6tV0xFuzFIF16aJA==
-X-Google-Smtp-Source: APXvYqy4g+sPWDvtjuzHam2AP/YjYBLiMEbmD1GTZF1aE6eRxGVi944aZKF9bVr2VAzVelcad2qvz8kSYFdA3tCFMmU=
-X-Received: by 2002:a1c:4384:: with SMTP id q126mr4559194wma.153.1568735558937;
- Tue, 17 Sep 2019 08:52:38 -0700 (PDT)
+        bh=LZ5ZTEmaTIYuHEPVaWnnIRDnM1ExQsI9I+rDX1pKJz8=;
+        b=ZImPD4ZPq9l8w+NQ9c04rHOxEUOwGlFQDB6BD+/gPLUUvjJyyAUWtPRcmBTRl3eyLJ
+         jPBAg8TuyF6wjK26KexCL5HuTe8Dv3cFcLkml4iBu8oP08fckY+VVMH+Otm52nAtTj6P
+         pnwIDNFyvvSP3eJp8EQPlMZwa8q6gK49apwv6ERbbEGl7f3l1euSv2LqmE5p5+d2ihx0
+         DY8ZvccNMTq2NYSb0+6Z/PC6zAha+DJABnAt+naBfStR2utASOzujMfQNKZWLXNkOZxt
+         4TCux1VSFfc+fhQEIjBDcN98NBzilONRCk+BcXL7sqYQ5iZ1Y503E7KAVMQN4TXfZTJu
+         SSfg==
+X-Gm-Message-State: APjAAAWV7defE23UscNV5AG6yDuAbtRjpMVgunvBVKq/TSPLA62FQ9w6
+        hwgUIEo/q9NJLhm2ZB1j6I/+945R7BXZjLsI90cglA==
+X-Google-Smtp-Source: APXvYqxbdK26SIM0+biFH4klJsQGXwbZHmXVpxC2DveOR4YNrg/laGGIb5lVHSsJE4/ZW9VCG2Bm4wm72MQy8yubuPw=
+X-Received: by 2002:a1c:4485:: with SMTP id r127mr4048388wma.59.1568738179087;
+ Tue, 17 Sep 2019 09:36:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-16-jinpuwang@gmail.com>
- <4fbad80b-f551-131e-9a5c-a24f1fa98fea@acm.org> <CAMGffEnVFHpmDCiazHFX1jwi4=p401T9goSkes3j1AttV0t1Ng@mail.gmail.com>
- <20190916052729.GB18203@unreal> <25bd79e1-9523-8354-873a-0ff1db92659a@acm.org>
- <20190917154150.GE18203@unreal>
-In-Reply-To: <20190917154150.GE18203@unreal>
+References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-17-jinpuwang@gmail.com>
+ <7d11d903-7826-8c1a-bef8-74ea4cf5f340@acm.org>
+In-Reply-To: <7d11d903-7826-8c1a-bef8-74ea4cf5f340@acm.org>
 From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Tue, 17 Sep 2019 17:52:27 +0200
-Message-ID: <CAMGffEmK6Crv9e1NWXxo8P2mGVfhVKZ_uZRx6_P63Uts1vu2NQ@mail.gmail.com>
-Subject: Re: [PATCH v4 15/25] ibnbd: private headers with IBNBD protocol
- structs and helpers
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+Date:   Tue, 17 Sep 2019 18:36:08 +0200
+Message-ID: <CAMGffEmZdqJ2Nw1KX=DirMp4e89i-G4ut24qNSVYRy0eG=v8sg@mail.gmail.com>
+Subject: Re: [PATCH v4 16/25] ibnbd: client: private header with client
+ structs and functions
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
         Sagi Grimberg <sagi@grimberg.me>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de,
-        Roman Pen <roman.penyaev@profitbricks.com>
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 17, 2019 at 5:42 PM Leon Romanovsky <leon@kernel.org> wrote:
+On Sat, Sep 14, 2019 at 12:25 AM Bart Van Assche <bvanassche@acm.org> wrote:
 >
-> On Mon, Sep 16, 2019 at 06:45:17AM -0700, Bart Van Assche wrote:
-> > On 9/15/19 10:27 PM, Leon Romanovsky wrote:
-> > > On Sun, Sep 15, 2019 at 04:30:04PM +0200, Jinpu Wang wrote:
-> > > > On Sat, Sep 14, 2019 at 12:10 AM Bart Van Assche <bvanassche@acm.org> wrote:
-> > > > > > +/* TODO: should be configurable */
-> > > > > > +#define IBTRS_PORT 1234
-> > > > >
-> > > > > How about converting this macro into a kernel module parameter?
-> > > > Sounds good, will do.
-> > >
-> > > Don't rush to do it and defer it to be the last change before merging,
-> > > this is controversial request which not everyone will like here.
-> >
-> > Hi Leon,
-> >
-> > If you do not agree with changing this macro into a kernel module parameter
-> > please suggest an alternative.
+> On 6/20/19 8:03 AM, Jack Wang wrote:
+> > +     char                    pathname[NAME_MAX];
+> [ ... ]
+>  > +    char                    blk_symlink_name[NAME_MAX];
 >
-> I didn't review code so my answer can be not fully accurate, but opening
-> some port to use this IB* seems strange from my non-sysadmin POV.
-> What about using RDMA-CM, like NVMe?
-Hi Leon,
+> Please allocate path names dynamically instead of hard-coding the upper
+> length for a path.
+>
+> Bart.
+Hi Bart,
 
-We are using rdma-cm, the port number here is same like addr_trsvcid
-in NVMeoF, it controls which port
-rdma_listen is listening on.
+ok,  will dynamically allocate the path and blk_symlink_name as you suggested.
 
-Currently, it's hardcoded, I've adapted the code to have a kernel
-module parameter port_nr in ibnbd_server, so it's possible
-to change it if the sysadmin wants.
+Thank you
+Jinpu
 
-Thanks,
--- 
+--
 Jack Wang
-Linux Kernel Developer
-Platform Engineering Compute (IONOS Cloud)
