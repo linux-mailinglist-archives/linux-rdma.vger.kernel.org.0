@@ -2,87 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2654FB40A1
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Sep 2019 20:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A069B4544
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Sep 2019 03:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726724AbfIPSxj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Sep 2019 14:53:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50698 "EHLO mail.kernel.org"
+        id S1730648AbfIQBjh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Sep 2019 21:39:37 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:51272 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbfIPSxi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 16 Sep 2019 14:53:38 -0400
-Received: from localhost (unknown [77.137.89.37])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728878AbfIQBjh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 16 Sep 2019 21:39:37 -0400
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DFFF206A4;
-        Mon, 16 Sep 2019 18:53:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568660018;
-        bh=8EJJVoQBy1M6FY6G2rYO0WfzKkVaFCDd0SbMjfnZGhM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dWALIpZ7MslPQYWLKXQv0ocBw2L+190wLiHFtVt3UhhrWYR82Hpw5VA+ixdr5d9Y2
-         FJTY2LShJj39jUC3yVzSZg6tchfZBqssrih7vbEneZ7Juzr76s56aYuwPZi3MifkYX
-         Oc2gx1ILgbvwBk15x8rV/vg4Oid+IpgGzJDgkG40=
-Date:   Mon, 16 Sep 2019 21:53:33 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        Mark Zhang <markz@mellanox.com>
-Subject: Re: [PATCH 3/4] RDMA/nldev: Reshuffle the code to avoid need to
- rebind QP in error path
-Message-ID: <20190916185333.GD18203@unreal>
-References: <20190916071154.20383-1-leon@kernel.org>
- <20190916071154.20383-4-leon@kernel.org>
- <20190916184818.GH2585@mellanox.com>
+        by mx1.redhat.com (Postfix) with ESMTPS id 26C9CC057867;
+        Tue, 17 Sep 2019 01:39:37 +0000 (UTC)
+Received: from dhcp-128-227.nay.redhat.com (unknown [10.66.128.227])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3F0FD5C1D6;
+        Tue, 17 Sep 2019 01:39:34 +0000 (UTC)
+From:   Honggang LI <honli@redhat.com>
+To:     bvanassche@acm.org, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org
+Cc:     Honggang Li <honli@redhat.com>
+Subject: [PATCH 1/2] IB/srp: Add parse function for maximum initiator to target IU size
+Date:   Tue, 17 Sep 2019 09:39:04 +0800
+Message-Id: <20190917013905.2600-1-honli@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190916184818.GH2585@mellanox.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.31]); Tue, 17 Sep 2019 01:39:37 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 16, 2019 at 06:48:24PM +0000, Jason Gunthorpe wrote:
-> On Mon, Sep 16, 2019 at 10:11:53AM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> >
-> > Properly unwind QP counter rebinding in case of failure.
->
-> What is the actual problem here? Calling 'bind' in an error
-> unwind seems insane, is that the issue?
+From: Honggang Li <honli@redhat.com>
 
-Yep
+According to SRP specifications 'srp-r16a' and 'srp2r06',
+IOControllerProfile attributes for SRP target port include
+the maximum initiator to target IU size.
 
->
-> > Fixes: b389327df905 ("RDMA/nldev: Allow counter manual mode configration through RDMA netlink")
-> > Reviewed-by: Mark Zhang <markz@mellanox.com>
-> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> >  drivers/infiniband/core/nldev.c | 12 +++++-------
-> >  1 file changed, 5 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-> > index 5e2b7eb0761b..6eb14481a72e 100644
-> > +++ b/drivers/infiniband/core/nldev.c
-> > @@ -1860,24 +1860,22 @@ static int nldev_stat_del_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
-> >
-> >  	cntn = nla_get_u32(tb[RDMA_NLDEV_ATTR_STAT_COUNTER_ID]);
-> >  	qpn = nla_get_u32(tb[RDMA_NLDEV_ATTR_RES_LQPN]);
-> > -	ret = rdma_counter_unbind_qpn(device, port, qpn, cntn);
-> > -	if (ret)
-> > -		goto err_unbind;
-> > -
-> >  	if (fill_nldev_handle(msg, device) ||
-> >  	    nla_put_u32(msg, RDMA_NLDEV_ATTR_PORT_INDEX, port) ||
-> >  	    nla_put_u32(msg, RDMA_NLDEV_ATTR_STAT_COUNTER_ID, cntn) ||
-> >  	    nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_LQPN, qpn)) {
-> >  		ret = -EMSGSIZE;
-> > -		goto err_fill;
-> > +		goto err_unbind;
->
-> These label names don't make much sense anymore
->
-> Jason
+SRP connection daemons, such as srp_daemon, can get the value
+from subnet manager. The SRP connection daemon can pass this
+value to kernel.
+
+This patch add parse function for it.
+
+Upstream commit [1] enables the kernel parameter, 'use_imm_data',
+by default. [1] also use (8 * 1024) as the default value for
+kernel parameter 'max_imm_data'. With those default values, the
+maximum initiator to target IU size will be 8260.
+
+In case the SRPT modules, which include the in-tree 'ib_srpt.ko'
+module, do not support SRP-2 'immediate data' feature, the default
+maximum initiator to target IU size is significantly samller than
+8260. For 'ib_srpt.ko' module, which built from source before
+[2], the default maximum initiator to target IU is 2116.
+
+[1] introduces a regression issue for old srp target with default
+kernel parameters, as the connection will be reject because of
+too large maximum initiator to target IU size.
+
+[1] 882981f4a411 RDMA/srp: Add support for immediate data
+[2] 5dabcd0456d7 RDMA/srpt: Add support for immediate data
+
+Signed-off-by: Honggang Li <honli@redhat.com>
+---
+ drivers/infiniband/ulp/srp/ib_srp.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
+index b5960351bec0..2eadb038b257 100644
+--- a/drivers/infiniband/ulp/srp/ib_srp.c
++++ b/drivers/infiniband/ulp/srp/ib_srp.c
+@@ -75,6 +75,7 @@ static bool prefer_fr = true;
+ static bool register_always = true;
+ static bool never_register;
+ static int topspin_workarounds = 1;
++static uint32_t srp_opt_max_it_iu_size;
+ 
+ module_param(srp_sg_tablesize, uint, 0444);
+ MODULE_PARM_DESC(srp_sg_tablesize, "Deprecated name for cmd_sg_entries");
+@@ -3411,6 +3412,7 @@ enum {
+ 	SRP_OPT_IP_SRC		= 1 << 15,
+ 	SRP_OPT_IP_DEST		= 1 << 16,
+ 	SRP_OPT_TARGET_CAN_QUEUE= 1 << 17,
++	SRP_OPT_MAX_IT_IU_SIZE  = 1 << 18,
+ };
+ 
+ static unsigned int srp_opt_mandatory[] = {
+@@ -3443,6 +3445,7 @@ static const match_table_t srp_opt_tokens = {
+ 	{ SRP_OPT_QUEUE_SIZE,		"queue_size=%d"		},
+ 	{ SRP_OPT_IP_SRC,		"src=%s"		},
+ 	{ SRP_OPT_IP_DEST,		"dest=%s"		},
++	{ SRP_OPT_MAX_IT_IU_SIZE,	"max_it_iu_size=%d"	},
+ 	{ SRP_OPT_ERR,			NULL 			}
+ };
+ 
+@@ -3736,6 +3739,14 @@ static int srp_parse_options(struct net *net, const char *buf,
+ 			target->tl_retry_count = token;
+ 			break;
+ 
++		case SRP_OPT_MAX_IT_IU_SIZE:
++			if (match_int(args, &token) || token < 0) {
++				pr_warn("bad maximum initiator to target IU size '%s'\n", p);
++				goto out;
++			}
++			srp_opt_max_it_iu_size = token;
++			break;
++
+ 		default:
+ 			pr_warn("unknown parameter or missing value '%s' in target creation request\n",
+ 				p);
+-- 
+2.21.0
+
