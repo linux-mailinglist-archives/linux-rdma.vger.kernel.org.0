@@ -2,49 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B63B53E2
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Sep 2019 19:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37871B53EE
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Sep 2019 19:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727240AbfIQRTk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Sep 2019 13:19:40 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:45853 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727166AbfIQRTk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Sep 2019 13:19:40 -0400
-Received: by mail-pf1-f195.google.com with SMTP id y72so2526414pfb.12
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Sep 2019 10:19:39 -0700 (PDT)
+        id S1728035AbfIQRUg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Sep 2019 13:20:36 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:46111 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726744AbfIQRUg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Sep 2019 13:20:36 -0400
+Received: by mail-wr1-f67.google.com with SMTP id o18so3977710wrv.13
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Sep 2019 10:20:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=gv/TDMGflI0y3unHsxjm0uYjBhMMMNVxgN6XChX/CBQ=;
-        b=J2OOHNvXg8qJoiPmERY9HlLjUWiNSQxObZpsduvuSmA18yQzLVJ96/LkNX6E0NmslR
-         kDYFDFtIqf3tQFNe4BLfEQDjoqGvYSkH2YZLswq5WHUYyKqN2SWlN/505DLsuUO//Rh+
-         QBudqu6Yt9qVoLcP8V42eSkh9q3rJQ0soMrMQLACtr8mz6aXeeXjLlgF///T84CjxJjF
-         FjyDPfUZ/7GQhV1PZDYHXiMXdHj9zfNXoldGsZl7if0PIcZsy5aX2MP5JIvnsK1Li+e5
-         ixbllffTrDp4dOy/mmfhySsVPGT70QAdOH5sOwAdHGB3XFAa5bvpoZJgeLWTdYm+ax4w
-         XdKw==
-X-Gm-Message-State: APjAAAWc94qtgTn1SM3QkbjVfXoArTUg9kTqtUxQlpa343dckdGbfsyB
-        3/WU/rUhyzvYL24U14mqCWySBidA
-X-Google-Smtp-Source: APXvYqxDLdaKadO1k1N4A3j/U3nyM0t3yxVoT+Lc+V1FPL2l4dPnxFV2x1ksuei/gGYQ/2hjybPLQA==
-X-Received: by 2002:a17:90a:d0c4:: with SMTP id y4mr6285359pjw.116.1568740779162;
-        Tue, 17 Sep 2019 10:19:39 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id 2sm3672322pfa.43.2019.09.17.10.19.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Sep 2019 10:19:38 -0700 (PDT)
-Subject: Re: [rdma-core patch] srp_daemon: print maximum initiator to target
- IU size
-To:     Honggang LI <honli@redhat.com>, linux-rdma@vger.kernel.org
-References: <20190916013607.9474-1-honli@redhat.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <deb829a3-813e-6b99-c932-ceecc06e09b3@acm.org>
-Date:   Tue, 17 Sep 2019 10:19:37 -0700
+        bh=rBckLleFLjatJBkoQzBeHMYHcRKemTGYl33t4yHOkqc=;
+        b=CL9aBfp7KiHSRxR4WIvtQP3vvwjGTlY+FhaHOHtBzQDI7XiN2qcth2gdxfGq+J5R4r
+         FThE846BygL3WB72AKTcLls8HbIPMCS90duZTLirL1IyeIpyvtxjGddo8mOB9l9nDA1W
+         IspqUD4Ve2oHEWUA+vs8mUmLGwVa2tPrIrNMHSogBiD6swgNF9LW1O9GdQsc1+7ffj5c
+         Vhw74vJkDzb/DKouQWkIE1ycsVluSnAbjQKbnHKKBanLspk0RbGkwRnW1OU+L5kgYdZr
+         3vBxMMQvPX9R8eyfPQnyOYfm/2HCJUxzOsjvdX5q/Mguu4cdGxfiYvUOGvIrAY8xsuHi
+         8KxA==
+X-Gm-Message-State: APjAAAXmaYzl04IuC/Ie818HfXFxm9amqolDFtHM3NLxAt/sCJevGudH
+        DM6S4ftPRSCBkZC7XewUCIC1iBfW
+X-Google-Smtp-Source: APXvYqw07Kw5UwCk/1lNEyGSc3gDMsP7o+STuLvo/ImXkn85WPdu2DcaxQmRoQd47ZKr0GGECVsyGw==
+X-Received: by 2002:adf:cc8a:: with SMTP id p10mr3743735wrj.321.1568740833839;
+        Tue, 17 Sep 2019 10:20:33 -0700 (PDT)
+Received: from ?IPv6:2600:1700:65a0:78e0:514:7862:1503:8e4d? ([2600:1700:65a0:78e0:514:7862:1503:8e4d])
+        by smtp.gmail.com with ESMTPSA id v7sm2524899wru.87.2019.09.17.10.20.31
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 17 Sep 2019 10:20:33 -0700 (PDT)
+Subject: Re: [PATCH v3] iwcm: don't hold the irq disabled lock on iw_rem_ref
+To:     Bernard Metzler <BMT@zurich.ibm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Krishnamraju Eraparaju <krishna2@chelsio.com>,
+        Steve Wise <larrystevenwise@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20190916162829.GA22329@ziepe.ca>
+ <20190904212531.6488-1-sagi@grimberg.me> <20190910111759.GA5472@chelsio.com>
+ <5cc42f23-bf60-ca8d-f40c-cbd8875f5756@grimberg.me>
+ <20190910192157.GA5954@chelsio.com>
+ <OF00E4DFD9.0EEF58A6-ON00258472.0032F9AC-00258472.0034FEAA@notes.na.collabserv.com>
+ <CADmRdJcCENJx==LaaJQYU_kMv5rSgD69Z6s+ubCKWjprZmPQpA@mail.gmail.com>
+ <20190911155814.GA12639@chelsio.com>
+ <OFAEAC1AA7.9611AF4F-ON00258478.002E162F-00258478.0031D798@notes.na.collabserv.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <55ece255-b4e2-9bc4-e1ec-039d92a36273@grimberg.me>
+Date:   Tue, 17 Sep 2019 10:20:27 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190916013607.9474-1-honli@redhat.com>
+In-Reply-To: <OFAEAC1AA7.9611AF4F-ON00258478.002E162F-00258478.0031D798@notes.na.collabserv.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -53,40 +63,47 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/15/19 6:36 PM, Honggang LI wrote:
-> From: Honggang Li <honli@redhat.com>
-> 
-> The 'Send Message Size' field of IOControllerProfile attributes
-> contains the maximum initiator to target IU size.
-> 
-> When there is something wrong with SRP login to a third party
-> SRP target, whose ib_srpt parameters can't be collected with
-> ordinary method, dump the 'Send Message Size' may help us to
-> diagnose the problem.
-> 
-> Signed-off-by: Honggang Li <honli@redhat.com>
-> ---
->   srp_daemon/srp_daemon.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/srp_daemon/srp_daemon.c b/srp_daemon/srp_daemon.c
-> index 337b21c7..90533c77 100644
-> --- a/srp_daemon/srp_daemon.c
-> +++ b/srp_daemon/srp_daemon.c
-> @@ -1022,6 +1022,8 @@ static int do_port(struct resources *res, uint16_t pkey, uint16_t dlid,
->   			pr_human("        vendor ID: %06x\n", be32toh(target->ioc_prof.vendor_id) >> 8);
->   			pr_human("        device ID: %06x\n", be32toh(target->ioc_prof.device_id));
->   			pr_human("        IO class : %04hx\n", be16toh(target->ioc_prof.io_class));
-> +			pr_human("        Maximum initiator to target IU size: %d\n",
-> +				 be32toh(target->ioc_prof.send_size));
->   			pr_human("        ID:        %s\n", target->ioc_prof.id);
->   			pr_human("        service entries: %d\n", target->ioc_prof.service_entries);
 
-How about using the terminology from the InfiniBand Architecture 
-Specification? This is what I found in release 1.3, table 306:
+>> To: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+>> From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>> Date: 09/16/2019 06:28PM
+>> Cc: "Steve Wise" <larrystevenwise@gmail.com>, "Bernard Metzler"
+>> <BMT@zurich.ibm.com>, "Sagi Grimberg" <sagi@grimberg.me>,
+>> "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+>> Subject: [EXTERNAL] Re: Re: [PATCH v3] iwcm: don't hold the irq
+>> disabled lock on iw_rem_ref
+>>
+>> On Wed, Sep 11, 2019 at 09:28:16PM +0530, Krishnamraju Eraparaju
+>> wrote:
+>>> Hi Steve & Bernard,
+>>>
+>>> Thanks for the review comments.
+>>> I will do those formating changes.
+>>
+>> I don't see anything in patchworks, but the consensus is to drop
+>> Sagi's patch pending this future patch?
+>>
+>> Jason
+>>
+> This is my impression as well. But consensus should be
+> explicit...Sagi, what do you think?
 
-"Maximum size of Send Messages in bytes"
+I don't really care, but given the changes from Krishnamraju cause other
+problems I'd ask if my version is also offending his test.
 
-Thanks,
+In general, I do not think that making resources free routines (both
+explict or implicit via ref dec) under a spinlock is not a robust
+design.
 
-Bart.
+I would first make it clear and documented what cm_id_priv->lock is
+protecting. In my mind, it should protect *its own* mutations of
+cm_id_priv and by design leave all the ops calls outside the lock.
+
+I don't understand what is causing the Chelsio issue observed, but
+it looks like c4iw_destroy_qp blocks on a completion that depends on a
+refcount that is taken also by iwcm, which means that I cannot call
+ib_destroy_qp if the cm is not destroyed as well?
+
+If that is madatory, I'd say that instead of blocking on this
+completion, we can simply convert c4iw_qp_rem_ref if use a kref
+which is not order dependent.
