@@ -2,54 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5BD2B6815
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2019 18:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE21B69C0
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2019 19:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731961AbfIRQ2l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Sep 2019 12:28:41 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:33431 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731956AbfIRQ2l (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Sep 2019 12:28:41 -0400
-Received: by mail-pg1-f196.google.com with SMTP id n190so158837pgn.0;
-        Wed, 18 Sep 2019 09:28:40 -0700 (PDT)
+        id S1727109AbfIRRlQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Sep 2019 13:41:16 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:41868 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726730AbfIRRlQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Sep 2019 13:41:16 -0400
+Received: by mail-pl1-f193.google.com with SMTP id t10so285918plr.8;
+        Wed, 18 Sep 2019 10:41:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=8rdoH0a+QsELg1xLYb3BRFJVMR3oYJaQvDlAnnpQ/PM=;
-        b=bK9Vq3TblvSfqvv/1aNf1szX1jyJejp9XwxSByUkAvgI13IrBrqkVTZ8bcyPlmZIp3
-         bsuffjyWPy0xodw9EHxE+IJLwS84zfUEnxEbY49CgPe+evZTq5DRNNPX0TjEqLzIX9eg
-         izIAQ/sK41Nqx9ch3KVEQDQzMV/fDibXAHwJMxMJ9Nz+/YrAcR8NQFNoz6GoClMiAg+S
-         wajmj88wncGbDYOZ7VHnjNf4fBQY0rFhVbZsbFgurlSXd7V+NRGuPusZ+U8Hcpm32jkB
-         uNErCXhb3vFs/CvAe/9aQ1Sda9HJdUCfpZVgedekq4M6ptzsxd3NOik8ppKOBg/uOaMu
-         DsZg==
-X-Gm-Message-State: APjAAAXAnJJ1atpzbdaSGh4wyM8OF0VptR/0947yjTIg4VpgzZ3SErG2
-        5FdlHWw5aJJ2O0s0qJySotA=
-X-Google-Smtp-Source: APXvYqzptXgIyKHsvSdcdY3sDKO5CqyDUw+mtcCNzkaYkyyx539NG3satsFU3FYgK1eu/sozeAtKHA==
-X-Received: by 2002:a65:6716:: with SMTP id u22mr4741660pgf.192.1568824119817;
-        Wed, 18 Sep 2019 09:28:39 -0700 (PDT)
+        bh=8+d4tzun7r7q4QhWdwUWUdcRBoPK9Sf22U5/YR584EU=;
+        b=gYFPpYQi8dOqZ+GDpRJrKnEFbDTw9q0xZwtqmPSAJCDI3kpaq4/huq2hBvSk4r7omf
+         GT4f39UyCmhhd4USEqwuj1OXK/kgTtL2oWxlGgxe+eSBBZx70wpGVjtj9nTS/zm4Gc11
+         Wo3bfOuETr5FQ9fscs8EcZvBiibCVACVyF5VyPfc4wJo9AlqKjnSOHODKDrqxijTeQnS
+         hQpeaBKEyx+6TygRfmyHHx71CrH1Zxcoc85Ox2ggor9/Tk+pamfD1Ye53dwRvhWFgm64
+         rPoC5S82+vKWfBkGZFNRuButBnQzVD2qhco+4CdC2ezuO1w+hr8sCZYjeDk8C/szxVSb
+         QqNQ==
+X-Gm-Message-State: APjAAAWvoNyjSk10jLvrqr8EjSqGxSSzvdWo5tWCExoRz6mZN3SgGga3
+        RTvutRbTUtpaJ4IHB1Eje5o=
+X-Google-Smtp-Source: APXvYqxJEvwqB9patrgYFyq1fclwFTnjys/g+6ZYdQlcHJGKP/XFK28FII/ciWC+h2CG3CieX+UGqQ==
+X-Received: by 2002:a17:902:7147:: with SMTP id u7mr5444007plm.260.1568828475835;
+        Wed, 18 Sep 2019 10:41:15 -0700 (PDT)
 Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id q42sm3246212pja.16.2019.09.18.09.28.38
+        by smtp.gmail.com with ESMTPSA id m16sm6842486pgb.84.2019.09.18.10.41.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Sep 2019 09:28:39 -0700 (PDT)
-Subject: Re: [PATCH v4 18/25] ibnbd: client: sysfs interface functions
+        Wed, 18 Sep 2019 10:41:14 -0700 (PDT)
+Subject: Re: [PATCH v4 20/25] ibnbd: server: main functionality
 To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         jgg@mellanox.com, dledford@redhat.com,
         danil.kipnis@cloud.ionos.com, rpenyaev@suse.de,
+        Roman Pen <roman.penyaev@profitbricks.com>,
         Jack Wang <jinpu.wang@cloud.ionos.com>
 References: <20190620150337.7847-1-jinpuwang@gmail.com>
- <20190620150337.7847-19-jinpuwang@gmail.com>
+ <20190620150337.7847-21-jinpuwang@gmail.com>
 From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <05192413-4b0c-76fd-7459-bc6d430b46a6@acm.org>
-Date:   Wed, 18 Sep 2019 09:28:37 -0700
+Message-ID: <5ceebb9c-b7ae-8e0c-6f07-d83e878e23d0@acm.org>
+Date:   Wed, 18 Sep 2019 10:41:13 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190620150337.7847-19-jinpuwang@gmail.com>
+In-Reply-To: <20190620150337.7847-21-jinpuwang@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -62,266 +63,185 @@ On 6/20/19 8:03 AM, Jack Wang wrote:
 > +#undef pr_fmt
 > +#define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
 
-Including the line number in all messages is too much information. 
-Please don't do this. Additionally, this will make the line number occur 
-twice in messages produced by pr_debug().
+Same comment here as for a previous patch - please do not include line 
+number information in pr_fmt().
 
-> +static unsigned int ibnbd_opt_mandatory[] = {
-> +	IBNBD_OPT_PATH,
-> +	IBNBD_OPT_DEV_PATH,
-> +	IBNBD_OPT_SESSNAME,
-> +};
+> +MODULE_AUTHOR("ibnbd@profitbricks.com");
+> +MODULE_VERSION(IBNBD_VER_STRING);
+> +MODULE_DESCRIPTION("InfiniBand Network Block Device Server");
+> +MODULE_LICENSE("GPL");
 
-Should this array have been declared const?
+Please remove the version number (MODULE_VERSION()).
 
- > +/* remove new line from string */
- > +static void strip(char *s)
- > +{
- > +	char *p = s;
- > +
- > +	while (*s != '\0') {
- > +		if (*s != '\n')
- > +			*p++ = *s++;
- > +		else
- > +			++s;
- > +	}
- > +	*p = '\0';
- > +}
+> +static char dev_search_path[PATH_MAX] = DEFAULT_DEV_SEARCH_PATH;
 
-This function can remove a newline from the middle of a string. Are you 
-sure that's what you want?
+Please change dev_search_path[] into a dynamically allocated string to 
+avoid a hard-coded length limit.
 
-Is it useful to strip newline characters only and to keep other 
-whitespace? Could this function be dropped and can the callers use 
-strim() instead?
+> +	if (dup[strlen(dup) - 1] == '\n')
+> +		dup[strlen(dup) - 1] = '\0';
 
-> +static int ibnbd_clt_parse_map_options(const char *buf,
-> +				       char *sessname,
-> +				       struct ibtrs_addr *paths,
-> +				       size_t *path_cnt,
-> +				       size_t max_path_cnt,
-> +				       char *pathname,
-> +				       enum ibnbd_access_mode *access_mode,
-> +				       enum ibnbd_io_mode *io_mode)
+Can this be changed into a call to strim()?
+
+> +static void ibnbd_endio(void *priv, int error)
 > +{
-
-Please introduce a structure for all the output parameters of this 
-function and pass a pointer to that structure to this function. That 
-will make it easier to introduce support for new parameters.
-
-> +	char *options, *sep_opt;
-> +	char *p;
-> +	substring_t args[MAX_OPT_ARGS];
-> +	int opt_mask = 0;
-> +	int token;
-> +	int ret = -EINVAL;
-> +	int i;
-> +	int p_cnt = 0;
+> +	struct ibnbd_io_private *ibnbd_priv = priv;
+> +	struct ibnbd_srv_sess_dev *sess_dev = ibnbd_priv->sess_dev;
 > +
-> +	options = kstrdup(buf, GFP_KERNEL);
-> +	if (!options)
-> +		return -ENOMEM;
+> +	ibnbd_put_sess_dev(sess_dev);
 > +
-> +	sep_opt = strstrip(options);
-> +	strip(sep_opt);
-
-Are you sure that strstrip() does not remove trailing newline characters?
-
-> +	while ((p = strsep(&sep_opt, " ")) != NULL) {
-> +		if (!*p)
-> +			continue;
+> +	ibtrs_srv_resp_rdma(ibnbd_priv->id, error);
 > +
-> +		token = match_token(p, ibnbd_opt_tokens, args);
-> +		opt_mask |= token;
-> +
-> +		switch (token) {
-> +		case IBNBD_OPT_SESSNAME:
-> +			p = match_strdup(args);
-> +			if (!p) {
-> +				ret = -ENOMEM;
-> +				goto out;
-> +			}
-> +			if (strlen(p) > NAME_MAX) {
-> +				pr_err("map_device: sessname too long\n");
-> +				ret = -EINVAL;
-> +				kfree(p);
-> +				goto out;
-> +			}
-> +			strlcpy(sessname, p, NAME_MAX);
-> +			kfree(p);
-> +			break;
-
-Please change sessname from a fixed size buffer into a dynamically 
-allocated buffer. That will remove the need to perform a strlcpy() and 
-will also allow to remove the NAME_MAX checks.
-
-> +		case IBNBD_OPT_DEV_PATH:
-> +			p = match_strdup(args);
-> +			if (!p) {
-> +				ret = -ENOMEM;
-> +				goto out;
-> +			}
-> +			if (strlen(p) > NAME_MAX) {
-> +				pr_err("map_device: Device path too long\n");
-> +				ret = -EINVAL;
-> +				kfree(p);
-> +				goto out;
-> +			}
-> +			strlcpy(pathname, p, NAME_MAX);
-> +			kfree(p);
-> +			break;
-
-Same comment here - please change pathname from a fixed-size array into 
-a dynamically allocated buffer.
-
-> +static ssize_t ibnbd_clt_state_show(struct kobject *kobj,
-> +				    struct kobj_attribute *attr, char *page)
-> +{
-> +	struct ibnbd_clt_dev *dev;
-> +
-> +	dev = container_of(kobj, struct ibnbd_clt_dev, kobj);
-> +
-> +	switch (dev->dev_state) {
-> +	case (DEV_STATE_INIT):
-> +		return scnprintf(page, PAGE_SIZE, "init\n");
-> +	case (DEV_STATE_MAPPED):
-> +		/* TODO fix cli tool before changing to proper state */
-> +		return scnprintf(page, PAGE_SIZE, "open\n");
-> +	case (DEV_STATE_MAPPED_DISCONNECTED):
-> +		/* TODO fix cli tool before changing to proper state */
-> +		return scnprintf(page, PAGE_SIZE, "closed\n");
-> +	case (DEV_STATE_UNMAPPED):
-> +		return scnprintf(page, PAGE_SIZE, "unmapped\n");
-> +	default:
-> +		return scnprintf(page, PAGE_SIZE, "unknown\n");
-> +	}
+> +	kfree(priv);
 > +}
 
-Please remove the superfluous parentheses from around the DEV_STATE_* 
-constants.
+Since ibtrs_srv_resp_rdma() starts an RDMA WRITE without waiting for the 
+write completion, shouldn't the session reference be retained until the 
+completion for that RDMA WRITE has been received? In other words, is 
+there a risk with the current approach that the buffer that is being 
+transferred to the client will be freed before the RDMA WRITE has finished?
 
-Additionally, using scnprintf() here is overkill. snprintf() should be 
-sufficient.
-
-> +static struct kobj_attribute ibnbd_clt_state_attr =
-> +	__ATTR(state, 0444, ibnbd_clt_state_show, NULL);
-
-Please use DEVICE_ATTR_RO() instead of __ATTR() for all read-only 
-attributes.
-
-> +static ssize_t ibnbd_clt_unmap_dev_store(struct kobject *kobj,
-> +					 struct kobj_attribute *attr,
-> +					 const char *buf, size_t count)
+> +static struct ibnbd_srv_sess_dev *
+> +ibnbd_get_sess_dev(int dev_id, struct ibnbd_srv_session *srv_sess)
 > +{
-> +	struct ibnbd_clt_dev *dev;
-> +	char *opt, *options;
-> +	bool force;
-> +	int err;
+> +	struct ibnbd_srv_sess_dev *sess_dev;
+> +	int ret = 0;
 > +
-> +	opt = kstrdup(buf, GFP_KERNEL);
-> +	if (!opt)
-> +		return -ENOMEM;
+> +	read_lock(&srv_sess->index_lock);
+> +	sess_dev = idr_find(&srv_sess->index_idr, dev_id);
+> +	if (likely(sess_dev))
+> +		ret = kref_get_unless_zero(&sess_dev->kref);
+> +	read_unlock(&srv_sess->index_lock);
 > +
-> +	options = strstrip(opt);
-> +	strip(options);
+> +	if (unlikely(!sess_dev || !ret))
+> +		return ERR_PTR(-ENXIO);
 > +
-> +	dev = container_of(kobj, struct ibnbd_clt_dev, kobj);
+> +	return sess_dev;
+> +}
+
+Something that is not important: isn't the sess_dev check superfluous in 
+the if-statement just above the return statement? If ret == 1, does that 
+imply that sess_dev != 0 ?
+
+Has it been considered to return -ENODEV instead of -ENXIO if no device 
+is found?
+
+> +static int create_sess(struct ibtrs_srv *ibtrs)
+> +{
+ > [ ... ]
+> +	strlcpy(srv_sess->sessname, sessname, sizeof(srv_sess->sessname));
+
+Please change the session name into a dynamically allocated string such 
+that strdup() can be used instead of strlcpy().
+
+> +static int process_msg_open(struct ibtrs_srv *ibtrs,
+> +			    struct ibnbd_srv_session *srv_sess,
+> +			    const void *msg, size_t len,
+> +			    void *data, size_t datalen);
 > +
-> +	if (sysfs_streq(options, "normal")) {
-> +		force = false;
-> +	} else if (sysfs_streq(options, "force")) {
-> +		force = true;
+> +static int process_msg_sess_info(struct ibtrs_srv *ibtrs,
+> +				 struct ibnbd_srv_session *srv_sess,
+> +				 const void *msg, size_t len,
+> +				 void *data, size_t datalen);
+
+Can the code be reordered such that these forward declarations can be 
+dropped?
+
+> +static struct ibnbd_srv_sess_dev *
+> +ibnbd_srv_create_set_sess_dev(struct ibnbd_srv_session *srv_sess,
+> +			      const struct ibnbd_msg_open *open_msg,
+> +			      struct ibnbd_dev *ibnbd_dev, fmode_t open_flags,
+> +			      struct ibnbd_srv_dev *srv_dev)
+> +{
+> +	struct ibnbd_srv_sess_dev *sdev = ibnbd_sess_dev_alloc(srv_sess);
+> +
+> +	if (IS_ERR(sdev))
+> +		return sdev;
+> +
+> +	kref_init(&sdev->kref);
+> +
+> +	strlcpy(sdev->pathname, open_msg->dev_name, sizeof(sdev->pathname));
+
+Can the path name be changed into a dynamically allocated string?
+
+> +static char *ibnbd_srv_get_full_path(struct ibnbd_srv_session *srv_sess,
+> +				     const char *dev_name)
+> +{
+> +	char *full_path;
+> +	char *a, *b;
+> +
+> +	full_path = kmalloc(PATH_MAX, GFP_KERNEL);
+> +	if (!full_path)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	/*
+> +	 * Replace %SESSNAME% with a real session name in order to
+> +	 * create device namespace.
+> +	 */
+> +	a = strnstr(dev_search_path, "%SESSNAME%", sizeof(dev_search_path));
+> +	if (a) {
+> +		int len = a - dev_search_path;
+> +
+> +		len = snprintf(full_path, PATH_MAX, "%.*s/%s/%s", len,
+> +			       dev_search_path, srv_sess->sessname, dev_name);
+> +		if (len >= PATH_MAX) {
+> +			pr_err("Tooooo looong path: %s, %s, %s\n",
+> +			       dev_search_path, srv_sess->sessname, dev_name);
+> +			kfree(full_path);
+> +			return ERR_PTR(-EINVAL);
+> +		}
 > +	} else {
-> +		ibnbd_err(dev, "unmap_device: Invalid value: %s\n", options);
-> +		err = -EINVAL;
-> +		goto out;
+> +		snprintf(full_path, PATH_MAX, "%s/%s",
+> +			 dev_search_path, dev_name);
 > +	}
 
-Wasn't sysfs_streq() introduced to avoid having to duplicate and strip 
-the input string?
+Has it been considered to use kasprintf() instead of kmalloc() + snprintf()?
 
-> +	/*
-> +	 * We take explicit module reference only for one reason: do not
-> +	 * race with lockless ibnbd_destroy_sessions().
-> +	 */
-> +	if (!try_module_get(THIS_MODULE)) {
-> +		err = -ENODEV;
-> +		goto out;
-> +	}
-> +	err = ibnbd_clt_unmap_device(dev, force, &attr->attr);
-> +	if (unlikely(err)) {
-> +		if (unlikely(err != -EALREADY))
-> +			ibnbd_err(dev, "unmap_device: %d\n",  err);
-> +		goto module_put;
-> +	}
-> +
-> +	/*
-> +	 * Here device can be vanished!
-> +	 */
-> +
-> +	err = count;
-> +
-> +module_put:
-> +	module_put(THIS_MODULE);
-
-I've never before seen a module_get() / module_put() pair inside a sysfs 
-  callback function. Can this race be fixed by making 
-ibnbd_destroy_sessions() remove this sysfs attribute before it tries to 
-destroy any sessions?
-
-> +void ibnbd_clt_remove_dev_symlink(struct ibnbd_clt_dev *dev)
+> +static int process_msg_sess_info(struct ibtrs_srv *ibtrs,
+> +				 struct ibnbd_srv_session *srv_sess,
+> +				 const void *msg, size_t len,
+> +				 void *data, size_t datalen)
 > +{
-> +	/*
-> +	 * The module_is_live() check is crucial and helps to avoid annoying
-> +	 * sysfs warning raised in sysfs_remove_link(), when the whole sysfs
-> +	 * path was just removed, see ibnbd_close_sessions().
-> +	 */
-> +	if (strlen(dev->blk_symlink_name) && module_is_live(THIS_MODULE))
-> +		sysfs_remove_link(ibnbd_devs_kobj, dev->blk_symlink_name);
+> +	const struct ibnbd_msg_sess_info *sess_info_msg = msg;
+> +	struct ibnbd_msg_sess_info_rsp *rsp = data;
+> +
+> +	srv_sess->ver = min_t(u8, sess_info_msg->ver, IBNBD_PROTO_VER_MAJOR);
+> +	pr_debug("Session %s using protocol version %d (client version: %d,"
+> +		 " server version: %d)\n", srv_sess->sessname,
+> +		 srv_sess->ver, sess_info_msg->ver, IBNBD_PROTO_VER_MAJOR);
+
+Has this patch been verified with checkpatch? I think checkpatch 
+recommends not to split literal strings.
+
+> +/**
+> + * find_srv_sess_dev() - a dev is already opened by this name
+> + *
+> + * Return struct ibnbd_srv_sess_dev if srv_sess already opened the dev_name
+> + * NULL if the session didn't open the device yet.
+> + */
+> +static struct ibnbd_srv_sess_dev *
+> +find_srv_sess_dev(struct ibnbd_srv_session *srv_sess, const char *dev_name)
+> +{
+> +	struct ibnbd_srv_sess_dev *sess_dev;
+> +
+> +	if (list_empty(&srv_sess->sess_dev_list))
+> +		return NULL;
+> +
+> +	list_for_each_entry(sess_dev, &srv_sess->sess_dev_list, sess_list)
+> +		if (!strcmp(sess_dev->pathname, dev_name))
+> +			return sess_dev;
+> +
+> +	return NULL;
 > +}
 
-I haven't been able to find any other sysfs code that calls 
-module_is_live()? Please elaborate why that check is needed.
+Is explicit the list_empty() check really necessary? Would the behavior 
+of this function change if that check is left out?
 
-> +int ibnbd_clt_create_sysfs_files(void)
-> +{
-> +	int err;
-> +
-> +	ibnbd_dev_class = class_create(THIS_MODULE, "ibnbd-client");
-> +	if (unlikely(IS_ERR(ibnbd_dev_class)))
-> +		return PTR_ERR(ibnbd_dev_class);
-> +
-> +	ibnbd_dev = device_create(ibnbd_dev_class, NULL,
-> +				  MKDEV(0, 0), NULL, "ctl");
-> +	if (unlikely(IS_ERR(ibnbd_dev))) {
-> +		err = PTR_ERR(ibnbd_dev);
-> +		goto cls_destroy;
-> +	}
-> +	ibnbd_devs_kobj = kobject_create_and_add("devices", &ibnbd_dev->kobj);
-> +	if (unlikely(!ibnbd_devs_kobj)) {
-> +		err = -ENOMEM;
-> +		goto dev_destroy;
-> +	}
-> +	err = sysfs_create_group(&ibnbd_dev->kobj, &default_attr_group);
-> +	if (unlikely(err))
-> +		goto put_devs_kobj;
-> +
-> +	return 0;
-> +
-> +put_devs_kobj:
-> +	kobject_del(ibnbd_devs_kobj);
-> +	kobject_put(ibnbd_devs_kobj);
-> +dev_destroy:
-> +	device_destroy(ibnbd_dev_class, MKDEV(0, 0));
-> +cls_destroy:
-> +	class_destroy(ibnbd_dev_class);
-> +
-> +	return err;
-> +}
+Has the posted code been compiled with W=1? I'm asking this because the 
+documentation of the function arguments is missing from the kernel-doc 
+header. I expect that a warning will be reported if this code is 
+compiled with W=1.
 
-I think this is the wrong way to create a device node because this 
-approach will inform udev about device creation before the sysfs group 
-has been created. Please use device_create_with_groups() instead of 
-calling device_create() and sysfs_create_group() separately.
+Thanks,
 
 Bart.
