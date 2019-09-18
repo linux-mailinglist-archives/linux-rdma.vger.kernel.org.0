@@ -2,95 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD15B54C8
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Sep 2019 19:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A28B591D
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2019 02:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726996AbfIQR7L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Sep 2019 13:59:11 -0400
-Received: from mail-pg1-f170.google.com ([209.85.215.170]:33017 "EHLO
-        mail-pg1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbfIQR7L (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Sep 2019 13:59:11 -0400
-Received: by mail-pg1-f170.google.com with SMTP id n190so2431532pgn.0
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Sep 2019 10:59:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jsQ7CwmpOwFZ9SEJivcYuQ2uZq/YXm72KB9P5StyPto=;
-        b=N7ob3omNri/F1xUrqmST96e8dbCQHORkyGPn80nGjgVa1ag45jTMAuczgD81EUHOt2
-         SKSRfluzOjD6qUVbQ1ISXIkde2VPqijdpjQD2CaTcXjueT38ABTT4Kv3PUx7AHnE5HSP
-         cEY9G5gQxK/8yB9+IbiYnSglO6hHeLhkuybPkQw7sw2giMs+oC8QfF/LTZssAbi29dtQ
-         sO0SqRLOwUCoLvWYvXZ4kEqHTjFGrHngGVwBLdE60+eeqAQHqhGPvhDgqgmBZlQsCKos
-         ncexwysupL0bqslAIdn3O+pJJMTznE+YRx10UhClNPTC+bS69WQpqoikR7zYgPwqlk/5
-         DFVQ==
-X-Gm-Message-State: APjAAAXvCW7kgyQ36YlMC9n57igBTjCTB5pNyEllcikhV5AcmQQsi9cd
-        eSVlcDKLQnLme1Y13uF5aDc=
-X-Google-Smtp-Source: APXvYqykYlJfkn4P4dnn0a0/HbODMIVDO+EZ9Q+B4M9P8iASarKgqI60chPVVa2ezgntPCzGzCJmzA==
-X-Received: by 2002:aa7:94af:: with SMTP id a15mr5602538pfl.157.1568743151136;
-        Tue, 17 Sep 2019 10:59:11 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id r18sm3510814pfc.3.2019.09.17.10.59.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Sep 2019 10:59:10 -0700 (PDT)
-Subject: Re: 5.3-rc8 tests all pass with RDMA/SRP testing
-To:     Laurence Oberman <loberman@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "Dutile, Don" <ddutile@redhat.com>
-Cc:     Rupesh Girase <rgirase@redhat.com>
-References: <3d41038fc1e720937606589d1ba91591486dd548.camel@redhat.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <c9e449ab-23d6-0036-7056-8c49e4efdf0b@acm.org>
-Date:   Tue, 17 Sep 2019 10:59:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726353AbfIRAzM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Sep 2019 20:55:12 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:49884 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727302AbfIRAzL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 17 Sep 2019 20:55:11 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 96E1230860BD;
+        Wed, 18 Sep 2019 00:55:11 +0000 (UTC)
+Received: from localhost (unknown [10.66.128.227])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0BB98600C4;
+        Wed, 18 Sep 2019 00:55:10 +0000 (UTC)
+Date:   Wed, 18 Sep 2019 08:55:08 +0800
+From:   Honggang LI <honli@redhat.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [rdma-core patch] srp_daemon: print maximum initiator to target
+ IU size
+Message-ID: <20190918005508.GA8676@dhcp-128-227.nay.redhat.com>
+References: <20190916013607.9474-1-honli@redhat.com>
+ <deb829a3-813e-6b99-c932-ceecc06e09b3@acm.org>
 MIME-Version: 1.0
-In-Reply-To: <3d41038fc1e720937606589d1ba91591486dd548.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <deb829a3-813e-6b99-c932-ceecc06e09b3@acm.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Wed, 18 Sep 2019 00:55:11 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/12/19 12:48 PM, Laurence Oberman wrote:
-> My usual 3 month SRP test results show all is still well with SRP
-> client drivers and multipath.
-> I am still using 4.16 for the ib_srpt on the target server.
+On Tue, Sep 17, 2019 at 10:19:37AM -0700, Bart Van Assche wrote:
+> On 9/15/19 6:36 PM, Honggang LI wrote:
+> > From: Honggang Li <honli@redhat.com>
+> > 
+> > The 'Send Message Size' field of IOControllerProfile attributes
+> > contains the maximum initiator to target IU size.
+> > 
+> > When there is something wrong with SRP login to a third party
+> > SRP target, whose ib_srpt parameters can't be collected with
+> > ordinary method, dump the 'Send Message Size' may help us to
+> > diagnose the problem.
+> > 
+> > Signed-off-by: Honggang Li <honli@redhat.com>
+> > ---
+> >   srp_daemon/srp_daemon.c | 2 ++
+> >   1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/srp_daemon/srp_daemon.c b/srp_daemon/srp_daemon.c
+> > index 337b21c7..90533c77 100644
+> > --- a/srp_daemon/srp_daemon.c
+> > +++ b/srp_daemon/srp_daemon.c
+> > @@ -1022,6 +1022,8 @@ static int do_port(struct resources *res, uint16_t pkey, uint16_t dlid,
+> >   			pr_human("        vendor ID: %06x\n", be32toh(target->ioc_prof.vendor_id) >> 8);
+> >   			pr_human("        device ID: %06x\n", be32toh(target->ioc_prof.device_id));
+> >   			pr_human("        IO class : %04hx\n", be16toh(target->ioc_prof.io_class));
+> > +			pr_human("        Maximum initiator to target IU size: %d\n",
+> > +				 be32toh(target->ioc_prof.send_size));
+> >   			pr_human("        ID:        %s\n", target->ioc_prof.id);
+> >   			pr_human("        service entries: %d\n", target->ioc_prof.service_entries);
 > 
-> 5.3-rc8 ib_srp CX4 100Gbit EDR tests
-> direct and unbuffered, large and small I/O sizes
-> port recovery with fault injection
-> 
-> One small observation was that after fault injection it seemed to take
-> longer to log back in, in that I needed to extend my sleep in the
-> injection script to avoid some multipaths lose all paths.
-> 
-> I was sleeping 30s between resets prior to this and I would log back in
-> quick enough to not lose all paths.
-> My sleep is now 60s
-> 
-> #on ibclient server in /sys/class/srp_remote_ports, using echo 1 >
-> delete for the particular port will simulate a port reset.
-> 
-> #/sys/class/srp_remote_ports
-> #[root@ibclient srp_remote_ports]# ls
-> #port-1:1  port-2:1
-> for d in /sys/class/srp_remote_ports/*
-> do
-> 	echo 1 > $d/delete
-> sleep 60
-> done
+> How about using the terminology from the InfiniBand Architecture
 
-Hi Laurence,
+As this is srp specific, so I suggest to use the terminology from
+srp specification 'srp2r06'.
 
-This is weird. Has this behavior change been observed once or has it 
-been observed multiple times? I'm asking because in my tests I noticed 
-that there can be variation between tests depending on how much time the 
-SCSI error handler spends in its error recovery strategy.
+Table B.7 — IOControllerProfile attributes for SRP target ports
+----------------------------------------------------------------
+| Field            | SRP requirement                           |
+----------------------------------------------------------------
+|(skip many lines).....                                        |
+----------------------------------------------------------------
+|Send Message Size |MAXIMUM INITIATOR TO TARGET IU LENGTH      |
+----------------------------------------------------------------
 
-Thanks,
-
-Bart.
+> Specification? This is what I found in release 1.3, table 306:
+> 
+> "Maximum size of Send Messages in bytes"
+> 
+> Thanks,
+> 
+> Bart.
