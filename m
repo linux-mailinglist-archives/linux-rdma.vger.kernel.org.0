@@ -2,264 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 178B2B6F0B
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2019 23:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E565B6F8C
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Sep 2019 01:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388160AbfIRVqK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Sep 2019 17:46:10 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:36798 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388135AbfIRVqK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Sep 2019 17:46:10 -0400
-Received: by mail-pf1-f194.google.com with SMTP id y22so858674pfr.3;
-        Wed, 18 Sep 2019 14:46:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5ToE36TXyPvjUmT2q612I/w8lZAj5I/Vf7MAwIwtPbE=;
-        b=Zk00P3DMH0DJotVDsgwhKXiY7uHS7iO3vhBkrIE7fk/JK69SmvodlhO4btFvwsjOVc
-         CN/f2daXB5v4Msc+0l3Cwhe27NbhFWhjc+FeG5q7KWZ+Y+OMTEgmGeuJtAJRAOwlKI8X
-         CYZ89nOwEq6LqQdTMGTV+Ix3nTJG68A9JSTqD7t2nkz62O6RjpuO1W4BCbb27jIoaFzj
-         zNOQXQ1Zv1mV9IhkBsL49kKcoZWDDBTEWi3dkqh5ZTM2CgHcH0IVEMnViXnpTy/RKHIm
-         oQHwGqRNtlPxxwt5n+hXF3Qm2oMaWOeTxvnTF4+A9Jqp6qOb4dGk8Lk/QuAfApEX5xkj
-         hIVA==
-X-Gm-Message-State: APjAAAW3vrQi2MW7iARM8M62qeGdki5yJRNeyNaofDXiVHRCA7h3dlCn
-        ng9wHA3+qZAWuxnOvDoiyjM=
-X-Google-Smtp-Source: APXvYqxhwtY/fEk55nOQQgf6oaUR6FukzEdXiWq8qdn3NQKbx40i578g6LsGGlAf2vYbYksJsbxA9A==
-X-Received: by 2002:a17:90a:9a81:: with SMTP id e1mr37824pjp.95.1568843169464;
-        Wed, 18 Sep 2019 14:46:09 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id l124sm7581337pgl.54.2019.09.18.14.46.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Sep 2019 14:46:08 -0700 (PDT)
-Subject: Re: [PATCH v4 21/25] ibnbd: server: functionality for IO submission
- to file or block dev
-To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
-        jgg@mellanox.com, dledford@redhat.com,
-        danil.kipnis@cloud.ionos.com, rpenyaev@suse.de,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-References: <20190620150337.7847-1-jinpuwang@gmail.com>
- <20190620150337.7847-22-jinpuwang@gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <d1208649-5c25-578f-967e-f7a3c9edd9ce@acm.org>
-Date:   Wed, 18 Sep 2019 14:46:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190620150337.7847-22-jinpuwang@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1726676AbfIRXIF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Sep 2019 19:08:05 -0400
+Received: from mail-eopbgr710046.outbound.protection.outlook.com ([40.107.71.46]:7616
+        "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729042AbfIRXIF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Sep 2019 19:08:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JISRIuPhuE8qURO1b6zjUPBJYiCjK84jKjSbE/ln+IPJCQFBY5s6xg+qBRlC6bmDz4ePKnWvmW1/+5wMod1pe6kFOkujodVPBfWREkMyBpB3nihKQVKcpy5LlGoVHMLJ5TPXob6j3ei65y9m1y08HyeVq2T4Tyq7pbCb2ZQAhkoEis0T/hM/3DDN8XtjQ4VWO6k/pb3XHsFOoz/Rmhb5zTReLxdWhVy/7TVgRE2VZ9M2kvnUXin4SgUCe+OiZeZXIEyrbDCvVKeAiw5B1e1cMfiPb0p2I1iYShQXZ2efBjMgBEiWMIJIwl2ZP8tf4HIETKze+eAEYP5xJ5lRrjhxGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Bx4w8qG2ZujoD++Iq3/ZM/wYQDOPdfZ/G8SjY//tKo0=;
+ b=CFdofeTO+PI6LFg5lHnX7AT5oZAra5BgXaZ5YyTSUu9JpBpOZwQeLDLDdMFM4HJ6B7IpTnAmOSERamqOIo0m4TR11Tu+By7zErPWQoCFmxU4SNidUhx8kBfj/Zq3BbXNPEfXsVUJ9P3fJ2o8U1R+hcXzSqKwVacm7tneAZlRR+oYRj2qjOtsiy+e5NzPoY4zuafDyz0izg4IFn0BeC85KspXzUIAQxQgSFbp3RmvnahtUG1cx7IobgZLUGpw5p+BybGkXF2GiknveiDRYDEqJzssj/Csu0YEz7Kzh8kFieKr2wLmJRLPaj/MqEwXGQodpUuqBA7wfjgp58b/0zP34g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Bx4w8qG2ZujoD++Iq3/ZM/wYQDOPdfZ/G8SjY//tKo0=;
+ b=yUObQoZYRGJTwTcLq88vF3xUWdkhttyrU7LuDw2RRvUR8OfyunpF9++oi6JiYTry1yJCcscTfKk1V3zXYWvjy9AVoC0VaHYu4fR9tyncGKgFPmve3uOkUujyFArQNTlwFUvm7Ldy7j00zhIs00L5JY/eCNDi+P1sEvPVxQRwtJY=
+Received: from BYAPR05MB5511.namprd05.prod.outlook.com (20.177.186.28) by
+ BYAPR05MB6150.namprd05.prod.outlook.com (20.178.55.27) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2284.18; Wed, 18 Sep 2019 23:08:02 +0000
+Received: from BYAPR05MB5511.namprd05.prod.outlook.com
+ ([fe80::81ed:73c3:bc95:7d03]) by BYAPR05MB5511.namprd05.prod.outlook.com
+ ([fe80::81ed:73c3:bc95:7d03%5]) with mapi id 15.20.2284.009; Wed, 18 Sep 2019
+ 23:08:02 +0000
+From:   Adit Ranadive <aditr@vmware.com>
+To:     "jgg@mellanox.com" <jgg@mellanox.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     Adit Ranadive <aditr@vmware.com>,
+        Pv-drivers <Pv-drivers@vmware.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: [PATCH] RDMA/vmw_pvrdma: Free SRQ only once
+Thread-Topic: [PATCH] RDMA/vmw_pvrdma: Free SRQ only once
+Thread-Index: AQHVbnXq/ZdDcwSMJkWe4MH4kt57+w==
+Date:   Wed, 18 Sep 2019 23:08:00 +0000
+Message-ID: <1568848066-12449-1-git-send-email-aditr@vmware.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BYAPR07CA0024.namprd07.prod.outlook.com
+ (2603:10b6:a02:bc::37) To BYAPR05MB5511.namprd05.prod.outlook.com
+ (2603:10b6:a03:1a::28)
+x-mailer: git-send-email 1.8.3.1
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=aditr@vmware.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [66.170.99.1]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4d0e9990-d854-4aca-4052-08d73c8d0cb7
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600167)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:BYAPR05MB6150;
+x-ms-traffictypediagnostic: BYAPR05MB6150:|BYAPR05MB6150:
+x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR05MB615055497EB5EB5EAD9DA84DC58E0@BYAPR05MB6150.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:229;
+x-forefront-prvs: 01644DCF4A
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(366004)(376002)(39860400002)(136003)(396003)(199004)(189003)(2201001)(50226002)(2906002)(52116002)(66446008)(66556008)(14454004)(6436002)(6506007)(6512007)(386003)(102836004)(4744005)(71190400001)(26005)(256004)(2501003)(6486002)(7736002)(71200400001)(86362001)(5660300002)(186003)(99286004)(305945005)(66476007)(8936002)(4326008)(486006)(64756008)(81156014)(66946007)(36756003)(3846002)(4720700003)(8676002)(478600001)(25786009)(2616005)(6116002)(316002)(110136005)(66066001)(54906003)(81166006)(476003);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR05MB6150;H:BYAPR05MB5511.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: sb/5QEC++4f9OkhEoLFwA0oMFxHVN/0ymtwXIB6lR4quY5UmCKS1L/iO4bH6zgULYFWzPuTnuvW1ur6JO1+CsdGEO1Sg5PCupiNTmSBD/8VLhJFNzxzZzYsqOIqiABzvNQUFMD+M3RgIOjlcWrerPwQY2IhWNuezVCZsSv+dTJKAz5/n4bJ39b1DfXLlpihfKQ7WBrf7vJDaJmeN23atGKM1vzZSnCwyEvx1+oD8waa21B+bJK0LHmuEYBTY3fNmTWWDhXoj+NQyse9gST4+IJTFmkMJIjUXszEy2TqMJVcILmqO2g8AbkxeHlQiGfu3/gzC/1JECq6y2XQJlrLdmdOxzefftj/GECbK61Ekmc0SjNgCK9oyXQzK+pPv2SfYD06ALX24UdITSXei5Y+uRDjfET+iklSv9kG/u7g++JU=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d0e9990-d854-4aca-4052-08d73c8d0cb7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Sep 2019 23:08:01.9553
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iH0uSqvdbNznuonHbBj0O8vGKHQIMbu2/GyUGQbxC583DMmZiiY0oXgGxehJNtpB3wWvynLS5fq4go/EOP6XZw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB6150
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/20/19 8:03 AM, Jack Wang wrote:
-> +#undef pr_fmt
-> +#define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
+An extra kfree cleanup was missed since these are now deallocated
+by core.
 
-Same comment as for a previous patch: please do not include line number 
-information in pr_fmt().
+Cc: <stable@vger.kernel.org>
+Fixes: 68e326dea1db ("RDMA: Handle SRQ allocations by IB/core")
+Signed-off-by: Adit Ranadive <aditr@vmware.com>
+---
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-> +static int ibnbd_dev_vfs_open(struct ibnbd_dev *dev, const char *path,
-> +			      fmode_t flags)
-> +{
-> +	int oflags = O_DSYNC; /* enable write-through */
-> +
-> +	if (flags & FMODE_WRITE)
-> +		oflags |= O_RDWR;
-> +	else if (flags & FMODE_READ)
-> +		oflags |= O_RDONLY;
-> +	else
-> +		return -EINVAL;
-> +
-> +	dev->file = filp_open(path, oflags, 0);
-> +	return PTR_ERR_OR_ZERO(dev->file);
-> +}
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c b/drivers/infini=
+band/hw/vmw_pvrdma/pvrdma_srq.c
+index 6cac0c88cf39..36cdfbdbd325 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c
+@@ -230,8 +230,6 @@ static void pvrdma_free_srq(struct pvrdma_dev *dev, str=
+uct pvrdma_srq *srq)
+=20
+ 	pvrdma_page_dir_cleanup(dev, &srq->pdir);
+=20
+-	kfree(srq);
+-
+ 	atomic_dec(&dev->num_srqs);
+ }
+=20
+--=20
+1.8.3.1
 
-Isn't the use of O_DSYNC something that should be configurable?
-
-> +struct ibnbd_dev *ibnbd_dev_open(const char *path, fmode_t flags,
-> +				 enum ibnbd_io_mode mode, struct bio_set *bs,
-> +				 ibnbd_dev_io_fn io_cb)
-> +{
-> +	struct ibnbd_dev *dev;
-> +	int ret;
-> +
-> +	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
-> +	if (!dev)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	if (mode == IBNBD_BLOCKIO) {
-> +		dev->blk_open_flags = flags;
-> +		ret = ibnbd_dev_blk_open(dev, path, dev->blk_open_flags);
-> +		if (ret)
-> +			goto err;
-> +	} else if (mode == IBNBD_FILEIO) {
-> +		dev->blk_open_flags = FMODE_READ;
-> +		ret = ibnbd_dev_blk_open(dev, path, dev->blk_open_flags);
-> +		if (ret)
-> +			goto err;
-> +
-> +		ret = ibnbd_dev_vfs_open(dev, path, flags);
-> +		if (ret)
-> +			goto blk_put;
-
-This looks really weird. Why to call ibnbd_dev_blk_open() first for file 
-I/O mode? Why to set dev->blk_open_flags to FMODE_READ in file I/O mode?
-
-> +static int ibnbd_dev_blk_submit_io(struct ibnbd_dev *dev, sector_t sector,
-> +				   void *data, size_t len, u32 bi_size,
-> +				   enum ibnbd_io_flags flags, short prio,
-> +				   void *priv)
-> +{
-> +	struct request_queue *q = bdev_get_queue(dev->bdev);
-> +	struct ibnbd_dev_blk_io *io;
-> +	struct bio *bio;
-> +
-> +	/* check if the buffer is suitable for bdev */
-> +	if (unlikely(WARN_ON(!blk_rq_aligned(q, (unsigned long)data, len))))
-> +		return -EINVAL;
-> +
-> +	/* Generate bio with pages pointing to the rdma buffer */
-> +	bio = ibnbd_bio_map_kern(q, data, dev->ibd_bio_set, len, GFP_KERNEL);
-> +	if (unlikely(IS_ERR(bio)))
-> +		return PTR_ERR(bio);
-> +
-> +	io = kmalloc(sizeof(*io), GFP_KERNEL);
-> +	if (unlikely(!io)) {
-> +		bio_put(bio);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	io->dev		= dev;
-> +	io->priv	= priv;
-> +
-> +	bio->bi_end_io		= ibnbd_dev_bi_end_io;
-> +	bio->bi_private		= io;
-> +	bio->bi_opf		= ibnbd_to_bio_flags(flags);
-> +	bio->bi_iter.bi_sector	= sector;
-> +	bio->bi_iter.bi_size	= bi_size;
-> +	bio_set_prio(bio, prio);
-> +	bio_set_dev(bio, dev->bdev);
-> +
-> +	submit_bio(bio);
-> +
-> +	return 0;
-> +}
-
-Can struct bio and struct ibnbd_dev_blk_io be combined into a single 
-data structure by passing the size of the latter data structure as the 
-front_pad argument to bioset_init()?
-
-> +static void ibnbd_dev_file_submit_io_worker(struct work_struct *w)
-> +{
-> +	struct ibnbd_dev_file_io_work *dev_work;
-> +	struct file *f;
-> +	int ret, len;
-> +	loff_t off;
-> +
-> +	dev_work = container_of(w, struct ibnbd_dev_file_io_work, work);
-> +	off = dev_work->sector * ibnbd_dev_get_logical_bsize(dev_work->dev);
-> +	f = dev_work->dev->file;
-> +	len = dev_work->bi_size;
-> +
-> +	if (ibnbd_op(dev_work->flags) == IBNBD_OP_FLUSH) {
-> +		ret = ibnbd_dev_file_handle_flush(dev_work, off);
-> +		if (unlikely(ret))
-> +			goto out;
-> +	}
-> +
-> +	if (ibnbd_op(dev_work->flags) == IBNBD_OP_WRITE_SAME) {
-> +		ret = ibnbd_dev_file_handle_write_same(dev_work);
-> +		if (unlikely(ret))
-> +			goto out;
-> +	}
-> +
-> +	/* TODO Implement support for DIRECT */
-> +	if (dev_work->bi_size) {
-> +		loff_t off_tmp = off;
-> +
-> +		if (ibnbd_op(dev_work->flags) == IBNBD_OP_WRITE)
-> +			ret = kernel_write(f, dev_work->data, dev_work->bi_size,
-> +					   &off_tmp);
-> +		else
-> +			ret = kernel_read(f, dev_work->data, dev_work->bi_size,
-> +					  &off_tmp);
-> +
-> +		if (unlikely(ret < 0)) {
-> +			goto out;
-> +		} else if (unlikely(ret != dev_work->bi_size)) {
-> +			/* TODO implement support for partial completions */
-> +			ret = -EIO;
-> +			goto out;
-> +		} else {
-> +			ret = 0;
-> +		}
-> +	}
-> +
-> +	if (dev_work->flags & IBNBD_F_FUA)
-> +		ret = ibnbd_dev_file_handle_fua(dev_work, off);
-> +out:
-> +	dev_work->dev->io_cb(dev_work->priv, ret);
-> +	kfree(dev_work);
-> +}
-> +
-> +static int ibnbd_dev_file_submit_io(struct ibnbd_dev *dev, sector_t sector,
-> +				    void *data, size_t len, size_t bi_size,
-> +				    enum ibnbd_io_flags flags, void *priv)
-> +{
-> +	struct ibnbd_dev_file_io_work *w;
-> +
-> +	if (!ibnbd_flags_supported(flags)) {
-> +		pr_info_ratelimited("Unsupported I/O flags: 0x%x on device "
-> +				    "%s\n", flags, dev->name);
-> +		return -ENOTSUPP;
-> +	}
-> +
-> +	w = kmalloc(sizeof(*w), GFP_KERNEL);
-> +	if (!w)
-> +		return -ENOMEM;
-> +
-> +	w->dev		= dev;
-> +	w->priv		= priv;
-> +	w->sector	= sector;
-> +	w->data		= data;
-> +	w->len		= len;
-> +	w->bi_size	= bi_size;
-> +	w->flags	= flags;
-> +	INIT_WORK(&w->work, ibnbd_dev_file_submit_io_worker);
-> +
-> +	if (unlikely(!queue_work(fileio_wq, &w->work))) {
-> +		kfree(w);
-> +		return -EEXIST;
-> +	}
-> +
-> +	return 0;
-> +}
-
-Please use the in-kernel asynchronous I/O API instead of kernel_read() 
-and kernel_write() and remove the fileio_wq workqueue. Examples of how 
-to use call_read_iter() and call_write_iter() are available in the loop 
-driver and also in drivers/target/target_core_file.c.
-
-> +/** ibnbd_dev_init() - Initialize ibnbd_dev
-> + *
-> + * This functions initialized the ibnbd-dev component.
-> + * It has to be called 1x time before ibnbd_dev_open() is used
-> + */
-> +int ibnbd_dev_init(void);
-
-It is great so see kernel-doc headers above functions but I'm not sure 
-these should be in .h files. I think most kernel developers prefer to 
-see kernel-doc headers for functions in .c files because that makes it 
-more likely that the implementation and the documentation stay in sync.
-
-Thanks,
-
-Bart.
