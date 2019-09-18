@@ -2,132 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB23B67C9
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2019 18:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0FDB67DA
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2019 18:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731915AbfIRQLb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Sep 2019 12:11:31 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:51832 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730861AbfIRQLb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Sep 2019 12:11:31 -0400
-Received: by mail-wm1-f65.google.com with SMTP id 7so801849wme.1
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Sep 2019 09:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l9BGDAnIqbvlWzDRE+Ku2Tnq1vI7ZHAZNnDGcLJaeoI=;
-        b=Lee9cvGv6LRHm4P1vIe3YyRUN3MG64NsmSRZPybtCtutHoKSLd2WvngPDQAnq51/Dd
-         CutIKWoHl6mtRNpLvhG9OU3AoYFgKJ8oRsuJ02zoRttFMO0KamdhkTwVnUdzqeJJnC8H
-         TrZASzjumSSEhz3mXlF02CQsQSPf0vmAUnCTSR3ks9/yCWnymcsF99oXK0DV2BMvBwq4
-         q3DswQns2HdGa259y+Ol6wpd6ela13VNtewNNuy2eexI8rUEJqmdze2nJcgAlgJM3cM0
-         mHgFryxTZffJQHwSf7k0TRDPNufgLOHt00y9ne7j7oaA6KfJVDc7NxSIhL1q7OAechoy
-         5bXw==
+        id S2387560AbfIRQRf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Sep 2019 12:17:35 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:31141 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387555AbfIRQRf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Sep 2019 12:17:35 -0400
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 648792AFF40
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Sep 2019 16:17:35 +0000 (UTC)
+Received: by mail-qt1-f198.google.com with SMTP id 59so616871qtc.5
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Sep 2019 09:17:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l9BGDAnIqbvlWzDRE+Ku2Tnq1vI7ZHAZNnDGcLJaeoI=;
-        b=fhFZ3Eh26o35NDVYIbW1Q777vkTf735OcwsmJy957o+tPboORoXHhGWs2UoLLQh0t1
-         12HFVgCOz282BuK3eiKIuhDinvXgOwkTktVJf3stfSQz55iChE8bYYFI7bSyiC8/cOfw
-         zE9DlkHB2DEY77re+1UnpVnS0fhgVoQmJrSZmXBGAA2BeWpT1dm4B7c7BR5XHlxNOR2M
-         ViY4QAzdOCP1M0Wpi1nP8fQKebFPhIGV23dfeyyNFrJGHDbGMCiCbwXihtzOdSeRZu2z
-         eq0Bj/oBw+Z7z76RtsiO0pi4IazCD3M5g2etFbTY2q4gtL8XCOAjcrIS1qn9Z7hgg30c
-         CfMQ==
-X-Gm-Message-State: APjAAAXkGVoYq+D/pVvW4WzIyQuKYKnaemx6yBdB/6QEy7J//0aPGbFT
-        CnPZouW2PIylA1hUk+n4eTal9caC6Q9x/5yLwsNIWIjd
-X-Google-Smtp-Source: APXvYqyEbRxped1rON75+xXUk3BOZcaOPA2pkEEmXl5pb7A8VyKejDYVYQxPCAwpWk3zADgNyjpkO9Mc5AVHNIISCoQ=
-X-Received: by 2002:a1c:7dd1:: with SMTP id y200mr3416473wmc.59.1568823089744;
- Wed, 18 Sep 2019 09:11:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-16-jinpuwang@gmail.com>
- <4fbad80b-f551-131e-9a5c-a24f1fa98fea@acm.org> <CAMGffEnVFHpmDCiazHFX1jwi4=p401T9goSkes3j1AttV0t1Ng@mail.gmail.com>
- <CAMGffE=Vsbv5O7rCSq_ymA-UXPaSWT_bMfZ+AK-2f1Z=zMMtyQ@mail.gmail.com> <66dcf1ac-53b8-aa0c-cda2-4919281500d0@acm.org>
-In-Reply-To: <66dcf1ac-53b8-aa0c-cda2-4919281500d0@acm.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Wed, 18 Sep 2019 18:11:18 +0200
-Message-ID: <CAMGffEmWg18uxB3g8w0yXprdf0Bxsoz_EiSBCOb8owenYpe2qA@mail.gmail.com>
-Subject: Re: [PATCH v4 15/25] ibnbd: private headers with IBNBD protocol
- structs and helpers
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rAFLqPnDXXL6syhfzi21csI37vHpTVq828Y+cIHnv5M=;
+        b=BKr1b4ioeek35ZpCiZoQXUcQA4bbMqDzaMW/QGjiS5Zd/iXF1apgJ/sOERuKxOABPx
+         ub0epLXPt0sCOL/BeuqLTR0DnpUxjS9FsvfE7QZQByetb+b1uaANM8naItLraaNUd47s
+         tPvs9GDKq0qicxSEvnztYSTmwWwWaWJKA3qjro/wBygS3a2gEpVpWUMpBtyf2N56buWC
+         xwSbzogrnw8SUPbAnPJhGGaI3tbllg7oksiQvAghmbtXLAUh/WBS2493s7tJEtY6Qw7G
+         6Rv8oXs69ci9Sdb7UbWf3LZBaoCQQnCFW7B1UHUTJFZjL8CZ7OYJagskjo7rn0KlGiKq
+         3yKw==
+X-Gm-Message-State: APjAAAV2Pg0cC9vqvSRuONvPKOSwPBJHr43qEHAgCl5W68+Y2MFqfLEk
+        ZiAAFqVmkVdAhaJ2lliJN5aQD9IDWfQJ2HFVB4//Zje7LcOi6tYcTQnAdj/GcpPOuVyv5PqQbJu
+        YFMMrn/DL9tU6BiKpL9GMug==
+X-Received: by 2002:a37:9b89:: with SMTP id d131mr4934618qke.176.1568823454490;
+        Wed, 18 Sep 2019 09:17:34 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqxQjxBZGN+z5yJeJwtu3woAQuhkbzYZoLfgFgrq5cUQbwK9FY+pDurAS6QIM1PWD1qWMRutYg==
+X-Received: by 2002:a37:9b89:: with SMTP id d131mr4934583qke.176.1568823454181;
+        Wed, 18 Sep 2019 09:17:34 -0700 (PDT)
+Received: from rhel7lobe ([2600:6c64:4e80:f1:aa45:cafe:5682:368f])
+        by smtp.gmail.com with ESMTPSA id k17sm3795911qtk.7.2019.09.18.09.17.33
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 18 Sep 2019 09:17:33 -0700 (PDT)
+Message-ID: <ae55e946c8d355f5c1e2e4f4575c76b44cd8d14f.camel@redhat.com>
+Subject: Re: 5.3-rc8 tests all pass with RDMA/SRP testing
+From:   Laurence Oberman <loberman@redhat.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "Dutile, Don" <ddutile@redhat.com>
+Cc:     Rupesh Girase <rgirase@redhat.com>
+Date:   Wed, 18 Sep 2019 12:17:32 -0400
+In-Reply-To: <c9e449ab-23d6-0036-7056-8c49e4efdf0b@acm.org>
+References: <3d41038fc1e720937606589d1ba91591486dd548.camel@redhat.com>
+         <c9e449ab-23d6-0036-7056-8c49e4efdf0b@acm.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-2.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 18, 2019 at 5:26 PM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 9/16/19 8:39 AM, Jinpu Wang wrote:
-> > - Roman's pb emal address, it's no longer valid, will fix next round.
-> >
-> >
-> >>>
-> >>>> +static inline const char *ibnbd_io_mode_str(enum ibnbd_io_mode mode)
-> >>>> +{
-> >>>> +     switch (mode) {
-> >>>> +     case IBNBD_FILEIO:
-> >>>> +             return "fileio";
-> >>>> +     case IBNBD_BLOCKIO:
-> >>>> +             return "blockio";
-> >>>> +     case IBNBD_AUTOIO:
-> >>>> +             return "autoio";
-> >>>> +     default:
-> >>>> +             return "unknown";
-> >>>> +     }
-> >>>> +}
-> >>>> +
-> >>>> +static inline const char *ibnbd_access_mode_str(enum ibnbd_access_mode mode)
-> >>>> +{
-> >>>> +     switch (mode) {
-> >>>> +     case IBNBD_ACCESS_RO:
-> >>>> +             return "ro";
-> >>>> +     case IBNBD_ACCESS_RW:
-> >>>> +             return "rw";
-> >>>> +     case IBNBD_ACCESS_MIGRATION:
-> >>>> +             return "migration";
-> >>>> +     default:
-> >>>> +             return "unknown";
-> >>>> +     }
-> >>>> +}
-> >>>
-> >>> These two functions are not in the hot path and hence should not be
-> >>> inline functions.
-> >> Sounds reasonable, will remove the inline.
-> > inline was added to fix the -Wunused-function warning  eg:
-> >
-> >    CC [M]  /<<PKGBUILDDIR>>/ibnbd/ibnbd-clt.o
-> > In file included from /<<PKGBUILDDIR>>/ibnbd/ibnbd-clt.h:34,
-> >                   from /<<PKGBUILDDIR>>/ibnbd/ibnbd-clt.c:33:
-> > /<<PKGBUILDDIR>>/ibnbd/ibnbd-proto.h:362:20: warning:
-> > 'ibnbd_access_mode_str' defined but not used [-Wunused-function]
-> >   static const char *ibnbd_access_mode_str(enum ibnbd_access_mode mode)
-> >                      ^~~~~~~~~~~~~~~~~~~~~
-> > /<<PKGBUILDDIR>>/ibnbd/ibnbd-proto.h:348:20: warning:
-> > 'ibnbd_io_mode_str' defined but not used [-Wunused-function]
-> >   static const char *ibnbd_io_mode_str(enum ibnbd_io_mode mode)
-> >
-> > We have to move both functions to a separate header file if we really
-> > want to do it.
-> > The function is simple and small, if you insist, I will do it.
->
-> Please move these functions into a .c file. That will reduce the size of
-> the kernel modules and will also reduce the size of the header file.
->
+On Tue, 2019-09-17 at 10:59 -0700, Bart Van Assche wrote:
+> On 9/12/19 12:48 PM, Laurence Oberman wrote:
+> > My usual 3 month SRP test results show all is still well with SRP
+> > client drivers and multipath.
+> > I am still using 4.16 for the ib_srpt on the target server.
+> > 
+> > 5.3-rc8 ib_srp CX4 100Gbit EDR tests
+> > direct and unbuffered, large and small I/O sizes
+> > port recovery with fault injection
+> > 
+> > One small observation was that after fault injection it seemed to
+> > take
+> > longer to log back in, in that I needed to extend my sleep in the
+> > injection script to avoid some multipaths lose all paths.
+> > 
+> > I was sleeping 30s between resets prior to this and I would log
+> > back in
+> > quick enough to not lose all paths.
+> > My sleep is now 60s
+> > 
+> > #on ibclient server in /sys/class/srp_remote_ports, using echo 1 >
+> > delete for the particular port will simulate a port reset.
+> > 
+> > #/sys/class/srp_remote_ports
+> > #[root@ibclient srp_remote_ports]# ls
+> > #port-1:1  port-2:1
+> > for d in /sys/class/srp_remote_ports/*
+> > do
+> > 	echo 1 > $d/delete
+> > sleep 60
+> > done
+> 
+> Hi Laurence,
+> 
+> This is weird. Has this behavior change been observed once or has it 
+> been observed multiple times? I'm asking because in my tests I
+> noticed 
+> that there can be variation between tests depending on how much time
+> the 
+> SCSI error handler spends in its error recovery strategy.
+> 
 > Thanks,
->
+> 
 > Bart.
->
 
-Ok, will do.
+Hi Bart, 
+Well the tests have been at 30s for quite a while.
+The 30s used to be long enough to get by in my tests.
+I would have to go back a bit to see when it started seeing these
+longer delays but I fully expect it to be related to EH changes to be
+honest.
 
-Thanks,
-Jinpu
+When I started getting hard errors I realized I was taking the second
+port out before the first had recovered now.
+
+Just let you know in case you have to change your blktests etc.
+
+Thanks 
+Laurence
+
+
+
+
