@@ -2,93 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A28B591D
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2019 02:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 078F7B5ABE
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2019 07:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbfIRAzM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Sep 2019 20:55:12 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:49884 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727302AbfIRAzL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 17 Sep 2019 20:55:11 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 96E1230860BD;
-        Wed, 18 Sep 2019 00:55:11 +0000 (UTC)
-Received: from localhost (unknown [10.66.128.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0BB98600C4;
-        Wed, 18 Sep 2019 00:55:10 +0000 (UTC)
-Date:   Wed, 18 Sep 2019 08:55:08 +0800
-From:   Honggang LI <honli@redhat.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [rdma-core patch] srp_daemon: print maximum initiator to target
- IU size
-Message-ID: <20190918005508.GA8676@dhcp-128-227.nay.redhat.com>
-References: <20190916013607.9474-1-honli@redhat.com>
- <deb829a3-813e-6b99-c932-ceecc06e09b3@acm.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <deb829a3-813e-6b99-c932-ceecc06e09b3@acm.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Wed, 18 Sep 2019 00:55:11 +0000 (UTC)
+        id S1727016AbfIRFSK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Sep 2019 01:18:10 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:43034 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726444AbfIRFSK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Sep 2019 01:18:10 -0400
+Received: by mail-io1-f67.google.com with SMTP id v2so13136107iob.10;
+        Tue, 17 Sep 2019 22:18:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=hsEZeGzMmik1nF5cEz0wbkGKUHu+pMKAnWIyuh68h1o=;
+        b=CuhATGSNTggc1boGxczlcFdvvJB8SlQmvbqHc3SXKLYzHnH7O5b0FTvQ2dVhAvZtyU
+         jNDjI6FPxo1HohLRTErUqeNhipcaXCk3/mMpXRL3XBrcmFxknZbWnpEPfvG7ow0Aon+v
+         kE4Clwy4lAEmkzqPqPWzWEYJt7cpw+sUTU6f4pHMXpjpEPMspCwO8xmR3GdilOIPkv0r
+         mSIs+uPPIMIvijVWONDT6NAo8CzD1WTzokt5zpZckXLZFn7xq3gSBsW/rKQN7VrcpnWr
+         xbvsZwGLvn2Og1oDUdzJqGiggDG+QcCH0hqegKLI+TZMB0cD3ZefLRrAIF8Mpzj0ENYh
+         d//A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=hsEZeGzMmik1nF5cEz0wbkGKUHu+pMKAnWIyuh68h1o=;
+        b=hhhWDhLLxCaEIwPIOGVsT3nzmonHe99o23vdVuW72CFXs2Kh75eztyKmgYBal4e5f5
+         T/8WchvMvA9gDfM5MAUZKJo6aDCFY06uDXEhWSx2C2+OUAjn1MSB6ZGhJX+psFRTZeIC
+         z6IYVu7iNBKzrA1pyWSPikL0pTBLwbL+EL4emR0kiB0g0bgGwHLmp18XH9MN/XINbb2i
+         ZX2wwwLavle709cCiJWK1A5iv8fUgrt6gakDzZ0nbkFTHPKGVh/BzUOCZ+WY80jtH4Ep
+         +HXcCQOqRjlb0NVjLYpK63iZVJmr7mW0ptKFAacjdGX9MiWaT/UWW/xrwII239sIDdh4
+         XrNA==
+X-Gm-Message-State: APjAAAXSCOrVHmH2dms6bBhNT8aUuJ29KNXFWUWeV0MdGGObKyYD2e5k
+        oFlJUuqn+8zBm8cnv9vk78fQi7BR9Do=
+X-Google-Smtp-Source: APXvYqwDYJfv+C6cXnFMDzSVIBdz6YfXIw/z6Or2FY41AC3LLl2ZQkAUoygqnEJ+6j43xYEvqxifcQ==
+X-Received: by 2002:a6b:7d02:: with SMTP id c2mr2423948ioq.262.1568783889740;
+        Tue, 17 Sep 2019 22:18:09 -0700 (PDT)
+Received: from cs-dulles.cs.umn.edu (cs-dulles.cs.umn.edu. [128.101.35.54])
+        by smtp.googlemail.com with ESMTPSA id p26sm109882iob.50.2019.09.17.22.18.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Sep 2019 22:18:08 -0700 (PDT)
+From:   Navid Emamdoost <navid.emamdoost@gmail.com>
+Cc:     emamd001@umn.edu, smccaman@umn.edu, kjlu@umn.edu,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] RDMA: release allocated skb
+Date:   Wed, 18 Sep 2019 00:17:55 -0500
+Message-Id: <20190918051756.10238-1-navid.emamdoost@gmail.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 17, 2019 at 10:19:37AM -0700, Bart Van Assche wrote:
-> On 9/15/19 6:36 PM, Honggang LI wrote:
-> > From: Honggang Li <honli@redhat.com>
-> > 
-> > The 'Send Message Size' field of IOControllerProfile attributes
-> > contains the maximum initiator to target IU size.
-> > 
-> > When there is something wrong with SRP login to a third party
-> > SRP target, whose ib_srpt parameters can't be collected with
-> > ordinary method, dump the 'Send Message Size' may help us to
-> > diagnose the problem.
-> > 
-> > Signed-off-by: Honggang Li <honli@redhat.com>
-> > ---
-> >   srp_daemon/srp_daemon.c | 2 ++
-> >   1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/srp_daemon/srp_daemon.c b/srp_daemon/srp_daemon.c
-> > index 337b21c7..90533c77 100644
-> > --- a/srp_daemon/srp_daemon.c
-> > +++ b/srp_daemon/srp_daemon.c
-> > @@ -1022,6 +1022,8 @@ static int do_port(struct resources *res, uint16_t pkey, uint16_t dlid,
-> >   			pr_human("        vendor ID: %06x\n", be32toh(target->ioc_prof.vendor_id) >> 8);
-> >   			pr_human("        device ID: %06x\n", be32toh(target->ioc_prof.device_id));
-> >   			pr_human("        IO class : %04hx\n", be16toh(target->ioc_prof.io_class));
-> > +			pr_human("        Maximum initiator to target IU size: %d\n",
-> > +				 be32toh(target->ioc_prof.send_size));
-> >   			pr_human("        ID:        %s\n", target->ioc_prof.id);
-> >   			pr_human("        service entries: %d\n", target->ioc_prof.service_entries);
-> 
-> How about using the terminology from the InfiniBand Architecture
+In create_cq, the allocated skb buffer needs to be released on error
+path.
 
-As this is srp specific, so I suggest to use the terminology from
-srp specification 'srp2r06'.
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+---
+ drivers/infiniband/hw/cxgb4/cq.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Table B.7 — IOControllerProfile attributes for SRP target ports
-----------------------------------------------------------------
-| Field            | SRP requirement                           |
-----------------------------------------------------------------
-|(skip many lines).....                                        |
-----------------------------------------------------------------
-|Send Message Size |MAXIMUM INITIATOR TO TARGET IU LENGTH      |
-----------------------------------------------------------------
+diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
+index b1bb61c65f4f..841a395d9896 100644
+--- a/drivers/infiniband/hw/cxgb4/cq.c
++++ b/drivers/infiniband/hw/cxgb4/cq.c
+@@ -166,6 +166,7 @@ static int create_cq(struct c4iw_rdev *rdev, struct t4_cq *cq,
+ 	if (user && !cq->bar2_pa) {
+ 		pr_warn("%s: cqid %u not in BAR2 range\n",
+ 			pci_name(rdev->lldi.pdev), cq->cqid);
++		kfree_skb(skb);
+ 		ret = -EINVAL;
+ 		goto err4;
+ 	}
+-- 
+2.17.1
 
-> Specification? This is what I found in release 1.3, table 306:
-> 
-> "Maximum size of Send Messages in bytes"
-> 
-> Thanks,
-> 
-> Bart.
