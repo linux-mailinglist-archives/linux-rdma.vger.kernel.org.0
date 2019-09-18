@@ -2,129 +2,395 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45274B6238
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2019 13:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA21B624F
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2019 13:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730081AbfIRL0c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Sep 2019 07:26:32 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:46258 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730065AbfIRL0c (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Sep 2019 07:26:32 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8IBNoqe146870;
-        Wed, 18 Sep 2019 11:26:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2019-08-05; bh=HWlhLi9iPsMBLr+je8pNhoJSs7q0Qb60SYxIVKtsnPU=;
- b=GDFug7GGzN5titq5nHn7hUMIpDOJ8hPTF9cBdWi/TOGQWvNKiaIHwXmljS2Y48a11ERZ
- tDkkumwi4nsJyEW8gg3s4unyzOJVwKjidjwjBk+PNZ753Hge9vMcS56GiPMVW4yAXwag
- y7QBb++LtEWoOWorzDEV6qE387lGMAaQfPtozuCaVLzQRUVXqVoo8eVkoEdEY6E+2rnp
- cM3Srsl/N58OhREXl+4NLJjoJcM8gXlh4202cWCWnSsxuFTKcaKFwGdItmILK7aav0g5
- Sco1lozer+spP0QZ/Z78+OTtNZTfdPUGypMlQy4rkq7QOt8fxaonUN9BzP1M8FlOO8Rk yQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2v385du481-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Sep 2019 11:26:27 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8IBOIJQ119055;
-        Wed, 18 Sep 2019 11:26:26 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2v37mmds71-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Sep 2019 11:26:26 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x8IBQNJs002222;
-        Wed, 18 Sep 2019 11:26:23 GMT
-Received: from dhcp-10-172-157-168.no.oracle.com (/10.172.157.168)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 18 Sep 2019 04:26:23 -0700
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: Stable branches missing ed7a01fd3fd7
-From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
-In-Reply-To: <20190918111037.GE1894362@kroah.com>
-Date:   Wed, 18 Sep 2019 13:26:20 +0200
-Cc:     stable-commits@vger.kernel.org, stable@vger.kernel.org,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2BED7C73-DB59-4002-86E6-296BABE5248E@oracle.com>
-References: <880A1006-BF84-4691-8EE1-8E6D111BF09F@oracle.com>
- <20190918111037.GE1894362@kroah.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9383 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=4 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=841
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1909180115
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9383 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=4 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=916 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1909180115
+        id S1727562AbfIRLg0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Sep 2019 07:36:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727401AbfIRLg0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Sep 2019 07:36:26 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 48D9721907;
+        Wed, 18 Sep 2019 11:36:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1568806584;
+        bh=9eUbzJGeeW3QcBlQjvakfVAr5/IIkA+qsCftMzHfyYs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ku3rLil+YeQnnm9Vh6wKsWq2qYISdpi7/BROZuVTXNWjvOg0fbzZpVSv9PAl5dcwT
+         7qHRvlG5zvFDKqz4DPINaiA/jf0TrXKQnRbly1UrjXgmjsUe45QKuDJ79lL9Wle4wA
+         b3e23hqxd9MSzxXTu/txNU6WWqqIkwUw/Y/WN/Fo=
+Date:   Wed, 18 Sep 2019 14:36:21 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Jack Morgenstein <jackm@dev.mellanox.co.il>,
+        Mark Zhang <markz@mellanox.com>
+Subject: Re: [PATCH 1/4] RDMA/cm: Fix memory leak in cm_add/remove_one
+Message-ID: <20190918113621.GA14368@unreal>
+References: <20190916071154.20383-1-leon@kernel.org>
+ <20190916071154.20383-2-leon@kernel.org>
+ <20190916184544.GG2585@mellanox.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190916184544.GG2585@mellanox.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Sep 16, 2019 at 06:45:48PM +0000, Jason Gunthorpe wrote:
+> On Mon, Sep 16, 2019 at 10:11:51AM +0300, Leon Romanovsky wrote:
+> > From: Jack Morgenstein <jackm@dev.mellanox.co.il>
+> >
+> > In the process of moving the debug counters sysfs entries, the commit
+> > mentioned below eliminated the cm_infiniband sysfs directory.
+> >
+> > This sysfs directory was tied to the cm_port object allocated in procedure
+> > cm_add_one().
+> >
+> > Before the commit below, this cm_port object was freed via a call to
+> > kobject_put(port->kobj) in procedure cm_remove_port_fs().
+> >
+> > Since port no longer uses its kobj, kobject_put(port->kobj) was eliminated.
+> > This, however, meant that kfree was never called for the cm_port buffers.
+> >
+> > Fix this by adding explicit kfree(port) calls to functions cm_add_one()
+> > and cm_remove_one().
+> >
+> > Note: the kfree call in the first chunk below (in the cm_add_one error
+> > flow) fixes an old, undetected memory leak.
+> >
+> > Fixes: c87e65cfb97c ("RDMA/cm: Move debug counters to be under relevant IB device")
+> > Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> >  drivers/infiniband/core/cm.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+> > index da10e6ccb43c..5920c0085d35 100644
+> > +++ b/drivers/infiniband/core/cm.c
+> > @@ -4399,6 +4399,7 @@ static void cm_add_one(struct ib_device *ib_device)
+> >  error1:
+> >  	port_modify.set_port_cap_mask = 0;
+> >  	port_modify.clr_port_cap_mask = IB_PORT_CM_SUP;
+> > +	kfree(port);
+> >  	while (--i) {
+> >  		if (!rdma_cap_ib_cm(ib_device, i))
+> >  			continue;
+> > @@ -4407,6 +4408,7 @@ static void cm_add_one(struct ib_device *ib_device)
+> >  		ib_modify_port(ib_device, port->port_num, 0, &port_modify);
+> >  		ib_unregister_mad_agent(port->mad_agent);
+> >  		cm_remove_port_fs(port);
+> > +		kfree(port);
+> >  	}
+> >  free:
+> >  	kfree(cm_dev);
+> > @@ -4460,6 +4462,7 @@ static void cm_remove_one(struct ib_device *ib_device, void *client_data)
+> >  		spin_unlock_irq(&cm.state_lock);
+> >  		ib_unregister_mad_agent(cur_mad_agent);
+> >  		cm_remove_port_fs(port);
+> > +		kfree(port);
+> >  	}
+>
+> This whole thing is looking pretty goofy now, and I suspect there are
+> more error unwind bugs here.
+>
+> How about this instead:
 
+It looks OK to me.
 
-> On 18 Sep 2019, at 13:10, Greg Kroah-Hartman =
-<gregkh@linuxfoundation.org> wrote:
->=20
-> On Wed, Sep 18, 2019 at 11:17:59AM +0200, H=C3=A5kon Bugge wrote:
->> Hi Greg,
->>=20
->>=20
->> Commit 00313983cda6 ("RDMA/nldev: provide detailed CM_ID =
-information") is in the following stable releases:
->>=20
->>  stable/linux-4.17.y
->>  stable/linux-4.18.y
->>  stable/linux-4.19.y
->>  stable/linux-4.20.y
->>  stable/linux-5.0.y
->>  stable/linux-5.1.y
->>  stable/linux-5.2.y
->>  stable/linux-5.3.y
->>  stable/master
->=20
-> It was part of the 4.17 release, so yes, of course it is in all later
-> releases.
->=20
->> It has a potential for a big leak of task_struct's, and if the case =
-is hit, the number of task_struct entries in /proc/slabinfo increases =
-rapidly.
->>=20
->> The fix, ed7a01fd3fd7 ("RDMA/restrack: Release task struct which was =
-hold by CM_ID object"), is in the following stable releases:
->>=20
->>  stable/linux-4.20.y
->>  stable/linux-5.0.y
->>  stable/linux-5.1.y
->>  stable/linux-5.2.y
->>  stable/linux-5.3.y
->>  stable/master
->=20
-> It was part of the 4.20 release, so yes, it will be in all releases
-> newer than that.
->=20
->> Hence, this commit needs to be included in 4-17..4.19.
->=20
-> Given there is only one "active" kernel branch you are looking at =
-here,
-> that means it should only go into 4.19.y, right?
+Thanks
 
-Yes, you are right. I should have read the collateral first, =
-kernel.org/releases.html :-)
-
-
-Thxs, H=C3=A5kon
-
-
+>
+> From e8dad20c7b69436e63b18f16cd9457ea27da5bc1 Mon Sep 17 00:00:00 2001
+> From: Jack Morgenstein <jackm@dev.mellanox.co.il>
+> Date: Mon, 16 Sep 2019 10:11:51 +0300
+> Subject: [PATCH] RDMA/cm: Fix memory leak in cm_add/remove_one
+>
+> In the process of moving the debug counters sysfs entries, the commit
+> mentioned below eliminated the cm_infiniband sysfs directory, and created
+> some missing cases where the port pointers were not being freed as the
+> kobject_put was also eliminated.
+>
+> Rework this to not allocate port pointers and consolidate all the error
+> unwind into one sequence.
+>
+> This also fixes unlikely racey bugs where error-unwind after unregistering
+> the MAD handler would miss flushing the WQ and other clean up that is
+> necessary once concurrency starts.
+>
+> Fixes: c87e65cfb97c ("RDMA/cm: Move debug counters to be under relevant IB device")
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> ---
+>  drivers/infiniband/core/cm.c | 187 ++++++++++++++++++-----------------
+>  1 file changed, 94 insertions(+), 93 deletions(-)
+>
+> diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+> index da10e6ccb43cd0..30a764e763dec1 100644
+> --- a/drivers/infiniband/core/cm.c
+> +++ b/drivers/infiniband/core/cm.c
+> @@ -223,7 +223,7 @@ struct cm_device {
+>  	struct ib_device *ib_device;
+>  	u8 ack_delay;
+>  	int going_down;
+> -	struct cm_port *port[0];
+> +	struct cm_port port[];
+>  };
+>
+>  struct cm_av {
+> @@ -520,7 +520,7 @@ get_cm_port_from_path(struct sa_path_rec *path, const struct ib_gid_attr *attr)
+>  		read_lock_irqsave(&cm.device_lock, flags);
+>  		list_for_each_entry(cm_dev, &cm.device_list, list) {
+>  			if (cm_dev->ib_device == attr->device) {
+> -				port = cm_dev->port[attr->port_num - 1];
+> +				port = &cm_dev->port[attr->port_num - 1];
+>  				break;
+>  			}
+>  		}
+> @@ -539,7 +539,7 @@ get_cm_port_from_path(struct sa_path_rec *path, const struct ib_gid_attr *attr)
+>  					     sa_conv_pathrec_to_gid_type(path),
+>  					     NULL);
+>  			if (!IS_ERR(attr)) {
+> -				port = cm_dev->port[attr->port_num - 1];
+> +				port = &cm_dev->port[attr->port_num - 1];
+>  				break;
+>  			}
+>  		}
+> @@ -4319,23 +4319,99 @@ static void cm_remove_port_fs(struct cm_port *port)
+>
+>  }
+>
+> -static void cm_add_one(struct ib_device *ib_device)
+> +static void cm_destroy_one_port(struct cm_device *cm_dev, unsigned int port_num)
+>  {
+> -	struct cm_device *cm_dev;
+> -	struct cm_port *port;
+> +	struct cm_port *port = &cm_dev->port[port_num - 1];
+> +	struct ib_port_modify port_modify = {
+> +		.clr_port_cap_mask = IB_PORT_CM_SUP
+> +	};
+> +	struct ib_mad_agent *cur_mad_agent;
+> +	struct cm_id_private *cm_id_priv;
+> +
+> +	if (!rdma_cap_ib_cm(cm_dev->ib_device, port_num))
+> +		return;
+> +
+> +	ib_modify_port(cm_dev->ib_device, port_num, 0, &port_modify);
+> +
+> +	/* Mark all the cm_id's as not valid */
+> +	spin_lock_irq(&cm.lock);
+> +	list_for_each_entry (cm_id_priv, &port->cm_priv_altr_list, altr_list)
+> +		cm_id_priv->altr_send_port_not_ready = 1;
+> +	list_for_each_entry (cm_id_priv, &port->cm_priv_prim_list, prim_list)
+> +		cm_id_priv->prim_send_port_not_ready = 1;
+> +	spin_unlock_irq(&cm.lock);
+> +
+> +	/*
+> +	 * We flush the queue here after the going_down set, this verifies
+> +	 * that no new works will be queued in the recv handler, after that we
+> +	 * can call the unregister_mad_agent
+> +	 */
+> +	flush_workqueue(cm.wq);
+> +
+> +	spin_lock_irq(&cm.state_lock);
+> +	cur_mad_agent = port->mad_agent;
+> +	port->mad_agent = NULL;
+> +	spin_unlock_irq(&cm.state_lock);
+> +
+> +	if (cur_mad_agent)
+> +		ib_unregister_mad_agent(cur_mad_agent);
+> +
+> +	cm_remove_port_fs(port);
+> +}
+> +
+> +static int cm_init_one_port(struct cm_device *cm_dev, unsigned int port_num)
+> +{
+> +	struct cm_port *port = &cm_dev->port[port_num - 1];
+>  	struct ib_mad_reg_req reg_req = {
+>  		.mgmt_class = IB_MGMT_CLASS_CM,
+>  		.mgmt_class_version = IB_CM_CLASS_VERSION,
+>  	};
+>  	struct ib_port_modify port_modify = {
+> -		.set_port_cap_mask = IB_PORT_CM_SUP
+> +		.set_port_cap_mask = IB_PORT_CM_SUP,
+>  	};
+> -	unsigned long flags;
+>  	int ret;
+> +
+> +	if (!rdma_cap_ib_cm(cm_dev->ib_device, port_num))
+> +		return 0;
+> +
+> +	set_bit(IB_MGMT_METHOD_SEND, reg_req.method_mask);
+> +
+> +	port->cm_dev = cm_dev;
+> +	port->port_num = port_num;
+> +
+> +	INIT_LIST_HEAD(&port->cm_priv_prim_list);
+> +	INIT_LIST_HEAD(&port->cm_priv_altr_list);
+> +
+> +	ret = cm_create_port_fs(port);
+> +	if (ret)
+> +		return ret;
+> +
+> +	port->mad_agent =
+> +		ib_register_mad_agent(cm_dev->ib_device, port_num, IB_QPT_GSI,
+> +				      &reg_req, 0, cm_send_handler,
+> +				      cm_recv_handler, port, 0);
+> +	if (IS_ERR(port->mad_agent)) {
+> +		cm_destroy_one_port(cm_dev, port_num);
+> +		return PTR_ERR(port->mad_agent);
+> +	}
+> +
+> +	ret = ib_modify_port(cm_dev->ib_device, port_num, 0, &port_modify);
+> +	if (ret) {
+> +		cm_destroy_one_port(cm_dev, port_num);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void cm_add_one(struct ib_device *ib_device)
+> +{
+> +	struct cm_device *cm_dev;
+> +	unsigned long flags;
+>  	int count = 0;
+>  	u8 i;
+>
+> -	cm_dev = kzalloc(struct_size(cm_dev, port, ib_device->phys_port_cnt),
+> +	cm_dev = kvzalloc(struct_size(cm_dev, port, ib_device->phys_port_cnt),
+>  			 GFP_KERNEL);
+>  	if (!cm_dev)
+>  		return;
+> @@ -4344,41 +4420,9 @@ static void cm_add_one(struct ib_device *ib_device)
+>  	cm_dev->ack_delay = ib_device->attrs.local_ca_ack_delay;
+>  	cm_dev->going_down = 0;
+>
+> -	set_bit(IB_MGMT_METHOD_SEND, reg_req.method_mask);
+>  	for (i = 1; i <= ib_device->phys_port_cnt; i++) {
+> -		if (!rdma_cap_ib_cm(ib_device, i))
+> -			continue;
+> -
+> -		port = kzalloc(sizeof *port, GFP_KERNEL);
+> -		if (!port)
+> -			goto error1;
+> -
+> -		cm_dev->port[i-1] = port;
+> -		port->cm_dev = cm_dev;
+> -		port->port_num = i;
+> -
+> -		INIT_LIST_HEAD(&port->cm_priv_prim_list);
+> -		INIT_LIST_HEAD(&port->cm_priv_altr_list);
+> -
+> -		ret = cm_create_port_fs(port);
+> -		if (ret)
+> -			goto error1;
+> -
+> -		port->mad_agent = ib_register_mad_agent(ib_device, i,
+> -							IB_QPT_GSI,
+> -							&reg_req,
+> -							0,
+> -							cm_send_handler,
+> -							cm_recv_handler,
+> -							port,
+> -							0);
+> -		if (IS_ERR(port->mad_agent))
+> -			goto error2;
+> -
+> -		ret = ib_modify_port(ib_device, i, 0, &port_modify);
+> -		if (ret)
+> -			goto error3;
+> -
+> +		if (!cm_init_one_port(cm_dev, i))
+> +			goto error;
+>  		count++;
+>  	}
+>
+> @@ -4392,35 +4436,16 @@ static void cm_add_one(struct ib_device *ib_device)
+>  	write_unlock_irqrestore(&cm.device_lock, flags);
+>  	return;
+>
+> -error3:
+> -	ib_unregister_mad_agent(port->mad_agent);
+> -error2:
+> -	cm_remove_port_fs(port);
+> -error1:
+> -	port_modify.set_port_cap_mask = 0;
+> -	port_modify.clr_port_cap_mask = IB_PORT_CM_SUP;
+> -	while (--i) {
+> -		if (!rdma_cap_ib_cm(ib_device, i))
+> -			continue;
+> -
+> -		port = cm_dev->port[i-1];
+> -		ib_modify_port(ib_device, port->port_num, 0, &port_modify);
+> -		ib_unregister_mad_agent(port->mad_agent);
+> -		cm_remove_port_fs(port);
+> -	}
+> +error:
+> +	while (--i)
+> +		cm_destroy_one_port(cm_dev, i);
+>  free:
+> -	kfree(cm_dev);
+> +	kvfree(cm_dev);
+>  }
+>
+>  static void cm_remove_one(struct ib_device *ib_device, void *client_data)
+>  {
+>  	struct cm_device *cm_dev = client_data;
+> -	struct cm_port *port;
+> -	struct cm_id_private *cm_id_priv;
+> -	struct ib_mad_agent *cur_mad_agent;
+> -	struct ib_port_modify port_modify = {
+> -		.clr_port_cap_mask = IB_PORT_CM_SUP
+> -	};
+>  	unsigned long flags;
+>  	int i;
+>
+> @@ -4435,34 +4460,10 @@ static void cm_remove_one(struct ib_device *ib_device, void *client_data)
+>  	cm_dev->going_down = 1;
+>  	spin_unlock_irq(&cm.lock);
+>
+> -	for (i = 1; i <= ib_device->phys_port_cnt; i++) {
+> -		if (!rdma_cap_ib_cm(ib_device, i))
+> -			continue;
+> -
+> -		port = cm_dev->port[i-1];
+> -		ib_modify_port(ib_device, port->port_num, 0, &port_modify);
+> -		/* Mark all the cm_id's as not valid */
+> -		spin_lock_irq(&cm.lock);
+> -		list_for_each_entry(cm_id_priv, &port->cm_priv_altr_list, altr_list)
+> -			cm_id_priv->altr_send_port_not_ready = 1;
+> -		list_for_each_entry(cm_id_priv, &port->cm_priv_prim_list, prim_list)
+> -			cm_id_priv->prim_send_port_not_ready = 1;
+> -		spin_unlock_irq(&cm.lock);
+> -		/*
+> -		 * We flush the queue here after the going_down set, this
+> -		 * verify that no new works will be queued in the recv handler,
+> -		 * after that we can call the unregister_mad_agent
+> -		 */
+> -		flush_workqueue(cm.wq);
+> -		spin_lock_irq(&cm.state_lock);
+> -		cur_mad_agent = port->mad_agent;
+> -		port->mad_agent = NULL;
+> -		spin_unlock_irq(&cm.state_lock);
+> -		ib_unregister_mad_agent(cur_mad_agent);
+> -		cm_remove_port_fs(port);
+> -	}
+> +	for (i = 1; i <= ib_device->phys_port_cnt; i++)
+> +		cm_destroy_one_port(cm_dev, i);
+>
+> -	kfree(cm_dev);
+> +	kvfree(cm_dev);
+>  }
+>
+>  static int __init ib_cm_init(void)
+> --
+> 2.23.0
+>
