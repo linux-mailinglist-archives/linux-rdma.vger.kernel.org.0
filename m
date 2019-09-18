@@ -2,85 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 414BCB62FC
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2019 14:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ADA1B64EE
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Sep 2019 15:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729873AbfIRMWc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Sep 2019 08:22:32 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:42789 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729141AbfIRMWc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Sep 2019 08:22:32 -0400
-Received: by mail-wr1-f68.google.com with SMTP id n14so5796660wrw.9
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Sep 2019 05:22:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m4xmVhO4aVmWQpZQri7DsxSTEfwJAB057bj26n65Zok=;
-        b=UCNZmbmD2GDn+g+EDmNepoyb2UzByJvJPs503pqvEf0SmwF6sj6oMPkCW/9oHrEY8T
-         veuJag53n4J65fLiYAzr2Zc+pkNUY5vYlrCR+YmRszw64Fk21SMkeLM9CQadGUvxRByf
-         L+jaGnGMc7REC5ZLuZiP5FLVYp5fg6uYhwga8fDdYAE3rjSFyJ5YBHLBAuU0bS1CAdRG
-         MDEHsL6+UE4HIX/k3Go7MUouR9I21Dj9OZVdOMW7vzPhFNeZUZmuMuFVnEM1zxZJmqmp
-         aJTGDz1DCYSds3yqcv93sH3hV2vXxJ3/wKi2lgjhvgK3hp9cBQABXhhd9r+dQRqe3eEO
-         Zbdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m4xmVhO4aVmWQpZQri7DsxSTEfwJAB057bj26n65Zok=;
-        b=Bi4SxWRLg+5qPxlYu56zRGrUqtmbKhW7QxMaLBPfxj4VmHO2hKVu+jjtOX1MMo1sp7
-         LYI0ZHZsYygWr07D21sZ9lewW0zFk9pfI1dGvM79tOmkW8zNrnr2eAfDb5mns6Wy6P0z
-         O0cA9zE63IQ0XqC4uMDoUK+bKj1tHT8WeqvnWExr1nxn53+lkHudy37P2dDFdriGv2/7
-         zeIEv69sc/NBhIfIn3TJiNGWrvc7cdjMoR2VJq0P2pTWi99XIaueC5NDeW9ukyU8io9c
-         BRaJ1dy1YMf/kb+bmNnAvtXBq6Hvu2qLWjFcRIoixLFMlfKUHis9OfdGiE734c/Lxc7Y
-         iYMg==
-X-Gm-Message-State: APjAAAUmQDB4rPjuK3pgrffOjJbwtHdBAH1NCP/wl5tDuS6DrU6Yf//i
-        UxqOHOU07hiMSfCMShCzizPIt7CRVi7URUo9nN4F6A==
-X-Google-Smtp-Source: APXvYqzCUT4tP0P7kaqvmlAhxGIGeZIJobnt5M+Q2IZYU3eBvDQ/Xc2dz92RXzxIT2ujmdlLkjAl0qnVJM4HGGc88cg=
-X-Received: by 2002:adf:8444:: with SMTP id 62mr3077746wrf.202.1568809349137;
- Wed, 18 Sep 2019 05:22:29 -0700 (PDT)
+        id S1726714AbfIRNoA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Sep 2019 09:44:00 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:22993 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726659AbfIRNoA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Sep 2019 09:44:00 -0400
+Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x8IDhQHe002100;
+        Wed, 18 Sep 2019 06:43:27 -0700
+Date:   Wed, 18 Sep 2019 19:13:25 +0530
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     Sagi Grimberg <sagi@grimberg.me>,
+        Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Steve Wise <larrystevenwise@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Nirranjan Kirubaharan <nirranjan@chelsio.com>
+Subject: Re: [PATCH v3] iwcm: don't hold the irq disabled lock on iw_rem_ref
+Message-ID: <20190918134324.GA5734@chelsio.com>
+References: <20190916162829.GA22329@ziepe.ca>
+ <20190904212531.6488-1-sagi@grimberg.me>
+ <20190910111759.GA5472@chelsio.com>
+ <5cc42f23-bf60-ca8d-f40c-cbd8875f5756@grimberg.me>
+ <20190910192157.GA5954@chelsio.com>
+ <OF00E4DFD9.0EEF58A6-ON00258472.0032F9AC-00258472.0034FEAA@notes.na.collabserv.com>
+ <CADmRdJcCENJx==LaaJQYU_kMv5rSgD69Z6s+ubCKWjprZmPQpA@mail.gmail.com>
+ <20190911155814.GA12639@chelsio.com>
+ <OFAEAC1AA7.9611AF4F-ON00258478.002E162F-00258478.0031D798@notes.na.collabserv.com>
+ <55ece255-b4e2-9bc4-e1ec-039d92a36273@grimberg.me>
 MIME-Version: 1.0
-References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-25-jinpuwang@gmail.com>
- <f9e6014b-9123-8cfb-77a2-57af953a5031@acm.org>
-In-Reply-To: <f9e6014b-9123-8cfb-77a2-57af953a5031@acm.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Wed, 18 Sep 2019 14:22:18 +0200
-Message-ID: <CAMGffE=SQa54CmY+c=qqUMFFOE1zfNi4hVtcHxkZ1meWbXX9-A@mail.gmail.com>
-Subject: Re: [PATCH v4 24/25] ibnbd: a bit of documentation
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de,
-        Roman Pen <roman.penyaev@profitbricks.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <55ece255-b4e2-9bc4-e1ec-039d92a36273@grimberg.me>
+User-Agent: Mutt/1.9.3 (20180206.02d571c2)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Sep 14, 2019 at 1:58 AM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 6/20/19 8:03 AM, Jack Wang wrote:
-> > From: Roman Pen <roman.penyaev@profitbricks.com>
-> >
-> > README with description of major sysfs entries.
->
-> Please have a look at Documentation/ABI/README and follow the
-> instructions from that document.
->
-> Thanks,
->
-> Bart.
+On Tuesday, September 09/17/19, 2019 at 22:50:27 +0530, Sagi Grimberg wrote:
+> 
+> >> To: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+> >> From: "Jason Gunthorpe" <jgg@ziepe.ca>
+> >> Date: 09/16/2019 06:28PM
+> >> Cc: "Steve Wise" <larrystevenwise@gmail.com>, "Bernard Metzler"
+> >> <BMT@zurich.ibm.com>, "Sagi Grimberg" <sagi@grimberg.me>,
+> >> "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+> >> Subject: [EXTERNAL] Re: Re: [PATCH v3] iwcm: don't hold the irq
+> >> disabled lock on iw_rem_ref
+> >>
+> >> On Wed, Sep 11, 2019 at 09:28:16PM +0530, Krishnamraju Eraparaju
+> >> wrote:
+> >>> Hi Steve & Bernard,
+> >>>
+> >>> Thanks for the review comments.
+> >>> I will do those formating changes.
+> >>
+> >> I don't see anything in patchworks, but the consensus is to drop
+> >> Sagi's patch pending this future patch?
+> >>
+> >> Jason
+> >>
+> > This is my impression as well. But consensus should be
+> > explicit...Sagi, what do you think?
+> 
+> I don't really care, but given the changes from Krishnamraju cause other
+> problems I'd ask if my version is also offending his test.
+Hi Sagi,
+Your version holds good for rdma_destroy_id() path only, but there are
+other places where iw_rem_ref() is being called within spinlocks, here is
+the call trace when iw_rem_ref() is called in cm_close_handler() path:
+[  627.716339] Call Trace:
+[  627.716339]  ? load_new_mm_cr3+0xc0/0xc0
+[  627.716339]  on_each_cpu+0x23/0x40
+[  627.716339]  flush_tlb_kernel_range+0x74/0x80
+[  627.716340]  free_unmap_vmap_area+0x2a/0x40
+[  627.716340]  remove_vm_area+0x59/0x60
+[  627.716340]  __vunmap+0x46/0x210
+[  627.716340]  siw_free_qp+0x88/0x120 [siw]
+[  627.716340]  cm_work_handler+0x5b8/0xd00  <=====
+[  627.716340]  process_one_work+0x155/0x380
+[  627.716341]  worker_thread+0x41/0x3b0
+[  627.716341]  kthread+0xf3/0x130
+[  627.716341]  ? process_one_work+0x380/0x380
+[  627.716341]  ? kthread_bind+0x10/0x10
+[  627.716341]  ret_from_fork+0x35/0x40
 
-Thanks, will move the sysfs description to
-Documentation/ABI/testing/[sysfs-class-ibnbd-client|sysfs-block-ibnbd],
-will also move ibtrs sysfs description there.
+Hence, I moved all the occurances of iw_rem_ref() outside of spinlocks
+critical section.
+> 
+> In general, I do not think that making resources free routines (both
+> explict or implicit via ref dec) under a spinlock is not a robust
+> design.
+> 
+> I would first make it clear and documented what cm_id_priv->lock is
+> protecting. In my mind, it should protect *its own* mutations of
+> cm_id_priv and by design leave all the ops calls outside the lock.
+> 
+> I don't understand what is causing the Chelsio issue observed, but
+> it looks like c4iw_destroy_qp blocks on a completion that depends on a
+> refcount that is taken also by iwcm, which means that I cannot call
+> ib_destroy_qp if the cm is not destroyed as well?
+> 
+> If that is madatory, I'd say that instead of blocking on this
+> completion, we can simply convert c4iw_qp_rem_ref if use a kref
+> which is not order dependent.
 
-
-Regards,
-Jinpu
+I agree,
+I'm exploring best possible ways to address this issue, will update my
+final resolution by this Friday.
