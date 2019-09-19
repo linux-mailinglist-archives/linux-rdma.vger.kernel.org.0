@@ -2,35 +2,33 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06CE3B7204
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Sep 2019 05:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DE2B734D
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Sep 2019 08:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731769AbfISDvF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Sep 2019 23:51:05 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:35956 "EHLO mx1.redhat.com"
+        id S1728770AbfISGlA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Sep 2019 02:41:00 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:35506 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730964AbfISDvF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 18 Sep 2019 23:51:05 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        id S1725320AbfISGlA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 19 Sep 2019 02:41:00 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 22CE24E4E6;
-        Thu, 19 Sep 2019 03:51:05 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id 7F71487630;
+        Thu, 19 Sep 2019 06:41:00 +0000 (UTC)
 Received: from dhcp-128-227.nay.redhat.com (unknown [10.66.128.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5964D100194E;
-        Thu, 19 Sep 2019 03:51:03 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3C45760872;
+        Thu, 19 Sep 2019 06:40:58 +0000 (UTC)
 From:   Honggang LI <honli@redhat.com>
-To:     bvanassche@acm.org, dledford@redhat.com, jgg@ziepe.ca
+To:     bvanassche@acm.org
 Cc:     linux-rdma@vger.kernel.org, Honggang Li <honli@redhat.com>
-Subject: [patch v3 2/2] RDMA/srp: calculate max_it_iu_size if remote max_it_iu length available
-Date:   Thu, 19 Sep 2019 11:50:32 +0800
-Message-Id: <20190919035032.31373-2-honli@redhat.com>
-In-Reply-To: <20190919035032.31373-1-honli@redhat.com>
-References: <20190919035032.31373-1-honli@redhat.com>
+Subject: [rdma-core patch] srp_daemon: fix a double free segment fault for ibsrpdm
+Date:   Thu, 19 Sep 2019 14:40:45 +0800
+Message-Id: <20190919064045.23193-1-honli@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.38]); Thu, 19 Sep 2019 03:51:05 +0000 (UTC)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.26]); Thu, 19 Sep 2019 06:41:00 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
@@ -38,95 +36,43 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Honggang Li <honli@redhat.com>
 
-The default maximum immediate size is too big for old srp clients,
-which without immediate data support.
+Command: ./ibsrpdm -d /dev/infiniband/umadX
 
-According to the SRP and SRP-2 specifications, the IOControllerProfile
-attributes for SRP target ports contains the maximum initiator to target
-iu length.
-
-The maximum initiator to target iu length can be get from the subnet
-manager, such as opensm and opafm. We should calculate the
-max_it_iu_size instead of the default value, when remote maximum
-initiator to target iu length available.
+Invalid free() / delete / delete[] / realloc()
+   at 0x4C320DC: free (vg_replace_malloc.c:540)
+   by 0x403BBB: free_config (srp_daemon.c:1811)
+   by 0x4031BE: ibsrpdm (srp_daemon.c:2113)
+   by 0x4031BE: main (srp_daemon.c:2153)
+ Address 0x5ee5fd0 is 0 bytes inside a block of size 16 free'd
+   at 0x4C320DC: free (vg_replace_malloc.c:540)
+   by 0x404851: translate_umad_to_ibdev_and_port (srp_daemon.c:729)
+   by 0x404851: set_conf_dev_and_port (srp_daemon.c:1586)
+   by 0x403171: ibsrpdm (srp_daemon.c:2092)
+   by 0x403171: main (srp_daemon.c:2153)
+ Block was alloc'd at
+   at 0x4C30EDB: malloc (vg_replace_malloc.c:309)
+   by 0x40478D: translate_umad_to_ibdev_and_port (srp_daemon.c:698)
+   by 0x40478D: set_conf_dev_and_port (srp_daemon.c:1586)
+   by 0x403171: ibsrpdm (srp_daemon.c:2092)
+   by 0x403171: main (srp_daemon.c:2153)
 
 Signed-off-by: Honggang Li <honli@redhat.com>
 ---
- drivers/infiniband/ulp/srp/ib_srp.c | 28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
+ srp_daemon/srp_daemon.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index b829dab0df77..b3bf5d552de9 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -139,7 +139,7 @@ MODULE_PARM_DESC(use_imm_data,
+diff --git a/srp_daemon/srp_daemon.c b/srp_daemon/srp_daemon.c
+index 337b21c7..f0bcf923 100644
+--- a/srp_daemon/srp_daemon.c
++++ b/srp_daemon/srp_daemon.c
+@@ -727,6 +727,7 @@ end:
+ 	if (ret) {
+ 		free(*ibport);
+ 		free(*ibdev);
++		*ibdev = NULL;
+ 	}
+ 	free(class_dev_path);
  
- static unsigned int srp_max_imm_data = 8 * 1024;
- module_param_named(max_imm_data, srp_max_imm_data, uint, 0644);
--MODULE_PARM_DESC(max_imm_data, "Maximum immediate data size.");
-+MODULE_PARM_DESC(max_imm_data, "Maximum immediate data size if max_it_iu_size has not been specified.");
- 
- static unsigned ch_count;
- module_param(ch_count, uint, 0444);
-@@ -1362,15 +1362,23 @@ static void srp_terminate_io(struct srp_rport *rport)
- }
- 
- /* Calculate maximum initiator to target information unit length. */
--static uint32_t srp_max_it_iu_len(int cmd_sg_cnt, bool use_imm_data)
-+static uint32_t srp_max_it_iu_len(int cmd_sg_cnt, bool use_imm_data,
-+				  uint32_t max_it_iu_size)
- {
- 	uint32_t max_iu_len = sizeof(struct srp_cmd) + SRP_MAX_ADD_CDB_LEN +
- 		sizeof(struct srp_indirect_buf) +
- 		cmd_sg_cnt * sizeof(struct srp_direct_buf);
- 
--	if (use_imm_data)
--		max_iu_len = max(max_iu_len, SRP_IMM_DATA_OFFSET +
--				 srp_max_imm_data);
-+	if (use_imm_data) {
-+		if (max_it_iu_size == 0) {
-+			max_iu_len = max(max_iu_len,
-+			   SRP_IMM_DATA_OFFSET + srp_max_imm_data);
-+		} else {
-+			max_iu_len = max_it_iu_size;
-+		}
-+	}
-+
-+	pr_debug("max_iu_len = %d\n", max_iu_len);
- 
- 	return max_iu_len;
- }
-@@ -1389,7 +1397,8 @@ static int srp_rport_reconnect(struct srp_rport *rport)
- 	struct srp_target_port *target = rport->lld_data;
- 	struct srp_rdma_ch *ch;
- 	uint32_t max_iu_len = srp_max_it_iu_len(target->cmd_sg_cnt,
--						srp_use_imm_data);
-+						srp_use_imm_data,
-+						target->max_it_iu_size);
- 	int i, j, ret = 0;
- 	bool multich = false;
- 
-@@ -2538,7 +2547,8 @@ static void srp_cm_rep_handler(struct ib_cm_id *cm_id,
- 		ch->req_lim       = be32_to_cpu(lrsp->req_lim_delta);
- 		ch->use_imm_data  = lrsp->rsp_flags & SRP_LOGIN_RSP_IMMED_SUPP;
- 		ch->max_it_iu_len = srp_max_it_iu_len(target->cmd_sg_cnt,
--						      ch->use_imm_data);
-+						      ch->use_imm_data,
-+						      target->max_it_iu_size);
- 		WARN_ON_ONCE(ch->max_it_iu_len >
- 			     be32_to_cpu(lrsp->max_it_iu_len));
- 
-@@ -3897,7 +3907,9 @@ static ssize_t srp_create_target(struct device *dev,
- 	target->mr_per_cmd = mr_per_cmd;
- 	target->indirect_size = target->sg_tablesize *
- 				sizeof (struct srp_direct_buf);
--	max_iu_len = srp_max_it_iu_len(target->cmd_sg_cnt, srp_use_imm_data);
-+	max_iu_len = srp_max_it_iu_len(target->cmd_sg_cnt,
-+				       srp_use_imm_data,
-+				       target->max_it_iu_size);
- 
- 	INIT_WORK(&target->tl_err_work, srp_tl_err_work);
- 	INIT_WORK(&target->remove_work, srp_remove_work);
 -- 
 2.21.0
 
