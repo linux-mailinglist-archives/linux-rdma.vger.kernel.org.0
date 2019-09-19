@@ -2,129 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E09B71EF
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Sep 2019 05:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079E5B7202
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Sep 2019 05:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731062AbfISDgi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Sep 2019 23:36:38 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:47892 "EHLO mx1.redhat.com"
+        id S1731472AbfISDu4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Sep 2019 23:50:56 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:47894 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728423AbfISDgi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 18 Sep 2019 23:36:38 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        id S1730964AbfISDuz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Sep 2019 23:50:55 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id C3BFD307CDD1;
-        Thu, 19 Sep 2019 03:36:37 +0000 (UTC)
-Received: from localhost (unknown [10.66.128.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2EC5F600CC;
-        Thu, 19 Sep 2019 03:36:36 +0000 (UTC)
-Date:   Thu, 19 Sep 2019 11:36:35 +0800
+        by mx1.redhat.com (Postfix) with ESMTPS id 30D7B3DE04;
+        Thu, 19 Sep 2019 03:50:55 +0000 (UTC)
+Received: from dhcp-128-227.nay.redhat.com (unknown [10.66.128.227])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 683191001B01;
+        Thu, 19 Sep 2019 03:50:53 +0000 (UTC)
 From:   Honggang LI <honli@redhat.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org
-Subject: Re: [patch v2 2/2] RDMA/SRP: calculate max_it_iu_size if remote
- max_it_iu length available
-Message-ID: <20190919033635.GB6303@dhcp-128-227.nay.redhat.com>
-References: <20190917032421.13000-1-honli@redhat.com>
- <20190917032421.13000-2-honli@redhat.com>
- <ba8ed403-b74e-dc6a-2c47-d4dc6f81fbdd@acm.org>
+To:     bvanassche@acm.org, dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, Honggang Li <honli@redhat.com>
+Subject: [patch v3 1/2] RDMA/srp: Add parse function for maximum initiator to target IU size
+Date:   Thu, 19 Sep 2019 11:50:31 +0800
+Message-Id: <20190919035032.31373-1-honli@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ba8ed403-b74e-dc6a-2c47-d4dc6f81fbdd@acm.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.49]); Thu, 19 Sep 2019 03:36:37 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.29]); Thu, 19 Sep 2019 03:50:55 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 17, 2019 at 10:40:00AM -0700, Bart Van Assche wrote:
-> On 9/16/19 8:24 PM, Honggang LI wrote:
-> > diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-> > index 2eadb038b257..d8dee5900c08 100644
-> > --- a/drivers/infiniband/ulp/srp/ib_srp.c
-> > +++ b/drivers/infiniband/ulp/srp/ib_srp.c
-> > @@ -76,6 +76,7 @@ static bool register_always = true;
-> >   static bool never_register;
-> >   static int topspin_workarounds = 1;
-> >   static uint32_t srp_opt_max_it_iu_size;
-> > +static unsigned int srp_max_imm_data;
-> 
-> Each SCSI host can represent a connection to another SRP target, and the
-> max_it_iu_size parameter can differ per target. So I think this variable
-> should be moved into struct srp_target_port instead of being global.
+From: Honggang Li <honli@redhat.com>
 
-Yes, will do as you said.
+According to SRP specifications 'srp-r16a' and 'srp2r06',
+IOControllerProfile attributes for SRP target port include
+the maximum initiator to target IU size.
 
-> 
-> >   module_param(srp_sg_tablesize, uint, 0444);
-> >   MODULE_PARM_DESC(srp_sg_tablesize, "Deprecated name for cmd_sg_entries");
-> > @@ -138,9 +139,9 @@ module_param_named(use_imm_data, srp_use_imm_data, bool, 0644);
-> >   MODULE_PARM_DESC(use_imm_data,
-> >   		 "Whether or not to request permission to use immediate data during SRP login.");
-> > -static unsigned int srp_max_imm_data = 8 * 1024;
-> > -module_param_named(max_imm_data, srp_max_imm_data, uint, 0644);
-> > -MODULE_PARM_DESC(max_imm_data, "Maximum immediate data size.");
-> > +static unsigned int srp_default_max_imm_data = 8 * 1024;
-> > +module_param_named(max_imm_data, srp_default_max_imm_data, uint, 0644);
-> > +MODULE_PARM_DESC(max_imm_data, "Default maximum immediate data size.");
-> 
-> This description might confuse users. How about keeping the name of the
-> variable and the module parameter and changing its description into the
+SRP connection daemons, such as srp_daemon, can get the value
+from subnet manager. The SRP connection daemon can pass this
+value to kernel.
 
-Yes, will keep the name of the variable and the module parameter.
+This patch add parse function for it.
 
-> following?
-> 
-> "Maximum immediate data size if max_it_iu_size has not been specified."
+Upstream commit [1] enables the kernel parameter, 'use_imm_data',
+by default. [1] also use (8 * 1024) as the default value for
+kernel parameter 'max_imm_data'. With those default values, the
+maximum initiator to target IU size will be 8260.
 
-Yes, will use this description.
+In case the SRPT modules, which include the in-tree 'ib_srpt.ko'
+module, do not support SRP-2 'immediate data' feature, the default
+maximum initiator to target IU size is significantly smaller than
+8260. For 'ib_srpt.ko' module, which built from source before
+[2], the default maximum initiator to target IU is 2116.
 
-> 
-> >   static unsigned ch_count;
-> >   module_param(ch_count, uint, 0444);
-> > @@ -1369,9 +1370,19 @@ static uint32_t srp_max_it_iu_len(int cmd_sg_cnt, bool use_imm_data)
-> >   		sizeof(struct srp_indirect_buf) +
-> >   		cmd_sg_cnt * sizeof(struct srp_direct_buf);
-> > -	if (use_imm_data)
-> > -		max_iu_len = max(max_iu_len, SRP_IMM_DATA_OFFSET +
-> > -				 srp_max_imm_data);
-> > +	if (use_imm_data) {
-> > +		if (srp_opt_max_it_iu_size == 0) {
-> > +			srp_max_imm_data = srp_default_max_imm_data;
-> > +			max_iu_len = max(max_iu_len,
-> > +			   SRP_IMM_DATA_OFFSET + srp_max_imm_data);
-> > +		} else {
-> > +			srp_max_imm_data =
-> > +			   srp_opt_max_it_iu_size - SRP_IMM_DATA_OFFSET;
-> 
-> Please use as much of a line as possible. I think the recommended style in
-> the Linux kernel is as follows:
-> 
-> 			srp_max_imm_data = srp_opt_max_it_iu_size -
-> 				SRP_IMM_DATA_OFFSET;
+[1] introduces a regression issue for old srp target with default
+kernel parameters, as the connection will be reject because of
+too large maximum initiator to target IU size.
 
-The new patch no longer needs this. So, it will not be a problem.
+[1] commit 882981f4a411 ("RDMA/srp: Add support for immediate data")
+[2] commit 5dabcd0456d7 ("RDMA/srpt: Add support for immediate data")
 
-> 
-> > @@ -3829,6 +3840,8 @@ static ssize_t srp_create_target(struct device *dev,
-> >   	if (ret < 0)
-> >   		goto put;
-> > +	srp_opt_max_it_iu_size = 0;
-> > +
-> 
-> Static variables that are not initialized explicitly are initialized to
-> zero. Since this initialization is redundant, please remove it.
+Signed-off-by: Honggang Li <honli@redhat.com>
+---
+ drivers/infiniband/ulp/srp/ib_srp.c | 10 ++++++++++
+ drivers/infiniband/ulp/srp/ib_srp.h |  1 +
+ 2 files changed, 11 insertions(+)
 
-The initialization is not redundant. For example, a srp client connect
-to target-1 with 'max_it_iu=1234', and then try to connect target-2
-without 'max_it_iu'. At this time srp_opt_max_it_iu_size has garbage
-value 1234. That is why we have to initialize it for echo login.
+diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
+index b5960351bec0..b829dab0df77 100644
+--- a/drivers/infiniband/ulp/srp/ib_srp.c
++++ b/drivers/infiniband/ulp/srp/ib_srp.c
+@@ -3411,6 +3411,7 @@ enum {
+ 	SRP_OPT_IP_SRC		= 1 << 15,
+ 	SRP_OPT_IP_DEST		= 1 << 16,
+ 	SRP_OPT_TARGET_CAN_QUEUE= 1 << 17,
++	SRP_OPT_MAX_IT_IU_SIZE  = 1 << 18,
+ };
+ 
+ static unsigned int srp_opt_mandatory[] = {
+@@ -3443,6 +3444,7 @@ static const match_table_t srp_opt_tokens = {
+ 	{ SRP_OPT_QUEUE_SIZE,		"queue_size=%d"		},
+ 	{ SRP_OPT_IP_SRC,		"src=%s"		},
+ 	{ SRP_OPT_IP_DEST,		"dest=%s"		},
++	{ SRP_OPT_MAX_IT_IU_SIZE,	"max_it_iu_size=%d"	},
+ 	{ SRP_OPT_ERR,			NULL 			}
+ };
+ 
+@@ -3736,6 +3738,14 @@ static int srp_parse_options(struct net *net, const char *buf,
+ 			target->tl_retry_count = token;
+ 			break;
+ 
++		case SRP_OPT_MAX_IT_IU_SIZE:
++			if (match_int(args, &token) || token < 0) {
++				pr_warn("bad maximum initiator to target IU size '%s'\n", p);
++				goto out;
++			}
++			target->max_it_iu_size = token;
++			break;
++
+ 		default:
+ 			pr_warn("unknown parameter or missing value '%s' in target creation request\n",
+ 				p);
+diff --git a/drivers/infiniband/ulp/srp/ib_srp.h b/drivers/infiniband/ulp/srp/ib_srp.h
+index b2861cd2087a..105b2bc6aa2f 100644
+--- a/drivers/infiniband/ulp/srp/ib_srp.h
++++ b/drivers/infiniband/ulp/srp/ib_srp.h
+@@ -209,6 +209,7 @@ struct srp_target_port {
+ 	u32			ch_count;
+ 	u32			lkey;
+ 	enum srp_target_state	state;
++	uint32_t		max_it_iu_size;
+ 	unsigned int		cmd_sg_cnt;
+ 	unsigned int		indirect_size;
+ 	bool			allow_ext_sg;
+-- 
+2.21.0
 
-Because srp_opt_max_it_iu_size will be removed in new patch, it
-will not be a problem.
-
-thanks
