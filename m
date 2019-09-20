@@ -2,82 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FDEB90CC
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Sep 2019 15:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4288B914A
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Sep 2019 16:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbfITNkC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Sep 2019 09:40:02 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:30172 "EHLO
+        id S1728023AbfITOBp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Sep 2019 10:01:45 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:46691 "EHLO
         smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726835AbfITNkC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Sep 2019 09:40:02 -0400
+        with ESMTP id S1727904AbfITOBp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Sep 2019 10:01:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1568986801; x=1600522801;
+  t=1568988104; x=1600524104;
   h=subject:to:cc:references:from:message-id:date:
    mime-version:in-reply-to:content-transfer-encoding;
-  bh=1v3R+9+ruxzn0qZecp9Uv9GZk+babxpJBnzXg063FJE=;
-  b=CYm0fE3biiMhNx902X5C8Rmc6cu72hOOQsWMyDCA3GAjRHf8b/1DEu3/
-   zPLs6UtJPumBE3iVpgGF1Ab+0Awa60FYN4gRQ3h1JrZF2CgtYnGDxHoEf
-   JUlfV4UJbl/ue1ofMzI+/7eUAcasxR6GdfnBrMe5lzbffTlQlD3FOVCq/
-   0=;
+  bh=aowkE49bc3ByHHUEDi9aagoFNsOCP9k2iEPG2iJHylg=;
+  b=TiqjQAS7NGlzTLZ443ib6o4RJyZLIOl9wwM0McN89sueeFdyRyJsKzQ5
+   +7LWeLyg8cR+OnYmyaV+f5gyRLe6fq0uFBuAfoqISQnylUTbKidRYpkC7
+   Ndv08pLWOOkXEk6s7CSqWCHfdDvuzt70lGmsihy1RqpU8VT9lhTMcFp18
+   E=;
 X-IronPort-AV: E=Sophos;i="5.64,528,1559520000"; 
-   d="scan'208";a="834975016"
-Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-2c-1968f9fa.us-west-2.amazon.com) ([10.47.22.34])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 20 Sep 2019 13:39:26 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2c-1968f9fa.us-west-2.amazon.com (Postfix) with ESMTPS id 2ECD6A0763;
-        Fri, 20 Sep 2019 13:39:21 +0000 (UTC)
+   d="scan'208";a="834980687"
+Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.47.22.34])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 20 Sep 2019 14:00:43 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id F37E8A1897;
+        Fri, 20 Sep 2019 14:00:36 +0000 (UTC)
 Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
  EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Fri, 20 Sep 2019 13:39:20 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.116) by
+ id 15.0.1367.3; Fri, 20 Sep 2019 14:00:36 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.27) by
  EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Fri, 20 Sep 2019 13:39:15 +0000
-Subject: Re: [PATCH v11 rdma-next 5/7] RDMA/qedr: Use the common mmap API
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Michal Kalderon <michal.kalderon@marvell.com>
-CC:     <mkalderon@marvell.com>, <aelior@marvell.com>,
+ id 15.0.1367.3; Fri, 20 Sep 2019 14:00:31 +0000
+Subject: Re: [PATCH v11 rdma-next 6/7] RDMA/qedr: Add doorbell overflow
+ recovery support
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Michal Kalderon <michal.kalderon@marvell.com>,
+        <mkalderon@marvell.com>, <aelior@marvell.com>,
         <dledford@redhat.com>, <bmt@zurich.ibm.com>, <sleybo@amazon.com>,
         <leon@kernel.org>, <linux-rdma@vger.kernel.org>
 References: <20190905100117.20879-1-michal.kalderon@marvell.com>
- <20190905100117.20879-6-michal.kalderon@marvell.com>
- <20190919175546.GD4132@ziepe.ca>
+ <20190905100117.20879-7-michal.kalderon@marvell.com>
+ <20190919180224.GE4132@ziepe.ca>
+ <a0e19fb2-cd5c-4394-16d6-75ac856340b4@amazon.com>
+ <20190920133817.GB7095@ziepe.ca>
 From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <af160e72-bcc3-c511-8757-a21b33bd9e5c@amazon.com>
-Date:   Fri, 20 Sep 2019 16:39:10 +0300
+Message-ID: <82541758-3e72-d485-6923-cf3336a4297a@amazon.com>
+Date:   Fri, 20 Sep 2019 17:00:25 +0300
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
  Gecko/20100101 Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20190919175546.GD4132@ziepe.ca>
+In-Reply-To: <20190920133817.GB7095@ziepe.ca>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.116]
-X-ClientProxiedBy: EX13D32UWA003.ant.amazon.com (10.43.160.167) To
+X-Originating-IP: [10.43.160.27]
+X-ClientProxiedBy: EX13D29UWC001.ant.amazon.com (10.43.162.143) To
  EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 19/09/2019 20:55, Jason Gunthorpe wrote:
-> Huh. If you recall we did all this work with the XA and the free
-> callback because you said qedr was mmaping BAR pages that had some HW
-> lifetime associated with them, and the HW resource was not to be
-> reallocated until all users were gone.
+On 20/09/2019 16:38, Jason Gunthorpe wrote:
+> On Fri, Sep 20, 2019 at 04:30:52PM +0300, Gal Pressman wrote:
+>> On 19/09/2019 21:02, Jason Gunthorpe wrote:
+>>> On Thu, Sep 05, 2019 at 01:01:16PM +0300, Michal Kalderon wrote:
+>>>
+>>>> @@ -347,6 +360,9 @@ void qedr_mmap_free(struct rdma_user_mmap_entry *rdma_entry)
+>>>>  {
+>>>>  	struct qedr_user_mmap_entry *entry = get_qedr_mmap_entry(rdma_entry);
+>>>>  
+>>>> +	if (entry->mmap_flag == QEDR_USER_MMAP_PHYS_PAGE)
+>>>> +		free_page((unsigned long)phys_to_virt(entry->address));
+>>>> +
+>>>
+>>> While it isn't wrong it do it this way, we don't need this mmap_free()
+>>> stuff for normal CPU pages. Those are refcounted and qedr can simply
+>>> call free_page() during the teardown of the uobject that is using the
+>>> this page. This is what other drivers already do.
+>>
+>> This is pretty much what EFA does as well.  When we allocate pages
+>> for the user (CQ for example), we DMA map them and later on mmap
+>> them to the user. We expect those pages to remain until the entry is
+>> freed, how can we call free_page, who is holding a refcount on those
+>> except for the driver?
 > 
-> I think it would be a better example of this API if you pulled the
+> free_page is kind of a lie, it is more like put_page (see
+> __free_pages). I think the difference is that it assumes the page came
+> from alloc_page and skips some generic stuff when freeing it.
 > 
->  	dev->ops->rdma_remove_user(dev->rdma_ctx, ctx->dpi);
+> When the driver does vm_insert_page the vma holds another refcount and
+> the refcount does not go to zero until that page drops out of the
+> vma (ie at the same time mmap_free above is called). 
 > 
-> Into qedr_mmap_free().
+> Then __put_page will do the free_unref_page(), etc.
 > 
-> Then the rdma_user_mmap_entry_remove() will call it naturally as it
-> does entry_put() and if we are destroying the ucontext we already know
-> the mmaps are destroyed.
-> 
-> Maybe the same basic comment for EFA, not sure. Gal?
+> So for CPU pages it is fine to not use mmap_free so long as
+> vm_insert_page is used
 
-That's what EFA already does in this series, no?
-We no longer remove entries on dealloc_ucontext, only when the entry is freed.
+Thanks, I did not know this, it simplifies things.
+In that case, maybe the mmap_free callback is redundant.
