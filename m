@@ -2,104 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4288B914A
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Sep 2019 16:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B7BB944C
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Sep 2019 17:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbfITOBp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Sep 2019 10:01:45 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:46691 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727904AbfITOBp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Sep 2019 10:01:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1568988104; x=1600524104;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=aowkE49bc3ByHHUEDi9aagoFNsOCP9k2iEPG2iJHylg=;
-  b=TiqjQAS7NGlzTLZ443ib6o4RJyZLIOl9wwM0McN89sueeFdyRyJsKzQ5
-   +7LWeLyg8cR+OnYmyaV+f5gyRLe6fq0uFBuAfoqISQnylUTbKidRYpkC7
-   Ndv08pLWOOkXEk6s7CSqWCHfdDvuzt70lGmsihy1RqpU8VT9lhTMcFp18
-   E=;
-X-IronPort-AV: E=Sophos;i="5.64,528,1559520000"; 
-   d="scan'208";a="834980687"
-Received: from sea3-co-svc-lb6-vlan2.sea.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.47.22.34])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 20 Sep 2019 14:00:43 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id F37E8A1897;
-        Fri, 20 Sep 2019 14:00:36 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Fri, 20 Sep 2019 14:00:36 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.27) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Fri, 20 Sep 2019 14:00:31 +0000
-Subject: Re: [PATCH v11 rdma-next 6/7] RDMA/qedr: Add doorbell overflow
- recovery support
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Michal Kalderon <michal.kalderon@marvell.com>,
-        <mkalderon@marvell.com>, <aelior@marvell.com>,
-        <dledford@redhat.com>, <bmt@zurich.ibm.com>, <sleybo@amazon.com>,
-        <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-References: <20190905100117.20879-1-michal.kalderon@marvell.com>
- <20190905100117.20879-7-michal.kalderon@marvell.com>
- <20190919180224.GE4132@ziepe.ca>
- <a0e19fb2-cd5c-4394-16d6-75ac856340b4@amazon.com>
- <20190920133817.GB7095@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <82541758-3e72-d485-6923-cf3336a4297a@amazon.com>
-Date:   Fri, 20 Sep 2019 17:00:25 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.9.0
+        id S2393523AbfITPmR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Sep 2019 11:42:17 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:37618 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391417AbfITPmQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Sep 2019 11:42:16 -0400
+Received: by mail-pl1-f196.google.com with SMTP id b10so3365512plr.4;
+        Fri, 20 Sep 2019 08:42:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5k0Hu7l3DB3jRw+ooV6mnNF37HqLQwv8COStuG71sZ8=;
+        b=BZ4j9grosqv1YQIhliQUvV8SIxv7teEfhu8+opvV4qZw42ikIFXMkCHOMtyRFjJG4h
+         XTU8awVGYMvyW9uQ2DoAXHfWKW7hBqv0W0LEnQfyvoxH6VKZ1tHtvX+KgY0ZFbldXxpG
+         d0dhjG6cliqfSoKpmPIVW/xIsjWq6mz+y70liviRdQU9z4WpHOGLPvPZE7v4h8ZQVvCl
+         jfsksXis0ldzGHoDEzsl8wWgnK479Ki9ioxrHUMGwolcVZEW+2yTGfcMcw87NWKDW3hH
+         utvGINl3X5fQZ18pp0NQFqyXYcnohLK/agidh0D1lqGjBnF9GFLoW2Bm3FTkEXj+Wkjf
+         8F4w==
+X-Gm-Message-State: APjAAAUl6gz8kfCfxMJBEsgPJXKmNE9hPOUfSNCSNEAh39qH2rKs+pKa
+        dZzlI4+rwRQR9lo1T9GXvR4=
+X-Google-Smtp-Source: APXvYqwHqVTt2crG6TDYmodv+VSYzm7WIYYYgdumgCr77pq+xmF6WVqVrNNO+9zBw0dFcwe5WlXRMg==
+X-Received: by 2002:a17:902:b097:: with SMTP id p23mr18048328plr.261.1568994135216;
+        Fri, 20 Sep 2019 08:42:15 -0700 (PDT)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id 7sm2630484pfi.91.2019.09.20.08.42.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Sep 2019 08:42:14 -0700 (PDT)
+Subject: Re: [PATCH v4 20/25] ibnbd: server: main functionality
+To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, rpenyaev@suse.de,
+        Roman Pen <roman.penyaev@profitbricks.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>
+References: <20190620150337.7847-1-jinpuwang@gmail.com>
+ <20190620150337.7847-21-jinpuwang@gmail.com>
+ <5ceebb9c-b7ae-8e0c-6f07-d83e878e23d0@acm.org>
+ <CAHg0Huw8Sk-ORjDaFDsTiL00nfsHru20MpNqGmWrCa_pSWuQSQ@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <ed4555f4-fbc3-a3f5-7180-69064452e377@acm.org>
+Date:   Fri, 20 Sep 2019 08:42:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190920133817.GB7095@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAHg0Huw8Sk-ORjDaFDsTiL00nfsHru20MpNqGmWrCa_pSWuQSQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.27]
-X-ClientProxiedBy: EX13D29UWC001.ant.amazon.com (10.43.162.143) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 20/09/2019 16:38, Jason Gunthorpe wrote:
-> On Fri, Sep 20, 2019 at 04:30:52PM +0300, Gal Pressman wrote:
->> On 19/09/2019 21:02, Jason Gunthorpe wrote:
->>> On Thu, Sep 05, 2019 at 01:01:16PM +0300, Michal Kalderon wrote:
->>>
->>>> @@ -347,6 +360,9 @@ void qedr_mmap_free(struct rdma_user_mmap_entry *rdma_entry)
->>>>  {
->>>>  	struct qedr_user_mmap_entry *entry = get_qedr_mmap_entry(rdma_entry);
->>>>  
->>>> +	if (entry->mmap_flag == QEDR_USER_MMAP_PHYS_PAGE)
->>>> +		free_page((unsigned long)phys_to_virt(entry->address));
->>>> +
->>>
->>> While it isn't wrong it do it this way, we don't need this mmap_free()
->>> stuff for normal CPU pages. Those are refcounted and qedr can simply
->>> call free_page() during the teardown of the uobject that is using the
->>> this page. This is what other drivers already do.
+On 9/20/19 12:36 AM, Danil Kipnis wrote:
+> On Wed, Sep 18, 2019 at 7:41 PM Bart Van Assche <bvanassche@acm.org> wrote:
+>> On 6/20/19 8:03 AM, Jack Wang wrote:
+>>> +static int process_msg_sess_info(struct ibtrs_srv *ibtrs,
+>>> +                              struct ibnbd_srv_session *srv_sess,
+>>> +                              const void *msg, size_t len,
+>>> +                              void *data, size_t datalen)
+>>> +{
+>>> +     const struct ibnbd_msg_sess_info *sess_info_msg = msg;
+>>> +     struct ibnbd_msg_sess_info_rsp *rsp = data;
+>>> +
+>>> +     srv_sess->ver = min_t(u8, sess_info_msg->ver, IBNBD_PROTO_VER_MAJOR);
+>>> +     pr_debug("Session %s using protocol version %d (client version: %d,"
+>>> +              " server version: %d)\n", srv_sess->sessname,
+>>> +              srv_sess->ver, sess_info_msg->ver, IBNBD_PROTO_VER_MAJOR);
 >>
->> This is pretty much what EFA does as well.  When we allocate pages
->> for the user (CQ for example), we DMA map them and later on mmap
->> them to the user. We expect those pages to remain until the entry is
->> freed, how can we call free_page, who is holding a refcount on those
->> except for the driver?
+>> Has this patch been verified with checkpatch? I think checkpatch
+>> recommends not to split literal strings.
 > 
-> free_page is kind of a lie, it is more like put_page (see
-> __free_pages). I think the difference is that it assumes the page came
-> from alloc_page and skips some generic stuff when freeing it.
-> 
-> When the driver does vm_insert_page the vma holds another refcount and
-> the refcount does not go to zero until that page drops out of the
-> vma (ie at the same time mmap_free above is called). 
-> 
-> Then __put_page will do the free_unref_page(), etc.
-> 
-> So for CPU pages it is fine to not use mmap_free so long as
-> vm_insert_page is used
+> Yes it does complain about our splitted strings. But it's either
+> splitted string or line over 80 chars or "Avoid line continuations in
+> quoted strings" if we use backslash on previous line. I don't know how
+> to avoid all three of them.
 
-Thanks, I did not know this, it simplifies things.
-In that case, maybe the mmap_free callback is redundant.
+Checkpatch shouldn't complain about constant strings that exceed 80 
+columns. If it complains about such strings then that's a checkpatch bug.
+
+Bart.
