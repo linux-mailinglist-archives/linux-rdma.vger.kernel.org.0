@@ -2,178 +2,177 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 187AEBBCAF
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Sep 2019 22:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33F9BBCCA
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Sep 2019 22:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728763AbfIWUSD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Sep 2019 16:18:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728647AbfIWUSC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Sep 2019 16:18:02 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C996205F4;
-        Mon, 23 Sep 2019 20:18:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569269881;
-        bh=1cS+V/2T6hNQDP2dZSXrP1Xl7F2JPVXoQBrGnhIIPto=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=uCQg0YOuP/QFqnR+R+RbQxNx8ri4unVWRFrjFAw3XVDUoGJOVcYLXFDm98fFifPCF
-         xhFWllvd7JOhbF6YB82C7hWZ46zQEZp5t2CYtIJhjbBN8gDSWVAEEIPvT/Lf/NO7RV
-         NfF133HbqciMhpf6r0BUlHGlbDyOHVIgaZ1FmiJA=
-Message-ID: <5d5a93637934867e1b3352763da8e3d9f9e6d683.camel@kernel.org>
-Subject: Re: Lease semantic proposal
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Ira Weiny <ira.weiny@intel.com>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org
-Cc:     Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Date:   Mon, 23 Sep 2019 16:17:59 -0400
-In-Reply-To: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
-References: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S2388083AbfIWU0g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Sep 2019 16:26:36 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:15951 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502575AbfIWU0g (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Sep 2019 16:26:36 -0400
+Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x8NKQVYc014371;
+        Mon, 23 Sep 2019 13:26:33 -0700
+Date:   Tue, 24 Sep 2019 01:56:31 +0530
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org, bharat@chelsio.com,
+        nirranjan@chelsio.com
+Subject: Re: [PATCH for-next] RDMA/siw: fixes serialization issue in
+ write_space
+Message-ID: <20190923202629.GA24416@chelsio.com>
+References: <20190923101112.32685-1-krishna2@chelsio.com>
+ <OFF07E93B6.E63D8785-ON0025847E.003DA8D0-0025847E.003EAD9D@notes.na.collabserv.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OFF07E93B6.E63D8785-ON0025847E.003DA8D0-0025847E.003EAD9D@notes.na.collabserv.com>
+User-Agent: Mutt/1.9.3 (20180206.02d571c2)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 2019-09-23 at 12:08 -0700, Ira Weiny wrote:
-> Since the last RFC patch set[1] much of the discussion of supporting RDMA with
-> FS DAX has been around the semantics of the lease mechanism.[2]  Within that
-> thread it was suggested I try and write some documentation and/or tests for the
-> new mechanism being proposed.  I have created a foundation to test lease
-> functionality within xfstests.[3] This should be close to being accepted.
-> Before writing additional lease tests, or changing lots of kernel code, this
-> email presents documentation for the new proposed "layout lease" semantic.
-> 
-> At Linux Plumbers[4] just over a week ago, I presented the current state of the
-> patch set and the outstanding issues.  Based on the discussion there, well as
-> follow up emails, I propose the following addition to the fcntl() man page.
-> 
-> Thank you,
-> Ira
-> 
-> [1] https://lkml.org/lkml/2019/8/9/1043
-> [2] https://lkml.org/lkml/2019/8/9/1062
-> [3] https://www.spinics.net/lists/fstests/msg12620.html
-> [4] https://linuxplumbersconf.org/event/4/contributions/368/
-> 
-> 
+Hi Bernard,
 
-Thank you so much for doing this, Ira. This allows us to debate the
-user-visible behavior semantics without getting bogged down in the
-implementation details. More comments below:
+write_space callback may not always be called from softirq/tasklet
+context, it may be called from process context.
+Hence, read_lock_bh() is safer than read_lock().
 
-> <fcntl man page addition>
-> Layout Leases
-> -------------
-> 
-> Layout (F_LAYOUT) leases are special leases which can be used to control and/or
-> be informed about the manipulation of the underlying layout of a file.
-> 
-> A layout is defined as the logical file block -> physical file block mapping
-> including the file size and sharing of physical blocks among files.  Note that
-> the unwritten state of a block is not considered part of file layout.
-> 
-> **Read layout lease F_RDLCK | F_LAYOUT**
-> 
-> Read layout leases can be used to be informed of layout changes by the
-> system or other users.  This lease is similar to the standard read (F_RDLCK)
-> lease in that any attempt to change the _layout_ of the file will be reported to
-> the process through the lease break process.  But this lease is different
-> because the file can be opened for write and data can be read and/or written to
-> the file as long as the underlying layout of the file does not change.
-> Therefore, the lease is not broken if the file is simply open for write, but
-> _may_ be broken if an operation such as, truncate(), fallocate() or write()
-> results in changing the underlying layout.
-> 
-> **Write layout lease (F_WRLCK | F_LAYOUT)**
-> 
-> Write Layout leases can be used to break read layout leases to indicate that
-> the process intends to change the underlying layout lease of the file.
-> 
-> A process which has taken a write layout lease has exclusive ownership of the
-> file layout and can modify that layout as long as the lease is held.
-> Operations which change the layout are allowed by that process.  But operations
-> from other file descriptors which attempt to change the layout will break the
-> lease through the standard lease break process.  The F_LAYOUT flag is used to
-> indicate a difference between a regular F_WRLCK and F_WRLCK with F_LAYOUT.  In
-> the F_LAYOUT case opens for write do not break the lease.  But some operations,
-> if they change the underlying layout, may.
-> 
-> The distinction between read layout leases and write layout leases is that
-> write layout leases can change the layout without breaking the lease within the
-> owning process.  This is useful to guarantee a layout prior to specifying the
-> unbreakable flag described below.
-> 
-> 
+I will resubmit the patch.
 
-The above sounds totally reasonable. You're essentially exposing the
-behavior of nfsd's layout leases to userland. To be clear, will F_LAYOUT
-leases work the same way as "normal" leases, wrt signals and timeouts?
+Also, after looking at the below commit, I feel all other read_lock()
+in SIW driver should be replaced with BH variants.
 
-I do wonder if we're better off not trying to "or" in flags for this,
-and instead have a separate set of commands (maybe F_RDLAYOUT,
-F_WRLAYOUT, F_UNLAYOUT). Maybe I'm just bikeshedding though -- I don't
-feel terribly strongly about it.
+https://github.com/torvalds/linux/commit/7cb001d4c4fa7e1cc1a55388a9544e160dddc610
 
-Also, at least in NFSv4, layouts are handed out for a particular byte
-range in a file. Should we consider doing this with an API that allows
-for that in the future? Is this something that would be desirable for
-your RDMA+DAX use-cases?
 
-We could add a new F_SETLEASE variant that takes a struct with a byte
-range (something like struct flock).
 
-> **Unbreakable Layout Leases (F_UNBREAK)**
+Shall I also change all other occurances of read_lock() to
+read_lock_bh()?
+
+
+Thanks,
+Krishna.
+
+On Monday, September 09/23/19, 2019 at 11:24:36 +0000, Bernard Metzler wrote:
+> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
 > 
-> In order to support pinning of file pages by direct user space users an
-> unbreakable flag (F_UNBREAK) can be used to modify the read and write layout
-> lease.  When specified, F_UNBREAK indicates that any user attempting to break
-> the lease will fail with ETXTBUSY rather than follow the normal breaking
-> procedure.
+> >To: jgg@ziepe.ca, bmt@zurich.ibm.com
+> >From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+> >Date: 09/23/2019 12:11PM
+> >Cc: linux-rdma@vger.kernel.org, bharat@chelsio.com,
+> >nirranjan@chelsio.com, "Krishnamraju Eraparaju"
+> ><krishna2@chelsio.com>
+> >Subject: [EXTERNAL] [PATCH for-next] RDMA/siw: fixes serialization
+> >issue in write_space
+> >
+> >In siw_qp_llp_write_space(), 'sock' members should be accessed
+> >with sk_callback_lock held, otherwise, it could race with
+> >siw_sk_restore_upcalls(). And this could cause "NULL deref" panic.
+> >Below panic is due to the NULL cep returned from sk_to_cep(sk):
+> >[14524.030863] Call Trace:
+> >[14524.030868]  <IRQ>    siw_qp_llp_write_space+0x11/0x40 [siw]
+> >[14524.030873]  tcp_check_space+0x4c/0xf0
+> >[14524.030877]  tcp_rcv_established+0x52b/0x630
+> >[14524.030880]  tcp_v4_do_rcv+0xf4/0x1e0
+> >[14524.030882]  tcp_v4_rcv+0x9b8/0xab0
+> >[14524.030886]  ip_protocol_deliver_rcu+0x2c/0x1c0
+> >[14524.030889]  ip_local_deliver_finish+0x44/0x50
+> >[14524.030891]  ip_local_deliver+0x6b/0xf0
+> >[14524.030893]  ? ip_protocol_deliver_rcu+0x1c0/0x1c0
+> >[14524.030896]  ip_rcv+0x52/0xd0
+> >[14524.030898]  ? ip_rcv_finish_core.isra.14+0x390/0x390
+> >[14524.030903]  __netif_receive_skb_one_core+0x83/0xa0
+> >[14524.030906]  netif_receive_skb_internal+0x73/0xb0
+> >[14524.030909]  napi_gro_frags+0x1ff/0x2b0
+> >[14524.030922]  t4_ethrx_handler+0x4a7/0x740 [cxgb4]
+> >[14524.030930]  process_responses+0x2c9/0x590 [cxgb4]
+> >[14524.030937]  ? t4_sge_intr_msix+0x1d/0x30 [cxgb4]
+> >[14524.030941]  ? handle_irq_event_percpu+0x51/0x70
+> >[14524.030943]  ? handle_irq_event+0x41/0x60
+> >[14524.030946]  ? handle_edge_irq+0x97/0x1a0
+> >[14524.030952]  napi_rx_handler+0x14/0xe0 [cxgb4]
+> >[14524.030955]  net_rx_action+0x2af/0x410
+> >[14524.030962]  __do_softirq+0xda/0x2a8
+> >[14524.030965]  do_softirq_own_stack+0x2a/0x40
+> >[14524.030967]  </IRQ>
+> >[14524.030969]  do_softirq+0x50/0x60
+> >[14524.030972]  __local_bh_enable_ip+0x50/0x60
+> >[14524.030974]  ip_finish_output2+0x18f/0x520
+> >[14524.030977]  ip_output+0x6e/0xf0
+> >[14524.030979]  ? __ip_finish_output+0x1f0/0x1f0
+> >[14524.030982]  __ip_queue_xmit+0x14f/0x3d0
+> >[14524.030986]  ? __slab_alloc+0x4b/0x58
+> >[14524.030990]  __tcp_transmit_skb+0x57d/0xa60
+> >[14524.030992]  tcp_write_xmit+0x23b/0xfd0
+> >[14524.030995]  __tcp_push_pending_frames+0x2e/0xf0
+> >[14524.030998]  tcp_sendmsg_locked+0x939/0xd50
+> >[14524.031001]  tcp_sendmsg+0x27/0x40
+> >[14524.031004]  sock_sendmsg+0x57/0x80
+> >[14524.031009]  siw_tx_hdt+0x894/0xb20 [siw]
+> >[14524.031015]  ? find_busiest_group+0x3e/0x5b0
+> >[14524.031019]  ? common_interrupt+0xa/0xf
+> >[14524.031021]  ? common_interrupt+0xa/0xf
+> >[14524.031023]  ? common_interrupt+0xa/0xf
+> >[14524.031028]  siw_qp_sq_process+0xf1/0xe60 [siw]
+> >[14524.031031]  ? __wake_up_common_lock+0x87/0xc0
+> >[14524.031035]  siw_sq_resume+0x33/0xe0 [siw]
+> >[14524.031039]  siw_run_sq+0xac/0x190 [siw]
+> >[14524.031041]  ? remove_wait_queue+0x60/0x60
+> >[14524.031045]  kthread+0xf8/0x130
+> >[14524.031049]  ? siw_sq_resume+0xe0/0xe0 [siw]
+> >[14524.031051]  ? kthread_bind+0x10/0x10
+> >[14524.031053]  ret_from_fork+0x35/0x40
+> >
+> >Fixes: f29dd55b0236 (rdma/siw: queue pair methods)
+> >Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+> >---
+> > drivers/infiniband/sw/siw/siw_qp.c | 15 +++++++++++----
+> > 1 file changed, 11 insertions(+), 4 deletions(-)
+> >
+> >diff --git a/drivers/infiniband/sw/siw/siw_qp.c
+> >b/drivers/infiniband/sw/siw/siw_qp.c
+> >index 430314c8abd9..52d402f39df9 100644
+> >--- a/drivers/infiniband/sw/siw/siw_qp.c
+> >+++ b/drivers/infiniband/sw/siw/siw_qp.c
+> >@@ -182,12 +182,19 @@ void siw_qp_llp_close(struct siw_qp *qp)
+> >  */
+> > void siw_qp_llp_write_space(struct sock *sk)
+> > {
+> >-	struct siw_cep *cep = sk_to_cep(sk);
+> >+	struct siw_cep *cep;
+> > 
+> >-	cep->sk_write_space(sk);
+> >+	read_lock(&sk->sk_callback_lock);
+> >+
+> >+	cep  = sk_to_cep(sk);
+> >+	if (cep) {
+> >+		cep->sk_write_space(sk);
+> > 
+> >-	if (!test_bit(SOCK_NOSPACE, &sk->sk_socket->flags))
+> >-		(void)siw_sq_start(cep->qp);
+> >+		if (!test_bit(SOCK_NOSPACE, &sk->sk_socket->flags))
+> >+			(void)siw_sq_start(cep->qp);
+> >+	}
+> >+
+> >+	read_unlock(&sk->sk_callback_lock);
+> > }
+> > 
+> > static int siw_qp_readq_init(struct siw_qp *qp, int irq_size, int
+> >orq_size)
+> >-- 
+> >2.23.0.rc0
+> >
+> >
 > 
-> Both read and write layout leases can have the unbreakable flag (F_UNBREAK)
-> specified.  The difference between an unbreakable read layout lease and an
-> unbreakable write layout lease are that an unbreakable read layout lease is
-> _not_ exclusive.  This means that once a layout is established on a file,
-> multiple unbreakable read layout leases can be taken by multiple processes and
-> used to pin the underlying pages of that file.
+> Hi Krishna,
 > 
-> Care must therefore be taken to ensure that the layout of the file is as the
-> user wants prior to using the unbreakable read layout lease.  A safe mechanism
-> to do this would be to take a write layout lease and use fallocate() to set the
-> layout of the file.  The layout lease can then be "downgraded" to unbreakable
-> read layout as long as no other user broke the write layout lease.
+> Many thanks! I completely agree. This fixes a potential race.
+> I was under the impression the socket layer itself would hold
+> the sk_callback_lock during the writespace upcall, which is
+> obviously not true.
 > 
-
-Will userland require any special privileges in order to set an
-F_UNBREAK lease? This seems like something that could be used for DoS. I
-assume that these will never time out.
-
-How will we deal with the case where something is is squatting on an
-F_UNBREAK lease and isn't letting it go?
-
-Leases are technically "owned" by the file description -- we can't
-necessarily trace it back to a single task in a threaded program. The
-kernel task that set the lease may have exited by the time we go
-looking.
-
-Will we be content trying to determine this using /proc/locks+lsof, etc,
-or will we need something better?
-
-> </fcntl man page addition>
-
--- 
-Jeff Layton <jlayton@kernel.org>
-
+> Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+> 
