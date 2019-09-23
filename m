@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D83A4BBF0F
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2019 01:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC091BBF11
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2019 01:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391213AbfIWXta (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Sep 2019 19:49:30 -0400
-Received: from mail-eopbgr820057.outbound.protection.outlook.com ([40.107.82.57]:44032
-        "EHLO NAM01-SN1-obe.outbound.protection.outlook.com"
+        id S2391461AbfIWXti (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Sep 2019 19:49:38 -0400
+Received: from mail-eopbgr690069.outbound.protection.outlook.com ([40.107.69.69]:35713
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729276AbfIWXta (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Sep 2019 19:49:30 -0400
+        id S1729276AbfIWXti (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 23 Sep 2019 19:49:38 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f+VAA2Rkv44GZEDZ+wPJVZozfKJz+EnaiW4+q5fiDFcbbmC0mA11P+4QsNEQ1pDm2kKXTjFmZCmxCIAiUH3l+GI6RzCze99UgjLbFwsfzxdXXxQ0TTQ7Kyu3gBGRCqwEeLLIxKJ+/lTSfOfUAoPgsNK6e3CTqSXT1pLqikuvl++ciaKcehWsty6ZLjbWrnFYEEk6pMkxSX/46TUaHjd4ziIXGQiEuUXsvvc2XhWIVQlPZbbMgLzQ4iAF0aTuQ9zHPiNuxC+ToHk3rmutlCJXAOl6Bn58g5MF1op8CYphii3+0JFkvid2TrV0WVbfkP6m/Q4MVKWZYuz0ufWnCujHRw==
+ b=dwHy3szSf2ccITNzuiHlHt1d3ORKyzdZVWWhCNhrNy7oLLa2j1sClWK+hZhPpMXV7io/n0yjvAQoa2yqlukCDK3yX57aKgcbibCCXx6I85NjLEpVtTg+aBw6tODCCs+6WcM8RGwskf+N29tsh1wAJCHPaj6H1uWMqmYOTl0q3cWjlhiqS9YyIEafLDkjH3pJLgiJFLsUae4kliXnWHnqBCkyJAjLlLFC6PBXj3Kav6R6ZNVft4+IvPIlTw155KyywM9y7I2rYtYUbs7cxDF0hQTKQdVfRkTAKQ/oWsixGVPzCVsIA4WDUOvhZqNJrjvVho3HuDlR7Y+zkrmasgJqbQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gG4oMcpBwSA2Fwx0Za8p3eMcP+cDPuce6TInDvtgE5k=;
- b=kqudZNqxTR6aGtReYlq3ONf8fT6kad71EFIWalQFNRnqdt2VjdbHJ3CUsPH6+uWGzMrKx3g6pX+Js/FstuXHPG4oKzXJPTk5Wb/HwyVDO9KlI1l2t1RVob1ZLIbYn/7DgwepOD3c8fqKvdJrYiPNyVFEqFK5rV1NrSadyi3dIKHADCZ5aJ4q53ix3h4ssxPvPHdCySvWIo+g0V2+TmWsXAo0N2EhD8Yh5e9tyNndIEUKgar4T2ggjWhZ9LXjzACZhfwZWHZRwnTB6oiQhMTc/Jgq+vzhGaHAmLRz5DSuAbaKYb9HKQu1p2acucTFi2BFmmbBjUMPwUS0gsr85d5SxA==
+ bh=kS8y2tp3e/ixPXzH44FkJjTVoSIm0u836gvhFsxJVHA=;
+ b=UKoxERjBMX9tOhjXr6wVSbw/hXb2FhJHM+wz2epMOOAeBey0uFynUOYGFDxSxtmCGlsiCDdYAC8FGDi5ZDPbpHPis2VpUn+tCxWPzWShTENkOZGnZvg7D+ss4YMDbnCpBOk/yE8VjL2r9Yx1m1S6O9PpididAv7C3GYnNjKH+EE8su0he1Df2LY0qXUd/m6UUE/G3PLcnTcPKGmqON9KBV1xedN6EjiedW4okxnx143RfQcPV4j0hQwg9PFCKBFCNPSV6eVEECHdtOD4zYh39woKP1Yk2kryw8Wqa8kT4z7QBP66NRq0n1maFnYleP/JxE7kfYG7kAHjCqGtonuRxQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
  dkim=pass header.d=vmware.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gG4oMcpBwSA2Fwx0Za8p3eMcP+cDPuce6TInDvtgE5k=;
- b=sMhtguAhpVrhRofuTiTz+nGDPdKelSUnmeIA6z8vILWW2kqTBHPoR+Emk9sV3+uDOPUsZuOks8tZVKfNGESg1jhPEhELj0zoXB7iW01CBMI7cQgjhyEqFhjbEsypII+MTQKPqEEvr43Xi2YhbX9imFq3ZN8RQGjPo3AmFkUpEpE=
+ bh=kS8y2tp3e/ixPXzH44FkJjTVoSIm0u836gvhFsxJVHA=;
+ b=FyeuMbmQICDHWsl5kTL42pKz4gK59DDJF6jUZyShl5+tmvRaHIsTpvpfLOPmsw4m7O9jHJOoaJanKU8TTmMsGJpPsoHAFnAr6SnYgJWCfBdDsxmwvpVwc77loIsP/1Qhxvci090LYBSE8w8VoCXn2JqbrmITK5zPla+L7xFilow=
 Received: from BYAPR05MB5511.namprd05.prod.outlook.com (20.177.186.28) by
- BYAPR05MB6680.namprd05.prod.outlook.com (20.178.235.150) with Microsoft SMTP
+ BYAPR05MB4455.namprd05.prod.outlook.com (52.135.205.17) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2305.15; Mon, 23 Sep 2019 23:49:28 +0000
+ 15.20.2305.15; Mon, 23 Sep 2019 23:49:35 +0000
 Received: from BYAPR05MB5511.namprd05.prod.outlook.com
  ([fe80::81ed:73c3:bc95:7d03]) by BYAPR05MB5511.namprd05.prod.outlook.com
  ([fe80::81ed:73c3:bc95:7d03%5]) with mapi id 15.20.2284.023; Mon, 23 Sep 2019
- 23:49:28 +0000
+ 23:49:35 +0000
 From:   Adit Ranadive <aditr@vmware.com>
 To:     "jgg@mellanox.com" <jgg@mellanox.com>,
         "leon@kernel.org" <leon@kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
 CC:     Adit Ranadive <aditr@vmware.com>
-Subject: [PATCH rdma-core v2 0/2] vmw_pvrdma: Use physical resource ids from
- device
-Thread-Topic: [PATCH rdma-core v2 0/2] vmw_pvrdma: Use physical resource ids
- from device
-Thread-Index: AQHVcmmJyt9qRfc6yEudk4RWBK361g==
-Date:   Mon, 23 Sep 2019 23:49:28 +0000
-Message-ID: <cover.1569282124.git.aditr@vmware.com>
+Subject: [PATCH rdma-core v2 1/2] Update kernel headers
+Thread-Topic: [PATCH rdma-core v2 1/2] Update kernel headers
+Thread-Index: AQHVcmmNIkofFtfnkEivO4vWC26rdg==
+Date:   Mon, 23 Sep 2019 23:49:34 +0000
+Message-ID: <333074d88847396252a597993d9a51645acfffd6.1569282124.git.aditr@vmware.com>
+References: <cover.1569282124.git.aditr@vmware.com>
+In-Reply-To: <cover.1569282124.git.aditr@vmware.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -60,73 +60,163 @@ authentication-results: spf=none (sender IP is )
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [66.170.99.1]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c3c07b7e-11a5-4e4c-0b49-08d74080abe0
-x-ms-traffictypediagnostic: BYAPR05MB6680:|BYAPR05MB6680:
-x-ms-exchange-purlcount: 2
+x-ms-office365-filtering-correlation-id: 763020b9-2a8c-4169-2a03-08d74080afcf
+x-ms-traffictypediagnostic: BYAPR05MB4455:|BYAPR05MB4455:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR05MB66805D324DCBFD814141376CC5850@BYAPR05MB6680.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1284;
+x-microsoft-antispam-prvs: <BYAPR05MB4455033AE4D19A4C89CA5260C5850@BYAPR05MB4455.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
 x-forefront-prvs: 0169092318
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(376002)(346002)(366004)(396003)(136003)(54534003)(189003)(199004)(99286004)(2906002)(2501003)(14454004)(6116002)(14444005)(256004)(5660300002)(26005)(3846002)(186003)(6506007)(386003)(102836004)(71200400001)(71190400001)(52116002)(36756003)(966005)(7736002)(478600001)(86362001)(81156014)(6306002)(81166006)(50226002)(4326008)(476003)(486006)(6436002)(6512007)(6486002)(2616005)(316002)(8676002)(66066001)(66476007)(66446008)(64756008)(66946007)(66556008)(110136005)(25786009)(2201001)(107886003)(4744005)(305945005)(8936002);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR05MB6680;H:BYAPR05MB5511.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(396003)(136003)(39850400004)(376002)(366004)(199004)(189003)(8936002)(110136005)(14454004)(316002)(7736002)(25786009)(305945005)(4326008)(6486002)(256004)(2201001)(6436002)(6512007)(14444005)(107886003)(36756003)(478600001)(66066001)(3846002)(6116002)(81166006)(8676002)(81156014)(71190400001)(186003)(66946007)(76176011)(52116002)(86362001)(26005)(99286004)(6506007)(102836004)(386003)(486006)(11346002)(71200400001)(476003)(5660300002)(2906002)(446003)(66446008)(66556008)(64756008)(50226002)(2616005)(2501003)(118296001)(66476007);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR05MB4455;H:BYAPR05MB5511.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: vmware.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZPVLdB2ktHAj3JuK8zOV96Dcuboeu8Ld1h5Ux6EFsI8m7MewbB/eU1PZLliNcjZmtLKKuzsz5Vz6DCNdYcNW1ePlm+jk76EOZo8J+79WKUw/SFJWlLM99/R8X8unN7SWySrrqZnx1pUpQ1Vw/Sodk8q/Nbz3MAmJwKuoOxaRWvJB1W2sWNU2EcOq+nIXsluSCLKitCLDrtsBRFnOmTkmA+T69tBVeoMbZoLWsHIogtKgKKJpmUUrG1dGieMFW5p5ZN9m9vj5UMFF6MYtlmFjKyqDgsBptaEYmn+baY03MgIkfo0XRSoAtOALQ8X0hAUhP7zy6LKM11w/fuMdo7/sdbhw+wdUrJUOd44sCUZsXOD3h9rb343QaMCZrLLatEO1QJnSw7o4iiDHUdK04Zu5EI2CFxIP6AePXaSO+hjX3xs=
+x-microsoft-antispam-message-info: gDyWi352Kbwn684au2rL822Px2HvmMJss2nmEDYVdOeMNu+A2lcYFY6YCE1C32vIi/txWL0F3ukiyZnlSte6fds4+3ozz/6AuFQ0TjmT27kT9XeCyvVDXbqJNx0g9W44/gMI/26+elsajE5TZ8ZbNW5+DZlfQds0mSCMJ0DqstHDT6zF4XjmRUgsV8YqjTIRi+DEBhAt/RpcKZl1yUI854mrZXWhBFML1g3+BM25n6puodpRGdh5NJxPZBIKO3vs/IYVQwRE29CcLJchTshosd97VAYyB8PgZnzbo70zJKv5vJjkwqtsH5nCXL7oOnAazI8AuFW2w2NR1En7KnNZJlyw3iBSG3c6sL7YIVY2L11udusrGSih/iJYqflvjmnXwBUfHK2jXurMUu8EMkLM5bPlTpOBaAAzSpvC6peYDUc=
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3c07b7e-11a5-4e4c-0b49-08d74080abe0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2019 23:49:28.2191
+X-MS-Exchange-CrossTenant-Network-Message-Id: 763020b9-2a8c-4169-2a03-08d74080afcf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Sep 2019 23:49:34.8843
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: enoa1pxxFIJXDL5CC4acwidizLmWCef73fGupJdrZyOEmdtiBaaudu7un7GwePkVN7GAxxzcvG1IUDnwB0D7lw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB6680
+X-MS-Exchange-CrossTenant-userprincipalname: 0AvA6Iav5ZaeEfbxV47CuXdJsHZfa8m8KXB5y8D8Zshs1woBqP5V6Jm1OItKEoonFCZN3JTJt8Qcpjwih3db0w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB4455
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Changelog:
-v2:
- - Used kernel-headers/update script to generate headers commit
-v1:
- - Added a separate patch for the kernel header
- - Dropped the ABI version check
- - Added a create qp flag and an in-band check to indicate support
-v0:
- - https://patchwork.kernel.org/patch/10946987/
+To commit ?? ("RDMA/vmw_pvrdma: Use resource ids from physical device if
+available")
 
-Hi,
-
-Here is a patchset for enabling exposing physical resource ids for vmw_pvrd=
-ma
-userspace provider.
-
-rdma-core PR:
- - https://github.com/linux-rdma/rdma-core/pull/581
-
-Thanks,
-Adit
-
-Adit Ranadive (1):
-  Update kernel headers
-
-Bryan Tan (1):
-  vmw_pvrdma: Use resource ids from physical device if available
-
+Signed-off-by: Adit Ranadive <aditr@vmware.com>
+---
  kernel-headers/CMakeLists.txt        |  1 +
  kernel-headers/rdma/rvt-abi.h        | 66 ++++++++++++++++++++++++++++
  kernel-headers/rdma/vmw_pvrdma-abi.h | 13 ++++++
- providers/vmw_pvrdma/pvrdma-abi.h    |  2 +-
- providers/vmw_pvrdma/pvrdma.h        |  1 +
- providers/vmw_pvrdma/qp.c            | 24 +++++-----
- 6 files changed, 95 insertions(+), 12 deletions(-)
+ 3 files changed, 80 insertions(+)
  create mode 100644 kernel-headers/rdma/rvt-abi.h
 
+diff --git a/kernel-headers/CMakeLists.txt b/kernel-headers/CMakeLists.txt
+index 50bc77e6ab6e..13624b22d81b 100644
+--- a/kernel-headers/CMakeLists.txt
++++ b/kernel-headers/CMakeLists.txt
+@@ -23,6 +23,7 @@ publish_internal_headers(rdma
+   rdma/rdma_user_ioctl.h
+   rdma/rdma_user_ioctl_cmds.h
+   rdma/rdma_user_rxe.h
++  rdma/rvt-abi.h
+   rdma/siw-abi.h
+   rdma/vmw_pvrdma-abi.h
+   )
+diff --git a/kernel-headers/rdma/rvt-abi.h b/kernel-headers/rdma/rvt-abi.h
+new file mode 100644
+index 000000000000..7c05a02d2be5
+--- /dev/null
++++ b/kernel-headers/rdma/rvt-abi.h
+@@ -0,0 +1,66 @@
++/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Cl=
+ause) */
++
++/*
++ * This file contains defines, structures, etc. that are used
++ * to communicate between kernel and user code.
++ */
++
++#ifndef RVT_ABI_USER_H
++#define RVT_ABI_USER_H
++
++#include <linux/types.h>
++#include <rdma/ib_user_verbs.h>
++#ifndef RDMA_ATOMIC_UAPI
++#define RDMA_ATOMIC_UAPI(_type, _name) struct{ _type val; } _name
++#endif
++
++struct rvt_wqe_sge {
++	__aligned_u64 addr;
++	__u32 length;
++	__u32 lkey;
++};
++
++/*
++ * This structure is used to contain the head pointer, tail pointer,
++ * and completion queue entries as a single memory allocation so
++ * it can be mmap'ed into user space.
++ */
++struct rvt_cq_wc {
++	/* index of next entry to fill */
++	RDMA_ATOMIC_UAPI(__u32, head);
++	/* index of next ib_poll_cq() entry */
++	RDMA_ATOMIC_UAPI(__u32, tail);
++
++	/* these are actually size ibcq.cqe + 1 */
++	struct ib_uverbs_wc uqueue[];
++};
++
++/*
++ * Receive work request queue entry.
++ * The size of the sg_list is determined when the QP (or SRQ) is created
++ * and stored in qp->r_rq.max_sge (or srq->rq.max_sge).
++ */
++struct rvt_rwqe {
++	__u64 wr_id;
++	__u8 num_sge;
++	__u8 padding[7];
++	struct rvt_wqe_sge sg_list[];
++};
++
++/*
++ * This structure is used to contain the head pointer, tail pointer,
++ * and receive work queue entries as a single memory allocation so
++ * it can be mmap'ed into user space.
++ * Note that the wq array elements are variable size so you can't
++ * just index into the array to get the N'th element;
++ * use get_rwqe_ptr() for user space and rvt_get_rwqe_ptr()
++ * for kernel space.
++ */
++struct rvt_rwq {
++	/* new work requests posted to the head */
++	RDMA_ATOMIC_UAPI(__u32, head);
++	/* receives pull requests from here. */
++	RDMA_ATOMIC_UAPI(__u32, tail);
++	struct rvt_rwqe wq[];
++};
++#endif /* RVT_ABI_USER_H */
+diff --git a/kernel-headers/rdma/vmw_pvrdma-abi.h b/kernel-headers/rdma/vmw=
+_pvrdma-abi.h
+index 6e73f0274e41..1d339285550e 100644
+--- a/kernel-headers/rdma/vmw_pvrdma-abi.h
++++ b/kernel-headers/rdma/vmw_pvrdma-abi.h
+@@ -133,6 +133,10 @@ enum pvrdma_wc_flags {
+ 	PVRDMA_WC_FLAGS_MAX		=3D PVRDMA_WC_WITH_NETWORK_HDR_TYPE,
+ };
+=20
++enum pvrdma_user_qp_create_flags {
++	PVRDMA_USER_QP_CREATE_USE_RESP	=3D 1 << 0,
++};
++
+ struct pvrdma_alloc_ucontext_resp {
+ 	__u32 qp_tab_size;
+ 	__u32 reserved;
+@@ -177,6 +181,15 @@ struct pvrdma_create_qp {
+ 	__u32 rbuf_size;
+ 	__u32 sbuf_size;
+ 	__aligned_u64 qp_addr;
++	__u32 flags;
++	__u32 reserved;
++};
++
++struct pvrdma_create_qp_resp {
++	__u32 qpn;
++	__u32 qp_handle;
++	__u32 qpn_valid;
++	__u32 reserved;
+ };
+=20
+ /* PVRDMA masked atomic compare and swap */
 --=20
 2.18.1
 
