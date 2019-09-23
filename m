@@ -2,178 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACC3BBAAA
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Sep 2019 19:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B660DBBAE3
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Sep 2019 20:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391110AbfIWRol (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Sep 2019 13:44:41 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:41690 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389763AbfIWRol (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Sep 2019 13:44:41 -0400
-Received: by mail-pf1-f196.google.com with SMTP id q7so9546497pfh.8;
-        Mon, 23 Sep 2019 10:44:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VCyFJnwaPK6qM/V+l3WbBpnXJnUTZEa6VNWv+6InCmE=;
-        b=ay8EYFyOlq+SNPm+ELbkYcMuBS4G9iSnBaL1Mh62cgbNRIZKSlmM+EkGc3U4DOSTwl
-         z7LZBxRKBpWFx6aRCuUBuxLS9khYyE9QMddm8W4riROnV57epi2CiAqxv/w8vWbtxxej
-         5eB6+AlPHd1mL8pCyWaIHd7U9FFIE0cQvP4HxcMNG86ZUKfjIxqcEwXF3vAIu0cFI4fs
-         Sq4eSFkzX8LdNn8F2dDrrtFuhT4W35/FpVDuwez2AAdLBOWux5Yw3WaIsBm4JQCcWO2z
-         QayOdF7ADv85A4TpGmXN/1TWaYtiCX0q03H1NFmdOsptXstbKahXsOeOQrBJ4cX2UDIm
-         vPEQ==
-X-Gm-Message-State: APjAAAXmf0yRvRiGN7+P6qRvp0fSblzwQoJtiWWexL1+Kva5aBElpdfW
-        1OZcPJ9/52N1JqcVnYR3Q68=
-X-Google-Smtp-Source: APXvYqxH11vRLoj01Bj1USCJlOxVD32/gEivU6HGztrjQ25nqTfl+umTsp5FRZuJGTdAjgXg63eGoA==
-X-Received: by 2002:a62:115:: with SMTP id 21mr875783pfb.110.1569260679392;
-        Mon, 23 Sep 2019 10:44:39 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id g4sm14060628pfo.33.2019.09.23.10.44.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Sep 2019 10:44:38 -0700 (PDT)
-Subject: Re: [PATCH v4 02/25] ibtrs: public interface header to establish RDMA
- connections
-To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
-        jgg@mellanox.com, dledford@redhat.com,
-        danil.kipnis@cloud.ionos.com, rpenyaev@suse.de,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-References: <20190620150337.7847-1-jinpuwang@gmail.com>
- <20190620150337.7847-3-jinpuwang@gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <0607ca2d-6509-69da-4afc-0be6526b11c4@acm.org>
-Date:   Mon, 23 Sep 2019 10:44:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2394236AbfIWSFx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Sep 2019 14:05:53 -0400
+Received: from dvalin.narfation.org ([213.160.73.56]:38386 "EHLO
+        dvalin.narfation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390851AbfIWSFx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Sep 2019 14:05:53 -0400
+X-Greylist: delayed 572 seconds by postgrey-1.27 at vger.kernel.org; Mon, 23 Sep 2019 14:05:50 EDT
+Received: from sven-edge.localnet (unknown [IPv6:2a00:1ca0:1480:f9fc::4065])
+        by dvalin.narfation.org (Postfix) with ESMTPSA id D9AF31FFAB;
+        Mon, 23 Sep 2019 17:26:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+        s=20121; t=1569259611;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JUegENmeIHHiT+O9uIIOxc1zWJHPwvIxI2SvuwGf54A=;
+        b=dVWTU2YRhbvNTjzU5zWqJuZwGuXdr2Y5i4h8fAIbmfcxuBJK1ZG+fGo/W/YblVDINcKj0n
+        B670FTOeqbkbbqdtvLu3HbF2eoleJzXw6Dgnm1/VfifonzNleM7VytHWdyYL6G301L3qIC
+        tdTHwh8/l2Z9JQUVmzRFgWWvKZS3wUo=
+From:   Sven Eckelmann <sven@narfation.org>
+To:     b.a.t.m.a.n@lists.open-mesh.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Jiri Kosina <trivial@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        lvs-devel@vger.kernel.org, rds-devel@oss.oracle.com
+Subject: Re: [PATCH trivial 1/2] net: Fix Kconfig indentation
+Date:   Mon, 23 Sep 2019 19:56:12 +0200
+Message-ID: <2354684.0ZvKvX0iQ3@sven-edge>
+In-Reply-To: <20190923155243.6997-1-krzk@kernel.org>
+References: <20190923155243.6997-1-krzk@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20190620150337.7847-3-jinpuwang@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="nextPart2306317.z6aVZVsvuq"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+        s=20121; t=1569259612;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JUegENmeIHHiT+O9uIIOxc1zWJHPwvIxI2SvuwGf54A=;
+        b=x1TVkKv99+ozAK7NGhKJppOQTZ3rt6BG5uCQ9jX1Cu6VwaJ1Z9e2XjHeZoi0ylFmE0Qgv2
+        uPumTYEhEqN0pwscCMrxg05p8YgwwZxS95AE3BnKHxJCx8DfTCCPdTAyKbC6OzxnJqzLC+
+        xMuRoeIhRMuvm0RcjlgRZSLiQKlXzBQ=
+ARC-Seal: i=1; s=20121; d=narfation.org; t=1569259612; a=rsa-sha256;
+        cv=none;
+        b=sC+Bw4VcxyWYjzxCJPweIGNX+Yyrk334W9KKcHzvmcS/hWk8OQo5sJew0irtt83lHu620y
+        GR1yOu+K+tFNotiu7Ji8FKdtPcJdPj6tP5KcJpiNcjdVnKzc1GUdEDf7J4u+rCReuDLD9y
+        a6G6B/KjsDql8SBNK00XkdLiqUmNeNQ=
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=sven smtp.mailfrom=sven@narfation.org
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/20/19 8:03 AM, Jack Wang wrote:
-> From: Roman Pen <roman.penyaev@profitbricks.com>
-> 
-> Introduce public header which provides set of API functions to
-> establish RDMA connections from client to server machine using
-> IBTRS protocol, which manages RDMA connections for each session,
-> does multipathing and load balancing.
-> 
-> Main functions for client (active) side:
-> 
->   ibtrs_clt_open() - Creates set of RDMA connections incapsulated
-                              ^^^                       ^^^^^^^^^^^^
-                                a?                      encapsulated?
+--nextPart2306317.z6aVZVsvuq
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
->                      in IBTRS session and returns pointer on IBTRS
-                         ^^^                       ^^^       ^^
-                          a?                        a?       to an?
-> 		    session object.
-[ ... ]
-> +/**
-> + * enum ibtrs_clt_link_ev - Events about connectivity state of a client
-> + * @IBTRS_CLT_LINK_EV_RECONNECTED	Client was reconnected.
-> + * @IBTRS_CLT_LINK_EV_DISCONNECTED	Client was disconnected.
-> + */
-> +enum ibtrs_clt_link_ev {
-> +	IBTRS_CLT_LINK_EV_RECONNECTED,
-> +	IBTRS_CLT_LINK_EV_DISCONNECTED,
-> +};
-> +
-> +/**
-> + * Source and destination address of a path to be established
-> + */
-> +struct ibtrs_addr {
-> +	struct sockaddr_storage *src;
-> +	struct sockaddr_storage *dst;
-> +};
+On Monday, 23 September 2019 17:52:42 CEST Krzysztof Kozlowski wrote:
+> --- a/net/batman-adv/Kconfig
+> +++ b/net/batman-adv/Kconfig
+> @@ -12,11 +12,11 @@ config BATMAN_ADV
+>         depends on NET
+>         select LIBCRC32C
+>         help
+> -          B.A.T.M.A.N. (better approach to mobile ad-hoc networking) is
+> -          a routing protocol for multi-hop ad-hoc mesh networks. The
+> -          networks may be wired or wireless. See
+> -          https://www.open-mesh.org/ for more information and user space
+> -          tools.
+> +         B.A.T.M.A.N. (better approach to mobile ad-hoc networking) is
+> +         a routing protocol for multi-hop ad-hoc mesh networks. The
+> +         networks may be wired or wireless. See
+> +         https://www.open-mesh.org/ for more information and user space
+> +         tools.
+>  
+>  config BATMAN_ADV_BATMAN_V
+>         bool "B.A.T.M.A.N. V protocol"
 
-Is it really useful to define a structure to hold two pointers or can 
-these two pointers also be passed as separate arguments?
+Acked-by: Sven Eckelmann <sven@narfation.org>
 
-> +/**
-> + * ibtrs_clt_open() - Open a session to a IBTRS client
-> + * @priv:		User supplied private data.
-> + * @link_ev:		Event notification for connection state changes
-> + *	@priv:			user supplied data that was passed to
-> + *				ibtrs_clt_open()
-> + *	@ev:			Occurred event
-> + * @sessname: name of the session
-> + * @paths: Paths to be established defined by their src and dst addresses
-> + * @path_cnt: Number of elemnts in the @paths array
-> + * @port: port to be used by the IBTRS session
-> + * @pdu_sz: Size of extra payload which can be accessed after tag allocation.
-> + * @max_inflight_msg: Max. number of parallel inflight messages for the session
-> + * @max_segments: Max. number of segments per IO request
-> + * @reconnect_delay_sec: time between reconnect tries
-> + * @max_reconnect_attempts: Number of times to reconnect on error before giving
-> + *			    up, 0 for * disabled, -1 for forever
-> + *
-> + * Starts session establishment with the ibtrs_server. The function can block
-> + * up to ~2000ms until it returns.
-> + *
-> + * Return a valid pointer on success otherwise PTR_ERR.
-> + */
-> +struct ibtrs_clt *ibtrs_clt_open(void *priv, link_clt_ev_fn *link_ev,
-> +				 const char *sessname,
-> +				 const struct ibtrs_addr *paths,
-> +				 size_t path_cnt, short port,
-> +				 size_t pdu_sz, u8 reconnect_delay_sec,
-> +				 u16 max_segments,
-> +				 s16 max_reconnect_attempts);
+Kind regards,
+	Sven
 
-Having detailed kernel-doc headers for describing API functions is great 
-but I'm not sure a .h file is the best location for such documentation. 
-Many kernel developers keep kernel-doc headers in .c files because that 
-makes it more likely that the documentation and the implementation stay 
-in sync.
+--nextPart2306317.z6aVZVsvuq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-> +
-> +/**
-> + * ibtrs_clt_close() - Close a session
-> + * @sess: Session handler, is freed on return
-                      ^^^^^^^
-                      handle?
+-----BEGIN PGP SIGNATURE-----
 
-This sentence suggests that the handle is freed on return. I guess that 
-you meant that the session is freed upon return?
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAl2JBzwACgkQXYcKB8Em
+e0YTVg/+PgtfvbyO8UPeEG3nkvaRcMywQsGWWB2nkRfHXA+QnFghJNXsvPHonkd+
+QQ1E5I3loiK90VFbdRR8R0o5G57WPTFAivY334UAL1m5qOZT1bMKwI971dT0GCny
+a9+BhZEjt729e7WlSOvkT/v7BHo8lxyHH5+x33dxMJF0oSD5UDdH8VZX9PCBTJ1g
+4+O3e18WyQdsXFi3G2N75DcT+OhRle2P7T6yfgD0Ro5ViMqeTigsdmw+kpq8x8IK
+fyUN3oo5vqFnH3sEEXFshmxAqAVjPjzzoRYTFTupTw8yDOTL2REIgU75HZ0WP2w6
+eQ03/+7hKhujukr4V/bwVPMf6WJ1mi9+cz88Op8BkY/UgFgAYJSUhnfeoLo1pK6q
+ewEwagQfFibXUqtebAoam3z20Mb7rnrUmQJbUvPLQatL76qUaonJp3yxUMnrOWo+
+GmDWR4zgHgwatjOBeGCPBuF3PBMPWe1NBrA0EF7+33gZu6pttf3Z6XLNUWCw3unx
+xQCR1dn7VzUA+/FdFZfVoUlGBPeqWzqdyp3Os2ymDHJRp6jZWTd2gX6KvldvWTDR
+dU2SmyvoOovNLFWyBd7rC7vud0aWMJUHypD2IlEMCPprnu+m33Lhqx8nrbF/goZL
+drH0F1BJDs5jlWehfTwnnaNdqZEuzamWT8GEJAUBj8Iq5R6+35s=
+=OS2O
+-----END PGP SIGNATURE-----
 
-> +/**
-> + * ibtrs_clt_get_tag() - allocates tag for future RDMA operation
-> + * @sess:	Current session
-> + * @con_type:	Type of connection to use with the tag
-> + * @wait:	Wait type
-> + *
-> + * Description:
-> + *    Allocates tag for the following RDMA operation.  Tag is used
-> + *    to preallocate all resources and to propagate memory pressure
-> + *    up earlier.
-> + *
-> + * Context:
-> + *    Can sleep if @wait == IBTRS_TAG_WAIT
-> + */
-> +struct ibtrs_tag *ibtrs_clt_get_tag(struct ibtrs_clt *sess,
-> +				    enum ibtrs_clt_con_type con_type,
-> +				    int wait);
+--nextPart2306317.z6aVZVsvuq--
 
-Since struct ibtrs_tag has another role than what is called a tag in the 
-block layer I think a better description is needed of what struct 
-ibtrs_tag actually represents.
 
-> +/*
-> + * Here goes IBTRS server API
-> + */
 
-Most software either uses the client API or the server API but not both 
-at the same time. Has it been considered to use separate header files 
-for the client and server APIs?
-
-Bart.
