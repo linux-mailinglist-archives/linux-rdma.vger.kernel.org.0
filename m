@@ -2,177 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A33F9BBCCA
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Sep 2019 22:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71113BBDFB
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Sep 2019 23:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388083AbfIWU0g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Sep 2019 16:26:36 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:15951 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502575AbfIWU0g (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Sep 2019 16:26:36 -0400
-Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x8NKQVYc014371;
-        Mon, 23 Sep 2019 13:26:33 -0700
-Date:   Tue, 24 Sep 2019 01:56:31 +0530
-From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org, bharat@chelsio.com,
-        nirranjan@chelsio.com
-Subject: Re: [PATCH for-next] RDMA/siw: fixes serialization issue in
- write_space
-Message-ID: <20190923202629.GA24416@chelsio.com>
-References: <20190923101112.32685-1-krishna2@chelsio.com>
- <OFF07E93B6.E63D8785-ON0025847E.003DA8D0-0025847E.003EAD9D@notes.na.collabserv.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OFF07E93B6.E63D8785-ON0025847E.003DA8D0-0025847E.003EAD9D@notes.na.collabserv.com>
-User-Agent: Mutt/1.9.3 (20180206.02d571c2)
+        id S2389665AbfIWVc6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Sep 2019 17:32:58 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:35238 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729120AbfIWVc6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Sep 2019 17:32:58 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from maxg@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 24 Sep 2019 00:32:51 +0300
+Received: from r-vnc12.mtr.labs.mlnx (r-vnc12.mtr.labs.mlnx [10.208.0.12])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x8NLWp5F012417;
+        Tue, 24 Sep 2019 00:32:51 +0300
+From:   Max Gurtovoy <maxg@mellanox.com>
+To:     jgg@mellanox.com, linux-rdma@vger.kernel.org, dledford@redhat.com,
+        leonro@mellanox.com, sagi@grimberg.me
+Cc:     Max Gurtovoy <maxg@mellanox.com>
+Subject: [PATCH 1/1] IB/iser: add unlikely checks in the fast path
+Date:   Tue, 24 Sep 2019 00:32:49 +0300
+Message-Id: <1569274369-29217-1-git-send-email-maxg@mellanox.com>
+X-Mailer: git-send-email 1.7.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Bernard,
+ib_post_send, ib_post_recv and ib_dma_map_sg  operations should succeed
+unless something unusual happened to the ib device.
 
-write_space callback may not always be called from softirq/tasklet
-context, it may be called from process context.
-Hence, read_lock_bh() is safer than read_lock().
+Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+---
+ drivers/infiniband/ulp/iser/iser_memory.c | 2 +-
+ drivers/infiniband/ulp/iser/iser_verbs.c  | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-I will resubmit the patch.
+diff --git a/drivers/infiniband/ulp/iser/iser_memory.c b/drivers/infiniband/ulp/iser/iser_memory.c
+index 2cc89a9..3a26e5b 100644
+--- a/drivers/infiniband/ulp/iser/iser_memory.c
++++ b/drivers/infiniband/ulp/iser/iser_memory.c
+@@ -170,7 +170,7 @@ int iser_dma_map_task_data(struct iscsi_iser_task *iser_task,
+ 	dev = iser_task->iser_conn->ib_conn.device->ib_device;
+ 
+ 	data->dma_nents = ib_dma_map_sg(dev, data->sg, data->size, dma_dir);
+-	if (data->dma_nents == 0) {
++	if (unlikely(data->dma_nents == 0)) {
+ 		iser_err("dma_map_sg failed!!!\n");
+ 		return -EINVAL;
+ 	}
+diff --git a/drivers/infiniband/ulp/iser/iser_verbs.c b/drivers/infiniband/ulp/iser/iser_verbs.c
+index a6548de..94b5011 100644
+--- a/drivers/infiniband/ulp/iser/iser_verbs.c
++++ b/drivers/infiniband/ulp/iser/iser_verbs.c
+@@ -1019,7 +1019,7 @@ int iser_post_recvm(struct iser_conn *iser_conn, int count)
+ 
+ 	ib_conn->post_recv_buf_count += count;
+ 	ib_ret = ib_post_recv(ib_conn->qp, ib_conn->rx_wr, NULL);
+-	if (ib_ret) {
++	if (unlikely(ib_ret)) {
+ 		iser_err("ib_post_recv failed ret=%d\n", ib_ret);
+ 		ib_conn->post_recv_buf_count -= count;
+ 	} else
+@@ -1060,7 +1060,7 @@ int iser_post_send(struct ib_conn *ib_conn, struct iser_tx_desc *tx_desc,
+ 		first_wr = wr;
+ 
+ 	ib_ret = ib_post_send(ib_conn->qp, first_wr, NULL);
+-	if (ib_ret)
++	if (unlikely(ib_ret))
+ 		iser_err("ib_post_send failed, ret:%d opcode:%d\n",
+ 			 ib_ret, wr->opcode);
+ 
+-- 
+1.8.3.1
 
-Also, after looking at the below commit, I feel all other read_lock()
-in SIW driver should be replaced with BH variants.
-
-https://github.com/torvalds/linux/commit/7cb001d4c4fa7e1cc1a55388a9544e160dddc610
-
-
-
-Shall I also change all other occurances of read_lock() to
-read_lock_bh()?
-
-
-Thanks,
-Krishna.
-
-On Monday, September 09/23/19, 2019 at 11:24:36 +0000, Bernard Metzler wrote:
-> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
-> 
-> >To: jgg@ziepe.ca, bmt@zurich.ibm.com
-> >From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
-> >Date: 09/23/2019 12:11PM
-> >Cc: linux-rdma@vger.kernel.org, bharat@chelsio.com,
-> >nirranjan@chelsio.com, "Krishnamraju Eraparaju"
-> ><krishna2@chelsio.com>
-> >Subject: [EXTERNAL] [PATCH for-next] RDMA/siw: fixes serialization
-> >issue in write_space
-> >
-> >In siw_qp_llp_write_space(), 'sock' members should be accessed
-> >with sk_callback_lock held, otherwise, it could race with
-> >siw_sk_restore_upcalls(). And this could cause "NULL deref" panic.
-> >Below panic is due to the NULL cep returned from sk_to_cep(sk):
-> >[14524.030863] Call Trace:
-> >[14524.030868]  <IRQ>    siw_qp_llp_write_space+0x11/0x40 [siw]
-> >[14524.030873]  tcp_check_space+0x4c/0xf0
-> >[14524.030877]  tcp_rcv_established+0x52b/0x630
-> >[14524.030880]  tcp_v4_do_rcv+0xf4/0x1e0
-> >[14524.030882]  tcp_v4_rcv+0x9b8/0xab0
-> >[14524.030886]  ip_protocol_deliver_rcu+0x2c/0x1c0
-> >[14524.030889]  ip_local_deliver_finish+0x44/0x50
-> >[14524.030891]  ip_local_deliver+0x6b/0xf0
-> >[14524.030893]  ? ip_protocol_deliver_rcu+0x1c0/0x1c0
-> >[14524.030896]  ip_rcv+0x52/0xd0
-> >[14524.030898]  ? ip_rcv_finish_core.isra.14+0x390/0x390
-> >[14524.030903]  __netif_receive_skb_one_core+0x83/0xa0
-> >[14524.030906]  netif_receive_skb_internal+0x73/0xb0
-> >[14524.030909]  napi_gro_frags+0x1ff/0x2b0
-> >[14524.030922]  t4_ethrx_handler+0x4a7/0x740 [cxgb4]
-> >[14524.030930]  process_responses+0x2c9/0x590 [cxgb4]
-> >[14524.030937]  ? t4_sge_intr_msix+0x1d/0x30 [cxgb4]
-> >[14524.030941]  ? handle_irq_event_percpu+0x51/0x70
-> >[14524.030943]  ? handle_irq_event+0x41/0x60
-> >[14524.030946]  ? handle_edge_irq+0x97/0x1a0
-> >[14524.030952]  napi_rx_handler+0x14/0xe0 [cxgb4]
-> >[14524.030955]  net_rx_action+0x2af/0x410
-> >[14524.030962]  __do_softirq+0xda/0x2a8
-> >[14524.030965]  do_softirq_own_stack+0x2a/0x40
-> >[14524.030967]  </IRQ>
-> >[14524.030969]  do_softirq+0x50/0x60
-> >[14524.030972]  __local_bh_enable_ip+0x50/0x60
-> >[14524.030974]  ip_finish_output2+0x18f/0x520
-> >[14524.030977]  ip_output+0x6e/0xf0
-> >[14524.030979]  ? __ip_finish_output+0x1f0/0x1f0
-> >[14524.030982]  __ip_queue_xmit+0x14f/0x3d0
-> >[14524.030986]  ? __slab_alloc+0x4b/0x58
-> >[14524.030990]  __tcp_transmit_skb+0x57d/0xa60
-> >[14524.030992]  tcp_write_xmit+0x23b/0xfd0
-> >[14524.030995]  __tcp_push_pending_frames+0x2e/0xf0
-> >[14524.030998]  tcp_sendmsg_locked+0x939/0xd50
-> >[14524.031001]  tcp_sendmsg+0x27/0x40
-> >[14524.031004]  sock_sendmsg+0x57/0x80
-> >[14524.031009]  siw_tx_hdt+0x894/0xb20 [siw]
-> >[14524.031015]  ? find_busiest_group+0x3e/0x5b0
-> >[14524.031019]  ? common_interrupt+0xa/0xf
-> >[14524.031021]  ? common_interrupt+0xa/0xf
-> >[14524.031023]  ? common_interrupt+0xa/0xf
-> >[14524.031028]  siw_qp_sq_process+0xf1/0xe60 [siw]
-> >[14524.031031]  ? __wake_up_common_lock+0x87/0xc0
-> >[14524.031035]  siw_sq_resume+0x33/0xe0 [siw]
-> >[14524.031039]  siw_run_sq+0xac/0x190 [siw]
-> >[14524.031041]  ? remove_wait_queue+0x60/0x60
-> >[14524.031045]  kthread+0xf8/0x130
-> >[14524.031049]  ? siw_sq_resume+0xe0/0xe0 [siw]
-> >[14524.031051]  ? kthread_bind+0x10/0x10
-> >[14524.031053]  ret_from_fork+0x35/0x40
-> >
-> >Fixes: f29dd55b0236 (rdma/siw: queue pair methods)
-> >Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
-> >---
-> > drivers/infiniband/sw/siw/siw_qp.c | 15 +++++++++++----
-> > 1 file changed, 11 insertions(+), 4 deletions(-)
-> >
-> >diff --git a/drivers/infiniband/sw/siw/siw_qp.c
-> >b/drivers/infiniband/sw/siw/siw_qp.c
-> >index 430314c8abd9..52d402f39df9 100644
-> >--- a/drivers/infiniband/sw/siw/siw_qp.c
-> >+++ b/drivers/infiniband/sw/siw/siw_qp.c
-> >@@ -182,12 +182,19 @@ void siw_qp_llp_close(struct siw_qp *qp)
-> >  */
-> > void siw_qp_llp_write_space(struct sock *sk)
-> > {
-> >-	struct siw_cep *cep = sk_to_cep(sk);
-> >+	struct siw_cep *cep;
-> > 
-> >-	cep->sk_write_space(sk);
-> >+	read_lock(&sk->sk_callback_lock);
-> >+
-> >+	cep  = sk_to_cep(sk);
-> >+	if (cep) {
-> >+		cep->sk_write_space(sk);
-> > 
-> >-	if (!test_bit(SOCK_NOSPACE, &sk->sk_socket->flags))
-> >-		(void)siw_sq_start(cep->qp);
-> >+		if (!test_bit(SOCK_NOSPACE, &sk->sk_socket->flags))
-> >+			(void)siw_sq_start(cep->qp);
-> >+	}
-> >+
-> >+	read_unlock(&sk->sk_callback_lock);
-> > }
-> > 
-> > static int siw_qp_readq_init(struct siw_qp *qp, int irq_size, int
-> >orq_size)
-> >-- 
-> >2.23.0.rc0
-> >
-> >
-> 
-> Hi Krishna,
-> 
-> Many thanks! I completely agree. This fixes a potential race.
-> I was under the impression the socket layer itself would hold
-> the sk_callback_lock during the writespace upcall, which is
-> obviously not true.
-> 
-> Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
-> 
