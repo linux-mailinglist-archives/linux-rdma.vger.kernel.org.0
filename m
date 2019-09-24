@@ -2,109 +2,154 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE10EBBFD4
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2019 03:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7B1BC0D0
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2019 05:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403750AbfIXB7j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Sep 2019 21:59:39 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:48344 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392902AbfIXB7j (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Sep 2019 21:59:39 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 5457485541;
-        Tue, 24 Sep 2019 01:59:39 +0000 (UTC)
-Received: from localhost (unknown [10.66.128.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C5B2D196B2;
-        Tue, 24 Sep 2019 01:59:38 +0000 (UTC)
-Date:   Tue, 24 Sep 2019 09:59:36 +0800
-From:   Honggang LI <honli@redhat.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [rdma-core patch] srp_daemon: print maximum initiator to target
- IU size
-Message-ID: <20190924015936.GA28951@dhcp-128-227.nay.redhat.com>
-References: <20190916013607.9474-1-honli@redhat.com>
- <deb829a3-813e-6b99-c932-ceecc06e09b3@acm.org>
- <20190918005508.GA8676@dhcp-128-227.nay.redhat.com>
- <46dfd841-f7d3-52fb-6737-253ce95108c2@acm.org>
+        id S2438439AbfIXDys (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Sep 2019 23:54:48 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:38254 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389841AbfIXDys (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 23 Sep 2019 23:54:48 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 81C1FF67A270345BBA2F;
+        Tue, 24 Sep 2019 11:54:46 +0800 (CST)
+Received: from [127.0.0.1] (10.74.223.196) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.439.0; Tue, 24 Sep 2019
+ 11:54:38 +0800
+Subject: Re: [PATCH for-next] RDMA/hns: Bugfix for flush cqe in case softirq
+ and multi-process
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <jgg@ziepe.ca>,
+        <dledford@redhat.com>, <linuxarm@huawei.com>
+References: <1567686671-4331-1-git-send-email-liweihang@hisilicon.com>
+ <20190908080303.GC26697@unreal>
+ <f8f29a6a-b473-6c89-8ec7-092fd53aea16@huawei.com>
+ <20190910075216.GX6601@unreal>
+ <94ad1f56-afc6-ec78-4aa2-85d03c644031@huawei.com>
+ <0d4ce391-6619-783d-55a8-fa2524af7b9c@huawei.com>
+ <20190923050125.GK14368@unreal>
+From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
+Message-ID: <1224a3a0-50fb-dd6a-f22e-833e74ec77c3@huawei.com>
+Date:   Tue, 24 Sep 2019 11:54:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <46dfd841-f7d3-52fb-6737-253ce95108c2@acm.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.28]); Tue, 24 Sep 2019 01:59:39 +0000 (UTC)
+In-Reply-To: <20190923050125.GK14368@unreal>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.223.196]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 23, 2019 at 09:59:10AM -0700, Bart Van Assche wrote:
-> On 9/17/19 5:55 PM, Honggang LI wrote:
-> > On Tue, Sep 17, 2019 at 10:19:37AM -0700, Bart Van Assche wrote:
-> > > On 9/15/19 6:36 PM, Honggang LI wrote:
-> > > > From: Honggang Li <honli@redhat.com>
-> > > > 
-> > > > The 'Send Message Size' field of IOControllerProfile attributes
-> > > > contains the maximum initiator to target IU size.
-> > > > 
-> > > > When there is something wrong with SRP login to a third party
-> > > > SRP target, whose ib_srpt parameters can't be collected with
-> > > > ordinary method, dump the 'Send Message Size' may help us to
-> > > > diagnose the problem.
-> > > > 
-> > > > Signed-off-by: Honggang Li <honli@redhat.com>
-> > > > ---
-> > > >    srp_daemon/srp_daemon.c | 2 ++
-> > > >    1 file changed, 2 insertions(+)
-> > > > 
-> > > > diff --git a/srp_daemon/srp_daemon.c b/srp_daemon/srp_daemon.c
-> > > > index 337b21c7..90533c77 100644
-> > > > --- a/srp_daemon/srp_daemon.c
-> > > > +++ b/srp_daemon/srp_daemon.c
-> > > > @@ -1022,6 +1022,8 @@ static int do_port(struct resources *res, uint16_t pkey, uint16_t dlid,
-> > > >    			pr_human("        vendor ID: %06x\n", be32toh(target->ioc_prof.vendor_id) >> 8);
-> > > >    			pr_human("        device ID: %06x\n", be32toh(target->ioc_prof.device_id));
-> > > >    			pr_human("        IO class : %04hx\n", be16toh(target->ioc_prof.io_class));
-> > > > +			pr_human("        Maximum initiator to target IU size: %d\n",
-> > > > +				 be32toh(target->ioc_prof.send_size));
-> > > >    			pr_human("        ID:        %s\n", target->ioc_prof.id);
-> > > >    			pr_human("        service entries: %d\n", target->ioc_prof.service_entries);
-> > > 
-> > > How about using the terminology from the InfiniBand Architecture
-> > 
-> > As this is srp specific, so I suggest to use the terminology from
-> > srp specification 'srp2r06'.
-> > 
-> > Table B.7 — IOControllerProfile attributes for SRP target ports
-> > ----------------------------------------------------------------
-> > | Field            | SRP requirement                           |
-> > ----------------------------------------------------------------
-> > |(skip many lines).....                                        |
-> > ----------------------------------------------------------------
-> > |Send Message Size |MAXIMUM INITIATOR TO TARGET IU LENGTH      |
-> > ----------------------------------------------------------------
-> > 
-> > > Specification? This is what I found in release 1.3, table 306:
-> > > 
-> > > "Maximum size of Send Messages in bytes"
+
+
+On 2019/9/23 13:01, Leon Romanovsky wrote:
+> On Fri, Sep 20, 2019 at 11:55:56AM +0800, Liuyixian (Eason) wrote:
+>>
+>>
+>> On 2019/9/11 21:17, Liuyixian (Eason) wrote:
+>>>
+>>>
+>>> On 2019/9/10 15:52, Leon Romanovsky wrote:
+>>>> On Tue, Sep 10, 2019 at 02:40:20PM +0800, Liuyixian (Eason) wrote:
+>>>>>
+>>>>>
+>>>>> On 2019/9/8 16:03, Leon Romanovsky wrote:
+>>>>>> On Thu, Sep 05, 2019 at 08:31:11PM +0800, Weihang Li wrote:
+>>>>>>> From: Yixian Liu <liuyixian@huawei.com>
+>>>>>>>
+>>>>>>> Hip08 has the feature flush cqe, which help to flush wqe in workqueue
+>>>>>>> (sq and rq) when error happened by transmitting producer index with
+>>>>>>> mailbox to hardware. Flush cqe is emplemented in post send and recv
+>>>>>>> verbs. However, under NVMe cases, these verbs will be called under
+>>>>>>> softirq context, and it will lead to following calltrace with
+>>>>>>> current driver as mailbox used by flush cqe can go to sleep.
+>>>>>>>
+>>>>>>> This patch solves this problem by using workqueue to do flush cqe,
+>>>>>>
+>>>>>> Unbelievable, almost every bug in this driver is solved by introducing
+>>>>>> workqueue. You should fix "sleep in flush path" issue and not by adding
+>>>>>> new workqueue.
+>>>>>>
+>>>>> Hi Leon,
+>>>>>
+>>>>> Thanks for the comment.
+>>>>> Up to now, for hip08, only one place use workqueue in hns_roce_hw_v2.c
+>>>>> where for irq prints.
+>>>>
+>>>> Thanks to our lack of desire to add more workqueues and previous patches
+>>>> which removed extra workqueues from the driver.
+>>>>
+>>> Thanks, I see.
+>>>
+>>>>>
+>>>>> The solution for flush cqe in this patch is as follow:
+>>>>> While flush cqe should be implement, the driver should modify qp to error state
+>>>>> through mailbox with the newest product index of sq and rq, the hardware then
+>>>>> can flush all outstanding wqes in sq and rq.
+>>>>>
+>>>>> That's the whole mechanism of flush cqe, also is the flush path. We can't
+>>>>> change neither mailbox sleep attribute or flush cqe occurred in post send/recv.
+>>>>> To avoid the calltrace of flush cqe in post verbs under NVMe softirq,
+>>>>> use workqueue for flush cqe seems reasonable.
+>>>>>
+>>>>> As far as I know, there is no other alternative solution for this situation.
+>>>>> I will be very grateful if you reminder me more information.
+>>>>
+>>>> ib_drain_rq/ib_drain_sq/ib_drain_qp????
+>>>>
+>>> Hi Leon,
+>>>
+>>> I think these interfaces are designed for application to check that all wqes
+>>> have been processed by hardware, so called drain or flush. However, it is not
+>>> the same as the flush in this patch. The solution in this patch is used
+>>> to help the hardware generate flush cqes for outstanding wqes while qp error.
+>>>
+>> Hi Leon,
+>>
+>> What's your opinion about above? Do you have any further comments?
 > 
-> I don't have a strong opinion about which description to use. The latter may
-> be easier to comprehend though. I'm not sure whether every SRP user knows
-> what an SRP "IU" is ...
+> My opinion didn't change, you need to read discussions about ib_drain_*()
+> functions, how and why they were introduced. It is a way to go.
+> 
+> Thanks
 
-How about replacing "IU" with "information unit"?
+Hi Leon,
 
+Thanks a lot! I will dig those functions for my problem.
 
-+			pr_human("        Maximum initiator to target information unit size: %d\n",
-+				 be32toh(target->ioc_prof.send_size));
-
-If you want to use "Maximum size of Send Messages in bytes",
-just let me know, I will send a new patch to use that.
-
-thanks
+> 
+>>
+>> Thanks.
+>>
+>>>>>
+>>>>> Thanks
+>>>>>
+>>>>>> _______________________________________________
+>>>>>> Linuxarm mailing list
+>>>>>> Linuxarm@huawei.com
+>>>>>> http://hulk.huawei.com/mailman/listinfo/linuxarm
+>>>>>>
+>>>>>>
+>>>>>
+>>>>
+>>>> .
+>>>>
+>>>
+>>> _______________________________________________
+>>> Linuxarm mailing list
+>>> Linuxarm@huawei.com
+>>> http://hulk.huawei.com/mailman/listinfo/linuxarm
+>>>
+>>> .
+>>>
+>>
+> 
+> .
+> 
 
