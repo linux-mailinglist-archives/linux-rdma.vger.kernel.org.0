@@ -2,80 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD557BC9E1
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2019 16:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772E2BCBA1
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2019 17:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436899AbfIXOLG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Sep 2019 10:11:06 -0400
-Received: from smtp10.smtpout.orange.fr ([80.12.242.132]:46539 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730832AbfIXOLF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Sep 2019 10:11:05 -0400
-Received: from localhost.localdomain ([93.23.14.234])
-        by mwinf5d19 with ME
-        id 5SB02100B52zbZp03SB1gG; Tue, 24 Sep 2019 16:11:03 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 24 Sep 2019 16:11:03 +0200
-X-ME-IP: 93.23.14.234
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     bharat@chelsio.com, dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] RDMA/iw_cgxb4: Fix an error handling path in 'c4iw_connect()'
-Date:   Mon, 23 Sep 2019 21:07:46 +0200
-Message-Id: <20190923190746.10964-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.20.1
+        id S2388250AbfIXPg2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Sep 2019 11:36:28 -0400
+Received: from mail-pl1-f180.google.com ([209.85.214.180]:43027 "EHLO
+        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388323AbfIXPg2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Sep 2019 11:36:28 -0400
+Received: by mail-pl1-f180.google.com with SMTP id 4so1143494pld.10
+        for <linux-rdma@vger.kernel.org>; Tue, 24 Sep 2019 08:36:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7eyS/MwlDN5AtjKA0OIivf0pVeLOAa7/zaRKOXRwEZ8=;
+        b=Pqyrq2UF0aWKumK8VkGj2fo1FAyTOZOqPG6rDE0WQOzC+b0SwDmVa1r0MXi/2FrK8i
+         Yc8sbE029zj31gwQMrxKYyGa7EqkwFY9ajfIGAWlaw6py1wpoYmZkcyXVM77Nk1ZFIMe
+         LY7tHCIDX6zRWJXysJxUL6nVk0jaIcv89u9L8HysI+VNqPooqDaWTnQPmJ22r6GaDxnw
+         3LaNnqzea55wt0IE5ftez7YJuSANTtdVEMmj6uYYb1f2iuIBL9zMmsKE+e9GcDqSC8C+
+         1XpKaOI2jNZcXeon/5QJco1i7eOGzzZtpmEZVguwh4yskDi/m6vJYyNG2AbwxsKK1KtN
+         PELg==
+X-Gm-Message-State: APjAAAX8kbrNUdMBfv9cIkicf0tPmAk1MR7WKU6Cx6tb9BXH1sHopNw4
+        NO84LTnaADpQsYSUrWev67l5ZXRS
+X-Google-Smtp-Source: APXvYqzHoV+SXGnAIJ8yuDTpSe2kftVeHay5o8q3uup2ya6chGn1GWvN8QPzYDPPBUqRLYBDkfOVgQ==
+X-Received: by 2002:a17:902:7282:: with SMTP id d2mr3594327pll.85.1569339386613;
+        Tue, 24 Sep 2019 08:36:26 -0700 (PDT)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id 69sm2942932pfb.145.2019.09.24.08.36.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Sep 2019 08:36:25 -0700 (PDT)
+Subject: Re: [rdma-core patch] srp_daemon: print maximum initiator to target
+ IU size
+To:     Honggang LI <honli@redhat.com>
+Cc:     linux-rdma@vger.kernel.org
+References: <20190916013607.9474-1-honli@redhat.com>
+ <deb829a3-813e-6b99-c932-ceecc06e09b3@acm.org>
+ <20190918005508.GA8676@dhcp-128-227.nay.redhat.com>
+ <46dfd841-f7d3-52fb-6737-253ce95108c2@acm.org>
+ <20190924015936.GA28951@dhcp-128-227.nay.redhat.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <8c3cc0f4-1ddd-6a7b-87ac-f79cb5487385@acm.org>
+Date:   Tue, 24 Sep 2019 08:36:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190924015936.GA28951@dhcp-128-227.nay.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-We should jump to fail3 in order to undo the 'xa_insert_irq()' call.
+On 9/23/19 6:59 PM, Honggang LI wrote:
+> If you want to use "Maximum size of Send Messages in bytes",
+> just let me know, I will send a new patch to use that.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Not sure which Fixes tag to use because of the many refactorings in this
-area. So I've choosen to use none :).
-The issue was already there in 4a740838bf44c. This commit has renamed
-all labels because a new fail1 was introduced. I've not searched further.
+I think that description is short and easy to read.
 
-Naming of error labels should be improved. Having nowadays a fail5
-between fail2 and fail3 (because fail5 was the last
-error handling path added) is not that readable.
-However, it goes beyong the purpose of this patch.
+Thanks,
 
-Maybe, just using a fail2a, just as already done in 9f5a9632e412 (which
-introduced fail5) would be enough.
----
- drivers/infiniband/hw/cxgb4/cm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-index e87fc0408470..81440eaf0a00 100644
---- a/drivers/infiniband/hw/cxgb4/cm.c
-+++ b/drivers/infiniband/hw/cxgb4/cm.c
-@@ -3381,7 +3381,7 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 		if (raddr->sin_addr.s_addr == htonl(INADDR_ANY)) {
- 			err = pick_local_ipaddrs(dev, cm_id);
- 			if (err)
--				goto fail2;
-+				goto fail3;
- 		}
- 
- 		/* find a route */
-@@ -3403,7 +3403,7 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 		if (ipv6_addr_type(&raddr6->sin6_addr) == IPV6_ADDR_ANY) {
- 			err = pick_local_ip6addrs(dev, cm_id);
- 			if (err)
--				goto fail2;
-+				goto fail3;
- 		}
- 
- 		/* find a route */
--- 
-2.20.1
-
+Bart.
