@@ -2,99 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA09BC448
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2019 10:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BFB2BC4B8
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2019 11:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbfIXIuF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Sep 2019 04:50:05 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:4389 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbfIXIuF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Sep 2019 04:50:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1569315004; x=1600851004;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=zmbCWZ7mkSoGQgXIsEiCBKmVFdjFZZW38kLydlm/p2I=;
-  b=qJocJzinVk92xNRttqjje7MbwBoccD4UpyHUhenAmlL+q0RbLvCsOizM
-   ZczNzM+INwgCO/c470SbvXbb66XwB6Tc3k38y9tp7BqiVpyxTOMLHufog
-   FvdWzMLi3bvdGAkGh0IqwXSKkHFo7CJGOxX0pmARLYDT5srvJRNc9lex4
-   4=;
-X-IronPort-AV: E=Sophos;i="5.64,543,1559520000"; 
-   d="scan'208";a="423182441"
-Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-17c49630.us-east-1.amazon.com) ([10.124.125.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 24 Sep 2019 08:50:02 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1e-17c49630.us-east-1.amazon.com (Postfix) with ESMTPS id 14AECA07B1;
-        Tue, 24 Sep 2019 08:50:00 +0000 (UTC)
-Received: from EX13D13EUB002.ant.amazon.com (10.43.166.205) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 24 Sep 2019 08:50:00 +0000
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13D13EUB002.ant.amazon.com (10.43.166.205) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 24 Sep 2019 08:49:59 +0000
-Received: from EX13D19EUB003.ant.amazon.com ([10.43.166.69]) by
- EX13D19EUB003.ant.amazon.com ([10.43.166.69]) with mapi id 15.00.1367.000;
- Tue, 24 Sep 2019 08:49:59 +0000
-From:   "Pressman, Gal" <galpress@amazon.com>
-To:     Michal Kalderon <mkalderon@marvell.com>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, Ariel Elior <aelior@marvell.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "bmt@zurich.ibm.com" <bmt@zurich.ibm.com>,
-        "Leybovich, Yossi" <sleybo@amazon.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH v11 rdma-next 5/7] RDMA/qedr: Use the common mmap API
-Thread-Topic: [PATCH v11 rdma-next 5/7] RDMA/qedr: Use the common mmap API
-Thread-Index: AQHVY9F112/Hqya3nkOS7EjBcc9JJaczX0oAgAF87QCABDy/gIABiXyA
-Date:   Tue, 24 Sep 2019 08:49:59 +0000
-Message-ID: <4A66AD43-246B-4256-BA99-B61D3F1D05A8@amazon.com>
-References: <MN2PR18MB31828BDF43D9CA65A7BF1BC8A1850@MN2PR18MB3182.namprd18.prod.outlook.com>
-In-Reply-To: <MN2PR18MB31828BDF43D9CA65A7BF1BC8A1850@MN2PR18MB3182.namprd18.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <55A9282DB2AEE945AB09EE217879123A@amazon.com>
-Content-Transfer-Encoding: base64
+        id S2395171AbfIXJV2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Sep 2019 05:21:28 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50618 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395143AbfIXJV2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Sep 2019 05:21:28 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8O99SnS035989;
+        Tue, 24 Sep 2019 09:21:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=nW1mVSUlRlC6Xi8gsIAQF8wGl9EcYhp7h0NTVYykaII=;
+ b=RAOr5c46/XkgY1Gb6+Z0hGEZ7Qdn9/ORJv1Iu0Kp1LAB6sWW/11d8mBCnGPfFy8D7dBv
+ 7kHUTFLN4l56fnFXp6pHEPiWS3xyCAS3m2kj+8YG2w08BFPOb4L7WFxXqz9T6in6KXCA
+ 15vSU6H3w+3IuqU5HkVqFyIY6erdjRL7KH8Gu5G1xmi3CwoAM8SpsHC7IeTDQ4KkMyDB
+ 6TL3rvrK5bAtN9jszFbiRTZgOCP1wmk7QHzoOUKL95OheH/KZ8thFDvS8gIoOYiGNXGE
+ oseEwdn6H1AoLK1CP7IiRnofzbuFOXaL7DcF5Jbw9ZYLDOYgYxCbfZFs8EkE5YCC9xIB EQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2v5cgqvrar-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Sep 2019 09:21:12 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8O98rmr088004;
+        Tue, 24 Sep 2019 09:21:11 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 2v6yvr9u85-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Sep 2019 09:21:11 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x8O9L8Ul024258;
+        Tue, 24 Sep 2019 09:21:09 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 24 Sep 2019 02:21:08 -0700
+Date:   Tue, 24 Sep 2019 12:21:00 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Eli Cohen <eli@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH] IB/mlx5: add checking for "vf" from do_setvfinfo()
+Message-ID: <20190924091823.GM20699@kadam>
+References: <20190415094610.GO6095@kadam>
+ <VI1PR0501MB22713CCB1141529CCB6934B1D12B0@VI1PR0501MB2271.eurprd05.prod.outlook.com>
+ <20190416082112.GA27670@kadam>
+ <AM4PR0501MB22609E4C9D126A096DD7F614D1240@AM4PR0501MB2260.eurprd05.prod.outlook.com>
+ <20190420095102.GA14798@kadam>
+ <VI1PR0501MB22713B232B3CF42B849F959BD1220@VI1PR0501MB2271.eurprd05.prod.outlook.com>
+ <20190423154943.GC14820@kadam>
+ <AM4PR0501MB2260ADC1DA37E87D01979969D1230@AM4PR0501MB2260.eurprd05.prod.outlook.com>
+ <20190424140820.GB14798@kadam>
+ <AM4PR0501MB2260DF0BBBC528A147F07E0DD13D0@AM4PR0501MB2260.eurprd05.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM4PR0501MB2260DF0BBBC528A147F07E0DD13D0@AM4PR0501MB2260.eurprd05.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9389 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1909240093
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9389 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1909240093
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQo+IE9uIDIzIFNlcCAyMDE5LCBhdCAxODoyMiwgTWljaGFsIEthbGRlcm9uIDxta2FsZGVyb25A
-bWFydmVsbC5jb20+IHdyb3RlOg0KPiANCj4g77u/DQo+PiANCj4+IEZyb206IGxpbnV4LXJkbWEt
-b3duZXJAdmdlci5rZXJuZWwub3JnIDxsaW51eC1yZG1hLQ0KPj4gb3duZXJAdmdlci5rZXJuZWwu
-b3JnPiBPbiBCZWhhbGYgT2YgR2FsIFByZXNzbWFuDQo+PiANCj4+PiBPbiAxOS8wOS8yMDE5IDIw
-OjU1LCBKYXNvbiBHdW50aG9ycGUgd3JvdGU6DQo+Pj4gSHVoLiBJZiB5b3UgcmVjYWxsIHdlIGRp
-ZCBhbGwgdGhpcyB3b3JrIHdpdGggdGhlIFhBIGFuZCB0aGUgZnJlZQ0KPj4+IGNhbGxiYWNrIGJl
-Y2F1c2UgeW91IHNhaWQgcWVkciB3YXMgbW1hcGluZyBCQVIgcGFnZXMgdGhhdCBoYWQgc29tZSBI
-Vw0KPj4+IGxpZmV0aW1lIGFzc29jaWF0ZWQgd2l0aCB0aGVtLCBhbmQgdGhlIEhXIHJlc291cmNl
-IHdhcyBub3QgdG8gYmUNCj4+PiByZWFsbG9jYXRlZCB1bnRpbCBhbGwgdXNlcnMgd2VyZSBnb25l
-Lg0KPj4+IA0KPj4+IEkgdGhpbmsgaXQgd291bGQgYmUgYSBiZXR0ZXIgZXhhbXBsZSBvZiB0aGlz
-IEFQSSBpZiB5b3UgcHVsbGVkIHRoZQ0KPj4+IA0KPj4+ICAgIGRldi0+b3BzLT5yZG1hX3JlbW92
-ZV91c2VyKGRldi0+cmRtYV9jdHgsIGN0eC0+ZHBpKTsNCj4+PiANCj4+PiBJbnRvIHFlZHJfbW1h
-cF9mcmVlKCkuDQo+Pj4gDQo+Pj4gVGhlbiB0aGUgcmRtYV91c2VyX21tYXBfZW50cnlfcmVtb3Zl
-KCkgd2lsbCBjYWxsIGl0IG5hdHVyYWxseSBhcyBpdA0KPj4+IGRvZXMgZW50cnlfcHV0KCkgYW5k
-IGlmIHdlIGFyZSBkZXN0cm95aW5nIHRoZSB1Y29udGV4dCB3ZSBhbHJlYWR5IGtub3cNCj4+PiB0
-aGUgbW1hcHMgYXJlIGRlc3Ryb3llZC4NCj4+PiANCj4+PiBNYXliZSB0aGUgc2FtZSBiYXNpYyBj
-b21tZW50IGZvciBFRkEsIG5vdCBzdXJlLiBHYWw/DQo+PiANCj4+IFRoYXQncyB3aGF0IEVGQSBh
-bHJlYWR5IGRvZXMgaW4gdGhpcyBzZXJpZXMsIG5vPw0KPj4gV2Ugbm8gbG9uZ2VyIHJlbW92ZSBl
-bnRyaWVzIG9uIGRlYWxsb2NfdWNvbnRleHQsIG9ubHkgd2hlbiB0aGUgZW50cnkgaXMNCj4+IGZy
-ZWVkLg0KPiANCj4gQWN0dWFsbHksIEkgdGhpbmsgbW9zdCBvZiB0aGUgZGlzY3Vzc2lvbnMgeW91
-IGhhZCBvbiB0aGUgdG9waWMgd2VyZSB3aXRoIEdhbCwgYnV0DQo+IFNvbWUgYXBwbHkgdG8gcWVk
-ciBhcyB3ZWxsLCBob3dldmVyLCBmb3IgcWVkciwgdGhlIG9ubHkgaHcgcmVzb3VyY2Ugd2UgYWxs
-b2NhdGUgKGJhcikNCj4gaXMgb24gYWxsb2NfdWNvbnRleHQgLCB0aGVyZWZvcmUgd2Ugd2VyZSBz
-YWZlIHRvIGZyZWUgaXQgb24gZGVhbGxvY191Y29udGV4dCBhcyBhbGwgbWFwcGluZ3MNCj4gd2Vy
-ZSBhbHJlYWR5IHphcHBlZC4gTWFraW5nIHRoZSBtbWFwX2ZyZWUgYSBiaXQgcmVkdW5kYW50IGZv
-ciBxZWRyIGV4Y2VwdCBmb3IgdGhlIG5lZWQNCj4gdG8gZnJlZSB0aGUgZW50cnkuIA0KPiANCj4g
-Rm9yIEVGQSwgaXQgc2VlbWVkIHRoZSBvbmx5IG9wZXJhdGlvbiBkZWxheWVkIHdhcyBmcmVlaW5n
-IG1lbW9yeSAtIEkgZGlkbid0IHNlZSBodyByZXNvdXJjZXMNCj4gYmVpbmcgZnJlZWQuLi4gR2Fs
-Pw0KDQpXaGF0IGRvIHlvdSBtZWFuIGJ5IGh3IHJlc291cmNlcyBiZWluZyBmcmVlZD8gVGhlIEJB
-UiBtYXBwaW5ncyBhcmUgdW5kZXIgdGhlIGRldmljZeKAmXMgY29udHJvbCBhbmQgYXJlIGFzc29j
-aWF0ZWQgdG8gdGhlIGxpZmV0aW1lIG9mIHRoZSBVQVIuDQo=
+On Thu, Apr 25, 2019 at 06:15:13AM +0000, Parav Pandit wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Dan Carpenter <dan.carpenter@oracle.com>
+> > Sent: Wednesday, April 24, 2019 9:08 AM
+> > To: Parav Pandit <parav@mellanox.com>; netdev@vger.kernel.org
+> > Cc: Leon Romanovsky <leon@kernel.org>; Eli Cohen <eli@mellanox.com>;
+> > Doug Ledford <dledford@redhat.com>; Jason Gunthorpe <jgg@ziepe.ca>;
+> > linux-rdma@vger.kernel.org; kernel-janitors@vger.kernel.org
+> > Subject: Re: [PATCH] IB/mlx5: add checking for "vf" from do_setvfinfo()
+> > 
+> > I think I'm just going to ask netdev for an opinion on this.  It could be that
+> > we're just reading the code wrong...
+> > 
+> > I'm getting a lot of Smatch warning about buffer underflows.  The problem is
+> > that Smatch marks everything from nla_data() as unknown and untrusted
+> > user data.  In do_setvfinfo() we get the "->vf" values from nla_data().  It
+> > starts as u32, but all the function pointers in net_device_ops use it as a
+> > signed integer.  Most of the functions return -EINVAL if "vf" is negative but
+> > there are at least 48 which potentially use negative values as an offset into
+> > an array.
+> > 
+> > To me making "vf" a u32 throughout seems like a good idea but it's an
+> > extensive patch and I'm not really able to test it at all.
+> 
+> I will be try to get you patch early next week for core and in mlx5,
+> tested on mlx5 VFs, that possibly you can carry forward?
+
+Whatever happened with this?
+
+regards,
+dan carpenter
