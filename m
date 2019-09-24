@@ -2,155 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13042BC422
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2019 10:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA09BC448
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Sep 2019 10:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394959AbfIXIbX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Sep 2019 04:31:23 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:57560 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390364AbfIXIbX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 24 Sep 2019 04:31:23 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x8O8UiAd027381;
-        Tue, 24 Sep 2019 01:31:19 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pfpt0818;
- bh=tJYwOol7U07KCgVk6c8pxYdz9f06TzncAEMkiJ5ezFE=;
- b=eL3iKWdEeZhfiaNuvUWa4Gmpp5ITsly3dFIAt1UtSIRjqybVpnbQ0lyPJEz73vYcDTjW
- 5D+PQ72SYoiy3WFwtc3mQ7SgFxhgFFSnw/kIWcoH7oopvdmxuaLPPuSchvbMPqzC0MDj
- y80HTX0Qg7FL01bTvdx3cWZfn3ZZk+ZFMrQai76b9zBpATUB309IhQ1J79n6sPkoNOeb
- r2LTUtsp7MVas9P0bj/NRP7ccWtGdIivVTnizgDEu4803OgEujeDb0AxXooEYdSjsq7F
- KeC7tPjz6UCnok2RX3fXf3TKKgvsEjIBW5Xhzv2BR3itbgtviu2hsrhHRdK4QSaTBRj2 Og== 
-Received: from sc-exch04.marvell.com ([199.233.58.184])
-        by mx0a-0016f401.pphosted.com with ESMTP id 2v5h7qhwhm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 24 Sep 2019 01:31:19 -0700
-Received: from SC-EXCH04.marvell.com (10.93.176.84) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Tue, 24 Sep
- 2019 01:31:18 -0700
-Received: from NAM03-CO1-obe.outbound.protection.outlook.com (104.47.40.53) by
- SC-EXCH04.marvell.com (10.93.176.84) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Tue, 24 Sep 2019 01:31:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dcS2pqkiCijBIYLuua0QQ058LcGI8XH0ZzXl1zmQRz+y9EJeaZsS2UDKCS6jJSQICbtdmHApDST4LhEfI1o7i3RIEUzll/k8qVdcO0H3b8Tjh2QP0tGIdZsCzpg+2SaPFPPTE+SfKVguLiz2k9YUDEFjlO6gwbNUeAx0KDQuN551WsV75l1aWuXClCxEydmAfiwELB/ETjtuNdE5CecD8MTIeL+xQujdbVaorVihZh8edKbBLk8capk8xjNE3G6w0d+4xt8bJJZWTvFrLgrr1FZNrwcms+Mw0S2liXIxP5BOtIU30l3sP0lvjdwbng+Z9LepYCM5bR60nSq/T4MBQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tJYwOol7U07KCgVk6c8pxYdz9f06TzncAEMkiJ5ezFE=;
- b=E7SEZdSxQej/oPPQGhTFYKxww3sXW73nPG4h3SEyQuxqoUyiiZyGLO2zSopKVS6cpspC2NV5mr8yQrAgjHshVyqm8uIPhCaYIMvHA9S74zs+ZtfsJwe1Z4jxjOusQ7xydX0gdsM+ZprbhcS6TTpVHyj6yHpVqHVEjMxZp4PM1SSdQRFLSZgsqVu0q1uhrTvGSB0ldVsYf4Z1tqHxKc7SK7s1iK0YXKHkV4kguxL1rljcTAtx/wUNoEPwawY0me9Vsw3uMoyIVTczO+X3DiA8e2PhWq5xxTGIzKPRkOLkEIPN+5Te7zfIQmf1PNkaQzF/4Y+FW70nBO5iB+qxvn/oKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+        id S1726811AbfIXIuF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Sep 2019 04:50:05 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:4389 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726029AbfIXIuF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Sep 2019 04:50:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector2-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tJYwOol7U07KCgVk6c8pxYdz9f06TzncAEMkiJ5ezFE=;
- b=jeMmQMdS/C4SyZD7VI9zjZBYYT7Hh15bO330yHSMa2eseskeMPm/8kuLELQ1+pw8VblrH3ef7m8L7Nu51FOdbIx/IERHBk1AeUjOmRZA0Myu4aO/3oQ5n6OG5vtuleORyH3BaZjMaCrMKfrZWx0bYwKd7y4ZQT5dXmUqySdYokU=
-Received: from MN2PR18MB3182.namprd18.prod.outlook.com (10.255.236.143) by
- MN2PR18MB2943.namprd18.prod.outlook.com (20.179.22.32) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2284.20; Tue, 24 Sep 2019 08:31:16 +0000
-Received: from MN2PR18MB3182.namprd18.prod.outlook.com
- ([fe80::9d49:7d09:abb5:34e8]) by MN2PR18MB3182.namprd18.prod.outlook.com
- ([fe80::9d49:7d09:abb5:34e8%7]) with mapi id 15.20.2284.023; Tue, 24 Sep 2019
- 08:31:16 +0000
-From:   Michal Kalderon <mkalderon@marvell.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Ariel Elior <aelior@marvell.com>,
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1569315004; x=1600851004;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=zmbCWZ7mkSoGQgXIsEiCBKmVFdjFZZW38kLydlm/p2I=;
+  b=qJocJzinVk92xNRttqjje7MbwBoccD4UpyHUhenAmlL+q0RbLvCsOizM
+   ZczNzM+INwgCO/c470SbvXbb66XwB6Tc3k38y9tp7BqiVpyxTOMLHufog
+   FvdWzMLi3bvdGAkGh0IqwXSKkHFo7CJGOxX0pmARLYDT5srvJRNc9lex4
+   4=;
+X-IronPort-AV: E=Sophos;i="5.64,543,1559520000"; 
+   d="scan'208";a="423182441"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-17c49630.us-east-1.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 24 Sep 2019 08:50:02 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1e-17c49630.us-east-1.amazon.com (Postfix) with ESMTPS id 14AECA07B1;
+        Tue, 24 Sep 2019 08:50:00 +0000 (UTC)
+Received: from EX13D13EUB002.ant.amazon.com (10.43.166.205) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 24 Sep 2019 08:50:00 +0000
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13D13EUB002.ant.amazon.com (10.43.166.205) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 24 Sep 2019 08:49:59 +0000
+Received: from EX13D19EUB003.ant.amazon.com ([10.43.166.69]) by
+ EX13D19EUB003.ant.amazon.com ([10.43.166.69]) with mapi id 15.00.1367.000;
+ Tue, 24 Sep 2019 08:49:59 +0000
+From:   "Pressman, Gal" <galpress@amazon.com>
+To:     Michal Kalderon <mkalderon@marvell.com>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>, Ariel Elior <aelior@marvell.com>,
         "dledford@redhat.com" <dledford@redhat.com>,
         "bmt@zurich.ibm.com" <bmt@zurich.ibm.com>,
-        "galpress@amazon.com" <galpress@amazon.com>,
-        "sleybo@amazon.com" <sleybo@amazon.com>,
+        "Leybovich, Yossi" <sleybo@amazon.com>,
         "leon@kernel.org" <leon@kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [EXT] Re: [PATCH v11 rdma-next 2/7] RDMA/core: Create mmap
- database and cookie helper functions
-Thread-Topic: [EXT] Re: [PATCH v11 rdma-next 2/7] RDMA/core: Create mmap
- database and cookie helper functions
-Thread-Index: AQHVY9EbgU9u1ehEnECRiayMwe50F6czYqUAgAW5klCAAEIlAIABPUuQ
-Date:   Tue, 24 Sep 2019 08:31:16 +0000
-Message-ID: <MN2PR18MB3182E0034A68DF1452BA73C6A1840@MN2PR18MB3182.namprd18.prod.outlook.com>
-References: <20190905100117.20879-1-michal.kalderon@marvell.com>
- <20190905100117.20879-3-michal.kalderon@marvell.com>
- <20190919180746.GF4132@ziepe.ca>
- <MN2PR18MB31822DCFCA312D6A455A000BA1850@MN2PR18MB3182.namprd18.prod.outlook.com>
- <20190923133000.GD12047@ziepe.ca>
-In-Reply-To: <20190923133000.GD12047@ziepe.ca>
+Subject: Re: [PATCH v11 rdma-next 5/7] RDMA/qedr: Use the common mmap API
+Thread-Topic: [PATCH v11 rdma-next 5/7] RDMA/qedr: Use the common mmap API
+Thread-Index: AQHVY9F112/Hqya3nkOS7EjBcc9JJaczX0oAgAF87QCABDy/gIABiXyA
+Date:   Tue, 24 Sep 2019 08:49:59 +0000
+Message-ID: <4A66AD43-246B-4256-BA99-B61D3F1D05A8@amazon.com>
+References: <MN2PR18MB31828BDF43D9CA65A7BF1BC8A1850@MN2PR18MB3182.namprd18.prod.outlook.com>
+In-Reply-To: <MN2PR18MB31828BDF43D9CA65A7BF1BC8A1850@MN2PR18MB3182.namprd18.prod.outlook.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [199.203.130.254]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d9f1a78d-459c-4da4-abaf-08d740c9917c
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600167)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MN2PR18MB2943;
-x-ms-traffictypediagnostic: MN2PR18MB2943:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR18MB29432064B1C3F8E21911F671A1840@MN2PR18MB2943.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3968;
-x-forefront-prvs: 0170DAF08C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(376002)(366004)(346002)(39850400004)(136003)(199004)(189003)(26005)(6436002)(99286004)(11346002)(81156014)(81166006)(66946007)(76176011)(9686003)(33656002)(8936002)(256004)(55016002)(476003)(14444005)(54906003)(446003)(229853002)(7696005)(478600001)(66476007)(66556008)(14454004)(8676002)(102836004)(186003)(6246003)(6506007)(6916009)(52536014)(66446008)(66066001)(316002)(4326008)(64756008)(305945005)(6116002)(5660300002)(25786009)(7736002)(3846002)(71190400001)(71200400001)(76116006)(2906002)(486006)(86362001)(74316002)(130980200001);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR18MB2943;H:MN2PR18MB3182.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: marvell.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: lweTiitAb5EIuJAhv4DDgDn9QiY36ccrHaczM0ibTvu1nywlN1FOpUty8gCWv8fBet7PAtdahNbdb1Q6M0dHZ7vZGXPTOdRDtqnrIeKORIkIkdrZhjTNbXp0Ok3P8FZKPMiS1A94T37xczJikbi5B5TBKoJZvrusH1ewrN0TqDDRBDQ5blcftGpltEAqbZgm83Beo7AQqByKm9gxxoPnqpZ15oHILhSXbhBymv4i85ZyqnglpWG4Rve1C+CntWZbquUtPL0TZqlfjzjWCImJANCf7hVlvklNBx9wR2kXx7JVro2i/+wflpjneIiqkvnAabCPfQhcgw3ooulL+lzeAVGGB+rPjX7HI152nZ64PE/4L2eQzDllEb61LnPI17/P+O8ZTEp5RDBXEkDnwxUgipa2puzCamGpWZpcn1+8mB0=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+x-ms-exchange-transport-fromentityheader: Hosted
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <55A9282DB2AEE945AB09EE217879123A@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9f1a78d-459c-4da4-abaf-08d740c9917c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2019 08:31:16.7616
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fB6dfIUebH3ZzcXsym6SuvtnHQBazAcL4QNZLl6/H6VaY/XKBo6GEkQTbO9SU00qJO/bdOic5y5NJZuIXD7KwQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB2943
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-09-24_04:2019-09-23,2019-09-24 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> owner@vger.kernel.org> On Behalf Of Jason Gunthorpe
->=20
-> On Mon, Sep 23, 2019 at 09:36:01AM +0000, Michal Kalderon wrote:
-> > > > + * will use the key to retrieve information such as address to
-> > > > + * be mapped and how.
-> > > > + *
-> > > > + * Return: unique key or RDMA_USER_MMAP_INVALID if entry was
-> not
-> > > added.
-> > > > + */
-> > > > +u64 rdma_user_mmap_entry_insert(struct ib_ucontext *ucontext,
-> > > > +				struct rdma_user_mmap_entry *entry,
-> > > > +				size_t length)
-> > >
-> > > The similarly we don't need to return a u64 here and the sort of
-> > > ugly RDMA_USER_MMAP_INVALID can go away
-> >
-> > So you mean add a return code here ? and on failure driver will delete
-> > the Allocated xx_user_mmap_entry and not store it in xx_key ?
->=20
-> I'm not sure what this means
->=20
-Before fixing: driver allocated rdma_user_mmap_entry, receives a key and st=
-ores
-The key, if the key received is INVALID the driver frees the allocated entr=
-y.=20
-Wanted to make sure I understand correctly that you're requesting I change =
-the
-Function to return an error code, and on success the driver will store the =
-pointer
-To the mmap_entry structure and on failure free it ?=20
-And the driver will not hold the value of the key, instead call a helper fu=
-nction if it is required ?=20
-Thanks,
-Michal
-
-> Jason
+DQo+IE9uIDIzIFNlcCAyMDE5LCBhdCAxODoyMiwgTWljaGFsIEthbGRlcm9uIDxta2FsZGVyb25A
+bWFydmVsbC5jb20+IHdyb3RlOg0KPiANCj4g77u/DQo+PiANCj4+IEZyb206IGxpbnV4LXJkbWEt
+b3duZXJAdmdlci5rZXJuZWwub3JnIDxsaW51eC1yZG1hLQ0KPj4gb3duZXJAdmdlci5rZXJuZWwu
+b3JnPiBPbiBCZWhhbGYgT2YgR2FsIFByZXNzbWFuDQo+PiANCj4+PiBPbiAxOS8wOS8yMDE5IDIw
+OjU1LCBKYXNvbiBHdW50aG9ycGUgd3JvdGU6DQo+Pj4gSHVoLiBJZiB5b3UgcmVjYWxsIHdlIGRp
+ZCBhbGwgdGhpcyB3b3JrIHdpdGggdGhlIFhBIGFuZCB0aGUgZnJlZQ0KPj4+IGNhbGxiYWNrIGJl
+Y2F1c2UgeW91IHNhaWQgcWVkciB3YXMgbW1hcGluZyBCQVIgcGFnZXMgdGhhdCBoYWQgc29tZSBI
+Vw0KPj4+IGxpZmV0aW1lIGFzc29jaWF0ZWQgd2l0aCB0aGVtLCBhbmQgdGhlIEhXIHJlc291cmNl
+IHdhcyBub3QgdG8gYmUNCj4+PiByZWFsbG9jYXRlZCB1bnRpbCBhbGwgdXNlcnMgd2VyZSBnb25l
+Lg0KPj4+IA0KPj4+IEkgdGhpbmsgaXQgd291bGQgYmUgYSBiZXR0ZXIgZXhhbXBsZSBvZiB0aGlz
+IEFQSSBpZiB5b3UgcHVsbGVkIHRoZQ0KPj4+IA0KPj4+ICAgIGRldi0+b3BzLT5yZG1hX3JlbW92
+ZV91c2VyKGRldi0+cmRtYV9jdHgsIGN0eC0+ZHBpKTsNCj4+PiANCj4+PiBJbnRvIHFlZHJfbW1h
+cF9mcmVlKCkuDQo+Pj4gDQo+Pj4gVGhlbiB0aGUgcmRtYV91c2VyX21tYXBfZW50cnlfcmVtb3Zl
+KCkgd2lsbCBjYWxsIGl0IG5hdHVyYWxseSBhcyBpdA0KPj4+IGRvZXMgZW50cnlfcHV0KCkgYW5k
+IGlmIHdlIGFyZSBkZXN0cm95aW5nIHRoZSB1Y29udGV4dCB3ZSBhbHJlYWR5IGtub3cNCj4+PiB0
+aGUgbW1hcHMgYXJlIGRlc3Ryb3llZC4NCj4+PiANCj4+PiBNYXliZSB0aGUgc2FtZSBiYXNpYyBj
+b21tZW50IGZvciBFRkEsIG5vdCBzdXJlLiBHYWw/DQo+PiANCj4+IFRoYXQncyB3aGF0IEVGQSBh
+bHJlYWR5IGRvZXMgaW4gdGhpcyBzZXJpZXMsIG5vPw0KPj4gV2Ugbm8gbG9uZ2VyIHJlbW92ZSBl
+bnRyaWVzIG9uIGRlYWxsb2NfdWNvbnRleHQsIG9ubHkgd2hlbiB0aGUgZW50cnkgaXMNCj4+IGZy
+ZWVkLg0KPiANCj4gQWN0dWFsbHksIEkgdGhpbmsgbW9zdCBvZiB0aGUgZGlzY3Vzc2lvbnMgeW91
+IGhhZCBvbiB0aGUgdG9waWMgd2VyZSB3aXRoIEdhbCwgYnV0DQo+IFNvbWUgYXBwbHkgdG8gcWVk
+ciBhcyB3ZWxsLCBob3dldmVyLCBmb3IgcWVkciwgdGhlIG9ubHkgaHcgcmVzb3VyY2Ugd2UgYWxs
+b2NhdGUgKGJhcikNCj4gaXMgb24gYWxsb2NfdWNvbnRleHQgLCB0aGVyZWZvcmUgd2Ugd2VyZSBz
+YWZlIHRvIGZyZWUgaXQgb24gZGVhbGxvY191Y29udGV4dCBhcyBhbGwgbWFwcGluZ3MNCj4gd2Vy
+ZSBhbHJlYWR5IHphcHBlZC4gTWFraW5nIHRoZSBtbWFwX2ZyZWUgYSBiaXQgcmVkdW5kYW50IGZv
+ciBxZWRyIGV4Y2VwdCBmb3IgdGhlIG5lZWQNCj4gdG8gZnJlZSB0aGUgZW50cnkuIA0KPiANCj4g
+Rm9yIEVGQSwgaXQgc2VlbWVkIHRoZSBvbmx5IG9wZXJhdGlvbiBkZWxheWVkIHdhcyBmcmVlaW5n
+IG1lbW9yeSAtIEkgZGlkbid0IHNlZSBodyByZXNvdXJjZXMNCj4gYmVpbmcgZnJlZWQuLi4gR2Fs
+Pw0KDQpXaGF0IGRvIHlvdSBtZWFuIGJ5IGh3IHJlc291cmNlcyBiZWluZyBmcmVlZD8gVGhlIEJB
+UiBtYXBwaW5ncyBhcmUgdW5kZXIgdGhlIGRldmljZeKAmXMgY29udHJvbCBhbmQgYXJlIGFzc29j
+aWF0ZWQgdG8gdGhlIGxpZmV0aW1lIG9mIHRoZSBVQVIuDQo=
