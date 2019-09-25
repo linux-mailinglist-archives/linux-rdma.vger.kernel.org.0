@@ -2,138 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 058CEBD833
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Sep 2019 08:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB5ABDB00
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Sep 2019 11:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbfIYGQY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Sep 2019 02:16:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390491AbfIYGQX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 25 Sep 2019 02:16:23 -0400
-Received: from localhost (unknown [77.137.89.37])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84A8D2054F;
-        Wed, 25 Sep 2019 06:16:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569392182;
-        bh=TMgy5szIW+DPZ1xRKChK67Z3kr+ZTD64reyMuMfxd40=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SCJ5qArBB5mFpS3DT8JFKgQlMJAzsm8fOeTMYR5VwKvOtbCa3nDdhdKGCS5sVtgGF
-         4zUGsskGCH2yKuq8jFfjA2kfTYl4zRs9mOJ9x+QKsMxz6o9dH70Dp3gGaAPADISCs1
-         oWNXQUJqiuclL4Bn8RznUb5YckobGMjLgHgebOWY=
-Date:   Wed, 25 Sep 2019 09:16:17 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        Mark Zhang <markz@mellanox.com>
-Subject: Re: [PATCH 1/4] RDMA/cm: Fix memory leak in cm_add/remove_one
-Message-ID: <20190925061617.GV14368@unreal>
-References: <20190916071154.20383-1-leon@kernel.org>
- <20190916071154.20383-2-leon@kernel.org>
- <20190916184544.GG2585@mellanox.com>
+        id S1731555AbfIYJat (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Sep 2019 05:30:49 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:38184 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731125AbfIYJat (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Sep 2019 05:30:49 -0400
+Received: by mail-io1-f68.google.com with SMTP id u8so12017865iom.5
+        for <linux-rdma@vger.kernel.org>; Wed, 25 Sep 2019 02:30:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DoKG+LEFGGjI80cfy/D8ELzKAiYahl1c5RXmUNYC+MI=;
+        b=hlL+PGhKZHqXkIrAM8xIuFShQ8wQnlsRZcnM2vj3YkeSeWJpVR88bFQhXz4MZtuGeS
+         kqJjXt/mGlSEPAYOOkZLIWazJf71G+XBErbJCPU4PUmInALl+VVLucN8zUeHkdxYs2bw
+         bg13NOTniesCBXTZZr2monswaTop11zSrbQ7yduFSvZlzO6MxmpApMQ0e5A2Nh40ZlqZ
+         HeTgbTCwvsJpHEfZnqI6tN/iVidSxoht3RfM1usHk3PfIRFU1urbk3A0RclOkcoDucfK
+         ipYqYLE+eXjwch+gfdRKpFGphdi3XdiDZglTG8GDVnIKMhaBbesreNxF7KAgIMB5DkUg
+         /4zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DoKG+LEFGGjI80cfy/D8ELzKAiYahl1c5RXmUNYC+MI=;
+        b=EbJ/x7u6rA885WB1i+hQfgNCgXRI9e6rNVHUo9g9fjEuFO6b6kaeiZIHAk5Rn0g9t/
+         uGqiqVkEZwFm03kYST4demYkLREwrLYYEpdvapsOc1ZGz2bwrl4BK4htckauxhAON5fM
+         XR4IW9i4r3oVvZT/evra2nTwy7A8Py5BzwhsK6urBB4mD044owSt6SAF84EuG6qVoIBd
+         aTVFGPEdvL1gj94BcaJfcqCpz/2LFcMmGN012GbK3GQYH9Wo6s/2Hr1cYMcz9H+cv3Uk
+         Zs+y+9HRjFMK6uqZTe4MR9Awh2eJVpyjNXPS9atl5YfidgIrW63lky7VuVRZpiE0C2G3
+         MAJw==
+X-Gm-Message-State: APjAAAWWjPlmsgaoyG6tbWpcJKQ8AZr9rJ2wGabM6Pv+fRb0/YF5GDET
+        qDM6n+u/aHUXLVpeef/AdYPjPX0F31yN//rS2HUc
+X-Google-Smtp-Source: APXvYqyyT66uWyKaxU76gMaJXwjt3UXvaHQdez83u1Nu9ZObDjlxmg6jMKi37TKZg1HGf9jqZA0a8/XAG7TcZU/VniY=
+X-Received: by 2002:a5e:cb49:: with SMTP id h9mr8756390iok.307.1569403848522;
+ Wed, 25 Sep 2019 02:30:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190916184544.GG2585@mellanox.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-2-jinpuwang@gmail.com>
+ <4cad763a-e803-1dd8-4ea5-d7ceab929841@acm.org>
+In-Reply-To: <4cad763a-e803-1dd8-4ea5-d7ceab929841@acm.org>
+From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Date:   Wed, 25 Sep 2019 11:30:37 +0200
+Message-ID: <CAHg0Huxk5fFxzzjSR0FnGfWk6cGjfad022J_R2f60mVFeE423w@mail.gmail.com>
+Subject: Re: [PATCH v4 01/25] sysfs: export sysfs_remove_file_self()
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, rpenyaev@suse.de,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 16, 2019 at 06:45:48PM +0000, Jason Gunthorpe wrote:
-> On Mon, Sep 16, 2019 at 10:11:51AM +0300, Leon Romanovsky wrote:
-> > From: Jack Morgenstein <jackm@dev.mellanox.co.il>
-> >
-> > In the process of moving the debug counters sysfs entries, the commit
-> > mentioned below eliminated the cm_infiniband sysfs directory.
-> >
-> > This sysfs directory was tied to the cm_port object allocated in procedure
-> > cm_add_one().
-> >
-> > Before the commit below, this cm_port object was freed via a call to
-> > kobject_put(port->kobj) in procedure cm_remove_port_fs().
-> >
-> > Since port no longer uses its kobj, kobject_put(port->kobj) was eliminated.
-> > This, however, meant that kfree was never called for the cm_port buffers.
-> >
-> > Fix this by adding explicit kfree(port) calls to functions cm_add_one()
-> > and cm_remove_one().
-> >
-> > Note: the kfree call in the first chunk below (in the cm_add_one error
-> > flow) fixes an old, undetected memory leak.
-> >
-> > Fixes: c87e65cfb97c ("RDMA/cm: Move debug counters to be under relevant IB device")
-> > Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
-> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> >  drivers/infiniband/core/cm.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-> > index da10e6ccb43c..5920c0085d35 100644
-> > +++ b/drivers/infiniband/core/cm.c
-> > @@ -4399,6 +4399,7 @@ static void cm_add_one(struct ib_device *ib_device)
-> >  error1:
-> >  	port_modify.set_port_cap_mask = 0;
-> >  	port_modify.clr_port_cap_mask = IB_PORT_CM_SUP;
-> > +	kfree(port);
-> >  	while (--i) {
-> >  		if (!rdma_cap_ib_cm(ib_device, i))
-> >  			continue;
-> > @@ -4407,6 +4408,7 @@ static void cm_add_one(struct ib_device *ib_device)
-> >  		ib_modify_port(ib_device, port->port_num, 0, &port_modify);
-> >  		ib_unregister_mad_agent(port->mad_agent);
-> >  		cm_remove_port_fs(port);
-> > +		kfree(port);
-> >  	}
-> >  free:
-> >  	kfree(cm_dev);
-> > @@ -4460,6 +4462,7 @@ static void cm_remove_one(struct ib_device *ib_device, void *client_data)
-> >  		spin_unlock_irq(&cm.state_lock);
-> >  		ib_unregister_mad_agent(cur_mad_agent);
-> >  		cm_remove_port_fs(port);
-> > +		kfree(port);
-> >  	}
+On Mon, Sep 23, 2019 at 7:21 PM Bart Van Assche <bvanassche@acm.org> wrote:
 >
-> This whole thing is looking pretty goofy now, and I suspect there are
-> more error unwind bugs here.
+> On 6/20/19 8:03 AM, Jack Wang wrote:
+> > Function is going to be used in transport over RDMA module
+> > in subsequent patches.
 >
-> How about this instead:
->
-> From e8dad20c7b69436e63b18f16cd9457ea27da5bc1 Mon Sep 17 00:00:00 2001
-> From: Jack Morgenstein <jackm@dev.mellanox.co.il>
-> Date: Mon, 16 Sep 2019 10:11:51 +0300
-> Subject: [PATCH] RDMA/cm: Fix memory leak in cm_add/remove_one
->
-> In the process of moving the debug counters sysfs entries, the commit
-> mentioned below eliminated the cm_infiniband sysfs directory, and created
-> some missing cases where the port pointers were not being freed as the
-> kobject_put was also eliminated.
->
-> Rework this to not allocate port pointers and consolidate all the error
-> unwind into one sequence.
->
-> This also fixes unlikely racey bugs where error-unwind after unregistering
-> the MAD handler would miss flushing the WQ and other clean up that is
-> necessary once concurrency starts.
->
-> Fixes: c87e65cfb97c ("RDMA/cm: Move debug counters to be under relevant IB device")
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> ---
->  drivers/infiniband/core/cm.c | 187 ++++++++++++++++++-----------------
->  1 file changed, 94 insertions(+), 93 deletions(-)
-
-The proposed patch doesn't pass sanity check and unfortunately, I don't
-have time now to debug it.
-
-$ ./rping -V -S 256 -C 100 -p 19663 -P -a 192.168.0.1 -s &
-$ ./rping -V -S 256 -C 100 -p 19663 -a 192.168.0.1 -c -I 192.168.0.1
-   rdma_connect: Invalid argument
-   connect error -1
-   <hang>
-
-Thanks
+> It seems like several words are missing from this patch description.
+Will extend with corresponding description of the function from
+fs/sysfs/file.c and explanation why we need it.
