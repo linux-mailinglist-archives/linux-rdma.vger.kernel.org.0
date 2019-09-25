@@ -2,291 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D846EBDD40
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Sep 2019 13:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7CDBDE2F
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Sep 2019 14:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391127AbfIYLjY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Sep 2019 07:39:24 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2720 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2391117AbfIYLjY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 25 Sep 2019 07:39:24 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 8F6F37F23564381B6CF1;
-        Wed, 25 Sep 2019 19:39:21 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.439.0; Wed, 25 Sep 2019 19:39:14 +0800
-From:   Weihang Li <liweihang@hisilicon.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v3 rdma-core 4/4] libhns: Add UD support for hip08 in user mode
-Date:   Wed, 25 Sep 2019 19:35:51 +0800
-Message-ID: <1569411351-57148-5-git-send-email-liweihang@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1569411351-57148-1-git-send-email-liweihang@hisilicon.com>
-References: <1569411351-57148-1-git-send-email-liweihang@hisilicon.com>
+        id S1732425AbfIYMlU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Sep 2019 08:41:20 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:25566 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726369AbfIYMlU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 25 Sep 2019 08:41:20 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x8PCeGSJ012653;
+        Wed, 25 Sep 2019 05:41:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0818;
+ bh=ZPG80p6CCXPJRwOo2P2x9+3Re1I8zG6Kq6fTaBdVOCQ=;
+ b=l18X91sJrKCxNsvssMe9g+H/1L54QSXdM9dmxF/q201t14McJeEbnlx8EO8J2FhrbpRl
+ DqTpSdoxqLotXnkW0ig5glsbmWkl75JD9JmpcjP6XOfitv5B+gwVdkOPhCsP5A3gqkSo
+ l5POBI/OcAcCWIVK3b8/NGRVyV8SQkgR4lA9t63KKG5bO60xrksEeVzv/mDHV5sADj4Z
+ j6+2Vs10i3uneIWfZH8Vj6lsk/7eYCrwKtvBS1wdZscdE7lWxoXN2CNePQ2oyxUHB/9C
+ OjYUlXYM+l2WGajUk7R3mJgeO0hDF6I8J4fjJ4nbJ1s/JrQ0SxplfKHgMgBTKkMEPb3J hQ== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0b-0016f401.pphosted.com with ESMTP id 2v887gg207-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 25 Sep 2019 05:41:13 -0700
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Wed, 25 Sep
+ 2019 05:35:46 -0700
+Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
+ Transport; Wed, 25 Sep 2019 05:35:46 -0700
+Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
+        by maili.marvell.com (Postfix) with ESMTP id 963103F703F;
+        Wed, 25 Sep 2019 05:35:44 -0700 (PDT)
+From:   Michal Kalderon <michal.kalderon@marvell.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <kamalheib1@gmail.com>,
+        <michal.kalderon@marvell.com>, <aelior@marvell.com>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+Subject: [PATCH rdma-next] RDMA/core: Fix use after free and refcnt leak on ndev in_device in iwarp_query_port
+Date:   Wed, 25 Sep 2019 15:33:32 +0300
+Message-ID: <20190925123332.10746-1-michal.kalderon@marvell.com>
+X-Mailer: git-send-email 2.14.5
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-09-25_05:2019-09-23,2019-09-25 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lijun Ou <oulijun@huawei.com>
+If an iWARP driver is probed and removed while there are no ips
+set for the device, it will lead to a reference count leak on
+the inet device of the netdevice.
 
-User Application can use Unreliable Datagram on hip08 now.
+In addition, the netdevice was accessed after already calling
+netdev_put, which could lead to using the netdev after already
+freed.
 
-Signed-off-by: Lijun Ou <oulijun@huawei.com>
-Signed-off-by: Weihang Li <liweihang@hisilicon.com>
+Fixes: 4929116bdf72 ("RDMA/core: Add common iWARP query port")
+Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
+Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
 ---
- providers/hns/hns_roce_u_hw_v2.c | 104 ++++++++++++++++++++++++++++++++++++++-
- providers/hns/hns_roce_u_hw_v2.h |  91 ++++++++++++++++++++++++++++++++++
- providers/hns/hns_roce_u_verbs.c |   6 +++
- 3 files changed, 200 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/device.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/providers/hns/hns_roce_u_hw_v2.c b/providers/hns/hns_roce_u_hw_v2.c
-index 50057e3..f0f76cc 100644
---- a/providers/hns/hns_roce_u_hw_v2.c
-+++ b/providers/hns/hns_roce_u_hw_v2.c
-@@ -637,6 +637,107 @@ static void set_sge(struct hns_roce_v2_wqe_data_seg *dseg,
- 		}
- }
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 99c4a55545cf..2dd2cfe9b561 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -1987,8 +1987,6 @@ static int iw_query_port(struct ib_device *device,
+ 	if (!netdev)
+ 		return -ENODEV;
  
-+static void set_ud_wqe(void *wqe, struct hns_roce_qp *qp,
-+		       struct ibv_send_wr *wr, int nreq,
-+		       struct hns_roce_sge_info *sge_info)
-+{
-+	struct hns_roce_ah *ah = to_hr_ah(wr->wr.ud.ah);
-+	struct hns_roce_ud_sq_wqe *ud_sq_wqe = wqe;
-+	unsigned int hr_op;
-+
-+	memset(ud_sq_wqe, 0, sizeof(*ud_sq_wqe));
-+
-+	roce_set_bit(ud_sq_wqe->rsv_opcode, UD_SQ_WQE_CQE_S,
-+		     (wr->send_flags & IBV_SEND_SIGNALED) ? 1 : 0);
-+	roce_set_bit(ud_sq_wqe->rsv_opcode, UD_SQ_WQE_SE_S,
-+		     (wr->send_flags & IBV_SEND_SOLICITED) ? 1 : 0);
-+	roce_set_bit(ud_sq_wqe->rsv_opcode, UD_SQ_WQE_OWNER_S,
-+		     ~(((qp->sq.head + nreq) >> qp->sq.shift) & 0x1));
-+
-+	switch (wr->opcode) {
-+	case IBV_WR_SEND:
-+		hr_op = HNS_ROCE_WQE_OP_SEND;
-+		ud_sq_wqe->immtdata = 0;
-+		break;
-+	case IBV_WR_SEND_WITH_IMM:
-+		hr_op = HNS_ROCE_WQE_OP_SEND_WITH_IMM;
-+		ud_sq_wqe->immtdata =
-+				htole32(be32toh(wr->imm_data));
-+		break;
-+	default:
-+		hr_op = HNS_ROCE_WQE_OP_MASK;
-+		break;
-+	}
-+
-+	roce_set_field(ud_sq_wqe->rsv_opcode, UD_SQ_WQE_OPCODE_M,
-+		       UD_SQ_WQE_OPCODE_S, hr_op);
-+
-+	roce_set_field(ud_sq_wqe->sge_num_pd, UD_SQ_WQE_PD_M,
-+		       UD_SQ_WQE_PD_S, to_hr_pd(qp->ibv_qp.pd)->pdn);
-+
-+	roce_set_field(ud_sq_wqe->rsv_msg_start_sge_idx,
-+		       UD_SQ_WQE_MSG_START_SGE_IDX_M,
-+		       UD_SQ_WQE_MSG_START_SGE_IDX_S,
-+		       sge_info->start_idx & (qp->sge.sge_cnt - 1));
-+
-+	roce_set_field(ud_sq_wqe->udpspn_rsv, UD_SQ_WQE_UDP_SPN_M,
-+		       UD_SQ_WQE_UDP_SPN_S, 0);
-+
-+	ud_sq_wqe->qkey = htole32(wr->wr.ud.remote_qkey);
-+
-+	roce_set_field(ud_sq_wqe->rsv_dqpn, UD_SQ_WQE_DQPN_M,
-+		       UD_SQ_WQE_DQPN_S, wr->wr.ud.remote_qpn);
-+
-+	roce_set_field(ud_sq_wqe->tclass_vlan, UD_SQ_WQE_VLAN_M,
-+		       UD_SQ_WQE_VLAN_S, ah->av.vlan_id);
-+
-+	roce_set_field(ud_sq_wqe->tclass_vlan, UD_SQ_WQE_TCLASS_M,
-+		       UD_SQ_WQE_TCLASS_S, ah->av.tclass);
-+
-+	roce_set_field(ud_sq_wqe->tclass_vlan, UD_SQ_WQE_HOPLIMIT_M,
-+		       UD_SQ_WQE_HOPLIMIT_S, ah->av.hop_limit);
-+
-+	roce_set_field(ud_sq_wqe->lbi_flow_label, UD_SQ_WQE_FLOW_LABEL_M,
-+		       UD_SQ_WQE_FLOW_LABEL_S, ah->av.flowlabel);
-+
-+	roce_set_bit(ud_sq_wqe->lbi_flow_label, UD_SQ_WQE_VLAN_EN_S,
-+		     ah->av.vlan_en ? 1 : 0);
-+
-+	roce_set_bit(ud_sq_wqe->lbi_flow_label, UD_SQ_WQE_LBI_S, 0);
-+
-+	roce_set_field(ud_sq_wqe->lbi_flow_label, UD_SQ_WQE_SL_M,
-+		       UD_SQ_WQE_SL_S, ah->av.sl);
-+
-+	roce_set_field(ud_sq_wqe->lbi_flow_label, UD_SQ_WQE_PORTN_M,
-+		       UD_SQ_WQE_PORTN_S, qp->ibv_qp.qp_num);
-+
-+	roce_set_field(ud_sq_wqe->dmac, UD_SQ_WQE_DMAC_0_M,
-+		       UD_SQ_WQE_DMAC_0_S, ah->av.mac[0]);
-+	roce_set_field(ud_sq_wqe->dmac, UD_SQ_WQE_DMAC_1_M,
-+		       UD_SQ_WQE_DMAC_1_S, ah->av.mac[1]);
-+	roce_set_field(ud_sq_wqe->dmac, UD_SQ_WQE_DMAC_2_M,
-+		       UD_SQ_WQE_DMAC_2_S, ah->av.mac[2]);
-+	roce_set_field(ud_sq_wqe->dmac, UD_SQ_WQE_DMAC_3_M,
-+		       UD_SQ_WQE_DMAC_3_S, ah->av.mac[3]);
-+	roce_set_field(ud_sq_wqe->smac_index_dmac,
-+		       UD_SQ_WQE_DMAC_4_M, UD_SQ_WQE_DMAC_4_S,
-+		       to_hr_ah(wr->wr.ud.ah)->av.mac[4]);
-+	roce_set_field(ud_sq_wqe->smac_index_dmac,
-+		       UD_SQ_WQE_DMAC_5_M, UD_SQ_WQE_DMAC_5_S,
-+		       to_hr_ah(wr->wr.ud.ah)->av.mac[5]);
-+	roce_set_field(ud_sq_wqe->smac_index_dmac, UD_SQ_WQE_SGID_IDX_M,
-+		       UD_SQ_WQE_SGID_IDX_S, ah->av.gid_index);
-+
-+	memcpy(ud_sq_wqe->dgid, ah->av.dgid, HNS_ROCE_GID_SIZE);
-+
-+	set_sge(NULL, qp, wr, sge_info);
-+
-+	ud_sq_wqe->msg_len = htole32(sge_info->total_len);
-+
-+	roce_set_field(ud_sq_wqe->sge_num_pd, UD_SQ_WQE_SGE_NUM_M,
-+		       UD_SQ_WQE_SGE_NUM_S, sge_info->valid_num);
-+}
-+
- static int set_rc_wqe(void *wqe, struct hns_roce_qp *qp, struct ibv_send_wr *wr,
- 		      int nreq, struct hns_roce_sge_info *sge_info)
- {
-@@ -833,8 +934,9 @@ int hns_roce_u_v2_post_send(struct ibv_qp *ibvqp, struct ibv_send_wr *wr,
- 				goto out;
- 			}
- 			break;
--		case IBV_QPT_UC:
- 		case IBV_QPT_UD:
-+			set_ud_wqe(wqe, qp, wr, nreq, &sge_info);
-+			break;
- 		default:
- 			ret = -EINVAL;
- 			*bad_wr = wr;
-diff --git a/providers/hns/hns_roce_u_hw_v2.h b/providers/hns/hns_roce_u_hw_v2.h
-index 3eca1fd..84cf6c4 100644
---- a/providers/hns/hns_roce_u_hw_v2.h
-+++ b/providers/hns/hns_roce_u_hw_v2.h
-@@ -291,4 +291,95 @@ struct hns_roce_wqe_atomic_seg {
- int hns_roce_u_v2_post_send(struct ibv_qp *ibvqp, struct ibv_send_wr *wr,
- 			    struct ibv_send_wr **bad_wr);
+-	dev_put(netdev);
+-
+ 	port_attr->max_mtu = IB_MTU_4096;
+ 	port_attr->active_mtu = ib_mtu_int_to_enum(netdev->mtu);
  
-+struct hns_roce_ud_sq_wqe {
-+	__le32		rsv_opcode;
-+	__le32		msg_len;
-+	__le32		immtdata;
-+	__le32		sge_num_pd;
-+	__le32		rsv_msg_start_sge_idx;
-+	__le32		udpspn_rsv;
-+	__le32		qkey;
-+	__le32		rsv_dqpn;
-+	__le32		tclass_vlan;
-+	__le32		lbi_flow_label;
-+	__le32		dmac;
-+	__le32		smac_index_dmac;
-+	uint8_t		dgid[HNS_ROCE_GID_SIZE];
-+};
-+
-+#define UD_SQ_WQE_OPCODE_S 0
-+#define UD_SQ_WQE_OPCODE_M  (((1UL << 5) - 1) << UD_SQ_WQE_OPCODE_S)
-+
-+#define UD_SQ_WQE_OWNER_S 7
-+
-+#define UD_SQ_WQE_CQE_S 8
-+
-+#define UD_SQ_WQE_SE_S 11
-+
-+#define UD_SQ_WQE_PD_S 0
-+#define UD_SQ_WQE_PD_M  (((1UL << 24) - 1) << UD_SQ_WQE_PD_S)
-+
-+#define UD_SQ_WQE_SGE_NUM_S 24
-+#define UD_SQ_WQE_SGE_NUM_M  (((1UL << 8) - 1) << UD_SQ_WQE_SGE_NUM_S)
-+
-+#define UD_SQ_WQE_MSG_START_SGE_IDX_S 0
-+#define UD_SQ_WQE_MSG_START_SGE_IDX_M \
-+	(((1UL << 24) - 1) << UD_SQ_WQE_MSG_START_SGE_IDX_S)
-+
-+#define UD_SQ_WQE_UDP_SPN_S 16
-+#define UD_SQ_WQE_UDP_SPN_M \
-+	(((1UL << 16) - 1) << UD_SQ_WQE_UDP_SPN_S)
-+
-+#define UD_SQ_WQE_DQPN_S 0
-+#define UD_SQ_WQE_DQPN_M (((1UL << 24) - 1) << UD_SQ_WQE_DQPN_S)
-+
-+#define UD_SQ_WQE_VLAN_S 0
-+#define UD_SQ_WQE_VLAN_M (((1UL << 16) - 1) << UD_SQ_WQE_VLAN_S)
-+
-+#define UD_SQ_WQE_HOPLIMIT_S 16
-+#define UD_SQ_WQE_HOPLIMIT_M (((1UL << 8) - 1) << UD_SQ_WQE_HOPLIMIT_S)
-+
-+#define UD_SQ_WQE_TCLASS_S 24
-+#define UD_SQ_WQE_TCLASS_M (((1UL << 8) - 1) << UD_SQ_WQE_TCLASS_S)
-+
-+#define UD_SQ_WQE_FLOW_LABEL_S 0
-+#define UD_SQ_WQE_FLOW_LABEL_M (((1UL << 20) - 1) << UD_SQ_WQE_FLOW_LABEL_S)
-+
-+#define UD_SQ_WQE_SL_S 20
-+#define UD_SQ_WQE_SL_M (((1UL << 4) - 1) << UD_SQ_WQE_SL_S)
-+
-+#define UD_SQ_WQE_PORTN_S 24
-+#define UD_SQ_WQE_PORTN_M (((1UL << 3) - 1) << UD_SQ_WQE_PORTN_S)
-+
-+#define UD_SQ_WQE_VLAN_EN_S 30
-+
-+#define UD_SQ_WQE_LBI_S 31
-+
-+#define UD_SQ_WQE_PORTN_S 24
-+#define UD_SQ_WQE_PORTN_M (((1UL << 3) - 1) << UD_SQ_WQE_PORTN_S)
-+
-+#define UD_SQ_WQE_DMAC_0_S 0
-+#define UD_SQ_WQE_DMAC_0_M (((1UL << 8) - 1) << UD_SQ_WQE_DMAC_0_S)
-+
-+#define UD_SQ_WQE_DMAC_1_S 8
-+#define UD_SQ_WQE_DMAC_1_M (((1UL << 8) - 1) << UD_SQ_WQE_DMAC_1_S)
-+
-+#define UD_SQ_WQE_DMAC_2_S 16
-+#define UD_SQ_WQE_DMAC_2_M (((1UL << 8) - 1) << UD_SQ_WQE_DMAC_2_S)
-+
-+#define UD_SQ_WQE_DMAC_3_S 24
-+#define UD_SQ_WQE_DMAC_3_M (((1UL << 8) - 1) << UD_SQ_WQE_DMAC_3_S)
-+
-+#define UD_SQ_WQE_DMAC_4_S 0
-+#define UD_SQ_WQE_DMAC_4_M (((1UL << 8) - 1) << UD_SQ_WQE_DMAC_4_S)
-+
-+#define UD_SQ_WQE_DMAC_5_S 8
-+#define UD_SQ_WQE_DMAC_5_M (((1UL << 8) - 1) << UD_SQ_WQE_DMAC_5_S)
-+
-+#define UD_SQ_WQE_SGID_IDX_S 16
-+#define UD_SQ_WQE_SGID_IDX_M (((1UL << 8) - 1) << UD_SQ_WQE_SGID_IDX_S)
-+
-+#define UD_SQ_WQE_SMAC_IDX_S 24
-+#define UD_SQ_WQE_SMAC_IDX_M (((1UL << 8) - 1) << UD_SQ_WQE_SMAC_IDX_S)
-+
- #endif /* _HNS_ROCE_U_HW_V2_H */
-diff --git a/providers/hns/hns_roce_u_verbs.c b/providers/hns/hns_roce_u_verbs.c
-index 0d10b1c..07597a0 100644
---- a/providers/hns/hns_roce_u_verbs.c
-+++ b/providers/hns/hns_roce_u_verbs.c
-@@ -767,6 +767,12 @@ static void hns_roce_set_qp_params(struct ibv_pd *pd,
+@@ -1996,19 +1994,22 @@ static int iw_query_port(struct ib_device *device,
+ 		port_attr->state = IB_PORT_DOWN;
+ 		port_attr->phys_state = IB_PORT_PHYS_STATE_DISABLED;
+ 	} else {
+-		inetdev = in_dev_get(netdev);
++		rcu_read_lock();
++		inetdev = __in_dev_get_rcu(netdev);
+ 
+ 		if (inetdev && inetdev->ifa_list) {
+ 			port_attr->state = IB_PORT_ACTIVE;
+ 			port_attr->phys_state = IB_PORT_PHYS_STATE_LINK_UP;
+-			in_dev_put(inetdev);
+ 		} else {
+ 			port_attr->state = IB_PORT_INIT;
+ 			port_attr->phys_state =
+ 				IB_PORT_PHYS_STATE_PORT_CONFIGURATION_TRAINING;
  		}
++
++		rcu_read_unlock();
  	}
  
-+	if (attr->qp_type == IBV_QPT_UD)
-+		qp->sge.sge_cnt = roundup_pow_of_two(qp->sq.wqe_cnt *
-+						     qp->sq.max_gs);
-+
-+	qp->ibv_qp.qp_type = attr->qp_type;
-+
- 	/* limit by the context queried during alloc context */
- 	qp->rq.max_post = min(ctx->max_qp_wr, qp->rq.wqe_cnt);
- 	qp->sq.max_post = min(ctx->max_qp_wr, qp->sq.wqe_cnt);
++	dev_put(netdev);
+ 	err = device->ops.query_port(device, port_num, port_attr);
+ 	if (err)
+ 		return err;
 -- 
-2.8.1
+2.20.1
 
