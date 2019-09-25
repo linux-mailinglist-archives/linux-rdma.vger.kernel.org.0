@@ -2,80 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9E7BE4E7
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Sep 2019 20:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFE6BE518
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Sep 2019 20:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbfIYSp0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Sep 2019 14:45:26 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:37981 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726175AbfIYSp0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Sep 2019 14:45:26 -0400
-Received: by mail-wm1-f66.google.com with SMTP id 3so6089117wmi.3
-        for <linux-rdma@vger.kernel.org>; Wed, 25 Sep 2019 11:45:24 -0700 (PDT)
+        id S1726512AbfIYSuc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Sep 2019 14:50:32 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:45657 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbfIYSuc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Sep 2019 14:50:32 -0400
+Received: by mail-wr1-f65.google.com with SMTP id r5so8106465wrm.12
+        for <linux-rdma@vger.kernel.org>; Wed, 25 Sep 2019 11:50:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RPril4YgcRmPmooDyKH1wJLjnG5Kq7kOi9WRmhXR8jg=;
-        b=sjr2CGKPTSYl32WCGCQRYmj/ZKEQdMLdm6lFdZmk9TaSUarz+/edJJ8iKOqbGra/CL
-         0z401BrUFEzfbkIFGTeqolGgmlZ2WYXFK5Xr8VOreMly4LTKfx/y4cvBSUcz+CWzgLoX
-         GsUzrxYF5OMfwodFA28I4iCmVjJ3VhgvAcnmGMIzT2QjzvhLaqW2+iMk2zIPr38jEGVo
-         fbOBrNUmpp4h+NZM+E3imcjJmNzK3Fz9tlQlIriayYbRorswaM8/swrx32er3OAv+lH+
-         q6Atq8hq5KyorWlLxndt9B4jivRfO7PZ1JsB8Kz4qCr/4LkMt3SIqBtDYwDf5i8wym1e
-         afdw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jGWWEDcIEH+mcbEz6KfmksJKZdf0560UqpBnTRqgW7w=;
+        b=p2DCHzx0HPMOIPd1EnQMShfjDwFd0pQcJByq5mzIJ9vvejcAM+dGEFwP3gtiF/Cwo3
+         1NLaKGCnHus27EXwC5LpiFSUbyIAmPWMyFHN4hEBhw01jHTe3AB/ZPSooKehT4M6ZSuA
+         l2XZ9/8KO+dIf4Hxv3dDZYGStNuU5CYkMEXVFe2e3SblrwfBGAxcFyFUaI7zlnP6IX9G
+         8Sfxka26+eJ2n9Cug2mKOyRYPg14rxgCEsQkIr97ULNkVWQ9JZcrBIOTpmM3fMeyBYfW
+         9AcBIq3g1C8OMihlynkKg52qZOZcZ+2P4trqkjmJSg6QI+Y2fLWOSvvN2kMJNQOjbc1h
+         1l2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RPril4YgcRmPmooDyKH1wJLjnG5Kq7kOi9WRmhXR8jg=;
-        b=ZbWsz5ii9ba7Ux4PDIsprw45AllLcjc15xc0dpe7WF693YgC4s3nu94faKOEZzKCJ5
-         4aJPAnBSMHrJNJI89QwpqbFGsI12IAamXPQpEbGZe9BiM/UdXheiPsQSOIrDMk1gpsgP
-         41tGTwme7+KYHVgX8H96aOVC2wbpshPqLyadCxN69T5T9UPsOc3TWFr3N9CuhsL533or
-         Ne5jkz+ig0euTc1KzJfVe55Lli4gnncBkxBmSa/VphpNAJXhbY+wI+/R3zZ9GDxPdSKa
-         eSJNv71tcA4D13QzaGtdv9fXr9w5Y4OhPP4KWg8jXC8WkpSBOyS5zWUhXUrgyfYp5ndc
-         x/xg==
-X-Gm-Message-State: APjAAAXiI2B/dhzv5BwcuNAJHfOzyTYnR+Xo1tZZKmTaSHa7ldbUtFpk
-        yUMuSc1ozhRI4Y0x+sVSgIA=
-X-Google-Smtp-Source: APXvYqwVxMWw8wOm9ZrHTzJL4zyNZHgpo9BQ41XISMU12bzf9ylxBARPcQNsXrpZLFTuV7vuVVcMtg==
-X-Received: by 2002:a1c:cc0e:: with SMTP id h14mr9168336wmb.117.1569437124117;
-        Wed, 25 Sep 2019 11:45:24 -0700 (PDT)
-Received: from kheib-workstation (bzq-79-181-41-92.red.bezeqint.net. [79.181.41.92])
-        by smtp.gmail.com with ESMTPSA id c10sm9857534wrf.58.2019.09.25.11.45.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Sep 2019 11:45:23 -0700 (PDT)
-Date:   Wed, 25 Sep 2019 21:45:19 +0300
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jGWWEDcIEH+mcbEz6KfmksJKZdf0560UqpBnTRqgW7w=;
+        b=q6yRt/nfqhHT4Wfr9CMEmeb9/1sbqskn9vUi6fwPHhVuCcnPh/VLEPDF5KnS+Fhrf1
+         pXrzjPQtXpWEySKyHLxaZQU7Sf0J6o3S7jIWAiqjuJU5jnKyw1BTowEdCbW0N2IPc9hr
+         7Jwo2ck7KpxLYNhm/Z6xkT/rr8ka5rofKORIfdCmwVQhAaara4ivTolavxX9o12tNJAG
+         xkHvm+3sa4sIjY6Z/x2bentPse7kCOfGpi20kMTpl1xWoLtE4FQghIUU90XjhopkpS3m
+         DMEkymRItP7bN5C6ooM1v3MjWfc6HF1cdVJNgito9P+6sNs4dA2Ib2wYcee3AZ/fRsTi
+         Txdg==
+X-Gm-Message-State: APjAAAWJjnCgc0uY2HE9kZD2EqZsk7QM29PmaSPD2wlnBWEEpgry/MVK
+        4oZUKnYfxghcMMmFhCOLgZg5btX3
+X-Google-Smtp-Source: APXvYqwJ8Jakpx5JGcFoJwRdAcehOZSBvx3nTa1vtqEcAdROKiFOUvd5Mfb2DcLyEbzijF3szbGRjw==
+X-Received: by 2002:adf:f343:: with SMTP id e3mr10665754wrp.268.1569437430328;
+        Wed, 25 Sep 2019 11:50:30 -0700 (PDT)
+Received: from [192.168.1.108] (bzq-79-181-41-92.red.bezeqint.net. [79.181.41.92])
+        by smtp.gmail.com with ESMTPSA id y5sm5610361wma.14.2019.09.25.11.50.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Sep 2019 11:50:29 -0700 (PDT)
+Subject: Re: [PATCH for-5.4] RDMA/i40iw: Associate ibdev to netdev before IB
+ device registration
+To:     Shiraz Saleem <shiraz.saleem@intel.com>, dledford@redhat.com,
+        jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org
+References: <20190925164524.856-1-shiraz.saleem@intel.com>
 From:   Kamal Heib <kamalheib1@gmail.com>
-To:     Michal Kalderon <michal.kalderon@marvell.com>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, aelior@marvell.com,
-        leon@kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/core: Fix use after free and refcnt leak
- on ndev in_device in iwarp_query_port
-Message-ID: <20190925184519.GA16328@kheib-workstation>
-References: <20190925123332.10746-1-michal.kalderon@marvell.com>
+Message-ID: <327441aa-3991-b55b-aa71-7deff4ad6ed2@gmail.com>
+Date:   Wed, 25 Sep 2019 21:50:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190925123332.10746-1-michal.kalderon@marvell.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190925164524.856-1-shiraz.saleem@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 25, 2019 at 03:33:32PM +0300, Michal Kalderon wrote:
-> If an iWARP driver is probed and removed while there are no ips
-> set for the device, it will lead to a reference count leak on
-> the inet device of the netdevice.
+
+
+On 9/25/19 7:45 PM, Shiraz Saleem wrote:
+> From: "Shiraz, Saleem" <shiraz.saleem@intel.com>
 > 
-> In addition, the netdevice was accessed after already calling
-> netdev_put, which could lead to using the netdev after already
-> freed.
+> i40iw IB device registration fails with ENODEV.
+> 
+> ib_register_device
+>  setup_device/setup_port_data
+>   i40iw_port_immutable
+>    ib_query_port
+>      iw_query_port
+>       ib_device_get_netdev(ENODEV)
+> 
+> ib_device_get_netdev() does not have a netdev associated
+> with the ibdev and thus fails.
+> Use ib_device_set_netdev() to associate netdev to ibdev
+> in i40iw before IB device registration.
 > 
 > Fixes: 4929116bdf72 ("RDMA/core: Add common iWARP query port")
-> Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
-> Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+> Signed-off-by: Shiraz, Saleem <shiraz.saleem@intel.com>
 > ---
+>  drivers/infiniband/hw/i40iw/i40iw_verbs.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> index 8056930..cd9ee166 100644
+> --- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> +++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> @@ -2773,6 +2773,10 @@ int i40iw_register_rdma_device(struct i40iw_device *iwdev)
+>  		return -ENOMEM;
+>  	iwibdev = iwdev->iwibdev;
+>  	rdma_set_device_sysfs_group(&iwibdev->ibdev, &i40iw_attr_group);
+> +	ret = ib_device_set_netdev(&iwibdev->ibdev, iwdev->netdev, 1);
+> +	if (ret)
+> +		goto error;
+> +
+>  	ret = ib_register_device(&iwibdev->ibdev, "i40iw%d");
+>  	if (ret)
+>  		goto error;
+> 
 
 Thanks!
 
