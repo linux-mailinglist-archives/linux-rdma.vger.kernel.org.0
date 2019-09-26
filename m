@@ -2,89 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F96BEF19
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2019 11:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3441BEF2A
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2019 12:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726229AbfIZJ4C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Sep 2019 05:56:02 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:38512 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbfIZJ4C (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Sep 2019 05:56:02 -0400
-Received: by mail-oi1-f193.google.com with SMTP id m16so1556732oic.5;
-        Thu, 26 Sep 2019 02:56:01 -0700 (PDT)
+        id S1726137AbfIZKAv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Sep 2019 06:00:51 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:37138 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbfIZKAv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Sep 2019 06:00:51 -0400
+Received: by mail-wm1-f67.google.com with SMTP id f22so1894030wmc.2
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2019 03:00:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=g7QiJenNKxBa3/26UANfbTTYekrIvyL4x477K5pCRuA=;
-        b=pEYTOCcm1DEqg3InE5EGDE7EUod3egkoekuRL+gIIAx/ENObwO8RJRqKcjgOv5oBZr
-         Y868etL8PzrzwloN89W5ZvdHKzspjhBOIdWfgGF4DL0EaLlwdWtGnzRZlchLrMLZvHAA
-         ZlJQPzHmQs1IX513OPcGQ6PGxcZshGlaodi8GxMXqCi6I5/xmedZsOw2LLGCBj1Ezlay
-         WmW2sqx/HQUz7U5OwMx0f6YB/mDsaPa4u3l5lzm9M7FeGBfmsKCoeS9PVTThO10PV4W/
-         pxPCsKglBTWirRWF+p0+sEXwD48Tfz4AG1zu/rd1NGGQQy0gjK0urt1NCdML+lCVtVBh
-         PdDQ==
+        bh=ROnvgo4/nAkCzFnrK5SIJSu529RBPGmkqL+uQqHEUMo=;
+        b=PuaUgNVHIVBuzW7CazDD5YSXZ47LIMRVT0LuhBHydMkL+Nd/4ALuCEadZa5huqFFOT
+         89hFZdAd8Hp8MQPaAxFtWHssbThHRCBxJUIqt4yKSlVIxEab08seSVTBCe35OR75g8u7
+         SGH2P7KZ3b1J9NzpiKK7IMTmMQHxDlynol1xoN9064QZTiJ2Meffpaeaq2veyboRAuAK
+         92grBr9pH7R8LD1EtKFtfHGFlnVEvFuKWZTp6G8S2Mi/whFCejINu2WOcGLD6zrTQj24
+         p/gQkg99LLpBeIfo2I4o/KRuuHt/JI7xbNEfkFhswW0Eg7Tj3CBby8pmDwF16aneyqVy
+         K87g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=g7QiJenNKxBa3/26UANfbTTYekrIvyL4x477K5pCRuA=;
-        b=ehje4FW1alzkaiEbQqYo30pPUKyAdgwY593PuF/AWXHng8PfN8j1mIUJEJ6wswsRui
-         MyH1F7AU5/FuqQhfbOzAwMWCFlH3i+aqpWv0UKFmz37nVeOqs/wZrXsZzu4R0hBIUpnO
-         HMtTKiHYEOagm0Hr5ulLCEmhuKVzX1MEllRFUM5zn+GNXjGfUeteQJy1UnPjLFC9d5g0
-         mE7FG/vnO/Tu2ZzUrs0J265MrG9ygfn9WdtOfCFvpT/6O2lxnddUvn4jXcyVoCDGfr5L
-         3gnDDx43DuF6blksjrWCBOOSOB4RLX1PP4SxCRbJjZmrU2RQC1iV/zwmbjRNpz1DDnrq
-         Ylig==
-X-Gm-Message-State: APjAAAVbNU7ICSLQDiZ69KPQ2SEquI9VWMboBnHImYEjmR38gOid6gZ0
-        DnJ0suAmmQgjJhQxBwtIRL8sYn+L0iRq6Q+k1xE=
-X-Google-Smtp-Source: APXvYqzNH1fW9xKBKe6Z3YY60fwvZHmm384uLRC+kPxdxa6fbO3MLQW251lNrni7PIHWCYhj91MQpvFQr1LACnvcfHo=
-X-Received: by 2002:aca:3ed7:: with SMTP id l206mr1944265oia.25.1569491761364;
- Thu, 26 Sep 2019 02:56:01 -0700 (PDT)
+        bh=ROnvgo4/nAkCzFnrK5SIJSu529RBPGmkqL+uQqHEUMo=;
+        b=d6H75vpXiCsm/nj0Ax74thB5qiYHNT9tr43E/LRNU6+9lrgP3FHuHSaTBOrjbBxfWe
+         Kx7Qak9r8KNXmxtngq+FgJvFZ6i3XF6Yb/EP5VXY+zAExlwE2nWVQOLgiRHhNNYe1Ubi
+         tS2CAC0S0wgpEdNEGxeT5vP3QY8+2jyep4y8m1p70GYTufEmqa66o+mMIhcEZGWW7nOS
+         BT77FCBIWQN2zTPFJi0DrsyffOicnQZcoF6saN0y4lLwMd1X/QCwIJ0bMJganwaiq2yr
+         HfxfxUWiSWls3VD850yIYZIU6SFvs5NktquO3/8PEX1WvdXi59mh+ovvlbBqop1gpK1V
+         7dVw==
+X-Gm-Message-State: APjAAAX4X2J6EN7o1KQJxlSIhTcISCsm0D2M7+UEStBLW2Q7e8enTtKe
+        YVdkgIlVM0Qk0Q7N1Xy875N9nX5JZAbnwAK28rPJwA==
+X-Google-Smtp-Source: APXvYqysXTvpf5h9BVMWCnPdx4cfKVcwJHWZ7bm/B461J7LDJWR7z6FxBTIsHXBS1ZilwuRiugympCx0y+aumA5hMp4=
+X-Received: by 2002:a05:600c:c2:: with SMTP id u2mr2107404wmm.37.1569492049693;
+ Thu, 26 Sep 2019 03:00:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-18-jinpuwang@gmail.com>
- <bd8963e2-d186-dbd0-fe39-7f4a518f4177@acm.org> <CAHg0HuwzHnzPQAqjtYFTZb7BhzFagJ0NJ=pW=VkTqn5HML-0Vw@mail.gmail.com>
- <5c5ff7df-2cce-ec26-7893-55911e4d8595@acm.org> <CAHg0HuwFTVsCNHbiXW20P6hQ3c-P_p5tB6dYKtOW=_euWEvLnA@mail.gmail.com>
- <CAHg0HuzQOH4ZCe+v-GHu8jOYm-wUbh1fFRK75Muq+DPpQGAH8A@mail.gmail.com>
- <6f677d56-82b3-a321-f338-cbf8ff4e83eb@acm.org> <CAHg0HuxvKZVjROMM7YmYJ0kOU5Y4UeE+a3V==LNkWpLFy8wqtw@mail.gmail.com>
-In-Reply-To: <CAHg0HuxvKZVjROMM7YmYJ0kOU5Y4UeE+a3V==LNkWpLFy8wqtw@mail.gmail.com>
-From:   Roman Penyaev <r.peniaev@gmail.com>
-Date:   Thu, 26 Sep 2019 11:55:50 +0200
-Message-ID: <CACZ9PQU6bFtnDUYtzbsmNzsNW0j1EkxgUKzUw5N5gr1ArEXZvw@mail.gmail.com>
-Subject: Re: [PATCH v4 17/25] ibnbd: client: main functionality
-To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-17-jinpuwang@gmail.com>
+ <7d11d903-7826-8c1a-bef8-74ea4cf5f340@acm.org> <CAMGffEmZdqJ2Nw1KX=DirMp4e89i-G4ut24qNSVYRy0eG=v8sg@mail.gmail.com>
+ <CAHg0Huyuf_rVCb3gugYWu1jaFT4gyrex+SpC1vsuUtWRk-UOFQ@mail.gmail.com>
+In-Reply-To: <CAHg0Huyuf_rVCb3gugYWu1jaFT4gyrex+SpC1vsuUtWRk-UOFQ@mail.gmail.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Thu, 26 Sep 2019 12:00:38 +0200
+Message-ID: <CAMGffEkKyx1dB2ipwi++U4B2he7A+E16Pbzt-FqGQeZGuXvUDQ@mail.gmail.com>
+Subject: Re: [PATCH v4 16/25] ibnbd: client: private header with client
+ structs and functions
+To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Bart Van Assche <bvanassche@acm.org>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
         Sagi Grimberg <sagi@grimberg.me>,
         Jason Gunthorpe <jgg@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, rpenyaev@suse.de,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
+        Doug Ledford <dledford@redhat.com>, rpenyaev@suse.de
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 26, 2019 at 12:26 AM Danil Kipnis
+On Thu, Sep 26, 2019 at 1:43 AM Danil Kipnis
 <danil.kipnis@cloud.ionos.com> wrote:
 >
-> On Wed, Sep 18, 2019 at 5:47 PM Bart Van Assche <bvanassche@acm.org> wrote:
-> > Combining multiple queues (a) into a single queue (b) that is smaller
-> > than the combined source queues without sacrificing performance is
-> > tricky. We already have one such implementation in the block layer core
-> > and it took considerable time to get that implementation right. See e.g.
-> > blk_mq_sched_mark_restart_hctx() and blk_mq_sched_restart().
->
-> Roma, can you please estimate the performance impact in case we switch to it?
+> On Tue, Sep 17, 2019 at 6:36 PM Jinpu Wang <jinpu.wang@cloud.ionos.com> wrote:
+> >
+> > On Sat, Sep 14, 2019 at 12:25 AM Bart Van Assche <bvanassche@acm.org> wrote:
+> > >
+> > > On 6/20/19 8:03 AM, Jack Wang wrote:
+> > > > +     char                    pathname[NAME_MAX];
+> > > [ ... ]
+> > >  > +    char                    blk_symlink_name[NAME_MAX];
+> > >
+> > > Please allocate path names dynamically instead of hard-coding the upper
+> > > length for a path.
+> Those strings are used to name directories and files under sysfs,
+> which I think makes NAME_MAX a natural limitation for them. Client and
+> server only exchange those strings on connection establishment, not in
+> the IO path. We do not really need to safe 256K on a server with 1000
+> devices mapped in parallel. A patch to allocate those strings makes
+> the code longer, introduces new error paths and in my opinion doesn't
+> bring any benefits.
+Hi Bart,
 
-As I remember correctly I could not reuse the whole machinery with those
-restarts from block core because shared tags are shared only between
-hardware queues, i.e. different hardware queues share different tags sets.
-IBTRS has many hardware queues (independent RDMA connections) but only one
-tags set, which is equally shared between block devices.  What I dreamed
-about is something like BLK_MQ_F_TAG_GLOBALLY_SHARED support in block
-layer.
+We have a draft patch, but it looks ugly, after discussing in house,
+due to the reason
+Danil mentioned.
 
---
-Roman
+we dropped the patch.
+
+Thanks,
+Jinpu
