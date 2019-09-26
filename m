@@ -2,79 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B51FBBF619
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2019 17:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2F0BF6B6
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2019 18:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbfIZPmu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Sep 2019 11:42:50 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:38470 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727147AbfIZPmu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Sep 2019 11:42:50 -0400
-Received: by mail-wr1-f67.google.com with SMTP id w12so2642357wro.5
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2019 08:42:49 -0700 (PDT)
+        id S1727426AbfIZQaB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Sep 2019 12:30:01 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:44848 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726029AbfIZQaB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Sep 2019 12:30:01 -0400
+Received: by mail-pl1-f195.google.com with SMTP id q15so1265639pll.11
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2019 09:30:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PpwR5OQB+xY3WIuqEisZKwNt0UQoj8JXmNFXuSMJCwE=;
-        b=a/hAnKXS+9HDKuYBXiN1sVD4g4PquoPFi8ebytrUwHR8OJMwuZRMeQI25EdVSSFe9A
-         SVGe2DOCg6OXIcYs7fPjBuk60lwOWeOZHIUYqG4uM8uaT9hk3rVcVRvO9sZMTzIo+KGk
-         F1wYVu+9TREFKB2WOafva31ThLdwFRYDWrmB1AhO4N8hkM9B1Daog+LCHkWGP5O3SPhV
-         qjEsmAcDfMp/PogyNldplHRPHRCWsvA11I6VZO0tNq6ys7mnoclHtLhE4dr3GK2Sa8mH
-         Eb1qGxOs4wBUuEohF5lkro8Ja5JF+qIoMiSiz+QcH/xzqYVh0FIjXADByAH7yj36HisR
-         uUWw==
+        d=pensando.io; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=iUBOjyHfuR7bXfhhUiHsxfKRvIQzrO86xTAr8Ifre0Q=;
+        b=y3h5OT0UmQqXJi0n0rBvqkcTo+13EdxQBhESuHKUhhUdt4HIIcVQewbszw7316Jbj3
+         B26hOzlkXv8XsgeN5pGs7wsfUu35kRVDjdfbd80Cz2QkLIg0M3MsvsJVJdd9QD5RXeiy
+         6UEhQ9sxyZ6zQojKZM8g8YSAiU0HmfS6EeGLmm2G3M5zDUXby8glVotg/+s3ve95UAlT
+         DAQ0U/ntgxEnEPfGxe+68Qz99D7tUdj8cjDtGb+44i81+8OKBcckxrd+3wvZeL0MsCVS
+         GUydrXVlNXeNeT9yD3EB7dKB2lMU1zF3uY6+lKZ9hv2ld2NLoMT31L6wdQwnvoc03z5L
+         JHDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PpwR5OQB+xY3WIuqEisZKwNt0UQoj8JXmNFXuSMJCwE=;
-        b=jUFRl32orYHHFpFocKTuW2pjD6seMYTx2NCLLDonWjCodNKoE1h1MPxzRaQpmVhqMb
-         tSwGNYeFgPozumBHfWcLvO16vzootEVF2twt3W7JRREk+5c2Vj6m+MOi/tyAf7msVjdY
-         YvoDTJblpVErdCzL4n1tmIJjzbNxnpOX22nl8BTqZyj29mnEp0/ZK4NF6hmB+ITJHsvO
-         p7w6M0CyKMJK+sZgcq9P8oSWuyhLN62btAv0B3LybEdzTX76Wp++w7ZQpiAb58Am20yI
-         W3cDp846lAdYV+zqUXV9gtFVpHMCkAgPpSjZzrQpDhVsbsYIgGZIUXjyk/Xz98WE+rLQ
-         yFaQ==
-X-Gm-Message-State: APjAAAVvpJir3KvbAaGMeNWtJF5g3lL6GrKYJOicR1WZTX/xLmDcwqRx
-        FOnZBy6Rzo8Db45yTl8rSCl0YWgQ4zsjiqc/eG0bVg==
-X-Google-Smtp-Source: APXvYqy0nPzyGNaJknLG1OMjqhZXNCiRKAKzkH96nghdpSnxJUn80IzRIGN4BTWgrBrAo7mL/czNLCFCX7zGEqpW0FM=
-X-Received: by 2002:a5d:6785:: with SMTP id v5mr3833859wru.9.1569512568417;
- Thu, 26 Sep 2019 08:42:48 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=iUBOjyHfuR7bXfhhUiHsxfKRvIQzrO86xTAr8Ifre0Q=;
+        b=NmNX7IszpDhenIga9+RCqKWUxlKImc9Waw5A0XQCCsqJCYOlfy5syYEk6h7RE0Nsve
+         F/+d4fsBPgego1hARVxYR0gbXZR7EJevgIvnuT/4TyZM+kdFFGbyLW7+fYg2YBINzTot
+         U38LeZ/9w+z9WtS5CB2A7LnTAIgcNgn8XpWtRtVVnxL8hdYUTYoyWgzuIGQB3mvAbMmP
+         dcfPhWeoI9npLxtERbaa7nkH22nJfCf8EQT7y3va0pehY/vOc1BZb+I/KuGyRL0v0jgu
+         hkQRIU9hwzvvbdJ+yHldRfcKBhzeR3NwFtAfnmbtAI1m5GmM6Vjwl0Of4mXMBoUCRQnE
+         Syjg==
+X-Gm-Message-State: APjAAAVrZGZu3xPsyVtYHjV/89y+/EmT/zVQPf26GvxE50S5rs29wXFP
+        1HcRvQ6zK+frUYSkxkcAuzto+w==
+X-Google-Smtp-Source: APXvYqzWSovEndvhpUlPPG2KWsLiHc/5J0wB0jU8KW7kk3lkOzlRWdHFYbFHIpUg2H8EkpfjsR5P5g==
+X-Received: by 2002:a17:902:8a88:: with SMTP id p8mr4822043plo.152.1569515400373;
+        Thu, 26 Sep 2019 09:30:00 -0700 (PDT)
+Received: from Shannons-MacBook-Pro.local (static-50-53-47-17.bvtn.or.frontiernet.net. [50.53.47.17])
+        by smtp.gmail.com with ESMTPSA id e127sm3547209pfe.37.2019.09.26.09.29.57
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 26 Sep 2019 09:29:59 -0700 (PDT)
+Subject: Re: [PATCH 1/3] docs: fix some broken references
+To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        corbet@lwn.net
+Cc:     Mauro Carvalho Chehab <mchehab@infradead.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paul.burton@mips.com>,
+        James Hogan <jhogan@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pensando Drivers <drivers@pensando.io>,
+        Steve French <sfrench@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-mips@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-riscv@lists.infradead.org
+References: <b87385b2ac6ce6c75df82062fce2976149bbaa6b.1569330078.git.mchehab+samsung@kernel.org>
+From:   Shannon Nelson <snelson@pensando.io>
+Message-ID: <81dc41d5-606a-7638-1d11-4fe53e9c2a7f@pensando.io>
+Date:   Thu, 26 Sep 2019 09:29:56 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-22-jinpuwang@gmail.com>
- <d1208649-5c25-578f-967e-f7a3c9edd9ce@acm.org> <CAMGffE=RpTjDX-LL2E5t_eOF8iwG=UpgWFcnB3tz-N-PQ0etoQ@mail.gmail.com>
- <ab90033d-6045-fcdf-f238-80d8b4852559@acm.org> <CAHg0HuwJJ3LmUwOOw2Uba0Zq_c9hwUyFBrao2nzpv4y97U1Mvg@mail.gmail.com>
- <40f69402-5f38-c78b-8922-3a77babb4c6c@acm.org> <CAHg0HuxOP7Vhkd3pHi8XZBo2uCBGmMOMgSpBQuPTVY9MLB5EBA@mail.gmail.com>
-In-Reply-To: <CAHg0HuxOP7Vhkd3pHi8XZBo2uCBGmMOMgSpBQuPTVY9MLB5EBA@mail.gmail.com>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Thu, 26 Sep 2019 17:42:37 +0200
-Message-ID: <CAMGffE=wV7P3zjZADwD7w_+7QR1QGL=ZoBqCng-r=mjXUD41Cg@mail.gmail.com>
-Subject: Re: [PATCH v4 21/25] ibnbd: server: functionality for IO submission
- to file or block dev
-To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, rpenyaev@suse.de
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b87385b2ac6ce6c75df82062fce2976149bbaa6b.1569330078.git.mchehab+samsung@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 26, 2019 at 5:38 PM Danil Kipnis
-<danil.kipnis@cloud.ionos.com> wrote:
+On 9/24/19 6:01 AM, Mauro Carvalho Chehab wrote:
+> There are a number of documentation files that got moved or
+> renamed. update their references.
 >
-> > > Bart, would it in your opinion be OK to drop the file_io support in
-> > > IBNBD entirely? We implemented this feature in the beginning of the
-> > > project to see whether it could be beneficial in some use cases, but
-> > > never actually found any.
-> >
-> > I think that's reasonable since the loop driver can be used to convert a
-> > file into a block device.
-> Jack, shall we drop it?
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 
-Yes, we should drop it in next round.
+>   drivers/net/ethernet/pensando/ionic/ionic_if.h            | 4 ++--
+
+Acked-by: Shannon Nelson <snelson@pensando.io>
+
