@@ -2,270 +2,442 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6323ABF431
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2019 15:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3031DBF495
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2019 16:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbfIZNil convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 26 Sep 2019 09:38:41 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53538 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726975AbfIZNil (ORCPT
+        id S1726666AbfIZOCy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 26 Sep 2019 10:02:54 -0400
+Received: from m4a0039g.houston.softwaregrp.com ([15.124.2.85]:38241 "EHLO
+        m4a0039g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726216AbfIZOCx (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 26 Sep 2019 09:38:41 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x8QDbKSo009011
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2019 09:38:39 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.103])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2v8x0dhc37-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2019 09:38:39 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Thu, 26 Sep 2019 13:38:38 -0000
-Received: from us1b3-smtp05.a3dr.sjc01.isc4sb.com (10.122.203.183)
-        by smtp.notes.na.collabserv.com (10.122.47.39) with smtp.notes.na.collabserv.com ESMTP;
-        Thu, 26 Sep 2019 13:38:33 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp05.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2019092613383323-495716 ;
-          Thu, 26 Sep 2019 13:38:33 +0000 
-In-Reply-To: <20190923202629.GA24416@chelsio.com>
-Subject: Re: Re: [PATCH for-next] RDMA/siw: fixes serialization issue in write_space
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Krishnamraju Eraparaju" <krishna2@chelsio.com>
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org, bharat@chelsio.com,
-        nirranjan@chelsio.com
-Date:   Thu, 26 Sep 2019 13:38:32 +0000
-MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20190923202629.GA24416@chelsio.com>,<20190923101112.32685-1-krishna2@chelsio.com>
- <OFF07E93B6.E63D8785-ON0025847E.003DA8D0-0025847E.003EAD9D@notes.na.collabserv.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
-X-KeepSent: 6DFD0CAC:490420E7-00258481:0041FCBB;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 6911
-X-TNEFEvaluated: 1
+        Thu, 26 Sep 2019 10:02:53 -0400
+Received: FROM m4a0039g.houston.softwaregrp.com (15.120.17.146) BY m4a0039g.houston.softwaregrp.com WITH ESMTP
+ FOR linux-rdma@vger.kernel.org;
+ Thu, 26 Sep 2019 14:01:56 +0000
+Received: from M4W0334.microfocus.com (2002:f78:1192::f78:1192) by
+ M4W0334.microfocus.com (2002:f78:1192::f78:1192) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Thu, 26 Sep 2019 14:00:00 +0000
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (15.124.8.13) by
+ M4W0334.microfocus.com (15.120.17.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Thu, 26 Sep 2019 14:00:00 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=adrAKUw/cIYBoWB2DmH6CnNYIJ6nkuebcRpRRv1buAaRXZAME2gTxcx+cg18S4CMnCBpsGVlqTpgE8Yv0/rBi7RqCzuXAmiwNdZabcNa1RoYKvSlQxrpMKik2NvAsMEDAqTDRVwyhjCp5/O9BQQRuwVG1qC9mmKEmAljPeljCe8ttxB7jssS7WCNWMlXYGcBavDTYiSxfqYPbCPoYUb4FuyFw0VyxAVu5egzMHqURZMyhyB4W1eYgnQ2DTuf6Ahe0U6BxcvCXpWZEORTipYq/Tgg/P2V6bIWYlC5kJ/1oTk0R26fv0Dl3Gp7p4VqaXx4axe8pPx9/UCWwDlMWOtftA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E8xhM14q3QqqjTJ7SX8W3newUkmqomO+0aOSAyeTnlQ=;
+ b=Jlr/eX4fVBlGoeiUqAR4XfaY475Qk2A1v2w0gNV0NSo8qz3U60RQmNzo4fEit9N/vu90xdyVWF7nL4xIOIqjj/hs0yIox91Cvog1t8JQ8/btjpKwDfjdu8R7PFiO9kqh/qPlChNrna2M4TPyKaydrxmuTrP6/P6IbZ+tYosb8ZmrW0MDjB3kITgfMkzJrbq2381pjZSyTx9bbFd+Q6nf610hbB7XhrwSICKcTsH/dLeNDhZreR+h/8zOE0QEFfOEodh9903eTN29vYElUs2OYw06EiwIzsqBdjMPKUyz3Ee1Y3CH5LY4+ohG5/KUu1baSo28tdlgAqfvsFbxK618jQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Received: from BY5PR18MB3298.namprd18.prod.outlook.com (10.255.138.224) by
+ BY5PR18MB3154.namprd18.prod.outlook.com (10.255.137.209) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2284.20; Thu, 26 Sep 2019 13:59:58 +0000
+Received: from BY5PR18MB3298.namprd18.prod.outlook.com
+ ([fe80::6cc3:48d0:8726:7005]) by BY5PR18MB3298.namprd18.prod.outlook.com
+ ([fe80::6cc3:48d0:8726:7005%7]) with mapi id 15.20.2305.017; Thu, 26 Sep 2019
+ 13:59:58 +0000
+From:   Nicolas Morey-Chaisemartin <NMoreyChaisemartin@suse.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: [ANNOUNCE] rdma-core: new stable releases
+Thread-Topic: [ANNOUNCE] rdma-core: new stable releases
+Thread-Index: AQHVdHKuFCvy6grTXE6kOb+dpZHsHQ==
+Date:   Thu, 26 Sep 2019 13:59:58 +0000
+Message-ID: <d4c12c2f-befd-2737-077d-30fbe6eb3799@suse.com>
+Accept-Language: en-150, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: PR2PR09CA0003.eurprd09.prod.outlook.com
+ (2603:10a6:101:16::15) To BY5PR18MB3298.namprd18.prod.outlook.com
+ (2603:10b6:a03:1ae::32)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=NMoreyChaisemartin@suse.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [86.200.198.78]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 21bd6388-5d5a-43f0-593d-08d74289d148
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600167)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BY5PR18MB3154;
+x-ms-traffictypediagnostic: BY5PR18MB3154:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <BY5PR18MB315454EFABBB1B55D47436F3BF860@BY5PR18MB3154.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:534;
+x-forefront-prvs: 0172F0EF77
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(366004)(39860400002)(396003)(346002)(376002)(136003)(54524002)(189003)(199004)(486006)(2906002)(99286004)(8936002)(386003)(6506007)(81156014)(102836004)(26005)(2616005)(2501003)(31686004)(2351001)(52116002)(186003)(476003)(3846002)(66446008)(66476007)(64756008)(66556008)(6486002)(5660300002)(305945005)(7736002)(30864003)(6512007)(6306002)(80792005)(81166006)(86362001)(256004)(14444005)(36756003)(66066001)(14454004)(478600001)(71200400001)(6116002)(5640700003)(6916009)(66946007)(6436002)(31696002)(8676002)(71190400001)(19627235002)(316002)(25786009)(966005);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3154;H:BY5PR18MB3298.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: suse.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: tqsoAYR7rssVSTg4bhTAVBMI4jCFWZMMmchm26bEuCsHJD2Al5AzZ3x+AStOmi8546IAAB9RpT9pJC/NnVuToDpQJ0jeXB+370M1maK1RmpYXC3cSubioGcRjOHQwI2rCnt4/qY3kXUwELaBLo37Cc9QCKKGnf5diHJVH6bDtL7k1BrKIJTUEmaZCzsG1DHbGauHT3g9k54Q/feXm9UJ7CUJnbp/92WtHKfcTLlngVlsZwgtep8sE/ZQ8WSdRZiYf8YVTrLvIZT93YFwC7zJhpKykGHNwH1vkeq9g61x5ODKbib26OLiVWUYic3e55ezOxc87KleiNdGAWLIWzBw+W3xAK6kcWTKeV+zo8qBI9uNzRmFPtk6Hr8AUF9+nr41FUFehM3QY8oxwEySQ8tXaJH8s6KY2/AY2YLaimM/fMW/piiwWEs43Ar5j/dy7NxABLWl/0wFU1benq0WPxestQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="Windows-1252"
+Content-ID: <9B65EDB9CCC5134DB46C08F4A5AD58CF@namprd18.prod.outlook.com>
 Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19092613-9547-0000-0000-000000723D0F
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.378364; ST=0; TS=0; UL=0; ISC=; MB=0.015921
-X-IBM-SpamModules-Versions: BY=3.00011843; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000292; SDB=6.01266836; UDB=6.00670273; IPR=6.01048817;
- MB=3.00028821; MTD=3.00000008; XFM=3.00000015; UTC=2019-09-26 13:38:37
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-09-26 11:45:19 - 6.00010454
-x-cbparentid: 19092613-9548-0000-0000-0000119A4442
-Message-Id: <OF6DFD0CAC.490420E7-ON00258481.0041FCBB-00258481.004AF091@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-26_06:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21bd6388-5d5a-43f0-593d-08d74289d148
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Sep 2019 13:59:58.7145
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MOcDBAoM5Bk3ODT6VGN5llsO4do2CaqqLGxeslTzJ9Bq9J41WP7dCrqE4V26ng31peZ7m7DnPG2cHpjoatKX+ghoVgN0NlPQkVBtI0JFXno=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3154
+X-OriginatorOrg: suse.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
->To: "Bernard Metzler" <BMT@zurich.ibm.com>
->From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
->Date: 09/23/2019 10:26PM
->Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, bharat@chelsio.com,
->nirranjan@chelsio.com
->Subject: [EXTERNAL] Re: [PATCH for-next] RDMA/siw: fixes
->serialization issue in write_space
->
->Hi Bernard,
->
->write_space callback may not always be called from softirq/tasklet
->context, it may be called from process context.
->Hence, read_lock_bh() is safer than read_lock().
->
->I will resubmit the patch.
->
+A whole bunch of new stable releases.
+Linaro publishing multiple aarch64 toolchains and Leap 42.3 disappearing from available containers broke CI for almost all stable branches.
+So even if the older ones had almost no fixes pending, they are still getting released with those CI fix backported so we have a clean slate for later patches.
 
-Hi Krishna,
+These version were tagged/released:
+ * v15.9
+ * v16.10
+ * v17.6
+ * v18.5
+ * v19.4
+ * v20.4
+ * v21.3
+ * v22.4
+ * v23.2
+ * v24.1
+ * v25.1
 
-siw takes a write_lock on the sockets sk_callback_lock
-only when it is in a process context, and never from
-within an socket upcall. It only takes the write_lock when
-changing the assignment of the socket upcalls.
-write_lock is always taken using the _bh variant,
-which prevents us from an otherwise potentially
-concurrently running softirq to spinlock on the same
-socket.
+It's available at the normal places:
 
-During socket upcall, siw always only takes a read lock
-(one was missing, your current patch thankfully fixes that).
-If now the upcall may happen from a process context,
-it would not be prevented by write_lock_bh, but it
-also does not have to. It then just does what it
-is supposed to do - the process spins until the
-lock becomes available. That's what spinlock's
-are for...
+git://github.com/linux-rdma/rdma-core
+https://github.com/linux-rdma/rdma-core/releases
 
-So I don't see a reason to change read_lock()'s to
-read_lock_bh()'s: All critical write lock's are
-write_lock_bh(), which either prevents the softirq
-upcall from running, or lets the up-calling process
-context correctly spinning.
+- ---
 
-I think your current patch is just fine.
+Here's the information from the tags:
+tag v15.9
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date:   Thu Sep 26 14:01:23 2019 +0200
 
+rdma-core-15.9:
 
-I am not sure about the iscsi_tcp code change. Maybe
-it is needed since it may take a write_lock from within
-softirq.
+Updates from version 15.8
+ * Backport fixes:
+   * cbuild: Fix packaging of SuSE leap
+   * cbuild: extend CLI to pass --with[out] options to rpmbuild
+   * cbuild: fix python path for leap
+   * buildlib: update SUSE validation targets
+   * travis: fix aarch64 extraction
+   * suse: fix dracut support
+- -----BEGIN PGP SIGNATURE-----
 
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl2MqJUcHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZEZkB/4+esxgDVOJGorCurRh
+NEnWvExOEZ/jXgVo4k/4vhtIsEeDQjizJ1BFvhz32pcO18mNOn3bNMjdOgMQm+C3
+CIj3Kwi826A/GhUkJwem6NvhvXMG1CdDbCVzvEDzmiZ60+thjR9VXhFbJRJ2Ontk
+vicg4qb5sjmCOQbvlTFCEiOVAD9UOSUzfiZjAQL8SXl7ZOmLV+MNaGAJ3Bowq1tR
+NKuU1elUupChkTfiM8YYuQdpE5zPM71PP2TL+4nXL48NcApoIuIQHlTgU8L9/TX5
+cyIPwYa5MBHM1yR42fk2y0Kt/30H8rFPoZLse6hIw4wv9nwLpPdUOmQg5JuQi9Ji
+CUzv
+=5J3M
+- -----END PGP SIGNATURE-----
 
-Many thanks,
-Bernard.
+tag v16.10
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date:   Thu Sep 26 14:01:30 2019 +0200
 
+rdma-core-16.10:
 
->Also, after looking at the below commit, I feel all other read_lock()
->in SIW driver should be replaced with BH variants.
->
->https://urldefense.proofpoint.com/v2/url?u=https-3A__github.com_torva
->lds_linux_commit_7cb001d4c4fa7e1cc1a55388a9544e160dddc610&d=DwIBAg&c=
->jf_iaSHvJObTbx-siA1ZOg&r=2TaYXQ0T-r8ZO1PP1alNwU_QJcRRLfmYTAgd3QCvqSc&
->m=QHDqv1KcjDv-pXFNN-vF1j8b_JkQdzRXbebBg24Mf0U&s=LQmC1X40Q1CFelQASrwaI
->25kLAzhrTdPj28m4x3sxUs&e= 
->
->
->
->Shall I also change all other occurances of read_lock() to
->read_lock_bh()?
->
->
->Thanks,
->Krishna.
->
->On Monday, September 09/23/19, 2019 at 11:24:36 +0000, Bernard
->Metzler wrote:
->> -----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
->> 
->> >To: jgg@ziepe.ca, bmt@zurich.ibm.com
->> >From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
->> >Date: 09/23/2019 12:11PM
->> >Cc: linux-rdma@vger.kernel.org, bharat@chelsio.com,
->> >nirranjan@chelsio.com, "Krishnamraju Eraparaju"
->> ><krishna2@chelsio.com>
->> >Subject: [EXTERNAL] [PATCH for-next] RDMA/siw: fixes serialization
->> >issue in write_space
->> >
->> >In siw_qp_llp_write_space(), 'sock' members should be accessed
->> >with sk_callback_lock held, otherwise, it could race with
->> >siw_sk_restore_upcalls(). And this could cause "NULL deref" panic.
->> >Below panic is due to the NULL cep returned from sk_to_cep(sk):
->> >[14524.030863] Call Trace:
->> >[14524.030868]  <IRQ>    siw_qp_llp_write_space+0x11/0x40 [siw]
->> >[14524.030873]  tcp_check_space+0x4c/0xf0
->> >[14524.030877]  tcp_rcv_established+0x52b/0x630
->> >[14524.030880]  tcp_v4_do_rcv+0xf4/0x1e0
->> >[14524.030882]  tcp_v4_rcv+0x9b8/0xab0
->> >[14524.030886]  ip_protocol_deliver_rcu+0x2c/0x1c0
->> >[14524.030889]  ip_local_deliver_finish+0x44/0x50
->> >[14524.030891]  ip_local_deliver+0x6b/0xf0
->> >[14524.030893]  ? ip_protocol_deliver_rcu+0x1c0/0x1c0
->> >[14524.030896]  ip_rcv+0x52/0xd0
->> >[14524.030898]  ? ip_rcv_finish_core.isra.14+0x390/0x390
->> >[14524.030903]  __netif_receive_skb_one_core+0x83/0xa0
->> >[14524.030906]  netif_receive_skb_internal+0x73/0xb0
->> >[14524.030909]  napi_gro_frags+0x1ff/0x2b0
->> >[14524.030922]  t4_ethrx_handler+0x4a7/0x740 [cxgb4]
->> >[14524.030930]  process_responses+0x2c9/0x590 [cxgb4]
->> >[14524.030937]  ? t4_sge_intr_msix+0x1d/0x30 [cxgb4]
->> >[14524.030941]  ? handle_irq_event_percpu+0x51/0x70
->> >[14524.030943]  ? handle_irq_event+0x41/0x60
->> >[14524.030946]  ? handle_edge_irq+0x97/0x1a0
->> >[14524.030952]  napi_rx_handler+0x14/0xe0 [cxgb4]
->> >[14524.030955]  net_rx_action+0x2af/0x410
->> >[14524.030962]  __do_softirq+0xda/0x2a8
->> >[14524.030965]  do_softirq_own_stack+0x2a/0x40
->> >[14524.030967]  </IRQ>
->> >[14524.030969]  do_softirq+0x50/0x60
->> >[14524.030972]  __local_bh_enable_ip+0x50/0x60
->> >[14524.030974]  ip_finish_output2+0x18f/0x520
->> >[14524.030977]  ip_output+0x6e/0xf0
->> >[14524.030979]  ? __ip_finish_output+0x1f0/0x1f0
->> >[14524.030982]  __ip_queue_xmit+0x14f/0x3d0
->> >[14524.030986]  ? __slab_alloc+0x4b/0x58
->> >[14524.030990]  __tcp_transmit_skb+0x57d/0xa60
->> >[14524.030992]  tcp_write_xmit+0x23b/0xfd0
->> >[14524.030995]  __tcp_push_pending_frames+0x2e/0xf0
->> >[14524.030998]  tcp_sendmsg_locked+0x939/0xd50
->> >[14524.031001]  tcp_sendmsg+0x27/0x40
->> >[14524.031004]  sock_sendmsg+0x57/0x80
->> >[14524.031009]  siw_tx_hdt+0x894/0xb20 [siw]
->> >[14524.031015]  ? find_busiest_group+0x3e/0x5b0
->> >[14524.031019]  ? common_interrupt+0xa/0xf
->> >[14524.031021]  ? common_interrupt+0xa/0xf
->> >[14524.031023]  ? common_interrupt+0xa/0xf
->> >[14524.031028]  siw_qp_sq_process+0xf1/0xe60 [siw]
->> >[14524.031031]  ? __wake_up_common_lock+0x87/0xc0
->> >[14524.031035]  siw_sq_resume+0x33/0xe0 [siw]
->> >[14524.031039]  siw_run_sq+0xac/0x190 [siw]
->> >[14524.031041]  ? remove_wait_queue+0x60/0x60
->> >[14524.031045]  kthread+0xf8/0x130
->> >[14524.031049]  ? siw_sq_resume+0xe0/0xe0 [siw]
->> >[14524.031051]  ? kthread_bind+0x10/0x10
->> >[14524.031053]  ret_from_fork+0x35/0x40
->> >
->> >Fixes: f29dd55b0236 (rdma/siw: queue pair methods)
->> >Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
->> >---
->> > drivers/infiniband/sw/siw/siw_qp.c | 15 +++++++++++----
->> > 1 file changed, 11 insertions(+), 4 deletions(-)
->> >
->> >diff --git a/drivers/infiniband/sw/siw/siw_qp.c
->> >b/drivers/infiniband/sw/siw/siw_qp.c
->> >index 430314c8abd9..52d402f39df9 100644
->> >--- a/drivers/infiniband/sw/siw/siw_qp.c
->> >+++ b/drivers/infiniband/sw/siw/siw_qp.c
->> >@@ -182,12 +182,19 @@ void siw_qp_llp_close(struct siw_qp *qp)
->> >  */
->> > void siw_qp_llp_write_space(struct sock *sk)
->> > {
->> >-	struct siw_cep *cep = sk_to_cep(sk);
->> >+	struct siw_cep *cep;
->> > 
->> >-	cep->sk_write_space(sk);
->> >+	read_lock(&sk->sk_callback_lock);
->> >+
->> >+	cep  = sk_to_cep(sk);
->> >+	if (cep) {
->> >+		cep->sk_write_space(sk);
->> > 
->> >-	if (!test_bit(SOCK_NOSPACE, &sk->sk_socket->flags))
->> >-		(void)siw_sq_start(cep->qp);
->> >+		if (!test_bit(SOCK_NOSPACE, &sk->sk_socket->flags))
->> >+			(void)siw_sq_start(cep->qp);
->> >+	}
->> >+
->> >+	read_unlock(&sk->sk_callback_lock);
->> > }
->> > 
->> > static int siw_qp_readq_init(struct siw_qp *qp, int irq_size, int
->> >orq_size)
->> >-- 
->> >2.23.0.rc0
->> >
->> >
->> 
->> Hi Krishna,
->> 
->> Many thanks! I completely agree. This fixes a potential race.
->> I was under the impression the socket layer itself would hold
->> the sk_callback_lock during the writespace upcall, which is
->> obviously not true.
->> 
->> Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
->> 
->
->
+Updates from version 16.9
+ * Backport fixes:
+   * cbuild: Fix packaging of SuSE leap
+   * cbuild: extend CLI to pass --with[out] options to rpmbuild
+   * cbuild: fix python path for leap
+   * buildlib: update SUSE validation targets
+   * travis: fix aarch64 extraction
+- -----BEGIN PGP SIGNATURE-----
 
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl2MqJwcHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZBCZB/45ntJJCjoizZXgoQK9
+2fUkFmcTro8TOb2R9xCq2in2WtIaIZLyJMxZkZw9WhLCsZjGXeCj9tReZMRPpIl2
+t+p3bKG6Ox1u0g+BNPlZfgDsH+31sN/lebpkQQEIUhqixCf+PZy0ZzwMx1HciWYJ
+5NEPRlTgJPk7iiew5au5gH/eNJooPvGe/eT+AJ42F8yvvtB2WKLOedqIQXQ7wnFM
+90A/FBCAw+cPGge+nKjRwIhq7RYKfH8QuUv6u+V1verJoBUnVtoJxySsZcyYe2/I
+ht2lzUjxfrI9CV/GdHAHvhbxyjEt5Hk2VsGpbqPrTTU7rLG1EzkOIoNshm3nA8x8
+hpoT
+=phkl
+- -----END PGP SIGNATURE-----
+
+tag v17.6
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date:   Thu Sep 26 14:01:35 2019 +0200
+
+rdma-core-17.6:
+
+Updates from version 17.5
+ * Backport fixes:
+   * cbuild: Fix packaging of SuSE leap
+   * cbuild: extend CLI to pass --with[out] options to rpmbuild
+   * cbuild: fix python path for leap
+   * buildlib: update SUSE validation targets
+   * travis: fix aarch64 extraction
+   * suse: fix dracut support
+- -----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl2MqKEcHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZN03B/4sxVnl5xbZHtlkN3i8
+f9cvTcHsSZQ7TbC4ndxCNz8gxKBE6f2PuPfkkTeMpVK+6oUlywu4M5c8d0wIaoKe
+0qtEufizFA7A3ju7A416uqlmxLoe6aSQOZTkVDb4VjgBR6WkYc4HxWV0ZGg9AAoH
+1Ww66s9A/wK7ou0J67dvesLdvLCY1w8929drYPWtDxTi68ksmL7abonHrke9tSTe
+L7jyWaUETwCqQeMr2WD1p3DOhfR2B1tPMZtYvYkfcDU8blMm75+cJP9hNJV30Uiv
+U0HydLxJCALx5brkrtTSgERCuwBDpeQIhISyeiD6/FZOCBp8HLajuSsCB8CxNZey
+TxgU
+=YlkW
+- -----END PGP SIGNATURE-----
+
+tag v18.5
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date:   Thu Sep 26 14:01:40 2019 +0200
+
+rdma-core-18.5:
+
+Updates from version 18.4
+ * Backport fixes:
+   * cbuild: Fix packaging of SuSE leap
+   * cbuild: extend CLI to pass --with[out] options to rpmbuild
+   * cbuild: fix python path for leap
+   * buildlib: update SUSE validation targets
+   * travis: fix aarch64 extraction
+   * ccam: Properly enable ilog32() calculations
+   * suse: fix dracut support
+- -----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl2MqKYcHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZPYLCADCOZhh5v80/Tr8fN6I
+pwHaxH9ypDYeuvnkbASYiTNFak8sScUTirkaYMDuA+7XNeNeYfhRa0y6dRhz4Fnc
+hi/EV34qy4HN946MYwb4UE8Wk1f1SRfHBGInUvIwzr5bWoRxBeYg4P0wzQ6DOWqV
+d2gacHqtvdk952kGwsyUAN65PE/1Aq8nwqGBHwNAwhYpx6SkgXYBxru8QOmp3lxT
+oip8L77vIfs68nf07fcJP6MqKzFnRh7+9S3sYND1Fynlt6Zcv94TQdWCpgEXbWwa
+q5S8ECDZXo+ignUlGJq25IPDGSg5Bw06maeopXy/q29qJEJkM8SkyPyxTB1ZIpRD
+fCpX
+=Iu9E
+- -----END PGP SIGNATURE-----
+
+tag v19.4
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date:   Thu Sep 26 14:01:46 2019 +0200
+
+rdma-core-19.4:
+
+Updates from version 19.3
+ * Backport fixes:
+   * cbuild: Fix packaging of SuSE leap
+   * cbuild: extend CLI to pass --with[out] options to rpmbuild
+   * cbuild: fix python path for leap
+   * buildlib: update SUSE validation targets
+   * travis: fix aarch64 extraction
+   * ccam: Properly enable ilog32() calculations
+   * suse: fix dracut support
+- -----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl2MqKscHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZNHEB/9kVCOYWcOj3WItD5T6
+O3pwQynd1arRYzzfhCzPqQ6YmCh8/6S1T21Zi6+Bh3pBuz4Hkxb+nwus+ddZVASx
+geqIOyxSYoEu4WW69vth2ZI8dOT4sPSik+TnGG6JQMUfIN9OI2JCYYUb6GyHWElZ
+RdCAuFlzkaLkBfotc+UR0DxZx4B3XU5lXL/oadFQnZR3t93nxes8vio9kUyEjrZi
+isa7PmwkTiyTR/yP/tjIksy5QtSvG8HrWdWON+yICUjPKhqSDdinitEVMjhCeaZh
+49fwltJRG20nfvMxA1PEhTfTg91e2270WCvlXBoklIMiE4BslKQa3qYJBhfi8naM
+d88y
+=SX4Y
+- -----END PGP SIGNATURE-----
+
+tag v20.4
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date:   Thu Sep 26 14:01:50 2019 +0200
+
+rdma-core-20.4:
+
+Updates from version 20.3
+ * Backport fixes:
+   * cbuild: Fix packaging of SuSE leap
+   * cbuild: extend CLI to pass --with[out] options to rpmbuild
+   * cbuild: fix python path for leap
+   * buildlib: update SUSE validation targets
+   * travis: fix aarch64 extraction
+   * ccam: Properly enable ilog32() calculations
+   * suse: fix dracut support
+   * libhns: Bugfix for flush cqe in case multi-process
+- -----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl2MqLAcHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZPKHCACZTMuf4mi9m+nA4Jpn
+WXS3sHr6O+JnHtilbjftK634cDIeu3IIpDmrE8oYUY0x1pU4mSYA/nlZ3B/kFmRM
+TUjyswSnIi4Dck4wPJySmDFjs/Qbr+bwj6lVBtO61I6Pbu1VRsDGngUuIiSsE6H/
+90t+azFI6evtif/ch59yKpn8iMX1P/40zvaeerWGbVlMt2U1NG199m4fiwqkqG3N
+ltled2m0XWwj018Xv3ofhhcBOODcj61JWL7Bikyi1U4XFTr8piCMy7TV6DioZT2Y
+164J11n0BOoQZcIDDS+qeYInGwBeWGj2Ps4Vky3jj96okEyb5NN4Sb8D6BlNM6y1
+qpVG
+=nZEn
+- -----END PGP SIGNATURE-----
+
+tag v21.3
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date:   Thu Sep 26 14:01:55 2019 +0200
+
+rdma-core-21.3:
+
+Updates from version 21.2
+ * Backport fixes:
+   * travis: fix aarch64 extraction
+   * ccam: Properly enable ilog32() calculations
+   * suse: fix dracut support
+   * mlx5: Fix man page of mlx5dv_create_flow_action_modify_header()
+   * libhns: Bugfix for flush cqe in case multi-process
+- -----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl2MqLYcHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZF72B/95bzRJ9uOelzMOmL3D
+aarob6epVYs9/96p5kElZyV82ugctqLppu+gBVcWP6uQM2gTh+cCu/B7+WQ0f1P2
+sZyFwqsI2U30rl4Zvs78X3srUTVikcDK6ZUo0bBjbcSJX09pv6gAKjaiCCRiyfSV
+vpewTZJ+9yEjLvd37eGWC4ex1dmLxZWPcuQQvbjLYX6RdTPUd0wIgwZD9rTfz4Ij
+Wds10iWvzZ3Rtq7oyX5swaX2rocZ4OFvVYd7Oe72UZOqJzAJPv9KABPF5/+iN5QV
+0pSPmcvo1bn1bOeYOMbWjkaRuETbOdvPpvadQLsex69evkFtd9TGuQOV37WM30kQ
+csYb
+=gvFT
+- -----END PGP SIGNATURE-----
+
+tag v22.4
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date:   Thu Sep 26 14:02:01 2019 +0200
+
+rdma-core-22.4:
+
+Updates from version 22.3
+ * Backport fixes:
+   * travis: fix aarch64 extraction
+   * ccam: Properly enable ilog32() calculations
+- -----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl2MqLscHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZHg9B/9/hgao8ue9caaBYdRh
+D8GuAFb1H/ZlJxx6TVNAwpsnxIcktrM2pZsXrURNzJ6TnV2wdjQOn8d07A2zKmwv
+HcvoKT25JFvN6lLrFvRlYvMyUJXviVMbh+PdzQ2NZ4ra3iPGk2SYVnL5yC06k9iY
+34mQ9cgwjq2/Y7xJ885/zlO4uB4H6n6kh8RLFVXseSS/yf3XxEwXFBW18+vjjiqL
+Vu979emNogR8OdXF3SR+FKGW5I7tgnYl8vpJ+FPxGA+h9UFac4UpaGBIjdk2vIqA
+7WYqceYqew35315Pqi9EJyLXAUDrOHzNcUSYG5KtT62MeCAOXxCLBjqGGHHwc06X
+Wdaf
+=Dzin
+- -----END PGP SIGNATURE-----
+
+tag v23.2
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date:   Thu Sep 26 14:02:06 2019 +0200
+
+rdma-core-23.2:
+
+Updates from version 23.1
+ * Backport fixes:
+   * travis: fix aarch64 extraction
+   * ccam: Properly enable ilog32() calculations
+   * RDMA/hns: Bugfix for identify the last srq sge
+   * suse: fix dracut support
+   * mlx5: Fix man page of mlx5dv_create_flow_action_modify_header()
+   * libhns: Bugfix for flush cqe in case multi-process
+- -----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl2MqL8cHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZAXFB/49K+Ih6CjvDUPyO57O
+9mOFjyJS/LEvzR/TR7PZtXqRQKPjRvrmZhiIPk9rvEghgOdCuY/a3s4HROLamI74
+j166a38KKOa+toqQBczhOzJ+3caDMAst3eK1f+e2Onx28MuEx16BL9TJ1YGwS8m4
+c5TAIJsKyjVi46XyG99LkOz277+1vbWY5MolZCqnjoA2yErEpuBVFUAW/HSJaO0j
+tvQ9/SSVUbUYFUF4+B/hpF/b+QXsNf7ianwQJFz9N/ULxuIsNsOOeyD6CsKdJJWp
+oa5q9cliMaZk2xUGNdUKrj4q9lF9GEAQc9UNf7sOF3Mzv41en7vQ8u+WRARaPYe5
+Qydj
+=s9b3
+- -----END PGP SIGNATURE-----
+
+tag v24.1
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date:   Thu Sep 26 14:02:10 2019 +0200
+
+rdma-core-24.1:
+
+Updates from version 24.0
+ * Backport fixes:
+   * suse: Fix name for libefa RPM
+   * ccam: Properly enable ilog32() calculations
+   * travis: fix aarch64 extraction
+   * kernel-boot: Set default prefix for RDMA devices with unknown protocol
+   * kernel-boot: Fix garbage name due to wrong usage of netlink API
+   * mlx5: Fix mlx5_ifc metadata fields spelling
+   * mlx5: Fix bucket allocation check
+   * mlx5: Allow matching of source QP regardless the source port
+   * mlx5: Set the proper flags upon dr_fill_data_segs
+   * RDMA/hns: Bugfix for identify the last srq sge
+   * kernel-boot: Reset buffer before refill
+   * suse: fix dracut support
+   * ABI Files
+- -----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl2MqMQcHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZG94B/49Bnjhe2ZDQAo3H64m
+UxUGf40XQpnLc4XAaWPGCYUUrP0hfVbCZiWY2eOaJ1tWur/GbYGV663i79vF1lEh
+OyTCaQWv7EtrnpynaKCGh85Vfmfz1TitDmUCwLmw8VVW7npiBpCwxiJknCBkEC80
+KbfYA+JOumBAcoO7pmTxdxUdYJlsQ0XDjZQRsm4pcjoi+qSgfuQzPvkb4vVrjlRe
+ooRxwFKORkALN4MGpCZhuv2yObyVs5z0wGIYMm0bhBEksY2CykLmbeHLQtaHHesc
+qFapLAuQqewObkL66Qqib68XsroOECnFkmOxhxb+iHWBpEETTR8sEL1/KceK6WRQ
+nTEg
+=9bZ7
+- -----END PGP SIGNATURE-----
+
+tag v25.1
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date:   Thu Sep 26 14:02:15 2019 +0200
+
+rdma-core-25.1:
+
+Updates from version 25.0
+ * Backport fixes:
+   * suse: provide libibmad-devel
+   * suse: add perl dependency for infiniband-diags
+   * suse: fix dependency to rst2man
+   * suse: Fix name for libefa RPM
+   * ccam: Properly enable ilog32() calculations
+   * siw: Change user mmapped CQ notifications flags to 32bit.
+   * travis: fix aarch64 extraction
+   * cxgb4: fix chipversion initialization
+   * kernel-boot: Set default prefix for RDMA devices with unknown protocol
+   * rdmacm: Fix missing libraries on centos6 build
+   * ABI Files
+- -----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl2MqMkcHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZEDGB/0YmyMTu31vuGgglXXz
+M0LJr7nXNzBpPPcDaVox14L9mhRkcg6voBeciIu6EWfVAIGb4/e9uBmWe2Nsh8NX
+as9qFdlaHpduSrp8Q+a/kVyZR13Y119QLR03cV9kMqLXcPtEetKThSeqVSzqX6ff
+p7aHNVxPJjyxUm4dj122yev7illdPuG486DAsojkiAi09srAanIphaImAIsZEvJ7
+jFb2hJJRG8S0/+WvabFtUAWBDNHKp174JoH4daiBP+FBsgvAmCr2Fs8X5jQapF+Z
+BcSG1f1RVxOfI2aknh+SYjUVAlOXfjxUJCAgfu86iV9e2BA450eozKLD8sPMA9Gw
+1UOa
+=Uqmv
+- -----END PGP SIGNATURE-----
+
+It's available at the normal places:
+
+git://github.com/linux-rdma/rdma-core
+https://github.com/linux-rdma/rdma-core/releases
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl2MxFYACgkQgBvduCWY
+j2S9GggAmbbi9EqgyBxxTspM1ntEQv6SfwLhdHhQ9/cXlT720hTyZmC1xIUF9Yir
+nnvSszHGDRlWun4WL/1173X4g/rEWNJlFUMSklIZbUDhy0XgPGKtY3Fq0aAimHUz
+SFJB+nl5y4EcrF30KdpBKp9CVg3DvkwaaqevRRwOHG7Ap+VKENOJxthPvpP/4kRg
+ag9V4gjl0fS0kdi6AcCrHyK0j13ha/N/SzwwerighAORQ8sTX+nKwdth6C7AsNR7
+CkS0PleruLeA+cyil+6XybU2Xz1SrV19yRt0RyXcvJr3vQ+9KkxYRb1LSQIQlSkA
+3Q4QQXZVK3qXz35OJjO8DnXVTg4GJg==
+=Bs+8
+-----END PGP SIGNATURE-----
