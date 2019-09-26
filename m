@@ -2,62 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D31BF898
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2019 19:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A080BF89F
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Sep 2019 20:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727821AbfIZR6l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Sep 2019 13:58:41 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:51044 "EHLO mx1.redhat.com"
+        id S1727827AbfIZSCT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Sep 2019 14:02:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727794AbfIZR6l (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 26 Sep 2019 13:58:41 -0400
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727502AbfIZSCT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 26 Sep 2019 14:02:19 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 451138980E5;
-        Thu, 26 Sep 2019 17:58:41 +0000 (UTC)
-Received: from jtoppins.rdu.csb (ovpn-125-21.rdu2.redhat.com [10.10.125.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 001685C220;
-        Thu, 26 Sep 2019 17:58:38 +0000 (UTC)
-Reply-To: jtoppins@redhat.com
-Subject: Re: [PATCH rdma-core] kernel-boot: Tighten check if device is virtual
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-References: <20190926094253.31145-1-leon@kernel.org>
- <20190926123427.GD19509@mellanox.com>
-From:   Jonathan Toppins <jtoppins@redhat.com>
-Organization: Red Hat
-Message-ID: <9c582ae3-8214-f9b8-d403-cf443b70284e@redhat.com>
-Date:   Thu, 26 Sep 2019 13:58:38 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        by mail.kernel.org (Postfix) with ESMTPSA id EC8DE222CC;
+        Thu, 26 Sep 2019 18:02:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1569520938;
+        bh=QJDg+8fSbQAJxMAvp592p5HNgoUEZPOIHiYjHDq13jI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UbFQAVtBTg3EvwEVIamRpQjnzkK7eHUHkGUIaJ0Jy2cbjmC0Uz/w82MwyJ/R3V1U/
+         s5NnA5pacLeKtrq8xmJz5g+jKdh9Jn2rcwOSIsw//G20JLhJf5QNSSaM7Fm2ZUd1f+
+         S5FxM4DlZihO0uCNtwwslZp9g3Bv/kdOBgWjH6qw=
+Date:   Thu, 26 Sep 2019 20:02:15 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: Re: [RFC 04/20] RDMA/irdma: Add driver framework definitions
+Message-ID: <20190926180215.GA1733924@kroah.com>
+References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
+ <20190926164519.10471-5-jeffrey.t.kirsher@intel.com>
+ <20190926165506.GF19509@mellanox.com>
 MIME-Version: 1.0
-In-Reply-To: <20190926123427.GD19509@mellanox.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.67]); Thu, 26 Sep 2019 17:58:41 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190926165506.GF19509@mellanox.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 09/26/2019 08:34 AM, Jason Gunthorpe wrote:
-> On Thu, Sep 26, 2019 at 12:42:53PM +0300, Leon Romanovsky wrote:
->> From: Leon Romanovsky <leonro@mellanox.com>
->>
->> Virtual devices like SIW or RXE don't set FW version because
->> they don't have one, use that fact to rely on having empty
->> fw_ver file to sense such virtual devices.
+On Thu, Sep 26, 2019 at 04:55:12PM +0000, Jason Gunthorpe wrote:
+> On Thu, Sep 26, 2019 at 09:45:03AM -0700, Jeff Kirsher wrote:
+> > +int i40iw_probe(struct platform_device *pdev)
+> > +{
+> > +	struct i40e_peer_dev_platform_data *pdata =
+> > +		dev_get_platdata(&pdev->dev);
+> > +	struct i40e_info *ldev;
 > 
-> Have you checked that every physical device does set fw version?
-> 
-> Seems hacky
+> I thought Greg already said not to use platform_device for this?
 
-agreed, how are tuntap devices handled, is there a similar handling that
-can be applied here?
+Yes I did, which is what I thought this whole "use MFD" was supposed to
+solve.  Why is a platform device still being used here?
 
+thanks,
+
+greg k-h
