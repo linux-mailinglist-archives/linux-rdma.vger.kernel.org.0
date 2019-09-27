@@ -2,133 +2,236 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A86BC0185
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 10:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D610C0194
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 10:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbfI0Iwu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Sep 2019 04:52:50 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:32774 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726116AbfI0Iwt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Sep 2019 04:52:49 -0400
-Received: by mail-ot1-f66.google.com with SMTP id o9so828114otl.0;
-        Fri, 27 Sep 2019 01:52:49 -0700 (PDT)
+        id S1726016AbfI0I4b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Sep 2019 04:56:31 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:37517 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725911AbfI0I4b (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Sep 2019 04:56:31 -0400
+Received: by mail-wr1-f66.google.com with SMTP id i1so1789853wro.4
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Sep 2019 01:56:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=viPyc6txsVnn9ZEJNFT6H54DEyJqpwoqVakjY1bNS08=;
-        b=WvXYluVmDXywwLPRJBTFK9ab3x3ibDevvChfnKdeRmGQmQ2QQfoz6ORo9waSkK5nG+
-         3FEvgjlk9DlgSnnYWoroorbExyrI6e2RM46dBJPoSCdJPhdX9WNRMOwn2r7JfwJwEXUU
-         xEqTVzG3/THZbxRIz7Elwc8jWgjej6WgR9Tb0mwMSaso36fZDnW7jc2v6UI8zSyg4+fZ
-         DT2+s6HbGnM8uM1fhMyRJtrj/4bJ0lneoAtN0rC9ARakXp5jNjqsi/ek7OBY0eL/o9qx
-         u9/TfXiICOqeNVYDwFFLIi36byFoc2raHDgmWaQ65l3L627PMkjhcAigHM5is1qAFZW7
-         C9qg==
+        bh=TfXue9T2NkQBattDkXEon2NvQgVQztlS6k0o1+O9NR0=;
+        b=UjKJwYJryZcxHCXwQqzpWtx7u991HKb7WQkoTDphhyFcp+NE6J2M5rolmd9lkRTnXN
+         C4AYPPAF8iVymbgKGXxwj1Js/d5pavwIOj5zRhLYh38nNpK4t1EwK0JmHHLubh2oGbBy
+         D4YikOeHQ0nMpPAMhWGQ8uwv7xt1TrHHLCVouCe4bcD3wMu+cJnfNKjmbZPEhTf/zYQ1
+         EYj+BITqrZK9+eqJoOk1HeSsQRutPLl1R9sApgpiF9ya4c/EK9DKa/h2amlD+XNl9eUC
+         U2rGO97uvHdABQ5+pYr/1tTIiACq9q+YdIiZhc/IDpqEGdU2ffc1OppOpgtoyMlZyESp
+         7AWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=viPyc6txsVnn9ZEJNFT6H54DEyJqpwoqVakjY1bNS08=;
-        b=XAAvchk/6SWGPfwAFU4qWEg0HYGoXLDoywT8Byn7YT5o7wTfPNufHswCSKx3fD9CWs
-         AZPe6xq2LSKjkTMH9dktRGQrsrbsXlvBPqEBbkHakCUBH24HmJg+Fn/UhciE9dZKfONF
-         4cEeEl19gOsoP31mcntagiXQsUmRXRPMOVOUly8C/YcH+OIUhc6ddzLKQHrV4zxJqF+a
-         0+N4UeZMvVqReMjtN5VP8q/lq6woGcdRenk5QjpQqGq9+caYjnaKnnSuMZL3xi9A/Rr2
-         70LPseYaDI25A40LlX+EMADI9H6pjDUpVeMZcVfJT5MAdJj+2NaDTpBkTeuH+UBEKYDh
-         jaxQ==
-X-Gm-Message-State: APjAAAWMqVcUeIDsyMmlqv8U1PvHMdVb2j+Z1TJdNM1M08mDmGxICCJa
-        Tx1t7NkJqxlvyjxPKc2GGaInSmFyMxsMwSR0qGE=
-X-Google-Smtp-Source: APXvYqwBIw1mFQ7BPjJBAweb0uTnGzbRswJ1ti/c8F91tUghSHryYMY8eQSYg3ZlLb64fVgE2WmMeF0t+ydfOKgcdMw=
-X-Received: by 2002:a9d:7207:: with SMTP id u7mr2270486otj.59.1569574368808;
- Fri, 27 Sep 2019 01:52:48 -0700 (PDT)
+        bh=TfXue9T2NkQBattDkXEon2NvQgVQztlS6k0o1+O9NR0=;
+        b=iyTaQpfE/TUvB9QQSXnDNcJAbpEZiXTB4E0sjljynuxzjmrkn/jkY0qAZrASGqGXiT
+         CSJJW0IjUi1VD7XWIqbldp+8e7TMr+RW/LKUX9t3OFRE1nrDSo9kspCZ6OOAxQrzOQnU
+         RrC1MpRqhnBctuxbLFMn82ZHcL1Xiyl5YeWIgRyLZRrAPWSJdl0B0Eg8Nzr4qWVkofw7
+         /4+w83i24MBnb7lmnAsnEMm8UP5ti6FRkqmVfCBCvBCoyuXCA5nTK7jy67Bsll9Tx0aB
+         0SfB1+a/pBeWkuc21Kxpq77HM4xCjHkYnTL6MFWVPs4VL1nvQGdt0cVVSO1+W5SIb0Xy
+         Ytzg==
+X-Gm-Message-State: APjAAAWZe8D73SH5i07IjYdiEH/ssHlVYZsiGtBPJ6jUs9BCaQBjk+kF
+        u14QRB/y7flW7NbhEkP27jyv+LsWZPwuEaQn0ONhPA==
+X-Google-Smtp-Source: APXvYqxfWyaZuRbOnAwrVlspvqQMOlUGBXujPtXA5C42+fyPB1kYHoqubhTogBMEJYCXzLDa7+1kLUmFpNdgFEhvi5k=
+X-Received: by 2002:adf:d192:: with SMTP id v18mr1043108wrc.9.1569574588074;
+ Fri, 27 Sep 2019 01:56:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-18-jinpuwang@gmail.com>
- <bd8963e2-d186-dbd0-fe39-7f4a518f4177@acm.org> <CAHg0HuwzHnzPQAqjtYFTZb7BhzFagJ0NJ=pW=VkTqn5HML-0Vw@mail.gmail.com>
- <5c5ff7df-2cce-ec26-7893-55911e4d8595@acm.org> <CAHg0HuwFTVsCNHbiXW20P6hQ3c-P_p5tB6dYKtOW=_euWEvLnA@mail.gmail.com>
- <CAHg0HuzQOH4ZCe+v-GHu8jOYm-wUbh1fFRK75Muq+DPpQGAH8A@mail.gmail.com>
- <6f677d56-82b3-a321-f338-cbf8ff4e83eb@acm.org> <CAHg0HuxvKZVjROMM7YmYJ0kOU5Y4UeE+a3V==LNkWpLFy8wqtw@mail.gmail.com>
- <CACZ9PQU6bFtnDUYtzbsmNzsNW0j1EkxgUKzUw5N5gr1ArEXZvw@mail.gmail.com> <e2056b1d-b428-18c7-8e22-2f37b91917c8@acm.org>
-In-Reply-To: <e2056b1d-b428-18c7-8e22-2f37b91917c8@acm.org>
-From:   Roman Penyaev <r.peniaev@gmail.com>
-Date:   Fri, 27 Sep 2019 10:52:37 +0200
-Message-ID: <CACZ9PQU8=4DaSAUQ7czKdcWio2H5HB1ro-pXaY2VP9PhgTxk7g@mail.gmail.com>
-Subject: Re: [PATCH v4 17/25] ibnbd: client: main functionality
+References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-4-jinpuwang@gmail.com>
+ <7f62b16a-6e6c-ad05-46d4-05514ffaeaba@acm.org>
+In-Reply-To: <7f62b16a-6e6c-ad05-46d4-05514ffaeaba@acm.org>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Fri, 27 Sep 2019 10:56:17 +0200
+Message-ID: <CAMGffEmJ3_HSQ=i3Xq3v=pN75DXpDmLfQ0SS6dkv40T1q9PMhQ@mail.gmail.com>
+Subject: Re: [PATCH v4 03/25] ibtrs: private headers with IBTRS protocol
+ structs and helpers
 To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
         Sagi Grimberg <sagi@grimberg.me>,
         Jason Gunthorpe <jgg@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, rpenyaev@suse.de,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
+        Doug Ledford <dledford@redhat.com>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de,
+        Roman Pen <roman.penyaev@profitbricks.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 26, 2019 at 5:01 PM Bart Van Assche <bvanassche@acm.org> wrote:
+On Tue, Sep 24, 2019 at 12:50 AM Bart Van Assche <bvanassche@acm.org> wrote:
 >
-> On 9/26/19 2:55 AM, Roman Penyaev wrote:
-> > As I remember correctly I could not reuse the whole machinery with those
-> > restarts from block core because shared tags are shared only between
-> > hardware queues, i.e. different hardware queues share different tags sets.
-> > IBTRS has many hardware queues (independent RDMA connections) but only one
-> > tags set, which is equally shared between block devices.  What I dreamed
-> > about is something like BLK_MQ_F_TAG_GLOBALLY_SHARED support in block
-> > layer.
+> On 6/20/19 8:03 AM, Jack Wang wrote:
+> > +#define P1 )
+> > +#define P2 ))
+> > +#define P3 )))
+> > +#define P4 ))))
+> > +#define P(N) P ## N
+> > +
+> > +#define CAT(a, ...) PRIMITIVE_CAT(a, __VA_ARGS__)
+> > +#define PRIMITIVE_CAT(a, ...) a ## __VA_ARGS__
+> > +
+> > +#define LIST(...)                                            \
+> > +     __VA_ARGS__,                                            \
+> > +     ({ unknown_type(); NULL; })                             \
+> > +     CAT(P, COUNT_ARGS(__VA_ARGS__))                         \
+> > +
+> > +#define EMPTY()
+> > +#define DEFER(id) id EMPTY()
+> > +
+> > +#define _CASE(obj, type, member)                             \
+> > +     __builtin_choose_expr(                                  \
+> > +     __builtin_types_compatible_p(                           \
+> > +             typeof(obj), type),                             \
+> > +             ((type)obj)->member
+> > +#define CASE(o, t, m) DEFER(_CASE)(o, t, m)
+> > +
+> > +/*
+> > + * Below we define retrieving of sessname from common IBTRS types.
+> > + * Client or server related types have to be defined by special
+> > + * TYPES_TO_SESSNAME macro.
+> > + */
+> > +
+> > +void unknown_type(void);
+> > +
+> > +#ifndef TYPES_TO_SESSNAME
+> > +#define TYPES_TO_SESSNAME(...) ({ unknown_type(); NULL; })
+> > +#endif
+> > +
+> > +#define ibtrs_prefix(obj)                                    \
+> > +     _CASE(obj, struct ibtrs_con *,  sess->sessname),        \
+> > +     _CASE(obj, struct ibtrs_sess *, sessname),              \
+> > +     TYPES_TO_SESSNAME(obj)                                  \
+> > +     ))
 >
-> A patch series that adds support for sharing tag sets across hardware
-> queues is pending. See also "[PATCH V3 0/8] blk-mq & scsi: fix reply
-> queue selection and improve host wide tagset"
-> (https://lore.kernel.org/linux-block/20180227100750.32299-1-ming.lei@redhat.com/).
-> Would that patch series allow to remove the queue management code from
-> ibnbd?
+> No preprocessor voodoo please. Please remove all of the above and modify
+> the logging statements such that these pass the proper name string as
+> first argument to logging macros.
+Sure, will do.
+>
+> > +struct ibtrs_msg_conn_req {
+> > +     u8              __cma_version; /* Is set to 0 by cma.c in case of
+> > +                                     * AF_IB, do not touch that. */
+> > +     u8              __ip_version;  /* On sender side that should be
+> > +                                     * set to 0, or cma_save_ip_info()
+> > +                                     * extract garbage and will fail. */
+> > +     __le16          magic;
+> > +     __le16          version;
+> > +     __le16          cid;
+> > +     __le16          cid_num;
+> > +     __le16          recon_cnt;
+> > +     uuid_t          sess_uuid;
+> > +     uuid_t          paths_uuid;
+> > +     u8              reserved[12];
+> > +};
+>
+> Please remove the reserved[] array and check private_data_len in the
+> code that receives the login request.
+We already checked the private_data_len on server side, see ibtrs_rdma_connect,
+and keep some reserved fields for future seems to be common practice
+for protocol, IMO.
+Also due to the fact, we already running the code in production, we
+want to keep the protocol compatible, so future
+transition could be smooth.
+>
+> > +/**
+> > + * struct ibtrs_msg_conn_rsp - Server connection response to the client
+> > + * @magic:      IBTRS magic
+> > + * @version:    IBTRS protocol version
+> > + * @errno:      If rdma_accept() then 0, if rdma_reject() indicates error
+> > + * @queue_depth:   max inflight messages (queue-depth) in this session
+> > + * @max_io_size:   max io size server supports
+> > + * @max_hdr_size:  max msg header size server supports
+> > + *
+> > + * NOTE: size is 56 bytes, max possible is 136 bytes, see man rdma_accept().
+> > + */
+> > +struct ibtrs_msg_conn_rsp {
+> > +     __le16          magic;
+> > +     __le16          version;
+> > +     __le16          errno;
+> > +     __le16          queue_depth;
+> > +     __le32          max_io_size;
+> > +     __le32          max_hdr_size;
+> > +     u8              reserved[40];
+> > +};
+>
+> Same comment here: please remove the reserved[] array and check
+> private_data_len in the code that processes this data structure.
+Ditto.
+>
+> > +static inline int sockaddr_cmp(const struct sockaddr *a,
+> > +                            const struct sockaddr *b)
+> > +{
+> > +     switch (a->sa_family) {
+> > +     case AF_IB:
+> > +             return memcmp(&((struct sockaddr_ib *)a)->sib_addr,
+> > +                           &((struct sockaddr_ib *)b)->sib_addr,
+> > +                           sizeof(struct ib_addr));
+> > +     case AF_INET:
+> > +             return memcmp(&((struct sockaddr_in *)a)->sin_addr,
+> > +                           &((struct sockaddr_in *)b)->sin_addr,
+> > +                           sizeof(struct in_addr));
+> > +     case AF_INET6:
+> > +             return memcmp(&((struct sockaddr_in6 *)a)->sin6_addr,
+> > +                           &((struct sockaddr_in6 *)b)->sin6_addr,
+> > +                           sizeof(struct in6_addr));
+> > +     default:
+> > +             return -ENOENT;
+> > +     }
+> > +}
+> > +
+> > +static inline int sockaddr_to_str(const struct sockaddr *addr,
+> > +                                char *buf, size_t len)
+> > +{
+> > +     int cnt;
+> > +
+> > +     switch (addr->sa_family) {
+> > +     case AF_IB:
+> > +             cnt = scnprintf(buf, len, "gid:%pI6",
+> > +                     &((struct sockaddr_ib *)addr)->sib_addr.sib_raw);
+> > +             return cnt;
+> > +     case AF_INET:
+> > +             cnt = scnprintf(buf, len, "ip:%pI4",
+> > +                     &((struct sockaddr_in *)addr)->sin_addr);
+> > +             return cnt;
+> > +     case AF_INET6:
+> > +             cnt = scnprintf(buf, len, "ip:%pI6c",
+> > +                       &((struct sockaddr_in6 *)addr)->sin6_addr);
+> > +             return cnt;
+> > +     }
+> > +     cnt = scnprintf(buf, len, "<invalid address family>");
+> > +     pr_err("Invalid address family\n");
+> > +     return cnt;
+> > +}
+>
+> Since these functions are not in the hot path, please move these into a
+> .c file.
+ok.
+>
+> > +/**
+> > + * ibtrs_invalidate_flag() - returns proper flags for invalidation
+> > + *
+> > + * NOTE: This function is needed for compat layer, so think twice before
+> > + *       rename or remove.
+> > + */
+> > +static inline u32 ibtrs_invalidate_flag(void)
+> > +{
+> > +     return IBTRS_MSG_NEED_INVAL_F;
+> > +}
+>
+> An inline function that does nothing else than returning a compile-time
+> constant? That does not look useful to me. How about inlining this function?
+This is needed for the compact layer, we redefine some FR functions to
+use FMR for our
+ConnectX2 X3 HCA.
+https://github.com/ionos-enterprise/ibnbd/tree/master/ibtrs/compat
+It will finally fade out, but it will take time.
 
-Hi Bart,
 
-No, it seems this thingy is a bit different.  According to my
-understanding patches 3 and 4 from this patchset do the
-following: 1# split equally the whole queue depth on number
-of hardware queues and 2# return tag number which is unique
-host-wide (more or less similar to unique_tag, right?).
-
-2# is not needed for ibtrs, and 1# can be easy done by dividing
-queue_depth on number of hw queues on tag set allocation, e.g.
-something like the following:
-
-    ...
-    tags->nr_hw_queues = num_online_cpus();
-    tags->queue_depth  = sess->queue_deph / tags->nr_hw_queues;
-
-    blk_mq_alloc_tag_set(tags);
-
-
-And this trick won't work out for the performance.  ibtrs client
-has a single resource: set of buffer chunks received from a
-server side.  And these buffers should be dynamically distributed
-between IO producers according to the load.  Having a hard split
-of the whole queue depth between hw queues we can forget about a
-dynamic load distribution, here is an example:
-
-   - say server shares 1024 buffer chunks for a session (do not
-     remember what is the actual number).
-
-   - 1024 buffers are equally divided between hw queues, let's
-     say 64 (number of cpus), so each queue is 16 requests depth.
-
-   - only several CPUs produce IO, and instead of occupying the
-     whole "bandwidth" of a session, i.e. 1024 buffer chunks,
-     we limit ourselves to a small queue depth of an each hw
-     queue.
-
-And performance drops significantly when number of IO producers
-is smaller than number of hw queues (CPUs), and it can be easily
-tested and proved.
-
-So for this particular ibtrs case tags should be globally shared,
-and seems (unfortunately) there is no any other similar requirements
-for other block devices.
-
---
-Roman
+Thanks,
+Jinpu
