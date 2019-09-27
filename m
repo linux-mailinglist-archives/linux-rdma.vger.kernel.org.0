@@ -2,178 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABD9BFC00
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 01:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AEDBFD52
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 04:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728599AbfIZXjY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Sep 2019 19:39:24 -0400
-Received: from mga11.intel.com ([192.55.52.93]:7656 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728441AbfIZXjY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 26 Sep 2019 19:39:24 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Sep 2019 16:39:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,553,1559545200"; 
-   d="p7s'?scan'208";a="389788596"
-Received: from orsmsx108.amr.corp.intel.com ([10.22.240.6])
-  by fmsmga005.fm.intel.com with ESMTP; 26 Sep 2019 16:39:23 -0700
-Received: from orsmsx113.amr.corp.intel.com (10.22.240.9) by
- ORSMSX108.amr.corp.intel.com (10.22.240.6) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 26 Sep 2019 16:39:22 -0700
-Received: from orsmsx116.amr.corp.intel.com ([169.254.7.232]) by
- ORSMSX113.amr.corp.intel.com ([169.254.9.232]) with mapi id 14.03.0439.000;
- Thu, 26 Sep 2019 16:39:22 -0700
-From:   "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-To:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     "jgg@mellanox.com" <jgg@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "Ertman, David M" <david.m.ertman@intel.com>
-Subject: Re: [RFC 01/20] ice: Initialize and register multi-function device
- to provide RDMA
-Thread-Topic: [RFC 01/20] ice: Initialize and register multi-function device
- to provide RDMA
-Thread-Index: AQHVdInWt0NTAJCEIEqQg3Y1OkbYY6c+tloAgABdJwA=
-Date:   Thu, 26 Sep 2019 23:39:22 +0000
-Message-ID: <7e7f6c159de52984b89c13982f0a7fd83f1bdcd4.camel@intel.com>
-References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
-         <20190926164519.10471-2-jeffrey.t.kirsher@intel.com>
-         <20190926180556.GB1733924@kroah.com>
-In-Reply-To: <20190926180556.GB1733924@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.166.244.155]
-Content-Type: multipart/signed; micalg=sha-1;
-        protocol="application/x-pkcs7-signature"; boundary="=-a1EaP/4SM51eBVg0Nwrv"
+        id S1728169AbfI0CuR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Sep 2019 22:50:17 -0400
+Received: from mail-pf1-f173.google.com ([209.85.210.173]:44918 "EHLO
+        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727796AbfI0CuR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Sep 2019 22:50:17 -0400
+Received: by mail-pf1-f173.google.com with SMTP id q21so640322pfn.11
+        for <linux-rdma@vger.kernel.org>; Thu, 26 Sep 2019 19:50:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3nZxZFSYvYCZGrR+dmFUluMIKj4Rnp7jZ77o4sHt3rA=;
+        b=UejioMzUo7C9snUTmhrUBkX7iPVovidlEELGe+METp+2yrGkjJTRzxiGZCK5wlsgN5
+         mGQL+yt+NisRVX6sbXjCNIbZuvao4As7yodxav/+8yFDZAW16s4b5eFfZoEFSRtyzQvV
+         44Shx6Ny0CdkgMPeaMzk+PGiE+ELdREPTS0c8C1AbE74jVMFEFqQzZIbxSsF39GZeIFe
+         7O8uzWx/LsfZRXOZY/8uGEUmEJbtrU2wUe6OefA7GJ3Z1SIusdF/YPwoEszNHmLaIbbc
+         LKmCOilvq64D2KCpjDn4nZpAA6oipk0RLdAuHjyzC/17wXZ5SDVnRNZMF2ifVq6GCitv
+         FsMg==
+X-Gm-Message-State: APjAAAW3pO08pSSZc/AfX2XShduN8MkYrXvYCK6XrXdCXiaHO1hUbjWd
+        efitQjVs0c2AdMzI5uii3oy7prUd
+X-Google-Smtp-Source: APXvYqwOVb3W2LJYX6nVghf2KANIuoeRvNN0OrQ7FTFg6f/xtEMP28UaBzzngSAuawe1dJqF3pzUfQ==
+X-Received: by 2002:a62:8142:: with SMTP id t63mr1467662pfd.246.1569552616111;
+        Thu, 26 Sep 2019 19:50:16 -0700 (PDT)
+Received: from localhost.localdomain ([2601:647:4000:a9:2083:a241:50c7:8f37])
+        by smtp.gmail.com with ESMTPSA id j16sm3877737pje.6.2019.09.26.19.50.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Sep 2019 19:50:15 -0700 (PDT)
+Subject: Re: SRP subnet timeout
+To:     Karandeep Chahal <karandeepchahal@gmail.com>,
+        linux-rdma@vger.kernel.org
+References: <25ca594d-cb80-2796-01f3-50c40155b4de@gmail.com>
+ <69ad7ea4-4b2f-8460-8152-ffe3505bea40@acm.org>
+ <dbdc27d0-93bf-947c-0c6c-41f4a7d20385@gmail.com>
+ <0068b947-a405-fec3-c0e4-6be4c78c7448@acm.org>
+ <683077ff-834a-1184-fbd0-28b4e6e3eeda@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <26d64d1f-2c73-aa53-233f-7a939266d354@acm.org>
+Date:   Thu, 26 Sep 2019 19:50:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
+In-Reply-To: <683077ff-834a-1184-fbd0-28b4e6e3eeda@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---=-a1EaP/4SM51eBVg0Nwrv
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 2019-09-26 08:24, Karandeep Chahal wrote:
+> The problem with adding 2 to SRP CM timeout is that it makes the SRP CM
+> timeout value far off the subnet timeout value.
+> Now you can either have a reasonable subnet timeout value and an
+> unreasonable SRP CM timeout value, or an unreasonable subnet timeout and
+> a reasonable SRP CM timeout.
 
-On Thu, 2019-09-26 at 20:05 +0200, Greg KH wrote:
-> On Thu, Sep 26, 2019 at 09:45:00AM -0700, Jeff Kirsher wrote:
-> > From: Tony Nguyen <anthony.l.nguyen@intel.com>
-> >=20
-> > The RDMA block does not advertise on the PCI bus or any other bus.
->=20
-> Huh?  How do you "know" where it is then?  Isn't is usually assigned
-> to
-> a PCI device?
+Hi Karan,
 
-The RDMA block does not have its own PCI function so it must register
-and interact with the ice driver. =20
-
->=20
-> > Thus the ice driver needs to provide access to the RDMA hardware
-> > block
-> > via a virtual bus; utilize a multi-function device to provide this
-> > access.
-> >=20
-> > This patch initializes the driver to support RDMA as well as
-> > creates
-> > and registers a multi-function device for the RDMA driver to
-> > register to.
-> > At this point the driver is fully initialized to register a
-> > platform
-> > driver, however, can not yet register as the ops have not been
-> > implemented.
-> >=20
-> > We refer to the interaction of this platform device as Inter-Driver
-> > Communication (IDC); where the platform device is referred to as
-> > the peer
-> > device and the platform driver is referred to as the peer driver.
->=20
-> Again, no platform devices, unless it REALLY IS a platform device
-> (i.e.
-> you are using device tree or platform data to find it.)  Is that what
-> you are doing here?
->=20
-
-Sorry, this was an oversight.  When I was changing the wording in the
-commit message away from platform device, I missed this one.
-
-I will rewrite the commit message to make things clearer and correct
-the platform device reference.
+Do you have a proposal for how the SRP initiator driver should be
+modified (patch)? After a patch is available the next step is to write a
+text that describes why that change will work for all users (patch
+description).
 
 Thanks,
-Tony
 
---=-a1EaP/4SM51eBVg0Nwrv
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-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
-UDSWFPJn1IonMumCuP0DYWGYiGS8dKTJMMh2WA2XVewXVn0JQTWQDpckAOkmi+A0RwpZzYJ0Y3gT
-AgMBAAGjggI2MIICMjAdBgNVHQ4EFgQUydTU8+nnPeJE0ndEkV7rlhV6p30wHwYDVR0jBBgwFoAU
-HmkqtNwo/kcYTiELP7ysES/wmPUwZQYDVR0fBF4wXDBaoFigVoZUaHR0cDovL3d3dy5pbnRlbC5j
-b20vcmVwb3NpdG9yeS9DUkwvSW50ZWwlMjBFeHRlcm5hbCUyMEJhc2ljJTIwSXNzdWluZyUyMENB
-JTIwNEEuY3JsMIGeBggrBgEFBQcBAQSBkTCBjjBpBggrBgEFBQcwAoZdaHR0cDovL3d3dy5pbnRl
-bC5jb20vcmVwb3NpdG9yeS9jZXJ0aWZpY2F0ZXMvSW50ZWwlMjBFeHRlcm5hbCUyMEJhc2ljJTIw
-SXNzdWluZyUyMENBJTIwNEEuY3J0MCEGCCsGAQUFBzABhhVodHRwOi8vb2NzcC5pbnRlbC5jb20w
-CwYDVR0PBAQDAgeAMDwGCSsGAQQBgjcVBwQvMC0GJSsGAQQBgjcVCIbDjHWEmeVRg/2BKIWOn1OC
-kcAJZ4HevTmV8EMCAWQCAQkwHwYDVR0lBBgwFgYIKwYBBQUHAwQGCisGAQQBgjcKAwwwKQYJKwYB
-BAGCNxUKBBwwGjAKBggrBgEFBQcDBDAMBgorBgEEAYI3CgMMMFEGA1UdEQRKMEigKgYKKwYBBAGC
-NxQCA6AcDBphbnRob255Lmwubmd1eWVuQGludGVsLmNvbYEaYW50aG9ueS5sLm5ndXllbkBpbnRl
-bC5jb20wDQYJKoZIhvcNAQEFBQADggEBALLF5b7PLd6kEWuQRkEq6eZpohKWRkfC9DyLiwS+HaeH
-9euNcIqpV4xrMXM6mPqs3AHRb9ibqUPo3wQMtHph35RRsmY7ENk9FxF/W8Ov5ZVPyW0rFiRsnr1C
-QVc08YqXp1dlbQGf8nvJn8ryCwjNpw0CTQcGHXrL/YnboLu8+R9RdBue/HIlP4g0pyAC/8YOie04
-PVo4flU2CGMYilm1euQ6OV8WRA2CKgvRVp/DZEzTqnmDvy12efG74bmMzXAvDv2I53TR5ltDpx5X
-B8uO1XlhOrj+Z3mSi85eblWWhJlq6+TQH/hZWSiyZH2lo3J49oHClTlk86GUEIUp/sf5v5cxggIX
-MIICEwIBATCBkDB5MQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFDASBgNVBAcTC1NhbnRhIENs
-YXJhMRowGAYDVQQKExFJbnRlbCBDb3Jwb3JhdGlvbjErMCkGA1UEAxMiSW50ZWwgRXh0ZXJuYWwg
-QmFzaWMgSXNzdWluZyBDQSA0QQITMwAA0J5PWjT/SLEH2wAAAADQnjAJBgUrDgMCGgUAoF0wGAYJ
-KoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTkwOTI2MjMzOTIwWjAjBgkq
-hkiG9w0BCQQxFgQUoM6lWPWGOzBGlsM+GKqniaeu80UwDQYJKoZIhvcNAQEBBQAEggEABJHMg9ss
-260p68+HBkE4s/SfRiM5Tj3JzpJQcSESWRL54fruYXXDZya9GHozL6dGhzVIfS+G5TzkPiBXC5aa
-ekqLzEiN+SqAdNnPjLCQg+kAlaF7qdsLfmFUSlF1pMWa4TQTXtt1JjmfvbxsBdZip4UE4neFYpo5
-IaKb5KAqoVpgAH7xDW3m+D8FCiZkWgnlyY3+cbitx41LD3DJaT7vTLJ6cOxe2NWPALRGMwOENg7s
-Lk/0V9jJEVx5UBQgq/zrayifjImdrX6Hq0miXh7KbtcuVPnleJBYe/w/D40vkPTKQ2/eBSVYpL5N
-QHBz2q9iDx4JJ1T0DhHTY6GIZM1quQAAAAAAAA==
-
-
---=-a1EaP/4SM51eBVg0Nwrv--
+Bart.
