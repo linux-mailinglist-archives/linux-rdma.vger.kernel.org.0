@@ -2,103 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD18BFE44
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 06:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DC3BFE77
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 07:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbfI0Eue (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Sep 2019 00:50:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42032 "EHLO mail.kernel.org"
+        id S1727653AbfI0FNb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Sep 2019 01:13:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbfI0Eue (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Sep 2019 00:50:34 -0400
-Received: from localhost (unknown [77.137.89.37])
+        id S1726217AbfI0FNb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 27 Sep 2019 01:13:31 -0400
+Received: from localhost (unknown [62.119.166.9])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A45720872;
-        Fri, 27 Sep 2019 04:50:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1524621783;
+        Fri, 27 Sep 2019 05:13:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569559833;
-        bh=JVEnk9tinPjTGLJ3dFKeOM+IowNE8SvIlokdPK+hW08=;
+        s=default; t=1569561209;
+        bh=AftiEiLWyKEj9+4fCQzCQskHt9HJiWKV//AZDTI6ZHw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=anTuyJfN6AOmQhVHlw9SPneEDj1Tj+pbQ1vpXawgaSgXf4aWoBgdvS2/yh60NMv09
-         FNq1528w7YOKKNiTtSzJTPxKX8pARpKLnK+i8G0UhntwZMJopXsvqDRdryGVDVYqXw
-         NBYWTXRqdF5C92mU3Sh+1qzjGcke+6Y/xotNWtHA=
-Date:   Fri, 27 Sep 2019 07:50:29 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+        b=Bj38Ej61OzeAqlcz7xjR0Bet3kaASNF4zHAMMsax8CiLBTTPGmSHR85idFgMOyztn
+         qdFWAbRRAUm3+mqK78d7AD/ZPbbc/MBcNlngvz6PeyNgSJCkH4VsDNqxQj9G9MRcZk
+         F4vRnA0d6eaic/8IOHQ2Wdo+IV6gM0IBUjyYcspk=
+Date:   Fri, 27 Sep 2019 07:13:20 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
 Cc:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
         "jgg@mellanox.com" <jgg@mellanox.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [RFC 12/20] RDMA/irdma: Implement device supported verb APIs
-Message-ID: <20190927045029.GG14368@unreal>
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "Ertman, David M" <david.m.ertman@intel.com>
+Subject: Re: [RFC 01/20] ice: Initialize and register multi-function device
+ to provide RDMA
+Message-ID: <20190927051320.GA1767635@kroah.com>
 References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
- <20190926164519.10471-13-jeffrey.t.kirsher@intel.com>
- <20190926173710.GC14368@unreal>
- <9DD61F30A802C4429A01CA4200E302A7AC702BEA@fmsmsx123.amr.corp.intel.com>
+ <20190926164519.10471-2-jeffrey.t.kirsher@intel.com>
+ <20190926180556.GB1733924@kroah.com>
+ <7e7f6c159de52984b89c13982f0a7fd83f1bdcd4.camel@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7AC702BEA@fmsmsx123.amr.corp.intel.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <7e7f6c159de52984b89c13982f0a7fd83f1bdcd4.camel@intel.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 26, 2019 at 07:49:52PM +0000, Saleem, Shiraz wrote:
-> > Subject: Re: [RFC 12/20] RDMA/irdma: Implement device supported verb APIs
-> >
-> > On Thu, Sep 26, 2019 at 09:45:11AM -0700, Jeff Kirsher wrote:
-> > > From: Mustafa Ismail <mustafa.ismail@intel.com>
-> > >
-> > > Implement device supported verb APIs. The supported APIs vary based on
-> > > the underlying transport the ibdev is registered as (i.e. iWARP or
-> > > RoCEv2).
-> > >
-> > > Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-> > > Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > ---
-> > >  drivers/infiniband/hw/irdma/verbs.c      | 4346 ++++++++++++++++++++++
-> > >  drivers/infiniband/hw/irdma/verbs.h      |  199 +
-> > >  include/uapi/rdma/rdma_user_ioctl_cmds.h |    1 +
-> > >  3 files changed, 4546 insertions(+)
-> > >  create mode 100644 drivers/infiniband/hw/irdma/verbs.c
-> > >  create mode 100644 drivers/infiniband/hw/irdma/verbs.h
-> > >
-> > > diff --git a/drivers/infiniband/hw/irdma/verbs.c
-> > > b/drivers/infiniband/hw/irdma/verbs.c
-> > > new file mode 100644
-> > > index 000000000000..025c21c722e2
-> > > --- /dev/null
-> > > +++ b/drivers/infiniband/hw/irdma/verbs.c
-> > > @@ -0,0 +1,4346 @@
-> > > +// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
-> > > +/* Copyright (c) 2019, Intel Corporation. */
-> >
-> > <...>
-> >
-> > > +
-> > > +	size = sqdepth * sizeof(struct irdma_sq_uk_wr_trk_info) +
-> > > +	       (rqdepth << 3);
-> > > +	iwqp->kqp.wrid_mem = kzalloc(size, GFP_KERNEL);
-> > > +	if (!iwqp->kqp.wrid_mem)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	ukinfo->sq_wrtrk_array = (struct irdma_sq_uk_wr_trk_info *)
-> > > +				 iwqp->kqp.wrid_mem;
-> > > +	if (!ukinfo->sq_wrtrk_array)
-> > > +		return -ENOMEM;
-> >
-> > You are leaking resources here, forgot to do proper error unwinding.
-> >
->
-> irdma_free_qp_rsrc() will free up that memory in case of an error.
+On Thu, Sep 26, 2019 at 11:39:22PM +0000, Nguyen, Anthony L wrote:
+> On Thu, 2019-09-26 at 20:05 +0200, Greg KH wrote:
+> > On Thu, Sep 26, 2019 at 09:45:00AM -0700, Jeff Kirsher wrote:
+> > > From: Tony Nguyen <anthony.l.nguyen@intel.com>
+> > > 
+> > > The RDMA block does not advertise on the PCI bus or any other bus.
+> > 
+> > Huh?  How do you "know" where it is then?  Isn't is usually assigned
+> > to
+> > a PCI device?
+> 
+> The RDMA block does not have its own PCI function so it must register
+> and interact with the ice driver.  
 
-I'm talking about kqp.wrid_mem you allocated a couple of lines above and
-didn't free in case of sq_wrtrk_array allocation failed.
+So the "ice driver" is the real thing controlling the pci device?  How
+does it "know" about the RDMA block?
 
-Thanks
+thanks,
+
+greg k-h
