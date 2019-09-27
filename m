@@ -2,79 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACD9C0501
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 14:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 224B6C0708
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 16:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbfI0MSJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Sep 2019 08:18:09 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:42605 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727368AbfI0MSJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Sep 2019 08:18:09 -0400
-Received: by mail-ed1-f65.google.com with SMTP id y91so2116950ede.9
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Sep 2019 05:18:07 -0700 (PDT)
+        id S1727124AbfI0OKX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Sep 2019 10:10:23 -0400
+Received: from mail-qt1-f176.google.com ([209.85.160.176]:39908 "EHLO
+        mail-qt1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726926AbfI0OKW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Sep 2019 10:10:22 -0400
+Received: by mail-qt1-f176.google.com with SMTP id n7so7427582qtb.6
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Sep 2019 07:10:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=FKHeGQHPDqERmEIFxtVPQVkrwntjuPpxcT3RmSIpP3o=;
-        b=HdrofhHQzBPK9v8Uo6SaER6UTr3ErMkOtpIMUvNAfRk3TsOnPbuZUuyzDLpriySmte
-         SoF9tI5+/jTLLvfjl+U399goUWoufGPSSthoOvnAfh/8OD8i9WBqMC6tZsLN6LSvE5Zk
-         9m3+kreK+0+6KaLuL35SO7qZNvzuC0iexA2pE/RHotailaByQjeWaqyVI8OD2J2MYj+1
-         rik304UZpq+4QIF74Y4WXzaduvZaZUo5rxadnZY7tWJUYxnyHSvQd7k5ujOLIzXGCWcU
-         bJb4nF0aGfEDv+rasjeCEjqiEJ3Rfsef0zm8uhvdWfXKw/5JmM7WoRTMJpfrpsHDOjk9
-         8n+g==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=8tnTIMv2UN2b0TmznJz6E04QWQKkP7V9hAIsoYEbEbU=;
+        b=DDU3VLqCRGSmg1ewFCypf/zz7y73pcDmaGAcBc2mLlXfUK6QK2++clbYKdq2JEOX0T
+         hz+FqQcvOiy7RxMOV/FpS2ItnEcfsZfo2dUSvXw4Ut9BfZx7aNkeS+41FJLWtiEtx8Qj
+         gCBeAg+QONBegyY1OqWdEg3hbk9xuaoD48wBvN3YSBonb+t4ZBfiqyyl0Dblzgnwfpln
+         9qPmqAozUZ/QXl3P07yRu3DK7fAFILL77KmOfAcZnay3vowTwvM4SBUxV2Nwj1ma79dE
+         ElZjnnvTI2t+rDLnSXCMg//RoveBgw+oV98J6efDSSavlLkHnJNaK612MT9jiiUnXGWb
+         oejw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=FKHeGQHPDqERmEIFxtVPQVkrwntjuPpxcT3RmSIpP3o=;
-        b=m7u/9CqvsaDZAmi4+Zvjg3jc5VaPhkH+mhAp+kRk9q6gRswZtOqxhKvk2gfMaeDZ2z
-         W4Fhh5wj4+81lMjQzuK4RpkF2GqGae7YHH/Vb3fimxeM4C+cIQJB6xRXab3ntDxwqARl
-         nWAMpUVLNPDXjYCJG2VvlZNeRjCVfi96Gp7x57ovdLwqHxrLBafPnSgUkxr/C4c3s9V9
-         pgIU4u27yk+4cWVim8jeU5Px0B0LMlS195Qkau9uuYTdB2mkttYLxvv0kHYMfP7QtJId
-         dOW1hTxpByrfMmpoSsGwj3VNQ0bwkO/GPczcPogbyFN0BxK5cLdbj0ISdJUzMmZG5LM9
-         guVQ==
-X-Gm-Message-State: APjAAAWs3U601bxGK9bxd8jolkK/8RqLeP3UbAby6+LI0ZuT0M4Duz+t
-        pYpQbtoBkTzfdb+YD6Ofw2In
-X-Google-Smtp-Source: APXvYqy1JTYW4Su7MKrX0sOFsS3sjuB529ktql8CtIDV3FED1QGblp/9SVcsm2Y+sy5ezO3svyfbFw==
-X-Received: by 2002:a50:91b1:: with SMTP id g46mr3998224eda.255.1569586686552;
-        Fri, 27 Sep 2019 05:18:06 -0700 (PDT)
-Received: from ?IPv6:2a02:247f:ffff:2540:251d:77f4:c17c:46f7? ([2001:1438:4010:2540:251d:77f4:c17c:46f7])
-        by smtp.gmail.com with ESMTPSA id i7sm492490edk.42.2019.09.27.05.18.05
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 27 Sep 2019 05:18:05 -0700 (PDT)
-Subject: Re: [PATCH v4 17/25] ibnbd: client: main functionality
-From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
-To:     Roman Penyaev <r.peniaev@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, rpenyaev@suse.de,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-References: <20190620150337.7847-1-jinpuwang@gmail.com>
- <20190620150337.7847-18-jinpuwang@gmail.com>
- <bd8963e2-d186-dbd0-fe39-7f4a518f4177@acm.org>
- <CAHg0HuwzHnzPQAqjtYFTZb7BhzFagJ0NJ=pW=VkTqn5HML-0Vw@mail.gmail.com>
- <5c5ff7df-2cce-ec26-7893-55911e4d8595@acm.org>
- <CAHg0HuwFTVsCNHbiXW20P6hQ3c-P_p5tB6dYKtOW=_euWEvLnA@mail.gmail.com>
- <CAHg0HuzQOH4ZCe+v-GHu8jOYm-wUbh1fFRK75Muq+DPpQGAH8A@mail.gmail.com>
- <6f677d56-82b3-a321-f338-cbf8ff4e83eb@acm.org>
- <CAHg0HuxvKZVjROMM7YmYJ0kOU5Y4UeE+a3V==LNkWpLFy8wqtw@mail.gmail.com>
- <CACZ9PQU6bFtnDUYtzbsmNzsNW0j1EkxgUKzUw5N5gr1ArEXZvw@mail.gmail.com>
- <e2056b1d-b428-18c7-8e22-2f37b91917c8@acm.org>
- <CACZ9PQU8=4DaSAUQ7czKdcWio2H5HB1ro-pXaY2VP9PhgTxk7g@mail.gmail.com>
- <CAHg0HuwgPXtaY3XGv0=TjPbmRRdbmOsa7fRYa+n5fGf9K0_xRg@mail.gmail.com>
-Message-ID: <b449137d-e986-4d2b-ed0a-0b931d8312e1@cloud.ionos.com>
-Date:   Fri, 27 Sep 2019 14:18:05 +0200
+        bh=8tnTIMv2UN2b0TmznJz6E04QWQKkP7V9hAIsoYEbEbU=;
+        b=cJ2RelmEsEN/X7k1UG5YVBvYWgkAf+poOh12r9T9jhJWqjRhzDdGo57F/btvlkmI8t
+         zbD8TNEcmpMK0vTVXBHCBp3LuCxlsqzcdyM/WtX0KTkAi7X6vH2P/ek+YDimnU+yH3Jy
+         EiNlptRcXlR1OfS+2s/exY836chiExn0G4QeeJUhKdvzvkNCWn51q1hSwGYLuoIp4ecW
+         s9iRv7w4XUWsBqSNBiAsmZx8/WxizTmuCTZwU7mSA+RSMdQv1BCkuobquW4UqcrbAuCw
+         QhH1xaKzJs81sVcqkQ5BeNHX05tLz5Pa/d1GHgwLb0YrBICRXBNzWQ479LNDj0VV3rMk
+         piMw==
+X-Gm-Message-State: APjAAAUb8a8/AJIjkS0qv4r98+YKzFG2rUugnWikw+wfXOu8oRFMe6P3
+        kXizN4cfXdqomdcJK4/xoX5io/g1
+X-Google-Smtp-Source: APXvYqyAmKX8vupGT91tpM7p2IQNgXytFQ//IeYb4gyS0hJAiqC8ZxhYU772Qdbkuuo01rIZfJTbFg==
+X-Received: by 2002:ac8:550a:: with SMTP id j10mr10298402qtq.230.1569593421236;
+        Fri, 27 Sep 2019 07:10:21 -0700 (PDT)
+Received: from [10.48.108.64] (DATADIRECT.bear1.Baltimore1.Level3.net. [4.34.0.142])
+        by smtp.gmail.com with ESMTPSA id x12sm3199509qtb.32.2019.09.27.07.10.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 27 Sep 2019 07:10:20 -0700 (PDT)
+Subject: Re: SRP subnet timeout
+To:     Bart Van Assche <bvanassche@acm.org>, linux-rdma@vger.kernel.org
+References: <25ca594d-cb80-2796-01f3-50c40155b4de@gmail.com>
+ <69ad7ea4-4b2f-8460-8152-ffe3505bea40@acm.org>
+ <dbdc27d0-93bf-947c-0c6c-41f4a7d20385@gmail.com>
+ <0068b947-a405-fec3-c0e4-6be4c78c7448@acm.org>
+ <683077ff-834a-1184-fbd0-28b4e6e3eeda@gmail.com>
+ <26d64d1f-2c73-aa53-233f-7a939266d354@acm.org>
+From:   Karandeep Chahal <karandeepchahal@gmail.com>
+Message-ID: <527bbf2c-13b2-428d-dbe1-962c48c7a827@gmail.com>
+Date:   Fri, 27 Sep 2019 10:10:19 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAHg0HuwgPXtaY3XGv0=TjPbmRRdbmOsa7fRYa+n5fGf9K0_xRg@mail.gmail.com>
+In-Reply-To: <26d64d1f-2c73-aa53-233f-7a939266d354@acm.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -83,59 +68,27 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 9/26/19 10:50 PM, Bart Van Assche wrote:
+> On 2019-09-26 08:24, Karandeep Chahal wrote:
+>> The problem with adding 2 to SRP CM timeout is that it makes the SRP CM
+>> timeout value far off the subnet timeout value.
+>> Now you can either have a reasonable subnet timeout value and an
+>> unreasonable SRP CM timeout value, or an unreasonable subnet timeout and
+>> a reasonable SRP CM timeout.
+> Hi Karan,
+>
+> Do you have a proposal for how the SRP initiator driver should be
+> modified (patch)? After a patch is available the next step is to write a
+> text that describes why that change will work for all users (patch
+> description).
+>
+> Thanks,
+>
+> Bart.
+Hi Bart,
 
-On 27.09.19 11:32, Danil Kipnis wrote:
-> On Fri, Sep 27, 2019 at 10:52 AM Roman Penyaev <r.peniaev@gmail.com> wrote:
->> No, it seems this thingy is a bit different.  According to my
->> understanding patches 3 and 4 from this patchset do the
->> following: 1# split equally the whole queue depth on number
->> of hardware queues and 2# return tag number which is unique
->> host-wide (more or less similar to unique_tag, right?).
->>
->> 2# is not needed for ibtrs, and 1# can be easy done by dividing
->> queue_depth on number of hw queues on tag set allocation, e.g.
->> something like the following:
->>
->>      ...
->>      tags->nr_hw_queues = num_online_cpus();
->>      tags->queue_depth  = sess->queue_deph / tags->nr_hw_queues;
->>
->>      blk_mq_alloc_tag_set(tags);
->>
->>
->> And this trick won't work out for the performance.  ibtrs client
->> has a single resource: set of buffer chunks received from a
->> server side.  And these buffers should be dynamically distributed
->> between IO producers according to the load.  Having a hard split
->> of the whole queue depth between hw queues we can forget about a
->> dynamic load distribution, here is an example:
->>
->>     - say server shares 1024 buffer chunks for a session (do not
->>       remember what is the actual number).
->>
->>     - 1024 buffers are equally divided between hw queues, let's
->>       say 64 (number of cpus), so each queue is 16 requests depth.
->>
->>     - only several CPUs produce IO, and instead of occupying the
->>       whole "bandwidth" of a session, i.e. 1024 buffer chunks,
->>       we limit ourselves to a small queue depth of an each hw
->>       queue.
->>
->> And performance drops significantly when number of IO producers
->> is smaller than number of hw queues (CPUs), and it can be easily
->> tested and proved.
->>
->> So for this particular ibtrs case tags should be globally shared,
->> and seems (unfortunately) there is no any other similar requirements
->> for other block devices.
-> I don't see any difference between what you describe here and 100 dm
-> volumes sitting on top of a single NVME device.
+I will come up with a patch/proposal sometime next week. Please stay tuned.
 
-Hallo Christoph,
-
-am I wrong?
-
-Thank you,
-
-Danil.
+Thanks
+-Karan
 
