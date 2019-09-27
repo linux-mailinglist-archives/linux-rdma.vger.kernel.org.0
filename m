@@ -2,52 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC91C04C1
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 14:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45262C04CA
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 14:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbfI0MAZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Sep 2019 08:00:25 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:54400 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbfI0MAZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Sep 2019 08:00:25 -0400
-Received: by mail-wm1-f68.google.com with SMTP id p7so6293696wmp.4
-        for <linux-rdma@vger.kernel.org>; Fri, 27 Sep 2019 05:00:22 -0700 (PDT)
+        id S1726251AbfI0MEa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Sep 2019 08:04:30 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:42388 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726087AbfI0MEa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Sep 2019 08:04:30 -0400
+Received: by mail-wr1-f67.google.com with SMTP id n14so2419001wrw.9
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Sep 2019 05:04:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7sau4xOb8dPAV6A8mONisBLMb8Kneqh/zCycDLH7kVM=;
-        b=JBx5mSIFQWc67My7BtaboyYPhlJ2ld2ZaxutYkYxsWk/2GoodnKW91vbnziHjt/6aE
-         weQgSFmAO8xjf3Y8/jne6cmlJkhKRbzKNKrbTgu5e1ECiRfgJ3sFXJLQpxlQFNT696ma
-         IGAXuZ9JcQrvNsK2R8W5QNGY8zOyGDdqk47EU1GXaY1l8DuwxYeCO8VE/ScWrbhmGlUY
-         Hm8rt5hp7u+4BpNBO50CWDvdIKT+dg0JZmtZLdDE2sbUSMZGn4gcbtEKL9kbDdqpmdqX
-         lS8/pyy0OHpXVZRyvQgnR1ZPodt61ZqbhHlGpbBjLCYagDYGNib+7D/RN4vTd0l4r/uv
-         lwJw==
+        bh=b2iw2VtLufxj11Fm0JlU+oavXCSMSBn9EwsIJtM7DtQ=;
+        b=OAHrzWxT684cRT2Q/GTvTyymCyaxbdc3nQoVxzq/XX9VR9tXPlxFdVgH2Pp+hIPefl
+         TxNiF7v3ZhzgHyFnOVJyXPPWQ2dJwAlvy9BYwbVZBS6QplsQvJ1teUCC/aNAB7dLWW6Y
+         qsidadUVKJej3zS9PlKQ5rp1JfzZfkCOjgBMzt4Juf/ySTZeSQyyjGksG/JTmEacFRjv
+         5hAiEf/nXBNcteBkTdwq9drth/z3IdldXHHwR0YQaYe8DA0slzWylW6QpKTwUNS93hmT
+         v8r0J7DuMNB39x2GbNbRN2BnLOGb7FjereolHc7XhgT1aQQxK2A2i5pTUtMmE2AneqTl
+         vmHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7sau4xOb8dPAV6A8mONisBLMb8Kneqh/zCycDLH7kVM=;
-        b=TbRaJdXdGMlKP2jmvcj1KQWKkTC6Fp/qbeRnjUc+z1JEdVS97ohNLYEdTEvLkAGTfw
-         Ptt/A2F7F9VmzQ+odEIJcsXJgrlZCoAfOLRbb/z9V3fZGweyRBSs5I7047OwY0Q6vOHk
-         pgHxdKj+upfeXJtNx2TFlEe1W8Ye+ME7MY43FA2x6TAe/Q0lTCQv8G+cuuXVkw7hl02D
-         wGiDqAKGNFsjTQrEN2YEhWFwvE8rdorGOJVaiiyRODD3+ZUgPPJg3p8lQ7wLkdguY8tM
-         hhYsqg+0jv3yEl1wdDff0/kWV+wi2IMvwpjoWpUjJiVHku1zu5PfBFb0sU8i6pzeOEJ6
-         YJxA==
-X-Gm-Message-State: APjAAAVMwZwEXu2OABXqPPY9MPVRqlbii0+tVQblb0itpmJg+AMdUpDv
-        6H7qXeJ/bTD7jt6cbp4C7u5o2lrYa4EQQdVodSjk2g==
-X-Google-Smtp-Source: APXvYqySiV0qQ9lhK5Uto9CXxqqUPTX+RQLORdsyn9dS/8FaZXdJZDAA0Tc1FTVrOfx3oL89tccCvAvzqQ/EhQSNeB4=
-X-Received: by 2002:a1c:7dd1:: with SMTP id y200mr6611245wmc.59.1569585622131;
- Fri, 27 Sep 2019 05:00:22 -0700 (PDT)
+        bh=b2iw2VtLufxj11Fm0JlU+oavXCSMSBn9EwsIJtM7DtQ=;
+        b=iACmW30/JY3KFdSDe7j0vHT1oy5cyXhqtWLeRRN7rQBJrlAvOiI9o4a92rrsIIFvZg
+         eUQ6e1/Gqk3SmG0AMV+FDiLaMbIibAII6kfm2U8d/kZCt/brklu9tzqJ9fijWmgpbuEY
+         7VYwqoPIJwnO75jknLdyJU6gMD59Ok4g09m9hBYfrB55HnZoZfxo5nbnORfnRiUawuSU
+         iw6M7+Sd9TLCrtGpExcH+i718MNqQbIvnc+elr8UVNsNMGtfwBPXyQi5c0f8Dx+N/QHS
+         niLge83QTS58B9XsQ7l0zvX/UiEl20HFgxzhoOJWIFfOiLcjTB797C39IKKwQTzGFSrd
+         z5aQ==
+X-Gm-Message-State: APjAAAWVNHp8jxZVS5RJbqNOJhXEhZh53u8mwYeoWMMIJpYhGGCQCVKA
+        mOX48/EZy7N8YP/7kBP2SHkbAWuSbymUk/LhpLGBng==
+X-Google-Smtp-Source: APXvYqxCJWbMzmW/zWMBktqKGLPDSSJau0EgT0yLx2A6eOZ1Kxv0eu+UGP4dL/ncofnLK8C52TUhPso+IYZ67eKl9T8=
+X-Received: by 2002:adf:f406:: with SMTP id g6mr2574100wro.325.1569585868528;
+ Fri, 27 Sep 2019 05:04:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-8-jinpuwang@gmail.com>
- <0f6ce58e-48f2-8020-f8f6-957cf464ae60@acm.org>
-In-Reply-To: <0f6ce58e-48f2-8020-f8f6-957cf464ae60@acm.org>
+References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-10-jinpuwang@gmail.com>
+ <c0ca07e9-2864-b1a2-1b78-b9f1de5702c0@acm.org>
+In-Reply-To: <c0ca07e9-2864-b1a2-1b78-b9f1de5702c0@acm.org>
 From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Fri, 27 Sep 2019 14:00:11 +0200
-Message-ID: <CAMGffEkud6di8veG0sVfLSY4Qe+ngMvPd4YnHh1SZK9-CeZnmA@mail.gmail.com>
-Subject: Re: [PATCH v4 07/25] ibtrs: client: statistics functions
+Date:   Fri, 27 Sep 2019 14:04:17 +0200
+Message-ID: <CAMGffEnqC0peHr9W8y077YLZPC0+RzSJ4c8Z3q23eVgvFp1y3A@mail.gmail.com>
+Subject: Re: [PATCH v4 09/25] ibtrs: server: private header with server
+ structs and functions
 To:     Bart Van Assche <bvanassche@acm.org>
 Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
@@ -55,81 +56,45 @@ Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         Sagi Grimberg <sagi@grimberg.me>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de,
+        Roman Pen <roman.penyaev@profitbricks.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 1:15 AM Bart Van Assche <bvanassche@acm.org> wrote:
+On Tue, Sep 24, 2019 at 1:21 AM Bart Van Assche <bvanassche@acm.org> wrote:
 >
 > On 6/20/19 8:03 AM, Jack Wang wrote:
-> > +void ibtrs_clt_update_rdma_lat(struct ibtrs_clt_stats *stats, bool read,
-> > +                            unsigned long ms)
+> > +static inline const char *ibtrs_srv_state_str(enum ibtrs_srv_state state)
 > > +{
-> > +     struct ibtrs_clt_stats_pcpu *s;
-> > +     int id;
-> > +
-> > +     id = ibtrs_clt_ms_to_id(ms);
-> > +     s = this_cpu_ptr(stats->pcpu_stats);
-> > +     if (read) {
-> > +             s->rdma_lat_distr[id].read++;
-> > +             if (s->rdma_lat_max.read < ms)
-> > +                     s->rdma_lat_max.read = ms;
-> > +     } else {
-> > +             s->rdma_lat_distr[id].write++;
-> > +             if (s->rdma_lat_max.write < ms)
-> > +                     s->rdma_lat_max.write = ms;
+> > +     switch (state) {
+> > +     case IBTRS_SRV_CONNECTING:
+> > +             return "IBTRS_SRV_CONNECTING";
+> > +     case IBTRS_SRV_CONNECTED:
+> > +             return "IBTRS_SRV_CONNECTED";
+> > +     case IBTRS_SRV_CLOSING:
+> > +             return "IBTRS_SRV_CLOSING";
+> > +     case IBTRS_SRV_CLOSED:
+> > +             return "IBTRS_SRV_CLOSED";
+> > +     default:
+> > +             return "UNKNOWN";
 > > +     }
 > > +}
 >
-> Can it happen that this function is called simultaneously from thread
-> context and from interrupt context?
-This can't happen, we only call the function from complete_rdma_req, and
-complete_rdma_req is call from cq callback except fail_all_outstanding_reqs,
-cq callback context is softirq, fail_all_outstanding_reqs is process
-context, but we
-disconnect and drain_qp before call into fail_all_outstading_reqs
-
+> Since this function is not in the hot path, please move it into a .c file.
+Ok.
 >
-> > +void ibtrs_clt_update_wc_stats(struct ibtrs_clt_con *con)
-> > +{
-> > +     struct ibtrs_clt_sess *sess = to_clt_sess(con->c.sess);
-> > +     struct ibtrs_clt_stats *stats = &sess->stats;
-> > +     struct ibtrs_clt_stats_pcpu *s;
-> > +     int cpu;
-> > +
-> > +     cpu = raw_smp_processor_id();
-> > +     s = this_cpu_ptr(stats->pcpu_stats);
-> > +     s->wc_comp.cnt++;
-> > +     s->wc_comp.total_cnt++;
-> > +     if (unlikely(con->cpu != cpu)) {
-> > +             s->cpu_migr.to++;
-> > +
-> > +             /* Careful here, override s pointer */
-> > +             s = per_cpu_ptr(stats->pcpu_stats, con->cpu);
-> > +             atomic_inc(&s->cpu_migr.from);
-> > +     }
-> > +}
+> > +/* See ibtrs-log.h */
+> > +#define TYPES_TO_SESSNAME(obj)                                               \
+> > +     LIST(CASE(obj, struct ibtrs_srv_sess *, s.sessname))
 >
-> Same question here.
-The function is only called from cq done callback,
->
-> > +void ibtrs_clt_inc_failover_cnt(struct ibtrs_clt_stats *stats)
-> > +{
-> > +     struct ibtrs_clt_stats_pcpu *s;
-> > +
-> > +     s = this_cpu_ptr(stats->pcpu_stats);
-> > +     s->rdma.failover_cnt++;
-> > +}
->
-> And here ...
-this function only call from process context.
-
+> Please remove this macro and pass 'sessname' explicitly to logging
+> functions.
+Ok.
 >
 > Thanks,
 >
 > Bart.
-Thanks,
-Jinpu
+Thanks!
