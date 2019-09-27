@@ -2,117 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59426C0A89
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 19:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CABC0ABE
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 20:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727289AbfI0RoY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Sep 2019 13:44:24 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:57580 "EHLO mx1.redhat.com"
+        id S1727726AbfI0SDx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 27 Sep 2019 14:03:53 -0400
+Received: from mga03.intel.com ([134.134.136.65]:15037 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726321AbfI0RoY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Sep 2019 13:44:24 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 17DA064120;
-        Fri, 27 Sep 2019 17:44:24 +0000 (UTC)
-Received: from dhcp-128-227.nay.redhat.com (unknown [10.66.128.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 406D55D6A7;
-        Fri, 27 Sep 2019 17:44:22 +0000 (UTC)
-From:   Honggang LI <honli@redhat.com>
-To:     bvanassche@acm.org, dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, Honggang Li <honli@redhat.com>
-Subject: [patch v5 2/2] RDMA/srp: calculate max_it_iu_size if remote max_it_iu length available
-Date:   Sat, 28 Sep 2019 01:43:52 +0800
-Message-Id: <20190927174352.7800-2-honli@redhat.com>
-In-Reply-To: <20190927174352.7800-1-honli@redhat.com>
-References: <20190927174352.7800-1-honli@redhat.com>
+        id S1726321AbfI0SDx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 27 Sep 2019 14:03:53 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Sep 2019 11:03:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,556,1559545200"; 
+   d="scan'208";a="273892591"
+Received: from orsmsx106.amr.corp.intel.com ([10.22.225.133])
+  by orsmga001.jf.intel.com with ESMTP; 27 Sep 2019 11:03:52 -0700
+Received: from orsmsx116.amr.corp.intel.com (10.22.240.14) by
+ ORSMSX106.amr.corp.intel.com (10.22.225.133) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 27 Sep 2019 11:03:52 -0700
+Received: from orsmsx101.amr.corp.intel.com ([169.254.8.204]) by
+ ORSMSX116.amr.corp.intel.com ([169.254.7.232]) with mapi id 14.03.0439.000;
+ Fri, 27 Sep 2019 11:03:52 -0700
+From:   "Ertman, David M" <david.m.ertman@intel.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+CC:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "jgg@mellanox.com" <jgg@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>
+Subject: RE: [RFC 01/20] ice: Initialize and register multi-function device
+ to provide RDMA
+Thread-Topic: [RFC 01/20] ice: Initialize and register multi-function device
+ to provide RDMA
+Thread-Index: AQGOetFAPbFeoIHdxRJDZlVegIphLQHJRZnhAdxiwysB1QCSuQJ6/k4op44H7uA=
+Date:   Fri, 27 Sep 2019 18:03:51 +0000
+Message-ID: <2B0E3F215D1AB84DA946C8BEE234CCC97B2B1A28@ORSMSX101.amr.corp.intel.com>
+References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
+ <20190926164519.10471-2-jeffrey.t.kirsher@intel.com>
+ <20190926180556.GB1733924@kroah.com>
+ <7e7f6c159de52984b89c13982f0a7fd83f1bdcd4.camel@intel.com>
+ <20190927051320.GA1767635@kroah.com>
+In-Reply-To: <20190927051320.GA1767635@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiMDExNTZjYjYtNjI2MS00ZGNkLTkzNWUtZjZhNjcxNTc5YTQ4IiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoibjdIUGVleGVSbFRZeHRUOHRXUnZOQUNBeDNUZGFpM0xnTU1pbFpPMjZyWml2QlZWR1duWWdYOVMxN2E3VEN2OSJ9
+x-ctpclassification: CTP_NT
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.22.254.138]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Fri, 27 Sep 2019 17:44:24 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Honggang Li <honli@redhat.com>
+> -----Original Message-----
+> From: gregkh@linuxfoundation.org [mailto:gregkh@linuxfoundation.org]
+> Sent: Thursday, September 26, 2019 10:13 PM
+> To: Nguyen, Anthony L <anthony.l.nguyen@intel.com>
+> Cc: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>; jgg@mellanox.com;
+> netdev@vger.kernel.org; linux-rdma@vger.kernel.org; dledford@redhat.com;
+> Ertman, David M <david.m.ertman@intel.com>
+> Subject: Re: [RFC 01/20] ice: Initialize and register multi-function device to
+> provide RDMA
+> 
+> On Thu, Sep 26, 2019 at 11:39:22PM +0000, Nguyen, Anthony L wrote:
+> > On Thu, 2019-09-26 at 20:05 +0200, Greg KH wrote:
+> > > On Thu, Sep 26, 2019 at 09:45:00AM -0700, Jeff Kirsher wrote:
+> > > > From: Tony Nguyen <anthony.l.nguyen@intel.com>
+> > > >
+> > > > The RDMA block does not advertise on the PCI bus or any other bus.
+> > >
+> > > Huh?  How do you "know" where it is then?  Isn't is usually assigned
+> > > to a PCI device?
+> >
+> > The RDMA block does not have its own PCI function so it must register
+> > and interact with the ice driver.
+> 
+> So the "ice driver" is the real thing controlling the pci device?  How does it
+> "know" about the RDMA block?
+> 
+> thanks,
+> 
+> greg k-h
 
-The default maximum immediate size is too big for old srp clients,
-which do not support immediate data.
+The ICE driver loads and registers to control the PCI device.  It then
+creates an MFD device with the name 'ice_rdma'. The device data provided to
+the MFD subsystem by the ICE driver is the struct iidc_peer_dev which
+contains all of the relevant information that the IRDMA peer will need
+to access this PF's IIDC API callbacks
 
-According to the SRP and SRP-2 specifications, the IOControllerProfile
-attributes for SRP target ports contains the maximum initiator to target
-iu length.
+The IRDMA driver loads as a software only driver, and then registers a MFD
+function driver that takes ownership of MFD devices named 'ice_rdma'.
+This causes the platform bus to perform a matching between ICE's MFD device
+and IRDMA's driver.  Then the patform bus will call the IRDMA's IIDC probe
+function.  This probe provides the device data to IRDMA.
 
-The maximum initiator to target iu length can be obtained by sending
-MAD packets to query subnet manager port and SRP target ports. We should
-calculate the max_it_iu_size instead of the default value, when remote
-maximum initiator to target iu length available.
-
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Honggang Li <honli@redhat.com>
----
- drivers/infiniband/ulp/srp/ib_srp.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index b829dab0df77..b48088af2ea1 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -1362,7 +1362,8 @@ static void srp_terminate_io(struct srp_rport *rport)
- }
- 
- /* Calculate maximum initiator to target information unit length. */
--static uint32_t srp_max_it_iu_len(int cmd_sg_cnt, bool use_imm_data)
-+static uint32_t srp_max_it_iu_len(int cmd_sg_cnt, bool use_imm_data,
-+				  uint32_t max_it_iu_size)
- {
- 	uint32_t max_iu_len = sizeof(struct srp_cmd) + SRP_MAX_ADD_CDB_LEN +
- 		sizeof(struct srp_indirect_buf) +
-@@ -1372,6 +1373,11 @@ static uint32_t srp_max_it_iu_len(int cmd_sg_cnt, bool use_imm_data)
- 		max_iu_len = max(max_iu_len, SRP_IMM_DATA_OFFSET +
- 				 srp_max_imm_data);
- 
-+	if (max_it_iu_size)
-+		max_iu_len = min(max_iu_len, max_it_iu_size);
-+
-+	pr_debug("max_iu_len = %d\n", max_iu_len);
-+
- 	return max_iu_len;
- }
- 
-@@ -1389,7 +1395,8 @@ static int srp_rport_reconnect(struct srp_rport *rport)
- 	struct srp_target_port *target = rport->lld_data;
- 	struct srp_rdma_ch *ch;
- 	uint32_t max_iu_len = srp_max_it_iu_len(target->cmd_sg_cnt,
--						srp_use_imm_data);
-+						srp_use_imm_data,
-+						target->max_it_iu_size);
- 	int i, j, ret = 0;
- 	bool multich = false;
- 
-@@ -2538,7 +2545,8 @@ static void srp_cm_rep_handler(struct ib_cm_id *cm_id,
- 		ch->req_lim       = be32_to_cpu(lrsp->req_lim_delta);
- 		ch->use_imm_data  = lrsp->rsp_flags & SRP_LOGIN_RSP_IMMED_SUPP;
- 		ch->max_it_iu_len = srp_max_it_iu_len(target->cmd_sg_cnt,
--						      ch->use_imm_data);
-+						      ch->use_imm_data,
-+						      target->max_it_iu_size);
- 		WARN_ON_ONCE(ch->max_it_iu_len >
- 			     be32_to_cpu(lrsp->max_it_iu_len));
- 
-@@ -3897,7 +3905,9 @@ static ssize_t srp_create_target(struct device *dev,
- 	target->mr_per_cmd = mr_per_cmd;
- 	target->indirect_size = target->sg_tablesize *
- 				sizeof (struct srp_direct_buf);
--	max_iu_len = srp_max_it_iu_len(target->cmd_sg_cnt, srp_use_imm_data);
-+	max_iu_len = srp_max_it_iu_len(target->cmd_sg_cnt,
-+				       srp_use_imm_data,
-+				       target->max_it_iu_size);
- 
- 	INIT_WORK(&target->tl_err_work, srp_tl_err_work);
- 	INIT_WORK(&target->remove_work, srp_remove_work);
--- 
-2.21.0
-
+Dave E
