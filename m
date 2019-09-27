@@ -2,109 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CABC0ABE
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 20:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C5CC0AFC
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 20:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727726AbfI0SDx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 27 Sep 2019 14:03:53 -0400
-Received: from mga03.intel.com ([134.134.136.65]:15037 "EHLO mga03.intel.com"
+        id S1728100AbfI0SYL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Sep 2019 14:24:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726321AbfI0SDx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Sep 2019 14:03:53 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Sep 2019 11:03:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,556,1559545200"; 
-   d="scan'208";a="273892591"
-Received: from orsmsx106.amr.corp.intel.com ([10.22.225.133])
-  by orsmga001.jf.intel.com with ESMTP; 27 Sep 2019 11:03:52 -0700
-Received: from orsmsx116.amr.corp.intel.com (10.22.240.14) by
- ORSMSX106.amr.corp.intel.com (10.22.225.133) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Fri, 27 Sep 2019 11:03:52 -0700
-Received: from orsmsx101.amr.corp.intel.com ([169.254.8.204]) by
- ORSMSX116.amr.corp.intel.com ([169.254.7.232]) with mapi id 14.03.0439.000;
- Fri, 27 Sep 2019 11:03:52 -0700
-From:   "Ertman, David M" <david.m.ertman@intel.com>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-CC:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        id S1726594AbfI0SYL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 27 Sep 2019 14:24:11 -0400
+Received: from localhost (unknown [62.119.166.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41F3D21655;
+        Fri, 27 Sep 2019 18:23:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1569608649;
+        bh=4swEvpXaqSRC7XJbFySxlHY6O59YmXPHl6S6u/bn7gk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=02bLKIX+cGcqGYknMvQpYeQxL9frtu2emAO8Rp40APIVL6QS7TMORC0NaPoY08ENO
+         tlxYFIV9KIzkTq18RBxYR+Tm/oOmLLFgVf7sYYiS0uiCVnEGf3DCt35MfgnCoO921k
+         85E9OA8WHg2t6CzQnpSTEtY6XJJx7P98VTn3tm1Q=
+Date:   Fri, 27 Sep 2019 20:23:46 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
         "jgg@mellanox.com" <jgg@mellanox.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>
-Subject: RE: [RFC 01/20] ice: Initialize and register multi-function device
- to provide RDMA
-Thread-Topic: [RFC 01/20] ice: Initialize and register multi-function device
- to provide RDMA
-Thread-Index: AQGOetFAPbFeoIHdxRJDZlVegIphLQHJRZnhAdxiwysB1QCSuQJ6/k4op44H7uA=
-Date:   Fri, 27 Sep 2019 18:03:51 +0000
-Message-ID: <2B0E3F215D1AB84DA946C8BEE234CCC97B2B1A28@ORSMSX101.amr.corp.intel.com>
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [RFC 15/20] RDMA/irdma: Add miscellaneous utility definitions
+Message-ID: <20190927182346.GE1804168@kroah.com>
 References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
- <20190926164519.10471-2-jeffrey.t.kirsher@intel.com>
- <20190926180556.GB1733924@kroah.com>
- <7e7f6c159de52984b89c13982f0a7fd83f1bdcd4.camel@intel.com>
- <20190927051320.GA1767635@kroah.com>
-In-Reply-To: <20190927051320.GA1767635@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiMDExNTZjYjYtNjI2MS00ZGNkLTkzNWUtZjZhNjcxNTc5YTQ4IiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoibjdIUGVleGVSbFRZeHRUOHRXUnZOQUNBeDNUZGFpM0xnTU1pbFpPMjZyWml2QlZWR1duWWdYOVMxN2E3VEN2OSJ9
-x-ctpclassification: CTP_NT
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.138]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+ <20190926164519.10471-16-jeffrey.t.kirsher@intel.com>
+ <20190926174948.GE14368@unreal>
+ <9DD61F30A802C4429A01CA4200E302A7AC702BC6@fmsmsx123.amr.corp.intel.com>
+ <20190927044653.GF14368@unreal>
+ <9DD61F30A802C4429A01CA4200E302A7AC704647@fmsmsx123.amr.corp.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7AC704647@fmsmsx123.amr.corp.intel.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> -----Original Message-----
-> From: gregkh@linuxfoundation.org [mailto:gregkh@linuxfoundation.org]
-> Sent: Thursday, September 26, 2019 10:13 PM
-> To: Nguyen, Anthony L <anthony.l.nguyen@intel.com>
-> Cc: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>; jgg@mellanox.com;
-> netdev@vger.kernel.org; linux-rdma@vger.kernel.org; dledford@redhat.com;
-> Ertman, David M <david.m.ertman@intel.com>
-> Subject: Re: [RFC 01/20] ice: Initialize and register multi-function device to
-> provide RDMA
-> 
-> On Thu, Sep 26, 2019 at 11:39:22PM +0000, Nguyen, Anthony L wrote:
-> > On Thu, 2019-09-26 at 20:05 +0200, Greg KH wrote:
-> > > On Thu, Sep 26, 2019 at 09:45:00AM -0700, Jeff Kirsher wrote:
-> > > > From: Tony Nguyen <anthony.l.nguyen@intel.com>
+On Fri, Sep 27, 2019 at 02:28:20PM +0000, Saleem, Shiraz wrote:
+> > Subject: Re: [RFC 15/20] RDMA/irdma: Add miscellaneous utility definitions
+> > 
+> > On Thu, Sep 26, 2019 at 07:49:33PM +0000, Saleem, Shiraz wrote:
+> > > > Subject: Re: [RFC 15/20] RDMA/irdma: Add miscellaneous utility
+> > > > definitions
 > > > >
-> > > > The RDMA block does not advertise on the PCI bus or any other bus.
+> > > > On Thu, Sep 26, 2019 at 09:45:14AM -0700, Jeff Kirsher wrote:
+> > > > > From: Mustafa Ismail <mustafa.ismail@intel.com>
+> > > > >
+> > > > > Add miscellaneous utility functions and headers.
+> > > > >
+> > > > > Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
+> > > > > Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> > > > > ---
+> > > > >  drivers/infiniband/hw/irdma/osdep.h  |  108 ++
+> > > > >  drivers/infiniband/hw/irdma/protos.h |   96 ++
+> > > > >  drivers/infiniband/hw/irdma/status.h |   70 +
+> > > > >  drivers/infiniband/hw/irdma/utils.c  | 2333
+> > > > > ++++++++++++++++++++++++++
+> > > > >  4 files changed, 2607 insertions(+)  create mode 100644
+> > > > > drivers/infiniband/hw/irdma/osdep.h
+> > > > >  create mode 100644 drivers/infiniband/hw/irdma/protos.h
+> > > > >  create mode 100644 drivers/infiniband/hw/irdma/status.h
+> > > > >  create mode 100644 drivers/infiniband/hw/irdma/utils.c
+> > > > >
+> > > > > diff --git a/drivers/infiniband/hw/irdma/osdep.h
+> > > > > b/drivers/infiniband/hw/irdma/osdep.h
+> > > > > new file mode 100644
+> > > > > index 000000000000..5885b6fa413d
+> > > > > --- /dev/null
+> > > > > +++ b/drivers/infiniband/hw/irdma/osdep.h
+> > > > > @@ -0,0 +1,108 @@
+> > > > > +/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
+> > > > > +/* Copyright (c) 2019, Intel Corporation. */
+> > > > > +
+> > > > > +#ifndef IRDMA_OSDEP_H
+> > > > > +#define IRDMA_OSDEP_H
+> > > > > +
+> > > > > +#include <linux/version.h>
+> > > > > +#include <linux/kernel.h>
+> > > > > +#include <linux/vmalloc.h>
+> > > > > +#include <linux/string.h>
+> > > > > +#include <linux/bitops.h>
+> > > > > +#include <linux/pci.h>
+> > > > > +#include <net/tcp.h>
+> > > > > +#include <crypto/hash.h>
+> > > > > +/* get readq/writeq support for 32 bit kernels, use the low-first
+> > > > > +version */ #include <linux/io-64-nonatomic-lo-hi.h>
+> > > > > +
+> > > > > +#define MAKEMASK(m, s) ((m) << (s))
+> > > >
+> > > > It is a little bit over-macro.
+> > > >
 > > >
-> > > Huh?  How do you "know" where it is then?  Isn't is usually assigned
-> > > to a PCI device?
-> >
-> > The RDMA block does not have its own PCI function so it must register
-> > and interact with the ice driver.
-> 
-> So the "ice driver" is the real thing controlling the pci device?  How does it
-> "know" about the RDMA block?
-> 
-> thanks,
-> 
-> greg k-h
+> > > Why is this a problem?
+> > > We are not translating any basic kernel construct here.
+> > 
+> > See BIT() definition.
+> > 
+> OK. And?
 
-The ICE driver loads and registers to control the PCI device.  It then
-creates an MFD device with the name 'ice_rdma'. The device data provided to
-the MFD subsystem by the ICE driver is the struct iidc_peer_dev which
-contains all of the relevant information that the IRDMA peer will need
-to access this PF's IIDC API callbacks
+And you just re-created GENMASK().  Please use in-kernel definitions
+instead of creating your own.
 
-The IRDMA driver loads as a software only driver, and then registers a MFD
-function driver that takes ownership of MFD devices named 'ice_rdma'.
-This causes the platform bus to perform a matching between ICE's MFD device
-and IRDMA's driver.  Then the patform bus will call the IRDMA's IIDC probe
-function.  This probe provides the device data to IRDMA.
+thanks,
 
-Dave E
+greg k-h
