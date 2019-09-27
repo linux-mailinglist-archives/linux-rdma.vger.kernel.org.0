@@ -2,120 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C5CC0AFC
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 20:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B09CFC0C86
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 22:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728100AbfI0SYL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Sep 2019 14:24:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33398 "EHLO mail.kernel.org"
+        id S1726033AbfI0URT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Sep 2019 16:17:19 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:57646 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726594AbfI0SYL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Sep 2019 14:24:11 -0400
-Received: from localhost (unknown [62.119.166.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725815AbfI0URT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 27 Sep 2019 16:17:19 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41F3D21655;
-        Fri, 27 Sep 2019 18:23:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569608649;
-        bh=4swEvpXaqSRC7XJbFySxlHY6O59YmXPHl6S6u/bn7gk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=02bLKIX+cGcqGYknMvQpYeQxL9frtu2emAO8Rp40APIVL6QS7TMORC0NaPoY08ENO
-         tlxYFIV9KIzkTq18RBxYR+Tm/oOmLLFgVf7sYYiS0uiCVnEGf3DCt35MfgnCoO921k
-         85E9OA8WHg2t6CzQnpSTEtY6XJJx7P98VTn3tm1Q=
-Date:   Fri, 27 Sep 2019 20:23:46 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+        by mx1.redhat.com (Postfix) with ESMTPS id E07E13090FD4;
+        Fri, 27 Sep 2019 20:17:18 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-20.rdu2.redhat.com [10.10.112.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9CA7510013A7;
+        Fri, 27 Sep 2019 20:17:17 +0000 (UTC)
+Message-ID: <bc18503dcace47150d5f45e8669d7978e18a38f9.camel@redhat.com>
+Subject: Re: [RFC 20/20] RDMA/i40iw: Mark i40iw as deprecated
+From:   Doug Ledford <dledford@redhat.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>
 Cc:     Leon Romanovsky <leon@kernel.org>,
         "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
         "jgg@mellanox.com" <jgg@mellanox.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [RFC 15/20] RDMA/irdma: Add miscellaneous utility definitions
-Message-ID: <20190927182346.GE1804168@kroah.com>
+Date:   Fri, 27 Sep 2019 16:17:15 -0400
+In-Reply-To: <20190926195517.GA1743170@kroah.com>
 References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
- <20190926164519.10471-16-jeffrey.t.kirsher@intel.com>
- <20190926174948.GE14368@unreal>
- <9DD61F30A802C4429A01CA4200E302A7AC702BC6@fmsmsx123.amr.corp.intel.com>
- <20190927044653.GF14368@unreal>
- <9DD61F30A802C4429A01CA4200E302A7AC704647@fmsmsx123.amr.corp.intel.com>
+         <20190926164519.10471-21-jeffrey.t.kirsher@intel.com>
+         <20190926174009.GD14368@unreal>
+         <9DD61F30A802C4429A01CA4200E302A7AC702BDA@fmsmsx123.amr.corp.intel.com>
+         <20190926195517.GA1743170@kroah.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-s1Ee7myzZbv2hqZTGRLp"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7AC704647@fmsmsx123.amr.corp.intel.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.43]); Fri, 27 Sep 2019 20:17:19 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 27, 2019 at 02:28:20PM +0000, Saleem, Shiraz wrote:
-> > Subject: Re: [RFC 15/20] RDMA/irdma: Add miscellaneous utility definitions
-> > 
-> > On Thu, Sep 26, 2019 at 07:49:33PM +0000, Saleem, Shiraz wrote:
-> > > > Subject: Re: [RFC 15/20] RDMA/irdma: Add miscellaneous utility
-> > > > definitions
-> > > >
-> > > > On Thu, Sep 26, 2019 at 09:45:14AM -0700, Jeff Kirsher wrote:
-> > > > > From: Mustafa Ismail <mustafa.ismail@intel.com>
-> > > > >
-> > > > > Add miscellaneous utility functions and headers.
-> > > > >
-> > > > > Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-> > > > > Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > > > ---
-> > > > >  drivers/infiniband/hw/irdma/osdep.h  |  108 ++
-> > > > >  drivers/infiniband/hw/irdma/protos.h |   96 ++
-> > > > >  drivers/infiniband/hw/irdma/status.h |   70 +
-> > > > >  drivers/infiniband/hw/irdma/utils.c  | 2333
-> > > > > ++++++++++++++++++++++++++
-> > > > >  4 files changed, 2607 insertions(+)  create mode 100644
-> > > > > drivers/infiniband/hw/irdma/osdep.h
-> > > > >  create mode 100644 drivers/infiniband/hw/irdma/protos.h
-> > > > >  create mode 100644 drivers/infiniband/hw/irdma/status.h
-> > > > >  create mode 100644 drivers/infiniband/hw/irdma/utils.c
-> > > > >
-> > > > > diff --git a/drivers/infiniband/hw/irdma/osdep.h
-> > > > > b/drivers/infiniband/hw/irdma/osdep.h
-> > > > > new file mode 100644
-> > > > > index 000000000000..5885b6fa413d
-> > > > > --- /dev/null
-> > > > > +++ b/drivers/infiniband/hw/irdma/osdep.h
-> > > > > @@ -0,0 +1,108 @@
-> > > > > +/* SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB */
-> > > > > +/* Copyright (c) 2019, Intel Corporation. */
-> > > > > +
-> > > > > +#ifndef IRDMA_OSDEP_H
-> > > > > +#define IRDMA_OSDEP_H
-> > > > > +
-> > > > > +#include <linux/version.h>
-> > > > > +#include <linux/kernel.h>
-> > > > > +#include <linux/vmalloc.h>
-> > > > > +#include <linux/string.h>
-> > > > > +#include <linux/bitops.h>
-> > > > > +#include <linux/pci.h>
-> > > > > +#include <net/tcp.h>
-> > > > > +#include <crypto/hash.h>
-> > > > > +/* get readq/writeq support for 32 bit kernels, use the low-first
-> > > > > +version */ #include <linux/io-64-nonatomic-lo-hi.h>
-> > > > > +
-> > > > > +#define MAKEMASK(m, s) ((m) << (s))
-> > > >
-> > > > It is a little bit over-macro.
-> > > >
-> > >
-> > > Why is this a problem?
-> > > We are not translating any basic kernel construct here.
-> > 
-> > See BIT() definition.
-> > 
-> OK. And?
 
-And you just re-created GENMASK().  Please use in-kernel definitions
-instead of creating your own.
+--=-s1Ee7myzZbv2hqZTGRLp
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
+On Thu, 2019-09-26 at 21:55 +0200, gregkh@linuxfoundation.org wrote:
+> On Thu, Sep 26, 2019 at 07:49:44PM +0000, Saleem, Shiraz wrote:
+> > > Subject: Re: [RFC 20/20] RDMA/i40iw: Mark i40iw as deprecated
+> > >=20
+> > > On Thu, Sep 26, 2019 at 09:45:19AM -0700, Jeff Kirsher wrote:
+> > > > From: Shiraz Saleem <shiraz.saleem@intel.com>
+> > > >=20
+> > > > Mark i40iw as deprecated/obsolete.
+> > > >=20
+> > > > irdma is the replacement driver that supports X722.
+> > >=20
+> > > Can you simply delete old one and add MODULE_ALIAS() in new
+> > > driver?
+> > >=20
+> >=20
+> > Yes, but we thought typically driver has to be deprecated for a few
+> > cycles before removing it.
+>=20
+> If you completely replace it with something that works the same, why
+> keep the old one around at all?
+>=20
+> Unless you don't trust your new code?  :)
 
-greg k-h
+I have yet to see, in over 20 years of kernel experience, a new driver
+replace an old driver and not initially be more buggy and troublesome
+than the old driver.  It takes time and real world usage for the final
+issues to get sorted out.  During that time, the fallback is often
+necessary for those real world users.
+
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-s1Ee7myzZbv2hqZTGRLp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl2ObksACgkQuCajMw5X
+L90Lyg//b3ptE8AoVBijWhVsfB2qYdpGB3S01vv1ScJMLqT+yPXHRa9otvBhoe5e
+TKNkxE75neJMlK4y7bzPesDEcYYHjbz7T3KEOOuUOdNn0Ba6WkhmabobMYFh5vfi
+Kf8YYC9HjoHTdTq5roakoZOo+/+fYPTgPkafH7FSQp+3YYxf4NAszQATPw3+gVQf
+C58CRGg4oDMb61cXgDmtPAK/ralxbEw1AKcJ8qrdrzWARn/kcj5NLtmjByy250BB
+Nbp8h4f2erSgbqmAuMq7JnPSsTtkARmQmb1dcQpby8c1V37iyIKC2+Q9Ea32w3Tl
+zf2MWYIFX9hO7hwsLDO8HqM8Aq1FunLyruMckgz8b68MDTkBB140053gGzJQGa0l
+SiTWI17mChXcikhsDtm7SKhubbjn15MvmkNPunE0lKb9Hp4v6IfeC66Qg2hnPEW4
+FDtTR5WwpQkWjXeT2BFcTJSOppWemYemh3+F/ZogCDc7ebI8My3wBFxIjfmGS445
+mbyzjD3vicKve8zTaeLIBXIlDcGcd4HONCzXxChIlhyVv7K0xvkuM+4hghQC1olg
+lTQ0TeTdHkdtIqUF59HVzKeM/PrVw3kNOmYfvwv5zlDWkOBsnFxsK2iHCRxMF/so
+E06Yaj8eJDEr9bXRNmReD1jT8OFJIXRSoUgRbe3DcHG23zpodFs=
+=I6hj
+-----END PGP SIGNATURE-----
+
+--=-s1Ee7myzZbv2hqZTGRLp--
+
