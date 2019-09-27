@@ -2,97 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 414AEC0A1D
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 19:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7A2C0A2D
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Sep 2019 19:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbfI0RQc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Sep 2019 13:16:32 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:36552 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbfI0RQc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Sep 2019 13:16:32 -0400
-Received: by mail-pl1-f193.google.com with SMTP id f19so1352045plr.3;
-        Fri, 27 Sep 2019 10:16:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RNfU8SMnxj+higWP0jV8ynN/lW/e0hOoNDbR3t713zo=;
-        b=lIEKSsgV6WVwYYze9xLZwYxndKC2iV3LjEv+Yfh8wRc9R4/x41jkUz6r1Sl1K1mMbS
-         RR+vG5rFrCFAzgaOWtYvPxRJld9c3C8cj0RNKAe1GeCVWOCX4/Ksaz9DPOGxR2h8T/9r
-         fC4T0uSZlhOMWR7FKiXwZP90dbWe/PdqkQqx3WG0foxUpZrQhJaSumDxfQVGKyjJpYJk
-         UONeNLTAn8bbRmMdKRfBB8wjznXCPd4wsTjjqMabJBXUAUfbdPvrkIdY8LoYOeKugJWm
-         WSQTKaBWZLYsjQNktpsCvp7XkpK7eBTpJi7K9x7j97FsvbqeoA7Lv/Zk8l4L+Weof0Pd
-         piZQ==
-X-Gm-Message-State: APjAAAW0rvdX4ys8GfyTdIiWWbRqXGcq57hEoUu69vs7QWA5APfgwu1i
-        NdLzuEjQGKDTMm+f6fORLUE=
-X-Google-Smtp-Source: APXvYqzcL/Tqhb5gG2ywYAm1G7rYdRw8swzeDVXQKsFWKzH09mnNAcXt+jlZgTP9aiz8MZHqn+AKJw==
-X-Received: by 2002:a17:902:d681:: with SMTP id v1mr5972574ply.310.1569604591178;
-        Fri, 27 Sep 2019 10:16:31 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id i1sm4345760pfg.2.2019.09.27.10.16.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Sep 2019 10:16:30 -0700 (PDT)
-Subject: Re: [PATCH v4 17/25] ibnbd: client: main functionality
-To:     Roman Penyaev <r.peniaev@gmail.com>
-Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, rpenyaev@suse.de,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-References: <20190620150337.7847-1-jinpuwang@gmail.com>
- <20190620150337.7847-18-jinpuwang@gmail.com>
- <bd8963e2-d186-dbd0-fe39-7f4a518f4177@acm.org>
- <CAHg0HuwzHnzPQAqjtYFTZb7BhzFagJ0NJ=pW=VkTqn5HML-0Vw@mail.gmail.com>
- <5c5ff7df-2cce-ec26-7893-55911e4d8595@acm.org>
- <CAHg0HuwFTVsCNHbiXW20P6hQ3c-P_p5tB6dYKtOW=_euWEvLnA@mail.gmail.com>
- <CAHg0HuzQOH4ZCe+v-GHu8jOYm-wUbh1fFRK75Muq+DPpQGAH8A@mail.gmail.com>
- <6f677d56-82b3-a321-f338-cbf8ff4e83eb@acm.org>
- <CAHg0HuxvKZVjROMM7YmYJ0kOU5Y4UeE+a3V==LNkWpLFy8wqtw@mail.gmail.com>
- <CACZ9PQU6bFtnDUYtzbsmNzsNW0j1EkxgUKzUw5N5gr1ArEXZvw@mail.gmail.com>
- <e2056b1d-b428-18c7-8e22-2f37b91917c8@acm.org>
- <CACZ9PQU8=4DaSAUQ7czKdcWio2H5HB1ro-pXaY2VP9PhgTxk7g@mail.gmail.com>
- <b31be034-eae0-77f7-aabf-92c8f8a984e5@acm.org>
- <CACZ9PQWTBiYbjYa=s9+QOWXXr+_hNP5VYP_mC2wi5VJZLTE_kw@mail.gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <84f5e08b-9586-8e6d-3e35-ce6f1976ba31@acm.org>
-Date:   Fri, 27 Sep 2019 10:16:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727235AbfI0RSS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Sep 2019 13:18:18 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:49796 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726594AbfI0RSS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 27 Sep 2019 13:18:18 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id DAA7330089A1;
+        Fri, 27 Sep 2019 17:18:17 +0000 (UTC)
+Received: from localhost (unknown [10.66.128.227])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4901561B63;
+        Fri, 27 Sep 2019 17:18:17 +0000 (UTC)
+Date:   Sat, 28 Sep 2019 01:18:14 +0800
+From:   Honggang LI <honli@redhat.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org
+Subject: Re: [patch v3 2/2] RDMA/srp: calculate max_it_iu_size if remote
+ max_it_iu length available
+Message-ID: <20190927171814.GA13717@dhcp-128-227.nay.redhat.com>
+References: <20190919035032.31373-1-honli@redhat.com>
+ <20190919035032.31373-2-honli@redhat.com>
+ <c0ab625a-d029-37b4-753f-312e7877a6fc@acm.org>
+ <20190923033339.GB8298@dhcp-128-227.nay.redhat.com>
+ <0f2331d1-6a4a-6c30-6e53-9662c2a59708@acm.org>
 MIME-Version: 1.0
-In-Reply-To: <CACZ9PQWTBiYbjYa=s9+QOWXXr+_hNP5VYP_mC2wi5VJZLTE_kw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0f2331d1-6a4a-6c30-6e53-9662c2a59708@acm.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.46]); Fri, 27 Sep 2019 17:18:18 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/27/19 9:50 AM, Roman Penyaev wrote:
-> On Fri, Sep 27, 2019 at 6:37 PM Bart Van Assche <bvanassche@acm.org> wrote:
->> I agree that BLK_MQ_F_HOST_TAGS partitions a tag set across hardware
->> queues while ibnbd shares a single tag set across multiple hardware
->> queues. Since such sharing may be useful for other block drivers, isn't
->> that something that should be implemented in the block layer core
->> instead of in the ibnbd driver? If that logic would be moved into the
->> block layer core, would that allow to reuse the queue restarting logic
->> that already exists in the block layer core?
-> 
-> Definitely yes, but what other block drivers you have in mind?
+On Mon, Sep 23, 2019 at 08:10:48AM -0700, Bart Van Assche wrote:
+> On 9/22/19 8:33 PM, Honggang LI wrote:
+> > On Fri, Sep 20, 2019 at 09:18:49AM -0700, Bart Van Assche wrote:
+> > > On 9/18/19 8:50 PM, Honggang LI wrote:
+> > > > The maximum initiator to target iu length can be get from the subnet
+> > >                                                     ^^^
+> > >                                           retrieved? obtained?
+> > 
+> > OK, will replace it with 'retrieved'.
+> > 
+> > > > manager, such as opensm and opafm. We should calculate the
+> > >    ^^^^^^^
+> > > 
+> > > Are you sure that information comes from the subnet manager?
+> > > Isn't the LID passed to get_ioc_prof() in the srp_daemon the LID of the SRP
+> > > target?
+> > 
+> > Yes, you are right. But srp_daemon/get_ioc_prof() send MAD packet
+> > to subnet manager to obtain the maximum initiator to target iu length.
+>  I do not agree that the maximum initiator to target IU length comes from
+> the subnet manager. This is how I think the srp_daemon works:
+> 1. The srp_daemon process sends a query to the subnet manager and asks
+>    the subnet manager to report all IB ports that support device
+>    management.
+> 2. The subnet manager sends back information about all ports that
+>    support device management (struct srp_sa_port_info_rec).
+> 3. The srp_daemon sends a query to the SRP target(s) to retrieve the
+>    IOUnitInfo (struct srp_dm_iou_info) and IOControllerProfile
+>    (struct srp_dm_ioc_prof). The maximum initiator to target IU length
+>    is present in that data structure (srp_dm_ioc_prof.send_size).
 
-I'd like to hear the opinion of Jens and Christoph about this topic. My 
-concern is that if the code for sharing a tag set across hwqs stays in 
-the ibnbd driver and if another block driver is submitted in the future 
-that needs the same logic that in order to end up with a single 
-implementation of the tag set sharing code that the authors of the new 
-driver would have to be asked to modify the ibnbd driver. I think it 
-would be inappropriate to ask the authors of such a new driver to modify 
-the ibnbd driver.
+Yes, your description is more accurate.
 
-Bart.
+[1] "The maximum initiator to target iu length can be retrieved from the subnet
+manager, such as opensm and opafm."
 
+[2] "The maximum initiator to target iu length can be obtained by sending
+MAD packets to query subnet manager port and SRP target ports."
+
+How about replacing sentence [1] with [2] in commit message?
+
+thanks
