@@ -2,92 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 339FDC0FE1
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Sep 2019 07:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F09EC0FE9
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Sep 2019 08:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725932AbfI1FzP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 28 Sep 2019 01:55:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58126 "EHLO mail.kernel.org"
+        id S1725857AbfI1GAh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 28 Sep 2019 02:00:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725856AbfI1FzP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 28 Sep 2019 01:55:15 -0400
+        id S1725263AbfI1GAg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 28 Sep 2019 02:00:36 -0400
 Received: from localhost (unknown [77.137.89.37])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC1392081B;
-        Sat, 28 Sep 2019 05:55:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40C342081B;
+        Sat, 28 Sep 2019 06:00:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569650114;
-        bh=zeKjhwCf7GhFCQgmig2FZlvYJ1HcAhDSb8kElWZk5Dg=;
+        s=default; t=1569650436;
+        bh=vme6/jAMbcwv00vmJFNWcY1fDi3aFHpqvBkw0DKLf04=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dcKEwv8PkXVI9zPT2rZUhxr6ReouabFfsAzpj3BmQM2sPMLDooIg7m4oTG9Tia4L8
-         huM4AVHClVJK2wbD2uJXOnS5xlBL4oEypi6AB1nvOLshOJkSp5tkNK6bQuAtNAx1mL
-         V8Kfc8cGv7g/B/r7/aVyE6e+/Q1+4gfNJp52LacA=
-Date:   Sat, 28 Sep 2019 08:55:11 +0300
+        b=kOiIpgvRUboTTxj8/O7CzeZVehsfokWe2W/UttvBguJouBiEXgpwdeR7eGGYLsvIW
+         72g5WmRODXVgeWpWakE841XhIGIhf7aPidSLmT9QdmTAuPal6V4A+yzfp6VsecTrrN
+         hsNubj/ejOIwl3tWzCr9J8GSA1dnarUSDb/a+Oqg=
+Date:   Sat, 28 Sep 2019 09:00:32 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Cc:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
         "jgg@mellanox.com" <jgg@mellanox.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [RFC 20/20] RDMA/i40iw: Mark i40iw as deprecated
-Message-ID: <20190928055511.GI14368@unreal>
+Subject: Re: [RFC 12/20] RDMA/irdma: Implement device supported verb APIs
+Message-ID: <20190928060032.GJ14368@unreal>
 References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
- <20190926164519.10471-21-jeffrey.t.kirsher@intel.com>
- <20190926174009.GD14368@unreal>
- <9DD61F30A802C4429A01CA4200E302A7AC702BDA@fmsmsx123.amr.corp.intel.com>
- <20190926195517.GA1743170@kroah.com>
- <bc18503dcace47150d5f45e8669d7978e18a38f9.camel@redhat.com>
+ <20190926164519.10471-13-jeffrey.t.kirsher@intel.com>
+ <20190926173710.GC14368@unreal>
+ <9DD61F30A802C4429A01CA4200E302A7AC702BEA@fmsmsx123.amr.corp.intel.com>
+ <20190927045029.GG14368@unreal>
+ <9DD61F30A802C4429A01CA4200E302A7AC70468F@fmsmsx123.amr.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bc18503dcace47150d5f45e8669d7978e18a38f9.camel@redhat.com>
+In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7AC70468F@fmsmsx123.amr.corp.intel.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 27, 2019 at 04:17:15PM -0400, Doug Ledford wrote:
-> On Thu, 2019-09-26 at 21:55 +0200, gregkh@linuxfoundation.org wrote:
-> > On Thu, Sep 26, 2019 at 07:49:44PM +0000, Saleem, Shiraz wrote:
-> > > > Subject: Re: [RFC 20/20] RDMA/i40iw: Mark i40iw as deprecated
+On Fri, Sep 27, 2019 at 02:28:41PM +0000, Saleem, Shiraz wrote:
+> > Subject: Re: [RFC 12/20] RDMA/irdma: Implement device supported verb APIs
+> >
+> > On Thu, Sep 26, 2019 at 07:49:52PM +0000, Saleem, Shiraz wrote:
+> > > > Subject: Re: [RFC 12/20] RDMA/irdma: Implement device supported verb
+> > > > APIs
 > > > >
-> > > > On Thu, Sep 26, 2019 at 09:45:19AM -0700, Jeff Kirsher wrote:
-> > > > > From: Shiraz Saleem <shiraz.saleem@intel.com>
+> > > > On Thu, Sep 26, 2019 at 09:45:11AM -0700, Jeff Kirsher wrote:
+> > > > > From: Mustafa Ismail <mustafa.ismail@intel.com>
 > > > > >
-> > > > > Mark i40iw as deprecated/obsolete.
+> > > > > Implement device supported verb APIs. The supported APIs vary
+> > > > > based on the underlying transport the ibdev is registered as (i.e.
+> > > > > iWARP or RoCEv2).
 > > > > >
-> > > > > irdma is the replacement driver that supports X722.
+> > > > > Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
+> > > > > Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> > > > > ---
+> > > > >  drivers/infiniband/hw/irdma/verbs.c      | 4346 ++++++++++++++++++++++
+> > > > >  drivers/infiniband/hw/irdma/verbs.h      |  199 +
+> > > > >  include/uapi/rdma/rdma_user_ioctl_cmds.h |    1 +
+> > > > >  3 files changed, 4546 insertions(+)  create mode 100644
+> > > > > drivers/infiniband/hw/irdma/verbs.c
+> > > > >  create mode 100644 drivers/infiniband/hw/irdma/verbs.h
+> > > > >
+> > > > > diff --git a/drivers/infiniband/hw/irdma/verbs.c
+> > > > > b/drivers/infiniband/hw/irdma/verbs.c
+> > > > > new file mode 100644
+> > > > > index 000000000000..025c21c722e2
+> > > > > --- /dev/null
+> > > > > +++ b/drivers/infiniband/hw/irdma/verbs.c
+> > > > > @@ -0,0 +1,4346 @@
+> > > > > +// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
+> > > > > +/* Copyright (c) 2019, Intel Corporation. */
 > > > >
-> > > > Can you simply delete old one and add MODULE_ALIAS() in new
-> > > > driver?
+> > > > <...>
+> > > >
+> > > > > +
+> > > > > +	size = sqdepth * sizeof(struct irdma_sq_uk_wr_trk_info) +
+> > > > > +	       (rqdepth << 3);
+> > > > > +	iwqp->kqp.wrid_mem = kzalloc(size, GFP_KERNEL);
+> > > > > +	if (!iwqp->kqp.wrid_mem)
+> > > > > +		return -ENOMEM;
+> > > > > +
+> > > > > +	ukinfo->sq_wrtrk_array = (struct irdma_sq_uk_wr_trk_info *)
+> > > > > +				 iwqp->kqp.wrid_mem;
+> > > > > +	if (!ukinfo->sq_wrtrk_array)
+> > > > > +		return -ENOMEM;
+> > > >
+> > > > You are leaking resources here, forgot to do proper error unwinding.
 > > > >
 > > >
-> > > Yes, but we thought typically driver has to be deprecated for a few
-> > > cycles before removing it.
+> > > irdma_free_qp_rsrc() will free up that memory in case of an error.
 > >
-> > If you completely replace it with something that works the same, why
-> > keep the old one around at all?
+> > I'm talking about kqp.wrid_mem you allocated a couple of lines above and didn't
+> > free in case of sq_wrtrk_array allocation failed.
 > >
-> > Unless you don't trust your new code?  :)
->
-> I have yet to see, in over 20 years of kernel experience, a new driver
-> replace an old driver and not initially be more buggy and troublesome
-> than the old driver.  It takes time and real world usage for the final
-> issues to get sorted out.  During that time, the fallback is often
-> necessary for those real world users.
+> Yes, I am referring to kqp.wrid_mem as well
+> In case of err, all memory resources setup for
+> the QP is freed in the common utility irdma_free_qp_rsrc()
+> including the kqp.wrid_mem.
 
-How many real users exist in RDMA world who run pure upstream kernel?
+I see it as an anti-pattern, you have function to setup and it shouldn't
+return half initialized state and rely on some other function to clean
+the mess.
+
+Current code is written in a way that makes very hard to check for
+unwinding errors.
 
 Thanks
-
->
-> --
-> Doug Ledford <dledford@redhat.com>
->     GPG KeyID: B826A3330E572FDD
->     Fingerprint = AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
-
