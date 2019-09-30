@@ -2,37 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5031CC2ABA
+	by mail.lfdr.de (Postfix) with ESMTP id B9DBDC2ABB
 	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 01:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731960AbfI3XRd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Sep 2019 19:17:33 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:34562 "EHLO
+        id S1731968AbfI3XRe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Sep 2019 19:17:34 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:34565 "EHLO
         mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731852AbfI3XRc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Sep 2019 19:17:32 -0400
-Received: by mail-pg1-f193.google.com with SMTP id y35so8263485pgl.1
-        for <linux-rdma@vger.kernel.org>; Mon, 30 Sep 2019 16:17:32 -0700 (PDT)
+        with ESMTP id S1731852AbfI3XRe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Sep 2019 19:17:34 -0400
+Received: by mail-pg1-f193.google.com with SMTP id y35so8263521pgl.1
+        for <linux-rdma@vger.kernel.org>; Mon, 30 Sep 2019 16:17:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LeCtAwbRRdyPPNVebY8Q0aEvrjvJ6tMNcrmSbGUu0bw=;
-        b=c42UF1cA06hzwEGsOR6oYS3aP+tFOBki82fC+y59yb/43yBMsNB2FC4163vVVD90g7
-         Iy27Hy+JyRq4c++TY6Hs2Nvt5EjvTdUACf/jzqJ8tUKak9mcmUEe3KnTRRJMQ7DfPfHA
-         rvDqWz4HLx3N2HDXKQAUEuYFLclAF38yPMke3GZMsUh93dvfQHIFlUKrpSbKu+ct8Op2
-         e81dEX6rhoQVHOBlOFD/d84QgTI4L49DCnteSs/wd8Un4QHKLmXuLIeWhY+C+LRM8BnW
-         BW2msodSHShePGNP82LMZB/lnW4IU7TMm7X8qefUgHaDWozxFEirFKR8Whu96MlexXpq
-         btOA==
-X-Gm-Message-State: APjAAAU79GQBH5+z7JpnhVyjPchHS2C9ONIIR1zFvCRUn6ow1F9k2Qjf
-        /GD04kfg/8jz79xNIhnYD/8=
-X-Google-Smtp-Source: APXvYqxOp7KwP/KgURdTIwky+Mt00O/azIij69OyBMQ5qPiiPpgLehDHR8AR+9vF6y0qxZng6Vqx+g==
-X-Received: by 2002:a17:90a:65c8:: with SMTP id i8mr1906599pjs.51.1569885452171;
-        Mon, 30 Sep 2019 16:17:32 -0700 (PDT)
+        bh=eGtTfGcD29RzTaSchvjdg6mH4L5jyhUU8qp7VAgaELI=;
+        b=AdPfdHQ1zCNN11aq5vS3+ueLqB3vFB/hz9u2Gj+tpfxyli4NOWjsRWed9a9DMyGObd
+         GVbv3CcibyMCwaO74CKTJajM+HgA3MmMRVDPD72eBGJBl88MI+4E8ioasLEL0RKendGh
+         bEUbwvugL9FMWmMxhYZG0TzBNo2DPjlk/HBx9yeYrNxcntm9sahgNApgCZGCxp4HaVml
+         /gEG6qqhVhoxsCk6S8pfPLtnFuuap70Flxd+uMne37gWAKVG6rLnUqKN/mReOqzV2xT1
+         SO6Y99KresRbZLhqQ9oq9/AqDQpaIMICkiLvVoiQifsUiL9esZNt6zx6xeIRDqVpp2rz
+         cuGg==
+X-Gm-Message-State: APjAAAVvgIcO5yBAB4NaGneOu/JpJiFdUyzZDL3V1PbngOutmJ80Njdv
+        fI1HXy4dz9zXV3Ug8w1y/WY=
+X-Google-Smtp-Source: APXvYqwZfeNYDemKwG8xmGfA1peUGhvsys6cMFRnfnxJUOYz1D1d39mgaK8xq3vlTOVNpeGMX74Lqg==
+X-Received: by 2002:aa7:8436:: with SMTP id q22mr24330861pfn.74.1569885453620;
+        Mon, 30 Sep 2019 16:17:33 -0700 (PDT)
 Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id l7sm585406pjy.12.2019.09.30.16.17.30
+        by smtp.gmail.com with ESMTPSA id l7sm585406pjy.12.2019.09.30.16.17.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Sep 2019 16:17:31 -0700 (PDT)
+        Mon, 30 Sep 2019 16:17:32 -0700 (PDT)
 From:   Bart Van Assche <bvanassche@acm.org>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Leon Romanovsky <leonro@mellanox.com>,
@@ -40,9 +40,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Bart Van Assche <bvanassche@acm.org>,
         Honggang LI <honli@redhat.com>,
         Laurence Oberman <loberman@redhat.com>
-Subject: [PATCH 10/15] RDMA/srpt: Fix handling of iWARP logins
-Date:   Mon, 30 Sep 2019 16:17:02 -0700
-Message-Id: <20190930231707.48259-11-bvanassche@acm.org>
+Subject: [PATCH 11/15] RDMA/srpt: Improve a debug message
+Date:   Mon, 30 Sep 2019 16:17:03 -0700
+Message-Id: <20190930231707.48259-12-bvanassche@acm.org>
 X-Mailer: git-send-email 2.23.0.444.g18eeb5a265-goog
 In-Reply-To: <20190930231707.48259-1-bvanassche@acm.org>
 References: <20190930231707.48259-1-bvanassche@acm.org>
@@ -53,8 +53,9 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The path_rec pointer is NULL set for IB and RoCE logins but not for iWARP
-logins. Hence check the path_rec pointer before dereferencing it.
+The ib_srpt driver uses two different identifiers while registering a
+session with the LIO core. Report both identifiers if the modified
+pr_debug() statement is enabled.
 
 Cc: Honggang LI <honli@redhat.com>
 Cc: Laurence Oberman <loberman@redhat.com>
@@ -64,26 +65,19 @@ Signed-off-by: Bart Van Assche <bvanassche@acm.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-index 4f99a5e040c3..fbfadeedc195 100644
+index fbfadeedc195..dabaea301328 100644
 --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
 +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-@@ -2502,6 +2502,7 @@ static int srpt_rdma_cm_req_recv(struct rdma_cm_id *cm_id,
- 	struct srpt_device *sdev;
- 	struct srp_login_req req;
- 	const struct srp_login_req_rdma *req_rdma;
-+	struct sa_path_rec *path_rec = cm_id->route.path_rec;
- 	char src_addr[40];
+@@ -2293,7 +2293,8 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
+ 			be64_to_cpu(*(__be64 *)nexus->i_port_id),
+ 			be64_to_cpu(*(__be64 *)(nexus->i_port_id + 8)));
  
- 	sdev = ib_get_client_data(cm_id->device, &srpt_client);
-@@ -2527,7 +2528,7 @@ static int srpt_rdma_cm_req_recv(struct rdma_cm_id *cm_id,
- 		 &cm_id->route.addr.src_addr);
+-	pr_debug("registering session %s\n", ch->sess_name);
++	pr_debug("registering src addr %s or i_port_id %s\n", ch->sess_name,
++		 i_port_id);
  
- 	return srpt_cm_req_recv(sdev, NULL, cm_id, cm_id->port_num,
--				cm_id->route.path_rec->pkey, &req, src_addr);
-+				path_rec ? path_rec->pkey : 0, &req, src_addr);
- }
- 
- static void srpt_cm_rej_recv(struct srpt_rdma_ch *ch,
+ 	tag_num = ch->rq_size;
+ 	tag_size = 1; /* ib_srpt does not use se_sess->sess_cmd_map */
 -- 
 2.23.0.444.g18eeb5a265-goog
 
