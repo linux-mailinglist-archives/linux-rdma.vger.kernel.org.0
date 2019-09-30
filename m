@@ -2,45 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9DDC2AB0
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 01:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B549FC2AB2
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 01:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731781AbfI3XRU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Sep 2019 19:17:20 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:38393 "EHLO
+        id S1731806AbfI3XRW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Sep 2019 19:17:22 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:33322 "EHLO
         mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727118AbfI3XRU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Sep 2019 19:17:20 -0400
-Received: by mail-pg1-f194.google.com with SMTP id x10so8243255pgi.5
-        for <linux-rdma@vger.kernel.org>; Mon, 30 Sep 2019 16:17:20 -0700 (PDT)
+        with ESMTP id S1729057AbfI3XRW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Sep 2019 19:17:22 -0400
+Received: by mail-pg1-f194.google.com with SMTP id q1so219118pgb.0;
+        Mon, 30 Sep 2019 16:17:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=r7m6YScsy0R9Q7oVPrZM5vUGUw2WYUyTOdi6FlEBqQ4=;
-        b=AiEO5lF7mIiRMMKWE9Rp3/45+NalyakPXXtCUqqEetM2hndvVT6gc9ji+qrBMICf3+
-         u9z8GWJT4VIB5aQ3t0hKxboAe0LsJN+DbZlLoBg1VjNAOJtY0NtRc4wYv4bwGwC3lKen
-         Kuj2YOfTo2nQHB0ISFN8wbmnA1h7IPtQXe2Omel0avmTdHbrANkAE9+rk9CdqaQN6Ll+
-         1r3APwC5yZwQgJPWvokM/N6s68Qa3w5A97DEp8ervXs6UsdouBKaJwoLyATRhchbSuiS
-         T05bEVniSiB8JZwJWqpoeIGebqLGb9jbFpzXYUzGxwX0WrUbVumsmaKSio2om3reAkmJ
-         F0ag==
-X-Gm-Message-State: APjAAAUh4aAijf8dD3TbexU0hONgC+aeqDuU/0CslhjWKJmtun/+skfY
-        WF53O139jkldwNnwZb6zi+k=
-X-Google-Smtp-Source: APXvYqyixEs8LdmnesVA5hr1pCHE0Q9FxQwgOy9rJ7uh43xIpKQowFOMend5u98X9vFaPkSrUI96tA==
-X-Received: by 2002:a62:1d12:: with SMTP id d18mr24438990pfd.53.1569885439799;
-        Mon, 30 Sep 2019 16:17:19 -0700 (PDT)
+        bh=ocb0Btdcve+bO+wvymS9VkmrTcFGK8V6696tRMbHc+k=;
+        b=BhCKdjvdhTBZ69uqLHX2rGhrP36s1pp3LebDq630hlx5pZd1TJU2aRe3anlZwZiRp/
+         dPE5Qs3uUSvt9BIhLynmIdZR+pcKG3bzSPL96tfKysMZkP9kwMc+rjXh4ToFiNqvT6NC
+         iUGtYjJaiOilU71VexFOrjk5qiBbq9Q2P4XIgLZ3FP6FMG7KhT1eoTkxXuO1GH0aKM11
+         wHUJY0b0Z8MDl7ScLdgRp/XoAAJ8HtsxhgSpRyGhXGN9gsYWdiF+CmNVw0Me5tJGSKSj
+         1q9BYcosEACI0JScPOzFtV+gPDlX0AC9P9frw2XCieCHmFOByFFtVuCrPq8zksVnMdco
+         9+Wg==
+X-Gm-Message-State: APjAAAVy29WaWbqZ+2ptOMnkFdkcoKZKZsLePPDWHUl6tYW81YnCyQj8
+        yul+f2I1mPmEKje7oPzVe9k=
+X-Google-Smtp-Source: APXvYqxqlWVNGWrOUIUEPZcvOX2yzzKdpmHAFcs908qNTdxO1EMIqimea5iYW00BRDuKt2JUsKyy1g==
+X-Received: by 2002:aa7:9104:: with SMTP id 4mr24407619pfh.176.1569885441335;
+        Mon, 30 Sep 2019 16:17:21 -0700 (PDT)
 Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id l7sm585406pjy.12.2019.09.30.16.17.18
+        by smtp.gmail.com with ESMTPSA id l7sm585406pjy.12.2019.09.30.16.17.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Sep 2019 16:17:19 -0700 (PDT)
+        Mon, 30 Sep 2019 16:17:20 -0700 (PDT)
 From:   Bart Van Assche <bvanassche@acm.org>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: [PATCH 01/15] RDMA/ucma: Reduce the number of rdma_destroy_id() calls
-Date:   Mon, 30 Sep 2019 16:16:53 -0700
-Message-Id: <20190930231707.48259-2-bvanassche@acm.org>
+        Bart Van Assche <bvanassche@acm.org>,
+        Or Gerlitz <gerlitz.or@gmail.com>,
+        Steve Wise <larrystevenwise@gmail.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Bernard Metzler <BMT@zurich.ibm.com>,
+        Krishnamraju Eraparaju <krishna2@chelsio.com>,
+        stable@vger.kernel.org
+Subject: [PATCH 02/15] RDMA/iwcm: Fix a lock inversion issue
+Date:   Mon, 30 Sep 2019 16:16:54 -0700
+Message-Id: <20190930231707.48259-3-bvanassche@acm.org>
 X-Mailer: git-send-email 2.23.0.444.g18eeb5a265-goog
 In-Reply-To: <20190930231707.48259-1-bvanassche@acm.org>
 References: <20190930231707.48259-1-bvanassche@acm.org>
@@ -51,65 +57,81 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Instead of calling rdma_destroy_id() after waiting for the context completion
-finished, call rdma_destroy_id() from inside the ucma_put_ctx() function.
-This patch reduces the number of rdma_destroy_id() calls but does not change
-the behavior of this code.
+This patch fixes the lock inversion complaint:
 
+============================================
+WARNING: possible recursive locking detected
+5.3.0-rc7-dbg+ #1 Not tainted
+--------------------------------------------
+kworker/u16:6/171 is trying to acquire lock:
+00000000035c6e6c (&id_priv->handler_mutex){+.+.}, at: rdma_destroy_id+0x78/0x4a0 [rdma_cm]
+
+but task is already holding lock:
+00000000bc7c307d (&id_priv->handler_mutex){+.+.}, at: iw_conn_req_handler+0x151/0x680 [rdma_cm]
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&id_priv->handler_mutex);
+  lock(&id_priv->handler_mutex);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+3 locks held by kworker/u16:6/171:
+ #0: 00000000e2eaa773 ((wq_completion)iw_cm_wq){+.+.}, at: process_one_work+0x472/0xac0
+ #1: 000000001efd357b ((work_completion)(&work->work)#3){+.+.}, at: process_one_work+0x476/0xac0
+ #2: 00000000bc7c307d (&id_priv->handler_mutex){+.+.}, at: iw_conn_req_handler+0x151/0x680 [rdma_cm]
+
+stack backtrace:
+CPU: 3 PID: 171 Comm: kworker/u16:6 Not tainted 5.3.0-rc7-dbg+ #1
+Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
+Workqueue: iw_cm_wq cm_work_handler [iw_cm]
+Call Trace:
+ dump_stack+0x8a/0xd6
+ __lock_acquire.cold+0xe1/0x24d
+ lock_acquire+0x106/0x240
+ __mutex_lock+0x12e/0xcb0
+ mutex_lock_nested+0x1f/0x30
+ rdma_destroy_id+0x78/0x4a0 [rdma_cm]
+ iw_conn_req_handler+0x5c9/0x680 [rdma_cm]
+ cm_work_handler+0xe62/0x1100 [iw_cm]
+ process_one_work+0x56d/0xac0
+ worker_thread+0x7a/0x5d0
+ kthread+0x1bc/0x210
+ ret_from_fork+0x24/0x30
+
+Cc: Or Gerlitz <gerlitz.or@gmail.com>
+Cc: Steve Wise <larrystevenwise@gmail.com>
+Cc: Sagi Grimberg <sagi@grimberg.me>
+Cc: Bernard Metzler <BMT@zurich.ibm.com>
+Cc: Krishnamraju Eraparaju <krishna2@chelsio.com>
+Cc: <stable@vger.kernel.org>
+Fixes: de910bd92137 ("RDMA/cma: Simplify locking needed for serialization of callbacks"; v2.6.27).
 Signed-off-by: Bart Van Assche <bvanassche@acm.org>
 ---
- drivers/infiniband/core/ucma.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/infiniband/core/cma.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-index 0274e9b704be..30c09864fd9e 100644
---- a/drivers/infiniband/core/ucma.c
-+++ b/drivers/infiniband/core/ucma.c
-@@ -160,8 +160,14 @@ static struct ucma_context *ucma_get_ctx(struct ucma_file *file, int id)
- 
- static void ucma_put_ctx(struct ucma_context *ctx)
- {
--	if (atomic_dec_and_test(&ctx->ref))
--		complete(&ctx->comp);
-+	if (!atomic_dec_and_test(&ctx->ref))
-+		return;
-+	/*
-+	 * rdma_destroy_id() ensures that no event handlers are inflight
-+	 * for that id before releasing it.
-+	 */
-+	rdma_destroy_id(ctx->cm_id);
-+	complete(&ctx->comp);
- }
- 
- /*
-@@ -199,8 +205,6 @@ static void ucma_close_id(struct work_struct *work)
- 	 */
- 	ucma_put_ctx(ctx);
- 	wait_for_completion(&ctx->comp);
--	/* No new events will be generated after destroying the id. */
--	rdma_destroy_id(ctx->cm_id);
- }
- 
- static struct ucma_context *ucma_alloc_ctx(struct ucma_file *file)
-@@ -628,7 +632,6 @@ static ssize_t ucma_destroy_id(struct ucma_file *file, const char __user *inbuf,
- 		xa_unlock(&ctx_table);
- 		ucma_put_ctx(ctx);
- 		wait_for_completion(&ctx->comp);
--		rdma_destroy_id(ctx->cm_id);
- 	} else {
- 		xa_unlock(&ctx_table);
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 0e3cf3461999..d78f67623f24 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -2396,9 +2396,10 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
+ 		conn_id->cm_id.iw = NULL;
+ 		cma_exch(conn_id, RDMA_CM_DESTROYING);
+ 		mutex_unlock(&conn_id->handler_mutex);
++		mutex_unlock(&listen_id->handler_mutex);
+ 		cma_deref_id(conn_id);
+ 		rdma_destroy_id(&conn_id->id);
+-		goto out;
++		return ret;
  	}
-@@ -1756,10 +1759,6 @@ static int ucma_close(struct inode *inode, struct file *filp)
- 			xa_unlock(&ctx_table);
- 			ucma_put_ctx(ctx);
- 			wait_for_completion(&ctx->comp);
--			/* rdma_destroy_id ensures that no event handlers are
--			 * inflight for that id before releasing it.
--			 */
--			rdma_destroy_id(ctx->cm_id);
- 		} else {
- 			xa_unlock(&ctx_table);
- 		}
+ 
+ 	mutex_unlock(&conn_id->handler_mutex);
 -- 
 2.23.0.444.g18eeb5a265-goog
 
