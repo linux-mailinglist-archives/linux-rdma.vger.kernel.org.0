@@ -2,103 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 682C3C249E
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Sep 2019 17:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6FDC251D
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Sep 2019 18:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731967AbfI3PqT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Sep 2019 11:46:19 -0400
-Received: from mga17.intel.com ([192.55.52.151]:14565 "EHLO mga17.intel.com"
+        id S1732145AbfI3Q3J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Sep 2019 12:29:09 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:50122 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731865AbfI3PqT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 30 Sep 2019 11:46:19 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 30 Sep 2019 08:46:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,567,1559545200"; 
-   d="asc'?scan'208";a="181394397"
-Received: from jtkirshe-desk1.jf.intel.com ([134.134.177.96])
-  by orsmga007.jf.intel.com with ESMTP; 30 Sep 2019 08:46:18 -0700
-Message-ID: <30473f53cd3bc46f87c4fe87587acaf0aa90741f.camel@intel.com>
-Subject: Re: [RFC 00/20] Intel RDMA/IDC Driver series
-From:   Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Reply-To: jeffrey.t.kirsher@intel.com
-To:     Or Gerlitz <gerlitz.or@gmail.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Date:   Mon, 30 Sep 2019 08:46:18 -0700
-In-Reply-To: <CAJ3xEMgJrj3JT-NS7xf8cpAWrQzDi-UAQ0f8S1rsk9Mv7jCsgA@mail.gmail.com>
-References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
-         <CAJ3xEMgJrj3JT-NS7xf8cpAWrQzDi-UAQ0f8S1rsk9Mv7jCsgA@mail.gmail.com>
-Organization: Intel
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-kuaUc1E86xtWAwuFki4g"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1732056AbfI3Q3I (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 30 Sep 2019 12:29:08 -0400
+Received: from zn.tnic (p200300EC2F058B00329C23FFFEA6A903.dip0.t-ipconnect.de [IPv6:2003:ec:2f05:8b00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C36C71EC05A1;
+        Mon, 30 Sep 2019 18:29:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1569860946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=jzkAFLaCHV29m/fJWef9IzITfqS1NsfHIWmyf8nzRCA=;
+        b=NwVORxvgEnskxgL1hwnDSn7+uvAKGAHnEyl/4bKR9rA40iT/66FCEoXBNC/v06rwEkzJ7W
+        raUj6GsQz4BDeSHoexc9g+vzLtMR8MKPasfbleksFjNT0jXulw5du2jg9kqoPX07vxnCA4
+        jAjRFl5AhGzlHzMbWO7OFXjJShxZNJw=
+Date:   Mon, 30 Sep 2019 18:29:10 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michal Kubecek <mkubecek@suse.cz>
+Cc:     linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: ERROR: "__umoddi3"
+ [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] undefined!
+Message-ID: <20190930162910.GI29694@zn.tnic>
+References: <20190930141316.GG29694@zn.tnic>
+ <20190930154535.GC22120@unicorn.suse.cz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20190930154535.GC22120@unicorn.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Sep 30, 2019 at 05:45:35PM +0200, Michal Kubecek wrote:
+> On Mon, Sep 30, 2019 at 04:13:17PM +0200, Borislav Petkov wrote:
+> > I'm seeing this on i386 allyesconfig builds of current Linus master:
+> > 
+> > ERROR: "__umoddi3" [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] undefined!
+> > make[1]: *** [__modpost] Error 1
+> > make: *** [modules] Error 2
+> 
+> This is usually result of dividing (or modulo) by a 64-bit integer. Can
+> you identify where (file and line number) is the __umoddi3() call
+> generated?
 
---=-kuaUc1E86xtWAwuFki4g
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Did another 32-bit allyesconfig build. It said:
 
-On Sun, 2019-09-29 at 12:28 +0300, Or Gerlitz wrote:
-> On Thu, Sep 26, 2019 at 7:46 PM Jeff Kirsher
-> <jeffrey.t.kirsher@intel.com> wrote:
-> > This series is sent out as an RFC to verify that our implementation
-> > of
-> > the MFD subsystem is correct to facilitate inner driver
-> > communication
-> > (IDC) between the new "irdma" driver to support Intel's ice and
-> > i40e
-> > drivers.
-> >=20
-> > The changes contain the modified ice and i40e driver changes using
-> > the
-> > MFD subsystem.  It also contains the new irdma driver which is
-> > replacing
-> > the i40iw driver and supports both the i40e and ice drivers.
->=20
-> Hi Jeff,
->=20
-> Can this be fetched from somewhere? didn't see a related branch at
-> your trees with these bits..
+ld: drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.o: in function `mlx5dr_icm_alloc_chunk':
+dr_icm_pool.c:(.text+0x733): undefined reference to `__umoddi3'
+make: *** [vmlinux] Error 1
 
-I can make these patches available, I had not pushed them to my tree
-because they were RFC.
+The .s file then points to the exact location:
 
-I will push these series of patches to the "rdma" branch of my next-
-queue git tree on kernel.org.
+# drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c:140:   align_diff = icm_mr->icm_start_addr % align_base;
+        pushl   %ebx    # align_base
+        pushl   %ecx    # align_base
+        call    __umoddi3       #
+        popl    %edx    #
+        popl    %ecx    #
 
---=-kuaUc1E86xtWAwuFki4g
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+HTH.
 
------BEGIN PGP SIGNATURE-----
+-- 
+Regards/Gruss,
+    Boris.
 
-iQIzBAABCAAdFiEEiTyZWz+nnTrOJ1LZ5W/vlVpL7c4FAl2SI0oACgkQ5W/vlVpL
-7c7Pmg//ZbsdLzhA4yeSv9dRD6dv7fvY61TBrWVOqp4C/Qt9N7Zz6081k3H8EIdW
-NJ4ErvTEUYjJqooondLy42oD31mXr8eY6KRy7p1GnKlqswnV7MRI5Zzx32RD0tD0
-Peizjkl+CSZix7o0JRSnqcHXkHn0RzMKFw5/Xolt2Mu4sFI8wpsknA64mXaaqv6Y
-4v3TZiwNmo5S+nnY4IrbqSAW4prOhjlyzYihqx0teQ7vhbRaSydlXME+qMC2qi7V
-RXVYvBGecJ5gWlHS29B6vzLOADP2+RNXWSyxMtfp3t56Da8yCXYa29EN5OQLo1p1
-7Q1waCbHLg4nF/kRHmxBf1ikFzabLFOMIs3PJxUT7PfhE6/5A8UGAuO7B49ausQC
-LW0SMmevu5zlQNY9dDp6Q6zRdq7z518RQcNuuwLz8523hzLBhcWB+IrHZwsrrNCd
-/dVysFu0OToXyz8apljK1dnILNss3TomP1qIC5zm0T4m6Q8Tp4+I7pI3i7dY0DnF
-Mm0qLy6APjC/SR13yjmuQwBr8Q95hgaoYKXmG929CIYoI5qX2FH4pve8aRNesWJU
-tM2NkjTTtBQEbGkJ/l+9rZDgHqp8LfgNH49wQEBZFl5CEjJ2BaP58guCw0+wufSd
-NRn5ay/u+lbGCKxyX1sQ8CZc+jsXz4oqa5bdiY2Ifyap+2MmV0w=
-=OHFM
------END PGP SIGNATURE-----
-
---=-kuaUc1E86xtWAwuFki4g--
-
+https://people.kernel.org/tglx/notes-about-netiquette
