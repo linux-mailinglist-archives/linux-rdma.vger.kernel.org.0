@@ -2,58 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5099C393A
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 17:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B128C393F
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 17:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727299AbfJAPig (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Oct 2019 11:38:36 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:38590 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727246AbfJAPig (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Oct 2019 11:38:36 -0400
-Received: by mail-qk1-f193.google.com with SMTP id u186so11656600qkc.5
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Oct 2019 08:38:36 -0700 (PDT)
+        id S1727372AbfJAPii (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Oct 2019 11:38:38 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:34818 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727246AbfJAPii (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Oct 2019 11:38:38 -0400
+Received: by mail-qt1-f196.google.com with SMTP id m15so22200597qtq.2
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Oct 2019 08:38:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p462bBu3FLp7h99bhn7hlf1550lKI8QVbiyabIvmL8s=;
-        b=GC+jISPJiApirnCQHb4hocNDB50/YNDD/bhsMoT0KdJ1CkJyMYoStp3RXqJQZtiNp1
-         rXv7rYq7R5k0dnOgW89FMa5+SBCMpMkBWorJ4xabpvUlTlBH7vqVPjGPDuv4kQfqzOg0
-         df0GoYafMJAgeRQHH/uw+ckAw1ugVOfc0qeEEUdkzxg+kNXo9/DkBtzKKhhbPnm7tcfg
-         8Ac8B46wjKUvIeyx000OF+bSs3EPKUWXm3pqL4jM2a3e1iIUj4RUYJ0+iaz3xM+zhR5a
-         nxbjXryMNc+gnujnAb3FrdD4VNT5Ru7hBX0NdmYkB3U4s3MizUgzX+lva3zQN1B44KYv
-         LD4g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=M8TytSI9W0EaNiTDJIBpTTQUheltq6fvtn/bWPVhJh0=;
+        b=CUOnmnmRrfKeY+HsmVV4VVhxeYuNximkEJE5jSrM9tqwXpfiavH3PngsSBmgcjgyX5
+         p67h75WBmrfgWWO1sLmIvW93iONURYVqUgJhbPH7l/Ag4+JmomYBXz8kou5b7faYszpj
+         TK8JYyT+BQG3kbfWa6KgZ5QuZ1ja2w6lhOry7eJEJ/HSwKS9NdLY3UMKEE9VLU0ZImKS
+         D1ilq98f/zWf1BIKCcGBERvJwfxT0EzX81H9SGq54rccgv7axkht9/zCXedWtn4vG5KG
+         yI+Zjl+wTmfn75vHNk/8cT+a8YghI+Mt3VCxZWcEyGMNnWWvPKnYjt7Q/IXS0oT/FZ3K
+         Dvsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p462bBu3FLp7h99bhn7hlf1550lKI8QVbiyabIvmL8s=;
-        b=kv62bMWiBc8YgBRVrMGaJiNneFWAWePvASsLC8LGWL0oERX1AXrbT3o8TTx96PAZIh
-         9xxtlEIQhjVW52EyNFN8c3ERCpMo/tMDuyAADqid9mWR8U4qdAG+8toWDpHsoW9wyekk
-         YAyZapo0hqRAKOGGzDO4KR530y++cXf61lhOUA2vHvqvH4yKTBcG5xJjkbAQF2IyvLdW
-         IWVpQI9OlzRZR0ibFNvEy6dnH3oRpfe+P8T3MaK5N8JWXklJqbuV9xJ/EQEqrtEeLRPk
-         JplnBxVEeuViI2p6Hs3hNW6rA4iOkFdSYVNXkRviIJN2DHRfP/J36R8DhiVf0L7hgQ1Q
-         WEcQ==
-X-Gm-Message-State: APjAAAU84w1Ycpxv78Nj5dmNDxBqE6bzN/7kv6g0jjj7Y25Dii6FIMOB
-        x7i0w1OXLfNhhchIzVU0wXhMHhjSpXI=
-X-Google-Smtp-Source: APXvYqxadej/LIVqPeuu3ZKcEpo03tAQSKJPLkcHSQXEmHlrvHa5n6MBSJcyMoNAAfGYm0Z2fqqbkw==
-X-Received: by 2002:a37:dcc7:: with SMTP id v190mr6667129qki.125.1569944315253;
-        Tue, 01 Oct 2019 08:38:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=M8TytSI9W0EaNiTDJIBpTTQUheltq6fvtn/bWPVhJh0=;
+        b=p6jMFo6HQ/FN2SJDLMseIo6OsXWK3QcLV7A2xASXrxq9uwxq7pryIOYQEVLORJc8cS
+         o5NQuBx0p6pLkRoci2d3irlFibdKzV/s/gVbFBNdaQfc/6H//ERW/SBdYzAxqNKFHU9G
+         6W0FLGXTceJ2okw0umLAtoP613Zo8w2AS3OiWXi2qATJjfrSH7gFfKvoULo+6GYBabdN
+         N+Usg3+dJG406Ca1q5B20KR3t2JsuovZvjPjlKEjk4YXXPL+ynNF1kt5EGjHXRaFRoB+
+         OwQR/B89pw/aNcFbhUNurW82bsuAvBGUEvpIRTUjAzWeYZrCmElK80eesmMWFydzaqiL
+         MlPA==
+X-Gm-Message-State: APjAAAUJEj8Wy5h9Z8B3yRYyXgByQXw+ZOcivAenOAy1K0BSspnm56cs
+        G4gLOC8OPweEh9RDy/yFqnoxgF4WKaE=
+X-Google-Smtp-Source: APXvYqzcYNSQxIxUsYDdzrcUalJ9ckmjQ8vaqWqtpx/04voydhrI2uHxOt6U/e//et8okaJjcDxb+w==
+X-Received: by 2002:ac8:2f81:: with SMTP id l1mr31693007qta.269.1569944317534;
+        Tue, 01 Oct 2019 08:38:37 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id q5sm11566507qte.38.2019.10.01.08.38.34
+        by smtp.gmail.com with ESMTPSA id g45sm9073129qtc.9.2019.10.01.08.38.34
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Oct 2019 08:38:34 -0700 (PDT)
+        Tue, 01 Oct 2019 08:38:35 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iFKET-0006ER-VX; Tue, 01 Oct 2019 12:38:33 -0300
+        id 1iFKEU-0006EX-0e; Tue, 01 Oct 2019 12:38:34 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH -rc 0/6] Bug fixes for odp
-Date:   Tue,  1 Oct 2019 12:38:15 -0300
-Message-Id: <20191001153821.23621-1-jgg@ziepe.ca>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Artemy Kovalyov <artemyko@mellanox.com>
+Subject: [PATCH 1/6] RDMA/mlx5: Do not allow rereg of a ODP MR
+Date:   Tue,  1 Oct 2019 12:38:16 -0300
+Message-Id: <20191001153821.23621-2-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20191001153821.23621-1-jgg@ziepe.ca>
+References: <20191001153821.23621-1-jgg@ziepe.ca>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -63,25 +66,48 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-Various assorted bug fixes for the ODP feature closing races and other bad
-locking things we be seeing in the field.
+This code is completely broken, the umem of a ODP MR simply cannot be
+discarded without a lot more locking, nor can an ODP mkey be blithely
+destroyed via destroy_mkey().
 
-Jason Gunthorpe (6):
-  RDMA/mlx5: Do not allow rereg of a ODP MR
-  RDMA/mlx5: Fix a race with mlx5_ib_update_xlt on an implicit MR
-  RDMA/odp: Lift umem_mutex out of ib_umem_odp_unmap_dma_pages()
-  RDMA/mlx5: Order num_pending_prefetch properly with synchronize_srcu
-  RDMA/mlx5: Put live in the correct place for ODP MRs
-  RDMA/mlx5: Add missing synchronize_srcu() for MW cases
+Fixes: 6aec21f6a832 ("IB/mlx5: Page faults handling infrastructure")
+Reviewed-by: Artemy Kovalyov <artemyko@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+ drivers/infiniband/hw/mlx5/mr.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
- drivers/infiniband/core/umem_odp.c           |  6 +-
- drivers/infiniband/hw/mlx5/devx.c            | 58 +++++------------
- drivers/infiniband/hw/mlx5/mlx5_ib.h         |  3 +-
- drivers/infiniband/hw/mlx5/mr.c              | 68 ++++++++------------
- drivers/infiniband/hw/mlx5/odp.c             | 58 +++++++++++++----
- drivers/net/ethernet/mellanox/mlx5/core/mr.c |  8 +--
- 6 files changed, 96 insertions(+), 105 deletions(-)
-
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index 1eff031ef04842..e7f840f306e46a 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1441,6 +1441,9 @@ int mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
+ 	if (!mr->umem)
+ 		return -EINVAL;
+ 
++	if (is_odp_mr(mr))
++		return -EOPNOTSUPP;
++
+ 	if (flags & IB_MR_REREG_TRANS) {
+ 		addr = virt_addr;
+ 		len = length;
+@@ -1486,8 +1489,6 @@ int mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
+ 		}
+ 
+ 		mr->allocated_from_cache = 0;
+-		if (IS_ENABLED(CONFIG_INFINIBAND_ON_DEMAND_PAGING))
+-			mr->live = 1;
+ 	} else {
+ 		/*
+ 		 * Send a UMR WQE
+@@ -1516,7 +1517,6 @@ int mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
+ 
+ 	set_mr_fields(dev, mr, npages, len, access_flags);
+ 
+-	update_odp_mr(mr);
+ 	return 0;
+ 
+ err:
 -- 
 2.23.0
 
