@@ -2,220 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E7BC33DD
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 14:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02853C3664
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 15:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732921AbfJAMIb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 1 Oct 2019 08:08:31 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23708 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725821AbfJAMIa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Oct 2019 08:08:30 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x91C6drx107884
-        for <linux-rdma@vger.kernel.org>; Tue, 1 Oct 2019 08:08:29 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.91])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2vc63s8y96-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Oct 2019 08:08:29 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Tue, 1 Oct 2019 12:08:28 -0000
-Received: from us1a3-smtp07.a3.dal06.isc4sb.com (10.146.103.14)
-        by smtp.notes.na.collabserv.com (10.106.227.143) with smtp.notes.na.collabserv.com ESMTP;
-        Tue, 1 Oct 2019 12:08:23 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp07.a3.dal06.isc4sb.com
-          with ESMTP id 2019100112082271-436537 ;
-          Tue, 1 Oct 2019 12:08:22 +0000 
-In-Reply-To: <2b0ae7d3-0dc9-94c0-0092-e32fb2c9cb45@acm.org>
-Subject: Re: BUG: KASAN: use-after-free in siw_qp_put_ref
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Bart Van Assche" <bvanassche@acm.org>
-Cc:     "linux-rdma" <linux-rdma@vger.kernel.org>,
-        "Krishnamraju Eraparaju" <krishna2@chelsio.com>
-Date:   Tue, 1 Oct 2019 12:08:23 +0000
+        id S2388767AbfJANyc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Oct 2019 09:54:32 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:38903 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbfJANyc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Oct 2019 09:54:32 -0400
+Received: by mail-qt1-f195.google.com with SMTP id j31so21692063qta.5
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Oct 2019 06:54:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BlIRQGk1pr2xNfAlAuq52KNMvxNuXtY13udgYZxJPDQ=;
+        b=XE4xuttdIhnl4u6Y/iBs62HmAUIyp5ru9LZU1lct2oxegtgkMkl71CeYp9Ma5bEC2g
+         DMBhfJn99zfMBlmu31T9t1c6CFyP4qfaVYJUlZgeV9bhdcqH9Gz3kVBEZJgsHyAJD24I
+         WKsLDhrE4ZRFwx+pDoBDPSdkUztqcxv+h3341Gp5A1eB2dBGBAG9HwcRNGRGodIlIwR+
+         GHengGUZ5yaQU0PZoDZZzqUT6BXyKgLP4ghrI30HwLRGgG6Bm6cOqdHwBZ4TyJfJo/X8
+         1MXdNeNrnn3nH4w3QbUgdlzppJMJJzUZn15H/DRLa186a7ow9mjrmYBtn9E2lmQMpYu5
+         ZOsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BlIRQGk1pr2xNfAlAuq52KNMvxNuXtY13udgYZxJPDQ=;
+        b=HHwSl2+UemI3klwQiI97lcF58gEQIyWn69i2uLE8VXo3GC0LaiIjxKi6Av1l9IpHoa
+         jgP0uWYTTtdmsMDkFbcBuImy0bxsH4E4QvUkFjjiX9/jQ5YuHz71MdifksYe1ezIKdmg
+         N27iYtMzqroFgavEYyt4hTUcQ8W4f3Lu6dGNXB4jWcpE5RqL2EG8WWswz21viUG58tzb
+         lC4d5/zjW4eHWolIKZjNG0J6lEZgLHhXkdFYfOA+09Y8kN0KMphC3ZGn51gV6wqx85Gk
+         MakwYORSAIPrgnFgPXb1HJ+sKImuU5gWzhiRSPDoQNde7rpS+3zNELSHZpYjnN43TtnO
+         weQw==
+X-Gm-Message-State: APjAAAX7IM2ChRiEW/xa/QwDfZMjWLAwtJxofAfLVYW7g7Aidbg78zAA
+        NbEE8Kir6iT7A0SYFo+TUIOZRg==
+X-Google-Smtp-Source: APXvYqzcSPa2CE4T3TD0U+DLWNizMhHBjoacjTw0iHRjOVAb0codaIbWWfjADA/A776+fzV4c/ZGMg==
+X-Received: by 2002:aed:2726:: with SMTP id n35mr29910659qtd.171.1569938071033;
+        Tue, 01 Oct 2019 06:54:31 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id c41sm13595334qte.8.2019.10.01.06.54.30
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 01 Oct 2019 06:54:30 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iFIbm-00073R-5P; Tue, 01 Oct 2019 10:54:30 -0300
+Date:   Tue, 1 Oct 2019 10:54:30 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Navid Emamdoost <navid.emamdoost@gmail.com>
+Cc:     leon@kernel.org, emamd001@umn.edu, smccaman@umn.edu, kjlu@umn.edu,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] RDMA: release allocated skb
+Message-ID: <20191001135430.GA27086@ziepe.ca>
+References: <20190923050823.GL14368@unreal>
+ <20190923155300.20407-1-navid.emamdoost@gmail.com>
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <2b0ae7d3-0dc9-94c0-0092-e32fb2c9cb45@acm.org>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
-X-LLNOutbound: False
-X-Disclaimed: 20567
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19100112-2475-0000-0000-000000D51F21
-X-IBM-SpamModules-Scores: BY=0.229859; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.013010
-X-IBM-SpamModules-Versions: BY=3.00011870; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000292; SDB=6.01269155; UDB=6.00671691; IPR=6.01051181;
- MB=3.00028898; MTD=3.00000008; XFM=3.00000015; UTC=2019-10-01 12:08:26
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-10-01 11:46:59 - 6.00010474
-x-cbparentid: 19100112-2476-0000-0000-00002D39579B
-Message-Id: <OF0B426945.C9BEAB54-ON00258486.00410759-00258486.0042AF87@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-01_06:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190923155300.20407-1-navid.emamdoost@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Bart Van Assche" <bvanassche@acm.org> wrote: -----
+On Mon, Sep 23, 2019 at 10:52:59AM -0500, Navid Emamdoost wrote:
+> In create_cq, the allocated skb buffer needs to be released on error
+> path.
+> Moved the kfree_skb(skb) under err4 label.
 
->To: "Bernard Metzler" <BMT@zurich.ibm.com>, "linux-rdma"
-><linux-rdma@vger.kernel.org>
->From: "Bart Van Assche" <bvanassche@acm.org>
->Date: 10/01/2019 12:49AM
->Subject: [EXTERNAL] BUG: KASAN: use-after-free in siw_qp_put_ref
->
->Hi Bernard,
->
->The complaint shown below was reported while I was running blktests 
->after having configured the siw driver. I'm not sure whether this is
->an 
->NVMe driver or siw driver bug. So far I have encountered this
->complaint 
->only with the siw driver but not yet with the rdma_rxe driver.
->
->Bart.
+This didn't move anything
+ 
+> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+>  drivers/infiniband/hw/cxgb4/cq.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
+> index b1bb61c65f4f..1886c1af10bc 100644
+> +++ b/drivers/infiniband/hw/cxgb4/cq.c
+> @@ -173,6 +173,7 @@ static int create_cq(struct c4iw_rdev *rdev, struct t4_cq *cq,
+>  err4:
+>  	dma_free_coherent(&rdev->lldi.pdev->dev, cq->memsize, cq->queue,
+>  			  dma_unmap_addr(cq, mapping));
+> +	kfree_skb(skb);
+>  err3:
+>  	kfree(cq->sw_queue);
+>  err2:
 
-Hi Bart,
+This looks wrong to me:
 
-Many thanks for finding this. I expect this to be an siw issue.
-Related/caused by the issue Krishna (on CC) reported recently.
-siw provides specific drain functions for ib_drain_sq() and
-ib_drain_rq(), but does not adhere to its intended semantics
-- waiting until the SQ/RQ is completely drained to the CQ and
-its completions are consumed by the application.
+int c4iw_ofld_send(struct c4iw_rdev *rdev, struct sk_buff *skb)
+{
+	int	error = 0;
 
-I see the NVME host calling nvme_rdma_teardown_io_queues()->
-nvme_rdma_stop_io_queues()->nvme_rdma_stop_queue()->
-__nvme_rdma_stop_queue->ib_drain_qp() , which calls
-the driver specific drain routines. 
+	if (c4iw_fatal_error(rdev)) {
+		kfree_skb(skb);
+		pr_err("%s - device in error state - dropping\n", __func__);
+		return -EIO;
+	}
+	error = cxgb4_ofld_send(rdev->lldi.ports[0], skb);
+	if (error < 0)
+		kfree_skb(skb);
+	return error < 0 ? error : 0;
+}
 
-So let's fix that.
-
-Thanks
-Bernard.
-
->
->==================================================================
->BUG: KASAN: use-after-free in siw_qp_put_ref+0x19/0x40 [siw]
->Read of size 8 at addr ffff8881024fe490 by task check/9926
->
->CPU: 1 PID: 9926 Comm: check Not tainted 5.4.0-rc1-dbg+ #13
->Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 
->04/01/2014
->Call Trace:
->  dump_stack+0x86/0xca
->  print_address_description.constprop.7+0x40/0x60
->  __kasan_report.cold.10+0x1b/0x39
->  kasan_report+0x12/0x20
->  __asan_load8+0x54/0x90
->  siw_qp_put_ref+0x19/0x40 [siw]
->  destroy_cm_id+0x181/0x330 [iw_cm]
->  iw_destroy_cm_id+0xe/0x10 [iw_cm]
->  rdma_destroy_id+0x3ee/0x460 [rdma_cm]
->  nvme_rdma_free_queue+0x3e/0x50 [nvme_rdma]
->  nvme_rdma_destroy_io_queues+0x55/0xb0 [nvme_rdma]
->  nvme_rdma_teardown_io_queues.part.32+0xca/0xe0 [nvme_rdma]
->  nvme_rdma_shutdown_ctrl+0x50/0xa0 [nvme_rdma]
->  nvme_rdma_delete_ctrl+0x1a/0x20 [nvme_rdma]
->  nvme_do_delete_ctrl+0x97/0xe1 [nvme_core]
->  nvme_sysfs_delete.cold.95+0x8/0xd [nvme_core]
->  dev_attr_store+0x3c/0x50
->  sysfs_kf_write+0x87/0xa0
->  kernfs_fop_write+0x186/0x240
->  __vfs_write+0x4d/0x90
->  vfs_write+0xfa/0x290
->  ksys_write+0xc3/0x160
->  __x64_sys_write+0x43/0x50
->  do_syscall_64+0x6b/0x2d0
->  entry_SYSCALL_64_after_hwframe+0x49/0xbe
->RIP: 0033:0x7f99db297024
->Code: 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b3 0f 1f 80 00 00 00
->00 
->48 8d 05 b9 d3 0d 00 8b 00 85 c0 75 13 b8 01 00 00 00 0f 05 <48> 3d
->00 
->f0 ff ff 77 54 c3 0f 1f 00 41 54 49 89 d4 55 48 89 f5 53
->RSP: 002b:00007ffe02f8b228 EFLAGS: 00000246 ORIG_RAX:
->0000000000000001
->RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f99db297024
->RDX: 0000000000000002 RSI: 00005615bb94ad80 RDI: 0000000000000001
->RBP: 00005615bb94ad80 R08: 000000000000000a R09: 00000000ffffffff
->R10: 000000000000000a R11: 0000000000000246 R12: 00007f99db36f760
->R13: 0000000000000002 R14: 00007f99db370560 R15: 00007f99db36f960
->
->Allocated by task 6360:
->  save_stack+0x21/0x90
->  __kasan_kmalloc.constprop.9+0xc7/0xd0
->  kasan_kmalloc+0x9/0x10
->  kmem_cache_alloc_trace+0x15a/0x3a0
->  siw_create_qp+0x206/0xe10 [siw]
->  ib_create_qp_user+0x11e/0x710 [ib_core]
->  rdma_create_qp+0x6c/0x140 [rdma_cm]
->  nvme_rdma_create_qp.constprop.58+0x130/0x180 [nvme_rdma]
->  nvme_rdma_cm_handler+0x716/0xdb0 [nvme_rdma]
->  addr_handler+0x181/0x2c0 [rdma_cm]
->  process_one_req+0x8c/0x280 [ib_core]
->  process_one_work+0x51a/0xa60
->  worker_thread+0x67/0x5b0
->  kthread+0x1dc/0x200
->  ret_from_fork+0x24/0x30
->
->Freed by task 9926:
->  save_stack+0x21/0x90
->  __kasan_slab_free+0x139/0x190
->  kasan_slab_free+0xe/0x10
->  kfree+0x101/0x3a0
->  siw_destroy_qp+0x1cd/0x290 [siw]
->  ib_destroy_qp_user+0x155/0x380 [ib_core]
->  nvme_rdma_destroy_queue_ib+0x78/0xe0 [nvme_rdma]
->  nvme_rdma_free_queue+0x2c/0x50 [nvme_rdma]
->  nvme_rdma_destroy_io_queues+0x55/0xb0 [nvme_rdma]
->  nvme_rdma_teardown_io_queues.part.32+0xca/0xe0 [nvme_rdma]
->  nvme_rdma_shutdown_ctrl+0x50/0xa0 [nvme_rdma]
->  nvme_rdma_delete_ctrl+0x1a/0x20 [nvme_rdma]
->  nvme_do_delete_ctrl+0x97/0xe1 [nvme_core]
->  nvme_sysfs_delete.cold.95+0x8/0xd [nvme_core]
->  dev_attr_store+0x3c/0x50
->  sysfs_kf_write+0x87/0xa0
->  kernfs_fop_write+0x186/0x240
->  __vfs_write+0x4d/0x90
->  vfs_write+0xfa/0x290
->  ksys_write+0xc3/0x160
->  __x64_sys_write+0x43/0x50
->  do_syscall_64+0x6b/0x2d0
->  entry_SYSCALL_64_after_hwframe+0x49/0xbe
->
->The buggy address belongs to the object at ffff8881024fe300
->  which belongs to the cache kmalloc-512 of size 512
->The buggy address is located 400 bytes inside of
->  512-byte region [ffff8881024fe300, ffff8881024fe500)
->The buggy address belongs to the page:
->page:ffffea0004093f00 refcount:1 mapcount:0 mapping:ffff88811a80e580 
->index:0xffff8881024fd680 compound_mapcount: 0
->flags: 0x2fff000000010200(slab|head)
->raw: 2fff000000010200 ffffea000406a300 0000000400000004
->ffff88811a80e580
->raw: ffff8881024fd680 0000000080190018 00000001ffffffff
->0000000000000000
->page dumped because: kasan: bad access detected
->
->Memory state around the buggy address:
->  ffff8881024fe380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->  ffff8881024fe400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >ffff8881024fe480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                          ^
->  ffff8881024fe500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->  ffff8881024fe580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->==================================================================
->
->
-
+Jason
