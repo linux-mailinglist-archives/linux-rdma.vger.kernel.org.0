@@ -2,84 +2,160 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB1AC38B0
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 17:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E01C38B9
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 17:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389508AbfJAPOm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Oct 2019 11:14:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42270 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389129AbfJAPOm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 1 Oct 2019 11:14:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 71301AFC6;
-        Tue,  1 Oct 2019 15:14:40 +0000 (UTC)
-Received: by unicorn.suse.cz (Postfix, from userid 1000)
-        id E9E8FE0083; Tue,  1 Oct 2019 17:14:39 +0200 (CEST)
-Date:   Tue, 1 Oct 2019 17:14:39 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     netdev@vger.kernel.org
-Cc:     Borislav Petkov <bp@alien8.de>, Alex Vesker <valex@mellanox.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: ERROR: "__umoddi3"
- [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] undefined!
-Message-ID: <20191001151439.GA24815@unicorn.suse.cz>
-References: <20190930141316.GG29694@zn.tnic>
- <20190930154535.GC22120@unicorn.suse.cz>
- <20190930162910.GI29694@zn.tnic>
- <20190930095516.0f55513a@hermes.lan>
- <20190930184031.GJ29694@zn.tnic>
+        id S2389372AbfJAPRS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Oct 2019 11:17:18 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:41935 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389175AbfJAPRS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Oct 2019 11:17:18 -0400
+Received: by mail-qt1-f196.google.com with SMTP id d16so1465005qtq.8
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Oct 2019 08:17:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=r+FO2BI995eRmLYxxh49xnSc2i73sE6cqi4HJnCrGKE=;
+        b=a7T8s9l1nzbmcfBIGUKFO0/p3IZD8mNTu/GfelBMWcTOK+aNSJ5rgdzzCyKwysKXkN
+         HNoMtIahnqemYG7VcSPGdirgTBiEjt5if6Cmq/42bQGvbv3nZumRFckU0bMKv0cchzrW
+         jHwLBwQE9STJDn5/S6dAOWF3lvx4QyNFiqvPuR7VwR6VA7eaC5m+b6yzpxa2R5/6x3tZ
+         wJzDCRFjeAppD77+KOTpjk2K/lPhyvRMp1ZOIWmLpumhIJnDIpwZYx+PTnJe1w16pRHs
+         y/V7OivY/CmazNQoi6KEoTrbmc1nZA6WpMX8urcspILcSca/9h9bRxBFMxNUoJSzy+YS
+         tudA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=r+FO2BI995eRmLYxxh49xnSc2i73sE6cqi4HJnCrGKE=;
+        b=d2Hz4vL0f0AGPRHfUeYfrMIpRxK/VnqVKiX2mXYOUT6ogmsEJKmoL42utBhb8bD7ra
+         B1hh+94w6HNCPxUUD8d5DN54ybOZaROhHDpoa8JAWn+fGWBu3vmqSflosFBkDMpgA4xk
+         YCEDgV1Ri0SbuWH0U5h3qWR4CyZA/oZJHQ3d/1yRrMsMWtz/08UyHxt0royy5ZrFS+9w
+         TjNaYFNYi1AGPxL+oBKRBMV3+FcDTlTiXeRqGYDsE7uQu6F/MbMVf5T/FmRT9fiWiPwa
+         SViGyghZtfcZ/C2M8EO7ihuQMVE7SL+b3zrnXCJzv5079FWePwaRQDnwZdgnDhhmDPGe
+         e/vA==
+X-Gm-Message-State: APjAAAUvT/ZrOCmir5KGacXe+R9SRkmFEBmFDXTr5qEq6kDDFO5bzG2E
+        WCDOe1MfyeDp5umlYH2w43VJ+A==
+X-Google-Smtp-Source: APXvYqwB+5whx4p14k8HOKIbO7Xq1eN/HI/koAWy1Z9IZuajIZq9vjGnbrT45Vua7gZUmxHy2+/8Iw==
+X-Received: by 2002:ac8:fb4:: with SMTP id b49mr30108477qtk.203.1569943037101;
+        Tue, 01 Oct 2019 08:17:17 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id o28sm7224194qkk.106.2019.10.01.08.17.16
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 01 Oct 2019 08:17:16 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iFJts-0000N7-4B; Tue, 01 Oct 2019 12:17:16 -0300
+Date:   Tue, 1 Oct 2019 12:17:16 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Or Gerlitz <gerlitz.or@gmail.com>,
+        Steve Wise <larrystevenwise@gmail.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Bernard Metzler <BMT@zurich.ibm.com>,
+        Krishnamraju Eraparaju <krishna2@chelsio.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 02/15] RDMA/iwcm: Fix a lock inversion issue
+Message-ID: <20191001151716.GE22532@ziepe.ca>
+References: <20190930231707.48259-1-bvanassche@acm.org>
+ <20190930231707.48259-3-bvanassche@acm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190930184031.GJ29694@zn.tnic>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190930231707.48259-3-bvanassche@acm.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 30, 2019 at 08:40:31PM +0200, Borislav Petkov wrote:
-> On Mon, Sep 30, 2019 at 09:55:16AM -0700, Stephen Hemminger wrote:
-> > Could also us div_u64_rem here?
+On Mon, Sep 30, 2019 at 04:16:54PM -0700, Bart Van Assche wrote:
+> This patch fixes the lock inversion complaint:
 > 
-> Yah, the below seems to work and the resulting asm looks sensible to me
-> but someone should definitely double-check me as I don't know this code
-> at all.
+> ============================================
+> WARNING: possible recursive locking detected
+> 5.3.0-rc7-dbg+ #1 Not tainted
+> kworker/u16:6/171 is trying to acquire lock:
+> 00000000035c6e6c (&id_priv->handler_mutex){+.+.}, at: rdma_destroy_id+0x78/0x4a0 [rdma_cm]
 > 
-> Thx.
+> but task is already holding lock:
+> 00000000bc7c307d (&id_priv->handler_mutex){+.+.}, at: iw_conn_req_handler+0x151/0x680 [rdma_cm]
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c
-> index 913f1e5aaaf2..b4302658e5f8 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c
-> @@ -137,7 +137,7 @@ dr_icm_pool_mr_create(struct mlx5dr_icm_pool *pool,
->  
->  	icm_mr->icm_start_addr = icm_mr->dm.addr;
->  
-> -	align_diff = icm_mr->icm_start_addr % align_base;
-> +	div_u64_rem(icm_mr->icm_start_addr, align_base, &align_diff);
->  	if (align_diff)
->  		icm_mr->used_length = align_base - align_diff;
->  
+> other info that might help us debug this:
+>  Possible unsafe locking scenario:
 > 
+>        CPU0
+>   lock(&id_priv->handler_mutex);
+>   lock(&id_priv->handler_mutex);
+> 
+>  *** DEADLOCK ***
+> 
+>  May be due to missing lock nesting notation
+> 
+> 3 locks held by kworker/u16:6/171:
+>  #0: 00000000e2eaa773 ((wq_completion)iw_cm_wq){+.+.}, at: process_one_work+0x472/0xac0
+>  #1: 000000001efd357b ((work_completion)(&work->work)#3){+.+.}, at: process_one_work+0x476/0xac0
+>  #2: 00000000bc7c307d (&id_priv->handler_mutex){+.+.}, at: iw_conn_req_handler+0x151/0x680 [rdma_cm]
+> 
+> stack backtrace:
+> CPU: 3 PID: 171 Comm: kworker/u16:6 Not tainted 5.3.0-rc7-dbg+ #1
+> Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
+> Workqueue: iw_cm_wq cm_work_handler [iw_cm]
+> Call Trace:
+>  dump_stack+0x8a/0xd6
+>  __lock_acquire.cold+0xe1/0x24d
+>  lock_acquire+0x106/0x240
+>  __mutex_lock+0x12e/0xcb0
+>  mutex_lock_nested+0x1f/0x30
+>  rdma_destroy_id+0x78/0x4a0 [rdma_cm]
+>  iw_conn_req_handler+0x5c9/0x680 [rdma_cm]
+>  cm_work_handler+0xe62/0x1100 [iw_cm]
+>  process_one_work+0x56d/0xac0
+>  worker_thread+0x7a/0x5d0
+>  kthread+0x1bc/0x210
+>  ret_from_fork+0x24/0x30
+> 
+> Cc: Or Gerlitz <gerlitz.or@gmail.com>
+> Cc: Steve Wise <larrystevenwise@gmail.com>
+> Cc: Sagi Grimberg <sagi@grimberg.me>
+> Cc: Bernard Metzler <BMT@zurich.ibm.com>
+> Cc: Krishnamraju Eraparaju <krishna2@chelsio.com>
+> Cc: <stable@vger.kernel.org>
+> Fixes: de910bd92137 ("RDMA/cma: Simplify locking needed for serialization of callbacks"; v2.6.27).
+> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+>  drivers/infiniband/core/cma.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> index 0e3cf3461999..d78f67623f24 100644
+> +++ b/drivers/infiniband/core/cma.c
+> @@ -2396,9 +2396,10 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
+>  		conn_id->cm_id.iw = NULL;
+>  		cma_exch(conn_id, RDMA_CM_DESTROYING);
+>  		mutex_unlock(&conn_id->handler_mutex);
+> +		mutex_unlock(&listen_id->handler_mutex);
+>  		cma_deref_id(conn_id);
+>  		rdma_destroy_id(&conn_id->id);
+> -		goto out;
+> +		return ret;
+>  	}
 
-While this fixes 32-bit builds, it breaks 64-bit ones as align_diff is
-64-bit and div_u64_rem expects pointer to u32. :-(
+Hurm. Minimizing code under lock is always a good fix, but the lockdep
+report is not a bug.
 
-I checked that align_base is always a power of two so that we could get
-away with
+The issue is caused by the hacky use of SINGLE_DEPTH_NESTING when we
+really have two lock classes, 'listening' and 'connecting' for CM ids.
 
-	align_diff = icm_mr->icm_start_addr & (align_base - 1)
+connecting IDs can be nested under listening IDs but not the other way
+around.
 
-I'm not sure, however, if it's safe to assume align_base will always
-have to be a power of two or if we should add a check for safety.
+So two lock classes will also get rid of the lockdep warning, which is
+why it isn't a bug..
 
-(Cc-ing also author of commit 29cf8febd185 ("net/mlx5: DR, ICM pool
-memory allocator").)
+Applied to for-rc
 
-Michal
+Thanks,
+Jason
