@@ -2,86 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 48611C3CFF
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 18:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3DAC3D03
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 18:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730862AbfJAQ4N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Oct 2019 12:56:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54090 "EHLO mail.kernel.org"
+        id S1732098AbfJAQ4S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Oct 2019 12:56:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731768AbfJAQmO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 1 Oct 2019 12:42:14 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1731801AbfJAQ4O (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 1 Oct 2019 12:56:14 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F32D205C9;
-        Tue,  1 Oct 2019 16:42:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A147206BB;
+        Tue,  1 Oct 2019 16:56:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569948134;
-        bh=a2MGscU/Bb+I5eSQfmvlq8/dgcZNCypX6u8kDBlQeqo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NvlgAk5NDIhTvK2bFhVrRMhT0AoZXhZSM6Ib5QyU3bwWY2u/k29b/eL+CmHf6LM5Q
-         naTYwW/Xo+OX/kRLFFq9tV3p3UdtHrUBec0FjdTRf7wCYQACRucXwqPVkkoCOkoOfZ
-         bT3ZZMCBVD3L70FT7/4Cp6U1HIxBeX/NxiYYr+3M=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 34/63] net/mlx5e: Fix traffic duplication in ethtool steering
-Date:   Tue,  1 Oct 2019 12:40:56 -0400
-Message-Id: <20191001164125.15398-34-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191001164125.15398-1-sashal@kernel.org>
-References: <20191001164125.15398-1-sashal@kernel.org>
+        s=default; t=1569948973;
+        bh=5rOmi/hQpmZC8qAgYpId4kUI81s/ozuuSGWHgczZ5BM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0tOVHOQwoEb0OxWlsUfzG6QSwR/67paORUCTvwb3UaFOhbnfzkMSlLGkYTRiIJQQ1
+         Xim6ULBJisHYLja++NzlTwlRQQ4o5CY4EdqD91HQhPrWDknDarp5s2rM63i9F87/eE
+         93URjYeeEg6jxTWkYLTulKf2l+yql5WIBEXxaAj0=
+Date:   Tue, 1 Oct 2019 18:56:11 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Potnuri Bharat Teja <bharat@chelsio.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nicolas Waisman <nico@semmle.com>
+Subject: [PATCH v2] cxgb4: do not dma memory off of the stack
+Message-ID: <20191001165611.GA3542072@kroah.com>
+References: <20191001153917.GA3498459@kroah.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191001153917.GA3498459@kroah.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Saeed Mahameed <saeedm@mellanox.com>
+Nicolas pointed out that the cxgb4 driver is doing dma off of the stack,
+which is generally considered a very bad thing.  On some architectures
+it could be a security problem, but odds are none of them actually run
+this driver, so it's just a "normal" bug.
 
-[ Upstream commit d22fcc806b84b9818de08b32e494f3c05dd236c7 ]
+Resolve this by allocating the memory for a message off of the heap
+instead of the stack.  kmalloc() always will give us a proper memory
+location that DMA will work correctly from.
 
-Before this patch, when adding multiple ethtool steering rules with
-identical classification, the driver used to append the new destination
-to the already existing hw rule, which caused the hw to forward the
-traffic to all destinations (rx queues).
+Reported-by: Nicolas Waisman <nico@semmle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Here we avoid this by setting the "no append" mlx5 fs core flag when
-adding a new ethtool rule.
-
-Fixes: 6dc6071cfcde ("net/mlx5e: Add ethtool flow steering support")
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_fs_ethtool.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ v2: clean up memory on error case, pointed out by Nicolas
+ v1: https://lore.kernel.org/r/20191001153917.GA3498459@kroah.com
+     Test-built only, I don't have this hardware to actually run this
+     code at all.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_fs_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_fs_ethtool.c
-index 4421c10f58ae5..baed9e93794ff 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs_ethtool.c
-@@ -397,10 +397,10 @@ add_ethtool_flow_rule(struct mlx5e_priv *priv,
- 		      struct mlx5_flow_table *ft,
- 		      struct ethtool_rx_flow_spec *fs)
+diff --git a/drivers/infiniband/hw/cxgb4/mem.c b/drivers/infiniband/hw/cxgb4/mem.c
+index aa772ee0706f..35c284af574d 100644
+--- a/drivers/infiniband/hw/cxgb4/mem.c
++++ b/drivers/infiniband/hw/cxgb4/mem.c
+@@ -275,13 +275,17 @@ static int write_tpt_entry(struct c4iw_rdev *rdev, u32 reset_tpt_entry,
+ 			   struct sk_buff *skb, struct c4iw_wr_wait *wr_waitp)
  {
-+	struct mlx5_flow_act flow_act = { .flags = FLOW_ACT_NO_APPEND };
- 	struct mlx5_flow_destination *dst = NULL;
--	struct mlx5_flow_act flow_act = {0};
--	struct mlx5_flow_spec *spec;
- 	struct mlx5_flow_handle *rule;
-+	struct mlx5_flow_spec *spec;
- 	int err = 0;
+ 	int err;
+-	struct fw_ri_tpte tpt;
++	struct fw_ri_tpte *tpt;
+ 	u32 stag_idx;
+ 	static atomic_t key;
  
- 	spec = kvzalloc(sizeof(*spec), GFP_KERNEL);
--- 
-2.20.1
-
+ 	if (c4iw_fatal_error(rdev))
+ 		return -EIO;
+ 
++	tpt = kmalloc(sizeof(*tpt), GFP_KERNEL);
++	if (!tpt)
++		return -ENOMEM;
++
+ 	stag_state = stag_state > 0;
+ 	stag_idx = (*stag) >> 8;
+ 
+@@ -291,6 +295,7 @@ static int write_tpt_entry(struct c4iw_rdev *rdev, u32 reset_tpt_entry,
+ 			mutex_lock(&rdev->stats.lock);
+ 			rdev->stats.stag.fail++;
+ 			mutex_unlock(&rdev->stats.lock);
++			kfree(tpt);
+ 			return -ENOMEM;
+ 		}
+ 		mutex_lock(&rdev->stats.lock);
+@@ -305,28 +310,28 @@ static int write_tpt_entry(struct c4iw_rdev *rdev, u32 reset_tpt_entry,
+ 
+ 	/* write TPT entry */
+ 	if (reset_tpt_entry)
+-		memset(&tpt, 0, sizeof(tpt));
++		memset(tpt, 0, sizeof(*tpt));
+ 	else {
+-		tpt.valid_to_pdid = cpu_to_be32(FW_RI_TPTE_VALID_F |
++		tpt->valid_to_pdid = cpu_to_be32(FW_RI_TPTE_VALID_F |
+ 			FW_RI_TPTE_STAGKEY_V((*stag & FW_RI_TPTE_STAGKEY_M)) |
+ 			FW_RI_TPTE_STAGSTATE_V(stag_state) |
+ 			FW_RI_TPTE_STAGTYPE_V(type) | FW_RI_TPTE_PDID_V(pdid));
+-		tpt.locread_to_qpid = cpu_to_be32(FW_RI_TPTE_PERM_V(perm) |
++		tpt->locread_to_qpid = cpu_to_be32(FW_RI_TPTE_PERM_V(perm) |
+ 			(bind_enabled ? FW_RI_TPTE_MWBINDEN_F : 0) |
+ 			FW_RI_TPTE_ADDRTYPE_V((zbva ? FW_RI_ZERO_BASED_TO :
+ 						      FW_RI_VA_BASED_TO))|
+ 			FW_RI_TPTE_PS_V(page_size));
+-		tpt.nosnoop_pbladdr = !pbl_size ? 0 : cpu_to_be32(
++		tpt->nosnoop_pbladdr = !pbl_size ? 0 : cpu_to_be32(
+ 			FW_RI_TPTE_PBLADDR_V(PBL_OFF(rdev, pbl_addr)>>3));
+-		tpt.len_lo = cpu_to_be32((u32)(len & 0xffffffffUL));
+-		tpt.va_hi = cpu_to_be32((u32)(to >> 32));
+-		tpt.va_lo_fbo = cpu_to_be32((u32)(to & 0xffffffffUL));
+-		tpt.dca_mwbcnt_pstag = cpu_to_be32(0);
+-		tpt.len_hi = cpu_to_be32((u32)(len >> 32));
++		tpt->len_lo = cpu_to_be32((u32)(len & 0xffffffffUL));
++		tpt->va_hi = cpu_to_be32((u32)(to >> 32));
++		tpt->va_lo_fbo = cpu_to_be32((u32)(to & 0xffffffffUL));
++		tpt->dca_mwbcnt_pstag = cpu_to_be32(0);
++		tpt->len_hi = cpu_to_be32((u32)(len >> 32));
+ 	}
+ 	err = write_adapter_mem(rdev, stag_idx +
+ 				(rdev->lldi.vr->stag.start >> 5),
+-				sizeof(tpt), &tpt, skb, wr_waitp);
++				sizeof(*tpt), tpt, skb, wr_waitp);
+ 
+ 	if (reset_tpt_entry) {
+ 		c4iw_put_resource(&rdev->resource.tpt_table, stag_idx);
+@@ -334,6 +339,7 @@ static int write_tpt_entry(struct c4iw_rdev *rdev, u32 reset_tpt_entry,
+ 		rdev->stats.stag.cur -= 32;
+ 		mutex_unlock(&rdev->stats.lock);
+ 	}
++	kfree(tpt);
+ 	return err;
+ }
+ 
