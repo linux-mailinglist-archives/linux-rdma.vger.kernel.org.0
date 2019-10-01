@@ -2,152 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D04C37FC
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 16:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E223C3802
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 16:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389126AbfJAOpg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Oct 2019 10:45:36 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:43364 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727051AbfJAOpg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Oct 2019 10:45:36 -0400
-Received: by mail-qt1-f195.google.com with SMTP id c3so21886161qtv.10
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Oct 2019 07:45:35 -0700 (PDT)
+        id S2389278AbfJAOr1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Oct 2019 10:47:27 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:33613 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389216AbfJAOr1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Oct 2019 10:47:27 -0400
+Received: by mail-qk1-f194.google.com with SMTP id x134so11508780qkb.0
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Oct 2019 07:47:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=q9shm3lqv7NRccZ2e08wFHPb1VHDPCJ6mOTBTqrM99s=;
-        b=H2tcgSeaoaAFQqLuk+HBmDUPZMouTWSgVdwjQZAGS2V4cGIVqIm2/Mab9WU9AQnQ7d
-         MMgy3bblNWes8TPaWHJ+IOQnx8LB3m67bM+RN1WuXMmYU/NiOMNowZ7OPP4RT/efbT44
-         gx9nOmi+VL+8AWwmS7VhjnJ4Se9xr8CoR48I3Nckjsb5MxYoQC1CW3jgwHfKwY9biSro
-         QjlujpPNyE8gjbZMia9ZuUHlgGKxg6hS1hJQY0Yiz1j1L+Tmyib04WYvf45Ht6Y11rcB
-         F0KdqqSeCP0Av1f5DQ9b+1ZtmNYnj932r/omBqQXwgFPH35Cz8SLe9eMnllUbAyJVPW4
-         tTbA==
+        bh=77UPRizKzszHVGLYJvHjHkCV0Pc/l5BZHHrokuA5NqA=;
+        b=G0NUZ6XXwsiJC8F8a7pAXhxYpL1tU4lIR1R3eCDwnVcEriNUarc4YlEUei/pRAcmuZ
+         HieXZqfexD3FaDK+b/Z7YuY/6TYXixEvFvpK7eqPz6uS/QIvnEIKQ+c5QeRicYK5M5S1
+         S54nnHVnbP/3D6LiBNJIP4KYWAxv7UGBsnumD0/J3Nd0WqluEO/6ICEzY4uenEbJ1kSx
+         Wk9UZVxI8eD7flvDyYtYakA7K9U1NqJMl0/0aXEmqwgll9vrJpEcCJ9yiu8X1u7NV5Hz
+         TrtJ1WFfohW+Kqdxq4uCtBMqBTKxBfsr9xo4c9oeTLrls5gcPFBe2vRGgezHAfYsnt3i
+         QQ0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=q9shm3lqv7NRccZ2e08wFHPb1VHDPCJ6mOTBTqrM99s=;
-        b=Kgt1mZIAqyWsUt9KHgKToAHp2nRWK4MjWULDyQkav6qMrVYxmH99FH5bmYyNGwFODo
-         iGYF+bojwMbVfa1Oodi4Gsd8/QEIQ2fiBqc+VZYI9+G9nNIXk3212wGiekNMYgCSBL2P
-         3Sm5RWX7l9gz8sjdLLzJM0InDq7CWeZM4VkP4pvpBH6LPfKEXF2bWO2/NyF/BWf3KJgj
-         eSgikpRRgy3pVAQqb69tHI3s0WnanyNJ95DnTFdq2PEAhxgzI8uJWhQnklDI4saeIDVO
-         +E5S/EN7La2GMR31Q49rSo72L0eYTnUY7JtQsxrWLetB5+rW19lLwrG0FUFoas98CfRE
-         Hf4g==
-X-Gm-Message-State: APjAAAXku/eVZaNrnZdeqAP+2ivcT0Qe1WLHDI2Agd8hs1OEhP+Rh9Fk
-        biWjT6Us7ttr+2Qj0Dp5+Njog/QbiDM=
-X-Google-Smtp-Source: APXvYqxdXYlL/7C4FKBQ2h4y/qxbAsr2CsXDPyABjkq7zEnWyOOoktwsLwsq3mYvEpMZARVGElLIWg==
-X-Received: by 2002:ac8:730f:: with SMTP id x15mr11248258qto.248.1569941135283;
-        Tue, 01 Oct 2019 07:45:35 -0700 (PDT)
+        bh=77UPRizKzszHVGLYJvHjHkCV0Pc/l5BZHHrokuA5NqA=;
+        b=AUgjUqiHEGaoOvtTyFTRxLmkNaLwSxWYpjjFVfoRQYCLGbSOMsGpniIh71OYWrv5qi
+         Va2p8fq34yFqbyzL+9faldE0nOV3oTtGLrKAj9RmHInQvx3orycgCXM8abvmN4BXtZec
+         Y1M5cPPvJKTwaZH5yN3xi8ERf6sLjFx4MrFr/HwMevnA5AeLiG0sQoH2sMYBwzpb/EeC
+         563nsVRL7ItIDBSuO33q7q31zatw/Ti+cYvH/ovy2uTMZ9tDC/M4gqfm7D02PDqd5pSq
+         48t8V/OyuR8WVlWj1BYpujS2QTG4kz6n8aynpxJPxtz76BG7L3ARlNwPIa1wfRdQ1nR0
+         pqpg==
+X-Gm-Message-State: APjAAAViOPZkgTmLMxWMF97irssEtYtmEQzHDg8kBdjY7dlEkd76omiX
+        XZbUs3sdrQkjlXds7uRL9r3Z5K7DByU=
+X-Google-Smtp-Source: APXvYqzttCI1y4IErEO+O5Rng8Yizj26UdzrYcuOmYk5MaZFNPdju7lHmB1x4sD4j2G0cU1ut77ozg==
+X-Received: by 2002:a05:620a:55c:: with SMTP id o28mr5943226qko.13.1569941246339;
+        Tue, 01 Oct 2019 07:47:26 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id v7sm8613075qte.29.2019.10.01.07.45.34
+        by smtp.gmail.com with ESMTPSA id w85sm7759640qkb.57.2019.10.01.07.47.25
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Oct 2019 07:45:34 -0700 (PDT)
+        Tue, 01 Oct 2019 07:47:25 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iFJPC-0003NF-86; Tue, 01 Oct 2019 11:45:34 -0300
-Date:   Tue, 1 Oct 2019 11:45:34 -0300
+        id 1iFJQz-0003QG-Hp; Tue, 01 Oct 2019 11:47:25 -0300
+Date:   Tue, 1 Oct 2019 11:47:25 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Stefan Metzmacher <metze@samba.org>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] rdma/core: add __module_get()/module_put() to
- cma_[de]ref_dev()
-Message-ID: <20191001144534.GC22532@ziepe.ca>
-References: <20190930090455.10772-1-metze@samba.org>
- <20190930124122.GA24612@ziepe.ca>
- <31690de0-eef6-378b-2703-6cd13eb61461@samba.org>
+To:     Potnuri Bharat Teja <bharat@chelsio.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        nirranjan@chelsio.com
+Subject: Re: [PATCH for-rc] iw_cxgb4: fix ECN check on the passive accept
+Message-ID: <20191001144725.GA13087@ziepe.ca>
+References: <20190930074048.19995-1-bharat@chelsio.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <31690de0-eef6-378b-2703-6cd13eb61461@samba.org>
+In-Reply-To: <20190930074048.19995-1-bharat@chelsio.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 30, 2019 at 03:52:51PM +0200, Stefan Metzmacher wrote:
-> Am 30.09.19 um 14:41 schrieb Jason Gunthorpe:
-> > On Mon, Sep 30, 2019 at 11:04:55AM +0200, Stefan Metzmacher wrote:
-> >> Currently there seems to be a problem when an RDMA listener or connection
-> >> is active on an ib_device.
-> >>
-> >> 'rmmod rdma_rxe' (the same for 'siw' and most likely all
-> >> others) just hangs like this until shutdown the listeners and
-> >> connections:
-> >>
-> >>   [<0>] remove_client_context+0x97/0xe0 [ib_core]
-> >>   [<0>] disable_device+0x90/0x120 [ib_core]
-> >>   [<0>] __ib_unregister_device+0x41/0xa0 [ib_core]
-> >>   [<0>] ib_unregister_driver+0xbb/0x100 [ib_core]
-> >>   [<0>] rxe_module_exit+0x1a/0x8aa [rdma_rxe]
-> >>   [<0>] __x64_sys_delete_module+0x147/0x290
-> >>   [<0>] do_syscall_64+0x5a/0x130
-> >>   [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >>
-> >> The following would be expected:
-> >>
-> >>   rmmod: ERROR: Module rdma_rxe is in use
-> >>
-> >> And this change provides that.
-> >>
-> >> Once all add listeners and connections are gone
-> >> the module can be removed again.
-> >>
-> >> Signed-off-by: Stefan Metzmacher <metze@samba.org>
-> >> Cc: stable@vger.kernel.org
-> >>  drivers/infiniband/core/cma.c | 2 ++
-> >>  1 file changed, 2 insertions(+)
-> > 
-> > How do you even get here? Are you using in-kernel modules to access
-> > rxe?
+On Mon, Sep 30, 2019 at 01:10:48PM +0530, Potnuri Bharat Teja wrote:
+> pass_accept_req() is using the same skb for handling accept request and
+> sending accept reply to HW. Here req and rpl structures are pointing to
+> same skb->data which is over written by INIT_TP_WR() and leads to
+> accessing corrupt req fields in accept_cr() while checking for ECN flags.
+> Reordered code in accept_cr() to fetch correct req fields.
 > 
-> Yes, I'm testing my smbdirect driver with Samba.
-> https://git.samba.org/?p=metze/linux/smbdirect.git;a=summary
-> 
-> Samba's 'smbd' listens for incoming connections.
-> 
-> > Drivers are supposed to declare a DEVICE_FATAL error when their module
-> > is removed and then progress toward cleaning up. It would seem this is
-> > missing in rxe.
-> 
-> It's a bit hard for me to follow the code path from other drivers
-> and how an unload of them would trigger IB_EVENT_DEVICE_FATAL.
+> Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
 
-I think the drivers just call a ib_dispatch_event on
-IB_EVENT_DEVICE_FATAL when they start to remove, ie before calling
-ib_device_unregister()
-
-> > Globally blocking module unload would break the existing dis-associate
-> > flows, and blocking until listeners are removed seems like all rdma
-> > drivers will instantly become permanetly blocked when things like SRP
-> > or IPoIB CM mode are running?
-> 
-> So the design is to allow drivers to be unloaded while there are
-> active connections?
-> 
-> If so is this specific to RDMA drivers?
-
-No, it is normal for networking, you can ip link set down and unload a
-net driver even though there are sockets open that might traverse it
- 
-> > I think the proper thing is to fix rxe (and probably siw) to signal
-> > the DEVICE_FATAL so the CMA listeners can cleanly disconnect
->
-> I just found that drivers/nvme/host/rdma.c and
-> drivers/nvme/target/rdma.c both use ib_register_client();
-> in order to get notified that a device is going to be removed.
-> 
-> Maybe I should also use ib_register_client()?
-
-Oh, yes, all kernel clients must use register_client and related to
-manage their connection to the RDMA stack otherwise they are probably
-racy. The remove callback there is the same idea as the device_fatal
-scheme is for userspace.
-
-How do you discover the RDMA device to use? Just call into CM and let
-it sort it out? That actually seems reasonable, but then CM should
-take care of the remove() to kill connections, I suppose it doesn't..
+This needs a fixes line
 
 Jason
