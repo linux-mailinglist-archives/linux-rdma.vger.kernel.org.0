@@ -2,110 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35493C388E
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 17:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB1AC38B0
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 17:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727206AbfJAPHd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Oct 2019 11:07:33 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:33281 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726309AbfJAPHc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Oct 2019 11:07:32 -0400
-Received: by mail-qk1-f193.google.com with SMTP id x134so11584664qkb.0
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Oct 2019 08:07:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2nQjvTbwJ6uRdgVS82DId2qxs8AnlBlut4BlU59GnCg=;
-        b=MTPbUjxTULu5CNlj7bTLWHAng5KIyDtxxwtcNi9lQqBoSLhFWpgia6d8wa/uINg+99
-         5DDaEn2bmP6jXSOvC9TsBwm4z+ocIceT6W7cCNtfQBOVtWmciOKO1jhZeixHCXylhMrp
-         +TNPtM4kThlCHc0jNA/9neE7srFcoo797irBs4Qd/axdI75xW8fmaMLR1Utvvzo8Q/rJ
-         5IY34mn+0od3Uw18aqLXjP8F+X2KHmAY/L4H9ukWI4nLSD5HvDHNtx3RbjR7dDci49oK
-         dfkbkI3fN9iLLb0nF6kYkCaR4VRlOiquvyYszoFGZlnGhVmdmygxhx9m8yJCCDbrlJGj
-         Sflg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2nQjvTbwJ6uRdgVS82DId2qxs8AnlBlut4BlU59GnCg=;
-        b=kdJF4hxbaLT1ZWYEMTd/s9GKAYQoQFpDGbrtWzFYHNkX6R8r/b74PwapYhIpu7vLEk
-         j0d8D/Drz54qdKcSGDo6b54h3dPlMETCmu3nXVC4yVTk8VDn3biUJz495uMjgy3u5V5Q
-         c59XC7tmp33y0YRKAofbPnvXIAw6H1vMxBsG8gAp9Co2Tuxj/zWKwBGX+To3mmQPD98d
-         9F5IcynlQJzT8SkCInkXjIXqOITFfF4dkr8M7nOnQbi12lPBCF60o/NMt/a5b6ESc4Ww
-         b478KT8i0l+9ecEIrwlU2P7U/Hff3spumXACphBgsG+x5C7N+6AYA/zrd7081bbc/pF/
-         cMMw==
-X-Gm-Message-State: APjAAAVXIJzj5LPngpy7j9Ahc7mrZ8QqDi8Yke8TpDke11LdQUnE/JFf
-        6fv2dFlWHkuvW/5YntykDhr3IQ==
-X-Google-Smtp-Source: APXvYqxwDjYq7GDHR/0mgmXiSjJTuZUR2DJENVD+lLIVy/tDKfawUf9LJY/k0UtpCrp2asV6Ga1+Gg==
-X-Received: by 2002:a37:bc84:: with SMTP id m126mr6412389qkf.196.1569942451846;
-        Tue, 01 Oct 2019 08:07:31 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id 62sm8283688qki.130.2019.10.01.08.07.31
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Oct 2019 08:07:31 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iFJkQ-0000BK-Ny; Tue, 01 Oct 2019 12:07:30 -0300
-Date:   Tue, 1 Oct 2019 12:07:30 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 01/15] RDMA/ucma: Reduce the number of rdma_destroy_id()
- calls
-Message-ID: <20191001150730.GD22532@ziepe.ca>
-References: <20190930231707.48259-1-bvanassche@acm.org>
- <20190930231707.48259-2-bvanassche@acm.org>
+        id S2389508AbfJAPOm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Oct 2019 11:14:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42270 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389129AbfJAPOm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 1 Oct 2019 11:14:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 71301AFC6;
+        Tue,  1 Oct 2019 15:14:40 +0000 (UTC)
+Received: by unicorn.suse.cz (Postfix, from userid 1000)
+        id E9E8FE0083; Tue,  1 Oct 2019 17:14:39 +0200 (CEST)
+Date:   Tue, 1 Oct 2019 17:14:39 +0200
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     netdev@vger.kernel.org
+Cc:     Borislav Petkov <bp@alien8.de>, Alex Vesker <valex@mellanox.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        linux-rdma@vger.kernel.org, Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: ERROR: "__umoddi3"
+ [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] undefined!
+Message-ID: <20191001151439.GA24815@unicorn.suse.cz>
+References: <20190930141316.GG29694@zn.tnic>
+ <20190930154535.GC22120@unicorn.suse.cz>
+ <20190930162910.GI29694@zn.tnic>
+ <20190930095516.0f55513a@hermes.lan>
+ <20190930184031.GJ29694@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190930231707.48259-2-bvanassche@acm.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190930184031.GJ29694@zn.tnic>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 30, 2019 at 04:16:53PM -0700, Bart Van Assche wrote:
-> Instead of calling rdma_destroy_id() after waiting for the context completion
-> finished, call rdma_destroy_id() from inside the ucma_put_ctx() function.
-> This patch reduces the number of rdma_destroy_id() calls but does not change
-> the behavior of this code.
+On Mon, Sep 30, 2019 at 08:40:31PM +0200, Borislav Petkov wrote:
+> On Mon, Sep 30, 2019 at 09:55:16AM -0700, Stephen Hemminger wrote:
+> > Could also us div_u64_rem here?
 > 
-> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
->  drivers/infiniband/core/ucma.c | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
+> Yah, the below seems to work and the resulting asm looks sensible to me
+> but someone should definitely double-check me as I don't know this code
+> at all.
 > 
-> diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-> index 0274e9b704be..30c09864fd9e 100644
-> +++ b/drivers/infiniband/core/ucma.c
-> @@ -160,8 +160,14 @@ static struct ucma_context *ucma_get_ctx(struct ucma_file *file, int id)
+> Thx.
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c
+> index 913f1e5aaaf2..b4302658e5f8 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c
+> @@ -137,7 +137,7 @@ dr_icm_pool_mr_create(struct mlx5dr_icm_pool *pool,
 >  
->  static void ucma_put_ctx(struct ucma_context *ctx)
->  {
-> -	if (atomic_dec_and_test(&ctx->ref))
-> -		complete(&ctx->comp);
-> +	if (!atomic_dec_and_test(&ctx->ref))
-> +		return;
-> +	/*
-> +	 * rdma_destroy_id() ensures that no event handlers are inflight
-> +	 * for that id before releasing it.
-> +	 */
-> +	rdma_destroy_id(ctx->cm_id);
-> +	complete(&ctx->comp);
->  }
+>  	icm_mr->icm_start_addr = icm_mr->dm.addr;
+>  
+> -	align_diff = icm_mr->icm_start_addr % align_base;
+> +	div_u64_rem(icm_mr->icm_start_addr, align_base, &align_diff);
+>  	if (align_diff)
+>  		icm_mr->used_length = align_base - align_diff;
+>  
+> 
 
-Since all the refcounting here is basically insane, you can't do this
-without creating new kinds of bugs related to lifetime of ctx->cm_id
+While this fixes 32-bit builds, it breaks 64-bit ones as align_diff is
+64-bit and div_u64_rem expects pointer to u32. :-(
 
-The call to rdma_destroy_id must be after the xa_erase as other
-threads can continue to access the context despite its zero ref via
-ucma_get_ctx(() as ucma_get_ctx() is not using refcounts properly.
+I checked that align_base is always a power of two so that we could get
+away with
 
-The xa_erase provides the needed barrier.
+	align_diff = icm_mr->icm_start_addr & (align_base - 1)
 
-Maybe this patch could be fixed if the ucma_get_ctx used an
-atomic_inc_not_zero ?
+I'm not sure, however, if it's safe to assume align_base will always
+have to be a power of two or if we should add a check for safety.
 
-Jason
+(Cc-ing also author of commit 29cf8febd185 ("net/mlx5: DR, ICM pool
+memory allocator").)
+
+Michal
