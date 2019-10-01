@@ -2,86 +2,195 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE64FC3DAB
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 19:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 503C6C3D85
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 19:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbfJARBb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Oct 2019 13:01:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729772AbfJAQkS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 1 Oct 2019 12:40:18 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5FCE21855;
-        Tue,  1 Oct 2019 16:40:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569948017;
-        bh=6Bnatj/5Ub1pWlIo0rzxCNeZp/xLiby1b8UPWU8/Gvs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SjAMadA0znV+DjNJevRy+h/Jp/wlKY5htH7a/lE9TzX8rwRyo5Ws1sdjAADvkKwOl
-         uLKA4oj7X0Yld8DMDUfh5yWb5C9mdG5SzexRBrPb6KQsEoAMQQi3RMc3qo0rxBpqBM
-         N2z+7bRWEX5MbEIzCSGZ9jFRuVsGF2SxgZOWbUcs=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.3 38/71] net/mlx5e: Fix traffic duplication in ethtool steering
-Date:   Tue,  1 Oct 2019 12:38:48 -0400
-Message-Id: <20191001163922.14735-38-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191001163922.14735-1-sashal@kernel.org>
-References: <20191001163922.14735-1-sashal@kernel.org>
+        id S1726225AbfJARAh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Oct 2019 13:00:37 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:33688 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727389AbfJARAe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Oct 2019 13:00:34 -0400
+Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x91H0VbL013282;
+        Tue, 1 Oct 2019 10:00:32 -0700
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     jgg@ziepe.ca, bmt@zurich.ibm.com
+Cc:     linux-rdma@vger.kernel.org, bharat@chelsio.com,
+        nirranjan@chelsio.com,
+        Krishnamraju Eraparaju <krishna2@chelsio.com>
+Subject: [PATCH for-rc] RDMA/siw: move iw_rem_ref() calls out of spinlocks
+Date:   Tue,  1 Oct 2019 22:30:25 +0530
+Message-Id: <20191001170025.31626-1-krishna2@chelsio.com>
+X-Mailer: git-send-email 2.23.0.rc0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Saeed Mahameed <saeedm@mellanox.com>
+kref release routines usually perform memory release operations,
+so they should not be called with spinlocks held.
+one such case is: SIW release routine siw_free_qp() calls sleepable
+vfree() to release queue memory.
 
-[ Upstream commit d22fcc806b84b9818de08b32e494f3c05dd236c7 ]
+Hence, all iw_rem_ref() calls in IWCM are moved out of spinlocks.
 
-Before this patch, when adding multiple ethtool steering rules with
-identical classification, the driver used to append the new destination
-to the already existing hw rule, which caused the hw to forward the
-traffic to all destinations (rx queues).
-
-Here we avoid this by setting the "no append" mlx5 fs core flag when
-adding a new ethtool rule.
-
-Fixes: 6dc6071cfcde ("net/mlx5e: Add ethtool flow steering support")
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_fs_ethtool.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/core/iwcm.c | 52 +++++++++++++++++++---------------
+ 1 file changed, 29 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_fs_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_fs_ethtool.c
-index 94304abc49e98..39e90b8733192 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_fs_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_fs_ethtool.c
-@@ -399,10 +399,10 @@ add_ethtool_flow_rule(struct mlx5e_priv *priv,
- 		      struct mlx5_flow_table *ft,
- 		      struct ethtool_rx_flow_spec *fs)
+diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+index 72141c5b7c95..ade71823370f 100644
+--- a/drivers/infiniband/core/iwcm.c
++++ b/drivers/infiniband/core/iwcm.c
+@@ -372,6 +372,7 @@ EXPORT_SYMBOL(iw_cm_disconnect);
+ static void destroy_cm_id(struct iw_cm_id *cm_id)
  {
-+	struct mlx5_flow_act flow_act = { .flags = FLOW_ACT_NO_APPEND };
- 	struct mlx5_flow_destination *dst = NULL;
--	struct mlx5_flow_act flow_act = {0};
--	struct mlx5_flow_spec *spec;
- 	struct mlx5_flow_handle *rule;
-+	struct mlx5_flow_spec *spec;
- 	int err = 0;
+ 	struct iwcm_id_private *cm_id_priv;
++	struct ib_qp *qp;
+ 	unsigned long flags;
  
- 	spec = kvzalloc(sizeof(*spec), GFP_KERNEL);
+ 	cm_id_priv = container_of(cm_id, struct iwcm_id_private, id);
+@@ -389,6 +390,9 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
+ 	set_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags);
+ 
+ 	spin_lock_irqsave(&cm_id_priv->lock, flags);
++	qp = cm_id_priv->qp;
++	cm_id_priv->qp = NULL;
++
+ 	switch (cm_id_priv->state) {
+ 	case IW_CM_STATE_LISTEN:
+ 		cm_id_priv->state = IW_CM_STATE_DESTROYING;
+@@ -401,7 +405,7 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
+ 		cm_id_priv->state = IW_CM_STATE_DESTROYING;
+ 		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+ 		/* Abrupt close of the connection */
+-		(void)iwcm_modify_qp_err(cm_id_priv->qp);
++		(void)iwcm_modify_qp_err(qp);
+ 		spin_lock_irqsave(&cm_id_priv->lock, flags);
+ 		break;
+ 	case IW_CM_STATE_IDLE:
+@@ -426,11 +430,9 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
+ 		BUG();
+ 		break;
+ 	}
+-	if (cm_id_priv->qp) {
+-		cm_id_priv->id.device->ops.iw_rem_ref(cm_id_priv->qp);
+-		cm_id_priv->qp = NULL;
+-	}
+ 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
++	if (qp)
++		cm_id_priv->id.device->ops.iw_rem_ref(qp);
+ 
+ 	if (cm_id->mapped) {
+ 		iwpm_remove_mapinfo(&cm_id->local_addr, &cm_id->m_local_addr);
+@@ -671,11 +673,11 @@ int iw_cm_accept(struct iw_cm_id *cm_id,
+ 		BUG_ON(cm_id_priv->state != IW_CM_STATE_CONN_RECV);
+ 		cm_id_priv->state = IW_CM_STATE_IDLE;
+ 		spin_lock_irqsave(&cm_id_priv->lock, flags);
+-		if (cm_id_priv->qp) {
+-			cm_id->device->ops.iw_rem_ref(qp);
+-			cm_id_priv->qp = NULL;
+-		}
++		qp = cm_id_priv->qp;
++		cm_id_priv->qp = NULL;
+ 		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
++		if (qp)
++			cm_id->device->ops.iw_rem_ref(qp);
+ 		clear_bit(IWCM_F_CONNECT_WAIT, &cm_id_priv->flags);
+ 		wake_up_all(&cm_id_priv->connect_wait);
+ 	}
+@@ -696,7 +698,7 @@ int iw_cm_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *iw_param)
+ 	struct iwcm_id_private *cm_id_priv;
+ 	int ret;
+ 	unsigned long flags;
+-	struct ib_qp *qp;
++	struct ib_qp *qp = NULL;
+ 
+ 	cm_id_priv = container_of(cm_id, struct iwcm_id_private, id);
+ 
+@@ -730,13 +732,13 @@ int iw_cm_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *iw_param)
+ 		return 0;	/* success */
+ 
+ 	spin_lock_irqsave(&cm_id_priv->lock, flags);
+-	if (cm_id_priv->qp) {
+-		cm_id->device->ops.iw_rem_ref(qp);
+-		cm_id_priv->qp = NULL;
+-	}
++	qp = cm_id_priv->qp;
++	cm_id_priv->qp = NULL;
+ 	cm_id_priv->state = IW_CM_STATE_IDLE;
+ err:
+ 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
++	if (qp)
++		cm_id->device->ops.iw_rem_ref(qp);
+ 	clear_bit(IWCM_F_CONNECT_WAIT, &cm_id_priv->flags);
+ 	wake_up_all(&cm_id_priv->connect_wait);
+ 	return ret;
+@@ -878,6 +880,7 @@ static int cm_conn_est_handler(struct iwcm_id_private *cm_id_priv,
+ static int cm_conn_rep_handler(struct iwcm_id_private *cm_id_priv,
+ 			       struct iw_cm_event *iw_event)
+ {
++	struct ib_qp *qp = NULL;
+ 	unsigned long flags;
+ 	int ret;
+ 
+@@ -896,11 +899,13 @@ static int cm_conn_rep_handler(struct iwcm_id_private *cm_id_priv,
+ 		cm_id_priv->state = IW_CM_STATE_ESTABLISHED;
+ 	} else {
+ 		/* REJECTED or RESET */
+-		cm_id_priv->id.device->ops.iw_rem_ref(cm_id_priv->qp);
++		qp = cm_id_priv->qp;
+ 		cm_id_priv->qp = NULL;
+ 		cm_id_priv->state = IW_CM_STATE_IDLE;
+ 	}
+ 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
++	if (qp)
++		cm_id_priv->id.device->ops.iw_rem_ref(qp);
+ 	ret = cm_id_priv->id.cm_handler(&cm_id_priv->id, iw_event);
+ 
+ 	if (iw_event->private_data_len)
+@@ -942,21 +947,18 @@ static void cm_disconnect_handler(struct iwcm_id_private *cm_id_priv,
+ static int cm_close_handler(struct iwcm_id_private *cm_id_priv,
+ 				  struct iw_cm_event *iw_event)
+ {
++	struct ib_qp *qp;
+ 	unsigned long flags;
+-	int ret = 0;
++	int ret = 0, notify_event = 0;
+ 	spin_lock_irqsave(&cm_id_priv->lock, flags);
++	qp = cm_id_priv->qp;
++	cm_id_priv->qp = NULL;
+ 
+-	if (cm_id_priv->qp) {
+-		cm_id_priv->id.device->ops.iw_rem_ref(cm_id_priv->qp);
+-		cm_id_priv->qp = NULL;
+-	}
+ 	switch (cm_id_priv->state) {
+ 	case IW_CM_STATE_ESTABLISHED:
+ 	case IW_CM_STATE_CLOSING:
+ 		cm_id_priv->state = IW_CM_STATE_IDLE;
+-		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+-		ret = cm_id_priv->id.cm_handler(&cm_id_priv->id, iw_event);
+-		spin_lock_irqsave(&cm_id_priv->lock, flags);
++		notify_event = 1;
+ 		break;
+ 	case IW_CM_STATE_DESTROYING:
+ 		break;
+@@ -965,6 +967,10 @@ static int cm_close_handler(struct iwcm_id_private *cm_id_priv,
+ 	}
+ 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+ 
++	if (qp)
++		cm_id_priv->id.device->ops.iw_rem_ref(qp);
++	if (notify_event)
++		ret = cm_id_priv->id.cm_handler(&cm_id_priv->id, iw_event);
+ 	return ret;
+ }
+ 
 -- 
-2.20.1
+2.23.0.rc0
 
