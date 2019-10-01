@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20229C393B
+	by mail.lfdr.de (Postfix) with ESMTP id 91EB1C393D
 	for <lists+linux-rdma@lfdr.de>; Tue,  1 Oct 2019 17:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727312AbfJAPih (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1727332AbfJAPih (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Tue, 1 Oct 2019 11:38:37 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:33112 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727280AbfJAPih (ORCPT
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:41394 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727246AbfJAPih (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Oct 2019 11:38:37 -0400
-Received: by mail-qk1-f196.google.com with SMTP id x134so11692954qkb.0
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Oct 2019 08:38:36 -0700 (PDT)
+Received: by mail-qt1-f193.google.com with SMTP id d16so1558018qtq.8
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Oct 2019 08:38:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=s8IPBG3dgj2MA8wIPbTYtDxNXlAPNZNoDy7J6NM8bRQ=;
-        b=FXHq4hOeiYiYpL8i2etxTsNt5Z+cjnttDjILRPclKw4ytfydwQO19NkaZqZmVFSx4t
-         60CK5IwCyOJ4zlHpT7W40Y37I7WJNlEaRLY0RDUyswXFLEq2cK8VCR+2kn+rC1BS1duF
-         u9EKJffL+sO6QXnyeK/YsJyEH4DXsylVd6BkMlHpAYswvnTIEDRsYkcbU0Yr2bJYOt15
-         qqfJmyIJ13vBw+tn6PRUhiP9lEpuKTjWFGhpIqy0tBnn9S1r9IhJ+xuHTmGipDYYS2kl
-         aCJZqkf1YyL2g/xC8finzEichRaX2HprDdC3KiPlPDAdyB7fkW2PpWp0EUDsTtgqAgcs
-         kbtw==
+        bh=VjSimegOVv1mcHQrf53Oma0EmyHc2zoY77haYmlOcRw=;
+        b=PyNMT3WBMuzQrCaWKCocLuFA42oL/lFhDZz2ZKJ+DN4FWOtA7GA4YABlo/yUeDORxe
+         HgS1geoXhpVYtqXTsM3YkAdXBW9LIGghhnQgVC8qPheM0sn1thmbUO2mx5wbMFK/cXN4
+         gMO15CwTYKPgUimOai7JciKkKHqorXrxHxrLrxyYf+PHZAX4nHitJzgy22GjESNj0FDH
+         Eo5WjoV4CE5CTNJAq9cV3yCq5llZis2YApsNO8YjIrjj94ww2PJctCCm4b4TS7FnUlk3
+         W9D55QauWJ9PvWLAKl7L8mC3kLg792jTJRTCT0jcGlVLRWnsJCCW1EIhK5yEVPXFGMf+
+         6J3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=s8IPBG3dgj2MA8wIPbTYtDxNXlAPNZNoDy7J6NM8bRQ=;
-        b=imQQwvZu688mHNL1/OSttvfUyH9P3pXJKiEqJcudPs3GXaGmV5nX7QAUSFJaTy1ENP
-         fc0QDAM6+DXhXg86mCbYwAZJriyBqTimZyKhupA/WuUAGvuGZoq6j3KYgx5bgNOwxbBv
-         jarJwMjWCATXVAFZ7X7HZ9mtuX/u/ECdhodly9uB0n0vq3WWyghIa4Ut4vOyfl4MrKzV
-         8VcL8MsmcqNFdty+QSvZq5lenQB+pfOKeWngspMg1Dwm8r4X67ICZFkq8zPn7WZc6wqd
-         XsQT7urpxy6VBgz2oq4q2E0S+OvnkhZ3SP7jQGa3hrT4S578v8zubCZEeUlk7mx0PQSI
-         L/cw==
-X-Gm-Message-State: APjAAAWB/uKIEVojCuF36Q2oCu3/1iO8lHq4+Zk6DibNU6XbziL2LBMY
-        XsqlhFa8t/mptHfC/PJ8/wh8KGpANuM=
-X-Google-Smtp-Source: APXvYqzIs39si8HJ7MjjT0NVAxrhbR6lILeTrTWwe9Y92gprg7fsZI1qwJhLLHuC+SE5FLyJMgE7ng==
-X-Received: by 2002:a37:4a85:: with SMTP id x127mr6545943qka.362.1569944315715;
-        Tue, 01 Oct 2019 08:38:35 -0700 (PDT)
+        bh=VjSimegOVv1mcHQrf53Oma0EmyHc2zoY77haYmlOcRw=;
+        b=nAqUSpDD6+xhjroERf3k4DuQ76jYmqIp4nhP+EOfj2vJjl4DTsqk9yZjlxqJWhcKXR
+         /OZ8LxbAbJD829V87Qyav6QxyaBLCgVBOVggCNncFCC2mgBdTICTcNSDbwb/Ty0/J8R3
+         ZeTU82aU9bSFymaoZYXxmaXRwMsqjHhKwBEkLbd4fOy9i84YGO8nfv/MBAPf0r/CmUZ7
+         BNiZKlB7hBd6RsuwSMQ0pEXE7vmUrNW4hri3Ay5oJ+6p8qJZ5xfAZVpLpQ+yck6OAWuw
+         qvDn8b0wYOEJ4/J0M8JQPHtOJclg3PHXvXw2Qnq1vhSaaJMRQDU/4ZCCfJN0vS3YRsKd
+         NjnQ==
+X-Gm-Message-State: APjAAAVOPKu0g5JijmyR8ZYLbg2AtF6HN61XzoDulV1e1Y1YFZv++Xrd
+        mJtUuvQg4SAFGXKoBTRw5O+Lz+W7uE0=
+X-Google-Smtp-Source: APXvYqyKs13ZaPqNEFDqX83BTo/jcQ5zBDKEno2PoY8HZjUtGtSnWob3Pc0YclC5jSZnICXS5FtA1w==
+X-Received: by 2002:a0c:eb89:: with SMTP id x9mr25228054qvo.18.1569944316517;
+        Tue, 01 Oct 2019 08:38:36 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id 29sm7681743qkp.86.2019.10.01.08.38.34
+        by smtp.gmail.com with ESMTPSA id 199sm7850089qkk.112.2019.10.01.08.38.34
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Tue, 01 Oct 2019 08:38:34 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iFKEU-0006Ed-1f; Tue, 01 Oct 2019 12:38:34 -0300
+        id 1iFKEU-0006Ej-2j; Tue, 01 Oct 2019 12:38:34 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@mellanox.com>,
         Artemy Kovalyov <artemyko@mellanox.com>
-Subject: [PATCH 2/6] RDMA/mlx5: Fix a race with mlx5_ib_update_xlt on an implicit MR
-Date:   Tue,  1 Oct 2019 12:38:17 -0300
-Message-Id: <20191001153821.23621-3-jgg@ziepe.ca>
+Subject: [PATCH 3/6] RDMA/odp: Lift umem_mutex out of ib_umem_odp_unmap_dma_pages()
+Date:   Tue,  1 Oct 2019 12:38:18 -0300
+Message-Id: <20191001153821.23621-4-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191001153821.23621-1-jgg@ziepe.ca>
 References: <20191001153821.23621-1-jgg@ziepe.ca>
@@ -66,104 +66,125 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-mlx5_ib_update_xlt() must be protected against parallel free of the MR it
-is accessing, also it must be called single threaded while updating the
-HW. Otherwise we can have races of the form:
-
+This fixes a race of the form:
     CPU0                               CPU1
-  mlx5_ib_update_xlt()
-   mlx5_odp_populate_klm()
-     odp_lookup() == NULL
-     pklm = ZAP
-                                      implicit_mr_get_data()
- 				        implicit_mr_alloc()
- 					  <update interval tree>
-					mlx5_ib_update_xlt
-					  mlx5_odp_populate_klm()
-					    odp_lookup() != NULL
-					    pklm = VALID
-					   mlx5_ib_post_send_wait()
+mlx5_ib_invalidate_range()     mlx5_ib_invalidate_range()
+				 // This one actually makes npages == 0
+				 ib_umem_odp_unmap_dma_pages()
+				 if (npages == 0 && !dying)
+  // This one does nothing
+  ib_umem_odp_unmap_dma_pages()
+  if (npages == 0 && !dying)
+     dying = 1;
+                                    dying = 1;
+				    schedule_work(&umem_odp->work);
+     // Double schedule of the same work
+     schedule_work(&umem_odp->work);  // BOOM
 
-    mlx5_ib_post_send_wait() // Replaces VALID with ZAP
+npages and dying must be read and written under the umem_mutex lock.
 
-This can be solved by putting both the SRCU and the umem_mutex lock around
-every call to mlx5_ib_update_xlt(). This ensures that the content of the
-interval tree relavent to mlx5_odp_populate_klm() (ie mr->parent == mr)
-will not change while it is running, and thus the posted WRs to update the
-KLM will always reflect the correct information.
+Since whenever ib_umem_odp_unmap_dma_pages() is called mlx5 must also call
+mlx5_ib_update_xlt, and both need to be done in the same locking region,
+hoist the lock out of unmap.
 
-The race above will resolve by either having CPU1 wait till CPU0 completes
-the ZAP or CPU0 will run after the add and instead store VALID.
-
-The pagefault path adding children already holds the umem_mutex and SRCU,
-so the only missed lock is during MR destruction.
+This avoids an expensive double critical section in
+mlx5_ib_invalidate_range().
 
 Fixes: 81713d3788d2 ("IB/mlx5: Add implicit MR support")
 Reviewed-by: Artemy Kovalyov <artemyko@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/odp.c | 34 ++++++++++++++++++++++++++++++--
- 1 file changed, 32 insertions(+), 2 deletions(-)
+ drivers/infiniband/core/umem_odp.c |  6 ++++--
+ drivers/infiniband/hw/mlx5/odp.c   | 12 ++++++++----
+ 2 files changed, 12 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
+index f67a30fda1ed9a..163ff7ba92b7f1 100644
+--- a/drivers/infiniband/core/umem_odp.c
++++ b/drivers/infiniband/core/umem_odp.c
+@@ -451,8 +451,10 @@ void ib_umem_odp_release(struct ib_umem_odp *umem_odp)
+ 	 * that the hardware will not attempt to access the MR any more.
+ 	 */
+ 	if (!umem_odp->is_implicit_odp) {
++		mutex_lock(&umem_odp->umem_mutex);
+ 		ib_umem_odp_unmap_dma_pages(umem_odp, ib_umem_start(umem_odp),
+ 					    ib_umem_end(umem_odp));
++		mutex_unlock(&umem_odp->umem_mutex);
+ 		kvfree(umem_odp->dma_list);
+ 		kvfree(umem_odp->page_list);
+ 	}
+@@ -719,6 +721,8 @@ void ib_umem_odp_unmap_dma_pages(struct ib_umem_odp *umem_odp, u64 virt,
+ 	u64 addr;
+ 	struct ib_device *dev = umem_odp->umem.ibdev;
+ 
++	lockdep_assert_held(&umem_odp->umem_mutex);
++
+ 	virt = max_t(u64, virt, ib_umem_start(umem_odp));
+ 	bound = min_t(u64, bound, ib_umem_end(umem_odp));
+ 	/* Note that during the run of this function, the
+@@ -726,7 +730,6 @@ void ib_umem_odp_unmap_dma_pages(struct ib_umem_odp *umem_odp, u64 virt,
+ 	 * faults from completion. We might be racing with other
+ 	 * invalidations, so we must make sure we free each page only
+ 	 * once. */
+-	mutex_lock(&umem_odp->umem_mutex);
+ 	for (addr = virt; addr < bound; addr += BIT(umem_odp->page_shift)) {
+ 		idx = (addr - ib_umem_start(umem_odp)) >> umem_odp->page_shift;
+ 		if (umem_odp->page_list[idx]) {
+@@ -757,7 +760,6 @@ void ib_umem_odp_unmap_dma_pages(struct ib_umem_odp *umem_odp, u64 virt,
+ 			umem_odp->npages--;
+ 		}
+ 	}
+-	mutex_unlock(&umem_odp->umem_mutex);
+ }
+ EXPORT_SYMBOL(ib_umem_odp_unmap_dma_pages);
+ 
 diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 2e9b4306179745..3401c06b7e54f5 100644
+index 3401c06b7e54f5..1930d78c3091cb 100644
 --- a/drivers/infiniband/hw/mlx5/odp.c
 +++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -178,6 +178,29 @@ void mlx5_odp_populate_klm(struct mlx5_klm *pklm, size_t offset,
- 		return;
- 	}
- 
-+	/*
-+	 * The locking here is pretty subtle. Ideally the implicit children
-+	 * list would be protected by the umem_mutex, however that is not
-+	 * possible. Instead this uses a weaker update-then-lock pattern:
-+	 *
-+	 *  srcu_read_lock()
-+	 *    <change children list>
-+	 *    mutex_lock(umem_mutex)
-+	 *     mlx5_ib_update_xlt()
-+	 *    mutex_unlock(umem_mutex)
-+	 *    destroy lkey
-+	 *
-+	 * ie any change the children list must be followed by the locked
-+	 * update_xlt before destroying.
-+	 *
-+	 * The umem_mutex provides the acquire/release semantic needed to make
-+	 * the children list visible to a racing thread. While SRCU is not
-+	 * technically required, using it gives consistent use of the SRCU
-+	 * locking around the children list.
-+	 */
-+	lockdep_assert_held(&to_ib_umem_odp(mr->umem)->umem_mutex);
-+	lockdep_assert_held(&mr->dev->mr_srcu);
-+
- 	odp = odp_lookup(offset * MLX5_IMR_MTT_SIZE,
- 			 nentries * MLX5_IMR_MTT_SIZE, mr);
- 
-@@ -202,15 +225,22 @@ static void mr_leaf_free_action(struct work_struct *work)
- 	struct ib_umem_odp *odp = container_of(work, struct ib_umem_odp, work);
- 	int idx = ib_umem_start(odp) >> MLX5_IMR_MTT_SHIFT;
- 	struct mlx5_ib_mr *mr = odp->private, *imr = mr->parent;
-+	struct ib_umem_odp *odp_imr = to_ib_umem_odp(imr->umem);
-+	int srcu_key;
- 
- 	mr->parent = NULL;
- 	synchronize_srcu(&mr->dev->mr_srcu);
- 
--	ib_umem_odp_release(odp);
--	if (imr->live)
-+	if (imr->live) {
-+		srcu_key = srcu_read_lock(&mr->dev->mr_srcu);
-+		mutex_lock(&odp_imr->umem_mutex);
- 		mlx5_ib_update_xlt(imr, idx, 1, 0,
- 				   MLX5_IB_UPD_XLT_INDIRECT |
+@@ -308,7 +308,6 @@ void mlx5_ib_invalidate_range(struct ib_umem_odp *umem_odp, unsigned long start,
+ 				   idx - blk_start_idx + 1, 0,
+ 				   MLX5_IB_UPD_XLT_ZAP |
  				   MLX5_IB_UPD_XLT_ATOMIC);
-+		mutex_unlock(&odp_imr->umem_mutex);
-+		srcu_read_unlock(&mr->dev->mr_srcu, srcu_key);
-+	}
-+	ib_umem_odp_release(odp);
- 	mlx5_mr_cache_free(mr->dev, mr);
+-	mutex_unlock(&umem_odp->umem_mutex);
+ 	/*
+ 	 * We are now sure that the device will not access the
+ 	 * memory. We can safely unmap it, and mark it as dirty if
+@@ -319,10 +318,11 @@ void mlx5_ib_invalidate_range(struct ib_umem_odp *umem_odp, unsigned long start,
  
- 	if (atomic_dec_and_test(&imr->num_leaf_free))
+ 	if (unlikely(!umem_odp->npages && mr->parent &&
+ 		     !umem_odp->dying)) {
+-		WRITE_ONCE(umem_odp->dying, 1);
++		umem_odp->dying = 1;
+ 		atomic_inc(&mr->parent->num_leaf_free);
+ 		schedule_work(&umem_odp->work);
+ 	}
++	mutex_unlock(&umem_odp->umem_mutex);
+ }
+ 
+ void mlx5_ib_internal_fill_odp_caps(struct mlx5_ib_dev *dev)
+@@ -585,15 +585,19 @@ void mlx5_ib_free_implicit_mr(struct mlx5_ib_mr *imr)
+ 		if (mr->parent != imr)
+ 			continue;
+ 
++		mutex_lock(&umem_odp->umem_mutex);
+ 		ib_umem_odp_unmap_dma_pages(umem_odp, ib_umem_start(umem_odp),
+ 					    ib_umem_end(umem_odp));
+ 
+-		if (umem_odp->dying)
++		if (umem_odp->dying) {
++			mutex_unlock(&umem_odp->umem_mutex);
+ 			continue;
++		}
+ 
+-		WRITE_ONCE(umem_odp->dying, 1);
++		umem_odp->dying = 1;
+ 		atomic_inc(&imr->num_leaf_free);
+ 		schedule_work(&umem_odp->work);
++		mutex_unlock(&umem_odp->umem_mutex);
+ 	}
+ 	up_read(&per_mm->umem_rwsem);
+ 
 -- 
 2.23.0
 
