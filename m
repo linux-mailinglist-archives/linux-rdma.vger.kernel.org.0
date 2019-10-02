@@ -2,124 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B8EC938B
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 23:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48512C9415
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 00:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728112AbfJBVfU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Oct 2019 17:35:20 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:44370 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726491AbfJBVfT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 17:35:19 -0400
-Received: by mail-io1-f68.google.com with SMTP id w12so690919iol.11;
-        Wed, 02 Oct 2019 14:35:18 -0700 (PDT)
+        id S1726081AbfJBWKI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Oct 2019 18:10:08 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:36507 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726070AbfJBWKH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 18:10:07 -0400
+Received: by mail-io1-f66.google.com with SMTP id b136so980468iof.3
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Oct 2019 15:10:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gnlFMlNypABzLw5irR8OlMn/0wqoIPMi5PCZlnfktBc=;
-        b=J/j7EnsMpbJA8yJk7WiiiRf2aEycL7N0/yMWKKoWPvWx6QCGnBDEhzH0VAvC2v4CLQ
-         v3V8kAyN7v16sscwmvWO9a+VXf0vyAGdXVGCVxhBdqjC56wlDbQd56WsaVMZ2EvQEPoS
-         mdOyELSWmzbzPmgavFQ/sLMqUIyJNrrId5MQW/V44d41KtB9t8imArRpW9Owl140EBmf
-         s0H0al/rVm9L7tJzM+rnU/Lm66AHNuRJ2vB2HFiBhPb5ssLPCB9jes2JUVQ0zpi1tBsc
-         MFesIM8bAcUAXdJUVEKxyY918T/Z9RW4p4yY65wLFgHxe1mIqxEv1vXT0c7Eg67i6xTW
-         ZxxA==
+        d=sifive.com; s=google;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=6c+UtI1uYDbyYxUQwSa9jl5b6+0JQI0MJumhi18xfQg=;
+        b=kboGfl6VR6AFG/YCMnKlVG1+DLAnMRlmrb8TUPJMLPA8HrsPJg1Wv8qBfjT/1q4Bki
+         bBHNbIFDJCUEivY6JcJ8nmU4c1/OM5zE+nbfYeEhQBMkd4DgnMpt27LQCB66JR4ey7Zc
+         LS2WLuNO7xZj1wj/3HEnrW2rj2gpzQnUmlwALGcM0Wm9pCjPbLzsr0mq1mz7Kq+YUbob
+         9ht8eU3m5L9/xHmvhA1RZaSsMCPDzEHDCd0xVDaqVHUzRaHAY/ldADDT6KFMPW0FPa54
+         yvmv+K2YV95Qr4Cy6BOpBN7bF6oZcWYlKVB7T3RlKmOz/SK53j9xC0hFrC1dwk4swq6R
+         0EfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gnlFMlNypABzLw5irR8OlMn/0wqoIPMi5PCZlnfktBc=;
-        b=Nb2Ajg/b7P3nn68Gt3TgEDEf0Ef5a2Vy4d3gSmtrB1pcWlALGlF2mLCe0t4NXKksIZ
-         hGE+XOaae45PFWGJC6/qn8OG9md5i02cWfr+37JZPt08r3zGSaE7AfRlA745XXcXc8CU
-         orls7pWaxfWqFxMd4KQXnsyC8buQeB1QQOYXVfWrNbEhT3Ji7WQNwtaKYYG6yiujEO/W
-         Me7IBk/1Sv3lXSH76i6rt+v0hr9Qlpy+r0b4Lmr2rRoC0WJF6G8Jqvw19P+IUaAqGSu9
-         ilVgRw3ldAankApAuUkriWfwhpXjPDNPI7iHBhA1ePtLTTbsbNiELVAsJgtLGSUULreX
-         dXKg==
-X-Gm-Message-State: APjAAAXUrfzNY0F5q2b6akp/JqPvKjB/HgOxMq6LJFKD37nbF9dkuAOt
-        Gc8oBL/wcMusvKlopp5AhwoaK1/O5vMS+sGlJn8=
-X-Google-Smtp-Source: APXvYqzOA3zPAidGAa3rwzBrR+yHc0akSPI7N6kZIMeg+KCx3xKt86FB6MaFniD7JYNR2ESpns2Na4vGi1xWW+XriKI=
-X-Received: by 2002:a92:b112:: with SMTP id t18mr6345688ilh.252.1570052117394;
- Wed, 02 Oct 2019 14:35:17 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=6c+UtI1uYDbyYxUQwSa9jl5b6+0JQI0MJumhi18xfQg=;
+        b=H4ukLY01pWabNQmiNK6qFzJlIrYAAvPeNSaMmx0li2CPI2csfu1E2Pt0JGNwyFUI1e
+         HiYo9A1BNvycQsImcerhlOooUrC9+57ux6I2BWboApx1lR1Ni4m2AkyGuCq9tXPZ0v6H
+         n9EFv8+P6cZmkjno22ex8lMr/49PJY/hQAL/gc8wxXInZJ/hL0D7M8bOWQHMZyVlu1am
+         Tr+ICp0nlLQM458knzsc7HYS8YO7IJZl854bYQU93aKrCcJADyo9JxbD2naiP8hZmlUH
+         DTLSIJqIpoUrSD5Bg/SzyunNG42/i27VCY8ewPe7hsgxzw7WqI0eDk2sLwdGm3Z32lUx
+         f/OQ==
+X-Gm-Message-State: APjAAAUGM3xfVKQDzekbyFuOHaaRJVt4gn3rNMkaTK/OG30YC5P21UBf
+        gJbWBtZMJK+h5+kHpji60vP31g==
+X-Google-Smtp-Source: APXvYqwYei1g/xOWE2U+PJHvvft5qrbaOfrE6nk3lP1n8pcWvN76f2qecpvDskoigtVrXYEOtuSqcA==
+X-Received: by 2002:a6b:8bd4:: with SMTP id n203mr5741864iod.133.1570054206751;
+        Wed, 02 Oct 2019 15:10:06 -0700 (PDT)
+Received: from localhost (67-0-10-3.albq.qwest.net. [67.0.10.3])
+        by smtp.gmail.com with ESMTPSA id l16sm350067ilm.67.2019.10.02.15.10.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Oct 2019 15:10:05 -0700 (PDT)
+Date:   Wed, 2 Oct 2019 15:10:05 -0700 (PDT)
+From:   Paul Walmsley <paul.walmsley@sifive.com>
+X-X-Sender: paulw@viisi.sifive.com
+To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>, corbet@lwn.net,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Hogan <jhogan@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Palmer Dabbelt <palmer@sifive.com>, linux-mips@vger.kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-cifs@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-rdma@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>,
+        Mauro Carvalho Chehab <mchehab@infradead.org>,
+        linux-gpio@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Pensando Drivers <drivers@pensando.io>,
+        linux-hwmon@vger.kernel.org, netdev@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Steve French <sfrench@samba.org>,
+        Paul Burton <paul.burton@mips.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 1/3] docs: fix some broken references
+In-Reply-To: <b87385b2ac6ce6c75df82062fce2976149bbaa6b.1569330078.git.mchehab+samsung@kernel.org>
+Message-ID: <alpine.DEB.2.21.9999.1910021509260.3732@viisi.sifive.com>
+References: <b87385b2ac6ce6c75df82062fce2976149bbaa6b.1569330078.git.mchehab+samsung@kernel.org>
+User-Agent: Alpine 2.21.9999 (DEB 301 2018-08-15)
 MIME-Version: 1.0
-References: <20190923050823.GL14368@unreal> <20190923155300.20407-1-navid.emamdoost@gmail.com>
- <20191001135430.GA27086@ziepe.ca>
-In-Reply-To: <20191001135430.GA27086@ziepe.ca>
-From:   Navid Emamdoost <navid.emamdoost@gmail.com>
-Date:   Wed, 2 Oct 2019 16:35:06 -0500
-Message-ID: <CAEkB2EQF0D-Fdg74+E4VdxipZvTaBKseCtKJKnFg7T6ZZE9x6Q@mail.gmail.com>
-Subject: Re: [PATCH v2] RDMA: release allocated skb
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Navid Emamdoost <emamd001@umn.edu>,
-        Stephen McCamant <smccaman@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jason,
+On Tue, 24 Sep 2019, Mauro Carvalho Chehab wrote:
 
-Thanks for the feedback. Yes, you are right if the skb release is
-moved under err4 label it will cause a double free as
-c4iw_ref_send_wait will release skb in case of error.
-So, in order to avoid leaking skb in case of c4iw_bar2_addrs failure,
-the kfree(skb) could be placed under the error check like the way
-patch v1 did. Do you see any mistake in version 1?
-https://lore.kernel.org/patchwork/patch/1128510/
+> There are a number of documentation files that got moved or
+> renamed. update their references.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/cpu/cpu-topology.txt    | 2 +-
+>  Documentation/devicetree/bindings/timer/ingenic,tcu.txt   | 2 +-
+>  Documentation/driver-api/gpio/driver.rst                  | 2 +-
+>  Documentation/hwmon/inspur-ipsps1.rst                     | 2 +-
+>  Documentation/mips/ingenic-tcu.rst                        | 2 +-
+>  Documentation/networking/device_drivers/mellanox/mlx5.rst | 2 +-
+>  MAINTAINERS                                               | 2 +-
+>  drivers/net/ethernet/faraday/ftgmac100.c                  | 2 +-
+>  drivers/net/ethernet/pensando/ionic/ionic_if.h            | 4 ++--
+>  fs/cifs/cifsfs.c                                          | 2 +-
+>  10 files changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/cpu/cpu-topology.txt b/Documentation/devicetree/bindings/cpu/cpu-topology.txt
+> index 99918189403c..9bd530a35d14 100644
+> --- a/Documentation/devicetree/bindings/cpu/cpu-topology.txt
+> +++ b/Documentation/devicetree/bindings/cpu/cpu-topology.txt
+> @@ -549,5 +549,5 @@ Example 3: HiFive Unleashed (RISC-V 64 bit, 4 core system)
+>  [2] Devicetree NUMA binding description
+>      Documentation/devicetree/bindings/numa.txt
+>  [3] RISC-V Linux kernel documentation
+> -    Documentation/devicetree/bindings/riscv/cpus.txt
+> +    Documentation/devicetree/bindings/riscv/cpus.yaml
+>  [4] https://www.devicetree.org/specifications/
 
+For the RISC-V related change:
 
-Thanks,
-Navid
-
-On Tue, Oct 1, 2019 at 8:54 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Mon, Sep 23, 2019 at 10:52:59AM -0500, Navid Emamdoost wrote:
-> > In create_cq, the allocated skb buffer needs to be released on error
-> > path.
-> > Moved the kfree_skb(skb) under err4 label.
->
-> This didn't move anything
->
-> > Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-> >  drivers/infiniband/hw/cxgb4/cq.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
-> > index b1bb61c65f4f..1886c1af10bc 100644
-> > +++ b/drivers/infiniband/hw/cxgb4/cq.c
-> > @@ -173,6 +173,7 @@ static int create_cq(struct c4iw_rdev *rdev, struct t4_cq *cq,
-> >  err4:
-> >       dma_free_coherent(&rdev->lldi.pdev->dev, cq->memsize, cq->queue,
-> >                         dma_unmap_addr(cq, mapping));
-> > +     kfree_skb(skb);
-> >  err3:
-> >       kfree(cq->sw_queue);
-> >  err2:
->
-> This looks wrong to me:
->
-> int c4iw_ofld_send(struct c4iw_rdev *rdev, struct sk_buff *skb)
-> {
->         int     error = 0;
->
->         if (c4iw_fatal_error(rdev)) {
->                 kfree_skb(skb);
->                 pr_err("%s - device in error state - dropping\n", __func__);
->                 return -EIO;
->         }
->         error = cxgb4_ofld_send(rdev->lldi.ports[0], skb);
->         if (error < 0)
->                 kfree_skb(skb);
->         return error < 0 ? error : 0;
-> }
->
-> Jason
+Acked-by: Paul Walmsley <paul.walmsley@sifive.com> # RISC-V
 
 
-
--- 
-Navid.
+- Paul
