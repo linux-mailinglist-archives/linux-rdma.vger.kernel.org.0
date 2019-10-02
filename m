@@ -2,84 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B03C8B05
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 16:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3EDCC8B67
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 16:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbfJBOTf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Oct 2019 10:19:35 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:45345 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728230AbfJBOTe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 10:19:34 -0400
-Received: by mail-qt1-f196.google.com with SMTP id c21so26492019qtj.12;
-        Wed, 02 Oct 2019 07:19:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:subject:references
-         :in-reply-to:mime-version:content-transfer-encoding:cc:cc:to;
-        bh=xEcXpQ/NEwyCKzNgI7asImKqcpzGOLlroU+HXRPzw4Y=;
-        b=pbl8cfHVjygWxRJrxDOT49+2J+Ri/7m9++D1QRchMBW3FEQG7zQUcPOUe3cs5urfnb
-         Q0gi2YkQr/rIhtBd4h2+T8G1NFLNChz2+zexhlEqwu4rmW2YMR9lB7T64NehQhKocP4q
-         9Oof/LI67NNKSHmCrrDHJEOuPP6bBGCyBGC5smgkm7/bkFddY6Ro0A5olq3/DoKy8LPT
-         VSz4k0vEnlmGSeeBekTIGef9GXNwC/JLQmW6DhDUdufbYzI+SLB5g9gL1v8HuBvHeHht
-         7F7uup4R07DdNjMlFi/n+lQ8sl+Q5OYoOegcWTcoFqzJjEBOqGmw4nIkEZp46o3gLEfY
-         HqUg==
-X-Gm-Message-State: APjAAAUH2F5bdtEQ+UKEMKF0F+bvtIM7tC0pjFVK6R7af0s0XgIMZNEW
-        OOmvhU5p749tQMYsynvR6f4F9yQQOA==
-X-Google-Smtp-Source: APXvYqxaLnHeciWkdlweE2LBBH7eoNN5RyZrMPdqv69QmbChVl6tENsSTpMqu/HDsjtpBHL6zYeZPA==
-X-Received: by 2002:a0c:a5a5:: with SMTP id z34mr3240240qvz.110.1570025972605;
-        Wed, 02 Oct 2019 07:19:32 -0700 (PDT)
-Received: from localhost ([132.205.230.8])
-        by smtp.gmail.com with ESMTPSA id d45sm12737320qtc.70.2019.10.02.07.19.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Oct 2019 07:19:32 -0700 (PDT)
-Message-ID: <5d94b1f4.1c69fb81.6f9ad.2586@mx.google.com>
-Date:   Wed, 02 Oct 2019 09:19:29 -0500
-From:   Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 1/3] docs: fix some broken references
-References: <b87385b2ac6ce6c75df82062fce2976149bbaa6b.1569330078.git.mchehab+samsung@kernel.org>
-In-Reply-To: <b87385b2ac6ce6c75df82062fce2976149bbaa6b.1569330078.git.mchehab+samsung@kernel.org>
+        id S1726223AbfJBOig convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 2 Oct 2019 10:38:36 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12360 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726000AbfJBOig (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 10:38:36 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x92EMD4s099708
+        for <linux-rdma@vger.kernel.org>; Wed, 2 Oct 2019 10:38:35 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.104])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2vcuknvvdw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Oct 2019 10:38:35 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Wed, 2 Oct 2019 14:38:34 -0000
+Received: from us1b3-smtp02.a3dr.sjc01.isc4sb.com (10.122.7.175)
+        by smtp.notes.na.collabserv.com (10.122.47.44) with smtp.notes.na.collabserv.com ESMTP;
+        Wed, 2 Oct 2019 14:38:27 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp02.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2019100214382718-518440 ;
+          Wed, 2 Oct 2019 14:38:27 +0000 
+In-Reply-To: <20191002133210.GD5855@unreal>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Leon Romanovsky" <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, bharat@chelsio.com, jgg@ziepe.ca,
+        nirranjan@chelsio.com, krishna2@chelsio.com, bvanassche@acm.org
+Date:   Wed, 2 Oct 2019 14:38:26 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>, corbet@lwn.net
-Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Shannon Nelson <snelson@pensando.io>,
-        Pensando Drivers <drivers@pensando.io>,
-        Steve French <sfrench@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-mips@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-riscv@lists.infradead.org
-To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20191002133210.GD5855@unreal>,<20191002131423.4181-1-bmt@zurich.ibm.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
+X-KeepSent: 0EB68DD7:BD098844-00258487:005068D7;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 65023
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19100214-5525-0000-0000-000000F86860
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.013736
+X-IBM-SpamModules-Versions: BY=3.00011877; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000292; SDB=6.01269669; UDB=6.00672002; IPR=6.01051707;
+ MB=3.00028915; MTD=3.00000008; XFM=3.00000015; UTC=2019-10-02 14:38:31
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-10-02 09:30:44 - 6.00010477
+x-cbparentid: 19100214-5526-0000-0000-000062AF7268
+Message-Id: <OF0EB68DD7.BD098844-ON00258487.005068D7-00258487.00506C97@notes.na.collabserv.com>
+Subject: RE: [[PATCH v2 for-next]] RDMA/siw: Fix SQ/RQ drain logic
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-02_06:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 24 Sep 2019 10:01:28 -0300, Mauro Carvalho Chehab wrote:
-> There are a number of documentation files that got moved or
-> renamed. update their references.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-> ---
->  Documentation/devicetree/bindings/cpu/cpu-topology.txt    | 2 +-
->  Documentation/devicetree/bindings/timer/ingenic,tcu.txt   | 2 +-
->  Documentation/driver-api/gpio/driver.rst                  | 2 +-
->  Documentation/hwmon/inspur-ipsps1.rst                     | 2 +-
->  Documentation/mips/ingenic-tcu.rst                        | 2 +-
->  Documentation/networking/device_drivers/mellanox/mlx5.rst | 2 +-
->  MAINTAINERS                                               | 2 +-
->  drivers/net/ethernet/faraday/ftgmac100.c                  | 2 +-
->  drivers/net/ethernet/pensando/ionic/ionic_if.h            | 4 ++--
->  fs/cifs/cifsfs.c                                          | 2 +-
->  10 files changed, 11 insertions(+), 11 deletions(-)
-> 
+-----"Leon Romanovsky" <leon@kernel.org> wrote: -----
 
-Acked-by: Rob Herring <robh@kernel.org>
+>To: "Bernard Metzler" <bmt@zurich.ibm.com>
+>From: "Leon Romanovsky" <leon@kernel.org>
+>Date: 10/02/2019 03:32PM
+>Cc: linux-rdma@vger.kernel.org, bharat@chelsio.com, jgg@ziepe.ca,
+>nirranjan@chelsio.com, krishna2@chelsio.com, bvanassche@acm.org
+>Subject: [EXTERNAL] Re: [[PATCH v2 for-next]] RDMA/siw: Fix SQ/RQ
+>drain logic
+>
+>On Wed, Oct 02, 2019 at 03:14:23PM +0200, Bernard Metzler wrote:
+>> Storage ULPs (e.g. iSER & NVMeOF) use ib_drain_qp() to
+>> drain QP/CQ. Current SIW's own drain routines do not properly
+>> wait until all SQ/RQ elements are completed and reaped
+>> from the CQ. This may cause touch after free issues.
+>> New logic relies on generic __ib_drain_sq()/__ib_drain_rq()
+>> posting a final work request, which SIW immediately flushes
+>> to CQ.
+>>
+>> Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
+>> Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+>> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+>> ---
+>>  drivers/infiniband/sw/siw/siw_main.c  |  20 -----
+>>  drivers/infiniband/sw/siw/siw_verbs.c | 103
+>+++++++++++++++++++++-----
+>>  2 files changed, 86 insertions(+), 37 deletions(-)
+>>
+>
+>I didn't follow after v1 discussion and will be glad to see
+>changelog,
+>what is the reason for v2?
+>
+Absolutely. Let me resend the patch with below change log.
+
+Sorry & best regards,
+Bernard.
+
+v1 -> v2:
+- Accept SQ and RQ work requests, if QP is in ERROR
+  state. In that case, immediately flush WR's to CQ.
+  This already provides needed functionality to
+  support ib_drain_sq()/ib_drain_rq() without extra
+  state checking in the fast path.
 
