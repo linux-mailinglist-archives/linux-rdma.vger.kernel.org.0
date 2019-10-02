@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4F5C8C75
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 17:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97C9C8C8C
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 17:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726225AbfJBPM7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Oct 2019 11:12:59 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:38373 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728076AbfJBPLe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 11:11:34 -0400
-Received: by mail-wm1-f67.google.com with SMTP id 3so7400723wmi.3
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Oct 2019 08:11:32 -0700 (PDT)
+        id S1728164AbfJBPPY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Oct 2019 11:15:24 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:35090 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbfJBPPX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 11:15:23 -0400
+Received: by mail-wm1-f65.google.com with SMTP id y21so7412896wmi.0
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Oct 2019 08:15:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lIwBPELl88iaMbSYiV7ycp6Z2I2x7UqLvm1fpqtgIXY=;
-        b=TfizWOp1O5grpdnBXDk3+LRhC3jOPjmjiOtARGAnecRh/K1l/Eze0BI3ax7G8dcRfN
-         9npLURBC3t5GSXRgBjBXwPLtG8NtfXp1SzSZw9jSNwJfz8oFxTNxaoQKOzpl1NKDcQd0
-         q1jkbm9GH5JRcVoAZjecW3T1H8QtX7UjbNT7L+ohbCmO7o0dw/yBsC2CTcXSjnwcAMqy
-         /OAk9npnpenDU9whhCeJdWn5BOJGGjqo/zL5lz+AsmWrLITNhG9VGiO3DHzZyb8j2X9b
-         QGotpTE2h7+/dKG+DuYJnFItWYtl+q7Cw0IpNvCS5ewq5P0+u2kan5huNKVyJaxLIvxU
-         Tuaw==
+        bh=gCeYxxWGqu4H261nZ/Kv5iczycPoUyJg2oSaDolu7gM=;
+        b=LjDUFAgRLILpxmhwZg4/ZJUJ2OUU7wdxWuKZ6VUgEu7PUnsKFfCYTE9IVWyNuevkBO
+         pBVqPLv0P6DE3Ai4tCIKcqsrLRTZNBQ/1rJ5clY4gikofrb68BifYJnz3N+yhO8tOnw9
+         CeMkJ1PfTPjXO89D3qhU4gWsq3VTQH/mne5TYJ0+T65tXJtNn6QKMIZakcFZHNTMJXzk
+         yD0UCQIVhK/e7rOP8YYKnQX89NaBvdNQW0x8bw42iVJlaGh4/3/bHWsvr7SoYN8XMt2y
+         U+rV0+8MThlAWHM2QDqpUvUoIYti6hv1z9w4ZR2Eu6K7UjjBeLSf/7GRhYwlbv/6hyL+
+         Sd8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lIwBPELl88iaMbSYiV7ycp6Z2I2x7UqLvm1fpqtgIXY=;
-        b=cvF9ORgj/tKPKkLooga4Gz8vWX7GPT/XyfHH4etDNHbTnLIdC4FnFsL1/eoIkvb88W
-         9mDNE/u7qqmNAoBuOpXwQqDmY2Y4+J8o9cctLiKxPObUwwr+e4ZP+g7AqY9eGBr0OgBx
-         fJ1FQvqAQKumy2FOOjCfDvvpsanXgnvBOhYV4A4Kbuz50ZF9BL+5yN0ytYH7WJdi/UQ6
-         /3/VXp4+P+ubtv6eVv1wLtb9D1CoSkiCNjIPhSURn37zbzewHt1g4ssxhrwcBFkNwZJA
-         +PvGV2EpHh5qKnUsz4QGpb+nZxSIURYGJFreXEAFkth25oaXjogrBk4pu2vzfLzQ9gbP
-         4Big==
-X-Gm-Message-State: APjAAAVVJhWJY4QyCpIDXruJ3mMvs1uP0x39ESmMEY9I8sbztreYo1Dw
-        YwPsD6W1UULbu+xY4YhVRDNBJQImih15Q/odFyFg9Q==
-X-Google-Smtp-Source: APXvYqyVYtXXGpUdVB6ylwGhw1yNpK4mJ8Vn9U3jNTlfbgR4PTFniUnt/0j6bekeqzWI3mTgTbrRUGwR5AFnXJ0n2wQ=
-X-Received: by 2002:a05:600c:c2:: with SMTP id u2mr3082276wmm.37.1570029091670;
- Wed, 02 Oct 2019 08:11:31 -0700 (PDT)
+        bh=gCeYxxWGqu4H261nZ/Kv5iczycPoUyJg2oSaDolu7gM=;
+        b=o6/k9oRjjUsvDaetVQzmKPuSWRnU0i4JS52sx24yfiWKAct7m4DDV75DOkf2Sg7bHY
+         MHQj5dQWTJOdL88qYI3KZ0RdLoYtKU4xn+RY9CgJDw1KeUfytLDCyBwSUuDCj26piskM
+         HRvao/9EplA3sxB+avxDnY9h9he9MepZE1x6aqTUrMgR/isjt9UI/GYkDzRUNcxAtzub
+         aCRJsCq3fhSrS+ZQGcTqkDcLFOSoiMURhTmBBsVXCNKoAxGkjZfOQ56o0SSXLeV1obf7
+         UGFQkuJN52T9K99ayMbST9tupRvZgaMfm0e07CqAv0r2FY+A9kH/B7IIVe/LGDrLGeyz
+         RYLQ==
+X-Gm-Message-State: APjAAAXrwqCDRCYeqQn92DX/t/SxGvgeizJMl4WWpsACuoGJxcHs2G+0
+        r4M2mA8G9fQMTHaPSdElPGpZx26M2It7bsiYQOyvKw==
+X-Google-Smtp-Source: APXvYqwUICB5HNOgqN+UEb5CMQzWU5E3xd9myBBnnlKBSiHKqmz/8YiGf6iJyWEPRrqrDPTyauO2+yKIBwytUQD57mw=
+X-Received: by 2002:a1c:4485:: with SMTP id r127mr3136949wma.59.1570029321609;
+ Wed, 02 Oct 2019 08:15:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-13-jinpuwang@gmail.com>
- <456f046d-391e-2344-f61b-ba84290ff7b1@acm.org>
-In-Reply-To: <456f046d-391e-2344-f61b-ba84290ff7b1@acm.org>
+References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-12-jinpuwang@gmail.com>
+ <8477e5d5-036b-f3b5-976b-624b811baf38@acm.org>
+In-Reply-To: <8477e5d5-036b-f3b5-976b-624b811baf38@acm.org>
 From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Wed, 2 Oct 2019 17:11:20 +0200
-Message-ID: <CAMGffE=RkDw0rbL-qMnuv0jA-PkH-iaeWGAUyDxVvXanL59n+A@mail.gmail.com>
-Subject: Re: [PATCH v4 12/25] ibtrs: server: sysfs interface functions
+Date:   Wed, 2 Oct 2019 17:15:10 +0200
+Message-ID: <CAMGffE=dBo-yZVOvyjyeauEEHzHOjmgtOjGKB+GiQiSoMX7Sig@mail.gmail.com>
+Subject: Re: [PATCH v4 11/25] ibtrs: server: statistics functions
 To:     Bart Van Assche <bvanassche@acm.org>
 Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
@@ -55,27 +55,40 @@ Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         Sagi Grimberg <sagi@grimberg.me>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de,
-        Roman Pen <roman.penyaev@profitbricks.com>
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 2:00 AM Bart Van Assche <bvanassche@acm.org> wrote:
+On Tue, Sep 24, 2019 at 1:56 AM Bart Van Assche <bvanassche@acm.org> wrote:
 >
 > On 6/20/19 8:03 AM, Jack Wang wrote:
-> > +static void ibtrs_srv_dev_release(struct device *dev)
+> > +ssize_t ibtrs_srv_stats_rdma_to_str(struct ibtrs_srv_stats *stats,
+> > +                                 char *page, size_t len)
 > > +{
-> > +     /* Nobody plays with device references, so nop */
+> > +     struct ibtrs_srv_stats_rdma_stats *r = &stats->rdma_stats;
+> > +     struct ibtrs_srv_sess *sess;
+> > +
+> > +     sess = container_of(stats, typeof(*sess), stats);
+> > +
+> > +     return scnprintf(page, len, "%lld %lld %lld %lld %u\n",
+> > +                      (s64)atomic64_read(&r->dir[READ].cnt),
+> > +                      (s64)atomic64_read(&r->dir[READ].size_total),
+> > +                      (s64)atomic64_read(&r->dir[WRITE].cnt),
+> > +                      (s64)atomic64_read(&r->dir[WRITE].size_total),
+> > +                      atomic_read(&sess->ids_inflight));
 > > +}
 >
-> I doubt that the above comment is correct.
+> Does this follow the sysfs one-value-per-file rule? See also
+> Documentation/filesystems/sysfs.txt.
 >
 > Thanks,
 >
 > Bart.
-will fix it,
+It looks overkill to create one file for each value to me, and there
+are enough stats in sysfs contain multiple values.
 
-Thank you, Bart!
+Thanks
+Jinpu
