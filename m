@@ -2,134 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2E8C88A7
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 14:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528CCC8948
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 15:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725935AbfJBMc6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Oct 2019 08:32:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725848AbfJBMc6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 2 Oct 2019 08:32:58 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 959D82133F;
-        Wed,  2 Oct 2019 12:32:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570019577;
-        bh=IvBhPwmzCuDK5a0zT9AP+G+1dk9/67FyCXMdsLkEDDo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K0V40a5Iz9oygb5GWSkrECOdpe5xUlknPAIm/SsT2I1KljUP68yLouyESuylYCmIP
-         p5rfm9UYu8B6kJR8CO0P1nyReLyLD63zkwqhGxvMK7Jj55Lwn8gVeDBJ9ugTUjZLXw
-         jfnmDLc0rUz7TWmyEXx5DhXD2zfFEV0zB2Z/K04o=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: [PATCH rdma-next 2/2] RDMA/core: Check that process is still alive before sending it to the users
-Date:   Wed,  2 Oct 2019 15:32:45 +0300
-Message-Id: <20191002123245.18153-3-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191002123245.18153-1-leon@kernel.org>
-References: <20191002123245.18153-1-leon@kernel.org>
+        id S1726852AbfJBNHn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Oct 2019 09:07:43 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:36061 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726901AbfJBNHk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 09:07:40 -0400
+Received: by mail-oi1-f175.google.com with SMTP id k20so17574648oih.3
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Oct 2019 06:07:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=50mE1GFOx2IDL8fOUBOO94SxADHosM9SfQ7pyxbnHTg=;
+        b=OcATdm0fU0HGv1IIhubCuFeqR/P2N37o7xtR/ZD4irFYeHZyY/QMlcxb9A3jVo1gr4
+         chbxvSvR7VV0Qigg5Ap4In4xkHjYBGjW81DG45OK+R+st0eaUOvKFdRsNtBGfdXXso+G
+         CRT9yAg3GyQINBZ5KBDazaDUYmqZ9vColyWrmK7zf2b7qw3LLSuXB22GA91dRzkb/DN3
+         hVBuovDyfmx09Yu6vWFC0lVHAXaZdX+8e6xTLeBTs8iVaP9DmUzHXZJ5SuCoYXwZ14L3
+         3WdQyTtyBcH2b1o1IoJ8dDqWwniK/IYku412BJ6lj3HdaGvf3lcdbJk/pu8WTervpUsH
+         BKcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=50mE1GFOx2IDL8fOUBOO94SxADHosM9SfQ7pyxbnHTg=;
+        b=U532IcywIbK1sPeQbmXYaj/e2VGEDAlsuyTfwzQRCp0HGV7m+yjqVJjpnGqjsHMXFq
+         6ARONsiw8COhP+wEl0nsac+MXaM18ZgWRYgG3XwZ2glO29GqC2hbJZm7l7dgwPwF5qXi
+         BAxW630hWxz1fD6/cGiaF8OjMQpTHxK3OsO827wxn6X8Jve1E1u/5N03jyJPgi/Ukzx/
+         NTppxIEhHff6m2TBCbcnlrfr7/HzO1mi3FXDevedSKShPDGfVsNvrmjC9t/8UrBcl7o1
+         Plh5yXjUiSbW4OggTrWf+A50izEGuQ2cXsTB22jiEtjGz8ekEf7YE4t6Mk0Rf2RCkQHB
+         e5Gg==
+X-Gm-Message-State: APjAAAXRttbmb6aS3WgjKTcFQNExUAeOZcwm0kasDnq0zr/9j5r8zZQd
+        yudP1plmntNZtT1tFiVk5lSuieKdSvOaLYgTbi33Fg==
+X-Google-Smtp-Source: APXvYqxGQ01cpMCqhyT0OZic4du6ntHizaukJRygkeedHLWkQjdo8fNGeQWk8deAiGsRuCSgwYPjlJGf+Xhg9J875/c=
+X-Received: by 2002:aca:eb09:: with SMTP id j9mr2925590oih.105.1570021659582;
+ Wed, 02 Oct 2019 06:07:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
+ <20190923222620.GC16973@dread.disaster.area> <20190925234602.GB12748@iweiny-DESK2.sc.intel.com>
+ <20190930084233.GO16973@dread.disaster.area> <20191001210156.GB5500@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20191001210156.GB5500@iweiny-DESK2.sc.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 2 Oct 2019 06:07:27 -0700
+Message-ID: <CAPcyv4jpLYUcqA6D_qfGF4FQCu-SuH67FHLcH0fCQTQ-D+hWzQ@mail.gmail.com>
+Subject: Re: Lease semantic proposal
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+On Tue, Oct 1, 2019 at 2:02 PM Ira Weiny <ira.weiny@intel.com> wrote:
+>
+> On Mon, Sep 30, 2019 at 06:42:33PM +1000, Dave Chinner wrote:
+> > On Wed, Sep 25, 2019 at 04:46:03PM -0700, Ira Weiny wrote:
+> > > On Tue, Sep 24, 2019 at 08:26:20AM +1000, Dave Chinner wrote:
+> > > > Hence, AFIACT, the above definition of a F_RDLCK|F_LAYOUT lease
+> > > > doesn't appear to be compatible with the semantics required by
+> > > > existing users of layout leases.
+> > >
+> > > I disagree.  Other than the addition of F_UNBREAK, I think this is consistent
+> > > with what is currently implemented.  Also, by exporting all this to user space
+> > > we can now write tests for it independent of the RDMA pinning.
+> >
+> > The current usage of F_RDLCK | F_LAYOUT by the pNFS code allows
+> > layout changes to occur to the file while the layout lease is held.
+>
+> This was not my understanding.
 
-The PID information can disappear asynchronically because task can be
-killed and moved to zombie state. In such case, PID will be zero in
-similar way to the kernel tasks. Recognize such situation where
-we are asking to return orphaned object and simply skip filling
-PID attribute.
+I think you guys are talking past each other. F_RDLCK | F_LAYOUT can
+be broken to allow writes to the file / layout. The new unbreakable
+case would require explicit SIGKILL as "revocation method of last
+resort", but that's the new incremental extension being proposed. No
+changes to the current behavior of F_RDLCK | F_LAYOUT.
 
-As part of this change, document the same scenario in counter.c code.
-
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/core/counters.c | 14 ++++++++++++--
- drivers/infiniband/core/nldev.c    | 31 ++++++++++++++++++++++--------
- 2 files changed, 35 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
-index 12ba2685abcf..47c551a0bcb0 100644
---- a/drivers/infiniband/core/counters.c
-+++ b/drivers/infiniband/core/counters.c
-@@ -149,8 +149,18 @@ static bool auto_mode_match(struct ib_qp *qp, struct rdma_counter *counter,
- 	struct auto_mode_param *param = &counter->mode.param;
- 	bool match = true;
-
--	/* Ensure that counter belongs to the right PID */
--	if (task_pid_nr(counter->res.task) != task_pid_nr(qp->res.task))
-+	/*
-+	 * Ensure that counter belongs to the right PID.
-+	 * This operation can race with user space which kills
-+	 * the process and leaves QP and counters orphans.
-+	 *
-+	 * It is not a big deal because exitted task will leave both
-+	 * QP and counter in the same bucket of zombie process. Just ensure
-+	 * that process is still alive before procedding.
-+	 *
-+	 */
-+	if (task_pid_nr(counter->res.task) != task_pid_nr(qp->res.task) ||
-+	    !task_pid_nr(qp->res.task))
- 		return false;
-
- 	if (auto_mask & RDMA_COUNTER_MASK_QP_TYPE)
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index 71bc08510064..c6fe0c52f6dc 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -399,20 +399,35 @@ static int fill_res_info(struct sk_buff *msg, struct ib_device *device)
- static int fill_res_name_pid(struct sk_buff *msg,
- 			     struct rdma_restrack_entry *res)
- {
-+	int err = 0;
-+	pid_t pid;
-+
- 	/*
- 	 * For user resources, user is should read /proc/PID/comm to get the
- 	 * name of the task file.
- 	 */
- 	if (rdma_is_kernel_res(res)) {
--		if (nla_put_string(msg, RDMA_NLDEV_ATTR_RES_KERN_NAME,
--		    res->kern_name))
--			return -EMSGSIZE;
--	} else {
--		if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PID,
--		    task_pid_vnr(res->task)))
--			return -EMSGSIZE;
-+		err = nla_put_string(msg, RDMA_NLDEV_ATTR_RES_KERN_NAME,
-+				     res->kern_name);
-+		goto out;
- 	}
--	return 0;
-+
-+	pid = task_pid_vnr(res->task);
-+	/*
-+	 * PID == 0 returns in two scenarios:
-+	 * 1. It is kernel task, but because we checked above, it won't be possible.
-+	 * 2. Task is dead and in zombie state. There is no need to print PID anymore.
-+	 */
-+	if (pid)
-+		/*
-+		 * This part is racy, task can be killed and PID will be zero right
-+		 * here but it is ok, next query won't return PID. We don't promise
-+		 * real-time reflection of SW objects.
-+		 */
-+		err = nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PID, pid);
-+
-+out:
-+	return err ? -EMSGSIZE : 0;
- }
-
- static bool fill_res_entry(struct ib_device *dev, struct sk_buff *msg,
---
-2.20.1
-
+Dave, the question at hand is whether this new layout lease mode being
+proposed is going to respond to BREAK_WRITE, or just BREAK_UNMAP. It
+seems longterm page pinning conflicts really only care about
+BREAK_UNMAP where pages that were part of the file are being removed
+from the file. The unbreakable case can tolerate layout changes that
+keep pinned pages mapped / allocated to the file.
