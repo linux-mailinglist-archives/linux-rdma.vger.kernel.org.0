@@ -2,61 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F02D3C8C5C
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 17:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4F5C8C75
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 17:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728154AbfJBPIm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 2 Oct 2019 11:08:42 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:32798 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725766AbfJBPIm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 11:08:42 -0400
-Received: from localhost (unknown [IPv6:2603:3023:50c:85e1:b5c5:ae11:3e54:6a07])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id AE8EE14BBED93;
-        Wed,  2 Oct 2019 08:08:41 -0700 (PDT)
-Date:   Wed, 02 Oct 2019 11:08:41 -0400 (EDT)
-Message-Id: <20191002.110841.1635125794151710562.davem@davemloft.net>
-To:     valex@mellanox.com
-Cc:     mkubecek@suse.cz, saeedm@mellanox.com, leon@kernel.org,
-        bp@alien8.de, stephen@networkplumber.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] mlx5: avoid 64-bit division in
- dr_icm_pool_mr_create()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <57dc9ea7-e925-e8e8-af71-35326bb5c673@mellanox.com>
-References: <20191002121241.D74DAE04C7@unicorn.suse.cz>
-        <57dc9ea7-e925-e8e8-af71-35326bb5c673@mellanox.com>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 02 Oct 2019 08:08:42 -0700 (PDT)
+        id S1726225AbfJBPM7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Oct 2019 11:12:59 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:38373 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728076AbfJBPLe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 11:11:34 -0400
+Received: by mail-wm1-f67.google.com with SMTP id 3so7400723wmi.3
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Oct 2019 08:11:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lIwBPELl88iaMbSYiV7ycp6Z2I2x7UqLvm1fpqtgIXY=;
+        b=TfizWOp1O5grpdnBXDk3+LRhC3jOPjmjiOtARGAnecRh/K1l/Eze0BI3ax7G8dcRfN
+         9npLURBC3t5GSXRgBjBXwPLtG8NtfXp1SzSZw9jSNwJfz8oFxTNxaoQKOzpl1NKDcQd0
+         q1jkbm9GH5JRcVoAZjecW3T1H8QtX7UjbNT7L+ohbCmO7o0dw/yBsC2CTcXSjnwcAMqy
+         /OAk9npnpenDU9whhCeJdWn5BOJGGjqo/zL5lz+AsmWrLITNhG9VGiO3DHzZyb8j2X9b
+         QGotpTE2h7+/dKG+DuYJnFItWYtl+q7Cw0IpNvCS5ewq5P0+u2kan5huNKVyJaxLIvxU
+         Tuaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lIwBPELl88iaMbSYiV7ycp6Z2I2x7UqLvm1fpqtgIXY=;
+        b=cvF9ORgj/tKPKkLooga4Gz8vWX7GPT/XyfHH4etDNHbTnLIdC4FnFsL1/eoIkvb88W
+         9mDNE/u7qqmNAoBuOpXwQqDmY2Y4+J8o9cctLiKxPObUwwr+e4ZP+g7AqY9eGBr0OgBx
+         fJ1FQvqAQKumy2FOOjCfDvvpsanXgnvBOhYV4A4Kbuz50ZF9BL+5yN0ytYH7WJdi/UQ6
+         /3/VXp4+P+ubtv6eVv1wLtb9D1CoSkiCNjIPhSURn37zbzewHt1g4ssxhrwcBFkNwZJA
+         +PvGV2EpHh5qKnUsz4QGpb+nZxSIURYGJFreXEAFkth25oaXjogrBk4pu2vzfLzQ9gbP
+         4Big==
+X-Gm-Message-State: APjAAAVVJhWJY4QyCpIDXruJ3mMvs1uP0x39ESmMEY9I8sbztreYo1Dw
+        YwPsD6W1UULbu+xY4YhVRDNBJQImih15Q/odFyFg9Q==
+X-Google-Smtp-Source: APXvYqyVYtXXGpUdVB6ylwGhw1yNpK4mJ8Vn9U3jNTlfbgR4PTFniUnt/0j6bekeqzWI3mTgTbrRUGwR5AFnXJ0n2wQ=
+X-Received: by 2002:a05:600c:c2:: with SMTP id u2mr3082276wmm.37.1570029091670;
+ Wed, 02 Oct 2019 08:11:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190620150337.7847-1-jinpuwang@gmail.com> <20190620150337.7847-13-jinpuwang@gmail.com>
+ <456f046d-391e-2344-f61b-ba84290ff7b1@acm.org>
+In-Reply-To: <456f046d-391e-2344-f61b-ba84290ff7b1@acm.org>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Wed, 2 Oct 2019 17:11:20 +0200
+Message-ID: <CAMGffE=RkDw0rbL-qMnuv0jA-PkH-iaeWGAUyDxVvXanL59n+A@mail.gmail.com>
+Subject: Re: [PATCH v4 12/25] ibtrs: server: sysfs interface functions
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de,
+        Roman Pen <roman.penyaev@profitbricks.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Alex Vesker <valex@mellanox.com>
-Date: Wed, 2 Oct 2019 14:58:44 +0000
+On Tue, Sep 24, 2019 at 2:00 AM Bart Van Assche <bvanassche@acm.org> wrote:
+>
+> On 6/20/19 8:03 AM, Jack Wang wrote:
+> > +static void ibtrs_srv_dev_release(struct device *dev)
+> > +{
+> > +     /* Nobody plays with device references, so nop */
+> > +}
+>
+> I doubt that the above comment is correct.
+>
+> Thanks,
+>
+> Bart.
+will fix it,
 
-> On 10/2/2019 3:12 PM, Michal Kubecek wrote:
->> Recently added code introduces 64-bit division in dr_icm_pool_mr_create()
->> so that build on 32-bit architectures fails with
->>
->>    ERROR: "__umoddi3" [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] undefined!
->>
->> As the divisor is always a power of 2, we can use bitwise operation
->> instead.
->>
->> Fixes: 29cf8febd185 ("net/mlx5: DR, ICM pool memory allocator")
->> Reported-by: Borislav Petkov <bp@alien8.de>
->> Signed-off-by: Michal Kubecek <mkubecek@suse.cz>
- ...
-> Align diff is power of 2,  looks good to me.
-> Thanks for fixing it Michal.
-
-I'll just apply this directly, thanks everyone.
-
+Thank you, Bart!
