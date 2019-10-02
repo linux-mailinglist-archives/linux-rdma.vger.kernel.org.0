@@ -2,174 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23655C8A34
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 15:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 251D8C8AAB
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 16:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728154AbfJBNtm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Oct 2019 09:49:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726150AbfJBNtl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 2 Oct 2019 09:49:41 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 798A821783;
-        Wed,  2 Oct 2019 13:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570024180;
-        bh=H4MJVYsZJO/6VO8DXButzSaRTg+PIdVczRyRW0Kz44s=;
-        h=From:To:Cc:Subject:Date:From;
-        b=zx0ObmtNO0OIiDZM7ZoFvl4nP91oCLt63Od0FQRGCsZ2sg2E8dqScO5GN0KIZlza6
-         zS6/Ih+YgFQX4UOS0NdVRUzi76Kd6ibI1pS94iv6oy4xRG9Zjp3tVC8wBW8SiXK2/j
-         T1upSM7vFqiVChdwHy6LqQdibEo0oWUqKNwfYiW8=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     David Ahern <dsahern@gmail.com>
+        id S1727959AbfJBOOy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Oct 2019 10:14:54 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:35773 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbfJBOOx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 10:14:53 -0400
+Received: by mail-qk1-f195.google.com with SMTP id w2so15133024qkf.2
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Oct 2019 07:14:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=od02w21zGmcxSDiiBE3+RmwgoeYQ8ap+pXkewByuoTg=;
+        b=CR2EqhPmJQEY+FDmCWoyL+Z1Nv0qFAmssGcJtCisgQVHpLBzXGvbYaKRk99mOI5BdL
+         K3AqQjR4wT9c5N1tK0MCGnbxzszpAoehlXwi/J7ZwQ3AoU4ErLfvB8jGM4CMr1Xcg8G1
+         g+G5w/2TThrpfeXD9hMFvF/tvGPlMIkEXc/h/EfWWD3AMT641Z2QRl6rjoumvhy7WszG
+         H0wwJIZdLBIEaExQXnqvN7s6y/VJLmOfqiLe8i/rdnosGOfIH9g+13Xdirt7nm2i2o8A
+         u6gEPj82fcB6jrSt+P+Ov8+gBksX9R7LzEKXBIqY1CE96yf/Lp9/N6WpXU4mGZnCuPZe
+         R15A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=od02w21zGmcxSDiiBE3+RmwgoeYQ8ap+pXkewByuoTg=;
+        b=GYImbmtczjh+T+DDYcpu+P3lDPeTpuMSqT4ytrSzB1sxnqTbnaaHsuaXrHdXgjWzAW
+         TiFOerb14wdSYvMih7iCI2ToaWHqA6J28K3goyZdrX9zNmPHjLCkHTbhx+MlKI/zYSN4
+         W27CpcKlQqisAKIx6jv3iUz4iq27Pjew+KArA5niiFXTSNLHYE7ksWbs1wNuFEfTC8YO
+         Tg22sGzaA3TfMuESgg3qVyt0ZbsloTdWfkCZOOpDeQtl2wdJFKCf6IQs2SiEYQE7aVP/
+         kWoRTT2psQKyMmu6gTXIw5ebluApntJT8G13lRFelhzLKZXovr/haxGJflXbKNoOgVaP
+         5LnQ==
+X-Gm-Message-State: APjAAAUprNiLLCzjGg/1FUSNTFUGT03j+xR9Z6uN3NvyCyo74+ccEPkF
+        2txN2v7gFiJL9LVaiQiXCztr6Q==
+X-Google-Smtp-Source: APXvYqwUty+RaBC8aTJNcMOpwLEuChkaP5ZJnwZOhrajMnCfum3079bN6VyzF7QNJAuxbX2g4S46XA==
+X-Received: by 2002:a37:65c7:: with SMTP id z190mr3829415qkb.483.1570025692905;
+        Wed, 02 Oct 2019 07:14:52 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id j2sm9632109qki.15.2019.10.02.07.14.52
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 02 Oct 2019 07:14:52 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iFfP1-0006eY-OK; Wed, 02 Oct 2019 11:14:51 -0300
+Date:   Wed, 2 Oct 2019 11:14:51 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bart Van Assche <bvanassche@acm.org>
 Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        netdev <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Stephen Hemminger <stephen@networkplumber.org>
-Subject: [PATCH iproute2-next] rdma: Relax requirement to have PID for HW objects
-Date:   Wed,  2 Oct 2019 16:49:34 +0300
-Message-Id: <20191002134934.19226-1-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Honggang LI <honli@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>
+Subject: Re: [PATCH 09/15] RDMA/srpt: Fix handling of SR-IOV and iWARP ports
+Message-ID: <20191002141451.GA17152@ziepe.ca>
+References: <20190930231707.48259-1-bvanassche@acm.org>
+ <20190930231707.48259-10-bvanassche@acm.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190930231707.48259-10-bvanassche@acm.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+On Mon, Sep 30, 2019 at 04:17:01PM -0700, Bart Van Assche wrote:
+> Management datagrams (MADs) are not supported by SR-IOV VFs nor by
+> iWARP
 
-RDMA has weak connection between PIDs and HW objects, because
-the latter tied to file descriptors for their lifetime management.
+Really? This seems surprising to me..
 
-The outcome of such connection is that for the following scenario,
-the returned PID will be 0 (not-valid):
- 1. Create FD and context
- 2. Share it with ephemeral child
- 3. Create any object and exit that child
-
-This flow was revealed in testing environment and of course real users
-are not running such scenario, because it makes no sense at all in RDMA
-world.
-
-Let's do two changes in the code to support such workflow anyway:
- 1. Remove need to provide PID/kernel name. Code already supports it,
-    just need to remove extra validation.
- 2. Ball-out in case PID is 0.
-
-Link: https://lore.kernel.org/linux-rdma/20191002123245.18153-2-leon@kernel.org
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- rdma/res-cmid.c | 5 +----
- rdma/res-cq.c   | 5 +----
- rdma/res-mr.c   | 5 +----
- rdma/res-pd.c   | 5 +----
- rdma/res-qp.c   | 5 +----
- rdma/res.c      | 3 +++
- 6 files changed, 8 insertions(+), 20 deletions(-)
-
-diff --git a/rdma/res-cmid.c b/rdma/res-cmid.c
-index 0b830088..0ee9c3d4 100644
---- a/rdma/res-cmid.c
-+++ b/rdma/res-cmid.c
-@@ -120,11 +120,8 @@ static int res_cm_id_line(struct rd *rd, const char *name, int idx,
- 	char *comm = NULL;
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_STATE] ||
--	    !nla_line[RDMA_NLDEV_ATTR_RES_PS] ||
--	    (!nla_line[RDMA_NLDEV_ATTR_RES_PID] &&
--	     !nla_line[RDMA_NLDEV_ATTR_RES_KERN_NAME])) {
-+	    !nla_line[RDMA_NLDEV_ATTR_RES_PS])
- 		return MNL_CB_ERROR;
--	}
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_PORT_INDEX])
- 		port = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_PORT_INDEX]);
-diff --git a/rdma/res-cq.c b/rdma/res-cq.c
-index d2591fbe..6855e798 100644
---- a/rdma/res-cq.c
-+++ b/rdma/res-cq.c
-@@ -56,11 +56,8 @@ static int res_cq_line(struct rd *rd, const char *name, int idx,
- 	uint32_t cqe;
- 
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_CQE] ||
--	    !nla_line[RDMA_NLDEV_ATTR_RES_USECNT] ||
--	    (!nla_line[RDMA_NLDEV_ATTR_RES_PID] &&
--	     !nla_line[RDMA_NLDEV_ATTR_RES_KERN_NAME])) {
-+	    !nla_line[RDMA_NLDEV_ATTR_RES_USECNT])
- 		return MNL_CB_ERROR;
--	}
- 
- 	cqe = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_CQE]);
- 
-diff --git a/rdma/res-mr.c b/rdma/res-mr.c
-index f4a24dc1..c1b8069a 100644
---- a/rdma/res-mr.c
-+++ b/rdma/res-mr.c
-@@ -17,11 +17,8 @@ static int res_mr_line(struct rd *rd, const char *name, int idx,
- 	uint32_t mrn = 0;
- 	uint32_t pid = 0;
- 
--	if (!nla_line[RDMA_NLDEV_ATTR_RES_MRLEN] ||
--	    (!nla_line[RDMA_NLDEV_ATTR_RES_PID] &&
--	     !nla_line[RDMA_NLDEV_ATTR_RES_KERN_NAME])) {
-+	if (!nla_line[RDMA_NLDEV_ATTR_RES_MRLEN])
- 		return MNL_CB_ERROR;
--	}
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_RKEY])
- 		rkey = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_RES_RKEY]);
-diff --git a/rdma/res-pd.c b/rdma/res-pd.c
-index 07c836e8..6e5e4e6b 100644
---- a/rdma/res-pd.c
-+++ b/rdma/res-pd.c
-@@ -17,11 +17,8 @@ static int res_pd_line(struct rd *rd, const char *name, int idx,
- 	uint32_t pdn = 0;
- 	uint64_t users;
- 
--	if (!nla_line[RDMA_NLDEV_ATTR_RES_USECNT] ||
--	    (!nla_line[RDMA_NLDEV_ATTR_RES_PID] &&
--	     !nla_line[RDMA_NLDEV_ATTR_RES_KERN_NAME])) {
-+	if (!nla_line[RDMA_NLDEV_ATTR_RES_USECNT])
- 		return MNL_CB_ERROR;
--	}
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_RES_LOCAL_DMA_LKEY])
- 		local_dma_lkey = mnl_attr_get_u32(
-diff --git a/rdma/res-qp.c b/rdma/res-qp.c
-index 954e465d..e30d68ed 100644
---- a/rdma/res-qp.c
-+++ b/rdma/res-qp.c
-@@ -90,11 +90,8 @@ static int res_qp_line(struct rd *rd, const char *name, int idx,
- 	if (!nla_line[RDMA_NLDEV_ATTR_RES_LQPN] ||
- 	    !nla_line[RDMA_NLDEV_ATTR_RES_SQ_PSN] ||
- 	    !nla_line[RDMA_NLDEV_ATTR_RES_TYPE] ||
--	    !nla_line[RDMA_NLDEV_ATTR_RES_STATE] ||
--	    (!nla_line[RDMA_NLDEV_ATTR_RES_PID] &&
--	     !nla_line[RDMA_NLDEV_ATTR_RES_KERN_NAME])) {
-+	    !nla_line[RDMA_NLDEV_ATTR_RES_STATE])
- 		return MNL_CB_ERROR;
--	}
- 
- 	if (nla_line[RDMA_NLDEV_ATTR_PORT_INDEX])
- 		port = mnl_attr_get_u32(nla_line[RDMA_NLDEV_ATTR_PORT_INDEX]);
-diff --git a/rdma/res.c b/rdma/res.c
-index 6003006e..e8607808 100644
---- a/rdma/res.c
-+++ b/rdma/res.c
-@@ -211,6 +211,9 @@ char *get_task_name(uint32_t pid)
- 	char *comm;
- 	FILE *f;
- 
-+	if (!pid)
-+		return NULL;
-+
- 	if (asprintf(&comm, "/proc/%d/comm", pid) < 0)
- 		return NULL;
- 
--- 
-2.20.1
-
+Jason
