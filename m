@@ -2,103 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4E3C8D8F
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 18:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE49C8EF3
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 18:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729157AbfJBQBV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Oct 2019 12:01:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725799AbfJBQBV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 2 Oct 2019 12:01:21 -0400
-Received: from localhost (unknown [77.137.89.37])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6A2A21D81;
-        Wed,  2 Oct 2019 16:01:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570032080;
-        bh=98zbXrCvdXboZ6utLF9G+ewXb0o0MRQR//RXyXSOsws=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j9W+NDYGqAwNAD6EgCb7f3FpIqwv/I4RP8VNI/7AFZ15nIH/WRpF3gmAk5TBiRzmg
-         Psldqu6rZ9X1fI04nN9t0ZBTC+nEDsT54SFV+O0up5NpjqmDL+KqDtjiEnGIraacng
-         ++3VindvhrpNpTfnouEuW2je+QbaDDqfo62OIOKM=
-Date:   Wed, 2 Oct 2019 19:00:56 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de
-Subject: Re: [PATCH v4 11/25] ibtrs: server: statistics functions
-Message-ID: <20191002160056.GI5855@unreal>
-References: <20190620150337.7847-1-jinpuwang@gmail.com>
- <20190620150337.7847-12-jinpuwang@gmail.com>
- <8477e5d5-036b-f3b5-976b-624b811baf38@acm.org>
- <CAMGffE=dBo-yZVOvyjyeauEEHzHOjmgtOjGKB+GiQiSoMX7Sig@mail.gmail.com>
- <20191002154219.GG5855@unreal>
- <CAMGffEmfOHPCEOXC8OGvq2r0S_hrbN1D5EJk0Lpvte=dd4L7Rg@mail.gmail.com>
+        id S1726267AbfJBQvD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Oct 2019 12:51:03 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:41402 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726101AbfJBQvC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 12:51:02 -0400
+Received: by mail-qt1-f195.google.com with SMTP id d16so6638490qtq.8
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Oct 2019 09:51:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TYQkCV9xVXdpSyLpTjhxHurX6ehq4VZU8Iu+BbmJg3I=;
+        b=U6zAApFRZHP6SAKRMhBuQ3+Xp77wJ69s4TmNpgiWZrZkpHWUa6LaEsOcoOqvyccjtY
+         /1sNHYY/Js/KZSCaFg9o9xQ7XXuJQLvIshYXHrmnvdU/Yvuh+iErULSv/ti8tnjKm7JU
+         rZXpSKIjDPnBBULwLb5ZUq4KwfwR2h0h5sf2COgc/Nsmy3ALsKZjAnBLS6ztP9bXVFyn
+         gLnzhLw/t8NWeO/0P18hYcg8LF6xAkY3oWcsP7EcqPtRjL+Qt94HQQbw/laDRf7QmKXh
+         OxH1EvZGp+1YhkO6cSiDgdH6bH3Nm+d1T4VO+RNvElBYIRP1+SQICEdLdQtIBhTHxkCd
+         AwAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TYQkCV9xVXdpSyLpTjhxHurX6ehq4VZU8Iu+BbmJg3I=;
+        b=t6cWCPuaHExc0RcTT+bqtcsmfdngJoelRfSt9bVd3/KFe28blSceYBvCw9y9bpblYV
+         bcXyac+RSSzTUJykTSTOfYROW8D20lfDVoCfMRZY7O4NtYQc0q6t+ovOonM1MRYeyelj
+         k7ng5VYVSh/33TRuzsntUONhzheUqZJd/Sv0/kMTsYaywIT+Bwz2tGSVmt99jGcXFp37
+         08Y+UZ1/yN5ubBfukfCwvGFJqJn0xBx/7uq/P5a8+koTlkqIRfNUIKE8BOuOfwSGpnc2
+         SQiwax7rmuck4nolBCblSoGJEFFf8XTgvb6QwVP/aCBcihNfrh9FYbwSVH1+ieMQA6aV
+         pbhA==
+X-Gm-Message-State: APjAAAUL40lbtVYogICDC/TeHQZtwD/EhjCoe7EUA9AmTnHYaRm2FbOh
+        M8NeUdBdbf7i+IgoAwMOTfixKg==
+X-Google-Smtp-Source: APXvYqxpprWQvSfds3HPfZiBeR4qijYTLxSAmpyn+1Qt+zqfZ1LYXVxVmM/gw6dbhEt3+wBmF/1tVw==
+X-Received: by 2002:a05:6214:801:: with SMTP id df1mr3964692qvb.82.1570035061842;
+        Wed, 02 Oct 2019 09:51:01 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id z72sm9577446qka.115.2019.10.02.09.51.01
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 02 Oct 2019 09:51:01 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iFhq8-00032K-PX; Wed, 02 Oct 2019 13:51:00 -0300
+Date:   Wed, 2 Oct 2019 13:51:00 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Jack Morgenstein <jackm@dev.mellanox.co.il>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Honggang LI <honli@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>
+Subject: Re: [PATCH 09/15] RDMA/srpt: Fix handling of SR-IOV and iWARP ports
+Message-ID: <20191002165100.GF17152@ziepe.ca>
+References: <20190930231707.48259-1-bvanassche@acm.org>
+ <20190930231707.48259-10-bvanassche@acm.org>
+ <20191002141451.GA17152@ziepe.ca>
+ <cb5c838a-4a0e-7cac-cc0a-ae218b34d50f@acm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMGffEmfOHPCEOXC8OGvq2r0S_hrbN1D5EJk0Lpvte=dd4L7Rg@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <cb5c838a-4a0e-7cac-cc0a-ae218b34d50f@acm.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 02, 2019 at 05:45:04PM +0200, Jinpu Wang wrote:
-> On Wed, Oct 2, 2019 at 5:42 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Wed, Oct 02, 2019 at 05:15:10PM +0200, Jinpu Wang wrote:
-> > > On Tue, Sep 24, 2019 at 1:56 AM Bart Van Assche <bvanassche@acm.org> wrote:
-> > > >
-> > > > On 6/20/19 8:03 AM, Jack Wang wrote:
-> > > > > +ssize_t ibtrs_srv_stats_rdma_to_str(struct ibtrs_srv_stats *stats,
-> > > > > +                                 char *page, size_t len)
-> > > > > +{
-> > > > > +     struct ibtrs_srv_stats_rdma_stats *r = &stats->rdma_stats;
-> > > > > +     struct ibtrs_srv_sess *sess;
-> > > > > +
-> > > > > +     sess = container_of(stats, typeof(*sess), stats);
-> > > > > +
-> > > > > +     return scnprintf(page, len, "%lld %lld %lld %lld %u\n",
-> > > > > +                      (s64)atomic64_read(&r->dir[READ].cnt),
-> > > > > +                      (s64)atomic64_read(&r->dir[READ].size_total),
-> > > > > +                      (s64)atomic64_read(&r->dir[WRITE].cnt),
-> > > > > +                      (s64)atomic64_read(&r->dir[WRITE].size_total),
-> > > > > +                      atomic_read(&sess->ids_inflight));
-> > > > > +}
-> > > >
-> > > > Does this follow the sysfs one-value-per-file rule? See also
-> > > > Documentation/filesystems/sysfs.txt.
-> > > >
-> > > > Thanks,
-> > > >
-> > > > Bart.
-> > > It looks overkill to create one file for each value to me, and there
-> > > are enough stats in sysfs contain multiple values.
-> >
-> > Not for statistics.
-> 2 examples:
-> cat /sys/block/nvme0n1/inflight
->        0        0
-> cat /sys/block/nvme0n1/stat
->  1267566       53 85396638   927624  4790532  3076340 198306930
-> 19413605        0  2459788 17013620    74392        0 397606816
-> 6864
+On Wed, Oct 02, 2019 at 08:21:45AM -0700, Bart Van Assche wrote:
+> On 10/2/19 7:14 AM, Jason Gunthorpe wrote:
+> > On Mon, Sep 30, 2019 at 04:17:01PM -0700, Bart Van Assche wrote:
+> >> Management datagrams (MADs) are not supported by SR-IOV VFs nor by
+> >> iWARP
+> > 
+> > Really? This seems surprising to me..
+> 
+> Hi Jason,
+> 
+> Last time I checked the Mellanox drivers allow MADs to be sent over a
+> SR-IOV VF but do not allow MADs to be received through such a VF.
 
-OMG, I feel sorry for users who now should go and read code to see what
-column 3 in second row means.
+I think that is only true of mlx4, mlx5 allows receive, AFAIK
 
-We respect our users, please don't do like they did.
+I don't know if registering a mad agent fails though. Jack?
 
-Thanks
+> I haven't been able to find any reference to management datagrams in the
+> iWARP RFC. Maybe that means that I overlooked something?
 
->
-> Thanks
+Iwarp makes sense
+
+Jason
