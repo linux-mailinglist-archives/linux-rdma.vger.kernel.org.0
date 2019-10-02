@@ -2,80 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4EEC87BE
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 14:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8767CC8805
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 14:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbfJBMCt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Oct 2019 08:02:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725875AbfJBMCt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 2 Oct 2019 08:02:49 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 593ED21929;
-        Wed,  2 Oct 2019 12:02:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570017768;
-        bh=ocV04J050uWr0dkUV67D3c0ASvLF/FU/G6094X4aHCs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=anOY6Wxud7N0XszrqM5XEwEUKR1owh+2Dh8/1+WQaOWTG7ZCpXNQG4WjrSV/9Ps6O
-         AXVvnmoW0B2VRaahzpjdL/IgjxJrR5z1N4eYWvMnzXnPtcIyUg4UabUSbGLpEIRoiy
-         fz2xfKjfgV1LtlSt36P+lXyt0f0zOwIiQ9DwUsrU=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Rafi Wiener <rafiw@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bodong Wang <bodong@mellanox.com>,
-        Oleg Kuporosov <olegk@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: [PATCH rdma-rc] RDMA/mlx5: Clear old rate limit when closing QP
-Date:   Wed,  2 Oct 2019 15:02:43 +0300
-Message-Id: <20191002120243.16971-1-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726466AbfJBMMp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Oct 2019 08:12:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49230 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725766AbfJBMMp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 2 Oct 2019 08:12:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 6E6F5AC10;
+        Wed,  2 Oct 2019 12:12:43 +0000 (UTC)
+Received: by unicorn.suse.cz (Postfix, from userid 1000)
+        id D74DAE04C7; Wed,  2 Oct 2019 14:12:41 +0200 (CEST)
+From:   Michal Kubecek <mkubecek@suse.cz>
+Subject: [PATCH net] mlx5: avoid 64-bit division in dr_icm_pool_mr_create()
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     Alex Vesker <valex@mellanox.com>, Borislav Petkov <bp@alien8.de>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-Id: <20191002121241.D74DAE04C7@unicorn.suse.cz>
+Date:   Wed,  2 Oct 2019 14:12:41 +0200 (CEST)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Rafi Wiener <rafiw@mellanox.com>
+Recently added code introduces 64-bit division in dr_icm_pool_mr_create()
+so that build on 32-bit architectures fails with
 
-Before QP is closed it changes to ERROR state, when this happens
-the QP was left with old rate limit that was already removed from
-the table.
+  ERROR: "__umoddi3" [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] undefined!
 
-Fixes: 7d29f349a4b9 ("IB/mlx5: Properly adjust rate limit on QP state transitions")
-Signed-off-by: Rafi Wiener <rafiw@mellanox.com>
-Signed-off-by: Oleg Kuporosov <olegk@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+As the divisor is always a power of 2, we can use bitwise operation
+instead.
+
+Fixes: 29cf8febd185 ("net/mlx5: DR, ICM pool memory allocator")
+Reported-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Michal Kubecek <mkubecek@suse.cz>
 ---
- drivers/infiniband/hw/mlx5/qp.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 8937d72ddcf6..5fd071c05944 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -3249,10 +3249,12 @@ static int modify_raw_packet_qp_sq(
- 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c
+index 913f1e5aaaf2..d7c7467e2d53 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_icm_pool.c
+@@ -137,7 +137,8 @@ dr_icm_pool_mr_create(struct mlx5dr_icm_pool *pool,
  
- 	/* Only remove the old rate after new rate was set */
--	if ((old_rl.rate &&
--	     !mlx5_rl_are_equal(&old_rl, &new_rl)) ||
--	    (new_state != MLX5_SQC_STATE_RDY))
-+	if ((old_rl.rate && !mlx5_rl_are_equal(&old_rl, &new_rl)) ||
-+	    (new_state != MLX5_SQC_STATE_RDY)) {
- 		mlx5_rl_remove_rate(dev, &old_rl);
-+		if (new_state != MLX5_SQC_STATE_RDY)
-+			memset(&new_rl, 0, sizeof(new_rl));
-+	}
+ 	icm_mr->icm_start_addr = icm_mr->dm.addr;
  
- 	ibqp->rl = new_rl;
- 	sq->state = new_state;
+-	align_diff = icm_mr->icm_start_addr % align_base;
++	/* align_base is always a power of 2 */
++	align_diff = icm_mr->icm_start_addr & (align_base - 1);
+ 	if (align_diff)
+ 		icm_mr->used_length = align_base - align_diff;
+ 
 -- 
-2.20.1
+2.23.0
 
