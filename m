@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 369E8C88A6
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2E8C88A7
 	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 14:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbfJBMcy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Oct 2019 08:32:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34200 "EHLO mail.kernel.org"
+        id S1725935AbfJBMc6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Oct 2019 08:32:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726128AbfJBMcy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 2 Oct 2019 08:32:54 -0400
+        id S1725848AbfJBMc6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 2 Oct 2019 08:32:58 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 635212133F;
-        Wed,  2 Oct 2019 12:32:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 959D82133F;
+        Wed,  2 Oct 2019 12:32:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570019574;
-        bh=6KwTyt56YY82jy1zyfY21cm8lULVx5gS8dpNM11AVe0=;
+        s=default; t=1570019577;
+        bh=IvBhPwmzCuDK5a0zT9AP+G+1dk9/67FyCXMdsLkEDDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZD8Uie3NKsTUzAyc9X/3f9MNf6PJzpH83RDn6qCm1yxzCLOWAHbK9g7UW9I4zyYnJ
-         pKWIwkl46tYwMwQq/MvvBLg3X645roPTOUbbSM6Ox3YhCptKIlKwn1rnfB1OcuDeTx
-         TtqEcjvCbKa96OtXKI9Np4SLcTjdTsfS1nGAnpGI=
+        b=K0V40a5Iz9oygb5GWSkrECOdpe5xUlknPAIm/SsT2I1KljUP68yLouyESuylYCmIP
+         p5rfm9UYu8B6kJR8CO0P1nyReLyLD63zkwqhGxvMK7Jj55Lwn8gVeDBJ9ugTUjZLXw
+         jfnmDLc0rUz7TWmyEXx5DhXD2zfFEV0zB2Z/K04o=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
 Cc:     Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: [PATCH rdma-next 1/2] RDMA/restrack: Remove PID namespace support
-Date:   Wed,  2 Oct 2019 15:32:44 +0300
-Message-Id: <20191002123245.18153-2-leon@kernel.org>
+Subject: [PATCH rdma-next 2/2] RDMA/core: Check that process is still alive before sending it to the users
+Date:   Wed,  2 Oct 2019 15:32:45 +0300
+Message-Id: <20191002123245.18153-3-leon@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191002123245.18153-1-leon@kernel.org>
 References: <20191002123245.18153-1-leon@kernel.org>
@@ -43,163 +43,93 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-IB resources are bounded to IB device and file descriptors,
-both entities are unaware to PID namespaces and to task lifetime.
+The PID information can disappear asynchronically because task can be
+killed and moved to zombie state. In such case, PID will be zero in
+similar way to the kernel tasks. Recognize such situation where
+we are asking to return orphaned object and simply skip filling
+PID attribute.
 
-The difference in model caused to unpredictable behavior for the
-following scenario:
- 1. Create FD and context
- 2. Share it with ephemeral child
- 3. Create any object and exit that child
-
-The end result of this flow, that those newly created objects will be
-tracked by restrack, but won't be visible for users because task_struct
-associated with them already exited.
-
-The right thing is to rely on net namespace only for any filtering
-purposes  and drop PID namespace.
+As part of this change, document the same scenario in counter.c code.
 
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/counters.c | 14 --------------
- drivers/infiniband/core/nldev.c    | 13 +------------
- drivers/infiniband/core/restrack.c | 20 +-------------------
- drivers/infiniband/core/restrack.h |  1 -
- 4 files changed, 2 insertions(+), 46 deletions(-)
+ drivers/infiniband/core/counters.c | 14 ++++++++++++--
+ drivers/infiniband/core/nldev.c    | 31 ++++++++++++++++++++++--------
+ 2 files changed, 35 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
-index 736ab760025d..12ba2685abcf 100644
+index 12ba2685abcf..47c551a0bcb0 100644
 --- a/drivers/infiniband/core/counters.c
 +++ b/drivers/infiniband/core/counters.c
-@@ -149,9 +149,6 @@ static bool auto_mode_match(struct ib_qp *qp, struct rdma_counter *counter,
+@@ -149,8 +149,18 @@ static bool auto_mode_match(struct ib_qp *qp, struct rdma_counter *counter,
  	struct auto_mode_param *param = &counter->mode.param;
  	bool match = true;
 
--	if (!rdma_is_visible_in_pid_ns(&qp->res))
--		return false;
--
- 	/* Ensure that counter belongs to the right PID */
- 	if (task_pid_nr(counter->res.task) != task_pid_nr(qp->res.task))
+-	/* Ensure that counter belongs to the right PID */
+-	if (task_pid_nr(counter->res.task) != task_pid_nr(qp->res.task))
++	/*
++	 * Ensure that counter belongs to the right PID.
++	 * This operation can race with user space which kills
++	 * the process and leaves QP and counters orphans.
++	 *
++	 * It is not a big deal because exitted task will leave both
++	 * QP and counter in the same bucket of zombie process. Just ensure
++	 * that process is still alive before procedding.
++	 *
++	 */
++	if (task_pid_nr(counter->res.task) != task_pid_nr(qp->res.task) ||
++	    !task_pid_nr(qp->res.task))
  		return false;
-@@ -229,9 +226,6 @@ static struct rdma_counter *rdma_get_counter_auto_mode(struct ib_qp *qp,
- 	rt = &dev->res[RDMA_RESTRACK_COUNTER];
- 	xa_lock(&rt->xa);
- 	xa_for_each(&rt->xa, id, res) {
--		if (!rdma_is_visible_in_pid_ns(res))
--			continue;
--
- 		counter = container_of(res, struct rdma_counter, res);
- 		if ((counter->device != qp->device) || (counter->port != port))
- 			goto next;
-@@ -412,9 +406,6 @@ static struct ib_qp *rdma_counter_get_qp(struct ib_device *dev, u32 qp_num)
- 	if (IS_ERR(res))
- 		return NULL;
 
--	if (!rdma_is_visible_in_pid_ns(res))
--		goto err;
--
- 	qp = container_of(res, struct ib_qp, res);
- 	if (qp->qp_type == IB_QPT_RAW_PACKET && !capable(CAP_NET_RAW))
- 		goto err;
-@@ -445,11 +436,6 @@ static struct rdma_counter *rdma_get_counter_by_id(struct ib_device *dev,
- 	if (IS_ERR(res))
- 		return NULL;
-
--	if (!rdma_is_visible_in_pid_ns(res)) {
--		rdma_restrack_put(res);
--		return NULL;
--	}
--
- 	counter = container_of(res, struct rdma_counter, res);
- 	kref_get(&counter->kref);
- 	rdma_restrack_put(res);
+ 	if (auto_mask & RDMA_COUNTER_MASK_QP_TYPE)
 diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index 7a7474000100..71bc08510064 100644
+index 71bc08510064..c6fe0c52f6dc 100644
 --- a/drivers/infiniband/core/nldev.c
 +++ b/drivers/infiniband/core/nldev.c
-@@ -698,9 +698,6 @@ static int fill_stat_counter_qps(struct sk_buff *msg,
- 	rt = &counter->device->res[RDMA_RESTRACK_QP];
- 	xa_lock(&rt->xa);
- 	xa_for_each(&rt->xa, id, res) {
--		if (!rdma_is_visible_in_pid_ns(res))
--			continue;
--
- 		qp = container_of(res, struct ib_qp, res);
- 		if (qp->qp_type == IB_QPT_RAW_PACKET && !capable(CAP_NET_RAW))
- 			continue;
-@@ -1222,15 +1219,10 @@ static int res_get_common_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
- 		goto err;
- 	}
-
--	if (!rdma_is_visible_in_pid_ns(res)) {
--		ret = -ENOENT;
--		goto err_get;
--	}
--
- 	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
- 	if (!msg) {
- 		ret = -ENOMEM;
--		goto err;
-+		goto err_get;
- 	}
-
- 	nlh = nlmsg_put(msg, NETLINK_CB(skb).portid, nlh->nlmsg_seq,
-@@ -1334,9 +1326,6 @@ static int res_get_common_dumpit(struct sk_buff *skb,
- 	 * objects.
+@@ -399,20 +399,35 @@ static int fill_res_info(struct sk_buff *msg, struct ib_device *device)
+ static int fill_res_name_pid(struct sk_buff *msg,
+ 			     struct rdma_restrack_entry *res)
+ {
++	int err = 0;
++	pid_t pid;
++
+ 	/*
+ 	 * For user resources, user is should read /proc/PID/comm to get the
+ 	 * name of the task file.
  	 */
- 	xa_for_each(&rt->xa, id, res) {
--		if (!rdma_is_visible_in_pid_ns(res))
--			continue;
--
- 		if (idx < start || !rdma_restrack_get(res))
- 			goto next;
-
-diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
-index a07665f7ef8c..62fbb0ae9cb4 100644
---- a/drivers/infiniband/core/restrack.c
-+++ b/drivers/infiniband/core/restrack.c
-@@ -116,11 +116,8 @@ int rdma_restrack_count(struct ib_device *dev, enum rdma_restrack_type type)
- 	u32 cnt = 0;
-
- 	xa_lock(&rt->xa);
--	xas_for_each(&xas, e, U32_MAX) {
--		if (!rdma_is_visible_in_pid_ns(e))
--			continue;
-+	xas_for_each(&xas, e, U32_MAX)
- 		cnt++;
--	}
- 	xa_unlock(&rt->xa);
- 	return cnt;
- }
-@@ -346,18 +343,3 @@ void rdma_restrack_del(struct rdma_restrack_entry *res)
+ 	if (rdma_is_kernel_res(res)) {
+-		if (nla_put_string(msg, RDMA_NLDEV_ATTR_RES_KERN_NAME,
+-		    res->kern_name))
+-			return -EMSGSIZE;
+-	} else {
+-		if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PID,
+-		    task_pid_vnr(res->task)))
+-			return -EMSGSIZE;
++		err = nla_put_string(msg, RDMA_NLDEV_ATTR_RES_KERN_NAME,
++				     res->kern_name);
++		goto out;
  	}
+-	return 0;
++
++	pid = task_pid_vnr(res->task);
++	/*
++	 * PID == 0 returns in two scenarios:
++	 * 1. It is kernel task, but because we checked above, it won't be possible.
++	 * 2. Task is dead and in zombie state. There is no need to print PID anymore.
++	 */
++	if (pid)
++		/*
++		 * This part is racy, task can be killed and PID will be zero right
++		 * here but it is ok, next query won't return PID. We don't promise
++		 * real-time reflection of SW objects.
++		 */
++		err = nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PID, pid);
++
++out:
++	return err ? -EMSGSIZE : 0;
  }
- EXPORT_SYMBOL(rdma_restrack_del);
--
--bool rdma_is_visible_in_pid_ns(struct rdma_restrack_entry *res)
--{
--	/*
--	 * 1. Kern resources should be visible in init
--	 *    namespace only
--	 * 2. Present only resources visible in the current
--	 *     namespace
--	 */
--	if (rdma_is_kernel_res(res))
--		return task_active_pid_ns(current) == &init_pid_ns;
--
--	/* PID 0 means that resource is not found in current namespace */
--	return task_pid_vnr(res->task);
--}
-diff --git a/drivers/infiniband/core/restrack.h b/drivers/infiniband/core/restrack.h
-index 7bd177cc0a61..d084e5f89849 100644
---- a/drivers/infiniband/core/restrack.h
-+++ b/drivers/infiniband/core/restrack.h
-@@ -27,5 +27,4 @@ int rdma_restrack_init(struct ib_device *dev);
- void rdma_restrack_clean(struct ib_device *dev);
- void rdma_restrack_attach_task(struct rdma_restrack_entry *res,
- 			       struct task_struct *task);
--bool rdma_is_visible_in_pid_ns(struct rdma_restrack_entry *res);
- #endif /* _RDMA_CORE_RESTRACK_H_ */
+
+ static bool fill_res_entry(struct ib_device *dev, struct sk_buff *msg,
 --
 2.20.1
 
