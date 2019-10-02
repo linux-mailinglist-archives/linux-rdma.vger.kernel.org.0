@@ -2,77 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4466BC8AB0
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 16:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B03C8B05
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 16:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726214AbfJBOQD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Oct 2019 10:16:03 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:37835 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726200AbfJBOQD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 10:16:03 -0400
-Received: by mail-qk1-f194.google.com with SMTP id u184so15146385qkd.4
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Oct 2019 07:16:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=gdaOd7YDxE1Cx3MM7w14SPPortS4uXYEDsnBG+WIPcY=;
-        b=I/WjrVVD5UCzP3Pqh2ZlVY/v0VKskkK573WmF9vI4tVV7eUqyLWkx+CVLFSVsBdBBi
-         EQq0pGdof//tyU5PNvPlVnsRkgvD0Bx02BoK1r2VfGDjuQ8y0FTb7EnlIIyMEzpsROfK
-         a35HXD/hormGTnLijkEiyESQXSa5P8R7A9SMHvARU5GKs0jfymUxdEg7tM6wqvFIRFG4
-         oqnYWaDmqnQZok9hLtnsuNKF6y7rwa2fGv7N4Wc5fs9Nk6j7QmJLpUvheb3t8iJPu5/h
-         j2GYyHndWT4GQom5JYncXYM2GzOBMZWQkUewb3TVNfH4kEIOoWeKUGG6M1/dXaIPslF7
-         IrFQ==
+        id S1728312AbfJBOTf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Oct 2019 10:19:35 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:45345 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728230AbfJBOTe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 10:19:34 -0400
+Received: by mail-qt1-f196.google.com with SMTP id c21so26492019qtj.12;
+        Wed, 02 Oct 2019 07:19:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gdaOd7YDxE1Cx3MM7w14SPPortS4uXYEDsnBG+WIPcY=;
-        b=t9y9R73Fis6b8JV+eXByQq/HSpJyLYxixOY0S4e/n2RmpxXBveUK/7L6vqHs5cYguq
-         LWR/qkex/K/4gHkgt1EkbfKyBkDtoyytnAYoyz96+y3Zi4n0nsqFjmQlDurwlWs27otm
-         tjPdVXxHNXFqpqQRfyr+zh4uwxZcC0+9ftARynX7EGCQ4aYmOJRMdpxzMCM7SSTqG2xC
-         DczuEdWyhVNArlNv/xoRm7qXkwvR5k314wJfNqct5OZ7LWPlj96n14pAj52s81Z1FgaX
-         xd0ZhyzhsWxNHD0WTJ2XmqZEmgFQ1D31UThmYcJLEOepkzLK8saiJ4RdWENs6etFWZpi
-         7rdg==
-X-Gm-Message-State: APjAAAUs2BAginGFQerH9o0ITM0CZiaH9tPzZRATUtL3UtFd6syQ6s+Y
-        VcT9yxhYmmLQpZJBUedKNJQRlQ==
-X-Google-Smtp-Source: APXvYqyBf8oCmgGOI/W8iM0msACgKdnBztz4LSRGrLq9oX5VmMqHkvcEMQop7olFwGhUMrWSwsdBYQ==
-X-Received: by 2002:a37:a9d1:: with SMTP id s200mr3903777qke.251.1570025762020;
-        Wed, 02 Oct 2019 07:16:02 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id z46sm12043472qth.62.2019.10.02.07.16.01
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 02 Oct 2019 07:16:01 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iFfQ8-0006fh-SN; Wed, 02 Oct 2019 11:16:00 -0300
-Date:   Wed, 2 Oct 2019 11:16:00 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Honggang LI <honli@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>
-Subject: Re: [PATCH 10/15] RDMA/srpt: Fix handling of iWARP logins
-Message-ID: <20191002141600.GB17152@ziepe.ca>
-References: <20190930231707.48259-1-bvanassche@acm.org>
- <20190930231707.48259-11-bvanassche@acm.org>
+        h=x-gm-message-state:message-id:date:from:subject:references
+         :in-reply-to:mime-version:content-transfer-encoding:cc:cc:to;
+        bh=xEcXpQ/NEwyCKzNgI7asImKqcpzGOLlroU+HXRPzw4Y=;
+        b=pbl8cfHVjygWxRJrxDOT49+2J+Ri/7m9++D1QRchMBW3FEQG7zQUcPOUe3cs5urfnb
+         Q0gi2YkQr/rIhtBd4h2+T8G1NFLNChz2+zexhlEqwu4rmW2YMR9lB7T64NehQhKocP4q
+         9Oof/LI67NNKSHmCrrDHJEOuPP6bBGCyBGC5smgkm7/bkFddY6Ro0A5olq3/DoKy8LPT
+         VSz4k0vEnlmGSeeBekTIGef9GXNwC/JLQmW6DhDUdufbYzI+SLB5g9gL1v8HuBvHeHht
+         7F7uup4R07DdNjMlFi/n+lQ8sl+Q5OYoOegcWTcoFqzJjEBOqGmw4nIkEZp46o3gLEfY
+         HqUg==
+X-Gm-Message-State: APjAAAUH2F5bdtEQ+UKEMKF0F+bvtIM7tC0pjFVK6R7af0s0XgIMZNEW
+        OOmvhU5p749tQMYsynvR6f4F9yQQOA==
+X-Google-Smtp-Source: APXvYqxaLnHeciWkdlweE2LBBH7eoNN5RyZrMPdqv69QmbChVl6tENsSTpMqu/HDsjtpBHL6zYeZPA==
+X-Received: by 2002:a0c:a5a5:: with SMTP id z34mr3240240qvz.110.1570025972605;
+        Wed, 02 Oct 2019 07:19:32 -0700 (PDT)
+Received: from localhost ([132.205.230.8])
+        by smtp.gmail.com with ESMTPSA id d45sm12737320qtc.70.2019.10.02.07.19.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Oct 2019 07:19:32 -0700 (PDT)
+Message-ID: <5d94b1f4.1c69fb81.6f9ad.2586@mx.google.com>
+Date:   Wed, 02 Oct 2019 09:19:29 -0500
+From:   Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/3] docs: fix some broken references
+References: <b87385b2ac6ce6c75df82062fce2976149bbaa6b.1569330078.git.mchehab+samsung@kernel.org>
+In-Reply-To: <b87385b2ac6ce6c75df82062fce2976149bbaa6b.1569330078.git.mchehab+samsung@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190930231707.48259-11-bvanassche@acm.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>, corbet@lwn.net
+Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Shannon Nelson <snelson@pensando.io>,
+        Pensando Drivers <drivers@pensando.io>,
+        Steve French <sfrench@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-mips@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-riscv@lists.infradead.org
+To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 30, 2019 at 04:17:02PM -0700, Bart Van Assche wrote:
-> The path_rec pointer is NULL set for IB and RoCE logins but not for iWARP
-> logins. Hence check the path_rec pointer before dereferencing it.
+On Tue, 24 Sep 2019 10:01:28 -0300, Mauro Carvalho Chehab wrote:
+> There are a number of documentation files that got moved or
+> renamed. update their references.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/cpu/cpu-topology.txt    | 2 +-
+>  Documentation/devicetree/bindings/timer/ingenic,tcu.txt   | 2 +-
+>  Documentation/driver-api/gpio/driver.rst                  | 2 +-
+>  Documentation/hwmon/inspur-ipsps1.rst                     | 2 +-
+>  Documentation/mips/ingenic-tcu.rst                        | 2 +-
+>  Documentation/networking/device_drivers/mellanox/mlx5.rst | 2 +-
+>  MAINTAINERS                                               | 2 +-
+>  drivers/net/ethernet/faraday/ftgmac100.c                  | 2 +-
+>  drivers/net/ethernet/pensando/ionic/ionic_if.h            | 4 ++--
+>  fs/cifs/cifsfs.c                                          | 2 +-
+>  10 files changed, 11 insertions(+), 11 deletions(-)
+> 
 
-Did you mean it is null set for iWARP logins? I would expect iwarp to
-not have a pkey..
+Acked-by: Rob Herring <robh@kernel.org>
 
-Jason
