@@ -2,99 +2,267 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 528CCC8948
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 15:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3ED1C895C
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Oct 2019 15:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbfJBNHn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Oct 2019 09:07:43 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:36061 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726901AbfJBNHk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 09:07:40 -0400
-Received: by mail-oi1-f175.google.com with SMTP id k20so17574648oih.3
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Oct 2019 06:07:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=50mE1GFOx2IDL8fOUBOO94SxADHosM9SfQ7pyxbnHTg=;
-        b=OcATdm0fU0HGv1IIhubCuFeqR/P2N37o7xtR/ZD4irFYeHZyY/QMlcxb9A3jVo1gr4
-         chbxvSvR7VV0Qigg5Ap4In4xkHjYBGjW81DG45OK+R+st0eaUOvKFdRsNtBGfdXXso+G
-         CRT9yAg3GyQINBZ5KBDazaDUYmqZ9vColyWrmK7zf2b7qw3LLSuXB22GA91dRzkb/DN3
-         hVBuovDyfmx09Yu6vWFC0lVHAXaZdX+8e6xTLeBTs8iVaP9DmUzHXZJ5SuCoYXwZ14L3
-         3WdQyTtyBcH2b1o1IoJ8dDqWwniK/IYku412BJ6lj3HdaGvf3lcdbJk/pu8WTervpUsH
-         BKcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=50mE1GFOx2IDL8fOUBOO94SxADHosM9SfQ7pyxbnHTg=;
-        b=U532IcywIbK1sPeQbmXYaj/e2VGEDAlsuyTfwzQRCp0HGV7m+yjqVJjpnGqjsHMXFq
-         6ARONsiw8COhP+wEl0nsac+MXaM18ZgWRYgG3XwZ2glO29GqC2hbJZm7l7dgwPwF5qXi
-         BAxW630hWxz1fD6/cGiaF8OjMQpTHxK3OsO827wxn6X8Jve1E1u/5N03jyJPgi/Ukzx/
-         NTppxIEhHff6m2TBCbcnlrfr7/HzO1mi3FXDevedSKShPDGfVsNvrmjC9t/8UrBcl7o1
-         Plh5yXjUiSbW4OggTrWf+A50izEGuQ2cXsTB22jiEtjGz8ekEf7YE4t6Mk0Rf2RCkQHB
-         e5Gg==
-X-Gm-Message-State: APjAAAXRttbmb6aS3WgjKTcFQNExUAeOZcwm0kasDnq0zr/9j5r8zZQd
-        yudP1plmntNZtT1tFiVk5lSuieKdSvOaLYgTbi33Fg==
-X-Google-Smtp-Source: APXvYqxGQ01cpMCqhyT0OZic4du6ntHizaukJRygkeedHLWkQjdo8fNGeQWk8deAiGsRuCSgwYPjlJGf+Xhg9J875/c=
-X-Received: by 2002:aca:eb09:: with SMTP id j9mr2925590oih.105.1570021659582;
- Wed, 02 Oct 2019 06:07:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
- <20190923222620.GC16973@dread.disaster.area> <20190925234602.GB12748@iweiny-DESK2.sc.intel.com>
- <20190930084233.GO16973@dread.disaster.area> <20191001210156.GB5500@iweiny-DESK2.sc.intel.com>
-In-Reply-To: <20191001210156.GB5500@iweiny-DESK2.sc.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 2 Oct 2019 06:07:27 -0700
-Message-ID: <CAPcyv4jpLYUcqA6D_qfGF4FQCu-SuH67FHLcH0fCQTQ-D+hWzQ@mail.gmail.com>
-Subject: Re: Lease semantic proposal
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+        id S1725860AbfJBNOm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Oct 2019 09:14:42 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14272 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726839AbfJBNOm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Oct 2019 09:14:42 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x92D8mnY052997
+        for <linux-rdma@vger.kernel.org>; Wed, 2 Oct 2019 09:14:41 -0400
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2vcuknj59v-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Oct 2019 09:14:40 -0400
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
+        Wed, 2 Oct 2019 14:14:38 +0100
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 2 Oct 2019 14:14:35 +0100
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x92DEZP751118166
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Oct 2019 13:14:35 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D9F54A405B;
+        Wed,  2 Oct 2019 13:14:34 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9D1F9A4053;
+        Wed,  2 Oct 2019 13:14:34 +0000 (GMT)
+Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Oct 2019 13:14:34 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     bharat@chelsio.com, jgg@ziepe.ca, nirranjan@chelsio.com,
+        krishna2@chelsio.com, bvanassche@acm.org,
+        Bernard Metzler <bmt@zurich.ibm.com>
+Subject: [[PATCH v2 for-next]] RDMA/siw: Fix SQ/RQ drain logic
+Date:   Wed,  2 Oct 2019 15:14:23 +0200
+X-Mailer: git-send-email 2.17.2
+X-TM-AS-GCONF: 00
+x-cbid: 19100213-4275-0000-0000-0000036D5A22
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19100213-4276-0000-0000-000038805D38
+Message-Id: <20191002131423.4181-1-bmt@zurich.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-02_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=4 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=665 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1910020126
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 1, 2019 at 2:02 PM Ira Weiny <ira.weiny@intel.com> wrote:
->
-> On Mon, Sep 30, 2019 at 06:42:33PM +1000, Dave Chinner wrote:
-> > On Wed, Sep 25, 2019 at 04:46:03PM -0700, Ira Weiny wrote:
-> > > On Tue, Sep 24, 2019 at 08:26:20AM +1000, Dave Chinner wrote:
-> > > > Hence, AFIACT, the above definition of a F_RDLCK|F_LAYOUT lease
-> > > > doesn't appear to be compatible with the semantics required by
-> > > > existing users of layout leases.
-> > >
-> > > I disagree.  Other than the addition of F_UNBREAK, I think this is consistent
-> > > with what is currently implemented.  Also, by exporting all this to user space
-> > > we can now write tests for it independent of the RDMA pinning.
-> >
-> > The current usage of F_RDLCK | F_LAYOUT by the pNFS code allows
-> > layout changes to occur to the file while the layout lease is held.
->
-> This was not my understanding.
+Storage ULPs (e.g. iSER & NVMeOF) use ib_drain_qp() to
+drain QP/CQ. Current SIW's own drain routines do not properly
+wait until all SQ/RQ elements are completed and reaped
+from the CQ. This may cause touch after free issues.
+New logic relies on generic __ib_drain_sq()/__ib_drain_rq()
+posting a final work request, which SIW immediately flushes
+to CQ.
 
-I think you guys are talking past each other. F_RDLCK | F_LAYOUT can
-be broken to allow writes to the file / layout. The new unbreakable
-case would require explicit SIGKILL as "revocation method of last
-resort", but that's the new incremental extension being proposed. No
-changes to the current behavior of F_RDLCK | F_LAYOUT.
+Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
+Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+---
+ drivers/infiniband/sw/siw/siw_main.c  |  20 -----
+ drivers/infiniband/sw/siw/siw_verbs.c | 103 +++++++++++++++++++++-----
+ 2 files changed, 86 insertions(+), 37 deletions(-)
 
-Dave, the question at hand is whether this new layout lease mode being
-proposed is going to respond to BREAK_WRITE, or just BREAK_UNMAP. It
-seems longterm page pinning conflicts really only care about
-BREAK_UNMAP where pages that were part of the file are being removed
-from the file. The unbreakable case can tolerate layout changes that
-keep pinned pages mapped / allocated to the file.
+diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
+index 05a92f997f60..fb01407a310f 100644
+--- a/drivers/infiniband/sw/siw/siw_main.c
++++ b/drivers/infiniband/sw/siw/siw_main.c
+@@ -248,24 +248,6 @@ static struct ib_qp *siw_get_base_qp(struct ib_device *base_dev, int id)
+ 	return NULL;
+ }
+ 
+-static void siw_verbs_sq_flush(struct ib_qp *base_qp)
+-{
+-	struct siw_qp *qp = to_siw_qp(base_qp);
+-
+-	down_write(&qp->state_lock);
+-	siw_sq_flush(qp);
+-	up_write(&qp->state_lock);
+-}
+-
+-static void siw_verbs_rq_flush(struct ib_qp *base_qp)
+-{
+-	struct siw_qp *qp = to_siw_qp(base_qp);
+-
+-	down_write(&qp->state_lock);
+-	siw_rq_flush(qp);
+-	up_write(&qp->state_lock);
+-}
+-
+ static const struct ib_device_ops siw_device_ops = {
+ 	.owner = THIS_MODULE,
+ 	.uverbs_abi_ver = SIW_ABI_VERSION,
+@@ -284,8 +266,6 @@ static const struct ib_device_ops siw_device_ops = {
+ 	.destroy_cq = siw_destroy_cq,
+ 	.destroy_qp = siw_destroy_qp,
+ 	.destroy_srq = siw_destroy_srq,
+-	.drain_rq = siw_verbs_rq_flush,
+-	.drain_sq = siw_verbs_sq_flush,
+ 	.get_dma_mr = siw_get_dma_mr,
+ 	.get_port_immutable = siw_get_port_immutable,
+ 	.iw_accept = siw_accept,
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index 869e02b69a01..40e68e7a4f39 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -687,6 +687,47 @@ static int siw_copy_inline_sgl(const struct ib_send_wr *core_wr,
+ 	return bytes;
+ }
+ 
++/* Complete SQ WR's without processing */
++static int siw_sq_flush_wr(struct siw_qp *qp, const struct ib_send_wr *wr,
++			   const struct ib_send_wr **bad_wr)
++{
++	struct siw_sqe sqe = {};
++	int rv = 0;
++
++	while (wr) {
++		sqe.id = wr->wr_id;
++		sqe.opcode = wr->opcode;
++		rv = siw_sqe_complete(qp, &sqe, 0, SIW_WC_WR_FLUSH_ERR);
++		if (rv) {
++			if (bad_wr)
++				*bad_wr = wr;
++			break;
++		}
++		wr = wr->next;
++	}
++	return rv;
++}
++
++/* Complete RQ WR's without processing */
++static int siw_rq_flush_wr(struct siw_qp *qp, const struct ib_recv_wr *wr,
++			   const struct ib_recv_wr **bad_wr)
++{
++	struct siw_rqe rqe = {};
++	int rv = 0;
++
++	while (wr) {
++		rqe.id = wr->wr_id;
++		rv = siw_rqe_complete(qp, &rqe, 0, 0, SIW_WC_WR_FLUSH_ERR);
++		if (rv) {
++			if (bad_wr)
++				*bad_wr = wr;
++			break;
++		}
++		wr = wr->next;
++	}
++	return rv;
++}
++
+ /*
+  * siw_post_send()
+  *
+@@ -705,6 +746,12 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
+ 	unsigned long flags;
+ 	int rv = 0;
+ 
++	if (wr && !qp->kernel_verbs) {
++		siw_dbg_qp(qp, "wr must be empty for user mapped sq\n");
++		*bad_wr = wr;
++		return -EINVAL;
++	}
++
+ 	/*
+ 	 * Try to acquire QP state lock. Must be non-blocking
+ 	 * to accommodate kernel clients needs.
+@@ -715,16 +762,23 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
+ 		return -ENOTCONN;
+ 	}
+ 	if (unlikely(qp->attrs.state != SIW_QP_STATE_RTS)) {
++		if (qp->attrs.state == SIW_QP_STATE_ERROR) {
++			/*
++			 * Immediately flush this WR to CQ, if QP
++			 * is in ERROR state. SQ is guaranteed to
++			 * be empty, so WR complets in-order.
++			 *
++			 * Typically triggered by ib_drain_sq().
++			 */
++			rv = siw_sq_flush_wr(qp, wr, bad_wr);
++		} else {
++			rv = -ENOTCONN;
++			*bad_wr = wr;
++			siw_dbg_qp(qp, "QP out of state %d\n",
++				   qp->attrs.state);
++		}
+ 		up_read(&qp->state_lock);
+-		*bad_wr = wr;
+-		siw_dbg_qp(qp, "QP out of state %d\n", qp->attrs.state);
+-		return -ENOTCONN;
+-	}
+-	if (wr && !qp->kernel_verbs) {
+-		siw_dbg_qp(qp, "wr must be empty for user mapped sq\n");
+-		up_read(&qp->state_lock);
+-		*bad_wr = wr;
+-		return -EINVAL;
++		return rv;
+ 	}
+ 	spin_lock_irqsave(&qp->sq_lock, flags);
+ 
+@@ -919,6 +973,13 @@ int siw_post_receive(struct ib_qp *base_qp, const struct ib_recv_wr *wr,
+ 		*bad_wr = wr;
+ 		return -EOPNOTSUPP; /* what else from errno.h? */
+ 	}
++	if (!qp->kernel_verbs) {
++		siw_dbg_qp(qp, "no kernel post_recv for user mapped sq\n");
++		up_read(&qp->state_lock);
++		*bad_wr = wr;
++		return -EINVAL;
++	}
++
+ 	/*
+ 	 * Try to acquire QP state lock. Must be non-blocking
+ 	 * to accommodate kernel clients needs.
+@@ -927,16 +988,24 @@ int siw_post_receive(struct ib_qp *base_qp, const struct ib_recv_wr *wr,
+ 		*bad_wr = wr;
+ 		return -ENOTCONN;
+ 	}
+-	if (!qp->kernel_verbs) {
+-		siw_dbg_qp(qp, "no kernel post_recv for user mapped sq\n");
+-		up_read(&qp->state_lock);
+-		*bad_wr = wr;
+-		return -EINVAL;
+-	}
+ 	if (qp->attrs.state > SIW_QP_STATE_RTS) {
++		if (qp->attrs.state == SIW_QP_STATE_ERROR) {
++			/*
++			 * Immediately flush this WR to CQ, if QP
++			 * is in ERROR state. RQ is guaranteed to
++			 * be empty, so WR complets in-order.
++			 *
++			 * Typically triggered by ib_drain_rq().
++			 */
++			rv = siw_rq_flush_wr(qp, wr, bad_wr);
++		} else {
++			rv = -ENOTCONN;
++			*bad_wr = wr;
++			siw_dbg_qp(qp, "QP out of state %d\n",
++				   qp->attrs.state);
++		}
+ 		up_read(&qp->state_lock);
+-		*bad_wr = wr;
+-		return -EINVAL;
++		return rv;
+ 	}
+ 	/*
+ 	 * Serialize potentially multiple producers.
+-- 
+2.17.2
+
