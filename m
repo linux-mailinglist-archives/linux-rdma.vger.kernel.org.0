@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 34743CAFFE
+	by mail.lfdr.de (Postfix) with ESMTP id C1005CAFFF
 	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 22:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388568AbfJCUUO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Oct 2019 16:20:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46372 "EHLO mx1.suse.de"
+        id S2388676AbfJCUUR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Oct 2019 16:20:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46416 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729087AbfJCUUN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Oct 2019 16:20:13 -0400
+        id S1733146AbfJCUUP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 3 Oct 2019 16:20:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 90485B04F;
-        Thu,  3 Oct 2019 20:20:10 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id D3484B052;
+        Thu,  3 Oct 2019 20:20:12 +0000 (UTC)
 From:   Davidlohr Bueso <dave@stgolabs.net>
 To:     akpm@linux-foundation.org
 Cc:     walken@google.com, peterz@infradead.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
         dave@stgolabs.net, Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH 01/11] mm: introduce vma_interval_tree_foreach_stab()
-Date:   Thu,  3 Oct 2019 13:18:48 -0700
-Message-Id: <20191003201858.11666-2-dave@stgolabs.net>
+Subject: [PATCH 02/11] lib/interval-tree: add an equivalent tree with [a,b) intervals
+Date:   Thu,  3 Oct 2019 13:18:49 -0700
+Message-Id: <20191003201858.11666-3-dave@stgolabs.net>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191003201858.11666-1-dave@stgolabs.net>
 References: <20191003201858.11666-1-dave@stgolabs.net>
@@ -32,190 +32,212 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This documents better the nature of the stab lookup/query.
+While the kernel's interval tree implementation uses closed intervals, all
+users (with the exception of query stabbing) really want half closed intervals,
+specifically [a, b), and will explicitly correct this before calling the tree api.
 
-In addition, this is a step that will make the conversion
-of interval tree nodes from [a,b] to [a,b) easier to review.
+This patch simply duplicates the include/linuxinterval_tree_generic.h header into
+a interval_tree_gen.h (gen as in 'generic' and 'generate' :-) with two differences:
 
-For symmetry with vma_interval_tree, the anon equivalent is
-also introduced, albeit a single user. This patch does not
-change any semantics.
+- The 'last' endpoint is renamed 'end'; this is something lib/interval_tree.c will
+also need to update, but that is later in the series.
+
+- The lookup calls have been adapted accordingly, such that users need not need to
+do the subtraction by one fixup.
+
+No users are ported over in this patch.
 
 Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
 ---
- arch/arm/mm/fault-armv.c   | 2 +-
- arch/arm/mm/flush.c        | 2 +-
- arch/nios2/mm/cacheflush.c | 2 +-
- arch/parisc/kernel/cache.c | 2 +-
- fs/dax.c                   | 2 +-
- include/linux/mm.h         | 6 ++++++
- kernel/events/uprobes.c    | 2 +-
- mm/hugetlb.c               | 4 ++--
- mm/khugepaged.c            | 2 +-
- mm/memory-failure.c        | 6 ++----
- 10 files changed, 17 insertions(+), 13 deletions(-)
+ include/linux/interval_tree_gen.h | 179 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 179 insertions(+)
+ create mode 100644 include/linux/interval_tree_gen.h
 
-diff --git a/arch/arm/mm/fault-armv.c b/arch/arm/mm/fault-armv.c
-index ae857f41f68d..85bb69f1decb 100644
---- a/arch/arm/mm/fault-armv.c
-+++ b/arch/arm/mm/fault-armv.c
-@@ -143,7 +143,7 @@ make_coherent(struct address_space *mapping, struct vm_area_struct *vma,
- 	 * cache coherency.
- 	 */
- 	flush_dcache_mmap_lock(mapping);
--	vma_interval_tree_foreach(mpnt, &mapping->i_mmap, pgoff, pgoff) {
-+	vma_interval_tree_foreach_stab(mpnt, &mapping->i_mmap, pgoff) {
- 		/*
- 		 * If this VMA is not in our MM, we can ignore it.
- 		 * Note that we intentionally mask out the VMA
-diff --git a/arch/arm/mm/flush.c b/arch/arm/mm/flush.c
-index 6d89db7895d1..b04384406c0f 100644
---- a/arch/arm/mm/flush.c
-+++ b/arch/arm/mm/flush.c
-@@ -249,7 +249,7 @@ static void __flush_dcache_aliases(struct address_space *mapping, struct page *p
- 	pgoff = page->index;
- 
- 	flush_dcache_mmap_lock(mapping);
--	vma_interval_tree_foreach(mpnt, &mapping->i_mmap, pgoff, pgoff) {
-+	vma_interval_tree_foreach_stab(mpnt, &mapping->i_mmap, pgoff) {
- 		unsigned long offset;
- 
- 		/*
-diff --git a/arch/nios2/mm/cacheflush.c b/arch/nios2/mm/cacheflush.c
-index 65de1bd6a760..8abe26b8e29d 100644
---- a/arch/nios2/mm/cacheflush.c
-+++ b/arch/nios2/mm/cacheflush.c
-@@ -79,7 +79,7 @@ static void flush_aliases(struct address_space *mapping, struct page *page)
- 	pgoff = page->index;
- 
- 	flush_dcache_mmap_lock(mapping);
--	vma_interval_tree_foreach(mpnt, &mapping->i_mmap, pgoff, pgoff) {
-+	vma_interval_tree_foreach_stab(mpnt, &mapping->i_mmap, pgoff) {
- 		unsigned long offset;
- 
- 		if (mpnt->vm_mm != mm)
-diff --git a/arch/parisc/kernel/cache.c b/arch/parisc/kernel/cache.c
-index a82b3eaa5398..c5f8aab749c1 100644
---- a/arch/parisc/kernel/cache.c
-+++ b/arch/parisc/kernel/cache.c
-@@ -348,7 +348,7 @@ void flush_dcache_page(struct page *page)
- 	 * to flush one address here for them all to become coherent */
- 
- 	flush_dcache_mmap_lock(mapping);
--	vma_interval_tree_foreach(mpnt, &mapping->i_mmap, pgoff, pgoff) {
-+	vma_interval_tree_foreach_stab(mpnt, &mapping->i_mmap, pgoff) {
- 		offset = (pgoff - mpnt->vm_pgoff) << PAGE_SHIFT;
- 		addr = mpnt->vm_start + offset;
- 
-diff --git a/fs/dax.c b/fs/dax.c
-index 6bf81f931de3..f24c035defb7 100644
---- a/fs/dax.c
-+++ b/fs/dax.c
-@@ -781,7 +781,7 @@ static void dax_entry_mkclean(struct address_space *mapping, pgoff_t index,
- 	spinlock_t *ptl;
- 
- 	i_mmap_lock_read(mapping);
--	vma_interval_tree_foreach(vma, &mapping->i_mmap, index, index) {
-+	vma_interval_tree_foreach_stab(vma, &mapping->i_mmap, index) {
- 		struct mmu_notifier_range range;
- 		unsigned long address;
- 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index cc292273e6ba..53f9784d917d 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2248,6 +2248,9 @@ struct vm_area_struct *vma_interval_tree_iter_next(struct vm_area_struct *node,
- 	for (vma = vma_interval_tree_iter_first(root, start, last);	\
- 	     vma; vma = vma_interval_tree_iter_next(vma, start, last))
- 
-+#define vma_interval_tree_foreach_stab(vma, root, start)		\
-+	vma_interval_tree_foreach(vma, root, start, start)
+diff --git a/include/linux/interval_tree_gen.h b/include/linux/interval_tree_gen.h
+new file mode 100644
+index 000000000000..5d446c0bd89a
+--- /dev/null
++++ b/include/linux/interval_tree_gen.h
+@@ -0,0 +1,179 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++  Interval Trees
++  (C) 2012  Michel Lespinasse <walken@google.com>
++*/
 +
- void anon_vma_interval_tree_insert(struct anon_vma_chain *node,
- 				   struct rb_root_cached *root);
- void anon_vma_interval_tree_remove(struct anon_vma_chain *node,
-@@ -2265,6 +2268,9 @@ void anon_vma_interval_tree_verify(struct anon_vma_chain *node);
- 	for (avc = anon_vma_interval_tree_iter_first(root, start, last); \
- 	     avc; avc = anon_vma_interval_tree_iter_next(avc, start, last))
- 
-+#define anon_vma_interval_tree_foreach_stab(vma, root, start)		\
-+	anon_vma_interval_tree_foreach(vma, root, start, start)
++#include <linux/rbtree_augmented.h>
 +
- /* mmap.c */
- extern int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin);
- extern int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 94d38a39d72e..6a70dbe0b4b2 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -975,7 +975,7 @@ build_map_info(struct address_space *mapping, loff_t offset, bool is_register)
- 
-  again:
- 	i_mmap_lock_read(mapping);
--	vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, pgoff) {
-+	vma_interval_tree_foreach_stab(vma, &mapping->i_mmap, pgoff) {
- 		if (!valid_vma(vma, is_register))
- 			continue;
- 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index ef37c85423a5..1a6b133ca66d 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3643,7 +3643,7 @@ static void unmap_ref_private(struct mm_struct *mm, struct vm_area_struct *vma,
- 	 * __unmap_hugepage_range() is called as the lock is already held
- 	 */
- 	i_mmap_lock_write(mapping);
--	vma_interval_tree_foreach(iter_vma, &mapping->i_mmap, pgoff, pgoff) {
-+	vma_interval_tree_foreach_stab(iter_vma, &mapping->i_mmap, pgoff) {
- 		/* Do not unmap the current VMA */
- 		if (iter_vma == vma)
- 			continue;
-@@ -4844,7 +4844,7 @@ pte_t *huge_pmd_share(struct mm_struct *mm, unsigned long addr, pud_t *pud)
- 		return (pte_t *)pmd_alloc(mm, pud, addr);
- 
- 	i_mmap_lock_write(mapping);
--	vma_interval_tree_foreach(svma, &mapping->i_mmap, idx, idx) {
-+	vma_interval_tree_foreach_stab(svma, &mapping->i_mmap, idx) {
- 		if (svma == vma)
- 			continue;
- 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 0a1b4b484ac5..24b66416fde0 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1420,7 +1420,7 @@ static void retract_page_tables(struct address_space *mapping, pgoff_t pgoff)
- 	pmd_t *pmd, _pmd;
- 
- 	i_mmap_lock_write(mapping);
--	vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, pgoff) {
-+	vma_interval_tree_foreach_stab(vma, &mapping->i_mmap, pgoff) {
- 		/*
- 		 * Check vma->anon_vma to exclude MAP_PRIVATE mappings that
- 		 * got written to. These VMAs are likely not worth investing
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 7ef849da8278..79934fd00146 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -451,8 +451,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
- 
- 		if (!t)
- 			continue;
--		anon_vma_interval_tree_foreach(vmac, &av->rb_root,
--					       pgoff, pgoff) {
-+		anon_vma_interval_tree_foreach_stab(vmac, &av->rb_root, pgoff) {
- 			vma = vmac->vma;
- 			if (!page_mapped_in_vma(page, vma))
- 				continue;
-@@ -482,8 +481,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
- 
- 		if (!t)
- 			continue;
--		vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff,
--				      pgoff) {
-+		vma_interval_tree_foreach_stab(vma, &mapping->i_mmap, pgoff) {
- 			/*
- 			 * Send early kill signal to tasks where a vma covers
- 			 * the page but the corrupted page is not necessarily
++/*
++ * Template for implementing interval trees
++ *
++ * ITSTRUCT:   struct type of the interval tree nodes
++ * ITRB:       name of struct rb_node field within ITSTRUCT
++ * ITTYPE:     type of the interval endpoints
++ * ITSUBTREE:  name of ITTYPE field within ITSTRUCT holding end-in-subtree
++ * ITSTART(n): start endpoint of ITSTRUCT node n
++ * ITEND(n):   end/last endpoint of ITSTRUCT node n
++ * ITSTATIC:   'static' or empty
++ * ITPREFIX:   prefix to use for the inline tree definitions
++ *
++ * Note - before using this, please consider if generic version
++ * (interval_tree.h) would work for you...
++ */
++
++#define INTERVAL_TREE_DEFINE(ITSTRUCT, ITRB, ITTYPE, ITSUBTREE,		      \
++			     ITSTART, ITEND, ITSTATIC, ITPREFIX)	      \
++									      \
++/* Callbacks for augmented rbtree insert and remove */			      \
++									      \
++RB_DECLARE_CALLBACKS_MAX(static, ITPREFIX ## _augment,			      \
++			 ITSTRUCT, ITRB, ITTYPE, ITSUBTREE, ITEND)	      \
++									      \
++/* Insert / remove interval nodes from the tree */			      \
++									      \
++ITSTATIC void ITPREFIX ## _insert(ITSTRUCT *node,			      \
++				  struct rb_root_cached *root)		      \
++{									      \
++	struct rb_node **link = &root->rb_root.rb_node, *rb_parent = NULL;    \
++	ITTYPE start = ITSTART(node), end = ITEND(node);		      \
++	ITSTRUCT *parent;						      \
++	bool leftmost = true;						      \
++									      \
++	while (*link) {							      \
++		rb_parent = *link;					      \
++		parent = rb_entry(rb_parent, ITSTRUCT, ITRB);		      \
++		if (parent->ITSUBTREE < end)				      \
++			parent->ITSUBTREE = end;			      \
++		if (start < ITSTART(parent))				      \
++			link = &parent->ITRB.rb_left;			      \
++		else {							      \
++			link = &parent->ITRB.rb_right;			      \
++			leftmost = false;				      \
++		}							      \
++	}								      \
++									      \
++	node->ITSUBTREE = end;						      \
++	rb_link_node(&node->ITRB, rb_parent, link);			      \
++	rb_insert_augmented_cached(&node->ITRB, root,			      \
++				   leftmost, &ITPREFIX ## _augment);	      \
++}									      \
++									      \
++ITSTATIC void ITPREFIX ## _remove(ITSTRUCT *node,			      \
++				  struct rb_root_cached *root)		      \
++{									      \
++	rb_erase_augmented_cached(&node->ITRB, root, &ITPREFIX ## _augment);  \
++}									      \
++									      \
++/*									      \
++ * Iterate over intervals intersecting [start;end)			      \
++ *									      \
++ * Note that a node's interval intersects [start;end) iff:		      \
++ *   Cond1: ITSTART(node) < end						      \
++ * and									      \
++ *   Cond2: start < ITEND(node)						      \
++ */									      \
++									      \
++static ITSTRUCT *							      \
++ITPREFIX ## _subtree_search(ITSTRUCT *node, ITTYPE start, ITTYPE end)	      \
++{									      \
++	while (true) {							      \
++		/*							      \
++		 * Loop invariant: start <= node->ITSUBTREE		      \
++		 * (Cond2 is satisfied by one of the subtree nodes)	      \
++		 */							      \
++		if (node->ITRB.rb_left) {				      \
++			ITSTRUCT *left = rb_entry(node->ITRB.rb_left,	      \
++						  ITSTRUCT, ITRB);	      \
++			if (start < left->ITSUBTREE) {			      \
++				/*					      \
++				 * Some nodes in left subtree satisfy Cond2.  \
++				 * Iterate to find the leftmost such node N.  \
++				 * If it also satisfies Cond1, that's the     \
++				 * match we are looking for. Otherwise, there \
++				 * is no matching interval as nodes to the    \
++				 * right of N can't satisfy Cond1 either.     \
++				 */					      \
++				node = left;				      \
++				continue;				      \
++			}						      \
++		}							      \
++		if (ITSTART(node) < end) {		/* Cond1 */	      \
++			if (start < ITEND(node))	/* Cond2 */	      \
++				return node;	/* node is leftmost match */  \
++			if (node->ITRB.rb_right) {			      \
++				node = rb_entry(node->ITRB.rb_right,	      \
++						ITSTRUCT, ITRB);	      \
++				if (start <= node->ITSUBTREE)		      \
++					continue;			      \
++			}						      \
++		}							      \
++		return NULL;	/* No match */				      \
++	}								      \
++}									      \
++									      \
++ITSTATIC ITSTRUCT *							      \
++ITPREFIX ## _iter_first(struct rb_root_cached *root,			      \
++			ITTYPE start, ITTYPE end)			      \
++{									      \
++	ITSTRUCT *node, *leftmost;					      \
++									      \
++	if (!root->rb_root.rb_node)					      \
++		return NULL;						      \
++									      \
++	/*								      \
++	 * Fastpath range intersection/overlap where we compare the	      \
++	 * smallest 'start' and largest 'end' in the tree. For the latter,    \
++	 * we rely on the root node, which by augmented interval tree	      \
++	 * property, holds the largest value in its end-in-subtree.	      \
++	 * This allows mitigating some of the tree walk overhead for	      \
++	 * for non-intersecting ranges, maintained and consulted in O(1).     \
++	 */								      \
++	node = rb_entry(root->rb_root.rb_node, ITSTRUCT, ITRB);		      \
++	if (node->ITSUBTREE <= start)	/* !Cond2 */			      \
++		return NULL;						      \
++									      \
++	leftmost = rb_entry(root->rb_leftmost, ITSTRUCT, ITRB);		      \
++	if (ITSTART(leftmost) >= end)	/* !Cond1 */			      \
++		return NULL;						      \
++									      \
++	return ITPREFIX ## _subtree_search(node, start, end);		      \
++}									      \
++									      \
++ITSTATIC ITSTRUCT *							      \
++ITPREFIX ## _iter_next(ITSTRUCT *node, ITTYPE start, ITTYPE end)	      \
++{									      \
++	struct rb_node *rb = node->ITRB.rb_right, *prev;		      \
++									      \
++	while (true) {							      \
++		/*							      \
++		 * Loop invariants:					      \
++		 *   Cond1: ITSTART(node) < end				      \
++		 *   rb == node->ITRB.rb_right				      \
++		 *							      \
++		 * First, search right subtree if suitable		      \
++		 */							      \
++		if (rb) {						      \
++			ITSTRUCT *right = rb_entry(rb, ITSTRUCT, ITRB);	      \
++			if (start < right->ITSUBTREE)			      \
++				return ITPREFIX ## _subtree_search(right,     \
++								start, end); \
++		}							      \
++									      \
++		/* Move up the tree until we come from a node's left child */ \
++		do {							      \
++			rb = rb_parent(&node->ITRB);			      \
++			if (!rb)					      \
++				return NULL;				      \
++			prev = &node->ITRB;				      \
++			node = rb_entry(rb, ITSTRUCT, ITRB);		      \
++			rb = node->ITRB.rb_right;			      \
++		} while (prev == rb);					      \
++									      \
++		/* Check if the node intersects [start;end) */		      \
++		if (end <= ITSTART(node))		/* !Cond1 */	      \
++			return NULL;					      \
++		else if (start < ITEND(node))		/* Cond2 */	      \
++			return node;					      \
++	}								      \
++}
 -- 
 2.16.4
 
