@@ -2,115 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23365CAA70
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 19:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BA9CAF4B
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 21:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393371AbfJCRF0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Oct 2019 13:05:26 -0400
-Received: from mga18.intel.com ([134.134.136.126]:14911 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393369AbfJCRFZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Oct 2019 13:05:25 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 Oct 2019 10:05:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,253,1566889200"; 
-   d="scan'208";a="392014697"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga005.fm.intel.com with ESMTP; 03 Oct 2019 10:05:23 -0700
-Date:   Thu, 3 Oct 2019 10:05:23 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Jeff Layton <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        Dave Chinner <david@fromorbit.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: Lease semantic proposal
-Message-ID: <20191003170523.GC31174@iweiny-DESK2.sc.intel.com>
-References: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
- <5d5a93637934867e1b3352763da8e3d9f9e6d683.camel@kernel.org>
- <20191001181659.GA5500@iweiny-DESK2.sc.intel.com>
- <20191003090110.GC17911@quack2.suse.cz>
+        id S1731105AbfJCTdI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Oct 2019 15:33:08 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:33886 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730979AbfJCTdH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Oct 2019 15:33:07 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x93JFmAA019413;
+        Thu, 3 Oct 2019 12:33:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt0818;
+ bh=hE6LEGaRXo/pLY3ofA5JybT6+DI/lOWPB9Xl/h0VgSY=;
+ b=jmRRtDpYVvG6CFEYpWb+QzYiDCX1svAcEadfduW5V9e3RuQMaDnpTzK35BH+VmAkGp5f
+ sZEomjLQNhgz94x7qLh/Ui8dnj9KzsTYt4Zy4xVg3UVc8l5JIo4SJ65ZgqlxTosCpcaV
+ AZb0O7zQpd6oFeO8kJ0M9eG8M/UWG5bI+nc7iVneBg8xK7ji+e7lX3n1jalt0Gr5ErhR
+ Ql52QSLwbO6tPu4CCeEWfBY49QEItd9mGBTFKZPP24ihnuMECwniqHLEJTpE/Sn8Ggd7
+ uEaLxWhSHFMpOdKa6ylFr3cVwqBI/PHhgXHiq9wSso81MG+1vD1JXnDGRoa2w38Lp4Cv Rg== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0b-0016f401.pphosted.com with ESMTP id 2vd0ya4yjm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 03 Oct 2019 12:33:04 -0700
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Thu, 3 Oct
+ 2019 12:33:02 -0700
+Received: from NAM03-CO1-obe.outbound.protection.outlook.com (104.47.40.59) by
+ SC-EXCH01.marvell.com (10.93.176.81) with Microsoft SMTP Server (TLS) id
+ 15.0.1367.3 via Frontend Transport; Thu, 3 Oct 2019 12:33:02 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gfQudMS1jiUQv8nTswRiOkP+75XsiKqoKMBivqFnfiFhq3u+ws36LwYSEJngG2hC4WRvDDNGH2bQqtYTMYwRn63jDkSTaJP/OC66mIp0PYam+FB1BbKbVytOInT+0IfoEs+lswryT/CGYwg13k1RvEOw8sxIvw3E4Im55jVynJyCqskYo/3v2ta/bNN1Y42phgImJQ3ntZef+9uQ9El/ce0IhLFDg0SYVES8sNLcnweMmcSa0d8Fxxnj4lMwQEpndj5OpwMX5J+riI5r16N6k+ESemrA7gqMWBuGg8XFAja5KtUh/93sbNXuIY1uZp352EAlJlq2jsDaP/aVIOPm+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hE6LEGaRXo/pLY3ofA5JybT6+DI/lOWPB9Xl/h0VgSY=;
+ b=kcKusbA2Z9UuO0laLrl2ODVHcv2PUJljNCN8990wERcxi+YmD90TqnMSXiELOPiMOhVXBryhbpJbTjB2HOGgdEzcxhNS3LVFt/arPMRdagqYLSaodZAP2E3d+Ul25G0ZM8U620OYu3ygI8hQT+JmSpp0NRfRgK3sMIrFNq11HEfbf7InWCr5EMv7t8sXAvdpNFhQxy+dbVt66+Wa0NgqwcMjT7aDZjsHxxSc1yPZTElQQWCpvxD1zBG54HmDKE8wrXPJ1j4GxEj4xjOAuxG7kk4oBMZa3tgkDKd+J90+b9uKac4AcQc0qs30/8HEcoLFkXiGevD3E6pOGWWdZEuHgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector2-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hE6LEGaRXo/pLY3ofA5JybT6+DI/lOWPB9Xl/h0VgSY=;
+ b=D51f6W/AW80P7AF2AD0SQZw/ZTaLxFdt476pw4N/kCoV+tVKm2v0wOIO1WR67kOalEr0xudAOZMmbQoupSHm2T82rNLaWjn4iKjaLX1QpX1bsI0MP4OyjYqMbI07DMAjIDwLELH8cTjUSWRNMWF7BrmpWpHmzCOyEA0xqurt3jU=
+Received: from MN2PR18MB3182.namprd18.prod.outlook.com (10.255.236.143) by
+ MN2PR18MB2527.namprd18.prod.outlook.com (20.179.82.202) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2305.17; Thu, 3 Oct 2019 19:33:00 +0000
+Received: from MN2PR18MB3182.namprd18.prod.outlook.com
+ ([fe80::9d49:7d09:abb5:34e8]) by MN2PR18MB3182.namprd18.prod.outlook.com
+ ([fe80::9d49:7d09:abb5:34e8%7]) with mapi id 15.20.2305.023; Thu, 3 Oct 2019
+ 19:33:00 +0000
+From:   Michal Kalderon <mkalderon@marvell.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Ariel Elior <aelior@marvell.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Ariel Elior <aelior@marvell.com>
+Subject: RE: [EXT] Re: [PATCH rdma-next 1/2] RDMA/qedr: Fix synchronization
+ methods and memory leaks in qedr
+Thread-Topic: [EXT] Re: [PATCH rdma-next 1/2] RDMA/qedr: Fix synchronization
+ methods and memory leaks in qedr
+Thread-Index: AQHVeeL/Zqn8Gmyl/0KSJPUwmRq186dJGBGAgAAuYTA=
+Date:   Thu, 3 Oct 2019 19:33:00 +0000
+Message-ID: <MN2PR18MB318226121DAB349647E1903CA19F0@MN2PR18MB3182.namprd18.prod.outlook.com>
+References: <20191003120342.16926-1-michal.kalderon@marvell.com>
+ <20191003120342.16926-2-michal.kalderon@marvell.com>
+ <20191003161633.GA15026@ziepe.ca>
+In-Reply-To: <20191003161633.GA15026@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [79.182.56.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 080495ae-867c-4e71-6146-08d74838808a
+x-ms-traffictypediagnostic: MN2PR18MB2527:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR18MB25275507ED33D5A34AD021D8A19F0@MN2PR18MB2527.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 01792087B6
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39850400004)(396003)(376002)(136003)(366004)(346002)(189003)(199004)(52536014)(14444005)(256004)(5660300002)(3846002)(6116002)(11346002)(2906002)(71190400001)(71200400001)(66066001)(486006)(8936002)(81166006)(8676002)(102836004)(81156014)(229853002)(476003)(446003)(7696005)(76176011)(6506007)(186003)(7736002)(6916009)(74316002)(478600001)(305945005)(26005)(25786009)(4326008)(14454004)(86362001)(66446008)(6436002)(107886003)(66476007)(76116006)(55016002)(9686003)(316002)(66946007)(33656002)(54906003)(64756008)(6246003)(66556008)(99286004);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR18MB2527;H:MN2PR18MB3182.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: marvell.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: p9FutXKk4mtblBrVd121bNq738WlJJ5+IoECRS/F7kGZkyM+eaWb22HzE6Bnvt43SVPZnwkKiAGvxA2GWB/yZxr/hJv1v1HwzR5Cvzy56U6b+i0ozINAJDvE/ZPeXFYQLBnE5+UhW3ctffJoTG3fBJbz/I5uPbnMMdpJkHsKLeCYMgAU5nrdOtNEtW9SoWErcA2JCE4iQjDBvwpRmzAqhWsA6G9GvJ0HduYvZa0zxBsLKk7PSpSwPP8LCBvtdmOvelu9kFNBahfq38e7ZpYOV3an+oaxzOHFpg6EHUh113ct5lhvo9PcnLdGWy1v5EgIsjn0f3CHsnl855OKWOTgZaGfAqXOGZgIV9RJcX0B6W/PC7vxZJPe07yppvDc0iLtjexNSbkLR79SoJGHmiSqc+WDcgHFfQfrj/Di9IKwMp4=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191003090110.GC17911@quack2.suse.cz>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 080495ae-867c-4e71-6146-08d74838808a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Oct 2019 19:33:00.6436
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4FlrOqCat2RBwQrn55ntfWTBzoiVa67G1EgKECETXnxAkEZmsaTGMBxIkJFAtk4THo7KA/1RyTwQjFkzgheqKw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB2527
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-03_07:2019-10-03,2019-10-03 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 03, 2019 at 11:01:10AM +0200, Jan Kara wrote:
-> On Tue 01-10-19 11:17:00, Ira Weiny wrote:
-> > On Mon, Sep 23, 2019 at 04:17:59PM -0400, Jeff Layton wrote:
-> > > On Mon, 2019-09-23 at 12:08 -0700, Ira Weiny wrote:
-> > > 
-> > > Will userland require any special privileges in order to set an
-> > > F_UNBREAK lease? This seems like something that could be used for DoS. I
-> > > assume that these will never time out.
-> > 
-> > Dan and I discussed this some more and yes I think the uid of the process needs
-> > to be the owner of the file.  I think that is a reasonable mechanism.
-> 
-> Honestly, I'm not convinced anything more than open-for-write should be
-> required. Sure unbreakable lease may result in failing truncate and other
-> ops but as we discussed at LFS/MM, this is not hugely different from
-> executing a file resulting in ETXTBUSY for any truncate attempt (even from
-> root). So sufficiently priviledged user has to be able to easily find which
-> process(es) owns the lease so that he can kill it / take other
-> administrative action to release the lease. But that's about it.
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> Sent: Thursday, October 3, 2019 7:17 PM
+> On Thu, Oct 03, 2019 at 03:03:41PM +0300, Michal Kalderon wrote:
+>=20
+> > diff --git a/drivers/infiniband/hw/qedr/qedr_iw_cm.c
+> > b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
+> > index 22881d4442b9..ebc6bc25a0e2 100644
+> > +++ b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
+> > @@ -79,6 +79,28 @@ qedr_fill_sockaddr6(const struct qed_iwarp_cm_info
+> *cm_info,
+> >  	}
+> >  }
+> >
+> > +static void qedr_iw_free_qp(struct kref *ref) {
+> > +	struct qedr_qp *qp =3D container_of(ref, struct qedr_qp, refcnt);
+> > +
+> > +	xa_erase_irq(&qp->dev->qps, qp->qp_id);
+>=20
+> why is it _irq? Where are we in an irq when using the xa_lock on this xar=
+ray?
+We could be under a spin lock when called from several locations in core/iw=
+cm.c
+>=20
+>=20
+> > +	kfree(qp);
+>=20
+> [..]
+>=20
+> > @@ -516,8 +548,10 @@ int qedr_iw_connect(struct iw_cm_id *cm_id,
+> struct iw_cm_conn_param *conn_param)
+> >  		return -ENOMEM;
+> >
+> >  	ep->dev =3D dev;
+> > +	kref_init(&ep->refcnt);
+> > +
+> > +	kref_get(&qp->refcnt);
+>=20
+> Here 'qp' comes out of an xa_load, but the QP is still visible in the xar=
+ray with
+> a 0 refcount, so this is invalid.
+The core/iwcm takes a refcnt of the QP before calling connect, so it can't =
+be with
+refcnt zero
 
-Well that was kind of what I was thinking.  However I wanted to be careful
-about requiring write permission when doing a F_RDLCK.  I think that it has to
-be clearly documented _why_ write permission is required.
+>=20
+> Also, the xa_load doesn't have any locking around it, so the entire thing=
+ looks
+> wrong to me.
+Since the functions calling it from core/iwcm ( connect / accept ) take a q=
+p
+Ref-cnt before the calling there's no risk of the entry being deleted while
+xa_load is called
 
->  
-> > > How will we deal with the case where something is is squatting on an
-> > > F_UNBREAK lease and isn't letting it go?
-> > 
-> > That is a good question.  I had not considered someone taking the UNBREAK
-> > without pinning the file.
-> 
-> IMHO the same answer as above - sufficiently priviledged user should be
-> able to easily find the process holding the lease and kill it. Given the
-> lease owner has to have write access to the file, he better should be from
-> the same "security domain"...
-> 
-> > > Leases are technically "owned" by the file description -- we can't
-> > > necessarily trace it back to a single task in a threaded program. The
-> > > kernel task that set the lease may have exited by the time we go
-> > > looking.
-> > > 
-> > > Will we be content trying to determine this using /proc/locks+lsof, etc,
-> > > or will we need something better?
-> > 
-> > I think using /proc/locks is our best bet.  Similar to my intention to report
-> > files being pinned.[1]
-> > 
-> > In fact should we consider files with F_UNBREAK leases "pinned" and just report
-> > them there?
-> 
-> As Jeff wrote later, /proc/locks is not enough. You need PID(s) which have
-> access to the lease and hold it alive. Your /proc/<pid>/ files you had in your
-> patches should do that, shouldn't they? Maybe they were not tied to the
-> right structure... They really need to be tied to the existence of a lease.
+>=20
+> Most probably you want to hold the xa_lock during xa_load and then use a
+> kref_get_not_zero - failure of the get also means the qp is not in the xa=
+rray
+>=20
+> Or rework things so the qp is removed from the xarray earlier, I'm not su=
+re.
+This would make qedr more robust, but I think it not needed given the exist=
+ing
+Core/iwcm implementation.=20
 
-Yes, sorry.  I misspoke above.
-
-Right now /proc/<pid>/file_pins indicates that the file is pinned by GUP.  I
-think it may be reasonable to extend that to any file which has F_UNBREAK
-specified.  'file_pins' may be the wrong name when we include F_UNBREAK'ed
-leased files, so I will think on the name.  But I think this is possible and
-desired.
-
-Ira
-
+Thanks,
+Michal
+>=20
+> Jason
