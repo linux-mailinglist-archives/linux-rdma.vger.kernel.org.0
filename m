@@ -2,65 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B78C99A8
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 10:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5BA7C99BA
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 10:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727337AbfJCIUv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Oct 2019 04:20:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58472 "EHLO mail.kernel.org"
+        id S1726039AbfJCIXh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Oct 2019 04:23:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727095AbfJCIUv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Oct 2019 04:20:51 -0400
+        id S1727382AbfJCIXh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 3 Oct 2019 04:23:37 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91F5420815;
-        Thu,  3 Oct 2019 08:20:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E25BD2070B;
+        Thu,  3 Oct 2019 08:23:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570090851;
-        bh=zma8b4WVQpeJfiL2fy1SEiHV9CPEtfvm4I+YEdFQC8E=;
+        s=default; t=1570091016;
+        bh=kMVLItmWOvHbHYHw3FLdwWFyBWipkFaY3U7hgdBVMcc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SsYTOmWDqV9ID1YtFhdNTo4rKkAHUlaSIYfzrJVjAX3mkR2RUeJLqk1fheLLP+tfm
-         LYQo2WAiz4OMYMR7aRvcDsPfOXbGuqrY1820xVzMbaIYNQ32Rjk/MyhfRI+VAze2z6
-         +fFsYyDXKyGnxi2yz41CRQYeG0MDkXKE0RaMtgrM=
-Date:   Thu, 3 Oct 2019 11:20:48 +0300
+        b=KvKn/xFquMuOqyoKN59d0YD7/x9dYeLd+2q9Et965cYgH/p8V29tfYJA02mQZ03e/
+         n7prZWHJayKdRN3LyvdNZp6zBe4AA34NyhLK1HiXme+hwZ6ICbzrXxDKcjH/PfKy8x
+         WbH6YpDia5kymRRDFW+poUNYpdhCoE/8qXm/SYTU=
+Date:   Thu, 3 Oct 2019 11:23:33 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Navid Emamdoost <navid.emamdoost@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Navid Emamdoost <emamd001@umn.edu>,
-        Stephen McCamant <smccaman@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] RDMA: release allocated skb
-Message-ID: <20191003082048.GK5855@unreal>
-References: <20190923050823.GL14368@unreal>
- <20190923155300.20407-1-navid.emamdoost@gmail.com>
- <20191001135430.GA27086@ziepe.ca>
- <CAEkB2EQF0D-Fdg74+E4VdxipZvTaBKseCtKJKnFg7T6ZZE9x6Q@mail.gmail.com>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "jgg@mellanox.com" <jgg@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [RFC 20/20] RDMA/i40iw: Mark i40iw as deprecated
+Message-ID: <20191003082333.GL5855@unreal>
+References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
+ <20190926164519.10471-21-jeffrey.t.kirsher@intel.com>
+ <20190926174009.GD14368@unreal>
+ <9DD61F30A802C4429A01CA4200E302A7AC702BDA@fmsmsx123.amr.corp.intel.com>
+ <20190926195517.GA1743170@kroah.com>
+ <bc18503dcace47150d5f45e8669d7978e18a38f9.camel@redhat.com>
+ <20190928055511.GI14368@unreal>
+ <64752160-e8cc-5dcd-d0f9-f26f81057324@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEkB2EQF0D-Fdg74+E4VdxipZvTaBKseCtKJKnFg7T6ZZE9x6Q@mail.gmail.com>
+In-Reply-To: <64752160-e8cc-5dcd-d0f9-f26f81057324@intel.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 02, 2019 at 04:35:06PM -0500, Navid Emamdoost wrote:
-> Hi Jason,
+On Wed, Oct 02, 2019 at 05:15:45PM -0400, Dennis Dalessandro wrote:
+> On 9/28/2019 1:55 AM, Leon Romanovsky wrote:
+> > On Fri, Sep 27, 2019 at 04:17:15PM -0400, Doug Ledford wrote:
+> > > On Thu, 2019-09-26 at 21:55 +0200, gregkh@linuxfoundation.org wrote:
+> > > > On Thu, Sep 26, 2019 at 07:49:44PM +0000, Saleem, Shiraz wrote:
+> > > > > > Subject: Re: [RFC 20/20] RDMA/i40iw: Mark i40iw as deprecated
+> > > > > >
+> > > > > > On Thu, Sep 26, 2019 at 09:45:19AM -0700, Jeff Kirsher wrote:
+> > > > > > > From: Shiraz Saleem <shiraz.saleem@intel.com>
+> > > > > > >
+> > > > > > > Mark i40iw as deprecated/obsolete.
+> > > > > > >
+> > > > > > > irdma is the replacement driver that supports X722.
+> > > > > >
+> > > > > > Can you simply delete old one and add MODULE_ALIAS() in new
+> > > > > > driver?
+> > > > > >
+> > > > >
+> > > > > Yes, but we thought typically driver has to be deprecated for a few
+> > > > > cycles before removing it.
+> > > >
+> > > > If you completely replace it with something that works the same, why
+> > > > keep the old one around at all?
+> > > >
+> > > > Unless you don't trust your new code?  :)
+> > >
+> > > I have yet to see, in over 20 years of kernel experience, a new driver
+> > > replace an old driver and not initially be more buggy and troublesome
+> > > than the old driver.  It takes time and real world usage for the final
+> > > issues to get sorted out.  During that time, the fallback is often
+> > > necessary for those real world users.
+> >
+> > How many real users exist in RDMA world who run pure upstream kernel?
 >
-> Thanks for the feedback. Yes, you are right if the skb release is
-> moved under err4 label it will cause a double free as
-> c4iw_ref_send_wait will release skb in case of error.
-> So, in order to avoid leaking skb in case of c4iw_bar2_addrs failure,
-> the kfree(skb) could be placed under the error check like the way
-> patch v1 did. Do you see any mistake in version 1?
-> https://lore.kernel.org/patchwork/patch/1128510/
+> I doubt too many especially the latest bleeding edge upstream kernel. That
+> could be interesting, but I don't think it's the reality.
+>
+> Distro kernels could certainly still keep the old driver, and that makes a
+> lot of sense.
 
-No, it is not enough.
-c4iw_ref_send_wait() ->
-  c4iw_wait_for_reply() ->
-    return wr_waitp->ret; <--- can be -EIO
+Also, they are invited to run their regression suite to verify
+stability and report any arising problems to upstream/vendor.
 
 Thanks
+
+>
+> -Denny
+>
