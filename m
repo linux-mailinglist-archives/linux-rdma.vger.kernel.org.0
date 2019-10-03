@@ -2,127 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57271CAA5E
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 19:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23365CAA70
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 19:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390710AbfJCREE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Oct 2019 13:04:04 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:48549 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732998AbfJCREE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Oct 2019 13:04:04 -0400
-Received: from localhost (mehrangarh.blr.asicdesigners.com [10.193.185.169])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x93H3sMP028509;
-        Thu, 3 Oct 2019 10:03:55 -0700
-Date:   Thu, 3 Oct 2019 22:33:53 +0530
-From:   Potnuri Bharat Teja <bharat@chelsio.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nicolas Waisman <nico@semmle.com>
-Subject: Re: [PATCH] cxgb4: do not dma memory off of the stack
-Message-ID: <20191003170339.GA16190@chelsio.com>
-References: <20191001153917.GA3498459@kroah.com>
+        id S2393371AbfJCRF0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Oct 2019 13:05:26 -0400
+Received: from mga18.intel.com ([134.134.136.126]:14911 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393369AbfJCRFZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 3 Oct 2019 13:05:25 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 Oct 2019 10:05:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.67,253,1566889200"; 
+   d="scan'208";a="392014697"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by fmsmga005.fm.intel.com with ESMTP; 03 Oct 2019 10:05:23 -0700
+Date:   Thu, 3 Oct 2019 10:05:23 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Jeff Layton <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: Lease semantic proposal
+Message-ID: <20191003170523.GC31174@iweiny-DESK2.sc.intel.com>
+References: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
+ <5d5a93637934867e1b3352763da8e3d9f9e6d683.camel@kernel.org>
+ <20191001181659.GA5500@iweiny-DESK2.sc.intel.com>
+ <20191003090110.GC17911@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191001153917.GA3498459@kroah.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20191003090110.GC17911@quack2.suse.cz>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tuesday, October 10/01/19, 2019 at 21:09:17 +0530, Greg KH wrote:
-> Nicolas pointed out that the cxgb4 driver is doing dma off of the stack,
-> which is generally considered a very bad thing.  On some architectures
-> it could be a security problem, but odds are none of them actually run
-> this driver, so it's just a "normal" bug.
+On Thu, Oct 03, 2019 at 11:01:10AM +0200, Jan Kara wrote:
+> On Tue 01-10-19 11:17:00, Ira Weiny wrote:
+> > On Mon, Sep 23, 2019 at 04:17:59PM -0400, Jeff Layton wrote:
+> > > On Mon, 2019-09-23 at 12:08 -0700, Ira Weiny wrote:
+> > > 
+> > > Will userland require any special privileges in order to set an
+> > > F_UNBREAK lease? This seems like something that could be used for DoS. I
+> > > assume that these will never time out.
+> > 
+> > Dan and I discussed this some more and yes I think the uid of the process needs
+> > to be the owner of the file.  I think that is a reasonable mechanism.
 > 
-> Resolve this by allocating the memory for a message off of the heap
-> instead of the stack.  kmalloc() always will give us a proper memory
-> location that DMA will work correctly from.
-> 
-> Reported-by: Nicolas Waisman <nico@semmle.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> ---
-> 
-> Note, test-built only, I don't have this hardware to actually run this
-> code at all.
-Thanks for the patch.
-Tests with HW ran fine.
-Tested-by: Potnuri Bharat Teja <bharat@chelsio.com>
+> Honestly, I'm not convinced anything more than open-for-write should be
+> required. Sure unbreakable lease may result in failing truncate and other
+> ops but as we discussed at LFS/MM, this is not hugely different from
+> executing a file resulting in ETXTBUSY for any truncate attempt (even from
+> root). So sufficiently priviledged user has to be able to easily find which
+> process(es) owns the lease so that he can kill it / take other
+> administrative action to release the lease. But that's about it.
 
+Well that was kind of what I was thinking.  However I wanted to be careful
+about requiring write permission when doing a F_RDLCK.  I think that it has to
+be clearly documented _why_ write permission is required.
+
+>  
+> > > How will we deal with the case where something is is squatting on an
+> > > F_UNBREAK lease and isn't letting it go?
+> > 
+> > That is a good question.  I had not considered someone taking the UNBREAK
+> > without pinning the file.
 > 
-> diff --git a/drivers/infiniband/hw/cxgb4/mem.c b/drivers/infiniband/hw/cxgb4/mem.c
-> index aa772ee0706f..b2bd3de81dcd 100644
-> --- a/drivers/infiniband/hw/cxgb4/mem.c
-> +++ b/drivers/infiniband/hw/cxgb4/mem.c
-> @@ -275,13 +275,17 @@ static int write_tpt_entry(struct c4iw_rdev *rdev, u32 reset_tpt_entry,
->  			   struct sk_buff *skb, struct c4iw_wr_wait *wr_waitp)
->  {
->  	int err;
-> -	struct fw_ri_tpte tpt;
-> +	struct fw_ri_tpte *tpt;
->  	u32 stag_idx;
->  	static atomic_t key;
->  
->  	if (c4iw_fatal_error(rdev))
->  		return -EIO;
->  
-> +	tpt = kmalloc(sizeof(*tpt), GFP_KERNEL);
-> +	if (!tpt)
-> +		return -ENOMEM;
-> +
->  	stag_state = stag_state > 0;
->  	stag_idx = (*stag) >> 8;
->  
-> @@ -305,28 +309,28 @@ static int write_tpt_entry(struct c4iw_rdev *rdev, u32 reset_tpt_entry,
->  
->  	/* write TPT entry */
->  	if (reset_tpt_entry)
-> -		memset(&tpt, 0, sizeof(tpt));
-> +		memset(tpt, 0, sizeof(*tpt));
->  	else {
-> -		tpt.valid_to_pdid = cpu_to_be32(FW_RI_TPTE_VALID_F |
-> +		tpt->valid_to_pdid = cpu_to_be32(FW_RI_TPTE_VALID_F |
->  			FW_RI_TPTE_STAGKEY_V((*stag & FW_RI_TPTE_STAGKEY_M)) |
->  			FW_RI_TPTE_STAGSTATE_V(stag_state) |
->  			FW_RI_TPTE_STAGTYPE_V(type) | FW_RI_TPTE_PDID_V(pdid));
-> -		tpt.locread_to_qpid = cpu_to_be32(FW_RI_TPTE_PERM_V(perm) |
-> +		tpt->locread_to_qpid = cpu_to_be32(FW_RI_TPTE_PERM_V(perm) |
->  			(bind_enabled ? FW_RI_TPTE_MWBINDEN_F : 0) |
->  			FW_RI_TPTE_ADDRTYPE_V((zbva ? FW_RI_ZERO_BASED_TO :
->  						      FW_RI_VA_BASED_TO))|
->  			FW_RI_TPTE_PS_V(page_size));
-> -		tpt.nosnoop_pbladdr = !pbl_size ? 0 : cpu_to_be32(
-> +		tpt->nosnoop_pbladdr = !pbl_size ? 0 : cpu_to_be32(
->  			FW_RI_TPTE_PBLADDR_V(PBL_OFF(rdev, pbl_addr)>>3));
-> -		tpt.len_lo = cpu_to_be32((u32)(len & 0xffffffffUL));
-> -		tpt.va_hi = cpu_to_be32((u32)(to >> 32));
-> -		tpt.va_lo_fbo = cpu_to_be32((u32)(to & 0xffffffffUL));
-> -		tpt.dca_mwbcnt_pstag = cpu_to_be32(0);
-> -		tpt.len_hi = cpu_to_be32((u32)(len >> 32));
-> +		tpt->len_lo = cpu_to_be32((u32)(len & 0xffffffffUL));
-> +		tpt->va_hi = cpu_to_be32((u32)(to >> 32));
-> +		tpt->va_lo_fbo = cpu_to_be32((u32)(to & 0xffffffffUL));
-> +		tpt->dca_mwbcnt_pstag = cpu_to_be32(0);
-> +		tpt->len_hi = cpu_to_be32((u32)(len >> 32));
->  	}
->  	err = write_adapter_mem(rdev, stag_idx +
->  				(rdev->lldi.vr->stag.start >> 5),
-> -				sizeof(tpt), &tpt, skb, wr_waitp);
-> +				sizeof(*tpt), tpt, skb, wr_waitp);
->  
->  	if (reset_tpt_entry) {
->  		c4iw_put_resource(&rdev->resource.tpt_table, stag_idx);
-> @@ -334,6 +338,7 @@ static int write_tpt_entry(struct c4iw_rdev *rdev, u32 reset_tpt_entry,
->  		rdev->stats.stag.cur -= 32;
->  		mutex_unlock(&rdev->stats.lock);
->  	}
-> +	kfree(tpt);
->  	return err;
->  }
->  
+> IMHO the same answer as above - sufficiently priviledged user should be
+> able to easily find the process holding the lease and kill it. Given the
+> lease owner has to have write access to the file, he better should be from
+> the same "security domain"...
+> 
+> > > Leases are technically "owned" by the file description -- we can't
+> > > necessarily trace it back to a single task in a threaded program. The
+> > > kernel task that set the lease may have exited by the time we go
+> > > looking.
+> > > 
+> > > Will we be content trying to determine this using /proc/locks+lsof, etc,
+> > > or will we need something better?
+> > 
+> > I think using /proc/locks is our best bet.  Similar to my intention to report
+> > files being pinned.[1]
+> > 
+> > In fact should we consider files with F_UNBREAK leases "pinned" and just report
+> > them there?
+> 
+> As Jeff wrote later, /proc/locks is not enough. You need PID(s) which have
+> access to the lease and hold it alive. Your /proc/<pid>/ files you had in your
+> patches should do that, shouldn't they? Maybe they were not tied to the
+> right structure... They really need to be tied to the existence of a lease.
+
+Yes, sorry.  I misspoke above.
+
+Right now /proc/<pid>/file_pins indicates that the file is pinned by GUP.  I
+think it may be reasonable to extend that to any file which has F_UNBREAK
+specified.  'file_pins' may be the wrong name when we include F_UNBREAK'ed
+leased files, so I will think on the name.  But I think this is possible and
+desired.
+
+Ira
+
