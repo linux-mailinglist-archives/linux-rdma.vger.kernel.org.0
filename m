@@ -2,280 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E8CC9808
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 07:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2979C982E
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 08:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727935AbfJCFsw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Oct 2019 01:48:52 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:36729 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727893AbfJCFsv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Oct 2019 01:48:51 -0400
-Received: by mail-pl1-f194.google.com with SMTP id j11so963157plk.3
-        for <linux-rdma@vger.kernel.org>; Wed, 02 Oct 2019 22:48:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=n+7zRedXERX/L0koBAbltU72y2uVvnN7jZ44NVg5Z4Q=;
-        b=dabdr/zIrUC9maHps61kXDkfeqKXh/zdqmcV9emVaNvN8Z57SIEgPXVk4v6JUZiJhY
-         r+/Zss3PN9jfLaAxY8mk2xW6SJB8gkQV3t1swAxN3qcwQft3XUlCM1NUfZsFY8SVoDRD
-         gRlRARqEPATFZEOVgL3pqTfzMDQdyqyEnm5gM=
+        id S1726119AbfJCGSI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Oct 2019 02:18:08 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:33374 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725835AbfJCGSI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Oct 2019 02:18:08 -0400
+Received: by mail-io1-f70.google.com with SMTP id g15so3628753ioc.0
+        for <linux-rdma@vger.kernel.org>; Wed, 02 Oct 2019 23:18:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=n+7zRedXERX/L0koBAbltU72y2uVvnN7jZ44NVg5Z4Q=;
-        b=GO8769+HOjkHDLkjZ2yycmTS9ZAPy3F+ETor0YR0Dk/bqL/Exz18BCAi2N3t4ADTxy
-         2BHAHg6wsYULSIjyuwLc+Ij5Et2zSe5oGb/m+Yp2bNmvAGIKGFa2UtdJaJd4+bXNJ6U/
-         I3jNZAr6TMKEkhpFcV0Ik7QydaCavb+FTpgMgDL7WpLN+KXczlutw9al2o/p4UtRbj8Y
-         Q0KDqV9aeUVtHfC9oURqLGHZzC29vrHthsm5ly+6m5NQbh7QuC9T4wvMkQSvTxF49H4f
-         VAvgtM2s+qgXtgkUrSRncx93Ti+i/8VCW53rM+p//h6V3+06MAZzDze9HWc82IhOz417
-         1YCQ==
-X-Gm-Message-State: APjAAAUZ56LO67DaG/HnRUJcoyLuBLcAIw+dDLvJW+NSfAwD2ZBoWAzY
-        sYFjAfa4wIDyJb4FjI2JMe6d1xL0A5o=
-X-Google-Smtp-Source: APXvYqyRwtjClby63v4q6kREH7PZSl/5XmfX7VECnrxnKIag1CehxcQHhSCmDTqjYv7Bn5odDbIUiQ==
-X-Received: by 2002:a17:902:848e:: with SMTP id c14mr7803602plo.217.1570081729275;
-        Wed, 02 Oct 2019 22:48:49 -0700 (PDT)
-Received: from neo00-el73.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id x18sm1195740pge.76.2019.10.02.22.48.47
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Oct 2019 22:48:48 -0700 (PDT)
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-To:     dledford@redhat.com, jgg@mellanox.com
-Cc:     linux-rdma@vger.kernel.org,
-        Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [PATCH for-next] RDMA/bnxt_re: Enable SRIOV VF support on Broadcom's 57500 adapter series
-Date:   Thu,  3 Oct 2019 01:48:35 -0400
-Message-Id: <1570081715-14301-1-git-send-email-devesh.sharma@broadcom.com>
-X-Mailer: git-send-email 1.8.3.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=gBSQkU41ZLVR6bUYLDQYs/WhgJL7Xhhm/K97Y0QyX7E=;
+        b=FxsGZkwyKnmd3rl1ZbPSjOQfZj3aL2vMXQm9vWxfuF2aC51AdUYjchjQrRuKFK5MBz
+         czEVt/qTlXue4+/0xLNhfOlHH2oH6CeV3kaQBQ8XP/j1d9XPk+9lVs5Alb58jiGgorPQ
+         fzuLQIBUTIp91ig1S+fAq1bHeZzy5wHuTTTja2jwBn++O6O3PT40bfZAY/pjjEjsfNUf
+         jJswW4/tsOYxADsXON9dsEoktJlkngg5G20fLtn9NKHxNVLVS3O12DWhbi6Stq/31Rp8
+         kMGXdUwb9ShNcmZM+XaEjlAhhY3GdlhFWkIiVD/+FMXd6+NsCWHmWrvrJYcBMGeesPDN
+         pcjg==
+X-Gm-Message-State: APjAAAV65x/gyVcrf2pgsyiddCiWHyuikCzzSvGxo9mmGeU2a+v+XhIv
+        GwgwA7Qm4A4yQT05jmN0vP99kl0lc+zjNWkWo6JHWQKGHshP
+X-Google-Smtp-Source: APXvYqyPWsGmsYzObJIZ/MF2L7Heo9bZifiycB3TxiMa7aWNjl+XOaK6BJwyXu6fx7wFW6GAnxH7ZgGG9qebcGQrUaRJ34hGrI0T
+MIME-Version: 1.0
+X-Received: by 2002:a02:1cc5:: with SMTP id c188mr8051949jac.26.1570083487128;
+ Wed, 02 Oct 2019 23:18:07 -0700 (PDT)
+Date:   Wed, 02 Oct 2019 23:18:07 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000084a5a10593fb8c3f@google.com>
+Subject: KASAN: use-after-free Read in rds_inc_put
+From:   syzbot <syzbot+322126673a98080e677f@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        rds-devel@oss.oracle.com, santosh.shilimkar@oracle.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Broadcom's 575xx adapter series has support for SRIOV VFs.
-Making changes to enable SRIOV VF support. There are two
-major area where changes are done:
- -- Added new DB location for control-path and data-path DB ring
- -- New devices do not need to issue sriov-config slow-path command
-    thus, skipping to call that firmware command.
-For now enabling support for 64 RoCE VFs.
+Hello,
 
-Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+syzbot found the following crash on:
+
+HEAD commit:    a32db7e1 Add linux-next specific files for 20191002
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10ff857b600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=599cf05035799eef
+dashboard link: https://syzkaller.appspot.com/bug?extid=322126673a98080e677f
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+322126673a98080e677f@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in rds_inc_put+0x141/0x150 net/rds/recv.c:82
+Read of size 8 at addr ffff88806f5371b0 by task syz-executor.0/18418
+
+CPU: 1 PID: 18418 Comm: syz-executor.0 Not tainted 5.4.0-rc1-next-20191002  
+#0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
+  __kasan_report.cold+0x1b/0x41 mm/kasan/report.c:506
+  kasan_report+0x12/0x20 mm/kasan/common.c:634
+  __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:132
+  rds_inc_put+0x141/0x150 net/rds/recv.c:82
+  rds_clear_recv_queue+0x157/0x380 net/rds/recv.c:770
+  rds_release+0x117/0x3d0 net/rds/af_rds.c:73
+  __sock_release+0xce/0x280 net/socket.c:591
+  sock_close+0x1e/0x30 net/socket.c:1269
+  __fput+0x2ff/0x890 fs/file_table.c:280
+  ____fput+0x16/0x20 fs/file_table.c:313
+  task_work_run+0x145/0x1c0 kernel/task_work.c:113
+  exit_task_work include/linux/task_work.h:22 [inline]
+  do_exit+0x904/0x2e60 kernel/exit.c:817
+  do_group_exit+0x135/0x360 kernel/exit.c:921
+  get_signal+0x47c/0x2500 kernel/signal.c:2734
+  do_signal+0x87/0x1700 arch/x86/kernel/signal.c:815
+  exit_to_usermode_loop+0x286/0x380 arch/x86/entry/common.c:159
+  prepare_exit_to_usermode arch/x86/entry/common.c:194 [inline]
+  syscall_return_slowpath arch/x86/entry/common.c:274 [inline]
+  do_syscall_64+0x65f/0x760 arch/x86/entry/common.c:300
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x459a29
+Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f4088663cf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 000000000075bf28 RCX: 0000000000459a29
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000075bf28
+RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000075bf2c
+R13: 00007ffe10e1ad8f R14: 00007f40886649c0 R15: 000000000075bf2c
+
+Allocated by task 12004:
+  save_stack+0x23/0x90 mm/kasan/common.c:69
+  set_track mm/kasan/common.c:77 [inline]
+  __kasan_kmalloc mm/kasan/common.c:510 [inline]
+  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:483
+  kasan_slab_alloc+0xf/0x20 mm/kasan/common.c:518
+  slab_post_alloc_hook mm/slab.h:584 [inline]
+  slab_alloc mm/slab.c:3319 [inline]
+  kmem_cache_alloc+0x121/0x710 mm/slab.c:3483
+  kmem_cache_zalloc include/linux/slab.h:680 [inline]
+  __rds_conn_create+0x63f/0x20b0 net/rds/connection.c:193
+  rds_conn_create_outgoing+0x4b/0x60 net/rds/connection.c:351
+  rds_sendmsg+0x19a4/0x35b0 net/rds/send.c:1294
+  sock_sendmsg_nosec net/socket.c:638 [inline]
+  sock_sendmsg+0xd7/0x130 net/socket.c:658
+  __sys_sendto+0x262/0x380 net/socket.c:1953
+  __do_sys_sendto net/socket.c:1965 [inline]
+  __se_sys_sendto net/socket.c:1961 [inline]
+  __x64_sys_sendto+0xe1/0x1a0 net/socket.c:1961
+  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Freed by task 9330:
+  save_stack+0x23/0x90 mm/kasan/common.c:69
+  set_track mm/kasan/common.c:77 [inline]
+  kasan_set_free_info mm/kasan/common.c:332 [inline]
+  __kasan_slab_free+0x102/0x150 mm/kasan/common.c:471
+  kasan_slab_free+0xe/0x10 mm/kasan/common.c:480
+  __cache_free mm/slab.c:3425 [inline]
+  kmem_cache_free+0x86/0x320 mm/slab.c:3693
+  rds_conn_destroy+0x61f/0x880 net/rds/connection.c:501
+  rds_loop_kill_conns net/rds/loop.c:213 [inline]
+  rds_loop_exit_net+0x2fc/0x4a0 net/rds/loop.c:219
+  ops_exit_list.isra.0+0xaa/0x150 net/core/net_namespace.c:172
+  cleanup_net+0x4e2/0xa60 net/core/net_namespace.c:594
+  process_one_work+0x9af/0x1740 kernel/workqueue.c:2269
+  worker_thread+0x98/0xe40 kernel/workqueue.c:2415
+  kthread+0x361/0x430 kernel/kthread.c:255
+  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+
+The buggy address belongs to the object at ffff88806f537168
+  which belongs to the cache rds_connection of size 232
+The buggy address is located 72 bytes inside of
+  232-byte region [ffff88806f537168, ffff88806f537250)
+The buggy address belongs to the page:
+page:ffffea0001bd4dc0 refcount:1 mapcount:0 mapping:ffff88809bcbd1c0  
+index:0xffff88806f537608
+flags: 0x1fffc0000000200(slab)
+raw: 01fffc0000000200 ffff88809bcfb338 ffffea00026b0248 ffff88809bcbd1c0
+raw: ffff88806f537608 ffff88806f537040 0000000100000005 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+  ffff88806f537080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  ffff88806f537100: 00 00 00 00 00 fc fc fc fc fc fc fc fc fb fb fb
+> ffff88806f537180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                      ^
+  ffff88806f537200: fb fb fb fb fb fb fb fb fb fb fc fc fc fc fc fc
+  ffff88806f537280: fc fc fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
 ---
- drivers/infiniband/hw/bnxt_re/bnxt_re.h    |   1 +
- drivers/infiniband/hw/bnxt_re/main.c       | 133 +++++++++++++++++------------
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c |   5 +-
- 3 files changed, 82 insertions(+), 57 deletions(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-index e55a166..725b235 100644
---- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-+++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-@@ -108,6 +108,7 @@ struct bnxt_re_sqp_entries {
- #define BNXT_RE_MAX_MSIX		9
- #define BNXT_RE_AEQ_IDX			0
- #define BNXT_RE_NQ_IDX			1
-+#define BNXT_RE_GEN_P5_MAX_VF		64
- 
- struct bnxt_re_dev {
- 	struct ib_device		ibdev;
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 7b914bd..d6785b8 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -119,61 +119,76 @@ static void bnxt_re_get_sriov_func_type(struct bnxt_re_dev *rdev)
-  * reserved for the function. The driver may choose to allocate fewer
-  * resources than the firmware maximum.
-  */
--static void bnxt_re_set_resource_limits(struct bnxt_re_dev *rdev)
-+static void bnxt_re_limit_pf_res(struct bnxt_re_dev *rdev)
- {
--	u32 vf_qps = 0, vf_srqs = 0, vf_cqs = 0, vf_mrws = 0, vf_gids = 0;
--	u32 i;
--	u32 vf_pct;
--	u32 num_vfs;
--	struct bnxt_qplib_dev_attr *dev_attr = &rdev->dev_attr;
-+	struct bnxt_qplib_dev_attr *attr;
-+	struct bnxt_qplib_ctx *ctx;
-+	int i;
- 
--	rdev->qplib_ctx.qpc_count = min_t(u32, BNXT_RE_MAX_QPC_COUNT,
--					  dev_attr->max_qp);
-+	attr = &rdev->dev_attr;
-+	ctx = &rdev->qplib_ctx;
- 
--	rdev->qplib_ctx.mrw_count = BNXT_RE_MAX_MRW_COUNT_256K;
-+	ctx->qpc_count = min_t(u32, BNXT_RE_MAX_QPC_COUNT,
-+			       attr->max_qp);
-+	ctx->mrw_count = BNXT_RE_MAX_MRW_COUNT_256K;
- 	/* Use max_mr from fw since max_mrw does not get set */
--	rdev->qplib_ctx.mrw_count = min_t(u32, rdev->qplib_ctx.mrw_count,
--					  dev_attr->max_mr);
--	rdev->qplib_ctx.srqc_count = min_t(u32, BNXT_RE_MAX_SRQC_COUNT,
--					   dev_attr->max_srq);
--	rdev->qplib_ctx.cq_count = min_t(u32, BNXT_RE_MAX_CQ_COUNT,
--					 dev_attr->max_cq);
--
--	for (i = 0; i < MAX_TQM_ALLOC_REQ; i++)
--		rdev->qplib_ctx.tqm_count[i] =
--		rdev->dev_attr.tqm_alloc_reqs[i];
--
--	if (rdev->num_vfs) {
--		/*
--		 * Reserve a set of resources for the PF. Divide the remaining
--		 * resources among the VFs
--		 */
--		vf_pct = 100 - BNXT_RE_PCT_RSVD_FOR_PF;
--		num_vfs = 100 * rdev->num_vfs;
--		vf_qps = (rdev->qplib_ctx.qpc_count * vf_pct) / num_vfs;
--		vf_srqs = (rdev->qplib_ctx.srqc_count * vf_pct) / num_vfs;
--		vf_cqs = (rdev->qplib_ctx.cq_count * vf_pct) / num_vfs;
--		/*
--		 * The driver allows many more MRs than other resources. If the
--		 * firmware does also, then reserve a fixed amount for the PF
--		 * and divide the rest among VFs. VFs may use many MRs for NFS
--		 * mounts, ISER, NVME applications, etc. If the firmware
--		 * severely restricts the number of MRs, then let PF have
--		 * half and divide the rest among VFs, as for the other
--		 * resource types.
--		 */
--		if (rdev->qplib_ctx.mrw_count < BNXT_RE_MAX_MRW_COUNT_64K)
--			vf_mrws = rdev->qplib_ctx.mrw_count * vf_pct / num_vfs;
--		else
--			vf_mrws = (rdev->qplib_ctx.mrw_count -
--				   BNXT_RE_RESVD_MR_FOR_PF) / rdev->num_vfs;
--		vf_gids = BNXT_RE_MAX_GID_PER_VF;
-+	ctx->mrw_count = min_t(u32, ctx->mrw_count, attr->max_mr);
-+	ctx->srqc_count = min_t(u32, BNXT_RE_MAX_SRQC_COUNT,
-+				attr->max_srq);
-+	ctx->cq_count = min_t(u32, BNXT_RE_MAX_CQ_COUNT, attr->max_cq);
-+	if (!bnxt_qplib_is_chip_gen_p5(&rdev->chip_ctx))
-+		for (i = 0; i < MAX_TQM_ALLOC_REQ; i++)
-+			rdev->qplib_ctx.tqm_count[i] =
-+			rdev->dev_attr.tqm_alloc_reqs[i];
-+}
-+
-+static void bnxt_re_limit_vf_res(struct bnxt_qplib_ctx *qplib_ctx, u32 num_vf)
-+{
-+	struct bnxt_qplib_vf_res *vf_res;
-+	u32 mrws = 0;
-+	u32 vf_pct;
-+	u32 nvfs;
-+
-+	vf_res = &qplib_ctx->vf_res;
-+	/*
-+	 * Reserve a set of resources for the PF. Divide the remaining
-+	 * resources among the VFs
-+	 */
-+	vf_pct = 100 - BNXT_RE_PCT_RSVD_FOR_PF;
-+	nvfs = num_vf;
-+	num_vf = 100 * num_vf;
-+	vf_res->max_qp_per_vf = (qplib_ctx->qpc_count * vf_pct) / num_vf;
-+	vf_res->max_srq_per_vf = (qplib_ctx->srqc_count * vf_pct) / num_vf;
-+	vf_res->max_cq_per_vf = (qplib_ctx->cq_count * vf_pct) / num_vf;
-+	/*
-+	 * The driver allows many more MRs than other resources. If the
-+	 * firmware does also, then reserve a fixed amount for the PF and
-+	 * divide the rest among VFs. VFs may use many MRs for NFS
-+	 * mounts, ISER, NVME applications, etc. If the firmware severely
-+	 * restricts the number of MRs, then let PF have half and divide
-+	 * the rest among VFs, as for the other resource types.
-+	 */
-+	if (qplib_ctx->mrw_count < BNXT_RE_MAX_MRW_COUNT_64K) {
-+		mrws = qplib_ctx->mrw_count * vf_pct;
-+		nvfs = num_vf;
-+	} else {
-+		mrws = qplib_ctx->mrw_count - BNXT_RE_RESVD_MR_FOR_PF;
- 	}
--	rdev->qplib_ctx.vf_res.max_mrw_per_vf = vf_mrws;
--	rdev->qplib_ctx.vf_res.max_gid_per_vf = vf_gids;
--	rdev->qplib_ctx.vf_res.max_qp_per_vf = vf_qps;
--	rdev->qplib_ctx.vf_res.max_srq_per_vf = vf_srqs;
--	rdev->qplib_ctx.vf_res.max_cq_per_vf = vf_cqs;
-+	vf_res->max_mrw_per_vf = (mrws / nvfs);
-+	vf_res->max_gid_per_vf = BNXT_RE_MAX_GID_PER_VF;
-+}
-+
-+static void bnxt_re_set_resource_limits(struct bnxt_re_dev *rdev)
-+{
-+	u32 num_vfs;
-+
-+	memset(&rdev->qplib_ctx.vf_res, 0, sizeof(struct bnxt_qplib_vf_res));
-+	bnxt_re_limit_pf_res(rdev);
-+
-+	num_vfs =  bnxt_qplib_is_chip_gen_p5(&rdev->chip_ctx) ?
-+			BNXT_RE_GEN_P5_MAX_VF : rdev->num_vfs;
-+	if (num_vfs)
-+		bnxt_re_limit_vf_res(&rdev->qplib_ctx, num_vfs);
- }
- 
- /* for handling bnxt_en callbacks later */
-@@ -193,9 +208,11 @@ static void bnxt_re_sriov_config(void *p, int num_vfs)
- 		return;
- 
- 	rdev->num_vfs = num_vfs;
--	bnxt_re_set_resource_limits(rdev);
--	bnxt_qplib_set_func_resources(&rdev->qplib_res, &rdev->rcfw,
--				      &rdev->qplib_ctx);
-+	if (!bnxt_qplib_is_chip_gen_p5(&rdev->chip_ctx)) {
-+		bnxt_re_set_resource_limits(rdev);
-+		bnxt_qplib_set_func_resources(&rdev->qplib_res, &rdev->rcfw,
-+					      &rdev->qplib_ctx);
-+	}
- }
- 
- static void bnxt_re_shutdown(void *p)
-@@ -894,10 +911,14 @@ static int bnxt_re_cqn_handler(struct bnxt_qplib_nq *nq,
- 	return 0;
- }
- 
-+#define BNXT_RE_GEN_P5_PF_NQ_DB		0x10000
-+#define BNXT_RE_GEN_P5_VF_NQ_DB		0x4000
- static u32 bnxt_re_get_nqdb_offset(struct bnxt_re_dev *rdev, u16 indx)
- {
- 	return bnxt_qplib_is_chip_gen_p5(&rdev->chip_ctx) ?
--				0x10000 : rdev->msix_entries[indx].db_offset;
-+		(rdev->is_virtfn ? BNXT_RE_GEN_P5_VF_NQ_DB :
-+				   BNXT_RE_GEN_P5_PF_NQ_DB) :
-+				   rdev->msix_entries[indx].db_offset;
- }
- 
- static void bnxt_re_cleanup_res(struct bnxt_re_dev *rdev)
-@@ -1407,8 +1428,8 @@ static int bnxt_re_ib_reg(struct bnxt_re_dev *rdev)
- 				     rdev->is_virtfn);
- 	if (rc)
- 		goto disable_rcfw;
--	if (!rdev->is_virtfn)
--		bnxt_re_set_resource_limits(rdev);
-+
-+	bnxt_re_set_resource_limits(rdev);
- 
- 	rc = bnxt_qplib_alloc_ctx(rdev->en_dev->pdev, &rdev->qplib_ctx, 0,
- 				  bnxt_qplib_is_chip_gen_p5(&rdev->chip_ctx));
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 60c8f76..5cdfa84 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -494,8 +494,10 @@ int bnxt_qplib_init_rcfw(struct bnxt_qplib_rcfw *rcfw,
- 	 * shall setup this area for VF. Skipping the
- 	 * HW programming
- 	 */
--	if (is_virtfn || bnxt_qplib_is_chip_gen_p5(rcfw->res->cctx))
-+	if (is_virtfn)
- 		goto skip_ctx_setup;
-+	if (bnxt_qplib_is_chip_gen_p5(rcfw->res->cctx))
-+		goto config_vf_res;
- 
- 	level = ctx->qpc_tbl.level;
- 	req.qpc_pg_size_qpc_lvl = (level << CMDQ_INITIALIZE_FW_QPC_LVL_SFT) |
-@@ -540,6 +542,7 @@ int bnxt_qplib_init_rcfw(struct bnxt_qplib_rcfw *rcfw,
- 	req.number_of_srq = cpu_to_le32(ctx->srqc_tbl.max_elements);
- 	req.number_of_cq = cpu_to_le32(ctx->cq_tbl.max_elements);
- 
-+config_vf_res:
- 	req.max_qp_per_vf = cpu_to_le32(ctx->vf_res.max_qp_per_vf);
- 	req.max_mrw_per_vf = cpu_to_le32(ctx->vf_res.max_mrw_per_vf);
- 	req.max_srq_per_vf = cpu_to_le32(ctx->vf_res.max_srq_per_vf);
--- 
-1.8.3.1
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
