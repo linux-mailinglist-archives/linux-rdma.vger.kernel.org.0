@@ -2,114 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CBDC9C2E
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 12:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE8FC9C91
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 12:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbfJCKZh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Oct 2019 06:25:37 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:18102 "EHLO
+        id S1729194AbfJCKoH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Oct 2019 06:44:07 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:49557 "EHLO
         stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727452AbfJCKZh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Oct 2019 06:25:37 -0400
+        with ESMTP id S1728919AbfJCKoH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Oct 2019 06:44:07 -0400
 Received: from localhost (mehrangarh.blr.asicdesigners.com [10.193.185.169])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x93APHcP026009;
-        Thu, 3 Oct 2019 03:25:18 -0700
-Date:   Thu, 3 Oct 2019 15:55:11 +0530
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x93Ahwv5026105;
+        Thu, 3 Oct 2019 03:43:59 -0700
 From:   Potnuri Bharat Teja <bharat@chelsio.com>
-To:     Navid Emamdoost <navid.emamdoost@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Navid Emamdoost <emamd001@umn.edu>,
-        Stephen McCamant <smccaman@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] RDMA: release allocated skb
-Message-ID: <20191003102510.GA10875@chelsio.com>
-References: <20190923050823.GL14368@unreal>
- <20190923155300.20407-1-navid.emamdoost@gmail.com>
- <20191001135430.GA27086@ziepe.ca>
- <CAEkB2EQF0D-Fdg74+E4VdxipZvTaBKseCtKJKnFg7T6ZZE9x6Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEkB2EQF0D-Fdg74+E4VdxipZvTaBKseCtKJKnFg7T6ZZE9x6Q@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+To:     jgg@ziepe.ca, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org, bharat@chelsio.com,
+        nirranjan@chelsio.com
+Subject: [PATCH v2 for-rc] iw_cxgb4: fix ECN check on the passive accept
+Date:   Thu,  3 Oct 2019 16:13:53 +0530
+Message-Id: <20191003104353.11590-1-bharat@chelsio.com>
+X-Mailer: git-send-email 2.18.0.232.gb7bd9486b055
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thursday, October 10/03/19, 2019 at 03:05:06 +0530, Navid Emamdoost wrote:
-> Hi Jason,
-> 
-> Thanks for the feedback. Yes, you are right if the skb release is
-> moved under err4 label it will cause a double free as
-> c4iw_ref_send_wait will release skb in case of error.
-> So, in order to avoid leaking skb in case of c4iw_bar2_addrs failure,
-> the kfree(skb) could be placed under the error check like the way
-> patch v1 did. Do you see any mistake in version 1?
-> https://lore.kernel.org/patchwork/patch/1128510/
+pass_accept_req() is using the same skb for handling accept request and
+sending accept reply to HW. Here req and rpl structures are pointing to
+same skb->data which is over written by INIT_TP_WR() and leads to
+accessing corrupt req fields in accept_cr() while checking for ECN flags.
+Reordered code in accept_cr() to fetch correct req fields.
 
-Hi Navid,
-Both the revisions of the patch are invalid. skb is freed in both the cases of 
-failure and success through c4iw_ofld_send().
-case success: in ctrl_xmit()
-case failure: in c4iw_ofld_send()
+Fixes: 92e7ae7172 ("iw_cxgb4: Choose appropriate hw mtu index and ISS for iWARP connections")
+Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+---
+changes from v1:
+- added fixes line.
+---
+ drivers/infiniband/hw/cxgb4/cm.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-Thanks,
-Bharat.
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index e87fc0408470..9e8eca7b613c 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -2424,20 +2424,6 @@ static int accept_cr(struct c4iw_ep *ep, struct sk_buff *skb,
+ 	enum chip_type adapter_type = ep->com.dev->rdev.lldi.adapter_type;
+ 
+ 	pr_debug("ep %p tid %u\n", ep, ep->hwtid);
+-
+-	skb_get(skb);
+-	rpl = cplhdr(skb);
+-	if (!is_t4(adapter_type)) {
+-		skb_trim(skb, roundup(sizeof(*rpl5), 16));
+-		rpl5 = (void *)rpl;
+-		INIT_TP_WR(rpl5, ep->hwtid);
+-	} else {
+-		skb_trim(skb, sizeof(*rpl));
+-		INIT_TP_WR(rpl, ep->hwtid);
+-	}
+-	OPCODE_TID(rpl) = cpu_to_be32(MK_OPCODE_TID(CPL_PASS_ACCEPT_RPL,
+-						    ep->hwtid));
+-
+ 	cxgb_best_mtu(ep->com.dev->rdev.lldi.mtus, ep->mtu, &mtu_idx,
+ 		      enable_tcp_timestamps && req->tcpopt.tstamp,
+ 		      (ep->com.remote_addr.ss_family == AF_INET) ? 0 : 1);
+@@ -2483,6 +2469,20 @@ static int accept_cr(struct c4iw_ep *ep, struct sk_buff *skb,
+ 		if (tcph->ece && tcph->cwr)
+ 			opt2 |= CCTRL_ECN_V(1);
+ 	}
++
++	skb_get(skb);
++	rpl = cplhdr(skb);
++	if (!is_t4(adapter_type)) {
++		skb_trim(skb, roundup(sizeof(*rpl5), 16));
++		rpl5 = (void *)rpl;
++		INIT_TP_WR(rpl5, ep->hwtid);
++	} else {
++		skb_trim(skb, sizeof(*rpl));
++		INIT_TP_WR(rpl, ep->hwtid);
++	}
++	OPCODE_TID(rpl) = cpu_to_be32(MK_OPCODE_TID(CPL_PASS_ACCEPT_RPL,
++						    ep->hwtid));
++
+ 	if (CHELSIO_CHIP_VERSION(adapter_type) > CHELSIO_T4) {
+ 		u32 isn = (prandom_u32() & ~7UL) - 1;
+ 		opt2 |= T5_OPT_2_VALID_F;
+-- 
+2.18.0.232.gb7bd9486b055
 
-
-> 
-> 
-> Thanks,
-> Navid
-> 
-> On Tue, Oct 1, 2019 at 8:54 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Mon, Sep 23, 2019 at 10:52:59AM -0500, Navid Emamdoost wrote:
-> > > In create_cq, the allocated skb buffer needs to be released on error
-> > > path.
-> > > Moved the kfree_skb(skb) under err4 label.
-> >
-> > This didn't move anything
-> >
-> > > Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-> > >  drivers/infiniband/hw/cxgb4/cq.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
-> > > index b1bb61c65f4f..1886c1af10bc 100644
-> > > +++ b/drivers/infiniband/hw/cxgb4/cq.c
-> > > @@ -173,6 +173,7 @@ static int create_cq(struct c4iw_rdev *rdev, struct t4_cq *cq,
-> > >  err4:
-> > >       dma_free_coherent(&rdev->lldi.pdev->dev, cq->memsize, cq->queue,
-> > >                         dma_unmap_addr(cq, mapping));
-> > > +     kfree_skb(skb);
-> > >  err3:
-> > >       kfree(cq->sw_queue);
-> > >  err2:
-> >
-> > This looks wrong to me:
-> >
-> > int c4iw_ofld_send(struct c4iw_rdev *rdev, struct sk_buff *skb)
-> > {
-> >         int     error = 0;
-> >
-> >         if (c4iw_fatal_error(rdev)) {
-> >                 kfree_skb(skb);
-> >                 pr_err("%s - device in error state - dropping\n", __func__);
-> >                 return -EIO;
-> >         }
-> >         error = cxgb4_ofld_send(rdev->lldi.ports[0], skb);
-> >         if (error < 0)
-> >                 kfree_skb(skb);
-> >         return error < 0 ? error : 0;
-> > }
-> >
-> > Jason
-> 
-> 
-> 
-> -- 
-> Navid.
