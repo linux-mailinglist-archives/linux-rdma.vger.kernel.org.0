@@ -2,109 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1947DC9DE6
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 13:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C32C9E04
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 14:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727368AbfJCL64 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Oct 2019 07:58:56 -0400
-Received: from mga04.intel.com ([192.55.52.120]:8861 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725892AbfJCL64 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Oct 2019 07:58:56 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 Oct 2019 04:58:55 -0700
-X-IronPort-AV: E=Sophos;i="5.67,252,1566889200"; 
-   d="scan'208";a="185892227"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.204.65]) ([10.254.204.65])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 03 Oct 2019 04:58:54 -0700
-Subject: Re: [bug report] IB/hfi1: Eliminate allocation while atomic
-To:     Dan Carpenter <dan.carpenter@oracle.com>, don.hiatt@intel.com
-Cc:     linux-rdma@vger.kernel.org, Laura Abbott <labbott@redhat.com>,
-        Greg KH <greg@kroah.com>,
-        "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
-References: <20191002121520.GA11064@mwanda>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <3452a307-5f87-4587-b289-63ea8bc594b5@intel.com>
-Date:   Thu, 3 Oct 2019 07:58:53 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728812AbfJCMGP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Oct 2019 08:06:15 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:4864 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726523AbfJCMGP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Oct 2019 08:06:15 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x93BoUYP024255;
+        Thu, 3 Oct 2019 05:06:06 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0818;
+ bh=M2xdveTo+piTvTxt8XyiViy4EYvUc2Em2gsF7LVH/PY=;
+ b=pKBCrXbr2FlGzl1dAiJ0Axh66/oy+N5lAS3D+tfu21Q76yeBoTKEIC6nt/y0Khu6LI1D
+ +XsdPqdezZJOSKRkNTuxIxadV/GiQfViwHaviUEOb7Eoqidy3IkDf2oLM8HtmUaeZCmj
+ V1EKalBbFyFzzJDaBmmrz2wCsaxUAN/tlTsp+dOe/jOADKUA+LgoUEquIZowxv3+VwDz
+ wHhJrC+s55FcnrOQwtBfjug+/tKl5bLmiZd/A6oEcbpxWwj9/y1TkV8VGzwI+/6h/X1z
+ 4Knv9YtH3iK4dh0Seyg6z0slDz3978oFZemYJjug5Vtd5gEi7XXfjHz4DihtU9A78spK xg== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 2vd0ya36t9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 03 Oct 2019 05:06:06 -0700
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Thu, 3 Oct
+ 2019 05:06:04 -0700
+Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
+ Transport; Thu, 3 Oct 2019 05:06:04 -0700
+Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
+        by maili.marvell.com (Postfix) with ESMTP id E965D3F7043;
+        Thu,  3 Oct 2019 05:06:02 -0700 (PDT)
+From:   Michal Kalderon <michal.kalderon@marvell.com>
+To:     <michal.kalderon@marvell.com>, <aelior@marvell.com>,
+        <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>
+Subject: [PATCH rdma-next 0/2] RDMA/qedr: Fix memory leaks and synchronization
+Date:   Thu, 3 Oct 2019 15:03:40 +0300
+Message-ID: <20191003120342.16926-1-michal.kalderon@marvell.com>
+X-Mailer: git-send-email 2.14.5
 MIME-Version: 1.0
-In-Reply-To: <20191002121520.GA11064@mwanda>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-03_05:2019-10-03,2019-10-03 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/2/2019 8:15 AM, Dan Carpenter wrote:
-> Hello Don Hiatt,
-> 
-> The patch f8195f3b14a0: "IB/hfi1: Eliminate allocation while atomic"
-> from Oct 9, 2017, leads to the following static checker warning:
-> 
-> 	drivers/infiniband/hw/hfi1/verbs.c:824 build_verbs_tx_desc()
-> 	error: doing dma on the stack (trail_buf)
-> 
-> drivers/infiniband/hw/hfi1/verbs.c
->     147  /* Length of buffer to create verbs txreq cache name */
->     148  #define TXREQ_NAME_LEN 24
->     149
->     150  /* 16B trailing buffer */
->     151  static const u8 trail_buf[MAX_16B_PADDING];
->                          ^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> This used to be actually allocated on the stack but now it's here.  I
-> believe this is still a problem.  It's not a problem for most people at
-> runtime, but it's technically a bug.  And I believe that soon we will
-> add a check in dma_map_single() which will generate a warning.
-> 
->     152
->     153  static uint wss_threshold = 80;
-> 
-> [ snip ]
-> 
->     801          } else {
->     802                  ret = sdma_txinit_ahg(
->     803                          &tx->txreq,
->     804                          ahg_info->tx_flags,
->     805                          length,
->     806                          ahg_info->ahgidx,
->     807                          ahg_info->ahgcount,
->     808                          ahg_info->ahgdesc,
->     809                          hdrbytes,
->     810                          verbs_sdma_complete);
->     811                  if (ret)
->     812                          goto bail_txadd;
->     813          }
->     814          /* add the ulp payload - if any. tx->ss can be NULL for acks */
->     815          if (tx->ss) {
->     816                  ret = build_verbs_ulp_payload(sde, length, tx);
->     817                  if (ret)
->     818                          goto bail_txadd;
->     819          }
->     820
->     821          /* add icrc, lt byte, and padding to flit */
->     822          if (extra_bytes)
->     823                  ret = sdma_txadd_kvaddr(sde->dd, &tx->txreq,
->     824                                          (void *)trail_buf, extra_bytes);
->                                                          ^^^^^^^^^
-> This has to be DMAable memory.
-> 
->     825
->     826  bail_txadd:
->     827          return ret;
->     828  }
-> 
-> 
-> regards,
-> dan carpenter
-> 
+Several leaks and issues were found when running iWARP with kmemleak.
+some apply to RoCE as well.
 
-Thanks Dan, we actually got a separate out-of-band email about this. We 
-are working up a fix right now.
+This series fixes some memory leaks and some wrong methods of
+synchronization which were used to wait for iWARP CM related events.
 
--Denny
+Michal Kalderon (2):
+  RDMA/qedr: Fix synchronization methods and memory leaks in qedr
+  RDMA/qedr: Fix memory leak in user qp and mr
+
+ drivers/infiniband/hw/qedr/qedr.h       |  23 ++++--
+ drivers/infiniband/hw/qedr/qedr_iw_cm.c | 120 +++++++++++++++++++++-----------
+ drivers/infiniband/hw/qedr/verbs.c      |  54 +++++++-------
+ 3 files changed, 128 insertions(+), 69 deletions(-)
+
+-- 
+2.14.5
+
