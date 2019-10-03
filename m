@@ -2,98 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE295C9E05
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 14:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23916C9E98
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 14:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727357AbfJCMGR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Oct 2019 08:06:17 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:50222 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726523AbfJCMGR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Oct 2019 08:06:17 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x93C63h8029794;
-        Thu, 3 Oct 2019 05:06:15 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0818; bh=mgfHy6VkEs1C9hOuMhxqlYbIqYiLsat3yG9A9AqDa/o=;
- b=yL+vDFHpL275nfWZR9fdm7Wsk8RCyHK0TJLpr3TUFMO/kHY2g45QKoEZ5vNfPTnTu4y7
- JnFhUd6IJHtZoheAUmhfi0Yo/d2wTGYOXffVJFUPXDkS4fLTlW+Xa3ekoDJCYpKqkwkS
- 0vZhGFU2UWm/opg0TnSnTFH4cFj5y+5nJP17vnTOGhafXuDrUeByClVa9VaamvnmmIcK
- Ht8E/8/4Lfl+rvZKpQ4zLpAqddi1sw96DAGMEUOxoExJaFb/xgMF5A6rFVzbg5zrIDuS
- 7S/zqGeQw6G9QrJUny8yIXH9V5noptaLRbk8pfYo4WsO+W7SfFm7LhGreKyAFWyjsxSP pg== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 2vd0y73b0g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 03 Oct 2019 05:06:14 -0700
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Thu, 3 Oct
- 2019 05:06:13 -0700
-Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Thu, 3 Oct 2019 05:06:13 -0700
-Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id 04D863F7043;
-        Thu,  3 Oct 2019 05:06:11 -0700 (PDT)
-From:   Michal Kalderon <michal.kalderon@marvell.com>
-To:     <michal.kalderon@marvell.com>, <aelior@marvell.com>,
-        <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, Ariel Elior <ariel.elior@marvell.com>
-Subject: [PATCH rdma-next 2/2] RDMA/qedr: Fix memory leak in user qp and mr
-Date:   Thu, 3 Oct 2019 15:03:42 +0300
-Message-ID: <20191003120342.16926-3-michal.kalderon@marvell.com>
-X-Mailer: git-send-email 2.14.5
-In-Reply-To: <20191003120342.16926-1-michal.kalderon@marvell.com>
-References: <20191003120342.16926-1-michal.kalderon@marvell.com>
+        id S1729204AbfJCMdo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Oct 2019 08:33:44 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:33432 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729093AbfJCMdo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Oct 2019 08:33:44 -0400
+Received: by mail-qt1-f196.google.com with SMTP id r5so3346249qtd.0
+        for <linux-rdma@vger.kernel.org>; Thu, 03 Oct 2019 05:33:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=AS/JS6py9PyuBTYp4eIvUqUx9NXrvOQhjnvc14Nd4gQ=;
+        b=BsUli7zOZiXg2t8MzieXcDdoo9k0U6gbLPm1hxN7ckZkmxyXP2B5XIWGrCnBi+V9Up
+         3VLVVhApqCr0g7KKVp+ApvGBx436Z7W3o8nqb1yxbLJK5ajPXQCsdLHr8rqj9vv+sYWO
+         2eapmUT+I5VkQ+/qyXXOLs//DMKauE3/r51Kl9xfx2ViNoZCaavnK4rc634O51oZRjN2
+         D9kRNc8BAhO0AqxwqrMVbHSJVeQLGtyFP5RXUAleLKub/i+kgwMb2Pk3XD5RVlpX8Akm
+         NJAG2Qzs6TCrZVFkLLP0zG8UXjcFwSYRjC6Ptll/TnELosIjJAAU2XGL9D1oD2x8kRkq
+         TEzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=AS/JS6py9PyuBTYp4eIvUqUx9NXrvOQhjnvc14Nd4gQ=;
+        b=IgyWziYueN4V5PZcu6Z/rW3ghiXBuXHanvJa1AC3Hm8gQGycVwYnPOUHFXDU8pk8v7
+         lIvsRS2iONSvlsNscG83KewRT46ktJ+oPSInRK7y3Rp/ihp+SROZe5RRECrA1cq6rR8u
+         8qAs2j2hPtHEl8Lp7VoXMECo0bDaqN0O/v1/DfWx0oy/HRz1Mqhblca3lUswkUKM5njT
+         GW7cSXRiAghujtbis35q7cXWQ7XeWY02L6dEX5Z3cs7Z6Bt9VxBDUA40tEB3T092s5Eh
+         T2eROA8EotnCvTrLhBcEz0L1nA8yPQ9/1wtKzfPAwAXIRzwO0P5QmnsRauMFHFjlaV+I
+         ZNyg==
+X-Gm-Message-State: APjAAAVyicCVRheLeTPjfGXxqKMabEENk2WPnOUdj6rCwINtmbSh8DgU
+        n5lOBQboef5ki07/ud6jM5Sknz1T7nA=
+X-Google-Smtp-Source: APXvYqwnSfoUIOaQwgYznKf4fKXMPxnDRjoxhwHdahfDU4+ZcmOzEfdnYsT+ETUxO16bCmjn8kQtrQ==
+X-Received: by 2002:ac8:2e58:: with SMTP id s24mr9880523qta.52.1570106023447;
+        Thu, 03 Oct 2019 05:33:43 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id t32sm1709163qtb.64.2019.10.03.05.33.42
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 03 Oct 2019 05:33:42 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iG0Ig-0006w6-7G; Thu, 03 Oct 2019 09:33:42 -0300
+Date:   Thu, 3 Oct 2019 09:33:42 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, Artemy Kovalyov <artemyko@mellanox.com>
+Subject: Re: [PATCH 6/6] RDMA/mlx5: Add missing synchronize_srcu() for MW
+ cases
+Message-ID: <20191003123342.GA26135@ziepe.ca>
+References: <20191001153821.23621-1-jgg@ziepe.ca>
+ <20191001153821.23621-7-jgg@ziepe.ca>
+ <20191003085449.GN5855@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-03_05:2019-10-03,2019-10-03 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191003085449.GN5855@unreal>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-User QPs pbl's won't freed properly.
-MR pbls won't freed properly.
+On Thu, Oct 03, 2019 at 11:54:49AM +0300, Leon Romanovsky wrote:
 
-Fixes: e0290cce6ac0 ("qedr: Add support for memory registeration verbs")
-Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
----
- drivers/infiniband/hw/qedr/verbs.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+> > diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+> > index 3a27bddfcf31f5..630599311586ec 100644
+> > +++ b/drivers/infiniband/hw/mlx5/mr.c
+> > @@ -1962,14 +1962,25 @@ struct ib_mw *mlx5_ib_alloc_mw(struct ib_pd *pd, enum ib_mw_type type,
+> >
+> >  int mlx5_ib_dealloc_mw(struct ib_mw *mw)
+> >  {
+> > +	struct mlx5_ib_dev *dev = to_mdev(mw->device);
+> >  	struct mlx5_ib_mw *mmw = to_mmw(mw);
+> >  	int err;
+> >
+> > -	err =  mlx5_core_destroy_mkey((to_mdev(mw->device))->mdev,
+> > -				      &mmw->mmkey);
+> > -	if (!err)
+> > -		kfree(mmw);
+> > -	return err;
+> > +	if (IS_ENABLED(CONFIG_INFINIBAND_ON_DEMAND_PAGING)) {
+> > +		xa_erase(&dev->mdev->priv.mkey_table,
+> > +			 mlx5_base_mkey(mmw->mmkey.key));
+> > +		/*
+> > +		 * pagefault_single_data_segment() may be accessing mmw under
+> > +		 * SRCU if the user bound an ODP MR to this MW.
+> > +		 */
+> > +		synchronize_srcu(&dev->mr_srcu);
+> > +	}
+> > +
+> > +	err = mlx5_core_destroy_mkey(dev->mdev, &mmw->mmkey);
+> > +	if (err)
+> > +		return err;
+> > +	kfree(mmw);
+> 
+> You are skipping kfree() in case of error returned by mlx5_core_destroy_mkey().
+> IMHO, it is right for -ENOENT, but is not right for mlx5_cmd_exec() failures.
 
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index dbb0b0000594..8d4164380984 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -1581,6 +1581,14 @@ static void qedr_cleanup_user(struct qedr_dev *dev, struct qedr_qp *qp)
- 
- 	ib_umem_release(qp->urq.umem);
- 	qp->urq.umem = NULL;
-+
-+	if (rdma_protocol_roce(&dev->ibdev, 1)) {
-+		qedr_free_pbl(dev, &qp->usq.pbl_info, qp->usq.pbl_tbl);
-+		qedr_free_pbl(dev, &qp->urq.pbl_info, qp->urq.pbl_tbl);
-+	} else {
-+		kfree(qp->usq.pbl_tbl);
-+		kfree(qp->urq.pbl_tbl);
-+	}
- }
- 
- static int qedr_create_user_qp(struct qedr_dev *dev,
-@@ -2671,8 +2679,8 @@ int qedr_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata)
- 
- 	dev->ops->rdma_free_tid(dev->rdma_ctx, mr->hw_mr.itid);
- 
--	if ((mr->type != QEDR_MR_DMA) && (mr->type != QEDR_MR_FRMR))
--		qedr_free_pbl(dev, &mr->info.pbl_info, mr->info.pbl_table);
-+	if (mr->type != QEDR_MR_DMA)
-+		free_mr_info(dev, &mr->info);
- 
- 	/* it could be user registered memory. */
- 	ib_umem_release(mr->umem);
--- 
-2.14.5
+This is pre-existing behavior, it seems reasonable to always free.
 
+Again, allow error on destroy is such an annoying anti-pattern..
+
+But fixing this should be a followup patch
+
+Jason
