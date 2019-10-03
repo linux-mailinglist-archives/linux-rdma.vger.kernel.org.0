@@ -2,46 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDC2C9E06
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 14:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE295C9E05
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 14:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbfJCMGS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Oct 2019 08:06:18 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:49540 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728583AbfJCMGS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Oct 2019 08:06:18 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x93BpsuL025412;
-        Thu, 3 Oct 2019 05:06:13 -0700
+        id S1727357AbfJCMGR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Oct 2019 08:06:17 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:50222 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726523AbfJCMGR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Oct 2019 08:06:17 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x93C63h8029794;
+        Thu, 3 Oct 2019 05:06:15 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0818; bh=ki/kgR2OOawy4UmceTjf0BBnqGxlRCNapNRMq2O8pw8=;
- b=pIa+ix69gRGigHurSytGwlEVinsLy9DPxCCIUWfHKpZb9tf/pw81Y0j8G6xR75IFkLn7
- rKvHFLOyMuEzYPxFuejMOnXDk1r6p0QjMjZt6VQx18Bjvqb4+BD9FUqJ86XmYI7m3xrK
- 9AyYEcXanXNjsRXDmNx6gli36RJv/hqn/MKtj6EvwRcFfvaVyoHXqYfFPlX6dkf2qljj
- fK9ItoCN7gEw5XLdp++TfF7WavKns5+D7jV14vRo2PWT6vaR4gc7ai2VCYbZcvpaSqSR
- uo+PgDj7RoZURxqBVfPWf/SvF4GmyIVS5/xUHd00XFXb6Y1m6RZOUBvi2/6gp+PLheMb EA== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 2vd0ya36td-1
+ content-type; s=pfpt0818; bh=mgfHy6VkEs1C9hOuMhxqlYbIqYiLsat3yG9A9AqDa/o=;
+ b=yL+vDFHpL275nfWZR9fdm7Wsk8RCyHK0TJLpr3TUFMO/kHY2g45QKoEZ5vNfPTnTu4y7
+ JnFhUd6IJHtZoheAUmhfi0Yo/d2wTGYOXffVJFUPXDkS4fLTlW+Xa3ekoDJCYpKqkwkS
+ 0vZhGFU2UWm/opg0TnSnTFH4cFj5y+5nJP17vnTOGhafXuDrUeByClVa9VaamvnmmIcK
+ Ht8E/8/4Lfl+rvZKpQ4zLpAqddi1sw96DAGMEUOxoExJaFb/xgMF5A6rFVzbg5zrIDuS
+ 7S/zqGeQw6G9QrJUny8yIXH9V5noptaLRbk8pfYo4WsO+W7SfFm7LhGreKyAFWyjsxSP pg== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 2vd0y73b0g-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 03 Oct 2019 05:06:12 -0700
-Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Thu, 3 Oct
- 2019 05:06:10 -0700
-Received: from maili.marvell.com (10.93.176.43) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Thu, 3 Oct 2019 05:06:10 -0700
+        Thu, 03 Oct 2019 05:06:14 -0700
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Thu, 3 Oct
+ 2019 05:06:13 -0700
+Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
+ Transport; Thu, 3 Oct 2019 05:06:13 -0700
 Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id 5C9353F7043;
-        Thu,  3 Oct 2019 05:06:08 -0700 (PDT)
+        by maili.marvell.com (Postfix) with ESMTP id 04D863F7043;
+        Thu,  3 Oct 2019 05:06:11 -0700 (PDT)
 From:   Michal Kalderon <michal.kalderon@marvell.com>
 To:     <michal.kalderon@marvell.com>, <aelior@marvell.com>,
         <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <linux-rdma@vger.kernel.org>, Ariel Elior <ariel.elior@marvell.com>
-Subject: [PATCH rdma-next 1/2] RDMA/qedr: Fix synchronization methods and memory leaks in qedr
-Date:   Thu, 3 Oct 2019 15:03:41 +0300
-Message-ID: <20191003120342.16926-2-michal.kalderon@marvell.com>
+Subject: [PATCH rdma-next 2/2] RDMA/qedr: Fix memory leak in user qp and mr
+Date:   Thu, 3 Oct 2019 15:03:42 +0300
+Message-ID: <20191003120342.16926-3-michal.kalderon@marvell.com>
 X-Mailer: git-send-email 2.14.5
 In-Reply-To: <20191003120342.16926-1-michal.kalderon@marvell.com>
 References: <20191003120342.16926-1-michal.kalderon@marvell.com>
@@ -54,486 +54,46 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Re-design of the iWARP CM related objects reference
-counting and synchronization methods, to ensure operations
-are synchronized correctly and and that memory allocated for "ep"
-is released. (was leaked).
-Also makes sure QP memory is not released before ep is finished
-accessing it.
+User QPs pbl's won't freed properly.
+MR pbls won't freed properly.
 
-Where as the QP object is created/destroyed by external operations,
-the ep is created/destroyed by internal operations and represents
-the tcp connection associated with the QP.
-
-QP destruction flow:
-- needs to wait for ep establishment to complete (either successfully
-  or with error)
-- needs to wait for ep disconnect to be fully posted to avoid a
-  race condition of disconnect being called after reset.
-- both the operations above don't always happen, so we use atomic
-  flags to indicate whether the qp destruction flow needs to wait
-  for these completions or not, if the destroy is called before
-  these operations began, the flows will check the flags and not
-  execute them ( connect / disconnect).
-
-We use completion structure for waiting for the completions mentioned
-above.
-
-The QP refcnt was modified to kref object.
-The EP has a kref added to it to handle additional worker thread
-accessing it.
-
-Memory Leaks - https://www.spinics.net/lists/linux-rdma/msg83762.html
-Reported-by: Chuck Lever <chuck.lever@oracle.com>
-
-Concurrency not managed correctly -
-https://www.spinics.net/lists/linux-rdma/msg67949.html
-Reported-by: Jason Gunthorpe <jgg@ziepe.ca>
-
-Fixes: e411e0587e0d ("RDMA/qedr: Add iWARP connection management functions")
+Fixes: e0290cce6ac0 ("qedr: Add support for memory registeration verbs")
 Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
 Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
 ---
- drivers/infiniband/hw/qedr/qedr.h       |  23 ++++--
- drivers/infiniband/hw/qedr/qedr_iw_cm.c | 120 +++++++++++++++++++++-----------
- drivers/infiniband/hw/qedr/verbs.c      |  42 ++++++-----
- 3 files changed, 118 insertions(+), 67 deletions(-)
+ drivers/infiniband/hw/qedr/verbs.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
-index 0cfd849b13d6..8e927f6c1520 100644
---- a/drivers/infiniband/hw/qedr/qedr.h
-+++ b/drivers/infiniband/hw/qedr/qedr.h
-@@ -40,6 +40,7 @@
- #include <linux/qed/qed_rdma_if.h>
- #include <linux/qed/qede_rdma.h>
- #include <linux/qed/roce_common.h>
-+#include <linux/completion.h>
- #include "qedr_hsi_rdma.h"
- 
- #define QEDR_NODE_DESC "QLogic 579xx RoCE HCA"
-@@ -377,10 +378,20 @@ enum qedr_qp_err_bitmap {
- 	QEDR_QP_ERR_RQ_PBL_FULL = 32,
- };
- 
-+enum qedr_qp_create_type {
-+	QEDR_QP_CREATE_NONE,
-+	QEDR_QP_CREATE_USER,
-+	QEDR_QP_CREATE_KERNEL,
-+};
-+
-+enum qedr_iwarp_cm_flags {
-+	QEDR_IWARP_CM_WAIT_FOR_CONNECT    = BIT(0),
-+	QEDR_IWARP_CM_WAIT_FOR_DISCONNECT = BIT(1),
-+};
-+
- struct qedr_qp {
- 	struct ib_qp ibqp;	/* must be first */
- 	struct qedr_dev *dev;
--	struct qedr_iw_ep *ep;
- 	struct qedr_qp_hwq_info sq;
- 	struct qedr_qp_hwq_info rq;
- 
-@@ -395,6 +406,7 @@ struct qedr_qp {
- 	u32 id;
- 	struct qedr_pd *pd;
- 	enum ib_qp_type qp_type;
-+	enum qedr_qp_create_type create_type;
- 	struct qed_rdma_qp *qed_qp;
- 	u32 qp_id;
- 	u16 icid;
-@@ -437,8 +449,11 @@ struct qedr_qp {
- 	/* Relevant to qps created from user space only (applications) */
- 	struct qedr_userq usq;
- 	struct qedr_userq urq;
--	atomic_t refcnt;
--	bool destroyed;
-+
-+	/* synchronization objects used with iwarp ep */
-+	struct kref refcnt;
-+	struct completion iwarp_cm_comp;
-+	unsigned long iwarp_cm_flags; /* enum iwarp_cm_flags */
- };
- 
- struct qedr_ah {
-@@ -531,7 +546,7 @@ struct qedr_iw_ep {
- 	struct iw_cm_id	*cm_id;
- 	struct qedr_qp	*qp;
- 	void		*qed_context;
--	u8		during_connect;
-+	struct kref	refcnt;
- };
- 
- static inline
-diff --git a/drivers/infiniband/hw/qedr/qedr_iw_cm.c b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-index 22881d4442b9..ebc6bc25a0e2 100644
---- a/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-+++ b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-@@ -79,6 +79,28 @@ qedr_fill_sockaddr6(const struct qed_iwarp_cm_info *cm_info,
- 	}
- }
- 
-+static void qedr_iw_free_qp(struct kref *ref)
-+{
-+	struct qedr_qp *qp = container_of(ref, struct qedr_qp, refcnt);
-+
-+	xa_erase_irq(&qp->dev->qps, qp->qp_id);
-+	kfree(qp);
-+}
-+
-+static void
-+qedr_iw_free_ep(struct kref *ref)
-+{
-+	struct qedr_iw_ep *ep = container_of(ref, struct qedr_iw_ep, refcnt);
-+
-+	if (ep->qp)
-+		kref_put(&ep->qp->refcnt, qedr_iw_free_qp);
-+
-+	if (ep->cm_id)
-+		ep->cm_id->rem_ref(ep->cm_id);
-+
-+	kfree(ep);
-+}
-+
- static void
- qedr_iw_mpa_request(void *context, struct qed_iwarp_cm_event_params *params)
- {
-@@ -93,6 +115,7 @@ qedr_iw_mpa_request(void *context, struct qed_iwarp_cm_event_params *params)
- 
- 	ep->dev = dev;
- 	ep->qed_context = params->ep_context;
-+	kref_init(&ep->refcnt);
- 
- 	memset(&event, 0, sizeof(event));
- 	event.event = IW_CM_EVENT_CONNECT_REQUEST;
-@@ -141,12 +164,10 @@ qedr_iw_close_event(void *context, struct qed_iwarp_cm_event_params *params)
- {
- 	struct qedr_iw_ep *ep = (struct qedr_iw_ep *)context;
- 
--	if (ep->cm_id) {
-+	if (ep->cm_id)
- 		qedr_iw_issue_event(context, params, IW_CM_EVENT_CLOSE);
- 
--		ep->cm_id->rem_ref(ep->cm_id);
--		ep->cm_id = NULL;
--	}
-+	kref_put(&ep->refcnt, qedr_iw_free_ep);
- }
- 
- static void
-@@ -186,11 +207,13 @@ static void qedr_iw_disconnect_worker(struct work_struct *work)
- 	struct qedr_qp *qp = ep->qp;
- 	struct iw_cm_event event;
- 
--	if (qp->destroyed) {
--		kfree(dwork);
--		qedr_iw_qp_rem_ref(&qp->ibqp);
--		return;
--	}
-+	/* The qp won't be released until we release the ep.
-+	 * the ep's refcnt was increased before calling this
-+	 * function, therefore it is safe to access qp
-+	 */
-+	if (test_and_set_bit(QEDR_IWARP_CM_WAIT_FOR_DISCONNECT,
-+			     &qp->iwarp_cm_flags))
-+		goto out;
- 
- 	memset(&event, 0, sizeof(event));
- 	event.status = dwork->status;
-@@ -204,7 +227,6 @@ static void qedr_iw_disconnect_worker(struct work_struct *work)
- 	else
- 		qp_params.new_state = QED_ROCE_QP_STATE_SQD;
- 
--	kfree(dwork);
- 
- 	if (ep->cm_id)
- 		ep->cm_id->event_handler(ep->cm_id, &event);
-@@ -214,7 +236,10 @@ static void qedr_iw_disconnect_worker(struct work_struct *work)
- 
- 	dev->ops->rdma_modify_qp(dev->rdma_ctx, qp->qed_qp, &qp_params);
- 
--	qedr_iw_qp_rem_ref(&qp->ibqp);
-+	complete(&ep->qp->iwarp_cm_comp);
-+out:
-+	kfree(dwork);
-+	kref_put(&ep->refcnt, qedr_iw_free_ep);
- }
- 
- static void
-@@ -224,13 +249,18 @@ qedr_iw_disconnect_event(void *context,
- 	struct qedr_discon_work *work;
- 	struct qedr_iw_ep *ep = (struct qedr_iw_ep *)context;
- 	struct qedr_dev *dev = ep->dev;
--	struct qedr_qp *qp = ep->qp;
- 
- 	work = kzalloc(sizeof(*work), GFP_ATOMIC);
- 	if (!work)
- 		return;
- 
--	qedr_iw_qp_add_ref(&qp->ibqp);
-+	/* We can't get a close event before disconnect, but since
-+	 * we're scheduling a work queue we need to make sure close
-+	 * won't delete the ep, so we increase the refcnt
-+	 */
-+	if (!kref_get_unless_zero(&ep->refcnt))
-+		return;
-+
- 	work->ep = ep;
- 	work->event = params->event;
- 	work->status = params->status;
-@@ -252,16 +282,30 @@ qedr_iw_passive_complete(void *context,
- 	if ((params->status == -ECONNREFUSED) && (!ep->qp)) {
- 		DP_DEBUG(dev, QEDR_MSG_IWARP,
- 			 "PASSIVE connection refused releasing ep...\n");
--		kfree(ep);
-+		kref_put(&ep->refcnt, qedr_iw_free_ep);
- 		return;
- 	}
- 
-+	complete(&ep->qp->iwarp_cm_comp);
- 	qedr_iw_issue_event(context, params, IW_CM_EVENT_ESTABLISHED);
- 
- 	if (params->status < 0)
- 		qedr_iw_close_event(context, params);
- }
- 
-+static void
-+qedr_iw_active_complete(void *context,
-+			struct qed_iwarp_cm_event_params *params)
-+{
-+	struct qedr_iw_ep *ep = (struct qedr_iw_ep *)context;
-+
-+	complete(&ep->qp->iwarp_cm_comp);
-+	qedr_iw_issue_event(context, params, IW_CM_EVENT_CONNECT_REPLY);
-+
-+	if (params->status < 0)
-+		kref_put(&ep->refcnt, qedr_iw_free_ep);
-+}
-+
- static int
- qedr_iw_mpa_reply(void *context, struct qed_iwarp_cm_event_params *params)
- {
-@@ -288,27 +332,15 @@ qedr_iw_event_handler(void *context, struct qed_iwarp_cm_event_params *params)
- 		qedr_iw_mpa_reply(context, params);
- 		break;
- 	case QED_IWARP_EVENT_PASSIVE_COMPLETE:
--		ep->during_connect = 0;
- 		qedr_iw_passive_complete(context, params);
- 		break;
--
- 	case QED_IWARP_EVENT_ACTIVE_COMPLETE:
--		ep->during_connect = 0;
--		qedr_iw_issue_event(context,
--				    params,
--				    IW_CM_EVENT_CONNECT_REPLY);
--		if (params->status < 0) {
--			struct qedr_iw_ep *ep = (struct qedr_iw_ep *)context;
--
--			ep->cm_id->rem_ref(ep->cm_id);
--			ep->cm_id = NULL;
--		}
-+		qedr_iw_active_complete(context, params);
- 		break;
- 	case QED_IWARP_EVENT_DISCONNECT:
- 		qedr_iw_disconnect_event(context, params);
- 		break;
- 	case QED_IWARP_EVENT_CLOSE:
--		ep->during_connect = 0;
- 		qedr_iw_close_event(context, params);
- 		break;
- 	case QED_IWARP_EVENT_RQ_EMPTY:
-@@ -516,8 +548,10 @@ int qedr_iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 		return -ENOMEM;
- 
- 	ep->dev = dev;
-+	kref_init(&ep->refcnt);
-+
-+	kref_get(&qp->refcnt);
- 	ep->qp = qp;
--	qp->ep = ep;
- 	cm_id->add_ref(cm_id);
- 	ep->cm_id = cm_id;
- 
-@@ -580,7 +614,10 @@ int qedr_iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 	in_params.qp = qp->qed_qp;
- 	memcpy(in_params.local_mac_addr, dev->ndev->dev_addr, ETH_ALEN);
- 
--	ep->during_connect = 1;
-+	if (test_and_set_bit(QEDR_IWARP_CM_WAIT_FOR_CONNECT,
-+			     &qp->iwarp_cm_flags))
-+		goto err; /* QP already being destroyed */
-+
- 	rc = dev->ops->iwarp_connect(dev->rdma_ctx, &in_params, &out_params);
- 	if (rc)
- 		goto err;
-@@ -588,8 +625,8 @@ int qedr_iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 	return rc;
- 
- err:
--	cm_id->rem_ref(cm_id);
--	kfree(ep);
-+	complete(&qp->iwarp_cm_comp);
-+	kref_put(&ep->refcnt, qedr_iw_free_ep);
- 	return rc;
- }
- 
-@@ -677,7 +714,7 @@ int qedr_iw_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 	struct qedr_dev *dev = ep->dev;
- 	struct qedr_qp *qp;
- 	struct qed_iwarp_accept_in params;
--	int rc;
-+	int rc = 0;
- 
- 	DP_DEBUG(dev, QEDR_MSG_IWARP, "Accept on qpid=%d\n", conn_param->qpn);
- 
-@@ -687,8 +724,8 @@ int qedr_iw_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 		return -EINVAL;
- 	}
- 
-+	kref_get(&qp->refcnt);
- 	ep->qp = qp;
--	qp->ep = ep;
- 	cm_id->add_ref(cm_id);
- 	ep->cm_id = cm_id;
- 
-@@ -700,15 +737,19 @@ int qedr_iw_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 	params.ird = conn_param->ird;
- 	params.ord = conn_param->ord;
- 
--	ep->during_connect = 1;
-+	if (test_and_set_bit(QEDR_IWARP_CM_WAIT_FOR_CONNECT,
-+			     &qp->iwarp_cm_flags))
-+		goto err; /* QP already destroyed */
-+
- 	rc = dev->ops->iwarp_accept(dev->rdma_ctx, &params);
- 	if (rc)
- 		goto err;
- 
- 	return rc;
- err:
--	ep->during_connect = 0;
--	cm_id->rem_ref(cm_id);
-+	complete(&qp->iwarp_cm_comp);
-+	kref_put(&ep->refcnt, qedr_iw_free_ep);
-+
- 	return rc;
- }
- 
-@@ -731,17 +772,14 @@ void qedr_iw_qp_add_ref(struct ib_qp *ibqp)
- {
- 	struct qedr_qp *qp = get_qedr_qp(ibqp);
- 
--	atomic_inc(&qp->refcnt);
-+	kref_get(&qp->refcnt);
- }
- 
- void qedr_iw_qp_rem_ref(struct ib_qp *ibqp)
- {
- 	struct qedr_qp *qp = get_qedr_qp(ibqp);
- 
--	if (atomic_dec_and_test(&qp->refcnt)) {
--		xa_erase_irq(&qp->dev->qps, qp->qp_id);
--		kfree(qp);
--	}
-+	kref_put(&qp->refcnt, qedr_iw_free_qp);
- }
- 
- struct ib_qp *qedr_iw_get_qp(struct ib_device *ibdev, int qpn)
 diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 6f3ce86019b7..dbb0b0000594 100644
+index dbb0b0000594..8d4164380984 100644
 --- a/drivers/infiniband/hw/qedr/verbs.c
 +++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -51,6 +51,7 @@
- #include "verbs.h"
- #include <rdma/qedr-abi.h>
- #include "qedr_roce_cm.h"
-+#include "qedr_iw_cm.h"
+@@ -1581,6 +1581,14 @@ static void qedr_cleanup_user(struct qedr_dev *dev, struct qedr_qp *qp)
  
- #define QEDR_SRQ_WQE_ELEM_SIZE	sizeof(union rdma_srq_elm)
- #define	RDMA_MAX_SGE_PER_SRQ	(4)
-@@ -1193,7 +1194,10 @@ static void qedr_set_common_qp_params(struct qedr_dev *dev,
- 				      struct ib_qp_init_attr *attrs)
- {
- 	spin_lock_init(&qp->q_lock);
--	atomic_set(&qp->refcnt, 1);
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
-+		kref_init(&qp->refcnt);
-+		init_completion(&qp->iwarp_cm_comp);
+ 	ib_umem_release(qp->urq.umem);
+ 	qp->urq.umem = NULL;
++
++	if (rdma_protocol_roce(&dev->ibdev, 1)) {
++		qedr_free_pbl(dev, &qp->usq.pbl_info, qp->usq.pbl_tbl);
++		qedr_free_pbl(dev, &qp->urq.pbl_info, qp->urq.pbl_tbl);
++	} else {
++		kfree(qp->usq.pbl_tbl);
++		kfree(qp->urq.pbl_tbl);
 +	}
- 	qp->pd = pd;
- 	qp->qp_type = attrs->qp_type;
- 	qp->max_inline_data = attrs->cap.max_inline_data;
-@@ -1592,6 +1596,7 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 	int alloc_and_init = rdma_protocol_roce(&dev->ibdev, 1);
- 	int rc = -EINVAL;
- 
-+	qp->create_type = QEDR_QP_CREATE_USER;
- 	memset(&ureq, 0, sizeof(ureq));
- 	rc = ib_copy_from_udata(&ureq, udata, sizeof(ureq));
- 	if (rc) {
-@@ -1805,6 +1810,7 @@ static int qedr_create_kernel_qp(struct qedr_dev *dev,
- 	u32 n_sq_entries;
- 
- 	memset(&in_params, 0, sizeof(in_params));
-+	qp->create_type = QEDR_QP_CREATE_KERNEL;
- 
- 	/* A single work request may take up to QEDR_MAX_SQ_WQE_SIZE elements in
- 	 * the ring. The ring should allow at least a single WR, even if the
-@@ -2437,7 +2443,7 @@ static int qedr_free_qp_resources(struct qedr_dev *dev, struct qedr_qp *qp,
- 			return rc;
- 	}
- 
--	if (udata)
-+	if (qp->create_type == QEDR_QP_CREATE_USER)
- 		qedr_cleanup_user(dev, qp);
- 	else
- 		qedr_cleanup_kernel(dev, qp);
-@@ -2467,22 +2473,14 @@ int qedr_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- 			qedr_modify_qp(ibqp, &attr, attr_mask, NULL);
- 		}
- 	} else {
--		/* Wait for the connect/accept to complete */
--		if (qp->ep) {
--			int wait_count = 1;
--
--			while (qp->ep->during_connect) {
--				DP_DEBUG(dev, QEDR_MSG_QP,
--					 "Still in during connect/accept\n");
--
--				msleep(100);
--				if (wait_count++ > 200) {
--					DP_NOTICE(dev,
--						  "during connect timeout\n");
--					break;
--				}
--			}
--		}
-+		/* Wait for the connection setup to complete */
-+		if (test_and_set_bit(QEDR_IWARP_CM_WAIT_FOR_CONNECT,
-+				     &qp->iwarp_cm_flags))
-+			wait_for_completion(&qp->iwarp_cm_comp);
-+
-+		if (test_and_set_bit(QEDR_IWARP_CM_WAIT_FOR_DISCONNECT,
-+				     &qp->iwarp_cm_flags))
-+			wait_for_completion(&qp->iwarp_cm_comp);
- 	}
- 
- 	if (qp->qp_type == IB_QPT_GSI)
-@@ -2490,11 +2488,11 @@ int qedr_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- 
- 	qedr_free_qp_resources(dev, qp, udata);
- 
--	if (atomic_dec_and_test(&qp->refcnt) &&
--	    rdma_protocol_iwarp(&dev->ibdev, 1)) {
--		xa_erase_irq(&dev->qps, qp->qp_id);
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1))
-+		qedr_iw_qp_rem_ref(&qp->ibqp);
-+	else
- 		kfree(qp);
--	}
-+
- 	return 0;
  }
  
+ static int qedr_create_user_qp(struct qedr_dev *dev,
+@@ -2671,8 +2679,8 @@ int qedr_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata)
+ 
+ 	dev->ops->rdma_free_tid(dev->rdma_ctx, mr->hw_mr.itid);
+ 
+-	if ((mr->type != QEDR_MR_DMA) && (mr->type != QEDR_MR_FRMR))
+-		qedr_free_pbl(dev, &mr->info.pbl_info, mr->info.pbl_table);
++	if (mr->type != QEDR_MR_DMA)
++		free_mr_info(dev, &mr->info);
+ 
+ 	/* it could be user registered memory. */
+ 	ib_umem_release(mr->umem);
 -- 
 2.14.5
 
