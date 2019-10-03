@@ -2,98 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C2EC9A58
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 11:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CBDC9C2E
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Oct 2019 12:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbfJCJAw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Oct 2019 05:00:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50004 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727611AbfJCJAv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Oct 2019 05:00:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 60B8DB144;
-        Thu,  3 Oct 2019 09:00:49 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 534081E4810; Thu,  3 Oct 2019 11:01:10 +0200 (CEST)
-Date:   Thu, 3 Oct 2019 11:01:10 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jeff Layton <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: Lease semantic proposal
-Message-ID: <20191003090110.GC17911@quack2.suse.cz>
-References: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
- <5d5a93637934867e1b3352763da8e3d9f9e6d683.camel@kernel.org>
- <20191001181659.GA5500@iweiny-DESK2.sc.intel.com>
+        id S1728405AbfJCKZh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Oct 2019 06:25:37 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:18102 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727452AbfJCKZh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Oct 2019 06:25:37 -0400
+Received: from localhost (mehrangarh.blr.asicdesigners.com [10.193.185.169])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x93APHcP026009;
+        Thu, 3 Oct 2019 03:25:18 -0700
+Date:   Thu, 3 Oct 2019 15:55:11 +0530
+From:   Potnuri Bharat Teja <bharat@chelsio.com>
+To:     Navid Emamdoost <navid.emamdoost@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Navid Emamdoost <emamd001@umn.edu>,
+        Stephen McCamant <smccaman@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] RDMA: release allocated skb
+Message-ID: <20191003102510.GA10875@chelsio.com>
+References: <20190923050823.GL14368@unreal>
+ <20190923155300.20407-1-navid.emamdoost@gmail.com>
+ <20191001135430.GA27086@ziepe.ca>
+ <CAEkB2EQF0D-Fdg74+E4VdxipZvTaBKseCtKJKnFg7T6ZZE9x6Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191001181659.GA5500@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAEkB2EQF0D-Fdg74+E4VdxipZvTaBKseCtKJKnFg7T6ZZE9x6Q@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue 01-10-19 11:17:00, Ira Weiny wrote:
-> On Mon, Sep 23, 2019 at 04:17:59PM -0400, Jeff Layton wrote:
-> > On Mon, 2019-09-23 at 12:08 -0700, Ira Weiny wrote:
-> > 
-> > Will userland require any special privileges in order to set an
-> > F_UNBREAK lease? This seems like something that could be used for DoS. I
-> > assume that these will never time out.
+On Thursday, October 10/03/19, 2019 at 03:05:06 +0530, Navid Emamdoost wrote:
+> Hi Jason,
 > 
-> Dan and I discussed this some more and yes I think the uid of the process needs
-> to be the owner of the file.  I think that is a reasonable mechanism.
+> Thanks for the feedback. Yes, you are right if the skb release is
+> moved under err4 label it will cause a double free as
+> c4iw_ref_send_wait will release skb in case of error.
+> So, in order to avoid leaking skb in case of c4iw_bar2_addrs failure,
+> the kfree(skb) could be placed under the error check like the way
+> patch v1 did. Do you see any mistake in version 1?
+> https://lore.kernel.org/patchwork/patch/1128510/
 
-Honestly, I'm not convinced anything more than open-for-write should be
-required. Sure unbreakable lease may result in failing truncate and other
-ops but as we discussed at LFS/MM, this is not hugely different from
-executing a file resulting in ETXTBUSY for any truncate attempt (even from
-root). So sufficiently priviledged user has to be able to easily find which
-process(es) owns the lease so that he can kill it / take other
-administrative action to release the lease. But that's about it.
- 
-> > How will we deal with the case where something is is squatting on an
-> > F_UNBREAK lease and isn't letting it go?
+Hi Navid,
+Both the revisions of the patch are invalid. skb is freed in both the cases of 
+failure and success through c4iw_ofld_send().
+case success: in ctrl_xmit()
+case failure: in c4iw_ofld_send()
+
+Thanks,
+Bharat.
+
+
 > 
-> That is a good question.  I had not considered someone taking the UNBREAK
-> without pinning the file.
-
-IMHO the same answer as above - sufficiently priviledged user should be
-able to easily find the process holding the lease and kill it. Given the
-lease owner has to have write access to the file, he better should be from
-the same "security domain"...
-
-> > Leases are technically "owned" by the file description -- we can't
-> > necessarily trace it back to a single task in a threaded program. The
-> > kernel task that set the lease may have exited by the time we go
-> > looking.
-> > 
-> > Will we be content trying to determine this using /proc/locks+lsof, etc,
-> > or will we need something better?
 > 
-> I think using /proc/locks is our best bet.  Similar to my intention to report
-> files being pinned.[1]
+> Thanks,
+> Navid
 > 
-> In fact should we consider files with F_UNBREAK leases "pinned" and just report
-> them there?
-
-As Jeff wrote later, /proc/locks is not enough. You need PID(s) which have
-access to the lease and hold it alive. Your /proc/<pid>/ files you had in your
-patches should do that, shouldn't they? Maybe they were not tied to the
-right structure... They really need to be tied to the existence of a lease.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> On Tue, Oct 1, 2019 at 8:54 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Mon, Sep 23, 2019 at 10:52:59AM -0500, Navid Emamdoost wrote:
+> > > In create_cq, the allocated skb buffer needs to be released on error
+> > > path.
+> > > Moved the kfree_skb(skb) under err4 label.
+> >
+> > This didn't move anything
+> >
+> > > Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+> > >  drivers/infiniband/hw/cxgb4/cq.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
+> > > index b1bb61c65f4f..1886c1af10bc 100644
+> > > +++ b/drivers/infiniband/hw/cxgb4/cq.c
+> > > @@ -173,6 +173,7 @@ static int create_cq(struct c4iw_rdev *rdev, struct t4_cq *cq,
+> > >  err4:
+> > >       dma_free_coherent(&rdev->lldi.pdev->dev, cq->memsize, cq->queue,
+> > >                         dma_unmap_addr(cq, mapping));
+> > > +     kfree_skb(skb);
+> > >  err3:
+> > >       kfree(cq->sw_queue);
+> > >  err2:
+> >
+> > This looks wrong to me:
+> >
+> > int c4iw_ofld_send(struct c4iw_rdev *rdev, struct sk_buff *skb)
+> > {
+> >         int     error = 0;
+> >
+> >         if (c4iw_fatal_error(rdev)) {
+> >                 kfree_skb(skb);
+> >                 pr_err("%s - device in error state - dropping\n", __func__);
+> >                 return -EIO;
+> >         }
+> >         error = cxgb4_ofld_send(rdev->lldi.ports[0], skb);
+> >         if (error < 0)
+> >                 kfree_skb(skb);
+> >         return error < 0 ? error : 0;
+> > }
+> >
+> > Jason
+> 
+> 
+> 
+> -- 
+> Navid.
