@@ -2,318 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 931E4CBADD
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 14:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D08CBB69
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 15:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387473AbfJDMyH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Oct 2019 08:54:07 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60696 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726024AbfJDMyH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 08:54:07 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x94ClkYa008941
-        for <linux-rdma@vger.kernel.org>; Fri, 4 Oct 2019 08:54:05 -0400
-Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2vdwym8ps8-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 08:54:05 -0400
-Received: from localhost
-        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
-        Fri, 4 Oct 2019 13:54:03 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 4 Oct 2019 13:53:59 +0100
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x94CrT3L40567226
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 4 Oct 2019 12:53:29 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A736BA4060;
-        Fri,  4 Oct 2019 12:53:58 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 57211A405C;
-        Fri,  4 Oct 2019 12:53:58 +0000 (GMT)
-Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  4 Oct 2019 12:53:58 +0000 (GMT)
-From:   Bernard Metzler <bmt@zurich.ibm.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     bharat@chelsio.com, jgg@ziepe.ca, nirranjan@chelsio.com,
-        krishna2@chelsio.com, bvanassche@acm.org, leon@kernel.org,
-        Bernard Metzler <bmt@zurich.ibm.com>
-Subject: [[PATCH v3 for-next]] RDMA/siw: Fix SQ/RQ drain logic
-Date:   Fri,  4 Oct 2019 14:53:56 +0200
-X-Mailer: git-send-email 2.17.2
-X-TM-AS-GCONF: 00
-x-cbid: 19100412-0028-0000-0000-000003A6021E
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19100412-0029-0000-0000-000024680CCA
-Message-Id: <20191004125356.20673-1-bmt@zurich.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-04_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=4 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=632 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1908290000 definitions=main-1910040118
+        id S2388197AbfJDNP2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Oct 2019 09:15:28 -0400
+Received: from mail-yb1-f173.google.com ([209.85.219.173]:38383 "EHLO
+        mail-yb1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387870AbfJDNP1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 09:15:27 -0400
+Received: by mail-yb1-f173.google.com with SMTP id x4so2091388ybr.5
+        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 06:15:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/UcVhX9GaoSfCR5Nzgmo8T8FLFMJ0xd65q4Shx2Kmts=;
+        b=aVs4zyKIMELcbbp0OrZDIIRM6M9FqgqBWOj7D/V0OOVxjk/TCK1tb1H33aayEVT9Fq
+         NOF79kJ75vl2d2aHQWCNVE3mdS8xv2agwN5v/GWtJcU0doJRauKDjzYg6Q6Aok4YYi3b
+         mqNPN9hT3Q49dLWzDmTUjRAHeblmpVkFSji5wQrOx6/uMD4mWAJGCY15WvCoWVOEjYTY
+         zLXisVJYNrNI9DPaiv0kVngz338cFFvM+h3OzJgZEFf8gZFZm7Iiy5tpDfP2d3CkVb0j
+         V4Ux/4E3Ys8h0MioMBqFvf8jY+vH9oklDJ5qpoyn4dUJxko+npNTfqsfS9FFgD1YpKeU
+         TCXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/UcVhX9GaoSfCR5Nzgmo8T8FLFMJ0xd65q4Shx2Kmts=;
+        b=KZz643HD3D8pkkGAF620hyy4oFys6JAGRTaRfrV4amgV+IrLZh7rHhzJlJLocX2ClY
+         82U0j7bz7fgKHmiNp4UU1T1kSpzy4hbwsk9DNAvro9oQAXaifAKGg/Ed3y2pRrc93tIi
+         1tD0vLUXVRZtF2R7Hh0c1g/eeQ+Vez347Ir5bJ4S+5lwsxykMuq55BU1JFF6uoaUfW3K
+         hBiZZU6XHolczev6u1IDM61X+s37qmAYzOiKZX0EDFVi1DDZoMbj3BKuyeHL1uBvL3Ak
+         pmx9nujY1TsUy2seL5fUJ/UAVbHzN1YYE0ZdyTsMBpnF7hBuQHrc1O1+ACCQyITDZgdr
+         C1RA==
+X-Gm-Message-State: APjAAAV1NO0E0JrbKnZetaC3Xfxn5gashtF49oCtC0jFpPTxNuz/5s4i
+        ymDTr87PKeicx4ODen81P7GhVZPmCrzH9savI7b0bQ==
+X-Google-Smtp-Source: APXvYqzwEQFavuGTQfqs5oMner1fD3hr86iQqTMlgoG4RfUPbRmbA3D9aQz/XYkIYsRESetVSOBhZBfVuAsxsNy+MeI=
+X-Received: by 2002:a25:8149:: with SMTP id j9mr1749501ybm.132.1570194926383;
+ Fri, 04 Oct 2019 06:15:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20191003201858.11666-1-dave@stgolabs.net> <20191004002609.GB1492@ziepe.ca>
+In-Reply-To: <20191004002609.GB1492@ziepe.ca>
+From:   Michel Lespinasse <walken@google.com>
+Date:   Fri, 4 Oct 2019 06:15:11 -0700
+Message-ID: <CANN689G3chM1FjFPdCNm9_OQxazs7YP1PuZLpqGtq=qzaZ0Hbw@mail.gmail.com>
+Subject: Re: [PATCH -next 00/11] lib/interval-tree: move to half closed intervals
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, dri-devel@lists.freedesktop.org,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Storage ULPs (e.g. iSER & NVMeOF) use ib_drain_qp() to
-drain QP/CQ. Current SIW's own drain routines do not properly
-wait until all SQ/RQ elements are completed and reaped
-from the CQ. This may cause touch after free issues.
-New logic relies on generic __ib_drain_sq()/__ib_drain_rq()
-posting a final work request, which SIW immediately flushes
-to CQ.
+Hi Jason,
 
-Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
-Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
-Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
----
-v2 -> v3:
-- Handle ib_drain_sq()/ib_drain_rq() calls when QP's
-  state is currently locked.
+On Thu, Oct 3, 2019 at 5:26 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> Hurm, this is not entirely accurate. Most users do actually want
+> overlapping and multiple ranges. I just studied this extensively:
 
-v1 -> v2:
-- Accept SQ and RQ work requests, if QP is in ERROR
-  state. In that case, immediately flush WR's to CQ.
-  This already provides needed functionality to
-  support ib_drain_sq()/ib_drain_rq() without extra
-  state checking in the fast path.
+(Just curious, are you the person we discussed this with after the
+Maple Tree talk at LPC 2019 ?)
 
- drivers/infiniband/sw/siw/siw_main.c  |  20 ----
- drivers/infiniband/sw/siw/siw_verbs.c | 144 ++++++++++++++++++++++----
- 2 files changed, 122 insertions(+), 42 deletions(-)
+I think we have two separate API problems there:
+- overlapping vs non-overlapping intervals (the interval tree API
+supports overlapping intervals, but some users are confused about
+this)
+- closed vs half-open interval definitions
 
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index 05a92f997f60..fb01407a310f 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -248,24 +248,6 @@ static struct ib_qp *siw_get_base_qp(struct ib_device *base_dev, int id)
- 	return NULL;
- }
- 
--static void siw_verbs_sq_flush(struct ib_qp *base_qp)
--{
--	struct siw_qp *qp = to_siw_qp(base_qp);
--
--	down_write(&qp->state_lock);
--	siw_sq_flush(qp);
--	up_write(&qp->state_lock);
--}
--
--static void siw_verbs_rq_flush(struct ib_qp *base_qp)
--{
--	struct siw_qp *qp = to_siw_qp(base_qp);
--
--	down_write(&qp->state_lock);
--	siw_rq_flush(qp);
--	up_write(&qp->state_lock);
--}
--
- static const struct ib_device_ops siw_device_ops = {
- 	.owner = THIS_MODULE,
- 	.uverbs_abi_ver = SIW_ABI_VERSION,
-@@ -284,8 +266,6 @@ static const struct ib_device_ops siw_device_ops = {
- 	.destroy_cq = siw_destroy_cq,
- 	.destroy_qp = siw_destroy_qp,
- 	.destroy_srq = siw_destroy_srq,
--	.drain_rq = siw_verbs_rq_flush,
--	.drain_sq = siw_verbs_sq_flush,
- 	.get_dma_mr = siw_get_dma_mr,
- 	.get_port_immutable = siw_get_port_immutable,
- 	.iw_accept = siw_accept,
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-index 869e02b69a01..c0574ddc98fa 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -687,6 +687,47 @@ static int siw_copy_inline_sgl(const struct ib_send_wr *core_wr,
- 	return bytes;
- }
- 
-+/* Complete SQ WR's without processing */
-+static int siw_sq_flush_wr(struct siw_qp *qp, const struct ib_send_wr *wr,
-+			   const struct ib_send_wr **bad_wr)
-+{
-+	struct siw_sqe sqe = {};
-+	int rv = 0;
-+
-+	while (wr) {
-+		sqe.id = wr->wr_id;
-+		sqe.opcode = wr->opcode;
-+		rv = siw_sqe_complete(qp, &sqe, 0, SIW_WC_WR_FLUSH_ERR);
-+		if (rv) {
-+			if (bad_wr)
-+				*bad_wr = wr;
-+			break;
-+		}
-+		wr = wr->next;
-+	}
-+	return rv;
-+}
-+
-+/* Complete RQ WR's without processing */
-+static int siw_rq_flush_wr(struct siw_qp *qp, const struct ib_recv_wr *wr,
-+			   const struct ib_recv_wr **bad_wr)
-+{
-+	struct siw_rqe rqe = {};
-+	int rv = 0;
-+
-+	while (wr) {
-+		rqe.id = wr->wr_id;
-+		rv = siw_rqe_complete(qp, &rqe, 0, 0, SIW_WC_WR_FLUSH_ERR);
-+		if (rv) {
-+			if (bad_wr)
-+				*bad_wr = wr;
-+			break;
-+		}
-+		wr = wr->next;
-+	}
-+	return rv;
-+}
-+
- /*
-  * siw_post_send()
-  *
-@@ -705,26 +746,54 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
- 	unsigned long flags;
- 	int rv = 0;
- 
-+	if (wr && !qp->kernel_verbs) {
-+		siw_dbg_qp(qp, "wr must be empty for user mapped sq\n");
-+		*bad_wr = wr;
-+		return -EINVAL;
-+	}
-+
- 	/*
- 	 * Try to acquire QP state lock. Must be non-blocking
- 	 * to accommodate kernel clients needs.
- 	 */
- 	if (!down_read_trylock(&qp->state_lock)) {
--		*bad_wr = wr;
--		siw_dbg_qp(qp, "QP locked, state %d\n", qp->attrs.state);
--		return -ENOTCONN;
-+		if (qp->attrs.state == SIW_QP_STATE_ERROR) {
-+			/*
-+			 * ERROR state is final, so we can be sure
-+			 * this state will not change as long as the QP
-+			 * exists.
-+			 *
-+			 * This handles an ib_drain_sq() call with
-+			 * a concurrent request to set the QP state
-+			 * to ERROR.
-+			 */
-+			rv = siw_sq_flush_wr(qp, wr, bad_wr);
-+		} else {
-+			siw_dbg_qp(qp, "QP locked, state %d\n",
-+				   qp->attrs.state);
-+			*bad_wr = wr;
-+			rv = -ENOTCONN;
-+		}
-+		return rv;
- 	}
- 	if (unlikely(qp->attrs.state != SIW_QP_STATE_RTS)) {
-+		if (qp->attrs.state == SIW_QP_STATE_ERROR) {
-+			/*
-+			 * Immediately flush this WR to CQ, if QP
-+			 * is in ERROR state. SQ is guaranteed to
-+			 * be empty, so WR complets in-order.
-+			 *
-+			 * Typically triggered by ib_drain_sq().
-+			 */
-+			rv = siw_sq_flush_wr(qp, wr, bad_wr);
-+		} else {
-+			siw_dbg_qp(qp, "QP out of state %d\n",
-+				   qp->attrs.state);
-+			*bad_wr = wr;
-+			rv = -ENOTCONN;
-+		}
- 		up_read(&qp->state_lock);
--		*bad_wr = wr;
--		siw_dbg_qp(qp, "QP out of state %d\n", qp->attrs.state);
--		return -ENOTCONN;
--	}
--	if (wr && !qp->kernel_verbs) {
--		siw_dbg_qp(qp, "wr must be empty for user mapped sq\n");
--		up_read(&qp->state_lock);
--		*bad_wr = wr;
--		return -EINVAL;
-+		return rv;
- 	}
- 	spin_lock_irqsave(&qp->sq_lock, flags);
- 
-@@ -919,24 +988,55 @@ int siw_post_receive(struct ib_qp *base_qp, const struct ib_recv_wr *wr,
- 		*bad_wr = wr;
- 		return -EOPNOTSUPP; /* what else from errno.h? */
- 	}
--	/*
--	 * Try to acquire QP state lock. Must be non-blocking
--	 * to accommodate kernel clients needs.
--	 */
--	if (!down_read_trylock(&qp->state_lock)) {
--		*bad_wr = wr;
--		return -ENOTCONN;
--	}
- 	if (!qp->kernel_verbs) {
- 		siw_dbg_qp(qp, "no kernel post_recv for user mapped sq\n");
- 		up_read(&qp->state_lock);
- 		*bad_wr = wr;
- 		return -EINVAL;
- 	}
-+
-+	/*
-+	 * Try to acquire QP state lock. Must be non-blocking
-+	 * to accommodate kernel clients needs.
-+	 */
-+	if (!down_read_trylock(&qp->state_lock)) {
-+		if (qp->attrs.state == SIW_QP_STATE_ERROR) {
-+			/*
-+			 * ERROR state is final, so we can be sure
-+			 * this state will not change as long as the QP
-+			 * exists.
-+			 *
-+			 * This handles an ib_drain_rq() call with
-+			 * a concurrent request to set the QP state
-+			 * to ERROR.
-+			 */
-+			rv = siw_rq_flush_wr(qp, wr, bad_wr);
-+		} else {
-+			siw_dbg_qp(qp, "QP locked, state %d\n",
-+				   qp->attrs.state);
-+			*bad_wr = wr;
-+			rv = -ENOTCONN;
-+		}
-+		return rv;
-+	}
- 	if (qp->attrs.state > SIW_QP_STATE_RTS) {
-+		if (qp->attrs.state == SIW_QP_STATE_ERROR) {
-+			/*
-+			 * Immediately flush this WR to CQ, if QP
-+			 * is in ERROR state. RQ is guaranteed to
-+			 * be empty, so WR complets in-order.
-+			 *
-+			 * Typically triggered by ib_drain_rq().
-+			 */
-+			rv = siw_rq_flush_wr(qp, wr, bad_wr);
-+		} else {
-+			siw_dbg_qp(qp, "QP out of state %d\n",
-+				   qp->attrs.state);
-+			*bad_wr = wr;
-+			rv = -ENOTCONN;
-+		}
- 		up_read(&qp->state_lock);
--		*bad_wr = wr;
--		return -EINVAL;
-+		return rv;
- 	}
- 	/*
- 	 * Serialize potentially multiple producers.
+It looks like you have been looking mostly at the first issue, which I
+expect could simplify several interval tree users considerably, while
+Davidlohr is addressing the second issue here.
+
+> radeon_mn actually wants overlapping but seems to mis-understand the
+> interval_tree API and actively tries hard to prevent overlapping at
+> great cost and complexity. I have a patch to delete all of this and
+> just be overlapping.
+>
+> amdgpu_mn copied the wrongness from radeon_mn
+>
+> All the DRM drivers are basically the same here, tracking userspace
+> controlled VAs, so overlapping is essential
+>
+> hfi1/mmu_rb definitely needs overlapping as it is dealing with
+> userspace VA ranges under control of userspace. As do the other
+> infiniband users.
+
+Do you have a handle on what usnic is doing with its intervals ?
+usnic_uiom_insert_interval() has some complicated logic to avoid
+having overlapping intervals, which is very confusing to me.
+
+> vhost probably doesn't overlap in the normal case, but again userspace
+> could trigger overlap in some pathalogical case.
+>
+> The [start,last] allows the interval to cover up to ULONG_MAX. I don't
+> know if this is needed however. Many users are using userspace VAs
+> here. Is there any kernel configuration where ULONG_MAX is a valid
+> userspace pointer? Ie 32 bit 4G userspace? I don't know.
+>
+> Many users seemed to have bugs where they were taking a userspace
+> controlled start + length and converting them into a start/end for
+> interval tree without overflow protection (woops)
+>
+> Also I have a series already cooking to delete several of these
+> interval tree users, which will terribly conflict with this :\
+>
+> Is it really necessary to make such churn for such a tiny API change?
+
+My take is that this (Davidlohr's) patch series does not necessarily
+need to be applied all at once - we could get the first change in
+(adding the interval_tree_gen.h header), and convert the first few
+users, without getting them all at once, as long as we have a plan for
+finishing the work. So, if you have cleanups in progress in some of
+the files, just tell us which ones and we can leave them out from the
+first pass.
+
+Thanks,
+
 -- 
-2.17.2
-
+Michel "Walken" Lespinasse
+A program is never fully debugged until the last user dies.
