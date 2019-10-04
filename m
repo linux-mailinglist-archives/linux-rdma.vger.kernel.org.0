@@ -2,87 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3B1CBA73
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 14:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C5ACBAA4
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 14:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730817AbfJDMas (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Oct 2019 08:30:48 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:36313 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728927AbfJDMas (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 08:30:48 -0400
-Received: by mail-pf1-f195.google.com with SMTP id y22so3839480pfr.3
-        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 05:30:48 -0700 (PDT)
+        id S2387421AbfJDMjq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Oct 2019 08:39:46 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:46107 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387412AbfJDMjq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 08:39:46 -0400
+Received: by mail-wr1-f65.google.com with SMTP id o18so6955574wrv.13;
+        Fri, 04 Oct 2019 05:39:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3h7sOSA5jjR1emcH5dOd6H8xcJkobT200k6X8W+3UrY=;
-        b=RizUr5Ifv1Bz8eqstV0Ksj9u7iT3BnODSB9UF+fHMQWB6OJQT7drjZhpvl+9z5fgF2
-         saLhn7S19fMY3bByCWvEiDR1zYH0oLs8BXfRNmgdfvGXfz6AIkny2X4q15DuAdRI/ljH
-         d8suc9q/fgiLkaQjRaqqA17Ywqz0XgkG6x9XOFMqr4/Zm4mi1j1dXX/39RO+SNJ+CWhd
-         rAo0bZ5e1ID09f6zmDJ+YvdcLhiSwz/NPyopNmDZAAdhG5nEweJj5/zSexE7mND/m8Wb
-         McPyrdp106HPZnZX4jD8PI5wsew95R4kZjqXT7w1Ty9EEr52H6Zado1HrHQjXf7bDkAC
-         rU3A==
+        d=gmail.com; s=20161025;
+        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=+pseJbkmmDayD6+Jn87ClcbkQZcbbnaCL4Buh3G3qjM=;
+        b=Tlq12npjJdGVRcZaaPRBmG1UulkC6ZNwLepKNYSEfIo0Qh6MeOhT7tRWrZBPNSPw5M
+         aaeSYYvt6/iEBMJIPNczjKEeCdPcMIsW4dfZQoAPmURw4qMo15KUa/UFTxT9eNhZH0J8
+         XJnZ/hiTVceeN4eKrbpjrNYAnoNJTOGbC+J4YjyHn+2wjS+ufM0jhrncj29Z6uNcDKNd
+         M5fdcy8iq3vHGNhQ2TkpQ8eLxTztVtSMW6kqpDFFWfSwaREahz5/237RIOOM2bGFe9fU
+         R0IA9BPZjnxxXj9y3hDHCF03ZfA0zB8RDKUzTmznMeJYwSXBbVJ7VJmjyVm93RAJZwKn
+         M1nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3h7sOSA5jjR1emcH5dOd6H8xcJkobT200k6X8W+3UrY=;
-        b=l4aa7qOcK4vJDA1bsdOUKDgjskwPTq03/LW+PAAjak+q2xLfQ8XMRltQrkQ1hrB758
-         tBtCggKQahBFG6M8PhPGXr1noZ7y3hVl2tMwazEQLbRcd4pRYaYivWEB4jT6rJ2S4UB5
-         z+0FwWW8CBPWpsymzgv9/1SS4YS0aZHJA01q4yBOy6hTtSfEJByEh6X8xqCMYcnOYa0r
-         +/uw+n+33vvNO79g90MlV8ccQpL/cN/ulnjtNknumNbFDf3ogLGQzyzaWxRcoHg3vbqs
-         M6f1e20oqhieXhYrPVsVF7DItUy4T0RncsiRuNhoCv5FoS9Zr08cDzEURs/Q1OQTbmUh
-         KVQg==
-X-Gm-Message-State: APjAAAWHQAB6gmVY3pnaQdZLS7OtIhgm4sTNecI99UzPdGQ+ge/wXGCU
-        dUDlaIyX8xIAmYltJzIvpl32VQ==
-X-Google-Smtp-Source: APXvYqwvpIBZbvlF/CMNVlUL2gBE3HIrXIodkeeSqCAg05vZLgI6flJWYprqy5/q7UrKNdq6z1Qbyw==
-X-Received: by 2002:a62:5485:: with SMTP id i127mr16750418pfb.260.1570192247465;
-        Fri, 04 Oct 2019 05:30:47 -0700 (PDT)
-Received: from google.com ([2620:15c:2cd:202:668d:6035:b425:3a3a])
-        by smtp.gmail.com with ESMTPSA id p1sm8907022pfb.112.2019.10.04.05.30.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Oct 2019 05:30:46 -0700 (PDT)
-Date:   Fri, 4 Oct 2019 05:30:44 -0700
-From:   Michel Lespinasse <walken@google.com>
-To:     Davidlohr Bueso <dave@stgolabs.net>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH 08/11] mm: convert vma_interval_tree to half closed
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=+pseJbkmmDayD6+Jn87ClcbkQZcbbnaCL4Buh3G3qjM=;
+        b=tMoJc49Ti/cC+xIkNU6QOIzqO/oT9Cstads4dhQrgi52Szg2AApCR6TqRBjyH6UfFr
+         RwCawyM/tnZeLvBbw/1rOpmd05UrxlIUry1hANbKStMnqoiR+WrCBFXCsZWN+GyfN+Vl
+         sJdO74dVg+eQI8bj0P/TqvWn52n0d0QofZAq6uQ5xzHmtOd534tDuTC5FvwLBvgmQ/jC
+         oYXolkv1oCI1iRgFZ9QmTsRwh+wXaUNKE+fgnKiNoUqq0Xycr77nIOf5HyzT0j9wJZtv
+         pRSO0B9Iwyxy4UkaK0X7cVEGY5MtlDIKlNvryITTwSxBouzgVqJShOG39yNUuMxvxUkM
+         fJ7Q==
+X-Gm-Message-State: APjAAAU/Srl4+w56u74RvHRhHHWz+c5Rst0b8v5c67DLZeuCDm3qQ+FH
+        5HPscn7zYGKGkIKa+2t99ZaTpQlJ
+X-Google-Smtp-Source: APXvYqxS6UQ2bnKgNuObVtiLOcssLnA6+jvl5KiXC3jViySnaZ7X43QXzYkaXntWj7e4NjMxK9d0eQ==
+X-Received: by 2002:adf:ec09:: with SMTP id x9mr12081882wrn.308.1570192783261;
+        Fri, 04 Oct 2019 05:39:43 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id a2sm2607667wrt.45.2019.10.04.05.39.41
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Oct 2019 05:39:42 -0700 (PDT)
+Reply-To: christian.koenig@amd.com
+Subject: Re: [PATCH 03/11] drm/amdgpu: convert amdgpu_vm_it to half closed
  intervals
-Message-ID: <20191004123044.GA11046@google.com>
+To:     Michel Lespinasse <walken@google.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
 References: <20191003201858.11666-1-dave@stgolabs.net>
- <20191003201858.11666-9-dave@stgolabs.net>
+ <20191003201858.11666-4-dave@stgolabs.net>
+ <dc9cc8c4-7275-43be-5bed-91384e3246ae@amd.com>
+ <20191004113628.GA260828@google.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <232710bd-dc54-9d77-6f0f-24a91a28cbf6@gmail.com>
+Date:   Fri, 4 Oct 2019 14:39:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191003201858.11666-9-dave@stgolabs.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191004113628.GA260828@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 03, 2019 at 01:18:55PM -0700, Davidlohr Bueso wrote:
-> The vma and anon vma interval tree really wants [a, b) intervals,
-> not fully closed. As such convert it to use the new
-> interval_tree_gen.h. Because of vma_last_pgoff(), the conversion
-> is quite straightforward.
+Hi Michel,
 
-I am not certain if we need to worry about integer overflow here.
-The problem case would be accessing the last block of a file that is
-exactly 16TB long, on an arch where long (and thus pgoff_t) is 32-bit.
-Maybe FS folks can tell us whether that case is currently supported,
-or if we can just not worry about it ?
+Am 04.10.19 um 13:36 schrieb Michel Lespinasse:
+> On Fri, Oct 04, 2019 at 06:54:54AM +0000, Koenig, Christian wrote:
+>> Am 03.10.19 um 22:18 schrieb Davidlohr Bueso:
+>>> The amdgpu_vm interval tree really wants [a, b) intervals,
+>> NAK, we explicitly do need an [a, b[ interval here.
+> Hi Christian,
+>
+> Just wanted to confirm where you stand on this patch, since I think
+> you reconsidered your initial position after first looking at 9/11
+> from this series.
+>
+> I do not know the amdgpu code well, but I think the changes should be
+> fine - in struct amdgpu_bo_va_mapping, the "end" field will hold what
+> was previously stored in the "last" field, plus one. The expectation
+> is that overflows should not be an issue there, as "end" is explicitly
+> declared as an uint64, and as the code was previously computing
+> "last + 1" in many places.
+>
+> Does that seem workable to you ?
 
-I would also want to rename the fields in struct zap_details into
-start_index and end_index so we can verify we don't leave any
-off-by-one uses.
+No, we computed last + 1 in a couple of debug places were it doesn't 
+hurt us and IIRC we currently cheat a bit because we use pfn instead of 
+addresses on some other places.
 
--- 
-Michel "Walken" Lespinasse
-A program is never fully debugged until the last user dies.
+But that is only a leftover from radeon and we need to fix that sooner 
+or later, cause essentially the physical address space of the device is 
+really full 64bits, e.g. 0x0-0xffffffffffffffff.
+
+So that only fits into a 64bit int when we use half open/closed 
+intervals, but would wrap around to zero if we use a closed interval.
+
+I initially thought that the set was changing the interval tree into 
+always using a closed interval, but that seems to have been a 
+misunderstanding.
+
+Regards,
+Christian.
+
+>
+> Thanks,
+>
+
