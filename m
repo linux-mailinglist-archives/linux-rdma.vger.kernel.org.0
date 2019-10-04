@@ -2,128 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D08CBB69
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 15:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964AFCBC2D
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 15:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388197AbfJDNP2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Oct 2019 09:15:28 -0400
-Received: from mail-yb1-f173.google.com ([209.85.219.173]:38383 "EHLO
-        mail-yb1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387870AbfJDNP1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 09:15:27 -0400
-Received: by mail-yb1-f173.google.com with SMTP id x4so2091388ybr.5
-        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 06:15:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/UcVhX9GaoSfCR5Nzgmo8T8FLFMJ0xd65q4Shx2Kmts=;
-        b=aVs4zyKIMELcbbp0OrZDIIRM6M9FqgqBWOj7D/V0OOVxjk/TCK1tb1H33aayEVT9Fq
-         NOF79kJ75vl2d2aHQWCNVE3mdS8xv2agwN5v/GWtJcU0doJRauKDjzYg6Q6Aok4YYi3b
-         mqNPN9hT3Q49dLWzDmTUjRAHeblmpVkFSji5wQrOx6/uMD4mWAJGCY15WvCoWVOEjYTY
-         zLXisVJYNrNI9DPaiv0kVngz338cFFvM+h3OzJgZEFf8gZFZm7Iiy5tpDfP2d3CkVb0j
-         V4Ux/4E3Ys8h0MioMBqFvf8jY+vH9oklDJ5qpoyn4dUJxko+npNTfqsfS9FFgD1YpKeU
-         TCXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/UcVhX9GaoSfCR5Nzgmo8T8FLFMJ0xd65q4Shx2Kmts=;
-        b=KZz643HD3D8pkkGAF620hyy4oFys6JAGRTaRfrV4amgV+IrLZh7rHhzJlJLocX2ClY
-         82U0j7bz7fgKHmiNp4UU1T1kSpzy4hbwsk9DNAvro9oQAXaifAKGg/Ed3y2pRrc93tIi
-         1tD0vLUXVRZtF2R7Hh0c1g/eeQ+Vez347Ir5bJ4S+5lwsxykMuq55BU1JFF6uoaUfW3K
-         hBiZZU6XHolczev6u1IDM61X+s37qmAYzOiKZX0EDFVi1DDZoMbj3BKuyeHL1uBvL3Ak
-         pmx9nujY1TsUy2seL5fUJ/UAVbHzN1YYE0ZdyTsMBpnF7hBuQHrc1O1+ACCQyITDZgdr
-         C1RA==
-X-Gm-Message-State: APjAAAV1NO0E0JrbKnZetaC3Xfxn5gashtF49oCtC0jFpPTxNuz/5s4i
-        ymDTr87PKeicx4ODen81P7GhVZPmCrzH9savI7b0bQ==
-X-Google-Smtp-Source: APXvYqzwEQFavuGTQfqs5oMner1fD3hr86iQqTMlgoG4RfUPbRmbA3D9aQz/XYkIYsRESetVSOBhZBfVuAsxsNy+MeI=
-X-Received: by 2002:a25:8149:: with SMTP id j9mr1749501ybm.132.1570194926383;
- Fri, 04 Oct 2019 06:15:26 -0700 (PDT)
+        id S2388897AbfJDNsN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 4 Oct 2019 09:48:13 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39908 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388149AbfJDNsN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 09:48:13 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x94DgZYH138359
+        for <linux-rdma@vger.kernel.org>; Fri, 4 Oct 2019 09:48:11 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.74])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2ve5s5mgkk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 09:48:11 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Fri, 4 Oct 2019 13:48:10 -0000
+Received: from us1a3-smtp05.a3.dal06.isc4sb.com (10.146.71.159)
+        by smtp.notes.na.collabserv.com (10.106.227.92) with smtp.notes.na.collabserv.com ESMTP;
+        Fri, 4 Oct 2019 13:47:45 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp05.a3.dal06.isc4sb.com
+          with ESMTP id 2019100413474442-521400 ;
+          Fri, 4 Oct 2019 13:47:44 +0000 
+In-Reply-To: <20191004045718.GA29290@chelsio.com>
+Subject: Re: Re: Re: Re: Re: [PATCH for-next] RDMA/siw: fix SQ/RQ drain logic to
+ support ib_drain_qp
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+Cc:     "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Potnuri Bharat Teja" <bharat@chelsio.com>,
+        "Nirranjan Kirubaharan" <nirranjan@chelsio.com>
+Date:   Fri, 4 Oct 2019 13:47:44 +0000
 MIME-Version: 1.0
-References: <20191003201858.11666-1-dave@stgolabs.net> <20191004002609.GB1492@ziepe.ca>
-In-Reply-To: <20191004002609.GB1492@ziepe.ca>
-From:   Michel Lespinasse <walken@google.com>
-Date:   Fri, 4 Oct 2019 06:15:11 -0700
-Message-ID: <CANN689G3chM1FjFPdCNm9_OQxazs7YP1PuZLpqGtq=qzaZ0Hbw@mail.gmail.com>
-Subject: Re: [PATCH -next 00/11] lib/interval-tree: move to half closed intervals
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, dri-devel@lists.freedesktop.org,
-        linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20191004045718.GA29290@chelsio.com>,<20191003105112.GA20688@chelsio.com>
+ <20191001174502.GB31728@chelsio.com> <20191001095224.GA5448@chelsio.com>
+ <20190927221545.5944-1-krishna2@chelsio.com>
+ <OFFA5BB431.AD96EB3F-ON00258485.0054053B-00258485.0055D206@notes.na.collabserv.com>
+ <OF8E75AE75.02E5B443-ON00258486.00578402-00258486.00579818@notes.na.collabserv.com>
+ <OFB95A41D1.52157F37-ON00258487.003EF8B5-00258487.003EF8F6@notes.na.collabserv.com>
+ <OF2EDF2738.25C83B56-ON00258488.003E6ADE-00258488.004D3019@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
+X-LLNOutbound: False
+X-Disclaimed: 48287
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19100413-3165-0000-0000-0000013B7E88
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.118653
+X-IBM-SpamModules-Versions: BY=3.00011888; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000292; SDB=6.01270599; UDB=6.00672568; IPR=6.01052648;
+ MB=3.00028942; MTD=3.00000008; XFM=3.00000015; UTC=2019-10-04 13:48:08
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-10-04 10:06:07 - 6.00010485
+x-cbparentid: 19100413-3166-0000-0000-000047198A8D
+Message-Id: <OFBE05CE37.CBF33C8C-ON00258489.004868EE-00258489.004BC858@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-04_06:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jason,
+-----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
 
-On Thu, Oct 3, 2019 at 5:26 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> Hurm, this is not entirely accurate. Most users do actually want
-> overlapping and multiple ranges. I just studied this extensively:
-
-(Just curious, are you the person we discussed this with after the
-Maple Tree talk at LPC 2019 ?)
-
-I think we have two separate API problems there:
-- overlapping vs non-overlapping intervals (the interval tree API
-supports overlapping intervals, but some users are confused about
-this)
-- closed vs half-open interval definitions
-
-It looks like you have been looking mostly at the first issue, which I
-expect could simplify several interval tree users considerably, while
-Davidlohr is addressing the second issue here.
-
-> radeon_mn actually wants overlapping but seems to mis-understand the
-> interval_tree API and actively tries hard to prevent overlapping at
-> great cost and complexity. I have a patch to delete all of this and
-> just be overlapping.
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+>Date: 10/04/2019 06:57AM
+>Cc: "jgg@ziepe.ca" <jgg@ziepe.ca>, "linux-rdma@vger.kernel.org"
+><linux-rdma@vger.kernel.org>, "Potnuri Bharat Teja"
+><bharat@chelsio.com>, "Nirranjan Kirubaharan" <nirranjan@chelsio.com>
+>Subject: [EXTERNAL] Re: Re: Re: Re: [PATCH for-next] RDMA/siw: fix
+>SQ/RQ drain logic to support ib_drain_qp
 >
-> amdgpu_mn copied the wrongness from radeon_mn
+>On Thursday, October 10/03/19, 2019 at 14:03:05 +0000, Bernard
+>Metzler wrote:
+>> There are other reasons why the generic
+>> __ib_drain_sq() may fail. A CQ overflow is one
+>> such candidate. Failures are not handled by the ULP,
+>> since calling a void function.
+>The function description of ib_drain_qp() says:
+> * The caller must:
+> *
+> * ensure there is room in the CQ(s), SQ, and RQ for drain work
+>requests
+> * and completions.
+> *
+> * allocate the CQs using ib_alloc_cq().
+> *
+> * ensure that there are no other contexts that are posting WRs
+> * concurrently.
+> * Otherwise the drain is not guaranteed.
+> */
 >
-> All the DRM drivers are basically the same here, tracking userspace
-> controlled VAs, so overlapping is essential
->
-> hfi1/mmu_rb definitely needs overlapping as it is dealing with
-> userspace VA ranges under control of userspace. As do the other
-> infiniband users.
+Yes, I know. Imho, this guarantee falls into the same category
+as assuming a sane ULP which will not try to change the QP state
+at the same time while calling for sq_drain. A CQ overflow  would
+be a miscalculation of its size by the ULP. A drain_sq in parallel
+with a modify_qp call just another misbehaving..? Anyway, I think
+you are right, let's handle explicitly all cases we can handle.
 
-Do you have a handle on what usnic is doing with its intervals ?
-usnic_uiom_insert_interval() has some complicated logic to avoid
-having overlapping intervals, which is very confusing to me.
-
-> vhost probably doesn't overlap in the normal case, but again userspace
-> could trigger overlap in some pathalogical case.
 >
-> The [start,last] allows the interval to cover up to ULONG_MAX. I don't
-> know if this is needed however. Many users are using userspace VAs
-> here. Is there any kernel configuration where ULONG_MAX is a valid
-> userspace pointer? Ie 32 bit 4G userspace? I don't know.
+>So, it looks like ULP has to check for available CQs before calling
+>ib_drain_xx(). 
+>> 
+>> At the other hand, we know that if we have reached
+>> ERROR state, the QP will never escape back to become
+>> full functional; ERROR is the QP's final state.
+>> 
+>> So we could do an extra check if we cannot get
+>> the state lock - if we are already in ERROR. And
+>> if yes, complete immediately there as well.
+>> 
+>> I can change the patch accordingly. Makes sense?
+>Yes, I think addressing this would make the fix complete.
 >
-> Many users seemed to have bugs where they were taking a userspace
-> controlled start + length and converting them into a start/end for
-> interval tree without overflow protection (woops)
+sent.
+
+I'll be away whole next week from tonight on.
+
+Thanks
+Bernard.
+
+>Thanks,
+>Krishna.
 >
-> Also I have a series already cooking to delete several of these
-> interval tree users, which will terribly conflict with this :\
 >
-> Is it really necessary to make such churn for such a tiny API change?
 
-My take is that this (Davidlohr's) patch series does not necessarily
-need to be applied all at once - we could get the first change in
-(adding the interval_tree_gen.h header), and convert the first few
-users, without getting them all at once, as long as we have a plan for
-finishing the work. So, if you have cleanups in progress in some of
-the files, just tell us which ones and we can leave them out from the
-first pass.
-
-Thanks,
-
--- 
-Michel "Walken" Lespinasse
-A program is never fully debugged until the last user dies.
