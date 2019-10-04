@@ -2,174 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 573A0CBC65
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 15:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61C0CBCBB
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 16:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388376AbfJDN6X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Oct 2019 09:58:23 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:37638 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387917AbfJDN6X (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 09:58:23 -0400
-Received: by mail-io1-f66.google.com with SMTP id b19so13754729iob.4;
-        Fri, 04 Oct 2019 06:58:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:cc:date:message-id:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=BkUt5LiybN+dYsfgIZi/llLOI8b7tpVT44LJM3jeSXo=;
-        b=I7kuTi+/wz00Y/pPQe5lPFNtQFDKpdmEy+lCf/TqJAqwv1klGhHdRjGW6GX/Wdvm6h
-         x0+3GFZ+LqpVUjrLgNJPlAgRQW/9rQ/YMT7Gx5SYTeBH25tXKvmO+c2xnc7yB6rw/0RJ
-         lgT1tkpFMuvTqmjzurlYxj7VmKSwuPJKeD472vhZrNuNQF5bDfmpItYcjJMa6xdxN4fM
-         uh3d89Eul4jbL4DaiYv01ZYJrPZksAUinB8aPDACI0GNo6d1HR0PiJZMMnSzOdzX39CP
-         fwbQdW5YJEEEWl+oc83zaZVowiP+YPtyRk2FQA4nAzk1n0YlOw8RbZy5FouKplrqUwYo
-         jsxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:cc:date:message-id
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=BkUt5LiybN+dYsfgIZi/llLOI8b7tpVT44LJM3jeSXo=;
-        b=t7birBZErJu5x8Rh+HAbYIpqCx1DcwrkOv8iIJM1nyyghkQwPgE7e0GDDjQcyPr3lP
-         3KVU1dvJfp6SqWttyHXaI8h/jFncXjd/mhpuNWQF/hFmdGgSiAg0QmXQ4SsrvRwdDTbB
-         oiNzqGiTQbo3cxdsrjkKqYRGDhzXa0z8aSXe96cHjK4KhEQzoTGOP2DyzmajWSgguqlI
-         nzre43LnyLDXIUxnIMdaAQIvAydk4yHSwZUvH+IsQY7Yxy9/OK9fzHENKuBvFqMtyr+2
-         A068ubhPeAZRvH+/CNNGHtR8cKgBKrfJMYcjqETFEorcZlvbTwvStbYA4g7BVJXZm218
-         OuaQ==
-X-Gm-Message-State: APjAAAVTDmOnPdx7apyydwsSkfr9+YuV3f78jC02IoIaDZ2anoEKaNSb
-        uNWeH/cEqZBSY9bXOnlKXXvUAlFx
-X-Google-Smtp-Source: APXvYqxR9vCi2Q8+NGI+7m5I99n8WKUpA5gsAWzaumch2XBYj4Qdqm8KVyhCS9Zw+iWFHGLTuABOrw==
-X-Received: by 2002:a02:2941:: with SMTP id p62mr15268150jap.142.1570197502346;
-        Fri, 04 Oct 2019 06:58:22 -0700 (PDT)
-Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
-        by smtp.gmail.com with ESMTPSA id h17sm2519283ilq.66.2019.10.04.06.58.21
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Oct 2019 06:58:21 -0700 (PDT)
-Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
-        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id x94DwKWW019110;
-        Fri, 4 Oct 2019 13:58:21 GMT
-Subject: [PATCH] svcrdma: Improve DMA mapping trace points
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     bfields@fieldses.org
-Cc:     linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org
-Date:   Fri, 04 Oct 2019 09:58:20 -0400
-Message-ID: <20191004135745.2510.93924.stgit@manet.1015granger.net>
-User-Agent: StGit/0.17.1-dirty
+        id S2388149AbfJDOKQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 4 Oct 2019 10:10:16 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15872 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388905AbfJDOKQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 10:10:16 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x94Dqdpw162587
+        for <linux-rdma@vger.kernel.org>; Fri, 4 Oct 2019 10:10:15 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.93])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2vdwymbcb2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 10:10:13 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Fri, 4 Oct 2019 14:10:06 -0000
+Received: from us1a3-smtp02.a3.dal06.isc4sb.com (10.106.154.159)
+        by smtp.notes.na.collabserv.com (10.106.227.39) with smtp.notes.na.collabserv.com ESMTP;
+        Fri, 4 Oct 2019 14:09:59 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp02.a3.dal06.isc4sb.com
+          with ESMTP id 2019100414095852-564598 ;
+          Fri, 4 Oct 2019 14:09:58 +0000 
+In-Reply-To: <20191002154728.GH5855@unreal>
+Subject: Re: Re: [[PATCH v2 for-next]] RDMA/siw: Fix SQ/RQ drain logic
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Leon Romanovsky" <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, bharat@chelsio.com, jgg@ziepe.ca,
+        nirranjan@chelsio.com, krishna2@chelsio.com, bvanassche@acm.org
+Date:   Fri, 4 Oct 2019 14:09:57 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20191002154728.GH5855@unreal>,<20191002143858.4550-1-bmt@zurich.ibm.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
+X-LLNOutbound: False
+X-Disclaimed: 49175
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19100414-8889-0000-0000-000000A67304
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.000002
+X-IBM-SpamModules-Versions: BY=3.00011888; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000292; SDB=6.01270607; UDB=6.00672572; IPR=6.01052655;
+ MB=3.00028942; MTD=3.00000008; XFM=3.00000015; UTC=2019-10-04 14:10:03
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-10-04 10:24:10 - 6.00010485
+x-cbparentid: 19100414-8890-0000-0000-000000F081DD
+Message-Id: <OFA7E48CEB.393CBE8D-ON00258489.0047C07A-00258489.004DD109@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-04_07:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Capture the total size of Sends, the size of DMA map and the
-matching DMA unmap to ensure operation is correct.
+-----"Leon Romanovsky" <leon@kernel.org> wrote: -----
+<...>
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- include/trace/events/rpcrdma.h        |   30 +++++++++++++++++++++++-------
- net/sunrpc/xprtrdma/svc_rdma_sendto.c |    8 ++++++--
- 2 files changed, 29 insertions(+), 9 deletions(-)
+>>   *
+>> @@ -705,6 +746,12 @@ int siw_post_send(struct ib_qp *base_qp, const
+>struct ib_send_wr *wr,
+>>  	unsigned long flags;
+>>  	int rv = 0;
+>>
+>> +	if (wr && !qp->kernel_verbs) {
+>
+>It is not related to this specific patch, but all siw "kernel_verbs"
+>should go, we have standard way to distinguish between kernel and
+>user
+>verbs.
+>
+>Thanks
+>
+Understood. I think we touched on that already.
+rdma core objects have a uobject pointer which
+is valid only if it belongs to a user land
+application. We might better use that. Let me
+see if I can compact QP objects to contain the
+ib_qp. I'd like to avoid following pointers
+potentially causing cache misses on the
+fast path. This is why I still have that
+little boolean within the siw private
+structure.
 
-Hey Bruce-
-
-Please consider this patch for v5.5. Thanks!
-
-
-diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdma.h
-index a138306..9dd7680 100644
---- a/include/trace/events/rpcrdma.h
-+++ b/include/trace/events/rpcrdma.h
-@@ -1498,31 +1498,47 @@
-  ** Server-side RDMA API events
-  **/
- 
--TRACE_EVENT(svcrdma_dma_map_page,
-+DECLARE_EVENT_CLASS(svcrdma_dma_map_class,
- 	TP_PROTO(
- 		const struct svcxprt_rdma *rdma,
--		const void *page
-+		u64 dma_addr,
-+		u32 length
- 	),
- 
--	TP_ARGS(rdma, page),
-+	TP_ARGS(rdma, dma_addr, length),
- 
- 	TP_STRUCT__entry(
--		__field(const void *, page);
-+		__field(u64, dma_addr)
-+		__field(u32, length)
- 		__string(device, rdma->sc_cm_id->device->name)
- 		__string(addr, rdma->sc_xprt.xpt_remotebuf)
- 	),
- 
- 	TP_fast_assign(
--		__entry->page = page;
-+		__entry->dma_addr = dma_addr;
-+		__entry->length = length;
- 		__assign_str(device, rdma->sc_cm_id->device->name);
- 		__assign_str(addr, rdma->sc_xprt.xpt_remotebuf);
- 	),
- 
--	TP_printk("addr=%s device=%s page=%p",
--		__get_str(addr), __get_str(device), __entry->page
-+	TP_printk("addr=%s device=%s dma_addr=%llu length=%u",
-+		__get_str(addr), __get_str(device),
-+		__entry->dma_addr, __entry->length
- 	)
- );
- 
-+#define DEFINE_SVC_DMA_EVENT(name)					\
-+		DEFINE_EVENT(svcrdma_dma_map_class, svcrdma_##name,	\
-+				TP_PROTO(				\
-+					const struct svcxprt_rdma *rdma,\
-+					u64 dma_addr,			\
-+					u32 length			\
-+				),					\
-+				TP_ARGS(rdma, dma_addr, length))
-+
-+DEFINE_SVC_DMA_EVENT(dma_map_page);
-+DEFINE_SVC_DMA_EVENT(dma_unmap_page);
-+
- TRACE_EVENT(svcrdma_dma_map_rwctx,
- 	TP_PROTO(
- 		const struct svcxprt_rdma *rdma,
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_sendto.c b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-index 6fdba72..f3f1080 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-@@ -233,11 +233,15 @@ void svc_rdma_send_ctxt_put(struct svcxprt_rdma *rdma,
- 	/* The first SGE contains the transport header, which
- 	 * remains mapped until @ctxt is destroyed.
- 	 */
--	for (i = 1; i < ctxt->sc_send_wr.num_sge; i++)
-+	for (i = 1; i < ctxt->sc_send_wr.num_sge; i++) {
- 		ib_dma_unmap_page(device,
- 				  ctxt->sc_sges[i].addr,
- 				  ctxt->sc_sges[i].length,
- 				  DMA_TO_DEVICE);
-+		trace_svcrdma_dma_unmap_page(rdma,
-+					     ctxt->sc_sges[i].addr,
-+					     ctxt->sc_sges[i].length);
-+	}
- 
- 	for (i = 0; i < ctxt->sc_page_count; ++i)
- 		put_page(ctxt->sc_pages[i]);
-@@ -490,6 +494,7 @@ static int svc_rdma_dma_map_page(struct svcxprt_rdma *rdma,
- 	dma_addr_t dma_addr;
- 
- 	dma_addr = ib_dma_map_page(dev, page, offset, len, DMA_TO_DEVICE);
-+	trace_svcrdma_dma_map_page(rdma, dma_addr, len);
- 	if (ib_dma_mapping_error(dev, dma_addr))
- 		goto out_maperr;
- 
-@@ -499,7 +504,6 @@ static int svc_rdma_dma_map_page(struct svcxprt_rdma *rdma,
- 	return 0;
- 
- out_maperr:
--	trace_svcrdma_dma_map_page(rdma, page);
- 	return -EIO;
- }
- 
+Thanks and best regards,
+Bernard.
 
