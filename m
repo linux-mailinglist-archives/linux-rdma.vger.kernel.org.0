@@ -2,141 +2,518 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 964AFCBC2D
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 15:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1A1CBC5D
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 15:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388897AbfJDNsN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 4 Oct 2019 09:48:13 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39908 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388149AbfJDNsN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 09:48:13 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x94DgZYH138359
-        for <linux-rdma@vger.kernel.org>; Fri, 4 Oct 2019 09:48:11 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.74])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2ve5s5mgkk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 09:48:11 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Fri, 4 Oct 2019 13:48:10 -0000
-Received: from us1a3-smtp05.a3.dal06.isc4sb.com (10.146.71.159)
-        by smtp.notes.na.collabserv.com (10.106.227.92) with smtp.notes.na.collabserv.com ESMTP;
-        Fri, 4 Oct 2019 13:47:45 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp05.a3.dal06.isc4sb.com
-          with ESMTP id 2019100413474442-521400 ;
-          Fri, 4 Oct 2019 13:47:44 +0000 
-In-Reply-To: <20191004045718.GA29290@chelsio.com>
-Subject: Re: Re: Re: Re: Re: [PATCH for-next] RDMA/siw: fix SQ/RQ drain logic to
- support ib_drain_qp
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Krishnamraju Eraparaju" <krishna2@chelsio.com>
-Cc:     "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Potnuri Bharat Teja" <bharat@chelsio.com>,
-        "Nirranjan Kirubaharan" <nirranjan@chelsio.com>
-Date:   Fri, 4 Oct 2019 13:47:44 +0000
+        id S2388491AbfJDN5Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Oct 2019 09:57:25 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:42315 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388333AbfJDN5Y (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 09:57:24 -0400
+Received: by mail-io1-f67.google.com with SMTP id n197so13655679iod.9
+        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 06:57:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=DRKC+1lGRw6w68saQFnhUetJfMSVSqw2UHd3PQIJOWs=;
+        b=NBQtpPUGSKf2Z5NSecfogjBMW5N4Je/n4fnsVlyLCmzaSdJ8InnlGvag54EUuQpDP8
+         VXEQmMOEpdZ9HYwznaY6WJjkRrf8IYj5P/AV+hAFWJsYm4Of1B86t8vaAJVrjB55cd6o
+         VYF1P3BXdbQE9oq+EDpwVNroGPMPbA6tcxK5sCceOISeQj07yh7YjctrI3inMIHQgLBx
+         7bJcpv8nK55ElR1SC/Hn4qTWgrGyH+551Z1NShWKTsHOv2t7Vp+ZzMfAx7O5lpviVZG4
+         VAmBCg84T55+9G55rJ4qRqcaDPWarlBXmRhDZep0vC0+CwtSrWEJ4Eu5Rdx5Yq68K9Nl
+         AH7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:from:to:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=DRKC+1lGRw6w68saQFnhUetJfMSVSqw2UHd3PQIJOWs=;
+        b=j0JXt6XsUARJhGeoFRd2wN3IyWkLNYldauuE9xF+JT6/RbApGEPEVnkdKkwvHfUqBn
+         R5zxmjYG2tH6nvkPwqaomo6S7/hE2pA81yyCqZMplZw4KDiDBnjeaBgxYwlfD5mouHMD
+         pdp1TDcD7/lpgV6ZRARTR4qJiWU8LdBTgn3SqlHEpvxjO2GD5DWbwKz/VcJ1XC4h/Bbe
+         b7URJKehdYwuKZbzu/bE+i6znRBd8keXKuG0LfDU/ioYgdYhvggTQ8uFau0gEZQYLGfL
+         2L3xyyJBMP6bifTzwpOCyyxRjNaRUq9Q9Z3JNhMz+0/BzpXGkyvbvfQF2A+e0yVA9sfF
+         wsJQ==
+X-Gm-Message-State: APjAAAX96oR9qK6YfEyQWVkW0u5ZsZIu9fEQdQIpXE4RD3E1JV0oAWnS
+        QnTypn3wVYBXQLpFHJyKcCq3PQX/
+X-Google-Smtp-Source: APXvYqzlPTkWnMb4MpLf52mSb3kIEbh0kBCCnvIDZDRNjZdqNFTHXw8eX4lGel7LybcI60KVFLe7Mg==
+X-Received: by 2002:a02:3f12:: with SMTP id d18mr14597092jaa.39.1570197443491;
+        Fri, 04 Oct 2019 06:57:23 -0700 (PDT)
+Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id d6sm2459958ilc.39.2019.10.04.06.57.22
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Oct 2019 06:57:22 -0700 (PDT)
+Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id x94DvL5H019107
+        for <linux-rdma@vger.kernel.org>; Fri, 4 Oct 2019 13:57:22 GMT
+Subject: [PATCH RFC] IB/core: Trace points for diagnosing completion queue
+ issues
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     linux-rdma@vger.kernel.org
+Date:   Fri, 04 Oct 2019 09:57:21 -0400
+Message-ID: <20191004135721.2488.63359.stgit@manet.1015granger.net>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20191004045718.GA29290@chelsio.com>,<20191003105112.GA20688@chelsio.com>
- <20191001174502.GB31728@chelsio.com> <20191001095224.GA5448@chelsio.com>
- <20190927221545.5944-1-krishna2@chelsio.com>
- <OFFA5BB431.AD96EB3F-ON00258485.0054053B-00258485.0055D206@notes.na.collabserv.com>
- <OF8E75AE75.02E5B443-ON00258486.00578402-00258486.00579818@notes.na.collabserv.com>
- <OFB95A41D1.52157F37-ON00258487.003EF8B5-00258487.003EF8F6@notes.na.collabserv.com>
- <OF2EDF2738.25C83B56-ON00258488.003E6ADE-00258488.004D3019@notes.na.collabserv.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP57 August 05, 2019 at 12:42
-X-LLNOutbound: False
-X-Disclaimed: 48287
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19100413-3165-0000-0000-0000013B7E88
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.118653
-X-IBM-SpamModules-Versions: BY=3.00011888; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000292; SDB=6.01270599; UDB=6.00672568; IPR=6.01052648;
- MB=3.00028942; MTD=3.00000008; XFM=3.00000015; UTC=2019-10-04 13:48:08
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-10-04 10:06:07 - 6.00010485
-x-cbparentid: 19100413-3166-0000-0000-000047198A8D
-Message-Id: <OFBE05CE37.CBF33C8C-ON00258489.004868EE-00258489.004BC858@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-04_06:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+---
+ drivers/infiniband/core/Makefile |    2 
+ drivers/infiniband/core/cq.c     |   29 ++++--
+ drivers/infiniband/core/trace.c  |   15 +++
+ include/rdma/ib_verbs.h          |    2 
+ include/trace/events/rdma.h      |   89 ++++++++++++++++++
+ include/trace/events/rdma_core.h |  192 ++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 319 insertions(+), 10 deletions(-)
+ create mode 100644 drivers/infiniband/core/trace.c
+ create mode 100644 include/trace/events/rdma_core.h
 
->To: "Bernard Metzler" <BMT@zurich.ibm.com>
->From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
->Date: 10/04/2019 06:57AM
->Cc: "jgg@ziepe.ca" <jgg@ziepe.ca>, "linux-rdma@vger.kernel.org"
-><linux-rdma@vger.kernel.org>, "Potnuri Bharat Teja"
-><bharat@chelsio.com>, "Nirranjan Kirubaharan" <nirranjan@chelsio.com>
->Subject: [EXTERNAL] Re: Re: Re: Re: [PATCH for-next] RDMA/siw: fix
->SQ/RQ drain logic to support ib_drain_qp
->
->On Thursday, October 10/03/19, 2019 at 14:03:05 +0000, Bernard
->Metzler wrote:
->> There are other reasons why the generic
->> __ib_drain_sq() may fail. A CQ overflow is one
->> such candidate. Failures are not handled by the ULP,
->> since calling a void function.
->The function description of ib_drain_qp() says:
-> * The caller must:
-> *
-> * ensure there is room in the CQ(s), SQ, and RQ for drain work
->requests
-> * and completions.
-> *
-> * allocate the CQs using ib_alloc_cq().
-> *
-> * ensure that there are no other contexts that are posting WRs
-> * concurrently.
-> * Otherwise the drain is not guaranteed.
-> */
->
-Yes, I know. Imho, this guarantee falls into the same category
-as assuming a sane ULP which will not try to change the QP state
-at the same time while calling for sq_drain. A CQ overflow  would
-be a miscalculation of its size by the ULP. A drain_sq in parallel
-with a modify_qp call just another misbehaving..? Anyway, I think
-you are right, let's handle explicitly all cases we can handle.
-
->
->So, it looks like ULP has to check for available CQs before calling
->ib_drain_xx(). 
->> 
->> At the other hand, we know that if we have reached
->> ERROR state, the QP will never escape back to become
->> full functional; ERROR is the QP's final state.
->> 
->> So we could do an extra check if we cannot get
->> the state lock - if we are already in ERROR. And
->> if yes, complete immediately there as well.
->> 
->> I can change the patch accordingly. Makes sense?
->Yes, I think addressing this would make the fix complete.
->
-sent.
-
-I'll be away whole next week from tonight on.
-
-Thanks
-Bernard.
-
->Thanks,
->Krishna.
->
->
+diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
+index 09881bd..68d9e27 100644
+--- a/drivers/infiniband/core/Makefile
++++ b/drivers/infiniband/core/Makefile
+@@ -11,7 +11,7 @@ ib_core-y :=			packer.o ud_header.o verbs.o cq.o rw.o sysfs.o \
+ 				device.o fmr_pool.o cache.o netlink.o \
+ 				roce_gid_mgmt.o mr_pool.o addr.o sa_query.o \
+ 				multicast.o mad.o smi.o agent.o mad_rmpp.o \
+-				nldev.o restrack.o counters.o
++				nldev.o restrack.o counters.o trace.o
+ 
+ ib_core-$(CONFIG_SECURITY_INFINIBAND) += security.o
+ ib_core-$(CONFIG_CGROUP_RDMA) += cgroup.o
+diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
+index bbfded6..bcde992 100644
+--- a/drivers/infiniband/core/cq.c
++++ b/drivers/infiniband/core/cq.c
+@@ -7,6 +7,8 @@
+ #include <linux/slab.h>
+ #include <rdma/ib_verbs.h>
+ 
++#include <trace/events/rdma_core.h>
++
+ /* # of WCs to poll for with a single call to ib_poll_cq */
+ #define IB_POLL_BATCH			16
+ #define IB_POLL_BATCH_DIRECT		8
+@@ -41,6 +43,7 @@ static void ib_cq_rdma_dim_work(struct work_struct *w)
+ 
+ 	dim->state = DIM_START_MEASURE;
+ 
++	trace_cq_modify(cq, comps, usec);
+ 	cq->device->ops.modify_cq(cq, comps, usec);
+ }
+ 
+@@ -70,13 +73,9 @@ static int __ib_process_cq(struct ib_cq *cq, int budget, struct ib_wc *wcs,
+ {
+ 	int i, n, completed = 0;
+ 
+-	/*
+-	 * budget might be (-1) if the caller does not
+-	 * want to bound this call, thus we need unsigned
+-	 * minimum here.
+-	 */
+-	while ((n = ib_poll_cq(cq, min_t(u32, batch,
+-					 budget - completed), wcs)) > 0) {
++	trace_cq_process(cq);
++	while ((n = ib_poll_cq(cq, batch, wcs)) > 0) {
++		trace_cq_poll(cq, batch, n);
+ 		for (i = 0; i < n; i++) {
+ 			struct ib_wc *wc = &wcs[i];
+ 
+@@ -87,9 +86,15 @@ static int __ib_process_cq(struct ib_cq *cq, int budget, struct ib_wc *wcs,
+ 		}
+ 
+ 		completed += n;
+-
+ 		if (n != batch || (budget != -1 && completed >= budget))
+ 			break;
++
++		/*
++		 * budget might be (-1) if the caller does not
++		 * want to bound this call, thus we need unsigned
++		 * minimum here.
++		 */
++		batch = min_t(u32, batch, budget - completed);
+ 	}
+ 
+ 	return completed;
+@@ -131,8 +136,10 @@ static int ib_poll_handler(struct irq_poll *iop, int budget)
+ 	completed = __ib_process_cq(cq, budget, cq->wc, IB_POLL_BATCH);
+ 	if (completed < budget) {
+ 		irq_poll_complete(&cq->iop);
+-		if (ib_req_notify_cq(cq, IB_POLL_FLAGS) > 0)
++		if (ib_req_notify_cq(cq, IB_POLL_FLAGS) > 0) {
++			trace_cq_reschedule(cq);
+ 			irq_poll_sched(&cq->iop);
++		}
+ 	}
+ 
+ 	if (dim)
+@@ -143,6 +150,7 @@ static int ib_poll_handler(struct irq_poll *iop, int budget)
+ 
+ static void ib_cq_completion_softirq(struct ib_cq *cq, void *private)
+ {
++	trace_cq_schedule(cq);
+ 	irq_poll_sched(&cq->iop);
+ }
+ 
+@@ -162,6 +170,7 @@ static void ib_cq_poll_work(struct work_struct *work)
+ 
+ static void ib_cq_completion_workqueue(struct ib_cq *cq, void *private)
+ {
++	trace_cq_schedule(cq);
+ 	queue_work(cq->comp_wq, &cq->work);
+ }
+ 
+@@ -239,6 +248,7 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
+ 		goto out_destroy_cq;
+ 	}
+ 
++	trace_cq_alloc(cq, comp_vector, poll_ctx);
+ 	return cq;
+ 
+ out_destroy_cq:
+@@ -304,6 +314,7 @@ void ib_free_cq_user(struct ib_cq *cq, struct ib_udata *udata)
+ 		WARN_ON_ONCE(1);
+ 	}
+ 
++	trace_cq_free(cq);
+ 	rdma_restrack_del(&cq->res);
+ 	cq->device->ops.destroy_cq(cq, udata);
+ 	if (cq->dim)
+diff --git a/drivers/infiniband/core/trace.c b/drivers/infiniband/core/trace.c
+new file mode 100644
+index 0000000..568f57d
+--- /dev/null
++++ b/drivers/infiniband/core/trace.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Trace points for core RDMA functions.
++ *
++ * Author: Chuck Lever <chuck.lever@oracle.com>
++ *
++ * Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
++ */
++
++#define CREATE_TRACE_POINTS
++
++#include <rdma/ib_verbs.h>
++#include <rdma/rdma_cm.h>
++
++#include <trace/events/rdma_core.h>
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 6a47ba8..95a6bce 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -1555,6 +1555,8 @@ struct ib_cq {
+ 	};
+ 	struct workqueue_struct *comp_wq;
+ 	struct dim *dim;
++	ktime_t timestamp;
++	bool interrupt;
+ 	/*
+ 	 * Implementation details of the RDMA core, don't use in drivers:
+ 	 */
+diff --git a/include/trace/events/rdma.h b/include/trace/events/rdma.h
+index aa19afc..d5e5fa7a 100644
+--- a/include/trace/events/rdma.h
++++ b/include/trace/events/rdma.h
+@@ -127,3 +127,92 @@
+ 
+ #define rdma_show_cm_event(x) \
+ 		__print_symbolic(x, RDMA_CM_EVENT_LIST)
++
++/*
++ * enum ib_poll_context, from include/rdma/ib_verbs.h
++ */
++#define IB_POLL_CTX_LIST			\
++	ib_poll_ctx(DIRECT)			\
++	ib_poll_ctx(SOFTIRQ)			\
++	ib_poll_ctx(WORKQUEUE)			\
++	ib_poll_ctx_end(UNBOUND_WORKQUEUE)
++
++#undef ib_poll_ctx
++#undef ib_poll_ctx_end
++
++#define ib_poll_ctx(x)		TRACE_DEFINE_ENUM(IB_POLL_##x);
++#define ib_poll_ctx_end(x)	TRACE_DEFINE_ENUM(IB_POLL_##x);
++
++IB_POLL_CTX_LIST
++
++#undef ib_poll_ctx
++#undef ib_poll_ctx_end
++
++#define ib_poll_ctx(x)		{ IB_POLL_##x, #x },
++#define ib_poll_ctx_end(x)	{ IB_POLL_##x, #x }
++
++#define rdma_show_ib_poll_ctx(x) \
++		__print_symbolic(x, IB_POLL_CTX_LIST)
++
++/*
++ * enum ib_wc_opcode, from include/rdma/ib_verbs.h
++ */
++#define IB_WC_OPCODE_LIST			\
++	ib_wc_opcode(SEND)			\
++	ib_wc_opcode(RDMA_WRITE)		\
++	ib_wc_opcode(RDMA_READ)			\
++	ib_wc_opcode(COMP_SWAP)			\
++	ib_wc_opcode(FETCH_ADD)			\
++	ib_wc_opcode(LSO)			\
++	ib_wc_opcode(LOCAL_INV)			\
++	ib_wc_opcode(REG_MR)			\
++	ib_wc_opcode(MASKED_COMP_SWAP)		\
++	ib_wc_opcode(MASKED_FETCH_ADD)		\
++	ib_wc_opcode(RECV)			\
++	ib_wc_opcode_end(RECV_RDMA_WITH_IMM)
++
++#undef ib_wc_opcode
++#undef ib_wc_opcode_end
++
++#define ib_wc_opcode(x)		TRACE_DEFINE_ENUM(IB_WC_##x);
++#define ib_wc_opcode_end(x)	TRACE_DEFINE_ENUM(IB_WC_##x);
++
++IB_WC_OPCODE_LIST
++
++#undef ib_wc_opcode
++#undef ib_wc_opcode_end
++
++#define ib_wc_opcode(x)		{ IB_WC_##x, #x },
++#define ib_wc_opcode_end(x)	{ IB_WC_##x, #x }
++
++#define rdma_show_wc_opcode(x) \
++		__print_symbolic(x, IB_WC_OPCODE_LIST)
++
++/*
++ * enum ib_wc_flags, from include/rdma/ib_verbs.h
++ */
++#define IB_WC_FLAGS_LIST			\
++	ib_wc_flags(GRH)			\
++	ib_wc_flags(WITH_IMM)			\
++	ib_wc_flags(WITH_INVALIDATE)		\
++	ib_wc_flags(IP_CSUM_OK)			\
++	ib_wc_flags(WITH_SMAC)			\
++	ib_wc_flags(WITH_VLAN)			\
++	ib_wc_flags_end(WITH_NETWORK_HDR_TYPE)
++
++#undef ib_wc_flags
++#undef ib_wc_flags_end
++
++#define ib_wc_flags(x)		TRACE_DEFINE_ENUM(IB_WC_##x);
++#define ib_wc_flags_end(x)	TRACE_DEFINE_ENUM(IB_WC_##x);
++
++IB_WC_FLAGS_LIST
++
++#undef ib_wc_flags
++#undef ib_wc_flags_end
++
++#define ib_wc_flags(x)		{ IB_WC_##x, #x },
++#define ib_wc_flags_end(x)	{ IB_WC_##x, #x }
++
++#define rdma_show_wc_flags(x) \
++		__print_symbolic(x, IB_WC_FLAGS_LIST)
+diff --git a/include/trace/events/rdma_core.h b/include/trace/events/rdma_core.h
+new file mode 100644
+index 0000000..d5cafe8
+--- /dev/null
++++ b/include/trace/events/rdma_core.h
+@@ -0,0 +1,192 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Trace point definitions for core RDMA functions.
++ *
++ * Author: Chuck Lever <chuck.lever@oracle.com>
++ *
++ * Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
++ */
++
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM rdma_core
++
++#if !defined(_TRACE_RDMA_CORE_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_RDMA_CORE_H
++
++#include <linux/tracepoint.h>
++#include <trace/events/rdma.h>
++#include <rdma/ib_verbs.h>
++
++/**
++ ** Completion Queue events
++ **/
++
++TRACE_EVENT(cq_schedule,
++	TP_PROTO(
++		struct ib_cq *cq
++	),
++
++	TP_ARGS(cq),
++
++	TP_STRUCT__entry(
++		__field(const void *, cq)
++	),
++
++	TP_fast_assign(
++		cq->timestamp = ktime_get();
++		cq->interrupt = true;
++
++		__entry->cq = cq;
++	),
++
++	TP_printk("cq=%p", __entry->cq)
++);
++
++TRACE_EVENT(cq_reschedule,
++	TP_PROTO(
++		struct ib_cq *cq
++	),
++
++	TP_ARGS(cq),
++
++	TP_STRUCT__entry(
++		__field(const void *, cq)
++	),
++
++	TP_fast_assign(
++		cq->timestamp = ktime_get();
++		cq->interrupt = false;
++
++		__entry->cq = cq;
++	),
++
++	TP_printk("cq=%p", __entry->cq)
++);
++
++TRACE_EVENT(cq_process,
++	TP_PROTO(
++		const struct ib_cq *cq
++	),
++
++	TP_ARGS(cq),
++
++	TP_STRUCT__entry(
++		__field(const void *, cq)
++		__field(s64, latency)
++		__field(bool, interrupt)
++	),
++
++	TP_fast_assign(
++		ktime_t latency = ktime_sub(ktime_get(), cq->timestamp);
++
++		__entry->cq = cq;
++		__entry->latency = ktime_to_us(latency);
++		__entry->interrupt = cq->interrupt;
++	),
++
++	TP_printk("cq=%p: wake-up took %lld [us] from %s",
++		__entry->cq, __entry->latency,
++		__entry->interrupt ? "interrupt" : "reschedule"
++	)
++);
++
++TRACE_EVENT(cq_poll,
++	TP_PROTO(
++		const struct ib_cq *cq,
++		int requested,
++		int rc
++	),
++
++	TP_ARGS(cq, requested, rc),
++
++	TP_STRUCT__entry(
++		__field(const void *, cq)
++		__field(int, requested)
++		__field(int, rc)
++	),
++
++	TP_fast_assign(
++		__entry->cq = cq;
++		__entry->requested = requested;
++		__entry->rc = rc;
++	),
++
++	TP_printk("cq=%p: requested %d, returned %d",
++		__entry->cq, __entry->requested, __entry->rc
++	)
++);
++
++TRACE_EVENT(cq_modify,
++	TP_PROTO(
++		const struct ib_cq *cq,
++		u16 comps,
++		u16 usec
++	),
++
++	TP_ARGS(cq, comps, usec),
++
++	TP_STRUCT__entry(
++		__field(const void *, cq)
++		__field(unsigned int, comps)
++		__field(unsigned int, usec)
++	),
++
++	TP_fast_assign(
++		__entry->cq = cq;
++		__entry->comps = comps;
++		__entry->usec = usec;
++	),
++
++	TP_printk("cq=%p: comps=%u usec=%u",
++		__entry->cq, __entry->comps, __entry->usec
++	)
++);
++
++TRACE_EVENT(cq_alloc,
++	TP_PROTO(
++		const struct ib_cq *cq,
++		int comp_vector,
++		enum ib_poll_context poll_ctx
++	),
++
++	TP_ARGS(cq, comp_vector, poll_ctx),
++
++	TP_STRUCT__entry(
++		__field(const void *, cq)
++		__field(int, comp_vector)
++		__field(unsigned long, poll_ctx)
++	),
++
++	TP_fast_assign(
++		__entry->cq = cq;
++		__entry->comp_vector = comp_vector;
++		__entry->poll_ctx = poll_ctx;
++	),
++
++	TP_printk("cq=%p: comp_vector=%d poll_ctx=%s",
++		__entry->cq, __entry->comp_vector,
++		rdma_show_ib_poll_ctx(__entry->poll_ctx)
++	)
++);
++
++TRACE_EVENT(cq_free,
++	TP_PROTO(
++		const struct ib_cq *cq
++	),
++
++	TP_ARGS(cq),
++
++	TP_STRUCT__entry(
++		__field(const void *, cq)
++	),
++
++	TP_fast_assign(
++		__entry->cq = cq;
++	),
++
++	TP_printk("cq=%p", __entry->cq)
++);
++
++#endif /* _TRACE_RDMA_CORE_H */
++
++#include <trace/define_trace.h>
 
