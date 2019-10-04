@@ -2,130 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC22ACC1C5
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 19:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E19CC1CA
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 19:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729542AbfJDReK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Oct 2019 13:34:10 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:45992 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729291AbfJDReK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 13:34:10 -0400
-Received: by mail-qt1-f195.google.com with SMTP id c21so9561822qtj.12
-        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 10:34:10 -0700 (PDT)
+        id S2388187AbfJDRfe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Oct 2019 13:35:34 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:40026 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387948AbfJDRfe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 13:35:34 -0400
+Received: by mail-qk1-f196.google.com with SMTP id y144so6523878qkb.7
+        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 10:35:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=gCPkVAkRLNwFkUE2gPgITBllCCV8rirv9ieAAsqDBxY=;
-        b=KCIQy2T+sEGTICgxb/5NyIl7gFjPonnVoVR3A9qN4orZksVkeVejWXp2qkYsW2VVLH
-         phimcK0W2jeHMkOy97mGoaqlAIh+BFTHU+7faLPuiQm8ghG6Lx8oWmwIrJPh2BFgUQJO
-         R2OIVjCHOuTVD+cixB04xdgOs5zm5sQwD4jBqlq4ThtI/npS9KtotZo/ViQQD7o9UBOg
-         2tCUJp2hHZ1ccGpRQQ11VSsUA6V10W8xbihw/RdidBwU6FQ4L2pPFGt6E9lul66FbHOH
-         ohzThYai6CqB2HWcH0PVMKvGxg7AbKu6jxV6QrflIPZOUcNGuEJvCw1AEY1VpqC5Pcoj
-         V1Hg==
+        bh=EKS9jfBt1Cia3S2tiBMJrQQRBhZeZmZbTpNVcTFJ4GE=;
+        b=IUQyS3HBtwQdXH5V7/7gmonFZeT72tTO0Bz5NkqS9+YfmiELvzJdLkQC+n54tbcejG
+         Q/VUMv5jZz4U8tC5rDp4DbkTvIia2cOUMJdl2eOkAcDHXSR7T5OQErl09NZCnJlpNvsJ
+         /w6S67yawkB85pR8rcfVhAbKMB/10tB62R+I5nKXB8sTf6PuMsN3x5Hf2/prQzoIzPpc
+         FUs3uV0eDBb7yIo70nnFQpnS9zA+Ufx2bPUxWe//ppjV1nwWYkfXfScIWjyV7OiL9puD
+         zQIVkkHGk0z0uwORAmHCFxn3wrr24eNNLjR1/wYb5oI//rPMK4juIc04DM3bUP7OOuSl
+         2KUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gCPkVAkRLNwFkUE2gPgITBllCCV8rirv9ieAAsqDBxY=;
-        b=g9zo85cqjLMeIoSOAESQ20Ngg+f6KsRBVWiqE1XkKpetTtLKM31z9QADls4jQYm74u
-         a9YmUKyotCRbRk1r0Z6/QJ9pgXJrrsn4HEe/Tmp48T66mxW4YrcjcTP1T0q93I+Ghpyd
-         5Yhyfq0kYjlK+EAyYlYc9awdpxUPdH539Zh5Gtw4/vDrjzKU+8cmBbR4P11U5YbDQfuQ
-         Sb/mzUeyfqWtC9YJFnIrN3v6wNyz4ypK7oChoBUwelw+GrypFUsdNIIblyj979z5VI1Y
-         dECFWtASVPNfigjpGP4OhsLaS62RtygsQHK1NfRZDwJunEpyO6C+Mq7uhSQckZ0l7bEC
-         gimg==
-X-Gm-Message-State: APjAAAVEPpYhlRz36ltcoGfLplDhh0IyURqNiOD572Go6G9lbbuPQ9Pl
-        L51YEbfMQB11YT5M5fe9Zg9yNdeHgxQ=
-X-Google-Smtp-Source: APXvYqwK036Z0J+rpofH2O8Ry93OBVj5mpbZJbkC8PUrVQvkFDlYRkr9BybmxHulWZdxF9ffudOgdg==
-X-Received: by 2002:ad4:4a88:: with SMTP id h8mr15240911qvx.145.1570210449598;
-        Fri, 04 Oct 2019 10:34:09 -0700 (PDT)
+        bh=EKS9jfBt1Cia3S2tiBMJrQQRBhZeZmZbTpNVcTFJ4GE=;
+        b=kO/cKZ+deJaBceLtHdNVgeicTcr8AeeJW4x5kiHw3txOJ3x2M/j3AIhz3liBKhpCV0
+         eG5iD7RBppwfKtJ1xtPOZM80A+zMHR1jt6CUa3qYCRodGlDxZ9hsLzHkri+9gnAbOqlf
+         WhnScI/spa4V+Kg6KQyZFe9ikahjYTvjrn2/lnwJ5B6UvVUD5jBEW0ceDObkg900e3Gh
+         Ivg4Wow9gqWJAIsg8a33eWhszc2PkroXh9gGZHohdHAI6RAAG7PPvzK3yUbKK3u/UuUm
+         l9XHIpb47t2G7mFKAowQ6kLlSyrwDN4q5yx6yBH3aytCGoBBdC6k+x5l1JZfTvZ8OzQs
+         essA==
+X-Gm-Message-State: APjAAAXY435JYyNvS0g8Om6gqCSSCyaKIyGBs/1b0+5FTtWuK4WSj5b3
+        L6PwC456F70WjmaOX5L0KLUBLKaDgw0=
+X-Google-Smtp-Source: APXvYqyUHgGgLQtkmEjeBx3OKLRlWVEqXdrGJfabu+5Q7XZfPaR7EwIneEZwHA6XXKUkBaFqRF6Uow==
+X-Received: by 2002:a37:5f03:: with SMTP id t3mr11532792qkb.130.1570210533036;
+        Fri, 04 Oct 2019 10:35:33 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id v13sm2665909qtp.61.2019.10.04.10.34.08
+        by smtp.gmail.com with ESMTPSA id g8sm4529053qta.67.2019.10.04.10.35.32
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 04 Oct 2019 10:34:08 -0700 (PDT)
+        Fri, 04 Oct 2019 10:35:32 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iGRSy-0005aD-Es; Fri, 04 Oct 2019 14:34:08 -0300
-Date:   Fri, 4 Oct 2019 14:34:08 -0300
+        id 1iGRUK-0005d5-0b; Fri, 04 Oct 2019 14:35:32 -0300
+Date:   Fri, 4 Oct 2019 14:35:32 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     Kamal Heib <kamalheib1@gmail.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH for-5.4] RDMA/i40iw: Associate ibdev to netdev before IB
- device registration
-Message-ID: <20191004173408.GB13988@ziepe.ca>
-References: <20190925164524.856-1-shiraz.saleem@intel.com>
- <327441aa-3991-b55b-aa71-7deff4ad6ed2@gmail.com>
- <9DD61F30A802C4429A01CA4200E302A7B5CD869B@fmsmsx124.amr.corp.intel.com>
+To:     Weihang Li <liweihang@hisilicon.com>
+Cc:     "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH for-next] RDMA/hns: Add UD support for hip08
+Message-ID: <20191004173531.GC13988@ziepe.ca>
+References: <1567155056-38660-1-git-send-email-liweihang@hisilicon.com>
+ <cff5e5f3-8eac-4456-0b4e-5d5bb9c9b393@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7B5CD869B@fmsmsx124.amr.corp.intel.com>
+In-Reply-To: <cff5e5f3-8eac-4456-0b4e-5d5bb9c9b393@hisilicon.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 04, 2019 at 04:00:13PM +0000, Saleem, Shiraz wrote:
-> > Subject: Re: [PATCH for-5.4] RDMA/i40iw: Associate ibdev to netdev before IB
-> > device registration
+On Fri, Oct 04, 2019 at 10:13:00AM +0800, Weihang Li wrote:
+> > diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+> > index ba81768..5374cd0 100644
+> > +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+> > @@ -377,6 +377,10 @@ static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
+> >  		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp->sq.wqe_cnt *
+> >  							(hr_qp->sq.max_gs - 2));
+> >  
+> > +	if (hr_qp->ibqp.qp_type == IB_QPT_UD)
+> > +		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp->sq.wqe_cnt *
+> > +						       hr_qp->sq.max_gs);
+> > +
+> >  	if ((hr_qp->sq.max_gs > 2) && (hr_dev->pci_dev->revision == 0x20)) {
+> >  		if (hr_qp->sge.sge_cnt > hr_dev->caps.max_extend_sg) {
+> >  			dev_err(hr_dev->dev,
+> > @@ -1005,6 +1009,7 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
+> >  	int ret;
+> >  
+> >  	switch (init_attr->qp_type) {
+> > +	case IB_QPT_UD:
+> >  	case IB_QPT_RC: {
+> >  		hr_qp = kzalloc(sizeof(*hr_qp), GFP_KERNEL);
+> >  		if (!hr_qp)
 > > 
-> > 
-> > 
-> > On 9/25/19 7:45 PM, Shiraz Saleem wrote:
-> > > From: "Shiraz, Saleem" <shiraz.saleem@intel.com>
-> > >
-> > > i40iw IB device registration fails with ENODEV.
-> > >
-> > > ib_register_device
-> > >  setup_device/setup_port_data
-> > >   i40iw_port_immutable
-> > >    ib_query_port
-> > >      iw_query_port
-> > >       ib_device_get_netdev(ENODEV)
-> > >
-> > > ib_device_get_netdev() does not have a netdev associated with the
-> > > ibdev and thus fails.
-> > > Use ib_device_set_netdev() to associate netdev to ibdev in i40iw
-> > > before IB device registration.
-> > >
-> > > Fixes: 4929116bdf72 ("RDMA/core: Add common iWARP query port")
-> > > Signed-off-by: Shiraz, Saleem <shiraz.saleem@intel.com>
-> > >  drivers/infiniband/hw/i40iw/i40iw_verbs.c | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > >
-> > > diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-> > > b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-> > > index 8056930..cd9ee166 100644
-> > > +++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
-> > > @@ -2773,6 +2773,10 @@ int i40iw_register_rdma_device(struct i40iw_device
-> > *iwdev)
-> > >  		return -ENOMEM;
-> > >  	iwibdev = iwdev->iwibdev;
-> > >  	rdma_set_device_sysfs_group(&iwibdev->ibdev, &i40iw_attr_group);
-> > > +	ret = ib_device_set_netdev(&iwibdev->ibdev, iwdev->netdev, 1);
-> > > +	if (ret)
-> > > +		goto error;
-> > > +
-> > >  	ret = ib_register_device(&iwibdev->ibdev, "i40iw%d");
-> > >  	if (ret)
-> > >  		goto error;
-> > >
-> > 
-> > Thanks!
-> > 
-> > Reviewed-by: Kamal Heib <kamalheib1@gmail.com>
 > 
-> Hi Jason or Doug - This was a regression introduced in 5.4 which
-> breaks i40iw. Can you pick this up for 5.4-rc?
+> Hi Jason & Leon,
+> 
+> Do you have some suggestions on this patch? Could it be applied to for-next?
 
-I was going to complain that this shouldn't have been done without
-also deleting i40iw_find_netdev(), but it seems that is doing something
-else. 
-
-Ok applied to for-rc
+I'm not applying any more hns patches for features until the security
+issue is settled
 
 Jason
