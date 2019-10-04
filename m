@@ -2,101 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D74BECB94A
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 13:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F909CB983
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 13:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730389AbfJDLgd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Oct 2019 07:36:33 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:35307 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727254AbfJDLgd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 07:36:33 -0400
-Received: by mail-pl1-f195.google.com with SMTP id c3so1545589plo.2
-        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 04:36:33 -0700 (PDT)
+        id S1731257AbfJDLvE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Oct 2019 07:51:04 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:45944 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730814AbfJDLvD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 07:51:03 -0400
+Received: by mail-pg1-f196.google.com with SMTP id q7so3606212pgi.12
+        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 04:51:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=nOCYZTp0wlW16jrmBzFl+zhQm0PaZWf4IPrpoghz8Yo=;
-        b=K+HIkB/DaYwobnDZtGi3XYvBspVWPMRJiBUETqqpwYTvQp9tFBZOt4UE5me6R4KH5S
-         Mpx9ZDpyd8o1w0mVzmm8xGfSJnTlB+fk7/XqioTy3S4hbK3Z5kH0ZqyrjIOzsB8/tH4D
-         pfUcTKQjyTZzSqwORuc9ZViuQQAwesVIU9ynZ29agbbAhvnjEeoO4Q3XkX0ZgukyrWyx
-         OlvSrz0HxL/0J8NRos64LcHFpCF7MEyzvjVw1ZWrt38q+v1BvfwltyrXUM8IdBp68K2O
-         qjUllfapLPCmx63lB2GJHG7VgeZVpYLRyL6TEoYakOevapQZBNzNwj6pu5yuCvW2iDrV
-         mrHQ==
+        bh=LDjxN9zYfYwQGavnLYA8WpnuYwjGQxc3ZfqoyY+I8d4=;
+        b=eDZ+LnQEXYZs967EljhFpazUQwxyUnRr8qR/yJ+x3NhXFEjxLwXjpxOsiUBJ78DaKI
+         /UMmcl3MEa8C5DRK+Ei3BqtgIO6FTYRD/5EskT6tIuU4YqyusAUCYOJRZqPQdwu2enYd
+         PIA2NetokHIFO9SSciCIAErYX/HJ9orevIsr117hbKzymnue9yy/3p5cECN/O2PkESTS
+         yGSINmk/SzLffG2biSja81ucIkF79GxNnrTHJs9S6qEgWTECz8xrfr7pAf9FWhNCtYX2
+         ONA1XdL8wy//pherVLPZyMIOkhWw9L6uw7RivR13h9eSRr2ajhUAGKRgu6C5aSLZ53cG
+         R1nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nOCYZTp0wlW16jrmBzFl+zhQm0PaZWf4IPrpoghz8Yo=;
-        b=oJYQfqK5vQIK4IUCRY5h5ETSZ3vN6/KXySNcdKstitanTmc/NFFvmhh7HQ6oeszv7I
-         BtpUp6tjcRXIMWKJqnmwtSSuq87nvnZGLPxgm+D/zZLV/uUAerPYucNrKDzxy5qg4+3l
-         4pxJMP7ILwlMPXp3RV6wJxXuPJ5GhJVt4Pw1qwBHsxLg8DvEQ1NLO6RdBpLjiXSYfT4u
-         ICC6Q/ebB00APXFyu5UUwfUq9wjko3Dk8o2Aijs2OOBqa94OqOjJWxQ9yoomQrRO+ai3
-         WuORDRi4K6ycWGdgjGu+YAPSQ+IKo4o57sAumA3RM6zERA35qxm4X4NeBjg56aZbEADn
-         l/jA==
-X-Gm-Message-State: APjAAAVOmjGarKMYVXupets2xSoqyKHi9z3nb/nQx/3gKVb8zCNtugJo
-        MRYrMCPxFjvTrBiIX8DSXU8h5A==
-X-Google-Smtp-Source: APXvYqycHeOHIdMYTzA5mukhrOH4bcwhg8D6NWJcmxV+oLSJ8CZYEOinQHT3+LzyKtJ5O8kGHo7eRg==
-X-Received: by 2002:a17:902:6b4c:: with SMTP id g12mr15170702plt.80.1570188992416;
-        Fri, 04 Oct 2019 04:36:32 -0700 (PDT)
+        bh=LDjxN9zYfYwQGavnLYA8WpnuYwjGQxc3ZfqoyY+I8d4=;
+        b=THpvNOfQrbMJT1tw5gS/+J+d/kFhVLkXkRJJbfBPgqHDnzgAsAWPmSm7t3i+cFd44f
+         zyUQciUrl8ttoRWNET0ogC223wnriP3XzBL8aPCgoW79w+kThGwLpnjt+ktRL+GbFavN
+         vYemb5Evelu/C+mTT+4XAsTeWG30JyJcdQMox/Y8annJ0873VXFpjPv/KXt17xO5DACu
+         cqfJ2N+gfeFwhM5VRcI2wRh3O1ON9VKPhkrGx+N4lK0htZHODZcpnRjRmGFb4/EGeGpD
+         pMI2NeZEOMMAVS9PizsnYsmpJTSda8HhGbbuMNlkoowwwppGRmel/+g8DnsvDxOutjNv
+         TiZw==
+X-Gm-Message-State: APjAAAWyPP80P2zzgrkmPgZWrxAEF4B11fRShiLONj3H/EWpovb4Jkgb
+        by07GMmTAlJzZ4YKUMPc5AyA0A==
+X-Google-Smtp-Source: APXvYqxWE88uDnUENVAwGnB6kBNSopPGvxoHD74Gl2YC8ZBHYCtxnod+sGwQ8qN4JjQgDDUDo1m3ng==
+X-Received: by 2002:a17:90a:24a8:: with SMTP id i37mr16435220pje.123.1570189861247;
+        Fri, 04 Oct 2019 04:51:01 -0700 (PDT)
 Received: from google.com ([2620:15c:2cd:202:668d:6035:b425:3a3a])
-        by smtp.gmail.com with ESMTPSA id ev20sm5730991pjb.19.2019.10.04.04.36.30
+        by smtp.gmail.com with ESMTPSA id u65sm6097605pfu.104.2019.10.04.04.50.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Oct 2019 04:36:30 -0700 (PDT)
-Date:   Fri, 4 Oct 2019 04:36:28 -0700
+        Fri, 04 Oct 2019 04:50:59 -0700 (PDT)
+Date:   Fri, 4 Oct 2019 04:50:57 -0700
 From:   Michel Lespinasse <walken@google.com>
-To:     "Koenig, Christian" <Christian.Koenig@amd.com>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     akpm@linux-foundation.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
         Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH 03/11] drm/amdgpu: convert amdgpu_vm_it to half closed
+Subject: Re: [PATCH 05/11] IB/hfi1: convert __mmu_int_rb to half closed
  intervals
-Message-ID: <20191004113628.GA260828@google.com>
+Message-ID: <20191004115057.GA2371@google.com>
 References: <20191003201858.11666-1-dave@stgolabs.net>
- <20191003201858.11666-4-dave@stgolabs.net>
- <dc9cc8c4-7275-43be-5bed-91384e3246ae@amd.com>
+ <20191003201858.11666-6-dave@stgolabs.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dc9cc8c4-7275-43be-5bed-91384e3246ae@amd.com>
+In-Reply-To: <20191003201858.11666-6-dave@stgolabs.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 04, 2019 at 06:54:54AM +0000, Koenig, Christian wrote:
-> Am 03.10.19 um 22:18 schrieb Davidlohr Bueso:
-> > The amdgpu_vm interval tree really wants [a, b) intervals,
-> 
-> NAK, we explicitly do need an [a, b[ interval here.
+On Thu, Oct 03, 2019 at 01:18:52PM -0700, Davidlohr Bueso wrote:
+> diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.c b/drivers/infiniband/hw/hfi1/mmu_rb.c
+> index 14d2a90964c3..fb6382b2d44e 100644
+> --- a/drivers/infiniband/hw/hfi1/mmu_rb.c
+> +++ b/drivers/infiniband/hw/hfi1/mmu_rb.c
+> @@ -47,7 +47,7 @@
+>  #include <linux/list.h>
+>  #include <linux/rculist.h>
+>  #include <linux/mmu_notifier.h>
+> -#include <linux/interval_tree_generic.h>
+> +#include <linux/interval_tree_gen.h>
+>  
+>  #include "mmu_rb.h"
+>  #include "trace.h"
+> @@ -89,7 +89,7 @@ static unsigned long mmu_node_start(struct mmu_rb_node *node)
+>  
+>  static unsigned long mmu_node_last(struct mmu_rb_node *node)
+>  {
+> -	return PAGE_ALIGN(node->addr + node->len) - 1;
+> +	return PAGE_ALIGN(node->addr + node->len);
+>  }
 
-Hi Christian,
+May as well rename the function mmu_node_end(). I was worried if it
+was used anywhere else, but it turned out it's only used when defining
+the interval tree.
 
-Just wanted to confirm where you stand on this patch, since I think
-you reconsidered your initial position after first looking at 9/11
-from this series.
+I would also suggest moving this function (as well as mmu_node_first)
+right before its use, rather than just after, which would allow you to
+also remove the function prototype a few lines earlier.
 
-I do not know the amdgpu code well, but I think the changes should be
-fine - in struct amdgpu_bo_va_mapping, the "end" field will hold what
-was previously stored in the "last" field, plus one. The expectation
-is that overflows should not be an issue there, as "end" is explicitly
-declared as an uint64, and as the code was previously computing
-"last + 1" in many places.
+Looks good to me otherwise.
 
-Does that seem workable to you ?
-
-Thanks,
+Reviewed-by: Michel Lespinasse <walken@google.com>
 
 -- 
 Michel "Walken" Lespinasse
