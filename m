@@ -2,138 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA6FCC1BA
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 19:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC22ACC1C5
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 19:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387458AbfJDR2O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Oct 2019 13:28:14 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:34209 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387428AbfJDR2O (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 13:28:14 -0400
-Received: by mail-qt1-f194.google.com with SMTP id 3so9636103qta.1
-        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 10:28:12 -0700 (PDT)
+        id S1729542AbfJDReK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Oct 2019 13:34:10 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:45992 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729291AbfJDReK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 13:34:10 -0400
+Received: by mail-qt1-f195.google.com with SMTP id c21so9561822qtj.12
+        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 10:34:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=FA74ZJSi0TnMlk2JnIE4dyE0xg2hdHkFTTa7DCSkTYs=;
-        b=G2YN7X6yBxKFwxgkP9+HN91dBiRxgSxKrcODCmw3gwN4KRt+IgAbeoCf+As7I9BqY7
-         nHOTZvFm0ShCvqLapPr4K+IcVLxtSm6BVQuEyMu90yqH4vGlijcXhdQ1cSbPVc9nwyd6
-         Ahf58M8Vn/eZZrJsOpV2wKet3k6mjmFkLVRe+SoLqn6QGbLFnXLBzDpgdQYsbAzFZH5h
-         K0yV1ul6Kqs6ltUWOCll69G4rOxrcn/mJ85diqGuJU8gFjDSMPoj4ADiiNP+N6Qt0YMI
-         GJ0Pz2zhbtZOWcZAyIoJ0xyKvEvoZOga4PPmqJINS6J3W156z6BPCiUKWHdnAEXLFPeY
-         6P2Q==
+        bh=gCPkVAkRLNwFkUE2gPgITBllCCV8rirv9ieAAsqDBxY=;
+        b=KCIQy2T+sEGTICgxb/5NyIl7gFjPonnVoVR3A9qN4orZksVkeVejWXp2qkYsW2VVLH
+         phimcK0W2jeHMkOy97mGoaqlAIh+BFTHU+7faLPuiQm8ghG6Lx8oWmwIrJPh2BFgUQJO
+         R2OIVjCHOuTVD+cixB04xdgOs5zm5sQwD4jBqlq4ThtI/npS9KtotZo/ViQQD7o9UBOg
+         2tCUJp2hHZ1ccGpRQQ11VSsUA6V10W8xbihw/RdidBwU6FQ4L2pPFGt6E9lul66FbHOH
+         ohzThYai6CqB2HWcH0PVMKvGxg7AbKu6jxV6QrflIPZOUcNGuEJvCw1AEY1VpqC5Pcoj
+         V1Hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FA74ZJSi0TnMlk2JnIE4dyE0xg2hdHkFTTa7DCSkTYs=;
-        b=B3NH7w3+BdcqeGoiZlfY3bR3wBnq3AsLK4xrGYZzAf5/QuGqWeUM8AxUbEJmb42ilH
-         8yYCcV9ClayZDsYUGV2qKqXdm9ZAUcRz9+9/3qZPh4pJQR9Hoibp/gVEWzHI7vv39oP4
-         I0T14J0n7J8SbqpovmMkZbt/gZ3f6XuJtrwF4kXj0pDUCVLGi8Bk4a7sqarIp+j4Wm4s
-         6O7Pgq1pDE9ztUm5WeuuKNb7ZQwyWBWCXf4+Wngy5/2FKx0pCeZqc/gg3DQvCSJw4QWA
-         kj8weXUh07QeCNrQYTZMHOIj3kYz401QhAu4ejhRVvWtdDB3Wk5SNB3OfOcBdG0Au0QW
-         0YvA==
-X-Gm-Message-State: APjAAAX0kPCBBX6xI7n8f0CRmFFu/BA4kBjZIVMnCj+TyXOonUJbmHRR
-        e2FuauBk4Or3QjrpaKnnx/QWXQ==
-X-Google-Smtp-Source: APXvYqxYWGeO+YEUKOG4kqjENs/qFxWttgxhFxeaIW4bSHvPHpMdTxVPtBjUy29xuehyJn7EAElBGw==
-X-Received: by 2002:a0c:eda2:: with SMTP id h2mr14766766qvr.190.1570210091636;
-        Fri, 04 Oct 2019 10:28:11 -0700 (PDT)
+        bh=gCPkVAkRLNwFkUE2gPgITBllCCV8rirv9ieAAsqDBxY=;
+        b=g9zo85cqjLMeIoSOAESQ20Ngg+f6KsRBVWiqE1XkKpetTtLKM31z9QADls4jQYm74u
+         a9YmUKyotCRbRk1r0Z6/QJ9pgXJrrsn4HEe/Tmp48T66mxW4YrcjcTP1T0q93I+Ghpyd
+         5Yhyfq0kYjlK+EAyYlYc9awdpxUPdH539Zh5Gtw4/vDrjzKU+8cmBbR4P11U5YbDQfuQ
+         Sb/mzUeyfqWtC9YJFnIrN3v6wNyz4ypK7oChoBUwelw+GrypFUsdNIIblyj979z5VI1Y
+         dECFWtASVPNfigjpGP4OhsLaS62RtygsQHK1NfRZDwJunEpyO6C+Mq7uhSQckZ0l7bEC
+         gimg==
+X-Gm-Message-State: APjAAAVEPpYhlRz36ltcoGfLplDhh0IyURqNiOD572Go6G9lbbuPQ9Pl
+        L51YEbfMQB11YT5M5fe9Zg9yNdeHgxQ=
+X-Google-Smtp-Source: APXvYqwK036Z0J+rpofH2O8Ry93OBVj5mpbZJbkC8PUrVQvkFDlYRkr9BybmxHulWZdxF9ffudOgdg==
+X-Received: by 2002:ad4:4a88:: with SMTP id h8mr15240911qvx.145.1570210449598;
+        Fri, 04 Oct 2019 10:34:09 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id h10sm3295235qtk.18.2019.10.04.10.28.10
+        by smtp.gmail.com with ESMTPSA id v13sm2665909qtp.61.2019.10.04.10.34.08
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 04 Oct 2019 10:28:10 -0700 (PDT)
+        Fri, 04 Oct 2019 10:34:08 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iGRNC-0003pP-5d; Fri, 04 Oct 2019 14:28:10 -0300
-Date:   Fri, 4 Oct 2019 14:28:10 -0300
+        id 1iGRSy-0005aD-Es; Fri, 04 Oct 2019 14:34:08 -0300
+Date:   Fri, 4 Oct 2019 14:34:08 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Michal Kalderon <mkalderon@marvell.com>
-Cc:     Ariel Elior <aelior@marvell.com>,
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Cc:     Kamal Heib <kamalheib1@gmail.com>,
         "dledford@redhat.com" <dledford@redhat.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [EXT] Re: [PATCH rdma-next 1/2] RDMA/qedr: Fix synchronization
- methods and memory leaks in qedr
-Message-ID: <20191004172810.GA13988@ziepe.ca>
-References: <20191003120342.16926-1-michal.kalderon@marvell.com>
- <20191003120342.16926-2-michal.kalderon@marvell.com>
- <20191003161633.GA15026@ziepe.ca>
- <MN2PR18MB318226121DAB349647E1903CA19F0@MN2PR18MB3182.namprd18.prod.outlook.com>
- <20191004003609.GC1492@ziepe.ca>
- <MN2PR18MB3182A3BF6C37425F9AA82757A19E0@MN2PR18MB3182.namprd18.prod.outlook.com>
+Subject: Re: [PATCH for-5.4] RDMA/i40iw: Associate ibdev to netdev before IB
+ device registration
+Message-ID: <20191004173408.GB13988@ziepe.ca>
+References: <20190925164524.856-1-shiraz.saleem@intel.com>
+ <327441aa-3991-b55b-aa71-7deff4ad6ed2@gmail.com>
+ <9DD61F30A802C4429A01CA4200E302A7B5CD869B@fmsmsx124.amr.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MN2PR18MB3182A3BF6C37425F9AA82757A19E0@MN2PR18MB3182.namprd18.prod.outlook.com>
+In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7B5CD869B@fmsmsx124.amr.corp.intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 04, 2019 at 05:10:20PM +0000, Michal Kalderon wrote:
-> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> > owner@vger.kernel.org> On Behalf Of Jason Gunthorpe
+On Fri, Oct 04, 2019 at 04:00:13PM +0000, Saleem, Shiraz wrote:
+> > Subject: Re: [PATCH for-5.4] RDMA/i40iw: Associate ibdev to netdev before IB
+> > device registration
 > > 
-> > On Thu, Oct 03, 2019 at 07:33:00PM +0000, Michal Kalderon wrote:
-> > > > From: Jason Gunthorpe <jgg@ziepe.ca>
-> > > > Sent: Thursday, October 3, 2019 7:17 PM On Thu, Oct 03, 2019 at
-> > > > 03:03:41PM +0300, Michal Kalderon wrote:
-> > > >
-> > > > > diff --git a/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-> > > > > b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-> > > > > index 22881d4442b9..ebc6bc25a0e2 100644
-> > > > > +++ b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-> > > > > @@ -79,6 +79,28 @@ qedr_fill_sockaddr6(const struct
-> > > > > qed_iwarp_cm_info
-> > > > *cm_info,
-> > > > >  	}
-> > > > >  }
-> > > > >
-> > > > > +static void qedr_iw_free_qp(struct kref *ref) {
-> > > > > +	struct qedr_qp *qp = container_of(ref, struct qedr_qp, refcnt);
-> > > > > +
-> > > > > +	xa_erase_irq(&qp->dev->qps, qp->qp_id);
-> > > >
-> > > > why is it _irq? Where are we in an irq when using the xa_lock on this
-> > xarray?
-> > > We could be under a spin lock when called from several locations in
-> > > core/iwcm.c
 > > 
-> > spinlock is OK, _irq is only needed if the code needs to mask IRQs because
-> > there is a user of the same lock in an IRQ context, see the documentation.
 > > 
-> > > > > @@ -516,8 +548,10 @@ int qedr_iw_connect(struct iw_cm_id *cm_id,
-> > > > struct iw_cm_conn_param *conn_param)
-> > > > >  		return -ENOMEM;
-> > > > >
-> > > > >  	ep->dev = dev;
-> > > > > +	kref_init(&ep->refcnt);
-> > > > > +
-> > > > > +	kref_get(&qp->refcnt);
-> > > >
-> > > > Here 'qp' comes out of an xa_load, but the QP is still visible in
-> > > > the xarray with a 0 refcount, so this is invalid.
+> > On 9/25/19 7:45 PM, Shiraz Saleem wrote:
+> > > From: "Shiraz, Saleem" <shiraz.saleem@intel.com>
+> > >
+> > > i40iw IB device registration fails with ENODEV.
+> > >
+> > > ib_register_device
+> > >  setup_device/setup_port_data
+> > >   i40iw_port_immutable
+> > >    ib_query_port
+> > >      iw_query_port
+> > >       ib_device_get_netdev(ENODEV)
+> > >
+> > > ib_device_get_netdev() does not have a netdev associated with the
+> > > ibdev and thus fails.
+> > > Use ib_device_set_netdev() to associate netdev to ibdev in i40iw
+> > > before IB device registration.
+> > >
+> > > Fixes: 4929116bdf72 ("RDMA/core: Add common iWARP query port")
+> > > Signed-off-by: Shiraz, Saleem <shiraz.saleem@intel.com>
+> > >  drivers/infiniband/hw/i40iw/i40iw_verbs.c | 4 ++++
+> > >  1 file changed, 4 insertions(+)
+> > >
+> > > diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> > > b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> > > index 8056930..cd9ee166 100644
+> > > +++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> > > @@ -2773,6 +2773,10 @@ int i40iw_register_rdma_device(struct i40iw_device
+> > *iwdev)
+> > >  		return -ENOMEM;
+> > >  	iwibdev = iwdev->iwibdev;
+> > >  	rdma_set_device_sysfs_group(&iwibdev->ibdev, &i40iw_attr_group);
+> > > +	ret = ib_device_set_netdev(&iwibdev->ibdev, iwdev->netdev, 1);
+> > > +	if (ret)
+> > > +		goto error;
+> > > +
+> > >  	ret = ib_register_device(&iwibdev->ibdev, "i40iw%d");
+> > >  	if (ret)
+> > >  		goto error;
+> > >
 > > 
-> > > The core/iwcm takes a refcnt of the QP before calling connect, so it
-> > > can't be with refcnt zero
+> > Thanks!
 > > 
-> > > > Also, the xa_load doesn't have any locking around it, so the entire
-> > > > thing looks wrong to me.
-> > > Since the functions calling it from core/iwcm ( connect / accept )
-> > > take a qp Ref-cnt before the calling there's no risk of the entry
-> > > being deleted while xa_load is called
-> > 
-> > Then why look it up in an xarray at all? If you already have the pointer to get a
-> > refcount then pass the refcounted pointer in and get rid of the sketchy
-> > xarray lookup.
-> > 
-> I don't have the pointer, the core/iwcm has the pointer. 
-> The interface between the core and driver is that the driver gets a qp number from
-> the core/iwcm and needs to get the QP pointer from it's database. All the iWARP drivers
-> are implemented this way, this is also not new to qedr. 
+> > Reviewed-by: Kamal Heib <kamalheib1@gmail.com>
+> 
+> Hi Jason or Doug - This was a regression introduced in 5.4 which
+> breaks i40iw. Can you pick this up for 5.4-rc?
 
-That seems crazy.
+I was going to complain that this shouldn't have been done without
+also deleting i40iw_find_netdev(), but it seems that is doing something
+else. 
+
+Ok applied to for-rc
 
 Jason
