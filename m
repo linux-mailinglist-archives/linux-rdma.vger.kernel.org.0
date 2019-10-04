@@ -2,94 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CF0CC2C3
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 20:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CE9CC2EB
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 20:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbfJDSgh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Oct 2019 14:36:37 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:38923 "EHLO
+        id S1725775AbfJDStQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Oct 2019 14:49:16 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:40975 "EHLO
         mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727647AbfJDSgh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 14:36:37 -0400
-Received: by mail-qk1-f196.google.com with SMTP id 4so6723822qki.6
-        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 11:36:36 -0700 (PDT)
+        with ESMTP id S1725730AbfJDStP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 14:49:15 -0400
+Received: by mail-qk1-f196.google.com with SMTP id p10so6727966qkg.8
+        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 11:49:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=vKnDsCYGZlDvFRjAn5od7fTwS4TxXouKqRSBFtho6T0=;
-        b=a2UoJ+oYicEjda6s+QqqKvqsW5B8EZip8I4mP0O2ThGvMvX2zXZQMth3/dKBMdpszG
-         f/Mp30OxuJsk8gcYbpQUFeaJm2qiO/CXfeEKW5Xrw22apkcZNA9eVdmlHaEIrXVAdB1E
-         YCySRy7wIOnAa+GHav42ySmpIdXjtqr9n4WcucYwld8y61YPzGReQqgZB3j7OMd0FOPz
-         wWwhgMYo5TbHua9LvxR9M+jRaSxY+R3p2Iu3Z8Jqgt/gimkaB5z/HQao7YsOzIeykwvy
-         Vo/hV86M+82wg2I+tkQP4kg7qpRP+RhxwIukKBPJAfRJZEw53n0RDyhlbagEzzz/ZYdT
-         v4PQ==
+        bh=pb24NDt8PAjy3SoKTAvSXbXneneDVCO9Xx3fs5kMOeY=;
+        b=oWXqHADv9RUzh3dwQwHW3BEDZRfuef/JDL6F/JxUoW33N95ZLpMIG/13IDOz9/JzX7
+         7WYH9AN2ZDH+nRQ1vsRxnXpZD8UTsmRsoMkMaJVQY+NDPzAZK1vWjDsvyBMpa0DIoUCs
+         q5gThucwhOoVbGuQIFgPyO6xhkYAh3BWREjaai+9msP19vDsk8F33430U8yyi0/Ql0Ci
+         hLhXznoWdSyU6Az9NIBNW4e7CacxkGL8EwC7efWNASYsBTmGMNkait2AbhUpO8zUdZgX
+         EAe/DdKKrcUfrGki/tdF4Kjd1cNiE7trWR3PCNHhm5DrbMScjIYksXZOzUMsGk0/niIk
+         j80w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vKnDsCYGZlDvFRjAn5od7fTwS4TxXouKqRSBFtho6T0=;
-        b=Tl0PaF0xfYNkYJtgIedLv6I7NWi16vg0VTcCGNuASvopPXWp2sZkNNG68S4sfBbSzR
-         5tWPZdEqUqeAR4PGPHmr+RBRlKLdVy3Ud5cJr0/yUAb7UKYdRVmhjQDBSm6Rv41xJWQH
-         l+7uBAQcbLwy1M18Flv1PVaBEb9WUNaV+9Lt3+kheILYEv6emUB/VXaSSzsG1p+M1tRt
-         6UQYpNWBI0/1IxzGmWiQ5rxBRut96e+OnhVbai5bMTwWa86pb2rW6wu4Z+RMcFHDHJwA
-         OCiM1+lFIXME4bBKZjTAh0lplHZGWNoXit2Ud96w4NFOKeAvggnezKhVdVksAUInwwbx
-         gbBQ==
-X-Gm-Message-State: APjAAAV8e2gGJKCOIM0eg1G8OApsO901v1AXREau4BoLoFTSJhF/CGWo
-        kGqjMTt+ISWN980b6eK08ao/Pw==
-X-Google-Smtp-Source: APXvYqwyZCndnhxGxQFyHSPqAfLaz0mJ+iurtFy4mteioyOQwXsqXr/u8EhGvtEOV3F9ze2/xeLDZQ==
-X-Received: by 2002:ae9:ef53:: with SMTP id d80mr11828532qkg.33.1570214196315;
-        Fri, 04 Oct 2019 11:36:36 -0700 (PDT)
+        bh=pb24NDt8PAjy3SoKTAvSXbXneneDVCO9Xx3fs5kMOeY=;
+        b=Qt5HJDULY4WrQ5wujwXrNjzToQc7UqPWcm4aX6mwgf6IiFAWfj4toWIvffG1/s/yFV
+         W5bg1Ofqn6E6f85OpQZZ2cS1qRUp64vtfyvtiWCSEIXKK+frzgXyXIKQx7NQT4sUlH8a
+         ZW1NxO0YBOo8VPFJuTPMF8oAksObnpmeg4tCrDZHnM4PA4b1otw6i3mWk7qM0a/Rl/e+
+         cERbqnqQ+DMzX5P+nN6uIbbhbW4Y1xJqcVEHYiUMRO+vvpn3vJPRpkMYF+HOKgFT9g94
+         tgrfIZf0C7PIe6RZ5LDlRUkeCCoXjHoveGd3c8GfJ4McsfbNbVxGp/qb91ScdcU55qRQ
+         nlEA==
+X-Gm-Message-State: APjAAAUrJ0AUiBxYBwXL05x2R3bcHL2Pt1MHGjdBT3iT76D4BKEtFrSn
+        j1RtrxEL3R1lqMMK5Fcjfo/6xw==
+X-Google-Smtp-Source: APXvYqxnz4oPJ76FyiMvNsuAxPI8x5Eu6I4wJ7mUwa6xIUZlqDpKiguapeO8hJzj4KWcxFeQ90zoIQ==
+X-Received: by 2002:a37:6555:: with SMTP id z82mr9161490qkb.198.1570214954731;
+        Fri, 04 Oct 2019 11:49:14 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id e7sm3044490qtb.94.2019.10.04.11.36.35
+        by smtp.gmail.com with ESMTPSA id m19sm3302430qke.22.2019.10.04.11.49.14
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 04 Oct 2019 11:36:35 -0700 (PDT)
+        Fri, 04 Oct 2019 11:49:14 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iGSRP-0001CN-7V; Fri, 04 Oct 2019 15:36:35 -0300
-Date:   Fri, 4 Oct 2019 15:36:35 -0300
+        id 1iGSdd-0001jp-TZ; Fri, 04 Oct 2019 15:49:13 -0300
+Date:   Fri, 4 Oct 2019 15:49:13 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 00/15] RDMA patches for kernel v5.5
-Message-ID: <20191004183635.GA4533@ziepe.ca>
-References: <20190930231707.48259-1-bvanassche@acm.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Erez Alfasi <ereza@mellanox.com>,
+        Parav Pandit <parav@mellanox.com>
+Subject: Re: [PATCH rdma-next 0/4] Unrelated code cleanups
+Message-ID: <20191004184913.GA6622@ziepe.ca>
+References: <20191002122517.17721-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190930231707.48259-1-bvanassche@acm.org>
+In-Reply-To: <20191002122517.17721-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 30, 2019 at 04:16:52PM -0700, Bart Van Assche wrote:
-> Hi Jason,
+On Wed, Oct 02, 2019 at 03:25:13PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 > 
-> This patch series includes my pending RDMA kernel patches. Please consider
-> these for inclusion in Linux kernel v5.5.
+> Hi,
 > 
-> Thanks,
+> Various code cleanups.
 > 
-> Bart.
->
-> Bart Van Assche (15):
->
->   RDMA/siw: Make node GUIDs valid EUI-64 identifiers
->   RDMA/srp: Remove two casts
->   RDMA/srp: Honor the max_send_sge device attribute
->   RDMA/srp: Make route resolving error messages more informative
->   RDMA/srpt: Fix handling of SR-IOV and iWARP ports
->   RDMA/srpt: Fix handling of iWARP logins
->   RDMA/srpt: Improve a debug message
->   RDMA/srpt: Rework the approach for closing an RDMA channel
->   RDMA/srpt: Rework the code that waits until an RDMA port is no longer
->     in use
->   RDMA/srpt: Make the code for handling port identities more systematic
->   RDMA/srpt: Postpone HCA removal until after configfs directory removal
+> Thanks
+> 
+> Erez Alfasi (2):
+>   IB/mlx5: Remove unnecessary return statement
+>   IB/mlx5: Remove unnecessary else statement
+> 
+> Leon Romanovsky (1):
+>   RDMA/mlx5: Group boolean parameters to take less space
+> 
+> Parav Pandit (1):
+>   IB/cm: Use container_of() instead of typecast
 
-These are applied to for-next, thanks
+Applied to for-next, thanks
 
 Jason
