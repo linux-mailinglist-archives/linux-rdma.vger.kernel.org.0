@@ -2,143 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E642CB33A
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 04:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8965CB357
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 04:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731462AbfJDCNK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Oct 2019 22:13:10 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3199 "EHLO huawei.com"
+        id S1732381AbfJDCta (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Oct 2019 22:49:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38858 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728360AbfJDCNK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Oct 2019 22:13:10 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id F255CB4DF9EDF005E74C;
-        Fri,  4 Oct 2019 10:13:07 +0800 (CST)
-Received: from [127.0.0.1] (10.40.168.149) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Fri, 4 Oct 2019
- 10:13:00 +0800
-Subject: Re: [PATCH for-next] RDMA/hns: Add UD support for hip08
-From:   Weihang Li <liweihang@hisilicon.com>
-To:     "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-References: <1567155056-38660-1-git-send-email-liweihang@hisilicon.com>
-Message-ID: <cff5e5f3-8eac-4456-0b4e-5d5bb9c9b393@hisilicon.com>
-Date:   Fri, 4 Oct 2019 10:13:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1730566AbfJDCta (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 3 Oct 2019 22:49:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 0DAE6AFB2;
+        Fri,  4 Oct 2019 02:49:27 +0000 (UTC)
+Date:   Thu, 3 Oct 2019 19:48:19 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     akpm@linux-foundation.org, walken@google.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH -next 00/11] lib/interval-tree: move to half closed
+ intervals
+Message-ID: <20191004024819.ux2osxcpobgnel6j@linux-p48b>
+Mail-Followup-To: Jason Gunthorpe <jgg@ziepe.ca>, akpm@linux-foundation.org,
+        walken@google.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org
+References: <20191003201858.11666-1-dave@stgolabs.net>
+ <20191004002609.GB1492@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <1567155056-38660-1-git-send-email-liweihang@hisilicon.com>
-Content-Type: text/plain; charset="gbk"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.168.149]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20191004002609.GB1492@ziepe.ca>
+User-Agent: NeoMutt/20180716
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2019/8/30 16:50, Weihang Li wrote:
-> From: Lijun Ou <oulijun@huawei.com>
-> 
-> This patch aims to let hip08 support communication of Unreliable
-> Datagram.
-> 
-> Signed-off-by: Lijun Ou <oulijun@huawei.com>
-> Signed-off-by: Weihang Li <liweihang@hisilicon.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 17 ++++++++++-------
->  drivers/infiniband/hw/hns/hns_roce_qp.c    |  5 +++++
->  2 files changed, 15 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> index 206dfdb..e27d864a 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> @@ -296,7 +296,7 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
->  		tmp_len = 0;
->  
->  		/* Corresponding to the QP type, wqe process separately */
-> -		if (ibqp->qp_type == IB_QPT_GSI) {
-> +		if (ibqp->qp_type == IB_QPT_GSI || ibqp->qp_type == IB_QPT_UD) {
->  			ud_sq_wqe = wqe;
->  			memset(ud_sq_wqe, 0, sizeof(*ud_sq_wqe));
->  
-> @@ -420,8 +420,7 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
->  			roce_set_field(ud_sq_wqe->byte_48,
->  				       V2_UD_SEND_WQE_BYTE_48_SGID_INDX_M,
->  				       V2_UD_SEND_WQE_BYTE_48_SGID_INDX_S,
-> -				       hns_get_gid_index(hr_dev, qp->phy_port,
-> -							 ah->av.gid_index));
-> +				       ah->av.gid_index);
->  
->  			memcpy(&ud_sq_wqe->dgid[0], &ah->av.dgid[0],
->  			       GID_LEN_V2);
-> @@ -3130,7 +3129,8 @@ static void set_qpc_wqe_cnt(struct hns_roce_qp *hr_qp,
->  			    struct hns_roce_v2_qp_context *context,
->  			    struct hns_roce_v2_qp_context *qpc_mask)
->  {
-> -	if (hr_qp->ibqp.qp_type == IB_QPT_GSI)
-> +	if (hr_qp->ibqp.qp_type == IB_QPT_GSI ||
-> +	    hr_qp->ibqp.qp_type == IB_QPT_UD)
->  		roce_set_field(context->byte_4_sqpn_tst,
->  			       V2_QPC_BYTE_4_SGE_SHIFT_M,
->  			       V2_QPC_BYTE_4_SGE_SHIFT_S,
-> @@ -3650,8 +3650,9 @@ static int modify_qp_init_to_rtr(struct ib_qp *ibqp,
->  	roce_set_field(context->byte_20_smac_sgid_idx,
->  		       V2_QPC_BYTE_20_SGE_HOP_NUM_M,
->  		       V2_QPC_BYTE_20_SGE_HOP_NUM_S,
-> -		       ((ibqp->qp_type == IB_QPT_GSI) ||
-> -		       hr_qp->sq.max_gs > HNS_ROCE_V2_UC_RC_SGE_NUM_IN_WQE) ?
-> +		       ((ibqp->qp_type == IB_QPT_GSI ||
-> +			ibqp->qp_type == IB_QPT_UD) ||
-> +			hr_qp->sq.max_gs > HNS_ROCE_V2_UC_RC_SGE_NUM_IN_WQE) ?
->  		       hr_dev->caps.wqe_sge_hop_num : 0);
->  	roce_set_field(qpc_mask->byte_20_smac_sgid_idx,
->  		       V2_QPC_BYTE_20_SGE_HOP_NUM_M,
-> @@ -4564,7 +4565,9 @@ static int hns_roce_v2_destroy_qp_common(struct hns_roce_dev *hr_dev,
->  	struct ib_device *ibdev = &hr_dev->ib_dev;
->  	int ret;
->  
-> -	if (hr_qp->ibqp.qp_type == IB_QPT_RC && hr_qp->state != IB_QPS_RESET) {
-> +	if ((hr_qp->ibqp.qp_type == IB_QPT_RC ||
-> +	     hr_qp->ibqp.qp_type == IB_QPT_UD) &&
-> +	    hr_qp->state != IB_QPS_RESET) {
->  		/* Modify qp to reset before destroying qp */
->  		ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, NULL, 0,
->  					    hr_qp->state, IB_QPS_RESET);
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> index ba81768..5374cd0 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> @@ -377,6 +377,10 @@ static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
->  		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp->sq.wqe_cnt *
->  							(hr_qp->sq.max_gs - 2));
->  
-> +	if (hr_qp->ibqp.qp_type == IB_QPT_UD)
-> +		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp->sq.wqe_cnt *
-> +						       hr_qp->sq.max_gs);
-> +
->  	if ((hr_qp->sq.max_gs > 2) && (hr_dev->pci_dev->revision == 0x20)) {
->  		if (hr_qp->sge.sge_cnt > hr_dev->caps.max_extend_sg) {
->  			dev_err(hr_dev->dev,
-> @@ -1005,6 +1009,7 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
->  	int ret;
->  
->  	switch (init_attr->qp_type) {
-> +	case IB_QPT_UD:
->  	case IB_QPT_RC: {
->  		hr_qp = kzalloc(sizeof(*hr_qp), GFP_KERNEL);
->  		if (!hr_qp)
-> 
+On Thu, 03 Oct 2019, Jason Gunthorpe wrote:
 
-Hi Jason & Leon,
+>On Thu, Oct 03, 2019 at 01:18:47PM -0700, Davidlohr Bueso wrote:
+>> Hi,
+>>
+>> It has been discussed[1,2] that almost all users of interval trees would better
+>> be served if the intervals were actually not [a,b], but instead [a, b). This
+>> series attempts to convert all callers by way of transitioning from using
+>> "interval_tree_generic.h" to "interval_tree_gen.h". Once all users are converted,
+>> we remove the former.
+>>
+>> Patch 1: adds a call that will make patch 8 easier to review by introducing stab
+>>          queries for the vma interval tree.
+>>
+>> Patch 2: adds the new interval_tree_gen.h which is the same as the old one but
+>>          uses [a,b) intervals.
+>>
+>> Patch 3-9: converts, in baby steps (as much as possible), each interval tree to
+>> 	   the new [a,b) one. It is done this way also to maintain bisectability.
+>> 	   Most conversions are pretty straightforward, however, there are some
+>> 	   creative ways in which some callers use the interval 'end' when going
+>> 	   through intersecting ranges within a tree. Ie: patch 3, 6 and 9.
+>>
+>> Patch 10: deletes the interval_tree_generic.h header; there are no longer any users.
+>>
+>> Patch 11: finally simplifies x86 pat tree to use the new interval tree machinery.
+>>
+>> This has been lightly tested, and certainly not on driver paths that do non
+>> trivial conversions. Also needs more eyeballs as conversions can be easily
+>> missed (even when I've tried mitigating this by renaming the endpoint from 'last'
+>> to 'end' in each corresponding structure).
+>>
+>> Because this touches a lot of drivers, I'm Cc'ing the whole thing to a couple of
+>> relevant lists (mm, dri, rdma); sorry if you consider this spam.
+>>
+>> Applies on top of today's linux-next tree. Please consider for v5.5.
+>>
+>> Thanks!
+>>
+>> [1] https://lore.kernel.org/lkml/CANN689HVDJXKEwB80yPAVwvRwnV4HfiucQVAho=dupKM_iKozw@mail.gmail.com/
+>
+>Hurm, this is not entirely accurate. Most users do actually want
+>overlapping and multiple ranges. I just studied this extensively:
+>
+>radeon_mn actually wants overlapping but seems to mis-understand the
+>interval_tree API and actively tries hard to prevent overlapping at
+>great cost and complexity. I have a patch to delete all of this and
+>just be overlapping.
+>
+>amdgpu_mn copied the wrongness from radeon_mn
+>
+>All the DRM drivers are basically the same here, tracking userspace
+>controlled VAs, so overlapping is essential
+>
+>hfi1/mmu_rb definitely needs overlapping as it is dealing with
+>userspace VA ranges under control of userspace. As do the other
+>infiniband users.
+>
+>vhost probably doesn't overlap in the normal case, but again userspace
+>could trigger overlap in some pathalogical case.
+>
+>The [start,last] allows the interval to cover up to ULONG_MAX. I don't
+>know if this is needed however. Many users are using userspace VAs
+>here. Is there any kernel configuration where ULONG_MAX is a valid
+>userspace pointer? Ie 32 bit 4G userspace? I don't know.
+>
+>Many users seemed to have bugs where they were taking a userspace
+>controlled start + length and converting them into a start/end for
+>interval tree without overflow protection (woops)
+>
+>Also I have a series already cooking to delete several of these
+>interval tree users, which will terribly conflict with this :\
 
-Do you have some suggestions on this patch? Could it be applied to for-next?
+I have no problem redoing after your changes; if it's worth it
+at all.
+
+>
+>Is it really necessary to make such churn for such a tiny API change?
+
+I agree, and was kind of expecting this. In general the diffstat ended
+up being larger than I initially hoped for. Maybe after your removals
+I can look into this again.
 
 Thanks,
-Weihang
-
-
+Davidlohr
