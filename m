@@ -2,106 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F909CB983
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 13:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88CECBA02
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 14:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731257AbfJDLvE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Oct 2019 07:51:04 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:45944 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730814AbfJDLvD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 07:51:03 -0400
-Received: by mail-pg1-f196.google.com with SMTP id q7so3606212pgi.12
-        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 04:51:02 -0700 (PDT)
+        id S1729988AbfJDMK0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Oct 2019 08:10:26 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:36513 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726393AbfJDMK0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 08:10:26 -0400
+Received: by mail-pf1-f194.google.com with SMTP id y22so3806820pfr.3
+        for <linux-rdma@vger.kernel.org>; Fri, 04 Oct 2019 05:10:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=LDjxN9zYfYwQGavnLYA8WpnuYwjGQxc3ZfqoyY+I8d4=;
-        b=eDZ+LnQEXYZs967EljhFpazUQwxyUnRr8qR/yJ+x3NhXFEjxLwXjpxOsiUBJ78DaKI
-         /UMmcl3MEa8C5DRK+Ei3BqtgIO6FTYRD/5EskT6tIuU4YqyusAUCYOJRZqPQdwu2enYd
-         PIA2NetokHIFO9SSciCIAErYX/HJ9orevIsr117hbKzymnue9yy/3p5cECN/O2PkESTS
-         yGSINmk/SzLffG2biSja81ucIkF79GxNnrTHJs9S6qEgWTECz8xrfr7pAf9FWhNCtYX2
-         ONA1XdL8wy//pherVLPZyMIOkhWw9L6uw7RivR13h9eSRr2ajhUAGKRgu6C5aSLZ53cG
-         R1nw==
+        bh=MONUV9NdASv4E/jp3PLYS1e/RNBJIzL7dOLdp6xf/uE=;
+        b=iTtWj+7gGfp6+mPyUyPcmc1lJtdr2PP7Q3oDWr3dme3JCqXTvoY85yKuWWZDqr+5m/
+         +JsDgV07ki6BMM0hU84es+Tsw9fZruvIti3HHf1SF5iMPnonCoT+VpH54rRIFPHHNVmP
+         7DslUK3E2axvE6afKEKJW1kJNT76E15ro9GIccWL4y+3c9/AAyvVo/KJypKH8SRfU1WS
+         n5QWt42Atech8fFN7rbGUdWkMprEE3+0ugj2RMeBAK9W1tUJt2muS7tnFG2UFyeVsfyf
+         Qoi6nT5m3WKRNmvn2e0mSyjBD/qHKKVmQMalcby/BF/ww13W9PJX10Y3d9xIyoMIa2cD
+         AEwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LDjxN9zYfYwQGavnLYA8WpnuYwjGQxc3ZfqoyY+I8d4=;
-        b=THpvNOfQrbMJT1tw5gS/+J+d/kFhVLkXkRJJbfBPgqHDnzgAsAWPmSm7t3i+cFd44f
-         zyUQciUrl8ttoRWNET0ogC223wnriP3XzBL8aPCgoW79w+kThGwLpnjt+ktRL+GbFavN
-         vYemb5Evelu/C+mTT+4XAsTeWG30JyJcdQMox/Y8annJ0873VXFpjPv/KXt17xO5DACu
-         cqfJ2N+gfeFwhM5VRcI2wRh3O1ON9VKPhkrGx+N4lK0htZHODZcpnRjRmGFb4/EGeGpD
-         pMI2NeZEOMMAVS9PizsnYsmpJTSda8HhGbbuMNlkoowwwppGRmel/+g8DnsvDxOutjNv
-         TiZw==
-X-Gm-Message-State: APjAAAWyPP80P2zzgrkmPgZWrxAEF4B11fRShiLONj3H/EWpovb4Jkgb
-        by07GMmTAlJzZ4YKUMPc5AyA0A==
-X-Google-Smtp-Source: APXvYqxWE88uDnUENVAwGnB6kBNSopPGvxoHD74Gl2YC8ZBHYCtxnod+sGwQ8qN4JjQgDDUDo1m3ng==
-X-Received: by 2002:a17:90a:24a8:: with SMTP id i37mr16435220pje.123.1570189861247;
-        Fri, 04 Oct 2019 04:51:01 -0700 (PDT)
+        bh=MONUV9NdASv4E/jp3PLYS1e/RNBJIzL7dOLdp6xf/uE=;
+        b=fy/34sf+uMV0zdCooU+3NRmCX3GzcsW4ha6RrFu3HMKMdm2TDmES0qVlVcvWJk2OCx
+         28LULgVmTTkk6bz0Go1kZTEgNT93JfmmNxcX8stGDcdBVQmR6qzcUj3umaAZCnTGjkml
+         axrYj0ce2gJ62gywIYymYIUry2fpbsRugYzai6PXR87XuXdTYj/0+52slu9CSf9co+6K
+         Aw238XyX9eynmyUjtW1cSKA/lIF9cCN4fLmjvu/9W+yUw/jbf3nlrdBa93cDyk5ciMuQ
+         G4XaBAeWGB8dVFCpSUszZhKSP60Ov4C29r4MkZWeiTp9NNzVgPaxzhEGbTNnMPgmN5iD
+         XD4Q==
+X-Gm-Message-State: APjAAAXzlh6tYvvJdsLmZDYZnxJrxIYxsjtoY34vRflS8Ashqo9hWYKz
+        7S5g7KftVAq8WfuVRhU/KSJVxg==
+X-Google-Smtp-Source: APXvYqzNdLXB1er8H0c7Slwc2yYDYsLUGzWgSjwx36DZdnfkq/ZCVMhUzLC1HtyaiP0lxIoZTRVcSQ==
+X-Received: by 2002:a63:2154:: with SMTP id s20mr14813025pgm.379.1570191024502;
+        Fri, 04 Oct 2019 05:10:24 -0700 (PDT)
 Received: from google.com ([2620:15c:2cd:202:668d:6035:b425:3a3a])
-        by smtp.gmail.com with ESMTPSA id u65sm6097605pfu.104.2019.10.04.04.50.59
+        by smtp.gmail.com with ESMTPSA id x72sm6836120pfc.89.2019.10.04.05.10.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Oct 2019 04:50:59 -0700 (PDT)
-Date:   Fri, 4 Oct 2019 04:50:57 -0700
+        Fri, 04 Oct 2019 05:10:23 -0700 (PDT)
+Date:   Fri, 4 Oct 2019 05:10:21 -0700
 From:   Michel Lespinasse <walken@google.com>
 To:     Davidlohr Bueso <dave@stgolabs.net>
 Cc:     akpm@linux-foundation.org, peterz@infradead.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
+        Michael@google.com, Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
         Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH 05/11] IB/hfi1: convert __mmu_int_rb to half closed
- intervals
-Message-ID: <20191004115057.GA2371@google.com>
+Subject: Re: [PATCH 07/11] vhost: convert vhost_umem_interval_tree to half
+ closed intervals
+Message-ID: <20191004121021.GA4541@google.com>
 References: <20191003201858.11666-1-dave@stgolabs.net>
- <20191003201858.11666-6-dave@stgolabs.net>
+ <20191003201858.11666-8-dave@stgolabs.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191003201858.11666-6-dave@stgolabs.net>
+In-Reply-To: <20191003201858.11666-8-dave@stgolabs.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 03, 2019 at 01:18:52PM -0700, Davidlohr Bueso wrote:
-> diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.c b/drivers/infiniband/hw/hfi1/mmu_rb.c
-> index 14d2a90964c3..fb6382b2d44e 100644
-> --- a/drivers/infiniband/hw/hfi1/mmu_rb.c
-> +++ b/drivers/infiniband/hw/hfi1/mmu_rb.c
-> @@ -47,7 +47,7 @@
->  #include <linux/list.h>
->  #include <linux/rculist.h>
->  #include <linux/mmu_notifier.h>
-> -#include <linux/interval_tree_generic.h>
-> +#include <linux/interval_tree_gen.h>
->  
->  #include "mmu_rb.h"
->  #include "trace.h"
-> @@ -89,7 +89,7 @@ static unsigned long mmu_node_start(struct mmu_rb_node *node)
->  
->  static unsigned long mmu_node_last(struct mmu_rb_node *node)
+On Thu, Oct 03, 2019 at 01:18:54PM -0700, Davidlohr Bueso wrote:
+> @@ -1320,15 +1320,14 @@ static bool iotlb_access_ok(struct vhost_virtqueue *vq,
 >  {
-> -	return PAGE_ALIGN(node->addr + node->len) - 1;
-> +	return PAGE_ALIGN(node->addr + node->len);
->  }
+>  	const struct vhost_umem_node *node;
+>  	struct vhost_umem *umem = vq->iotlb;
+> -	u64 s = 0, size, orig_addr = addr, last = addr + len - 1;
+> +	u64 s = 0, size, orig_addr = addr, last = addr + len;
 
-May as well rename the function mmu_node_end(). I was worried if it
-was used anywhere else, but it turned out it's only used when defining
-the interval tree.
+maybe "end" or "end_addr" instead of "last".
 
-I would also suggest moving this function (as well as mmu_node_first)
-right before its use, rather than just after, which would allow you to
-also remove the function prototype a few lines earlier.
+> diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
+> index e9ed2722b633..bb36cb9ed5ec 100644
+> --- a/drivers/vhost/vhost.h
+> +++ b/drivers/vhost/vhost.h
+> @@ -53,13 +53,13 @@ struct vhost_log {
+>  };
+>  
+>  #define START(node) ((node)->start)
+> -#define LAST(node) ((node)->last)
+> +#define END(node) ((node)->end)
+>  
+>  struct vhost_umem_node {
+>  	struct rb_node rb;
+>  	struct list_head link;
+>  	__u64 start;
+> -	__u64 last;
+> +	__u64 end;
+>  	__u64 size;
+>  	__u64 userspace_addr;
+>  	__u32 perm;
+
+Preferably also rename __subtree_last to __subtree_end
 
 Looks good to me otherwise.
-
-Reviewed-by: Michel Lespinasse <walken@google.com>
 
 -- 
 Michel "Walken" Lespinasse
