@@ -2,126 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8965CB357
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 04:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461D3CB40C
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 06:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732381AbfJDCta (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Oct 2019 22:49:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38858 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730566AbfJDCta (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 3 Oct 2019 22:49:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 0DAE6AFB2;
-        Fri,  4 Oct 2019 02:49:27 +0000 (UTC)
-Date:   Thu, 3 Oct 2019 19:48:19 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     akpm@linux-foundation.org, walken@google.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH -next 00/11] lib/interval-tree: move to half closed
- intervals
-Message-ID: <20191004024819.ux2osxcpobgnel6j@linux-p48b>
-Mail-Followup-To: Jason Gunthorpe <jgg@ziepe.ca>, akpm@linux-foundation.org,
-        walken@google.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org
-References: <20191003201858.11666-1-dave@stgolabs.net>
- <20191004002609.GB1492@ziepe.ca>
+        id S2387916AbfJDE53 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Oct 2019 00:57:29 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:28819 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387872AbfJDE53 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Oct 2019 00:57:29 -0400
+Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x944vL1q032002;
+        Thu, 3 Oct 2019 21:57:22 -0700
+Date:   Fri, 4 Oct 2019 10:27:20 +0530
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Nirranjan Kirubaharan <nirranjan@chelsio.com>
+Subject: Re: Re: Re: Re: [PATCH for-next] RDMA/siw: fix SQ/RQ drain logic to
+ support ib_drain_qp
+Message-ID: <20191004045718.GA29290@chelsio.com>
+References: <20191003105112.GA20688@chelsio.com>
+ <20191001174502.GB31728@chelsio.com>
+ <20191001095224.GA5448@chelsio.com>
+ <20190927221545.5944-1-krishna2@chelsio.com>
+ <OFFA5BB431.AD96EB3F-ON00258485.0054053B-00258485.0055D206@notes.na.collabserv.com>
+ <OF8E75AE75.02E5B443-ON00258486.00578402-00258486.00579818@notes.na.collabserv.com>
+ <OFB95A41D1.52157F37-ON00258487.003EF8B5-00258487.003EF8F6@notes.na.collabserv.com>
+ <OF2EDF2738.25C83B56-ON00258488.003E6ADE-00258488.004D3019@notes.na.collabserv.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191004002609.GB1492@ziepe.ca>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <OF2EDF2738.25C83B56-ON00258488.003E6ADE-00258488.004D3019@notes.na.collabserv.com>
+User-Agent: Mutt/1.9.3 (20180206.02d571c2)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 03 Oct 2019, Jason Gunthorpe wrote:
+On Thursday, October 10/03/19, 2019 at 14:03:05 +0000, Bernard Metzler wrote:
+> There are other reasons why the generic
+> __ib_drain_sq() may fail. A CQ overflow is one
+> such candidate. Failures are not handled by the ULP,
+> since calling a void function.
+The function description of ib_drain_qp() says:
+ * The caller must:
+ *
+ * ensure there is room in the CQ(s), SQ, and RQ for drain work requests
+ * and completions.
+ *
+ * allocate the CQs using ib_alloc_cq().
+ *
+ * ensure that there are no other contexts that are posting WRs
+ * concurrently.
+ * Otherwise the drain is not guaranteed.
+ */
 
->On Thu, Oct 03, 2019 at 01:18:47PM -0700, Davidlohr Bueso wrote:
->> Hi,
->>
->> It has been discussed[1,2] that almost all users of interval trees would better
->> be served if the intervals were actually not [a,b], but instead [a, b). This
->> series attempts to convert all callers by way of transitioning from using
->> "interval_tree_generic.h" to "interval_tree_gen.h". Once all users are converted,
->> we remove the former.
->>
->> Patch 1: adds a call that will make patch 8 easier to review by introducing stab
->>          queries for the vma interval tree.
->>
->> Patch 2: adds the new interval_tree_gen.h which is the same as the old one but
->>          uses [a,b) intervals.
->>
->> Patch 3-9: converts, in baby steps (as much as possible), each interval tree to
->> 	   the new [a,b) one. It is done this way also to maintain bisectability.
->> 	   Most conversions are pretty straightforward, however, there are some
->> 	   creative ways in which some callers use the interval 'end' when going
->> 	   through intersecting ranges within a tree. Ie: patch 3, 6 and 9.
->>
->> Patch 10: deletes the interval_tree_generic.h header; there are no longer any users.
->>
->> Patch 11: finally simplifies x86 pat tree to use the new interval tree machinery.
->>
->> This has been lightly tested, and certainly not on driver paths that do non
->> trivial conversions. Also needs more eyeballs as conversions can be easily
->> missed (even when I've tried mitigating this by renaming the endpoint from 'last'
->> to 'end' in each corresponding structure).
->>
->> Because this touches a lot of drivers, I'm Cc'ing the whole thing to a couple of
->> relevant lists (mm, dri, rdma); sorry if you consider this spam.
->>
->> Applies on top of today's linux-next tree. Please consider for v5.5.
->>
->> Thanks!
->>
->> [1] https://lore.kernel.org/lkml/CANN689HVDJXKEwB80yPAVwvRwnV4HfiucQVAho=dupKM_iKozw@mail.gmail.com/
->
->Hurm, this is not entirely accurate. Most users do actually want
->overlapping and multiple ranges. I just studied this extensively:
->
->radeon_mn actually wants overlapping but seems to mis-understand the
->interval_tree API and actively tries hard to prevent overlapping at
->great cost and complexity. I have a patch to delete all of this and
->just be overlapping.
->
->amdgpu_mn copied the wrongness from radeon_mn
->
->All the DRM drivers are basically the same here, tracking userspace
->controlled VAs, so overlapping is essential
->
->hfi1/mmu_rb definitely needs overlapping as it is dealing with
->userspace VA ranges under control of userspace. As do the other
->infiniband users.
->
->vhost probably doesn't overlap in the normal case, but again userspace
->could trigger overlap in some pathalogical case.
->
->The [start,last] allows the interval to cover up to ULONG_MAX. I don't
->know if this is needed however. Many users are using userspace VAs
->here. Is there any kernel configuration where ULONG_MAX is a valid
->userspace pointer? Ie 32 bit 4G userspace? I don't know.
->
->Many users seemed to have bugs where they were taking a userspace
->controlled start + length and converting them into a start/end for
->interval tree without overflow protection (woops)
->
->Also I have a series already cooking to delete several of these
->interval tree users, which will terribly conflict with this :\
 
-I have no problem redoing after your changes; if it's worth it
-at all.
-
->
->Is it really necessary to make such churn for such a tiny API change?
-
-I agree, and was kind of expecting this. In general the diffstat ended
-up being larger than I initially hoped for. Maybe after your removals
-I can look into this again.
+So, it looks like ULP has to check for available CQs before calling
+ib_drain_xx(). 
+> 
+> At the other hand, we know that if we have reached
+> ERROR state, the QP will never escape back to become
+> full functional; ERROR is the QP's final state.
+> 
+> So we could do an extra check if we cannot get
+> the state lock - if we are already in ERROR. And
+> if yes, complete immediately there as well.
+> 
+> I can change the patch accordingly. Makes sense?
+Yes, I think addressing this would make the fix complete.
 
 Thanks,
-Davidlohr
+Krishna.
