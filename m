@@ -2,65 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9476CC46E
-	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 22:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C19BFCC493
+	for <lists+linux-rdma@lfdr.de>; Fri,  4 Oct 2019 23:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725826AbfJDUv3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Oct 2019 16:51:29 -0400
-Received: from mga02.intel.com ([134.134.136.20]:4996 "EHLO mga02.intel.com"
+        id S1730131AbfJDVJN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 4 Oct 2019 17:09:13 -0400
+Received: from mga17.intel.com ([192.55.52.151]:48665 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbfJDUv3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 4 Oct 2019 16:51:29 -0400
+        id S1729727AbfJDVJN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 4 Oct 2019 17:09:13 -0400
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Oct 2019 13:51:28 -0700
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Oct 2019 14:09:13 -0700
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.67,257,1566889200"; 
-   d="scan'208";a="186370662"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.204.65]) ([10.254.204.65])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 04 Oct 2019 13:51:27 -0700
-Subject: Re: [PATCH for-rc 2/2] IB/hfi1: Use a common pad buffer for 9B and
- 16B packets
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Kaike Wan <kaike.wan@intel.com>
-References: <20191004203739.26542.57060.stgit@awfm-01.aw.intel.com>
- <20191004204934.26838.13099.stgit@awfm-01.aw.intel.com>
-Message-ID: <21590759-2a49-737f-1edf-0778a9586d6c@intel.com>
-Date:   Fri, 4 Oct 2019 16:51:25 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <20191004204934.26838.13099.stgit@awfm-01.aw.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+   d="scan'208";a="191699362"
+Received: from orsmsx104.amr.corp.intel.com ([10.22.225.131])
+  by fmsmga008.fm.intel.com with ESMTP; 04 Oct 2019 14:09:13 -0700
+Received: from orsmsx154.amr.corp.intel.com (10.22.226.12) by
+ ORSMSX104.amr.corp.intel.com (10.22.225.131) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 4 Oct 2019 14:09:12 -0700
+Received: from orsmsx160.amr.corp.intel.com ([169.254.13.209]) by
+ ORSMSX154.amr.corp.intel.com ([169.254.11.180]) with mapi id 14.03.0439.000;
+ Fri, 4 Oct 2019 14:09:12 -0700
+From:   "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Laura Abbott <labbott@redhat.com>, Greg KH <greg@kroah.com>,
+        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
+        "Hiatt, Don" <don.hiatt@intel.com>
+Subject: RE: [bug report] IB/hfi1: Eliminate allocation while atomic
+Thread-Topic: [bug report] IB/hfi1: Eliminate allocation while atomic
+Thread-Index: AQHVeRsrXvx5iv7efkOZGUpXiG3n5adJRvyAgAG0jsA=
+Date:   Fri, 4 Oct 2019 21:09:12 +0000
+Message-ID: <32E1700B9017364D9B60AED9960492BC72911CA9@ORSMSX160.amr.corp.intel.com>
+References: <20191002121520.GA11064@mwanda>
+ <3452a307-5f87-4587-b289-63ea8bc594b5@intel.com>
+In-Reply-To: <3452a307-5f87-4587-b289-63ea8bc594b5@intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiY2U4YzM3NWYtNDhjYi00MTAwLWE1ZWYtNzgzM2I2MTllZDRjIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiMmNGM3RMK3lcL0VuZll3ZE5JWll1eCtGTkk0bjdJekZRdHRvSmZHbTIwTUVrcWYwREdiRjloU3Z4ek5zVFN0Y0cifQ==
+x-ctpclassification: CTP_NT
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.22.254.138]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/4/2019 4:49 PM, Dennis Dalessandro wrote:
-> From: Mike Marciniszyn <mike.marciniszyn@intel.com>
-> 
-> There is no reason for a different pad buffer for the two
-> packet types.
-> 
-> Expand the current buffer allocation to allow for both
-> packet types.
-> 
-> Fixes: f8195f3b14a0 ("IB/hfi1: Eliminate allocation while atomic")
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Reviewed-by: Kaike Wan <kaike.wan@intel.com>
-> Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-> Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-> Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-
-Should also have had:
-
-Cc: <stable@vger.kernel.org> # 4.14+
-
--Denny
+PiANCj4gVGhhbmtzIERhbiwgd2UgYWN0dWFsbHkgZ290IGEgc2VwYXJhdGUgb3V0LW9mLWJhbmQg
+ZW1haWwgYWJvdXQgdGhpcy4gV2UNCj4gYXJlIHdvcmtpbmcgdXAgYSBmaXggcmlnaHQgbm93Lg0K
+PiANCj4gLURlbm55DQoNCkRhbiwNCg0KVGhpcyBqdXN0IGhpdCB0aGUgbGlzdCBpbiBodHRwczov
+L21hcmMuaW5mby8/bD1saW51eC1yZG1hJm09MTU3MDIyMjE3OTI3MTQzJnc9Mi4NCg0KQ2FuIHlv
+dSB0YWtlIGEgbG9vaz8NCg0KWW91IG1lbnRpb24gYSBjaGFuZ2UgaW4gZG1hX21hcF9zaW5nbGUo
+KS4NCg0KRG8geW91IGhhdmUgYW4gZGV0YWlscyBvbiB0aGF0Pw0KDQpNaWtlDQo=
