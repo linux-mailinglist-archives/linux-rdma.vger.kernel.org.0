@@ -2,141 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB475CC6FA
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Oct 2019 02:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2DCCC81D
+	for <lists+linux-rdma@lfdr.de>; Sat,  5 Oct 2019 07:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729439AbfJEAqS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Oct 2019 20:46:18 -0400
-Received: from mga18.intel.com ([134.134.136.126]:56782 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727647AbfJEAqS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 4 Oct 2019 20:46:18 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Oct 2019 17:46:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,258,1566889200"; 
-   d="asc'?scan'208";a="222324030"
-Received: from sranders-mobl2.amr.corp.intel.com ([10.251.5.129])
-  by fmsmga002.fm.intel.com with ESMTP; 04 Oct 2019 17:46:16 -0700
-Message-ID: <cd1712dc03721a01ac786ec878701a1823027434.camel@intel.com>
-Subject: Re: [RFC 04/20] RDMA/irdma: Add driver framework definitions
-From:   Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Date:   Fri, 04 Oct 2019 17:46:15 -0700
-In-Reply-To: <20191004234519.GF13974@mellanox.com>
-References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
-         <20190926164519.10471-5-jeffrey.t.kirsher@intel.com>
-         <20190926173046.GB14368@unreal>
-         <04e8a95837ba8f6a0b1d001dff2e905f5c6311b4.camel@intel.com>
-         <20191004234519.GF13974@mellanox.com>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-31JrZf1yK5lAQWNSDlMW"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1726446AbfJEFVV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 5 Oct 2019 01:21:21 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:53380 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725796AbfJEFVV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 5 Oct 2019 01:21:21 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x955IiOg104082;
+        Sat, 5 Oct 2019 05:21:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=YO7N6zrJN20qxv51KNIJ1RDPqPhAFHU5PJDenYif458=;
+ b=HfUfxymk0qniVqylT8ZduKZATKDp8DkvqFhsAQHKu9bA7p5biSwG3VMt32YTsFJyMYgM
+ /V7VaotUpFN4bGtldpm015CQ8v9MyPTQ2cTP3NltlStStqnVBZAePm84ZKO/44PtoCVo
+ 28d49wrPjzWBTi4B/o8r7ZWGtWt//eVQ99HnHyS+5F2EOgMkXZ6AL4pIy5xc+NZnoFbI
+ 7BO4iOP1BpuMXvLRaPMFNBJNfZdoXxqhC3XKaqeLk7Ggww9uBeKScKVTfDyqQDt3MuIN
+ YJMjLbHXfpx76GmnTD8rFMyEONBn+CrhoZzoJvrYALznIBIq9EvuNrBCs1hJ4tooHdeV sQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2vektr06va-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 05 Oct 2019 05:21:05 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x955I01H078674;
+        Sat, 5 Oct 2019 05:21:04 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2vek0an87q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 05 Oct 2019 05:21:04 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x955L2Ng007497;
+        Sat, 5 Oct 2019 05:21:02 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 04 Oct 2019 22:21:02 -0700
+Date:   Sat, 5 Oct 2019 08:20:55 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Laura Abbott <labbott@redhat.com>, Greg KH <greg@kroah.com>,
+        "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
+        "Hiatt, Don" <don.hiatt@intel.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [bug report] IB/hfi1: Eliminate allocation while atomic
+Message-ID: <20191005052055.GB21515@kadam>
+References: <20191002121520.GA11064@mwanda>
+ <3452a307-5f87-4587-b289-63ea8bc594b5@intel.com>
+ <32E1700B9017364D9B60AED9960492BC72911CA9@ORSMSX160.amr.corp.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <32E1700B9017364D9B60AED9960492BC72911CA9@ORSMSX160.amr.corp.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9400 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=921
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910050047
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9400 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910050048
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Fri, Oct 04, 2019 at 09:09:12PM +0000, Marciniszyn, Mike wrote:
+> > 
+> > Thanks Dan, we actually got a separate out-of-band email about this. We
+> > are working up a fix right now.
+> > 
+> > -Denny
+> 
+> Dan,
+> 
+> This just hit the list in https://marc.info/?l=linux-rdma&m=157022217927143&w=2.
+> 
+> Can you take a look?
+> 
+> You mention a change in dma_map_single().
+> 
+> Do you have an details on that?
 
---=-31JrZf1yK5lAQWNSDlMW
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Kees posted a patch for that after I emailed you.
 
-On Fri, 2019-10-04 at 23:45 +0000, Jason Gunthorpe wrote:
-> On Fri, Oct 04, 2019 at 01:12:22PM -0700, Jeff Kirsher wrote:
->=20
-> > > > +	if (ldev->version.major !=3D I40E_CLIENT_VERSION_MAJOR ||
-> > > > +	    ldev->version.minor !=3D I40E_CLIENT_VERSION_MINOR) {
-> > > > +		pr_err("version mismatch:\n");
-> > > > +		pr_err("expected major ver %d, caller specified
-> > > > major
-> > > > ver %d\n",
-> > > > +		       I40E_CLIENT_VERSION_MAJOR, ldev-
-> > > > >version.major);
-> > > > +		pr_err("expected minor ver %d, caller specified
-> > > > minor
-> > > > ver %d\n",
-> > > > +		       I40E_CLIENT_VERSION_MINOR, ldev-
-> > > > >version.minor);
-> > > > +		return -EINVAL;
-> > > > +	}
-> > >=20
-> > > This is can't be in upstream code, we don't support out-of-tree
-> > > modules,
-> > > everything else will have proper versions.
-> >=20
-> > Who is the "we" in this context?
->=20
-> Upstream sensibility - if we start doing stuff like this then we will
-> end up doing it everwhere.
+https://lkml.org/lkml/2019/10/2/866
 
-I see you cut out the part of my response about Linux distributions
-disagreeing with this stance.
-
->=20
-> > you support out-of-tree drivers, they do exist and this code would
-> > ensure that if a "out-of-tree" driver is loaded, the driver will do a
-> > sanity check to ensure the RDMA driver will work.
->=20
-> I don't see how this is any different from any of the other myriad of
-> problems out of tree modules face.=20
->=20
-> Someone providing out of tree modules has to provide enough parts of
-> their driver so that it only consumes the stable ABI from the distro
-> kernel.
->=20
-> Pretty normal stuff really.
-
-Your right, if the dependency was reversed and the out-of-tree (OOT) driver
-was dependent upon the RDMA driver, but in this case it is not.  The LAN
-driver does not "need" the RDMA driver to work.  So the RDMA driver should
-at least check that the LAN driver loaded has the required version to work.
-
-This line of thinking, "marries" the in-kernel RDMA driver with the in-
-kernel LAN driver(s) so the end users and Linux distro's can not choose to
-upgrade or use any other driver than what comes with the kernel.  I totally
-agree that any out-of-tree (OOT) driver needs to make sure they have all
-kernel ABI's figured out for whatever kernel they are being installed on.=
-=20
-But what is the problem with the in-kernel RDMA driver to do it's own
-checks to ensure the driver it is dependent upon meets its minimum
-requirements?
-
-Similar checks are done in the Intel LAN driver to ensure the firmware is
-of a certain level, which is no different than what is being done here.
-
---=-31JrZf1yK5lAQWNSDlMW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEiTyZWz+nnTrOJ1LZ5W/vlVpL7c4FAl2X59cACgkQ5W/vlVpL
-7c7wsg//V/WTg5IWRBsx9NMkSbE7kaky1PNfZY/YeqAJRaFRHn+1akabNgDs9FUM
-Tvs82OrU8NPwIynEAY/RYo7nH6MFEJ3xedAZcAkOyv1aUzCfBJ2YIcr59iQ3ZhEV
-jlW9PyGg2qD9YblEAZ8D/xLSLMY32N9qDHH7mAlJOKVLrTMrwnB0DB63VsoBaVz0
-9b9roAdDDJUEiOABxjiv5SHlCdodfxSFQbtmDd5z23DUH7rctuKd1yIzrajeHLvh
-SVirOl7r5L+hRjE2evjK87gW/jhGKthf0z2tG8z3Isgh6GsmeIbkZ97QqaSDPVuT
-jNfhVCI8BIGKqFkkqemsNMc7KdxN7nFDfXAMN3WWKR6mctVEDpVK3lhL5JOGB21h
-+ikeo2V69kOaCzAJXEOTHoRCkdAYSfaMU+jrjmhZIAlh2lg7DEcHXrYrhBYJRmSB
-7/lQpDk3NbGhvai4D0QZxohpm6QN2QEMjz/AOH6g/dIwlLu8FpU9qU8cnPD8Wejw
-YdgAYFI6UBf9jP3M/xGBIIXGSmTSFZgqVYFiYZfcXOltCURpvZjCjsnMXPBAg0Sl
-kn8BYI/kJ+o1TZTwU/sdNmQWHoW+RyLU9RaT9l9wiF2A9lSeMoyUWB3jfCiqVKnd
-98B/5jBXhELgY4vbLPs5Mn99TvDd7FjP3adeaX+lBPny69TNzCY=
-=M1uO
------END PGP SIGNATURE-----
-
---=-31JrZf1yK5lAQWNSDlMW--
+regards,
+dan carpenter
 
