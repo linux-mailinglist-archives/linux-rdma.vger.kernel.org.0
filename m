@@ -2,109 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B7ACC85D
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Oct 2019 08:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BD0CC86A
+	for <lists+linux-rdma@lfdr.de>; Sat,  5 Oct 2019 08:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725976AbfJEGMS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 5 Oct 2019 02:12:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48418 "EHLO mail.kernel.org"
+        id S1725862AbfJEG2K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 5 Oct 2019 02:28:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725862AbfJEGMS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 5 Oct 2019 02:12:18 -0400
+        id S1725796AbfJEG2K (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 5 Oct 2019 02:28:10 -0400
 Received: from localhost (unknown [77.137.89.37])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20FEF2133F;
-        Sat,  5 Oct 2019 06:12:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E0211222BE;
+        Sat,  5 Oct 2019 06:28:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570255937;
-        bh=erD3DfWkZOzxmjP8CSruNZOprvNRMOuOtplsGA1nLsw=;
+        s=default; t=1570256889;
+        bh=Fv7oDguoTz5ZkqeXjMvNuINSSxU92ogY5oisfQOHrCc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CzqptSJFMP3UAcnyqIqf5XjLlMPZOV/G/QKsK8chyGzxV9fC87J6jiaxzIDZF4ED2
-         2EWdaRMjiHXtY1gerFcDWWH5gIfIeCki+8X//+GJ0qfjhUlirltz1+LogzAA9e+hTH
-         FUJFrEQVxfXmVUPlVlKgJ8aGk9xelYWI2lGMGtvI=
-Date:   Sat, 5 Oct 2019 09:12:12 +0300
+        b=SQ/2TB40NQN5vm5zu9AD2kzoIN+sQQAogAxEdplietHBZoUfF2+sSKlCMfTkfkKfx
+         uBCF1EGOamM454FiGgYPXULLxCSvxveP2j+JYE9mYZh4VpGSH5TfZILbFwPi9+/x2V
+         QFV9xxmQSCBp6SWul2Yj2O33l8V1GRry6Fa8Rck0=
+Date:   Sat, 5 Oct 2019 09:28:05 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Jonathan Toppins <jtoppins@redhat.com>,
-        Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-core] kernel-boot: Tighten check if device is virtual
-Message-ID: <20191005061212.GO5855@unreal>
-References: <20190926094253.31145-1-leon@kernel.org>
- <20190926123427.GD19509@mellanox.com>
- <9c582ae3-8214-f9b8-d403-cf443b70284e@redhat.com>
- <20190928165416.GL14368@unreal>
- <20191003163127.GE26151@mellanox.com>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: Re: [RFC 04/20] RDMA/irdma: Add driver framework definitions
+Message-ID: <20191005062805.GP5855@unreal>
+References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
+ <20190926164519.10471-5-jeffrey.t.kirsher@intel.com>
+ <20190926173046.GB14368@unreal>
+ <04e8a95837ba8f6a0b1d001dff2e905f5c6311b4.camel@intel.com>
+ <20191004234519.GF13974@mellanox.com>
+ <cd1712dc03721a01ac786ec878701a1823027434.camel@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191003163127.GE26151@mellanox.com>
+In-Reply-To: <cd1712dc03721a01ac786ec878701a1823027434.camel@intel.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 03, 2019 at 04:31:32PM +0000, Jason Gunthorpe wrote:
-> On Sat, Sep 28, 2019 at 07:54:16PM +0300, Leon Romanovsky wrote:
-> > On Thu, Sep 26, 2019 at 01:58:38PM -0400, Jonathan Toppins wrote:
-> > > On 09/26/2019 08:34 AM, Jason Gunthorpe wrote:
-> > > > On Thu, Sep 26, 2019 at 12:42:53PM +0300, Leon Romanovsky wrote:
-> > > >> From: Leon Romanovsky <leonro@mellanox.com>
-> > > >>
-> > > >> Virtual devices like SIW or RXE don't set FW version because
-> > > >> they don't have one, use that fact to rely on having empty
-> > > >> fw_ver file to sense such virtual devices.
+On Fri, Oct 04, 2019 at 05:46:15PM -0700, Jeff Kirsher wrote:
+> On Fri, 2019-10-04 at 23:45 +0000, Jason Gunthorpe wrote:
+> > On Fri, Oct 04, 2019 at 01:12:22PM -0700, Jeff Kirsher wrote:
+> >
+> > > > > +	if (ldev->version.major != I40E_CLIENT_VERSION_MAJOR ||
+> > > > > +	    ldev->version.minor != I40E_CLIENT_VERSION_MINOR) {
+> > > > > +		pr_err("version mismatch:\n");
+> > > > > +		pr_err("expected major ver %d, caller specified
+> > > > > major
+> > > > > ver %d\n",
+> > > > > +		       I40E_CLIENT_VERSION_MAJOR, ldev-
+> > > > > >version.major);
+> > > > > +		pr_err("expected minor ver %d, caller specified
+> > > > > minor
+> > > > > ver %d\n",
+> > > > > +		       I40E_CLIENT_VERSION_MINOR, ldev-
+> > > > > >version.minor);
+> > > > > +		return -EINVAL;
+> > > > > +	}
 > > > >
-> > > > Have you checked that every physical device does set fw version?
-> > > >
-> > > > Seems hacky
+> > > > This is can't be in upstream code, we don't support out-of-tree
+> > > > modules,
+> > > > everything else will have proper versions.
 > > >
-> > > agreed, how are tuntap devices handled, is there a similar handling that
-> > > can be applied here?
+> > > Who is the "we" in this context?
 > >
-> > Unfortunately, we can't do the same, RDMA doesn't have notion of stacked devices.
-> >
-> > 1.
-> > TUN devices are initialized with ARPHRD_NONE type.
-> > https://elixir.bootlin.com/linux/latest/source/drivers/net/tun.c#L1396
-> >
-> > It causes for systemd-udev to skip their rename.
-> > https://github.com/systemd/systemd/blob/master/src/udev/udev-builtin-net_id.c#L781
-> >
-> > 2.
-> > TAP devices are skipped due to the fact that iflink != ifindex on such devices.
-> > https://github.com/systemd/systemd/blob/master/src/udev/udev-builtin-net_id.c#L810
-> >
-> > So, yes hacky, but the solution is tailored to RDMA subsystem where ALL
-> > devices have FW and we can ensure that ALL future devices will report any
-> > sort of string through fw_ver file.
+> > Upstream sensibility - if we start doing stuff like this then we will
+> > end up doing it everwhere.
 >
-> It still seems really hacky, why not add some device flag or something
-> instead? Is this better because it works with old kernels?
+> I see you cut out the part of my response about Linux distributions
+> disagreeing with this stance.
+>
+> >
+> > > you support out-of-tree drivers, they do exist and this code would
+> > > ensure that if a "out-of-tree" driver is loaded, the driver will do a
+> > > sanity check to ensure the RDMA driver will work.
+> >
+> > I don't see how this is any different from any of the other myriad of
+> > problems out of tree modules face.
+> >
+> > Someone providing out of tree modules has to provide enough parts of
+> > their driver so that it only consumes the stable ABI from the distro
+> > kernel.
+> >
+> > Pretty normal stuff really.
+>
+> Your right, if the dependency was reversed and the out-of-tree (OOT) driver
+> was dependent upon the RDMA driver, but in this case it is not.  The LAN
+> driver does not "need" the RDMA driver to work.  So the RDMA driver should
+> at least check that the LAN driver loaded has the required version to work.
 
-Yes, I'm trying to find a way to do such discovery without changing
-kernel, because we have only two virtual devices and I don't expect
-to see any new ones in forth coming future.
+Not in upstream code, there is an expectation that kernel and modules are aligned.
 
-However, this patch is wrong because there are at least two drivers (hns
-and EFA) didn't implement .get_dev_fw_str() and they will have empty
-fw_ver.
+>
+> This line of thinking, "marries" the in-kernel RDMA driver with the in-
+> kernel LAN driver(s) so the end users and Linux distro's can not choose to
+> upgrade or use any other driver than what comes with the kernel.  I totally
+> agree that any out-of-tree (OOT) driver needs to make sure they have all
+> kernel ABI's figured out for whatever kernel they are being installed on.
+> But what is the problem with the in-kernel RDMA driver to do it's own
+> checks to ensure the driver it is dependent upon meets its minimum
+> requirements?
 
- 805 void ib_get_device_fw_str(struct ib_device *dev, char *str)
- 806 {
- 807         if (dev->ops.get_dev_fw_str)
- 808                 dev->ops.get_dev_fw_str(dev, str);
- 809         else
- 810                 str[0] = '\0';
- 811 }
- 812 EXPORT_SYMBOL(ib_get_device_fw_str);
+It is packaging problem to ensure that those minimum requirements are in
+place.
 
-Special flag seems too much for me, what about writing special string to
-fw_ver to indicate virtual device? For example "virtual".
+>
+> Similar checks are done in the Intel LAN driver to ensure the firmware is
+> of a certain level, which is no different than what is being done here.
+
+It doesn't say that it is correct way of doing things. FW is not part
+of the kernel hence needs to be checked. Modules are different from
+FW because they are part of the distributed kernel.
 
 Thanks
-
->
-> Jason
