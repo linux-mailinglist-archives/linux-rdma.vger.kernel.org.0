@@ -2,117 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 818DBCC883
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Oct 2019 09:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95378CC8C5
+	for <lists+linux-rdma@lfdr.de>; Sat,  5 Oct 2019 10:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbfJEHIc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 5 Oct 2019 03:08:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55254 "EHLO mail.kernel.org"
+        id S1727647AbfJEI0e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 5 Oct 2019 04:26:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725796AbfJEHIc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 5 Oct 2019 03:08:32 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1727453AbfJEI0e (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 5 Oct 2019 04:26:34 -0400
+Received: from localhost (unknown [77.137.89.37])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 264D92084D;
-        Sat,  5 Oct 2019 07:08:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31BFB222BE;
+        Sat,  5 Oct 2019 08:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570259310;
-        bh=KgBJS2KS4Us8rDmrlnbSAKH/YQf5U12is/W8MDpz1q4=;
+        s=default; t=1570263993;
+        bh=c1pFtaKSaMkKUk402FoBrJ7gWzx05BUrV4oYi88W9DA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TDTwdRoGRTpnBukfIAfQrR42wgmzAFEfoad6pWqbRhsfxexHpgDvb9VsudzkgTwQ9
-         jJDbPH83yiM8k+8FDV1/TFiDrnkh+L9WHvPV3ZdszoRzKb2JOF96d0moB5L9erGdFv
-         Ae2LXNuOXd8hW3c7YOiUf+DlDDfT2THnvqvw5ENk=
-Date:   Sat, 5 Oct 2019 09:08:27 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: Re: [RFC 04/20] RDMA/irdma: Add driver framework definitions
-Message-ID: <20191005070827.GA929891@kroah.com>
-References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
- <20190926164519.10471-5-jeffrey.t.kirsher@intel.com>
- <20190926173046.GB14368@unreal>
- <04e8a95837ba8f6a0b1d001dff2e905f5c6311b4.camel@intel.com>
- <20191004234519.GF13974@mellanox.com>
- <cd1712dc03721a01ac786ec878701a1823027434.camel@intel.com>
- <20191005062805.GP5855@unreal>
+        b=gojT4u6JgVNMKOAz2mRWOZF4w92UkWYFCTZiSaHlzl/tbTgHdwO66b46CW50/3ESN
+         2t+H4J6jXV8ZEHM8t6d9NeVC4q0epSS2Hzp8beKggZkAA1NtnkgK1HXQpsMonWHWyb
+         zs/+WC5+wsNyPSdc6LUnlrJ045Sg05D5vSdOfB88=
+Date:   Sat, 5 Oct 2019 11:26:29 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     linux-rdma@vger.kernel.org, bharat@chelsio.com, jgg@ziepe.ca,
+        nirranjan@chelsio.com, krishna2@chelsio.com, bvanassche@acm.org
+Subject: Re: Re: [[PATCH v2 for-next]] RDMA/siw: Fix SQ/RQ drain logic
+Message-ID: <20191005082629.GS5855@unreal>
+References: <20191002154728.GH5855@unreal>
+ <20191002143858.4550-1-bmt@zurich.ibm.com>
+ <OFA7E48CEB.393CBE8D-ON00258489.0047C07A-00258489.004DD109@notes.na.collabserv.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191005062805.GP5855@unreal>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+In-Reply-To: <OFA7E48CEB.393CBE8D-ON00258489.0047C07A-00258489.004DD109@notes.na.collabserv.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Oct 05, 2019 at 09:28:05AM +0300, Leon Romanovsky wrote:
-> On Fri, Oct 04, 2019 at 05:46:15PM -0700, Jeff Kirsher wrote:
-> > On Fri, 2019-10-04 at 23:45 +0000, Jason Gunthorpe wrote:
-> > > On Fri, Oct 04, 2019 at 01:12:22PM -0700, Jeff Kirsher wrote:
-> > >
-> > > > > > +	if (ldev->version.major != I40E_CLIENT_VERSION_MAJOR ||
-> > > > > > +	    ldev->version.minor != I40E_CLIENT_VERSION_MINOR) {
-> > > > > > +		pr_err("version mismatch:\n");
-> > > > > > +		pr_err("expected major ver %d, caller specified
-> > > > > > major
-> > > > > > ver %d\n",
-> > > > > > +		       I40E_CLIENT_VERSION_MAJOR, ldev-
-> > > > > > >version.major);
-> > > > > > +		pr_err("expected minor ver %d, caller specified
-> > > > > > minor
-> > > > > > ver %d\n",
-> > > > > > +		       I40E_CLIENT_VERSION_MINOR, ldev-
-> > > > > > >version.minor);
-> > > > > > +		return -EINVAL;
-> > > > > > +	}
-> > > > >
-> > > > > This is can't be in upstream code, we don't support out-of-tree
-> > > > > modules,
-> > > > > everything else will have proper versions.
-> > > >
-> > > > Who is the "we" in this context?
-> > >
-> > > Upstream sensibility - if we start doing stuff like this then we will
-> > > end up doing it everwhere.
+On Fri, Oct 04, 2019 at 02:09:57PM +0000, Bernard Metzler wrote:
+> -----"Leon Romanovsky" <leon@kernel.org> wrote: -----
+> <...>
+>
+> >>   *
+> >> @@ -705,6 +746,12 @@ int siw_post_send(struct ib_qp *base_qp, const
+> >struct ib_send_wr *wr,
+> >>  	unsigned long flags;
+> >>  	int rv = 0;
+> >>
+> >> +	if (wr && !qp->kernel_verbs) {
 > >
-> > I see you cut out the part of my response about Linux distributions
-> > disagreeing with this stance.
+> >It is not related to this specific patch, but all siw "kernel_verbs"
+> >should go, we have standard way to distinguish between kernel and
+> >user
+> >verbs.
 > >
-> > >
-> > > > you support out-of-tree drivers, they do exist and this code would
-> > > > ensure that if a "out-of-tree" driver is loaded, the driver will do a
-> > > > sanity check to ensure the RDMA driver will work.
-> > >
-> > > I don't see how this is any different from any of the other myriad of
-> > > problems out of tree modules face.
-> > >
-> > > Someone providing out of tree modules has to provide enough parts of
-> > > their driver so that it only consumes the stable ABI from the distro
-> > > kernel.
-> > >
-> > > Pretty normal stuff really.
+> >Thanks
 > >
-> > Your right, if the dependency was reversed and the out-of-tree (OOT) driver
-> > was dependent upon the RDMA driver, but in this case it is not.  The LAN
-> > driver does not "need" the RDMA driver to work.  So the RDMA driver should
-> > at least check that the LAN driver loaded has the required version to work.
-> 
-> Not in upstream code, there is an expectation that kernel and modules are aligned.
+> Understood. I think we touched on that already.
+> rdma core objects have a uobject pointer which
+> is valid only if it belongs to a user land
+> application. We might better use that. Let me
+> see if I can compact QP objects to contain the
+> ib_qp. I'd like to avoid following pointers
+> potentially causing cache misses on the
+> fast path. This is why I still have that
+> little boolean within the siw private
+> structure.
 
-s/expectation/requirement/
+You have this variable in CQ and SRQ too.
 
-If you do not do that, all bets are off.
+I have serious doubts that this value gives any performance advantages.
+In both flows, you will need to fetch ib_qp pointer, so you don't save
+here anything by looking on kernel_verbs value.
 
-Distros can decide to do whatever they want with their kernels, but
-that's not what we require upstream.
+Thanks
 
-thanks,
-
-greg k-h
+>
+> Thanks and best regards,
+> Bernard.
+>
