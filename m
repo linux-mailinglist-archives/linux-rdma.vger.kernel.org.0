@@ -2,105 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0353FCC81E
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Oct 2019 07:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B7ACC85D
+	for <lists+linux-rdma@lfdr.de>; Sat,  5 Oct 2019 08:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725796AbfJEFY5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 5 Oct 2019 01:24:57 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:42156 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbfJEFY4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 5 Oct 2019 01:24:56 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x955OT3t118128;
-        Sat, 5 Oct 2019 05:24:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
- bh=MHLJ+v2FrwvIQqoJEE93jo71MnucBzuVQQK/GeAiIyI=;
- b=Ue2H6Cq82olsWjvH2AUAP3xoP5U8JmjAtcPVtyQ7UH8XU1PQLcqaDvro4w0oKLAuzHzr
- Fv3tkLzSWj6oi3xGkqNoi6chyLeq+gN6aOy2GzSX9jH3XdS/N5cIBzD4K8hWSot4FZJa
- yro5j5oZWCtkio1kpk8Yv30wl0u2K9W56bacdTQQvOYnqhRj1KmZNxbjgFBZEDQLx8nm
- 9OArFb9GGWNjz2Crp1pg9dMt5xRXYGHtNa8IPDuwPqsowiSsZI84Xn7pZ7JYJ7QcZ29G
- WuvUTkX6fvWE3olqjepLWZvlZHdCywoMu+ywjZruXEqHJnvG88+UvxN+jrAAq0hEFp2l gQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2vejku0dee-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 05 Oct 2019 05:24:29 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x955OMg2185985;
-        Sat, 5 Oct 2019 05:24:29 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2vegagre0s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 05 Oct 2019 05:24:29 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x955NjMx021940;
-        Sat, 5 Oct 2019 05:23:46 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 04 Oct 2019 22:23:45 -0700
-Date:   Sat, 5 Oct 2019 08:23:37 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Doug Ledford <dledford@redhat.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Matan Barak <matanb@mellanox.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] uverbs: prevent potential underflow
-Message-ID: <20191005052337.GA20129@mwanda>
+        id S1725976AbfJEGMS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 5 Oct 2019 02:12:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725862AbfJEGMS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 5 Oct 2019 02:12:18 -0400
+Received: from localhost (unknown [77.137.89.37])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20FEF2133F;
+        Sat,  5 Oct 2019 06:12:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570255937;
+        bh=erD3DfWkZOzxmjP8CSruNZOprvNRMOuOtplsGA1nLsw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CzqptSJFMP3UAcnyqIqf5XjLlMPZOV/G/QKsK8chyGzxV9fC87J6jiaxzIDZF4ED2
+         2EWdaRMjiHXtY1gerFcDWWH5gIfIeCki+8X//+GJ0qfjhUlirltz1+LogzAA9e+hTH
+         FUJFrEQVxfXmVUPlVlKgJ8aGk9xelYWI2lGMGtvI=
+Date:   Sat, 5 Oct 2019 09:12:12 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Jonathan Toppins <jtoppins@redhat.com>,
+        Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-core] kernel-boot: Tighten check if device is virtual
+Message-ID: <20191005061212.GO5855@unreal>
+References: <20190926094253.31145-1-leon@kernel.org>
+ <20190926123427.GD19509@mellanox.com>
+ <9c582ae3-8214-f9b8-d403-cf443b70284e@redhat.com>
+ <20190928165416.GL14368@unreal>
+ <20191003163127.GE26151@mellanox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9400 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910050048
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9400 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910050049
+In-Reply-To: <20191003163127.GE26151@mellanox.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The issue is in drivers/infiniband/core/uverbs_std_types_cq.c in the
-UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE) function.  We check that:
+On Thu, Oct 03, 2019 at 04:31:32PM +0000, Jason Gunthorpe wrote:
+> On Sat, Sep 28, 2019 at 07:54:16PM +0300, Leon Romanovsky wrote:
+> > On Thu, Sep 26, 2019 at 01:58:38PM -0400, Jonathan Toppins wrote:
+> > > On 09/26/2019 08:34 AM, Jason Gunthorpe wrote:
+> > > > On Thu, Sep 26, 2019 at 12:42:53PM +0300, Leon Romanovsky wrote:
+> > > >> From: Leon Romanovsky <leonro@mellanox.com>
+> > > >>
+> > > >> Virtual devices like SIW or RXE don't set FW version because
+> > > >> they don't have one, use that fact to rely on having empty
+> > > >> fw_ver file to sense such virtual devices.
+> > > >
+> > > > Have you checked that every physical device does set fw version?
+> > > >
+> > > > Seems hacky
+> > >
+> > > agreed, how are tuntap devices handled, is there a similar handling that
+> > > can be applied here?
+> >
+> > Unfortunately, we can't do the same, RDMA doesn't have notion of stacked devices.
+> >
+> > 1.
+> > TUN devices are initialized with ARPHRD_NONE type.
+> > https://elixir.bootlin.com/linux/latest/source/drivers/net/tun.c#L1396
+> >
+> > It causes for systemd-udev to skip their rename.
+> > https://github.com/systemd/systemd/blob/master/src/udev/udev-builtin-net_id.c#L781
+> >
+> > 2.
+> > TAP devices are skipped due to the fact that iflink != ifindex on such devices.
+> > https://github.com/systemd/systemd/blob/master/src/udev/udev-builtin-net_id.c#L810
+> >
+> > So, yes hacky, but the solution is tailored to RDMA subsystem where ALL
+> > devices have FW and we can ensure that ALL future devices will report any
+> > sort of string through fw_ver file.
+>
+> It still seems really hacky, why not add some device flag or something
+> instead? Is this better because it works with old kernels?
 
-	if (attr.comp_vector >= attrs->ufile->device->num_comp_vectors) {
+Yes, I'm trying to find a way to do such discovery without changing
+kernel, because we have only two virtual devices and I don't expect
+to see any new ones in forth coming future.
 
-But we don't check that "attr.comp_vector" whether negative.  It
-could potentially lead to an array underflow.  My concern would be where
-cq->vector is used in the create_cq() function from the cxgb4 driver.
+However, this patch is wrong because there are at least two drivers (hns
+and EFA) didn't implement .get_dev_fw_str() and they will have empty
+fw_ver.
 
-Fixes: 9ee79fce3642 ("IB/core: Add completion queue (cq) object actions")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/infiniband/core/uverbs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ 805 void ib_get_device_fw_str(struct ib_device *dev, char *str)
+ 806 {
+ 807         if (dev->ops.get_dev_fw_str)
+ 808                 dev->ops.get_dev_fw_str(dev, str);
+ 809         else
+ 810                 str[0] = '\0';
+ 811 }
+ 812 EXPORT_SYMBOL(ib_get_device_fw_str);
 
-diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
-index 1e5aeb39f774..63f7f7db5902 100644
---- a/drivers/infiniband/core/uverbs.h
-+++ b/drivers/infiniband/core/uverbs.h
-@@ -98,7 +98,7 @@ ib_uverbs_init_udata_buf_or_null(struct ib_udata *udata,
- 
- struct ib_uverbs_device {
- 	atomic_t				refcount;
--	int					num_comp_vectors;
-+	u32					num_comp_vectors;
- 	struct completion			comp;
- 	struct device				dev;
- 	/* First group for device attributes, NULL terminated array */
--- 
-2.20.1
+Special flag seems too much for me, what about writing special string to
+fw_ver to indicate virtual device? For example "virtual".
 
+Thanks
+
+>
+> Jason
