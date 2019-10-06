@@ -2,160 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A134CCEE8
-	for <lists+linux-rdma@lfdr.de>; Sun,  6 Oct 2019 07:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C38ACCF1C
+	for <lists+linux-rdma@lfdr.de>; Sun,  6 Oct 2019 09:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726109AbfJFF64 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 6 Oct 2019 01:58:56 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:36146 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726087AbfJFF6z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 6 Oct 2019 01:58:55 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from haggaie@mellanox.com)
-        with ESMTPS (AES256-SHA encrypted); 6 Oct 2019 07:58:53 +0200
-Received: from gen-l-vrt-097.mtl.labs.mlnx (gen-l-vrt-097.mtl.labs.mlnx [10.137.168.1])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x965wrta013564;
-        Sun, 6 Oct 2019 08:58:53 +0300
-From:   Haggai Eran <haggaie@mellanox.com>
-To:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Alex Rosenbaum <alexr@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Haggai Eran <haggaie@mellanox.com>
-Subject: [PATCH RFC rdma-core] verbs: custom parent-domain allocators
-Date:   Sun,  6 Oct 2019 08:58:49 +0300
-Message-Id: <1570341529-30636-1-git-send-email-haggaie@mellanox.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S1726257AbfJFHJA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 6 Oct 2019 03:09:00 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:54624 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726204AbfJFHJA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 6 Oct 2019 03:09:00 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 825AFBAE63C8E18FDC26;
+        Sun,  6 Oct 2019 15:08:57 +0800 (CST)
+Received: from localhost (10.133.213.239) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Sun, 6 Oct 2019
+ 15:08:51 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <santosh.shilimkar@oracle.com>, <davem@davemloft.net>,
+        <ka-cheong.poon@oracle.com>
+CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <rds-devel@oss.oracle.com>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH net-next] net/rds: Add missing include file
+Date:   Sun, 6 Oct 2019 15:08:32 +0800
+Message-ID: <20191006070832.55532-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.133.213.239]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Extend the parent domain object with custom allocation callbacks that
-can be used by user-applications to override the provider allocation.
+Fix build error:
 
-This can be used for example to add NUMA aware allocation.
+net/rds/ib_cm.c: In function rds_dma_hdrs_alloc:
+net/rds/ib_cm.c:475:13: error: implicit declaration of function dma_pool_zalloc; did you mean mempool_alloc? [-Werror=implicit-function-declaration]
+   hdrs[i] = dma_pool_zalloc(pool, GFP_KERNEL, &hdr_daddrs[i]);
+             ^~~~~~~~~~~~~~~
+             mempool_alloc
 
-The new allocator receives context information about the parent domain,
-as well as the requested size and alignment of the buffer. It also
-receives a vendor-specific resource type code to allow customizing it
-for specific resources.
+net/rds/ib.c: In function rds_ib_dev_free:
+net/rds/ib.c:111:3: error: implicit declaration of function dma_pool_destroy; did you mean mempool_destroy? [-Werror=implicit-function-declaration]
+   dma_pool_destroy(rds_ibdev->rid_hdrs_pool);
+   ^~~~~~~~~~~~~~~~
+   mempool_destroy
 
-The allocator then allocates the memory or returns an
-IBV_ALLOCATOR_USE_DEFAULT value to request that the provider driver use
-its own allocation method.
-
-Signed-off-by: Haggai Eran <haggaie@mellanox.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 9b17f5884be4 ("net/rds: Use DMA memory pool allocation for rds_header")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- libibverbs/man/ibv_alloc_parent_domain.3 | 54 ++++++++++++++++++++++++++++++++
- libibverbs/verbs.h                       | 12 +++++++
- 2 files changed, 66 insertions(+)
+ net/rds/ib.c    | 1 +
+ net/rds/ib_cm.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/libibverbs/man/ibv_alloc_parent_domain.3 b/libibverbs/man/ibv_alloc_parent_domain.3
-index 92b60582b55f..2523e97ed186 100644
---- a/libibverbs/man/ibv_alloc_parent_domain.3
-+++ b/libibverbs/man/ibv_alloc_parent_domain.3
-@@ -41,11 +41,23 @@ The
- argument specifies the following:
- .PP
- .nf
-+enum ibv_parent_domain_init_attr_mask {
-+.in +8
-+IBV_PARENT_DOMAIN_INIT_ATTR_ALLOCATORS = 1 << 0,
-+IBV_PARENT_DOMAIN_INIT_ATTR_CONTEXT = 1 << 1,
-+.in -8
-+};
-+
- struct ibv_parent_domain_init_attr {
- .in +8
- struct ibv_pd *pd; /* referance to a protection domain, can't be NULL */
- struct ibv_td *td; /* referance to a thread domain, or NULL */
- uint32_t comp_mask;
-+void *(*alloc)(struct ibv_pd *pd, void *pd_context, size_t size,
-+               size_t alignment, uint64_t resource_type);
-+void (*free)(struct ibv_pd *pd, void *pd_context, void *ptr,
-+             uint64_t resource_type);
-+void *pd_context;
- .in -8
- };
- .fi
-@@ -56,6 +68,48 @@ will deallocate the parent domain as its exposed as an ibv_pd
- .I pd\fR.
- All resources created with the parent domain
- should be destroyed prior to deallocating the parent domain\fR.
-+.SH "ARGUMENTS"
-+.B pd
-+Reference to the protection domain that this parent domain uses.
-+.PP
-+.B td
-+An optional thread domain that the parent domain uses.
-+.PP
-+.B comp_mask
-+Bit-mask of optional fields in the ibv_parent_domain_init_attr struct.
-+.PP
-+.B alloc
-+Custom memory allocation function for this parent domain. Provider
-+memory allocations will use this function to allocate the needed memory.
-+The allocation function is passed the parent domain
-+.B pd
-+and the user-specified context
-+.B pd_context.
-+In addition, the callback receives the
-+.B size
-+and the
-+.B alignment
-+of the requested buffer, as well a vendor-specific
-+.B resource_type
-+, which is derived from the rdma_driver_id enum (upper 32 bits) and a vendor
-+specific resource code.
-+The function returns the pointer to the allocated buffer, or NULL to
-+designate an error.  It may also return
-+.B IBV_ALLOCATOR_USE_DEFAULT
-+asking the callee to allocate the buffer using the default allocator.
-+
-+The callback makes sure the allocated buffer is initialized with zeros. It is
-+also the responsibility of the callback to make sure the memory cannot be
-+COWed, e.g. by using madvise(MADV_DONTFORK) or by allocating anonymous shared
-+memory.
-+.PP
-+.B free
-+Callback to free memory buffers that were allocated using a successful
-+alloc().
-+.PP
-+.B pd_context
-+A pointer for additional user-specific data to be associated with this
-+parent domain. The pointer is passed back to the custom allocator functions.
- .SH "RETURN VALUE"
- .B ibv_alloc_parent_domain()
- returns a pointer to the allocated struct
-diff --git a/libibverbs/verbs.h b/libibverbs/verbs.h
-index c411722b154f..8b580d101ce2 100644
---- a/libibverbs/verbs.h
-+++ b/libibverbs/verbs.h
-@@ -1976,10 +1976,22 @@ struct ibv_cq_init_attr_ex {
- 	uint32_t		flags;
- };
- 
-+enum ibv_parent_domain_init_attr_mask {
-+	IBV_PARENT_DOMAIN_INIT_ATTR_ALLOCATORS = 1 << 0,
-+	IBV_PARENT_DOMAIN_INIT_ATTR_PD_CONTEXT = 1 << 1,
-+};
-+
-+#define IBV_ALLOCATOR_USE_DEFAULT ((void *)-1)
-+
- struct ibv_parent_domain_init_attr {
- 	struct ibv_pd *pd; /* referance to a protection domain object, can't be NULL */
- 	struct ibv_td *td; /* referance to a thread domain object, or NULL */
- 	uint32_t comp_mask;
-+	void *(*alloc)(struct ibv_pd *pd, void *pd_context, size_t size,
-+		       size_t alignment, uint64_t resource_type);
-+	void (*free)(struct ibv_pd *pd, void *pd_context, void *ptr,
-+		     uint64_t resource_type);
-+	void *pd_context;
- };
- 
- struct ibv_counters_init_attr {
+diff --git a/net/rds/ib.c b/net/rds/ib.c
+index 23a2ae53f231..62d4ebeb08c1 100644
+--- a/net/rds/ib.c
++++ b/net/rds/ib.c
+@@ -30,6 +30,7 @@
+  * SOFTWARE.
+  *
+  */
++#include <linux/dmapool.h>
+ #include <linux/kernel.h>
+ #include <linux/in.h>
+ #include <linux/if.h>
+diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
+index d08251f4a00c..6b345c858dba 100644
+--- a/net/rds/ib_cm.c
++++ b/net/rds/ib_cm.c
+@@ -30,6 +30,7 @@
+  * SOFTWARE.
+  *
+  */
++#include <linux/dmapool.h>
+ #include <linux/kernel.h>
+ #include <linux/in.h>
+ #include <linux/slab.h>
 -- 
-1.8.3.1
+2.20.1
+
 
