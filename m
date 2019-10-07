@@ -2,86 +2,200 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1118ECDF05
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 12:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C70BCDF52
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 12:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbfJGKQV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Oct 2019 06:16:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58894 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727755AbfJGKQV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 7 Oct 2019 06:16:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 688B2B206;
-        Mon,  7 Oct 2019 10:16:18 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E6A461E4813; Fri,  4 Oct 2019 09:51:00 +0200 (CEST)
-Date:   Fri, 4 Oct 2019 09:51:00 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: Lease semantic proposal
-Message-ID: <20191004075100.GA12412@quack2.suse.cz>
-References: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
- <20190923222620.GC16973@dread.disaster.area>
- <20190925234602.GB12748@iweiny-DESK2.sc.intel.com>
- <20190930084233.GO16973@dread.disaster.area>
+        id S1727702AbfJGK1i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Oct 2019 06:27:38 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:37273 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727509AbfJGK1i (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Oct 2019 06:27:38 -0400
+Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x97ARAmE028628;
+        Mon, 7 Oct 2019 03:27:11 -0700
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     jgg@ziepe.ca, bmt@zurich.ibm.com
+Cc:     linux-rdma@vger.kernel.org, bharat@chelsio.com,
+        nirranjan@chelsio.com, sagi@grimberg.me, larrystevenwise@gmail.com,
+        Krishnamraju Eraparaju <krishna2@chelsio.com>
+Subject: [PATCH v1,for-rc] RDMA/iwcm: move iw_rem_ref() calls out of spinlock
+Date:   Mon,  7 Oct 2019 15:56:27 +0530
+Message-Id: <20191007102627.12568-1-krishna2@chelsio.com>
+X-Mailer: git-send-email 2.23.0.rc0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190930084233.GO16973@dread.disaster.area>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon 30-09-19 18:42:33, Dave Chinner wrote:
-> On Wed, Sep 25, 2019 at 04:46:03PM -0700, Ira Weiny wrote:
-> > On Tue, Sep 24, 2019 at 08:26:20AM +1000, Dave Chinner wrote:
-> > > Hence, AFIACT, the above definition of a F_RDLCK|F_LAYOUT lease
-> > > doesn't appear to be compatible with the semantics required by
-> > > existing users of layout leases.
-> > 
-> > I disagree.  Other than the addition of F_UNBREAK, I think this is consistent
-> > with what is currently implemented.  Also, by exporting all this to user space
-> > we can now write tests for it independent of the RDMA pinning.
-> 
-> The current usage of F_RDLCK | F_LAYOUT by the pNFS code allows
-> layout changes to occur to the file while the layout lease is held.
+kref release routines usually perform memory release operations,
+hence, they should not be called with spinlocks held.
+one such case is: SIW kref release routine siw_free_qp(), which
+can sleep via vfree() while freeing queue memory.
 
-I remember you saying that in the past conversations. But I agree with Ira
-that I don't see where in the code this would be implemented. AFAICS
-break_layout() called from xfs_break_leased_layouts() simply breaks all the
-leases with F_LAYOUT set attached to the inode... Now I'm not any expert on
-file leases but what am I missing?
+Hence, all iw_rem_ref() calls in IWCM are moved out of spinlocks.
 
-> IOWs, your definition of F_RDLCK | F_LAYOUT not being allowed
-> to change the is in direct contradition to existing users.
-> 
-> I've said this several times over the past few months now: shared
-> layout leases must allow layout modifications to be made. Only
-> allowing an exclusive layout lease to modify the layout rules out
-> many potential use cases for direct data placement and p2p DMA
-> applications, not to mention conflicts with the existing pNFS usage.
-> Layout leases need to support more than just RDMA, and tailoring the
-> API to exactly the immediate needs of RDMA is just going to make it
-> useless for anything else.
+Fixes: 922a8e9fb2e0 ("RDMA: iWARP Connection Manager.")
+Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+---
+v0 -> v1:
+-changed component name in subject line: siw->iwcm
+-added "Fixes" line.
+---
+ drivers/infiniband/core/iwcm.c | 52 +++++++++++++++++++---------------
+ 1 file changed, 29 insertions(+), 23 deletions(-)
 
-I agree we should not tailor the layout lease definition to just RDMA
-usecase. But let's talk about the semantics once our confusion about how
-pNFS currently uses layout leases is clear out.
-
-								Honza
+diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+index 72141c5b7c95..ade71823370f 100644
+--- a/drivers/infiniband/core/iwcm.c
++++ b/drivers/infiniband/core/iwcm.c
+@@ -372,6 +372,7 @@ EXPORT_SYMBOL(iw_cm_disconnect);
+ static void destroy_cm_id(struct iw_cm_id *cm_id)
+ {
+ 	struct iwcm_id_private *cm_id_priv;
++	struct ib_qp *qp;
+ 	unsigned long flags;
+ 
+ 	cm_id_priv = container_of(cm_id, struct iwcm_id_private, id);
+@@ -389,6 +390,9 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
+ 	set_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags);
+ 
+ 	spin_lock_irqsave(&cm_id_priv->lock, flags);
++	qp = cm_id_priv->qp;
++	cm_id_priv->qp = NULL;
++
+ 	switch (cm_id_priv->state) {
+ 	case IW_CM_STATE_LISTEN:
+ 		cm_id_priv->state = IW_CM_STATE_DESTROYING;
+@@ -401,7 +405,7 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
+ 		cm_id_priv->state = IW_CM_STATE_DESTROYING;
+ 		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+ 		/* Abrupt close of the connection */
+-		(void)iwcm_modify_qp_err(cm_id_priv->qp);
++		(void)iwcm_modify_qp_err(qp);
+ 		spin_lock_irqsave(&cm_id_priv->lock, flags);
+ 		break;
+ 	case IW_CM_STATE_IDLE:
+@@ -426,11 +430,9 @@ static void destroy_cm_id(struct iw_cm_id *cm_id)
+ 		BUG();
+ 		break;
+ 	}
+-	if (cm_id_priv->qp) {
+-		cm_id_priv->id.device->ops.iw_rem_ref(cm_id_priv->qp);
+-		cm_id_priv->qp = NULL;
+-	}
+ 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
++	if (qp)
++		cm_id_priv->id.device->ops.iw_rem_ref(qp);
+ 
+ 	if (cm_id->mapped) {
+ 		iwpm_remove_mapinfo(&cm_id->local_addr, &cm_id->m_local_addr);
+@@ -671,11 +673,11 @@ int iw_cm_accept(struct iw_cm_id *cm_id,
+ 		BUG_ON(cm_id_priv->state != IW_CM_STATE_CONN_RECV);
+ 		cm_id_priv->state = IW_CM_STATE_IDLE;
+ 		spin_lock_irqsave(&cm_id_priv->lock, flags);
+-		if (cm_id_priv->qp) {
+-			cm_id->device->ops.iw_rem_ref(qp);
+-			cm_id_priv->qp = NULL;
+-		}
++		qp = cm_id_priv->qp;
++		cm_id_priv->qp = NULL;
+ 		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
++		if (qp)
++			cm_id->device->ops.iw_rem_ref(qp);
+ 		clear_bit(IWCM_F_CONNECT_WAIT, &cm_id_priv->flags);
+ 		wake_up_all(&cm_id_priv->connect_wait);
+ 	}
+@@ -696,7 +698,7 @@ int iw_cm_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *iw_param)
+ 	struct iwcm_id_private *cm_id_priv;
+ 	int ret;
+ 	unsigned long flags;
+-	struct ib_qp *qp;
++	struct ib_qp *qp = NULL;
+ 
+ 	cm_id_priv = container_of(cm_id, struct iwcm_id_private, id);
+ 
+@@ -730,13 +732,13 @@ int iw_cm_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *iw_param)
+ 		return 0;	/* success */
+ 
+ 	spin_lock_irqsave(&cm_id_priv->lock, flags);
+-	if (cm_id_priv->qp) {
+-		cm_id->device->ops.iw_rem_ref(qp);
+-		cm_id_priv->qp = NULL;
+-	}
++	qp = cm_id_priv->qp;
++	cm_id_priv->qp = NULL;
+ 	cm_id_priv->state = IW_CM_STATE_IDLE;
+ err:
+ 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
++	if (qp)
++		cm_id->device->ops.iw_rem_ref(qp);
+ 	clear_bit(IWCM_F_CONNECT_WAIT, &cm_id_priv->flags);
+ 	wake_up_all(&cm_id_priv->connect_wait);
+ 	return ret;
+@@ -878,6 +880,7 @@ static int cm_conn_est_handler(struct iwcm_id_private *cm_id_priv,
+ static int cm_conn_rep_handler(struct iwcm_id_private *cm_id_priv,
+ 			       struct iw_cm_event *iw_event)
+ {
++	struct ib_qp *qp = NULL;
+ 	unsigned long flags;
+ 	int ret;
+ 
+@@ -896,11 +899,13 @@ static int cm_conn_rep_handler(struct iwcm_id_private *cm_id_priv,
+ 		cm_id_priv->state = IW_CM_STATE_ESTABLISHED;
+ 	} else {
+ 		/* REJECTED or RESET */
+-		cm_id_priv->id.device->ops.iw_rem_ref(cm_id_priv->qp);
++		qp = cm_id_priv->qp;
+ 		cm_id_priv->qp = NULL;
+ 		cm_id_priv->state = IW_CM_STATE_IDLE;
+ 	}
+ 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
++	if (qp)
++		cm_id_priv->id.device->ops.iw_rem_ref(qp);
+ 	ret = cm_id_priv->id.cm_handler(&cm_id_priv->id, iw_event);
+ 
+ 	if (iw_event->private_data_len)
+@@ -942,21 +947,18 @@ static void cm_disconnect_handler(struct iwcm_id_private *cm_id_priv,
+ static int cm_close_handler(struct iwcm_id_private *cm_id_priv,
+ 				  struct iw_cm_event *iw_event)
+ {
++	struct ib_qp *qp;
+ 	unsigned long flags;
+-	int ret = 0;
++	int ret = 0, notify_event = 0;
+ 	spin_lock_irqsave(&cm_id_priv->lock, flags);
++	qp = cm_id_priv->qp;
++	cm_id_priv->qp = NULL;
+ 
+-	if (cm_id_priv->qp) {
+-		cm_id_priv->id.device->ops.iw_rem_ref(cm_id_priv->qp);
+-		cm_id_priv->qp = NULL;
+-	}
+ 	switch (cm_id_priv->state) {
+ 	case IW_CM_STATE_ESTABLISHED:
+ 	case IW_CM_STATE_CLOSING:
+ 		cm_id_priv->state = IW_CM_STATE_IDLE;
+-		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+-		ret = cm_id_priv->id.cm_handler(&cm_id_priv->id, iw_event);
+-		spin_lock_irqsave(&cm_id_priv->lock, flags);
++		notify_event = 1;
+ 		break;
+ 	case IW_CM_STATE_DESTROYING:
+ 		break;
+@@ -965,6 +967,10 @@ static int cm_close_handler(struct iwcm_id_private *cm_id_priv,
+ 	}
+ 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+ 
++	if (qp)
++		cm_id_priv->id.device->ops.iw_rem_ref(qp);
++	if (notify_event)
++		ret = cm_id_priv->id.cm_handler(&cm_id_priv->id, iw_event);
+ 	return ret;
+ }
+ 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.23.0.rc0
+
