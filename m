@@ -2,65 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D7BCEEAA
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 23:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A34CEF02
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2019 00:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729133AbfJGVzd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Oct 2019 17:55:33 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:45433 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728422AbfJGVzc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Oct 2019 17:55:32 -0400
-Received: by mail-pl1-f193.google.com with SMTP id u12so7493484pls.12;
-        Mon, 07 Oct 2019 14:55:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Fh/v3zhxR6R1H2Q5qz0fPvsPGD6CN/4zH5A3jA+1l4c=;
-        b=m0SNwn2+uijDrABFwPtcNOCJZFF82maNiMnRi1k4jPTbNVSutdw3lTjto48XWlEorM
-         rQivFqnYewMEWPOPMEsW0Xzk5ICkR5iPgzTzXHnbb07VkmAAYGAq3b7AlYZT8yTareM6
-         1jHIrUNeOEV8McHBQb3iNRfiGIMtXAR4HFeGPof3LO+G/loGKuf/56xxQPPQWKYFIUBs
-         Dh747sPspTqRe8URDtgHAGw+nucnHqdXt3YrbhVeSuCQsL2UJJY0TrPM7ttv+AAeehv0
-         rGjUH3Rz0BHqt0fCpgrUrd1L3jepkfBuXI8H5NNgeRwxTvD6Wh2KQmUqU4jXC+EKU+Fi
-         vbig==
+        id S1728980AbfJGWWe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Oct 2019 18:22:34 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:37990 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728654AbfJGWWe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Oct 2019 18:22:34 -0400
+Received: by mail-pf1-f195.google.com with SMTP id h195so9546726pfe.5;
+        Mon, 07 Oct 2019 15:22:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Fh/v3zhxR6R1H2Q5qz0fPvsPGD6CN/4zH5A3jA+1l4c=;
-        b=PYokGBorXuYRkelHm0F2bA4hijnHW0VlbWlNiaFuVuTU/QWt1o2Xh1PJ4/mVbhuyZQ
-         9FXPyoj3p22AHRcjt95FZSIZreJovcPi6sYFkaRKYFJ6zSX+nAzjycqezivdURNC9IdO
-         q8OIQ1jOcUAoFTftb5DPXfh0jpIfzXRg09ncBjBa1bZFA5XrenSpNBsTMTvlPRwWMYO2
-         /11oQ71enflo7w2/GDF0Pv2LNLy9v7SQP2YlCCkmPm9SUhrL/CIWZ+PG2YhzZK0c3Wvh
-         GkhVBCMrJpyzZvC5gusbxs1WRIbhLaP+L5oFFhUqZA0hUzbEci3CFPFbr9udv7mok6h8
-         z6uw==
-X-Gm-Message-State: APjAAAVVZDTn3kmZalGb1XMgXsQVU/UvcZ/dhupM19FjRLtF1lGGlcjQ
-        MfEL8AGxJ4tRSOyI1ZIKq9s=
-X-Google-Smtp-Source: APXvYqyKl22DtP+1oaZxqYjtzDL6/AjPliKNsivsnCtEB3R6/ySLo7a/4+fa0Wu7zR+DUKss/LOtvw==
-X-Received: by 2002:a17:902:bb91:: with SMTP id m17mr32142567pls.79.1570485332004;
-        Mon, 07 Oct 2019 14:55:32 -0700 (PDT)
-Received: from dahern-DO-MB.local ([2601:282:800:fd80:dc58:1abd:13a8:f485])
-        by smtp.googlemail.com with ESMTPSA id g12sm17709018pfb.97.2019.10.07.14.55.30
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 07 Oct 2019 14:55:31 -0700 (PDT)
-Subject: Re: [PATCH iproute2-next] rdma: Relax requirement to have PID for HW
- objects
+        bh=PdkJ4Z+HzytIxudQqsDlaQKJxjFii3sZzUB2db98gvY=;
+        b=ZJ71WyEP5XXMr+1aiGaBVryqG0NdieaiYHaC82iND4CyN9GpJd53Yw4fpivjtxh+0E
+         OCdYe3U01uELX/6k650grCMVFJe32yudWjgh2eCFJe452kaEPiE/eKq+ioCDW9RpGozc
+         2UzhxRAlvoX/xtjqMkZ0/hlG5yP6rmTbRgALrKOUJLqpGEvWYo3bmAD6XSbiEpp/g3rz
+         S7xQG11e0pA2dqAECRhP9OKjD7HX/Op/u9c1UPiDj0ja3/EriF8ORRoaVQ7NNj7ruCWr
+         N9DRJaS0bUdI09YcAWPvdEewtJuJKL7SwmTtV8VBd1fFioXPIgw2RWLiOXUAEAjv3Js6
+         zzww==
+X-Gm-Message-State: APjAAAUjqk4Ia36ikopRuxutwgIBc8ZPn9WwQtpYHc21iCGtI3YiT1Sw
+        LOa7r7doZb6yBq1rbSVSs1YFu/Ui
+X-Google-Smtp-Source: APXvYqzdKNwxtKOMAm1+Gvne26nJWbaDyd2nTTcmgg64eaPk+FXegTjIsKwG7jOyi1K3FyTqL5FOLw==
+X-Received: by 2002:a65:4785:: with SMTP id e5mr32267378pgs.407.1570486952364;
+        Mon, 07 Oct 2019 15:22:32 -0700 (PDT)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id b185sm16432284pfg.14.2019.10.07.15.22.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Oct 2019 15:22:31 -0700 (PDT)
+Subject: Re: [PATCH rdma-next v2 2/3] RDMA/rw: Support threshold for
+ registration vs scattering to local pages
 To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        netdev <netdev@vger.kernel.org>,
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Christoph Hellwig <hch@infradead.org>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Stephen Hemminger <stephen@networkplumber.org>
-References: <20191002134934.19226-1-leon@kernel.org>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <598c983f-d28a-3b77-9d9c-3a8686836630@gmail.com>
-Date:   Mon, 7 Oct 2019 15:55:29 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.9.0
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+References: <20191007135933.12483-1-leon@kernel.org>
+ <20191007135933.12483-3-leon@kernel.org>
+ <c0105196-b0e4-854e-88ff-40f5ba2d4105@acm.org> <20191007160336.GB5855@unreal>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <8d610a58-abb5-941a-2a52-96ab9287572b@acm.org>
+Date:   Mon, 7 Oct 2019 15:22:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20191002134934.19226-1-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20191007160336.GB5855@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -68,37 +63,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/2/19 7:49 AM, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
+On 10/7/19 9:03 AM, Leon Romanovsky wrote:
+> On Mon, Oct 07, 2019 at 08:07:55AM -0700, Bart Van Assche wrote:
+>> On 10/7/19 6:59 AM, Leon Romanovsky wrote:
+>>>    /*
+>>> - * Check if the device might use memory registration.  This is currently only
+>>> - * true for iWarp devices. In the future we can hopefully fine tune this based
+>>> - * on HCA driver input.
+>>> + * Check if the device might use memory registration. This is currently
+>>> + * true for iWarp devices and devices that have optimized SGL registration
+>>> + * logic.
+>>>     */
+>>
+>> The following sentence in the above comment looks confusing to me: "Check if
+>> the device might use memory registration." That sentence suggests that the
+>> HCA decides whether or not to use memory registration. Isn't it the RDMA R/W
+>> code that decides whether or not to use memory registration?
 > 
-> RDMA has weak connection between PIDs and HW objects, because
-> the latter tied to file descriptors for their lifetime management.
-> 
-> The outcome of such connection is that for the following scenario,
-> the returned PID will be 0 (not-valid):
->  1. Create FD and context
->  2. Share it with ephemeral child
->  3. Create any object and exit that child
-> 
-> This flow was revealed in testing environment and of course real users
-> are not running such scenario, because it makes no sense at all in RDMA
-> world.
-> 
-> Let's do two changes in the code to support such workflow anyway:
->  1. Remove need to provide PID/kernel name. Code already supports it,
->     just need to remove extra validation.
->  2. Ball-out in case PID is 0.
-> 
-> Link: https://lore.kernel.org/linux-rdma/20191002123245.18153-2-leon@kernel.org
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  rdma/res-cmid.c | 5 +----
->  rdma/res-cq.c   | 5 +----
->  rdma/res-mr.c   | 5 +----
->  rdma/res-pd.c   | 5 +----
->  rdma/res-qp.c   | 5 +----
->  rdma/res.c      | 3 +++
->  6 files changed, 8 insertions(+), 20 deletions(-)
-> 
+> I'm open for any reasonable text, what do you expect to be written there?
 
-applied to iproute2-next
+Hi Leon,
+
+How about the following (not sure whether this is correct)?
+
+/*
+  * Report whether memory registration should be used. Memory
+  * registration must be used for iWarp devices because of
+  * iWARP-specific limitations. Memory registration is also enabled if
+  * registering memory will yield better performance than using multiple
+  * SGE entries.
+  */
+
+Thanks,
+
+Bart.
