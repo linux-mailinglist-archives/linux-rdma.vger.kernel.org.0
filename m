@@ -2,99 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF77ECE7FD
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 17:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385A6CE85E
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 17:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727970AbfJGPlU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Oct 2019 11:41:20 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:53456 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727791AbfJGPlU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Oct 2019 11:41:20 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x97FOhFf123592
-        for <linux-rdma@vger.kernel.org>; Mon, 7 Oct 2019 15:41:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : content-type :
- content-transfer-encoding : mime-version : subject : message-id : date :
- to; s=corp-2019-08-05; bh=wDe6WDN2tpCHdPDPzQ1+dVjdfkPEFDMeZpLadoDzLGw=;
- b=S3SVPOHipVFf8R171vxvrMqqx/uKQMnlgX2H79CDtxu7y08zd5Tt0SxxEk0yRrOt9mSF
- TEq44wXP4DRsxyF9P0TMyqdJ7/fY/OYvuXB1cuKdt8TuTrobO/PfTF8rrLWfetjW+WsR
- aYG9c/Pjr5xjzhVdNJUPJPYgqZgJBEoQbEGuX5PE05nKbLIx/cTggtR8m7DPxlJTAX7n
- +YiQ691KeBTMjWTpx78LNegvN7rFiLPwKOupHmhC+f521TJzF6mzlDcA2Am1ChieKa46
- ZTvSZV/S+VuTFBrqkR7Zskpc1KvJDamG6lgCx7R4pVChgAdy5bS3oISNSnPl9x4EU/un YQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2vek4q7kjx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-rdma@vger.kernel.org>; Mon, 07 Oct 2019 15:41:19 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x97FOajn044229
-        for <linux-rdma@vger.kernel.org>; Mon, 7 Oct 2019 15:41:18 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2vf4n9ft74-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-rdma@vger.kernel.org>; Mon, 07 Oct 2019 15:41:18 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x97FfHN0005377
-        for <linux-rdma@vger.kernel.org>; Mon, 7 Oct 2019 15:41:17 GMT
-Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 07 Oct 2019 08:41:17 -0700
-From:   Chuck Lever <chuck.lever@oracle.com>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: unregister_device messages at shutdown (v5.4-rc)
-Message-Id: <6D3E730A-ED56-4AA9-9BAC-8AD31BB915BB@oracle.com>
-Date:   Mon, 7 Oct 2019 11:41:13 -0400
-To:     linux-rdma <linux-rdma@vger.kernel.org>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9403 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=804
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910070152
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9403 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=886 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910070152
+        id S1727912AbfJGPyl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Oct 2019 11:54:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727801AbfJGPyl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Oct 2019 11:54:41 -0400
+Received: from localhost (unknown [77.137.89.37])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9183620679;
+        Mon,  7 Oct 2019 15:54:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570463680;
+        bh=A6Hck1SO3IpFeLsQFU+3wiLlAr7I+9JrSXX1SV7ibHw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YJzzUSCEdmGMe4UvckKgE4QMK2r8U3ebyLk6UQBmYTph11XzWKfbtsGEWHxjC9fPC
+         VzOgMtnPIqITzdqa1AZz6PnPbLe1rCJ2sDIKgiNeNJUqP0LJP4SDuS/5t+rZzmnnQZ
+         t33uW1/T+hP7FSKXQ//OtUZGdxladYzp37OE8OWk=
+Date:   Mon, 7 Oct 2019 18:54:34 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH mlx5-next v2 1/3] net/mlx5: Expose optimal performance
+ scatter entries capability
+Message-ID: <20191007155434.GY5855@unreal>
+References: <20191007135933.12483-1-leon@kernel.org>
+ <20191007135933.12483-2-leon@kernel.org>
+ <cfae2979-1ba4-e20d-ed20-1cb8f26b78f6@acm.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cfae2979-1ba4-e20d-ed20-1cb8f26b78f6@acm.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Not quite sure where to report this.
+On Mon, Oct 07, 2019 at 08:02:50AM -0700, Bart Van Assche wrote:
+> On 10/7/19 6:59 AM, Leon Romanovsky wrote:
+> > -	u8         reserved_at_c0[0x8];
+> > +	u8         max_sgl_for_optimized_performance[0x8];
+>
+> Should the name of this member variable perhaps be changed into
+> "max_sgl_for_optimal_performance"?
 
-Since v5.4-rc1, at shutdown I'm seeing a hang with this message repeated
-in /var/log/messages:
+We don't want to force our internal HW/FW names on all uverbs users
+and drivers. So, the answer is no, it is used for optimized performance,
+but it is not the proper name for uverbs.
 
-unregister_netdevice: waiting for ens1f0 to become free. Usage count =3D =
-1
+Thanks
 
-Google turns up this particular failure off and on for the past few =
-years
-from various network devices. It's currently 100% reproducible on my =
-rig.
-
-ens1f0 is a FastLinq NIC in iWARP mode:
-
-01:00.0 Ethernet controller: QLogic Corp. FastLinQ QL41000 Series =
-10/25/40/50GbE Controller (rev 02)
-        Subsystem: QLogic Corp. FastLinQ QL41212H 25GbE Adapter
-
-3: ens1f0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 9216 qdisc mq state =
-DOWN group default qlen 1000
-    link/ether f4:e9:d4:72:49:f2 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.100.51/24 brd 192.168.100.255 scope global ens1f0
-       valid_lft forever preferred_lft forever
-
-(the network switch is powered off at the moment).
-
-
---
-Chuck Lever
-
-
-
+>
+> Thanks,
+>
+> Bart.
