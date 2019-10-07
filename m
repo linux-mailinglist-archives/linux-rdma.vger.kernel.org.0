@@ -2,27 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D95FCDF86
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 12:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BFACE101
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 13:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727345AbfJGKmk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Oct 2019 06:42:40 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:19715 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727252AbfJGKmk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Oct 2019 06:42:40 -0400
-Received: from localhost (budha.blr.asicdesigners.com [10.193.185.4])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id x97AgZfb028700;
-        Mon, 7 Oct 2019 03:42:37 -0700
-From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
-To:     jgg@ziepe.ca, bmt@zurich.ibm.com
-Cc:     linux-rdma@vger.kernel.org, bharat@chelsio.com,
-        nirranjan@chelsio.com,
-        Krishnamraju Eraparaju <krishna2@chelsio.com>
-Subject: [PATCH v1,for-rc] RDMA/siw: free siw_base_qp in kref release routine
-Date:   Mon,  7 Oct 2019 16:12:29 +0530
-Message-Id: <20191007104229.29412-1-krishna2@chelsio.com>
-X-Mailer: git-send-email 2.23.0.rc0
+        id S1727688AbfJGL6Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Oct 2019 07:58:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727561AbfJGL6Y (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Oct 2019 07:58:24 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1EE71206C0;
+        Mon,  7 Oct 2019 11:58:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570449503;
+        bh=h5PdoRx5540011kN/7+z08gjBFOMzx/MQk7yc+ikkoI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=foemdufbFgereOuX5ewrZZWDB5zfbVENaBK2rvjMSeckLhSmx4858xMwAOPI54cb1
+         LmOzkaw8Z4Lad/6qOwmiqZg7Ioml4qSuifemhZGMD1LXZACSkW/bDX+2NEo9CxAuBx
+         zLsOHaqderC+9p95+EzniysscXr3JQzxPrvIH9gQ=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: [PATCH rdma-next v1 0/3] Optimize SGL registration
+Date:   Mon,  7 Oct 2019 14:58:16 +0300
+Message-Id: <20191007115819.9211-1-leon@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -30,59 +44,32 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-As siw_free_qp() is the last routine to access 'siw_base_qp' structure,
-freeing this structure early in siw_destroy_qp() could cause
-touch-after-free issue.
-Hence, moved kfree(siw_base_qp) from siw_destroy_qp() to siw_free_qp().
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
-Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
----
-v0 -> v1:
-- added "Fixes" line.
----
- drivers/infiniband/sw/siw/siw_qp.c    | 2 ++
- drivers/infiniband/sw/siw/siw_verbs.c | 2 --
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Changelog v0->v1: https://lore.kernel.org/linux-rdma/20191006155955.31445-1-leon@kernel.org
+ * Reorganized patches to have IB/core changes separated from mlx5
+ * Moved SGL check before rdma_rw_force_mr
+ * Added and rephrased original comment.
 
-diff --git a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
-index 430314c8abd9..c317f6e18ea8 100644
---- a/drivers/infiniband/sw/siw/siw_qp.c
-+++ b/drivers/infiniband/sw/siw/siw_qp.c
-@@ -1305,6 +1305,7 @@ int siw_qp_add(struct siw_device *sdev, struct siw_qp *qp)
- void siw_free_qp(struct kref *ref)
- {
- 	struct siw_qp *found, *qp = container_of(ref, struct siw_qp, ref);
-+	struct siw_base_qp *siw_base_qp = to_siw_base_qp(qp->ib_qp);
- 	struct siw_device *sdev = qp->sdev;
- 	unsigned long flags;
- 
-@@ -1327,4 +1328,5 @@ void siw_free_qp(struct kref *ref)
- 	atomic_dec(&sdev->num_qp);
- 	siw_dbg_qp(qp, "free QP\n");
- 	kfree_rcu(qp, rcu);
-+	kfree(siw_base_qp);
- }
-diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-index 869e02b69a01..b18a677832e1 100644
---- a/drivers/infiniband/sw/siw/siw_verbs.c
-+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-@@ -604,7 +604,6 @@ int siw_verbs_modify_qp(struct ib_qp *base_qp, struct ib_qp_attr *attr,
- int siw_destroy_qp(struct ib_qp *base_qp, struct ib_udata *udata)
- {
- 	struct siw_qp *qp = to_siw_qp(base_qp);
--	struct siw_base_qp *siw_base_qp = to_siw_base_qp(base_qp);
- 	struct siw_ucontext *uctx =
- 		rdma_udata_to_drv_context(udata, struct siw_ucontext,
- 					  base_ucontext);
-@@ -641,7 +640,6 @@ int siw_destroy_qp(struct ib_qp *base_qp, struct ib_udata *udata)
- 	qp->scq = qp->rcq = NULL;
- 
- 	siw_qp_put(qp);
--	kfree(siw_base_qp);
- 
- 	return 0;
- }
--- 
-2.23.0.rc0
+-----------------------------------------------------------------------------
+Hi,
+
+This series from Yamin implements long standing "TODO" existed in rw.c.
+
+Thanks
+
+Yamin Friedman (3):
+  net/mlx5: Expose optimal performance scatter entries capability
+  RDMA/rw: Support threshold for registration vs scattering to local
+    pages
+  RDMA/mlx5: Add capability for max sge to get optimized performance
+
+ drivers/infiniband/core/rw.c      | 14 ++++++++------
+ drivers/infiniband/hw/mlx5/main.c |  2 ++
+ include/linux/mlx5/mlx5_ifc.h     |  2 +-
+ include/rdma/ib_verbs.h           |  2 ++
+ 4 files changed, 13 insertions(+), 7 deletions(-)
+
+--
+2.20.1
 
