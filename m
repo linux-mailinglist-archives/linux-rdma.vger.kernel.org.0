@@ -2,82 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C83CE479
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 15:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD829CE64D
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 17:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728085AbfJGN7r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Oct 2019 09:59:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727536AbfJGN7r (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 7 Oct 2019 09:59:47 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72EBE20867;
-        Mon,  7 Oct 2019 13:59:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570456787;
-        bh=174nUUEc39BnPNjnjG3coCMSkyWpv0morokgjS6xmCA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rUd+0Qi6Pt7+4Sre7hWSZNTcQy77wWwBSNlOiOI4HoilPh0ObZwWBCgmeB1VTUphO
-         5knyoyX/IM2BCrTXlK8P4eIa4nOnZA2tGZ9kLKOd1Gm/uGmoe5XuVuW2WuxyBVLtmX
-         4BoWx0epSWGQwIFxgKAlgKl7L8cCxenc54KKWuTQ=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
+        id S1727589AbfJGPAm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Oct 2019 11:00:42 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:45282 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727490AbfJGPAm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Oct 2019 11:00:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=durQ/zIFS+d7BPv+c4GQQ5x/qr95LXTfrUb9U1/mljA=; b=BUH6xrb6tYI919QXCcEWKU2+t
+        qBCgtnESE5DuMl9Zl9hKF7kF4HSIQ55yJCHrVZih7d6eFGHHByZyjg0mErqoB4M5aVkTaHb9UMWDl
+        hE8tp6q72xQjUKE2V6nXU8Hlmej20kafZ8Ub0zuvWKeNbQd8FfFP1jhHVPmO8C/yOsCfSeW/tJTAk
+        5ImFwh4iDyK6+ZMXr/gFdXeW2wK08oIWb4V2twuNI0h1lel0XcGDIJlgy0x2yMQDiOg7LSugE5MXW
+        L/CnCggpvWyOUIYaPZxp0rzXlvpv4TpPYgE0O7B/OvtWWdvSoaJWQYmQyGgPt/qHiRCrwT8UOYqqd
+        /UHryC6mg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.2 #3 (Red Hat Linux))
+        id 1iHUV7-0002nk-7M; Mon, 07 Oct 2019 15:00:41 +0000
+Date:   Mon, 7 Oct 2019 08:00:41 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Or Gerlitz <ogerlitz@mellanox.com>,
         Yamin Friedman <yaminf@mellanox.com>,
         Saeed Mahameed <saeedm@mellanox.com>,
         linux-netdev <netdev@vger.kernel.org>
-Subject: [PATCH rdma-next v2 3/3] RDMA/mlx5: Add capability for max sge to get optimized performance
-Date:   Mon,  7 Oct 2019 16:59:33 +0300
-Message-Id: <20191007135933.12483-4-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191007135933.12483-1-leon@kernel.org>
+Subject: Re: [PATCH rdma-next v2 2/3] RDMA/rw: Support threshold for
+ registration vs scattering to local pages
+Message-ID: <20191007150041.GA3702@infradead.org>
 References: <20191007135933.12483-1-leon@kernel.org>
+ <20191007135933.12483-3-leon@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191007135933.12483-3-leon@kernel.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yamin Friedman <yaminf@mellanox.com>
+>   */
+> +
+>  static inline bool rdma_rw_io_needs_mr(struct ib_device *dev, u8 port_num,
 
-Allows the IB device to provide a value of maximum scatter gather entries
-per RDMA READ.
+Same like an empty line sneaked in here.  Except for that the whole
+series looks fine:
 
-In certain cases it may be preferable for a device to perform UMR memory
-registration rather than have many scatter entries in a single RDMA READ.
-This provides a significant performance increase in devices capable of
-using different memory registration schemes based on the number of scatter
-gather entries. This general capability allows each device vendor to fine
-tune when it is better to use memory registration.
-
-Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
-Reviewed-by: Or Gerlitz <ogerlitz@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/mlx5/main.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index fa23c8e7043b..39d54e285ae9 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -1012,6 +1012,8 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
- 		1 << MLX5_CAP_GEN(mdev, log_max_klm_list_size);
- 	props->max_pi_fast_reg_page_list_len =
- 		props->max_fast_reg_page_list_len / 2;
-+	props->max_sgl_rd =
-+		MLX5_CAP_GEN(mdev, max_sgl_for_optimized_performance);
- 	get_atomic_caps_qp(dev, props);
- 	props->masked_atomic_cap   = IB_ATOMIC_NONE;
- 	props->max_mcast_grp	   = 1 << MLX5_CAP_GEN(mdev, log_max_mcg);
---
-2.20.1
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
