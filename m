@@ -2,83 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9B1CE2EB
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 15:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282DFCE473
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 15:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbfJGNRK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Oct 2019 09:17:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56302 "EHLO mail.kernel.org"
+        id S1727442AbfJGN7i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Oct 2019 09:59:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727490AbfJGNRK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 7 Oct 2019 09:17:10 -0400
+        id S1727536AbfJGN7h (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Oct 2019 09:59:37 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3BAD2084D;
-        Mon,  7 Oct 2019 13:17:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6C3D20684;
+        Mon,  7 Oct 2019 13:59:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570454229;
-        bh=xa5tCod28JJBbGcKVRTOQ0XJYf74j2f5L1PTRdyyON0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xt+kDFhqe4uP3NTWqLWDms9Z8oW3IU2k63m2IJt2PTzUhhnifzKXjaMdY4RIutQmo
-         yJphlQZa3HY0TZfdrxJ2DGDO/4gmcpDKMWn1TOMOWmyCtfLGdbe19uMVctp04NWtF/
-         L8PsvC0idol+8rGuJiHrytl3f5HqiAdv6/vaYN2c=
-Date:   Mon, 7 Oct 2019 16:17:06 +0300
+        s=default; t=1570456777;
+        bh=EgoY6K4XF7lSrEpX97ximQ3QyNxEnI7nfyRlB5Kyj/k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=L8Kk6oStL2jNDzc6VI/PEuucG/hjVvmMo1bhoU+f0xUJpg+vItlk3H85a13ns28an
+         67THK81vm0vdz+SpGRWflxxGhSSk+eiUML60s7bnU8cfTURlZ1LDWqPv/UQGNldvHr
+         DiyvqRMzUTxCRIJFEbIpwvJceidWEQCU3C0f+AZ4=
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
+To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Or Gerlitz <ogerlitz@mellanox.com>,
         Yamin Friedman <yaminf@mellanox.com>,
         Saeed Mahameed <saeedm@mellanox.com>,
         linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v1 2/3] RDMA/rw: Support threshold for
- registration vs scattering to local pages
-Message-ID: <20191007131706.GX5855@unreal>
-References: <20191007115819.9211-1-leon@kernel.org>
- <20191007115819.9211-3-leon@kernel.org>
- <20191007121244.GA19843@infradead.org>
- <20191007123656.GW5855@unreal>
- <20191007124831.GA20840@infradead.org>
+Subject: [PATCH rdma-next v2 0/3] Optimize SGL registration
+Date:   Mon,  7 Oct 2019 16:59:30 +0300
+Message-Id: <20191007135933.12483-1-leon@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191007124831.GA20840@infradead.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 07, 2019 at 05:48:31AM -0700, Christoph Hellwig wrote:
-> On Mon, Oct 07, 2019 at 03:36:56PM +0300, Leon Romanovsky wrote:
-> > > >  	if (rdma_protocol_iwarp(dev, port_num) && dir == DMA_FROM_DEVICE)
-> > > >  		return true;
-> > > > +	if (dev->attrs.max_sgl_rd && dir == DMA_FROM_DEVICE &&
-> > > > +	    dma_nents > dev->attrs.max_sgl_rd)
-> > > > +		return true;
-> > >
-> > > This can be simplified to:
-> > >
-> > > 	if (dir == DMA_FROM_DEVICE &&
-> > > 	    (rdma_protocol_iwarp(dev, port_num) ||
-> > > 	     (dev->attrs.max_sgl_rd && dma_nents > dev->attrs.max_sgl_rd)))
-> > > 		return true;
-> >
-> > I don't think that it simplifies and wanted to make separate checks to
-> > be separated. For example, rdma_protocol_iwarp() has nothing to do with
-> > attrs.max_sgl_rd.
->
-> The important bit is to have the DMA_FROM_DEVICE check only once, as
-> we only do the registration for reads with either parameter.  So if
-> you want it more verbose the wya would be:
->
->  	if (dir == DMA_FROM_DEVICE) {
-> 		if (rdma_protocol_iwarp(dev, port_num))
-> 			return true;
-> 		if (dev->attrs.max_sgl_rd && dma_nents > dev->attrs.max_sgl_rd)
-> 			return true;
-> 	}
+From: Leon Romanovsky <leonro@mellanox.com>
 
-I'm doing it now, Thank you for taking time to explain.
+Changelog
+v1->v2: https://lore.kernel.org/linux-rdma/20191007115819.9211-1-leon@kernel.org
+ * Used Christoph's comment
+ * Change patch code flow to have one DMA_FROM_DEVICE check
+v0->v1: https://lore.kernel.org/linux-rdma/20191006155955.31445-1-leon@kernel.org
+ * Reorganized patches to have IB/core changes separated from mlx5
+ * Moved SGL check before rdma_rw_force_mr
+ * Added and rephrased original comment.
+
+-----------------------------------------------------------------------------
+Hi,
+
+This series from Yamin implements long standing "TODO" existed in rw.c.
+
+Thanks
+
+Yamin Friedman (3):
+  net/mlx5: Expose optimal performance scatter entries capability
+  RDMA/rw: Support threshold for registration vs scattering to local
+    pages
+  RDMA/mlx5: Add capability for max sge to get optimized performance
+
+ drivers/infiniband/core/rw.c      | 25 +++++++++++++++----------
+ drivers/infiniband/hw/mlx5/main.c |  2 ++
+ include/linux/mlx5/mlx5_ifc.h     |  2 +-
+ include/rdma/ib_verbs.h           |  2 ++
+ 4 files changed, 20 insertions(+), 11 deletions(-)
+
+--
+2.20.1
+
