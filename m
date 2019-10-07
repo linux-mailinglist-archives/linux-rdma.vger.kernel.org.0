@@ -2,115 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2A1CE7A2
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 17:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF77ECE7FD
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 17:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728634AbfJGPdo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Oct 2019 11:33:44 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:32812 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728594AbfJGPdo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Oct 2019 11:33:44 -0400
-Received: by mail-wr1-f67.google.com with SMTP id b9so15900607wrs.0;
-        Mon, 07 Oct 2019 08:33:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=quR8Kb6GAk4jYImEGkDjHBYeMyfZIdQBv2DrxYLvF70=;
-        b=c7lu6Yh4SW2Tvuh1xafLP92jKbiNAvuBg/Km9vd0KvZU2E11+TBSVwgc3WkiZ/6GeG
-         OMD89f1fH4nrgXTqmewRdrimBHyGFLGFKhNTmCzVClKy/HbvAwz5w4mlL+IVRMQCTz10
-         w1XeN9pM4v/P9F0cC5BAE38SgX/rmuGkKEvFK0M0wDbKCr9fMFJduL5aLgwtmJu/HCUD
-         6DJot7eTO+zB+slgYRwaG30RBBGpQ0NcW0wtW6b4Io3NSOS7ho1aA/VKEQHq8ltDWgzX
-         13XSYOlp6u4QQ1/acZA8CeqSwl21x9EWYa2o7ghUB8UqvfmxtfQrxYgm+rBDK4NY3Ew1
-         iafA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=quR8Kb6GAk4jYImEGkDjHBYeMyfZIdQBv2DrxYLvF70=;
-        b=HsSPnQ3C7gGorDJZN3aPQzC7h69lwPkBuW7Zj4jnilP5FSKq+4WO+pFQaIu4zCKd+P
-         e2ldN4IabiOBS8X1XIo6e/+vruk4nK1F7BZ5oczPmc4TGtJTdpmK/M2FAT42BANDJhlY
-         jCaZGrKDtjSMMNd/SKjhHSdwTAIQ33v54ppfoRh8lEZLDTOIOfUt49vWLEwIZuxBl2j/
-         8w3SbeM46iK5qoDgMpIQsBHD/AMeUWIIyrOtYjWOyBzkmaUiup+sh3JCFxOKo8FSjn9h
-         Qt0EM9fXUErTQoFUu44ar/f5aIvZEgWgKkVE0uiTZ32bIoIf/iR45Ru7phHImHFeUnC5
-         /5HQ==
-X-Gm-Message-State: APjAAAU7DBhnrawTQbdWIkj4q8iY20vlRlHs7raZRUd7YMpTgycHBKKp
-        m3qjNnSBBkoU6HoV10rxwPE=
-X-Google-Smtp-Source: APXvYqz1lvbhYIE/Ji8FSRU355cLZvKRKQCsmcdWrQVr8/9Glty+Il7foi680QdDddETmlMfQpbxHQ==
-X-Received: by 2002:adf:dcd2:: with SMTP id x18mr22950157wrm.220.1570462422220;
-        Mon, 07 Oct 2019 08:33:42 -0700 (PDT)
-Received: from gmail.com (2E8B0CD5.catv.pool.telekom.hu. [46.139.12.213])
-        by smtp.gmail.com with ESMTPSA id a2sm21763670wrt.45.2019.10.07.08.33.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Oct 2019 08:33:41 -0700 (PDT)
-Date:   Mon, 7 Oct 2019 17:33:39 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     akpm@linux-foundation.org, walken@google.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH 11/11] x86/mm, pat: convert pat tree to generic interval
- tree
-Message-ID: <20191007153339.GA95072@gmail.com>
-References: <20191003201858.11666-1-dave@stgolabs.net>
- <20191003201858.11666-12-dave@stgolabs.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191003201858.11666-12-dave@stgolabs.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727970AbfJGPlU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Oct 2019 11:41:20 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:53456 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727791AbfJGPlU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Oct 2019 11:41:20 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x97FOhFf123592
+        for <linux-rdma@vger.kernel.org>; Mon, 7 Oct 2019 15:41:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : content-type :
+ content-transfer-encoding : mime-version : subject : message-id : date :
+ to; s=corp-2019-08-05; bh=wDe6WDN2tpCHdPDPzQ1+dVjdfkPEFDMeZpLadoDzLGw=;
+ b=S3SVPOHipVFf8R171vxvrMqqx/uKQMnlgX2H79CDtxu7y08zd5Tt0SxxEk0yRrOt9mSF
+ TEq44wXP4DRsxyF9P0TMyqdJ7/fY/OYvuXB1cuKdt8TuTrobO/PfTF8rrLWfetjW+WsR
+ aYG9c/Pjr5xjzhVdNJUPJPYgqZgJBEoQbEGuX5PE05nKbLIx/cTggtR8m7DPxlJTAX7n
+ +YiQ691KeBTMjWTpx78LNegvN7rFiLPwKOupHmhC+f521TJzF6mzlDcA2Am1ChieKa46
+ ZTvSZV/S+VuTFBrqkR7Zskpc1KvJDamG6lgCx7R4pVChgAdy5bS3oISNSnPl9x4EU/un YQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2vek4q7kjx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-rdma@vger.kernel.org>; Mon, 07 Oct 2019 15:41:19 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x97FOajn044229
+        for <linux-rdma@vger.kernel.org>; Mon, 7 Oct 2019 15:41:18 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2vf4n9ft74-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-rdma@vger.kernel.org>; Mon, 07 Oct 2019 15:41:18 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x97FfHN0005377
+        for <linux-rdma@vger.kernel.org>; Mon, 7 Oct 2019 15:41:17 GMT
+Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Oct 2019 08:41:17 -0700
+From:   Chuck Lever <chuck.lever@oracle.com>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: unregister_device messages at shutdown (v5.4-rc)
+Message-Id: <6D3E730A-ED56-4AA9-9BAC-8AD31BB915BB@oracle.com>
+Date:   Mon, 7 Oct 2019 11:41:13 -0400
+To:     linux-rdma <linux-rdma@vger.kernel.org>
+X-Mailer: Apple Mail (2.3445.104.11)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9403 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=804
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910070152
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9403 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=886 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910070152
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Not quite sure where to report this.
 
-* Davidlohr Bueso <dave@stgolabs.net> wrote:
+Since v5.4-rc1, at shutdown I'm seeing a hang with this message repeated
+in /var/log/messages:
 
-> With some considerations, the custom pat_rbtree implementation can be
-> simplified to use most of the generic interval_tree machinery.
-> 
-> o The tree inorder traversal can slightly differ when there are key
-> ('start') collisions in the tree due to one going left and another right.
-> This, however, only affects the output of debugfs' pat_memtype_list file.
-> 
-> o Generic interval trees are now semi open [a,b), which suits well with
-> what pat wants.
-> 
-> o Erasing logic must remain untouched as well.
-> 
-> In order for the types to remain u64, the 'memtype_interval' calls are
-> introduced, as opposed to simply using struct interval_tree.
-> 
-> In addition, pat tree might potentially also benefit by the fast overlap
-> detection for the insertion case when looking up the first overlapping node
-> in the tree.
-> 
-> Finally, I've tested this on various servers, via sanity warnings, running
-> side by side with the current version and so far see no differences in the
-> returned pointer node when doing memtype_rb_lowest_match() lookups.
-> 
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: x86@kernel.org
-> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
-> ---
->  arch/x86/mm/pat.c        |  22 +++----
->  arch/x86/mm/pat_rbtree.c | 151 ++++++++++-------------------------------------
->  2 files changed, 43 insertions(+), 130 deletions(-)
+unregister_netdevice: waiting for ens1f0 to become free. Usage count =3D =
+1
 
-I suppose this will be carried in -mm?
+Google turns up this particular failure off and on for the past few =
+years
+from various network devices. It's currently 100% reproducible on my =
+rig.
 
-If so and if this patch is regression free, then:
+ens1f0 is a FastLinq NIC in iWARP mode:
 
-  Acked-by: Ingo Molnar <mingo@kernel.org>
+01:00.0 Ethernet controller: QLogic Corp. FastLinQ QL41000 Series =
+10/25/40/50GbE Controller (rev 02)
+        Subsystem: QLogic Corp. FastLinQ QL41212H 25GbE Adapter
 
-Thanks,
-	
-	Ingo
+3: ens1f0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 9216 qdisc mq state =
+DOWN group default qlen 1000
+    link/ether f4:e9:d4:72:49:f2 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.100.51/24 brd 192.168.100.255 scope global ens1f0
+       valid_lft forever preferred_lft forever
+
+(the network switch is powered off at the moment).
+
+
+--
+Chuck Lever
+
+
+
