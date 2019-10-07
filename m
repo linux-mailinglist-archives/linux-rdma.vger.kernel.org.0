@@ -2,35 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 559CBCDC46
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 09:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B24ACDC9C
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 09:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbfJGHND (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Oct 2019 03:13:03 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:38238 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbfJGHND (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Oct 2019 03:13:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=CUxXi74mQTtzR35BL4cV3ysUkx+e3F2IaA4sSCsQ1w0=; b=oaiTg5Jfr2qIin/88nwbfCE7L
-        uhSnvSqzmK92pzaP5TgWj+s9a75vvEh2WTyGFBq4bhJrlnynwHbU6MJDw92N4uvtFA/XTgVZ2sRar
-        +GHtKq29NR4QVhZlPlaj3AY+LXRCiwQhD2DCZmZ2Lda/GPpBclR50eyUgalEWkJQdQ8D8DNQCb87W
-        E0K+B8kAF86E86Fi+znk75LfDnUzoWIsIz6IaSUl3fnnIbwNVdjJ1OdxoCC0HL3dvuls8rhokz8XM
-        budvjyIpXpmxb/cwu6rzcL/8BeL3KKXhtczOgAcpoNgKG27XwdGx4+raO+5PaSaArqKh7QxnGyREn
-        EKTCOsbkA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.2 #3 (Red Hat Linux))
-        id 1iHNCY-0003wh-6k; Mon, 07 Oct 2019 07:13:02 +0000
-Date:   Mon, 7 Oct 2019 00:13:02 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Leon Romanovsky <leon@kernel.org>
+        id S1727103AbfJGHyN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Oct 2019 03:54:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727028AbfJGHyN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Oct 2019 03:54:13 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58AD62133F;
+        Mon,  7 Oct 2019 07:54:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570434853;
+        bh=9YOtX4I/ANs5lGe3LFcwFOESe39eOkgj8iMoqlcF+18=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2A3gNbUSccEJ41EqYprROoxzZ6bTrI47DYRdbPbYsCQYZ9/HH82SZ4qFfBCG53Tg+
+         Nepd/ZSNykUvNWOtl/ajpGBxZfeWbMOeFVviVH7UExQ8K/pUzFVJ2BqUNDFeYPGAgW
+         cc1ebvt2YzulycTZtt+6F0yjDFH5Y0LwZCt6br8Q=
+Date:   Mon, 7 Oct 2019 10:54:09 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
 Cc:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Or Gerlitz <ogerlitz@mellanox.com>,
         Yamin Friedman <yaminf@mellanox.com>,
@@ -38,31 +35,36 @@ Cc:     Doug Ledford <dledford@redhat.com>,
         linux-netdev <netdev@vger.kernel.org>
 Subject: Re: [PATCH rdma-next 2/3] RDMA/mlx5: Add capability for max sge to
  get optimized performance
-Message-ID: <20191007071302.GA15034@infradead.org>
+Message-ID: <20191007075409.GU5855@unreal>
 References: <20191006155955.31445-1-leon@kernel.org>
  <20191006155955.31445-3-leon@kernel.org>
+ <20191007071302.GA15034@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191006155955.31445-3-leon@kernel.org>
+In-Reply-To: <20191007071302.GA15034@infradead.org>
 User-Agent: Mutt/1.12.1 (2019-06-15)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Oct 06, 2019 at 06:59:54PM +0300, Leon Romanovsky wrote:
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index 4f671378dbfc..60fd98a9b7e8 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -445,6 +445,8 @@ struct ib_device_attr {
->  	struct ib_tm_caps	tm_caps;
->  	struct ib_cq_caps       cq_caps;
->  	u64			max_dm_size;
-> +	/* Max entries for sgl for optimized performance per READ */
-> +	u32			max_sgl_rd;
+On Mon, Oct 07, 2019 at 12:13:02AM -0700, Christoph Hellwig wrote:
+> On Sun, Oct 06, 2019 at 06:59:54PM +0300, Leon Romanovsky wrote:
+> > diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> > index 4f671378dbfc..60fd98a9b7e8 100644
+> > --- a/include/rdma/ib_verbs.h
+> > +++ b/include/rdma/ib_verbs.h
+> > @@ -445,6 +445,8 @@ struct ib_device_attr {
+> >  	struct ib_tm_caps	tm_caps;
+> >  	struct ib_cq_caps       cq_caps;
+> >  	u64			max_dm_size;
+> > +	/* Max entries for sgl for optimized performance per READ */
+> > +	u32			max_sgl_rd;
+>
+> This either needs to go into what current is patch 3 or an entirely
+> separate one.
 
-This either needs to go into what current is patch 3 or an entirely
-separate one.
+I'll reshuffle.
+
+Thanks
