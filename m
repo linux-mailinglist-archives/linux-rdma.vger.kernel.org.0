@@ -2,105 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6120BCE16B
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 14:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A234CE1DE
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Oct 2019 14:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727608AbfJGMS6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Oct 2019 08:18:58 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:41036 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727536AbfJGMS6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Oct 2019 08:18:58 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x97CEu7C143489;
-        Mon, 7 Oct 2019 12:18:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=/UOOc1cATzBwlPLu/8Sz73f+GGsqx83AY5fORC6N2rw=;
- b=YY52EU6E9j39+xDs0clyylXViFHdLWF8fquciX/gkrS7ysfXoA5oko4JS6lmFS04qohh
- /7aqxdTuykCIg52zegrmiECBoiZlwG/AX0onyhOYOT5vcG7V3p72isvI7bOD3z7RUq0m
- lKehiA9D09i/+9HEshNZ6EmbdgbtDrmL1n/V194TNJdt440x+Qjpp5Db7oPV/UEIi/vO
- kRiN5+TNKMLerHYfwjqDlitTQAenRxzSXZNwSJq5Cp9KsXVbX/QljrD/wQvhekXgJ0Mo
- gSJtXB35ZIIYRRg1gR0qlaP26qLXs7/RJqohxYlCN/m78w4vv2EYJkgmwOG7DxuDzU7J rg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2vek4q69qd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 07 Oct 2019 12:18:40 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x97CIQMQ055176;
-        Mon, 7 Oct 2019 12:18:39 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 2vg1ytssh9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 07 Oct 2019 12:18:39 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x97CIc9n009673;
-        Mon, 7 Oct 2019 12:18:38 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 07 Oct 2019 05:18:37 -0700
-Date:   Mon, 7 Oct 2019 15:18:22 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Lijun Ou <oulijun@huawei.com>
-Cc:     "Wei Hu(Xavier)" <xavier.huwei@huawei.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] RDMA/hns: prevent undefined behavior in
- hns_roce_set_user_sq_size()
-Message-ID: <20191007121821.GI21515@kadam>
-References: <20190608092514.GC28890@mwanda>
+        id S1727715AbfJGMhA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Oct 2019 08:37:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727467AbfJGMhA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 7 Oct 2019 08:37:00 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CDDD21655;
+        Mon,  7 Oct 2019 12:36:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570451819;
+        bh=KbrfUILisgZfU+U/a7mv6OG2qRS311DhSAdU6VQp+lQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ESuZ98AWJ6z0c/ECqNw6QJwwqGm+nIcU+RMnrQ1F8TOh6OOpIbUMwQ4ekDTR2k48B
+         ycA6/6U6lkBhEUMGnKsn333VBszbzp9PS1YD7OZ0NHGjgRg0uqbk1ADkXgH2jwgavN
+         evUlk4f/YCqmerDGnhQXHu9oxpJIV/GjQC5BUuUo=
+Date:   Mon, 7 Oct 2019 15:36:56 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v1 2/3] RDMA/rw: Support threshold for
+ registration vs scattering to local pages
+Message-ID: <20191007123656.GW5855@unreal>
+References: <20191007115819.9211-1-leon@kernel.org>
+ <20191007115819.9211-3-leon@kernel.org>
+ <20191007121244.GA19843@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190608092514.GC28890@mwanda>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9402 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910070123
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9402 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910070122
+In-Reply-To: <20191007121244.GA19843@infradead.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This one still needs to be applied.
+On Mon, Oct 07, 2019 at 05:12:44AM -0700, Christoph Hellwig wrote:
+> Sorry for nitpicking again, but..
+>
+> On Mon, Oct 07, 2019 at 02:58:18PM +0300, Leon Romanovsky wrote:
+> > @@ -37,15 +39,15 @@ static inline bool rdma_rw_can_use_mr(struct ib_device *dev, u8 port_num)
+> >   * Check if the device will use memory registration for this RW operation.
+> >   * We currently always use memory registrations for iWarp RDMA READs, and
+> >   * have a debug option to force usage of MRs.
+> > - *
+> > - * XXX: In the future we can hopefully fine tune this based on HCA driver
+> > - * input.
+>
+> The above comment needs an updated a la:
+>
+>  * Check if the device will use memory registration for this RW operation.
+>  * For RDMA READs we must use MRs on iWarp and can optionaly use them as an
+>  * optimaztion otherwise.  Additionally we have a debug option to force usage
+>  * of MRs to help testing this code path.
+>
+>
+> >  	if (rdma_protocol_iwarp(dev, port_num) && dir == DMA_FROM_DEVICE)
+> >  		return true;
+> > +	if (dev->attrs.max_sgl_rd && dir == DMA_FROM_DEVICE &&
+> > +	    dma_nents > dev->attrs.max_sgl_rd)
+> > +		return true;
+>
+> This can be simplified to:
+>
+> 	if (dir == DMA_FROM_DEVICE &&
+> 	    (rdma_protocol_iwarp(dev, port_num) ||
+> 	     (dev->attrs.max_sgl_rd && dma_nents > dev->attrs.max_sgl_rd)))
+> 		return true;
 
-regards,
-dan carpenter
+I don't think that it simplifies and wanted to make separate checks to
+be separated. For example, rdma_protocol_iwarp() has nothing to do with
+attrs.max_sgl_rd.
 
-On Sat, Jun 08, 2019 at 12:25:14PM +0300, Dan Carpenter wrote:
-> The "ucmd->log_sq_bb_count" variable is a user controlled variable in
-> the 0-255 range.  If we shift more than then number of bits in an int
-> then it's undefined behavior (it shift wraps).  It turns out this
-> doesn't cause any real issues at runtime, but it's good to check anyway.
-> 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_qp.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> index 8db2817a249e..006b3e7f4ed5 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> @@ -342,7 +342,8 @@ static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
->  	u32 max_cnt;
->  
->  	/* Sanity check SQ size before proceeding */
-> -	if ((u32)(1 << ucmd->log_sq_bb_count) > hr_dev->caps.max_wqes ||
-> +	if (ucmd->log_sq_bb_count > 31 ||
-> +	    (u32)(1 << ucmd->log_sq_bb_count) > hr_dev->caps.max_wqes ||
->  	     ucmd->log_sq_stride > max_sq_stride ||
->  	     ucmd->log_sq_stride < HNS_ROCE_IB_MIN_SQ_STRIDE) {
->  		dev_err(hr_dev->dev, "check SQ size error!\n");
-> -- 
-> 2.20.1
+I'll fix comment.
+
+Thanks
