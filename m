@@ -2,178 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57AAACF44E
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2019 09:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73382CF534
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2019 10:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730218AbfJHHwP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Oct 2019 03:52:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730177AbfJHHwP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 8 Oct 2019 03:52:15 -0400
-Received: from localhost (unknown [77.137.89.37])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AF30206BB;
-        Tue,  8 Oct 2019 07:52:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570521134;
-        bh=eqQUq8n+2nr36mfjdnaJJaHrzFs7zZEI9uDV4qBzThQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u1XdiLey5Ait7LPtRfT0L8gvyWqDSC1tEswTh/bcjpfkyXfhtN/n4eBZghUmGCAQW
-         ARBPb8wp/ZdPAJ6P6Tn3MhRfO98ZFi58AUmxLzPV82WX1WgM7A7wdnuj4PkkSyAWru
-         xmotTfywrS9k6Wfn1avfFvebuwD4CVBuIncA4rdY=
-Date:   Tue, 8 Oct 2019 10:52:10 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Parav Pandit <parav@mellanox.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 2/2] RDMA/core: Check that process is still
- alive before sending it to the users
-Message-ID: <20191008075210.GF5855@unreal>
-References: <20191002123245.18153-1-leon@kernel.org>
- <20191002123245.18153-3-leon@kernel.org>
- <AM0PR05MB4866CB24D8105C83B31988A3D19B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+        id S1728866AbfJHInN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Oct 2019 04:43:13 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2429 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729767AbfJHInN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 8 Oct 2019 04:43:13 -0400
+Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.55])
+        by Forcepoint Email with ESMTP id BF1B2B152279FE775659;
+        Tue,  8 Oct 2019 16:43:10 +0800 (CST)
+Received: from DGGEML423-HUB.china.huawei.com (10.1.199.40) by
+ DGGEML404-HUB.china.huawei.com (10.3.17.39) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 8 Oct 2019 16:43:10 +0800
+Received: from DGGEML522-MBX.china.huawei.com ([169.254.7.8]) by
+ dggeml423-hub.china.huawei.com ([10.1.199.40]) with mapi id 14.03.0439.000;
+ Tue, 8 Oct 2019 16:43:03 +0800
+From:   liweihang <liweihang@hisilicon.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>
+Subject: RE: [PATCH for-next 3/9] RDMA/hns: Completely release qp resources
+        when hw err
+Thread-Topic: [PATCH for-next 3/9] RDMA/hns: Completely release qp resources
+        when hw err
+Thread-Index: AQHVUSLjL8u375XtlUemFDafjnojDKb5o2qAgACXgQCAAD4ugIAHyKoAgE6DVBA=
+Date:   Tue, 8 Oct 2019 08:43:02 +0000
+Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A020DA8C3@DGGEML522-MBX.china.huawei.com>
+References: <1565343666-73193-1-git-send-email-oulijun@huawei.com>
+        <1565343666-73193-4-git-send-email-oulijun@huawei.com>
+        <f49c56933205d90d82ffd3fa55a951843e22cda1.camel@redhat.com>
+        <0d325f78-a929-f088-cc29-e2c7af98fd40@huawei.com>
+        <f1609a31d9b0d1cdc3b2db38dda1543126755007.camel@redhat.com>
+        <20190814184737.GB5893@mtr-leonro.mtl.com>
+ <3d51b645485b861ff7b20108c638de37e29b4c0f.camel@redhat.com>
+In-Reply-To: <3d51b645485b861ff7b20108c638de37e29b4c0f.camel@redhat.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.40.168.149]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM0PR05MB4866CB24D8105C83B31988A3D19B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 07, 2019 at 06:58:13PM +0000, Parav Pandit wrote:
->
->
-> > -----Original Message-----
-> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> > owner@vger.kernel.org> On Behalf Of Leon Romanovsky
-> > Sent: Wednesday, October 2, 2019 7:33 AM
-> > To: Doug Ledford <dledford@redhat.com>; Jason Gunthorpe
-> > <jgg@mellanox.com>
-> > Cc: Leon Romanovsky <leonro@mellanox.com>; RDMA mailing list <linux-
-> > rdma@vger.kernel.org>
-> > Subject: [PATCH rdma-next 2/2] RDMA/core: Check that process is still alive
-> > before sending it to the users
-> >
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> >
-> > The PID information can disappear asynchronically because task can be killed
-> > and moved to zombie state. In such case, PID will be zero in similar way to the
-> > kernel tasks. Recognize such situation where we are asking to return orphaned
-> > object and simply skip filling PID attribute.
-> >
-> > As part of this change, document the same scenario in counter.c code.
-> >
-> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> > ---
-> >  drivers/infiniband/core/counters.c | 14 ++++++++++++--
-> >  drivers/infiniband/core/nldev.c    | 31 ++++++++++++++++++++++--------
-> >  2 files changed, 35 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/core/counters.c
-> > b/drivers/infiniband/core/counters.c
-> > index 12ba2685abcf..47c551a0bcb0 100644
-> > --- a/drivers/infiniband/core/counters.c
-> > +++ b/drivers/infiniband/core/counters.c
-> > @@ -149,8 +149,18 @@ static bool auto_mode_match(struct ib_qp *qp, struct
-> > rdma_counter *counter,
-> >  	struct auto_mode_param *param = &counter->mode.param;
-> >  	bool match = true;
-> >
-> > -	/* Ensure that counter belongs to the right PID */
-> > -	if (task_pid_nr(counter->res.task) != task_pid_nr(qp->res.task))
-> > +	/*
-> > +	 * Ensure that counter belongs to the right PID.
-> > +	 * This operation can race with user space which kills
-> > +	 * the process and leaves QP and counters orphans.
-> > +	 *
-> > +	 * It is not a big deal because exitted task will leave both
-> > +	 * QP and counter in the same bucket of zombie process. Just ensure
-> > +	 * that process is still alive before procedding.
-> > +	 *
-> > +	 */
-> > +	if (task_pid_nr(counter->res.task) != task_pid_nr(qp->res.task) ||
-> > +	    !task_pid_nr(qp->res.task))
-> >  		return false;
-> >
-> >  	if (auto_mask & RDMA_COUNTER_MASK_QP_TYPE) diff --git
-> > a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c index
-> > 71bc08510064..c6fe0c52f6dc 100644
-> > --- a/drivers/infiniband/core/nldev.c
-> > +++ b/drivers/infiniband/core/nldev.c
-> > @@ -399,20 +399,35 @@ static int fill_res_info(struct sk_buff *msg, struct
-> > ib_device *device)  static int fill_res_name_pid(struct sk_buff *msg,
-> >  			     struct rdma_restrack_entry *res)  {
-> > +	int err = 0;
-> > +	pid_t pid;
-> > +
-> >  	/*
-> >  	 * For user resources, user is should read /proc/PID/comm to get the
-> >  	 * name of the task file.
-> >  	 */
-> >  	if (rdma_is_kernel_res(res)) {
-> > -		if (nla_put_string(msg,
-> > RDMA_NLDEV_ATTR_RES_KERN_NAME,
-> > -		    res->kern_name))
-> > -			return -EMSGSIZE;
-> > -	} else {
-> > -		if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PID,
-> > -		    task_pid_vnr(res->task)))
-> > -			return -EMSGSIZE;
-> > +		err = nla_put_string(msg,
-> > RDMA_NLDEV_ATTR_RES_KERN_NAME,
-> > +				     res->kern_name);
-> > +		goto out;
-> >  	}
-> > -	return 0;
-> > +
-> > +	pid = task_pid_vnr(res->task);
-> > +	/*
-> > +	 * PID == 0 returns in two scenarios:
-> > +	 * 1. It is kernel task, but because we checked above, it won't be
-> > possible.
-> Please drop above comment point 1. See more below.
->
-> > +	 * 2. Task is dead and in zombie state. There is no need to print PID
-> > anymore.
-> > +	 */
-> > +	if (pid)
-> > +		/*
-> > +		 * This part is racy, task can be killed and PID will be zero right
-> > +		 * here but it is ok, next query won't return PID. We don't
-> > promise
-> > +		 * real-time reflection of SW objects.
-> > +		 */
-> > +		err = nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PID, pid);
-> > +
-> > +out:
-> > +	return err ? -EMSGSIZE : 0;
-> >  }
->
-> Below code reads better along with rest of the comments in the patch.
->
-> if (kern_resource) {
-> 	err = nla_put_string(msg, RDMA_NLDEV_ATTR_RES_KERN_NAME,
-> 			     res->kern_name);
-> } else {
-> 	pid_t pid;
->
-> 	pid = task_pid_vnr(res->task);
-> 	if (pid)
-> 		err = nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PID, pid);
-> }
-
-Why do you think that nested "if" reads better?
-
-Thanks
-
->
-> >
-> >  static bool fill_res_entry(struct ib_device *dev, struct sk_buff *msg,
-> > --
-> > 2.20.1
->
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGludXhhcm0gW21haWx0
+bzpsaW51eGFybS1ib3VuY2VzQGh1YXdlaS5jb21dIE9uIEJlaGFsZiBPZiBEb3VnDQo+IExlZGZv
+cmQNCj4gU2VudDogVHVlc2RheSwgQXVndXN0IDIwLCAyMDE5IDE6NDAgQU0NCj4gVG86IExlb24g
+Um9tYW5vdnNreSA8bGVvbkBrZXJuZWwub3JnPg0KPiBDYzogbGludXgtcmRtYUB2Z2VyLmtlcm5l
+bC5vcmc7IExpbnV4YXJtIDxsaW51eGFybUBodWF3ZWkuY29tPjsNCj4gamdnQHppZXBlLmNhDQo+
+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggZm9yLW5leHQgMy85XSBSRE1BL2huczogQ29tcGxldGVseSBy
+ZWxlYXNlIHFwDQo+IHJlc291cmNlcyB3aGVuIGh3IGVycg0KPiANCj4gT24gV2VkLCAyMDE5LTA4
+LTE0IGF0IDIxOjQ3ICswMzAwLCBMZW9uIFJvbWFub3Zza3kgd3JvdGU6DQo+ID4gT24gV2VkLCBB
+dWcgMTQsIDIwMTkgYXQgMTE6MDU6MDRBTSAtMDQwMCwgRG91ZyBMZWRmb3JkIHdyb3RlOg0KPiA+
+ID4gT24gV2VkLCAyMDE5LTA4LTE0IGF0IDE0OjAyICswODAwLCBZYW5neWFuZyBMaSB3cm90ZToN
+Cj4gPiA+ID4gPiBJIGRvbid0IGtub3cgeW91ciBoYXJkd2FyZSwgYnV0IHRoaXMgcGF0Y2ggc291
+bmRzDQo+ID4gPiA+ID4gd3JvbmcvZGFuZ2Vyb3VzIHRvIG1lLg0KPiA+ID4gPiA+IEFzIGxvbmcg
+YXMgdGhlIHJlc291cmNlcyB0aGlzIGNhcmQgbWlnaHQgYWNjZXNzIGFyZSBhbGxvY2F0ZWQgYnkN
+Cj4gPiA+ID4gPiB0aGUga2VybmVsLCB5b3UgY2FuJ3QgZ2V0IHJhbmRvbSBkYXRhIGNvcnJ1cHRp
+b24gYnkgdGhlIGNhcmQNCj4gPiA+ID4gPiB3cml0aW5nIHRvIG1lbW9yeSB1c2VkIGVsc2V3aGVy
+ZSBpbiB0aGUga2VybmVsLiAgU28gaWYgeW91ciBjYXJkDQo+ID4gPiA+ID4gaXMgbm90IHJlc3Bv
+bmRpbmcgdG8geW91ciByZXF1ZXN0cyB0byBmcmVlIHRoZSByZXNvdXJjZXMsIGl0DQo+ID4gPiA+
+ID4gd291bGQgc2VlbSBzYWZlciB0byBsZWFrIHRob3NlIHJlc291cmNlcyBwZXJtYW5lbnRseSB0
+aGFuIHRvDQo+ID4gPiA+ID4gZnJlZSB0aGVtIGFuZCByaXNrIHRoZSBjYXJkIGNvbWluZyBiYWNr
+IHRvIGxpZmUgbG9uZyBlbm91Z2ggdG8NCj4gPiA+ID4gPiBjb3JydXB0IG1lbW9yeSByZWFsbG9j
+YXRlZCB0byBzb21lIG90aGVyIHRhc2suDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBPbmx5IGlmIHlv
+dSBjYW4gZ3VhcmFudGVlIG1lIHRoYXQgdGhlcmUgaXMgbm8gd2F5IHlvdXIgY29tbWFuZHMNCj4g
+PiA+ID4gPiB0byB0aGUgY2FyZCB3aWxsIGZhaWwgYW5kIHRoZW4gdGhlIGNhcmQgc3RhcnQgd29y
+a2luZyBhZ2Fpbg0KPiA+ID4gPiA+IGxhdGVyIHdvdWxkIEkgY29uc2lkZXIgdGhpcyBwYXRjaCBz
+YWZlLiAgQW5kIGlmIGl0J3MgcG9zc2libGUNCj4gPiA+ID4gPiBmb3IgdGhlIGNhcmQgdG8gaGFu
+ZyBsaWtlIHRoaXMsIHNob3VsZCB0aGF0IGJlIHRyaWdnZXJpbmcgYQ0KPiA+ID4gPiA+IHJlc2V0
+IG9mIHRoZSBkZXZpY2U/DQo+ID4gPiA+ID4NCj4gPiA+ID4NCj4gPiA+ID4gVGhhbmtzIGZvciB5
+b3VyIHN1Z2dlc3Rpb24sIEkgYWdyZWUgd2l0aCB5b3UsIGl0IHdvdWxkIHNlZW0gc2FmZXINCj4g
+PiA+ID4gdG8gbGVhayB0aG9zZSByZXNvdXJjZXMgcGVybWFuZW50bHkgdGhhbiB0byBmcmVlIHRo
+ZW0uIEkgd2lsbA0KPiA+ID4gPiBhYmFuZG9uIHRoaXMgY2hhbmdlIGFuZCBjb25zaWRlciBjbGVh
+bmluZyB1cCB0aGVzZSBsZWFrZWQNCj4gPiA+ID4gcmVzb3VyY2VzIGR1cmluZyB1bmluc3RhbGxh
+dGlvbiBvciByZXNldC4NCj4gPiA+DQo+ID4gPiBPaywgcGF0Y2ggZHJvcHBlZCBmcm9tIHBhdGNo
+d29ya3MsIHRoYW5rcy4NCj4gPg0KPiA+IFNvcnJ5IGZvciBiZWluZyBsYXRlLCBidXQgSSBkb24n
+dCBsaWtlIHRoZSBpZGVhIG9mIGhhdmluZyBsZWFrZWQNCj4gPiBtZW1vcnkuDQo+ID4NCj4gPiBB
+bGwgbXkgYWxsb2NhdGlvbiBwYXRjaGVzIGFyZSBhY3R1YWxseSB0cnlpbmcgdG8gYXZvaWQgc3Vj
+aCBzaXR1YXRpb24NCj4gPiBieSBlbnN1cmluZyB0aGF0IG5vIGRyaXZlciBkb2VzIGNyYXp5IHN0
+dWZmIGxpa2UgdGhpcy4gSXQgbWVhbnMgdGhhdA0KPiA+IG9uY2UgSSdsbCBoYXZlIHRpbWUgdG8g
+d29yayBvbiBRUCBhbGxvY2F0aW9ucywgSSdsbCBlbnN1cmUgdGhhdCBtZW1vcnkNCj4gPiBpcyBm
+cmVlZCwgc28gaXQgaXMgYmV0dGVyIHRvIGZyZWUgc3VjaCBtZW1vcnkgbm93Lg0KPiANCj4gWW91
+IGNhbid0IGZyZWUgc29tZXRoaW5nIGlmIHRoZSBjYXJkIG1pZ2h0IHN0aWxsIGFjY2VzcyBpdC4g
+IEEgbGVhayBpcyBhbHdheXMNCj4gcHJlZmVyYWJsZSB0byBkYXRhIGNvcnJ1cHRpb24uDQo+IA0K
+DQpIaSBEb3VnLA0KDQpXZSBjYW4gY29uZmlybSB0aGF0IGhpcDA4IGhhcmR3YXJlIHdvbid0IHN0
+YXJ0IHdvcmtpbmcgYWdhaW4gd2hlbiBmYWlsZWQNCnRvIGRlc3Ryb3kgYWZ0ZXIgY29uc2lkZXJp
+bmcgYWxsIHBvc3NpYmxlIHNpdHVhdGlvbnMuIFNvIGl0IGlzIHNhZmUgdG8gZnJlZSBxcA0KcmVz
+b3VyY2VzICBldmVuIGlmIHRoZSBkZXN0cm95IGNvbW1hbmQgZmFpbGVkIGV4ZWN1dGVkLiBJIHdp
+bGwgcmVzZW5kIHRoaXMNCnBhdGNoIHRvIGF2b2lkIG1lbW9yeSBsZWFrcyBhcyBKYXNvbiBhc2tl
+ZC4NCg0KVGhhbmtzLA0KV2VpaGFuZw0KDQo+IC0tDQo+IERvdWcgTGVkZm9yZCA8ZGxlZGZvcmRA
+cmVkaGF0LmNvbT4NCj4gICAgIEdQRyBLZXlJRDogQjgyNkEzMzMwRTU3MkZERA0KPiAgICAgRmlu
+Z2VycHJpbnQgPSBBRTZCIDFCREEgMTIyQiAyM0I0IDI2NUIgIDEyNzQgQjgyNiBBMzMzIDBFNTcg
+MkZERA0K
