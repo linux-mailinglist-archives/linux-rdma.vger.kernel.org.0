@@ -2,77 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE442CF23D
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2019 07:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1255CCF240
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2019 07:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729568AbfJHFrQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Oct 2019 01:47:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50004 "EHLO mail.kernel.org"
+        id S1729568AbfJHFxW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Oct 2019 01:53:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729440AbfJHFrQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 8 Oct 2019 01:47:16 -0400
+        id S1729440AbfJHFxV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 8 Oct 2019 01:53:21 -0400
 Received: from localhost (unknown [77.137.89.37])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E227F206BB;
-        Tue,  8 Oct 2019 05:47:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5127D206BB;
+        Tue,  8 Oct 2019 05:53:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570513635;
-        bh=UgEIBI9zXUfWqg45q7CP+3IkAq5jRlWev+EO20nspro=;
+        s=default; t=1570514001;
+        bh=wtVkErxzLeCqnsmorlDLTmhwQSUBKXlv8tUwBlRU7uQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LI4EGRG9MtQwdQlIv+ssiTiwjnli1lzsZ3VvHXuzMkDx5LnNy5GTGjmblprRPuyu8
-         maQwUl83RKw2tWL0ltPN4e2RMKxx31st/d4aayHJvGekEyZFnUQdzv/3ndljK6kC8o
-         d4fkvFRBbw+Iczs52HhiTDFNRpEa6bW2zTpqjZh4=
-Date:   Tue, 8 Oct 2019 08:47:11 +0300
+        b=rUhM6PLqi7E2hPkE3tkijTD0vVZRGbFU4qMcnr+nDdEC5B1/D4fQ86pzqUgLirnF9
+         78banokZTEhybYozKNN9//hVCEEFpcxubiaKroLo4p1wFr+ckN0mg4wN0KOKlf64D/
+         +kAlP8T6D3eULslgGLx8bPiMFpNhRxHOFKklLM7M=
+Date:   Tue, 8 Oct 2019 08:53:17 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Qing Huang <qing.huang@oracle.com>
-Cc:     linux-rdma@vger.kernel.org, linux-netdev <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: Re: [PATCH] net/mlx5: Fixed a typo in a comment in esw_del_uc_addr()
-Message-ID: <20191008054711.GC5855@unreal>
-References: <20190921004928.24349-1-qing.huang@oracle.com>
- <20889bb7-0b36-831f-faa1-6bfe0e70dd94@oracle.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v2 2/3] RDMA/rw: Support threshold for
+ registration vs scattering to local pages
+Message-ID: <20191008055317.GD5855@unreal>
+References: <20191007135933.12483-1-leon@kernel.org>
+ <20191007135933.12483-3-leon@kernel.org>
+ <c0105196-b0e4-854e-88ff-40f5ba2d4105@acm.org>
+ <20191007160336.GB5855@unreal>
+ <8d610a58-abb5-941a-2a52-96ab9287572b@acm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20889bb7-0b36-831f-faa1-6bfe0e70dd94@oracle.com>
+In-Reply-To: <8d610a58-abb5-941a-2a52-96ab9287572b@acm.org>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 07, 2019 at 05:38:55PM -0700, Qing Huang wrote:
-> I know this is not critical. Maybe someone can merge this or fix it with
-> other commits? Thanks.
+On Mon, Oct 07, 2019 at 03:22:30PM -0700, Bart Van Assche wrote:
+> On 10/7/19 9:03 AM, Leon Romanovsky wrote:
+> > On Mon, Oct 07, 2019 at 08:07:55AM -0700, Bart Van Assche wrote:
+> > > On 10/7/19 6:59 AM, Leon Romanovsky wrote:
+> > > >    /*
+> > > > - * Check if the device might use memory registration.  This is currently only
+> > > > - * true for iWarp devices. In the future we can hopefully fine tune this based
+> > > > - * on HCA driver input.
+> > > > + * Check if the device might use memory registration. This is currently
+> > > > + * true for iWarp devices and devices that have optimized SGL registration
+> > > > + * logic.
+> > > >     */
+> > >
+> > > The following sentence in the above comment looks confusing to me: "Check if
+> > > the device might use memory registration." That sentence suggests that the
+> > > HCA decides whether or not to use memory registration. Isn't it the RDMA R/W
+> > > code that decides whether or not to use memory registration?
+> >
+> > I'm open for any reasonable text, what do you expect to be written there?
+>
+> Hi Leon,
+>
+> How about the following (not sure whether this is correct)?
+>
+> /*
+>  * Report whether memory registration should be used. Memory
+>  * registration must be used for iWarp devices because of
+>  * iWARP-specific limitations. Memory registration is also enabled if
+>  * registering memory will yield better performance than using multiple
+>  * SGE entries.
+>  */
 
-It is not "linux-rdma", but netdev. Your chances will be much higher if
-you use get_maintainer.pl and put relevant mailing lists together with
-maintainers in TO/CC parts of an email.
-
-Saeed will return from vacation and will take it to his net-next part.
+"Better performance" is relevant for mlx5 only, maybe others will use
+this max_.. field to overcome their HW limitations.
 
 Thanks
 
 >
-> On 9/20/19 5:49 PM, Qing Huang wrote:
-> > Changed "managerss" to "managers".
-> >
-> > Fixes: a1b3839ac4a4 ("net/mlx5: E-Switch, Properly refer to the esw manager vport")
-> > Signed-off-by: Qing Huang <qing.huang@oracle.com>
-> > ---
-> >   drivers/net/ethernet/mellanox/mlx5/core/eswitch.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-> > index 81e03e4..48642b8 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-> > @@ -530,7 +530,7 @@ static int esw_del_uc_addr(struct mlx5_eswitch *esw, struct vport_addr *vaddr)
-> >   	u16 vport = vaddr->vport;
-> >   	int err = 0;
-> > -	/* Skip mlx5_mpfs_del_mac for eswitch managerss,
-> > +	/* Skip mlx5_mpfs_del_mac for eswitch managers,
-> >   	 * it is already done by its netdev in mlx5e_execute_l2_action
-> >   	 */
-> >   	if (!vaddr->mpfs || esw->manager_vport == vport)
+> Thanks,
+>
+> Bart.
