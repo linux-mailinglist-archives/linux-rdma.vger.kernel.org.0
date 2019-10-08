@@ -2,98 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A34CEF02
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2019 00:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FA7CEFF2
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2019 02:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728980AbfJGWWe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Oct 2019 18:22:34 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:37990 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728654AbfJGWWe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Oct 2019 18:22:34 -0400
-Received: by mail-pf1-f195.google.com with SMTP id h195so9546726pfe.5;
-        Mon, 07 Oct 2019 15:22:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PdkJ4Z+HzytIxudQqsDlaQKJxjFii3sZzUB2db98gvY=;
-        b=ZJ71WyEP5XXMr+1aiGaBVryqG0NdieaiYHaC82iND4CyN9GpJd53Yw4fpivjtxh+0E
-         OCdYe3U01uELX/6k650grCMVFJe32yudWjgh2eCFJe452kaEPiE/eKq+ioCDW9RpGozc
-         2UzhxRAlvoX/xtjqMkZ0/hlG5yP6rmTbRgALrKOUJLqpGEvWYo3bmAD6XSbiEpp/g3rz
-         S7xQG11e0pA2dqAECRhP9OKjD7HX/Op/u9c1UPiDj0ja3/EriF8ORRoaVQ7NNj7ruCWr
-         N9DRJaS0bUdI09YcAWPvdEewtJuJKL7SwmTtV8VBd1fFioXPIgw2RWLiOXUAEAjv3Js6
-         zzww==
-X-Gm-Message-State: APjAAAUjqk4Ia36ikopRuxutwgIBc8ZPn9WwQtpYHc21iCGtI3YiT1Sw
-        LOa7r7doZb6yBq1rbSVSs1YFu/Ui
-X-Google-Smtp-Source: APXvYqzdKNwxtKOMAm1+Gvne26nJWbaDyd2nTTcmgg64eaPk+FXegTjIsKwG7jOyi1K3FyTqL5FOLw==
-X-Received: by 2002:a65:4785:: with SMTP id e5mr32267378pgs.407.1570486952364;
-        Mon, 07 Oct 2019 15:22:32 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id b185sm16432284pfg.14.2019.10.07.15.22.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Oct 2019 15:22:31 -0700 (PDT)
-Subject: Re: [PATCH rdma-next v2 2/3] RDMA/rw: Support threshold for
- registration vs scattering to local pages
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-References: <20191007135933.12483-1-leon@kernel.org>
- <20191007135933.12483-3-leon@kernel.org>
- <c0105196-b0e4-854e-88ff-40f5ba2d4105@acm.org> <20191007160336.GB5855@unreal>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <8d610a58-abb5-941a-2a52-96ab9287572b@acm.org>
-Date:   Mon, 7 Oct 2019 15:22:30 -0700
+        id S1729651AbfJHAjo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Oct 2019 20:39:44 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34950 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729285AbfJHAjo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Oct 2019 20:39:44 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x980cx8O177512
+        for <linux-rdma@vger.kernel.org>; Tue, 8 Oct 2019 00:39:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ references : message-id : date : mime-version : in-reply-to : content-type
+ : content-transfer-encoding; s=corp-2019-08-05;
+ bh=Ye4PMka0GL7ppfk2r5jMXYiK7jFyNryBMlJ2Gur/8+Q=;
+ b=S019k1lcLRea9uBAzc3df6hWWvvrg1Y6MCTBBQtDyZR49IfOa4VxzOuQX8jaGENKLIEW
+ nIVuo7BbK/MeQQfTxE5+oLc8CHUEtOqo2Td9fU//p3YYzFipUvKn2YSXDRDyhLNmO73G
+ 5MAZ0qLMCJ4QN68cCGahL0fRGlqn1dScDp8VwwgxRwv3koG8do+B+iNSj+bRRJfZFICl
+ 14tKr8OLz7KeGP47/pe5KdsrGkpeCmx6487aEmiKghapIpUlrYW6XaK5UlDf4i38xsex
+ 5OLfa0McE8KL9LYWE+5S4cj5dHbED4fgeDnj1ja7WVZKGP6O7GfTQh5bn667AeSUFN3m xA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2vek4qa2ma-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-rdma@vger.kernel.org>; Tue, 08 Oct 2019 00:39:42 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x980dftd077917
+        for <linux-rdma@vger.kernel.org>; Tue, 8 Oct 2019 00:39:42 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2vgeuwkxkh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-rdma@vger.kernel.org>; Tue, 08 Oct 2019 00:39:40 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x980ctRb031557
+        for <linux-rdma@vger.kernel.org>; Tue, 8 Oct 2019 00:38:56 GMT
+Received: from [10.132.91.169] (/10.132.91.169)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Oct 2019 17:38:55 -0700
+Subject: Re: [PATCH] net/mlx5: Fixed a typo in a comment in esw_del_uc_addr()
+From:   Qing Huang <qing.huang@oracle.com>
+To:     linux-rdma@vger.kernel.org
+References: <20190921004928.24349-1-qing.huang@oracle.com>
+Message-ID: <20889bb7-0b36-831f-faa1-6bfe0e70dd94@oracle.com>
+Date:   Mon, 7 Oct 2019 17:38:55 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20191007160336.GB5855@unreal>
+In-Reply-To: <20190921004928.24349-1-qing.huang@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9403 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910080005
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9403 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910080005
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/7/19 9:03 AM, Leon Romanovsky wrote:
-> On Mon, Oct 07, 2019 at 08:07:55AM -0700, Bart Van Assche wrote:
->> On 10/7/19 6:59 AM, Leon Romanovsky wrote:
->>>    /*
->>> - * Check if the device might use memory registration.  This is currently only
->>> - * true for iWarp devices. In the future we can hopefully fine tune this based
->>> - * on HCA driver input.
->>> + * Check if the device might use memory registration. This is currently
->>> + * true for iWarp devices and devices that have optimized SGL registration
->>> + * logic.
->>>     */
->>
->> The following sentence in the above comment looks confusing to me: "Check if
->> the device might use memory registration." That sentence suggests that the
->> HCA decides whether or not to use memory registration. Isn't it the RDMA R/W
->> code that decides whether or not to use memory registration?
-> 
-> I'm open for any reasonable text, what do you expect to be written there?
+I know this is not critical. Maybe someone can merge this or fix it with 
+other commits? Thanks.
 
-Hi Leon,
-
-How about the following (not sure whether this is correct)?
-
-/*
-  * Report whether memory registration should be used. Memory
-  * registration must be used for iWarp devices because of
-  * iWARP-specific limitations. Memory registration is also enabled if
-  * registering memory will yield better performance than using multiple
-  * SGE entries.
-  */
-
-Thanks,
-
-Bart.
+On 9/20/19 5:49 PM, Qing Huang wrote:
+> Changed "managerss" to "managers".
+>
+> Fixes: a1b3839ac4a4 ("net/mlx5: E-Switch, Properly refer to the esw manager vport")
+> Signed-off-by: Qing Huang <qing.huang@oracle.com>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/eswitch.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+> index 81e03e4..48642b8 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+> @@ -530,7 +530,7 @@ static int esw_del_uc_addr(struct mlx5_eswitch *esw, struct vport_addr *vaddr)
+>   	u16 vport = vaddr->vport;
+>   	int err = 0;
+>   
+> -	/* Skip mlx5_mpfs_del_mac for eswitch managerss,
+> +	/* Skip mlx5_mpfs_del_mac for eswitch managers,
+>   	 * it is already done by its netdev in mlx5e_execute_l2_action
+>   	 */
+>   	if (!vaddr->mpfs || esw->manager_vport == vport)
