@@ -2,114 +2,178 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 89395CF245
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2019 07:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57AAACF44E
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2019 09:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729740AbfJHF4E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Oct 2019 01:56:04 -0400
-Received: from mail-eopbgr50060.outbound.protection.outlook.com ([40.107.5.60]:40354
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729375AbfJHF4E (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 8 Oct 2019 01:56:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mgsk8hc2Fw9eHN+gNPFA/qo+iauaMbd9gtltYdJefbQ2/b686yW3aS/eeYjJrsthGxpOMdrmIb0g3oQYb34+GxXZ6LNHIepyCAeze86nSl/WRz2vS3k4m4Z483ttSh7TO0hetqFjatSF+qrBc4dhzW5095oWDU2vo89VzM/e+bN4ib8M8Y+86NoKJoDSdESroGOhKZD1Q6L+pLcuZwEZWIR8MFqNzmNIWk9NNxSkMlztW/35zU/IsY1uugPfTzzJvVON/LbNWyaZiH203ZdmEPbMsHmwrBCVT5PT0DgMQS3aRVpu4JQwL0B84m6temac1pPF2kJ/PPNLjMm/CLUWgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cELSm5oPIxjpMakOL3CQ94p5EGIfXcF8OGdoTOGhuGk=;
- b=mYNgcowfndkN9iCZLtwW4mWJxm/YbiKzU8AfwdarH4hDyBhF0aS4k6BnS/QWjLE9P4jUnYSvjL5W2gJZHTYTY2VOmrrJI/llzeOulJHrWTkN1KkJLtHhxMnu2gud6s2hkWQfn7nWN7xrf8kK/plbm80Ietd/an5rT1p8shT+H/7rMj00S7JGSxfp7tpOYmPHkBmqKmxmyeiQ6AqLitWq+EC+vuiF+6TDDNLINl/1zPZn8dUI/YLhuPIDRq+U8WaFr7UHDpFWj447QjLt2y5C4Sg56Gwfn7BFsIJbQBP7q/2jUiOVKxYJMINLsUBFHkhsP06ePA6njZYOQZvJ5Q5G1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cELSm5oPIxjpMakOL3CQ94p5EGIfXcF8OGdoTOGhuGk=;
- b=EjH457jj4wCEtJGkH0l+IrNQagU7iJzA1wIA4s1gwbnWihEtaFr2mZUamIUeYtqDFBN50nPv8aMYcCo3BxLq6P9Wx+9bI+TPXW7PRJbbjIHlqaArYLNFSL/n8AL3MJwrw9riwLC2Ckow4G5chLvCnZafKUfrBMcBkiAejLyf6Hg=
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com (10.171.188.155) by
- AM4PR05MB3123.eurprd05.prod.outlook.com (10.170.126.139) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2327.24; Tue, 8 Oct 2019 05:55:59 +0000
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::dde1:60df:efba:b3df]) by AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::dde1:60df:efba:b3df%7]) with mapi id 15.20.2327.026; Tue, 8 Oct 2019
- 05:55:59 +0000
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Doug Ledford <dledford@redhat.com>,
+        id S1730218AbfJHHwP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Oct 2019 03:52:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730177AbfJHHwP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 8 Oct 2019 03:52:15 -0400
+Received: from localhost (unknown [77.137.89.37])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5AF30206BB;
+        Tue,  8 Oct 2019 07:52:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570521134;
+        bh=eqQUq8n+2nr36mfjdnaJJaHrzFs7zZEI9uDV4qBzThQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u1XdiLey5Ait7LPtRfT0L8gvyWqDSC1tEswTh/bcjpfkyXfhtN/n4eBZghUmGCAQW
+         ARBPb8wp/ZdPAJ6P6Tn3MhRfO98ZFi58AUmxLzPV82WX1WgM7A7wdnuj4PkkSyAWru
+         xmotTfywrS9k6Wfn1avfFvebuwD4CVBuIncA4rdY=
+Date:   Tue, 8 Oct 2019 10:52:10 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
-        Christoph Hellwig <hch@infradead.org>
-CC:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH mlx5-next v2 1/3] net/mlx5: Expose optimal performance
- scatter entries capability
-Thread-Topic: [PATCH mlx5-next v2 1/3] net/mlx5: Expose optimal performance
- scatter entries capability
-Thread-Index: AQHVfRd47k7lLrZYBkWF5INDPoQUgqdQP+qA
-Date:   Tue, 8 Oct 2019 05:55:58 +0000
-Message-ID: <20191008055555.GE5855@unreal>
-References: <20191007135933.12483-1-leon@kernel.org>
- <20191007135933.12483-2-leon@kernel.org>
-In-Reply-To: <20191007135933.12483-2-leon@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM0PR06CA0096.eurprd06.prod.outlook.com
- (2603:10a6:208:fa::37) To AM4PR05MB3137.eurprd05.prod.outlook.com
- (2603:10a6:205:8::27)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=leonro@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [77.137.89.37]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d507a1f3-c76c-476a-0683-08d74bb4311a
-x-ms-office365-filtering-ht: Tenant
-x-ms-traffictypediagnostic: AM4PR05MB3123:|AM4PR05MB3123:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM4PR05MB3123674F6E7F34401C4B21F0B09A0@AM4PR05MB3123.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-forefront-prvs: 01842C458A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(7916004)(366004)(376002)(396003)(346002)(39860400002)(136003)(199004)(189003)(316002)(66946007)(81166006)(54906003)(14454004)(81156014)(110136005)(64756008)(52116002)(76176011)(66446008)(478600001)(229853002)(99286004)(1076003)(66476007)(66556008)(6116002)(3846002)(9686003)(33656002)(66066001)(33716001)(6512007)(2906002)(71190400001)(8676002)(25786009)(71200400001)(256004)(476003)(11346002)(446003)(86362001)(486006)(14444005)(5660300002)(26005)(6486002)(4326008)(6436002)(6506007)(8936002)(7736002)(305945005)(186003)(4744005)(386003)(6246003)(102836004);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR05MB3123;H:AM4PR05MB3137.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XVuHy+DJo5Usj9VQHOzj4eJXUEI0oxL4vIJB9AZd1725fm/geQlReNNxpLW8ylJ+GYACiAe6GaR/12tQEWqBMikZGC3g05sE1w5wevqhEUG0gUOa2XyCIZAKpB82fnNCxztL2IjLVXiygNg0kefbtIMtr/XRWUZMLJPXmPNcZwpM2F8g28hLYTZ6HuG1R9xcsEH6Fq2eMf6zUJYpkCSCGvehlF9nUozgLHmz2Zjduu+IsdCW0/jDNZdUzqCvPZfKQQVRAJd4ZLpmRGTHg5oIA+3z6URRge62BiY0xS71M5g6OSVSlrY02pMPtPHgZLblZP4IiIbPjQsFcXYOvLeII66ChebSEzY3I0XXO+T5IzNDSUsRIW1GlBNcZ5GhEiNGIE2vw3EJwSew7B+zTx5OpbcSfa5YdDAyP9wF8zvQln8=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1C58A6E5AB404B4AA506A41AB11070FE@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next 2/2] RDMA/core: Check that process is still
+ alive before sending it to the users
+Message-ID: <20191008075210.GF5855@unreal>
+References: <20191002123245.18153-1-leon@kernel.org>
+ <20191002123245.18153-3-leon@kernel.org>
+ <AM0PR05MB4866CB24D8105C83B31988A3D19B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d507a1f3-c76c-476a-0683-08d74bb4311a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2019 05:55:58.8758
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mn8BH2vocDKPt/okaC1Iz07LNan8gfC/IxsjK+u/a8gDJZUfN0reG4DWEL7YuCSb7BA0RIzAiRPlAqM0rKtrQw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3123
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM0PR05MB4866CB24D8105C83B31988A3D19B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 07, 2019 at 04:59:31PM +0300, Leon Romanovsky wrote:
-> From: Yamin Friedman <yaminf@mellanox.com>
+On Mon, Oct 07, 2019 at 06:58:13PM +0000, Parav Pandit wrote:
 >
-> Expose maximum scatter entries per RDMA READ for optimal performance.
 >
-> Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
-> Reviewed-by: Or Gerlitz <ogerlitz@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  include/linux/mlx5/mlx5_ifc.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > -----Original Message-----
+> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> > owner@vger.kernel.org> On Behalf Of Leon Romanovsky
+> > Sent: Wednesday, October 2, 2019 7:33 AM
+> > To: Doug Ledford <dledford@redhat.com>; Jason Gunthorpe
+> > <jgg@mellanox.com>
+> > Cc: Leon Romanovsky <leonro@mellanox.com>; RDMA mailing list <linux-
+> > rdma@vger.kernel.org>
+> > Subject: [PATCH rdma-next 2/2] RDMA/core: Check that process is still alive
+> > before sending it to the users
+> >
+> > From: Leon Romanovsky <leonro@mellanox.com>
+> >
+> > The PID information can disappear asynchronically because task can be killed
+> > and moved to zombie state. In such case, PID will be zero in similar way to the
+> > kernel tasks. Recognize such situation where we are asking to return orphaned
+> > object and simply skip filling PID attribute.
+> >
+> > As part of this change, document the same scenario in counter.c code.
+> >
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > ---
+> >  drivers/infiniband/core/counters.c | 14 ++++++++++++--
+> >  drivers/infiniband/core/nldev.c    | 31 ++++++++++++++++++++++--------
+> >  2 files changed, 35 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/core/counters.c
+> > b/drivers/infiniband/core/counters.c
+> > index 12ba2685abcf..47c551a0bcb0 100644
+> > --- a/drivers/infiniband/core/counters.c
+> > +++ b/drivers/infiniband/core/counters.c
+> > @@ -149,8 +149,18 @@ static bool auto_mode_match(struct ib_qp *qp, struct
+> > rdma_counter *counter,
+> >  	struct auto_mode_param *param = &counter->mode.param;
+> >  	bool match = true;
+> >
+> > -	/* Ensure that counter belongs to the right PID */
+> > -	if (task_pid_nr(counter->res.task) != task_pid_nr(qp->res.task))
+> > +	/*
+> > +	 * Ensure that counter belongs to the right PID.
+> > +	 * This operation can race with user space which kills
+> > +	 * the process and leaves QP and counters orphans.
+> > +	 *
+> > +	 * It is not a big deal because exitted task will leave both
+> > +	 * QP and counter in the same bucket of zombie process. Just ensure
+> > +	 * that process is still alive before procedding.
+> > +	 *
+> > +	 */
+> > +	if (task_pid_nr(counter->res.task) != task_pid_nr(qp->res.task) ||
+> > +	    !task_pid_nr(qp->res.task))
+> >  		return false;
+> >
+> >  	if (auto_mask & RDMA_COUNTER_MASK_QP_TYPE) diff --git
+> > a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c index
+> > 71bc08510064..c6fe0c52f6dc 100644
+> > --- a/drivers/infiniband/core/nldev.c
+> > +++ b/drivers/infiniband/core/nldev.c
+> > @@ -399,20 +399,35 @@ static int fill_res_info(struct sk_buff *msg, struct
+> > ib_device *device)  static int fill_res_name_pid(struct sk_buff *msg,
+> >  			     struct rdma_restrack_entry *res)  {
+> > +	int err = 0;
+> > +	pid_t pid;
+> > +
+> >  	/*
+> >  	 * For user resources, user is should read /proc/PID/comm to get the
+> >  	 * name of the task file.
+> >  	 */
+> >  	if (rdma_is_kernel_res(res)) {
+> > -		if (nla_put_string(msg,
+> > RDMA_NLDEV_ATTR_RES_KERN_NAME,
+> > -		    res->kern_name))
+> > -			return -EMSGSIZE;
+> > -	} else {
+> > -		if (nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PID,
+> > -		    task_pid_vnr(res->task)))
+> > -			return -EMSGSIZE;
+> > +		err = nla_put_string(msg,
+> > RDMA_NLDEV_ATTR_RES_KERN_NAME,
+> > +				     res->kern_name);
+> > +		goto out;
+> >  	}
+> > -	return 0;
+> > +
+> > +	pid = task_pid_vnr(res->task);
+> > +	/*
+> > +	 * PID == 0 returns in two scenarios:
+> > +	 * 1. It is kernel task, but because we checked above, it won't be
+> > possible.
+> Please drop above comment point 1. See more below.
 >
+> > +	 * 2. Task is dead and in zombie state. There is no need to print PID
+> > anymore.
+> > +	 */
+> > +	if (pid)
+> > +		/*
+> > +		 * This part is racy, task can be killed and PID will be zero right
+> > +		 * here but it is ok, next query won't return PID. We don't
+> > promise
+> > +		 * real-time reflection of SW objects.
+> > +		 */
+> > +		err = nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PID, pid);
+> > +
+> > +out:
+> > +	return err ? -EMSGSIZE : 0;
+> >  }
+>
+> Below code reads better along with rest of the comments in the patch.
+>
+> if (kern_resource) {
+> 	err = nla_put_string(msg, RDMA_NLDEV_ATTR_RES_KERN_NAME,
+> 			     res->kern_name);
+> } else {
+> 	pid_t pid;
+>
+> 	pid = task_pid_vnr(res->task);
+> 	if (pid)
+> 		err = nla_put_u32(msg, RDMA_NLDEV_ATTR_RES_PID, pid);
+> }
 
-I'm taking this patch to mlx5-next, since it is not controversial.
+Why do you think that nested "if" reads better?
 
 Thanks
+
+>
+> >
+> >  static bool fill_res_entry(struct ib_device *dev, struct sk_buff *msg,
+> > --
+> > 2.20.1
+>
