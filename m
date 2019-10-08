@@ -2,94 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1255CCF240
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2019 07:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89395CF245
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2019 07:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729568AbfJHFxW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Oct 2019 01:53:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729440AbfJHFxV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 8 Oct 2019 01:53:21 -0400
-Received: from localhost (unknown [77.137.89.37])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5127D206BB;
-        Tue,  8 Oct 2019 05:53:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570514001;
-        bh=wtVkErxzLeCqnsmorlDLTmhwQSUBKXlv8tUwBlRU7uQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rUhM6PLqi7E2hPkE3tkijTD0vVZRGbFU4qMcnr+nDdEC5B1/D4fQ86pzqUgLirnF9
-         78banokZTEhybYozKNN9//hVCEEFpcxubiaKroLo4p1wFr+ckN0mg4wN0KOKlf64D/
-         +kAlP8T6D3eULslgGLx8bPiMFpNhRxHOFKklLM7M=
-Date:   Tue, 8 Oct 2019 08:53:17 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
+        id S1729740AbfJHF4E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Oct 2019 01:56:04 -0400
+Received: from mail-eopbgr50060.outbound.protection.outlook.com ([40.107.5.60]:40354
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729375AbfJHF4E (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 8 Oct 2019 01:56:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mgsk8hc2Fw9eHN+gNPFA/qo+iauaMbd9gtltYdJefbQ2/b686yW3aS/eeYjJrsthGxpOMdrmIb0g3oQYb34+GxXZ6LNHIepyCAeze86nSl/WRz2vS3k4m4Z483ttSh7TO0hetqFjatSF+qrBc4dhzW5095oWDU2vo89VzM/e+bN4ib8M8Y+86NoKJoDSdESroGOhKZD1Q6L+pLcuZwEZWIR8MFqNzmNIWk9NNxSkMlztW/35zU/IsY1uugPfTzzJvVON/LbNWyaZiH203ZdmEPbMsHmwrBCVT5PT0DgMQS3aRVpu4JQwL0B84m6temac1pPF2kJ/PPNLjMm/CLUWgA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cELSm5oPIxjpMakOL3CQ94p5EGIfXcF8OGdoTOGhuGk=;
+ b=mYNgcowfndkN9iCZLtwW4mWJxm/YbiKzU8AfwdarH4hDyBhF0aS4k6BnS/QWjLE9P4jUnYSvjL5W2gJZHTYTY2VOmrrJI/llzeOulJHrWTkN1KkJLtHhxMnu2gud6s2hkWQfn7nWN7xrf8kK/plbm80Ietd/an5rT1p8shT+H/7rMj00S7JGSxfp7tpOYmPHkBmqKmxmyeiQ6AqLitWq+EC+vuiF+6TDDNLINl/1zPZn8dUI/YLhuPIDRq+U8WaFr7UHDpFWj447QjLt2y5C4Sg56Gwfn7BFsIJbQBP7q/2jUiOVKxYJMINLsUBFHkhsP06ePA6njZYOQZvJ5Q5G1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cELSm5oPIxjpMakOL3CQ94p5EGIfXcF8OGdoTOGhuGk=;
+ b=EjH457jj4wCEtJGkH0l+IrNQagU7iJzA1wIA4s1gwbnWihEtaFr2mZUamIUeYtqDFBN50nPv8aMYcCo3BxLq6P9Wx+9bI+TPXW7PRJbbjIHlqaArYLNFSL/n8AL3MJwrw9riwLC2Ckow4G5chLvCnZafKUfrBMcBkiAejLyf6Hg=
+Received: from AM4PR05MB3137.eurprd05.prod.outlook.com (10.171.188.155) by
+ AM4PR05MB3123.eurprd05.prod.outlook.com (10.170.126.139) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2327.24; Tue, 8 Oct 2019 05:55:59 +0000
+Received: from AM4PR05MB3137.eurprd05.prod.outlook.com
+ ([fe80::dde1:60df:efba:b3df]) by AM4PR05MB3137.eurprd05.prod.outlook.com
+ ([fe80::dde1:60df:efba:b3df%7]) with mapi id 15.20.2327.026; Tue, 8 Oct 2019
+ 05:55:59 +0000
+From:   Leon Romanovsky <leonro@mellanox.com>
+To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+CC:     RDMA mailing list <linux-rdma@vger.kernel.org>,
         Or Gerlitz <ogerlitz@mellanox.com>,
         Yamin Friedman <yaminf@mellanox.com>,
         Saeed Mahameed <saeedm@mellanox.com>,
         linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v2 2/3] RDMA/rw: Support threshold for
- registration vs scattering to local pages
-Message-ID: <20191008055317.GD5855@unreal>
+Subject: Re: [PATCH mlx5-next v2 1/3] net/mlx5: Expose optimal performance
+ scatter entries capability
+Thread-Topic: [PATCH mlx5-next v2 1/3] net/mlx5: Expose optimal performance
+ scatter entries capability
+Thread-Index: AQHVfRd47k7lLrZYBkWF5INDPoQUgqdQP+qA
+Date:   Tue, 8 Oct 2019 05:55:58 +0000
+Message-ID: <20191008055555.GE5855@unreal>
 References: <20191007135933.12483-1-leon@kernel.org>
- <20191007135933.12483-3-leon@kernel.org>
- <c0105196-b0e4-854e-88ff-40f5ba2d4105@acm.org>
- <20191007160336.GB5855@unreal>
- <8d610a58-abb5-941a-2a52-96ab9287572b@acm.org>
+ <20191007135933.12483-2-leon@kernel.org>
+In-Reply-To: <20191007135933.12483-2-leon@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM0PR06CA0096.eurprd06.prod.outlook.com
+ (2603:10a6:208:fa::37) To AM4PR05MB3137.eurprd05.prod.outlook.com
+ (2603:10a6:205:8::27)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=leonro@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [77.137.89.37]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d507a1f3-c76c-476a-0683-08d74bb4311a
+x-ms-office365-filtering-ht: Tenant
+x-ms-traffictypediagnostic: AM4PR05MB3123:|AM4PR05MB3123:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM4PR05MB3123674F6E7F34401C4B21F0B09A0@AM4PR05MB3123.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-forefront-prvs: 01842C458A
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(7916004)(366004)(376002)(396003)(346002)(39860400002)(136003)(199004)(189003)(316002)(66946007)(81166006)(54906003)(14454004)(81156014)(110136005)(64756008)(52116002)(76176011)(66446008)(478600001)(229853002)(99286004)(1076003)(66476007)(66556008)(6116002)(3846002)(9686003)(33656002)(66066001)(33716001)(6512007)(2906002)(71190400001)(8676002)(25786009)(71200400001)(256004)(476003)(11346002)(446003)(86362001)(486006)(14444005)(5660300002)(26005)(6486002)(4326008)(6436002)(6506007)(8936002)(7736002)(305945005)(186003)(4744005)(386003)(6246003)(102836004);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR05MB3123;H:AM4PR05MB3137.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XVuHy+DJo5Usj9VQHOzj4eJXUEI0oxL4vIJB9AZd1725fm/geQlReNNxpLW8ylJ+GYACiAe6GaR/12tQEWqBMikZGC3g05sE1w5wevqhEUG0gUOa2XyCIZAKpB82fnNCxztL2IjLVXiygNg0kefbtIMtr/XRWUZMLJPXmPNcZwpM2F8g28hLYTZ6HuG1R9xcsEH6Fq2eMf6zUJYpkCSCGvehlF9nUozgLHmz2Zjduu+IsdCW0/jDNZdUzqCvPZfKQQVRAJd4ZLpmRGTHg5oIA+3z6URRge62BiY0xS71M5g6OSVSlrY02pMPtPHgZLblZP4IiIbPjQsFcXYOvLeII66ChebSEzY3I0XXO+T5IzNDSUsRIW1GlBNcZ5GhEiNGIE2vw3EJwSew7B+zTx5OpbcSfa5YdDAyP9wF8zvQln8=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1C58A6E5AB404B4AA506A41AB11070FE@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8d610a58-abb5-941a-2a52-96ab9287572b@acm.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d507a1f3-c76c-476a-0683-08d74bb4311a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2019 05:55:58.8758
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mn8BH2vocDKPt/okaC1Iz07LNan8gfC/IxsjK+u/a8gDJZUfN0reG4DWEL7YuCSb7BA0RIzAiRPlAqM0rKtrQw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3123
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 07, 2019 at 03:22:30PM -0700, Bart Van Assche wrote:
-> On 10/7/19 9:03 AM, Leon Romanovsky wrote:
-> > On Mon, Oct 07, 2019 at 08:07:55AM -0700, Bart Van Assche wrote:
-> > > On 10/7/19 6:59 AM, Leon Romanovsky wrote:
-> > > >    /*
-> > > > - * Check if the device might use memory registration.  This is currently only
-> > > > - * true for iWarp devices. In the future we can hopefully fine tune this based
-> > > > - * on HCA driver input.
-> > > > + * Check if the device might use memory registration. This is currently
-> > > > + * true for iWarp devices and devices that have optimized SGL registration
-> > > > + * logic.
-> > > >     */
-> > >
-> > > The following sentence in the above comment looks confusing to me: "Check if
-> > > the device might use memory registration." That sentence suggests that the
-> > > HCA decides whether or not to use memory registration. Isn't it the RDMA R/W
-> > > code that decides whether or not to use memory registration?
-> >
-> > I'm open for any reasonable text, what do you expect to be written there?
+On Mon, Oct 07, 2019 at 04:59:31PM +0300, Leon Romanovsky wrote:
+> From: Yamin Friedman <yaminf@mellanox.com>
 >
-> Hi Leon,
+> Expose maximum scatter entries per RDMA READ for optimal performance.
 >
-> How about the following (not sure whether this is correct)?
+> Signed-off-by: Yamin Friedman <yaminf@mellanox.com>
+> Reviewed-by: Or Gerlitz <ogerlitz@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  include/linux/mlx5/mlx5_ifc.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> /*
->  * Report whether memory registration should be used. Memory
->  * registration must be used for iWarp devices because of
->  * iWARP-specific limitations. Memory registration is also enabled if
->  * registering memory will yield better performance than using multiple
->  * SGE entries.
->  */
 
-"Better performance" is relevant for mlx5 only, maybe others will use
-this max_.. field to overcome their HW limitations.
+I'm taking this patch to mlx5-next, since it is not controversial.
 
 Thanks
-
->
-> Thanks,
->
-> Bart.
