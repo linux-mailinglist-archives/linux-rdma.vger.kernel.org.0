@@ -2,287 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5843D0637
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2019 06:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A016ED0860
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2019 09:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729778AbfJIEDT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Oct 2019 00:03:19 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:55344 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726490AbfJIEDT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Oct 2019 00:03:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=UXxRjFKnC3QApp6K8OrZAzbv2i1MTH0Ch/nW5W/E2gM=; b=DRANkHaXibB83CZpeCf0ci8NS
-        z+eqY6Af0LuhPCl0MduH/sKnQiYz9Ih4DYzijM1T+Hp4jbA120HBCubKr1EQdOuLgYRqQnC9yghhy
-        eL8k3H4CS+PqUY98GWO6dNR82n7tIGyu+FR2+AX3XDIg7EQu5Y8q5AQ8wfpKX2Yn0nOauUdxN3TjE
-        WM3TPPm58C1G3b8oepDoMb9OFLcNHQrqd2DCeDDtUCq1vrYsCm23qcuWOx0zusF/hOXiVy4LEci+t
-        5/XY2ucSt8+8hbe43HVpBodxICPve/B2LOfXtz1h0lN0d0vx6AvrAIpkob4PvN0QxZ2FSEyJvqzhw
-        QNYsbwo6g==;
-Received: from [2601:1c0:6280:3f0::9ef4]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.2 #3 (Red Hat Linux))
-        id 1iI3C1-0007D8-69; Wed, 09 Oct 2019 04:03:17 +0000
-To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc:     Yamin Friedman <yaminf@mellanox.com>,
-        Tal Gilboa <talgi@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] DIM: fix dim.h kernel-doc and headers
-Message-ID: <6f8dd95f-dc58-88b9-1d20-1a620b964d86@infradead.org>
-Date:   Tue, 8 Oct 2019 21:03:14 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        id S1727035AbfJIHfy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Oct 2019 03:35:54 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:51224 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725440AbfJIHfy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Oct 2019 03:35:54 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x997YIIH071378;
+        Wed, 9 Oct 2019 07:35:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=astRmtcxdwJfd5jGfQNYmdgoAsTRPrOTEf1/eNK/ur4=;
+ b=hMeu5JJSBXaU+qAM43MF9tr25AnwolI1wnzCjWACz0q3XiZtOrhnWSOV/8KfsrkERTY0
+ UVFyE6oPmzSJfwmMKB4ILAmYU9pMNAeT/9oexmZl8cgu5segf6qe6XuHqgiLqRQngZ1i
+ sQPyI6JBfx+jRyZLGbCbiResFVPUvavt5VULvqsjDNfsUYAcJaKNBgJrwoxPqmnqEA9x
+ 6v7aEUGiRePffRgOAN/yd1ISAJ5532GPUInMbF3hRMnFJE2kAZ9tlum+y9Yplc4vcA+y
+ +mEKnCbP3+acotURpQe6/c3C6kaKi8Si9RlTXQNdRSzrIEEgtt7EGjjWdrxvGXGVyLVj Og== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2vek4qj8b3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Oct 2019 07:35:18 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x997YAqX112192;
+        Wed, 9 Oct 2019 07:35:17 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 2vgev0qynd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 09 Oct 2019 07:35:17 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x997ZFEG027907;
+        Wed, 9 Oct 2019 07:35:15 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 09 Oct 2019 00:35:14 -0700
+Date:   Wed, 9 Oct 2019 10:35:06 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Matan Barak <matanb@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] uverbs: prevent potential underflow
+Message-ID: <20191009073506.GI25098@kadam>
+References: <20191005052337.GA20129@mwanda>
+ <20191008194425.GA28067@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191008194425.GA28067@ziepe.ca>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9404 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910090071
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9404 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910090071
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+On Tue, Oct 08, 2019 at 04:44:25PM -0300, Jason Gunthorpe wrote:
+> On Sat, Oct 05, 2019 at 08:23:37AM +0300, Dan Carpenter wrote:
+> > The issue is in drivers/infiniband/core/uverbs_std_types_cq.c in the
+> > UVERBS_HANDLER(UVERBS_METHOD_CQ_CREATE) function.  We check that:
+> > 
+> > 	if (attr.comp_vector >= attrs->ufile->device->num_comp_vectors) {
+> > 
+> > But we don't check that "attr.comp_vector" whether negative.  It
+> > could potentially lead to an array underflow.  My concern would be where
+> > cq->vector is used in the create_cq() function from the cxgb4 driver.
+> > 
+> > Fixes: 9ee79fce3642 ("IB/core: Add completion queue (cq) object actions")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > ---
+> >  drivers/infiniband/core/uverbs.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+>  
+> > diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
+> > index 1e5aeb39f774..63f7f7db5902 100644
+> > --- a/drivers/infiniband/core/uverbs.h
+> > +++ b/drivers/infiniband/core/uverbs.h
+> > @@ -98,7 +98,7 @@ ib_uverbs_init_udata_buf_or_null(struct ib_udata *udata,
+> >  
+> >  struct ib_uverbs_device {
+> >  	atomic_t				refcount;
+> > -	int					num_comp_vectors;
+> > +	u32					num_comp_vectors;
+> >  	struct completion			comp;
+> >  	struct device				dev;
+> >  	/* First group for device attributes, NULL terminated array */
+> 
+> I would have expected you to change struct ib_cq_init_attr ? Or at
+> least both..
+> 
+> This is actually a bug as the type of
+> UVERBS_ATTR_CREATE_CQ_COMP_VECTOR for userspace is u32:
+> 
+>         UVERBS_ATTR_PTR_IN(UVERBS_ATTR_CREATE_CQ_COMP_VECTOR,
+>                            UVERBS_ATTR_TYPE(u32),
+>                            UA_MANDATORY),
+> 
+> But we are stuffing it into a int:
+> 
+>         ret = uverbs_copy_from(&attr.comp_vector, attrs,
+>                                UVERBS_ATTR_CREATE_CQ_COMP_VECTOR);
+> 
+> So very large values will become negative and switching
+> num_comp_vectors to u32 won't help??
 
-Lots of fixes to kernel-doc in structs, enums, and functions.
-Also add header files that are being used but not yet #included.
+Yeah.  You're right.  I should have changed both.  I'm not sure what I
+was thinking.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Yamin Friedman <yaminf@mellanox.com>
-Cc: Tal Gilboa <talgi@mellanox.com>
-Cc: Saeed Mahameed <saeedm@mellanox.com>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@mellanox.com>
-Cc: linux-rdma@vger.kernel.org
-Cc: netdev@vger.kernel.org
----
- include/linux/dim.h |   63 ++++++++++++++++++++++--------------------
- 1 file changed, 33 insertions(+), 30 deletions(-)
+My patch does fix the bug because of type promotion, but we should
+change both to u32.
 
---- linux.orig/include/linux/dim.h
-+++ linux/include/linux/dim.h
-@@ -4,22 +4,26 @@
- #ifndef DIM_H
- #define DIM_H
- 
-+#include <linux/bits.h>
-+#include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/workqueue.h>
- 
--/**
-+/*
-  * Number of events between DIM iterations.
-  * Causes a moderation of the algorithm run.
-  */
- #define DIM_NEVENTS 64
- 
--/**
-+/*
-  * Is a difference between values justifies taking an action.
-  * We consider 10% difference as significant.
-  */
- #define IS_SIGNIFICANT_DIFF(val, ref) \
- 	(((100UL * abs((val) - (ref))) / (ref)) > 10)
- 
--/**
-+/*
-  * Calculate the gap between two values.
-  * Take wrap-around and variable size into consideration.
-  */
-@@ -27,12 +31,13 @@
- 		& (BIT_ULL(bits) - 1))
- 
- /**
-- * Structure for CQ moderation values.
-+ * struct dim_cq_moder - Structure for CQ moderation values.
-  * Used for communications between DIM and its consumer.
-  *
-  * @usec: CQ timer suggestion (by DIM)
-  * @pkts: CQ packet counter suggestion (by DIM)
-- * @cq_period_mode: CQ priod count mode (from CQE/EQE)
-+ * @comps: completion counter
-+ * @cq_period_mode: CQ period count mode (from CQE/EQE)
-  */
- struct dim_cq_moder {
- 	u16 usec;
-@@ -42,13 +47,14 @@ struct dim_cq_moder {
- };
- 
- /**
-- * Structure for DIM sample data.
-+ * struct dim_sample - Structure for DIM sample data.
-  * Used for communications between DIM and its consumer.
-  *
-  * @time: Sample timestamp
-  * @pkt_ctr: Number of packets
-  * @byte_ctr: Number of bytes
-  * @event_ctr: Number of events
-+ * @comp_ctr: Current completion counter
-  */
- struct dim_sample {
- 	ktime_t time;
-@@ -59,12 +65,14 @@ struct dim_sample {
- };
- 
- /**
-- * Structure for DIM stats.
-+ * struct dim_stats - Structure for DIM stats.
-  * Used for holding current measured rates.
-  *
-  * @ppms: Packets per msec
-  * @bpms: Bytes per msec
-  * @epms: Events per msec
-+ * @cpms: Completions per msec
-+ * @cpe_ratio: ratio of completions to events
-  */
- struct dim_stats {
- 	int ppms; /* packets per msec */
-@@ -75,12 +83,13 @@ struct dim_stats {
- };
- 
- /**
-- * Main structure for dynamic interrupt moderation (DIM).
-+ * struct dim - Main structure for dynamic interrupt moderation (DIM).
-  * Used for holding all information about a specific DIM instance.
-  *
-  * @state: Algorithm state (see below)
-  * @prev_stats: Measured rates from previous iteration (for comparison)
-  * @start_sample: Sampled data at start of current iteration
-+ * @measuring_sample: a &dim_sample that is used to update the current events
-  * @work: Work to perform on action required
-  * @priv: A pointer to the struct that points to dim
-  * @profile_ix: Current moderation profile
-@@ -106,24 +115,21 @@ struct dim {
- };
- 
- /**
-- * enum dim_cq_period_mode
-- *
-- * These are the modes for CQ period count.
-+ * enum dim_cq_period_mode - modes for CQ period count
-  *
-  * @DIM_CQ_PERIOD_MODE_START_FROM_EQE: Start counting from EQE
-  * @DIM_CQ_PERIOD_MODE_START_FROM_CQE: Start counting from CQE (implies timer reset)
-  * @DIM_CQ_PERIOD_NUM_MODES: Number of modes
-  */
--enum {
-+enum dim_cq_period_mode {
- 	DIM_CQ_PERIOD_MODE_START_FROM_EQE = 0x0,
- 	DIM_CQ_PERIOD_MODE_START_FROM_CQE = 0x1,
- 	DIM_CQ_PERIOD_NUM_MODES
- };
- 
- /**
-- * enum dim_state
-+ * enum dim_state - DIM algorithm states
-  *
-- * These are the DIM algorithm states.
-  * These will determine if the algorithm is in a valid state to start an iteration.
-  *
-  * @DIM_START_MEASURE: This is the first iteration (also after applying a new profile)
-@@ -131,16 +137,15 @@ enum {
-  * need to perform an action
-  * @DIM_APPLY_NEW_PROFILE: DIM consumer is currently applying a profile - no need to measure
-  */
--enum {
-+enum dim_state {
- 	DIM_START_MEASURE,
- 	DIM_MEASURE_IN_PROGRESS,
- 	DIM_APPLY_NEW_PROFILE,
- };
- 
- /**
-- * enum dim_tune_state
-+ * enum dim_tune_state - DIM algorithm tune states
-  *
-- * These are the DIM algorithm tune states.
-  * These will determine which action the algorithm should perform.
-  *
-  * @DIM_PARKING_ON_TOP: Algorithm found a local top point - exit on significant difference
-@@ -148,7 +153,7 @@ enum {
-  * @DIM_GOING_RIGHT: Algorithm is currently trying higher moderation levels
-  * @DIM_GOING_LEFT: Algorithm is currently trying lower moderation levels
-  */
--enum {
-+enum dim_tune_state {
- 	DIM_PARKING_ON_TOP,
- 	DIM_PARKING_TIRED,
- 	DIM_GOING_RIGHT,
-@@ -156,25 +161,23 @@ enum {
- };
- 
- /**
-- * enum dim_stats_state
-+ * enum dim_stats_state - DIM algorithm statistics states
-  *
-- * These are the DIM algorithm statistics states.
-  * These will determine the verdict of current iteration.
-  *
-  * @DIM_STATS_WORSE: Current iteration shows worse performance than before
-- * @DIM_STATS_WORSE: Current iteration shows same performance than before
-- * @DIM_STATS_WORSE: Current iteration shows better performance than before
-+ * @DIM_STATS_SAME:  Current iteration shows same performance than before
-+ * @DIM_STATS_BETTER: Current iteration shows better performance than before
-  */
--enum {
-+enum dim_stats_state {
- 	DIM_STATS_WORSE,
- 	DIM_STATS_SAME,
- 	DIM_STATS_BETTER,
- };
- 
- /**
-- * enum dim_step_result
-+ * enum dim_step_result - DIM algorithm step results
-  *
-- * These are the DIM algorithm step results.
-  * These describe the result of a step.
-  *
-  * @DIM_STEPPED: Performed a regular step
-@@ -182,7 +185,7 @@ enum {
-  * tired parking
-  * @DIM_ON_EDGE: Stepped to the most left/right profile
-  */
--enum {
-+enum dim_step_result {
- 	DIM_STEPPED,
- 	DIM_TOO_TIRED,
- 	DIM_ON_EDGE,
-@@ -199,7 +202,7 @@ enum {
- bool dim_on_top(struct dim *dim);
- 
- /**
-- *	dim_turn - change profile alterning direction
-+ *	dim_turn - change profile altering direction
-  *	@dim: DIM context
-  *
-  * Go left if we were going right and vice-versa.
-@@ -238,7 +241,7 @@ void dim_calc_stats(struct dim_sample *s
- 		    struct dim_stats *curr_stats);
- 
- /**
-- *	dim_update_sample - set a sample's fields with give values
-+ *	dim_update_sample - set a sample's fields with given values
-  *	@event_ctr: number of events to set
-  *	@packets: number of packets to set
-  *	@bytes: number of bytes to set
-@@ -304,8 +307,8 @@ struct dim_cq_moder net_dim_get_def_tx_m
-  *	@end_sample: Current data measurement
-  *
-  * Called by the consumer.
-- * This is the main logic of the algorithm, where data is processed in order to decide on next
-- * required action.
-+ * This is the main logic of the algorithm, where data is processed in order
-+ * to decide on next required action.
-  */
- void net_dim(struct dim *dim, struct dim_sample end_sample);
- 
+regards,
+dan carpenter
 
