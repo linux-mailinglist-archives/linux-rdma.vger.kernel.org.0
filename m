@@ -2,58 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D64EED142A
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2019 18:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C89D1428
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2019 18:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730546AbfJIQgR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Oct 2019 12:36:17 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:44782 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731173AbfJIQgR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Oct 2019 12:36:17 -0400
-Received: by mail-qt1-f195.google.com with SMTP id u40so4258130qth.11
-        for <linux-rdma@vger.kernel.org>; Wed, 09 Oct 2019 09:36:16 -0700 (PDT)
+        id S1731562AbfJIQgP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Oct 2019 12:36:15 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:39359 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731173AbfJIQgO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Oct 2019 12:36:14 -0400
+Received: by mail-qk1-f195.google.com with SMTP id 4so2788291qki.6
+        for <linux-rdma@vger.kernel.org>; Wed, 09 Oct 2019 09:36:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Rgj+Em+k5g8VITkwsSO4Kk3ctS7hLkQ0A4Swm0wJxDs=;
-        b=VmUl94XenE+Dj005g/a4KtY87W73ts+nGnbmOeydX/I0M8fG6DA/fTfgQLe2Sk1fx+
-         9h1dr7UIY6uCnvkmcG6yfAhzrqJBd18JNH56F5JVFt9ixKfhPCvu7YTqZvWMLyRmoPAR
-         Er4h27Kn+8PBrCw2HxMXzxqZMyqHei516al5DwtRoxOSFZfj8BnLFJkBleuNmI7LAQpt
-         ZaHYLL+xPidWWsnlTgHAAE5n1+JYXOBx1TwPVsHlOUAokP3UCGiKNaN2MFF2Vk5oLWd7
-         wZ9Oy7bZMxg8tFjf2P9vMFTqkFD2qXgjYFltrODYjBl/IdwWR+/ePoJ0Fe9JKMaU70Mk
-         qi5w==
+        bh=m+HKKyBh5Mxz2+SPSiNgHktnqZFyO/mMHEowsHIa+nU=;
+        b=kMlL9KtsUQW7KLYh+03CVqsPG8LhvwvSL/Xr3oR0okKKGJcIQTnpCkMUWNw1ORKoor
+         4oD5zBQAwTmBBP4GvgXSaUjf32yuLZW3YtytmeF7p7iOcLkmBNPhO/1im6RKu9SZoT0l
+         chIQuxr7WpUUgGGJFiluAM9mGfGQoaITo/sOyu2xo+914LV85rwKOBWkG6CHevykLdDL
+         LWpFd1i3erxJQCqQ9HCVQrCibugBk1nejfcTZy0Bul9pFnXJV2jz1VXPamHeghtX50HN
+         ym0UeIRbQz92FME1wKKmoXkckA5r+9zG2moiaUd2Z9MoBULMCBVtgfC9fGR+f1rJFGyJ
+         M0fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Rgj+Em+k5g8VITkwsSO4Kk3ctS7hLkQ0A4Swm0wJxDs=;
-        b=YGzCxggme/pQ9xTncEpEm8R7m/fts3216Ii7WGZtUDkH56kmnNC1H79iZKzGr2SMQZ
-         RTFU+ZFo98tEJ1duuc+KAl1s4baPh1myrzjMBiSgut6ouLBfP90ztD94HJSq8zZOBKan
-         gGgRNUUi9npmQVYFxzDh6VmNbCz7UhUA/5BgrHlE2Ql7RK6UbhSkW6qP4gcJ3bhjoPOp
-         vR5N0uu71toNwdB7oVbAYdEdo2uUBhE4hCbMe+e8g/mnZ2fxSQUg+mpVHAL7XMXUpAPL
-         Q21i7oHQ8KZ7jqg61mbX7nDfK8/rZbuWxWBixjWqF9ZY4EItMYLkseABgO760ONaUVNQ
-         efZQ==
-X-Gm-Message-State: APjAAAXIeNNnQnQ7yOLZiMCcVEx00lfi9FA0e0GnSb9AQBR09Vz1lTEC
-        /8MKya8inxmz5JWWumEhqyldWD1buGE=
-X-Google-Smtp-Source: APXvYqy93mYAEiamt7JHN95mxOF7yk1idgL0/g/oIzAfYx+WMaMGCBVCUBvGqZoDfkJTW+rRLz+Eeg==
-X-Received: by 2002:ac8:2d87:: with SMTP id p7mr4655187qta.198.1570638975509;
-        Wed, 09 Oct 2019 09:36:15 -0700 (PDT)
+        bh=m+HKKyBh5Mxz2+SPSiNgHktnqZFyO/mMHEowsHIa+nU=;
+        b=lfIKzxfu7rxtlgCRixIhHShl9GmQXhZ+n43fLCemJhALLwZItBCbotTizLi/3zzeSM
+         8xXEAsnoUGZq+e0JO/EK+NP3qdChdqkc4SBMD5ia75OKZYbHa5uUlk+1iWgJlt4NaZCy
+         RowAiJdKumvDI3sFpht3z7QWspx5bS1nrQQCjb3Xvz2DvbvXHS5gZDh7GgpVDFG6J+At
+         RJ1nTgH5o3Xoc26If1UD5wL+NBuFpsNjec0v4oae8gQmnZOBUzCDUPwoKuHiWOmzo8A8
+         csHbOOPmxMH+kvM5ph+2WdfIf3neex4CUw74znL5xLiCu1poRCUHlal/QYbPER9TDIkN
+         6UrQ==
+X-Gm-Message-State: APjAAAWl+F5Jk1446R13Zb4i5L9V52Aao3bkOhW6DlWWdbh8Qyvmw0FL
+        m3UgkRm1dXebJH4oX6obgbMqXB59Xz4=
+X-Google-Smtp-Source: APXvYqxS1Pv7hVkUKM0pjiu9ITnrcQvHBtmqtVf7WBFELjRez9n6ZGEsLXSBjab+3ieOl1xTVpqURw==
+X-Received: by 2002:a37:f90e:: with SMTP id l14mr4714916qkj.40.1570638973718;
+        Wed, 09 Oct 2019 09:36:13 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id n17sm1208530qke.103.2019.10.09.09.36.15
+        by smtp.gmail.com with ESMTPSA id h68sm1141769qkf.2.2019.10.09.09.36.13
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 09 Oct 2019 09:36:15 -0700 (PDT)
+        Wed, 09 Oct 2019 09:36:13 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iIEXN-0000rT-9M; Wed, 09 Oct 2019 13:10:05 -0300
+        id 1iIEXN-0000rg-C2; Wed, 09 Oct 2019 13:10:05 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Artemy Kovalyov <artemyko@mellanox.com>
-Subject: [PATCH 13/15] RDMA/mlx5: Do not store implicit children in the odp_mkeys xarray
-Date:   Wed,  9 Oct 2019 13:09:33 -0300
-Message-Id: <20191009160934.3143-14-jgg@ziepe.ca>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>
+Subject: [PATCH 15/15] RDMA/odp: Remove broken debugging call to invalidate_range
+Date:   Wed,  9 Oct 2019 13:09:35 -0300
+Message-Id: <20191009160934.3143-16-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191009160934.3143-1-jgg@ziepe.ca>
 References: <20191009160934.3143-1-jgg@ziepe.ca>
@@ -66,125 +65,79 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-These mkeys are entirely internal and are never used by the HW for
-page fault. They should also never be used by userspace for prefetch.
-Simplify & optimize things by not including them in the xarray.
+invalidate_range() also obtains the umem_mutex which is being held at this
+point, so if this path were was ever called it would deadlock. Thus
+conclude the debugging never triggers and rework it into a simple WARN_ON
+and leave things as they are.
 
-Since the prefetch path can now never see a child mkey there is no need
-for the second synchronize_srcu() during imr destroy.
+While here add a note to explain how we could possibly get inconsistent
+page pointers.
 
-Reviewed-by: Artemy Kovalyov <artemyko@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/odp.c | 36 ++++++--------------------------
- 1 file changed, 6 insertions(+), 30 deletions(-)
+ drivers/infiniband/core/umem_odp.c | 38 +++++++++++++++---------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 71f8580b25b2ab..66523313c3e46c 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -146,9 +146,9 @@ void mlx5_odp_populate_klm(struct mlx5_klm *pklm, size_t idx, size_t nentries,
- 
- /*
-  * This must be called after the mr has been removed from implicit_children
-- * and odp_mkeys and the SRCU synchronized.  NOTE: The MR does not necessarily
-- * have to be empty here, parallel page faults could have raced with the free
-- * process and added pages to it.
-+ * and the SRCU synchronized.  NOTE: The MR does not necessarily have to be
-+ * empty here, parallel page faults could have raced with the free process and
-+ * added pages to it.
-  */
- static void free_implicit_child_mr(struct mlx5_ib_mr *mr, bool need_imr_xlt)
+diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
+index 163ff7ba92b7f1..d7d5fadf0899ad 100644
+--- a/drivers/infiniband/core/umem_odp.c
++++ b/drivers/infiniband/core/umem_odp.c
+@@ -508,7 +508,6 @@ static int ib_umem_odp_map_dma_single_page(
  {
-@@ -210,7 +210,6 @@ static void destroy_unused_implicit_child_mr(struct mlx5_ib_mr *mr)
- 	    mr)
- 		goto out_unlock;
+ 	struct ib_device *dev = umem_odp->umem.ibdev;
+ 	dma_addr_t dma_addr;
+-	int remove_existing_mapping = 0;
+ 	int ret = 0;
  
--	__xa_erase(&mr->dev->odp_mkeys, mlx5_base_mkey(mr->mmkey.key));
- 	atomic_inc(&imr->num_deferred_work);
- 	call_srcu(&mr->dev->odp_srcu, &mr->odp_destroy.rcu,
- 		  free_implicit_child_mr_rcu);
-@@ -401,13 +400,6 @@ static struct mlx5_ib_mr *implicit_get_child_mr(struct mlx5_ib_mr *imr,
- 	if (IS_ERR(mr))
- 		goto out_umem;
+ 	/*
+@@ -534,28 +533,29 @@ static int ib_umem_odp_map_dma_single_page(
+ 	} else if (umem_odp->page_list[page_index] == page) {
+ 		umem_odp->dma_list[page_index] |= access_mask;
+ 	} else {
+-		pr_err("error: got different pages in IB device and from get_user_pages. IB device page: %p, gup page: %p\n",
+-		       umem_odp->page_list[page_index], page);
+-		/* Better remove the mapping now, to prevent any further
+-		 * damage. */
+-		remove_existing_mapping = 1;
++		/*
++		 * This is a race here where we could have done:
++		 *
++		 *         CPU0                             CPU1
++		 *   get_user_pages()
++		 *                                       invalidate()
++		 *                                       page_fault()
++		 *   mutex_lock(umem_mutex)
++		 *    page from GUP != page in ODP
++		 *
++		 * It should be prevented by the retry test above as reading
++		 * the seq number should be reliable under the
++		 * umem_mutex. Thus something is really not working right if
++		 * things get here.
++		 */
++		WARN(true,
++		     "Got different pages in IB device and from get_user_pages. IB device page: %p, gup page: %p\n",
++		     umem_odp->page_list[page_index], page);
++		ret = -EAGAIN;
+ 	}
  
--	err = xa_reserve(&imr->dev->odp_mkeys, mlx5_base_mkey(mr->mmkey.key),
--			 GFP_KERNEL);
--	if (err) {
--		ret = ERR_PTR(err);
--		goto out_mr;
+ out:
+ 	put_user_page(page);
+-
+-	if (remove_existing_mapping) {
+-		ib_umem_notifier_start_account(umem_odp);
+-		dev->ops.invalidate_range(
+-			umem_odp,
+-			ib_umem_start(umem_odp) +
+-				(page_index << umem_odp->page_shift),
+-			ib_umem_start(umem_odp) +
+-				((page_index + 1) << umem_odp->page_shift));
+-		ib_umem_notifier_end_account(umem_odp);
+-		ret = -EAGAIN;
 -	}
 -
- 	mr->ibmr.pd = imr->ibmr.pd;
- 	mr->access_flags = imr->access_flags;
- 	mr->umem = &odp->umem;
-@@ -424,7 +416,7 @@ static struct mlx5_ib_mr *implicit_get_child_mr(struct mlx5_ib_mr *imr,
- 				 MLX5_IB_UPD_XLT_ENABLE);
- 	if (err) {
- 		ret = ERR_PTR(err);
--		goto out_release;
-+		goto out_mr;
- 	}
+ 	return ret;
+ }
  
- 	/*
-@@ -433,26 +425,21 @@ static struct mlx5_ib_mr *implicit_get_child_mr(struct mlx5_ib_mr *imr,
- 	 */
- 	ret = xa_cmpxchg(&imr->implicit_children, idx, NULL, mr,
- 			 GFP_KERNEL);
--	if (likely(!ret))
--		xa_store(&imr->dev->odp_mkeys, mlx5_base_mkey(mr->mmkey.key),
--			 &mr->mmkey, GFP_ATOMIC);
- 	if (unlikely(ret)) {
- 		if (xa_is_err(ret)) {
- 			ret = ERR_PTR(xa_err(ret));
--			goto out_release;
-+			goto out_mr;
- 		}
- 		/*
- 		 * Another thread beat us to creating the child mr, use
- 		 * theirs.
- 		 */
--		goto out_release;
-+		goto out_mr;
- 	}
- 
- 	mlx5_ib_dbg(imr->dev, "key %x mr %p\n", mr->mmkey.key, mr);
- 	return mr;
- 
--out_release:
--	xa_release(&imr->dev->odp_mkeys, mlx5_base_mkey(mr->mmkey.key));
- out_mr:
- 	mlx5_mr_cache_free(imr->dev, mr);
- out_umem:
-@@ -535,14 +522,10 @@ void mlx5_ib_free_implicit_mr(struct mlx5_ib_mr *imr)
- 	xa_lock(&imr->implicit_children);
- 	xa_for_each (&imr->implicit_children, idx, mtt) {
- 		__xa_erase(&imr->implicit_children, idx);
--		__xa_erase(&dev->odp_mkeys, mlx5_base_mkey(mtt->mmkey.key));
- 		list_add(&mtt->odp_destroy.elm, &destroy_list);
- 	}
- 	xa_unlock(&imr->implicit_children);
- 
--	/* Fence access to the child pointers via the pagefault thread */
--	synchronize_srcu(&dev->odp_srcu);
--
- 	/*
- 	 * num_deferred_work can only be incremented inside the odp_srcu, or
- 	 * under xa_lock while the child is in the xarray. Thus at this point
-@@ -1655,13 +1638,6 @@ get_prefetchable_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
- 	if (mr->ibmr.pd != pd)
- 		return NULL;
- 
--	/*
--	 * Implicit child MRs are internal and userspace should not refer to
--	 * them.
--	 */
--	if (mr->parent)
--		return NULL;
--
- 	odp = to_ib_umem_odp(mr->umem);
- 
- 	/* prefetch with write-access must be supported by the MR */
 -- 
 2.23.0
 
