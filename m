@@ -2,210 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CE7D1136
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2019 16:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED29AD1178
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2019 16:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731454AbfJIO2V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Oct 2019 10:28:21 -0400
-Received: from mail-eopbgr30056.outbound.protection.outlook.com ([40.107.3.56]:19623
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        id S1731550AbfJIOkU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Oct 2019 10:40:20 -0400
+Received: from mail-eopbgr80051.outbound.protection.outlook.com ([40.107.8.51]:46062
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731390AbfJIO2V (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 9 Oct 2019 10:28:21 -0400
+        id S1729491AbfJIOkU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 9 Oct 2019 10:40:20 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q0xgr8HZV+ruZCQLKdjBhk/DVGmtPfe8fIozJsA8oseAOziLJkzVldV1YYbfJ6eip2zGEWhL7a35uWJ+GhyAIybdP+UB7nB8JmQm1ijN4JJP4pq1ciDZdUJpq9/U6YG9WLxn7x9GGmJgH96kSUhCfxChJBuW4T+9cbA1JB8oRUZtvmX6zr5igt86ySslikQSqP2S4aOS0RK6iXpKdJ6jM03F7YsIUby7omOV5RfXrqEwX610V6hNzghHTnSttRibr5TGJq8xXb8p9rLGPmR4IBnvzjg+VDLYey0oqQ9KzspXxYZsJlrz0NfgftwV90xpbW23omZ85mUbuEpddg+aqg==
+ b=FjvrFnk3A/Iqtoe/L1GpxCpltLBD8BlVBSHO/+3LoXD2LO5kKcYvolmfTi8GejIIDZfPEsQzxy5KHzA17D/HVvp/tn0KXJ5BlR7sNgPQTJ6xwFe1XMO61Ju/bOqZbFYbJfgSS9LzqvHxjIKz05AJKRd+44FlOtZ1225/qorEy8gVnqcZGjKpqhFpiSBenjDsR0UR9r71/m9AII4YOyzLtcKJr2yvJJBwGk8NnjA3vey4it8fFyLazbJpDFrd0SQp1tJQyFhaHaEfm8nHG9IB/f9nUStvkgN9uH/bSaLWqqT1UwbVPi7FUrq3+uxyWCrhVKKinctnqgYcvZg+NEoLkQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9DvsMKUIWhMOTO1UNS8MAXBFHvZXgSZGqZ7pMFY59BI=;
- b=NEufk4yhoH2F27J6oWJ9ggwhfqkE0FW1aMoEOLra4oBgsearx1vaaMZMbQvxQbSfBFeEOlIizKy0P9ljoRGiSn4B2nChO0g/7r0u9YHdvi4nvJj0zYnOw6zf0g3v5G93P0UnsjuB53nu3MPnjpSGk1aRetKWcAJTjHZir4uG/3f1EYRM1yJLdHlWHiuJJac2VbI6gVWsriZzQe7Y5i5q5DMvjWNalMmjH0l/FVBJFA0u2YaAW/Dm11GtS7mwZtZF4sL0dA03NJw2BTTqFkuXX+oezCos2ZvqSkhF9t8vqNjgcvptw18xj3O+dCntKtIIJErsWZUegXRDSvmqlDpfDw==
+ bh=QJGZV4qnLdUmFHjipyPrthdODWJjbVG719fOJGbdx44=;
+ b=G+QfhC0onu1+UiNx6m/Qagf1pSJURuHi60cstdnMNosDDR3QoSx0uulrq7hIm5SQAyH70CLw45F7LHWMQwU6FXqOTS3aL5R8Cql5M2DzcUe9DkfaQhhQ9jpP/yDL4WMj3Bl+bsPNPfT3Dtg0UkBILpQTE5BDBmUpr889mpUXpgbMzUIDjt66funeMmAXnzS0/tjXFSHg/4WRcUvpO6nCxNvHCvwI46Ih9EclIPDzlAmliQ7hFPcumBfRqzKmEqYtpsqQNc1KHyQap4v06LwpEeqptWL6sPJj/5fJ9Q/OOhxA//WXPg1ZXlFyGddK02zL0xtVUlL4keTDypOztpIa/w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9DvsMKUIWhMOTO1UNS8MAXBFHvZXgSZGqZ7pMFY59BI=;
- b=rjK5QeDqMpTfje7swtn7F7xpac9XcmvucDxthvzJoJoV4U2DKWovnRKEyboejeQGphtsS5xtt6pZGH3o3zK/ImpzOdozka5faFSq+pHRUHTgGCOooaCnvbwqCN5KQtqzf0v0AKVf2PnjtGTWJkdvVOme8zjFsD6FTSTvCR6Th0g=
+ bh=QJGZV4qnLdUmFHjipyPrthdODWJjbVG719fOJGbdx44=;
+ b=MXM7+TR+9wwKVGhcNatAIF4vRG7PvB+9QmxBtHym4eMMrjXBbd4hpwc4ubGsjPgO++Qw2OMh9a8xHovqqLH8AaTr14Sfww8dpAtCxN6jHi85uyFDYri5UVmwShbqJmnZMic4UaLzEWjPIJ5LedI39vH9EtDQkNo/zcs0CXqxSMk=
 Received: from DB7PR05MB4138.eurprd05.prod.outlook.com (52.135.129.16) by
- DB7PR05MB5660.eurprd05.prod.outlook.com (20.178.106.221) with Microsoft SMTP
+ DB7PR05MB5756.eurprd05.prod.outlook.com (20.178.108.22) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2327.24; Wed, 9 Oct 2019 14:28:15 +0000
+ 15.20.2327.23; Wed, 9 Oct 2019 14:40:16 +0000
 Received: from DB7PR05MB4138.eurprd05.prod.outlook.com
  ([fe80::18c2:3d9e:4f04:4043]) by DB7PR05MB4138.eurprd05.prod.outlook.com
  ([fe80::18c2:3d9e:4f04:4043%3]) with mapi id 15.20.2327.023; Wed, 9 Oct 2019
- 14:28:15 +0000
+ 14:40:16 +0000
 From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] Please pull RDMA subsystem changes
-Thread-Topic: [GIT PULL] Please pull RDMA subsystem changes
-Thread-Index: AQHVfq3JiPPlLGHm0U+89M4HCo82oQ==
-Date:   Wed, 9 Oct 2019 14:28:15 +0000
-Message-ID: <20191009142811.GA29521@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Erez Alfasi <ereza@mellanox.com>
+Subject: Re: [PATCH rdma-next v2 4/4] RDMA/nldev: Provide MR statistics
+Thread-Topic: [PATCH rdma-next v2 4/4] RDMA/nldev: Provide MR statistics
+Thread-Index: AQHVfF4A2m8QCXadNEO7xAO7BYpkDadSZi0A
+Date:   Wed, 9 Oct 2019 14:40:16 +0000
+Message-ID: <20191009144012.GJ22714@mellanox.com>
+References: <20191006155139.30632-1-leon@kernel.org>
+ <20191006155139.30632-5-leon@kernel.org>
+In-Reply-To: <20191006155139.30632-5-leon@kernel.org>
 Accept-Language: en-US
 Content-Language: en-US
-X-MS-Has-Attach: yes
+X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: BN8PR04CA0001.namprd04.prod.outlook.com
- (2603:10b6:408:70::14) To DB7PR05MB4138.eurprd05.prod.outlook.com
+x-clientproxiedby: BN6PR17CA0036.namprd17.prod.outlook.com
+ (2603:10b6:405:75::25) To DB7PR05MB4138.eurprd05.prod.outlook.com
  (2603:10a6:5:23::16)
 authentication-results: spf=none (sender IP is )
  smtp.mailfrom=jgg@mellanox.com; 
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [142.162.113.180]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 075d0292-ce12-4387-df26-08d74cc4ebc8
+x-ms-office365-filtering-correlation-id: fd9beb8a-d88d-425c-d73a-08d74cc699a0
 x-ms-office365-filtering-ht: Tenant
-x-ms-traffictypediagnostic: DB7PR05MB5660:
-x-microsoft-antispam-prvs: <DB7PR05MB566071946F7BB9B51B75A828CF950@DB7PR05MB5660.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:130;
+x-ms-traffictypediagnostic: DB7PR05MB5756:|DB7PR05MB5756:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR05MB5756C716453F95870E999E94CF950@DB7PR05MB5756.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:403;
 x-forefront-prvs: 018577E36E
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(39860400002)(346002)(136003)(366004)(396003)(189003)(199004)(6116002)(5660300002)(7736002)(6506007)(2906002)(386003)(305945005)(1076003)(486006)(99936001)(66066001)(256004)(25786009)(476003)(36756003)(14444005)(4326008)(186003)(26005)(66616009)(66446008)(64756008)(66556008)(66476007)(66946007)(6486002)(33656002)(54906003)(6436002)(316002)(110136005)(8676002)(52116002)(3846002)(9686003)(6512007)(81156014)(81166006)(86362001)(99286004)(71200400001)(71190400001)(14454004)(102836004)(8936002)(478600001);DIR:OUT;SFP:1101;SCL:1;SRVR:DB7PR05MB5660;H:DB7PR05MB4138.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(376002)(396003)(136003)(39860400002)(366004)(199004)(189003)(4326008)(54906003)(76176011)(316002)(6246003)(107886003)(99286004)(3846002)(6116002)(2906002)(14454004)(5660300002)(71200400001)(71190400001)(478600001)(6512007)(446003)(8936002)(386003)(6486002)(7736002)(186003)(86362001)(11346002)(2616005)(52116002)(25786009)(66446008)(486006)(6506007)(476003)(66946007)(102836004)(36756003)(33656002)(81156014)(81166006)(229853002)(305945005)(256004)(1076003)(6436002)(8676002)(66066001)(6916009)(26005)(64756008)(66476007)(66556008);DIR:OUT;SFP:1101;SCL:1;SRVR:DB7PR05MB5756;H:DB7PR05MB4138.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Mu48uZS3R0EfXAiePib7nZLmXdP3RSH7FjgnIYWwFd6NqEXdgxBGH8wF5QpnDS8XXyQJVjNbZLjjRWiVxO/Szj9kWKHPjWmMkZhjRb23EF8POdz0Dv/cK70lOPdJlJF876qxLGNxdKVLKZGnLnMdJ/BXRQv7xoCCcl/tOdPrhT/CpAgyAZ7X/6BBlnZFq3SPB+XfM6jFGLkxUQySK8jEVrrbUAMkYZImhUSE3tiXRszxtqzG4t/vBUmoD2ugGdtlSeRYX1NgS3h6aDYMKwiKHyDgFQ3d9DKwyiHKNlobyAY81n8nd/IWwMu929qAOcFzux8oo82xL9OnOuTvFXW+ZbcivES5fZ6+jhXvqNxP4+NcrJ1xCbYPWr2k4uSZMKzj9SJvhuLDR9h1YEOYlkIPGYUUDvlPz1/d+5CKFBPeHyw=
-x-ms-exchange-transport-forked: True
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LQksG6bCIzRHxTLp"
+x-microsoft-antispam-message-info: 67GjGWYA6x7H2vwthMAh2Zd1WL/5SL7KtZXSXkkwfieUH/1b79DPFQRs1IbeVDRSQ7eL4l9azIvqNHPD6EdN0oe/SWUlQYS/waswN/1+eF6GzQe0O8DFwBa+JDAcyp2WiPbFKakG4SUd6NZ5p7JbqX/tgjtfQ83x4R4NBbkBjvZpPbBoK+N3cFOq5Foo5wNXknqhU26TKF81saHSwVc8UsWyviqM75eTMC2DsvM3dIN83ANgCNqEzaY7IC8Gskz5bOvFI0+62Fs+EE1OlNEW/huWKjCPu6YY+szhK9/m5TNcaweWTJOgKkhoFNTYXLIMqslBeQjqKMWLvs3xwBquqREhkbiS6RoKQqW6ccsT2z9jGQcQpwED8TXCLyATS9inbb3WobibpZn7bk53apiF86e95An0pna1G4vyhV2QgDQ=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <859CB892E71FBD45910860D400E9ED67@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 075d0292-ce12-4387-df26-08d74cc4ebc8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Oct 2019 14:28:15.1464
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd9beb8a-d88d-425c-d73a-08d74cc699a0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Oct 2019 14:40:16.2733
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HvivC+vXyUtshK+4QVVli09cdX+sxSriH134RAHhmczpvECmBqJnzq1/IJFR0sAnLYvtqbV4NEyLWymg0Pp2PQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR05MB5660
+X-MS-Exchange-CrossTenant-userprincipalname: Zf291JdA60ojWkabPKdnULq1HVJ+LjfbLFAJhAUevUeV2sh4WwsI0o6Bdewu+lS7LZ1v99hJ0xRuPZFWROQ9Jg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR05MB5756
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---LQksG6bCIzRHxTLp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Sun, Oct 06, 2019 at 06:51:39PM +0300, Leon Romanovsky wrote:
+> From: Erez Alfasi <ereza@mellanox.com>
+>=20
+> Add RDMA nldev netlink interface for dumping MR
+> statistics information.
+>=20
+> Output example:
+> ereza@dev~$: ./ibv_rc_pingpong -o -P -s 500000000
+>   local address:  LID 0x0001, QPN 0x00008a, PSN 0xf81096, GID ::
+>=20
+> ereza@dev~$: rdma stat show mr
+> dev mlx5_0 mrn 2 page_faults 122071 page_invalidations 0
+> prefetched_pages 122071
+>=20
+> Signed-off-by: Erez Alfasi <ereza@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+>  drivers/infiniband/core/device.c      |  1 +
+>  drivers/infiniband/core/nldev.c       | 41 ++++++++++++++++++++++---
+>  drivers/infiniband/hw/mlx5/main.c     |  2 ++
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h  |  2 ++
+>  drivers/infiniband/hw/mlx5/restrack.c | 44 +++++++++++++++++++++++++++
+>  include/rdma/ib_verbs.h               |  7 +++++
+>  include/rdma/restrack.h               |  3 ++
+>  7 files changed, 96 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/d=
+evice.c
+> index a667636f74bf..2e53aa25f0c7 100644
+> +++ b/drivers/infiniband/core/device.c
+> @@ -2606,6 +2606,7 @@ void ib_set_device_ops(struct ib_device *dev, const=
+ struct ib_device_ops *ops)
+>  	SET_DEVICE_OP(dev_ops, drain_sq);
+>  	SET_DEVICE_OP(dev_ops, enable_driver);
+>  	SET_DEVICE_OP(dev_ops, fill_res_entry);
+> +	SET_DEVICE_OP(dev_ops, fill_stat_entry);
+>  	SET_DEVICE_OP(dev_ops, get_dev_fw_str);
+>  	SET_DEVICE_OP(dev_ops, get_dma_mr);
+>  	SET_DEVICE_OP(dev_ops, get_hw_stats);
+> diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nl=
+dev.c
+> index 6114465959e1..1d9d89fd9ce9 100644
+> +++ b/drivers/infiniband/core/nldev.c
+> @@ -454,6 +454,14 @@ static bool fill_res_entry(struct ib_device *dev, st=
+ruct sk_buff *msg,
+>  	return dev->ops.fill_res_entry(msg, res);
+>  }
+> =20
+> +static bool fill_stat_entry(struct ib_device *dev, struct sk_buff *msg,
+> +			    struct rdma_restrack_entry *res)
+> +{
+> +	if (!dev->ops.fill_stat_entry)
+> +		return false;
+> +	return dev->ops.fill_stat_entry(msg, res);
+> +}
 
-Hi Linus,
+Why do we need this function called in only one place?
 
-First rc pull request
-
-The usual collection of driver bug fixes, and a few regressions from the merge
-window. Nothing particularly worrisome.
-
-The following changes since commit 54ecb8f7028c5eb3d740bb82b0f1d90f2df63c5c:
-
-  Linux 5.4-rc1 (2019-09-30 10:35:40 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-
-for you to fetch changes up to 0417791536ae1e28d7f0418f1d20048ec4d3c6cf:
-
-  RDMA/mlx5: Add missing synchronize_srcu() for MW cases (2019-10-04 15:54:22 -0300)
-
-----------------------------------------------------------------
-RDMA subsystem updates for 5.4-rc
-
-Various minor bug fixes posted in the last couple of weeks:
-
-- Various missed memory frees and error unwind bugs
-
-- Fix regressions in a few iwarp drivers from 5.4 patches
-
-- A few regressions added in past kernels
-
-- Squash a number of races in mlx5 ODP code
-
-----------------------------------------------------------------
-Adit Ranadive (1):
-      RDMA/vmw_pvrdma: Free SRQ only once
-
-Bart Van Assche (1):
-      RDMA/iwcm: Fix a lock inversion issue
-
-Christophe JAILLET (1):
-      RDMA/core: Fix an error handling path in 'res_get_common_doit()'
-
-Greg KH (1):
-      RDMA/cxgb4: Do not dma memory off of the stack
-
-Jack Morgenstein (1):
-      RDMA/cm: Fix memory leak in cm_add/remove_one
-
-Jason Gunthorpe (6):
-      RDMA/mlx5: Do not allow rereg of a ODP MR
-      RDMA/mlx5: Fix a race with mlx5_ib_update_xlt on an implicit MR
-      RDMA/odp: Lift umem_mutex out of ib_umem_odp_unmap_dma_pages()
-      RDMA/mlx5: Order num_pending_prefetch properly with synchronize_srcu
-      RDMA/mlx5: Put live in the correct place for ODP MRs
-      RDMA/mlx5: Add missing synchronize_srcu() for MW cases
-
-Krishnamraju Eraparaju (1):
-      RDMA/siw: Fix serialization issue in write_space()
-
-Leon Romanovsky (1):
-      RDMA/nldev: Reshuffle the code to avoid need to rebind QP in error path
-
-Michal Kalderon (1):
-      RDMA/core: Fix use after free and refcnt leak on ndev in_device in iwarp_query_port
-
-Mohamad Heib (1):
-      IB/core: Fix wrong iterating on ports
-
-Navid Emamdoost (1):
-      RDMA/hfi1: Prevent memory leak in sdma_init
-
-Potnuri Bharat Teja (1):
-      RDMA/iw_cxgb4: fix SRQ access from dump_qp()
-
-Shiraz, Saleem (1):
-      RDMA/i40iw: Associate ibdev to netdev before IB device registration
-
- drivers/infiniband/core/cm.c                  |  3 ++
- drivers/infiniband/core/cma.c                 |  3 +-
- drivers/infiniband/core/device.c              |  9 ++--
- drivers/infiniband/core/nldev.c               | 12 ++---
- drivers/infiniband/core/security.c            |  2 +-
- drivers/infiniband/core/umem_odp.c            |  6 ++-
- drivers/infiniband/hw/cxgb4/device.c          |  7 ++-
- drivers/infiniband/hw/cxgb4/mem.c             | 28 ++++++-----
- drivers/infiniband/hw/cxgb4/qp.c              | 10 +---
- drivers/infiniband/hw/hfi1/sdma.c             |  5 +-
- drivers/infiniband/hw/i40iw/i40iw_verbs.c     |  4 ++
- drivers/infiniband/hw/mlx5/devx.c             | 58 +++++++----------------
- drivers/infiniband/hw/mlx5/mlx5_ib.h          |  3 +-
- drivers/infiniband/hw/mlx5/mr.c               | 68 +++++++++++----------------
- drivers/infiniband/hw/mlx5/odp.c              | 58 ++++++++++++++++++-----
- drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c |  2 -
- drivers/infiniband/sw/siw/siw_qp.c            | 15 ++++--
- drivers/net/ethernet/mellanox/mlx5/core/mr.c  |  8 +---
- 18 files changed, 154 insertions(+), 147 deletions(-)
-
---LQksG6bCIzRHxTLp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEfB7FMLh+8QxL+6i3OG33FX4gmxoFAl2d7nkACgkQOG33FX4g
-mxpxgRAAhF8UrKU9CW2mmqyYjZ7pAtM9IVgfN0Vn17fijXrYc1hC9dDwlQv1dk1c
-EUlucKp7jTQxRHqNpZ++W0acGF7TO8rh03aty8KGqQN8jQs6xQOYyFUJNCdri6Mp
-s2e/0Hk7x2H1xXwyDGnZAARZZ3rvdJ29AXxzC5ZXwHsssS8oM+ox19W22MtrZCV2
-y6vSFFue7xi+TDPCUFgS8nacebfsM3gkkGShNEP1LNTM95UoLtYrdvrcyuXCXoWP
-ty+X6p+r1riyU+deVboWOkwetRDDfgS0y1X2c4XidWE1HqzrsVh4vDZAptbmW6aB
-hOcBO4Ofm1W1WBJLc2Tnq3SGQ9XcR8Ezns3ZX/qtdQ6QCrt7YpiMe+kSPE/ZKf7g
-RDL6lvMHFM8Qr2c/EzHCyeZbGWwy/XV5awNrOmk6WBT11vvg8pBKeUrimlnIqo0a
-ft9MfHSAmVVsOxUgNrQOUSLEPxNTn9v++Ou6Bqv+F6Go1ODS5gKWtRKfyJGH6D6j
-ETDGctGU7IOerkBqMIhN/RrwEU/ync/iDxEirSzLoHCAWgs9vUBTWwP/efLVC+ef
-v5V7rfVIlIKQZHjmz3bzuqnR/e4cRgjRwGWxy4JvohlyS8vPxQQssys0/exRRTwW
-mIS7RZYmBAiacT3kNhhav4yJbBfxEENzJeZmMhWBUoLv4t3wBwg=
-=Fhmu
------END PGP SIGNATURE-----
-
---LQksG6bCIzRHxTLp--
+Jason
