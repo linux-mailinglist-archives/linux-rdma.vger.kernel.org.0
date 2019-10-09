@@ -2,147 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF0CD01E3
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Oct 2019 22:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 279B3D051C
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2019 03:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730344AbfJHUD6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Oct 2019 16:03:58 -0400
-Received: from fieldses.org ([173.255.197.46]:47282 "EHLO fieldses.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730101AbfJHUD5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 8 Oct 2019 16:03:57 -0400
-Received: by fieldses.org (Postfix, from userid 2815)
-        id BEB7C1C21; Tue,  8 Oct 2019 16:03:56 -0400 (EDT)
-Date:   Tue, 8 Oct 2019 16:03:56 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH] svcrdma: Improve DMA mapping trace points
-Message-ID: <20191008200356.GA9151@fieldses.org>
-References: <20191004135745.2510.93924.stgit@manet.1015granger.net>
+        id S1729737AbfJIBPR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Oct 2019 21:15:17 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3664 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727051AbfJIBPR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 8 Oct 2019 21:15:17 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id BB81D622A3AAD2CD37BE;
+        Wed,  9 Oct 2019 09:15:15 +0800 (CST)
+Received: from [127.0.0.1] (10.40.168.149) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.439.0; Wed, 9 Oct 2019
+ 09:15:08 +0800
+Subject: Re: [PATCH for-next] RDMA/hns: Release qp resources when failed to
+ destroy qp
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <1570532331-49676-1-git-send-email-liweihang@hisilicon.com>
+ <20191008194810.GA3280@ziepe.ca>
+From:   Weihang Li <liweihang@hisilicon.com>
+Message-ID: <3af76d7d-30e2-e48f-6187-d33effe45c36@hisilicon.com>
+Date:   Wed, 9 Oct 2019 09:15:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191004135745.2510.93924.stgit@manet.1015granger.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20191008194810.GA3280@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.168.149]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 04, 2019 at 09:58:20AM -0400, Chuck Lever wrote:
-> Capture the total size of Sends, the size of DMA map and the
-> matching DMA unmap to ensure operation is correct.
-> 
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> ---
->  include/trace/events/rpcrdma.h        |   30 +++++++++++++++++++++++-------
->  net/sunrpc/xprtrdma/svc_rdma_sendto.c |    8 ++++++--
->  2 files changed, 29 insertions(+), 9 deletions(-)
-> 
-> Hey Bruce-
-> 
-> Please consider this patch for v5.5. Thanks!
 
-Applied, thanks!
 
---b.
+On 2019/10/9 3:48, Jason Gunthorpe wrote:
+> On Tue, Oct 08, 2019 at 06:58:51PM +0800, Weihang Li wrote:
+>> From: Yangyang Li <liyangyang20@huawei.com>
+>>
+>> Even if no response from hardware, we should make sure that qp related
+>> resources are released to avoid memory leaks.
+>>
+>> Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
+>> Signed-off-by: Weihang Li <liweihang@hisilicon.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 12 ++++--------
+>>  1 file changed, 4 insertions(+), 8 deletions(-)
+> 
+> This needs a fixes line
+>  
+> Jason
+> 
+
+OK, thank you.
 
 > 
-> 
-> diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdma.h
-> index a138306..9dd7680 100644
-> --- a/include/trace/events/rpcrdma.h
-> +++ b/include/trace/events/rpcrdma.h
-> @@ -1498,31 +1498,47 @@
->   ** Server-side RDMA API events
->   **/
->  
-> -TRACE_EVENT(svcrdma_dma_map_page,
-> +DECLARE_EVENT_CLASS(svcrdma_dma_map_class,
->  	TP_PROTO(
->  		const struct svcxprt_rdma *rdma,
-> -		const void *page
-> +		u64 dma_addr,
-> +		u32 length
->  	),
->  
-> -	TP_ARGS(rdma, page),
-> +	TP_ARGS(rdma, dma_addr, length),
->  
->  	TP_STRUCT__entry(
-> -		__field(const void *, page);
-> +		__field(u64, dma_addr)
-> +		__field(u32, length)
->  		__string(device, rdma->sc_cm_id->device->name)
->  		__string(addr, rdma->sc_xprt.xpt_remotebuf)
->  	),
->  
->  	TP_fast_assign(
-> -		__entry->page = page;
-> +		__entry->dma_addr = dma_addr;
-> +		__entry->length = length;
->  		__assign_str(device, rdma->sc_cm_id->device->name);
->  		__assign_str(addr, rdma->sc_xprt.xpt_remotebuf);
->  	),
->  
-> -	TP_printk("addr=%s device=%s page=%p",
-> -		__get_str(addr), __get_str(device), __entry->page
-> +	TP_printk("addr=%s device=%s dma_addr=%llu length=%u",
-> +		__get_str(addr), __get_str(device),
-> +		__entry->dma_addr, __entry->length
->  	)
->  );
->  
-> +#define DEFINE_SVC_DMA_EVENT(name)					\
-> +		DEFINE_EVENT(svcrdma_dma_map_class, svcrdma_##name,	\
-> +				TP_PROTO(				\
-> +					const struct svcxprt_rdma *rdma,\
-> +					u64 dma_addr,			\
-> +					u32 length			\
-> +				),					\
-> +				TP_ARGS(rdma, dma_addr, length))
-> +
-> +DEFINE_SVC_DMA_EVENT(dma_map_page);
-> +DEFINE_SVC_DMA_EVENT(dma_unmap_page);
-> +
->  TRACE_EVENT(svcrdma_dma_map_rwctx,
->  	TP_PROTO(
->  		const struct svcxprt_rdma *rdma,
-> diff --git a/net/sunrpc/xprtrdma/svc_rdma_sendto.c b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-> index 6fdba72..f3f1080 100644
-> --- a/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-> +++ b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-> @@ -233,11 +233,15 @@ void svc_rdma_send_ctxt_put(struct svcxprt_rdma *rdma,
->  	/* The first SGE contains the transport header, which
->  	 * remains mapped until @ctxt is destroyed.
->  	 */
-> -	for (i = 1; i < ctxt->sc_send_wr.num_sge; i++)
-> +	for (i = 1; i < ctxt->sc_send_wr.num_sge; i++) {
->  		ib_dma_unmap_page(device,
->  				  ctxt->sc_sges[i].addr,
->  				  ctxt->sc_sges[i].length,
->  				  DMA_TO_DEVICE);
-> +		trace_svcrdma_dma_unmap_page(rdma,
-> +					     ctxt->sc_sges[i].addr,
-> +					     ctxt->sc_sges[i].length);
-> +	}
->  
->  	for (i = 0; i < ctxt->sc_page_count; ++i)
->  		put_page(ctxt->sc_pages[i]);
-> @@ -490,6 +494,7 @@ static int svc_rdma_dma_map_page(struct svcxprt_rdma *rdma,
->  	dma_addr_t dma_addr;
->  
->  	dma_addr = ib_dma_map_page(dev, page, offset, len, DMA_TO_DEVICE);
-> +	trace_svcrdma_dma_map_page(rdma, dma_addr, len);
->  	if (ib_dma_mapping_error(dev, dma_addr))
->  		goto out_maperr;
->  
-> @@ -499,7 +504,6 @@ static int svc_rdma_dma_map_page(struct svcxprt_rdma *rdma,
->  	return 0;
->  
->  out_maperr:
-> -	trace_svcrdma_dma_map_page(rdma, page);
->  	return -EIO;
->  }
->  
+
