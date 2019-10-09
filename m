@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4265BD13B3
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2019 18:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B23DD13B5
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Oct 2019 18:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731679AbfJIQKK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Oct 2019 12:10:10 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:40855 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731800AbfJIQKJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Oct 2019 12:10:09 -0400
-Received: by mail-qt1-f196.google.com with SMTP id m61so4175725qte.7
-        for <linux-rdma@vger.kernel.org>; Wed, 09 Oct 2019 09:10:08 -0700 (PDT)
+        id S1731829AbfJIQKL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Oct 2019 12:10:11 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:44098 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731824AbfJIQKK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Oct 2019 12:10:10 -0400
+Received: by mail-qt1-f194.google.com with SMTP id u40so4142286qth.11
+        for <linux-rdma@vger.kernel.org>; Wed, 09 Oct 2019 09:10:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JJdwbx9SqBfnQym9Z50MQ/5e4bZxyYXUS1R2G4Io3fE=;
-        b=KUHpYHK94j8nckh+E0UgVXVqsvFEGGpUSCWNGEum1xQqrBt5W47WqXaA1AQgGl6Hfr
-         pnbjE++KZcojBZt8/144A1fFF7v6CtdY0v1JZpwdTvJWUhAlBoJibVtYCsChGS2JHii5
-         NC5onFPEcCugPBizRRa0Ozey8StD7PRWUnl6XmxNJ+thOe6/Epjo1mmDWSvRL8xcWH5A
-         zFC9ma22/UJagxru+R58eI21rR1ATvAZSMXty4++8yUDEaXhP++N4VT33booFPDUJNqS
-         LlI6Uz/GHT9mZW5mGHyvdDG000wHR4zZS5IHkGBy7JLuzk2YkpAPY7c65puz79RFCV56
-         fL5Q==
+        bh=ZJEg3kRU8fOi2QfaHQ3YiAy6OHmBCS5J4mto1R77tvc=;
+        b=aMrCS/B+reyXBv7nn5zIEpiYlTRUyYx7ABrWLJ2AM8NuaYp1bjwQN+WDue/1hnPidQ
+         eqn2DOv2NNjglW02axLOvst5GFSIkhOpr5Q+cBFrOY1gncqBjYHAVy54KfugxV/Ee9dQ
+         Ma5IDITvvNf0gk/DzvQ6klJMs3gizoRfzvA2W/+MH6NityCwizJ8kAPu9dVBpko4CyPB
+         nZUiqFjQ+PhHNY3Hm5jbHkxLHqQFn8tv6oCWZZwp7X30CrBOlUKKvgGtzzhpWS/u8l+3
+         ntFjspleWAv9WL6srfgDDIqmfLhLoyIRiLXVuStcWRMZ8iXO51GcDHIonNaZ3t2WyeCu
+         tovA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JJdwbx9SqBfnQym9Z50MQ/5e4bZxyYXUS1R2G4Io3fE=;
-        b=ZnKOcocvPlJrwy3Xzpxd/SaiFpymdqSlnur5SA+T2bBz3/kPok7aomqeAgAvitooWF
-         8yLg11Ss/NislH+3CWF1oXjXYmgmlF+MJgQWFKMPzqh4314wFj4VpAC660NRjPsjJhly
-         EzXcNhroI2kwFIL7sabDYrIdZ/y8jOVwhroiAtLnXNv1mbBRB/9xXfG/k83FjhMiASJU
-         aDUcPDghOmE1T+zcb0VD45GEV2kA5ydBiZ0+eqxtN+CqyvD2QuUrKZeFAM3U19hcZ8gS
-         8/+O8qMMFo0g95hdndt/mTdLQ80VpH7HRpFMT5Z/zhAqQ85SC+W13IvR4VgC/zIEPeb7
-         fzuQ==
-X-Gm-Message-State: APjAAAV65sZtHSDmsZTiJvS6SytW+RVJHB5ZLxh2oDmNz9oKiKBNpGyo
-        GZLFFWnwEZm3HV75M+BTmMS07vtrW90=
-X-Google-Smtp-Source: APXvYqyke6pLTNcSeq2HrxVvLQRl17pM4c/lyXp6flDollVfDgdCdkFhrD4pP26rrTnq18L8VXr02Q==
-X-Received: by 2002:a05:6214:154c:: with SMTP id t12mr4510801qvw.127.1570637408098;
-        Wed, 09 Oct 2019 09:10:08 -0700 (PDT)
+        bh=ZJEg3kRU8fOi2QfaHQ3YiAy6OHmBCS5J4mto1R77tvc=;
+        b=uKAwq+RkBvBzb8NPQynD3jeid7TiuU/+JMRFBsV6ewUYrk6R05Alnvq4EgplzT3+FD
+         cqJZbSt2RzI+mOl4zIxF5vSH0l7e28Ji8/u6qEUjSR++sNlZmzFbYg/Za/4vmEWw8tzt
+         a/+5vpRjH9pkDknMvQwMgpkJJK0aIQS5p+JaBCcSJXWaKSB0OkaIQs7IbhzKtQ9KrJRY
+         pbdnSrcFErV3Wg/6I8nVABKtu8s7J7TYFUkdQJXYwUppLgJUxQWYKUO+RNvDsKizly83
+         Jcb7MAx1YDffiIk/1PoEZsWgjJVB1WheC7OOOWt1FWoacLyeqHE+Owhym/esz2OuFrba
+         S11A==
+X-Gm-Message-State: APjAAAWLm5SdVFlO2F9BIm7bTtYboP3cO0Laq0RB02qr6nzDfHQ4v1Mx
+        pXptHNn9BPvAXvsPUBBqRuR6TFlZBYI=
+X-Google-Smtp-Source: APXvYqz+SGVLiB/1XSzDgVmhVnDjoSg9asrI1w3UInEzxwP0q8aKZhEsCDOD1itSGD9aem2CBizfsw==
+X-Received: by 2002:ac8:28a3:: with SMTP id i32mr4540283qti.42.1570637409404;
+        Wed, 09 Oct 2019 09:10:09 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id x9sm1061893qkl.75.2019.10.09.09.10.05
+        by smtp.gmail.com with ESMTPSA id w11sm1336153qtj.10.2019.10.09.09.10.05
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
         Wed, 09 Oct 2019 09:10:06 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iIEXM-0000qg-Sr; Wed, 09 Oct 2019 13:10:04 -0300
+        id 1iIEXM-0000qm-Ur; Wed, 09 Oct 2019 13:10:04 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     linux-rdma@vger.kernel.org
 Cc:     Jason Gunthorpe <jgg@mellanox.com>,
         Artemy Kovalyov <artemyko@mellanox.com>
-Subject: [PATCH 05/15] RDMA/mlx5: Rework implicit_mr_get_data
-Date:   Wed,  9 Oct 2019 13:09:25 -0300
-Message-Id: <20191009160934.3143-6-jgg@ziepe.ca>
+Subject: [PATCH 06/15] RDMA/mlx5: Lift implicit_mr_alloc() into the two routines that call it
+Date:   Wed,  9 Oct 2019 13:09:26 -0300
+Message-Id: <20191009160934.3143-7-jgg@ziepe.ca>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191009160934.3143-1-jgg@ziepe.ca>
 References: <20191009160934.3143-1-jgg@ziepe.ca>
@@ -66,180 +66,223 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-This function is intended to loop across each MTT chunk in the implicit
-parent that intersects the range [io_virt, io_virt+bnct).  But it is has a
-confusing construction, so:
+This makes the routines easier to understand, particularly with respect
+the locking requirements of the entire sequence. The implicit_mr_alloc()
+had a lot of ifs specializing it to each of the callers, and only a very
+small amount of code was actually shared.
 
-- Consistently use imr and odp_imr to refer to the implicit parent
-  to avoid confusion with the normal mr and odp of the child
-- Directly compute the inclusive start/end indexes by shifting. This is
-  clearer to understand the intent and avoids any errors from unaligned
-  values of addr
-- Iterate directly over the range of MTT indexes, do not make a loop
-  out of goto
-- Follow 'success oriented flow', with goto error unwind
-- Directly calculate the range of idx's that need update_xlt
-- Ensure that any leaf MR added to the interval tree always results in an
-  update to the XLT
+Following patches will cause the flow in the two functions to diverge
+further.
 
 Reviewed-by: Artemy Kovalyov <artemyko@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/odp.c | 123 +++++++++++++++++--------------
- 1 file changed, 69 insertions(+), 54 deletions(-)
+ drivers/infiniband/hw/mlx5/odp.c | 151 +++++++++++++++----------------
+ 1 file changed, 74 insertions(+), 77 deletions(-)
 
 diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 3de30317891a23..a56c627e25ae58 100644
+index a56c627e25ae58..9b912d2f786192 100644
 --- a/drivers/infiniband/hw/mlx5/odp.c
 +++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -479,78 +479,93 @@ static struct mlx5_ib_mr *implicit_mr_alloc(struct ib_pd *pd,
- 	return ERR_PTR(err);
+@@ -416,96 +416,66 @@ static void mlx5_ib_page_fault_resume(struct mlx5_ib_dev *dev,
+ 			    wq_num, err);
  }
  
--static struct ib_umem_odp *implicit_mr_get_data(struct mlx5_ib_mr *mr,
--						u64 io_virt, size_t bcnt)
+-static struct mlx5_ib_mr *implicit_mr_alloc(struct ib_pd *pd,
+-					    struct ib_umem_odp *umem_odp,
+-					    bool ksm, int access_flags)
 +static struct mlx5_ib_mr *implicit_get_child_mr(struct mlx5_ib_mr *imr,
 +						unsigned long idx)
  {
--	struct mlx5_ib_dev *dev = to_mdev(mr->ibmr.pd->device);
--	struct ib_umem_odp *odp, *result = NULL;
--	struct ib_umem_odp *odp_mr = to_ib_umem_odp(mr->umem);
--	u64 addr = io_virt & MLX5_IMR_MTT_MASK;
--	int nentries = 0, start_idx = 0, ret;
+-	struct mlx5_ib_dev *dev = to_mdev(pd->device);
 +	struct ib_umem_odp *odp;
- 	struct mlx5_ib_mr *mtt;
+ 	struct mlx5_ib_mr *mr;
++	struct mlx5_ib_mr *ret;
+ 	int err;
  
--	mutex_lock(&odp_mr->umem_mutex);
--	odp = odp_lookup(addr, 1, mr);
+-	mr = mlx5_mr_cache_alloc(dev, ksm ? MLX5_IMR_KSM_CACHE_ENTRY :
+-					    MLX5_IMR_MTT_CACHE_ENTRY);
 +	odp = ib_umem_odp_alloc_child(to_ib_umem_odp(imr->umem),
 +				      idx * MLX5_IMR_MTT_SIZE,
 +				      MLX5_IMR_MTT_SIZE);
 +	if (IS_ERR(odp))
 +		return ERR_CAST(odp);
  
--	mlx5_ib_dbg(dev, "io_virt:%llx bcnt:%zx addr:%llx odp:%p\n",
--		    io_virt, bcnt, addr, odp);
-+	mtt = implicit_mr_alloc(imr->ibmr.pd, odp, 0, imr->access_flags);
-+	if (IS_ERR(mtt)) {
-+		ib_umem_odp_release(odp);
-+		return mtt;
++	ret = mr = mlx5_mr_cache_alloc(imr->dev, MLX5_IMR_MTT_CACHE_ENTRY);
+ 	if (IS_ERR(mr))
+-		return mr;
++		goto out_umem;
+ 
+-	err = xa_reserve(&dev->odp_mkeys, mlx5_base_mkey(mr->mmkey.key),
++	err = xa_reserve(&imr->dev->odp_mkeys, mlx5_base_mkey(mr->mmkey.key),
+ 			 GFP_KERNEL);
+-	if (err)
++	if (err) {
++		ret = ERR_PTR(err);
+ 		goto out_mr;
+-
+-	mr->ibmr.pd = pd;
+-
+-	mr->dev = dev;
+-	mr->access_flags = access_flags;
+-	mr->mmkey.iova = 0;
+-	mr->umem = &umem_odp->umem;
+-
+-	if (ksm) {
+-		err = mlx5_ib_update_xlt(mr, 0,
+-					 mlx5_imr_ksm_entries,
+-					 MLX5_KSM_PAGE_SHIFT,
+-					 MLX5_IB_UPD_XLT_INDIRECT |
+-					 MLX5_IB_UPD_XLT_ZAP |
+-					 MLX5_IB_UPD_XLT_ENABLE);
+-
+-	} else {
+-		err = mlx5_ib_update_xlt(mr, 0,
+-					 MLX5_IMR_MTT_ENTRIES,
+-					 PAGE_SHIFT,
+-					 MLX5_IB_UPD_XLT_ZAP |
+-					 MLX5_IB_UPD_XLT_ENABLE |
+-					 MLX5_IB_UPD_XLT_ATOMIC);
+ 	}
+ 
+-	if (err)
+-		goto out_release;
+-
++	mr->ibmr.pd = imr->ibmr.pd;
++	mr->access_flags = imr->access_flags;
++	mr->umem = &odp->umem;
+ 	mr->ibmr.lkey = mr->mmkey.key;
+ 	mr->ibmr.rkey = mr->mmkey.key;
++	mr->mmkey.iova = 0;
++	mr->parent = imr;
++	odp->private = mr;
++	INIT_WORK(&odp->work, mr_leaf_free_action);
++
++	err = mlx5_ib_update_xlt(mr, 0,
++				 MLX5_IMR_MTT_ENTRIES,
++				 PAGE_SHIFT,
++				 MLX5_IB_UPD_XLT_ZAP |
++				 MLX5_IB_UPD_XLT_ENABLE |
++				 MLX5_IB_UPD_XLT_ATOMIC);
++	if (err) {
++		ret = ERR_PTR(err);
++		goto out_release;
 +	}
  
--next_mr:
--	if (likely(odp)) {
--		if (nentries)
--			nentries++;
--	} else {
--		odp = ib_umem_odp_alloc_child(odp_mr, addr, MLX5_IMR_MTT_SIZE);
--		if (IS_ERR(odp)) {
--			mutex_unlock(&odp_mr->umem_mutex);
--			return ERR_CAST(odp);
--		}
-+	odp->private = mtt;
-+	mtt->umem = &odp->umem;
-+	mtt->mmkey.iova = idx * MLX5_IMR_MTT_SIZE;
-+	mtt->parent = imr;
-+	INIT_WORK(&odp->work, mr_leaf_free_action);
+-	mlx5_ib_dbg(dev, "key %x dev %p mr %p\n",
+-		    mr->mmkey.key, dev->mdev, mr);
++	mr->mmkey.iova = idx * MLX5_IMR_MTT_SIZE;
++	xa_store(&imr->dev->odp_mkeys, mlx5_base_mkey(mr->mmkey.key),
++		 &mr->mmkey, GFP_ATOMIC);
  
--		mtt = implicit_mr_alloc(mr->ibmr.pd, odp, 0,
--					mr->access_flags);
--		if (IS_ERR(mtt)) {
--			mutex_unlock(&odp_mr->umem_mutex);
--			ib_umem_odp_release(odp);
--			return ERR_CAST(mtt);
--		}
-+	xa_store(&mtt->dev->odp_mkeys, mlx5_base_mkey(mtt->mmkey.key),
-+		 &mtt->mmkey, GFP_ATOMIC);
-+	return mtt;
-+}
++	mlx5_ib_dbg(imr->dev, "key %x mr %p\n", mr->mmkey.key, mr);
+ 	return mr;
  
--		odp->private = mtt;
--		mtt->umem = &odp->umem;
--		mtt->mmkey.iova = addr;
--		mtt->parent = mr;
--		INIT_WORK(&odp->work, mr_leaf_free_action);
-+static struct ib_umem_odp *implicit_mr_get_data(struct mlx5_ib_mr *imr,
-+						u64 io_virt, size_t bcnt)
-+{
-+	struct ib_umem_odp *odp_imr = to_ib_umem_odp(imr->umem);
-+	unsigned long end_idx = (io_virt + bcnt - 1) >> MLX5_IMR_MTT_SHIFT;
-+	unsigned long idx = io_virt >> MLX5_IMR_MTT_SHIFT;
-+	unsigned long inv_start_idx = end_idx + 1;
-+	unsigned long inv_len = 0;
-+	struct ib_umem_odp *result = NULL;
-+	struct ib_umem_odp *odp;
-+	int ret;
- 
--		xa_store(&dev->odp_mkeys, mlx5_base_mkey(mtt->mmkey.key),
--			 &mtt->mmkey, GFP_ATOMIC);
-+	mutex_lock(&odp_imr->umem_mutex);
-+	odp = odp_lookup(idx * MLX5_IMR_MTT_SIZE, 1, imr);
-+	for (idx = idx; idx <= end_idx; idx++) {
-+		if (unlikely(!odp)) {
-+			struct mlx5_ib_mr *mtt;
- 
--		if (!nentries)
--			start_idx = addr >> MLX5_IMR_MTT_SHIFT;
--		nentries++;
+ out_release:
+-	xa_release(&dev->odp_mkeys, mlx5_base_mkey(mr->mmkey.key));
++	xa_release(&imr->dev->odp_mkeys, mlx5_base_mkey(mr->mmkey.key));
+ out_mr:
+-	mlx5_ib_err(dev, "Failed to register MKEY %d\n", err);
+-	mlx5_mr_cache_free(dev, mr);
+-
+-	return ERR_PTR(err);
+-}
+-
+-static struct mlx5_ib_mr *implicit_get_child_mr(struct mlx5_ib_mr *imr,
+-						unsigned long idx)
+-{
+-	struct ib_umem_odp *odp;
+-	struct mlx5_ib_mr *mtt;
+-
+-	odp = ib_umem_odp_alloc_child(to_ib_umem_odp(imr->umem),
+-				      idx * MLX5_IMR_MTT_SIZE,
+-				      MLX5_IMR_MTT_SIZE);
+-	if (IS_ERR(odp))
+-		return ERR_CAST(odp);
+-
+-	mtt = implicit_mr_alloc(imr->ibmr.pd, odp, 0, imr->access_flags);
+-	if (IS_ERR(mtt)) {
+-		ib_umem_odp_release(odp);
+-		return mtt;
 -	}
-+			mtt = implicit_get_child_mr(imr, idx);
-+			if (IS_ERR(mtt)) {
-+				result = ERR_CAST(mtt);
-+				goto out;
-+			}
-+			odp = to_ib_umem_odp(mtt->umem);
-+			inv_start_idx = min(inv_start_idx, idx);
-+			inv_len = idx - inv_start_idx + 1;
-+		}
- 
--	/* Return first odp if region not covered by single one */
--	if (likely(!result))
--		result = odp;
-+		/* Return first odp if region not covered by single one */
-+		if (likely(!result))
-+			result = odp;
- 
--	addr += MLX5_IMR_MTT_SIZE;
--	if (unlikely(addr < io_virt + bcnt)) {
- 		odp = odp_next(odp);
--		if (odp && ib_umem_start(odp) != addr)
-+		if (odp && ib_umem_start(odp) != idx * MLX5_IMR_MTT_SIZE)
- 			odp = NULL;
--		goto next_mr;
- 	}
- 
--	if (unlikely(nentries)) {
--		ret = mlx5_ib_update_xlt(mr, start_idx, nentries, 0,
--					 MLX5_IB_UPD_XLT_INDIRECT |
-+	/*
-+	 * Any time the children in the interval tree are changed we must
-+	 * perform an update of the xlt before exiting to ensure the HW and
-+	 * the tree remains synchronized.
-+	 */
-+out:
-+	if (likely(!inv_len))
-+		goto out_unlock;
-+
-+	ret = mlx5_ib_update_xlt(imr, inv_start_idx, inv_len, 0,
-+				 MLX5_IB_UPD_XLT_INDIRECT |
- 					 MLX5_IB_UPD_XLT_ATOMIC);
--		if (ret) {
--			mlx5_ib_err(dev, "Failed to update PAS\n");
--			result = ERR_PTR(ret);
--		}
-+	if (ret) {
-+		mlx5_ib_err(to_mdev(imr->ibmr.pd->device),
-+			    "Failed to update PAS\n");
-+		result = ERR_PTR(ret);
-+		goto out_unlock;
- 	}
- 
--	mutex_unlock(&odp_mr->umem_mutex);
-+out_unlock:
-+	mutex_unlock(&odp_imr->umem_mutex);
- 	return result;
+-
+-	odp->private = mtt;
+-	mtt->umem = &odp->umem;
+-	mtt->mmkey.iova = idx * MLX5_IMR_MTT_SIZE;
+-	mtt->parent = imr;
+-	INIT_WORK(&odp->work, mr_leaf_free_action);
+-
+-	xa_store(&mtt->dev->odp_mkeys, mlx5_base_mkey(mtt->mmkey.key),
+-		 &mtt->mmkey, GFP_ATOMIC);
+-	return mtt;
++	mlx5_mr_cache_free(imr->dev, mr);
++out_umem:
++	ib_umem_odp_release(odp);
++	return ret;
  }
  
+ static struct ib_umem_odp *implicit_mr_get_data(struct mlx5_ib_mr *imr,
+@@ -573,27 +543,54 @@ struct mlx5_ib_mr *mlx5_ib_alloc_implicit_mr(struct mlx5_ib_pd *pd,
+ 					     struct ib_udata *udata,
+ 					     int access_flags)
+ {
+-	struct mlx5_ib_mr *imr;
++	struct mlx5_ib_dev *dev = to_mdev(pd->ibpd.device);
+ 	struct ib_umem_odp *umem_odp;
++	struct mlx5_ib_mr *imr;
++	int err;
+ 
+ 	umem_odp = ib_umem_odp_alloc_implicit(udata, access_flags);
+ 	if (IS_ERR(umem_odp))
+ 		return ERR_CAST(umem_odp);
+ 
+-	imr = implicit_mr_alloc(&pd->ibpd, umem_odp, 1, access_flags);
++	imr = mlx5_mr_cache_alloc(dev, MLX5_IMR_KSM_CACHE_ENTRY);
+ 	if (IS_ERR(imr)) {
+-		ib_umem_odp_release(umem_odp);
+-		return ERR_CAST(imr);
++		err = PTR_ERR(imr);
++		goto out_umem;
+ 	}
+ 
++	imr->ibmr.pd = &pd->ibpd;
++	imr->access_flags = access_flags;
++	imr->mmkey.iova = 0;
++	imr->umem = &umem_odp->umem;
++	imr->ibmr.lkey = imr->mmkey.key;
++	imr->ibmr.rkey = imr->mmkey.key;
+ 	imr->umem = &umem_odp->umem;
+ 	init_waitqueue_head(&imr->q_leaf_free);
+ 	atomic_set(&imr->num_leaf_free, 0);
+ 	atomic_set(&imr->num_pending_prefetch, 0);
+-	xa_store(&imr->dev->odp_mkeys, mlx5_base_mkey(imr->mmkey.key),
+-		 &imr->mmkey, GFP_ATOMIC);
+ 
++	err = mlx5_ib_update_xlt(imr, 0,
++				 mlx5_imr_ksm_entries,
++				 MLX5_KSM_PAGE_SHIFT,
++				 MLX5_IB_UPD_XLT_INDIRECT |
++				 MLX5_IB_UPD_XLT_ZAP |
++				 MLX5_IB_UPD_XLT_ENABLE);
++	if (err)
++		goto out_mr;
++
++	err = xa_err(xa_store(&dev->odp_mkeys, mlx5_base_mkey(imr->mmkey.key),
++			      &imr->mmkey, GFP_KERNEL));
++	if (err)
++		goto out_mr;
++
++	mlx5_ib_dbg(dev, "key %x mr %p\n", imr->mmkey.key, imr);
+ 	return imr;
++out_mr:
++	mlx5_ib_err(dev, "Failed to register MKEY %d\n", err);
++	mlx5_mr_cache_free(dev, imr);
++out_umem:
++	ib_umem_odp_release(umem_odp);
++	return ERR_PTR(err);
+ }
+ 
+ void mlx5_ib_free_implicit_mr(struct mlx5_ib_mr *imr)
 -- 
 2.23.0
 
