@@ -2,86 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 907B7D1E85
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2019 04:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61945D1F30
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2019 06:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbfJJChk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Oct 2019 22:37:40 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:41561 "EHLO
+        id S1727391AbfJJEIf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Oct 2019 00:08:35 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:43295 "EHLO
         mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726478AbfJJChk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Oct 2019 22:37:40 -0400
-Received: by mail-pf1-f195.google.com with SMTP id q7so2883435pfh.8
-        for <linux-rdma@vger.kernel.org>; Wed, 09 Oct 2019 19:37:40 -0700 (PDT)
+        with ESMTP id S1725774AbfJJEIe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Oct 2019 00:08:34 -0400
+Received: by mail-pf1-f195.google.com with SMTP id a2so3000479pfo.10;
+        Wed, 09 Oct 2019 21:08:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=jDj5V52U5xTiReCaQxdwl1Wy4Pgu3XL85Wr1xg/FK3o=;
-        b=oS50rc6iHGi/Vwb3FeZHHicVb/Rnb1tGHLAO3ThEFqLc6xm/Ya8Xk9MJkkKaNXAo/d
-         XcAbXLI4lTYVu1k5aSkI3bOyn/pE8gT9WRrIbb0E/oZW1J5ljZCa/hBZUIp+vcxpfjXc
-         ovnKLZP4Dh7WRqfKRPzWiB5Yq6a/XCrYV60AW4Si1DEdv+CBNaYlNsuR6yOfXNaU59Pq
-         haceGEbLu4afSSKQua8Q8AIYW1+Wx1BIwJA0VhIR0FEHsHHMlM67ye9Ir73kjHopjCJ+
-         74w/ZuY+9rcWjZv1Qz3b9LJHILZUw+RCJlMOciqrcEtr632uPqTw8uA7JIYeLfYlIsrG
-         Wj7A==
+        d=gmail.com; s=20161025;
+        h=message-id:user-agent:date:from:to:cc:cc:subject;
+        bh=uSCgIQ4b5P3WH4lz0cFe8247i5uPiz/jkdyyNGLEv2k=;
+        b=bWFMWh0QVw8aq9StQZyW1vP87IkIpgsKfii8nhSLor99O9M9xooSmlaxOoy0y7+5S0
+         xJsjTR2O1y3+AayBF5XHow0ar/MbRaeboBfqX3PdAC1aaAP6dCHLPPfqYlJXuQkngrgl
+         wz/Ct+Gi5kDIVA3RKbcB2xYH1yFaFh8O0dtqhhWSEVXCnQ+Tj0pmDC7tN1FpDJ6qfMrD
+         OevhErcWLcZ8Xc3qJRo9JCBseXXSClB3ZhndEo6ZyHQPA7dOEkKqap2OYObz36udytKH
+         mkGxvJX7E4imHPOmaB7ADL0uQrTCouFN2udFoHGfJzcTJ7aZ40iWpFqovp+9Y0Egsgqc
+         npVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=jDj5V52U5xTiReCaQxdwl1Wy4Pgu3XL85Wr1xg/FK3o=;
-        b=P0vY7zs+nzU9lglPo1HYDlbS7MdfEvOmw13pgJryVCdzU7dZ+6Uo0vF2bo68A1r1AE
-         mrJgHipOUB9AKOqqAySQH/eZKHGoUhww87wNqDL6iGu7heyPd8fscDHRtycRr9BTR0qk
-         rGF4xHC1TfjtBtWmhmPRQW+946Ydbkti8iu2ONrpU205OnjweB0qAg5fhQepI7vVtd/I
-         UCybF7lt/xybfCSuwFBSmzUwQAvf6OWHA19SFtBmSoqsXXEY9vxqRNphpLFyEbR36Y6b
-         azuv4+DeOMXjj+TgzUZ9qCKA7GEdirwC9KyRKrwNzyP7mCzH2iuOz7H09YCR+wjrkddb
-         X8pQ==
-X-Gm-Message-State: APjAAAWfO8EpGcvw7IyyHjcYcHTZb4taOewfl+fqr85wBvgkRzPzEV6+
-        T+Nv6HzOOHnwW0ktnLK/hQp2fw==
-X-Google-Smtp-Source: APXvYqyveXVAz9bIuwZtUAHK52ARF4ljhWlYEKMPMJprXOxzfsJrBKzLyspm+V+JLqlKkdhkIJnEYg==
-X-Received: by 2002:a63:f810:: with SMTP id n16mr7909486pgh.176.1570675059958;
-        Wed, 09 Oct 2019 19:37:39 -0700 (PDT)
-Received: from cakuba.netronome.com (c-73-202-202-92.hsd1.ca.comcast.net. [73.202.202.92])
-        by smtp.gmail.com with ESMTPSA id h26sm3266773pgh.7.2019.10.09.19.37.39
+        h=x-gm-message-state:message-id:user-agent:date:from:to:cc:cc:subject;
+        bh=uSCgIQ4b5P3WH4lz0cFe8247i5uPiz/jkdyyNGLEv2k=;
+        b=VLzWL0fROt/mgojptDR9ttR3ozzqSxUPXnsKsx3FNJxILIA42dSQNzEkqxMBzimAQx
+         rj4Ef8IeP8xTHJdozF5N6W0UijeADkyIn6JREMsfQzgkHETwZlo6I3kSqmh6Zni8dRap
+         Q5Wanv3tlnWSxVUZ0xYspbAxB/jJVjYn0RswFG/hzZqeOnS8ttuimC6irnSCk++o9zbu
+         /sQFP0oc1dzeNnyw+FBzvyR+yALpxfhXsjJSYaTOQiX8N9+rNItDALtTHBAFOxrqOC/E
+         ZHW1AzbSg4Mf9QDPHnACMgItZXkZr6WebguJcODcZlHVX05MyRO/t/0lOH9wc4pW2hrn
+         0TXw==
+X-Gm-Message-State: APjAAAUo+eOGdKqxj/jumWm4x7Q7F2QLAd73dpnEf4K+LXNEi87vYZJX
+        jF/fb192ahAouGoJ10JCx+NxvRMm
+X-Google-Smtp-Source: APXvYqzCjcGmzPmvnZl6iR3ReUl4vOWbYHDK9wxxnzJT99zKS38T2oA6i8rFSMdgNcrQITKq6GKvVw==
+X-Received: by 2002:a62:2f05:: with SMTP id v5mr7518455pfv.79.1570680512103;
+        Wed, 09 Oct 2019 21:08:32 -0700 (PDT)
+Received: from localhost ([2601:1c0:6280:3f0::9ef4])
+        by smtp.gmail.com with ESMTPSA id k5sm5267229pgb.11.2019.10.09.21.08.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2019 19:37:39 -0700 (PDT)
-Date:   Wed, 9 Oct 2019 19:37:26 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        Tal Gilboa <talgi@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Subject: Re: [PATCH] DIM: fix dim.h kernel-doc and headers
-Message-ID: <20191009193726.098eb771@cakuba.netronome.com>
-In-Reply-To: <6f8dd95f-dc58-88b9-1d20-1a620b964d86@infradead.org>
-References: <6f8dd95f-dc58-88b9-1d20-1a620b964d86@infradead.org>
-Organization: Netronome Systems, Ltd.
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Wed, 09 Oct 2019 21:08:31 -0700 (PDT)
+Message-Id: <20191010035239.532908118@gmail.com>
+User-Agent: quilt/0.65
+Date:   Wed, 09 Oct 2019 20:52:39 -0700
+From:   rd.dunlab@gmail.com
+To:     linux-rdma@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>, linux-doc@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH 00/12] infiniband kernel-doc fixes & driver-api/ chapter
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 8 Oct 2019 21:03:14 -0700, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Lots of fixes to kernel-doc in structs, enums, and functions.
-> Also add header files that are being used but not yet #included.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Yamin Friedman <yaminf@mellanox.com>
-> Cc: Tal Gilboa <talgi@mellanox.com>
-> Cc: Saeed Mahameed <saeedm@mellanox.com>
-> Cc: Doug Ledford <dledford@redhat.com>
-> Cc: Jason Gunthorpe <jgg@mellanox.com>
-> Cc: linux-rdma@vger.kernel.org
-> Cc: netdev@vger.kernel.org
 
-I capitalized some of the descriptions looks like this file prefers that.
+This patch series cleans up lots of kernel-doc in drivers/infiniband/
+and then adds an infiniband.rst file.
 
-Otherwise seems reasonable, applied to net-next, thank you!
+It also changes a few instances of non-exported functions from kernel-doc
+notation back to non-kernel-doc comments.
+
+There are still a few kernel-doc and Sphinx warnings that I don't know how
+to resolve:
+
+  ../drivers/infiniband/ulp/iser/iscsi_iser.h:401: warning: Function parameter or member 'all_list' not described in 'iser_fr_desc'
+  ../drivers/infiniband/ulp/iser/iscsi_iser.h:415: warning: Function parameter or member 'all_list' not described in 'iser_fr_pool'
+  ../drivers/infiniband/core/verbs.c:2510: WARNING: Unexpected indentation.
+  ../drivers/infiniband/core/verbs.c:2512: WARNING: Block quote ends without a blank line; unexpected unindent.
+  ../drivers/infiniband/core/verbs.c:2544: WARNING: Unexpected indentation.
+
+I have not added any Fixes: tags to these patches because I don't
+think that they need to be applied to any stable releases...
+
+
+ Documentation/driver-api/index.rst                  |    1 
+ Documentation/driver-api/infiniband.rst             |  127 ++++++++++
+ drivers/infiniband/core/device.c                    |   23 -
+ drivers/infiniband/core/iwpm_util.h                 |    5 
+ drivers/infiniband/core/sa_query.c                  |    2 
+ drivers/infiniband/core/verbs.c                     |    2 
+ drivers/infiniband/sw/rdmavt/ah.c                   |    1 
+ drivers/infiniband/sw/rdmavt/cq.c                   |    2 
+ drivers/infiniband/sw/rdmavt/qp.c                   |   30 +-
+ drivers/infiniband/sw/rdmavt/vt.c                   |    3 
+ drivers/infiniband/ulp/iser/iscsi_iser.c            |    2 
+ drivers/infiniband/ulp/iser/iscsi_iser.h            |   26 +-
+ drivers/infiniband/ulp/iser/iser_initiator.c        |    5 
+ drivers/infiniband/ulp/iser/iser_verbs.c            |   60 ++--
+ drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h    |   42 +++
+ drivers/infiniband/ulp/opa_vnic/opa_vnic_internal.h |    8 
+ drivers/infiniband/ulp/srpt/ib_srpt.h               |    7 
+ 17 files changed, 269 insertions(+), 77 deletions(-)
+
+
