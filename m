@@ -2,86 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 393ADD2EB1
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2019 18:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F173AD2F8D
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2019 19:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbfJJQhb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Oct 2019 12:37:31 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:47044 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbfJJQhb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Oct 2019 12:37:31 -0400
-Received: by mail-oi1-f195.google.com with SMTP id k25so5436556oiw.13
-        for <linux-rdma@vger.kernel.org>; Thu, 10 Oct 2019 09:37:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=rvNKcQa6csvrpV0BR7Qohhs6ik/U0hSG7/A3nrUQ4+g=;
-        b=kOyXbu3+zHoOhnB1P/Zq5yXR4EyQ7y2zBm+/BgJ1Gsk78S9F8a8Whv8Al12WC3/X8d
-         KzQkKRmscwpvG0mXlH/93sULDD2DAcIEGxphjQh9NvhVxOHnNzoS0ouZ5LOPCU5kFzyJ
-         NFhALCUOrGR2wJ5IH/W4NAeF2PjEVSXJSRrf16dJ6mZsBiwnNFqzg0jV3pfZB/xkYEft
-         Qf+AAZNqKdl1qFrtZFOb0ApEQccLgjg74lKbwZzTTGyeYSNcFvbiFKTW0lEFutRMqebK
-         tFpNgRAKqzQaZNdhV9smOijbHaFp/EU8qZKtbNrN+9qHjSKjhYNq/O42ju9sMOyWck+U
-         gukA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=rvNKcQa6csvrpV0BR7Qohhs6ik/U0hSG7/A3nrUQ4+g=;
-        b=BNPKjOdnnXJRBUXOXwMCP0RzlVxkS92QwoXZZXHdQZFwh0TVz3PfTn3IIVPASW7Y0a
-         wWo6jBZwrsiFKjGS1XXZ6EBOEuEPhO3RRGbM1xehBJ7mYegkTWsbiXmIKOf+5suLjpW9
-         U742HamHZ9uyLYt+66C6aSzxBApy/AM8F6h9HpYaxhcFxrC82nzvYjZcQum1M4UK4vva
-         J6DmiwiDDAHpxvegwDB4HDUUx2qszcPchnXKJlp+Y75Y0ADhtSFFSf1a9vzxpd/GSiac
-         avt4+lr9X22vxD50/DlQqSrxnc1AN0wyiF9It5cZ2q1W1Kzfir0KKPoaYKlhUEML3lmN
-         UikQ==
-X-Gm-Message-State: APjAAAXoGctNpZgsV0bBFGRh7pAfvPA6kLW2XjiOzZykMLzDnny7pwg0
-        hpcD88+hT2Yv9dKYvRZsGYx9fZJOZsva7c7Osg==
-X-Google-Smtp-Source: APXvYqx9pHw37Q0H22/wByklULJ03KoMfltHnFJRD3Om1HGl33ab8Lyt1IMR5RX5Dk/XpMPJCTOoYdC8zSKSMKaLADQ=
-X-Received: by 2002:a54:4e8a:: with SMTP id c10mr8413283oiy.14.1570725450592;
- Thu, 10 Oct 2019 09:37:30 -0700 (PDT)
+        id S1726550AbfJJR2e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Oct 2019 13:28:34 -0400
+Received: from ms.lwn.net ([45.79.88.28]:60706 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725862AbfJJR2d (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 10 Oct 2019 13:28:33 -0400
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 7CBEE2BD;
+        Thu, 10 Oct 2019 17:28:31 +0000 (UTC)
+Date:   Thu, 10 Oct 2019 11:28:30 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@infradead.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paul.burton@mips.com>,
+        James Hogan <jhogan@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Shannon Nelson <snelson@pensando.io>,
+        Pensando Drivers <drivers@pensando.io>,
+        Steve French <sfrench@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-mips@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 1/3] docs: fix some broken references
+Message-ID: <20191010112830.11ce7007@lwn.net>
+In-Reply-To: <b87385b2ac6ce6c75df82062fce2976149bbaa6b.1569330078.git.mchehab+samsung@kernel.org>
+References: <b87385b2ac6ce6c75df82062fce2976149bbaa6b.1569330078.git.mchehab+samsung@kernel.org>
+Organization: LWN.net
 MIME-Version: 1.0
-Received: by 2002:a4a:ab4e:0:0:0:0:0 with HTTP; Thu, 10 Oct 2019 09:37:30
- -0700 (PDT)
-Reply-To: brianjesse343@gmail.com
-From:   brianjesse <cleanmichel66@gmail.com>
-Date:   Thu, 10 Oct 2019 17:37:30 +0100
-Message-ID: <CAJnAYk-6LSDA9_o-rvP+bdL5tNKj3SaqQZwEEQmNLnpYJE+-EQ@mail.gmail.com>
-Subject: Hl
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dear Friend,
+On Tue, 24 Sep 2019 10:01:28 -0300
+Mauro Carvalho Chehab <mchehab+samsung@kernel.org> wrote:
 
-I hope this message meet you well, after quite a very long time. I'm
-happy to inform you about my success in getting those funds
-transferred under the cooperation of a new partner from India.
-Presently  I'm in India for investment projects with my own share of
-the total sum. meanwhile, I didn't forget your past efforts and
-attempts to assist me in transferring those funds despite that it
-failed us some how.Now contact my secretary in Lome, Togo with his
-below contact,I droped a certified ATM visa card, ask him to send you
-the ATM visa card of $250.000.00 which I left with him for your
-compensation for all the past efforts and attempts to assist me in
-this matter. I appreciated your efforts at that time very much.
+> There are a number of documentation files that got moved or
+> renamed. update their references.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 
-So feel free and get in touch with my secretary in Lome Togo and
-instruct him  where to send the ATM visa card containing amount to
-you.Please do let me know immediately if you receive it so that we can
-share the joy after all the sufferness at that  time together. in the
-moment, I'm very busy here because of the investment projects which me
-and the new partner are having at hand,finally remember that I had
-forwarded instruction to my secretary on your behalf to release the
-ATM visa card to you and you alone, so feel free to get in touch with
-him and forward him your informations,your full names,address and
-contact number for easy communication until your received the ATM visa
-card. if you whish to communicate futher on this issue, you can
-contact my secretery Mr: Vincent Philip through this his email address
-(vincentphilip.sec@gmail.com)
+I've applied this set, thanks.
 
-
-Best Regards
-Barrister Brian Jesse
+jon
