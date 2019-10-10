@@ -2,217 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3891DD1F48
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2019 06:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988D3D1FC3
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2019 06:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727309AbfJJEJr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Oct 2019 00:09:47 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:44379 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbfJJEJq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Oct 2019 00:09:46 -0400
-Received: by mail-pg1-f194.google.com with SMTP id u12so2771233pgb.11;
-        Wed, 09 Oct 2019 21:09:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:user-agent:date:from:to:cc:cc:subject:references
-         :mime-version:content-disposition;
-        bh=AZ1YJbAshlu7K6Rn/NZRdHk7w5gMMC8tvShAhe/DdQg=;
-        b=Yc2t6Q/vQiuD9OSlyvh/aZuum7DHHJwIM6yPmjBJdYBNjC0nuDzSjqQaRWUwR95bFd
-         2aXQdAFroep2a/dqnRNySk5Wunh3+HQIJ3MALGZei1gzOEDPuhyNcE5MOSuoPNVXOB7/
-         bVcLFNX2wFutZ3FmUMD5OiCmFD1mD15vsGw1tIgk1TcnwcC0pWdCP5tmBYUiGY9VZBzO
-         YOO5t0YIyiLR/6X3mStppngiurKxrX++5cOV11fEK+w5VxtwvjBVZXDWFEK39gah0S2B
-         eJRvwP8AFffHXRH5nK6UqnZZKQDepK+2AU0WiOYxky0qv8A9nMVNHW7LO/SCif9JMHNU
-         bt2Q==
+        id S1726523AbfJJEph (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Oct 2019 00:45:37 -0400
+Received: from mx6.ucr.edu ([138.23.62.71]:4024 "EHLO mx6.ucr.edu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725601AbfJJEpg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 10 Oct 2019 00:45:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
+  t=1570682737; x=1602218737;
+  h=mime-version:from:date:message-id:subject:to;
+  bh=+Ge6RQ5EEbk2NFp4KXFfiQFXMowpb4uMY3rL+1ZBbVc=;
+  b=cspYgve08Cs3OvAENJG0VVX/ZGgKqqM8cT64MUbqe46ykmrhJJk1CIC5
+   tuZC4mrxTUmmemNXqtsaLsv9COl4eIjxoqtiTEUo6vr5dVaA+a+IbdNog
+   FUwhPJFfQ/iXMr7/Ho6UxwX1DC0WNuR1MOyYBZjFj0uBD8XD6uGy9gYC4
+   xlFHNzbbX+biKv6FWyA6kfwZEHHkIk8cHDJZCjUcjDN46FNSq3Zry3A9x
+   7r7M9nQCvJmwDHdEHdl3xbw8yOPbs4xv11mXwzuvpVkGjVo6me6NCgRra
+   ocn1uUlJUOYdwsuHV+3UfUqR1Uk+tCse35J+72Ju98lArCa0Voj9KYiRT
+   A==;
+IronPort-SDR: cMdTLMPraB7tYBcxRr4Vr0dRAHdfkfQV0VXYUFRCFs7PBHA1xEE4GlcnEIwOumHi7FGbJ9pHAk
+ Ejg8puVhISzrD8GKCI5pOTJ8Jdw6bfKE2vdxPZ1hqpS30u+X69vTmb7Bl9wZPWD0OLTMoEMpn/
+ KqEBsonaonUWaWLnDWdt2aUKy6n2WyQScJa3oEoyoAKmAToUbaqAJen3LlrJbUJLKIPjOH+b3x
+ wBtnc559IrjgIRLJKzHovb/+96xLpFk/skud12D/MHdBKFjkhco1iDuOLhDSyob4bZv8ILSOr5
+ 6/M=
+IronPort-PHdr: =?us-ascii?q?9a23=3AGTxBBhKo+RFUJCC1PtmcpTZWNBhigK39O0sv0r?=
+ =?us-ascii?q?FitYgfL/nxwZ3uMQTl6Ol3ixeRBMOHsqkC1bCd4/CocFdDyK7JiGoFfp1IWk?=
+ =?us-ascii?q?1NouQttCtkPvS4D1bmJuXhdS0wEZcKflZk+3amLRodQ56mNBXdrXKo8DEdBA?=
+ =?us-ascii?q?j0OxZrKeTpAI7SiNm82/yv95HJbAhEmTSwbalzIRmoognctcobipZ+J6gszR?=
+ =?us-ascii?q?fEvmFGcPlMy2NyIlKTkRf85sOu85Nm7i9dpfEv+dNeXKvjZ6g3QqBWAzogM2?=
+ =?us-ascii?q?Au+c3krgLDQheV5nsdSWoZjBxFCBXY4R7gX5fxtiz6tvdh2CSfIMb7Q6w4VS?=
+ =?us-ascii?q?ik4qx2UxLjljsJOCAl/2HWksxwjbxUoBS9pxxk3oXYZJiZOOdicq/BeN8XQ3?=
+ =?us-ascii?q?dKUMRMWCxbGo6zYIsBAeQCM+hFsYfyu0ADrQeiCQS2GO/j1iNEi33w0KYn0+?=
+ =?us-ascii?q?ohCwbG3Ak4Et0MsXTVrdX1NLoVUeuoz6bIzS/Mb/JL0jr66InJcxAhruuNXb?=
+ =?us-ascii?q?5sbcbcx1IiFx7ZgVWKs4DqIS6a1vkUvmWd8uFuVvqvhnY5pw1tpjWj3MQhh4?=
+ =?us-ascii?q?nTio4Iy13J9z91zYQoKdC+VUV1e8SrEIFKuCGfL4Z2R8QiTHx2tysi0b0GvI?=
+ =?us-ascii?q?K7fDANyJQ62x7Tc/yHfJaM4hLkTOuRJC13hHNheL6mgxay/1WsxvTyVsS2zV?=
+ =?us-ascii?q?pGtCVFkt7LtnAC0xzc9NKLRed6/kekwTqP1gbT5f9YIU0si6bXN5oszqQzm5?=
+ =?us-ascii?q?cTq0jPAy77lUfsgKKUa0ko4u2o5P7mYrXiqJ+cLYh0igTmP6Uum82/Af43Mg?=
+ =?us-ascii?q?kSU2SH9+mxz6Dj8lHjQLlQkPI5j7TZvIjAJcsHvq65HxNV0oE75ha7Djem1s?=
+ =?us-ascii?q?kYnHYeIFJfZR2HipLmNkrQIPD3E/i/mU6gkDR1yPDcOL3uHJHNImLEkLf7cr?=
+ =?us-ascii?q?Yuo3JbnS80y9EX3JJTF7hJdPf0XE7qnNnVChswNQukhe3gDYM5nq8ZRG3HJq?=
+ =?us-ascii?q?KVPqTIvRfc6uYiL+eLfoM9ojvxK/E5ofXpiCl90X0UZq6vlbQKbmy4Ge5+Lg?=
+ =?us-ascii?q?3NY3XjqsUAHH8H+AE3GqiijFyETC4WfXq3Vooi6TwhToGrF4HOQsaqmrPFlC?=
+ =?us-ascii?q?O6GIBGI2NLEFaBFV/2eIieHfQBciSfJolmiDNAHYqhSp4801mXtQb8g+51Lu?=
+ =?us-ascii?q?vF5ysBnZn4ksV+/avemQxksXRfD8mb3HCQB1pzmGxAEzQt26ZwiUdmjEqIy+?=
+ =?us-ascii?q?51j+EORvJJ4PYcYwYoNYPbh956AtG6DhPTft6IEA79asitG3c8Qs9nkIxGWF?=
+ =?us-ascii?q?p0B9j31kOL5CGtGbJA0uXTXJE=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2FRAwAmt55dh0enVdFlDoZEhE2OW4U?=
+ =?us-ascii?q?XAY1pijQBCAEBAQ4vAQGHFCM4EwIDCQEBBQEBAQEBBQQBAQIQAQEBCA0JCCm?=
+ =?us-ascii?q?FQII6KQGDVRF8DwImAiQSAQUBIgE0gwCCeAWkQoEDPIsmgTKEDAGEWAEJDYF?=
+ =?us-ascii?q?IEnoojA6CF4ERgmSIPoJeBIE5AQEBlS+WVwEGAoIQFIxUiEUbgioBlxWOLZl?=
+ =?us-ascii?q?PDyOBRoF7MxolfwZngU9PEBSBaY1xBAFWJJFLAQE?=
+X-IPAS-Result: =?us-ascii?q?A2FRAwAmt55dh0enVdFlDoZEhE2OW4UXAY1pijQBCAEBA?=
+ =?us-ascii?q?Q4vAQGHFCM4EwIDCQEBBQEBAQEBBQQBAQIQAQEBCA0JCCmFQII6KQGDVRF8D?=
+ =?us-ascii?q?wImAiQSAQUBIgE0gwCCeAWkQoEDPIsmgTKEDAGEWAEJDYFIEnoojA6CF4ERg?=
+ =?us-ascii?q?mSIPoJeBIE5AQEBlS+WVwEGAoIQFIxUiEUbgioBlxWOLZlPDyOBRoF7Mxolf?=
+ =?us-ascii?q?wZngU9PEBSBaY1xBAFWJJFLAQE?=
+X-IronPort-AV: E=Sophos;i="5.67,278,1566889200"; 
+   d="scan'208";a="81371734"
+Received: from mail-lf1-f71.google.com ([209.85.167.71])
+  by smtpmx6.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Oct 2019 21:45:26 -0700
+Received: by mail-lf1-f71.google.com with SMTP id c83so1042157lfg.8
+        for <linux-rdma@vger.kernel.org>; Wed, 09 Oct 2019 21:45:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:user-agent:date:from:to:cc:cc:subject
-         :references:mime-version:content-disposition;
-        bh=AZ1YJbAshlu7K6Rn/NZRdHk7w5gMMC8tvShAhe/DdQg=;
-        b=uiGrMiDKhYVZ8Fs0gr1SY4gqmEH6bINi96gwlU9UjSPnJxffyAz66dI/lpzNdmMYeC
-         V3dxAdE3pR8x4vGaZdsszf3eRoHhvHI79dw8bKTpUoX4HS/feXRgJunKZm70HCSulpgi
-         EXzSHeA9wZq2Kd5ZvO77MPnySeGfjFqHLDoGOrd8THChflcjkSWeIOXgvyrhQHVijr6S
-         hotE3vkN/Q6qcMRPe3iRqYiElf3bjCt7V+wfCF0yXukECeOB7kxkgddyH0GrjPnLTR5J
-         kpSsGY8JlipLUe6mf8hsZFmlzj9N8FOxFcMB+7W7djTlBCs8Fu9276HDtwvm1O3PsnXj
-         KORA==
-X-Gm-Message-State: APjAAAXhW9n3hwi53ye19uuqhWNQyr7kqwajBzYz7Oh7yyu8AAUkhYIS
-        2UUvuhLuZ4ixKVdmHU2EfDcSXDXP
-X-Google-Smtp-Source: APXvYqzfZz9Z2lHQEh3822KFnrgLUGFs2jJBHFyzHy8FTsYMQILG6Sou0WtDsu1aCKGt2K6qPzoyaw==
-X-Received: by 2002:a63:5f52:: with SMTP id t79mr8511425pgb.311.1570680583058;
-        Wed, 09 Oct 2019 21:09:43 -0700 (PDT)
-Received: from localhost ([2601:1c0:6280:3f0::9ef4])
-        by smtp.gmail.com with ESMTPSA id p1sm5836192pfb.112.2019.10.09.21.09.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2019 21:09:42 -0700 (PDT)
-Message-Id: <20191010035240.310347906@gmail.com>
-User-Agent: quilt/0.65
-Date:   Wed, 09 Oct 2019 20:52:51 -0700
-From:   rd.dunlab@gmail.com
-To:     linux-rdma@vger.kernel.org
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>, linux-doc@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH 12/12] infiniband: add a Documentation driver-api chapter for Infiniband
-References: <20191010035239.532908118@gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=V6cjM2qh3lyKS09CLhQGgKKcyIxkLzht81qjdvHNaNU=;
+        b=HOY9Ce6aFtPbLxvIaUdZTjY04xTFMX/168EmzME52DIrY3AGENCXSCw2YxcJnbOGVO
+         EUO0hHo+Cqwj7HQncw3IcFURARZRQH2+cHJNoHr7PlTfOjjM2tOTOyA8iW6tRorJRWrA
+         XMXVSzn2qKrziNtYpwlaqg2m/9j24c4vCZGmsV3YeOfDKTLceZDj13VfWircSdSoycGM
+         FU/rBEl+Qyv+gRqtw72hUqDI/d93oZ3AQ5Nw03F3BHvWxvKvEO4UnkKtjFb+3XUQmzrM
+         cgNdfC2LvvyzucnvCCS+M6Ms/QqdfPc9+r4a6lP6pBk3tNvj9P80G/T6t90+EpKLLLDP
+         7yrw==
+X-Gm-Message-State: APjAAAUllVqUYRxocPL10PnZpQ9xIkmyxdZXDmBaAwMcXD8JoeVzNqCD
+        hUAr1aCVMzZ4m0UoX6IhfcQHPuwpJPT16qQ8VEf6hL+ZMiwL0wKMBHht8AUQchajfTLHqLO3Lcw
+        EH5plF1heffZcUKHD+eGODheuqA5/O2nQbFH0jss=
+X-Received: by 2002:ac2:4845:: with SMTP id 5mr4293570lfy.191.1570682724789;
+        Wed, 09 Oct 2019 21:45:24 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqw1x9AZgLV+61XMXXlIC+oLuJtWCWzXpz8VHNyPNzHXul+5fsFjuz78wD6ofpSibIsZLzZdbbAZUx6k7PFAKRM=
+X-Received: by 2002:ac2:4845:: with SMTP id 5mr4293560lfy.191.1570682724585;
+ Wed, 09 Oct 2019 21:45:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline; filename=017-docum-iband-chapter.patch
+From:   Yizhuo Zhai <yzhai003@ucr.edu>
+Date:   Wed, 9 Oct 2019 21:44:58 -0700
+Message-ID: <CABvMjLTZ3ztSR6XkHa94iLTnHDK3-P3wRo+31UdivSMavzeq4g@mail.gmail.com>
+Subject: Potential NULL pointer deference in RDMA
+To:     Moni Shoua <monis@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhiyun Qian <zhiyunq@cs.ucr.edu>,
+        Chengyu Song <csong@cs.ucr.edu>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add a driver-api chapter for InfiniBand interfaces.
-
-Signed-off-by: Randy Dunlap <rd.dunlab@gmail.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@mellanox.com>
-Cc: linux-doc@vger.kernel.org
----
- Documentation/driver-api/index.rst      |    1 
- Documentation/driver-api/infiniband.rst |  127 ++++++++++++++++++++++
- 2 files changed, 128 insertions(+)
-
---- linux-next-20191009.orig/Documentation/driver-api/index.rst
-+++ linux-next-20191009/Documentation/driver-api/index.rst
-@@ -26,6 +26,7 @@ available subsections can be seen below.
-    device_link
-    component
-    message-based
-+   infiniband
-    sound
-    frame-buffer
-    regulator
---- /dev/null
-+++ linux-next-20191009/Documentation/driver-api/infiniband.rst
-@@ -0,0 +1,127 @@
-+===========================================
-+InfiniBand and Remote DMA (RDMA) Interfaces
-+===========================================
-+
-+Introduction and Overview
-+=========================
-+
-+TBD
-+
-+InfiniBand core interfaces
-+==========================
-+
-+.. kernel-doc:: drivers/infiniband/core/iwpm_util.h
-+    :internal:
-+
-+.. kernel-doc:: drivers/infiniband/core/cq.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/core/cm.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/core/rw.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/core/device.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/core/verbs.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/core/packer.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/core/sa_query.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/core/ud_header.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/core/fmr_pool.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/core/umem.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/core/umem_odp.c
-+    :export:
-+
-+RDMA Verbs transport library
-+============================
-+
-+.. kernel-doc:: drivers/infiniband/sw/rdmavt/mr.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/sw/rdmavt/rc.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/sw/rdmavt/ah.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/sw/rdmavt/vt.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/sw/rdmavt/cq.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/sw/rdmavt/qp.c
-+    :export:
-+
-+.. kernel-doc:: drivers/infiniband/sw/rdmavt/mcast.c
-+    :export:
-+
-+Upper Layer Protocols
-+=====================
-+
-+iSCSI Extensions for RDMA (iSER)
-+--------------------------------
-+
-+.. kernel-doc:: drivers/infiniband/ulp/iser/iscsi_iser.h
-+   :internal:
-+
-+.. kernel-doc:: drivers/infiniband/ulp/iser/iscsi_iser.c
-+   :functions: iscsi_iser_pdu_alloc iser_initialize_task_headers \
-+	iscsi_iser_task_init iscsi_iser_mtask_xmit iscsi_iser_task_xmit \
-+	iscsi_iser_cleanup_task iscsi_iser_check_protection \
-+	iscsi_iser_conn_create iscsi_iser_conn_bind \
-+	iscsi_iser_conn_start iscsi_iser_conn_stop \
-+	iscsi_iser_session_destroy iscsi_iser_session_create \
-+	iscsi_iser_set_param iscsi_iser_ep_connect iscsi_iser_ep_poll \
-+	iscsi_iser_ep_disconnect
-+
-+.. kernel-doc:: drivers/infiniband/ulp/iser/iser_initiator.c
-+   :internal:
-+
-+.. kernel-doc:: drivers/infiniband/ulp/iser/iser_verbs.c
-+   :internal:
-+
-+Omni-Path (OPA) Virtual NIC support
-+-----------------------------------
-+
-+.. kernel-doc:: drivers/infiniband/ulp/opa_vnic/opa_vnic_internal.h
-+   :internal:
-+
-+.. kernel-doc:: drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h
-+   :internal:
-+
-+.. kernel-doc:: drivers/infiniband/ulp/opa_vnic/opa_vnic_vema_iface.c
-+   :internal:
-+
-+.. kernel-doc:: drivers/infiniband/ulp/opa_vnic/opa_vnic_vema.c
-+   :internal:
-+
-+InfiniBand SCSI RDMA protocol target support
-+--------------------------------------------
-+
-+.. kernel-doc:: drivers/infiniband/ulp/srpt/ib_srpt.h
-+   :internal:
-+
-+.. kernel-doc:: drivers/infiniband/ulp/srpt/ib_srpt.c
-+   :internal:
-+
-+iSCSI Extensions for RDMA (iSER) target support
-+-----------------------------------------------
-+
-+.. kernel-doc:: drivers/infiniband/ulp/isert/ib_isert.c
-+   :internal:
-+
+Hi All:
+drivers/infiniband/sw/rxe/rxe_verbs.c:
+The function to_rdev() could return NULL, but no caller in this file
+checks the return value but directly dereference them, which seems
+potentially unsafe. Callers include rxe_query_device(),
+rxe_query_port(), rxe_query_pkey(), etc.
 
 
+-- 
+Kind Regards,
+
+Yizhuo Zhai
+
+Computer Science, Graduate Student
+University of California, Riverside
