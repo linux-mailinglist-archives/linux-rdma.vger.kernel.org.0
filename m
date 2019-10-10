@@ -2,165 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BD7D3141
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2019 21:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756C2D31B1
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2019 21:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbfJJTVn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Oct 2019 15:21:43 -0400
-Received: from mail-eopbgr60052.outbound.protection.outlook.com ([40.107.6.52]:41714
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        id S1726028AbfJJTto (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Oct 2019 15:49:44 -0400
+Received: from mail-eopbgr70080.outbound.protection.outlook.com ([40.107.7.80]:11202
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726007AbfJJTVl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 10 Oct 2019 15:21:41 -0400
+        id S1725867AbfJJTto (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 10 Oct 2019 15:49:44 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BfINI3vQlS3Kft8fY1M2PLWv0EK/bv4gK5bNDDMl2cVt2IYWFbqRnQ+8ztlu3HAdQ2hDsz/s9GU6q5JkZ4Ou59efzzYvkBopWB4xaQc7ZPmLPpV3stIIXLpKNuS2F3+fdLW99MYn8xxhq6SkRsQoGWXDVOSkL2P71dzahw+Atm2LzO0MudbP/QTn4nOyi7mwYThXLxfczuJv6xchKvQG5KsHh4QZ477XpUN2hQJQhdWDaMPXbrFsrRMKKdMhWfvuSg6VYC9pg4PAg1d55ZmYVdSK4f9GwYTr2x8FBcLp596g5wkCQVvfRAmmmMpn2wS6L4EfFp/eX2/NOZsn8QsvsA==
+ b=SdR0k4bKOloEmC3qJyRteclHiseuy74e28QbVZPwgOq5z39S7OTNnALwvp74JbQr46rDo3KExgRgJzM9FmjMiMyF9AQYMqNukr2Nm8vOsts2Pzn6fmjwdC7Pditwc255tmqwHcVxJcLZ5LK5drKHV8rwONG950Io5cSFaUrnHYw9ReWkRf+Y2xKVSc6O+lI+fmei81Y9FpPfC+KI1YOCq1dmRMJjPneWm1oLLzNJxxdsEJ6zqHKaLGlZMTEMEkb/XU2EYRyIG1TpupERJXBmQs6qVVgx2soHpqHK4xKtzxbvnj5dSEHKEy60+lNDJuu2zM+hllriN+qwWcEl4V01hg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qLvSMGR2m6sY1X7WXy9kmvKphpdrtiU8LW8ghvFI1Q4=;
- b=JHq0sREVQZRgS5ZFSTQmvVCqhnnjZC70KO35I1qrVcw6zWFy506rucU+Rq/fqjYGOzZlSK1oBn3ueS7Bus7lfY+WkV9KlB7SrtRIwXTzSTUZ113/brqNJ0p0yWXtTH0T0dMVjPP4UPAvXDjGDO02HKj30S+MbjoftStGUw052rbXDc58ZpsT83ASBGhelDtTnjDpgrwVSiomyz/fUHavb0hzIglY59t2SxTNH6O2L3U0Wr51BqIvsPKzV6xmrYBwbFj03tZ577mmTiSWILSQOtberMbXMIyrQaAPDc+NXKUa2A95yy1MM0A35OVgPfk+aNeqz9aOBDOEU28/HT38ZA==
+ bh=sw5ZM0kxZCjHsoquq1YkA8bkl+6zrLVR4d7fW3D8pGM=;
+ b=gOMGeLTrismpSjO3gYfnlg7Jl4IpKeElr1htIslxEgQg1FD5ZwpjYxtzOPxkH9O1Won6jUTwvpE+kes2sTtS6mYl5tqgxk6LdXJQQUPYnOmovfiwuBV+hZhO6D/RMJgDlh/ypLdQcd1tDRG2117DL7jKbyggynNhOY8V9oWsWx0ynGf2MfCCfq9qV6+Lb86DfiU0ZLFePA4r12+CWwf0GHZYGNBjq17cEVsDUpaKwT8czvbXd1lQSETH3VVnGQ0fenBpRLm85o4eo7/cvS3WAdDuSte2T8X0scvUQksDQsO3mlnfb8NEt1m9K++7DGxNMkzBL/pave+8MJRibwD9xg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qLvSMGR2m6sY1X7WXy9kmvKphpdrtiU8LW8ghvFI1Q4=;
- b=dMBE4j/cYIxYGHk5MtkJfMA9BdtQvtqth+/RggjCfdO6Um2V8uqUI1Shdp218hMUzzTcKZBW3fUcTCr0hR40KTROkm46BrqFLRmne7ugiSITN340f89v0dfszw0JYg89tFaebAqIKXryQx8T7r4zun3mS+wElMsHy3iWYq0nnUI=
+ bh=sw5ZM0kxZCjHsoquq1YkA8bkl+6zrLVR4d7fW3D8pGM=;
+ b=Mo5WCyiTVPI0zIIUVJlKcWThclsmjcfQ6mwRJOpjyvZww79okgSgZH+sLQ0Ib7XUlnEy9wNGW+R21ddO59SZY0G4KjiND8vVSuhDq4fIA3CRFccYe8L2Kk83Q7ZwB83D3RBN3z6FdJqrlkzncGdJDtVga5U8d3KShednyKadoYU=
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB4464.eurprd05.prod.outlook.com (52.133.14.11) with Microsoft SMTP
+ VI1PR05MB3183.eurprd05.prod.outlook.com (10.170.237.152) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.16; Thu, 10 Oct 2019 19:20:58 +0000
+ 15.20.2327.24; Thu, 10 Oct 2019 19:49:40 +0000
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::75ae:b00b:69d8:3db0]) by VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::75ae:b00b:69d8:3db0%7]) with mapi id 15.20.2347.016; Thu, 10 Oct 2019
- 19:20:58 +0000
+ 19:49:40 +0000
 From:   Jason Gunthorpe <jgg@mellanox.com>
 To:     Leon Romanovsky <leon@kernel.org>
 CC:     Doug Ledford <dledford@redhat.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: Re: [PATCH rdma-next] RDMA/uapi: Fix and re-organize the usage of
- rdma_driver_id
-Thread-Topic: [PATCH rdma-next] RDMA/uapi: Fix and re-organize the usage of
- rdma_driver_id
-Thread-Index: AQHVf2MPvIQZqqf4tEaWjTkw/MQdJqdUQOSA
-Date:   Thu, 10 Oct 2019 19:20:57 +0000
-Message-ID: <20191010192053.GD11569@mellanox.com>
-References: <20191010120541.30841-1-leon@kernel.org>
-In-Reply-To: <20191010120541.30841-1-leon@kernel.org>
+        Erez Alfasi <ereza@mellanox.com>
+Subject: Re: [PATCH rdma-next v2 1/4] IB/mlx5: Introduce ODP diagnostic
+ counters
+Thread-Topic: [PATCH rdma-next v2 1/4] IB/mlx5: Introduce ODP diagnostic
+ counters
+Thread-Index: AQHVfF4C06r9wF2Q00iuzj9RDI6vr6dRLF2AgAJtqoCAALTtAA==
+Date:   Thu, 10 Oct 2019 19:49:40 +0000
+Message-ID: <20191010194936.GI11569@mellanox.com>
+References: <20191006155139.30632-1-leon@kernel.org>
+ <20191006155139.30632-2-leon@kernel.org>
+ <20191008195701.GE22714@mellanox.com> <20191010090203.GJ5855@unreal>
+In-Reply-To: <20191010090203.GJ5855@unreal>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: MN2PR19CA0028.namprd19.prod.outlook.com
- (2603:10b6:208:178::41) To VI1PR05MB4141.eurprd05.prod.outlook.com
+x-clientproxiedby: MN2PR17CA0024.namprd17.prod.outlook.com
+ (2603:10b6:208:15e::37) To VI1PR05MB4141.eurprd05.prod.outlook.com
  (2603:10a6:803:44::15)
 authentication-results: spf=none (sender IP is )
  smtp.mailfrom=jgg@mellanox.com; 
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [142.162.113.180]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: eb078069-50a7-48a6-5146-08d74db6f9fd
+x-ms-office365-filtering-correlation-id: 12f0cafa-3b0f-4736-fb2a-08d74dbafcf8
 x-ms-office365-filtering-ht: Tenant
-x-ms-traffictypediagnostic: VI1PR05MB4464:|VI1PR05MB4464:
+x-ms-traffictypediagnostic: VI1PR05MB3183:|VI1PR05MB3183:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB44644EBECAB248FFD5EA9444CF940@VI1PR05MB4464.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-microsoft-antispam-prvs: <VI1PR05MB318338DACB684BBAC9AE55BBCF940@VI1PR05MB3183.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
 x-forefront-prvs: 018632C080
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(39850400004)(366004)(376002)(346002)(136003)(189003)(199004)(25786009)(229853002)(5660300002)(99286004)(8676002)(6116002)(478600001)(3846002)(6246003)(66066001)(2906002)(107886003)(81156014)(81166006)(6916009)(305945005)(36756003)(71190400001)(1076003)(71200400001)(7736002)(256004)(14444005)(14454004)(66476007)(66946007)(66556008)(64756008)(102836004)(66446008)(476003)(2616005)(486006)(26005)(33656002)(6506007)(86362001)(386003)(54906003)(6436002)(11346002)(446003)(186003)(52116002)(4326008)(76176011)(6512007)(316002)(8936002)(6486002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4464;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(39850400004)(136003)(346002)(366004)(376002)(199004)(189003)(6506007)(99286004)(102836004)(66066001)(54906003)(33656002)(1076003)(14454004)(386003)(316002)(8676002)(305945005)(52116002)(81156014)(81166006)(86362001)(8936002)(76176011)(186003)(256004)(486006)(7736002)(14444005)(476003)(25786009)(6486002)(6916009)(6436002)(11346002)(71190400001)(71200400001)(229853002)(66556008)(5660300002)(64756008)(66446008)(2616005)(478600001)(66946007)(36756003)(4326008)(26005)(66476007)(2906002)(6116002)(6512007)(3846002)(6246003)(107886003)(446003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3183;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qjvCUSw+/BRFpoXaUj4R+jiny4d5wexGPKg8hz1NjsvjbyledutXRV6VavtZMhdngqO22phjc8ewRp8WIENW5BfF9uuVbAYWy4HC8jzYiUUTo8TzYi1x9TayHalqzfcQmCYgxeb1ACYpJSwU2nRsOdXuxXKT9yNDax75EI4lq5SYoLGLbxnxp3C5TCbopNlcIXGGI8H9PcweBp16hNeDqSU9jJiImqBMk115Z1S5REUvN8Wigs13xXF1DYsOzgnVum141l5Vu1gXCll7ohrY7C/LmMJe58IlQPV8SURIgDdWSgwwp+PG1sZiqrJO82NYjiOvyzVwsdNafuWJqx/AX93JLfCf1VufS2GJSSaNZMTmVyeoydbBTs+LHmE9bqtEHWFZ9cKvG2C76uSBoxHAjRVRnBa/dq/YIE2Aslwh8DQ=
+x-microsoft-antispam-message-info: +PExCk+W9aAN2Ofd2izLhAyAhu2E1ejZGF/ISvhnsGlc289zfhQiTaYdXIFbYhjDlUNw8gOrYosbp9PQoHhrtO51bqXnom5zC4bAdFEhb7026LeTyu4qJzxiXHmRgSwovvl11xWQsSFWblH9lEs7EE6igp6+Qjc1Tx56zs8+D98C6uYw7lUSK4sAONlF69U50KyhHr7UwugQ0l6VFGbewpuk2qw7MoG6RdHChkVV4qVxTBZwV0yMZ1qMQq4N+8njqRKvJjTcq1BYLEA6NA+E+Q+y7GjkGAui6WFsUTX9au8Jqz0GOeJmbZ4/9NmUyVosC9uLEZM5DNleoRc59FE2CuZvZi6OoqJ6QnFRuA8EJqDrno3FtSaFLbM2eDZYrcuAqMZWKMnBDzh83yaMsbl84fbmh0s8QNEIfbOEM/QLCeA=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <368986A2D8B7E043A97DAC13B15CE7C7@eurprd05.prod.outlook.com>
+Content-ID: <F63212729ABA82408FC4BC8547844DBD@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb078069-50a7-48a6-5146-08d74db6f9fd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2019 19:20:57.3886
+X-MS-Exchange-CrossTenant-Network-Message-Id: 12f0cafa-3b0f-4736-fb2a-08d74dbafcf8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2019 19:49:40.1215
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kcWSfMuz1tl43GWSYiwSkFxsYDf1jiv7y234ubJPjv/8wU3aTnIoHLMJzrrxOn7YKqF1jkvaTR2TBTWxWdm6KQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4464
+X-MS-Exchange-CrossTenant-userprincipalname: S7gfq0tPPsVYso8R577DfyRKSOlRj2c+lw7t8mvzVBxSyssm9+aSSjvVf0jVKrmhIgcF7SJVjHQuH7r/7esngg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3183
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 10, 2019 at 03:05:41PM +0300, Leon Romanovsky wrote:
-> From: Yishai Hadas <yishaih@mellanox.com>
->=20
-> Fix 'enum rdma_driver_id' to preserve other driver values before that
-> RDMA_DRIVER_CXGB3 was deleted.  As this value is UAPI we can't affect
-> other values as of a deletion of one driver id.
->=20
-> In addition,
-> - Expose 'enum rdma_driver_id' to user applications by moving it to
->   ib_user_ioctl_verbs.h which is exposed in rdma-core to applications.
->=20
-> - Drop the dependency of ib_user_ioctl_verbs.h on ib_user_verbs.h which
->   is not really required.
+On Thu, Oct 10, 2019 at 12:02:03PM +0300, Leon Romanovsky wrote:
 
-One change per patch when it is a fixes..
-
-> Fixes: 30e0f6cf5acb ("RDMA/iw_cxgb3: Remove the iw_cxgb3 module from kern=
-el")
-> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->  include/uapi/rdma/ib_user_ioctl_verbs.h  | 47 +++++++++++++++++++++++-
->  include/uapi/rdma/ib_user_verbs.h        | 25 -------------
->  include/uapi/rdma/rdma_user_ioctl_cmds.h | 21 -----------
->  3 files changed, 46 insertions(+), 47 deletions(-)
+> > >  static inline bool is_odp_mr(struct mlx5_ib_mr *mr)
+> > > diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw=
+/mlx5/odp.c
+> > > index 95cf0249b015..966783bfb557 100644
+> > > +++ b/drivers/infiniband/hw/mlx5/odp.c
+> > > @@ -261,6 +261,10 @@ void mlx5_ib_invalidate_range(struct ib_umem_odp=
+ *umem_odp, unsigned long start,
+> > >  				blk_start_idx =3D idx;
+> > >  				in_block =3D 1;
+> > >  			}
+> > > +
+> > > +			/* Count page invalidations */
+> > > +			mlx5_update_odp_stats(mr, invalidations,
+> > > +					      (idx - blk_start_idx + 1));
+> >
+> > I feel like these should be batched and the atomic done once at the
+> > end of the routine..
 >=20
-> diff --git a/include/uapi/rdma/ib_user_ioctl_verbs.h b/include/uapi/rdma/=
-ib_user_ioctl_verbs.h
-> index 72c7fc75f960..3d703be40012 100644
-> +++ b/include/uapi/rdma/ib_user_ioctl_verbs.h
-> @@ -35,7 +35,6 @@
->  #define IB_USER_IOCTL_VERBS_H
-> =20
->  #include <linux/types.h>
-> -#include <rdma/ib_user_verbs.h>
-> =20
->  #ifndef RDMA_UAPI_PTR
->  #define RDMA_UAPI_PTR(_type, _name)	__aligned_u64 _name
-> @@ -167,10 +166,56 @@ enum ib_uverbs_advise_mr_flag {
->  	IB_UVERBS_ADVISE_MR_FLAG_FLUSH =3D 1 << 0,
->  };
-> =20
-> +struct ib_uverbs_query_port_resp {
-> +	__u32 port_cap_flags;		/* see ib_uverbs_query_port_cap_flags */
-> +	__u32 max_msg_sz;
-> +	__u32 bad_pkey_cntr;
-> +	__u32 qkey_viol_cntr;
-> +	__u32 gid_tbl_len;
-> +	__u16 pkey_tbl_len;
-> +	__u16 lid;
-> +	__u16 sm_lid;
-> +	__u8  state;
-> +	__u8  max_mtu;
-> +	__u8  active_mtu;
-> +	__u8  lmc;
-> +	__u8  max_vl_num;
-> +	__u8  sm_sl;
-> +	__u8  subnet_timeout;
-> +	__u8  init_type_reply;
-> +	__u8  active_width;
-> +	__u8  active_speed;
-> +	__u8  phys_state;
-> +	__u8  link_layer;
-> +	__u8  flags;			/* see ib_uverbs_query_port_flags */
-> +	__u8  reserved;
-> +};
+> We can, but does it worth it?
 
-Probably better to move ib_uverbs_query_port_resp_ex, since it is
-really more of write() style interface
+Probably since it is so simple, atomics are very expensive
+
+> For various reasons we are delaying this series for months already.
+> Let's drop "prefetch" counter for now and merge everything without
+> it.
+
+OK, I guess the counters are extendible as we go along, however see below:
+
+> > This is also not quite right for prefetch as we are doing a form of
+> > prefetching in the mlx5_ib_mr_rdma_pfault_handler() too, although it
+> > is less clear how to count those. Maybe this should be split to SQ/RQ
+> > faults?
+>=20
+> mlx5_ib_mr_rdma_pfault_handler() calls to pagefault_single_data_segment()
+> without MLX5_PF_FLAGS_PREFETCH, so I'm unsure that this counter should
+> count mlx5_ib_mr_rdma_pfault_handler() pagefaults.
+>=20
+> However the idea to separate SQ/RQ for everything sounds appealing.
+
+Let's at least have a well defined counter design. SQ/RQ seems like a
+good split to me as they have quite different behavior on mlx5
+hardware, so splitting the existing counter seems good anyhow
 
 Jason
