@@ -2,79 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6F1D1F44
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2019 06:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15169D1F46
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2019 06:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727643AbfJJEJd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Oct 2019 00:09:33 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:41504 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727619AbfJJEJd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Oct 2019 00:09:33 -0400
-Received: by mail-pg1-f194.google.com with SMTP id t3so2781784pga.8;
-        Wed, 09 Oct 2019 21:09:33 -0700 (PDT)
+        id S1727619AbfJJEJj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Oct 2019 00:09:39 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:42966 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727309AbfJJEJj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Oct 2019 00:09:39 -0400
+Received: by mail-pg1-f195.google.com with SMTP id z12so2784244pgp.9;
+        Wed, 09 Oct 2019 21:09:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=message-id:user-agent:date:from:to:cc:cc:subject:references
          :mime-version:content-disposition;
-        bh=StQwwzl5sIUT0iWQHdYG7DfV+RABFpPOuXBX/Txahe0=;
-        b=FOYtjn20cV0H0TNQ/UCyO0e88kTjZgOBpLw4yYHXoUCbkKcfbTFSfgDG/+UKIEJl9R
-         DuYrOYJxhxiJ06CuJN+U65dITiJ4mLE9yUib6LucE2trQfqoBRNj8PnekYAzq3ZxSPay
-         l3o0/GDHIG3fibOd7bHuJyyc7k2Bqpu6NrhUGDcRdW+InH4zW3OXWtdLHxxq929Vh0gq
-         5nByXWm4hvfA07SWiKHCxAGhv5PsNgzXJ5sqQSYlLgFv1+K/OEmXmNvF/J+uty8T8vpU
-         Q5ywPzQBE6WtI7n1DywrLIM/G9Enct2Shld/OtX7w1Wi8XPN8Qd1XdwxqbomqkM4WjSj
-         xccQ==
+        bh=9XR5r6M6ZpEwAsYdDHjQ5vf0SeychjUyebV9Shb4Nvo=;
+        b=Mg/kbGMnWguEkYNALQFr/LlFXWbLzVMr++8lIocJ/7XVyZbO9U4Qojwy3SVw7hxRUQ
+         juX4C2VmGA+fJIhciKtyLE1fAYNyNUYAO1PCSuB5e3gsW51Al1YVBZMpwiFYdnigHBbm
+         ZxulgmFhkVblnLKKYjnf0Qn9s9WWwgkn/cWO3gAAaRnr9tMXFFNxc3Mtu3xUWqcEY8tQ
+         dngxJkanFWWRyI1s+PlcWdhEdSaXJPFjYlD4pLkw9zkWpKs8peNpdeP+X1VxeyFnIZe8
+         Dte8ZrrlBNfmLX7KVOklXGwMKeb/6o5IIacYIHv3KV0yOki0Tb5fjhcYdcQEHpsVEcAH
+         swGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:message-id:user-agent:date:from:to:cc:cc:subject
          :references:mime-version:content-disposition;
-        bh=StQwwzl5sIUT0iWQHdYG7DfV+RABFpPOuXBX/Txahe0=;
-        b=g96l77A4JKzmZCLETBM4zLJ0B1M8UFD8l+wrwML7Up+7ZClR9VkaIZ0cjngdcNU99A
-         6GZoxspZYlNhvws4h8rcZhswmGaqZYtNOSXrUuUduZMsGqXVzUEOJisMaKpYGobMDG80
-         PcigfLjoNzlIVXac383xXe2oDNfDANXCYiSxJdsR9Ejv91gVSRabXvNCxvNDe9rcPuqs
-         pYf20aBhM7Yzc3n23Ch48ux7OKrN721X9daqdwNgxS6PLRBEa2etXA9Sw0m1fl6zmhhA
-         60JW57gRcIAL9UjGh3YgbnEe/dmmS0maGLuE68zqA06K7Jza++kje49h5XimdZGfX9VZ
-         CIUQ==
-X-Gm-Message-State: APjAAAVgFkmU/QpqdfqLtATJd+pt66uNNRk2OCMs8xi0aH4xyi9iXnNE
-        yrGUnIRTad5CpLw0/HTx7kM1a6F2
-X-Google-Smtp-Source: APXvYqwiBsb5RmznPX5siJ6DVI/vfThb87nulItVLSDAx4fDfNNu02CVhurjYt78Bm785UTNm8Pchw==
-X-Received: by 2002:a62:6842:: with SMTP id d63mr7778614pfc.16.1570680572364;
-        Wed, 09 Oct 2019 21:09:32 -0700 (PDT)
+        bh=9XR5r6M6ZpEwAsYdDHjQ5vf0SeychjUyebV9Shb4Nvo=;
+        b=YA5oi/Z6aOFKi1Fhew9xV2PMPrf0TMdQLLCQj+4V55XWGE8ZONtA3tX9Xz+Sx0u33y
+         7L28R8px88eFFMFRo2RvM2DAmpiZ6Nn+MY6NZ20aoRGwoskyJE7QLAYVuS8j7I9dmFxI
+         KZswCEgYf+EulIliuY8NHYFaCSbme8jZ8fi3rEEOfr2mzwFN6Eqva47ZZM/PYGogC+/y
+         tb5Oww3vQpPih4lCoX0W0+rcZF/r6B7bWFztxfTkfcPdHwZZbiMRPw6F7qW4sw223mZ2
+         dxIOW8Djr+1yFxuFCCMkQHWG0tRNG9QAliIjwrPXTt7Rv8su31+AnbvRd5NC8TvuY/nq
+         JcRg==
+X-Gm-Message-State: APjAAAXSInMsujBWK4KkdqBwljki3vmIJMs9IcNtZEI8nM0TLOxB6chI
+        kEAIwSFahw0prc4uoSTNffgl1fXz
+X-Google-Smtp-Source: APXvYqxxvzwLlfBGudEee1pvcxjZz9MNZl7aCUcvySorcaZI/D4wJQrXPLy0Xya8n3sa63vuvTmnVw==
+X-Received: by 2002:a17:90a:1b28:: with SMTP id q37mr8665154pjq.91.1570680577887;
+        Wed, 09 Oct 2019 21:09:37 -0700 (PDT)
 Received: from localhost ([2601:1c0:6280:3f0::9ef4])
-        by smtp.gmail.com with ESMTPSA id h4sm3703901pgg.81.2019.10.09.21.09.31
+        by smtp.gmail.com with ESMTPSA id z13sm3842668pfg.172.2019.10.09.21.09.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2019 21:09:31 -0700 (PDT)
-Message-Id: <20191010035240.191542461@gmail.com>
+        Wed, 09 Oct 2019 21:09:36 -0700 (PDT)
+Message-Id: <20191010035240.251184229@gmail.com>
 User-Agent: quilt/0.65
-Date:   Wed, 09 Oct 2019 20:52:49 -0700
+Date:   Wed, 09 Oct 2019 20:52:50 -0700
 From:   rd.dunlab@gmail.com
 To:     linux-rdma@vger.kernel.org
 Cc:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>, linux-doc@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH 10/12] infiniband: fix core/ kernel-doc notation
+Subject: [PATCH 11/12] infiniband: fix sw/rdmavt/ kernel-doc notation
 References: <20191010035239.532908118@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline; filename=015-iband-core-fixes.patch
+Content-Disposition: inline; filename=016-iband-rdmavt-fixes.patch
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Correct function parameter names (typos or renames).
-Add kernel-doc notation for missing function parameters.
+Add kernel-doc for missing function parameters.
+Remove excess kernel-doc descriptions.
+Fix expected kernel-doc formatting (use ':' instead of '-' after @funcarg).
 
-../drivers/infiniband/core/sa_query.c:1263: warning: Function parameter or member 'gid_attr' not described in 'ib_init_ah_attr_from_path'
-../drivers/infiniband/core/sa_query.c:1263: warning: Excess function parameter 'sgid_attr' description in 'ib_init_ah_attr_from_path'
-
-../drivers/infiniband/core/device.c:145: warning: Function parameter or member 'dev' not described in 'rdma_dev_access_netns'
-../drivers/infiniband/core/device.c:145: warning: Excess function parameter 'device' description in 'rdma_dev_access_netns'
-../drivers/infiniband/core/device.c:1333: warning: Function parameter or member 'name' not described in 'ib_register_device'
-../drivers/infiniband/core/device.c:1461: warning: Function parameter or member 'ib_dev' not described in 'ib_unregister_device'
-../drivers/infiniband/core/device.c:1461: warning: Excess function parameter 'device' description in 'ib_unregister_device'
-../drivers/infiniband/core/device.c:1483: warning: Function parameter or member 'ib_dev' not described in 'ib_unregister_device_and_put'
-../drivers/infiniband/core/device.c:1550: warning: Function parameter or member 'ib_dev' not described in 'ib_unregister_device_queued'
+../drivers/infiniband/sw/rdmavt/ah.c:138: warning: Excess function parameter 'udata' description in 'rvt_destroy_ah'
+../drivers/infiniband/sw/rdmavt/vt.c:698: warning: Function parameter or member 'pkey_table' not described in 'rvt_init_port'
+../drivers/infiniband/sw/rdmavt/cq.c:561: warning: Excess function parameter 'rdi' description in 'rvt_driver_cq_init'
+../drivers/infiniband/sw/rdmavt/cq.c:575: warning: Excess function parameter 'rdi' description in 'rvt_cq_exit'
+../drivers/infiniband/sw/rdmavt/qp.c:2573: warning: Function parameter or member 'qp' not described in 'rvt_add_rnr_timer'
+../drivers/infiniband/sw/rdmavt/qp.c:2573: warning: Function parameter or member 'aeth' not described in 'rvt_add_rnr_timer'
+../drivers/infiniband/sw/rdmavt/qp.c:2591: warning: Function parameter or member 'qp' not described in 'rvt_stop_rc_timers'
+../drivers/infiniband/sw/rdmavt/qp.c:2624: warning: Function parameter or member 'qp' not described in 'rvt_del_timers_sync'
+../drivers/infiniband/sw/rdmavt/qp.c:2697: warning: Function parameter or member 'cb' not described in 'rvt_qp_iter_init'
+../drivers/infiniband/sw/rdmavt/qp.c:2728: warning: Function parameter or member 'iter' not described in 'rvt_qp_iter_next'
+../drivers/infiniband/sw/rdmavt/qp.c:2796: warning: Function parameter or member 'rdi' not described in 'rvt_qp_iter'
+../drivers/infiniband/sw/rdmavt/qp.c:2796: warning: Function parameter or member 'v' not described in 'rvt_qp_iter'
+../drivers/infiniband/sw/rdmavt/qp.c:2796: warning: Function parameter or member 'cb' not described in 'rvt_qp_iter'
 
 Signed-off-by: Randy Dunlap <rd.dunlab@gmail.com>
 Cc: Randy Dunlap <rdunlap@infradead.org>
@@ -82,83 +86,141 @@ Cc: Doug Ledford <dledford@redhat.com>
 Cc: Jason Gunthorpe <jgg@mellanox.com>
 Cc: linux-doc@vger.kernel.org
 ---
- drivers/infiniband/core/device.c   |   23 +++++++++++------------
- drivers/infiniband/core/sa_query.c |    2 +-
- 2 files changed, 12 insertions(+), 13 deletions(-)
+ drivers/infiniband/sw/rdmavt/ah.c |    1 
+ drivers/infiniband/sw/rdmavt/cq.c |    2 -
+ drivers/infiniband/sw/rdmavt/qp.c |   30 ++++++++++++++--------------
+ drivers/infiniband/sw/rdmavt/vt.c |    3 +-
+ 4 files changed, 17 insertions(+), 19 deletions(-)
 
---- linux-next-20191009.orig/drivers/infiniband/core/sa_query.c
-+++ linux-next-20191009/drivers/infiniband/core/sa_query.c
-@@ -1246,7 +1246,7 @@ static int init_ah_attr_grh_fields(struc
-  * @port_num: Port on the specified device.
-  * @rec: path record entry to use for ah attributes initialization.
-  * @ah_attr: address handle attributes to initialization from path record.
-- * @sgid_attr: SGID attribute to consider during initialization.
-+ * @gid_attr: SGID attribute to consider during initialization.
+--- linux-next-20191009.orig/drivers/infiniband/sw/rdmavt/ah.c
++++ linux-next-20191009/drivers/infiniband/sw/rdmavt/ah.c
+@@ -129,7 +129,6 @@ int rvt_create_ah(struct ib_ah *ibah, st
+  * rvt_destory_ah - Destory an address handle
+  * @ibah: address handle
+  * @destroy_flags: destroy address handle flags (see enum rdma_destroy_ah_flags)
+- * @udata: user data or NULL for kernel object
   *
-  * When ib_init_ah_attr_from_path() returns success,
-  * (a) for IB link layer it optionally contains a reference to SGID attribute
---- linux-next-20191009.orig/drivers/infiniband/core/device.c
-+++ linux-next-20191009/drivers/infiniband/core/device.c
-@@ -128,17 +128,14 @@ module_param_named(netns_mode, ib_device
- MODULE_PARM_DESC(netns_mode,
- 		 "Share device among net namespaces; default=1 (shared)");
- /**
-- * rdma_dev_access_netns() - Return whether a rdma device can be accessed
-+ * rdma_dev_access_netns() - Return whether an rdma device can be accessed
-  *			     from a specified net namespace or not.
-- * @device:	Pointer to rdma device which needs to be checked
-+ * @dev:	Pointer to rdma device which needs to be checked
-  * @net:	Pointer to net namesapce for which access to be checked
-  *
-- * rdma_dev_access_netns() - Return whether a rdma device can be accessed
-- *			     from a specified net namespace or not. When
-- *			     rdma device is in shared mode, it ignores the
-- *			     net namespace. When rdma device is exclusive
-- *			     to a net namespace, rdma device net namespace is
-- *			     checked against the specified one.
-+ * When the rdma device is in shared mode, it ignores the net namespace.
-+ * When the rdma device is exclusive to a net namespace, rdma device net
-+ * namespace is checked against the specified one.
+  * Return: 0 on success
   */
- bool rdma_dev_access_netns(const struct ib_device *dev, const struct net *net)
+--- linux-next-20191009.orig/drivers/infiniband/sw/rdmavt/vt.c
++++ linux-next-20191009/drivers/infiniband/sw/rdmavt/vt.c
+@@ -683,9 +683,10 @@ EXPORT_SYMBOL(rvt_unregister_device);
+ 
+ /**
+  * rvt_init_port - init internal data for driver port
+- * @rdi: rvt dev strut
++ * @rdi: rvt_dev_info struct
+  * @port: rvt port
+  * @port_index: 0 based index of ports, different from IB core port num
++ * @pkey_table: pkey_table for @port
+  *
+  * Keep track of a list of ports. No need to have a detach port.
+  * They persist until the driver goes away.
+--- linux-next-20191009.orig/drivers/infiniband/sw/rdmavt/cq.c
++++ linux-next-20191009/drivers/infiniband/sw/rdmavt/cq.c
+@@ -552,7 +552,6 @@ int rvt_poll_cq(struct ib_cq *ibcq, int
+ 
+ /**
+  * rvt_driver_cq_init - Init cq resources on behalf of driver
+- * @rdi: rvt dev structure
+  *
+  * Return: 0 on success
+  */
+@@ -568,7 +567,6 @@ int rvt_driver_cq_init(void)
+ 
+ /**
+  * rvt_cq_exit - tear down cq reources
+- * @rdi: rvt dev structure
+  */
+ void rvt_cq_exit(void)
  {
-@@ -1317,7 +1314,9 @@ out:
+--- linux-next-20191009.orig/drivers/infiniband/sw/rdmavt/qp.c
++++ linux-next-20191009/drivers/infiniband/sw/rdmavt/qp.c
+@@ -2563,10 +2563,9 @@ void rvt_add_retry_timer_ext(struct rvt_
+ EXPORT_SYMBOL(rvt_add_retry_timer_ext);
  
  /**
-  * ib_register_device - Register an IB device with IB core
-- * @device:Device to register
-+ * @device: Device to register
-+ * @name: unique string device name. This may include a '%' which will
-+ * cause a unique index to be added to the passed device name.
-  *
-  * Low-level drivers use ib_register_device() to register their
-  * devices with the IB core.  All registered clients will receive a
-@@ -1444,7 +1443,7 @@ out:
+- * rvt_add_rnr_timer - add/start an rnr timer
+- * @qp - the QP
+- * @aeth - aeth of RNR timeout, simulated aeth for loopback
+- * add an rnr timer on the QP
++ * rvt_add_rnr_timer - add/start an rnr timer on the QP
++ * @qp: the QP
++ * @aeth: aeth of RNR timeout, simulated aeth for loopback
+  */
+ void rvt_add_rnr_timer(struct rvt_qp *qp, u32 aeth)
+ {
+@@ -2583,7 +2582,7 @@ EXPORT_SYMBOL(rvt_add_rnr_timer);
  
  /**
-  * ib_unregister_device - Unregister an IB device
-- * @device: The device to unregister
-+ * @ib_dev: The device to unregister
-  *
-  * Unregister an IB device.  All clients will receive a remove callback.
-  *
-@@ -1466,7 +1465,7 @@ EXPORT_SYMBOL(ib_unregister_device);
+  * rvt_stop_rc_timers - stop all timers
+- * @qp - the QP
++ * @qp: the QP
+  * stop any pending timers
+  */
+ void rvt_stop_rc_timers(struct rvt_qp *qp)
+@@ -2617,7 +2616,7 @@ static void rvt_stop_rnr_timer(struct rv
  
  /**
-  * ib_unregister_device_and_put - Unregister a device while holding a 'get'
-- * device: The device to unregister
-+ * @ib_dev: The device to unregister
+  * rvt_del_timers_sync - wait for any timeout routines to exit
+- * @qp - the QP
++ * @qp: the QP
+  */
+ void rvt_del_timers_sync(struct rvt_qp *qp)
+ {
+@@ -2626,7 +2625,7 @@ void rvt_del_timers_sync(struct rvt_qp *
+ }
+ EXPORT_SYMBOL(rvt_del_timers_sync);
+ 
+-/**
++/*
+  * This is called from s_timer for missing responses.
+  */
+ static void rvt_rc_timeout(struct timer_list *t)
+@@ -2676,12 +2675,13 @@ EXPORT_SYMBOL(rvt_rc_rnr_retry);
+  * rvt_qp_iter_init - initial for QP iteration
+  * @rdi: rvt devinfo
+  * @v: u64 value
++ * @cb: user-defined callback
   *
-  * This is the same as ib_unregister_device(), except it includes an internal
-  * ib_device_put() that should match a 'get' obtained by the caller.
-@@ -1536,7 +1535,7 @@ static void ib_unregister_work(struct wo
+  * This returns an iterator suitable for iterating QPs
+  * in the system.
+  *
+- * The @cb is a user defined callback and @v is a 64
+- * bit value passed to and relevant for processing in the
++ * The @cb is a user-defined callback and @v is a 64-bit
++ * value passed to and relevant for processing in the
+  * @cb.  An example use case would be to alter QP processing
+  * based on criteria not part of the rvt_qp.
+  *
+@@ -2712,7 +2712,7 @@ EXPORT_SYMBOL(rvt_qp_iter_init);
  
  /**
-  * ib_unregister_device_queued - Unregister a device using a work queue
-- * device: The device to unregister
-+ * @ib_dev: The device to unregister
+  * rvt_qp_iter_next - return the next QP in iter
+- * @iter - the iterator
++ * @iter: the iterator
   *
-  * This schedules an asynchronous unregistration using a WQ for the device. A
-  * driver should use this to avoid holding locks while doing unregistration,
+  * Fine grained QP iterator suitable for use
+  * with debugfs seq_file mechanisms.
+@@ -2775,14 +2775,14 @@ EXPORT_SYMBOL(rvt_qp_iter_next);
+ 
+ /**
+  * rvt_qp_iter - iterate all QPs
+- * @rdi - rvt devinfo
+- * @v - a 64 bit value
+- * @cb - a callback
++ * @rdi: rvt devinfo
++ * @v: a 64-bit value
++ * @cb: a callback
+  *
+  * This provides a way for iterating all QPs.
+  *
+- * The @cb is a user defined callback and @v is a 64
+- * bit value passed to and relevant for processing in the
++ * The @cb is a user-defined callback and @v is a 64-bit
++ * value passed to and relevant for processing in the
+  * cb.  An example use case would be to alter QP processing
+  * based on criteria not part of the rvt_qp.
+  *
 
 
