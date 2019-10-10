@@ -2,202 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDFDD28B3
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2019 14:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14892D2AE2
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Oct 2019 15:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727917AbfJJMFr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Oct 2019 08:05:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727320AbfJJMFr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 10 Oct 2019 08:05:47 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D6EE20650;
-        Thu, 10 Oct 2019 12:05:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570709145;
-        bh=WwG7hcF3+2Fb9Qquld+kqX/95MLz0nWTl/uORGzBk+A=;
-        h=From:To:Cc:Subject:Date:From;
-        b=N3d82p/bF6w8K8rvM1Lczu1RNrzXwY9B2WxJThV4zBatOOVwcYwQHK1QML5TXQoMJ
-         18SdL04cJMPZMMk70aZylbGJ8iZ6WcCk+b7qGN8S3QgVN/Tnx+XxIEUZn1TtVgweQe
-         tvSlrAuHHB+p9Xjoc1d1oVu9fYuLKamaSLLP7Jo4=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Yishai Hadas <yishaih@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: [PATCH rdma-next] RDMA/uapi: Fix and re-organize the usage of rdma_driver_id
-Date:   Thu, 10 Oct 2019 15:05:41 +0300
-Message-Id: <20191010120541.30841-1-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
+        id S2388310AbfJJNRt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Oct 2019 09:17:49 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:38680 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388285AbfJJNRo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Oct 2019 09:17:44 -0400
+Received: by mail-ot1-f67.google.com with SMTP id e11so4819420otl.5
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Oct 2019 06:17:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ub-ac-id.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=QTZIdVmjWEaVgfwGRupI4vAqJVGET3VIX90hz2R16m0=;
+        b=kbDD0ETnfb+9T5ky4afnuU19WL5B3TgSTtrvr8/78l52RfSJ/bD7cjcm8C45XsJ4wr
+         kY8zUv/ms1sLDr56E/0rqAcpldgbTirzVsO1TqrlTRt5AL5IhxusLfWbWkCQZqSDApog
+         xVZixZPZF5pv+wD9wYHHFszyBuRJ0Z0/71+2E/SGgHwnMzv66/86w9uplcX1z0grTv9p
+         1TYZ7MtIagYr+hnMPgyspL8CH18dkY1RexU6NSgr6L6/lGHi7jHNMmmGOoiBuh2azqNd
+         aWHFVXbx5cxjkbX5kJe7PAp4IU2wf06fogqa+YoO9ylF7jna+POCU+xNsHXT6R2wFQg9
+         YqYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=QTZIdVmjWEaVgfwGRupI4vAqJVGET3VIX90hz2R16m0=;
+        b=gTGkXVxAYrf+9aWRlKSsI6svA8GF7UkS/aP2dEDDVNGqn1QczsT8ySmy232YoAGp8m
+         8Nyk78SVCXa4WuS1tgXUICZ9IqpdNeTrmeghl681yKHPd6x7m6SYDLeJYPlnauoCYyrW
+         fx+IwP7rruLKoNsqJMVZZjCKongN9dw0QhvbwkYVAe7nWlmlolJ+ImSqj8qELDnznQPl
+         2SvcLYn80KfqS0VBrI6v4qdZORVkgKmrnNj/hx6MZRSsuw2mnNGXWOMQ2zem53SFRum6
+         f8nDbQzp6n+/HNUGKxRMq7RrWYId65TpwHdgWN2YYRH9wM93XEp+VnQp9FnRnDJqvJXv
+         +nEw==
+X-Gm-Message-State: APjAAAXkJTUkJSRdxj/FEZS87s2BhM5gdyRXcSnMm3qr+LXh1VaGjVAq
+        r7uf43Gf3Y1XWSGi0OfjuZQEWo/z42D07qykMLX9
+X-Google-Smtp-Source: APXvYqwe5B6z/3dUuNDQtQ0n2oQYOsdY3HQR3dkIin1gqVhu0NNteov05tKzv4DhJBBR4bjK2RG7Phnj6WUHoBrkRYc=
+X-Received: by 2002:a05:6830:1103:: with SMTP id w3mr7909437otq.312.1570713462861;
+ Thu, 10 Oct 2019 06:17:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a4a:3346:0:0:0:0:0 with HTTP; Thu, 10 Oct 2019 06:17:41
+ -0700 (PDT)
+Reply-To: sunrisefundingltd50@gmail.com
+From:   Valentina Yurina <v_yurina@ub.ac.id>
+Date:   Thu, 10 Oct 2019 14:17:41 +0100
+Message-ID: <CAKoEkvu4vc5Yn9-hzxQ5dYmUL=oO69=GSP0FC7O+CGz9Jni8+Q@mail.gmail.com>
+Subject: Apply For Financial investment at a lower rate 2%
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yishai Hadas <yishaih@mellanox.com>
-
-Fix 'enum rdma_driver_id' to preserve other driver values before that
-RDMA_DRIVER_CXGB3 was deleted.  As this value is UAPI we can't affect
-other values as of a deletion of one driver id.
-
-In addition,
-- Expose 'enum rdma_driver_id' to user applications by moving it to
-  ib_user_ioctl_verbs.h which is exposed in rdma-core to applications.
-
-- Drop the dependency of ib_user_ioctl_verbs.h on ib_user_verbs.h which
-  is not really required.
-
-Fixes: 30e0f6cf5acb ("RDMA/iw_cxgb3: Remove the iw_cxgb3 module from kernel")
-Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- include/uapi/rdma/ib_user_ioctl_verbs.h  | 47 +++++++++++++++++++++++-
- include/uapi/rdma/ib_user_verbs.h        | 25 -------------
- include/uapi/rdma/rdma_user_ioctl_cmds.h | 21 -----------
- 3 files changed, 46 insertions(+), 47 deletions(-)
-
-diff --git a/include/uapi/rdma/ib_user_ioctl_verbs.h b/include/uapi/rdma/ib_user_ioctl_verbs.h
-index 72c7fc75f960..3d703be40012 100644
---- a/include/uapi/rdma/ib_user_ioctl_verbs.h
-+++ b/include/uapi/rdma/ib_user_ioctl_verbs.h
-@@ -35,7 +35,6 @@
- #define IB_USER_IOCTL_VERBS_H
- 
- #include <linux/types.h>
--#include <rdma/ib_user_verbs.h>
- 
- #ifndef RDMA_UAPI_PTR
- #define RDMA_UAPI_PTR(_type, _name)	__aligned_u64 _name
-@@ -167,10 +166,56 @@ enum ib_uverbs_advise_mr_flag {
- 	IB_UVERBS_ADVISE_MR_FLAG_FLUSH = 1 << 0,
- };
- 
-+struct ib_uverbs_query_port_resp {
-+	__u32 port_cap_flags;		/* see ib_uverbs_query_port_cap_flags */
-+	__u32 max_msg_sz;
-+	__u32 bad_pkey_cntr;
-+	__u32 qkey_viol_cntr;
-+	__u32 gid_tbl_len;
-+	__u16 pkey_tbl_len;
-+	__u16 lid;
-+	__u16 sm_lid;
-+	__u8  state;
-+	__u8  max_mtu;
-+	__u8  active_mtu;
-+	__u8  lmc;
-+	__u8  max_vl_num;
-+	__u8  sm_sl;
-+	__u8  subnet_timeout;
-+	__u8  init_type_reply;
-+	__u8  active_width;
-+	__u8  active_speed;
-+	__u8  phys_state;
-+	__u8  link_layer;
-+	__u8  flags;			/* see ib_uverbs_query_port_flags */
-+	__u8  reserved;
-+};
-+
- struct ib_uverbs_query_port_resp_ex {
- 	struct ib_uverbs_query_port_resp legacy_resp;
- 	__u16 port_cap_flags2;
- 	__u8  reserved[6];
- };
- 
-+enum rdma_driver_id {
-+	RDMA_DRIVER_UNKNOWN,
-+	RDMA_DRIVER_MLX5,
-+	RDMA_DRIVER_MLX4,
-+	RDMA_DRIVER_CXGB4 = 4,
-+	RDMA_DRIVER_MTHCA,
-+	RDMA_DRIVER_BNXT_RE,
-+	RDMA_DRIVER_OCRDMA,
-+	RDMA_DRIVER_NES,
-+	RDMA_DRIVER_I40IW,
-+	RDMA_DRIVER_VMW_PVRDMA,
-+	RDMA_DRIVER_QEDR,
-+	RDMA_DRIVER_HNS,
-+	RDMA_DRIVER_USNIC,
-+	RDMA_DRIVER_RXE,
-+	RDMA_DRIVER_HFI1,
-+	RDMA_DRIVER_QIB,
-+	RDMA_DRIVER_EFA,
-+	RDMA_DRIVER_SIW,
-+};
-+
- #endif
-diff --git a/include/uapi/rdma/ib_user_verbs.h b/include/uapi/rdma/ib_user_verbs.h
-index 0474c7400268..37450f133a07 100644
---- a/include/uapi/rdma/ib_user_verbs.h
-+++ b/include/uapi/rdma/ib_user_verbs.h
-@@ -281,31 +281,6 @@ struct ib_uverbs_query_port {
- 	__aligned_u64 driver_data[0];
- };
- 
--struct ib_uverbs_query_port_resp {
--	__u32 port_cap_flags;		/* see ib_uverbs_query_port_cap_flags */
--	__u32 max_msg_sz;
--	__u32 bad_pkey_cntr;
--	__u32 qkey_viol_cntr;
--	__u32 gid_tbl_len;
--	__u16 pkey_tbl_len;
--	__u16 lid;
--	__u16 sm_lid;
--	__u8  state;
--	__u8  max_mtu;
--	__u8  active_mtu;
--	__u8  lmc;
--	__u8  max_vl_num;
--	__u8  sm_sl;
--	__u8  subnet_timeout;
--	__u8  init_type_reply;
--	__u8  active_width;
--	__u8  active_speed;
--	__u8  phys_state;
--	__u8  link_layer;
--	__u8  flags;			/* see ib_uverbs_query_port_flags */
--	__u8  reserved;
--};
--
- struct ib_uverbs_alloc_pd {
- 	__aligned_u64 response;
- 	__aligned_u64 driver_data[0];
-diff --git a/include/uapi/rdma/rdma_user_ioctl_cmds.h b/include/uapi/rdma/rdma_user_ioctl_cmds.h
-index b2680051047a..7b1ec806f8f9 100644
---- a/include/uapi/rdma/rdma_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/rdma_user_ioctl_cmds.h
-@@ -84,25 +84,4 @@ struct ib_uverbs_ioctl_hdr {
- 	struct ib_uverbs_attr  attrs[0];
- };
- 
--enum rdma_driver_id {
--	RDMA_DRIVER_UNKNOWN,
--	RDMA_DRIVER_MLX5,
--	RDMA_DRIVER_MLX4,
--	RDMA_DRIVER_CXGB4,
--	RDMA_DRIVER_MTHCA,
--	RDMA_DRIVER_BNXT_RE,
--	RDMA_DRIVER_OCRDMA,
--	RDMA_DRIVER_NES,
--	RDMA_DRIVER_I40IW,
--	RDMA_DRIVER_VMW_PVRDMA,
--	RDMA_DRIVER_QEDR,
--	RDMA_DRIVER_HNS,
--	RDMA_DRIVER_USNIC,
--	RDMA_DRIVER_RXE,
--	RDMA_DRIVER_HFI1,
--	RDMA_DRIVER_QIB,
--	RDMA_DRIVER_EFA,
--	RDMA_DRIVER_SIW,
--};
--
- #endif
 -- 
-2.20.1
+Hello,
 
+We are private lenders based in UK.
+
+Do you need a loan (credit) as soon as possible. Are you in search of
+money to solve your personal needs or finance your business venture,
+then get Your desired loan today! Consult us at Sunrise Funding Ltd.
+
+* We offer personal loan & huge capital loan at 2% interest rate to
+the general public both locally and internationally.
+* Credit amount range from $5,000.00 -- $500,000.00 and above.
+* Special $10,000,000.00 Loan offer for huge project also available.
+* Loan period of 6 months -- 10 years.
+* Loan is granted 24 hours after approval and accredited, directly in
+hand or bank account.
+
+Please note that you are advised to contact us for more details via
+the following e-mail address below;
+
+EMAIL : sunrisefundingltd50@gmail.com
+FIRM : Sunrise Funding Ltd UK.
