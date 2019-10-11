@@ -2,118 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0E6D34C2
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Oct 2019 02:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B54D3615
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Oct 2019 02:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727384AbfJKABG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Oct 2019 20:01:06 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:41568 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726474AbfJKABG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Oct 2019 20:01:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=UQF4cNumUbtKahglQlBwLkBLOTXfceVJww2G5C//v48=; b=o8yVlPGynvMz+eefSvU+Yb/wp
-        lWTtCR3YFPa92uDCbR9O5mqki0k8kECVd750q6GWPBN4JD7U+5fnahS9879K1XGe0xHYJTr6/6gYq
-        x299ufkDMbNxPY8C4HBjFE7Zw5nlT/XX4nxOjaS23ugu4lISgsqtbkCncndmHw9iqyIWqShKWdfFr
-        e9IpkWe8/ojbhz6TTbZjihOJliNdHP8aQZ+yGCS5ypF5LAJBGRdFufKpZWkvK1OcACLphxfVDad1B
-        iQ/C9AIRr0bUKHtwtiATpx4WiqvPcbDYPUWW3toQtLS9P0jq09XvXfLnS28TNPRHRB5b+2QPEYjE0
-        pFcwYDrbA==;
-Received: from [2601:1c0:6280:3f0::9ef4]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iIiMj-0000wz-2F; Fri, 11 Oct 2019 00:01:05 +0000
-Subject: Re: [PATCH] Documentation: networking: add a chapter for the DIM
- library
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+        id S1727602AbfJKAeH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Oct 2019 20:34:07 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:45717 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbfJKAeH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Oct 2019 20:34:07 -0400
+Received: by mail-qt1-f194.google.com with SMTP id c21so11400909qtj.12
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Oct 2019 17:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=Ir1jRSeCWH2x6xvXc8uL8ybXkWpvILfmaQVgM2wRfvA=;
+        b=N/NiHW61NL9pl0vSynqNPKg+47CTftTAZJrCeaKJfjBsZQsGZbA8sq8jZPvlPRspj3
+         +y9R41RMgNMVvFxYKy26KTQCe+od85PboWA8bWr0RfnsIQlkyjqx/wGvHDhEMCqamHsU
+         9G7vXzxRBYHTZmgJTnxOXLA+plvbFYf/p9ieYG2s/k9OecB/ezF4A96KHhDM8hQxvtbp
+         kKWhlMutOrHtnnOgwcfyPDt4hTz8osq0GKXPY+qrRPVY8Cc0t5lRHnNm0T9Axq6qYljB
+         RfHHcJvZC1XMehq73B8DwGn8FKLMblhE99UM5nhqImqrx+5YVYUVEUc8Wcw8mRLGPWN7
+         a1JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=Ir1jRSeCWH2x6xvXc8uL8ybXkWpvILfmaQVgM2wRfvA=;
+        b=AmjCdCaJmLOglLiyrfZmZFxpKWiYjZv0VK9dLm9yGw80gPdU7qGgCxP8gpA7Lg5DjE
+         8ZUxqCEkH78xFxfoJE3gcagT+moryfOyA7KrKBAekcz303rG8dAMT5unoguBkaLXDk0G
+         D7UjZREX4F/o8bwH831eg6iuAD/ihGbndJkLxv7wIGl87lLRmrEgPSXWM8wAteW1dm61
+         5kh+9fE4cEyQgUlG3gqQEI7974zXw4tHDQrmewE8l787xEkOCk/zWSVJzW+S3fR5Nc+m
+         nnpurkDxQWCCB0PPEkUNlUjlRbTJ98EhMjSQ0BiM/X75gpEgAPPlXXB1dPE5nMLxzAA9
+         jVFQ==
+X-Gm-Message-State: APjAAAUbJ/EibRH2L+WnIC9VPSE9vGzSYfHIU3/M5Sb9f+udcVPrCB5U
+        jhh2JwFfXuvGSAToo/N1kKSEPg==
+X-Google-Smtp-Source: APXvYqxLt8bpwBFRHaQ/ptEWq7ZJhKNvIocjzEh92WCjqtn0q+SHst81ezrPpSRnVrvXXCwdTmZgLg==
+X-Received: by 2002:ac8:71d7:: with SMTP id i23mr13728484qtp.195.1570754045532;
+        Thu, 10 Oct 2019 17:34:05 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id m186sm3151805qkd.119.2019.10.10.17.34.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Oct 2019 17:34:05 -0700 (PDT)
+Date:   Thu, 10 Oct 2019 17:33:48 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
 Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         Tal Gilboa <talgi@mellanox.com>,
         David Miller <davem@davemloft.net>, linux-doc@vger.kernel.org,
         Jacob Keller <jacob.e.keller@intel.com>
+Subject: Re: [PATCH] Documentation: networking: add a chapter for the DIM
+ library
+Message-ID: <20191010173348.1836f23f@cakuba.netronome.com>
+In-Reply-To: <c3eab338-f3a9-bff3-4c24-edeb3f80b7cd@infradead.org>
 References: <e9345b39-352e-cfc6-7359-9b681cb760e8@infradead.org>
- <20191010162003.4f36a820@cakuba.netronome.com>
- <4c7f5563-2ca1-d37b-7639-f3df99a0219b@infradead.org>
- <20191010165828.0540d18d@cakuba.netronome.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c3eab338-f3a9-bff3-4c24-edeb3f80b7cd@infradead.org>
-Date:   Thu, 10 Oct 2019 17:01:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        <20191010162003.4f36a820@cakuba.netronome.com>
+        <4c7f5563-2ca1-d37b-7639-f3df99a0219b@infradead.org>
+        <20191010165828.0540d18d@cakuba.netronome.com>
+        <c3eab338-f3a9-bff3-4c24-edeb3f80b7cd@infradead.org>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-In-Reply-To: <20191010165828.0540d18d@cakuba.netronome.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/10/19 4:58 PM, Jakub Kicinski wrote:
-> On Thu, 10 Oct 2019 16:34:59 -0700, Randy Dunlap wrote:
->> On 10/10/19 4:20 PM, Jakub Kicinski wrote:
->>> On Thu, 10 Oct 2019 15:55:15 -0700, Randy Dunlap wrote:  
->>>> From: Randy Dunlap <rdunlap@infradead.org>
->>>>
->>>> Add a Documentation networking chapter for the DIM library.
->>>>
->>>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->>>> Cc: Tal Gilboa <talgi@mellanox.com>
->>>> Cc: "David S. Miller" <davem@davemloft.net>
->>>> Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
->>>> Cc: netdev@vger.kernel.org
->>>> Cc: linux-rdma@vger.kernel.org
->>>> ---
->>>>  Documentation/networking/index.rst   |    1 +
->>>>  Documentation/networking/lib-dim.rst |    6 ++++++
->>>>  2 files changed, 7 insertions(+)
->>>>
->>>> --- linux-next-20191010.orig/Documentation/networking/index.rst
->>>> +++ linux-next-20191010/Documentation/networking/index.rst
->>>> @@ -33,6 +33,7 @@ Contents:
->>>>     scaling
->>>>     tls
->>>>     tls-offload
->>>> +   lib-dim
->>>>  
->>>>  .. only::  subproject and html
->>>>  
->>>> --- /dev/null
->>>> +++ linux-next-20191010/Documentation/networking/lib-dim.rst
->>>> @@ -0,0 +1,6 @@
->>>> +=====================================================
->>>> +Dynamic Interrupt Moderation (DIM) library interfaces
->>>> +=====================================================
->>>> +
->>>> +.. kernel-doc:: include/linux/dim.h
->>>> +    :internal:
->>>>
->>>>  
->>>
->>> CC: linux-doc, Jake
->>>
->>> How does this relate to Documentation/networking/net_dim.txt ?
->>> (note in case you want to edit that one there is a patch with 
->>> updates for that file from Jake I'll be applying shortly)
+On Thu, 10 Oct 2019 17:01:02 -0700, Randy Dunlap wrote:
+> > Will you try to convert and integrate the existing file instead, or do
+> > you think the kdoc file should be separate?  
 > 
-> Applied now.
-> 
->> There is also a small patch from Jesse:
->> https://lore.kernel.org/netdev/20191010193112.15215-1-jesse.brandeburg@intel.com/
-> 
-> Ack, as Jake said this duplicates part of what his patch covered, tho.
+> I'll take a look at doing that.
 
-Yes, so I noticed.
-
-> Will you try to convert and integrate the existing file instead, or do
-> you think the kdoc file should be separate?
-
-I'll take a look at doing that.
-
-thanks.
--- 
-~Randy
+Thanks!
