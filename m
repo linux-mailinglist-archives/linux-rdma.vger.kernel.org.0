@@ -2,78 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B54D3615
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Oct 2019 02:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52EA3D3DE5
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Oct 2019 13:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727602AbfJKAeH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Oct 2019 20:34:07 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:45717 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbfJKAeH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Oct 2019 20:34:07 -0400
-Received: by mail-qt1-f194.google.com with SMTP id c21so11400909qtj.12
-        for <linux-rdma@vger.kernel.org>; Thu, 10 Oct 2019 17:34:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=Ir1jRSeCWH2x6xvXc8uL8ybXkWpvILfmaQVgM2wRfvA=;
-        b=N/NiHW61NL9pl0vSynqNPKg+47CTftTAZJrCeaKJfjBsZQsGZbA8sq8jZPvlPRspj3
-         +y9R41RMgNMVvFxYKy26KTQCe+od85PboWA8bWr0RfnsIQlkyjqx/wGvHDhEMCqamHsU
-         9G7vXzxRBYHTZmgJTnxOXLA+plvbFYf/p9ieYG2s/k9OecB/ezF4A96KHhDM8hQxvtbp
-         kKWhlMutOrHtnnOgwcfyPDt4hTz8osq0GKXPY+qrRPVY8Cc0t5lRHnNm0T9Axq6qYljB
-         RfHHcJvZC1XMehq73B8DwGn8FKLMblhE99UM5nhqImqrx+5YVYUVEUc8Wcw8mRLGPWN7
-         a1JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=Ir1jRSeCWH2x6xvXc8uL8ybXkWpvILfmaQVgM2wRfvA=;
-        b=AmjCdCaJmLOglLiyrfZmZFxpKWiYjZv0VK9dLm9yGw80gPdU7qGgCxP8gpA7Lg5DjE
-         8ZUxqCEkH78xFxfoJE3gcagT+moryfOyA7KrKBAekcz303rG8dAMT5unoguBkaLXDk0G
-         D7UjZREX4F/o8bwH831eg6iuAD/ihGbndJkLxv7wIGl87lLRmrEgPSXWM8wAteW1dm61
-         5kh+9fE4cEyQgUlG3gqQEI7974zXw4tHDQrmewE8l787xEkOCk/zWSVJzW+S3fR5Nc+m
-         nnpurkDxQWCCB0PPEkUNlUjlRbTJ98EhMjSQ0BiM/X75gpEgAPPlXXB1dPE5nMLxzAA9
-         jVFQ==
-X-Gm-Message-State: APjAAAUbJ/EibRH2L+WnIC9VPSE9vGzSYfHIU3/M5Sb9f+udcVPrCB5U
-        jhh2JwFfXuvGSAToo/N1kKSEPg==
-X-Google-Smtp-Source: APXvYqxLt8bpwBFRHaQ/ptEWq7ZJhKNvIocjzEh92WCjqtn0q+SHst81ezrPpSRnVrvXXCwdTmZgLg==
-X-Received: by 2002:ac8:71d7:: with SMTP id i23mr13728484qtp.195.1570754045532;
-        Thu, 10 Oct 2019 17:34:05 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id m186sm3151805qkd.119.2019.10.10.17.34.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2019 17:34:05 -0700 (PDT)
-Date:   Thu, 10 Oct 2019 17:33:48 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Tal Gilboa <talgi@mellanox.com>,
-        David Miller <davem@davemloft.net>, linux-doc@vger.kernel.org,
-        Jacob Keller <jacob.e.keller@intel.com>
-Subject: Re: [PATCH] Documentation: networking: add a chapter for the DIM
- library
-Message-ID: <20191010173348.1836f23f@cakuba.netronome.com>
-In-Reply-To: <c3eab338-f3a9-bff3-4c24-edeb3f80b7cd@infradead.org>
-References: <e9345b39-352e-cfc6-7359-9b681cb760e8@infradead.org>
-        <20191010162003.4f36a820@cakuba.netronome.com>
-        <4c7f5563-2ca1-d37b-7639-f3df99a0219b@infradead.org>
-        <20191010165828.0540d18d@cakuba.netronome.com>
-        <c3eab338-f3a9-bff3-4c24-edeb3f80b7cd@infradead.org>
-Organization: Netronome Systems, Ltd.
+        id S1727653AbfJKLEq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 11 Oct 2019 07:04:46 -0400
+Received: from os.inf.tu-dresden.de ([141.76.48.99]:38610 "EHLO
+        os.inf.tu-dresden.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727592AbfJKLEq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Oct 2019 07:04:46 -0400
+X-Greylist: delayed 1372 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Oct 2019 07:04:45 EDT
+Received: from [141.76.29.166] (helo=[172.26.144.86])
+        by os.inf.tu-dresden.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.92.3)
+        id 1iIsMq-0005eE-L3; Fri, 11 Oct 2019 12:41:52 +0200
+Subject: Re: [PATCH 10/10] Replace tasklets with workqueues
+From:   Maksym Planeta <mplaneta@os.inf.tu-dresden.de>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Moni Shoua <monis@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20190722151426.5266-1-mplaneta@os.inf.tu-dresden.de>
+ <20190722151426.5266-11-mplaneta@os.inf.tu-dresden.de>
+ <20190722153205.GG7607@ziepe.ca>
+ <21a4daf9-c77e-ec80-9da0-78ab512d248d@os.inf.tu-dresden.de>
+ <20190725185006.GD7467@ziepe.ca>
+ <385139f2-0d31-1148-95c0-a6e6768ab413@os.inf.tu-dresden.de>
+Message-ID: <995754de-5ec4-0a62-991e-2ea77a6bc622@os.inf.tu-dresden.de>
+Date:   Fri, 11 Oct 2019 12:41:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <385139f2-0d31-1148-95c0-a6e6768ab413@os.inf.tu-dresden.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 10 Oct 2019 17:01:02 -0700, Randy Dunlap wrote:
-> > Will you try to convert and integrate the existing file instead, or do
-> > you think the kdoc file should be separate?  
-> 
-> I'll take a look at doing that.
+Hi,
 
-Thanks!
+this is a kind reminder regarding the patchset. I added description of 
+races in the original email.
+
+On 30/07/2019 21:20, Maksym Planeta wrote:
+> 
+> 
+> On 25/07/2019 20:50, Jason Gunthorpe wrote:
+>> On Thu, Jul 25, 2019 at 04:36:20PM +0200, Maksym Planeta wrote:
+>>> Is this one better?
+>>>
+>>> Replace tasklets with workqueues in rxe driver. The reason for this
+>>> replacement is that tasklets are supposed to run atomically, although 
+>>> the
+>>> actual code may block.
+>>>
+>>> Modify the SKB destructor for outgoing SKB's to schedule QP tasks 
+>>> only if
+>>> the QP is not destroyed itself.
+>>>
+>>> Add a variable "pending_skb_down" to ensure that reference counting 
+>>> for a QP
+>>> is decremented only when QP access related to this skb is over.
+>>>
+>>> Separate part of pool element cleanup code to allow this code to be 
+>>> called
+>>> in the very end of cleanup, even if some of cleanup is scheduled for
+>>> asynchronous execution. Example, when it was happening is destructor 
+>>> for a
+>>> QP.
+>>>
+>>> Disallow calling of task functions "directly". This allows to 
+>>> simplify logic
+>>> inside rxe_task.c
+>>>
+>>> Schedule rxe_qp_do_cleanup onto high-priority system workqueue, 
+>>> because this
+>>> function can be scheduled from normal system workqueue.
+>>>
+>>> Before destroying a QP, wait until all references to this QP are gone.
+>>> Previously the problem was that outgoing SKBs could be freed after 
+>>> the QP
+>>> these SKBs refer to is destroyed.
+>>>
+>>> Add blocking rxe_run_task to replace __rxe_do_task that was calling task
+>>> function directly.
+>>
+>> Mostly but it would also be good to describe the use after free and
+>> races more specifically
+>>
+> 
+> These situations are described in the cover letter (PATCH 00/10). Do you 
+> need a more detailed description than that?
+> 
+>> Jason
+>>
+> 
+
+-- 
+Regards,
+Maksym Planeta
