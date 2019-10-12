@@ -2,149 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D0FD4C8E
-	for <lists+linux-rdma@lfdr.de>; Sat, 12 Oct 2019 05:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17203D4C91
+	for <lists+linux-rdma@lfdr.de>; Sat, 12 Oct 2019 06:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726354AbfJLDxw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 11 Oct 2019 23:53:52 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3700 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726269AbfJLDxv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 11 Oct 2019 23:53:51 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 2036AACF708977E44C51;
-        Sat, 12 Oct 2019 11:53:50 +0800 (CST)
-Received: from [127.0.0.1] (10.74.223.196) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Sat, 12 Oct 2019
- 11:53:40 +0800
-Subject: Re: [PATCH for-next] RDMA/hns: Bugfix for flush cqe in case softirq
- and multi-process
-From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <jgg@ziepe.ca>,
-        <dledford@redhat.com>, <linuxarm@huawei.com>
-References: <1567686671-4331-1-git-send-email-liweihang@hisilicon.com>
- <20190908080303.GC26697@unreal>
- <f8f29a6a-b473-6c89-8ec7-092fd53aea16@huawei.com>
- <20190910075216.GX6601@unreal>
- <94ad1f56-afc6-ec78-4aa2-85d03c644031@huawei.com>
- <0d4ce391-6619-783d-55a8-fa2524af7b9c@huawei.com>
- <20190923050125.GK14368@unreal>
- <1224a3a0-50fb-dd6a-f22e-833e74ec77c3@huawei.com>
-Message-ID: <f1845894-a5c3-9630-15c2-6e1d806071e1@huawei.com>
-Date:   Sat, 12 Oct 2019 11:53:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.1
+        id S1725970AbfJLEDy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 12 Oct 2019 00:03:54 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:59356 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbfJLEDy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 12 Oct 2019 00:03:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=APeT5AaLXeswMWlb3tP/PsbHyjxr0vkPncnt4qDerko=; b=Zb/L7iLFqV8TtC3501JZIQkTc
+        6DRWodoCOnx6ycC8HFdbzWSQCo30pG7gjqWO6Esri69LdrZ+3lW/MNdu4E494WqQUwa7bvmKi+3L2
+        BPP1dzzb5Yx3eb8WI7h2W7//zyKR3QeKDe7fkeTTimrpHGFgcfmXReYvr4vBWgDfVAfpbMG2GAm9t
+        +GOWlUg9QAfd9MsJ35RFQpFqAzWXIrPcLFp6nJftaJL60fmaif9zr0izuRAXMu2aNQlJ5x0Hx9S20
+        SxOrHAswCiPacdB3Td9SgGmWI1yoH63aNAjDjeZIr1Jrj1PWFCILj5RAe07cYoaP8rgERaTP9m9bu
+        vDcaynE4A==;
+Received: from [2601:1c0:6280:3f0::9ef4]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iJ8cw-00045P-Si; Sat, 12 Oct 2019 04:03:34 +0000
+To:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
+        Tal Gilboa <talgi@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] net: ethernet: broadcom: have drivers select DIMLIB as needed
+Message-ID: <610f9277-adff-2f4b-1f44-8f41b6c3ccb5@infradead.org>
+Date:   Fri, 11 Oct 2019 21:03:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <1224a3a0-50fb-dd6a-f22e-833e74ec77c3@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.223.196]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Randy Dunlap <rdunlap@infradead.org>
 
+NET_VENDOR_BROADCOM is intended to control a kconfig menu only.
+It should not have anything to do with code generation.
+As such, it should not select DIMLIB for all drivers under
+NET_VENDOR_BROADCOM.  Instead each driver that needs DIMLIB should
+select it (being the symbols SYSTEMPORT, BNXT, and BCMGENET).
 
-On 2019/9/24 11:54, Liuyixian (Eason) wrote:
-> 
-> 
-> On 2019/9/23 13:01, Leon Romanovsky wrote:
->> On Fri, Sep 20, 2019 at 11:55:56AM +0800, Liuyixian (Eason) wrote:
->>>
->>>
->>> On 2019/9/11 21:17, Liuyixian (Eason) wrote:
->>>>
->>>>
->>>> On 2019/9/10 15:52, Leon Romanovsky wrote:
->>>>> On Tue, Sep 10, 2019 at 02:40:20PM +0800, Liuyixian (Eason) wrote:
->>>>>>
->>>>>>
->>>>>> On 2019/9/8 16:03, Leon Romanovsky wrote:
->>>>>>> On Thu, Sep 05, 2019 at 08:31:11PM +0800, Weihang Li wrote:
->>>>>>>> From: Yixian Liu <liuyixian@huawei.com>
->>>>>>>>
->>>>>>>> Hip08 has the feature flush cqe, which help to flush wqe in workqueue
->>>>>>>> (sq and rq) when error happened by transmitting producer index with
->>>>>>>> mailbox to hardware. Flush cqe is emplemented in post send and recv
->>>>>>>> verbs. However, under NVMe cases, these verbs will be called under
->>>>>>>> softirq context, and it will lead to following calltrace with
->>>>>>>> current driver as mailbox used by flush cqe can go to sleep.
->>>>>>>>
->>>>>>>> This patch solves this problem by using workqueue to do flush cqe,
->>>>>>>
->>>>>>> Unbelievable, almost every bug in this driver is solved by introducing
->>>>>>> workqueue. You should fix "sleep in flush path" issue and not by adding
->>>>>>> new workqueue.
->>>>>>>
->>>>>> Hi Leon,
->>>>>>
->>>>>> Thanks for the comment.
->>>>>> Up to now, for hip08, only one place use workqueue in hns_roce_hw_v2.c
->>>>>> where for irq prints.
->>>>>
->>>>> Thanks to our lack of desire to add more workqueues and previous patches
->>>>> which removed extra workqueues from the driver.
->>>>>
->>>> Thanks, I see.
->>>>
->>>>>>
->>>>>> The solution for flush cqe in this patch is as follow:
->>>>>> While flush cqe should be implement, the driver should modify qp to error state
->>>>>> through mailbox with the newest product index of sq and rq, the hardware then
->>>>>> can flush all outstanding wqes in sq and rq.
->>>>>>
->>>>>> That's the whole mechanism of flush cqe, also is the flush path. We can't
->>>>>> change neither mailbox sleep attribute or flush cqe occurred in post send/recv.
->>>>>> To avoid the calltrace of flush cqe in post verbs under NVMe softirq,
->>>>>> use workqueue for flush cqe seems reasonable.
->>>>>>
->>>>>> As far as I know, there is no other alternative solution for this situation.
->>>>>> I will be very grateful if you reminder me more information.
->>>>>
->>>>> ib_drain_rq/ib_drain_sq/ib_drain_qp????
->>>>>
->>>> Hi Leon,
->>>>
->>>> I think these interfaces are designed for application to check that all wqes
->>>> have been processed by hardware, so called drain or flush. However, it is not
->>>> the same as the flush in this patch. The solution in this patch is used
->>>> to help the hardware generate flush cqes for outstanding wqes while qp error.
->>>>
->>> Hi Leon,
->>>
->>> What's your opinion about above? Do you have any further comments?
->>
->> My opinion didn't change, you need to read discussions about ib_drain_*()
->> functions, how and why they were introduced. It is a way to go.
->>
->> Thanks
-> 
-> Hi Leon,
-> 
-> Thanks a lot! I will dig those functions for my problem.
-> 
+Link: https://lkml.kernel.org/r/alpine.DEB.2.21.1907021810220.13058@ramsan.of.borg/
 
-Hi Leon,
+Fixes: 4f75da3666c0 ("linux/dim: Move implementation to .c files")
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Uwe Kleine-König <uwe@kleine-koenig.org>
+Cc: Tal Gilboa <talgi@mellanox.com>
+Cc: Saeed Mahameed <saeedm@mellanox.com>
+Cc: netdev@vger.kernel.org
+Cc: linux-rdma@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc: Doug Ledford <dledford@redhat.com>
+Cc: Jason Gunthorpe <jgg@mellanox.com>
+Cc: Leon Romanovsky <leonro@mellanox.com>
+Cc: Or Gerlitz <ogerlitz@mellanox.com>
+Cc: Sagi Grimberg <sagi@grimberg.me>
+---
+ drivers/net/ethernet/broadcom/Kconfig |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-I have analysis the mechanism of ib_drain_(qp, sq, rq), that's okay to use
-it instead of our flush cqe as both of them are calling modify qp to error
-state in flush path.
-
-However, both ib_drain_* and flush cqe will face the same problem as declared
-in previous emails, that is, in NVME case, post verbs will be called under
-**softirq**, which will result to calltrace as mailbox used in modify qp
-(flush path) can sleep, this is not allowed under softirq.
-
-Thus, to resolve above calltrace (sleep in softirq), using workqueue as in
-this patch seems is a reasonable solution regardless of ib_drain_qp or
-flush cqe is called in the workqueue.
-
-I think it is not a good idea to fix sleep in flush path (actually referred
-to mailbox used in modify qp) as the mailbox is such a mature mechanism.
-
-Thanks.
-
+--- linux-next-20191011.orig/drivers/net/ethernet/broadcom/Kconfig
++++ linux-next-20191011/drivers/net/ethernet/broadcom/Kconfig
+@@ -8,7 +8,6 @@ config NET_VENDOR_BROADCOM
+ 	default y
+ 	depends on (SSB_POSSIBLE && HAS_DMA) || PCI || BCM63XX || \
+ 		   SIBYTE_SB1xxx_SOC
+-	select DIMLIB
+ 	---help---
+ 	  If you have a network (Ethernet) chipset belonging to this class,
+ 	  say Y.
+@@ -69,6 +68,7 @@ config BCMGENET
+ 	select FIXED_PHY
+ 	select BCM7XXX_PHY
+ 	select MDIO_BCM_UNIMAC
++	select DIMLIB
+ 	help
+ 	  This driver supports the built-in Ethernet MACs found in the
+ 	  Broadcom BCM7xxx Set Top Box family chipset.
+@@ -188,6 +188,7 @@ config SYSTEMPORT
+ 	select MII
+ 	select PHYLIB
+ 	select FIXED_PHY
++	select DIMLIB
+ 	help
+ 	  This driver supports the built-in Ethernet MACs found in the
+ 	  Broadcom BCM7xxx Set Top Box family chipset using an internal
+@@ -200,6 +201,7 @@ config BNXT
+ 	select LIBCRC32C
+ 	select NET_DEVLINK
+ 	select PAGE_POOL
++	select DIMLIB
+ 	---help---
+ 	  This driver supports Broadcom NetXtreme-C/E 10/25/40/50 gigabit
+ 	  Ethernet cards.  To compile this driver as a module, choose M here:
