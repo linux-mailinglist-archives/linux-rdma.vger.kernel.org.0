@@ -2,118 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 17203D4C91
-	for <lists+linux-rdma@lfdr.de>; Sat, 12 Oct 2019 06:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE46D4DD5
+	for <lists+linux-rdma@lfdr.de>; Sat, 12 Oct 2019 09:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725970AbfJLEDy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 12 Oct 2019 00:03:54 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:59356 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725855AbfJLEDy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 12 Oct 2019 00:03:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=APeT5AaLXeswMWlb3tP/PsbHyjxr0vkPncnt4qDerko=; b=Zb/L7iLFqV8TtC3501JZIQkTc
-        6DRWodoCOnx6ycC8HFdbzWSQCo30pG7gjqWO6Esri69LdrZ+3lW/MNdu4E494WqQUwa7bvmKi+3L2
-        BPP1dzzb5Yx3eb8WI7h2W7//zyKR3QeKDe7fkeTTimrpHGFgcfmXReYvr4vBWgDfVAfpbMG2GAm9t
-        +GOWlUg9QAfd9MsJ35RFQpFqAzWXIrPcLFp6nJftaJL60fmaif9zr0izuRAXMu2aNQlJ5x0Hx9S20
-        SxOrHAswCiPacdB3Td9SgGmWI1yoH63aNAjDjeZIr1Jrj1PWFCILj5RAe07cYoaP8rgERaTP9m9bu
-        vDcaynE4A==;
-Received: from [2601:1c0:6280:3f0::9ef4]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iJ8cw-00045P-Si; Sat, 12 Oct 2019 04:03:34 +0000
-To:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
-        Tal Gilboa <talgi@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] net: ethernet: broadcom: have drivers select DIMLIB as needed
-Message-ID: <610f9277-adff-2f4b-1f44-8f41b6c3ccb5@infradead.org>
-Date:   Fri, 11 Oct 2019 21:03:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1727016AbfJLHEA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 12 Oct 2019 03:04:00 -0400
+Received: from mail-eopbgr740057.outbound.protection.outlook.com ([40.107.74.57]:62173
+        "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726821AbfJLHEA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 12 Oct 2019 03:04:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k8nn314BT/rvX7fORSSJp6yzyZ7KHgon/sPEKFxiOsAZ2LQbhLa/JVseyR+L+kQ9YYTbCzIwKRQ6c7dpYYqPjYqAgA8L91tm1t4PCd55mM96KtIzi4iqe8MYXvPyi5vdVdBLwM7MgXHNkwj/NbTFO/kWH958TQBrZk4kOnF+9PTMFTbgFKCfr0qkI4Fx0pjqK5sI0nHHEZje02yQ8pahMgZvXDTlAmv4vGbf1tR0VrfUENgA+TWQjQsoU51T1PrlrnskVioZKo0872A9hkmxhFAsUVA9SIsyZSZyi49m3Ep8FbTyMgFYhxgkPchEpTQMWEUIoI5z4IxQRCbJ40Qf3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JviqO0HAGom6y4SIEdWLwbh4VbgSjgYhQY96kjYWpzQ=;
+ b=LrlUwiTS6CZhjNzHmxRFLt0rxzLY9j8GWkRw+fyQL4o4jOsYw4KQ8z7XeqJwLrvvMNnqMABbMIO5oornZ1MWXXnSuK21UsGj8q+B0XhYwaZ4Malh4E9XoyqqxNFvlQs2Mw215Ws8glwoxCTQs1e9M0WtTU+isF0PZUJ0cSs3k8d7Pxvs1AFOMmG8seL3JwQNhDP+qxV9K0TWFdLqp1Ye7b/qGIyOD8nTwnzITbAVWAMr+8lH/iDFgtbxLQjDy1GnXkTosricU9uhfx5ymvaxtR5e5sTBBK7zmbyhB2V8vKF/KTHwNLXvLd1SFJNHQhfxz3G8JHR3hIQgZuNJZwXchA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JviqO0HAGom6y4SIEdWLwbh4VbgSjgYhQY96kjYWpzQ=;
+ b=zcTnw49mA3fO80SMGHZfrDrXdNFacjuIt96/Y1OMiREgW3mNbEdxgjLK+ob5IKgE53TjWJZaZTjgwp3StY15dqKQ/ScqBNncl7kVC35M/xPzgaM1hlnMMraIE0vUVA1OG1XGfY5SIdLU6jgdP7hhwypdHTiKjILRpW7yolIBPas=
+Received: from BYAPR05MB5511.namprd05.prod.outlook.com (20.177.186.28) by
+ BYAPR05MB4758.namprd05.prod.outlook.com (52.135.232.211) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.16; Sat, 12 Oct 2019 07:03:56 +0000
+Received: from BYAPR05MB5511.namprd05.prod.outlook.com
+ ([fe80::81ed:73c3:bc95:7d03]) by BYAPR05MB5511.namprd05.prod.outlook.com
+ ([fe80::81ed:73c3:bc95:7d03%5]) with mapi id 15.20.2347.021; Sat, 12 Oct 2019
+ 07:03:56 +0000
+From:   Adit Ranadive <aditr@vmware.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Bryan Tan <bryantan@vmware.com>,
+        Pv-drivers <Pv-drivers@vmware.com>
+Subject: Re: [PATCH for-next v1] RDMA/vmw_pvrdma: Use resource ids from
+ physical device if available
+Thread-Topic: [PATCH for-next v1] RDMA/vmw_pvrdma: Use resource ids from
+ physical device if available
+Thread-Index: AQHVbyhNYSy/DHAt80igdHIsy3KW2qdRKnwAgAUYRQA=
+Date:   Sat, 12 Oct 2019 07:03:55 +0000
+Message-ID: <8F02F753-B71A-4F73-83D8-D6224D6C4F6B@vmware.com>
+References: <1568924678-16356-1-git-send-email-aditr@vmware.com>
+ <20191008181544.GA2880@ziepe.ca>
+In-Reply-To: <20191008181544.GA2880@ziepe.ca>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=aditr@vmware.com; 
+x-originating-ip: [24.6.219.15]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3745249b-a699-4004-9d96-08d74ee25957
+x-ms-traffictypediagnostic: BYAPR05MB4758:|BYAPR05MB4758:
+x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR05MB4758F177B47C7C776744350CC5960@BYAPR05MB4758.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0188D66E61
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(346002)(136003)(396003)(39860400002)(376002)(189003)(199004)(186003)(99286004)(33656002)(4744005)(54906003)(6512007)(26005)(7736002)(8936002)(25786009)(6486002)(229853002)(6506007)(53546011)(2906002)(76176011)(6436002)(102836004)(305945005)(11346002)(256004)(8676002)(14444005)(446003)(6916009)(36756003)(4326008)(107886003)(478600001)(81156014)(81166006)(86362001)(2616005)(66556008)(64756008)(66446008)(66066001)(76116006)(316002)(66946007)(66476007)(476003)(14454004)(5660300002)(486006)(6116002)(3846002)(6246003)(71190400001)(71200400001);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR05MB4758;H:BYAPR05MB5511.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: D7CjZ0TB1MU1/Tgco820EZHWRIWsvKaN4O6nqbAZjPD/V0vmEfNZqtifRzL+2sg2Bb8eW1gl4tCx3sLmBXIpbTV1Gib/aTTl8zxHGoVQML4urckrXvZCkKZSZxOdRI6j2sMaiBWHVz4/vii7PGUb2+7Tteuvbj5iOYLyID3bXxkyYZk/6RgfRt9KpNQz5WyoZVNjmLBQAbnfv6HzqqYFQrj+EMQI6lSc2NhWQumsoFZIP6DC2jBOt2vh6wUSoQZ0/SPWtQVhHr1RYoYVKPhMDjObvqg/+itu9HMu1Bj+QNOQgcu1xUnl623tqpiK+4lJp3JHnjt6Ho0J/nXRapDQ2eMDlGMrkDlZWnCeDMdxuYK3nS6ZMZAaxGFQSIBX+L6MiCA5JwWb6ZR6TeEi65T6p8+RuzqyYUWjZKSj0b+/f3A=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3E063ABB69376648B68318A3D45FC8C4@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3745249b-a699-4004-9d96-08d74ee25957
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Oct 2019 07:03:56.1665
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ikR34E9btoeucq48QFb4SBQa20gIt3gTHTC906LfeZLWBCCSJPjbT2i4N3w+Dy3JeFUUcRkMmsivP9ajbNDt7Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB4758
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
-
-NET_VENDOR_BROADCOM is intended to control a kconfig menu only.
-It should not have anything to do with code generation.
-As such, it should not select DIMLIB for all drivers under
-NET_VENDOR_BROADCOM.  Instead each driver that needs DIMLIB should
-select it (being the symbols SYSTEMPORT, BNXT, and BCMGENET).
-
-Link: https://lkml.kernel.org/r/alpine.DEB.2.21.1907021810220.13058@ramsan.of.borg/
-
-Fixes: 4f75da3666c0 ("linux/dim: Move implementation to .c files")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Uwe Kleine-König <uwe@kleine-koenig.org>
-Cc: Tal Gilboa <talgi@mellanox.com>
-Cc: Saeed Mahameed <saeedm@mellanox.com>
-Cc: netdev@vger.kernel.org
-Cc: linux-rdma@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@mellanox.com>
-Cc: Leon Romanovsky <leonro@mellanox.com>
-Cc: Or Gerlitz <ogerlitz@mellanox.com>
-Cc: Sagi Grimberg <sagi@grimberg.me>
----
- drivers/net/ethernet/broadcom/Kconfig |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
---- linux-next-20191011.orig/drivers/net/ethernet/broadcom/Kconfig
-+++ linux-next-20191011/drivers/net/ethernet/broadcom/Kconfig
-@@ -8,7 +8,6 @@ config NET_VENDOR_BROADCOM
- 	default y
- 	depends on (SSB_POSSIBLE && HAS_DMA) || PCI || BCM63XX || \
- 		   SIBYTE_SB1xxx_SOC
--	select DIMLIB
- 	---help---
- 	  If you have a network (Ethernet) chipset belonging to this class,
- 	  say Y.
-@@ -69,6 +68,7 @@ config BCMGENET
- 	select FIXED_PHY
- 	select BCM7XXX_PHY
- 	select MDIO_BCM_UNIMAC
-+	select DIMLIB
- 	help
- 	  This driver supports the built-in Ethernet MACs found in the
- 	  Broadcom BCM7xxx Set Top Box family chipset.
-@@ -188,6 +188,7 @@ config SYSTEMPORT
- 	select MII
- 	select PHYLIB
- 	select FIXED_PHY
-+	select DIMLIB
- 	help
- 	  This driver supports the built-in Ethernet MACs found in the
- 	  Broadcom BCM7xxx Set Top Box family chipset using an internal
-@@ -200,6 +201,7 @@ config BNXT
- 	select LIBCRC32C
- 	select NET_DEVLINK
- 	select PAGE_POOL
-+	select DIMLIB
- 	---help---
- 	  This driver supports Broadcom NetXtreme-C/E 10/25/40/50 gigabit
- 	  Ethernet cards.  To compile this driver as a module, choose M here:
+T24gMTAvOC8xOSwgMTE6MTUgQU0sICJKYXNvbiBHdW50aG9ycGUiIDxqZ2dAemllcGUuY2E+IHdy
+b3RlOg0KPiANCj4gT24gVGh1LCBTZXAgMTksIDIwMTkgYXQgMDg6MjQ6NTZQTSArMDAwMCwgQWRp
+dCBSYW5hZGl2ZSB3cm90ZToNCj4gDQo+ID4gIA0KPiA+ICsJaWYgKCFxcC0+aXNfa2VybmVsKSB7
+DQo+ID4gKwkJaWYgKHVjbWQuZmxhZ3MgPT0gUFZSRE1BX1VTRVJfUVBfQ1JFQVRFX1VTRV9SRVNQ
+KSB7DQo+IA0KPiBXaHkgZG9lcyB0aGlzIGZsYWcgZXhpc3Q/IERvbid0IG9sZCB1c2Vyc3BhY2Vz
+IHBhc3MgaW4gYSAwIGxlbmd0aD8NCj4gSnVzdCB1c2UgdGhlIGxlbmd0aCB0byBzaWduYWwgbmV3
+IHVzZXJzcGFjZT8NCg0KSSBkaWQgaGF2ZSB0aGF0IGluIGFuIGVhcmxpZXIgdmVyc2lvbiBidXQg
+d2UgZGVjaWRlZCBpdCB0byBtYWtlIGl0IG1vcmUNCmV4cGxpY2l0LiBJdCB3b3VsZCBiZSBlYXNp
+ZXIgdG8gYWRkIGFub3RoZXIgZmxhZyBsYXRlciBvbiBpZiByZXF1aXJlZA0KdGhhbiB0byBjaGVj
+ayB0aGUgbGVuZ3RoICh3aGljaCBtaWdodCBiZSBzYW1lKS4NCg0KPiANCj4gPiArCQkJcXBfcmVz
+cC5xcG4gPSBxcC0+aWJxcC5xcF9udW07DQo+ID4gKwkJCXFwX3Jlc3AucXBfaGFuZGxlID0gcXAt
+PnFwX2hhbmRsZTsNCj4gPiArCQkJcXBfcmVzcC5xcG5fdmFsaWQgPSBQVlJETUFfVVNFUl9RUF9D
+UkVBVEVfVVNFX1JFU1A7DQo+ID4gKw0KPiA+ICsJCQlpZiAoaWJfY29weV90b191ZGF0YSh1ZGF0
+YSwgJnFwX3Jlc3AsDQo+ID4gKwkJCQkJICAgICBzaXplb2YocXBfcmVzcCkpKSB7DQo+IA0KPiBU
+aGlzIHNob3VsZCBsaW1pdCB0aGUgY29weSBzaXplIHRvIHRoZSBsZW5ndGggb2YgdGhlIHVzZXIg
+YnVmZmVyDQoNClByb2JhYmx5IHNob3VsZCBiZSBtaW4oc2l6ZW9mKHFwX3Jlc3ApLCB1ZGF0YS0+
+b3V0bGVuKT8NCg0K
