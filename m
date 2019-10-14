@@ -2,98 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4325CD57B5
-	for <lists+linux-rdma@lfdr.de>; Sun, 13 Oct 2019 21:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35DAD62D1
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Oct 2019 14:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729440AbfJMTV1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 13 Oct 2019 15:21:27 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:38873 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728982AbfJMTV1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 13 Oct 2019 15:21:27 -0400
-Received: by mail-pf1-f196.google.com with SMTP id h195so9120118pfe.5;
-        Sun, 13 Oct 2019 12:21:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oHK/IbtLtLd0Mg7pLkpjOllfV02f4vtvzFxGoOp6RpE=;
-        b=valD4oTADEY+j55I6B/KvTUuuY2Ro615SOGtX5bZxpO/SYNDj9i8xS1bwlOBet9YzF
-         Qx51g6x47P7LtcwtYXfoXXAf5FixapJ+CnPdJGtru+7agwb25OYJ+37J0j6wHvv9R0B1
-         qwM3AUJAQGdV5bw1MB2zKdWNLL7im9nLZ7tKI8AOf9ozBs9sp8gpGdCFS2GeGeLmu+Gt
-         5wvDIVTTuhK1VYuJmhOuTsZnTBumkuOlYMsGOXa56l1ZEwT447U+Y5UdFu1bsM691JQR
-         2P9WDRK9xvv+7pNCqCsDncufe0SjV1lsoFcTFU+02imBb5m9k8M2x45TIS8SLq1L+F49
-         /Ssw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oHK/IbtLtLd0Mg7pLkpjOllfV02f4vtvzFxGoOp6RpE=;
-        b=Dccd/LXIUM0k5e53HIuqArUhpMWu+b+T7ivwebxJm2X5yLDs2bbZ1ATTbY8dz9FC8e
-         VrGI3SmxNJhCoZjPySc0ZROgwT3B2DCwIq3MXnuilLvsf3o0VCMsoOnUSoe/oIfX9iBB
-         x7uxeLhylW9LiCVxCOFGm8Ru1w92XNSyrMt1cTuH3/8vG/DOE1DrS+hO2EGvfAGZiws7
-         aA9EmNBClfnjp6adHon1mCSyDuY18M9lLlPXQYX1YIibUJokWzNL43KliTeEeNGHbz/j
-         0q4oX+L8HlrN+UahYbjRP0skGKreOnBJo+JzkOnMJUnnNcu1OIztR6aXHOgFCW9lXGSV
-         cL3Q==
-X-Gm-Message-State: APjAAAUneRESKJN0hJnwB45Cj7qwAmoHBJ0i7ecsofn8MkFYmS222VKm
-        7SuthBCbuHXeXCGsTkSpxGX6L3iD
-X-Google-Smtp-Source: APXvYqxqcyUAGHdvLmGFJ3ZiKCpImZ2fnsa5DwVHeQn6yEQkYlVENnbpkiDmBA8s14FH1IlVxQkRgw==
-X-Received: by 2002:a17:90a:c406:: with SMTP id i6mr31274471pjt.98.1570994486372;
-        Sun, 13 Oct 2019 12:21:26 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id 193sm16266892pfc.59.2019.10.13.12.21.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 13 Oct 2019 12:21:25 -0700 (PDT)
-Subject: Re: [PATCH] net: ethernet: broadcom: have drivers select DIMLIB as
- needed
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
-        Tal Gilboa <talgi@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>
-References: <610f9277-adff-2f4b-1f44-8f41b6c3ccb5@infradead.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <198472c1-f584-8e17-6109-264af1328152@gmail.com>
-Date:   Sun, 13 Oct 2019 12:21:23 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1730910AbfJNMlt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Oct 2019 08:41:49 -0400
+Received: from mga18.intel.com ([134.134.136.126]:51284 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730908AbfJNMlt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 14 Oct 2019 08:41:49 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Oct 2019 05:41:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.67,295,1566889200"; 
+   d="scan'208";a="194213080"
+Received: from jerryopenix.sh.intel.com (HELO jerryopenix) ([10.239.158.171])
+  by fmsmga008.fm.intel.com with ESMTP; 14 Oct 2019 05:41:47 -0700
+Date:   Mon, 14 Oct 2019 20:39:11 +0800
+From:   "Liu, Changcheng" <changcheng.liu@intel.com>
+To:     linux-rdma@vger.kernel.org
+Subject: MCX516A-CCAT failed to set ip
+Message-ID: <20191014123911.GA711781@jerryopenix>
 MIME-Version: 1.0
-In-Reply-To: <610f9277-adff-2f4b-1f44-8f41b6c3ccb5@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hi all,
+   I’m using MCX516A-CCAT in RHEL-7.6 with kernel 4.19.45.
+   The network script always failed to configure the NIC with static ip. There was no problem when using CX314A to get the ip address with the simliar network script.
+   Could anyone give me some info to check why the network script failed to set the ip address?
 
+   Detail:
+     Network script:
+       [rdma@rdmarhel0 network-scripts]$ cat ifcfg-ens801f0
+       DEVICE=ens801f0
+       BOOTPROTO=static
+       HWADDR=24:8a:07:60:90:e1
+       IPADDR=192.168.100.101
+       NETMASK=255.255.255.0
+       ONBOOT=yes
 
-On 10/11/2019 9:03 PM, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> NET_VENDOR_BROADCOM is intended to control a kconfig menu only.
-> It should not have anything to do with code generation.
-> As such, it should not select DIMLIB for all drivers under
-> NET_VENDOR_BROADCOM.  Instead each driver that needs DIMLIB should
-> select it (being the symbols SYSTEMPORT, BNXT, and BCMGENET).
-> 
-> Link: https://lkml.kernel.org/r/alpine.DEB.2.21.1907021810220.13058@ramsan.of.borg/
-> 
-> Fixes: 4f75da3666c0 ("linux/dim: Move implementation to .c files")
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+       [rdma@rdmarhel0 network-scripts]$ cat ifcfg-ens801f1
+       DEVICE=ens801f1
+       BOOTPROTO=static
+       HWADDR=24:8a:07:60:90:e0
+       IPADDR=173.168.100.101
+       NETMASK=255.255.255.0
+       ONBOOT=yes
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+     Restart network command:
+       [rdma@rdmarhel0 ~]$ sudo service network restart
+
+     Error output:
+       Restarting network (via systemctl):  Job for network.service failed because the control process exited with error code.
+       See "systemctl status network.service" and "journalctl -xe" for details.
+
+    Further check:
+       [rdma@rdmarhel0 ~]$ systemctl status network.service
+       network.service - LSB: Bring up/down networking
+          Loaded: loaded (/etc/rc.d/init.d/network; bad; vendor preset: disabled)
+          Active: failed (Result: exit-code) since Mon 2019-10-14 16:43:38 CST; 5min ago
+            Docs: man:systemd-sysv-generator(8)
+         Process: 20373 ExecStop=/etc/rc.d/init.d/network stop (code=exited, status=0/SUCCESS)
+         Process: 26051 ExecStart=/etc/rc.d/init.d/network start (code=exited, status=1/FAILURE)
+
+       Oct 14 16:43:38 rdmarhel0 network[26051]: RTNETLINK answers: File exists
+       Oct 14 16:43:38 rdmarhel0 network[26051]: RTNETLINK answers: File exists
+       Oct 14 16:43:38 rdmarhel0 network[26051]: RTNETLINK answers: File exists
+       Oct 14 16:43:38 rdmarhel0 network[26051]: RTNETLINK answers: File exists
+       Oct 14 16:43:38 rdmarhel0 network[26051]: RTNETLINK answers: File exists
+       Oct 14 16:43:38 rdmarhel0 network[26051]: RTNETLINK answers: File exists
+       Oct 14 16:43:38 rdmarhel0 systemd[1]: network.service: control process exited, code=exited status=1
+       Oct 14 16:43:38 rdmarhel0 systemd[1]: Failed to start LSB: Bring up/down networking.
+       Oct 14 16:43:38 rdmarhel0 systemd[1]: Unit network.service entered failed state.
+       Oct 14 16:43:38 rdmarhel0 systemd[1]: network.service failed.
+
+    [rdma@rdmarhel0 ~]$ journalctl -xe
+       -- Unit network.service has begun starting up.
+       Oct 14 16:43:37 rdmarhel0 network[26051]: Bringing up loopback interface:  [  OK  ]
+       Oct 14 16:43:37 rdmarhel0 network[26051]: Bringing up interface eno1:  [  OK  ]
+       Oct 14 16:43:37 rdmarhel0 network[26051]: Bringing up interface ens785f0:  [  OK  ]
+       Oct 14 16:43:37 rdmarhel0 network[26051]: Bringing up interface ens785f1:  [  OK  ]
+       Oct 14 16:43:38 rdmarhel0 NetworkManager[14879]: <info>  [1571042618.1158] audit: op="connection-activate" uuid="e9345cc8-be74-0dd5-85a4-8260e310b66b" name="System ens801f0" result="fail" reason="No suitable d
+       Oct 14 16:43:38 rdmarhel0 network[26051]: Bringing up interface ens801f0:  Error: Connection activation failed: No suitable device found for this connection.
+       Oct 14 16:43:38 rdmarhel0 network[26051]: [FAILED]
+       Oct 14 16:43:38 rdmarhel0 network[26051]: Bringing up interface ens801f1:  [  OK  ]
+       Oct 14 16:43:38 rdmarhel0 network[26051]: RTNETLINK answers: File exists
+       Oct 14 16:43:38 rdmarhel0 network[26051]: RTNETLINK answers: File exists
+       Oct 14 16:43:38 rdmarhel0 systemd[1]: network.service: control process exited, code=exited status=1
+       Oct 14 16:43:38 rdmarhel0 systemd[1]: Failed to start LSB: Bring up/down networking.
+       -- Subject: Unit network.service has failed
+       -- Defined-By: systemd
+       -- Support: http://lists.freedesktop.org/mailman/listinfo/systemd-devel
+       -- 
+       -- Unit network.service has failed.
+       -- 
+       -- The result is failed.
+       Oct 14 16:43:38 rdmarhel0 systemd[1]: Unit network.service entered failed state.
+       Oct 14 16:43:38 rdmarhel0 systemd[1]: network.service failed.
+       Oct 14 16:43:38 rdmarhel0 polkitd[14826]: Unregistered Authentication Agent for unix-process:26045:493383 (system bus name :1.338, object path /org/freedesktop/PolicyKit1/AuthenticationAgent, locale en_US.UTF-
+       Oct 14 16:43:38 rdmarhel0 sudo[26025]: pam_unix(sudo:session): session closed for user root
+
+Regards,
+Changcheng
