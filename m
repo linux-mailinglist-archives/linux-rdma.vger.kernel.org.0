@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1FCD708A
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Oct 2019 09:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED7FD708B
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Oct 2019 09:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727332AbfJOHy1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Oct 2019 03:54:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40554 "EHLO mail.kernel.org"
+        id S1728176AbfJOHya (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Oct 2019 03:54:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728107AbfJOHy0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 15 Oct 2019 03:54:26 -0400
+        id S1728107AbfJOHya (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 15 Oct 2019 03:54:30 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B704C21835;
-        Tue, 15 Oct 2019 07:54:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E03292089C;
+        Tue, 15 Oct 2019 07:54:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571126066;
-        bh=fzmfYyUIBDeCYnRP+IbEyle3JpWMSQGxD3w9CCZqeM8=;
+        s=default; t=1571126069;
+        bh=D9gSbgOWgzRWyD3FpGUn4JyfOe44/LL2l+kpzsTF0bY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=18O3WfjhVHYkoKwCa9yxKbcsArk00H6M6dBxawDhWl+tn3JdOoh9/NeMx05c1Nbtw
-         kgFXP/rCnKioPbAbrojXgicpSNwf9cmPYtw4zXS8aqvle0nUfjN7J9Zq4gWWdVNiTm
-         xWKtoaja1P1DlZFbKM7KCSPSJTdwoQ4zpnEUXMlg=
+        b=g0CHjko5T1Ir6IzIPJZ6dWLbMDNc6J7c4uHHv8i4F/lRwiRmoTDtOvtTfVVnayHJ9
+         2bWqWG+X/H+eQDN7JoOvNHyJJ76GH5GB5DY+N0nCy7loCrIMZQvMFWJ7MM/56H81dw
+         LCA8b9vNaDronDBfQr/X3BW5huQhhJNSvd2f9/24=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -30,9 +30,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Potnuri Bharat Teja <bharat@chelsio.com>,
         Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH rdma-next v1 1/2] RDMA/uapi: Fix and re-organize the usage of rdma_driver_id
-Date:   Tue, 15 Oct 2019 10:54:18 +0300
-Message-Id: <20191015075419.18185-2-leon@kernel.org>
+Subject: [PATCH rdma-next v1 2/2] RDMA/uapi: Drop the dependency of ib_user_ioctl_verbs.h on ib_user_verbs.h
+Date:   Tue, 15 Oct 2019 10:54:19 +0300
+Message-Id: <20191015075419.18185-3-leon@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191015075419.18185-1-leon@kernel.org>
 References: <20191015075419.18185-1-leon@kernel.org>
@@ -45,79 +45,96 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Yishai Hadas <yishaih@mellanox.com>
 
-Fix 'enum rdma_driver_id' to preserve other driver values before that
-RDMA_DRIVER_CXGB3 was deleted. As this value is UAPI we can't affect
-other values as of a deletion of one driver id.
+Drop the dependency of ib_user_ioctl_verbs.h on ib_user_verbs.h which
+is not really required.
 
-Fixes: 30e0f6cf5acb ("RDMA/iw_cxgb3: Remove the iw_cxgb3 module from kernel")
 Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- include/uapi/rdma/ib_user_ioctl_verbs.h  | 22 ++++++++++++++++++++++
- include/uapi/rdma/rdma_user_ioctl_cmds.h | 21 ---------------------
- 2 files changed, 22 insertions(+), 21 deletions(-)
+ include/uapi/rdma/ib_user_ioctl_verbs.h | 26 ++++++++++++++++++++++++-
+ include/uapi/rdma/ib_user_verbs.h       | 25 ------------------------
+ 2 files changed, 25 insertions(+), 26 deletions(-)
 
 diff --git a/include/uapi/rdma/ib_user_ioctl_verbs.h b/include/uapi/rdma/ib_user_ioctl_verbs.h
-index 72c7fc75f960..9019b2d906ea 100644
+index 9019b2d906ea..8bdfdd4ef8b5 100644
 --- a/include/uapi/rdma/ib_user_ioctl_verbs.h
 +++ b/include/uapi/rdma/ib_user_ioctl_verbs.h
-@@ -173,4 +173,26 @@ struct ib_uverbs_query_port_resp_ex {
- 	__u8  reserved[6];
+@@ -35,7 +35,6 @@
+ #define IB_USER_IOCTL_VERBS_H
+ 
+ #include <linux/types.h>
+-#include <rdma/ib_user_verbs.h>
+ 
+ #ifndef RDMA_UAPI_PTR
+ #define RDMA_UAPI_PTR(_type, _name)	__aligned_u64 _name
+@@ -167,6 +166,31 @@ enum ib_uverbs_advise_mr_flag {
+ 	IB_UVERBS_ADVISE_MR_FLAG_FLUSH = 1 << 0,
  };
  
-+enum rdma_driver_id {
-+	RDMA_DRIVER_UNKNOWN,
-+	RDMA_DRIVER_MLX5,
-+	RDMA_DRIVER_MLX4,
-+	RDMA_DRIVER_CXGB3,
-+	RDMA_DRIVER_CXGB4,
-+	RDMA_DRIVER_MTHCA,
-+	RDMA_DRIVER_BNXT_RE,
-+	RDMA_DRIVER_OCRDMA,
-+	RDMA_DRIVER_NES,
-+	RDMA_DRIVER_I40IW,
-+	RDMA_DRIVER_VMW_PVRDMA,
-+	RDMA_DRIVER_QEDR,
-+	RDMA_DRIVER_HNS,
-+	RDMA_DRIVER_USNIC,
-+	RDMA_DRIVER_RXE,
-+	RDMA_DRIVER_HFI1,
-+	RDMA_DRIVER_QIB,
-+	RDMA_DRIVER_EFA,
-+	RDMA_DRIVER_SIW,
++struct ib_uverbs_query_port_resp {
++	__u32 port_cap_flags;		/* see ib_uverbs_query_port_cap_flags */
++	__u32 max_msg_sz;
++	__u32 bad_pkey_cntr;
++	__u32 qkey_viol_cntr;
++	__u32 gid_tbl_len;
++	__u16 pkey_tbl_len;
++	__u16 lid;
++	__u16 sm_lid;
++	__u8  state;
++	__u8  max_mtu;
++	__u8  active_mtu;
++	__u8  lmc;
++	__u8  max_vl_num;
++	__u8  sm_sl;
++	__u8  subnet_timeout;
++	__u8  init_type_reply;
++	__u8  active_width;
++	__u8  active_speed;
++	__u8  phys_state;
++	__u8  link_layer;
++	__u8  flags;			/* see ib_uverbs_query_port_flags */
++	__u8  reserved;
 +};
 +
- #endif
-diff --git a/include/uapi/rdma/rdma_user_ioctl_cmds.h b/include/uapi/rdma/rdma_user_ioctl_cmds.h
-index b2680051047a..7b1ec806f8f9 100644
---- a/include/uapi/rdma/rdma_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/rdma_user_ioctl_cmds.h
-@@ -84,25 +84,4 @@ struct ib_uverbs_ioctl_hdr {
- 	struct ib_uverbs_attr  attrs[0];
+ struct ib_uverbs_query_port_resp_ex {
+ 	struct ib_uverbs_query_port_resp legacy_resp;
+ 	__u16 port_cap_flags2;
+diff --git a/include/uapi/rdma/ib_user_verbs.h b/include/uapi/rdma/ib_user_verbs.h
+index 0474c7400268..37450f133a07 100644
+--- a/include/uapi/rdma/ib_user_verbs.h
++++ b/include/uapi/rdma/ib_user_verbs.h
+@@ -281,31 +281,6 @@ struct ib_uverbs_query_port {
+ 	__aligned_u64 driver_data[0];
  };
  
--enum rdma_driver_id {
--	RDMA_DRIVER_UNKNOWN,
--	RDMA_DRIVER_MLX5,
--	RDMA_DRIVER_MLX4,
--	RDMA_DRIVER_CXGB4,
--	RDMA_DRIVER_MTHCA,
--	RDMA_DRIVER_BNXT_RE,
--	RDMA_DRIVER_OCRDMA,
--	RDMA_DRIVER_NES,
--	RDMA_DRIVER_I40IW,
--	RDMA_DRIVER_VMW_PVRDMA,
--	RDMA_DRIVER_QEDR,
--	RDMA_DRIVER_HNS,
--	RDMA_DRIVER_USNIC,
--	RDMA_DRIVER_RXE,
--	RDMA_DRIVER_HFI1,
--	RDMA_DRIVER_QIB,
--	RDMA_DRIVER_EFA,
--	RDMA_DRIVER_SIW,
+-struct ib_uverbs_query_port_resp {
+-	__u32 port_cap_flags;		/* see ib_uverbs_query_port_cap_flags */
+-	__u32 max_msg_sz;
+-	__u32 bad_pkey_cntr;
+-	__u32 qkey_viol_cntr;
+-	__u32 gid_tbl_len;
+-	__u16 pkey_tbl_len;
+-	__u16 lid;
+-	__u16 sm_lid;
+-	__u8  state;
+-	__u8  max_mtu;
+-	__u8  active_mtu;
+-	__u8  lmc;
+-	__u8  max_vl_num;
+-	__u8  sm_sl;
+-	__u8  subnet_timeout;
+-	__u8  init_type_reply;
+-	__u8  active_width;
+-	__u8  active_speed;
+-	__u8  phys_state;
+-	__u8  link_layer;
+-	__u8  flags;			/* see ib_uverbs_query_port_flags */
+-	__u8  reserved;
 -};
 -
- #endif
+ struct ib_uverbs_alloc_pd {
+ 	__aligned_u64 response;
+ 	__aligned_u64 driver_data[0];
 -- 
 2.20.1
 
