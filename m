@@ -2,332 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9091ED70BB
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Oct 2019 10:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03BED70D1
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Oct 2019 10:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728455AbfJOIHi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Oct 2019 04:07:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728457AbfJOIHi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 15 Oct 2019 04:07:38 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8319D20873;
-        Tue, 15 Oct 2019 08:07:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571126857;
-        bh=hhWChGtynLIF27V4qssmxHDoPGKMpOHt5Md7s34MIRQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GRjUeF9W4J6f5o6+G6eyokPWKsc35/kEU9+jwlLaXQlNaWUOSlrurcVg9lcEmrUNl
-         uPUKJ83WDW7T+pRaFLcnfaA8v6pTvUru4g2G3pCCdYmgM307n3KdAH+pWSg5HlrOnr
-         VAnfArLDM3Nb0TxJUbf9ig9E0/2sDQqjsIo05q7I=
-From:   Leon Romanovsky <leon@kernel.org>
+        id S1728615AbfJOIP3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Oct 2019 04:15:29 -0400
+Received: from mail-eopbgr50053.outbound.protection.outlook.com ([40.107.5.53]:29198
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728560AbfJOIP3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 15 Oct 2019 04:15:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FEJEqO5xBnTeCWGCwZ1fvH341A2re38dCFZr8RrzsHk5HmxC4SBDn3m/bDioyov+jZI4UsaOC1BfZbV6K9qPk7q0sUXyqK3JrbNKpRcwjuCwC+cD++qmvpZlRcOxwgOvd2zZJhOGCe2NaMFM5HeKTGekULPLjxTz8S8Gl54w66zUYnzyfbk8SZG2bOZWK0B8INVQ4O2HM6FAIAXgEvAS4UGb8KQjhK+hdoA6r/xJSTbv18Mp27nmYE0WMW9rW+L6LH8TL3bGCWnilOFb+5SNU/ML1z+gBOBD9nZhQI5iyBkcbODQ0JSSmSRLWVGwzKrpU6xK1kgknEDaoGFH4B6A6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9UpJPMqiRHJY3NSzZ10zJ3GHzvuZPPvjeoWqFkYvVU4=;
+ b=YRRWfjvkSs8w8W7NpJzY2yNAohN9dgCoZkGSLvaHdUq36qvLgU4TL9ztNugMD6SCmx8+s5DWVDiI0udWSQ1rhhA9nxgaP/tLYbhh7RhuWkTgRqYiAvg7gMxeajQJEr2tPxfDyf4YU1I34gGQ3qVap9O7AMPEzYLq0Q/ViC1t6Md1u8FQvjwxPHy4hDpCU8PSCw6A4ayZE6HNbOlfk7yzxg7dsdvcQw5zTMQ1//tGB2zId1WVZajU1toD70rcdTXdwImRpqJBx/osx9vT8kNfkiWaUi0AiDvqcUrmNu+WBcp6NFm/d8VMqU3EYhSA12v9VIfFB2meoxjulFTP8Vhk9A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9UpJPMqiRHJY3NSzZ10zJ3GHzvuZPPvjeoWqFkYvVU4=;
+ b=qxfsDRgac+kf+QwlyJW1dll/uhbZPOkJkjezeM/VrVB3u4oC5kF87Ozf9rjWE2eHERNn83c7QZzhhNpofdZrgmVwPJQpN9TAWghchoeJ8eCJaTXcyN0hecuRbsUz08bK31tAtsy3O2ZZrFqCOpo2nQPi5pDjk1qdcp3V/CARwIo=
+Received: from AM4PR05MB3137.eurprd05.prod.outlook.com (10.171.188.155) by
+ AM4PR05MB3377.eurprd05.prod.outlook.com (10.171.190.28) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.16; Tue, 15 Oct 2019 08:15:25 +0000
+Received: from AM4PR05MB3137.eurprd05.prod.outlook.com
+ ([fe80::dde1:60df:efba:b3df]) by AM4PR05MB3137.eurprd05.prod.outlook.com
+ ([fe80::dde1:60df:efba:b3df%7]) with mapi id 15.20.2347.023; Tue, 15 Oct 2019
+ 08:15:25 +0000
+From:   Leon Romanovsky <leonro@mellanox.com>
 To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Parav Pandit <parav@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: [PATCH rdma-next] IB/core: Avoid deadlock during netlink message handling
-Date:   Tue, 15 Oct 2019 11:07:33 +0300
-Message-Id: <20191015080733.18625-1-leon@kernel.org>
-X-Mailer: git-send-email 2.21.0
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Christoph Hellwig <hch@infradead.org>
+CC:     RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v2 0/3] Optimize SGL registration
+Thread-Topic: [PATCH rdma-next v2 0/3] Optimize SGL registration
+Thread-Index: AQHVfRd2xu2EQ+EHjUSoTDpnyENqmadbZzOA
+Date:   Tue, 15 Oct 2019 08:15:25 +0000
+Message-ID: <20191015081523.GD6957@unreal>
+References: <20191007135933.12483-1-leon@kernel.org>
+In-Reply-To: <20191007135933.12483-1-leon@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM0PR07CA0014.eurprd07.prod.outlook.com
+ (2603:10a6:208:ac::27) To AM4PR05MB3137.eurprd05.prod.outlook.com
+ (2603:10a6:205:8::27)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=leonro@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [193.47.165.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0b65f356-4149-40a8-57f9-08d75147d4de
+x-ms-office365-filtering-ht: Tenant
+x-ms-traffictypediagnostic: AM4PR05MB3377:|AM4PR05MB3377:
+x-ms-exchange-purlcount: 2
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM4PR05MB3377A6FFC5DFC701811C1943B0930@AM4PR05MB3377.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-forefront-prvs: 01917B1794
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(7916004)(376002)(136003)(366004)(346002)(39860400002)(396003)(54534003)(199004)(189003)(486006)(8676002)(9686003)(6512007)(186003)(7736002)(6436002)(52116002)(66476007)(66556008)(76176011)(64756008)(6506007)(386003)(66446008)(66946007)(66066001)(6486002)(99286004)(6306002)(446003)(476003)(11346002)(81166006)(6246003)(81156014)(8936002)(86362001)(229853002)(966005)(478600001)(25786009)(71190400001)(33656002)(4326008)(3846002)(6116002)(71200400001)(256004)(33716001)(316002)(14454004)(102836004)(305945005)(26005)(54906003)(110136005)(5660300002)(2906002)(1076003);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR05MB3377;H:AM4PR05MB3137.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qyt4WX/XUHoIrWgE8AiT4BZ/0pKrVyaW2/UHoyr+SE9+HEm4SqEYuTghSHT4dXf2stz2IX+qcRLjFNFuzUFn16jjetzo3/o+IacRVUcdnSUoI5i8U9Eyc435qh2ax7Jl/tKKC3+RsaLpphTHKPwEe+FRVYoYz8nzGGB103aj+X661Ecp98bZilOJec7kZ/7pOsk57ZV4Axm3qxBG0IoLDp8Ef+xLQZe6Lwt0zIuAysjy0n3zK0V99wlZZRcJtjEbSS60kGSJ3IZgKpgG49KYgU4BY5nX0aRUpl1d17kwp8M7g7Y0u1lKLBhivF38Sv6u/369sV0to7gFcpxEoHqzVx0Z+DJSbO3CfyKKphBIAsrkvDnoIbXA4vr2js80yHz7CSRcOJepYtpX9VCzxOi99Pd1GMljZ7ngryZwILG5f3HSnLgt78Yc77eO1miLybTy3Qg/ZbZ1xi6JUQApN6i0/w==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <8C73AC86256C384087D07DE2F38752DA@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b65f356-4149-40a8-57f9-08d75147d4de
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2019 08:15:25.3532
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +erjus/iG9OMnVwyu1xH8VEWS5zZu5Kj9sZ5aW8JBUPB1v640EAAAvJ2f2YeTrBWum5HTt0ugw+EPVYF+vVMng==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3377
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@mellanox.com>
+On Mon, Oct 07, 2019 at 04:59:30PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+>
+> Changelog
+> v1->v2: https://lore.kernel.org/linux-rdma/20191007115819.9211-1-leon@ker=
+nel.org
+>  * Used Christoph's comment
+>  * Change patch code flow to have one DMA_FROM_DEVICE check
+> v0->v1: https://lore.kernel.org/linux-rdma/20191006155955.31445-1-leon@ke=
+rnel.org
+>  * Reorganized patches to have IB/core changes separated from mlx5
+>  * Moved SGL check before rdma_rw_force_mr
+>  * Added and rephrased original comment.
+>
+> -------------------------------------------------------------------------=
+----
+> Hi,
+>
+> This series from Yamin implements long standing "TODO" existed in rw.c.
+>
+> Thanks
 
-When rdmacm module is not loaded, and when netlink message is received
-to get char device info, it results into a deadlock due to recursive
-locking rdma_nl_mutex in below call sequence.
+Jason, Doug
 
-[..]
-  rdma_nl_rcv()
-  mutex_lock()
-  rdma_nl_rcv_msg()
-      ib_get_client_nl_info()
-         request_module()
-           iw_cm_init()
-             rdma_nl_register()
-               mutex_lock(); <- Deadlock, acquiring mutex again
+Do you expect anything from me in regards to this series?
 
-Due to above call sequence, following call trace and deadlock is
-observed.
+Thanks
 
-kernel: __mutex_lock+0x35e/0x860
-kernel: ? __mutex_lock+0x129/0x860
-kernel: ? rdma_nl_register+0x1a/0x90 [ib_core]
-kernel: rdma_nl_register+0x1a/0x90 [ib_core]
-kernel: ? 0xffffffffc029b000
-kernel: iw_cm_init+0x34/0x1000 [iw_cm]
-kernel: do_one_initcall+0x67/0x2d4
-kernel: ? kmem_cache_alloc_trace+0x1ec/0x2a0
-kernel: do_init_module+0x5a/0x223
-kernel: load_module+0x1998/0x1e10
-kernel: ? __symbol_put+0x60/0x60
-kernel: __do_sys_finit_module+0x94/0xe0
-kernel: do_syscall_64+0x5a/0x270
-kernel: entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-process stack trace:
-[<0>] __request_module+0x1c9/0x460
-[<0>] ib_get_client_nl_info+0x5e/0xb0 [ib_core]
-[<0>] nldev_get_chardev+0x1ac/0x320 [ib_core]
-[<0>] rdma_nl_rcv_msg+0xeb/0x1d0 [ib_core]
-[<0>] rdma_nl_rcv+0xcd/0x120 [ib_core]
-[<0>] netlink_unicast+0x179/0x220
-[<0>] netlink_sendmsg+0x2f6/0x3f0
-[<0>] sock_sendmsg+0x30/0x40
-[<0>] ___sys_sendmsg+0x27a/0x290
-[<0>] __sys_sendmsg+0x58/0xa0
-[<0>] do_syscall_64+0x5a/0x270
-[<0>] entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-To overcome this deadlock and to allow multiple netlink messages to
-progress in parallel, following scheme is implemented.
-
-1. Block netlink table unregistration of a client until all the callers
-finish executing callback for a given client.
-
-2. Netlink clients shouldn't register table multiple times for a given
-index. Such basic requirement from two non IB core module eliminates
-mutex usage for table registratio,
-
-Fixes: 0e2d00eb6fd45 ("RDMA: Add NLDEV_GET_CHARDEV to allow char dev discovery and autoload")
-Signed-off-by: Parav Pandit <parav@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/core/core_priv.h |  1 +
- drivers/infiniband/core/device.c    |  2 +
- drivers/infiniband/core/netlink.c   | 93 ++++++++++++++++-------------
- 3 files changed, 54 insertions(+), 42 deletions(-)
-
-diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index 3a8b0911c3bc..9d07378b5b42 100644
---- a/drivers/infiniband/core/core_priv.h
-+++ b/drivers/infiniband/core/core_priv.h
-@@ -199,6 +199,7 @@ void ib_mad_cleanup(void);
- int ib_sa_init(void);
- void ib_sa_cleanup(void);
- 
-+void rdma_nl_init(void);
- void rdma_nl_exit(void);
- 
- int ib_nl_handle_resolve_resp(struct sk_buff *skb,
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 2e53aa25f0c7..2f89c4d64b73 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -2716,6 +2716,8 @@ static int __init ib_core_init(void)
- 		goto err_comp_unbound;
- 	}
- 
-+	rdma_nl_init();
-+
- 	ret = addr_init();
- 	if (ret) {
- 		pr_warn("Could't init IB address resolution\n");
-diff --git a/drivers/infiniband/core/netlink.c b/drivers/infiniband/core/netlink.c
-index 81dbd5f41bed..a3507b8be569 100644
---- a/drivers/infiniband/core/netlink.c
-+++ b/drivers/infiniband/core/netlink.c
-@@ -42,9 +42,12 @@
- #include <linux/module.h>
- #include "core_priv.h"
- 
--static DEFINE_MUTEX(rdma_nl_mutex);
- static struct {
--	const struct rdma_nl_cbs   *cb_table;
-+	const struct rdma_nl_cbs __rcu *cb_table;
-+	/* Synchronizes between ongoing netlink commands and netlink client
-+	 * unregistration.
-+	 */
-+	struct srcu_struct unreg_srcu;
- } rdma_nl_types[RDMA_NL_NUM_CLIENTS];
- 
- bool rdma_nl_chk_listeners(unsigned int group)
-@@ -78,8 +81,6 @@ static bool is_nl_msg_valid(unsigned int type, unsigned int op)
- static bool
- is_nl_valid(const struct sk_buff *skb, unsigned int type, unsigned int op)
- {
--	const struct rdma_nl_cbs *cb_table;
--
- 	if (!is_nl_msg_valid(type, op))
- 		return false;
- 
-@@ -90,23 +91,12 @@ is_nl_valid(const struct sk_buff *skb, unsigned int type, unsigned int op)
- 	if (sock_net(skb->sk) != &init_net && type != RDMA_NL_NLDEV)
- 		return false;
- 
--	if (!rdma_nl_types[type].cb_table) {
--		mutex_unlock(&rdma_nl_mutex);
--		request_module("rdma-netlink-subsys-%d", type);
--		mutex_lock(&rdma_nl_mutex);
--	}
--
--	cb_table = rdma_nl_types[type].cb_table;
--
--	if (!cb_table || (!cb_table[op].dump && !cb_table[op].doit))
--		return false;
- 	return true;
- }
- 
- void rdma_nl_register(unsigned int index,
- 		      const struct rdma_nl_cbs cb_table[])
- {
--	mutex_lock(&rdma_nl_mutex);
- 	if (!is_nl_msg_valid(index, 0)) {
- 		/*
- 		 * All clients are not interesting in success/failure of
-@@ -114,31 +104,21 @@ void rdma_nl_register(unsigned int index,
- 		 * continue their initialization. Print warning for them,
- 		 * because it is programmer's error to be here.
- 		 */
--		mutex_unlock(&rdma_nl_mutex);
- 		WARN(true,
- 		     "The not-valid %u index was supplied to RDMA netlink\n",
- 		     index);
- 		return;
- 	}
- 
--	if (rdma_nl_types[index].cb_table) {
--		mutex_unlock(&rdma_nl_mutex);
--		WARN(true,
--		     "The %u index is already registered in RDMA netlink\n",
--		     index);
--		return;
--	}
--
--	rdma_nl_types[index].cb_table = cb_table;
--	mutex_unlock(&rdma_nl_mutex);
-+	/* Publish now that this table entry can be accessed */
-+	rcu_assign_pointer(rdma_nl_types[index].cb_table, cb_table);
- }
- EXPORT_SYMBOL(rdma_nl_register);
- 
- void rdma_nl_unregister(unsigned int index)
- {
--	mutex_lock(&rdma_nl_mutex);
--	rdma_nl_types[index].cb_table = NULL;
--	mutex_unlock(&rdma_nl_mutex);
-+	rcu_assign_pointer(rdma_nl_types[index].cb_table, NULL);
-+	synchronize_srcu(&rdma_nl_types[index].unreg_srcu);
- }
- EXPORT_SYMBOL(rdma_nl_unregister);
- 
-@@ -170,15 +150,35 @@ static int rdma_nl_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	unsigned int index = RDMA_NL_GET_CLIENT(type);
- 	unsigned int op = RDMA_NL_GET_OP(type);
- 	const struct rdma_nl_cbs *cb_table;
-+	int srcu_idx;
-+	int err = -EINVAL;
- 
- 	if (!is_nl_valid(skb, index, op))
- 		return -EINVAL;
- 
--	cb_table = rdma_nl_types[index].cb_table;
-+	srcu_idx = srcu_read_lock(&rdma_nl_types[index].unreg_srcu);
-+	cb_table = srcu_dereference(rdma_nl_types[index].cb_table,
-+				    &rdma_nl_types[index].unreg_srcu);
-+	if (!cb_table) {
-+		/* Didn't get valid reference of the table;
-+		 * attempt module load once.
-+		 */
-+		srcu_read_unlock(&rdma_nl_types[index].unreg_srcu, srcu_idx);
-+
-+		request_module("rdma-netlink-subsys-%d", index);
-+
-+		srcu_idx = srcu_read_lock(&rdma_nl_types[index].unreg_srcu);
-+		cb_table = srcu_dereference(rdma_nl_types[index].cb_table,
-+					    &rdma_nl_types[index].unreg_srcu);
-+	}
-+	if (!cb_table || (!cb_table[op].dump && !cb_table[op].doit))
-+		goto done;
- 
- 	if ((cb_table[op].flags & RDMA_NL_ADMIN_PERM) &&
--	    !netlink_capable(skb, CAP_NET_ADMIN))
--		return -EPERM;
-+	    !netlink_capable(skb, CAP_NET_ADMIN)) {
-+		err = -EPERM;
-+		goto done;
-+	}
- 
- 	/*
- 	 * LS responses overload the 0x100 (NLM_F_ROOT) flag.  Don't
-@@ -186,8 +186,8 @@ static int rdma_nl_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	 */
- 	if (index == RDMA_NL_LS) {
- 		if (cb_table[op].doit)
--			return cb_table[op].doit(skb, nlh, extack);
--		return -EINVAL;
-+			err = cb_table[op].doit(skb, nlh, extack);
-+		goto done;
- 	}
- 	/* FIXME: Convert IWCM to properly handle doit callbacks */
- 	if ((nlh->nlmsg_flags & NLM_F_DUMP) || index == RDMA_NL_IWCM) {
-@@ -195,14 +195,15 @@ static int rdma_nl_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh,
- 			.dump = cb_table[op].dump,
- 		};
- 		if (c.dump)
--			return netlink_dump_start(skb->sk, skb, nlh, &c);
--		return -EINVAL;
-+			err = netlink_dump_start(skb->sk, skb, nlh, &c);
-+		goto done;
- 	}
- 
- 	if (cb_table[op].doit)
--		return cb_table[op].doit(skb, nlh, extack);
--
--	return 0;
-+		err = cb_table[op].doit(skb, nlh, extack);
-+done:
-+	srcu_read_unlock(&rdma_nl_types[index].unreg_srcu, srcu_idx);
-+	return err;
- }
- 
- /*
-@@ -263,9 +264,7 @@ static int rdma_nl_rcv_skb(struct sk_buff *skb, int (*cb)(struct sk_buff *,
- 
- static void rdma_nl_rcv(struct sk_buff *skb)
- {
--	mutex_lock(&rdma_nl_mutex);
- 	rdma_nl_rcv_skb(skb, &rdma_nl_rcv_msg);
--	mutex_unlock(&rdma_nl_mutex);
- }
- 
- int rdma_nl_unicast(struct net *net, struct sk_buff *skb, u32 pid)
-@@ -297,14 +296,24 @@ int rdma_nl_multicast(struct net *net, struct sk_buff *skb,
- }
- EXPORT_SYMBOL(rdma_nl_multicast);
- 
--void rdma_nl_exit(void)
-+void rdma_nl_init(void)
- {
- 	int idx;
- 
- 	for (idx = 0; idx < RDMA_NL_NUM_CLIENTS; idx++)
-+		init_srcu_struct(&rdma_nl_types[idx].unreg_srcu);
-+}
-+
-+void rdma_nl_exit(void)
-+{
-+	int idx;
-+
-+	for (idx = 0; idx < RDMA_NL_NUM_CLIENTS; idx++) {
-+		cleanup_srcu_struct(&rdma_nl_types[idx].unreg_srcu);
- 		WARN(rdma_nl_types[idx].cb_table,
- 		     "Netlink client %d wasn't released prior to unloading %s\n",
- 		     idx, KBUILD_MODNAME);
-+	}
- }
- 
- int rdma_nl_net_init(struct rdma_dev_net *rnet)
--- 
-2.20.1
-
+>
+> Yamin Friedman (3):
+>   net/mlx5: Expose optimal performance scatter entries capability
+>   RDMA/rw: Support threshold for registration vs scattering to local
+>     pages
+>   RDMA/mlx5: Add capability for max sge to get optimized performance
+>
+>  drivers/infiniband/core/rw.c      | 25 +++++++++++++++----------
+>  drivers/infiniband/hw/mlx5/main.c |  2 ++
+>  include/linux/mlx5/mlx5_ifc.h     |  2 +-
+>  include/rdma/ib_verbs.h           |  2 ++
+>  4 files changed, 20 insertions(+), 11 deletions(-)
+>
+> --
+> 2.20.1
+>
