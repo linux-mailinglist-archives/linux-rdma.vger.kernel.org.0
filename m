@@ -2,68 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A69D87C5
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Oct 2019 07:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068E2D8890
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Oct 2019 08:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730411AbfJPFLJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Oct 2019 01:11:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50402 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732659AbfJPFLI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 16 Oct 2019 01:11:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C1428B38A;
-        Wed, 16 Oct 2019 05:11:06 +0000 (UTC)
-Subject: Re: [PATCH hmm 08/15] xen/gntdev: Use select for DMA_SHARED_BUFFER
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Felix.Kuehling@amd.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Jerome Glisse <jglisse@redhat.com>
-Cc:     Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-mm@kvack.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, xen-devel@lists.xenproject.org,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>, linux-rdma@vger.kernel.org
-References: <20191015181242.8343-1-jgg@ziepe.ca>
- <20191015181242.8343-9-jgg@ziepe.ca>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <6f60f558-20db-1749-044d-a46697258c39@suse.com>
-Date:   Wed, 16 Oct 2019 07:11:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        id S1727417AbfJPGXR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Oct 2019 02:23:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727444AbfJPGXR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 16 Oct 2019 02:23:17 -0400
+Received: from localhost (unknown [77.137.89.37])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6649620873;
+        Wed, 16 Oct 2019 06:23:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1571206996;
+        bh=Beg804sqWjD4XTvY9Sl/AIfBaz23PPcaTSMbpvfYNdw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Td8+/aBTzHCrfCoSpp+p2aoti/fa6YBI5uTCxVhT1/4G3rXFlTRY4hR2fRM+cZQa7
+         VFgIzcQo0BVTIEFJ5xm3um2DWQRmB+tBb8XWaPlBOQ088M3KoO79aTlRsSjrXCHvF/
+         jxbcX5HLOiIY128NvzmFjXrBZP1kmznamRBSK7f4=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Erez Alfasi <ereza@mellanox.com>
+Subject: [PATCH rdma-next v3 0/4] ODP information and statistics
+Date:   Wed, 16 Oct 2019 09:23:04 +0300
+Message-Id: <20191016062308.11886-1-leon@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20191015181242.8343-9-jgg@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 15.10.19 20:12, Jason Gunthorpe wrote:
-> From: Jason Gunthorpe <jgg@mellanox.com>
-> 
-> DMA_SHARED_BUFFER can not be enabled by the user (it represents a library
-> set in the kernel). The kconfig convention is to use select for such
-> symbols so they are turned on implicitly when the user enables a kconfig
-> that needs them.
-> 
-> Otherwise the XEN_GNTDEV_DMABUF kconfig is overly difficult to enable.
-> 
-> Fixes: 932d6562179e ("xen/gntdev: Add initial support for dma-buf UAPI")
-> Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Cc: xen-devel@lists.xenproject.org
-> Cc: Juergen Gross <jgross@suse.com>
-> Cc: Stefano Stabellini <sstabellini@kernel.org>
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Reviewed-by: Juergen Gross <jgross@suse.com>
+Changelog:
+ v3:
+ * Implement batch count of "invalidataions".
+ * "prefetched" ounter is dropped, will be separated to two separate counters (RQ/SQ)
+  later once Jason's ODP rework will be finished.
+ v2: https://lore.kernel.org/linux-rdma/20191006155139.30632-1-leon@kernel.org
+ * Since umems can disappear during rereg flow and the fact that we
+   are not locking its during our counter usage (uverbs prevents this
+   by holding the uobject write lock), expose possible race bugs. Move
+   the counters into mlx5_ib_mr to avoid racing bugs (related patches
+   - #1, #3 & #4).
+ * Fix page invalidation counting (Patch #1).
+ * Make the code more elegant by defining fill_function type and use it
+   within res_common_{dumpit, doit} (Patch #2).
+ * Put an ODP implicit indicator within mlx5 reg MR operation,
+   indicating when a given MR is ODP implicit registered and use
+   its indication when dumping ODP type.
+ * Since the counters has been moved to mlx5_ib_mr, the ODP stats are now
+   filled with internal to mlx5 driver function. Remove the fill_odp_stats
+   device operation from the reason mentioned above.
+ v1: https://lore.kernel.org/linux-rdma/20190830081612.2611-1-leon@kernel.org
+ * Dropped umem patch, because it doesn't follow our IB model, where
+   UMEM is driver object and ib_core object (Jason).
+ * Removed the ODP type indicator from ib_umem_odp not needed after
+   commit fd7dbf035edc ("RDMA/odp: Make it clearer when a umem is an implicit ODP umem")
+ * Since umems are not part of core MR (from the reason mentioned
+   above) there is no way to access the odp type as was previously done via nldev
+   (old patch #3). Instead, patch #4 is adding mlx5 implementation for fill_res_entry
+   and dumping ODP type as part of the driver table entry, as its driver details.
+ * Counter types are now atomic64_t instead of u64.
+ v0: https://lore.kernel.org/linux-rdma/20190807103403.8102-1-leon@kernel.org
 
+-----------------------------------------------------------------------------
+Hi,
 
-Juergen
+This series from Erez refactors exposes ODP type information (explicit,
+implicit) and statistics through netlink interface.
+
+Thanks
+
+Erez Alfasi (4):
+  IB/mlx5: Introduce ODP diagnostic counters
+  RDMA/nldev: Allow different fill function per resource
+  RDMA/mlx5: Return ODP type per MR
+  RDMA/nldev: Provide MR statistics
+
+ drivers/infiniband/core/device.c      |  1 +
+ drivers/infiniband/core/nldev.c       | 98 ++++++++++++++++++++-------
+ drivers/infiniband/hw/mlx5/Makefile   |  2 +-
+ drivers/infiniband/hw/mlx5/main.c     |  3 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h  |  9 +++
+ drivers/infiniband/hw/mlx5/odp.c      | 17 +++++
+ drivers/infiniband/hw/mlx5/restrack.c | 90 ++++++++++++++++++++++++
+ include/rdma/ib_verbs.h               | 12 ++++
+ include/rdma/restrack.h               |  6 ++
+ 9 files changed, 212 insertions(+), 26 deletions(-)
+ create mode 100644 drivers/infiniband/hw/mlx5/restrack.c
+
+--
+2.20.1
+
