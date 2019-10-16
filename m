@@ -2,156 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB40D8A79
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Oct 2019 10:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAD5D8BF0
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Oct 2019 10:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389734AbfJPIGC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Oct 2019 04:06:02 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:51714 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388733AbfJPIGB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 16 Oct 2019 04:06:01 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9G84na3017788;
-        Wed, 16 Oct 2019 01:05:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pfpt0818;
- bh=g7Nd9C3LZv/WczYAlxR5wsDdyWhy9oTP/kUISq5cUl8=;
- b=NtyjwJLewp+/Gr6lmEqx94kfFTZBmyzc1w1fnaBuxZkwKlYEdK69c+3blP7XzAZXo4hC
- OEonQVgut/1ihFA2zDC7D8X1DkNjIqIfgphywbWENtHUYA3wL5a/kKVPZdJ3Z2Yvfkmc
- 7JAtkwgE0iudBTJsMcF+JVUMB012XKhWkT46SC9PClX0Qcjj3RMVVEKnjp0M9EyEzw8O
- CYgcVsmnHYN05tdCTHzkoGgkaZk+Jo4hVXf+b+aFMnOyk+SIOznFFmH0K9Eaaq6QJQK1
- V1U7h4lUbf5UuhzM87zABn+XDphDlysNe/MsjAhHbZCmfGMbMhD9pABIcXdGgLnuFA1q uQ== 
-Received: from sc-exch04.marvell.com ([199.233.58.184])
-        by mx0b-0016f401.pphosted.com with ESMTP id 2vkebp5k29-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 16 Oct 2019 01:05:52 -0700
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Wed, 16 Oct
- 2019 01:05:50 -0700
-Received: from NAM05-CO1-obe.outbound.protection.outlook.com (104.47.48.53) by
- SC-EXCH01.marvell.com (10.93.176.81) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Wed, 16 Oct 2019 01:05:50 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XiaEMlpjJq4C8dLs3uJBk5DaeepbAnTCPj3HS8cywE6P0SRiW7d9wWTsiRJjItPqqZLRgNXvV13e24Vrhi7SHr0PHWzurNzH/DRdDUZr3R4CdjiSzEzEsp0cHhuxqVypvur1gbaAjLPlANJ2JCr3IP/SSaQwdD6ehB62MbdhbKTHXZm5XWbygkexMYtOXRAGqVlzpGJJ3nYngdp+aJqIfHRPBB0AephJW+JLgaVPtsuAln5SmNRGSRv+T9Gy3/KriAtJwGEIUDqv8AT8h5ycpx83n4BUXhVRVNq9fQF5Bz4gxv2uClRjOxwlry41fiGlpcKF6fLR+cQBz8BI2yJz8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g7Nd9C3LZv/WczYAlxR5wsDdyWhy9oTP/kUISq5cUl8=;
- b=Mr9tgTKdtHj6sl6nGL/JTTLNFvZ+nmHgsq1v1NOUDq1Bwz2qc9Bpnv5trHKXkqwWuLsEP1GNsGa3oinavhw7VbRM8xM9+3qG+aRFStSiKKNP7a3CRXnQJw2tCFGQSfK9s6NItbukALL20xK/T7s2laMh5gdBUKUgauZMN9c+yvgbYm98EML9HSzRqJhsPkPnZrvdmA6CKv25Rel7H1Z8EW8Aqx6fS6psenko5XwMQdfEqahVx1Nb8O5bsmNgJvIL6jvttojoSPCwzxU3KfCDM6nSBdOSU8/UvZoRuNTkdgGx3P0DDJJhXYFG/le9Vsuncu4XreLW2L2zMbRagmm2iw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+        id S1732705AbfJPI6H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Oct 2019 04:58:07 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:42893 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730468AbfJPI6H (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Oct 2019 04:58:07 -0400
+Received: by mail-wr1-f68.google.com with SMTP id n14so27004941wrw.9
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Oct 2019 01:58:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector2-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g7Nd9C3LZv/WczYAlxR5wsDdyWhy9oTP/kUISq5cUl8=;
- b=kgjtnLLtk/cbfAVIRbYVAoJdw6K/qX414VEfe1L3BZ3MVk0xNwAKjdhr8d6szC0in4W8GZZpx6hUfVdnxs6VMXjDHC2psS2NtmsFPX394wSVKh4l2zk5avZZC2wzXu44p4u8Inctk2NDeaX0JIN5NZRAL1VM/IwzuIcOf+tVg3Q=
-Received: from MN2PR18MB3182.namprd18.prod.outlook.com (10.255.236.143) by
- MN2PR18MB2575.namprd18.prod.outlook.com (20.179.82.215) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.16; Wed, 16 Oct 2019 08:05:49 +0000
-Received: from MN2PR18MB3182.namprd18.prod.outlook.com
- ([fe80::4c1d:fb1e:ea9c:6811]) by MN2PR18MB3182.namprd18.prod.outlook.com
- ([fe80::4c1d:fb1e:ea9c:6811%6]) with mapi id 15.20.2347.023; Wed, 16 Oct 2019
- 08:05:49 +0000
-From:   Michal Kalderon <mkalderon@marvell.com>
-To:     Kamal Heib <kamalheib1@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "Lijun Ou" <oulijun@huawei.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: RE: [EXT] [PATCH for-next v2 1/4] RDMA/core: Fix return code when
- modify_port isn't supported
-Thread-Topic: [EXT] [PATCH for-next v2 1/4] RDMA/core: Fix return code when
- modify_port isn't supported
-Thread-Index: AQHVg/KNP07l2qZtYkyT1zxeSAMyuqdc6CCA
-Date:   Wed, 16 Oct 2019 08:05:49 +0000
-Message-ID: <MN2PR18MB31825843C5DFA493069485D2A1920@MN2PR18MB3182.namprd18.prod.outlook.com>
-References: <20191016072234.28442-1-kamalheib1@gmail.com>
- <20191016072234.28442-2-kamalheib1@gmail.com>
-In-Reply-To: <20191016072234.28442-2-kamalheib1@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [212.199.69.1]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 30c00d4b-d509-494b-0e3e-08d7520fa830
-x-ms-traffictypediagnostic: MN2PR18MB2575:
-x-microsoft-antispam-prvs: <MN2PR18MB257535A930CA34F3231E6607A1920@MN2PR18MB2575.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-forefront-prvs: 0192E812EC
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(39860400002)(136003)(376002)(366004)(396003)(189003)(199004)(76116006)(2906002)(478600001)(66446008)(66556008)(5660300002)(66476007)(74316002)(14454004)(54906003)(110136005)(64756008)(25786009)(7736002)(52536014)(305945005)(66946007)(6116002)(3846002)(33656002)(2501003)(14444005)(229853002)(102836004)(6506007)(7696005)(11346002)(446003)(186003)(6436002)(76176011)(99286004)(86362001)(256004)(486006)(81166006)(81156014)(476003)(6246003)(8676002)(66066001)(4326008)(8936002)(316002)(71200400001)(71190400001)(26005)(9686003)(55016002);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR18MB2575;H:MN2PR18MB3182.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: marvell.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pfmuuXJveqFIKTGNVZU1UYXLLmALCVqcZ1f5zYbNPqesi0shKRi2Zk377sOVX4G/6g7XKnQDvEuc0yLXh4Vj79CUY04HUpPjT0qeY+/itoVVbAG2OEG/oQ07QKJLJeUOMS522PZp71PMC6h12VOhHo883/P8Jv3kvSQ8BMlD99de7N/YpeRf5X5w+WKA/SjJAxpmMjK6AV6tD5GnFAh3iyasqpnKib55VV2vAL/7Q4NbsWELbjnNYX6fYLWo6k2Dutz+UULp95fdKL8by0VIMkIzn+SHDE+6Rz4xAVm0UOcpGdvojkK4bBz++R+mtmfKuvpI8r25CEP2d0UkfaOJHPle0tud9ROhktO5GQXGuvr7OMzuApyWwwV1b2vTUQL3BQfGREHAi4x3JepiZhFIHHpUhOV4AVAmZ9syBx5qc/k=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=V+4SMbJY+xnY/02Qu1SPKip6GAEd3pyslcFpF7IxHBM=;
+        b=vI5EgckJStxRO73bc+3CwPgKxclRbKnLXPsOtNhcrVURZW63+9T1e2AR+xD4ChmYjb
+         F09Az3ubghdrV9WGNALSeqQTPTWu3DRy4fj4jt/7XpCfcYOXb97srJ+8PG01E8O4sYxe
+         alaKfq+3azM37/Z9sab8NfOx5RuG3cz3D7bOj0LoGEmV03UEbCQ2M8o4eH+iNDAL65kT
+         NUkh3nPZoaRQ4VtHUDdLuoZtEpF2ba26YAvw6u7cdrsWGafqXs3O/NxmX5gnSy0+Nkjz
+         xUjXcoBkOZ9KEXo6In0z6fpRL/TMFSnEc3h3Phoj68Pum7UJui5fB1f08XIfVZboPN+1
+         5OYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=V+4SMbJY+xnY/02Qu1SPKip6GAEd3pyslcFpF7IxHBM=;
+        b=n6/ZXnnWsIcgUG6ZyT7qFZPfLLcTEq+JVhtLmoXBxKG6ufcVVUR+L5fDKUG6gis8zl
+         aiiP+/ydld8F1F2+XaYNTKRpPkvZfgrs1HoeC84U418ykE5TOuBCWz56g/5yZMdoyuT1
+         /GjDrq9qJkjqixIxTU4zoylhXnvIM6kyl2EWpXK07JhH605JZpLlCaDHPrib3LmUkgvS
+         iTLcfaPZGCwYJBMmEH8bMbPotVmT2rWHZABGD0sOQy+4Q/pTB4uR2MHpoiSoKFBoB8Pu
+         KYCVR0KFr4MEq8msg2w2auO1BhoIBT97uM41x6hylrqnsX4I/6dMLuR+/n0aZMTWNzOe
+         LfOg==
+X-Gm-Message-State: APjAAAUftIZoo6sJg0E5IrBb1HYHxe/FGWVg8xYH8onDCjKuQ0qyKRE/
+        mC3YanRWQtGu/Fg7EIXpAx4=
+X-Google-Smtp-Source: APXvYqywHpqS2WwakM+BUQmjn7/0SQxlW6RiaETqeNUjKm43xk/4p1AdnGlHpqoSz8YMsyfharKZLg==
+X-Received: by 2002:adf:fa92:: with SMTP id h18mr1684319wrr.220.1571216284378;
+        Wed, 16 Oct 2019 01:58:04 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id b5sm1610909wmj.18.2019.10.16.01.58.03
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 16 Oct 2019 01:58:03 -0700 (PDT)
+Reply-To: christian.koenig@amd.com
+Subject: Re: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
+ locking
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com
+Cc:     Andrea Arcangeli <aarcange@redhat.com>, linux-rdma@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, linux-mm@kvack.org,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        dri-devel@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>
+References: <20191015181242.8343-1-jgg@ziepe.ca>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <bc954d29-388b-9e29-f960-115ccc6b9fea@gmail.com>
+Date:   Wed, 16 Oct 2019 10:58:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 30c00d4b-d509-494b-0e3e-08d7520fa830
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2019 08:05:49.4024
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gBVA380ArqLk6IX8YGW+RSOmWfGxJwMEaOG1fkBq97rzNO7/hUosd60cnzTxjuWJOcBL45aZjbTCJJhAYawb3g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB2575
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-16_03:2019-10-15,2019-10-16 signatures=0
+In-Reply-To: <20191015181242.8343-1-jgg@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> From: Kamal Heib <kamalheib1@gmail.com>
-> Sent: Wednesday, October 16, 2019 10:23 AM
->=20
-> External Email
->=20
-> ----------------------------------------------------------------------
-> The proper return code is "-EOPNOTSUPP" when modify_port callback is not
-> supported.
->=20
-> Fixes: 61e0962d5221 ("IB: Avoid ib_modify_port() failure for RoCE devices=
-")
-> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-> ---
->  drivers/infiniband/core/device.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/infiniband/core/device.c
-> b/drivers/infiniband/core/device.c
-> index a667636f74bf..98a01caf7850 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -2397,7 +2397,7 @@ int ib_modify_port(struct ib_device *device,
->  					     port_modify_mask,
->  					     port_modify);
->  	else
-> -		rc =3D rdma_protocol_roce(device, port_num) ? 0 : -ENOSYS;
-> +		rc =3D rdma_protocol_roce(device, port_num) ? 0 : -
-> EOPNOTSUPP;
+Am 15.10.19 um 20:12 schrieb Jason Gunthorpe:
+> From: Jason Gunthorpe <jgg@mellanox.com>
+>
+> 8 of the mmu_notifier using drivers (i915_gem, radeon_mn, umem_odp, hfi1,
+> scif_dma, vhost, gntdev, hmm) drivers are using a common pattern where
+> they only use invalidate_range_start/end and immediately check the
+> invalidating range against some driver data structure to tell if the
+> driver is interested. Half of them use an interval_tree, the others are
+> simple linear search lists.
+>
+> Of the ones I checked they largely seem to have various kinds of races,
+> bugs and poor implementation. This is a result of the complexity in how
+> the notifier interacts with get_user_pages(). It is extremely difficult to
+> use it correctly.
+>
+> Consolidate all of this code together into the core mmu_notifier and
+> provide a locking scheme similar to hmm_mirror that allows the user to
+> safely use get_user_pages() and reliably know if the page list still
+> matches the mm.
 
-This is a bit confusing, looks like for RoCE it's ok not to have a callback=
- but for the=20
-The other protocols it's required. For iWARP for example there also isn't a=
- modify-port.
-Is there any other protocol except ib that this is relevant to ?=20
-If not perhaps modify rdma_protocol_roce(..)? to rdma_protocol_ib(...)? -EO=
-PNOTSUPP : 0?
+That sounds really good, but could you outline for a moment how that is 
+archived?
 
+Please keep in mind that the page reference get_user_pages() grabs is 
+*NOT* sufficient to guarantee coherency here.
 
+Regards,
+Christian.
 
->  	return rc;
->  }
->  EXPORT_SYMBOL(ib_modify_port);
-> --
-> 2.20.1
+>
+> This new arrangment plays nicely with the !blockable mode for
+> OOM. Scanning the interval tree is done such that the intersection test
+> will always succeed, and since there is no invalidate_range_end exposed to
+> drivers the scheme safely allows multiple drivers to be subscribed.
+>
+> Four places are converted as an example of how the new API is used.
+> Four are left for future patches:
+>   - i915_gem has complex locking around destruction of a registration,
+>     needs more study
+>   - hfi1 (2nd user) needs access to the rbtree
+>   - scif_dma has a complicated logic flow
+>   - vhost's mmu notifiers are already being rewritten
+>
+> This is still being tested, but I figured to send it to start getting help
+> from the xen, amd and hfi drivers which I cannot test here.
+>
+> It would be intended for the hmm tree.
+>
+> Jason Gunthorpe (15):
+>    mm/mmu_notifier: define the header pre-processor parts even if
+>      disabled
+>    mm/mmu_notifier: add an interval tree notifier
+>    mm/hmm: allow hmm_range to be used with a mmu_range_notifier or
+>      hmm_mirror
+>    mm/hmm: define the pre-processor related parts of hmm.h even if
+>      disabled
+>    RDMA/odp: Use mmu_range_notifier_insert()
+>    RDMA/hfi1: Use mmu_range_notifier_inset for user_exp_rcv
+>    drm/radeon: use mmu_range_notifier_insert
+>    xen/gntdev: Use select for DMA_SHARED_BUFFER
+>    xen/gntdev: use mmu_range_notifier_insert
+>    nouveau: use mmu_notifier directly for invalidate_range_start
+>    nouveau: use mmu_range_notifier instead of hmm_mirror
+>    drm/amdgpu: Call find_vma under mmap_sem
+>    drm/amdgpu: Use mmu_range_insert instead of hmm_mirror
+>    drm/amdgpu: Use mmu_range_notifier instead of hmm_mirror
+>    mm/hmm: remove hmm_mirror and related
+>
+>   Documentation/vm/hmm.rst                      | 105 +---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   2 +
+>   .../gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c  |   9 +-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c        |  14 +-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   1 +
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_mn.c        | 445 ++------------
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_mn.h        |  53 --
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_object.h    |  13 +-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c       | 111 ++--
+>   drivers/gpu/drm/nouveau/nouveau_svm.c         | 229 +++++---
+>   drivers/gpu/drm/radeon/radeon.h               |   9 +-
+>   drivers/gpu/drm/radeon/radeon_mn.c            | 218 ++-----
+>   drivers/infiniband/core/device.c              |   1 -
+>   drivers/infiniband/core/umem_odp.c            | 288 +---------
+>   drivers/infiniband/hw/hfi1/file_ops.c         |   2 +-
+>   drivers/infiniband/hw/hfi1/hfi.h              |   2 +-
+>   drivers/infiniband/hw/hfi1/user_exp_rcv.c     | 144 ++---
+>   drivers/infiniband/hw/hfi1/user_exp_rcv.h     |   3 +-
+>   drivers/infiniband/hw/mlx5/mlx5_ib.h          |   7 +-
+>   drivers/infiniband/hw/mlx5/mr.c               |   3 +-
+>   drivers/infiniband/hw/mlx5/odp.c              |  48 +-
+>   drivers/xen/Kconfig                           |   3 +-
+>   drivers/xen/gntdev-common.h                   |   8 +-
+>   drivers/xen/gntdev.c                          | 179 ++----
+>   include/linux/hmm.h                           | 195 +------
+>   include/linux/mmu_notifier.h                  | 124 +++-
+>   include/rdma/ib_umem_odp.h                    |  65 +--
+>   include/rdma/ib_verbs.h                       |   2 -
+>   kernel/fork.c                                 |   1 -
+>   mm/Kconfig                                    |   2 +-
+>   mm/hmm.c                                      | 275 +--------
+>   mm/mmu_notifier.c                             | 542 +++++++++++++++++-
+>   32 files changed, 1180 insertions(+), 1923 deletions(-)
+>
 
