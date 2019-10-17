@@ -2,161 +2,169 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27164DA7D6
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Oct 2019 10:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4C6DA80A
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Oct 2019 11:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439287AbfJQIys (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Oct 2019 04:54:48 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:51954 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439155AbfJQIys (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Oct 2019 04:54:48 -0400
-Received: by mail-wm1-f68.google.com with SMTP id 7so1675996wme.1
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Oct 2019 01:54:46 -0700 (PDT)
+        id S2408394AbfJQJJi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Oct 2019 05:09:38 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:42823 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404200AbfJQJJi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Oct 2019 05:09:38 -0400
+Received: by mail-wr1-f65.google.com with SMTP id n14so1412278wrw.9
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Oct 2019 02:09:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Hmw4OwL9FqHb+jV8hLh1gJHi/QJcPAOSq/jTTk2K2mA=;
-        b=NQe40YBxmG96f9TOt2lx2nu5yeOXIxxCZAt2XQ4UJNRC/70WHa4W3XT/bvDilI4+h8
-         B0wNL6ov0qQEYZPgvU+KVwDDMAtWgOsYpRb8qbHhiW8s7Il0t4d5ZROl6Plmy2QWvIpe
-         5LLee0ctnKCYPjSfOWUzNj3fbs3MjnU5KB/6XfHtXcA0z18t6ZtuuYL6abHh+QYPPFHU
-         NMe4BKsJHV7wCBmKf2FuGN7qsm+r93+M0G1Qj3cgpNYdL2Bdny9VlzCdUMmGvTTAG2x1
-         4kzSR+iWl7k73rIJNAOKvHu05m/5toXC/u7LCLrWXNmWdKxgwqIwK4JIGwfAmkq9+7ZJ
-         N2ng==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3CG/30+NyvUJbSlZfOhh4lxLl3HE5sB4CEcwd6pIocQ=;
+        b=DM+/TTAgjXnaamb/FcrUK4qXiOU2rT8U0195WUKUSc1VwODiLqoO/UN9piURsEP5h4
+         LTIdTptlJn2AqJyp93QQbUlctEuq2QM5eWOGJ0FXA5kWegCEX9CWeyLoDDH8HOrUPMo8
+         ZdT+TH/GGv5y1vaBpCNbEXAFjg0zIKiirMSG97R/jaygf20N6R6XvIJ8857LQMpcqJ1x
+         BdH67Ak8lbpv5IV1XET2EqrNarTQCMZR5mRKzFmS1j1z119TS2pHzkmgLUMfGn0BUefE
+         oyuPjquK/rIO08AeueH8ajlBqEiAqn9pkUxPAYl9GVNmAMNI98NnK7Zm2QGxMRHvb2xm
+         lupQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=Hmw4OwL9FqHb+jV8hLh1gJHi/QJcPAOSq/jTTk2K2mA=;
-        b=FlMFdt7ZEdb6jgfVkNKdBYk/lPMFakJWZS7yGv4lPxm5rkM+oPZrw3yi0hKrsGVD9N
-         E8+T7BZ5qzjtVxvXiua1AV8FGYQn05uB2R3lJUzjkNCW7ujaUzJ8Q+ZWSqgmCRIUAV/V
-         P6wsJL3GqmyzUA3GRz3sRUfaUN6MMPqicsz+IVV2V0pmdGZuMQhT83Yc5RJAgnyxTczH
-         DcSdWvKs/9/4JwJkUAfL60Y1WosOXW3X7RZsqNqbF4HJcuUN4Womstb/OD8LBpRzEPgJ
-         AGO2uMFrkGdGPNhoFKEfI2P5QNkDSa3OrzOz5soRKRUuyhip4NN7B5xeNd5VfzBvO275
-         0ILw==
-X-Gm-Message-State: APjAAAVUSZrkh8NiEe4fLp35UJXMYNZXFREXoxIXejpOHCqBxqyJzlML
-        PsGqx+RAhWTsJ1KvU8D/mkLwk3XU
-X-Google-Smtp-Source: APXvYqzJi9+RvTSEwHzV3ur+tJTiN0DDJTk5yUlvOyd82uaG+4z5rZr2J2St19DvdGnPXph1nSYjMw==
-X-Received: by 2002:a7b:c936:: with SMTP id h22mr1819751wml.1.1571302485776;
-        Thu, 17 Oct 2019 01:54:45 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
-        by smtp.gmail.com with ESMTPSA id c132sm1490101wme.27.2019.10.17.01.54.44
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Oct 2019 01:54:45 -0700 (PDT)
-Reply-To: christian.koenig@amd.com
-Subject: Re: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
- locking
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>
-References: <20191015181242.8343-1-jgg@ziepe.ca>
- <bc954d29-388b-9e29-f960-115ccc6b9fea@gmail.com>
- <20191016160444.GB3430@mellanox.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <2df298e2-ee91-ef40-5da9-2bc1af3a17be@gmail.com>
-Date:   Thu, 17 Oct 2019 10:54:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3CG/30+NyvUJbSlZfOhh4lxLl3HE5sB4CEcwd6pIocQ=;
+        b=ASVfDbzoUA9MvNqdkebbJPpjBJI3LK5yJbH4XSdXiwfpvKJICdmRdsA3y187Qd0wg+
+         Zmr8sy7nsQ39rReqae4t2dWWz+ODuMIiBPJtZzMHmhMEjUQjIepoNWmIsB3zy6voY+cx
+         zj2CnwBxH0P9zdejxkHdkRTTh9pmkupm7es25pxYgvkNM1CsrMTYOQUaqxBzq8OCWHjy
+         7ht1ApYZx6JuEB9WQHXDpK9f9lb1AV630V6ycxOHlkgCA4ehr29cdCF3FdQsymWlvHQw
+         Sxd58R2P4lnFzmifnhpGFOrayb8iegm3aHK1GynujrZOAtYbJ0ratGYctOlMzEBM00gh
+         9cDg==
+X-Gm-Message-State: APjAAAV21vrzYoei+LDizi2Y8ubdaZrTYk+jxdXSDx97twcsJEZg6t1l
+        j4yIa/cTcP6Xerxth6aAswjApBTN
+X-Google-Smtp-Source: APXvYqxOauej6Uiy0BNc8af9v5I6Url6l0lGYXHLOdYp4Pwd06BsofoW4RGMr78LGrbETthCMyNdsw==
+X-Received: by 2002:adf:a54e:: with SMTP id j14mr2194877wrb.265.1571303375359;
+        Thu, 17 Oct 2019 02:09:35 -0700 (PDT)
+Received: from kheib-workstation (bzq-79-179-0-252.red.bezeqint.net. [79.179.0.252])
+        by smtp.gmail.com with ESMTPSA id f8sm1528216wmb.37.2019.10.17.02.09.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Oct 2019 02:09:34 -0700 (PDT)
+Date:   Thu, 17 Oct 2019 12:09:30 +0300
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     Michal Kalderon <mkalderon@marvell.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Lijun Ou <oulijun@huawei.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: Re: [EXT] [PATCH for-next v2 1/4] RDMA/core: Fix return code when
+ modify_port isn't supported
+Message-ID: <20191017090930.GA28093@kheib-workstation>
+References: <20191016072234.28442-1-kamalheib1@gmail.com>
+ <20191016072234.28442-2-kamalheib1@gmail.com>
+ <MN2PR18MB31825843C5DFA493069485D2A1920@MN2PR18MB3182.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20191016160444.GB3430@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MN2PR18MB31825843C5DFA493069485D2A1920@MN2PR18MB3182.namprd18.prod.outlook.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Am 16.10.19 um 18:04 schrieb Jason Gunthorpe:
-> On Wed, Oct 16, 2019 at 10:58:02AM +0200, Christian König wrote:
->> Am 15.10.19 um 20:12 schrieb Jason Gunthorpe:
->>> From: Jason Gunthorpe <jgg@mellanox.com>
->>>
->>> 8 of the mmu_notifier using drivers (i915_gem, radeon_mn, umem_odp, hfi1,
->>> scif_dma, vhost, gntdev, hmm) drivers are using a common pattern where
->>> they only use invalidate_range_start/end and immediately check the
->>> invalidating range against some driver data structure to tell if the
->>> driver is interested. Half of them use an interval_tree, the others are
->>> simple linear search lists.
->>>
->>> Of the ones I checked they largely seem to have various kinds of races,
->>> bugs and poor implementation. This is a result of the complexity in how
->>> the notifier interacts with get_user_pages(). It is extremely difficult to
->>> use it correctly.
->>>
->>> Consolidate all of this code together into the core mmu_notifier and
->>> provide a locking scheme similar to hmm_mirror that allows the user to
->>> safely use get_user_pages() and reliably know if the page list still
->>> matches the mm.
->> That sounds really good, but could you outline for a moment how that is
->> archived?
-> It uses the same basic scheme as hmm and rdma odp, outlined in the
-> revisions to hmm.rst later on.
+On Wed, Oct 16, 2019 at 08:05:49AM +0000, Michal Kalderon wrote:
+> > From: Kamal Heib <kamalheib1@gmail.com>
+> > Sent: Wednesday, October 16, 2019 10:23 AM
+> > 
+> > External Email
+> > 
+> > ----------------------------------------------------------------------
+> > The proper return code is "-EOPNOTSUPP" when modify_port callback is not
+> > supported.
+> > 
+> > Fixes: 61e0962d5221 ("IB: Avoid ib_modify_port() failure for RoCE devices")
+> > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> > ---
+> >  drivers/infiniband/core/device.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/infiniband/core/device.c
+> > b/drivers/infiniband/core/device.c
+> > index a667636f74bf..98a01caf7850 100644
+> > --- a/drivers/infiniband/core/device.c
+> > +++ b/drivers/infiniband/core/device.c
+> > @@ -2397,7 +2397,7 @@ int ib_modify_port(struct ib_device *device,
+> >  					     port_modify_mask,
+> >  					     port_modify);
+> >  	else
+> > -		rc = rdma_protocol_roce(device, port_num) ? 0 : -ENOSYS;
+> > +		rc = rdma_protocol_roce(device, port_num) ? 0 : -
+> > EOPNOTSUPP;
+> 
+> This is a bit confusing, looks like for RoCE it's ok not to have a callback but for the 
+> The other protocols it's required. For iWARP for example there also isn't a modify-port.
+> Is there any other protocol except ib that this is relevant to ? 
+> If not perhaps modify rdma_protocol_roce(..)? to rdma_protocol_ib(...)? -EOPNOTSUPP : 0?
 >
-> Basically,
->
->   seq = mmu_range_read_begin(&mrn);
->
->   // This is a speculative region
->   .. get_user_pages()/hmm_range_fault() ..
 
-How do we enforce that this get_user_pages()/hmm_range_fault() doesn't 
-see outdated page table information?
+Yes, I agree this is confusing.
 
-In other words how the the following race prevented:
+This change was introduced by the following commit to avoid the failures
+of ib_modify_port() calls from CM when the protocol is RoCE, I also see
+that almost all providers that support RoCE return success from the
+modify_port() callback (hns, mlx4, mlx5, ocrdma, qedr), except rxe and
+vmw_pvrdma which I think they shouldn't.
 
-CPU A CPU B
-invalidate_range_start()
-       mmu_range_read_begin()
-       get_user_pages()/hmm_range_fault()
-Updating the ptes
-invalidate_range_end()
+So, I suggest adding a check to CM avoid calling ib_modify_port() when the
+protocol is RoCE and cleanup the mess from the providers, thoughts? 
+
+commit 61e0962d52216f2e5bab59bb055f1210e41f484f
+Author: Selvin Xavier <selvin.xavier@broadcom.com>
+Date:   Wed Aug 23 01:08:07 2017 -0700
+
+    IB: Avoid ib_modify_port() failure for RoCE devices
+    
+    IB CM calls ib_modify_port() irrespective of link layer. If the
+    failure is returned, the mad agent gets unregistered for those
+    devices. Recently, modify_port() hook was removed from some of the
+    low level drivers as it was always returning success. This breaks
+    rdma connection establishment over those devices.
+    For ethernet devices, Qkey violation and port capabilities are not
+    applicable. So returning success for RoCE when modify_port hook is
+    is not implemented.
+    
+    Cc: Leon Romanovsky <leon@kernel.org>
+    Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+    Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+    Signed-off-by: Doug Ledford <dledford@redhat.com>
+
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index fc6be1175183..2466ffc6362d 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -1005,14 +1005,17 @@ int ib_modify_port(struct ib_device *device,
+                   u8 port_num, int port_modify_mask,
+                   struct ib_port_modify *port_modify)
+ {
+-       if (!device->modify_port)
+-               return -ENOSYS;
++       int rc;
+ 
+        if (!rdma_is_port_valid(device, port_num))
+                return -EINVAL;
+ 
+-       return device->modify_port(device, port_num, port_modify_mask,
+-                                  port_modify);
++       if (device->modify_port)
++               rc = device->modify_port(device, port_num, port_modify_mask,
++                                          port_modify);
++       else
++               rc = rdma_protocol_roce(device, port_num) ? 0 : -ENOSYS;
++       return rc;
+ }
+ EXPORT_SYMBOL(ib_modify_port);
 
 
-I mean get_user_pages() tries to circumvent this issue by grabbing a 
-reference to the pages in question, but that isn't sufficient for the 
-SVM use case.
-
-That's the reason why we had this horrible solution with a r/w lock and 
-a linked list of BOs in an interval tree.
-
-Regards,
-Christian.
-
->   // Result cannot be derferenced
->
->   take_lock(driver->update);
->   if (mmu_range_read_retry(&mrn, range.notifier_seq) {
->      // collision! The results are not correct
->      goto again
->   }
->
->   // no collision, and now under lock. Now we can de-reference the pages/etc
->   // program HW
->   // Now the invalidate callback is responsible to synchronize against changes
->   unlock(driver->update)
->
-> Basically, anything that was using hmm_mirror correctly transisions
-> over fairly trivially, just with the modification to store a sequence
-> number to close that race described in the hmm commit.
->
-> For something like AMD gpu I expect it to transition to use dma_fence
-> from the notifier for coherency right before it unlocks driver->update.
->
-> Jason
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
-
+> 
+> 
+> >  	return rc;
+> >  }
+> >  EXPORT_SYMBOL(ib_modify_port);
+> > --
+> > 2.20.1
+> 
