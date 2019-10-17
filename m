@@ -2,229 +2,168 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1E4DA81E
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Oct 2019 11:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2935FDB24A
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Oct 2019 18:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393102AbfJQJPG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Oct 2019 05:15:06 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:44742 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733113AbfJQJPG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 17 Oct 2019 05:15:06 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9H99hqL004401;
-        Thu, 17 Oct 2019 02:14:56 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pfpt0818;
- bh=QeLTgJVrXg2unh0QwAWrz3Ev12+NEhdjtWO3ra068H0=;
- b=u5zI+EKJh4CRfa3MPIYO64a3ApO+MAI2ic5LU63yDUZv02g885uZ4rxN+bqYr0ApFUpH
- lC2/hgic0/7rTtKOyaYaD6NBZDRgGnGfO5pRi9444mfIgQyM1SU5vtOSUUs+2EJOdZJJ
- 8Lq8E0d87sM1bBZC0li7gxozOYtMM07IWnc4f4BqlJASTzSL1R1edhcsXWBr+DrgbDA4
- q/NPMlmtoQDMXXKWaxGIGyI5QbNPln/u17HYgA0PZ+xScCKZuqcUPDxo+xyqd4WZyhdU
- q9YaZo5/U+pfXVS2bUKMr5h4lfhscafkap/MyTwUknse6MnhfS07iyVTAMfCB7w2Bhl2 XQ== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0a-0016f401.pphosted.com with ESMTP id 2vnpmbq1e2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 17 Oct 2019 02:14:56 -0700
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Thu, 17 Oct
- 2019 02:14:55 -0700
-Received: from NAM01-BY2-obe.outbound.protection.outlook.com (104.47.34.52) by
- SC-EXCH01.marvell.com (10.93.176.81) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Thu, 17 Oct 2019 02:14:55 -0700
+        id S2391171AbfJQQ0T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Oct 2019 12:26:19 -0400
+Received: from mail-eopbgr750042.outbound.protection.outlook.com ([40.107.75.42]:26542
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389403AbfJQQ0T (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 17 Oct 2019 12:26:19 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ObEqkDEAzfx1/FA2ctFysPbyqUt6mkz1zRK9F9fPAbPktG/HCWid4NOA6IwBzY0nnLxDFMijHso2OlJbApnlUH9dGvwumzTedDvhNuRAtftAXCvWO/vIDKsxg1tzrMfAELamfYdKLY5xgwppobaAEp+Fo+4ljwRFu07Od6qIByPhvoV5vf3yHRK+x9nI/dceV62OuSibsUDdaPqvkjmcpwYYLr5opv0CMZgHqL3ecyDRvrhT6C3PrQXUjadP0Mupm6KGUjvobst+HJ19vgqZZzrMA1sw4S8MkQ2cWLeMqzENBkeOK0K6sl7cPUaPIKKCgAjZQ4im36adbA4+M8v/5A==
+ b=hPPI/KdpV1ySMjuE8xMysGj5BxqJTn39qsgJBhvcsfDW9Nb87uQ9G+5JGF1vTLB5aA/OCAxRIT32fyL4Fkkt12OU9m+YZpJdnJcwA+ZCI5656sQlqrtbBcVzWrirF+HLTEuC3TKKK2B07L+e0mzC2J65vuXRYSYZDtOz5PsnCsb9O0vvgX8luLYhfmQwT6ISl9govTMaEJExdVYFZh29FiBU0ousWkSatgcZ3eSWACwPbbOx4ZQUzr7yZeIKoIq+SSUMTMSVIHM/R4opXdYn+QIlclBNIBL5KclDyqjHtnsCYQyVSanCuXZouPZup2EIfA/eqh4Xwa27p1PDT7P8JQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QeLTgJVrXg2unh0QwAWrz3Ev12+NEhdjtWO3ra068H0=;
- b=V9RaxO2Qk+qvtRtFlk4Ta+nd9Qvfx227JvY6uNuXoE38HU1T0OeR/m2vPnTiZgAF1iUwJNeWklJAy2Qe6t56wYJUYhg3uPEpPik08+zVBCB2wiMywf1qJMTIIgio1AX0z9VZ0jI7ACYs6lJcMFAY+YZguH5z/19hV3kY31CJCNNYfIC+8UyBiViqzACBhsgE7CzK1iircnelEnouIY649diaPFBuK+abH/BV7rgmAbdi12JSoV9poZiEovFn0nEIQLYT7srdfqlS//hIwP5/8sf6uoZ9I+b0529PBuAVIXyCT2WmerQ3HmnNzIsetI8fwu6tFmXjc069Oa5bDkggUw==
+ bh=x2kD6baPL/03oaq3mGRnEx2SY9ZU9CpCQSquQSo1pRE=;
+ b=oHeVLXbTY+ai94CGQVNY867hBgiXpdwL0LMZdIqrjYdxCBjmb2KYKAJhsdHAX1O7URmDvrmHmYKCb3i/3madiy+MUJN7/gKnnk1pz3oDSu/ULG2vuaB3qRcOGOkKX6/6n7gBBxNxfwRq1N1UlrnPGDaSL2bVGgBsltEGYXTUAHYtEAYnrJNwW8R2ZtbLAHJ9f/SKdr/lEKnPTmXuGSRZ3tL15Fto9nNjvgmVPme41DmtuUTt48F643pUu0Ec0eI+8GKOienh8axC58JKT9+adcAC7lGDNAqOfCCCAyUMrL6I9Rjyn/kSn4oqe8orWajpNZJLie7LRz/WcTyrtZHytA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector2-marvell-onmicrosoft-com;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QeLTgJVrXg2unh0QwAWrz3Ev12+NEhdjtWO3ra068H0=;
- b=Agst5KnwZoBM5bVc3923RI1DlJ91l0t4IDJNg8pxvNCkuA5p+h6YDDSEVFuQpX+FtmMmtsy3WqyWjtH/68DMEjw4QIRADD8e3I5w93Aykv1lBOvrXJ4iaIykChVShDfctP0VhddTXHwHbYyA5+3Apb/nU17yfWfpIsV2v9WCz6U=
-Received: from MN2PR18MB3182.namprd18.prod.outlook.com (10.255.236.143) by
- MN2PR18MB2733.namprd18.prod.outlook.com (20.179.21.145) with Microsoft SMTP
+ bh=x2kD6baPL/03oaq3mGRnEx2SY9ZU9CpCQSquQSo1pRE=;
+ b=umS3t80kRizwGBb8bLvT805Dn31h0s8RvCssXbowBFLYeGsEACyzlX6sCrbqFFrsBg3eSNXwYv2zQ9E84UXpJvgVE9/PbpQp57LmSgdM8DyGYoH264bX1czzcSlWgQrN7atubgshFEZQZwc2EMgnWmXy/whHq0LY1rjJaPrjwK4=
+Received: from MN2PR12MB4030.namprd12.prod.outlook.com (10.255.86.25) by
+ MN2PR12MB4318.namprd12.prod.outlook.com (52.135.49.204) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.21; Thu, 17 Oct 2019 09:14:54 +0000
-Received: from MN2PR18MB3182.namprd18.prod.outlook.com
- ([fe80::4c1d:fb1e:ea9c:6811]) by MN2PR18MB3182.namprd18.prod.outlook.com
- ([fe80::4c1d:fb1e:ea9c:6811%6]) with mapi id 15.20.2347.024; Thu, 17 Oct 2019
- 09:14:53 +0000
-From:   Michal Kalderon <mkalderon@marvell.com>
-To:     Kamal Heib <kamalheib1@gmail.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Lijun Ou <oulijun@huawei.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: RE: [EXT] [PATCH for-next v2 1/4] RDMA/core: Fix return code when
- modify_port isn't supported
-Thread-Topic: [EXT] [PATCH for-next v2 1/4] RDMA/core: Fix return code when
- modify_port isn't supported
-Thread-Index: AQHVg/KNP07l2qZtYkyT1zxeSAMyuqdc6CCAgAGlJQCAAAFDsA==
-Date:   Thu, 17 Oct 2019 09:14:53 +0000
-Message-ID: <MN2PR18MB3182B29937262A44C8452CD4A16D0@MN2PR18MB3182.namprd18.prod.outlook.com>
-References: <20191016072234.28442-1-kamalheib1@gmail.com>
- <20191016072234.28442-2-kamalheib1@gmail.com>
- <MN2PR18MB31825843C5DFA493069485D2A1920@MN2PR18MB3182.namprd18.prod.outlook.com>
- <20191017090930.GA28093@kheib-workstation>
-In-Reply-To: <20191017090930.GA28093@kheib-workstation>
-Accept-Language: en-US
+ 15.20.2347.23; Thu, 17 Oct 2019 16:26:15 +0000
+Received: from MN2PR12MB4030.namprd12.prod.outlook.com
+ ([fe80::1ee:c734:15e5:d8b9]) by MN2PR12MB4030.namprd12.prod.outlook.com
+ ([fe80::1ee:c734:15e5:d8b9%5]) with mapi id 15.20.2347.024; Thu, 17 Oct 2019
+ 16:26:14 +0000
+From:   "Yang, Philip" <Philip.Yang@amd.com>
+To:     "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+CC:     Andrea Arcangeli <aarcange@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+Subject: Re: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
+ locking
+Thread-Topic: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
+ locking
+Thread-Index: AQHVg4TZ/Ef2jouLL0SYZs11ha9wvadc+JcAgAB3QgCAARomgIAAfiUA
+Date:   Thu, 17 Oct 2019 16:26:14 +0000
+Message-ID: <2046e0b4-ba05-0683-5804-e9bbf903658d@amd.com>
+References: <20191015181242.8343-1-jgg@ziepe.ca>
+ <bc954d29-388b-9e29-f960-115ccc6b9fea@gmail.com>
+ <20191016160444.GB3430@mellanox.com>
+ <2df298e2-ee91-ef40-5da9-2bc1af3a17be@gmail.com>
+In-Reply-To: <2df298e2-ee91-ef40-5da9-2bc1af3a17be@gmail.com>
+Accept-Language: en-ZA, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [199.203.130.254]
+x-clientproxiedby: YT1PR01CA0035.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::48)
+ To MN2PR12MB4030.namprd12.prod.outlook.com (2603:10b6:208:159::25)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Philip.Yang@amd.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [165.204.55.251]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 31a030ad-50a0-49e7-714f-08d752e278d4
-x-ms-traffictypediagnostic: MN2PR18MB2733:
-x-microsoft-antispam-prvs: <MN2PR18MB27330E13DEC554695BDE117FA16D0@MN2PR18MB2733.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2399;
+x-ms-office365-filtering-correlation-id: d79b2197-ea8a-4126-6886-08d7531ebade
+x-ms-office365-filtering-ht: Tenant
+x-ms-traffictypediagnostic: MN2PR12MB4318:
+x-ms-exchange-purlcount: 1
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR12MB431841F447954084CED9F678E66D0@MN2PR12MB4318.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3383;
 x-forefront-prvs: 01930B2BA8
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(396003)(366004)(376002)(39860400002)(346002)(199004)(189003)(55016002)(486006)(6916009)(446003)(6436002)(66946007)(229853002)(74316002)(3846002)(7736002)(305945005)(6116002)(476003)(14444005)(256004)(64756008)(11346002)(6246003)(9686003)(4326008)(66476007)(66556008)(2906002)(76116006)(66446008)(81166006)(25786009)(1411001)(8936002)(6506007)(71190400001)(8676002)(81156014)(76176011)(186003)(7696005)(71200400001)(99286004)(26005)(86362001)(478600001)(316002)(102836004)(52536014)(14454004)(66066001)(54906003)(33656002)(5660300002);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR18MB2733;H:MN2PR18MB3182.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: marvell.com does not designate
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(346002)(136003)(39860400002)(396003)(366004)(199004)(189003)(6486002)(66946007)(7416002)(4326008)(66476007)(6436002)(81156014)(81166006)(6246003)(66574012)(2906002)(66556008)(64756008)(66446008)(229853002)(14444005)(6306002)(256004)(14454004)(6512007)(26005)(3846002)(71190400001)(66066001)(71200400001)(186003)(2616005)(25786009)(8936002)(11346002)(486006)(966005)(4001150100001)(305945005)(110136005)(6116002)(478600001)(7736002)(76176011)(31696002)(36756003)(52116002)(102836004)(8676002)(446003)(54906003)(86362001)(53546011)(6506007)(31686004)(316002)(5660300002)(386003)(99286004)(476003);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR12MB4318;H:MN2PR12MB4030.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: amd.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: X22ragScdpeELHYnGOnuZcYaJAA/9f7KCjPjEskevn5kqaSj6i7pSj2lLHxYmYn0CnL9RkRnke+tlWHJT26YwDwX9laQF0+oHXrI50b8rqfGslN2J8QwttxTyW328YAtAHgOYSdybX1j2P6VUdAvhv6blc2pP0/m+cMPNsz1cVlTXczS+t12k3NbkeKv0pdxIO13OcNJ560UM0b3QnmoStuu8qQyTzghLGH5uVJCo8tgpajP1NhLhEb/9NqSjfofiSji5EoYXSxreCM8NEs5Q4BNdRjWiDxYROLJZx0JXTtoXQg6w75x7xwpKLfYT/mPsnJEc3mdVo34JjhmYUNgzIM+4RqsbApjoE6WVDz925Vuyg9vUkXdpD1uQnytHD1/JfMbuOFps3XAJUbTiYiw+EvfOmLtcCoH43AQHVkaYzU=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+x-microsoft-antispam-message-info: 15Ij+Oxjr5SYyStxv7N70Yt2/DgYaensU6+daUZlmFTnLJkzsJKx27a2gZnfdEf42+7mlwA/+Ve8juiCI9Ygs6ZlXV0PR+Wss8JAoGWvnnXsuUJoritOhDGKYqz4TOM+jUER/qWfnX5/68i/ZPt/x10CkRs9nEOB6PMrcVLs+FZFi1vxZichx+SyYsP+dZy7FFP+NNQxAMvalYE4y4xFvAKlgFWvQw6ViblGdx0YjiPt6fw1cAgM1AVgfvFBJSfW7ho1AS49Pk0AUJWTHwGG7YyWs1/x2RA0OQFOEPONdUj9Fk32kilmk5b3tXw53BdorQPCfN2zUb9JNZpRGDwouSc8DxSh5AtowrHH43JIWDOkR3F7EdPjdYv0YASuvkyNGUkodPquY6QKjB9KeI0urqMWD18WdJgE9swZD8Ycko8s+jjapLTNg1R+QUX3h17PAttDYbx9Bqz6RiskxpaIVQ==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <651BA46246152D49990824226C166BFF@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 31a030ad-50a0-49e7-714f-08d752e278d4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Oct 2019 09:14:53.7330
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d79b2197-ea8a-4126-6886-08d7531ebade
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Oct 2019 16:26:14.7485
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pxgwcPGMvEtgVAMayrTpittE1Tyb022bhHZamKst1MbcfkxSql3OIZL8f0n7p0Lsrfm8mBRuBJnOIb7d6nqtvQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB2733
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-17_04:2019-10-17,2019-10-17 signatures=0
+X-MS-Exchange-CrossTenant-userprincipalname: vU17H1IcGAzJ6l0n5+b6Xlxz/QgSu/S7mrYbYM5unbaeF66UXHc6VyX0ap3vk3wh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4318
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> owner@vger.kernel.org> On Behalf Of Kamal Heib
->=20
-> On Wed, Oct 16, 2019 at 08:05:49AM +0000, Michal Kalderon wrote:
-> > > From: Kamal Heib <kamalheib1@gmail.com>
-> > > Sent: Wednesday, October 16, 2019 10:23 AM
-> > >
-> > > External Email
-> > >
-> > > --------------------------------------------------------------------
-> > > -- The proper return code is "-EOPNOTSUPP" when modify_port callback
-> > > is not supported.
-> > >
-> > > Fixes: 61e0962d5221 ("IB: Avoid ib_modify_port() failure for RoCE
-> > > devices")
-> > > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-> > > ---
-> > >  drivers/infiniband/core/device.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/infiniband/core/device.c
-> > > b/drivers/infiniband/core/device.c
-> > > index a667636f74bf..98a01caf7850 100644
-> > > --- a/drivers/infiniband/core/device.c
-> > > +++ b/drivers/infiniband/core/device.c
-> > > @@ -2397,7 +2397,7 @@ int ib_modify_port(struct ib_device *device,
-> > >  					     port_modify_mask,
-> > >  					     port_modify);
-> > >  	else
-> > > -		rc =3D rdma_protocol_roce(device, port_num) ? 0 : -ENOSYS;
-> > > +		rc =3D rdma_protocol_roce(device, port_num) ? 0 : -
-> > > EOPNOTSUPP;
-> >
-> > This is a bit confusing, looks like for RoCE it's ok not to have a
-> > callback but for the The other protocols it's required. For iWARP for
-> example there also isn't a modify-port.
-> > Is there any other protocol except ib that this is relevant to ?
-> > If not perhaps modify rdma_protocol_roce(..)? to rdma_protocol_ib(...)?=
- -
-> EOPNOTSUPP : 0?
-> >
->=20
-> Yes, I agree this is confusing.
->=20
-> This change was introduced by the following commit to avoid the failures =
-of
-> ib_modify_port() calls from CM when the protocol is RoCE, I also see that
-> almost all providers that support RoCE return success from the
-> modify_port() callback (hns, mlx4, mlx5, ocrdma, qedr), except rxe and
-> vmw_pvrdma which I think they shouldn't.
->=20
-> So, I suggest adding a check to CM avoid calling ib_modify_port() when th=
-e
-> protocol is RoCE and cleanup the mess from the providers, thoughts?
-I think we can leave the logic inside the function ib_modify_port, and just=
- return
-Success if the protocol isn't IB.=20
-
->=20
-> commit 61e0962d52216f2e5bab59bb055f1210e41f484f
-> Author: Selvin Xavier <selvin.xavier@broadcom.com>
-> Date:   Wed Aug 23 01:08:07 2017 -0700
->=20
->     IB: Avoid ib_modify_port() failure for RoCE devices
->=20
->     IB CM calls ib_modify_port() irrespective of link layer. If the
->     failure is returned, the mad agent gets unregistered for those
->     devices. Recently, modify_port() hook was removed from some of the
->     low level drivers as it was always returning success. This breaks
->     rdma connection establishment over those devices.
->     For ethernet devices, Qkey violation and port capabilities are not
->     applicable. So returning success for RoCE when modify_port hook is
->     is not implemented.
->=20
->     Cc: Leon Romanovsky <leon@kernel.org>
->     Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
->     Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
->     Signed-off-by: Doug Ledford <dledford@redhat.com>
->=20
-> diff --git a/drivers/infiniband/core/device.c
-> b/drivers/infiniband/core/device.c
-> index fc6be1175183..2466ffc6362d 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -1005,14 +1005,17 @@ int ib_modify_port(struct ib_device *device,
->                    u8 port_num, int port_modify_mask,
->                    struct ib_port_modify *port_modify)  {
-> -       if (!device->modify_port)
-> -               return -ENOSYS;
-> +       int rc;
->=20
->         if (!rdma_is_port_valid(device, port_num))
->                 return -EINVAL;
->=20
-> -       return device->modify_port(device, port_num, port_modify_mask,
-> -                                  port_modify);
-> +       if (device->modify_port)
-> +               rc =3D device->modify_port(device, port_num, port_modify_=
-mask,
-> +                                          port_modify);
-> +       else
-> +               rc =3D rdma_protocol_roce(device, port_num) ? 0 : -ENOSYS=
-;
-> +       return rc;
->  }
->  EXPORT_SYMBOL(ib_modify_port);
->=20
->=20
-> >
-> >
-> > >  	return rc;
-> > >  }
-> > >  EXPORT_SYMBOL(ib_modify_port);
-> > > --
-> > > 2.20.1
-> >
+DQoNCk9uIDIwMTktMTAtMTcgNDo1NCBhLm0uLCBDaHJpc3RpYW4gS8O2bmlnIHdyb3RlOg0KPiBB
+bSAxNi4xMC4xOSB1bSAxODowNCBzY2hyaWViIEphc29uIEd1bnRob3JwZToNCj4+IE9uIFdlZCwg
+T2N0IDE2LCAyMDE5IGF0IDEwOjU4OjAyQU0gKzAyMDAsIENocmlzdGlhbiBLw7ZuaWcgd3JvdGU6
+DQo+Pj4gQW0gMTUuMTAuMTkgdW0gMjA6MTIgc2NocmllYiBKYXNvbiBHdW50aG9ycGU6DQo+Pj4+
+IEZyb206IEphc29uIEd1bnRob3JwZSA8amdnQG1lbGxhbm94LmNvbT4NCj4+Pj4NCj4+Pj4gOCBv
+ZiB0aGUgbW11X25vdGlmaWVyIHVzaW5nIGRyaXZlcnMgKGk5MTVfZ2VtLCByYWRlb25fbW4sIHVt
+ZW1fb2RwLCANCj4+Pj4gaGZpMSwNCj4+Pj4gc2NpZl9kbWEsIHZob3N0LCBnbnRkZXYsIGhtbSkg
+ZHJpdmVycyBhcmUgdXNpbmcgYSBjb21tb24gcGF0dGVybiB3aGVyZQ0KPj4+PiB0aGV5IG9ubHkg
+dXNlIGludmFsaWRhdGVfcmFuZ2Vfc3RhcnQvZW5kIGFuZCBpbW1lZGlhdGVseSBjaGVjayB0aGUN
+Cj4+Pj4gaW52YWxpZGF0aW5nIHJhbmdlIGFnYWluc3Qgc29tZSBkcml2ZXIgZGF0YSBzdHJ1Y3R1
+cmUgdG8gdGVsbCBpZiB0aGUNCj4+Pj4gZHJpdmVyIGlzIGludGVyZXN0ZWQuIEhhbGYgb2YgdGhl
+bSB1c2UgYW4gaW50ZXJ2YWxfdHJlZSwgdGhlIG90aGVycyBhcmUNCj4+Pj4gc2ltcGxlIGxpbmVh
+ciBzZWFyY2ggbGlzdHMuDQo+Pj4+DQo+Pj4+IE9mIHRoZSBvbmVzIEkgY2hlY2tlZCB0aGV5IGxh
+cmdlbHkgc2VlbSB0byBoYXZlIHZhcmlvdXMga2luZHMgb2YgcmFjZXMsDQo+Pj4+IGJ1Z3MgYW5k
+IHBvb3IgaW1wbGVtZW50YXRpb24uIFRoaXMgaXMgYSByZXN1bHQgb2YgdGhlIGNvbXBsZXhpdHkg
+aW4gaG93DQo+Pj4+IHRoZSBub3RpZmllciBpbnRlcmFjdHMgd2l0aCBnZXRfdXNlcl9wYWdlcygp
+LiBJdCBpcyBleHRyZW1lbHkgDQo+Pj4+IGRpZmZpY3VsdCB0bw0KPj4+PiB1c2UgaXQgY29ycmVj
+dGx5Lg0KPj4+Pg0KPj4+PiBDb25zb2xpZGF0ZSBhbGwgb2YgdGhpcyBjb2RlIHRvZ2V0aGVyIGlu
+dG8gdGhlIGNvcmUgbW11X25vdGlmaWVyIGFuZA0KPj4+PiBwcm92aWRlIGEgbG9ja2luZyBzY2hl
+bWUgc2ltaWxhciB0byBobW1fbWlycm9yIHRoYXQgYWxsb3dzIHRoZSB1c2VyIHRvDQo+Pj4+IHNh
+ZmVseSB1c2UgZ2V0X3VzZXJfcGFnZXMoKSBhbmQgcmVsaWFibHkga25vdyBpZiB0aGUgcGFnZSBs
+aXN0IHN0aWxsDQo+Pj4+IG1hdGNoZXMgdGhlIG1tLg0KPj4+IFRoYXQgc291bmRzIHJlYWxseSBn
+b29kLCBidXQgY291bGQgeW91IG91dGxpbmUgZm9yIGEgbW9tZW50IGhvdyB0aGF0IGlzDQo+Pj4g
+YXJjaGl2ZWQ/DQo+PiBJdCB1c2VzIHRoZSBzYW1lIGJhc2ljIHNjaGVtZSBhcyBobW0gYW5kIHJk
+bWEgb2RwLCBvdXRsaW5lZCBpbiB0aGUNCj4+IHJldmlzaW9ucyB0byBobW0ucnN0IGxhdGVyIG9u
+Lg0KPj4NCj4+IEJhc2ljYWxseSwNCj4+DQo+PiDCoCBzZXEgPSBtbXVfcmFuZ2VfcmVhZF9iZWdp
+bigmbXJuKTsNCj4+DQo+PiDCoCAvLyBUaGlzIGlzIGEgc3BlY3VsYXRpdmUgcmVnaW9uDQo+PiDC
+oCAuLiBnZXRfdXNlcl9wYWdlcygpL2htbV9yYW5nZV9mYXVsdCgpIC4uDQo+IA0KPiBIb3cgZG8g
+d2UgZW5mb3JjZSB0aGF0IHRoaXMgZ2V0X3VzZXJfcGFnZXMoKS9obW1fcmFuZ2VfZmF1bHQoKSBk
+b2Vzbid0IA0KPiBzZWUgb3V0ZGF0ZWQgcGFnZSB0YWJsZSBpbmZvcm1hdGlvbj8NCj4gDQo+IElu
+IG90aGVyIHdvcmRzIGhvdyB0aGUgdGhlIGZvbGxvd2luZyByYWNlIHByZXZlbnRlZDoNCj4gDQo+
+IENQVSBBIENQVSBCDQo+IGludmFsaWRhdGVfcmFuZ2Vfc3RhcnQoKQ0KPiAgwqDCoMKgIMKgIG1t
+dV9yYW5nZV9yZWFkX2JlZ2luKCkNCj4gIMKgwqDCoCDCoCBnZXRfdXNlcl9wYWdlcygpL2htbV9y
+YW5nZV9mYXVsdCgpDQo+IFVwZGF0aW5nIHRoZSBwdGVzDQo+IGludmFsaWRhdGVfcmFuZ2VfZW5k
+KCkNCj4gDQo+IA0KPiBJIG1lYW4gZ2V0X3VzZXJfcGFnZXMoKSB0cmllcyB0byBjaXJjdW12ZW50
+IHRoaXMgaXNzdWUgYnkgZ3JhYmJpbmcgYSANCj4gcmVmZXJlbmNlIHRvIHRoZSBwYWdlcyBpbiBx
+dWVzdGlvbiwgYnV0IHRoYXQgaXNuJ3Qgc3VmZmljaWVudCBmb3IgdGhlIA0KPiBTVk0gdXNlIGNh
+c2UuDQo+IA0KPiBUaGF0J3MgdGhlIHJlYXNvbiB3aHkgd2UgaGFkIHRoaXMgaG9ycmlibGUgc29s
+dXRpb24gd2l0aCBhIHIvdyBsb2NrIGFuZCANCj4gYSBsaW5rZWQgbGlzdCBvZiBCT3MgaW4gYW4g
+aW50ZXJ2YWwgdHJlZS4NCj4gDQo+IFJlZ2FyZHMsDQo+IENocmlzdGlhbi4NCmdldF91c2VyX3Bh
+Z2VzL2htbV9yYW5nZV9mYXVsdCgpIGFuZCBpbnZhbGlkYXRlX3JhbmdlX3N0YXJ0KCkgYm90aCBh
+cmUgDQpjYWxsZWQgd2hpbGUgaG9sZGluZyBtbS0+bWFwX3NlbSwgc28gdGhleSBhcmUgYWx3YXlz
+IHNlcmlhbGl6ZWQuDQoNClBoaWxpcA0KPiANCj4+IMKgIC8vIFJlc3VsdCBjYW5ub3QgYmUgZGVy
+ZmVyZW5jZWQNCj4+DQo+PiDCoCB0YWtlX2xvY2soZHJpdmVyLT51cGRhdGUpOw0KPj4gwqAgaWYg
+KG1tdV9yYW5nZV9yZWFkX3JldHJ5KCZtcm4sIHJhbmdlLm5vdGlmaWVyX3NlcSkgew0KPj4gwqDC
+oMKgwqAgLy8gY29sbGlzaW9uISBUaGUgcmVzdWx0cyBhcmUgbm90IGNvcnJlY3QNCj4+IMKgwqDC
+oMKgIGdvdG8gYWdhaW4NCj4+IMKgIH0NCj4+DQo+PiDCoCAvLyBubyBjb2xsaXNpb24sIGFuZCBu
+b3cgdW5kZXIgbG9jay4gTm93IHdlIGNhbiBkZS1yZWZlcmVuY2UgdGhlIA0KPj4gcGFnZXMvZXRj
+DQo+PiDCoCAvLyBwcm9ncmFtIEhXDQo+PiDCoCAvLyBOb3cgdGhlIGludmFsaWRhdGUgY2FsbGJh
+Y2sgaXMgcmVzcG9uc2libGUgdG8gc3luY2hyb25pemUgYWdhaW5zdCANCj4+IGNoYW5nZXMNCj4+
+IMKgIHVubG9jayhkcml2ZXItPnVwZGF0ZSkNCj4+DQo+PiBCYXNpY2FsbHksIGFueXRoaW5nIHRo
+YXQgd2FzIHVzaW5nIGhtbV9taXJyb3IgY29ycmVjdGx5IHRyYW5zaXNpb25zDQo+PiBvdmVyIGZh
+aXJseSB0cml2aWFsbHksIGp1c3Qgd2l0aCB0aGUgbW9kaWZpY2F0aW9uIHRvIHN0b3JlIGEgc2Vx
+dWVuY2UNCj4+IG51bWJlciB0byBjbG9zZSB0aGF0IHJhY2UgZGVzY3JpYmVkIGluIHRoZSBobW0g
+Y29tbWl0Lg0KPj4NCj4+IEZvciBzb21ldGhpbmcgbGlrZSBBTUQgZ3B1IEkgZXhwZWN0IGl0IHRv
+IHRyYW5zaXRpb24gdG8gdXNlIGRtYV9mZW5jZQ0KPj4gZnJvbSB0aGUgbm90aWZpZXIgZm9yIGNv
+aGVyZW5jeSByaWdodCBiZWZvcmUgaXQgdW5sb2NrcyBkcml2ZXItPnVwZGF0ZS4NCj4+DQo+PiBK
+YXNvbg0KPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18N
+Cj4+IGFtZC1nZnggbWFpbGluZyBsaXN0DQo+PiBhbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9y
+Zw0KPj4gaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbWQt
+Z2Z4DQo+IA0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Xw0KPiBhbWQtZ2Z4IG1haWxpbmcgbGlzdA0KPiBhbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9y
+Zw0KPiBodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2FtZC1n
+ZngNCg==
