@@ -2,105 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C81DBC2E
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Oct 2019 06:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E7ADBC4B
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Oct 2019 07:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387841AbfJRE5M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Oct 2019 00:57:12 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:36202 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731903AbfJRE5M (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Oct 2019 00:57:12 -0400
-Received: by mail-pf1-f193.google.com with SMTP id y22so3079666pfr.3
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Oct 2019 21:57:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=xTDqaCFrDT/AH/JnoA0Ry1FR1MW8Gce+C0SSDSEjGao=;
-        b=BXZDpCVvmj//fuZW6gO2ClRYw9Qd9ikcet6K342AAswZk+QpdR6HqoedN4Q6ic0ic6
-         uxLi9mKaUBUHe5Z7kDDgG0tZ+I8kJIf8SaJThLE+0UcQA0oxfZR9KYXxizJUVaHz85Zl
-         9rY5eOKQfSV1h2NOMtLO2hXykcVL0wpGPeDuZPNoEQUoaUi1Gr+IhKZ633YEy3XZWT9F
-         6UVbLHLR4CjQPH/PA1ie616/TRIRjQqr28BEJ4aY2e9Ibg340+JYCaffmVGg7L+hYfix
-         R+WLKTz1kIAPY7mtbYK2UPLg7Y+Nlykw1nkhCafc4+kcqydltaWBGgQGARaPz+YJQb1i
-         fwZw==
-X-Gm-Message-State: APjAAAW5wuPbOcQL/eY7NGs5fs26HFP3RkRsl4qIhWvWJZzDmB26jEQr
-        9iMWRiRLZbfydDbwJfFob3QuKP4u
-X-Google-Smtp-Source: APXvYqwDw095wNjWMB5ZkXYYv69o6pf0gSwT8MJdAL4iL8ekOOJU/DGKX/yrhYC+4k7RQqk2SQsreg==
-X-Received: by 2002:a17:90a:cb88:: with SMTP id a8mr8693904pju.85.1571374630915;
-        Thu, 17 Oct 2019 21:57:10 -0700 (PDT)
-Received: from localhost.localdomain ([2601:647:4000:ce:84e0:ff05:5b17:3d9e])
-        by smtp.gmail.com with ESMTPSA id c62sm4822177pfa.92.2019.10.17.21.57.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Oct 2019 21:57:09 -0700 (PDT)
-Subject: Re: [PATCH] srp_daemon: Use maximum initiator to target IU size
-To:     Honggang LI <honli@redhat.com>
-Cc:     linux-rdma@vger.kernel.org
-References: <20191018044104.21353-1-honli@redhat.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <1d811fc0-1f74-b546-b296-a4e9f8c33d86@acm.org>
-Date:   Thu, 17 Oct 2019 21:57:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        id S2441967AbfJRFA2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Oct 2019 01:00:28 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:52052 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2441982AbfJRFA2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 18 Oct 2019 01:00:28 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id EE56410CC1F0;
+        Fri, 18 Oct 2019 04:41:17 +0000 (UTC)
+Received: from dhcp-128-227.nay.redhat.com (unknown [10.66.128.227])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9CDAB5D9CA;
+        Fri, 18 Oct 2019 04:41:16 +0000 (UTC)
+From:   Honggang LI <honli@redhat.com>
+To:     bvanassche@acm.org
+Cc:     linux-rdma@vger.kernel.org, Honggang Li <honli@redhat.com>
+Subject: [PATCH] srp_daemon: Use maximum initiator to target IU size
+Date:   Fri, 18 Oct 2019 12:41:04 +0800
+Message-Id: <20191018044104.21353-1-honli@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20191018044104.21353-1-honli@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.65]); Fri, 18 Oct 2019 04:41:18 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2019-10-17 21:41, Honggang LI wrote:
-> +	if (config->print_max_it_iu_size) {
-> +		len += snprintf(target_config_str+len,
-> +				sizeof(target_config_str) - len,
-> +				",max_it_iu_size=%d",
-> +				be32toh(target->ioc_prof.send_size));
-> +
-> +		if (len >= sizeof(target_config_str)) {
-> +			pr_err("Target config string is too long, ignoring target\n");
-> +			closedir(dir);
-> +			return -1;
-> +		}
-> +	}
+From: Honggang Li <honli@redhat.com>
 
-Hi Honggang,
+"ib_srp.ko" module with immediate data support use (8 * 1024)
+as default immediate data size. When immediate data support enabled
+for "ib_srp.ko" client, the default maximum initiator to target IU
+size will greater than (8 * 1024). That means it also greater than
+the default maximum initiator to target IU size set by old
+"ib_srpt.ko" module, which does not support immediate data.
 
-I think this patch will make srp_daemon incompatible with versions of
-the ib_srp kernel driver that do not support the max_it_iu_size
-parameter and also that that's unacceptable. How about the following
-approach:
-* Do not add a new command-line option.
-* Add max_it_iu_size at the end. I think that approach will trigger a
-warning with older versions of the SRP kernel driver but also that it
-won't break SRP login.
+Signed-off-by: Honggang Li <honli@redhat.com>
+---
+ srp_daemon/srp_daemon.c                | 26 ++++++++++++++++++++++++--
+ srp_daemon/srp_daemon.h                |  1 +
+ srp_daemon/srp_daemon.sh.in            |  2 +-
+ srp_daemon/srp_daemon_port@.service.in |  2 +-
+ 4 files changed, 27 insertions(+), 4 deletions(-)
 
-Thanks,
+diff --git a/srp_daemon/srp_daemon.c b/srp_daemon/srp_daemon.c
+index f0bcf923..43caf9d4 100644
+--- a/srp_daemon/srp_daemon.c
++++ b/srp_daemon/srp_daemon.c
+@@ -217,7 +217,7 @@ static int srpd_sys_read_uint64(const char *dir_name, const char *file_name,
+ 
+ static void usage(const char *argv0)
+ {
+-	fprintf(stderr, "Usage: %s [-vVcaeon] [-d <umad device> | -i <infiniband device> [-p <port_num>]] [-t <timeout (ms)>] [-r <retries>] [-R <rescan time>] [-f <rules file>\n", argv0);
++	fprintf(stderr, "Usage: %s [-vVcaeonm] [-d <umad device> | -i <infiniband device> [-p <port_num>]] [-t <timeout (ms)>] [-r <retries>] [-R <rescan time>] [-f <rules file>\n", argv0);
+ 	fprintf(stderr, "-v 			Verbose\n");
+ 	fprintf(stderr, "-V 			debug Verbose\n");
+ 	fprintf(stderr, "-c 			prints connection Commands\n");
+@@ -235,6 +235,7 @@ static void usage(const char *argv0)
+ 	fprintf(stderr, "-t <timeout>		Timeout for mad response in milliseconds\n");
+ 	fprintf(stderr, "-r <retries>		number of send Retries for each mad\n");
+ 	fprintf(stderr, "-n 			New connection command format - use also initiator extension\n");
++	fprintf(stderr, "-m 			New connection command format - use also maximum initiator to target IU size\n");
+ 	fprintf(stderr, "--systemd		Enable systemd integration.\n");
+ 	fprintf(stderr, "\nExample: srp_daemon -e -n -i mthca0 -p 1 -R 60\n");
+ }
+@@ -556,6 +557,19 @@ static int add_non_exist_target(struct target_details *target)
+ 		}
+ 	}
+ 
++	if (config->print_max_it_iu_size) {
++		len += snprintf(target_config_str+len,
++				sizeof(target_config_str) - len,
++				",max_it_iu_size=%d",
++				be32toh(target->ioc_prof.send_size));
++
++		if (len >= sizeof(target_config_str)) {
++			pr_err("Target config string is too long, ignoring target\n");
++			closedir(dir);
++			return -1;
++		}
++	}
++
+ 	if (config->execute && config->tl_retry_count) {
+ 		len += snprintf(target_config_str + len,
+ 				sizeof(target_config_str) - len,
+@@ -1360,6 +1374,10 @@ static void print_config(struct config_t *conf)
+ 		printf(" Print initiator_ext\n");
+ 	else
+ 		printf(" Do not print initiator_ext\n");
++	if (conf->print_max_it_iu_size)
++		printf(" Print maximum initiator to target IU size\n");
++	else
++		printf(" Do not print maximum initiator to target IU size\n");
+ 	if (conf->recalc_time)
+ 		printf(" Performs full target rescan every %d seconds\n", conf->recalc_time);
+ 	else
+@@ -1629,7 +1647,7 @@ static const struct option long_opts[] = {
+ 	{ "systemd",        0, NULL, 'S' },
+ 	{}
+ };
+-static const char short_opts[] = "caveod:i:j:p:t:r:R:T:l:Vhnf:";
++static const char short_opts[] = "caveod:i:j:p:t:r:R:T:l:Vhnmf:";
+ 
+ /* Check if the --systemd options was passed in very early so we can setup
+  * logging properly.
+@@ -1670,6 +1688,7 @@ static int get_config(struct config_t *conf, int argc, char *argv[])
+ 	conf->retry_timeout 		= 20;
+ 	conf->add_target_file  		= NULL;
+ 	conf->print_initiator_ext	= 0;
++	conf->print_max_it_iu_size	= 0;
+ 	conf->rules_file		= SRP_DEAMON_CONFIG_FILE;
+ 	conf->rules			= NULL;
+ 	conf->tl_retry_count		= 0;
+@@ -1734,6 +1753,9 @@ static int get_config(struct config_t *conf, int argc, char *argv[])
+ 		case 'n':
+ 			++conf->print_initiator_ext;
+ 			break;
++		case 'm':
++			++conf->print_max_it_iu_size;
++			break;
+ 		case 't':
+ 			conf->timeout = atoi(optarg);
+ 			if (conf->timeout == 0) {
+diff --git a/srp_daemon/srp_daemon.h b/srp_daemon/srp_daemon.h
+index b753cecd..d4111afc 100644
+--- a/srp_daemon/srp_daemon.h
++++ b/srp_daemon/srp_daemon.h
+@@ -206,6 +206,7 @@ struct config_t {
+ 	int		timeout;
+ 	int		recalc_time;
+ 	int		print_initiator_ext;
++	int		print_max_it_iu_size;
+ 	const char     *rules_file;
+ 	struct rule    *rules;
+ 	int 		retry_timeout;
+diff --git a/srp_daemon/srp_daemon.sh.in b/srp_daemon/srp_daemon.sh.in
+index 75e8a31b..dacbc9f5 100755
+--- a/srp_daemon/srp_daemon.sh.in
++++ b/srp_daemon/srp_daemon.sh.in
+@@ -76,7 +76,7 @@ for d in ${ibdir}_mad/umad*; do
+     port="$(<"$d/port")"
+     add_target="${ibdir}_srp/srp-${hca_id}-${port}/add_target"
+     if [ -e "${add_target}" ]; then
+-        ${prog} -e -c -n -i "${hca_id}" -p "${port}" -R "${rescan_interval}" "${params[@]}" >/dev/null 2>&1 &
++        ${prog} -e -c -n -m -i "${hca_id}" -p "${port}" -R "${rescan_interval}" "${params[@]}" >/dev/null 2>&1 &
+         pids+=($!)
+     fi
+ done
+diff --git a/srp_daemon/srp_daemon_port@.service.in b/srp_daemon/srp_daemon_port@.service.in
+index 3d5a11e8..b91532ca 100644
+--- a/srp_daemon/srp_daemon_port@.service.in
++++ b/srp_daemon/srp_daemon_port@.service.in
+@@ -23,7 +23,7 @@ BindsTo=srp_daemon.service
+ 
+ [Service]
+ Type=simple
+-ExecStart=@CMAKE_INSTALL_FULL_SBINDIR@/srp_daemon --systemd -e -c -n -j %I -R 60
++ExecStart=@CMAKE_INSTALL_FULL_SBINDIR@/srp_daemon --systemd -e -c -n -m -j %I -R 60
+ MemoryDenyWriteExecute=yes
+ PrivateNetwork=yes
+ PrivateTmp=yes
+-- 
+2.21.0
 
-Bart.
