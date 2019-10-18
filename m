@@ -2,94 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7723CDCC54
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Oct 2019 19:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2107CDCE11
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Oct 2019 20:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408773AbfJRRKI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Oct 2019 13:10:08 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:42169 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406050AbfJRRKI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Oct 2019 13:10:08 -0400
-Received: by mail-pf1-f196.google.com with SMTP id q12so4260032pff.9
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Oct 2019 10:10:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Aj35VCMbx89QuAm5WaSE84BkyrGFDS7pEc42puagD4Y=;
-        b=N+nCOtRYxea+YfRNG7flux1snNoyaLmD6Z29IrGRPX8WQSHejGw2Sj7v3MXsBoHAw9
-         KOV3kL77/t0r5+BUTWuOrtr88b5XAn1M7z/HENpjk+bFcc4pMfBAT48M0DGgrLLDLPTj
-         ewx1pt/qqkLYBoBvAyO0DFw4CmJiT6JqxnbGETt0rkoMDZfz08iulEAhuVviiCQpFlRO
-         5VP7rx2aLGuvo8QcjYL01mCMdZsHWs6YbETou2t/scMUFYsG9coNV8SaRiOCsgFY/JHu
-         bSr5TuL6ucI7jNhNEqcCT2h/wcaYJL0lkMgp91NGxYzeG594P1dtErWoxK/s5WLr+L5H
-         +1lQ==
-X-Gm-Message-State: APjAAAW4nhsOD2q0eZCYh2L2Z/JzZMG8PrqW1Kw20Miyi7SVyhYRaDCv
-        ew9cxTz1JlMrX7vp5jjWZ2y71vw2
-X-Google-Smtp-Source: APXvYqyJq46pRiPt1XToNdSEL6DLajNSPeQyAZ5H00H9dn+CQays58+QYn/Y0DdQK/jJiRtwpRpYfg==
-X-Received: by 2002:aa7:8583:: with SMTP id w3mr145376pfn.129.1571418607110;
-        Fri, 18 Oct 2019 10:10:07 -0700 (PDT)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id r30sm7210733pfl.42.2019.10.18.10.10.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Oct 2019 10:10:06 -0700 (PDT)
-Subject: Re: [PATCH] srp_daemon: Use maximum initiator to target IU size
-To:     Honggang LI <honli@redhat.com>
-Cc:     linux-rdma@vger.kernel.org
-References: <20191018044104.21353-1-honli@redhat.com>
- <1d811fc0-1f74-b546-b296-a4e9f8c33d86@acm.org>
- <20191018152253.GA32562@dhcp-128-227.nay.redhat.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <21142610-1e01-4ce8-635c-2fe677e69cf9@acm.org>
-Date:   Fri, 18 Oct 2019 10:10:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S2387642AbfJRShC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Oct 2019 14:37:02 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:51346 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730794AbfJRShC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 18 Oct 2019 14:37:02 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id C2C3D3175295;
+        Fri, 18 Oct 2019 18:37:01 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-37.rdu2.redhat.com [10.10.112.37])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E8C6A5D9CA;
+        Fri, 18 Oct 2019 18:37:00 +0000 (UTC)
+Message-ID: <2b7aae89011067b39806130206fee26b6df2a947.camel@redhat.com>
+Subject: Re: [PATCH v2 for-rc] iw_cxgb4: fix ECN check on the passive accept
+From:   Doug Ledford <dledford@redhat.com>
+To:     Potnuri Bharat Teja <bharat@chelsio.com>, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, nirranjan@chelsio.com
+Date:   Fri, 18 Oct 2019 14:36:58 -0400
+In-Reply-To: <20191003104353.11590-1-bharat@chelsio.com>
+References: <20191003104353.11590-1-bharat@chelsio.com>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-jSQDf5PFPPeFxAXIeLOB"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <20191018152253.GA32562@dhcp-128-227.nay.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.49]); Fri, 18 Oct 2019 18:37:01 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/18/19 8:22 AM, Honggang LI wrote:
-> [ ... ]
 
-Hi Honggang,
+--=-jSQDf5PFPPeFxAXIeLOB
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The approach of your patch seems suboptimal to me. I think it would be 
-cumbersome for users to have to modify the srp_daemon_port@.service file 
-to suppress a kernel warning or to pass the max_it_iu_size parameter 
-during login.
+On Thu, 2019-10-03 at 16:13 +0530, Potnuri Bharat Teja wrote:
+> pass_accept_req() is using the same skb for handling accept request
+> and
+> sending accept reply to HW. Here req and rpl structures are pointing
+> to
+> same skb->data which is over written by INIT_TP_WR() and leads to
+> accessing corrupt req fields in accept_cr() while checking for ECN
+> flags.
+> Reordered code in accept_cr() to fetch correct req fields.
+>=20
+> Fixes: 92e7ae7172 ("iw_cxgb4: Choose appropriate hw mtu index and ISS
+> for iWARP connections")
+> Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
 
-Had you noticed that the SRP initiator stops parsing parameters if it 
-encounters an unrecognized parameter?
+Thanks, applied to for-rc.
 
- From ib_srp.c, function srp_parse_options():
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-	default:
-		pr_warn("unknown parameter or missing value '%s' in"
-			" target creation request\n", p);
-			goto out;
-		}
+--=-jSQDf5PFPPeFxAXIeLOB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-The "goto out" breaks out of the while loop that parses options. We 
-cannot change this behavior in existing versions of the SRP initiator 
-kernel driver. In other words, if the max_it_iu_size parameter is not 
-specified at the very end of the login string it will cause some login 
-parameters to be ignored.
+-----BEGIN PGP SIGNATURE-----
 
-I think we should use one of the following two approaches:
-* Not add a new command-line option to srp_daemon and add the
-   max_it_iu_size at the very end of the login string.
-* Modify the ib_srp driver such that it exports the login parameters
-   through sysfs. Modify srp_daemon such that it only specifies the
-   max_it_iu_size parameter if it finds that parameter in the list of
-   supported parameters.
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl2qBkoACgkQuCajMw5X
+L90CpQ/6AyYZtcYJqCht2JOAH1rx9+xYENAUgj/Ujj2BMEfmxxmPwsMfTq3HjUFp
+NxaxOzJkICDmQ0ZZYEywjQzYLeXHI6pY1QzQ0P8aQE+IJ19MBnBkMM1Ea0CItt3B
+C7Kci+PPubfPt48Sz06gA5+He6wNniKaAf4PQIvhlfh/1U8f7dG0Sufqf/h2ov/+
+i4hAeyeZETfmD1dj/YzMkpnrAtWl0Gte37HJvGBEFet4ugveOt2ALSIGgZk+gdwK
+wvv0yasl0+UdQGjovSWNHy50YeVa8hd0gy3X+NUTTdBj3jxCUpGiOUljme6W8Gp7
+epBktQwF+TWco9nRxhhWf4QRFvHY4Zxx76B734d1v6Co9m6Tvy6lGIQH2I3YyTGb
+NvwwH3Ma1Q0zhQyxu8JpKRzJm/6aOVdXsO65WQ5g3Svmav5WbAiNuiTpRabkIsqO
+0F79JOYSl3WxIEMl/8LFADVGQkQaUCnuSSeG5eXMrKo6dqHjvJj7lODR6hdyNLnr
+JGmfI3MvduBnRztagD+RNdZhBoEuw844Vw2VBkgJ/OiEcyD9ZA6tzlcOS0TRmXHX
+2MUDLLRQI3exD50ST1adAkBnYMHt8aTM0jlTSnkc5HWTMr5twCAtUboULVRvsQAS
+YmGOTLmdBsiA4sa/OljA7t+l7sJ6uAw2e+FM+Kz0ux5qBEvxVpg=
+=ElKw
+-----END PGP SIGNATURE-----
 
-Thanks,
+--=-jSQDf5PFPPeFxAXIeLOB--
 
-Bart.
