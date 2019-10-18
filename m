@@ -2,48 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6A7DC18D
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Oct 2019 11:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54751DC18E
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Oct 2019 11:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392366AbfJRJlg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Oct 2019 05:41:36 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:39596 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409690AbfJRJlf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Oct 2019 05:41:35 -0400
-Received: by mail-wm1-f65.google.com with SMTP id v17so5400330wml.4
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Oct 2019 02:41:34 -0700 (PDT)
+        id S2404496AbfJRJlh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Oct 2019 05:41:37 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:50838 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390553AbfJRJlg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Oct 2019 05:41:36 -0400
+Received: by mail-wm1-f66.google.com with SMTP id 5so5474063wmg.0
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Oct 2019 02:41:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hAZ2TrIIVcLEbxIdOVbHEBWi4WBUQuacFKnyYRaMGgU=;
-        b=bc0N4yFtCDvQuTeYZbrZBl0MvigSkN/d+Owm/UhJoB/Yuf0yGrx+N8VJ5xbxaLkcIs
-         3aFzoCDF3e0CzGJ+YBO5rGqGr2dGriND5Wiscx4WR9TQBnjhqEbQlHhaLkQPHqqz8TOO
-         qGfmbxc+w8AHxnGffbbkLYh6JBgqH8jU+0x7NRFCjJHnVzTk2kYdRq4WfF2bil7nP7+i
-         P/flMoP5CliusO2wAcYkcPzxgiBjl3CaYCdTybMzOixSuSCZ45J2Z1YX+8zHqrG34M9P
-         Y+0saYfebZjgxoZRRvd6cglPj3OcubZyAlChApE7OMg3pk89iEuB1mp6cdOF2dvRqo8x
-         5tyA==
+        bh=/nLBDNnI2ytUN/R+LaCECQ51HAzPdQVxI7fwxKBAxkk=;
+        b=CpxitlkK2kw5eHHRk/N7OrnkoOy+P0zGzG0FmJIMB2MbV3WrohuYgu7VeCT965LXix
+         NsZnPXvMHendhlQKMBHMM13Dg/KFMrCQgJFOPY4CCdxQFthi7MZcqfpMkNlRz9zTd+qQ
+         Oh2/5es82icn3vZ5EFLWilirGhZhIYQjtPNWTeAWB22tg3NGT3gswexcw7O+ZPWCruPn
+         rBf6fm+clg2SdQQkY5OM721xQqj/D5L38EazyMnHi5AM5cA837XLDFlVu/FXmoRhT/Z2
+         A1dVma2RrKxwVUI5eX97Zn1Hit+/cpTJjAN48ZFYAqnc0KItIaj69Q8vuh6Dhdi3Sdbx
+         x5DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hAZ2TrIIVcLEbxIdOVbHEBWi4WBUQuacFKnyYRaMGgU=;
-        b=GjLoroG+jN6tmI4n4vVry+AoBpcEbfkYkAwoJLJqaSxowzQeJzwwLHA+wtdt6qgf4W
-         YG6mAo2GmEib7a3bzXBmlAaYmlKXPmgYvZNtOTsQZUkEZOTNS74vbwZTjEvDE96XM6og
-         IXfHxIFWycpeySdbZNRN+uPX+Skw36rWcbAzVbsWyZCPf60oJoids1lAWyHZkDrwXPDY
-         SzdZ2uWg3Ozf3FvHybg7C1g42QmmZQilD/bpTZr9OEQuX2DtQgi79Vr5B/phrliqbdJL
-         uwEDend9pmdGA4u5pL5CXlnefL6MHwBf+sb9fnwA/UWJUARfQ+fWQLzqSUXHaqQo+WQU
-         5Ntg==
-X-Gm-Message-State: APjAAAVYUDmvj7e+TLVWT7nU7W4IR+CoK3IspzliKz+HbtYmELwgxZpq
-        QpHSo16Fcrbx3VEcJVRlVjgh6ATQ
-X-Google-Smtp-Source: APXvYqyerypUNCBquYnHL2UsrO76eXBKC/pqW1dHPXbMKYbmPA7ia01iOOZbGxSf2WFkEsWA9YlDLA==
-X-Received: by 2002:a1c:3c07:: with SMTP id j7mr691766wma.122.1571391693514;
-        Fri, 18 Oct 2019 02:41:33 -0700 (PDT)
+        bh=/nLBDNnI2ytUN/R+LaCECQ51HAzPdQVxI7fwxKBAxkk=;
+        b=Qwo3to1Ju1P5MiIBSo7c/dOZei0e9eVOXtEKIeoDmHZo5eZjA1XyYdjkUamt0Vnz1H
+         DBbLXoy1dgW5a9pChm5QSzcvTorpMcNW3hFQ1wJ9/00wf2UIAPstSqP1XG3YeyeNC0zB
+         WFwHIY4swo6KtKKfjaVlKiOVYHbJvsMzCl687yVQcG0Dd61qY9S4rrjqo7c/i5vI4Z1+
+         zZnSHYUUkomGjAh3PHQc2/JG59pSDOfeF/KV3/vbWtdo1uYmldEx38rH+WBDX/PQ3Qbq
+         M/7vSRUDoL5spck7cjmLlUZ0j2P0XFCAlY/zDAj9GBNME7zb3rF1sfqiU6jNOczVlT7h
+         RjzQ==
+X-Gm-Message-State: APjAAAWS4g4wSwRrJ2IL/Vlj+IJbUxhT7xVCBps+TwTI6XNzTPxJnjMr
+        fvu1InqsMNeBuXQPveuaenDghJDL
+X-Google-Smtp-Source: APXvYqwXFdQwrnCRkItvWKX2IOgKa7qdfY8yNC+MyyKM7doWRl9fMd9AkCIW/wAUphjNVfS7XS2bPw==
+X-Received: by 2002:a05:600c:2185:: with SMTP id e5mr6970504wme.78.1571391694848;
+        Fri, 18 Oct 2019 02:41:34 -0700 (PDT)
 Received: from kheib-workstation.redhat.com (bzq-79-179-0-252.red.bezeqint.net. [79.179.0.252])
-        by smtp.gmail.com with ESMTPSA id 126sm2186111wma.48.2019.10.18.02.41.32
+        by smtp.gmail.com with ESMTPSA id 126sm2186111wma.48.2019.10.18.02.41.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Oct 2019 02:41:33 -0700 (PDT)
+        Fri, 18 Oct 2019 02:41:34 -0700 (PDT)
 From:   Kamal Heib <kamalheib1@gmail.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
@@ -51,9 +51,9 @@ Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
         Selvin Xavier <selvin.xavier@broadcom.com>,
         Michal Kalderon <mkalderon@marvell.com>,
         Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH for-next v3 2/4] RDMA/hns: Remove unsupported modify_port callback
-Date:   Fri, 18 Oct 2019 12:41:13 +0300
-Message-Id: <20191018094115.13167-3-kamalheib1@gmail.com>
+Subject: [PATCH for-next v3 3/4] RDMA/ocrdma: Remove unsupported modify_port callback
+Date:   Fri, 18 Oct 2019 12:41:14 +0300
+Message-Id: <20191018094115.13167-4-kamalheib1@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191018094115.13167-1-kamalheib1@gmail.com>
 References: <20191018094115.13167-1-kamalheib1@gmail.com>
@@ -67,37 +67,56 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 There is no need to return always zero for function which is not
 supported.
 
-Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
+Fixes: fe2caefcdf58 ("RDMA/ocrdma: Add driver for Emulex OneConnect IBoE RDMAadapter")
 Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_main.c | 7 -------
- 1 file changed, 7 deletions(-)
+ drivers/infiniband/hw/ocrdma/ocrdma_main.c  | 1 -
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c | 6 ------
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.h | 2 --
+ 3 files changed, 9 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index b5d196c119ee..b241f74a7e3b 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -301,12 +301,6 @@ static int hns_roce_modify_device(struct ib_device *ib_dev, int mask,
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_main.c b/drivers/infiniband/hw/ocrdma/ocrdma_main.c
+index c15cfc6cef81..d8c47d24d6d6 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_main.c
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_main.c
+@@ -166,7 +166,6 @@ static const struct ib_device_ops ocrdma_dev_ops = {
+ 	.get_port_immutable = ocrdma_port_immutable,
+ 	.map_mr_sg = ocrdma_map_mr_sg,
+ 	.mmap = ocrdma_mmap,
+-	.modify_port = ocrdma_modify_port,
+ 	.modify_qp = ocrdma_modify_qp,
+ 	.poll_cq = ocrdma_poll_cq,
+ 	.post_recv = ocrdma_post_recv,
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+index e8267e590772..e72050de5734 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+@@ -190,12 +190,6 @@ int ocrdma_query_port(struct ib_device *ibdev,
  	return 0;
  }
  
--static int hns_roce_modify_port(struct ib_device *ib_dev, u8 port_num, int mask,
--				struct ib_port_modify *props)
+-int ocrdma_modify_port(struct ib_device *ibdev, u8 port, int mask,
+-		       struct ib_port_modify *props)
 -{
 -	return 0;
 -}
 -
- static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- 				   struct ib_udata *udata)
+ static int ocrdma_add_mmap(struct ocrdma_ucontext *uctx, u64 phy_addr,
+ 			   unsigned long len)
  {
-@@ -438,7 +432,6 @@ static const struct ib_device_ops hns_roce_dev_ops = {
- 	.get_port_immutable = hns_roce_port_immutable,
- 	.mmap = hns_roce_mmap,
- 	.modify_device = hns_roce_modify_device,
--	.modify_port = hns_roce_modify_port,
- 	.modify_qp = hns_roce_modify_qp,
- 	.query_ah = hns_roce_query_ah,
- 	.query_device = hns_roce_query_device,
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
+index 32488da1b752..3a5010881be5 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
+@@ -54,8 +54,6 @@ int ocrdma_arm_cq(struct ib_cq *, enum ib_cq_notify_flags flags);
+ int ocrdma_query_device(struct ib_device *, struct ib_device_attr *props,
+ 			struct ib_udata *uhw);
+ int ocrdma_query_port(struct ib_device *, u8 port, struct ib_port_attr *props);
+-int ocrdma_modify_port(struct ib_device *, u8 port, int mask,
+-		       struct ib_port_modify *props);
+ 
+ enum rdma_protocol_type
+ ocrdma_query_protocol(struct ib_device *device, u8 port_num);
 -- 
 2.20.1
 
