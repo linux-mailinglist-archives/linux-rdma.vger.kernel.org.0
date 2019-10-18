@@ -2,259 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F30BDCFF5
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Oct 2019 22:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A30DD058
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Oct 2019 22:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729008AbfJRUYY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Oct 2019 16:24:24 -0400
-Received: from p3plsmtpa06-10.prod.phx3.secureserver.net ([173.201.192.111]:39172
-        "EHLO p3plsmtpa06-10.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728674AbfJRUYX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 18 Oct 2019 16:24:23 -0400
-X-Greylist: delayed 438 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Oct 2019 16:24:23 EDT
-Received: from [192.168.0.67] ([24.218.182.144])
-        by :SMTPAUTH: with ESMTPSA
-        id LYgHiTJ6rcZUvLYgJiSZI2; Fri, 18 Oct 2019 13:17:04 -0700
-Subject: Re: [PATCH v1 6/6] xprtrdma: Pull up sometimes
-To:     Chuck Lever <chuck.lever@oracle.com>, linux-rdma@vger.kernel.org,
-        linux-nfs@vger.kernel.org
-References: <20191017182811.2517.25676.stgit@oracle-102.nfsv4bat.org>
- <20191017183152.2517.67599.stgit@oracle-102.nfsv4bat.org>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <f5075a20-7c9a-773f-e76b-11cba1ab0f16@talpey.com>
-Date:   Fri, 18 Oct 2019 16:17:01 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <20191017183152.2517.67599.stgit@oracle-102.nfsv4bat.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1731569AbfJRUgZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Oct 2019 16:36:25 -0400
+Received: from mail-eopbgr130080.outbound.protection.outlook.com ([40.107.13.80]:45334
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727291AbfJRUgY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 18 Oct 2019 16:36:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JXS8vb2Jzqod84MSa1ewYRUvPkNE9WagpIfBGh8EST9TAuHU0oWl4dsgUxiiNvRpmzRi0RZ1+nVpS+uKkb/tmFbmLW2oL8u4TyskF/dRq/yBhG7UWEebdOJUbJB4oE4AV9ITzjvPiXE+a/C9TNX+0Oc8YDrJ8HDsx0wcrrrvP3NL8/6QVtTAPUJbNJ0okv36ZpLVn/nBU2DSRybcVOJXpD+b5HLaVXGabVsMJLYa7flTa2YgpRoGimCRRgavkwqDFjFpURwpIvtNXQPaLSBjkz+PMD5RC9DTUibFbORaEmif30fxiGLyeDHntwHbdVhc5+cyCkhStujZVgOvTKmC0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=smXqpb9251kp69aNvxZPS9Z8+1UgwbybVdHvLUJQFGY=;
+ b=RUEOQJMm5z9iEAFJzsgot+pOk8m2g0pXa8G2s6BJ18y/FzAAGPJgpyO86UXFkSVqmo12zxbJrOiOXBOJMtwlakymxnFq1VhJg9UJ5TTey9ryZEQ5KOkJePEXraSLTYWlBHajvspDzsyNgKFPT5r650JnBxXPyVQS45Ko5MKkaCtkzW/2E/wAjdowrzxwRimT9aZsRjpri3KwLxPydrf0dbLKn7SxDgDKcR0bjt0ofTdAFo5g0pGEvg4kXFYbbgsQfGM/yQbfBXdNOPkEhIUEln/HxWNKlvQlxpo95Ac+u8nNLVffxPnZM1mwI30lTxzS6LpMAoWgH51sqeBqZeujdw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=smXqpb9251kp69aNvxZPS9Z8+1UgwbybVdHvLUJQFGY=;
+ b=r53Jgk999IoxDUKHtfa7EIQ8UnoLc3R0e6RXPbys46Obfs/5j9L5s+yXrWt5Gg46/UeUF2kIUxfWeKlnXYka/+swCuQHxAEMQb/RgnXbksWLe5WjOoKUNsESOEUww8T/oD+0dQO2Z/HQqGJKTODinbGLXXJ9n34+GD3nE+MNVYc=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB4973.eurprd05.prod.outlook.com (20.177.52.18) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.16; Fri, 18 Oct 2019 20:36:19 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::75ae:b00b:69d8:3db0]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::75ae:b00b:69d8:3db0%7]) with mapi id 15.20.2347.023; Fri, 18 Oct 2019
+ 20:36:18 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     "Koenig, Christian" <Christian.Koenig@amd.com>
+CC:     "Yang, Philip" <Philip.Yang@amd.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+Subject: Re: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
+ locking
+Thread-Topic: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
+ locking
+Thread-Index: AQHVg4Sqa7CCxCToXEeTrrYAqVQVhqdc+JgAgAB3OACAARovgIAAficAgAAF3YCAAdJKAA==
+Date:   Fri, 18 Oct 2019 20:36:18 +0000
+Message-ID: <20191018203608.GA5670@mellanox.com>
+References: <20191015181242.8343-1-jgg@ziepe.ca>
+ <bc954d29-388b-9e29-f960-115ccc6b9fea@gmail.com>
+ <20191016160444.GB3430@mellanox.com>
+ <2df298e2-ee91-ef40-5da9-2bc1af3a17be@gmail.com>
+ <2046e0b4-ba05-0683-5804-e9bbf903658d@amd.com>
+ <d6bcbd2a-2519-8945-eaf5-4f4e738c7fa9@amd.com>
+In-Reply-To: <d6bcbd2a-2519-8945-eaf5-4f4e738c7fa9@amd.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfMGDalAs4rTVVCV7jAD+hdFgLoClja52MyGJ52ARI/y6nMpU303s7BAPcznlxBtXzRl2bzUPGd2hZ3TfQW5IkrZMso/QP7ASX7+E9DEosZ2foRMVR9DZ
- GIe4Etsg+WF20T9he1AoXjLZV8pTTYpBqfNTt0JlFvL1AcAHbRMSf4Aj+dP7Ba2K+GPlgIfaLkH5WVCTktKgcXg7JZRioMPp3JycbLq4gnZh8dUVrwt4VeJw
- qzm0g4UlaKN0Erj1BvcS9A==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR20CA0044.namprd20.prod.outlook.com
+ (2603:10b6:300:ed::30) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [66.51.117.131]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 69e9ab54-0717-40b2-861b-08d7540ad427
+x-ms-office365-filtering-ht: Tenant
+x-ms-traffictypediagnostic: VI1PR05MB4973:
+x-microsoft-antispam-prvs: <VI1PR05MB4973E5D04B92642A40EEE0E6CF6C0@VI1PR05MB4973.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 01949FE337
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(376002)(39860400002)(396003)(366004)(346002)(189003)(199004)(186003)(66066001)(305945005)(33656002)(3846002)(7736002)(71190400001)(486006)(4326008)(6116002)(229853002)(86362001)(6436002)(6486002)(7416002)(14444005)(71200400001)(81166006)(2616005)(8676002)(256004)(81156014)(8936002)(6916009)(54906003)(66946007)(476003)(64756008)(66556008)(66476007)(446003)(316002)(6506007)(11346002)(52116002)(6246003)(5660300002)(478600001)(76176011)(36756003)(1076003)(14454004)(102836004)(386003)(99286004)(25786009)(26005)(2906002)(66446008)(6512007);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4973;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UPF+keoznRhlCBtOJNRn0zkttxRh9aDiR7740wSN6aP5QvRQduueDoET4X5x1pwWC7iubmR6zTWcChzGQhe2+MVD4KJDI75s1atMhJKtopvkCy0Bj5vfXOijthH8T+dAWcrzr+WZ8VgxWMj75A6sOUH2aoxwkET7So1hRNBhguEw6JCSDNdu1dA+K79onggltu8YTaZ0vij34iu+tQ5S6Ej2jEn8QnHfKAPgQ2KByQWyTF5gbNMLdHSFvO85QEfrxJcVmKifL9eDGOEFGKcPipCbWU6CgN57IFuTAehoFPGphofEOPr9hnganzBPOWic9c/wwdQY80SYTRqIdq/LS2KhpMtFMx592ESJtoDUFToHWtu8rM+ZofpGwtZvspYRUa0ZqaUKx98FCH8zcCYsYxf9j1HOLHBTrYC7Ml7otTY=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <C97D0CFCD1F5B645A1B272BD732EBC74@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69e9ab54-0717-40b2-861b-08d7540ad427
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Oct 2019 20:36:18.5468
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: whpnjBYJtkeFOwuFODiM58DUvsXdve63q0hhi7+SAmJNW+ERnWAS13rlOE/iRUgkf4ZNSY7A4Px29zedbec9uQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4973
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/17/2019 2:31 PM, Chuck Lever wrote:
-> On some platforms, DMA mapping part of a page is more costly than
-> copying bytes. Restore the pull-up code and use that when we
-> think it's going to be faster. The heuristic for now is to pull-up
-> when the size of the RPC message body fits in the buffer underlying
-> the head iovec.
-> 
-> Indeed, not involving the I/O MMU can help the RPC/RDMA transport
-> scale better for tiny I/Os across more RDMA devices. This is because
-> interaction with the I/O MMU is eliminated, as is handling a Send
-> completion, for each of these small I/Os. Without the explicit
-> unmapping, the NIC no longer needs to do a costly internal TLB shoot
-> down for buffers that are just a handful of bytes.
+On Thu, Oct 17, 2019 at 04:47:20PM +0000, Koenig, Christian wrote:
 
-This is good stuff. Do you have any performance data for the new
-strategy, especially latencies and local CPU cycles per byte?
+> > get_user_pages/hmm_range_fault() and invalidate_range_start() both are
+> > called while holding mm->map_sem, so they are always serialized.
+>=20
+> Not even remotely.
+>=20
+> For calling get_user_pages()/hmm_range_fault() you only need to hold the=
+=20
+> mmap_sem in read mode.
 
-Tom.
+Right
+=20
+> And IIRC invalidate_range_start() is sometimes called without holding=20
+> the mmap_sem at all.
 
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> ---
->   net/sunrpc/xprtrdma/backchannel.c |    2 -
->   net/sunrpc/xprtrdma/rpc_rdma.c    |   82 +++++++++++++++++++++++++++++++++++--
->   net/sunrpc/xprtrdma/verbs.c       |    2 -
->   net/sunrpc/xprtrdma/xprt_rdma.h   |    2 +
->   4 files changed, 81 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdma.h
-> index 16572ae7..336a65d 100644
-> --- a/include/trace/events/rpcrdma.h
-> +++ b/include/trace/events/rpcrdma.h
-> @@ -532,6 +532,8 @@
->   DEFINE_WRCH_EVENT(reply);
->   
->   TRACE_DEFINE_ENUM(rpcrdma_noch);
-> +TRACE_DEFINE_ENUM(rpcrdma_noch_pullup);
-> +TRACE_DEFINE_ENUM(rpcrdma_noch_mapped);
->   TRACE_DEFINE_ENUM(rpcrdma_readch);
->   TRACE_DEFINE_ENUM(rpcrdma_areadch);
->   TRACE_DEFINE_ENUM(rpcrdma_writech);
-> @@ -540,6 +542,8 @@
->   #define xprtrdma_show_chunktype(x)					\
->   		__print_symbolic(x,					\
->   				{ rpcrdma_noch, "inline" },		\
-> +				{ rpcrdma_noch_pullup, "pullup" },	\
-> +				{ rpcrdma_noch_mapped, "mapped" },	\
->   				{ rpcrdma_readch, "read list" },	\
->   				{ rpcrdma_areadch, "*read list" },	\
->   				{ rpcrdma_writech, "write list" },	\
-> diff --git a/net/sunrpc/xprtrdma/backchannel.c b/net/sunrpc/xprtrdma/backchannel.c
-> index 50e075f..1168524 100644
-> --- a/net/sunrpc/xprtrdma/backchannel.c
-> +++ b/net/sunrpc/xprtrdma/backchannel.c
-> @@ -79,7 +79,7 @@ static int rpcrdma_bc_marshal_reply(struct rpc_rqst *rqst)
->   	*p = xdr_zero;
->   
->   	if (rpcrdma_prepare_send_sges(r_xprt, req, RPCRDMA_HDRLEN_MIN,
-> -				      &rqst->rq_snd_buf, rpcrdma_noch))
-> +				      &rqst->rq_snd_buf, rpcrdma_noch_pullup))
->   		return -EIO;
->   
->   	trace_xprtrdma_cb_reply(rqst);
-> diff --git a/net/sunrpc/xprtrdma/rpc_rdma.c b/net/sunrpc/xprtrdma/rpc_rdma.c
-> index a441dbf..4ad8889 100644
-> --- a/net/sunrpc/xprtrdma/rpc_rdma.c
-> +++ b/net/sunrpc/xprtrdma/rpc_rdma.c
-> @@ -392,7 +392,7 @@ static int rpcrdma_encode_read_list(struct rpcrdma_xprt *r_xprt,
->   	unsigned int pos;
->   	int nsegs;
->   
-> -	if (rtype == rpcrdma_noch)
-> +	if (rtype == rpcrdma_noch_pullup || rtype == rpcrdma_noch_mapped)
->   		goto done;
->   
->   	pos = rqst->rq_snd_buf.head[0].iov_len;
-> @@ -691,6 +691,72 @@ static bool rpcrdma_prepare_tail_iov(struct rpcrdma_req *req,
->   	return false;
->   }
->   
-> +/* Copy the tail to the end of the head buffer.
-> + */
-> +static void rpcrdma_pullup_tail_iov(struct rpcrdma_xprt *r_xprt,
-> +				    struct rpcrdma_req *req,
-> +				    struct xdr_buf *xdr)
-> +{
-> +	unsigned char *dst;
-> +
-> +	dst = (unsigned char *)xdr->head[0].iov_base;
-> +	dst += xdr->head[0].iov_len + xdr->page_len;
-> +	memmove(dst, xdr->tail[0].iov_base, xdr->tail[0].iov_len);
-> +	r_xprt->rx_stats.pullup_copy_count += xdr->tail[0].iov_len;
-> +}
-> +
-> +/* Copy pagelist content into the head buffer.
-> + */
-> +static void rpcrdma_pullup_pagelist(struct rpcrdma_xprt *r_xprt,
-> +				    struct rpcrdma_req *req,
-> +				    struct xdr_buf *xdr)
-> +{
-> +	unsigned int len, page_base, remaining;
-> +	struct page **ppages;
-> +	unsigned char *src, *dst;
-> +
-> +	dst = (unsigned char *)xdr->head[0].iov_base;
-> +	dst += xdr->head[0].iov_len;
-> +	ppages = xdr->pages + (xdr->page_base >> PAGE_SHIFT);
-> +	page_base = offset_in_page(xdr->page_base);
-> +	remaining = xdr->page_len;
-> +	while (remaining) {
-> +		src = page_address(*ppages);
-> +		src += page_base;
-> +		len = min_t(unsigned int, PAGE_SIZE - page_base, remaining);
-> +		memcpy(dst, src, len);
-> +		r_xprt->rx_stats.pullup_copy_count += len;
-> +
-> +		ppages++;
-> +		dst += len;
-> +		remaining -= len;
-> +		page_base = 0;
-> +	}
-> +}
-> +
-> +/* Copy the contents of @xdr into @rl_sendbuf and DMA sync it.
-> + * When the head, pagelist, and tail are small, a pull-up copy
-> + * is considerably less costly than DMA mapping the components
-> + * of @xdr.
-> + *
-> + * Assumptions:
-> + *  - the caller has already verified that the total length
-> + *    of the RPC Call body will fit into @rl_sendbuf.
-> + */
-> +static bool rpcrdma_prepare_noch_pullup(struct rpcrdma_xprt *r_xprt,
-> +					struct rpcrdma_req *req,
-> +					struct xdr_buf *xdr)
-> +{
-> +	if (unlikely(xdr->tail[0].iov_len))
-> +		rpcrdma_pullup_tail_iov(r_xprt, req, xdr);
-> +
-> +	if (unlikely(xdr->page_len))
-> +		rpcrdma_pullup_pagelist(r_xprt, req, xdr);
-> +
-> +	/* The whole RPC message resides in the head iovec now */
-> +	return rpcrdma_prepare_head_iov(r_xprt, req, xdr->len);
-> +}
-> +
->   static bool rpcrdma_prepare_noch_mapped(struct rpcrdma_xprt *r_xprt,
->   					struct rpcrdma_req *req,
->   					struct xdr_buf *xdr)
-> @@ -779,7 +845,11 @@ inline int rpcrdma_prepare_send_sges(struct rpcrdma_xprt *r_xprt,
->   		goto out_unmap;
->   
->   	switch (rtype) {
-> -	case rpcrdma_noch:
-> +	case rpcrdma_noch_pullup:
-> +		if (!rpcrdma_prepare_noch_pullup(r_xprt, req, xdr))
-> +			goto out_unmap;
-> +		break;
-> +	case rpcrdma_noch_mapped:
->   		if (!rpcrdma_prepare_noch_mapped(r_xprt, req, xdr))
->   			goto out_unmap;
->   		break;
-> @@ -827,6 +897,7 @@ inline int rpcrdma_prepare_send_sges(struct rpcrdma_xprt *r_xprt,
->   	struct rpcrdma_req *req = rpcr_to_rdmar(rqst);
->   	struct xdr_stream *xdr = &req->rl_stream;
->   	enum rpcrdma_chunktype rtype, wtype;
-> +	struct xdr_buf *buf = &rqst->rq_snd_buf;
->   	bool ddp_allowed;
->   	__be32 *p;
->   	int ret;
-> @@ -884,8 +955,9 @@ inline int rpcrdma_prepare_send_sges(struct rpcrdma_xprt *r_xprt,
->   	 */
->   	if (rpcrdma_args_inline(r_xprt, rqst)) {
->   		*p++ = rdma_msg;
-> -		rtype = rpcrdma_noch;
-> -	} else if (ddp_allowed && rqst->rq_snd_buf.flags & XDRBUF_WRITE) {
-> +		rtype = buf->len < rdmab_length(req->rl_sendbuf) ?
-> +			rpcrdma_noch_pullup : rpcrdma_noch_mapped;
-> +	} else if (ddp_allowed && buf->flags & XDRBUF_WRITE) {
->   		*p++ = rdma_msg;
->   		rtype = rpcrdma_readch;
->   	} else {
-> @@ -927,7 +999,7 @@ inline int rpcrdma_prepare_send_sges(struct rpcrdma_xprt *r_xprt,
->   		goto out_err;
->   
->   	ret = rpcrdma_prepare_send_sges(r_xprt, req, req->rl_hdrbuf.len,
-> -					&rqst->rq_snd_buf, rtype);
-> +					buf, rtype);
->   	if (ret)
->   		goto out_err;
->   
-> diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
-> index 2f46582..a514e2c 100644
-> --- a/net/sunrpc/xprtrdma/verbs.c
-> +++ b/net/sunrpc/xprtrdma/verbs.c
-> @@ -1165,7 +1165,7 @@ int rpcrdma_buffer_create(struct rpcrdma_xprt *r_xprt)
->   	for (i = 0; i < buf->rb_max_requests; i++) {
->   		struct rpcrdma_req *req;
->   
-> -		req = rpcrdma_req_create(r_xprt, RPCRDMA_V1_DEF_INLINE_SIZE,
-> +		req = rpcrdma_req_create(r_xprt, RPCRDMA_V1_DEF_INLINE_SIZE * 2,
->   					 GFP_KERNEL);
->   		if (!req)
->   			goto out;
-> diff --git a/net/sunrpc/xprtrdma/xprt_rdma.h b/net/sunrpc/xprtrdma/xprt_rdma.h
-> index cdd6a3d..5d15140 100644
-> --- a/net/sunrpc/xprtrdma/xprt_rdma.h
-> +++ b/net/sunrpc/xprtrdma/xprt_rdma.h
-> @@ -554,6 +554,8 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt *r_xprt,
->   
->   enum rpcrdma_chunktype {
->   	rpcrdma_noch = 0,
-> +	rpcrdma_noch_pullup,
-> +	rpcrdma_noch_mapped,
->   	rpcrdma_readch,
->   	rpcrdma_areadch,
->   	rpcrdma_writech,
-> 
-> 
-> 
+Yep
+=20
+> So again how are they serialized?
+
+The 'driver lock' thing does it, read the hmm documentation, the hmm
+approach is basically the only approach that was correct of all the
+drivers..
+
+So long as the 'driver lock' is held the range cannot become
+invalidated as the 'driver lock' prevents progress of invalidation.
+
+Holding the driver lock and using the seq based mmu_range_read_retry()
+tells if the previous unlocked get_user_pages() is still valid or
+needs to be discard.
+
+So it doesn't matter if get_user_pages() races or not, the result is not
+to be used until the driver lock is held and mmu_range_read_retry()
+called, which provides the coherence.
+
+It is the usual seqlock pattern.
+
+Jason
