@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAECDD4D3
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Oct 2019 00:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B22DD4BD
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Oct 2019 00:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392220AbfJRW1n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Oct 2019 18:27:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35514 "EHLO mail.kernel.org"
+        id S2404957AbfJRW0y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Oct 2019 18:26:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727476AbfJRWDz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 18 Oct 2019 18:03:55 -0400
+        id S1727821AbfJRWEK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 18 Oct 2019 18:04:10 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55FEE2245D;
-        Fri, 18 Oct 2019 22:03:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1872222C5;
+        Fri, 18 Oct 2019 22:04:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571436235;
-        bh=Z8kNSpZKICsj64i1BK953BmpbaZEYmjCSvxuGKfVnTE=;
+        s=default; t=1571436249;
+        bh=NjxgLiEaplHS39J1mvZTecb/FKS7xh3ECqXe5Meeb1E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FwG0meJObO8KxVQtfNMVk2JdySkMg2+vGKEl8fvTr06uvyEYTm/V0d/aIFjX5QiEW
-         z2pPFK31mS3rDpz1nyiGRjXiYOhsgkvRn66oHNTrwKNnnjtW4W+TuFZBG7l/SHoog0
-         wYEs8VzhBx5ompKe4tauokwVuAip3Z/BE8+rZYM0=
+        b=T7tdWfg4UlopICbWd2CYzSZlmga3l/r8e1AfGqqu+PNuQ9fQNi0rQ1AlaYDbhzxds
+         mHeYluE886vIeb6gBrgHM8QTWWo0SEFDqhM96WWhTiMh1k/glUUOGDSKE37swfzVns
+         K3vbeq+M6q5FVU9neyRM7ynhe8vmELxkM980g11E=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bart Van Assche <bvanassche@acm.org>,
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.3 20/89] RDMA/iwcm: Fix a lock inversion issue
-Date:   Fri, 18 Oct 2019 18:02:15 -0400
-Message-Id: <20191018220324.8165-20-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.3 33/89] RDMA/core: Fix an error handling path in 'res_get_common_doit()'
+Date:   Fri, 18 Oct 2019 18:02:28 -0400
+Message-Id: <20191018220324.8165-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191018220324.8165-1-sashal@kernel.org>
 References: <20191018220324.8165-1-sashal@kernel.org>
@@ -43,85 +43,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit b66f31efbdad95ec274345721d99d1d835e6de01 ]
+[ Upstream commit ab59ca3eb4e7059727df85eee68bda169d26c8f8 ]
 
-This patch fixes the lock inversion complaint:
+According to surrounding error paths, it is likely that 'goto err_get;' is
+expected here. Otherwise, a call to 'rdma_restrack_put(res);' would be
+missing.
 
-============================================
-WARNING: possible recursive locking detected
-5.3.0-rc7-dbg+ #1 Not tainted
---------------------------------------------
-kworker/u16:6/171 is trying to acquire lock:
-00000000035c6e6c (&id_priv->handler_mutex){+.+.}, at: rdma_destroy_id+0x78/0x4a0 [rdma_cm]
-
-but task is already holding lock:
-00000000bc7c307d (&id_priv->handler_mutex){+.+.}, at: iw_conn_req_handler+0x151/0x680 [rdma_cm]
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&id_priv->handler_mutex);
-  lock(&id_priv->handler_mutex);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-3 locks held by kworker/u16:6/171:
- #0: 00000000e2eaa773 ((wq_completion)iw_cm_wq){+.+.}, at: process_one_work+0x472/0xac0
- #1: 000000001efd357b ((work_completion)(&work->work)#3){+.+.}, at: process_one_work+0x476/0xac0
- #2: 00000000bc7c307d (&id_priv->handler_mutex){+.+.}, at: iw_conn_req_handler+0x151/0x680 [rdma_cm]
-
-stack backtrace:
-CPU: 3 PID: 171 Comm: kworker/u16:6 Not tainted 5.3.0-rc7-dbg+ #1
-Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
-Workqueue: iw_cm_wq cm_work_handler [iw_cm]
-Call Trace:
- dump_stack+0x8a/0xd6
- __lock_acquire.cold+0xe1/0x24d
- lock_acquire+0x106/0x240
- __mutex_lock+0x12e/0xcb0
- mutex_lock_nested+0x1f/0x30
- rdma_destroy_id+0x78/0x4a0 [rdma_cm]
- iw_conn_req_handler+0x5c9/0x680 [rdma_cm]
- cm_work_handler+0xe62/0x1100 [iw_cm]
- process_one_work+0x56d/0xac0
- worker_thread+0x7a/0x5d0
- kthread+0x1bc/0x210
- ret_from_fork+0x24/0x30
-
-This is not a bug as there are actually two lock classes here.
-
-Link: https://lore.kernel.org/r/20190930231707.48259-3-bvanassche@acm.org
-Fixes: de910bd92137 ("RDMA/cma: Simplify locking needed for serialization of callbacks")
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Fixes: c5dfe0ea6ffa ("RDMA/nldev: Add resource tracker doit callback")
+Link: https://lore.kernel.org/r/20190818091044.8845-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/cma.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/nldev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index a68d0ccf67a43..2e48b59926c19 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -2396,9 +2396,10 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
- 		conn_id->cm_id.iw = NULL;
- 		cma_exch(conn_id, RDMA_CM_DESTROYING);
- 		mutex_unlock(&conn_id->handler_mutex);
-+		mutex_unlock(&listen_id->handler_mutex);
- 		cma_deref_id(conn_id);
- 		rdma_destroy_id(&conn_id->id);
--		goto out;
-+		return ret;
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index 020c269765584..91e2cc9ddb9f8 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -1230,7 +1230,7 @@ static int res_get_common_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
+ 	if (!msg) {
+ 		ret = -ENOMEM;
+-		goto err;
++		goto err_get;
  	}
  
- 	mutex_unlock(&conn_id->handler_mutex);
+ 	nlh = nlmsg_put(msg, NETLINK_CB(skb).portid, nlh->nlmsg_seq,
 -- 
 2.20.1
 
