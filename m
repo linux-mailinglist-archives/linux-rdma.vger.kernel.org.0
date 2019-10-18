@@ -2,40 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B65ADDD36A
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Oct 2019 00:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73764DD2E7
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Oct 2019 00:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732544AbfJRWHM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Oct 2019 18:07:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39254 "EHLO mail.kernel.org"
+        id S2388098AbfJRWIn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Oct 2019 18:08:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732528AbfJRWHL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 18 Oct 2019 18:07:11 -0400
+        id S2388072AbfJRWIm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 18 Oct 2019 18:08:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45701222D4;
-        Fri, 18 Oct 2019 22:07:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D83E922468;
+        Fri, 18 Oct 2019 22:08:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571436430;
-        bh=HY2dTaaSDHEp+P4iea/XnCJQu8WkixiXr/krmgVV+2I=;
+        s=default; t=1571436521;
+        bh=+WwV0E1ym9y6aqcP9TKtSk5RdtH6hq+0LURBV+jXbNw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JmfGQ0njL3UPxhTtd4iT6ZsW773s3TY2yOWKVUhE6uqaN+SCKX0kfe81fnujQhebN
-         OCpBiZszroMMZpzMy9f05iQJl1B61bgV5pfVqe+MQF3afXNOweIBE5CoyvE9EruvAj
-         WEbmm/mOrN4LCZnPwfLKBRnUZzZjhsOYY71q1Rg8=
+        b=RyCyijJ0NqIhu3+USMpJeYmWVdFCIBmUe6rfk89KNUmoJygCfh4z5QZqnWZD7k10v
+         60NbGMqKZP/q9POPQR0t6RWFEBKlgBMbp58manGiXIzDG1pbcZxQjjI+9xaxSnQBHG
+         YhVfjHiEqXMzblz5y0sB08IqO7hzLfwvVJ3TMqps=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Nicolas Waisman <nico@semmle.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
+Cc:     Bart Van Assche <bvanassche@acm.org>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 071/100] RDMA/cxgb4: Do not dma memory off of the stack
-Date:   Fri, 18 Oct 2019 18:04:56 -0400
-Message-Id: <20191018220525.9042-71-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 28/56] RDMA/iwcm: Fix a lock inversion issue
+Date:   Fri, 18 Oct 2019 18:07:25 -0400
+Message-Id: <20191018220753.10002-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191018220525.9042-1-sashal@kernel.org>
-References: <20191018220525.9042-1-sashal@kernel.org>
+In-Reply-To: <20191018220753.10002-1-sashal@kernel.org>
+References: <20191018220753.10002-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,107 +43,85 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Greg KH <gregkh@linuxfoundation.org>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit 3840c5b78803b2b6cc1ff820100a74a092c40cbb ]
+[ Upstream commit b66f31efbdad95ec274345721d99d1d835e6de01 ]
 
-Nicolas pointed out that the cxgb4 driver is doing dma off of the stack,
-which is generally considered a very bad thing.  On some architectures it
-could be a security problem, but odds are none of them actually run this
-driver, so it's just a "normal" bug.
+This patch fixes the lock inversion complaint:
 
-Resolve this by allocating the memory for a message off of the heap
-instead of the stack.  kmalloc() always will give us a proper memory
-location that DMA will work correctly from.
+============================================
+WARNING: possible recursive locking detected
+5.3.0-rc7-dbg+ #1 Not tainted
+--------------------------------------------
+kworker/u16:6/171 is trying to acquire lock:
+00000000035c6e6c (&id_priv->handler_mutex){+.+.}, at: rdma_destroy_id+0x78/0x4a0 [rdma_cm]
 
-Link: https://lore.kernel.org/r/20191001165611.GA3542072@kroah.com
-Reported-by: Nicolas Waisman <nico@semmle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Tested-by: Potnuri Bharat Teja <bharat@chelsio.com>
+but task is already holding lock:
+00000000bc7c307d (&id_priv->handler_mutex){+.+.}, at: iw_conn_req_handler+0x151/0x680 [rdma_cm]
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&id_priv->handler_mutex);
+  lock(&id_priv->handler_mutex);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+3 locks held by kworker/u16:6/171:
+ #0: 00000000e2eaa773 ((wq_completion)iw_cm_wq){+.+.}, at: process_one_work+0x472/0xac0
+ #1: 000000001efd357b ((work_completion)(&work->work)#3){+.+.}, at: process_one_work+0x476/0xac0
+ #2: 00000000bc7c307d (&id_priv->handler_mutex){+.+.}, at: iw_conn_req_handler+0x151/0x680 [rdma_cm]
+
+stack backtrace:
+CPU: 3 PID: 171 Comm: kworker/u16:6 Not tainted 5.3.0-rc7-dbg+ #1
+Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
+Workqueue: iw_cm_wq cm_work_handler [iw_cm]
+Call Trace:
+ dump_stack+0x8a/0xd6
+ __lock_acquire.cold+0xe1/0x24d
+ lock_acquire+0x106/0x240
+ __mutex_lock+0x12e/0xcb0
+ mutex_lock_nested+0x1f/0x30
+ rdma_destroy_id+0x78/0x4a0 [rdma_cm]
+ iw_conn_req_handler+0x5c9/0x680 [rdma_cm]
+ cm_work_handler+0xe62/0x1100 [iw_cm]
+ process_one_work+0x56d/0xac0
+ worker_thread+0x7a/0x5d0
+ kthread+0x1bc/0x210
+ ret_from_fork+0x24/0x30
+
+This is not a bug as there are actually two lock classes here.
+
+Link: https://lore.kernel.org/r/20190930231707.48259-3-bvanassche@acm.org
+Fixes: de910bd92137 ("RDMA/cma: Simplify locking needed for serialization of callbacks")
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/cxgb4/mem.c | 28 +++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+ drivers/infiniband/core/cma.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/mem.c b/drivers/infiniband/hw/cxgb4/mem.c
-index 7b76e6f81aeb4..f2fb7318abc10 100644
---- a/drivers/infiniband/hw/cxgb4/mem.c
-+++ b/drivers/infiniband/hw/cxgb4/mem.c
-@@ -274,13 +274,17 @@ static int write_tpt_entry(struct c4iw_rdev *rdev, u32 reset_tpt_entry,
- 			   struct sk_buff *skb, struct c4iw_wr_wait *wr_waitp)
- {
- 	int err;
--	struct fw_ri_tpte tpt;
-+	struct fw_ri_tpte *tpt;
- 	u32 stag_idx;
- 	static atomic_t key;
- 
- 	if (c4iw_fatal_error(rdev))
- 		return -EIO;
- 
-+	tpt = kmalloc(sizeof(*tpt), GFP_KERNEL);
-+	if (!tpt)
-+		return -ENOMEM;
-+
- 	stag_state = stag_state > 0;
- 	stag_idx = (*stag) >> 8;
- 
-@@ -290,6 +294,7 @@ static int write_tpt_entry(struct c4iw_rdev *rdev, u32 reset_tpt_entry,
- 			mutex_lock(&rdev->stats.lock);
- 			rdev->stats.stag.fail++;
- 			mutex_unlock(&rdev->stats.lock);
-+			kfree(tpt);
- 			return -ENOMEM;
- 		}
- 		mutex_lock(&rdev->stats.lock);
-@@ -304,28 +309,28 @@ static int write_tpt_entry(struct c4iw_rdev *rdev, u32 reset_tpt_entry,
- 
- 	/* write TPT entry */
- 	if (reset_tpt_entry)
--		memset(&tpt, 0, sizeof(tpt));
-+		memset(tpt, 0, sizeof(*tpt));
- 	else {
--		tpt.valid_to_pdid = cpu_to_be32(FW_RI_TPTE_VALID_F |
-+		tpt->valid_to_pdid = cpu_to_be32(FW_RI_TPTE_VALID_F |
- 			FW_RI_TPTE_STAGKEY_V((*stag & FW_RI_TPTE_STAGKEY_M)) |
- 			FW_RI_TPTE_STAGSTATE_V(stag_state) |
- 			FW_RI_TPTE_STAGTYPE_V(type) | FW_RI_TPTE_PDID_V(pdid));
--		tpt.locread_to_qpid = cpu_to_be32(FW_RI_TPTE_PERM_V(perm) |
-+		tpt->locread_to_qpid = cpu_to_be32(FW_RI_TPTE_PERM_V(perm) |
- 			(bind_enabled ? FW_RI_TPTE_MWBINDEN_F : 0) |
- 			FW_RI_TPTE_ADDRTYPE_V((zbva ? FW_RI_ZERO_BASED_TO :
- 						      FW_RI_VA_BASED_TO))|
- 			FW_RI_TPTE_PS_V(page_size));
--		tpt.nosnoop_pbladdr = !pbl_size ? 0 : cpu_to_be32(
-+		tpt->nosnoop_pbladdr = !pbl_size ? 0 : cpu_to_be32(
- 			FW_RI_TPTE_PBLADDR_V(PBL_OFF(rdev, pbl_addr)>>3));
--		tpt.len_lo = cpu_to_be32((u32)(len & 0xffffffffUL));
--		tpt.va_hi = cpu_to_be32((u32)(to >> 32));
--		tpt.va_lo_fbo = cpu_to_be32((u32)(to & 0xffffffffUL));
--		tpt.dca_mwbcnt_pstag = cpu_to_be32(0);
--		tpt.len_hi = cpu_to_be32((u32)(len >> 32));
-+		tpt->len_lo = cpu_to_be32((u32)(len & 0xffffffffUL));
-+		tpt->va_hi = cpu_to_be32((u32)(to >> 32));
-+		tpt->va_lo_fbo = cpu_to_be32((u32)(to & 0xffffffffUL));
-+		tpt->dca_mwbcnt_pstag = cpu_to_be32(0);
-+		tpt->len_hi = cpu_to_be32((u32)(len >> 32));
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 7c5eca312aa88..f698c6a28c142 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -2212,9 +2212,10 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
+ 		conn_id->cm_id.iw = NULL;
+ 		cma_exch(conn_id, RDMA_CM_DESTROYING);
+ 		mutex_unlock(&conn_id->handler_mutex);
++		mutex_unlock(&listen_id->handler_mutex);
+ 		cma_deref_id(conn_id);
+ 		rdma_destroy_id(&conn_id->id);
+-		goto out;
++		return ret;
  	}
- 	err = write_adapter_mem(rdev, stag_idx +
- 				(rdev->lldi.vr->stag.start >> 5),
--				sizeof(tpt), &tpt, skb, wr_waitp);
-+				sizeof(*tpt), tpt, skb, wr_waitp);
  
- 	if (reset_tpt_entry) {
- 		c4iw_put_resource(&rdev->resource.tpt_table, stag_idx);
-@@ -333,6 +338,7 @@ static int write_tpt_entry(struct c4iw_rdev *rdev, u32 reset_tpt_entry,
- 		rdev->stats.stag.cur -= 32;
- 		mutex_unlock(&rdev->stats.lock);
- 	}
-+	kfree(tpt);
- 	return err;
- }
- 
+ 	mutex_unlock(&conn_id->handler_mutex);
 -- 
 2.20.1
 
