@@ -2,90 +2,184 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD56BDBF9D
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Oct 2019 10:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B560DC0A3
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Oct 2019 11:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442179AbfJRIQC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Oct 2019 04:16:02 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:44371 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731008AbfJRIQC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Oct 2019 04:16:02 -0400
-Received: by mail-pl1-f196.google.com with SMTP id q15so2471812pll.11;
-        Fri, 18 Oct 2019 01:16:02 -0700 (PDT)
+        id S2633049AbfJRJMV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Oct 2019 05:12:21 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:41525 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390299AbfJRJMV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Oct 2019 05:12:21 -0400
+Received: by mail-wr1-f66.google.com with SMTP id p4so5381273wrm.8
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Oct 2019 02:12:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=M3S4yTtVgaNC9BkQRuSaEuAlwVVJJ6jYNkihyhEpRi8=;
-        b=idopb+em4RetH9GiUvFvJK761YLj4h6/AlCEqA6bzDqYMWGLNUahqbQH6A69wIQsDT
-         hGUNY4MnXEekB51MQ8sI59BW/kyjexIGJ27cjEtI5itCrGT05nVYV1OaFaEroBFeGMaG
-         eJ22SaHega6SqNDS+lIcWSOr1k5ibLmeJaJgDUIVnz2whel16FRvcsc3ELS39qvMbq4t
-         MR6mf+Egztb99o9k/MJeOkKYfNR/6m2xs+Lk93ZwnZ8ivpWphIuUT6XJoRLZGrCQjR/2
-         2KJ7MUOXFIZHIi0TTCDKvTHAniMnSSF061ZM/nRfh5OLP1gEuyhNu6XRAt129699POlC
-         qQ1w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=pQzmU8+xk+35I+JF+LJX3jGfizjZS+sisr4S9g769r4=;
+        b=Kw6Ib2/DD5YD7AzNpTkeeM/l4tk2OcIHK6MZ/whSd9LOsd1gCkKm6GnVRlJG28oB84
+         DbbOrT/QhYT41WxHqi19OUpzwCAmQqbAXXKA0vPcBCFgEwFtRKiZCZp8VdDDqV/mcROZ
+         uC/YGNU17BJuU4zRmqOtiVR3BktZohYIxKBUjvkvRVp5z1VE9tDCDvJNvbNdUVIe8mbR
+         nTxJl04GOaxpb3G+gVSMEjGFpyYHzKjq9uLlnPLjpu/xt60/2wHDDAbG3Q4fc1YawH5T
+         5RMX7xxPs69A8YG2tty+a4KlDSkGxdfmejjd9wc1Fxl7eAWnfrmbeJnhtfsj2UEkwh3K
+         7FTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=M3S4yTtVgaNC9BkQRuSaEuAlwVVJJ6jYNkihyhEpRi8=;
-        b=NKpuxb/t14ngqbPUwZUUxiu0AXo7xLpDVOQLJ5WHN7ml0FcoZWDetjifI9V1xJ/4po
-         /0KGV5Vf90WvFJ55ueFE/hWmEYgcCzyV8t8Pdo+ytVlu1KG1A/ylDwn+IV4Gn3hzAZjE
-         r9LeuMm4+DMwASGlUDgCoXuM6SLkeZhyJV77BUkuk+KqvIcTaN7oF1/7D4D459Dw1U+s
-         2Ec4rgBUSAQzoD9rqG22E3jLFEpibGZdNVufRiSdhRP8hix1cP6rTzbilp5KK996jdrD
-         DiVHlLXhY8tLntnMBnnU0Woh2khNCTi/6i8LBMb954rwaRfuwg5JzpiMIu9JjSLkzUBM
-         PY+w==
-X-Gm-Message-State: APjAAAVdkhABs725Hn2+3XkiGrGOXb9DPKWCMHvqhwoc2M2tiTWYNXTH
-        6aEcyrmCyjq3+izxw49qaw7/EOEc6NQ=
-X-Google-Smtp-Source: APXvYqxOyPRwYYZarT0UfJktCM8UsTrZreWvRAg17Hy3LBgoxoEYTPHLs16Xe3qS9t4vyyElzAggng==
-X-Received: by 2002:a17:902:bc41:: with SMTP id t1mr8649031plz.34.1571386561943;
-        Fri, 18 Oct 2019 01:16:01 -0700 (PDT)
-Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([89.31.126.54])
-        by smtp.gmail.com with ESMTPSA id e10sm7216574pfh.77.2019.10.18.01.15.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=pQzmU8+xk+35I+JF+LJX3jGfizjZS+sisr4S9g769r4=;
+        b=I4NO5HCBS3dfRfEhF0bmmaJel4NriJhsmqP7BJA5YbetIHossKfJOd0AVtLxi6Hpyh
+         tDYuFEeZ66eAYNK3lS9OakAJxDrbHK88RWKnF95IhkAHEitg1Hq4tNy/V2wVbgQ/THsg
+         keBjo9xOQJKB4PelaNWUGJHdCn+y/w33kadMhkkNOtdwKWhme3DXem6CHaafuIQvty/D
+         7Bt2830On8pVPx7KHSL3FGXCRDgzQ6MMgJX99pcg/my4gKSvSGyCHvsjbdBrwraG8MhQ
+         cKPoOhYF6Jli606nM9WG1Aa56Jz+tyS9mddd9hcVNJLjhcZTqnwh0qFIoE6oJmdCcyYK
+         R3Rg==
+X-Gm-Message-State: APjAAAUpiiSElh/zP7JrHutIlp1iFX01QvpLpefCooEYMlJbRfWOkJN1
+        XcJO+4wOFK2qftldFzIUgwGaM4Kc
+X-Google-Smtp-Source: APXvYqwQ64f1qdT/Yjjv7kMihF2aICxvXmF2U3/o+95nnoMdyM9U8lwYT3++grcJgvEus6iNrQa87Q==
+X-Received: by 2002:adf:f0cc:: with SMTP id x12mr6907588wro.326.1571389937907;
+        Fri, 18 Oct 2019 02:12:17 -0700 (PDT)
+Received: from kheib-workstation (bzq-79-179-0-252.red.bezeqint.net. [79.179.0.252])
+        by smtp.gmail.com with ESMTPSA id r2sm4767614wrm.3.2019.10.18.02.12.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Oct 2019 01:16:01 -0700 (PDT)
-From:   Chuhong Yuan <hslester96@gmail.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chuhong Yuan <hslester96@gmail.com>
-Subject: [PATCH] IB/uverbs: Add a check for uverbs_attr_get
-Date:   Fri, 18 Oct 2019 16:15:34 +0800
-Message-Id: <20191018081533.8544-1-hslester96@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 18 Oct 2019 02:12:17 -0700 (PDT)
+Date:   Fri, 18 Oct 2019 12:12:13 +0300
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     Michal Kalderon <mkalderon@marvell.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Lijun Ou <oulijun@huawei.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: Re: [EXT] [PATCH for-next v2 1/4] RDMA/core: Fix return code when
+ modify_port isn't supported
+Message-ID: <20191018091213.GA9641@kheib-workstation>
+References: <20191016072234.28442-1-kamalheib1@gmail.com>
+ <20191016072234.28442-2-kamalheib1@gmail.com>
+ <MN2PR18MB31825843C5DFA493069485D2A1920@MN2PR18MB3182.namprd18.prod.outlook.com>
+ <20191017090930.GA28093@kheib-workstation>
+ <MN2PR18MB3182B29937262A44C8452CD4A16D0@MN2PR18MB3182.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MN2PR18MB3182B29937262A44C8452CD4A16D0@MN2PR18MB3182.namprd18.prod.outlook.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Only uverbs_copy_to_struct_or_zero in uverbs_ioctl.c does not have a
-check for uverbs_attr_get.
-Although its usage in uverbs_response has a check for attr's validity,
-UVERBS_HANDLER does not.
-Therefore, it is better to add a check like other functions in
-uverbs_ioctl.c.
+On Thu, Oct 17, 2019 at 09:14:53AM +0000, Michal Kalderon wrote:
+> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> > owner@vger.kernel.org> On Behalf Of Kamal Heib
+> > 
+> > On Wed, Oct 16, 2019 at 08:05:49AM +0000, Michal Kalderon wrote:
+> > > > From: Kamal Heib <kamalheib1@gmail.com>
+> > > > Sent: Wednesday, October 16, 2019 10:23 AM
+> > > >
+> > > > External Email
+> > > >
+> > > > --------------------------------------------------------------------
+> > > > -- The proper return code is "-EOPNOTSUPP" when modify_port callback
+> > > > is not supported.
+> > > >
+> > > > Fixes: 61e0962d5221 ("IB: Avoid ib_modify_port() failure for RoCE
+> > > > devices")
+> > > > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> > > > ---
+> > > >  drivers/infiniband/core/device.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/infiniband/core/device.c
+> > > > b/drivers/infiniband/core/device.c
+> > > > index a667636f74bf..98a01caf7850 100644
+> > > > --- a/drivers/infiniband/core/device.c
+> > > > +++ b/drivers/infiniband/core/device.c
+> > > > @@ -2397,7 +2397,7 @@ int ib_modify_port(struct ib_device *device,
+> > > >  					     port_modify_mask,
+> > > >  					     port_modify);
+> > > >  	else
+> > > > -		rc = rdma_protocol_roce(device, port_num) ? 0 : -ENOSYS;
+> > > > +		rc = rdma_protocol_roce(device, port_num) ? 0 : -
+> > > > EOPNOTSUPP;
+> > >
+> > > This is a bit confusing, looks like for RoCE it's ok not to have a
+> > > callback but for the The other protocols it's required. For iWARP for
+> > example there also isn't a modify-port.
+> > > Is there any other protocol except ib that this is relevant to ?
+> > > If not perhaps modify rdma_protocol_roce(..)? to rdma_protocol_ib(...)? -
+> > EOPNOTSUPP : 0?
+> > >
+> > 
+> > Yes, I agree this is confusing.
+> > 
+> > This change was introduced by the following commit to avoid the failures of
+> > ib_modify_port() calls from CM when the protocol is RoCE, I also see that
+> > almost all providers that support RoCE return success from the
+> > modify_port() callback (hns, mlx4, mlx5, ocrdma, qedr), except rxe and
+> > vmw_pvrdma which I think they shouldn't.
+> > 
+> > So, I suggest adding a check to CM avoid calling ib_modify_port() when the
+> > protocol is RoCE and cleanup the mess from the providers, thoughts?
+> I think we can leave the logic inside the function ib_modify_port, and just return
+> Success if the protocol isn't IB. 
+>
 
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
----
- drivers/infiniband/core/uverbs_ioctl.c | 3 +++
- 1 file changed, 3 insertions(+)
+OK, I'll fix it in v3.
 
-diff --git a/drivers/infiniband/core/uverbs_ioctl.c b/drivers/infiniband/core/uverbs_ioctl.c
-index 61758201d9b2..269938f59d3f 100644
---- a/drivers/infiniband/core/uverbs_ioctl.c
-+++ b/drivers/infiniband/core/uverbs_ioctl.c
-@@ -795,6 +795,9 @@ int uverbs_copy_to_struct_or_zero(const struct uverbs_attr_bundle *bundle,
- {
- 	const struct uverbs_attr *attr = uverbs_attr_get(bundle, idx);
- 
-+	if (IS_ERR(attr))
-+		return PTR_ERR(attr);
-+
- 	if (size < attr->ptr_attr.len) {
- 		if (clear_user(u64_to_user_ptr(attr->ptr_attr.data) + size,
- 			       attr->ptr_attr.len - size))
--- 
-2.20.1
-
+> > 
+> > commit 61e0962d52216f2e5bab59bb055f1210e41f484f
+> > Author: Selvin Xavier <selvin.xavier@broadcom.com>
+> > Date:   Wed Aug 23 01:08:07 2017 -0700
+> > 
+> >     IB: Avoid ib_modify_port() failure for RoCE devices
+> > 
+> >     IB CM calls ib_modify_port() irrespective of link layer. If the
+> >     failure is returned, the mad agent gets unregistered for those
+> >     devices. Recently, modify_port() hook was removed from some of the
+> >     low level drivers as it was always returning success. This breaks
+> >     rdma connection establishment over those devices.
+> >     For ethernet devices, Qkey violation and port capabilities are not
+> >     applicable. So returning success for RoCE when modify_port hook is
+> >     is not implemented.
+> > 
+> >     Cc: Leon Romanovsky <leon@kernel.org>
+> >     Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> >     Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+> >     Signed-off-by: Doug Ledford <dledford@redhat.com>
+> > 
+> > diff --git a/drivers/infiniband/core/device.c
+> > b/drivers/infiniband/core/device.c
+> > index fc6be1175183..2466ffc6362d 100644
+> > --- a/drivers/infiniband/core/device.c
+> > +++ b/drivers/infiniband/core/device.c
+> > @@ -1005,14 +1005,17 @@ int ib_modify_port(struct ib_device *device,
+> >                    u8 port_num, int port_modify_mask,
+> >                    struct ib_port_modify *port_modify)  {
+> > -       if (!device->modify_port)
+> > -               return -ENOSYS;
+> > +       int rc;
+> > 
+> >         if (!rdma_is_port_valid(device, port_num))
+> >                 return -EINVAL;
+> > 
+> > -       return device->modify_port(device, port_num, port_modify_mask,
+> > -                                  port_modify);
+> > +       if (device->modify_port)
+> > +               rc = device->modify_port(device, port_num, port_modify_mask,
+> > +                                          port_modify);
+> > +       else
+> > +               rc = rdma_protocol_roce(device, port_num) ? 0 : -ENOSYS;
+> > +       return rc;
+> >  }
+> >  EXPORT_SYMBOL(ib_modify_port);
+> > 
+> > 
+> > >
+> > >
+> > > >  	return rc;
+> > > >  }
+> > > >  EXPORT_SYMBOL(ib_modify_port);
+> > > > --
+> > > > 2.20.1
+> > >
