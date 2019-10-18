@@ -2,97 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D176CDD091
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Oct 2019 22:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDC0DD098
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Oct 2019 22:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727488AbfJRUrv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Oct 2019 16:47:51 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:33158 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726383AbfJRUrv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Oct 2019 16:47:51 -0400
-Received: by mail-qk1-f193.google.com with SMTP id 71so2712420qkl.0
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Oct 2019 13:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ajp9s1qaNwz6bmaiY8C/7SU7SsSlLhlRpFO3uAx1pvQ=;
-        b=Icr8JXO1Md/73c4Uc4OT7EyJ2kfieESwGNvpfGRYl4MTrcRl77yFDrQg4l6oZ2epYt
-         D3fHGwDk5DgsKidnD1ylOSERVNK3l7fUFvxyFlqHg0oNx0MG3qE/d0ajGWsc0LkVLDo7
-         fZw/ktp8jlLLoFvd4IcWoF6uYrUuCI3it/9kPBzJ6xZOtvos5gXDfuWq7bzllGnkY4t3
-         ik6P1Te3rnAeogJch9WJrQF/mArGNGTIPlKFT2mpY6KYJc55qm28+JaHu/dZ/zkmg68Z
-         OOrsvy/98sOGUaqv/Gda4F9rQZnQVf1XItNhZGntG7jqUTYNuvd3MIWQbVyJMv+stuwe
-         lokw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ajp9s1qaNwz6bmaiY8C/7SU7SsSlLhlRpFO3uAx1pvQ=;
-        b=kxm7Da0y/i5U8t8nZeRo5csgt/ahTIuQxglk85vgbenldxKFgh6X0KPZDvmYhdYhNx
-         6EPYL/mnp7cOG8kTiXBcH0IA52ndvKSH4pRERV/AqeGZv3TBH0aqfJFA2Jym5TC0YeKD
-         gqJi2dDl0im1Fkxe7kw2OSLL3ilQH11kGshPHgIR00VNvEZ/ypZ1FV12W7ea0fOJGd4q
-         TJkHja6lPZmXqnocKypg1N7SE9S5QxWnUQ4qlFlH4eiKBxpYRiRXXz1xQuMYvCz97oFv
-         eQLO/IXiu3BO4u1SxsohKFz/+7IvixI/vGXwUx7S1uQdJKK1IChYU9SRkPEQ/MhZ7aTH
-         aoMg==
-X-Gm-Message-State: APjAAAUYbJG9cCyBQC1a/EyvobpoCiNSHcBWDnHU8lBhx/qE0NLQaBZP
-        NnTWV9JMaNsuqxUcwISNHOAvpw==
-X-Google-Smtp-Source: APXvYqxzYH68MxxJK4idc/6YfzmNnjDCM4KcPMYiWvvs3lLghlt0FOjtSRD57NRW8cUaInZaNrYDYQ==
-X-Received: by 2002:a05:620a:530:: with SMTP id h16mr11189367qkh.396.1571431668544;
-        Fri, 18 Oct 2019 13:47:48 -0700 (PDT)
-Received: from ziepe.ca (ip-66-51-117-131.syban.net. [66.51.117.131])
-        by smtp.gmail.com with ESMTPSA id w2sm4746556qtc.59.2019.10.18.13.47.48
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 18 Oct 2019 13:47:48 -0700 (PDT)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iLZA3-0001bi-46; Fri, 18 Oct 2019 17:47:47 -0300
-Date:   Fri, 18 Oct 2019 17:47:47 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Adit Ranadive <aditr@vmware.com>
+        id S1729259AbfJRUtr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Oct 2019 16:49:47 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:50750 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728567AbfJRUtr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 18 Oct 2019 16:49:47 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id A92A73071D9C;
+        Fri, 18 Oct 2019 20:49:46 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-37.rdu2.redhat.com [10.10.112.37])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A22A0600C4;
+        Fri, 18 Oct 2019 20:49:45 +0000 (UTC)
+Message-ID: <93a0c381172f05a0256af82f702faa2d4068a24a.camel@redhat.com>
+Subject: Re: [PATCH for-next] iw_cxgb3: remove iw_cxgb3 module from kernel.
+From:   Doug Ledford <dledford@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Adit Ranadive <aditr@vmware.com>
 Cc:     Potnuri Bharat Teja <bharat@chelsio.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "nirranjan@chelsio.com" <nirranjan@chelsio.com>
-Subject: Re: [PATCH for-next] iw_cxgb3: remove iw_cxgb3 module from kernel.
-Message-ID: <20191018204747.GB6087@ziepe.ca>
+Date:   Fri, 18 Oct 2019 16:49:43 -0400
+In-Reply-To: <20191018204747.GB6087@ziepe.ca>
 References: <20190930074252.20133-1-bharat@chelsio.com>
- <20191004181154.GA20868@ziepe.ca>
- <D4D8B4CD-CDA7-4587-BA10-E41A2DE89978@vmware.com>
+         <20191004181154.GA20868@ziepe.ca>
+         <D4D8B4CD-CDA7-4587-BA10-E41A2DE89978@vmware.com>
+         <20191018204747.GB6087@ziepe.ca>
+Organization: Red Hat, Inc.
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-WqrDnNMpzmVFWUmMflly"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <D4D8B4CD-CDA7-4587-BA10-E41A2DE89978@vmware.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.47]); Fri, 18 Oct 2019 20:49:46 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 17, 2019 at 06:41:16AM +0000, Adit Ranadive wrote:
-> On 10/4/19, 11:12 AM, "Jason Gunthorpe" <jgg@ziepe.ca> wrote:
-> > 
-> > On Mon, Sep 30, 2019 at 01:12:52PM +0530, Potnuri Bharat Teja wrote:
-> > > remove iw_cxgb3 module from kernel as the corresponding HW Chelsio T3 has
-> > > reached EOL.
-> > > 
-> > > Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
-> > 
-> > Applied to for-next
-> > 
-> > Please also send a PR to delete cxgb3 from rdma-core
-> > 
-> 
-> Is Chelsio going to send a PR for the deletion? It looks like otherwise
-> rdma-core is broken for other providers when running with the for-next branch.
-> 
-> Also, it looks like the kernel-headers/update script in rdma-core needs to be
-> updated to remove a header if required from the rdma_kernel_provider_abi
-> section. Or is that expected to be manual?
 
-Manual is probably fine, this doesn't happen often
+--=-WqrDnNMpzmVFWUmMflly
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-And the bug introduced in this patch is just a bug that should be
-fixed in the kernel now
+On Fri, 2019-10-18 at 17:47 -0300, Jason Gunthorpe wrote:
+> On Thu, Oct 17, 2019 at 06:41:16AM +0000, Adit Ranadive wrote:
+> > On 10/4/19, 11:12 AM, "Jason Gunthorpe" <jgg@ziepe.ca> wrote:
+> > > On Mon, Sep 30, 2019 at 01:12:52PM +0530, Potnuri Bharat Teja
+> > > wrote:
+> > > > remove iw_cxgb3 module from kernel as the corresponding HW
+> > > > Chelsio T3 has
+> > > > reached EOL.
+> > > >=20
+> > > > Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+> > >=20
+> > > Applied to for-next
+> > >=20
+> > > Please also send a PR to delete cxgb3 from rdma-core
+> > >=20
+> >=20
+> > Is Chelsio going to send a PR for the deletion? It looks like
+> > otherwise
+> > rdma-core is broken for other providers when running with the for-
+> > next branch.
+> >=20
+> > Also, it looks like the kernel-headers/update script in rdma-core
+> > needs to be
+> > updated to remove a header if required from the
+> > rdma_kernel_provider_abi
+> > section. Or is that expected to be manual?
+>=20
+> Manual is probably fine, this doesn't happen often
+>=20
+> And the bug introduced in this patch is just a bug that should be
+> fixed in the kernel now
 
-Jason
+I pushed that fix out already.
+
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-WqrDnNMpzmVFWUmMflly
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl2qJWcACgkQuCajMw5X
+L90uEQ//RX/WdOM9IuS1xBzb1+/YpJKL4kLRBTUCeqWiJHSUPmemmcUQ317lp8cK
+JpYjt9fIRpOg0vIaQIEsq+Vjzjt5At3gJqFYnrQSDQiQFcmnLrmL/SjQCkbsPJwJ
+Dp+HceqvR7ZEGS6H3WtcP3z3A4nbMBHXIXYyWKJphB6udlQvrbgjvV5EyRf50IoC
+09tKxKii2oASoiFvj/MgQ5vysKfE6jMMZ1lj8RM0JhH7FHVIG46tJD+5WIsU9p4d
+UZXdUsUDUDopwzRh7A0y5SUk65rgDEXhKL0KE3AtnwaGcxd7B4PocUcDbu6qXVWE
+dFpIAGnhp86k3ztrUb7o7DsVcS7r6sI0WdBZQEWQF2TEGcpFTQZaf15rshBSIpuL
+vfLdtpWw0kn6xpNeDG/ezmXfs5lC7yeHdfj02cCVwnnf2yegDi9ToDvF9I98qZWT
+Ds40eO37JRTKN/bem6m6jmwQ6fuMt8OjCg4O087ZWMUWPd2VMs1QFswMu/G/Rmpr
+kNedjh7wxcy0rVonGHSsQCmKDXCn8QxOvlhI8KzwvgOH+5BIjx5DT1sqR0BXw+dC
+3FG+8pk0IBDMANBXTQroUTRHL4q+xgk78znO1dJbvnWisIULXE80b54l0L6kDJGQ
+iq053CdT1TC6nPuNxgizWxn+bbYtulIEtUOanFfGjssRVwFhylc=
+=vSs6
+-----END PGP SIGNATURE-----
+
+--=-WqrDnNMpzmVFWUmMflly--
+
