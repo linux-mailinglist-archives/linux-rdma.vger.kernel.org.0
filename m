@@ -2,36 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 166AFDD49E
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Oct 2019 00:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EAECDD4D3
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Oct 2019 00:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727493AbfJRWDz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Oct 2019 18:03:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35476 "EHLO mail.kernel.org"
+        id S2392220AbfJRW1n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Oct 2019 18:27:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727460AbfJRWDz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        id S1727476AbfJRWDz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
         Fri, 18 Oct 2019 18:03:55 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CBBF222D3;
-        Fri, 18 Oct 2019 22:03:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55FEE2245D;
+        Fri, 18 Oct 2019 22:03:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571436233;
-        bh=fDteLza2W1wJUfSTg/wf7TafiBkuex3xqUTpb6zVZQg=;
+        s=default; t=1571436235;
+        bh=Z8kNSpZKICsj64i1BK953BmpbaZEYmjCSvxuGKfVnTE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XO9LiVOcRnV+PwvlVBaFRzIAZptSebYrbl4XPH4uMa1sPB/ouESXF1TshMop+SZhz
-         9goy0YuL3qnSqu1kQ8pcbopSj68Ic77zCQVMMjmsB8p/AKMRh/wUsZ1f8sNBM4DHpD
-         kMWe9gZBuqB+pWhK2cKIV9vpF3nIXZEVjsAZX8wY=
+        b=FwG0meJObO8KxVQtfNMVk2JdySkMg2+vGKEl8fvTr06uvyEYTm/V0d/aIFjX5QiEW
+         z2pPFK31mS3rDpz1nyiGRjXiYOhsgkvRn66oHNTrwKNnnjtW4W+TuFZBG7l/SHoog0
+         wYEs8VzhBx5ompKe4tauokwVuAip3Z/BE8+rZYM0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Potnuri Bharat Teja <bharat@chelsio.com>,
-        Rahul Kundu <rahul.kundu@chelsio.com>,
+Cc:     Bart Van Assche <bvanassche@acm.org>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.3 19/89] RDMA/iw_cxgb4: fix SRQ access from dump_qp()
-Date:   Fri, 18 Oct 2019 18:02:14 -0400
-Message-Id: <20191018220324.8165-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.3 20/89] RDMA/iwcm: Fix a lock inversion issue
+Date:   Fri, 18 Oct 2019 18:02:15 -0400
+Message-Id: <20191018220324.8165-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191018220324.8165-1-sashal@kernel.org>
 References: <20191018220324.8165-1-sashal@kernel.org>
@@ -44,92 +43,85 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Potnuri Bharat Teja <bharat@chelsio.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit 91724c1e5afe45b64970036170659726e7dc5cff ]
+[ Upstream commit b66f31efbdad95ec274345721d99d1d835e6de01 ]
 
-dump_qp() is wrongly trying to dump SRQ structures as QP when SRQ is used
-by the application. This patch matches the QPID before dumping them.  Also
-removes unwanted SRQ id addition to QP id xarray.
+This patch fixes the lock inversion complaint:
 
-Fixes: 2f43129127e6 ("cxgb4: Convert qpidr to XArray")
-Link: https://lore.kernel.org/r/20190930074119.20046-1-bharat@chelsio.com
-Signed-off-by: Rahul Kundu <rahul.kundu@chelsio.com>
-Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+============================================
+WARNING: possible recursive locking detected
+5.3.0-rc7-dbg+ #1 Not tainted
+--------------------------------------------
+kworker/u16:6/171 is trying to acquire lock:
+00000000035c6e6c (&id_priv->handler_mutex){+.+.}, at: rdma_destroy_id+0x78/0x4a0 [rdma_cm]
+
+but task is already holding lock:
+00000000bc7c307d (&id_priv->handler_mutex){+.+.}, at: iw_conn_req_handler+0x151/0x680 [rdma_cm]
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&id_priv->handler_mutex);
+  lock(&id_priv->handler_mutex);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+3 locks held by kworker/u16:6/171:
+ #0: 00000000e2eaa773 ((wq_completion)iw_cm_wq){+.+.}, at: process_one_work+0x472/0xac0
+ #1: 000000001efd357b ((work_completion)(&work->work)#3){+.+.}, at: process_one_work+0x476/0xac0
+ #2: 00000000bc7c307d (&id_priv->handler_mutex){+.+.}, at: iw_conn_req_handler+0x151/0x680 [rdma_cm]
+
+stack backtrace:
+CPU: 3 PID: 171 Comm: kworker/u16:6 Not tainted 5.3.0-rc7-dbg+ #1
+Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
+Workqueue: iw_cm_wq cm_work_handler [iw_cm]
+Call Trace:
+ dump_stack+0x8a/0xd6
+ __lock_acquire.cold+0xe1/0x24d
+ lock_acquire+0x106/0x240
+ __mutex_lock+0x12e/0xcb0
+ mutex_lock_nested+0x1f/0x30
+ rdma_destroy_id+0x78/0x4a0 [rdma_cm]
+ iw_conn_req_handler+0x5c9/0x680 [rdma_cm]
+ cm_work_handler+0xe62/0x1100 [iw_cm]
+ process_one_work+0x56d/0xac0
+ worker_thread+0x7a/0x5d0
+ kthread+0x1bc/0x210
+ ret_from_fork+0x24/0x30
+
+This is not a bug as there are actually two lock classes here.
+
+Link: https://lore.kernel.org/r/20190930231707.48259-3-bvanassche@acm.org
+Fixes: de910bd92137 ("RDMA/cma: Simplify locking needed for serialization of callbacks")
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/cxgb4/device.c |  7 +++++--
- drivers/infiniband/hw/cxgb4/qp.c     | 10 +---------
- 2 files changed, 6 insertions(+), 11 deletions(-)
+ drivers/infiniband/core/cma.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/device.c b/drivers/infiniband/hw/cxgb4/device.c
-index a8b9548bd1a26..599340c1f0b82 100644
---- a/drivers/infiniband/hw/cxgb4/device.c
-+++ b/drivers/infiniband/hw/cxgb4/device.c
-@@ -242,10 +242,13 @@ static void set_ep_sin6_addrs(struct c4iw_ep *ep,
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index a68d0ccf67a43..2e48b59926c19 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -2396,9 +2396,10 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
+ 		conn_id->cm_id.iw = NULL;
+ 		cma_exch(conn_id, RDMA_CM_DESTROYING);
+ 		mutex_unlock(&conn_id->handler_mutex);
++		mutex_unlock(&listen_id->handler_mutex);
+ 		cma_deref_id(conn_id);
+ 		rdma_destroy_id(&conn_id->id);
+-		goto out;
++		return ret;
  	}
- }
  
--static int dump_qp(struct c4iw_qp *qp, struct c4iw_debugfs_data *qpd)
-+static int dump_qp(unsigned long id, struct c4iw_qp *qp,
-+		   struct c4iw_debugfs_data *qpd)
- {
- 	int space;
- 	int cc;
-+	if (id != qp->wq.sq.qid)
-+		return 0;
- 
- 	space = qpd->bufsize - qpd->pos - 1;
- 	if (space == 0)
-@@ -350,7 +353,7 @@ static int qp_open(struct inode *inode, struct file *file)
- 
- 	xa_lock_irq(&qpd->devp->qps);
- 	xa_for_each(&qpd->devp->qps, index, qp)
--		dump_qp(qp, qpd);
-+		dump_qp(index, qp, qpd);
- 	xa_unlock_irq(&qpd->devp->qps);
- 
- 	qpd->buf[qpd->pos++] = 0;
-diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
-index eb9368be28c1d..bbcac539777a2 100644
---- a/drivers/infiniband/hw/cxgb4/qp.c
-+++ b/drivers/infiniband/hw/cxgb4/qp.c
-@@ -2737,15 +2737,11 @@ int c4iw_create_srq(struct ib_srq *ib_srq, struct ib_srq_init_attr *attrs,
- 	if (CHELSIO_CHIP_VERSION(rhp->rdev.lldi.adapter_type) > CHELSIO_T6)
- 		srq->flags = T4_SRQ_LIMIT_SUPPORT;
- 
--	ret = xa_insert_irq(&rhp->qps, srq->wq.qid, srq, GFP_KERNEL);
--	if (ret)
--		goto err_free_queue;
--
- 	if (udata) {
- 		srq_key_mm = kmalloc(sizeof(*srq_key_mm), GFP_KERNEL);
- 		if (!srq_key_mm) {
- 			ret = -ENOMEM;
--			goto err_remove_handle;
-+			goto err_free_queue;
- 		}
- 		srq_db_key_mm = kmalloc(sizeof(*srq_db_key_mm), GFP_KERNEL);
- 		if (!srq_db_key_mm) {
-@@ -2789,8 +2785,6 @@ int c4iw_create_srq(struct ib_srq *ib_srq, struct ib_srq_init_attr *attrs,
- 	kfree(srq_db_key_mm);
- err_free_srq_key_mm:
- 	kfree(srq_key_mm);
--err_remove_handle:
--	xa_erase_irq(&rhp->qps, srq->wq.qid);
- err_free_queue:
- 	free_srq_queue(srq, ucontext ? &ucontext->uctx : &rhp->rdev.uctx,
- 		       srq->wr_waitp);
-@@ -2813,8 +2807,6 @@ void c4iw_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
- 	rhp = srq->rhp;
- 
- 	pr_debug("%s id %d\n", __func__, srq->wq.qid);
--
--	xa_erase_irq(&rhp->qps, srq->wq.qid);
- 	ucontext = rdma_udata_to_drv_context(udata, struct c4iw_ucontext,
- 					     ibucontext);
- 	free_srq_queue(srq, ucontext ? &ucontext->uctx : &rhp->rdev.uctx,
+ 	mutex_unlock(&conn_id->handler_mutex);
 -- 
 2.20.1
 
