@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36304DD4DC
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Oct 2019 00:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166AFDD49E
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Oct 2019 00:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726259AbfJRW14 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Oct 2019 18:27:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35424 "EHLO mail.kernel.org"
+        id S1727493AbfJRWDz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Oct 2019 18:03:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727431AbfJRWDw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 18 Oct 2019 18:03:52 -0400
+        id S1727460AbfJRWDz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 18 Oct 2019 18:03:55 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5770222D4;
-        Fri, 18 Oct 2019 22:03:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CBBF222D3;
+        Fri, 18 Oct 2019 22:03:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571436231;
-        bh=p9C5sV/9RGDGSsR26ocpzESBcVa9EVNGwDLOF9hwdCM=;
+        s=default; t=1571436233;
+        bh=fDteLza2W1wJUfSTg/wf7TafiBkuex3xqUTpb6zVZQg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KN+mpTQpXhXETZoM7l+m1SBa/z/LcwqgZ4e2Xf+sILWTxlIY1beh4A9qPwjLh0vCk
-         rMAZyWZlycttm/p6niXpR3hobCb5eks2Eno9qncjJmpiohwNzIH3uGhw51HjTdpqC1
-         Ky1a6sCg1b9Kc82MDCyaE24jx8KPHgXb/bqp9dKs=
+        b=XO9LiVOcRnV+PwvlVBaFRzIAZptSebYrbl4XPH4uMa1sPB/ouESXF1TshMop+SZhz
+         9goy0YuL3qnSqu1kQ8pcbopSj68Ic77zCQVMMjmsB8p/AKMRh/wUsZ1f8sNBM4DHpD
+         kMWe9gZBuqB+pWhK2cKIV9vpF3nIXZEVjsAZX8wY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Krishnamraju Eraparaju <krishna2@chelsio.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
+Cc:     Potnuri Bharat Teja <bharat@chelsio.com>,
+        Rahul Kundu <rahul.kundu@chelsio.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.3 17/89] RDMA/siw: Fix serialization issue in write_space()
-Date:   Fri, 18 Oct 2019 18:02:12 -0400
-Message-Id: <20191018220324.8165-17-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.3 19/89] RDMA/iw_cxgb4: fix SRQ access from dump_qp()
+Date:   Fri, 18 Oct 2019 18:02:14 -0400
+Message-Id: <20191018220324.8165-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191018220324.8165-1-sashal@kernel.org>
 References: <20191018220324.8165-1-sashal@kernel.org>
@@ -44,107 +44,92 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Krishnamraju Eraparaju <krishna2@chelsio.com>
+From: Potnuri Bharat Teja <bharat@chelsio.com>
 
-[ Upstream commit df791c54d627bae53c9be3be40a69594c55de487 ]
+[ Upstream commit 91724c1e5afe45b64970036170659726e7dc5cff ]
 
-In siw_qp_llp_write_space(), 'sock' members should be accessed with
-sk_callback_lock held, otherwise, it could race with
-siw_sk_restore_upcalls(). And this could cause "NULL deref" panic.  Below
-panic is due to the NULL cep returned from sk_to_cep(sk):
+dump_qp() is wrongly trying to dump SRQ structures as QP when SRQ is used
+by the application. This patch matches the QPID before dumping them.  Also
+removes unwanted SRQ id addition to QP id xarray.
 
-  Call Trace:
-   <IRQ>    siw_qp_llp_write_space+0x11/0x40 [siw]
-   tcp_check_space+0x4c/0xf0
-   tcp_rcv_established+0x52b/0x630
-   tcp_v4_do_rcv+0xf4/0x1e0
-   tcp_v4_rcv+0x9b8/0xab0
-   ip_protocol_deliver_rcu+0x2c/0x1c0
-   ip_local_deliver_finish+0x44/0x50
-   ip_local_deliver+0x6b/0xf0
-   ? ip_protocol_deliver_rcu+0x1c0/0x1c0
-   ip_rcv+0x52/0xd0
-   ? ip_rcv_finish_core.isra.14+0x390/0x390
-   __netif_receive_skb_one_core+0x83/0xa0
-   netif_receive_skb_internal+0x73/0xb0
-   napi_gro_frags+0x1ff/0x2b0
-   t4_ethrx_handler+0x4a7/0x740 [cxgb4]
-   process_responses+0x2c9/0x590 [cxgb4]
-   ? t4_sge_intr_msix+0x1d/0x30 [cxgb4]
-   ? handle_irq_event_percpu+0x51/0x70
-   ? handle_irq_event+0x41/0x60
-   ? handle_edge_irq+0x97/0x1a0
-   napi_rx_handler+0x14/0xe0 [cxgb4]
-   net_rx_action+0x2af/0x410
-   __do_softirq+0xda/0x2a8
-   do_softirq_own_stack+0x2a/0x40
-   </IRQ>
-   do_softirq+0x50/0x60
-   __local_bh_enable_ip+0x50/0x60
-   ip_finish_output2+0x18f/0x520
-   ip_output+0x6e/0xf0
-   ? __ip_finish_output+0x1f0/0x1f0
-   __ip_queue_xmit+0x14f/0x3d0
-   ? __slab_alloc+0x4b/0x58
-   __tcp_transmit_skb+0x57d/0xa60
-   tcp_write_xmit+0x23b/0xfd0
-   __tcp_push_pending_frames+0x2e/0xf0
-   tcp_sendmsg_locked+0x939/0xd50
-   tcp_sendmsg+0x27/0x40
-   sock_sendmsg+0x57/0x80
-   siw_tx_hdt+0x894/0xb20 [siw]
-   ? find_busiest_group+0x3e/0x5b0
-   ? common_interrupt+0xa/0xf
-   ? common_interrupt+0xa/0xf
-   ? common_interrupt+0xa/0xf
-   siw_qp_sq_process+0xf1/0xe60 [siw]
-   ? __wake_up_common_lock+0x87/0xc0
-   siw_sq_resume+0x33/0xe0 [siw]
-   siw_run_sq+0xac/0x190 [siw]
-   ? remove_wait_queue+0x60/0x60
-   kthread+0xf8/0x130
-   ? siw_sq_resume+0xe0/0xe0 [siw]
-   ? kthread_bind+0x10/0x10
-   ret_from_fork+0x35/0x40
-
-Fixes: f29dd55b0236 ("rdma/siw: queue pair methods")
-Link: https://lore.kernel.org/r/20190923101112.32685-1-krishna2@chelsio.com
-Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
-Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+Fixes: 2f43129127e6 ("cxgb4: Convert qpidr to XArray")
+Link: https://lore.kernel.org/r/20190930074119.20046-1-bharat@chelsio.com
+Signed-off-by: Rahul Kundu <rahul.kundu@chelsio.com>
+Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/siw/siw_qp.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/cxgb4/device.c |  7 +++++--
+ drivers/infiniband/hw/cxgb4/qp.c     | 10 +---------
+ 2 files changed, 6 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
-index 430314c8abd94..52d402f39df93 100644
---- a/drivers/infiniband/sw/siw/siw_qp.c
-+++ b/drivers/infiniband/sw/siw/siw_qp.c
-@@ -182,12 +182,19 @@ void siw_qp_llp_close(struct siw_qp *qp)
-  */
- void siw_qp_llp_write_space(struct sock *sk)
- {
--	struct siw_cep *cep = sk_to_cep(sk);
-+	struct siw_cep *cep;
- 
--	cep->sk_write_space(sk);
-+	read_lock(&sk->sk_callback_lock);
-+
-+	cep  = sk_to_cep(sk);
-+	if (cep) {
-+		cep->sk_write_space(sk);
- 
--	if (!test_bit(SOCK_NOSPACE, &sk->sk_socket->flags))
--		(void)siw_sq_start(cep->qp);
-+		if (!test_bit(SOCK_NOSPACE, &sk->sk_socket->flags))
-+			(void)siw_sq_start(cep->qp);
-+	}
-+
-+	read_unlock(&sk->sk_callback_lock);
+diff --git a/drivers/infiniband/hw/cxgb4/device.c b/drivers/infiniband/hw/cxgb4/device.c
+index a8b9548bd1a26..599340c1f0b82 100644
+--- a/drivers/infiniband/hw/cxgb4/device.c
++++ b/drivers/infiniband/hw/cxgb4/device.c
+@@ -242,10 +242,13 @@ static void set_ep_sin6_addrs(struct c4iw_ep *ep,
+ 	}
  }
  
- static int siw_qp_readq_init(struct siw_qp *qp, int irq_size, int orq_size)
+-static int dump_qp(struct c4iw_qp *qp, struct c4iw_debugfs_data *qpd)
++static int dump_qp(unsigned long id, struct c4iw_qp *qp,
++		   struct c4iw_debugfs_data *qpd)
+ {
+ 	int space;
+ 	int cc;
++	if (id != qp->wq.sq.qid)
++		return 0;
+ 
+ 	space = qpd->bufsize - qpd->pos - 1;
+ 	if (space == 0)
+@@ -350,7 +353,7 @@ static int qp_open(struct inode *inode, struct file *file)
+ 
+ 	xa_lock_irq(&qpd->devp->qps);
+ 	xa_for_each(&qpd->devp->qps, index, qp)
+-		dump_qp(qp, qpd);
++		dump_qp(index, qp, qpd);
+ 	xa_unlock_irq(&qpd->devp->qps);
+ 
+ 	qpd->buf[qpd->pos++] = 0;
+diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
+index eb9368be28c1d..bbcac539777a2 100644
+--- a/drivers/infiniband/hw/cxgb4/qp.c
++++ b/drivers/infiniband/hw/cxgb4/qp.c
+@@ -2737,15 +2737,11 @@ int c4iw_create_srq(struct ib_srq *ib_srq, struct ib_srq_init_attr *attrs,
+ 	if (CHELSIO_CHIP_VERSION(rhp->rdev.lldi.adapter_type) > CHELSIO_T6)
+ 		srq->flags = T4_SRQ_LIMIT_SUPPORT;
+ 
+-	ret = xa_insert_irq(&rhp->qps, srq->wq.qid, srq, GFP_KERNEL);
+-	if (ret)
+-		goto err_free_queue;
+-
+ 	if (udata) {
+ 		srq_key_mm = kmalloc(sizeof(*srq_key_mm), GFP_KERNEL);
+ 		if (!srq_key_mm) {
+ 			ret = -ENOMEM;
+-			goto err_remove_handle;
++			goto err_free_queue;
+ 		}
+ 		srq_db_key_mm = kmalloc(sizeof(*srq_db_key_mm), GFP_KERNEL);
+ 		if (!srq_db_key_mm) {
+@@ -2789,8 +2785,6 @@ int c4iw_create_srq(struct ib_srq *ib_srq, struct ib_srq_init_attr *attrs,
+ 	kfree(srq_db_key_mm);
+ err_free_srq_key_mm:
+ 	kfree(srq_key_mm);
+-err_remove_handle:
+-	xa_erase_irq(&rhp->qps, srq->wq.qid);
+ err_free_queue:
+ 	free_srq_queue(srq, ucontext ? &ucontext->uctx : &rhp->rdev.uctx,
+ 		       srq->wr_waitp);
+@@ -2813,8 +2807,6 @@ void c4iw_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
+ 	rhp = srq->rhp;
+ 
+ 	pr_debug("%s id %d\n", __func__, srq->wq.qid);
+-
+-	xa_erase_irq(&rhp->qps, srq->wq.qid);
+ 	ucontext = rdma_udata_to_drv_context(udata, struct c4iw_ucontext,
+ 					     ibucontext);
+ 	free_srq_queue(srq, ucontext ? &ucontext->uctx : &rhp->rdev.uctx,
 -- 
 2.20.1
 
