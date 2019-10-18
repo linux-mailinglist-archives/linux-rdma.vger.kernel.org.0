@@ -2,144 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A30DD058
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Oct 2019 22:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D60DDD08F
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Oct 2019 22:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731569AbfJRUgZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Oct 2019 16:36:25 -0400
-Received: from mail-eopbgr130080.outbound.protection.outlook.com ([40.107.13.80]:45334
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727291AbfJRUgY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 18 Oct 2019 16:36:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JXS8vb2Jzqod84MSa1ewYRUvPkNE9WagpIfBGh8EST9TAuHU0oWl4dsgUxiiNvRpmzRi0RZ1+nVpS+uKkb/tmFbmLW2oL8u4TyskF/dRq/yBhG7UWEebdOJUbJB4oE4AV9ITzjvPiXE+a/C9TNX+0Oc8YDrJ8HDsx0wcrrrvP3NL8/6QVtTAPUJbNJ0okv36ZpLVn/nBU2DSRybcVOJXpD+b5HLaVXGabVsMJLYa7flTa2YgpRoGimCRRgavkwqDFjFpURwpIvtNXQPaLSBjkz+PMD5RC9DTUibFbORaEmif30fxiGLyeDHntwHbdVhc5+cyCkhStujZVgOvTKmC0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=smXqpb9251kp69aNvxZPS9Z8+1UgwbybVdHvLUJQFGY=;
- b=RUEOQJMm5z9iEAFJzsgot+pOk8m2g0pXa8G2s6BJ18y/FzAAGPJgpyO86UXFkSVqmo12zxbJrOiOXBOJMtwlakymxnFq1VhJg9UJ5TTey9ryZEQ5KOkJePEXraSLTYWlBHajvspDzsyNgKFPT5r650JnBxXPyVQS45Ko5MKkaCtkzW/2E/wAjdowrzxwRimT9aZsRjpri3KwLxPydrf0dbLKn7SxDgDKcR0bjt0ofTdAFo5g0pGEvg4kXFYbbgsQfGM/yQbfBXdNOPkEhIUEln/HxWNKlvQlxpo95Ac+u8nNLVffxPnZM1mwI30lTxzS6LpMAoWgH51sqeBqZeujdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=smXqpb9251kp69aNvxZPS9Z8+1UgwbybVdHvLUJQFGY=;
- b=r53Jgk999IoxDUKHtfa7EIQ8UnoLc3R0e6RXPbys46Obfs/5j9L5s+yXrWt5Gg46/UeUF2kIUxfWeKlnXYka/+swCuQHxAEMQb/RgnXbksWLe5WjOoKUNsESOEUww8T/oD+0dQO2Z/HQqGJKTODinbGLXXJ9n34+GD3nE+MNVYc=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB4973.eurprd05.prod.outlook.com (20.177.52.18) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.16; Fri, 18 Oct 2019 20:36:19 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::75ae:b00b:69d8:3db0]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::75ae:b00b:69d8:3db0%7]) with mapi id 15.20.2347.023; Fri, 18 Oct 2019
- 20:36:18 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     "Koenig, Christian" <Christian.Koenig@amd.com>
-CC:     "Yang, Philip" <Philip.Yang@amd.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>
-Subject: Re: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
- locking
-Thread-Topic: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
- locking
-Thread-Index: AQHVg4Sqa7CCxCToXEeTrrYAqVQVhqdc+JgAgAB3OACAARovgIAAficAgAAF3YCAAdJKAA==
-Date:   Fri, 18 Oct 2019 20:36:18 +0000
-Message-ID: <20191018203608.GA5670@mellanox.com>
-References: <20191015181242.8343-1-jgg@ziepe.ca>
- <bc954d29-388b-9e29-f960-115ccc6b9fea@gmail.com>
- <20191016160444.GB3430@mellanox.com>
- <2df298e2-ee91-ef40-5da9-2bc1af3a17be@gmail.com>
- <2046e0b4-ba05-0683-5804-e9bbf903658d@amd.com>
- <d6bcbd2a-2519-8945-eaf5-4f4e738c7fa9@amd.com>
-In-Reply-To: <d6bcbd2a-2519-8945-eaf5-4f4e738c7fa9@amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR20CA0044.namprd20.prod.outlook.com
- (2603:10b6:300:ed::30) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [66.51.117.131]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 69e9ab54-0717-40b2-861b-08d7540ad427
-x-ms-office365-filtering-ht: Tenant
-x-ms-traffictypediagnostic: VI1PR05MB4973:
-x-microsoft-antispam-prvs: <VI1PR05MB4973E5D04B92642A40EEE0E6CF6C0@VI1PR05MB4973.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 01949FE337
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(376002)(39860400002)(396003)(366004)(346002)(189003)(199004)(186003)(66066001)(305945005)(33656002)(3846002)(7736002)(71190400001)(486006)(4326008)(6116002)(229853002)(86362001)(6436002)(6486002)(7416002)(14444005)(71200400001)(81166006)(2616005)(8676002)(256004)(81156014)(8936002)(6916009)(54906003)(66946007)(476003)(64756008)(66556008)(66476007)(446003)(316002)(6506007)(11346002)(52116002)(6246003)(5660300002)(478600001)(76176011)(36756003)(1076003)(14454004)(102836004)(386003)(99286004)(25786009)(26005)(2906002)(66446008)(6512007);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4973;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UPF+keoznRhlCBtOJNRn0zkttxRh9aDiR7740wSN6aP5QvRQduueDoET4X5x1pwWC7iubmR6zTWcChzGQhe2+MVD4KJDI75s1atMhJKtopvkCy0Bj5vfXOijthH8T+dAWcrzr+WZ8VgxWMj75A6sOUH2aoxwkET7So1hRNBhguEw6JCSDNdu1dA+K79onggltu8YTaZ0vij34iu+tQ5S6Ej2jEn8QnHfKAPgQ2KByQWyTF5gbNMLdHSFvO85QEfrxJcVmKifL9eDGOEFGKcPipCbWU6CgN57IFuTAehoFPGphofEOPr9hnganzBPOWic9c/wwdQY80SYTRqIdq/LS2KhpMtFMx592ESJtoDUFToHWtu8rM+ZofpGwtZvspYRUa0ZqaUKx98FCH8zcCYsYxf9j1HOLHBTrYC7Ml7otTY=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <C97D0CFCD1F5B645A1B272BD732EBC74@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1728655AbfJRUqw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Oct 2019 16:46:52 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:45415 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726383AbfJRUqv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Oct 2019 16:46:51 -0400
+Received: by mail-qk1-f195.google.com with SMTP id z67so6544471qkb.12
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Oct 2019 13:46:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7PfSKiH+PRh3wAH2gyyRJOzZGVuhIGI1nnsU3t7/W50=;
+        b=QH3A5itFoO3FHEtw1ZgdCRi2ydq66uJBDsxwASlfbU1FwDDFDmHDCOT0YOWrj3G9vO
+         psd2aKzE2RD8BuNJnbQe/gt+K/FBTT7X8cUq+5UI+jKAGIjS66xr4bZY/IlwvRGdTvVu
+         BqXoWdLQiVhsAFNjTwhQaO6Bhp9SM0oR060ihi3OwgBuDdyfN5FCI0m0jsZOSE5pYnC1
+         OrMkIfVGSx7RUU6oBpaJuyCqLNuKUAVcBOzTOWB7vmAgr7AhKrQyJnDd37VzL6Woe3Iy
+         tCQM+PiiuK63gUVcopBcb+t4L1Oj8YWT0H4jX9HTsT13jACX1ncGrgLAVnGrn5cyy5/n
+         UYUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7PfSKiH+PRh3wAH2gyyRJOzZGVuhIGI1nnsU3t7/W50=;
+        b=ZyRG59nDVTcfrk1LaFvk7OApiZRnGLEA2R8wKAjlgmvpcJIYVjYXXFULatlU1lJvrs
+         1ZWwf/wrwpVueMwuRdYexq+rZDj56TtlHbMVQ4VZ4hoTVTdTXKyNSU7gwwUewhvGOuqU
+         ZitcEMlufmtW8w6ugEI9fvxJETGrtSHDDO/VTmkb3lbOzl3i2m7oPN5nWXfHMjZ1udOI
+         D2f6fwokyhqw0vTJxkulyAZE0LfdmTdw6bBFBFtB9xYGXZI6Vu5emgUjLafBFjYVi0Ce
+         w3jhMV3C5MwpJ1hRO/WyECnHHonfdz1FJYI/J+v5KUBGTM9nbM0OjUtAJKPbF8sHbbG6
+         87og==
+X-Gm-Message-State: APjAAAVak6H/Lk+lYJmz+GKxDiFN7ISlmcxiI2hxIn6EPK34UnHS5DEL
+        XG392a1wIRidygWHj5T3kh2MCQ==
+X-Google-Smtp-Source: APXvYqxryYu/+FNtyedECRyzc5Gf5jwZuKf46S2saRgfaHUJN6UlWkVlkW4x7YOxEpQ4J7WpiTEMQA==
+X-Received: by 2002:a37:ef04:: with SMTP id j4mr11045924qkk.482.1571431609331;
+        Fri, 18 Oct 2019 13:46:49 -0700 (PDT)
+Received: from ziepe.ca (ip-66-51-117-131.syban.net. [66.51.117.131])
+        by smtp.gmail.com with ESMTPSA id r6sm117548qtp.75.2019.10.18.13.46.48
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 18 Oct 2019 13:46:48 -0700 (PDT)
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iLZ95-0001bX-9V; Fri, 18 Oct 2019 17:46:47 -0300
+Date:   Fri, 18 Oct 2019 17:46:47 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Don Dutile <ddutile@redhat.com>
+Cc:     Potnuri Bharat Teja <bharat@chelsio.com>, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, nirranjan@chelsio.com
+Subject: Re: [PATCH for-next] iw_cxgb3: remove iw_cxgb3 module from kernel.
+Message-ID: <20191018204647.GA6087@ziepe.ca>
+References: <20190930074252.20133-1-bharat@chelsio.com>
+ <411c4ea1-4320-fa04-b014-7e5fe91869a8@redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69e9ab54-0717-40b2-861b-08d7540ad427
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Oct 2019 20:36:18.5468
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: whpnjBYJtkeFOwuFODiM58DUvsXdve63q0hhi7+SAmJNW+ERnWAS13rlOE/iRUgkf4ZNSY7A4Px29zedbec9uQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4973
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <411c4ea1-4320-fa04-b014-7e5fe91869a8@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 17, 2019 at 04:47:20PM +0000, Koenig, Christian wrote:
+On Wed, Oct 16, 2019 at 01:47:29PM -0400, Don Dutile wrote:
 
-> > get_user_pages/hmm_range_fault() and invalidate_range_start() both are
-> > called while holding mm->map_sem, so they are always serialized.
->=20
-> Not even remotely.
->=20
-> For calling get_user_pages()/hmm_range_fault() you only need to hold the=
-=20
-> mmap_sem in read mode.
+> Isn't there a better way to mark a driver deprecated?
+> 
+> This kind of removal makes long-term maintenance of such drivers
+> painful in downstream distros, as API changes that are rippled from
+> core through all the drivers, don't update these drivers, and when
+> backporting such API changes to downstream distros, we have to +1
+> removed drivers.
 
-Right
-=20
-> And IIRC invalidate_range_start() is sometimes called without holding=20
-> the mmap_sem at all.
+You still have cxg3 as an enabled & supported driver? In RH8? Why?
+ 
+> It's much easier if upstream continues to update the drivers for
+> such across-the-driver-patch-changes.  heck, add a separate patch
+> that punches out a printk stating DEPRECATED (dropping a patch to
+> backport is easy! :) ).
 
-Yep
-=20
-> So again how are they serialized?
-
-The 'driver lock' thing does it, read the hmm documentation, the hmm
-approach is basically the only approach that was correct of all the
-drivers..
-
-So long as the 'driver lock' is held the range cannot become
-invalidated as the 'driver lock' prevents progress of invalidation.
-
-Holding the driver lock and using the seq based mmu_range_read_retry()
-tells if the previous unlocked get_user_pages() is still valid or
-needs to be discard.
-
-So it doesn't matter if get_user_pages() races or not, the result is not
-to be used until the driver lock is held and mmu_range_read_retry()
-called, which provides the coherence.
-
-It is the usual seqlock pattern.
+The whole point of doing this is to avoid this work!
 
 Jason
