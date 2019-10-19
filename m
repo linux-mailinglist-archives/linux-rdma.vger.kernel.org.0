@@ -2,132 +2,296 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8551ADD78B
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Oct 2019 10:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A261DD9B0
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Oct 2019 18:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727639AbfJSIzS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 19 Oct 2019 04:55:18 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:58570 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725965AbfJSIzS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 19 Oct 2019 04:55:18 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 249B7647C74ABC886516;
-        Sat, 19 Oct 2019 16:55:16 +0800 (CST)
-Received: from linux-ioko.site (10.78.228.23) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.439.0; Sat, 19 Oct 2019 16:55:05 +0800
-From:   Lijun Ou <oulijun@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [RFC PATCH V2 for-next] RDMA/hns: Add UD support for hip08
-Date:   Sat, 19 Oct 2019 16:46:12 +0800
-Message-ID: <1571474772-2212-1-git-send-email-oulijun@huawei.com>
-X-Mailer: git-send-email 1.9.1
+        id S1725948AbfJSQn1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 19 Oct 2019 12:43:27 -0400
+Received: from p3plsmtpa09-02.prod.phx3.secureserver.net ([173.201.193.231]:46299
+        "EHLO p3plsmtpa09-02.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726133AbfJSQn1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 19 Oct 2019 12:43:27 -0400
+Received: from [192.168.0.67] ([24.218.182.144])
+        by :SMTPAUTH: with ESMTPSA
+        id LrhziyD1ZMkfcLri1iwrfe; Sat, 19 Oct 2019 09:36:05 -0700
+Subject: Re: [PATCH v1 6/6] xprtrdma: Pull up sometimes
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+References: <20191017182811.2517.25676.stgit@oracle-102.nfsv4bat.org>
+ <20191017183152.2517.67599.stgit@oracle-102.nfsv4bat.org>
+ <f5075a20-7c9a-773f-e76b-11cba1ab0f16@talpey.com>
+ <E1BB2B60-6DE2-47FD-92BA-ED9011C51661@oracle.com>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <3ef2c12c-cc88-6ac6-25cd-99ef162f70a1@talpey.com>
+Date:   Sat, 19 Oct 2019 12:36:03 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.78.228.23]
-X-CFilter-Loop: Reflected
+In-Reply-To: <E1BB2B60-6DE2-47FD-92BA-ED9011C51661@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfHzKUSSLWdtqn03RmDQdMVz1AHZImFACXlAoESN68G2Uafx9QE1BKjwqVXAcvaFt8g9yXJu5dW5jmJ8TU/Pc2Kc0+Qs+8R3ArxOY6j/Lelpbt11CoGMo
+ rQmBWl7KYbMW4cuNd1i6FeZp5UqM3Co9Igv+G3VvKzGsRqQ+7PWzB/44LoshopTTBlIIbXlGOSswsVho8ZhZORb3WL9o3H/lpJsaEOzW0OD+z0ijL69eCzLs
+ FHxwf0tciYX647VjCemHXg==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch aims to let hip08 support communication of Unreliable
-Datagram.
+On 10/18/2019 7:34 PM, Chuck Lever wrote:
+> Hi Tom-
+> 
+>> On Oct 18, 2019, at 4:17 PM, Tom Talpey <tom@talpey.com> wrote:
+>>
+>> On 10/17/2019 2:31 PM, Chuck Lever wrote:
+>>> On some platforms, DMA mapping part of a page is more costly than
+>>> copying bytes. Restore the pull-up code and use that when we
+>>> think it's going to be faster. The heuristic for now is to pull-up
+>>> when the size of the RPC message body fits in the buffer underlying
+>>> the head iovec.
+>>> Indeed, not involving the I/O MMU can help the RPC/RDMA transport
+>>> scale better for tiny I/Os across more RDMA devices. This is because
+>>> interaction with the I/O MMU is eliminated, as is handling a Send
+>>> completion, for each of these small I/Os. Without the explicit
+>>> unmapping, the NIC no longer needs to do a costly internal TLB shoot
+>>> down for buffers that are just a handful of bytes.
+>>
+>> This is good stuff. Do you have any performance data for the new
+>> strategy, especially latencies and local CPU cycles per byte?
+> 
+> Saves almost a microsecond of RT latency on my NFS client that uses
+> a real Intel IOMMU. On my other NFS client, the DMA map operations
+> are always a no-op. This savings applies only to NFS WRITE, of course.
+> 
+> I don't have a good benchmark for cycles per byte. Do you have any
+> suggestions? Not sure how I would account for cycles spent handling
+> Send completions, for example.
 
-Signed-off-by: Lijun Ou <oulijun@huawei.com>
-Signed-off-by: Weihang Li <liweihang@hisilicon.com>
----
-V1->V2:
-1. Use CAP_NET_RAW for limit the creation UD queue
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 17 ++++++++++-------
- drivers/infiniband/hw/hns/hns_roce_qp.c    |  7 +++++++
- 2 files changed, 17 insertions(+), 7 deletions(-)
+Cycles per byte is fairly simple but like all performance measurement
+the trick is in the setup. Because of platform variations, it's best
+to compare results on the same hardware. The absolute value isn't as
+meaningful. Here's a rough sketch of one approach.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 7a89d66..e320ab0 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -296,7 +296,7 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 		tmp_len = 0;
- 
- 		/* Corresponding to the QP type, wqe process separately */
--		if (ibqp->qp_type == IB_QPT_GSI) {
-+		if (ibqp->qp_type == IB_QPT_GSI || ibqp->qp_type == IB_QPT_UD) {
- 			ud_sq_wqe = wqe;
- 			memset(ud_sq_wqe, 0, sizeof(*ud_sq_wqe));
- 
-@@ -417,8 +417,7 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 			roce_set_field(ud_sq_wqe->byte_48,
- 				       V2_UD_SEND_WQE_BYTE_48_SGID_INDX_M,
- 				       V2_UD_SEND_WQE_BYTE_48_SGID_INDX_S,
--				       hns_get_gid_index(hr_dev, qp->phy_port,
--							 ah->av.gid_index));
-+				       ah->av.gid_index);
- 
- 			memcpy(&ud_sq_wqe->dgid[0], &ah->av.dgid[0],
- 			       GID_LEN_V2);
-@@ -3217,7 +3216,8 @@ static void set_qpc_wqe_cnt(struct hns_roce_qp *hr_qp,
- 			    struct hns_roce_v2_qp_context *context,
- 			    struct hns_roce_v2_qp_context *qpc_mask)
- {
--	if (hr_qp->ibqp.qp_type == IB_QPT_GSI)
-+	if (hr_qp->ibqp.qp_type == IB_QPT_GSI ||
-+	    hr_qp->ibqp.qp_type == IB_QPT_UD)
- 		roce_set_field(context->byte_4_sqpn_tst,
- 			       V2_QPC_BYTE_4_SGE_SHIFT_M,
- 			       V2_QPC_BYTE_4_SGE_SHIFT_S,
-@@ -3737,8 +3737,9 @@ static int modify_qp_init_to_rtr(struct ib_qp *ibqp,
- 	roce_set_field(context->byte_20_smac_sgid_idx,
- 		       V2_QPC_BYTE_20_SGE_HOP_NUM_M,
- 		       V2_QPC_BYTE_20_SGE_HOP_NUM_S,
--		       ((ibqp->qp_type == IB_QPT_GSI) ||
--		       hr_qp->sq.max_gs > HNS_ROCE_V2_UC_RC_SGE_NUM_IN_WQE) ?
-+		       ((ibqp->qp_type == IB_QPT_GSI ||
-+			ibqp->qp_type == IB_QPT_UD) ||
-+			hr_qp->sq.max_gs > HNS_ROCE_V2_UC_RC_SGE_NUM_IN_WQE) ?
- 		       hr_dev->caps.wqe_sge_hop_num : 0);
- 	roce_set_field(qpc_mask->byte_20_smac_sgid_idx,
- 		       V2_QPC_BYTE_20_SGE_HOP_NUM_M,
-@@ -4652,7 +4653,9 @@ static int hns_roce_v2_destroy_qp_common(struct hns_roce_dev *hr_dev,
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	int ret;
- 
--	if (hr_qp->ibqp.qp_type == IB_QPT_RC && hr_qp->state != IB_QPS_RESET) {
-+	if ((hr_qp->ibqp.qp_type == IB_QPT_RC ||
-+	     hr_qp->ibqp.qp_type == IB_QPT_UD) &&
-+	    hr_qp->state != IB_QPS_RESET) {
- 		/* Modify qp to reset before destroying qp */
- 		ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, NULL, 0,
- 					    hr_qp->state, IB_QPS_RESET);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index bd78ff9..722cc5f 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -377,6 +377,10 @@ static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
- 		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp->sq.wqe_cnt *
- 							(hr_qp->sq.max_gs - 2));
- 
-+	if (hr_qp->ibqp.qp_type == IB_QPT_UD)
-+		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp->sq.wqe_cnt *
-+						       hr_qp->sq.max_gs);
-+
- 	if ((hr_qp->sq.max_gs > 2) && (hr_dev->pci_dev->revision == 0x20)) {
- 		if (hr_qp->sge.sge_cnt > hr_dev->caps.max_extend_sg) {
- 			dev_err(hr_dev->dev,
-@@ -1022,6 +1026,9 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
- 	int ret;
- 
- 	switch (init_attr->qp_type) {
-+	case IB_QPT_UD:
-+		if (!capable(CAP_NET_RAW))
-+			return -EPERM;
- 	case IB_QPT_RC: {
- 		hr_qp = kzalloc(sizeof(*hr_qp), GFP_KERNEL);
- 		if (!hr_qp)
--- 
-2.8.1
+- Configure BIOS and OS to hold CPU frequency constant:
+   - ACPI C-states off
+   - Turbo mode off
+   - Power management off (OS needs this too)
+   - Anything else relevant to clock variation
+- Hyperthreading off
+   - (hyperthreads don't add work linearly)
+- Calculate core count X clock frequency
+   - (e.g. 8 X 3GHz = 24G cycles/sec)
 
+Now, use a benchmark which runs the desired workload and reports %CPU.
+For a given interval, record the total bytes transferred, time spent,
+and CPU load. (e.g. 100GB, 100 sec, 20%).
+
+Finally, compute CpB (the 1/sec terms cancel out):
+  20% x 24Gcps = 4.8G cps
+  100GB / 100s = 1G bps
+  4.8Gcps / 1 GBps = 4.8cpb
+
+Like I said, it's rough, but surprisingly telling. A similar metric
+is cycles per IOP, and since you're focusing on small i/o with this
+change, it might also be an interesting calculation. Simply replace
+total bytes/sec with IOPS.
+
+Tom.
+
+
+>>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+>>> ---
+>>>   net/sunrpc/xprtrdma/backchannel.c |    2 -
+>>>   net/sunrpc/xprtrdma/rpc_rdma.c    |   82 +++++++++++++++++++++++++++++++++++--
+>>>   net/sunrpc/xprtrdma/verbs.c       |    2 -
+>>>   net/sunrpc/xprtrdma/xprt_rdma.h   |    2 +
+>>>   4 files changed, 81 insertions(+), 7 deletions(-)
+>>> diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdma.h
+>>> index 16572ae7..336a65d 100644
+>>> --- a/include/trace/events/rpcrdma.h
+>>> +++ b/include/trace/events/rpcrdma.h
+>>> @@ -532,6 +532,8 @@
+>>>   DEFINE_WRCH_EVENT(reply);
+>>>     TRACE_DEFINE_ENUM(rpcrdma_noch);
+>>> +TRACE_DEFINE_ENUM(rpcrdma_noch_pullup);
+>>> +TRACE_DEFINE_ENUM(rpcrdma_noch_mapped);
+>>>   TRACE_DEFINE_ENUM(rpcrdma_readch);
+>>>   TRACE_DEFINE_ENUM(rpcrdma_areadch);
+>>>   TRACE_DEFINE_ENUM(rpcrdma_writech);
+>>> @@ -540,6 +542,8 @@
+>>>   #define xprtrdma_show_chunktype(x)					\
+>>>   		__print_symbolic(x,					\
+>>>   				{ rpcrdma_noch, "inline" },		\
+>>> +				{ rpcrdma_noch_pullup, "pullup" },	\
+>>> +				{ rpcrdma_noch_mapped, "mapped" },	\
+>>>   				{ rpcrdma_readch, "read list" },	\
+>>>   				{ rpcrdma_areadch, "*read list" },	\
+>>>   				{ rpcrdma_writech, "write list" },	\
+>>> diff --git a/net/sunrpc/xprtrdma/backchannel.c b/net/sunrpc/xprtrdma/backchannel.c
+>>> index 50e075f..1168524 100644
+>>> --- a/net/sunrpc/xprtrdma/backchannel.c
+>>> +++ b/net/sunrpc/xprtrdma/backchannel.c
+>>> @@ -79,7 +79,7 @@ static int rpcrdma_bc_marshal_reply(struct rpc_rqst *rqst)
+>>>   	*p = xdr_zero;
+>>>     	if (rpcrdma_prepare_send_sges(r_xprt, req, RPCRDMA_HDRLEN_MIN,
+>>> -				      &rqst->rq_snd_buf, rpcrdma_noch))
+>>> +				      &rqst->rq_snd_buf, rpcrdma_noch_pullup))
+>>>   		return -EIO;
+>>>     	trace_xprtrdma_cb_reply(rqst);
+>>> diff --git a/net/sunrpc/xprtrdma/rpc_rdma.c b/net/sunrpc/xprtrdma/rpc_rdma.c
+>>> index a441dbf..4ad8889 100644
+>>> --- a/net/sunrpc/xprtrdma/rpc_rdma.c
+>>> +++ b/net/sunrpc/xprtrdma/rpc_rdma.c
+>>> @@ -392,7 +392,7 @@ static int rpcrdma_encode_read_list(struct rpcrdma_xprt *r_xprt,
+>>>   	unsigned int pos;
+>>>   	int nsegs;
+>>>   -	if (rtype == rpcrdma_noch)
+>>> +	if (rtype == rpcrdma_noch_pullup || rtype == rpcrdma_noch_mapped)
+>>>   		goto done;
+>>>     	pos = rqst->rq_snd_buf.head[0].iov_len;
+>>> @@ -691,6 +691,72 @@ static bool rpcrdma_prepare_tail_iov(struct rpcrdma_req *req,
+>>>   	return false;
+>>>   }
+>>>   +/* Copy the tail to the end of the head buffer.
+>>> + */
+>>> +static void rpcrdma_pullup_tail_iov(struct rpcrdma_xprt *r_xprt,
+>>> +				    struct rpcrdma_req *req,
+>>> +				    struct xdr_buf *xdr)
+>>> +{
+>>> +	unsigned char *dst;
+>>> +
+>>> +	dst = (unsigned char *)xdr->head[0].iov_base;
+>>> +	dst += xdr->head[0].iov_len + xdr->page_len;
+>>> +	memmove(dst, xdr->tail[0].iov_base, xdr->tail[0].iov_len);
+>>> +	r_xprt->rx_stats.pullup_copy_count += xdr->tail[0].iov_len;
+>>> +}
+>>> +
+>>> +/* Copy pagelist content into the head buffer.
+>>> + */
+>>> +static void rpcrdma_pullup_pagelist(struct rpcrdma_xprt *r_xprt,
+>>> +				    struct rpcrdma_req *req,
+>>> +				    struct xdr_buf *xdr)
+>>> +{
+>>> +	unsigned int len, page_base, remaining;
+>>> +	struct page **ppages;
+>>> +	unsigned char *src, *dst;
+>>> +
+>>> +	dst = (unsigned char *)xdr->head[0].iov_base;
+>>> +	dst += xdr->head[0].iov_len;
+>>> +	ppages = xdr->pages + (xdr->page_base >> PAGE_SHIFT);
+>>> +	page_base = offset_in_page(xdr->page_base);
+>>> +	remaining = xdr->page_len;
+>>> +	while (remaining) {
+>>> +		src = page_address(*ppages);
+>>> +		src += page_base;
+>>> +		len = min_t(unsigned int, PAGE_SIZE - page_base, remaining);
+>>> +		memcpy(dst, src, len);
+>>> +		r_xprt->rx_stats.pullup_copy_count += len;
+>>> +
+>>> +		ppages++;
+>>> +		dst += len;
+>>> +		remaining -= len;
+>>> +		page_base = 0;
+>>> +	}
+>>> +}
+>>> +
+>>> +/* Copy the contents of @xdr into @rl_sendbuf and DMA sync it.
+>>> + * When the head, pagelist, and tail are small, a pull-up copy
+>>> + * is considerably less costly than DMA mapping the components
+>>> + * of @xdr.
+>>> + *
+>>> + * Assumptions:
+>>> + *  - the caller has already verified that the total length
+>>> + *    of the RPC Call body will fit into @rl_sendbuf.
+>>> + */
+>>> +static bool rpcrdma_prepare_noch_pullup(struct rpcrdma_xprt *r_xprt,
+>>> +					struct rpcrdma_req *req,
+>>> +					struct xdr_buf *xdr)
+>>> +{
+>>> +	if (unlikely(xdr->tail[0].iov_len))
+>>> +		rpcrdma_pullup_tail_iov(r_xprt, req, xdr);
+>>> +
+>>> +	if (unlikely(xdr->page_len))
+>>> +		rpcrdma_pullup_pagelist(r_xprt, req, xdr);
+>>> +
+>>> +	/* The whole RPC message resides in the head iovec now */
+>>> +	return rpcrdma_prepare_head_iov(r_xprt, req, xdr->len);
+>>> +}
+>>> +
+>>>   static bool rpcrdma_prepare_noch_mapped(struct rpcrdma_xprt *r_xprt,
+>>>   					struct rpcrdma_req *req,
+>>>   					struct xdr_buf *xdr)
+>>> @@ -779,7 +845,11 @@ inline int rpcrdma_prepare_send_sges(struct rpcrdma_xprt *r_xprt,
+>>>   		goto out_unmap;
+>>>     	switch (rtype) {
+>>> -	case rpcrdma_noch:
+>>> +	case rpcrdma_noch_pullup:
+>>> +		if (!rpcrdma_prepare_noch_pullup(r_xprt, req, xdr))
+>>> +			goto out_unmap;
+>>> +		break;
+>>> +	case rpcrdma_noch_mapped:
+>>>   		if (!rpcrdma_prepare_noch_mapped(r_xprt, req, xdr))
+>>>   			goto out_unmap;
+>>>   		break;
+>>> @@ -827,6 +897,7 @@ inline int rpcrdma_prepare_send_sges(struct rpcrdma_xprt *r_xprt,
+>>>   	struct rpcrdma_req *req = rpcr_to_rdmar(rqst);
+>>>   	struct xdr_stream *xdr = &req->rl_stream;
+>>>   	enum rpcrdma_chunktype rtype, wtype;
+>>> +	struct xdr_buf *buf = &rqst->rq_snd_buf;
+>>>   	bool ddp_allowed;
+>>>   	__be32 *p;
+>>>   	int ret;
+>>> @@ -884,8 +955,9 @@ inline int rpcrdma_prepare_send_sges(struct rpcrdma_xprt *r_xprt,
+>>>   	 */
+>>>   	if (rpcrdma_args_inline(r_xprt, rqst)) {
+>>>   		*p++ = rdma_msg;
+>>> -		rtype = rpcrdma_noch;
+>>> -	} else if (ddp_allowed && rqst->rq_snd_buf.flags & XDRBUF_WRITE) {
+>>> +		rtype = buf->len < rdmab_length(req->rl_sendbuf) ?
+>>> +			rpcrdma_noch_pullup : rpcrdma_noch_mapped;
+>>> +	} else if (ddp_allowed && buf->flags & XDRBUF_WRITE) {
+>>>   		*p++ = rdma_msg;
+>>>   		rtype = rpcrdma_readch;
+>>>   	} else {
+>>> @@ -927,7 +999,7 @@ inline int rpcrdma_prepare_send_sges(struct rpcrdma_xprt *r_xprt,
+>>>   		goto out_err;
+>>>     	ret = rpcrdma_prepare_send_sges(r_xprt, req, req->rl_hdrbuf.len,
+>>> -					&rqst->rq_snd_buf, rtype);
+>>> +					buf, rtype);
+>>>   	if (ret)
+>>>   		goto out_err;
+>>>   diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
+>>> index 2f46582..a514e2c 100644
+>>> --- a/net/sunrpc/xprtrdma/verbs.c
+>>> +++ b/net/sunrpc/xprtrdma/verbs.c
+>>> @@ -1165,7 +1165,7 @@ int rpcrdma_buffer_create(struct rpcrdma_xprt *r_xprt)
+>>>   	for (i = 0; i < buf->rb_max_requests; i++) {
+>>>   		struct rpcrdma_req *req;
+>>>   -		req = rpcrdma_req_create(r_xprt, RPCRDMA_V1_DEF_INLINE_SIZE,
+>>> +		req = rpcrdma_req_create(r_xprt, RPCRDMA_V1_DEF_INLINE_SIZE * 2,
+>>>   					 GFP_KERNEL);
+>>>   		if (!req)
+>>>   			goto out;
+>>> diff --git a/net/sunrpc/xprtrdma/xprt_rdma.h b/net/sunrpc/xprtrdma/xprt_rdma.h
+>>> index cdd6a3d..5d15140 100644
+>>> --- a/net/sunrpc/xprtrdma/xprt_rdma.h
+>>> +++ b/net/sunrpc/xprtrdma/xprt_rdma.h
+>>> @@ -554,6 +554,8 @@ struct rpcrdma_mr_seg *frwr_map(struct rpcrdma_xprt *r_xprt,
+>>>     enum rpcrdma_chunktype {
+>>>   	rpcrdma_noch = 0,
+>>> +	rpcrdma_noch_pullup,
+>>> +	rpcrdma_noch_mapped,
+>>>   	rpcrdma_readch,
+>>>   	rpcrdma_areadch,
+>>>   	rpcrdma_writech,
+> 
+> --
+> Chuck Lever
+> 
+> 
+> 
+> 
+> 
