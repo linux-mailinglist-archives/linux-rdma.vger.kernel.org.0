@@ -2,104 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C40C4DF6E8
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 22:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2E2DF72D
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 22:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730297AbfJUUmx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Oct 2019 16:42:53 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28656 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728914AbfJUUmx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Oct 2019 16:42:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571690572;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cYa9VxRUhyQagegxe07UahH8eNhiy0ByEwADC3xi3cQ=;
-        b=hpOb8PzfiOO0GNdrzEEs83/XAqgNu5BVtsQhnTHvv+gkrampNcbT5z0USuec5h3yOXVdzM
-        LnJJGoIF6CkYR8sVFJ+uBuOqW5DMfCXhBOqt8a3IY74E3+tYzkNuKGoiIOjMdbWJvDDSkF
-        reeo++nNeaAr16FWklVNFj+PGinJVj4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-313-k3TSP4bCOLW9xBjJ2baJPQ-1; Mon, 21 Oct 2019 16:42:46 -0400
-X-MC-Unique: k3TSP4bCOLW9xBjJ2baJPQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6220F800D41;
-        Mon, 21 Oct 2019 20:42:45 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-37.rdu2.redhat.com [10.10.112.37])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7CB8060C57;
-        Mon, 21 Oct 2019 20:42:44 +0000 (UTC)
-Message-ID: <d425d78e2fba5258e3f3c2c4dab02258986775b6.camel@redhat.com>
-Subject: Re: [PATCH v2 for-next] RDMA/hns: Release qp resources when failed
- to destroy qp
-From:   Doug Ledford <dledford@redhat.com>
-To:     Weihang Li <liweihang@hisilicon.com>, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linuxarm@huawei.com
-Date:   Mon, 21 Oct 2019 16:42:41 -0400
-In-Reply-To: <1570584110-3659-1-git-send-email-liweihang@hisilicon.com>
-References: <1570584110-3659-1-git-send-email-liweihang@hisilicon.com>
-Organization: Red Hat, Inc.
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30)
+        id S1729869AbfJUUyR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Oct 2019 16:54:17 -0400
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:13486 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728914AbfJUUyR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Oct 2019 16:54:17 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dae1b030000>; Mon, 21 Oct 2019 13:54:27 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 21 Oct 2019 13:54:17 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Mon, 21 Oct 2019 13:54:17 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Oct
+ 2019 20:54:16 +0000
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by
+ DRHQMAIL107.nvidia.com (10.27.9.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Mon, 21 Oct 2019 20:54:15 +0000
+Subject: Re: [PATCH v2 2/3] mm/hmm: allow snapshot of the special zero page
+To:     Jerome Glisse <jglisse@redhat.com>
+CC:     John Hubbard <jhubbard@nvidia.com>, Christoph Hellwig <hch@lst.de>,
+        "Jason Gunthorpe" <jgg@mellanox.com>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>
+References: <20191015204814.30099-1-rcampbell@nvidia.com>
+ <20191015204814.30099-3-rcampbell@nvidia.com>
+ <20191021184927.GG3177@redhat.com>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <95fa45cf-a2ce-fab8-588d-8d806124aef3@nvidia.com>
+Date:   Mon, 21 Oct 2019 13:54:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Mimecast-Spam-Score: 0
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-ozj0f7vKcv+QnlaTMwCR"
+In-Reply-To: <20191021184927.GG3177@redhat.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1571691267; bh=N8CJfrBWXeelg3CYFYytdZrSkYKGVF3Nf4ocWcNbLdM=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=HePaq9WzypRM7B2petuLt4qiPLZCLRNb/n5j1JQzPt5ugY+W0vlC/NA0qG1Sr4ld/
+         hlrmFm06izi6WeWC98l3kxbIUWR6YOJr/WJf/UunELirAo0NyAaleeRb4JHCcbyIGD
+         Y371rfRttqxdSShpe32lF2GGOfu4Iocs7r1FU/NaOdk0LBLqZ7sQh/vwZ32CqyllcT
+         uVILKsl3to8db8Xytx7B3fnNRJsaw2ckiYSSYewM7oAGxqbGJHV6j4F7NDbd0Kc0KK
+         SkzKVKHPKJXg/WWcZ4/Q2kWxuNtM+TmcGIr7g8Lgx14JwE5Gqok4bJrid9LjSfs56m
+         d4dBdfXOi32iA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---=-ozj0f7vKcv+QnlaTMwCR
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2019-10-09 at 09:21 +0800, Weihang Li wrote:
-> From: Yangyang Li <liyangyang20@huawei.com>
+On 10/21/19 11:49 AM, Jerome Glisse wrote:
+> On Tue, Oct 15, 2019 at 01:48:13PM -0700, Ralph Campbell wrote:
+>> Allow hmm_range_fault() to return success (0) when the CPU pagetable
+>> entry points to the special shared zero page.
+>> The caller can then handle the zero page by possibly clearing device
+>> private memory instead of DMAing a zero page.
 >=20
-> Even if no response from hardware, we should make sure that qp related
-> resources are released to avoid memory leaks.
+> I do not understand why you are talking about DMA. GPU can work
+> on main memory and migrating to GPU memory is optional and should
+> not involve this function at all.
+
+Good point. This is the device accessing the zero page over PCIe
+or another bus, not migrating a zero page to device private memory.
+I'll update the wording.
+
+>>
+>> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>> Cc: "J=E9r=F4me Glisse" <jglisse@redhat.com>
+>> Cc: Jason Gunthorpe <jgg@mellanox.com>
 >=20
-> Fixes: 926a01dc000d ("RDMA/hns: Add QP operations support for hip08
-> SoC")
+> NAK please keep semantic or change it fully. See the alternative
+> below.
 >=20
-> Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
-> Signed-off-by: Weihang Li <liweihang@hisilicon.com>
+>> ---
+>>   mm/hmm.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/mm/hmm.c b/mm/hmm.c
+>> index 5df0dbf77e89..f62b119722a3 100644
+>> --- a/mm/hmm.c
+>> +++ b/mm/hmm.c
+>> @@ -530,7 +530,9 @@ static int hmm_vma_handle_pte(struct mm_walk *walk, =
+unsigned long addr,
+>>   			return -EBUSY;
+>>   	} else if (IS_ENABLED(CONFIG_ARCH_HAS_PTE_SPECIAL) && pte_special(pte=
+)) {
+>>   		*pfn =3D range->values[HMM_PFN_SPECIAL];
+>> -		return -EFAULT;
+>> +		if (!is_zero_pfn(pte_pfn(pte)))
+>> +			return -EFAULT;
+>> +		return 0;
+>=20
+> An acceptable change would be to turn the branch into:
+> 	} else if (IS_ENABLED(CONFIG_ARCH_HAS_PTE_SPECIAL) && pte_special(pte)) =
+{
+> 		if (!is_zero_pfn(pte_pfn(pte))) {
+> 			*pfn =3D range->values[HMM_PFN_SPECIAL];
+> 			return -EFAULT;
+> 		}
+> 		/* Fall-through for zero pfn (if write was needed the above
+> 		 * hmm_pte_need_faul() would had catched it).
+> 		 */
+> 	}
 >=20
 
-Thanks, applied to for-next.  For the future sake, no space between
-Fixes: and Signed-off-by: lines please.  They're all just metadata, they
-don't need to be separated.
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-ozj0f7vKcv+QnlaTMwCR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl2uGEEACgkQuCajMw5X
-L90U8w//VptxHeSsJTzJBaInSK5BCem8/bIU8pPJyrmzfOgPUzFRYBLLRBBOqetC
-FQX5L90xzMNkjqkjAbMqR97mjrO6NlrtUEf5Y+jjtjnbRNyQzmK7K+uvRIZM+fCW
-FlCA0rcbPkIF+VaApBlgRFAPnwXlApPr57fOjdgS+qcTN6/S/xsMBmxPjuk0V4OS
-UePY3m3iCcBvNi6URQCbt/Jq8imin/LWLofvwpBTkGSqeiZz+MF9TOEDit7KHBuT
-k8oNSvH9GlRP/k8ZOj/NBeWWeop4stURrF6InG+Ps4okCC0GqESyPHMqrC38StV5
-aeePsQ3qDrHHFnFUm6RxlIQcScZtDAQGzaVui188wY/dHp8Lufg2VOGqJPpzkhNR
-Q43ZE50MQYDtrxEXNvusdUTVmbBhK9uxFKMfwM7OsWaxeUam3GFXoXw0QcVFNXs4
-EOBjgSDArb9tT7jgQIAvNsItt6Nt9w9d1OHwDhD3tocZQnMLlzOZT4E7Xq3tF4TW
-bzwA3TiBl77+15sumsepTnNyZ6uM9cTN/EKefMmxIW2McmEFNb0UTdq4SfBkuuta
-/EfHp+EsidNZuOpETfQHNivn2BUgVy7Ri81TkUkZo8koojGhHskh0EjT0cSGmd3A
-Q0aZbKGjPqvL1d/K/Da26yH9VXn1XIinROOiznO+7Wf+XkA4d4I=
-=kN43
------END PGP SIGNATURE-----
-
---=-ozj0f7vKcv+QnlaTMwCR--
-
+Except this will return the zero pfn with no indication that it is special
+(i.e., doesn't have a struct page).
