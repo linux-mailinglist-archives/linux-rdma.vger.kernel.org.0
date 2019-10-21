@@ -2,121 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FC6DF4DC
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 20:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D5EDF4E1
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 20:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730036AbfJUSIq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Oct 2019 14:08:46 -0400
-Received: from mail-eopbgr130053.outbound.protection.outlook.com ([40.107.13.53]:26606
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728353AbfJUSIq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 21 Oct 2019 14:08:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UnYaSc7JUgt7wlAc/1KwuK4URy+635FaSFExcGC3Sz1XhdNPsN20b6fcDvb0oJuqBN1Lgbx9FtdfG0gmK6XaNbdHeV1d0lG7qPFp9p9z6FdgSulhQDhKywxDxV93J0blNjcQNl1KXBnFnhigMxSwPPD0FQsU0VXBnX+ZWGSiIklTpTke8fWEbDARhwOM1e8bqVyYVr2IkD/eG3r80s6yP6fR18mxCZeNjWH5O8Hb7XqgRGwdnic+0fcPPB585fRSm0nd5CCjjdJ839rqZ2PmA/E3Yo4neYHOacTRtrbHyHArAJQVs5seyLxpbbWKWQHzrYk6+x7uso+OuD/FeW5/XQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TCS44TzEuNTUdRkC3s+Dv1/s/9sssrrdahGMrPPYGM8=;
- b=UymJcEryiD88+B7DudafTfEt+5wkE//IK7uYW4NeEzmUbzLNt7XGpUtN9BxIQu9rgCJLeFccB5KsibNskL+wjBavf1BRGDefGSwn8/bSDcIkgZMcm0foygsKtzr1qDx8NJMfW8VVaJc+IeeYs+eoynI+N7dUtfyUJE2rg//7W7sMR319AdmsMDsgdEi5CiS3c5COF5AGPZOpf6S60dlVZHCvq9wHj8rmguKNsRp1qvZ4Xb140qDam3e3q+Khj/28yhJjET/63ynCOJfmi7wQzGMw8S5lx0Lcoj3r4bNQ6/jKOOYYpwwDFlMLmj448EWBJWjbk/Ytv5M6curyxFNasQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TCS44TzEuNTUdRkC3s+Dv1/s/9sssrrdahGMrPPYGM8=;
- b=TVZosprgrQWECeR5H+0IF+juaEUmwI4ATfUajYkkeGwOjBGqTc775Lc3PrhjVkahxwA5n0v5T8dnOQ5ph5LZMt+vUJE/gna/tGaw+5J+LQA9XKgbXzOM1UBNIpt/hqE/IgfmwmpIjr+aSTKFAewlRTAUHj+u+t3moifLxge/ZnE=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB5631.eurprd05.prod.outlook.com (20.178.120.88) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.18; Mon, 21 Oct 2019 18:08:41 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::75ae:b00b:69d8:3db0]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::75ae:b00b:69d8:3db0%7]) with mapi id 15.20.2347.029; Mon, 21 Oct 2019
- 18:08:41 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-CC:     Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
+        id S1730027AbfJUSKP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Oct 2019 14:10:15 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:38567 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730015AbfJUSKP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Oct 2019 14:10:15 -0400
+Received: by mail-pl1-f194.google.com with SMTP id w8so7009617plq.5
+        for <linux-rdma@vger.kernel.org>; Mon, 21 Oct 2019 11:10:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oRbIskBaL1aL4BucIlvtGeeYDkL36JmkKgAYi6onRhg=;
+        b=bSfSpdMt8PhyxV4OPUM9O/olzkHtae941iS4qugMeQ/S+W1sKsOwvIPFi/6WOYw76s
+         Pk59olP6fkLr6iJkaROHcJWyGgQKU20XJro6svECjD50uwSErHr2Vf1z7nMDBqEgz9S2
+         eOuXEIfj20H4rk1ugexddJb61LZE/bcLDf0bQHZQ/yBDGa2aBedCXrhJt2rof5fV0T9b
+         2Qv+GUmdv05hxxZgGVDbAD1fP+vHPhu7J3fUXF4Hg26df/7bf+2Rdt89m7S5aMeuNQZA
+         /YN6Egr29u0jME9Me0FZxBAF6dhaBkorr3w/xdRc97moJFteQ5EZKJAWGTJs2cPwOaPJ
+         mcKA==
+X-Gm-Message-State: APjAAAWqzD+0DfereonrsmDeSRcfzFIoubT3RnqBfd4CGZzTQ7HjckYX
+        2f/oMksC9CkeEKU4qIwyGxw=
+X-Google-Smtp-Source: APXvYqzho0RawTs2mNddceg4GlxVuBRcSZquvvA7zeEHbhLPzSRpKBJ+YWq6LSZ8qi0i3wdHaDo03g==
+X-Received: by 2002:a17:902:a987:: with SMTP id bh7mr25259248plb.181.1571681414742;
+        Mon, 21 Oct 2019 11:10:14 -0700 (PDT)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id j128sm18002698pfg.51.2019.10.21.11.10.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Oct 2019 11:10:13 -0700 (PDT)
+Subject: Re: [PATCH 2/4] RDMA/core: Set DMA parameters correctly
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v2 2/3] mm/hmm: allow snapshot of the special zero page
-Thread-Topic: [PATCH v2 2/3] mm/hmm: allow snapshot of the special zero page
-Thread-Index: AQHVg5noYFRN6Uol1kOCsSoXbSSn1KdlbekA
-Date:   Mon, 21 Oct 2019 18:08:40 +0000
-Message-ID: <20191021180836.GE6285@mellanox.com>
-References: <20191015204814.30099-1-rcampbell@nvidia.com>
- <20191015204814.30099-3-rcampbell@nvidia.com>
-In-Reply-To: <20191015204814.30099-3-rcampbell@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BN7PR10CA0031.namprd10.prod.outlook.com
- (2603:10b6:406:bc::44) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [142.162.113.180]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4512248a-6055-48d6-71f2-08d75651b3d2
-x-ms-office365-filtering-ht: Tenant
-x-ms-traffictypediagnostic: VI1PR05MB5631:
-x-microsoft-antispam-prvs: <VI1PR05MB563186E7714F11B399A575E6CF690@VI1PR05MB5631.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 0197AFBD92
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(346002)(396003)(136003)(376002)(366004)(199004)(189003)(1076003)(66946007)(66556008)(316002)(64756008)(66476007)(33656002)(8936002)(71200400001)(256004)(14444005)(5660300002)(54906003)(66446008)(71190400001)(66574012)(86362001)(25786009)(3846002)(36756003)(486006)(2906002)(8676002)(6486002)(102836004)(26005)(6116002)(476003)(81166006)(6512007)(52116002)(76176011)(81156014)(6916009)(6246003)(478600001)(66066001)(11346002)(14454004)(446003)(186003)(7736002)(305945005)(386003)(6506007)(6436002)(4326008)(99286004)(229853002)(2616005);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5631;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xfMxah0kfQhGYyzxzzg7V1yme0MEpJe9wBMgH0/RJtViqwcZunAZRrLWJJAuodLmLDA2rnxWJgWhohjNA47+c5ZgJjg/Trrjc4n3IDSez1pGyfvoSVYjPy8Radw7BGp6zYD++zB1wzMCr4s67PG9QtCAqVQiAcLoz0EuoW5G4cPrL/tTH2NaHhEXKpEySkrK41aabqTuGDrtS1ZYNc1KCbSP4btS8j6ZfuzkcFYlkawoHLRpgG3Uoq5jPtxmfNpQKYaov5BdzxC3OUaoyH1m2fhN3Osxy/G1QPaAljtSVztrq1e3j+JkS2AuNWR5V2WWGW73xl9SLg1mXI8AMJikQoWROysmH5xVFdst2hzUhP7Sti1ioaD1ShHOy5Cr3usbmbFJORuvQzjy0aocq/KAhxbeuJx8LgtD0gF7pw23Ef0=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <68C2F239C011E24CBC4AAB274EE267B9@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+References: <20191021021030.1037-1-bvanassche@acm.org>
+ <20191021021030.1037-3-bvanassche@acm.org> <20191021141039.GC25178@ziepe.ca>
+ <61d89948-de40-5e6b-f368-353476292093@acm.org>
+ <9DD61F30A802C4429A01CA4200E302A7B6B0D6EE@fmsmsx124.amr.corp.intel.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <4d1fb001-ead8-81ce-893e-1ff94214c389@acm.org>
+Date:   Mon, 21 Oct 2019 11:10:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4512248a-6055-48d6-71f2-08d75651b3d2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2019 18:08:40.9095
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xr+IFJrxx9S49yDwrMNdxVZAPjloR0SC1Raz/qcA//Kd+22wcY+vrGt8PozOjZuHJAh5JfMpTW+L9HIFkAFVwg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5631
+In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7B6B0D6EE@fmsmsx124.amr.corp.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gVHVlLCBPY3QgMTUsIDIwMTkgYXQgMDE6NDg6MTNQTSAtMDcwMCwgUmFscGggQ2FtcGJlbGwg
-d3JvdGU6DQo+IEFsbG93IGhtbV9yYW5nZV9mYXVsdCgpIHRvIHJldHVybiBzdWNjZXNzICgwKSB3
-aGVuIHRoZSBDUFUgcGFnZXRhYmxlDQo+IGVudHJ5IHBvaW50cyB0byB0aGUgc3BlY2lhbCBzaGFy
-ZWQgemVybyBwYWdlLg0KPiBUaGUgY2FsbGVyIGNhbiB0aGVuIGhhbmRsZSB0aGUgemVybyBwYWdl
-IGJ5IHBvc3NpYmx5IGNsZWFyaW5nIGRldmljZQ0KPiBwcml2YXRlIG1lbW9yeSBpbnN0ZWFkIG9m
-IERNQWluZyBhIHplcm8gcGFnZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFJhbHBoIENhbXBiZWxs
-IDxyY2FtcGJlbGxAbnZpZGlhLmNvbT4NCj4gUmV2aWV3ZWQtYnk6IENocmlzdG9waCBIZWxsd2ln
-IDxoY2hAbHN0LmRlPg0KPiBDYzogIkrDqXLDtG1lIEdsaXNzZSIgPGpnbGlzc2VAcmVkaGF0LmNv
-bT4NCj4gQ2M6IEphc29uIEd1bnRob3JwZSA8amdnQG1lbGxhbm94LmNvbT4NCj4gIG1tL2htbS5j
-IHwgNCArKystDQo+ICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9u
-KC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvbW0vaG1tLmMgYi9tbS9obW0uYw0KPiBpbmRleCA1ZGYw
-ZGJmNzdlODkuLmY2MmIxMTk3MjJhMyAxMDA2NDQNCj4gKysrIGIvbW0vaG1tLmMNCj4gQEAgLTUz
-MCw3ICs1MzAsOSBAQCBzdGF0aWMgaW50IGhtbV92bWFfaGFuZGxlX3B0ZShzdHJ1Y3QgbW1fd2Fs
-ayAqd2FsaywgdW5zaWduZWQgbG9uZyBhZGRyLA0KPiAgCQkJcmV0dXJuIC1FQlVTWTsNCj4gIAl9
-IGVsc2UgaWYgKElTX0VOQUJMRUQoQ09ORklHX0FSQ0hfSEFTX1BURV9TUEVDSUFMKSAmJiBwdGVf
-c3BlY2lhbChwdGUpKSB7DQo+ICAJCSpwZm4gPSByYW5nZS0+dmFsdWVzW0hNTV9QRk5fU1BFQ0lB
-TF07DQo+IC0JCXJldHVybiAtRUZBVUxUOw0KPiArCQlpZiAoIWlzX3plcm9fcGZuKHB0ZV9wZm4o
-cHRlKSkpDQo+ICsJCQlyZXR1cm4gLUVGQVVMVDsNCj4gKwkJcmV0dXJuIDA7DQoNCkRvZXMgaXQg
-bWFrZSBzZW5zZSB0byByZXR1cm4gSE1NX1BGTl9TUEVDSUFMIGluIHRoaXMgY2FzZT8gRG9lcyB0
-aGUNCnplcm8gcGZuIGhhdmUgYSBzdHJ1Y3QgcGFnZT8gRG9lcyBpdCBuZWVkIG1hbmRhdG9yeSBz
-cGVjaWFsIHRyZWF0bWVudD8NCg0KaWUgdGhlIGJhc2UgYmVoYXZpb3Igd2l0aG91dCBhbnkgZHJp
-dmVyIGNvZGUgc2hvdWxkIGJlIHRvIGRtYSBmcm9tIHRoZQ0KemVybyBtZW1vcnkuIEEgZmFuY3kg
-ZHJpdmVyIHNob3VsZCBiZSBhYmxlIHRvIGRldGVjdCB0aGUgemVybyBhbmQgZG8NCnNvbWV0aGlu
-ZyBlbHNlLg0KDQpJJ20gbm90IGNsZWFyIHdoYXQgdGhlIHR3byBleGlzdGluZyB1c2VycyBkbyB3
-aXRoIFBGTl9TUEVDSUFMPyBOb3V2ZWF1DQpsb29rcyBsaWtlIGl0IGlzIHRoZSBzYW1lIHZhbHVl
-IGFzIGVycm9yLCBjYW4ndCBndWVzcyB3aGF0IGFtZGdwdSBkb2VzDQp3aXRoIGl0cyBtYWdpYyBj
-b25zdGFudA0KDQpKYXNvbg0K
+On 10/21/19 10:44 AM, Saleem, Shiraz wrote:
+>> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+>> index a667636f74bf..a523d844ad9d 100644
+>> --- a/drivers/infiniband/core/device.c
+>> +++ b/drivers/infiniband/core/device.c
+>> @@ -1199,9 +1199,21 @@ static void setup_dma_device(struct ib_device *device)
+>>    		WARN_ON_ONCE(!parent);
+>>    		device->dma_device = parent;
+>>    	}
+>> -	/* Setup default max segment size for all IB devices */
+>> -	dma_set_max_seg_size(device->dma_device, SZ_2G);
+>>
+>> +	if (!device->dev.dma_parms) {
+>> +		if (parent) {
+>> +			/*
+>> +			 * The caller did not provide DMA parameters, so
+>> +			 * 'parent' probably represents a PCI device. The PCI
+>> +			 * core sets the maximum segment size to 64
+>> +			 * KB. Increase this parameter to 2G.
+>> +			 */
+>> +			device->dev.dma_parms = parent->dma_parms;
+>> +			dma_set_max_seg_size(device->dma_device, SZ_2G);
+> 
+> Did you mean dma_set_max_seg_size(&device->dev, SZ_2G)?
+
+Have you realized that that call has the same effect as what I proposed 
+since both devices share the dma_parms parameter?
+
+> device->dma_device could be pointing to parent if the caller
+> did not provide dma_ops. So wont this update the parent device
+> dma params?
+
+That's correct, this will update the parent device DMA parameters.
+
+> Also do we want to ensure all callers device max_seg_sz
+> params >= threshold (=2G)? If so, perhaps we can do something
+> similar to vb2_dma_contig_set_max_seg_size()
+> 
+> https://elixir.bootlin.com/linux/v5.4-rc2/source/drivers/media/common/videobuf2/videobuf2-dma-contig.c#L734
+
+It depends on what PCIe RDMA adapters support. If all PCIe RDMA adapters 
+supported by the Linux kernel support max_segment_size >= 2G the above 
+code is probably the easiest approach.
+
+Thanks,
+
+Bart.
