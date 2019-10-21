@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CCADF579
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 20:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F7DDF5A8
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 21:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbfJUS5r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Oct 2019 14:57:47 -0400
-Received: from mail-eopbgr70049.outbound.protection.outlook.com ([40.107.7.49]:59448
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        id S1728056AbfJUTGo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Oct 2019 15:06:44 -0400
+Received: from mail-eopbgr80047.outbound.protection.outlook.com ([40.107.8.47]:49793
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727211AbfJUS5q (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 21 Oct 2019 14:57:46 -0400
+        id S1727211AbfJUTGo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 21 Oct 2019 15:06:44 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lv7E1gT7C/Ynymgl8YNFMcqYljTzh+J5LjKwrVwBleY1hhxDybKnRXuo7rCg4cWtg0qvyFSuhLbHXLAgQ6SAGFkIMnoiVgagAyWQ9bni9iFZyUX4rWfrpb70LfVEruxEP+3I1MkgJyriAtoCo5mGkX87JBDflU0C1MT93eCcOApaSS2KDGRdSQBKY2osHHTjP6AzmWmY2+q4GoRrG89/1Sf9jv1WfiurnZhKokjsYO0KUt7FRbXv+zK2/9oJs/UFrII4DhzoTKOTDYSlEuX321yl5yNMCcQicOOiViZFKmWQgO5CPu6F5N966vE5BF0PC3+M4fG+nk/JBlqCbIqmQw==
+ b=B6hJs01S/6cr1FMXF3VGzvgufocf7zgkuk3a8Cs/X0FRYWou69zoTCEMnkFiG27yhwjs6bCVM2L8B7XSQ3IqaR9MtUmL0nFWnA1xuGU7kdRbFYylYc4lyvZ3ekO8ofzL5SnutjCFjQB+qTDP/FkyprfqJ8+O1cBqk8Vtloz4eR67xAwF8MSJirt5bmGqjtoKBZquHiVCypqHr+0JEqrufJOgpShhS2tsU+45nV8lgdjiDYnz2x+X5/VvOb4dqBhFuXo88SwAtXb65r8KE8Eeaw6qB1620NLl175ZefH9OP2xbEIi0dhovwePdfq0ly7RAk2zt79fFgyeXi5ZuSCjHw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TyjmVYKuEJheZR+mPSV4oncME0AobZ0x4p/0lHK1Pes=;
- b=kMDOLiWLuT8gYTaV+xvs4FJZglHDCaLHzWVTCFdekQcXqSLP8grwbuR9HUS+Rskk+FuR/IG6hGpWuqNHsb2q+0xq8EjndZTFRv2K5wqQseA0fD32P9kh6JKTk7J8XQ7CxwyFU3igFVd1npAEQBvMBG4SDKta7wX926NaEcCpymq9PNvnob0VLbCz23Gk1mnLq6q7rH2nvk/YGvN6lgdjj+XXkzifWYaDyA9FID+vG5yw7+nuDoZphbP1vMgRRQv33L9+VwzJBsV+GThRmpAIiIhRecAuzuRYtKvTSAX4223SyB70yet3Ruk6cPd2l/QmuKKgpyAAmd63aRYyHecYXg==
+ bh=CKJd2NpinY3P8m2AwGEy7BmBOIvD5pXIr4+oty5xgzM=;
+ b=MG4yKM/LzdqTrC8gKZM+GwPOKPWmyMKjlFP36yJSJWRjLnzti0naKZdWOTN7gN6Th9gZ5lOHCUNgnwviUJJ+loLzwcLFJ5PscO9KVvO+u/ejKD6cc5COPIC6NZ8ALf0Ufg93//kscqIGYXUA7G3tTXl3Y7GddQv3oJsFfUkg+bdQjUJ7eddpw+SsVyMoDnR+niGySsoqxdLQdlXiH0ZH2wxoH7nWrU5wAXgwpyH6jQ+WAjul0uZkO+A8Nyr0b16xiaQZEesuRMeFcMNsw2fWQ8Bg3u6V8NPLSQC1cZIta7T8pIVvK7jigDw+J2ZiL7OrYirdo3mFoSVvRbAGDeV34Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TyjmVYKuEJheZR+mPSV4oncME0AobZ0x4p/0lHK1Pes=;
- b=kUjLVOxFsvzhE2gS+f+y03MCZdmnaQwnANzgflTVhU5BsPUsrgD5Q8fx5g0sASJ8lKJrUXKbGq9aH7sAjoms+9KuMFV7h9U842TAXq8o6FR8Z0AQ30+p+cJQTRbn0Cvl0wyv1IcWxyrK0iziEMj49A7ptH+sPwXE6XO6T9Z4Jeg=
+ bh=CKJd2NpinY3P8m2AwGEy7BmBOIvD5pXIr4+oty5xgzM=;
+ b=CG4YGrSZGij6J6KVBkGlb9HhJoeTiDjONhgS8039+aME1VgmVwyHfgNeatPc+W5PDHS63brsg5hYASEOzuhfDqWc9QQ4mr4v8ipXPTXp75zZMKCxrrIFfr46WQ04lWj0vi/E/OGEVSnY2KgBpsQQE9E+aSw9ElLyMc0bOrLtadw=
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB4191.eurprd05.prod.outlook.com (52.134.122.17) with Microsoft SMTP
+ VI1PR05MB4718.eurprd05.prod.outlook.com (20.176.1.139) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.16; Mon, 21 Oct 2019 18:57:42 +0000
+ 15.20.2347.16; Mon, 21 Oct 2019 19:06:00 +0000
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::75ae:b00b:69d8:3db0]) by VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::75ae:b00b:69d8:3db0%7]) with mapi id 15.20.2347.029; Mon, 21 Oct 2019
- 18:57:42 +0000
+ 19:06:00 +0000
 From:   Jason Gunthorpe <jgg@mellanox.com>
 To:     Jerome Glisse <jglisse@redhat.com>
 CC:     Ralph Campbell <rcampbell@nvidia.com>,
@@ -46,90 +46,124 @@ CC:     Ralph Campbell <rcampbell@nvidia.com>,
         "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
         "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
         Ben Skeggs <bskeggs@redhat.com>
-Subject: Re: [PATCH hmm 15/15] mm/hmm: remove hmm_mirror and related
-Thread-Topic: [PATCH hmm 15/15] mm/hmm: remove hmm_mirror and related
-Thread-Index: AQHVg4SywcbuimcjREqJNp41R1BK1KdldmcAgAAFYAA=
-Date:   Mon, 21 Oct 2019 18:57:42 +0000
-Message-ID: <20191021185738.GH6285@mellanox.com>
+Subject: Re: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
+ locking
+Thread-Topic: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
+ locking
+Thread-Index: AQHVg4Sqa7CCxCToXEeTrrYAqVQVhqdldwqAgAAHDgA=
+Date:   Mon, 21 Oct 2019 19:06:00 +0000
+Message-ID: <20191021190556.GI6285@mellanox.com>
 References: <20191015181242.8343-1-jgg@ziepe.ca>
- <20191015181242.8343-16-jgg@ziepe.ca> <20191021183824.GE3177@redhat.com>
-In-Reply-To: <20191021183824.GE3177@redhat.com>
+ <20191021184041.GF3177@redhat.com>
+In-Reply-To: <20191021184041.GF3177@redhat.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: BL0PR02CA0143.namprd02.prod.outlook.com
- (2603:10b6:208:35::48) To VI1PR05MB4141.eurprd05.prod.outlook.com
+x-clientproxiedby: BN8PR04CA0038.namprd04.prod.outlook.com
+ (2603:10b6:408:d4::12) To VI1PR05MB4141.eurprd05.prod.outlook.com
  (2603:10a6:803:44::15)
 authentication-results: spf=none (sender IP is )
  smtp.mailfrom=jgg@mellanox.com; 
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [142.162.113.180]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 57e0870c-c9e7-4acd-0215-08d756588d1f
+x-ms-office365-filtering-correlation-id: d02704bc-4334-4fc6-067d-08d75659b5e5
 x-ms-office365-filtering-ht: Tenant
-x-ms-traffictypediagnostic: VI1PR05MB4191:
-x-microsoft-antispam-prvs: <VI1PR05MB4191F433A5EBEF8A72E7D72ACF690@VI1PR05MB4191.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-traffictypediagnostic: VI1PR05MB4718:
+x-microsoft-antispam-prvs: <VI1PR05MB4718C871FA1CE457B206E8BDCF690@VI1PR05MB4718.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
 x-forefront-prvs: 0197AFBD92
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(136003)(376002)(396003)(366004)(346002)(199004)(189003)(305945005)(66476007)(33656002)(6436002)(66946007)(64756008)(6506007)(66556008)(6116002)(316002)(476003)(7416002)(54906003)(6486002)(4326008)(71190400001)(71200400001)(386003)(36756003)(3846002)(25786009)(229853002)(186003)(2616005)(11346002)(6916009)(66446008)(7736002)(1076003)(14444005)(446003)(86362001)(99286004)(81166006)(76176011)(5660300002)(6512007)(478600001)(102836004)(6246003)(26005)(486006)(2906002)(66066001)(8936002)(14454004)(52116002)(256004)(8676002)(81156014);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4191;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(366004)(136003)(396003)(39860400002)(346002)(199004)(189003)(3846002)(86362001)(316002)(66946007)(7416002)(305945005)(7736002)(8676002)(81156014)(14444005)(256004)(66476007)(66556008)(64756008)(66446008)(52116002)(71200400001)(76176011)(54906003)(99286004)(71190400001)(8936002)(81166006)(6116002)(6506007)(33656002)(478600001)(14454004)(386003)(26005)(229853002)(25786009)(4326008)(6436002)(446003)(1076003)(486006)(66066001)(102836004)(6486002)(2906002)(2616005)(36756003)(5660300002)(11346002)(186003)(476003)(6246003)(6916009)(6512007);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4718;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xVB2BKyQWSpwrUc3vLyrml9di3pbVk/A+6m1CA56Q7QP/c+BwIpRWxIRbIAE+w+wd3uYnD9MFJ7aGNqKON1kTs2AM2cpZOByVP/a1tpTLyj4a8Qy/roNWdepZHCXepWHdmYuoZc1JrKzxNNSetQPLrKYquqiPVA1K1q8Se6cfyfGm5k5BhHzxzSM0LhROrE6yu1f2xc+CggLqUUsC4OdM5F3rMLL7FLACKA6Zz50kKKALE2FoBIN8d1xDVcEHG4RlboPS1knSu4Q/N+72Rc4LyHfDBOkZdbYT/DENEL0h1QUmFcBDEy8cTvSFDIl1TuLjuBgUaFjRmqncKadT/fViUTYJ7TFBaDlopVxF6iFP58ccsC1ZXQblTZ9FyepPUHMhTR39tXyCfVYG64TSSVnU7TDIZUcxnkYkk+uagnhMwc=
+x-microsoft-antispam-message-info: 848yyiXVONH54Kkcr/4H3YrpXwbjxGarmHogfgIcRQyB9BAQyL7b+LUAsaaea5JJvZPTv0v6cSokHczFqydmW89SFTJ/iloqnLVJxTI44EETpoDxOpU+6OC2xJs/QAjKBFCGhgliz7GPvv1BppF+Dm3WusPMLcrSBGYxi8FHneGfmspxl57uY8ASH6KQKmgWUZPt5xzjPCER2xjRC+yrD/93jx/CIZ5FbrIAk+T8nDefNjD7Sy60MVruS2drvVfFqWraEsOJNtsBFxlrXkqEnxxuqWKISD3+A9YJi0m21Z/4tRvlaf3On1oogNXTExUik2EVINDTMF5mv5BufV9hFLU1slrhuNpbtcSt3gFRj6mt1y6mOC1XOoAnCg0tgu7VetlBfr+guYRuxA+D8e3OKrdaPcOk/T7xC0cCl0yBef72nowZBpL9TbpTMdzSzTUp
 x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <08002827BBC4AD498462229A8A58EBB7@eurprd05.prod.outlook.com>
+Content-ID: <46700DBA60BB8A43AC732C3FBB27EA05@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 57e0870c-c9e7-4acd-0215-08d756588d1f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2019 18:57:42.2633
+X-MS-Exchange-CrossTenant-Network-Message-Id: d02704bc-4334-4fc6-067d-08d75659b5e5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2019 19:06:00.1077
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yj26yeaHwQG/b6beP5Fb/8PQ9D7NwBgtBYbjTOiEUeeZ85UxYUizDHfh0Uw9M9cCiLwJYCnPv2G79WC8j4C2pg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4191
+X-MS-Exchange-CrossTenant-userprincipalname: rQFA9nq6A4mLS2977RGY5r/lxIuJD5QCXkx4gDd0HbxIJbyD3HQ9PBGfGhJgZVWmCs427iJB/wWK1+1M3uZ8yA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4718
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 02:38:24PM -0400, Jerome Glisse wrote:
-> On Tue, Oct 15, 2019 at 03:12:42PM -0300, Jason Gunthorpe wrote:
+On Mon, Oct 21, 2019 at 02:40:41PM -0400, Jerome Glisse wrote:
+> On Tue, Oct 15, 2019 at 03:12:27PM -0300, Jason Gunthorpe wrote:
 > > From: Jason Gunthorpe <jgg@mellanox.com>
 > >=20
-> > The only two users of this are now converted to use mmu_range_notifier,
-> > delete all the code and update hmm.rst.
+> > 8 of the mmu_notifier using drivers (i915_gem, radeon_mn, umem_odp, hfi=
+1,
+> > scif_dma, vhost, gntdev, hmm) drivers are using a common pattern where
+> > they only use invalidate_range_start/end and immediately check the
+> > invalidating range against some driver data structure to tell if the
+> > driver is interested. Half of them use an interval_tree, the others are
+> > simple linear search lists.
+> >=20
+> > Of the ones I checked they largely seem to have various kinds of races,
+> > bugs and poor implementation. This is a result of the complexity in how
+> > the notifier interacts with get_user_pages(). It is extremely difficult=
+ to
+> > use it correctly.
+> >=20
+> > Consolidate all of this code together into the core mmu_notifier and
+> > provide a locking scheme similar to hmm_mirror that allows the user to
+> > safely use get_user_pages() and reliably know if the page list still
+> > matches the mm.
+> >=20
+> > This new arrangment plays nicely with the !blockable mode for
+> > OOM. Scanning the interval tree is done such that the intersection test
+> > will always succeed, and since there is no invalidate_range_end exposed=
+ to
+> > drivers the scheme safely allows multiple drivers to be subscribed.
+> >=20
+> > Four places are converted as an example of how the new API is used.
+> > Four are left for future patches:
+> >  - i915_gem has complex locking around destruction of a registration,
+> >    needs more study
+> >  - hfi1 (2nd user) needs access to the rbtree
+> >  - scif_dma has a complicated logic flow
+> >  - vhost's mmu notifiers are already being rewritten
+> >=20
+> > This is still being tested, but I figured to send it to start getting h=
+elp
+> > from the xen, amd and hfi drivers which I cannot test here.
 >=20
-> I guess i should point out that the reasons for hmm_mirror and hmm
-> was for:
->     1) Maybe define a common API for userspace to provide memory
->        placement hints (NUMA for GPU)
+> It might be a good oportunity to also switch those users to
+> hmm_range_fault() instead of GUP as GUP is pointless for those
+> users. In fact the GUP is an impediment to normal mm operations.
 
-Do you think this needs special code in the notifiers?
+I think vhost can use hmm_range_fault
 
->     2) multi-devices sharing same mirror page table
+hfi1 does actually need to have the page pin, it doesn't fence DMA
+during invalidate.
 
-Oh neat, but I think this just means the GPU driver has to register a
-single notifier for multiple GPUs??
+i915_gem feels alot like amdgpu, so probably it would benefit
 
-> But support for multi-GPU in nouveau is way behind and i guess such
-> optimization will have to re-materialize what is necessary once that
-> happens.
+No idea about scif_dma
 
-Sure, it will be easier to understand what is needed with a bit of
-code!
+> I will test on nouveau.
 
-> Note this patch should also update kernel/fork.c and the mm_struct
-> definition AFAICT. With those changes you can add my:
+Thanks, hopefully it still works, I think Ralph was able to do some
+basic checks. But it is a pretty complicated series, I probably made
+some mistakes.
 
-Can you please elaborate what updates you mean? I'm not sure.=20
+FWIW, I know that nouveau gets a lockdep splat now from Daniel
+Vetter's recent changes, it tries to do GFP_KERENEL allocations under
+a lock also held by the invalidate_range_start path.
 
-Maybe I already got the things you are thinking of with the get/put
-changes?
+Thanks for looking at it!
 
-Thanks,
-Jason
+Regards,
+Jason=20
