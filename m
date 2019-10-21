@@ -2,123 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2E2DF72D
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 22:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45D8DF732
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 22:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729869AbfJUUyR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Oct 2019 16:54:17 -0400
-Received: from hqemgate15.nvidia.com ([216.228.121.64]:13486 "EHLO
-        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728914AbfJUUyR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Oct 2019 16:54:17 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dae1b030000>; Mon, 21 Oct 2019 13:54:27 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 21 Oct 2019 13:54:17 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Mon, 21 Oct 2019 13:54:17 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Oct
- 2019 20:54:16 +0000
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by
- DRHQMAIL107.nvidia.com (10.27.9.16) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Mon, 21 Oct 2019 20:54:15 +0000
-Subject: Re: [PATCH v2 2/3] mm/hmm: allow snapshot of the special zero page
-To:     Jerome Glisse <jglisse@redhat.com>
-CC:     John Hubbard <jhubbard@nvidia.com>, Christoph Hellwig <hch@lst.de>,
-        "Jason Gunthorpe" <jgg@mellanox.com>, <linux-rdma@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20191015204814.30099-1-rcampbell@nvidia.com>
- <20191015204814.30099-3-rcampbell@nvidia.com>
- <20191021184927.GG3177@redhat.com>
-From:   Ralph Campbell <rcampbell@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <95fa45cf-a2ce-fab8-588d-8d806124aef3@nvidia.com>
-Date:   Mon, 21 Oct 2019 13:54:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        id S1730065AbfJUUzz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Oct 2019 16:55:55 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:53057 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728943AbfJUUzz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 21 Oct 2019 16:55:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1571691354;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HWrTW4dGirEHlCYQhRmguSL5PY0G03s8kJ1n6OjbfEk=;
+        b=EOB8gchduY05iAUX+gztgxAQp6dIXcf0BXaEFlHYIrfxo3DyhvKKLGVxqmSRaKEUBG1oXl
+        j/DrokkmovWsmhxJAbvqWALEO6eKwG+xjR8Y1ce+CnqDTUeeT5QoqghM4khVFf0qbRAZuH
+        A4FKd9UO5mRNjlEenl4SzrtKpgzcZHk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-163-UrM7_W4UPwSVjEfG8SXJQQ-1; Mon, 21 Oct 2019 16:55:53 -0400
+X-MC-Unique: UrM7_W4UPwSVjEfG8SXJQQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 55DF6100550E;
+        Mon, 21 Oct 2019 20:55:52 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-37.rdu2.redhat.com [10.10.112.37])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A8FD460856;
+        Mon, 21 Oct 2019 20:55:51 +0000 (UTC)
+Message-ID: <ffbb94fd1187edc7b0307e739fdaf2c000b7a325.camel@redhat.com>
+Subject: Re: [PATCH] ib/srp: Add missing new line after displaying
+ fast_io_fail_tmo param
+From:   Doug Ledford <dledford@redhat.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Donald Dutile <ddutile@redhat.com>, linux-rdma@vger.kernel.org
+Date:   Mon, 21 Oct 2019 16:55:49 -0400
+In-Reply-To: <d5535489-0130-d159-7e3d-bb34d3bc4282@acm.org>
+References: <20191009164937.21989-1-ddutile@redhat.com>
+         <d5535489-0130-d159-7e3d-bb34d3bc4282@acm.org>
+Organization: Red Hat, Inc.
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30)
 MIME-Version: 1.0
-In-Reply-To: <20191021184927.GG3177@redhat.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1571691267; bh=N8CJfrBWXeelg3CYFYytdZrSkYKGVF3Nf4ocWcNbLdM=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=HePaq9WzypRM7B2petuLt4qiPLZCLRNb/n5j1JQzPt5ugY+W0vlC/NA0qG1Sr4ld/
-         hlrmFm06izi6WeWC98l3kxbIUWR6YOJr/WJf/UunELirAo0NyAaleeRb4JHCcbyIGD
-         Y371rfRttqxdSShpe32lF2GGOfu4Iocs7r1FU/NaOdk0LBLqZ7sQh/vwZ32CqyllcT
-         uVILKsl3to8db8Xytx7B3fnNRJsaw2ckiYSSYewM7oAGxqbGJHV6j4F7NDbd0Kc0KK
-         SkzKVKHPKJXg/WWcZ4/Q2kWxuNtM+TmcGIr7g8Lgx14JwE5Gqok4bJrid9LjSfs56m
-         d4dBdfXOi32iA==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Mimecast-Spam-Score: 0
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-Ex5SC0YINomtpQL610kb"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+--=-Ex5SC0YINomtpQL610kb
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 10/21/19 11:49 AM, Jerome Glisse wrote:
-> On Tue, Oct 15, 2019 at 01:48:13PM -0700, Ralph Campbell wrote:
->> Allow hmm_range_fault() to return success (0) when the CPU pagetable
->> entry points to the special shared zero page.
->> The caller can then handle the zero page by possibly clearing device
->> private memory instead of DMAing a zero page.
+On Wed, 2019-10-09 at 14:55 -0700, Bart Van Assche wrote:
+> On 10/9/19 9:49 AM, Donald Dutile wrote:
+> > Long-time missing new-line in sysfs output.
+> > Simply add it.
 >=20
-> I do not understand why you are talking about DMA. GPU can work
-> on main memory and migrating to GPU memory is optional and should
-> not involve this function at all.
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 
-Good point. This is the device accessing the zero page over PCIe
-or another bus, not migrating a zero page to device private memory.
-I'll update the wording.
+Thanks, applied to for-next.
 
->>
->> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
->> Reviewed-by: Christoph Hellwig <hch@lst.de>
->> Cc: "J=E9r=F4me Glisse" <jglisse@redhat.com>
->> Cc: Jason Gunthorpe <jgg@mellanox.com>
->=20
-> NAK please keep semantic or change it fully. See the alternative
-> below.
->=20
->> ---
->>   mm/hmm.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/mm/hmm.c b/mm/hmm.c
->> index 5df0dbf77e89..f62b119722a3 100644
->> --- a/mm/hmm.c
->> +++ b/mm/hmm.c
->> @@ -530,7 +530,9 @@ static int hmm_vma_handle_pte(struct mm_walk *walk, =
-unsigned long addr,
->>   			return -EBUSY;
->>   	} else if (IS_ENABLED(CONFIG_ARCH_HAS_PTE_SPECIAL) && pte_special(pte=
-)) {
->>   		*pfn =3D range->values[HMM_PFN_SPECIAL];
->> -		return -EFAULT;
->> +		if (!is_zero_pfn(pte_pfn(pte)))
->> +			return -EFAULT;
->> +		return 0;
->=20
-> An acceptable change would be to turn the branch into:
-> 	} else if (IS_ENABLED(CONFIG_ARCH_HAS_PTE_SPECIAL) && pte_special(pte)) =
-{
-> 		if (!is_zero_pfn(pte_pfn(pte))) {
-> 			*pfn =3D range->values[HMM_PFN_SPECIAL];
-> 			return -EFAULT;
-> 		}
-> 		/* Fall-through for zero pfn (if write was needed the above
-> 		 * hmm_pte_need_faul() would had catched it).
-> 		 */
-> 	}
->=20
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-Except this will return the zero pfn with no indication that it is special
-(i.e., doesn't have a struct page).
+--=-Ex5SC0YINomtpQL610kb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl2uG1UACgkQuCajMw5X
+L93n7Q/+M0SN09nVhv997JZdi+QH5oqj0rvkNWY8YvyEVUnxaUiH7nJNp5Gimn0r
+ffQWPv6D678raVHiI+bVhmK+M6WStw0TapRS4r6JlncvhaB0Pa6cu+MMyQBmmXNA
+9INoFO4stPRnoRzZrNGToJnNKY76uy8QHHCuVJZsjVD3MYS2yV7VqI1g248cNdwI
++LCo5eJElwZvldamsuQbRqmriJKrOmzd8NXJXMl9xU4mu93KOpIhmbaCiwChRA84
+MJmG43LYL7GZiDFevcbbOWBGDyqml986EtM1L6Dv7u4Yeyuu/ppdhKEhewu/am4K
+2HxRfWQu/klFXopeb2BhPs09xJnCHCkzRrBXkiSzlDjUjM9pB/OqeEMVsYa4gn6n
+oCP6DEHlGMKtrOoFQFJXqs4sYrNp4AML2qvEnCrqTWl1GIR69Rp7/0vsq4RBAull
+5pGuQe/61CBsf0Dj3kbLX0N429rI/9O17820mI5xoHpnWe3KJygj5o8QMXtwdo1q
+Xi+KrRTZkA6YkSIbOBsBps+vSltzpxiLU7EeY3IANtB0ZzJVLMu3iaXTX0blxvfR
+/hygYqDQ06tsGgDtOLgb70VpdSFRfMxIOLC1eFtqNG0JNewMw7QgDxncEB7bqz7G
+LbEcNaj60a1aDRBjJjlkrUktA5aRSCVolO8dClN9vKuS6R2Ac+Y=
+=jpFF
+-----END PGP SIGNATURE-----
+
+--=-Ex5SC0YINomtpQL610kb--
+
