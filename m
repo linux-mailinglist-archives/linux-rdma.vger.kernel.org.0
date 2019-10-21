@@ -2,121 +2,263 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA04EDF3B6
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 18:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9895BDF3CF
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 19:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727993AbfJUQ6h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Oct 2019 12:58:37 -0400
-Received: from mail-eopbgr10061.outbound.protection.outlook.com ([40.107.1.61]:3906
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726276AbfJUQ6h (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 21 Oct 2019 12:58:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JyqTDdJ5asdWm6rJcxDsCbJXWyrXfcAJkMwPQmRIbKiAop2WkdR38yJy2TTDw8v18ZtAixXaLR2D5+e0kK7zyXSMGMboVqU6ohl2s87o4+MHBgAXEE6KqFQvqYXZa7Ua8mGA8eVJpIkOURxX2RPfScGzgVgk993BLFAo70wnj1ESY0v7k/UGqaej+k37lZqoXTdYqF8mSPT8G0q/alfwixTNh4UQKBzzFc3O3ht9hChQvhD8dMtaoqWWhuxeF/cfkCf1kSgYB2FKHjyMFezuJ/kFEcIpGwRoiW5vVBmp+UPmMrHuDRIuvlCn37C//Rfz7ieKQrkPeXR5q72z9kl2ug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xFlN5t3UGozcMevuLdzlZwjri0Hmv1gvskUCJgPfxEQ=;
- b=JCUElLHM9QD7lYtjSVhEEYN5k/C4TVMtjJbu1Ke6f+DA4oX6nC75LuE2z5p1dzW9fFVPkBI6C/p5x3e0ORViFXrIZfqM4ZrqeMyYUlzTBQyYVpdgWQ3NxOT6virUPoVAhQUonHmctxc7n1TlXFhS9tEeFgg2l986DXGmGOP1KP3jWJYgsG1/A64L+YhTVRi/xJqoyrBpNe9bwLZBkqSBFZaIXhXTXCo+oZ5KNPS2ny/WPpesipn4l2VbiRzPW8f/fk2RSXgN0OY6uu1QqL7ba19ZHe0WMei6VdEbfrKqA9ys3N06xz/IUOC9L5a2D4lU3mmBrOTAdSxbmA6i3NSfcw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xFlN5t3UGozcMevuLdzlZwjri0Hmv1gvskUCJgPfxEQ=;
- b=f8qJYOxs3ZUAdo7qGx9rPBymNiej4qbXjfgCQkb573Ido4mogR/amppl9vBBt6NmKsFbD9gieTDZYtkWLIVdGYaUemOwCOeab3SyppkGkPdLpRp9y+zCvYP6UPGJ6VxTAObcQLPPoNRI9BgXnlsa17jkP88ZamNZYp9kup+1PEU=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB4751.eurprd05.prod.outlook.com (20.176.5.24) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2367.24; Mon, 21 Oct 2019 16:58:31 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::75ae:b00b:69d8:3db0]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::75ae:b00b:69d8:3db0%7]) with mapi id 15.20.2347.029; Mon, 21 Oct 2019
- 16:58:31 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-CC:     Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>
-Subject: Re: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
- locking
-Thread-Topic: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
- locking
-Thread-Index: AQHVg4Sqa7CCxCToXEeTrrYAqVQVhqdlSPyAgAARfwA=
-Date:   Mon, 21 Oct 2019 16:58:31 +0000
-Message-ID: <20191021165828.GA6285@mellanox.com>
-References: <20191015181242.8343-1-jgg@ziepe.ca>
- <5fdbcda8-c6ec-70aa-3f89-147fe67152f2@intel.com>
-In-Reply-To: <5fdbcda8-c6ec-70aa-3f89-147fe67152f2@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MN2PR17CA0033.namprd17.prod.outlook.com
- (2603:10b6:208:15e::46) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [142.162.113.180]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3bafb636-c336-48c8-cbde-08d75647e702
-x-ms-office365-filtering-ht: Tenant
-x-ms-traffictypediagnostic: VI1PR05MB4751:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <VI1PR05MB4751E3B605CD85B6453633F5CF690@VI1PR05MB4751.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-forefront-prvs: 0197AFBD92
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(979002)(4636009)(366004)(346002)(39860400002)(136003)(396003)(376002)(189003)(199004)(14454004)(11346002)(446003)(966005)(86362001)(33656002)(1076003)(25786009)(6916009)(81156014)(8936002)(8676002)(81166006)(478600001)(64756008)(66556008)(66446008)(66476007)(66946007)(486006)(66066001)(186003)(5660300002)(386003)(256004)(476003)(4744005)(2616005)(26005)(102836004)(53546011)(6506007)(71190400001)(76176011)(52116002)(99286004)(71200400001)(3846002)(7416002)(7736002)(305945005)(6116002)(6486002)(4326008)(6246003)(36756003)(229853002)(6306002)(6512007)(6436002)(2906002)(54906003)(316002)(969003)(989001)(999001)(1009001)(1019001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4751;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: a2AscmFxZMvMh7umM9ml1xvkjD7/KAn9E+K4LuOt0mOmZV7uxAzKt91w/jzJOR0dJ7rjwcM1IvzQ+2rBTxOhYdsdHj20qeLHEtemH24Msiy463JaAOM8ejMmETPi5pk1Q9Sb8M+KpkluJN4bt6u1n/mIM/qd8+PC3reBSjcJeb7rBivYWz0FoojijxZyFPOUx310c3/q7oB6OqOtRctesumjSVEZkjOUhhfGKOODk7AsiQdWiFo3aXBEvwepkMIb2BEp2hurdTD/8iEOTvHonO//dqNZcTAQt9zjaAF0hg6zgj4w2bgd9Cj8q9Z+T1xAXbcJtXjOvwY3sUrARtTBS0cZ+j11d8xQir0NuGQrFi708TBNJU+CiuwvJM2g4nDmjk0F0pHG64k+oZ0gEhWs7QtiWupAlZJi4kgA4y/Efko6Un6BASLTFyq4YcGB+ah3/RiULbhPa3qcal8fD2GTZkcGN1NYssY6ipn+9VorzaQ=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <0BEC4912CF056E498EEC73DAB37D8D9B@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1728254AbfJURHv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Oct 2019 13:07:51 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:42525 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728056AbfJURHu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Oct 2019 13:07:50 -0400
+Received: by mail-qt1-f195.google.com with SMTP id w14so22087943qto.9
+        for <linux-rdma@vger.kernel.org>; Mon, 21 Oct 2019 10:07:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=nGjwlBOVTIlb++PoJjuByBkJLzfzQYfpW/sCcy1A5TA=;
+        b=eRg9NJfZ5Tot/MIdyiXWyytyhykyH6du0L/3H/ZLNKjPtvXaOd0lyaEoZ2NniQdlXz
+         YqQK9TK9UqmbdNBm7RpCrmAZ5qRbfxtnfqYasfYhj00VJhNFoQXtPrVTtFkJ3dmaUprk
+         FIje3Bbppu9FRBvPV6SN9rG3Ksbd9XkGf2bb9zwvNEEHUCdcsVqEvz5/pu+KK731XRfF
+         rosU0ncppydRhOyetvpp1TbPS1LjXq49DLFMn+UrC4TzWgOB3LVCxZ6/20l6kVOKrLQs
+         QFi6etwt4QjhFcK8KIB3MFShIcu5fIdaOihfiCzewbhbjd/Kf3QSH9c9A6hViXU/JGGV
+         mRMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=nGjwlBOVTIlb++PoJjuByBkJLzfzQYfpW/sCcy1A5TA=;
+        b=YQ+3qIyXSeL5LXDdTT31zg1emlk3A1RtaU2f2Hn+vsKCWNHocINGeeKbFGW8pmGUL0
+         g/CO+v8GRoFQYzIgF7BQdPM2Xncc7h7tej9qxKJjjH9x/sVcwMQlppPGbppaSRQv2392
+         szsUCaty78s9OHBOD1Syu/33MA/JZd/gKFR05bmA97I2Jg1iw5Cba0pWIsfC3fzVbTxT
+         6oecEsQYOPN7vSRaMq/uNDbagyuNvY/lsArX0jp+uUPN6mozmzA79PY8H1LPp0bYgEWE
+         gcemf+Z4M+EIgeKDnzGyi7uh80joPQekWYKGyXMb0tV37nMUgJRHKGmNouDtI0GAonzw
+         hHOQ==
+X-Gm-Message-State: APjAAAVQQWSjQ4Hvm/KLS6gGGmI37MSITTQFN2p3Sw8O/kpDHpTtH2n1
+        F2yzxOjDUrzZgoWzx5540HVZPg==
+X-Google-Smtp-Source: APXvYqzETyUTekuu3Imqqjzn7s17WpTh9mJG2cnVP6mbFiUBemPdG0t6a3YbMV+SG1Va3ddmTLGkgg==
+X-Received: by 2002:a05:6214:1812:: with SMTP id o18mr24397806qvw.157.1571677667629;
+        Mon, 21 Oct 2019 10:07:47 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id v23sm9110249qto.89.2019.10.21.10.07.46
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 21 Oct 2019 10:07:46 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iMb9l-0001nB-PT; Mon, 21 Oct 2019 14:07:45 -0300
+Date:   Mon, 21 Oct 2019 14:07:45 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     kbuild test robot <lkp@intel.com>
+Cc:     rd.dunlab@gmail.com, kbuild-all@01.org, linux-rdma@vger.kernel.org,
+        Doug Ledford <dledford@redhat.com>, linux-doc@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH 12/12] infiniband: add a Documentation driver-api chapter
+ for Infiniband
+Message-ID: <20191021170745.GF25178@ziepe.ca>
+References: <20191010035240.310347906@gmail.com>
+ <201910102325.gH3tui1l%lkp@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bafb636-c336-48c8-cbde-08d75647e702
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2019 16:58:31.7439
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JtObhpIvyLXiMbHmlOTySSdn0phGLZ2o8sFLlU55MoazkmQyEt5eZmfp2X5HMXx6AgMrCY1k54+ECnSUsQNjDQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4751
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <201910102325.gH3tui1l%lkp@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 11:55:51AM -0400, Dennis Dalessandro wrote:
-> On 10/15/2019 2:12 PM, Jason Gunthorpe wrote:
-> > This is still being tested, but I figured to send it to start getting h=
-elp
-> > from the xen, amd and hfi drivers which I cannot test here.
->=20
-> Sorry for the delay, I never seen this. Was not on Cc list and didn't
-> register to me it impacted hfi. I'll take a look and run it through some
-> hfi1 tests.
+Randy,
 
-Hm, you were cc'd on the hfi1 patch of the series:
+What do you want to do with this series? Is this error below related
+needing respin, or just noise?
 
-https://patchwork.kernel.org/patch/11191395/
-
-So you saw that, right?
-
-But it seems that git send-email didn't pull all the cc's together?
-
+Thanks,
 Jason
+
+On Thu, Oct 10, 2019 at 11:45:28PM +0800, kbuild test robot wrote:
+> Hi,
+> 
+> Thank you for the patch! Perhaps something to improve:
+> 
+> [auto build test WARNING on rdma/for-next]
+> [cannot apply to v5.4-rc2 next-20191010]
+> [if your patch is applied to the wrong git tree, please drop us a note to help
+> improve the system. BTW, we also suggest to use '--base' option to specify the
+> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+> 
+> url:    https://github.com/0day-ci/linux/commits/rd-dunlab-gmail-com/infiniband-kernel-doc-fixes-driver-api-chapter/20191010-220426
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+> reproduce: make htmldocs
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kbuild test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    Warning: The Sphinx 'sphinx_rtd_theme' HTML theme was not found. Make sure you have the theme installed to produce pretty HTML output. Falling back to the default theme.
+>    WARNING: dot(1) not found, for better output quality install graphviz from http://www.graphviz.org
+>    WARNING: convert(1) not found, for SVG to PDF conversion install ImageMagick (https://www.imagemagick.org)
+>    Error: Cannot open file drivers/dma-buf/reservation.c
+>    Error: Cannot open file drivers/dma-buf/reservation.c
+>    Error: Cannot open file drivers/dma-buf/reservation.c
+>    Error: Cannot open file include/linux/reservation.h
+>    Error: Cannot open file include/linux/reservation.h
+>    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'quotactl' not described in 'security_list_options'
+>    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'quota_on' not described in 'security_list_options'
+>    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'sb_free_mnt_opts' not described in 'security_list_options'
+>    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'sb_eat_lsm_opts' not described in 'security_list_options'
+>    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'sb_kern_mount' not described in 'security_list_options'
+>    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'sb_show_options' not described in 'security_list_options'
+>    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'sb_add_mnt_opt' not described in 'security_list_options'
+>    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'd_instantiate' not described in 'security_list_options'
+>    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'getprocattr' not described in 'security_list_options'
+>    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'setprocattr' not described in 'security_list_options'
+>    include/linux/lsm_hooks.h:1822: warning: Function parameter or member 'locked_down' not described in 'security_list_options'
+>    include/linux/regulator/machine.h:196: warning: Function parameter or member 'max_uV_step' not described in 'regulation_constraints'
+>    include/linux/regulator/driver.h:223: warning: Function parameter or member 'resume' not described in 'regulator_ops'
+>    include/linux/spi/spi.h:190: warning: Function parameter or member 'driver_override' not described in 'spi_device'
+>    fs/fs-writeback.c:913: warning: Excess function parameter 'nr_pages' description in 'cgroup_writeback_by_id'
+>    fs/direct-io.c:258: warning: Excess function parameter 'offset' description in 'dio_complete'
+>    fs/libfs.c:496: warning: Excess function parameter 'available' description in 'simple_write_end'
+>    fs/posix_acl.c:647: warning: Function parameter or member 'inode' not described in 'posix_acl_update_mode'
+>    fs/posix_acl.c:647: warning: Function parameter or member 'mode_p' not described in 'posix_acl_update_mode'
+>    fs/posix_acl.c:647: warning: Function parameter or member 'acl' not described in 'posix_acl_update_mode'
+>    drivers/usb/typec/bus.c:1: warning: 'typec_altmode_unregister_driver' not found
+>    drivers/usb/typec/bus.c:1: warning: 'typec_altmode_register_driver' not found
+>    drivers/usb/typec/class.c:1: warning: 'typec_altmode_register_notifier' not found
+>    drivers/usb/typec/class.c:1: warning: 'typec_altmode_unregister_notifier' not found
+>    include/linux/w1.h:277: warning: Function parameter or member 'of_match_table' not described in 'w1_family'
+>    drivers/gpio/gpiolib-of.c:92: warning: Excess function parameter 'dev' description in 'of_gpio_need_valid_mask'
+>    include/linux/i2c.h:337: warning: Function parameter or member 'init_irq' not described in 'i2c_client'
+> >> drivers/infiniband/ulp/iser/iscsi_iser.h:401: warning: Function parameter or member 'all_list' not described in 'iser_fr_desc'
+> >> drivers/infiniband/ulp/iser/iscsi_iser.h:415: warning: Function parameter or member 'all_list' not described in 'iser_fr_pool'
+>    kernel/dma/coherent.c:1: warning: no structured comments found
+>    include/linux/input/sparse-keymap.h:43: warning: Function parameter or member 'sw' not described in 'key_entry'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'dev_scratch' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'list' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'ip_defrag_offset' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'skb_mstamp_ns' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member '__cloned_offset' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'head_frag' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member '__pkt_type_offset' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'encapsulation' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'encap_hdr_csum' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'csum_valid' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member '__pkt_vlan_present_offset' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'vlan_present' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'csum_complete_sw' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'csum_level' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'inner_protocol_type' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'remcsum_offload' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'sender_cpu' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'reserved_tailroom' not described in 'sk_buff'
+>    include/linux/skbuff.h:888: warning: Function parameter or member 'inner_ipproto' not described in 'sk_buff'
+>    include/net/sock.h:233: warning: Function parameter or member 'skc_addrpair' not described in 'sock_common'
+>    include/net/sock.h:233: warning: Function parameter or member 'skc_portpair' not described in 'sock_common'
+>    include/net/sock.h:233: warning: Function parameter or member 'skc_ipv6only' not described in 'sock_common'
+>    include/net/sock.h:233: warning: Function parameter or member 'skc_net_refcnt' not described in 'sock_common'
+>    include/net/sock.h:233: warning: Function parameter or member 'skc_v6_daddr' not described in 'sock_common'
+>    include/net/sock.h:233: warning: Function parameter or member 'skc_v6_rcv_saddr' not described in 'sock_common'
+>    include/net/sock.h:233: warning: Function parameter or member 'skc_cookie' not described in 'sock_common'
+>    include/net/sock.h:233: warning: Function parameter or member 'skc_listener' not described in 'sock_common'
+>    include/net/sock.h:233: warning: Function parameter or member 'skc_tw_dr' not described in 'sock_common'
+>    include/net/sock.h:233: warning: Function parameter or member 'skc_rcv_wnd' not described in 'sock_common'
+>    include/net/sock.h:233: warning: Function parameter or member 'skc_tw_rcv_nxt' not described in 'sock_common'
+>    include/net/sock.h:515: warning: Function parameter or member 'sk_rx_skb_cache' not described in 'sock'
+>    include/net/sock.h:515: warning: Function parameter or member 'sk_wq_raw' not described in 'sock'
+>    include/net/sock.h:515: warning: Function parameter or member 'tcp_rtx_queue' not described in 'sock'
+>    include/net/sock.h:515: warning: Function parameter or member 'sk_tx_skb_cache' not described in 'sock'
+>    include/net/sock.h:515: warning: Function parameter or member 'sk_route_forced_caps' not described in 'sock'
+>    include/net/sock.h:515: warning: Function parameter or member 'sk_txtime_report_errors' not described in 'sock'
+>    include/net/sock.h:515: warning: Function parameter or member 'sk_validate_xmit_skb' not described in 'sock'
+>    include/net/sock.h:515: warning: Function parameter or member 'sk_bpf_storage' not described in 'sock'
+>    include/net/sock.h:2439: warning: Function parameter or member 'tcp_rx_skb_cache_key' not described in 'DECLARE_STATIC_KEY_FALSE'
+>    include/net/sock.h:2439: warning: Excess function parameter 'sk' description in 'DECLARE_STATIC_KEY_FALSE'
+>    include/net/sock.h:2439: warning: Excess function parameter 'skb' description in 'DECLARE_STATIC_KEY_FALSE'
+>    include/linux/netdevice.h:2053: warning: Function parameter or member 'gso_partial_features' not described in 'net_device'
+>    include/linux/netdevice.h:2053: warning: Function parameter or member 'l3mdev_ops' not described in 'net_device'
+>    include/linux/netdevice.h:2053: warning: Function parameter or member 'xfrmdev_ops' not described in 'net_device'
+>    include/linux/netdevice.h:2053: warning: Function parameter or member 'tlsdev_ops' not described in 'net_device'
+>    include/linux/netdevice.h:2053: warning: Function parameter or member 'name_assign_type' not described in 'net_device'
+>    include/linux/netdevice.h:2053: warning: Function parameter or member 'ieee802154_ptr' not described in 'net_device'
+>    include/linux/netdevice.h:2053: warning: Function parameter or member 'mpls_ptr' not described in 'net_device'
+>    include/linux/netdevice.h:2053: warning: Function parameter or member 'xdp_prog' not described in 'net_device'
+>    include/linux/netdevice.h:2053: warning: Function parameter or member 'gro_flush_timeout' not described in 'net_device'
+>    include/linux/netdevice.h:2053: warning: Function parameter or member 'nf_hooks_ingress' not described in 'net_device'
+>    include/linux/netdevice.h:2053: warning: Function parameter or member '____cacheline_aligned_in_smp' not described in 'net_device'
+>    include/linux/netdevice.h:2053: warning: Function parameter or member 'qdisc_hash' not described in 'net_device'
+>    include/linux/netdevice.h:2053: warning: Function parameter or member 'xps_cpus_map' not described in 'net_device'
+>    include/linux/netdevice.h:2053: warning: Function parameter or member 'xps_rxqs_map' not described in 'net_device'
+>    include/linux/phylink.h:56: warning: Function parameter or member '__ETHTOOL_DECLARE_LINK_MODE_MASK(advertising' not described in 'phylink_link_state'
+>    include/linux/phylink.h:56: warning: Function parameter or member '__ETHTOOL_DECLARE_LINK_MODE_MASK(lp_advertising' not described in 'phylink_link_state'
+>    drivers/net/phy/phylink.c:595: warning: Function parameter or member 'config' not described in 'phylink_create'
+>    drivers/net/phy/phylink.c:595: warning: Excess function parameter 'ndev' description in 'phylink_create'
+>    lib/genalloc.c:1: warning: 'gen_pool_add_virt' not found
+>    lib/genalloc.c:1: warning: 'gen_pool_alloc' not found
+>    lib/genalloc.c:1: warning: 'gen_pool_free' not found
+>    lib/genalloc.c:1: warning: 'gen_pool_alloc_algo' not found
+>    include/linux/bitmap.h:341: warning: Function parameter or member 'nbits' not described in 'bitmap_or_equal'
+>    include/linux/rculist.h:374: warning: Excess function parameter 'cond' description in 'list_for_each_entry_rcu'
+>    include/linux/rculist.h:651: warning: Excess function parameter 'cond' description in 'hlist_for_each_entry_rcu'
+>    mm/util.c:1: warning: 'get_user_pages_fast' not found
+>    mm/slab.c:4215: warning: Function parameter or member 'objp' not described in '__ksize'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c:335: warning: Excess function parameter 'dev' description in 'amdgpu_gem_prime_export'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c:336: warning: Excess function parameter 'dev' description in 'amdgpu_gem_prime_export'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_mn.c:142: warning: Function parameter or member 'blockable' not described in 'amdgpu_mn_read_lock'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:347: warning: cannot understand function prototype: 'struct amdgpu_vm_pt_cursor '
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:348: warning: cannot understand function prototype: 'struct amdgpu_vm_pt_cursor '
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:494: warning: Function parameter or member 'start' not described in 'amdgpu_vm_pt_first_dfs'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:546: warning: Function parameter or member 'adev' not described in 'for_each_amdgpu_vm_pt_dfs_safe'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:546: warning: Function parameter or member 'vm' not described in 'for_each_amdgpu_vm_pt_dfs_safe'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:546: warning: Function parameter or member 'start' not described in 'for_each_amdgpu_vm_pt_dfs_safe'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:546: warning: Function parameter or member 'cursor' not described in 'for_each_amdgpu_vm_pt_dfs_safe'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:546: warning: Function parameter or member 'entry' not described in 'for_each_amdgpu_vm_pt_dfs_safe'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:823: warning: Function parameter or member 'level' not described in 'amdgpu_vm_bo_param'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1285: warning: Function parameter or member 'params' not described in 'amdgpu_vm_update_flags'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1285: warning: Function parameter or member 'bo' not described in 'amdgpu_vm_update_flags'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1285: warning: Function parameter or member 'level' not described in 'amdgpu_vm_update_flags'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1285: warning: Function parameter or member 'pe' not described in 'amdgpu_vm_update_flags'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1285: warning: Function parameter or member 'addr' not described in 'amdgpu_vm_update_flags'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1285: warning: Function parameter or member 'count' not described in 'amdgpu_vm_update_flags'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1285: warning: Function parameter or member 'incr' not described in 'amdgpu_vm_update_flags'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:1285: warning: Function parameter or member 'flags' not described in 'amdgpu_vm_update_flags'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c:2823: warning: Function parameter or member 'pasid' not described in 'amdgpu_vm_make_compute'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c:378: warning: Excess function parameter 'entry' description in 'amdgpu_irq_dispatch'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c:379: warning: Function parameter or member 'ih' not described in 'amdgpu_irq_dispatch'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c:379: warning: Excess function parameter 'entry' description in 'amdgpu_irq_dispatch'
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c:1: warning: no structured comments found
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c:1: warning: no structured comments found
+>    drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c:1: warning: 'pp_dpm_sclk pp_dpm_mclk pp_dpm_pcie' not found
+>    drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:132: warning: Incorrect use of kernel-doc format: Documentation Makefile include scripts source @atomic_obj
+>    drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:238: warning: Incorrect use of kernel-doc format: Documentation Makefile include scripts source gpu_info FW provided soc bounding box struct or 0 if not
+>    drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:243: warning: Function parameter or member 'atomic_obj' not described in 'amdgpu_display_manager'
+> 
+> vim +401 drivers/infiniband/ulp/iser/iscsi_iser.h
+> 
+> 5587856c9659ac Sagi Grimberg       2013-07-28 @401  
+> 385ad87d4b637c Sagi Grimberg       2015-08-06  402  /**
+> e506e0f630a40d rd.dunlab@gmail.com 2019-10-09  403   * struct iser_fr_pool - connection fast registration pool
+> 385ad87d4b637c Sagi Grimberg       2015-08-06  404   *
+> 2b3bf958103899 Adir Lev            2015-08-06  405   * @list:                list of fastreg descriptors
+> 385ad87d4b637c Sagi Grimberg       2015-08-06  406   * @lock:                protects fmr/fastreg pool
+> 2b3bf958103899 Adir Lev            2015-08-06  407   * @size:                size of the pool
+> 385ad87d4b637c Sagi Grimberg       2015-08-06  408   */
+> 385ad87d4b637c Sagi Grimberg       2015-08-06  409  struct iser_fr_pool {
+> 2b3bf958103899 Adir Lev            2015-08-06  410  	struct list_head        list;
+> 385ad87d4b637c Sagi Grimberg       2015-08-06  411  	spinlock_t              lock;
+> 2b3bf958103899 Adir Lev            2015-08-06  412  	int                     size;
+> ea174c9573b0e0 Sagi Grimberg       2017-02-27  413  	struct list_head        all_list;
+> 385ad87d4b637c Sagi Grimberg       2015-08-06  414  };
+> 385ad87d4b637c Sagi Grimberg       2015-08-06 @415  
+> 
+> :::::: The code at line 401 was first introduced by commit
+> :::::: 5587856c9659ac2d6ab201141aa8a5c2ff3be4cd IB/iser: Introduce fast memory registration model (FRWR)
+> 
+> :::::: TO: Sagi Grimberg <sagig@mellanox.com>
+> :::::: CC: Roland Dreier <roland@purestorage.com>
+> 
+> 0-DAY kernel test infrastructure                Open Source Technology Center
+> https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+
+
