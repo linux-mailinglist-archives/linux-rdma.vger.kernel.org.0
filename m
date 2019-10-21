@@ -2,130 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C611DF5EF
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 21:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AEBDF60C
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 21:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728543AbfJUTY6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Oct 2019 15:24:58 -0400
-Received: from mail-eopbgr40046.outbound.protection.outlook.com ([40.107.4.46]:9499
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729406AbfJUTY6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 21 Oct 2019 15:24:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dfJ6wjHu7g425Q21cDn+cGxHfT5EuFjueq7gKzD7F2fzaDcW9DuvTl9TtZvE+xKYSwijELzbWzhqHP0dVeMlKzKDfN6hSEaoXthWiAE5MaETddI37Ybj8/EaL/b39O9s9UTM6hQFbE9xdvuHYrQdFhZ4Nx9SZ25NfdiTLLIgNv0JRLootQeRRoUcKVUUGQaknrVpN7xvajt9gFa7zUIoiMErau9TkfgXqQrjmjhcu377+AdyDD0D3Bi+uG5A+fSM/Rp44H7OB2pnREDhI21A9UZrmH+o0hGGcdSG6kuD4NrHe7g1yfA0sM0GAtwoZCTSNnERH7f0hdyV0fCCraF8xg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1dhDTpAku16PKEX8QPygpkn/ME6Oi9YMZPMT/TaQauo=;
- b=GxnqFpLcoEONx91iTtrMK8N5/ltULyD8qscPxeMNv7+zc93YUoCAHzpKiFJZzkdCLxOx+AcJ/4YJQXAryhsqNJJC4yPY0a1uFYE82qJrjOLnC/YpkWYPK6K9SfTyHVpYON54dy/al+1qlTD9U2uYlFXZ9ModD8UDVGdFOlS8bOBH2ZqAh4HzGmUVLnvJrsEduR1R+gxdlJgoqbb+zWMQHzi0NzIrsCyzBwu5G57Zrw+WhRuPHltmjYWWv9GLA8ryYvbMvs+gQxDadzCIlezU+UfmaByRgPJGj4B2ihXFlThZxXYVe37wVBr4jFzfI5CoZ0R2ixZ4A5wAEK/gRallkA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1dhDTpAku16PKEX8QPygpkn/ME6Oi9YMZPMT/TaQauo=;
- b=gOHsp8Bw9gJpeplQWvLjcTwn11zwNNxnNNrfnnbbHmcDUbenZoid3kK0nyaCfucFf4Y6JvwOjOvi9QqnAP1bx4vEKuKnWJzoChKTWibUJUiot8VHF+pt3pp9c18E4uGZeqgJFEbWryKpSRZTN+7cJ5qFyxmTwShZVa3tjaOFuR8=
-Received: from DB7PR05MB4138.eurprd05.prod.outlook.com (52.135.129.16) by
- DB7PR05MB5659.eurprd05.prod.outlook.com (20.178.104.84) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.21; Mon, 21 Oct 2019 19:24:54 +0000
-Received: from DB7PR05MB4138.eurprd05.prod.outlook.com
- ([fe80::18c2:3d9e:4f04:4043]) by DB7PR05MB4138.eurprd05.prod.outlook.com
- ([fe80::18c2:3d9e:4f04:4043%3]) with mapi id 15.20.2347.028; Mon, 21 Oct 2019
- 19:24:54 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Jerome Glisse <jglisse@redhat.com>
-CC:     Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH hmm 02/15] mm/mmu_notifier: add an interval tree notifier
-Thread-Topic: [PATCH hmm 02/15] mm/mmu_notifier: add an interval tree notifier
-Thread-Index: AQHVg4SuHCkuEaFxsk60wlfA7oiQWadldFEAgAAGi4CAAATrgIAAA5cA
-Date:   Mon, 21 Oct 2019 19:24:53 +0000
-Message-ID: <20191021192448.GK6285@mellanox.com>
-References: <20191015181242.8343-1-jgg@ziepe.ca>
- <20191015181242.8343-3-jgg@ziepe.ca> <20191021183056.GA3177@redhat.com>
- <20191021185421.GG6285@mellanox.com> <20191021191157.GA5208@redhat.com>
-In-Reply-To: <20191021191157.GA5208@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BL0PR02CA0049.namprd02.prod.outlook.com
- (2603:10b6:207:3d::26) To DB7PR05MB4138.eurprd05.prod.outlook.com
- (2603:10a6:5:23::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [142.162.113.180]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 04351a75-d219-4bc1-7c39-08d7565c5966
-x-ms-office365-filtering-ht: Tenant
-x-ms-traffictypediagnostic: DB7PR05MB5659:
-x-microsoft-antispam-prvs: <DB7PR05MB5659D6A6BC04F255885F9274CF690@DB7PR05MB5659.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0197AFBD92
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(346002)(136003)(376002)(366004)(39860400002)(199004)(189003)(81166006)(3846002)(6116002)(6436002)(5660300002)(52116002)(229853002)(6246003)(256004)(14444005)(1076003)(6916009)(6486002)(99286004)(4326008)(86362001)(25786009)(6512007)(8676002)(8936002)(81156014)(7416002)(2616005)(7736002)(36756003)(305945005)(66066001)(54906003)(11346002)(386003)(71190400001)(316002)(71200400001)(14454004)(66946007)(66476007)(66556008)(64756008)(66446008)(33656002)(486006)(476003)(102836004)(26005)(2906002)(76176011)(478600001)(446003)(186003)(6506007);DIR:OUT;SFP:1101;SCL:1;SRVR:DB7PR05MB5659;H:DB7PR05MB4138.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: uaW6dNXYv7f3Ty85RklRU7AQ9DISFCeTPUPObjm/eHP0KgJ9Wnx5A1Xir48dKXFwUS1rpcUMnUwf7IbAW0h1veKC7PvTf6TKFk1NUB+ctqzyQyqiviARQYhK73CGvjNnLrPb9OM8bzAfLvZ30osqKLlBvKNrjYWEqV5+rsU/Yd9saZkad70JWmq5m2CPkABL5/UJqqYd29y/m2GYOtvYuxc9xIryL4aDrvBvKr2tTtm8kNxUgSl8UGuaqzVwP3hoJxNaOrVGH/96MxQ9fEekO/YyglfwERt14UDx0iXFzPr6WrBnMiQszjNKFhvVYSBcGASexBAauvJeTGinow6SsqYmg8JzNtt7zspSXc5Qj7hbrZqXcPT8hv3b34HWa8JucVcjUJrvy0wUVc9r7kM4pdtdXhYDYVTtsjQCSvb2eNeqnGQ5dSelX/9AOadV3jGB
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <0EDBBF2131C9044CB11AA3ED64A52B60@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1729906AbfJUTbW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Oct 2019 15:31:22 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:45316 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726672AbfJUTbV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Oct 2019 15:31:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1571686280;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wMHE9njDUR2fpWn8rPDCgex+R5/8QXywGbmF+npogjM=;
+        b=WhVZ8/I+v9iVkfmCItopF/zbpecFf1DfaTNEDGhG6g6nia1hcO2HuOigYJ3qayJPZT4nK4
+        rMAnVeP/aQSI7PrgV/nz0XihfwwBNKf7UMlBjeER6kP0c1J5BqILWGdwXPQt695m45hYrP
+        vav88GmhYpm4snoUS6LoWm6338vSLfw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-278-qJE8eBYeOWyCwUiIDWxcww-1; Mon, 21 Oct 2019 15:31:16 -0400
+X-MC-Unique: qJE8eBYeOWyCwUiIDWxcww-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 77617107AD31;
+        Mon, 21 Oct 2019 19:31:15 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-37.rdu2.redhat.com [10.10.112.37])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 79D9E1001B33;
+        Mon, 21 Oct 2019 19:31:14 +0000 (UTC)
+Message-ID: <1da5615253c63911af50644ca7e42fe313be1222.camel@redhat.com>
+Subject: Re: [PATCH for-next 0/5] Some bugfixes and cleanups for hip08
+From:   Doug Ledford <dledford@redhat.com>
+To:     Weihang Li <liweihang@hisilicon.com>, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linuxarm@huawei.com
+Date:   Mon, 21 Oct 2019 15:31:11 -0400
+In-Reply-To: <1567566885-23088-1-git-send-email-liweihang@hisilicon.com>
+References: <1567566885-23088-1-git-send-email-liweihang@hisilicon.com>
+Organization: Red Hat, Inc.
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30)
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04351a75-d219-4bc1-7c39-08d7565c5966
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2019 19:24:54.0488
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sb3rhz5F375UQWwYODHTQPl9MFhe8HNVlx/hkgyRSMie0HtCOIpI0qlukbcHGu3V4ud7QdBEoTn05ZSsKuuFrA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR05MB5659
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Mimecast-Spam-Score: 0
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-SatJYLOpRZUeq0xHb4PZ"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 03:11:57PM -0400, Jerome Glisse wrote:
-> > Since that reader is not locked we need release semantics here to
-> > ensure the unlocked reader sees a fully initinalized mmu_notifier_mm
-> > structure when it observes the pointer.
+--=-SatJYLOpRZUeq0xHb4PZ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2019-09-04 at 11:14 +0800, Weihang Li wrote:
+> This patchset fixes two bugs in previous patches, and does some
+> cleanups
+> to increase readability.
 >=20
-> I thought the mm_take_all_locks() would have had a barrier and thus
-> that you could not see mmu_notifier struct partialy initialized.=20
+> Lang Cheng (1):
+>   RDMA/hns: Modify return value of restrack fucntions
+>=20
+> Weihang Li (3):
+>   RDMA/hns: remove a redundant le16_to_cpu
+>   RDMA/hns: Fix wrong parameters when initial mtt of srq->idx_que
+>   RDMA/hns: Modify variable/field name from vlan to vlan_id
+>=20
+> Yixing Liu (1):
+>   RDMA/hns: Fix a spelling mistake in a macro
+>=20
+>  drivers/infiniband/hw/hns/hns_roce_ah.c       | 14 +++++++-------
+>  drivers/infiniband/hw/hns/hns_roce_device.h   |  4 ++--
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c    | 10 +++++-----
+>  drivers/infiniband/hw/hns/hns_roce_qp.c       | 24 ++++++++++++----
+> --------
+>  drivers/infiniband/hw/hns/hns_roce_restrack.c |  2 +-
+>  drivers/infiniband/hw/hns/hns_roce_srq.c      | 24 ++++++++++++++--
+> --------
+>  6 files changed, 41 insertions(+), 37 deletions(-)
+>=20
 
-Not sure, usually a lock acquire doesn't have a store barrier?
+I fixed some typos in the commit messages, but otherwise these look OK.=20
+Applied to for-next.
 
-Even if it did, we would still need some pairing read barrier..
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-> having the acquire/release as safety net does not hurt. Maybe add a
-> comment about the struct initialization needing to be visible before
-> pointer is set.
+--=-SatJYLOpRZUeq0xHb4PZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Is this clear?
+-----BEGIN PGP SIGNATURE-----
 
-         * release semantics on the initialization of the
-         * mmu_notifier_mm's contents are provided for unlocked readers.
-	 * acquire can only be used while holding the
-         * mmgrab or mmget, and is safe because once created the
-         * mmu_notififer_mm is not freed until the mm is destroyed.
-         * Users holding the mmap_sem or one of the
-	 * mm_take_all_locks() do not need to use acquire semantics.
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl2uB38ACgkQuCajMw5X
+L938/Q//Uwd4mAXgSDXAmd2Yc3USakDjb9J3qxjGEMoyvGDTLUy6Qpzg0Ymx3p3g
+rahmsRr9rh/aBUaX5l/K/ST6RpOf0iXUMsxfxLzCEV5YaIjjdxxIF61ww43BeN0w
++/fee9VcqCMQr9+wVhQlOBXgu4CmEgqsNAg208PPkdig/heOgvYSzJqQ5FcmdyoR
+XcPVHU8VqLQBxqJ+qtQbxQtSdq8rmRIocWOspJAMKDXV5tEeFPQlOlleYRW75qQg
+WqR9JrnG6hQvXp6osNVUCtaZ9PRw+8FL4J/CwKeMGLyMiOTE+P0lcuXvoh1KIZKi
+JIy6qdcLnMOcBXr0q5SkltNJgplCHJ/1Y/DDZinV6slJQ+kcl4exD+ssAtsyvA1W
+FPjlND/4pM5JpNdyM64SmwhYUkbOB6O1g+bx0j4veqMme2x5+oK81Ztpgpb9Vbit
+qSLfrS+EkM4pru5RMGlCGWJ4LDSNrbt+RK4SSrt2iZj2ogo/Dw7a0FP+nA84RrTF
+UpSACwinqcueVpDIiLtUzpF2/69k4+wuavesvlPoYasglnlRltzjZ3DfSro7g7kE
+rPy+RQEYfnQk/uaUJaxtRbr2JoJ9P1qktd7aVSnCpFXPFADpQbVgCs/p/fluC7bX
+VDDLI0j4OoKqvPeVPoCKwLoad4d+tHtP+VxXaf+76FpBIH9BUWc=
+=65UG
+-----END PGP SIGNATURE-----
 
-It also helps explain why there is no locking around the other
-readers, which has puzzled me in the past at least.
+--=-SatJYLOpRZUeq0xHb4PZ--
 
-Jason
