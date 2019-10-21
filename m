@@ -2,161 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 301E1DF37E
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 18:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA04EDF3B6
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 18:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbfJUQqF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Oct 2019 12:46:05 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20131 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728305AbfJUQqF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Oct 2019 12:46:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571676363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=td2Yy+ZPt/Fj+knnX4kkCtLM9yXLmmBiQFArVkbUplY=;
-        b=YygE2LaZhJWMsh5bF8D5mgZ7M51B4nfFCIwmK5BRJEZOU8xkAZSfhBPnwHdPeU60U0Q9oQ
-        RQtEaTE0W9q6p7Ft0kPNsRKIm3rbPMan1n9C93V7vz5wrldgpSPUfVQeHZsApV1AK5bM/5
-        /UutSZjvfbvtJqN+thvgn/Vov6e5tzY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-133-i4-p4HfwM7yIoOUaU5AGKw-1; Mon, 21 Oct 2019 12:46:01 -0400
-X-MC-Unique: i4-p4HfwM7yIoOUaU5AGKw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B175100550E;
-        Mon, 21 Oct 2019 16:46:00 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-37.rdu2.redhat.com [10.10.112.37])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 541585DA60;
-        Mon, 21 Oct 2019 16:45:58 +0000 (UTC)
-Message-ID: <4ab0f98e4569a9700d94173c7f3d93e00bd9635b.camel@redhat.com>
-Subject: Re: [RFC PATCH V2 for-next] RDMA/hns: Add UD support for hip08
-From:   Doug Ledford <dledford@redhat.com>
-To:     oulijun <oulijun@huawei.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     leon@kernel.org, linux-rdma@vger.kernel.org, linuxarm@huawei.com
-Date:   Mon, 21 Oct 2019 12:45:56 -0400
-In-Reply-To: <ad4a492cfd16ab37186d7fdead215ba52f5c3da5.camel@redhat.com>
-References: <1571474772-2212-1-git-send-email-oulijun@huawei.com>
-         <20191021141312.GD25178@ziepe.ca>
-         <9eea1f7b-fef1-080a-2f54-64b914822c94@huawei.com>
-         <ad4a492cfd16ab37186d7fdead215ba52f5c3da5.camel@redhat.com>
-Organization: Red Hat, Inc.
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30)
+        id S1727993AbfJUQ6h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Oct 2019 12:58:37 -0400
+Received: from mail-eopbgr10061.outbound.protection.outlook.com ([40.107.1.61]:3906
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726276AbfJUQ6h (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 21 Oct 2019 12:58:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JyqTDdJ5asdWm6rJcxDsCbJXWyrXfcAJkMwPQmRIbKiAop2WkdR38yJy2TTDw8v18ZtAixXaLR2D5+e0kK7zyXSMGMboVqU6ohl2s87o4+MHBgAXEE6KqFQvqYXZa7Ua8mGA8eVJpIkOURxX2RPfScGzgVgk993BLFAo70wnj1ESY0v7k/UGqaej+k37lZqoXTdYqF8mSPT8G0q/alfwixTNh4UQKBzzFc3O3ht9hChQvhD8dMtaoqWWhuxeF/cfkCf1kSgYB2FKHjyMFezuJ/kFEcIpGwRoiW5vVBmp+UPmMrHuDRIuvlCn37C//Rfz7ieKQrkPeXR5q72z9kl2ug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xFlN5t3UGozcMevuLdzlZwjri0Hmv1gvskUCJgPfxEQ=;
+ b=JCUElLHM9QD7lYtjSVhEEYN5k/C4TVMtjJbu1Ke6f+DA4oX6nC75LuE2z5p1dzW9fFVPkBI6C/p5x3e0ORViFXrIZfqM4ZrqeMyYUlzTBQyYVpdgWQ3NxOT6virUPoVAhQUonHmctxc7n1TlXFhS9tEeFgg2l986DXGmGOP1KP3jWJYgsG1/A64L+YhTVRi/xJqoyrBpNe9bwLZBkqSBFZaIXhXTXCo+oZ5KNPS2ny/WPpesipn4l2VbiRzPW8f/fk2RSXgN0OY6uu1QqL7ba19ZHe0WMei6VdEbfrKqA9ys3N06xz/IUOC9L5a2D4lU3mmBrOTAdSxbmA6i3NSfcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xFlN5t3UGozcMevuLdzlZwjri0Hmv1gvskUCJgPfxEQ=;
+ b=f8qJYOxs3ZUAdo7qGx9rPBymNiej4qbXjfgCQkb573Ido4mogR/amppl9vBBt6NmKsFbD9gieTDZYtkWLIVdGYaUemOwCOeab3SyppkGkPdLpRp9y+zCvYP6UPGJ6VxTAObcQLPPoNRI9BgXnlsa17jkP88ZamNZYp9kup+1PEU=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB4751.eurprd05.prod.outlook.com (20.176.5.24) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2367.24; Mon, 21 Oct 2019 16:58:31 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::75ae:b00b:69d8:3db0]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::75ae:b00b:69d8:3db0%7]) with mapi id 15.20.2347.029; Mon, 21 Oct 2019
+ 16:58:31 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+CC:     Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+Subject: Re: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
+ locking
+Thread-Topic: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
+ locking
+Thread-Index: AQHVg4Sqa7CCxCToXEeTrrYAqVQVhqdlSPyAgAARfwA=
+Date:   Mon, 21 Oct 2019 16:58:31 +0000
+Message-ID: <20191021165828.GA6285@mellanox.com>
+References: <20191015181242.8343-1-jgg@ziepe.ca>
+ <5fdbcda8-c6ec-70aa-3f89-147fe67152f2@intel.com>
+In-Reply-To: <5fdbcda8-c6ec-70aa-3f89-147fe67152f2@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR17CA0033.namprd17.prod.outlook.com
+ (2603:10b6:208:15e::46) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.162.113.180]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3bafb636-c336-48c8-cbde-08d75647e702
+x-ms-office365-filtering-ht: Tenant
+x-ms-traffictypediagnostic: VI1PR05MB4751:
+x-ms-exchange-purlcount: 1
+x-microsoft-antispam-prvs: <VI1PR05MB4751E3B605CD85B6453633F5CF690@VI1PR05MB4751.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-forefront-prvs: 0197AFBD92
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(979002)(4636009)(366004)(346002)(39860400002)(136003)(396003)(376002)(189003)(199004)(14454004)(11346002)(446003)(966005)(86362001)(33656002)(1076003)(25786009)(6916009)(81156014)(8936002)(8676002)(81166006)(478600001)(64756008)(66556008)(66446008)(66476007)(66946007)(486006)(66066001)(186003)(5660300002)(386003)(256004)(476003)(4744005)(2616005)(26005)(102836004)(53546011)(6506007)(71190400001)(76176011)(52116002)(99286004)(71200400001)(3846002)(7416002)(7736002)(305945005)(6116002)(6486002)(4326008)(6246003)(36756003)(229853002)(6306002)(6512007)(6436002)(2906002)(54906003)(316002)(969003)(989001)(999001)(1009001)(1019001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4751;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: a2AscmFxZMvMh7umM9ml1xvkjD7/KAn9E+K4LuOt0mOmZV7uxAzKt91w/jzJOR0dJ7rjwcM1IvzQ+2rBTxOhYdsdHj20qeLHEtemH24Msiy463JaAOM8ejMmETPi5pk1Q9Sb8M+KpkluJN4bt6u1n/mIM/qd8+PC3reBSjcJeb7rBivYWz0FoojijxZyFPOUx310c3/q7oB6OqOtRctesumjSVEZkjOUhhfGKOODk7AsiQdWiFo3aXBEvwepkMIb2BEp2hurdTD/8iEOTvHonO//dqNZcTAQt9zjaAF0hg6zgj4w2bgd9Cj8q9Z+T1xAXbcJtXjOvwY3sUrARtTBS0cZ+j11d8xQir0NuGQrFi708TBNJU+CiuwvJM2g4nDmjk0F0pHG64k+oZ0gEhWs7QtiWupAlZJi4kgA4y/Efko6Un6BASLTFyq4YcGB+ah3/RiULbhPa3qcal8fD2GTZkcGN1NYssY6ipn+9VorzaQ=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <0BEC4912CF056E498EEC73DAB37D8D9B@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Mimecast-Spam-Score: 0
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-+tOKK735i0uUN64ntpdZ"
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3bafb636-c336-48c8-cbde-08d75647e702
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2019 16:58:31.7439
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: JtObhpIvyLXiMbHmlOTySSdn0phGLZ2o8sFLlU55MoazkmQyEt5eZmfp2X5HMXx6AgMrCY1k54+ECnSUsQNjDQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4751
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---=-+tOKK735i0uUN64ntpdZ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 2019-10-21 at 10:58 -0400, Doug Ledford wrote:
-> On Mon, 2019-10-21 at 22:20 +0800, oulijun wrote:
-> > =E5=9C=A8 2019/10/21 22:13, Jason Gunthorpe =E5=86=99=E9=81=93:
-> > > On Sat, Oct 19, 2019 at 04:46:12PM +0800, Lijun Ou wrote:
-> > > > index bd78ff9..722cc5f 100644
-> > > > +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> > > > @@ -377,6 +377,10 @@ static int hns_roce_set_user_sq_size(struct
-> > > > hns_roce_dev *hr_dev,
-> > > >  =09=09hr_qp->sge.sge_cnt =3D roundup_pow_of_two(hr_qp-
-> > > > > sq.wqe_cnt *
-> > > >  =09=09=09=09=09=09=09(hr_qp-
-> > > > > sq.max_gs - 2));
-> > > > =20
-> > > > +=09if (hr_qp->ibqp.qp_type =3D=3D IB_QPT_UD)
-> > > > +=09=09hr_qp->sge.sge_cnt =3D roundup_pow_of_two(hr_qp-
-> > > > > sq.wqe_cnt *
-> > > > +=09=09=09=09=09=09       hr_qp-
-> > > > > sq.max_gs);
-> > > > +
-> > > >  =09if ((hr_qp->sq.max_gs > 2) && (hr_dev->pci_dev->revision=20
-> > > > =3D=3D
-> > > > 0x20)) {
-> > > >  =09=09if (hr_qp->sge.sge_cnt > hr_dev-
-> > > > >caps.max_extend_sg) {
-> > > >  =09=09=09dev_err(hr_dev->dev,
-> > > > @@ -1022,6 +1026,9 @@ struct ib_qp *hns_roce_create_qp(struct
-> > > > ib_pd *pd,
-> > > >  =09int ret;
-> > > > =20
-> > > >  =09switch (init_attr->qp_type) {
-> > > > +=09case IB_QPT_UD:
-> > > > +=09=09if (!capable(CAP_NET_RAW))
-> > > > +=09=09=09return -EPERM;
-> > > This needs a big comment explaining why this HW requires it.
-> > >=20
-> > > Jason
-> > >=20
-> > Add the detail comments for HW limit?
+On Mon, Oct 21, 2019 at 11:55:51AM -0400, Dennis Dalessandro wrote:
+> On 10/15/2019 2:12 PM, Jason Gunthorpe wrote:
+> > This is still being tested, but I figured to send it to start getting h=
+elp
+> > from the xen, amd and hfi drivers which I cannot test here.
 >=20
-> I can add those comments while taking the pactch.  Plus we need to add
-> a
-> fallthrough annotation at the same place.  I'll fix it up and unfreeze
-> the hns queue.
->=20
+> Sorry for the delay, I never seen this. Was not on Cc list and didn't
+> register to me it impacted hfi. I'll take a look and run it through some
+> hfi1 tests.
 
-Does this meet people's approval?
+Hm, you were cc'd on the hfi1 patch of the series:
 
-        switch (init_attr->qp_type) {
-        case IB_QPT_UD:
-                /*
-                 * DO NOT REMOVE!
-                 * The HNS RoCE hardware has a security vulnerability.
-                 * Normally, UD packet routing is achieved using nothing
-                 * but the ib_ah struct, which contains the src gid in the
-                 * sgid_attr element.  Th src gid is sufficient for the
-                 * hardware to know if any vlan tag is needed, as well as
-                 * any priority tag.  In the case of HNS RoCE, the vlan
-                 * tag is passed to the hardware along with the src gid.
-                 * This allows a situation where a malicious user could
-                 * intentionally send packets with a gid that belongs to
-                 * vlan A, but direct the packets to go out to vlan B
-                 * instead.
-                 * Because the ability to send out packets with arbitrary
-                 * headers is reserved for CAP_NET_RAW, and because UD
-                 * queue pairs can be tricked into doing that, make all
-                 * UD queue pairs on this hardware require CAP_NET_RAW.
-                 */
-                if (!capable(CAP_NET_RAW))
-                        return -EPERM;
-                /* fallthrough */
-        case IB_QPT_RC: {
+https://patchwork.kernel.org/patch/11191395/
 
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+So you saw that, right?
 
---=-+tOKK735i0uUN64ntpdZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+But it seems that git send-email didn't pull all the cc's together?
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl2t4MQACgkQuCajMw5X
-L93ZrQ//Qwdja4MjlsTUOhB/dtLHSQJUn9lpSFnhNhapVVVo6QNBEYd7VjdQ2pyN
-zZcoDDoPRQYKOSPZ7Gcec6UQEAPnJ/yG5b2AnZKlRe6kxkeGIuaM814OEcw3mgOC
-vMqOGSsRFqRsSpwDu/cdxRGVhPG9KQH1itTV/qOUEDb9y5qIYd9IlrTUK2z8uCth
-DddFUW8VsPJcPxjJ0c+Iq6nvSU6SZMGPBNEiFU+8scZv/vYvHEd+hJlM78CXh3re
-57KX61RvZLB/wr0owYAitGU3Rt2TD3+ywqVDmKuKnVw16sV77uBc7nkIBpaKie5X
-7PnQrTKnSePaR37+6YDOb7+SkErh1TfYNx6ktrRSkGrf06FsWlErx6F0I/mbBnqb
-2cmBqUA+vyGIklCIAX5iTdaCZDTSZjJeb51IaEpMdR78eP65DDwkDtbdMeZ54fJe
-auhPlkIUF8mcHKbyeb/0Sex5imT2bLpEJ2fAS7NlpqvFhBULPI9xQqOCZeUk2Lsa
-/beVcYMTkqWUlChT0Uj8Hxz+/jO1i0SGUNJh/4T57AZJMj/ey3hA3ftfp8D2ep3q
-aPtsb0XoJcFu9VPQGDlojOGpwKL2//DvkGcbbtg78ZgFpMG7UvvOgJXHljKyegsv
-E0d9VJ+NKATNIMr976yMhL7h8o5p0zngL3sa8LMkZ5yLMBkzOpw=
-=n9YP
------END PGP SIGNATURE-----
-
---=-+tOKK735i0uUN64ntpdZ--
-
+Jason
