@@ -2,91 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EEB7DF6CA
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 22:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA50CDF6CB
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 22:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730121AbfJUUc6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Oct 2019 16:32:58 -0400
-Received: from mga12.intel.com ([192.55.52.136]:59217 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730065AbfJUUc6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 21 Oct 2019 16:32:58 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Oct 2019 13:32:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,324,1566889200"; 
-   d="scan'208";a="222584163"
-Received: from fmsmsx106.amr.corp.intel.com ([10.18.124.204])
-  by fmsmga004.fm.intel.com with ESMTP; 21 Oct 2019 13:32:57 -0700
-Received: from fmsmsx115.amr.corp.intel.com (10.18.116.19) by
- FMSMSX106.amr.corp.intel.com (10.18.124.204) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Mon, 21 Oct 2019 13:32:57 -0700
-Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.139]) by
- fmsmsx115.amr.corp.intel.com ([169.254.4.204]) with mapi id 14.03.0439.000;
- Mon, 21 Oct 2019 13:32:57 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
+        id S1730065AbfJUUdC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Oct 2019 16:33:02 -0400
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:12450 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726672AbfJUUdC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Oct 2019 16:33:02 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dae16070003>; Mon, 21 Oct 2019 13:33:11 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 21 Oct 2019 13:33:01 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Mon, 21 Oct 2019 13:33:01 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Oct
+ 2019 20:33:01 +0000
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Oct
+ 2019 20:32:59 +0000
+Subject: Re: [PATCH v2 1/3] mm/hmm: make full use of walk_page_range()
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: RE: [PATCH 2/4] RDMA/core: Set DMA parameters correctly
-Thread-Topic: [PATCH 2/4] RDMA/core: Set DMA parameters correctly
-Thread-Index: AQHVh7TCl3yVX+llIEiJz4mtL+DEw6dlmJGAgAAl4ID//5KrUIAAimIA//+ln6A=
-Date:   Mon, 21 Oct 2019 20:32:56 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A7B6B0DA15@fmsmsx124.amr.corp.intel.com>
-References: <20191021021030.1037-1-bvanassche@acm.org>
- <20191021021030.1037-3-bvanassche@acm.org> <20191021141039.GC25178@ziepe.ca>
- <61d89948-de40-5e6b-f368-353476292093@acm.org>
- <9DD61F30A802C4429A01CA4200E302A7B6B0D6EE@fmsmsx124.amr.corp.intel.com>
- <4d1fb001-ead8-81ce-893e-1ff94214c389@acm.org>
-In-Reply-To: <4d1fb001-ead8-81ce-893e-1ff94214c389@acm.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ctpclassification: CTP_NT
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiMmEyOTNhMzgtNWM0Ny00NzQ1LTkzYTEtMjI2Y2U5YzBjYjk0IiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoidUtIU0R6aitZSk5IU2JTdXJkZ2NSTnZKRTBCMmg5VHBNckk2MUsxZk90VHB4ZUNcL21nOVp5bEc3eVJhSmpQU1MifQ==
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.107]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+References: <20191015204814.30099-1-rcampbell@nvidia.com>
+ <20191015204814.30099-2-rcampbell@nvidia.com>
+ <20191021183220.GF6285@mellanox.com>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <5692b090-353f-b784-b4f3-0591c40f23be@nvidia.com>
+Date:   Mon, 21 Oct 2019 13:32:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
+In-Reply-To: <20191021183220.GF6285@mellanox.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1571689991; bh=pmC8cc9rEY+1OzsfEoomNsQPfpLKPCm66Zn9A4x/2Bo=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=WDYWXPDAIgDSA0Ncrpz4rXzOVNQiKSNfbrNEBYZnCV9OrSe2Xg0V8cXskMqgratXX
+         L8wPqxnh35udAFbgHh1RfyE1pK2sBasjTTSVTTnABNqmOnBHor0JBbzX6XjYb9TuEI
+         h9NQI4EaroYUyM9a/yLwv+kDhqi5pNMKB4hvBvybpIQTnIbwQu0SvYRnkPy/Gwn+Sf
+         b/TO58jNsrOUWfs4+BjFPLx1nTorlzJUd8vfuZJRHP8agLi1yLK8xoT1rU9UQKYIBx
+         TX926uk5wmdedUnIUHzRqaKRVrK6UWMBUyhH/A1QJH4NrICgIt7X4x8dMYMMgoJbiu
+         Bv5/xUhHQ1fXA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-PiBTdWJqZWN0OiBSZTogW1BBVENIIDIvNF0gUkRNQS9jb3JlOiBTZXQgRE1BIHBhcmFtZXRlcnMg
-Y29ycmVjdGx5DQo+IA0KPiBPbiAxMC8yMS8xOSAxMDo0NCBBTSwgU2FsZWVtLCBTaGlyYXogd3Jv
-dGU6DQo+ID4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2luZmluaWJhbmQvY29yZS9kZXZpY2UuYw0K
-PiA+PiBiL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL2RldmljZS5jDQo+ID4+IGluZGV4IGE2Njc2
-MzZmNzRiZi4uYTUyM2Q4NDRhZDlkIDEwMDY0NA0KPiA+PiAtLS0gYS9kcml2ZXJzL2luZmluaWJh
-bmQvY29yZS9kZXZpY2UuYw0KPiA+PiArKysgYi9kcml2ZXJzL2luZmluaWJhbmQvY29yZS9kZXZp
-Y2UuYw0KPiA+PiBAQCAtMTE5OSw5ICsxMTk5LDIxIEBAIHN0YXRpYyB2b2lkIHNldHVwX2RtYV9k
-ZXZpY2Uoc3RydWN0IGliX2RldmljZQ0KPiAqZGV2aWNlKQ0KPiA+PiAgICAJCVdBUk5fT05fT05D
-RSghcGFyZW50KTsNCj4gPj4gICAgCQlkZXZpY2UtPmRtYV9kZXZpY2UgPSBwYXJlbnQ7DQo+ID4+
-ICAgIAl9DQo+ID4+IC0JLyogU2V0dXAgZGVmYXVsdCBtYXggc2VnbWVudCBzaXplIGZvciBhbGwg
-SUIgZGV2aWNlcyAqLw0KPiA+PiAtCWRtYV9zZXRfbWF4X3NlZ19zaXplKGRldmljZS0+ZG1hX2Rl
-dmljZSwgU1pfMkcpOw0KPiA+Pg0KPiA+PiArCWlmICghZGV2aWNlLT5kZXYuZG1hX3Bhcm1zKSB7
-DQo+ID4+ICsJCWlmIChwYXJlbnQpIHsNCj4gPj4gKwkJCS8qDQo+ID4+ICsJCQkgKiBUaGUgY2Fs
-bGVyIGRpZCBub3QgcHJvdmlkZSBETUEgcGFyYW1ldGVycywgc28NCj4gPj4gKwkJCSAqICdwYXJl
-bnQnIHByb2JhYmx5IHJlcHJlc2VudHMgYSBQQ0kgZGV2aWNlLiBUaGUgUENJDQo+ID4+ICsJCQkg
-KiBjb3JlIHNldHMgdGhlIG1heGltdW0gc2VnbWVudCBzaXplIHRvIDY0DQo+ID4+ICsJCQkgKiBL
-Qi4gSW5jcmVhc2UgdGhpcyBwYXJhbWV0ZXIgdG8gMkcuDQo+ID4+ICsJCQkgKi8NCj4gPj4gKwkJ
-CWRldmljZS0+ZGV2LmRtYV9wYXJtcyA9IHBhcmVudC0+ZG1hX3Bhcm1zOw0KPiA+PiArCQkJZG1h
-X3NldF9tYXhfc2VnX3NpemUoZGV2aWNlLT5kbWFfZGV2aWNlLCBTWl8yRyk7DQo+ID4NCj4gPiBE
-aWQgeW91IG1lYW4gZG1hX3NldF9tYXhfc2VnX3NpemUoJmRldmljZS0+ZGV2LCBTWl8yRyk/DQo+
-IA0KPiBIYXZlIHlvdSByZWFsaXplZCB0aGF0IHRoYXQgY2FsbCBoYXMgdGhlIHNhbWUgZWZmZWN0
-IGFzIHdoYXQgSSBwcm9wb3NlZCBzaW5jZSBib3RoDQo+IGRldmljZXMgc2hhcmUgdGhlIGRtYV9w
-YXJtcyBwYXJhbWV0ZXI/DQo+IA0KSSBoYWRu4oCZdC4gVGhpcyBtYWtlcyBtb3JlIHNlbnNlIG5v
-dy4NCg0KDQo=
+
+On 10/21/19 11:32 AM, Jason Gunthorpe wrote:
+> On Tue, Oct 15, 2019 at 01:48:12PM -0700, Ralph Campbell wrote:
+> 
+>> +static bool hmm_range_needs_fault(unsigned long addr, unsigned long end,
+>> +				  const struct hmm_vma_walk *hmm_vma_walk)
+> 
+> This has a very similar name to hmm_range_need_fault(), and seems like
+> it does the same thing?
+
+The two functions are very similar but not identical.
+I guess I could resolve the differences and use one function.
+
+>> +static int hmm_vma_walk_test(unsigned long start, unsigned long end,
+>> +			     struct mm_walk *walk)
+>> +{
+>> +	struct hmm_vma_walk *hmm_vma_walk = walk->private;
+>> +	struct hmm_range *range = hmm_vma_walk->range;
+>> +	struct vm_area_struct *vma = walk->vma;
+>> +
+>> +	/* If range is no longer valid, force retry. */
+>> +	if (!range->valid)
+>> +		return -EBUSY;
+>> +
+>> +	/*
+>> +	 * Skip vma ranges that don't have struct page backing them or
+>> +	 * map I/O devices directly.
+>> +	 */
+>> +	if (vma->vm_flags & (VM_IO | VM_PFNMAP | VM_MIXEDMAP))
+>> +		return -EFAULT;
+>> +
+>> +	/*
+>> +	 * If the vma does not allow read access, then assume that it does not
+>> +	 * allow write access either. HMM does not support architectures
+>> +	 * that allow write without read.
+>> +	 */
+>> +	if (!(vma->vm_flags & VM_READ)) {
+>> +		/*
+>> +		 * Check to see if a fault is requested for any page in the
+>> +		 * range.
+>> +		 */
+>> +		if (hmm_range_needs_fault(start, end, hmm_vma_walk))
+>> +			return -EFAULT;
+> 
+> Is this change to call hmm_range_needs_fault another bug fix?
+> 
+> Jason
+
+Yes. If the HMM_FAULT_SNAPSHOT is specified, there shouldn't be any
+error return code. If it is not specified, then the range->pfns[] array,
+on input, holds flags indicating which pages the driver wants populated
+if the page is not already present. The hmm_range_needs_fault() checks
+for this and hmm_vma_walk_test() returns -EFAULT.
+
+I guess I could include this in the change log.
