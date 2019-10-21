@@ -2,131 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD38CDF5C2
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 21:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7536DF5DE
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 21:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbfJUTNJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Oct 2019 15:13:09 -0400
-Received: from mail-eopbgr80071.outbound.protection.outlook.com ([40.107.8.71]:42574
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728513AbfJUTNI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 21 Oct 2019 15:13:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h06LGNT9sxkxR8EYajM/vurYHZTkaGDV4Jhdt7WbN/AmasgxQoGu1cGelLx3HgS/U6gN8xYh7rtoXhozSoZmJIGHnX8MhboP3GuA8Dw3NpgEXqeyVYGppFMZq+aLmln0nginfw4r3E8F5sBnzWTcgBllPwBAvKV28fQbKO5JNaqFi7eXFk6lwd9+Ufk5yrOgobODxH4W2gJXDFSCyJbakRTOxUn3WPa8mZMasMs/LpicwmiiK4Ebg9CM6nQLvCIA/mRRwSPpo7hBCTswn3zpuQ5VMy0sWzPlxQkxrWKBvw+dx06qnDCYTMkiLCgsxaV7ltYN1uKrPE8xjxPJLKmhUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8fTLsgbvO3jKnQB8EQfU7dorG5dIAD4HEDgB6UX61y4=;
- b=mG+olQeI9D+PtGirNdNwOV0hNNe3Dv/TKENCrD4QjQ0QKLcW0UZuXdixOWCwUx+46KSfZKTpqa1tUpW4Lexg4a2l9Ly6YpBaGiZuEQXkTepxHh11s0xqkWQ4pfVX7llmGjjSlWsEMpCsSrOUSPDM5C44P+AFLxKR53OaiTByw8PGQtxJGrBlOp7i0vyzVFDfqpgGIy9+A2YNbJklhYnAhdpPDjRcTKOO/GTUrSJWLyUOi6p1hvqaIHyMB77BydHSOS/nOOk1FvxDJirk/huSvJBn0/kjxIaqOaq7mZzKycGjLwLjSPwyrDu2dvWXlCd+uwArB69etEUdBN8/B9le4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8fTLsgbvO3jKnQB8EQfU7dorG5dIAD4HEDgB6UX61y4=;
- b=J2Qkue3m0fXLy8OTb/5YDQVX0F7485Vp5/AA3hl5n2DvMeO+E/ZJO/olSXBiqjBLAjubVVO25ebMeWs8pX/0OPFi6EJOadDRnuChLbxI4wSx2ecu4nYwhsKoQW4uphzDsaGAWVaiB4f+twLW5NfI5WhGH5f9H7948q7QESryLO0=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB4718.eurprd05.prod.outlook.com (20.176.1.139) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.16; Mon, 21 Oct 2019 19:12:23 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::75ae:b00b:69d8:3db0]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::75ae:b00b:69d8:3db0%7]) with mapi id 15.20.2347.029; Mon, 21 Oct 2019
- 19:12:23 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
-CC:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
+        id S1730132AbfJUTTa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Oct 2019 15:19:30 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38756 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730127AbfJUTTa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Oct 2019 15:19:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1571685569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XvQMWms2Ef0GKQbYBZu3QSp4iD5UdUfpEnyzpzRVcdo=;
+        b=iPuerWb/WuXX7/GXllntnTOlArtQiCIFfCMJJfxuPgWQtij0VmMkWaAi1wHuP0lZB+KOL6
+        cHoPgWHDPyWZeQW7NZR49DeZ+0l6uaGfMlNBtjOreBE0LX0eFuw/MxMLBuQMBrVAuKu8Mk
+        7cK8Pma1YPJ1uFi9cK26hMd7HsGtb4o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-366-pucvyFZ9O-qowyYJDMXeyA-1; Mon, 21 Oct 2019 15:19:26 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AC2FE47B;
+        Mon, 21 Oct 2019 19:19:24 +0000 (UTC)
+Received: from redhat.com (unknown [10.20.6.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A55836012D;
+        Mon, 21 Oct 2019 19:19:23 +0000 (UTC)
+Date:   Mon, 21 Oct 2019 15:19:22 -0400
+From:   Jerome Glisse <jglisse@redhat.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Ralph Campbell <rcampbell@nvidia.com>,
         John Hubbard <jhubbard@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
+        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH hmm 08/15] xen/gntdev: Use select for DMA_SHARED_BUFFER
-Thread-Topic: [PATCH hmm 08/15] xen/gntdev: Use select for DMA_SHARED_BUFFER
-Thread-Index: AQHVg4SlqgIWJTGEnUWY/9OWOhnZ6adcuS2AgAAXhoCACK8ugA==
-Date:   Mon, 21 Oct 2019 19:12:23 +0000
-Message-ID: <20191021191219.GJ6285@mellanox.com>
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+Subject: Re: [PATCH hmm 15/15] mm/hmm: remove hmm_mirror and related
+Message-ID: <20191021191922.GB5208@redhat.com>
 References: <20191015181242.8343-1-jgg@ziepe.ca>
- <20191015181242.8343-9-jgg@ziepe.ca>
- <6f60f558-20db-1749-044d-a46697258c39@suse.com>
- <91329d7d-9db5-057e-59d2-887254083da0@epam.com>
-In-Reply-To: <91329d7d-9db5-057e-59d2-887254083da0@epam.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MN2PR10CA0033.namprd10.prod.outlook.com
- (2603:10b6:208:120::46) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [142.162.113.180]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6ec60703-e1c6-45c8-1c8a-08d7565a9a4c
-x-ms-office365-filtering-ht: Tenant
-x-ms-traffictypediagnostic: VI1PR05MB4718:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <VI1PR05MB471835E42FDACA420662D37ACF690@VI1PR05MB4718.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 0197AFBD92
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(366004)(136003)(396003)(39860400002)(346002)(199004)(189003)(3846002)(86362001)(316002)(66946007)(7416002)(305945005)(7736002)(8676002)(81156014)(256004)(66476007)(66556008)(64756008)(66446008)(52116002)(71200400001)(76176011)(54906003)(99286004)(71190400001)(8936002)(81166006)(6116002)(6506007)(33656002)(478600001)(14454004)(386003)(966005)(53546011)(26005)(229853002)(25786009)(4326008)(6436002)(446003)(1076003)(486006)(66066001)(102836004)(6486002)(2906002)(2616005)(36756003)(5660300002)(11346002)(186003)(476003)(6246003)(6306002)(6916009)(6512007);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4718;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: g4ausQGRHXY9fH7yb8Thrc2Y95CFMVFdv7CoYgV9HWqYKgQ/7rmW9I5OYvTKM1hmt9/TTR+RyVSqU4PKQzhzfN0WOoTcv4VuYVPwYgmm/NoDnda0qOe+byOXwOUZ++bZO23pdYMIka77UIRt02urMfJgO/60lTVP+Dz5pZLTWEfLdE7xq2fvjIZ5nOZAWdPEhdlpH0njfzosAMxMmZNt7c2J3tFPnxiYEpHwhpUBegNfQTX1PAe8MKpqskJ35iPBNrqNCjh7D9nv4twXXx8QbOYSAnrFmJkPh5SxYk0hRLYWBfD6/Vft3cQYq89NkrxwDhDkrHeoNXYJRBCMBhuTluH0IgXC/ibgPpCzPDrZT7RLmKwq2LBLJAQqOlP//4WhEpBI1lIHDAhK57+FY7DNmgai1ZSE5efZDCSgRALBwNYVQT8Wdfq/vuwCXF8chgIVsWyo3sNne+WNmF+vwKsB9WKNKKk1bpEup6LqakTtdFM=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8BF592EA6461D548874DB6BE9FEE8E38@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <20191015181242.8343-16-jgg@ziepe.ca>
+ <20191021183824.GE3177@redhat.com>
+ <20191021185738.GH6285@mellanox.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ec60703-e1c6-45c8-1c8a-08d7565a9a4c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2019 19:12:23.3208
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tU+L6I+Wz0eK9v9BNR+9bz7Z02bge5VZ641k0CG1bD32N/F5e6KyugGae73KMZsjHtrrrSBTeDk+5FP/09VfiA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4718
+In-Reply-To: <20191021185738.GH6285@mellanox.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MC-Unique: pucvyFZ9O-qowyYJDMXeyA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gV2VkLCBPY3QgMTYsIDIwMTkgYXQgMDY6MzU6MTVBTSArMDAwMCwgT2xla3NhbmRyIEFuZHJ1
-c2hjaGVua28gd3JvdGU6DQo+IE9uIDEwLzE2LzE5IDg6MTEgQU0sIErDvHJnZW4gR3Jvw58gd3Jv
-dGU6DQo+ID4gT24gMTUuMTAuMTkgMjA6MTIsIEphc29uIEd1bnRob3JwZSB3cm90ZToNCj4gPj4g
-RnJvbTogSmFzb24gR3VudGhvcnBlIDxqZ2dAbWVsbGFub3guY29tPg0KPiA+Pg0KPiA+PiBETUFf
-U0hBUkVEX0JVRkZFUiBjYW4gbm90IGJlIGVuYWJsZWQgYnkgdGhlIHVzZXIgKGl0IHJlcHJlc2Vu
-dHMgYSANCj4gPj4gbGlicmFyeQ0KPiA+PiBzZXQgaW4gdGhlIGtlcm5lbCkuIFRoZSBrY29uZmln
-IGNvbnZlbnRpb24gaXMgdG8gdXNlIHNlbGVjdCBmb3Igc3VjaA0KPiA+PiBzeW1ib2xzIHNvIHRo
-ZXkgYXJlIHR1cm5lZCBvbiBpbXBsaWNpdGx5IHdoZW4gdGhlIHVzZXIgZW5hYmxlcyBhIGtjb25m
-aWcNCj4gPj4gdGhhdCBuZWVkcyB0aGVtLg0KPiA+Pg0KPiA+PiBPdGhlcndpc2UgdGhlIFhFTl9H
-TlRERVZfRE1BQlVGIGtjb25maWcgaXMgb3Zlcmx5IGRpZmZpY3VsdCB0byBlbmFibGUuDQo+ID4+
-DQo+ID4+IEZpeGVzOiA5MzJkNjU2MjE3OWUgKCJ4ZW4vZ250ZGV2OiBBZGQgaW5pdGlhbCBzdXBw
-b3J0IGZvciBkbWEtYnVmIFVBUEkiKQ0KPiA+PiBDYzogT2xla3NhbmRyIEFuZHJ1c2hjaGVua28g
-PG9sZWtzYW5kcl9hbmRydXNoY2hlbmtvQGVwYW0uY29tPg0KPiA+PiBDYzogQm9yaXMgT3N0cm92
-c2t5IDxib3Jpcy5vc3Ryb3Zza3lAb3JhY2xlLmNvbT4NCj4gPj4gQ2M6IHhlbi1kZXZlbEBsaXN0
-cy54ZW5wcm9qZWN0Lm9yZw0KPiA+PiBDYzogSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuY29t
-Pg0KPiA+PiBDYzogU3RlZmFubyBTdGFiZWxsaW5pIDxzc3RhYmVsbGluaUBrZXJuZWwub3JnPg0K
-PiA+PiBTaWduZWQtb2ZmLWJ5OiBKYXNvbiBHdW50aG9ycGUgPGpnZ0BtZWxsYW5veC5jb20+DQo+
-ID4NCj4gPiBSZXZpZXdlZC1ieTogSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuY29tPg0KPiA+
-DQo+IFJldmlld2VkLWJ5OiBPbGVrc2FuZHIgQW5kcnVzaGNoZW5rbyA8b2xla3NhbmRyX2FuZHJ1
-c2hjaGVua29AZXBhbS5jb20+DQoNClRoYW5rcyBPbGVrc2FuZHIgYW5kIEp1ZXJnZW4sIGNhbiB5
-b3UgYWxzbyBnaXZlIG1lIHNvbWUgYWR2aWNlIG9uIGhvdw0KdG8gcHJvZ3Jlc3MgdGhlIG1vcmUg
-Y29tcGxleCBwYXRjaDoNCg0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMTE5
-MTM2OS8NCg0KSXMgdGhpcyBnbnRkZXYgc3R1ZmYgc3RpbGwgaW4tdXNlPyBJIHN0cnVnZ2xlZCBh
-IGJpdCB0byB1bmRlcnN0YW5kDQp3aGF0IGl0IGlzIGRvaW5nLCBidXQgSSB0aGluayBJIG1hZGUg
-YSByZWFzb25hYmxlIGd1ZXNzPw0KDQpKYXNvbg0K
+On Mon, Oct 21, 2019 at 06:57:42PM +0000, Jason Gunthorpe wrote:
+> On Mon, Oct 21, 2019 at 02:38:24PM -0400, Jerome Glisse wrote:
+> > On Tue, Oct 15, 2019 at 03:12:42PM -0300, Jason Gunthorpe wrote:
+> > > From: Jason Gunthorpe <jgg@mellanox.com>
+> > >=20
+> > > The only two users of this are now converted to use mmu_range_notifie=
+r,
+> > > delete all the code and update hmm.rst.
+> >=20
+> > I guess i should point out that the reasons for hmm_mirror and hmm
+> > was for:
+> >     1) Maybe define a common API for userspace to provide memory
+> >        placement hints (NUMA for GPU)
+>=20
+> Do you think this needs special code in the notifiers?
+
+Just need a place where to hang userspace policy hint the hmm_range
+was the prime suspect. I need to revisit this once the nouveau user
+space is in better shape.
+
+>=20
+> >     2) multi-devices sharing same mirror page table
+>=20
+> Oh neat, but I think this just means the GPU driver has to register a
+> single notifier for multiple GPUs??
+
+Yes that was the idea a single notifier with share page table, but
+at this time this is non existent code so no need to hinder change
+just for the sake of it.
+
+>=20
+> > But support for multi-GPU in nouveau is way behind and i guess such
+> > optimization will have to re-materialize what is necessary once that
+> > happens.
+>=20
+> Sure, it will be easier to understand what is needed with a bit of
+> code!
+>=20
+> > Note this patch should also update kernel/fork.c and the mm_struct
+> > definition AFAICT. With those changes you can add my:
+>=20
+> Can you please elaborate what updates you mean? I'm not sure.=20
+>=20
+> Maybe I already got the things you are thinking of with the get/put
+> changes?
+
+Oh i forgot this was already taken care of by this. So yes all is
+fine:
+
+Reviewed-by: J=E9r=F4me Glisse <jglisse@redhat.com>
+
