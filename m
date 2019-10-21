@@ -2,105 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B85A1DF638
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 21:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF65DF67F
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Oct 2019 22:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729270AbfJUTr5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Oct 2019 15:47:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23667 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726672AbfJUTr4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Oct 2019 15:47:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571687275;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=61Nnku0I+13ll91wxHp2GCqWsterOpYjidrMjRQ6FOk=;
-        b=FgXx8MPj2E5264FKUKvWQbruJp1cI/6JkRubU1VJQfFvoubEx+GLp/4P4dgRAKSQ/omar4
-        T6vDwlwnUHe6jTlViX5l/cqIB4V2yaJvOMZf6PbtjnZ8+uV5Ccx+CWIh9f/GjiISwr9mtF
-        E5+Ghp2essq6A+MdDcmipjIu6p0BDv0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-184-tvVLh5QnNemqg5-Lf0njnA-1; Mon, 21 Oct 2019 15:47:52 -0400
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6C07800D41;
-        Mon, 21 Oct 2019 19:47:50 +0000 (UTC)
-Received: from redhat.com (unknown [10.20.6.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DB9105C219;
-        Mon, 21 Oct 2019 19:47:49 +0000 (UTC)
-Date:   Mon, 21 Oct 2019 15:47:48 -0400
-From:   Jerome Glisse <jglisse@redhat.com>
+        id S1730052AbfJUUIV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Oct 2019 16:08:21 -0400
+Received: from hqemgate14.nvidia.com ([216.228.121.143]:8414 "EHLO
+        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726672AbfJUUIV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Oct 2019 16:08:21 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dae10390003>; Mon, 21 Oct 2019 13:08:25 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 21 Oct 2019 13:08:20 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 21 Oct 2019 13:08:20 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Oct
+ 2019 20:08:20 +0000
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 21 Oct
+ 2019 20:08:17 +0000
+Subject: Re: [PATCH v2 2/3] mm/hmm: allow snapshot of the special zero page
 To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Ralph Campbell <rcampbell@nvidia.com>,
+CC:     Jerome Glisse <jglisse@redhat.com>,
         John Hubbard <jhubbard@nvidia.com>,
-        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
+        Christoph Hellwig <hch@lst.de>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH hmm 02/15] mm/mmu_notifier: add an interval tree notifier
-Message-ID: <20191021194748.GA5644@redhat.com>
-References: <20191015181242.8343-1-jgg@ziepe.ca>
- <20191015181242.8343-3-jgg@ziepe.ca>
- <20191021183056.GA3177@redhat.com>
- <20191021185421.GG6285@mellanox.com>
- <20191021191157.GA5208@redhat.com>
- <20191021192448.GK6285@mellanox.com>
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+References: <20191015204814.30099-1-rcampbell@nvidia.com>
+ <20191015204814.30099-3-rcampbell@nvidia.com>
+ <20191021180836.GE6285@mellanox.com>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <03961f82-bd03-796f-9cb6-aec38fbd958f@nvidia.com>
+Date:   Mon, 21 Oct 2019 13:08:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-In-Reply-To: <20191021192448.GK6285@mellanox.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-MC-Unique: tvVLh5QnNemqg5-Lf0njnA-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
+In-Reply-To: <20191021180836.GE6285@mellanox.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1571688505; bh=2ra+kt8z/5wxbafu2VhB01aluircmbMKWVVuX5PGlmU=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=iUI1dx780VmDYvtjTBFOpvQlvVfemhaGyZQ/I1OB2KeEzpkS8UBn73dKJNAmN8azl
+         8erxjDAoMjivlarXss7KcPBkhXn6Kru+JRxt/LAPGr3A6sgeBDEjijtt16rTUqpB4C
+         FNpfkYbdwbYKerTRCKJkgUOtpswS0RYguJR6EUiL2v4m5sEnUM1iWGouEeZ150Pb8T
+         tAJ7Knwuw2REvtYG9V8jr9Ag5Q5winkJRj87vpEklBV53puFYR4vMTVlp+0grc0i4w
+         eZnEhr8tz2sHqCykjD7DIlGcmIldGhO8rHn1Jf6TvYLtswcqs7dQIdvGaX4x3Kz9Dk
+         SkAZkhyjmL44A==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 07:24:53PM +0000, Jason Gunthorpe wrote:
-> On Mon, Oct 21, 2019 at 03:11:57PM -0400, Jerome Glisse wrote:
-> > > Since that reader is not locked we need release semantics here to
-> > > ensure the unlocked reader sees a fully initinalized mmu_notifier_mm
-> > > structure when it observes the pointer.
-> >=20
-> > I thought the mm_take_all_locks() would have had a barrier and thus
-> > that you could not see mmu_notifier struct partialy initialized.=20
->=20
-> Not sure, usually a lock acquire doesn't have a store barrier?
 
-Yeah likely.
+On 10/21/19 11:08 AM, Jason Gunthorpe wrote:
+> On Tue, Oct 15, 2019 at 01:48:13PM -0700, Ralph Campbell wrote:
+>> Allow hmm_range_fault() to return success (0) when the CPU pagetable
+>> entry points to the special shared zero page.
+>> The caller can then handle the zero page by possibly clearing device
+>> private memory instead of DMAing a zero page.
+>>
+>> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>> Cc: "J=C3=A9r=C3=B4me Glisse" <jglisse@redhat.com>
+>> Cc: Jason Gunthorpe <jgg@mellanox.com>
+>>   mm/hmm.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/mm/hmm.c b/mm/hmm.c
+>> index 5df0dbf77e89..f62b119722a3 100644
+>> +++ b/mm/hmm.c
+>> @@ -530,7 +530,9 @@ static int hmm_vma_handle_pte(struct mm_walk *walk, =
+unsigned long addr,
+>>   			return -EBUSY;
+>>   	} else if (IS_ENABLED(CONFIG_ARCH_HAS_PTE_SPECIAL) && pte_special(pte=
+)) {
+>>   		*pfn =3D range->values[HMM_PFN_SPECIAL];
+>> -		return -EFAULT;
+>> +		if (!is_zero_pfn(pte_pfn(pte)))
+>> +			return -EFAULT;
+>> +		return 0;
+>=20
+> Does it make sense to return HMM_PFN_SPECIAL in this case? Does the
+> zero pfn have a struct page? Does it need mandatory special treatment?
 
->=20
-> Even if it did, we would still need some pairing read barrier..
->=20
-> > having the acquire/release as safety net does not hurt. Maybe add a
-> > comment about the struct initialization needing to be visible before
-> > pointer is set.
->=20
-> Is this clear?
->=20
->          * release semantics on the initialization of the
->          * mmu_notifier_mm's contents are provided for unlocked readers.
-> =09 * acquire can only be used while holding the
->          * mmgrab or mmget, and is safe because once created the
->          * mmu_notififer_mm is not freed until the mm is destroyed.
->          * Users holding the mmap_sem or one of the
-> =09 * mm_take_all_locks() do not need to use acquire semantics.
->=20
-> It also helps explain why there is no locking around the other
-> readers, which has puzzled me in the past at least.
+The zero pfn does not have a struct page so it needs special treatment:
+see nouveau_dmem_convert_pfn() where it calls hmm_device_entry_to_page().
 
-Perfect.
+If HMM ever ends up supporting VM_PFNMAP
+there would need to be a way to distinguish pfns with and without a
+backing struct page too.
 
-J=E9r=F4me
+> ie the base behavior without any driver code should be to dma from the
+> zero memory. A fancy driver should be able to detect the zero and do
+> something else.
 
+Correct.
+
+> I'm not clear what the two existing users do with PFN_SPECIAL? Nouveau
+> looks like it is the same value as error, can't guess what amdgpu does
+> with its magic constant
+>=20
+> Jason
+
+I doubt the zero pfn case is being handled correctly in amd/nouveau.
+I made the change above when explicitly testing for it in the patch
+adding HMM tests.
