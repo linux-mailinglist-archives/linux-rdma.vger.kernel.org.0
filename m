@@ -2,155 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 616A8E0A0D
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 19:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A670E0A1C
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 19:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732478AbfJVRGn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Oct 2019 13:06:43 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:51633 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732316AbfJVRGn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Oct 2019 13:06:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571764001;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pziuiR3USf+QYOjB5TUqNYl6I5zkv1vS1NLbzCx5qr0=;
-        b=Jkx5ej7pToZQm/GGB/iNh8lj0TUA8vNikRWNf6TwiE0DetZQ+cN35mqkT+eLVuQHtI9PCf
-        XPHBDcZ2rLwjdMUl2CHrHZnddUEPwCP3DQW7TxGBm5vK5xMj/VwLFfWJ4LPX8mAVw2hHov
-        g79byH7Y7PTGWeSU5Z6GCWGyDsCOYwI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-278-ltazWoUfNh2VJ_Uoq4ToMQ-1; Tue, 22 Oct 2019 13:06:35 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F26E61005509;
-        Tue, 22 Oct 2019 17:06:33 +0000 (UTC)
-Received: from redhat.com (unknown [10.20.6.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5D5A05D6A9;
-        Tue, 22 Oct 2019 17:06:33 +0000 (UTC)
-Date:   Tue, 22 Oct 2019 13:06:31 -0400
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Ralph Campbell <rcampbell@nvidia.com>,
+        id S1729696AbfJVRJX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Oct 2019 13:09:23 -0400
+Received: from mail-eopbgr30046.outbound.protection.outlook.com ([40.107.3.46]:49086
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730701AbfJVRJX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Oct 2019 13:09:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZvLcFL7t0zD2GgHb+NKtG0fTdgHwn0AI59/0mzgkaoAQeoebR0r2pJgetqGLrh7opgA03/46ZAanOVtKTZkE0W3+2C8BKUQH12B8Z+8+AWsPNwCEHxzbERkTFRBHpbiFn1JJiNTWBI6fix4G2ky9CbJpnEH0XfoA0Q6Q70TE4ooQq6qRiytkrZPAivCmBPxrVUw9iDNT3P+vai+dBsbDL4RqAHcpXkXs+Wt3Uog4UAbMGfPMcY4zplMMTvdFnPawa2C607Ua8qjPyPU3XnU75meldmwVoxeFH9OxGX9NIpy/Ef7DrftlzxpCBBQjMbdJn26aJFVoImPhlRpCWKE/4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=80dU3RQN2bmXaYhttvIKpAOWsikzhbGrgm8lrn5NWAs=;
+ b=Nth2oInKI7GZr3mRzn1ranHubHT5eSgLJQ1wXOjrh/mrrQNvz9V5J38ZAzX4/qQcVaJB/U4GiQAD4RafKyYEFmtZISl1cBrssk7gCzGY4CYTs+PrxJMvQ9qYXC036vyQtI+/3vdT/DU60rTHT4RnEGde9MbfpSAD7xluHeHoBasddY1H7D53Dg79TxCzbOUCYK4xIKkc4QD4h3wTnjFjm1A3F7qCpw77R0iuKS3rhICzMqXYPOBGGZ+eKQmV2lcR3r03J3VlGFLMCIDA/u0oQULnMbFpeliQ6GMOuCoWbAQuGIIK94VaFBVetzWMUgyQSBfd65pRYibO1SkrI309Yg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=80dU3RQN2bmXaYhttvIKpAOWsikzhbGrgm8lrn5NWAs=;
+ b=sJ980dynn9OHseghRUo31mwlSGHGwd4zCeW639IY3Cuns9fcVrRDl15CUn//8FY7Xs10/nxpIEFu6yMZ1cT7lBV7w7Y0Cv+74vmBQQWbKppAIAbbQbdLMZgNZXwoRDI2Cw5Z09XUnVh46qW0ckGqeFlPlFV6e6Z/oD8bBvW2Hhc=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB4221.eurprd05.prod.outlook.com (52.133.13.140) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.16; Tue, 22 Oct 2019 17:09:19 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::75ae:b00b:69d8:3db0]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::75ae:b00b:69d8:3db0%7]) with mapi id 15.20.2367.022; Tue, 22 Oct 2019
+ 17:09:19 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Jerome Glisse <jglisse@redhat.com>
+CC:     Ralph Campbell <rcampbell@nvidia.com>,
         John Hubbard <jhubbard@nvidia.com>,
         Christoph Hellwig <hch@lst.de>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>
 Subject: Re: [PATCH v2 2/3] mm/hmm: allow snapshot of the special zero page
-Message-ID: <20191022170631.GA4805@redhat.com>
+Thread-Topic: [PATCH v2 2/3] mm/hmm: allow snapshot of the special zero page
+Thread-Index: AQHVg5noYFRN6Uol1kOCsSoXbSSn1KdleVOAgAAi3oCAAGI6gIAAzpcAgAAh44CAAADFAA==
+Date:   Tue, 22 Oct 2019 17:09:19 +0000
+Message-ID: <20191022170916.GL22766@mellanox.com>
 References: <20191015204814.30099-1-rcampbell@nvidia.com>
  <20191015204814.30099-3-rcampbell@nvidia.com>
  <20191021184927.GG3177@redhat.com>
  <95fa45cf-a2ce-fab8-588d-8d806124aef3@nvidia.com>
- <20191022024549.GA4347@redhat.com>
- <20191022150514.GH22766@mellanox.com>
-MIME-Version: 1.0
-In-Reply-To: <20191022150514.GH22766@mellanox.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-MC-Unique: ltazWoUfNh2VJ_Uoq4ToMQ-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
+ <20191022024549.GA4347@redhat.com> <20191022150514.GH22766@mellanox.com>
+ <20191022170631.GA4805@redhat.com>
+In-Reply-To: <20191022170631.GA4805@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BL0PR02CA0113.namprd02.prod.outlook.com
+ (2603:10b6:208:35::18) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.162.113.180]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: dd213a93-3cb9-40c7-eccf-08d757129398
+x-ms-traffictypediagnostic: VI1PR05MB4221:
+x-microsoft-antispam-prvs: <VI1PR05MB42214C5FA54E2C5D7234FCF1CF680@VI1PR05MB4221.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 01986AE76B
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(39860400002)(396003)(376002)(346002)(366004)(199004)(189003)(6246003)(476003)(102836004)(2616005)(5660300002)(2906002)(446003)(6486002)(25786009)(26005)(4326008)(1076003)(6436002)(11346002)(6916009)(229853002)(6512007)(186003)(36756003)(486006)(66066001)(66446008)(64756008)(66556008)(66476007)(256004)(81166006)(71190400001)(99286004)(54906003)(305945005)(3846002)(66946007)(71200400001)(52116002)(76176011)(86362001)(14454004)(316002)(7736002)(6506007)(386003)(478600001)(33656002)(8936002)(8676002)(81156014)(6116002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4221;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UHzFgqtFVY2AvL7QwWCyu6SYGIeD55/2Xl0rgz7KzTP2qjMczIwa84rqiGpOZbSsdhoCbktRa117ItRuMdIGMvt9/QwoOUPfy2MUBQRGOKdk63w3DKQ1f2CEDMy4qrRt6giE/hBNIuMEIrzDGZE6ltVSHNHwnHYPlknZHfua6TLTkQCfQF2IZrPLtubbO+P2ykAMPRfXuwTE6/tPDTN63Bfa0nvRZEhQ8LJHX08xdjnDtWOQB6R9Bd8ygk9YzLjv7k4E5Jh4NootqFuJATHNSCHXnOZSozGcNiFDaJjIg4Ro0JSteEYmNdbVPYiYgKygBQiIaVjTCjw9P1DV9AFJ/+hMfNfzN0Tjrm9voDox9/IXbEQaWv/4EbuDRV5rvmE2WSo+XR0F5zKsCqZaY4h/giM20JzDs80PA7V/aeNhsdI=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <0B8B87066FF37141B680B6F7191434E1@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd213a93-3cb9-40c7-eccf-08d757129398
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Oct 2019 17:09:19.5444
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OaqtpSmwPekKCPXAAB5K5q6lQCSQlMv8MpbBONX+Nu82Q1tHoHMusCoqw/itujwn4efqxZEjq97uXjMC5iiAnw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4221
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 03:05:18PM +0000, Jason Gunthorpe wrote:
-> On Mon, Oct 21, 2019 at 10:45:49PM -0400, Jerome Glisse wrote:
-> > On Mon, Oct 21, 2019 at 01:54:15PM -0700, Ralph Campbell wrote:
+On Tue, Oct 22, 2019 at 01:06:31PM -0400, Jerome Glisse wrote:
+
+> > > That is fine, the device driver should not do anything with it ie
+> > > if the device driver wanted to write then the write fault test
+> > > would return true and it would fault.
 > > >=20
-> > > On 10/21/19 11:49 AM, Jerome Glisse wrote:
-> > > > On Tue, Oct 15, 2019 at 01:48:13PM -0700, Ralph Campbell wrote:
-> > > > > Allow hmm_range_fault() to return success (0) when the CPU pageta=
-ble
-> > > > > entry points to the special shared zero page.
-> > > > > The caller can then handle the zero page by possibly clearing dev=
-ice
-> > > > > private memory instead of DMAing a zero page.
-> > > >=20
-> > > > I do not understand why you are talking about DMA. GPU can work
-> > > > on main memory and migrating to GPU memory is optional and should
-> > > > not involve this function at all.
-> > >=20
-> > > Good point. This is the device accessing the zero page over PCIe
-> > > or another bus, not migrating a zero page to device private memory.
-> > > I'll update the wording.
-> > >=20
-> > > > >=20
-> > > > > Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
-> > > > > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > > > > Cc: "J=E9r=F4me Glisse" <jglisse@redhat.com>
-> > > > > Cc: Jason Gunthorpe <jgg@mellanox.com>
-> > > >=20
-> > > > NAK please keep semantic or change it fully. See the alternative
-> > > > below.
-> > > >=20
-> > > > >   mm/hmm.c | 4 +++-
-> > > > >   1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > >=20
-> > > > > diff --git a/mm/hmm.c b/mm/hmm.c
-> > > > > index 5df0dbf77e89..f62b119722a3 100644
-> > > > > +++ b/mm/hmm.c
-> > > > > @@ -530,7 +530,9 @@ static int hmm_vma_handle_pte(struct mm_walk =
-*walk, unsigned long addr,
-> > > > >   =09=09=09return -EBUSY;
-> > > > >   =09} else if (IS_ENABLED(CONFIG_ARCH_HAS_PTE_SPECIAL) && pte_sp=
-ecial(pte)) {
-> > > > >   =09=09*pfn =3D range->values[HMM_PFN_SPECIAL];
-> > > > > -=09=09return -EFAULT;
-> > > > > +=09=09if (!is_zero_pfn(pte_pfn(pte)))
-> > > > > +=09=09=09return -EFAULT;
-> > > > > +=09=09return 0;
-> > > >=20
-> > > > An acceptable change would be to turn the branch into:
-> > > > =09} else if (IS_ENABLED(CONFIG_ARCH_HAS_PTE_SPECIAL) && pte_specia=
-l(pte)) {
-> > > > =09=09if (!is_zero_pfn(pte_pfn(pte))) {
-> > > > =09=09=09*pfn =3D range->values[HMM_PFN_SPECIAL];
-> > > > =09=09=09return -EFAULT;
-> > > > =09=09}
-> > > > =09=09/* Fall-through for zero pfn (if write was needed the above
-> > > > =09=09 * hmm_pte_need_faul() would had catched it).
-> > > > =09=09 */
-> > > > =09}
-> > > >=20
-> > >=20
-> > > Except this will return the zero pfn with no indication that it is sp=
-ecial
-> > > (i.e., doesn't have a struct page).
+> > > Note that driver should not dereference the struct page.
 > >=20
-> > That is fine, the device driver should not do anything with it ie
-> > if the device driver wanted to write then the write fault test
-> > would return true and it would fault.
+> > Can this thing be dma mapped for read?
 > >=20
-> > Note that driver should not dereference the struct page.
 >=20
-> Can this thing be dma mapped for read?
+> Yes it can, the zero page is just a regular page (AFAIK on all
+> architecture). So device can dma map it for read only, there is
+> no reason to treat it any differently.
 >=20
+> The HMM_PTE_SPECIAL is only (as documented in the header) for
+> pte insert with insert_pfn or insert_page ie pte inserted in
+> vma with MIXED or PFNMAP flag. While HMM catch those vma early
+> on and backof it can still race with some driver setting the vma
+> flag and installing special pte afterward hence why special pte
+> goes through this special path.
+>=20
+> The zero page being a special pte is just an exception ie it
+> is the only special pte allowed in vma that do not have MIXED or
+> PFNMAP flag set.
 
-Yes it can, the zero page is just a regular page (AFAIK on all
-architecture). So device can dma map it for read only, there is
-no reason to treat it any differently.
+Just to be clear then, the correct behavior is to return the zero page
+pfn as a HMM_PFN_VALID and the driver should treat it the same as any
+memory page and dma map it?
 
-The HMM_PTE_SPECIAL is only (as documented in the header) for
-pte insert with insert_pfn or insert_page ie pte inserted in
-vma with MIXED or PFNMAP flag. While HMM catch those vma early
-on and backof it can still race with some driver setting the vma
-flag and installing special pte afterward hence why special pte
-goes through this special path.
+Smart drivers can test somehow for pfn =3D=3D zero_page and optimize?
 
-The zero page being a special pte is just an exception ie it
-is the only special pte allowed in vma that do not have MIXED or
-PFNMAP flag set.
-
-Cheers,
-J=E9r=F4me
-
+Jason
