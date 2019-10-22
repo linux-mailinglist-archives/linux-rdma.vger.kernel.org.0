@@ -2,96 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C07DEE0B94
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 20:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB26E0B9C
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 20:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732623AbfJVSlL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Oct 2019 14:41:11 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:40661 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732615AbfJVSlL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Oct 2019 14:41:11 -0400
-Received: by mail-qt1-f193.google.com with SMTP id o49so20469558qta.7
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Oct 2019 11:41:10 -0700 (PDT)
+        id S1732719AbfJVSln (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Oct 2019 14:41:43 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:35891 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727851AbfJVSln (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Oct 2019 14:41:43 -0400
+Received: by mail-qk1-f194.google.com with SMTP id y189so17271960qkc.3
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Oct 2019 11:41:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=bF9K7Bd9BrzzMLmMrrO2HSAwcPu6dNqSFJ59SdGCcdc=;
-        b=hUqrSk3F2J3Z8zY9lRzqLgcqiBlMJq/h0fGcZwZg2lGeEi1NZ6pmv7rS5TI8fveK0c
-         p6Yl+F1AkuwmmT0uOR/eE6hhn3OOlAaQNZlXGuaJ+82hcuzay99N9bCLFpiqVepSDlyC
-         aGhR2902V9sufLYEzDqPMzxj0wd4SeSxBLOlOyz1LlhAa5ue0YVhL2BYxim3uJ8gtPmS
-         l/dRThDyTcBvW870OvDN2BlB+LNwUwbCTy4wucgbxrrP+yigmC348hZUW6hrC6/WBBEQ
-         P+iB/GaYuq2qZaaQ+P9qnH3Rymsrdsa9bua1g/ZsxVfKsjQlLCGht70yJJcd4q6Qr4b0
-         rBZQ==
+        bh=dk7uCgHLxccIY6fVbA7wZt6uovWWgfYi1byT7K+xYUw=;
+        b=j4YYwNhpqvbJ8WnF4A3dpIcrvbmpbQ/D02OkY4ssIsAokNjY0MNGsqBqxtiviNKwPN
+         xwjBIN66Nw7Rcg9ek6jFTYnWjFe/4yBU/XLuAg+9IsnBivqJKNbZkUMI3m/ABjIIER9g
+         saOyPyriRqY1OFwpsc1/dNphgyGlW41wdRY4M6LQrD+YhlpEGv1axSlRuFOH87juoKh0
+         CWn+eVu9EEXr5FT3XDyV2/cR83cmjk/vY7f7zHpgC7TfCFFgR99IIwKXJQvSPTJ7cKo/
+         uwsL6w2T2kzicix25K+QF9xhsBMj8wAHa5JAO2lhgs2H4rqTMhuCn8lN0/yKVOUusmh4
+         dtrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bF9K7Bd9BrzzMLmMrrO2HSAwcPu6dNqSFJ59SdGCcdc=;
-        b=Xw5reOluFfhx+cv41MsxAeFL+eHhGs/ATJ3BQoJ4AN1myBYq0CvqeU2kIUYh91fcJW
-         RArkzlcwxt65SvmuwV4jhjd9jCuTFjVaaj7SjGFHN4KKUUtQBqxbO+RhrRlyXjPuCCyc
-         1e4kpq9euiMTaTAsVcfJMfI4c0BT+HdWe4+/g5Vi+x+Lv7dh3KzGgssTvmeXmjE2MqTp
-         XHSqekiDTttenMwTHQTRaATpWe4NBORB5ojVNxEOGeoZZI+42qxSKPfUpzBrbuegcBaF
-         B+ffsCkjC26lVax52FdTdaw77yO5FyGTdwf/0JgBognWnglm9WI5FYqbkrDdR1C7RzNM
-         9Q1Q==
-X-Gm-Message-State: APjAAAXUDeLMwPnWyDgaXtHhqPTUgJzoRCJvFzzDQmO3Oo0O2eSPbuEr
-        cJlR+PRt2EL/CYWnvgvRZjomAQ==
-X-Google-Smtp-Source: APXvYqxad1u6C2e/cv+Tm8SJFBvz8Mt1xEFYtc9Wnpqiik7XQlAmUbuOzEjnbzLmSEm8ikvwXQ0TEw==
-X-Received: by 2002:ac8:6f27:: with SMTP id i7mr4994566qtv.359.1571769670432;
-        Tue, 22 Oct 2019 11:41:10 -0700 (PDT)
+        bh=dk7uCgHLxccIY6fVbA7wZt6uovWWgfYi1byT7K+xYUw=;
+        b=Fkja52dsXmsYtRMV48hzlXifvgTFpBl/GjoaOrSA3OT2UrHrjTyu8uA9r8nylrBQ54
+         uToTfAS4EtV8tcsqjbWyZHVlrJLKz9WRxZTh6XbMtNEYofOdvSNfD4WpC58Ho9FyWnLV
+         e+1oJ1NvX59vs0abTLmqxRYpZI4++/gKrB6z6TKExarfnEqvuppI6kEBW+tED/rQfBtL
+         2Esne2A80VyTmACt9kVUMgIebl1558dyxD0c+AMq6B6V3QlAZu7Wvk9Cmh9/YUE8W8Mc
+         FGXA4G1BkMg87uP1BaFKGq1uNt5gLb7pkejyObxti7aUcyX6viD25yaDkqLTSTXwMsYU
+         9g9Q==
+X-Gm-Message-State: APjAAAXYshUayqWyE4tCbKOGOXujNFCiphhAsWUiczdXe0RW90N7IiLT
+        Vvjn+1mowV/zfMs6a+tFonclicoCwb4=
+X-Google-Smtp-Source: APXvYqzyzL7ztcnVWdSJdMTQ0Nya3gSWBKP+hFXVpxUh359dL3cb676rFx5IS0powukH5ZHNuyC7kg==
+X-Received: by 2002:a05:620a:1497:: with SMTP id w23mr4400792qkj.302.1571769702173;
+        Tue, 22 Oct 2019 11:41:42 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id a190sm11028340qkf.118.2019.10.22.11.41.09
+        by smtp.gmail.com with ESMTPSA id u189sm422776qkd.62.2019.10.22.11.41.41
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 22 Oct 2019 11:41:09 -0700 (PDT)
+        Tue, 22 Oct 2019 11:41:41 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iMz5h-0002GS-Er; Tue, 22 Oct 2019 15:41:09 -0300
-Date:   Tue, 22 Oct 2019 15:41:09 -0300
+        id 1iMz6D-0002HG-9Z; Tue, 22 Oct 2019 15:41:41 -0300
+Date:   Tue, 22 Oct 2019 15:41:41 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     rd.dunlab@gmail.com, Max Gurtovoy <maxg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
-        linux-doc@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH 00/12] infiniband kernel-doc fixes & driver-api/ chapter
-Message-ID: <20191022184109.GA2155@ziepe.ca>
-References: <20191010035239.532908118@gmail.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Erez Alfasi <ereza@mellanox.com>
+Subject: Re: [PATCH rdma-next v3 4/4] RDMA/nldev: Provide MR statistics
+Message-ID: <20191022184141.GA8628@ziepe.ca>
+References: <20191016062308.11886-1-leon@kernel.org>
+ <20191016062308.11886-5-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191010035239.532908118@gmail.com>
+In-Reply-To: <20191016062308.11886-5-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 09, 2019 at 08:52:39PM -0700, rd.dunlab@gmail.com wrote:
-> 
-> This patch series cleans up lots of kernel-doc in drivers/infiniband/
-> and then adds an infiniband.rst file.
-> 
-> It also changes a few instances of non-exported functions from kernel-doc
-> notation back to non-kernel-doc comments.
-> 
-> There are still a few kernel-doc and Sphinx warnings that I don't know how
-> to resolve:
-> 
->   ../drivers/infiniband/ulp/iser/iscsi_iser.h:401: warning: Function parameter or member 'all_list' not described in 'iser_fr_desc'
->   ../drivers/infiniband/ulp/iser/iscsi_iser.h:415: warning: Function parameter or member 'all_list' not described in 'iser_fr_pool'
+On Wed, Oct 16, 2019 at 09:23:08AM +0300, Leon Romanovsky wrote:
 
-Maybe Max can help?
+> @@ -773,6 +781,25 @@ static int fill_stat_hwcounter_entry(struct sk_buff *msg,
+>  	nla_nest_cancel(msg, entry_attr);
+>  	return -EMSGSIZE;
+>  }
+> +EXPORT_SYMBOL(fill_stat_hwcounter_entry);
 
->   ../drivers/infiniband/core/verbs.c:2510: WARNING: Unexpected indentation.
->   ../drivers/infiniband/core/verbs.c:2512: WARNING: Block quote ends without a blank line; unexpected unindent.
->   ../drivers/infiniband/core/verbs.c:2544: WARNING: Unexpected indentation.
+This is not a good name for a global symbol, I changed it to
+rdma_nl_stat_hwcounter_entry
 
-I don't know what to make of these either.
-
-Anyhow, it is an overall improvement, so I applied everything but
-
-[05/12] infiniband: fix ulp/opa_vnic/opa_vnic_encap.h kernel-doc notation
-
-pending some discussion.
-
-Thanks,
 Jason
