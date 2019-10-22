@@ -2,281 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B98E0848
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 18:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616A8E0A0D
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 19:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbfJVQIN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Oct 2019 12:08:13 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:38940 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731436AbfJVQIN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Oct 2019 12:08:13 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9MG7ZBd145830;
-        Tue, 22 Oct 2019 16:08:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2019-08-05; bh=kaaT+wFBs/EY2gUbkOpPNJSkxo45bu97p1bzsZSK2hQ=;
- b=EpSdhT4SBeJ21lFqlyAb1qxZmePTZRaahgu8e042pC54Qs98KBCY3lz4TeC+wZfV09tM
- FLXJZP8eWDeHQh32nrqWuajCuxBZv8vSCvE/foQYLsoJd97G5iQKphc2GIGFp4Ixb2I6
- 9hj8VYenDMg7sPt57b/BKDZpjTpxbmBmbTgjOBZvGXYzoIzLIqmWnhW+mPTIexwbrZdo
- GrP8qOo49Hkaz0te7yS7oClTWxK7DOVDa7UxrXuI2437ei50Ors+On1zVpznoaeIHhVH
- wngFeSHUUp284ZUuyUavMPMJvUhLbtEP11JDhiIUZJIUgbSXbREVXAInOPjUibv9LjZ/ Ng== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 2vqu4qqnhd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Oct 2019 16:08:10 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9MG2rQh051004;
-        Tue, 22 Oct 2019 16:08:09 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 2vsx231829-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Oct 2019 16:08:08 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9MG88Yp020411;
-        Tue, 22 Oct 2019 16:08:08 GMT
-Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 22 Oct 2019 09:08:07 -0700
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v1 6/6] xprtrdma: Pull up sometimes
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <3ef2c12c-cc88-6ac6-25cd-99ef162f70a1@talpey.com>
-Date:   Tue, 22 Oct 2019 12:08:06 -0400
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+        id S1732478AbfJVRGn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Oct 2019 13:06:43 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:51633 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732316AbfJVRGn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Oct 2019 13:06:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1571764001;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pziuiR3USf+QYOjB5TUqNYl6I5zkv1vS1NLbzCx5qr0=;
+        b=Jkx5ej7pToZQm/GGB/iNh8lj0TUA8vNikRWNf6TwiE0DetZQ+cN35mqkT+eLVuQHtI9PCf
+        XPHBDcZ2rLwjdMUl2CHrHZnddUEPwCP3DQW7TxGBm5vK5xMj/VwLFfWJ4LPX8mAVw2hHov
+        g79byH7Y7PTGWeSU5Z6GCWGyDsCOYwI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-278-ltazWoUfNh2VJ_Uoq4ToMQ-1; Tue, 22 Oct 2019 13:06:35 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F26E61005509;
+        Tue, 22 Oct 2019 17:06:33 +0000 (UTC)
+Received: from redhat.com (unknown [10.20.6.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5D5A05D6A9;
+        Tue, 22 Oct 2019 17:06:33 +0000 (UTC)
+Date:   Tue, 22 Oct 2019 13:06:31 -0400
+From:   Jerome Glisse <jglisse@redhat.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH v2 2/3] mm/hmm: allow snapshot of the special zero page
+Message-ID: <20191022170631.GA4805@redhat.com>
+References: <20191015204814.30099-1-rcampbell@nvidia.com>
+ <20191015204814.30099-3-rcampbell@nvidia.com>
+ <20191021184927.GG3177@redhat.com>
+ <95fa45cf-a2ce-fab8-588d-8d806124aef3@nvidia.com>
+ <20191022024549.GA4347@redhat.com>
+ <20191022150514.GH22766@mellanox.com>
+MIME-Version: 1.0
+In-Reply-To: <20191022150514.GH22766@mellanox.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-MC-Unique: ltazWoUfNh2VJ_Uoq4ToMQ-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <EC70F961-3062-4079-A1F0-54B53C6B861B@oracle.com>
-References: <20191017182811.2517.25676.stgit@oracle-102.nfsv4bat.org>
- <20191017183152.2517.67599.stgit@oracle-102.nfsv4bat.org>
- <f5075a20-7c9a-773f-e76b-11cba1ab0f16@talpey.com>
- <E1BB2B60-6DE2-47FD-92BA-ED9011C51661@oracle.com>
- <3ef2c12c-cc88-6ac6-25cd-99ef162f70a1@talpey.com>
-To:     Tom Talpey <tom@talpey.com>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9418 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910220137
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9418 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910220137
+Content-Disposition: inline
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-> On Oct 19, 2019, at 12:36 PM, Tom Talpey <tom@talpey.com> wrote:
+On Tue, Oct 22, 2019 at 03:05:18PM +0000, Jason Gunthorpe wrote:
+> On Mon, Oct 21, 2019 at 10:45:49PM -0400, Jerome Glisse wrote:
+> > On Mon, Oct 21, 2019 at 01:54:15PM -0700, Ralph Campbell wrote:
+> > >=20
+> > > On 10/21/19 11:49 AM, Jerome Glisse wrote:
+> > > > On Tue, Oct 15, 2019 at 01:48:13PM -0700, Ralph Campbell wrote:
+> > > > > Allow hmm_range_fault() to return success (0) when the CPU pageta=
+ble
+> > > > > entry points to the special shared zero page.
+> > > > > The caller can then handle the zero page by possibly clearing dev=
+ice
+> > > > > private memory instead of DMAing a zero page.
+> > > >=20
+> > > > I do not understand why you are talking about DMA. GPU can work
+> > > > on main memory and migrating to GPU memory is optional and should
+> > > > not involve this function at all.
+> > >=20
+> > > Good point. This is the device accessing the zero page over PCIe
+> > > or another bus, not migrating a zero page to device private memory.
+> > > I'll update the wording.
+> > >=20
+> > > > >=20
+> > > > > Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+> > > > > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > > > > Cc: "J=E9r=F4me Glisse" <jglisse@redhat.com>
+> > > > > Cc: Jason Gunthorpe <jgg@mellanox.com>
+> > > >=20
+> > > > NAK please keep semantic or change it fully. See the alternative
+> > > > below.
+> > > >=20
+> > > > >   mm/hmm.c | 4 +++-
+> > > > >   1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > >=20
+> > > > > diff --git a/mm/hmm.c b/mm/hmm.c
+> > > > > index 5df0dbf77e89..f62b119722a3 100644
+> > > > > +++ b/mm/hmm.c
+> > > > > @@ -530,7 +530,9 @@ static int hmm_vma_handle_pte(struct mm_walk =
+*walk, unsigned long addr,
+> > > > >   =09=09=09return -EBUSY;
+> > > > >   =09} else if (IS_ENABLED(CONFIG_ARCH_HAS_PTE_SPECIAL) && pte_sp=
+ecial(pte)) {
+> > > > >   =09=09*pfn =3D range->values[HMM_PFN_SPECIAL];
+> > > > > -=09=09return -EFAULT;
+> > > > > +=09=09if (!is_zero_pfn(pte_pfn(pte)))
+> > > > > +=09=09=09return -EFAULT;
+> > > > > +=09=09return 0;
+> > > >=20
+> > > > An acceptable change would be to turn the branch into:
+> > > > =09} else if (IS_ENABLED(CONFIG_ARCH_HAS_PTE_SPECIAL) && pte_specia=
+l(pte)) {
+> > > > =09=09if (!is_zero_pfn(pte_pfn(pte))) {
+> > > > =09=09=09*pfn =3D range->values[HMM_PFN_SPECIAL];
+> > > > =09=09=09return -EFAULT;
+> > > > =09=09}
+> > > > =09=09/* Fall-through for zero pfn (if write was needed the above
+> > > > =09=09 * hmm_pte_need_faul() would had catched it).
+> > > > =09=09 */
+> > > > =09}
+> > > >=20
+> > >=20
+> > > Except this will return the zero pfn with no indication that it is sp=
+ecial
+> > > (i.e., doesn't have a struct page).
+> >=20
+> > That is fine, the device driver should not do anything with it ie
+> > if the device driver wanted to write then the write fault test
+> > would return true and it would fault.
+> >=20
+> > Note that driver should not dereference the struct page.
 >=20
-> On 10/18/2019 7:34 PM, Chuck Lever wrote:
->> Hi Tom-
->>> On Oct 18, 2019, at 4:17 PM, Tom Talpey <tom@talpey.com> wrote:
->>>=20
->>> On 10/17/2019 2:31 PM, Chuck Lever wrote:
->>>> On some platforms, DMA mapping part of a page is more costly than
->>>> copying bytes. Restore the pull-up code and use that when we
->>>> think it's going to be faster. The heuristic for now is to pull-up
->>>> when the size of the RPC message body fits in the buffer underlying
->>>> the head iovec.
->>>> Indeed, not involving the I/O MMU can help the RPC/RDMA transport
->>>> scale better for tiny I/Os across more RDMA devices. This is =
-because
->>>> interaction with the I/O MMU is eliminated, as is handling a Send
->>>> completion, for each of these small I/Os. Without the explicit
->>>> unmapping, the NIC no longer needs to do a costly internal TLB =
-shoot
->>>> down for buffers that are just a handful of bytes.
->>>=20
->>> This is good stuff. Do you have any performance data for the new
->>> strategy, especially latencies and local CPU cycles per byte?
->> Saves almost a microsecond of RT latency on my NFS client that uses
->> a real Intel IOMMU. On my other NFS client, the DMA map operations
->> are always a no-op. This savings applies only to NFS WRITE, of =
-course.
->> I don't have a good benchmark for cycles per byte. Do you have any
->> suggestions? Not sure how I would account for cycles spent handling
->> Send completions, for example.
+> Can this thing be dma mapped for read?
 >=20
-> Cycles per byte is fairly simple but like all performance measurement
-> the trick is in the setup. Because of platform variations, it's best
-> to compare results on the same hardware. The absolute value isn't as
-> meaningful. Here's a rough sketch of one approach.
->=20
-> - Configure BIOS and OS to hold CPU frequency constant:
->  - ACPI C-states off
->  - Turbo mode off
->  - Power management off (OS needs this too)
->  - Anything else relevant to clock variation
-> - Hyperthreading off
->  - (hyperthreads don't add work linearly)
-> - Calculate core count X clock frequency
->  - (e.g. 8 X 3GHz =3D 24G cycles/sec)
->=20
-> Now, use a benchmark which runs the desired workload and reports %CPU.
-> For a given interval, record the total bytes transferred, time spent,
-> and CPU load. (e.g. 100GB, 100 sec, 20%).
->=20
-> Finally, compute CpB (the 1/sec terms cancel out):
-> 20% x 24Gcps =3D 4.8G cps
-> 100GB / 100s =3D 1G bps
-> 4.8Gcps / 1 GBps =3D 4.8cpb
->=20
-> Like I said, it's rough, but surprisingly telling. A similar metric
-> is cycles per IOP, and since you're focusing on small i/o with this
-> change, it might also be an interesting calculation. Simply replace
-> total bytes/sec with IOPS.
 
-Systems under test:
+Yes it can, the zero page is just a regular page (AFAIK on all
+architecture). So device can dma map it for read only, there is
+no reason to treat it any differently.
 
-	=E2=80=A2 12 Haswell cores x 1.6GHz =3D 19.2 billion cps
-	=E2=80=A2 Server is exporting a tmpfs filesystem
-	=E2=80=A2 Client and server using CX-3 Pro on 56Gbps InfiniBand
-	=E2=80=A2 Kernel is v5.4-rc4
-	=E2=80=A2 iozone -M -+u -i0 -i1 -s1g -r1k -t12 -I
+The HMM_PTE_SPECIAL is only (as documented in the header) for
+pte insert with insert_pfn or insert_page ie pte inserted in
+vma with MIXED or PFNMAP flag. While HMM catch those vma early
+on and backof it can still race with some driver setting the vma
+flag and installing special pte afterward hence why special pte
+goes through this special path.
 
-The purpose of this test is to compare the two kernels, not to publish =
-an absolute performance value. Both kernels below have a number of =
-CPU-intensive debugging options enabled, which might tend to increase =
-CPU cycles per byte or per I/O, and might also amplify the differences =
-between the two kernels.
+The zero page being a special pte is just an exception ie it
+is the only special pte allowed in vma that do not have MIXED or
+PFNMAP flag set.
 
-
-
-*** With DMA-mapping kernel (confirmed after test - total pull-up was =
-zero bytes):
-
-WRITE tests:
-
-	=E2=80=A2 Write test: CPU Utilization: Wall time  496.136    CPU =
-time  812.879    CPU utilization 163.84 %
-	=E2=80=A2 Re-write test: CPU utilization: Wall time  500.266    =
-CPU time  822.810    CPU utilization 164.47 %
-
-Final mountstats results:
-
-WRITE:
-    25161863 ops (50%)
-    avg bytes sent per op: 1172    avg bytes received per op: 136
-    backlog wait: 0.094913     RTT: 0.048245     total execute time: =
-0.213270 (milliseconds)
-
-Based solely on the iozone Write test:
-12 threads x 1GB file =3D 12 GB transferred
-12 GB / 496 s =3D 25973227 Bps
-19.2 billion cps / 25973227 Bps =3D 740 cpB @ 1KB I/O
-
-Based on both the iozone Write and Re-write tests:
-25161863 ops / 996 s =3D 25263 IOps
-19.2 billion cps / 25263 IOps =3D 760004 cpIO
-
-
-READ tests:
-
-	=E2=80=A2 Read test: CPU utilization: Wall time  451.762    CPU =
-time  826.888    CPU utilization 183.04 %
-	=E2=80=A2 Re-read test: CPU utilization: Wall time  452.543    =
-CPU time  827.575    CPU utilization 182.87 %
-
-Final mountstats results:
-
-READ:
-    25146066 ops (49%)
-    avg bytes sent per op: 140    avg bytes received per op: 1152
-    backlog wait: 0.092140     RTT: 0.045202     total execute time: =
-0.205996 (milliseconds)
-
-Based solely on the iozone Read test:
-12 threads x 1GB file =3D 12 GB transferred
-12 GB / 451 s =3D 28569627 Bps
-19.2 billion cps / 28569627 Bps =3D 672 cpB @ 1KB I/O
-
-Based on both the iozone Read and Re-read tests:
-25146066 ops / 903 s =3D 27847 IOps
-19.2 billion cps / 27847 IOps =3D 689481 cpIO
-
-
-
-*** With pull-up kernel (confirmed after test - total pull-up was =
-25763734528 bytes):
-
-WRITE tests:
-	=E2=80=A2 Write test: CPU Utilization: Wall time  453.318    CPU =
-time  839.581    CPU utilization 185.21 %
-	=E2=80=A2 Re-write test: CPU utilization: Wall time  458.717    =
-CPU time  850.335    CPU utilization 185.37 %
-
-Final mountstats results:
-
-WRITE:
-          25159897 ops (50%)
-        avg bytes sent per op: 1172     avg bytes received per op: 136
-        backlog wait: 0.080036  RTT: 0.049674   total execute time: =
-0.183426 (milliseconds)
-
-Based solely on the iozone Write test:
-12 threads x 1GB file =3D 12 GB transferred
-12 GB / 453 s =3D 28443492 Bps
-19.2 billion cps / 28443492 Bps =3D 675 cpB @ 1KB I/O
-
-Based on both the iozone Write and Re-write tests:
-25159897 ops / 911 s =3D 27617 IOps
-19.2 billion cps / 27617 IOps =3D 695223 cpIO
-
-
-READ tests:
-
-	=E2=80=A2 Read test: CPU utilization: Wall time  451.248    CPU =
-time  834.203    CPU utilization 184.87 %
-	=E2=80=A2 Re-read test: CPU utilization: Wall time  451.113    =
-CPU time  834.302    CPU utilization 184.94 %
-
-Final mountstats results:
-
-READ:
-    25149527 ops (49%)
-    avg bytes sent per op: 140    avg bytes received per op: 1152
-    backlog wait: 0.091011     RTT: 0.045790     total execute time: =
-0.203793 (milliseconds)
-
-Based solely on the iozone Read test:
-12 threads x 1GB file =3D 12 GB transferred
-12 GB / 451 s =3D 28569627 Bps
-19.2 billion cps / 28569627 Bps =3D 672 cpB @ 1KB I/O
-
-Based on both the iozone Read and Re-read tests:
-25149527 ops / 902 s =3D 27881 IOps
-19.2 billion cps / 27881 IOps =3D 688641 cpIO
-
-
-
-*** Analysis:
-
-For both kernels, the READ tests are close. This demonstrates that the =
-patch does not have any gross effects on the READ path, as expected.
-
-The WRITE tests are more remarkable.
-	=E2=80=A2 Mean total execute time per WRITE RPC decreases by =
-about 30 microseconds. Almost half of that is decreased backlog wait.
-	=E2=80=A2 Mean round-trip time increases by a microsecond and a =
-half. My earlier report that RT decreased by a microsecond was based on =
-a QD=3D1 direct latency measure.
-	=E2=80=A2 For 1KB WRITE: IOPS, Cycles per byte written and =
-Cycles per I/O are now within spitting distance of the same metrics for =
-1KB READ.
-
-
---
-Chuck Lever
-
-
+Cheers,
+J=E9r=F4me
 
