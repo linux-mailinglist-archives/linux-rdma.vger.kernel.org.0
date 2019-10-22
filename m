@@ -2,103 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 158A1E0B1E
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 19:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45EA2E0B22
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 19:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727309AbfJVR53 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Oct 2019 13:57:29 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:37375 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727154AbfJVR52 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Oct 2019 13:57:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571767047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RsHzVavgqXXlbIxcecOB0fgRNdTdZShlUDJWOp6UjYI=;
-        b=J4QAIdvpb6TpSsBA5agFa77cxePm+xr6bfzzOrYweWPSwxcgAZx/WN5a4B9LfUwSXgK8dq
-        d9VzA7z1HM27O11Y60wQdyvYlNyq3hhatMtZAeu7iZvPm+751wC8FE1bQ5iStUGCyh++yX
-        eB49fKQPcaCCmZqhtZXEctE45aAYYCk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-5-73vAyDfqN3W8j5BvF0VIjQ-1; Tue, 22 Oct 2019 13:57:24 -0400
-X-MC-Unique: 73vAyDfqN3W8j5BvF0VIjQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E486480183D;
-        Tue, 22 Oct 2019 17:57:21 +0000 (UTC)
-Received: from linux-ws.nc.xsintricity.com (ovpn-112-37.rdu2.redhat.com [10.10.112.37])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1037460126;
-        Tue, 22 Oct 2019 17:57:20 +0000 (UTC)
-Message-ID: <ba91bb6c42e18e72cd6eaa705067a9cb30a02853.camel@redhat.com>
+        id S1727154AbfJVR6X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Oct 2019 13:58:23 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:32818 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726702AbfJVR6X (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Oct 2019 13:58:23 -0400
+Received: by mail-qt1-f193.google.com with SMTP id r5so28150584qtd.0
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Oct 2019 10:58:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=eIBqZPIL9lWCHVPBIQMtPrTLxfK89BZ1hdzXod0rGi8=;
+        b=jcze28WDC+TzlqwTacEl9hZAgVP4ZqsycW1bvaBP+9KRjUTbM+H7cvDgVu5qqhfCpP
+         /3xkdWPhuGWxQgChqCTlyvFw+RqmYDRzDchuPh9cIAiuGhwvgmkJ9MKRm8l5xE2GJFM+
+         n81oBjkXMHA1aj1zqMMOnNgVD8jhfcSjeXdhJH0ndGQCzz+NH7Itmi7Dv+K5+nvUhXC/
+         YNrP5b5T1G9n+Aqo6s41yE/xSIzAjnMVwVvxsaCRiwt0MQKVWiAnt1BCHRkxM5X0hyOw
+         YY8ygAFkwaKuLmlGD98cyZ/LVSYcGY494y/EI+PJa/eJ4PxeuR9mr7dd1z6/LH8aBe5W
+         56Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=eIBqZPIL9lWCHVPBIQMtPrTLxfK89BZ1hdzXod0rGi8=;
+        b=L3AwX5wSOksxWt202cXfmtz5V5RJl9xnVy2yatSfqfxDtx/HZbNhZplz//iXwWzE46
+         qlg9Ns5XPLMxUJ8jIimAUUOnBABCAnR5B+t1Q+OxGP97Wt88m7TCK/piL0wNKzn+Uv+I
+         IeGqKvrA2TEWH+GwPSb25R5R1uW0+JTasH1UN4QUCclmgnFukauDmiIZ/OsZqCeEcI08
+         +dlVXziI1WdSJL4KMJeXySIiRwuM3BDY0t2M/ZU8rWhXcCUA6tjx6ESrkdxQMRl1GD/u
+         sNd8hHfPc7CyADy+JSAHCOWHcQ4NvxelHE0De9VEvVwqphPWNo7emVZhDPMYqlU+KQZb
+         sFRw==
+X-Gm-Message-State: APjAAAVMjgM8nC/ttlI40q2kWiHFD0wzGG70Gs1Pt/pz8Qu9K7TrJLak
+        Me4BqH5vGy+IadKivBfJdFj1eQchan0=
+X-Google-Smtp-Source: APXvYqzuCHrg/b/mkd9EC788k+TQDmW95BubuMm8ANhk/k2UJi1z5E8r0BOMXWOYHoQD40hGigA6Yw==
+X-Received: by 2002:ac8:23e8:: with SMTP id r37mr4804893qtr.365.1571767102562;
+        Tue, 22 Oct 2019 10:58:22 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id h3sm3031491qte.62.2019.10.22.10.58.22
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 22 Oct 2019 10:58:22 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iMyQH-0007D3-E8; Tue, 22 Oct 2019 14:58:21 -0300
+Date:   Tue, 22 Oct 2019 14:58:21 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Doug Ledford <dledford@redhat.com>
+Cc:     Yuval Shaia <yuval.shaia@oracle.com>, bharat@chelsio.com,
+        linux-rdma@vger.kernel.org
 Subject: Re: [PATCH] iw_cxgb3: Remove the iw_cxgb3 provider code
-From:   Doug Ledford <dledford@redhat.com>
-To:     Yuval Shaia <yuval.shaia@oracle.com>, bharat@chelsio.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org
-Date:   Tue, 22 Oct 2019 13:57:18 -0400
-In-Reply-To: <20191022174710.12758-1-yuval.shaia@oracle.com>
+Message-ID: <20191022175821.GB23952@ziepe.ca>
 References: <20191022174710.12758-1-yuval.shaia@oracle.com>
-Organization: Red Hat, Inc.
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30)
+ <ba91bb6c42e18e72cd6eaa705067a9cb30a02853.camel@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Mimecast-Spam-Score: 0
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-xO8QNUR9XifEwUVL7dLT"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ba91bb6c42e18e72cd6eaa705067a9cb30a02853.camel@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---=-xO8QNUR9XifEwUVL7dLT
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, Oct 22, 2019 at 01:57:18PM -0400, Doug Ledford wrote:
+> On Tue, 2019-10-22 at 20:47 +0300, Yuval Shaia wrote:
+> > diff --git a/kernel-headers/rdma/rdma_user_ioctl_cmds.h b/kernel-
+> > headers/rdma/rdma_user_ioctl_cmds.h
+> > index b8bb285f..b2680051 100644
+> > +++ b/kernel-headers/rdma/rdma_user_ioctl_cmds.h
+> > @@ -88,7 +88,6 @@ enum rdma_driver_id {
+> >         RDMA_DRIVER_UNKNOWN,
+> >         RDMA_DRIVER_MLX5,
+> >         RDMA_DRIVER_MLX4,
+> > -       RDMA_DRIVER_CXGB3,
+> >         RDMA_DRIVER_CXGB4,
+> >         RDMA_DRIVER_MTHCA,
+> >         RDMA_DRIVER_BNXT_RE,
+> 
+> This is the same bug the kernel patch had.  We can't change that enum.
 
-On Tue, 2019-10-22 at 20:47 +0300, Yuval Shaia wrote:
-> diff --git a/kernel-headers/rdma/rdma_user_ioctl_cmds.h b/kernel-
-> headers/rdma/rdma_user_ioctl_cmds.h
-> index b8bb285f..b2680051 100644
-> --- a/kernel-headers/rdma/rdma_user_ioctl_cmds.h
-> +++ b/kernel-headers/rdma/rdma_user_ioctl_cmds.h
-> @@ -88,7 +88,6 @@ enum rdma_driver_id {
->         RDMA_DRIVER_UNKNOWN,
->         RDMA_DRIVER_MLX5,
->         RDMA_DRIVER_MLX4,
-> -       RDMA_DRIVER_CXGB3,
->         RDMA_DRIVER_CXGB4,
->         RDMA_DRIVER_MTHCA,
->         RDMA_DRIVER_BNXT_RE,
+This patch shouldn't touch the kernel headers, delete the driver, then
+we will get the kernel header changes on the next resync.
 
-This is the same bug the kernel patch had.  We can't change that enum.
-
---=20
-Doug Ledford <dledford@redhat.com>
-    GPG KeyID: B826A3330E572FDD
-    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
-
---=-xO8QNUR9XifEwUVL7dLT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl2vQv4ACgkQuCajMw5X
-L91JLg/+JZPVMCSvvFhjQliuPLar0XI+YYWpypnRWyoCpd7BCt08OYlkOzOZDdIO
-O6Mfw2S17zP59UHbQxmcr4q9FDOsBFHEzxkhFBf9sFgzR8g1vPWUdo8qmbajr1Ac
-Ofa2D2vsj3UrbTHwa6S1OZH6ZfjigdqBtY840P02GJrFifNPPUjUNaKB2cYh2fb0
-PQGdyYtJu64DMVcFpNB0bRxoxVSWM24cbqDvR7XNC08zA8Rq9Qqo5m/d5UGcBJkF
-dRUsVhvqGjvGqU3NsipT1rJ5oaPOa5gJrxgYx3qBC2PH3ryKJAcn9yYA0CZVg5S6
-b7FCCYdyVww6tvLh1i7XwmAvbVqPSHrGTkM1A2+nxtWRZ3UA+q4P8is+iSqr739U
-7R7WmffK5kM6cLN+JxBmNhI3Caqj5l4wadbfaBIdmEd0zSXw8eIBCEU/9Fn0xWZ4
-gMuPpi18hojS0Ei6orADtT5wnfXMkXqs+UlnwKEMkersGm1YUTQXTvc5N0wjJlZQ
-5NkEQ4J1P2O4tufmWOfDL/XyY1gmHUwFo5zpgiOzUiWhNS2S8POuBLm/gaodndlk
-7FXtdAjl2cLJFXhuWFl5zEM6Zp+qf2fgCqgFJ0xHWeVnQ6K2S3fvPmxLvoxuAlnB
-GgftEpIqVt4blboo6uXJnk1GHxaLcdUckYPtFFXd3IwoyfEM0sY=
-=Lr95
------END PGP SIGNATURE-----
-
---=-xO8QNUR9XifEwUVL7dLT--
+Jason
 
