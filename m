@@ -2,118 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12EC5E0AD2
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 19:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44420E0AD7
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 19:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727226AbfJVRlQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Oct 2019 13:41:16 -0400
-Received: from mail-eopbgr140044.outbound.protection.outlook.com ([40.107.14.44]:45121
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725837AbfJVRlP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Oct 2019 13:41:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D0Rk1ri2xvKXsWMmbcy6dGDabJuKSJ6MEoQJec5B0FQy4zWPgqismZqy82s7KvV4YqdCpbvtVIBOR8CGkoNJqxaCAPaU1ER6jIEOJpTXTDthL2B5aR2lqX2Ozxew/UHKUTyBb3eHOIotvmH64vSg8iAY1TsB/2maEp6BKXAI/RIoeSYLQ9iGY2q7biEl0lmR6xctdxZMbEemCgQQAbMNTtMxCymz8lp7ct99pXwwBxeD6TM8wVLSlWxK2dd/xkKNC/r1mRd2pzGocm+Kn5Vyucw8OurbhLufoh1tHEt76zJkf8iRsNuHlAbsACpr4vu90dXvZkJT/VCmDlyjFee3uw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qyc59d9dNteTRCWbCPQgLLylaaWucixJ8GZlas6nxF8=;
- b=evYvajqk3iIm+DDH8Y5XQyFblTSM4aLVM4/yuGvMXJ2N9QwS5ZL4F9NavO8wSsWONzDsO/68Np2vLmMDmJgHNkgJthzJvEepIKk2R09mFIh9mluY0UHsP/5xmivy0bdc6DFwRdVSUxBOjj9DUcsKSpqZnTCEQjo4z9h8G5rHftQGnv1iJv+FCJXgMEJDfD2MOLPK1WtAgB1sXbM05EbkwwXrZyFzxynEL7Zwo+aPVJmMeP4fEkn7WSxHT3Z5MZQ2cxNvZtJy4tT4G+B1K6eeYSXWwW6Vl3cQ1wLQUEFBhf1fZy60Ru1Q/rwnlBTnYe7+bkfTRi6fsL9qjZ1nDF1zRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qyc59d9dNteTRCWbCPQgLLylaaWucixJ8GZlas6nxF8=;
- b=GVMGMYAGeliThMvQc6eFihCPerIHQvK+9jf/F9Jx8r+BLgsNUTr25pbQNj36g+2QdVJrfVbdIxjjyGmmhOlT/2cKrEFseiFWsJMD4qseHbF4gWM/s5WrODFik4M73nyNpxSY/jUCzDhnpV1T0CYwWSn4KGoxjK4jE9OocTiCURY=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB6223.eurprd05.prod.outlook.com (20.178.124.18) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.17; Tue, 22 Oct 2019 17:41:12 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::75ae:b00b:69d8:3db0]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::75ae:b00b:69d8:3db0%7]) with mapi id 15.20.2367.022; Tue, 22 Oct 2019
- 17:41:11 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Jerome Glisse <jglisse@redhat.com>
-CC:     Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v2 2/3] mm/hmm: allow snapshot of the special zero page
-Thread-Topic: [PATCH v2 2/3] mm/hmm: allow snapshot of the special zero page
-Thread-Index: AQHVg5noYFRN6Uol1kOCsSoXbSSn1KdleVOAgAAi3oCAAGI6gIAAzpcAgAAh44CAAADFAIAABeoAgAAC/IA=
-Date:   Tue, 22 Oct 2019 17:41:11 +0000
-Message-ID: <20191022174107.GM22766@mellanox.com>
-References: <20191015204814.30099-1-rcampbell@nvidia.com>
- <20191015204814.30099-3-rcampbell@nvidia.com>
- <20191021184927.GG3177@redhat.com>
- <95fa45cf-a2ce-fab8-588d-8d806124aef3@nvidia.com>
- <20191022024549.GA4347@redhat.com> <20191022150514.GH22766@mellanox.com>
- <20191022170631.GA4805@redhat.com> <20191022170916.GL22766@mellanox.com>
- <20191022173026.GB5169@redhat.com>
-In-Reply-To: <20191022173026.GB5169@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BL0PR1501CA0009.namprd15.prod.outlook.com
- (2603:10b6:207:17::22) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [142.162.113.180]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 7dc745f0-4bb3-4783-0814-08d75717076d
-x-ms-traffictypediagnostic: VI1PR05MB6223:
-x-microsoft-antispam-prvs: <VI1PR05MB6223D9460A9DACF3AFB0B0D8CF680@VI1PR05MB6223.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3044;
-x-forefront-prvs: 01986AE76B
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(39860400002)(366004)(376002)(346002)(396003)(199004)(189003)(6916009)(6246003)(2616005)(6512007)(11346002)(76176011)(7736002)(5660300002)(26005)(54906003)(71200400001)(71190400001)(476003)(6436002)(186003)(6116002)(3846002)(478600001)(305945005)(52116002)(316002)(81156014)(81166006)(99286004)(1076003)(4326008)(33656002)(229853002)(36756003)(2906002)(14454004)(486006)(4744005)(8936002)(66066001)(64756008)(66556008)(6506007)(66476007)(66446008)(386003)(66946007)(256004)(14444005)(25786009)(8676002)(86362001)(102836004)(6486002)(446003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6223;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /O/CO1YR/uqGacxfPNB5PjqvcSipYG4RfKucbTSoqzBUEs2JZGwMoLL5H2ErOfaAWTECmTb16KUJcs110D2glxRsT4NgYAD8OXzE6VoDBLrh2FgHyZE/s2n09ecnSqaYU736gAjkdZ6lnw7dX318X3kdhzkEUhatzoNs6ASsjKL/Yp48h6S73ZgIYlfzyU5eEQBdLTuPTKRiPC6ZVevzUChbhs9X5NVuZqoVHZnmjjtEcAWUOOgoEHlEbMaQVAem3YAPncn3obHmtjA4A8krGnToMhol8G9UdYwdmX+KmhseMMUoD9QQnWhgVKcGjMojC1Uo7qDzXaGqoSo5DjgId9B6G9iAyG0Y1OnM2LwwRyVxZrfbb48qxfFxPAi5IvZ8goN48UMOSzBu+Q6bSu4fDOOf21XK0j9YzDXKrpi11LreMFSTuMoiuPgaUJ3mjN6L
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <C30660878EB2704D8C267A7630B14E34@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1730141AbfJVRmb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Oct 2019 13:42:31 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:41975 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727881AbfJVRmb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Oct 2019 13:42:31 -0400
+Received: by mail-qk1-f194.google.com with SMTP id p10so17049097qkg.8
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Oct 2019 10:42:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Gkeh9SXr2W/e0d/g6gOQoAJngpnGHvNbt25Adv2nDyA=;
+        b=J1ud/+VTA4mBP9KsI/BEYsYsFpq5vdsH2zlZE4wcAGMR+XXOvli7YhMZNgS0cVNsmO
+         HrlLhS7gdwodoByMTCBJTDiNkvMDgonB5UXFhypFVHAXJtx0Bkn5uNVTc5jaXVHZxE7v
+         7m7cTh95J0auoveA4XtlZu0mS0JYWlMdmZZZXDhEHpF6iRXw2fHRqQt6nxYjkji/CLFz
+         /QX9ER8GtWRQz+iaLi55ARSAAMd8hYzhn9WzY+ADNRJywk0l6iQpjZ0PF8oSdud7Ky/f
+         jS5kocl49x36ie/wrXwD3a3JwcJSej128enzFNLKINbnGZtj5G2NVNH4qOLylL4ucZSy
+         xscg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Gkeh9SXr2W/e0d/g6gOQoAJngpnGHvNbt25Adv2nDyA=;
+        b=nuX3XWMZZwl7o9DsP+H/9jkXhppeTPe0BI7D3RPEBhg+rUTJD6vq+8sTurv6+ktUxF
+         9mbEoieOtDBAAih9AgzWrLlpEiiBWmvgHg8Tgrn+k0/tUxPuQS6KZ+/9GdXbr1H8yZf4
+         mLk8//GSyd0oaNUa9oExut34ZhRsmepUxarNfS83quWyF5oKeQteA7heZcv+Xmcw9rwl
+         XWAVBikPgnYOOSAZZSxtMq29JeFrb7KXjNlD91vlha9I2fG2A30OmmlqVGfkjlSmAotN
+         vZY9cZCfp99P1G4wPBWR2H+0j1s2GjS7twUqbw+xZcIrndww2GIapkjThcVP3c1YSJwi
+         vQ7A==
+X-Gm-Message-State: APjAAAVguoIKHV0/31QsE7kfvF3J7ziMZxguzeaaEnE/BDgIFNkmJ3kd
+        f2vpWe7HmXMX1tF3QhR1PSIJdw==
+X-Google-Smtp-Source: APXvYqyNGe52mC3C1CtBUXMYilijRoJ4kPAIEvAuvYC+PJQx5sWz3FTJJUaHusEPOLdLQ9bZHbmfXA==
+X-Received: by 2002:a37:bf05:: with SMTP id p5mr4099896qkf.111.1571766149903;
+        Tue, 22 Oct 2019 10:42:29 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id x64sm1881486qkd.88.2019.10.22.10.42.29
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 22 Oct 2019 10:42:29 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iMyAu-0006VF-P2; Tue, 22 Oct 2019 14:42:28 -0300
+Date:   Tue, 22 Oct 2019 14:42:28 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v2 0/3] Optimize SGL registration
+Message-ID: <20191022174228.GA24923@ziepe.ca>
+References: <20191007135933.12483-1-leon@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7dc745f0-4bb3-4783-0814-08d75717076d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Oct 2019 17:41:11.8543
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sCgnVa8WMZjJUTVgr/YYva50C6fnTVNzeNwLhcWv7vHV8Y3O5g6AvdKgjzEHAIGtQOotGCOjgAy8yojhaTpHjQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6223
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191007135933.12483-1-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 01:30:26PM -0400, Jerome Glisse wrote:
+On Mon, Oct 07, 2019 at 04:59:30PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> Changelog
+> v1->v2: https://lore.kernel.org/linux-rdma/20191007115819.9211-1-leon@kernel.org
+>  * Used Christoph's comment
+>  * Change patch code flow to have one DMA_FROM_DEVICE check
+> v0->v1: https://lore.kernel.org/linux-rdma/20191006155955.31445-1-leon@kernel.org
+>  * Reorganized patches to have IB/core changes separated from mlx5
+>  * Moved SGL check before rdma_rw_force_mr
+>  * Added and rephrased original comment.
+> 
+> -----------------------------------------------------------------------------
+> Hi,
+> 
+> This series from Yamin implements long standing "TODO" existed in rw.c.
+> 
+> Thanks
+> 
+> Yamin Friedman (3):
+>   net/mlx5: Expose optimal performance scatter entries capability
+>   RDMA/rw: Support threshold for registration vs scattering to local
+>     pages
+>   RDMA/mlx5: Add capability for max sge to get optimized performance
 
-> > Smart drivers can test somehow for pfn =3D=3D zero_page and optimize?
->=20
-> There is nothing to optimize here, i do not know any hardware that
-> have a special page table entry that make all memory access return
-> zero.
+Applied to for-next with various fixes from Christoph and Bart
 
-Presumably any GPU could globally dedicate one page of internal memory
-as a zero page and remap CPU zero page to that internal memory page?
-This is basically how the CPU zero page works.
-
-I suspect mlx5 could do the same with its internal memory, but the
-internal memory is too limited to make this worth while.
-
-mlx5 also has a specially 'zero MR' that always reads as zero (and
-discards writes), but it doesn't quite fit well into the ODP flow.
-
+Thanks,
 Jason
