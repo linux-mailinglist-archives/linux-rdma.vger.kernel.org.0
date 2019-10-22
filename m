@@ -2,165 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1DCE0398
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 14:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C15EE03EF
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 14:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388954AbfJVMId (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Oct 2019 08:08:33 -0400
-Received: from mga11.intel.com ([192.55.52.93]:16238 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388106AbfJVMId (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Oct 2019 08:08:33 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Oct 2019 05:08:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,327,1566889200"; 
-   d="scan'208";a="398994993"
-Received: from jerryopenix.sh.intel.com (HELO jerryopenix) ([10.239.158.171])
-  by fmsmga006.fm.intel.com with ESMTP; 22 Oct 2019 05:08:31 -0700
-Date:   Tue, 22 Oct 2019 20:05:56 +0800
-From:   "Liu, Changcheng" <changcheng.liu@intel.com>
-To:     Doug Ledford <dledford@redhat.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: rdma performance verification
-Message-ID: <20191022120556.GA830170@jerryopenix>
-References: <20190916094234.GA11772@jerryopenix>
- <4f01d52616a4a8f767b95bda7fd68e62d8c1f8ae.camel@redhat.com>
+        id S2388220AbfJVMfb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Oct 2019 08:35:31 -0400
+Received: from mail-eopbgr30043.outbound.protection.outlook.com ([40.107.3.43]:22424
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388066AbfJVMfa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Oct 2019 08:35:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PRmqGxTWIRsraatWNydp0MpfE+G9dN3cndbNH4vxjvwpyY9j4TPm++eVoPNeFWYLqaCJbw69Pj1DZmKOPqokFwzdw9IiLprn9sOXKHlPZ1XWD4QgudUL702WlLjH4Ia+i73j5JKh8cO6Z+jaLeuzv5OwrdXHhAiwiu+/XGLN46QRic82TCyPpDVcjOhw4cQg5hMwvPgoODBvtGDkZbhva1+0Gfmcq9ZNYgs2rg/cIm1BDWu6gRbAicSR1bU1xVWjEenHsMsfVu8i3XpLBP5E2hycDiElujdB8ahUSh/votO25VSpRL46IV6eI0x6lqZr4l++oqp0yE/NeMMDvCJgeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3BBa+W+SPlwtQjvmv7dj450AvPyt85TeEAdY4WS+mEM=;
+ b=fU5NPXDmMkaDx6I+XfJ2vAmqvdxdMDyJl6gFXRV7Zw4IVFbSacQkcCqGI6jVQRufdmrZI2b09oxGvvVPTohXL+yGlL7QH9nixDTNLXtC+DYPjD/sTN3Cgm8xkwJvgMhosqresqwlcw6SlI/9C9aMlSFu0t5bNTYvfmJ0O9S4GJgrZiw58HkwFcX2lIKNmkeVuPxdhXccQTEsKI8qhLHsFewGytQa8luXpHzODQKothFTRuYwA3mXp6zRX5ozDQoADCUr+48wSm8bjncoVoM8xEzsm7SWeYLaJrPFHpNKa364r4yrY9349s9zhzdlXFx5t1UhVYRgWOeo0w1186jEOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3BBa+W+SPlwtQjvmv7dj450AvPyt85TeEAdY4WS+mEM=;
+ b=gQXSqCeDCiID5PW1lcYLofNqdvRHw8onOuxAVwaJs7oW+CrfIfHjmIESsw2vXig6FV9aTtNKt++sRwskETlNE2muYu5mRJtLz32Ckeiq6gTggWvQpqr8dm/LkEPh/TAYhJkpxW83yLrQvZD5yjLoXPtKhBVkIJlV2HfhMfKyBxs=
+Received: from AM4PR05MB3137.eurprd05.prod.outlook.com (10.171.188.155) by
+ AM4PR05MB3202.eurprd05.prod.outlook.com (10.171.189.27) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2367.24; Tue, 22 Oct 2019 12:35:27 +0000
+Received: from AM4PR05MB3137.eurprd05.prod.outlook.com
+ ([fe80::dde1:60df:efba:b3df]) by AM4PR05MB3137.eurprd05.prod.outlook.com
+ ([fe80::dde1:60df:efba:b3df%7]) with mapi id 15.20.2367.022; Tue, 22 Oct 2019
+ 12:35:27 +0000
+From:   Leon Romanovsky <leonro@mellanox.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+CC:     RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Michael Guralnik <michaelgur@mellanox.com>
+Subject: Re: [PATCH rdma-next 2/2] IB/mlx5: Test write combining support
+Thread-Topic: [PATCH rdma-next 2/2] IB/mlx5: Test write combining support
+Thread-Index: AQHViNUuVcQiHIU45Umq1xcsNfy+KQ==
+Date:   Tue, 22 Oct 2019 12:35:26 +0000
+Message-ID: <20191022123523.GH4853@unreal>
+References: <20191020064400.8344-1-leon@kernel.org>
+ <20191020064400.8344-3-leon@kernel.org>
+In-Reply-To: <20191020064400.8344-3-leon@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM4P190CA0014.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:200:56::24) To AM4PR05MB3137.eurprd05.prod.outlook.com
+ (2603:10a6:205:8::27)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=leonro@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [77.137.89.37]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: fce364c0-2b42-4c05-b45e-08d756ec50f6
+x-ms-traffictypediagnostic: AM4PR05MB3202:|AM4PR05MB3202:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM4PR05MB32029608710982190D583FDCB0680@AM4PR05MB3202.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 01986AE76B
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(7916004)(4636009)(136003)(396003)(366004)(39860400002)(346002)(376002)(199004)(189003)(386003)(6506007)(102836004)(6486002)(76176011)(25786009)(54906003)(110136005)(26005)(186003)(229853002)(33656002)(486006)(476003)(4326008)(446003)(11346002)(66946007)(316002)(64756008)(66556008)(66476007)(6116002)(66446008)(3846002)(86362001)(7736002)(305945005)(52116002)(6246003)(6636002)(107886003)(99286004)(8936002)(2906002)(81166006)(81156014)(6512007)(9686003)(8676002)(5660300002)(33716001)(66066001)(71190400001)(71200400001)(478600001)(14444005)(256004)(1076003)(6436002)(14454004);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR05MB3202;H:AM4PR05MB3137.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ayTkQmrzNj5OtfA3U1JFbpEM7fgsnW0DOyanjeoUjFvRa4gd1CI6JMVzQoMyKlJZdAy2A6lstjWEp5Qu15vDo9XV0kuIX92jhCDjao2zUftIZNr0DuH0SFa9jXmNzNwurD/ZxxnRW/p9G+SxfQpxfr4k94hwMnffeNm+7LqF4XLj+1E1NdEN+kHsXmu9IpBU0KoWiYW4rYzbefOZT5rsn99E78k2Qlov37DbcKoj4hy1+6RazzpT0NU6cNhEkDZtBJF8jt9iB+NLBMlRnLY4YAxW9XydybtVLSBul11rJ6DwE35wxRdr9t1lVU21mutrpYtuMmUIvA0V7Npvo2JsP7kjg/7Lue22hSGhEQbyKskWqFX83nPlTsAF43Mc+D+pCK0molz1XFAjR0HDz348Zsd/33xLuTpgHxZe4rfsb2s4M0piclEZk6Ym2U18dSUY
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <A55AB7EBA615EE469EC30BC48CAA30D7@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4f01d52616a4a8f767b95bda7fd68e62d8c1f8ae.camel@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fce364c0-2b42-4c05-b45e-08d756ec50f6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Oct 2019 12:35:26.9425
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nChOt8s7galzviAWyEXYOGJGrYr5ny0p3hTxNKD2lJRwwsvGdtZs/BeHe/e3UOA90Nm3a5y8IMtoNSM7877V3g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3202
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 16:30 Mon 21 Oct, Doug Ledford wrote:
-> On Mon, 2019-09-16 at 17:42 +0800, Liu, Changcheng wrote:
-> > Hi all,
-> >    I'm working on using rdma to improve message transaction
-> qperf is nice because it will do both the tcp and rdma testing, so the
-> same set of options will make it behave the same way under both tests.
-@Doug Ledford:
-   I'll check how to use it to compare RDMA & TCP.
-> 
-> I think you are mis-reading the instructions on ib_send_bw.  First of
-> all, IB RC queue pairs are, when used in send/recv mode, message passing
-> devices, not a stream device.  When you specified the -s parameter of
+On Sun, Oct 20, 2019 at 09:44:00AM +0300, Leon Romanovsky wrote:
+> From: Michael Guralnik <michaelgur@mellanox.com>
+>
+> Add a test in mlx5_ib initialization process to test whether
+> write-combining is supported on the machine.
+> The test will run as part of the enable_driver callback to ensure that
+> the test runs after the device is setup and can create and modify the
+> QP needed, but runs before the device is exposed to the users.
+>
+> The test opens UD QP and posts NOP WQEs, the WQE written to the BlueFlame
+> is different from the WQE in memory, requesting CQE only on the BlueFlame
+> WQE. By checking whether we received a completion on one of these WQEs we
+> can know if BlueFlame succeeded and whether write-combining is supported.
+>
+> Change reporting of BlueFlame support to be dependent on write-combining
+> support.
+>
+> Signed-off-by: Michael Guralnik <michaelgur@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/hw/mlx5/main.c    |  15 +-
+>  drivers/infiniband/hw/mlx5/mem.c     | 200 +++++++++++++++++++++++++++
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h |   6 +
+>  drivers/infiniband/hw/mlx5/qp.c      |   6 +-
+>  4 files changed, 224 insertions(+), 3 deletions(-)
+>
 
-@Doug Ledford:
-   What's the difference between "message passing device" and "stream
-   device"?
+We found statistical failure with this patch and I'll resend it.
 
-> 1GB, you were telling it to use messages of 1GB in size, not to pass a
-> total of 1GB of messages.  And the default number of messages to pass is
-> 1,000 iterations (the -n or --iters options), so you were actually
-@Doug Ledford:
-   Thanks for your information. It helps me a lot.
-> testing a 1,000GB transfer.  You would be better off to use a smaller
-> message size and then set the iters to the proper value.  This is what I
-> got with 1000 iters and 1GB message size:
-> 
->  #bytes     #iterations    BW peak[MB/sec]    BW average[MB/sec]   MsgRate[Mpps]
->  1073741824    1000             6159.64            6159.46		   0.000006
-> ---------------------------------------------------------------------------------------
-> 
-> real	3m3.101s
-> user	3m2.430s
-> sys	0m0.450s
-> 
-> I tried dropping it to 1 iteration to make a comparison, but that's not
-> even allowed by ib_send_bw, it wants a minimum of 5 iterations.  So I
-> did 8 iterations at 1/8th GB in size and this is what I got:
-> 
->  #bytes     #iterations    BW peak[MB/sec]    BW average[MB/sec]   MsgRate[Mpps]
->  134217728    8                6157.54            6157.54		   0.000048
-> ---------------------------------------------------------------------------------------
-> 
-> real	0m2.506s
-> user	0m2.411s
-> sys	0m0.059s
-> 
-> When I adjust that down to 1MB and 1024 iters, I get:
-> 
->  #bytes     #iterations    BW peak[MB/sec]    BW average[MB/sec]   MsgRate[Mpps]
->  1048576    1024             6157.74            6157.74		   0.006158
-> ---------------------------------------------------------------------------------------
-> 
-> real	0m0.427s
-> user	0m0.408s
-> sys	0m0.002s
-> 
-> The large difference in time between these last two tests, given that
-> the measured bandwidth is so close to identical, explains the problem
-> you are seeing below.
-> 
-> The ib_send_bw test is a simple test.  It sets up a buffer by
-> registering its memory, then just slams that buffer over the wire.  With
-> a 128MB buffer, you pay a heavily memory registration penalty.  That's
-> factored into the 2s time difference between the two runs.  When you use
-> a 1GB buffer, the delay is noticeable to the human eye.  There is a very
-> visible pause as the server and client start their memory registrations.
-@Doug Ledford:
-   Do you mean that every RDMA-SGE(Scatter/Gather element) will use
-   seperate MR(Memory Region)?
-   If all the RDMA-SGE use only one pre-allocated MR-1GB, the two tests
-   shouldn't have so much time consuming difference.
-
-> 
-> >    In Ceph, the result shows that rdma performance (RC transaction
-> > type,
-> >    SEDN operation) is worse or not much better than TCP implemented
-> > performance.
-> >    Test A:
-> >       1 client thread send 20GB data to 1 server thread (marked as
-> > 1C:1S)
-> >    Result:
-> >       1) implementation based on RDMA
-> >          Take 171.921294s to finish send 20GB data.
-> >       2) implementation based on TCP
-> >          Take 62.444163s to finish send 20GB data.
-> > 
-> >    Test B:
-> >       16 client threads send 16x20GB data to 1 server thread (marked
-> > as 16C:1S)
-> >    Result:
-> >       1) implementation base on RDMA
-> >          Take 261.285612s to finish send 16x20GB data.
-> >       2) implementation based on TCP
-> >          Take 318.949126 to finish send 16x20GB data.
-> 
-> I suspect your performance problems here are memory registrations.  As
-> noted by Chuck Lever in some of his recent postings, memory
-> registrations can end up killing performance for small messages, and the
-> tests I've shown here indicate, they're also a killer for huge memory
-> blocks if they are repeatedly registered/deregistered.  TCP has no
-
-I think we could pre-registered 1GB MR and then all the SGE share with the
-same MR, then it could mitigate the penalty in register/deregister.
-
-> memory registration overhead, so in the single client case, it is
-> outperforming the RDMA case.  But in the parallel case with lots of
-> clients, the memory registration overhead is spread out among many
-> clients, so we are able to perform better overall.
-
-In Ceph implementation, all the threads in the same process share with
-the same pre-registered 1GB MR. The MR is divided into lots of chunks to
-be used as SGE.
-In this way, how to explain the test result between Test-A & Test-B?
-
-> 
-> In a nutshell, it sounds like the Ceph transfer engine over RDMA is not
-> optimized at all, and is hitting problems with memory registration
-> overhead.
-Ceph/RDMA seems not widely used and some implementation need to be
-optimized. I'm going to work on it in future.
-> 
-> -- 
-> Doug Ledford <dledford@redhat.com>
->     GPG KeyID: B826A3330E572FDD
->     Fingerprint = AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+Thanks
