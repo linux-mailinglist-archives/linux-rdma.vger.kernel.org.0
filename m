@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9E7DFA0A
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 03:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C109DFA0B
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 03:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728819AbfJVBHp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Oct 2019 21:07:45 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4743 "EHLO huawei.com"
+        id S1727953AbfJVBOO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Oct 2019 21:14:14 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4701 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727953AbfJVBHp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 21 Oct 2019 21:07:45 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 13D85B15AB4D2ED69D9E;
-        Tue, 22 Oct 2019 09:07:41 +0800 (CST)
-Received: from [127.0.0.1] (10.61.25.96) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.439.0; Tue, 22 Oct 2019
- 09:07:31 +0800
-Subject: Re: [RFC PATCH V2 for-next] RDMA/hns: Add UD support for hip08
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+        id S1727264AbfJVBON (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 21 Oct 2019 21:14:13 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 40F6A3C0A1668F8716E4;
+        Tue, 22 Oct 2019 09:14:11 +0800 (CST)
+Received: from [127.0.0.1] (10.61.25.96) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.439.0; Tue, 22 Oct 2019
+ 09:14:00 +0800
+Subject: Re: [PATCH for-next 9/9] RDMA/hns: Copy some information of AV to
+ user
+To:     Doug Ledford <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-References: <1571474772-2212-1-git-send-email-oulijun@huawei.com>
- <20191021141312.GD25178@ziepe.ca>
- <9eea1f7b-fef1-080a-2f54-64b914822c94@huawei.com>
- <ad4a492cfd16ab37186d7fdead215ba52f5c3da5.camel@redhat.com>
+References: <1565343666-73193-1-git-send-email-oulijun@huawei.com>
+ <1565343666-73193-10-git-send-email-oulijun@huawei.com>
+ <3056732a61a9f4d356f761f0e436cc01e67aac31.camel@redhat.com>
 From:   oulijun <oulijun@huawei.com>
-Message-ID: <0222baee-1ef1-dd7b-ab13-fd228de9f85f@huawei.com>
-Date:   Tue, 22 Oct 2019 09:07:30 +0800
+Message-ID: <09a9101e-b458-a7c7-4fde-adc63feefc16@huawei.com>
+Date:   Tue, 22 Oct 2019 09:13:59 +0800
 User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
  Thunderbird/52.1.0
 MIME-Version: 1.0
-In-Reply-To: <ad4a492cfd16ab37186d7fdead215ba52f5c3da5.camel@redhat.com>
+In-Reply-To: <3056732a61a9f4d356f761f0e436cc01e67aac31.camel@redhat.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.61.25.96]
@@ -41,46 +41,27 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2019/10/21 22:58, Doug Ledford 写道:
-> On Mon, 2019-10-21 at 22:20 +0800, oulijun wrote:
->> 在 2019/10/21 22:13, Jason Gunthorpe 写道:
->>> On Sat, Oct 19, 2019 at 04:46:12PM +0800, Lijun Ou wrote:
->>>> index bd78ff9..722cc5f 100644
->>>> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
->>>> @@ -377,6 +377,10 @@ static int hns_roce_set_user_sq_size(struct
->>>> hns_roce_dev *hr_dev,
->>>>  		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp-
->>>>> sq.wqe_cnt *
->>>>  							(hr_qp-
->>>>> sq.max_gs - 2));
->>>>  
->>>> +	if (hr_qp->ibqp.qp_type == IB_QPT_UD)
->>>> +		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp-
->>>>> sq.wqe_cnt *
->>>> +						       hr_qp-
->>>>> sq.max_gs);
->>>> +
->>>>  	if ((hr_qp->sq.max_gs > 2) && (hr_dev->pci_dev->revision ==
->>>> 0x20)) {
->>>>  		if (hr_qp->sge.sge_cnt > hr_dev->caps.max_extend_sg) {
->>>>  			dev_err(hr_dev->dev,
->>>> @@ -1022,6 +1026,9 @@ struct ib_qp *hns_roce_create_qp(struct
->>>> ib_pd *pd,
->>>>  	int ret;
->>>>  
->>>>  	switch (init_attr->qp_type) {
->>>> +	case IB_QPT_UD:
->>>> +		if (!capable(CAP_NET_RAW))
->>>> +			return -EPERM;
->>> This needs a big comment explaining why this HW requires it.
->>>
->>> Jason
->>>
->> Add the detail comments for HW limit?
-> I can add those comments while taking the pactch.  Plus we need to add a
-> fallthrough annotation at the same place.  I'll fix it up and unfreeze
-> the hns queue.
+在 2019/10/22 1:23, Doug Ledford 写道:
+> On Fri, 2019-08-09 at 17:41 +0800, Lijun Ou wrote:
+>> When the driver support UD transport in user mode, it needs to
+>> create the Address Handle(AH) and transfer Address Vector to
+>> The hardware. The Address Vector includes the destination mac
+>> and vlan inforation and it will be generated from the kernel
+>> driver. As a result, we can copy this information to user
+>> through ib_copy_to_udata function.
+>>
+>> Signed-off-by: Lijun Ou <oulijun@huawei.com>
+> This patch is broken.  There are multiple instance of whitespace
+> breakage (spaces that should be tabs, etc.), and at least one instance
+> of a hanging character that makes no sense:
 >
-Thanks
+>>  	ah->av.sl_tclass_flowlabel = cpu_to_le32(rdma_ah_get_sl(ah_attr)
+>> <<
+>> -						 HNS_ROCE_SL_SHIFT);
+>> +				i		 HNS_ROCE_SL_SHIFT);
+>                                 ^ ?
+> This needs to be resubmitted.
+>
+ok， I will do
 
 
