@@ -2,183 +2,301 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1E5DFDF0
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 09:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5066ADFECD
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 09:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730619AbfJVHAi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Oct 2019 03:00:38 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:23270 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729909AbfJVHAh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Oct 2019 03:00:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571727635;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ljwfuH7BYhMZjIUOz8BxegYF0eyiiLQaMPtxdkqwO0U=;
-        b=FnrdVQdaZX+u03cJQrWGq6hOEOOjRJvZCUaTxtBw7rJbMIpS4Qha/o39PT7UCA9yMAZrC9
-        uINvfy3RhnHFviXXn2bwgTmnIsNIU+lmJcDLCn61l8419aZFkfP3gLJnOfbaXaStrokOyK
-        3zxtrfqZfThJ0BweGVdNMyqpsv6zrHY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-270-4HYOeeccPpyB7sv7hvJYuw-1; Tue, 22 Oct 2019 03:00:34 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 56A1E107AD34;
-        Tue, 22 Oct 2019 07:00:33 +0000 (UTC)
-Received: from localhost (unknown [10.66.128.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C30EC60A9F;
-        Tue, 22 Oct 2019 07:00:32 +0000 (UTC)
-Date:   Tue, 22 Oct 2019 15:00:25 +0800
-From:   Honggang LI <honli@redhat.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] srp_daemon: Use maximum initiator to target IU size
-Message-ID: <20191022070025.GA20278@dhcp-128-227.nay.redhat.com>
-References: <20191018044104.21353-1-honli@redhat.com>
- <1d811fc0-1f74-b546-b296-a4e9f8c33d86@acm.org>
- <20191018152253.GA32562@dhcp-128-227.nay.redhat.com>
- <21142610-1e01-4ce8-635c-2fe677e69cf9@acm.org>
+        id S2387614AbfJVH5m (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Oct 2019 03:57:42 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:50190 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387999AbfJVH5l (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Oct 2019 03:57:41 -0400
+Received: by mail-wm1-f65.google.com with SMTP id q13so5964623wmj.0
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Oct 2019 00:57:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=sender:date:from:to:cc:subject:message-id:mail-followup-to
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=ROh4rdNDqXOhRRdO284KPkGzZyY++utv+oGYDMQe5MU=;
+        b=CBb48fDUyTRQMv9HvwoxGfLenOC40zL3DrVPS/y/X0lpnxGaEbBd6CvNglLC88n0nm
+         H2S3nHw5RAiDUKsFcOCAo16yGxKfcB3KblwNeRUSbQpswczeghaDIjPJmbnOPri9UZGo
+         0xkMKv5HA2iYR4s8pU8+gACjEJj2rhE47sB+o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=ROh4rdNDqXOhRRdO284KPkGzZyY++utv+oGYDMQe5MU=;
+        b=uYaxGrdklnYeUiNTJYNm/vWni+BcXf0MBgUvpspeRCozu0I2g2nVIoOUgnqh3KtXNp
+         kPys/oTzuTDGvGcSIw/ce3vAZ09ptIlbbunheuf4XxLCZ6BIlmHmThQOoJfn2RutC3ET
+         W5rzwzbrJQsdQPuApTaMSEmot+DxNtVUQ7O6EXWlQtGSq5DStnZvsHGeENULnoh2aOTT
+         FMIcHSu8VkLrrcBmbk9tr+CXT4WJDyrwAO6jdFx2AdaX+2KPMjUOsGenbGt0KfCffCxd
+         EWpUGbbP0TWrnbGImOZi66eB0O4g3LZnD8VhNkMiaPyPU32284AAegnDKnuJ4khqj+DV
+         sTlw==
+X-Gm-Message-State: APjAAAXtEFop7Pgm5FRYeHXbKNC97KHS1OY+wyio98Qjnoxr2T4JuVF1
+        N3X8hW5xEvQw+h/xNulcI/tq1w==
+X-Google-Smtp-Source: APXvYqzKrxZLRkZGIn/j/6GXzN01h0XlQ1NZaDTvcyCGyqNp2p/Kw3f/rv9PyApcC7hMNit/dkHghw==
+X-Received: by 2002:a7b:c3c8:: with SMTP id t8mr1558153wmj.87.1571731058043;
+        Tue, 22 Oct 2019 00:57:38 -0700 (PDT)
+Received: from phenom.ffwll.local (212-51-149-96.fiber7.init7.net. [212.51.149.96])
+        by smtp.gmail.com with ESMTPSA id p7sm16093245wma.34.2019.10.22.00.57.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Oct 2019 00:57:37 -0700 (PDT)
+Date:   Tue, 22 Oct 2019 09:57:35 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Yang, Philip" <Philip.Yang@amd.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+Subject: Re: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
+ locking
+Message-ID: <20191022075735.GV11828@phenom.ffwll.local>
+Mail-Followup-To: Jason Gunthorpe <jgg@mellanox.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Yang, Philip" <Philip.Yang@amd.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+References: <bc954d29-388b-9e29-f960-115ccc6b9fea@gmail.com>
+ <20191016160444.GB3430@mellanox.com>
+ <2df298e2-ee91-ef40-5da9-2bc1af3a17be@gmail.com>
+ <2046e0b4-ba05-0683-5804-e9bbf903658d@amd.com>
+ <d6bcbd2a-2519-8945-eaf5-4f4e738c7fa9@amd.com>
+ <20191018203608.GA5670@mellanox.com>
+ <f7e34d8f-f3b0-b86d-7388-1f791674a4a9@amd.com>
+ <20191021135744.GA25164@mellanox.com>
+ <e07092c3-8ccd-9814-835c-6c462017aff8@amd.com>
+ <20191021151221.GC25164@mellanox.com>
 MIME-Version: 1.0
-In-Reply-To: <21142610-1e01-4ce8-635c-2fe677e69cf9@acm.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-MC-Unique: 4HYOeeccPpyB7sv7hvJYuw-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191021151221.GC25164@mellanox.com>
+X-Operating-System: Linux phenom 5.2.0-2-amd64 
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 18, 2019 at 10:10:05AM -0700, Bart Van Assche wrote:
-> On 10/18/19 8:22 AM, Honggang LI wrote:
-> > [ ... ]
->=20
-> Hi Honggang,
->=20
-> The approach of your patch seems suboptimal to me. I think it would be
-> cumbersome for users to have to modify the srp_daemon_port@.service file =
-to
-> suppress a kernel warning or to pass the max_it_iu_size parameter during
-> login.
->=20
-> Had you noticed that the SRP initiator stops parsing parameters if it
-> encounters an unrecognized parameter?
->=20
-> From ib_srp.c, function srp_parse_options():
->=20
-> =09default:
-> =09=09pr_warn("unknown parameter or missing value '%s' in"
-> =09=09=09" target creation request\n", p);
-> =09=09=09goto out;
-> =09=09}
->=20
-> The "goto out" breaks out of the while loop that parses options. We canno=
-t
-> change this behavior in existing versions of the SRP initiator kernel
-> driver. In other words, if the max_it_iu_size parameter is not specified =
-at
-> the very end of the login string it will cause some login parameters to b=
-e
-> ignored.
+On Mon, Oct 21, 2019 at 03:12:26PM +0000, Jason Gunthorpe wrote:
+> On Mon, Oct 21, 2019 at 02:28:46PM +0000, Koenig, Christian wrote:
+> > Am 21.10.19 um 15:57 schrieb Jason Gunthorpe:
+> > > On Sun, Oct 20, 2019 at 02:21:42PM +0000, Koenig, Christian wrote:
+> > >> Am 18.10.19 um 22:36 schrieb Jason Gunthorpe:
+> > >>> On Thu, Oct 17, 2019 at 04:47:20PM +0000, Koenig, Christian wrote:
+> > >>> [SNIP]
+> > >>>    
+> > >>>> So again how are they serialized?
+> > >>> The 'driver lock' thing does it, read the hmm documentation, the hmm
+> > >>> approach is basically the only approach that was correct of all the
+> > >>> drivers..
+> > >> Well that's what I've did, but what HMM does still doesn't looks correct
+> > >> to me.
+> > > It has a bug, but the basic flow seems to work.
+> > >
+> > > https://patchwork.kernel.org/patch/11191
+> > 
+> > Maybe wrong link? That link looks like an unrelated discussion on kernel 
+> > image relocation.
+> 
+> Sorry, it got corrupted:
+> 
+> https://patchwork.kernel.org/patch/11191397/
+> 
+> > >>> So long as the 'driver lock' is held the range cannot become
+> > >>> invalidated as the 'driver lock' prevents progress of invalidation.
+> > >> Correct, but the problem is it doesn't wait for ongoing operations to
+> > >> complete.
+> > >>
+> > >> See I'm talking about the following case:
+> > >>
+> > >> Thread A    Thread B
+> > >> invalidate_range_start()
+> > >>                       mmu_range_read_begin()
+> > >>                       get_user_pages()/hmm_range_fault()
+> > >>                       grab_driver_lock()
+> > >> Updating the ptes
+> > >> invalidate_range_end()
+> > >>
+> > >> As far as I can see in invalidate_range_start() the driver lock is taken
+> > >> to make sure that we can't start any invalidation while the driver is
+> > >> using the pages for a command submission.
+> > > Again, this uses the seqlock like scheme *and* the driver lock.
+> > >
+> > > In this case after grab_driver_lock() mmu_range_read_retry() will
+> > > return false if Thread A has progressed to 'updating the ptes.
+> > >
+> > > For instance here is how the concurrency resolves for retry:
+> > >
+> > >         CPU1                                CPU2
+> > >                                    seq = mmu_range_read_begin()
+> > > invalidate_range_start()
+> > >    invalidate_seq++
+> > 
+> > How that was order was what confusing me. But I've read up on the code 
+> > in mmu_range_read_begin() and found the lines I was looking for:
+> > 
+> > +    if (is_invalidating)
+> > +        wait_event(mmn_mm->wq,
+> > +               READ_ONCE(mmn_mm->invalidate_seq) != seq);
+> > 
+> > [SNIP]
+> 
+> Right, the basic design is that the 'seq' returned by
+> mmu_range_read_begin() is never currently under invalidation.
+> 
+> Thus if the starting seq is not invalidating, then if it doesn't
+> change we are guaranteed the ptes haven't changed either.
+> 
+> > > For the above I've simplified the mechanics of the invalidate_seq, you
+> > > need to look through the patch to see how it actually works.
+> > 
+> > Yea, that you also allow multiple write sides is pretty neat.
+> 
+> Complicated, but necessary to make the non-blocking OOM stuff able to
+> read the interval tree under all conditions :\
+> 
+> > > One of the motivations for this work is to squash that bug by adding a
+> > > seqlock like pattern. But the basic hmm flow and collision-retry
+> > > approach seems sound.
+> > >
+> > > Do you see a problem with this patch?
+> > 
+> > No, not any more.
+> 
+> Okay, great, thanks
+>  
+> > Essentially you are doing the same thing I've tried to do with the 
+> > original amdgpu implementation. The difference is that you don't try to 
+> > use a per range sequence (which is a good idea, we never got that fully 
+> > working) and you allow multiple writers at the same time.
+> 
+> Yes, ODP had the per-range sequence and it never worked right
+> either. Keeping track of things during the invalidate_end was too complex
+>  
+> > Feel free to stitch an Acked-by: Christian König 
+> > <christian.koenig@amd.com> on patch #2,
+> 
+> Thanks! Can you also take some review and test for the AMD related
+> patches? These were quite hard to make, it is very likely I've made an
+> error..
+> 
+> > but you still doing a bunch of things in there which are way beyond
+> > my understanding (e.g. where are all the SMP barriers?).
+> 
+> The only non-locked data is 'struct mmu_range_notifier->invalidate_seq'
+> 
+> On the write side it uses a WRITE_ONCE. The 'seq' it writes is
+> generated under the mmn_mm->lock spinlock (held before and after the
+> WRITE_ONCE) such that all concurrent WRITE_ONCE's are storing the same
+> value. 
+> 
+> Essentially the spinlock is providing the barrier to order write:
+> 
+> invalidate_range_start():
+>  spin_lock(&mmn_mm->lock);
+>  mmn_mm->active_invalidate_ranges++;
+>  mmn_mm->invalidate_seq |= 1;
+>  *seq = mmn_mm->invalidate_seq;
+>  spin_unlock(&mmn_mm->lock);
+> 
+>  WRITE_ONCE(mrn->invalidate_seq, cur_seq);
+> 
+> invalidate_range_end()
+>  spin_lock(&mmn_mm->lock);
+>  if (--mmn_mm->active_invalidate_ranges)
+>     mmn_mm->invalidate_seq++
+>  spin_unlock(&mmn_mm->lock);
+> 
+> ie when we do invalidate_seq++, due to the active_invalidate_ranges
+> counter and the spinlock, we know all other WRITE_ONCE's have passed
+> their spin_unlock and no concurrent ones are starting. The spinlock is
+> providing the barrier here.
+> 
+> On the read side.. It is a similar argument, except with the
+> driver_lock:
+> 
+> mmu_range_read_begin()
+>   seq = READ_ONCE(mrn->invalidate_seq);
+> 
+> Here 'seq' may be the current value, or it may be an older
+> value. Ordering is eventually provided by the driver_lock:
+> 
+> mn_tree_invalidate_start()
+>  [..]
+>  WRITE_ONCE(mrn->invalidate_seq, cur_seq);
+>  driver_lock()
+>  driver_unlock()
+> 
+> vs
+>  driver_lock()
+>    mmu_range_read_begin()
+>      return seq != READ_ONCE(mrn->invalidate_seq);
+>  driver_unlock()
+> 
+> Here if mn_tree_invalidate_start() has passed driver_unlock() then
+> because we do driver_lock() before mmu_range_read_begin() we must
+> observe the WRITE_ONCE. ie the driver_unlock()/driver_lock() provide
+> the pair'd barrier.
+> 
+> If mn_tree_invalidate_start() has not passed driver_lock() then the
+> mmu_range_read_begin() side prevents it from passing driver_lock()
+> while it holds the lock. In this case it is OK if we don't observe the
+> WRITE_ONCE() that was done just before as the invalidate_start()
+> thread can't proceed to invalidation.
+> 
+> It is very unusual locking, it would be great if others could help
+> look at it!
+> 
+> The unusual bit in all of this is using a lock's critical region to
+> 'protect' data for read, but updating that same data before the lock's
+> critical secion. ie relying on the unlock barrier to 'release' program
+> ordered stores done before the lock's own critical region, and the
+> lock side barrier to 'acquire' those stores.
 
-I see.
+I think this unusual use of locks as barriers for other unlocked accesses
+deserves comments even more than just normal barriers. Can you pls add
+them? I think the design seeems sound ...
 
->=20
-> I think we should use one of the following two approaches:
-> * Not add a new command-line option to srp_daemon and add the
->   max_it_iu_size at the very end of the login string.
+Also the comment on the driver's lock hopefully prevents driver
+maintainers from moving the driver_lock around in a way that would very
+subtle break the scheme, so I think having the acquire barrier commented
+in each place would be really good.
 
-Yes, I will remove the new command-line and append max_it_iu_size at
-the very end of login string.
+Cheers, Daniel
 
-> * Modify the ib_srp driver such that it exports the login parameters
+> 
+> This approach is borrowed from the hmm mirror implementation..
+> 
+> If for some reason the scheme doesn't work, then the fallback is to
+> expand the mmn_mm->lock spinlock to protect the mrn->invalidate_seq at
+> some cost in performance.
+> 
+> Jason
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-This hints me to check the value of
-/sys/module/ib_srp/parameters/use_imm_data .
-
-The regression issue was introduced because of using immediate data.
-The new patch will append max_it_iu_size only when use_imm_data enabled.
-
-For old ib_srp client does not support immediate date, the new patch will
-not use max_it_iu_size. It will not trigger the kernel warning message
-of unsupported parameter.
-
-Please see this patch.
-
-diff --git a/srp_daemon/srp_daemon.c b/srp_daemon/srp_daemon.c
-index f0bcf923..24451b87 100644
---- a/srp_daemon/srp_daemon.c
-+++ b/srp_daemon/srp_daemon.c
-@@ -402,6 +402,28 @@ static int is_enabled_by_rules_file(struct target_deta=
-ils *target)
- }
-=20
-=20
-+static bool use_imm_data(void)
-+{
-+#ifdef __linux__
-+=09bool ret =3D false;
-+=09char flag =3D 0;
-+=09int cnt;
-+=09int fd =3D open("/sys/module/ib_srp/parameters/use_imm_data", O_RDONLY)=
-;
-+
-+=09if (fd < 0)
-+=09=09return false;
-+=09cnt =3D read(fd, &flag, 1);
-+=09if (cnt !=3D 1)
-+=09=09return false;
-+
-+=09if (!strncmp(&flag, "Y", 1))
-+=09=09ret =3D true;
-+=09close(fd);
-+=09return ret;
-+#else
-+=09return false;
-+#endif
-+}
-=20
- static int add_non_exist_target(struct target_details *target)
- {
-@@ -581,6 +603,19 @@ static int add_non_exist_target(struct target_details =
-*target)
- =09=09}
- =09}
-=20
-+=09if (use_imm_data()) {
-+=09=09len +=3D snprintf(target_config_str+len,
-+=09=09=09sizeof(target_config_str) - len,
-+=09=09=09",max_it_iu_size=3D%d",
-+=09=09=09be32toh(target->ioc_prof.send_size));
-+
-+=09=09if (len >=3D sizeof(target_config_str)) {
-+=09=09=09pr_err("Target config string is too long, ignoring target\n");
-+=09=09=09closedir(dir);
-+=09=09=09return -1;
-+=09=09}
-+=09}
-+
- =09target_config_str[len] =3D '\0';
-=20
- =09pr_cmd(target_config_str, not_connected);
-@@ -1360,6 +1395,10 @@ static void print_config(struct config_t *conf)
- =09=09printf(" Print initiator_ext\n");
- =09else
- =09=09printf(" Do not print initiator_ext\n");
-+=09if (use_imm_data())
-+=09=09printf(" Print maximum initiator to target IU size\n");
-+=09else
-+=09=09printf(" Do not print maximum initiator to target IU size\n");
- =09if (conf->recalc_time)
- =09=09printf(" Performs full target rescan every %d seconds\n", conf->reca=
-lc_time);
- =09else
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
