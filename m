@@ -2,60 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A410ADF89E
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 01:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9E7DFA0A
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Oct 2019 03:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728353AbfJUXZq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Oct 2019 19:25:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49348 "EHLO mx1.suse.de"
+        id S1728819AbfJVBHp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Oct 2019 21:07:45 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:4743 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728056AbfJUXZq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 21 Oct 2019 19:25:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9B8D5B210;
-        Mon, 21 Oct 2019 23:25:44 +0000 (UTC)
-Date:   Mon, 21 Oct 2019 16:24:23 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     akpm@linux-foundation.org, walken@google.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH 11/11] x86/mm, pat: convert pat tree to generic interval
- tree
-Message-ID: <20191021232423.s24x5go2ozjbvtvy@linux-p48b>
-Mail-Followup-To: Ingo Molnar <mingo@kernel.org>, akpm@linux-foundation.org,
-        walken@google.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Davidlohr Bueso <dbueso@suse.de>
-References: <20191003201858.11666-1-dave@stgolabs.net>
- <20191003201858.11666-12-dave@stgolabs.net>
- <20191007153339.GA95072@gmail.com>
+        id S1727953AbfJVBHp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 21 Oct 2019 21:07:45 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 13D85B15AB4D2ED69D9E;
+        Tue, 22 Oct 2019 09:07:41 +0800 (CST)
+Received: from [127.0.0.1] (10.61.25.96) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.439.0; Tue, 22 Oct 2019
+ 09:07:31 +0800
+Subject: Re: [RFC PATCH V2 for-next] RDMA/hns: Add UD support for hip08
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <1571474772-2212-1-git-send-email-oulijun@huawei.com>
+ <20191021141312.GD25178@ziepe.ca>
+ <9eea1f7b-fef1-080a-2f54-64b914822c94@huawei.com>
+ <ad4a492cfd16ab37186d7fdead215ba52f5c3da5.camel@redhat.com>
+From:   oulijun <oulijun@huawei.com>
+Message-ID: <0222baee-1ef1-dd7b-ab13-fd228de9f85f@huawei.com>
+Date:   Tue, 22 Oct 2019 09:07:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20191007153339.GA95072@gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <ad4a492cfd16ab37186d7fdead215ba52f5c3da5.camel@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.61.25.96]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 07 Oct 2019, Ingo Molnar wrote:
->I suppose this will be carried in -mm?
+在 2019/10/21 22:58, Doug Ledford 写道:
+> On Mon, 2019-10-21 at 22:20 +0800, oulijun wrote:
+>> 在 2019/10/21 22:13, Jason Gunthorpe 写道:
+>>> On Sat, Oct 19, 2019 at 04:46:12PM +0800, Lijun Ou wrote:
+>>>> index bd78ff9..722cc5f 100644
+>>>> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+>>>> @@ -377,6 +377,10 @@ static int hns_roce_set_user_sq_size(struct
+>>>> hns_roce_dev *hr_dev,
+>>>>  		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp-
+>>>>> sq.wqe_cnt *
+>>>>  							(hr_qp-
+>>>>> sq.max_gs - 2));
+>>>>  
+>>>> +	if (hr_qp->ibqp.qp_type == IB_QPT_UD)
+>>>> +		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp-
+>>>>> sq.wqe_cnt *
+>>>> +						       hr_qp-
+>>>>> sq.max_gs);
+>>>> +
+>>>>  	if ((hr_qp->sq.max_gs > 2) && (hr_dev->pci_dev->revision ==
+>>>> 0x20)) {
+>>>>  		if (hr_qp->sge.sge_cnt > hr_dev->caps.max_extend_sg) {
+>>>>  			dev_err(hr_dev->dev,
+>>>> @@ -1022,6 +1026,9 @@ struct ib_qp *hns_roce_create_qp(struct
+>>>> ib_pd *pd,
+>>>>  	int ret;
+>>>>  
+>>>>  	switch (init_attr->qp_type) {
+>>>> +	case IB_QPT_UD:
+>>>> +		if (!capable(CAP_NET_RAW))
+>>>> +			return -EPERM;
+>>> This needs a big comment explaining why this HW requires it.
+>>>
+>>> Jason
+>>>
+>> Add the detail comments for HW limit?
+> I can add those comments while taking the pactch.  Plus we need to add a
+> fallthrough annotation at the same place.  I'll fix it up and unfreeze
+> the hns queue.
+>
+Thanks
 
-I've just sent out a new patchset for -tip that only modified the pat
-tree. It seems that this series will at least take some more time due to
-the mmu_notifier rework being done - and there was some worries about
-the corner case details. I think it makes sense to just port the pat
-tree to the current interval tree machineary and just be done with all this.
-Any future versions of this series would require a trivial two liner for pat.
 
-Thanks,
-Davidlohr
