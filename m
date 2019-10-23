@@ -2,58 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FA7E1CB9
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 15:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF32E1D93
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 16:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405894AbfJWNfy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Oct 2019 09:35:54 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:39872 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405891AbfJWNfy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Oct 2019 09:35:54 -0400
-Received: by mail-wr1-f65.google.com with SMTP id a11so6048870wra.6
-        for <linux-rdma@vger.kernel.org>; Wed, 23 Oct 2019 06:35:53 -0700 (PDT)
+        id S2406292AbfJWOBu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Oct 2019 10:01:50 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:43236 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406291AbfJWOBu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Oct 2019 10:01:50 -0400
+Received: by mail-io1-f68.google.com with SMTP id c11so15949670iom.10;
+        Wed, 23 Oct 2019 07:01:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=dVgB2gHwyu9BrwAHrTVrhxxTLMnU+GjkCtVmW3QXNgU=;
-        b=A1sd8nVHR9uQiD6rSXLgHcb6vg4kFg7r/FfCmaHMEeG2j1uzf1nh3DYJkiiBVZu2qj
-         bsmAtgviGlo3pT0ngfbu6AAf5yZLtRcexjFysB1x6NNudh6B2YXeL+JCmYe/Pdd/lSjT
-         XcRLLOZ0SG7LIUiBtxeOJRj3C1Ezj0PI+9bklCPVqfih7jgRZdAGtb6QTKoSvtV/1BDE
-         mb+p6NjTDDmrbU0EYA+SCru29kjbvnnWyMiXfeIBQ729+AfSfPbTdwz1KpdmVfOwgDzm
-         dl2OpmhcdldHP3izLtWZ0bxyOVJelURFhyDtu0OXmdHX06VPzu+XdFJ8OHbuIlou9yln
-         zNrA==
+        h=sender:subject:from:to:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=i1onkp7tVbiousuoh/lKkPugrxCGZSa3fAT6ThfLs+M=;
+        b=TwcQb8Uxlfoe1qDM8UjrLSAHW2xTmVWWrLMJxPalhcsldntJ41pwdWKRFNBfYfXprU
+         V2v+cZOOCIs5hQs3qoLwFQd5Wx5h7uYacd+aqAIXQ34zoXR3b+A219tsZLZdfja3AxTJ
+         YFXgrZYFq3vrpHJsma5c92ygvz12KxA/trGeZmzjIqryw9EUQVxjryzTEWMu3xfgku0l
+         p0FKXuiUd6ROyJq9HapwiZcRL5wP+c4bji3uFhuHPnm/myQZhnivLMV8vXNW0NTzn53V
+         FFOslrI8Bhki8DxNxMGZ2oIq/2l0zJ7NiYHJmxqWMXQXoBS1V3c3/ErFQMUhjwyttIVp
+         1wXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=dVgB2gHwyu9BrwAHrTVrhxxTLMnU+GjkCtVmW3QXNgU=;
-        b=jankbNWErh2v+L3CFjUGgIibNuwbjUdu4Apv0vJEqahgxZHKvMBe7mBLhCh8/ydalq
-         k27lbzQB+SxRQg12vUEZ06i16rLYIjGHbTEc9QgVxcVYhoY7/U8VWEPBGcqgGWfDqiZb
-         mX6MRSGtuR6y04a+ZOlDXDFPSEpBPLDnLZ6ppiP7PNKxOQdsxEvIdA3eiDTGXlDUHY9x
-         eGyZtuMw/MUb4cuvcCiFKbwZrUPXBpQIvcKGQKmLSXPzTrGyeHaRSMbJ0b/NwIxcs9n4
-         tgFWYKpcjm3eMZgs91tVeZU1Vi1QxYxEVjVqdjbBzmtjNtZsMUXShNdcAakv0YIw80/b
-         5Erw==
-X-Gm-Message-State: APjAAAXDj4SJv+Wl3dreUHaDHSXoVFLEfbLojL9AmQzN4oGlJF5cJZjB
-        AOd4vWt1W9aTG0CvcKbY8qGBqwOCw0l5vwrKPC0=
-X-Google-Smtp-Source: APXvYqwlaomCfDlYbNNF8YV7bmOiA+RBcC2Lj4IMuUuRMpLg0+bmLmxHgplYSxfX9KJ2jH/5Utbw4xrv7YTsiZGNk50=
-X-Received: by 2002:adf:dbc4:: with SMTP id e4mr8432672wrj.354.1571837752639;
- Wed, 23 Oct 2019 06:35:52 -0700 (PDT)
+        h=x-gm-message-state:sender:subject:from:to:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=i1onkp7tVbiousuoh/lKkPugrxCGZSa3fAT6ThfLs+M=;
+        b=QLli1vtgc0ubeYFw7XCQxhlmhTtaCSTi1edb2ZoTuyPKtMVGwoQyazj9CdShEh0x51
+         qsp6nhzPAN6VRS/YCNuSj69zjgxIX7GVmCYyqImdaIG9zoBx9NH5vgeF2u1l9b2f11tj
+         HFRw0n6raYeY+uPocRb+XauoIufmmUfRHiD4fmZ08pHdb2R5U34kL6oJ1WgMmXsf9Pxd
+         iF746K34IXgSl4aXaU8FJE5SA7xG0JV4A2yPb9MobtQWZAeQP+UaXmdQbAPjrGjIUHkU
+         qJ7Xt1h3tVFZpVFSkJ3MFLzPmM3Y/DFG/ZUewRWyHBu6Nv/2JI6+xULS6VVuhR5pNxIU
+         OG/Q==
+X-Gm-Message-State: APjAAAUV/P8KxgvSnlaUWFjYcMAcuEJ7A4q+NP8forZG6pHET/Jftlsz
+        gCzTtvUvAZ/YAiu9y9LG/VAJXqAJ
+X-Google-Smtp-Source: APXvYqzUcoHsSLIlE3ex18X4hONq3ohOj6A/4Z9zQ+WGq9pT6j/xLH2YSEo3rHUy0gxbGEgPa8PSgQ==
+X-Received: by 2002:a6b:37c6:: with SMTP id e189mr3195173ioa.61.1571839309248;
+        Wed, 23 Oct 2019 07:01:49 -0700 (PDT)
+Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id 133sm5421899ila.25.2019.10.23.07.01.47
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 23 Oct 2019 07:01:48 -0700 (PDT)
+Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id x9NE1kDO012538;
+        Wed, 23 Oct 2019 14:01:47 GMT
+Subject: [PATCH v1 0/5] RPC/RDMA client connect-related fixes
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org
+Date:   Wed, 23 Oct 2019 10:01:46 -0400
+Message-ID: <20191023135907.3992.69010.stgit@manet.1015granger.net>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Received: by 2002:a5d:400a:0:0:0:0:0 with HTTP; Wed, 23 Oct 2019 06:35:51
- -0700 (PDT)
-Reply-To: mrs.lisarobinson746@gmail.com
-From:   "Mrs. Lisa" <helpdesk.eit.ac.nz@gmail.com>
-Date:   Wed, 23 Oct 2019 06:35:51 -0700
-Message-ID: <CAK7Er8ZGwF5nM0uBJxWx9uuPAN=Bbc0y8Jfd5b0stynKODG32g@mail.gmail.com>
-Subject: Mrs. Lisa Charity Donation
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
--- 
-I am Lisa Robinson, you have a donation of $1,200,000.00 USD. Contact
-me now for more information.
+First patch fixes a problem with the logic that deals with failure
+to establish a connection. The others are trace point clean-ups that
+I found along the way to the fix.
+
+This is the final set of client patches I currently have ready for
+the v5.5 merge window.
+
+---
+
+Chuck Lever (5):
+      xprtrdma: Wake tasks after connect worker fails
+      xprtrdma: Report the computed connect delay
+      xprtrdma: Refine trace_xprtrdma_fixup
+      xprtrdma: Replace dprintk() in rpcrdma_update_connect_private()
+      xprtrdma: Replace dprintk in xprt_rdma_set_port
+
+
+ include/trace/events/rpcrdma.h  |  164 ++++++++++++++++++++++++---------------
+ net/sunrpc/xprtrdma/rpc_rdma.c  |    9 --
+ net/sunrpc/xprtrdma/transport.c |   27 ++----
+ net/sunrpc/xprtrdma/verbs.c     |   34 +++-----
+ 4 files changed, 126 insertions(+), 108 deletions(-)
+
+--
+Chuck Lever
