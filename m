@@ -2,89 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4E6E2321
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 21:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F048DE2376
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 21:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731822AbfJWTJf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Oct 2019 15:09:35 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:42181 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731267AbfJWTJf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Oct 2019 15:09:35 -0400
-Received: by mail-qk1-f196.google.com with SMTP id m4so3980184qke.9
-        for <linux-rdma@vger.kernel.org>; Wed, 23 Oct 2019 12:09:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hbYknmQKutx5eVV9wjJYmszxal9l6dIeQEjgmlvcQ3o=;
-        b=Ltd8wuPxBy5li7B+rrO7LTgr7dZwz3acYU+jSZloisMfT2gpxmE04nE5o8nRttFdRu
-         yb567EeizxACVmCag1LjLNodxXJ7lyowJnnOd/F+xoxQtGUYEK0gTrdJKa9B6/emyh0l
-         khBU5saCAX7tfNhtY63hlQQnEGC3V5W/jDuZC8+gJWUhqTTyIb1l//DLThOLZxdQpdZY
-         9MOyACCLh/GHhKPGbzRqo/pRUn9PL+nnWw7YcOQS4b8kAG6apHTuzTG9RVuNsEhbpRsD
-         JY8q0GHO6giHDuesYETv3N5KloZSwIDiQMtUxC56JsO57y6lHEndDF8y66uDLsdXgOzk
-         Xjag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hbYknmQKutx5eVV9wjJYmszxal9l6dIeQEjgmlvcQ3o=;
-        b=BknrGLOgzNP9/QxRHEX7VW182hBEl++KV9+LNxwFaM6zxjtsYL1r4EHq+czNbkLmmv
-         oXoyTsJ3j4VuOcD2Rr6pMIuydAPVRibdB8nRVwRZ4AnkQPwZlAWmVO5w9Ci6xHBr0dk1
-         ulKkcNK8qkNmy6rW2NQD8X0owM/buG/vEUUTOQXGZtP8YBqfXZIjSlfzCw3FlwiyR8NY
-         FWaw4o6neB+T2KUGXnJZZpDMmdtzuHdkkK+41eDX53m3kWOcHTsQoyC/9Y8lofG2oZlU
-         XXHf2J8dCEBakRh6EvsuLTxspUWJb82pbiH7gVtiEW/Wu2qZ0l1HFcHWXd9gp629jy8G
-         hI3g==
-X-Gm-Message-State: APjAAAUD9w186mUo+AQC2yB5SfsAa87CpiBBQQBigoc099ZfB5dsM1fk
-        FfgyZtx5ixt6QVcIozj94WOQdg==
-X-Google-Smtp-Source: APXvYqzES43rYEnyTM8Ycsh/WVJ/xmuVvnsiYb+QM8awdzgAnXDyIPTmBbtrn64IkQazV+LWDzREMQ==
-X-Received: by 2002:a37:5784:: with SMTP id l126mr3305013qkb.373.1571857774345;
-        Wed, 23 Oct 2019 12:09:34 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id k199sm10893969qke.0.2019.10.23.12.09.33
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 23 Oct 2019 12:09:33 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iNM0j-0001Ge-4n; Wed, 23 Oct 2019 16:09:33 -0300
-Date:   Wed, 23 Oct 2019 16:09:33 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next v1 0/2] Remove PID namespaces support from
- restrack
-Message-ID: <20191023190933.GA4836@ziepe.ca>
-References: <20191010071105.25538-1-leon@kernel.org>
+        id S2390417AbfJWTzY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Oct 2019 15:55:24 -0400
+Received: from hqemgate16.nvidia.com ([216.228.121.65]:13559 "EHLO
+        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727595AbfJWTzX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Oct 2019 15:55:23 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5db0b02f0000>; Wed, 23 Oct 2019 12:55:27 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 23 Oct 2019 12:55:22 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 23 Oct 2019 12:55:22 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 23 Oct
+ 2019 19:55:17 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 23 Oct 2019 19:55:17 +0000
+Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5db0b0250003>; Wed, 23 Oct 2019 12:55:17 -0700
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@mellanox.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Ralph Campbell <rcampbell@nvidia.com>
+Subject: [PATCH v3 0/3] HMM tests and minor fixes
+Date:   Wed, 23 Oct 2019 12:55:12 -0700
+Message-ID: <20191023195515.13168-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191010071105.25538-1-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1571860527; bh=pKsqywyqkPUWdC01GQUc5JE3JAYljHqFpxxgzuwg5Ig=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Type:
+         Content-Transfer-Encoding;
+        b=VzM9m/nRhsUN+U0kVN1J6xlUJ+TUD0ZT40vMiAjmyzZQKCCfLs6vn3GbAgUDkcEZQ
+         0rLM2QdgwPTibNN38mym9vKUICrJ0g/hjQDEFEMuMM/QRULteFtF9YBC9NiRGWMrY/
+         gZWTikGFvoXHp6TctNP+dkKMQIxHcR7usLwoW+MepWuGUlmFhTajxDw9OP8N6FKfc4
+         b9hB9lWTb8oBcdukIeua+CWrtoWhD9F9S1EEcmRBlbomo5VO2eyLpiQDVvMVg8nyNY
+         617gBwTBE6cZMwx4FH9LPQeGJgT0vrmqdNyWCqRFgkmMbvfh9D2WIq6nZcPnkw75pD
+         AJz33oCCmeh7A==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 10, 2019 at 10:11:03AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> Changelog
->  v0 -> v1: https://lore.kernel.org/linux-rdma/20191002123245.18153-1-leon@kernel.org
->  * Beatify code as Parav suggested (patch #2)
-> 
-> Hi,
-> 
-> Please see individual commit messages for more details.
-> 
-> Thanks
-> 
-> Leon Romanovsky (2):
->   RDMA/restrack: Remove PID namespace support
->   RDMA/core: Check that process is still alive before sending it to the
->     users
+These changes are based on Jason's rdma/hmm branch (5.4.0-rc1).
+Patch 1 was previously posted here [1] but was dropped from that orginal
+series. Hopefully, the tests will reduce concerns about edge conditions.
+I'm sure more tests could be usefully added but I thought this was a good
+starting point.
 
-Applied to for-next, thanks
+Changes since v2:
+patch 1:
+Removed hmm_range_needs_fault() and just use hmm_range_need_fault().
+Updated the change log to include that it fixes a bug where
+hmm_range_fault() incorrectly returned an error when no fault is requested.
+patch 2:
+Removed the confusing change log wording about DMA.
+Changed hmm_range_fault() to return the PFN of the zero page like any other
+page.
+patch 3:
+Adjusted the test code to match the new zero page behavior.
 
-Jason
+Changes since v1:
+Rebased to Jason's rdma/hmm branch (5.4.0-rc1).
+Cleaned up locking for the test driver's page tables.
+Incorporated Christoph Hellwig's comments.
+
+[1] https://lore.kernel.org/linux-mm/20190726005650.2566-6-rcampbell@nvidia=
+.com/
+
+Ralph Campbell (3):
+  mm/hmm: make full use of walk_page_range()
+  mm/hmm: allow snapshot of the special zero page
+  mm/hmm/test: add self tests for HMM
+
+ MAINTAINERS                            |    3 +
+ drivers/char/Kconfig                   |   11 +
+ drivers/char/Makefile                  |    1 +
+ drivers/char/hmm_dmirror.c             | 1566 ++++++++++++++++++++++++
+ include/Kbuild                         |    1 +
+ include/uapi/linux/hmm_dmirror.h       |   74 ++
+ mm/hmm.c                               |  136 +-
+ tools/testing/selftests/vm/.gitignore  |    1 +
+ tools/testing/selftests/vm/Makefile    |    3 +
+ tools/testing/selftests/vm/config      |    3 +
+ tools/testing/selftests/vm/hmm-tests.c | 1311 ++++++++++++++++++++
+ tools/testing/selftests/vm/run_vmtests |   16 +
+ tools/testing/selftests/vm/test_hmm.sh |   97 ++
+ 13 files changed, 3158 insertions(+), 65 deletions(-)
+ create mode 100644 drivers/char/hmm_dmirror.c
+ create mode 100644 include/uapi/linux/hmm_dmirror.h
+ create mode 100644 tools/testing/selftests/vm/hmm-tests.c
+ create mode 100755 tools/testing/selftests/vm/test_hmm.sh
+
+--=20
+2.20.1
+
