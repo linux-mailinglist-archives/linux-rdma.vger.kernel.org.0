@@ -2,135 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F956E1251
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 08:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A06E1316
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 09:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389378AbfJWGk7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Oct 2019 02:40:59 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:55989 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389356AbfJWGk7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Oct 2019 02:40:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1571812858; x=1603348858;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=NKaK3t49bbVBVNWjMYywB6uNwSewTXIml7JVFPCNVTs=;
-  b=pFJjIWIFzZhlBvfWa8L+oOFT9RyG1KOdI/+P9B5kVyQnZmwH7o+Gm5q6
-   RVTRtphoOLh2A+brtkK0lncJgUMRn2IH3Jz6LUSBMPfj6WILFoZcSviIN
-   SYbD/28tTqVa+gzPglooOftKYdTrNeDBz3M7tvDKmy2+5v/ldJqZYXhji
-   o=;
-X-IronPort-AV: E=Sophos;i="5.68,219,1569283200"; 
-   d="scan'208";a="762194683"
-Received: from iad6-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-87a10be6.us-west-2.amazon.com) ([10.124.125.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 23 Oct 2019 06:40:55 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2c-87a10be6.us-west-2.amazon.com (Postfix) with ESMTPS id EEFB9A2353;
-        Wed, 23 Oct 2019 06:40:54 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 23 Oct 2019 06:40:54 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.223) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 23 Oct 2019 06:40:50 +0000
-Subject: Re: [PATCH v11 rdma-next 5/7] RDMA/qedr: Use the common mmap API
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Michal Kalderon <mkalderon@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "bmt@zurich.ibm.com" <bmt@zurich.ibm.com>,
-        "Leybovich, Yossi" <sleybo@amazon.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <MN2PR18MB31828BDF43D9CA65A7BF1BC8A1850@MN2PR18MB3182.namprd18.prod.outlook.com>
- <4A66AD43-246B-4256-BA99-B61D3F1D05A8@amazon.com>
- <MN2PR18MB3182999F3ACFC93455B887C8A1840@MN2PR18MB3182.namprd18.prod.outlook.com>
- <f7f91641-6a80-2c06-2d4a-9045b876daff@amazon.com>
- <20191021173349.GH25178@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <215079fa-03bc-1b5b-dfbe-561f6072de94@amazon.com>
-Date:   Wed, 23 Oct 2019 09:40:44 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.9.0
+        id S2389910AbfJWH0P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Oct 2019 03:26:15 -0400
+Received: from mga01.intel.com ([192.55.52.88]:22048 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389351AbfJWH0O (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 23 Oct 2019 03:26:14 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Oct 2019 00:26:14 -0700
+X-IronPort-AV: E=Sophos;i="5.68,219,1569308400"; 
+   d="scan'208";a="191747859"
+Received: from jnikula-mobl3.fi.intel.com (HELO localhost) ([10.237.66.161])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Oct 2019 00:26:10 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, rd.dunlab@gmail.com
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH 05/12] infiniband: fix ulp/opa_vnic/opa_vnic_encap.h kernel-doc notation
+In-Reply-To: <e6be1ddd-c32f-4f8a-4528-7393d5997755@infradead.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20191010035239.532908118@gmail.com> <20191010035239.890311169@gmail.com> <20191022175215.GA26528@ziepe.ca> <e6be1ddd-c32f-4f8a-4528-7393d5997755@infradead.org>
+Date:   Wed, 23 Oct 2019 10:26:07 +0300
+Message-ID: <87d0engbxs.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20191021173349.GH25178@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.161.223]
-X-ClientProxiedBy: EX13D27UWA001.ant.amazon.com (10.43.160.19) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 21/10/2019 20:33, Jason Gunthorpe wrote:
-> On Sun, Oct 20, 2019 at 10:19:34AM +0300, Gal Pressman wrote:
->> On 24/09/2019 12:31, Michal Kalderon wrote:
->>>> From: Pressman, Gal <galpress@amazon.com>
->>>> Sent: Tuesday, September 24, 2019 11:50 AM
->>>>
->>>>
->>>>> On 23 Sep 2019, at 18:22, Michal Kalderon <mkalderon@marvell.com>
->>>> wrote:
->>>>>
->>>>>
->>>>>>
->>>>>> From: linux-rdma-owner@vger.kernel.org <linux-rdma-
->>>>>> owner@vger.kernel.org> On Behalf Of Gal Pressman
->>>>>>
->>>>>>> On 19/09/2019 20:55, Jason Gunthorpe wrote:
->>>>>>> Huh. If you recall we did all this work with the XA and the free
->>>>>>> callback because you said qedr was mmaping BAR pages that had some
->>>>>>> HW lifetime associated with them, and the HW resource was not to be
->>>>>>> reallocated until all users were gone.
->>>>>>>
->>>>>>> I think it would be a better example of this API if you pulled the
->>>>>>>
->>>>>>>    dev->ops->rdma_remove_user(dev->rdma_ctx, ctx->dpi);
->>>>>>>
->>>>>>> Into qedr_mmap_free().
->>>>>>>
->>>>>>> Then the rdma_user_mmap_entry_remove() will call it naturally as it
->>>>>>> does entry_put() and if we are destroying the ucontext we already
->>>>>>> know the mmaps are destroyed.
->>>>>>>
->>>>>>> Maybe the same basic comment for EFA, not sure. Gal?
->>>>>>
->>>>>> That's what EFA already does in this series, no?
->>>>>> We no longer remove entries on dealloc_ucontext, only when the entry
->>>>>> is freed.
->>>>>
->>>>> Actually, I think most of the discussions you had on the topic were
->>>>> with Gal, but Some apply to qedr as well, however, for qedr, the only
->>>>> hw resource we allocate (bar) is on alloc_ucontext , therefore we were
->>>>> safe to free it on dealloc_ucontext as all mappings were already
->>>>> zapped. Making the mmap_free a bit redundant for qedr except for the
->>>> need to free the entry.
->>>>>
->>>>> For EFA, it seemed the only operation delayed was freeing memory - I
->>>>> didn't see hw resources being freed... Gal?
->>>>
->>>> What do you mean by hw resources being freed? The BAR mappings are
->>>> under the device’s control and are associated to the lifetime of the UAR.
->>> The bar offset you get is from the device -> don't you release it back to the device
->>> So it can be allocated to a different application ? 
->>> In efa_com_create_qp -> you get offsets from the device that you use for mapping
->>> The bar -> are these unique for every call ? are they released during destroy_qp ? 
->>> Before this patch series mmap_entries_remove_free only freed the DMA pages, but
->>> Following this thread, it seemed the initial intention was that only the hw resources would
->>> Be delayed as the DMA pages are ref counted anyway.  I didn't see any delay to returning
->>> The bar offsets to the device. Thanks.
->> The BAR pages are being "freed" back to the device once the UAR is freed.
->> These pages' lifetime is under the control of the device so there's nothing the
->> driver needs to do, just make sure no one else is using them.
-> 
-> What frees the UAR?
-> 
-> In the mlx drivers this was done during destruction of the ucontext,
-> but with this new mmap stuff it could be moved to the mmap_free..
+On Tue, 22 Oct 2019, Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 10/22/19 10:52 AM, Jason Gunthorpe wrote:
+>> On Wed, Oct 09, 2019 at 08:52:44PM -0700, rd.dunlab@gmail.com wrote:
+>>> Make reserved struct fields "private:" so that they don't need to
+>>> be added to the kernel-doc notation. This removes 24 warnings.
+>> 
+>>> +++ linux-next-20191009/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h
+>>> @@ -129,21 +129,31 @@ struct opa_vesw_info {
+>>>  	__be16  fabric_id;
+>>>  	__be16  vesw_id;
+>>>  
+>>> +	/* private: */
+>>>  	u8      rsvd0[6];
+>>> +	/* public: */
+>>>  	__be16  def_port_mask;
+>> 
+>> This seems overly ugly, is there some other way to handle these
+>> reserved fields? Maybe wire protocol structures shouldn't be kdoc?
+>
+> I don't know of any other way to handle them with kernel-doc.
+> Sure, changing the /** to just /* would be one way to hide the
+> warnings.  Either this patch or not having them be kernel-doc
+> is needed just to "fix" 24 warnings.
 
-Dealloc UAR is currently being called during dealloc_ucontext.
-The mmap_free callback is per entry, how can dealloc_uar be moved there?
+The currently available options are:
+
+- The patch at hand (private/public comments). Ugly and verbose.
+
+- Document the structs using regular comments instead of
+  kernel-doc. Might be suitable here, but not a generally useful
+  approach. Loses all format checking and generated documentation.
+
+- Also document the reserved fields. Ugly and verbose, also in the
+  generated documentation.
+
+Some options that I think might be relatively easy to implement:
+
+- Add struct documentation comment indicator to not complain about
+  missing member documentation. Some special tag in the struct
+  comment. This would also ignore members that actually need to be
+  documented.
+
+- Add support for designating private members in the member
+  documentation, i.e. require the documentation, but omit the members
+  from the generated document. Something like this, with PRIVATE
+  replaced with your favorite bikeshed colors:
+
+  /**
+   * @rsvd0: PRIVATE
+   */
+
+  This could be used either in the struct documentation comment or in
+  the inline member documentation comment. Less ugly than the patch at
+  hand, and arguably a better notation, but still requires documenting
+  the members.
+
+- Add support for a catch-all member documentation comment, for example:
+
+  /**
+   * struct foo - bar
+   * @*: This member is private.
+   */
+
+  Would generate the documentation for the member with the catch-all
+  documentation, which might be a generally useful feature, and would be
+  easy on the source code side. This could be combined with the PRIVATE
+  designation above, practically leading to the same result as the first
+  option but with more flexibility.
+
+
+BR,
+Jani.
+
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
