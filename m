@@ -2,120 +2,253 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABE5E21D8
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 19:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9EEEE21EF
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 19:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730140AbfJWReK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Oct 2019 13:34:10 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:59672 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730302AbfJWReK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Oct 2019 13:34:10 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9NHT0MZ190406;
-        Wed, 23 Oct 2019 17:33:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2019-08-05;
- bh=mHXswdXwjMkjlynu6WoO/JXk1XcXd81Y/XoQ2aJrYlc=;
- b=mMjMJAWPAOGCP7e/Eh0KJ0oLM2GOYPVRUzKsUHf//g0VJ08flrTR0PkKo4ldPUvx1wdm
- 1xmJ7V0CmnPZDFiYiXyMQSegB8oHt93MBAi6YqL3l6fZEn/cdB7MkTrYastp0NGPc768
- pCnlbnvQAbRkFQp5P7zznAX3D1z7QHRa5CWyWnKNwiHIiu0nt7kjBZNTALpfrzMjjngN
- H7jVzBMhjRsiThJdQDbBjdka3yGnnfZYpchbaFuJ1j2WugWb39nBrXC+Bc83odRKRAWL
- erPhKb2D3xBDLCq4tfyzK5ONtK6jUp3a7ze5R0LZ9Y/Ytr+q/seVuuUshtZqik2geQ3B /A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2vqtepxv63-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Oct 2019 17:33:58 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9NHXkwc070018;
-        Wed, 23 Oct 2019 17:33:58 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 2vtm22kxeg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 23 Oct 2019 17:33:58 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x9NHXnFO070572;
-        Wed, 23 Oct 2019 17:33:57 GMT
-Received: from ca-dev107.us.oracle.com (ca-dev107.us.oracle.com [10.129.135.36])
-        by aserp3030.oracle.com with ESMTP id 2vtm22kwep-2;
-        Wed, 23 Oct 2019 17:33:57 +0000
-From:   rao Shoaib <rao.shoaib@oracle.com>
-To:     monis@mellanox.com, dledford@redhat.com, sean.hefty@intel.com,
-        hal.rosenstock@gmail.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Rao Shoaib <rao.shoaib@oracle.com>
-Subject: [PATCH v1 1/1] rxe: calculate inline data size based on requested values
-Date:   Wed, 23 Oct 2019 10:32:37 -0700
-Message-Id: <1571851957-3524-2-git-send-email-rao.shoaib@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1571851957-3524-1-git-send-email-rao.shoaib@oracle.com>
-References: <1571851957-3524-1-git-send-email-rao.shoaib@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9419 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910230167
+        id S1730125AbfJWRkF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Oct 2019 13:40:05 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:33740 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729283AbfJWRkF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Oct 2019 13:40:05 -0400
+Received: by mail-wr1-f52.google.com with SMTP id s1so14284647wro.0
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Oct 2019 10:40:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GZ8n6S4NfaKtQTi/gcDWbIv2/8+bvhyDihcDm9eCIPA=;
+        b=O+aqbRZ1MFusrcwePHUxgPWrdkHumhkAX3g0NotQ30+a0L6aecwVBFItRnGlohitCk
+         1+rOOXmC467+5CTMC1RUOwWsafKB77Vfr+B8Abg/vlLXjZ6jcT3TKFButLPjNVOFlX7H
+         8Ff4oEkh/WogGGlDTIyV2REOP/i79DDiP/NT7TiSfozWpjdiH0AkeGCDnsP2qOm11Go4
+         vB46Hr7h7mLfDq+2XWOcrjOcg3VOzLauT+MghqceqAmfgL+B9BRzUPHpasGPkHsAeqg1
+         klmsjvmSSx1RHtERafv7PEkyPK+sPODT5kX2OwxZ4vousfVC+RRQQXSMXRKNYt+KL/tL
+         2kow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GZ8n6S4NfaKtQTi/gcDWbIv2/8+bvhyDihcDm9eCIPA=;
+        b=K2hEzvSk2lduMscncR0goI4w7j/AlXZaZoj3oFwEHROPlFQTb8/cbXrfmMA7bFs5ug
+         Tnnp1VAvwsHJb7QihyxHs3Y6v3FGAjIWCWdN9Upl0CBEpAMAxuy9B0VmJKUwGiEo8at3
+         xh7N1GPAw0ht5yDwSxNP3IfslXfslFS4pNf8QtLtNfOdNzeLPcog/BVnxDSv5sUMivNi
+         g9dI/9ng8nG1IpbteewYQSEiy5hDBcicXo1cW6cp12vuNPGluvbWUJFHhXVhyyj0Jvra
+         FOxDAXwBg+WpDoR5QLWfNEiCh2cV366Ff+3G4LmNgL2P11AlS43JC24EDXOM4CqSWB28
+         DdFw==
+X-Gm-Message-State: APjAAAUXfctuLtOlV1Hr0ElsffTJIv3/0UKsQRfoDhv2WupwrVGoGbpW
+        q9Zzi2ovNPJCdcx7qBwKB8e37YXp5FY=
+X-Google-Smtp-Source: APXvYqynxPAk3t+DQvgVQV5aAg4uWVHa/GYyw+fEgm+NRCrfWhGY8+8l9XRxzO+8rZuFH9jjZEQ5iA==
+X-Received: by 2002:adf:da4e:: with SMTP id r14mr9174307wrl.375.1571852402155;
+        Wed, 23 Oct 2019 10:40:02 -0700 (PDT)
+Received: from kheib-workstation.redhat.com (bzq-79-179-0-252.red.bezeqint.net. [79.179.0.252])
+        by smtp.gmail.com with ESMTPSA id u1sm33183252wru.90.2019.10.23.10.40.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Oct 2019 10:40:01 -0700 (PDT)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH for-next] selftests: rdma: Add rdma tests
+Date:   Wed, 23 Oct 2019 20:39:54 +0300
+Message-Id: <20191023173954.29291-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Rao Shoaib <rao.shoaib@oracle.com>
+Add a new directory to house the rdma specific tests and add the first
+rdma_dev.sh test that checks the renaming and setting of adaptive
+moderation using the rdma tool for the available RDMA devices in the
+system.
 
-rxe driver has a hard coded value for the size of inline data, where as
-mlx5 driver calculates number of SGE's and inline data size based on the
-values in the qp request. This patch modifies rxe driver to do the same
-so that applications can work seamlessly across drivers.
-
-Signed-off-by: Rao Shoaib <rao.shoaib@oracle.com>
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_param.h | 2 +-
- drivers/infiniband/sw/rxe/rxe_qp.c    | 4 ++++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ tools/testing/selftests/Makefile         |  1 +
+ tools/testing/selftests/rdma/Makefile    |  6 ++
+ tools/testing/selftests/rdma/lib.sh      | 55 ++++++++++++++++
+ tools/testing/selftests/rdma/rdma_dev.sh | 83 ++++++++++++++++++++++++
+ 4 files changed, 145 insertions(+)
+ create mode 100644 tools/testing/selftests/rdma/Makefile
+ create mode 100644 tools/testing/selftests/rdma/lib.sh
+ create mode 100755 tools/testing/selftests/rdma/rdma_dev.sh
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
-index 1b596fb..657f9303 100644
---- a/drivers/infiniband/sw/rxe/rxe_param.h
-+++ b/drivers/infiniband/sw/rxe/rxe_param.h
-@@ -68,7 +68,6 @@ enum rxe_device_param {
- 	RXE_HW_VER			= 0,
- 	RXE_MAX_QP			= 0x10000,
- 	RXE_MAX_QP_WR			= 0x4000,
--	RXE_MAX_INLINE_DATA		= 400,
- 	RXE_DEVICE_CAP_FLAGS		= IB_DEVICE_BAD_PKEY_CNTR
- 					| IB_DEVICE_BAD_QKEY_CNTR
- 					| IB_DEVICE_AUTO_PATH_MIG
-@@ -81,6 +80,7 @@ enum rxe_device_param {
- 					| IB_DEVICE_MEM_MGT_EXTENSIONS,
- 	RXE_MAX_SGE			= 32,
- 	RXE_MAX_SGE_RD			= 32,
-+	RXE_MAX_INLINE_DATA		= RXE_MAX_SGE * sizeof(struct ib_sge),
- 	RXE_MAX_CQ			= 16384,
- 	RXE_MAX_LOG_CQE			= 15,
- 	RXE_MAX_MR			= 2 * 1024,
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index aeea994..45b5da5 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -229,6 +229,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
- {
- 	int err;
- 	int wqe_size;
-+	unsigned int inline_size;
- 
- 	err = sock_create_kern(&init_net, AF_INET, SOCK_DGRAM, 0, &qp->sk);
- 	if (err < 0)
-@@ -244,6 +245,9 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
- 			 sizeof(struct rxe_send_wqe) +
- 			 qp->sq.max_inline);
- 
-+	inline_size = wqe_size - sizeof(struct rxe_send_wqe);
-+	qp->sq.max_inline = inline_size;
-+	init->cap.max_inline_data = inline_size;
- 	qp->sq.queue = rxe_queue_init(rxe,
- 				      &qp->sq.max_wr,
- 				      wqe_size);
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index c3feccb99ff5..870b9d0c36c9 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -37,6 +37,7 @@ TARGETS += powerpc
+ TARGETS += proc
+ TARGETS += pstore
+ TARGETS += ptrace
++TARGETS += rdma
+ TARGETS += rseq
+ TARGETS += rtc
+ TARGETS += seccomp
+diff --git a/tools/testing/selftests/rdma/Makefile b/tools/testing/selftests/rdma/Makefile
+new file mode 100644
+index 000000000000..56df64b9b5d9
+--- /dev/null
++++ b/tools/testing/selftests/rdma/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0
++# Makefile for rdma selftests
++
++TEST_PROGS := rdma_dev.sh
++
++include ../lib.mk
+diff --git a/tools/testing/selftests/rdma/lib.sh b/tools/testing/selftests/rdma/lib.sh
+new file mode 100644
+index 000000000000..5f1cc08bc6b2
+--- /dev/null
++++ b/tools/testing/selftests/rdma/lib.sh
+@@ -0,0 +1,55 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++
++EXIT_STATUS=0
++RET=0
++#Kselftest framework requirement - SKIP code is 4
++ksft_skip=4
++
++check_and_skip()
++{
++	local rc=$1
++	local msg=$2
++
++	if [ $rc -ne 0 ]; then
++		echo "SKIP: $msg"
++		exit $ksft_skip
++	fi
++}
++
++check_ret_val()
++{
++	local rc=$1
++	local msg=$2
++
++	if [[ $RET -eq 0 && $rc -ne 0 ]]; then
++		RET=$rc
++		retmsg=$msg
++	fi
++}
++
++print_results()
++{
++	local test_name=$1
++
++	if [[ $RET -ne 0 ]]; then
++		EXIT_STATUS=1
++		printf "TEST: %-60s [FAIL]\n" "$test_name"
++		if [[ ! -z "$retmsg" ]]; then
++			printf "\t%s\n" "$retmsg"
++		fi
++		return 1
++	fi
++
++	printf "TEST: %-60s [OK]\n" "$test_name"
++	return 0
++}
++
++run_tests()
++{
++	local cur_test
++
++	for cur_test in ${ALL_TESTS}; do
++		$cur_test
++	done
++}
+diff --git a/tools/testing/selftests/rdma/rdma_dev.sh b/tools/testing/selftests/rdma/rdma_dev.sh
+new file mode 100755
+index 000000000000..ca3ae7ddac9b
+--- /dev/null
++++ b/tools/testing/selftests/rdma/rdma_dev.sh
+@@ -0,0 +1,83 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++
++lib=$(dirname $0)/lib.sh
++source $lib
++
++ALL_TESTS="
++	test_rename
++	test_adaptive_moderation
++"
++
++test_rename()
++{
++	local dev=$RDMA_DEV
++
++	rdma dev set $dev name "tmp_$dev"
++	check_ret_val $? "Failed to rename $dev to tmp_$dev"
++
++	rdma dev set tmp_$dev name $dev
++	check_ret_val $? "Failed to restore $dev name"
++
++	print_results "$dev: Rename"
++}
++
++test_adaptive_moderation()
++{
++	local dev=$RDMA_DEV
++
++	rdma dev show $dev -d | grep -qE "adaptive-moderation"
++	check_and_skip $? "Setting adaptive-moderation is not supported"
++
++	rdma dev show $dev -d | grep -qE "adaptive-moderation off"
++	if [ $? -ne 0 ]; then
++		rdma dev set $dev adaptive-moderation off
++		check_ret_val $? "$dev: Failed to set adaptive-moderation to on"
++
++		rdma dev set $dev adaptive-moderation on
++		check_ret_val $? "$dev: Failed to restroe adaptive-moderation to off"
++	else
++		rdma dev set $dev adaptive-moderation on
++		check_ret_val $? "$dev: Failed to set adaptive-moderation to on"
++
++		rdma dev set $dev adaptive-moderation off
++		check_ret_val $? "$dev: Failed to restroe adaptive-moderation to off"
++	fi
++
++	print_results "$dev: Setting adaptive-moderation"
++}
++
++prepare()
++{
++	TMP_LIST_RDMADEV="$(mktemp)"
++	if [ ! -e $TMP_LIST_RDMADEV ]; then
++		echo "FAIL: Failed to create temp file to hold rdma devices"
++		exit 1
++	fi
++}
++
++cleanup()
++{
++	rm $TMP_LIST_RDMADEV
++}
++
++trap cleanup EXIT
++
++check_and_skip $(id -u) "Need root privileges"
++
++rdma dev show 2>/dev/null >/dev/null
++check_and_skip $? "Can not run the test without rdma tool"
++
++prepare
++
++rdma dev show | grep '^[0-9]' | cut -d" " -f 2 | cut -d: -f1> "$TMP_LIST_RDMADEV"
++test -s "$TMP_LIST_RDMADEV"
++check_and_skip $? "No RDMA devices available"
++
++while read rdma_dev
++do
++	RDMA_DEV=$rdma_dev
++	run_tests
++done < $TMP_LIST_RDMADEV
++
++exit $EXIT_STATUS
 -- 
-1.8.3.1
+2.20.1
 
