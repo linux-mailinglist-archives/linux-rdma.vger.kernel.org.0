@@ -2,137 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 613EBE0E60
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 00:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6305EE1066
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 05:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731185AbfJVWwh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Oct 2019 18:52:37 -0400
-Received: from mail-eopbgr80059.outbound.protection.outlook.com ([40.107.8.59]:14060
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731850AbfJVWwh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Oct 2019 18:52:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jsoBrpC1G/j0BY9l8pOGNGzV7MU5+AyrDGL+iubTDQa9LdiiSJnmVPeTs6p6jDZ4wFiOceaZZ2/LkJpOBJiF+2nB9PqSMasAssTFeeJ4VdF0G1vR0KRSzUExfrMloBAOnPgVhGvPL9w6St9z+7bH8Zr0xJBjV9n64rua3Iiyme0TDzEGXdrAKtD0qXGhSpQokCt4h/7rwM3a+VQVw9fZegiKvIT4IUjpIRqmz+Dls8Xrk6qps4tHre08bjpUkUW4/sDaU3j9YUa9fC0bpi/itjAJMxMnBVhTzcx6H3n1tZNyYRXveuMabhbN5aMjnU5PGJZahy3w9ddSv8cIuwMeww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mEYpimMGmPIpZLS+l0rEM5Y076zjNvwjGozb7fRYLdM=;
- b=A05m9KRYVXTDw6DxN4TnsWGexoSo1Gwoql2/GBzFlGQCHXXA8o5gJizewwkJmKSP1RzHWSDH74pUTswGxB1qclTI/rBVDZsIBYAjhSDLhjMVM++Khf+6Cvlq8//r37Nl4SHnETQ/ezzvuouT7rhNPGYAjjOptUHZ6QnHMfVzCrIDEWq1G3qzFI02uy2THS8JDOgc+XByn3QblBr8b3UzccppUbU38tGadyis/W99izipmZqHnP6By5XSLFxwQUgf8+1KNAq0JSSDRp+RnhVLolDTa8DfpLDEk/E0keuFI/yDKUUhxX5bey86aBlyy43R9+YaDA8VK6YZAvmP9b7Hxw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 193.47.165.251) smtp.rcpttodomain=infradead.org smtp.mailfrom=mellanox.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=mellanox.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mEYpimMGmPIpZLS+l0rEM5Y076zjNvwjGozb7fRYLdM=;
- b=Y8wEkpHuSpTsM2GHWtBzej6/guRxacIUSNQojqi92gLDoq7Y7XL0OSbiNcAmQKdEiJ6dxnC38UeUIJ5NNHoFjIXvfHL22LuLmag2mYNJZw5zvmgH5XAlLC6/K7zL6iFn8eD8+7mv7dcJZj447xly7slIuV3W4KIjMMjVv6ucTp0=
-Received: from AM0PR05CA0048.eurprd05.prod.outlook.com (2603:10a6:208:be::25)
- by VI1PR05MB5357.eurprd05.prod.outlook.com (2603:10a6:803:b0::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2347.28; Tue, 22 Oct
- 2019 22:51:52 +0000
-Received: from AM5EUR03FT029.eop-EUR03.prod.protection.outlook.com
- (2a01:111:f400:7e08::207) by AM0PR05CA0048.outlook.office365.com
- (2603:10a6:208:be::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2387.20 via Frontend
- Transport; Tue, 22 Oct 2019 22:51:52 +0000
-Authentication-Results: spf=pass (sender IP is 193.47.165.251)
- smtp.mailfrom=mellanox.com; infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=pass action=none header.from=mellanox.com;
-Received-SPF: Pass (protection.outlook.com: domain of mellanox.com designates
- 193.47.165.251 as permitted sender) receiver=protection.outlook.com;
- client-ip=193.47.165.251; helo=mtlcas13.mtl.com;
-Received: from mtlcas13.mtl.com (193.47.165.251) by
- AM5EUR03FT029.mail.protection.outlook.com (10.152.16.150) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.2367.23 via Frontend Transport; Tue, 22 Oct 2019 22:51:52 +0000
-Received: from MTLCAS13.mtl.com (10.0.8.78) by mtlcas13.mtl.com (10.0.8.78)
- with Microsoft SMTP Server (TLS) id 15.0.1178.4; Wed, 23 Oct 2019 01:51:51
- +0300
-Received: from MTLCAS01.mtl.com (10.0.8.71) by MTLCAS13.mtl.com (10.0.8.78)
- with Microsoft SMTP Server (TLS) id 15.0.1178.4 via Frontend Transport; Wed,
- 23 Oct 2019 01:51:51 +0300
-Received: from [172.16.0.15] (172.16.0.15) by MTLCAS01.mtl.com (10.0.8.71)
- with Microsoft SMTP Server (TLS) id 14.3.468.0; Wed, 23 Oct 2019 01:48:32
- +0300
-Subject: Re: [PATCH 00/12] infiniband kernel-doc fixes & driver-api/ chapter
-To:     Jason Gunthorpe <jgg@ziepe.ca>, <rd.dunlab@gmail.com>
-CC:     <linux-rdma@vger.kernel.org>, Doug Ledford <dledford@redhat.com>,
-        <linux-doc@vger.kernel.org>, Randy Dunlap <rdunlap@infradead.org>
-References: <20191010035239.532908118@gmail.com>
- <20191022184109.GA2155@ziepe.ca>
-From:   Max Gurtovoy <maxg@mellanox.com>
-Message-ID: <3f234558-f894-9dcd-da88-120fe4e15e6e@mellanox.com>
-Date:   Wed, 23 Oct 2019 01:51:49 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729810AbfJWDGu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Oct 2019 23:06:50 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:41183 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727831AbfJWDGu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Oct 2019 23:06:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1571800008;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k4pDUbJL5SVqm0FRARnmM0PghrVjCXV2gWquMokKN4M=;
+        b=brI8CY3goEb7jnW9IkmJEp7BNdW+feGZY4z/7JWhs7nmTQ6MijIBwMROu5u05jHe+7ZJHj
+        iFy45OyfEcQ4h4APzL/hh0in41DbfwjzZuZmqMYvNORlj3H4t0qiyFThjkqaC6lHpRKWkC
+        6ItuchF+JpPKokXDuYX2Mc0I1fdut6Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-66-yRk375OLMvexFMzurFWSIw-1; Tue, 22 Oct 2019 23:06:45 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4DC9F476;
+        Wed, 23 Oct 2019 03:06:44 +0000 (UTC)
+Received: from localhost (unknown [10.66.128.227])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BCE475D6D0;
+        Wed, 23 Oct 2019 03:06:43 +0000 (UTC)
+Date:   Wed, 23 Oct 2019 11:06:41 +0800
+From:   Honggang LI <honli@redhat.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] srp_daemon: Use maximum initiator to target IU size
+Message-ID: <20191023030641.GA14551@dhcp-128-227.nay.redhat.com>
+References: <20191018044104.21353-1-honli@redhat.com>
+ <1d811fc0-1f74-b546-b296-a4e9f8c33d86@acm.org>
+ <20191018152253.GA32562@dhcp-128-227.nay.redhat.com>
+ <21142610-1e01-4ce8-635c-2fe677e69cf9@acm.org>
+ <20191022070025.GA20278@dhcp-128-227.nay.redhat.com>
+ <5f664232-ca58-c25c-e9b1-e441c053c818@acm.org>
 MIME-Version: 1.0
-In-Reply-To: <20191022184109.GA2155@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [172.16.0.15]
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:193.47.165.251;IPV:NLI;CTRY:IL;EFV:NLI;SFV:NSPM;SFS:(10009020)(4636009)(136003)(346002)(376002)(396003)(39860400002)(199004)(189003)(50466002)(316002)(36906005)(31696002)(76176011)(110136005)(2486003)(8676002)(6246003)(54906003)(86362001)(229853002)(53546011)(4326008)(26005)(106002)(16526019)(186003)(81166006)(23676004)(58126008)(478600001)(305945005)(81156014)(70586007)(126002)(3846002)(36756003)(70206006)(486006)(2870700001)(14444005)(65806001)(5660300002)(8936002)(6116002)(336012)(2906002)(446003)(2616005)(11346002)(16576012)(476003)(356004)(6666004)(47776003)(31686004)(65956001)(7736002)(3940600001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5357;H:mtlcas13.mtl.com;FPR:;SPF:Pass;LANG:en;PTR:InfoDomainNonexistent;A:1;MX:1;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dbf779b6-517e-4b3d-5212-08d757426e1e
-X-MS-TrafficTypeDiagnostic: VI1PR05MB5357:
-X-Microsoft-Antispam-PRVS: <VI1PR05MB5357180E0AE19925D41A087EB6680@VI1PR05MB5357.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 01986AE76B
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vfvEbLIcjHiUquVIPnwI00IerxCFrCyrKZtbikaepvuugrjZ8ISuotwvOiw3Hy+7MteQ6GA96itjrBMHe/g2n4cvDLdGEYkq03Xm6LvtLTC2y3vFGVWvc5Z+f3CaJtq2JgyTrybyzEpfDyw+6Cx0QWxayz48JVJm5FUj7pYQfDeIh/cPLRxputwhDRY0jEUxHi2oATdln8UHp33dACdbJOJV+vlo4b7mSqohHRkw3UFnrmGpovhuMZapPuFvsCUK79vxsADh84Z0Ylq2j7SV9PNF+hfzZ5WQ9i9USL6vy0D9GNJcQwJVWf2HUELH5V+4/jeSBxW//A7aXhTbC1QOvCY1ekvb6VlolfL6rNdUSQjvrNOzGgTdZnIwLDluA8B9zRAhMegdZRgfglLpQBVmFS1SNO9/klCbdB98RiulGcE=
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2019 22:51:52.1241
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: dbf779b6-517e-4b3d-5212-08d757426e1e
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a652971c-7d2e-4d9b-a6a4-d149256f461b;Ip=[193.47.165.251];Helo=[mtlcas13.mtl.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5357
+In-Reply-To: <5f664232-ca58-c25c-e9b1-e441c053c818@acm.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-MC-Unique: yRk375OLMvexFMzurFWSIw-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Oct 22, 2019 at 03:10:26PM -0700, Bart Van Assche wrote:
+> On 2019-10-22 00:00, Honggang LI wrote:
+> > +static bool use_imm_data(void)
+> > +{
+> > +#ifdef __linux__
+> > +=09bool ret =3D false;
+> > +=09char flag =3D 0;
+> > +=09int cnt;
+> > +=09int fd =3D open("/sys/module/ib_srp/parameters/use_imm_data", O_RDO=
+NLY);
+> > +
+> > +=09if (fd < 0)
+> > +=09=09return false;
+> > +=09cnt =3D read(fd, &flag, 1);
+> > +=09if (cnt !=3D 1)
+> > +=09=09return false;
+> > +
+> > +=09if (!strncmp(&flag, "Y", 1))
+> > +=09=09ret =3D true;
+> > +=09close(fd);
+> > +=09return ret;
+> > +#else
+> > +=09return false;
+> > +#endif
+> > +}
+>=20
+> There is already plenty of Linux-specific code in srp_daemon. The #ifdef
+> __linux__ / #endif guard does not seem useful to me.
 
-On 10/22/2019 9:41 PM, Jason Gunthorpe wrote:
-> On Wed, Oct 09, 2019 at 08:52:39PM -0700, rd.dunlab@gmail.com wrote:
->> This patch series cleans up lots of kernel-doc in drivers/infiniband/
->> and then adds an infiniband.rst file.
->>
->> It also changes a few instances of non-exported functions from kernel-doc
->> notation back to non-kernel-doc comments.
->>
->> There are still a few kernel-doc and Sphinx warnings that I don't know how
->> to resolve:
->>
->>    ../drivers/infiniband/ulp/iser/iscsi_iser.h:401: warning: Function parameter or member 'all_list' not described in 'iser_fr_desc'
+Will delete the guard.
 
-@all_list:           entry in the entire fastreg descriptors list
+>=20
+> There is a file descriptor leak in the above function, namely if read()
+> returns another value than 1.
 
-or
+Yes, will fix it.
 
-@all_list:           entry in the whole fastreg descriptors list
+>=20
+> The use_imm_data kernel module parameter was introduced in kernel v5.0
+> (commit 882981f4a411; "RDMA/srp: Add support for immediate data"). The
+> max_it_iu_size will be introduced in kernel v5.5 (commit 547ed331bbe8;
+> "RDMA/srp: Add parse function for maximum initiator to target IU size").
+>=20
+> So the above check will help for kernel versions before v5.0 but not for
+> kernel versions [v5.0..v5.5).=20
 
->>    ../drivers/infiniband/ulp/iser/iscsi_iser.h:415: warning: Function parameter or member 'all_list' not described in 'iser_fr_pool'
-@all_list:                list of all fastreg descriptors for the connection
-> Maybe Max can help?
->
->>    ../drivers/infiniband/core/verbs.c:2510: WARNING: Unexpected indentation.
->>    ../drivers/infiniband/core/verbs.c:2512: WARNING: Block quote ends without a blank line; unexpected unindent.
->>    ../drivers/infiniband/core/verbs.c:2544: WARNING: Unexpected indentation.
-> I don't know what to make of these either.
->
-> Anyhow, it is an overall improvement, so I applied everything but
->
-> [05/12] infiniband: fix ulp/opa_vnic/opa_vnic_encap.h kernel-doc notation
->
-> pending some discussion.
->
-> Thanks,
-> Jason
+Yes, you are right. The patch does not fix the issue for kernel
+versions [v5.0..v5.5). But it also does not do anything bad for
+kernel versions before v5.5 (commit 547ed331bbe8). It will fix
+the issue for kernel after 547ed331bbe8.
+
+> If that is really what you want, please
+> explain this in a comment above the use_imm_data() function.
+
+Yes, will add a comment for it.
+
+thanks
+
