@@ -2,41 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B109DE2107
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 18:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17110E21AF
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 19:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726409AbfJWQwc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Oct 2019 12:52:32 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53406 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726316AbfJWQwc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 23 Oct 2019 12:52:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571849551;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GanjAE8HfQ8qzFKCa/r64Dq3fD+/mSUc5zOx+PGr8eg=;
-        b=CFbPw7ge1cEfd6zfruWiTMMy1isjVe5aniMuB2kfrzSzWWSiM1kr1RJglVlo13tsECdgZh
-        EKhvt4LjbYskVdW2l7zOLJZzbDfU+YUn53o6VsV55X+eR2eoyXvd2oGmomU2SxYCs7jF/l
-        UBY1iGuNiC8Mp5RzMD3i8zQ06GTYJ54=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-166-kiwu8J-9MZWZX-y3vAa-XQ-1; Wed, 23 Oct 2019 12:52:28 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D64580183E;
-        Wed, 23 Oct 2019 16:52:26 +0000 (UTC)
-Received: from redhat.com (ovpn-124-105.rdu2.redhat.com [10.10.124.105])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 258D660126;
-        Wed, 23 Oct 2019 16:52:25 +0000 (UTC)
-Date:   Wed, 23 Oct 2019 12:52:23 -0400
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     christian.koenig@amd.com
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        id S1728549AbfJWRYu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Oct 2019 13:24:50 -0400
+Received: from mail-eopbgr30078.outbound.protection.outlook.com ([40.107.3.78]:10417
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728583AbfJWRYt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 23 Oct 2019 13:24:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eSoIh2Re3QHAc2joYgOWb+Me3GXRpED+0zTPRYajXTdY0KeHwJy0YY96BZBFJmjfWeHyLeHSvCU7wrAKRd4IxReFstNBeizO3WxMV+vEuW0+mfusMveKh8LFvcd1ZLGW3LohNbsukRBHXO27I7YBbpz1UJ52HTswwziJpNDepnhhKo2cvsNFHtKGem7cbiwfyIGly+YvkLSv4d6dzV/J4l8i+lbLDn5PPPeBc1/QEMUGjn4kYmCpYZMkehxSN+bxj5yGy86LLoWfwRtIOuhsrBQcLw4/xnndGAiJ/6LfPq8A14P7Ja9FBzqlELpIK1yLuKZ1BAIaLP01tCQZFJcK0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=e27RJwgohDjB5rPJYMfqo9M5TDj75Snml902/edeD64=;
+ b=RBadsEmZujOi/G3z+o/KoCPUFGoZqmqMHI8gNv4TNayYClzMJJpqU7Jq50I49BCWkzu6EWqv3MRD7bPXMk5vqAvlmb9+QqjtPdYIEO4tzGip2bBtLfd4JSGMo+ta7LIPEWVZ1lDRM/zT5EilUfJ3LMAWXD6gr7cns5QmrX/00czhfq+bketAl/QTuziRhdcNHe8lhavizZelSmxYJtxwwyWwMErLCOK/MreyG+zQwoydwCOXjOyAZh6ZzYO3F275mtd4a3HGpq6kzzYVokbETBCbq7tXdooZJxy8B6AkCDa80B/Yygn6T0Qy0ie4xcFU2KmukRnrXUFrFJ9VwJywMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=e27RJwgohDjB5rPJYMfqo9M5TDj75Snml902/edeD64=;
+ b=p5PJZX8QiqkvZDVkoXS+MksknfUpTBD+uWoELKAEeh4p4/HGbAm+rADHP/zSyQgek/c+GVOdib4vaNsZeu5Mx1gzD0/1scToH0aMD1PMT6ITits7izXr7FqcxMDB7hitHfxyvtjHz94W9jLGU43zioNZMMvWowa3RW69N1HawLI=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB4239.eurprd05.prod.outlook.com (52.134.123.13) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.22; Wed, 23 Oct 2019 17:24:45 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::75ae:b00b:69d8:3db0]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::75ae:b00b:69d8:3db0%7]) with mapi id 15.20.2367.025; Wed, 23 Oct 2019
+ 17:24:45 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Jerome Glisse <jglisse@redhat.com>
+CC:     "christian.koenig@amd.com" <christian.koenig@amd.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
         "Yang, Philip" <Philip.Yang@amd.com>,
         Ralph Campbell <rcampbell@nvidia.com>,
@@ -49,9 +50,12 @@ Cc:     Jason Gunthorpe <jgg@mellanox.com>,
         Ben Skeggs <bskeggs@redhat.com>
 Subject: Re: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
  locking
-Message-ID: <20191023165223.GA4163@redhat.com>
-References: <d6bcbd2a-2519-8945-eaf5-4f4e738c7fa9@amd.com>
- <20191018203608.GA5670@mellanox.com>
+Thread-Topic: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
+ locking
+Thread-Index: AQHVg4Sqa7CCxCToXEeTrrYAqVQVhqdc+JgAgAB3OACAARovgIAAficAgAAF3YCAAdJKAIACvAUAgAGLqgCAAAilAIAADDUAgAEY24CAAHZYgIABL+8AgAAGggCAAHr4gIAACQcA
+Date:   Wed, 23 Oct 2019 17:24:45 +0000
+Message-ID: <20191023172442.GX22766@mellanox.com>
+References: <20191018203608.GA5670@mellanox.com>
  <f7e34d8f-f3b0-b86d-7388-1f791674a4a9@amd.com>
  <20191021135744.GA25164@mellanox.com>
  <e07092c3-8ccd-9814-835c-6c462017aff8@amd.com>
@@ -60,125 +64,113 @@ References: <d6bcbd2a-2519-8945-eaf5-4f4e738c7fa9@amd.com>
  <20191022150109.GF22766@mellanox.com>
  <20191023090858.GV11828@phenom.ffwll.local>
  <13edf841-421e-3522-fcec-ef919c2013ef@gmail.com>
-MIME-Version: 1.0
-In-Reply-To: <13edf841-421e-3522-fcec-ef919c2013ef@gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-MC-Unique: kiwu8J-9MZWZX-y3vAa-XQ-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
+ <20191023165223.GA4163@redhat.com>
+In-Reply-To: <20191023165223.GA4163@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BL0PR02CA0137.namprd02.prod.outlook.com
+ (2603:10b6:208:35::42) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.162.113.180]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8f6b4a1d-3abc-4baf-6e57-08d757dde5f7
+x-ms-traffictypediagnostic: VI1PR05MB4239:
+x-microsoft-antispam-prvs: <VI1PR05MB42391529A72E1D681D6E323FCF6B0@VI1PR05MB4239.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 019919A9E4
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(39860400002)(376002)(346002)(396003)(366004)(189003)(199004)(71190400001)(36756003)(6246003)(6436002)(86362001)(4326008)(6116002)(1076003)(3846002)(6916009)(6486002)(33656002)(2906002)(71200400001)(478600001)(7416002)(5660300002)(26005)(66446008)(76176011)(11346002)(486006)(64756008)(476003)(256004)(52116002)(66476007)(386003)(6506007)(66556008)(66946007)(186003)(305945005)(7736002)(446003)(66066001)(99286004)(6512007)(81166006)(81156014)(25786009)(8936002)(8676002)(14444005)(229853002)(2616005)(316002)(102836004)(14454004)(54906003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4239;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /eDCrbN2DZ7jIHyX3sGWvx8DgQk9MjRGIiKuxS3Lsl935gUs7E+g91bhJwfIHxLFxgdAE+/hPJWFdMIxN7sxANaES+49qJESfLhmxuoSLrdS8viRM6yy+6JRLGRZHDyj4+8PoUMT8ArRtrhgxDmwN0k1N3FRh/ebqplcDfxPclckH6mVCR2Gset6aFwB0YBUOaexLD4aNg6Pjnn9MWpKdRws+jl3XnLsHiLWOLzA+wIuMeCui4VJAVcJDjtwhgmzcoORQ3RwN5P7u0v/3ll3qq62pQx7BU36gSQG4aNHJgdgWbtabVcYwLtLcLri9DDSEMKP2LkjKMAL8b9dOHQYAMNzwDHmCXONbJ+hz3xYWArNOJWFTznOIf7bQz459TRux6R9gKna115MLyXE+G3wFO0/pmDgwGkNyz7Ntz2ATS4SzCkKzKu4hBcq0S3mYb8E
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <ECB58748CAB4784EBC55A1889CAC7D2B@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f6b4a1d-3abc-4baf-6e57-08d757dde5f7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2019 17:24:45.5170
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jd8rcyB6pWt4/zZXZYHvAYuYU/mqvHSucyjl1/KDFNaq8LOiiu5qcuSve8X4a9z++8cRiHm9oN56WcEN+qWeww==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4239
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 11:32:16AM +0200, Christian K=F6nig wrote:
-> Am 23.10.19 um 11:08 schrieb Daniel Vetter:
-> > On Tue, Oct 22, 2019 at 03:01:13PM +0000, Jason Gunthorpe wrote:
-> > > On Tue, Oct 22, 2019 at 09:57:35AM +0200, Daniel Vetter wrote:
-> > >=20
-> > > > > The unusual bit in all of this is using a lock's critical region =
-to
-> > > > > 'protect' data for read, but updating that same data before the l=
-ock's
-> > > > > critical secion. ie relying on the unlock barrier to 'release' pr=
-ogram
-> > > > > ordered stores done before the lock's own critical region, and th=
-e
-> > > > > lock side barrier to 'acquire' those stores.
-> > > > I think this unusual use of locks as barriers for other unlocked ac=
-cesses
-> > > > deserves comments even more than just normal barriers. Can you pls =
-add
-> > > > them? I think the design seeems sound ...
-> > > >=20
-> > > > Also the comment on the driver's lock hopefully prevents driver
-> > > > maintainers from moving the driver_lock around in a way that would =
-very
-> > > > subtle break the scheme, so I think having the acquire barrier comm=
-ented
-> > > > in each place would be really good.
-> > > There is already a lot of documentation, I think it would be helpful
-> > > if you could suggest some specific places where you think an addition
-> > > would help? I think the perspective of someone less familiar with thi=
-s
-> > > design would really improve the documentation
-> > Hm I just meant the usual recommendation that "barriers must have comme=
-nts
-> > explaining what they order, and where the other side of the barrier is"=
-.
-> > Using unlock/lock as a barrier imo just makes that an even better idea.
-> > Usually what I do is something like "we need to order $this against $th=
-at
-> > below, and the other side of this barrier is in function()." With maybe=
- a
-> > bit more if it's not obvious how things go wrong if the orderin is brok=
-en.
+On Wed, Oct 23, 2019 at 12:52:23PM -0400, Jerome Glisse wrote:
+> > Going another step further.... what hinders us to put the lock into the=
+ mmu
+> > range notifier itself and have _lock()/_unlock() helpers?
 > >=20
-> > Ofc seqlock.h itself skimps on that rule and doesn't bother explaining =
-its
-> > barriers :-/
-> >=20
-> > > I've been tempted to force the driver to store the seq number directl=
-y
-> > > under the driver lock - this makes the scheme much clearer, ie
-> > > something like this:
-> > >=20
-> > > diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/=
-nouveau/nouveau_svm.c
-> > > index 712c99918551bc..738fa670dcfb19 100644
-> > > --- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-> > > +++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-> > > @@ -488,7 +488,8 @@ struct svm_notifier {
-> > >   };
-> > >   static bool nouveau_svm_range_invalidate(struct mmu_range_notifier =
-*mrn,
-> > > -                                        const struct mmu_notifier_ra=
-nge *range)
-> > > +                                        const struct mmu_notifier_ra=
-nge *range,
-> > > +                                        unsigned long seq)
-> > >   {
-> > >          struct svm_notifier *sn =3D
-> > >                  container_of(mrn, struct svm_notifier, notifier);
-> > > @@ -504,6 +505,7 @@ static bool nouveau_svm_range_invalidate(struct m=
-mu_range_notifier *mrn,
-> > >                  mutex_lock(&sn->svmm->mutex);
-> > >          else if (!mutex_trylock(&sn->svmm->mutex))
-> > >                  return false;
-> > > +       mmu_range_notifier_update_seq(mrn, seq);
-> > >          mutex_unlock(&sn->svmm->mutex);
-> > >          return true;
-> > >   }
-> > >=20
-> > >=20
-> > > At the cost of making the driver a bit more complex, what do you
-> > > think?
-> > Hm, spinning this further ... could we initialize the mmu range notifie=
-r
-> > with a pointer to the driver lock, so that we could put a
-> > lockdep_assert_held into mmu_range_notifier_update_seq? I think that wo=
-uld
-> > make this scheme substantially more driver-hacker proof :-)
+> > I mean having the lock in the driver only makes sense when the driver w=
+ould
+> > be using the same lock for multiple things, e.g. multiple MMU range
+> > notifiers under the same lock. But I really don't see that use case her=
+e.
 >=20
-> Going another step further.... what hinders us to put the lock into the m=
-mu
-> range notifier itself and have _lock()/_unlock() helpers?
->=20
-> I mean having the lock in the driver only makes sense when the driver wou=
-ld
-> be using the same lock for multiple things, e.g. multiple MMU range
-> notifiers under the same lock. But I really don't see that use case here.
+> I actualy do, nouveau use one lock to protect the page table and that's t=
+he
+> lock that matter. You can have multiple range for a single page table, id=
+ea
+> being only a sub-set of the process address space is ever accessed by the
+> GPU and those it is better to focus on this sub-set and track invalidatio=
+n in
+> a finer grain.
 
-I actualy do, nouveau use one lock to protect the page table and that's the
-lock that matter. You can have multiple range for a single page table, idea
-being only a sub-set of the process address space is ever accessed by the
-GPU and those it is better to focus on this sub-set and track invalidation =
-in
-a finer grain.
+mlx5 is similar, but not currently coded quite right, there is one
+lock that protects the command queue for submitting invalidations to
+the HW and it doesn't make a lot of sense to have additional fine
+grained locking beyond that.
 
-Cheers,
-J=E9r=F4me
+So I suppose the intent here that most drivers would have a single
+'page table lock' that protects the HW's page table update, and this
+lock is the one that should be held while upating and checking the
+sequence number.
 
+dma_fence based drivers are possibly a little different, I think they
+can just use a spinlock, their pattern should probably be something
+like
+
+fault:
+ hmm_range_fault()
+
+ spin_lock()
+ if (mmu_range_read_retry()))
+     goto again
+ dma_fence_init(mrn->fence)
+ spin_unlock()
+
+invalidate:
+ spin_lock()
+ is_inited =3D 'dma fence init has been called'
+ spin_unlock()
+ if (is_inited)
+    dma_fence_wait(fence)
+
+
+I'm not sure, never used dma_fence before. The key thing is that the
+dma_fence_wait() cannot block until after the mmu_range_read_retry() &
+unlock completes. Otherwise it can deadlock with hmm_range_fault().
+
+It would be nice to figure this out and add it to the hmm.rst as we do
+have two drivers using the dma_fence scheme.
+
+Also, the use of a spinlock here probably says we should keep the lock
+external.
+
+But, it sounds like the mmu_range_notifier_update_seq() is a good
+idea, so let me add that in v2.
+
+Jason
