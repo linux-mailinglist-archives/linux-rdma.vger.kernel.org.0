@@ -2,118 +2,177 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6305EE1066
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 05:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F9BE117C
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 07:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729810AbfJWDGu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Oct 2019 23:06:50 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:41183 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727831AbfJWDGu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Oct 2019 23:06:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571800008;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k4pDUbJL5SVqm0FRARnmM0PghrVjCXV2gWquMokKN4M=;
-        b=brI8CY3goEb7jnW9IkmJEp7BNdW+feGZY4z/7JWhs7nmTQ6MijIBwMROu5u05jHe+7ZJHj
-        iFy45OyfEcQ4h4APzL/hh0in41DbfwjzZuZmqMYvNORlj3H4t0qiyFThjkqaC6lHpRKWkC
-        6ItuchF+JpPKokXDuYX2Mc0I1fdut6Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-66-yRk375OLMvexFMzurFWSIw-1; Tue, 22 Oct 2019 23:06:45 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4DC9F476;
-        Wed, 23 Oct 2019 03:06:44 +0000 (UTC)
-Received: from localhost (unknown [10.66.128.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BCE475D6D0;
-        Wed, 23 Oct 2019 03:06:43 +0000 (UTC)
-Date:   Wed, 23 Oct 2019 11:06:41 +0800
-From:   Honggang LI <honli@redhat.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] srp_daemon: Use maximum initiator to target IU size
-Message-ID: <20191023030641.GA14551@dhcp-128-227.nay.redhat.com>
-References: <20191018044104.21353-1-honli@redhat.com>
- <1d811fc0-1f74-b546-b296-a4e9f8c33d86@acm.org>
- <20191018152253.GA32562@dhcp-128-227.nay.redhat.com>
- <21142610-1e01-4ce8-635c-2fe677e69cf9@acm.org>
- <20191022070025.GA20278@dhcp-128-227.nay.redhat.com>
- <5f664232-ca58-c25c-e9b1-e441c053c818@acm.org>
-MIME-Version: 1.0
-In-Reply-To: <5f664232-ca58-c25c-e9b1-e441c053c818@acm.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-MC-Unique: yRk375OLMvexFMzurFWSIw-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
+        id S1730450AbfJWFJB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Oct 2019 01:09:01 -0400
+Received: from mail-eopbgr130072.outbound.protection.outlook.com ([40.107.13.72]:22814
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727980AbfJWFJB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 23 Oct 2019 01:09:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L0EiKpKuLD8/Rz5g64pOhZ+IT1RT/GC64Vyjr7NYKa7zbAP/FFoSJF+WthiiWpOo+FUAo/ugasloqwqFRgTICrtNIGQ291kRzXDnc3XFss08o0bzWWtmnvaTtaNYGk7t2NKOb5RYVPFURFj6eQZymcJj0JInxHJVCQ6eyKknqATxHR0IqpwCojs/eKLX+X6d+uhFxMme5WZSQN3bHigAQvshH7eZlCe3VSOxcDpVelMKkwpDbidf+94xs4ZNRqtLguo6XXweTG+eLfogC4yKXAopgGl/qP2PvYa3T3Wgnyg1C7vSjDXrxAkPSllntNMpZ+47Eg2T0Jcdb/Y/r34E9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J5WDGWZZpjxBQbH3tPRXcycjFuRwRV4QliHAlK05gm8=;
+ b=QASeJq0EhZYZKWWNRtm+ezJtDYwud2ktRzt1EAKezktXcaQ5WVAKHC1pahNhU/Y6IP1cHQcq1zOnYHnzd3WubIyUrAVD9yL3Q3hJVKVx4clsuumX3aHo1bwCkCfbrH6+mj7d+LLrnZi68zhNcw2zXGSpwNEQVnpuKBhVBl57t1JoNvwDX0qZPnlLmC2Hv09i8TYqhOcmH8g3K3dRJlq7Z+LwVhjbtkjOIscvHpmYtkEFbX1vyILVaZ+veRk5qZu7WFQmFt4z4GGlDNIA1UY5ZBDZRmwSDbOmEnRbi47EMxQajGwbwjFF8y+tgys8v4E7Rgm4ZMyUmy0DSemIlORw6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J5WDGWZZpjxBQbH3tPRXcycjFuRwRV4QliHAlK05gm8=;
+ b=JCFs+6slxKkKO1rlp5ktl4f8hVs0t4+POYqHU4ZZ3Bj7+MRkxyF4V3aUkKPHCC6Yzm9BLYXvuy4kfJ7tTnzAQdIkdFKTL/d630mtx5FgqsGdqqb5RJXiKIlNwcUKqQZ+fBcz1Lq2TC2RRYiGQjxP7ed1+bSlbMsEqX8SeVgHmOU=
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
+ AM0PR05MB6433.eurprd05.prod.outlook.com (20.179.35.148) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2367.20; Wed, 23 Oct 2019 05:08:56 +0000
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::64b2:6eb4:f000:3432]) by AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::64b2:6eb4:f000:3432%7]) with mapi id 15.20.2387.019; Wed, 23 Oct 2019
+ 05:08:56 +0000
+From:   Parav Pandit <parav@mellanox.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Daniel Jurgens <danielj@mellanox.com>
+Subject: RE: [PATCH rdma-next 1/3] IB/core: Let IB core distribute cache
+ update events
+Thread-Topic: [PATCH rdma-next 1/3] IB/core: Let IB core distribute cache
+ update events
+Thread-Index: AQHVhxM9S9h4NqlGK0Gqm3lNIdP0f6dnFyAAgACYR0A=
+Date:   Wed, 23 Oct 2019 05:08:56 +0000
+Message-ID: <AM0PR05MB4866B5ABA8F86D60A3FEE299D16B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+References: <20191020065427.8772-1-leon@kernel.org>
+ <20191020065427.8772-2-leon@kernel.org> <20191022195518.GO22766@mellanox.com>
+In-Reply-To: <20191022195518.GO22766@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=parav@mellanox.com; 
+x-originating-ip: [2605:6000:ec82:1c00:9998:a67e:2d73:c34e]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 6d843094-9179-45ef-1107-08d757771af5
+x-ms-traffictypediagnostic: AM0PR05MB6433:|AM0PR05MB6433:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR05MB64339342F8BC5CEDF824ECFDD16B0@AM0PR05MB6433.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 019919A9E4
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(136003)(39860400002)(396003)(346002)(366004)(189003)(199004)(13464003)(14444005)(229853002)(2906002)(15650500001)(66556008)(6246003)(66476007)(33656002)(86362001)(76116006)(107886003)(55016002)(66446008)(6436002)(64756008)(478600001)(14454004)(256004)(9686003)(66946007)(71190400001)(4326008)(11346002)(46003)(8936002)(186003)(71200400001)(25786009)(6116002)(81166006)(81156014)(8676002)(446003)(316002)(54906003)(7696005)(76176011)(53546011)(6506007)(476003)(102836004)(486006)(52536014)(305945005)(7736002)(74316002)(5660300002)(99286004)(110136005);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB6433;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: L71Prtdwr3uRgLgZNvQIZW809DKsCXbgXJNU5z79GZaa45N9ciQjPRf1UgjFesmZp+JcN0NhhddZKRdJ1k6gxwudQLTFzvFJlzGiEqkcq/srKeFNkTmW18QIagC0aWNnQSxkPTgDwbWvh1g2H0cxv12AHp9dbKLvbEcC+kX5cPL4guTOVJ+Him3BkpyRGC25A8sdtSfs8XgdYTj6RZi/eODQuNNhRR/wFXLICQQZFY4Ie45lJ5CDeQ6GoS6h1gDOPlj+vCtEd8TuvNK27hP/KOWp1a3qlS8leakxxI0HtOqRzJdVw3bfFqPIO8CIJz4aK8bw8NDm9QTmyZyg1Nx93IGJdq6hrz1wfQ1tNV8hAeHAltvL+7g/LHKvBMH6UvK2vTJqHISo/Wq6i9M+5UdlzUYHKwlrp11YtY1FvDV/HZdqFc5sEf1uPhYj3buvyHwB
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d843094-9179-45ef-1107-08d757771af5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2019 05:08:56.0388
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yg52KjkcSh4PS0JQUmgOm6beps9d4oVdeK1ho9BWjyKUqhAnMZ0Uv+ZOQYtT7W2NTpoVGENaulgrbG8CS/E51Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6433
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 03:10:26PM -0700, Bart Van Assche wrote:
-> On 2019-10-22 00:00, Honggang LI wrote:
-> > +static bool use_imm_data(void)
-> > +{
-> > +#ifdef __linux__
-> > +=09bool ret =3D false;
-> > +=09char flag =3D 0;
-> > +=09int cnt;
-> > +=09int fd =3D open("/sys/module/ib_srp/parameters/use_imm_data", O_RDO=
-NLY);
+
+
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@mellanox.com>
+> Sent: Tuesday, October 22, 2019 2:55 PM
+> To: Leon Romanovsky <leon@kernel.org>
+> Cc: Doug Ledford <dledford@redhat.com>; Leon Romanovsky
+> <leonro@mellanox.com>; RDMA mailing list <linux-rdma@vger.kernel.org>;
+> Daniel Jurgens <danielj@mellanox.com>; Parav Pandit
+> <parav@mellanox.com>
+> Subject: Re: [PATCH rdma-next 1/3] IB/core: Let IB core distribute cache
+> update events
+>=20
+> On Sun, Oct 20, 2019 at 09:54:25AM +0300, Leon Romanovsky wrote:
+> > diff --git a/drivers/infiniband/core/device.c
+> > b/drivers/infiniband/core/device.c
+> > index 2f89c4d64b73..e9ab1289c224 100644
+> > +++ b/drivers/infiniband/core/device.c
+> > @@ -1951,15 +1951,7 @@ void ib_unregister_event_handler(struct
+> > ib_event_handler *event_handler)  }
+> > EXPORT_SYMBOL(ib_unregister_event_handler);
+> >
+> > -/**
+> > - * ib_dispatch_event - Dispatch an asynchronous event
+> > - * @event:Event to dispatch
+> > - *
+> > - * Low-level drivers must call ib_dispatch_event() to dispatch the
+> > - * event to all registered event handlers when an asynchronous event
+> > - * occurs.
+> > - */
+> > -void ib_dispatch_event(struct ib_event *event)
+> > +void ib_dispatch_cache_event_clients(struct ib_event *event)
+> >  {
+>=20
+> no kdoc for this?
+>
+I dropped the kdoc because it was an internal API, not exposed to other ker=
+nel modules.=20
+ And added for the external one below.
+
+> >  	unsigned long flags;
+> >  	struct ib_event_handler *handler;
+> > @@ -1971,6 +1963,22 @@ void ib_dispatch_event(struct ib_event *event)
+> >
+> >  	spin_unlock_irqrestore(&event->device->event_handler_lock, flags);
+> > }
 > > +
-> > +=09if (fd < 0)
-> > +=09=09return false;
-> > +=09cnt =3D read(fd, &flag, 1);
-> > +=09if (cnt !=3D 1)
-> > +=09=09return false;
-> > +
-> > +=09if (!strncmp(&flag, "Y", 1))
-> > +=09=09ret =3D true;
-> > +=09close(fd);
-> > +=09return ret;
-> > +#else
-> > +=09return false;
-> > +#endif
+> > +/**
+> > + * ib_dispatch_event - Dispatch an asynchronous event
+> > + * @event:Event to dispatch
+> > + *
+> > + * Low-level drivers must call ib_dispatch_event() to dispatch the
+> > + * event to all registered event handlers when an asynchronous event
+> > + * occurs.
+> > + */
+> > +void ib_dispatch_event(struct ib_event *event) {
+> > +	if (ib_is_cache_update_event(event))
+> > +		ib_enqueue_cache_update_event(event);
+> > +	else
+> > +		ib_dispatch_cache_event_clients(event);
 > > +}
+> >  EXPORT_SYMBOL(ib_dispatch_event);
 >=20
-> There is already plenty of Linux-specific code in srp_daemon. The #ifdef
-> __linux__ / #endif guard does not seem useful to me.
-
-Will delete the guard.
-
+> It seems like there is now some big mess here, many of the users of event=
+s,
+> including cache, acctually do need a blocking context to do their work, w=
+hile
+> this function is supposed to be atomic context for the driver.
 >=20
-> There is a file descriptor leak in the above function, namely if read()
-> returns another value than 1.
-
-Yes, will fix it.
-
+> So, after this change, many event types are now guarenteed to be called
+> from a blocking context in a WQ - but we still go ahead and do silly thin=
+gs
+> like launch more work to get into blocking contexts from the other users
 >=20
-> The use_imm_data kernel module parameter was introduced in kernel v5.0
-> (commit 882981f4a411; "RDMA/srp: Add support for immediate data"). The
-> max_it_iu_size will be introduced in kernel v5.5 (commit 547ed331bbe8;
-> "RDMA/srp: Add parse function for maximum initiator to target IU size").
->=20
-> So the above check will help for kernel versions before v5.0 but not for
-> kernel versions [v5.0..v5.5).=20
-
-Yes, you are right. The patch does not fix the issue for kernel
-versions [v5.0..v5.5). But it also does not do anything bad for
-kernel versions before v5.5 (commit 547ed331bbe8). It will fix
-the issue for kernel after 547ed331bbe8.
-
-> If that is really what you want, please
-> explain this in a comment above the use_imm_data() function.
-
-Yes, will add a comment for it.
-
-thanks
+> Thus I'm wondering if this wouldn't be better off just always pushing eve=
+nts
+> into a wq and running the notifier subscriptions sequentially?
+>
+Are you saying we should drop the else part above and always do ib_enqueue_=
+cache_update_event()?
+If so, yes, I think it should be fine.
+Only event that I wanted to deliver faster was IB_EVENT_SRQ_LIMIT_REACHED.
+However given no kernel consumer interested in it, doing fast event deliver=
+y for such event is not so useful.
+We can slim down ib_is_cache_update_event().
 
