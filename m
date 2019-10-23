@@ -2,253 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C9EEEE21EF
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 19:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F05E21F1
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 19:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730125AbfJWRkF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Oct 2019 13:40:05 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:33740 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729283AbfJWRkF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Oct 2019 13:40:05 -0400
-Received: by mail-wr1-f52.google.com with SMTP id s1so14284647wro.0
-        for <linux-rdma@vger.kernel.org>; Wed, 23 Oct 2019 10:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GZ8n6S4NfaKtQTi/gcDWbIv2/8+bvhyDihcDm9eCIPA=;
-        b=O+aqbRZ1MFusrcwePHUxgPWrdkHumhkAX3g0NotQ30+a0L6aecwVBFItRnGlohitCk
-         1+rOOXmC467+5CTMC1RUOwWsafKB77Vfr+B8Abg/vlLXjZ6jcT3TKFButLPjNVOFlX7H
-         8Ff4oEkh/WogGGlDTIyV2REOP/i79DDiP/NT7TiSfozWpjdiH0AkeGCDnsP2qOm11Go4
-         vB46Hr7h7mLfDq+2XWOcrjOcg3VOzLauT+MghqceqAmfgL+B9BRzUPHpasGPkHsAeqg1
-         klmsjvmSSx1RHtERafv7PEkyPK+sPODT5kX2OwxZ4vousfVC+RRQQXSMXRKNYt+KL/tL
-         2kow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GZ8n6S4NfaKtQTi/gcDWbIv2/8+bvhyDihcDm9eCIPA=;
-        b=K2hEzvSk2lduMscncR0goI4w7j/AlXZaZoj3oFwEHROPlFQTb8/cbXrfmMA7bFs5ug
-         Tnnp1VAvwsHJb7QihyxHs3Y6v3FGAjIWCWdN9Upl0CBEpAMAxuy9B0VmJKUwGiEo8at3
-         xh7N1GPAw0ht5yDwSxNP3IfslXfslFS4pNf8QtLtNfOdNzeLPcog/BVnxDSv5sUMivNi
-         g9dI/9ng8nG1IpbteewYQSEiy5hDBcicXo1cW6cp12vuNPGluvbWUJFHhXVhyyj0Jvra
-         FOxDAXwBg+WpDoR5QLWfNEiCh2cV366Ff+3G4LmNgL2P11AlS43JC24EDXOM4CqSWB28
-         DdFw==
-X-Gm-Message-State: APjAAAUXfctuLtOlV1Hr0ElsffTJIv3/0UKsQRfoDhv2WupwrVGoGbpW
-        q9Zzi2ovNPJCdcx7qBwKB8e37YXp5FY=
-X-Google-Smtp-Source: APXvYqynxPAk3t+DQvgVQV5aAg4uWVHa/GYyw+fEgm+NRCrfWhGY8+8l9XRxzO+8rZuFH9jjZEQ5iA==
-X-Received: by 2002:adf:da4e:: with SMTP id r14mr9174307wrl.375.1571852402155;
-        Wed, 23 Oct 2019 10:40:02 -0700 (PDT)
-Received: from kheib-workstation.redhat.com (bzq-79-179-0-252.red.bezeqint.net. [79.179.0.252])
-        by smtp.gmail.com with ESMTPSA id u1sm33183252wru.90.2019.10.23.10.40.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2019 10:40:01 -0700 (PDT)
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH for-next] selftests: rdma: Add rdma tests
-Date:   Wed, 23 Oct 2019 20:39:54 +0300
-Message-Id: <20191023173954.29291-1-kamalheib1@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S1729203AbfJWRlZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Oct 2019 13:41:25 -0400
+Received: from mail-eopbgr50064.outbound.protection.outlook.com ([40.107.5.64]:16802
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730976AbfJWRlZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 23 Oct 2019 13:41:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=imlTRHwuuIdxelI1vnrfhjgrhbN7K0aH3nB8e8+65zFrS6tHn0i5h+D+brmZa+9uQn7tWruB5fXXk0tbnFEAhoXczMAROVU7RBmG6cs/lhx6Ba+cbbqcwD2DQGE4sqn7sB2T0DxoeMVV5Gp1g6uasVHWUu4Y8R1p8UbEs7dMU6ZLor9DwbsWFUBRRGtBc609U0JOf7XY1L9UjwfoWfKtzOPwBHDQos7lAkGtmova5Wu+Ke7+2sYqYobrLDE6n1s2nLPZAeRN6+Pn9wcagLSB27g6LpEWSBJw4k8M/PtWlcJkXa+t8R4UqTgxhR6CkqLcS8iTBDyHH+oh4Jra+YUHMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uYr8eHaS/++X0xeIT8eYyRCLOAXUsQfVCdX4KlJfgBA=;
+ b=Gt6FOzjUbUWvFkVeHGR2bnZgpsBiG3WxuZpl5ICfBzvMtQBNF5cAZ0U84guCgd7yY2t0PlJgwD6wf/MXhmvUXP5j0JsZICeZHLoeGRe88Vae6KGtLDTnUuFNi6TMtrYQejvxWirHNBALXXTzOeFz6UHFwv2HbyZZa+brwzAggqTQa9lydbAjuMnWjvoHo85HV+tFvsuOa03InF3nn+kR/kPZksjKW2iWk1lNgGXqN+Bw47/0kDv+rbpQlOYOieqEOShfYVL71ndQ/mKAsdGTTEp1ML38puxMkpr90XhcgwMJxp0NarTOncwhsiHfYb2KIeW6PDByWywTlydD8gOUAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uYr8eHaS/++X0xeIT8eYyRCLOAXUsQfVCdX4KlJfgBA=;
+ b=bXLckyClcd+H+WMi2kB5tWDoh53267N6FnHYe5TQrVXDPACDIVOVE+GfjS4GS12yJ3TfMQ0fQNeqPnNx9Qj2dCa/sccEhnNZzVviLPzXe1M1zL4SqSmNLa63a/d2TptHEXMVf05qLVM0qBKtFi0lZ3OxkxKVOKWkpxWJR5XOq7I=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB3357.eurprd05.prod.outlook.com (10.170.237.31) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2387.20; Wed, 23 Oct 2019 17:40:42 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::75ae:b00b:69d8:3db0]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::75ae:b00b:69d8:3db0%7]) with mapi id 15.20.2367.025; Wed, 23 Oct 2019
+ 17:40:41 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Parav Pandit <parav@mellanox.com>
+CC:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Daniel Jurgens <danielj@mellanox.com>
+Subject: Re: [PATCH rdma-next 1/3] IB/core: Let IB core distribute cache
+ update events
+Thread-Topic: [PATCH rdma-next 1/3] IB/core: Let IB core distribute cache
+ update events
+Thread-Index: AQHVhxM94+KDX9EQUkqFPNNVbTrJ86dnFxsAgACarwCAANIEgA==
+Date:   Wed, 23 Oct 2019 17:40:41 +0000
+Message-ID: <20191023174037.GY22766@mellanox.com>
+References: <20191020065427.8772-1-leon@kernel.org>
+ <20191020065427.8772-2-leon@kernel.org> <20191022195518.GO22766@mellanox.com>
+ <AM0PR05MB4866B5ABA8F86D60A3FEE299D16B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+In-Reply-To: <AM0PR05MB4866B5ABA8F86D60A3FEE299D16B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BN8PR04CA0060.namprd04.prod.outlook.com
+ (2603:10b6:408:d4::34) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.162.113.180]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: a34ea325-d4f8-4448-5801-08d757e01fe3
+x-ms-traffictypediagnostic: VI1PR05MB3357:|VI1PR05MB3357:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB3357119F1378484A1EDA91AFCF6B0@VI1PR05MB3357.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 019919A9E4
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(136003)(396003)(346002)(39860400002)(366004)(199004)(189003)(66556008)(5660300002)(37006003)(316002)(66476007)(66446008)(1076003)(64756008)(66946007)(66066001)(71200400001)(71190400001)(54906003)(14444005)(36756003)(8936002)(86362001)(256004)(81166006)(99286004)(81156014)(186003)(33656002)(6436002)(6506007)(6862004)(107886003)(6636002)(4326008)(386003)(6486002)(26005)(14454004)(52116002)(76176011)(102836004)(2906002)(478600001)(446003)(486006)(476003)(229853002)(6246003)(11346002)(2616005)(6512007)(3846002)(6116002)(7736002)(305945005)(25786009)(8676002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3357;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4K7azIcnBsuyrSrJDBB2778bz28XoysnSkqyi4mL4Wmt9au4s9xa1l47PzkxT8xL7DkLywH/AJKpV2ky0HQhhn/MTbmy3MdYQt3ZIy+tC/oFgeJrnqe30Mh4XIjOiULbB/sQ5H36xqxBBsVbdDnfiQs4ph7x8VdyUZhAr8UEbLDza0P0f/4l+oueRG1unvk0p9z4XxHWFnkW98Hzo6JvGuPcmuW+sTjsPsrLvEtEP+WOiIixiVpO00JryZ81d8ZLmY67GHqP4Ke7ZGAhQ/zDN4RMuFMg0QJZEZqrVMdnOlHO0G3rV3XvqCIRCrxLyTy+96ZnQ84Pa0K1wAReG96sAUttNh8QbIva+vyXfe+zY5wiIw6ZFXGalRXr11kGRpJ1xETk1vEJ7Wx2JWdeIVPoJxwhuQh8s6y5bz+lraUqWlXU2inEUFJKh1JcGVvgm5+i
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <45D15685D095F34C922AFC44DE60A9FE@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a34ea325-d4f8-4448-5801-08d757e01fe3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2019 17:40:41.6947
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2XqsXjN2oJuwb8N7lqZWqonrdSIMIje71jQovSMkGbp+K9sNKioV6OGN0hPWsup8WvAcBWAtvJcsyjtRjth6iw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3357
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add a new directory to house the rdma specific tests and add the first
-rdma_dev.sh test that checks the renaming and setting of adaptive
-moderation using the rdma tool for the available RDMA devices in the
-system.
+On Wed, Oct 23, 2019 at 05:08:56AM +0000, Parav Pandit wrote:
+> > >  	unsigned long flags;
+> > >  	struct ib_event_handler *handler;
+> > > @@ -1971,6 +1963,22 @@ void ib_dispatch_event(struct ib_event *event)
+> > >
+> > >  	spin_unlock_irqrestore(&event->device->event_handler_lock, flags);
+> > > }
+> > > +
+> > > +/**
+> > > + * ib_dispatch_event - Dispatch an asynchronous event
+> > > + * @event:Event to dispatch
+> > > + *
+> > > + * Low-level drivers must call ib_dispatch_event() to dispatch the
+> > > + * event to all registered event handlers when an asynchronous event
+> > > + * occurs.
+> > > + */
+> > > +void ib_dispatch_event(struct ib_event *event) {
+> > > +	if (ib_is_cache_update_event(event))
+> > > +		ib_enqueue_cache_update_event(event);
+> > > +	else
+> > > +		ib_dispatch_cache_event_clients(event);
+> > > +}
+> > >  EXPORT_SYMBOL(ib_dispatch_event);
+> >=20
+> > It seems like there is now some big mess here, many of the users of eve=
+nts,
+> > including cache, acctually do need a blocking context to do their work,=
+ while
+> > this function is supposed to be atomic context for the driver.
+> >=20
+> > So, after this change, many event types are now guarenteed to be called
+> > from a blocking context in a WQ - but we still go ahead and do silly th=
+ings
+> > like launch more work to get into blocking contexts from the other user=
+s
+> >=20
+> > Thus I'm wondering if this wouldn't be better off just always pushing e=
+vents
+> > into a wq and running the notifier subscriptions sequentially?
+> >
+> Are you saying we should drop the else part above and always do
+> ib_enqueue_cache_update_event()?
 
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
----
- tools/testing/selftests/Makefile         |  1 +
- tools/testing/selftests/rdma/Makefile    |  6 ++
- tools/testing/selftests/rdma/lib.sh      | 55 ++++++++++++++++
- tools/testing/selftests/rdma/rdma_dev.sh | 83 ++++++++++++++++++++++++
- 4 files changed, 145 insertions(+)
- create mode 100644 tools/testing/selftests/rdma/Makefile
- create mode 100644 tools/testing/selftests/rdma/lib.sh
- create mode 100755 tools/testing/selftests/rdma/rdma_dev.sh
+Yes, but also now saying that all notifier callbacks are called from
+work queues and can block for short periods.
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index c3feccb99ff5..870b9d0c36c9 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -37,6 +37,7 @@ TARGETS += powerpc
- TARGETS += proc
- TARGETS += pstore
- TARGETS += ptrace
-+TARGETS += rdma
- TARGETS += rseq
- TARGETS += rtc
- TARGETS += seccomp
-diff --git a/tools/testing/selftests/rdma/Makefile b/tools/testing/selftests/rdma/Makefile
-new file mode 100644
-index 000000000000..56df64b9b5d9
---- /dev/null
-+++ b/tools/testing/selftests/rdma/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
-+# Makefile for rdma selftests
-+
-+TEST_PROGS := rdma_dev.sh
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/rdma/lib.sh b/tools/testing/selftests/rdma/lib.sh
-new file mode 100644
-index 000000000000..5f1cc08bc6b2
---- /dev/null
-+++ b/tools/testing/selftests/rdma/lib.sh
-@@ -0,0 +1,55 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+
-+EXIT_STATUS=0
-+RET=0
-+#Kselftest framework requirement - SKIP code is 4
-+ksft_skip=4
-+
-+check_and_skip()
-+{
-+	local rc=$1
-+	local msg=$2
-+
-+	if [ $rc -ne 0 ]; then
-+		echo "SKIP: $msg"
-+		exit $ksft_skip
-+	fi
-+}
-+
-+check_ret_val()
-+{
-+	local rc=$1
-+	local msg=$2
-+
-+	if [[ $RET -eq 0 && $rc -ne 0 ]]; then
-+		RET=$rc
-+		retmsg=$msg
-+	fi
-+}
-+
-+print_results()
-+{
-+	local test_name=$1
-+
-+	if [[ $RET -ne 0 ]]; then
-+		EXIT_STATUS=1
-+		printf "TEST: %-60s [FAIL]\n" "$test_name"
-+		if [[ ! -z "$retmsg" ]]; then
-+			printf "\t%s\n" "$retmsg"
-+		fi
-+		return 1
-+	fi
-+
-+	printf "TEST: %-60s [OK]\n" "$test_name"
-+	return 0
-+}
-+
-+run_tests()
-+{
-+	local cur_test
-+
-+	for cur_test in ${ALL_TESTS}; do
-+		$cur_test
-+	done
-+}
-diff --git a/tools/testing/selftests/rdma/rdma_dev.sh b/tools/testing/selftests/rdma/rdma_dev.sh
-new file mode 100755
-index 000000000000..ca3ae7ddac9b
---- /dev/null
-+++ b/tools/testing/selftests/rdma/rdma_dev.sh
-@@ -0,0 +1,83 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+
-+lib=$(dirname $0)/lib.sh
-+source $lib
-+
-+ALL_TESTS="
-+	test_rename
-+	test_adaptive_moderation
-+"
-+
-+test_rename()
-+{
-+	local dev=$RDMA_DEV
-+
-+	rdma dev set $dev name "tmp_$dev"
-+	check_ret_val $? "Failed to rename $dev to tmp_$dev"
-+
-+	rdma dev set tmp_$dev name $dev
-+	check_ret_val $? "Failed to restore $dev name"
-+
-+	print_results "$dev: Rename"
-+}
-+
-+test_adaptive_moderation()
-+{
-+	local dev=$RDMA_DEV
-+
-+	rdma dev show $dev -d | grep -qE "adaptive-moderation"
-+	check_and_skip $? "Setting adaptive-moderation is not supported"
-+
-+	rdma dev show $dev -d | grep -qE "adaptive-moderation off"
-+	if [ $? -ne 0 ]; then
-+		rdma dev set $dev adaptive-moderation off
-+		check_ret_val $? "$dev: Failed to set adaptive-moderation to on"
-+
-+		rdma dev set $dev adaptive-moderation on
-+		check_ret_val $? "$dev: Failed to restroe adaptive-moderation to off"
-+	else
-+		rdma dev set $dev adaptive-moderation on
-+		check_ret_val $? "$dev: Failed to set adaptive-moderation to on"
-+
-+		rdma dev set $dev adaptive-moderation off
-+		check_ret_val $? "$dev: Failed to restroe adaptive-moderation to off"
-+	fi
-+
-+	print_results "$dev: Setting adaptive-moderation"
-+}
-+
-+prepare()
-+{
-+	TMP_LIST_RDMADEV="$(mktemp)"
-+	if [ ! -e $TMP_LIST_RDMADEV ]; then
-+		echo "FAIL: Failed to create temp file to hold rdma devices"
-+		exit 1
-+	fi
-+}
-+
-+cleanup()
-+{
-+	rm $TMP_LIST_RDMADEV
-+}
-+
-+trap cleanup EXIT
-+
-+check_and_skip $(id -u) "Need root privileges"
-+
-+rdma dev show 2>/dev/null >/dev/null
-+check_and_skip $? "Can not run the test without rdma tool"
-+
-+prepare
-+
-+rdma dev show | grep '^[0-9]' | cut -d" " -f 2 | cut -d: -f1> "$TMP_LIST_RDMADEV"
-+test -s "$TMP_LIST_RDMADEV"
-+check_and_skip $? "No RDMA devices available"
-+
-+while read rdma_dev
-+do
-+	RDMA_DEV=$rdma_dev
-+	run_tests
-+done < $TMP_LIST_RDMADEV
-+
-+exit $EXIT_STATUS
--- 
-2.20.1
+This seems it would simplify many of the users??
 
+And not using the ib_enqueue_cache_update_event() but a simple
+blocking_notifier_call_chain() with the cache always at the front
+
+> Only event that I wanted to deliver faster was
+> IB_EVENT_SRQ_LIMIT_REACHED. =20
+
+It might make sense to have an atomic event list for such things in
+future..
+
+Jason
