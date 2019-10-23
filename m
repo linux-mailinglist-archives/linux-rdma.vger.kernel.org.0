@@ -2,30 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D07AE222A
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 19:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314B8E223E
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 20:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731858AbfJWRzm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 23 Oct 2019 13:55:42 -0400
-Received: from mga09.intel.com ([134.134.136.24]:1186 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730131AbfJWRzm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 23 Oct 2019 13:55:42 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Oct 2019 10:55:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,221,1569308400"; 
-   d="scan'208";a="188329106"
-Received: from orsmsx104.amr.corp.intel.com ([10.22.225.131])
-  by orsmga007.jf.intel.com with ESMTP; 23 Oct 2019 10:55:41 -0700
-Received: from orsmsx101.amr.corp.intel.com ([169.254.8.212]) by
- ORSMSX104.amr.corp.intel.com ([169.254.4.167]) with mapi id 14.03.0439.000;
- Wed, 23 Oct 2019 10:55:39 -0700
-From:   "Ertman, David M" <david.m.ertman@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        id S2387538AbfJWSBL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Oct 2019 14:01:11 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:36651 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732365AbfJWSBL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Oct 2019 14:01:11 -0400
+Received: by mail-qt1-f196.google.com with SMTP id d17so18977094qto.3
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Oct 2019 11:01:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=NQ6tKgTGVcyRqL0Uez6+bIGFAD/xWLx1fHm590a6YIQ=;
+        b=jtFkd7hTl76drrjU8sdI7bunECUCsC8ktafivS+U7bIYhMIJ+zS0iQCa3pXpQdQ6eq
+         ypwkFXGe4dLgpYRMYpPvbMkx0zuXvfkS+rPNPyiXP2K50Ttg65B6sgq7QNUc7J3mH4Dv
+         zGw/uJhn1LK8R0ihpu7IwnJcBNJliEsP7HZ+Q48B2QVZRS68WSoXfAfZaaKnNl4RbgZk
+         jfkt2oBLSBKBbMoszkfCf3BkrStERShu88Uqhweb9o4W+jaGr4JzXe1FZhlMy5ArvlM2
+         QasjfUN1oOuG8HVPAln2AC9gJJWL0NOCcH5jvTrQnYGFo4pT+wVlg5LNR43krehTP0yD
+         JYCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NQ6tKgTGVcyRqL0Uez6+bIGFAD/xWLx1fHm590a6YIQ=;
+        b=UDfz3JBPRXughjiMSYr6JLZKhTlzgqUzYRqxISYxBb0dL03llxctUcvRauY809koSN
+         0BaptkaMPxdoSodydL4KFN0gWf6VMoBIpKbrA+icBA02jGU61F5NRqeyMVPxPtzfDsRp
+         mbMuOpQy+8DSrbS1Gl+5HjPIdgu+Ki4VqfP9yCU6SMHqDKL6EdR8q72+36/itaLifnby
+         Qej68yMv+h32QSpxFYEjM3kuv87mG86JnjNGAs7wPX8vtZdgKsnLhroIVLt2XLJUlrQ2
+         RdTxvDzNr+GTXxBo1i3pq3pcMxZ76EMd97U56P+uGgKggoc6p2aU/6VS3P1y8uxfFbv+
+         4ryw==
+X-Gm-Message-State: APjAAAWi0v7XtiLCU4KT9fhX2PePbiNVwyaozFPD03N1tyUn8y599IUH
+        G7+CDqgV71mVlAcN6kDMEjkNaQ==
+X-Google-Smtp-Source: APXvYqzbUVVpjQLD1S33F3Se+dUpl1cwA2mMXn+N9c27dQBJQnj92hcffr8ioNzWSaQQcv+3ilUqbg==
+X-Received: by 2002:a0c:9adf:: with SMTP id k31mr2446593qvf.126.1571853670122;
+        Wed, 23 Oct 2019 11:01:10 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id y29sm11774227qtc.8.2019.10.23.11.01.09
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 23 Oct 2019 11:01:09 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iNKwX-0006KT-0c; Wed, 23 Oct 2019 15:01:09 -0300
+Date:   Wed, 23 Oct 2019 15:01:09 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Ertman, David M" <david.m.ertman@intel.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
         "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
         "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
@@ -33,13 +58,9 @@ CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
         "dledford@redhat.com" <dledford@redhat.com>,
         "Ismail, Mustafa" <mustafa.ismail@intel.com>,
         "Patil, Kiran" <kiran.patil@intel.com>
-Subject: RE: [RFC 01/20] ice: Initialize and register multi-function device
+Subject: Re: [RFC 01/20] ice: Initialize and register multi-function device
  to provide RDMA
-Thread-Topic: [RFC 01/20] ice: Initialize and register multi-function device
- to provide RDMA
-Thread-Index: AQGOetFAPbFeoIHdxRJDZlVegIphLQHJRZnhAdxiwysB1QCSuQJ6/k4op44H7uCAKV2vAP//jAtw
-Date:   Wed, 23 Oct 2019 17:55:38 +0000
-Message-ID: <2B0E3F215D1AB84DA946C8BEE234CCC97B2E0C84@ORSMSX101.amr.corp.intel.com>
+Message-ID: <20191023180108.GQ23952@ziepe.ca>
 References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
  <20190926164519.10471-2-jeffrey.t.kirsher@intel.com>
  <20190926180556.GB1733924@kroah.com>
@@ -47,91 +68,36 @@ References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
  <20190927051320.GA1767635@kroah.com>
  <2B0E3F215D1AB84DA946C8BEE234CCC97B2B1A28@ORSMSX101.amr.corp.intel.com>
  <20191023174448.GP23952@ziepe.ca>
-In-Reply-To: <20191023174448.GP23952@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiYTE5YjdmMDgtYTI5OC00MDk1LWJmODQtNGZkMmUxMzVhZDQzIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiUTRwc0tOamFyTURwTUN0elJlMkJWdE5rQVJMZWVSOUdPc2hHS1VNcFloTFp0TU13cHAyNXNLdzFCbGl6RklnVSJ9
-x-ctpclassification: CTP_NT
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.139]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+ <2B0E3F215D1AB84DA946C8BEE234CCC97B2E0C84@ORSMSX101.amr.corp.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2B0E3F215D1AB84DA946C8BEE234CCC97B2E0C84@ORSMSX101.amr.corp.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> -----Original Message-----
-> From: Jason Gunthorpe [mailto:jgg@ziepe.ca]
-> Sent: Wednesday, October 23, 2019 10:45 AM
-> To: Ertman, David M <david.m.ertman@intel.com>
-> Cc: gregkh@linuxfoundation.org; Nguyen, Anthony L
-> <anthony.l.nguyen@intel.com>; Kirsher, Jeffrey T
-> <jeffrey.t.kirsher@intel.com>; netdev@vger.kernel.org; linux-
-> rdma@vger.kernel.org; dledford@redhat.com
-> Subject: Re: [RFC 01/20] ice: Initialize and register multi-function device to
-> provide RDMA
+On Wed, Oct 23, 2019 at 05:55:38PM +0000, Ertman, David M wrote:
+> > Did any resolution happen here? Dave, do you know what to do to get Greg's
+> > approval?
+> > 
+> > Jason
 > 
-> On Fri, Sep 27, 2019 at 06:03:51PM +0000, Ertman, David M wrote:
-> > > From: gregkh@linuxfoundation.org [mailto:gregkh@linuxfoundation.org]
-> > > Sent: Thursday, September 26, 2019 10:13 PM
-> > > To: Nguyen, Anthony L <anthony.l.nguyen@intel.com>
-> > > Cc: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>;
-> > > jgg@mellanox.com; netdev@vger.kernel.org;
-> > > linux-rdma@vger.kernel.org; dledford@redhat.com; Ertman, David M
-> > > <david.m.ertman@intel.com>
-> > > Subject: Re: [RFC 01/20] ice: Initialize and register multi-function
-> > > device to provide RDMA
-> > >
-> > > On Thu, Sep 26, 2019 at 11:39:22PM +0000, Nguyen, Anthony L wrote:
-> > > > On Thu, 2019-09-26 at 20:05 +0200, Greg KH wrote:
-> > > > > On Thu, Sep 26, 2019 at 09:45:00AM -0700, Jeff Kirsher wrote:
-> > > > > > From: Tony Nguyen <anthony.l.nguyen@intel.com>
-> > > > > >
-> > > > > > The RDMA block does not advertise on the PCI bus or any other bus.
-> > > > >
-> > > > > Huh?  How do you "know" where it is then?  Isn't is usually
-> > > > > assigned to a PCI device?
-> > > >
-> > > > The RDMA block does not have its own PCI function so it must
-> > > > register and interact with the ice driver.
-> > >
-> > > So the "ice driver" is the real thing controlling the pci device?
-> > > How does it "know" about the RDMA block?
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> >
-> > The ICE driver loads and registers to control the PCI device.  It then
-> > creates an MFD device with the name 'ice_rdma'. The device data
-> > provided to the MFD subsystem by the ICE driver is the struct
-> > iidc_peer_dev which contains all of the relevant information that the
-> > IRDMA peer will need to access this PF's IIDC API callbacks
-> >
-> > The IRDMA driver loads as a software only driver, and then registers a
-> > MFD function driver that takes ownership of MFD devices named 'ice_rdma'.
-> > This causes the platform bus to perform a matching between ICE's MFD
-> > device and IRDMA's driver.  Then the patform bus will call the IRDMA's
-> > IIDC probe function.  This probe provides the device data to IRDMA.
+> This was the last communication that I saw on this topic.  I was taking Greg's silence as
+> "Oh ok, that works" :)  I hope I was not being too optimistic!
 > 
-> Did any resolution happen here? Dave, do you know what to do to get Greg's
-> approval?
+> If there is any outstanding issue I am not aware of it, but please let me know if I am 
+> out of the loop!
 > 
-> Jason
+> Greg, if you have any other concerns or questions I would be happy to address them! 
 
-This was the last communication that I saw on this topic.  I was taking Greg's silence as
-"Oh ok, that works" :)  I hope I was not being too optimistic!
+I was hoping to hear Greg say that taking a pci_device, feeding it to
+the multi-function-device stuff to split it to a bunch of
+platform_device's is OK, or that mfd should be changed somehow..
 
-If there is any outstanding issue I am not aware of it, but please let me know if I am 
-out of the loop!
+As far I as I was interested in the, the basic high level approach
+seems much better than the previous attempt using net notifiers.
 
-Greg, if you have any other concerns or questions I would be happy to address them! 
-
--Dave E
-
+Jason
