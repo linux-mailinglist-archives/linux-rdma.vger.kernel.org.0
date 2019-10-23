@@ -2,54 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1D2E1F65
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 17:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B109DE2107
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Oct 2019 18:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392476AbfJWPeI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Oct 2019 11:34:08 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54667 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2390400AbfJWPeH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Oct 2019 11:34:07 -0400
+        id S1726409AbfJWQwc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Oct 2019 12:52:32 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53406 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726316AbfJWQwc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 23 Oct 2019 12:52:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571844846;
+        s=mimecast20190719; t=1571849551;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Nrtde6rE6r+glN1bkK8a7f6By+ITTgZtHt+agfRY3Gk=;
-        b=ZDbWkkkjZht8TBpL0xQ+lUU+BtVDH5p0e4iZZ+m55ZbZlyE4XAigCJVNlOv1ouopHtfMJx
-        MwmfZAL3tbmyuKM0lB1Irrc49Xfor5VKo3p/nVcWgDoaA9VNXCMKJGfdSCQPc6QHKDBXon
-        L7jRYAJUkoqb1Sq1t+r4StUNV6xHbAs=
+        bh=GanjAE8HfQ8qzFKCa/r64Dq3fD+/mSUc5zOx+PGr8eg=;
+        b=CFbPw7ge1cEfd6zfruWiTMMy1isjVe5aniMuB2kfrzSzWWSiM1kr1RJglVlo13tsECdgZh
+        EKhvt4LjbYskVdW2l7zOLJZzbDfU+YUn53o6VsV55X+eR2eoyXvd2oGmomU2SxYCs7jF/l
+        UBY1iGuNiC8Mp5RzMD3i8zQ06GTYJ54=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-113-eNoGpBdyNK6S7LdwgYHbow-1; Wed, 23 Oct 2019 11:34:02 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-166-kiwu8J-9MZWZX-y3vAa-XQ-1; Wed, 23 Oct 2019 12:52:28 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F8B21005500;
-        Wed, 23 Oct 2019 15:34:01 +0000 (UTC)
-Received: from localhost (unknown [10.66.128.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9F83A1001DD7;
-        Wed, 23 Oct 2019 15:34:00 +0000 (UTC)
-Date:   Wed, 23 Oct 2019 23:33:57 +0800
-From:   Honggang LI <honli@redhat.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] srp_daemon: Use maximum initiator to target IU size
-Message-ID: <20191023153357.GA9650@dhcp-128-227.nay.redhat.com>
-References: <20191018044104.21353-1-honli@redhat.com>
- <1d811fc0-1f74-b546-b296-a4e9f8c33d86@acm.org>
- <20191018152253.GA32562@dhcp-128-227.nay.redhat.com>
- <21142610-1e01-4ce8-635c-2fe677e69cf9@acm.org>
- <20191022070025.GA20278@dhcp-128-227.nay.redhat.com>
- <5f664232-ca58-c25c-e9b1-e441c053c818@acm.org>
- <20191023030641.GA14551@dhcp-128-227.nay.redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D64580183E;
+        Wed, 23 Oct 2019 16:52:26 +0000 (UTC)
+Received: from redhat.com (ovpn-124-105.rdu2.redhat.com [10.10.124.105])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 258D660126;
+        Wed, 23 Oct 2019 16:52:25 +0000 (UTC)
+Date:   Wed, 23 Oct 2019 12:52:23 -0400
+From:   Jerome Glisse <jglisse@redhat.com>
+To:     christian.koenig@amd.com
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Yang, Philip" <Philip.Yang@amd.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+Subject: Re: [PATCH hmm 00/15] Consolidate the mmu notifier interval_tree and
+ locking
+Message-ID: <20191023165223.GA4163@redhat.com>
+References: <d6bcbd2a-2519-8945-eaf5-4f4e738c7fa9@amd.com>
+ <20191018203608.GA5670@mellanox.com>
+ <f7e34d8f-f3b0-b86d-7388-1f791674a4a9@amd.com>
+ <20191021135744.GA25164@mellanox.com>
+ <e07092c3-8ccd-9814-835c-6c462017aff8@amd.com>
+ <20191021151221.GC25164@mellanox.com>
+ <20191022075735.GV11828@phenom.ffwll.local>
+ <20191022150109.GF22766@mellanox.com>
+ <20191023090858.GV11828@phenom.ffwll.local>
+ <13edf841-421e-3522-fcec-ef919c2013ef@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20191023030641.GA14551@dhcp-128-227.nay.redhat.com>
+In-Reply-To: <13edf841-421e-3522-fcec-ef919c2013ef@gmail.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-MC-Unique: eNoGpBdyNK6S7LdwgYHbow-1
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MC-Unique: kiwu8J-9MZWZX-y3vAa-XQ-1
 X-Mimecast-Spam-Score: 0
 Content-Type: text/plain; charset=WINDOWS-1252
 Content-Transfer-Encoding: quoted-printable
@@ -59,92 +74,111 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 11:06:44AM +0800, Honggang LI wrote:
-> On Tue, Oct 22, 2019 at 03:10:26PM -0700, Bart Van Assche wrote:
-> > On 2019-10-22 00:00, Honggang LI wrote:
-> > > +static bool use_imm_data(void)
-> > > +{
-> > > +#ifdef __linux__
-> > > +=09bool ret =3D false;
-> > > +=09char flag =3D 0;
-> > > +=09int cnt;
-> > > +=09int fd =3D open("/sys/module/ib_srp/parameters/use_imm_data", O_R=
-DONLY);
-> > > +
-> > > +=09if (fd < 0)
-> > > +=09=09return false;
-> > > +=09cnt =3D read(fd, &flag, 1);
-> > > +=09if (cnt !=3D 1)
-> > > +=09=09return false;
-> > > +
-> > > +=09if (!strncmp(&flag, "Y", 1))
-> > > +=09=09ret =3D true;
-> > > +=09close(fd);
-> > > +=09return ret;
-> > > +#else
-> > > +=09return false;
-> > > +#endif
-> > > +}
-> >=20
-> > There is already plenty of Linux-specific code in srp_daemon. The #ifde=
-f
-> > __linux__ / #endif guard does not seem useful to me.
->=20
-> Will delete the guard.
->=20
-> >=20
-> > There is a file descriptor leak in the above function, namely if read()
-> > returns another value than 1.
->=20
-> Yes, will fix it.
->=20
-> >=20
-> > The use_imm_data kernel module parameter was introduced in kernel v5.0
-> > (commit 882981f4a411; "RDMA/srp: Add support for immediate data"). The
-> > max_it_iu_size will be introduced in kernel v5.5 (commit 547ed331bbe8;
-> > "RDMA/srp: Add parse function for maximum initiator to target IU size")=
+On Wed, Oct 23, 2019 at 11:32:16AM +0200, Christian K=F6nig wrote:
+> Am 23.10.19 um 11:08 schrieb Daniel Vetter:
+> > On Tue, Oct 22, 2019 at 03:01:13PM +0000, Jason Gunthorpe wrote:
+> > > On Tue, Oct 22, 2019 at 09:57:35AM +0200, Daniel Vetter wrote:
+> > >=20
+> > > > > The unusual bit in all of this is using a lock's critical region =
+to
+> > > > > 'protect' data for read, but updating that same data before the l=
+ock's
+> > > > > critical secion. ie relying on the unlock barrier to 'release' pr=
+ogram
+> > > > > ordered stores done before the lock's own critical region, and th=
+e
+> > > > > lock side barrier to 'acquire' those stores.
+> > > > I think this unusual use of locks as barriers for other unlocked ac=
+cesses
+> > > > deserves comments even more than just normal barriers. Can you pls =
+add
+> > > > them? I think the design seeems sound ...
+> > > >=20
+> > > > Also the comment on the driver's lock hopefully prevents driver
+> > > > maintainers from moving the driver_lock around in a way that would =
+very
+> > > > subtle break the scheme, so I think having the acquire barrier comm=
+ented
+> > > > in each place would be really good.
+> > > There is already a lot of documentation, I think it would be helpful
+> > > if you could suggest some specific places where you think an addition
+> > > would help? I think the perspective of someone less familiar with thi=
+s
+> > > design would really improve the documentation
+> > Hm I just meant the usual recommendation that "barriers must have comme=
+nts
+> > explaining what they order, and where the other side of the barrier is"=
 .
+> > Using unlock/lock as a barrier imo just makes that an even better idea.
+> > Usually what I do is something like "we need to order $this against $th=
+at
+> > below, and the other side of this barrier is in function()." With maybe=
+ a
+> > bit more if it's not obvious how things go wrong if the orderin is brok=
+en.
 > >=20
-> > So the above check will help for kernel versions before v5.0 but not fo=
+> > Ofc seqlock.h itself skimps on that rule and doesn't bother explaining =
+its
+> > barriers :-/
+> >=20
+> > > I've been tempted to force the driver to store the seq number directl=
+y
+> > > under the driver lock - this makes the scheme much clearer, ie
+> > > something like this:
+> > >=20
+> > > diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/=
+nouveau/nouveau_svm.c
+> > > index 712c99918551bc..738fa670dcfb19 100644
+> > > --- a/drivers/gpu/drm/nouveau/nouveau_svm.c
+> > > +++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
+> > > @@ -488,7 +488,8 @@ struct svm_notifier {
+> > >   };
+> > >   static bool nouveau_svm_range_invalidate(struct mmu_range_notifier =
+*mrn,
+> > > -                                        const struct mmu_notifier_ra=
+nge *range)
+> > > +                                        const struct mmu_notifier_ra=
+nge *range,
+> > > +                                        unsigned long seq)
+> > >   {
+> > >          struct svm_notifier *sn =3D
+> > >                  container_of(mrn, struct svm_notifier, notifier);
+> > > @@ -504,6 +505,7 @@ static bool nouveau_svm_range_invalidate(struct m=
+mu_range_notifier *mrn,
+> > >                  mutex_lock(&sn->svmm->mutex);
+> > >          else if (!mutex_trylock(&sn->svmm->mutex))
+> > >                  return false;
+> > > +       mmu_range_notifier_update_seq(mrn, seq);
+> > >          mutex_unlock(&sn->svmm->mutex);
+> > >          return true;
+> > >   }
+> > >=20
+> > >=20
+> > > At the cost of making the driver a bit more complex, what do you
+> > > think?
+> > Hm, spinning this further ... could we initialize the mmu range notifie=
 r
-> > kernel versions [v5.0..v5.5).=20
+> > with a pointer to the driver lock, so that we could put a
+> > lockdep_assert_held into mmu_range_notifier_update_seq? I think that wo=
+uld
+> > make this scheme substantially more driver-hacker proof :-)
 >=20
-> Yes, you are right. The patch does not fix the issue for kernel
-> versions [v5.0..v5.5). But it also does not do anything bad for
-> kernel versions before v5.5 (commit 547ed331bbe8). It will fix
-> the issue for kernel after 547ed331bbe8.
+> Going another step further.... what hinders us to put the lock into the m=
+mu
+> range notifier itself and have _lock()/_unlock() helpers?
+>=20
+> I mean having the lock in the driver only makes sense when the driver wou=
+ld
+> be using the same lock for multiple things, e.g. multiple MMU range
+> notifiers under the same lock. But I really don't see that use case here.
 
-Well, for kernel versions [v5.0..v5.5), this patch will cause kernel to
-emit warning message of unknown parameter. It seems we need add a flag
-like this for ib_srp module:
+I actualy do, nouveau use one lock to protect the page table and that's the
+lock that matter. You can have multiple range for a single page table, idea
+being only a sub-set of the process address space is ever accessed by the
+GPU and those it is better to focus on this sub-set and track invalidation =
+in
+a finer grain.
 
-
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/s=
-rp/ib_srp.c
-index b7f7a5f7bd98..96434f743a91 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -74,6 +74,7 @@ static bool allow_ext_sg;
- static bool prefer_fr =3D true;
- static bool register_always =3D true;
- static bool never_register;
-+static bool has_max_it_iu_size =3D true;
- static int topspin_workarounds =3D 1;
-=20
- module_param(srp_sg_tablesize, uint, 0444);
-@@ -103,6 +104,10 @@ module_param(register_always, bool, 0444);
- MODULE_PARM_DESC(register_always,
- =09=09 "Use memory registration even for contiguous memory regions");
-=20
-+module_param(has_max_it_iu_size, bool, 0444);
-+MODULE_PARM_DESC(has_max_it_iu_size,
-+=09=09  "Indicate the module supports max_it_iu_size login parameter");
-+
- module_param(never_register, bool, 0444);
- MODULE_PARM_DESC(never_register, "Never register memory");
-=20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Then, srp_daemon should check file "/sys/module/ib_srp/parameters/has_max_i=
-t_iu_size"
-instead of "/sys/module/ib_srp/parameters/use_imm_data".
+Cheers,
+J=E9r=F4me
 
