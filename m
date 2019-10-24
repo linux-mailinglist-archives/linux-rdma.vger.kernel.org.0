@@ -2,52 +2,50 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A04FE2A34
+	by mail.lfdr.de (Postfix) with ESMTP id E3195E2A35
 	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2019 08:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437665AbfJXGAz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 24 Oct 2019 02:00:55 -0400
+        id S2437596AbfJXGA6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 24 Oct 2019 02:00:58 -0400
 Received: from mail-eopbgr50068.outbound.protection.outlook.com ([40.107.5.68]:21413
         "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2437466AbfJXGAy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 24 Oct 2019 02:00:54 -0400
+        id S2437663AbfJXGA5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 24 Oct 2019 02:00:57 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fSxKf+CmSuxxZAMpF9fWS8rPFCTrOOFoyPv+IzuVixnMRtskjvbyjoqa1gZFFJxdRP6H2zWx7l3Aokhz+HPiwPzpizr+2hWhGM3gcnruhMcHOL3m3IXhPvQcgR+EXeqT/npi9Oj/SbnZxUtrBZFwXjATwQIQT8TYpOKQCVCJafKAKZbm2ZHp28M3JkPUrwFXP6kKDGsYPBYCcjXPoJJ5ssIoGcI/SqLZ7M5T2VTDWvVRuTfGGYGC8PkC59tm3JXJ0Puubx7p2SuyQgLm6BWw5y8O9HAsgDrGPnVOSTtTrx25vVElXbzj6VXrLadxC6+0OI6lXHSq/VkrGum8RmMkOA==
+ b=Cy67AUs3CMD6MkpQx/f/VPfBNYDmsdIYlbneFNEz84pzg1K11u+GvMhuN5J6YuneIIivFOkK1/6sHbHFhE7fRDOYLbwpnR4lB5+qsv0Px602WS4yvkzd00a5UCn1sW0HVS7agR/O3FWE+1cKLNFfn6VAkx6X6VgDWSUNkfdpbXd768jga282lt9vrhXm/DVPBz02XnDo1pmcLiSRfda3pCq7x3Zm3868gabjUbBwA1OEHhlodfc5QEU03qsUV5EccTYP44458G8/refDmLsd09xxWDo6F0v1LprjRMpD1o1WPBbRUvFOsdL/0o2g877H0dBWKyHmZ6CP5GuDbBvnMg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KEDcWfJAxbJAXmZR4CgGqIByR23UW7rzxEwOwopPDBs=;
- b=IBgkqarscMhvifepL/BKoawMwet09Ma3MAe+118pPbfs47tJsZ3y9pgU/MnFIxGcn+Yv27aT0sRi8eaxgxbYaSpifWxUULYN77ojnVkDdo+mGojvI1xGBfdWlk4tysVPCEXnvmy6guFdG2j4sgNbRYeikLqy/2T0kAR/Sp3a/SfU/cZTaWVEQSypf+2/aUBZJtep00qQZ2kR8j9eN8ZAlPfaZgCjF9rLUEUmgcVNthjYF9iLRSNjv+OX2OKh6kxMYdLnEHnTw/TFXnyHPXVUF1Rl7ch9VobjRdKC3rJBLhLVfXvIRCYObvS5u5L+j0KW+0av5fxJS80T8B0nxuozhA==
+ bh=Z/D0im2QpL6zyzVDoUoXR3iX6byHwXojxBDZbq6WRE4=;
+ b=MLtBuImiWh4yF4Ge9iIQpPO2h4uWyYCHVXQBQOYMqE+htdMajOcjcK3tCYL3dNjIDly/aTTwqQz3T28DSSQ3+kJltiVeQR4yXkMFtfU78BtN7bSMktGTFGzF/vR862Lp5LKuW1vFFrQXVqu+DWV8TxVclrUiHucoPZinFT0Ur8wHMAuwUYKtW57r82udQYiNJLLOOVOPbNP2ja/snwvKeU6GzIIFqIxORHPDJfvwlux4U0q1uVLcBGFPiJ9allcw8Pt1mxBVBr8/8yPlpMMHFtQBbD2OKWa4S+mqJ82UbESRafnPqyhn92AZpXMM6ULKM+0NRnAixMXROrB3RBRLLw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KEDcWfJAxbJAXmZR4CgGqIByR23UW7rzxEwOwopPDBs=;
- b=X5vdN/BpHFd5jCPR335JnNYUS7tQjaT4F0UkVtvIfMsmli8RpC9mT7nfNH3vq2g6UF/Unjj1Q1guuw2dc65p2sOCRDEbf79B/X3WCKldBV2EhPssMuWZ7p3o4VL0AelpsS43CKd1jbVDTftsGQncfBvF5EbmO3rwPUUgeQ9l7fM=
+ bh=Z/D0im2QpL6zyzVDoUoXR3iX6byHwXojxBDZbq6WRE4=;
+ b=jwn8yx4EXCfYUzk7I0P1Sfs9F5JBE6iR777wa+GMUq8ePz7EiFNlnYyU/RxGDZ4GXg3KT27Kp8Yfoyl9qbuw+i6lq5Ae3HuAdsi0F0gzcwCI8FpRYFcC6r3EAK95/iNQV2FPig34Kv/NB0sqCvahF3GpGVXzequ812CIfsb/96M=
 Received: from AM6PR05MB4968.eurprd05.prod.outlook.com (20.177.33.17) by
  AM6PR05MB4182.eurprd05.prod.outlook.com (52.135.164.155) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.21; Thu, 24 Oct 2019 06:00:48 +0000
+ 15.20.2347.21; Thu, 24 Oct 2019 06:00:49 +0000
 Received: from AM6PR05MB4968.eurprd05.prod.outlook.com
  ([fe80::ecbd:11b3:e4e9:fa1a]) by AM6PR05MB4968.eurprd05.prod.outlook.com
  ([fe80::ecbd:11b3:e4e9:fa1a%5]) with mapi id 15.20.2347.029; Thu, 24 Oct 2019
- 06:00:48 +0000
+ 06:00:49 +0000
 From:   Noa Osherovich <noaos@mellanox.com>
 To:     "dledford@redhat.com" <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Leon Romanovsky <leonro@mellanox.com>
 CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         Noa Osherovich <noaos@mellanox.com>
-Subject: [PATCH rdma-core 2/4] pyverbs/mlx5: Add support for driver-specific
- context
-Thread-Topic: [PATCH rdma-core 2/4] pyverbs/mlx5: Add support for
- driver-specific context
-Thread-Index: AQHVijBheEMLLjx7j0K4/7pLDXTysA==
-Date:   Thu, 24 Oct 2019 06:00:48 +0000
-Message-ID: <20191024060027.8696-3-noaos@mellanox.com>
+Subject: [PATCH rdma-core 3/4] pyverbs: Add providers to cmake build
+Thread-Topic: [PATCH rdma-core 3/4] pyverbs: Add providers to cmake build
+Thread-Index: AQHVijBicvr9tvojhUqvetli8muUrQ==
+Date:   Thu, 24 Oct 2019 06:00:49 +0000
+Message-ID: <20191024060027.8696-4-noaos@mellanox.com>
 References: <20191024060027.8696-1-noaos@mellanox.com>
 In-Reply-To: <20191024060027.8696-1-noaos@mellanox.com>
 Accept-Language: en-US
@@ -64,188 +62,122 @@ x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [94.188.199.18]
 x-ms-publictraffictype: Email
 x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 50b83d3e-c0ef-41e4-fea0-08d758478428
+x-ms-office365-filtering-correlation-id: c01cf6e1-471d-437d-db85-08d7584784b2
 x-ms-traffictypediagnostic: AM6PR05MB4182:|AM6PR05MB4182:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR05MB418237EFD4DE0DB5EB8FAEF4D96A0@AM6PR05MB4182.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-microsoft-antispam-prvs: <AM6PR05MB4182BD0176D9E86EB77B5D12D96A0@AM6PR05MB4182.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2201;
 x-forefront-prvs: 0200DDA8BE
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(39860400002)(376002)(366004)(346002)(396003)(199004)(189003)(478600001)(71200400001)(86362001)(486006)(71190400001)(2501003)(11346002)(2616005)(446003)(52116002)(476003)(4326008)(76176011)(110136005)(54906003)(66946007)(66476007)(66556008)(66446008)(64756008)(6636002)(14454004)(99286004)(107886003)(26005)(186003)(305945005)(7736002)(316002)(66066001)(6506007)(386003)(3846002)(36756003)(256004)(102836004)(8936002)(50226002)(1076003)(6116002)(2906002)(81156014)(81166006)(6436002)(6512007)(6486002)(5660300002)(25786009)(8676002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB4182;H:AM6PR05MB4968.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(39860400002)(376002)(366004)(346002)(396003)(199004)(189003)(478600001)(71200400001)(86362001)(486006)(71190400001)(2501003)(11346002)(2616005)(446003)(52116002)(476003)(4326008)(76176011)(110136005)(54906003)(66946007)(66476007)(66556008)(66446008)(64756008)(6636002)(14454004)(99286004)(19627235002)(107886003)(26005)(186003)(305945005)(7736002)(316002)(66066001)(6506007)(386003)(3846002)(36756003)(14444005)(256004)(102836004)(8936002)(50226002)(1076003)(6116002)(2906002)(81156014)(81166006)(6436002)(6512007)(6486002)(5660300002)(25786009)(8676002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB4182;H:AM6PR05MB4968.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZvbSvtPbaMCjyBPXvUipWjgimVwBm6ZTEl067akC6R34sfuRLOD/BgSPiGv8S41vm8PuLcz1jXWjz8lVwqgm+96aO33w7vUCYXi7tH2g9IYAZkxujrlgid/oBNOXIQGkmgTF/e8hu/iSoH34a5swiZdKB8oMAcQ84Jst9kQgwYJzjFs3u63zWAHTMRa9l9bFk7vTFopa1vwGFPgkBl/7wM6pnOr6sAIiyG3iRJrV4U3mlhmR2LhF0ntL9Gl4vGLBAF/L/ey9+xiWyaMJ6myFbRW/u6kjf3sWuZD5EuR3sWuauHpg3yly3FrptaaaDriLed9pl6BEM+uLqgh/0VxgWZY8oM3RjUVD/8k90bKbNuPRDQG0W+vIyFIo7lP0pGcz3p8taOTzdZIqt5LIzk2LP6V1vc7KJVqz7FBP9M1ShVlwAiZ1QZyDwAOxd4t4iHiH
+x-microsoft-antispam-message-info: Hhth1woTKuarffSzh0UNMbskqMremziPK9xael6uabVAiGgwTC0U9zyLqqvZbQ5SJa3BPZwyocW1Xyybpkn6cwijYTIbH4z4NdPdeRD+kYGgg9IZFMXret7tLwr+X1dceSoKGfg6zVBrD0akCo73wZpr04zeH1ug+rtefkOLhpl51Gz86Wg9jN5NPdA7wwDdP/QsNuuSxxiYBoa98w1yurvGt/zs/99PGIRAyiOfKF9+QhC6Rb5ntUAfMRnpuGyDNEqQ4uP0nECz/98A1dXkh5O5nI53OmNTqXHZ2v7B433C1j+QcTZ/R8UGIprZjlhmHDSfgTfVC2Hr8SgEZY2E+Naj+nHST+WSZnMDsY0cJGQyovn+zsXGarm3+JJxg1rQvv4EB/i1Ke8ejPIJr2+CAPZ3eRmJdi6a7V2jfVIU0lKiQMw0JPGZmHtJ88gpY3Sz
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50b83d3e-c0ef-41e4-fea0-08d758478428
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2019 06:00:48.1994
+X-MS-Exchange-CrossTenant-Network-Message-Id: c01cf6e1-471d-437d-db85-08d7584784b2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2019 06:00:49.1399
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wULXfycjp/1mQ/D8asnK0NwPqT0XKmiVoK3w2eeJbJo1gA9rYju9vQw0z+FPJwXUMxKe69zKMYzC8qkcDLn4VA==
+X-MS-Exchange-CrossTenant-userprincipalname: wIiQynS0Rn/5hNPQyQtDCjiluAXJWoYemXxC1xsViiOTA/4NSL1IPabAhRlkVqUX9R3lOrka98W8WPjxZfyXsA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB4182
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Allow users to open a device using mlx5dv_open_device. For this, two
-new classes are introduced:
-- Mlx5Context which inherits from Context.
-- Mlx5DVContextAttr, which represents mlx5dv_context_attr struct,
-  used by users to define driver-specific options for the device
-  opening.
+Adapt the building function to support subdirectories under pyverbs.
+Add the needed CMakeLists file to pyverbs/providers.
+Update pyverbs' CMakeLists to include the providers sub directory.
 
 Signed-off-by: Noa Osherovich <noaos@mellanox.com>
 ---
- pyverbs/providers/__init__.pxd      |  0
- pyverbs/providers/__init__.py       |  0
- pyverbs/providers/mlx5/__init__.pxd |  0
- pyverbs/providers/mlx5/__init__.py  |  0
- pyverbs/providers/mlx5/libmlx5.pxd  | 17 +++++++++
- pyverbs/providers/mlx5/mlx5dv.pxd   | 14 +++++++
- pyverbs/providers/mlx5/mlx5dv.pyx   | 57 +++++++++++++++++++++++++++++
- 7 files changed, 88 insertions(+)
- create mode 100644 pyverbs/providers/__init__.pxd
- create mode 100644 pyverbs/providers/__init__.py
- create mode 100644 pyverbs/providers/mlx5/__init__.pxd
- create mode 100644 pyverbs/providers/mlx5/__init__.py
- create mode 100644 pyverbs/providers/mlx5/libmlx5.pxd
- create mode 100644 pyverbs/providers/mlx5/mlx5dv.pxd
- create mode 100644 pyverbs/providers/mlx5/mlx5dv.pyx
+ buildlib/pyverbs_functions.cmake      | 11 ++++++++---
+ pyverbs/CMakeLists.txt                |  7 ++++++-
+ pyverbs/providers/mlx5/CMakeLists.txt |  6 ++++++
+ 3 files changed, 20 insertions(+), 4 deletions(-)
+ create mode 100644 pyverbs/providers/mlx5/CMakeLists.txt
 
-diff --git a/pyverbs/providers/__init__.pxd b/pyverbs/providers/__init__.px=
-d
+diff --git a/buildlib/pyverbs_functions.cmake b/buildlib/pyverbs_functions.=
+cmake
+index 8ea5dc0df7de..4c255054fe94 100644
+--- a/buildlib/pyverbs_functions.cmake
++++ b/buildlib/pyverbs_functions.cmake
+@@ -1,10 +1,15 @@
+ # SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
+ # Copyright (c) 2018, Mellanox Technologies. All rights reserved.  See COP=
+YING file
+=20
+-function(rdma_cython_module PY_MODULE)
++function(rdma_cython_module PY_MODULE LINKER_FLAGS)
+   foreach(PYX_FILE ${ARGN})
+     get_filename_component(FILENAME ${PYX_FILE} NAME_WE)
+-    set(PYX "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.pyx")
++    get_filename_component(DIR ${PYX_FILE} DIRECTORY)
++	if (DIR)
++		set(PYX "${CMAKE_CURRENT_SOURCE_DIR}/${DIR}/${FILENAME}.pyx")
++	else()
++	    set(PYX "${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}.pyx")
++	endif()
+     set(CFILE "${CMAKE_CURRENT_BINARY_DIR}/${FILENAME}.c")
+     include_directories(${PYTHON_INCLUDE_DIRS})
+     add_custom_command(
+@@ -20,7 +25,7 @@ function(rdma_cython_module PY_MODULE)
+       COMPILE_FLAGS "${CMAKE_C_FLAGS} -fPIC -fno-strict-aliasing -Wno-unus=
+ed-function -Wno-redundant-decls -Wno-shadow -Wno-cast-function-type -Wno-i=
+mplicit-fallthrough -Wno-unknown-warning -Wno-unknown-warning-option ${NO_V=
+AR_TRACKING_FLAGS}"
+       LIBRARY_OUTPUT_DIRECTORY "${BUILD_PYTHON}/${PY_MODULE}"
+       PREFIX "")
+-    target_link_libraries(${SONAME} LINK_PRIVATE ${PYTHON_LIBRARIES} ibver=
+bs)
++    target_link_libraries(${SONAME} LINK_PRIVATE ${PYTHON_LIBRARIES} ibver=
+bs ${LINKER_FLAGS})
+     install(TARGETS ${SONAME}
+       DESTINATION ${CMAKE_INSTALL_PYTHON_ARCH_LIB}/${PY_MODULE})
+   endforeach()
+diff --git a/pyverbs/CMakeLists.txt b/pyverbs/CMakeLists.txt
+index 90293982b280..7bbb5fc841c0 100755
+--- a/pyverbs/CMakeLists.txt
++++ b/pyverbs/CMakeLists.txt
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
+ # Copyright (c) 2019, Mellanox Technologies. All rights reserved. See COPY=
+ING file
+=20
+-rdma_cython_module(pyverbs
++rdma_cython_module(pyverbs ""
+   addr.pyx
+   base.pyx
+   cq.pyx
+@@ -20,3 +20,8 @@ rdma_python_module(pyverbs
+   pyverbs_error.py
+   utils.py
+   )
++
++# mlx5 provider is not built without coherent DMA, e.g. ARM32 build.
++if (HAVE_COHERENT_DMA)
++add_subdirectory(providers/mlx5)
++endif()
+diff --git a/pyverbs/providers/mlx5/CMakeLists.txt b/pyverbs/providers/mlx5=
+/CMakeLists.txt
 new file mode 100644
-index 000000000000..e69de29bb2d1
-diff --git a/pyverbs/providers/__init__.py b/pyverbs/providers/__init__.py
-new file mode 100644
-index 000000000000..e69de29bb2d1
-diff --git a/pyverbs/providers/mlx5/__init__.pxd b/pyverbs/providers/mlx5/_=
-_init__.pxd
-new file mode 100644
-index 000000000000..e69de29bb2d1
-diff --git a/pyverbs/providers/mlx5/__init__.py b/pyverbs/providers/mlx5/__=
-init__.py
-new file mode 100644
-index 000000000000..e69de29bb2d1
-diff --git a/pyverbs/providers/mlx5/libmlx5.pxd b/pyverbs/providers/mlx5/li=
-bmlx5.pxd
-new file mode 100644
-index 000000000000..54d91e288590
+index 000000000000..f6536de8a932
 --- /dev/null
-+++ b/pyverbs/providers/mlx5/libmlx5.pxd
-@@ -0,0 +1,17 @@
++++ b/pyverbs/providers/mlx5/CMakeLists.txt
+@@ -0,0 +1,6 @@
 +# SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
-+# Copyright (c) 2019 Mellanox Technologies, Inc. All rights reserved. See =
-COPYING file
++# Copyright (c) 2019, Mellanox Technologies. All rights reserved. See COPY=
+ING file
 +
-+from libcpp cimport bool
-+
-+cimport pyverbs.libibverbs as v
-+
-+
-+cdef extern from 'infiniband/mlx5dv.h':
-+
-+    cdef struct mlx5dv_context_attr:
-+        unsigned int    flags
-+        unsigned long   comp_mask
-+
-+    bool mlx5dv_is_supported(v.ibv_device *device)
-+    v.ibv_context* mlx5dv_open_device(v.ibv_device *device,
-+                                      mlx5dv_context_attr *attr)
-diff --git a/pyverbs/providers/mlx5/mlx5dv.pxd b/pyverbs/providers/mlx5/mlx=
-5dv.pxd
-new file mode 100644
-index 000000000000..6ab94b6484b0
---- /dev/null
-+++ b/pyverbs/providers/mlx5/mlx5dv.pxd
-@@ -0,0 +1,14 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
-+# Copyright (c) 2019 Mellanox Technologies, Inc. All rights reserved. See =
-COPYING file
-+
-+#cython: language_level=3D3
-+
-+cimport pyverbs.providers.mlx5.libmlx5 as dv
-+from pyverbs.base cimport PyverbsObject
-+from pyverbs.device cimport Context
-+
-+cdef class Mlx5Context(Context):
-+    pass
-+
-+cdef class Mlx5DVContextAttr(PyverbsObject):
-+    cdef dv.mlx5dv_context_attr attr
-diff --git a/pyverbs/providers/mlx5/mlx5dv.pyx b/pyverbs/providers/mlx5/mlx=
-5dv.pyx
-new file mode 100644
-index 000000000000..0c6b28be1d5a
---- /dev/null
-+++ b/pyverbs/providers/mlx5/mlx5dv.pyx
-@@ -0,0 +1,57 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
-+# Copyright (c) 2019 Mellanox Technologies, Inc. All rights reserved. See =
-COPYING file
-+
-+from pyverbs.pyverbs_error import PyverbsUserError
-+cimport pyverbs.providers.mlx5.libmlx5 as dv
-+
-+
-+cdef class Mlx5DVContextAttr(PyverbsObject):
-+    """
-+    Represent mlx5dv_context_attr struct. This class is used to open an ml=
-x5
-+    device.
-+    """
-+    def __cinit__(self, flags=3D0, comp_mask=3D0):
-+        self.attr.flags =3D flags
-+        self.attr.comp_mask =3D comp_mask
-+
-+    def __str__(self):
-+        print_format =3D '{:20}: {:<20}\n'
-+        return print_format.format('flags', self.attr.flags) +\
-+               print_format.format('comp_mask', self.attr.comp_mask)
-+
-+    @property
-+    def flags(self):
-+        return self.attr.flags
-+    @flags.setter
-+    def flags(self, val):
-+        self.attr.flags =3D val
-+
-+    @property
-+    def comp_mask(self):
-+        return self.attr.comp_mask
-+    @comp_mask.setter
-+    def comp_mask(self, val):
-+        self.attr.comp_mask =3D val
-+
-+
-+cdef class Mlx5Context(Context):
-+    """
-+    Represent mlx5 context, which extends Context.
-+    """
-+    def __cinit__(self, **kwargs):
-+        """
-+        Open an mlx5 device using the given attributes
-+        :param kwargs: Arguments:
-+            * *name* (str)
-+               The RDMA device's name (used by parent class)
-+            * *attr* (Mlx5DVContextAttr)
-+               mlx5-specific device attributes
-+        :return: None
-+        """
-+        cdef Mlx5DVContextAttr attr
-+        attr =3D kwargs.get('attr')
-+        if not attr or not isinstance(attr, Mlx5DVContextAttr):
-+            raise PyverbsUserError('Missing provider attributes')
-+        if not dv.mlx5dv_is_supported(self.device):
-+            raise PyverbsUserError('This is not an MLX5 device')
-+        self.context =3D dv.mlx5dv_open_device(self.device, &attr.attr)
++rdma_cython_module(pyverbs/providers/mlx5 mlx5
++  mlx5dv.pyx
++)
 --=20
 2.21.0
 
