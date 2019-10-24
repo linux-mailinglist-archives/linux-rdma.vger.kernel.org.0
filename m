@@ -2,180 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 551B0E2A05
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2019 07:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F0DE2A31
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2019 08:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436467AbfJXFlI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 24 Oct 2019 01:41:08 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:51403 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390925AbfJXFlI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Oct 2019 01:41:08 -0400
-Received: by mail-io1-f69.google.com with SMTP id x13so24785337ioa.18
-        for <linux-rdma@vger.kernel.org>; Wed, 23 Oct 2019 22:41:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=qTVxFo3HdO6z5TZWXw04u3dfnIn/I3qJHsYWtua5niA=;
-        b=bK/6Lacjmz7+2gyDKINEPa+MnNKbKSHjUkPVJBbHiI061UWKoQr+FzJf00wWeHYv0v
-         0L3Pzoz3cv3qGzNd8Az2bk3F4F7lyLEw8UVWqGGEdVUvyIV5eHpNzhivAOSTNwZRWqnk
-         yFrw9ziCiF7c3snYblZmQDxVX3z+jAn7NaenV02qhig6mu4v+8hWZVIGK+VfGJewZt7+
-         FCmBv6T/BGv16N2nfRZgyHqNzazcEizH5uUnoY+bU8GaOfeVa5VfzQ64wcSwABpgRcW6
-         YEeucE9npSJyKOdeS73XZ4eAOvVF6084hzQ0ofDhkAzMmkEDlRToZKHv09zQ7CCJzFSt
-         t/Sw==
-X-Gm-Message-State: APjAAAX2vmkjvvzWN4JMTPSee+N/iD06CkH9gGPUM7vubrouR8XxZZ9D
-        SDaWB7UVYOotvt1rPN/tgFsiA+JWf2YFqKM12YzQPPqDA/QO
-X-Google-Smtp-Source: APXvYqxIitDkoL/+XE9OagriX+lVJtdpL/L4jMmuCArawskq6JXSx2y80ga0/MGcZ0DkpUwvpk2az4jKKier8V13JnGRACA5nxzF
+        id S2437664AbfJXGAt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 24 Oct 2019 02:00:49 -0400
+Received: from mail-eopbgr50068.outbound.protection.outlook.com ([40.107.5.68]:21413
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2437662AbfJXGAt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 24 Oct 2019 02:00:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZRbwsH7ehywOZG8h7xinvgroR83wmmsIIoyOpi23RXC5pTL27AQpfXSYBMI+EvP1Zmsz/k746RID4x/+40pbiUYOfJpfD/jGR+EMyOiGfHKyQWAtGDyGaWSHASKeAttBmakR6PbAV5fE92AkT34gmSTQK6uD+BDu0Jc/kIO9zZ4s+48FSEKdqav8GpoS/KDoeqUuvycxR0EKpi4NXLeFUWElnPdlbi6+NSyqTAFBiHfIpyRhqNVXq9U6MA7EtcwQiT6bF2Fl8fO9zEju72Jk+aFdxHbb9aJdYyHRxclRVS7xtaQBexjm4pTZ15YK6emJgEg8WoRF9mbzWOBJB9imTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1cPlBwdKl3PQ/0oFaA9yaTRrWvkwe3YBS8lD+yasjV8=;
+ b=lbalNLo2B1oNS7AA8xrVgvLN4zyZurgrNRlcMMJF0AR42td34kCoRcwsLckKQKJp88sxVGoP836uzGCCgYXZ/U80BNa8/yPbZDwQts/stRbEzDnDtl+tumkLC2qgtFEPFFQ6jJvxzaHLqZxkGcErNkGQaMzB3AUeEREKOnjFlMkHk5JBIAkUHzX9cK36vg1TyXtFWGQESzFAlkkYQnnIL0rQby4yWT2dQ6dYI0fUWwlIyTkksQ7MoxyxGAou1A6pKm/ICj1j8R0oBb7uf44/mDSWLrZwFuqsd6S1QkfG57Z9/GuzLMOMdBVSIpCNy+yvhEI4FWcPmxCefWYXwVA4Lg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1cPlBwdKl3PQ/0oFaA9yaTRrWvkwe3YBS8lD+yasjV8=;
+ b=GpcMVyMPSmjsxcmKXpWWcuRN6r5H/9RsN5Hv3Ngkk/t7lLD0q+nSCuB0ebOTu6do3GJoaCGWB4dgX0KFAIUTvZpMi6zNPnYVyjvMlJ7w1EkNPWNiY1jXUCfOWTzHG8dZCRCi6eWse/cVYxnM9wuIXt3UEL7Gg6zNpU4V34wjvg8=
+Received: from AM6PR05MB4968.eurprd05.prod.outlook.com (20.177.33.17) by
+ AM6PR05MB4182.eurprd05.prod.outlook.com (52.135.164.155) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.21; Thu, 24 Oct 2019 06:00:46 +0000
+Received: from AM6PR05MB4968.eurprd05.prod.outlook.com
+ ([fe80::ecbd:11b3:e4e9:fa1a]) by AM6PR05MB4968.eurprd05.prod.outlook.com
+ ([fe80::ecbd:11b3:e4e9:fa1a%5]) with mapi id 15.20.2347.029; Thu, 24 Oct 2019
+ 06:00:46 +0000
+From:   Noa Osherovich <noaos@mellanox.com>
+To:     "dledford@redhat.com" <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Noa Osherovich <noaos@mellanox.com>
+Subject: [PATCH rdma-core 0/4] pyverbs: Introducing mlx5 DV support
+Thread-Topic: [PATCH rdma-core 0/4] pyverbs: Introducing mlx5 DV support
+Thread-Index: AQHVijBgBd8S03+xQEinEanFIgBkzg==
+Date:   Thu, 24 Oct 2019 06:00:46 +0000
+Message-ID: <20191024060027.8696-1-noaos@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: git-send-email 2.21.0
+x-clientproxiedby: AM0PR05CA0081.eurprd05.prod.outlook.com
+ (2603:10a6:208:136::21) To AM6PR05MB4968.eurprd05.prod.outlook.com
+ (2603:10a6:20b:4::17)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=noaos@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [94.188.199.18]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 562d6df4-405d-4cc8-a4d0-08d75847830d
+x-ms-traffictypediagnostic: AM6PR05MB4182:|AM6PR05MB4182:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR05MB418296657B26B2A53F16E007D96A0@AM6PR05MB4182.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-forefront-prvs: 0200DDA8BE
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(39860400002)(376002)(366004)(346002)(396003)(199004)(189003)(478600001)(71200400001)(86362001)(486006)(71190400001)(2501003)(2616005)(52116002)(476003)(4326008)(110136005)(54906003)(66946007)(66476007)(66556008)(66446008)(64756008)(6636002)(14454004)(99286004)(19627235002)(107886003)(26005)(186003)(305945005)(7736002)(316002)(66066001)(6506007)(386003)(3846002)(36756003)(256004)(102836004)(8936002)(50226002)(1076003)(6116002)(2906002)(81156014)(81166006)(6436002)(6512007)(6486002)(5660300002)(25786009)(8676002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB4182;H:AM6PR05MB4968.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: W/ta4A5Huo4Hw1Viw5RCpyrhpxx2GZipfvodd9HMrn9Kvucq+o4pv5q4ugNTrkr0Auoh1MKeB0Nrt6qGuc6SPfVI3aF1y2DywTR9aeHpT+M2csxcz8tE/RApDKVA+YgmOo/F0ujhTiagwE7Ui0e/W91yOpJ/wjO7NWzVVJd9RLqO8HFhk3PdKneTWdWDq8EsQeaOyYF7sAMB5rRfZigSexN9oAucGajQQ5a/QtXggabs+sh5ALY0auTxVpPRf2b5zgwL/L3JKRhW59vOwwOMf6owZiBiympJ8/4vvekj7oek1tPzpXzGc7VDM6eZ2Cyu4DT0cJi779WKrwP5KGrF2kGNb00Xs3xDC7ZVeilW0utbfxp4wiG5kX3Lcx+dwxAJKctyJVf30DXpukzhDAazlRjbypkDeVnItt91TNjF1NFIWWsVUVSy/6Pq3Lidfsg5
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Received: by 2002:a02:b619:: with SMTP id h25mr13146316jam.40.1571895667272;
- Wed, 23 Oct 2019 22:41:07 -0700 (PDT)
-Date:   Wed, 23 Oct 2019 22:41:06 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000df373f0595a17a83@google.com>
-Subject: KASAN: use-after-free Read in cma_cancel_listens
-From:   syzbot <syzbot+57a3b121df74c4eccbc7@syzkaller.appspotmail.com>
-To:     bvanassche@acm.org, danitg@mellanox.com, dledford@redhat.com,
-        jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, mhjungk@gmail.com, parav@mellanox.com,
-        shamir.rabinovitch@oracle.com, swise@opengridcomputing.com,
-        syzkaller-bugs@googlegroups.com, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 562d6df4-405d-4cc8-a4d0-08d75847830d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2019 06:00:46.2735
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XNaJelpk7yVTY+32+s+4lpwHjwvDo6shILgXu0YYJbCXSYZv6usNM6pu6JnUEU655zeHQA5cuEysM4BIuodgwA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB4182
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+Direct verbs (DV) provide fast data path execution. This series
+introduces the DV infrastructure to pyverbs:
+Allow providers to open contexts rather than use ibv_open_device.
+Add Mlx5Context and expose the mlx5dv_query_device.
 
-syzbot found the following crash on:
+Noa Osherovich (4):
+  pyverbs: Add support for providers' context
+  pyverbs/mlx5: Add support for driver-specific context
+  pyverbs: Add providers to cmake build
+  pyverbs/mlx5: Add query device capability
 
-HEAD commit:    3b7c59a1 Merge tag 'pinctrl-v5.4-2' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12b639ff600000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6c03e4d33fa96d51
-dashboard link: https://syzkaller.appspot.com/bug?extid=57a3b121df74c4eccbc7
-compiler:       clang version 9.0.0 (/home/glider/llvm/clang  
-80fee25776c2fb61e74c1ecb1a523375c2500b69)
+ buildlib/pyverbs_functions.cmake        |  11 +-
+ pyverbs/CMakeLists.txt                  |   7 +-
+ pyverbs/device.pxd                      |   1 +
+ pyverbs/device.pyx                      |  17 +-
+ pyverbs/providers/__init__.pxd          |   0
+ pyverbs/providers/__init__.py           |   0
+ pyverbs/providers/mlx5/CMakeLists.txt   |   7 +
+ pyverbs/providers/mlx5/__init__.pxd     |   0
+ pyverbs/providers/mlx5/__init__.py      |   0
+ pyverbs/providers/mlx5/libmlx5.pxd      |  46 +++++
+ pyverbs/providers/mlx5/mlx5_enums.pyx   |   1 +
+ pyverbs/providers/mlx5/mlx5dv.pxd       |  17 ++
+ pyverbs/providers/mlx5/mlx5dv.pyx       | 253 ++++++++++++++++++++++++
+ pyverbs/providers/mlx5/mlx5dv_enums.pxd |  47 +++++
+ pyverbs/qp.pyx                          |   2 +-
+ 15 files changed, 400 insertions(+), 9 deletions(-)
+ create mode 100644 pyverbs/providers/__init__.pxd
+ create mode 100644 pyverbs/providers/__init__.py
+ create mode 100644 pyverbs/providers/mlx5/CMakeLists.txt
+ create mode 100644 pyverbs/providers/mlx5/__init__.pxd
+ create mode 100644 pyverbs/providers/mlx5/__init__.py
+ create mode 100644 pyverbs/providers/mlx5/libmlx5.pxd
+ create mode 120000 pyverbs/providers/mlx5/mlx5_enums.pyx
+ create mode 100644 pyverbs/providers/mlx5/mlx5dv.pxd
+ create mode 100644 pyverbs/providers/mlx5/mlx5dv.pyx
+ create mode 100644 pyverbs/providers/mlx5/mlx5dv_enums.pxd
 
-Unfortunately, I don't have any reproducer for this crash yet.
+--=20
+2.21.0
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+57a3b121df74c4eccbc7@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in __list_del_entry_valid+0x9c/0x100  
-lib/list_debug.c:54
-Read of size 8 at addr ffff888097eda1e8 by task syz-executor.2/15086
-
-CPU: 1 PID: 15086 Comm: syz-executor.2 Not tainted 5.4.0-rc4+ #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x1d8/0x2f8 lib/dump_stack.c:113
-  print_address_description+0x75/0x5c0 mm/kasan/report.c:374
-  __kasan_report+0x14b/0x1c0 mm/kasan/report.c:506
-  kasan_report+0x26/0x50 mm/kasan/common.c:634
-  __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:132
-  __list_del_entry_valid+0x9c/0x100 lib/list_debug.c:54
-  __list_del_entry include/linux/list.h:131 [inline]
-  list_del include/linux/list.h:139 [inline]
-  cma_cancel_listens+0x40/0x390 drivers/infiniband/core/cma.c:1750
-  cma_cancel_operation drivers/infiniband/core/cma.c:1778 [inline]
-  rdma_destroy_id+0x44f/0x1080 drivers/infiniband/core/cma.c:1842
-  ucma_close+0x1eb/0x2c0 drivers/infiniband/core/ucma.c:1762
-  __fput+0x2e4/0x740 fs/file_table.c:280
-  ____fput+0x15/0x20 fs/file_table.c:313
-  task_work_run+0x17e/0x1b0 kernel/task_work.c:113
-  exit_task_work include/linux/task_work.h:22 [inline]
-  do_exit+0x5e8/0x2190 kernel/exit.c:817
-  do_group_exit+0x15c/0x2b0 kernel/exit.c:921
-  get_signal+0x4ac/0x1d60 kernel/signal.c:2734
-  do_signal+0x37/0x640 arch/x86/kernel/signal.c:815
-  exit_to_usermode_loop arch/x86/entry/common.c:159 [inline]
-  prepare_exit_to_usermode+0x303/0x580 arch/x86/entry/common.c:194
-  syscall_return_slowpath+0x113/0x4a0 arch/x86/entry/common.c:274
-  do_syscall_64+0x11f/0x1c0 arch/x86/entry/common.c:300
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x459ef9
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007faedb0c5cf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 000000000075bf28 RCX: 0000000000459ef9
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000075bf28
-RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000075bf2c
-R13: 00007ffe74d4703f R14: 00007faedb0c69c0 R15: 000000000075bf2c
-
-Allocated by task 15089:
-  save_stack mm/kasan/common.c:69 [inline]
-  set_track mm/kasan/common.c:77 [inline]
-  __kasan_kmalloc+0x11c/0x1b0 mm/kasan/common.c:510
-  kasan_kmalloc+0x9/0x10 mm/kasan/common.c:524
-  kmem_cache_alloc_trace+0x221/0x2f0 mm/slab.c:3550
-  kmalloc include/linux/slab.h:556 [inline]
-  kzalloc include/linux/slab.h:690 [inline]
-  __rdma_create_id+0x66/0x480 drivers/infiniband/core/cma.c:882
-  ucma_create_id+0x250/0x540 drivers/infiniband/core/ucma.c:501
-  ucma_write+0x2da/0x360 drivers/infiniband/core/ucma.c:1684
-  __vfs_write+0xb8/0x740 fs/read_write.c:494
-  vfs_write+0x275/0x590 fs/read_write.c:558
-  ksys_write+0x117/0x220 fs/read_write.c:611
-  __do_sys_write fs/read_write.c:623 [inline]
-  __se_sys_write fs/read_write.c:620 [inline]
-  __x64_sys_write+0x7b/0x90 fs/read_write.c:620
-  do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Freed by task 15272:
-  save_stack mm/kasan/common.c:69 [inline]
-  set_track mm/kasan/common.c:77 [inline]
-  kasan_set_free_info mm/kasan/common.c:332 [inline]
-  __kasan_slab_free+0x12a/0x1e0 mm/kasan/common.c:471
-  kasan_slab_free+0xe/0x10 mm/kasan/common.c:480
-  __cache_free mm/slab.c:3425 [inline]
-  kfree+0x115/0x200 mm/slab.c:3756
-  rdma_destroy_id+0xea2/0x1080 drivers/infiniband/core/cma.c:1877
-  ucma_close+0x1eb/0x2c0 drivers/infiniband/core/ucma.c:1762
-  __fput+0x2e4/0x740 fs/file_table.c:280
-  ____fput+0x15/0x20 fs/file_table.c:313
-  task_work_run+0x17e/0x1b0 kernel/task_work.c:113
-  get_signal+0x1ca8/0x1d60 kernel/signal.c:2528
-  do_signal+0x37/0x640 arch/x86/kernel/signal.c:815
-  exit_to_usermode_loop arch/x86/entry/common.c:159 [inline]
-  prepare_exit_to_usermode+0x303/0x580 arch/x86/entry/common.c:194
-  syscall_return_slowpath+0x113/0x4a0 arch/x86/entry/common.c:274
-  do_syscall_64+0x11f/0x1c0 arch/x86/entry/common.c:300
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-The buggy address belongs to the object at ffff888097eda000
-  which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 488 bytes inside of
-  2048-byte region [ffff888097eda000, ffff888097eda800)
-The buggy address belongs to the page:
-page:ffffea00025fb680 refcount:1 mapcount:0 mapping:ffff8880aa400e00  
-index:0x0
-flags: 0x1fffc0000000200(slab)
-raw: 01fffc0000000200 ffffea0002982a08 ffffea0002561a48 ffff8880aa400e00
-raw: 0000000000000000 ffff888097eda000 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
-  ffff888097eda080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff888097eda100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ffff888097eda180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                           ^
-  ffff888097eda200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff888097eda280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
