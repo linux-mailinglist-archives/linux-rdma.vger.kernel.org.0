@@ -2,163 +2,173 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D08E7E3F53
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 00:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26E1E4067
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 01:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730507AbfJXWZj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 24 Oct 2019 18:25:39 -0400
-Received: from mga17.intel.com ([192.55.52.151]:37783 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729789AbfJXWZi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 24 Oct 2019 18:25:38 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 Oct 2019 15:25:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,226,1569308400"; 
-   d="scan'208";a="188733714"
-Received: from orsmsx103.amr.corp.intel.com ([10.22.225.130])
-  by orsmga007.jf.intel.com with ESMTP; 24 Oct 2019 15:25:37 -0700
-Received: from orsmsx115.amr.corp.intel.com (10.22.240.11) by
- ORSMSX103.amr.corp.intel.com (10.22.225.130) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 24 Oct 2019 15:25:37 -0700
-Received: from orsmsx101.amr.corp.intel.com ([169.254.8.212]) by
- ORSMSX115.amr.corp.intel.com ([169.254.4.146]) with mapi id 14.03.0439.000;
- Thu, 24 Oct 2019 15:25:37 -0700
-From:   "Ertman, David M" <david.m.ertman@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>
-Subject: RE: [RFC 01/20] ice: Initialize and register multi-function device
- to provide RDMA
-Thread-Topic: [RFC 01/20] ice: Initialize and register multi-function device
- to provide RDMA
-Thread-Index: AQGOetFAPbFeoIHdxRJDZlVegIphLQHJRZnhAdxiwysB1QCSuQJ6/k4op44H7uCAKV2vAP//jAtwgAB4hoCAAaHugIAAA8+A//+igjA=
-Date:   Thu, 24 Oct 2019 22:25:36 +0000
-Message-ID: <2B0E3F215D1AB84DA946C8BEE234CCC97B2E1D29@ORSMSX101.amr.corp.intel.com>
-References: <20190926164519.10471-1-jeffrey.t.kirsher@intel.com>
- <20190926164519.10471-2-jeffrey.t.kirsher@intel.com>
- <20190926180556.GB1733924@kroah.com>
- <7e7f6c159de52984b89c13982f0a7fd83f1bdcd4.camel@intel.com>
- <20190927051320.GA1767635@kroah.com>
- <2B0E3F215D1AB84DA946C8BEE234CCC97B2B1A28@ORSMSX101.amr.corp.intel.com>
- <20191023174448.GP23952@ziepe.ca>
- <2B0E3F215D1AB84DA946C8BEE234CCC97B2E0C84@ORSMSX101.amr.corp.intel.com>
- <20191023180108.GQ23952@ziepe.ca> <20191024185659.GE260560@kroah.com>
- <20191024191037.GC23952@ziepe.ca>
-In-Reply-To: <20191024191037.GC23952@ziepe.ca>
+        id S1732266AbfJXXtS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 24 Oct 2019 19:49:18 -0400
+Received: from mail-eopbgr00053.outbound.protection.outlook.com ([40.107.0.53]:10962
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730783AbfJXXtS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 24 Oct 2019 19:49:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ewvpJtr/gjrO2I5EgLCxpcDMZASwkyR5yZcmAhlo/80G94RX8+I3zDCEL2mlKoGddHufPNOID4RxKAb4fj81XpyHnhbw449fxP3iFpKnXSXIEpfPnHHeGOW0C3AdU0NtLHrtg412FO+SzQM7/HklFvwhZhwR8dC0kLhDurXO0d01lxKJVEP/67LlSFxDnWZHHiihJDhQF0cI0cxi+Dgtf4Fg5Hg2h5DTmUZ7Ue+gGpl41AaEFAzHBnKwdHLHFTf98FXVmQPUxX+BWRjx7EYShSqEkRWvW1KkB4APZbMQwDIgAltq5bV6XuoYKLT8sBnae6P4OsfxZHc0GgCFiwZmYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UA9rkPsJjcMVKzm5zLal9u7YwwvQ3gR5XBwq/UIywmQ=;
+ b=Ss6sElOrvR0iY3VnTFXtYEaqfmPZDxHIZwmlVuIvjkRCJOzko5/ArHImqGiKmNqulgQuUlfhqxuHrur757RH2W4eSS8337gQ/07MD4jB0P3zOjzzlOjBbQ1oaWHBDT3mitqv8zgqNESyFnlyEmZqrRcu32IG0WyIPFncRdXaH0rAlMJeL+8bpL+/NTuzF2rHLkS3KqXgnxpnHhbfueZlaZVW6cTmm9Guzpom4dXF+dv7d6L7Iy5jYPT7oZRtajaNoMHw+fid5Q8NuLdMPuGX6+WJHOoctQi/iTcMiHiqgAW8ymGa8GY7D7+gwrv2FEEM0l8MKebLqJq87nPnu6HUJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UA9rkPsJjcMVKzm5zLal9u7YwwvQ3gR5XBwq/UIywmQ=;
+ b=skXXPrLLJ0QmTs3yo3W+kcS55oGo51+879kwxL8ToVmEDaTOg5J8yN8AWW9oX4f0f0sZDhWmaDhtiezobWZsS9aAenrQ5RBMswrCLrOdutOARRiVnmx36LHDUggdhs2CzXCjkcQSYB3UMSbiVIxGzlpYJ5RBrNLS5k3gen+Yoyw=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB4382.eurprd05.prod.outlook.com (52.134.31.140) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2387.22; Thu, 24 Oct 2019 23:49:14 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::75ae:b00b:69d8:3db0]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::75ae:b00b:69d8:3db0%7]) with mapi id 15.20.2367.027; Thu, 24 Oct 2019
+ 23:49:14 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     Leon Romanovsky <leonro@mellanox.com>
+Subject: [PATCH] RDMA/mlx5: Use irq xarray locking for mkey_table
+Thread-Topic: [PATCH] RDMA/mlx5: Use irq xarray locking for mkey_table
+Thread-Index: AQHVisWjPuXKtKD79UKwaBBBljL4iA==
+Date:   Thu, 24 Oct 2019 23:49:13 +0000
+Message-ID: <20191024234910.GA9038@ziepe.ca>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiMmM1ZDg2MTktMWQzYS00OGI2LWE5MTUtODg1ZTYyMmU4ODhmIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiYlVwSU9hVVF0eVpJcGt1U0g4MWZvR1V3cjNEcmRkTFVGRnA1M3RoSnVGU3k5dHozdSt0eVArVExtWStNWGlqMiJ9
-x-ctpclassification: CTP_NT
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.140]
+x-clientproxiedby: MN2PR20CA0013.namprd20.prod.outlook.com
+ (2603:10b6:208:e8::26) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.162.113.180]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: b23037d5-2c61-4de7-d271-08d758dcc63a
+x-ms-traffictypediagnostic: VI1PR05MB4382:|VI1PR05MB4382:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB43823CB3EBA36959836DD016CF6A0@VI1PR05MB4382.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:398;
+x-forefront-prvs: 0200DDA8BE
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(376002)(366004)(346002)(396003)(39860400002)(199004)(189003)(6916009)(99286004)(2501003)(6116002)(3846002)(107886003)(256004)(14444005)(66066001)(8936002)(81166006)(81156014)(316002)(7736002)(186003)(102836004)(26005)(386003)(6506007)(8676002)(52116002)(66556008)(9686003)(6512007)(5640700003)(71200400001)(71190400001)(33656002)(486006)(476003)(305945005)(66446008)(66476007)(64756008)(86362001)(1076003)(4326008)(36756003)(6486002)(25786009)(478600001)(2906002)(2351001)(6436002)(66946007)(14454004)(5660300002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4382;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WyLsVHwehBYSbj6Iw2fyUxT7qJB52KZjvG0f2056WZEZR2G/oGvVp7066jeN4sfdccP+rzS4FORVQPfk0uGvllM9ejWijCktM0gwjiyncXI3ndD23s+gAsD9bc+fCLu63cLsZRqMvlaVDRL5G6/hQWJDAeRf2Zt7pieWSfeuoLeoX6bG9qnOc+C6tlz6AZeSeahxf9USwxmtoMpFigQlADS2+2izmhyzW22UqMIJ6OdATWmA99wCwegefvQOEVcK7FJagQF7SYDqbuyj56rxudkisR/ST7BqR/hBjCkZm+uiTryzxh6RULj6MmwG0MXYfDBQ5AmiyNpFXvqD1Rc9hpNCrwmdvCQMgQaxvzj6xmwI6imythO6s0OlXYVwJ2rOiO5gticMfb1VLgffph9Jes4U8CrROmWs5IP/3U4H8rHOoe1YYiRt0M73IcOc4AaY
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-ID: <CA8AC5CE02220E48AC7025DEA531731A@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b23037d5-2c61-4de7-d271-08d758dcc63a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2019 23:49:13.8857
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KNmHW7xbiaT9BemB4Cn2ZxwIE+nXe/juxbQ37ka/xQQ7xsW+kkrSVB0JTUJLdnXlLFnMfvGJ4qCafqiL7cHK0A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4382
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> -----Original Message-----
-> From: Jason Gunthorpe [mailto:jgg@ziepe.ca]
-> Sent: Thursday, October 24, 2019 12:11 PM
-> To: gregkh@linuxfoundation.org
-> Cc: Ertman, David M <david.m.ertman@intel.com>; Nguyen, Anthony L
-> <anthony.l.nguyen@intel.com>; Kirsher, Jeffrey T
-> <jeffrey.t.kirsher@intel.com>; netdev@vger.kernel.org; linux-
-> rdma@vger.kernel.org; dledford@redhat.com; Ismail, Mustafa
-> <mustafa.ismail@intel.com>; Patil, Kiran <kiran.patil@intel.com>
-> Subject: Re: [RFC 01/20] ice: Initialize and register multi-function device to
-> provide RDMA
-> 
-> On Thu, Oct 24, 2019 at 02:56:59PM -0400, gregkh@linuxfoundation.org wrote:
-> > On Wed, Oct 23, 2019 at 03:01:09PM -0300, Jason Gunthorpe wrote:
-> > > On Wed, Oct 23, 2019 at 05:55:38PM +0000, Ertman, David M wrote:
-> > > > > Did any resolution happen here? Dave, do you know what to do to
-> > > > > get Greg's approval?
-> > > > >
-> > > > > Jason
-> > > >
-> > > > This was the last communication that I saw on this topic.  I was
-> > > > taking Greg's silence as "Oh ok, that works" :)  I hope I was not being too
-> optimistic!
-> > > >
-> > > > If there is any outstanding issue I am not aware of it, but please
-> > > > let me know if I am out of the loop!
-> > > >
-> > > > Greg, if you have any other concerns or questions I would be happy to
-> address them!
-> > >
-> > > I was hoping to hear Greg say that taking a pci_device, feeding it
-> > > to the multi-function-device stuff to split it to a bunch of
-> > > platform_device's is OK, or that mfd should be changed somehow..
-> >
-> > Again, platform devices are ONLY for actual platform devices.  A PCI
-> > device is NOT a platform device, sorry.
-> 
-> To be fair to David, IIRC, you did suggest mfd as the solution here some months
-> ago, but I think you also said it might need some fixing
-> :)
-> 
-> > If MFD needs to be changed to handle non-platform devices, fine, but
-> > maybe what you really need to do here is make your own "bus" of
-> > individual devices and have drivers for them, as you can't have a
-> > "normal" PCI driver for these.
-> 
-> It does feel like MFD is the cleaner model here otherwise we'd have each
-> driver making its own custom buses for its multi-function capability..
-> 
-> David, do you see some path to fix mfd to not use platform devices?
-> 
-> Maybe it needs a MFD bus type and a 'struct mfd_device' ?
-> 
-> I guess I'll drop these patches until it is sorted.
-> 
-> Jason
+The mkey_table xarray is touched by the reg_mr_callback() function which
+is called from a hard irq. Thus all other uses of xa_lock must use the
+_irq variants.
 
+  WARNING: inconsistent lock state
+  5.4.0-rc1 #12 Not tainted
+  --------------------------------
+  inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
+  python3/343 [HC0[0]:SC0[0]:HE1:SE1] takes:
+  ffff888182be1d40 (&(&xa->xa_lock)->rlock#3){?.-.}, at: xa_erase+0x12/0x30
+  {IN-HARDIRQ-W} state was registered at:
+    lock_acquire+0xe1/0x200
+    _raw_spin_lock_irqsave+0x35/0x50
+    reg_mr_callback+0x2dd/0x450 [mlx5_ib]
+    mlx5_cmd_exec_cb_handler+0x2c/0x70 [mlx5_core]
+    mlx5_cmd_comp_handler+0x355/0x840 [mlx5_core]
+   [..]
 
-The original submission of the RDMA driver had separate drivers to
-interact with the ice and i40e LAN drivers.  There was only about 2000
-lines of code different between them, so a request was (rightly so)
-made to unify the RDMA drivers into a single driver.
+   Possible unsafe locking scenario:
 
-Our original submission for IIDC had a "software bus" that the ice driver
-was creating.  The problem, now that the RDMA driver is a unified driver
-for both the ice and i40e drivers, each of which would need to create their
-own bus.  So, we cannot have module dependencies for the irdma driver,
-as we don't know which hardware the user will have installed in the system.
-or which drivers will be loaded in what order.  As new hardware is supported
-(presumably by the same irdma driver) this will only get more complicated.
-For instance, if the ice driver loads, then the irdma, then the i40e.  The irdma
-will have no notice that a new bus was created that it needs to register with
-by the i40e driver.
+         CPU0
+         ----
+    lock(&(&xa->xa_lock)->rlock#3);
+    <Interrupt>
+      lock(&(&xa->xa_lock)->rlock#3);
 
-Our original solution to this problem was with netdev notifiers, which met with
-resistance, and the statement that the bus infrastructure was the proper way to
-approach the interaction of the LAN driver and peer.  This did turn out to be a
-much more elegant way to approach the issue.
+   *** DEADLOCK ***
 
-The direct access of the platform bus was unacceptable, and the MFD sub-system
-was suggested by Greg as the solution.  The MFD sub-system uses the platform
-bus in the background as a base to perform its functions, since it is a purely software
-construct that is handy and fulfills its needs.  The question then is:  If the MFD sub-
-system is using the platform bus for all of its background functionality, is the platform
-bus really only for platform devices?  It seems that the kernel is already using the
-platform bus as a generic software based bus, and it fulfills the role efficiently.
+  2 locks held by python3/343:
+   #0: ffff88818eb4bd38 (&uverbs_dev->disassociate_srcu){....}, at: ib_uver=
+bs_ioctl+0xe5/0x1e0 [ib_uverbs]
+   #1: ffff888176c76d38 (&file->hw_destroy_rwsem){++++}, at: uobj_destroy+0=
+x2d/0x90 [ib_uverbs]
 
-Dave E.
+  stack backtrace:
+  CPU: 3 PID: 343 Comm: python3 Not tainted 5.4.0-rc1 #12
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.1-0-ga5=
+cab58e9a3f-prebuilt.qemu.org 04/01/2014
+  Call Trace:
+   dump_stack+0x86/0xca
+   print_usage_bug.cold.50+0x2e5/0x355
+   mark_lock+0x871/0xb50
+   ? match_held_lock+0x20/0x250
+   ? check_usage_forwards+0x240/0x240
+   __lock_acquire+0x7de/0x23a0
+   ? __kasan_check_read+0x11/0x20
+   ? mark_lock+0xae/0xb50
+   ? mark_held_locks+0xb0/0xb0
+   ? find_held_lock+0xca/0xf0
+   lock_acquire+0xe1/0x200
+   ? xa_erase+0x12/0x30
+   _raw_spin_lock+0x2a/0x40
+   ? xa_erase+0x12/0x30
+   xa_erase+0x12/0x30
+   mlx5_ib_dealloc_mw+0x55/0xa0 [mlx5_ib]
+   uverbs_dealloc_mw+0x3c/0x70 [ib_uverbs]
+   uverbs_free_mw+0x1a/0x20 [ib_uverbs]
+   destroy_hw_idr_uobject+0x49/0xa0 [ib_uverbs]
+   [..]
+
+Fixes: 0417791536ae ("RDMA/mlx5: Add missing synchronize_srcu() for MW case=
+s")
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+ drivers/infiniband/hw/mlx5/mr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/m=
+r.c
+index 630599311586ec..7019c12005f4c1 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1967,8 +1967,8 @@ int mlx5_ib_dealloc_mw(struct ib_mw *mw)
+ 	int err;
+=20
+ 	if (IS_ENABLED(CONFIG_INFINIBAND_ON_DEMAND_PAGING)) {
+-		xa_erase(&dev->mdev->priv.mkey_table,
+-			 mlx5_base_mkey(mmw->mmkey.key));
++		xa_erase_irq(&dev->mdev->priv.mkey_table,
++			     mlx5_base_mkey(mmw->mmkey.key));
+ 		/*
+ 		 * pagefault_single_data_segment() may be accessing mmw under
+ 		 * SRCU if the user bound an ODP MR to this MW.
+--=20
+2.23.0
 
