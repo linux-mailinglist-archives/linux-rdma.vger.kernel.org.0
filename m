@@ -2,612 +2,296 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C980E3221
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2019 14:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A28E3379
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2019 15:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439672AbfJXMTv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 24 Oct 2019 08:19:51 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:61138 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726393AbfJXMTv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 24 Oct 2019 08:19:51 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9OC5ujf027440;
-        Thu, 24 Oct 2019 05:19:46 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pfpt0818;
- bh=2EGRVtM9BrSVKvPu2zsjQ+b3ntorYSf94TXDfG6RYI0=;
- b=NX8Cg91o/ai3hb5hxPcMyJszF50K5Xu+JBY6xvXNs4eQY/uMbaMTgU22PTzHoGaNmHB8
- vPuaBQEMv0ynvX6DvOkRAUAibZ2pB6l5/Y77Bx1H0Uv15gIx+6z86p8irLfCHBFLMZ2q
- ILJvERkGfFyACvYLMeP56BLmFE6/qK6YsGpQR+8Tb9Qh5FXDQrjm1k1ATHacM6sONDj+
- Md3pyluB9hZItpmtQss/DeHf7OImL/BcqnShpHkHnqD9WDx0NTgAVzpwEJht++AlRCNl
- ihuih4rnER0m8HA5DdwLIhV23EPm+deVygh1Op5ePMRK1Hmjp+9uF7y/MEFLsghHsn91 +A== 
-Received: from sc-exch04.marvell.com ([199.233.58.184])
-        by mx0a-0016f401.pphosted.com with ESMTP id 2vt9u5qe0r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 24 Oct 2019 05:19:46 -0700
-Received: from SC-EXCH02.marvell.com (10.93.176.82) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Thu, 24 Oct
- 2019 05:19:45 -0700
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (104.47.45.57) by
- SC-EXCH02.marvell.com (10.93.176.82) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Thu, 24 Oct 2019 05:19:45 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q95SvsgUMf/XMjwk2V0lxXBIpTELTd0l64LzyejzK6ToLi1PXeixpLbC4X5gR+iPIJ3dM9fyskOL2mQIi9CEGw0/eZDx3Xi+kfZdMAcaXFXx34EKbqyzbok2jAzpuxEn5/TOyQFnXVN1DUwe/lGAo4FdWRQDACJa2Co9gCgKlt+W11rfg602+MF4Zz4jdT43+Onau3K/WM3oBNbR7vN/vaiINZtvH+55XbXUN8rEFSLORVrhHa7hFqbqR3Ufo1mCN5kfratLYgoEivQXoJj0odrbJDhxByu/CdsQV8EJTnxxk8fHJHmxsx2+4rnZzmkOgkcEbPpyciK9ZpuN5DEGkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2EGRVtM9BrSVKvPu2zsjQ+b3ntorYSf94TXDfG6RYI0=;
- b=BWvN1vZt3wu0HfwtWw61cTzLXbK8XKluuR/DaGi1uxqSTSzYSvL9i2woEShvkLicZyx1PvGQsCgRohhc+eEnzjJECC9/VsM1wFP7raJPCZgfLK4yxiBxCmO8ElmgRhPBbZzxfStA2sreBfiL95ebX1QvOzdQk3GPMMeis66E9LCtnfi1vcZsdh9imaQBc9INHpShyoMllN2eRLFMVNpfDbXF5gL3IDnhestJ8ZCkoEkfqA4JGzHjRKBYLm6LTFlpH8kKmwVLKIbWQg8u9cFDmr19YHtWbrLJWGKnjSOVjbIfD+j+Ws5WC+0XgZtD47n/YHdvnSOxYJigbn4DTCWtnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector2-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2EGRVtM9BrSVKvPu2zsjQ+b3ntorYSf94TXDfG6RYI0=;
- b=f9e3WFiD6fb673Y35gc2u/pbQoKn6Kwhw9toODAKY7L2towZaaSDIQyneX4o6gwYCR3gu/UacnSMtrMJI+daSJIVeYOY1WXBhxVmBAIyNWf4KaAVydQRM0Ih1cL8CrEU7M7ArwVi+3EeJN3GWcIhFFCQv4+VmEwUtam16fpdGpM=
-Received: from MN2PR18MB3182.namprd18.prod.outlook.com (10.255.236.143) by
- MN2PR18MB3359.namprd18.prod.outlook.com (10.255.239.154) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2367.20; Thu, 24 Oct 2019 12:19:43 +0000
-Received: from MN2PR18MB3182.namprd18.prod.outlook.com
- ([fe80::4c1d:fb1e:ea9c:6811]) by MN2PR18MB3182.namprd18.prod.outlook.com
- ([fe80::4c1d:fb1e:ea9c:6811%6]) with mapi id 15.20.2387.023; Thu, 24 Oct 2019
- 12:19:43 +0000
-From:   Michal Kalderon <mkalderon@marvell.com>
-To:     Michal Kalderon <mkalderon@marvell.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Ariel Elior <aelior@marvell.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Ariel Elior <aelior@marvell.com>
-Subject: RE: [EXT] Re: [PATCH v2 rdma-next 1/2] RDMA/qedr: Fix synchronization
- methods and memory leaks in qedr
-Thread-Topic: [EXT] Re: [PATCH v2 rdma-next 1/2] RDMA/qedr: Fix
- synchronization methods and memory leaks in qedr
-Thread-Index: AQHVhBctBQC8AoLrfU+3L4N5Y0TGgqdnF8qAgADZ+0CAAc2n0A==
-Date:   Thu, 24 Oct 2019 12:19:43 +0000
-Message-ID: <MN2PR18MB318222E31E0D52FCE0350C5EA16A0@MN2PR18MB3182.namprd18.prod.outlook.com>
-References: <20191016114242.10736-1-michal.kalderon@marvell.com>
- <20191016114242.10736-2-michal.kalderon@marvell.com>
- <20191022193623.GG23952@ziepe.ca>
- <MN2PR18MB3182B5EED33E362D875C70B6A16B0@MN2PR18MB3182.namprd18.prod.outlook.com>
-In-Reply-To: <MN2PR18MB3182B5EED33E362D875C70B6A16B0@MN2PR18MB3182.namprd18.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [199.203.130.254]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 25b6e86d-ca02-4596-8af0-08d7587c737f
-x-ms-traffictypediagnostic: MN2PR18MB3359:
-x-ms-exchange-purlcount: 1
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR18MB33595DE677994B8FA5B4346DA16A0@MN2PR18MB3359.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-forefront-prvs: 0200DDA8BE
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(346002)(136003)(366004)(39860400002)(376002)(199004)(189003)(6246003)(55016002)(9686003)(186003)(305945005)(86362001)(14444005)(5660300002)(256004)(71200400001)(486006)(76176011)(26005)(476003)(11346002)(71190400001)(7696005)(6506007)(19627235002)(102836004)(99286004)(107886003)(446003)(52536014)(229853002)(110136005)(81166006)(33656002)(14454004)(8676002)(81156014)(966005)(54906003)(4326008)(66066001)(64756008)(66446008)(66556008)(66476007)(478600001)(76116006)(2906002)(30864003)(66946007)(74316002)(25786009)(6436002)(8936002)(6116002)(3846002)(6306002)(316002)(7736002);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR18MB3359;H:MN2PR18MB3182.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: marvell.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8NssjZyNAHh9DQkLwl5SUyYsRtWZjgvn0Af4xsutypsF4pK2c1z2cf9JsIWIbK5/FxCrbmiJIXHCzJxM3wVXNbBJe5x5pWqzSRCQumZzMy3/mCFh0N+Ho3kybhV39el2qaIpskMq9KzLxioKFyBBlgImsalGp9/R2V6nCwA+F0wSz6AVaaOArUXEgSOYNMc7kl3RyvN0OrjkyaDcxbry9XNYNm8EeHyF4DgRxpR2GXehjvrLMtC4jjQkraZwUOllGG6VIGcNM67UvoiwF/P7S40hf2uUj5/dnex8kxu3AGRhtIpueE3zOQdh4OREv1JC5vBf8mPO6UbrrbHWn4PUzkWTCwTJQDKy3D2cafVtmNO8gcDbU/BnQY3Kke5fecYZGEvsSRR4i3kS5SuufbjMyR1JpR/K/5iohN30Ap6pvDRGkD4irgzPEPKPSJGwZne+eJ/JwlJ/VqjrYAfxzxjFRT/P7EmTiGSPy4V6Vp7+zVs=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2502348AbfJXNH4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 24 Oct 2019 09:07:56 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22992 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732588AbfJXNH4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Oct 2019 09:07:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1571922474;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y/mP46+A29h+9KH4NmzTY3ov42WTkRcwR12iQgmX6l8=;
+        b=TPxtWRslFwWS1IAvMMG2Ut86H/8tnPguUiHDfnJ4D1o85tplyuiuL4sZ3v8snSFmRLCf9f
+        YfD9aCy5EXhnnaKDZpaLBJW5zF+PL0amszI8mzdyyXifiGjCvbvJvO6NXghjBphV4Uu+Tk
+        yta6D9YtTEFn83HaHexEHklKQuHvFWk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-174-QJNQ_4QHMa6fHM4K-7h1cQ-1; Thu, 24 Oct 2019 09:07:50 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C57D0800D49;
+        Thu, 24 Oct 2019 13:07:49 +0000 (UTC)
+Received: from localhost (unknown [10.66.128.227])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E6EFC100164D;
+        Thu, 24 Oct 2019 13:07:48 +0000 (UTC)
+Date:   Thu, 24 Oct 2019 21:07:46 +0800
+From:   Honggang LI <honli@redhat.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] RDMA/srpt: Fix TPG creation
+Message-ID: <20191024130746.GA21231@dhcp-128-227.nay.redhat.com>
+References: <20191023204106.23326-1-bvanassche@acm.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 25b6e86d-ca02-4596-8af0-08d7587c737f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2019 12:19:43.1552
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: isiTwykjKj3jJ56kb3pk0ZurTHGXA5geSJcB2M6nJuHmGJaNi66/gI/pSzUXZ8D4h6nCAte7s+iRMKvzWLYA6A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB3359
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-24_08:2019-10-23,2019-10-24 signatures=0
+In-Reply-To: <20191023204106.23326-1-bvanassche@acm.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-MC-Unique: QJNQ_4QHMa6fHM4K-7h1cQ-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> owner@vger.kernel.org> On Behalf Of Michal Kalderon
->=20
-> > From: Jason Gunthorpe <jgg@ziepe.ca>
-> > Sent: Tuesday, October 22, 2019 10:36 PM
-> >
-> > External Email
-> >
-> > ----------------------------------------------------------------------
-> > On Wed, Oct 16, 2019 at 02:42:41PM +0300, Michal Kalderon wrote:
-> >
-> > > Re-design of the iWARP CM related objects reference
-> >
-> > > counting and synchronization methods, to ensure operations
-> >
-> > > are synchronized correctly and and that memory allocated for "ep"
-> >
-> > > is released. (was leaked).
-> >
-> > > Also makes sure QP memory is not released before ep is finished
-> >
-> > > accessing it.
-> >
-> > >
-> >
-> > > Where as the QP object is created/destroyed by external operations,
-> >
-> > > the ep is created/destroyed by internal operations and represents
-> >
-> > > the tcp connection associated with the QP.
-> >
-> > >
-> >
-> > > QP destruction flow:
-> >
-> > > - needs to wait for ep establishment to complete (either
-> > > successfully
-> >
-> > >   or with error)
-> >
-> > > - needs to wait for ep disconnect to be fully posted to avoid a
-> >
-> > >   race condition of disconnect being called after reset.
-> >
-> > > - both the operations above don't always happen, so we use atomic
-> >
-> > >   flags to indicate whether the qp destruction flow needs to wait
-> >
-> > >   for these completions or not, if the destroy is called before
-> >
-> > >   these operations began, the flows will check the flags and not
-> >
-> > >   execute them ( connect / disconnect).
-> >
-> > >
-> >
-> > > We use completion structure for waiting for the completions
-> > > mentioned
-> >
-> > > above.
-> >
-> > >
-> >
-> > > The QP refcnt was modified to kref object.
-> >
-> > > The EP has a kref added to it to handle additional worker thread
-> >
-> > > accessing it.
-> >
-> > >
-> >
-> > > Memory Leaks - https://urldefense.proofpoint.com/v2/url?u=3Dhttps-
-> > 3A__www.spinics.net_lists_linux-
-> >
-> 2Drdma_msg83762.html&d=3DDwIBAg&c=3DnKjWec2b6R0mOyPaz7xtfQ&r=3D7Yun
-> > NpwaTtA-c31OjGDRlmf54csBCXY_j41vn-0xRz4&m=3DDfexSyvBpCQbEUyzV-
-> > q_oGHiJYpLrH4Igtg963UsuZs&s=3DXNxYMW-
-> > rrECcE1vRoUReaYZcb01cMCx9X9fs_clAU1Y&e=3D
-> >
-> > > Reported-by Chuck Lever <chuck.lever@oracle.com>
-> >
-> > >
-> >
-> > > Concurrency not managed correctly -
-> >
-> > > https://urldefense.proofpoint.com/v2/url?u=3Dhttps-
-> > 3A__www.spinics.net_lists_linux-
-> >
-> 2Drdma_msg67949.html&d=3DDwIBAg&c=3DnKjWec2b6R0mOyPaz7xtfQ&r=3D7Yun
-> > NpwaTtA-c31OjGDRlmf54csBCXY_j41vn-0xRz4&m=3DDfexSyvBpCQbEUyzV-
-> >
-> q_oGHiJYpLrH4Igtg963UsuZs&s=3DzgMS6HLPvQCHcCwmmXuA8EqpZV1cX_DL-
-> > oPqtLJv2vs&e=3D
-> >
-> > > Reported-by Jason Gunthorpe <jgg@ziepe.ca>
-> >
-> > >
-> >
-> > > Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
-> >
-> > > Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
-> >
-> > >  drivers/infiniband/hw/qedr/qedr.h       |  23 ++++-
-> >
-> > >  drivers/infiniband/hw/qedr/qedr_iw_cm.c | 150
-> > ++++++++++++++++++++++----------
-> >
-> > >  drivers/infiniband/hw/qedr/verbs.c      |  42 +++++----
-> >
-> > >  3 files changed, 141 insertions(+), 74 deletions(-)
-> >
-> > >
-> >
-> > > diff --git a/drivers/infiniband/hw/qedr/qedr.h
-> > b/drivers/infiniband/hw/qedr/qedr.h
-> >
-> > > index 0cfd849b13d6..8e927f6c1520 100644
-> >
-> > > +++ b/drivers/infiniband/hw/qedr/qedr.h
-> >
-> > > @@ -40,6 +40,7 @@
-> >
-> > >  #include <linux/qed/qed_rdma_if.h>
-> >
-> > >  #include <linux/qed/qede_rdma.h>
-> >
-> > >  #include <linux/qed/roce_common.h>
-> >
-> > > +#include <linux/completion.h>
-> >
-> > >  #include "qedr_hsi_rdma.h"
-> >
-> > >
-> >
-> > >  #define QEDR_NODE_DESC "QLogic 579xx RoCE HCA"
-> >
-> > > @@ -377,10 +378,20 @@ enum qedr_qp_err_bitmap {
-> >
-> > >  	QEDR_QP_ERR_RQ_PBL_FULL =3D 32,
-> >
-> > >  };
-> >
-> > >
-> >
-> > > +enum qedr_qp_create_type {
-> >
-> > > +	QEDR_QP_CREATE_NONE,
-> >
-> > > +	QEDR_QP_CREATE_USER,
-> >
-> > > +	QEDR_QP_CREATE_KERNEL,
-> >
-> > > +};
-> >
-> > > +
-> >
-> > > +enum qedr_iwarp_cm_flags {
-> >
-> > > +	QEDR_IWARP_CM_WAIT_FOR_CONNECT    =3D BIT(0),
-> >
-> > > +	QEDR_IWARP_CM_WAIT_FOR_DISCONNECT =3D BIT(1),
-> >
-> > > +};
-> >
-> > > +
-> >
-> > >  struct qedr_qp {
-> >
-> > >  	struct ib_qp ibqp;	/* must be first */
-> >
-> > >  	struct qedr_dev *dev;
-> >
-> > > -	struct qedr_iw_ep *ep;
-> >
-> > >  	struct qedr_qp_hwq_info sq;
-> >
-> > >  	struct qedr_qp_hwq_info rq;
-> >
-> > >
-> >
-> > > @@ -395,6 +406,7 @@ struct qedr_qp {
-> >
-> > >  	u32 id;
-> >
-> > >  	struct qedr_pd *pd;
-> >
-> > >  	enum ib_qp_type qp_type;
-> >
-> > > +	enum qedr_qp_create_type create_type;
-> >
-> > >  	struct qed_rdma_qp *qed_qp;
-> >
-> > >  	u32 qp_id;
-> >
-> > >  	u16 icid;
-> >
-> > > @@ -437,8 +449,11 @@ struct qedr_qp {
-> >
-> > >  	/* Relevant to qps created from user space only (applications) */
-> >
-> > >  	struct qedr_userq usq;
-> >
-> > >  	struct qedr_userq urq;
-> >
-> > > -	atomic_t refcnt;
-> >
-> > > -	bool destroyed;
-> >
-> > > +
-> >
-> > > +	/* synchronization objects used with iwarp ep */
-> >
-> > > +	struct kref refcnt;
-> >
-> > > +	struct completion iwarp_cm_comp;
-> >
-> > > +	unsigned long iwarp_cm_flags; /* enum iwarp_cm_flags */
-> >
-> > >  };
-> >
-> > >
-> >
-> > >  struct qedr_ah {
-> >
-> > > @@ -531,7 +546,7 @@ struct qedr_iw_ep {
-> >
-> > >  	struct iw_cm_id	*cm_id;
-> >
-> > >  	struct qedr_qp	*qp;
-> >
-> > >  	void		*qed_context;
-> >
-> > > -	u8		during_connect;
-> >
-> > > +	struct kref	refcnt;
-> >
-> > >  };
-> >
-> > >
-> >
-> > >  static inline
-> >
-> > > diff --git a/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-> > b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-> >
-> > > index 22881d4442b9..26204caf0975 100644
-> >
-> > > +++ b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-> >
-> > > @@ -79,6 +79,28 @@ qedr_fill_sockaddr6(const struct
-> > > qed_iwarp_cm_info
-> > *cm_info,
-> >
-> > >  	}
-> >
-> > >  }
-> >
-> > >
-> >
-> > > +static void qedr_iw_free_qp(struct kref *ref)
-> >
-> > > +{
-> >
-> > > +	struct qedr_qp *qp =3D container_of(ref, struct qedr_qp, refcnt);
-> >
-> > > +
-> >
-> > > +	xa_erase(&qp->dev->qps, qp->qp_id);
-> >
-> >
-> >
-> > This probably doesn't work right because qp_id is not derived from the
-> >
-> > xa_array, but some external entity.
-> >
-> >
-> >
-> > Thus the qp_id should be removed from the xarray and kref put'd right
-> >
-> > before the qp_id is deallocated from the external manager.
-> >
-> Thanks! This is a good point.
-> I will remove the element from xarray and kref put before deallocation, a=
+On Wed, Oct 23, 2019 at 01:41:06PM -0700, Bart Van Assche wrote:
+> Unlike the iSCSI target driver, for the SRP target driver it is sufficien=
+t
+> if a single TPG can be associated with each RDMA port name. However, user=
 s
-> you mentioned, But will wait for the kref-free function to be called ( pe=
-rhaps
-> using completion ) Before deallocation.
-Hi Jason,=20
+> started associating multiple TPGs with RDMA port names. Support this by
+> converting the single TPG in struct srpt_port_id into a list. This patch
+> fixes the following list corruption issue:
+>=20
+> list_add corruption. prev->next should be next (ffffffffc0a080c0), but wa=
+s ffffa08a994ce6f0. (prev=3Dffffa08a994ce6f0).
+> WARNING: CPU: 2 PID: 2597 at lib/list_debug.c:28 __list_add_valid+0x6a/0x=
+70
+> CPU: 2 PID: 2597 Comm: targetcli Not tainted 5.4.0-rc1.3bfa3c9602a7 #1
+> RIP: 0010:__list_add_valid+0x6a/0x70
+> Call Trace:
+>  core_tpg_register+0x116/0x200 [target_core_mod]
+>  srpt_make_tpg+0x3f/0x60 [ib_srpt]
+>  target_fabric_make_tpg+0x41/0x290 [target_core_mod]
+>  configfs_mkdir+0x158/0x3e0
+>  vfs_mkdir+0x108/0x1a0
+>  do_mkdirat+0x77/0xe0
+>  do_syscall_64+0x55/0x1d0
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>=20
+> Cc: Honggang LI <honli@redhat.com>
+> Reported-by: Honggang LI <honli@redhat.com>
+> Fixes: a42d985bd5b2 ("ib_srpt: Initial SRP Target merge for v3.3-rc1")
+> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+> ---
+>  drivers/infiniband/ulp/srpt/ib_srpt.c | 77 ++++++++++++++++++---------
+>  drivers/infiniband/ulp/srpt/ib_srpt.h | 25 +++++++--
+>  2 files changed, 73 insertions(+), 29 deletions(-)
+>=20
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/u=
+lp/srpt/ib_srpt.c
+> index daf811abf40a..a278e76b9e02 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -2131,6 +2131,7 @@ static int srpt_cm_req_recv(struct srpt_device *con=
+st sdev,
+>  =09char i_port_id[36];
+>  =09u32 it_iu_len;
+>  =09int i, tag_num, tag_size, ret;
+> +=09struct srpt_tpg *stpg;
+> =20
+>  =09WARN_ON_ONCE(irqs_disabled());
+> =20
+> @@ -2288,19 +2289,33 @@ static int srpt_cm_req_recv(struct srpt_device *c=
+onst sdev,
+> =20
+>  =09tag_num =3D ch->rq_size;
+>  =09tag_size =3D 1; /* ib_srpt does not use se_sess->sess_cmd_map */
+> -=09if (sport->port_guid_id.tpg.se_tpg_wwn)
+> -=09=09ch->sess =3D target_setup_session(&sport->port_guid_id.tpg, tag_nu=
+m,
+> +
+> +=09mutex_lock(&sport->port_guid_id.mutex);
+> +=09list_for_each_entry(stpg, &sport->port_guid_id.tpg_list, entry) {
+> +=09=09if (!IS_ERR_OR_NULL(ch->sess))
+> +=09=09=09break;
+> +=09=09ch->sess =3D target_setup_session(&stpg->tpg, tag_num,
+>  =09=09=09=09=09=09tag_size, TARGET_PROT_NORMAL,
+>  =09=09=09=09=09=09ch->sess_name, ch, NULL);
+> -=09if (sport->port_gid_id.tpg.se_tpg_wwn && IS_ERR_OR_NULL(ch->sess))
+> -=09=09ch->sess =3D target_setup_session(&sport->port_gid_id.tpg, tag_num=
+,
+> +=09}
+> +=09mutex_unlock(&sport->port_guid_id.mutex);
+> +
+> +=09mutex_lock(&sport->port_gid_id.mutex);
+> +=09list_for_each_entry(stpg, &sport->port_gid_id.tpg_list, entry) {
+> +=09=09if (!IS_ERR_OR_NULL(ch->sess))
+> +=09=09=09break;
+> +=09=09ch->sess =3D target_setup_session(&stpg->tpg, tag_num,
+>  =09=09=09=09=09tag_size, TARGET_PROT_NORMAL, i_port_id,
+>  =09=09=09=09=09ch, NULL);
+> -=09/* Retry without leading "0x" */
+> -=09if (sport->port_gid_id.tpg.se_tpg_wwn && IS_ERR_OR_NULL(ch->sess))
+> -=09=09ch->sess =3D target_setup_session(&sport->port_gid_id.tpg, tag_num=
+,
+> +=09=09if (!IS_ERR_OR_NULL(ch->sess))
+> +=09=09=09break;
+> +=09=09/* Retry without leading "0x" */
+> +=09=09ch->sess =3D target_setup_session(&stpg->tpg, tag_num,
+>  =09=09=09=09=09=09tag_size, TARGET_PROT_NORMAL,
+>  =09=09=09=09=09=09i_port_id + 2, ch, NULL);
+> +=09}
+> +=09mutex_unlock(&sport->port_gid_id.mutex);
+> +
+>  =09if (IS_ERR_OR_NULL(ch->sess)) {
+>  =09=09WARN_ON_ONCE(ch->sess =3D=3D NULL);
+>  =09=09ret =3D PTR_ERR(ch->sess);
+> @@ -3140,6 +3155,10 @@ static void srpt_add_one(struct ib_device *device)
+>  =09=09sport->port_attrib.srp_sq_size =3D DEF_SRPT_SQ_SIZE;
+>  =09=09sport->port_attrib.use_srq =3D false;
+>  =09=09INIT_WORK(&sport->work, srpt_refresh_port_work);
+> +=09=09mutex_init(&sport->port_guid_id.mutex);
+> +=09=09INIT_LIST_HEAD(&sport->port_guid_id.tpg_list);
+> +=09=09mutex_init(&sport->port_gid_id.mutex);
+> +=09=09INIT_LIST_HEAD(&sport->port_gid_id.tpg_list);
+> =20
+>  =09=09if (srpt_refresh_port(sport)) {
+>  =09=09=09pr_err("MAD registration failed for %s-%d.\n",
+> @@ -3242,18 +3261,6 @@ static struct srpt_port *srpt_tpg_to_sport(struct =
+se_portal_group *tpg)
+>  =09return tpg->se_tpg_wwn->priv;
+>  }
+> =20
+> -static struct srpt_port_id *srpt_tpg_to_sport_id(struct se_portal_group =
+*tpg)
+> -{
+> -=09struct srpt_port *sport =3D srpt_tpg_to_sport(tpg);
+> -
+> -=09if (tpg =3D=3D &sport->port_guid_id.tpg)
+> -=09=09return &sport->port_guid_id;
+> -=09if (tpg =3D=3D &sport->port_gid_id.tpg)
+> -=09=09return &sport->port_gid_id;
+> -=09WARN_ON_ONCE(true);
+> -=09return NULL;
+> -}
+> -
+>  static struct srpt_port_id *srpt_wwn_to_sport_id(struct se_wwn *wwn)
+>  {
+>  =09struct srpt_port *sport =3D wwn->priv;
+> @@ -3268,7 +3275,9 @@ static struct srpt_port_id *srpt_wwn_to_sport_id(st=
+ruct se_wwn *wwn)
+> =20
+>  static char *srpt_get_fabric_wwn(struct se_portal_group *tpg)
+>  {
+> -=09return srpt_tpg_to_sport_id(tpg)->name;
+> +=09struct srpt_tpg *stpg =3D container_of(tpg, typeof(*stpg), tpg);
+> +
+> +=09return stpg->sport_id->name;
+>  }
+> =20
+>  static u16 srpt_get_tag(struct se_portal_group *tpg)
+> @@ -3725,16 +3734,27 @@ static struct se_portal_group *srpt_make_tpg(stru=
+ct se_wwn *wwn,
+>  =09=09=09=09=09     const char *name)
+>  {
+>  =09struct srpt_port *sport =3D wwn->priv;
+> -=09struct se_portal_group *tpg =3D &srpt_wwn_to_sport_id(wwn)->tpg;
+> -=09int res;
+> +=09struct srpt_port_id *sport_id =3D srpt_wwn_to_sport_id(wwn);
+> +=09struct srpt_tpg *stpg;
+> +=09int res =3D -ENOMEM;
+> =20
+> -=09res =3D core_tpg_register(wwn, tpg, SCSI_PROTOCOL_SRP);
+> -=09if (res)
+> +=09stpg =3D kzalloc(sizeof(*stpg), GFP_KERNEL);
+> +=09if (!stpg)
+> +=09=09return ERR_PTR(res);
+> +=09stpg->sport_id =3D sport_id;
+> +=09res =3D core_tpg_register(wwn, &stpg->tpg, SCSI_PROTOCOL_SRP);
+> +=09if (res) {
+> +=09=09kfree(stpg);
+>  =09=09return ERR_PTR(res);
+> +=09}
+> +
+> +=09mutex_lock(&sport_id->mutex);
+> +=09list_add_tail(&stpg->entry, &sport_id->tpg_list);
+> +=09mutex_unlock(&sport_id->mutex);
+> =20
+>  =09atomic_inc(&sport->refcount);
+> =20
+> -=09return tpg;
+> +=09return &stpg->tpg;
+>  }
+> =20
+>  /**
+> @@ -3743,10 +3763,17 @@ static struct se_portal_group *srpt_make_tpg(stru=
+ct se_wwn *wwn,
+>   */
+>  static void srpt_drop_tpg(struct se_portal_group *tpg)
+>  {
+> +=09struct srpt_tpg *stpg =3D container_of(tpg, typeof(*stpg), tpg);
+> +=09struct srpt_port_id *sport_id =3D stpg->sport_id;
+>  =09struct srpt_port *sport =3D srpt_tpg_to_sport(tpg);
+> =20
+> +=09mutex_lock(&sport_id->mutex);
+> +=09list_del(&stpg->entry);
+> +=09mutex_unlock(&sport_id->mutex);
+> +
+>  =09sport->enabled =3D false;
+>  =09core_tpg_deregister(tpg);
+> +=09kfree(stpg);
+>  =09srpt_drop_sport_ref(sport);
+>  }
+> =20
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.h b/drivers/infiniband/u=
+lp/srpt/ib_srpt.h
+> index f8bd95302ac0..27a54f777e3b 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.h
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.h
+> @@ -363,17 +363,34 @@ struct srpt_port_attrib {
+>  =09bool=09=09=09use_srq;
+>  };
+> =20
+> +/**
+> + * struct srpt_tpg - information about a single "target portal group"
+> + * @entry:=09Entry in @sport_id->tpg_list.
+> + * @sport_id:=09Port name this TPG is associated with.
+> + * @tpg:=09LIO TPG data structure.
+> + *
+> + * Zero or more target portal groups are associated with each port name
+> + * (srpt_port_id). With each TPG an ACL list is associated.
+> + */
+> +struct srpt_tpg {
+> +=09struct list_head=09entry;
+> +=09struct srpt_port_id=09*sport_id;
+> +=09struct se_portal_group=09tpg;
+> +};
+> +
+>  /**
+>   * struct srpt_port_id - information about an RDMA port name
+> - * @tpg: TPG associated with the RDMA port.
+> - * @wwn: WWN associated with the RDMA port.
+> - * @name: ASCII representation of the port name.
+> + * @mutex:=09Protects @tpg_list changes.
+> + * @tpg_list:=09TPGs associated with the RDMA port name.
+> + * @wwn:=09WWN associated with the RDMA port name.
+> + * @name:=09ASCII representation of the port name.
+>   *
+>   * Multiple sysfs directories can be associated with a single RDMA port.=
+ This
+>   * data structure represents a single (port, name) pair.
+>   */
+>  struct srpt_port_id {
+> -=09struct se_portal_group=09tpg;
+> +=09struct mutex=09=09mutex;
+> +=09struct list_head=09tpg_list;
+>  =09struct se_wwn=09=09wwn;
+>  =09char=09=09=09name[64];
+>  };
 
-Actually I was wrong about this one. I can't wait for the kref-free functio=
-n to be called,=20
-As it requires the deallocation flow to complete for ep->qp reference to de=
-crease.=20
-I think I can simply call xa_erase before the deallocation flow and not as =
-part of the
-Kref release function and call kref_put for the qp object at the end of the=
- flow after
-everything is freed so that qp can be freed.
+Acked-by: Honggang Li <honli@redhat.com>
 
->=20
-> >
-> >
-> > Ie you want to avoid a race where the qp_id can be re-assigned but the
-> >
-> > xarray entry hasn't been freed by its kref yet. Then it would
-> >
-> > xa_insert and fail.
-> >
-> >
-> >
-> > Also the xa_insert is probably not supposed to be the _irq version
-> Right, this was originally an idr which was modified with the massive pat=
-chset
-> That changed all idrs to xarrays. I'll re-review it.
->=20
-> >
-> > either.
-> >
-> >
-> >
-> > > @@ -224,13 +249,18 @@ qedr_iw_disconnect_event(void *context,
-> >
-> > >  	struct qedr_discon_work *work;
-> >
-> > >  	struct qedr_iw_ep *ep =3D (struct qedr_iw_ep *)context;
-> >
-> > >  	struct qedr_dev *dev =3D ep->dev;
-> >
-> > > -	struct qedr_qp *qp =3D ep->qp;
-> >
-> > >
-> >
-> > >  	work =3D kzalloc(sizeof(*work), GFP_ATOMIC);
-> >
-> > >  	if (!work)
-> >
-> > >  		return;
-> >
-> > >
-> >
-> > > -	qedr_iw_qp_add_ref(&qp->ibqp);
-> >
-> > > +	/* We can't get a close event before disconnect, but since
-> >
-> > > +	 * we're scheduling a work queue we need to make sure close
-> >
-> > > +	 * won't delete the ep, so we increase the refcnt
-> >
-> > > +	 */
-> >
-> > > +	if (!kref_get_unless_zero(&ep->refcnt))
-> >
-> > > +		return;
-> >
-> >
-> >
-> > The unless_zero version should not be used without some kind of
-> >
-> > locking like this, if you have a pointer to ep then ep must be a valid
-> >
-> > pointer and it is safe to take a kref on it.
-> >
-> >
-> >
-> > If there is a risk it is not valid then this is racy in a way that
-> >
-> > only locking can fix, not unless_zero
-> Ok, ep is valid here, I'll modify to kref_get. Thanks.
->=20
-> >
-> >
-> >
-> > > @@ -476,6 +508,19 @@ qedr_addr6_resolve(struct qedr_dev *dev,
-> >
-> > >  	return rc;
-> >
-> > >  }
-> >
-> > >
-> >
-> > > +struct qedr_qp *qedr_iw_load_qp(struct qedr_dev *dev, u32 qpn)
-> >
-> > > +{
-> >
-> > > +	struct qedr_qp *qp;
-> >
-> > > +
-> >
-> > > +	xa_lock(&dev->qps);
-> >
-> > > +	qp =3D xa_load(&dev->qps, qpn);
-> >
-> > > +	if (!qp || !kref_get_unless_zero(&qp->refcnt))
-> >
-> > > +		qp =3D NULL;
-> >
-> >
-> >
-> > See, here is is OK because qp can't be freed under the xa_lock.
-> >
-> >
-> >
-> > However, this unless_zero also will not be needed once the xa_erase is
-> >
-> > moved to the right spot.
-> Right. Thanks.
->=20
-> >
-> >
-> >
-> > > +		/* Wait for the connection setup to complete */
-> >
-> > > +		if
-> > (test_and_set_bit(QEDR_IWARP_CM_WAIT_FOR_CONNECT,
-> >
-> > > +				     &qp->iwarp_cm_flags))
-> >
-> > > +			wait_for_completion(&qp->iwarp_cm_comp);
-> >
-> > > +
-> >
-> > > +		if
-> > (test_and_set_bit(QEDR_IWARP_CM_WAIT_FOR_DISCONNECT,
-> >
-> > > +				     &qp->iwarp_cm_flags))
-> >
-> > > +			wait_for_completion(&qp->iwarp_cm_comp);
-> >
-> > >  	}
-> >
-> >
-> >
-> > These atomics seem mis-named, and I'm unclear how they can both be
-> >
-> > waiting on the same completion?
->=20
-> In IWARP the connection establishment and disconnect are offloaded to hw
-> and asynchronous.
-> The first waits for CONNECT to complete. (completes asynchronously) If we
-> are in the middle of a connect that was offloaded (or after connect) the =
-bit
-> will be on and completion will be completed once the connection is fully
-> established.
-> We want to wait before destroying the qp due to hw constraints (can't
-> destroy during connect).
->=20
-> The seconds waits for DISCONNECT to complete ( doesn't always occur, only
-> if a graceful disconnect was initiated on either side) Disconnect can't o=
-ccur on
-> a connection not established yet, so we can't get the completion of the
-> disconnect instead.
-> Similar for connect, once we start the disconnect we turn on the bit and =
-will
-> complete once the disconnect completes.
->=20
-> I didn't see a reason to use another completion structure, since from wha=
-t I
-> read complete does comp->done++ and wait_for_completion checks done
-> and eventually does done-- so it can be used several times if there is no=
- need
-> to distinguish which event occurred first (in this case there is only one=
- option
-> first connect then disconnect and disconnect can't occur without connect)
->=20
-> But if this is wrong I will add another completion structure.
->=20
-> Thanks,
-> Michal
-> >
-> >
-> >
-> > > @@ -2490,11 +2488,11 @@ int qedr_destroy_qp(struct ib_qp *ibqp,
-> > > struct
-> > ib_udata *udata)
-> >
-> > >
-> >
-> > >  	qedr_free_qp_resources(dev, qp, udata);
-> >
-> > >
-> >
-> > > -	if (atomic_dec_and_test(&qp->refcnt) &&
-> >
-> > > -	    rdma_protocol_iwarp(&dev->ibdev, 1)) {
-> >
-> > > -		xa_erase_irq(&dev->qps, qp->qp_id);
-> >
-> >
-> >
-> > This is probably too late, it should be done before the qp_id could be
-> >
-> > recycled.
-> >
-> >
-> >
-> > Jason
+Thanks
 
