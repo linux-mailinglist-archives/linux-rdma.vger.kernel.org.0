@@ -2,113 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFA2E3770
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2019 18:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C98E3786
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2019 18:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407757AbfJXQIM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 24 Oct 2019 12:08:12 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:36512 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405863AbfJXQIM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Oct 2019 12:08:12 -0400
-Received: by mail-qt1-f193.google.com with SMTP id d17so24039472qto.3
-        for <linux-rdma@vger.kernel.org>; Thu, 24 Oct 2019 09:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=s1fj8fwhXASvA5BcSEnuaym+AEP5F8vrCX6CqSoSzHE=;
-        b=ipLcj3vqSRvDkawQ84nEhQUdYOuFWhl+8+r4w/t271R3CMRcMqmd3xDKgI0v3RUIfw
-         0pZuoTB/6uXIbjMQnS22Mf4xeguRF7l5tiofGMv5nuDLnSGFHPVZO/y+9vxjd5Id0eek
-         2H1vArZabODJZDFiPOD6ihIpZGVcl9WnJxmYhSdbGU2IJwmJm94kE2C12ySZ2DeOqMJh
-         5XeeAWa4yDubLdRoBlzXBGlC9n6jiFuNO8It+eXFEVgZk1YYkrndG81IzTi/4l8fi8tw
-         RiMgn/erpd7vq6rkfjg3VsdFJRU70QXce+y/9Yk4W33KJPMSqvOIicC7GX7sfiNgTq+L
-         EIzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=s1fj8fwhXASvA5BcSEnuaym+AEP5F8vrCX6CqSoSzHE=;
-        b=USvxdCOrwckWoo19+mHTdnBKzYJOKYysSUdURdzDO9s0DgXMb0I3WCICQxfZPC2sin
-         siYmg46IzH0kbf6HE7TQMHZ/MbSDbkfN1sIvn1JoqMqMIS0KbSkzxVK2D1AYQO7A+EvA
-         51UaHmrgL1mMlIfoOCCVu5k67feMBsrp1CqY85q7x8YuHyUWL6PJfcTTS9H+XDI9sqCT
-         YcSjxdX5vlGP5GyFOt0/s10Y+ZRCNOp/sLjybBDQaC5LBYfNpxQd1OSQD1i1pPJhiaqM
-         PTl+YsZnK1fbEV8cPNB5mApVTkmiw6u+6jskUep58mxCHYDu/zK5WzlibOqeimqQyYkC
-         dYLA==
-X-Gm-Message-State: APjAAAVdcNH5tDMY/OQGHspgH92WEJO6Awa5z5Qk9K1GJvhaa5na6NNX
-        P6nZm8zI60zmly1c9z1B2BLaEUGHVBg=
-X-Google-Smtp-Source: APXvYqxWKpcpuF7L6UlbLq/uff1A34fMdUx/u0mXPi6YKIBzvhtfZB+gMw1Kvmu6HEbnImc9BdXlUg==
-X-Received: by 2002:aed:2907:: with SMTP id s7mr4108459qtd.265.1571933291109;
-        Thu, 24 Oct 2019 09:08:11 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id k17sm21683561qtk.7.2019.10.24.09.08.10
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 24 Oct 2019 09:08:10 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iNfek-0008Kl-1A; Thu, 24 Oct 2019 13:08:10 -0300
-Date:   Thu, 24 Oct 2019 13:08:10 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Parav Pandit <parav@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next] IB/core: Avoid deadlock during netlink message
- handling
-Message-ID: <20191024160810.GV23952@ziepe.ca>
-References: <20191015080733.18625-1-leon@kernel.org>
- <20191024131743.GA24174@ziepe.ca>
- <20191024132607.GR4853@unreal>
- <20191024135017.GT23952@ziepe.ca>
- <20191024160252.GS4853@unreal>
+        id S2439703AbfJXQLZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 24 Oct 2019 12:11:25 -0400
+Received: from smtp.codeaurora.org ([198.145.29.96]:40368 "EHLO
+        smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436655AbfJXQLZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Oct 2019 12:11:25 -0400
+Received: by smtp.codeaurora.org (Postfix, from userid 1000)
+        id D22F5611AD; Thu, 24 Oct 2019 16:11:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codeaurora.org;
+        s=default; t=1571933484;
+        bh=6BQeRd1YE343V3Pyn6bXhu7AVvclx5LyH+xiYk/mmsQ=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=TQNWdZPw1VNshMmWaBQj1Njknz4thr4uOvbL1s7+gUpZ2/S4Z6UPbwd/i0UR/Pl7b
+         Sp4caPzRIbVyjzYY/jo54suzPij6UtrkvF+XsYDXl1bDXeAvgT6m7F8e19ZDERebd7
+         vU/FhgsI3fyJCWKzlLamjK3sITo8j5Zub6XmHcBw=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        pdx-caf-mail.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.7 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_INVALID,DKIM_SIGNED,SPF_NONE autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (unknown [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo@smtp.codeaurora.org)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CE9586110A;
+        Thu, 24 Oct 2019 16:11:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codeaurora.org;
+        s=default; t=1571933480;
+        bh=6BQeRd1YE343V3Pyn6bXhu7AVvclx5LyH+xiYk/mmsQ=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=ad96iQEMymUX4ygi/5GDCdgFnmUhXDrCv64tNVhd3dPGHxI4cDyjZzfjbCwrwUedx
+         /jnhJJswJ5dPo4LKE68u2uv2H7SAvEKEbExn15lSHN9CohgbLdjqfa6M8ApqgrEYzy
+         NJ7yZ41/UYNotjEG+4ToTSevM23sPyCLz9KkbYLk=
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CE9586110A
+Authentication-Results: pdx-caf-mail.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: pdx-caf-mail.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jiri Kosina <trivial@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] [trivial] net: Fix misspellings of "configure" and "configuration"
+References: <20191024152201.29868-1-geert+renesas@glider.be>
+Date:   Thu, 24 Oct 2019 19:11:15 +0300
+In-Reply-To: <20191024152201.29868-1-geert+renesas@glider.be> (Geert
+        Uytterhoeven's message of "Thu, 24 Oct 2019 17:22:01 +0200")
+Message-ID: <878spaqg2k.fsf@kamboji.qca.qualcomm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191024160252.GS4853@unreal>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 24, 2019 at 07:02:52PM +0300, Leon Romanovsky wrote:
-> On Thu, Oct 24, 2019 at 10:50:17AM -0300, Jason Gunthorpe wrote:
-> > On Thu, Oct 24, 2019 at 04:26:07PM +0300, Leon Romanovsky wrote:
-> > > On Thu, Oct 24, 2019 at 10:17:43AM -0300, Jason Gunthorpe wrote:
-> > > > On Tue, Oct 15, 2019 at 11:07:33AM +0300, Leon Romanovsky wrote:
-> > > >
-> > > > > diff --git a/drivers/infiniband/core/netlink.c b/drivers/infiniband/core/netlink.c
-> > > > > index 81dbd5f41bed..a3507b8be569 100644
-> > > > > +++ b/drivers/infiniband/core/netlink.c
-> > > > > @@ -42,9 +42,12 @@
-> > > > >  #include <linux/module.h>
-> > > > >  #include "core_priv.h"
-> > > > >
-> > > > > -static DEFINE_MUTEX(rdma_nl_mutex);
-> > > > >  static struct {
-> > > > > -	const struct rdma_nl_cbs   *cb_table;
-> > > > > +	const struct rdma_nl_cbs __rcu *cb_table;
-> > > > > +	/* Synchronizes between ongoing netlink commands and netlink client
-> > > > > +	 * unregistration.
-> > > > > +	 */
-> > > > > +	struct srcu_struct unreg_srcu;
-> > > >
-> > > > A srcu in every index is serious overkill for this. Lets just us a
-> > > > rwsem:
-> > >
-> > > I liked previous variant more than rwsem, but it is Parav's patch.
-> >
-> > Why? srcu is a huge data structure and slow on unregister
-> 
-> The unregister time is not so important for those IB/core modules.
-> I liked SRCU because it doesn't have *_ONCE() macros and smb_* calls.
+Geert Uytterhoeven <geert+renesas@glider.be> writes:
 
-It does, they are just hidden under other macros..
+> Fix various misspellings of "configuration" and "configure".
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> v2:
+>   - Merge
+>     [trivial] net/mlx5e: Spelling s/configuraiton/configuration/
+>     [trivial] qed: Spelling s/configuraiton/configuration/
+>   - Fix typo in subject,
+>   - Extend with various other similar misspellings.
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en/port_buffer.c | 2 +-
+>  drivers/net/ethernet/qlogic/qed/qed_int.h                | 4 ++--
+>  drivers/net/ethernet/qlogic/qed/qed_sriov.h              | 2 +-
+>  drivers/net/ethernet/qlogic/qede/qede_filter.c           | 2 +-
+>  drivers/net/wireless/ath/ath9k/ar9003_hw.c               | 2 +-
+>  drivers/net/wireless/intel/iwlwifi/iwl-fh.h              | 2 +-
+>  drivers/net/wireless/ti/wlcore/spi.c                     | 2 +-
+>  include/uapi/linux/dcbnl.h                               | 2 +-
+>  8 files changed, 9 insertions(+), 9 deletions(-)
 
-> Maybe wrong here, but the extra advantage of SRCU is that we are already
-> using that mechanism in uverbs and my assumption that SRCU will greatly
-> enjoy shared grace period.
+I hope this goes to net-next? Easier to handle possible conflicts that
+way.
 
-Hm, I'm not sure it works like that, the grace periods would be consecutive
+For the wireless part:
 
-Jason
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
+
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
