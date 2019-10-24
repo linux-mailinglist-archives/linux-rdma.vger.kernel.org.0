@@ -2,90 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD666E2EAB
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2019 12:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC8FE2F20
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Oct 2019 12:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407546AbfJXKTU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 24 Oct 2019 06:19:20 -0400
-Received: from mail-ed1-f53.google.com ([209.85.208.53]:34030 "EHLO
-        mail-ed1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407344AbfJXKTU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Oct 2019 06:19:20 -0400
-Received: by mail-ed1-f53.google.com with SMTP id b72so9248665edf.1
-        for <linux-rdma@vger.kernel.org>; Thu, 24 Oct 2019 03:19:19 -0700 (PDT)
+        id S2438841AbfJXKcz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 24 Oct 2019 06:32:55 -0400
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:42639 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436738AbfJXKcz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Oct 2019 06:32:55 -0400
+Received: by mail-yb1-f194.google.com with SMTP id 4so7275659ybq.9
+        for <linux-rdma@vger.kernel.org>; Thu, 24 Oct 2019 03:32:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=message-id:subject:from:to:date:user-agent:mime-version
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=uIkiLurxAG15B3r6RxO2ycm67eznuWcRvb08KCsAuRM=;
-        b=Lb9CnPqmaM7ZTnrwqi/T9wxqB2y2znvxCc2JVIBLBINY6beXKa+nW1MSdxba7ughjl
-         5oCtcCOEVhGreYJUUDHdCC646I3fbqcOCmMBxgM3MJhflbVI43u209PcajR24bVqjpg4
-         jtLbXT/oTJMTxHV2T1Pa+P+Tqp5xuWyRp5L5/LpusWKHQD9RQG8G/mdf5RT2Hk2CM4PP
-         s3JtiFahnCSEtfH99psn14tg6zGfAZ5/+oJnx/EeVNQ9DF0SbH490b85cG+nBGx+NjYV
-         tgifhjySURVq57mRoyZFAeH4xqM04idnXn8k7Nbc3qPp6KhtTlU8mqyg8ThhE0HEj/Ye
-         hZVg==
+        bh=okI+WKXZnivApTS1Oqi6dD5Ms0rFCprYxF1H61WduWk=;
+        b=aydGTgNt0Kog/e+MtjHBfgOm4Rz2AiW4lw/ljp/DGaWjVUcv0gIfKdiSL81n6pt1pW
+         LsVq/UlLr6uX83Cod06BPpEsiFB7AbzQ7wpfKy7vrVykfl7h3QSsK5qezH6OmnfxVYvj
+         jF3LmypUMaPFy9uQvLkcvh9ats3wNshpt21TX87dgPLxLp0I+SxtqMDRK+Wysp1S8rfL
+         HdWxTa7icEi7lCBTlUSG+t/fbRG5WivDReO20HuglYhO8JW+dESVo0RPHo8VAeDv2lM4
+         2g+vHs8UVEjX5M9Z5WQ27XeCf3Lp7isYZCpLEikcouzJL4JdjwToarkcyklbAUYHL/kF
+         Hx2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:date:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=uIkiLurxAG15B3r6RxO2ycm67eznuWcRvb08KCsAuRM=;
-        b=FxkNgkRfzganPzePh7VCKPouEs5dFq9+1/9vddv9uOau4LbxpdyK3jzCY2xawKSlu1
-         ZcqhO1qXcKPrAfN8fhyWEyffx0kooSz1mKIVQge5LeKT9inxcZb07zCM/ywpUC8LBeXZ
-         Wvr8YpWgi89rWnUWhjGoyF4RYU5my+KnyjkYXupAEiiTbiIpbMNZiIxxLuEuVyUAQGNS
-         opsRUAkwLTQOyXdTixIH0I3oVkf8EQjqmIpmLPtHI11HaV9kuBXPrQrH1AkNGls27iX5
-         QFv89/sc22JhU/dai56GNUqmAaVY7+zRU8qaRkEWIddweKsmy40V9rid5hwN4yiDLXwV
-         98qQ==
-X-Gm-Message-State: APjAAAXbdspbqXyBy1U4Ra6C9Zpg928rTao/tFg3xdXlmPeq9xSUQkT5
-        G/A8/FmABlyiXaHgVzc3HOH+IbMBYDo=
-X-Google-Smtp-Source: APXvYqxlt/yEyuQiXiFnhovdpRGtsvZr6u9PG0SqAv0LVehCNmZNgCDnX8WYSkkgm6sIsY1ZuMwWow==
-X-Received: by 2002:a05:6402:8c9:: with SMTP id d9mr30530364edz.16.1571912358259;
-        Thu, 24 Oct 2019 03:19:18 -0700 (PDT)
-Received: from fiftytwodotfive ([2001:1438:4010:2558:9033:8018:ecb0:7d65])
-        by smtp.gmail.com with ESMTPSA id i63sm845581edi.65.2019.10.24.03.19.17
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2019 03:19:17 -0700 (PDT)
-Message-ID: <41d360c7e2a6db457f3d139a1b35507bc62ae321.camel@cloud.ionos.com>
-Subject: srp_daemon and ibacm in wrong man section
-From:   Benjamin Drung <benjamin.drung@cloud.ionos.com>
-To:     linux-rdma@vger.kernel.org
-Date:   Thu, 24 Oct 2019 12:19:23 +0200
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.1-2 
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=okI+WKXZnivApTS1Oqi6dD5Ms0rFCprYxF1H61WduWk=;
+        b=hFVJk1CpeQwuWA3HENhmymqWQno2altZZUQfLAWVW9ZcZl+NdE1OFqU/HzwT67FdNj
+         kE4MCMpR4x6rJnb5OB0JfhIFIZ153qvdujhKrJc34ofSlbX2LqD6rdAIU/DM97G1+EAs
+         3TcEPMexsUFI71M4SpZ8fgEkavR2Zipvr1DqTPpxh2dNf/Qd6XB7BqkvI6VVbVx+qxtt
+         hrPzO8kTJi1uRQHwSvpJMeHtUGcy7AnMjODXRKoslnfKZQb2+RdHYrx6I1+wuvaIGQQH
+         VHYhX9TqxZ/XZXENJ3LOQ66zS6hYlCe2/ZSLFLCL0ibx0UM5zUBXbSflI8baxjjOKEMO
+         /ejA==
+X-Gm-Message-State: APjAAAWCOGoAsnuQtNybTLdOz6UM9v2QqEEttIAUDqOGEOQIB1EVzhUH
+        7bMOzI9P5WyJtD4QGB8bnjj8avlncPHvG7dkvDw=
+X-Google-Smtp-Source: APXvYqyTv0MWoF8qU8jeDVaiHKVzarw9cknmS4HBT/Mz11jkxP0L8pJgQ2KPhIqclc8QT3zW133R0XTyDeUc9JcQvcI=
+X-Received: by 2002:a25:2552:: with SMTP id l79mr9369404ybl.327.1571913174489;
+ Thu, 24 Oct 2019 03:32:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a25:7797:0:0:0:0:0 with HTTP; Thu, 24 Oct 2019 03:32:54
+ -0700 (PDT)
+Reply-To: eddywilliam0002@gmail.com
+From:   eddy william <moordavis0002@gmail.com>
+Date:   Thu, 24 Oct 2019 12:32:54 +0200
+Message-ID: <CALTCcCxDE0zV8Sv3s_V_CuPt+2WPtvsLrYqswoFErwp5T4-+5A@mail.gmail.com>
+Subject: hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi,
+Hallo
 
-srp_daemon and ibacm are both installed in /usr/sbin. lintian complains
-about command-in-sbin-has-manpage-in-incorrect-section:
+Mein Name ist Eddy William. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
+Ihnen anbieten
+die n=C3=A4chsten Verwandten zu meinem Klienten. Sie erben die Summe von
+($8,5 Millionen US-Dollar)
+Dollar, die mein Kunde vor seinem Tod in der Bank gelassen hat.
 
-The command in /sbin or /usr/sbin are system administration commands;
-their manpages thus belong in section 8, not section 1.
+Mein Mandant ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau
+bei einem Autounfall ums Leben gekommen ist
+und nur Sohn. Ich werde mit 50% des Gesamtfonds berechtigt sein, w=C3=A4hre=
+nd 50%
+sein f=C3=BCr dich.
+Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
+Informationen: eddywilliam0002gmail.com
 
-Please check whether the command is actually useful to non-privileged
-user in which case it should be moved to /bin or /usr/bin, or
-alternatively the manual page should be moved to section 8 instead,
-ie. /usr/share/man/man8.
+Vielen Dank im Voraus,
+Mr. Eddy William,
 
-Refer to the hier(7) manual page for details.
 
--- 
-Benjamin Drung
 
-Debian & Ubuntu Developer
-Platform Engineering Compute (Enterprise Cloud)
+Hello
 
-1&1 IONOS SE | Greifswalder Str. 207 | 10405 Berlin | Germany
-E-mail: benjamin.drung@cloud.ionos.com | Web: www.ionos.de
+My name is Eddy William I am a lawyer by profession. I wish to offer you
+the next of kin to my client. You will inherit the sum of ($8.5 Million)
+dollars my client left in the bank before his death.
 
-Hauptsitz Montabaur, Amtsgericht Montabaur, HRB 24498
-Vorstand: Dr. Christian Böing, Hüseyin Dogan, Hans-Henning Kettler,
-Matthias Steinberg, Achim Weiß
-Aufsichtsratsvorsitzender: Markus Kadelke
-Member of United Internet
+My client is a citizen of your country who died in auto crash with his wife
+and only son. I will be entitled with 50% of the total fund while 50% will
+be for you.
+Please contact my private email here for more details:eddywilliam0002gmail.=
+com
 
+Many thanks in advance,
+Mr.Eddy William,
