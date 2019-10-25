@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D639E4D0C
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 15:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFDAE4D39
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 15:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505339AbfJYN5b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Oct 2019 09:57:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52322 "EHLO mail.kernel.org"
+        id S2632881AbfJYN6x (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Oct 2019 09:58:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505331AbfJYN5b (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 25 Oct 2019 09:57:31 -0400
+        id S2393718AbfJYN6w (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 25 Oct 2019 09:58:52 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1AF8F222BE;
-        Fri, 25 Oct 2019 13:57:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFE55222CB;
+        Fri, 25 Oct 2019 13:58:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572011850;
-        bh=vjVcnfY1w3GyMOyFPwp2LORsqbLMyXUQfGFsGauZl/s=;
+        s=default; t=1572011932;
+        bh=qR4vbAuIR6QqRJdC4Ze811+0GMlQs3Y8tIAa0DxLn+U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qdNtZkoEh04Cl/LpPmQK+nIoqQzjbQmkeHaLRgzID70GmdF0p3NzBjbpe/ZrJoMFf
-         Ih8opC/ZBJWlRhygN0F5JNKP5fLHM9Q8M0vc/2TCLrlkHeDT21Y0F15tFjTl+Lm4IG
-         Xe/0GhFIZ6/74NBDQoOoe0nettY7rVSKVQJewCzI=
+        b=fxhA5EdP77jPWrTv54ZZ3yJnIlsF+m2EHWh2LDAufqeQu3Z0hGIIxdP4TZDvWwonA
+         RrNEwvA0jvKNn/rnUrwUQ9UaXCNDQzeMe4Zg0BgZ4w9ndIMkECk+RZQRfmtlY9vcw+
+         DYlgb7yhJyPAfgCoFtXuMWCbqpQ6NmAX6ACNKHMs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Bart Van Assche <bvanassche@acm.org>,
@@ -34,12 +34,12 @@ Cc:     Bart Van Assche <bvanassche@acm.org>,
         Doug Ledford <dledford@redhat.com>,
         "Martin K . Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 09/25] scsi: RDMA/srp: Fix a sleep-in-invalid-context bug
-Date:   Fri, 25 Oct 2019 09:56:57 -0400
-Message-Id: <20191025135715.25468-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 05/16] scsi: RDMA/srp: Fix a sleep-in-invalid-context bug
+Date:   Fri, 25 Oct 2019 09:58:29 -0400
+Message-Id: <20191025135842.25977-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191025135715.25468-1-sashal@kernel.org>
-References: <20191025135715.25468-1-sashal@kernel.org>
+In-Reply-To: <20191025135842.25977-1-sashal@kernel.org>
+References: <20191025135842.25977-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -99,10 +99,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index 3f5b5893792cd..78e6e3b040305 100644
+index 3dbc3ed263c21..9a70267244e1a 100644
 --- a/drivers/infiniband/ulp/srp/ib_srp.c
 +++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -2132,7 +2132,6 @@ static void srp_handle_qp_err(struct ib_cq *cq, struct ib_wc *wc,
+@@ -2057,7 +2057,6 @@ static void srp_send_completion(struct ib_cq *cq, void *ch_ptr)
  static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
  {
  	struct srp_target_port *target = host_to_target(shost);
@@ -110,7 +110,7 @@ index 3f5b5893792cd..78e6e3b040305 100644
  	struct srp_rdma_ch *ch;
  	struct srp_request *req;
  	struct srp_iu *iu;
-@@ -2142,16 +2141,6 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
+@@ -2067,16 +2066,6 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
  	u32 tag;
  	u16 idx;
  	int len, ret;
@@ -127,7 +127,7 @@ index 3f5b5893792cd..78e6e3b040305 100644
  
  	scmnd->result = srp_chkready(target->rport);
  	if (unlikely(scmnd->result))
-@@ -2213,13 +2202,7 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
+@@ -2138,13 +2127,7 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
  		goto err_unmap;
  	}
  
@@ -142,7 +142,7 @@ index 3f5b5893792cd..78e6e3b040305 100644
  
  err_unmap:
  	srp_unmap_data(scmnd, ch, req);
-@@ -2241,7 +2224,7 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
+@@ -2166,7 +2149,7 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
  		ret = SCSI_MLQUEUE_HOST_BUSY;
  	}
  
