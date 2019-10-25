@@ -2,81 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 718C7E4118
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 03:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 507F0E456B
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 10:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389068AbfJYBgB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 24 Oct 2019 21:36:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730006AbfJYBgB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 24 Oct 2019 21:36:01 -0400
-Received: from localhost (unknown [38.98.37.136])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C98E2064A;
-        Fri, 25 Oct 2019 01:35:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571967360;
-        bh=XCeKzecQIIglaoewbYNc46ewGAE4hVfr2+RHbU9+vYQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r+Q77euabKymHctLCq2nDvGJO/eq3v2ABu1U3TB6/uXAXMqOvefrA9OaRhaQBJ7S/
-         e3UT4vSQbdZVgS1WDSTbc6tP2lfTdzuF4A0JENpSXd0LTxAFHYybaAF68sjlEIRAHp
-         YX9zrd8UL2E9vUN46fsK0+H4a43Z59fo4Wle5nbo=
-Date:   Thu, 24 Oct 2019 21:30:48 -0400
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     "Ertman, David M" <david.m.ertman@intel.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>
-Subject: Re: [RFC 01/20] ice: Initialize and register multi-function device
- to provide RDMA
-Message-ID: <20191025013048.GB265361@kroah.com>
-References: <20190926180556.GB1733924@kroah.com>
- <7e7f6c159de52984b89c13982f0a7fd83f1bdcd4.camel@intel.com>
- <20190927051320.GA1767635@kroah.com>
- <2B0E3F215D1AB84DA946C8BEE234CCC97B2B1A28@ORSMSX101.amr.corp.intel.com>
- <20191023174448.GP23952@ziepe.ca>
- <2B0E3F215D1AB84DA946C8BEE234CCC97B2E0C84@ORSMSX101.amr.corp.intel.com>
- <20191023180108.GQ23952@ziepe.ca>
- <20191024185659.GE260560@kroah.com>
- <20191024191037.GC23952@ziepe.ca>
- <2B0E3F215D1AB84DA946C8BEE234CCC97B2E1D29@ORSMSX101.amr.corp.intel.com>
+        id S2407793AbfJYIQW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 25 Oct 2019 04:16:22 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35700 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2407695AbfJYIQV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 25 Oct 2019 04:16:21 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x9P87Ij6141238
+        for <linux-rdma@vger.kernel.org>; Fri, 25 Oct 2019 04:16:21 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.91])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2vuujh3e99-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Fri, 25 Oct 2019 04:16:20 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Fri, 25 Oct 2019 08:16:20 -0000
+Received: from us1a3-smtp08.a3.dal06.isc4sb.com (10.146.103.57)
+        by smtp.notes.na.collabserv.com (10.106.227.143) with smtp.notes.na.collabserv.com ESMTP;
+        Fri, 25 Oct 2019 08:16:16 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp08.a3.dal06.isc4sb.com
+          with ESMTP id 2019102508161577-166956 ;
+          Fri, 25 Oct 2019 08:16:15 +0000 
+In-Reply-To: <20191024203841.GA7912@mwanda>
+Subject: Re: [bug report] RDMA/siw: Fix SQ/RQ drain logic
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Dan Carpenter" <dan.carpenter@oracle.com>,
+        "Doug Ledford" <dledford@redhat.com>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Fri, 25 Oct 2019 08:16:15 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2B0E3F215D1AB84DA946C8BEE234CCC97B2E1D29@ORSMSX101.amr.corp.intel.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20191024203841.GA7912@mwanda>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP59 September 23, 2019 at 18:08
+X-LLNOutbound: False
+X-Disclaimed: 51467
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19102508-2475-0000-0000-0000011E469A
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.000897
+X-IBM-SpamModules-Versions: BY=3.00011994; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000292; SDB=6.01280429; UDB=6.00678489; IPR=6.01062571;
+ MB=3.00029233; MTD=3.00000008; XFM=3.00000015; UTC=2019-10-25 08:16:19
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-10-25 07:57:11 - 6.00010570
+x-cbparentid: 19102508-2476-0000-0000-00002D9B8379
+Message-Id: <OF9EE3BDCA.84D0CB33-ON0025849E.002C56C0-0025849E.002D6F03@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-25_05:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 24, 2019 at 10:25:36PM +0000, Ertman, David M wrote:
-> The direct access of the platform bus was unacceptable, and the MFD sub-system
-> was suggested by Greg as the solution.  The MFD sub-system uses the platform
-> bus in the background as a base to perform its functions, since it is a purely software
-> construct that is handy and fulfills its needs.  The question then is:  If the MFD sub-
-> system is using the platform bus for all of its background functionality, is the platform
-> bus really only for platform devices?
+-----"Dan Carpenter" <dan.carpenter@oracle.com> wrote: -----
 
-Yes, how many times do I have to keep saying this?
+>To: bmt@zurich.ibm.com
+>From: "Dan Carpenter" <dan.carpenter@oracle.com>
+>Date: 10/24/2019 10:39PM
+>Cc: linux-rdma@vger.kernel.org
+>Subject: [EXTERNAL] [bug report] RDMA/siw: Fix SQ/RQ drain logic
+>
+>Hello Bernard Metzler,
+>
+>The patch cf049bb31f71: "RDMA/siw: Fix SQ/RQ drain logic" from Oct 4,
+>2019, leads to the following static checker warning:
+>
+>	drivers/infiniband/sw/siw/siw_verbs.c:1079 siw_post_receive()
+>	error: locking inconsistency.  We assume 'read_sem:&qp->state_lock'
+>is both locked and unlocked at the start.
+>
+>drivers/infiniband/sw/siw/siw_verbs.c
+>   978  int siw_post_receive(struct ib_qp *base_qp, const struct
+>ib_recv_wr *wr,
+>   979                       const struct ib_recv_wr **bad_wr)
+>   980  {
+>   981          struct siw_qp *qp = to_siw_qp(base_qp);
+>   982          unsigned long flags;
+>   983          int rv = 0;
+>   984  
+>   985          if (qp->srq) {
+>   986                  *bad_wr = wr;
+>   987                  return -EOPNOTSUPP; /* what else from
+>errno.h? */
+>   988          }
+>   989          if (!qp->kernel_verbs) {
+>   990                  siw_dbg_qp(qp, "no kernel post_recv for user
+>mapped sq\n");
+>   991                  up_read(&qp->state_lock);
+>                        ^^^^^^^^^^^^^^^^^^^^^^^^
+>The patch changes the locking so this isn't held here and should be
+>released.  Should it be held, though?
 
-The platform bus should ONLY be used for devices that are actually
-platform devices and can not be discovered any other way and are not on
-any other type of bus.
+Yes, this is a BUG. Thanks very much! There is no qp spinlock to 
+be held here. I moved that down to state checking. No need to
+hold the qp lock before. 
 
-If you try to add platform devices for a PCI device, I am going to
-continue to complain.  I keep saying this and am getting tired.
+Shall I re-send, or can we just amend the patch,
+removing that single 'up_read()' line?
 
-Now yes, MFD does do "fun" things here, and that should probably be
-fixed up one of these days.  But I still don't see why a real bus would
-not work for you.
+Thanks very much,
+Bernard
 
-greg "platform devices are dead, long live the platform device" k-h
+
+>
+>   992                  *bad_wr = wr;
+>   993                  return -EINVAL;
+>   994          }
+>   995  
+>   996          /*
+>   997           * Try to acquire QP state lock. Must be non-blocking
+>   998           * to accommodate kernel clients needs.
+>   999           */
+>  1000          if (!down_read_trylock(&qp->state_lock)) {
+>                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>
+>  1001                  if (qp->attrs.state == SIW_QP_STATE_ERROR) {
+>  1002                          /*
+>  1003                           * ERROR state is final, so we can be
+>sure
+>  1004                           * this state will not change as long
+>as the QP
+>  1005                           * exists.
+>  1006                           *
+>  1007                           * This handles an ib_drain_rq() call
+>with
+>  1008                           * a concurrent request to set the QP
+>state
+>  1009                           * to ERROR.
+>  1010                           */
+>  1011                          rv = siw_rq_flush_wr(qp, wr, bad_wr);
+>  1012                  } else {
+>
+>regards,
+>dan carpenter
+>
+>
+
