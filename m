@@ -2,46 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E41E56C2
-	for <lists+linux-rdma@lfdr.de>; Sat, 26 Oct 2019 00:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05886E56C4
+	for <lists+linux-rdma@lfdr.de>; Sat, 26 Oct 2019 00:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725963AbfJYW6i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Oct 2019 18:58:38 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:43742 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725881AbfJYW6i (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Oct 2019 18:58:38 -0400
-Received: by mail-pg1-f193.google.com with SMTP id l24so2497508pgh.10
-        for <linux-rdma@vger.kernel.org>; Fri, 25 Oct 2019 15:58:37 -0700 (PDT)
+        id S1726365AbfJYW6l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Oct 2019 18:58:41 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:42492 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725881AbfJYW6l (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Oct 2019 18:58:41 -0400
+Received: by mail-pf1-f195.google.com with SMTP id 21so2579646pfj.9;
+        Fri, 25 Oct 2019 15:58:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jXDNPMHHwc83BOJ89YXwYW4Jgyv+JzOIiFw0eYOgnRE=;
-        b=NXtWs71t4mTsK2YYr6kTS1nNi5RzhLUPPZ4zREcYN1S6dLShC/Pqf36bFua4EnKDBu
-         1d6RlIVChr0EVwlj6KI3p6YNdgKwdAtaDBWDI9IYAlixzo8cmk1V0N6A24nNC7sKPoS0
-         UzJEKa8rZIRFrbu8HZZu1F6hPWUYxH3Yo+aHrWyhl3WgJoo+Ffuw9gW0hxHKswguWHiO
-         +Iy9a5rYGfwINU810HmD7L5WgvaJZxNeGJVdH7fofKG+9dHQ6X3jV3NfIVr/4y7MM1GP
-         DMlxp5TP9FQFoSCbDCVOKF3cTg+pH3qI0N3spuD0hKHxI5pEI6AlzdcG/bGO2mlvfvZ3
-         m2Iw==
-X-Gm-Message-State: APjAAAV4U8zY109mQcjCR5DmqSV6od7ttRZUnOZaS9wFow55J0Ja28u0
-        45VpYr46zACFxXGOg4SkpoM=
-X-Google-Smtp-Source: APXvYqy3vYMzOrCF5nMm3G0mVvN6NLBf3ZsEL9bSWWpSBERCPGIs9LA93HWmpXcE2UwHqBx2GeB3yA==
-X-Received: by 2002:a63:1b41:: with SMTP id b1mr7344495pgm.335.1572044317266;
-        Fri, 25 Oct 2019 15:58:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=id3Jag4Ah2PkB7BKapHcKYtTL7WashnqZLKEAmMbsoE=;
+        b=MZScq3UdhvrmlDVe5EBsvK0Lvfrl7WM4JQr+TE/GRKfD4gUaIR0owHKfBgG8w33fOt
+         UIdAGLtdrd9FpbMX9u8jtNA4PA2GJhclvMkpkJBjyHSgOH476+AGX81P8e0qns4ZNjU8
+         pFKFn7vbiu4lmtp/QbrmJagAF4N4P/FbH15/P5DWPH+z+QUjZBEcL6OcFhjkPxvbOe7J
+         ioI9xXQQUfmRDqHVtsSMU9PTkzBxz0ewhrEj1bGlutnRx/w7EfYAP2AEUTlUm0mmzdtG
+         7KiPBusBFv7V/Gqm9rm34EAUuQzMpyqgUCa4/e7xyu4gKOZOdVPqR/8QrY+Hkigu5RSL
+         trvg==
+X-Gm-Message-State: APjAAAUrC/VsFr+B1NF61C8kLAqWUQd6TeXMHIJI2M1eM8IrgIq1RIlq
+        6+0F/YdHNcCZwUUEH/d2+rA=
+X-Google-Smtp-Source: APXvYqxVNh2jQV3Ol7QSf63nwA0BzgNLtjQm8Jc74eJh4xlOySDdcvTkNaZoexKrf+dv3WMptsoYLQ==
+X-Received: by 2002:a63:258:: with SMTP id 85mr7097403pgc.352.1572044318650;
+        Fri, 25 Oct 2019 15:58:38 -0700 (PDT)
 Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id o123sm3243983pfg.161.2019.10.25.15.58.35
+        by smtp.gmail.com with ESMTPSA id o123sm3243983pfg.161.2019.10.25.15.58.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Oct 2019 15:58:36 -0700 (PDT)
+        Fri, 25 Oct 2019 15:58:37 -0700 (PDT)
 From:   Bart Van Assche <bvanassche@acm.org>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: [PATCH v2 0/4] Fixes related to the DMA max_segment_size parameter
-Date:   Fri, 25 Oct 2019 15:58:26 -0700
-Message-Id: <20191025225830.257535-1-bvanassche@acm.org>
+        Bart Van Assche <bvanassche@acm.org>,
+        Christoph Hellwig <hch@lst.de>, stable@vger.kernel.org
+Subject: [PATCH v2 1/4] RDMA/core: Fix ib_dma_max_seg_size()
+Date:   Fri, 25 Oct 2019 15:58:27 -0700
+Message-Id: <20191025225830.257535-2-bvanassche@acm.org>
 X-Mailer: git-send-email 2.24.0.rc0.303.g954a862665-goog
+In-Reply-To: <20191025225830.257535-1-bvanassche@acm.org>
+References: <20191025225830.257535-1-bvanassche@acm.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -49,30 +52,62 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jason,
+If dev->dma_device->params == NULL then the maximum DMA segment size is
+64 KB. See also the dma_get_max_seg_size() implementation. This patch
+fixes the following kernel warning:
 
-These four patches are what I came up with while analyzing a kernel warning
-triggered by the ib_srp kernel driver. Please consider these patches for
-inclusion in the Linux kernel.
+DMA-API: infiniband rxe0: mapping sg segment longer than device claims to support [len=126976] [max=65536]
+WARNING: CPU: 4 PID: 4848 at kernel/dma/debug.c:1220 debug_dma_map_sg+0x3d9/0x450
+RIP: 0010:debug_dma_map_sg+0x3d9/0x450
+Call Trace:
+ srp_queuecommand+0x626/0x18d0 [ib_srp]
+ scsi_queue_rq+0xd02/0x13e0 [scsi_mod]
+ __blk_mq_try_issue_directly+0x2b3/0x3f0
+ blk_mq_request_issue_directly+0xac/0xf0
+ blk_insert_cloned_request+0xdf/0x170
+ dm_mq_queue_rq+0x43d/0x830 [dm_mod]
+ __blk_mq_try_issue_directly+0x2b3/0x3f0
+ blk_mq_request_issue_directly+0xac/0xf0
+ blk_mq_try_issue_list_directly+0xb8/0x170
+ blk_mq_sched_insert_requests+0x23c/0x3b0
+ blk_mq_flush_plug_list+0x529/0x730
+ blk_flush_plug_list+0x21f/0x260
+ blk_mq_make_request+0x56b/0xf20
+ generic_make_request+0x196/0x660
+ submit_bio+0xae/0x290
+ blkdev_direct_IO+0x822/0x900
+ generic_file_direct_write+0x110/0x200
+ __generic_file_write_iter+0x124/0x2a0
+ blkdev_write_iter+0x168/0x270
+ aio_write+0x1c4/0x310
+ io_submit_one+0x971/0x1390
+ __x64_sys_io_submit+0x12a/0x390
+ do_syscall_64+0x6f/0x2e0
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-Thanks,
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: <stable@vger.kernel.org>
+Fixes: 0b5cb3300ae5 ("RDMA/srp: Increase max_segment_size")
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+---
+ include/rdma/ib_verbs.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Bart.
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index cca9985b4cbc..0626b62ed107 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -4057,9 +4057,7 @@ static inline void ib_dma_unmap_sg_attrs(struct ib_device *dev,
+  */
+ static inline unsigned int ib_dma_max_seg_size(struct ib_device *dev)
+ {
+-	struct device_dma_parameters *p = dev->dma_device->dma_parms;
+-
+-	return p ? p->max_segment_size : UINT_MAX;
++	return dma_get_max_seg_size(dev->dma_device);
+ }
+ 
+ /**
+-- 
+2.24.0.rc0.303.g954a862665-goog
 
-Changes compared to v1:
-- Restored the dma_set_max_seg_size() call in setup_dma_device(). Reordered
-  this patch series to keep it bisectable.
-
-Bart Van Assche (4):
-  RDMA/core: Fix ib_dma_max_seg_size()
-  rdma_rxe: Increase DMA max_segment_size parameter
-  siw: Increase DMA max_segment_size parameter
-  RDMA/core: Set DMA parameters correctly
-
- drivers/infiniband/core/device.c      | 16 ++++++++++++++--
- drivers/infiniband/sw/rxe/rxe_verbs.c |  3 +++
- drivers/infiniband/sw/rxe/rxe_verbs.h |  1 +
- drivers/infiniband/sw/siw/siw.h       |  1 +
- drivers/infiniband/sw/siw/siw_main.c  |  3 +++
- include/rdma/ib_verbs.h               |  4 +---
- 6 files changed, 23 insertions(+), 5 deletions(-)
