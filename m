@@ -2,132 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71996E4C00
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 15:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D639E4D0C
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 15:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394599AbfJYNX6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Oct 2019 09:23:58 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:40072 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2394578AbfJYNX6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Oct 2019 09:23:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1572009837;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=0O4a6zc1JTsovbufq82T9iZrsJZV4TRZ8krcut1tlBI=;
-        b=Twdq4Jx78D0vkkqkI2LDNPb6rfE4GC6NgVH4YutxcFFRiz0S/KZjaezPBp5hqMIayimDvj
-        XxW/SY7wbL8G6qL5sB9K/EJZ/z3i071l6wN4CVlvb3y82U0rVmfxjDzRd0Q/1U4Azmy2oA
-        17Z2YpJz45WmD/4KpivPswzt+EvpWLg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-264-do_R0f2_OzCxZI92g7q-XA-1; Fri, 25 Oct 2019 09:23:53 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2505339AbfJYN5b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Oct 2019 09:57:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2505331AbfJYN5b (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 25 Oct 2019 09:57:31 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 095AA47B;
-        Fri, 25 Oct 2019 13:23:52 +0000 (UTC)
-Received: from dhcp-128-227.nay.redhat.com (unknown [10.66.128.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2FA3160BF4;
-        Fri, 25 Oct 2019 13:23:49 +0000 (UTC)
-From:   Honggang LI <honli@redhat.com>
-To:     bvanassche@acm.org, dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, Honggang Li <honli@redhat.com>
-Subject: [rdma-core patch v2] srp_daemon: Use maximum initiator to target IU size
-Date:   Fri, 25 Oct 2019 21:23:43 +0800
-Message-Id: <20191025132343.14086-1-honli@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 1AF8F222BE;
+        Fri, 25 Oct 2019 13:57:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1572011850;
+        bh=vjVcnfY1w3GyMOyFPwp2LORsqbLMyXUQfGFsGauZl/s=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=qdNtZkoEh04Cl/LpPmQK+nIoqQzjbQmkeHaLRgzID70GmdF0p3NzBjbpe/ZrJoMFf
+         Ih8opC/ZBJWlRhygN0F5JNKP5fLHM9Q8M0vc/2TCLrlkHeDT21Y0F15tFjTl+Lm4IG
+         Xe/0GhFIZ6/74NBDQoOoe0nettY7rVSKVQJewCzI=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Hannes Reinecke <hare@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Laurence Oberman <loberman@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 09/25] scsi: RDMA/srp: Fix a sleep-in-invalid-context bug
+Date:   Fri, 25 Oct 2019 09:56:57 -0400
+Message-Id: <20191025135715.25468-9-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191025135715.25468-1-sashal@kernel.org>
+References: <20191025135715.25468-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-MC-Unique: do_R0f2_OzCxZI92g7q-XA-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Honggang Li <honli@redhat.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-"ib_srp.ko" module with immediate data support use (8 * 1024)
-as default immediate data size. When immediate data support enabled
-for "ib_srp.ko" client, the default maximum initiator to target IU
-size will greater than (8 * 1024). That means it also greater than
-the default maximum initiator to target IU size set by old
-"ib_srpt.ko" module, which does not support immediate data.
+[ Upstream commit fd56141244066a6a21ef458670071c58b6402035 ]
 
-Signed-off-by: Honggang Li <honli@redhat.com>
+The previous patch guarantees that srp_queuecommand() does not get
+invoked while reconnecting occurs. Hence remove the code from
+srp_queuecommand() that prevents command queueing while reconnecting.
+This patch avoids that the following can appear in the kernel log:
+
+BUG: sleeping function called from invalid context at kernel/locking/mutex.c:747
+in_atomic(): 1, irqs_disabled(): 0, pid: 5600, name: scsi_eh_9
+1 lock held by scsi_eh_9/5600:
+ #0:  (rcu_read_lock){....}, at: [<00000000cbb798c7>] __blk_mq_run_hw_queue+0xf1/0x1e0
+Preemption disabled at:
+[<00000000139badf2>] __blk_mq_delay_run_hw_queue+0x78/0xf0
+CPU: 9 PID: 5600 Comm: scsi_eh_9 Tainted: G        W        4.15.0-rc4-dbg+ #1
+Hardware name: Dell Inc. PowerEdge R720/0VWT90, BIOS 2.5.4 01/22/2016
+Call Trace:
+ dump_stack+0x67/0x99
+ ___might_sleep+0x16a/0x250 [ib_srp]
+ __mutex_lock+0x46/0x9d0
+ srp_queuecommand+0x356/0x420 [ib_srp]
+ scsi_dispatch_cmd+0xf6/0x3f0
+ scsi_queue_rq+0x4a8/0x5f0
+ blk_mq_dispatch_rq_list+0x73/0x440
+ blk_mq_sched_dispatch_requests+0x109/0x1a0
+ __blk_mq_run_hw_queue+0x131/0x1e0
+ __blk_mq_delay_run_hw_queue+0x9a/0xf0
+ blk_mq_run_hw_queue+0xc0/0x1e0
+ blk_mq_start_hw_queues+0x2c/0x40
+ scsi_run_queue+0x18e/0x2d0
+ scsi_run_host_queues+0x22/0x40
+ scsi_error_handler+0x18d/0x5f0
+ kthread+0x11c/0x140
+ ret_from_fork+0x24/0x30
+
+Reviewed-by: Hannes Reinecke <hare@suse.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Laurence Oberman <loberman@redhat.com>
+Cc: Jason Gunthorpe <jgg@mellanox.com>
+Cc: Leon Romanovsky <leonro@mellanox.com>
+Cc: Doug Ledford <dledford@redhat.com>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- srp_daemon/srp_daemon.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ drivers/infiniband/ulp/srp/ib_srp.c | 21 ++-------------------
+ 1 file changed, 2 insertions(+), 19 deletions(-)
 
-diff --git a/srp_daemon/srp_daemon.c b/srp_daemon/srp_daemon.c
-index f0bcf923..7783b18f 100644
---- a/srp_daemon/srp_daemon.c
-+++ b/srp_daemon/srp_daemon.c
-@@ -402,6 +402,26 @@ static int is_enabled_by_rules_file(struct target_deta=
-ils *target)
- }
-=20
-=20
-+static bool use_imm_data(void)
-+{
-+=09bool ret =3D false;
-+=09char flag =3D 0;
-+=09int cnt;
-+=09int fd =3D open("/sys/module/ib_srp/parameters/has_max_it_iu_size", O_R=
-DONLY);
-+
-+=09if (fd < 0)
-+=09=09return false;
-+=09cnt =3D read(fd, &flag, 1);
-+=09if (cnt !=3D 1) {
-+=09=09close(fd);
-+=09=09return false;
-+=09}
-+
-+=09if (!strncmp(&flag, "Y", 1))
-+=09=09ret =3D true;
-+=09close(fd);
-+=09return ret;
-+}
-=20
- static int add_non_exist_target(struct target_details *target)
+diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
+index 3f5b5893792cd..78e6e3b040305 100644
+--- a/drivers/infiniband/ulp/srp/ib_srp.c
++++ b/drivers/infiniband/ulp/srp/ib_srp.c
+@@ -2132,7 +2132,6 @@ static void srp_handle_qp_err(struct ib_cq *cq, struct ib_wc *wc,
+ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
  {
-@@ -581,6 +601,19 @@ static int add_non_exist_target(struct target_details =
-*target)
- =09=09}
- =09}
-=20
-+=09if (use_imm_data()) {
-+=09=09len +=3D snprintf(target_config_str+len,
-+=09=09=09sizeof(target_config_str) - len,
-+=09=09=09",max_it_iu_size=3D%d",
-+=09=09=09be32toh(target->ioc_prof.send_size));
-+
-+=09=09if (len >=3D sizeof(target_config_str)) {
-+=09=09=09pr_err("Target config string is too long, ignoring target\n");
-+=09=09=09closedir(dir);
-+=09=09=09return -1;
-+=09=09}
-+=09}
-+
- =09target_config_str[len] =3D '\0';
-=20
- =09pr_cmd(target_config_str, not_connected);
-@@ -1360,6 +1393,10 @@ static void print_config(struct config_t *conf)
- =09=09printf(" Print initiator_ext\n");
- =09else
- =09=09printf(" Do not print initiator_ext\n");
-+=09if (use_imm_data())
-+=09=09printf(" Print maximum initiator to target IU size\n");
-+=09else
-+=09=09printf(" Do not print maximum initiator to target IU size\n");
- =09if (conf->recalc_time)
- =09=09printf(" Performs full target rescan every %d seconds\n", conf->reca=
-lc_time);
- =09else
---=20
-2.21.0
+ 	struct srp_target_port *target = host_to_target(shost);
+-	struct srp_rport *rport = target->rport;
+ 	struct srp_rdma_ch *ch;
+ 	struct srp_request *req;
+ 	struct srp_iu *iu;
+@@ -2142,16 +2141,6 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
+ 	u32 tag;
+ 	u16 idx;
+ 	int len, ret;
+-	const bool in_scsi_eh = !in_interrupt() && current == shost->ehandler;
+-
+-	/*
+-	 * The SCSI EH thread is the only context from which srp_queuecommand()
+-	 * can get invoked for blocked devices (SDEV_BLOCK /
+-	 * SDEV_CREATED_BLOCK). Avoid racing with srp_reconnect_rport() by
+-	 * locking the rport mutex if invoked from inside the SCSI EH.
+-	 */
+-	if (in_scsi_eh)
+-		mutex_lock(&rport->mutex);
+ 
+ 	scmnd->result = srp_chkready(target->rport);
+ 	if (unlikely(scmnd->result))
+@@ -2213,13 +2202,7 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
+ 		goto err_unmap;
+ 	}
+ 
+-	ret = 0;
+-
+-unlock_rport:
+-	if (in_scsi_eh)
+-		mutex_unlock(&rport->mutex);
+-
+-	return ret;
++	return 0;
+ 
+ err_unmap:
+ 	srp_unmap_data(scmnd, ch, req);
+@@ -2241,7 +2224,7 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
+ 		ret = SCSI_MLQUEUE_HOST_BUSY;
+ 	}
+ 
+-	goto unlock_rport;
++	return ret;
+ }
+ 
+ /*
+-- 
+2.20.1
 
