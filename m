@@ -2,102 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F39E4624
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 10:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C40E48B4
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 12:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391893AbfJYIso (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Oct 2019 04:48:44 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:42741 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389425AbfJYIso (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Oct 2019 04:48:44 -0400
-Received: by mail-oi1-f196.google.com with SMTP id i185so1050033oif.9;
-        Fri, 25 Oct 2019 01:48:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uA6lSNHDRCatiJVJ/bgW4yuf0LByUeyt0njk9B4ukrc=;
-        b=pB1+s7USrm2jK85Akcv2CH3fUw/7POfgi/pgDdjS44HoqmOwhRJtXlOBQHZ2MEEmZz
-         zu9xxhWTFFKoHoaQMdR60oyEToi9uPlwzM1BBa2FNJ2D58lrim6ylC/Z1eY04ZZg6Fi4
-         yXdYkFlm7DbQBtjVP2+uFUxx+0qkSBCyk3gYQuXKGl/yTFANNMvx1reHErjCeQePx++4
-         8wY3yEAY+hSwF4/cEGQxXi8/Q6yJIXeITmGmxUARPAP4I+TM3sLtu3MgrZmOM1wpvbQg
-         FtcJRprTvebpzrS4IP17JXY7ad5Vw6O52Pjz8/W6o05yoDGNbPO3HcFv+5oFuSAfmDwv
-         K69A==
-X-Gm-Message-State: APjAAAXd7HRybCHuKR49gUG/tXaXd9tT+IRTL99HwWmVJ6M1pCcKlTS7
-        cJgcweT4SFuFCbApgqlqv7rlhXFWaEQDhZF7W+c=
-X-Google-Smtp-Source: APXvYqy3g9SYZvOxsJVmghtKOBqa12cq3/vF5Q6/wloURwxegziLuCjjGM4yxIDdlwF02aQ5tVVijREi3KOgNM/I0d4=
-X-Received: by 2002:aca:882:: with SMTP id 124mr2027997oii.54.1571993322988;
- Fri, 25 Oct 2019 01:48:42 -0700 (PDT)
+        id S2502510AbfJYKlW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Oct 2019 06:41:22 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:45996 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502503AbfJYKlV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Oct 2019 06:41:21 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9PAd424000997;
+        Fri, 25 Oct 2019 10:41:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
+ bh=6U1uhVXVY7QsPnJK9+ZulDsRGC5bxfFeessMTgt2YR0=;
+ b=jpnQ3DkjX9z7PidFqyxaU1qSjAiaO0PbVDv3MhK5kNlI0L5cAGiRMYZJ2CT7lVhvbJiq
+ ypvOggOD7xNiRxTGyuDeCn90zHPHRkjLHDkuYzRIDcBjWp+BjqFPiHdMjPmeDoiUKxwj
+ s7wn+U26qsEyEesBgM9albqys3QOSDpc7tWT8Nf5EmMftWmusczFq13/wdCS7HkMc8CJ
+ lhsD9nHcSiigtZL25gPpqvXQ2Q6hoXFtdw6JYQknPadSak66fg57JL4nW2UlOhSDOPfK
+ AoGAwC2HSGTzStWg2jSivrtBY11pRatnJqZ49uLjXTk3hygKxP3UyhXTytKzxz3Gr91P lw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2vqu4r9xer-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Oct 2019 10:41:19 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9PAYOnH124893;
+        Fri, 25 Oct 2019 10:41:18 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 2vu0frbcnp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Oct 2019 10:41:18 +0000
+Received: from abhmp0021.oracle.com (abhmp0021.oracle.com [141.146.116.27])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9PAfHAR016406;
+        Fri, 25 Oct 2019 10:41:17 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 25 Oct 2019 10:41:17 +0000
+Date:   Fri, 25 Oct 2019 13:41:11 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     rajur@chelsio.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [bug report] RDMA/iw_cxgb4: Avoid touch after free error in ARP
+ failure handlers
+Message-ID: <20191025104111.GA12120@mwanda>
 MIME-Version: 1.0
-References: <20191024152201.29868-1-geert+renesas@glider.be>
- <878spaqg2k.fsf@kamboji.qca.qualcomm.com> <20191024.095709.187911510311520475.davem@davemloft.net>
-In-Reply-To: <20191024.095709.187911510311520475.davem@davemloft.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 25 Oct 2019 10:48:31 +0200
-Message-ID: <CAMuHMdXLyoxpjYYVhnZ35hwD25+MPXkte5QV_YYOadPVTf9_zA@mail.gmail.com>
-Subject: Re: [PATCH v2] [trivial] net: Fix misspellings of "configure" and "configuration"
-To:     David Miller <davem@davemloft.net>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jiri Kosina <trivial@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9420 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=693
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910250100
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9420 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=772 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910250101
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi David,
+Hello Raju Rangoju,
 
-On Thu, Oct 24, 2019 at 6:57 PM David Miller <davem@davemloft.net> wrote:
-> From: Kalle Valo <kvalo@codeaurora.org>
-> Date: Thu, 24 Oct 2019 19:11:15 +0300
->
-> > Geert Uytterhoeven <geert+renesas@glider.be> writes:
-> >
-> >> Fix various misspellings of "configuration" and "configure".
-> >>
-> >> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> >> ---
-> >> v2:
-> >>   - Merge
-> >>     [trivial] net/mlx5e: Spelling s/configuraiton/configuration/
-> >>     [trivial] qed: Spelling s/configuraiton/configuration/
-> >>   - Fix typo in subject,
-> >>   - Extend with various other similar misspellings.
-> >> ---
-> >>  drivers/net/ethernet/mellanox/mlx5/core/en/port_buffer.c | 2 +-
-> >>  drivers/net/ethernet/qlogic/qed/qed_int.h                | 4 ++--
-> >>  drivers/net/ethernet/qlogic/qed/qed_sriov.h              | 2 +-
-> >>  drivers/net/ethernet/qlogic/qede/qede_filter.c           | 2 +-
-> >>  drivers/net/wireless/ath/ath9k/ar9003_hw.c               | 2 +-
-> >>  drivers/net/wireless/intel/iwlwifi/iwl-fh.h              | 2 +-
-> >>  drivers/net/wireless/ti/wlcore/spi.c                     | 2 +-
-> >>  include/uapi/linux/dcbnl.h                               | 2 +-
-> >>  8 files changed, 9 insertions(+), 9 deletions(-)
-> >
-> > I hope this goes to net-next? Easier to handle possible conflicts that
-> > way.
-> >
-> > For the wireless part:
-> >
-> > Acked-by: Kalle Valo <kvalo@codeaurora.org>
->
-> Yeah I can take it if that's easier.
+The patch 1dad0ebeea1c: "RDMA/iw_cxgb4: Avoid touch after free error
+in ARP failure handlers" from May 15, 2017, leads to the following
+static checker warning:
 
-That would be great, thanks!
+	drivers/infiniband/hw/cxgb4/cm.c:4310 process_work()
+	warn: 'skb' was already freed.
 
-Gr{oetje,eeting}s,
+drivers/infiniband/hw/cxgb4/cm.c
+  4289  static void process_work(struct work_struct *work)
+  4290  {
+  4291          struct sk_buff *skb = NULL;
+  4292          struct c4iw_dev *dev;
+  4293          struct cpl_act_establish *rpl;
+  4294          unsigned int opcode;
+  4295          int ret;
+  4296  
+  4297          process_timedout_eps();
+  4298          while ((skb = skb_dequeue(&rxq))) {
+  4299                  rpl = cplhdr(skb);
+  4300                  dev = *((struct c4iw_dev **) (skb->cb + sizeof(void *)));
+  4301                  opcode = rpl->ot.opcode;
+  4302  
+  4303                  if (opcode >= ARRAY_SIZE(work_handlers) ||
+  4304                      !work_handlers[opcode]) {
+  4305                          pr_err("No handler for opcode 0x%x.\n", opcode);
+  4306                          kfree_skb(skb);
+  4307                  } else {
+  4308                          ret = work_handlers[opcode](dev, skb);
+  4309                          if (!ret)
+  4310                                  kfree_skb(skb);
 
-                        Geert
+I'm not sure why this warning didn't show up before... :(
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+We added some kfree_skb() calls to _put_ep_safe() and _put_pass_ep_safe().
+The thing about kfree_skb() is that it's refcounted so it might not
+free anything so this could be a false positive.  I've looked at the
+code and it looks like it could be a bug?
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+  4311                  }
+  4312                  process_timedout_eps();
+  4313          }
+  4314  }
+
+regards,
+dan carpenter
