@@ -2,38 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FB8E4DE4
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 16:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A73BE4DB4
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 16:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395110AbfJYOD0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Oct 2019 10:03:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51668 "EHLO mail.kernel.org"
+        id S2394991AbfJYOB6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Oct 2019 10:01:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394791AbfJYN5G (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 25 Oct 2019 09:57:06 -0400
+        id S2505410AbfJYN54 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 25 Oct 2019 09:57:56 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A64B0222BD;
-        Fri, 25 Oct 2019 13:57:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D3D2A222C4;
+        Fri, 25 Oct 2019 13:57:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572011825;
-        bh=X3v+SOQIpdYf6iNAzKXGy4IuE0/gqSJw5bT5h8guRU4=;
+        s=default; t=1572011875;
+        bh=+WwV0E1ym9y6aqcP9TKtSk5RdtH6hq+0LURBV+jXbNw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f3ZnP7V4y3DCTrAYWLzRDirSDfa3ZMauxsnE1AdGr3bNBEafPL0quyMn2KZcriIxo
-         Di4qr+BgptrW3ZkFpqvKzI3YyLFaVqAp1grbNgKUVDrHaA/VrtcgzbY3kIAJLbVtn5
-         hSVEidpRHV2fCMWYgIhV1W0Dv5RoZ1rQs4hyrxHQ=
+        b=Q5+VBezDkazN+T6dlRjLByxOC2B8gAHHA1oQikxtm/ZrOCUn0X1U0Pg41QLOFESIh
+         iWKMmxRRLzF5qjBWxwhNLp0bABIWZwDmVB5a0PBCkdeTZOC7V0vnVTxaCo6hRkcBo9
+         nXF7xTKBgsPpz+rzjBKM9S+jcjzpNOuAgx/jg3QU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Bart Van Assche <bvanassche@acm.org>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 34/37] RDMA/iwcm: Fix a lock inversion issue
-Date:   Fri, 25 Oct 2019 09:55:58 -0400
-Message-Id: <20191025135603.25093-34-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 23/25] RDMA/iwcm: Fix a lock inversion issue
+Date:   Fri, 25 Oct 2019 09:57:11 -0400
+Message-Id: <20191025135715.25468-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191025135603.25093-1-sashal@kernel.org>
-References: <20191025135603.25093-1-sashal@kernel.org>
+In-Reply-To: <20191025135715.25468-1-sashal@kernel.org>
+References: <20191025135715.25468-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -107,10 +107,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 6257be21cbedd..1f373ba573b6d 100644
+index 7c5eca312aa88..f698c6a28c142 100644
 --- a/drivers/infiniband/core/cma.c
 +++ b/drivers/infiniband/core/cma.c
-@@ -2270,9 +2270,10 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
+@@ -2212,9 +2212,10 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
  		conn_id->cm_id.iw = NULL;
  		cma_exch(conn_id, RDMA_CM_DESTROYING);
  		mutex_unlock(&conn_id->handler_mutex);
