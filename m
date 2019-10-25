@@ -2,38 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D7AE4D44
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 15:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6D3E4E53
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 16:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632952AbfJYN7N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Oct 2019 09:59:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54932 "EHLO mail.kernel.org"
+        id S2632724AbfJYNzk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Oct 2019 09:55:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2632943AbfJYN7M (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 25 Oct 2019 09:59:12 -0400
+        id S2505131AbfJYNzj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 25 Oct 2019 09:55:39 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15DBE222BE;
-        Fri, 25 Oct 2019 13:59:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D39A222BD;
+        Fri, 25 Oct 2019 13:55:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572011951;
-        bh=WO055rew6vXiNWAIz24yB6BtLbtJIvjJYo9zKPqhmYY=;
+        s=default; t=1572011738;
+        bh=/5vZq0Extn35PLfohoeq1RAcB06TKXE2V7hZ+LfTC5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=elG18VWlZ35ElTF9UXtTdJqQi6PE6XUZFEBVMOAMrWMNdUpJ1WybccMgelOzrYNv9
-         MtyZKtUTmbr2JOX9U2oOdvKm87YflApSTE4Ml58VUHeiekMPMKo+L29EyvGm011Unl
-         eu6WH3lU6q2P8y0/ABi0cLGaDPEXc5gttlV1B0RY=
+        b=HSUS7naFH4Y/CPocVhj7wZ6T48Xo690eu+rAMcbZvURrqgGGFPRH2IxEb6buyFBhJ
+         6WaiGdOYsmZF+OpqOA3DoS4pMwYqKgXXI81tJLdQJMNRTai4cqH8MLCE1yepJ5RbAi
+         cOA7AzbNXNp7CfdRy0c87absZt6+gBVu1yDCHGSQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 15/16] RDMA/iwcm: Fix a lock inversion issue
-Date:   Fri, 25 Oct 2019 09:58:39 -0400
-Message-Id: <20191025135842.25977-15-sashal@kernel.org>
+Cc:     Dag Moxnes <dag.moxnes@oracle.com>, Jenny <jenny.x.xu@oracle.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.3 19/33] net/rds: Whitelist rdma_cookie and rx_tstamp for usercopy
+Date:   Fri, 25 Oct 2019 09:54:51 -0400
+Message-Id: <20191025135505.24762-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191025135842.25977-1-sashal@kernel.org>
-References: <20191025135842.25977-1-sashal@kernel.org>
+In-Reply-To: <20191025135505.24762-1-sashal@kernel.org>
+References: <20191025135505.24762-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,85 +45,162 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Dag Moxnes <dag.moxnes@oracle.com>
 
-[ Upstream commit b66f31efbdad95ec274345721d99d1d835e6de01 ]
+[ Upstream commit bf1867db9b850fff2dd54a1a117a684a10b8cd90 ]
 
-This patch fixes the lock inversion complaint:
+Add the RDMA cookie and RX timestamp to the usercopy whitelist.
 
-============================================
-WARNING: possible recursive locking detected
-5.3.0-rc7-dbg+ #1 Not tainted
---------------------------------------------
-kworker/u16:6/171 is trying to acquire lock:
-00000000035c6e6c (&id_priv->handler_mutex){+.+.}, at: rdma_destroy_id+0x78/0x4a0 [rdma_cm]
+After the introduction of hardened usercopy whitelisting
+(https://lwn.net/Articles/727322/), a warning is displayed when the
+RDMA cookie or RX timestamp is copied to userspace:
 
-but task is already holding lock:
-00000000bc7c307d (&id_priv->handler_mutex){+.+.}, at: iw_conn_req_handler+0x151/0x680 [rdma_cm]
+kernel: WARNING: CPU: 3 PID: 5750 at
+mm/usercopy.c:81 usercopy_warn+0x8e/0xa6
+[...]
+kernel: Call Trace:
+kernel: __check_heap_object+0xb8/0x11b
+kernel: __check_object_size+0xe3/0x1bc
+kernel: put_cmsg+0x95/0x115
+kernel: rds_recvmsg+0x43d/0x620 [rds]
+kernel: sock_recvmsg+0x43/0x4a
+kernel: ___sys_recvmsg+0xda/0x1e6
+kernel: ? __handle_mm_fault+0xcae/0xf79
+kernel: __sys_recvmsg+0x51/0x8a
+kernel: SyS_recvmsg+0x12/0x1c
+kernel: do_syscall_64+0x79/0x1ae
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
+When the whitelisting feature was introduced, the memory for the RDMA
+cookie and RX timestamp in RDS was not added to the whitelist, causing
+the warning above.
 
-       CPU0
-       ----
-  lock(&id_priv->handler_mutex);
-  lock(&id_priv->handler_mutex);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-3 locks held by kworker/u16:6/171:
- #0: 00000000e2eaa773 ((wq_completion)iw_cm_wq){+.+.}, at: process_one_work+0x472/0xac0
- #1: 000000001efd357b ((work_completion)(&work->work)#3){+.+.}, at: process_one_work+0x476/0xac0
- #2: 00000000bc7c307d (&id_priv->handler_mutex){+.+.}, at: iw_conn_req_handler+0x151/0x680 [rdma_cm]
-
-stack backtrace:
-CPU: 3 PID: 171 Comm: kworker/u16:6 Not tainted 5.3.0-rc7-dbg+ #1
-Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
-Workqueue: iw_cm_wq cm_work_handler [iw_cm]
-Call Trace:
- dump_stack+0x8a/0xd6
- __lock_acquire.cold+0xe1/0x24d
- lock_acquire+0x106/0x240
- __mutex_lock+0x12e/0xcb0
- mutex_lock_nested+0x1f/0x30
- rdma_destroy_id+0x78/0x4a0 [rdma_cm]
- iw_conn_req_handler+0x5c9/0x680 [rdma_cm]
- cm_work_handler+0xe62/0x1100 [iw_cm]
- process_one_work+0x56d/0xac0
- worker_thread+0x7a/0x5d0
- kthread+0x1bc/0x210
- ret_from_fork+0x24/0x30
-
-This is not a bug as there are actually two lock classes here.
-
-Link: https://lore.kernel.org/r/20190930231707.48259-3-bvanassche@acm.org
-Fixes: de910bd92137 ("RDMA/cma: Simplify locking needed for serialization of callbacks")
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
+Tested-by: Jenny <jenny.x.xu@oracle.com>
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/cma.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/rds/ib_recv.c | 11 ++++++++---
+ net/rds/rds.h     |  9 +++++++--
+ net/rds/recv.c    | 22 ++++++++++++----------
+ 3 files changed, 27 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 1454290078def..8ad9c6b04769d 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -1976,9 +1976,10 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
- 		conn_id->cm_id.iw = NULL;
- 		cma_exch(conn_id, RDMA_CM_DESTROYING);
- 		mutex_unlock(&conn_id->handler_mutex);
-+		mutex_unlock(&listen_id->handler_mutex);
- 		cma_deref_id(conn_id);
- 		rdma_destroy_id(&conn_id->id);
--		goto out;
-+		return ret;
+diff --git a/net/rds/ib_recv.c b/net/rds/ib_recv.c
+index 3cae88cbdaa02..fecd0abdc7e8e 100644
+--- a/net/rds/ib_recv.c
++++ b/net/rds/ib_recv.c
+@@ -1038,9 +1038,14 @@ int rds_ib_recv_init(void)
+ 	si_meminfo(&si);
+ 	rds_ib_sysctl_max_recv_allocation = si.totalram / 3 * PAGE_SIZE / RDS_FRAG_SIZE;
+ 
+-	rds_ib_incoming_slab = kmem_cache_create("rds_ib_incoming",
+-					sizeof(struct rds_ib_incoming),
+-					0, SLAB_HWCACHE_ALIGN, NULL);
++	rds_ib_incoming_slab =
++		kmem_cache_create_usercopy("rds_ib_incoming",
++					   sizeof(struct rds_ib_incoming),
++					   0, SLAB_HWCACHE_ALIGN,
++					   offsetof(struct rds_ib_incoming,
++						    ii_inc.i_usercopy),
++					   sizeof(struct rds_inc_usercopy),
++					   NULL);
+ 	if (!rds_ib_incoming_slab)
+ 		goto out;
+ 
+diff --git a/net/rds/rds.h b/net/rds/rds.h
+index f0066d1684993..e792a67dd5788 100644
+--- a/net/rds/rds.h
++++ b/net/rds/rds.h
+@@ -271,6 +271,12 @@ struct rds_ext_header_rdma_dest {
+ #define	RDS_MSG_RX_END		2
+ #define	RDS_MSG_RX_CMSG		3
+ 
++/* The following values are whitelisted for usercopy */
++struct rds_inc_usercopy {
++	rds_rdma_cookie_t	rdma_cookie;
++	ktime_t			rx_tstamp;
++};
++
+ struct rds_incoming {
+ 	refcount_t		i_refcount;
+ 	struct list_head	i_item;
+@@ -280,8 +286,7 @@ struct rds_incoming {
+ 	unsigned long		i_rx_jiffies;
+ 	struct in6_addr		i_saddr;
+ 
+-	rds_rdma_cookie_t	i_rdma_cookie;
+-	ktime_t			i_rx_tstamp;
++	struct rds_inc_usercopy i_usercopy;
+ 	u64			i_rx_lat_trace[RDS_RX_MAX_TRACES];
+ };
+ 
+diff --git a/net/rds/recv.c b/net/rds/recv.c
+index a42ba7fa06d5d..c8404971d5ab3 100644
+--- a/net/rds/recv.c
++++ b/net/rds/recv.c
+@@ -47,8 +47,8 @@ void rds_inc_init(struct rds_incoming *inc, struct rds_connection *conn,
+ 	INIT_LIST_HEAD(&inc->i_item);
+ 	inc->i_conn = conn;
+ 	inc->i_saddr = *saddr;
+-	inc->i_rdma_cookie = 0;
+-	inc->i_rx_tstamp = ktime_set(0, 0);
++	inc->i_usercopy.rdma_cookie = 0;
++	inc->i_usercopy.rx_tstamp = ktime_set(0, 0);
+ 
+ 	memset(inc->i_rx_lat_trace, 0, sizeof(inc->i_rx_lat_trace));
+ }
+@@ -62,8 +62,8 @@ void rds_inc_path_init(struct rds_incoming *inc, struct rds_conn_path *cp,
+ 	inc->i_conn = cp->cp_conn;
+ 	inc->i_conn_path = cp;
+ 	inc->i_saddr = *saddr;
+-	inc->i_rdma_cookie = 0;
+-	inc->i_rx_tstamp = ktime_set(0, 0);
++	inc->i_usercopy.rdma_cookie = 0;
++	inc->i_usercopy.rx_tstamp = ktime_set(0, 0);
+ }
+ EXPORT_SYMBOL_GPL(rds_inc_path_init);
+ 
+@@ -186,7 +186,7 @@ static void rds_recv_incoming_exthdrs(struct rds_incoming *inc, struct rds_sock
+ 		case RDS_EXTHDR_RDMA_DEST:
+ 			/* We ignore the size for now. We could stash it
+ 			 * somewhere and use it for error checking. */
+-			inc->i_rdma_cookie = rds_rdma_make_cookie(
++			inc->i_usercopy.rdma_cookie = rds_rdma_make_cookie(
+ 					be32_to_cpu(buffer.rdma_dest.h_rdma_rkey),
+ 					be32_to_cpu(buffer.rdma_dest.h_rdma_offset));
+ 
+@@ -380,7 +380,7 @@ void rds_recv_incoming(struct rds_connection *conn, struct in6_addr *saddr,
+ 				      be32_to_cpu(inc->i_hdr.h_len),
+ 				      inc->i_hdr.h_dport);
+ 		if (sock_flag(sk, SOCK_RCVTSTAMP))
+-			inc->i_rx_tstamp = ktime_get_real();
++			inc->i_usercopy.rx_tstamp = ktime_get_real();
+ 		rds_inc_addref(inc);
+ 		inc->i_rx_lat_trace[RDS_MSG_RX_END] = local_clock();
+ 		list_add_tail(&inc->i_item, &rs->rs_recv_queue);
+@@ -540,16 +540,18 @@ static int rds_cmsg_recv(struct rds_incoming *inc, struct msghdr *msg,
+ {
+ 	int ret = 0;
+ 
+-	if (inc->i_rdma_cookie) {
++	if (inc->i_usercopy.rdma_cookie) {
+ 		ret = put_cmsg(msg, SOL_RDS, RDS_CMSG_RDMA_DEST,
+-				sizeof(inc->i_rdma_cookie), &inc->i_rdma_cookie);
++				sizeof(inc->i_usercopy.rdma_cookie),
++				&inc->i_usercopy.rdma_cookie);
+ 		if (ret)
+ 			goto out;
  	}
  
- 	mutex_unlock(&conn_id->handler_mutex);
+-	if ((inc->i_rx_tstamp != 0) &&
++	if ((inc->i_usercopy.rx_tstamp != 0) &&
+ 	    sock_flag(rds_rs_to_sk(rs), SOCK_RCVTSTAMP)) {
+-		struct __kernel_old_timeval tv = ns_to_kernel_old_timeval(inc->i_rx_tstamp);
++		struct __kernel_old_timeval tv =
++			ns_to_kernel_old_timeval(inc->i_usercopy.rx_tstamp);
+ 
+ 		if (!sock_flag(rds_rs_to_sk(rs), SOCK_TSTAMP_NEW)) {
+ 			ret = put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMP_OLD,
 -- 
 2.20.1
 
