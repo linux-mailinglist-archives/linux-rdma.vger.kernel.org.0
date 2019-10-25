@@ -2,122 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6834E4A2B
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 13:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DFEE4AC7
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 14:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410349AbfJYLm1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Oct 2019 07:42:27 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:53822 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727283AbfJYLm1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Oct 2019 07:42:27 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9PBcvq1052730;
-        Fri, 25 Oct 2019 11:42:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2019-08-05;
- bh=O7w+ZyhYIJRus2QkwK5GMAVXf4qiZPD4foyde5oWwpg=;
- b=ZOY5/hfp6zt3ObuTbn54E8Xa9Mzj4utgwY+mEpBiaNKbKDC9KA8QnLkNoM6tDmj3So6Y
- LnpTy0bl+U4A+Byr/P77yyWMqpWdamsp5Hg43Vtlmrsu3q9BMk8qygClCtgvdcn/moUv
- cBZio8iaSfzKKr/vzqT0KgsDFZrSCKlcugbtT9CUB7vvU0gVFzIRtvywhfhvuAmadhex
- M05kXOQGhnhCoCat1jIhsIQNr4z2p/WF8ZxYJiRhLX8cjkrzfHeIaN2LQM7BRRDNOW1i
- /Mvd50L0SkS3YRt5rGz45NomlpqUqjuKSe9B2CA3TwRqxA56XfdO/aMO5xEFP/Jz0cZr GQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2vqu4ra8kh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Oct 2019 11:42:10 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9PBcOAX047222;
-        Fri, 25 Oct 2019 11:42:09 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2vug0e4cnp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Oct 2019 11:42:09 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9PBg8G4020274;
-        Fri, 25 Oct 2019 11:42:08 GMT
-Received: from dm-oel.no.oracle.com (/10.172.157.165)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 25 Oct 2019 04:42:07 -0700
-From:   Dag Moxnes <dag.moxnes@oracle.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
-        parav@mellanox.com
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dag.moxnes@oracle.com
-Subject: [PATCH rdma-next] RDMA/cma: Use ACK timeout for RoCE packetLifeTime
-Date:   Fri, 25 Oct 2019 13:42:01 +0200
-Message-Id: <1572003721-26368-1-git-send-email-dag.moxnes@oracle.com>
-X-Mailer: git-send-email 1.7.1
+        id S2410299AbfJYML1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 25 Oct 2019 08:11:27 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15194 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2410291AbfJYML1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 25 Oct 2019 08:11:27 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x9PC9ttY099423
+        for <linux-rdma@vger.kernel.org>; Fri, 25 Oct 2019 08:11:26 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.73])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2vv0s6g4v2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Fri, 25 Oct 2019 08:11:26 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Fri, 25 Oct 2019 12:11:25 -0000
+Received: from us1a3-smtp05.a3.dal06.isc4sb.com (10.146.71.159)
+        by smtp.notes.na.collabserv.com (10.106.227.90) with smtp.notes.na.collabserv.com ESMTP;
+        Fri, 25 Oct 2019 12:11:18 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp05.a3.dal06.isc4sb.com
+          with ESMTP id 2019102512111770-396862 ;
+          Fri, 25 Oct 2019 12:11:17 +0000 
+In-Reply-To: <20191004174804.GF13988@ziepe.ca>
+Subject: Re: Re: Re: [[PATCH v2 for-next]] RDMA/siw: Fix SQ/RQ drain logic
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     "Leon Romanovsky" <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        bharat@chelsio.com, nirranjan@chelsio.com, krishna2@chelsio.com,
+        bvanassche@acm.org
+Date:   Fri, 25 Oct 2019 12:11:16 +0000
 MIME-Version: 1.0
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20191004174804.GF13988@ziepe.ca>,<20191002154728.GH5855@unreal>
+ <20191002143858.4550-1-bmt@zurich.ibm.com>
+ <OFA7E48CEB.393CBE8D-ON00258489.0047C07A-00258489.004DD109@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
+ SCN1812108_20180501T0841_FP59 September 23, 2019 at 18:08
+X-LLNOutbound: False
+X-Disclaimed: 45267
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9420 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910250112
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9420 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910250112
+x-cbid: 19102512-8877-0000-0000-000001963128
+X-IBM-SpamModules-Scores: BY=0.066268; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.002132
+X-IBM-SpamModules-Versions: BY=3.00011995; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000292; SDB=6.01280507; UDB=6.00678534; IPR=6.01062649;
+ MB=3.00029235; MTD=3.00000008; XFM=3.00000015; UTC=2019-10-25 12:11:24
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-10-25 08:16:42 - 6.00010570
+x-cbparentid: 19102512-8878-0000-0000-0000565F3709
+Message-Id: <OF6A4B581E.5377D66F-ON0025849E.0041A942-0025849E.0042F36B@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-25_07:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The cma is currently using a hard-coded value, CMA_IBOE_PACKET_LIFETIME,
-for the PacketLifeTime, as it can not be determined from the network.
-This value might not be optimal for all networks.
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
-The cma module supports the function rdma_set_ack_timeout to set the
-ACK timeout for a QP associated with a connection. As per IBTA 12.7.34
-local ACK timeout = (2 * PacketLifeTime + Local CA’s ACK delay).
-Assuming a negligible local ACK delay, we can use
-PacketLifeTime = local ACK timeout/2
-as a reasonable approximation for RoCE networks.
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 10/04/2019 07:48PM
+>Cc: "Leon Romanovsky" <leon@kernel.org>, linux-rdma@vger.kernel.org,
+>bharat@chelsio.com, nirranjan@chelsio.com, krishna2@chelsio.com,
+>bvanassche@acm.org
+>Subject: [EXTERNAL] Re: Re: [[PATCH v2 for-next]] RDMA/siw: Fix SQ/RQ
+>drain logic
+>
+>On Fri, Oct 04, 2019 at 02:09:57PM +0000, Bernard Metzler wrote:
+>> <...>
+>> 
+>> >>   *
+>> >> @@ -705,6 +746,12 @@ int siw_post_send(struct ib_qp *base_qp,
+>const
+>> >struct ib_send_wr *wr,
+>> >>  	unsigned long flags;
+>> >>  	int rv = 0;
+>> >>
+>> >> +	if (wr && !qp->kernel_verbs) {
+>> >
+>> >It is not related to this specific patch, but all siw
+>"kernel_verbs"
+>> >should go, we have standard way to distinguish between kernel and
+>> >user
+>> >verbs.
+>> >
+>> >Thanks
+>> >
+>> Understood. I think we touched on that already.
+>> rdma core objects have a uobject pointer which
+>> is valid only if it belongs to a user land
+>> application. We might better use that. 
+>
+>No, the uobject pointer is not to be touched by drivers
+>
+Now what would be the appropriate way of remembering/
+detecting user level nature of endpoint resources?
+I see drivers _are_ doing 'if (!ibqp->uobject)' ... 
 
-Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
-Change-Id: I200eda9d54829184e556c3c55d6a8869558d76b2
----
- drivers/infiniband/core/cma.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+Other drivers keep it with the private state, like iw40,
+but I learned we shall get rid of it.
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index c8566a4237..2c1b08bde2 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -2530,7 +2530,9 @@ EXPORT_SYMBOL(rdma_set_service_type);
-  * This function should be called before rdma_connect() on active side,
-  * and on passive side before rdma_accept(). It is applicable to primary
-  * path only. The timeout will affect the local side of the QP, it is not
-- * negotiated with remote side and zero disables the timer.
-+ * negotiated with remote side and zero disables the timer. In case it is
-+ * set before rdma_resolve_route, the value will also be used to determine
-+ * PacketLifeTime for RoCE.
-  *
-  * Return: 0 for success
-  */
-@@ -2939,7 +2941,16 @@ static int cma_resolve_iboe_route(struct rdma_id_private *id_priv)
- 	route->path_rec->rate = iboe_get_rate(ndev);
- 	dev_put(ndev);
- 	route->path_rec->packet_life_time_selector = IB_SA_EQ;
--	route->path_rec->packet_life_time = CMA_IBOE_PACKET_LIFETIME;
-+	/* In case ACK timeout is set, use this value to calculate
-+	 * PacketLifeTime.  As per IBTA 12.7.34,
-+	 * local ACK timeout = (2 * PacketLifeTime + Local CA’s ACK delay).
-+	 * Assuming a negligible local ACK delay, we can use
-+	 * PacketLifeTime = local ACK timeout/2
-+	 * as a reasonable approximation for RoCE networks.
-+	 */
-+	route->path_rec->packet_life_time = id_priv->timeout_set ?
-+		id_priv->timeout - 1 : CMA_IBOE_PACKET_LIFETIME;
-+
- 	if (!route->path_rec->mtu) {
- 		ret = -EINVAL;
- 		goto err2;
--- 
-2.20.1
+We may export an inline query from RDMA core, or simply
+#define is_usermode(ib_obj *) (ib_obj->uobject != NULL)
+?
+
+Thanks and best regards,
+Bernard
 
