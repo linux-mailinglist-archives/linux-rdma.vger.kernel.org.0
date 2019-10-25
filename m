@@ -2,100 +2,188 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84565E54C4
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 21:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8C4E5674
+	for <lists+linux-rdma@lfdr.de>; Sat, 26 Oct 2019 00:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbfJYT66 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Oct 2019 15:58:58 -0400
-Received: from mga09.intel.com ([134.134.136.24]:21296 "EHLO mga09.intel.com"
+        id S1726443AbfJYW1s convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 25 Oct 2019 18:27:48 -0400
+Received: from mga12.intel.com ([192.55.52.136]:29747 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726189AbfJYT66 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 25 Oct 2019 15:58:58 -0400
+        id S1726428AbfJYW1s (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 25 Oct 2019 18:27:48 -0400
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Oct 2019 12:58:45 -0700
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Oct 2019 15:27:47 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,229,1569308400"; 
-   d="scan'208";a="210432647"
-Received: from sedona.ch.intel.com ([10.2.136.157])
-  by fmsmga001.fm.intel.com with ESMTP; 25 Oct 2019 12:58:45 -0700
-Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id x9PJwiKw024314;
-        Fri, 25 Oct 2019 12:58:44 -0700
-Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id x9PJwg56112008;
-        Fri, 25 Oct 2019 15:58:43 -0400
-Subject: [PATCH for-rc 4/4] IB/hfi1: TID RDMA WRITE should not return
- IB_WC_RNR_RETRY_EXC_ERR
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        stable@vger.kernel.org, Kaike Wan <kaike.wan@intel.com>
-Date:   Fri, 25 Oct 2019 15:58:42 -0400
-Message-ID: <20191025195842.106825.71532.stgit@awfm-01.aw.intel.com>
-In-Reply-To: <20191025161717.106825.14421.stgit@awfm-01.aw.intel.com>
-References: <20191025161717.106825.14421.stgit@awfm-01.aw.intel.com>
-User-Agent: StGit/0.17.1-dirty
+X-IronPort-AV: E=Sophos;i="5.68,230,1569308400"; 
+   d="scan'208";a="229054185"
+Received: from orsmsx103.amr.corp.intel.com ([10.22.225.130])
+  by fmsmga002.fm.intel.com with ESMTP; 25 Oct 2019 15:27:47 -0700
+Received: from orsmsx158.amr.corp.intel.com (10.22.240.20) by
+ ORSMSX103.amr.corp.intel.com (10.22.225.130) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 25 Oct 2019 15:27:47 -0700
+Received: from orsmsx101.amr.corp.intel.com ([169.254.8.212]) by
+ ORSMSX158.amr.corp.intel.com ([169.254.10.56]) with mapi id 14.03.0439.000;
+ Fri, 25 Oct 2019 15:27:47 -0700
+From:   "Ertman, David M" <david.m.ertman@intel.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>
+Subject: RE: [RFC 01/20] ice: Initialize and register multi-function device
+ to provide RDMA
+Thread-Topic: [RFC 01/20] ice: Initialize and register multi-function device
+ to provide RDMA
+Thread-Index: AQGOetFAPbFeoIHdxRJDZlVegIphLQHJRZnhAdxiwysB1QCSuQJ6/k4op44H7uCAKV2vAP//jAtwgAB4hoCAAaHugIAAA8+A//+igjCAAMe3AIAA6SdA
+Date:   Fri, 25 Oct 2019 22:27:46 +0000
+Message-ID: <2B0E3F215D1AB84DA946C8BEE234CCC97B2E2FE6@ORSMSX101.amr.corp.intel.com>
+References: <20190926180556.GB1733924@kroah.com>
+ <7e7f6c159de52984b89c13982f0a7fd83f1bdcd4.camel@intel.com>
+ <20190927051320.GA1767635@kroah.com>
+ <2B0E3F215D1AB84DA946C8BEE234CCC97B2B1A28@ORSMSX101.amr.corp.intel.com>
+ <20191023174448.GP23952@ziepe.ca>
+ <2B0E3F215D1AB84DA946C8BEE234CCC97B2E0C84@ORSMSX101.amr.corp.intel.com>
+ <20191023180108.GQ23952@ziepe.ca> <20191024185659.GE260560@kroah.com>
+ <20191024191037.GC23952@ziepe.ca>
+ <2B0E3F215D1AB84DA946C8BEE234CCC97B2E1D29@ORSMSX101.amr.corp.intel.com>
+ <20191025013048.GB265361@kroah.com>
+In-Reply-To: <20191025013048.GB265361@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiMDZkYmUxYzUtZWRjZi00MjNkLWEyYTktMjUyMDYxZDdjMDVjIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiZW1DYkdyaTdMUjZSeXNcL0pVTUJnQnQ3NFY0U0ZTYlZReXVVdjJIa2ZaWXlsY0RMQ0dRRzJUQ3VTak5oTE1LS3cifQ==
+x-ctpclassification: CTP_NT
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.22.254.140]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Kaike Wan <kaike.wan@intel.com>
+> -----Original Message-----
+> From: gregkh@linuxfoundation.org [mailto:gregkh@linuxfoundation.org]
+> Sent: Thursday, October 24, 2019 6:31 PM
+> To: Ertman, David M <david.m.ertman@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>; Nguyen, Anthony L
+> <anthony.l.nguyen@intel.com>; Kirsher, Jeffrey T
+> <jeffrey.t.kirsher@intel.com>; netdev@vger.kernel.org; linux-
+> rdma@vger.kernel.org; dledford@redhat.com; Ismail, Mustafa
+> <mustafa.ismail@intel.com>; Patil, Kiran <kiran.patil@intel.com>;
+> lee.jones@linaro.org
+> Subject: Re: [RFC 01/20] ice: Initialize and register multi-function device to
+> provide RDMA
+> 
+> On Thu, Oct 24, 2019 at 10:25:36PM +0000, Ertman, David M wrote:
+> > The direct access of the platform bus was unacceptable, and the MFD
+> > sub-system was suggested by Greg as the solution.  The MFD sub-system
+> > uses the platform bus in the background as a base to perform its
+> > functions, since it is a purely software construct that is handy and
+> > fulfills its needs.  The question then is:  If the MFD sub- system is
+> > using the platform bus for all of its background functionality, is the platform
+> bus really only for platform devices?
+> 
+> Yes, how many times do I have to keep saying this?
+> 
+> The platform bus should ONLY be used for devices that are actually platform
+> devices and can not be discovered any other way and are not on any other type
+> of bus.
+> 
+> If you try to add platform devices for a PCI device, I am going to continue to
+> complain.  I keep saying this and am getting tired.
+> 
+> Now yes, MFD does do "fun" things here, and that should probably be fixed up
+> one of these days.  But I still don't see why a real bus would not work for you.
+> 
+> greg "platform devices are dead, long live the platform device" k-h
 
-Normal RDMA WRITE request never returns IB_WC_RNR_RETRY_EXC_ERR to ULPs
-because it does not need post receive buffer on the responder side.
-Consequently, as an enhancement to normal RDMA WRITE request inside
-the hfi1 driver, TID RDMA WRITE request should not return such an
-error status to ULPs, although it does receive RNR NAKs from the
-responder when TID resources are not available. This behavior is
-violated when qp->s_rnr_retry_cnt is set in current hfi1
-implementation.
+> -----Original Message-----
+> From: gregkh@linuxfoundation.org [mailto:gregkh@linuxfoundation.org]
+> Sent: Thursday, October 24, 2019 6:31 PM
+> To: Ertman, David M <david.m.ertman@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>; Nguyen, Anthony L
+> <anthony.l.nguyen@intel.com>; Kirsher, Jeffrey T
+> <jeffrey.t.kirsher@intel.com>; netdev@vger.kernel.org; linux-
+> rdma@vger.kernel.org; dledford@redhat.com; Ismail, Mustafa
+> <mustafa.ismail@intel.com>; Patil, Kiran <kiran.patil@intel.com>;
+> lee.jones@linaro.org
+> Subject: Re: [RFC 01/20] ice: Initialize and register multi-function device to
+> provide RDMA
+> 
+> On Thu, Oct 24, 2019 at 10:25:36PM +0000, Ertman, David M wrote:
+> > The direct access of the platform bus was unacceptable, and the MFD
+> > sub-system was suggested by Greg as the solution.  The MFD sub-system
+> > uses the platform bus in the background as a base to perform its
+> > functions, since it is a purely software construct that is handy and
+> > fulfills its needs.  The question then is:  If the MFD sub- system is
+> > using the platform bus for all of its background functionality, is the platform
+> bus really only for platform devices?
+> 
+> Yes, how many times do I have to keep saying this?
+> 
+> The platform bus should ONLY be used for devices that are actually platform
+> devices and can not be discovered any other way and are not on any other type
+> of bus.
+> 
+> If you try to add platform devices for a PCI device, I am going to continue to
+> complain.  I keep saying this and am getting tired.
+> 
+> Now yes, MFD does do "fun" things here, and that should probably be fixed up
+> one of these days.  But I still don't see why a real bus would not work for you.
+> 
+> greg "platform devices are dead, long live the platform device" k-h
 
-This patch enforces this semantics by avoiding any reaction to the
-updates of the RNR QP attributes.
+I'm sorry, the last thing I want to do is to annoy you! I just need to
+figure out where to go from here.  Please, don't take anything I say as
+argumentative.
 
-Fixes: 3c6cb20a0d17 ("IB/hfi1: Add TID RDMA WRITE functionality into RDMA verbs")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Signed-off-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
----
- drivers/infiniband/hw/hfi1/rc.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+I don't understand what you mean by "a real bus".  The irdma driver does
+not have access to any physical bus.  It utilizes resources provided by
+the PCI LAN drivers, but to receive those resources it needs a mechanism
+to "hook up" with the PCI drivers.  The only way it has to locate them
+is to register a driver function with a software based bus of some kind
+and have the bus match it up to a compatible entity to achieve that hook up.
 
-diff --git a/drivers/infiniband/hw/hfi1/rc.c b/drivers/infiniband/hw/hfi1/rc.c
-index 513a8aa..1a3c647 100644
---- a/drivers/infiniband/hw/hfi1/rc.c
-+++ b/drivers/infiniband/hw/hfi1/rc.c
-@@ -2209,15 +2209,15 @@ int do_rc_ack(struct rvt_qp *qp, u32 aeth, u32 psn, int opcode,
- 		if (qp->s_flags & RVT_S_WAIT_RNR)
- 			goto bail_stop;
- 		rdi = ib_to_rvt(qp->ibqp.device);
--		if (qp->s_rnr_retry == 0 &&
--		    !((rdi->post_parms[wqe->wr.opcode].flags &
--		      RVT_OPERATION_IGN_RNR_CNT) &&
--		      qp->s_rnr_retry_cnt == 0)) {
--			status = IB_WC_RNR_RETRY_EXC_ERR;
--			goto class_b;
-+		if (!(rdi->post_parms[wqe->wr.opcode].flags &
-+		       RVT_OPERATION_IGN_RNR_CNT)) {
-+			if (qp->s_rnr_retry == 0) {
-+				status = IB_WC_RNR_RETRY_EXC_ERR;
-+				goto class_b;
-+			}
-+			if (qp->s_rnr_retry_cnt < 7 && qp->s_rnr_retry_cnt > 0)
-+				qp->s_rnr_retry--;
- 		}
--		if (qp->s_rnr_retry_cnt < 7 && qp->s_rnr_retry_cnt > 0)
--			qp->s_rnr_retry--;
- 
- 		/*
- 		 * The last valid PSN is the previous PSN. For TID RDMA WRITE
+The PCI LAN driver has a function that controls the PCI hardware, and then
+we want to present an entity for the RDMA driver to connect to.
 
+To move forward, we are thinking of the following design proposal:
+
+We could add a new module to the kernel named generic_bus.ko.  This would
+create a new generic software bus and a set of APIs that would allow for
+adding and removing simple generic virtual devices and drivers, not as
+a MFD cell or a platform device. The power management events would also
+be handled by the generic_bus infrastructure (suspend, resume, shutdown).
+We would use this for matching up by having the irdma driver register
+with this generic bus and hook to virtual devices that were added from
+different PCI LAN drivers.
+
+Pros:
+1) This would avoid us attaching anything to the platform bus
+2) Avoid having each PCI LAN driver creating its own software bus
+3) Provide a common matching ground for generic devices and drivers that
+eliminates problems caused by load order (all dependent on generic_bus.ko)
+4) Usable by any other entity that wants a lightweight matching system
+or information exchange mechanism
+
+Cons:
+1) Duplicates part of the platform bus functionality
+2) Adds a new software bus to the kernel architecture
+
+Is this path forward acceptable?
+
+Thanks for any clarification/guidance you can provide!
+
+-Dave E
