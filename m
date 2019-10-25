@@ -2,37 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6D3E4E53
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 16:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58635E4E4A
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 16:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632724AbfJYNzk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Oct 2019 09:55:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49610 "EHLO mail.kernel.org"
+        id S2404105AbfJYOGT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Oct 2019 10:06:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505131AbfJYNzj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 25 Oct 2019 09:55:39 -0400
+        id S2505147AbfJYNzs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 25 Oct 2019 09:55:48 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D39A222BD;
-        Fri, 25 Oct 2019 13:55:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C5AE222D2;
+        Fri, 25 Oct 2019 13:55:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572011738;
-        bh=/5vZq0Extn35PLfohoeq1RAcB06TKXE2V7hZ+LfTC5U=;
+        s=default; t=1572011747;
+        bh=p9C5sV/9RGDGSsR26ocpzESBcVa9EVNGwDLOF9hwdCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HSUS7naFH4Y/CPocVhj7wZ6T48Xo690eu+rAMcbZvURrqgGGFPRH2IxEb6buyFBhJ
-         6WaiGdOYsmZF+OpqOA3DoS4pMwYqKgXXI81tJLdQJMNRTai4cqH8MLCE1yepJ5RbAi
-         cOA7AzbNXNp7CfdRy0c87absZt6+gBVu1yDCHGSQ=
+        b=RTAWeLFx7Bgny8r22Q93xvoJ/zJ8z95fO/DVedtBqhfhiVXFaM90S2tX3xU7pTlKV
+         Ow3Ay4hFwlrsUak09C+UsmwU9CCfr/ZGogT+xRvoyhviZpwtlZ86MlZI+Nj7gmdacs
+         CJ/9VNNYheuREaYpz5fZtUD420sk4O65t79LziUU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dag Moxnes <dag.moxnes@oracle.com>, Jenny <jenny.x.xu@oracle.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.3 19/33] net/rds: Whitelist rdma_cookie and rx_tstamp for usercopy
-Date:   Fri, 25 Oct 2019 09:54:51 -0400
-Message-Id: <20191025135505.24762-19-sashal@kernel.org>
+Cc:     Krishnamraju Eraparaju <krishna2@chelsio.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.3 27/33] RDMA/siw: Fix serialization issue in write_space()
+Date:   Fri, 25 Oct 2019 09:54:59 -0400
+Message-Id: <20191025135505.24762-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191025135505.24762-1-sashal@kernel.org>
 References: <20191025135505.24762-1-sashal@kernel.org>
@@ -45,162 +44,107 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Dag Moxnes <dag.moxnes@oracle.com>
+From: Krishnamraju Eraparaju <krishna2@chelsio.com>
 
-[ Upstream commit bf1867db9b850fff2dd54a1a117a684a10b8cd90 ]
+[ Upstream commit df791c54d627bae53c9be3be40a69594c55de487 ]
 
-Add the RDMA cookie and RX timestamp to the usercopy whitelist.
+In siw_qp_llp_write_space(), 'sock' members should be accessed with
+sk_callback_lock held, otherwise, it could race with
+siw_sk_restore_upcalls(). And this could cause "NULL deref" panic.  Below
+panic is due to the NULL cep returned from sk_to_cep(sk):
 
-After the introduction of hardened usercopy whitelisting
-(https://lwn.net/Articles/727322/), a warning is displayed when the
-RDMA cookie or RX timestamp is copied to userspace:
+  Call Trace:
+   <IRQ>    siw_qp_llp_write_space+0x11/0x40 [siw]
+   tcp_check_space+0x4c/0xf0
+   tcp_rcv_established+0x52b/0x630
+   tcp_v4_do_rcv+0xf4/0x1e0
+   tcp_v4_rcv+0x9b8/0xab0
+   ip_protocol_deliver_rcu+0x2c/0x1c0
+   ip_local_deliver_finish+0x44/0x50
+   ip_local_deliver+0x6b/0xf0
+   ? ip_protocol_deliver_rcu+0x1c0/0x1c0
+   ip_rcv+0x52/0xd0
+   ? ip_rcv_finish_core.isra.14+0x390/0x390
+   __netif_receive_skb_one_core+0x83/0xa0
+   netif_receive_skb_internal+0x73/0xb0
+   napi_gro_frags+0x1ff/0x2b0
+   t4_ethrx_handler+0x4a7/0x740 [cxgb4]
+   process_responses+0x2c9/0x590 [cxgb4]
+   ? t4_sge_intr_msix+0x1d/0x30 [cxgb4]
+   ? handle_irq_event_percpu+0x51/0x70
+   ? handle_irq_event+0x41/0x60
+   ? handle_edge_irq+0x97/0x1a0
+   napi_rx_handler+0x14/0xe0 [cxgb4]
+   net_rx_action+0x2af/0x410
+   __do_softirq+0xda/0x2a8
+   do_softirq_own_stack+0x2a/0x40
+   </IRQ>
+   do_softirq+0x50/0x60
+   __local_bh_enable_ip+0x50/0x60
+   ip_finish_output2+0x18f/0x520
+   ip_output+0x6e/0xf0
+   ? __ip_finish_output+0x1f0/0x1f0
+   __ip_queue_xmit+0x14f/0x3d0
+   ? __slab_alloc+0x4b/0x58
+   __tcp_transmit_skb+0x57d/0xa60
+   tcp_write_xmit+0x23b/0xfd0
+   __tcp_push_pending_frames+0x2e/0xf0
+   tcp_sendmsg_locked+0x939/0xd50
+   tcp_sendmsg+0x27/0x40
+   sock_sendmsg+0x57/0x80
+   siw_tx_hdt+0x894/0xb20 [siw]
+   ? find_busiest_group+0x3e/0x5b0
+   ? common_interrupt+0xa/0xf
+   ? common_interrupt+0xa/0xf
+   ? common_interrupt+0xa/0xf
+   siw_qp_sq_process+0xf1/0xe60 [siw]
+   ? __wake_up_common_lock+0x87/0xc0
+   siw_sq_resume+0x33/0xe0 [siw]
+   siw_run_sq+0xac/0x190 [siw]
+   ? remove_wait_queue+0x60/0x60
+   kthread+0xf8/0x130
+   ? siw_sq_resume+0xe0/0xe0 [siw]
+   ? kthread_bind+0x10/0x10
+   ret_from_fork+0x35/0x40
 
-kernel: WARNING: CPU: 3 PID: 5750 at
-mm/usercopy.c:81 usercopy_warn+0x8e/0xa6
-[...]
-kernel: Call Trace:
-kernel: __check_heap_object+0xb8/0x11b
-kernel: __check_object_size+0xe3/0x1bc
-kernel: put_cmsg+0x95/0x115
-kernel: rds_recvmsg+0x43d/0x620 [rds]
-kernel: sock_recvmsg+0x43/0x4a
-kernel: ___sys_recvmsg+0xda/0x1e6
-kernel: ? __handle_mm_fault+0xcae/0xf79
-kernel: __sys_recvmsg+0x51/0x8a
-kernel: SyS_recvmsg+0x12/0x1c
-kernel: do_syscall_64+0x79/0x1ae
-
-When the whitelisting feature was introduced, the memory for the RDMA
-cookie and RX timestamp in RDS was not added to the whitelist, causing
-the warning above.
-
-Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
-Tested-by: Jenny <jenny.x.xu@oracle.com>
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: f29dd55b0236 ("rdma/siw: queue pair methods")
+Link: https://lore.kernel.org/r/20190923101112.32685-1-krishna2@chelsio.com
+Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/rds/ib_recv.c | 11 ++++++++---
- net/rds/rds.h     |  9 +++++++--
- net/rds/recv.c    | 22 ++++++++++++----------
- 3 files changed, 27 insertions(+), 15 deletions(-)
+ drivers/infiniband/sw/siw/siw_qp.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/net/rds/ib_recv.c b/net/rds/ib_recv.c
-index 3cae88cbdaa02..fecd0abdc7e8e 100644
---- a/net/rds/ib_recv.c
-+++ b/net/rds/ib_recv.c
-@@ -1038,9 +1038,14 @@ int rds_ib_recv_init(void)
- 	si_meminfo(&si);
- 	rds_ib_sysctl_max_recv_allocation = si.totalram / 3 * PAGE_SIZE / RDS_FRAG_SIZE;
- 
--	rds_ib_incoming_slab = kmem_cache_create("rds_ib_incoming",
--					sizeof(struct rds_ib_incoming),
--					0, SLAB_HWCACHE_ALIGN, NULL);
-+	rds_ib_incoming_slab =
-+		kmem_cache_create_usercopy("rds_ib_incoming",
-+					   sizeof(struct rds_ib_incoming),
-+					   0, SLAB_HWCACHE_ALIGN,
-+					   offsetof(struct rds_ib_incoming,
-+						    ii_inc.i_usercopy),
-+					   sizeof(struct rds_inc_usercopy),
-+					   NULL);
- 	if (!rds_ib_incoming_slab)
- 		goto out;
- 
-diff --git a/net/rds/rds.h b/net/rds/rds.h
-index f0066d1684993..e792a67dd5788 100644
---- a/net/rds/rds.h
-+++ b/net/rds/rds.h
-@@ -271,6 +271,12 @@ struct rds_ext_header_rdma_dest {
- #define	RDS_MSG_RX_END		2
- #define	RDS_MSG_RX_CMSG		3
- 
-+/* The following values are whitelisted for usercopy */
-+struct rds_inc_usercopy {
-+	rds_rdma_cookie_t	rdma_cookie;
-+	ktime_t			rx_tstamp;
-+};
-+
- struct rds_incoming {
- 	refcount_t		i_refcount;
- 	struct list_head	i_item;
-@@ -280,8 +286,7 @@ struct rds_incoming {
- 	unsigned long		i_rx_jiffies;
- 	struct in6_addr		i_saddr;
- 
--	rds_rdma_cookie_t	i_rdma_cookie;
--	ktime_t			i_rx_tstamp;
-+	struct rds_inc_usercopy i_usercopy;
- 	u64			i_rx_lat_trace[RDS_RX_MAX_TRACES];
- };
- 
-diff --git a/net/rds/recv.c b/net/rds/recv.c
-index a42ba7fa06d5d..c8404971d5ab3 100644
---- a/net/rds/recv.c
-+++ b/net/rds/recv.c
-@@ -47,8 +47,8 @@ void rds_inc_init(struct rds_incoming *inc, struct rds_connection *conn,
- 	INIT_LIST_HEAD(&inc->i_item);
- 	inc->i_conn = conn;
- 	inc->i_saddr = *saddr;
--	inc->i_rdma_cookie = 0;
--	inc->i_rx_tstamp = ktime_set(0, 0);
-+	inc->i_usercopy.rdma_cookie = 0;
-+	inc->i_usercopy.rx_tstamp = ktime_set(0, 0);
- 
- 	memset(inc->i_rx_lat_trace, 0, sizeof(inc->i_rx_lat_trace));
- }
-@@ -62,8 +62,8 @@ void rds_inc_path_init(struct rds_incoming *inc, struct rds_conn_path *cp,
- 	inc->i_conn = cp->cp_conn;
- 	inc->i_conn_path = cp;
- 	inc->i_saddr = *saddr;
--	inc->i_rdma_cookie = 0;
--	inc->i_rx_tstamp = ktime_set(0, 0);
-+	inc->i_usercopy.rdma_cookie = 0;
-+	inc->i_usercopy.rx_tstamp = ktime_set(0, 0);
- }
- EXPORT_SYMBOL_GPL(rds_inc_path_init);
- 
-@@ -186,7 +186,7 @@ static void rds_recv_incoming_exthdrs(struct rds_incoming *inc, struct rds_sock
- 		case RDS_EXTHDR_RDMA_DEST:
- 			/* We ignore the size for now. We could stash it
- 			 * somewhere and use it for error checking. */
--			inc->i_rdma_cookie = rds_rdma_make_cookie(
-+			inc->i_usercopy.rdma_cookie = rds_rdma_make_cookie(
- 					be32_to_cpu(buffer.rdma_dest.h_rdma_rkey),
- 					be32_to_cpu(buffer.rdma_dest.h_rdma_offset));
- 
-@@ -380,7 +380,7 @@ void rds_recv_incoming(struct rds_connection *conn, struct in6_addr *saddr,
- 				      be32_to_cpu(inc->i_hdr.h_len),
- 				      inc->i_hdr.h_dport);
- 		if (sock_flag(sk, SOCK_RCVTSTAMP))
--			inc->i_rx_tstamp = ktime_get_real();
-+			inc->i_usercopy.rx_tstamp = ktime_get_real();
- 		rds_inc_addref(inc);
- 		inc->i_rx_lat_trace[RDS_MSG_RX_END] = local_clock();
- 		list_add_tail(&inc->i_item, &rs->rs_recv_queue);
-@@ -540,16 +540,18 @@ static int rds_cmsg_recv(struct rds_incoming *inc, struct msghdr *msg,
+diff --git a/drivers/infiniband/sw/siw/siw_qp.c b/drivers/infiniband/sw/siw/siw_qp.c
+index 430314c8abd94..52d402f39df93 100644
+--- a/drivers/infiniband/sw/siw/siw_qp.c
++++ b/drivers/infiniband/sw/siw/siw_qp.c
+@@ -182,12 +182,19 @@ void siw_qp_llp_close(struct siw_qp *qp)
+  */
+ void siw_qp_llp_write_space(struct sock *sk)
  {
- 	int ret = 0;
+-	struct siw_cep *cep = sk_to_cep(sk);
++	struct siw_cep *cep;
  
--	if (inc->i_rdma_cookie) {
-+	if (inc->i_usercopy.rdma_cookie) {
- 		ret = put_cmsg(msg, SOL_RDS, RDS_CMSG_RDMA_DEST,
--				sizeof(inc->i_rdma_cookie), &inc->i_rdma_cookie);
-+				sizeof(inc->i_usercopy.rdma_cookie),
-+				&inc->i_usercopy.rdma_cookie);
- 		if (ret)
- 			goto out;
- 	}
+-	cep->sk_write_space(sk);
++	read_lock(&sk->sk_callback_lock);
++
++	cep  = sk_to_cep(sk);
++	if (cep) {
++		cep->sk_write_space(sk);
  
--	if ((inc->i_rx_tstamp != 0) &&
-+	if ((inc->i_usercopy.rx_tstamp != 0) &&
- 	    sock_flag(rds_rs_to_sk(rs), SOCK_RCVTSTAMP)) {
--		struct __kernel_old_timeval tv = ns_to_kernel_old_timeval(inc->i_rx_tstamp);
-+		struct __kernel_old_timeval tv =
-+			ns_to_kernel_old_timeval(inc->i_usercopy.rx_tstamp);
+-	if (!test_bit(SOCK_NOSPACE, &sk->sk_socket->flags))
+-		(void)siw_sq_start(cep->qp);
++		if (!test_bit(SOCK_NOSPACE, &sk->sk_socket->flags))
++			(void)siw_sq_start(cep->qp);
++	}
++
++	read_unlock(&sk->sk_callback_lock);
+ }
  
- 		if (!sock_flag(rds_rs_to_sk(rs), SOCK_TSTAMP_NEW)) {
- 			ret = put_cmsg(msg, SOL_SOCKET, SO_TIMESTAMP_OLD,
+ static int siw_qp_readq_init(struct siw_qp *qp, int irq_size, int orq_size)
 -- 
 2.20.1
 
