@@ -2,38 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A73BE4DB4
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 16:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E45E4DA4
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Oct 2019 16:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394991AbfJYOB6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Oct 2019 10:01:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53042 "EHLO mail.kernel.org"
+        id S2505522AbfJYN6U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Oct 2019 09:58:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505410AbfJYN54 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 25 Oct 2019 09:57:56 -0400
+        id S2505502AbfJYN6O (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 25 Oct 2019 09:58:14 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3D2A222C4;
-        Fri, 25 Oct 2019 13:57:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D40E9222CB;
+        Fri, 25 Oct 2019 13:58:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572011875;
-        bh=+WwV0E1ym9y6aqcP9TKtSk5RdtH6hq+0LURBV+jXbNw=;
+        s=default; t=1572011894;
+        bh=LTN6V6hmihi+VaoMqArjWGsDY+jF6bjygzvWJgkpK/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q5+VBezDkazN+T6dlRjLByxOC2B8gAHHA1oQikxtm/ZrOCUn0X1U0Pg41QLOFESIh
-         iWKMmxRRLzF5qjBWxwhNLp0bABIWZwDmVB5a0PBCkdeTZOC7V0vnVTxaCo6hRkcBo9
-         nXF7xTKBgsPpz+rzjBKM9S+jcjzpNOuAgx/jg3QU=
+        b=LePEQpw2NwaR8My8PP+RJ91etq11kwVVze/f6T1clE38poAX3zILV4rFTjhuJhoKn
+         PhXDKi3VNSt054usPUH3zLPoJF4V9Nqvqw3pmLz7zz5qLbJwU3QEzUXfsdB44YWvnD
+         aLNcCNeENhDYoCW1bzsXyppqXM3irqOGqunL8lHA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Hannes Reinecke <hare@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Laurence Oberman <loberman@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 23/25] RDMA/iwcm: Fix a lock inversion issue
-Date:   Fri, 25 Oct 2019 09:57:11 -0400
-Message-Id: <20191025135715.25468-23-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 06/20] scsi: RDMA/srp: Fix a sleep-in-invalid-context bug
+Date:   Fri, 25 Oct 2019 09:57:46 -0400
+Message-Id: <20191025135801.25739-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191025135715.25468-1-sashal@kernel.org>
-References: <20191025135715.25468-1-sashal@kernel.org>
+In-Reply-To: <20191025135801.25739-1-sashal@kernel.org>
+References: <20191025135801.25739-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,83 +51,106 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit b66f31efbdad95ec274345721d99d1d835e6de01 ]
+[ Upstream commit fd56141244066a6a21ef458670071c58b6402035 ]
 
-This patch fixes the lock inversion complaint:
+The previous patch guarantees that srp_queuecommand() does not get
+invoked while reconnecting occurs. Hence remove the code from
+srp_queuecommand() that prevents command queueing while reconnecting.
+This patch avoids that the following can appear in the kernel log:
 
-============================================
-WARNING: possible recursive locking detected
-5.3.0-rc7-dbg+ #1 Not tainted
---------------------------------------------
-kworker/u16:6/171 is trying to acquire lock:
-00000000035c6e6c (&id_priv->handler_mutex){+.+.}, at: rdma_destroy_id+0x78/0x4a0 [rdma_cm]
-
-but task is already holding lock:
-00000000bc7c307d (&id_priv->handler_mutex){+.+.}, at: iw_conn_req_handler+0x151/0x680 [rdma_cm]
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&id_priv->handler_mutex);
-  lock(&id_priv->handler_mutex);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-3 locks held by kworker/u16:6/171:
- #0: 00000000e2eaa773 ((wq_completion)iw_cm_wq){+.+.}, at: process_one_work+0x472/0xac0
- #1: 000000001efd357b ((work_completion)(&work->work)#3){+.+.}, at: process_one_work+0x476/0xac0
- #2: 00000000bc7c307d (&id_priv->handler_mutex){+.+.}, at: iw_conn_req_handler+0x151/0x680 [rdma_cm]
-
-stack backtrace:
-CPU: 3 PID: 171 Comm: kworker/u16:6 Not tainted 5.3.0-rc7-dbg+ #1
-Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
-Workqueue: iw_cm_wq cm_work_handler [iw_cm]
+BUG: sleeping function called from invalid context at kernel/locking/mutex.c:747
+in_atomic(): 1, irqs_disabled(): 0, pid: 5600, name: scsi_eh_9
+1 lock held by scsi_eh_9/5600:
+ #0:  (rcu_read_lock){....}, at: [<00000000cbb798c7>] __blk_mq_run_hw_queue+0xf1/0x1e0
+Preemption disabled at:
+[<00000000139badf2>] __blk_mq_delay_run_hw_queue+0x78/0xf0
+CPU: 9 PID: 5600 Comm: scsi_eh_9 Tainted: G        W        4.15.0-rc4-dbg+ #1
+Hardware name: Dell Inc. PowerEdge R720/0VWT90, BIOS 2.5.4 01/22/2016
 Call Trace:
- dump_stack+0x8a/0xd6
- __lock_acquire.cold+0xe1/0x24d
- lock_acquire+0x106/0x240
- __mutex_lock+0x12e/0xcb0
- mutex_lock_nested+0x1f/0x30
- rdma_destroy_id+0x78/0x4a0 [rdma_cm]
- iw_conn_req_handler+0x5c9/0x680 [rdma_cm]
- cm_work_handler+0xe62/0x1100 [iw_cm]
- process_one_work+0x56d/0xac0
- worker_thread+0x7a/0x5d0
- kthread+0x1bc/0x210
+ dump_stack+0x67/0x99
+ ___might_sleep+0x16a/0x250 [ib_srp]
+ __mutex_lock+0x46/0x9d0
+ srp_queuecommand+0x356/0x420 [ib_srp]
+ scsi_dispatch_cmd+0xf6/0x3f0
+ scsi_queue_rq+0x4a8/0x5f0
+ blk_mq_dispatch_rq_list+0x73/0x440
+ blk_mq_sched_dispatch_requests+0x109/0x1a0
+ __blk_mq_run_hw_queue+0x131/0x1e0
+ __blk_mq_delay_run_hw_queue+0x9a/0xf0
+ blk_mq_run_hw_queue+0xc0/0x1e0
+ blk_mq_start_hw_queues+0x2c/0x40
+ scsi_run_queue+0x18e/0x2d0
+ scsi_run_host_queues+0x22/0x40
+ scsi_error_handler+0x18d/0x5f0
+ kthread+0x11c/0x140
  ret_from_fork+0x24/0x30
 
-This is not a bug as there are actually two lock classes here.
-
-Link: https://lore.kernel.org/r/20190930231707.48259-3-bvanassche@acm.org
-Fixes: de910bd92137 ("RDMA/cma: Simplify locking needed for serialization of callbacks")
+Reviewed-by: Hannes Reinecke <hare@suse.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Laurence Oberman <loberman@redhat.com>
+Cc: Jason Gunthorpe <jgg@mellanox.com>
+Cc: Leon Romanovsky <leonro@mellanox.com>
+Cc: Doug Ledford <dledford@redhat.com>
 Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/cma.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/infiniband/ulp/srp/ib_srp.c | 21 ++-------------------
+ 1 file changed, 2 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 7c5eca312aa88..f698c6a28c142 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -2212,9 +2212,10 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
- 		conn_id->cm_id.iw = NULL;
- 		cma_exch(conn_id, RDMA_CM_DESTROYING);
- 		mutex_unlock(&conn_id->handler_mutex);
-+		mutex_unlock(&listen_id->handler_mutex);
- 		cma_deref_id(conn_id);
- 		rdma_destroy_id(&conn_id->id);
--		goto out;
-+		return ret;
+diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
+index 74de1ae48d4f7..a3145ae1d66d2 100644
+--- a/drivers/infiniband/ulp/srp/ib_srp.c
++++ b/drivers/infiniband/ulp/srp/ib_srp.c
+@@ -2102,7 +2102,6 @@ static void srp_handle_qp_err(struct ib_cq *cq, struct ib_wc *wc,
+ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
+ {
+ 	struct srp_target_port *target = host_to_target(shost);
+-	struct srp_rport *rport = target->rport;
+ 	struct srp_rdma_ch *ch;
+ 	struct srp_request *req;
+ 	struct srp_iu *iu;
+@@ -2112,16 +2111,6 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
+ 	u32 tag;
+ 	u16 idx;
+ 	int len, ret;
+-	const bool in_scsi_eh = !in_interrupt() && current == shost->ehandler;
+-
+-	/*
+-	 * The SCSI EH thread is the only context from which srp_queuecommand()
+-	 * can get invoked for blocked devices (SDEV_BLOCK /
+-	 * SDEV_CREATED_BLOCK). Avoid racing with srp_reconnect_rport() by
+-	 * locking the rport mutex if invoked from inside the SCSI EH.
+-	 */
+-	if (in_scsi_eh)
+-		mutex_lock(&rport->mutex);
+ 
+ 	scmnd->result = srp_chkready(target->rport);
+ 	if (unlikely(scmnd->result))
+@@ -2183,13 +2172,7 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
+ 		goto err_unmap;
  	}
  
- 	mutex_unlock(&conn_id->handler_mutex);
+-	ret = 0;
+-
+-unlock_rport:
+-	if (in_scsi_eh)
+-		mutex_unlock(&rport->mutex);
+-
+-	return ret;
++	return 0;
+ 
+ err_unmap:
+ 	srp_unmap_data(scmnd, ch, req);
+@@ -2211,7 +2194,7 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
+ 		ret = SCSI_MLQUEUE_HOST_BUSY;
+ 	}
+ 
+-	goto unlock_rport;
++	return ret;
+ }
+ 
+ /*
 -- 
 2.20.1
 
