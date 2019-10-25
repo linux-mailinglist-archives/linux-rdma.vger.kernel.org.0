@@ -2,188 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8C4E5674
-	for <lists+linux-rdma@lfdr.de>; Sat, 26 Oct 2019 00:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E41E56C2
+	for <lists+linux-rdma@lfdr.de>; Sat, 26 Oct 2019 00:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbfJYW1s convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 25 Oct 2019 18:27:48 -0400
-Received: from mga12.intel.com ([192.55.52.136]:29747 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726428AbfJYW1s (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 25 Oct 2019 18:27:48 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Oct 2019 15:27:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,230,1569308400"; 
-   d="scan'208";a="229054185"
-Received: from orsmsx103.amr.corp.intel.com ([10.22.225.130])
-  by fmsmga002.fm.intel.com with ESMTP; 25 Oct 2019 15:27:47 -0700
-Received: from orsmsx158.amr.corp.intel.com (10.22.240.20) by
- ORSMSX103.amr.corp.intel.com (10.22.225.130) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Fri, 25 Oct 2019 15:27:47 -0700
-Received: from orsmsx101.amr.corp.intel.com ([169.254.8.212]) by
- ORSMSX158.amr.corp.intel.com ([169.254.10.56]) with mapi id 14.03.0439.000;
- Fri, 25 Oct 2019 15:27:47 -0700
-From:   "Ertman, David M" <david.m.ertman@intel.com>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "Patil, Kiran" <kiran.patil@intel.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>
-Subject: RE: [RFC 01/20] ice: Initialize and register multi-function device
- to provide RDMA
-Thread-Topic: [RFC 01/20] ice: Initialize and register multi-function device
- to provide RDMA
-Thread-Index: AQGOetFAPbFeoIHdxRJDZlVegIphLQHJRZnhAdxiwysB1QCSuQJ6/k4op44H7uCAKV2vAP//jAtwgAB4hoCAAaHugIAAA8+A//+igjCAAMe3AIAA6SdA
-Date:   Fri, 25 Oct 2019 22:27:46 +0000
-Message-ID: <2B0E3F215D1AB84DA946C8BEE234CCC97B2E2FE6@ORSMSX101.amr.corp.intel.com>
-References: <20190926180556.GB1733924@kroah.com>
- <7e7f6c159de52984b89c13982f0a7fd83f1bdcd4.camel@intel.com>
- <20190927051320.GA1767635@kroah.com>
- <2B0E3F215D1AB84DA946C8BEE234CCC97B2B1A28@ORSMSX101.amr.corp.intel.com>
- <20191023174448.GP23952@ziepe.ca>
- <2B0E3F215D1AB84DA946C8BEE234CCC97B2E0C84@ORSMSX101.amr.corp.intel.com>
- <20191023180108.GQ23952@ziepe.ca> <20191024185659.GE260560@kroah.com>
- <20191024191037.GC23952@ziepe.ca>
- <2B0E3F215D1AB84DA946C8BEE234CCC97B2E1D29@ORSMSX101.amr.corp.intel.com>
- <20191025013048.GB265361@kroah.com>
-In-Reply-To: <20191025013048.GB265361@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiMDZkYmUxYzUtZWRjZi00MjNkLWEyYTktMjUyMDYxZDdjMDVjIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiZW1DYkdyaTdMUjZSeXNcL0pVTUJnQnQ3NFY0U0ZTYlZReXVVdjJIa2ZaWXlsY0RMQ0dRRzJUQ3VTak5oTE1LS3cifQ==
-x-ctpclassification: CTP_NT
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.140]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1725963AbfJYW6i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Oct 2019 18:58:38 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:43742 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725881AbfJYW6i (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Oct 2019 18:58:38 -0400
+Received: by mail-pg1-f193.google.com with SMTP id l24so2497508pgh.10
+        for <linux-rdma@vger.kernel.org>; Fri, 25 Oct 2019 15:58:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jXDNPMHHwc83BOJ89YXwYW4Jgyv+JzOIiFw0eYOgnRE=;
+        b=NXtWs71t4mTsK2YYr6kTS1nNi5RzhLUPPZ4zREcYN1S6dLShC/Pqf36bFua4EnKDBu
+         1d6RlIVChr0EVwlj6KI3p6YNdgKwdAtaDBWDI9IYAlixzo8cmk1V0N6A24nNC7sKPoS0
+         UzJEKa8rZIRFrbu8HZZu1F6hPWUYxH3Yo+aHrWyhl3WgJoo+Ffuw9gW0hxHKswguWHiO
+         +Iy9a5rYGfwINU810HmD7L5WgvaJZxNeGJVdH7fofKG+9dHQ6X3jV3NfIVr/4y7MM1GP
+         DMlxp5TP9FQFoSCbDCVOKF3cTg+pH3qI0N3spuD0hKHxI5pEI6AlzdcG/bGO2mlvfvZ3
+         m2Iw==
+X-Gm-Message-State: APjAAAV4U8zY109mQcjCR5DmqSV6od7ttRZUnOZaS9wFow55J0Ja28u0
+        45VpYr46zACFxXGOg4SkpoM=
+X-Google-Smtp-Source: APXvYqy3vYMzOrCF5nMm3G0mVvN6NLBf3ZsEL9bSWWpSBERCPGIs9LA93HWmpXcE2UwHqBx2GeB3yA==
+X-Received: by 2002:a63:1b41:: with SMTP id b1mr7344495pgm.335.1572044317266;
+        Fri, 25 Oct 2019 15:58:37 -0700 (PDT)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id o123sm3243983pfg.161.2019.10.25.15.58.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Oct 2019 15:58:36 -0700 (PDT)
+From:   Bart Van Assche <bvanassche@acm.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: [PATCH v2 0/4] Fixes related to the DMA max_segment_size parameter
+Date:   Fri, 25 Oct 2019 15:58:26 -0700
+Message-Id: <20191025225830.257535-1-bvanassche@acm.org>
+X-Mailer: git-send-email 2.24.0.rc0.303.g954a862665-goog
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> -----Original Message-----
-> From: gregkh@linuxfoundation.org [mailto:gregkh@linuxfoundation.org]
-> Sent: Thursday, October 24, 2019 6:31 PM
-> To: Ertman, David M <david.m.ertman@intel.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>; Nguyen, Anthony L
-> <anthony.l.nguyen@intel.com>; Kirsher, Jeffrey T
-> <jeffrey.t.kirsher@intel.com>; netdev@vger.kernel.org; linux-
-> rdma@vger.kernel.org; dledford@redhat.com; Ismail, Mustafa
-> <mustafa.ismail@intel.com>; Patil, Kiran <kiran.patil@intel.com>;
-> lee.jones@linaro.org
-> Subject: Re: [RFC 01/20] ice: Initialize and register multi-function device to
-> provide RDMA
-> 
-> On Thu, Oct 24, 2019 at 10:25:36PM +0000, Ertman, David M wrote:
-> > The direct access of the platform bus was unacceptable, and the MFD
-> > sub-system was suggested by Greg as the solution.  The MFD sub-system
-> > uses the platform bus in the background as a base to perform its
-> > functions, since it is a purely software construct that is handy and
-> > fulfills its needs.  The question then is:  If the MFD sub- system is
-> > using the platform bus for all of its background functionality, is the platform
-> bus really only for platform devices?
-> 
-> Yes, how many times do I have to keep saying this?
-> 
-> The platform bus should ONLY be used for devices that are actually platform
-> devices and can not be discovered any other way and are not on any other type
-> of bus.
-> 
-> If you try to add platform devices for a PCI device, I am going to continue to
-> complain.  I keep saying this and am getting tired.
-> 
-> Now yes, MFD does do "fun" things here, and that should probably be fixed up
-> one of these days.  But I still don't see why a real bus would not work for you.
-> 
-> greg "platform devices are dead, long live the platform device" k-h
+Hi Jason,
 
-> -----Original Message-----
-> From: gregkh@linuxfoundation.org [mailto:gregkh@linuxfoundation.org]
-> Sent: Thursday, October 24, 2019 6:31 PM
-> To: Ertman, David M <david.m.ertman@intel.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>; Nguyen, Anthony L
-> <anthony.l.nguyen@intel.com>; Kirsher, Jeffrey T
-> <jeffrey.t.kirsher@intel.com>; netdev@vger.kernel.org; linux-
-> rdma@vger.kernel.org; dledford@redhat.com; Ismail, Mustafa
-> <mustafa.ismail@intel.com>; Patil, Kiran <kiran.patil@intel.com>;
-> lee.jones@linaro.org
-> Subject: Re: [RFC 01/20] ice: Initialize and register multi-function device to
-> provide RDMA
-> 
-> On Thu, Oct 24, 2019 at 10:25:36PM +0000, Ertman, David M wrote:
-> > The direct access of the platform bus was unacceptable, and the MFD
-> > sub-system was suggested by Greg as the solution.  The MFD sub-system
-> > uses the platform bus in the background as a base to perform its
-> > functions, since it is a purely software construct that is handy and
-> > fulfills its needs.  The question then is:  If the MFD sub- system is
-> > using the platform bus for all of its background functionality, is the platform
-> bus really only for platform devices?
-> 
-> Yes, how many times do I have to keep saying this?
-> 
-> The platform bus should ONLY be used for devices that are actually platform
-> devices and can not be discovered any other way and are not on any other type
-> of bus.
-> 
-> If you try to add platform devices for a PCI device, I am going to continue to
-> complain.  I keep saying this and am getting tired.
-> 
-> Now yes, MFD does do "fun" things here, and that should probably be fixed up
-> one of these days.  But I still don't see why a real bus would not work for you.
-> 
-> greg "platform devices are dead, long live the platform device" k-h
+These four patches are what I came up with while analyzing a kernel warning
+triggered by the ib_srp kernel driver. Please consider these patches for
+inclusion in the Linux kernel.
 
-I'm sorry, the last thing I want to do is to annoy you! I just need to
-figure out where to go from here.  Please, don't take anything I say as
-argumentative.
+Thanks,
 
-I don't understand what you mean by "a real bus".  The irdma driver does
-not have access to any physical bus.  It utilizes resources provided by
-the PCI LAN drivers, but to receive those resources it needs a mechanism
-to "hook up" with the PCI drivers.  The only way it has to locate them
-is to register a driver function with a software based bus of some kind
-and have the bus match it up to a compatible entity to achieve that hook up.
+Bart.
 
-The PCI LAN driver has a function that controls the PCI hardware, and then
-we want to present an entity for the RDMA driver to connect to.
+Changes compared to v1:
+- Restored the dma_set_max_seg_size() call in setup_dma_device(). Reordered
+  this patch series to keep it bisectable.
 
-To move forward, we are thinking of the following design proposal:
+Bart Van Assche (4):
+  RDMA/core: Fix ib_dma_max_seg_size()
+  rdma_rxe: Increase DMA max_segment_size parameter
+  siw: Increase DMA max_segment_size parameter
+  RDMA/core: Set DMA parameters correctly
 
-We could add a new module to the kernel named generic_bus.ko.  This would
-create a new generic software bus and a set of APIs that would allow for
-adding and removing simple generic virtual devices and drivers, not as
-a MFD cell or a platform device. The power management events would also
-be handled by the generic_bus infrastructure (suspend, resume, shutdown).
-We would use this for matching up by having the irdma driver register
-with this generic bus and hook to virtual devices that were added from
-different PCI LAN drivers.
-
-Pros:
-1) This would avoid us attaching anything to the platform bus
-2) Avoid having each PCI LAN driver creating its own software bus
-3) Provide a common matching ground for generic devices and drivers that
-eliminates problems caused by load order (all dependent on generic_bus.ko)
-4) Usable by any other entity that wants a lightweight matching system
-or information exchange mechanism
-
-Cons:
-1) Duplicates part of the platform bus functionality
-2) Adds a new software bus to the kernel architecture
-
-Is this path forward acceptable?
-
-Thanks for any clarification/guidance you can provide!
-
--Dave E
+ drivers/infiniband/core/device.c      | 16 ++++++++++++++--
+ drivers/infiniband/sw/rxe/rxe_verbs.c |  3 +++
+ drivers/infiniband/sw/rxe/rxe_verbs.h |  1 +
+ drivers/infiniband/sw/siw/siw.h       |  1 +
+ drivers/infiniband/sw/siw/siw_main.c  |  3 +++
+ include/rdma/ib_verbs.h               |  4 +---
+ 6 files changed, 23 insertions(+), 5 deletions(-)
