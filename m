@@ -2,91 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABDC0E5800
-	for <lists+linux-rdma@lfdr.de>; Sat, 26 Oct 2019 04:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE01E5838
+	for <lists+linux-rdma@lfdr.de>; Sat, 26 Oct 2019 05:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725955AbfJZCKs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Oct 2019 22:10:48 -0400
-Received: from mail-pg1-f182.google.com ([209.85.215.182]:44753 "EHLO
-        mail-pg1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725954AbfJZCKr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Oct 2019 22:10:47 -0400
-Received: by mail-pg1-f182.google.com with SMTP id e10so2768705pgd.11
-        for <linux-rdma@vger.kernel.org>; Fri, 25 Oct 2019 19:10:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=pn1qvz6Md7SO6ix33L65Mj4xPBnWVkFXB9i9ZN4vaWU=;
-        b=rmPtBbPv/HrpWDxQl1ugEs2sX1FwM6zxH0s0AdvG+av0mr6q6W00gQriRKVXlOPz0U
-         xMUHJynZgvPUVME8n98dyjsieiKkokWvd63fxk97BwokKkVnG4R09zY3oC7fbswRW/pW
-         MSw9AcSfUIoz4Y/OcnE+KHc2jUxvle886mCzCaW9AAgrRAhOl6Dhg/RE3zMVdgiDmrcb
-         Vu6pWH9S2KrX9k1w9hAvJjwSE8o1g2uCR71KOiOGGpixvukJmbcXSV5Cn9CMb6ekMPPA
-         kuxFEqeUmHmCmBN/Sz7u8n8HVBxgmQy3DFTk0ZXAgBG4w46Kwq1EYeaydOIm665W3I1f
-         7ImQ==
-X-Gm-Message-State: APjAAAWaFPOJxw6ns3kmdFv6e0x5Vzqs3haTOs5F92L2k3e6r+oWAAMC
-        jaRN12VYW4pYKjlj2DfCDuebV2Gn
-X-Google-Smtp-Source: APXvYqwFrX6t0m1+T8yhGnc9iWvbd/EJXCek4RgQ2YiG6AZj8V1i12RFkfgR/JXlEmXOs5oTykRjEg==
-X-Received: by 2002:a63:ed4b:: with SMTP id m11mr7894781pgk.24.1572055846366;
-        Fri, 25 Oct 2019 19:10:46 -0700 (PDT)
-Received: from localhost.localdomain ([2601:647:4000:c3:e8e8:6182:152f:5392])
-        by smtp.gmail.com with ESMTPSA id j10sm3485303pfn.128.2019.10.25.19.10.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Oct 2019 19:10:45 -0700 (PDT)
-Subject: Re: [linux-next patch] RDMA/srp: add module parameter
- 'has_max_it_iu_size'
-To:     Honggang LI <honli@redhat.com>, dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org
-References: <20191025132318.13906-1-honli@redhat.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <e797397c-3bfb-610a-bcf1-9cfdfc75c680@acm.org>
-Date:   Fri, 25 Oct 2019 19:10:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726079AbfJZDSC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Oct 2019 23:18:02 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:4769 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725996AbfJZDSB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 25 Oct 2019 23:18:01 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id CBB23743F87458580549;
+        Sat, 26 Oct 2019 11:17:59 +0800 (CST)
+Received: from [127.0.0.1] (10.61.25.96) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.439.0; Sat, 26 Oct 2019
+ 11:17:53 +0800
+Subject: Re: [PATCH][next] RDMA/hns: fix memory leak on 'context' on error
+ return path
+To:     Colin King <colin.king@canonical.com>,
+        Wei Hu <xavier.huwei@huawei.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Tao Tian <tiantao6@huawei.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Yangyang Li <liyangyang20@huawei.com>,
+        <linux-rdma@vger.kernel.org>
+CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20191024131034.19989-1-colin.king@canonical.com>
+From:   oulijun <oulijun@huawei.com>
+Message-ID: <d3fefb17-e16f-bfe2-d244-d5a25309321f@huawei.com>
+Date:   Sat, 26 Oct 2019 11:17:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.0
 MIME-Version: 1.0
-In-Reply-To: <20191025132318.13906-1-honli@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20191024131034.19989-1-colin.king@canonical.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.61.25.96]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2019-10-25 06:23, Honggang LI wrote:
-> +module_param(has_max_it_iu_size, bool, 0444);
-> +MODULE_PARM_DESC(has_max_it_iu_size,
-> +		  "Indicate the module supports max_it_iu_size login parameter");
+在 2019/10/24 21:10, Colin King 写道:
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> Currently, the error return path when the call to function
+> dev->dfx->query_cqc_info fails will leak object 'context'. Fix this
+> by making the error return path via 'err' return return codes rather
+> than -EMSGSIZE, set ret appropriately for all error return paths and
+> for the memory leak now return via 'err' with -EINVAL rather than
+> just returning without freeing context.
+>
+> Addresses-Coverity: ("Resource leak")
+> Fixes: e1c9a0dc2939 ("RDMA/hns: Dump detailed driver-specific CQ")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_restrack.c | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_restrack.c b/drivers/infiniband/hw/hns/hns_roce_restrack.c
+> index a0d608ec81c1..7e4a91dd7329 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_restrack.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_restrack.c
+> @@ -94,15 +94,21 @@ static int hns_roce_fill_res_cq_entry(struct sk_buff *msg,
+>  		return -ENOMEM;
+>  
+>  	ret = hr_dev->dfx->query_cqc_info(hr_dev, hr_cq->cqn, (int *)context);
+> -	if (ret)
+> -		return -EINVAL;
+> +	if (ret) {
+> +		ret = -EINVAL;
+> +		goto err;
+Why not remove ret = -EINVAL?
+> +	}
+>  
+>  	table_attr = nla_nest_start(msg, RDMA_NLDEV_ATTR_DRIVER);
+> -	if (!table_attr)
+> +	if (!table_attr) {
+> +		ret = -EMSGSIZE;
+>  		goto err;
+> +	}
+>  
+> -	if (hns_roce_fill_cq(msg, context))
+> +	if (hns_roce_fill_cq(msg, context)) {
+> +		ret = -EMSGSIZE;
+>  		goto err_cancel_table;
+> +	}
+>  
+>  	nla_nest_end(msg, table_attr);
+>  	kfree(context);
+> @@ -113,7 +119,7 @@ static int hns_roce_fill_res_cq_entry(struct sk_buff *msg,
+>  	nla_nest_cancel(msg, table_attr);
+>  err:
+>  	kfree(context);
+> -	return -EMSGSIZE;
+> +	return ret;
+>  }
+>  
+>  int hns_roce_fill_res_entry(struct sk_buff *msg,
 
-Since the approach of this patch requires to add one new kernel
-parameter every time a new login parameter is added, I don't think this
-approach is future-proof. Has it been considered to export a list of all
-supported login parameters to user space?
 
-Thanks,
 
-Bart.
