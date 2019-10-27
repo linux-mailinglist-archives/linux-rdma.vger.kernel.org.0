@@ -2,161 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AD2E61AF
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Oct 2019 09:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 859D3E6480
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Oct 2019 18:25:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726254AbfJ0Ii7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 27 Oct 2019 04:38:59 -0400
-Received: from mail-eopbgr00052.outbound.protection.outlook.com ([40.107.0.52]:56295
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725977AbfJ0Ii7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 27 Oct 2019 04:38:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k7bQEX3VCzYR68UoYLkOuBUcRu3FNbEJLyeqDuax7LgcQe/0Gb1sBwlhrKXHQ6kWRkGAU6Wz7UpnHKPHd0d3BKMoqhC3x5v+u9L3GnLSdLrxov6Io++Zbp1DqIdTA7AoIPUjpEYQkUcn0y04Bt77JL8GejxP/1Ol51OxCb3rUiY8QfwR4J5ErwyF2izCXbmgCeBqrIQ6Spy7DOM7aF6q1sgnmqj/kO9FXDaV6yMzs9LVnRa7F+IcdYJH16Kuw/vjR91cUlXt81iCYgNmktXWoXTwXGHmX8358nRLorFezdCufP22O2LFjMlUPTtuxBvXLDhvIHHlwzDo+GYvO/KVaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ntdwMOH3zvYKS0QMvWEkHwN9fRe+zMrjzfXn/X/DRbA=;
- b=kG7IZ7oLVvj9LSErNqnuvtSspM7e80HYH0y7yW8vg8g8Q+m3vRp/3qAs7TvhowL+pnPqpZ6nzEX6Oj9sn35NGZf61Ct8kZrhjx1BxrWcTdbvn0icSFRuRRBeM7BP+atIkVzlzWYWwB9MbzQ22i90W0VahiMZa0UUlZT6WGwG61kiUMvBbI7U3YWKh6i5sAufwUWaDRSIzyek6T2opWdVOSjJxodOCjOkRA84NAe7NrkxqGopF2Zc4bGylx4XHYW4ZW4V2apG75rbHnKOKdT6HTLGK6YyCTJeoCWzJijqBTypp0o3rxgRAnkvuElR6+gqNBH09Zk7XIkrVlupUVsrkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ntdwMOH3zvYKS0QMvWEkHwN9fRe+zMrjzfXn/X/DRbA=;
- b=EQQXzGvoEJTmFRFCbucxc8ht4zgS2BTCjliwhcajIvDPB90+/TiU7+jwvzJvGP5Eykouvpf7vqEIG00BSyoiV5UuraLrUN8aY8vzamvnfYHiDjIRXB4tCoEsAc2HY2CD0/bD9e2NN3oAp7QTuVSZ0TiX/oY+xWeHkHRjisDa/H8=
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com (10.171.188.155) by
- AM4PR05MB3395.eurprd05.prod.outlook.com (10.171.188.32) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2387.20; Sun, 27 Oct 2019 08:38:56 +0000
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::dde1:60df:efba:b3df]) by AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::dde1:60df:efba:b3df%7]) with mapi id 15.20.2387.025; Sun, 27 Oct 2019
- 08:38:56 +0000
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH] RDMA/mlx5: Use irq xarray locking for mkey_table
-Thread-Topic: [PATCH] RDMA/mlx5: Use irq xarray locking for mkey_table
-Thread-Index: AQHVisWjPuXKtKD79UKwaBBBljL4iKduLmGA
-Date:   Sun, 27 Oct 2019 08:38:55 +0000
-Message-ID: <20191027083853.GY4853@unreal>
-References: <20191024234910.GA9038@ziepe.ca>
-In-Reply-To: <20191024234910.GA9038@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM0PR0102CA0038.eurprd01.prod.exchangelabs.com
- (2603:10a6:208::15) To AM4PR05MB3137.eurprd05.prod.outlook.com
- (2603:10a6:205:8::27)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=leonro@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [77.137.89.37]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 0b019374-192f-41f6-e9f7-08d75ab91a98
-x-ms-traffictypediagnostic: AM4PR05MB3395:|AM4PR05MB3395:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM4PR05MB3395A578946D418F9A33C060B0670@AM4PR05MB3395.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:133;
-x-forefront-prvs: 0203C93D51
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(7916004)(4636009)(376002)(396003)(346002)(39850400004)(136003)(366004)(189003)(199004)(6636002)(478600001)(6506007)(229853002)(86362001)(8936002)(316002)(1076003)(305945005)(6862004)(7736002)(11346002)(486006)(6246003)(446003)(186003)(5660300002)(33656002)(81166006)(81156014)(8676002)(4326008)(476003)(386003)(25786009)(14444005)(6116002)(3846002)(256004)(71190400001)(2906002)(76176011)(33716001)(66946007)(64756008)(9686003)(14454004)(66476007)(6512007)(66556008)(66446008)(6486002)(6436002)(102836004)(99286004)(71200400001)(52116002)(66066001)(26005);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR05MB3395;H:AM4PR05MB3137.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1Qlta7TtUO3EC2VXh5fcj8PRL6iNNx5v83ul9d1pcOdKcC4iaQ96r0r8yO69/ZJ3mI8lrtozDrTkf0DBwz3zzmQEMm8v97uCUE7a91EyIAlFylO2uIrEXyeFbsEpuc1wcSYfZpc6HfvqUYIOl2hyHYloutSi1g5FkJ46i0HmYvRfCmmLBRkB2pjJc3ScaG/dCUZm9bhdvfcklnSewiVabu1EB2fHzbsKzHkH4IJoGrdHmQuAtyLFrppPe+5VBzs5wNaeZhWpJqX30Z1qwMIaORpcGe4BmWxww+lMtJCMldFCHk1jwWSxD+X6l9nV+abhCmx9Jx162Zm8LivV4ds0iGnRPJK9qa6r0RNHMfFbm3oUTYWcQD9NVx4yYmN/t7ZfMeiSXZqaQJ2Y9zD+lb4Wl9p82wlARI7lm54Q/cyZbJfCDd+m6mdxCAgSUFYl51f7
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <49FDDA2931209049BBA3BB3E8E097585@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727828AbfJ0RZT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 27 Oct 2019 13:25:19 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:36436 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727163AbfJ0RZT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 27 Oct 2019 13:25:19 -0400
+Received: by mail-pg1-f193.google.com with SMTP id 23so4895239pgk.3;
+        Sun, 27 Oct 2019 10:25:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=J5kRa1HrIBqZ9C8hLLWifHat3GVoLBM4/UKYdlK/LY0=;
+        b=S1x9yYy7WzVfKjqn9nHtdKF3LRZeAn/DlcUcvQ4JnquccgqAekxNNDiAg5W7ch/GNX
+         hrkYdwt94FCKA+KUsa0QJLfT2E5gvzNEej7HFSuKZYj4YKEtbW6W2YvifwAyc2U4Tdb7
+         spcvvJtgv8CDkPe26h/PvWqNadEtx17VNgDD6JLdITWUD242pA0zmdZ+pI1q1cTonSRI
+         MAkGdJfUze2+g2jTSSAdQFWQj3Ni7zLZArNYMAWCDwTpQrs9kCacNvR6SbGMa3OGIBAH
+         S7riE+bR7IZP6ach7CumQ4O2vLbe8/61JRInBBV/CEckbWxpp2eiZ278pdPMVD2u5Waf
+         mwQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=J5kRa1HrIBqZ9C8hLLWifHat3GVoLBM4/UKYdlK/LY0=;
+        b=qIzhBf0cqdRpiKS87RB1mv88TJMHyorgycaApsQqYpeoE32gmianz8yeiwZQKOKoBq
+         tWP7e9QXXT0+6iZauNgrCvDORKE7U0WtQawCITGqcPKs+dVCobn6VgM/+FKapzQw/Ak/
+         9hBiDTp6chehrjtW0uvxd5oBmL/bz4Ga3o0oE9ojAw7S/f0czdKidxvTMfTSw3El7a6x
+         RCnnlTaAxV45qy/XTZfrGslrwQLlaf5gVztMxpE+f8mvbzvGx7bKGYslmFEhgNuF2FgN
+         pCL7+cm5lholBNzPw6u6gneBRvjSnwYdSuUcoQCsYgMkHHvI76ax13ip3JpqouQuLsVt
+         ID6w==
+X-Gm-Message-State: APjAAAUlaB9xJicU82kox44rSS1SaFWoiLVaFpESj/fR9qGBl8w6Sgwo
+        VQNqjPILQh1V9xKvkYBURuw=
+X-Google-Smtp-Source: APXvYqwsx88qhINGq1e2flUeIYqasiOCpZOcbSZUAE57dgnYugJSj4+JUEUxj83apB197nqc2wOF3A==
+X-Received: by 2002:a17:90a:dd43:: with SMTP id u3mr17709531pjv.130.1572197119032;
+        Sun, 27 Oct 2019 10:25:19 -0700 (PDT)
+Received: from [172.27.227.183] ([216.129.126.118])
+        by smtp.googlemail.com with ESMTPSA id b16sm11288464pfb.54.2019.10.27.10.25.17
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 27 Oct 2019 10:25:17 -0700 (PDT)
+Subject: Re: [PATCH iproute2-next 0/2] Add MR counters statistics
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        netdev <netdev@vger.kernel.org>,
+        Erez Alfasi <ereza@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Stephen Hemminger <stephen@networkplumber.org>
+References: <20191023103854.5981-1-leon@kernel.org>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <5ddecfe1-12d9-0e3a-b1c3-b2919a4e7030@gmail.com>
+Date:   Sun, 27 Oct 2019 11:25:16 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b019374-192f-41f6-e9f7-08d75ab91a98
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2019 08:38:55.8892
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4u8mbyDIWDoLRaVoXcQJ/3VXEF1SDB2/XjD8mVmGdCIf7265Uur0BAgR1Ayx7jMG0lWRt3Jl8NHVLxa4Zfuq4A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3395
+In-Reply-To: <20191023103854.5981-1-leon@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 25, 2019 at 02:49:13AM +0300, Jason Gunthorpe wrote:
-> The mkey_table xarray is touched by the reg_mr_callback() function which
-> is called from a hard irq. Thus all other uses of xa_lock must use the
-> _irq variants.
->
->   WARNING: inconsistent lock state
->   5.4.0-rc1 #12 Not tainted
->   --------------------------------
->   inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
->   python3/343 [HC0[0]:SC0[0]:HE1:SE1] takes:
->   ffff888182be1d40 (&(&xa->xa_lock)->rlock#3){?.-.}, at: xa_erase+0x12/0x=
-30
->   {IN-HARDIRQ-W} state was registered at:
->     lock_acquire+0xe1/0x200
->     _raw_spin_lock_irqsave+0x35/0x50
->     reg_mr_callback+0x2dd/0x450 [mlx5_ib]
->     mlx5_cmd_exec_cb_handler+0x2c/0x70 [mlx5_core]
->     mlx5_cmd_comp_handler+0x355/0x840 [mlx5_core]
->    [..]
->
->    Possible unsafe locking scenario:
->
->          CPU0
->          ----
->     lock(&(&xa->xa_lock)->rlock#3);
->     <Interrupt>
->       lock(&(&xa->xa_lock)->rlock#3);
->
->    *** DEADLOCK ***
->
->   2 locks held by python3/343:
->    #0: ffff88818eb4bd38 (&uverbs_dev->disassociate_srcu){....}, at: ib_uv=
-erbs_ioctl+0xe5/0x1e0 [ib_uverbs]
->    #1: ffff888176c76d38 (&file->hw_destroy_rwsem){++++}, at: uobj_destroy=
-+0x2d/0x90 [ib_uverbs]
->
->   stack backtrace:
->   CPU: 3 PID: 343 Comm: python3 Not tainted 5.4.0-rc1 #12
->   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.1-0-g=
-a5cab58e9a3f-prebuilt.qemu.org 04/01/2014
->   Call Trace:
->    dump_stack+0x86/0xca
->    print_usage_bug.cold.50+0x2e5/0x355
->    mark_lock+0x871/0xb50
->    ? match_held_lock+0x20/0x250
->    ? check_usage_forwards+0x240/0x240
->    __lock_acquire+0x7de/0x23a0
->    ? __kasan_check_read+0x11/0x20
->    ? mark_lock+0xae/0xb50
->    ? mark_held_locks+0xb0/0xb0
->    ? find_held_lock+0xca/0xf0
->    lock_acquire+0xe1/0x200
->    ? xa_erase+0x12/0x30
->    _raw_spin_lock+0x2a/0x40
->    ? xa_erase+0x12/0x30
->    xa_erase+0x12/0x30
->    mlx5_ib_dealloc_mw+0x55/0xa0 [mlx5_ib]
->    uverbs_dealloc_mw+0x3c/0x70 [ib_uverbs]
->    uverbs_free_mw+0x1a/0x20 [ib_uverbs]
->    destroy_hw_idr_uobject+0x49/0xa0 [ib_uverbs]
->    [..]
->
-> Fixes: 0417791536ae ("RDMA/mlx5: Add missing synchronize_srcu() for MW ca=
-ses")
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> ---
->  drivers/infiniband/hw/mlx5/mr.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
+On 10/23/19 4:38 AM, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> Hi,
+> 
+> This is supplementary part of "ODP information and statistics"
+> kernel series.
+> https://lore.kernel.org/linux-rdma/20191016062308.11886-1-leon@kernel.org
+> 
+> Thanks
+> 
+> Erez Alfasi (2):
+>   rdma: Add "stat show mr" support
+>   rdma: Document MR statistics
+> 
+>  man/man8/rdma-statistic.8 | 25 +++++++----
+>  rdma/Makefile             |  2 +-
+>  rdma/res.c                |  8 ++++
+>  rdma/stat-mr.c            | 88 +++++++++++++++++++++++++++++++++++++++
+>  rdma/stat.c               |  5 ++-
+>  rdma/stat.h               | 26 ++++++++++++
+>  6 files changed, 144 insertions(+), 10 deletions(-)
+>  create mode 100644 rdma/stat-mr.c
+>  create mode 100644 rdma/stat.h
+> 
+> --
+> 2.20.1
+> 
 
-Thanks,
-Acked-by: Leon Romanovsky <leonro@mellanox.com>
+Applied to iproute2-next. Thanks,
