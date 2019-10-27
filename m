@@ -2,99 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 859D3E6480
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Oct 2019 18:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA7CE653D
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Oct 2019 21:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbfJ0RZT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 27 Oct 2019 13:25:19 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:36436 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727163AbfJ0RZT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 27 Oct 2019 13:25:19 -0400
-Received: by mail-pg1-f193.google.com with SMTP id 23so4895239pgk.3;
-        Sun, 27 Oct 2019 10:25:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=J5kRa1HrIBqZ9C8hLLWifHat3GVoLBM4/UKYdlK/LY0=;
-        b=S1x9yYy7WzVfKjqn9nHtdKF3LRZeAn/DlcUcvQ4JnquccgqAekxNNDiAg5W7ch/GNX
-         hrkYdwt94FCKA+KUsa0QJLfT2E5gvzNEej7HFSuKZYj4YKEtbW6W2YvifwAyc2U4Tdb7
-         spcvvJtgv8CDkPe26h/PvWqNadEtx17VNgDD6JLdITWUD242pA0zmdZ+pI1q1cTonSRI
-         MAkGdJfUze2+g2jTSSAdQFWQj3Ni7zLZArNYMAWCDwTpQrs9kCacNvR6SbGMa3OGIBAH
-         S7riE+bR7IZP6ach7CumQ4O2vLbe8/61JRInBBV/CEckbWxpp2eiZ278pdPMVD2u5Waf
-         mwQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J5kRa1HrIBqZ9C8hLLWifHat3GVoLBM4/UKYdlK/LY0=;
-        b=qIzhBf0cqdRpiKS87RB1mv88TJMHyorgycaApsQqYpeoE32gmianz8yeiwZQKOKoBq
-         tWP7e9QXXT0+6iZauNgrCvDORKE7U0WtQawCITGqcPKs+dVCobn6VgM/+FKapzQw/Ak/
-         9hBiDTp6chehrjtW0uvxd5oBmL/bz4Ga3o0oE9ojAw7S/f0czdKidxvTMfTSw3El7a6x
-         RCnnlTaAxV45qy/XTZfrGslrwQLlaf5gVztMxpE+f8mvbzvGx7bKGYslmFEhgNuF2FgN
-         pCL7+cm5lholBNzPw6u6gneBRvjSnwYdSuUcoQCsYgMkHHvI76ax13ip3JpqouQuLsVt
-         ID6w==
-X-Gm-Message-State: APjAAAUlaB9xJicU82kox44rSS1SaFWoiLVaFpESj/fR9qGBl8w6Sgwo
-        VQNqjPILQh1V9xKvkYBURuw=
-X-Google-Smtp-Source: APXvYqwsx88qhINGq1e2flUeIYqasiOCpZOcbSZUAE57dgnYugJSj4+JUEUxj83apB197nqc2wOF3A==
-X-Received: by 2002:a17:90a:dd43:: with SMTP id u3mr17709531pjv.130.1572197119032;
-        Sun, 27 Oct 2019 10:25:19 -0700 (PDT)
-Received: from [172.27.227.183] ([216.129.126.118])
-        by smtp.googlemail.com with ESMTPSA id b16sm11288464pfb.54.2019.10.27.10.25.17
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 27 Oct 2019 10:25:17 -0700 (PDT)
-Subject: Re: [PATCH iproute2-next 0/2] Add MR counters statistics
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        netdev <netdev@vger.kernel.org>,
-        Erez Alfasi <ereza@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Stephen Hemminger <stephen@networkplumber.org>
-References: <20191023103854.5981-1-leon@kernel.org>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <5ddecfe1-12d9-0e3a-b1c3-b2919a4e7030@gmail.com>
-Date:   Sun, 27 Oct 2019 11:25:16 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
+        id S1727624AbfJ0UHU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 27 Oct 2019 16:07:20 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:34406 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727235AbfJ0UHU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 27 Oct 2019 16:07:20 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9RK5QqF011432;
+        Sun, 27 Oct 2019 13:07:16 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0818;
+ bh=TywjLq3Dh86ugHIevW/DGZpGA0Z5UAprnBTXTiQyusU=;
+ b=pjW/bhVQiK/5h9ZZpkgPHFctdJvgQL1z95sDpXrgXmAujZwQ6jPFzz/UC0oRfFoQSb5W
+ 98RjVKhfaDUjdFR2pTja/cGFCbFjKBkb9XoZU3pfJye6kZVIiKyyQ6h1Xfb6c1DMGWkW
+ vUSuIn60+YzKtpsB6njeCuk56C81LXBJXuT1g4DUSSWhDGh1l5HMmdlfXrK5F58ChRtW
+ sRblznYlo9+s0UJbxFh2wXTPd2nPOJjLl47e+yTzNhEfK7kUSo+9/ADnM+QCxIN6ZYsQ
+ 5rIJ0JzTSg8iCzYHnuGVnExG27WxgUWtT5pCvdvuKpyyhFD4c9Ddxb3TcXGpczaMWWzr pw== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 2vvkgq3qc6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 27 Oct 2019 13:07:16 -0700
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Sun, 27 Oct
+ 2019 13:07:15 -0700
+Received: from maili.marvell.com (10.93.176.43) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
+ Transport; Sun, 27 Oct 2019 13:07:15 -0700
+Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
+        by maili.marvell.com (Postfix) with ESMTP id 0F36A3F7040;
+        Sun, 27 Oct 2019 13:07:13 -0700 (PDT)
+From:   Michal Kalderon <michal.kalderon@marvell.com>
+To:     <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
+        <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>
+Subject: [PATCH v4 rdma-next 0/4] RDMA/qedr: Fix memory leaks and synchronization
+Date:   Sun, 27 Oct 2019 22:04:47 +0200
+Message-ID: <20191027200451.28187-1-michal.kalderon@marvell.com>
+X-Mailer: git-send-email 2.14.5
 MIME-Version: 1.0
-In-Reply-To: <20191023103854.5981-1-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-27_08:2019-10-25,2019-10-27 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/23/19 4:38 AM, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> Hi,
-> 
-> This is supplementary part of "ODP information and statistics"
-> kernel series.
-> https://lore.kernel.org/linux-rdma/20191016062308.11886-1-leon@kernel.org
-> 
-> Thanks
-> 
-> Erez Alfasi (2):
->   rdma: Add "stat show mr" support
->   rdma: Document MR statistics
-> 
->  man/man8/rdma-statistic.8 | 25 +++++++----
->  rdma/Makefile             |  2 +-
->  rdma/res.c                |  8 ++++
->  rdma/stat-mr.c            | 88 +++++++++++++++++++++++++++++++++++++++
->  rdma/stat.c               |  5 ++-
->  rdma/stat.h               | 26 ++++++++++++
->  6 files changed, 144 insertions(+), 10 deletions(-)
->  create mode 100644 rdma/stat-mr.c
->  create mode 100644 rdma/stat.h
-> 
-> --
-> 2.20.1
-> 
+Several leaks and issues were found when running iWARP with kmemleak.
+some apply to RoCE as well.
 
-Applied to iproute2-next. Thanks,
+This series fixes some memory leaks and some wrong methods of
+synchronization which were used to wait for iWARP CM related events.
+
+Changes from V3
+---------------
+- call xa_init for the qpids xarray.
+- add another patch that calls xa_init_flags for srqs xarray.
+
+Changes from V2
+---------------
+- Add a new separate patch that fixes the xarray api that was used
+  for the qps xarray, there was no need to use the _irq version of
+  the api.
+
+- Move xa_erase of qp_id to be right before the qp resources are
+  released. This fixes a race where the qp-id can be reassigned
+  before removed from the xarray.
+
+- Modify places that call kref_get_unless_zero to kref_get since we
+  already hold a valid pointer.
+
+- Comment about the usage of the same completion structure for two
+  different completions.
+
+- Add Fixes tag
+
+Changes from v1
+---------------
+- When removing the qp from the xarray xa_erase should be used and
+  not xa_erase_irq as this can't be called from irq context.
+
+- Add xa_lock around loading a qp from the xarray and increase the
+  refcnt only under the xa_lock and only if not zero. This is to make
+  qedr more robust and not rely on the core/iwcm implementation to
+  assure correctness.
+
+- Complete the iwarp_cm_comp event only if the bit was turned on and
+  the destroy qp flow will attempt to look at the completion
+
+
+Michal Kalderon (4):
+  RDMA/qedr: Fix srqs xarray initialization
+  RDMA/qedr: Fix qpids xarray api used
+  RDMA/qedr: Fix synchronization methods and memory leaks in qedr
+  RDMA/qedr: Fix memory leak in user qp and mr
+
+ drivers/infiniband/hw/qedr/main.c       |   3 +-
+ drivers/infiniband/hw/qedr/qedr.h       |  23 ++++-
+ drivers/infiniband/hw/qedr/qedr_iw_cm.c | 148 +++++++++++++++++++++-----------
+ drivers/infiniband/hw/qedr/verbs.c      |  76 ++++++++++------
+ 4 files changed, 171 insertions(+), 79 deletions(-)
+
+-- 
+2.14.5
+
