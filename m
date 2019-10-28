@@ -2,172 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D64AE7186
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 13:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1713DE7221
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 13:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727275AbfJ1Mhu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 28 Oct 2019 08:37:50 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8460 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389093AbfJ1Mht (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 28 Oct 2019 08:37:49 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x9SCaSv2100967
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2019 08:37:48 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.73])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2vwywdh7m3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2019 08:37:48 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Mon, 28 Oct 2019 12:37:47 -0000
-Received: from us1a3-smtp01.a3.dal06.isc4sb.com (10.106.154.95)
-        by smtp.notes.na.collabserv.com (10.106.227.90) with smtp.notes.na.collabserv.com ESMTP;
-        Mon, 28 Oct 2019 12:37:39 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp01.a3.dal06.isc4sb.com
-          with ESMTP id 2019102812373834-380939 ;
-          Mon, 28 Oct 2019 12:37:38 +0000 
-In-Reply-To: <20191027052111.GW4853@unreal>
-Subject: Re: Re: Re: Re: [[PATCH v2 for-next]] RDMA/siw: Fix SQ/RQ drain logic
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Leon Romanovsky" <leon@kernel.org>
-Cc:     "Jason Gunthorpe" <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        bharat@chelsio.com, nirranjan@chelsio.com, krishna2@chelsio.com,
-        bvanassche@acm.org
-Date:   Mon, 28 Oct 2019 12:37:38 +0000
+        id S1728908AbfJ1Mwg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Oct 2019 08:52:36 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:42868 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728903AbfJ1Mwf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Oct 2019 08:52:35 -0400
+Received: by mail-qt1-f193.google.com with SMTP id z17so7710804qts.9
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2019 05:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vV5xcV2yh7wC8cTGDc9zmXj0xqv8jF6PvAOFPo9vYzQ=;
+        b=oxFMnact3cJwEHovRsWtgif8DlVMaSUydZ6db7A7Wm9bjmCymOfjGGqkR+8X4CbKmh
+         el/SgDcCNLa+NPy/3XnEsysvCQarYIYFTG/pMrLO03ilsx6yDSDDmgTzRIlHbz+AnBZY
+         MPkh+MsfPv08cb/W4A7u/5uwbsl6p76g/EOsZOiu7rE3p+4hRrvErBzcp97688QNcz1P
+         /LEbnEGvEYx1SgRLcUaHG/kLZ5eszxT0W7g9FaOYUmlfX74GBZ9EsoaF6/ZsfKhjTl2/
+         H2gBb5iWVu2jPiKi6OjzaQF1eKeic6aYZwyl25/GQ26IntDi2eUvGj+Sb4PzQfigDWLd
+         aK4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vV5xcV2yh7wC8cTGDc9zmXj0xqv8jF6PvAOFPo9vYzQ=;
+        b=hgfeok4qnqQ+Sg7bv925uHreS2CJAPMqbmRO97gF9KulARiniMTWqCcNaRoFcHxCLx
+         RBQ70kMfSD0HBy9/Mcfz4Mij0Q2xtYXi9AFH2yyVRSs+rTfNeDjRv5FF2DzwqByW6kcX
+         l/3dpiSj6v4+ezMBoxMUxL1NE96O/J3FSXCNOnKwTGNlKwJpIckvB4k+u6EYi5vdlaKy
+         e9pbzUH3mIOfZELWrWEsFuGlvq2UzZxftYYfT7nvqUj1qacbLN0Jav9BYhS3NerJGzj4
+         f+8nuqhmd5yvOtKericQvOeY+G8tHItwBUzriLuiJFWwIweakKGVtXFY/iIH+Axwe4Ix
+         RDvA==
+X-Gm-Message-State: APjAAAWovXfOwTQwxip/G0UU6gj8V4BZPlItNlTEKQ8jpDUhWGCVDtqg
+        yP2JXaKywQdRR0MTNUtqYrIalA==
+X-Google-Smtp-Source: APXvYqxUrgs23ConI3P5jiqJkANCvbA3sBRAVcv4Lj0lW74dfoaDnCGpoRofOiDdHItOBfaqjnUcoQ==
+X-Received: by 2002:ac8:7650:: with SMTP id i16mr11039351qtr.43.1572267154603;
+        Mon, 28 Oct 2019 05:52:34 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id v141sm6905898qka.59.2019.10.28.05.52.34
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 28 Oct 2019 05:52:34 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iP4Vd-0007Ci-Gz; Mon, 28 Oct 2019 09:52:33 -0300
+Date:   Mon, 28 Oct 2019 09:52:33 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH rdma-next 4/6] RDMA/cm: Delete useless QPN masking
+Message-ID: <20191028125233.GA27317@ziepe.ca>
+References: <20191020071559.9743-1-leon@kernel.org>
+ <20191020071559.9743-5-leon@kernel.org>
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20191027052111.GW4853@unreal>,<20191004174804.GF13988@ziepe.ca>
- <20191002154728.GH5855@unreal> <20191002143858.4550-1-bmt@zurich.ibm.com>
- <OFA7E48CEB.393CBE8D-ON00258489.0047C07A-00258489.004DD109@notes.na.collabserv.com>
- <OF6A4B581E.5377D66F-ON0025849E.0041A942-0025849E.0042F36B@notes.na.collabserv.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054) | IBM Domino Build
- SCN1812108_20180501T0841_FP59 September 23, 2019 at 18:08
-X-LLNOutbound: False
-X-Disclaimed: 25411
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19102812-8877-0000-0000-0000019C3BC6
-X-IBM-SpamModules-Scores: BY=0.065721; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.058801
-X-IBM-SpamModules-Versions: BY=3.00012009; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000292; SDB=6.01281925; UDB=6.00679383; IPR=6.01064072;
- MB=3.00029272; MTD=3.00000008; XFM=3.00000015; UTC=2019-10-28 12:37:45
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-10-28 12:24:18 - 6.00010582
-x-cbparentid: 19102812-8878-0000-0000-0000566A4194
-Message-Id: <OF7628E460.D6869428-ON002584A1.003AE367-002584A1.00455D5D@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-28_05:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191020071559.9743-5-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Leon Romanovsky" <leon@kernel.org> wrote: -----
+On Sun, Oct 20, 2019 at 10:15:57AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> QPN is supplied by kernel users who controls and creates valid QPs,
+> such flow ensures that QPN is limited to 24bits and no need to mask
+> already valid QPN.
+> 
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/core/cm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+> index 7ffa16ea5fe3..2eb8e1fab962 100644
+> --- a/drivers/infiniband/core/cm.c
+> +++ b/drivers/infiniband/core/cm.c
+> @@ -2101,7 +2101,7 @@ int ib_send_cm_rep(struct ib_cm_id *cm_id,
+>  	cm_id_priv->initiator_depth = param->initiator_depth;
+>  	cm_id_priv->responder_resources = param->responder_resources;
+>  	cm_id_priv->rq_psn = cm_rep_get_starting_psn(rep_msg);
+> -	cm_id_priv->local_qpn = cpu_to_be32(param->qp_num & 0xFFFFFF);
+> +	cm_id_priv->local_qpn = cpu_to_be32(param->qp_num);
 
->To: "Bernard Metzler" <BMT@zurich.ibm.com>
->From: "Leon Romanovsky" <leon@kernel.org>
->Date: 10/27/2019 06:21AM
->Cc: "Jason Gunthorpe" <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
->bharat@chelsio.com, nirranjan@chelsio.com, krishna2@chelsio.com,
->bvanassche@acm.org
->Subject: [EXTERNAL] Re: Re: Re: [[PATCH v2 for-next]] RDMA/siw: Fix
->SQ/RQ drain logic
->
->On Fri, Oct 25, 2019 at 12:11:16PM +0000, Bernard Metzler wrote:
->> -----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
->>
->> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
->> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
->> >Date: 10/04/2019 07:48PM
->> >Cc: "Leon Romanovsky" <leon@kernel.org>,
->linux-rdma@vger.kernel.org,
->> >bharat@chelsio.com, nirranjan@chelsio.com, krishna2@chelsio.com,
->> >bvanassche@acm.org
->> >Subject: [EXTERNAL] Re: Re: [[PATCH v2 for-next]] RDMA/siw: Fix
->SQ/RQ
->> >drain logic
->> >
->> >On Fri, Oct 04, 2019 at 02:09:57PM +0000, Bernard Metzler wrote:
->> >> <...>
->> >>
->> >> >>   *
->> >> >> @@ -705,6 +746,12 @@ int siw_post_send(struct ib_qp *base_qp,
->> >const
->> >> >struct ib_send_wr *wr,
->> >> >>  	unsigned long flags;
->> >> >>  	int rv = 0;
->> >> >>
->> >> >> +	if (wr && !qp->kernel_verbs) {
->> >> >
->> >> >It is not related to this specific patch, but all siw
->> >"kernel_verbs"
->> >> >should go, we have standard way to distinguish between kernel
->and
->> >> >user
->> >> >verbs.
->> >> >
->> >> >Thanks
->> >> >
->> >> Understood. I think we touched on that already.
->> >> rdma core objects have a uobject pointer which
->> >> is valid only if it belongs to a user land
->> >> application. We might better use that.
->> >
->> >No, the uobject pointer is not to be touched by drivers
->> >
->> Now what would be the appropriate way of remembering/
->> detecting user level nature of endpoint resources?
->> I see drivers _are_ doing 'if (!ibqp->uobject)' ...
->
->IMHO, you should rely in "udata" to distinguish user/kernel objects.
->
+It does seem like this value comes from userspace:
 
-right, we already do that at resource creation time, when
-'udata' is available.  But there is no such parameter
-around during resource access (post_send/post_recv/poll_cq/...),
-when user land or kernel land application specific
-code might be required.
-That's why siw currently saves that info to a resource
-(QP/CQ/SRQ) specific parameter 'kernel_verbs'. I agree
-this parameter is redundant, if the rdma core object
-provides that information as well. The only way I see
-it provided is the validity of the uobject pointer of
-all those resources.
-Either (1) we use that uobject pointer as an indication
-of application location, or (2) we remember it from
-resource creation time when udata was available, or
-(3) we have the rdma core exporting that information
-explicitly.
-siw, and other drivers, are currently implementing (2).
-Some drivers implement (1). I'd be happy to change siw
-to implement (1) - to get rid of 'kernel_verbs'.
+ucma_connect()
+  ucma_copy_conn_param()
+    	dst->qp_num = src->qp_num
+  rdma_connect(.., &dst)
+	if (!id->qp) {
+		id_priv->qp_num = conn_param->qp_num;
 
-Thanks and best regards,
-Bernard.
+vs
 
+cma_accept_ib()
+	rep.qp_num = id_priv->qp_num;
 
+Maybe this needs to add some masking to ucma_copy_conn_param()?
 
-
->>
->> Other drivers keep it with the private state, like iw40,
->> but I learned we shall get rid of it.
->>
->> We may export an inline query from RDMA core, or simply
->> #define is_usermode(ib_obj *) (ib_obj->uobject != NULL)
->> ?
->>
->> Thanks and best regards,
->> Bernard
->>
->
->
-
+Jason
