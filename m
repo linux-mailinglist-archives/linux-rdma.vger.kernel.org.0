@@ -2,33 +2,33 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C5CE6ECF
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 10:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A51ADE6ECE
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 10:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387874AbfJ1JQA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S2387875AbfJ1JQA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Mon, 28 Oct 2019 05:16:00 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:37889 "EHLO
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:37887 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727664AbfJ1JP7 (ORCPT
+        with ESMTP id S2387877AbfJ1JP7 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Oct 2019 05:15:59 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from yishaih@mellanox.com)
         with ESMTPS (AES256-SHA encrypted); 28 Oct 2019 11:15:53 +0200
 Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [10.7.2.17])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x9S9FqC7032542;
-        Mon, 28 Oct 2019 11:15:52 +0200
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id x9S9FqCZ032570;
+        Mon, 28 Oct 2019 11:15:53 +0200
 Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [127.0.0.1])
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8) with ESMTP id x9S9Fqio031563;
+        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8) with ESMTP id x9S9Fqd5031567;
         Mon, 28 Oct 2019 11:15:52 +0200
 Received: (from yishaih@localhost)
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8/Submit) id x9S9FqJE031562;
+        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8/Submit) id x9S9FqXU031566;
         Mon, 28 Oct 2019 11:15:52 +0200
 From:   Yishai Hadas <yishaih@mellanox.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     yishaih@mellanox.com, haggaie@mellanox.com, jgg@mellanox.com,
         maorg@mellanox.com
-Subject: [PATCH rdma-core 4/6] mlx5: Add custom allocation support for QP and RWQ buffers
-Date:   Mon, 28 Oct 2019 11:14:57 +0200
-Message-Id: <1572254099-30864-5-git-send-email-yishaih@mellanox.com>
+Subject: [PATCH rdma-core 5/6] mlx5: Add custom allocation support for DBR
+Date:   Mon, 28 Oct 2019 11:14:58 +0200
+Message-Id: <1572254099-30864-6-git-send-email-yishaih@mellanox.com>
 X-Mailer: git-send-email 1.8.2.3
 In-Reply-To: <1572254099-30864-1-git-send-email-yishaih@mellanox.com>
 References: <1572254099-30864-1-git-send-email-yishaih@mellanox.com>
@@ -37,276 +37,299 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add custom allocation support for QP and RWQ buffers by extending the
-internal allocation flows to consider this option.
+Add custom allocation support for DBR by extending the internal
+allocation/free flows to consider this option.
 
 Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
 ---
- providers/mlx5/buf.c    | 59 +++++++++++++++++++++++++++++++++++++++++++++++++
- providers/mlx5/cq.c     |  2 +-
- providers/mlx5/mlx5.h   |  6 +++++
- providers/mlx5/mlx5dv.h |  4 ++++
- providers/mlx5/verbs.c  | 34 +++++++++++++++++++++++-----
- 5 files changed, 98 insertions(+), 7 deletions(-)
+ providers/mlx5/dbrec.c  | 34 ++++++++++++++++++++++++++++++++--
+ providers/mlx5/mlx5.h   |  9 +++++++--
+ providers/mlx5/mlx5dv.h |  1 +
+ providers/mlx5/verbs.c  | 47 +++++++++++++++++++++++++++--------------------
+ 4 files changed, 67 insertions(+), 24 deletions(-)
 
-diff --git a/providers/mlx5/buf.c b/providers/mlx5/buf.c
-index aa2fe02..b5cf391 100644
---- a/providers/mlx5/buf.c
-+++ b/providers/mlx5/buf.c
-@@ -356,6 +356,40 @@ int mlx5_alloc_buf_extern(struct mlx5_context *ctx, struct mlx5_buf *buf,
- 	return -1;
+diff --git a/providers/mlx5/dbrec.c b/providers/mlx5/dbrec.c
+index d6a69a5..5ef3d16 100644
+--- a/providers/mlx5/dbrec.c
++++ b/providers/mlx5/dbrec.c
+@@ -85,12 +85,31 @@ static struct mlx5_db_page *__add_page(struct mlx5_context *context)
+ 	return page;
  }
  
-+static void mlx5_free_buf_custom(struct mlx5_context *ctx,
-+			  struct mlx5_buf *buf)
-+{
-+	struct mlx5_parent_domain *mparent_domain = buf->mparent_domain;
-+
-+	mparent_domain->free(&mparent_domain->mpd.ibv_pd,
-+			     mparent_domain->pd_context,
-+			     buf->buf,
-+			     buf->resource_type);
-+}
-+
-+static int mlx5_alloc_buf_custom(struct mlx5_context *ctx,
-+			  struct mlx5_buf *buf, size_t size)
-+{
-+	struct mlx5_parent_domain *mparent_domain = buf->mparent_domain;
-+	void *addr;
-+
-+	addr = mparent_domain->alloc(&mparent_domain->mpd.ibv_pd,
-+				   mparent_domain->pd_context, size,
-+				   buf->req_alignment,
-+				   buf->resource_type);
-+	if (addr == IBV_ALLOCATOR_USE_DEFAULT)
-+		return 1;
-+
-+	if (addr || size == 0) {
-+		buf->buf = addr;
-+		buf->length = size;
-+		buf->type = MLX5_ALLOC_TYPE_CUSTOM;
-+		return 0;
-+	}
-+
-+	return -1;
-+}
-+
- int mlx5_alloc_prefered_buf(struct mlx5_context *mctx,
- 			    struct mlx5_buf *buf,
- 			    size_t size, int page_size,
-@@ -364,6 +398,14 @@ int mlx5_alloc_prefered_buf(struct mlx5_context *mctx,
+-__be32 *mlx5_alloc_dbrec(struct mlx5_context *context)
++__be32 *mlx5_alloc_dbrec(struct mlx5_context *context, struct ibv_pd *pd,
++			 bool *custom_alloc)
  {
- 	int ret;
- 
-+	if (type == MLX5_ALLOC_TYPE_CUSTOM) {
-+		ret = mlx5_alloc_buf_custom(mctx, buf, size);
-+		if (ret <= 0)
-+			return ret;
-+
-+		/* Fallback - default allocation is required */
-+	}
-+
- 	/*
- 	 * Fallback mechanism priority:
- 	 *	huge pages
-@@ -426,6 +468,10 @@ int mlx5_free_actual_buf(struct mlx5_context *ctx, struct mlx5_buf *buf)
- 		mlx5_free_buf_extern(ctx, buf);
- 		break;
- 
-+	case MLX5_ALLOC_TYPE_CUSTOM:
-+		mlx5_free_buf_custom(ctx, buf);
-+		break;
-+
- 	default:
- 		fprintf(stderr, "Bad allocation type\n");
- 	}
-@@ -458,12 +504,20 @@ static uint32_t mlx5_get_block_order(uint32_t v)
- 	return r;
- }
- 
-+bool mlx5_is_custom_alloc(struct ibv_pd *pd)
-+{
-+	struct mlx5_parent_domain *mparent_domain = to_mparent_domain(pd);
-+
-+	return (mparent_domain && mparent_domain->alloc && mparent_domain->free);
-+}
-+
- bool mlx5_is_extern_alloc(struct mlx5_context *context)
- {
- 	return context->extern_alloc.alloc && context->extern_alloc.free;
- }
- 
- void mlx5_get_alloc_type(struct mlx5_context *context,
-+			 struct ibv_pd *pd,
- 			 const char *component,
- 			 enum mlx5_alloc_type *alloc_type,
- 			 enum mlx5_alloc_type default_type)
-@@ -472,6 +526,11 @@ void mlx5_get_alloc_type(struct mlx5_context *context,
- 	char *env_value;
- 	char name[128];
+ 	struct mlx5_db_page *page;
+ 	__be32 *db = NULL;
+ 	int i, j;
  
 +	if (mlx5_is_custom_alloc(pd)) {
-+		*alloc_type = MLX5_ALLOC_TYPE_CUSTOM;
++		struct mlx5_parent_domain *mparent_domain = to_mparent_domain(pd);
++
++		db = mparent_domain->alloc(&mparent_domain->mpd.ibv_pd,
++				   mparent_domain->pd_context, 8, 8,
++				   MLX5DV_RES_TYPE_DBR);
++
++		if (db == IBV_ALLOCATOR_USE_DEFAULT)
++			goto default_alloc;
++
++		if (!db)
++			return NULL;
++
++		*custom_alloc = true;
++		return db;
++	}
++
++default_alloc:
+ 	pthread_mutex_lock(&context->db_list_mutex);
+ 
+ 	for (page = context->db_list; page; page = page->next)
+@@ -118,12 +137,23 @@ out:
+ 	return db;
+ }
+ 
+-void mlx5_free_db(struct mlx5_context *context, __be32 *db)
++void mlx5_free_db(struct mlx5_context *context, __be32 *db, struct ibv_pd *pd,
++		  bool custom_alloc)
+ {
+ 	struct mlx5_db_page *page;
+ 	uintptr_t ps = to_mdev(context->ibv_ctx.context.device)->page_size;
+ 	int i;
+ 
++	if (custom_alloc) {
++		struct mlx5_parent_domain *mparent_domain = to_mparent_domain(pd);
++
++		mparent_domain->free(&mparent_domain->mpd.ibv_pd,
++				     mparent_domain->pd_context,
++				     db,
++				     MLX5DV_RES_TYPE_DBR);
 +		return;
 +	}
 +
- 	if (mlx5_is_extern_alloc(context)) {
- 		*alloc_type = MLX5_ALLOC_TYPE_EXTERNAL;
- 		return;
-diff --git a/providers/mlx5/cq.c b/providers/mlx5/cq.c
-index b9b47df..26edd86 100644
---- a/providers/mlx5/cq.c
-+++ b/providers/mlx5/cq.c
-@@ -1861,7 +1861,7 @@ int mlx5_alloc_cq_buf(struct mlx5_context *mctx, struct mlx5_cq *cq,
- 	if (mlx5_use_huge("HUGE_CQ"))
- 		default_type = MLX5_ALLOC_TYPE_HUGE;
+ 	pthread_mutex_lock(&context->db_list_mutex);
  
--	mlx5_get_alloc_type(mctx, MLX5_CQ_PREFIX, &type, default_type);
-+	mlx5_get_alloc_type(mctx, NULL, MLX5_CQ_PREFIX, &type, default_type);
- 
- 	ret = mlx5_alloc_prefered_buf(mctx, buf,
- 				      align(nent * cqe_sz, dev->page_size),
+ 	for (page = context->db_list; page; page = page->next)
 diff --git a/providers/mlx5/mlx5.h b/providers/mlx5/mlx5.h
-index e960e6f..1c13390 100644
+index 1c13390..9a5cd6b 100644
 --- a/providers/mlx5/mlx5.h
 +++ b/providers/mlx5/mlx5.h
-@@ -173,6 +173,7 @@ enum mlx5_alloc_type {
- 	MLX5_ALLOC_TYPE_PREFER_HUGE,
- 	MLX5_ALLOC_TYPE_PREFER_CONTIG,
- 	MLX5_ALLOC_TYPE_EXTERNAL,
-+	MLX5_ALLOC_TYPE_CUSTOM,
- 	MLX5_ALLOC_TYPE_ALL
- };
+@@ -438,6 +438,7 @@ struct mlx5_srq {
+ 	int				waitq_head;
+ 	int				waitq_tail;
+ 	__be32			       *db;
++	bool				custom_db;
+ 	uint16_t			counter;
+ 	int				wq_sig;
+ 	struct ibv_qp		       *cmd_qp;
+@@ -553,6 +554,7 @@ struct mlx5_qp {
+ 	struct mlx5_wq                  sq;
  
-@@ -334,6 +335,9 @@ struct mlx5_buf {
- 	int                             base;
- 	struct mlx5_hugetlb_mem	       *hmem;
- 	enum mlx5_alloc_type		type;
-+	uint64_t			resource_type;
-+	size_t				req_alignment;
-+	struct mlx5_parent_domain	*mparent_domain;
- };
- 
- struct mlx5_td {
-@@ -780,10 +784,12 @@ int mlx5_alloc_prefered_buf(struct mlx5_context *mctx,
- 			    const char *component);
- int mlx5_free_actual_buf(struct mlx5_context *ctx, struct mlx5_buf *buf);
- void mlx5_get_alloc_type(struct mlx5_context *context,
-+			 struct ibv_pd *pd,
- 			 const char *component,
- 			 enum mlx5_alloc_type *alloc_type,
- 			 enum mlx5_alloc_type default_alloc_type);
- int mlx5_use_huge(const char *key);
-+bool mlx5_is_custom_alloc(struct ibv_pd *pd);
- bool mlx5_is_extern_alloc(struct mlx5_context *context);
- int mlx5_alloc_buf_extern(struct mlx5_context *ctx, struct mlx5_buf *buf,
+ 	__be32                         *db;
++	bool				custom_db;
+ 	struct mlx5_wq                  rq;
+ 	int                             wq_sig;
+ 	uint32_t			qp_cap_cache;
+@@ -582,6 +584,7 @@ struct mlx5_rwq {
+ 	int buf_size;
+ 	struct mlx5_wq rq;
+ 	__be32  *db;
++	bool	custom_db;
+ 	void	*pbuff;
+ 	__be32	*recv_db;
+ 	int wq_sig;
+@@ -795,8 +798,10 @@ int mlx5_alloc_buf_extern(struct mlx5_context *ctx, struct mlx5_buf *buf,
  			  size_t size);
+ void mlx5_free_buf_extern(struct mlx5_context *ctx, struct mlx5_buf *buf);
+ 
+-__be32 *mlx5_alloc_dbrec(struct mlx5_context *context);
+-void mlx5_free_db(struct mlx5_context *context, __be32 *db);
++__be32 *mlx5_alloc_dbrec(struct mlx5_context *context, struct ibv_pd *pd,
++			 bool *custom_alloc);
++void mlx5_free_db(struct mlx5_context *context, __be32 *db, struct ibv_pd *pd,
++		  bool custom_alloc);
+ 
+ int mlx5_query_device(struct ibv_context *context,
+ 		       struct ibv_device_attr *attr);
 diff --git a/providers/mlx5/mlx5dv.h b/providers/mlx5/mlx5dv.h
-index d5e8e0c..0ad9768 100644
+index 0ad9768..ac291eb 100644
 --- a/providers/mlx5/mlx5dv.h
 +++ b/providers/mlx5/mlx5dv.h
-@@ -59,6 +59,10 @@ extern "C" {
- #define MLX5DV_ALWAYS_INLINE inline
- #endif
+@@ -62,6 +62,7 @@ extern "C" {
  
-+
-+#define MLX5DV_RES_TYPE_QP ((uint64_t)RDMA_DRIVER_MLX5 << 32 | 1)
-+#define MLX5DV_RES_TYPE_RWQ ((uint64_t)RDMA_DRIVER_MLX5 << 32 | 2)
-+
+ #define MLX5DV_RES_TYPE_QP ((uint64_t)RDMA_DRIVER_MLX5 << 32 | 1)
+ #define MLX5DV_RES_TYPE_RWQ ((uint64_t)RDMA_DRIVER_MLX5 << 32 | 2)
++#define MLX5DV_RES_TYPE_DBR ((uint64_t)RDMA_DRIVER_MLX5 << 32 | 3)
+ 
  enum {
  	MLX5_RCV_DBR	= 0,
- 	MLX5_SND_DBR	= 1,
 diff --git a/providers/mlx5/verbs.c b/providers/mlx5/verbs.c
-index 166ea4f..513af5e 100644
+index 513af5e..1e026af 100644
 --- a/providers/mlx5/verbs.c
 +++ b/providers/mlx5/verbs.c
-@@ -1554,8 +1554,14 @@ static int mlx5_alloc_qp_buf(struct ibv_context *context,
- 	if (mlx5_use_huge(qp_huge_key))
- 		default_alloc_type = MLX5_ALLOC_TYPE_HUGE;
- 
--	mlx5_get_alloc_type(to_mctx(context), MLX5_QP_PREFIX, &alloc_type,
--			    default_alloc_type);
-+	mlx5_get_alloc_type(to_mctx(context), attr->pd, MLX5_QP_PREFIX,
-+			    &alloc_type, default_alloc_type);
-+
-+	if (alloc_type == MLX5_ALLOC_TYPE_CUSTOM) {
-+		qp->buf.mparent_domain = to_mparent_domain(attr->pd);
-+		qp->buf.req_alignment = to_mdev(context->device)->page_size;
-+		qp->buf.resource_type = MLX5DV_RES_TYPE_QP;
-+	}
- 
- 	err = mlx5_alloc_prefered_buf(to_mctx(context), &qp->buf,
- 				      align(qp->buf_size, to_mdev
-@@ -1569,12 +1575,20 @@ static int mlx5_alloc_qp_buf(struct ibv_context *context,
- 		goto ex_wrid;
+@@ -749,7 +749,7 @@ static struct ibv_cq_ex *create_cq(struct ibv_context *context,
+ 		goto err_spl;
  	}
  
--	memset(qp->buf.buf, 0, qp->buf_size);
-+	if (qp->buf.type != MLX5_ALLOC_TYPE_CUSTOM)
-+		memset(qp->buf.buf, 0, qp->buf_size);
+-	cq->dbrec  = mlx5_alloc_dbrec(to_mctx(context));
++	cq->dbrec  = mlx5_alloc_dbrec(to_mctx(context), NULL, NULL);
+ 	if (!cq->dbrec) {
+ 		mlx5_dbg(fp, MLX5_DBG_CQ, "\n");
+ 		goto err_buf;
+@@ -834,7 +834,7 @@ static struct ibv_cq_ex *create_cq(struct ibv_context *context,
+ 	return &cq->ibv_cq;
  
- 	if (attr->qp_type == IBV_QPT_RAW_PACKET ||
- 	    qp->flags & MLX5_QP_FLAGS_USE_UNDERLAY) {
- 		size_t aligned_sq_buf_size = align(qp->sq_buf_size,
- 						   to_mdev(context->device)->page_size);
-+
-+		if (alloc_type == MLX5_ALLOC_TYPE_CUSTOM) {
-+			qp->sq_buf.mparent_domain = to_mparent_domain(attr->pd);
-+			qp->sq_buf.req_alignment = to_mdev(context->device)->page_size;
-+			qp->sq_buf.resource_type = MLX5DV_RES_TYPE_QP;
-+		}
-+
- 		/* For Raw Packet QP, allocate a separate buffer for the SQ */
- 		err = mlx5_alloc_prefered_buf(to_mctx(context), &qp->sq_buf,
- 					      aligned_sq_buf_size,
-@@ -1586,7 +1600,8 @@ static int mlx5_alloc_qp_buf(struct ibv_context *context,
- 			goto rq_buf;
- 		}
+ err_db:
+-	mlx5_free_db(to_mctx(context), cq->dbrec);
++	mlx5_free_db(to_mctx(context), cq->dbrec, NULL, 0);
  
--		memset(qp->sq_buf.buf, 0, aligned_sq_buf_size);
-+		if (qp->sq_buf.type != MLX5_ALLOC_TYPE_CUSTOM)
-+			memset(qp->sq_buf.buf, 0, aligned_sq_buf_size);
- 	}
+ err_buf:
+ 	mlx5_free_cq_buf(to_mctx(context), &cq->buf_a);
+@@ -968,7 +968,7 @@ int mlx5_destroy_cq(struct ibv_cq *cq)
+ 	if (ret)
+ 		return ret;
  
- 	return 0;
-@@ -3121,13 +3136,14 @@ static void mlx5_free_rwq_buf(struct mlx5_rwq *rwq, struct ibv_context *context)
- }
+-	mlx5_free_db(to_mctx(cq->context), to_mcq(cq)->dbrec);
++	mlx5_free_db(to_mctx(cq->context), to_mcq(cq)->dbrec, NULL, 0);
+ 	mlx5_free_cq_buf(to_mctx(cq->context), to_mcq(cq)->active_buf);
+ 	free(to_mcq(cq));
  
- static int mlx5_alloc_rwq_buf(struct ibv_context *context,
-+			      struct ibv_pd *pd,
- 			      struct mlx5_rwq *rwq,
- 			      int size)
- {
- 	int err;
- 	enum mlx5_alloc_type alloc_type;
- 
--	mlx5_get_alloc_type(to_mctx(context), MLX5_RWQ_PREFIX,
-+	mlx5_get_alloc_type(to_mctx(context), pd, MLX5_RWQ_PREFIX,
- 			    &alloc_type, MLX5_ALLOC_TYPE_ANON);
- 
- 	rwq->rq.wrid = malloc(rwq->rq.wqe_cnt * sizeof(uint64_t));
-@@ -3136,6 +3152,12 @@ static int mlx5_alloc_rwq_buf(struct ibv_context *context,
- 		return -1;
- 	}
- 
-+	if (alloc_type == MLX5_ALLOC_TYPE_CUSTOM) {
-+		rwq->buf.mparent_domain = to_mparent_domain(pd);
-+		rwq->buf.req_alignment = to_mdev(context->device)->page_size;
-+		rwq->buf.resource_type = MLX5DV_RES_TYPE_RWQ;
-+	}
-+
- 	err = mlx5_alloc_prefered_buf(to_mctx(context), &rwq->buf,
- 				      align(rwq->buf_size, to_mdev
- 				      (context->device)->page_size),
-@@ -3186,7 +3208,7 @@ static struct ibv_wq *create_wq(struct ibv_context *context,
- 	}
- 
- 	rwq->buf_size = ret;
--	if (mlx5_alloc_rwq_buf(context, rwq, ret))
-+	if (mlx5_alloc_rwq_buf(context, attr->pd, rwq, ret))
+@@ -1028,13 +1028,14 @@ struct ibv_srq *mlx5_create_srq(struct ibv_pd *pd,
  		goto err;
+ 	}
  
- 	mlx5_init_rwq_indices(rwq);
+-	srq->db = mlx5_alloc_dbrec(to_mctx(pd->context));
++	srq->db = mlx5_alloc_dbrec(to_mctx(pd->context), pd, &srq->custom_db);
+ 	if (!srq->db) {
+ 		fprintf(stderr, "%s-%d:\n", __func__, __LINE__);
+ 		goto err_free;
+ 	}
+ 
+-	*srq->db = 0;
++	if (!srq->custom_db)
++		*srq->db = 0;
+ 
+ 	cmd.buf_addr = (uintptr_t) srq->buf.buf;
+ 	cmd.db_addr  = (uintptr_t) srq->db;
+@@ -1077,7 +1078,7 @@ err_destroy:
+ 
+ err_db:
+ 	pthread_mutex_unlock(&ctx->srq_table_mutex);
+-	mlx5_free_db(to_mctx(pd->context), srq->db);
++	mlx5_free_db(to_mctx(pd->context), srq->db, pd, srq->custom_db);
+ 
+ err_free:
+ 	free(srq->wrid);
+@@ -1128,7 +1129,7 @@ int mlx5_destroy_srq(struct ibv_srq *srq)
+ 	else
+ 		mlx5_clear_srq(ctx, msrq->srqn);
+ 
+-	mlx5_free_db(ctx, msrq->db);
++	mlx5_free_db(ctx, msrq->db, srq->pd, msrq->custom_db);
+ 	mlx5_free_buf(&msrq->buf);
+ 	free(msrq->tm_list);
+ 	free(msrq->wrid);
+@@ -2033,14 +2034,16 @@ static struct ibv_qp *create_qp(struct ibv_context *context,
+ 			mlx5_spinlock_init_pd(&qp->rq.lock, attr->pd))
+ 		goto err_free_qp_buf;
+ 
+-	qp->db = mlx5_alloc_dbrec(ctx);
++	qp->db = mlx5_alloc_dbrec(ctx, attr->pd, &qp->custom_db);
+ 	if (!qp->db) {
+ 		mlx5_dbg(fp, MLX5_DBG_QP, "\n");
+ 		goto err_free_qp_buf;
+ 	}
+ 
+-	qp->db[MLX5_RCV_DBR] = 0;
+-	qp->db[MLX5_SND_DBR] = 0;
++	if (!qp->custom_db) {
++		qp->db[MLX5_RCV_DBR] = 0;
++		qp->db[MLX5_SND_DBR] = 0;
++	}
+ 
+ 	cmd.buf_addr = (uintptr_t) qp->buf.buf;
+ 	cmd.sq_buf_addr = (attr->qp_type == IBV_QPT_RAW_PACKET ||
+@@ -2147,7 +2150,7 @@ err_free_uidx:
+ 		mlx5_clear_uidx(ctx, usr_idx);
+ 
+ err_rq_db:
+-	mlx5_free_db(to_mctx(context), qp->db);
++	mlx5_free_db(to_mctx(context), qp->db, attr->pd, qp->custom_db);
+ 
+ err_free_qp_buf:
+ 	mlx5_free_qp_buf(ctx, qp);
+@@ -2270,7 +2273,7 @@ int mlx5_destroy_qp(struct ibv_qp *ibqp)
+ 		mlx5_clear_uidx(ctx, qp->rsc.rsn);
+ 
+ 	if (qp->dc_type != MLX5DV_DCTYPE_DCT) {
+-		mlx5_free_db(ctx, qp->db);
++		mlx5_free_db(ctx, qp->db, ibqp->pd, qp->custom_db);
+ 		mlx5_free_qp_buf(ctx, qp);
+ 	}
+ free:
+@@ -2892,13 +2895,14 @@ struct ibv_srq *mlx5_create_srq_ex(struct ibv_context *context,
+ 		goto err;
+ 	}
+ 
+-	msrq->db = mlx5_alloc_dbrec(ctx);
++	msrq->db = mlx5_alloc_dbrec(ctx, attr->pd, &msrq->custom_db);
+ 	if (!msrq->db) {
+ 		fprintf(stderr, "%s-%d:\n", __func__, __LINE__);
+ 		goto err_free;
+ 	}
+ 
+-	*msrq->db = 0;
++	if (!msrq->custom_db)
++		*msrq->db = 0;
+ 
+ 	cmd.buf_addr = (uintptr_t)msrq->buf.buf;
+ 	cmd.db_addr  = (uintptr_t)msrq->db;
+@@ -2990,7 +2994,7 @@ err_free_uidx:
+ 		pthread_mutex_unlock(&ctx->srq_table_mutex);
+ 
+ err_free_db:
+-	mlx5_free_db(ctx, msrq->db);
++	mlx5_free_db(ctx, msrq->db, attr->pd, msrq->custom_db);
+ 
+ err_free:
+ 	free(msrq->wrid);
+@@ -3216,12 +3220,15 @@ static struct ibv_wq *create_wq(struct ibv_context *context,
+ 	if (mlx5_spinlock_init_pd(&rwq->rq.lock, attr->pd))
+ 		goto err_free_rwq_buf;
+ 
+-	rwq->db = mlx5_alloc_dbrec(ctx);
++	rwq->db = mlx5_alloc_dbrec(ctx, attr->pd, &rwq->custom_db);
+ 	if (!rwq->db)
+ 		goto err_free_rwq_buf;
+ 
+-	rwq->db[MLX5_RCV_DBR] = 0;
+-	rwq->db[MLX5_SND_DBR] = 0;
++	if (!rwq->custom_db) {
++		rwq->db[MLX5_RCV_DBR] = 0;
++		rwq->db[MLX5_SND_DBR] = 0;
++	}
++
+ 	rwq->pbuff = rwq->buf.buf + rwq->rq.offset;
+ 	rwq->recv_db =  &rwq->db[MLX5_RCV_DBR];
+ 	cmd.buf_addr = (uintptr_t)rwq->buf.buf;
+@@ -3278,7 +3285,7 @@ static struct ibv_wq *create_wq(struct ibv_context *context,
+ err_create:
+ 	mlx5_clear_uidx(ctx, cmd.user_index);
+ err_free_db_rec:
+-	mlx5_free_db(to_mctx(context), rwq->db);
++	mlx5_free_db(to_mctx(context), rwq->db, attr->pd, rwq->custom_db);
+ err_free_rwq_buf:
+ 	mlx5_free_rwq_buf(rwq, context);
+ err:
+@@ -3342,7 +3349,7 @@ int mlx5_destroy_wq(struct ibv_wq *wq)
+ 	__mlx5_cq_clean(to_mcq(wq->cq), rwq->rsc.rsn, NULL);
+ 	mlx5_spin_unlock(&to_mcq(wq->cq)->lock);
+ 	mlx5_clear_uidx(to_mctx(wq->context), rwq->rsc.rsn);
+-	mlx5_free_db(to_mctx(wq->context), rwq->db);
++	mlx5_free_db(to_mctx(wq->context), rwq->db, wq->pd, rwq->custom_db);
+ 	mlx5_free_rwq_buf(rwq, wq->context);
+ 	free(rwq);
+ 
 -- 
 1.8.3.1
 
