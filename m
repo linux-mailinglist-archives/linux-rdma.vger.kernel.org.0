@@ -2,223 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BEDDE6F49
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 10:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C699E6F5A
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 10:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388031AbfJ1JpR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Oct 2019 05:45:17 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:37994 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388030AbfJ1JpR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 28 Oct 2019 05:45:17 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id AE44EF21215E32EBFB1B;
-        Mon, 28 Oct 2019 17:45:14 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.439.0; Mon, 28 Oct 2019 17:45:04 +0800
-From:   Yixian Liu <liuyixian@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH for-next 2/2] RDMA/hns: Delayed flush cqe process with workqueue
-Date:   Mon, 28 Oct 2019 17:45:45 +0800
-Message-ID: <1572255945-20297-3-git-send-email-liuyixian@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1572255945-20297-1-git-send-email-liuyixian@huawei.com>
-References: <1572255945-20297-1-git-send-email-liuyixian@huawei.com>
+        id S1732601AbfJ1Js6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Oct 2019 05:48:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43432 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730038AbfJ1Js6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 28 Oct 2019 05:48:58 -0400
+Received: from localhost (unknown [77.137.89.37])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D7F50208C0;
+        Mon, 28 Oct 2019 09:48:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1572256137;
+        bh=42VmDfEquZCgObJJ4CaEDAA5yd+k92VX1ePkgUlWc64=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J06OXCFjy6O2ja11vFLcnlHTQPAM0nEVj3JGxAZt+RamuZi3eKH7hz2zb1ek1zJ+0
+         BT0VU+XJIjmD4CasamNm0tET4NBxV74+/Ox/l3v8nYbD8xLTp2Qg//F2Ije6V2SCl2
+         FPo0XN4v3y10hwjo89UERxTmh//dXiuTKCjkmDAM=
+Date:   Mon, 28 Oct 2019 11:48:50 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Yishai Hadas <yishaih@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, haggaie@mellanox.com, jgg@mellanox.com,
+        maorg@mellanox.com
+Subject: Re: [PATCH rdma-core 2/6] verbs: custom parent-domain allocators
+Message-ID: <20191028094850.GB5146@unreal>
+References: <1572254099-30864-1-git-send-email-yishaih@mellanox.com>
+ <1572254099-30864-3-git-send-email-yishaih@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1572254099-30864-3-git-send-email-yishaih@mellanox.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
-outstanding WQEs if QP state gets into errored mode for some reason.
-To overcome this hardware problem and as a workaround, when QP is
-detected to be in errored state during various legs like post send,
-post receive etc[1], flush needs to be performed from the driver.
+On Mon, Oct 28, 2019 at 11:14:55AM +0200, Yishai Hadas wrote:
+> From: Haggai Eran <haggaie@mellanox.com>
+>
+> Extend the parent domain object with custom allocation callbacks that
+> can be used by user-applications to override the provider allocation.
+>
+> This can be used for example to add NUMA aware allocation.
+>
+> The new allocator receives context information about the parent domain,
+> as well as the requested size and alignment of the buffer. It also
+> receives a vendor-specific resource type code to allow customizing it
+> for specific resources.
+>
+> The allocator then allocates the memory or returns an
+> IBV_ALLOCATOR_USE_DEFAULT value to request that the provider driver use
+> its own allocation method.
+>
+> Signed-off-by: Haggai Eran <haggaie@mellanox.com>
+> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+> ---
+>  libibverbs/man/ibv_alloc_parent_domain.3 | 54 ++++++++++++++++++++++++++++++++
+>  libibverbs/verbs.h                       | 12 +++++++
+>  2 files changed, 66 insertions(+)
+>
 
-The earlier patch[1] sent to solve the hardware limitation explained
-in the cover-letter had a bug in the software flushing leg. It
-acquired mutex while modifying QP state to errored state and while
-conveying it to the hardware using the mailbox. This caused leg to
-sleep while holding spin-lock and caused crash.
+It is unclear to me how and maybe it is not possible for this API. but I
+would expect any changes in public API be accompanied by relevant tests.
 
-Suggested Solution:
-we have proposed to defer the flushing of the QP in the Errored state
-using the workqueue to get around with the limitation of our hardware.
-
-This patch specifically adds the calls to the flush handler from
-where parts of the code like post_send/post_recv etc. when the QP
-state gets into the errored mode.
-
-[1] https://patchwork.kernel.org/patch/10534271/
-
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-Reviewed-by: Salil Mehta <salil.mehta@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 84 ++++++++++++++----------------
- 1 file changed, 38 insertions(+), 46 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 396c896..23932eb 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -221,11 +221,6 @@ static int set_rwqe_data_seg(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 	return 0;
- }
- 
--static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
--				 const struct ib_qp_attr *attr,
--				 int attr_mask, enum ib_qp_state cur_state,
--				 enum ib_qp_state new_state);
--
- static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 				 const struct ib_send_wr *wr,
- 				 const struct ib_send_wr **bad_wr)
-@@ -238,14 +233,12 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 	struct hns_roce_wqe_frmr_seg *fseg;
- 	struct device *dev = hr_dev->dev;
- 	struct hns_roce_v2_db sq_db;
--	struct ib_qp_attr attr;
- 	unsigned int sge_ind;
- 	unsigned int owner_bit;
- 	unsigned long flags;
- 	unsigned int ind;
- 	void *wqe = NULL;
- 	bool loopback;
--	int attr_mask;
- 	u32 tmp_len;
- 	int ret = 0;
- 	u32 hr_op;
-@@ -591,18 +584,17 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 		qp->sq_next_wqe = ind;
- 		qp->next_sge = sge_ind;
- 
--		if (qp->state == IB_QPS_ERR) {
--			attr_mask = IB_QP_STATE;
--			attr.qp_state = IB_QPS_ERR;
--
--			ret = hns_roce_v2_modify_qp(&qp->ibqp, &attr, attr_mask,
--						    qp->state, IB_QPS_ERR);
--			if (ret) {
--				spin_unlock_irqrestore(&qp->sq.lock, flags);
--				*bad_wr = wr;
--				return ret;
--			}
--		}
-+		/*
-+		 * Hip08 hardware cannot flush the WQEs in SQ if the QP state
-+		 * gets into errored mode. Hence, as a workaround to this
-+		 * hardware limitation, driver needs to assist in flushing. But
-+		 * the flushing operation uses mailbox to convey the QP state to
-+		 * the hardware and which can sleep due to the mutex protection
-+		 * around the mailbox calls. Hence, use the deferred flush for
-+		 * now.
-+		 */
-+		if (qp->state == IB_QPS_ERR)
-+			init_flush_work(hr_dev, qp);
- 	}
- 
- 	spin_unlock_irqrestore(&qp->sq.lock, flags);
-@@ -619,10 +611,8 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
- 	struct hns_roce_v2_wqe_data_seg *dseg;
- 	struct hns_roce_rinl_sge *sge_list;
- 	struct device *dev = hr_dev->dev;
--	struct ib_qp_attr attr;
- 	unsigned long flags;
- 	void *wqe = NULL;
--	int attr_mask;
- 	int ret = 0;
- 	int nreq;
- 	int ind;
-@@ -692,19 +682,17 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
- 
- 		*hr_qp->rdb.db_record = hr_qp->rq.head & 0xffff;
- 
--		if (hr_qp->state == IB_QPS_ERR) {
--			attr_mask = IB_QP_STATE;
--			attr.qp_state = IB_QPS_ERR;
--
--			ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, &attr,
--						    attr_mask, hr_qp->state,
--						    IB_QPS_ERR);
--			if (ret) {
--				spin_unlock_irqrestore(&hr_qp->rq.lock, flags);
--				*bad_wr = wr;
--				return ret;
--			}
--		}
-+		/*
-+		 * Hip08 hardware cannot flush the WQEs in RQ if the QP state
-+		 * gets into errored mode. Hence, as a workaround to this
-+		 * hardware limitation, driver needs to assist in flushing. But
-+		 * the flushing operation uses mailbox to convey the QP state to
-+		 * the hardware and which can sleep due to the mutex protection
-+		 * around the mailbox calls. Hence, use the deferred flush for
-+		 * now.
-+		 */
-+		if (hr_qp->state == IB_QPS_ERR)
-+			init_flush_work(hr_dev, hr_qp);
- 	}
- 	spin_unlock_irqrestore(&hr_qp->rq.lock, flags);
- 
-@@ -2707,13 +2695,11 @@ static int hns_roce_handle_recv_inl_wqe(struct hns_roce_v2_cqe *cqe,
- static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 				struct hns_roce_qp **cur_qp, struct ib_wc *wc)
- {
-+	struct hns_roce_dev *hr_dev = to_hr_dev(hr_cq->ib_cq.device);
- 	struct hns_roce_srq *srq = NULL;
--	struct hns_roce_dev *hr_dev;
- 	struct hns_roce_v2_cqe *cqe;
- 	struct hns_roce_qp *hr_qp;
- 	struct hns_roce_wq *wq;
--	struct ib_qp_attr attr;
--	int attr_mask;
- 	int is_send;
- 	u16 wqe_ctr;
- 	u32 opcode;
-@@ -2737,7 +2723,6 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 				V2_CQE_BYTE_16_LCL_QPN_S);
- 
- 	if (!*cur_qp || (qpn & HNS_ROCE_V2_CQE_QPN_MASK) != (*cur_qp)->qpn) {
--		hr_dev = to_hr_dev(hr_cq->ib_cq.device);
- 		hr_qp = __hns_roce_qp_lookup(hr_dev, qpn);
- 		if (unlikely(!hr_qp)) {
- 			dev_err(hr_dev->dev, "CQ %06lx with entry for unknown QPN %06x\n",
-@@ -2831,14 +2816,21 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 		break;
- 	}
- 
--	/* flush cqe if wc status is error, excluding flush error */
--	if ((wc->status != IB_WC_SUCCESS) &&
--	    (wc->status != IB_WC_WR_FLUSH_ERR)) {
--		attr_mask = IB_QP_STATE;
--		attr.qp_state = IB_QPS_ERR;
--		return hns_roce_v2_modify_qp(&(*cur_qp)->ibqp,
--					     &attr, attr_mask,
--					     (*cur_qp)->state, IB_QPS_ERR);
-+	/*
-+	 * Hip08 hardware cannot flush the WQEs in SQ/RQ if the QP state gets
-+	 * into errored mode. Hence, as a workaround to this hardware
-+	 * limitation, driver needs to assist in flushing. But the flushing
-+	 * operation uses mailbox to convey the QP state to the hardware and
-+	 * which can sleep due to the mutex protection around the mailbox calls.
-+	 * Hence, use the deferred flush for now. Once wc error detected, the
-+	 * flushing operation is needed.
-+	 */
-+	if (wc->status != IB_WC_SUCCESS &&
-+	    wc->status != IB_WC_WR_FLUSH_ERR) {
-+		dev_err(hr_dev->dev, "error cqe status is: 0x%x\n",
-+			status & HNS_ROCE_V2_CQE_STATUS_MASK);
-+		init_flush_work(hr_dev, *cur_qp);
-+		return 0;
- 	}
- 
- 	if (wc->status == IB_WC_WR_FLUSH_ERR)
--- 
-2.7.4
-
+Thanks
