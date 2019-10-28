@@ -2,97 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B32ACE7616
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 17:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25941E761D
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 17:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732728AbfJ1Q16 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Oct 2019 12:27:58 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:35965 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732424AbfJ1Q16 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Oct 2019 12:27:58 -0400
-Received: by mail-qk1-f196.google.com with SMTP id y189so9047522qkc.3
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2019 09:27:57 -0700 (PDT)
+        id S1732792AbfJ1Q30 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Oct 2019 12:29:26 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:46732 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732565AbfJ1Q3Z (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Oct 2019 12:29:25 -0400
+Received: by mail-qt1-f195.google.com with SMTP id u22so15372232qtq.13
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2019 09:29:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=UNfdPF7ys2aei9JlpbTt9ok2GPKHEVeVxQtWXAW3m50=;
-        b=eiKTVchux22WoiWzzjlUOjrMTqH0CLnfqHiR/ePeX9dkl64BYK0jnUdQVq6EHlCyiT
-         FcxQjJ4LGn4d4loZtrqr8xDVioWoabPSMN1P3fQFL2HaxUxZxA0OIPgMai8jBqo8KCMn
-         Ikjw+uzvrvra5Xe+9TgTe7+awzd8CiZbV20etN3gEyV11HPH+OnnLVXM+8sMs/UfumAD
-         oOEfz2ueU0lRFn8/ySmZ4hE1QxjY4PQKoZg+HFvN2gz3sF0OEGu/+6FDXuW1zZJwqjWv
-         eLxyegxmkqXkT/Uylh74bkc2nw6xxFn5+YexdegfkWRHZtSqySnzlsYWjTsjYn5hf9w0
-         wanw==
+        bh=9ywm++Z87RINsH4azWOF+cv9u1AUiAjG+Xeq+gmj+tY=;
+        b=NL0iVirGaY5bt9tNVjmCBo+bMCci1HgDaiuOI5rSi1psRZumMi1lU9cvaZ8bQmYYGv
+         tGAsZqT7c2WIV44hJjVGDiqBlGD4ni4vlUDi9w2KqwLMgfBeiYi0FoYhNY7IIgF/oJze
+         DcIAyVmBSLSA09buPvGrkRXicVasIaykpNkO4xUml11KlBD5fJ199O0KS1Nq+QCOJtDu
+         TPce3ahVQYcO/I6CvQqT33RA6GC2dbJ/dll6Vsml8vD2xd6pNmu0RkAFuyBXJbJaLFjp
+         tuRzd4LhcCB3+Zl/JRpq95+IPgohwz62F1y9Kh+Liz/nJUDbY8a/WTaq8Ak/9xqewcb5
+         3m3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UNfdPF7ys2aei9JlpbTt9ok2GPKHEVeVxQtWXAW3m50=;
-        b=OK5B0t40Qm2FPLJGdm/OTgZExPrGgwTBIqGm2oJmPJodDaxo56zHX0UeFvPIjce0P4
-         znXH9Nd4bnZlBKw8sqF8eIuLANtf2qEEBlGYw/94TnwXA8kWNRlXKoZjHJhhdKu1FfZk
-         wPl8Ok+2efnIxnRTdegfjhjF1CmjKBhngs4EjotI13SUgtjpkcPB6/TKcIXoeJwsJO17
-         vPgobCBT9nZoHlawW557ZNlqjPaE7PBDC7cxwy77fh06q7WiFlL/Y+SnjqYXfEJs95Ck
-         0x2sSBgHUmF8B6CUtmJKIuY7kZnMzJQZZNfLZBgXQRBsTNavLEIch5aaPxaktwZ9syX3
-         mvqg==
-X-Gm-Message-State: APjAAAURGdl2gAmN+Fo5ESn2SXTyUdueHMuxtYKf0kAz9oifnehnRZE8
-        R/+h6Lb04DygO9UiFNc6TVM9uXnDXzg=
-X-Google-Smtp-Source: APXvYqzzhnzXfy/uZ5uT0tmBGJ4bZsJVJjn17/KQ4JTGqUf3+ngkuh28THl1Hiv7BH7Ez2W/E7wdrg==
-X-Received: by 2002:a37:4253:: with SMTP id p80mr16879308qka.194.1572280077472;
-        Mon, 28 Oct 2019 09:27:57 -0700 (PDT)
+        bh=9ywm++Z87RINsH4azWOF+cv9u1AUiAjG+Xeq+gmj+tY=;
+        b=iEYyZprzaDsN4Flh0A3TgEYYWnW8hQxMa3jJpLFsoOBem/RKDx3TxkItLJwIW6c+b/
+         eqeIIPDDuUp4yjhvgEkcCIVwm2spZ/AeKVtOEspPYPTe2DU9LTFGhH93TBpf5aM9iIVp
+         isbyjo+ROTDU6ACeTd0RFO1tjciNuW2GOvy1wgSBUB2yJhtJh9CZRzW2vWks+Jdt1vwQ
+         GHSKorzwR0qbQpnsIgyt3GfV24h/WNpuUAApoVDVAyFQtZ4GCVdeWUcCOHkgKYCzTFSs
+         jco5+wFqyIG+E864N9SFnzToDYXEAOn8gjHbBN3UoaEZYcp7KYCVFAjTJmaF0UEAJey8
+         0Z7g==
+X-Gm-Message-State: APjAAAWsOMM9Kl2bsao1eXT6TmVxCIPaa/znf8B1DdrhYYLNyntjdUd9
+        k/i9bTaX1uiRiJQRcCyNebKx9g==
+X-Google-Smtp-Source: APXvYqxawCRZhac2ttiTxGbp/cRkz1CqGKRwsmlZK1FRvvnPd8bOMhGQcV+0Y2xkthoIlSypPjiIDg==
+X-Received: by 2002:ac8:3f5d:: with SMTP id w29mr16863473qtk.3.1572280164899;
+        Mon, 28 Oct 2019 09:29:24 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id k17sm8981547qtk.7.2019.10.28.09.27.56
+        by smtp.gmail.com with ESMTPSA id h185sm2233472qkc.7.2019.10.28.09.29.24
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 28 Oct 2019 09:27:56 -0700 (PDT)
+        Mon, 28 Oct 2019 09:29:24 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iP7s4-0004Jf-H5; Mon, 28 Oct 2019 13:27:56 -0300
-Date:   Mon, 28 Oct 2019 13:27:56 -0300
+        id 1iP7tT-00063L-Tq; Mon, 28 Oct 2019 13:29:23 -0300
+Date:   Mon, 28 Oct 2019 13:29:23 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Adit Ranadive <aditr@vmware.com>
-Cc:     "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Bryan Tan <bryantan@vmware.com>,
-        Pv-drivers <Pv-drivers@vmware.com>
-Subject: Re: [PATCH v2] RDMA/vmw_pvrdma: Use resource ids from physical
- device if available
-Message-ID: <20191028162756.GA16475@ziepe.ca>
-References: <20191022200642.22762-1-aditr@vmware.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next] RDMA/hns: Delete BITS_PER_BYTE redefinition
+Message-ID: <20191028162923.GA23235@ziepe.ca>
+References: <20191023054239.31648-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191022200642.22762-1-aditr@vmware.com>
+In-Reply-To: <20191023054239.31648-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 08:06:50PM +0000, Adit Ranadive wrote:
-> @@ -195,7 +198,9 @@ struct ib_qp *pvrdma_create_qp(struct ib_pd *pd,
->  	union pvrdma_cmd_resp rsp;
->  	struct pvrdma_cmd_create_qp *cmd = &req.create_qp;
->  	struct pvrdma_cmd_create_qp_resp *resp = &rsp.create_qp_resp;
-> +	struct pvrdma_cmd_create_qp_resp_v2 *resp_v2 = &rsp.create_qp_resp_v2;
->  	struct pvrdma_create_qp ucmd;
-> +	struct pvrdma_create_qp_resp qp_resp = {};
->  	unsigned long flags;
->  	int ret;
->  	bool is_srq = !!init_attr->srq;
-> @@ -260,6 +265,15 @@ struct ib_qp *pvrdma_create_qp(struct ib_pd *pd,
->  				goto err_qp;
->  			}
->  
-> +			/* Userspace supports qpn and qp handles? */
-> +			if (dev->dsr_version >= PVRDMA_QPHANDLE_VERSION &&
-> +			    udata->outlen != sizeof(qp_resp)) {
+On Wed, Oct 23, 2019 at 08:42:39AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> HNS redefined available in bits.h define and didn't use it,
+> we can safely delete it.
+> 
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_device.h | 2 --
+>  1 file changed, 2 deletions(-)
 
-Is != really what you want? Or is <= better? != means you can't ever
-make qp_resp bigger.
-
-> +	if (!qp->is_kernel) {
-> +		if (udata->outlen == sizeof(qp_resp)) {
-
-Same comment, this really should be min()? Didn't I mention that already?
+Applied to for-next, thanks
 
 Jason
