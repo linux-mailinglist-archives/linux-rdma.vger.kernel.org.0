@@ -2,120 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB21FE726F
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 14:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE78E7271
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 14:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727007AbfJ1NNW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Oct 2019 09:13:22 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:33525 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726940AbfJ1NNW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Oct 2019 09:13:22 -0400
-Received: by mail-qt1-f196.google.com with SMTP id y39so9096610qty.0
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2019 06:13:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hHAmyNyt0/UPcUBOa5Y8r6bMgHDJnqFgQ/fdHQ275L0=;
-        b=NoDafDCSiXnaHG/BEIoccNoX2VosfOLzXMXdZQ46Xa/SFCOxY3RLbmdnhZgcq8hGeu
-         8VplOQjpu/lGuZnLr3EsyT2xxLotCvKlYSdRsDnKJtzBbHXgeAiViegJP4Trp8mcjSeo
-         9cKcSZLMCuEnlsv42f7a2sWzbiT0is+FLvpIQ9iy8pootGuDrgwDVdBONXHAh6eoDSQ1
-         ATII+e5W4YB/hUdWYYOtQZMKFVHw77KWuawQSunU+iznIJ/QTtoKMS0wi/Uz1T906CCW
-         jTiJFvAY4IoM3YH/nqOeFFESHkZHS52TX+PXLOIN2zH1rmfeNUQf9/IAP6JfSKVL+yK6
-         fsLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hHAmyNyt0/UPcUBOa5Y8r6bMgHDJnqFgQ/fdHQ275L0=;
-        b=quOELaeHossUnS3C0W0Bk9yiB4DyigFgH7bh/H/r4TVN2DNp/gWR6TwY7Trr+1ODL+
-         yBXZ0X22CFPKrSWcxNtbVuH01oCL6fNfCYvsJutkN/m3kCk85lB5qHY89/I6yLKSfHuN
-         wB06Xv2Xcoe1Cf1Ss0QauqDuRrHZFHYlbzacKlNMJ8Kpm7p99hQTcjwewcORoNDff0US
-         bYT3YEYQLXMzClRgOuHE2JT0DV3bAY4e8maX0qMfPhdoGpa8b9k6rQX3QKHgb6iISTR6
-         MXCmc5mgyvidJNZC1Y4TurGkxCOY5UHTIX8t7BJw7wXB1OtwENCIuqPvmoR7gEEGy9iJ
-         uk3Q==
-X-Gm-Message-State: APjAAAU8ezfCEOPtf0FI+gZWCS5XUjUj2pgTEfx3PgIYvq0l/1jlI/GJ
-        DKlP1tDsDee/zEnUlHES2/TxoQ==
-X-Google-Smtp-Source: APXvYqy0kd1ZMLmvNoESY9DcL+8wdbB/MsNBJE59OkLlUGWlMgT951kC/cbf0/8pt/vvDMlYa7FI9A==
-X-Received: by 2002:ac8:4456:: with SMTP id m22mr16343560qtn.336.1572268400944;
-        Mon, 28 Oct 2019 06:13:20 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id y29sm7048613qtc.8.2019.10.28.06.13.20
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 28 Oct 2019 06:13:20 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iP4pj-0003zL-L2; Mon, 28 Oct 2019 10:13:19 -0300
-Date:   Mon, 28 Oct 2019 10:13:19 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
+        id S1729184AbfJ1NNi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Oct 2019 09:13:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729012AbfJ1NNi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 28 Oct 2019 09:13:38 -0400
+Received: from localhost (unknown [77.137.89.37])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BEF4F20717;
+        Mon, 28 Oct 2019 13:13:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1572268417;
+        bh=T0E4dOUSO+qdRVPutlqp/7UcdqvVoVpJhWquHo84bsk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VNj3A3iG6of6gVKGX+q6qncGSp6CrrNHL8sKQVW+ZgQIsqJqzIQJwPKtXjauiuemd
+         dFev1aPTtMEEjPsuDnQozgNQHm0clftzBZQX8pBg1Vlq/56BbBZoX3yVS61B1fO9aS
+         BD+eO/X6OUZPSMXdfCtEo82xcoyh8ZBq7ztqu6CM=
+Date:   Mon, 28 Oct 2019 15:13:33 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: Re: [PATCH rdma-next 6/6] RDMA/srpt: Use private_data_len instead of
- hardcoded value
-Message-ID: <20191028131319.GA15102@ziepe.ca>
+        Bart Van Assche <bvanassche@acm.org>,
+        Or Gerlitz <gerlitz.or@gmail.com>
+Subject: Re: [PATCH rdma-next 4/6] RDMA/cm: Delete useless QPN masking
+Message-ID: <20191028131333.GD5146@unreal>
 References: <20191020071559.9743-1-leon@kernel.org>
- <20191020071559.9743-7-leon@kernel.org>
+ <20191020071559.9743-5-leon@kernel.org>
+ <20191028125233.GA27317@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191020071559.9743-7-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191028125233.GA27317@ziepe.ca>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Oct 20, 2019 at 10:15:59AM +0300, Leon Romanovsky wrote:
-> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> index daf811abf40a..e66366de11e9 100644
-> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
-> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
-> @@ -2609,7 +2609,7 @@ static int srpt_cm_handler(struct ib_cm_id *cm_id,
->  	case IB_CM_REJ_RECEIVED:
->  		srpt_cm_rej_recv(ch, event->param.rej_rcvd.reason,
->  				 event->private_data,
-> -				 IB_CM_REJ_PRIVATE_DATA_SIZE);
-> +				 event->private_data_len);
+On Mon, Oct 28, 2019 at 09:52:33AM -0300, Jason Gunthorpe wrote:
+> On Sun, Oct 20, 2019 at 10:15:57AM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@mellanox.com>
+> >
+> > QPN is supplied by kernel users who controls and creates valid QPs,
+> > such flow ensures that QPN is limited to 24bits and no need to mask
+> > already valid QPN.
+> >
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > ---
+> >  drivers/infiniband/core/cm.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+> > index 7ffa16ea5fe3..2eb8e1fab962 100644
+> > --- a/drivers/infiniband/core/cm.c
+> > +++ b/drivers/infiniband/core/cm.c
+> > @@ -2101,7 +2101,7 @@ int ib_send_cm_rep(struct ib_cm_id *cm_id,
+> >  	cm_id_priv->initiator_depth = param->initiator_depth;
+> >  	cm_id_priv->responder_resources = param->responder_resources;
+> >  	cm_id_priv->rq_psn = cm_rep_get_starting_psn(rep_msg);
+> > -	cm_id_priv->local_qpn = cpu_to_be32(param->qp_num & 0xFFFFFF);
+> > +	cm_id_priv->local_qpn = cpu_to_be32(param->qp_num);
+>
+> It does seem like this value comes from userspace:
+>
+> ucma_connect()
+>   ucma_copy_conn_param()
+>     	dst->qp_num = src->qp_num
+>   rdma_connect(.., &dst)
+> 	if (!id->qp) {
+> 		id_priv->qp_num = conn_param->qp_num;
+>
+> vs
+>
+> cma_accept_ib()
+> 	rep.qp_num = id_priv->qp_num;
+>
+> Maybe this needs to add some masking to ucma_copy_conn_param()?
 
-So, I took a look and found a heck of a lot more places assuming the
-size of private data that really should be checked if we are going to
-introduce a buffer length here.
+Thanks for the callstack, Or pointed it to me too, but I missed this flow.
+Let's create a pre-patch with QPN masking.
 
-This is the first couple I noticed, but there were many many more and
-they all should be handled..
+Thanks
 
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -2677,9 +2677,14 @@ static void srp_ib_cm_rej_handler(struct ib_cm_id *cm_id,
-                break;
- 
-        case IB_CM_REJ_CONSUMER_DEFINED:
-+               if (event->private_data_len < sizeof(struct srp_login_rej)) {
-+                       ch->status = -ECONNRESET;
-+                       break;
-+               }
-+
-
---- a/drivers/infiniband/ulp/ipoib/ipoib_cm.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_cm.c
-@@ -985,12 +985,15 @@ static int ipoib_cm_rep_handler(struct ib_cm_id *cm_id,
- {
-        struct ipoib_cm_tx *p = cm_id->context;
-        struct ipoib_dev_priv *priv = ipoib_priv(p->dev);
-        struct ipoib_cm_data *data = event->private_data;
-        struct sk_buff_head skqueue;
-        struct ib_qp_attr qp_attr;
-        int qp_attr_mask, ret;
-        struct sk_buff *skb;
- 
-+       if (event->private_data_len < sizeof(*data))
-+               return -EINVAL;
-+
-
-
-Thanks,
-Jason
+>
+> Jason
