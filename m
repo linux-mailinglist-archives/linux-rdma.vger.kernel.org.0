@@ -2,171 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96095E6F33
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 10:35:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B062E6F48
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 10:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732722AbfJ1Jfe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Oct 2019 05:35:34 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4775 "EHLO huawei.com"
+        id S1732446AbfJ1JpM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Oct 2019 05:45:12 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5200 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732678AbfJ1Jfe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 28 Oct 2019 05:35:34 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 327805965A346FF4C17F;
-        Mon, 28 Oct 2019 17:35:31 +0800 (CST)
-Received: from [127.0.0.1] (10.74.223.196) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.439.0; Mon, 28 Oct 2019
- 17:35:23 +0800
-Subject: Re: [PATCH for-next] RDMA/hns: Bugfix for flush cqe in case softirq
- and multi-process
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <jgg@ziepe.ca>,
-        <dledford@redhat.com>, <linuxarm@huawei.com>
-References: <1567686671-4331-1-git-send-email-liweihang@hisilicon.com>
- <20190908080303.GC26697@unreal>
- <f8f29a6a-b473-6c89-8ec7-092fd53aea16@huawei.com>
- <20190910075216.GX6601@unreal>
- <94ad1f56-afc6-ec78-4aa2-85d03c644031@huawei.com>
- <0d4ce391-6619-783d-55a8-fa2524af7b9c@huawei.com>
- <20190923050125.GK14368@unreal>
- <1224a3a0-50fb-dd6a-f22e-833e74ec77c3@huawei.com>
- <f1845894-a5c3-9630-15c2-6e1d806071e1@huawei.com>
- <20191015080036.GC6957@unreal>
-From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
-Message-ID: <ae1e81ba-cdd1-c1c5-a585-b0bfe9936000@huawei.com>
-Date:   Mon, 28 Oct 2019 17:34:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.1
+        id S1730486AbfJ1JpM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 28 Oct 2019 05:45:12 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A0F2D3709E6A92D8FDE2;
+        Mon, 28 Oct 2019 17:45:09 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.439.0; Mon, 28 Oct 2019 17:45:03 +0800
+From:   Yixian Liu <liuyixian@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH for-next 0/2] Fix crash due to sleepy mutex while holding lock in post_{send|recv|poll}
+Date:   Mon, 28 Oct 2019 17:45:43 +0800
+Message-ID: <1572255945-20297-1-git-send-email-liuyixian@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20191015080036.GC6957@unreal>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.223.196]
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
 X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Earlier Background:
+HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
+outstanding WQEs if QP state gets into errored mode for some reason.
+To overcome this hardware problem and as a workaround, when QP is
+detected to be in errored state during various legs like post send,
+post receive etc [1], flush needs to be performed from the driver.
+
+These data-path legs might get called concurrently from various context,
+like thread and interrupt as well (like NVMe driver). Hence, these need
+to be protected with spin-locks for the concurrency. This code exists
+within the driver.
+
+Problem:
+Earlier The patch[1] sent to solve the hardware limitation explained
+in the background section had a bug in the software flushing leg. It
+acquired mutex while modifying QP state to errored state and while
+conveying it to the hardware using the mailbox. This caused leg to
+sleep while holding spin-lock and caused crash.
+
+Suggested Solution:
+In this patch, we have proposed to defer the flushing of the QP in
+Errored state using the workqueue.
+
+We do understand that this might have an impact on the recovery times
+as scheduling of the wqorkqueue handler depends upon the occupancy of
+the system. Therefore to roughly mitigate this affect we have tried
+to use Concurrency Managed workqueue to give worker thread (and
+hence handler) a chance to run over more than one core.
 
 
-On 2019/10/15 16:00, Leon Romanovsky wrote:
-> On Sat, Oct 12, 2019 at 11:53:36AM +0800, Liuyixian (Eason) wrote:
->>
->>
->> On 2019/9/24 11:54, Liuyixian (Eason) wrote:
->>>
->>>
->>> On 2019/9/23 13:01, Leon Romanovsky wrote:
->>>> On Fri, Sep 20, 2019 at 11:55:56AM +0800, Liuyixian (Eason) wrote:
->>>>>
->>>>>
->>>>> On 2019/9/11 21:17, Liuyixian (Eason) wrote:
->>>>>>
->>>>>>
->>>>>> On 2019/9/10 15:52, Leon Romanovsky wrote:
->>>>>>> On Tue, Sep 10, 2019 at 02:40:20PM +0800, Liuyixian (Eason) wrote:
->>>>>>>>
->>>>>>>>
->>>>>>>> On 2019/9/8 16:03, Leon Romanovsky wrote:
->>>>>>>>> On Thu, Sep 05, 2019 at 08:31:11PM +0800, Weihang Li wrote:
->>>>>>>>>> From: Yixian Liu <liuyixian@huawei.com>
->>>>>>>>>>
->>>>>>>>>> Hip08 has the feature flush cqe, which help to flush wqe in workqueue
->>>>>>>>>> (sq and rq) when error happened by transmitting producer index with
->>>>>>>>>> mailbox to hardware. Flush cqe is emplemented in post send and recv
->>>>>>>>>> verbs. However, under NVMe cases, these verbs will be called under
->>>>>>>>>> softirq context, and it will lead to following calltrace with
->>>>>>>>>> current driver as mailbox used by flush cqe can go to sleep.
->>>>>>>>>>
->>>>>>>>>> This patch solves this problem by using workqueue to do flush cqe,
->>>>>>>>>
->>>>>>>>> Unbelievable, almost every bug in this driver is solved by introducing
->>>>>>>>> workqueue. You should fix "sleep in flush path" issue and not by adding
->>>>>>>>> new workqueue.
->>>>>>>>>
->>>>>>>> Hi Leon,
->>>>>>>>
->>>>>>>> Thanks for the comment.
->>>>>>>> Up to now, for hip08, only one place use workqueue in hns_roce_hw_v2.c
->>>>>>>> where for irq prints.
->>>>>>>
->>>>>>> Thanks to our lack of desire to add more workqueues and previous patches
->>>>>>> which removed extra workqueues from the driver.
->>>>>>>
->>>>>> Thanks, I see.
->>>>>>
->>>>>>>>
->>>>>>>> The solution for flush cqe in this patch is as follow:
->>>>>>>> While flush cqe should be implement, the driver should modify qp to error state
->>>>>>>> through mailbox with the newest product index of sq and rq, the hardware then
->>>>>>>> can flush all outstanding wqes in sq and rq.
->>>>>>>>
->>>>>>>> That's the whole mechanism of flush cqe, also is the flush path. We can't
->>>>>>>> change neither mailbox sleep attribute or flush cqe occurred in post send/recv.
->>>>>>>> To avoid the calltrace of flush cqe in post verbs under NVMe softirq,
->>>>>>>> use workqueue for flush cqe seems reasonable.
->>>>>>>>
->>>>>>>> As far as I know, there is no other alternative solution for this situation.
->>>>>>>> I will be very grateful if you reminder me more information.
->>>>>>>
->>>>>>> ib_drain_rq/ib_drain_sq/ib_drain_qp????
->>>>>>>
->>>>>> Hi Leon,
->>>>>>
->>>>>> I think these interfaces are designed for application to check that all wqes
->>>>>> have been processed by hardware, so called drain or flush. However, it is not
->>>>>> the same as the flush in this patch. The solution in this patch is used
->>>>>> to help the hardware generate flush cqes for outstanding wqes while qp error.
->>>>>>
->>>>> Hi Leon,
->>>>>
->>>>> What's your opinion about above? Do you have any further comments?
->>>>
->>>> My opinion didn't change, you need to read discussions about ib_drain_*()
->>>> functions, how and why they were introduced. It is a way to go.
->>>>
->>>> Thanks
->>>
->>> Hi Leon,
->>>
->>> Thanks a lot! I will dig those functions for my problem.
->>>
->>
->> Hi Leon,
->>
->> I have analysis the mechanism of ib_drain_(qp, sq, rq), that's okay to use
->> it instead of our flush cqe as both of them are calling modify qp to error
->> state in flush path.
->>
->> However, both ib_drain_* and flush cqe will face the same problem as declared
->> in previous emails, that is, in NVME case, post verbs will be called under
->> **softirq**, which will result to calltrace as mailbox used in modify qp
->> (flush path) can sleep, this is not allowed under softirq.
->>
->> Thus, to resolve above calltrace (sleep in softirq), using workqueue as in
->> this patch seems is a reasonable solution regardless of ib_drain_qp or
->> flush cqe is called in the workqueue.
->>
->> I think it is not a good idea to fix sleep in flush path (actually referred
->> to mailbox used in modify qp) as the mailbox is such a mature mechanism.
-> 
-> No, it is not reasonable solution.
-> 
+[1] https://patchwork.kernel.org/patch/10534271/
 
-Hi Leon,
 
-     I have explained this issue better in another patch set and pruned other logic.
-     Thanks a lot for your review!
+This patch-set consists of:
+[Patch 001] Introduce workqueue based WQE Flush Handler
+[Patch 002] Call WQE flush handler in post {send|receive|poll}
 
-Best regards.
-Eason
+Yixian Liu (2):
+  RDMA/hns: Add the workqueue framework for flush cqe handler
+  RDMA/hns: Delayed flush cqe process with workqueue
 
->>
->> Thanks.
->>
-> 
-> .
-> 
+ drivers/infiniband/hw/hns/hns_roce_device.h |  10 +++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 100 +++++++++++++++-------------
+ drivers/infiniband/hw/hns/hns_roce_qp.c     |  43 ++++++++++++
+ 3 files changed, 107 insertions(+), 46 deletions(-)
+
+-- 
+2.7.4
 
