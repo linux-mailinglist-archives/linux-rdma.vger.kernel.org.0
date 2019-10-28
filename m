@@ -2,21 +2,21 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52DF2E7C29
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 23:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FD3E7C2A
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 23:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbfJ1WIC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 28 Oct 2019 18:08:02 -0400
-Received: from smtp-internal.canonical.com ([91.189.90.122]:46011 "EHLO
+        id S1726124AbfJ1WIP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 28 Oct 2019 18:08:15 -0400
+Received: from smtp-internal.canonical.com ([91.189.90.122]:52929 "EHLO
         erinyes.canonical.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725927AbfJ1WIC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Oct 2019 18:08:02 -0400
+        with ESMTP id S1725927AbfJ1WIP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Oct 2019 18:08:15 -0400
 Received: from alphecca.canonical.com ([91.189.89.254])
         by erinyes.canonical.com with esmtp (Exim 4.86_2 #2 (Debian))
-        id 1iPCUc-0001zY-E9
+        id 1iPCUc-0001ze-M0
         for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2019 21:24:02 +0000
 Received: from alphecca.canonical.com (localhost [IPv6:::1])
-        by alphecca.canonical.com (Postfix) with ESMTP id 678F8E00185
+        by alphecca.canonical.com (Postfix) with ESMTP id A3143E00185
         for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2019 21:24:02 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
@@ -28,15 +28,15 @@ X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
 X-Launchpad-Build-State: FAILEDTOBUILD
 To:     Linux RDMA <linux-rdma@vger.kernel.org>
 From:   noreply@launchpad.net
-Subject: [recipe build #2430483] of ~linux-rdma rdma-core-daily in disco:
+Subject: [recipe build #2430481] of ~linux-rdma rdma-core-daily in xenial:
  Failed to build
-Message-Id: <157229784242.24187.1024330597023335032.launchpad@alphecca.canonical.com>
+Message-Id: <157229784266.24187.7470153283558387592.launchpad@alphecca.canonical.com>
 Date:   Mon, 28 Oct 2019 21:24:02 -0000
 Reply-To: noreply@launchpad.net
 X-Generated-By: Launchpad (canonical.com);
  Revision="469f241f4e73cc0bdffa4e30654052a2af068e06";
  Instance="buildmaster-secrets-lazr.conf"
-X-Launchpad-Hash: 45c6ef229dafcfe0ba5adecdd05a436ffc1ef3c2
+X-Launchpad-Hash: 6ab38b53a2cabd51594980e4892d0672657d6498
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
@@ -45,12 +45,12 @@ X-Mailing-List: linux-rdma@vger.kernel.org
  * State: Failed to build
  * Recipe: linux-rdma/rdma-core-daily
  * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Distroseries: disco
+ * Distroseries: xenial
  * Duration: 9 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebuild/2430483/+files/buildlog.txt.gz
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebuild/2430481/+files/buildlog.txt.gz
  * Upload Log: 
- * Builder: https://launchpad.net/builders/lgw01-amd64-052
+ * Builder: https://launchpad.net/builders/lgw01-amd64-059
 
 -- 
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebuild/2430483
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebuild/2430481
 Your team Linux RDMA is the requester of the build.
