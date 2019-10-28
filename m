@@ -2,124 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36174E7741
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 18:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BF4E7749
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 18:07:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731786AbfJ1RGL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Oct 2019 13:06:11 -0400
-Received: from mail-eopbgr690089.outbound.protection.outlook.com ([40.107.69.89]:24807
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726851AbfJ1RGL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 28 Oct 2019 13:06:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kAA36sJFzYcq+Nwve22jnnbMa3nXFNYgCzqbzpjwJ/6T639v/5E33LFbSrrCcnyfCfbf+at0tY3ppW30uxjZH5Sj5Z6Czy6uMeWYhXcDSvwPpBLwVAQEZIy9y60Ob4yZCgG9lWQ6ec+MT7PHoF5i6/eqR2i1GPoEYxicmtFpmtFPKuR1cT9dvzh5+Asg+cuW/voqOK5l5kxI81soQR6HFFKma3lKd7eLlM/Rq70G48akZPbEgRrXYSfYgisefT9BrBv8FUUY0WVnMrZ6qTDQJgqxn2sVn2oxAhefuq3cfxlZS2cdWP3iAXTqHWOE+hML8Q+tIDgWbW0g6ZVqOSxE4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nbRHt5llUSUWj8v7E3dyOCogutSPlTXrOfXiusG3ZWs=;
- b=bp3pHdJTnsl3uAXl1BFM9Y/SXO5NKtWTwsXGdVEWYpOqtirOoZLDognoO2rKNoJnd7/kKTCbi3/ybuZsIRWwFOoxzp0naAl9fUqkntpeX55xoLrBfxEINxDQAVnNkoohOSdgky/dQvERHXu5vn1qq0Ihueatyj40CK8X4f0uTFVi1yTEZhaH8zQjvzyz8Xku2/Ybl7BvCJiq5ArV7D6C5+FTpJs3YzSQNbODEBH6sQCmKKvtfql7s2hYe1uVco58WOVRnkGiGBVTs0fVZth+SCG6BoSNVQaO0UU9tYtsuJoVQoUFJLm2Aq/2wJkhP8MOPuUQZK9y3ooUtDpMMxyIfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nbRHt5llUSUWj8v7E3dyOCogutSPlTXrOfXiusG3ZWs=;
- b=Jjl4JINr0RostFoFxTeekFQyrvbderbQtaM2Ng0atiW1w+97uu9Wzztd7aU4JgNRB9CbYnJ79H6aQLMhPeJoIWvhOE7OTs8VprEP+YNtJd+CAcbJr1qbBJp9f10cbZxVCt+wUVpxSYM8NXzbvS+4BBN0o62c+btSCmJVj3gPCpU=
-Received: from BYAPR05MB5511.namprd05.prod.outlook.com (20.177.186.28) by
- BYAPR05MB5992.namprd05.prod.outlook.com (20.178.53.33) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2408.15; Mon, 28 Oct 2019 17:06:08 +0000
-Received: from BYAPR05MB5511.namprd05.prod.outlook.com
- ([fe80::f149:5b68:407b:e494]) by BYAPR05MB5511.namprd05.prod.outlook.com
- ([fe80::f149:5b68:407b:e494%3]) with mapi id 15.20.2408.012; Mon, 28 Oct 2019
- 17:06:08 +0000
-From:   Adit Ranadive <aditr@vmware.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Bryan Tan <bryantan@vmware.com>,
-        Pv-drivers <Pv-drivers@vmware.com>
-Subject: Re: [PATCH v2] RDMA/vmw_pvrdma: Use resource ids from physical device
- if available
-Thread-Topic: [PATCH v2] RDMA/vmw_pvrdma: Use resource ids from physical
- device if available
-Thread-Index: AQHViRQ9NYXZypIt40K4gJBX9Hr5P6dwRyYA//+PvoCAAHi4gIAAAjWA
-Date:   Mon, 28 Oct 2019 17:06:07 +0000
-Message-ID: <48518d0c-f04a-fa80-71f1-bf8db27da36e@vmware.com>
-References: <20191022200642.22762-1-aditr@vmware.com>
- <20191028162756.GA16475@ziepe.ca>
- <8f14c8c9-db10-2bb6-51b8-6e3b8b0167be@vmware.com>
- <20191028165813.GG29652@ziepe.ca>
-In-Reply-To: <20191028165813.GG29652@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BYAPR02CA0003.namprd02.prod.outlook.com
- (2603:10b6:a02:ee::16) To BYAPR05MB5511.namprd05.prod.outlook.com
- (2603:10b6:a03:1a::28)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=aditr@vmware.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [66.170.99.1]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9ccf35b4-9509-42eb-550e-08d75bc91fd9
-x-ms-traffictypediagnostic: BYAPR05MB5992:|BYAPR05MB5992:
-x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR05MB5992E8DA10CC6D0E9A72A45AC5660@BYAPR05MB5992.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 0204F0BDE2
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(366004)(396003)(376002)(136003)(346002)(199004)(189003)(31696002)(8936002)(36756003)(86362001)(31686004)(2906002)(66066001)(229853002)(6116002)(3846002)(6246003)(107886003)(4326008)(6436002)(6486002)(6512007)(14454004)(478600001)(5660300002)(66946007)(54906003)(316002)(64756008)(25786009)(66446008)(66476007)(186003)(81166006)(102836004)(71200400001)(26005)(71190400001)(256004)(81156014)(6506007)(53546011)(11346002)(446003)(476003)(2616005)(305945005)(486006)(6916009)(386003)(76176011)(7736002)(8676002)(99286004)(66556008)(52116002)(309714004);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR05MB5992;H:BYAPR05MB5511.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: vmware.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rcISgKARIsziM+g+dy/WFDri1vLxK1dDVkEZiYcMGs5b9vqohyhVBaayXTnWeNL14JlzbqTi5udlB5ipMSaTpRJfVj2Jujdn1+8b6tl+mBZfIBCpkDG+K8mMWrdA1EIJqgwk7MZ6XXytsftBB4vs1Ke1zaM+KoKLbcBVqcY8+GVbYIZxal2A3OgCAQQ9zZ3TPZ2oM3OALxsglz2/PhiwEVhOSgC6o/CcXFHAj2jnBOMJJODMhPVcgez0e7sa744KBMxoCegnUrePL4T0K9OJhHbuDD1FqOGTrhOYkYeDaRW6VCM+5BTIE5BVVfQKS2Vu2VX+V61ll3/X17/FkSN931bsS7Koi4xw9dy+zW0NZ6VDjqsfrtuqO81sHHJiH8SOX8Kee8+5LmCL5RFXf90fl34o4OQxVlH/9l+4zS9OQoPFNE58SuLa3nW3kjBz6IB9
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <71465E83427A7140ACAF21CD3DA96C1E@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S2404023AbfJ1RHe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Oct 2019 13:07:34 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:33342 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726851AbfJ1RHd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Oct 2019 13:07:33 -0400
+Received: by mail-qk1-f195.google.com with SMTP id 71so9197920qkl.0
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2019 10:07:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IN7x0hiFXqyQYUwYDLeUiDxKVsIP6hFICx2nFLfvGsM=;
+        b=o61LF9quMUiEwwpHrdt9CIW5Ea014D3onjM16SG49Ss7EgCHk+Fj1Bo9sPHQ8UWTlI
+         E0hk1hClLmAXFK19WSyHz/acLgGEgpiWGKCF8zNrB08723zylLnnFF1bLQVfgPkfyo51
+         is5DKFpMtxIosP9g0Pzn31wP/nrWp1AW8dcayXLXN8hnkr2hIVijUK+ZYvvUjlZoxVqb
+         bNTyBn3G5xZ+oQ/bYIvfi52AtxopOP8AErFDCKQFPxfFGun8ohs/wdQ7rJRq22maUlpa
+         88Qc5WtMyIPtAOkPHe3KBRsKM3ZJHZ2kbffa9olhy4IrZkxu0YcjuC3Lb9kvnKwS8qxv
+         qexA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IN7x0hiFXqyQYUwYDLeUiDxKVsIP6hFICx2nFLfvGsM=;
+        b=DCnr142rODhS42YsDiQSlUi5BoT2Kmm75kGXt0k/ntK0C8Z6ywhSzet1V/InRiISvz
+         erJM2mXNdAc3Vu/a9+MCAof5jmbEbJpnfvhDuO3+wXXrQ3k23NLInLarqdKWmcnCCPRf
+         d4Rpnwe5zmKLJmgOEMLnnL8mgwtoWG6rOY1X9P/RdP9x07vpIL5aNd0bEDafH8yF5g3L
+         nJAlDMctjRt81sMk6LFpWMs2iAp/qzEIfwhKktzQItA4vOjXRAyoQE4juY6uazneX3ue
+         Gg9pbTYz/PehUc60LuHkxxPQIqiSbAPzXugYqV9mD1mFtSZk2eODxZQkGgJSCMUQNnSW
+         wz3g==
+X-Gm-Message-State: APjAAAU64khalcDKSaF8P9oqLu50F8N4zpQ8C76TwhbLlr8hoql7X1Sa
+        fv18HuEo7tYy+O+Id9/rLygf7A==
+X-Google-Smtp-Source: APXvYqyiUOOttKoBpgcTyQ2HLtEUOIGocxCuD133G/wSxMKy2Uyr/hkFlOWaZ8W59SZhuw7akQRgRQ==
+X-Received: by 2002:a05:620a:b12:: with SMTP id t18mr201557qkg.129.1572282452856;
+        Mon, 28 Oct 2019 10:07:32 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id j63sm6023141qkc.113.2019.10.28.10.07.32
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 28 Oct 2019 10:07:32 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iP8UO-0008Og-1H; Mon, 28 Oct 2019 14:07:32 -0300
+Date:   Mon, 28 Oct 2019 14:07:32 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Michal Kalderon <michal.kalderon@marvell.com>
+Cc:     ariel.elior@marvell.com, dledford@redhat.com,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v4 rdma-next 0/4] RDMA/qedr: Fix memory leaks and
+ synchronization
+Message-ID: <20191028170732.GA32173@ziepe.ca>
+References: <20191027200451.28187-1-michal.kalderon@marvell.com>
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ccf35b4-9509-42eb-550e-08d75bc91fd9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2019 17:06:08.0123
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZhjRKGXv6q2zgHmCDc87oH4YX1OjWjqB8sldpHxOJp6uR+3IpXrbq1wHygjeTJ4aF/+IDUmwlCvOaHBhpEEUrw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB5992
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191027200451.28187-1-michal.kalderon@marvell.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gMTAvMjgvMTkgOTo1OCBBTSwgSmFzb24gR3VudGhvcnBlIHdyb3RlOg0KPiBPbiBNb24sIE9j
-dCAyOCwgMjAxOSBhdCAwNDo0NjowOVBNICswMDAwLCBBZGl0IFJhbmFkaXZlIHdyb3RlOg0KPj4g
-T24gMTAvMjgvMTkgOToyNyBBTSwgSmFzb24gR3VudGhvcnBlIHdyb3RlOg0KPj4+IE9uIFR1ZSwg
-T2N0IDIyLCAyMDE5IGF0IDA4OjA2OjUwUE0gKzAwMDAsIEFkaXQgUmFuYWRpdmUgd3JvdGU6DQo+
-Pj4+IEBAIC0xOTUsNyArMTk4LDkgQEAgc3RydWN0IGliX3FwICpwdnJkbWFfY3JlYXRlX3FwKHN0
-cnVjdCBpYl9wZCAqcGQsDQo+Pj4+ICAJdW5pb24gcHZyZG1hX2NtZF9yZXNwIHJzcDsNCj4+Pj4g
-IAlzdHJ1Y3QgcHZyZG1hX2NtZF9jcmVhdGVfcXAgKmNtZCA9ICZyZXEuY3JlYXRlX3FwOw0KPj4+
-PiAgCXN0cnVjdCBwdnJkbWFfY21kX2NyZWF0ZV9xcF9yZXNwICpyZXNwID0gJnJzcC5jcmVhdGVf
-cXBfcmVzcDsNCj4+Pj4gKwlzdHJ1Y3QgcHZyZG1hX2NtZF9jcmVhdGVfcXBfcmVzcF92MiAqcmVz
-cF92MiA9ICZyc3AuY3JlYXRlX3FwX3Jlc3BfdjI7DQo+Pj4+ICAJc3RydWN0IHB2cmRtYV9jcmVh
-dGVfcXAgdWNtZDsNCj4+Pj4gKwlzdHJ1Y3QgcHZyZG1hX2NyZWF0ZV9xcF9yZXNwIHFwX3Jlc3Ag
-PSB7fTsNCj4+Pj4gIAl1bnNpZ25lZCBsb25nIGZsYWdzOw0KPj4+PiAgCWludCByZXQ7DQo+Pj4+
-ICAJYm9vbCBpc19zcnEgPSAhIWluaXRfYXR0ci0+c3JxOw0KPj4+PiBAQCAtMjYwLDYgKzI2NSwx
-NSBAQCBzdHJ1Y3QgaWJfcXAgKnB2cmRtYV9jcmVhdGVfcXAoc3RydWN0IGliX3BkICpwZCwNCj4+
-Pj4gIAkJCQlnb3RvIGVycl9xcDsNCj4+Pj4gIAkJCX0NCj4+Pj4gIA0KPj4+PiArCQkJLyogVXNl
-cnNwYWNlIHN1cHBvcnRzIHFwbiBhbmQgcXAgaGFuZGxlcz8gKi8NCj4+Pj4gKwkJCWlmIChkZXYt
-PmRzcl92ZXJzaW9uID49IFBWUkRNQV9RUEhBTkRMRV9WRVJTSU9OICYmDQo+Pj4+ICsJCQkgICAg
-dWRhdGEtPm91dGxlbiAhPSBzaXplb2YocXBfcmVzcCkpIHsNCj4+Pg0KPj4+IElzICE9IHJlYWxs
-eSB3aGF0IHlvdSB3YW50PyBPciBpcyA8PSBiZXR0ZXI/ICE9IG1lYW5zIHlvdSBjYW4ndCBldmVy
-DQo+Pj4gbWFrZSBxcF9yZXNwIGJpZ2dlci4NCj4+DQo+PiBJIHRob3VnaHQgYWJvdXQgdXNpbmcg
-IT0gb3IgPCBiZWZvcmUgc2VuZGluZyB0aGUgcGF0Y2guIFNpbmNlIHdlIHJlbW92ZWQNCj4+IHRo
-ZSBmbGFnIGFueXdheXMgdXNpbmcgIT0gaGVyZSBtYWRlIHNlbnNlIHRvIGJlIG1vcmUgc3RyaWN0
-IGFib3V0IHdoYXQncw0KPj4gYWNjZXB0YWJsZS4gSSdtIG5vdCBzdXJlIGlmIHdlJ2xsIGV2ZXIg
-bWFrZSBpdCBiaWdnZXIuDQo+IA0KPiBJdCBpcyBhIGJpZyBnYW1ibGUgeW91IHdpbGwgbmV2ZXIg
-bmVlZCB0byBhZGQgbmV3IGVudHJpZXMgdG8gdGhpcw0KPiBzdHJ1Y3QgZm9yZXZlciBtb3JlLiBC
-ZXR0ZXIgdG8gYmUgc2FmZSwgSU1ITy4NCj4gDQoNCk9rYXkuIFdpbGwgc2VuZCBhIHYzIGZvciB0
-aGlzLg0KDQo=
+On Sun, Oct 27, 2019 at 10:04:47PM +0200, Michal Kalderon wrote:
+> Several leaks and issues were found when running iWARP with kmemleak.
+> some apply to RoCE as well.
+> 
+> This series fixes some memory leaks and some wrong methods of
+> synchronization which were used to wait for iWARP CM related events.
+> 
+> Changes from V3
+> - call xa_init for the qpids xarray.
+> - add another patch that calls xa_init_flags for srqs xarray.
+> 
+> Changes from V2
+> - Add a new separate patch that fixes the xarray api that was used
+>   for the qps xarray, there was no need to use the _irq version of
+>   the api.
+> 
+> - Move xa_erase of qp_id to be right before the qp resources are
+>   released. This fixes a race where the qp-id can be reassigned
+>   before removed from the xarray.
+> 
+> - Modify places that call kref_get_unless_zero to kref_get since we
+>   already hold a valid pointer.
+> 
+> - Comment about the usage of the same completion structure for two
+>   different completions.
+> 
+> - Add Fixes tag
+> 
+> Changes from v1
+> - When removing the qp from the xarray xa_erase should be used and
+>   not xa_erase_irq as this can't be called from irq context.
+> 
+> - Add xa_lock around loading a qp from the xarray and increase the
+>   refcnt only under the xa_lock and only if not zero. This is to make
+>   qedr more robust and not rely on the core/iwcm implementation to
+>   assure correctness.
+> 
+> - Complete the iwarp_cm_comp event only if the bit was turned on and
+>   the destroy qp flow will attempt to look at the completion
+> 
+> 
+> Michal Kalderon (4):
+>   RDMA/qedr: Fix srqs xarray initialization
+>   RDMA/qedr: Fix qpids xarray api used
+>   RDMA/qedr: Fix synchronization methods and memory leaks in qedr
+>   RDMA/qedr: Fix memory leak in user qp and mr
+
+Applied to for-next, thanks
+
+Jason
