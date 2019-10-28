@@ -2,72 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C82FE72F5
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 14:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 079D7E732C
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 15:02:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbfJ1N55 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Oct 2019 09:57:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54740 "EHLO mail.kernel.org"
+        id S1727775AbfJ1OC1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Oct 2019 10:02:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727243AbfJ1N55 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 28 Oct 2019 09:57:57 -0400
+        id S1727598AbfJ1OC0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 28 Oct 2019 10:02:26 -0400
 Received: from localhost (unknown [77.137.89.37])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7AD252086D;
-        Mon, 28 Oct 2019 13:57:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82BB120659;
+        Mon, 28 Oct 2019 14:02:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572271077;
-        bh=auTisxDBqPAovqdOLJ4zRzbvYr1seh/4dOnj8zyrEAU=;
+        s=default; t=1572271346;
+        bh=jGfqE1YGvGXWZVVRZfLa23HuIcufLEB6TRGeYmJllOk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oFQooDh9zNY6Olq/UPz3/bH3gK2+/rMspyz2Kw+HJFolmP8CQ9PRjDugsb7xEQst3
-         ww55M6GHvTNvYmmnttHTyZXh39ztj/Kh6ruLCUAu/AmZoQ4FfbGXTuTkAuyc87R1aL
-         Wnuf5jiB3oYA/3/Tyu7hSO+jRgCR+MW7ZoWsI1so=
-Date:   Mon, 28 Oct 2019 15:57:52 +0200
+        b=wqdJQ5q7Q2Eiez1KAO7aEPNWXJ2G2dGnqeUu4g2Tkh4OCCkc7W6bg0/7cHaLzXkeG
+         1uz0U9LyPAyVEIMX4xq49j2Zv9FJZTfb5Iu5K1SjA/UBtCaLC1MDekBn4OcNzkFeOR
+         MWoc2LGsQkbkvFnfR+OiktfGDaytJGr7IxZu5kVA=
+Date:   Mon, 28 Oct 2019 16:02:22 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@mellanox.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Doug Ledford <dledford@redhat.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Sean Hefty <sean.hefty@intel.com>
-Subject: Re: [PATCH rdma-next] RDMA/ucma: Protect kernel from QPN larger than
- declared in IBTA
-Message-ID: <20191028135752.GG5146@unreal>
-References: <20191028134444.25537-1-leon@kernel.org>
- <20191028134528.GW22766@mellanox.com>
+        Bart Van Assche <bvanassche@acm.org>,
+        Or Gerlitz <gerlitz.or@gmail.com>
+Subject: Re: [PATCH rdma-next 4/6] RDMA/cm: Delete useless QPN masking
+Message-ID: <20191028140222.GH5146@unreal>
+References: <20191020071559.9743-1-leon@kernel.org>
+ <20191020071559.9743-5-leon@kernel.org>
+ <20191028125233.GA27317@ziepe.ca>
+ <20191028131333.GD5146@unreal>
+ <20191028134457.GC29652@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191028134528.GW22766@mellanox.com>
+In-Reply-To: <20191028134457.GC29652@ziepe.ca>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 28, 2019 at 03:45:33PM +0200, Jason Gunthorpe wrote:
-> On Mon, Oct 28, 2019 at 03:44:44PM +0200, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
+On Mon, Oct 28, 2019 at 10:44:57AM -0300, Jason Gunthorpe wrote:
+> On Mon, Oct 28, 2019 at 03:13:33PM +0200, Leon Romanovsky wrote:
+> > On Mon, Oct 28, 2019 at 09:52:33AM -0300, Jason Gunthorpe wrote:
+> > > On Sun, Oct 20, 2019 at 10:15:57AM +0300, Leon Romanovsky wrote:
+> > > > From: Leon Romanovsky <leonro@mellanox.com>
+> > > >
+> > > > QPN is supplied by kernel users who controls and creates valid QPs,
+> > > > such flow ensures that QPN is limited to 24bits and no need to mask
+> > > > already valid QPN.
+> > > >
+> > > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > > >  drivers/infiniband/core/cm.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+> > > > index 7ffa16ea5fe3..2eb8e1fab962 100644
+> > > > +++ b/drivers/infiniband/core/cm.c
+> > > > @@ -2101,7 +2101,7 @@ int ib_send_cm_rep(struct ib_cm_id *cm_id,
+> > > >  	cm_id_priv->initiator_depth = param->initiator_depth;
+> > > >  	cm_id_priv->responder_resources = param->responder_resources;
+> > > >  	cm_id_priv->rq_psn = cm_rep_get_starting_psn(rep_msg);
+> > > > -	cm_id_priv->local_qpn = cpu_to_be32(param->qp_num & 0xFFFFFF);
+> > > > +	cm_id_priv->local_qpn = cpu_to_be32(param->qp_num);
+> > >
+> > > It does seem like this value comes from userspace:
+> > >
+> > > ucma_connect()
+> > >   ucma_copy_conn_param()
+> > >     	dst->qp_num = src->qp_num
+> > >   rdma_connect(.., &dst)
+> > > 	if (!id->qp) {
+> > > 		id_priv->qp_num = conn_param->qp_num;
+> > >
+> > > vs
+> > >
+> > > cma_accept_ib()
+> > > 	rep.qp_num = id_priv->qp_num;
+> > >
+> > > Maybe this needs to add some masking to ucma_copy_conn_param()?
 > >
-> > IBTA declares QPN as 24bits, mask input to ensure that kernel
-> > doesn't get higher bits.
-> >
-> > Fixes: 75216638572f ("RDMA/cma: Export rdma cm interface to userspace")
-> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> >  * Not fully tested yet, passed sanity tests for now.
-> >  drivers/infiniband/core/ucma.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-> > index 0274e9b704be..57e68491a2fd 100644
-> > +++ b/drivers/infiniband/core/ucma.c
-> > @@ -1045,7 +1045,7 @@ static void ucma_copy_conn_param(struct rdma_cm_id *id,
-> >  	dst->retry_count = src->retry_count;
-> >  	dst->rnr_retry_count = src->rnr_retry_count;
-> >  	dst->srq = src->srq;
+> > Thanks for the callstack, Or pointed it to me too, but I missed this flow.
+> > Let's create a pre-patch with QPN masking.
 >
-> srq too?
+> You'll need to check all the id_priv->qp_num users, I stopped when I
+> found the above
 
-If I read IBTA correctly, the answer is yes. In all CM messages, QPN, SRQ number and EECN are 24 bits.
+Initially, I wanted to add masking in rdma_connect(), but decided that
+it is not the cleanest approach, so I grepped to see rdma_conn_param
+users. I'll continue to grep.
 
 Thanks
 
