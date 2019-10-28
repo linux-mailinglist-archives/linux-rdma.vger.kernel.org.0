@@ -2,104 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A615E7B3E
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 22:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93704E7B7C
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 22:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728132AbfJ1VSJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Oct 2019 17:18:09 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:40876 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726890AbfJ1VSJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Oct 2019 17:18:09 -0400
-Received: by mail-pl1-f196.google.com with SMTP id p5so1136907plr.7;
-        Mon, 28 Oct 2019 14:18:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+VUOkQQ0cS09JPSi71tIBBT1mTYHRZxM9Rky7eoOSgw=;
-        b=OjidU2oR2T7Q2hn+YlY+Tct62hI1mB5Kifm4bnkpc+vSlhdG07Rbxu78tVTb8ktGnw
-         AeaEcsZIAYA8VkjeezkHxk1P7mIAYRvIpF3nRii9vtvBaRXi83Y9cDUNVTQSfoDUQv4v
-         jnrL5/gPGgrjp3aBrI31twYk8mH4R9yHZLoM7MzgIs6GkMZco5UQq6nj2AntGx7ZvuAD
-         Tt/b/oLd9t8AhWziSH3Mc1M8/wVvg0JACvkoFrEeOk21xPCwxjwGHfygrgUu9yt9IM0K
-         zH46rQ2jlG3LMyYQc/Q0CeBltTYHOUN0uRHxDXyR17KejlePM+MBN+cKGxlVsjjE+xk+
-         e1JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+VUOkQQ0cS09JPSi71tIBBT1mTYHRZxM9Rky7eoOSgw=;
-        b=t/0cQXoR6uWkl4YmmO5FQOEYq531wOQ7Zhl2yoN7RYUPP5415vll2Sxh23gM4kfY42
-         EY1kqL+561bN0Jf9ZbyIldSV4/kwOMeOIOMwvCWKpQxnF3pNXM169XJWavvhfHSOmuXN
-         3/IyTqkPA4muchcPOkb2KFNG0e8dgapLq3hUJ/RtVqBjVIXlkLBK5usRmplvQIJaDIYT
-         Hom25krdpvEL6QPp8zQa1+K5FK2j2Me3zl99NlsR3ymznYkLoa8eidE9EVWrQDLdvSy1
-         jZyAU9TZoivc3G4YeB+JIHD3/hgknhscXuHlXvkcJ5puS7nFDAzGTZPrKvtyiT1xSIZh
-         QwIw==
-X-Gm-Message-State: APjAAAXnRe/hVpwgj0Ec9QNN51pszCQtgs2G8tlio4CuHh7wqClqUgsI
-        mzGhSET64LNO3s2j9yjBsDU=
-X-Google-Smtp-Source: APXvYqyo7XTKvgWX6tPjauNCdnz4UEC3+PRaUMgcyu5WG2/v8b20G+1O971o5O5DlU8wpP/ywNzsxw==
-X-Received: by 2002:a17:902:6b4c:: with SMTP id g12mr163578plt.78.1572297488315;
-        Mon, 28 Oct 2019 14:18:08 -0700 (PDT)
-Received: from ?IPv6:2620:15c:2c1:200:55c7:81e6:c7d8:94b? ([2620:15c:2c1:200:55c7:81e6:c7d8:94b])
-        by smtp.gmail.com with ESMTPSA id c19sm11424797pfn.44.2019.10.28.14.18.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Oct 2019 14:18:07 -0700 (PDT)
-Subject: Re: KASAN: use-after-free Read in sctp_sock_dump
-To:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        syzbot <syzbot+e5b57b8780297657b25b@syzkaller.appspotmail.com>
-Cc:     davem@davemloft.net, leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-sctp@vger.kernel.org,
-        netdev@vger.kernel.org, nhorman@tuxdriver.com, roid@mellanox.com,
-        saeedm@mellanox.com, syzkaller-bugs@googlegroups.com,
-        vladbu@mellanox.com, vyasevich@gmail.com
-References: <000000000000e68ee20595fa33be@google.com>
- <20191028153648.GF4250@localhost.localdomain>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <82f699fc-7509-b8fd-f2d0-b1ceb808e37b@gmail.com>
-Date:   Mon, 28 Oct 2019 14:18:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729972AbfJ1Vkh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 28 Oct 2019 17:40:37 -0400
+Received: from smtp-internal.canonical.com ([91.189.90.122]:43867 "EHLO
+        erinyes.canonical.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726834AbfJ1Vkh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Oct 2019 17:40:37 -0400
+X-Greylist: delayed 993 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Oct 2019 17:40:36 EDT
+Received: from alphecca.canonical.com ([91.189.89.254])
+        by erinyes.canonical.com with esmtp (Exim 4.86_2 #2 (Debian))
+        id 1iPCUc-0001zi-T3
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2019 21:24:02 +0000
+Received: from alphecca.canonical.com (localhost [IPv6:::1])
+        by alphecca.canonical.com (Postfix) with ESMTP id D89E5E00185
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2019 21:24:02 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20191028153648.GF4250@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: FAILEDTOBUILD
+To:     Linux RDMA <linux-rdma@vger.kernel.org>
+From:   noreply@launchpad.net
+Subject: [recipe build #2430482] of ~linux-rdma rdma-core-daily in bionic:
+ Failed to build
+Message-Id: <157229784288.24187.1374883879562344915.launchpad@alphecca.canonical.com>
+Date:   Mon, 28 Oct 2019 21:24:02 -0000
+Reply-To: noreply@launchpad.net
+X-Generated-By: Launchpad (canonical.com);
+ Revision="469f241f4e73cc0bdffa4e30654052a2af068e06";
+ Instance="buildmaster-secrets-lazr.conf"
+X-Launchpad-Hash: e89d38f4298d1772eadfd061c0cbdd8cf7e96aa7
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+ * State: Failed to build
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: bionic
+ * Duration: 9 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebuild/2430482/+files/buildlog.txt.gz
+ * Upload Log: 
+ * Builder: https://launchpad.net/builders/lgw01-amd64-057
 
-
-On 10/28/19 8:36 AM, Marcelo Ricardo Leitner wrote:
-> On Mon, Oct 28, 2019 at 08:32:08AM -0700, syzbot wrote:
->> Hello,
->>
->> syzbot found the following crash on:
->>
->> HEAD commit:    d6d5df1d Linux 5.4-rc5
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=17ef5a70e00000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=2bcb64e504d04eff
->> dashboard link: https://syzkaller.appspot.com/bug?extid=e5b57b8780297657b25b
->> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
->> userspace arch: i386
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16cd8800e00000
->>
->> The bug was bisected to:
->>
->> commit 61086f391044fd587af9d70a9b8f6f800dd474ba
->> Author: Vlad Buslov <vladbu@mellanox.com>
->> Date:   Fri Aug 2 19:21:56 2019 +0000
->>
->>     net/mlx5e: Protect encap hash table with mutex
->>
->> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=135960af600000
-> 
-> This is weird. This mlx5e commit has nothing to do with SCTP diag
-> dump.
-
-syzbot bisections results might be wrong, it happens quite often.
-
-But the SCTP bug is probably real.
+-- 
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebuild/2430482
+Your team Linux RDMA is the requester of the build.
