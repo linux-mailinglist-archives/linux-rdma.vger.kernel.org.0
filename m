@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC040E6F4A
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEDDE6F49
 	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 10:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388030AbfJ1JpR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S2388031AbfJ1JpR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Mon, 28 Oct 2019 05:45:17 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:37990 "EHLO huawei.com"
+Received: from szxga06-in.huawei.com ([45.249.212.32]:37994 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730486AbfJ1JpR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        id S2388030AbfJ1JpR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
         Mon, 28 Oct 2019 05:45:17 -0400
 Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A7ACBF952FA7275EA17C;
+        by Forcepoint Email with ESMTP id AE44EF21215E32EBFB1B;
         Mon, 28 Oct 2019 17:45:14 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
@@ -20,9 +20,9 @@ Received: from localhost.localdomain (10.69.192.56) by
 From:   Yixian Liu <liuyixian@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH for-next 1/2] RDMA/hns: Add the workqueue framework for flush cqe handler
-Date:   Mon, 28 Oct 2019 17:45:44 +0800
-Message-ID: <1572255945-20297-2-git-send-email-liuyixian@huawei.com>
+Subject: [PATCH for-next 2/2] RDMA/hns: Delayed flush cqe process with workqueue
+Date:   Mon, 28 Oct 2019 17:45:45 +0800
+Message-ID: <1572255945-20297-3-git-send-email-liuyixian@huawei.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1572255945-20297-1-git-send-email-liuyixian@huawei.com>
 References: <1572255945-20297-1-git-send-email-liuyixian@huawei.com>
@@ -39,7 +39,7 @@ HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
 outstanding WQEs if QP state gets into errored mode for some reason.
 To overcome this hardware problem and as a workaround, when QP is
 detected to be in errored state during various legs like post send,
-post receive etc [1], flush needs to be performed from the driver.
+post receive etc[1], flush needs to be performed from the driver.
 
 The earlier patch[1] sent to solve the hardware limitation explained
 in the cover-letter had a bug in the software flushing leg. It
@@ -51,156 +51,174 @@ Suggested Solution:
 we have proposed to defer the flushing of the QP in the Errored state
 using the workqueue to get around with the limitation of our hardware.
 
-This patch adds the framework of the workqueue and the flush handler
-function.
+This patch specifically adds the calls to the flush handler from
+where parts of the code like post_send/post_recv etc. when the QP
+state gets into the errored mode.
 
 [1] https://patchwork.kernel.org/patch/10534271/
 
 Signed-off-by: Yixian Liu <liuyixian@huawei.com>
 Reviewed-by: Salil Mehta <salil.mehta@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_device.h | 10 +++++++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 16 +++++++++++
- drivers/infiniband/hw/hns/hns_roce_qp.c     | 43 +++++++++++++++++++++++++++++
- 3 files changed, 69 insertions(+)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 84 ++++++++++++++----------------
+ 1 file changed, 38 insertions(+), 46 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index cbd75e4..0d979e8 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -45,6 +45,8 @@
- 
- #define HNS_ROCE_MAX_MSG_LEN			0x80000000
- 
-+#define HNS_ROCE_WORKQ_NAME_LEN			32
-+
- #define HNS_ROCE_ALIGN_UP(a, b) ((((a) + (b) - 1) / (b)) * (b))
- 
- #define HNS_ROCE_IB_MIN_SQ_STRIDE		6
-@@ -921,6 +923,12 @@ struct hns_roce_work {
- 	int sub_type;
- };
- 
-+struct hns_roce_flush_work {
-+	struct hns_roce_dev *hr_dev;
-+	struct work_struct work;
-+	struct hns_roce_qp *hr_qp;
-+};
-+
- struct hns_roce_dfx_hw {
- 	int (*query_cqc_info)(struct hns_roce_dev *hr_dev, u32 cqn,
- 			      int *buffer);
-@@ -1043,6 +1051,7 @@ struct hns_roce_dev {
- 	const struct hns_roce_hw *hw;
- 	void			*priv;
- 	struct workqueue_struct *irq_workq;
-+	struct workqueue_struct *flush_workq;
- 	const struct hns_roce_dfx_hw *dfx;
- };
- 
-@@ -1240,6 +1249,7 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *ib_pd,
- 				 struct ib_udata *udata);
- int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 		       int attr_mask, struct ib_udata *udata);
-+void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp);
- void *get_recv_wqe(struct hns_roce_qp *hr_qp, int n);
- void *get_send_wqe(struct hns_roce_qp *hr_qp, int n);
- void *get_send_extend_sge(struct hns_roce_qp *hr_qp, int n);
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 14e24b4..396c896 100644
+index 396c896..23932eb 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1960,6 +1960,8 @@ static void hns_roce_free_link_table(struct hns_roce_dev *hr_dev,
- static int hns_roce_v2_init(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_v2_priv *priv = hr_dev->priv;
-+	char workq_name[HNS_ROCE_WORKQ_NAME_LEN];
-+	static int device_id;
- 	int qpc_count, cqc_count;
- 	int ret, i;
+@@ -221,11 +221,6 @@ static int set_rwqe_data_seg(struct ib_qp *ibqp, const struct ib_send_wr *wr,
+ 	return 0;
+ }
  
-@@ -1998,6 +2000,17 @@ static int hns_roce_v2_init(struct hns_roce_dev *hr_dev)
- 		}
+-static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
+-				 const struct ib_qp_attr *attr,
+-				 int attr_mask, enum ib_qp_state cur_state,
+-				 enum ib_qp_state new_state);
+-
+ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
+ 				 const struct ib_send_wr *wr,
+ 				 const struct ib_send_wr **bad_wr)
+@@ -238,14 +233,12 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
+ 	struct hns_roce_wqe_frmr_seg *fseg;
+ 	struct device *dev = hr_dev->dev;
+ 	struct hns_roce_v2_db sq_db;
+-	struct ib_qp_attr attr;
+ 	unsigned int sge_ind;
+ 	unsigned int owner_bit;
+ 	unsigned long flags;
+ 	unsigned int ind;
+ 	void *wqe = NULL;
+ 	bool loopback;
+-	int attr_mask;
+ 	u32 tmp_len;
+ 	int ret = 0;
+ 	u32 hr_op;
+@@ -591,18 +584,17 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
+ 		qp->sq_next_wqe = ind;
+ 		qp->next_sge = sge_ind;
+ 
+-		if (qp->state == IB_QPS_ERR) {
+-			attr_mask = IB_QP_STATE;
+-			attr.qp_state = IB_QPS_ERR;
+-
+-			ret = hns_roce_v2_modify_qp(&qp->ibqp, &attr, attr_mask,
+-						    qp->state, IB_QPS_ERR);
+-			if (ret) {
+-				spin_unlock_irqrestore(&qp->sq.lock, flags);
+-				*bad_wr = wr;
+-				return ret;
+-			}
+-		}
++		/*
++		 * Hip08 hardware cannot flush the WQEs in SQ if the QP state
++		 * gets into errored mode. Hence, as a workaround to this
++		 * hardware limitation, driver needs to assist in flushing. But
++		 * the flushing operation uses mailbox to convey the QP state to
++		 * the hardware and which can sleep due to the mutex protection
++		 * around the mailbox calls. Hence, use the deferred flush for
++		 * now.
++		 */
++		if (qp->state == IB_QPS_ERR)
++			init_flush_work(hr_dev, qp);
  	}
  
-+	snprintf(workq_name, HNS_ROCE_WORKQ_NAME_LEN - 1,
-+		 "hns_roce_%d_flush_wq", device_id);
-+	device_id++;
-+
-+	hr_dev->flush_workq = alloc_workqueue(workq_name, WQ_HIGHPRI, 0);
-+	if (!hr_dev->flush_workq) {
-+		dev_err(hr_dev->dev, "Failed to create flush workqueue!\n");
-+		ret = -ENOMEM;
-+		goto err_cqc_timer_failed;
-+	}
-+
- 	return 0;
- 
- err_cqc_timer_failed:
-@@ -2020,6 +2033,9 @@ static void hns_roce_v2_exit(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_v2_priv *priv = hr_dev->priv;
- 
-+	flush_workqueue(hr_dev->flush_workq);
-+	destroy_workqueue(hr_dev->flush_workq);
-+
- 	if (hr_dev->pci_dev->revision == 0x21)
- 		hns_roce_function_clear(hr_dev);
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index bec48f2..2c8f726 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -43,6 +43,49 @@
- 
- #define SQP_NUM				(2 * HNS_ROCE_MAX_PORTS)
- 
-+static void flush_work_handle(struct work_struct *work)
-+{
-+	struct hns_roce_flush_work *flush_work = container_of(work,
-+					struct hns_roce_flush_work, work);
-+	struct hns_roce_qp *hr_qp = flush_work->hr_qp;
-+	struct device *dev = flush_work->hr_dev->dev;
-+	struct ib_qp_attr attr;
-+	int attr_mask;
-+	int ret;
-+
-+	attr_mask = IB_QP_STATE;
-+	attr.qp_state = IB_QPS_ERR;
-+
-+	ret = hns_roce_modify_qp(&hr_qp->ibqp, &attr, attr_mask, NULL);
-+	if (ret)
-+		dev_err(dev, "Modify QP to error state failed(%d) during CQE flush\n",
-+			ret);
-+
-+	kfree(flush_work);
-+
-+	/*
-+	 * make sure we signal QP destroy leg that flush QP was completed
-+	 * so that it can safely proceed ahead now and destroy QP
-+	 */
-+	if (atomic_dec_and_test(&hr_qp->refcount))
-+		complete(&hr_qp->free);
-+}
-+
-+void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
-+{
-+	struct hns_roce_flush_work *flush_work;
-+
-+	flush_work = kzalloc(sizeof(struct hns_roce_flush_work), GFP_ATOMIC);
-+	if (!flush_work)
-+		return;
-+
-+	flush_work->hr_dev = hr_dev;
-+	flush_work->hr_qp = hr_qp;
-+	INIT_WORK(&flush_work->work, flush_work_handle);
-+	atomic_inc(&hr_qp->refcount);
-+	queue_work(hr_dev->flush_workq, &flush_work->work);
-+}
-+
- void hns_roce_qp_event(struct hns_roce_dev *hr_dev, u32 qpn, int event_type)
- {
+ 	spin_unlock_irqrestore(&qp->sq.lock, flags);
+@@ -619,10 +611,8 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
+ 	struct hns_roce_v2_wqe_data_seg *dseg;
+ 	struct hns_roce_rinl_sge *sge_list;
  	struct device *dev = hr_dev->dev;
+-	struct ib_qp_attr attr;
+ 	unsigned long flags;
+ 	void *wqe = NULL;
+-	int attr_mask;
+ 	int ret = 0;
+ 	int nreq;
+ 	int ind;
+@@ -692,19 +682,17 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
+ 
+ 		*hr_qp->rdb.db_record = hr_qp->rq.head & 0xffff;
+ 
+-		if (hr_qp->state == IB_QPS_ERR) {
+-			attr_mask = IB_QP_STATE;
+-			attr.qp_state = IB_QPS_ERR;
+-
+-			ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, &attr,
+-						    attr_mask, hr_qp->state,
+-						    IB_QPS_ERR);
+-			if (ret) {
+-				spin_unlock_irqrestore(&hr_qp->rq.lock, flags);
+-				*bad_wr = wr;
+-				return ret;
+-			}
+-		}
++		/*
++		 * Hip08 hardware cannot flush the WQEs in RQ if the QP state
++		 * gets into errored mode. Hence, as a workaround to this
++		 * hardware limitation, driver needs to assist in flushing. But
++		 * the flushing operation uses mailbox to convey the QP state to
++		 * the hardware and which can sleep due to the mutex protection
++		 * around the mailbox calls. Hence, use the deferred flush for
++		 * now.
++		 */
++		if (hr_qp->state == IB_QPS_ERR)
++			init_flush_work(hr_dev, hr_qp);
+ 	}
+ 	spin_unlock_irqrestore(&hr_qp->rq.lock, flags);
+ 
+@@ -2707,13 +2695,11 @@ static int hns_roce_handle_recv_inl_wqe(struct hns_roce_v2_cqe *cqe,
+ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
+ 				struct hns_roce_qp **cur_qp, struct ib_wc *wc)
+ {
++	struct hns_roce_dev *hr_dev = to_hr_dev(hr_cq->ib_cq.device);
+ 	struct hns_roce_srq *srq = NULL;
+-	struct hns_roce_dev *hr_dev;
+ 	struct hns_roce_v2_cqe *cqe;
+ 	struct hns_roce_qp *hr_qp;
+ 	struct hns_roce_wq *wq;
+-	struct ib_qp_attr attr;
+-	int attr_mask;
+ 	int is_send;
+ 	u16 wqe_ctr;
+ 	u32 opcode;
+@@ -2737,7 +2723,6 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
+ 				V2_CQE_BYTE_16_LCL_QPN_S);
+ 
+ 	if (!*cur_qp || (qpn & HNS_ROCE_V2_CQE_QPN_MASK) != (*cur_qp)->qpn) {
+-		hr_dev = to_hr_dev(hr_cq->ib_cq.device);
+ 		hr_qp = __hns_roce_qp_lookup(hr_dev, qpn);
+ 		if (unlikely(!hr_qp)) {
+ 			dev_err(hr_dev->dev, "CQ %06lx with entry for unknown QPN %06x\n",
+@@ -2831,14 +2816,21 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
+ 		break;
+ 	}
+ 
+-	/* flush cqe if wc status is error, excluding flush error */
+-	if ((wc->status != IB_WC_SUCCESS) &&
+-	    (wc->status != IB_WC_WR_FLUSH_ERR)) {
+-		attr_mask = IB_QP_STATE;
+-		attr.qp_state = IB_QPS_ERR;
+-		return hns_roce_v2_modify_qp(&(*cur_qp)->ibqp,
+-					     &attr, attr_mask,
+-					     (*cur_qp)->state, IB_QPS_ERR);
++	/*
++	 * Hip08 hardware cannot flush the WQEs in SQ/RQ if the QP state gets
++	 * into errored mode. Hence, as a workaround to this hardware
++	 * limitation, driver needs to assist in flushing. But the flushing
++	 * operation uses mailbox to convey the QP state to the hardware and
++	 * which can sleep due to the mutex protection around the mailbox calls.
++	 * Hence, use the deferred flush for now. Once wc error detected, the
++	 * flushing operation is needed.
++	 */
++	if (wc->status != IB_WC_SUCCESS &&
++	    wc->status != IB_WC_WR_FLUSH_ERR) {
++		dev_err(hr_dev->dev, "error cqe status is: 0x%x\n",
++			status & HNS_ROCE_V2_CQE_STATUS_MASK);
++		init_flush_work(hr_dev, *cur_qp);
++		return 0;
+ 	}
+ 
+ 	if (wc->status == IB_WC_WR_FLUSH_ERR)
 -- 
 2.7.4
 
