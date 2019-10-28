@@ -2,80 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9ADE76AC
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 17:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F33EE76F1
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 17:46:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391102AbfJ1QjW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Oct 2019 12:39:22 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:46863 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733084AbfJ1QjW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Oct 2019 12:39:22 -0400
-Received: by mail-qk1-f195.google.com with SMTP id e66so9055528qkf.13
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2019 09:39:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9KsNTBJ6fYfkomOPww0YFjuQOVs1JLXNAN2fMq0txvs=;
-        b=oLC4FfxrsYJZLGK3Y0QD9213kqDZw8Lwl1l6ghci8OMnA5kTTbw3FY9Wlo9FwJUlRB
-         A2JNa0htrbvd7yW+1cmtT2YtxQlbTQ5akuNIeNityv02zAWLsBepKbsLL766Svu2bR7A
-         gntte3tdCfW5lDPP4pjlRQtW6MPWxp5ygeDvd3cfj8vGvWRVRk1lJoQ/owuaYdVWCYum
-         yjRq0MHVes+NcYs3iT0GR7fnN1M0I0DxxmO8QiE8altwiySQmZjnBR+Y/fcvOOKLV1FN
-         zANYnZujLyNE3KOqAYrFVO79Ya9JxWlEQ0zrB4kpCP+x1n+KrDDkUWNRAe7C8toKlYIw
-         KMPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9KsNTBJ6fYfkomOPww0YFjuQOVs1JLXNAN2fMq0txvs=;
-        b=eCBRJNhn9TxMtaB7OZSZZCS6huLBlLhl4bLFj/kqQQS5sl/CXYA9RQIZhxF//M/mxs
-         kc1NnXMGB8CMqFbZbqY0KmTFU/K79YTkGqND1ZQ4wYtKfbGFiKE4lYAwiAI40ZPpDKq/
-         ydtuHMSD59tbQIrcATjHNwmnzTDJNqpK+EUoRb2u++n7pfQKlaHvqbbmimCSp1itvuFP
-         rZ+cp8qbuAgfUXfVaDhE0JJgLrPIqmuDBejc6jV/alKl9bNqvF8z8BRtYflGM5qRx87T
-         S8/639qnr3xI6sNOPoBoqmGfJzfDRmDv4oECm2+OSjElc69ryEs77vbvtE20k4QOQ4dY
-         XQIg==
-X-Gm-Message-State: APjAAAW6Wv3I0b9+n1lqFQvLyXgCJvEfgipB1xaCJ54jG7EUCp8CjuoM
-        VWJW/3EG6A5P8ataLdlymNBQ1g==
-X-Google-Smtp-Source: APXvYqzsKRImXnCT+GgV26OwxlrMWN+Y++tvKhFhMquf7M5jnG8J7cxrIwqlOcMdmXgc++YqGUdGWA==
-X-Received: by 2002:a37:8b03:: with SMTP id n3mr16466680qkd.493.1572280761588;
-        Mon, 28 Oct 2019 09:39:21 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id b9sm1189750qkk.61.2019.10.28.09.39.21
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 28 Oct 2019 09:39:21 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iP836-0001Du-MR; Mon, 28 Oct 2019 13:39:20 -0300
-Date:   Mon, 28 Oct 2019 13:39:20 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Weihang Li <liweihang@hisilicon.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-rc 0/2] RDMA/hns: Fixes related to 64K page
-Message-ID: <20191028163920.GA4672@ziepe.ca>
-References: <1571908917-16220-1-git-send-email-liweihang@hisilicon.com>
+        id S2403863AbfJ1QqN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Oct 2019 12:46:13 -0400
+Received: from mail-eopbgr730051.outbound.protection.outlook.com ([40.107.73.51]:11584
+        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1733000AbfJ1QqN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 28 Oct 2019 12:46:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ql1KkfYXUFNwGh0oz7ssr8S6EnqfcPBNJxTvvLeBVG2DIl+ttyDgB1ZY1B6MIcM3p7iEmLS1QUt4dEEr0orqF8MO4PEw6y/S4Hi3UacEr91B94wNHh/VjU0xx08uzCaAdWvpw2ZHcM7r5ssnwPsW0A98hwcLIOY1JX1yKf/waOZaxwEyrxmpkLKmOHXKUh372mwa36rOqpt8uJ4M6VcDlNW/rnJNACwdsXwf1LtWfHn8njSmXOW0KvflSYxrOXFVab8uaefj7ejtI0B2WP0AAgcaYing/4KKRyAVUeD8wwTby57mYFpam//Sd5U1HcUB94H7D05V7Cx1EgYgnkAC6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OGlTxWNo/SijMmSxTzefqrHcJc9NwH110TinPMmo48k=;
+ b=IeFkh5dMFRwAfzb3DnsbobmDwQubmsQ7vKRD5HOBmV+Rq7ekVOUZLKwjWtzggJ/JClZDBkump7KVTNPTuwi/WgbmHaf1Vz7WBzbveAs/YLTvUoAvcI7ehxHVXphJfWvD61SU7b/D9gweLI/X204ucIBGYXoTHM162nv8Pn3vh15NCXnyGF4Sk5vHhFtIaIxLwE3rrnMODEpytJQlEN1s/QYWte/Pb7gFu6CK8mqJY4kMlBdr5KO2ThCWVOfcmkXKl1b+jVjYjeHpJosUKpFM39yyNfEX3PzmcHGjUZeuGzGN4hhphZizz4+gxPHhIiYNqxnhYLZ+or98G8pFrQzknw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OGlTxWNo/SijMmSxTzefqrHcJc9NwH110TinPMmo48k=;
+ b=Yea3CF5NRTQUljFEyQHnw8ratZZmR/Ma7+rdjvDCAzsN74WGqaTh5HR7KI1LMRPdhyVGcsdPzHIVyR4RzCmVJQlNM//gZFh3JO2QYbJRjVTmNFljFou8Jc4FTqmmk77xErD6p5qS17gM+Ml1jJbb5/ZHrLxrDUZqDblwi3NF+JQ=
+Received: from BYAPR05MB5511.namprd05.prod.outlook.com (20.177.186.28) by
+ BYAPR05MB5575.namprd05.prod.outlook.com (20.177.127.214) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2408.15; Mon, 28 Oct 2019 16:46:10 +0000
+Received: from BYAPR05MB5511.namprd05.prod.outlook.com
+ ([fe80::f149:5b68:407b:e494]) by BYAPR05MB5511.namprd05.prod.outlook.com
+ ([fe80::f149:5b68:407b:e494%3]) with mapi id 15.20.2408.012; Mon, 28 Oct 2019
+ 16:46:10 +0000
+From:   Adit Ranadive <aditr@vmware.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Bryan Tan <bryantan@vmware.com>,
+        Pv-drivers <Pv-drivers@vmware.com>
+Subject: Re: [PATCH v2] RDMA/vmw_pvrdma: Use resource ids from physical device
+ if available
+Thread-Topic: [PATCH v2] RDMA/vmw_pvrdma: Use resource ids from physical
+ device if available
+Thread-Index: AQHViRQ9NYXZypIt40K4gJBX9Hr5P6dwRyYAgAAFF4A=
+Date:   Mon, 28 Oct 2019 16:46:09 +0000
+Message-ID: <8f14c8c9-db10-2bb6-51b8-6e3b8b0167be@vmware.com>
+References: <20191022200642.22762-1-aditr@vmware.com>
+ <20191028162756.GA16475@ziepe.ca>
+In-Reply-To: <20191028162756.GA16475@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BYAPR08CA0001.namprd08.prod.outlook.com
+ (2603:10b6:a03:100::14) To BYAPR05MB5511.namprd05.prod.outlook.com
+ (2603:10b6:a03:1a::28)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=aditr@vmware.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [66.170.99.1]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 35477420-344b-47ba-2346-08d75bc655c4
+x-ms-traffictypediagnostic: BYAPR05MB5575:|BYAPR05MB5575:
+x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR05MB55756BD41BFA6DC21C66083EC5660@BYAPR05MB5575.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-forefront-prvs: 0204F0BDE2
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(366004)(376002)(346002)(136003)(396003)(199004)(189003)(31696002)(86362001)(305945005)(36756003)(256004)(71200400001)(71190400001)(476003)(99286004)(6506007)(316002)(2906002)(7736002)(52116002)(14454004)(54906003)(4326008)(66446008)(64756008)(66556008)(66476007)(6512007)(66946007)(31686004)(81156014)(81166006)(8936002)(8676002)(486006)(2616005)(107886003)(386003)(76176011)(6246003)(446003)(6916009)(11346002)(3846002)(478600001)(6116002)(26005)(25786009)(66066001)(5660300002)(102836004)(229853002)(6436002)(186003)(6486002)(53546011)(309714004);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR05MB5575;H:BYAPR05MB5511.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DQcsZndkhP20b8nc9rRk4DESpC9IFivYVf8obL1sZwE5ZD/ru4Fo6YiObfi7t/9n02O1bxNTxYi+9EuMqqjmJVn33OBYRZaL05UIFtcsRIhxa9F7LA6m7IDBp8vyZA9/et+kz4mkueK+p37DYpzBlSYBy+qdVF1SXsMuCvRXqibMtdd6aGVxI4ubOFSkxPd4aou/HCeNrTe+i/KaD/UGFCVESjpQUgDYEvsVnrawIr3AmVeagcXX+He8ZS+gaQPlF/rzAwKNvQy0uwY+58PkPIFmOLfnijWdEYdra2ctHvqhmXlTQthk3Fm8zzoqmoXQYdlxFh8KquzYm/nEHdmrrb0hRCtRLRPyw0TmMv+HlHgZThMqlb3b+KvJkKf0e2ddqz7JcdRZ7xP4opHyT5tEYrNJKG064m+382ZBAU3KXF6jJ40RpZBC6x1kf/jprp7a
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1DE8165076F15F4A9F44034B9E8B247E@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1571908917-16220-1-git-send-email-liweihang@hisilicon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 35477420-344b-47ba-2346-08d75bc655c4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2019 16:46:09.9502
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VtVt3LzzrrpWMrEXXkmf5Ywwbre6mWFGDmPY5lrJjEjoMFwgUW7llb8LeG+Qbtu03IrCdR4nMLzeatkty/A2vA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB5575
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 24, 2019 at 05:21:55PM +0800, Weihang Li wrote:
-> Currently, some configurations can only support 4K page in hip08, this
-> series fixes them.
-> 
-> Lijun Ou (1):
->   RDMA/hns: Fix to support 64K page for srq
-> 
-> Yangyang Li (1):
->   RDMA/hns: Bugfix for qpc/cqc timer configuration
-
-Applied to for-next
-
-Thanks,
-Jason
+T24gMTAvMjgvMTkgOToyNyBBTSwgSmFzb24gR3VudGhvcnBlIHdyb3RlOg0KPiBPbiBUdWUsIE9j
+dCAyMiwgMjAxOSBhdCAwODowNjo1MFBNICswMDAwLCBBZGl0IFJhbmFkaXZlIHdyb3RlOg0KPj4g
+QEAgLTE5NSw3ICsxOTgsOSBAQCBzdHJ1Y3QgaWJfcXAgKnB2cmRtYV9jcmVhdGVfcXAoc3RydWN0
+IGliX3BkICpwZCwNCj4+ICAJdW5pb24gcHZyZG1hX2NtZF9yZXNwIHJzcDsNCj4+ICAJc3RydWN0
+IHB2cmRtYV9jbWRfY3JlYXRlX3FwICpjbWQgPSAmcmVxLmNyZWF0ZV9xcDsNCj4+ICAJc3RydWN0
+IHB2cmRtYV9jbWRfY3JlYXRlX3FwX3Jlc3AgKnJlc3AgPSAmcnNwLmNyZWF0ZV9xcF9yZXNwOw0K
+Pj4gKwlzdHJ1Y3QgcHZyZG1hX2NtZF9jcmVhdGVfcXBfcmVzcF92MiAqcmVzcF92MiA9ICZyc3Au
+Y3JlYXRlX3FwX3Jlc3BfdjI7DQo+PiAgCXN0cnVjdCBwdnJkbWFfY3JlYXRlX3FwIHVjbWQ7DQo+
+PiArCXN0cnVjdCBwdnJkbWFfY3JlYXRlX3FwX3Jlc3AgcXBfcmVzcCA9IHt9Ow0KPj4gIAl1bnNp
+Z25lZCBsb25nIGZsYWdzOw0KPj4gIAlpbnQgcmV0Ow0KPj4gIAlib29sIGlzX3NycSA9ICEhaW5p
+dF9hdHRyLT5zcnE7DQo+PiBAQCAtMjYwLDYgKzI2NSwxNSBAQCBzdHJ1Y3QgaWJfcXAgKnB2cmRt
+YV9jcmVhdGVfcXAoc3RydWN0IGliX3BkICpwZCwNCj4+ICAJCQkJZ290byBlcnJfcXA7DQo+PiAg
+CQkJfQ0KPj4gIA0KPj4gKwkJCS8qIFVzZXJzcGFjZSBzdXBwb3J0cyBxcG4gYW5kIHFwIGhhbmRs
+ZXM/ICovDQo+PiArCQkJaWYgKGRldi0+ZHNyX3ZlcnNpb24gPj0gUFZSRE1BX1FQSEFORExFX1ZF
+UlNJT04gJiYNCj4+ICsJCQkgICAgdWRhdGEtPm91dGxlbiAhPSBzaXplb2YocXBfcmVzcCkpIHsN
+Cj4gDQo+IElzICE9IHJlYWxseSB3aGF0IHlvdSB3YW50PyBPciBpcyA8PSBiZXR0ZXI/ICE9IG1l
+YW5zIHlvdSBjYW4ndCBldmVyDQo+IG1ha2UgcXBfcmVzcCBiaWdnZXIuDQoNCkkgdGhvdWdodCBh
+Ym91dCB1c2luZyAhPSBvciA8IGJlZm9yZSBzZW5kaW5nIHRoZSBwYXRjaC4gU2luY2Ugd2UgcmVt
+b3ZlZA0KdGhlIGZsYWcgYW55d2F5cyB1c2luZyAhPSBoZXJlIG1hZGUgc2Vuc2UgdG8gYmUgbW9y
+ZSBzdHJpY3QgYWJvdXQgd2hhdCdzDQphY2NlcHRhYmxlLiBJJ20gbm90IHN1cmUgaWYgd2UnbGwg
+ZXZlciBtYWtlIGl0IGJpZ2dlci4NCg0KPiANCj4+ICsJaWYgKCFxcC0+aXNfa2VybmVsKSB7DQo+
+PiArCQlpZiAodWRhdGEtPm91dGxlbiA9PSBzaXplb2YocXBfcmVzcCkpIHsNCj4gDQo+IFNhbWUg
+Y29tbWVudCwgdGhpcyByZWFsbHkgc2hvdWxkIGJlIG1pbigpPyBEaWRuJ3QgSSBtZW50aW9uIHRo
+YXQgYWxyZWFkeT8NCj4NCg0KV2h5PyBJIGRpZG4ndCBhZGQgdGhlIG1pbiBzaW5jZSBJIHVzZWQg
+IT0gYWJvdmUgYW55d2F5cy4NCg0KPiBKYXNvbg0KPiANCg0K
