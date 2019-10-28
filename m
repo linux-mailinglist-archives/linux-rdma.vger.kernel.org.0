@@ -2,84 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D9FE7866
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 19:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B84EE78F1
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 20:08:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733226AbfJ1SZc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Oct 2019 14:25:32 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:35292 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733204AbfJ1SZc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Oct 2019 14:25:32 -0400
-Received: by mail-qt1-f194.google.com with SMTP id l3so5470149qtp.2
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2019 11:25:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=t71jXgJeYLFmX0IKk+gR8k3GqBKQELR9GtxYOxiQcp4=;
-        b=TN4hTqQE8VCVdoIPeL8jcTTx66Xa1BM1NroN+UBgx9V6JNRm8t5F6fr5YMLvi9VMtJ
-         dObraoyEdCqEYSgPOC2+0SJWPvb3/sAHwk5yAribbIRWr5wcURlFdgOOnPuW/pY7WN2f
-         NwlK7N4+1LAGimflEQ/rnBCZSr4rAFypuV6r9aDFTOuGncF7iKtv9X8dcCI0kGFuIe4m
-         3urR6OTHelpzLEBl0r+rBySQ4t9hnWrOFD72h9lt5YBRI674MT4bWFjEcejqB8D4oooP
-         y2iFNxEaOH7+5cTJn5XEHChFC3GH9DgM9STzdDYHX9UY4GitNKdtFFULhcWEA1AKW16s
-         r3Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=t71jXgJeYLFmX0IKk+gR8k3GqBKQELR9GtxYOxiQcp4=;
-        b=EEmuReTxJFuD+r2Na9k8lFbcILOOa6uFRlcP0EjMEBSnOiST7kxv4w3t88n4kMtQDG
-         Br8GyU4wrW2vVapij+ngl3mkLeZytKPHBGS8VHl7o6bubNFJLUECH69eRt3ARfGeNC4F
-         M4rZ1CsWckw/W62xI71vSVl3NqbGo58vB25hDRTgkGeMmLwt2Ijigf5o8F2xT6UxH/ft
-         ye8Dz6cIn3TF5RcfpdwM7aCi3rJ76sSzW/7sJuV6UmZHTLm/aoaNgSnbRlonojmlpRvg
-         4xsv4yYy2wPdqPmqNQQV/CMdZPTLar7bQ8NyYdP9bQgKy/MFKoq/ORQsmVmnWLeyJgtR
-         Ny1w==
-X-Gm-Message-State: APjAAAVDg0IMqyOHanF9CqDzZL/J7wlyGSJu4XwL6QsIDHJK2tccIuak
-        AohcBzrcboK5duP115GdwxfU4Q==
-X-Google-Smtp-Source: APXvYqzc+77oUZMFPubZPvFpy0/nCpikDLMuuuab4MCEMojCFTipngiZA29IWs9N0mGecf0OPHVmcQ==
-X-Received: by 2002:ac8:18af:: with SMTP id s44mr11483566qtj.78.1572287129563;
-        Mon, 28 Oct 2019 11:25:29 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id e3sm694507qkg.136.2019.10.28.11.25.29
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 28 Oct 2019 11:25:29 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iP9ho-0003pc-Mv; Mon, 28 Oct 2019 15:25:28 -0300
-Date:   Mon, 28 Oct 2019 15:25:28 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Weihang Li <liweihang@hisilicon.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-rc 2/2] RDMA/hns: Prevent memory leaks about eq
-Message-ID: <20191028182528.GA14706@ziepe.ca>
-References: <1572072995-11277-1-git-send-email-liweihang@hisilicon.com>
- <1572072995-11277-3-git-send-email-liweihang@hisilicon.com>
+        id S1729511AbfJ1TIq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Oct 2019 15:08:46 -0400
+Received: from mail-eopbgr70051.outbound.protection.outlook.com ([40.107.7.51]:25537
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727664AbfJ1TIq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 28 Oct 2019 15:08:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I+p7RDu6UKVzPBP8WMY9Rb5ZGPc2Dhg34prD5psK74Jq9Qo7/FHvK9erd9t70mw/KgM6mdWzewcvrfN32UCbGaaxRcj3gnkS6gc+Hm02PZ3YDXglVUslT3BLbyKVajeBfDH/GfHjNfCIIqCIVk53Xv1Va1ce61rR65mP2PBI/3b4KrFbCqlF7fvTpR8S96HiR3Tg5GPfcbyBrUtfKUSfhNP9SO4gIJcEjx8TNGJlQiPS8Es7TTtsOa3YDKdme8KUqqmdlcye7fZwY6TKKmhTe2aDzH5e+Or47MyzAbqsO0L/pSnaTFOcNNlTScq/Xu2TIqfO1/Gu0rrS3d9m1nBG1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AceR7SZO1DuVWj8JGnX7FqYUEzegP8CEpt/NyqtsMAU=;
+ b=RnfcHy01yW0lvaHG4vM734USt11pxFr3YTk9mH1z016nrVTuydHVni9A4H0Rwg1DsgkGjijpPEDjPgPIu7phtmSMDPfIhtAXohz6avpqnfv7HJjPmBl8BSimqaR7/CA358CBLRxUK6SNXiTP5FRpAMXh/K9ILn3R5dlOhBee5hZYlYOwSki/X3t7N///9ZrBYEcG3SB4ti0IK8TUIlvKqQT/j5FGyjK2dlctFartBP72Di1obkB0CRBQJTJABCtuX/baQ8S0LqslaRDV4pm7XbDLWNqnlIu60w8lCy0KqAPJYBQSvNcCdsdX21kcfsZCV/yy8igjeFf+rlB5QUaU8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AceR7SZO1DuVWj8JGnX7FqYUEzegP8CEpt/NyqtsMAU=;
+ b=Nacim+ByqpVoJg4+muAn8DjLSclfsF3c99fL3VKA4DUwmbIPwKYWGjx9ITEG1W9HE2xwsEKn/7I9/PvtU+3DtaNNjkK8Bze8CvLkRS7IygMea3ipSTJpkmVF8iBio6PYTZoTVrhdauKPsRgNb/mGZivRI3HOyKQbWGXSCPWrLOc=
+Received: from DB7PR05MB4138.eurprd05.prod.outlook.com (52.135.129.16) by
+ DB7PR05MB4122.eurprd05.prod.outlook.com (52.134.110.22) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2387.23; Mon, 28 Oct 2019 19:08:41 +0000
+Received: from DB7PR05MB4138.eurprd05.prod.outlook.com
+ ([fe80::18c2:3d9e:4f04:4043]) by DB7PR05MB4138.eurprd05.prod.outlook.com
+ ([fe80::18c2:3d9e:4f04:4043%3]) with mapi id 15.20.2387.021; Mon, 28 Oct 2019
+ 19:08:41 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Adit Ranadive <aditr@vmware.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Bryan Tan <bryantan@vmware.com>,
+        Pv-drivers <Pv-drivers@vmware.com>
+Subject: Re: [PATCH v3 for-next] RDMA/vmw_pvrdma: Use resource ids from
+ physical device if available
+Thread-Topic: [PATCH v3 for-next] RDMA/vmw_pvrdma: Use resource ids from
+ physical device if available
+Thread-Index: AQHVjbuXeycPE9XXtU+zc/m6Wa7saqdwarqA
+Date:   Mon, 28 Oct 2019 19:08:41 +0000
+Message-ID: <20191028190835.GZ22766@mellanox.com>
+References: <20191028181444.19448-1-aditr@vmware.com>
+In-Reply-To: <20191028181444.19448-1-aditr@vmware.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BL0PR01CA0031.prod.exchangelabs.com (2603:10b6:208:71::44)
+ To DB7PR05MB4138.eurprd05.prod.outlook.com (2603:10a6:5:23::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.162.113.180]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 6a850a6a-a4c3-4615-7feb-08d75bda3ec9
+x-ms-traffictypediagnostic: DB7PR05MB4122:
+x-microsoft-antispam-prvs: <DB7PR05MB41223663BD6394346CE56DDECF660@DB7PR05MB4122.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0204F0BDE2
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(396003)(366004)(136003)(376002)(39860400002)(189003)(199004)(316002)(81156014)(8676002)(8936002)(25786009)(6436002)(86362001)(33656002)(305945005)(256004)(6512007)(7736002)(6246003)(6486002)(54906003)(64756008)(66556008)(6916009)(4326008)(478600001)(66066001)(229853002)(1076003)(4744005)(36756003)(52116002)(476003)(66946007)(66476007)(81166006)(6116002)(2906002)(3846002)(14454004)(186003)(71190400001)(71200400001)(5660300002)(446003)(386003)(102836004)(6506007)(2616005)(66446008)(99286004)(26005)(11346002)(486006)(76176011);DIR:OUT;SFP:1101;SCL:1;SRVR:DB7PR05MB4122;H:DB7PR05MB4138.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Atvn8JKuOfrDY139F9ITL8rG/uPg0TZHwbRzg/iIcfxOCWc5WmGmgGMbkQ0IFMaQwBpTY2l04wb2ffJKWd2iliEQ2VkuNmgFfvu1uhKTpwAR2nwddbtS96fKYBHstPI0cfJdpO5D0oM4lT2janCSrc21omgTmMhYUSaCEa/To7lZ9wpqPiLa7AX7Up8goXHzE5lC3ccXm9aMjz/Qwoy83nDw5XKxAMG/gHO7gY40xQZI2/x9FAb9GHnQaU0aK57EHlbjBBVJD7I3jkVJdZaBrv4KS/EXI1WLUX055+6VAALrKSseBIhBISBMo/LhjeEYAxh3BZSm4xd0NtrfXHrzYOtdMe2ga/Lxh4d8CBKri2hAdX+92tbJpiko108aaYdsDq5+EJROSxiQeZ8ub2ywjPSP0g05yS7NdTFDtD2IwJ0hGYHHe5w2NCEZtzcvDRsI
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <DC18AF0B220A43489E8AEB0B0FDF4A5B@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1572072995-11277-3-git-send-email-liweihang@hisilicon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a850a6a-a4c3-4615-7feb-08d75bda3ec9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2019 19:08:41.5302
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nFRhQHwQ3whKJhS/ZktclbLsd06Z0ZTOetKbcxLZdHJJt/1y2cRWfUGkpGgA+Ts41Va/8qsmkOrMbk+fNOEiRw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR05MB4122
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Oct 26, 2019 at 02:56:35PM +0800, Weihang Li wrote:
-> From: Lijun Ou <oulijun@huawei.com>
-> 
-> eq->buf_list->buf and eq->buf_list should also be freed when eqe_hop_num
-> is set to 0, or there will be memory leaks.
-> 
-> Fixes: a5073d6054f7 ("RDMA/hns: Add eq support of hip08")
-> Signed-off-by: Lijun Ou <oulijun@huawei.com>
-> Signed-off-by: Weihang Li <liweihang@hisilicon.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+On Mon, Oct 28, 2019 at 06:14:52PM +0000, Adit Ranadive wrote:
+> =20
+> +	if (!qp->is_kernel) {
+> +		if (udata->outlen >=3D sizeof(qp_resp)) {
+> +			qp_resp.qpn =3D qp->ibqp.qp_num;
+> +			qp_resp.qp_handle =3D qp->qp_handle;
+> +
+> +			if (ib_copy_to_udata(udata, &qp_resp,
+> +					     min(udata->outlen,
+> +						 sizeof(qp_resp)))) {
+> +				dev_warn(&dev->pdev->dev,
+> +					 "failed to copy back udata\n");
+> +				__pvrdma_destroy_qp(dev, qp);
+> +				return ERR_PTR(-EINVAL);
+> +			}
+> +		}
+> +	}
 
-Applies to for-rc
+This is just supposed to be like this:
+
++       if (udata) {
++               qp_resp.qpn =3D qp->ibqp.qp_num;
++               qp_resp.qp_handle =3D qp->qp_handle;
++
++               if (ib_copy_to_udata(udata, &qp_resp,
++                                    min(udata->outlen, sizeof(qp_resp)))) =
+{
++                       dev_warn(&dev->pdev->dev,
++                                "failed to copy back udata\n");
++                       __pvrdma_destroy_qp(dev, qp);
++                       return ERR_PTR(-EINVAL);
+
+
+I fixed it
+
+Applied to for-next
 
 Thanks,
 Jason
