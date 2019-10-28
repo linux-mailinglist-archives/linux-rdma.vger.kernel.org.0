@@ -2,96 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5253BE754A
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 16:36:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF601E75B1
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Oct 2019 17:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731352AbfJ1Pgx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Oct 2019 11:36:53 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:39815 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726025AbfJ1Pgx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Oct 2019 11:36:53 -0400
-Received: by mail-qt1-f194.google.com with SMTP id t8so15174376qtc.6;
-        Mon, 28 Oct 2019 08:36:52 -0700 (PDT)
+        id S1731170AbfJ1QAG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Oct 2019 12:00:06 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:46038 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726612AbfJ1QAG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Oct 2019 12:00:06 -0400
+Received: by mail-wr1-f42.google.com with SMTP id q13so10439117wrs.12
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Oct 2019 09:00:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=X/AyUl2apR1iCfwj2kG9abOusf6OXMfXucKK4+wE+uQ=;
-        b=KsoHc9+W6GrxaU4WH0NzZ7G6kzBg0b0z8dTYFiJ4Wg3ccWBwvIqmsbRc48h8ZesB7j
-         GpiB1D67APHsIL5nBr4bq1cywQUmlPqkfGUh5p5ilesffsd+dYKo2qdrSyjRtLqiKZX2
-         tm8TISpGQdaGd7p7iKWBYNq+ksjvRS0kmrOFmQ40RMBTjyAsUJwr178a3JgtJ/KY+Don
-         piZK/q99/KgWT3WCe6O4zcoastXxdlTkeaxN5HPIRzCRv6a0jgtfYW23ibGIGozBNkU8
-         nH53xNYApd8jZeUifEm2vNdG4HJ/EgT6aI2IMte5HbK1Yj2pRxY6XziFLN9YxiZXDnQs
-         +15w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OXV7X6fMokZT0pDVcFDMQH9M9pgB+ph8TvWGz5FJSlE=;
+        b=gBqj5gAoKyKoLrwSvl6Tfq8KeXJDIz8E1tWDxZscmgJRIys6xfb3+ND9LRooLGfELF
+         buD42u7h/RmZMRLmidtP5YAaaZaiOHUh6Ae0h27wtlFL8KD17Vh7my7mjJ6HcSUNZR2o
+         QeOqxeJ2XPA1GXNgc0Sh9IZZgXEJ10t/ajS+RVySqX2BrkCcli3ZcTD9DO4qkKdY6wOa
+         v3tBre05LLNBIy/WpuJOuzJsBM0jU0jAjB74Itm2dOW4pezCRwmiztYOEB4uDQ8/ajkG
+         R1ddZni8DvNzJrxd3YMjWeb/f2j8R3dBH7GakCm0Xma9DhFTe9R44UMp6woO8ugPOILi
+         R8Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=X/AyUl2apR1iCfwj2kG9abOusf6OXMfXucKK4+wE+uQ=;
-        b=sh0gCUpto9CUSDSh8ccehb7QvX3Z+ZPCezkrsHRoCY9KARz/ucV2Vr1uCHkUqKXZm6
-         GNhydT1hYIe2ua5QDIy1zTc/84UwwjVWgWKvjjDY1UIvzf3GtRTrRUBsDd/QR2UuP8lQ
-         Gh5dsnxjmHvWWibZ2Ts2INwIFpj9FjpAVqxtcCD8WLe+DCUvCL48qKtEPw56zUpFxxb3
-         IeJxFWGdGIHRAMVLT0ayQiI7c65+5ixyp8tpSnjG1yXkl8n9jtM6QNUjhfZfK04Fkz+9
-         CZC5KR7CI9C2ICG7qIV84ZltUCQZ7o4I+oyVKcjkUQOcxoF1Ntz+Dyb/seR/+R6O6JAX
-         f/zA==
-X-Gm-Message-State: APjAAAXfVHEsviHQMaTpaRBQmkN2vApyBoPZqr9aE6Pwi2J9fPltnHUV
-        fxiaAoAUgryZ7Mt2Hrqd+oQ=
-X-Google-Smtp-Source: APXvYqymZABOv21SsYV9D8JTRdSkOnK9lkbnddolPIkUK1UpDSlv+qwInskpJwT/9VwSwKc/EEJcUA==
-X-Received: by 2002:a0c:f851:: with SMTP id g17mr16291522qvo.157.1572277011591;
-        Mon, 28 Oct 2019 08:36:51 -0700 (PDT)
-Received: from localhost.localdomain ([2001:1284:f013:326e:3cb7:46e:7f5e:cff5])
-        by smtp.gmail.com with ESMTPSA id y186sm6327995qkd.71.2019.10.28.08.36.50
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OXV7X6fMokZT0pDVcFDMQH9M9pgB+ph8TvWGz5FJSlE=;
+        b=T3J6MDq/5/a61INaUQNXAZWPMXITAB1rbA+IvHWU3Cnr/ksrhzTGgnTp2ZurZ+MhNw
+         7FTPqsNk8s1WPBznVSsiUJqwbYFraTswvDJE+7scEg56ueAFCT9RaOlD8Sc+2PVgRCmf
+         H6BF0+DVBx0w7UM0jSddyU1h+Flekwhf5ZfqmbwURqAMYBPKFaVhDWeCmFpkvzyvA1cE
+         pzN3YDCnJKa7ptMWIfuxb6jHPIRI3A6FMEQujKXOtMGujgi+4NGzOVl811Yviy9GzRnu
+         tm/RQIaX8pL4t0aq00r8UAvjtPYMIUaIIKbz9U5R84PujwIlfuj7DJVS/b488VMRMpl9
+         w3qw==
+X-Gm-Message-State: APjAAAWUTl8+aiocBu+FrEBN0WGsfbstywRz5VcSc5lj8O7L0vkNp9Ia
+        /bs/e3W19vNyrMsEeG6xWghaOKiBuuk=
+X-Google-Smtp-Source: APXvYqxcUngCNNOysvsYZRjqIPiH329rMjnGmmTsXguHWlR4+/NIACaENhXF0vhe3OP6cac26aNtVg==
+X-Received: by 2002:a5d:4f8b:: with SMTP id d11mr16241546wru.25.1572278402321;
+        Mon, 28 Oct 2019 09:00:02 -0700 (PDT)
+Received: from kheib-workstation.redhat.com (bzq-79-179-0-252.red.bezeqint.net. [79.179.0.252])
+        by smtp.gmail.com with ESMTPSA id a2sm11871600wrv.39.2019.10.28.09.00.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Oct 2019 08:36:50 -0700 (PDT)
-Received: by localhost.localdomain (Postfix, from userid 1000)
-        id 6FE69C0AD9; Mon, 28 Oct 2019 12:36:48 -0300 (-03)
-Date:   Mon, 28 Oct 2019 12:36:48 -0300
-From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-To:     syzbot <syzbot+e5b57b8780297657b25b@syzkaller.appspotmail.com>
-Cc:     davem@davemloft.net, leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-sctp@vger.kernel.org,
-        netdev@vger.kernel.org, nhorman@tuxdriver.com, roid@mellanox.com,
-        saeedm@mellanox.com, syzkaller-bugs@googlegroups.com,
-        vladbu@mellanox.com, vyasevich@gmail.com
-Subject: Re: KASAN: use-after-free Read in sctp_sock_dump
-Message-ID: <20191028153648.GF4250@localhost.localdomain>
-References: <000000000000e68ee20595fa33be@google.com>
+        Mon, 28 Oct 2019 09:00:01 -0700 (PDT)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Lijun Ou <oulijun@huawei.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [for-next v4 0/4] RDMA: modify_port improvements
+Date:   Mon, 28 Oct 2019 17:59:27 +0200
+Message-Id: <20191028155931.1114-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000e68ee20595fa33be@google.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 28, 2019 at 08:32:08AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following crash on:
-> 
-> HEAD commit:    d6d5df1d Linux 5.4-rc5
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17ef5a70e00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=2bcb64e504d04eff
-> dashboard link: https://syzkaller.appspot.com/bug?extid=e5b57b8780297657b25b
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> userspace arch: i386
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16cd8800e00000
-> 
-> The bug was bisected to:
-> 
-> commit 61086f391044fd587af9d70a9b8f6f800dd474ba
-> Author: Vlad Buslov <vladbu@mellanox.com>
-> Date:   Fri Aug 2 19:21:56 2019 +0000
-> 
->     net/mlx5e: Protect encap hash table with mutex
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=135960af600000
+Changelog:
+v4: Allow only IB_PORT_CM_SUP fake manipulation for RoCE providers.
+v3: Improve [patch 1/4].
+v2: Include fixes lines.
 
-This is weird. This mlx5e commit has nothing to do with SCTP diag
-dump.
+This series includes three patches which fix the return values from
+modify_port() callbacks when they aren't supported.
 
-  Marcelo
+Kamal Heib (4):
+  RDMA/core: Fix return code when modify_port isn't supported
+  RDMA/hns: Remove unsupported modify_port callback
+  RDMA/ocrdma: Remove unsupported modify_port callback
+  RDMA/qedr: Remove unsupported modify_port callback
+
+ drivers/infiniband/core/device.c            | 6 +++++-
+ drivers/infiniband/hw/hns/hns_roce_main.c   | 7 -------
+ drivers/infiniband/hw/ocrdma/ocrdma_main.c  | 1 -
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c | 6 ------
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.h | 2 --
+ drivers/infiniband/hw/qedr/main.c           | 1 -
+ drivers/infiniband/hw/qedr/verbs.c          | 6 ------
+ drivers/infiniband/hw/qedr/verbs.h          | 2 --
+ 8 files changed, 5 insertions(+), 26 deletions(-)
+
+-- 
+2.20.1
+
