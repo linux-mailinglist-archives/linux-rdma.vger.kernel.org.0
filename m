@@ -2,82 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C45E9055
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Oct 2019 20:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F5FE9124
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Oct 2019 21:58:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726695AbfJ2TwQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Oct 2019 15:52:16 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:43348 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726530AbfJ2TwQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Oct 2019 15:52:16 -0400
-Received: by mail-qt1-f194.google.com with SMTP id c26so3422215qtj.10
-        for <linux-rdma@vger.kernel.org>; Tue, 29 Oct 2019 12:52:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=etY+CBhDEUwzAdor1k/bGcw3XJJ1m/Kp3y65R3dEiKM=;
-        b=farqsGSisMFfToV5/jjl1jtlqaSaWVnx0Dkc1EINYpyGLuTn8XU7M1DVa63vG7qSSe
-         NHF/BYHgnkG09TnrjKfQl89ViAKy8yfJSLoUmQCDVpVBYDEGM9hUd/+J1DeOist5yEtH
-         wYJZqreDuTHrg4dryu3x+k+f2uXuZCoe7QOgCcP4zKLVKJb/Tgf4t043zuSCmywaFK8c
-         hg65jqY8BKSkkuezxXM3W0c80Lk+t7DMbsJ6h/tc1xs9OADPs11wzPpDlFu9n+J8kipX
-         GwkWbbLUmGDzkmcQI1/2GlGg3/yMuFCGlhccJhfJ0vY6EVMqbgHdPd37YCVXLk9+RCvY
-         tipA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=etY+CBhDEUwzAdor1k/bGcw3XJJ1m/Kp3y65R3dEiKM=;
-        b=c3HWnyfA0nk8q9TYFoYcCvv/8Nx8yZuljSMFTcUtTg80+N578oGWz/c+ygJ2pH0vUy
-         0/RLmw9Wk0qFguKanHf/DYQ7QDeN7309j+xSkL27SvGvIhEhlCiIdRQEDWhU3xPiEFSF
-         3LuJaVvrBw6Xis+xRw0t4ToBiAi1cgObOvBNXEx/2YtA+tJ5FsTVtfOm5TI+6EkbXeCe
-         Y/LFQ/03+U5WUkhjCVudAaupl8Fc39qUlpp/ZzhbhskVKiO+UnLXInKFZBbeq0FnOIZE
-         4EVqpPPnR4Ss7uANXRgnoPE2Dea1wG3jm66Ksl941LxOyFeWBI3Bzt7CDhd63W8qYQ3J
-         S/Og==
-X-Gm-Message-State: APjAAAVRRvPpIIPaa+z+edZ3i0aYiIeE1Jy/6ywAcoelMRZ3a7y4CQVE
-        4Nre93GklOeU4cXd5SEKDV0FyQ==
-X-Google-Smtp-Source: APXvYqxCYJgqGvmvouxwJHd0bRUeKLMfivNA75lKFRTkDA36hMn3sldqw9mK3gXzdCg1ydVYXI6u5g==
-X-Received: by 2002:ad4:52c8:: with SMTP id p8mr11346512qvs.114.1572378735270;
-        Tue, 29 Oct 2019 12:52:15 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id u11sm6973420qtg.11.2019.10.29.12.52.14
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 29 Oct 2019 12:52:14 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iPXXK-0000Tg-35; Tue, 29 Oct 2019 16:52:14 -0300
-Date:   Tue, 29 Oct 2019 16:52:14 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>, stable@vger.kernel.org,
-        James Erwin <james.erwin@intel.com>
-Subject: Re: [PATCH for-rc 1/4] IB/hfi1: Allow for all speeds higher than gen3
-Message-ID: <20191029195214.GA1802@ziepe.ca>
-References: <20191025161717.106825.14421.stgit@awfm-01.aw.intel.com>
- <20191025195823.106825.63080.stgit@awfm-01.aw.intel.com>
+        id S1727567AbfJ2U6Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Oct 2019 16:58:24 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50760 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727545AbfJ2U6X (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Oct 2019 16:58:23 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9TKs8mn096191;
+        Tue, 29 Oct 2019 20:58:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=+uvSwq9SA2egPotnUwozc3qtAJKZQGfqSvE+bOmm3MA=;
+ b=hAfBZOy3J8qyHEnSjd9xpISBTMkPkgGVZaOMh93uCZpN0PM5KFR5qV7CQV7iXX9jOArE
+ fYFRG4/j0DGgsuh3zX25rALutltma6x6c+iH1PSyBXJhb8wm42sc5hpfBDCedL2KYZFh
+ sRqWdtBBzWWWfrfc1l9nGXOmcJ7OmaQKeR1oGEyGuE9Tpm8TODo9xf8dMunVNAiTq9+P
+ JJTLzpGvyKIPylIysu/XuAwPJCQ1Nj2jPWaAtr7xbd09G+PS8fdQtDv1RpyQxKAPz9l2
+ oblsP7Un4HboSgAwoBxo0fporzvXe8lJYfmF2A5HNZ6Pf7ZUld77AFBy7hSXoG7dDl5D zA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2vvumfgs8s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Oct 2019 20:58:09 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9TKrQka007560;
+        Tue, 29 Oct 2019 20:58:08 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2vxpfdrmrm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Oct 2019 20:58:08 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9TKw7in009847;
+        Tue, 29 Oct 2019 20:58:07 GMT
+Received: from [192.168.1.2] (/109.189.94.39)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 29 Oct 2019 13:58:07 -0700
+Subject: Re: [PATCH rdma-next] RDMA/cma: Use ACK timeout for RoCE
+ packetLifeTime
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     dledford@redhat.com, leon@kernel.org, parav@mellanox.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1572003721-26368-1-git-send-email-dag.moxnes@oracle.com>
+ <20191029195101.GA1654@ziepe.ca>
+From:   Dag Moxnes <dag.moxnes@oracle.com>
+Message-ID: <3ce751b9-7f74-e197-f15c-cf76ffd1dd71@oracle.com>
+Date:   Tue, 29 Oct 2019 21:58:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191025195823.106825.63080.stgit@awfm-01.aw.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191029195101.GA1654@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9425 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910290183
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9425 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910290183
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 25, 2019 at 03:58:24PM -0400, Dennis Dalessandro wrote:
-> From: James Erwin <james.erwin@intel.com>
-> 
-> The driver avoids the gen3 speed bump when the parent
-> bus speed isn't identical to gen3, 8.0GT/s.  This is not
-> compatible with gen4 and newer speeds.
-> 
-> Fix by relaxing the test to explicitly look for the lower
-> capability speeds which inherently allows for all future speeds.
+Hi Jason,
 
-This description does not seem like stable material to me.
+Den 29.10.2019 20:51, skrev Jason Gunthorpe:
+> On Fri, Oct 25, 2019 at 01:42:01PM +0200, Dag Moxnes wrote:
+>> The cma is currently using a hard-coded value, CMA_IBOE_PACKET_LIFETIME,
+>> for the PacketLifeTime, as it can not be determined from the network.
+>> This value might not be optimal for all networks.
+>>
+>> The cma module supports the function rdma_set_ack_timeout to set the
+>> ACK timeout for a QP associated with a connection. As per IBTA 12.7.34
+>> local ACK timeout = (2 * PacketLifeTime + Local CA’s ACK delay).
+>> Assuming a negligible local ACK delay, we can use
+>> PacketLifeTime = local ACK timeout/2
+>> as a reasonable approximation for RoCE networks.
+>>
+>> Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
+>> Change-Id: I200eda9d54829184e556c3c55d6a8869558d76b2
+> Please don't send Change-Id to the public lists. Run checkpatch before
+> sending.
+>
+> Otherwise this seems reasonable to me..
+Thanks for the review. Sorry about the Change-Id. I will send a v2 patch 
+without it.
 
-Jason
+Regards,
+-Dag
+>
+> Jason
+
