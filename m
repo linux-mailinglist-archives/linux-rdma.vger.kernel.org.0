@@ -2,185 +2,226 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 741DDE8CAA
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Oct 2019 17:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DFAE8DF0
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Oct 2019 18:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390410AbfJ2Q2q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Oct 2019 12:28:46 -0400
-Received: from mail-eopbgr720080.outbound.protection.outlook.com ([40.107.72.80]:55264
-        "EHLO NAM05-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390273AbfJ2Q2q (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 29 Oct 2019 12:28:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PAsxBL69KGXzOPw5D7mDsLsCqqs5Q1rxSttdkwRoZuA65FJZuXPyJ1HeJvPnU+n/tBLLnqZq8thMGsFCSiVZGEHIeSqJ7vZhUzAhqjZIoGN1gQqb1czvi4Qz3LU8tFU36z+y1H1GF16rrJKCW2mAFZLBMa0QsnIEcUlXV0SuF5afhFPASaHLR7X4B7xDyKle+0830KgWWtwteLDnvUrQPPbQPQdn+3m4IYvvP+9j7CxgXwZXWAIr7hz6Sw7ORP+/n7DrqvFRquo3JqM0cqHnkA309FGcP6pwFRNnb0OaCi5kdgnXnnhnYgp/B82umQm270FvGk/ipCiMmwKF0eBbIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VM4HQGFf5jwhxw53/ZbfRiCS0dODZvzRRONe8Bd2gR4=;
- b=TExJhqQbakxzFhA511WAXPTlP/Kv9FwbaAkyhDXYo0ZTcbZnxPKgK8lfasIypyhun1rg1Hy7ty/+RD5r7mS7/FQfRxjLa8M53SPS1jRZVfmQtJ5prLZJDldwFBkhBVP+ij0ffYr9KuEoxleFyomLxPDP0wt71K+Olkf6Zi6DEqx52ZhVncfK6dNZzMg8p2JfrJF+jlCp2YeBMdvlCdfyWe3VmIo/m44bS2zGM4q7H6fjjY+7qpODum0GqG6LWgdmypNT/nTSx5B9mRaRdpkZCZDP4hIGBDZSWHgUqmyfMl7rAfVrUV0CS53Iod6gFuHViOGk7LXtITAE9PRPUcPhoA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S2390752AbfJ2RUA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Oct 2019 13:20:00 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:42174 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390744AbfJ2RUA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Oct 2019 13:20:00 -0400
+Received: by mail-wr1-f65.google.com with SMTP id a15so2263979wrf.9
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Oct 2019 10:19:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VM4HQGFf5jwhxw53/ZbfRiCS0dODZvzRRONe8Bd2gR4=;
- b=B880JVNcl+ffmI6mtIfsxV4tXmxpniKm3CHytwSY4eu3gYtunfon8tVvVS9k8hZPfXqHOf+V8KKF2hQgewdYVhYjFr9MYVOpNkeI7PdDK2Stv32nW710hS+YmbUMfIp7tXBSrq7aldZI0usBvzqiH7BoDq7OCogn9BsHwrx6G/E=
-Received: from DM6PR12MB3947.namprd12.prod.outlook.com (10.255.174.156) by
- DM6PR12MB4204.namprd12.prod.outlook.com (10.141.184.151) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2387.22; Tue, 29 Oct 2019 16:28:43 +0000
-Received: from DM6PR12MB3947.namprd12.prod.outlook.com
- ([fe80::288c:66ec:203d:aede]) by DM6PR12MB3947.namprd12.prod.outlook.com
- ([fe80::288c:66ec:203d:aede%4]) with mapi id 15.20.2387.025; Tue, 29 Oct 2019
- 16:28:43 +0000
-From:   "Kuehling, Felix" <Felix.Kuehling@amd.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        d=gmail.com; s=20161025;
+        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=+7k6Tgo7zdAI3sdkV2vUab4Qg2cErY2tDGH+QpqLC8g=;
+        b=kMvDAfqNMsgwLVSlQz2HGv5SXkrMFIA/sC5PQVA0qHCk2uNpr3vgteNY32KO6XolN9
+         jrYaAZAZBspll0O/IT//xBGYiWDFZD8KU1uPmY2vK3KPsyhTb7mzyGHCGTLByQgbXpOx
+         OeloXmN2vq/6bG5ZHNwG845uL6ZvA2Sdmd4uYMZ4E+4NJ7wccdnycw840yvcV4FBt6VL
+         /xrA8JLUiBY/5hX+ugxid7ZLni4gqfgl/j7jRF06f5phYKlyiq6OI+yIzaRotZfKsIyc
+         R7JU0GMg+/jruClJEMts6SYQJZeL4C+Qp1GS1gxReNthE6HvcZsnnoBEcT3avouO/n1H
+         WYQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=+7k6Tgo7zdAI3sdkV2vUab4Qg2cErY2tDGH+QpqLC8g=;
+        b=D2Xu/1BwYb28of9oBY4/Q5vniZw1rnGyEuKA1LM8X0sauhU+nGvLWm/OhY5GKDb5dr
+         fdAw/rYofM7Mn68cqlZAZ9MKWB5tg0lzUdUCCO739hR3b58mACdbdaZeJPoCwzP/DWkz
+         +iy3wqnJyO8RyiNKLopNNo49oF3UCPeixU11JLbH1amNw/NLfesWGkGDlad+BcgIx44e
+         BBNJXQic+5Jouu8Dx7tqvC1E1TrwHWBsSoGsJxx7YEmub0cCazgaquBBbv8PBiOZt4Y8
+         vDT1YEwd+cr2TOU4BSozEV9nyKqMFyy2v1V56cywdm/93KdXnBIGnqcR98a1HcjgKAdz
+         ZxIA==
+X-Gm-Message-State: APjAAAVfFaRpXRo30FqCZ5l5leJws4mjZvHGBwJzZXzCboJLhxpHCren
+        1HG4oLCXdKs3g2UzqNQoM4g=
+X-Google-Smtp-Source: APXvYqyE7qwpgL7KV62AOaDM+oFRQdWcTDjdZKuljhwWYaRRqCfiSc2s9/fNi7ZWZZwXl8hUkkgUgA==
+X-Received: by 2002:adf:ef0a:: with SMTP id e10mr20205293wro.234.1572369597497;
+        Tue, 29 Oct 2019 10:19:57 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id f8sm3544088wmb.37.2019.10.29.10.19.55
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 29 Oct 2019 10:19:56 -0700 (PDT)
+Reply-To: christian.koenig@amd.com
+Subject: Re: [PATCH v2 12/15] drm/amdgpu: Call find_vma under mmap_sem
+To:     "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>,
         Jerome Glisse <jglisse@redhat.com>,
         Ralph Campbell <rcampbell@nvidia.com>,
         John Hubbard <jhubbard@nvidia.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
+Cc:     Juergen Gross <jgross@suse.com>,
         "Zhou, David(ChunMing)" <David1.Zhou@amd.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Juergen Gross <jgross@suse.com>,
         Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Petr Cvek <petrcvekcz@gmail.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
         Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Subject: Re: [PATCH v2 12/15] drm/amdgpu: Call find_vma under mmap_sem
-Thread-Topic: [PATCH v2 12/15] drm/amdgpu: Call find_vma under mmap_sem
-Thread-Index: AQHVjcvMsdGOdpRiX0m2MY8nHQRFKKdx0EAA
-Date:   Tue, 29 Oct 2019 16:28:43 +0000
-Message-ID: <a368d1bf-ba69-bb63-2bfd-b674acc2f19b@amd.com>
+        Jason Gunthorpe <jgg@mellanox.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Petr Cvek <petrcvekcz@gmail.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>
 References: <20191028201032.6352-1-jgg@ziepe.ca>
  <20191028201032.6352-13-jgg@ziepe.ca>
-In-Reply-To: <20191028201032.6352-13-jgg@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [165.204.55.251]
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ <a368d1bf-ba69-bb63-2bfd-b674acc2f19b@amd.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <cd0507d9-80b9-34fc-1cd3-12d90ee65c21@gmail.com>
+Date:   Tue, 29 Oct 2019 14:07:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
-x-clientproxiedby: YTBPR01CA0034.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:14::47) To DM6PR12MB3947.namprd12.prod.outlook.com
- (2603:10b6:5:1cb::28)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Felix.Kuehling@amd.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: d58d7527-6913-4eb7-0689-08d75c8d1042
-x-ms-traffictypediagnostic: DM6PR12MB4204:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR12MB4204577115B45A7E5C3C937C92610@DM6PR12MB4204.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0205EDCD76
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(39860400002)(396003)(366004)(136003)(376002)(189003)(199004)(65806001)(66066001)(99286004)(25786009)(65956001)(53546011)(6506007)(386003)(31696002)(186003)(14454004)(81166006)(81156014)(71190400001)(66574012)(71200400001)(102836004)(5660300002)(26005)(8936002)(316002)(58126008)(36756003)(6246003)(4326008)(54906003)(6116002)(3846002)(8676002)(256004)(478600001)(7736002)(14444005)(31686004)(2906002)(229853002)(110136005)(305945005)(6486002)(11346002)(446003)(2616005)(52116002)(76176011)(66446008)(64756008)(66556008)(66476007)(2501003)(66946007)(6436002)(476003)(486006)(6512007)(4001150100001)(86362001)(7416002);DIR:OUT;SFP:1101;SCL:1;SRVR:DM6PR12MB4204;H:DM6PR12MB3947.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JX0Hhdw/PtF6MwtRUMdVX5O3FG1pCuBucETdlV3IllL4E9qQ7yOGVRdWPU7rFX2JpqA30XH5Hiq0kv1wjASITMLtW0XwB0VCiIZw/jCUayYxEfUPa+ghhhEXvlw0igKS95vyuqu4+jTG0fCplMo/m4Hy5+7wP/x1th1lXcTJk2pGKANiSEUbyV4UuIlx6u4bM25/4KDIWmuu7wvmj7/ghlUePYJiiaaNwa9m5Fe3Fhfb5KkFz7B4Mvfk8HzaVG8/nNFEqw11MJTNL6nOpD2ubHHg+u1N+RVsDpIPrluPBoQXnqGFOJCqhrr+0X3pEKXwTt/gVJi62pxAKwtHyqhzYN897vxkMi+37bUMsQVGttv+3Azkbxwnjd23hk4hNPplhbQcatr+BvyLmW1y3y+7prMnG6A7qiHefL5+L009cipy1w52Wq2pT8AQYpkll8zI
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8802A5E1B165854F856C0D7491F04952@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d58d7527-6913-4eb7-0689-08d75c8d1042
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Oct 2019 16:28:43.0620
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: R3C5J/8hc9ATQsgOD7nwlswh1nSkLYU5mGuLHFyyQVXWhM3s6x7VMw9g0b6KH7A1c57rNEFG/ZFaoCUYChx18Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4204
+In-Reply-To: <a368d1bf-ba69-bb63-2bfd-b674acc2f19b@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gMjAxOS0xMC0yOCA0OjEwIHAubS4sIEphc29uIEd1bnRob3JwZSB3cm90ZToNCj4gRnJvbTog
-SmFzb24gR3VudGhvcnBlIDxqZ2dAbWVsbGFub3guY29tPg0KPg0KPiBmaW5kX3ZtYSgpIG11c3Qg
-YmUgY2FsbGVkIHVuZGVyIHRoZSBtbWFwX3NlbSwgcmVvcmdhbml6ZSB0aGlzIGNvZGUgdG8NCj4g
-ZG8gdGhlIHZtYSBjaGVjayBhZnRlciBlbnRlcmluZyB0aGUgbG9jay4NCj4NCj4gRnVydGhlciwg
-Zml4IHRoZSB1bmxvY2tlZCB1c2Ugb2Ygc3RydWN0IHRhc2tfc3RydWN0J3MgbW0sIGluc3RlYWQg
-dXNlDQo+IHRoZSBtbSBmcm9tIGhtbV9taXJyb3Igd2hpY2ggaGFzIGFuIGFjdGl2ZSBtbV9ncmFi
-LiBBbHNvIHRoZSBtbV9ncmFiDQo+IG11c3QgYmUgY29udmVydGVkIHRvIGEgbW1fZ2V0IGJlZm9y
-ZSBhY3F1aXJpbmcgbW1hcF9zZW0gb3IgY2FsbGluZw0KPiBmaW5kX3ZtYSgpLg0KPg0KPiBGaXhl
-czogNjZjNDU1MDBiZmRjICgiZHJtL2FtZGdwdTogdXNlIG5ldyBITU0gQVBJcyBhbmQgaGVscGVy
-cyIpDQo+IEZpeGVzOiAwOTE5MTk1ZjJiMGQgKCJkcm0vYW1kZ3B1OiBFbmFibGUgYW1kZ3B1X3R0
-bV90dF9nZXRfdXNlcl9wYWdlcyBpbiB3b3JrZXIgdGhyZWFkcyIpDQo+IENjOiBBbGV4IERldWNo
-ZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+DQo+IENjOiBDaHJpc3RpYW4gS8O2bmlnIDxj
-aHJpc3RpYW4ua29lbmlnQGFtZC5jb20+DQo+IENjOiBEYXZpZCAoQ2h1bk1pbmcpIFpob3UgPERh
-dmlkMS5aaG91QGFtZC5jb20+DQo+IENjOiBhbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZw0K
-PiBTaWduZWQtb2ZmLWJ5OiBKYXNvbiBHdW50aG9ycGUgPGpnZ0BtZWxsYW5veC5jb20+DQoNCk9u
-ZSBxdWVzdGlvbiBpbmxpbmUgdG8gY29uZmlybSBteSB1bmRlcnN0YW5kaW5nLiBPdGhlcndpc2Ug
-dGhpcyBwYXRjaCBpcw0KDQpSZXZpZXdlZC1ieTogRmVsaXggS3VlaGxpbmcgPEZlbGl4Lkt1ZWhs
-aW5nQGFtZC5jb20+DQoNCg0KPiAtLS0NCj4gICBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9h
-bWRncHVfdHRtLmMgfCAzNyArKysrKysrKysrKysrKy0tLS0tLS0tLS0tDQo+ICAgMSBmaWxlIGNo
-YW5nZWQsIDIxIGluc2VydGlvbnMoKyksIDE2IGRlbGV0aW9ucygtKQ0KPg0KPiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X3R0bS5jIGIvZHJpdmVycy9ncHUv
-ZHJtL2FtZC9hbWRncHUvYW1kZ3B1X3R0bS5jDQo+IGluZGV4IGRmZjQxZDBhODVmZTk2Li5jMGU0
-MWYxZjBjMjM2NSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1k
-Z3B1X3R0bS5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV90dG0u
-Yw0KPiBAQCAtMzUsNiArMzUsNyBAQA0KPiAgICNpbmNsdWRlIDxsaW51eC9obW0uaD4NCj4gICAj
-aW5jbHVkZSA8bGludXgvcGFnZW1hcC5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9zY2hlZC90YXNr
-Lmg+DQo+ICsjaW5jbHVkZSA8bGludXgvc2NoZWQvbW0uaD4NCj4gICAjaW5jbHVkZSA8bGludXgv
-c2VxX2ZpbGUuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvc2xhYi5oPg0KPiAgICNpbmNsdWRlIDxs
-aW51eC9zd2FwLmg+DQo+IEBAIC03ODgsNyArNzg5LDcgQEAgaW50IGFtZGdwdV90dG1fdHRfZ2V0
-X3VzZXJfcGFnZXMoc3RydWN0IGFtZGdwdV9ibyAqYm8sIHN0cnVjdCBwYWdlICoqcGFnZXMpDQo+
-ICAgCXN0cnVjdCBobW1fbWlycm9yICptaXJyb3IgPSBiby0+bW4gPyAmYm8tPm1uLT5taXJyb3Ig
-OiBOVUxMOw0KPiAgIAlzdHJ1Y3QgdHRtX3R0ICp0dG0gPSBiby0+dGJvLnR0bTsNCj4gICAJc3Ry
-dWN0IGFtZGdwdV90dG1fdHQgKmd0dCA9ICh2b2lkICopdHRtOw0KPiAtCXN0cnVjdCBtbV9zdHJ1
-Y3QgKm1tID0gZ3R0LT51c2VydGFzay0+bW07DQo+ICsJc3RydWN0IG1tX3N0cnVjdCAqbW07DQo+
-ICAgCXVuc2lnbmVkIGxvbmcgc3RhcnQgPSBndHQtPnVzZXJwdHI7DQo+ICAgCXN0cnVjdCB2bV9h
-cmVhX3N0cnVjdCAqdm1hOw0KPiAgIAlzdHJ1Y3QgaG1tX3JhbmdlICpyYW5nZTsNCj4gQEAgLTc5
-NiwyNSArNzk3LDE0IEBAIGludCBhbWRncHVfdHRtX3R0X2dldF91c2VyX3BhZ2VzKHN0cnVjdCBh
-bWRncHVfYm8gKmJvLCBzdHJ1Y3QgcGFnZSAqKnBhZ2VzKQ0KPiAgIAl1aW50NjRfdCAqcGZuczsN
-Cj4gICAJaW50IHIgPSAwOw0KPiAgIA0KPiAtCWlmICghbW0pIC8qIEhhcHBlbnMgZHVyaW5nIHBy
-b2Nlc3Mgc2h1dGRvd24gKi8NCj4gLQkJcmV0dXJuIC1FU1JDSDsNCj4gLQ0KPiAgIAlpZiAodW5s
-aWtlbHkoIW1pcnJvcikpIHsNCj4gICAJCURSTV9ERUJVR19EUklWRVIoIkZhaWxlZCB0byBnZXQg
-aG1tX21pcnJvclxuIik7DQo+IC0JCXIgPSAtRUZBVUxUOw0KPiAtCQlnb3RvIG91dDsNCj4gKwkJ
-cmV0dXJuIC1FRkFVTFQ7DQo+ICAgCX0NCj4gICANCj4gLQl2bWEgPSBmaW5kX3ZtYShtbSwgc3Rh
-cnQpOw0KPiAtCWlmICh1bmxpa2VseSghdm1hIHx8IHN0YXJ0IDwgdm1hLT52bV9zdGFydCkpIHsN
-Cj4gLQkJciA9IC1FRkFVTFQ7DQo+IC0JCWdvdG8gb3V0Ow0KPiAtCX0NCj4gLQlpZiAodW5saWtl
-bHkoKGd0dC0+dXNlcmZsYWdzICYgQU1ER1BVX0dFTV9VU0VSUFRSX0FOT05PTkxZKSAmJg0KPiAt
-CQl2bWEtPnZtX2ZpbGUpKSB7DQo+IC0JCXIgPSAtRVBFUk07DQo+IC0JCWdvdG8gb3V0Ow0KPiAt
-CX0NCj4gKwltbSA9IG1pcnJvci0+aG1tLT5tbXVfbm90aWZpZXIubW07DQo+ICsJaWYgKCFtbWdl
-dF9ub3RfemVybyhtbSkpIC8qIEhhcHBlbnMgZHVyaW5nIHByb2Nlc3Mgc2h1dGRvd24gKi8NCg0K
-VGhpcyB3b3JrcyBiZWNhdXNlIG1pcnJvci0+aG1tLT5tbXVfbm90aWZpZXIgaG9sZHMgYW4gbW1n
-cmFiIHJlZmVyZW5jZSANCnRvIHRoZSBtbT8gU28gdGhlIE1NIHdpbGwgbm90IGp1c3QgZ28gYXdh
-eSwgYnV0IGlmIHRoZSBtbWdldCByZWZjb3VudCBpcyANCjAsIGl0IG1lYW5zIHRoZSBtbSBpcyBt
-YXJrZWQgZm9yIGRlc3RydWN0aW9uIGFuZCBzaG91bGRuJ3QgYmUgdXNlZCBhbnkgbW9yZS4NCg0K
-DQo+ICsJCXJldHVybiAtRVNSQ0g7DQo+ICAgDQo+ICAgCXJhbmdlID0ga3phbGxvYyhzaXplb2Yo
-KnJhbmdlKSwgR0ZQX0tFUk5FTCk7DQo+ICAgCWlmICh1bmxpa2VseSghcmFuZ2UpKSB7DQo+IEBA
-IC04NDcsNiArODM3LDE3IEBAIGludCBhbWRncHVfdHRtX3R0X2dldF91c2VyX3BhZ2VzKHN0cnVj
-dCBhbWRncHVfYm8gKmJvLCBzdHJ1Y3QgcGFnZSAqKnBhZ2VzKQ0KPiAgIAlobW1fcmFuZ2Vfd2Fp
-dF91bnRpbF92YWxpZChyYW5nZSwgSE1NX1JBTkdFX0RFRkFVTFRfVElNRU9VVCk7DQo+ICAgDQo+
-ICAgCWRvd25fcmVhZCgmbW0tPm1tYXBfc2VtKTsNCj4gKwl2bWEgPSBmaW5kX3ZtYShtbSwgc3Rh
-cnQpOw0KPiArCWlmICh1bmxpa2VseSghdm1hIHx8IHN0YXJ0IDwgdm1hLT52bV9zdGFydCkpIHsN
-Cj4gKwkJciA9IC1FRkFVTFQ7DQo+ICsJCWdvdG8gb3V0X3VubG9jazsNCj4gKwl9DQo+ICsJaWYg
-KHVubGlrZWx5KChndHQtPnVzZXJmbGFncyAmIEFNREdQVV9HRU1fVVNFUlBUUl9BTk9OT05MWSkg
-JiYNCj4gKwkJdm1hLT52bV9maWxlKSkgew0KPiArCQlyID0gLUVQRVJNOw0KPiArCQlnb3RvIG91
-dF91bmxvY2s7DQo+ICsJfQ0KPiArDQo+ICAgCXIgPSBobW1fcmFuZ2VfZmF1bHQocmFuZ2UsIDAp
-Ow0KPiAgIAl1cF9yZWFkKCZtbS0+bW1hcF9zZW0pOw0KPiAgIA0KPiBAQCAtODY1LDE1ICs4NjYs
-MTkgQEAgaW50IGFtZGdwdV90dG1fdHRfZ2V0X3VzZXJfcGFnZXMoc3RydWN0IGFtZGdwdV9ibyAq
-Ym8sIHN0cnVjdCBwYWdlICoqcGFnZXMpDQo+ICAgCX0NCj4gICANCj4gICAJZ3R0LT5yYW5nZSA9
-IHJhbmdlOw0KPiArCW1tcHV0KG1tKTsNCj4gICANCj4gICAJcmV0dXJuIDA7DQo+ICAgDQo+ICtv
-dXRfdW5sb2NrOg0KPiArCXVwX3JlYWQoJm1tLT5tbWFwX3NlbSk7DQo+ICAgb3V0X2ZyZWVfcGZu
-czoNCj4gICAJaG1tX3JhbmdlX3VucmVnaXN0ZXIocmFuZ2UpOw0KPiAgIAlrdmZyZWUocGZucyk7
-DQo+ICAgb3V0X2ZyZWVfcmFuZ2VzOg0KPiAgIAlrZnJlZShyYW5nZSk7DQo+ICAgb3V0Og0KPiAr
-CW1tcHV0KG1tKTsNCj4gICAJcmV0dXJuIHI7DQo+ICAgfQ0KPiAgIA0K
+Am 29.10.19 um 17:28 schrieb Kuehling, Felix:
+> On 2019-10-28 4:10 p.m., Jason Gunthorpe wrote:
+>> From: Jason Gunthorpe <jgg@mellanox.com>
+>>
+>> find_vma() must be called under the mmap_sem, reorganize this code to
+>> do the vma check after entering the lock.
+>>
+>> Further, fix the unlocked use of struct task_struct's mm, instead use
+>> the mm from hmm_mirror which has an active mm_grab. Also the mm_grab
+>> must be converted to a mm_get before acquiring mmap_sem or calling
+>> find_vma().
+>>
+>> Fixes: 66c45500bfdc ("drm/amdgpu: use new HMM APIs and helpers")
+>> Fixes: 0919195f2b0d ("drm/amdgpu: Enable amdgpu_ttm_tt_get_user_pages in worker threads")
+>> Cc: Alex Deucher <alexander.deucher@amd.com>
+>> Cc: Christian König <christian.koenig@amd.com>
+>> Cc: David (ChunMing) Zhou <David1.Zhou@amd.com>
+>> Cc: amd-gfx@lists.freedesktop.org
+>> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> One question inline to confirm my understanding. Otherwise this patch is
+>
+> Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+>
+>
+>> ---
+>>    drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 37 ++++++++++++++-----------
+>>    1 file changed, 21 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+>> index dff41d0a85fe96..c0e41f1f0c2365 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+>> @@ -35,6 +35,7 @@
+>>    #include <linux/hmm.h>
+>>    #include <linux/pagemap.h>
+>>    #include <linux/sched/task.h>
+>> +#include <linux/sched/mm.h>
+>>    #include <linux/seq_file.h>
+>>    #include <linux/slab.h>
+>>    #include <linux/swap.h>
+>> @@ -788,7 +789,7 @@ int amdgpu_ttm_tt_get_user_pages(struct amdgpu_bo *bo, struct page **pages)
+>>    	struct hmm_mirror *mirror = bo->mn ? &bo->mn->mirror : NULL;
+>>    	struct ttm_tt *ttm = bo->tbo.ttm;
+>>    	struct amdgpu_ttm_tt *gtt = (void *)ttm;
+>> -	struct mm_struct *mm = gtt->usertask->mm;
+>> +	struct mm_struct *mm;
+>>    	unsigned long start = gtt->userptr;
+>>    	struct vm_area_struct *vma;
+>>    	struct hmm_range *range;
+>> @@ -796,25 +797,14 @@ int amdgpu_ttm_tt_get_user_pages(struct amdgpu_bo *bo, struct page **pages)
+>>    	uint64_t *pfns;
+>>    	int r = 0;
+>>    
+>> -	if (!mm) /* Happens during process shutdown */
+>> -		return -ESRCH;
+>> -
+>>    	if (unlikely(!mirror)) {
+>>    		DRM_DEBUG_DRIVER("Failed to get hmm_mirror\n");
+>> -		r = -EFAULT;
+>> -		goto out;
+>> +		return -EFAULT;
+>>    	}
+>>    
+>> -	vma = find_vma(mm, start);
+>> -	if (unlikely(!vma || start < vma->vm_start)) {
+>> -		r = -EFAULT;
+>> -		goto out;
+>> -	}
+>> -	if (unlikely((gtt->userflags & AMDGPU_GEM_USERPTR_ANONONLY) &&
+>> -		vma->vm_file)) {
+>> -		r = -EPERM;
+>> -		goto out;
+>> -	}
+>> +	mm = mirror->hmm->mmu_notifier.mm;
+>> +	if (!mmget_not_zero(mm)) /* Happens during process shutdown */
+> This works because mirror->hmm->mmu_notifier holds an mmgrab reference
+> to the mm? So the MM will not just go away, but if the mmget refcount is
+> 0, it means the mm is marked for destruction and shouldn't be used any more.
+
+Yes, exactly. That is a rather common pattern, one reference count for 
+the functionality and one for the structure.
+
+When the functionality is gone the structure might still be alive for 
+some reason. TTM and a couple of other structures use the same approach.
+
+Christian.
+
+>
+>
+>> +		return -ESRCH;
+>>    
+>>    	range = kzalloc(sizeof(*range), GFP_KERNEL);
+>>    	if (unlikely(!range)) {
+>> @@ -847,6 +837,17 @@ int amdgpu_ttm_tt_get_user_pages(struct amdgpu_bo *bo, struct page **pages)
+>>    	hmm_range_wait_until_valid(range, HMM_RANGE_DEFAULT_TIMEOUT);
+>>    
+>>    	down_read(&mm->mmap_sem);
+>> +	vma = find_vma(mm, start);
+>> +	if (unlikely(!vma || start < vma->vm_start)) {
+>> +		r = -EFAULT;
+>> +		goto out_unlock;
+>> +	}
+>> +	if (unlikely((gtt->userflags & AMDGPU_GEM_USERPTR_ANONONLY) &&
+>> +		vma->vm_file)) {
+>> +		r = -EPERM;
+>> +		goto out_unlock;
+>> +	}
+>> +
+>>    	r = hmm_range_fault(range, 0);
+>>    	up_read(&mm->mmap_sem);
+>>    
+>> @@ -865,15 +866,19 @@ int amdgpu_ttm_tt_get_user_pages(struct amdgpu_bo *bo, struct page **pages)
+>>    	}
+>>    
+>>    	gtt->range = range;
+>> +	mmput(mm);
+>>    
+>>    	return 0;
+>>    
+>> +out_unlock:
+>> +	up_read(&mm->mmap_sem);
+>>    out_free_pfns:
+>>    	hmm_range_unregister(range);
+>>    	kvfree(pfns);
+>>    out_free_ranges:
+>>    	kfree(range);
+>>    out:
+>> +	mmput(mm);
+>>    	return r;
+>>    }
+>>    
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+
