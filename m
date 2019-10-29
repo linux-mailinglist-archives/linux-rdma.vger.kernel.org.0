@@ -2,239 +2,407 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D795E88EF
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Oct 2019 14:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11267E898D
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Oct 2019 14:31:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729253AbfJ2NAP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Oct 2019 09:00:15 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:41944 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728735AbfJ2NAP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Oct 2019 09:00:15 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9TCx2Z6085341;
-        Tue, 29 Oct 2019 13:00:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=oiyMqQ6clN9XkaZtbzHKQz6Z8/VKfBhM4I8JBiuWoUo=;
- b=gXWdJvnwuZy92yfpE0xph1X1Pk3sye+loFg5lJtZORocKu5cDaS7PsiXRZzSyzsERlBF
- 4gH47TyjztB7CTeByvq7oTsBB4D0jBw0ONV0jE270fQG4T773EolmcwG7FaARzKm1ICF
- itbxlx0DskPg6mdrEMU5KMA+iI7oQdwl5uJvCPsocr/lK2gVxMWMMhvDuLMbfS/iVhzB
- wxtifXvDq1byl6m++NmUdAcTdwuiF8CvZ1W31hjnoYRjEephQZFzAe2+Nlucvu1dDZEX
- 4By0Zqk0mw8ob2xAO7LIBhb8THijYGZhCefFkdOmtxK+ob3wSW8Qzp1fz1YenaAuSziG 0w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2vvdju95gf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Oct 2019 13:00:02 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9TCwoJX070029;
-        Tue, 29 Oct 2019 13:00:01 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 2vxj8g6h1c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Oct 2019 13:00:01 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9TCxxcw018082;
-        Tue, 29 Oct 2019 12:59:59 GMT
-Received: from [10.172.157.165] (/10.172.157.165)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 29 Oct 2019 05:59:59 -0700
-Subject: Re: [PATCH v2] RDMA/cma: Make CM response timeout and # CM retries
- configurable
-To:     =?UTF-8?Q?H=c3=a5kon_Bugge?= <haakon.bugge@oracle.com>,
-        Doug Ledford <dledford@redhat.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@mellanox.com>,
-        Steve Wise <swise@opengridcomputing.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20190226075722.1692315-1-haakon.bugge@oracle.com>
- <174ccd37a9ffa05d0c7c03fe80ff7170a9270824.camel@redhat.com>
- <67B4F337-4C3A-4193-B1EF-42FD4765CBB7@oracle.com>
- <6e586118ad154204ad2e2cf2c1391b916cb4ee54.camel@redhat.com>
- <9B7C9353-39B6-4193-9ACD-AD0FA62E9433@oracle.com>
-From:   Dag Moxnes <dag.moxnes@oracle.com>
-Message-ID: <aeab651d-d216-2946-11ee-22756fcffd42@oracle.com>
-Date:   Tue, 29 Oct 2019 13:59:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <9B7C9353-39B6-4193-9ACD-AD0FA62E9433@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1731885AbfJ2Nb1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Oct 2019 09:31:27 -0400
+Received: from mail-eopbgr20043.outbound.protection.outlook.com ([40.107.2.43]:37862
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726858AbfJ2Nb0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 29 Oct 2019 09:31:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QmUSwmqaUnzl3A7AbEgnzFlIWOkPFM2wlSk9nFdod6ZIYaQNNTNdRTvMxrbisVsy0sHfj63t9utpgMwQ43py0dK9LrkT2/+cbu2eM95htyu2ASKatAi1kHk/a+AuUg+edF3buOqE8GCpFbAK7nfJMEVQqvyhXDLD8BQn4LjWjm1UczDQRXF2gEO1DVwdcFt5i/M9O9bwRZulB3rS5MX6hIZ1So/JZBZY6Z2cxF6GCYN/MwKerFLdSwDdH2HKwM2CP6R8muGbAmi760Bp62vvTaPZkJzcnDjP0Fv+vKXgRsYSRTEZ+77TkHi/TYSf8Mg8q5TiEnkDLhHbnPvfgnq4SA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wkK50PPgp85AeroYL90FT4botfNI9lVDHGn88FXzJgE=;
+ b=NPBgX6ZFN62wQj0dwKIH9+eSQnRrGYVhcRjmZrBrnaXnXEWUDKD/0suhuCRnpFEb3+bfcsfn+kPXVtftOqcxPK7/WS9YLeKje8csy0JejGwBXPFthkPmnNVkB5LkkCF0TvS/lNek86l3le9C/b9/RikIpPICugh00jMbuupPU7EWKSf9isThkHolz88Ekb3PeNKDj5J3R/t8Mo+thXk0I5HercCYfLBFRseTMyHZUN+RRp4zyWJpkEvCVDRcXUnG23WXMmCj7BssAffg/0UgLLwtkwQ7OsQaCl4o9lhfxVmMyiRzbUlV/i6FiftZj+LN+hki1W7A4tuYp6emiqJBpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wkK50PPgp85AeroYL90FT4botfNI9lVDHGn88FXzJgE=;
+ b=bVA2YVZVD5f8njzkuBdQWakvFKtm/kBOYoyLqQsvDkzE4ADV9UKm2j7xa9dCmLvBAqbdSpaxGZS4Aeimbdu1Z5P7+0X8mobdcDAl/jLiFv7tsQTdowjrfULCYEM7XMUuB1EQo3ZVStMXaCS/jtJx6mmo99bCf1fHDlye+TigNck=
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
+ AM0PR05MB4580.eurprd05.prod.outlook.com (52.133.56.11) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2387.24; Tue, 29 Oct 2019 13:31:20 +0000
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::64b2:6eb4:f000:3432]) by AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::64b2:6eb4:f000:3432%7]) with mapi id 15.20.2387.019; Tue, 29 Oct 2019
+ 13:31:20 +0000
+From:   Parav Pandit <parav@mellanox.com>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+CC:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Daniel Jurgens <danielj@mellanox.com>
+Subject: RE: [PATCH rdma-next v1 1/2] IB/core: Let IB core distribute cache
+ update events
+Thread-Topic: [PATCH rdma-next v1 1/2] IB/core: Let IB core distribute cache
+ update events
+Thread-Index: AQHVjk+CpuXxUn6Q9k2inmzUDW7ozKdxnU3Q
+Date:   Tue, 29 Oct 2019 13:31:19 +0000
+Message-ID: <AM0PR05MB4866DC079BB158F04ED57552D1610@AM0PR05MB4866.eurprd05.prod.outlook.com>
+References: <20191029115327.16589-1-leon@kernel.org>
+ <20191029115327.16589-2-leon@kernel.org>
+In-Reply-To: <20191029115327.16589-2-leon@kernel.org>
+Accept-Language: en-US
 Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9424 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910290127
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9424 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910290127
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=parav@mellanox.com; 
+x-originating-ip: [2605:6000:ec82:1c00:e4b1:55b3:a0c6:e6a1]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c162e3b9-fa81-41c4-d808-08d75c74489b
+x-ms-traffictypediagnostic: AM0PR05MB4580:|AM0PR05MB4580:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR05MB45804C484A715A33E252A55FD1610@AM0PR05MB4580.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 0205EDCD76
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(136003)(346002)(376002)(39860400002)(366004)(189003)(199004)(13464003)(14444005)(186003)(256004)(4326008)(6116002)(76176011)(55016002)(86362001)(9686003)(8676002)(476003)(14454004)(46003)(229853002)(74316002)(6436002)(7736002)(8936002)(6246003)(305945005)(81166006)(102836004)(81156014)(486006)(107886003)(66556008)(25786009)(316002)(52536014)(11346002)(446003)(7696005)(110136005)(54906003)(6636002)(15650500001)(64756008)(66446008)(66476007)(66946007)(71190400001)(76116006)(71200400001)(6506007)(5660300002)(53546011)(478600001)(2906002)(33656002)(99286004);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB4580;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: loPqoc8H4dnZjxoHz0darn8PqsH+bm3n+KT59FuogOiEUQRtB0icDCjQxlSO/JSzTmNwg9MxE1gf1Z82O6tiMCJ6bSEu6HC6eCAd3bpj9sv5pCOP/i9A2Q+0bf73woBkZkduoDeNU3ILM/7o20mEPA2EJzyOPGa3AuscAGl8ClGfn5pLsraPkDGlJSrNNGQl1MoiiwrEOxvhcXJSHzVqfuWvaS6Qr24qwGO2xeRd6hPWxobLqsRG8FaeFdKBo8Moklmfyz7s3+79FjEA6ClhEy4nm0o7Si9uCI6BqE13LdUg7PPTl/K1lrWsdpt02xEKtpg6+jTqVxAwbeJieZXeYDRJwANveRElHfJR0qoya9JzQPJsw2Yh/asfKj1OR1mCR8Q3VVIGcmB4hT6TTyzo8X/tuyhTEKIT8ucIsqVOTPOCKoZyaHqgbS3rhaapp+lu
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c162e3b9-fa81-41c4-d808-08d75c74489b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Oct 2019 13:31:19.9279
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KpAyCVCDaCRtzzQdc4uGN1YtzeJUc68nR7MLhqLhCd68MAiJQU0XHMZOuRIpcvT1iU+0eE0wnidBSaht++Hh3A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB4580
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi all,
 
-Sorry for re-opening an old discussion, but I cannot find any final 
-decision on how to handle this.
 
-See inline for more comments.
+> -----Original Message-----
+> From: Leon Romanovsky <leon@kernel.org>
+> Sent: Tuesday, October 29, 2019 6:53 AM
+> To: Doug Ledford <dledford@redhat.com>; Jason Gunthorpe
+> <jgg@mellanox.com>
+> Cc: Leon Romanovsky <leonro@mellanox.com>; RDMA mailing list <linux-
+> rdma@vger.kernel.org>; Daniel Jurgens <danielj@mellanox.com>; Parav
+> Pandit <parav@mellanox.com>
+> Subject: [PATCH rdma-next v1 1/2] IB/core: Let IB core distribute cache
+> update events
+>=20
+> From: Parav Pandit <parav@mellanox.com>
+>=20
+> Currently when low level driver notifies Pkey, GID, port change events, t=
+hey
+> are notified to the registered handlers in the order they are registered.
+> IB core and other ULPs such as IPoIB are interested in GID, LID, Pkey cha=
+nge
+> events.
+> Since all GID query done by ULPs is serviced by IB core, in below flow wh=
+en
+> GID change event occurs, IB core is yet to update the GID cache when IPoI=
+B
+> queries the GID, resulting into not updating IPoIB address.
+>=20
+> mlx5_ib_handle_event()
+>   ib_dispatch_event()
+>     ib_cache_event()
+>        queue_work() -> slow cache update
+>=20
+>     [..]
+>     ipoib_event()
+>      queue_work()
+>        [..]
+>        work handler
+>          ipoib_ib_dev_flush_light()
+>            __ipoib_ib_dev_flush()
+>               ipoib_dev_addr_changed_valid()
+>                 rdma_query_gid() <- Returns old GID, cache not updated.
+>=20
+> Hence, all events which require cache update are handled first by the IB
+> core. Once cache update work is completed, IB core distributes the event =
+to
+> subscriber clients.
+>=20
+> Fixes: f35faa4ba956 ("IB/core: Simplify ib_query_gid to always refer to
+> cache")
+> Signed-off-by: Parav Pandit <parav@mellanox.com>
+> Reviewed-by: Daniel Jurgens <danielj@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/core/cache.c     | 84 ++++++++++++++---------------
+>  drivers/infiniband/core/core_priv.h |  2 +
+>  drivers/infiniband/core/device.c    | 27 ++++++----
+>  include/rdma/ib_verbs.h             |  1 -
+>  4 files changed, 57 insertions(+), 57 deletions(-)
+>=20
+> diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/ca=
+che.c
+> index d535995711c3..1d5c0df7dfab 100644
+> --- a/drivers/infiniband/core/cache.c
+> +++ b/drivers/infiniband/core/cache.c
+> @@ -51,9 +51,8 @@ struct ib_pkey_cache {
+>=20
+>  struct ib_update_work {
+>  	struct work_struct work;
+> -	struct ib_device  *device;
+> -	u8                 port_num;
+> -	bool		   enforce_security;
+> +	struct ib_event event;
+> +	bool enforce_security;
+>  };
+>=20
+>  union ib_gid zgid;
+> @@ -130,7 +129,7 @@ static void dispatch_gid_change_event(struct
+> ib_device *ib_dev, u8 port)
+>  	event.element.port_num	=3D port;
+>  	event.event		=3D IB_EVENT_GID_CHANGE;
+>=20
+> -	ib_dispatch_event(&event);
+> +	ib_dispatch_cache_event_clients(&event);
+>  }
+>=20
+>  static const char * const gid_type_str[] =3D { @@ -1381,9 +1380,8 @@ sta=
+tic
+> int config_non_roce_gid_cache(struct ib_device *device,
+>  	return ret;
+>  }
+>=20
+> -static void ib_cache_update(struct ib_device *device,
+> -			    u8                port,
+> -			    bool	      enforce_security)
+> +static int
+> +ib_cache_update(struct ib_device *device, u8 port, bool
+> 	enforce_security)
+>  {
+>  	struct ib_port_attr       *tprops =3D NULL;
+>  	struct ib_pkey_cache      *pkey_cache =3D NULL, *old_pkey_cache;
+> @@ -1391,11 +1389,11 @@ static void ib_cache_update(struct ib_device
+> *device,
+>  	int                        ret;
+>=20
+>  	if (!rdma_is_port_valid(device, port))
+> -		return;
+> +		return -EINVAL;
+>=20
+>  	tprops =3D kmalloc(sizeof *tprops, GFP_KERNEL);
+>  	if (!tprops)
+> -		return;
+> +		return -ENOMEM;
+>=20
+>  	ret =3D ib_query_port(device, port, tprops);
+>  	if (ret) {
+> @@ -1413,8 +1411,10 @@ static void ib_cache_update(struct ib_device
+> *device,
+>  	pkey_cache =3D kmalloc(struct_size(pkey_cache, table,
+>  					 tprops->pkey_tbl_len),
+>  			     GFP_KERNEL);
+> -	if (!pkey_cache)
+> +	if (!pkey_cache) {
+> +		ret =3D -ENOMEM;
+>  		goto err;
+> +	}
+>=20
+>  	pkey_cache->table_len =3D tprops->pkey_tbl_len;
+>=20
+> @@ -1446,49 +1446,48 @@ static void ib_cache_update(struct ib_device
+> *device,
+>=20
+>  	kfree(old_pkey_cache);
+>  	kfree(tprops);
+> -	return;
+> +	return 0;
+>=20
+>  err:
+>  	kfree(pkey_cache);
+>  	kfree(tprops);
+> +	return ret;
+>  }
+>=20
+>  static void ib_cache_task(struct work_struct *_work)  {
+>  	struct ib_update_work *work =3D
+>  		container_of(_work, struct ib_update_work, work);
+> +	int ret;
+> +
+> +	ret =3D ib_cache_update(work->event.device, work-
+> >event.element.port_num,
+> +			      work->enforce_security);
+> +
+> +	/* GID event is notified already for individual GID entries by
+> +	 * dispatch_gid_change_event(). Hence, notifiy for rest of the
+> +	 * events.
+> +	 */
+> +	if (!ret && work->event.event !=3D IB_EVENT_GID_CHANGE)
+> +		ib_dispatch_cache_event_clients(&work->event);
+>=20
+> -	ib_cache_update(work->device,
+> -			work->port_num,
+> -			work->enforce_security);
+>  	kfree(work);
+>  }
+>=20
+> -static void ib_cache_event(struct ib_event_handler *handler,
+> -			   struct ib_event *event)
+> +void ib_enqueue_cache_update_event(const struct ib_event *event)
+>  {
+>  	struct ib_update_work *work;
+>=20
+> -	if (event->event =3D=3D IB_EVENT_PORT_ERR    ||
+> -	    event->event =3D=3D IB_EVENT_PORT_ACTIVE ||
+> -	    event->event =3D=3D IB_EVENT_LID_CHANGE  ||
+> -	    event->event =3D=3D IB_EVENT_PKEY_CHANGE ||
+> -	    event->event =3D=3D IB_EVENT_CLIENT_REREGISTER ||
+> -	    event->event =3D=3D IB_EVENT_GID_CHANGE) {
+> -		work =3D kmalloc(sizeof *work, GFP_ATOMIC);
+> -		if (work) {
+> -			INIT_WORK(&work->work, ib_cache_task);
+> -			work->device   =3D event->device;
+> -			work->port_num =3D event->element.port_num;
+> -			if (event->event =3D=3D IB_EVENT_PKEY_CHANGE ||
+> -			    event->event =3D=3D IB_EVENT_GID_CHANGE)
+> -				work->enforce_security =3D true;
+> -			else
+> -				work->enforce_security =3D false;
+> -
+> -			queue_work(ib_wq, &work->work);
+> -		}
+> -	}
+> +	work =3D kzalloc(sizeof(*work), GFP_ATOMIC);
+> +	if (!work)
+> +		return;
+> +
+> +	INIT_WORK(&work->work, ib_cache_task);
+> +	work->event =3D *event;
+> +	if (event->event =3D=3D IB_EVENT_PKEY_CHANGE ||
+> +	    event->event =3D=3D IB_EVENT_GID_CHANGE)
+> +		work->enforce_security =3D true;
+> +
+> +	queue_work(ib_wq, &work->work);
+>  }
+>=20
+>  int ib_cache_setup_one(struct ib_device *device) @@ -1505,9 +1504,6 @@
+> int ib_cache_setup_one(struct ib_device *device)
+>  	rdma_for_each_port (device, p)
+>  		ib_cache_update(device, p, true);
+>=20
+> -	INIT_IB_EVENT_HANDLER(&device->cache.event_handler,
+> -			      device, ib_cache_event);
+> -	ib_register_event_handler(&device->cache.event_handler);
+>  	return 0;
+>  }
+>=20
+> @@ -1529,14 +1525,12 @@ void ib_cache_release_one(struct ib_device
+> *device)
+>=20
+>  void ib_cache_cleanup_one(struct ib_device *device)  {
+> -	/* The cleanup function unregisters the event handler,
+> -	 * waits for all in-progress workqueue elements and cleans
+> -	 * up the GID cache. This function should be called after
+> -	 * the device was removed from the devices list and all
+> -	 * clients were removed, so the cache exists but is
+> +	/* The cleanup function waits for all in-progress workqueue
+> +	 * elements and cleans up the GID cache. This function should be
+> +	 * called after the device was removed from the devices list and
+> +	 * all clients were removed, so the cache exists but is
+>  	 * non-functional and shouldn't be updated anymore.
+>  	 */
+> -	ib_unregister_event_handler(&device->cache.event_handler);
+>  	flush_workqueue(ib_wq);
+>  	gid_table_cleanup_one(device);
+>=20
+> diff --git a/drivers/infiniband/core/core_priv.h
+> b/drivers/infiniband/core/core_priv.h
+> index 3a8b0911c3bc..137c98098489 100644
+> --- a/drivers/infiniband/core/core_priv.h
+> +++ b/drivers/infiniband/core/core_priv.h
+> @@ -149,6 +149,8 @@ unsigned long roce_gid_type_mask_support(struct
+> ib_device *ib_dev, u8 port);  int ib_cache_setup_one(struct ib_device
+> *device);  void ib_cache_cleanup_one(struct ib_device *device);  void
+> ib_cache_release_one(struct ib_device *device);
+> +void ib_enqueue_cache_update_event(const struct ib_event *event); void
+> +ib_dispatch_cache_event_clients(struct ib_event *event);
+>=20
+>  #ifdef CONFIG_CGROUP_RDMA
+>  void ib_device_register_rdmacg(struct ib_device *device); diff --git
+> a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> index f8d383ceae05..9db229c628e9 100644
+> --- a/drivers/infiniband/core/device.c
+> +++ b/drivers/infiniband/core/device.c
+> @@ -1931,8 +1931,8 @@ EXPORT_SYMBOL(ib_set_client_data);
+>   *
+>   * ib_register_event_handler() registers an event handler that will be
+>   * called back when asynchronous IB events occur (as defined in
+> - * chapter 11 of the InfiniBand Architecture Specification).  This
+> - * callback may occur in interrupt context.
+> + * chapter 11 of the InfiniBand Architecture Specification). This
+> + * callback always occurring in workqueue context.
+>   */
+>  void ib_register_event_handler(struct ib_event_handler *event_handler)  =
+{
+> @@ -1962,15 +1962,7 @@ void ib_unregister_event_handler(struct
+> ib_event_handler *event_handler)  }
+> EXPORT_SYMBOL(ib_unregister_event_handler);
+>=20
+> -/**
+> - * ib_dispatch_event - Dispatch an asynchronous event
+> - * @event:Event to dispatch
+> - *
+> - * Low-level drivers must call ib_dispatch_event() to dispatch the
+> - * event to all registered event handlers when an asynchronous event
+> - * occurs.
+> - */
+> -void ib_dispatch_event(struct ib_event *event)
+> +void ib_dispatch_cache_event_clients(struct ib_event *event)
+>  {
+>  	unsigned long flags;
+>  	struct ib_event_handler *handler;
+> @@ -1982,6 +1974,19 @@ void ib_dispatch_event(struct ib_event *event)
+>=20
+>  	spin_unlock_irqrestore(&event->device->event_handler_lock, flags);
+> }
+> +
+> +/**
+> + * ib_dispatch_event - Dispatch an asynchronous event
+> + * @event:Event to dispatch
+> + *
+> + * Low-level drivers must call ib_dispatch_event() to dispatch the
+> + * event to all registered event handlers when an asynchronous event
+> + * occurs.
+> + */
+> +void ib_dispatch_event(struct ib_event *event) {
+> +	ib_enqueue_cache_update_event(event);
+> +}
+>  EXPORT_SYMBOL(ib_dispatch_event);
+>=20
+>  static int iw_query_port(struct ib_device *device,
+> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> index 0626b62ed107..6604115f7c85 100644
+> --- a/include/rdma/ib_verbs.h
+> +++ b/include/rdma/ib_verbs.h
+> @@ -2148,7 +2148,6 @@ struct ib_port_cache {
+>=20
+>  struct ib_cache {
+>  	rwlock_t                lock;
+> -	struct ib_event_handler event_handler;
+>  };
+>=20
+>  struct ib_port_immutable {
+> --
+> 2.20.1
 
-On 6/14/19 7:44 AM, Håkon Bugge wrote:
->
->> On 13 Jun 2019, at 22:25, Doug Ledford <dledford@redhat.com> wrote:
->>
->> On Thu, 2019-06-13 at 18:58 +0200, Håkon Bugge wrote:
->>>> On 13 Jun 2019, at 16:25, Doug Ledford <dledford@redhat.com> wrote:
->>>>
->>>> On Tue, 2019-02-26 at 08:57 +0100, Håkon Bugge wrote:
->>>>> During certain workloads, the default CM response timeout is too
->>>>> short, leading to excessive retries. Hence, make it configurable
->>>>> through sysctl. While at it, also make number of CM retries
->>>>> configurable.
->>>>>
->>>>> The defaults are not changed.
->>>>>
->>>>> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
->>>>> ---
->>>>> v1 -> v2:
->>>>>   * Added unregister_net_sysctl_table() in cma_cleanup()
->>>>> ---
->>>>> drivers/infiniband/core/cma.c | 52
->>>>> ++++++++++++++++++++++++++++++---
->>>>> --
->>>>> 1 file changed, 45 insertions(+), 7 deletions(-)
->>>> This has been sitting on patchworks since forever.  Presumably
->>>> because
->>>> Jason and I neither one felt like we really wanted it, but also
->>>> couldn't justify flat refusing it.
->>> I thought the agreement was to use NL and iproute2. But I haven't had
->>> the capacity.
->> To be fair, the email thread was gone from my linux-rdma folder.  So, I
->> just had to review the entry in patchworks, and there was no captured
->> discussion there.  So, if the agreement was made, it must have been
->> face to face some time and if I was involed, I had certainly forgotten
->> by now.  But I still needed to clean up patchworks, hence my email ;-).
-> This is the "agreement" I was referring too:
->
->> On 4 Mar 2019, at 07:27, Parav Pandit <parav@mellanox.com> wrote:
->>
->>> []
->> I think we should use rdma_nl_register(RDMA_NL_RDMA_CM, cma_cb_table) which was removed as part of ID stats removal.
->> Because of below reasons.
->> 1. rdma netlink command auto loads the module
->> 2. we don't need to write any extra code to do register_net_sysctl () in each netns.
->> Caller's skb's netns will read/write value of response_timeout in 'struct cma_pernet'.
->> 3. last time sysctl added in ipv6 was in 2017 in net/ipv6/addrconf.c, however ipv4 was done in 2018.
->>
->> Currently rdma_cm/rdma_ucma has configfs, sysctl.
->> We are adding netlink sys params to ib_core.
->>
->> We already have 3 clients and infra built using rdma_nl_register() netlink , so hooking up to netlink will provide unified way to set rdma params.
->> Let's just use netlink for any new params unless it is not doable.
->
->
->>>> Well, I've made up my mind, so
->>>> unless Jason wants to argue the other side, I'm rejecting this
->>>> patch.
->>>> Here's why.  The whole concept of a timeout is to help recovery in
->>>> a
->>>> situation that overloads one end of the connection.  There is a
->>>> relationship between the max queue backlog on the one host and the
->>>> timeout on the other host.
->>> If you refer to the backlog parameter in rdma_listen(), I cannot see
->>> it being used at all for IB.
->> No, not exactly.  I was more referring to heavy load causing an
->> overflow in the mad packet receive processing.  We have
->> IB_MAD_QP_RECV_SIZE set to 512 by default, but it can be changed at
->> module load time of the ib_core module and that represents the maximum
->> number of backlogged mad packets we can have waiting to be processed
->> before we just drop them on the floor.  There can be other places to
->> drop them too, but this is the one I was referring to.
-How can we determine the CM response timeout base on MAD QP recv size? 
-As far as I can see we would need
-to know the process time for the requests. An incoming connection 
-request will be send to and handled by the listener
-before the listener calls rdma_accept, do the processing time would need 
-to include this delay.
-Maybe the best approach would be to let IB rdma users modify the CM 
-reposponse timeout, either by adding it to the rdma_conn_param struct or 
-by adding a setter function similar to rdma_set_ack_timeout. What do you 
-think?
-
-Regards,
--Dag
-> That is another scenario than what I try to solve. What I see, is that the MAD packets are delayed, not lost. The delay is longer than the CMA timeout. Hence, the MAD packets are retried, adding more burden to the PF proxying and inducing even longer delays. And excessive CM retries are observed. See 2612d723aadc ("IB/mlx4: Increase the timeout for CM cache") where I have some quantification thereof.
->
-> Back to your scenario above, yes indeed, the queue sizes are module params. If the MADs are tossed, we will see rq_num_udsdprd incrementing on a CX-3.
->
-> But I do not understand how the dots are connected. Assume one client does rdma_listen(, backlog = 1000); Where are those 1000 REQs stored, assuming an "infinite slow processor"?
->
->
-> Thxs, Håkon
->
->
->>> For CX-3, which is paravirtualized wrt. MAD packets, it is the proxy
->>> UD receive queue length for the PF driver that can be construed as a
->>> backlog. Remember that any MAD packet being sent from a VF or the PF
->>> itself, is sent to a proxy UD QP in the PF. Those packets are then
->>> multiplexed out on the real QP0/1. Incoming MAD packets are
->>> demultiplexed and sent once more to the proxy QP in the VF.
->>>
->>>> Generally, in order for a request to get
->>>> dropped and us to need to retransmit, the queue must already have a
->>>> full backlog.  So, how long does it take a heavily loaded system to
->>>> process a full backlog?  That, plus a fuzz for a margin of error,
->>>> should be our timeout.  We shouldn't be asking users to configure
->>>> it.
->>> Customer configures #VMs and different workload may lead to way
->>> different number of CM connections. The proxying of MAD packet
->>> through the PF driver has a finite packet rate. With 64 VMs, 10.000
->>> QPs on each, all going down due to a switch failing or similar, you
->>> have 640.000 DREQs to be sent, and with the finite packet rate of MA
->>> packets through the PF, this takes more than the current CM timeout.
->>> And then you re-transmit and increase the burden of the PF proxying.
->>>
->>> So, we can change the default to cope with this. But, a MAD packet is
->>> unreliable, we may have transient loss. In this case, we want a short
->>> timeout.
->>>
->>>> However, if users change the default backlog queue on their
->>>> systems,
->>>> *then* it would make sense to have the users also change the
->>>> timeout
->>>> here, but I think guidance would be helpful.
->>>>
->>>> So, to revive this patch, what I'd like to see is some attempt to
->>>> actually quantify a reasonable timeout for the default backlog
->>>> depth,
->>>> then the patch should actually change the default to that
->>>> reasonable
->>>> timeout, and then put in the ability to adjust the timeout with
->>>> some
->>>> sort of doc guidance on how to calculate a reasonable timeout based
->>>> on
->>>> configured backlog depth.
->>> I can agree to this :-)
->>>
->>>
->>> Thxs, Håkon
->>>
->>>> -- 
->>>> Doug Ledford <dledford@redhat.com>
->>>>    GPG KeyID: B826A3330E572FDD
->>>>    Key fingerprint = AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
->>>> 2FDD
->> -- 
->> Doug Ledford <dledford@redhat.com>
->>     GPG KeyID: B826A3330E572FDD
->>     Key fingerprint = AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57
->> 2FDD
-
+We noticed one Kazan report with this patch in additional QA tests. I am lo=
+oking into it.
+Please wait until we have more updates.
