@@ -2,172 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D1857E8FFA
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Oct 2019 20:31:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132BFE900A
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Oct 2019 20:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728235AbfJ2TbW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Oct 2019 15:31:22 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:55262 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbfJ2TbW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Oct 2019 15:31:22 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9TJSmcH030842;
-        Tue, 29 Oct 2019 19:31:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=Je70oog1C51FTi7jCQQ1fCUjNy5E69wjO9Mhp3rlIp4=;
- b=rohmjOlQHx42xiyy428MvtqAkoyKLQRY8/xoiGlo/DrtanFMknfwJcYra2M8FuRbwxnP
- 68mHtPiNJpjOESliTkFL6Fcji48/7tqiMObcPQQm2dgdXAjPmKuyJifyE3VykOezJuNo
- T3vSRm/8QqnoW0SWa4KtvBSpNRJLqTncvfCzQ/F3pde1kvVdboKm0zCqlb9uDpHE9vwb
- 6iMtnc39oV05fKzElvL4YC3GZH48qSdD0dgNWsvrmXZfyP5JqA9KTid2HB+6M4dlQTtH
- +wYr5CHLvFpFASYm1/ZmhDLiZxPd33pjqnAWlnO3xN0ZoCQBu3EGhPKE6/zLh+JF1EBh iQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2vve3qbewy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Oct 2019 19:31:06 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9TJTWq0064195;
-        Tue, 29 Oct 2019 19:31:06 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 2vxpgfh960-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Oct 2019 19:31:06 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9TJV4qs022644;
-        Tue, 29 Oct 2019 19:31:04 GMT
-Received: from [10.159.243.118] (/10.159.243.118)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 29 Oct 2019 12:31:04 -0700
-Subject: Re: [PATCH v1 1/1] rxe: calculate inline data size based on requested
- values
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     monis@mellanox.com, dledford@redhat.com, sean.hefty@intel.com,
-        hal.rosenstock@gmail.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1571851957-3524-1-git-send-email-rao.shoaib@oracle.com>
- <1571851957-3524-2-git-send-email-rao.shoaib@oracle.com>
- <20191029191155.GA10841@ziepe.ca>
-From:   Rao Shoaib <rao.shoaib@oracle.com>
-Message-ID: <4c23244e-44bf-2927-6b9d-17c4d279ebe3@oracle.com>
-Date:   Tue, 29 Oct 2019 12:31:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729253AbfJ2ThN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Oct 2019 15:37:13 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:38955 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727395AbfJ2ThN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Oct 2019 15:37:13 -0400
+Received: by mail-qt1-f196.google.com with SMTP id t8so22004652qtc.6
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Oct 2019 12:37:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ndPchJCINSLW6zXoxwghNw45dTEmLArUMZOFT2JSm2k=;
+        b=O64hEkEFvzxf/oLPkeITelUjFffJdehBUleCEHwDLSm2tNqPIO9qJFp8jQoVvUpXbB
+         JN6oE4ALPBqQF5cPIG11DQjPR+EHCfXmNTOKu5+iqnWrZL8aC8Kki4UvCRUsT9Y+TqUg
+         wDmRTXdU9F0zscrO3Ar/Z93Eyf7jcKtxMo6264OsyRBFpcGL3LXB2ChlHrWEf8zxu2v9
+         v4v97ZY6Uinq4hqGFYgNuehEeXPgEMgnuXPXIr/p4XLileZh7fixH2T45yOOy4CuMIrE
+         6qy9QX/7QYa81lKgLJeuAuhSVwjEEwU8KbDWyuQcOqYWm+TIZJ8lfKB8OcZO0vAH3vnB
+         Jkvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ndPchJCINSLW6zXoxwghNw45dTEmLArUMZOFT2JSm2k=;
+        b=Wo6HmX1AKMOx86eZwmFg2DBPArKHRqBde2IQQ5ggKmPg6QqfxV7ehrfrsyhtc4eRdE
+         eUAydIXrqM2FACNCiO5ssAbBX1dnrk7AJ5wjcelbWGECblC7Kr7t5bw/zHSaPX2ZFZW8
+         lnpe1nu0CMS/ILvaiJiW409oivQmKPiCqTNLI3uE52l+1NkmQVpvSTqo0r4K8900L8Vn
+         J9xwsqsY1X8c4tp/0q47OeJsYy3KiZUO3DLMm05yjJYrevVgzYXeoXTmtCP9ifLXV1Dz
+         n6wOX0mEbj7D4t8p1ChAXgqrIdGiFWglBPUWpuJsP+CY+DbllsUzKteIYA1WS/EXwL0i
+         pzVA==
+X-Gm-Message-State: APjAAAWAZb9Qa5AKt/MruHjq5K5B0GrEM7575PUI4mnGNoiyQHqiJT+4
+        rCXclIPQf5ZfPGfqqP2Oc7LJpA==
+X-Google-Smtp-Source: APXvYqzDt0MMA1QUgAHudYW9T+91MvBi4R6sHQNiU/d17LpSx/RDcWvqDkCwhIP0T6AJyKbynUqXZg==
+X-Received: by 2002:a0c:85e4:: with SMTP id o91mr24953809qva.16.1572377832171;
+        Tue, 29 Oct 2019 12:37:12 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id c23sm10608811qte.66.2019.10.29.12.37.11
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Oct 2019 12:37:11 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iPXIl-00009L-62; Tue, 29 Oct 2019 16:37:11 -0300
+Date:   Tue, 29 Oct 2019 16:37:11 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Honggang LI <honli@redhat.com>
+Cc:     bvanassche@acm.org, leon@kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [rdma-core patch v2] srp_daemon: print maximum initiator to
+ target IU size
+Message-ID: <20191029193711.GA531@ziepe.ca>
+References: <20190925004200.32401-1-honli@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20191029191155.GA10841@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9425 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910290167
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9425 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910290167
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190925004200.32401-1-honli@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jason,
+On Wed, Sep 25, 2019 at 08:42:00AM +0800, Honggang LI wrote:
+> From: Honggang Li <honli@redhat.com>
+> 
+> The 'Send Message Size' field of IOControllerProfile attributes
+> contains the maximum initiator to target IU size.
+> 
+> When there is something wrong with SRP login to a third party
+> SRP target, whose ib_srpt parameters can't be collected with
+> ordinary method, dump the 'Send Message Size' may help us to
+> diagnose the problem.
+> 
+> Signed-off-by: Honggang Li <honli@redhat.com>
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> ---
+>  srp_daemon/srp_daemon.c | 2 ++
+>  1 file changed, 2 insertions(+)
 
-Thanks for the comments, please see inline.
+Applied, thanks
 
-On 10/29/19 12:11 PM, Jason Gunthorpe wrote:
-> On Wed, Oct 23, 2019 at 10:32:37AM -0700, rao Shoaib wrote:
->> From: Rao Shoaib <rao.shoaib@oracle.com>
->>
->> rxe driver has a hard coded value for the size of inline data, where as
->> mlx5 driver calculates number of SGE's and inline data size based on the
->> values in the qp request. This patch modifies rxe driver to do the same
->> so that applications can work seamlessly across drivers.
-> This description doesn't seem accurate at all, and this patch seems to
-> be doing two things:
-I thought the note described the change, I will try harder next time.
->
->> Signed-off-by: Rao Shoaib <rao.shoaib@oracle.com>
->> ---
->>   drivers/infiniband/sw/rxe/rxe_param.h | 2 +-
->>   drivers/infiniband/sw/rxe/rxe_qp.c    | 4 ++++
->>   2 files changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
->> index 1b596fb..657f9303 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_param.h
->> +++ b/drivers/infiniband/sw/rxe/rxe_param.h
->> @@ -68,7 +68,6 @@ enum rxe_device_param {
->>   	RXE_HW_VER			= 0,
->>   	RXE_MAX_QP			= 0x10000,
->>   	RXE_MAX_QP_WR			= 0x4000,
->> -	RXE_MAX_INLINE_DATA		= 400,
->>   	RXE_DEVICE_CAP_FLAGS		= IB_DEVICE_BAD_PKEY_CNTR
->>   					| IB_DEVICE_BAD_QKEY_CNTR
->>   					| IB_DEVICE_AUTO_PATH_MIG
->> @@ -81,6 +80,7 @@ enum rxe_device_param {
->>   					| IB_DEVICE_MEM_MGT_EXTENSIONS,
->>   	RXE_MAX_SGE			= 32,
->>   	RXE_MAX_SGE_RD			= 32,
->> +	RXE_MAX_INLINE_DATA		= RXE_MAX_SGE * sizeof(struct ib_sge),
->>   	RXE_MAX_CQ			= 16384,
->>   	RXE_MAX_LOG_CQE			= 15,
->>   	RXE_MAX_MR			= 2 * 1024,
-> Increasing RXE_MAX_INLINE_DATA to match the WQE size limited the
-> MAX_SGE. IMHO this is done in a hacky way, instead we should define a
-> maximim WQE size and from there derive the MAX_INLINE_DATA and MAX_SGE
-> limitations.
-There was already RXE_MAX_SGE defined so I did not define MAX_WQE. If 
-that is what is preference I can submit a patch with that. What is a 
-good value for MAX_WQE?
->
->> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
->> index aeea994..45b5da5 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
->> @@ -229,6 +229,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
->>   {
->>   	int err;
->>   	int wqe_size;
->> +	unsigned int inline_size;
->>   
->>   	err = sock_create_kern(&init_net, AF_INET, SOCK_DGRAM, 0, &qp->sk);
->>   	if (err < 0)
->> @@ -244,6 +245,9 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
->>   			 sizeof(struct rxe_send_wqe) +
->>   			 qp->sq.max_inline);
->>   
->> +	inline_size = wqe_size - sizeof(struct rxe_send_wqe);
->> +	qp->sq.max_inline = inline_size;
->> +	init->cap.max_inline_data = inline_size;
-> Whatever this is doing. Is this trying to expand the supported inline
-> data when max_sge is provided? That seems reasonable but
-> peculiar. Should be it's own patch.
-Yes that is what it is dong same as mlx5 which takes the larger of the 
-two values reqquested and bumps the other. I will submit a separate patch.
->
-> Also don't double initialize qp->sq.max_inline in the same function,
-> and there is no need for the temporary 'inline_size'
+Things will go faster if you send rdma-core patches as PRs.. It saves
+me a bunch of work :)
 
-I used a separate variable as I would have to repeat the calculation 
-twice. I do not understand your comment about double initialization, can 
-you please clarify that for me.
-
-Thanks,
-
-Shoaib
-
->
-> Jason
->
->
->>   	qp->sq.queue = rxe_queue_init(rxe,
->>   				      &qp->sq.max_wr,
->>   				      wqe_size);
->> -- 
->> 1.8.3.1
->>
+Jason
