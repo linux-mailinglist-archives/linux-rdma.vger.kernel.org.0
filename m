@@ -2,104 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F8EE8FD0
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Oct 2019 20:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A760E8FDC
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Oct 2019 20:21:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbfJ2TSC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Oct 2019 15:18:02 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:38499 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731085AbfJ2TR6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Oct 2019 15:17:58 -0400
-Received: by mail-qk1-f193.google.com with SMTP id e2so4880445qkn.5
-        for <linux-rdma@vger.kernel.org>; Tue, 29 Oct 2019 12:17:57 -0700 (PDT)
+        id S1729039AbfJ2TVA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Oct 2019 15:21:00 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:37450 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbfJ2TVA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Oct 2019 15:21:00 -0400
+Received: by mail-qt1-f194.google.com with SMTP id g50so21922984qtb.4
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Oct 2019 12:20:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=MiZaBDLtkGC2+waxhGGq8xdyCqxWB6WzvPaoZbLYYg8=;
-        b=Ton5hZMNO5L6j3O6Z0aT/yd/JiU0tb2UFOa3Lt4/kYYMZRYpDjtEhDgH+720i0OupF
-         oOnyZm3MWbhesFgyeSTZMO2C4rlW40SbvQTgVbrDzGTbsB+MCNT2dtw1NqXVERP3v93q
-         CfLXpAjFiJczmrrYHI5uQxwcpb0W+HooWILvY4wO18bocUIcM6ZWZLRnMJdyYFjZqDR7
-         qp7/3Jv9hJIwBrvNKRdCaI8HcGUznwlTqz4HFP5XqBMniwEt/ZU+BFYCynbOB4SbZOiR
-         cTNabChaoEJORLIHlrYYUF4fopM6WGtGw2+BqnLTzl7aLh1EVKUsJ6UrzYBejZZhyUO5
-         sCjQ==
+        bh=VLkdCW6fO/kdWcmvO5mZyGXLIND8hrF7Fib2pxaeHqE=;
+        b=oZJBSaUpNctcJF1KPdB1q8131m6M3DuwlLqWAJBVS6+GtrrEUnTJ1YGxdkS3laLv/O
+         jbUP78t8eppIZnsu1Oii9SJoWBXa0OBhG36OFp7u51/3lGHXsn+VQYbT6kOR2sO+QwXd
+         tjsQb41gUyoRm4bK1vv7btWy9MQFDDhEeF4izUxUvtT2UIEk7nyefrLIBkskCqYHAElq
+         Rq8H1CE0ostW9lFtEZ5Jw2639tSC9ud5q/I2QwJdHgG/2KVwqQwPQ+jzM/SSmNvnK2Ap
+         cf5ZIf7AfPFt4Gt7sZX/DFr4WIrjyQnY+nr7XuMq9q8L4G2k2YgdWpWihZNFr4HIDqFQ
+         Uhhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MiZaBDLtkGC2+waxhGGq8xdyCqxWB6WzvPaoZbLYYg8=;
-        b=nAZAUALNmKgifOi1MrzRfqWT8P2tCkWxJcKNQaoC0luhghfPi5b2Gqpk4VIDmKH9uK
-         2Fk+N2cS8qwG2ulWufBo5WyyfNiX0p0lRhryMSkmWWP9r6GafIErAB7+jBhQnSF6qSkt
-         KWQ5JTw58H2UwBw7/KCC77OovETW7Qp5dqXSAch3GvZlnca/BRWBSLbPcmneITAJl328
-         tVwHlMx7PhWHvkvWjS58dOiAsohDWrBCh+XXoQs9I3OxNeHG9OcVovHkqWuaMowE6byI
-         NrUEodQKcocd9b1jW5Z3gVt/i9vz3d9ctBawYJundjYUNkA8QyUZ1ocs4kYrYi2l9yZs
-         UTbg==
-X-Gm-Message-State: APjAAAU+tyGkbHEsRqHjP2wxZU6O9KXNiPrDUqL7agC0BPB2ye/OAfU8
-        SBlBVccaCObGeTu0jjPqYwLcWA==
-X-Google-Smtp-Source: APXvYqyfe73AOsu7OurMFcQnitG+NcgjcutExlfR6KLT234Oi1qps677i71FzyM0AyWOVZFNarrx0w==
-X-Received: by 2002:a37:ad1a:: with SMTP id f26mr11054372qkm.170.1572376677332;
-        Tue, 29 Oct 2019 12:17:57 -0700 (PDT)
+        bh=VLkdCW6fO/kdWcmvO5mZyGXLIND8hrF7Fib2pxaeHqE=;
+        b=eyvWRL4q+QcACWG74ILZZcdm4gVq2xc4Jo60c5iuCPgg/Eda/33TG9ba42IrMzE3sK
+         w8p+uSYnUcReafESPi/e6ymZzcFqQ4RLe35lnSCfxZ+/df6Re9Ry1XUjTLfY6SgtTe8R
+         RpKXwyr13B+hihkEk1yj+udNUXaTgsTF1J9hQv02Cuk6gHVpffPevKu4vuE/b8n4VejS
+         FO+CyhsE79hOuJpTHUCAL8KYD469W/v4e3LtBklePZ8EdZ6gDO4fVzHDW0zOURLHjds8
+         xijdmF5Mpx9FGpePqtbsumOfvtNnGPMw9tD1rY6H9JT95DcRDQn9ebGeOcWbM+dB7p+C
+         H3uQ==
+X-Gm-Message-State: APjAAAV8unO2Pa+wBKY6AkUPXwEUjxsLRQ0/t1ZR++9kDJS+VBj+PVWn
+        72uBYNF9N5y2hvKqH4mMenSqMQ==
+X-Google-Smtp-Source: APXvYqw9LzxzmjdLYLHltS5J607RC70qGlqUtWazEs9u72lKOb9c3az5HfcxcKJrFLefSp5tx8dDpg==
+X-Received: by 2002:ac8:2476:: with SMTP id d51mr752878qtd.378.1572376859018;
+        Tue, 29 Oct 2019 12:20:59 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id l186sm2596650qkc.58.2019.10.29.12.17.56
+        by smtp.gmail.com with ESMTPSA id a6sm7311724qth.74.2019.10.29.12.20.58
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 29 Oct 2019 12:17:56 -0700 (PDT)
+        Tue, 29 Oct 2019 12:20:58 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iPX08-00031S-0a; Tue, 29 Oct 2019 16:17:56 -0300
-Date:   Tue, 29 Oct 2019 16:17:56 -0300
+        id 1iPX33-0003g8-W0; Tue, 29 Oct 2019 16:20:57 -0300
+Date:   Tue, 29 Oct 2019 16:20:57 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Lijun Ou <oulijun@huawei.com>,
-        "Wei Hu(Xavier)" <xavier.huwei@huawei.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Hulk Robot <hulkci@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Shaobo Xu <xushaobo2@huawei.com>,
-        Shamir Rabinovitch <shamir.rabinovitch@oracle.com>,
-        Xi Wang <wangxi11@huawei.com>, Tao Tian <tiantao6@huawei.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/hns: Fix build error again
-Message-ID: <20191029191755.GA11530@ziepe.ca>
-References: <20191007211826.3361202-1-arnd@arndb.de>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH v2] iser: explicitly set shost max_segment_size if non
+ virtual boundary devices
+Message-ID: <20191029192057.GA11679@ziepe.ca>
+References: <20190607012914.2328-1-sagi@grimberg.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191007211826.3361202-1-arnd@arndb.de>
+In-Reply-To: <20190607012914.2328-1-sagi@grimberg.me>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 07, 2019 at 11:18:08PM +0200, Arnd Bergmann wrote:
-> This is not the first attempt to fix building random configurations,
-> unfortunately the attempt in commit a07fc0bb483e ("RDMA/hns: Fix build
-> error") caused a new problem when CONFIG_INFINIBAND_HNS_HIP06=m
-> and CONFIG_INFINIBAND_HNS_HIP08=y:
+On Thu, Jun 06, 2019 at 06:29:14PM -0700, Sagi Grimberg wrote:
+> if the rdma device supports sg gaps, we don't need to set a virtual
+> boundary but we then need to explicitly set the max_segment_size, otherwise
+> scsi takes BLK_MAX_SEGMENT_SIZE and sets it using dma_set_max_seg_size()
+> and this affects all the rdma device consumers.
 > 
-> drivers/infiniband/hw/hns/hns_roce_main.o:(.rodata+0xe60): undefined reference to `__this_module'
+> Fix it by setting shost max_segment_size according to the device
+> capability if SG_GAPS are not supported.
 > 
-> Revert commits a07fc0bb483e ("RDMA/hns: Fix build error") and
-> a3e2d4c7e766 ("RDMA/hns: remove obsolete Kconfig comment") to get
-> back to the previous state, then fix the issues described there
-> differently, by adding more specific dependencies: INFINIBAND_HNS
-> can now only be built-in if at least one of HNS or HNS3 are
-> built-in, and the individual back-ends are only available if
-> that code is reachable from the main driver.
-> 
-> Fixes: a07fc0bb483e ("RDMA/hns: Fix build error")
-> Fixes: a3e2d4c7e766 ("RDMA/hns: remove obsolete Kconfig comment")
-> Fixes: dd74282df573 ("RDMA/hns: Initialize the PCI device for hip08 RoCE")
-> Fixes: 08805fdbeb2d ("RDMA/hns: Split hw v1 driver from hns roce driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Reported-by: Jason Gunthorpe <jgg@ziepe.ca>
+> Suggested-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
 > ---
->  drivers/infiniband/hw/hns/Kconfig  | 17 ++++++++++++++---
->  drivers/infiniband/hw/hns/Makefile |  8 ++++++--
->  2 files changed, 20 insertions(+), 5 deletions(-)
+> Changes from v1:
+> - set max_segment_size only for non virtual boundary devices
+> 
+>  drivers/infiniband/ulp/iser/iscsi_iser.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-Applied to for-next, let us give it some time in linux-next I guess?
+Sagi, are you respinning this or ??
 
-Thanks,
+https://patchwork.kernel.org/patch/10980657/
+
 Jason
