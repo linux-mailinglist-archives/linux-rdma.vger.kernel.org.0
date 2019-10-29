@@ -2,156 +2,235 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B305E8179
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Oct 2019 07:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90EA7E82A0
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Oct 2019 08:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbfJ2Gw5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Oct 2019 02:52:57 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:58862 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726566AbfJ2Gw5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 29 Oct 2019 02:52:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1572331975;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=oZQfAcndGvdEDdCTHQjXI+RlVKWz9xFBBEp4bpMhrgE=;
-        b=Iz/x4M12XLjO6n8mjrEpA/Z+1G/ZFdlA3oNZ72p6w7YkT0IfAY5sLp8EOyLVvo62nJs3Xw
-        LJi7kdV3fOr2Ka1cpbzmCKLufV4JMvEdqLTBL8DxmqB08tygU7AhSyqLXe8PbV1bS5oUR6
-        HGMz2/oJBlHve8i2i3al6gpomC17CAo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-212-MKFSOS6nPTGZrruiIG9Idg-1; Tue, 29 Oct 2019 02:52:51 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727166AbfJ2Hmm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Oct 2019 03:42:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727165AbfJ2Hmm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 29 Oct 2019 03:42:42 -0400
+Received: from localhost (unknown [77.137.89.37])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B697E800C80;
-        Tue, 29 Oct 2019 06:52:50 +0000 (UTC)
-Received: from dhcp-128-227.nay.redhat.com (unknown [10.66.128.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DD4BB60863;
-        Tue, 29 Oct 2019 06:52:48 +0000 (UTC)
-From:   Honggang LI <honli@redhat.com>
-To:     bvanassche@acm.org, dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, Honggang Li <honli@redhat.com>
-Subject: [rdma-core patch v3] srp_daemon: Use maximum initiator to target IU size
-Date:   Tue, 29 Oct 2019 14:52:40 +0800
-Message-Id: <20191029065240.24963-1-honli@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 8530D20717;
+        Tue, 29 Oct 2019 07:42:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1572334961;
+        bh=EbzxDYf6F9qkZrsDsyMkAiltpwzAI2hBO1OY7oXdHJQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tl+kQ8BMYWCd8fvOnRBW6Ofq5pzKD217pHkHzsqQTfp+zFX5ZLY/ACcevqy7TGojH
+         iDxR2B+ezePu7JVT/6NGdEmsUcwkj4t55AXnBus3jqOc6gQeOAlk2rx38VbFERcotd
+         9AfU1S25yaxRIVMLbtUj2zZaqgA1YhB3iSGZIYXU=
+Date:   Tue, 29 Oct 2019 09:42:36 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Mark Bloch <markb@mellanox.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Yevgeny Kliteynik <kliteyn@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next] IB/mlx5: Support flow counters offset for bulk
+ counters
+Message-ID: <20191029074236.GB5545@unreal>
+References: <20191029055916.7322-1-leon@kernel.org>
+ <9a0ea9cf-d0f3-7d31-c027-b1568e4a25b1@mellanox.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-MC-Unique: MKFSOS6nPTGZrruiIG9Idg-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a0ea9cf-d0f3-7d31-c027-b1568e4a25b1@mellanox.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Honggang Li <honli@redhat.com>
+On Tue, Oct 29, 2019 at 06:48:42AM +0000, Mark Bloch wrote:
+> Hey Leon,
+>
+> On 10/28/2019 22:59, Leon Romanovsky wrote:
+> > From: Yevgeny Kliteynik <kliteyn@mellanox.com>
+> >
+> > Add support for flow steering counters action with
+> > a non-base counter ID (offset) for bulk counters.
+> >
+> > When creating a flow counter object, save the bulk value.
+> > This value is used when a flow action with a non-base
+> > counter ID is requested - to validate that the required
+> > offset is in the range of the allocated bulk.
+> >
+> > Signed-off-by: Yevgeny Kliteynik <kliteyn@mellanox.com>
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > ---
+> >  drivers/infiniband/hw/mlx5/devx.c        | 12 ++++++++-
+> >  drivers/infiniband/hw/mlx5/flow.c        | 34 ++++++++++++++++++++++--
+> >  drivers/infiniband/hw/mlx5/mlx5_ib.h     |  2 +-
+> >  include/uapi/rdma/mlx5_user_ioctl_cmds.h |  1 +
+> >  4 files changed, 45 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+> > index 6b1fca91d7d3..3900fcb1ccaf 100644
+> > --- a/drivers/infiniband/hw/mlx5/devx.c
+> > +++ b/drivers/infiniband/hw/mlx5/devx.c
+> > @@ -100,6 +100,7 @@ struct devx_obj {
+> >  		struct mlx5_ib_devx_mr	devx_mr;
+> >  		struct mlx5_core_dct	core_dct;
+> >  		struct mlx5_core_cq	core_cq;
+> > +		u32			flow_counter_bulk_size;
+> >  	};
+> >  	struct list_head event_sub; /* holds devx_event_subscription entries */
+> >  };
+> > @@ -192,7 +193,7 @@ bool mlx5_ib_devx_is_flow_dest(void *obj, int *dest_id, int *dest_type)
+> >  	}
+> >  }
+> >
+> > -bool mlx5_ib_devx_is_flow_counter(void *obj, u32 *counter_id)
+> > +bool mlx5_ib_devx_is_flow_counter(void *obj, u32 *counter_id, u32 *bulk_size)
+> >  {
+> >  	struct devx_obj *devx_obj = obj;
+> >  	u16 opcode = MLX5_GET(general_obj_in_cmd_hdr, devx_obj->dinbox, opcode);
+> > @@ -201,6 +202,7 @@ bool mlx5_ib_devx_is_flow_counter(void *obj, u32 *counter_id)
+> >  		*counter_id = MLX5_GET(dealloc_flow_counter_in,
+> >  				       devx_obj->dinbox,
+> >  				       flow_counter_id);
+> > +		*bulk_size = devx_obj->flow_counter_bulk_size;
+> >  		return true;
+> >  	}
+> >
+> > @@ -1463,6 +1465,14 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_CREATE)(
+> >  	if (err)
+> >  		goto obj_free;
+> >
+> > +	if (opcode == MLX5_CMD_OP_ALLOC_FLOW_COUNTER) {
+> > +		u8 bulk = MLX5_GET(alloc_flow_counter_in,
+> > +				   cmd_in,
+> > +				   flow_counter_bulk);
+> > +		if (bulk)
+> > +			obj->flow_counter_bulk_size = 64UL << ffs(bulk);
+>
+> Why do you need ffs and not just: 64 << bulk ?
+> As this field is a bitmask, only a single bit should be set and that should already
+> be validated by the FW.
 
-"ib_srp.ko" module with immediate data support use (8 * 1024)
-as default immediate data size. When immediate data support enabled
-for "ib_srp.ko" client, the default maximum initiator to target IU
-size will greater than (8 * 1024). That means it also greater than
-the default maximum initiator to target IU size set by old
-"ib_srpt.ko" module, which does not support immediate data.
+I preferred this approach instead of checking if "64UL << bulk" overflow while doing shift,
+but if you insist, we can change the code below to be something like this:
+check_shl_overflow(64UL, bulk, obj->flow_counter_bulk_size)
 
-Pass remote maximum initiator to target IU size as a login parameter,
-when immediate data size greater than remote maximum initiator to
-target IU size.
+>
+> > +	}
+> > +
+> >  	uobj->object = obj;
+> >  	INIT_LIST_HEAD(&obj->event_sub);
+> >  	obj->ib_dev = dev;
+> > diff --git a/drivers/infiniband/hw/mlx5/flow.c b/drivers/infiniband/hw/mlx5/flow.c
+> > index b198ff10cde9..05637039bcd7 100644
+> > --- a/drivers/infiniband/hw/mlx5/flow.c
+> > +++ b/drivers/infiniband/hw/mlx5/flow.c
+> > @@ -85,6 +85,8 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
+> >  	struct mlx5_ib_dev *dev = mlx5_udata_to_mdev(&attrs->driver_udata);
+> >  	int len, ret, i;
+> >  	u32 counter_id = 0;
+> > +	u32 bulk_size = 0;
+> > +	u32 *offset;
+> >
+> >  	if (!capable(CAP_NET_RAW))
+> >  		return -EPERM;
+> > @@ -151,8 +153,32 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
+> >  	if (len) {
+> >  		devx_obj = arr_flow_actions[0]->object;
+> >
+> > -		if (!mlx5_ib_devx_is_flow_counter(devx_obj, &counter_id))
+> > +		if (!mlx5_ib_devx_is_flow_counter(devx_obj,
+> > +						  &counter_id,
+> > +						  &bulk_size))
+> >  			return -EINVAL;
+> > +
+> > +		if (uverbs_attr_is_valid(
+> > +			    attrs,
+> > +			    MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX_OFFSET)) {
+> > +			int num_offsets = uverbs_attr_ptr_get_array_size(
+> > +				attrs,
+> > +				MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX_OFFSET,
+> > +				sizeof(uint32_t));
+> > +
+> > +			if (num_offsets != 1)
+> > +				return -EINVAL;> +
+> > +			offset = uverbs_attr_get_alloced_ptr(
+> > +				attrs,
+> > +				MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX_OFFSET);
+> > +
+> > +			if (*offset && *offset >= bulk_size)
+> > +				return -EINVAL;
+>
+> This logic/validity check should probably be in: mlx5_ib_devx_is_flow_counter().
+> you pass it the the offset (or 0) and you get back a counter_id and false/true if valid.
 
-This patch fixes backward compatibility for "ib_srp.ko" with [1]
-and old srp target does not support immediate data.
+Agree.
 
-[1] 547ed331bbe8 ("RDMA/srp: Add parse function for maximum
-initiator to target IU size")
+>
+> > +
+> > +			counter_id += *offset;
+> > +		}
+> > +
+> >  		flow_act.action |= MLX5_FLOW_CONTEXT_ACTION_COUNT;
+> >  	}
+> >
+> > @@ -598,7 +624,11 @@ DECLARE_UVERBS_NAMED_METHOD(
+> >  	UVERBS_ATTR_IDRS_ARR(MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX,
+> >  			     MLX5_IB_OBJECT_DEVX_OBJ,
+> >  			     UVERBS_ACCESS_READ, 1, 1,
+> > -			     UA_OPTIONAL));
+> > +			     UA_OPTIONAL),
+> > +	UVERBS_ATTR_PTR_IN(MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX_OFFSET,
+> > +			   UVERBS_ATTR_MIN_SIZE(sizeof(uint32_t)),
+>
+> Why uint32_t and not u32?
 
-Signed-off-by: Honggang Li <honli@redhat.com>
----
- srp_daemon/srp_daemon.c | 57 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
+Copy/paste from user space.
 
-diff --git a/srp_daemon/srp_daemon.c b/srp_daemon/srp_daemon.c
-index f0bcf923..b593e245 100644
---- a/srp_daemon/srp_daemon.c
-+++ b/srp_daemon/srp_daemon.c
-@@ -402,6 +402,50 @@ static int is_enabled_by_rules_file(struct target_deta=
-ils *target)
- }
-=20
-=20
-+static bool use_imm_data(void)
-+{
-+=09bool ret =3D false;
-+=09char flag =3D 0;
-+=09int cnt;
-+=09int fd =3D open("/sys/module/ib_srp/parameters/use_imm_data", O_RDONLY)=
-;
-+
-+=09if (fd < 0)
-+=09=09return false;
-+=09cnt =3D read(fd, &flag, 1);
-+=09if (cnt !=3D 1) {
-+=09=09close(fd);
-+=09=09return false;
-+=09}
-+
-+=09if (!strncmp(&flag, "Y", 1))
-+=09=09ret =3D true;
-+=09close(fd);
-+=09return ret;
-+}
-+
-+static bool imm_data_size_gt_send_size(__be32 send_size)
-+{
-+=09bool ret =3D false;
-+=09unsigned int srp_max_imm_data =3D 0;
-+=09unsigned int remote_max_it_ui_size =3D be32toh(send_size);
-+=09FILE *fp =3D fopen("/sys/module/ib_srp/parameters/max_imm_data", "r");
-+=09int cnt;
-+
-+=09if (fp =3D=3D NULL)
-+=09=09return ret;
-+
-+=09cnt =3D fscanf(fp, "%d", &srp_max_imm_data);
-+=09if (cnt <=3D 0) {
-+=09=09fclose(fp);
-+=09=09return ret;
-+=09}
-+
-+=09if (srp_max_imm_data > remote_max_it_ui_size)
-+=09=09ret =3D true;
-+
-+=09fclose(fp);
-+=09return ret;
-+}
-=20
- static int add_non_exist_target(struct target_details *target)
- {
-@@ -581,6 +625,19 @@ static int add_non_exist_target(struct target_details =
-*target)
- =09=09}
- =09}
-=20
-+=09if (use_imm_data() && imm_data_size_gt_send_size(target->ioc_prof.send_=
-size)) {
-+=09=09len +=3D snprintf(target_config_str+len,
-+=09=09=09sizeof(target_config_str) - len,
-+=09=09=09",max_it_iu_size=3D%d",
-+=09=09=09be32toh(target->ioc_prof.send_size));
-+
-+=09=09if (len >=3D sizeof(target_config_str)) {
-+=09=09=09pr_err("Target config string is too long, ignoring target\n");
-+=09=09=09closedir(dir);
-+=09=09=09return -1;
-+=09=09}
-+=09}
-+
- =09target_config_str[len] =3D '\0';
-=20
- =09pr_cmd(target_config_str, not_connected);
---=20
-2.21.0
+>
+> > +			   UA_OPTIONAL,
+> > +			   UA_ALLOC_AND_COPY));
+> side note, both MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX_OFFSET and MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX
+> are optional, but you should provide MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX_OFFSET only
+> if you are also passing MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX.
+>
+> Which means you can pass MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX_OFFSET without
+> MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX and everything will work.
+>
+> I wonder if we should have a way to define such things.
 
+Jason ???
+
+>
+> Mark
+>
+> >
+> >  DECLARE_UVERBS_NAMED_METHOD_DESTROY(
+> >  	MLX5_IB_METHOD_DESTROY_FLOW,
+> > diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> > index 0bdb8b45ea15..0fb58ecccb7e 100644
+> > --- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> > +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> > @@ -1367,7 +1367,7 @@ struct mlx5_ib_flow_handler *mlx5_ib_raw_fs_rule_add(
+> >  	struct mlx5_flow_act *flow_act, u32 counter_id,
+> >  	void *cmd_in, int inlen, int dest_id, int dest_type);
+> >  bool mlx5_ib_devx_is_flow_dest(void *obj, int *dest_id, int *dest_type);
+> > -bool mlx5_ib_devx_is_flow_counter(void *obj, u32 *counter_id);
+> > +bool mlx5_ib_devx_is_flow_counter(void *obj, u32 *counter_id, u32 *bulk_size);
+> >  int mlx5_ib_get_flow_trees(const struct uverbs_object_tree_def **root);
+> >  void mlx5_ib_destroy_flow_action_raw(struct mlx5_ib_flow_action *maction);
+> >  #else
+> > diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
+> > index d0da070cf0ab..20d88307f75f 100644
+> > --- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
+> > +++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
+> > @@ -198,6 +198,7 @@ enum mlx5_ib_create_flow_attrs {
+> >  	MLX5_IB_ATTR_CREATE_FLOW_ARR_FLOW_ACTIONS,
+> >  	MLX5_IB_ATTR_CREATE_FLOW_TAG,
+> >  	MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX,
+> > +	MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX_OFFSET,
+> >  };
+> >
+> >  enum mlx5_ib_destoy_flow_attrs {
+> >
