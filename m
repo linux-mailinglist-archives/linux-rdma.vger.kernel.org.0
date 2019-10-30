@@ -2,580 +2,486 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A465DE9F24
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2019 16:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 486AAEA229
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2019 17:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbfJ3Pdk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 30 Oct 2019 11:33:40 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47490 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726705AbfJ3Pdk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 30 Oct 2019 11:33:40 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x9UFP7a1039164
-        for <linux-rdma@vger.kernel.org>; Wed, 30 Oct 2019 11:33:37 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.111])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2vycdtjv99-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Wed, 30 Oct 2019 11:33:36 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Wed, 30 Oct 2019 15:33:36 -0000
-Received: from us1b3-smtp03.a3dr.sjc01.isc4sb.com (10.122.7.173)
-        by smtp.notes.na.collabserv.com (10.122.47.52) with smtp.notes.na.collabserv.com ESMTP;
-        Wed, 30 Oct 2019 15:33:28 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp03.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2019103015332742-572386 ;
-          Wed, 30 Oct 2019 15:33:27 +0000 
-In-Reply-To: <20191030094417.16866-6-michal.kalderon@marvell.com>
-Subject: Re: [PATCH v12 rdma-next 5/8] RDMA/siw: Use the common mmap_xa helpers
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Michal Kalderon" <michal.kalderon@marvell.com>
-Cc:     <ariel.elior@marvell.com>, <dledford@redhat.com>, <jgg@ziepe.ca>,
-        <galpress@amazon.com>, <yishaih@mellanox.com>,
-        <linux-rdma@vger.kernel.org>
-Date:   Wed, 30 Oct 2019 15:33:27 +0000
+        id S1726510AbfJ3Q70 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 30 Oct 2019 12:59:26 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:32970 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726619AbfJ3Q70 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Oct 2019 12:59:26 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9UGuWWH108547;
+        Wed, 30 Oct 2019 16:58:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=keEeUnYROMUeA95knhT+FHD4/E7a1Ew6FHXEch8uzww=;
+ b=D1JqQda86dNVGPCQ4AUxb9fjj0QImKbpnU4eXnAq4WKhYhIzGpDbxQPM21NnRfkDSd3q
+ GMq2yw4MLnwF8r4yxGrvyWKTS1QGywHwz9Eyqw+QMfJKvP5TQyEdju2DI5xLYQaB5o6z
+ q9tb7fptCGUyuQe3aIshog8URVKWfsrb8RBspmlEbJpgW14dlFsRlJZU1sTVn+gh7RY+
+ IDpHzotWRV3WUp40BHtSwPtRwPJZujcKjBl/eFBe9OPkQUVHq4rmBgNgsY9PjJxmFLs/
+ LV8pmJR+ureH1dB94B1cx7Dxisj4B014VgKDrV4gIKW/c0G0ibxOYatufRDqlocmu1bi JQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 2vxwhfdpwb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Oct 2019 16:58:32 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9UGrciw067506;
+        Wed, 30 Oct 2019 16:56:32 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 2vxwj72q6y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Oct 2019 16:56:31 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9UGuOon011005;
+        Wed, 30 Oct 2019 16:56:24 GMT
+Received: from bostrovs-us.us.oracle.com (/10.152.32.65)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 30 Oct 2019 09:56:24 -0700
+Subject: Re: [PATCH v2 09/15] xen/gntdev: use mmu_range_notifier_insert
+To:     Jason Gunthorpe <jgg@ziepe.ca>, linux-mm@kvack.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com
+Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Zhou <David1.Zhou@amd.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Petr Cvek <petrcvekcz@gmail.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        nouveau@lists.freedesktop.org, xen-devel@lists.xenproject.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Jason Gunthorpe <jgg@mellanox.com>
+References: <20191028201032.6352-1-jgg@ziepe.ca>
+ <20191028201032.6352-10-jgg@ziepe.ca>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=boris.ostrovsky@oracle.com; prefer-encrypt=mutual; keydata=
+ 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
+ Jg6OxFYd01z+a+oL
+Message-ID: <0355257f-6a3a-cdcd-d206-aec3df97dded@oracle.com>
+Date:   Wed, 30 Oct 2019 12:55:37 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20191030094417.16866-6-michal.kalderon@marvell.com>,<20191030094417.16866-1-michal.kalderon@marvell.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP61 October 18, 2019 at 15:11
-X-KeepSent: B4667D53:5FF97895-002584A3:0054186C;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 37347
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19103015-3633-0000-0000-000000F47D51
-X-IBM-SpamModules-Scores: BY=0.045882; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.000047
-X-IBM-SpamModules-Versions: BY=3.00012020; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000292; SDB=6.01282937; UDB=6.00679988; IPR=6.01065085;
- MB=3.00029305; MTD=3.00000008; XFM=3.00000015; UTC=2019-10-30 15:33:33
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-10-30 09:31:39 - 6.00010589
-x-cbparentid: 19103015-3634-0000-0000-00007C7F8FB3
-Message-Id: <OFB4667D53.5FF97895-ON002584A3.0054186C-002584A3.005575C3@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-30_07:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <20191028201032.6352-10-jgg@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9426 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910300151
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9426 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910300151
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Michal Kalderon" <michal.kalderon@marvell.com> wrote: -----
+On 10/28/19 4:10 PM, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
+>
+> gntdev simply wants to monitor a specific VMA for any notifier events,
+> this can be done straightforwardly using mmu_range_notifier_insert() over
+> the VMA's VA range.
+>
+> The notifier should be attached until the original VMA is destroyed.
+>
+> It is unclear if any of this is even sane, but at least a lot of duplicate
+> code is removed.
 
->To: <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
-><dledford@redhat.com>, <jgg@ziepe.ca>, <galpress@amazon.com>,
-><yishaih@mellanox.com>, <bmt@zurich.ibm.com>
->From: "Michal Kalderon" <michal.kalderon@marvell.com>
->Date: 10/30/2019 10:47AM
->Cc: <linux-rdma@vger.kernel.org>
->Subject: [EXTERNAL] [PATCH v12 rdma-next 5/8] RDMA/siw: Use the
->common mmap_xa helpers
->
->Remove the functions related to managing the mmap_xa database.
->This code is now common in ib_core. Use the common API's instead.
->
->Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
->Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
->Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
->---
-> drivers/infiniband/sw/siw/siw.h       |  20 +++-
-> drivers/infiniband/sw/siw/siw_main.c  |   1 +
-> drivers/infiniband/sw/siw/siw_verbs.c | 207
->++++++++++++++++++----------------
-> drivers/infiniband/sw/siw/siw_verbs.h |   1 +
-> 4 files changed, 128 insertions(+), 101 deletions(-)
->
->diff --git a/drivers/infiniband/sw/siw/siw.h
->b/drivers/infiniband/sw/siw/siw.h
->index dba4535494ab..824b11d5b879 100644
->--- a/drivers/infiniband/sw/siw/siw.h
->+++ b/drivers/infiniband/sw/siw/siw.h
->@@ -220,7 +220,7 @@ struct siw_cq {
-> 	u32 cq_get;
-> 	u32 num_cqe;
-> 	bool kernel_verbs;
->-	u32 xa_cq_index; /* mmap information for CQE array */
->+	struct rdma_user_mmap_entry *cq_entry; /* mmap info for CQE array
->*/
-> 	u32 id; /* For debugging only */
-> };
-> 
->@@ -263,7 +263,7 @@ struct siw_srq {
-> 	u32 rq_put;
-> 	u32 rq_get;
-> 	u32 num_rqe; /* max # of wqe's allowed */
->-	u32 xa_srq_index; /* mmap information for SRQ array */
->+	struct rdma_user_mmap_entry *srq_entry; /* mmap info for SRQ array
->*/
-> 	char armed; /* inform user if limit hit */
-> 	char kernel_verbs; /* '1' if kernel client */
-> };
->@@ -477,8 +477,8 @@ struct siw_qp {
-> 		u8 layer : 4, etype : 4;
-> 		u8 ecode;
-> 	} term_info;
->-	u32 xa_sq_index; /* mmap information for SQE array */
->-	u32 xa_rq_index; /* mmap information for RQE array */
->+	struct rdma_user_mmap_entry *sq_entry; /* mmap info for SQE array
->*/
->+	struct rdma_user_mmap_entry *rq_entry; /* mmap info for RQE array
->*/
-> 	struct rcu_head rcu;
-> };
-> 
->@@ -503,6 +503,12 @@ struct iwarp_msg_info {
-> 	int (*rx_data)(struct siw_qp *qp);
-> };
-> 
->+struct siw_user_mmap_entry {
->+	struct rdma_user_mmap_entry rdma_entry;
->+	void *address;
->+	size_t length;
->+};
->+
-> /* Global siw parameters. Currently set in siw_main.c */
-> extern const bool zcopy_tx;
-> extern const bool try_gso;
->@@ -607,6 +613,12 @@ static inline struct siw_mr *to_siw_mr(struct
->ib_mr *base_mr)
-> 	return container_of(base_mr, struct siw_mr, base_mr);
-> }
-> 
->+static inline struct siw_user_mmap_entry *
->+to_siw_mmap_entry(struct rdma_user_mmap_entry *rdma_mmap)
->+{
->+	return container_of(rdma_mmap, struct siw_user_mmap_entry,
->rdma_entry);
->+}
->+
-> static inline struct siw_qp *siw_qp_id2obj(struct siw_device *sdev,
->int id)
-> {
-> 	struct siw_qp *qp;
->diff --git a/drivers/infiniband/sw/siw/siw_main.c
->b/drivers/infiniband/sw/siw/siw_main.c
->index d1a1b7aa7d83..4b44d5f075fd 100644
->--- a/drivers/infiniband/sw/siw/siw_main.c
->+++ b/drivers/infiniband/sw/siw/siw_main.c
->@@ -299,6 +299,7 @@ static const struct ib_device_ops siw_device_ops
->= {
-> 	.iw_rem_ref = siw_qp_put_ref,
-> 	.map_mr_sg = siw_map_mr_sg,
-> 	.mmap = siw_mmap,
->+	.mmap_free = siw_mmap_free,
-> 	.modify_qp = siw_verbs_modify_qp,
-> 	.modify_srq = siw_modify_srq,
-> 	.poll_cq = siw_poll_cq,
->diff --git a/drivers/infiniband/sw/siw/siw_verbs.c
->b/drivers/infiniband/sw/siw/siw_verbs.c
->index 869e02b69a01..71c7a61cbfe3 100644
->--- a/drivers/infiniband/sw/siw/siw_verbs.c
->+++ b/drivers/infiniband/sw/siw/siw_verbs.c
->@@ -34,44 +34,20 @@ static char ib_qp_state_to_string[IB_QPS_ERR +
->1][sizeof("RESET")] = {
-> 	[IB_QPS_ERR] = "ERR"
-> };
-> 
->-static u32 siw_create_uobj(struct siw_ucontext *uctx, void *vaddr,
->u32 size)
->+void siw_mmap_free(struct rdma_user_mmap_entry *rdma_entry)
-> {
->-	struct siw_uobj *uobj;
->-	struct xa_limit limit = XA_LIMIT(0, SIW_UOBJ_MAX_KEY);
->-	u32 key;
->+	struct siw_user_mmap_entry *entry = to_siw_mmap_entry(rdma_entry);
-> 
->-	uobj = kzalloc(sizeof(*uobj), GFP_KERNEL);
->-	if (!uobj)
->-		return SIW_INVAL_UOBJ_KEY;
->-
->-	if (xa_alloc_cyclic(&uctx->xa, &key, uobj, limit,
->&uctx->uobj_nextkey,
->-			    GFP_KERNEL) < 0) {
->-		kfree(uobj);
->-		return SIW_INVAL_UOBJ_KEY;
->-	}
->-	uobj->size = PAGE_ALIGN(size);
->-	uobj->addr = vaddr;
->-
->-	return key;
->-}
->-
->-static struct siw_uobj *siw_get_uobj(struct siw_ucontext *uctx,
->-				     unsigned long off, u32 size)
->-{
->-	struct siw_uobj *uobj = xa_load(&uctx->xa, off);
->-
->-	if (uobj && uobj->size == size)
->-		return uobj;
->-
->-	return NULL;
->+	kfree(entry);
-> }
-> 
-> int siw_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma)
-> {
-> 	struct siw_ucontext *uctx = to_siw_ctx(ctx);
->-	struct siw_uobj *uobj;
->-	unsigned long off = vma->vm_pgoff;
->-	int size = vma->vm_end - vma->vm_start;
->+	unsigned long off = vma->vm_pgoff << PAGE_SHIFT;
->+	size_t size = vma->vm_end - vma->vm_start;
->+	struct rdma_user_mmap_entry *rdma_entry;
->+	struct siw_user_mmap_entry *entry;
-> 	int rv = -EINVAL;
-> 
-> 	/*
->@@ -79,18 +55,32 @@ int siw_mmap(struct ib_ucontext *ctx, struct
->vm_area_struct *vma)
-> 	 */
-> 	if (vma->vm_start & (PAGE_SIZE - 1)) {
-> 		pr_warn("siw: mmap not page aligned\n");
->-		goto out;
->+		return -EINVAL;
-> 	}
->-	uobj = siw_get_uobj(uctx, off, size);
->-	if (!uobj) {
->-		siw_dbg(&uctx->sdev->base_dev, "mmap lookup failed: %lu, %u\n",
->+	rdma_entry = rdma_user_mmap_entry_get(&uctx->base_ucontext, off,
->+					      vma);
->+	if (!rdma_entry) {
->+		siw_dbg(&uctx->sdev->base_dev, "mmap lookup failed: %lu, %#zx\n",
-> 			off, size);
->+		return -EINVAL;
->+	}
->+	entry = to_siw_mmap_entry(rdma_entry);
->+	if (PAGE_ALIGN(entry->length) != size) {
->+		siw_dbg(&uctx->sdev->base_dev,
->+			"key[%#lx] does not have valid length[%#zx] expected[%#zx]\n",
->+			off, size, entry->length);
->+		rv = -EINVAL;
->+		goto out;
->+	}
->+
->+	rv = remap_vmalloc_range(vma, entry->address, 0);
->+	if (rv) {
->+		pr_warn("remap_vmalloc_range failed: %lu, %zu\n", off, size);
-> 		goto out;
-> 	}
->-	rv = remap_vmalloc_range(vma, uobj->addr, 0);
->-	if (rv)
->-		pr_warn("remap_vmalloc_range failed: %lu, %u\n", off, size);
-> out:
->+	rdma_user_mmap_entry_put(&uctx->base_ucontext, rdma_entry);
->+
-> 	return rv;
-> }
-> 
->@@ -105,7 +95,7 @@ int siw_alloc_ucontext(struct ib_ucontext
->*base_ctx, struct ib_udata *udata)
-> 		rv = -ENOMEM;
-> 		goto err_out;
-> 	}
->-	xa_init_flags(&ctx->xa, XA_FLAGS_ALLOC);
->+
-> 	ctx->uobj_nextkey = 0;
-> 	ctx->sdev = sdev;
-> 
->@@ -135,19 +125,7 @@ int siw_alloc_ucontext(struct ib_ucontext
->*base_ctx, struct ib_udata *udata)
-> void siw_dealloc_ucontext(struct ib_ucontext *base_ctx)
-> {
-> 	struct siw_ucontext *uctx = to_siw_ctx(base_ctx);
->-	void *entry;
->-	unsigned long index;
-> 
->-	/*
->-	 * Make sure all user mmap objects are gone. Since QP, CQ
->-	 * and SRQ destroy routines destroy related objects, nothing
->-	 * should be found here.
->-	 */
->-	xa_for_each(&uctx->xa, index, entry) {
->-		kfree(xa_erase(&uctx->xa, index));
->-		pr_warn("siw: dropping orphaned uobj at %lu\n", index);
->-	}
->-	xa_destroy(&uctx->xa);
-> 	atomic_dec(&uctx->sdev->num_ctx);
-> }
-> 
->@@ -293,6 +271,34 @@ void siw_qp_put_ref(struct ib_qp *base_qp)
-> 	siw_qp_put(to_siw_qp(base_qp));
-> }
-> 
->+static struct rdma_user_mmap_entry *
->+siw_mmap_entry_insert(struct siw_ucontext *uctx,
->+		      void *address, size_t length,
->+		      u64 *key)
->+{
->+	struct siw_user_mmap_entry *entry = kzalloc(sizeof(*entry),
->GFP_KERNEL);
->+	int rv;
->+
->+	*key = SIW_INVAL_UOBJ_KEY;
->+	if (!entry)
->+		return NULL;
->+
->+	entry->address = address;
->+	entry->length = length;
->+
->+	rv = rdma_user_mmap_entry_insert(&uctx->base_ucontext,
->+					 &entry->rdma_entry,
->+					 length);
->+	if (rv) {
->+		kfree(entry);
->+		return NULL;
->+	}
->+
->+	*key = rdma_user_mmap_get_key(&entry->rdma_entry);
->+
->+	return &entry->rdma_entry;
->+}
->+
-> /*
->  * siw_create_qp()
->  *
->@@ -317,6 +323,7 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
-> 	struct siw_cq *scq = NULL, *rcq = NULL;
-> 	unsigned long flags;
-> 	int num_sqe, num_rqe, rv = 0;
->+	size_t length;
-> 
-> 	siw_dbg(base_dev, "create new QP\n");
-> 
->@@ -380,8 +387,6 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
-> 	spin_lock_init(&qp->orq_lock);
-> 
-> 	qp->kernel_verbs = !udata;
->-	qp->xa_sq_index = SIW_INVAL_UOBJ_KEY;
->-	qp->xa_rq_index = SIW_INVAL_UOBJ_KEY;
-> 
-> 	rv = siw_qp_add(sdev, qp);
-> 	if (rv)
->@@ -458,22 +463,27 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
-> 		uresp.qp_id = qp_id(qp);
-> 
-> 		if (qp->sendq) {
->-			qp->xa_sq_index =
->-				siw_create_uobj(uctx, qp->sendq,
->-					num_sqe * sizeof(struct siw_sqe));
->+			length = num_sqe * sizeof(struct siw_sqe);
->+			qp->sq_entry =
->+				siw_mmap_entry_insert(uctx, qp->sendq,
->+						      length, &uresp.sq_key);
->+			if (!qp->sq_entry) {
->+				rv = -ENOMEM;
->+				goto err_out_xa;
->+			}
-> 		}
->+
-> 		if (qp->recvq) {
->-			qp->xa_rq_index =
->-				 siw_create_uobj(uctx, qp->recvq,
->-					num_rqe * sizeof(struct siw_rqe));
->-		}
->-		if (qp->xa_sq_index == SIW_INVAL_UOBJ_KEY ||
->-		    qp->xa_rq_index == SIW_INVAL_UOBJ_KEY) {
->-			rv = -ENOMEM;
->-			goto err_out_xa;
->+			length = num_rqe * sizeof(struct siw_rqe);
->+			qp->rq_entry =
->+				siw_mmap_entry_insert(uctx, qp->recvq,
->+						      length, &uresp.rq_key);
->+			if (!qp->rq_entry) {
->+				uresp.sq_key = SIW_INVAL_UOBJ_KEY;
->+				rv = -ENOMEM;
->+				goto err_out_xa;
->+			}
-> 		}
->-		uresp.sq_key = qp->xa_sq_index << PAGE_SHIFT;
->-		uresp.rq_key = qp->xa_rq_index << PAGE_SHIFT;
-> 
-> 		if (udata->outlen < sizeof(uresp)) {
-> 			rv = -EINVAL;
->@@ -501,11 +511,12 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
-> 	kfree(siw_base_qp);
-> 
-> 	if (qp) {
->-		if (qp->xa_sq_index != SIW_INVAL_UOBJ_KEY)
->-			kfree(xa_erase(&uctx->xa, qp->xa_sq_index));
->-		if (qp->xa_rq_index != SIW_INVAL_UOBJ_KEY)
->-			kfree(xa_erase(&uctx->xa, qp->xa_rq_index));
->-
->+		if (uctx) {
->+			rdma_user_mmap_entry_remove(&uctx->base_ucontext,
->+						    qp->sq_entry);
->+			rdma_user_mmap_entry_remove(&uctx->base_ucontext,
->+						    qp->rq_entry);
->+		}
-> 		vfree(qp->sendq);
-> 		vfree(qp->recvq);
-> 		kfree(qp);
->@@ -619,10 +630,10 @@ int siw_destroy_qp(struct ib_qp *base_qp,
->struct ib_udata *udata)
-> 	qp->attrs.flags |= SIW_QP_IN_DESTROY;
-> 	qp->rx_stream.rx_suspend = 1;
-> 
->-	if (uctx && qp->xa_sq_index != SIW_INVAL_UOBJ_KEY)
->-		kfree(xa_erase(&uctx->xa, qp->xa_sq_index));
->-	if (uctx && qp->xa_rq_index != SIW_INVAL_UOBJ_KEY)
->-		kfree(xa_erase(&uctx->xa, qp->xa_rq_index));
->+	if (uctx) {
->+		rdma_user_mmap_entry_remove(&uctx->base_ucontext, qp->sq_entry);
->+		rdma_user_mmap_entry_remove(&uctx->base_ucontext, qp->rq_entry);
->+	}
-> 
-> 	down_write(&qp->state_lock);
-> 
->@@ -993,8 +1004,8 @@ void siw_destroy_cq(struct ib_cq *base_cq,
->struct ib_udata *udata)
-> 
-> 	siw_cq_flush(cq);
-> 
->-	if (ctx && cq->xa_cq_index != SIW_INVAL_UOBJ_KEY)
->-		kfree(xa_erase(&ctx->xa, cq->xa_cq_index));
->+	if (ctx)
->+		rdma_user_mmap_entry_remove(&ctx->base_ucontext, cq->cq_entry);
-> 
-> 	atomic_dec(&sdev->num_cq);
-> 
->@@ -1031,7 +1042,6 @@ int siw_create_cq(struct ib_cq *base_cq, const
->struct ib_cq_init_attr *attr,
-> 	size = roundup_pow_of_two(size);
-> 	cq->base_cq.cqe = size;
-> 	cq->num_cqe = size;
->-	cq->xa_cq_index = SIW_INVAL_UOBJ_KEY;
-> 
-> 	if (!udata) {
-> 		cq->kernel_verbs = 1;
->@@ -1057,16 +1067,17 @@ int siw_create_cq(struct ib_cq *base_cq,
->const struct ib_cq_init_attr *attr,
-> 		struct siw_ucontext *ctx =
-> 			rdma_udata_to_drv_context(udata, struct siw_ucontext,
-> 						  base_ucontext);
->+		size_t length = size * sizeof(struct siw_cqe) +
->+			sizeof(struct siw_cq_ctrl);
-> 
->-		cq->xa_cq_index =
->-			siw_create_uobj(ctx, cq->queue,
->-					size * sizeof(struct siw_cqe) +
->-						sizeof(struct siw_cq_ctrl));
->-		if (cq->xa_cq_index == SIW_INVAL_UOBJ_KEY) {
->+		cq->cq_entry =
->+			siw_mmap_entry_insert(ctx, cq->queue,
->+					      length, &uresp.cq_key);
->+		if (!cq->cq_entry) {
-> 			rv = -ENOMEM;
-> 			goto err_out;
-> 		}
->-		uresp.cq_key = cq->xa_cq_index << PAGE_SHIFT;
->+
-> 		uresp.cq_id = cq->id;
-> 		uresp.num_cqe = size;
-> 
->@@ -1087,8 +1098,9 @@ int siw_create_cq(struct ib_cq *base_cq, const
->struct ib_cq_init_attr *attr,
-> 		struct siw_ucontext *ctx =
-> 			rdma_udata_to_drv_context(udata, struct siw_ucontext,
-> 						  base_ucontext);
->-		if (cq->xa_cq_index != SIW_INVAL_UOBJ_KEY)
->-			kfree(xa_erase(&ctx->xa, cq->xa_cq_index));
->+		if (ctx)
->+			rdma_user_mmap_entry_remove(&ctx->base_ucontext,
->+						    cq->cq_entry);
-> 		vfree(cq->queue);
-> 	}
-> 	atomic_dec(&sdev->num_cq);
->@@ -1492,7 +1504,6 @@ int siw_create_srq(struct ib_srq *base_srq,
-> 	}
-> 	srq->max_sge = attrs->max_sge;
-> 	srq->num_rqe = roundup_pow_of_two(attrs->max_wr);
->-	srq->xa_srq_index = SIW_INVAL_UOBJ_KEY;
-> 	srq->limit = attrs->srq_limit;
-> 	if (srq->limit)
-> 		srq->armed = 1;
->@@ -1511,15 +1522,16 @@ int siw_create_srq(struct ib_srq *base_srq,
-> 	}
-> 	if (udata) {
-> 		struct siw_uresp_create_srq uresp = {};
->+		size_t length = srq->num_rqe * sizeof(struct siw_rqe);
-> 
->-		srq->xa_srq_index = siw_create_uobj(
->-			ctx, srq->recvq, srq->num_rqe * sizeof(struct siw_rqe));
->-
->-		if (srq->xa_srq_index == SIW_INVAL_UOBJ_KEY) {
->+		srq->srq_entry =
->+			siw_mmap_entry_insert(ctx, srq->recvq,
->+					      length, &uresp.srq_key);
->+		if (!srq->srq_entry) {
-> 			rv = -ENOMEM;
-> 			goto err_out;
-> 		}
->-		uresp.srq_key = srq->xa_srq_index;
->+
-> 		uresp.num_rqe = srq->num_rqe;
-> 
-> 		if (udata->outlen < sizeof(uresp)) {
->@@ -1538,8 +1550,9 @@ int siw_create_srq(struct ib_srq *base_srq,
-> 
-> err_out:
-> 	if (srq->recvq) {
->-		if (ctx && srq->xa_srq_index != SIW_INVAL_UOBJ_KEY)
->-			kfree(xa_erase(&ctx->xa, srq->xa_srq_index));
->+		if (ctx)
->+			rdma_user_mmap_entry_remove(&ctx->base_ucontext,
->+						    srq->srq_entry);
-> 		vfree(srq->recvq);
-> 	}
-> 	atomic_dec(&sdev->num_srq);
->@@ -1625,9 +1638,9 @@ void siw_destroy_srq(struct ib_srq *base_srq,
->struct ib_udata *udata)
-> 		rdma_udata_to_drv_context(udata, struct siw_ucontext,
-> 					  base_ucontext);
-> 
->-	if (ctx && srq->xa_srq_index != SIW_INVAL_UOBJ_KEY)
->-		kfree(xa_erase(&ctx->xa, srq->xa_srq_index));
->-
->+	if (ctx)
->+		rdma_user_mmap_entry_remove(&ctx->base_ucontext,
->+					    srq->srq_entry);
-> 	vfree(srq->recvq);
-> 	atomic_dec(&sdev->num_srq);
-> }
->diff --git a/drivers/infiniband/sw/siw/siw_verbs.h
->b/drivers/infiniband/sw/siw/siw_verbs.h
->index 1910869281cb..1a731989fad6 100644
->--- a/drivers/infiniband/sw/siw/siw_verbs.h
->+++ b/drivers/infiniband/sw/siw/siw_verbs.h
->@@ -83,6 +83,7 @@ void siw_destroy_srq(struct ib_srq *base_srq,
->struct ib_udata *udata);
-> int siw_post_srq_recv(struct ib_srq *base_srq, const struct
->ib_recv_wr *wr,
-> 		      const struct ib_recv_wr **bad_wr);
-> int siw_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma);
->+void siw_mmap_free(struct rdma_user_mmap_entry *rdma_entry);
-> void siw_qp_event(struct siw_qp *qp, enum ib_event_type type);
-> void siw_cq_event(struct siw_cq *cq, enum ib_event_type type);
-> void siw_srq_event(struct siw_srq *srq, enum ib_event_type type);
->-- 
->2.14.5
->
->
+I didn't have a chance to look at the patch itself yet but as a heads-up
+--- it crashes dom0.
 
-Hi Michal,
-
-For the siw part, this patch works fine and looks good.
+-boris
 
 
-Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
-Tested-by: Bernard Metzler <bmt@zurich.ibm.com>
+>
+> Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: xen-devel@lists.xenproject.org
+> Cc: Juergen Gross <jgross@suse.com>
+> Cc: Stefano Stabellini <sstabellini@kernel.org>
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> ---
+>  drivers/xen/gntdev-common.h |   8 +-
+>  drivers/xen/gntdev.c        | 180 ++++++++++--------------------------
+>  2 files changed, 49 insertions(+), 139 deletions(-)
+>
+> diff --git a/drivers/xen/gntdev-common.h b/drivers/xen/gntdev-common.h
+> index 2f8b949c3eeb14..b201fdd20b667b 100644
+> --- a/drivers/xen/gntdev-common.h
+> +++ b/drivers/xen/gntdev-common.h
+> @@ -21,15 +21,8 @@ struct gntdev_dmabuf_priv;
+>  struct gntdev_priv {
+>  	/* Maps with visible offsets in the file descriptor. */
+>  	struct list_head maps;
+> -	/*
+> -	 * Maps that are not visible; will be freed on munmap.
+> -	 * Only populated if populate_freeable_maps == 1
+> -	 */
+> -	struct list_head freeable_maps;
+>  	/* lock protects maps and freeable_maps. */
+>  	struct mutex lock;
+> -	struct mm_struct *mm;
+> -	struct mmu_notifier mn;
+>  
+>  #ifdef CONFIG_XEN_GRANT_DMA_ALLOC
+>  	/* Device for which DMA memory is allocated. */
+> @@ -49,6 +42,7 @@ struct gntdev_unmap_notify {
+>  };
+>  
+>  struct gntdev_grant_map {
+> +	struct mmu_range_notifier notifier;
+>  	struct list_head next;
+>  	struct vm_area_struct *vma;
+>  	int index;
+> diff --git a/drivers/xen/gntdev.c b/drivers/xen/gntdev.c
+> index a446a7221e13e9..12d626670bebbc 100644
+> --- a/drivers/xen/gntdev.c
+> +++ b/drivers/xen/gntdev.c
+> @@ -65,7 +65,6 @@ MODULE_PARM_DESC(limit, "Maximum number of grants that may be mapped by "
+>  static atomic_t pages_mapped = ATOMIC_INIT(0);
+>  
+>  static int use_ptemod;
+> -#define populate_freeable_maps use_ptemod
+>  
+>  static int unmap_grant_pages(struct gntdev_grant_map *map,
+>  			     int offset, int pages);
+> @@ -251,12 +250,6 @@ void gntdev_put_map(struct gntdev_priv *priv, struct gntdev_grant_map *map)
+>  		evtchn_put(map->notify.event);
+>  	}
+>  
+> -	if (populate_freeable_maps && priv) {
+> -		mutex_lock(&priv->lock);
+> -		list_del(&map->next);
+> -		mutex_unlock(&priv->lock);
+> -	}
+> -
+>  	if (map->pages && !use_ptemod)
+>  		unmap_grant_pages(map, 0, map->count);
+>  	gntdev_free_map(map);
+> @@ -445,17 +438,9 @@ static void gntdev_vma_close(struct vm_area_struct *vma)
+>  	struct gntdev_priv *priv = file->private_data;
+>  
+>  	pr_debug("gntdev_vma_close %p\n", vma);
+> -	if (use_ptemod) {
+> -		/* It is possible that an mmu notifier could be running
+> -		 * concurrently, so take priv->lock to ensure that the vma won't
+> -		 * vanishing during the unmap_grant_pages call, since we will
+> -		 * spin here until that completes. Such a concurrent call will
+> -		 * not do any unmapping, since that has been done prior to
+> -		 * closing the vma, but it may still iterate the unmap_ops list.
+> -		 */
+> -		mutex_lock(&priv->lock);
+> +	if (use_ptemod && map->vma == vma) {
+> +		mmu_range_notifier_remove(&map->notifier);
+>  		map->vma = NULL;
+> -		mutex_unlock(&priv->lock);
+>  	}
+>  	vma->vm_private_data = NULL;
+>  	gntdev_put_map(priv, map);
+> @@ -477,109 +462,44 @@ static const struct vm_operations_struct gntdev_vmops = {
+>  
+>  /* ------------------------------------------------------------------ */
+>  
+> -static bool in_range(struct gntdev_grant_map *map,
+> -			      unsigned long start, unsigned long end)
+> -{
+> -	if (!map->vma)
+> -		return false;
+> -	if (map->vma->vm_start >= end)
+> -		return false;
+> -	if (map->vma->vm_end <= start)
+> -		return false;
+> -
+> -	return true;
+> -}
+> -
+> -static int unmap_if_in_range(struct gntdev_grant_map *map,
+> -			      unsigned long start, unsigned long end,
+> -			      bool blockable)
+> +static bool gntdev_invalidate(struct mmu_range_notifier *mn,
+> +			      const struct mmu_notifier_range *range,
+> +			      unsigned long cur_seq)
+>  {
+> +	struct gntdev_grant_map *map =
+> +		container_of(mn, struct gntdev_grant_map, notifier);
+>  	unsigned long mstart, mend;
+>  	int err;
+>  
+> -	if (!in_range(map, start, end))
+> -		return 0;
+> +	if (!mmu_notifier_range_blockable(range))
+> +		return false;
+>  
+> -	if (!blockable)
+> -		return -EAGAIN;
+> +	/*
+> +	 * If the VMA is split or otherwise changed the notifier is not
+> +	 * updated, but we don't want to process VA's outside the modified
+> +	 * VMA. FIXME: It would be much more understandable to just prevent
+> +	 * modifying the VMA in the first place.
+> +	 */
+> +	if (map->vma->vm_start >= range->end ||
+> +	    map->vma->vm_end <= range->start)
+> +		return true;
+>  
+> -	mstart = max(start, map->vma->vm_start);
+> -	mend   = min(end,   map->vma->vm_end);
+> +	mstart = max(range->start, map->vma->vm_start);
+> +	mend = min(range->end, map->vma->vm_end);
+>  	pr_debug("map %d+%d (%lx %lx), range %lx %lx, mrange %lx %lx\n",
+>  			map->index, map->count,
+>  			map->vma->vm_start, map->vma->vm_end,
+> -			start, end, mstart, mend);
+> +			range->start, range->end, mstart, mend);
+>  	err = unmap_grant_pages(map,
+>  				(mstart - map->vma->vm_start) >> PAGE_SHIFT,
+>  				(mend - mstart) >> PAGE_SHIFT);
+>  	WARN_ON(err);
+>  
+> -	return 0;
+> -}
+> -
+> -static int mn_invl_range_start(struct mmu_notifier *mn,
+> -			       const struct mmu_notifier_range *range)
+> -{
+> -	struct gntdev_priv *priv = container_of(mn, struct gntdev_priv, mn);
+> -	struct gntdev_grant_map *map;
+> -	int ret = 0;
+> -
+> -	if (mmu_notifier_range_blockable(range))
+> -		mutex_lock(&priv->lock);
+> -	else if (!mutex_trylock(&priv->lock))
+> -		return -EAGAIN;
+> -
+> -	list_for_each_entry(map, &priv->maps, next) {
+> -		ret = unmap_if_in_range(map, range->start, range->end,
+> -					mmu_notifier_range_blockable(range));
+> -		if (ret)
+> -			goto out_unlock;
+> -	}
+> -	list_for_each_entry(map, &priv->freeable_maps, next) {
+> -		ret = unmap_if_in_range(map, range->start, range->end,
+> -					mmu_notifier_range_blockable(range));
+> -		if (ret)
+> -			goto out_unlock;
+> -	}
+> -
+> -out_unlock:
+> -	mutex_unlock(&priv->lock);
+> -
+> -	return ret;
+> -}
+> -
+> -static void mn_release(struct mmu_notifier *mn,
+> -		       struct mm_struct *mm)
+> -{
+> -	struct gntdev_priv *priv = container_of(mn, struct gntdev_priv, mn);
+> -	struct gntdev_grant_map *map;
+> -	int err;
+> -
+> -	mutex_lock(&priv->lock);
+> -	list_for_each_entry(map, &priv->maps, next) {
+> -		if (!map->vma)
+> -			continue;
+> -		pr_debug("map %d+%d (%lx %lx)\n",
+> -				map->index, map->count,
+> -				map->vma->vm_start, map->vma->vm_end);
+> -		err = unmap_grant_pages(map, /* offset */ 0, map->count);
+> -		WARN_ON(err);
+> -	}
+> -	list_for_each_entry(map, &priv->freeable_maps, next) {
+> -		if (!map->vma)
+> -			continue;
+> -		pr_debug("map %d+%d (%lx %lx)\n",
+> -				map->index, map->count,
+> -				map->vma->vm_start, map->vma->vm_end);
+> -		err = unmap_grant_pages(map, /* offset */ 0, map->count);
+> -		WARN_ON(err);
+> -	}
+> -	mutex_unlock(&priv->lock);
+> +	return true;
+>  }
+>  
+> -static const struct mmu_notifier_ops gntdev_mmu_ops = {
+> -	.release                = mn_release,
+> -	.invalidate_range_start = mn_invl_range_start,
+> +static const struct mmu_range_notifier_ops gntdev_mmu_ops = {
+> +	.invalidate = gntdev_invalidate,
+>  };
+>  
+>  /* ------------------------------------------------------------------ */
+> @@ -594,7 +514,6 @@ static int gntdev_open(struct inode *inode, struct file *flip)
+>  		return -ENOMEM;
+>  
+>  	INIT_LIST_HEAD(&priv->maps);
+> -	INIT_LIST_HEAD(&priv->freeable_maps);
+>  	mutex_init(&priv->lock);
+>  
+>  #ifdef CONFIG_XEN_GNTDEV_DMABUF
+> @@ -606,17 +525,6 @@ static int gntdev_open(struct inode *inode, struct file *flip)
+>  	}
+>  #endif
+>  
+> -	if (use_ptemod) {
+> -		priv->mm = get_task_mm(current);
+> -		if (!priv->mm) {
+> -			kfree(priv);
+> -			return -ENOMEM;
+> -		}
+> -		priv->mn.ops = &gntdev_mmu_ops;
+> -		ret = mmu_notifier_register(&priv->mn, priv->mm);
+> -		mmput(priv->mm);
+> -	}
+> -
+>  	if (ret) {
+>  		kfree(priv);
+>  		return ret;
+> @@ -653,16 +561,12 @@ static int gntdev_release(struct inode *inode, struct file *flip)
+>  		list_del(&map->next);
+>  		gntdev_put_map(NULL /* already removed */, map);
+>  	}
+> -	WARN_ON(!list_empty(&priv->freeable_maps));
+>  	mutex_unlock(&priv->lock);
+>  
+>  #ifdef CONFIG_XEN_GNTDEV_DMABUF
+>  	gntdev_dmabuf_fini(priv->dmabuf_priv);
+>  #endif
+>  
+> -	if (use_ptemod)
+> -		mmu_notifier_unregister(&priv->mn, priv->mm);
+> -
+>  	kfree(priv);
+>  	return 0;
+>  }
+> @@ -723,8 +627,6 @@ static long gntdev_ioctl_unmap_grant_ref(struct gntdev_priv *priv,
+>  	map = gntdev_find_map_index(priv, op.index >> PAGE_SHIFT, op.count);
+>  	if (map) {
+>  		list_del(&map->next);
+> -		if (populate_freeable_maps)
+> -			list_add_tail(&map->next, &priv->freeable_maps);
+>  		err = 0;
+>  	}
+>  	mutex_unlock(&priv->lock);
+> @@ -1096,11 +998,6 @@ static int gntdev_mmap(struct file *flip, struct vm_area_struct *vma)
+>  		goto unlock_out;
+>  	if (use_ptemod && map->vma)
+>  		goto unlock_out;
+> -	if (use_ptemod && priv->mm != vma->vm_mm) {
+> -		pr_warn("Huh? Other mm?\n");
+> -		goto unlock_out;
+> -	}
+> -
+>  	refcount_inc(&map->users);
+>  
+>  	vma->vm_ops = &gntdev_vmops;
+> @@ -1111,10 +1008,6 @@ static int gntdev_mmap(struct file *flip, struct vm_area_struct *vma)
+>  		vma->vm_flags |= VM_DONTCOPY;
+>  
+>  	vma->vm_private_data = map;
+> -
+> -	if (use_ptemod)
+> -		map->vma = vma;
+> -
+>  	if (map->flags) {
+>  		if ((vma->vm_flags & VM_WRITE) &&
+>  				(map->flags & GNTMAP_readonly))
+> @@ -1125,8 +1018,28 @@ static int gntdev_mmap(struct file *flip, struct vm_area_struct *vma)
+>  			map->flags |= GNTMAP_readonly;
+>  	}
+>  
+> +	if (use_ptemod) {
+> +		map->vma = vma;
+> +		err = mmu_range_notifier_insert_locked(
+> +			&map->notifier, vma->vm_start,
+> +			vma->vm_end - vma->vm_start, vma->vm_mm);
+> +		if (err)
+> +			goto out_unlock_put;
+> +	}
+>  	mutex_unlock(&priv->lock);
+>  
+> +	/*
+> +	 * gntdev takes the address of the PTE in find_grant_ptes() and passes
+> +	 * it to the hypervisor in gntdev_map_grant_pages(). The purpose of
+> +	 * the notifier is to prevent the hypervisor pointer to the PTE from
+> +	 * going stale.
+> +	 *
+> +	 * Since this vma's mappings can't be touched without the mmap_sem,
+> +	 * and we are holding it now, there is no need for the notifier_range
+> +	 * locking pattern.
+> +	 */
+> +	mmu_range_read_begin(&map->notifier);
+> +
+>  	if (use_ptemod) {
+>  		map->pages_vm_start = vma->vm_start;
+>  		err = apply_to_page_range(vma->vm_mm, vma->vm_start,
+> @@ -1175,8 +1088,11 @@ static int gntdev_mmap(struct file *flip, struct vm_area_struct *vma)
+>  	mutex_unlock(&priv->lock);
+>  out_put_map:
+>  	if (use_ptemod) {
+> -		map->vma = NULL;
+>  		unmap_grant_pages(map, 0, map->count);
+> +		if (map->vma) {
+> +			mmu_range_notifier_remove(&map->notifier);
+> +			map->vma = NULL;
+> +		}
+>  	}
+>  	gntdev_put_map(priv, map);
+>  	return err;
 
