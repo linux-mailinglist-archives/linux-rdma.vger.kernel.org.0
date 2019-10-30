@@ -2,185 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F36E9967
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2019 10:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79335E9BB6
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2019 13:44:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726266AbfJ3JrN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 30 Oct 2019 05:47:13 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:7694 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726225AbfJ3JrN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 30 Oct 2019 05:47:13 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9U9jatY017060;
-        Wed, 30 Oct 2019 02:47:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0818; bh=v5D7UKj1Yu3ZKX4CZEixhUC3+rY5Fwxsz7Q2nv4m4nk=;
- b=yNQSVfnss/6MGuhLlucmOGCsPTxYpc0V7FeyjEqR1EdiOxGBNGtKdZBaX+orP88KTK09
- QVS2WDj1CDeMFGEUrJqZiBfI3PcreXJ5F50xR+rcLvNzzefhHdABrqf7doG+jFkk4MgG
- tQhDTJ/F2ndOvjK256kYqFvy/EhfIh5PCNSxmnLJl4aXxvQ8W+8rGhfh1jN+XXJ0oyiP
- JB3btpt5DQo/QenJaM0qBfHBBih1bUxRJcV2RopGh1/fYJzQzQoEUxb6NfAg7tsTlu7E
- HKZZz05CyXj3G19I9L3qr5ts5L3MsJMsC37TP46ke1GEYrMYYcWEQm5OPUAaU+shbLhc yA== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0a-0016f401.pphosted.com with ESMTP id 2vxwjm21xs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 30 Oct 2019 02:47:07 -0700
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Wed, 30 Oct
- 2019 02:47:06 -0700
-Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Wed, 30 Oct 2019 02:47:06 -0700
-Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id 10E303F7040;
-        Wed, 30 Oct 2019 02:47:03 -0700 (PDT)
-From:   Michal Kalderon <michal.kalderon@marvell.com>
-To:     <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
-        <dledford@redhat.com>, <jgg@ziepe.ca>, <galpress@amazon.com>,
-        <yishaih@mellanox.com>, <bmt@zurich.ibm.com>
-CC:     <linux-rdma@vger.kernel.org>
-Subject: [PATCH v12 rdma-next 8/8] RDMA/qedr: Add iWARP doorbell recovery support
-Date:   Wed, 30 Oct 2019 11:44:17 +0200
-Message-ID: <20191030094417.16866-9-michal.kalderon@marvell.com>
-X-Mailer: git-send-email 2.14.5
-In-Reply-To: <20191030094417.16866-1-michal.kalderon@marvell.com>
-References: <20191030094417.16866-1-michal.kalderon@marvell.com>
+        id S1726269AbfJ3Mo1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 30 Oct 2019 08:44:27 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:44064 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726088AbfJ3Mo1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Oct 2019 08:44:27 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9UChUtj062928;
+        Wed, 30 Oct 2019 12:44:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2019-08-05;
+ bh=hjXJQzJc4al81yxlwcOSrDOdSsG+1fpvdzD3Lp+qPLY=;
+ b=T5Mt/3WrukGnIB1hwM6uGkqF2if+FV9fHPH74L8xEEx15DWM/FN86yJBrde+QPyfVU/k
+ Z4Rems3OX+6/VHKYFfLFc/Dz2qe3/QomC/onqQBMDhuXmmRZrCfVZKdg8rdSmVfwBUwX
+ JbT9fUleXSA0p61Dqjsi5t3YI9a126LRmIUTnt8DH71G2kglccUgGhiEyv5HTkskpvgR
+ rXqnAt/xT1cl7Jjq9NHs1KJav+uZXjEN/o3albcAhKfwVI2ibW6ehKnHMtaypW98l0wC
+ IK8Jgf2recr6wFl/AhUxgwfuFevPVF97pxY0Ka3aXHaiJ9k7CVLdarBsIMXpnulyO+sN gQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2vxwhfbxkx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Oct 2019 12:44:11 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9UChkch007847;
+        Wed, 30 Oct 2019 12:44:10 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 2vxwhw07eu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Oct 2019 12:44:10 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9UCi881024861;
+        Wed, 30 Oct 2019 12:44:08 GMT
+Received: from dm-oel.no.oracle.com (/10.172.157.165)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 30 Oct 2019 05:44:08 -0700
+From:   Dag Moxnes <dag.moxnes@oracle.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
+        parav@mellanox.com
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dag.moxnes@oracle.com
+Subject: [PATCH rdma-next v2] RDMA/cma: Use ACK timeout for RoCE packetLifeTime
+Date:   Wed, 30 Oct 2019 13:44:00 +0100
+Message-Id: <1572439440-17416-1-git-send-email-dag.moxnes@oracle.com>
+X-Mailer: git-send-email 1.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-30_04:2019-10-30,2019-10-30 signatures=0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9425 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910300125
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9425 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910300125
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch adds the iWARP specific doorbells to the doorbell
-recovery mechanism
+The cma is currently using a hard-coded value, CMA_IBOE_PACKET_LIFETIME,
+for the PacketLifeTime, as it can not be determined from the network.
+This value might not be optimal for all networks.
 
-Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+The cma module supports the function rdma_set_ack_timeout to set the
+ACK timeout for a QP associated with a connection. As per IBTA 12.7.34
+local ACK timeout = (2 * PacketLifeTime + Local CA’s ACK delay).
+Assuming a negligible local ACK delay, we can use
+PacketLifeTime = local ACK timeout/2
+as a reasonable approximation for RoCE networks.
+
+Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
 ---
- drivers/infiniband/hw/qedr/qedr.h  | 12 +++++++-----
- drivers/infiniband/hw/qedr/verbs.c | 37 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 43 insertions(+), 6 deletions(-)
+ drivers/infiniband/core/cma.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
-index 3ea5b7e8dbc6..c7a94ac5cc15 100644
---- a/drivers/infiniband/hw/qedr/qedr.h
-+++ b/drivers/infiniband/hw/qedr/qedr.h
-@@ -238,6 +238,11 @@ struct qedr_ucontext {
- 	bool db_rec;
- };
- 
-+union db_prod32 {
-+	struct rdma_pwm_val16_data data;
-+	u32 raw;
-+};
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index c8566a4237..2c1b08bde2 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -2530,7 +2530,9 @@ EXPORT_SYMBOL(rdma_set_service_type);
+  * This function should be called before rdma_connect() on active side,
+  * and on passive side before rdma_accept(). It is applicable to primary
+  * path only. The timeout will affect the local side of the QP, it is not
+- * negotiated with remote side and zero disables the timer.
++ * negotiated with remote side and zero disables the timer. In case it is
++ * set before rdma_resolve_route, the value will also be used to determine
++ * PacketLifeTime for RoCE.
+  *
+  * Return: 0 for success
+  */
+@@ -2939,7 +2941,16 @@ static int cma_resolve_iboe_route(struct rdma_id_private *id_priv)
+ 	route->path_rec->rate = iboe_get_rate(ndev);
+ 	dev_put(ndev);
+ 	route->path_rec->packet_life_time_selector = IB_SA_EQ;
+-	route->path_rec->packet_life_time = CMA_IBOE_PACKET_LIFETIME;
++	/* In case ACK timeout is set, use this value to calculate
++	 * PacketLifeTime.  As per IBTA 12.7.34,
++	 * local ACK timeout = (2 * PacketLifeTime + Local CA’s ACK delay).
++	 * Assuming a negligible local ACK delay, we can use
++	 * PacketLifeTime = local ACK timeout/2
++	 * as a reasonable approximation for RoCE networks.
++	 */
++	route->path_rec->packet_life_time = id_priv->timeout_set ?
++		id_priv->timeout - 1 : CMA_IBOE_PACKET_LIFETIME;
 +
- union db_prod64 {
- 	struct rdma_pwm_val32_data data;
- 	u64 raw;
-@@ -268,6 +273,8 @@ struct qedr_userq {
- 	void __iomem *db_addr;
- 	struct qedr_user_db_rec *db_rec_data;
- 	struct rdma_user_mmap_entry *db_mmap_entry;
-+	void __iomem *db_rec_db2_addr;
-+	union db_prod32 db_rec_db2_data;
- };
- 
- struct qedr_cq {
-@@ -303,11 +310,6 @@ struct qedr_pd {
- 	struct qedr_ucontext *uctx;
- };
- 
--union db_prod32 {
--	struct rdma_pwm_val16_data data;
--	u32 raw;
--};
--
- struct qedr_qp_hwq_info {
- 	/* WQE Elements */
- 	struct qed_chain pbl;
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 29686e5b8e55..a593593aa658 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -1758,6 +1758,10 @@ static void qedr_cleanup_user(struct qedr_dev *dev,
- 		rdma_user_mmap_entry_remove(&ctx->ibucontext,
- 					    qp->urq.db_mmap_entry);
- 	}
-+
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1))
-+		qedr_db_recovery_del(dev, qp->urq.db_rec_db2_addr,
-+				     &qp->urq.db_rec_db2_data);
- }
- 
- static int qedr_create_user_qp(struct qedr_dev *dev,
-@@ -1833,6 +1837,17 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 	qp->usq.db_addr = ctx->dpi_addr + uresp.sq_db_offset;
- 	qp->urq.db_addr = ctx->dpi_addr + uresp.rq_db_offset;
- 
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
-+		qp->urq.db_rec_db2_addr = ctx->dpi_addr + uresp.rq_db2_offset;
-+
-+		/* calculate the db_rec_db2 data since it is constant so no
-+		 *  need to reflect from user
-+		 */
-+		qp->urq.db_rec_db2_data.data.icid = cpu_to_le16(qp->icid);
-+		qp->urq.db_rec_db2_data.data.value =
-+			cpu_to_le16(DQ_TCM_IWARP_POST_RQ_CF_CMD);
-+	}
-+
- 	rc = qedr_db_recovery_add(dev, qp->usq.db_addr,
- 				  &qp->usq.db_rec_data->db_data,
- 				  DB_REC_WIDTH_32B,
-@@ -1846,6 +1861,15 @@ static int qedr_create_user_qp(struct qedr_dev *dev,
- 				  DB_REC_USER);
- 	if (rc)
- 		goto err;
-+
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
-+		rc = qedr_db_recovery_add(dev, qp->urq.db_rec_db2_addr,
-+					  &qp->urq.db_rec_db2_data,
-+					  DB_REC_WIDTH_32B,
-+					  DB_REC_USER);
-+		if (rc)
-+			goto err;
-+	}
- 	qedr_qp_user_print(dev, qp);
- 
- 	return rc;
-@@ -1886,7 +1910,13 @@ static int qedr_set_iwarp_db_info(struct qedr_dev *dev, struct qedr_qp *qp)
- 				  &qp->rq.db_data,
- 				  DB_REC_WIDTH_32B,
- 				  DB_REC_KERNEL);
-+	if (rc)
-+		return rc;
- 
-+	rc = qedr_db_recovery_add(dev, qp->rq.iwarp_db2,
-+				  &qp->rq.iwarp_db2_data,
-+				  DB_REC_WIDTH_32B,
-+				  DB_REC_KERNEL);
- 	return rc;
- }
- 
-@@ -2015,8 +2045,13 @@ static void qedr_cleanup_kernel(struct qedr_dev *dev, struct qedr_qp *qp)
- 
- 	qedr_db_recovery_del(dev, qp->sq.db, &qp->sq.db_data);
- 
--	if (!qp->srq)
-+	if (!qp->srq) {
- 		qedr_db_recovery_del(dev, qp->rq.db, &qp->rq.db_data);
-+
-+		if (rdma_protocol_iwarp(&dev->ibdev, 1))
-+			qedr_db_recovery_del(dev, qp->rq.iwarp_db2,
-+					     &qp->rq.iwarp_db2_data);
-+	}
- }
- 
- static int qedr_create_kernel_qp(struct qedr_dev *dev,
+ 	if (!route->path_rec->mtu) {
+ 		ret = -EINVAL;
+ 		goto err2;
 -- 
-2.14.5
+2.20.1
 
