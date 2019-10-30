@@ -2,48 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7BAE9961
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2019 10:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD5CE9962
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2019 10:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726046AbfJ3Jqy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 30 Oct 2019 05:46:54 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:35064 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726096AbfJ3Jqy (ORCPT
+        id S1726262AbfJ3Jq7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 30 Oct 2019 05:46:59 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:42188 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726096AbfJ3Jq7 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 30 Oct 2019 05:46:54 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9U9jEg9010080;
-        Wed, 30 Oct 2019 02:46:48 -0700
+        Wed, 30 Oct 2019 05:46:59 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9U9iUqe028318;
+        Wed, 30 Oct 2019 02:46:52 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0818; bh=/OsMzp2NbFqzpf2lIrt5XZTHUy36mHeypyBE6RQj+Ow=;
- b=qyS7yPjaFVyAa/Fw7I10+ULjcADBBV1Od9rqBNYoSmnItvGXbU5jmezmpdMAi1VQcVaB
- G9lK37d0PvqADEsXYIHuiSqSJdESaflwn9LI2eFgSGvxII5gUtJFYAg89i4u+uqpQ35n
- jxq7feq8WqZbAy9hgddLt8f4XCmAUNOWOdD2FaP15fh+1ii06o5XwCJzA+ulQuKExa1/
- Skz2MiVtf+1SKc0Lrafx39Z7Bl7WhCuK2srxVBBF8tLNOIafBGROu0+z4kC1HuYlwNCT
- msqqVO3xbQpJJkI4gQHmpGQKgg45uJlMtW2tCfc5h6IP76v9UHrLj8hzKNHA99EvGiQe XA== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 2vxwjm21wb-1
+ content-type; s=pfpt0818; bh=IBXRXQGyv6WDijEMktV1Yhe2+B6gGIOxz5kKP/120Uc=;
+ b=dK7XgJmJ9qZL8bCPN/xAuQzn7mrUs1Z2tt/pH3khGvdKOi6UDlGH3ZxZmY9i0gunyPvk
+ lTavgt13jnUsh8tO3P+oM7uZTV+GklfdlepQqZ4/4VF2Cq2Dd3ykDNtNwvoVcNZpWbTC
+ MrTQ24Yu6vAGdmYR1sC7F/jHsYy0fUrLSFwZnmPSMQumKg70Q6bLvrFPisPLqJAglyyV
+ 713vc27fUIELR+uQDFbuAlwDDXfi0WqGP5P6QyeGz2zYMARoTTgGUHrItcyH7r/Dz+8C
+ +itBh91Y4zJq0+sRP868QygjhEDpRLEZy4NYECeIZYFdCUTLVoy5qczqR6GYzJBO3/Ea mw== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0b-0016f401.pphosted.com with ESMTP id 2vxwjq9ys4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 30 Oct 2019 02:46:48 -0700
-Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Wed, 30 Oct
- 2019 02:46:47 -0700
+        Wed, 30 Oct 2019 02:46:52 -0700
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Wed, 30 Oct
+ 2019 02:46:50 -0700
 Received: from maili.marvell.com (10.93.176.43) by SC-EXCH03.marvell.com
  (10.93.176.83) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Wed, 30 Oct 2019 02:46:47 -0700
+ Transport; Wed, 30 Oct 2019 02:46:50 -0700
 Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id 7F35F3F703F;
-        Wed, 30 Oct 2019 02:46:45 -0700 (PDT)
+        by maili.marvell.com (Postfix) with ESMTP id E80403F7040;
+        Wed, 30 Oct 2019 02:46:47 -0700 (PDT)
 From:   Michal Kalderon <michal.kalderon@marvell.com>
 To:     <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
         <dledford@redhat.com>, <jgg@ziepe.ca>, <galpress@amazon.com>,
         <yishaih@mellanox.com>, <bmt@zurich.ibm.com>
 CC:     <linux-rdma@vger.kernel.org>
-Subject: [PATCH v12 rdma-next 1/8] RDMA/core: Move core content from ib_uverbs to ib_core
-Date:   Wed, 30 Oct 2019 11:44:10 +0200
-Message-ID: <20191030094417.16866-2-michal.kalderon@marvell.com>
+Subject: [PATCH v12 rdma-next 2/8] RDMA/core: Create mmap database and cookie helper functions
+Date:   Wed, 30 Oct 2019 11:44:11 +0200
+Message-ID: <20191030094417.16866-3-michal.kalderon@marvell.com>
 X-Mailer: git-send-email 2.14.5
 In-Reply-To: <20191030094417.16866-1-michal.kalderon@marvell.com>
 References: <20191030094417.16866-1-michal.kalderon@marvell.com>
@@ -56,239 +56,338 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Move functionality that is called by the driver, which is
-related to umap, to a new file that will be linked in ib_core.
-This is a first step in later enabling ib_uverbs to be optional.
-vm_ops is now initialized in ib_uverbs_mmap instead of
-priv_init to avoid having to move all the rdma_umap functions
-as well.
+Create some common API's for adding entries to a xa_mmap.
+Searching for an entry and freeing one.
 
-Suggested-by: Jason Gunthorpe <jgg@mellanox.com>
+Most of the code was copied from the efa driver almost as is, just renamed
+function to be generic and not efa specific.
+The fact that this code moved to core enabled managing it differently,
+so that now entries can be removed and deleted when driver+user are
+done with them. This enabled changing the insert algorithm in
+comparison to what was done in efa.
+
 Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
 Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
 ---
- drivers/infiniband/core/Makefile         |  2 +-
- drivers/infiniband/core/core_priv.h      |  9 ++++
- drivers/infiniband/core/ib_core_uverbs.c | 73 +++++++++++++++++++++++++++++++
- drivers/infiniband/core/uverbs_main.c    | 74 ++------------------------------
- 4 files changed, 86 insertions(+), 72 deletions(-)
- create mode 100644 drivers/infiniband/core/ib_core_uverbs.c
+ drivers/infiniband/core/device.c         |   1 +
+ drivers/infiniband/core/ib_core_uverbs.c | 201 +++++++++++++++++++++++++++++++
+ drivers/infiniband/core/rdma_core.c      |   1 +
+ drivers/infiniband/core/uverbs_cmd.c     |   2 +
+ include/rdma/ib_verbs.h                  |  34 ++++++
+ 5 files changed, 239 insertions(+)
 
-diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
-index 09881bd5f12d..9a8871e21545 100644
---- a/drivers/infiniband/core/Makefile
-+++ b/drivers/infiniband/core/Makefile
-@@ -11,7 +11,7 @@ ib_core-y :=			packer.o ud_header.o verbs.o cq.o rw.o sysfs.o \
- 				device.o fmr_pool.o cache.o netlink.o \
- 				roce_gid_mgmt.o mr_pool.o addr.o sa_query.o \
- 				multicast.o mad.o smi.o agent.o mad_rmpp.o \
--				nldev.o restrack.o counters.o
-+				nldev.o restrack.o counters.o ib_core_uverbs.o
- 
- ib_core-$(CONFIG_SECURITY_INFINIBAND) += security.o
- ib_core-$(CONFIG_CGROUP_RDMA) += cgroup.o
-diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index 3a8b0911c3bc..0252da9560f4 100644
---- a/drivers/infiniband/core/core_priv.h
-+++ b/drivers/infiniband/core/core_priv.h
-@@ -387,4 +387,13 @@ int ib_device_set_netns_put(struct sk_buff *skb,
- 
- int rdma_nl_net_init(struct rdma_dev_net *rnet);
- void rdma_nl_net_exit(struct rdma_dev_net *rnet);
-+
-+struct rdma_umap_priv {
-+	struct vm_area_struct *vma;
-+	struct list_head list;
-+};
-+
-+void rdma_umap_priv_init(struct rdma_umap_priv *priv,
-+			 struct vm_area_struct *vma);
-+
- #endif /* _CORE_PRIV_H */
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index a667636f74bf..bf3a683057bc 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -2629,6 +2629,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
+ 	SET_DEVICE_OP(dev_ops, map_mr_sg_pi);
+ 	SET_DEVICE_OP(dev_ops, map_phys_fmr);
+ 	SET_DEVICE_OP(dev_ops, mmap);
++	SET_DEVICE_OP(dev_ops, mmap_free);
+ 	SET_DEVICE_OP(dev_ops, modify_ah);
+ 	SET_DEVICE_OP(dev_ops, modify_cq);
+ 	SET_DEVICE_OP(dev_ops, modify_device);
 diff --git a/drivers/infiniband/core/ib_core_uverbs.c b/drivers/infiniband/core/ib_core_uverbs.c
-new file mode 100644
-index 000000000000..b74d2a2fb342
---- /dev/null
+index b74d2a2fb342..1ffc89fd5d94 100644
+--- a/drivers/infiniband/core/ib_core_uverbs.c
 +++ b/drivers/infiniband/core/ib_core_uverbs.c
-@@ -0,0 +1,73 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+/*
-+ * Copyright (c) 2005 Mellanox Technologies. All rights reserved.
-+ * Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ * Copyright 2019 Marvell. All rights reserved.
-+ */
-+#include <linux/xarray.h>
-+#include "uverbs.h"
-+#include "core_priv.h"
+@@ -71,3 +71,204 @@ int rdma_user_mmap_io(struct ib_ucontext *ucontext, struct vm_area_struct *vma,
+ 	return 0;
+ }
+ EXPORT_SYMBOL(rdma_user_mmap_io);
 +
-+/*
-+ * Each time we map IO memory into user space this keeps track of the mapping.
-+ * When the device is hot-unplugged we 'zap' the mmaps in user space to point
-+ * to the zero page and allow the hot unplug to proceed.
++/**
++ * rdma_user_mmap_entry_get() - Get an entry from the mmap_xa.
 + *
-+ * This is necessary for cases like PCI physical hot unplug as the actual BAR
-+ * memory may vanish after this and access to it from userspace could MCE.
++ * @ucontext: associated user context.
++ * @key: the key received from rdma_user_mmap_entry_insert which
++ *     is provided by user as the address to map.
++ * @vma: the vma related to the current mmap call.
 + *
-+ * RDMA drivers supporting disassociation must have their user space designed
-+ * to cope in some way with their IO pages going to the zero page.
++ * This function is called when a user tries to mmap a key it
++ * initially received from the driver. The key was created by
++ * the function rdma_user_mmap_entry_insert.
++ * This function increases the refcnt of the entry so that it won't
++ * be deleted from the xa in the meantime.
++ *
++ * Return an entry if exists or NULL if there is no match.
 + */
-+void rdma_umap_priv_init(struct rdma_umap_priv *priv,
++struct rdma_user_mmap_entry *
++rdma_user_mmap_entry_get(struct ib_ucontext *ucontext, u64 key,
 +			 struct vm_area_struct *vma)
 +{
-+	struct ib_uverbs_file *ufile = vma->vm_file->private_data;
++	struct rdma_user_mmap_entry *entry;
++	u64 mmap_page;
 +
-+	priv->vma = vma;
-+	vma->vm_private_data = priv;
-+	/* vm_ops is setup in ib_uverbs_mmap() to avoid module dependencies */
++	mmap_page = key >> PAGE_SHIFT;
++	if (mmap_page > U32_MAX)
++		return NULL;
 +
-+	mutex_lock(&ufile->umap_lock);
-+	list_add(&priv->list, &ufile->umaps);
-+	mutex_unlock(&ufile->umap_lock);
++	xa_lock(&ucontext->mmap_xa);
++
++	entry = xa_load(&ucontext->mmap_xa, mmap_page);
++
++	/* if refcount is zero, entry is already being deleted */
++	if (!entry || entry->invalid || !kref_get_unless_zero(&entry->ref))
++		goto err;
++
++	xa_unlock(&ucontext->mmap_xa);
++
++	ibdev_dbg(ucontext->device,
++		  "mmap: key[%#llx] npages[%#x] returned\n",
++		  key, entry->npages);
++
++	return entry;
++
++err:
++	xa_unlock(&ucontext->mmap_xa);
++	return NULL;
 +}
-+EXPORT_SYMBOL(rdma_umap_priv_init);
++EXPORT_SYMBOL(rdma_user_mmap_entry_get);
 +
-+/*
-+ * Map IO memory into a process. This is to be called by drivers as part of
-+ * their mmap() functions if they wish to send something like PCI-E BAR memory
-+ * to userspace.
++void rdma_user_mmap_entry_free(struct kref *kref)
++{
++	struct rdma_user_mmap_entry *entry =
++		container_of(kref, struct rdma_user_mmap_entry, ref);
++	struct ib_ucontext *ucontext = entry->ucontext;
++	unsigned long i;
++
++	/* need to erase all entries occupied by this single entry */
++	xa_lock(&ucontext->mmap_xa);
++	for (i = 0; i < entry->npages; i++)
++		__xa_erase(&ucontext->mmap_xa, entry->mmap_page + i);
++	xa_unlock(&ucontext->mmap_xa);
++
++	ibdev_dbg(ucontext->device,
++		  "mmap: key[%#llx] npages[%#x] removed\n",
++		  rdma_user_mmap_get_key(entry),
++		  entry->npages);
++
++	if (ucontext->device->ops.mmap_free)
++		ucontext->device->ops.mmap_free(entry);
++}
++
++/**
++ * rdma_user_mmap_entry_put() - Drop reference to the mmap entry
++ *
++ * @ucontext: associated user context.
++ * @entry: an entry in the mmap_xa.
++ *
++ * This function is called when the mapping is closed if it was
++ * an io mapping or when the driver is done with the entry for
++ * some other reason.
++ * Should be called after rdma_user_mmap_entry_get was called
++ * and entry is no longer needed. This function will erase the
++ * entry and free it if its refcnt reaches zero.
 + */
-+int rdma_user_mmap_io(struct ib_ucontext *ucontext, struct vm_area_struct *vma,
-+		      unsigned long pfn, unsigned long size, pgprot_t prot)
++void rdma_user_mmap_entry_put(struct ib_ucontext *ucontext,
++			      struct rdma_user_mmap_entry *entry)
++{
++	kref_put(&entry->ref, rdma_user_mmap_entry_free);
++}
++EXPORT_SYMBOL(rdma_user_mmap_entry_put);
++
++/**
++ * rdma_user_mmap_entry_remove() - Drop reference to entry and
++ *				   mark it as invalid.
++ *
++ * @ucontext: associated user context.
++ * @entry: the entry to insert into the mmap_xa
++ */
++void rdma_user_mmap_entry_remove(struct ib_ucontext *ucontext,
++				 struct rdma_user_mmap_entry *entry)
++{
++	if (!entry)
++		return;
++
++	entry->invalid = true;
++	kref_put(&entry->ref, rdma_user_mmap_entry_free);
++}
++EXPORT_SYMBOL(rdma_user_mmap_entry_remove);
++
++/**
++ * rdma_user_mmap_entry_insert() - Insert an entry to the mmap_xa.
++ *
++ * @ucontext: associated user context.
++ * @entry: the entry to insert into the mmap_xa
++ * @length: length of the address that will be mmapped
++ *
++ * This function should be called by drivers that use the rdma_user_mmap
++ * interface for handling user mmapped addresses. The database is handled in
++ * the core and helper functions are provided to insert entries into the
++ * database and extract entries when the user calls mmap with the given key.
++ * The function allocates a unique key that should be provided to user, the user
++ * will use the key to retrieve information such as address to
++ * be mapped and how.
++ *
++ * Return: 0 on success and -ENOMEM on failure
++ */
++int rdma_user_mmap_entry_insert(struct ib_ucontext *ucontext,
++				struct rdma_user_mmap_entry *entry,
++				size_t length)
 +{
 +	struct ib_uverbs_file *ufile = ucontext->ufile;
-+	struct rdma_umap_priv *priv;
++	XA_STATE(xas, &ucontext->mmap_xa, 0);
++	u32 xa_first, xa_last, npages;
++	int err, i;
 +
-+	if (!(vma->vm_flags & VM_SHARED))
++	if (!entry)
 +		return -EINVAL;
 +
-+	if (vma->vm_end - vma->vm_start != size)
-+		return -EINVAL;
++	kref_init(&entry->ref);
++	entry->ucontext = ucontext;
 +
-+	/* Driver is using this wrong, must be called by ib_uverbs_mmap */
-+	if (WARN_ON(!vma->vm_file ||
-+		    vma->vm_file->private_data != ufile))
-+		return -EINVAL;
-+	lockdep_assert_held(&ufile->device->disassociate_srcu);
++	/* We want the whole allocation to be done without interruption
++	 * from a different thread. The allocation requires finding a
++	 * free range and storing. During the xa_insert the lock could be
++	 * released, we don't want another thread taking the gap.
++	 */
++	mutex_lock(&ufile->umap_lock);
 +
-+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
++	xa_lock(&ucontext->mmap_xa);
 +
-+	vma->vm_page_prot = prot;
-+	if (io_remap_pfn_range(vma, vma->vm_start, pfn, size, prot)) {
-+		kfree(priv);
-+		return -EAGAIN;
++	/* We want to find an empty range */
++	npages = (u32)DIV_ROUND_UP(length, PAGE_SIZE);
++	entry->npages = npages;
++	while (true) {
++		/* First find an empty index */
++		xas_find_marked(&xas, U32_MAX, XA_FREE_MARK);
++		if (xas.xa_node == XAS_RESTART)
++			goto err_unlock;
++
++		xa_first = xas.xa_index;
++
++		/* Is there enough room to have the range? */
++		if (check_add_overflow(xa_first, npages, &xa_last))
++			goto err_unlock;
++
++		/* Now look for the next present entry. If such doesn't
++		 * exist, we found an empty range and can proceed
++		 */
++		xas_next_entry(&xas, xa_last - 1);
++		if (xas.xa_node == XAS_BOUNDS || xas.xa_index >= xa_last)
++			break;
++		/* o/w look for the next free entry */
 +	}
 +
-+	rdma_umap_priv_init(priv, vma);
-+	return 0;
-+}
-+EXPORT_SYMBOL(rdma_user_mmap_io);
-diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index db98111b47f4..b1f5334ff907 100644
---- a/drivers/infiniband/core/uverbs_main.c
-+++ b/drivers/infiniband/core/uverbs_main.c
-@@ -772,6 +772,8 @@ static ssize_t ib_uverbs_write(struct file *filp, const char __user *buf,
- 	return (ret) ? : count;
- }
- 
-+static const struct vm_operations_struct rdma_umap_ops;
++	for (i = xa_first; i < xa_last; i++) {
++		err = __xa_insert(&ucontext->mmap_xa, i, entry, GFP_KERNEL);
++		if (err)
++			goto err_undo;
++	}
 +
- static int ib_uverbs_mmap(struct file *filp, struct vm_area_struct *vma)
- {
- 	struct ib_uverbs_file *file = filp->private_data;
-@@ -785,45 +787,13 @@ static int ib_uverbs_mmap(struct file *filp, struct vm_area_struct *vma)
- 		ret = PTR_ERR(ucontext);
- 		goto out;
- 	}
--
-+	vma->vm_ops = &rdma_umap_ops;
- 	ret = ucontext->device->ops.mmap(ucontext, vma);
- out:
- 	srcu_read_unlock(&file->device->disassociate_srcu, srcu_key);
- 	return ret;
- }
++	entry->mmap_page = xa_first;
++	xa_unlock(&ucontext->mmap_xa);
++
++	mutex_unlock(&ufile->umap_lock);
++	ibdev_dbg(ucontext->device,
++		  "mmap: key[%#llx] npages[%#x] inserted\n",
++		  rdma_user_mmap_get_key(entry), npages);
++
++	return 0;
++
++err_undo:
++	for (; i > xa_first; i--)
++		__xa_erase(&ucontext->mmap_xa, i - 1);
++
++err_unlock:
++	xa_unlock(&ucontext->mmap_xa);
++	mutex_unlock(&ufile->umap_lock);
++	return -ENOMEM;
++}
++EXPORT_SYMBOL(rdma_user_mmap_entry_insert);
+diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
+index ccf4d069c25c..6c72773faf29 100644
+--- a/drivers/infiniband/core/rdma_core.c
++++ b/drivers/infiniband/core/rdma_core.c
+@@ -817,6 +817,7 @@ static void ufile_destroy_ucontext(struct ib_uverbs_file *ufile,
+ 	rdma_restrack_del(&ucontext->res);
  
--/*
-- * Each time we map IO memory into user space this keeps track of the mapping.
-- * When the device is hot-unplugged we 'zap' the mmaps in user space to point
-- * to the zero page and allow the hot unplug to proceed.
-- *
-- * This is necessary for cases like PCI physical hot unplug as the actual BAR
-- * memory may vanish after this and access to it from userspace could MCE.
-- *
-- * RDMA drivers supporting disassociation must have their user space designed
-- * to cope in some way with their IO pages going to the zero page.
-- */
--struct rdma_umap_priv {
--	struct vm_area_struct *vma;
--	struct list_head list;
--};
--
--static const struct vm_operations_struct rdma_umap_ops;
--
--static void rdma_umap_priv_init(struct rdma_umap_priv *priv,
--				struct vm_area_struct *vma)
--{
--	struct ib_uverbs_file *ufile = vma->vm_file->private_data;
--
--	priv->vma = vma;
--	vma->vm_private_data = priv;
--	vma->vm_ops = &rdma_umap_ops;
--
--	mutex_lock(&ufile->umap_lock);
--	list_add(&priv->list, &ufile->umaps);
--	mutex_unlock(&ufile->umap_lock);
--}
--
- /*
-  * The VMA has been dup'd, initialize the vm_private_data with a new tracking
-  * struct
-@@ -931,44 +901,6 @@ static const struct vm_operations_struct rdma_umap_ops = {
- 	.fault = rdma_umap_fault,
+ 	ib_dev->ops.dealloc_ucontext(ucontext);
++	WARN_ON(!xa_empty(&ucontext->mmap_xa));
+ 	kfree(ucontext);
+ 
+ 	ufile->ucontext = NULL;
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 14a80fd9f464..06ed32c8662f 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -252,6 +252,8 @@ static int ib_uverbs_get_context(struct uverbs_attr_bundle *attrs)
+ 	ucontext->closing = false;
+ 	ucontext->cleanup_retryable = false;
+ 
++	xa_init_flags(&ucontext->mmap_xa, XA_FLAGS_ALLOC);
++
+ 	ret = get_unused_fd_flags(O_CLOEXEC);
+ 	if (ret < 0)
+ 		goto err_free;
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 6a47ba85c54c..8a87c9d442bc 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -1471,6 +1471,7 @@ struct ib_ucontext {
+ 	 * Implementation details of the RDMA core, don't use in drivers:
+ 	 */
+ 	struct rdma_restrack_entry res;
++	struct xarray mmap_xa;
  };
  
--/*
-- * Map IO memory into a process. This is to be called by drivers as part of
-- * their mmap() functions if they wish to send something like PCI-E BAR memory
-- * to userspace.
-- */
--int rdma_user_mmap_io(struct ib_ucontext *ucontext, struct vm_area_struct *vma,
--		      unsigned long pfn, unsigned long size, pgprot_t prot)
--{
--	struct ib_uverbs_file *ufile = ucontext->ufile;
--	struct rdma_umap_priv *priv;
--
--	if (!(vma->vm_flags & VM_SHARED))
--		return -EINVAL;
--
--	if (vma->vm_end - vma->vm_start != size)
--		return -EINVAL;
--
--	/* Driver is using this wrong, must be called by ib_uverbs_mmap */
--	if (WARN_ON(!vma->vm_file ||
--		    vma->vm_file->private_data != ufile))
--		return -EINVAL;
--	lockdep_assert_held(&ufile->device->disassociate_srcu);
--
--	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
--	if (!priv)
--		return -ENOMEM;
--
--	vma->vm_page_prot = prot;
--	if (io_remap_pfn_range(vma, vma->vm_start, pfn, size, prot)) {
--		kfree(priv);
--		return -EAGAIN;
--	}
--
--	rdma_umap_priv_init(priv, vma);
--	return 0;
--}
--EXPORT_SYMBOL(rdma_user_mmap_io);
--
- void uverbs_user_mmap_disassociate(struct ib_uverbs_file *ufile)
+ struct ib_uobject {
+@@ -2251,6 +2252,20 @@ struct iw_cm_conn_param;
+ 
+ #define DECLARE_RDMA_OBJ_SIZE(ib_struct) size_t size_##ib_struct
+ 
++struct rdma_user_mmap_entry {
++	struct kref ref;
++	struct ib_ucontext *ucontext;
++	u32 npages;
++	u32 mmap_page;
++	bool invalid;
++};
++
++static inline u64
++rdma_user_mmap_get_key(const struct rdma_user_mmap_entry *entry)
++{
++	return (u64)entry->mmap_page << PAGE_SHIFT;
++}
++
+ /**
+  * struct ib_device_ops - InfiniBand device operations
+  * This structure defines all the InfiniBand device operations, providers will
+@@ -2363,6 +2378,13 @@ struct ib_device_ops {
+ 			      struct ib_udata *udata);
+ 	void (*dealloc_ucontext)(struct ib_ucontext *context);
+ 	int (*mmap)(struct ib_ucontext *context, struct vm_area_struct *vma);
++	/**
++	 * This will be called once refcount of an entry in mmap_xa reaches
++	 * zero. The type of the memory that was mapped may differ between
++	 * entries and is opaque to the rdma_user_mmap interface.
++	 * Therefore needs to be implemented by the driver in mmap_free.
++	 */
++	void (*mmap_free)(struct rdma_user_mmap_entry *entry);
+ 	void (*disassociate_ucontext)(struct ib_ucontext *ibcontext);
+ 	int (*alloc_pd)(struct ib_pd *pd, struct ib_udata *udata);
+ 	void (*dealloc_pd)(struct ib_pd *pd, struct ib_udata *udata);
+@@ -2801,6 +2823,18 @@ static inline int rdma_user_mmap_io(struct ib_ucontext *ucontext,
+ 	return -EINVAL;
+ }
+ #endif
++int rdma_user_mmap_entry_insert(struct ib_ucontext *ucontext,
++				struct rdma_user_mmap_entry *entry,
++				size_t length);
++struct rdma_user_mmap_entry *
++rdma_user_mmap_entry_get(struct ib_ucontext *ucontext, u64 key,
++			 struct vm_area_struct *vma);
++
++void rdma_user_mmap_entry_put(struct ib_ucontext *ucontext,
++			      struct rdma_user_mmap_entry *entry);
++
++void rdma_user_mmap_entry_remove(struct ib_ucontext *ucontext,
++				 struct rdma_user_mmap_entry *entry);
+ 
+ static inline int ib_copy_from_udata(void *dest, struct ib_udata *udata, size_t len)
  {
- 	struct rdma_umap_priv *priv, *next_priv;
 -- 
 2.14.5
 
