@@ -2,103 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8910EA303
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2019 19:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63ABBEA36E
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Oct 2019 19:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727334AbfJ3SH6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 30 Oct 2019 14:07:58 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:35357 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726259AbfJ3SH6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Oct 2019 14:07:58 -0400
-Received: by mail-qk1-f196.google.com with SMTP id h6so3754754qkf.2
-        for <linux-rdma@vger.kernel.org>; Wed, 30 Oct 2019 11:07:57 -0700 (PDT)
+        id S1728253AbfJ3Seo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 30 Oct 2019 14:34:44 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:37419 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728245AbfJ3Sen (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Oct 2019 14:34:43 -0400
+Received: by mail-qt1-f193.google.com with SMTP id g50so4637421qtb.4
+        for <linux-rdma@vger.kernel.org>; Wed, 30 Oct 2019 11:34:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=XJY+w7yizKxquEzbyxjzEiCQZwBiOWc+VGOuPrD25Qs=;
-        b=JSwH6ovbuXwq2Pf68PzSieWnzNnCS308vjyg+4TLtfoRBfpvTai5D0W/g2EAV14DhJ
-         zgxYD79pqBAMsDXuMjanG3XWevZ7+EC9etO5kZKwLqlym9jQFIxyoPCc5E+g+qzZOqhB
-         JwiUJ/jFP/ejxCGHUPMZU6q2t1JNjdoqLvzXHV7fCoycxZNACO23CmJjNPzV1KHjGBrN
-         1ZiJzkCs6ohrp8OnxMoJsudsuxhKKTINJIX2TEOiJPz0PvPH1c6i6d5hQyHyS0JBmF9f
-         hwVCT+Z+oUu0Sy7bRkzl/T0WjNSX34TMYBugSqBUbCuWKorZ1I8T+lVcWkIHuFu9Gpuh
-         QakA==
+        d=lca.pw; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=OsDBDDNNwNVk1HpNMJ12vRi0lwWKIJwrDacqqrUqTjQ=;
+        b=RTBhB+dV2WzXWBhflaJmPXdXqu2W7uM17qg7vysJH/Ru6ZlnTK7SAIH2Q4txGecZw3
+         4uCSmn8xgzmUEREam6ZaE0gUGshvY6fb6uuj4RACu213oXWsraskau9I+VYaqhRdJBqb
+         RbeuSog1yEqNie2TCj2Q4Gqn9pyVNnNMridzUN+CDvSSqUh829shisSd5XMadmJ1yKeW
+         UosRRZ6GJkr6hK/tkCdch2PgHrEdf823q3DtKhUMTiFV2EDduyvyZCT4ETPRU1xlYe48
+         Zyc55GYN6jU9mC6AgJqXRqipoc1jDTQXp5dJZno8tzjhE4qJkgPg7I2FshsrTBMq5+r0
+         0qxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=XJY+w7yizKxquEzbyxjzEiCQZwBiOWc+VGOuPrD25Qs=;
-        b=SPzYyHV5s2ml/bx3bVq0LcPD73S95N2a1iGtq1z3yjSB2lxw7gIyB55PgAa1erxBkx
-         I56MrMN7LuO/8YPmCrRUtpxt5HC+n+fD9LRnd7ssQ4TEatvGilaKCJMZC1s/3RVSYQPz
-         EWZDmL8ygbxLlkpuLY5tiSj5ee9vl6Otgfu46lFLV1MwzSmUQKemSa/OQ+OZszeV2ftH
-         1qskcioKg/4GRKp0uwPNuZueeLFHQaseIr2qjYdLaNNOYNM8uDxU/0DG/hj42cyzUU6X
-         nakqTjxKnjzRzlvwreYqqo2yqS5Hdf/91hsuDiq0yFodW1rca3JyjBdCGI1Sa7K30XY1
-         fI6w==
-X-Gm-Message-State: APjAAAVL//05grOt20SESRbAFPORLLFTFBjwBAEOl6TTgALlJoKa7OIw
-        X4UOAAVwJrGHRqFNQanNXkpASA==
-X-Google-Smtp-Source: APXvYqylMdF5kMHuUc7sqZ3iYup6lO5rHJ/zCFi+bOdgHp1wi6H/GV0nzc36/k4dYQ1kBvGn6qhzbw==
-X-Received: by 2002:a37:e407:: with SMTP id y7mr1248304qkf.77.1572458876487;
-        Wed, 30 Oct 2019 11:07:56 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id v137sm396839qka.64.2019.10.30.11.07.55
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 30 Oct 2019 11:07:55 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iPsNu-00013G-Oj; Wed, 30 Oct 2019 15:07:54 -0300
-Date:   Wed, 30 Oct 2019 15:07:54 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
-Cc:     "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OsDBDDNNwNVk1HpNMJ12vRi0lwWKIJwrDacqqrUqTjQ=;
+        b=G3lKBGpbfvi5LsuYAghetW+5JmBU1YXxHVqJkcIMUixK/Jj6q3igSBq0SbaJffKBNb
+         li9nDIXXbXVNJBryhL0V8qSkaxK3ROD6x5CCB0wlxETZ6i0+OeJ6Rr8pQCEIFixKhMBx
+         /BxtcbQ79FiiOe6OySm8dmnKIIYP2X6S8wf+5JYkUN3o75duyi31D6wZ2nLpTOnxKb8l
+         AsJ0BQTOocV/UVbUQyv6g7qwBeH1KTSCVZk32qEfYG/y5jA9xpAQP7RUtLmCNFMuez3u
+         YREXk7DlkuW3cFitEcC4s06aBz6GTuFsMBHhqOpKL0BIzLzGrRA0EqYig1IvjZ8//IJb
+         D/uA==
+X-Gm-Message-State: APjAAAXscbF0klLSQUtcTQ50J5OPdE3t53cuUu+37MFe3h8MDan7j8WI
+        VAM4LjIDyOJzx2rO2BDvT5eUbg==
+X-Google-Smtp-Source: APXvYqyjmgurV53BEYc4MsqVwfjA+33pu7DYugrs7ywxGjX6h1LZ+4/W7RrbokAPumRx5hYqHyiAvA==
+X-Received: by 2002:ac8:1194:: with SMTP id d20mr1554203qtj.275.1572460482169;
+        Wed, 30 Oct 2019 11:34:42 -0700 (PDT)
+Received: from dhcp-41-57.bos.redhat.com (nat-pool-bos-t.redhat.com. [66.187.233.206])
+        by smtp.gmail.com with ESMTPSA id q8sm758906qta.31.2019.10.30.11.34.40
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 30 Oct 2019 11:34:41 -0700 (PDT)
+Message-ID: <1572460479.5937.102.camel@lca.pw>
+Subject: Re: [PATCH v3 3/3] mm/hmm/test: add self tests for HMM
+From:   Qian Cai <cai@lca.pw>
+To:     Jason Gunthorpe <jgg@mellanox.com>,
+        Ralph Campbell <rcampbell@nvidia.com>
+Cc:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Wan, Kaike" <kaike.wan@intel.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Erwin, James" <james.erwin@intel.com>
-Subject: Re: [PATCH for-rc 1/4] IB/hfi1: Allow for all speeds higher than gen3
-Message-ID: <20191030180754.GA31799@ziepe.ca>
-References: <20191025161717.106825.14421.stgit@awfm-01.aw.intel.com>
- <20191025195823.106825.63080.stgit@awfm-01.aw.intel.com>
- <20191029195214.GA1802@ziepe.ca>
- <32E1700B9017364D9B60AED9960492BC729594E1@fmsmsx120.amr.corp.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <32E1700B9017364D9B60AED9960492BC729594E1@fmsmsx120.amr.corp.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Wed, 30 Oct 2019 14:34:39 -0400
+In-Reply-To: <20191029175837.GS22766@mellanox.com>
+References: <20191023195515.13168-1-rcampbell@nvidia.com>
+         <20191023195515.13168-4-rcampbell@nvidia.com>
+         <20191029175837.GS22766@mellanox.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.22.6 (3.22.6-10.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 29, 2019 at 09:19:34PM +0000, Marciniszyn, Mike wrote:
-> > Subject: Re: [PATCH for-rc 1/4] IB/hfi1: Allow for all speeds higher than gen3
+On Tue, 2019-10-29 at 17:58 +0000, Jason Gunthorpe wrote:
+> On Wed, Oct 23, 2019 at 12:55:15PM -0700, Ralph Campbell wrote:
+> > Add self tests for HMM.
 > > 
-> > On Fri, Oct 25, 2019 at 03:58:24PM -0400, Dennis Dalessandro wrote:
-> > > From: James Erwin <james.erwin@intel.com>
-> > >
-> > > The driver avoids the gen3 speed bump when the parent
-> > > bus speed isn't identical to gen3, 8.0GT/s.  This is not
-> > > compatible with gen4 and newer speeds.
-> > >
-> > > Fix by relaxing the test to explicitly look for the lower
-> > > capability speeds which inherently allows for all future speeds.
-> > 
-> > This description does not seem like stable material to me.
-> > 
+> > Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+> > ---
+> >  MAINTAINERS                            |    3 +
+> >  drivers/char/Kconfig                   |   11 +
+> >  drivers/char/Makefile                  |    1 +
+> >  drivers/char/hmm_dmirror.c             | 1566 ++++++++++++++++++++++++
+> >  include/Kbuild                         |    1 +
+> >  include/uapi/linux/hmm_dmirror.h       |   74 ++
+> >  tools/testing/selftests/vm/.gitignore  |    1 +
+> >  tools/testing/selftests/vm/Makefile    |    3 +
+> >  tools/testing/selftests/vm/config      |    3 +
+> >  tools/testing/selftests/vm/hmm-tests.c | 1311 ++++++++++++++++++++
+> >  tools/testing/selftests/vm/run_vmtests |   16 +
+> >  tools/testing/selftests/vm/test_hmm.sh |   97 ++
+> >  12 files changed, 3087 insertions(+)
+> >  create mode 100644 drivers/char/hmm_dmirror.c
+> >  create mode 100644 include/uapi/linux/hmm_dmirror.h
+> >  create mode 100644 tools/testing/selftests/vm/hmm-tests.c
+> >  create mode 100755 tools/testing/selftests/vm/test_hmm.sh
 > 
-> Having a card unknowingly operate at half speed would seem pretty serious to me.
-
-Since gen4 systems are really new this also sounds like a new feature
-to me.. You need to be concerned that changing the pci setup doesn't
-cause regressions on existing systems too.
-
-> Perhaps the description should say:
+> This is really big, it would be nice to get a comment from the various
+> kernel testing folks if this approach makes sense with the test
+> frameworks. Do we have other drivers that are only intended to be used
+> by selftests?
 > 
-> IB/hfi1: Insure full Gen3 speed in a Gen4 system
+> Frankly, I'm not super excited about the idea of a 'test driver', it
+> seems more logical for testing to have some way for a test harness to
+> call hmm_range_fault() under various conditions and check the results?
 
-And maybe explain what the actual user visible impact is here. Sounds
-like plugging a card into a gen4 system will not run at gen3 speeds?
-
-Jason
+Not a big fan of those selftests either. Could it be saner to use the new KUnit
+framework for those instead?
