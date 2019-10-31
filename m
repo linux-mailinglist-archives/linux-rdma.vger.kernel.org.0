@@ -2,115 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3486BEB37B
-	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2019 16:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 885E3EB61E
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2019 18:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727697AbfJaPJu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 31 Oct 2019 11:09:50 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:49132 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbfJaPJu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 31 Oct 2019 11:09:50 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9VF4KvB013590;
-        Thu, 31 Oct 2019 15:09:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=g5FDpzysK/Tdx/b7QD8MBg2VCo9YaQaUV9WG6V5S8AI=;
- b=MpyuFAMnzUaYVhcRpFe7vw9AaYuDjDIvwr7gin4v6BM3aw3Z056PzWpSICE4TW8xjfSk
- 5oRW3sS5x40ZqCTTFmB5iQWaCiE+PnYyDoUk8Oq0XFxg1RPH1MxT35cMSUaKgOvjUaUR
- uYhcllghOb/ajNsDpNaIpHCtq07iWd+9mi549EG9ojx0G36Fvu5IzYA6kMmqpf0QBMCr
- fb1hF8RwKyGTyYKJFy+4Mo5anZ2smscfE0Akr9mV9ukcwdOVak+phEIJry1HmUzzStnT
- m5eo0RW160tXurEFc30OL79JSCgbjyusOGQK5/pxeAtSBkHrlieab1wm/iBQ3pD8pWIc ng== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2vxwhfm0g1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 31 Oct 2019 15:09:42 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9VEx2r4109170;
-        Thu, 31 Oct 2019 15:09:41 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 2vykw1gj09-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 31 Oct 2019 15:09:41 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x9VF92YY145957;
-        Thu, 31 Oct 2019 15:09:41 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 2vykw1ghyx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 31 Oct 2019 15:09:41 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9VF9eqa000316;
-        Thu, 31 Oct 2019 15:09:41 GMT
-Received: from [10.172.157.165] (/10.172.157.165)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 31 Oct 2019 08:09:40 -0700
-Subject: Re: [PATCH net-next] rds: Cancel pending connections on connection
- request
-To:     santosh.shilimkar@oracle.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Cc:     davem@davemloft.net, haakon.bugge@oracle.com
-References: <1572528956-8504-1-git-send-email-dag.moxnes@oracle.com>
-From:   Dag Moxnes <dag.moxnes@oracle.com>
-Message-ID: <51893d36-492b-b345-b8c4-93110c4de7f8@oracle.com>
-Date:   Thu, 31 Oct 2019 16:09:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728655AbfJaR2R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 31 Oct 2019 13:28:17 -0400
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:6913 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728561AbfJaR2R (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 31 Oct 2019 13:28:17 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dbb19b70000>; Thu, 31 Oct 2019 10:28:23 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 31 Oct 2019 10:28:16 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 31 Oct 2019 10:28:16 -0700
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 31 Oct
+ 2019 17:28:12 +0000
+Subject: Re: [PATCH v3 3/3] mm/hmm/test: add self tests for HMM
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20191023195515.13168-1-rcampbell@nvidia.com>
+ <20191023195515.13168-4-rcampbell@nvidia.com>
+ <20191029175837.GS22766@mellanox.com>
+ <3ffecdc6-625f-ebea-8fb4-984fe6ca90f3@nvidia.com>
+ <20191029231255.GX22766@mellanox.com>
+ <f42d06e2-ca08-acdd-948d-2803079a13c2@nvidia.com>
+ <20191031124200.GJ22766@mellanox.com>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <a6b49a4e-a194-ce0b-685f-5e597072aeee@nvidia.com>
+Date:   Thu, 31 Oct 2019 10:28:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-In-Reply-To: <1572528956-8504-1-git-send-email-dag.moxnes@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20191031124200.GJ22766@mellanox.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9426 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910310154
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1572542903; bh=Wr3SVeuoH5XlM7NZPBlWqcbSTjspk3irIYRvlGi9yaI=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=kW174yLMG8IjxnIxZyGrbC9l4pJLEDIfwedwqdfEYw/0iC+ttgHPBJLMZkyCYUOr+
+         RmxUpyuuyis4YF6MLdl87jl0c7oyLblhWSadJUmnz1jEpOCgr23NZvbKblPTnLtGgs
+         F3C9AzLpFbe7EdbSmOJuem4Dc/OwsHeYevbSFMW2WlRNqRjQ0tLgmrujoxfb20sx1S
+         O7fLhLdjM5wM1kN93p9JjJXAvPayJPHH6IpfoERTCjwB492x//hykF6/MCqr0jmn7b
+         Q2/7fafKcaLwisg3k/YFqZ32xQkOEgoUivOon5ozWNgTbjxXT0nmbjOPmOykMNz16X
+         VpmUH5ZVPU//Q==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This one should be for net instead of net-next.
-Also it is not correct.
-I will send a new patch for net.
 
--Dag
 
-On 10/31/19 2:35 PM, Dag Moxnes wrote:
-> RDS connections can enter the RDS_CONN_CONNECTING state in two ways:
-> 1. It can be started using the connection workqueue (this can happen
-> both on queue_reconnect and upon send if the workqueue is not up)
-> 2. It can enter the RDS_CONN_CONNECTING state due to an incoming
-> connection request
->
-> In case RDS connections enter RDS_CONN_CONNECTION state due to an incoming
-> connection request, the connection workqueue might already be scheduled. In
-> this case the connection workqueue needs to be cancelled.
->
-> Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
-> ---
->   net/rds/ib_cm.c | 6 ++++++
->   1 file changed, 6 insertions(+)
->
-> diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
-> index 6b345c858d..1fdd76f70d 100644
-> --- a/net/rds/ib_cm.c
-> +++ b/net/rds/ib_cm.c
-> @@ -880,6 +880,12 @@ int rds_ib_cm_handle_connect(struct rdma_cm_id *cm_id,
->   			rds_ib_stats_inc(s_ib_connect_raced);
->   		}
->   		goto out;
-> +	} else {
-> +		/* Cancel any pending reconnect */
-> +		struct rds_conn_path *cp = &conn->c_path[0];
-> +
-> +		cancel_delayed_work_sync(&cp->cp_conn_w);
-> +		rds_clear_reconnect_pending_work_bit(cp);
->   	}
->   
->   	ic = conn->c_transport_data;
+On 10/31/19 5:42 AM, Jason Gunthorpe wrote:
+> On Wed, Oct 30, 2019 at 05:14:30PM -0700, Ralph Campbell wrote:
+> 
+>>> Well, that is good, is it also under drivers/char? It kind feels like
+>>> it should not be there...
+>>
+>> I think most of the test modules live in lib/ but I wasn't sure that
+>> was the right place for the HMM test driver.
+>> If you think that is better, I can easily move it.
+> 
+> It would be good to get the various test people involved in this, I
+> really don't know.
 
+OK.
+  
+>>>>> It seems especially over-complicated to use a full page table layout
+>>>>> for this, wouldn't something simple like an xarray be good enough for
+>>>>> test purposes?
+>>>>
+>>>> Possibly. A page table is really just a lookup table from virtual address
+>>>> to pfn/page. Part of the rationale was to mimic what a real device
+>>>> might do.
+>>>
+>>> Well, but the details of the page table layout don't see really
+>>> important to this testing, IMHO.
+>>
+>> One problem with XArray is that on 32-bit machines the value would
+>> need to be u64 to hold a pfn which won't fit in a ULONG_MAX.
+>> I guess we could make the driver 64-bit only.
+> 
+> Why would a 32 bit machine need a 64 bit pfn?
+> 
+> Jason
+> 
+
+On x86, Physical Address Extension (PAE) uses a 64 bit PTE.
+See arch/x86/include/asm/pgtable_32_types.h which includes
+arch/x86/include/asm/pgtable-3level_types.h.
