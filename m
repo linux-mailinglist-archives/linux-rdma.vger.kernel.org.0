@@ -2,239 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19534EB158
-	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2019 14:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BBFEB331
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2019 15:52:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727491AbfJaNip convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 31 Oct 2019 09:38:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50874 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726728AbfJaNip (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 31 Oct 2019 09:38:45 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x9VDb4tR094614
-        for <linux-rdma@vger.kernel.org>; Thu, 31 Oct 2019 09:38:44 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.82])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2vyyh1jpqv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Thu, 31 Oct 2019 09:38:44 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Thu, 31 Oct 2019 13:38:43 -0000
-Received: from us1a3-smtp06.a3.dal06.isc4sb.com (10.146.103.243)
-        by smtp.notes.na.collabserv.com (10.106.227.105) with smtp.notes.na.collabserv.com ESMTP;
-        Thu, 31 Oct 2019 13:38:37 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp06.a3.dal06.isc4sb.com
-          with ESMTP id 2019103113383738-483488 ;
-          Thu, 31 Oct 2019 13:38:37 +0000 
-In-Reply-To: <20191029045447.GA5545@unreal>
-Subject: Re: Re: Re: Re: Re: [[PATCH v2 for-next]] RDMA/siw: Fix SQ/RQ drain logic
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Leon Romanovsky" <leon@kernel.org>
-Cc:     "Jason Gunthorpe" <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        bharat@chelsio.com, nirranjan@chelsio.com, krishna2@chelsio.com,
-        bvanassche@acm.org
-Date:   Thu, 31 Oct 2019 13:38:37 +0000
+        id S1728229AbfJaOwO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 31 Oct 2019 10:52:14 -0400
+Received: from mail-eopbgr10041.outbound.protection.outlook.com ([40.107.1.41]:40846
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728227AbfJaOwO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 31 Oct 2019 10:52:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TK0Qwq1uVONjub0LxcXnS9LutOJ6pmNCPAiXCcRYPNVmklVNvDAtCEMEYt0QuQ0WQ9ei4ktT93qg5hLq1ibO+PUgmPSA59qEiW6yIIJwpVGf8t+pR4Nrjpv6IBlDT/TrVEKyFlDLEDeuZs9qPFm2lLxW/IAsina7kZngZo9dOTzHdVrycAJd1dSFkD7BoPYwmoGbeCjCaqb6DpSDqXUfsOoZ4E9yBF+Ox7YK8p9ZF7Ulcr4iUFLwGuHpssTbTaGhngjOOTSVgt00p+rHBz3PQkKTK06JlT68ZJsJXwKTQyGclV+Yk7ivFl5OBK5sGrtkFQNi5zZ7ZkHfZeu/vGgIRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JJSvDEk3ImGrNciSLrSTfUMPSqHSidO0NHUB0ZbinFw=;
+ b=QxGZOFSiDgONVLoqyIMnLgA0TWmA/7BQlsnyHRqAdCA2OoVUDgOvsDbP+chsej9sG/YL2etZe8fze7OToqkBktKxQKQpMNjQcMROjZfHtcPAvjhkWmQai4QmPKIQIpWPEJBYjU99qE94h3udSwO40bMEucwKa2VZu/lMklRAXD99tcMad3ccaGQInDpN4QpzVmIoV/8x2kL8QnWnB4ky7KPlKcmgy/5BskBKFQt6HJ5SLJ4ywfaYKKrKgBoy3yYY/RNqhJfa5CVxeLcH5RsRGjxxluunULMgdvmPr6UBrHj4otlzX1vNvBoSivxk0pwELq1yDg8LjcIpVg7J4JZIWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JJSvDEk3ImGrNciSLrSTfUMPSqHSidO0NHUB0ZbinFw=;
+ b=CAXJwQz+5Nsx2cpAgWzS7KPgLPkMBf0h4JGcRERkUdnAAVgtU5X3263R27yy9UIYVt60PkXitZcMkM9MKrM35bLO/u/G3BYKGgORNkYeo3zIrrFB2JqDfRuyYv8sqv75r3e2Db2nieI6PsQQBsrRiM9jFO37xA4p9KntU40qgLA=
+Received: from DBBPR05MB6283.eurprd05.prod.outlook.com (20.179.43.208) by
+ DBBPR05MB6556.eurprd05.prod.outlook.com (20.179.41.23) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2387.20; Thu, 31 Oct 2019 14:52:09 +0000
+Received: from DBBPR05MB6283.eurprd05.prod.outlook.com
+ ([fe80::8c61:2788:89:69ce]) by DBBPR05MB6283.eurprd05.prod.outlook.com
+ ([fe80::8c61:2788:89:69ce%5]) with mapi id 15.20.2408.018; Thu, 31 Oct 2019
+ 14:52:09 +0000
+From:   Tariq Toukan <tariqt@mellanox.com>
+To:     Yuval Shaia <yuval.shaia@oracle.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dotanb@dev.mellanox.co.il" <dotanb@dev.mellanox.co.il>,
+        Eli Cohen <eli@mellanox.com>,
+        Vladimir Sokolovsky <vlad@mellanox.com>
+Subject: Re: [PATCH] mlx4_core: fix wrong comment about the reason of subtract
+ one from the max_cqes
+Thread-Topic: [PATCH] mlx4_core: fix wrong comment about the reason of
+ subtract one from the max_cqes
+Thread-Index: AQHVj7/MLr7HVp7cQUKjB+F0Jw6ouKd01gQA
+Date:   Thu, 31 Oct 2019 14:52:09 +0000
+Message-ID: <6c0f87dd-bb63-cf0e-66c1-ed01b2a42382@mellanox.com>
+References: <20191031074931.20715-1-yuval.shaia@oracle.com>
+In-Reply-To: <20191031074931.20715-1-yuval.shaia@oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM0PR04CA0001.eurprd04.prod.outlook.com
+ (2603:10a6:208:122::14) To DBBPR05MB6283.eurprd05.prod.outlook.com
+ (2603:10a6:10:cf::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=tariqt@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [193.47.165.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: a2cbd38e-2e02-4a64-c722-08d75e11e7eb
+x-ms-traffictypediagnostic: DBBPR05MB6556:|DBBPR05MB6556:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DBBPR05MB655692B51CCC2DC8FAEE5AF7AE630@DBBPR05MB6556.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:240;
+x-forefront-prvs: 02070414A1
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(376002)(136003)(366004)(396003)(39860400002)(199004)(189003)(66446008)(476003)(386003)(71190400001)(2201001)(446003)(11346002)(6116002)(3846002)(6246003)(5660300002)(6506007)(53546011)(71200400001)(110136005)(2906002)(486006)(66556008)(66476007)(66946007)(6436002)(14444005)(6636002)(256004)(64756008)(186003)(52116002)(229853002)(6486002)(6512007)(25786009)(36756003)(8936002)(8676002)(14454004)(81166006)(81156014)(102836004)(7736002)(99286004)(31686004)(31696002)(66066001)(478600001)(26005)(76176011)(316002)(2616005)(2501003)(305945005)(86362001);DIR:OUT;SFP:1101;SCL:1;SRVR:DBBPR05MB6556;H:DBBPR05MB6283.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: k0AUfv2iUuZodcNI6i8K0sR5ZRaJqkIXoZIaDCCEkyfkOJ1aoAPdVRt7v5TpHZhA3G/IiHZEmCJqCPj8i4esL8cjz3mBo0fYDKuchgCXQBap0Eogy2vMOMaxIb2i1sX8EvI0zH2adNPuneVW27HkO6TQrvDgYn9BiR7aaxi2sEBsb/QZ1i2+3SoWPG3kyse7k7CBYn70WVrPZsja9oNVGUPRaxVCze0tXojqVf3ZGfhbHxCecsATqXNLMESHdmofVLaLvoZ/3UthARaGj0/DFVDyoP7eax/4ogVObCUK+VJcYqvUyEwT6tcZZOE/UzAjU4ew3LGhNCGi7Df7qJGA1kAUqzapIBAtKOOTHRqDtkYhhprnn2U2yjVVSFQu9UEs3QgrfaT9TI/CBRqLUZlw4XKtJlhBzl80yJ5RYDZnxTvLYuRe0ExTMy3WdO8N4oJC
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8B2741D21624A844A28DDCE6E5668819@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20191029045447.GA5545@unreal>,<20191027052111.GW4853@unreal>
- <20191004174804.GF13988@ziepe.ca> <20191002154728.GH5855@unreal>
- <20191002143858.4550-1-bmt@zurich.ibm.com>
- <OFA7E48CEB.393CBE8D-ON00258489.0047C07A-00258489.004DD109@notes.na.collabserv.com>
- <OF6A4B581E.5377D66F-ON0025849E.0041A942-0025849E.0042F36B@notes.na.collabserv.com>
- <OF7628E460.D6869428-ON002584A1.003AE367-002584A1.00455D5D@notes.na.collabserv.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP61 October 18, 2019 at 15:11
-X-LLNOutbound: False
-X-Disclaimed: 51475
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19103113-9463-0000-0000-0000014D66F8
-X-IBM-SpamModules-Scores: BY=0.283747; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.335479
-X-IBM-SpamModules-Versions: BY=3.00012025; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000292; SDB=6.01283378; UDB=6.00680252; IPR=6.01065525;
- MB=3.00029320; MTD=3.00000008; XFM=3.00000015; UTC=2019-10-31 13:38:42
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-10-31 08:38:19 - 6.00010593
-x-cbparentid: 19103113-9464-0000-0000-000038CB71B5
-Message-Id: <OF30885433.61CAFFA8-ON002584A4.0045D240-002584A4.004AF272@notes.na.collabserv.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-31_05:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2cbd38e-2e02-4a64-c722-08d75e11e7eb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Oct 2019 14:52:09.7086
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yzaDc399VWIl6QBxkcPMdh0svZMB+/sUbkdiY7JNa2W0frk8tlQuyvfnwnjABm8y3ZlwsfTiMQpdsCoqh7rCPQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR05MB6556
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Leon Romanovsky" <leon@kernel.org> wrote: -----
-
->To: "Bernard Metzler" <BMT@zurich.ibm.com>
->From: "Leon Romanovsky" <leon@kernel.org>
->Date: 10/29/2019 05:55AM
->Cc: "Jason Gunthorpe" <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
->bharat@chelsio.com, nirranjan@chelsio.com, krishna2@chelsio.com,
->bvanassche@acm.org
->Subject: [EXTERNAL] Re: Re: Re: Re: [[PATCH v2 for-next]] RDMA/siw:
->Fix SQ/RQ drain logic
->
->On Mon, Oct 28, 2019 at 12:37:38PM +0000, Bernard Metzler wrote:
->> -----"Leon Romanovsky" <leon@kernel.org> wrote: -----
->>
->> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
->> >From: "Leon Romanovsky" <leon@kernel.org>
->> >Date: 10/27/2019 06:21AM
->> >Cc: "Jason Gunthorpe" <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
->> >bharat@chelsio.com, nirranjan@chelsio.com, krishna2@chelsio.com,
->> >bvanassche@acm.org
->> >Subject: [EXTERNAL] Re: Re: Re: [[PATCH v2 for-next]] RDMA/siw:
->Fix
->> >SQ/RQ drain logic
->> >
->> >On Fri, Oct 25, 2019 at 12:11:16PM +0000, Bernard Metzler wrote:
->> >> -----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
->> >>
->> >> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
->> >> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
->> >> >Date: 10/04/2019 07:48PM
->> >> >Cc: "Leon Romanovsky" <leon@kernel.org>,
->> >linux-rdma@vger.kernel.org,
->> >> >bharat@chelsio.com, nirranjan@chelsio.com,
->krishna2@chelsio.com,
->> >> >bvanassche@acm.org
->> >> >Subject: [EXTERNAL] Re: Re: [[PATCH v2 for-next]] RDMA/siw: Fix
->> >SQ/RQ
->> >> >drain logic
->> >> >
->> >> >On Fri, Oct 04, 2019 at 02:09:57PM +0000, Bernard Metzler
->wrote:
->> >> >> <...>
->> >> >>
->> >> >> >>   *
->> >> >> >> @@ -705,6 +746,12 @@ int siw_post_send(struct ib_qp
->*base_qp,
->> >> >const
->> >> >> >struct ib_send_wr *wr,
->> >> >> >>  	unsigned long flags;
->> >> >> >>  	int rv = 0;
->> >> >> >>
->> >> >> >> +	if (wr && !qp->kernel_verbs) {
->> >> >> >
->> >> >> >It is not related to this specific patch, but all siw
->> >> >"kernel_verbs"
->> >> >> >should go, we have standard way to distinguish between
->kernel
->> >and
->> >> >> >user
->> >> >> >verbs.
->> >> >> >
->> >> >> >Thanks
->> >> >> >
->> >> >> Understood. I think we touched on that already.
->> >> >> rdma core objects have a uobject pointer which
->> >> >> is valid only if it belongs to a user land
->> >> >> application. We might better use that.
->> >> >
->> >> >No, the uobject pointer is not to be touched by drivers
->> >> >
->> >> Now what would be the appropriate way of remembering/
->> >> detecting user level nature of endpoint resources?
->> >> I see drivers _are_ doing 'if (!ibqp->uobject)' ...
->> >
->> >IMHO, you should rely in "udata" to distinguish user/kernel
->objects.
->> >
->>
->> right, we already do that at resource creation time, when
->> 'udata' is available.  But there is no such parameter
->> around during resource access (post_send/post_recv/poll_cq/...),
->> when user land or kernel land application specific
->> code might be required.
->> That's why siw currently saves that info to a resource
->> (QP/CQ/SRQ) specific parameter 'kernel_verbs'. I agree
->> this parameter is redundant, if the rdma core object
->> provides that information as well. The only way I see
->> it provided is the validity of the uobject pointer of
->> all those resources.
->> Either (1) we use that uobject pointer as an indication
->> of application location, or (2) we remember it from
->> resource creation time when udata was available, or
->> (3) we have the rdma core exporting that information
->> explicitly.
->> siw, and other drivers, are currently implementing (2).
->> Some drivers implement (1). I'd be happy to change siw
->> to implement (1) - to get rid of 'kernel_verbs'.
->
->Many if not all "kernel_verbs" variables are copy/paste.
->The usual way to handle difference in internal flows is to
->rely on having pointer initialized, e.g.
->if (siw_device->some_specific_kernel_pointer)
-> do_kernelwork(siw_device->some_specific_kernel_pointer->extra)
->
-
-The conditional code is always rather short:
-
-- a few lines for extra checks during post_sq,
-  post_rq and post_srq to forbid writing queue
-  entries via syscall.
-
-- write the qp kernel pointer to a CQE only
-  if it is a kernel application. Don't expose
-  it to user land.
-
-IMO, these checks do not qualify for a change
-to a function indirection, which would establish
-two very similar functions, differing only in
-very few lines. It would also decrease readability.
-The function pointer would have to be part of
-the resource itself (QP/SRQ/CQ), as the flag
-is now.
-
-Let me limit the usage of this obviously unliked
-flag to its possible minimum. During resource
-construction/destruction I do not really need
-it (except setting it), since 'udata' is there.
-It would appear only in the fast path for
-meentioned checks.
-I still prefer that siw private flag to
-avoid to rely on potentially changing semantics
-of rdma core private structures the driver
-IMHO better should not interpret. But I am
-completely open to do it that way, if preferred
-by the maintainers.
-
-Thanks and best regards,
-Bernard.
-
->Thanks
->
->>
->> Thanks and best regards,
->> Bernard.
->>
->>
->>
->>
->> >>
->> >> Other drivers keep it with the private state, like iw40,
->> >> but I learned we shall get rid of it.
->> >>
->> >> We may export an inline query from RDMA core, or simply
->> >> #define is_usermode(ib_obj *) (ib_obj->uobject != NULL)
->> >> ?
->> >>
->> >> Thanks and best regards,
->> >> Bernard
->> >>
->> >
->> >
->>
->
->
-
+DQoNCk9uIDEwLzMxLzIwMTkgOTo0OSBBTSwgWXV2YWwgU2hhaWEgd3JvdGU6DQo+IEZyb206IERv
+dGFuIEJhcmFrIDxkb3RhbmJAZGV2Lm1lbGxhbm94LmNvLmlsPg0KPiANCj4gU2lnbmVkLW9mZi1i
+eTogRG90YW4gQmFyYWsgPGRvdGFuYkBkZXYubWVsbGFub3guY28uaWw+DQo+IFNpZ25lZC1vZmYt
+Ynk6IEVsaSBDb2hlbiA8ZWxpQG1lbGxhbm94LmNvLmlsPg0KPiBTaWduZWQtb2ZmLWJ5OiBWbGFk
+aW1pciBTb2tvbG92c2t5IDx2bGFkQG1lbGxhbm94LmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogWXV2
+YWwgU2hhaWEgPHl1dmFsLnNoYWlhQG9yYWNsZS5jb20+DQo+IC0tLQ0KPiAgIGRyaXZlcnMvbmV0
+L2V0aGVybmV0L21lbGxhbm94L21seDQvbWFpbi5jIHwgMyArLS0NCj4gICAxIGZpbGUgY2hhbmdl
+ZCwgMSBpbnNlcnRpb24oKyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NC9tYWluLmMgYi9kcml2ZXJzL25ldC9ldGhl
+cm5ldC9tZWxsYW5veC9tbHg0L21haW4uYw0KPiBpbmRleCBmY2U5YjNhMjQzNDcuLmRjZjZiNDYy
+OGM1OCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NC9t
+YWluLmMNCj4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NC9tYWluLmMN
+Cj4gQEAgLTUxNCw4ICs1MTQsNyBAQCBzdGF0aWMgaW50IG1seDRfZGV2X2NhcChzdHJ1Y3QgbWx4
+NF9kZXYgKmRldiwgc3RydWN0IG1seDRfZGV2X2NhcCAqZGV2X2NhcCkNCj4gICAJZGV2LT5jYXBz
+Lm1heF9ycV9kZXNjX3N6ICAgICA9IGRldl9jYXAtPm1heF9ycV9kZXNjX3N6Ow0KPiAgIAkvKg0K
+PiAgIAkgKiBTdWJ0cmFjdCAxIGZyb20gdGhlIGxpbWl0IGJlY2F1c2Ugd2UgbmVlZCB0byBhbGxv
+Y2F0ZSBhDQo+IC0JICogc3BhcmUgQ1FFIHNvIHRoZSBIQ0EgSFcgY2FuIHRlbGwgdGhlIGRpZmZl
+cmVuY2UgYmV0d2VlbiBhbg0KPiAtCSAqIGVtcHR5IENRIGFuZCBhIGZ1bGwgQ1EuDQo+ICsJICog
+c3BhcmUgQ1FFIHRvIGVuYWJsZSByZXNpemluZyB0aGUgQ1ENCj4gICAJICovDQoNClBsZWFzZSB1
+c2UgYSBkb3QgYXQgRU9MLg0KDQpUaGlzIGlzIG5vdCBjbGVhciBlbm91Z2gsIGVzcGVjaWFsbHkg
+d2l0aG91dCBhIGNvbW1pdCBtZXNzYWdlLg0KDQo+ICAgCWRldi0+Y2Fwcy5tYXhfY3FlcwkgICAg
+ID0gZGV2X2NhcC0+bWF4X2NxX3N6IC0gMTsNCj4gICAJZGV2LT5jYXBzLnJlc2VydmVkX2Nxcwkg
+ICAgID0gZGV2X2NhcC0+cmVzZXJ2ZWRfY3FzOw0KPiANCg==
