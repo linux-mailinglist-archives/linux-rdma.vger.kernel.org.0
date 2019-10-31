@@ -2,212 +2,191 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C5AEA81B
-	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2019 01:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF86CEAB12
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2019 08:42:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbfJaAOg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 30 Oct 2019 20:14:36 -0400
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:17399 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726683AbfJaAOf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Oct 2019 20:14:35 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dba276f0000>; Wed, 30 Oct 2019 17:14:39 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Wed, 30 Oct 2019 17:14:33 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Wed, 30 Oct 2019 17:14:33 -0700
-Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 31 Oct
- 2019 00:14:31 +0000
-Subject: Re: [PATCH v3 3/3] mm/hmm/test: add self tests for HMM
-To:     Jason Gunthorpe <jgg@mellanox.com>
-CC:     Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20191023195515.13168-1-rcampbell@nvidia.com>
- <20191023195515.13168-4-rcampbell@nvidia.com>
- <20191029175837.GS22766@mellanox.com>
- <3ffecdc6-625f-ebea-8fb4-984fe6ca90f3@nvidia.com>
- <20191029231255.GX22766@mellanox.com>
-From:   Ralph Campbell <rcampbell@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <f42d06e2-ca08-acdd-948d-2803079a13c2@nvidia.com>
-Date:   Wed, 30 Oct 2019 17:14:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        id S1726769AbfJaHmW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 31 Oct 2019 03:42:22 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:37361 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726747AbfJaHmV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 31 Oct 2019 03:42:21 -0400
+Received: by mail-lf1-f68.google.com with SMTP id b20so3785891lfp.4;
+        Thu, 31 Oct 2019 00:42:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A9hJv4nqid7JxIZHhixcSeeagf7GXYfXIFUT0XG91wk=;
+        b=VfgwRQClq8a/k41mHyTkzsSHpIhqf5bvkBLRIoAnAokMIKNaS+9qRU8bi46hjRpIn3
+         cOLiLiZvh2a0fOvMU1vL2wS7+ljNaz0kCPvZx/VQARhYtLl7Arv1MSi1c/AAioCyDKRf
+         T3zw5n/Zmo+khkyzLPtAqVVrWT7AscFds8h2vGM8q5ZdFsrrJFBNRf0qAl4kToErvDlC
+         nakx5rqZY5eAC2IgtL+n5IYgVWUEZwdE+P0R4pKguK6Fr81u5r/aFwgHOefDvktYyhAm
+         Dcm6rFLBXP9h7KBKzv3BHgWs1inJDHw8fXdAwWcbDPjSlddd+UyQgLtufTo0miY1LepG
+         Z6xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A9hJv4nqid7JxIZHhixcSeeagf7GXYfXIFUT0XG91wk=;
+        b=LPBX4ewxZEJ3svP6Vh1JVVo0FSE7DJv4W1eUe0c6Nhmo26xkBBYkyPK7aJt9W0QFTN
+         SS2So34jouZcOau9Unl2JVVzJLhyX1pniOjegkBf278dfdXsoktit2XV0T8sQsFp19y4
+         gks5+oI+VmrDlvhBY76JEKgdSraGh6tfQF6h/3/CtrbeePX0TkuwlgijeV/ZWIQaOtha
+         JaZIw5H5hB1nx72PVyLdqphWD/rPFNDHUyF/IoDc0sI1Uhxdr+SMcIu/L01/SpsBXY7g
+         rUr0rF9wtkCBbaOuWyGf0M1VO/QlFlGezPCYsYbL8rzmxs9O/1Zjdxr1/55eqiZjr0HK
+         g+Hg==
+X-Gm-Message-State: APjAAAVYPtYHksLqk+sLuE72h8BO6jAZ7AWvuKv6a0GtGq+OH+OFKJ4d
+        ae6ZJUA8hzd5Pgpy4eBWl5FuYdD53lcnd0yRQw4=
+X-Google-Smtp-Source: APXvYqzPtzaP+14gi8Hkuo8pVwf2y/AhuX9DfzXZm4tRMGcgj4F2h8t2RuFhCXvtnHzdpNSZpxpw2fUHWZim2v2tOuQ=
+X-Received: by 2002:a19:2356:: with SMTP id j83mr2237665lfj.103.1572507738370;
+ Thu, 31 Oct 2019 00:42:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20191029231255.GX22766@mellanox.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1572480879; bh=aQDvoiizFwVElu/+JB2LeJEv2uD96Wkmo0qAhVBooQc=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=MWJCdQBYV5wFB7p92/YoCvnFMvaW5Z0IBrW0xE5hxmWN/aZqJV2A1iGIWrIIsAsV8
-         5VbUwe/ni8bh+UdPANC3o40XMQmti2jPniyG+kfKXopV2o92ZsH5WErJY0bTCkzbaq
-         Uv2d9ejyWGNHiGyn+USoMYCdZGkZjaf1R1TKpH3UAg2J2+/Vihh1G5u/xoT1MrefGQ
-         afjBFP8F4s4qdv4EK4vntC3rY/27ToshvjCbJrew79wgoor/yef38armEhFyhEvIAO
-         ruemKtXzYLn3lyFMiFLsaf9rlg03HrmcImjcDUjHfi1/TdGEdrlMlA1xfixlHdVgdW
-         DsWeazFXfVoKA==
+References: <20190927051320.GA1767635@kroah.com> <2B0E3F215D1AB84DA946C8BEE234CCC97B2B1A28@ORSMSX101.amr.corp.intel.com>
+ <20191023174448.GP23952@ziepe.ca> <2B0E3F215D1AB84DA946C8BEE234CCC97B2E0C84@ORSMSX101.amr.corp.intel.com>
+ <20191023180108.GQ23952@ziepe.ca> <20191024185659.GE260560@kroah.com>
+ <20191024191037.GC23952@ziepe.ca> <2B0E3F215D1AB84DA946C8BEE234CCC97B2E1D29@ORSMSX101.amr.corp.intel.com>
+ <20191025013048.GB265361@kroah.com> <2B0E3F215D1AB84DA946C8BEE234CCC97B2E2FE6@ORSMSX101.amr.corp.intel.com>
+ <20191026185338.GA804892@kroah.com>
+In-Reply-To: <20191026185338.GA804892@kroah.com>
+From:   Tomas Winkler <tomasw@gmail.com>
+Date:   Thu, 31 Oct 2019 08:42:06 +0100
+Message-ID: <CA+i0qc4pcxT6L9G-RGL6VYGDTYXZ4PSyw=sDgq8_+=jbs1E83A@mail.gmail.com>
+Subject: Re: [RFC 01/20] ice: Initialize and register multi-function device to
+ provide RDMA
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     "Ertman, David M" <david.m.ertman@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "Patil, Kiran" <kiran.patil@intel.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 10/29/19 4:12 PM, Jason Gunthorpe wrote:
-> On Tue, Oct 29, 2019 at 02:16:05PM -0700, Ralph Campbell wrote:
-> 
->>> Frankly, I'm not super excited about the idea of a 'test driver', it
->>> seems more logical for testing to have some way for a test harness to
->>> call hmm_range_fault() under various conditions and check the results?
->>
->> test_vmalloc.sh at least uses a test module(s).
-> 
-> Well, that is good, is it also under drivers/char? It kind feels like
-> it should not be there...
-
-I think most of the test modules live in lib/ but I wasn't sure that
-was the right place for the HMM test driver.
-If you think that is better, I can easily move it.
-
->>> It seems especially over-complicated to use a full page table layout
->>> for this, wouldn't something simple like an xarray be good enough for
->>> test purposes?
->>
->> Possibly. A page table is really just a lookup table from virtual address
->> to pfn/page. Part of the rationale was to mimic what a real device
->> might do.
-> 
-> Well, but the details of the page table layout don't see really
-> important to this testing, IMHO.
-
-One problem with XArray is that on 32-bit machines the value would
-need to be u64 to hold a pfn which won't fit in a ULONG_MAX.
-I guess we could make the driver 64-bit only.
-
->>>> +	for (addr = start; addr < end; ) {
->>>> +		long count;
->>>> +
->>>> +		next = min(addr + (ARRAY_SIZE(pfns) << PAGE_SHIFT), end);
->>>> +		range.start = addr;
->>>> +		range.end = next;
->>>> +
->>>> +		down_read(&mm->mmap_sem);
-> 
-> Also, did we get a mmget() before doing this down_read?
-> 
->>>> +
->>>> +		ret = hmm_range_register(&range, &dmirror->mirror);
->>>> +		if (ret) {
->>>> +			up_read(&mm->mmap_sem);
->>>> +			break;
->>>> +		}
->>>> +
->>>> +		if (!hmm_range_wait_until_valid(&range,
->>>> +						DMIRROR_RANGE_FAULT_TIMEOUT)) {
->>>> +			hmm_range_unregister(&range);
->>>> +			up_read(&mm->mmap_sem);
->>>> +			continue;
->>>> +		}
->>>> +
->>>> +		count = hmm_range_fault(&range, 0);
->>>> +		if (count < 0) {
->>>> +			ret = count;
->>>> +			hmm_range_unregister(&range);
->>>> +			up_read(&mm->mmap_sem);
->>>> +			break;
->>>> +		}
->>>> +
->>>> +		if (!hmm_range_valid(&range)) {
->>>
->>> There is no 'driver lock' being held here, how does this work?
->>> Shouldn't it hold dmirror->mutex for this sequence?
->>
->> I have a modified version of this driver that's based on your series
->> removing hmm_mirror_register() which uses a mutex.
->> Otherwise, it looks similar to the changes in nouveau.
-> 
-> Well, that locking pattern is required even for original hmm calls..
-
-Will be fixed in v4.
-
-> 
->>>> +static int dmirror_read(struct dmirror *dmirror,
->>>> +			struct hmm_dmirror_cmd *cmd)
->>>> +{
->>>
->>> Why not just use pread()/pwrite() for this instead of an ioctl?
->>
->> pread()/pwrite() could certainly be implemented.
->> I think the idea was that the read/write is actually the "device"
->> doing read/write and making that clearly different from a program
->> reading/writing the device. Also, the ioctl() allows information
->> about what faults or events happened during the operation. I only
->> have number of pages and number of page faults returned at the moment,
->> but one of Jerome's version of this driver had other counters being
->> returned.
-> 
-> Makes sense I guess
-> 
->>>> +static struct platform_driver dmirror_device_driver = {
->>>> +	.probe		= dmirror_probe,
->>>> +	.remove		= dmirror_remove,
->>>> +	.driver		= {
->>>> +		.name	= "HMM_DMIRROR",
->>>> +	},
->>>> +};
->>>
->>> This presence of a platform_driver and device is very confusing. I'm
->>> sure Greg KH would object to this as a misuse of platform drivers.
->>>
->>> A platform device isn't needed to create a char dev, so what is this for?
->>
->> The devm_request_free_mem_region() and devm_memremap_pages() calls for
->> creating the ZONE_DEVICE private pages tie into the devm* clean up framework.
->> I thought a platform_driver was the simplest way to also be able to call
->> devm_add_action_or_reset() to clean up on module unload and be compatible
->> with the private page clean up.
-> 
-> IIRC Christoph recently fixed things so there was a non devm version
-> of these functions. Certainly we should not be making fake
-> platform_devices just to call devm.
-> 
-> There is also a struct device inside the cdev, maybe that could be
-> arrange to be devm compatible if it was *really* needed.
-
-Will be fixed in v4.
-
->>>> diff --git a/include/Kbuild b/include/Kbuild
->>>> index ffba79483cc5..6ffb44a45957 100644
->>>> +++ b/include/Kbuild
->>>> @@ -1063,6 +1063,7 @@ header-test-			+= uapi/linux/coda_psdev.h
->>>>    header-test-			+= uapi/linux/errqueue.h
->>>>    header-test-			+= uapi/linux/eventpoll.h
->>>>    header-test-			+= uapi/linux/hdlc/ioctl.h
->>>> +header-test-			+= uapi/linux/hmm_dmirror.h
->>>
->>> Why? This list should only be updated if the header is broken in some
->>> way.
->>
->> Should this be in include/linux/ instead?
->> I wasn't sure where the "right" place was to put the header.
-> 
-> No, it is right, it just shouldn't be in this makefile.
-> 
-> Jason
-
-Will be fixed in v4.
-
-Thanks for the review, the code is much simpler now.
+> > >
+> > > On Thu, Oct 24, 2019 at 10:25:36PM +0000, Ertman, David M wrote:
+> > > > The direct access of the platform bus was unacceptable, and the MFD
+> > > > sub-system was suggested by Greg as the solution.  The MFD sub-system
+> > > > uses the platform bus in the background as a base to perform its
+> > > > functions, since it is a purely software construct that is handy and
+> > > > fulfills its needs.  The question then is:  If the MFD sub- system is
+> > > > using the platform bus for all of its background functionality, is the platform
+> > > bus really only for platform devices?
+> > >
+> > > Yes, how many times do I have to keep saying this?
+> > >
+> > > The platform bus should ONLY be used for devices that are actually platform
+> > > devices and can not be discovered any other way and are not on any other type
+> > > of bus.
+> > >
+> > > If you try to add platform devices for a PCI device, I am going to continue to
+> > > complain.  I keep saying this and am getting tired.
+> > >
+> > > Now yes, MFD does do "fun" things here, and that should probably be fixed up
+> > > one of these days.  But I still don't see why a real bus would not work for you.
+> > >
+> > > greg "platform devices are dead, long live the platform device" k-h
+> >
+> > > -----Original Message-----
+> > > From: gregkh@linuxfoundation.org [mailto:gregkh@linuxfoundation.org]
+> > > Sent: Thursday, October 24, 2019 6:31 PM
+> > > To: Ertman, David M <david.m.ertman@intel.com>
+> > > Cc: Jason Gunthorpe <jgg@ziepe.ca>; Nguyen, Anthony L
+> > > <anthony.l.nguyen@intel.com>; Kirsher, Jeffrey T
+> > > <jeffrey.t.kirsher@intel.com>; netdev@vger.kernel.org; linux-
+> > > rdma@vger.kernel.org; dledford@redhat.com; Ismail, Mustafa
+> > > <mustafa.ismail@intel.com>; Patil, Kiran <kiran.patil@intel.com>;
+> > > lee.jones@linaro.org
+> > > Subject: Re: [RFC 01/20] ice: Initialize and register multi-function device to
+> > > provide RDMA
+> > >
+> > > On Thu, Oct 24, 2019 at 10:25:36PM +0000, Ertman, David M wrote:
+> > > > The direct access of the platform bus was unacceptable, and the MFD
+> > > > sub-system was suggested by Greg as the solution.  The MFD sub-system
+> > > > uses the platform bus in the background as a base to perform its
+> > > > functions, since it is a purely software construct that is handy and
+> > > > fulfills its needs.  The question then is:  If the MFD sub- system is
+> > > > using the platform bus for all of its background functionality, is the platform
+> > > bus really only for platform devices?
+> > >
+> > > Yes, how many times do I have to keep saying this?
+> > >
+> > > The platform bus should ONLY be used for devices that are actually platform
+> > > devices and can not be discovered any other way and are not on any other type
+> > > of bus.
+> > >
+> > > If you try to add platform devices for a PCI device, I am going to continue to
+> > > complain.  I keep saying this and am getting tired.
+> > >
+> > > Now yes, MFD does do "fun" things here, and that should probably be fixed up
+> > > one of these days.  But I still don't see why a real bus would not work for you.
+> > >
+> > > greg "platform devices are dead, long live the platform device" k-h
+> >
+> > I'm sorry, the last thing I want to do is to annoy you! I just need to
+> > figure out where to go from here.  Please, don't take anything I say as
+> > argumentative.
+> >
+> > I don't understand what you mean by "a real bus".  The irdma driver does
+> > not have access to any physical bus.  It utilizes resources provided by
+> > the PCI LAN drivers, but to receive those resources it needs a mechanism
+> > to "hook up" with the PCI drivers.  The only way it has to locate them
+> > is to register a driver function with a software based bus of some kind
+> > and have the bus match it up to a compatible entity to achieve that hook up.
+> >
+> > The PCI LAN driver has a function that controls the PCI hardware, and then
+> > we want to present an entity for the RDMA driver to connect to.
+> >
+> > To move forward, we are thinking of the following design proposal:
+> >
+> > We could add a new module to the kernel named generic_bus.ko.  This would
+> > create a new generic software bus and a set of APIs that would allow for
+> > adding and removing simple generic virtual devices and drivers, not as
+> > a MFD cell or a platform device. The power management events would also
+> > be handled by the generic_bus infrastructure (suspend, resume, shutdown).
+> > We would use this for matching up by having the irdma driver register
+> > with this generic bus and hook to virtual devices that were added from
+> > different PCI LAN drivers.
+> >
+> > Pros:
+> > 1) This would avoid us attaching anything to the platform bus
+> > 2) Avoid having each PCI LAN driver creating its own software bus
+> > 3) Provide a common matching ground for generic devices and drivers that
+> > eliminates problems caused by load order (all dependent on generic_bus.ko)
+> > 4) Usable by any other entity that wants a lightweight matching system
+> > or information exchange mechanism
+> >
+> > Cons:
+> > 1) Duplicates part of the platform bus functionality
+> > 2) Adds a new software bus to the kernel architecture
+> >
+> > Is this path forward acceptable?
+>
+> Yes, that is much better.  But how about calling it a "virtual bus"?
+> It's not really virtualization, but we already have virtual devices
+> today when you look in sysfs for devices that are created that are not
+> associated with any specific bus.  So this could take those over quite
+> nicely!  Look at how /sys/devices/virtual/ works for specifics, you
+> could create a new virtual bus of a specific "name" and then add devices
+> to that bus directly.
+>
+> thanks,
+If I'm not mistaken,  currently the virtual devices do not have a parent and
+may not  have a bus so there is no enumeration and hence binding to a driver.
+This is not a case here, as the parent is the PCI device, and we need
+to bind to a driver.
+Code-wise the platform bus contains all the functionality needed by
+such virtual bus, for example helpers for the adding of resources that
+are inherited
+from its parent PCI device,
+ MMIO and IRQ,  the issue is just the name of the bus and associated sysfs?
+In that case the  platform bus will be a special case of the virtual bus?
+Thanks
+Tomas
