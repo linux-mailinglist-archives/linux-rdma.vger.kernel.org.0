@@ -2,84 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED2BEB720
-	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2019 19:37:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068D7EB76F
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2019 19:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729206AbfJaShi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 31 Oct 2019 14:37:38 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:35332 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729027AbfJaShi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 31 Oct 2019 14:37:38 -0400
-Received: by mail-qk1-f195.google.com with SMTP id h6so8092049qkf.2
-        for <linux-rdma@vger.kernel.org>; Thu, 31 Oct 2019 11:37:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lrILTC4+bcaln3eoSPhoO4YXMnF7rgx7O9TO7VWdqRc=;
-        b=T8Ur9yA6nvu/zeGkPfLa5iz7+lhoUksy/BPE9DR3AnsWbIrsW1hLNtO7HGF7BIqgqv
-         ztTZTTeJS31GQZExZEL0CdKYGPH+GKk9+1p5ctNG5pz+cEAZO2bqnVpOma7tFy3tUCz/
-         2s/6LskFH4g3niORqWoePKXdlei1LjieYkudSG4grGCKbuga5ZF/5O4aVVUClRg1aiRV
-         ftIuwKbH2kl5Y0HjGqtufQ45KuIJGESsV4LJFmWxssi0qU1w1vgsb5KNobKgHui3J4hX
-         78VYyiuP81ES2T6x7Nu8szk0uY0kGwmE7vy5vfHFj09833mncrjqOa7wXv8HNLXeRtdt
-         hkVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lrILTC4+bcaln3eoSPhoO4YXMnF7rgx7O9TO7VWdqRc=;
-        b=DqBd1dRyEBVp6OaHcwKl1gV6mZNaG7ZEej6/GuU3IE0d8VBA5fViG497QD+Kxr7jYk
-         +BpPUdFmhIOxJIeGJB8ImquKTY89xECF4vl8ci4mryTK87KjTyFQ1YGxe4MLKN3SdxB/
-         CEiEjbc9+A+AWzRdzqkK5BqkIQbnq0zFKGTIJGuo31GgFBX/DVmTmRxHjk+hRIcEyGbE
-         AiUYkV92+atj9Y4lvXQ9jALCl6ktzfjlfscbRhT4Ozyp69+ghzPVjeH8Lo7MWBZ4BrcJ
-         f5nRtjAbq1XgeHJ1BMJfdhqvJBPCEjickVMVojRAVHI5K16jWXzeaMFu+a479NNmB2Au
-         Gwpw==
-X-Gm-Message-State: APjAAAWQhXymej6Eg4s1lGpXOaz+LhNIDmPcNc5SPhMTqi3wrAU+YToj
-        +kSJHO+D1tX62xhuIRRku32GiQ==
-X-Google-Smtp-Source: APXvYqyS+kQv8oZWHMs0krMORKlC0DhL11G64Qz8lztLz485lOZ6ORo46DEJbwR3VQJlp5rXgZ6oeQ==
-X-Received: by 2002:ae9:ec0b:: with SMTP id h11mr2198300qkg.27.1572547057267;
-        Thu, 31 Oct 2019 11:37:37 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id r29sm2705156qtb.63.2019.10.31.11.37.36
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 31 Oct 2019 11:37:36 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iQFKC-0007P3-5b; Thu, 31 Oct 2019 15:37:36 -0300
-Date:   Thu, 31 Oct 2019 15:37:36 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Artemy Kovalyov <artemyko@mellanox.com>
-Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Return proper error value
-Message-ID: <20191031183736.GA28423@ziepe.ca>
-References: <20191029055721.7192-1-leon@kernel.org>
+        id S1729459AbfJaSnn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 31 Oct 2019 14:43:43 -0400
+Received: from hqemgate16.nvidia.com ([216.228.121.65]:9937 "EHLO
+        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729304AbfJaSnm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 31 Oct 2019 14:43:42 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dbb2b600000>; Thu, 31 Oct 2019 11:43:44 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 31 Oct 2019 11:43:38 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 31 Oct 2019 11:43:38 -0700
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 31 Oct
+ 2019 18:43:37 +0000
+Subject: Re: [PATCH 02/19] mm/gup: factor out duplicate code from four
+ routines
+To:     Ira Weiny <ira.weiny@intel.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+References: <20191030224930.3990755-1-jhubbard@nvidia.com>
+ <20191030224930.3990755-3-jhubbard@nvidia.com>
+ <20191031183549.GC14771@iweiny-DESK2.sc.intel.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <75b557f7-24b2-740c-2640-2f914d131600@nvidia.com>
+Date:   Thu, 31 Oct 2019 11:43:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191029055721.7192-1-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191031183549.GC14771@iweiny-DESK2.sc.intel.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1572547424; bh=tVTQ7w70LzXRWNozMw5pcweYnGaSw6wKS7taKOoMvgQ=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=ItGdt9jPwuaxZEwBZAmOs6QRw3y1ekRCXIkAk884e9fffuoHSkMv3IXuQ7vsU8mJ+
+         6sn7OAiE4sod/01pqRwiHcd242kDvH4VxxD334MsuTzmzdN+z2Tf4SkqA4hAm5RUgb
+         DQz3BJUfTbN/krdQz9Fy07dfiumXVmkiVCv2liRNNsMOm+vluNn2/EZjBIhVCKbXA7
+         WVHpKyr4oMIxF6v1Zhp2z85oNzL7rjapLTslb3D5k7UtqTOOxnqps/GxGVAfXIr7tc
+         /ZNTHbsdctd0KY29GLOk6czDGwBpbgAriROyniZOORRqIrKjgDjOEDFf1BfnHlTH/3
+         EDGo/Nn1OpOQw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 29, 2019 at 07:57:21AM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
+On 10/31/19 11:35 AM, Ira Weiny wrote:
+> On Wed, Oct 30, 2019 at 03:49:13PM -0700, John Hubbard wrote:
+...
+>> +
+>> +static void __remove_refs_from_head(struct page *page, int refs)
+>> +{
+>> +	/* Do a get_page() first, in case refs == page->_refcount */
+>> +	get_page(page);
+>> +	page_ref_sub(page, refs);
+>> +	put_page(page);
+>> +}
 > 
-> Returned value from mlx5_mr_cache_alloc() is checked to be error
-> or real pointer. Return proper error code instead of NULL which
-> is not checked later.
+> I wonder if this is better implemented as "put_compound_head()"?  To match the
+> try_get_compound_head() call below?
+
+Hi Ira,
+
+Good idea, I'll rename it to that.
+
 > 
-> Fixes: 81713d3788d2 ("IB/mlx5: Add implicit MR support")
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/hw/mlx5/mr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>> +
+>> +static int __huge_pt_done(struct page *head, int nr_recorded_pages, int *nr)
+>> +{
+>> +	*nr += nr_recorded_pages;
+>> +	SetPageReferenced(head);
+>> +	return 1;
+> 
+> When will this return anything but 1?
+> 
 
-Applied to for-next, thanks
+Never, but it saves a line at all four call sites, by having it return like that.
 
-Jason
+I could see how maybe people would prefer to just have it be a void function,
+and return 1 directly at the call sites. Since this was a lower line count I
+thought maybe it would be slightly better, but it's hard to say really.
+
+thanks,
+
+John Hubbard
+NVIDIA
