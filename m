@@ -2,122 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3EDEB71B
-	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2019 19:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED2BEB720
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2019 19:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729367AbfJaShA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 31 Oct 2019 14:37:00 -0400
-Received: from mga14.intel.com ([192.55.52.115]:53184 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729027AbfJaSg7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 31 Oct 2019 14:36:59 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 31 Oct 2019 11:36:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,252,1569308400"; 
-   d="scan'208";a="212547050"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga002.jf.intel.com with ESMTP; 31 Oct 2019 11:36:56 -0700
-Date:   Thu, 31 Oct 2019 11:36:56 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 03/19] goldish_pipe: rename local pin_user_pages() routine
-Message-ID: <20191031183656.GD14771@iweiny-DESK2.sc.intel.com>
-References: <20191030224930.3990755-1-jhubbard@nvidia.com>
- <20191030224930.3990755-4-jhubbard@nvidia.com>
+        id S1729206AbfJaShi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 31 Oct 2019 14:37:38 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:35332 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729027AbfJaShi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 31 Oct 2019 14:37:38 -0400
+Received: by mail-qk1-f195.google.com with SMTP id h6so8092049qkf.2
+        for <linux-rdma@vger.kernel.org>; Thu, 31 Oct 2019 11:37:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lrILTC4+bcaln3eoSPhoO4YXMnF7rgx7O9TO7VWdqRc=;
+        b=T8Ur9yA6nvu/zeGkPfLa5iz7+lhoUksy/BPE9DR3AnsWbIrsW1hLNtO7HGF7BIqgqv
+         ztTZTTeJS31GQZExZEL0CdKYGPH+GKk9+1p5ctNG5pz+cEAZO2bqnVpOma7tFy3tUCz/
+         2s/6LskFH4g3niORqWoePKXdlei1LjieYkudSG4grGCKbuga5ZF/5O4aVVUClRg1aiRV
+         ftIuwKbH2kl5Y0HjGqtufQ45KuIJGESsV4LJFmWxssi0qU1w1vgsb5KNobKgHui3J4hX
+         78VYyiuP81ES2T6x7Nu8szk0uY0kGwmE7vy5vfHFj09833mncrjqOa7wXv8HNLXeRtdt
+         hkVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lrILTC4+bcaln3eoSPhoO4YXMnF7rgx7O9TO7VWdqRc=;
+        b=DqBd1dRyEBVp6OaHcwKl1gV6mZNaG7ZEej6/GuU3IE0d8VBA5fViG497QD+Kxr7jYk
+         +BpPUdFmhIOxJIeGJB8ImquKTY89xECF4vl8ci4mryTK87KjTyFQ1YGxe4MLKN3SdxB/
+         CEiEjbc9+A+AWzRdzqkK5BqkIQbnq0zFKGTIJGuo31GgFBX/DVmTmRxHjk+hRIcEyGbE
+         AiUYkV92+atj9Y4lvXQ9jALCl6ktzfjlfscbRhT4Ozyp69+ghzPVjeH8Lo7MWBZ4BrcJ
+         f5nRtjAbq1XgeHJ1BMJfdhqvJBPCEjickVMVojRAVHI5K16jWXzeaMFu+a479NNmB2Au
+         Gwpw==
+X-Gm-Message-State: APjAAAWQhXymej6Eg4s1lGpXOaz+LhNIDmPcNc5SPhMTqi3wrAU+YToj
+        +kSJHO+D1tX62xhuIRRku32GiQ==
+X-Google-Smtp-Source: APXvYqyS+kQv8oZWHMs0krMORKlC0DhL11G64Qz8lztLz485lOZ6ORo46DEJbwR3VQJlp5rXgZ6oeQ==
+X-Received: by 2002:ae9:ec0b:: with SMTP id h11mr2198300qkg.27.1572547057267;
+        Thu, 31 Oct 2019 11:37:37 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id r29sm2705156qtb.63.2019.10.31.11.37.36
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 31 Oct 2019 11:37:36 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iQFKC-0007P3-5b; Thu, 31 Oct 2019 15:37:36 -0300
+Date:   Thu, 31 Oct 2019 15:37:36 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Artemy Kovalyov <artemyko@mellanox.com>
+Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Return proper error value
+Message-ID: <20191031183736.GA28423@ziepe.ca>
+References: <20191029055721.7192-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191030224930.3990755-4-jhubbard@nvidia.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20191029055721.7192-1-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 30, 2019 at 03:49:14PM -0700, John Hubbard wrote:
-> 1. Avoid naming conflicts: rename local static function from
-> "pin_user_pages()" to "pin_goldfish_pages()".
+On Tue, Oct 29, 2019 at 07:57:21AM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 > 
-> An upcoming patch will introduce a global pin_user_pages()
-> function.
+> Returned value from mlx5_mr_cache_alloc() is checked to be error
+> or real pointer. Return proper error code instead of NULL which
+> is not checked later.
 > 
-
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> Fixes: 81713d3788d2 ("IB/mlx5: Add implicit MR support")
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 > ---
->  drivers/platform/goldfish/goldfish_pipe.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/platform/goldfish/goldfish_pipe.c b/drivers/platform/goldfish/goldfish_pipe.c
-> index cef0133aa47a..7ed2a21a0bac 100644
-> --- a/drivers/platform/goldfish/goldfish_pipe.c
-> +++ b/drivers/platform/goldfish/goldfish_pipe.c
-> @@ -257,12 +257,12 @@ static int goldfish_pipe_error_convert(int status)
->  	}
->  }
->  
-> -static int pin_user_pages(unsigned long first_page,
-> -			  unsigned long last_page,
-> -			  unsigned int last_page_size,
-> -			  int is_write,
-> -			  struct page *pages[MAX_BUFFERS_PER_COMMAND],
-> -			  unsigned int *iter_last_page_size)
-> +static int pin_goldfish_pages(unsigned long first_page,
-> +			      unsigned long last_page,
-> +			      unsigned int last_page_size,
-> +			      int is_write,
-> +			      struct page *pages[MAX_BUFFERS_PER_COMMAND],
-> +			      unsigned int *iter_last_page_size)
->  {
->  	int ret;
->  	int requested_pages = ((last_page - first_page) >> PAGE_SHIFT) + 1;
-> @@ -354,9 +354,9 @@ static int transfer_max_buffers(struct goldfish_pipe *pipe,
->  	if (mutex_lock_interruptible(&pipe->lock))
->  		return -ERESTARTSYS;
->  
-> -	pages_count = pin_user_pages(first_page, last_page,
-> -				     last_page_size, is_write,
-> -				     pipe->pages, &iter_last_page_size);
-> +	pages_count = pin_goldfish_pages(first_page, last_page,
-> +					 last_page_size, is_write,
-> +					 pipe->pages, &iter_last_page_size);
->  	if (pages_count < 0) {
->  		mutex_unlock(&pipe->lock);
->  		return pages_count;
-> -- 
-> 2.23.0
-> 
-> 
+>  drivers/infiniband/hw/mlx5/mr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Applied to for-next, thanks
+
+Jason
