@@ -2,129 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 068D7EB76F
-	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2019 19:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E11EB7B1
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2019 20:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729459AbfJaSnn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 31 Oct 2019 14:43:43 -0400
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:9937 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729304AbfJaSnm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 31 Oct 2019 14:43:42 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dbb2b600000>; Thu, 31 Oct 2019 11:43:44 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 31 Oct 2019 11:43:38 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 31 Oct 2019 11:43:38 -0700
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 31 Oct
- 2019 18:43:37 +0000
-Subject: Re: [PATCH 02/19] mm/gup: factor out duplicate code from four
- routines
-To:     Ira Weiny <ira.weiny@intel.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-References: <20191030224930.3990755-1-jhubbard@nvidia.com>
- <20191030224930.3990755-3-jhubbard@nvidia.com>
- <20191031183549.GC14771@iweiny-DESK2.sc.intel.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <75b557f7-24b2-740c-2640-2f914d131600@nvidia.com>
-Date:   Thu, 31 Oct 2019 11:43:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1729379AbfJaTCw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 31 Oct 2019 15:02:52 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:34542 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729252AbfJaTCw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 31 Oct 2019 15:02:52 -0400
+Received: by mail-qt1-f194.google.com with SMTP id e14so10026105qto.1
+        for <linux-rdma@vger.kernel.org>; Thu, 31 Oct 2019 12:02:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hFtamFGnMkFJgVuRpLTeeHxlRIZgJIb4PUnS2wd14q0=;
+        b=IB1HraDHOiXpMBJskMnn585/wXT4BDc56s6LJK5DQ97j1dEXF+pdXWEF22Eh98s4ho
+         A36VVMqAb9rGdAyxuFOtMiJYFevKhDUKxFgI529sNZuZT8oYaxBFlnViMW9X7EQgQdOd
+         Ie3p7Kz8RYgbEGXYrNf0j9ukkNxZUlo8hyx0aNmRxMdJ0jmGijKpEo3Elnd8CpfTQrjE
+         XdjmxQoRMv9Xs3F4xS1Mjgzi3NxDFWGUPgSXpLIsZ6UEREpRYZv/VAKvM7DrroHnaYsL
+         a12eAv/VT6K/ZErEyAT4yoY6BlWW7KbYM/Wlj5gDdvjODIcrAzXGp3XIo095crz7j/CN
+         QOTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hFtamFGnMkFJgVuRpLTeeHxlRIZgJIb4PUnS2wd14q0=;
+        b=ATIkZp5AICaIaWK8TwDK97PPtObWMTEt1fZYGgBTMNbFZiGoUIVNnAJ+pDjuohZQQb
+         0RfUObq1UfWUqePfHjARSQcbVHreRkeZ13HoJfBkBgJOOIo6bj5vtoncC4k6WsC1FFeD
+         rTUwJJyx0PIXpzUOGYb5MiSe4vScsX8/NRoM6cpCEBazA9jSL0L7KTPd+FfJ+Qm/NC8U
+         KoI02Tid36xI7bj3lcbvXD92IiijQuSkhD7yCS6cGHO7R/rBDmCQPkEhzLKdbWhvpwWx
+         7WTOeyF7QUpXToJNBu6x1OhTpzcvYIsOkJ7xUblgTqZaWqkmBZocIfPIhVhmn7icN6+g
+         FhSw==
+X-Gm-Message-State: APjAAAWylyI/Sv0WsA40xuIypmFrRuqeVNG7mPcOQ8dJ4dbD0mxfFagU
+        G6oCZEDesuUkEi9621vRDTFeCA==
+X-Google-Smtp-Source: APXvYqxaZ1btUZDEppNxm3RiIrRgXW0Kwdqrnnvv6KHy0yZJxvvnhSeolm+XvruyV8UqR3StEfBZMg==
+X-Received: by 2002:ad4:5447:: with SMTP id h7mr6201249qvt.188.1572548571038;
+        Thu, 31 Oct 2019 12:02:51 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id f131sm694113qkb.99.2019.10.31.12.02.50
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 31 Oct 2019 12:02:50 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iQFib-0001WH-RS; Thu, 31 Oct 2019 16:02:49 -0300
+Date:   Thu, 31 Oct 2019 16:02:49 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: Re: [PATCH rdma-next v1] IB/mlx5: Test write combining support
+Message-ID: <20191031190249.GA5707@ziepe.ca>
+References: <20191027062234.10993-1-leon@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20191031183549.GC14771@iweiny-DESK2.sc.intel.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1572547424; bh=tVTQ7w70LzXRWNozMw5pcweYnGaSw6wKS7taKOoMvgQ=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=ItGdt9jPwuaxZEwBZAmOs6QRw3y1ekRCXIkAk884e9fffuoHSkMv3IXuQ7vsU8mJ+
-         6sn7OAiE4sod/01pqRwiHcd242kDvH4VxxD334MsuTzmzdN+z2Tf4SkqA4hAm5RUgb
-         DQz3BJUfTbN/krdQz9Fy07dfiumXVmkiVCv2liRNNsMOm+vluNn2/EZjBIhVCKbXA7
-         WVHpKyr4oMIxF6v1Zhp2z85oNzL7rjapLTslb3D5k7UtqTOOxnqps/GxGVAfXIr7tc
-         /ZNTHbsdctd0KY29GLOk6czDGwBpbgAriROyniZOORRqIrKjgDjOEDFf1BfnHlTH/3
-         EDGo/Nn1OpOQw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191027062234.10993-1-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/31/19 11:35 AM, Ira Weiny wrote:
-> On Wed, Oct 30, 2019 at 03:49:13PM -0700, John Hubbard wrote:
-...
->> +
->> +static void __remove_refs_from_head(struct page *page, int refs)
->> +{
->> +	/* Do a get_page() first, in case refs == page->_refcount */
->> +	get_page(page);
->> +	page_ref_sub(page, refs);
->> +	put_page(page);
->> +}
+On Sun, Oct 27, 2019 at 08:22:34AM +0200, Leon Romanovsky wrote:
+> From: Michael Guralnik <michaelgur@mellanox.com>
 > 
-> I wonder if this is better implemented as "put_compound_head()"?  To match the
-> try_get_compound_head() call below?
-
-Hi Ira,
-
-Good idea, I'll rename it to that.
-
+> Add a test in mlx5_ib initialization process to test whether
+> write-combining is supported on the machine.
+> The test will run as part of the enable_driver callback to ensure that
+> the test runs after the device is setup and can create and modify the
+> QP needed, but runs before the device is exposed to the users.
 > 
->> +
->> +static int __huge_pt_done(struct page *head, int nr_recorded_pages, int *nr)
->> +{
->> +	*nr += nr_recorded_pages;
->> +	SetPageReferenced(head);
->> +	return 1;
+> The test opens UD QP and posts NOP WQEs, the WQE written to the BlueFlame
+> is differnet from the WQE in memory, requesting CQE only on the BlueFlame
+> WQE. By checking whether we received a completion on one of these WQEs we
+> can know if BlueFlame succeeded and whether write-combining is supported.
 > 
-> When will this return anything but 1?
+> Change reporting of BlueFlame support to be dependent on write-combining
+> support.
 > 
+> Signed-off-by: Michael Guralnik <michaelgur@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  Changelog:
+>  v0 -> v1: https://lore.kernel.org/linux-rdma/20191020064400.8344-1-leon@kernel.org
+>  * First patch was merged, resend second only.
+>  * Changed spin_lock() to spin_lock_irqsave() in post_send_nop().
 
-Never, but it saves a line at all four call sites, by having it return like that.
+Probably this should just be spin_lock_irq as we are definitely not
+already in a IRQ or atomic context at this point.
 
-I could see how maybe people would prefer to just have it be a void function,
-and return 1 directly at the call sites. Since this was a lower line count I
-thought maybe it would be slightly better, but it's hard to say really.
+>  * Updated post_send_nop() current position math calculations.
+> ---
+>  drivers/infiniband/hw/mlx5/main.c    |  15 +-
+>  drivers/infiniband/hw/mlx5/mem.c     | 199 +++++++++++++++++++++++++++
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h |   6 +
+>  drivers/infiniband/hw/mlx5/qp.c      |   6 +-
+>  4 files changed, 223 insertions(+), 3 deletions(-)
 
-thanks,
+Applied to for-next, thanks
 
-John Hubbard
-NVIDIA
+Jason
