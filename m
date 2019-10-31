@@ -2,120 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BBFEB331
-	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2019 15:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3486BEB37B
+	for <lists+linux-rdma@lfdr.de>; Thu, 31 Oct 2019 16:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbfJaOwO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 31 Oct 2019 10:52:14 -0400
-Received: from mail-eopbgr10041.outbound.protection.outlook.com ([40.107.1.41]:40846
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728227AbfJaOwO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 31 Oct 2019 10:52:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TK0Qwq1uVONjub0LxcXnS9LutOJ6pmNCPAiXCcRYPNVmklVNvDAtCEMEYt0QuQ0WQ9ei4ktT93qg5hLq1ibO+PUgmPSA59qEiW6yIIJwpVGf8t+pR4Nrjpv6IBlDT/TrVEKyFlDLEDeuZs9qPFm2lLxW/IAsina7kZngZo9dOTzHdVrycAJd1dSFkD7BoPYwmoGbeCjCaqb6DpSDqXUfsOoZ4E9yBF+Ox7YK8p9ZF7Ulcr4iUFLwGuHpssTbTaGhngjOOTSVgt00p+rHBz3PQkKTK06JlT68ZJsJXwKTQyGclV+Yk7ivFl5OBK5sGrtkFQNi5zZ7ZkHfZeu/vGgIRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JJSvDEk3ImGrNciSLrSTfUMPSqHSidO0NHUB0ZbinFw=;
- b=QxGZOFSiDgONVLoqyIMnLgA0TWmA/7BQlsnyHRqAdCA2OoVUDgOvsDbP+chsej9sG/YL2etZe8fze7OToqkBktKxQKQpMNjQcMROjZfHtcPAvjhkWmQai4QmPKIQIpWPEJBYjU99qE94h3udSwO40bMEucwKa2VZu/lMklRAXD99tcMad3ccaGQInDpN4QpzVmIoV/8x2kL8QnWnB4ky7KPlKcmgy/5BskBKFQt6HJ5SLJ4ywfaYKKrKgBoy3yYY/RNqhJfa5CVxeLcH5RsRGjxxluunULMgdvmPr6UBrHj4otlzX1vNvBoSivxk0pwELq1yDg8LjcIpVg7J4JZIWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JJSvDEk3ImGrNciSLrSTfUMPSqHSidO0NHUB0ZbinFw=;
- b=CAXJwQz+5Nsx2cpAgWzS7KPgLPkMBf0h4JGcRERkUdnAAVgtU5X3263R27yy9UIYVt60PkXitZcMkM9MKrM35bLO/u/G3BYKGgORNkYeo3zIrrFB2JqDfRuyYv8sqv75r3e2Db2nieI6PsQQBsrRiM9jFO37xA4p9KntU40qgLA=
-Received: from DBBPR05MB6283.eurprd05.prod.outlook.com (20.179.43.208) by
- DBBPR05MB6556.eurprd05.prod.outlook.com (20.179.41.23) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2387.20; Thu, 31 Oct 2019 14:52:09 +0000
-Received: from DBBPR05MB6283.eurprd05.prod.outlook.com
- ([fe80::8c61:2788:89:69ce]) by DBBPR05MB6283.eurprd05.prod.outlook.com
- ([fe80::8c61:2788:89:69ce%5]) with mapi id 15.20.2408.018; Thu, 31 Oct 2019
- 14:52:09 +0000
-From:   Tariq Toukan <tariqt@mellanox.com>
-To:     Yuval Shaia <yuval.shaia@oracle.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dotanb@dev.mellanox.co.il" <dotanb@dev.mellanox.co.il>,
-        Eli Cohen <eli@mellanox.com>,
-        Vladimir Sokolovsky <vlad@mellanox.com>
-Subject: Re: [PATCH] mlx4_core: fix wrong comment about the reason of subtract
- one from the max_cqes
-Thread-Topic: [PATCH] mlx4_core: fix wrong comment about the reason of
- subtract one from the max_cqes
-Thread-Index: AQHVj7/MLr7HVp7cQUKjB+F0Jw6ouKd01gQA
-Date:   Thu, 31 Oct 2019 14:52:09 +0000
-Message-ID: <6c0f87dd-bb63-cf0e-66c1-ed01b2a42382@mellanox.com>
-References: <20191031074931.20715-1-yuval.shaia@oracle.com>
-In-Reply-To: <20191031074931.20715-1-yuval.shaia@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM0PR04CA0001.eurprd04.prod.outlook.com
- (2603:10a6:208:122::14) To DBBPR05MB6283.eurprd05.prod.outlook.com
- (2603:10a6:10:cf::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=tariqt@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [193.47.165.251]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: a2cbd38e-2e02-4a64-c722-08d75e11e7eb
-x-ms-traffictypediagnostic: DBBPR05MB6556:|DBBPR05MB6556:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DBBPR05MB655692B51CCC2DC8FAEE5AF7AE630@DBBPR05MB6556.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:240;
-x-forefront-prvs: 02070414A1
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(376002)(136003)(366004)(396003)(39860400002)(199004)(189003)(66446008)(476003)(386003)(71190400001)(2201001)(446003)(11346002)(6116002)(3846002)(6246003)(5660300002)(6506007)(53546011)(71200400001)(110136005)(2906002)(486006)(66556008)(66476007)(66946007)(6436002)(14444005)(6636002)(256004)(64756008)(186003)(52116002)(229853002)(6486002)(6512007)(25786009)(36756003)(8936002)(8676002)(14454004)(81166006)(81156014)(102836004)(7736002)(99286004)(31686004)(31696002)(66066001)(478600001)(26005)(76176011)(316002)(2616005)(2501003)(305945005)(86362001);DIR:OUT;SFP:1101;SCL:1;SRVR:DBBPR05MB6556;H:DBBPR05MB6283.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: k0AUfv2iUuZodcNI6i8K0sR5ZRaJqkIXoZIaDCCEkyfkOJ1aoAPdVRt7v5TpHZhA3G/IiHZEmCJqCPj8i4esL8cjz3mBo0fYDKuchgCXQBap0Eogy2vMOMaxIb2i1sX8EvI0zH2adNPuneVW27HkO6TQrvDgYn9BiR7aaxi2sEBsb/QZ1i2+3SoWPG3kyse7k7CBYn70WVrPZsja9oNVGUPRaxVCze0tXojqVf3ZGfhbHxCecsATqXNLMESHdmofVLaLvoZ/3UthARaGj0/DFVDyoP7eax/4ogVObCUK+VJcYqvUyEwT6tcZZOE/UzAjU4ew3LGhNCGi7Df7qJGA1kAUqzapIBAtKOOTHRqDtkYhhprnn2U2yjVVSFQu9UEs3QgrfaT9TI/CBRqLUZlw4XKtJlhBzl80yJ5RYDZnxTvLYuRe0ExTMy3WdO8N4oJC
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8B2741D21624A844A28DDCE6E5668819@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727697AbfJaPJu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 31 Oct 2019 11:09:50 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:49132 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726540AbfJaPJu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 31 Oct 2019 11:09:50 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9VF4KvB013590;
+        Thu, 31 Oct 2019 15:09:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=g5FDpzysK/Tdx/b7QD8MBg2VCo9YaQaUV9WG6V5S8AI=;
+ b=MpyuFAMnzUaYVhcRpFe7vw9AaYuDjDIvwr7gin4v6BM3aw3Z056PzWpSICE4TW8xjfSk
+ 5oRW3sS5x40ZqCTTFmB5iQWaCiE+PnYyDoUk8Oq0XFxg1RPH1MxT35cMSUaKgOvjUaUR
+ uYhcllghOb/ajNsDpNaIpHCtq07iWd+9mi549EG9ojx0G36Fvu5IzYA6kMmqpf0QBMCr
+ fb1hF8RwKyGTyYKJFy+4Mo5anZ2smscfE0Akr9mV9ukcwdOVak+phEIJry1HmUzzStnT
+ m5eo0RW160tXurEFc30OL79JSCgbjyusOGQK5/pxeAtSBkHrlieab1wm/iBQ3pD8pWIc ng== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2vxwhfm0g1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 31 Oct 2019 15:09:42 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9VEx2r4109170;
+        Thu, 31 Oct 2019 15:09:41 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 2vykw1gj09-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 31 Oct 2019 15:09:41 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x9VF92YY145957;
+        Thu, 31 Oct 2019 15:09:41 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2vykw1ghyx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 31 Oct 2019 15:09:41 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9VF9eqa000316;
+        Thu, 31 Oct 2019 15:09:41 GMT
+Received: from [10.172.157.165] (/10.172.157.165)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 31 Oct 2019 08:09:40 -0700
+Subject: Re: [PATCH net-next] rds: Cancel pending connections on connection
+ request
+To:     santosh.shilimkar@oracle.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
+Cc:     davem@davemloft.net, haakon.bugge@oracle.com
+References: <1572528956-8504-1-git-send-email-dag.moxnes@oracle.com>
+From:   Dag Moxnes <dag.moxnes@oracle.com>
+Message-ID: <51893d36-492b-b345-b8c4-93110c4de7f8@oracle.com>
+Date:   Thu, 31 Oct 2019 16:09:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2cbd38e-2e02-4a64-c722-08d75e11e7eb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Oct 2019 14:52:09.7086
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yzaDc399VWIl6QBxkcPMdh0svZMB+/sUbkdiY7JNa2W0frk8tlQuyvfnwnjABm8y3ZlwsfTiMQpdsCoqh7rCPQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR05MB6556
+In-Reply-To: <1572528956-8504-1-git-send-email-dag.moxnes@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9426 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910310154
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCk9uIDEwLzMxLzIwMTkgOTo0OSBBTSwgWXV2YWwgU2hhaWEgd3JvdGU6DQo+IEZyb206IERv
-dGFuIEJhcmFrIDxkb3RhbmJAZGV2Lm1lbGxhbm94LmNvLmlsPg0KPiANCj4gU2lnbmVkLW9mZi1i
-eTogRG90YW4gQmFyYWsgPGRvdGFuYkBkZXYubWVsbGFub3guY28uaWw+DQo+IFNpZ25lZC1vZmYt
-Ynk6IEVsaSBDb2hlbiA8ZWxpQG1lbGxhbm94LmNvLmlsPg0KPiBTaWduZWQtb2ZmLWJ5OiBWbGFk
-aW1pciBTb2tvbG92c2t5IDx2bGFkQG1lbGxhbm94LmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogWXV2
-YWwgU2hhaWEgPHl1dmFsLnNoYWlhQG9yYWNsZS5jb20+DQo+IC0tLQ0KPiAgIGRyaXZlcnMvbmV0
-L2V0aGVybmV0L21lbGxhbm94L21seDQvbWFpbi5jIHwgMyArLS0NCj4gICAxIGZpbGUgY2hhbmdl
-ZCwgMSBpbnNlcnRpb24oKyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NC9tYWluLmMgYi9kcml2ZXJzL25ldC9ldGhl
-cm5ldC9tZWxsYW5veC9tbHg0L21haW4uYw0KPiBpbmRleCBmY2U5YjNhMjQzNDcuLmRjZjZiNDYy
-OGM1OCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NC9t
-YWluLmMNCj4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NC9tYWluLmMN
-Cj4gQEAgLTUxNCw4ICs1MTQsNyBAQCBzdGF0aWMgaW50IG1seDRfZGV2X2NhcChzdHJ1Y3QgbWx4
-NF9kZXYgKmRldiwgc3RydWN0IG1seDRfZGV2X2NhcCAqZGV2X2NhcCkNCj4gICAJZGV2LT5jYXBz
-Lm1heF9ycV9kZXNjX3N6ICAgICA9IGRldl9jYXAtPm1heF9ycV9kZXNjX3N6Ow0KPiAgIAkvKg0K
-PiAgIAkgKiBTdWJ0cmFjdCAxIGZyb20gdGhlIGxpbWl0IGJlY2F1c2Ugd2UgbmVlZCB0byBhbGxv
-Y2F0ZSBhDQo+IC0JICogc3BhcmUgQ1FFIHNvIHRoZSBIQ0EgSFcgY2FuIHRlbGwgdGhlIGRpZmZl
-cmVuY2UgYmV0d2VlbiBhbg0KPiAtCSAqIGVtcHR5IENRIGFuZCBhIGZ1bGwgQ1EuDQo+ICsJICog
-c3BhcmUgQ1FFIHRvIGVuYWJsZSByZXNpemluZyB0aGUgQ1ENCj4gICAJICovDQoNClBsZWFzZSB1
-c2UgYSBkb3QgYXQgRU9MLg0KDQpUaGlzIGlzIG5vdCBjbGVhciBlbm91Z2gsIGVzcGVjaWFsbHkg
-d2l0aG91dCBhIGNvbW1pdCBtZXNzYWdlLg0KDQo+ICAgCWRldi0+Y2Fwcy5tYXhfY3FlcwkgICAg
-ID0gZGV2X2NhcC0+bWF4X2NxX3N6IC0gMTsNCj4gICAJZGV2LT5jYXBzLnJlc2VydmVkX2Nxcwkg
-ICAgID0gZGV2X2NhcC0+cmVzZXJ2ZWRfY3FzOw0KPiANCg==
+This one should be for net instead of net-next.
+Also it is not correct.
+I will send a new patch for net.
+
+-Dag
+
+On 10/31/19 2:35 PM, Dag Moxnes wrote:
+> RDS connections can enter the RDS_CONN_CONNECTING state in two ways:
+> 1. It can be started using the connection workqueue (this can happen
+> both on queue_reconnect and upon send if the workqueue is not up)
+> 2. It can enter the RDS_CONN_CONNECTING state due to an incoming
+> connection request
+>
+> In case RDS connections enter RDS_CONN_CONNECTION state due to an incoming
+> connection request, the connection workqueue might already be scheduled. In
+> this case the connection workqueue needs to be cancelled.
+>
+> Signed-off-by: Dag Moxnes <dag.moxnes@oracle.com>
+> ---
+>   net/rds/ib_cm.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+>
+> diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
+> index 6b345c858d..1fdd76f70d 100644
+> --- a/net/rds/ib_cm.c
+> +++ b/net/rds/ib_cm.c
+> @@ -880,6 +880,12 @@ int rds_ib_cm_handle_connect(struct rdma_cm_id *cm_id,
+>   			rds_ib_stats_inc(s_ib_connect_raced);
+>   		}
+>   		goto out;
+> +	} else {
+> +		/* Cancel any pending reconnect */
+> +		struct rds_conn_path *cp = &conn->c_path[0];
+> +
+> +		cancel_delayed_work_sync(&cp->cp_conn_w);
+> +		rds_clear_reconnect_pending_work_bit(cp);
+>   	}
+>   
+>   	ic = conn->c_transport_data;
+
