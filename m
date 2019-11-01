@@ -2,101 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5910EC8F6
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Nov 2019 20:20:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EAAEC8FB
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 Nov 2019 20:21:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727551AbfKATUC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 1 Nov 2019 15:20:02 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:33744 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727473AbfKATUB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 1 Nov 2019 15:20:01 -0400
-Received: by mail-qk1-f194.google.com with SMTP id 71so11758468qkl.0
-        for <linux-rdma@vger.kernel.org>; Fri, 01 Nov 2019 12:20:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=GwL3BzOKq0ds1hKB7ElDSudCiv4GvOB/hy58iKY5/B8=;
-        b=kA4XkYghuc1JhsLIKqtgHvYOYkbQmmO6SYAQeEOYSvqnxdZ9jZjDhUnlYr3SdULzs/
-         VoX2uPnnM2cxYanlj78zNtQ8A185ZcJgnYIuK+wcaBJKUjnadFHxwWHFnNobP8aT09Cn
-         HnhVwCqE58/HmHF5+ja6RFYUyhDE8o8qki7WdccEAWeGPWKB8fIH17+S7MdnxhZ3jZwr
-         y9zYt4pe9WYFRB7vGaJ1TV38vnomkwp60DMN7hZ5n6Ba4axjFUG3uuRMMSdF/nELroE0
-         XD1ENSPS4tRu1keLPM7zbG3a+3hiST+P1cHzfwyt+Rx8K72rUFTYxupuLkm6utoV1HB1
-         nhHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GwL3BzOKq0ds1hKB7ElDSudCiv4GvOB/hy58iKY5/B8=;
-        b=muSVJgIVB3L+V3CQuMEVjIHSpcTRmaclq4Fg1SDE4KatD3pdj5ooCR9U2GZvFWASsU
-         YmLchOYzDtmUngCV6zsQDZvi+1IOk6VZDGIBvxuvTvyyMYYJaVilv7aiIhxbsuQisIYx
-         cYFOxFJ4Kcwqmo+5QdE/unsP0ZZ1w+iPKIB2/QA6IaR36D9LUy/RxiQMhmi2gzF43e4r
-         dV6U2kwfVjT+6ojTcpSPm/BIrMwOJSY9qYzDM6q37eMUc1nnDoII7c3kvuAqnAps/0Lo
-         p7NnqI3q1S1ZhV6c+FQDa/0PgoNh8m+UD77CTsK11R6gcelmXXtyWGehNQ6Z/svzrFFe
-         0pQQ==
-X-Gm-Message-State: APjAAAVzmD6/PZc/FPh0j6YgUEzYvQgNxO2Ypqi8cwYI1Xwfw2PMgE3d
-        B5vqpQOsIfga0Rh6ScYn5jzliA==
-X-Google-Smtp-Source: APXvYqzEDkQfD72DvPVzNHUDGv0HzF9IhjVJJOU3fqLQvuuBBx1c6gvz8fC1Pmu9FXNbHzO5K/kLfA==
-X-Received: by 2002:a37:a5d3:: with SMTP id o202mr11070822qke.283.1572636000661;
-        Fri, 01 Nov 2019 12:20:00 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id n20sm4777802qkn.118.2019.11.01.12.19.59
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 01 Nov 2019 12:19:59 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iQcSl-0001WJ-Af; Fri, 01 Nov 2019 16:19:59 -0300
-Date:   Fri, 1 Nov 2019 16:19:59 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Yang, Philip" <Philip.Yang@amd.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>
-Subject: Re: [PATCH v2 14/15] drm/amdgpu: Use mmu_range_notifier instead of
- hmm_mirror
-Message-ID: <20191101191959.GC30938@ziepe.ca>
-References: <20191028201032.6352-1-jgg@ziepe.ca>
- <20191028201032.6352-15-jgg@ziepe.ca>
- <a456ebd0-28cf-997b-31ff-72d9077a9b8e@amd.com>
- <20191029192544.GU22766@mellanox.com>
- <30b2f569-bf7a-5166-c98d-4a4a13d1351f@amd.com>
- <20191101151222.GN22766@mellanox.com>
- <8280fb65-a897-3d71-79f9-9f80d9e474e9@amd.com>
- <20191101174221.GO22766@mellanox.com>
+        id S1727778AbfKATVE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 1 Nov 2019 15:21:04 -0400
+Received: from mga11.intel.com ([192.55.52.93]:51728 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727774AbfKATVE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 1 Nov 2019 15:21:04 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 01 Nov 2019 12:21:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,256,1569308400"; 
+   d="scan'208";a="402321986"
+Received: from sedona.ch.intel.com ([10.2.136.157])
+  by fmsmga006.fm.intel.com with ESMTP; 01 Nov 2019 12:21:03 -0700
+Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id xA1JL1dY032648;
+        Fri, 1 Nov 2019 12:21:02 -0700
+Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id xA1JKx7Q106271;
+        Fri, 1 Nov 2019 15:20:59 -0400
+Subject: [PATCH v2 for-rc 1/4] IB/hfi1: Ensure full Gen3 speed in a Gen4
+ system
+To:     jgg@ziepe.ca, dledford@redhat.com
+From:   Mike Marciniszyn <mike.marciniszyn@intel.com>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Fri, 01 Nov 2019 15:20:59 -0400
+Message-ID: <20191101192059.106248.1699.stgit@awfm-01.aw.intel.com>
+User-Agent: StGit/0.16
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191101174221.GO22766@mellanox.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 01, 2019 at 02:42:21PM -0300, Jason Gunthorpe wrote:
-> On Fri, Nov 01, 2019 at 03:59:26PM +0000, Yang, Philip wrote:
-> > > This test for range_blockable should be before mutex_lock, I can move
-> > > it up
-> > > 
-> > yes, thanks.
-> 
-> Okay, I wrote it like this:
-> 
-> 	if (mmu_notifier_range_blockable(range))
-> 		mutex_lock(&adev->notifier_lock);
-> 	else if (!mutex_trylock(&adev->notifier_lock))
-> 		return false;
+From: James Erwin <james.erwin@intel.com>
 
-Never mind, this routine sleeps for other reasons it should just be as
-it was:
+If an hfi1 card is inserted in a Gen4 systems, the driver will avoid
+the gen3 speed bump and the card will operate at half speed.
 
-	if (!mmu_notifier_range_blockable(range))
-		return false;
+This is because the driver avoids the gen3 speed bump when the parent
+bus speed isn't identical to gen3, 8.0GT/s.  This is not
+compatible with gen4 and newer speeds.
 
-	mutex_lock(&adev->notifier_lock);
+Fix by relaxing the test to explicitly look for the lower
+capability speeds which inherently allows for gen4 and all future
+speeds.
 
-Jason
+Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Reviewed-by: Kaike Wan <kaike.wan@intel.com>
+Signed-off-by: James Erwin <james.erwin@intel.com>
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+---
+ drivers/infiniband/hw/hfi1/pcie.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
+index 61aa550..61362bd 100644
+--- a/drivers/infiniband/hw/hfi1/pcie.c
++++ b/drivers/infiniband/hw/hfi1/pcie.c
+@@ -319,7 +319,9 @@ int pcie_speeds(struct hfi1_devdata *dd)
+ 	/*
+ 	 * bus->max_bus_speed is set from the bridge's linkcap Max Link Speed
+ 	 */
+-	if (parent && dd->pcidev->bus->max_bus_speed != PCIE_SPEED_8_0GT) {
++	if (parent &&
++	    (dd->pcidev->bus->max_bus_speed == PCIE_SPEED_2_5GT ||
++	     dd->pcidev->bus->max_bus_speed == PCIE_SPEED_5_0GT)) {
+ 		dd_dev_info(dd, "Parent PCIe bridge does not support Gen3\n");
+ 		dd->link_gen3_capable = 0;
+ 	}
+
