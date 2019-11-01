@@ -2,686 +2,219 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F155EC896
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Nov 2019 19:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92EC5EC8AB
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 Nov 2019 19:53:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbfKASjm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 1 Nov 2019 14:39:42 -0400
-Received: from mail-eopbgr30058.outbound.protection.outlook.com ([40.107.3.58]:60995
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726671AbfKASjm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 1 Nov 2019 14:39:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ID1czwKAJLJjyQE30wEVEYNJTUEtpI7Qkl24FrPbmXzaju2x222SlxL+11q/UDBdUsYq/Z2/UvM7LVb9kuBkmxRiPd+cG27JIs/5anPSLrc7aT3QaOrgcKpwM8i5z2Mu+VXBiwW83tEQNE5hJXvc+XrdZie0X3djGlK9VtdfANz/f9HA6j0tymIPobevmbRt5At9dvqKzmAlICQVL+C5KxnYAZUX1XsZDwxeeap+ii3cUXxe6a6LXB6Y9Z2CLEUZrgZfETf0RDCkTFrDGtTCi21B8u9CnCEWoplFgFw+ldPZqhwRHcWF5oC5uiLKC4BAedJEJltsMdcJCdpwIM9Ntw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oXuOHTtipoYkfU5LykKoTmwF4/VlgjtrC3fuHXm5AjI=;
- b=Ua7vkWayi5JBuLpIWZDwMR6AU8/DU7mhA0xCZewXDuUeeom3QLuwm1csS/Ijbju+vpjF5akTq0bN0oEELJ/Kenn1bIACSln3frAm66Gi8wdxfLhRqTQ+N8LJ2dpvGazDJQ9x9GjhAtvjf0jWi9ZpO9RhsiChXpx2x0XeytZp+nweQxxTcQXG22ZsGL5xqq1RfQ6lSkx9Yu/VeSvwR2JR/7hDMR5ENG++Gq98I60v1tkMK9wUXyvj65jfuM/79MVATfvMzpRzm1WpRXaXg6xWxf5XH6Ldn86uJDqZtAtFu3WnXOsCN8l+OGWxqAgNf56bqEnegkHrJwtC6tD56Ps3+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oXuOHTtipoYkfU5LykKoTmwF4/VlgjtrC3fuHXm5AjI=;
- b=SVt+wZWfddkHw40mdehiJvucDKT2KvzDlrQP55Ml/4rWjve2GuEe2xqxPo73B2fRqrFrHqK5bx8O/xIaihWeqPjCshAWTaYAbnXeNPUgKNFCym3gLpiowXTwCoZckm0xfZGrKXjiAUW/JE5DWbv0znRymHJP/wjis3b6AfDHIX8=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB4416.eurprd05.prod.outlook.com (52.134.123.146) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2387.22; Fri, 1 Nov 2019 18:34:40 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::b179:e8bf:22d4:bf8d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::b179:e8bf:22d4:bf8d%5]) with mapi id 15.20.2387.028; Fri, 1 Nov 2019
- 18:34:40 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     "Yang, Philip" <Philip.Yang@amd.com>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        id S1727468AbfKASxV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 1 Nov 2019 14:53:21 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:41298 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727381AbfKASxV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 1 Nov 2019 14:53:21 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA1InEpr152995;
+        Fri, 1 Nov 2019 18:52:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=WbdIr6uQ+VKrss9bMwmXr7ubweaCRh3wB5tK3WfLLi4=;
+ b=k9JHO9yeOJzG+d7ALungYLcLK4/5wv4Ib72cdP0vWXPA7n7pKCM04hi97sMD18E/pTJa
+ LwNY1BTYNbI42csECE+SGfYQ+dNmLTbv9xxPA7VpdvuOYUOGrjBmJ0DAuI8Wm6YEiO9F
+ eoz4NwU/13pmHrzOpjMUKUHGeG1gTL5UPqkIYGbX/Hyg/TgLpABx48ffttnl2RNkqfj6
+ GOn+R3QodocGZZZ0XZD+zr0i7klfcoFiZhCBR7vKetMJ0RJY9qBkuun/lxalRdM49qt8
+ veUjsB2ANBFyLFdIXngijO7iiuJ2H8w/deN4BIbGIXi41sjSWQS6Hg1jZRwQe2MBkwBC AQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 2vxwhg3fxf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 01 Nov 2019 18:52:39 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA1Iminu114420;
+        Fri, 1 Nov 2019 18:52:39 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 2w0qdwtd52-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 01 Nov 2019 18:52:39 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xA1Iqanl023242;
+        Fri, 1 Nov 2019 18:52:37 GMT
+Received: from bostrovs-us.us.oracle.com (/10.152.32.65)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 01 Nov 2019 11:52:36 -0700
+Subject: Re: [PATCH v2 09/15] xen/gntdev: use mmu_range_notifier_insert
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
         Jerome Glisse <jglisse@redhat.com>,
         Ralph Campbell <rcampbell@nvidia.com>,
         John Hubbard <jhubbard@nvidia.com>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        "Zhou, David(ChunMing)" <David1.Zhou@amd.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Christoph Hellwig <hch@infradead.org>,
         "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Zhou <David1.Zhou@amd.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
         Petr Cvek <petrcvekcz@gmail.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>
-Subject: [PATCH v2a 14/15] drm/amdgpu: Use mmu_range_notifier instead of
- hmm_mirror
-Thread-Topic: [PATCH v2a 14/15] drm/amdgpu: Use mmu_range_notifier instead of
- hmm_mirror
-Thread-Index: AQHVkOMFaRcJHQRrK0S6ryutY4Fnpg==
-Date:   Fri, 1 Nov 2019 18:34:40 +0000
-Message-ID: <20191101183435.GR22766@mellanox.com>
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Christoph Hellwig <hch@infradead.org>
 References: <20191028201032.6352-1-jgg@ziepe.ca>
- <20191028201032.6352-15-jgg@ziepe.ca>
- <a456ebd0-28cf-997b-31ff-72d9077a9b8e@amd.com>
- <20191029192544.GU22766@mellanox.com>
- <30b2f569-bf7a-5166-c98d-4a4a13d1351f@amd.com>
-In-Reply-To: <30b2f569-bf7a-5166-c98d-4a4a13d1351f@amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BN4PR12CA0013.namprd12.prod.outlook.com
- (2603:10b6:403:2::23) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [142.162.113.180]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 7fd1dc84-23d9-4c30-3490-08d75efa27d3
-x-ms-traffictypediagnostic: VI1PR05MB4416:
-x-microsoft-antispam-prvs: <VI1PR05MB441655C7601F1FC6E1ADB682CF620@VI1PR05MB4416.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-forefront-prvs: 020877E0CB
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(136003)(396003)(376002)(39860400002)(346002)(199004)(189003)(36756003)(81156014)(86362001)(102836004)(54906003)(476003)(11346002)(446003)(14454004)(6916009)(6512007)(486006)(2616005)(99286004)(14444005)(6436002)(66066001)(256004)(6486002)(6116002)(2906002)(8676002)(25786009)(71200400001)(3846002)(4326008)(478600001)(71190400001)(33656002)(30864003)(5660300002)(66946007)(81166006)(8936002)(7736002)(52116002)(66556008)(66476007)(386003)(6506007)(1076003)(316002)(66446008)(186003)(305945005)(26005)(7416002)(76176011)(64756008);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4416;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fWNQ+BZa7hfC/4uLDbkIzf190FXkgTVGRQKdPvrvbvJpoBtJPgrsM7NGgZQ1QolaRtrYNrap2uwCvyZBwc+s1RJrMJs0W4wt38pjuaPPJHfnwuNoqyOnrYlMsQwNybX+mi4Q5WE4Pg0wiaVGQDLKd/jzIznyDxANtLOIJkay4xVDUZuqQJg0ZJ5lwxg9w7eTS8jfnmflWgEN1kT2Vh17iuWWQZ3VwGzrMwd3SehhT5moiR+3hN8s058c3TYlgBggqYdEGdDYMmVxzwWbZ1hRnOtvnkbCjHalAFCEwBe2F4KYWoOr44uRyLV32bUbwHLWYknPvscKcWD2/FgOmTHQPiVPsk9o16OhK4JhXmP+uYkdvjkbZgWiPYIElS4dXYek7ygn7Xc0XKeD/JE/rH5lLTVBDLeo3+S2wC+qVP+/j2+4kf1uzHXjbfJLmDORfGdY
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B78E009015572D46BF74BF5D5DC8C6FA@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ <20191028201032.6352-10-jgg@ziepe.ca>
+ <0355257f-6a3a-cdcd-d206-aec3df97dded@oracle.com>
+ <20191101174824.GP22766@mellanox.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=boris.ostrovsky@oracle.com; prefer-encrypt=mutual; keydata=
+ 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
+ Jg6OxFYd01z+a+oL
+Message-ID: <14f96c2e-ee04-5b1a-fc32-2db1487df399@oracle.com>
+Date:   Fri, 1 Nov 2019 14:51:46 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7fd1dc84-23d9-4c30-3490-08d75efa27d3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Nov 2019 18:34:40.7437
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6w7Cky8H25cOW4Dxqgj7Dr4BIQtw+qoZ/7TjiXWzab8P8ekkpF8unK6sBjda6ZrGlvHzuK1g8e6b2fcbAMO5Iw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4416
+In-Reply-To: <20191101174824.GP22766@mellanox.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9428 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1911010171
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9428 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1911010171
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Convert the collision-retry lock around hmm_range_fault to use the one now
-provided by the mmu_range notifier.
+On 11/1/19 1:48 PM, Jason Gunthorpe wrote:
+> On Wed, Oct 30, 2019 at 12:55:37PM -0400, Boris Ostrovsky wrote:
+>> On 10/28/19 4:10 PM, Jason Gunthorpe wrote:
+>>> From: Jason Gunthorpe <jgg@mellanox.com>
+>>>
+>>> gntdev simply wants to monitor a specific VMA for any notifier events,
+>>> this can be done straightforwardly using mmu_range_notifier_insert() over
+>>> the VMA's VA range.
+>>>
+>>> The notifier should be attached until the original VMA is destroyed.
+>>>
+>>> It is unclear if any of this is even sane, but at least a lot of duplicate
+>>> code is removed.
+>> I didn't have a chance to look at the patch itself yet but as a heads-up
+>> --- it crashes dom0.
+> Thanks Boris. I spent a bit of time and got a VM running with a xen
+> 4.9 hypervisor and a kernel with this patch series. It a ubuntu bionic
+> VM with the distro's xen stuff.
+>
+> Can you give some guidance how you made it crash? 
 
-Although this driver does not seem to use the collision retry lock that
-hmm provides correctly, it can still be converted over to use the
-mmu_range_notifier api instead of hmm_mirror without too much trouble.
+It crashes trying to dereference mrn->ops->invalidate in
+mn_itree_invalidate() when a guest exits.
 
-This also deletes another place where a driver is associating additional
-data (struct amdgpu_mn) with a mmu_struct.
+I don't think you've initialized notifier ops. I don't see you using
+gntdev_mmu_ops anywhere.
 
-Signed-off-by: Philip Yang <Philip.Yang@amd.com>
-Reviewed-by: Philip Yang <Philip.Yang@amd.com>
-Tested-by: Philip Yang <Philip.Yang@amd.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
----
- .../gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c  |   4 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c        |  14 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_mn.c        | 150 ++----------------
- drivers/gpu/drm/amd/amdgpu/amdgpu_mn.h        |  49 ------
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c       | 116 +++++++++-----
- 5 files changed, 96 insertions(+), 237 deletions(-)
+-boris
 
-Philip, here is what it loos like after combining the two patches, thanks
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c b/drivers/gpu=
-/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-index 47700302a08b7f..1bcedb9b477dce 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-@@ -1738,6 +1738,10 @@ static int update_invalid_user_pages(struct amdkfd_p=
-rocess_info *process_info,
- 			return ret;
- 		}
-=20
-+		/*
-+		 * FIXME: Cannot ignore the return code, must hold
-+		 * notifier_lock
-+		 */
- 		amdgpu_ttm_tt_get_user_pages_done(bo->tbo.ttm);
-=20
- 		/* Mark the BO as valid unless it was invalidated
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd/a=
-mdgpu/amdgpu_cs.c
-index 82823d9a8ba887..22c989bca7514c 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-@@ -603,8 +603,6 @@ static int amdgpu_cs_parser_bos(struct amdgpu_cs_parser=
- *p,
- 		e->tv.num_shared =3D 2;
-=20
- 	amdgpu_bo_list_get_list(p->bo_list, &p->validated);
--	if (p->bo_list->first_userptr !=3D p->bo_list->num_entries)
--		p->mn =3D amdgpu_mn_get(p->adev, AMDGPU_MN_TYPE_GFX);
-=20
- 	INIT_LIST_HEAD(&duplicates);
- 	amdgpu_vm_get_pd_bo(&fpriv->vm, &p->validated, &p->vm_pd);
-@@ -1287,11 +1285,11 @@ static int amdgpu_cs_submit(struct amdgpu_cs_parser=
- *p,
- 	if (r)
- 		goto error_unlock;
-=20
--	/* No memory allocation is allowed while holding the mn lock.
--	 * p->mn is hold until amdgpu_cs_submit is finished and fence is added
--	 * to BOs.
-+	/* No memory allocation is allowed while holding the notifier lock.
-+	 * The lock is held until amdgpu_cs_submit is finished and fence is
-+	 * added to BOs.
- 	 */
--	amdgpu_mn_lock(p->mn);
-+	mutex_lock(&p->adev->notifier_lock);
-=20
- 	/* If userptr are invalidated after amdgpu_cs_parser_bos(), return
- 	 * -EAGAIN, drmIoctl in libdrm will restart the amdgpu_cs_ioctl.
-@@ -1334,13 +1332,13 @@ static int amdgpu_cs_submit(struct amdgpu_cs_parser=
- *p,
- 	amdgpu_vm_move_to_lru_tail(p->adev, &fpriv->vm);
-=20
- 	ttm_eu_fence_buffer_objects(&p->ticket, &p->validated, p->fence);
--	amdgpu_mn_unlock(p->mn);
-+	mutex_unlock(&p->adev->notifier_lock);
-=20
- 	return 0;
-=20
- error_abort:
- 	drm_sched_job_cleanup(&job->base);
--	amdgpu_mn_unlock(p->mn);
-+	mutex_unlock(&p->adev->notifier_lock);
-=20
- error_unlock:
- 	amdgpu_job_free(job);
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_mn.c b/drivers/gpu/drm/amd/a=
-mdgpu/amdgpu_mn.c
-index ac74320b71e4e7..f7be34907e54f5 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_mn.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_mn.c
-@@ -50,28 +50,6 @@
- #include "amdgpu.h"
- #include "amdgpu_amdkfd.h"
-=20
--/**
-- * amdgpu_mn_lock - take the write side lock for this notifier
-- *
-- * @mn: our notifier
-- */
--void amdgpu_mn_lock(struct amdgpu_mn *mn)
--{
--	if (mn)
--		down_write(&mn->lock);
--}
--
--/**
-- * amdgpu_mn_unlock - drop the write side lock for this notifier
-- *
-- * @mn: our notifier
-- */
--void amdgpu_mn_unlock(struct amdgpu_mn *mn)
--{
--	if (mn)
--		up_write(&mn->lock);
--}
--
- /**
-  * amdgpu_mn_invalidate_gfx - callback to notify about mm change
-  *
-@@ -82,16 +60,20 @@ void amdgpu_mn_unlock(struct amdgpu_mn *mn)
-  * potentially dirty.
-  */
- static bool amdgpu_mn_invalidate_gfx(struct mmu_range_notifier *mrn,
--				     const struct mmu_notifier_range *range)
-+				     const struct mmu_notifier_range *range,
-+				     unsigned long cur_seq)
- {
- 	struct amdgpu_bo *bo =3D container_of(mrn, struct amdgpu_bo, notifier);
- 	struct amdgpu_device *adev =3D amdgpu_ttm_adev(bo->tbo.bdev);
- 	long r;
-=20
--	if (!mmu_notifier_range_blockable(range))
-+	if (mmu_notifier_range_blockable(range))
-+		mutex_lock(&adev->notifier_lock);
-+	else if (!mutex_trylock(&adev->notifier_lock))
- 		return false;
-=20
--	mutex_lock(&adev->notifier_lock);
-+	mmu_range_set_seq(mrn, cur_seq);
-+
- 	r =3D dma_resv_wait_timeout_rcu(bo->tbo.base.resv, true, false,
- 				      MAX_SCHEDULE_TIMEOUT);
- 	mutex_unlock(&adev->notifier_lock);
-@@ -114,15 +96,19 @@ static const struct mmu_range_notifier_ops amdgpu_mn_g=
-fx_ops =3D {
-  * evicting all user-mode queues of the process.
-  */
- static bool amdgpu_mn_invalidate_hsa(struct mmu_range_notifier *mrn,
--				     const struct mmu_notifier_range *range)
-+				     const struct mmu_notifier_range *range,
-+				     unsigned long cur_seq)
- {
- 	struct amdgpu_bo *bo =3D container_of(mrn, struct amdgpu_bo, notifier);
- 	struct amdgpu_device *adev =3D amdgpu_ttm_adev(bo->tbo.bdev);
-=20
--	if (!mmu_notifier_range_blockable(range))
-+	if (mmu_notifier_range_blockable(range))
-+		mutex_lock(&adev->notifier_lock);
-+	else if (!mutex_trylock(&adev->notifier_lock))
- 		return false;
-=20
--	mutex_lock(&adev->notifier_lock);
-+	mmu_range_set_seq(mrn, cur_seq);
-+
- 	amdgpu_amdkfd_evict_userptr(bo->kfd_bo, bo->notifier.mm);
- 	mutex_unlock(&adev->notifier_lock);
-=20
-@@ -133,92 +119,6 @@ static const struct mmu_range_notifier_ops amdgpu_mn_h=
-sa_ops =3D {
- 	.invalidate =3D amdgpu_mn_invalidate_hsa,
- };
-=20
--static int amdgpu_mn_sync_pagetables(struct hmm_mirror *mirror,
--				     const struct mmu_notifier_range *update)
--{
--	struct amdgpu_mn *amn =3D container_of(mirror, struct amdgpu_mn, mirror);
--
--	if (!mmu_notifier_range_blockable(update))
--		return -EAGAIN;
--
--	down_read(&amn->lock);
--	up_read(&amn->lock);
--	return 0;
--}
--
--/* Low bits of any reasonable mm pointer will be unused due to struct
-- * alignment. Use these bits to make a unique key from the mm pointer
-- * and notifier type.
-- */
--#define AMDGPU_MN_KEY(mm, type) ((unsigned long)(mm) + (type))
--
--static struct hmm_mirror_ops amdgpu_hmm_mirror_ops[] =3D {
--	[AMDGPU_MN_TYPE_GFX] =3D {
--		.sync_cpu_device_pagetables =3D amdgpu_mn_sync_pagetables,
--	},
--	[AMDGPU_MN_TYPE_HSA] =3D {
--		.sync_cpu_device_pagetables =3D amdgpu_mn_sync_pagetables,
--	},
--};
--
--/**
-- * amdgpu_mn_get - create HMM mirror context
-- *
-- * @adev: amdgpu device pointer
-- * @type: type of MMU notifier context
-- *
-- * Creates a HMM mirror context for current->mm.
-- */
--struct amdgpu_mn *amdgpu_mn_get(struct amdgpu_device *adev,
--				enum amdgpu_mn_type type)
--{
--	struct mm_struct *mm =3D current->mm;
--	struct amdgpu_mn *amn;
--	unsigned long key =3D AMDGPU_MN_KEY(mm, type);
--	int r;
--
--	mutex_lock(&adev->mn_lock);
--	if (down_write_killable(&mm->mmap_sem)) {
--		mutex_unlock(&adev->mn_lock);
--		return ERR_PTR(-EINTR);
--	}
--
--	hash_for_each_possible(adev->mn_hash, amn, node, key)
--		if (AMDGPU_MN_KEY(amn->mirror.hmm->mmu_notifier.mm,
--				  amn->type) =3D=3D key)
--			goto release_locks;
--
--	amn =3D kzalloc(sizeof(*amn), GFP_KERNEL);
--	if (!amn) {
--		amn =3D ERR_PTR(-ENOMEM);
--		goto release_locks;
--	}
--
--	amn->adev =3D adev;
--	init_rwsem(&amn->lock);
--	amn->type =3D type;
--
--	amn->mirror.ops =3D &amdgpu_hmm_mirror_ops[type];
--	r =3D hmm_mirror_register(&amn->mirror, mm);
--	if (r)
--		goto free_amn;
--
--	hash_add(adev->mn_hash, &amn->node, AMDGPU_MN_KEY(mm, type));
--
--release_locks:
--	up_write(&mm->mmap_sem);
--	mutex_unlock(&adev->mn_lock);
--
--	return amn;
--
--free_amn:
--	up_write(&mm->mmap_sem);
--	mutex_unlock(&adev->mn_lock);
--	kfree(amn);
--
--	return ERR_PTR(r);
--}
--
- /**
-  * amdgpu_mn_register - register a BO for notifier updates
-  *
-@@ -253,25 +153,3 @@ void amdgpu_mn_unregister(struct amdgpu_bo *bo)
- 	mmu_range_notifier_remove(&bo->notifier);
- 	bo->notifier.mm =3D NULL;
- }
--
--/* flags used by HMM internal, not related to CPU/GPU PTE flags */
--static const uint64_t hmm_range_flags[HMM_PFN_FLAG_MAX] =3D {
--		(1 << 0), /* HMM_PFN_VALID */
--		(1 << 1), /* HMM_PFN_WRITE */
--		0 /* HMM_PFN_DEVICE_PRIVATE */
--};
--
--static const uint64_t hmm_range_values[HMM_PFN_VALUE_MAX] =3D {
--		0xfffffffffffffffeUL, /* HMM_PFN_ERROR */
--		0, /* HMM_PFN_NONE */
--		0xfffffffffffffffcUL /* HMM_PFN_SPECIAL */
--};
--
--void amdgpu_hmm_init_range(struct hmm_range *range)
--{
--	if (range) {
--		range->flags =3D hmm_range_flags;
--		range->values =3D hmm_range_values;
--		range->pfn_shift =3D PAGE_SHIFT;
--	}
--}
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_mn.h b/drivers/gpu/drm/amd/a=
-mdgpu/amdgpu_mn.h
-index d73ab2947b22b2..a292238f75ebae 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_mn.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_mn.h
-@@ -30,59 +30,10 @@
- #include <linux/workqueue.h>
- #include <linux/interval_tree.h>
-=20
--enum amdgpu_mn_type {
--	AMDGPU_MN_TYPE_GFX,
--	AMDGPU_MN_TYPE_HSA,
--};
--
--/**
-- * struct amdgpu_mn
-- *
-- * @adev: amdgpu device pointer
-- * @type: type of MMU notifier
-- * @work: destruction work item
-- * @node: hash table node to find structure by adev and mn
-- * @lock: rw semaphore protecting the notifier nodes
-- * @mirror: HMM mirror function support
-- *
-- * Data for each amdgpu device and process address space.
-- */
--struct amdgpu_mn {
--	/* constant after initialisation */
--	struct amdgpu_device	*adev;
--	enum amdgpu_mn_type	type;
--
--	/* only used on destruction */
--	struct work_struct	work;
--
--	/* protected by adev->mn_lock */
--	struct hlist_node	node;
--
--	/* objects protected by lock */
--	struct rw_semaphore	lock;
--
--#ifdef CONFIG_HMM_MIRROR
--	/* HMM mirror */
--	struct hmm_mirror	mirror;
--#endif
--};
--
- #if defined(CONFIG_HMM_MIRROR)
--void amdgpu_mn_lock(struct amdgpu_mn *mn);
--void amdgpu_mn_unlock(struct amdgpu_mn *mn);
--struct amdgpu_mn *amdgpu_mn_get(struct amdgpu_device *adev,
--				enum amdgpu_mn_type type);
- int amdgpu_mn_register(struct amdgpu_bo *bo, unsigned long addr);
- void amdgpu_mn_unregister(struct amdgpu_bo *bo);
--void amdgpu_hmm_init_range(struct hmm_range *range);
- #else
--static inline void amdgpu_mn_lock(struct amdgpu_mn *mn) {}
--static inline void amdgpu_mn_unlock(struct amdgpu_mn *mn) {}
--static inline struct amdgpu_mn *amdgpu_mn_get(struct amdgpu_device *adev,
--					      enum amdgpu_mn_type type)
--{
--	return NULL;
--}
- static inline int amdgpu_mn_register(struct amdgpu_bo *bo, unsigned long a=
-ddr)
- {
- 	DRM_WARN_ONCE("HMM_MIRROR kernel config option is not enabled, "
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/=
-amdgpu/amdgpu_ttm.c
-index c0e41f1f0c2365..5f4d8ab76f1da0 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-@@ -773,6 +773,20 @@ struct amdgpu_ttm_tt {
- #endif
- };
-=20
-+#ifdef CONFIG_DRM_AMDGPU_USERPTR
-+/* flags used by HMM internal, not related to CPU/GPU PTE flags */
-+static const uint64_t hmm_range_flags[HMM_PFN_FLAG_MAX] =3D {
-+	(1 << 0), /* HMM_PFN_VALID */
-+	(1 << 1), /* HMM_PFN_WRITE */
-+	0 /* HMM_PFN_DEVICE_PRIVATE */
-+};
-+
-+static const uint64_t hmm_range_values[HMM_PFN_VALUE_MAX] =3D {
-+	0xfffffffffffffffeUL, /* HMM_PFN_ERROR */
-+	0, /* HMM_PFN_NONE */
-+	0xfffffffffffffffcUL /* HMM_PFN_SPECIAL */
-+};
-+
- /**
-  * amdgpu_ttm_tt_get_user_pages - get device accessible pages that back us=
-er
-  * memory and start HMM tracking CPU page table update
-@@ -780,29 +794,28 @@ struct amdgpu_ttm_tt {
-  * Calling function must call amdgpu_ttm_tt_userptr_range_done() once and =
-only
-  * once afterwards to stop HMM tracking
-  */
--#if IS_ENABLED(CONFIG_DRM_AMDGPU_USERPTR)
--
--#define MAX_RETRY_HMM_RANGE_FAULT	16
--
- int amdgpu_ttm_tt_get_user_pages(struct amdgpu_bo *bo, struct page **pages=
-)
- {
--	struct hmm_mirror *mirror =3D bo->mn ? &bo->mn->mirror : NULL;
- 	struct ttm_tt *ttm =3D bo->tbo.ttm;
- 	struct amdgpu_ttm_tt *gtt =3D (void *)ttm;
--	struct mm_struct *mm;
- 	unsigned long start =3D gtt->userptr;
- 	struct vm_area_struct *vma;
- 	struct hmm_range *range;
-+	unsigned long timeout;
-+	struct mm_struct *mm;
- 	unsigned long i;
--	uint64_t *pfns;
- 	int r =3D 0;
-=20
--	if (unlikely(!mirror)) {
--		DRM_DEBUG_DRIVER("Failed to get hmm_mirror\n");
-+	mm =3D bo->notifier.mm;
-+	if (unlikely(!mm)) {
-+		DRM_DEBUG_DRIVER("BO is not registered?\n");
- 		return -EFAULT;
- 	}
-=20
--	mm =3D mirror->hmm->mmu_notifier.mm;
-+	/* Another get_user_pages is running at the same time?? */
-+	if (WARN_ON(gtt->range))
-+		return -EFAULT;
-+
- 	if (!mmget_not_zero(mm)) /* Happens during process shutdown */
- 		return -ESRCH;
-=20
-@@ -811,31 +824,23 @@ int amdgpu_ttm_tt_get_user_pages(struct amdgpu_bo *bo=
-, struct page **pages)
- 		r =3D -ENOMEM;
- 		goto out;
- 	}
-+	range->notifier =3D &bo->notifier;
-+	range->flags =3D hmm_range_flags;
-+	range->values =3D hmm_range_values;
-+	range->pfn_shift =3D PAGE_SHIFT;
-+	range->start =3D bo->notifier.interval_tree.start;
-+	range->end =3D bo->notifier.interval_tree.last + 1;
-+	range->default_flags =3D hmm_range_flags[HMM_PFN_VALID];
-+	if (!amdgpu_ttm_tt_is_readonly(ttm))
-+		range->default_flags |=3D range->flags[HMM_PFN_WRITE];
-=20
--	pfns =3D kvmalloc_array(ttm->num_pages, sizeof(*pfns), GFP_KERNEL);
--	if (unlikely(!pfns)) {
-+	range->pfns =3D kvmalloc_array(ttm->num_pages, sizeof(*range->pfns),
-+				     GFP_KERNEL);
-+	if (unlikely(!range->pfns)) {
- 		r =3D -ENOMEM;
- 		goto out_free_ranges;
- 	}
-=20
--	amdgpu_hmm_init_range(range);
--	range->default_flags =3D range->flags[HMM_PFN_VALID];
--	range->default_flags |=3D amdgpu_ttm_tt_is_readonly(ttm) ?
--				0 : range->flags[HMM_PFN_WRITE];
--	range->pfn_flags_mask =3D 0;
--	range->pfns =3D pfns;
--	range->start =3D start;
--	range->end =3D start + ttm->num_pages * PAGE_SIZE;
--
--	hmm_range_register(range, mirror);
--
--	/*
--	 * Just wait for range to be valid, safe to ignore return value as we
--	 * will use the return value of hmm_range_fault() below under the
--	 * mmap_sem to ascertain the validity of the range.
--	 */
--	hmm_range_wait_until_valid(range, HMM_RANGE_DEFAULT_TIMEOUT);
--
- 	down_read(&mm->mmap_sem);
- 	vma =3D find_vma(mm, start);
- 	if (unlikely(!vma || start < vma->vm_start)) {
-@@ -847,18 +852,31 @@ int amdgpu_ttm_tt_get_user_pages(struct amdgpu_bo *bo=
-, struct page **pages)
- 		r =3D -EPERM;
- 		goto out_unlock;
- 	}
-+	up_read(&mm->mmap_sem);
-+	timeout =3D jiffies + msecs_to_jiffies(HMM_RANGE_DEFAULT_TIMEOUT);
-=20
-+retry:
-+	range->notifier_seq =3D mmu_range_read_begin(&bo->notifier);
-+
-+	down_read(&mm->mmap_sem);
- 	r =3D hmm_range_fault(range, 0);
- 	up_read(&mm->mmap_sem);
--
--	if (unlikely(r < 0))
-+	if (unlikely(r <=3D 0)) {
-+		/*
-+		 * FIXME: This timeout should encompass the retry from
-+		 * mmu_range_read_retry() as well.
-+		 */
-+		if ((r =3D=3D 0 || r =3D=3D -EBUSY) && !time_after(jiffies, timeout))
-+			goto retry;
- 		goto out_free_pfns;
-+	}
-=20
- 	for (i =3D 0; i < ttm->num_pages; i++) {
--		pages[i] =3D hmm_device_entry_to_page(range, pfns[i]);
-+		/* FIXME: The pages cannot be touched outside the notifier_lock */
-+		pages[i] =3D hmm_device_entry_to_page(range, range->pfns[i]);
- 		if (unlikely(!pages[i])) {
- 			pr_err("Page fault failed for pfn[%lu] =3D 0x%llx\n",
--			       i, pfns[i]);
-+			       i, range->pfns[i]);
- 			r =3D -ENOMEM;
-=20
- 			goto out_free_pfns;
-@@ -873,8 +891,7 @@ int amdgpu_ttm_tt_get_user_pages(struct amdgpu_bo *bo, =
-struct page **pages)
- out_unlock:
- 	up_read(&mm->mmap_sem);
- out_free_pfns:
--	hmm_range_unregister(range);
--	kvfree(pfns);
-+	kvfree(range->pfns);
- out_free_ranges:
- 	kfree(range);
- out:
-@@ -903,15 +920,18 @@ bool amdgpu_ttm_tt_get_user_pages_done(struct ttm_tt =
-*ttm)
- 		"No user pages to check\n");
-=20
- 	if (gtt->range) {
--		r =3D hmm_range_valid(gtt->range);
--		hmm_range_unregister(gtt->range);
--
-+		/*
-+		 * FIXME: Must always hold notifier_lock for this, and must
-+		 * not ignore the return code.
-+		 */
-+		r =3D mmu_range_read_retry(gtt->range->notifier,
-+					 gtt->range->notifier_seq);
- 		kvfree(gtt->range->pfns);
- 		kfree(gtt->range);
- 		gtt->range =3D NULL;
- 	}
-=20
--	return r;
-+	return !r;
- }
- #endif
-=20
-@@ -992,10 +1012,18 @@ static void amdgpu_ttm_tt_unpin_userptr(struct ttm_t=
-t *ttm)
- 	sg_free_table(ttm->sg);
-=20
- #if IS_ENABLED(CONFIG_DRM_AMDGPU_USERPTR)
--	if (gtt->range &&
--	    ttm->pages[0] =3D=3D hmm_device_entry_to_page(gtt->range,
--						      gtt->range->pfns[0]))
--		WARN_ONCE(1, "Missing get_user_page_done\n");
-+	if (gtt->range) {
-+		unsigned long i;
-+
-+		for (i =3D 0; i < ttm->num_pages; i++) {
-+			if (ttm->pages[i] !=3D
-+				hmm_device_entry_to_page(gtt->range,
-+					      gtt->range->pfns[i]))
-+				break;
-+		}
-+
-+		WARN((i =3D=3D ttm->num_pages), "Missing get_user_page_done\n");
-+	}
- #endif
- }
-=20
---=20
-2.23.0
+> I see the VM
+> autoloaded gntdev:
+>
+> Module                  Size  Used by
+> xen_gntdev             24576  2
+> xen_evtchn             16384  1
+> xenfs                  16384  1
+> xen_privcmd            24576  16 xenfs
+>
+> And lsof says several xen processes have the chardev open:
+>
+> xenstored  819                 root   13u      CHR              10,53      0t0      19595 /dev/xen/gntdev
+> xenconsol  857                 root    8u      CHR              10,53      0t0      19595 /dev/xen/gntdev
+> xenconsol  857 860             root    8u      CHR              10,53      0t0      19595 /dev/xen/gntdev
+>
+> But no crashing..
+>
+> However, I wasn't able to get my usual debug kernel .config to boot
+> with the xen hypervisor, it crashes on early boot with:
+>
+> (XEN) Dom0 has maximum 8 VCPUs
+> (XEN) Scrubbing Free RAM on 1 nodes using 8 CPUs
+> (XEN) .done.
+> (XEN) Initial low memory virq threshold set at 0x1000 pages.
+> (XEN) Std. Loglevel: All
+> (XEN) Guest Loglevel: All
+> (XEN) *** Serial input -> DOM0 (type 'CTRL-a' three times to switch input to Xen)
+> (XEN) Freed 468kB init memory
+> (XEN) d0v0 Unhandled page fault fault/trap [#14, ec=0002]
+> (XEN) Pagetable walk from fffffbfff0480fbe:
+> (XEN)  L4[0x1f7] = 0000000000000000 ffffffffffffffff
+> (XEN) domain_crash_sync called from entry.S: fault at ffff82d080348a06 entry.o#create_bounce_frame+0x135/0x15f
+> (XEN) Domain 0 (vcpu#0) crashed on cpu#0:
+> (XEN) ----[ Xen-4.9.2  x86_64  debug=n   Not tainted ]----
+> (XEN) CPU:    0
+> (XEN) RIP:    e033:[<ffffffff82b9f731>]
+> (XEN) RFLAGS: 0000000000000296   EM: 1   CONTEXT: pv guest (d0v0)
+> (XEN) rax: fffffbfff0480fbe   rbx: 0000000000000000   rcx: 00000000c0000101
+> (XEN) rdx: 00000000ffffffff   rsi: ffffffff84026000   rdi: ffffffff82cb4a20
+> (XEN) rbp: ffffffff82407ff8   rsp: ffffffff82407da0   r8:  0000000000000000
+> (XEN) r9:  0000000000000000   r10: 0000000000000000   r11: 0000000000000000
+> (XEN) r12: 0000000000000000   r13: 1ffffffff0480fbe   r14: 0000000000000000
+> (XEN) r15: 0000000000000000   cr0: 000000008005003b   cr4: 00000000003506e0
+> (XEN) cr3: 0000000034027000   cr2: fffffbfff0480fbe
+> (XEN) fsb: 0000000000000000   gsb: ffffffff82b61000   gss: 0000000000000000
+> (XEN) ds: 0000   es: 0000   fs: 0000   gs: 0000   ss: e02b   cs: e033
+>
+> Which is surely some .config issue, but I didn't figure out what.
+>
+> Jason
 
