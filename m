@@ -2,40 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 757B2ECC88
-	for <lists+linux-rdma@lfdr.de>; Sat,  2 Nov 2019 01:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D88C8ECCE5
+	for <lists+linux-rdma@lfdr.de>; Sat,  2 Nov 2019 03:38:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbfKBA5r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 1 Nov 2019 20:57:47 -0400
-Received: from posta.amasya.edu.tr ([193.255.105.20]:32324 "EHLO
-        posta.amasya.edu.tr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726532AbfKBA5r (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 1 Nov 2019 20:57:47 -0400
-X-Greylist: delayed 1145 seconds by postgrey-1.27 at vger.kernel.org; Fri, 01 Nov 2019 20:57:45 EDT
-Received: by posta.amasya.edu.tr (Postfix, from userid 110)
-        id 649FB3C2799; Sat,  2 Nov 2019 03:22:36 +0300 (+03)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=amasya.edu.tr;
-        s=rsakey; t=1572654545;
-        bh=m3Fusfpbex5TBT1LaKl3nmhbuuyDj3lk04EFeFmiR6s=;
-        h=Date:From:Reply-To:Subject;
-        b=DXZ0LsHTcpZSbMRA05mHzik2J8pUb7gEKGk17JmNUVuyYeYrdXY/MYo0k1ddzVrL4
-         MfyTsTKleAIfJ765B/IWzT+fFacMTSIToZa/MM0T9L6TVE8Oa8QL+ShvkHT/b9xUeN
-         sH71woSGSQD5ydJN+gY2vIjCWV/IMIDQPZ9mNhjo=
-X-Virus-Scanned: by SpamTitan at amasya.edu.tr
-Authentication-Results: posta.amasya.edu.tr; none
-Date:   Sat, 2 Nov 2019 03:22:22 +0300 (EET)
-From:   Bellucci Capital Partners <ibrahim.topuz@amasya.edu.tr>
-Reply-To: Bellucci Capital Partners <info@belluccicp.net>
-Message-ID: <1258862030.140024.1572654142168.JavaMail.zimbra@amasya.edu.tr>
-Subject: 
+        id S1727151AbfKBCiH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 1 Nov 2019 22:38:07 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:34538 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727067AbfKBCiH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 1 Nov 2019 22:38:07 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 56F74C09AD8682A4CCBD;
+        Sat,  2 Nov 2019 10:38:01 +0800 (CST)
+Received: from [127.0.0.1] (10.40.168.149) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Sat, 2 Nov 2019
+ 10:37:50 +0800
+Subject: Re: [PATCH rdma-core] libhns: Use syslog for debugging while no print
+ by default
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     <jgg@ziepe.ca>, <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+References: <1572574425-41927-1-git-send-email-liweihang@hisilicon.com>
+ <20191101094444.GF8713@unreal>
+From:   Weihang Li <liweihang@hisilicon.com>
+Message-ID: <c38ec00b-2d39-afe4-cbd8-c6d1f9c315fd@hisilicon.com>
+Date:   Sat, 2 Nov 2019 10:37:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [37.48.118.105]
-X-Mailer: Zimbra 8.8.15_GA_3869 (ZimbraWebClient - GC77 (Win)/8.8.15_GA_3869)
-Thread-Index: 9n9KdcSWF637BLyQ1VRX5l7YCuxARQ==
-Thread-Topic: 
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20191101094444.GF8713@unreal>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.168.149]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
@@ -43,40 +43,38 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 
 
-Hallo,
+On 2019/11/1 17:44, Leon Romanovsky wrote:
+> On Fri, Nov 01, 2019 at 10:13:45AM +0800, Weihang Li wrote:
+>> From: Lang Cheng <chenglang@huawei.com>
+>>
+>> There should be no fprintf/printf in libraries by default unless
+>> debugging. So replace all fprintf/printf in libhns with a macro that is
+>> controlled by HNS_ROCE_DEBUG.
+>> This patch also standardizes all printtings to maintain a uniform style.
+>>
+>> Signed-off-by: Lang Cheng <chenglang@huawei.com>
+>> Signed-off-by: Weihang Li <liweihang@hisilicon.com>
+>> ---
+>>  providers/hns/hns_roce_u.c       | 12 +++++++-----
+>>  providers/hns/hns_roce_u.h       | 13 +++++++++++--
+>>  providers/hns/hns_roce_u_hw_v1.c | 28 ++++++++++++++--------------
+>>  providers/hns/hns_roce_u_hw_v2.c | 18 +++++++++---------
+>>  providers/hns/hns_roce_u_verbs.c | 36 ++++++++++++++++++------------------
+>>  5 files changed, 59 insertions(+), 48 deletions(-)
+> 
+> Thank you for pointing our attention that there are printf() in the library code.
+> Yes, to removal all fprintf/printf.
+> No, to introducing not-unified way to see debug messages.
+> Any solution should be applicable to all providers at least.
+> 
+> Thanks
+> 
+> .
 
-Wir verf=C3=BCgen =C3=BCber ein breites Kreditportfolio und sind an der Fin=
-anzierung von Gro=C3=9Fprojekten interessiert. Die Verfahren sind wie folgt=
-:
+Hi Leon,
+Thanks for your advice, I will use debug file for printings like other providers and send a new PR.
 
-1-Der Kunde muss eine kurze Zusammenfassung des Projekts senden. Dies muss =
-den f=C3=BCr das Projekt erforderlichen Gesamtbetrag, die gesch=C3=A4tzte K=
-apitalrendite und die Kreditr=C3=BCckzahlungsfrist enthalten, die nicht meh=
-r als 15 Jahre betragen darf.
-
-2- Der Kunde muss das besagte Projekt bei einer Versicherungsgesellschaft m=
-it der Gesamtsumme des Darlehens versichern, um das Darlehen als Sicherheit=
- zu gew=C3=A4hrleisten.
-
-3- Der Zinssatz betr=C3=A4gt 1% j=C3=A4hrlich.
-
-4-R=C3=BCckzahlungsdauer betr=C3=A4gt 15 Jahre
-
-5 Ab dem Tag, an dem Sie die Versicherungsbescheinigung vorlegen, dauert di=
-e Finanzierung ca. 10 Bankarbeitstage.
+Weihang
 
 
-Wenn Sie mit den oben genannten Verfahren zufrieden sind, senden Sie mir ei=
-ne Absichtserkl=C3=A4rung auf Ihren Firmenbriefkopf.
 
-F=C3=BCr weitere Informationen zur Kreditbeschaffung von: Bitte antworten S=
-ie umgehend auf diese E-Mail:
-info@belluccicp.net
-
-Gr=C3=BC=C3=9Fe, wie wir auf deine Antwort warten.
-
-Freundliche Gr=C3=BC=C3=9Fe
-Manuel Baressi
-Anzeigenpersonal
-WEB: https://www.belluccicp.net
-Bu e-posta mesaji kisiye ozel olup, gizli bilgiler iceriyor olabilir. Eger bu e-posta mesaji size yanlislikla ulasmissa, icerigini hicbir sekilde kullanmayiniz ve e-postayi siliniz. Amasya Universitesi bu e-posta mesajinin icerigi ile ilgili olarak hicbir hukuksal sorumlulugu kabul etmez. The information contained in this communication may contain confidential or legally privileged information. Amasya University doesn't accept any legal responsibility for the contents and attachments of this message. The sender does not accept any liability for any errors or omissions or any viruses in the context of this message which arise as a result of internet transmission.
