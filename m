@@ -2,89 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF9BECDE0
-	for <lists+linux-rdma@lfdr.de>; Sat,  2 Nov 2019 10:51:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AEBAECE39
+	for <lists+linux-rdma@lfdr.de>; Sat,  2 Nov 2019 12:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727067AbfKBJrR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 2 Nov 2019 05:47:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50220 "EHLO mail.kernel.org"
+        id S1726742AbfKBLB4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 2 Nov 2019 07:01:56 -0400
+Received: from mga18.intel.com ([134.134.136.126]:24973 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726670AbfKBJrR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 2 Nov 2019 05:47:17 -0400
-Received: from localhost (unknown [77.137.89.37])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3369620679;
-        Sat,  2 Nov 2019 09:47:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572688036;
-        bh=uqeMAHLTrkJ2kB3Cc8zJusDKIFROJtU3fg5KAGezERQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rzTlUJ9QZVkgJRmhiw3S+5ha60GSxNxdO3Dd68V08N3whLb/6CwnZ+iQAqyuWnDh+
-         ccyPeq85l0k0Lu7kNLZCYPDsri0U03RMJOl4dUIutj/HJmM1hnZVTOc+5EfmG3mDDq
-         s3Z7upGouzbkdtwr3sRWOCwcZajAQUxphsIM6Qzw=
-Date:   Sat, 2 Nov 2019 11:47:13 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Weihang Li <liweihang@hisilicon.com>
-Cc:     jgg@ziepe.ca, dledford@redhat.com, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH rdma-core] libhns: Use syslog for debugging while no
- print by default
-Message-ID: <20191102094713.GH8713@unreal>
-References: <1572574425-41927-1-git-send-email-liweihang@hisilicon.com>
- <20191101094444.GF8713@unreal>
- <c38ec00b-2d39-afe4-cbd8-c6d1f9c315fd@hisilicon.com>
+        id S1726163AbfKBLBz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 2 Nov 2019 07:01:55 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 02 Nov 2019 04:01:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,259,1569308400"; 
+   d="scan'208";a="206632673"
+Received: from mohseni-mobl2.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.42.93])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Nov 2019 04:01:44 -0700
+Subject: Re: [PATCH 11/19] net/xdp: set FOLL_PIN via pin_user_pages()
+To:     John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+References: <20191030224930.3990755-1-jhubbard@nvidia.com>
+ <20191030224930.3990755-12-jhubbard@nvidia.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <67cd4960-bc17-9603-8d4d-b7b2f68bb373@intel.com>
+Date:   Sat, 2 Nov 2019 12:01:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c38ec00b-2d39-afe4-cbd8-c6d1f9c315fd@hisilicon.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20191030224930.3990755-12-jhubbard@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Nov 02, 2019 at 10:37:50AM +0800, Weihang Li wrote:
->
->
-> On 2019/11/1 17:44, Leon Romanovsky wrote:
-> > On Fri, Nov 01, 2019 at 10:13:45AM +0800, Weihang Li wrote:
-> >> From: Lang Cheng <chenglang@huawei.com>
-> >>
-> >> There should be no fprintf/printf in libraries by default unless
-> >> debugging. So replace all fprintf/printf in libhns with a macro that is
-> >> controlled by HNS_ROCE_DEBUG.
-> >> This patch also standardizes all printtings to maintain a uniform style.
-> >>
-> >> Signed-off-by: Lang Cheng <chenglang@huawei.com>
-> >> Signed-off-by: Weihang Li <liweihang@hisilicon.com>
-> >> ---
-> >>  providers/hns/hns_roce_u.c       | 12 +++++++-----
-> >>  providers/hns/hns_roce_u.h       | 13 +++++++++++--
-> >>  providers/hns/hns_roce_u_hw_v1.c | 28 ++++++++++++++--------------
-> >>  providers/hns/hns_roce_u_hw_v2.c | 18 +++++++++---------
-> >>  providers/hns/hns_roce_u_verbs.c | 36 ++++++++++++++++++------------------
-> >>  5 files changed, 59 insertions(+), 48 deletions(-)
-> >
-> > Thank you for pointing our attention that there are printf() in the library code.
-> > Yes, to removal all fprintf/printf.
-> > No, to introducing not-unified way to see debug messages.
-> > Any solution should be applicable to all providers at least.
-> >
-> > Thanks
-> >
-> > .
->
-> Hi Leon,
-> Thanks for your advice, I will use debug file for printings like other providers and send a new PR.
+On 2019-10-30 23:49, John Hubbard wrote:
+> Convert net/xdp to use the new pin_longterm_pages() call, which sets
+> FOLL_PIN. Setting FOLL_PIN is now required for code that requires
+> tracking of pinned pages.
+> 
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 
-The solution shouldn't be copy/paste of other provides, but unified approach to see debug messages
-from rdma-core.
+Acked-by: Björn Töpel <bjorn.topel@intel.com>
 
-Thanks
-
->
-> Weihang
->
->
->
+> ---
+>   net/xdp/xdp_umem.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+> index 16d5f353163a..4d56dfb1139a 100644
+> --- a/net/xdp/xdp_umem.c
+> +++ b/net/xdp/xdp_umem.c
+> @@ -285,8 +285,8 @@ static int xdp_umem_pin_pages(struct xdp_umem *umem)
+>   		return -ENOMEM;
+>   
+>   	down_read(&current->mm->mmap_sem);
+> -	npgs = get_user_pages(umem->address, umem->npgs,
+> -			      gup_flags | FOLL_LONGTERM, &umem->pgs[0], NULL);
+> +	npgs = pin_longterm_pages(umem->address, umem->npgs, gup_flags,
+> +				  &umem->pgs[0], NULL);
+>   	up_read(&current->mm->mmap_sem);
+>   
+>   	if (npgs != umem->npgs) {
+> 
