@@ -2,199 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D284ED385
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Nov 2019 15:15:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67DE9ED477
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Nov 2019 20:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727444AbfKCOH3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 3 Nov 2019 09:07:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41650 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727350AbfKCOH2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 3 Nov 2019 09:07:28 -0500
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F3C632067D;
-        Sun,  3 Nov 2019 14:07:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572790047;
-        bh=4DrQlb0l2zHSbB8Qx/bUdqi+TwrbEK0/H79u++kT/9U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=AjW62kK8P4q1C4Y4PY4LGJWAzxaQ+as53a594dXBIiyFLyrsvNd1Lzkjd8z9qQioX
-         YcpTsrF9mXUbucbSSkDef2hZt85YMlq2vdMkP8eSmrLTwwv/cxIFUDO5b0nYDdz99d
-         gqykCTRebU95a5vxuIP1PzXvXBfYyfYOoyTm1nwc=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Yevgeny Kliteynik <kliteyn@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: [PATCH rdma-next v2] IB/mlx5: Support flow counters offset for bulk counters
-Date:   Sun,  3 Nov 2019 16:07:23 +0200
-Message-Id: <20191103140723.77411-1-leon@kernel.org>
-X-Mailer: git-send-email 2.23.0
+        id S1728143AbfKCTxp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 3 Nov 2019 14:53:45 -0500
+Received: from hqemgate16.nvidia.com ([216.228.121.65]:9104 "EHLO
+        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727343AbfKCTxo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 3 Nov 2019 14:53:44 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dbf30480000>; Sun, 03 Nov 2019 11:53:45 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Sun, 03 Nov 2019 11:53:38 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Sun, 03 Nov 2019 11:53:38 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 3 Nov
+ 2019 19:53:37 +0000
+Subject: Re: [PATCH 19/19] Documentation/vm: add pin_user_pages.rst
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20191030224930.3990755-1-jhubbard@nvidia.com>
+ <20191030224930.3990755-20-jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <58d3ef87-85ef-a69d-5cf7-1719ff356048@nvidia.com>
+Date:   Sun, 3 Nov 2019 11:53:37 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191030224930.3990755-20-jhubbard@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1572810825; bh=rTG1L9aHJoAtL42CYzuRVvyOXz7jlR1h5ExQz/00LXg=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=hz45cfuI6ZB24IXq0tlVG+4gOOw0rO1aR3a1v+mNE3URSP536c/QI/nw4iVi4Q3Fg
+         ZvhfjRg3c8U4Zeed5IN0S8La0/yhKPqXLcaka8zujsYCnTFzskkYWmX6ZMKm85uc53
+         903Xo+ojBBu648JazllTkreHad3wmqcM3sQfIPNK3XPWIubatS+4uPpiaSake+maws
+         O3mb+7lTk0b/qWmINewSdXIPlnBwUrlkcxoUQTGi1jJWPWnSrL74fzVKeEWjMvAjbH
+         5wXYgJG8qyFZYCSM/zx8jBY5FMvGDHZIQbt9J9oHql6kjp+O+lMMcuF1F8/mAcyFV4
+         Yo4Vz3wx3lQSQ==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yevgeny Kliteynik <kliteyn@mellanox.com>
+On 10/30/19 3:49 PM, John Hubbard wrote:
+...
+> +* struct page may not be increased in size for this, and all fields are already
+> +  used.
+> +
+> +* Given the above, we can overload the page->_refcount field by using, sort of,
+> +  the upper bits in that field for a dma-pinned count. "Sort of", means that,
+> +  rather than dividing page->_refcount into bit fields, we simple add a medium-
+> +  large value (GUP_PIN_COUNTING_BIAS, initially chosen to be 1024: 10 bits) to
+> +  page->_refcount. This provides fuzzy behavior: if a page has get_page() called
+> +  on it 1024 times, then it will appear to have a single dma-pinned count.
+> +  And again, that's acceptable.
+> +
+> +This also leads to limitations: there are only 32-10==22 bits available for a
+> +counter that increments 10 bits at a time.
+> +
 
-Add support for flow steering counters action with
-a non-base counter ID (offset) for bulk counters.
+The above claim is just a "bit" too optimistic, by one bit: page->_refcount, being 
+an atomic_t which uses a signed int (and we use the sign bit to check for overflow),
+only has 31 total bits available for actual counting, not 32.
 
-When creating a flow counter object, save the bulk value.
-This value is used when a flow action with a non-base
-counter ID is requested - to validate that the required
-offset is in the range of the allocated bulk.
+I'll adjust the documentation in v2, to account for this.
 
-Signed-off-by: Yevgeny Kliteynik <kliteyn@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- Changelog
- v1->v2: https://lore.kernel.org/linux-rdma/20191029155020.20792-1-leon@kernel.org
- * Fixed mlx5_ib_devx_is_flow_counter() logic
- v0 -> v1: https://lore.kernel.org/linux-rdma/20191029055916.7322-1-leon@kernel.org
- * Change ffs to multiply bitmap
- * Changed uint32_t to be u32
- * Added offset to mlx5_ib_devx_is_flow_counter()
----
- drivers/infiniband/hw/mlx5/devx.c        | 15 +++++++++++-
- drivers/infiniband/hw/mlx5/flow.c        | 29 ++++++++++++++++++++++--
- drivers/infiniband/hw/mlx5/mlx5_ib.h     |  2 +-
- include/uapi/rdma/mlx5_user_ioctl_cmds.h |  1 +
- 4 files changed, 43 insertions(+), 4 deletions(-)
+thanks,
 
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index 6b1fca91d7d3..2a5812a4c3bb 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -100,6 +100,7 @@ struct devx_obj {
- 		struct mlx5_ib_devx_mr	devx_mr;
- 		struct mlx5_core_dct	core_dct;
- 		struct mlx5_core_cq	core_cq;
-+		u32			flow_counter_bulk_size;
- 	};
- 	struct list_head event_sub; /* holds devx_event_subscription entries */
- };
-@@ -192,15 +193,20 @@ bool mlx5_ib_devx_is_flow_dest(void *obj, int *dest_id, int *dest_type)
- 	}
- }
-
--bool mlx5_ib_devx_is_flow_counter(void *obj, u32 *counter_id)
-+bool mlx5_ib_devx_is_flow_counter(void *obj, u32 offset, u32 *counter_id)
- {
- 	struct devx_obj *devx_obj = obj;
- 	u16 opcode = MLX5_GET(general_obj_in_cmd_hdr, devx_obj->dinbox, opcode);
-
- 	if (opcode == MLX5_CMD_OP_DEALLOC_FLOW_COUNTER) {
-+
-+		if (offset && offset >= devx_obj->flow_counter_bulk_size)
-+			return false;
-+
- 		*counter_id = MLX5_GET(dealloc_flow_counter_in,
- 				       devx_obj->dinbox,
- 				       flow_counter_id);
-+		*counter_id += offset;
- 		return true;
- 	}
-
-@@ -1463,6 +1469,13 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_CREATE)(
- 	if (err)
- 		goto obj_free;
-
-+	if (opcode == MLX5_CMD_OP_ALLOC_FLOW_COUNTER) {
-+		u8 bulk = MLX5_GET(alloc_flow_counter_in,
-+				   cmd_in,
-+				   flow_counter_bulk);
-+		obj->flow_counter_bulk_size = 128UL * bulk;
-+	}
-+
- 	uobj->object = obj;
- 	INIT_LIST_HEAD(&obj->event_sub);
- 	obj->ib_dev = dev;
-diff --git a/drivers/infiniband/hw/mlx5/flow.c b/drivers/infiniband/hw/mlx5/flow.c
-index b198ff10cde9..dbee17d22d50 100644
---- a/drivers/infiniband/hw/mlx5/flow.c
-+++ b/drivers/infiniband/hw/mlx5/flow.c
-@@ -85,6 +85,8 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
- 	struct mlx5_ib_dev *dev = mlx5_udata_to_mdev(&attrs->driver_udata);
- 	int len, ret, i;
- 	u32 counter_id = 0;
-+	u32 *offset_attr;
-+	u32 offset = 0;
-
- 	if (!capable(CAP_NET_RAW))
- 		return -EPERM;
-@@ -151,8 +153,27 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
- 	if (len) {
- 		devx_obj = arr_flow_actions[0]->object;
-
--		if (!mlx5_ib_devx_is_flow_counter(devx_obj, &counter_id))
-+		if (uverbs_attr_is_valid(attrs,
-+					 MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX_OFFSET)) {
-+
-+			int num_offsets = uverbs_attr_ptr_get_array_size(
-+				attrs,
-+				MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX_OFFSET,
-+				sizeof(u32));
-+
-+			if (num_offsets != 1)
-+				return -EINVAL;
-+
-+			offset_attr = uverbs_attr_get_alloced_ptr(
-+				attrs,
-+				MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX_OFFSET);
-+			offset = *offset_attr;
-+		}
-+
-+		if (!mlx5_ib_devx_is_flow_counter(devx_obj, offset,
-+						  &counter_id))
- 			return -EINVAL;
-+
- 		flow_act.action |= MLX5_FLOW_CONTEXT_ACTION_COUNT;
- 	}
-
-@@ -598,7 +619,11 @@ DECLARE_UVERBS_NAMED_METHOD(
- 	UVERBS_ATTR_IDRS_ARR(MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX,
- 			     MLX5_IB_OBJECT_DEVX_OBJ,
- 			     UVERBS_ACCESS_READ, 1, 1,
--			     UA_OPTIONAL));
-+			     UA_OPTIONAL),
-+	UVERBS_ATTR_PTR_IN(MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX_OFFSET,
-+			   UVERBS_ATTR_MIN_SIZE(sizeof(u32)),
-+			   UA_OPTIONAL,
-+			   UA_ALLOC_AND_COPY));
-
- DECLARE_UVERBS_NAMED_METHOD_DESTROY(
- 	MLX5_IB_METHOD_DESTROY_FLOW,
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 0bdb8b45ea15..8ca72cc8797e 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1367,7 +1367,7 @@ struct mlx5_ib_flow_handler *mlx5_ib_raw_fs_rule_add(
- 	struct mlx5_flow_act *flow_act, u32 counter_id,
- 	void *cmd_in, int inlen, int dest_id, int dest_type);
- bool mlx5_ib_devx_is_flow_dest(void *obj, int *dest_id, int *dest_type);
--bool mlx5_ib_devx_is_flow_counter(void *obj, u32 *counter_id);
-+bool mlx5_ib_devx_is_flow_counter(void *obj, u32 offset, u32 *counter_id);
- int mlx5_ib_get_flow_trees(const struct uverbs_object_tree_def **root);
- void mlx5_ib_destroy_flow_action_raw(struct mlx5_ib_flow_action *maction);
- #else
-diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-index d0da070cf0ab..20d88307f75f 100644
---- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
-@@ -198,6 +198,7 @@ enum mlx5_ib_create_flow_attrs {
- 	MLX5_IB_ATTR_CREATE_FLOW_ARR_FLOW_ACTIONS,
- 	MLX5_IB_ATTR_CREATE_FLOW_TAG,
- 	MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX,
-+	MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX_OFFSET,
- };
-
- enum mlx5_ib_destoy_flow_attrs {
---
-2.20.1
+John Hubbard
+NVIDIA
 
