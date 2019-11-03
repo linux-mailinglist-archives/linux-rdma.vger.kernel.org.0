@@ -2,102 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DD2ED2A4
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Nov 2019 10:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F06ED32C
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Nov 2019 12:41:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbfKCJMB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 3 Nov 2019 04:12:01 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:55934 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726408AbfKCJMA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 3 Nov 2019 04:12:00 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA399oQN007383;
-        Sun, 3 Nov 2019 09:11:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2019-08-05; bh=P3PgjTx1xX0s1w7HFWuS+rPiOnekGULZdTFE8G1NGrU=;
- b=ILavzPD4gL14fiMwm+yZh+a7zeRUZmQZR/65Dw0xgY/LSHTYKgnJDAczR69ljDt0e1QT
- jDoXIbc32vv0K9vZ43i+K2xpK9TubZUmOaVVB5Ik9yybH39h4MFIe76kicUwlT/DuCq4
- 3L6oHhJE5JWjZvLOA4zsAYX4oomtGoq9nXbVmutS5BLHH8vSTG9IThizeGwyNgexyB32
- ahG3Tg78lKUhSqwQemhnIIpKaoy46bZIaBmziXJhWp4McZvilecDp20EiV8RmGBNi3fW
- crmK0F1R0iSzzPVBZGWaxGXhBmEY0LT1dtfcno+6u0JjyW7H9slka4fdWb9iuamk/6Br Tg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2w117tk0mh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 03 Nov 2019 09:11:46 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA3990VW027783;
-        Sun, 3 Nov 2019 09:11:45 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 2w1kxjj8y8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 03 Nov 2019 09:11:45 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xA39Bhm1020617;
-        Sun, 3 Nov 2019 09:11:43 GMT
-Received: from host5.lan (/77.138.183.59)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 03 Nov 2019 01:11:42 -0800
-From:   Yuval Shaia <yuval.shaia@oracle.com>
-To:     tariqt@mellanox.com, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, dotanb@dev.mellanox.co.il,
-        eli@mellanox.co.il, vlad@mellanox.com
-Cc:     Yuval Shaia <yuval.shaia@oracle.com>
-Subject: [PATCH v1] mlx4_core: fix wrong comment about the reason of subtract one from the max_cqes
-Date:   Sun,  3 Nov 2019 11:11:35 +0200
-Message-Id: <20191103091135.1891-1-yuval.shaia@oracle.com>
-X-Mailer: git-send-email 2.20.1
+        id S1727769AbfKCLlQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 3 Nov 2019 06:41:16 -0500
+Received: from mail-eopbgr60074.outbound.protection.outlook.com ([40.107.6.74]:42051
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727764AbfKCLlP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 3 Nov 2019 06:41:15 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MFd1QuiMhQ511DgFhoPGQQUVJQ+s//BtF8Jc6Ar7V+W+qrYhGNqGZWstQ6W8GQq/Tmxgsg1Owkn1a0TOIhuYglP1ZgAGc3kX6TPGLXQfIoWftyZ1Xp29xCaTqIAJ3kR2VaXMR5XbDzLQI6pFcL9lvgAlqL5QVqw63b4cOFxoxPsZwj6Kc+eRalUYxHMCtf+ennKNw+oTEvcoR4tl/IXm5ErHCvjlnuWO/vVDNalYN3IZdzVoloVli4Tu2FJXVdDTZVIrhFGk8Zn6x2KWwXH6wB1X3alvZ/oAyddXm5FkHgSZWx1l9VvITaSvW0MCK95A/Qv3fB2+YQfpQWmDkufooQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BpKiiAyzpaxIbKajWgtYRd9AXiMlwt2LIyYhDGdUn8s=;
+ b=TpfFMPfKl+tsg1YXhC1RxLbeQVWv36FqHaRxne5BDXS9t9HS0mxqq6du5ZQEZ6LKwmlpXWzjVVwGWKG/em1fSaSkrj3pBgOggJDkj0dK569SA9Dn0AqWtVEqh/1/Hs7gjtB2cjXSfOnd1x9XBHEgV6uS6F3K9YOt8JOrh6CG3QVnHa3e0opPPzDPAaAmwfhhDNJMgQkpT+EmP2KI7sStRRkCEej824b/AtG+WSySoe1WzFyWCO4J3cTE+7lJkSDPHsAdzTmClZeIbPE2ktQj4UFbljT/pXxjHn0+fzord2jJ3hAr4riORQ/+UMQwpQzvPq9VOHVOU3InMSz/jZkZyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BpKiiAyzpaxIbKajWgtYRd9AXiMlwt2LIyYhDGdUn8s=;
+ b=Su4dndGZEVgS3dCV2DSxuJwjSKDJNyse/zXOdQNZvvCErhodYyploxjLigqVS4OsoBu7ckhxv27xnKM91bMrwF6x8pTomQ8ed9pMg9ggs0ZUUCll0NzVsSZr197A61iVfE/69MKuPzYqn49US7VD4DDAqgpzBFPhR4cpyPvCCrk=
+Received: from DBBPR05MB6283.eurprd05.prod.outlook.com (20.179.43.208) by
+ DBBPR05MB6411.eurprd05.prod.outlook.com (20.179.44.140) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2408.24; Sun, 3 Nov 2019 11:41:11 +0000
+Received: from DBBPR05MB6283.eurprd05.prod.outlook.com
+ ([fe80::8c61:2788:89:69ce]) by DBBPR05MB6283.eurprd05.prod.outlook.com
+ ([fe80::8c61:2788:89:69ce%5]) with mapi id 15.20.2408.024; Sun, 3 Nov 2019
+ 11:41:11 +0000
+From:   Tariq Toukan <tariqt@mellanox.com>
+To:     Yuval Shaia <yuval.shaia@oracle.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dotanb@dev.mellanox.co.il" <dotanb@dev.mellanox.co.il>,
+        Eli Cohen <eli@mellanox.com>,
+        Vladimir Sokolovsky <vlad@mellanox.com>
+Subject: Re: [PATCH v1] mlx4_core: fix wrong comment about the reason of
+ subtract one from the max_cqes
+Thread-Topic: [PATCH v1] mlx4_core: fix wrong comment about the reason of
+ subtract one from the max_cqes
+Thread-Index: AQHVkibAevwNukxCdke/TB6p1qOIhKd5UtuA
+Date:   Sun, 3 Nov 2019 11:41:11 +0000
+Message-ID: <68efcf5b-0c05-a626-d164-bf8bcbb60642@mellanox.com>
+References: <20191103091135.1891-1-yuval.shaia@oracle.com>
+In-Reply-To: <20191103091135.1891-1-yuval.shaia@oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM4PR0202CA0004.eurprd02.prod.outlook.com
+ (2603:10a6:200:89::14) To DBBPR05MB6283.eurprd05.prod.outlook.com
+ (2603:10a6:10:cf::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=tariqt@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [193.47.165.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1eb09617-bf0b-46c2-d4ee-08d76052b9c1
+x-ms-traffictypediagnostic: DBBPR05MB6411:|DBBPR05MB6411:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DBBPR05MB6411641154E01E468EADB99FAE7C0@DBBPR05MB6411.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:513;
+x-forefront-prvs: 0210479ED8
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(376002)(346002)(366004)(136003)(396003)(189003)(199004)(6636002)(2201001)(14444005)(2906002)(256004)(6116002)(3846002)(478600001)(305945005)(31696002)(25786009)(71190400001)(31686004)(2501003)(86362001)(7736002)(14454004)(11346002)(446003)(2616005)(476003)(486006)(6246003)(66476007)(64756008)(6436002)(66556008)(66446008)(71200400001)(76176011)(6512007)(52116002)(66946007)(8936002)(81166006)(186003)(8676002)(81156014)(6506007)(53546011)(66066001)(229853002)(110136005)(26005)(386003)(99286004)(316002)(102836004)(36756003)(5660300002)(6486002);DIR:OUT;SFP:1101;SCL:1;SRVR:DBBPR05MB6411;H:DBBPR05MB6283.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: zwfW0evr39ff87h6AzastmWQT3iNw1CZbb++IWlejFFicKELRswPr572BXoFMDNpBk4RnAtt/3kIfcYJ+Ab7aRVV2jf/kv3y73KHH2XvT3F3QbJsz/xpDzc5tJQQXTk904GkcwSw6z2aIa6GHiBN95eJVya0DGHempmxxlOyPqzDwQ3yw6wTWClwAeehmGd1NCeXy+QPlPQKBlAYCeH7gXLxmzzO8R+BasTFaQBLcwGRdjLujMJ8SY8m5CSpb/XLD9Jkkj5oCQhl8NPAcigkPm01I0hAO+aCJMOtjKpCP9zZIbTabi1A7XuVL6ZdjcqaGXUbD1sHK+x5FVwH2yqjueboXHFHa3aQX/FrvW4KU6Rrjm41P5311JLYaKq9nQ8bCAKKn6EUhgO84IL+02LdHT07e1reJ3gcFk1C4hvr3ZsP+nZqqrOlGM9DuxyxZjDZ
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E01A47EE5E9E034F82C1AC4EF5AFB7B7@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9429 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1911030098
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9429 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1911030098
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1eb09617-bf0b-46c2-d4ee-08d76052b9c1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2019 11:41:11.7716
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Pgz3chKat92oMAxIvDj1EPoz+UltVITbmLd9Y/Ms+DTpVgm+RkH2sS0JB1tYT34oB2AN4xIgxh1tZypKuRGDaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR05MB6411
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Dotan Barak <dotanb@dev.mellanox.co.il>
-
-The reason for the pre-allocation of one CQE is to enable resizing of
-the CQ.
-Fix comment accordingly.
-
-Signed-off-by: Dotan Barak <dotanb@dev.mellanox.co.il>
-Signed-off-by: Eli Cohen <eli@mellanox.co.il>
-Signed-off-by: Vladimir Sokolovsky <vlad@mellanox.com>
-Signed-off-by: Yuval Shaia <yuval.shaia@oracle.com>
----
-v0 -> v1:
-	* Add . at EOL
-	* Add commit message
----
- drivers/net/ethernet/mellanox/mlx4/main.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
-index fce9b3a24347..69bb6bb06e76 100644
---- a/drivers/net/ethernet/mellanox/mlx4/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-@@ -514,8 +514,7 @@ static int mlx4_dev_cap(struct mlx4_dev *dev, struct mlx4_dev_cap *dev_cap)
- 	dev->caps.max_rq_desc_sz     = dev_cap->max_rq_desc_sz;
- 	/*
- 	 * Subtract 1 from the limit because we need to allocate a
--	 * spare CQE so the HCA HW can tell the difference between an
--	 * empty CQ and a full CQ.
-+	 * spare CQE to enable resizing the CQ.
- 	 */
- 	dev->caps.max_cqes	     = dev_cap->max_cq_sz - 1;
- 	dev->caps.reserved_cqs	     = dev_cap->reserved_cqs;
--- 
-2.20.1
-
+DQoNCk9uIDExLzMvMjAxOSAxMToxMSBBTSwgWXV2YWwgU2hhaWEgd3JvdGU6DQo+IEZyb206IERv
+dGFuIEJhcmFrIDxkb3RhbmJAZGV2Lm1lbGxhbm94LmNvLmlsPg0KPiANCj4gVGhlIHJlYXNvbiBm
+b3IgdGhlIHByZS1hbGxvY2F0aW9uIG9mIG9uZSBDUUUgaXMgdG8gZW5hYmxlIHJlc2l6aW5nIG9m
+DQo+IHRoZSBDUS4NCj4gRml4IGNvbW1lbnQgYWNjb3JkaW5nbHkuDQo+IA0KPiBTaWduZWQtb2Zm
+LWJ5OiBEb3RhbiBCYXJhayA8ZG90YW5iQGRldi5tZWxsYW5veC5jby5pbD4NCj4gU2lnbmVkLW9m
+Zi1ieTogRWxpIENvaGVuIDxlbGlAbWVsbGFub3guY28uaWw+DQo+IFNpZ25lZC1vZmYtYnk6IFZs
+YWRpbWlyIFNva29sb3Zza3kgPHZsYWRAbWVsbGFub3guY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBZ
+dXZhbCBTaGFpYSA8eXV2YWwuc2hhaWFAb3JhY2xlLmNvbT4NCj4gLS0tDQo+IHYwIC0+IHYxOg0K
+PiAJKiBBZGQgLiBhdCBFT0wNCj4gCSogQWRkIGNvbW1pdCBtZXNzYWdlDQo+IC0tLQ0KPiAgIGRy
+aXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDQvbWFpbi5jIHwgMyArLS0NCj4gICAxIGZp
+bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NC9tYWluLmMgYi9kcml2ZXJz
+L25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg0L21haW4uYw0KPiBpbmRleCBmY2U5YjNhMjQzNDcu
+LjY5YmI2YmIwNmU3NiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFu
+b3gvbWx4NC9tYWluLmMNCj4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4
+NC9tYWluLmMNCj4gQEAgLTUxNCw4ICs1MTQsNyBAQCBzdGF0aWMgaW50IG1seDRfZGV2X2NhcChz
+dHJ1Y3QgbWx4NF9kZXYgKmRldiwgc3RydWN0IG1seDRfZGV2X2NhcCAqZGV2X2NhcCkNCj4gICAJ
+ZGV2LT5jYXBzLm1heF9ycV9kZXNjX3N6ICAgICA9IGRldl9jYXAtPm1heF9ycV9kZXNjX3N6Ow0K
+PiAgIAkvKg0KPiAgIAkgKiBTdWJ0cmFjdCAxIGZyb20gdGhlIGxpbWl0IGJlY2F1c2Ugd2UgbmVl
+ZCB0byBhbGxvY2F0ZSBhDQo+IC0JICogc3BhcmUgQ1FFIHNvIHRoZSBIQ0EgSFcgY2FuIHRlbGwg
+dGhlIGRpZmZlcmVuY2UgYmV0d2VlbiBhbg0KPiAtCSAqIGVtcHR5IENRIGFuZCBhIGZ1bGwgQ1Eu
+DQo+ICsJICogc3BhcmUgQ1FFIHRvIGVuYWJsZSByZXNpemluZyB0aGUgQ1EuDQo+ICAgCSAqLw0K
+PiAgIAlkZXYtPmNhcHMubWF4X2NxZXMJICAgICA9IGRldl9jYXAtPm1heF9jcV9zeiAtIDE7DQo+
+ICAgCWRldi0+Y2Fwcy5yZXNlcnZlZF9jcXMJICAgICA9IGRldl9jYXAtPnJlc2VydmVkX2NxczsN
+Cj4gDQoNClJldmlld2VkLWJ5OiBUYXJpcSBUb3VrYW4gPHRhcmlxdEBtZWxsYW5veC5jb20+DQoN
+ClRoYW5rcy4NCg==
