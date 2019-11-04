@@ -2,187 +2,207 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37AFEEDA09
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2019 08:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD88AEDAAF
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2019 09:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727267AbfKDHlp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 4 Nov 2019 02:41:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726891AbfKDHlp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 4 Nov 2019 02:41:45 -0500
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9CA07205C9;
-        Mon,  4 Nov 2019 07:41:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572853304;
-        bh=1u/OmclZYDmCL/AXUhElWHqwCkMQxKEiOIdFGBzeeaM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OGQ+HXc1XPAbXxyNoKzd3t8Id1dsgnwG4/s8qCIqz2DpPfXlfxPmP02VxzFg3/OOw
-         bweVXGzlnMwBmVeHmw/AAGjrngRMmITJM/ojpcxROENeysxLN041pW9RXjgZyJGCud
-         D3S35LviwwS/UO+6MerPdqN4ZPSIBUUcQ9FyZuUc=
-Date:   Mon, 4 Nov 2019 08:41:41 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        id S1726633AbfKDImT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 4 Nov 2019 03:42:19 -0500
+Received: from mail-eopbgr140089.outbound.protection.outlook.com ([40.107.14.89]:5419
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726441AbfKDImS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 4 Nov 2019 03:42:18 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DVroc+tjdNz/zVFrxJ6lYZjR/nkIzZw1JMLAjcHmWOx96bfAB5Vmk2bU5FK1Il3xKuMWUHPhGb29i1yRSspbznApO3MHTqCgcS/mGGOHr4LMUuWRJ6gkNs4tq0mwF7qscGMwv+RGcPymaMPgUBGm9LsfU10nBjUEx9Vf71Wz9hyzSl1ulwwAgyPNa986npVpHIBydgffKxIZl8mbI36aujwa81z6vYagKhvYOpr5ksli3jDi2r3yZmBQbWYFXQJjMcMQAVbL32Fgym0e3crrPrkQeuq1AewQDVHsRRaRPkr3GDtPVAcnQjvTN7vRY6zsts6xr7v3S4MTKx+GWU/wKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rEh2IjGqsUD6EpAuGaZonVeF28r49vFIkW2R17bE6cs=;
+ b=gSMly9FrWzTKTudI0GQmaKhj+pZlx+G0EEg2mc9UGH6oFG3ddrXZ9z5NNP9Sg+ywbWNjmBqh5lPKYrUPuEKKnCEYNkMCP7HmIJPAuLnuAxRMeWZoN6XF1IjnM1g7y4ZbhbRypJOr9zQ76Vh9p0cugcCBxA3306XQJrznM7b9RYS4mxt+fYGvUQhsMUDdJr6YZ9CwEDd8TNfNGYNv1L357cuxfrkEWTQvqoxr6GZnPQqrjn2cpeP0QdTNTTo/pNVp+cVomO+uX8LAx0elwiQrjfYgKvLWikdFVzJYE2eTbUGaPd77t8kD9v7g7iOqNHegdAT7Qas/aAogaiQLMWDv7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rEh2IjGqsUD6EpAuGaZonVeF28r49vFIkW2R17bE6cs=;
+ b=L9shdI3UTTZ3qMH8amH6HF9auNc+BeqxQEK86DPOZBHffSysY/CMsD3+NfsIUs5bIzLFGT31SEQx5hBx3YNOdviTBHgG4SSVmoACY5OuSx7CZhsgEvkcgBNwJoNWpV0yTHYt6cWskh8QYck0WAgT6F8CYP2ShPqyD4glEMbMSYY=
+Received: from VI1PR05MB3342.eurprd05.prod.outlook.com (10.170.238.143) by
+ VI1PR05MB5904.eurprd05.prod.outlook.com (20.178.127.89) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2408.24; Mon, 4 Nov 2019 08:42:11 +0000
+Received: from VI1PR05MB3342.eurprd05.prod.outlook.com
+ ([fe80::60cb:2e60:375e:8670]) by VI1PR05MB3342.eurprd05.prod.outlook.com
+ ([fe80::60cb:2e60:375e:8670%4]) with mapi id 15.20.2408.024; Mon, 4 Nov 2019
+ 08:42:11 +0000
+From:   Mark Bloch <markb@mellanox.com>
 To:     Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] IB: mlx5: no need to check return value of debugfs_create
- functions
-Message-ID: <20191104074141.GA1292396@kroah.com>
+        Jason Gunthorpe <jgg@mellanox.com>
+CC:     Yevgeny Kliteynik <kliteyn@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: Re: [PATCH rdma-next v2] IB/mlx5: Support flow counters offset for
+ bulk counters
+Thread-Topic: [PATCH rdma-next v2] IB/mlx5: Support flow counters offset for
+ bulk counters
+Thread-Index: AQHVklAJ6RSxct/GWUOX1Esh2h4l2ad6stOA
+Date:   Mon, 4 Nov 2019 08:42:10 +0000
+Message-ID: <06ad7417-7427-3402-0b8c-772ae2ea83dd@mellanox.com>
+References: <20191103140723.77411-1-leon@kernel.org>
+In-Reply-To: <20191103140723.77411-1-leon@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR20CA0022.namprd20.prod.outlook.com
+ (2603:10b6:300:13d::32) To VI1PR05MB3342.eurprd05.prod.outlook.com
+ (2603:10a6:802:1d::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=markb@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [104.156.100.52]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 3f80718c-fc1e-4091-eba1-08d76102e1e0
+x-ms-traffictypediagnostic: VI1PR05MB5904:|VI1PR05MB5904:
+x-ms-exchange-purlcount: 2
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB5904BEC3B00B25323131DEA8D27F0@VI1PR05MB5904.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2803;
+x-forefront-prvs: 0211965D06
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(346002)(396003)(136003)(39860400002)(376002)(189003)(199004)(54534003)(6636002)(14454004)(76176011)(66066001)(305945005)(7736002)(186003)(86362001)(6306002)(6486002)(31696002)(446003)(11346002)(6436002)(53546011)(102836004)(6512007)(31686004)(2616005)(476003)(486006)(229853002)(316002)(478600001)(8676002)(4326008)(8936002)(966005)(6116002)(81166006)(81156014)(110136005)(99286004)(54906003)(25786009)(6506007)(52116002)(26005)(6246003)(107886003)(14444005)(386003)(36756003)(256004)(66446008)(64756008)(66556008)(66946007)(66476007)(5660300002)(2906002)(71200400001)(71190400001)(3846002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5904;H:VI1PR05MB3342.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WsjKfGnTXIKtauW/HFa+ElrRrqzzM3g32unop/pbE9DQ5VYZhe+qY/EdX1kU1wvKxnBrmHtHmVqlSJC3Sz1NMRbfdSkQF76V5GrSipHnwEArU+74ugKsnyEfFt/4ANHxK8S6qBSzgmVFs3phIC0X2BItsSCGxNntUxA6p/ifgPBHJWqoBzb7t+DfgBGCTfUmQq5n/QCMJXX+0zi4HYBh+XP7RKEF3UYbTkAgiT9xkYwcRETo+zz6S85IkeeiwvGs3d0k1XURhP7fyOAmo0ryNRSERpbGBy4z80l+Ve+tYTqKenZ+JuYB8LeXdn00Fewm50U3yxRtEnamm/tzOyTPuTLpdTswF4nxyl4q8gn5ytarf0yAmMal7F/toCwPhf4SOff0+DkWE0ehNT+B8hY6ce9JSU8EQ9uo/mDTm6jAh9Wxh+T1UtHH54KFwo3q6pD2eev+7hK9ThjUdlz7AB2EsgIdofNhqG1tsXW3LxJrQ/U=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AC2B967B78C62A47B9E31EC1CF37CD0E@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.12.2 (2019-09-21)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f80718c-fc1e-4091-eba1-08d76102e1e0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Nov 2019 08:42:10.9294
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PJw+8kRMOtzVY3ppCxsNPy1IW55sBnqcNppHdIQ6tYOe2rtHVvEFXmZXpT0WHO34peSO2apd7V/rm9CB+TTm/w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5904
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When calling debugfs functions, there is no need to ever check the
-return value.  The function can work or not, but the code logic should
-never do something different based on this.
-
-Cc: Leon Romanovsky <leon@kernel.org>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/infiniband/hw/mlx5/main.c    | 62 +++++++---------------------
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  9 +---
- 2 files changed, 16 insertions(+), 55 deletions(-)
-
-Note, I kind of need to take this through my tree now as I broke the
-build due to me changing the use of debugfs_create_atomic_t() in my
-tree and not noticing this being used here.  Sorry about that, any
-objections?
-
-And 0-day seems really broken to have missed this for the past months,
-ugh, I need to stop relying on it...
-
-
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 831539419c30..059db0610445 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -5710,11 +5710,10 @@ static int mlx5_ib_rn_get_params(struct ib_device *device, u8 port_num,
- 
- static void delay_drop_debugfs_cleanup(struct mlx5_ib_dev *dev)
- {
--	if (!dev->delay_drop.dbg)
-+	if (!dev->delay_drop.dir_debugfs)
- 		return;
--	debugfs_remove_recursive(dev->delay_drop.dbg->dir_debugfs);
--	kfree(dev->delay_drop.dbg);
--	dev->delay_drop.dbg = NULL;
-+	debugfs_remove_recursive(dev->delay_drop.dir_debugfs);
-+	dev->delay_drop.dir_debugfs = NULL;
- }
- 
- static void cancel_delay_drop(struct mlx5_ib_dev *dev)
-@@ -5765,52 +5764,22 @@ static const struct file_operations fops_delay_drop_timeout = {
- 	.read	= delay_drop_timeout_read,
- };
- 
--static int delay_drop_debugfs_init(struct mlx5_ib_dev *dev)
-+static void delay_drop_debugfs_init(struct mlx5_ib_dev *dev)
- {
--	struct mlx5_ib_dbg_delay_drop *dbg;
-+	struct dentry *root;
- 
- 	if (!mlx5_debugfs_root)
--		return 0;
--
--	dbg = kzalloc(sizeof(*dbg), GFP_KERNEL);
--	if (!dbg)
--		return -ENOMEM;
--
--	dev->delay_drop.dbg = dbg;
--
--	dbg->dir_debugfs =
--		debugfs_create_dir("delay_drop",
--				   dev->mdev->priv.dbg_root);
--	if (!dbg->dir_debugfs)
--		goto out_debugfs;
--
--	dbg->events_cnt_debugfs =
--		debugfs_create_atomic_t("num_timeout_events", 0400,
--					dbg->dir_debugfs,
--					&dev->delay_drop.events_cnt);
--	if (!dbg->events_cnt_debugfs)
--		goto out_debugfs;
--
--	dbg->rqs_cnt_debugfs =
--		debugfs_create_atomic_t("num_rqs", 0400,
--					dbg->dir_debugfs,
--					&dev->delay_drop.rqs_cnt);
--	if (!dbg->rqs_cnt_debugfs)
--		goto out_debugfs;
--
--	dbg->timeout_debugfs =
--		debugfs_create_file("timeout", 0600,
--				    dbg->dir_debugfs,
--				    &dev->delay_drop,
--				    &fops_delay_drop_timeout);
--	if (!dbg->timeout_debugfs)
--		goto out_debugfs;
-+		return;
- 
--	return 0;
-+	root = debugfs_create_dir("delay_drop", dev->mdev->priv.dbg_root);
-+	dev->delay_drop.dir_debugfs = root;
- 
--out_debugfs:
--	delay_drop_debugfs_cleanup(dev);
--	return -ENOMEM;
-+	debugfs_create_atomic_t("num_timeout_events", 0400, root,
-+				&dev->delay_drop.events_cnt);
-+	debugfs_create_atomic_t("num_rqs", 0400, root,
-+				&dev->delay_drop.rqs_cnt);
-+	debugfs_create_file("timeout", 0600, root, &dev->delay_drop,
-+			    &fops_delay_drop_timeout);
- }
- 
- static void init_delay_drop(struct mlx5_ib_dev *dev)
-@@ -5826,8 +5795,7 @@ static void init_delay_drop(struct mlx5_ib_dev *dev)
- 	atomic_set(&dev->delay_drop.rqs_cnt, 0);
- 	atomic_set(&dev->delay_drop.events_cnt, 0);
- 
--	if (delay_drop_debugfs_init(dev))
--		mlx5_ib_warn(dev, "Failed to init delay drop debugfs\n");
-+	delay_drop_debugfs_init(dev);
- }
- 
- static void mlx5_ib_unbind_slave_port(struct mlx5_ib_dev *ibdev,
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 1a98ee2e01c4..55ce599db803 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -792,13 +792,6 @@ enum {
- 	MLX5_MAX_DELAY_DROP_TIMEOUT_MS = 100,
- };
- 
--struct mlx5_ib_dbg_delay_drop {
--	struct dentry		*dir_debugfs;
--	struct dentry		*rqs_cnt_debugfs;
--	struct dentry		*events_cnt_debugfs;
--	struct dentry		*timeout_debugfs;
--};
--
- struct mlx5_ib_delay_drop {
- 	struct mlx5_ib_dev     *dev;
- 	struct work_struct	delay_drop_work;
-@@ -808,7 +801,7 @@ struct mlx5_ib_delay_drop {
- 	bool			activate;
- 	atomic_t		events_cnt;
- 	atomic_t		rqs_cnt;
--	struct mlx5_ib_dbg_delay_drop *dbg;
-+	struct dentry		*dir_debugfs;
- };
- 
- enum mlx5_ib_stages {
--- 
-2.23.0
-
+DQoNCk9uIDExLzMvMjAxOSAwNjowNywgTGVvbiBSb21hbm92c2t5IHdyb3RlOg0KPiBGcm9tOiBZ
+ZXZnZW55IEtsaXRleW5payA8a2xpdGV5bkBtZWxsYW5veC5jb20+DQo+IA0KPiBBZGQgc3VwcG9y
+dCBmb3IgZmxvdyBzdGVlcmluZyBjb3VudGVycyBhY3Rpb24gd2l0aA0KPiBhIG5vbi1iYXNlIGNv
+dW50ZXIgSUQgKG9mZnNldCkgZm9yIGJ1bGsgY291bnRlcnMuDQo+IA0KPiBXaGVuIGNyZWF0aW5n
+IGEgZmxvdyBjb3VudGVyIG9iamVjdCwgc2F2ZSB0aGUgYnVsayB2YWx1ZS4NCj4gVGhpcyB2YWx1
+ZSBpcyB1c2VkIHdoZW4gYSBmbG93IGFjdGlvbiB3aXRoIGEgbm9uLWJhc2UNCj4gY291bnRlciBJ
+RCBpcyByZXF1ZXN0ZWQgLSB0byB2YWxpZGF0ZSB0aGF0IHRoZSByZXF1aXJlZA0KPiBvZmZzZXQg
+aXMgaW4gdGhlIHJhbmdlIG9mIHRoZSBhbGxvY2F0ZWQgYnVsay4NCj4gDQo+IFNpZ25lZC1vZmYt
+Ynk6IFlldmdlbnkgS2xpdGV5bmlrIDxrbGl0ZXluQG1lbGxhbm94LmNvbT4NCj4gU2lnbmVkLW9m
+Zi1ieTogTGVvbiBSb21hbm92c2t5IDxsZW9ucm9AbWVsbGFub3guY29tPg0KPiAtLS0NCj4gIENo
+YW5nZWxvZw0KPiAgdjEtPnYyOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1yZG1hLzIw
+MTkxMDI5MTU1MDIwLjIwNzkyLTEtbGVvbkBrZXJuZWwub3JnDQo+ICAqIEZpeGVkIG1seDVfaWJf
+ZGV2eF9pc19mbG93X2NvdW50ZXIoKSBsb2dpYw0KPiAgdjAgLT4gdjE6IGh0dHBzOi8vbG9yZS5r
+ZXJuZWwub3JnL2xpbnV4LXJkbWEvMjAxOTEwMjkwNTU5MTYuNzMyMi0xLWxlb25Aa2VybmVsLm9y
+Zw0KPiAgKiBDaGFuZ2UgZmZzIHRvIG11bHRpcGx5IGJpdG1hcA0KPiAgKiBDaGFuZ2VkIHVpbnQz
+Ml90IHRvIGJlIHUzMg0KPiAgKiBBZGRlZCBvZmZzZXQgdG8gbWx4NV9pYl9kZXZ4X2lzX2Zsb3df
+Y291bnRlcigpDQo+IC0tLQ0KPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvZGV2eC5jICAg
+ICAgICB8IDE1ICsrKysrKysrKysrLQ0KPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvZmxv
+dy5jICAgICAgICB8IDI5ICsrKysrKysrKysrKysrKysrKysrKystLQ0KPiAgZHJpdmVycy9pbmZp
+bmliYW5kL2h3L21seDUvbWx4NV9pYi5oICAgICB8ICAyICstDQo+ICBpbmNsdWRlL3VhcGkvcmRt
+YS9tbHg1X3VzZXJfaW9jdGxfY21kcy5oIHwgIDEgKw0KPiAgNCBmaWxlcyBjaGFuZ2VkLCA0MyBp
+bnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+aW5maW5pYmFuZC9ody9tbHg1L2RldnguYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9tbHg1L2Rl
+dnguYw0KPiBpbmRleCA2YjFmY2E5MWQ3ZDMuLjJhNTgxMmE0YzNiYiAxMDA2NDQNCj4gLS0tIGEv
+ZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvZGV2eC5jDQo+ICsrKyBiL2RyaXZlcnMvaW5maW5p
+YmFuZC9ody9tbHg1L2RldnguYw0KPiBAQCAtMTAwLDYgKzEwMCw3IEBAIHN0cnVjdCBkZXZ4X29i
+aiB7DQo+ICAJCXN0cnVjdCBtbHg1X2liX2RldnhfbXIJZGV2eF9tcjsNCj4gIAkJc3RydWN0IG1s
+eDVfY29yZV9kY3QJY29yZV9kY3Q7DQo+ICAJCXN0cnVjdCBtbHg1X2NvcmVfY3EJY29yZV9jcTsN
+Cj4gKwkJdTMyCQkJZmxvd19jb3VudGVyX2J1bGtfc2l6ZTsNCj4gIAl9Ow0KPiAgCXN0cnVjdCBs
+aXN0X2hlYWQgZXZlbnRfc3ViOyAvKiBob2xkcyBkZXZ4X2V2ZW50X3N1YnNjcmlwdGlvbiBlbnRy
+aWVzICovDQo+ICB9Ow0KPiBAQCAtMTkyLDE1ICsxOTMsMjAgQEAgYm9vbCBtbHg1X2liX2Rldnhf
+aXNfZmxvd19kZXN0KHZvaWQgKm9iaiwgaW50ICpkZXN0X2lkLCBpbnQgKmRlc3RfdHlwZSkNCj4g
+IAl9DQo+ICB9DQo+IA0KPiAtYm9vbCBtbHg1X2liX2RldnhfaXNfZmxvd19jb3VudGVyKHZvaWQg
+Km9iaiwgdTMyICpjb3VudGVyX2lkKQ0KPiArYm9vbCBtbHg1X2liX2RldnhfaXNfZmxvd19jb3Vu
+dGVyKHZvaWQgKm9iaiwgdTMyIG9mZnNldCwgdTMyICpjb3VudGVyX2lkKQ0KPiAgew0KPiAgCXN0
+cnVjdCBkZXZ4X29iaiAqZGV2eF9vYmogPSBvYmo7DQo+ICAJdTE2IG9wY29kZSA9IE1MWDVfR0VU
+KGdlbmVyYWxfb2JqX2luX2NtZF9oZHIsIGRldnhfb2JqLT5kaW5ib3gsIG9wY29kZSk7DQo+IA0K
+PiAgCWlmIChvcGNvZGUgPT0gTUxYNV9DTURfT1BfREVBTExPQ19GTE9XX0NPVU5URVIpIHsNCj4g
+Kw0KPiArCQlpZiAob2Zmc2V0ICYmIG9mZnNldCA+PSBkZXZ4X29iai0+Zmxvd19jb3VudGVyX2J1
+bGtfc2l6ZSkNCj4gKwkJCXJldHVybiBmYWxzZTsNCj4gKw0KPiAgCQkqY291bnRlcl9pZCA9IE1M
+WDVfR0VUKGRlYWxsb2NfZmxvd19jb3VudGVyX2luLA0KPiAgCQkJCSAgICAgICBkZXZ4X29iai0+
+ZGluYm94LA0KPiAgCQkJCSAgICAgICBmbG93X2NvdW50ZXJfaWQpOw0KPiArCQkqY291bnRlcl9p
+ZCArPSBvZmZzZXQ7DQo+ICAJCXJldHVybiB0cnVlOw0KPiAgCX0NCj4gDQo+IEBAIC0xNDYzLDYg
+KzE0NjksMTMgQEAgc3RhdGljIGludCBVVkVSQlNfSEFORExFUihNTFg1X0lCX01FVEhPRF9ERVZY
+X09CSl9DUkVBVEUpKA0KPiAgCWlmIChlcnIpDQo+ICAJCWdvdG8gb2JqX2ZyZWU7DQo+IA0KPiAr
+CWlmIChvcGNvZGUgPT0gTUxYNV9DTURfT1BfQUxMT0NfRkxPV19DT1VOVEVSKSB7DQo+ICsJCXU4
+IGJ1bGsgPSBNTFg1X0dFVChhbGxvY19mbG93X2NvdW50ZXJfaW4sDQo+ICsJCQkJICAgY21kX2lu
+LA0KPiArCQkJCSAgIGZsb3dfY291bnRlcl9idWxrKTsNCj4gKwkJb2JqLT5mbG93X2NvdW50ZXJf
+YnVsa19zaXplID0gMTI4VUwgKiBidWxrOw0KPiArCX0NCj4gKw0KPiAgCXVvYmotPm9iamVjdCA9
+IG9iajsNCj4gIAlJTklUX0xJU1RfSEVBRCgmb2JqLT5ldmVudF9zdWIpOw0KPiAgCW9iai0+aWJf
+ZGV2ID0gZGV2Ow0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvZmxv
+dy5jIGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvZmxvdy5jDQo+IGluZGV4IGIxOThmZjEw
+Y2RlOS4uZGJlZTE3ZDIyZDUwIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2luZmluaWJhbmQvaHcv
+bWx4NS9mbG93LmMNCj4gKysrIGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvZmxvdy5jDQo+
+IEBAIC04NSw2ICs4NSw4IEBAIHN0YXRpYyBpbnQgVVZFUkJTX0hBTkRMRVIoTUxYNV9JQl9NRVRI
+T0RfQ1JFQVRFX0ZMT1cpKA0KPiAgCXN0cnVjdCBtbHg1X2liX2RldiAqZGV2ID0gbWx4NV91ZGF0
+YV90b19tZGV2KCZhdHRycy0+ZHJpdmVyX3VkYXRhKTsNCj4gIAlpbnQgbGVuLCByZXQsIGk7DQo+
+ICAJdTMyIGNvdW50ZXJfaWQgPSAwOw0KPiArCXUzMiAqb2Zmc2V0X2F0dHI7DQo+ICsJdTMyIG9m
+ZnNldCA9IDA7DQo+IA0KPiAgCWlmICghY2FwYWJsZShDQVBfTkVUX1JBVykpDQo+ICAJCXJldHVy
+biAtRVBFUk07DQo+IEBAIC0xNTEsOCArMTUzLDI3IEBAIHN0YXRpYyBpbnQgVVZFUkJTX0hBTkRM
+RVIoTUxYNV9JQl9NRVRIT0RfQ1JFQVRFX0ZMT1cpKA0KPiAgCWlmIChsZW4pIHsNCj4gIAkJZGV2
+eF9vYmogPSBhcnJfZmxvd19hY3Rpb25zWzBdLT5vYmplY3Q7DQo+IA0KPiAtCQlpZiAoIW1seDVf
+aWJfZGV2eF9pc19mbG93X2NvdW50ZXIoZGV2eF9vYmosICZjb3VudGVyX2lkKSkNCj4gKwkJaWYg
+KHV2ZXJic19hdHRyX2lzX3ZhbGlkKGF0dHJzLA0KPiArCQkJCQkgTUxYNV9JQl9BVFRSX0NSRUFU
+RV9GTE9XX0FSUl9DT1VOVEVSU19ERVZYX09GRlNFVCkpIHsNCj4gKw0KPiArCQkJaW50IG51bV9v
+ZmZzZXRzID0gdXZlcmJzX2F0dHJfcHRyX2dldF9hcnJheV9zaXplKA0KPiArCQkJCWF0dHJzLA0K
+PiArCQkJCU1MWDVfSUJfQVRUUl9DUkVBVEVfRkxPV19BUlJfQ09VTlRFUlNfREVWWF9PRkZTRVQs
+DQo+ICsJCQkJc2l6ZW9mKHUzMikpOw0KPiArDQo+ICsJCQlpZiAobnVtX29mZnNldHMgIT0gMSkN
+Cj4gKwkJCQlyZXR1cm4gLUVJTlZBTDsNCj4gKw0KPiArCQkJb2Zmc2V0X2F0dHIgPSB1dmVyYnNf
+YXR0cl9nZXRfYWxsb2NlZF9wdHIoDQo+ICsJCQkJYXR0cnMsDQo+ICsJCQkJTUxYNV9JQl9BVFRS
+X0NSRUFURV9GTE9XX0FSUl9DT1VOVEVSU19ERVZYX09GRlNFVCk7DQo+ICsJCQlvZmZzZXQgPSAq
+b2Zmc2V0X2F0dHI7DQoNCkkgd291bGQgaGF2ZSB1c2VkIG9mZnNldF9hcnIgYW5kIHdvdWxkIGhh
+dmUgZG9uZToNCm9mZnNldCA9IG9mZnNldF9hdHRyWzBdIHNlZW1zIG1vcmUgYXBwcm9wcmlhdGUg
+YnV0IEkgZG9uJ3QgbWluZCBlaXRoZXIgd2F5Lg0KDQpSZXZpZXdlZC1ieTogTWFyayBCbG9jaCA8
+bWFya2JAbWVsbGFub3guY29tPg0KDQo+ICsJCX0NCj4gKw0KPiArCQlpZiAoIW1seDVfaWJfZGV2
+eF9pc19mbG93X2NvdW50ZXIoZGV2eF9vYmosIG9mZnNldCwNCj4gKwkJCQkJCSAgJmNvdW50ZXJf
+aWQpKQ0KPiAgCQkJcmV0dXJuIC1FSU5WQUw7DQo+ICsNCj4gIAkJZmxvd19hY3QuYWN0aW9uIHw9
+IE1MWDVfRkxPV19DT05URVhUX0FDVElPTl9DT1VOVDsNCj4gIAl9DQo+IA0KPiBAQCAtNTk4LDcg
+KzYxOSwxMSBAQCBERUNMQVJFX1VWRVJCU19OQU1FRF9NRVRIT0QoDQo+ICAJVVZFUkJTX0FUVFJf
+SURSU19BUlIoTUxYNV9JQl9BVFRSX0NSRUFURV9GTE9XX0FSUl9DT1VOVEVSU19ERVZYLA0KPiAg
+CQkJICAgICBNTFg1X0lCX09CSkVDVF9ERVZYX09CSiwNCj4gIAkJCSAgICAgVVZFUkJTX0FDQ0VT
+U19SRUFELCAxLCAxLA0KPiAtCQkJICAgICBVQV9PUFRJT05BTCkpOw0KPiArCQkJICAgICBVQV9P
+UFRJT05BTCksDQo+ICsJVVZFUkJTX0FUVFJfUFRSX0lOKE1MWDVfSUJfQVRUUl9DUkVBVEVfRkxP
+V19BUlJfQ09VTlRFUlNfREVWWF9PRkZTRVQsDQo+ICsJCQkgICBVVkVSQlNfQVRUUl9NSU5fU0la
+RShzaXplb2YodTMyKSksDQo+ICsJCQkgICBVQV9PUFRJT05BTCwNCj4gKwkJCSAgIFVBX0FMTE9D
+X0FORF9DT1BZKSk7DQo+IA0KPiAgREVDTEFSRV9VVkVSQlNfTkFNRURfTUVUSE9EX0RFU1RST1ko
+DQo+ICAJTUxYNV9JQl9NRVRIT0RfREVTVFJPWV9GTE9XLA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9pbmZpbmliYW5kL2h3L21seDUvbWx4NV9pYi5oIGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L21s
+eDUvbWx4NV9pYi5oDQo+IGluZGV4IDBiZGI4YjQ1ZWExNS4uOGNhNzJjYzg3OTdlIDEwMDY0NA0K
+PiAtLS0gYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9tbHg1X2liLmgNCj4gKysrIGIvZHJp
+dmVycy9pbmZpbmliYW5kL2h3L21seDUvbWx4NV9pYi5oDQo+IEBAIC0xMzY3LDcgKzEzNjcsNyBA
+QCBzdHJ1Y3QgbWx4NV9pYl9mbG93X2hhbmRsZXIgKm1seDVfaWJfcmF3X2ZzX3J1bGVfYWRkKA0K
+PiAgCXN0cnVjdCBtbHg1X2Zsb3dfYWN0ICpmbG93X2FjdCwgdTMyIGNvdW50ZXJfaWQsDQo+ICAJ
+dm9pZCAqY21kX2luLCBpbnQgaW5sZW4sIGludCBkZXN0X2lkLCBpbnQgZGVzdF90eXBlKTsNCj4g
+IGJvb2wgbWx4NV9pYl9kZXZ4X2lzX2Zsb3dfZGVzdCh2b2lkICpvYmosIGludCAqZGVzdF9pZCwg
+aW50ICpkZXN0X3R5cGUpOw0KPiAtYm9vbCBtbHg1X2liX2RldnhfaXNfZmxvd19jb3VudGVyKHZv
+aWQgKm9iaiwgdTMyICpjb3VudGVyX2lkKTsNCj4gK2Jvb2wgbWx4NV9pYl9kZXZ4X2lzX2Zsb3df
+Y291bnRlcih2b2lkICpvYmosIHUzMiBvZmZzZXQsIHUzMiAqY291bnRlcl9pZCk7DQo+ICBpbnQg
+bWx4NV9pYl9nZXRfZmxvd190cmVlcyhjb25zdCBzdHJ1Y3QgdXZlcmJzX29iamVjdF90cmVlX2Rl
+ZiAqKnJvb3QpOw0KPiAgdm9pZCBtbHg1X2liX2Rlc3Ryb3lfZmxvd19hY3Rpb25fcmF3KHN0cnVj
+dCBtbHg1X2liX2Zsb3dfYWN0aW9uICptYWN0aW9uKTsNCj4gICNlbHNlDQo+IGRpZmYgLS1naXQg
+YS9pbmNsdWRlL3VhcGkvcmRtYS9tbHg1X3VzZXJfaW9jdGxfY21kcy5oIGIvaW5jbHVkZS91YXBp
+L3JkbWEvbWx4NV91c2VyX2lvY3RsX2NtZHMuaA0KPiBpbmRleCBkMGRhMDcwY2YwYWIuLjIwZDg4
+MzA3Zjc1ZiAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS91YXBpL3JkbWEvbWx4NV91c2VyX2lvY3Rs
+X2NtZHMuaA0KPiArKysgYi9pbmNsdWRlL3VhcGkvcmRtYS9tbHg1X3VzZXJfaW9jdGxfY21kcy5o
+DQo+IEBAIC0xOTgsNiArMTk4LDcgQEAgZW51bSBtbHg1X2liX2NyZWF0ZV9mbG93X2F0dHJzIHsN
+Cj4gIAlNTFg1X0lCX0FUVFJfQ1JFQVRFX0ZMT1dfQVJSX0ZMT1dfQUNUSU9OUywNCj4gIAlNTFg1
+X0lCX0FUVFJfQ1JFQVRFX0ZMT1dfVEFHLA0KPiAgCU1MWDVfSUJfQVRUUl9DUkVBVEVfRkxPV19B
+UlJfQ09VTlRFUlNfREVWWCwNCj4gKwlNTFg1X0lCX0FUVFJfQ1JFQVRFX0ZMT1dfQVJSX0NPVU5U
+RVJTX0RFVlhfT0ZGU0VULA0KPiAgfTsNCj4gDQo+ICBlbnVtIG1seDVfaWJfZGVzdG95X2Zsb3df
+YXR0cnMgew0KPiAtLQ0KPiAyLjIwLjENCj4gDQo=
