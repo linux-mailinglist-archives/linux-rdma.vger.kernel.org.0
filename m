@@ -2,141 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0269EEAA3
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2019 21:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7638EEAA5
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Nov 2019 21:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729604AbfKDU6H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 4 Nov 2019 15:58:07 -0500
-Received: from hqemgate15.nvidia.com ([216.228.121.64]:8498 "EHLO
-        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729549AbfKDU6G (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 4 Nov 2019 15:58:06 -0500
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dc090dd0000>; Mon, 04 Nov 2019 12:58:05 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 04 Nov 2019 12:58:00 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Mon, 04 Nov 2019 12:58:00 -0800
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 4 Nov
- 2019 20:57:59 +0000
-Subject: Re: [PATCH v2 05/18] mm/gup: introduce pin_user_pages*() and FOLL_PIN
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Jerome Glisse <jglisse@redhat.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20191103211813.213227-1-jhubbard@nvidia.com>
- <20191103211813.213227-6-jhubbard@nvidia.com>
- <20191104173325.GD5134@redhat.com>
- <be9de35c-57e9-75c3-2e86-eae50904bbdf@nvidia.com>
- <20191104191811.GI5134@redhat.com>
- <e9656d47-b4a1-da8a-e8cc-ebcfb8cc06d6@nvidia.com>
- <20191104195248.GA7731@redhat.com>
- <25ec4bc0-caaa-2a01-2ae7-2d79663a40e1@nvidia.com>
- <20191104203153.GB7731@redhat.com> <20191104203702.GG30938@ziepe.ca>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <d0890a8b-c349-0515-2570-10e83979836b@nvidia.com>
-Date:   Mon, 4 Nov 2019 12:57:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728556AbfKDU7Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 4 Nov 2019 15:59:16 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:36615 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728510AbfKDU7Q (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 4 Nov 2019 15:59:16 -0500
+Received: by mail-qk1-f193.google.com with SMTP id d13so19076975qko.3
+        for <linux-rdma@vger.kernel.org>; Mon, 04 Nov 2019 12:59:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=N+vMMxPE1zexTcBhTUQBjEnFM7QQdjaq1YW9R4l5ACA=;
+        b=nvMSvlw7biiZ1pfK6nWpGeRxjb/qLlEauXWsgVsLny68w5JLO2+t2ewQPQN3UIteT1
+         9AVnanYTlL/rrDlez5ywA1Kaa/mczmwuDWP12nBYhMuz7Nmm8w6lnnyd300GrRTqIAo1
+         7nDV1Iqkm3knt5ctGYIZhW9CAXLKCduL7zDzAZ7iF27wNUkRDUQpN5PLka1RQqkU7+sp
+         T6p9nUtq3wLGv9ktG6iWDlFLOz+2/STeW7loSzMyFrYmNCxmyP+D5bE7mw10kLZ5shg+
+         1SeWkIvK8IIyrBK6CSyqaSXqhcumwxZw764yIfljS491asYLDOKsdG5XP4jEnrf91XN7
+         aCEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=N+vMMxPE1zexTcBhTUQBjEnFM7QQdjaq1YW9R4l5ACA=;
+        b=T2wT7TkOwZ+gg/SmrS1QuawH8EUgDzEccvJ7MgMDzu+g3YJrc1X4E/SZ1ydY84CXuk
+         qn5fXrhXOv6L9rgaajIzDvvFr7Z6XhG7bjl+oafQcXe6A3Q0+T7W2JhnhNsr+tgPqwJ5
+         Ug650RRnl7wevFhwpHeqSx5+FQtrBAMZM+S0WB18lvRNrQLNHFZxu326MnIwjY350hoy
+         W3nMUFtTZElfh/mz5Ve1Xn05Q1AiJCVgeLXHDfMlLMKePcpodzuUOm6k2AwSZ4x3RD7X
+         8TJXdMaQQdFIlrpRjMjXof3JAfYDfxRyp2RXnFOf/oCg3PiZWZdgArIppsUl9NLbhMqW
+         21dA==
+X-Gm-Message-State: APjAAAWVBzj27P3IU5ohh9pSzidx4mU2Ip4W78oERno3VMkvKsjTwxf4
+        e8WAKHEJyhV3kfbfOfmw86q6FA==
+X-Google-Smtp-Source: APXvYqw06wJFhqmxOjr9eue9Dc9+rxRZAZhQ7+cOKahyrSjjB8BXMcXir5KPt1owPT+levPxyNpcow==
+X-Received: by 2002:a05:620a:5e3:: with SMTP id z3mr1237806qkg.160.1572901155408;
+        Mon, 04 Nov 2019 12:59:15 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id q1sm6435433qti.46.2019.11.04.12.59.14
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 04 Nov 2019 12:59:14 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iRjRS-0000aI-FF; Mon, 04 Nov 2019 16:59:14 -0400
+Date:   Mon, 4 Nov 2019 16:59:14 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] IB: mlx5: no need to check return value of
+ debugfs_create functions
+Message-ID: <20191104205914.GI30938@ziepe.ca>
+References: <20191104074141.GA1292396@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20191104203702.GG30938@ziepe.ca>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1572901085; bh=EeK8bqsNfSA5i7MZV/85JI1lVmfCUv+TJ9yPJIg8GiI=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=lpq+hNDuPjPGBUnT+FF2AdBK4cieUl5iRoSXMbtLj+P8mC+Low0gZFUsCOCxgU9/5
-         DdN9/T6chOJfP5oOBc8usBmdwuRtBNEQH4F7VlCn14TGG0/SlwreoVfvdvj6xqa7/3
-         xeHneHSfMu5jFDq4HQuon77rSHBRD8GfWw0oGJaIFrobzmVoV/9zRJnxBAubrZjXN1
-         WRTqAeLXVE2rRthei7hHQyxBdSu2WAGq/7R/BGkZOAo7GutRRc+/9GEeCURW6eoDae
-         GFMlg2H2OK77XEEdt9PJrYvhIFYSBbOCAEQEdwBZOgkHGbaoMuenGmkX8oXc5haoCl
-         DibI+5WsHAIGw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191104074141.GA1292396@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/4/19 12:37 PM, Jason Gunthorpe wrote:
-> On Mon, Nov 04, 2019 at 03:31:53PM -0500, Jerome Glisse wrote:
->>> Note for Jason: the (a) or (b) items are talking about the vfio case, which is
->>> one of the two call sites that now use pin_longterm_pages_remote(), and the
->>> other one is infiniband:
->>>
->>> drivers/infiniband/core/umem_odp.c:646:         npages = pin_longterm_pages_remote(owning_process, owning_mm,
->>> drivers/vfio/vfio_iommu_type1.c:353:            ret = pin_longterm_pages_remote(NULL, mm, vaddr, 1,
->>
->> vfio should be reverted until it can be properly implemented.
->> The issue is that when you fix the implementation you might
->> break vfio existing user and thus regress the kernel from user
->> point of view. So i rather have the change to vfio reverted,
->> i believe it was not well understood when it got upstream,
->> between in my 5.4 tree it is still gup_remote not longterm.
+On Mon, Nov 04, 2019 at 08:41:41AM +0100, Greg Kroah-Hartman wrote:
+> When calling debugfs functions, there is no need to ever check the
+> return value.  The function can work or not, but the code logic should
+> never do something different based on this.
 > 
-> It is clearly a bug, vfio must use LONGTERM, and does right above this
-> remote call:
+> Cc: Leon Romanovsky <leon@kernel.org>
+> Cc: Doug Ledford <dledford@redhat.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>  drivers/infiniband/hw/mlx5/main.c    | 62 +++++++---------------------
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h |  9 +---
+>  2 files changed, 16 insertions(+), 55 deletions(-)
 > 
->         if (mm == current->mm) {
->                 ret = get_user_pages(vaddr, 1, flags | FOLL_LONGTERM, page,
->                                      vmas);
->         } else {
->                 ret = get_user_pages_remote(NULL, mm, vaddr, 1, flags, page,
->                                             vmas, NULL);
-> 
-> 
-> I'm not even sure that it really makes any sense to build a 'if' like
-> that, surely just always call remote??
-> 
+> Note, I kind of need to take this through my tree now as I broke the
+> build due to me changing the use of debugfs_create_atomic_t() in my
+> tree and not noticing this being used here.  Sorry about that, any
+> objections?
 
+I think it is fine, I don't forsee conflicts here at this point.
 
-Right, and I thought about this when converting, and realized that the above 
-code is working around the current gup.c limitations, which are "cannot support
-gup remote with FOLL_LONGTERM".
+To be clear, the build is broken in your tree and in linux-next?
 
-Given that observation, the code is getting itself some FOLL_LONGTERM support
-for the non-remote case, and only hitting the limitation if the mm really is
-non-current.
+> And 0-day seems really broken to have missed this for the past months,
+> ugh, I need to stop relying on it...
 
-And if you look at my patch, it keeps the same behavior, while adding in the
-new wrapper calls.
+Yes, I've noticed it missing a lot of stuff now too. Not sure why
 
-So...thoughts, preferences?
-
-
-thanks,
-
-John Hubbard
-NVIDIA
+Jason
