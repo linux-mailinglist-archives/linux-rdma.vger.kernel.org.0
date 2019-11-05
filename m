@@ -2,187 +2,183 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CEEEEF239
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2019 01:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDF1EF342
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2019 03:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729737AbfKEAsX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 4 Nov 2019 19:48:23 -0500
-Received: from mail-eopbgr40078.outbound.protection.outlook.com ([40.107.4.78]:8256
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        id S1729837AbfKECIC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 4 Nov 2019 21:08:02 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5264 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729443AbfKEAsX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 4 Nov 2019 19:48:23 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VveCAZu5BC1d5AT8gqQIV40/6DcXzhv6ootwyh/dvFsIPnrS7RhbojwEna0ErXYo6OJU1JVPWH8EVOESGo8rqx4/I9w4/52S8tdkh8IMoVMBuvnjtQ0iXjnYUp8dHtWSWIsQU6oJBIy64MoU7y/ndlBHal7i0Q2d6VMRm8PsSX60qwU7ARCKNGrsW2K080awXID0kHnb8RSLf+9T3x1uPsVB3uTXpMrMbffAby3zVJ2z0nDSQA0SQRtWxUcCXRQAECWPqzyV0lCH6sjxW1CqFFuOTIsVgrDr8nRvcVSGsBMMWcNqmHpFb8HhvU8kqZ4LJl9jj70J4boGdDZa4Ulo/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E3AcGgE295wPfkQ8WQ/NJGalyuIcE86QnkJKbzGU3m4=;
- b=PNnA70YRuXGVk+Kvu+3PcpHeEtmpNKNFtdUpQU7SSQHAgJ7EHAb4kN2ds6RWxrtkgGkEHTRNxk59OF4/Ge0of2+j0Ewm+j72DX+VgcyqRihULG4XtL/IHVz3kVO9XTtELP3QZUkzBc8mLM+Jo0m5dVZ1unSmktazgejMUo/ScyEs9VSEfkc2+j9prKnmmW5QCj//TFxfOUAperUS+1xYrjY3sI7RO0nhHkRjYnYrv+IBrBIvBQ8rFTdKCxx7VYclFlduSjHcJtMxoxJ9l51TgQ6ik334S0bxAC3sMD7mZEqpeqq8JMSoMpTJO/jzDiTkCsXNyam8uAIgSigdoW5jCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E3AcGgE295wPfkQ8WQ/NJGalyuIcE86QnkJKbzGU3m4=;
- b=Z85kf0VAZ/Ets6AXeHdsw4FjDHpfXCalGKrjZyvicfSOpLgIYJLTWpMmsNhb6xzwTvl7NNUp3ph7sDH0BB/pNiK6AQuK1M/+i62nF9UdlUlecH+SYtKCjvL4jfK64RwiAk3WxV+JR5e6RtRE+nUXKXlZg2WIyGyqEmWO5jFo7OY=
-Received: from VI1PR05MB3342.eurprd05.prod.outlook.com (10.170.238.143) by
- VI1PR05MB6128.eurprd05.prod.outlook.com (20.178.205.26) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2408.24; Tue, 5 Nov 2019 00:48:16 +0000
-Received: from VI1PR05MB3342.eurprd05.prod.outlook.com
- ([fe80::60cb:2e60:375e:8670]) by VI1PR05MB3342.eurprd05.prod.outlook.com
- ([fe80::60cb:2e60:375e:8670%4]) with mapi id 15.20.2408.024; Tue, 5 Nov 2019
- 00:48:16 +0000
-From:   Mark Bloch <markb@mellanox.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] IB: mlx5: no need to check return value of debugfs_create
- functions
-Thread-Topic: [PATCH] IB: mlx5: no need to check return value of
- debugfs_create functions
-Thread-Index: AQHVkuNSu/GyPpr3oU65xoNBaZChdqd7v5gA
-Date:   Tue, 5 Nov 2019 00:48:16 +0000
-Message-ID: <50a30aa3-3924-4fd1-f644-2fd2b184ec0e@mellanox.com>
-References: <20191104074141.GA1292396@kroah.com>
-In-Reply-To: <20191104074141.GA1292396@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR1701CA0021.namprd17.prod.outlook.com
- (2603:10b6:301:14::31) To VI1PR05MB3342.eurprd05.prod.outlook.com
- (2603:10a6:802:1d::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=markb@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [208.186.24.68]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 145d671f-728a-4787-8ded-08d76189d815
-x-ms-traffictypediagnostic: VI1PR05MB6128:
-x-microsoft-antispam-prvs: <VI1PR05MB6128611A67018DE1830BE431D27E0@VI1PR05MB6128.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0212BDE3BE
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(376002)(39860400002)(346002)(136003)(366004)(189003)(199004)(26005)(66946007)(110136005)(76176011)(305945005)(86362001)(486006)(6246003)(14454004)(186003)(478600001)(446003)(11346002)(476003)(2616005)(6436002)(256004)(52116002)(8936002)(81156014)(229853002)(81166006)(66066001)(8676002)(4326008)(316002)(64756008)(66476007)(66556008)(66446008)(5660300002)(99286004)(2906002)(7736002)(3846002)(6506007)(6116002)(53546011)(386003)(36756003)(31686004)(55236004)(102836004)(31696002)(54906003)(71190400001)(71200400001)(6512007)(25786009)(6486002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6128;H:VI1PR05MB3342.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8qfYYxzIqLyrnSjjJlny11uN3YkeM19NoXB0KvKJ9jIsdT1+S0alM79pNFf2KadCUgXxqrghJBE2CxdlKFr2HNNrNdJ/vYjS8z9yWoHiCav5xmsDaX8u2FcegPwWlOVKnrXYYL/b1Xt0LP9Vtk7IBIfPFM3+5DCVtB1F5806fH8EGnlITSIOKkdP8Gbk7MaFIdqgad8Wftd7TgjO9tj8NAZ2NFxGSV2XYw8zi/mb9rehCsnk++okauM9+hUEF8maZ0iGxA+vn48JB5zVBlwaD0fWNZzsLlLucSkRGKKICYmvivKg5cTfivW0XTIoZOE2QksA+wNLQ7fU10QQ2iCsAxxBYppuMJgAUtdat4FSePGMZfKHFFTKssNZuY3zwfNakMhexyKh7sD/v/Bh/NCUdwi4ZMmSlVvBfgWSndNWoXkv2D/jpGVfvIXzHiI6ZWai
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <FF3301372338564B90D5F451B1219EFF@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1729428AbfKECIC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 4 Nov 2019 21:08:02 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 924F661ECE1378BEFE54;
+        Tue,  5 Nov 2019 10:07:57 +0800 (CST)
+Received: from [127.0.0.1] (10.74.223.196) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.439.0; Tue, 5 Nov 2019
+ 10:07:50 +0800
+Subject: Re: [PATCH for-next] RDMA/hns: Bugfix for flush cqe in case softirq
+ and multi-process
+From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>, <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>, <jgg@ziepe.ca>, <linuxarm@huawei.com>
+References: <1567686671-4331-1-git-send-email-liweihang@hisilicon.com>
+ <20190908080303.GC26697@unreal>
+ <f8f29a6a-b473-6c89-8ec7-092fd53aea16@huawei.com>
+ <20190910075216.GX6601@unreal>
+ <94ad1f56-afc6-ec78-4aa2-85d03c644031@huawei.com>
+ <0d4ce391-6619-783d-55a8-fa2524af7b9c@huawei.com>
+ <20190923050125.GK14368@unreal>
+ <1224a3a0-50fb-dd6a-f22e-833e74ec77c3@huawei.com>
+ <f1845894-a5c3-9630-15c2-6e1d806071e1@huawei.com>
+ <20191015080036.GC6957@unreal>
+ <ae1e81ba-cdd1-c1c5-a585-b0bfe9936000@huawei.com>
+Message-ID: <2a0ae88d-908f-df4b-11ea-26e639b7b338@huawei.com>
+Date:   Tue, 5 Nov 2019 10:06:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.1
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 145d671f-728a-4787-8ded-08d76189d815
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2019 00:48:16.2827
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /Kz7+uZUcGWkrBv7htsM/Xp5HyWXmmQN36Amc7nR1yJi6Trvbm6nPE+4wcuTZUOO/t8BRWEZfa+OFUy9+H6xvA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6128
+In-Reply-To: <ae1e81ba-cdd1-c1c5-a585-b0bfe9936000@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.223.196]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCk9uIDExLzMvMTkgMTE6NDEgUE0sIEdyZWcgS3JvYWgtSGFydG1hbiB3cm90ZToNCj4gV2hl
-biBjYWxsaW5nIGRlYnVnZnMgZnVuY3Rpb25zLCB0aGVyZSBpcyBubyBuZWVkIHRvIGV2ZXIgY2hl
-Y2sgdGhlDQo+IHJldHVybiB2YWx1ZS4gIFRoZSBmdW5jdGlvbiBjYW4gd29yayBvciBub3QsIGJ1
-dCB0aGUgY29kZSBsb2dpYyBzaG91bGQNCj4gbmV2ZXIgZG8gc29tZXRoaW5nIGRpZmZlcmVudCBi
-YXNlZCBvbiB0aGlzLg0KPiANCj4gQ2M6IExlb24gUm9tYW5vdnNreSA8bGVvbkBrZXJuZWwub3Jn
-Pg0KPiBDYzogRG91ZyBMZWRmb3JkIDxkbGVkZm9yZEByZWRoYXQuY29tPg0KPiBDYzogSmFzb24g
-R3VudGhvcnBlIDxqZ2dAemllcGUuY2E+DQo+IFNpZ25lZC1vZmYtYnk6IEdyZWcgS3JvYWgtSGFy
-dG1hbiA8Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+DQo+IC0tLQ0KPiAgZHJpdmVycy9pbmZp
-bmliYW5kL2h3L21seDUvbWFpbi5jICAgIHwgNjIgKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQ0KPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvbWx4NV9pYi5oIHwgIDkgKy0tLQ0KPiAg
-MiBmaWxlcyBjaGFuZ2VkLCAxNiBpbnNlcnRpb25zKCspLCA1NSBkZWxldGlvbnMoLSkNCj4gDQo+
-IE5vdGUsIEkga2luZCBvZiBuZWVkIHRvIHRha2UgdGhpcyB0aHJvdWdoIG15IHRyZWUgbm93IGFz
-IEkgYnJva2UgdGhlDQo+IGJ1aWxkIGR1ZSB0byBtZSBjaGFuZ2luZyB0aGUgdXNlIG9mIGRlYnVn
-ZnNfY3JlYXRlX2F0b21pY190KCkgaW4gbXkNCj4gdHJlZSBhbmQgbm90IG5vdGljaW5nIHRoaXMg
-YmVpbmcgdXNlZCBoZXJlLiAgU29ycnkgYWJvdXQgdGhhdCwgYW55DQo+IG9iamVjdGlvbnM/DQo+
-IA0KPiBBbmQgMC1kYXkgc2VlbXMgcmVhbGx5IGJyb2tlbiB0byBoYXZlIG1pc3NlZCB0aGlzIGZv
-ciB0aGUgcGFzdCBtb250aHMsDQo+IHVnaCwgSSBuZWVkIHRvIHN0b3AgcmVseWluZyBvbiBpdC4u
-Lg0KPiANCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9tYWlu
-LmMgYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9tYWluLmMNCj4gaW5kZXggODMxNTM5NDE5
-YzMwLi4wNTlkYjA2MTA0NDUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvaW5maW5pYmFuZC9ody9t
-bHg1L21haW4uYw0KPiArKysgYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9tYWluLmMNCj4g
-QEAgLTU3MTAsMTEgKzU3MTAsMTAgQEAgc3RhdGljIGludCBtbHg1X2liX3JuX2dldF9wYXJhbXMo
-c3RydWN0IGliX2RldmljZSAqZGV2aWNlLCB1OCBwb3J0X251bSwNCj4gIA0KPiAgc3RhdGljIHZv
-aWQgZGVsYXlfZHJvcF9kZWJ1Z2ZzX2NsZWFudXAoc3RydWN0IG1seDVfaWJfZGV2ICpkZXYpDQo+
-ICB7DQo+IC0JaWYgKCFkZXYtPmRlbGF5X2Ryb3AuZGJnKQ0KPiArCWlmICghZGV2LT5kZWxheV9k
-cm9wLmRpcl9kZWJ1Z2ZzKQ0KDQpTaG91bGRuJ3QgdGhpcyBiZToNCmlmIChJU19FUlIoZGV2LT5k
-ZWxheV9kcm9wLmRpcl9kZWJ1Z2ZzKSkNCglyZXR1cm47DQo/DQo+ICAJCXJldHVybjsNCj4gLQlk
-ZWJ1Z2ZzX3JlbW92ZV9yZWN1cnNpdmUoZGV2LT5kZWxheV9kcm9wLmRiZy0+ZGlyX2RlYnVnZnMp
-Ow0KPiAtCWtmcmVlKGRldi0+ZGVsYXlfZHJvcC5kYmcpOw0KPiAtCWRldi0+ZGVsYXlfZHJvcC5k
-YmcgPSBOVUxMOw0KPiArCWRlYnVnZnNfcmVtb3ZlX3JlY3Vyc2l2ZShkZXYtPmRlbGF5X2Ryb3Au
-ZGlyX2RlYnVnZnMpOw0KPiArCWRldi0+ZGVsYXlfZHJvcC5kaXJfZGVidWdmcyA9IE5VTEw7DQoN
-ClRoaW5raW5nIGFib3V0IHRoaXMgbW9yZSwgd2UgYWxyZWFkeSBkbyBzb21ldGhpbmcgbGlrZSB0
-aGlzOg0KaWYgKElTX0VSUl9PUl9OVUxMKGRlbnRyeSkpDQoJCXJldHVybjsNCmluc2lkZSBkZWJ1
-Z2ZzX3JlbW92ZV9yZWN1cnNpdmUoKSwgc28gdGhpcyBlbnRpcmUgZnVuY3Rpb24gY2FuIGJlIHJl
-ZHVjZWQNCnRvIGp1c3QgY2FsbGluZyBkZWJ1Z2ZzX3JlbW92ZV9yZWN1cnNpdmUoKS4NCg0KTWFy
-aw0KDQo+ICB9DQo+ICANCj4gIHN0YXRpYyB2b2lkIGNhbmNlbF9kZWxheV9kcm9wKHN0cnVjdCBt
-bHg1X2liX2RldiAqZGV2KQ0KPiBAQCAtNTc2NSw1MiArNTc2NCwyMiBAQCBzdGF0aWMgY29uc3Qg
-c3RydWN0IGZpbGVfb3BlcmF0aW9ucyBmb3BzX2RlbGF5X2Ryb3BfdGltZW91dCA9IHsNCj4gIAku
-cmVhZAk9IGRlbGF5X2Ryb3BfdGltZW91dF9yZWFkLA0KPiAgfTsNCj4gIA0KPiAtc3RhdGljIGlu
-dCBkZWxheV9kcm9wX2RlYnVnZnNfaW5pdChzdHJ1Y3QgbWx4NV9pYl9kZXYgKmRldikNCj4gK3N0
-YXRpYyB2b2lkIGRlbGF5X2Ryb3BfZGVidWdmc19pbml0KHN0cnVjdCBtbHg1X2liX2RldiAqZGV2
-KQ0KPiAgew0KPiAtCXN0cnVjdCBtbHg1X2liX2RiZ19kZWxheV9kcm9wICpkYmc7DQo+ICsJc3Ry
-dWN0IGRlbnRyeSAqcm9vdDsNCj4gIA0KPiAgCWlmICghbWx4NV9kZWJ1Z2ZzX3Jvb3QpDQo+IC0J
-CXJldHVybiAwOw0KPiAtDQo+IC0JZGJnID0ga3phbGxvYyhzaXplb2YoKmRiZyksIEdGUF9LRVJO
-RUwpOw0KPiAtCWlmICghZGJnKQ0KPiAtCQlyZXR1cm4gLUVOT01FTTsNCj4gLQ0KPiAtCWRldi0+
-ZGVsYXlfZHJvcC5kYmcgPSBkYmc7DQo+IC0NCj4gLQlkYmctPmRpcl9kZWJ1Z2ZzID0NCj4gLQkJ
-ZGVidWdmc19jcmVhdGVfZGlyKCJkZWxheV9kcm9wIiwNCj4gLQkJCQkgICBkZXYtPm1kZXYtPnBy
-aXYuZGJnX3Jvb3QpOw0KPiAtCWlmICghZGJnLT5kaXJfZGVidWdmcykNCj4gLQkJZ290byBvdXRf
-ZGVidWdmczsNCj4gLQ0KPiAtCWRiZy0+ZXZlbnRzX2NudF9kZWJ1Z2ZzID0NCj4gLQkJZGVidWdm
-c19jcmVhdGVfYXRvbWljX3QoIm51bV90aW1lb3V0X2V2ZW50cyIsIDA0MDAsDQo+IC0JCQkJCWRi
-Zy0+ZGlyX2RlYnVnZnMsDQo+IC0JCQkJCSZkZXYtPmRlbGF5X2Ryb3AuZXZlbnRzX2NudCk7DQo+
-IC0JaWYgKCFkYmctPmV2ZW50c19jbnRfZGVidWdmcykNCj4gLQkJZ290byBvdXRfZGVidWdmczsN
-Cj4gLQ0KPiAtCWRiZy0+cnFzX2NudF9kZWJ1Z2ZzID0NCj4gLQkJZGVidWdmc19jcmVhdGVfYXRv
-bWljX3QoIm51bV9ycXMiLCAwNDAwLA0KPiAtCQkJCQlkYmctPmRpcl9kZWJ1Z2ZzLA0KPiAtCQkJ
-CQkmZGV2LT5kZWxheV9kcm9wLnJxc19jbnQpOw0KPiAtCWlmICghZGJnLT5ycXNfY250X2RlYnVn
-ZnMpDQo+IC0JCWdvdG8gb3V0X2RlYnVnZnM7DQo+IC0NCj4gLQlkYmctPnRpbWVvdXRfZGVidWdm
-cyA9DQo+IC0JCWRlYnVnZnNfY3JlYXRlX2ZpbGUoInRpbWVvdXQiLCAwNjAwLA0KPiAtCQkJCSAg
-ICBkYmctPmRpcl9kZWJ1Z2ZzLA0KPiAtCQkJCSAgICAmZGV2LT5kZWxheV9kcm9wLA0KPiAtCQkJ
-CSAgICAmZm9wc19kZWxheV9kcm9wX3RpbWVvdXQpOw0KPiAtCWlmICghZGJnLT50aW1lb3V0X2Rl
-YnVnZnMpDQo+IC0JCWdvdG8gb3V0X2RlYnVnZnM7DQo+ICsJCXJldHVybjsNCj4gIA0KPiAtCXJl
-dHVybiAwOw0KPiArCXJvb3QgPSBkZWJ1Z2ZzX2NyZWF0ZV9kaXIoImRlbGF5X2Ryb3AiLCBkZXYt
-Pm1kZXYtPnByaXYuZGJnX3Jvb3QpOw0KPiArCWRldi0+ZGVsYXlfZHJvcC5kaXJfZGVidWdmcyA9
-IHJvb3Q7DQo+ICANCj4gLW91dF9kZWJ1Z2ZzOg0KPiAtCWRlbGF5X2Ryb3BfZGVidWdmc19jbGVh
-bnVwKGRldik7DQo+IC0JcmV0dXJuIC1FTk9NRU07DQo+ICsJZGVidWdmc19jcmVhdGVfYXRvbWlj
-X3QoIm51bV90aW1lb3V0X2V2ZW50cyIsIDA0MDAsIHJvb3QsDQo+ICsJCQkJJmRldi0+ZGVsYXlf
-ZHJvcC5ldmVudHNfY250KTsNCj4gKwlkZWJ1Z2ZzX2NyZWF0ZV9hdG9taWNfdCgibnVtX3JxcyIs
-IDA0MDAsIHJvb3QsDQo+ICsJCQkJJmRldi0+ZGVsYXlfZHJvcC5ycXNfY250KTsNCj4gKwlkZWJ1
-Z2ZzX2NyZWF0ZV9maWxlKCJ0aW1lb3V0IiwgMDYwMCwgcm9vdCwgJmRldi0+ZGVsYXlfZHJvcCwN
-Cj4gKwkJCSAgICAmZm9wc19kZWxheV9kcm9wX3RpbWVvdXQpOw0KPiAgfQ0KPiAgDQo+ICBzdGF0
-aWMgdm9pZCBpbml0X2RlbGF5X2Ryb3Aoc3RydWN0IG1seDVfaWJfZGV2ICpkZXYpDQo+IEBAIC01
-ODI2LDggKzU3OTUsNyBAQCBzdGF0aWMgdm9pZCBpbml0X2RlbGF5X2Ryb3Aoc3RydWN0IG1seDVf
-aWJfZGV2ICpkZXYpDQo+ICAJYXRvbWljX3NldCgmZGV2LT5kZWxheV9kcm9wLnJxc19jbnQsIDAp
-Ow0KPiAgCWF0b21pY19zZXQoJmRldi0+ZGVsYXlfZHJvcC5ldmVudHNfY250LCAwKTsNCj4gIA0K
-PiAtCWlmIChkZWxheV9kcm9wX2RlYnVnZnNfaW5pdChkZXYpKQ0KPiAtCQltbHg1X2liX3dhcm4o
-ZGV2LCAiRmFpbGVkIHRvIGluaXQgZGVsYXkgZHJvcCBkZWJ1Z2ZzXG4iKTsNCj4gKwlkZWxheV9k
-cm9wX2RlYnVnZnNfaW5pdChkZXYpOw0KPiAgfQ0KPiAgDQo+ICBzdGF0aWMgdm9pZCBtbHg1X2li
-X3VuYmluZF9zbGF2ZV9wb3J0KHN0cnVjdCBtbHg1X2liX2RldiAqaWJkZXYsDQo+IGRpZmYgLS1n
-aXQgYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9tbHg1X2liLmggYi9kcml2ZXJzL2luZmlu
-aWJhbmQvaHcvbWx4NS9tbHg1X2liLmgNCj4gaW5kZXggMWE5OGVlMmUwMWM0Li41NWNlNTk5ZGI4
-MDMgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvaW5maW5pYmFuZC9ody9tbHg1L21seDVfaWIuaA0K
-PiArKysgYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9tbHg1X2liLmgNCj4gQEAgLTc5Miwx
-MyArNzkyLDYgQEAgZW51bSB7DQo+ICAJTUxYNV9NQVhfREVMQVlfRFJPUF9USU1FT1VUX01TID0g
-MTAwLA0KPiAgfTsNCj4gIA0KPiAtc3RydWN0IG1seDVfaWJfZGJnX2RlbGF5X2Ryb3Agew0KPiAt
-CXN0cnVjdCBkZW50cnkJCSpkaXJfZGVidWdmczsNCj4gLQlzdHJ1Y3QgZGVudHJ5CQkqcnFzX2Nu
-dF9kZWJ1Z2ZzOw0KPiAtCXN0cnVjdCBkZW50cnkJCSpldmVudHNfY250X2RlYnVnZnM7DQo+IC0J
-c3RydWN0IGRlbnRyeQkJKnRpbWVvdXRfZGVidWdmczsNCj4gLX07DQo+IC0NCj4gIHN0cnVjdCBt
-bHg1X2liX2RlbGF5X2Ryb3Agew0KPiAgCXN0cnVjdCBtbHg1X2liX2RldiAgICAgKmRldjsNCj4g
-IAlzdHJ1Y3Qgd29ya19zdHJ1Y3QJZGVsYXlfZHJvcF93b3JrOw0KPiBAQCAtODA4LDcgKzgwMSw3
-IEBAIHN0cnVjdCBtbHg1X2liX2RlbGF5X2Ryb3Agew0KPiAgCWJvb2wJCQlhY3RpdmF0ZTsNCj4g
-IAlhdG9taWNfdAkJZXZlbnRzX2NudDsNCj4gIAlhdG9taWNfdAkJcnFzX2NudDsNCj4gLQlzdHJ1
-Y3QgbWx4NV9pYl9kYmdfZGVsYXlfZHJvcCAqZGJnOw0KPiArCXN0cnVjdCBkZW50cnkJCSpkaXJf
-ZGVidWdmczsNCj4gIH07DQo+ICANCj4gIGVudW0gbWx4NV9pYl9zdGFnZXMgew0KPiANCg==
+
+
+On 2019/10/28 17:34, Liuyixian (Eason) wrote:
+> 
+> 
+> On 2019/10/15 16:00, Leon Romanovsky wrote:
+>> On Sat, Oct 12, 2019 at 11:53:36AM +0800, Liuyixian (Eason) wrote:
+>>>
+>>>
+>>> On 2019/9/24 11:54, Liuyixian (Eason) wrote:
+>>>>
+>>>>
+>>>> On 2019/9/23 13:01, Leon Romanovsky wrote:
+>>>>> On Fri, Sep 20, 2019 at 11:55:56AM +0800, Liuyixian (Eason) wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 2019/9/11 21:17, Liuyixian (Eason) wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> On 2019/9/10 15:52, Leon Romanovsky wrote:
+>>>>>>>> On Tue, Sep 10, 2019 at 02:40:20PM +0800, Liuyixian (Eason) wrote:
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> On 2019/9/8 16:03, Leon Romanovsky wrote:
+>>>>>>>>>> On Thu, Sep 05, 2019 at 08:31:11PM +0800, Weihang Li wrote:
+>>>>>>>>>>> From: Yixian Liu <liuyixian@huawei.com>
+>>>>>>>>>>>
+>>>>>>>>>>> Hip08 has the feature flush cqe, which help to flush wqe in workqueue
+>>>>>>>>>>> (sq and rq) when error happened by transmitting producer index with
+>>>>>>>>>>> mailbox to hardware. Flush cqe is emplemented in post send and recv
+>>>>>>>>>>> verbs. However, under NVMe cases, these verbs will be called under
+>>>>>>>>>>> softirq context, and it will lead to following calltrace with
+>>>>>>>>>>> current driver as mailbox used by flush cqe can go to sleep.
+>>>>>>>>>>>
+>>>>>>>>>>> This patch solves this problem by using workqueue to do flush cqe,
+>>>>>>>>>>
+>>>>>>>>>> Unbelievable, almost every bug in this driver is solved by introducing
+>>>>>>>>>> workqueue. You should fix "sleep in flush path" issue and not by adding
+>>>>>>>>>> new workqueue.
+>>>>>>>>>>
+>>>>>>>>> Hi Leon,
+>>>>>>>>>
+>>>>>>>>> Thanks for the comment.
+>>>>>>>>> Up to now, for hip08, only one place use workqueue in hns_roce_hw_v2.c
+>>>>>>>>> where for irq prints.
+>>>>>>>>
+>>>>>>>> Thanks to our lack of desire to add more workqueues and previous patches
+>>>>>>>> which removed extra workqueues from the driver.
+>>>>>>>>
+>>>>>>> Thanks, I see.
+>>>>>>>
+>>>>>>>>>
+>>>>>>>>> The solution for flush cqe in this patch is as follow:
+>>>>>>>>> While flush cqe should be implement, the driver should modify qp to error state
+>>>>>>>>> through mailbox with the newest product index of sq and rq, the hardware then
+>>>>>>>>> can flush all outstanding wqes in sq and rq.
+>>>>>>>>>
+>>>>>>>>> That's the whole mechanism of flush cqe, also is the flush path. We can't
+>>>>>>>>> change neither mailbox sleep attribute or flush cqe occurred in post send/recv.
+>>>>>>>>> To avoid the calltrace of flush cqe in post verbs under NVMe softirq,
+>>>>>>>>> use workqueue for flush cqe seems reasonable.
+>>>>>>>>>
+>>>>>>>>> As far as I know, there is no other alternative solution for this situation.
+>>>>>>>>> I will be very grateful if you reminder me more information.
+>>>>>>>>
+>>>>>>>> ib_drain_rq/ib_drain_sq/ib_drain_qp????
+>>>>>>>>
+>>>>>>> Hi Leon,
+>>>>>>>
+>>>>>>> I think these interfaces are designed for application to check that all wqes
+>>>>>>> have been processed by hardware, so called drain or flush. However, it is not
+>>>>>>> the same as the flush in this patch. The solution in this patch is used
+>>>>>>> to help the hardware generate flush cqes for outstanding wqes while qp error.
+>>>>>>>
+>>>>>> Hi Leon,
+>>>>>>
+>>>>>> What's your opinion about above? Do you have any further comments?
+>>>>>
+>>>>> My opinion didn't change, you need to read discussions about ib_drain_*()
+>>>>> functions, how and why they were introduced. It is a way to go.
+>>>>>
+>>>>> Thanks
+>>>>
+>>>> Hi Leon,
+>>>>
+>>>> Thanks a lot! I will dig those functions for my problem.
+>>>>
+>>>
+>>> Hi Leon,
+>>>
+>>> I have analysis the mechanism of ib_drain_(qp, sq, rq), that's okay to use
+>>> it instead of our flush cqe as both of them are calling modify qp to error
+>>> state in flush path.
+>>>
+>>> However, both ib_drain_* and flush cqe will face the same problem as declared
+>>> in previous emails, that is, in NVME case, post verbs will be called under
+>>> **softirq**, which will result to calltrace as mailbox used in modify qp
+>>> (flush path) can sleep, this is not allowed under softirq.
+>>>
+>>> Thus, to resolve above calltrace (sleep in softirq), using workqueue as in
+>>> this patch seems is a reasonable solution regardless of ib_drain_qp or
+>>> flush cqe is called in the workqueue.
+>>>
+>>> I think it is not a good idea to fix sleep in flush path (actually referred
+>>> to mailbox used in modify qp) as the mailbox is such a mature mechanism.
+>>
+>> No, it is not reasonable solution.
+>>
+> 
+> Hi Leon,
+> 
+>      I have explained this issue better in another patch set and pruned other logic.
+>      Thanks a lot for your review!
+> 
+> Best regards.
+> Eason
+> 
+
+Hi Doug and Loen,
+
+I just want to make sure that you know the above mentioned patch set is on:
+https://patchwork.kernel.org/project/linux-rdma/list/?series=194423
+
+Sorry to reply your last comment so late as I analyzed all possible solutions with
+your comment, and found that I haven't describe our problem clear enough and accurate,
+thus, I made this new patch set with simple logic and detailed commit message. I hope
+I have clearly explained this problem .
+
+Thanks.
+
+
+
+
