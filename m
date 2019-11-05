@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC459EFC2A
+	by mail.lfdr.de (Postfix) with ESMTP id 48781EFC29
 	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2019 12:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388735AbfKELLw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Nov 2019 06:11:52 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6155 "EHLO huawei.com"
+        id S2388746AbfKELLv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Nov 2019 06:11:51 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6154 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388734AbfKELLv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        id S2388735AbfKELLv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
         Tue, 5 Nov 2019 06:11:51 -0500
 Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 6F17D9AF5CE12CF98B65;
+        by Forcepoint Email with ESMTP id 6A88E9008359C9F20A72;
         Tue,  5 Nov 2019 19:11:49 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.439.0; Tue, 5 Nov 2019 19:11:38 +0800
+ 14.3.439.0; Tue, 5 Nov 2019 19:11:39 +0800
 From:   Weihang Li <liweihang@hisilicon.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next 8/9] RDMA/hns: Fix non-standard error codes
-Date:   Tue, 5 Nov 2019 19:08:01 +0800
-Message-ID: <1572952082-6681-9-git-send-email-liweihang@hisilicon.com>
+Subject: [PATCH v2 for-next 9/9] RDMA/hns: Modify appropriate printings
+Date:   Tue, 5 Nov 2019 19:08:02 +0800
+Message-ID: <1572952082-6681-10-git-send-email-liweihang@hisilicon.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1572952082-6681-1-git-send-email-liweihang@hisilicon.com>
 References: <1572952082-6681-1-git-send-email-liweihang@hisilicon.com>
@@ -35,127 +35,159 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yixian Liu <liuyixian@huawei.com>
+From: Wenpeng Liang <liangwenpeng@huawei.com>
 
-It is better to return a linux error code than define a private constant.
+Modify some printings that is not in uniformed style, non-standard or with
+spelling errors.
 
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
 Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
 Signed-off-by: Weihang Li <liweihang@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_alloc.c |  4 ++--
- drivers/infiniband/hw/hns/hns_roce_cq.c    |  4 ++--
- drivers/infiniband/hw/hns/hns_roce_mr.c    | 15 ++++++++-------
- drivers/infiniband/hw/hns/hns_roce_pd.c    |  2 +-
- drivers/infiniband/hw/hns/hns_roce_srq.c   |  2 +-
- 5 files changed, 14 insertions(+), 13 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_cq.c   | 20 ++++++++++++--------
+ drivers/infiniband/hw/hns/hns_roce_main.c |  4 ++--
+ drivers/infiniband/hw/hns/hns_roce_qp.c   |  2 +-
+ drivers/infiniband/hw/hns/hns_roce_srq.c  |  8 ++++----
+ 4 files changed, 19 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_alloc.c b/drivers/infiniband/hw/hns/hns_roce_alloc.c
-index 8c063c5..da574c2 100644
---- a/drivers/infiniband/hw/hns/hns_roce_alloc.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_alloc.c
-@@ -55,7 +55,7 @@ int hns_roce_bitmap_alloc(struct hns_roce_bitmap *bitmap, unsigned long *obj)
- 			bitmap->last = 0;
- 		*obj |= bitmap->top;
- 	} else {
--		ret = -1;
-+		ret = -EINVAL;
- 	}
- 
- 	spin_unlock(&bitmap->lock);
-@@ -100,7 +100,7 @@ int hns_roce_bitmap_alloc_range(struct hns_roce_bitmap *bitmap, int cnt,
- 		}
- 		*obj |= bitmap->top;
- 	} else {
--		ret = -1;
-+		ret = -EINVAL;
- 	}
- 
- 	spin_unlock(&bitmap->lock);
 diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index 713df1f..699c987 100644
+index 699c987..e25fa19 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_cq.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -116,9 +116,9 @@ static int hns_roce_cq_alloc(struct hns_roce_dev *hr_dev, int nent,
+@@ -105,32 +105,34 @@ static int hns_roce_cq_alloc(struct hns_roce_dev *hr_dev, int nent,
+ 	mtts = hns_roce_table_find(hr_dev, mtt_table,
+ 				   hr_mtt->first_seg, &dma_handle);
+ 	if (!mtts) {
+-		dev_err(dev, "CQ alloc.Failed to find cq buf addr.\n");
++		dev_err(dev, "Failed to find mtt for CQ buf.\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (vector >= hr_dev->caps.num_comp_vectors) {
+-		dev_err(dev, "CQ alloc.Invalid vector.\n");
++		dev_err(dev, "Invalid vector(0x%x) for CQ alloc.\n", vector);
+ 		return -EINVAL;
+ 	}
  	hr_cq->vector = vector;
  
  	ret = hns_roce_bitmap_alloc(&cq_table->bitmap, &hr_cq->cqn);
--	if (ret == -1) {
-+	if (ret) {
- 		dev_err(dev, "CQ alloc.Failed to alloc index.\n");
--		return -ENOMEM;
-+		return ret;
+ 	if (ret) {
+-		dev_err(dev, "CQ alloc.Failed to alloc index.\n");
++		dev_err(dev, "Num of CQ out of range.\n");
+ 		return ret;
  	}
  
  	/* Get CQC memory HEM(Hardware Entry Memory) table */
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index 577946b..6589e28 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -83,7 +83,7 @@ static int hns_roce_buddy_alloc(struct hns_roce_buddy *buddy, int order,
- 		}
- 	}
- 	spin_unlock(&buddy->lock);
--	return -1;
-+	return -EINVAL;
- 
-  found:
- 	clear_bit(*seg, buddy->bits[o]);
-@@ -206,13 +206,14 @@ static int hns_roce_alloc_mtt_range(struct hns_roce_dev *hr_dev, int order,
+ 	ret = hns_roce_table_get(hr_dev, &cq_table->table, hr_cq->cqn);
+ 	if (ret) {
+-		dev_err(dev, "CQ alloc.Failed to get context mem.\n");
++		dev_err(dev,
++			"Get context mem failed(%d) when CQ(0x%lx) alloc.\n",
++			ret, hr_cq->cqn);
+ 		goto err_out;
  	}
  
- 	ret = hns_roce_buddy_alloc(buddy, order, seg);
--	if (ret == -1)
--		return -1;
-+	if (ret)
-+		return ret;
- 
--	if (hns_roce_table_get_range(hr_dev, table, *seg,
--				     *seg + (1 << order) - 1)) {
-+	ret = hns_roce_table_get_range(hr_dev, table, *seg,
-+				       *seg + (1 << order) - 1);
-+	if (ret) {
- 		hns_roce_buddy_free(buddy, *seg, order);
--		return -1;
-+		return ret;
+ 	ret = xa_err(xa_store(&cq_table->array, hr_cq->cqn, hr_cq, GFP_KERNEL));
+ 	if (ret) {
+-		dev_err(dev, "CQ alloc failed xa_store.\n");
++		dev_err(dev, "Failed to xa_store CQ.\n");
+ 		goto err_put;
  	}
  
- 	return 0;
-@@ -578,7 +579,7 @@ static int hns_roce_mr_alloc(struct hns_roce_dev *hr_dev, u32 pd, u64 iova,
+@@ -148,7 +150,9 @@ static int hns_roce_cq_alloc(struct hns_roce_dev *hr_dev, int nent,
+ 	ret = hns_roce_hw_create_cq(hr_dev, mailbox, hr_cq->cqn);
+ 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+ 	if (ret) {
+-		dev_err(dev, "CQ alloc.Failed to cmd mailbox.\n");
++		dev_err(dev,
++			"Send cmd mailbox failed(%d) when CQ(0x%lx) alloc.\n",
++			ret, hr_cq->cqn);
+ 		goto err_xa;
+ 	}
  
- 	/* Allocate a key for mr from mr_table */
- 	ret = hns_roce_bitmap_alloc(&hr_dev->mr_table.mtpt_bitmap, &index);
--	if (ret == -1)
-+	if (ret)
- 		return -ENOMEM;
+@@ -418,7 +422,7 @@ int hns_roce_ib_create_cq(struct ib_cq *ib_cq,
+ 	int ret;
  
- 	mr->iova = iova;			/* MR va starting addr */
-diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
-index 912b89b4..780c780 100644
---- a/drivers/infiniband/hw/hns/hns_roce_pd.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_pd.c
-@@ -96,7 +96,7 @@ int hns_roce_uar_alloc(struct hns_roce_dev *hr_dev, struct hns_roce_uar *uar)
+ 	if (cq_entries < 1 || cq_entries > hr_dev->caps.max_cqes) {
+-		dev_err(dev, "Creat CQ failed. entries=%d, max=%d\n",
++		dev_err(dev, "Create CQ failed. entries=%d, max=%d\n",
+ 			cq_entries, hr_dev->caps.max_cqes);
+ 		return -EINVAL;
+ 	}
+@@ -448,7 +452,7 @@ int hns_roce_ib_create_cq(struct ib_cq *ib_cq,
+ 	ret = hns_roce_cq_alloc(hr_dev, cq_entries, &hr_cq->hr_buf.hr_mtt,
+ 				hr_cq, vector);
+ 	if (ret) {
+-		dev_err(dev, "Creat CQ .Failed to cq_alloc.\n");
++		dev_err(dev, "Alloc CQ failed(%d).\n", ret);
+ 		goto err_dbmap;
+ 	}
  
- 	/* Using bitmap to manager UAR index */
- 	ret = hns_roce_bitmap_alloc(&hr_dev->uar_table.bitmap, &uar->logic_idx);
--	if (ret == -1)
-+	if (ret)
- 		return -ENOMEM;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index b5d196c..b9200d53 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -111,7 +111,7 @@ static int handle_en_event(struct hns_roce_dev *hr_dev, u8 port,
  
- 	if (uar->logic_idx > 0 && hr_dev->caps.phy_num_uars > 1)
+ 	netdev = hr_dev->iboe.netdevs[port];
+ 	if (!netdev) {
+-		dev_err(dev, "port(%d) can't find netdev\n", port);
++		dev_err(dev, "Can't find netdev on port(%u)!\n", port);
+ 		return -ENODEV;
+ 	}
+ 
+@@ -253,7 +253,7 @@ static int hns_roce_query_port(struct ib_device *ib_dev, u8 port_num,
+ 	net_dev = hr_dev->iboe.netdevs[port];
+ 	if (!net_dev) {
+ 		spin_unlock_irqrestore(&hr_dev->iboe.lock, flags);
+-		dev_err(dev, "find netdev %d failed!\r\n", port);
++		dev_err(dev, "Find netdev %u failed!\n", port);
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index ecfa875..b0e5e8b 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -1029,7 +1029,7 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
+ 		ret = hns_roce_create_qp_common(hr_dev, pd, init_attr, udata, 0,
+ 						hr_qp);
+ 		if (ret) {
+-			ibdev_err(ibdev, "Create RC QP 0x%06lx failed(%d)\n",
++			ibdev_err(ibdev, "Create QP 0x%06lx failed(%d)\n",
+ 				  hr_qp->qpn, ret);
+ 			kfree(hr_qp);
+ 			return ERR_PTR(ret);
 diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index d275818..96ff782 100644
+index 96ff782..a1bfa51 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_srq.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -111,7 +111,7 @@ static int hns_roce_srq_alloc(struct hns_roce_dev *hr_dev, u32 pdn, u32 cqn,
+@@ -95,8 +95,7 @@ static int hns_roce_srq_alloc(struct hns_roce_dev *hr_dev, u32 pdn, u32 cqn,
+ 				       srq->mtt.first_seg,
+ 				       &dma_handle_wqe);
+ 	if (!mtts_wqe) {
+-		dev_err(hr_dev->dev,
+-			"SRQ alloc.Failed to find srq buf addr.\n");
++		dev_err(hr_dev->dev, "Failed to find mtt for srq buf.\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -106,13 +105,14 @@ static int hns_roce_srq_alloc(struct hns_roce_dev *hr_dev, u32 pdn, u32 cqn,
+ 				       &dma_handle_idx);
+ 	if (!mtts_idx) {
+ 		dev_err(hr_dev->dev,
+-			"SRQ alloc.Failed to find idx que buf addr.\n");
++			"Failed to find mtt for srq idx queue buf.\n");
+ 		return -EINVAL;
  	}
  
  	ret = hns_roce_bitmap_alloc(&srq_table->bitmap, &srq->srqn);
--	if (ret == -1) {
-+	if (ret) {
- 		dev_err(hr_dev->dev, "SRQ alloc.Failed to alloc index.\n");
+ 	if (ret) {
+-		dev_err(hr_dev->dev, "SRQ alloc.Failed to alloc index.\n");
++		dev_err(hr_dev->dev,
++			"Failed to alloc a bit from srq bitmap.\n");
  		return -ENOMEM;
  	}
+ 
 -- 
 2.8.1
 
