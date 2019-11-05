@@ -2,78 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5CEF0010
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2019 15:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 448B8F001B
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2019 15:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728647AbfKEOlH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Nov 2019 09:41:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728417AbfKEOlG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 5 Nov 2019 09:41:06 -0500
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B4E4E21928;
-        Tue,  5 Nov 2019 14:41:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572964866;
-        bh=9qJ/t+ccqlOOrccaK8tf3z8F5EWdOnavgzrVMz4gslo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PNH8kmMPrhZlxHlCl/3wI+oWsVjfbFAZ1IMrPnTya3J36RHeGvVjzD4mhWtooGXVe
-         Fl88JkNfuNP//tOEgW4ZMAR4GzEZYvWzmU5dnjE/e8XOPyUUyIF7oNQ/AVlh3k1n6v
-         1gWOzU9R0r4M1J+bpqHhAt/8A7HoUghkwiqWOyDE=
-Date:   Tue, 5 Nov 2019 16:41:03 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Parav Pandit <parav@mellanox.com>
-Cc:     Yixian Liu <liuyixian@huawei.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linuxarm@huawei.com" <linuxarm@huawei.com>
-Subject: Re: [PATCH rdma-next] RDMA/core: Use pr_warn_ratelimited
-Message-ID: <20191105144103.GF6763@unreal>
-References: <1572925690-7336-1-git-send-email-liuyixian@huawei.com>
- <AM0PR05MB4866B3612F0AE576136EED94D17E0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+        id S1728568AbfKEOoF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Nov 2019 09:44:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34178 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725385AbfKEOoF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 5 Nov 2019 09:44:05 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 80C58AF3E;
+        Tue,  5 Nov 2019 14:44:03 +0000 (UTC)
+Subject: Re: [PATCH v2 08/15] xen/gntdev: Use select for DMA_SHARED_BUFFER
+To:     Jason Gunthorpe <jgg@ziepe.ca>, linux-mm@kvack.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com
+Cc:     linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Zhou <David1.Zhou@amd.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Petr Cvek <petrcvekcz@gmail.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        nouveau@lists.freedesktop.org, xen-devel@lists.xenproject.org,
+        Christoph Hellwig <hch@infradead.org>
+References: <20191028201032.6352-1-jgg@ziepe.ca>
+ <20191028201032.6352-9-jgg@ziepe.ca> <20191101182611.GA31478@ziepe.ca>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <66b50cf6-89ac-81c8-e29a-b34f7f38633e@suse.com>
+Date:   Tue, 5 Nov 2019 15:44:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM0PR05MB4866B3612F0AE576136EED94D17E0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20191101182611.GA31478@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 05, 2019 at 04:09:12AM +0000, Parav Pandit wrote:
-> Hi Yixian Liu,
->
-> > -----Original Message-----
-> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> > owner@vger.kernel.org> On Behalf Of Yixian Liu
-> > Sent: Monday, November 4, 2019 9:48 PM
-> > To: dledford@redhat.com; jgg@ziepe.ca
-> > Cc: Parav Pandit <parav@mellanox.com>; leon@kernel.org; linux-
-> > rdma@vger.kernel.org; linuxarm@huawei.com
-> > Subject: [PATCH rdma-next] RDMA/core: Use pr_warn_ratelimited
-> >
-> > This warning can be triggered easily when adding a large number of VLANs
-> > while the capacity of GID table is small.
-> >
-> > Fixes: 598ff6bae689 ("IB/core: Refactor GID modify code for RoCE")
-> > Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-> > ---
-> >  drivers/infiniband/core/cache.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> Thanks for the patch. However, vlan netdevice addition is an administrative operation allowed to process which has CAP_NET_ADMIN privilege.
-> So large number of VLAN addition by a user for a RoCE device whose GID capacity is small is constrained operation.
-> Therefore, we shouldn't be rate limiting it.
-> By rate limiting we miss the information about any bugs in GID cache management.
-> At best we can convert it to dev_dbg() so that we still get the necessary debug information when needed.
-> I wanted to convert them trace functions which will allow us to more debug level prints such as netdev name, vlan etc.
-> I think I remember comment from Leon too while working on it, but it was long haul that time.
+On 01.11.19 19:26, Jason Gunthorpe wrote:
+> On Mon, Oct 28, 2019 at 05:10:25PM -0300, Jason Gunthorpe wrote:
+>> From: Jason Gunthorpe <jgg@mellanox.com>
+>>
+>> DMA_SHARED_BUFFER can not be enabled by the user (it represents a library
+>> set in the kernel). The kconfig convention is to use select for such
+>> symbols so they are turned on implicitly when the user enables a kconfig
+>> that needs them.
+>>
+>> Otherwise the XEN_GNTDEV_DMABUF kconfig is overly difficult to enable.
+>>
+>> Fixes: 932d6562179e ("xen/gntdev: Add initial support for dma-buf UAPI")
+>> Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+>> Cc: xen-devel@lists.xenproject.org
+>> Cc: Juergen Gross <jgross@suse.com>
+>> Cc: Stefano Stabellini <sstabellini@kernel.org>
+>> Reviewed-by: Juergen Gross <jgross@suse.com>
+>> Reviewed-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+>> ---
+>>   drivers/xen/Kconfig | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> Juergen/Oleksandr/Xen Maintainers:
+> 
+> Would you take this patch through a xen related tree? The only reason
+> I had in this series is to make it easier to compile-test the gntdev
+> changes.
 
-I wanted to work on it, but it never happened.
+Yes, I can take it for 5.5.
 
-Thanks
+
+Juergen
