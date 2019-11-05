@@ -2,150 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA35EFA09
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2019 10:50:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5537EFBA4
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2019 11:43:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388171AbfKEJts (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Nov 2019 04:49:48 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:36180 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730759AbfKEJtm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Nov 2019 04:49:42 -0500
-Received: by mail-wm1-f65.google.com with SMTP id c22so19351584wmd.1
-        for <linux-rdma@vger.kernel.org>; Tue, 05 Nov 2019 01:49:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=sender:date:from:to:cc:subject:message-id:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oRi35sDRRYSuldGaopElz5IjGs2HKuOAcqpcVoq2wdY=;
-        b=KE3dP9KvcLUq0hJbOhSYMXJr4Z1Cuc2Vc3sYtj3A588K1AxiPBhNRv2jLPVvg3HpiB
-         asO9jGRsCrrAGrGXQuynbnaqIOtPdku/48txDbkC3jyEv0zbAYA99l9MmTsEF4lXmu4c
-         UlGTi/e9P81uVhAoSbMh6OU7HFW5tO869wbeU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=oRi35sDRRYSuldGaopElz5IjGs2HKuOAcqpcVoq2wdY=;
-        b=iPoWQ+W8M3dKkTmr4iighdGtPi3lAC99Gw3mlPbxk5w68RQzwRL2UIsPlh58o7p8qI
-         7l/69GE78hQSozfy8whCAZ6JQYwPWxuaS8OiC5QZYb65sxtNVVYg6IvnT6FIqHtiUssF
-         +LNSKh/ahoFMtKB+DRui59tMt3B0yjvLcdVYYInfODsfQZI5qw6/3JAfDhUSCCpM6RhB
-         dTaxpiELpKtVvNTHFqHdF1BVMt1CLLqPQ1S/KOlItBzFniSm46zW9BbAcLEnfHjxaHpj
-         ujV/gKLqdSNryUdNvFbfmPg22b2Pn+lryeDJVv6OfjJCoU4aIXIt9rhVQ/ppxCqPGd9L
-         jQZA==
-X-Gm-Message-State: APjAAAUUX9tGxtnDrd93NnHPXSKhMtO0BczoQCr2GSU79xjLmOLU156g
-        sTUTqnlDGkObF1WSD3VTjZntdQ==
-X-Google-Smtp-Source: APXvYqy+m+ZJ5zxOn/Dji3l65qB+TEfMmH5EiR/oP/iFPjGmYGokusjpTK+YoOlM7MNeuKLe8vHIRQ==
-X-Received: by 2002:a7b:c925:: with SMTP id h5mr3591415wml.115.1572947379914;
-        Tue, 05 Nov 2019 01:49:39 -0800 (PST)
-Received: from phenom.ffwll.local (212-51-149-96.fiber7.init7.net. [212.51.149.96])
-        by smtp.gmail.com with ESMTPSA id j19sm25704277wre.0.2019.11.05.01.49.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Nov 2019 01:49:39 -0800 (PST)
-Date:   Tue, 5 Nov 2019 10:49:36 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 09/19] drm/via: set FOLL_PIN via pin_user_pages_fast()
-Message-ID: <20191105094936.GZ10326@phenom.ffwll.local>
-Mail-Followup-To: John Hubbard <jhubbard@nvidia.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>, David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>, Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-References: <20191030224930.3990755-1-jhubbard@nvidia.com>
- <20191030224930.3990755-10-jhubbard@nvidia.com>
- <20191031233628.GI14771@iweiny-DESK2.sc.intel.com>
- <20191104181055.GP10326@phenom.ffwll.local>
- <48d22c77-c313-59ff-4847-bc9a9813b8a7@nvidia.com>
+        id S2388318AbfKEKng (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Nov 2019 05:43:36 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5707 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387905AbfKEKng (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 5 Nov 2019 05:43:36 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 08A08C4B30B7CD1C77F7;
+        Tue,  5 Nov 2019 18:43:34 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.439.0; Tue, 5 Nov 2019 18:43:28 +0800
+From:   Weihang Li <liweihang@hisilicon.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH for-next 0/9] RDMA/hns: Cleanups for hip08
+Date:   Tue, 5 Nov 2019 18:39:45 +0800
+Message-ID: <1572950394-42910-1-git-send-email-liweihang@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <48d22c77-c313-59ff-4847-bc9a9813b8a7@nvidia.com>
-X-Operating-System: Linux phenom 5.2.0-3-amd64 
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 04, 2019 at 11:20:38AM -0800, John Hubbard wrote:
-> On 11/4/19 10:10 AM, Daniel Vetter wrote:
-> > On Thu, Oct 31, 2019 at 04:36:28PM -0700, Ira Weiny wrote:
-> >> On Wed, Oct 30, 2019 at 03:49:20PM -0700, John Hubbard wrote:
-> >>> Convert drm/via to use the new pin_user_pages_fast() call, which sets
-> >>> FOLL_PIN. Setting FOLL_PIN is now required for code that requires
-> >>> tracking of pinned pages, and therefore for any code that calls
-> >>> put_user_page().
-> >>>
-> >>
-> >> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > No one's touching the via driver anymore, so feel free to merge this
-> > through whatever tree suits best (aka I'll drop this on the floor and
-> > forget about it now).
-> > 
-> > Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > 
-> 
-> OK, great. Yes, in fact, I'm hoping Andrew can just push the whole series
-> in through the mm tree, because that would allow it to be done in one 
-> shot, in 5.5
+These series just make cleanups without changing code logic.
 
-btw is there more? We should have a bunch more userptr stuff in various
-drivers, so was really surprised that drm/via is the only thing in your
-series.
--Daniel
+[patch 1/9 ~ 3/9] remove unused variables and structures.
+[patch 4/9 ~ 5/9] modify field and function names.
+[patch 6/9 ~ 7/9] remove dead codes to simplify functions.
+[patch 8/9] replaces non-standard return value with linux error codes.
+[patch 9/9] does some fixes on printings.
+
+Lang Cheng (3):
+  {topost} RDMA/hns: Remove unnecessary structure hns_roce_sqp
+  {topost} RDMA/hns: Simplify doorbell initialization code
+  {topost} RDMA/hns: Modify hns_roce_hw_v2_get_cfg to simplify the code
+
+Wenpeng Liang (1):
+  {topost} RDMA/hns: Modify appropriate printings
+
+Yixian Liu (4):
+  {topost} RDMA/hns: Delete unnecessary variable max_post
+  {topost} RDMA/hns: Delete unnecessary uar from hns_roce_cq
+  {topost} RDMA/hns: Modify fields of struct hns_roce_srq
+  {topost} RDMA/hns: Fix non-standard error codes
+
+Yixing Liu (1):
+  {topost} RDMA/hns: Replace not intuitive function/macro names
+
+ drivers/infiniband/hw/hns/hns_roce_alloc.c  |  4 +-
+ drivers/infiniband/hw/hns/hns_roce_cmd.h    | 14 +++----
+ drivers/infiniband/hw/hns/hns_roce_cq.c     | 51 +++++++++++-----------
+ drivers/infiniband/hw/hns/hns_roce_device.h | 22 +++-------
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c  | 12 +++---
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 37 ++++++----------
+ drivers/infiniband/hw/hns/hns_roce_main.c   |  4 +-
+ drivers/infiniband/hw/hns/hns_roce_mr.c     | 65 +++++++++++++++--------------
+ drivers/infiniband/hw/hns/hns_roce_pd.c     |  2 +-
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 18 ++++----
+ drivers/infiniband/hw/hns/hns_roce_srq.c    | 58 ++++++++++++-------------
+ 11 files changed, 132 insertions(+), 155 deletions(-)
+
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.8.1
+
