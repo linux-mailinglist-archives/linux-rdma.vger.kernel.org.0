@@ -2,178 +2,231 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3788F0590
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2019 20:00:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9DCF0634
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2019 20:44:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390798AbfKETAM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Nov 2019 14:00:12 -0500
-Received: from hqemgate15.nvidia.com ([216.228.121.64]:13342 "EHLO
-        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390404AbfKETAL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Nov 2019 14:00:11 -0500
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dc1c6bc0000>; Tue, 05 Nov 2019 11:00:12 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 05 Nov 2019 11:00:07 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 05 Nov 2019 11:00:07 -0800
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 5 Nov
- 2019 19:00:07 +0000
-Subject: Re: [PATCH v2 05/18] mm/gup: introduce pin_user_pages*() and FOLL_PIN
-To:     Mike Rapoport <rppt@kernel.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20191103211813.213227-1-jhubbard@nvidia.com>
- <20191103211813.213227-6-jhubbard@nvidia.com>
- <20191105131032.GG25005@rapoport-lnx>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <9ac948a4-59bf-2427-2007-e460aad2848a@nvidia.com>
-Date:   Tue, 5 Nov 2019 11:00:06 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2390802AbfKETor (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Nov 2019 14:44:47 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:40169 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390391AbfKETor (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Nov 2019 14:44:47 -0500
+Received: by mail-qt1-f194.google.com with SMTP id o49so30894682qta.7
+        for <linux-rdma@vger.kernel.org>; Tue, 05 Nov 2019 11:44:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=I7IXEl0XRclf7HNqaFZdNc+HQbvGc3+z7cGmGB4HFb0=;
+        b=iZn3+irLtOwjjAhkxAmC9huzZArpPZmGAzqTrQcTeWtNiO6+o6Kcy5a8NuxDzgbagq
+         o3epqUDA0axvJb57UvQIhCDfI2mA5Z0b141c1Gzk9jnxcuPG//YijNNVyXysklED5YFU
+         Tj7WuddS1hG+CV9I9M2t+mNS52Ew17GssXoeiWl+t4kJdBp9FYj+RBOkTz2FEzbUmH25
+         xIXcRkdxUk8oWv0SAuFGFu+6EMJN1ZVed4S7Urgw2zeQncKQL3djOX/maBVUxTXy21Wd
+         qSt2J9Gc+7dtQar+h2clVSOEbmI0boy7DhM4AOATbcUMIfwTq++UrUNxOu6DSdCVFY/Y
+         mEXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=I7IXEl0XRclf7HNqaFZdNc+HQbvGc3+z7cGmGB4HFb0=;
+        b=h51RntJrQ4kiE0tdkuUfaXY///2es/VOx47iX5sVvfxwzaj+eZ/EvkJg4Xyeswr/2z
+         h6ACEpw9Wzd65LK6jpLUAdoVuuXtca42BHzeLBPHwC+1p6FsCK6XBaJetxo8OyedcI5j
+         BVY/jXSCCIbaHVGnOhIkKckpIvYVc+k+sf1XPsXsWToXAPvjns9gY9g+IepTAIX4/IOV
+         MfOA8f+CnfYxQHQUdo1lxIR4z7ir6pnBtHkHgev9zdLjVMMeqy+cd84ox/EL7k4+Ruk7
+         trPCUesZfO1nUw2gSxuBWlg2E49asrkXLU9Yr/h7aSbbha9KYUaAmn32I96Vx5kkiLpk
+         OcOw==
+X-Gm-Message-State: APjAAAXbXlZaEo9wbEbRUbZPhNMneIC1nGuMktwbz1n8jtmwf/bIoOi5
+        xtXpfBoyWYVGTkomgISsdRoxUg==
+X-Google-Smtp-Source: APXvYqz2uAI/l2aplVgfj8HBXHjgwAOR/0JTTBDN1SavUiRdcKh5zQx6478FanTNSK8m7yZCE4FBfQ==
+X-Received: by 2002:ac8:5514:: with SMTP id j20mr2806672qtq.286.1572983085833;
+        Tue, 05 Nov 2019 11:44:45 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id m22sm461820qka.28.2019.11.05.11.44.45
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 05 Nov 2019 11:44:45 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iS4ku-000587-Jn; Tue, 05 Nov 2019 15:44:44 -0400
+Date:   Tue, 5 Nov 2019 15:44:44 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Michal Kalderon <michal.kalderon@marvell.com>
+Cc:     ariel.elior@marvell.com, dledford@redhat.com, galpress@amazon.com,
+        yishaih@mellanox.com, bmt@zurich.ibm.com,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v12 rdma-next 2/8] RDMA/core: Create mmap database and
+ cookie helper functions
+Message-ID: <20191105194444.GA19518@ziepe.ca>
+References: <20191030094417.16866-1-michal.kalderon@marvell.com>
+ <20191030094417.16866-3-michal.kalderon@marvell.com>
 MIME-Version: 1.0
-In-Reply-To: <20191105131032.GG25005@rapoport-lnx>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1572980412; bh=ojXJL7Jf2vtMqYP0b7gLz2fp+ItJt4NPdkhylbujo04=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=BS0Skgz5RbNv7FRT3SjRhdwpwr0ecQ8AOgMazMsduNtoC93TjDB3sb+UV4BVm8kS1
-         e2YIxx2R9GvEAZtEOkrlW3cAbcdFl/wyRSANMj//120w5PZgTkX7MC1O13jzRSXm0k
-         KFRmKs+Z0OYFmlbRMapMiylU4RVjtXOt6K/rgWvnwLDQgPciqV1nCOSRX3qgMUJrsh
-         MPxa2/es4pKZhwzhaTFebsG3i4fLxzYnNXRQBChEYKYp2xONV3pwMnS3x1UJtQUm9p
-         dbWIIJyjFTTd1aKcwIBzPf2GKUh34tHy3QJ9j5720Clm3FqPmta2g3ZZa8fKcxJoAO
-         rGK6L5pnX3YOQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191030094417.16866-3-michal.kalderon@marvell.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/5/19 5:10 AM, Mike Rapoport wrote:
-...
->> ---
->>  Documentation/vm/index.rst          |   1 +
->>  Documentation/vm/pin_user_pages.rst | 212 ++++++++++++++++++++++
-> 
-> I think it belongs to Documentation/core-api.
+On Wed, Oct 30, 2019 at 11:44:11AM +0200, Michal Kalderon wrote:
+> diff --git a/drivers/infiniband/core/ib_core_uverbs.c b/drivers/infiniband/core/ib_core_uverbs.c
+> index b74d2a2fb342..1ffc89fd5d94 100644
+> +++ b/drivers/infiniband/core/ib_core_uverbs.c
+> @@ -71,3 +71,204 @@ int rdma_user_mmap_io(struct ib_ucontext *ucontext, struct vm_area_struct *vma,
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL(rdma_user_mmap_io);
+> +
+> +/**
+> + * rdma_user_mmap_entry_get() - Get an entry from the mmap_xa.
+> + *
+> + * @ucontext: associated user context.
+> + * @key: the key received from rdma_user_mmap_entry_insert which
+> + *     is provided by user as the address to map.
+> + * @vma: the vma related to the current mmap call.
+> + *
+> + * This function is called when a user tries to mmap a key it
+> + * initially received from the driver. The key was created by
+> + * the function rdma_user_mmap_entry_insert.
+> + * This function increases the refcnt of the entry so that it won't
+> + * be deleted from the xa in the meantime.
+> + *
+> + * Return an entry if exists or NULL if there is no match.
+> + */
+> +struct rdma_user_mmap_entry *
+> +rdma_user_mmap_entry_get(struct ib_ucontext *ucontext, u64 key,
+> +			 struct vm_area_struct *vma)
 
-Done:
+This should just accept 'key' (but called pgoff for clarity), but
+since everyone has a vma a static inline wrapper should take in the
+vma
 
-diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
-index ab0eae1c153a..413f7d7c8642 100644
---- a/Documentation/core-api/index.rst
-+++ b/Documentation/core-api/index.rst
-@@ -31,6 +31,7 @@ Core utilities
-    generic-radix-tree
-    memory-allocation
-    mm-api
-+   pin_user_pages
-    gfp_mask-from-fs-io
-    timekeeping
-    boot-time-mm
+> +{
+> +	struct rdma_user_mmap_entry *entry;
+> +	u64 mmap_page;
+> +
+> +	mmap_page = key >> PAGE_SHIFT;
 
+It isn't even really 'key' here if it was shifted as that is called
+'offset'
 
-...
->> diff --git a/Documentation/vm/pin_user_pages.rst b/Documentation/vm/pin_user_pages.rst
->> new file mode 100644
->> index 000000000000..3910f49ca98c
->> --- /dev/null
->> +++ b/Documentation/vm/pin_user_pages.rst
->> @@ -0,0 +1,212 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +====================================================
->> +pin_user_pages() and related calls
->> +====================================================
-> 
-> I know this is too much to ask, but having pin_user_pages() a part of more
-> general GUP description would be really great :)
-> 
+> +	if (mmap_page > U32_MAX)
+> +		return NULL;
+> +
+> +	xa_lock(&ucontext->mmap_xa);
+> +
+> +	entry = xa_load(&ucontext->mmap_xa, mmap_page);
 
-Yes, definitely. But until I saw the reaction to the pin_user_pages() API
-family, I didn't want to write too much--it could have all been tossed out
-in favor of a whole different API. But now that we've had some initial
-reviews, I'm much more confident in being able to write about the larger 
-API set.
-
-So yes, I'll put that on my pending list.
-
-
-...
->> +This document describes the following functions: ::
->> +
->> + pin_user_pages
->> + pin_user_pages_fast
->> + pin_user_pages_remote
->> +
->> + pin_longterm_pages
->> + pin_longterm_pages_fast
->> + pin_longterm_pages_remote
->> +
->> +Basic description of FOLL_PIN
->> +=============================
->> +
->> +A new flag for get_user_pages ("gup") has been added: FOLL_PIN. FOLL_PIN has
-> 
-> Consider reading this after, say, half a year ;-)
-> 
-
-OK, OK. I knew when I wrote that that it was not going to stay new forever, but
-somehow failed to write the right thing anyway. :) 
-
-Here's a revised set of paragraphs:
-
-Basic description of FOLL_PIN
-=============================
-
-FOLL_PIN and FOLL_LONGTERM are flags that can be passed to the get_user_pages*()
-("gup") family of functions. FOLL_PIN has significant interactions and
-interdependencies with FOLL_LONGTERM, so both are covered here.
-
-Both FOLL_PIN and FOLL_LONGTERM are internal to gup, meaning that neither
-FOLL_PIN nor FOLL_LONGTERM should not appear at the gup call sites. This allows
-the associated wrapper functions  (pin_user_pages() and others) to set the
-correct combination of these flags, and to check for problems as well.
+Since each xarray entry in the range stores the same pointer this
+needs to check that mmap_page is actually the right entry, attempting
+to directly mmap the 2nd page should fail as we don't have the rest of
+the infrastructure to make that work.
 
 
-thanks,
+> +/**
+> + * rdma_user_mmap_entry_put() - Drop reference to the mmap entry
+> + *
+> + * @ucontext: associated user context.
+> + * @entry: an entry in the mmap_xa.
+> + *
+> + * This function is called when the mapping is closed if it was
+> + * an io mapping or when the driver is done with the entry for
+> + * some other reason.
+> + * Should be called after rdma_user_mmap_entry_get was called
+> + * and entry is no longer needed. This function will erase the
+> + * entry and free it if its refcnt reaches zero.
+> + */
+> +void rdma_user_mmap_entry_put(struct ib_ucontext *ucontext,
+> +			      struct rdma_user_mmap_entry *entry)
+> +{
 
-John Hubbard
-NVIDIA
+ucontext is not needed
+
+> +	kref_put(&entry->ref, rdma_user_mmap_entry_free);
+> +}
+> +EXPORT_SYMBOL(rdma_user_mmap_entry_put);
+> +
+> +/**
+> + * rdma_user_mmap_entry_remove() - Drop reference to entry and
+> + *				   mark it as invalid.
+> + *
+> + * @ucontext: associated user context.
+> + * @entry: the entry to insert into the mmap_xa
+> + */
+> +void rdma_user_mmap_entry_remove(struct ib_ucontext *ucontext,
+> +				 struct rdma_user_mmap_entry *entry)
+> +{
+
+ucontext is not needed
+
+> +/**
+> + * rdma_user_mmap_entry_insert() - Insert an entry to the mmap_xa.
+> + *
+> + * @ucontext: associated user context.
+> + * @entry: the entry to insert into the mmap_xa
+> + * @length: length of the address that will be mmapped
+> + *
+> + * This function should be called by drivers that use the rdma_user_mmap
+> + * interface for handling user mmapped addresses. The database is handled in
+> + * the core and helper functions are provided to insert entries into the
+> + * database and extract entries when the user calls mmap with the given key.
+> + * The function allocates a unique key that should be provided to user, the user
+> + * will use the key to retrieve information such as address to
+> + * be mapped and how.
+> + *
+> + * Return: 0 on success and -ENOMEM on failure
+> + */
+> +int rdma_user_mmap_entry_insert(struct ib_ucontext *ucontext,
+> +				struct rdma_user_mmap_entry *entry,
+> +				size_t length)
+> +{
+> +	struct ib_uverbs_file *ufile = ucontext->ufile;
+> +	XA_STATE(xas, &ucontext->mmap_xa, 0);
+> +	u32 xa_first, xa_last, npages;
+> +	int err, i;
+
+'i' should be u32
+
+> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> index 6a47ba85c54c..8a87c9d442bc 100644
+> +++ b/include/rdma/ib_verbs.h
+> @@ -1471,6 +1471,7 @@ struct ib_ucontext {
+>  	 * Implementation details of the RDMA core, don't use in drivers:
+>  	 */
+>  	struct rdma_restrack_entry res;
+> +	struct xarray mmap_xa;
+>  };
+>  
+>  struct ib_uobject {
+> @@ -2251,6 +2252,20 @@ struct iw_cm_conn_param;
+>  
+>  #define DECLARE_RDMA_OBJ_SIZE(ib_struct) size_t size_##ib_struct
+>  
+> +struct rdma_user_mmap_entry {
+> +	struct kref ref;
+> +	struct ib_ucontext *ucontext;
+> +	u32 npages;
+> +	u32 mmap_page;
+> +	bool invalid;
+
+These names are confusing, lets use:
+
+       unsigned long start_pgoff;
+       size_t npages;
+       bool driver_removed;
+
+> +};
+> +
+> +static inline u64
+> +rdma_user_mmap_get_key(const struct rdma_user_mmap_entry *entry)
+> +{
+> +	return (u64)entry->mmap_page << PAGE_SHIFT;
+> +}
+
+This is offset not key, in fact lets not use the word 'key' at
+all. Either 'pgoff' or 'offset'
+
+There are also a number of fixables in comments, grammer, indentation
+and style..
+
+Jason
