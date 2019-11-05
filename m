@@ -2,183 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDF1EF342
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2019 03:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1B7EF379
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2019 03:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729837AbfKECIC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 4 Nov 2019 21:08:02 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5264 "EHLO huawei.com"
+        id S1729855AbfKECbQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 4 Nov 2019 21:31:16 -0500
+Received: from mail-eopbgr150087.outbound.protection.outlook.com ([40.107.15.87]:59652
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729428AbfKECIC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 4 Nov 2019 21:08:02 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 924F661ECE1378BEFE54;
-        Tue,  5 Nov 2019 10:07:57 +0800 (CST)
-Received: from [127.0.0.1] (10.74.223.196) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.439.0; Tue, 5 Nov 2019
- 10:07:50 +0800
-Subject: Re: [PATCH for-next] RDMA/hns: Bugfix for flush cqe in case softirq
- and multi-process
-From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
-To:     Leon Romanovsky <leon@kernel.org>, <dledford@redhat.com>
-CC:     <linux-rdma@vger.kernel.org>, <jgg@ziepe.ca>, <linuxarm@huawei.com>
-References: <1567686671-4331-1-git-send-email-liweihang@hisilicon.com>
- <20190908080303.GC26697@unreal>
- <f8f29a6a-b473-6c89-8ec7-092fd53aea16@huawei.com>
- <20190910075216.GX6601@unreal>
- <94ad1f56-afc6-ec78-4aa2-85d03c644031@huawei.com>
- <0d4ce391-6619-783d-55a8-fa2524af7b9c@huawei.com>
- <20190923050125.GK14368@unreal>
- <1224a3a0-50fb-dd6a-f22e-833e74ec77c3@huawei.com>
- <f1845894-a5c3-9630-15c2-6e1d806071e1@huawei.com>
- <20191015080036.GC6957@unreal>
- <ae1e81ba-cdd1-c1c5-a585-b0bfe9936000@huawei.com>
-Message-ID: <2a0ae88d-908f-df4b-11ea-26e639b7b338@huawei.com>
-Date:   Tue, 5 Nov 2019 10:06:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.1
-MIME-Version: 1.0
-In-Reply-To: <ae1e81ba-cdd1-c1c5-a585-b0bfe9936000@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+        id S1729760AbfKECbQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 4 Nov 2019 21:31:16 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i6T8ZDZCa0l7TqARLqpUnP2WA+rkJ7MKKSBPo97L7ijY6iBwWIXwecihxwgnyYODpzPI0hOKme5LGTXAh1WZxdWzg1/1cXFsnzQ4gdd1gzGAm5BXJP8PDwTb2NY6JptTs1L55RJrOLsQq4QbiZnss5ALGhye9kQnp1hALdyWIy55VrSilMXPZF2CIGYaAOWzenF/uc1jmKesCJcQ4UqdVKbUOtLkzjssh8fCLDJ80j71RYDIwfN8FJTaQeVSUvtMH6f1Mls4AARjMf852FYsDnKkPjKV43lQawMcAxTQDmlBtsowJUS7IM1N/SBET4xADRmPUgRXtsRW3RhOdGw7dg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y+7IscvhUZj8/JgUgTQRqK5pwqwTaSdwn71ra60cQpg=;
+ b=GZ5hV82Td+nLE4WXjRiU/4YkN9lZPKC4FUvMFwkq1OFscb6XTkbrH8Dj81+Ex9xAP4cqwHiYsC4jm0Ezo0gnqf18cpT5JGsAqsMdQy3J/I+6qOPxKQc6T8FSFpqLIoNQ6fRa+LCOOM1+OdYHAhzJiUBNLtIN9kadIiEKzloaRH0AGxwMhT+qtRIeKVnRSZ5JLH1XvyFnFlOq1rqn9UlsvlV5TfLLdpPsL8lt2wnTJl9ealPRMUbTJUQ/F7Cql6l0tB/LHfLbuHRIyWUnZv9PAzLkZTL3c7wW29lbIzBvkoyYQx/3HseId/Sf1MoEQZ82qAtwBWdTFpIK7TIqPKR4aw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y+7IscvhUZj8/JgUgTQRqK5pwqwTaSdwn71ra60cQpg=;
+ b=gngE79Bvs6Y7fWPbu2HwcUVZXIRq+STpf3YQMv6nnYymT/BpwH991WBvAH3txZKcL2qiSyKK7iokps6gruyEskBHs+G68r4Y7WYvM2J8qUwCuYacdFwMx4j/Rsre1M4Oz19ZpuimvqIII12/PGfhl5Sn5V2sKpby2C8EVxA1wU4=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB4973.eurprd05.prod.outlook.com (20.177.52.18) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2408.24; Tue, 5 Nov 2019 02:31:12 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::b179:e8bf:22d4:bf8d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::b179:e8bf:22d4:bf8d%5]) with mapi id 15.20.2408.024; Tue, 5 Nov 2019
+ 02:31:12 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        =?iso-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
+        David Zhou <David1.Zhou@amd.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Petr Cvek <petrcvekcz@gmail.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 09/15] xen/gntdev: use mmu_range_notifier_insert
+Thread-Topic: [PATCH v2 09/15] xen/gntdev: use mmu_range_notifier_insert
+Thread-Index: AQHVjcvKV253DVP8r0WB5NYgPgZcBad7m8uAgABKxgA=
+Date:   Tue, 5 Nov 2019 02:31:12 +0000
+Message-ID: <20191105023108.GN22766@mellanox.com>
+References: <20191028201032.6352-1-jgg@ziepe.ca>
+ <20191028201032.6352-10-jgg@ziepe.ca>
+ <3938b588-c6c5-3bd1-8ea9-47e4d5b2045c@oracle.com>
+In-Reply-To: <3938b588-c6c5-3bd1-8ea9-47e4d5b2045c@oracle.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.223.196]
-X-CFilter-Loop: Reflected
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR05CA0023.namprd05.prod.outlook.com
+ (2603:10b6:208:c0::36) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.162.113.180]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: a5aff1ba-e389-4613-96b3-08d761983919
+x-ms-traffictypediagnostic: VI1PR05MB4973:
+x-microsoft-antispam-prvs: <VI1PR05MB4973FE948FB772C4420372EFCF7E0@VI1PR05MB4973.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0212BDE3BE
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(39860400002)(136003)(366004)(346002)(376002)(189003)(199004)(36756003)(6486002)(256004)(52116002)(486006)(14444005)(478600001)(86362001)(14454004)(186003)(305945005)(7416002)(2906002)(102836004)(7736002)(6116002)(26005)(66476007)(66556008)(66446008)(64756008)(66946007)(76176011)(11346002)(99286004)(71190400001)(316002)(2616005)(71200400001)(8936002)(6436002)(33656002)(3846002)(25786009)(6916009)(6506007)(53546011)(386003)(66066001)(6512007)(81166006)(446003)(229853002)(54906003)(4326008)(81156014)(6246003)(5660300002)(1076003)(476003)(8676002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4973;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vBZ0Z2NhVzsjJAe7Kq9mS/lVT87prjRY2DebHQtJLF8qghumsbIK3H9j8SO5o9fRUHiDj4VrpWRspleFcQEM/exPW99z+IuP8gqlla+63kdrBW88TKbquJmgA6qGVWIPYh9wMiekbatqIReFH3LF66Qg20Oo26z+uEoyRtEdqPvPRoNgTV3Pd6hqVMX4MdMBlFJpshWk0Z8fucylMQgeAUbEZ46pUaaz1mXI430lroI5SQ3jYp/3WvSgOr9aLqwFg8Hhvig3+KCaaS5G++dwOVy4/xNG/Swl4kR5pVVDkbD2VlNVK8NjsBFRMPfuFdClo/rob/sGbRw6HbEn/mhc7rylSKwPO2pVON6XMKiPL7VWwbM36Hs00yub8qItDx8QrLh06/VvDEkaQgAPe3It7rfei9KmuGwOlFIxkYQDqQnfppA1iusicblqmMJldO24
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <27A5E315F0FBE349AC48D47C02A20B09@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5aff1ba-e389-4613-96b3-08d761983919
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2019 02:31:12.3841
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: x4a6UsdCOfg0iur9gbQw05+LLww53hTdCx+jkPZ/cAoDUgl4GRRDrh+zIq3jbBkkF7kv+st9bYwT7/EoofKpRg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4973
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Nov 04, 2019 at 05:03:31PM -0500, Boris Ostrovsky wrote:
+> On 10/28/19 4:10 PM, Jason Gunthorpe wrote:
+> > @@ -445,17 +438,9 @@ static void gntdev_vma_close(struct vm_area_struct=
+ *vma)
+> >  	struct gntdev_priv *priv =3D file->private_data;
+> > =20
+> >  	pr_debug("gntdev_vma_close %p\n", vma);
+> > -	if (use_ptemod) {
+> > -		/* It is possible that an mmu notifier could be running
+> > -		 * concurrently, so take priv->lock to ensure that the vma won't
+> > -		 * vanishing during the unmap_grant_pages call, since we will
+> > -		 * spin here until that completes. Such a concurrent call will
+> > -		 * not do any unmapping, since that has been done prior to
+> > -		 * closing the vma, but it may still iterate the unmap_ops list.
+> > -		 */
+> > -		mutex_lock(&priv->lock);
+> > +	if (use_ptemod && map->vma =3D=3D vma) {
+>=20
+>=20
+> Is it possible for map->vma not to be equal to vma?
 
+It could be NULL at least if use_ptemod is not set.
 
-On 2019/10/28 17:34, Liuyixian (Eason) wrote:
-> 
-> 
-> On 2019/10/15 16:00, Leon Romanovsky wrote:
->> On Sat, Oct 12, 2019 at 11:53:36AM +0800, Liuyixian (Eason) wrote:
->>>
->>>
->>> On 2019/9/24 11:54, Liuyixian (Eason) wrote:
->>>>
->>>>
->>>> On 2019/9/23 13:01, Leon Romanovsky wrote:
->>>>> On Fri, Sep 20, 2019 at 11:55:56AM +0800, Liuyixian (Eason) wrote:
->>>>>>
->>>>>>
->>>>>> On 2019/9/11 21:17, Liuyixian (Eason) wrote:
->>>>>>>
->>>>>>>
->>>>>>> On 2019/9/10 15:52, Leon Romanovsky wrote:
->>>>>>>> On Tue, Sep 10, 2019 at 02:40:20PM +0800, Liuyixian (Eason) wrote:
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> On 2019/9/8 16:03, Leon Romanovsky wrote:
->>>>>>>>>> On Thu, Sep 05, 2019 at 08:31:11PM +0800, Weihang Li wrote:
->>>>>>>>>>> From: Yixian Liu <liuyixian@huawei.com>
->>>>>>>>>>>
->>>>>>>>>>> Hip08 has the feature flush cqe, which help to flush wqe in workqueue
->>>>>>>>>>> (sq and rq) when error happened by transmitting producer index with
->>>>>>>>>>> mailbox to hardware. Flush cqe is emplemented in post send and recv
->>>>>>>>>>> verbs. However, under NVMe cases, these verbs will be called under
->>>>>>>>>>> softirq context, and it will lead to following calltrace with
->>>>>>>>>>> current driver as mailbox used by flush cqe can go to sleep.
->>>>>>>>>>>
->>>>>>>>>>> This patch solves this problem by using workqueue to do flush cqe,
->>>>>>>>>>
->>>>>>>>>> Unbelievable, almost every bug in this driver is solved by introducing
->>>>>>>>>> workqueue. You should fix "sleep in flush path" issue and not by adding
->>>>>>>>>> new workqueue.
->>>>>>>>>>
->>>>>>>>> Hi Leon,
->>>>>>>>>
->>>>>>>>> Thanks for the comment.
->>>>>>>>> Up to now, for hip08, only one place use workqueue in hns_roce_hw_v2.c
->>>>>>>>> where for irq prints.
->>>>>>>>
->>>>>>>> Thanks to our lack of desire to add more workqueues and previous patches
->>>>>>>> which removed extra workqueues from the driver.
->>>>>>>>
->>>>>>> Thanks, I see.
->>>>>>>
->>>>>>>>>
->>>>>>>>> The solution for flush cqe in this patch is as follow:
->>>>>>>>> While flush cqe should be implement, the driver should modify qp to error state
->>>>>>>>> through mailbox with the newest product index of sq and rq, the hardware then
->>>>>>>>> can flush all outstanding wqes in sq and rq.
->>>>>>>>>
->>>>>>>>> That's the whole mechanism of flush cqe, also is the flush path. We can't
->>>>>>>>> change neither mailbox sleep attribute or flush cqe occurred in post send/recv.
->>>>>>>>> To avoid the calltrace of flush cqe in post verbs under NVMe softirq,
->>>>>>>>> use workqueue for flush cqe seems reasonable.
->>>>>>>>>
->>>>>>>>> As far as I know, there is no other alternative solution for this situation.
->>>>>>>>> I will be very grateful if you reminder me more information.
->>>>>>>>
->>>>>>>> ib_drain_rq/ib_drain_sq/ib_drain_qp????
->>>>>>>>
->>>>>>> Hi Leon,
->>>>>>>
->>>>>>> I think these interfaces are designed for application to check that all wqes
->>>>>>> have been processed by hardware, so called drain or flush. However, it is not
->>>>>>> the same as the flush in this patch. The solution in this patch is used
->>>>>>> to help the hardware generate flush cqes for outstanding wqes while qp error.
->>>>>>>
->>>>>> Hi Leon,
->>>>>>
->>>>>> What's your opinion about above? Do you have any further comments?
->>>>>
->>>>> My opinion didn't change, you need to read discussions about ib_drain_*()
->>>>> functions, how and why they were introduced. It is a way to go.
->>>>>
->>>>> Thanks
->>>>
->>>> Hi Leon,
->>>>
->>>> Thanks a lot! I will dig those functions for my problem.
->>>>
->>>
->>> Hi Leon,
->>>
->>> I have analysis the mechanism of ib_drain_(qp, sq, rq), that's okay to use
->>> it instead of our flush cqe as both of them are calling modify qp to error
->>> state in flush path.
->>>
->>> However, both ib_drain_* and flush cqe will face the same problem as declared
->>> in previous emails, that is, in NVME case, post verbs will be called under
->>> **softirq**, which will result to calltrace as mailbox used in modify qp
->>> (flush path) can sleep, this is not allowed under softirq.
->>>
->>> Thus, to resolve above calltrace (sleep in softirq), using workqueue as in
->>> this patch seems is a reasonable solution regardless of ib_drain_qp or
->>> flush cqe is called in the workqueue.
->>>
->>> I think it is not a good idea to fix sleep in flush path (actually referred
->>> to mailbox used in modify qp) as the mailbox is such a mature mechanism.
->>
->> No, it is not reasonable solution.
->>
-> 
-> Hi Leon,
-> 
->      I have explained this issue better in another patch set and pruned other logic.
->      Thanks a lot for your review!
-> 
-> Best regards.
-> Eason
-> 
+Otherwise, I'm not sure, the confusing bit is that the map comes from
+here:
 
-Hi Doug and Loen,
+        map =3D gntdev_find_map_index(priv, index, count);
 
-I just want to make sure that you know the above mentioned patch set is on:
-https://patchwork.kernel.org/project/linux-rdma/list/?series=194423
+It looks like the intent is that the map->vma is always set to the
+only vma that has the map as private_data.
 
-Sorry to reply your last comment so late as I analyzed all possible solutions with
-your comment, and found that I haven't describe our problem clear enough and accurate,
-thus, I made this new patch set with simple logic and detailed commit message. I hope
-I have clearly explained this problem .
+So, I suppose it can be relaxed to a null test and a WARN_ON that it
+hasn't changed?
 
-Thanks.
-
-
-
-
+Jason
