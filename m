@@ -2,121 +2,187 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D40F00A2
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2019 16:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 816DFF00F1
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Nov 2019 16:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731034AbfKEPEC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Nov 2019 10:04:02 -0500
-Received: from mail-eopbgr10082.outbound.protection.outlook.com ([40.107.1.82]:56816
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730833AbfKEPEC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 5 Nov 2019 10:04:02 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gM6vvAlUZhsC00N0WcnqD1UyAMNZ5l2spNzzzIt7yobsNya//OUo95QzJNFRgPG2K5JzVvBhiP8ka+8I5zX4WtFHL/flkpgN+N69HRCphhgQaBjx6LcDBPetufR/lrwHZfNn4bNFgKLFIRQ4tvdGF+Iap5AVORPDFzAgF4WwczmXnpK9dy41oJ3NHW91jE3jFrYUAjty9cWAJUV5tgJeCtlU+0yhXjoaBK2FBzJhRuXSguAr0NoIkSCXRJI/yIJ33Un1BfqcqR/j4f20QT+lirtBZbk7dYUFCRlqLBJ+TBZHeqk0Sa+gUF7xjAeWkNvG9CUUqFog1E2TW8Myb/+/PA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W+YWA3/kHyGd2mPI0OSUXxwQ58Syr/JjXV4TOEeIqrc=;
- b=fbbeyr0r77n8oCZqD6uan3/FuU2mJSpuGqkPEtk0Fni6DtzNnrlLWmc9gvAJibR5E1vpNf3j3DKy3plB31QpMb4haASJrP7ShMxn+N7TkAKPC7TWrgudaEPE7y9fPI56yHOlo7h1sy57oosyHlpoHxRENGHkb7P/9zeAOIxvuzWZI+6TfwZ6DNNiv7/PRAv9W04AO6SmUHp3oi/BxdcNzv4GQyf1LYG6fH/fAGb9t9vyj7GDBgAh9XbJvoT5FkOmQqzFywUGvdKz1GYTJFKt6F+Cf587ER8UDQlpxdROMelRKvQyZjFHmeen9CO+s8seUO20qkhZqb/98AUPHkGAkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W+YWA3/kHyGd2mPI0OSUXxwQ58Syr/JjXV4TOEeIqrc=;
- b=ZJ9hZZqOnGCUabwcT2Bxea7Fqi1F7+GMH6st2ZQrseKxoeW34uoN4yUEFhi2ws0ZdMK1grFGAkHL/AqROwj97XYXifh9x/FFp9qAeHD3yr+KOQvilfP29E635pb/Hsra/wWWwSSUK3blpPeBtmTyWuo7CW5aTiRtFrqPcnIdTvw=
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
- AM0PR05MB5217.eurprd05.prod.outlook.com (20.178.19.32) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2408.24; Tue, 5 Nov 2019 15:03:55 +0000
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::e5c2:b650:f89:12d4]) by AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::e5c2:b650:f89:12d4%7]) with mapi id 15.20.2430.020; Tue, 5 Nov 2019
- 15:03:55 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     Colin King <colin.king@canonical.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH][next] net/mlx5: fix spelling mistake "metdata" ->
- "metadata"
-Thread-Topic: [PATCH][next] net/mlx5: fix spelling mistake "metdata" ->
- "metadata"
-Thread-Index: AQHVk+ju1UlJpWLIEk+xlXrsXBtltqd8rIFg
-Date:   Tue, 5 Nov 2019 15:03:55 +0000
-Message-ID: <AM0PR05MB4866F3706C26D06AD22BD975D17E0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-References: <20191105145416.60451-1-colin.king@canonical.com>
-In-Reply-To: <20191105145416.60451-1-colin.king@canonical.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [2605:6000:ec82:1c00:7198:5d2b:7ff1:d0d4]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 0d593f1b-f8db-4e13-572a-08d7620160eb
-x-ms-traffictypediagnostic: AM0PR05MB5217:|AM0PR05MB5217:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM0PR05MB5217C6BC9E01DD09018692F1D17E0@AM0PR05MB5217.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2657;
-x-forefront-prvs: 0212BDE3BE
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(366004)(396003)(346002)(136003)(376002)(13464003)(199004)(189003)(8676002)(81166006)(6506007)(11346002)(110136005)(76176011)(14454004)(486006)(2906002)(8936002)(6246003)(52536014)(5660300002)(71200400001)(81156014)(7696005)(66446008)(14444005)(6436002)(6116002)(54906003)(55016002)(25786009)(2501003)(316002)(74316002)(476003)(305945005)(33656002)(229853002)(9686003)(46003)(4326008)(86362001)(99286004)(478600001)(2201001)(53546011)(186003)(102836004)(66946007)(76116006)(64756008)(66476007)(7736002)(446003)(256004)(71190400001)(66556008);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB5217;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OnRPUJHh3Hmhhgf/uOQYR9Gs4LaEpAYHWcJzJVnKJXs44LNMd/l09XVsjckeseCl/yxXATUc6FWOOCDC1ceYEk+kTejsbZNPqKfQbT5svcVd9NQQ3IOxzzEMASxCPkNQPV/EXWk4LIplclPldb7PN4+6zO/6s8KqAy4H5Hbq2kPl3bITMdnouqZEbzhbP8vJ9pzOYuIany9zcZFvZbI5dfL8jpUI8CwtWczUa1B9k5UNtNWbt9Evos61Hkew0NHQuxj1AibH6X0kb78td/f6u3vgX66aihyT+l7X7Kz+miffmr/wrkPjFM5wXS/hrLP+ynnbsy/nxQiW5AG3NwfowhuF1hB89WEPfUvTioC6Pac9d0zOLiazNsDI9cWVeJsncWNODsQYy03TQEhW+w8Vsc6AhtE3obyauJ8u4LyTONQRpWOVD7BPgIiyHzydx432
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S2389708AbfKEPOU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Nov 2019 10:14:20 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:36902 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389715AbfKEPOR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Nov 2019 10:14:17 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA5FB6HZ020516;
+        Tue, 5 Nov 2019 15:13:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=IS23bB3dvrDkb9+06HwcoH/lIKWxN9p5igxhiyurBKo=;
+ b=GV+k4R8sw6t1Yt7enHJveBGuTNPYGPdxhAKVqoJ6ySbC3nV3vnHPcFzyApY4gNhapbO6
+ dd1TgMCPWZGUx67dpf+HjPX7LGqfh3A6TPKBaywdde80jIFzJngIaLAFeLGEFZGWikDH
+ 2PvVdOW96ljYQVSQufKxOzbj+uR7L3ARQRtZc920e3rHmdgQA3uh8rmVLY5Znwjm8mO9
+ d14zZHTbCkFl4M6pyjtKV/8V63pNpRwqGGHwlIEuR2zfagn9NjrrYio1Lgk7N2jOzjmY
+ 5fCVnNGqeNtW7vsIRgUQggfSOuGnh+0ZMHTjEZ3yVWbCzDKVj2NUsF8vdlgDwVptFxyF NQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2w11rpy5s0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 05 Nov 2019 15:13:31 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA5FB6tt027055;
+        Tue, 5 Nov 2019 15:13:31 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2w35pp2pd1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 05 Nov 2019 15:13:30 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xA5FDSHx018497;
+        Tue, 5 Nov 2019 15:13:29 GMT
+Received: from bostrovs-us.us.oracle.com (/10.152.32.65)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 05 Nov 2019 07:13:28 -0800
+Subject: Re: [PATCH v2 09/15] xen/gntdev: use mmu_range_notifier_insert
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Zhou <David1.Zhou@amd.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Petr Cvek <petrcvekcz@gmail.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Christoph Hellwig <hch@infradead.org>
+References: <20191028201032.6352-1-jgg@ziepe.ca>
+ <20191028201032.6352-10-jgg@ziepe.ca>
+ <3938b588-c6c5-3bd1-8ea9-47e4d5b2045c@oracle.com>
+ <20191105023108.GN22766@mellanox.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Autocrypt: addr=boris.ostrovsky@oracle.com; prefer-encrypt=mutual; keydata=
+ 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
+ Jg6OxFYd01z+a+oL
+Message-ID: <a62e58f6-d98b-1feb-d0ca-fb8210f3e831@oracle.com>
+Date:   Tue, 5 Nov 2019 10:16:46 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d593f1b-f8db-4e13-572a-08d7620160eb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2019 15:03:55.5980
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rvFNXhR6DXcASXG3Sr/awsKg4wunsBhpV3MgJePywunI4tYpUoZqRyAiZljVyzYAolrgXJt60WLj/6N68gPM3Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5217
+In-Reply-To: <20191105023108.GN22766@mellanox.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9432 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1911050126
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9432 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1911050126
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogbGludXgta2VybmVsLW93
-bmVyQHZnZXIua2VybmVsLm9yZyA8bGludXgta2VybmVsLQ0KPiBvd25lckB2Z2VyLmtlcm5lbC5v
-cmc+IE9uIEJlaGFsZiBPZiBDb2xpbiBLaW5nDQo+IFNlbnQ6IFR1ZXNkYXksIE5vdmVtYmVyIDUs
-IDIwMTkgODo1NCBBTQ0KPiBUbzogU2FlZWQgTWFoYW1lZWQgPHNhZWVkbUBtZWxsYW5veC5jb20+
-OyBMZW9uIFJvbWFub3Zza3kNCj4gPGxlb25Aa2VybmVsLm9yZz47IERhdmlkIFMgLiBNaWxsZXIg
-PGRhdmVtQGRhdmVtbG9mdC5uZXQ+Ow0KPiBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1y
-ZG1hQHZnZXIua2VybmVsLm9yZw0KPiBDYzoga2VybmVsLWphbml0b3JzQHZnZXIua2VybmVsLm9y
-ZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBbUEFUQ0hdW25leHRd
-IG5ldC9tbHg1OiBmaXggc3BlbGxpbmcgbWlzdGFrZSAibWV0ZGF0YSIgLT4NCj4gIm1ldGFkYXRh
-Ig0KPiANCj4gRnJvbTogQ29saW4gSWFuIEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4N
-Cj4gDQo+IFRoZXJlIGlzIGEgc3BlbGxpbmcgbWlzdGFrZSBpbiBhIGVzd193YXJuIHdhcm5pbmcg
-bWVzc2FnZS4gRml4IGl0Lg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ29saW4gSWFuIEtpbmcgPGNv
-bGluLmtpbmdAY2Fub25pY2FsLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9t
-ZWxsYW5veC9tbHg1L2NvcmUvZXN3aXRjaF9vZmZsb2Fkcy5jIHwgMiArLQ0KPiAgMSBmaWxlIGNo
-YW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Vzd2l0Y2hfb2ZmbG9hZHMu
-Yw0KPiBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lc3dpdGNoX29m
-ZmxvYWRzLmMNCj4gaW5kZXggYmQ5ZmQ1OWQ4MjMzLi4xYzNmZGVlODc1ODggMTAwNjQ0DQo+IC0t
-LSBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lc3dpdGNoX29mZmxv
-YWRzLmMNCj4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Vz
-d2l0Y2hfb2ZmbG9hZHMuYw0KPiBAQCAtMTg3Nyw3ICsxODc3LDcgQEAgc3RhdGljIGludA0KPiBl
-c3dfdnBvcnRfY3JlYXRlX2luZ3Jlc3NfYWNsX2dyb3VwKHN0cnVjdCBtbHg1X2Vzd2l0Y2ggKmVz
-dywNCj4gIAlpZiAoSVNfRVJSKGcpKSB7DQo+ICAJCXJldCA9IFBUUl9FUlIoZyk7DQo+ICAJCWVz
-d193YXJuKGVzdy0+ZGV2LA0KPiAtCQkJICJGYWlsZWQgdG8gY3JlYXRlIHZwb3J0WyVkXSBpbmdy
-ZXNzIG1ldGRhdGEgZ3JvdXAsDQo+IGVyciglZClcbiIsDQo+ICsJCQkgIkZhaWxlZCB0byBjcmVh
-dGUgdnBvcnRbJWRdIGluZ3Jlc3MgbWV0YWRhdGEgZ3JvdXAsDQo+IGVyciglZClcbiIsDQo+ICAJ
-CQkgdnBvcnQtPnZwb3J0LCByZXQpOw0KPiAgCQlnb3RvIGdycF9lcnI7DQo+ICAJfQ0KPiAtLQ0K
-PiAyLjIwLjENClJldmlld2VkLWJ5OiBQYXJhdiBQYW5kaXQgPHBhcmF2QG1lbGxhbm94LmNvbT4N
-Cg0K
+On 11/4/19 9:31 PM, Jason Gunthorpe wrote:
+> On Mon, Nov 04, 2019 at 05:03:31PM -0500, Boris Ostrovsky wrote:
+>> On 10/28/19 4:10 PM, Jason Gunthorpe wrote:
+>>> @@ -445,17 +438,9 @@ static void gntdev_vma_close(struct vm_area_struct *vma)
+>>>  	struct gntdev_priv *priv = file->private_data;
+>>>  
+>>>  	pr_debug("gntdev_vma_close %p\n", vma);
+>>> -	if (use_ptemod) {
+>>> -		/* It is possible that an mmu notifier could be running
+>>> -		 * concurrently, so take priv->lock to ensure that the vma won't
+>>> -		 * vanishing during the unmap_grant_pages call, since we will
+>>> -		 * spin here until that completes. Such a concurrent call will
+>>> -		 * not do any unmapping, since that has been done prior to
+>>> -		 * closing the vma, but it may still iterate the unmap_ops list.
+>>> -		 */
+>>> -		mutex_lock(&priv->lock);
+>>> +	if (use_ptemod && map->vma == vma) {
+>>
+>> Is it possible for map->vma not to be equal to vma?
+> It could be NULL at least if use_ptemod is not set.
+>
+> Otherwise, I'm not sure, the confusing bit is that the map comes from
+> here:
+>
+>         map = gntdev_find_map_index(priv, index, count);
+>
+> It looks like the intent is that the map->vma is always set to the
+> only vma that has the map as private_data.
+
+I am not sure how this can work otherwise. We stash map pointer in vm's
+vm_private_data and vice versa (for use_ptemod) gntdev_mmap() so if they
+have to match.
+
+That's why I was asking you to see if you had something particular in
+mind when you added this test.
+
+> So, I suppose it can be relaxed to a null test and a WARN_ON that it
+> hasn't changed?
+
+You mean
+
+if (use_ptemod) {
+        WARN_ON(map->vma != vma);
+        ...
+
+
+Yes, that sounds good.
+
+
+-boris
