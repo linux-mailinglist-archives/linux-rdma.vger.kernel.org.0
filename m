@@ -2,88 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 68548F1C76
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Nov 2019 18:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 065B7F1C8B
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Nov 2019 18:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729457AbfKFR0z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 Nov 2019 12:26:55 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:45908 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727572AbfKFR0z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Nov 2019 12:26:55 -0500
-Received: by mail-qv1-f67.google.com with SMTP id g12so1749455qvy.12
-        for <linux-rdma@vger.kernel.org>; Wed, 06 Nov 2019 09:26:54 -0800 (PST)
+        id S1728249AbfKFRfX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Nov 2019 12:35:23 -0500
+Received: from mail-qk1-f173.google.com ([209.85.222.173]:44875 "EHLO
+        mail-qk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727894AbfKFRfX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Nov 2019 12:35:23 -0500
+Received: by mail-qk1-f173.google.com with SMTP id m16so24999710qki.11
+        for <linux-rdma@vger.kernel.org>; Wed, 06 Nov 2019 09:35:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=1GBX1d/duL8sRvYSR5e7E0484c/WNKc0ZRscUH8jCzY=;
-        b=cq/eK7yGrdg7/vdvwU51CJ/7HoAqBhXRJnwQgaZbM6Qhg/OUo/hLjmJ5iJSy2irn+H
-         MXFOlAPnRMvzQTvTRvgoNFc1n/j1Z8h8A49rDihLTQ7jaG0SS+PbsXh8lCflTLAhXg96
-         vjH2pf/3WwsDvuv1zCnIFsrrnPi7+m8EmfHflMo+sFZymwwwqwtmzHJHCmtaqQQCY3uA
-         23WNPuAvxMH6I0Jti9vLIWqEsnBLkbJavQB8tAerckZyIgKqSaZdUdxnk3T5akfDn04B
-         8K7NcgZrO7CqA9yxTQTO5I/W59jHWaizI3ErpM4cLBLh6Pw93bBQ3ExikEZzuvO/l1IB
-         kYTQ==
+        bh=vNByp6cJ2yf1wZfwoOh86M3DlcG6rIcMG5q1sl3Wokc=;
+        b=QvKHcaMb2kWYWLq9vapZpQkanDK5Fckn9+VdUEhwNgvPQJVdv++VZkDazaIrvghN7D
+         CJXr1MRXn62D55vh6y4QImFbVNdF/2+7F/mZpQARKakC/HB3EE8ji0r/azqyOmGWiHYn
+         j18A6lg9IF92GGBMee+/bdd+YJN3tLf5izeRWvmVOAmLQFvgl3TETu1qDtD3pFGTNu9L
+         LZP8oT34l+oL4gOdRsNm6E9+KfmP9Otds5MDsNUGM/2L44H7FOMJ2cCUnGgOdMJg1zsS
+         YTSJeeKfgI6SAq0bCbBXkEm1wTl+CVFqMbdEqeoIyH1EA0ERVUwYRCUadclKEU+Usn54
+         dzeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1GBX1d/duL8sRvYSR5e7E0484c/WNKc0ZRscUH8jCzY=;
-        b=P24rHjdMkkCUOU4mbrudrF+KpQsfySwR/AFlGRx4c3Z8pWjpugo4vCrJHUEj2tHMrb
-         cBT+/vZCNAtXXYkhiYPWPUz0+o3kcsfiFQ/vp4SjIq9CaVImSPO/p811j2+a7XXOR4fs
-         WSRQwrwQxpaHV0o1k/7m0rGWjTOIjfP0WI8guZvT2px6ky/34hx+WcDXmAQJAEipHUF4
-         sGbX/nCkdY3TElXRN6wz6hRrDgJzlu861q5GkkNg5TCMZ5SB5a4UNKoJqOMZ83iklQ1B
-         FLWSX4opUkwLw8/GJdTE8LC7Rt/Fo6PK4D+EKdtAcfhwlfc0fgkPfHEoBu+mMoHOW2iR
-         YrYQ==
-X-Gm-Message-State: APjAAAXs4n1oy3O35ZzV4TeMWk/tqpXdcubfjMhV8X2bJyQOc+qMosx3
-        ITplkfc3Cffi0pQd0orp7J/Rxw==
-X-Google-Smtp-Source: APXvYqxzMoFxhiexhfozKw46NPhFQbKlMnEL8bhtYhxSQAjCwmDHM9T29zOS0214ygYchzqm55/b6A==
-X-Received: by 2002:a0c:b620:: with SMTP id f32mr3347234qve.186.1573061214378;
-        Wed, 06 Nov 2019 09:26:54 -0800 (PST)
+        bh=vNByp6cJ2yf1wZfwoOh86M3DlcG6rIcMG5q1sl3Wokc=;
+        b=fZaFIZ9bwPVEJjGjHXg8nqG82vPrB0X6SpAN52i2OHJ8zyYuNvPyoVGBYGnImtYNS5
+         sNwXczHXT7nquAdM6rIs+F6s9OxaVOW9XXPaCn1Ll9Pnl+KqYv0DL6r7mI2hsLf96X8o
+         lspv5boX82S7k6cF27wrug9dpbALqBQvGJfqiAxKZNHgdFTr+joJLe3vwgz5rE/bGNys
+         z+tSmvxhKB4BwtjhCtYr9N02SrsXjzZR68HFdkRYclCAJZl5UWdNMPplW6gH63EnN9Ca
+         X5quSRw0T4IQ+88HAFQ1PcyNnnQWmw6E/QB44mZpMFe81picex8zL4Kz2To6vwwS7CIf
+         DlLg==
+X-Gm-Message-State: APjAAAU1fX3sNyv2Yzlvmp0cQRBiWepH4SNZS6/9PHMwdMjeHR/51m2Y
+        cyJHqVrffKS7obV0h3dZ3JUBcQ==
+X-Google-Smtp-Source: APXvYqyxhGaSzLXn3g0j8wNfeCThQ9KvsqjA/0oPi8bKSC7olJuh1bbePuhOOXJimzmfDPN3AKXxRQ==
+X-Received: by 2002:a37:508b:: with SMTP id e133mr2994357qkb.21.1573061722255;
+        Wed, 06 Nov 2019 09:35:22 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id x133sm12044284qka.44.2019.11.06.09.26.53
+        by smtp.gmail.com with ESMTPSA id z72sm11959480qka.115.2019.11.06.09.35.21
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 06 Nov 2019 09:26:53 -0800 (PST)
+        Wed, 06 Nov 2019 09:35:21 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iSP53-0003Mf-Ci; Wed, 06 Nov 2019 13:26:53 -0400
-Date:   Wed, 6 Nov 2019 13:26:53 -0400
+        id 1iSPDF-00025K-8U; Wed, 06 Nov 2019 13:35:21 -0400
+Date:   Wed, 6 Nov 2019 13:35:21 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-rc 0/4] Few more rc fixes
-Message-ID: <20191106172653.GA12905@ziepe.ca>
-References: <20191025161717.106825.14421.stgit@awfm-01.aw.intel.com>
+To:     Kamal Heib <kamalheib1@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Lijun Ou <oulijun@huawei.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Michal Kalderon <mkalderon@marvell.com>
+Subject: Re: [for-next v4 0/4] RDMA: modify_port improvements
+Message-ID: <20191106173521.GA7971@ziepe.ca>
+References: <20191028155931.1114-1-kamalheib1@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191025161717.106825.14421.stgit@awfm-01.aw.intel.com>
+In-Reply-To: <20191028155931.1114-1-kamalheib1@gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 25, 2019 at 03:58:17PM -0400, Dennis Dalessandro wrote:
-> Here we have 4 more bug fixing patches. These are all marked stable as well so
-> it would be good to get these in to 5.4 if possible.
+On Mon, Oct 28, 2019 at 05:59:27PM +0200, Kamal Heib wrote:
+> Changelog:
+> v4: Allow only IB_PORT_CM_SUP fake manipulation for RoCE providers.
+> v3: Improve [patch 1/4].
+> v2: Include fixes lines.
 > 
-> The allow for speeds patch is not a "feature" it is a bug that causes problems
-> if the host comes up in gen4. Is very small. The other 3 from Kaike fix TID RDMA
-> bugs. A few more lines of code here but all relegated to TID RDMA.
+> This series includes three patches which fix the return values from
+> modify_port() callbacks when they aren't supported.
 > 
-> 
-> James Erwin (1):
->       IB/hfi1: Allow for all speeds higher than gen3
+> Kamal Heib (4):
+>   RDMA/core: Fix return code when modify_port isn't supported
+>   RDMA/hns: Remove unsupported modify_port callback
+>   RDMA/ocrdma: Remove unsupported modify_port callback
+>   RDMA/qedr: Remove unsupported modify_port callback
 
-With v2 of this one
-
- 
-> Kaike Wan (3):
->       IB/hfi1: Ensure r_tid_ack is valid before building TID RDMA ACK packet
->       IB/hfi1: Calculate flow weight based on QP MTU for TID RDMA
->       IB/hfi1: TID RDMA WRITE should not return IB_WC_RNR_RETRY_EXC_ERR
-
-Applied to for-rc, thanks
+Applied to for-next, thanks
 
 Jason
