@@ -2,88 +2,29 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3091F142E
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Nov 2019 11:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F6AF15C2
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Nov 2019 13:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727257AbfKFKoQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 Nov 2019 05:44:16 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:48140 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725890AbfKFKoQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 6 Nov 2019 05:44:16 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id AA547DCAE5EAD2187A5F;
-        Wed,  6 Nov 2019 18:44:13 +0800 (CST)
-Received: from [127.0.0.1] (10.40.168.149) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.439.0; Wed, 6 Nov 2019
- 18:44:06 +0800
-Subject: Re: [PATCH v2 for-next 8/9] RDMA/hns: Fix non-standard error codes
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <dledford@redhat.com>, <jgg@ziepe.ca>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1572952082-6681-1-git-send-email-liweihang@hisilicon.com>
- <1572952082-6681-9-git-send-email-liweihang@hisilicon.com>
- <20191105170058.GJ6763@unreal>
-From:   Weihang Li <liweihang@hisilicon.com>
-Message-ID: <3b2b6654-135c-a268-8933-7ca2ee5a0105@hisilicon.com>
-Date:   Wed, 6 Nov 2019 18:44:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20191105170058.GJ6763@unreal>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.168.149]
-X-CFilter-Loop: Reflected
+        id S1728610AbfKFMFD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Nov 2019 07:05:03 -0500
+Received: from [142.93.142.89] ([142.93.142.89]:60230 "EHLO TEST.localdomain"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727652AbfKFMFD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 6 Nov 2019 07:05:03 -0500
+X-Greylist: delayed 4150 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 Nov 2019 07:05:03 EST
+Received: from localhost (TEST [127.0.0.1])
+        by TEST.localdomain (Postfix) with SMTP id 9B2B017AB0B
+        for <linux-rdma@vger.kernel.org>; Wed,  6 Nov 2019 10:25:43 +0000 (UTC)
+From:   linux-rdma@vger.kernel.org
+To:     linux-rdma@vger.kernel.org
+Reply-To: prodawez@teleworm.us
+Subject: BAZY DANNYH! email: prodawez@teleworm.us UZNAJTE PODROBNEE
+Message-Id: <20191106102543.9B2B017AB0B@TEST.localdomain>
+Date:   Wed,  6 Nov 2019 10:25:43 +0000 (UTC)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 2019/11/6 1:00, Leon Romanovsky wrote:
-> On Tue, Nov 05, 2019 at 07:08:01PM +0800, Weihang Li wrote:
->> From: Yixian Liu <liuyixian@huawei.com>
->>
->> It is better to return a linux error code than define a private constant.
->>
->> Signed-off-by: Yixian Liu <liuyixian@huawei.com>
->> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
->> Signed-off-by: Weihang Li <liweihang@hisilicon.com>
->> ---
->>  drivers/infiniband/hw/hns/hns_roce_alloc.c |  4 ++--
->>  drivers/infiniband/hw/hns/hns_roce_cq.c    |  4 ++--
->>  drivers/infiniband/hw/hns/hns_roce_mr.c    | 15 ++++++++-------
->>  drivers/infiniband/hw/hns/hns_roce_pd.c    |  2 +-
->>  drivers/infiniband/hw/hns/hns_roce_srq.c   |  2 +-
->>  5 files changed, 14 insertions(+), 13 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_alloc.c b/drivers/infiniband/hw/hns/hns_roce_alloc.c
->> index 8c063c5..da574c2 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_alloc.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_alloc.c
->> @@ -55,7 +55,7 @@ int hns_roce_bitmap_alloc(struct hns_roce_bitmap *bitmap, unsigned long *obj)
-> 
-> Why do HNS driver have custom bitmap functions instead of include/linux/bitmap.h?
-> 
-> Thanks
-> 
-> .
-> 
-
-Hi Leon,
-
-These custom functions achieved the bitmap working in round-robin fashion.
-When using CM to establish connections, if we allocate a new QP after destroying
-one, we will get the same QP number which will be rejected by IB core.
-
-I found related patches about this issue:
-https://git.congatec.com/android/qmx6_kernel/commit/f4ec9e9531ac79ee2521faf7ad3d98978f747e42
-https://patchwork.kernel.org/patch/3306941/
-https://patchwork.kernel.org/patch/9444173/
-
-Thanks,
-Weihang
+BAZY DANNYH! email: prodawez@teleworm.us UZNAJTE PODROBNEE
 
