@@ -2,141 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D36ACF1735
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Nov 2019 14:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0BAF1996
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Nov 2019 16:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbfKFNgP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 Nov 2019 08:36:15 -0500
-Received: from mail-eopbgr00083.outbound.protection.outlook.com ([40.107.0.83]:48068
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726673AbfKFNgO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 6 Nov 2019 08:36:14 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KNm0HTlMrga0aOIXKkjkw0sx1MzlAmzM6uHJgEKhlDzwUd8APsgixsH/el1nmqfR/or/RoKoALSDdxSLKsUlYUnvtXb2kGMGcqAzUiUj5RSbNqzUQKKs61TZVg0ASYIhlX4hv545UhTeBomoFWcy3fZ5lU2O8KVPvjg7G3n88R1XiktaaqDW/m2zy0CySQ7rzHPrWcVGKsbegAFy6W9QXohTCD3MrjoW1CuKOkbSsXwr6B5b9/3JxXt9msiZN7YmHvGZfVwGfSR3cT+pwUWfGXamSgX1d+Xn0bynrxc5MAvoLKM/W9c51XKvFTYAFrZS5U+YB/5gIT7YcpzVV5zXVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xSYRMVOxQdiajVHDrB1ZWywWX0yisdKKCsAIbjlbH7M=;
- b=kcFOsXcTqEUYKGkn5z2orUFcoOPlMf3tqhWXQJttZF0j1hROKz4ltdlypZKDJ6qxqAkxXN9voEVyw7TCsEnINpgos9DM1UM/vgONDwud7QLqV9cIxRJCe8HhvTRy8gCV9mkPP2a4PqX9dRFehG7rrkLpcxt94/ToGQT5LRj2nelQxmHrg3RjVIvCAJb9FPBQ9Y8Q3JzRCDToTEID382YgS7M38tMY8NUJ7FWSPT9LvRRxBKmVc4PImFURPTC1S/nSK6+CxuQKk1siBFmpZOQE+/NFYbNuNzIXgLV9b8Xh6zNVQGWtzYQVRfAGFtnpDXySG40JhDM/RF2XCeREjmjNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xSYRMVOxQdiajVHDrB1ZWywWX0yisdKKCsAIbjlbH7M=;
- b=SmALHb2MWIdvKrq9nUe9UaYAgM8S5ZNBJaRZm5qNgLIQ5HSvFFoeMYdN0rZKzclNckGs00sfeIMa6yDyt7TJAN4XGyp3FUmTob5XFPuARoldvutK50uMJ9KqtycjTLGu5rHCkuxATf9y1Hu+2cPagn6qOyfvmiVJn20XId7ee2s=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB4142.eurprd05.prod.outlook.com (52.133.12.13) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2408.24; Wed, 6 Nov 2019 13:36:10 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::b179:e8bf:22d4:bf8d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::b179:e8bf:22d4:bf8d%5]) with mapi id 15.20.2408.024; Wed, 6 Nov 2019
- 13:36:10 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        =?utf-8?B?Q2hyaXN0aWFuIEvDtm5pZw==?= <christian.koenig@amd.com>,
-        David Zhou <David1.Zhou@amd.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Petr Cvek <petrcvekcz@gmail.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v2 01/15] mm/mmu_notifier: define the header pre-processor
- parts even if disabled
-Thread-Topic: [PATCH v2 01/15] mm/mmu_notifier: define the header
- pre-processor parts even if disabled
-Thread-Index: AQHVjcvKLi62CBGJ7kWsGjKWZ8qqVqd9IwUAgAEPqwA=
-Date:   Wed, 6 Nov 2019 13:36:10 +0000
-Message-ID: <20191106133606.GC22766@mellanox.com>
-References: <20191028201032.6352-1-jgg@ziepe.ca>
- <20191028201032.6352-2-jgg@ziepe.ca>
- <770248ae-efa1-efae-a978-f52d8510f7b1@nvidia.com>
-In-Reply-To: <770248ae-efa1-efae-a978-f52d8510f7b1@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BN6PR18CA0002.namprd18.prod.outlook.com
- (2603:10b6:404:121::12) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [142.162.113.180]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8f06dec5-2715-413b-9b5d-08d762be48c8
-x-ms-traffictypediagnostic: VI1PR05MB4142:
-x-microsoft-antispam-prvs: <VI1PR05MB4142E1A64CB606FD98EDECCDCF790@VI1PR05MB4142.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2803;
-x-forefront-prvs: 02135EB356
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(366004)(346002)(396003)(39860400002)(136003)(189003)(199004)(86362001)(186003)(6916009)(102836004)(26005)(386003)(66066001)(6506007)(53546011)(99286004)(316002)(4326008)(229853002)(66574012)(2906002)(52116002)(76176011)(1076003)(256004)(11346002)(446003)(36756003)(81156014)(2616005)(476003)(8676002)(8936002)(81166006)(54906003)(14444005)(7416002)(66556008)(66476007)(66946007)(33656002)(478600001)(71200400001)(71190400001)(486006)(305945005)(6486002)(7736002)(6512007)(5660300002)(6436002)(25786009)(6116002)(6246003)(3846002)(14454004)(64756008)(66446008);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4142;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JPvYlziAVByepieEeLxtpLGPljYV7kW7mQ4jvvUsSEA8JTJotYbtIM6wgq29ga5wlb7rbwkZgWsZLw/VMWQhwwot4M/HQoXUuXIwZzRkZR39cCEv8w3RzAKAdl7zM+Qz188vGp1fgyzBvZKYsUsY86EYcNPkf9GZJIe/V+sQj5v9S9oTpZ3VL2N3iE1zIthGEXZTzGeyy64f/tqF01COUsCGI0EULI74WbQBuHeRzyH2bn/SAiXJ3cxuM14/bE65wTuvVlUvPHicIH4BOFqzaD2lv4oRVGH3J/xbrFc099hUIAPitTYoOz/N86fc35MuOmUtNXsnvo5oyDRvB9wtKOqv2ejjY6dFc26uGh3xkH1pQbwi79UE9++1lMKgp25zKzLPM/cX337YvDhNzPh7z8LJv3wJ0uGngZL5Ofc/+wOjGDbLF5vxEjXvGODRU9Hz
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <79E66DC5C25B0D4EBC7ECCB2D81D0009@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727347AbfKFPKQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Nov 2019 10:10:16 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:36842 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727341AbfKFPKQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Nov 2019 10:10:16 -0500
+Received: by mail-qt1-f193.google.com with SMTP id y10so27261297qto.3
+        for <linux-rdma@vger.kernel.org>; Wed, 06 Nov 2019 07:10:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WwjzLqzI+gy4pPG4aukZss4i/UlCGv6Nl7wTvQ7+lMY=;
+        b=kfGbWcT+ZLxStIXrYTiwK7dh5HJ8TAihI9JGBrveA63BhtdvBj3PRhOoeffWWRCubf
+         foZcraObhxCGcVkipd7bOYuG48MoO/lTdnbDxDLKUN3kn+L/qSYDmwxYkFSXtHnTPFh9
+         XpgbKiNVrLygZ0oU8FSB+J3h38d0AQtqtd7HqF6ESZxTnmBVBPh8wTRBJCNUecevMdpD
+         EnXJ2EA83NGuYZfT1c+2TJnBXpFA3vXRj4bM1BzKjQS3U1yTOo680S5+BZb2ZaqgGsOA
+         fPtP5RrkMEpOxSJ1wLS8DhNHGOAaD+nobiwyQoChwqNUEUV7++YIJBkhlFLqzlRJwcFt
+         h5wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WwjzLqzI+gy4pPG4aukZss4i/UlCGv6Nl7wTvQ7+lMY=;
+        b=oLAqhUNMEbWr7lYxhJmxxtOTHFi+G9KkExEAdttdyfLpJdw9gcVIFTjdrb7Kgwo/Wn
+         2dzHTtw8n7mtORgvNV2KpQlu3JG0glcWSMZ3gwXTRt+Om3FQ6PdeIO4s9hOub7GS7LND
+         86h2NZWDmoIM2VOVMDnLMTkxCjEm+1LUvGodJ3uT42EHBNvM0Ne0txngFnGWhIIIBfoO
+         6f3TVjez2cs6wv3j15EQRrmip2a/an8H3sgjNHb4IkFMPPndjnv1McbC71Wt5ahjp06a
+         PTdrrlvzreuLdePvX/DF9d2YKNZ4QT6YuWtqHNwJyEOI3OYTopPHO0g8SKdumK/8L37m
+         Cpow==
+X-Gm-Message-State: APjAAAUEHLpDqwglxGdHG+XnJn4e1SZF1n2komhZOnzoxaHQ8ea1DJVe
+        VVgVYiklh3rb3sKoHmZyotvi1A==
+X-Google-Smtp-Source: APXvYqzL+u46idsgAH5M3gyaQd33YmGXmoq9G8Uhlq0td5MU1SjEWUqk20UvYmyP5TxMkPTadDgsLA==
+X-Received: by 2002:ac8:7a93:: with SMTP id x19mr2964368qtr.343.1573053015651;
+        Wed, 06 Nov 2019 07:10:15 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id u9sm12944542qke.50.2019.11.06.07.10.14
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 06 Nov 2019 07:10:14 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iSMwo-0003GW-DS; Wed, 06 Nov 2019 11:10:14 -0400
+Date:   Wed, 6 Nov 2019 11:10:14 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Michal Kalderon <mkalderon@marvell.com>
+Cc:     Ariel Elior <aelior@marvell.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "galpress@amazon.com" <galpress@amazon.com>,
+        "yishaih@mellanox.com" <yishaih@mellanox.com>,
+        "bmt@zurich.ibm.com" <bmt@zurich.ibm.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH v12 rdma-next 0/8] RDMA/qedr: Use the doorbell overflow
+ recovery mechanism for RDMA
+Message-ID: <20191106151014.GA15851@ziepe.ca>
+References: <20191030094417.16866-1-michal.kalderon@marvell.com>
+ <20191105204144.GB19938@ziepe.ca>
+ <MN2PR18MB318254AD4C7254E12BE970ECA1790@MN2PR18MB3182.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f06dec5-2715-413b-9b5d-08d762be48c8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Nov 2019 13:36:10.3537
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9N4VkzBzdqxM27Yj1ihfnzoZc7qLuE2NBf9sEDlemzMa3uI7R1Y5Iq8lTv1KSeoMlH0074TpypzVCgcgOal+2Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4142
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MN2PR18MB318254AD4C7254E12BE970ECA1790@MN2PR18MB3182.namprd18.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gVHVlLCBOb3YgMDUsIDIwMTkgYXQgMDE6MjM6NDZQTSAtMDgwMCwgSm9obiBIdWJiYXJkIHdy
-b3RlOg0KPiBPbiAxMC8yOC8xOSAxOjEwIFBNLCBKYXNvbiBHdW50aG9ycGUgd3JvdGU6DQo+ID4g
-RnJvbTogSmFzb24gR3VudGhvcnBlIDxqZ2dAbWVsbGFub3guY29tPg0KPiA+IA0KPiA+IE5vdyB0
-aGF0IHdlIGhhdmUgS0VSTkVMX0hFQURFUl9URVNUIGFsbCBoZWFkZXJzIGFyZSBnZW5lcmFsbHkg
-Y29tcGlsZQ0KPiA+IHRlc3RlZCwgc28gcmVseWluZyBvbiBtYWtlZmlsZSB0cmlja3MgdG8gYXZv
-aWQgY29tcGlsaW5nIGNvZGUgdGhhdCBkZXBlbmRzDQo+ID4gb24gQ09ORklHX01NVV9OT1RJRklF
-UiBpcyBtb3JlIGFubm95aW5nLg0KPiA+IA0KPiA+IEluc3RlYWQgZm9sbG93IHRoZSB1c3VhbCBw
-YXR0ZXJuIGFuZCBwcm92aWRlIG1vc3Qgb2YgdGhlIGhlYWRlciB3aXRoIG9ubHkNCj4gPiB0aGUg
-ZnVuY3Rpb25zIHN0dWJiZWQgb3V0IHdoZW4gQ09ORklHX01NVV9OT1RJRklFUiBpcyBkaXNhYmxl
-ZC4gVGhpcw0KPiA+IGVuc3VyZXMgY29kZSBjb21waWxlcyBubyBtYXR0ZXIgd2hhdCB0aGUgY29u
-ZmlnIHNldHRpbmcgaXMuDQo+ID4gDQo+ID4gV2hpbGUgaGVyZSwgc3RydWN0IG1tdV9ub3RpZmll
-cl9tbSBpcyBwcml2YXRlIHRvIG1tdV9ub3RpZmllci5jLCBtb3ZlIGl0Lg0KPiANCj4gYW5kIGNv
-cnJlY3QgYSBtaW5vciBzcGVsbGluZyBlcnJvciBpbiBhIGNvbW1lbnQuIEdvb2QuIDopDQo+IA0K
-PiA+IA0KPiA+IFJldmlld2VkLWJ5OiBKw6lyw7RtZSBHbGlzc2UgPGpnbGlzc2VAcmVkaGF0LmNv
-bT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBKYXNvbiBHdW50aG9ycGUgPGpnZ0BtZWxsYW5veC5jb20+
-DQo+ID4gIGluY2x1ZGUvbGludXgvbW11X25vdGlmaWVyLmggfCA0NiArKysrKysrKysrKysrLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gPiAgbW0vbW11X25vdGlmaWVyLmMgICAgICAgICAgICB8
-IDEzICsrKysrKysrKysNCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAzMCBpbnNlcnRpb25zKCspLCAy
-OSBkZWxldGlvbnMoLSkNCj4gPiANCj4gDQo+IEJlY2F1c2UgdGhpcyBpcyBjb3JyZWN0IGFzLWlz
-LCB5b3UgY2FuIGFkZDoNCj4gDQo+IFJldmlld2VkLWJ5OiBKb2huIEh1YmJhcmQgPGpodWJiYXJk
-QG52aWRpYS5jb20+DQo+IA0KDQpUaGFua3MNCg0KPiBkaWZmIC0tZ2l0IGEvbW0vbW11X25vdGlm
-aWVyLmMgYi9tbS9tbXVfbm90aWZpZXIuYw0KPiBpbmRleCAyYjc0ODU5MTllY2YuLjEwN2Y5NDA2
-YTkyZCAxMDA2NDQNCj4gKysrIGIvbW0vbW11X25vdGlmaWVyLmMNCj4gQEAgLTQ3LDYgKzQ3LDE2
-IEBAIHN0cnVjdCBtbXVfbm90aWZpZXJfbW0gew0KPiAgICAgICAgIHN0cnVjdCBobGlzdF9oZWFk
-IGRlZmVycmVkX2xpc3Q7DQo+ICB9Ow0KPiAgDQo+ICtpbnQgbW1faGFzX25vdGlmaWVycyhzdHJ1
-Y3QgbW1fc3RydWN0ICptbSkNCj4gK3sNCj4gKyAgICAgICByZXR1cm4gdW5saWtlbHkobW0tPm1t
-dV9ub3RpZmllcl9tbSk7DQo+ICt9DQoNClRoaXMgaW5saW5lIGlzIHBlcmZvcm1hbmNlIHNlbnNp
-dGl2ZSwgaXQgbmVlZHMgdG8gc3RheSBpbmxpbmVkLi4NCg0KSmFzb24NCg==
+> > Please let me know if I messed it up, otherwise I'll apply this in
+> > a few days.
+>
+> Thanks Jason. One small comment is that the length field was removed from siw + efa 
+> But not qedr_user_mmap_entry, I can also send a patch after to fix this. 
+> And one small insignificant typo below
+
+qedr looked to me like it was using non page size lengths, so I left
+it..
+
+> > diff --git a/drivers/infiniband/core/ib_core_uverbs.c
+> > b/drivers/infiniband/core/ib_core_uverbs.c
+> > index 88d9d47fb8adaa..6238842fd06402 100644
+> > +++ b/drivers/infiniband/core/ib_core_uverbs.c
+> > @@ -11,14 +11,14 @@
+> > 
+> >  /**
+> > - * rdma_user_mmap_entry_insert() - Insert an entry to the mmap_xa.
+> > + * rdma_user_mmap_entry_insert() - Insert an entry to the mmap_xa
+> >   *
+> >   * @ucontext: associated user context.
+> >   * @entry: the entry to insert into the mmap_xa
+> >   * @length: length of the address that will be mmapped
+> >   *
+> >   * This function should be called by drivers that use the rdma_user_mmap
+> > - * interface for handling user mmapped addresses. The database is handled
+> > in
+> > - * the core and helper functions are provided to insert entries into the
+> > - * database and extract entries when the user calls mmap with the given
+> > key.
+> > - * The function allocates a unique key that should be provided to user, the
+> > user
+> > - * will use the key to retrieve information such as address to
+> > - * be mapped and how.
+> > + * interface for implementing their mmap syscall A database of mmap
+> > + offsets is
+> > + * handled in the core and helper functions are provided to insert
+> > + entries
+> > + * into the database and extract entries when the user calls mmap with
+> > + the
+> > + * given offset.  The function allocates a unique page offset that
+> > + should be
+> > + * provided to user, the user will use the iffset to retrieve
+> 
+> Typo - should be offset
+
+Thanks, I'll fix that
+
+Jason
