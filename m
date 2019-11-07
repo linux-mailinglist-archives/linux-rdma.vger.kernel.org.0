@@ -2,61 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6530CF39A2
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2019 21:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F25D4F39AD
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2019 21:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbfKGUir (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Nov 2019 15:38:47 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:34758 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725924AbfKGUip (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Nov 2019 15:38:45 -0500
-Received: by mail-pf1-f193.google.com with SMTP id n13so3321252pff.1
-        for <linux-rdma@vger.kernel.org>; Thu, 07 Nov 2019 12:38:45 -0800 (PST)
+        id S1725870AbfKGUnE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Nov 2019 15:43:04 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:37418 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725497AbfKGUnE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Nov 2019 15:43:04 -0500
+Received: by mail-pf1-f194.google.com with SMTP id p24so3307978pfn.4
+        for <linux-rdma@vger.kernel.org>; Thu, 07 Nov 2019 12:43:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:in-reply-to:references
          :organization:mime-version:content-transfer-encoding;
-        bh=atbXQEkEcO1HpajO+U+SyWU18BioZk9DgM4LgjPJLDE=;
-        b=mzFB2zycVG8n/Q447VPD/8axjhd/Zcv/fO5M9TlmDHqeGtlUXcE3/YuyAUz2P1uLhf
-         Oi+5KTTEU3wc03yaNbEMqiurThzOiMxIQmPjJlMpD6GYM+97+AT28SGRDw14cBXTqHo/
-         4XR9z6pjr46wiRtLf1MOeZzr5glMl4VSQVmJTPDYW9SDK2yet55Pf3hiMlFpoVqymmCS
-         x7AHCccI82mnOOiFwqxUMftIYyQ4jgQZOpKssg3bo9Czjt1JRqkbDuXnYERAwn0tmEJh
-         gdSLKxU0yAai9VMeHHPf8QUsS2zpDzgVoyUWe44TYhLYaQJlGN0V7QtN8eXYD4yAJcUo
-         dnEg==
+        bh=oCsTVCq1tQgxv9nxqwe0qeFwhq6XGkTCN3Hs4h2HIRc=;
+        b=UIScBZHWyzEhzrW6Ee+rDwKrpK0dUyDsC9atPOnLD9BYejPhwqXy2R0N71p7tAF1LV
+         VdDNLcEyicjsZ307doxz7qDkoQk7xmnOCxcRfnxvvY3SVX5uUvZ62SUR1UMjcIGkDCAo
+         g6J83PyytFe93QomQ+NXMDSVvw8RIJfSatsEHfkbdy+kkrQy3JzSfWvy7cq3ObnA1D4O
+         l8Oywh/emvMYtyo989fZjr917697qhI0w7R8lQB7Y8/duUz3xrk09rxWRtXp6cmkFdT4
+         sNpueELPW/DfIf+XqgWYEJ3Hm0ZQoQrcQ/QMe2U+NkxAADOxkx5nBkAmvDDaiIVZw+zQ
+         proQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
          :references:organization:mime-version:content-transfer-encoding;
-        bh=atbXQEkEcO1HpajO+U+SyWU18BioZk9DgM4LgjPJLDE=;
-        b=pczh8cYsxhz+UR+psYqKUt6CHVwoxAdTZCcFllN/JrQnD6pn0h4kVip2D86+Nx7NNp
-         t3jNN/AFClsT7bn27b1U0cBypw27/R6rfEr6LZ76SBwU+IZF09auLoDoCClfT1GBkjq7
-         +7geSwG492fakNRI4bN3+r7tezecoVghwqTPU8t7J6KRGh2fiEoqZ2xOiUvr/RLMTr4m
-         c/Dpr2khM0Yy8uaMflZZX0lJ00pjp32jewle992jsd9u/wfoAe+svvuDv4yiUtviqXOp
-         w3NBEjhZ4OYTjW5e6FCiEtzlbzlEXo8sii7CDCYfXDFd5lLmI20MkZgNEp7F2msjJzk3
-         9tSA==
-X-Gm-Message-State: APjAAAWw9vE+rZGn1vQiTHiunNr2InS7A7ctJVxD8kz8V6ce/CBy23ik
-        cI2nD8f023pEUXD8WNviYWAZtA==
-X-Google-Smtp-Source: APXvYqyQS3xwwMmx8ubjVAkiyb41jzXwOXPEopHyK9U6F+fqFCyG9estARb6dABioa5y7hZBC/JQwg==
-X-Received: by 2002:a63:4506:: with SMTP id s6mr6843363pga.27.1573159124723;
-        Thu, 07 Nov 2019 12:38:44 -0800 (PST)
+        bh=oCsTVCq1tQgxv9nxqwe0qeFwhq6XGkTCN3Hs4h2HIRc=;
+        b=EyQlr6i4xlM3VKx3tTiznUDa5ItyTuKmwLpUjw7PPUsuZm2eP/psdCazXC+6ojG1Zz
+         AnPSHwn428aoeFo1a1PhLK2jes7gYWopYQsDXwBME7n+Ek/EYmgv4JqvYpua21SUgVl5
+         KK9jWgSObHoAW3Zu2/ShceYuFdmrI7DsZCdlMUqkFFja7L7h59CABEN1OfZambd9q3hX
+         b/LQjpSTivqzVHpzmvk9a/qm+jkJSjqtzlai6ZjGQTKG4xZQg4vA1EUmcx2B5uLrwQB2
+         ddEdRgVTUJLwHaQFwngceZkuBomNf8UA1PWiZnrOPo5+n4MzambTwf48e8P/S9t6jA+a
+         S1iA==
+X-Gm-Message-State: APjAAAXs+FZoMR5KTpd6okclljD/DQZNNTCAf23M2UU1KPjStLl5fRIV
+        WCKT3FMfnNugj4nusYGb9V+kTg==
+X-Google-Smtp-Source: APXvYqyvmZZM009+2/glhhKH328qJEZP5bLvefLceygilCRIbv5Ww29lexK4aWSSUU0O5Ow5KzUVTg==
+X-Received: by 2002:a62:1454:: with SMTP id 81mr6698710pfu.86.1573159383422;
+        Thu, 07 Nov 2019 12:43:03 -0800 (PST)
 Received: from cakuba.netronome.com ([65.196.126.174])
-        by smtp.gmail.com with ESMTPSA id e11sm3292613pff.104.2019.11.07.12.38.42
+        by smtp.gmail.com with ESMTPSA id r20sm6495560pgo.74.2019.11.07.12.43.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Nov 2019 12:38:44 -0800 (PST)
-Date:   Thu, 7 Nov 2019 15:38:36 -0500
+        Thu, 07 Nov 2019 12:43:03 -0800 (PST)
+Date:   Thu, 7 Nov 2019 15:42:56 -0500
 From:   Jakub Kicinski <jakub.kicinski@netronome.com>
 To:     Parav Pandit <parav@mellanox.com>
 Cc:     alex.williamson@redhat.com, davem@davemloft.net,
         kvm@vger.kernel.org, netdev@vger.kernel.org, saeedm@mellanox.com,
         kwankhede@nvidia.com, leon@kernel.org, cohuck@redhat.com,
         jiri@mellanox.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 12/19] devlink: Introduce mdev port flavour
-Message-ID: <20191107153836.29c09400@cakuba.netronome.com>
-In-Reply-To: <20191107160834.21087-12-parav@mellanox.com>
+Subject: Re: [PATCH net-next 16/19] net/mlx5: Implement dma ops and params
+ for mediated device
+Message-ID: <20191107154256.21629e5a@cakuba.netronome.com>
+In-Reply-To: <20191107160834.21087-16-parav@mellanox.com>
 References: <20191107160448.20962-1-parav@mellanox.com>
         <20191107160834.21087-1-parav@mellanox.com>
-        <20191107160834.21087-12-parav@mellanox.com>
+        <20191107160834.21087-16-parav@mellanox.com>
 Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -66,34 +67,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu,  7 Nov 2019 10:08:27 -0600, Parav Pandit wrote:
-> Introduce a new mdev port flavour for mdev devices.
-> PF.
-> Prepare such port's phys_port_name using unique mdev alias.
+On Thu,  7 Nov 2019 10:08:31 -0600, Parav Pandit wrote:
+> Implement dma ops wrapper to divert dma ops to its parent PCI device
+> because Intel IOMMU (and may be other IOMMU) is limited to PCI devices.
 > 
-> An example output for eswitch ports with one physical port and
-> one mdev port:
-> 
-> $ devlink port show
-> pci/0000:06:00.0/65535: type eth netdev p0 flavour physical port 0
-> pci/0000:06:00.0/32768: type eth netdev p1b0348cf880a flavour mdev alias 1b0348cf880a
-
-Surely those devices are anchored in on of the PF (or possibly VFs)
-that should be exposed here from the start.
-
+> Reviewed-by: Saeed Mahameed <saeedm@mellanox.com>
 > Signed-off-by: Parav Pandit <parav@mellanox.com>
 
-> @@ -6649,6 +6678,9 @@ static int __devlink_port_phys_port_name_get(struct devlink_port *devlink_port,
->  		n = snprintf(name, len, "pf%uvf%u",
->  			     attrs->pci_vf.pf, attrs->pci_vf.vf);
->  		break;
-> +	case DEVLINK_PORT_FLAVOUR_MDEV:
-> +		n = snprintf(name, len, "p%s", attrs->mdev.mdev_alias);
-
-Didn't you say m$alias in the cover letter? Not p$alias?
-
-> +		break;
->  	}
->  
->  	if (n >= len)
-
+Isn't this supposed to use PASSID or whatnot? Could you explain a
+little? This mdev stuff is pretty new to networking folks..
