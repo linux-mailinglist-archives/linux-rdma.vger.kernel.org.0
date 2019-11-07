@@ -2,117 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 753D8F2D96
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2019 12:40:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7283CF2E7A
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2019 13:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbfKGLk2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Nov 2019 06:40:28 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:53298 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727437AbfKGLk2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Nov 2019 06:40:28 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA7BYHVa075848;
-        Thu, 7 Nov 2019 11:40:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=YoU6jtG1ySY1uPxHBuKNU3IbhZ3lECJn7QO9JFRyqtc=;
- b=dVSTo6iDSzDKCzz5rQmEFcOGdGiqHk/ug5P6CUiWhzjX9/Sp+IXybhNvI1sX6Q+uWZDj
- c2tKvO/E6ZXRP9moTS0Pfzsj1Y6GASZ/E+TPXfSYOyEV34tLgwTUP/k4lHj8dqNX9baN
- hHBYrKVmfVFQylE1AaOcQX853Ti0nEx+PG6baZIHnQmgBfae2cF6YwKbgFYtomo3IIc/
- MWM2K2hpUHZNeg8eqYGPLpLYvgQt4zv5YpppVR8k2TRFYq+oU3uvX0rOyi81jDOAHiIY
- Xnrp6vQud+PRcqufTY8EabNA9y7Kz+LftiO+I9NYFZRT1Rdb6P28ucpl8s+F2waB88Bb Jw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2w41w15gkc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Nov 2019 11:40:25 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA7BdxQe073830;
-        Thu, 7 Nov 2019 11:40:24 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 2w41whr2ne-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Nov 2019 11:40:21 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xA7BeJMY025504;
-        Thu, 7 Nov 2019 11:40:20 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 07 Nov 2019 03:40:18 -0800
-Date:   Thu, 7 Nov 2019 14:40:10 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
+        id S2388206AbfKGMuV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Nov 2019 07:50:21 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:54136 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388089AbfKGMuV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 7 Nov 2019 07:50:21 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A0318C5D7802DF2471A4;
+        Thu,  7 Nov 2019 20:50:16 +0800 (CST)
+Received: from [127.0.0.1] (10.74.223.196) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.439.0; Thu, 7 Nov 2019
+ 20:50:10 +0800
+Subject: Re: [PATCH for-next 1/2] RDMA/hns: Add the workqueue framework for
+ flush cqe handler
 To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     michal.kalderon@marvell.com, linux-rdma@vger.kernel.org
-Subject: Re: [bug report] RDMA/qedr: Add doorbell overflow recovery support
-Message-ID: <20191107114009.GL21796@kadam>
-References: <20191106075259.GA22565@mwanda>
- <20191106153857.GB15851@ziepe.ca>
+CC:     <dledford@redhat.com>, <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+References: <1572255945-20297-1-git-send-email-liuyixian@huawei.com>
+ <1572255945-20297-2-git-send-email-liuyixian@huawei.com>
+ <20191106204013.GA26459@ziepe.ca>
+From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
+Message-ID: <e2e0f478-a057-c297-7e1e-d9b09eee2986@huawei.com>
+Date:   Thu, 7 Nov 2019 20:48:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191106153857.GB15851@ziepe.ca>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9433 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=912
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1910280000 definitions=main-1911070119
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9433 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=989 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1910280000
- definitions=main-1911070118
+In-Reply-To: <20191106204013.GA26459@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.223.196]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 06, 2019 at 11:38:57AM -0400, Jason Gunthorpe wrote:
-> >    959                  rc = qedr_init_user_queue(udata, dev, &cq->q, ureq.addr,
-> >    960                                            ureq.len, true,
-> >    961                                            IB_ACCESS_LOCAL_WRITE,
-> >    962                                            1, 1);
-> >    963                  if (rc)
-> >    964                          goto err0;
-> >    965  
-> >    966                  pbl_ptr = cq->q.pbl_tbl->pa;
-> >    967                  page_cnt = cq->q.pbl_info.num_pbes;
-> >    968  
-> >    969			cq->ibcq.cqe = chain_entries;
-> >    970			cq->q.db_addr = ctx->dpi_addr + db_offset;
-> >                                         ^^^^^^^^^^^^^
-> > New unchecked dereference.
+
+
+On 2019/11/7 4:40, Jason Gunthorpe wrote:
+> On Mon, Oct 28, 2019 at 05:45:44PM +0800, Yixian Liu wrote:
+>> @@ -1998,6 +2000,17 @@ static int hns_roce_v2_init(struct hns_roce_dev *hr_dev)
+>>  		}
+>>  	}
+>>  
+>> +	snprintf(workq_name, HNS_ROCE_WORKQ_NAME_LEN - 1,
+>> +		 "hns_roce_%d_flush_wq", device_id);
+>> +	device_id++;
+>> +
+>> +	hr_dev->flush_workq = alloc_workqueue(workq_name, WQ_HIGHPRI, 0);
+>> +	if (!hr_dev->flush_workq) {
 > 
-> For rdma_udata_to_drv_context(), udata != NULL implies ctx != NULL
+> Why is this so time critical?
+
+Hi Jason,
+
+I am not quite sure whether you concerned with the flag "WQ_HIGHPRI" or
+why WQ is created in hns_roce_v2_init.
+
+If it is WQ_HIGHPRI, yes, it is much better to implement flush operation
+ASAP to help generating flushed cqe as ULP may poll cqe urgently. If you
+concerned allocation stage, as flush operation is support for hip08 only,
+there is no other place proper than here I think.
+
 > 
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+>> index bec48f2..2c8f726 100644
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+>> @@ -43,6 +43,49 @@
+>>  
+>>  #define SQP_NUM				(2 * HNS_ROCE_MAX_PORTS)
+>>  
+>> +static void flush_work_handle(struct work_struct *work)
+>> +{
+>> +	struct hns_roce_flush_work *flush_work = container_of(work,
+>> +					struct hns_roce_flush_work, work);
+>> +	struct hns_roce_qp *hr_qp = flush_work->hr_qp;
+>> +	struct device *dev = flush_work->hr_dev->dev;
+>> +	struct ib_qp_attr attr;
+>> +	int attr_mask;
+>> +	int ret;
+>> +
+>> +	attr_mask = IB_QP_STATE;
+>> +	attr.qp_state = IB_QPS_ERR;
+>> +
+>> +	ret = hns_roce_modify_qp(&hr_qp->ibqp, &attr, attr_mask, NULL);
+>> +	if (ret)
+>> +		dev_err(dev, "Modify QP to error state failed(%d) during CQE flush\n",
+>> +			ret);
+> 
+> There is something wrong with your description as all this seems to do
+> is tell the HW to go to the ERR state.
 
-In that case, the other check for NULL ctx is inside an if (udata)
-condition so it could be removed.
+For the flush operation, in addition to modify qp to ERR state, the head pointers
+of SQ and RQ are also told to the HW with this interface as following. This part
+of codes is already there.
 
-  1036		return 0;
-  1037	
-  1038	err2:
-  1039		destroy_iparams.icid = cq->icid;
-  1040		dev->ops->rdma_destroy_cq(dev->rdma_ctx, &destroy_iparams,
-  1041					  &destroy_oparams);
-  1042	err1:
-  1043		if (udata) {
-                    ^^^^^
-  1044			qedr_free_pbl(dev, &cq->q.pbl_info, cq->q.pbl_tbl);
-  1045			ib_umem_release(cq->q.umem);
-  1046			if (ctx)
-                            ^^^
-Too late.
+if (new_state == IB_QPS_ERR) {
+        roce_set_field(context->byte_160_sq_ci_pi,
+                       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_M,
+                       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_S,
+                       hr_qp->sq.head);
+        roce_set_field(qpc_mask->byte_160_sq_ci_pi,
+                       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_M,
+                       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_S, 0);
 
-  1047				rdma_user_mmap_entry_remove(&ctx->ibucontext,
-  1048							    cq->q.db_mmap_entry);
+        if (!ibqp->srq) {
+                roce_set_field(context->byte_84_rq_ci_pi,
+                       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_M,
+                       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_S,
+                       hr_qp->rq.head);
+                roce_set_field(qpc_mask->byte_84_rq_ci_pi,
+                       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_M,
+                       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_S, 0);
+        }
+}
 
+> 
+> Why don't you do this from hns_roce_irq_work_handle() ?
 
+As described in the cover letter, here we used CMWQ (concurrency management workqueue)
+to make sure that flush operation can be implemented ASAP. Current irq workqueue is
+a singlethread workqueue, which may delay the flush too long when the system is heavy.
 
+Do you mean we can change irq workqueue to CMWQ to put flush work into it?
 
-regards,
-dan carpenter
+> 
+>> +	kfree(flush_work);
+>> +
+>> +	/*
+>> +	 * make sure we signal QP destroy leg that flush QP was completed
+>> +	 * so that it can safely proceed ahead now and destroy QP
+>> +	 */
+>> +	if (atomic_dec_and_test(&hr_qp->refcount))
+>> +		complete(&hr_qp->free);
+> 
+>> +}
+>> +
+>> +void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+>> +{
+>> +	struct hns_roce_flush_work *flush_work;
+>> +
+>> +	flush_work = kzalloc(sizeof(struct hns_roce_flush_work), GFP_ATOMIC);
+>> +	if (!flush_work)
+>> +		return;
+> 
+> Don't do things that can fail here
 
+Do you mean that as "GFP_ATOMIC" is used, the if branch can be deleted?
+
+> 
+>> +
+>> +	flush_work->hr_dev = hr_dev;
+>> +	flush_work->hr_qp = hr_qp;
+>> +	INIT_WORK(&flush_work->work, flush_work_handle);
+>> +	atomic_inc(&hr_qp->refcount);
+>> +	queue_work(hr_dev->flush_workq, &flush_work->work);
+>> +}
+>> +
+>>  void hns_roce_qp_event(struct hns_roce_dev *hr_dev, u32 qpn, int event_type)
+>>  {
+>>  	struct device *dev = hr_dev->dev;
+> 
+> .
+> 
 
