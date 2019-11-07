@@ -2,90 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5933F2BE4
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2019 11:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 753D8F2D96
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2019 12:40:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727519AbfKGKLp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Nov 2019 05:11:45 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:34730 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727434AbfKGKLp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Nov 2019 05:11:45 -0500
-Received: by mail-wm1-f65.google.com with SMTP id v3so4483318wmh.1
-        for <linux-rdma@vger.kernel.org>; Thu, 07 Nov 2019 02:11:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qC7NL62biyzzrxZrsAxpwfOJvcnvnenKvBa/4Ebiicw=;
-        b=Wzdv+VbqO5ZwQjh2/e1acUjRfog0dmAELNT+YaqN0Q04PG2H52266JG3xpfe0gOQCV
-         mbCWXL6Y3Q4RogDL9gjmOhwv0liyHiSkhkqX1WJeX3wRuEVdBOkx3fPkmz0DmQxQnTpV
-         XieiYqpE0X2x0SOehcJJak8kzZCWdzgrU1c1ve19uc2HKA6qBA5EwELAs85rvyUMUL8V
-         hcq2lClmsUWXDDsCOqOPuaY9bS8rmUHTwGBIog2Hyq/+UcjOJIMe44ngCR5sQmJ8YOia
-         vEYuLNeSddL+whkvqS657xaxL2cQJn/ya4/v3SdMoF2p1cF9n80BGs0Eb2YgmAeTZzy0
-         UPFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qC7NL62biyzzrxZrsAxpwfOJvcnvnenKvBa/4Ebiicw=;
-        b=ZoDoOTUg5MX0sVtQfDvF4uGak8oU86ahEmDR65Xmp0JSK+kfYct/swMyfY1JjXLDgN
-         sA6J0x5r6hcMbrwmq8454VZuoSqtTAbwqfXrq/OwjYCGEgXtyFk1iG2n8TL3cBm/5oPb
-         qUHDAlNHus8gsq1cEe/mZWrx6gYBr1+vU5JFTqbfU0+QgAx5rd3rHZ75uWe8OcRXnPqj
-         pMVzRNCzmiGUwDlRktPkLCdJZck5V6tdr7ptNs+tgpai4M3m2N11ebiMPblxjJ//FkDy
-         F1fiOjiYCpmcDgOeL5Ar8izMJ3iHkMKfpSLo/4ArvUzf1xp+55ZuXpU0gekQQTcp2x8K
-         Twew==
-X-Gm-Message-State: APjAAAWO/qGIcQDsAlwoghc9afRnaZzykr1vfnoR46vSrftE8npQxBP9
-        MOoPWiTM3DJJVitZSHUlgejN5g==
-X-Google-Smtp-Source: APXvYqzgZL0TOeh3Rubyg4NQjzYzjkepTHNkC8vakGBXI0WHiPmxQyL1EEBE/X9RPJmZsKMbYzMGVQ==
-X-Received: by 2002:a7b:c0da:: with SMTP id s26mr2035904wmh.6.1573121502034;
-        Thu, 07 Nov 2019 02:11:42 -0800 (PST)
-Received: from [10.80.2.221] ([193.47.165.251])
-        by smtp.googlemail.com with ESMTPSA id j15sm2152931wrt.78.2019.11.07.02.11.40
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Nov 2019 02:11:41 -0800 (PST)
-Subject: Re: [PATCH rdma-next v2] IB/mlx5: Support flow counters offset for
- bulk counters
+        id S1728051AbfKGLk2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Nov 2019 06:40:28 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:53298 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727437AbfKGLk2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Nov 2019 06:40:28 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA7BYHVa075848;
+        Thu, 7 Nov 2019 11:40:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=YoU6jtG1ySY1uPxHBuKNU3IbhZ3lECJn7QO9JFRyqtc=;
+ b=dVSTo6iDSzDKCzz5rQmEFcOGdGiqHk/ug5P6CUiWhzjX9/Sp+IXybhNvI1sX6Q+uWZDj
+ c2tKvO/E6ZXRP9moTS0Pfzsj1Y6GASZ/E+TPXfSYOyEV34tLgwTUP/k4lHj8dqNX9baN
+ hHBYrKVmfVFQylE1AaOcQX853Ti0nEx+PG6baZIHnQmgBfae2cF6YwKbgFYtomo3IIc/
+ MWM2K2hpUHZNeg8eqYGPLpLYvgQt4zv5YpppVR8k2TRFYq+oU3uvX0rOyi81jDOAHiIY
+ Xnrp6vQud+PRcqufTY8EabNA9y7Kz+LftiO+I9NYFZRT1Rdb6P28ucpl8s+F2waB88Bb Jw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 2w41w15gkc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 Nov 2019 11:40:25 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA7BdxQe073830;
+        Thu, 7 Nov 2019 11:40:24 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2w41whr2ne-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 Nov 2019 11:40:21 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xA7BeJMY025504;
+        Thu, 7 Nov 2019 11:40:20 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 07 Nov 2019 03:40:18 -0800
+Date:   Thu, 7 Nov 2019 14:40:10 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Yevgeny Kliteynik <kliteyn@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-References: <20191103140723.77411-1-leon@kernel.org>
- <20191106202118.GA26024@ziepe.ca>
-From:   Yishai Hadas <yishaih@dev.mellanox.co.il>
-Message-ID: <f4814cd9-598d-2957-4aa3-5b12b1c54d25@dev.mellanox.co.il>
-Date:   Thu, 7 Nov 2019 12:11:40 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+Cc:     michal.kalderon@marvell.com, linux-rdma@vger.kernel.org
+Subject: Re: [bug report] RDMA/qedr: Add doorbell overflow recovery support
+Message-ID: <20191107114009.GL21796@kadam>
+References: <20191106075259.GA22565@mwanda>
+ <20191106153857.GB15851@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <20191106202118.GA26024@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191106153857.GB15851@ziepe.ca>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9433 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=912
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1910280000 definitions=main-1911070119
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9433 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=989 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1910280000
+ definitions=main-1911070118
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/6/2019 10:21 PM, Jason Gunthorpe wrote:
-> On Sun, Nov 03, 2019 at 04:07:23PM +0200, Leon Romanovsky wrote:
->> diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
->> index d0da070cf0ab..20d88307f75f 100644
->> +++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
->> @@ -198,6 +198,7 @@ enum mlx5_ib_create_flow_attrs {
->>   	MLX5_IB_ATTR_CREATE_FLOW_ARR_FLOW_ACTIONS,
->>   	MLX5_IB_ATTR_CREATE_FLOW_TAG,
->>   	MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX,
->> +	MLX5_IB_ATTR_CREATE_FLOW_ARR_COUNTERS_DEVX_OFFSET,
->>   };
+On Wed, Nov 06, 2019 at 11:38:57AM -0400, Jason Gunthorpe wrote:
+> >    959                  rc = qedr_init_user_queue(udata, dev, &cq->q, ureq.addr,
+> >    960                                            ureq.len, true,
+> >    961                                            IB_ACCESS_LOCAL_WRITE,
+> >    962                                            1, 1);
+> >    963                  if (rc)
+> >    964                          goto err0;
+> >    965  
+> >    966                  pbl_ptr = cq->q.pbl_tbl->pa;
+> >    967                  page_cnt = cq->q.pbl_info.num_pbes;
+> >    968  
+> >    969			cq->ibcq.cqe = chain_entries;
+> >    970			cq->q.db_addr = ctx->dpi_addr + db_offset;
+> >                                         ^^^^^^^^^^^^^
+> > New unchecked dereference.
 > 
-> Where is the rdma-core PR consuming this new uapi?
+> For rdma_udata_to_drv_context(), udata != NULL implies ctx != NULL
+> 
 
-Below is the matching PR for this in rdma-core:
-https://github.com/linux-rdma/rdma-core/pull/611
+In that case, the other check for NULL ctx is inside an if (udata)
+condition so it could be removed.
 
-Yishai
+  1036		return 0;
+  1037	
+  1038	err2:
+  1039		destroy_iparams.icid = cq->icid;
+  1040		dev->ops->rdma_destroy_cq(dev->rdma_ctx, &destroy_iparams,
+  1041					  &destroy_oparams);
+  1042	err1:
+  1043		if (udata) {
+                    ^^^^^
+  1044			qedr_free_pbl(dev, &cq->q.pbl_info, cq->q.pbl_tbl);
+  1045			ib_umem_release(cq->q.umem);
+  1046			if (ctx)
+                            ^^^
+Too late.
+
+  1047				rdma_user_mmap_entry_remove(&ctx->ibucontext,
+  1048							    cq->q.db_mmap_entry);
+
+
+
+
+regards,
+dan carpenter
+
+
