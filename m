@@ -2,111 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23916F3989
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2019 21:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F707F3996
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2019 21:36:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725906AbfKGUco (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Nov 2019 15:32:44 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:39930 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbfKGUco (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Nov 2019 15:32:44 -0500
-Received: by mail-pl1-f193.google.com with SMTP id o9so2372689plk.6
-        for <linux-rdma@vger.kernel.org>; Thu, 07 Nov 2019 12:32:43 -0800 (PST)
+        id S1725868AbfKGUgd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Nov 2019 15:36:33 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:43770 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725818AbfKGUgd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Nov 2019 15:36:33 -0500
+Received: by mail-qt1-f195.google.com with SMTP id l24so3840121qtp.10
+        for <linux-rdma@vger.kernel.org>; Thu, 07 Nov 2019 12:36:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=H1xRS46fM5LD5K/ydfNvqg7rYgxWxCSqEht+PRGUa4U=;
-        b=tfsumkoAdjTKHfYeisbsRDvaxQtbOoI/KGYjE81Yl0PG95lm/ujd3Y4G5wuC8c1nc1
-         HK0X8h6vOomissKrVlvXzUCVcVgVjU+Rc6vogymUT4FOKIACOC7Rhh/7fGMbcL/Dc8Q5
-         sBRRY3L8eX8HajS2sBlP0NEuDCge8l6wMteDEQsT5allc+AVpzFzPknkI7kMkp89BWPU
-         Nexa7AwhxcBqhGulxhqBr2lGoNqjlalgk2QZMJHYS0kKDD4l1QS6643BNob8xEpA/C/W
-         3p/1adKgt8CBcD+Bt9sNv8+RP12YkmJwSE3XBVKqr0Z9ttUHYm4HnjcJebfdAPzxaiMt
-         ulKw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=71LM+xH1wkNpW127vr6ZxQkFrR5SvDtsBzUQHq660ZY=;
+        b=D3bFpO22vYKzoP0y0kJzENmUIyEWWuBeZdrbWOd1NSHyV6jshwYAek9v0UQlPVNFPm
+         gMM8Mo2Kxc8gRUHzzjxaadcVCTPEcRYvCbAIX8OusFUjw7o9YpFUkiK3RoQQUeow2ms9
+         eGazhDIo9mJpashFsikQQIbjd6TISyD1pZmFKifpX4Zhcl//XXhGcH3+Zo5Kzt51FlB3
+         w1yAflYz0ICBGX3upadZlsBXvu1aRMmxOCzSLHPZYss2G0V4O2B7ESmEO3vtegVYkAKW
+         tSKEpqMzverpHSnG3I+axEeI7kQum6AfY8LA3KuUKxqL3srA0wFn9Z1ou/8PeWVKM40a
+         a1yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=H1xRS46fM5LD5K/ydfNvqg7rYgxWxCSqEht+PRGUa4U=;
-        b=Yx/1FBw7fATN5CdmvVCJT9KgRBjxoxOyOQw1biWN7+xrPiIXuIBwPINwRLJi24TlgH
-         zZqh/7ets78mgKORlO+XyjYe4EGabTXNAt49f1IbaWtZf3XLRV32fWlEh1b1yhsHPnPk
-         8mBrE6RTodiQ82zNg/lkNCvIQRsd6y+jDdR/9yrwjm4lXrz89LVPg5VcV8doJg9Upnt6
-         CgAcQEeqqJPZjdzExaSCB5Bw7PeH25CDNcNT1Hhpdjjr9oauPdRAvgXP1+pnzgpbxd6D
-         lYn0ODIKKmvS7K6Zgc0ZgGTBgMCn+3U7Xp5m5WL/PaSRUB3AKW1ZLHAseVstjlJ1pBRg
-         glbA==
-X-Gm-Message-State: APjAAAXxCCFvO3u8vAKPgMkwLEC6PZFyBhzvHis9XYZholHtzFLiBBpY
-        aQV6S4kLYhDz9yfglmg3N8QeHg==
-X-Google-Smtp-Source: APXvYqwhMCPR1WhyCfSCTY6X/ImHgiDS2TCZ50mSul13Rm3wAlTshDzZs6tMtEB+yT/FsJxEeI/Fyw==
-X-Received: by 2002:a17:902:a410:: with SMTP id p16mr5875809plq.184.1573158763275;
-        Thu, 07 Nov 2019 12:32:43 -0800 (PST)
-Received: from cakuba.netronome.com ([65.196.126.174])
-        by smtp.gmail.com with ESMTPSA id a66sm3627107pfb.166.2019.11.07.12.32.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Nov 2019 12:32:42 -0800 (PST)
-Date:   Thu, 7 Nov 2019 15:32:34 -0500
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Parav Pandit <parav@mellanox.com>
-Cc:     alex.williamson@redhat.com, davem@davemloft.net,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, saeedm@mellanox.com,
-        kwankhede@nvidia.com, leon@kernel.org, cohuck@redhat.com,
-        jiri@mellanox.com, linux-rdma@vger.kernel.org,
-        Or Gerlitz <gerlitz.or@gmail.com>
-Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
-Message-ID: <20191107153234.0d735c1f@cakuba.netronome.com>
-In-Reply-To: <20191107160448.20962-1-parav@mellanox.com>
-References: <20191107160448.20962-1-parav@mellanox.com>
-Organization: Netronome Systems, Ltd.
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=71LM+xH1wkNpW127vr6ZxQkFrR5SvDtsBzUQHq660ZY=;
+        b=DVkUp39/kx6nRGinwrsp9SZ/1TV5S+UaUjz0MbWZHxKT3SISDnvSJztmTOrJmfbYch
+         PL5fwHWNHO1EyLPST+pLjNfWY0MpshNSUUmM/RoOqcanlFnXc45QAmCDpH/HDLHF48c9
+         7+5LplcWdoe56Yx1mCLLKX4wr01SRAd757CsjPg4bhqNFplidn5ZOtx8beSd+sw1DuVa
+         CkaaeBgyKxrn52DLJmgk6xpKYAUUuGnaL+qe3Ina5LfJe55E7jKPQIh/A1G7LvtTzPy6
+         +nKM/reKhDBxamek4hx6c2jzeerd5C8GegMIinDMekL8sQoto7g1UNDRsamr1lNykhiS
+         8ZHw==
+X-Gm-Message-State: APjAAAXK+FY/VNFCkUU3Tz9aS5pgw9hUVUwLXhhz3rK92S+HOvbaBtdq
+        mhP8+FwRDOPxIDHruLh4MZlllQ==
+X-Google-Smtp-Source: APXvYqyNBsBryLeEi7SIRoAPqzH4cK3zfUarxZiwLJPOIp00fgPi4tyHDHRm5q/vs9/sR4SDhwZ/Hw==
+X-Received: by 2002:ac8:67d9:: with SMTP id r25mr6108730qtp.7.1573158991013;
+        Thu, 07 Nov 2019 12:36:31 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id q17sm2194836qtq.58.2019.11.07.12.36.30
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 07 Nov 2019 12:36:30 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iSoW5-0000Io-Qj; Thu, 07 Nov 2019 16:36:29 -0400
+Date:   Thu, 7 Nov 2019 16:36:29 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        David Zhou <David1.Zhou@amd.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Petr Cvek <petrcvekcz@gmail.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 09/15] xen/gntdev: use mmu_range_notifier_insert
+Message-ID: <20191107203629.GF6730@ziepe.ca>
+References: <20191028201032.6352-1-jgg@ziepe.ca>
+ <20191028201032.6352-10-jgg@ziepe.ca>
+ <3938b588-c6c5-3bd1-8ea9-47e4d5b2045c@oracle.com>
+ <20191105023108.GN22766@mellanox.com>
+ <a62e58f6-d98b-1feb-d0ca-fb8210f3e831@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a62e58f6-d98b-1feb-d0ca-fb8210f3e831@oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu,  7 Nov 2019 10:04:48 -0600, Parav Pandit wrote:
-> Mellanox sub function capability allows users to create several hundreds
-> of networking and/or rdma devices without depending on PCI SR-IOV support.
+On Tue, Nov 05, 2019 at 10:16:46AM -0500, Boris Ostrovsky wrote:
 
-You call the new port type "sub function" but the devlink port flavour
-is mdev.
-
-As I'm sure you remember you nacked my patches exposing NFP's PCI 
-sub functions which are just regions of the BAR without any mdev
-capability. Am I in the clear to repost those now? Jiri?
-
-> Overview:
-> ---------
-> Mellanox ConnectX sub functions are exposed to user as a mediated
-> device (mdev) [2] as discussed in RFC [3] and further during
-> netdevconf0x13 at [4].
+> > So, I suppose it can be relaxed to a null test and a WARN_ON that it
+> > hasn't changed?
 > 
-> mlx5 mediated device (mdev) enables users to create multiple netdevices
-> and/or RDMA devices from single PCI function.
+> You mean
 > 
-> Each mdev maps to a mlx5 sub function.
-> mlx5 sub function is similar to PCI VF. However it doesn't have its own
-> PCI function and MSI-X vectors.
+> if (use_ptemod) {
+>         WARN_ON(map->vma != vma);
+>         ...
 > 
-> mlx5 mdevs share common PCI resources such as PCI BAR region,
-> MSI-X interrupts.
 > 
-> Each mdev has its own window in the PCI BAR region, which is
-> accessible only to that mdev and applications using it.
-> 
-> Each mlx5 sub function has its own resource namespace for RDMA resources.
-> 
-> mdevs are supported when eswitch mode of the devlink instance
-> is in switchdev mode described in devlink documentation [5].
+> Yes, that sounds good.
 
-So presumably the mdevs don't spawn their own devlink instance today,
-but once mapped via VIRTIO to a VM they will create one?
+I amended my copy of the patch with the above, has this rework shown
+signs of working?
 
-It could be useful to specify.
+@@ -436,7 +436,8 @@ static void gntdev_vma_close(struct vm_area_struct *vma)
+        struct gntdev_priv *priv = file->private_data;
+ 
+        pr_debug("gntdev_vma_close %p\n", vma);
+-       if (use_ptemod && map->vma == vma) {
++       if (use_ptemod) {
++               WARN_ON(map->vma != vma);
+                mmu_range_notifier_remove(&map->notifier);
+                map->vma = NULL;
+        }
 
-> Network side:
-> - By default the netdevice and the rdma device of mlx5 mdev cannot send or
-> receive any packets over the network or to any other mlx5 mdev.
-
-Does this mean the frames don't fall back to the repr by default?
+Jason
