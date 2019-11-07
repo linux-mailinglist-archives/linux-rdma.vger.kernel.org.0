@@ -2,135 +2,238 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A59F8F393A
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2019 21:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE818F3942
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2019 21:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726036AbfKGUKw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Nov 2019 15:10:52 -0500
-Received: from mail-eopbgr50060.outbound.protection.outlook.com ([40.107.5.60]:19170
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        id S1725868AbfKGULO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Nov 2019 15:11:14 -0500
+Received: from mail-eopbgr70073.outbound.protection.outlook.com ([40.107.7.73]:46082
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725823AbfKGUKw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 7 Nov 2019 15:10:52 -0500
+        id S1725906AbfKGULO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 7 Nov 2019 15:11:14 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TwU3r7ogLOMFmcuVGDsrvQeQVZBj5z2u4XvNIS+3894dSCH7ukjuFFpc0D0AloqxHZtCgjwfh1jW3bk20azARFkdQ8OUs5jb62yPJpUzPsQ0Xszc2lb+cS8LKfKIUEsZaUJ8KgPdbb+RWMar5X93hWzsoQismLJUP66313cz4EFs7J8kmRICS+Q8p8yx5oo4mLC58p8rju+JdKvvDI+vvSjegLAoWur4ETtHmsGgXbDAkFvA0lFLINxhx+Zm3lOJos3VbJJ/J3CB4GyAXLPjQ0TZXzoBRWUTyp3FD8qXPll2607vOjuM4OqmR1a9a8EbrJ6NSwA/8V1UH431falg4w==
+ b=nm8BTQc4XcVTH5AaIKywjzo0C9fWhL5LyHHaZXEcnqCacomefreNfCKYQ2Oa0s16aXW/c2911ukmgASDwn20ZW6cnBzvAqn8cyj8vO63bdPEgpPjdyVeLlt4Mak0civxWgMIpYwzLQ0KSDYPZ/gD4kroy5KkQif6whPF91zAh3v7+1YTYQdeiAtFx2lIKky2rwPSwPhs1FWpC8j3vAtxEKvCBxcP4DR77nl18J6wCkgZPeqZAg9BFa4zbCTv3vvDa7O2Ht5Mu1Ro18uRYhGu5yoRkzSf/MN+2W5ls0uPTsCZ/tO/eQHaoBAI3YU9UVv+c1l3kNpq3O4DTNIrHAiMHw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d+m/+uQQys3tzVTJUMV+0bku3PbZl9JbTni0PStXgu4=;
- b=nBjW8UIp/bUoOSRGIFD0yQcCy/MVUTRDpQDQbsDveOFakDOHD1+TUi255mpcOUAnDvehBCKiT619aggc8K7Le0rIl7x2/hcFH6g8zejtyJ5oesfwQMkV5vhxZFmNyv+Ja64dusYVnI4cMtAcMdTyuQ9BTuTwdqqkMDt5KcCAFwxO1hhLjhnsyUSpUyDUYr/d8BcrOzWUQRHNSFyDyAqwvkdtGQrJXKDaMDTIFK7SwwuCYmyeG3PQF/qYJWosgRQMhQ5sjITYkjFHB6BgYDtjMMrQpjlX0ACP+Bkql9iXmWyO8NnaEkWZNl5yiAphFldONJJK6JOsu1HfKS8RcK8OQA==
+ bh=xgxel6wzKCB7iAx3fWFDmhvkjcwH++biBi9chHqduk0=;
+ b=Y1VPdXKJOiXfUGO+KcCfgfc7X6vspbWwExS7JeTNyrHYmgiqc7w5TOu7GYwxtKutUPCOrvzwGby8zAXw2DUmL5NwGjxi75ZkhmtsZyDuaaeny6JyRpQUL3o++LbgL0PUENxQSPmCYtMcp8cuYR7IsrhUjixrjELVOnX7uzHOdde30hIqPYLlJ8QILxJxMjkat5ZsHj1asY0s0JLc46RanLeTw1CMhdYjPBFj5oSSiiwjDot2qTz6s82GyCVoQss1X5F0X23FCAfRBSs5xpAoDfO9EK2RrbKnawEG0Lk2NSfgEg/bkf6pJ7vSnunTwOQiGdj209mcO6w4NJZbfnGpQA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d+m/+uQQys3tzVTJUMV+0bku3PbZl9JbTni0PStXgu4=;
- b=so49M7sK6otLNx3mFTUcek83iFD9OcI735pOsAa+qVGp8OM3agi6OV2oPrSu+lQJJ/S851jqqBTyVOhrEGBI/oVqnbO+2HM5NmfWMbgxxysH2HnPoexFIy7r3D+gnOgdGDmMZtiIS4tCougVTmBbmZAfpgILz6h0VDxgrZa9zp4=
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
- AM0PR05MB4532.eurprd05.prod.outlook.com (52.133.55.143) with Microsoft SMTP
+ bh=xgxel6wzKCB7iAx3fWFDmhvkjcwH++biBi9chHqduk0=;
+ b=BNXsKXL9nJvqfGHHD/lPQbRXn/qd1yJwC3pT5azbBvdC35OPaGVyJz11549WonzkCt8RbubfZxch6PcjKWWnmHJTSZ38OOWd162SVBKSns8OP2ugL8tVb3WrTIhZUl9ji1XzNUD8Cpr2qo1jQvBAzvWBLCnkH2TiPtk2d3cY9Tw=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB3406.eurprd05.prod.outlook.com (10.175.245.23) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2430.20; Thu, 7 Nov 2019 20:10:45 +0000
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::e5c2:b650:f89:12d4]) by AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::e5c2:b650:f89:12d4%7]) with mapi id 15.20.2430.020; Thu, 7 Nov 2019
- 20:10:45 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
-Thread-Topic: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
-Thread-Index: AQHVlYUoVUzzBv4k4UmQHUerp08scad/75GAgAAxHKA=
-Date:   Thu, 7 Nov 2019 20:10:45 +0000
-Message-ID: <AM0PR05MB4866BE0BA3BEA9523A034EDDD1780@AM0PR05MB4866.eurprd05.prod.outlook.com>
-References: <20191107160448.20962-1-parav@mellanox.com>
- <20191107170341.GM6763@unreal>
-In-Reply-To: <20191107170341.GM6763@unreal>
+ 15.20.2430.23; Thu, 7 Nov 2019 20:11:06 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::b179:e8bf:22d4:bf8d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::b179:e8bf:22d4:bf8d%5]) with mapi id 15.20.2408.028; Thu, 7 Nov 2019
+ 20:11:06 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Jerome Glisse <jglisse@redhat.com>
+CC:     John Hubbard <jhubbard@nvidia.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        =?iso-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
+        David Zhou <David1.Zhou@amd.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Petr Cvek <petrcvekcz@gmail.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH v2 02/15] mm/mmu_notifier: add an interval tree notifier
+Thread-Topic: [PATCH v2 02/15] mm/mmu_notifier: add an interval tree notifier
+Thread-Index: AQHVjcvJYOye0EiwZkisYK74G5bmhqd+54eAgAAdRYCAAS6QAA==
+Date:   Thu, 7 Nov 2019 20:11:06 +0000
+Message-ID: <20191107201102.GC21728@mellanox.com>
+References: <20191028201032.6352-1-jgg@ziepe.ca>
+ <20191028201032.6352-3-jgg@ziepe.ca>
+ <35c2b322-004e-0e18-87e4-1920dc71bfd5@nvidia.com>
+ <20191107020807.GA747656@redhat.com>
+In-Reply-To: <20191107020807.GA747656@redhat.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
+x-clientproxiedby: BN4PR13CA0015.namprd13.prod.outlook.com
+ (2603:10b6:403:3::25) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
 authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [208.176.44.194]
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.162.113.180]
 x-ms-publictraffictype: Email
 x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: a50ad319-855e-4762-a490-08d763be92e4
-x-ms-traffictypediagnostic: AM0PR05MB4532:|AM0PR05MB4532:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM0PR05MB4532A73F922940083A7D86F1D1780@AM0PR05MB4532.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1091;
+x-ms-office365-filtering-correlation-id: 4cdf982f-b6aa-4a1e-ead0-08d763be9f65
+x-ms-traffictypediagnostic: VI1PR05MB3406:
+x-microsoft-antispam-prvs: <VI1PR05MB340605F186CF3F42C41E3009CF780@VI1PR05MB3406.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
 x-forefront-prvs: 0214EB3F68
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(366004)(39850400004)(396003)(376002)(136003)(13464003)(199004)(189003)(316002)(66476007)(476003)(14454004)(478600001)(25786009)(7736002)(186003)(66446008)(66946007)(66556008)(64756008)(76116006)(102836004)(256004)(7696005)(6116002)(3846002)(11346002)(76176011)(26005)(81166006)(486006)(81156014)(446003)(6506007)(53546011)(99286004)(4326008)(305945005)(33656002)(5660300002)(2906002)(54906003)(6916009)(6246003)(71190400001)(71200400001)(6436002)(229853002)(8676002)(52536014)(86362001)(55016002)(9686003)(8936002)(74316002)(66066001);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB4532;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(376002)(136003)(39850400004)(346002)(396003)(199004)(189003)(14454004)(25786009)(7416002)(305945005)(6916009)(478600001)(7736002)(6512007)(8936002)(6486002)(6436002)(36756003)(229853002)(86362001)(2906002)(81166006)(8676002)(81156014)(4326008)(6246003)(71190400001)(386003)(316002)(1076003)(66946007)(54906003)(99286004)(33656002)(5660300002)(256004)(14444005)(66066001)(52116002)(76176011)(3846002)(486006)(2616005)(476003)(71200400001)(11346002)(6116002)(66446008)(64756008)(66556008)(66476007)(186003)(26005)(6506007)(102836004)(446003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3406;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dS73FkBFIRJ1fJcD/+gNPpHkaCIgwmS+m1hfrPMZ7WWp2noahXTlbCeqp1qlAMl8l5FdvDpSAPB3O+xz7T5m12ttLgMLpO7B3hCOJH7fO8sc4eSJ58d6Ai8QkM6vVN3qfbVsNC5qrPMrMUduSdUqfVzpDe5k9zGDruWZp96hqRNnLSLO9ZmluwqaP4xkkdblRDPRD1ywS92ikBAnxpZvBLwcwTJrzHyNlZCdlD+w4DZIrL1Le+SP/lnSm0ZjTR025bMun86nrSGhcQBY5rns/SKFCxhAm4LbtUch5u8MpiGd2iB2s5TiXUyLaLeWpY3ipT31TCDj36IDyXOI6KoeOVtGaB1ewAGfiLSWPt1QvEkkqVlSA2xHFvZYNLcgIc/eXK1gifj43cLMMXJfVUyoB29nV16fTWz1e5K4B6SER7mD8sHJeNjQF9lS5WB7id7r
-Content-Type: text/plain; charset="us-ascii"
+x-microsoft-antispam-message-info: H5+pRnFkA5QDCMKd68E5ZKcpCb4oVJ3md863xj2cktKvQTKyzXn1xrpDtS9RNSLvsS1j3UXr/9v9oIJDV32GgFLWBOgnOoFuBJ+0TqRXfuiiBoeTrLB2abbk55CpA8TFeZgPeHvt1+1YlT8wbXygJthoj7FkBQm05t2h9kPXeCtZFWApw4yQb1Jx9p8Z/fO9qNjtRHWosI+hnxeHeIk2HHUNKsPCCMlbVe9qBgUy/ZqunC95Ji8bAPUOKQ9idWmIDjErlGSbaD0b3lXAiatAeC7ND7VLBjyk5L52U3MpSGDpVj/2KbTxDZSmwMG6yjJ0dQFfPcQe2XNhIa+YATjVxGRONmg1JkQc4QttBO2T2/f5ekxfmYtl2Xw00zNQJpnN6h42OLr296dVCm7jMhiGk07NexaMqkbX4v7XUttzwHCpqBwhWvIRTlmxi9y91JRG
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <9C8D977ED7A453449570F9D0913CEE68@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a50ad319-855e-4762-a490-08d763be92e4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Nov 2019 20:10:45.4129
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4cdf982f-b6aa-4a1e-ead0-08d763be9f65
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Nov 2019 20:11:06.8215
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BZLuPRRbpKk1WhJdFQATGueQRajjAhh9CTOOA6+B/q5ApzMNixLk7FoBkNItaqqvQnBU6mK9bVc5bVLcYkLykw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB4532
+X-MS-Exchange-CrossTenant-userprincipalname: z8D1valdPpKPqSFVylDJ7wF0U0fhXCJCXosYRLsrWDT8na41aquw4LOQzKGcVcTaq+RimeECKXfXEcNqGoIfXw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3406
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Leon,
+On Wed, Nov 06, 2019 at 09:08:07PM -0500, Jerome Glisse wrote:
 
-> -----Original Message-----
-> From: Leon Romanovsky <leon@kernel.org>
-> Sent: Thursday, November 7, 2019 11:04 AM
-> To: Parav Pandit <parav@mellanox.com>
-> Cc: alex.williamson@redhat.com; davem@davemloft.net;
-> kvm@vger.kernel.org; netdev@vger.kernel.org; Saeed Mahameed
-> <saeedm@mellanox.com>; kwankhede@nvidia.com; cohuck@redhat.com; Jiri
-> Pirko <jiri@mellanox.com>; linux-rdma@vger.kernel.org
-> Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
+> >=20
+> > Extra credit: IMHO, this clearly deserves to all be in a new mmu_range_=
+notifier.h
+> > header file, but I know that's extra work. Maybe later as a follow-up p=
+atch,
+> > if anyone has the time.
 >=20
-> On Thu, Nov 07, 2019 at 10:04:48AM -0600, Parav Pandit wrote:
-> > Hi Dave, Jiri, Alex,
-> >
->=20
-> <...>
->=20
-> > - View netdevice and (optionally) RDMA device using iproute2 tools
-> >     $ ip link show
-> >     $ rdma dev show
->=20
-> You perfectly explained how ETH devices will be named, but what about
-> RDMA?
-> How will be named? I feel that rdma-core needs to be extended to support =
-such
-> mediated devices.
->=20
-rdma devices are named by default using mlx_X.
-After your persistent naming patches, I thought we have GUID based naming s=
-cheme which doesn't care about its underlying bus.
-So mdevs will be able to use current GUID based naming scheme we already ha=
-ve.
+> The range notifier should get the event too, it would be a waste, i think=
+ it is
+> an oversight here. The release event is fine so NAK to you separate event=
+. Event
+> is really an helper for notifier i had a set of patch for nouveau to leve=
+rage
+> this i need to resucite them. So no need to split thing, i would just for=
+ward
+> the event ie add event to mmu_range_notifier_ops.invalidate() i failed to=
+ catch
+> that in v1 sorry.
 
-Additionally, if user prefers, mdev alias, we can extend systemd/udev to us=
-e mdev alias based names (like PCI bdf).
-Such as,
-rocem<alias1>
-ibm<alias2>
-Format is:
-<link_layer><m><alias>
-m -> stands for mdev device (similar to 'p' for PCI)
+I think what you mean is already done?
+
+struct mmu_range_notifier_ops {
+	bool (*invalidate)(struct mmu_range_notifier *mrn,
+			   const struct mmu_notifier_range *range,
+			   unsigned long cur_seq);
+
+> No it is always odd, you must call mmu_range_set_seq() only from the
+> op->invalidate_range() callback at which point the seq is odd. As well
+> when mrn is added and its seq first set it is set to an odd value
+> always. Maybe the comment, should read:
+>=20
+>  * mrn->invalidate_seq is always, yes always, set to an odd value. This e=
+nsures
+>=20
+> To stress that it is not an error.
+
+I went with this:
+
+	/*
+	 * mrn->invalidate_seq must always be set to an odd value via
+	 * mmu_range_set_seq() using the provided cur_seq from
+	 * mn_itree_inv_start_range(). This ensures that if seq does wrap we
+	 * will always clear the below sleep in some reasonable time as
+	 * mmn_mm->invalidate_seq is even in the idle state.
+	 */
+
+> > > +	spin_lock(&mmn_mm->lock);
+> > > +	if (mmn_mm->active_invalidate_ranges) {
+> > > +		if (mn_itree_is_invalidating(mmn_mm))
+> > > +			hlist_add_head(&mrn->deferred_item,
+> > > +				       &mmn_mm->deferred_list);
+> > > +		else {
+> > > +			mmn_mm->invalidate_seq |=3D 1;
+> > > +			interval_tree_insert(&mrn->interval_tree,
+> > > +					     &mmn_mm->itree);
+> > > +		}
+> > > +		mrn->invalidate_seq =3D mmn_mm->invalidate_seq;
+> > > +	} else {
+> > > +		WARN_ON(mn_itree_is_invalidating(mmn_mm));
+> > > +		mrn->invalidate_seq =3D mmn_mm->invalidate_seq - 1;
+> >=20
+> > Ohhh, checkmate. I lose. Why is *subtracting* the right thing to do
+> > for seq numbers here?  I'm acutely unhappy trying to figure this out.
+> > I suspect it's another unfortunate side effect of trying to use the
+> > lower bit of the seq number (even/odd) for something else.
+>=20
+> If there is no mmn_mm->active_invalidate_ranges then it means that
+> mmn_mm->invalidate_seq is even and thus mmn_mm->invalidate_seq - 1
+> is an odd number which means that mrn->invalidate_seq is initialized
+> to odd value and if you follow the rule for calling mmu_range_set_seq()
+> then it will _always_ be an odd number and this close the loop with
+> the above comments :)
+
+The key thing is that it is an odd value that will take a long time
+before mmn_mm->invalidate seq reaches it
+
+> > > +	might_lock(&mm->mmap_sem);
+> > > +
+> > > +	mmn_mm =3D smp_load_acquire(&mm->mmu_notifier_mm);
+> >=20
+> > What does the above pair with? Should have a comment that specifies tha=
+t.
+>=20
+> It was discussed in v1 but maybe a comment of what was said back then wou=
+ld
+> be helpful. Something like:
+>=20
+> /*
+>  * We need to insure that all writes to mm->mmu_notifier_mm are visible b=
+efore
+>  * any checks we do on mmn_mm below as otherwise CPU might re-order write=
+ done
+>  * by another CPU core to mm->mmu_notifier_mm structure fields after the =
+read
+>  * belows.
+>  */
+
+This comment made it, just at the store side:
+
+	/*
+	 * Serialize the update against mmu_notifier_unregister. A
+	 * side note: mmu_notifier_release can't run concurrently with
+	 * us because we hold the mm_users pin (either implicitly as
+	 * current->mm or explicitly with get_task_mm() or similar).
+	 * We can't race against any other mmu notifier method either
+	 * thanks to mm_take_all_locks().
+	 *
+	 * release semantics on the initialization of the mmu_notifier_mm's
+         * contents are provided for unlocked readers.  acquire can only be
+         * used while holding the mmgrab or mmget, and is safe because once
+         * created the mmu_notififer_mm is not freed until the mm is
+         * destroyed.  As above, users holding the mmap_sem or one of the
+         * mm_take_all_locks() do not need to use acquire semantics.
+	 */
+	if (mmu_notifier_mm)
+		smp_store_release(&mm->mmu_notifier_mm, mmu_notifier_mm);
+
+Which I think is really overly belaboring the typical smp
+store/release pattern, but people do seem unfamiliar with them...
+
+Thanks,
+Jason
