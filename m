@@ -2,98 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7AEF3455
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2019 17:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C8AF3554
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Nov 2019 18:03:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389662AbfKGQJr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Nov 2019 11:09:47 -0500
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:53729 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2389742AbfKGQJm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Nov 2019 11:09:42 -0500
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from parav@mellanox.com)
-        with ESMTPS (AES256-SHA encrypted); 7 Nov 2019 18:09:37 +0200
-Received: from sw-mtx-036.mtx.labs.mlnx (sw-mtx-036.mtx.labs.mlnx [10.9.150.149])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id xA7G8d4T007213;
-        Thu, 7 Nov 2019 18:09:34 +0200
-From:   Parav Pandit <parav@mellanox.com>
-To:     alex.williamson@redhat.com, davem@davemloft.net,
-        kvm@vger.kernel.org, netdev@vger.kernel.org
-Cc:     saeedm@mellanox.com, kwankhede@nvidia.com, leon@kernel.org,
-        cohuck@redhat.com, jiri@mellanox.com, linux-rdma@vger.kernel.org,
-        Parav Pandit <parav@mellanox.com>
-Subject: [PATCH net-next 19/19] mtty: Optionally support mtty alias
-Date:   Thu,  7 Nov 2019 10:08:34 -0600
-Message-Id: <20191107160834.21087-19-parav@mellanox.com>
-X-Mailer: git-send-email 2.19.2
-In-Reply-To: <20191107160834.21087-1-parav@mellanox.com>
+        id S2389767AbfKGRDu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Nov 2019 12:03:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389763AbfKGRDu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 7 Nov 2019 12:03:50 -0500
+Received: from localhost (unknown [77.137.81.198])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B1F82077C;
+        Thu,  7 Nov 2019 17:03:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1573146229;
+        bh=PDtqNzCQVvJ1yFWlVv7DsCYv722OieQOHmlBoBVQ/Rk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NqHtARVqqABdjJmz8yLHYLOMk+/Hn7RygTL7wOHFgq/eJ79ImGqI4gp2f3gz6iU3o
+         buFlNo/sIxuo9bS/t5j6k6lj3L0VlJs9VJ8MrRBdcpGOTBQ82xlbjKlvzGasnYGtYP
+         t08El1FC9sZAa5/u0srt1Wpe46cRomt8AW4XZqpY=
+Date:   Thu, 7 Nov 2019 19:03:41 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     alex.williamson@redhat.com, davem@davemloft.net,
+        kvm@vger.kernel.org, netdev@vger.kernel.org, saeedm@mellanox.com,
+        kwankhede@nvidia.com, cohuck@redhat.com, jiri@mellanox.com,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
+Message-ID: <20191107170341.GM6763@unreal>
 References: <20191107160448.20962-1-parav@mellanox.com>
- <20191107160834.21087-1-parav@mellanox.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191107160448.20962-1-parav@mellanox.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Provide a module parameter to set alias length to optionally generate
-mdev alias.
+On Thu, Nov 07, 2019 at 10:04:48AM -0600, Parav Pandit wrote:
+> Hi Dave, Jiri, Alex,
+>
 
-Example to request mdev alias.
-$ modprobe mtty alias_length=12
+<...>
 
-Make use of mtty_alias() API when alias_length module parameter is set.
+> - View netdevice and (optionally) RDMA device using iproute2 tools
+>     $ ip link show
+>     $ rdma dev show
 
-Signed-off-by: Parav Pandit <parav@mellanox.com>
----
- samples/vfio-mdev/mtty.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+You perfectly explained how ETH devices will be named, but what about RDMA?
+How will be named? I feel that rdma-core needs to be extended to support such
+mediated devices.
 
-diff --git a/samples/vfio-mdev/mtty.c b/samples/vfio-mdev/mtty.c
-index ce84a300a4da..5a69121ed5ec 100644
---- a/samples/vfio-mdev/mtty.c
-+++ b/samples/vfio-mdev/mtty.c
-@@ -150,6 +150,10 @@ static const struct file_operations vd_fops = {
- 	.owner          = THIS_MODULE,
- };
- 
-+static unsigned int mtty_alias_length;
-+module_param_named(alias_length, mtty_alias_length, uint, 0444);
-+MODULE_PARM_DESC(alias_length, "mdev alias length; default=0");
-+
- /* function prototypes */
- 
- static int mtty_trigger_interrupt(struct mdev_state *mdev_state);
-@@ -755,6 +759,9 @@ static int mtty_create(struct kobject *kobj, struct mdev_device *mdev)
- 	list_add(&mdev_state->next, &mdev_devices_list);
- 	mutex_unlock(&mdev_list_lock);
- 
-+	if (mtty_alias_length)
-+		dev_dbg(mdev_dev(mdev), "alias is %s\n", mdev_alias(mdev));
-+
- 	return 0;
- }
- 
-@@ -1387,6 +1394,11 @@ static struct attribute_group *mdev_type_groups[] = {
- 	NULL,
- };
- 
-+static unsigned int mtty_get_alias_length(void)
-+{
-+	return mtty_alias_length;
-+}
-+
- static const struct mdev_parent_ops mdev_fops = {
- 	.owner                  = THIS_MODULE,
- 	.dev_attr_groups        = mtty_dev_groups,
-@@ -1399,6 +1411,7 @@ static const struct mdev_parent_ops mdev_fops = {
- 	.read                   = mtty_read,
- 	.write                  = mtty_write,
- 	.ioctl		        = mtty_ioctl,
-+	.get_alias_length	= mtty_get_alias_length
- };
- 
- static void mtty_device_release(struct device *dev)
--- 
-2.19.2
-
+Thanks
