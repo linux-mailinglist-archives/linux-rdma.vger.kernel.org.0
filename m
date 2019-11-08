@@ -2,57 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BABECF4075
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 07:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B1FF41A5
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 09:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728513AbfKHGhf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Nov 2019 01:37:35 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:46764 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbfKHGhf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 01:37:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=CNijAZshoMwJR20b7qKf+ZniwDLWKjrDhAzbp2wJNJ4=; b=WRsfhR/j7iM6vH+dmWg/sruIi
-        uLl2UPDUxo2rYptfqOAVY6PReTarn9H3uEn4AGxOMOB8qdEX/2LEohLRDDE+z8JWzo57oLIUt1ip0
-        Y4P9MOmwYJ6JKve0itY5zUmX1Q4pm8T52GXkrtvTs1CH9KpZNXqwo6HqlFwUpJ0+AiATwO7OSp4JM
-        4+Q1OKjCSw12B4PyIQLiowQv4tB4hUIq81fHhfnLuPu0xsqL1Tne9CFCL4mAbycFhuv9OvwMH0DCp
-        mzrPiuvtK/f5uh88+qGXBjQaZxoZbA2Jk7GvPqh7ZetwzQUTH3WzKT0Dbq6GnqxDTEYF4MZ2n/8kn
-        ZpaAngp6A==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iSxtj-0006Wp-Bd; Fri, 08 Nov 2019 06:37:31 +0000
-Date:   Thu, 7 Nov 2019 22:37:31 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Parav Pandit <parav@mellanox.com>
-Cc:     alex.williamson@redhat.com, davem@davemloft.net,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, saeedm@mellanox.com,
-        kwankhede@nvidia.com, leon@kernel.org, cohuck@redhat.com,
-        jiri@mellanox.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 16/19] net/mlx5: Implement dma ops and params
- for mediated device
-Message-ID: <20191108063731.GA24679@infradead.org>
-References: <20191107160448.20962-1-parav@mellanox.com>
- <20191107160834.21087-1-parav@mellanox.com>
- <20191107160834.21087-16-parav@mellanox.com>
+        id S1726072AbfKHIL1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Nov 2019 03:11:27 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6170 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726672AbfKHIL0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 8 Nov 2019 03:11:26 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 910825F89C9AE8C44856;
+        Fri,  8 Nov 2019 16:11:19 +0800 (CST)
+Received: from [127.0.0.1] (10.40.168.149) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.439.0; Fri, 8 Nov 2019
+ 16:11:13 +0800
+Subject: Re: [PATCH v2 for-next 8/9] RDMA/hns: Fix non-standard error codes
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     <dledford@redhat.com>, <jgg@ziepe.ca>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+References: <1572952082-6681-1-git-send-email-liweihang@hisilicon.com>
+ <1572952082-6681-9-git-send-email-liweihang@hisilicon.com>
+ <20191105170058.GJ6763@unreal>
+ <3b2b6654-135c-a268-8933-7ca2ee5a0105@hisilicon.com>
+ <20191106154339.GL6763@unreal>
+From:   Weihang Li <liweihang@hisilicon.com>
+Message-ID: <2833edc5-27a4-8117-537e-b2b9a26ac757@hisilicon.com>
+Date:   Fri, 8 Nov 2019 16:11:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191107160834.21087-16-parav@mellanox.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20191106154339.GL6763@unreal>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.168.149]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 07, 2019 at 10:08:31AM -0600, Parav Pandit wrote:
-> Implement dma ops wrapper to divert dma ops to its parent PCI device
-> because Intel IOMMU (and may be other IOMMU) is limited to PCI devices.
 
-Yikes.  I've been trying hard to get rid of pointless dma_map_ops
-instance.  What upper layers use these child devices, and why can't
-they just use the parent device for dma mapping directly?
+
+On 2019/11/6 23:43, Leon Romanovsky wrote:
+> On Wed, Nov 06, 2019 at 06:44:06PM +0800, Weihang Li wrote:
+>>
+>>
+>> On 2019/11/6 1:00, Leon Romanovsky wrote:
+>>> On Tue, Nov 05, 2019 at 07:08:01PM +0800, Weihang Li wrote:
+>>>> From: Yixian Liu <liuyixian@huawei.com>
+>>>>
+>>>> It is better to return a linux error code than define a private constant.
+>>>>
+>>>> Signed-off-by: Yixian Liu <liuyixian@huawei.com>
+>>>> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+>>>> Signed-off-by: Weihang Li <liweihang@hisilicon.com>
+>>>> ---
+>>>>  drivers/infiniband/hw/hns/hns_roce_alloc.c |  4 ++--
+>>>>  drivers/infiniband/hw/hns/hns_roce_cq.c    |  4 ++--
+>>>>  drivers/infiniband/hw/hns/hns_roce_mr.c    | 15 ++++++++-------
+>>>>  drivers/infiniband/hw/hns/hns_roce_pd.c    |  2 +-
+>>>>  drivers/infiniband/hw/hns/hns_roce_srq.c   |  2 +-
+>>>>  5 files changed, 14 insertions(+), 13 deletions(-)
+>>>>
+>>>> diff --git a/drivers/infiniband/hw/hns/hns_roce_alloc.c b/drivers/infiniband/hw/hns/hns_roce_alloc.c
+>>>> index 8c063c5..da574c2 100644
+>>>> --- a/drivers/infiniband/hw/hns/hns_roce_alloc.c
+>>>> +++ b/drivers/infiniband/hw/hns/hns_roce_alloc.c
+>>>> @@ -55,7 +55,7 @@ int hns_roce_bitmap_alloc(struct hns_roce_bitmap *bitmap, unsigned long *obj)
+>>>
+>>> Why do HNS driver have custom bitmap functions instead of include/linux/bitmap.h?
+>>>
+>>> Thanks
+>>>
+>>> .
+>>>
+>>
+>> Hi Leon,
+>>
+>> These custom functions achieved the bitmap working in round-robin fashion.
+>> When using CM to establish connections, if we allocate a new QP after destroying
+>> one, we will get the same QP number which will be rejected by IB core.
+> 
+> QP number is controlled by HW (or at least should) and not by this bitmap.
+
+Hi Leon,
+
+Sorry for the late reply. QP number is allocated by SW in hip08, so we have to use this round-robin bitmap.
+
+> 
+>>
+>> I found related patches about this issue:
+>> https://git.congatec.com/android/qmx6_kernel/commit/f4ec9e9531ac79ee2521faf7ad3d98978f747e42
+>> https://patchwork.kernel.org/patch/3306941/
+>> https://patchwork.kernel.org/patch/9444173/
+> 
+> Irrelevant, those patches try to create and manage object numbers in SW.
+> 
+> Thanks
+> 
+>>
+>> Thanks,
+>> Weihang
+>>
+> 
+> .
+> 
+
