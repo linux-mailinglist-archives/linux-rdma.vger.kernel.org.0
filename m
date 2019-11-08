@@ -2,85 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9B8F4DF9
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 15:22:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B3FF4E54
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 15:40:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726095AbfKHOWA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Nov 2019 09:22:00 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:35447 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725995AbfKHOWA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 09:22:00 -0500
-Received: by mail-qk1-f196.google.com with SMTP id i19so5409574qki.2
-        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2019 06:21:59 -0800 (PST)
+        id S1726684AbfKHOk4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Nov 2019 09:40:56 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:44035 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbfKHOk4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 09:40:56 -0500
+Received: by mail-qv1-f67.google.com with SMTP id d3so691449qvs.11
+        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2019 06:40:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=WjO2btyA4fH/g01Vok9AFfjtQqDDRIYayaN738hzydg=;
-        b=L1Ag7UQyrDVfHd2FeVUoTHv/zhF7Z4cMIA0bf+T4Oen6FJb7r7d3qnhjca2k3KY1qp
-         sHHI90Wqfrejml4lXzY/AZkPkINN/GFu+OLu98CSiAtijt4StXdHXhosPt3HPJYvx4RB
-         p25rhzxh5qaUvg0uXFwqd4iSLJGwCUvIirhfOvZhi7iAD2kvNP4mPsTTnJ5glzRgm7FH
-         fpLfmRNBzYToRs0ST1NjJ2Uq8L8iGmrAsVN5u0XFtVSyruanLHa9m7CkJXye7vEqyGZY
-         IDHmZsK1QD6b8Dk1yfzQGYMOUXx7erX62SSJSNowr8OxiLaldcaaBWjL7WGNAU+T3PPM
-         V2zg==
+        bh=4/BNGnBIaNhJmNyZQR6lxLMXT6d3Dv82/rwkvFOhWJk=;
+        b=LxJbfBJhzJb4PqhllBvulv53F4EICAgMcbzWpDIfksRtWVI4Y2E4qbpeSL/gTbisGO
+         L+FVEBYxOD96nMGB5KMQrC5m+nXmnd2tcl04bonNbj2MWEkExlFWQW4KK4g2auQyEgAx
+         B+/KgCv+X0YeSONidnkazLrQECQR/Mr2hfhrn3hDzvrfipatOCyUJPypdN3mtiOIQbyQ
+         bLEfHSJnFysyL2oLpmZA7lmTVEULmNvPwA2tDh9qSSekvYWa7GVVfvfl2a+P6VEcfR43
+         Br7rI0WXOWYyHKLgNaHKK5pX8FvG9u0limoDeNL54dXTcggVRgnxZXSam+oRD4axZSOz
+         255w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WjO2btyA4fH/g01Vok9AFfjtQqDDRIYayaN738hzydg=;
-        b=WVQdrxZTcTPh6Tti5Y4C++FIEoA58FGrgM31NyLgxz4IzYvDw98vRWqcdaKFXqorwp
-         TgYb3Wfv+27iD6qHILlUTJq7f6B4bmFDHAdPI5LsTw9p/9mTD28FQXtOGCorZLAW8yQz
-         mi9el5U3rIFPXHL9n45dfMlzYdaTphZyIcplhFNbXB9BbQ2/BeNRsUBeLsqDVZr+Xbd9
-         W0kWVkr5+YrEGod3+BjYmmMR8/O3z+Qvsb1Xs+Le3Mjw6SfWucyh0Ms+xxfTPx8oQp8F
-         K1xkiRNVMYcoMobDf4zRnTzuW/B6V0Hx7jV+daUUW3fXhsHiGekAAdbthXMjC05OBvSc
-         IgVg==
-X-Gm-Message-State: APjAAAWJzaLZgk1FgXIeerg42UoxWavZUUZydYlDqa7eWtIhTQl86a6F
-        53AGp2azBvfx4lYR82InvUEHE8pAGY8=
-X-Google-Smtp-Source: APXvYqwGougD0MyvL6qGKLiPVNSUJfg8RsdKSUQAddb1iaS6XJ69j5cqR8gjTAV+x5KbIOjxIoG3UQ==
-X-Received: by 2002:a37:a00f:: with SMTP id j15mr9322047qke.103.1573222919242;
-        Fri, 08 Nov 2019 06:21:59 -0800 (PST)
+        bh=4/BNGnBIaNhJmNyZQR6lxLMXT6d3Dv82/rwkvFOhWJk=;
+        b=WG53pFSZZZZkwCN9I6FGg8uQVutWd4/YuOK4HPCFabuEoQzB2P3+ooObGZC46aFwA/
+         CU0SIV95DFyVagjZiogkcvIUyK3Ym07MSZ/p3xQC8zYT0su01pSfgz2k6enwZQ36xNl9
+         qG/Nc7GMswSoPpyXRYGVN2emXKCWLFTH4UIF+6o4UpCUKUL3413uwQ/kyLYitTCzOKDh
+         yFKNUSBp7fc0DKESgG8/yP8rpJWaXvN7pPZVGH9ykuYp41s+b886gySWp2cTMrV1x2lJ
+         KyOOswFi10u9G6VbnvFgm8WU9EMeFI4esROffihrRFxRTgTccYdADy1Onlu9HSPBQ7w9
+         lJ3Q==
+X-Gm-Message-State: APjAAAXrgFRhyqbtsDhc4HvxEmryNrTYGM7u0DYWHzvkz5VhBQFEweSo
+        P9soXtlD2OLfVvWNPEPZ0t/Spw==
+X-Google-Smtp-Source: APXvYqxu+Afc8RjTvb+fcKWQOy/aDi00JiHafoqZhTYMDVQXqcKgFn8Fxyj8hLqhWxhNal3o9uMgcQ==
+X-Received: by 2002:a05:6214:170c:: with SMTP id db12mr9593409qvb.202.1573224055219;
+        Fri, 08 Nov 2019 06:40:55 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id w69sm2871249qkb.26.2019.11.08.06.21.58
+        by smtp.gmail.com with ESMTPSA id l14sm2995037qkj.61.2019.11.08.06.40.54
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Nov 2019 06:21:58 -0800 (PST)
+        Fri, 08 Nov 2019 06:40:54 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iT59B-0003CS-W8; Fri, 08 Nov 2019 10:21:58 -0400
-Date:   Fri, 8 Nov 2019 10:21:57 -0400
+        id 1iT5RW-0003PI-Ar; Fri, 08 Nov 2019 10:40:54 -0400
+Date:   Fri, 8 Nov 2019 10:40:54 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v5] IB/core: Trace points for diagnosing completion queue
- issues
-Message-ID: <20191108142157.GB10956@ziepe.ca>
-References: <20191107205239.23193.69879.stgit@manet.1015granger.net>
+To:     Jiri Pirko <jiri@resnulli.us>, Ertman@ziepe.ca,
+        David M <david.m.ertman@intel.com>, gregkh@linuxfoundation.org
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Parav Pandit <parav@mellanox.com>, alex.williamson@redhat.com,
+        davem@davemloft.net, kvm@vger.kernel.org, netdev@vger.kernel.org,
+        saeedm@mellanox.com, kwankhede@nvidia.com, leon@kernel.org,
+        cohuck@redhat.com, jiri@mellanox.com, linux-rdma@vger.kernel.org,
+        Or Gerlitz <gerlitz.or@gmail.com>
+Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
+Message-ID: <20191108144054.GC10956@ziepe.ca>
+References: <20191107160448.20962-1-parav@mellanox.com>
+ <20191107153234.0d735c1f@cakuba.netronome.com>
+ <20191108121233.GJ6990@nanopsycho>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191107205239.23193.69879.stgit@manet.1015granger.net>
+In-Reply-To: <20191108121233.GJ6990@nanopsycho>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 07, 2019 at 03:54:34PM -0500, Chuck Lever wrote:
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> Reviewed-by: Parav Pandit <parav@mellanox.com>
->  drivers/infiniband/core/Makefile |    2 
->  drivers/infiniband/core/cq.c     |   36 +++++
->  drivers/infiniband/core/trace.c  |   14 ++
->  include/rdma/ib_verbs.h          |   11 +-
->  include/trace/events/rdma_core.h |  251 ++++++++++++++++++++++++++++++++++++++
->  5 files changed, 307 insertions(+), 7 deletions(-)
->  create mode 100644 drivers/infiniband/core/trace.c
->  create mode 100644 include/trace/events/rdma_core.h
+On Fri, Nov 08, 2019 at 01:12:33PM +0100, Jiri Pirko wrote:
+> Thu, Nov 07, 2019 at 09:32:34PM CET, jakub.kicinski@netronome.com wrote:
+> >On Thu,  7 Nov 2019 10:04:48 -0600, Parav Pandit wrote:
+> >> Mellanox sub function capability allows users to create several hundreds
+> >> of networking and/or rdma devices without depending on PCI SR-IOV support.
+> >
+> >You call the new port type "sub function" but the devlink port flavour
+> >is mdev.
+> >
+> >As I'm sure you remember you nacked my patches exposing NFP's PCI 
+> >sub functions which are just regions of the BAR without any mdev
+> >capability. Am I in the clear to repost those now? Jiri?
 > 
-> Changes since v4:
-> - Removed __ib_poll_cq, uninlined ib_poll_cq
+> Well question is, if it makes sense to have SFs without having them as
+> mdev? I mean, we discussed the modelling thoroughtly and eventually we
+> realized that in order to model this correctly, we need SFs on "a bus".
+> Originally we were thinking about custom bus, but mdev is already there
+> to handle this.
 
-Oh I don't think uninlining is such a good idea, isn't this rather
-performance sensitive?
+Did anyone consult Greg on this? 
+
+The new intel driver has been having a very similar discussion about
+how to model their 'multi function device' ie to bind RDMA and other
+drivers to a shared PCI function, and I think that discussion settled
+on adding a new bus?
+
+Really these things are all very similar, it would be nice to have a
+clear methodology on how to use the device core if a single PCI device
+is split by software into multiple different functional units and
+attached to different driver instances.
+
+Currently there is alot of hacking in this area.. And a consistent
+scheme might resolve the ugliness with the dma_ops wrappers.
+
+We already have the 'mfd' stuff to support splitting platform devices,
+maybe we need to create a 'pci-mfd' to support splitting PCI devices? 
+
+I'm not really clear how mfd and mdev relate, I always thought mdev
+was strongly linked to vfio.
+
+At the very least if it is agreed mdev should be the vehicle here,
+then it should also be able to solve the netdev/rdma hookup problem
+too.
 
 Jason
