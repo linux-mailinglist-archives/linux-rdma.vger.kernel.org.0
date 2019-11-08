@@ -2,118 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B3FF4E54
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 15:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A7DF4E59
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 15:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbfKHOk4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Nov 2019 09:40:56 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:44035 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726200AbfKHOk4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 09:40:56 -0500
-Received: by mail-qv1-f67.google.com with SMTP id d3so691449qvs.11
-        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2019 06:40:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4/BNGnBIaNhJmNyZQR6lxLMXT6d3Dv82/rwkvFOhWJk=;
-        b=LxJbfBJhzJb4PqhllBvulv53F4EICAgMcbzWpDIfksRtWVI4Y2E4qbpeSL/gTbisGO
-         L+FVEBYxOD96nMGB5KMQrC5m+nXmnd2tcl04bonNbj2MWEkExlFWQW4KK4g2auQyEgAx
-         B+/KgCv+X0YeSONidnkazLrQECQR/Mr2hfhrn3hDzvrfipatOCyUJPypdN3mtiOIQbyQ
-         bLEfHSJnFysyL2oLpmZA7lmTVEULmNvPwA2tDh9qSSekvYWa7GVVfvfl2a+P6VEcfR43
-         Br7rI0WXOWYyHKLgNaHKK5pX8FvG9u0limoDeNL54dXTcggVRgnxZXSam+oRD4axZSOz
-         255w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4/BNGnBIaNhJmNyZQR6lxLMXT6d3Dv82/rwkvFOhWJk=;
-        b=WG53pFSZZZZkwCN9I6FGg8uQVutWd4/YuOK4HPCFabuEoQzB2P3+ooObGZC46aFwA/
-         CU0SIV95DFyVagjZiogkcvIUyK3Ym07MSZ/p3xQC8zYT0su01pSfgz2k6enwZQ36xNl9
-         qG/Nc7GMswSoPpyXRYGVN2emXKCWLFTH4UIF+6o4UpCUKUL3413uwQ/kyLYitTCzOKDh
-         yFKNUSBp7fc0DKESgG8/yP8rpJWaXvN7pPZVGH9ykuYp41s+b886gySWp2cTMrV1x2lJ
-         KyOOswFi10u9G6VbnvFgm8WU9EMeFI4esROffihrRFxRTgTccYdADy1Onlu9HSPBQ7w9
-         lJ3Q==
-X-Gm-Message-State: APjAAAXrgFRhyqbtsDhc4HvxEmryNrTYGM7u0DYWHzvkz5VhBQFEweSo
-        P9soXtlD2OLfVvWNPEPZ0t/Spw==
-X-Google-Smtp-Source: APXvYqxu+Afc8RjTvb+fcKWQOy/aDi00JiHafoqZhTYMDVQXqcKgFn8Fxyj8hLqhWxhNal3o9uMgcQ==
-X-Received: by 2002:a05:6214:170c:: with SMTP id db12mr9593409qvb.202.1573224055219;
-        Fri, 08 Nov 2019 06:40:55 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id l14sm2995037qkj.61.2019.11.08.06.40.54
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Nov 2019 06:40:54 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iT5RW-0003PI-Ar; Fri, 08 Nov 2019 10:40:54 -0400
-Date:   Fri, 8 Nov 2019 10:40:54 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jiri Pirko <jiri@resnulli.us>, Ertman@ziepe.ca,
-        David M <david.m.ertman@intel.com>, gregkh@linuxfoundation.org
-Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Parav Pandit <parav@mellanox.com>, alex.williamson@redhat.com,
-        davem@davemloft.net, kvm@vger.kernel.org, netdev@vger.kernel.org,
-        saeedm@mellanox.com, kwankhede@nvidia.com, leon@kernel.org,
-        cohuck@redhat.com, jiri@mellanox.com, linux-rdma@vger.kernel.org,
-        Or Gerlitz <gerlitz.or@gmail.com>
-Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
-Message-ID: <20191108144054.GC10956@ziepe.ca>
-References: <20191107160448.20962-1-parav@mellanox.com>
- <20191107153234.0d735c1f@cakuba.netronome.com>
- <20191108121233.GJ6990@nanopsycho>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191108121233.GJ6990@nanopsycho>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726485AbfKHOle (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Nov 2019 09:41:34 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:55516 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726036AbfKHOle (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 09:41:34 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA8Ed0j5060032;
+        Fri, 8 Nov 2019 14:41:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2019-08-05; bh=wosJjr7kwe+Pdb8niSUsNB4nrOv/tKKvKse/du+zOOI=;
+ b=ordJGzs+5vQE+QtiWZF3HQRVzmXI64QH1xkRwHFbHlJSUBwCo6lLZMa+kma6hFXL0Oy4
+ LuNxHmTWhwlNeh4+8mhDgxAFuBtY4OYcmygPOuaArYYfS6jSw7GXlhdaFU56NaOCDYKH
+ DF4JRg3osAXIBXHaWEgK9x+ehAe5sPE+JI7iUf0rCPQrBM1sJjkLo0Qcpx9pJJLHE6Zn
+ TckmfTHMyu07R5OLGL2+eGeGlX85ScJNJ69tHeNiBOXODyOnPY3/EtaiZWZPgpHdlGph
+ ZOgfC5UbkdT0lfhO6H/A5g7hVG9zCnmlpqF7QXSErneCnwS05txfxBxWYFxFmbYhirSz 5w== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2w41w1dr1p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Nov 2019 14:41:32 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA8EdEKR116555;
+        Fri, 8 Nov 2019 14:41:32 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 2w41wcwfyb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Nov 2019 14:41:32 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xA8EfSCE000361;
+        Fri, 8 Nov 2019 14:41:28 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 08 Nov 2019 06:41:28 -0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v5] IB/core: Trace points for diagnosing completion queue
+ issues
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <20191108142157.GB10956@ziepe.ca>
+Date:   Fri, 8 Nov 2019 09:41:27 -0500
+Cc:     linux-rdma@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <533870DD-41E0-41F9-8553-5E84DBDE4EC2@oracle.com>
+References: <20191107205239.23193.69879.stgit@manet.1015granger.net>
+ <20191108142157.GB10956@ziepe.ca>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+X-Mailer: Apple Mail (2.3445.104.11)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9434 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1910280000 definitions=main-1911080147
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9434 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1910280000
+ definitions=main-1911080147
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 08, 2019 at 01:12:33PM +0100, Jiri Pirko wrote:
-> Thu, Nov 07, 2019 at 09:32:34PM CET, jakub.kicinski@netronome.com wrote:
-> >On Thu,  7 Nov 2019 10:04:48 -0600, Parav Pandit wrote:
-> >> Mellanox sub function capability allows users to create several hundreds
-> >> of networking and/or rdma devices without depending on PCI SR-IOV support.
-> >
-> >You call the new port type "sub function" but the devlink port flavour
-> >is mdev.
-> >
-> >As I'm sure you remember you nacked my patches exposing NFP's PCI 
-> >sub functions which are just regions of the BAR without any mdev
-> >capability. Am I in the clear to repost those now? Jiri?
-> 
-> Well question is, if it makes sense to have SFs without having them as
-> mdev? I mean, we discussed the modelling thoroughtly and eventually we
-> realized that in order to model this correctly, we need SFs on "a bus".
-> Originally we were thinking about custom bus, but mdev is already there
-> to handle this.
 
-Did anyone consult Greg on this? 
 
-The new intel driver has been having a very similar discussion about
-how to model their 'multi function device' ie to bind RDMA and other
-drivers to a shared PCI function, and I think that discussion settled
-on adding a new bus?
+> On Nov 8, 2019, at 9:21 AM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>=20
+> On Thu, Nov 07, 2019 at 03:54:34PM -0500, Chuck Lever wrote:
+>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+>> Reviewed-by: Parav Pandit <parav@mellanox.com>
+>> drivers/infiniband/core/Makefile |    2=20
+>> drivers/infiniband/core/cq.c     |   36 +++++
+>> drivers/infiniband/core/trace.c  |   14 ++
+>> include/rdma/ib_verbs.h          |   11 +-
+>> include/trace/events/rdma_core.h |  251 =
+++++++++++++++++++++++++++++++++++++++
+>> 5 files changed, 307 insertions(+), 7 deletions(-)
+>> create mode 100644 drivers/infiniband/core/trace.c
+>> create mode 100644 include/trace/events/rdma_core.h
+>>=20
+>> Changes since v4:
+>> - Removed __ib_poll_cq, uninlined ib_poll_cq
+>=20
+> Oh I don't think uninlining is such a good idea, isn't this rather
+> performance sensitive?
 
-Really these things are all very similar, it would be nice to have a
-clear methodology on how to use the device core if a single PCI device
-is split by software into multiple different functional units and
-attached to different driver instances.
+So would you rather go with v4?
 
-Currently there is alot of hacking in this area.. And a consistent
-scheme might resolve the ugliness with the dma_ops wrappers.
+Not clear to me that the compiler won't do the right thing,
+at least for __ib_process_cq.
 
-We already have the 'mfd' stuff to support splitting platform devices,
-maybe we need to create a 'pci-mfd' to support splitting PCI devices? 
 
-I'm not really clear how mfd and mdev relate, I always thought mdev
-was strongly linked to vfio.
+--
+Chuck Lever
 
-At the very least if it is agreed mdev should be the vehicle here,
-then it should also be able to solve the netdev/rdma hookup problem
-too.
 
-Jason
+
