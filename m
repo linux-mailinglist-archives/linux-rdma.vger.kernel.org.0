@@ -2,129 +2,161 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D73FF57CE
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 21:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8254F57E5
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 21:06:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389798AbfKHTlW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Nov 2019 14:41:22 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:51593 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389597AbfKHTlW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 14:41:22 -0500
-Received: by mail-wm1-f68.google.com with SMTP id q70so7339609wme.1
-        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2019 11:41:20 -0800 (PST)
+        id S1731623AbfKHTsm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Nov 2019 14:48:42 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:37506 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732164AbfKHTsl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 14:48:41 -0500
+Received: by mail-lf1-f65.google.com with SMTP id b20so5352323lfp.4
+        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2019 11:48:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+9uGOxKFFBUrhoWMRi3B1c9hleXqKEW5ns1xGB5QCLw=;
-        b=RdC7juWMDszU+G4FO/0JoRP2XeWH9lY+LtmBqOPdgJ8XC6bkf0NsFqVVwGK8yLCxqv
-         EO1HfAv7ZfSzhBEdN7BCxRUx2gp9YwTma+QA8ajkcTZBaihCYJXVob5lq+x8ipiHdpVI
-         oIYas0WhlvacPGwe3mR2Tj1Rh4ctWx4sccW69DAyyDVJp4A9NxYnHuLH8B7g81U+4la6
-         XawfSyVx+FZWkBsB7A4E77QWKj2/nBCn3YgXz5dkQ3EVzWDM36yIAnaStgWWRVP7edng
-         taQxO9wEL2tfCct60bus98ZHmzHtiOmjtDYwCzMSUtEZ7h0QWEctjaQ6O4PXQKx7l8Wx
-         QM3w==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=4GeYl/JbmaQ+nNNGRRXeewY0GX5EX1yGt/fIXbi0lcQ=;
+        b=baEWTVBGrFUgZcK2tuV+LCR0I1Lug9a5Sa6Pc3HTQihrbuuSG5W4eGJLZrXivlqEpO
+         C2TTMPLivHxRNvJAc/cABFZoBmtOb9+pcG+JdOAVziOL8T6GP8GTgMySHw0hlooPFyF8
+         9KF56BtyKUYVVT5P2Sz3FGO3PrVQm4dmWKznxDasf3qmUr5WfIUxtnmo99gJVDvJrw4m
+         LYgGj4zw3CYHP2rGgdUQ52+xN/e92Dp7iGvjeMRYtHTZ7kZehNlRg/Mexc1vsJWkcMqS
+         1DlRfM3YrAScdCkF57aVtE2IaS6GOJTBD5r/jMWpBwBXPJ7EnVzF+USSxRrZBkhh/1Ow
+         m3/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+9uGOxKFFBUrhoWMRi3B1c9hleXqKEW5ns1xGB5QCLw=;
-        b=ft85QApLMVbTfLrRxnfX0qb0Sq+29eIOLGhizFPgwUubCKm/TvSRTFFwLJchU+N//P
-         hTQ9MgrUDYOZpbxpsi5xYCmBS6hB6COthfaJRWNN9MefaVooVgc+zk+RgNLRhxMo4Xol
-         a0S1CU3NCa130xRQdXfNHTUavRixcuMso5nyBzYBK0KWbPx3dE5PRqfinD+3HETqXCS5
-         VnPrh0Pkdkr6HGG9DX1UvwB0clA5Mgqf+cLYFFdvcyL42Hgi0SL6w+UYujCVbplf3zuM
-         MnbV6kIbXJl7xXLjbitEiAzvCrbN7sAgb49Xo1Wojz7Dr8snIMcnLirFOCEx+y8OO0lQ
-         o9yQ==
-X-Gm-Message-State: APjAAAWrB/OKzUzIRKKLepDpCkljIwxoKnKp9x91FRv7ai//UvzJfJRi
-        xhVrSmWZFLgGHyZlvZIvufxVeg==
-X-Google-Smtp-Source: APXvYqyBo+um2KBRP3w/o5IKRdasbCg/n+9n9Fm8EBf8ZOSK8hHVpV/DZgPvcvWDfNWOBncYfBP5Pw==
-X-Received: by 2002:a1c:2e8f:: with SMTP id u137mr9951666wmu.105.1573242079736;
-        Fri, 08 Nov 2019 11:41:19 -0800 (PST)
-Received: from localhost (ip-94-113-220-175.net.upcbroadband.cz. [94.113.220.175])
-        by smtp.gmail.com with ESMTPSA id o81sm7427640wmb.38.2019.11.08.11.41.19
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=4GeYl/JbmaQ+nNNGRRXeewY0GX5EX1yGt/fIXbi0lcQ=;
+        b=jzEm3K6FtfSXNioJTpuWqrLti40CZOBn0ph7zn59ofj885pW0JGaU8WV1jFoPrKegX
+         OwdmoNqH7uHkkOupQABKpFDY4EOW/NSJIh8ot7gGCVBltIInNhnKBdMLiql9/BFHkN8q
+         m1cRzXLuKCGEGj2B3DrcXC9uRe+kon4cVDEUgrEqfDZ5m2MsllWMlzz2aBFkUTFyyKL9
+         MZxy8xfFKrODBq6D0/QA7qvf3/2QzXX73eNW8yKDZvodql4zPLh5rLF+GP2PTvJZJGqJ
+         YIHQQHyG3ngSnhGY4lOtNMMpn4mdXrcFtX69piqbASAQc2TG6KrUaY/tsHslcTbLLzd1
+         bfyA==
+X-Gm-Message-State: APjAAAWiunuksd02DIlUCTKQrJ5Iz2p9F+etC1sjiWur8mEbygGvb5UO
+        wTFvJe78waNWYqgnVnw4cw3sdA==
+X-Google-Smtp-Source: APXvYqzblZmoKjD9onc9Zui7MoXcErFTsLEVRUVVbR6WsIVxiOMADI2lS5/NZ2ASUDvRFLsn9ImzAA==
+X-Received: by 2002:ac2:46c9:: with SMTP id p9mr7147719lfo.166.1573242518612;
+        Fri, 08 Nov 2019 11:48:38 -0800 (PST)
+Received: from cakuba ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id n19sm2983782lfl.85.2019.11.08.11.48.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Nov 2019 11:41:19 -0800 (PST)
-Date:   Fri, 8 Nov 2019 20:41:18 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Parav Pandit <parav@mellanox.com>, alex.williamson@redhat.com,
-        davem@davemloft.net, kvm@vger.kernel.org, netdev@vger.kernel.org,
-        saeedm@mellanox.com, kwankhede@nvidia.com, leon@kernel.org,
-        cohuck@redhat.com, jiri@mellanox.com, linux-rdma@vger.kernel.org,
+        Fri, 08 Nov 2019 11:48:38 -0800 (PST)
+Date:   Fri, 8 Nov 2019 11:48:27 -0800
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     Jiri Pirko <jiri@resnulli.us>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         Or Gerlitz <gerlitz.or@gmail.com>
 Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
-Message-ID: <20191108194118.GY6990@nanopsycho>
+Message-ID: <20191108114827.0b95b032@cakuba>
+In-Reply-To: <AM0PR05MB4866B735135F667D0D512552D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
 References: <20191107160448.20962-1-parav@mellanox.com>
- <20191107153234.0d735c1f@cakuba.netronome.com>
- <20191108121233.GJ6990@nanopsycho>
- <20191108110640.225b2724@cakuba>
+        <20191107153234.0d735c1f@cakuba.netronome.com>
+        <20191108121233.GJ6990@nanopsycho>
+        <20191108110640.225b2724@cakuba>
+        <AM0PR05MB4866B735135F667D0D512552D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191108110640.225b2724@cakuba>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fri, Nov 08, 2019 at 08:06:40PM CET, jakub.kicinski@netronome.com wrote:
->On Fri, 8 Nov 2019 13:12:33 +0100, Jiri Pirko wrote:
->> Thu, Nov 07, 2019 at 09:32:34PM CET, jakub.kicinski@netronome.com wrote:
->> >On Thu,  7 Nov 2019 10:04:48 -0600, Parav Pandit wrote:  
->> >> Mellanox sub function capability allows users to create several hundreds
->> >> of networking and/or rdma devices without depending on PCI SR-IOV support.  
->> >
->> >You call the new port type "sub function" but the devlink port flavour
->> >is mdev.
->> >
->> >As I'm sure you remember you nacked my patches exposing NFP's PCI 
->> >sub functions which are just regions of the BAR without any mdev
->> >capability. Am I in the clear to repost those now? Jiri?  
->> 
->> Well question is, if it makes sense to have SFs without having them as
->> mdev? I mean, we discussed the modelling thoroughtly and eventually we
->> realized that in order to model this correctly, we need SFs on "a bus".
->> Originally we were thinking about custom bus, but mdev is already there
->> to handle this.
->
->But the "main/real" port is not a mdev in your case. NFP is like mlx4. 
->It has one PCI PF for multiple ports.
+On Fri, 8 Nov 2019 19:34:07 +0000, Parav Pandit wrote:
+> > -----Original Message-----
+> > From: Jakub Kicinski <jakub.kicinski@netronome.com>  
+>  
+> > On Fri, 8 Nov 2019 13:12:33 +0100, Jiri Pirko wrote:  
+> > > Thu, Nov 07, 2019 at 09:32:34PM CET, jakub.kicinski@netronome.com wrote:  
+> > > >On Thu,  7 Nov 2019 10:04:48 -0600, Parav Pandit wrote:  
+> > > >> Mellanox sub function capability allows users to create several
+> > > >> hundreds of networking and/or rdma devices without depending on PCI  
+> > SR-IOV support.  
+> > > >
+> > > >You call the new port type "sub function" but the devlink port
+> > > >flavour is mdev.
+> > > >
+> > > >As I'm sure you remember you nacked my patches exposing NFP's PCI sub
+> > > >functions which are just regions of the BAR without any mdev
+> > > >capability. Am I in the clear to repost those now? Jiri?  
+> > >
+> > > Well question is, if it makes sense to have SFs without having them as
+> > > mdev? I mean, we discussed the modelling thoroughtly and eventually we
+> > > realized that in order to model this correctly, we need SFs on "a bus".
+> > > Originally we were thinking about custom bus, but mdev is already
+> > > there to handle this.  
+> > 
+> > But the "main/real" port is not a mdev in your case. NFP is like mlx4.
+> > It has one PCI PF for multiple ports.
+> >   
+> > > Our SFs are also just regions of the BAR, same thing as you have.
+> > >
+> > > Can't you do the same for nfp SFs?
+> > > Then the "mdev" flavour is enough for all.  
+> > 
+> > Absolutely not.
+> >   
+> Please explain what is missing in mdev.
+> And frankly it is too late for such a comment.
+> I sent out RFC patches back in March-19, 
+> further discussed in netdevconf0x13, 
+> further discussed several times while we introduced devlink ports,
+> further discussed in august with mdev alias series and phys_port_name formation for mdev.
+> This series shouldn't be any surprise for you at all.
+> Anyways.
+> 
+> > Why not make the main device of mlx5 a mdev, too, if that's acceptable.
+> > There's (a) long precedence for multiple ports on one PCI PF in networking
+> > devices, (b) plenty deployed software which depend on the main devices
+> > hanging off the PCI PF directly.
+> > 
+> > The point of mdevs is being able to sign them to VFs or run DPDK on them (map
+> > to user space).
+> >   
+> That can be one use case. That is not the only use case.
+> I clearly explained the use case scenarios in motivation section of the cover letter. Please go through it again.
+> This series is certainly not targeting the DPDK usecase right now.
+> 
+> Also please read design decisions section of cover letter...
+> 
+> > For normal devices existing sysfs hierarchy were one device has multiple
+> > children of a certain class, without a bus and a separate driver is perfectly fine.
+> > Do you think we should also slice all serial chips into mdevs if they have
+> > multiple lines.
+> > 
+> > Exactly as I predicted much confusion about what's being achieved here, heh :)  
+> 
+> We don't see confusion here. Please be specific on the point that confuses you.
+> A PCI device is sliced to multiple devices to make use of it in different ways. Serial chips are not good example of it.
+> This is fitting in with 
+> - overall kernel bus-driver model, 
+> - suitable for multiple types of devices (netdev, rdma and their different link layers), 
+> - devlink framework of bus/device notion for health reporters, ports, resources
+> - mapping to VM/bare-metal/container usecase.
+> - and more..
+> I don't want to further repeat the cover-letter here.. let's talk specific points to improve upon.
 
-I don't see how relevant the number of PFs-vs-uplink_ports is.
+Parav, I think you completely missed the point of my email.
 
+I was replying to Jiri saying that mdev does not fit the nfp/mlx4
+mutli-port devices, and we still need a normal "PCI split" or something
+along those lines to have multiple PF ports on one PF.
 
->
->> Our SFs are also just regions of the BAR, same thing as you have.
->> 
->> Can't you do the same for nfp SFs?
->> Then the "mdev" flavour is enough for all.
->
->Absolutely not. 
->
->Why not make the main device of mlx5 a mdev, too, if that's acceptable.
->There's (a) long precedence for multiple ports on one PCI PF in
->networking devices, (b) plenty deployed software 
->which depend on the main devices hanging off the PCI PF directly.
->
->The point of mdevs is being able to sign them to VFs or run DPDK on
->them (map to user space).
->
->For normal devices existing sysfs hierarchy were one device has
->multiple children of a certain class, without a bus and a separate
->driver is perfectly fine. Do you think we should also slice all serial
->chips into mdevs if they have multiple lines.
->
->Exactly as I predicted much confusion about what's being achieved here,
->heh :)
+I'm not talking about your use of mdev at all.
 
-Please let me understand how your device is different.
-Originally Parav didn't want to have mlx5 subfunctions as mdev. He
-wanted to have them tight to the same pci device as the pf. No
-difference from what you describe you want. However while we thought
-about how to fit things in, how to handle na phys_port_name, how to see
-things in sysfs we came up with an idea of a dedicated bus. We took it
-upstream and people suggested to use mdev bus for this.
-
-Parav, please correct me if I'm wrong but I don't think where is a plan
-to push SFs into VM or to userspace as Jakub expects, right?
+The discussion on patch 12 also seems to indicate you don't read the
+emails you reply to...
