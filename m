@@ -2,106 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A7DF4E59
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 15:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 495A7F4EBF
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 15:53:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbfKHOle (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Nov 2019 09:41:34 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:55516 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726036AbfKHOle (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 09:41:34 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA8Ed0j5060032;
-        Fri, 8 Nov 2019 14:41:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2019-08-05; bh=wosJjr7kwe+Pdb8niSUsNB4nrOv/tKKvKse/du+zOOI=;
- b=ordJGzs+5vQE+QtiWZF3HQRVzmXI64QH1xkRwHFbHlJSUBwCo6lLZMa+kma6hFXL0Oy4
- LuNxHmTWhwlNeh4+8mhDgxAFuBtY4OYcmygPOuaArYYfS6jSw7GXlhdaFU56NaOCDYKH
- DF4JRg3osAXIBXHaWEgK9x+ehAe5sPE+JI7iUf0rCPQrBM1sJjkLo0Qcpx9pJJLHE6Zn
- TckmfTHMyu07R5OLGL2+eGeGlX85ScJNJ69tHeNiBOXODyOnPY3/EtaiZWZPgpHdlGph
- ZOgfC5UbkdT0lfhO6H/A5g7hVG9zCnmlpqF7QXSErneCnwS05txfxBxWYFxFmbYhirSz 5w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2w41w1dr1p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 Nov 2019 14:41:32 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA8EdEKR116555;
-        Fri, 8 Nov 2019 14:41:32 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2w41wcwfyb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 Nov 2019 14:41:32 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xA8EfSCE000361;
-        Fri, 8 Nov 2019 14:41:28 GMT
-Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 08 Nov 2019 06:41:28 -0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v5] IB/core: Trace points for diagnosing completion queue
- issues
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <20191108142157.GB10956@ziepe.ca>
-Date:   Fri, 8 Nov 2019 09:41:27 -0500
-Cc:     linux-rdma@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <533870DD-41E0-41F9-8553-5E84DBDE4EC2@oracle.com>
-References: <20191107205239.23193.69879.stgit@manet.1015granger.net>
- <20191108142157.GB10956@ziepe.ca>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9434 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1910280000 definitions=main-1911080147
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9434 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1910280000
- definitions=main-1911080147
+        id S1725995AbfKHOxE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Nov 2019 09:53:04 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:39226 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbfKHOxE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 09:53:04 -0500
+Received: by mail-qv1-f67.google.com with SMTP id v16so2287175qvq.6
+        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2019 06:53:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=KbZhp4AkDu7Xm430isAdIZqP2fKWimvIRojP4EOaH94=;
+        b=CnUhcgt/uCiHhFzG5fQwx/7yL/1CG4oXAa5rt7QVxsRyYE9BvjQnSrmpCegteZ6wG6
+         UdbIqy2G3VBCdlFsOHxs/+U1RPE3dzDODchlcknxyMkLszr7SBFzpBBLTiddH4Tg08Ht
+         mzvu2U3GfPtm+8nhuisFAzAvLGGBD26Rr2qKwRtahR5/cWZ9Dw2546KcysI5+LmkFl4f
+         uw4TZt8ZwEN4pTKLcXSMHSPwzQXJJ83lX+Vu0OBNgSn6qsoG5vEKP04ONdCWloYbp4p+
+         mbwxr54K0neA//wodYLjyKVnqB2cadeD0Xva/t+JRc+rAwGI6mVj5ESfMeaSIg5DxLSM
+         vL/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=KbZhp4AkDu7Xm430isAdIZqP2fKWimvIRojP4EOaH94=;
+        b=fOLHY2tLgGH4aXuxNS3SLPh1P7kDSQ3G3Xs0dyj/TooGmHA9DH/SvBB1zwQXpG/cyb
+         aqHX91Caegohs6H1tlwNyDQELvsv4hfYpBb376tqQlg9x+mtboRqavs+ytovT5kmbDus
+         WZZqkGH7/7tsZYWP6Yh4+HPrAKGuflbMIVPVlnvQ14BlAxY8XZT8KrR5oHcpTiJmnaH0
+         6NFliDvTLjX2xUDyBndyLzout9Q2dFazPLJgsvLWGPBzfMfon6LSXxuUnXagzT1s4Jcb
+         vEYX5REERleGrBeYIK+Gec10R5ueKrF+3OHB7zNQ4nDUZolCPHvPVD2PmHBHfriQKYdk
+         e4TQ==
+X-Gm-Message-State: APjAAAW/bseJsLyATKt1PiDGSCjbSuZ0B9I7Bgb3oWRqrp2gjqCSsVgQ
+        IsFv2gMmL3oB8Nh8ZHqKDcrxNg==
+X-Google-Smtp-Source: APXvYqxZ049SfJ3c2UO0ME4Y6QYpdzEBI6gXk0X7dNRcV8X3z8aw7kr92ScWfx2YoejxONb2FvDR8w==
+X-Received: by 2002:a05:6214:11f2:: with SMTP id e18mr10122108qvu.86.1573224783191;
+        Fri, 08 Nov 2019 06:53:03 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id o3sm3732759qta.3.2019.11.08.06.53.02
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 08 Nov 2019 06:53:02 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iT5dF-0003YQ-V5; Fri, 08 Nov 2019 10:53:01 -0400
+Date:   Fri, 8 Nov 2019 10:53:01 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        David Zhou <David1.Zhou@amd.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Petr Cvek <petrcvekcz@gmail.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH v2 09/15] xen/gntdev: use mmu_range_notifier_insert
+Message-ID: <20191108145301.GD10956@ziepe.ca>
+References: <20191028201032.6352-1-jgg@ziepe.ca>
+ <20191028201032.6352-10-jgg@ziepe.ca>
+ <3938b588-c6c5-3bd1-8ea9-47e4d5b2045c@oracle.com>
+ <20191105023108.GN22766@mellanox.com>
+ <a62e58f6-d98b-1feb-d0ca-fb8210f3e831@oracle.com>
+ <20191107203629.GF6730@ziepe.ca>
+ <4a68acc6-3ce7-e26b-2c98-774867288410@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4a68acc6-3ce7-e26b-2c98-774867288410@oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Nov 07, 2019 at 05:54:52PM -0500, Boris Ostrovsky wrote:
+> On 11/7/19 3:36 PM, Jason Gunthorpe wrote:
+> > On Tue, Nov 05, 2019 at 10:16:46AM -0500, Boris Ostrovsky wrote:
+> >
+> >>> So, I suppose it can be relaxed to a null test and a WARN_ON that it
+> >>> hasn't changed?
+> >> You mean
+> >>
+> >> if (use_ptemod) {
+> >>         WARN_ON(map->vma != vma);
+> >>         ...
+> >>
+> >>
+> >> Yes, that sounds good.
+> > I amended my copy of the patch with the above, has this rework shown
+> > signs of working?
+> 
+> Yes, it works fine.
+> 
+> But please don't forget notifier ops initialization.
+> 
+> With those two changes,
+> 
+> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 
+Thanks, I got both things. I'll forward this toward linux-next and
+repost a v3 
 
-> On Nov 8, 2019, at 9:21 AM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
->=20
-> On Thu, Nov 07, 2019 at 03:54:34PM -0500, Chuck Lever wrote:
->> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
->> Reviewed-by: Parav Pandit <parav@mellanox.com>
->> drivers/infiniband/core/Makefile |    2=20
->> drivers/infiniband/core/cq.c     |   36 +++++
->> drivers/infiniband/core/trace.c  |   14 ++
->> include/rdma/ib_verbs.h          |   11 +-
->> include/trace/events/rdma_core.h |  251 =
-++++++++++++++++++++++++++++++++++++++
->> 5 files changed, 307 insertions(+), 7 deletions(-)
->> create mode 100644 drivers/infiniband/core/trace.c
->> create mode 100644 include/trace/events/rdma_core.h
->>=20
->> Changes since v4:
->> - Removed __ib_poll_cq, uninlined ib_poll_cq
->=20
-> Oh I don't think uninlining is such a good idea, isn't this rather
-> performance sensitive?
-
-So would you rather go with v4?
-
-Not clear to me that the compiler won't do the right thing,
-at least for __ib_process_cq.
-
-
---
-Chuck Lever
-
-
-
+Jason
