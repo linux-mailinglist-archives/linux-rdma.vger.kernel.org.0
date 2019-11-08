@@ -2,37 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E93B4F4A5B
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 13:08:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24334F4A00
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 13:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388638AbfKHLk2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Nov 2019 06:40:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53406 "EHLO mail.kernel.org"
+        id S2389919AbfKHMGl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Nov 2019 07:06:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388614AbfKHLk0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 8 Nov 2019 06:40:26 -0500
+        id S2389152AbfKHLlF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 8 Nov 2019 06:41:05 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B568222C4;
-        Fri,  8 Nov 2019 11:40:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8DB6E222C5;
+        Fri,  8 Nov 2019 11:41:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573213226;
-        bh=yXJ6Nbeh5e1xKhtBk4G9bNNBN67AaO4fXPVEf4EEI/A=;
+        s=default; t=1573213265;
+        bh=bRuj8CaW3i77z39sNUpYq4u9Rthmjs806R22l2nD95s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wn2qIKNk8s8TWWvEkxKTU2xUbJ8YqIq7qNwkDX23O6omj8A49S5Ix5opsLGqx6Gew
-         S8VahwArtbhXwQ8EWa9F5cVAG7t4lSgt8WKE0SpxPUnTDar6ujuftXv7btcuo5Cg91
-         ZJvDv9Xjj1r103OVGlIGiMwFbrZRX6dqD4qwnXwI=
+        b=QrUzYEelY//iXQMaPT5AXHu+sDqE3QWLixjFq1oCW7PFgL4f9/GdmE9BM471Z6d0s
+         on7GKTmKDLARxc5EAMsRYQ1CDdTzL5bM6ZcuGfkeq6rM5904/xBSdMJEty4F/vvnSH
+         OF7jp8PTPa+oKPb5AVpC6qUgOtqVfbEUT4TMCFiI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Parav Pandit <parav@mellanox.com>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 099/205] RDMA/core: Follow correct unregister order between sysfs and cgroup
-Date:   Fri,  8 Nov 2019 06:36:06 -0500
-Message-Id: <20191108113752.12502-99-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 129/205] RDMA/hns: Fix an error code in hns_roce_v2_init_eq_table()
+Date:   Fri,  8 Nov 2019 06:36:36 -0500
+Message-Id: <20191108113752.12502-129-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191108113752.12502-1-sashal@kernel.org>
 References: <20191108113752.12502-1-sashal@kernel.org>
@@ -45,38 +43,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@mellanox.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit c715a39541bb399eb03d728a996b224d90ce1336 ]
+[ Upstream commit f1a315420e79fe5c077fa119db9439ffabd2cda2 ]
 
-During register_device() init sequence is,
-(a) register with rdma cgroup followed by
-(b) register with sysfs
+The error code isn't set on this path.
 
-Therefore, unregister_device() sequence should follow the reverse order.
-
-Signed-off-by: Parav Pandit <parav@mellanox.com>
-Reviewed-by: Daniel Jurgens <danielj@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 6d8ac51a39cc0..6a585c3e21923 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -599,8 +599,8 @@ void ib_unregister_device(struct ib_device *device)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index a442b29e76119..72cfd8c56527e 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -5117,6 +5117,7 @@ static int hns_roce_v2_init_eq_table(struct hns_roce_dev *hr_dev)
+ 		create_singlethread_workqueue("hns_roce_irq_workqueue");
+ 	if (!hr_dev->irq_workq) {
+ 		dev_err(dev, "Create irq workqueue failed!\n");
++		ret = -ENOMEM;
+ 		goto err_request_irq_fail;
  	}
- 	up_read(&lists_rwsem);
- 
--	ib_device_unregister_rdmacg(device);
- 	ib_device_unregister_sysfs(device);
-+	ib_device_unregister_rdmacg(device);
- 
- 	mutex_unlock(&device_mutex);
  
 -- 
 2.20.1
