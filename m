@@ -2,97 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9F6F4D10
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 14:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DFBBF4D65
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 14:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729935AbfKHNWd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Nov 2019 08:22:33 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:43364 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727944AbfKHNWd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 08:22:33 -0500
-Received: by mail-wr1-f65.google.com with SMTP id n1so7005361wra.10
-        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2019 05:22:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cBsuV6lhsX+rIy99bACBsVO4uTxrbxnKAG7+zgmVfls=;
-        b=ZVpa7tAZSw7YDtFqqf8LbpXzAeNODTzklSFa34o2mX8On1jsvwngEuswYT4VjGJRAv
-         jA3qRVsei5odkquqC/GeG3J+Byr7mYEr7cRrzN8uSsmUWzIfuqHtmn9RL7wzpiS7ewFW
-         XhidJiYXoMGghUtfPQSSRKfGKLxrZTvQK/OVkldNSRg4abQNssEKKEhU6ti2BHlkyksO
-         jzCqylpDjwXZluzA7v5DzMAWaTdMJUaEUFhSbBiyTD8aSneF4eUQXGOoj+a5yuVEqRGe
-         tvMV21VGpkqhePH/ixQDUdRc7MeNOKmuc1rKfcB9NTN6Wo+bXz/hWDGECDBO4XPcAanJ
-         j6VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cBsuV6lhsX+rIy99bACBsVO4uTxrbxnKAG7+zgmVfls=;
-        b=aj1F4xZ0uuqUuZRdKLiM/NnPz7k2lPJzP2GoPSnhYLK5HrrH08AQEUFL2lvDymLVmB
-         wMzC+8yqsJWjGnNzeOkicpONClSUAPVdkeSiqTUt4Wi8fFKEKYxy9Ca26AdZ301kwrk9
-         qsOlJpw+/R7CxW1F3qcuZ2mMJoEO02Txy0HLHElOwCfp4SgxlpHCtQl7arg/11ElBJLf
-         GjUBsYFXDX8Mt1aBfgOPkPbzc5y2yCPCAqVugoiG5aafIzgWO38GyakBexw2ola6om2K
-         ZvcdylP6xPqIfYaxKT7FPnxeVh9rHrosuOp3BWQfFfjC18NtsxpqBO6aVCP9HnUz/gGe
-         y9bw==
-X-Gm-Message-State: APjAAAXnFsC0kD1n9LmypvWrb4ZZIQ5OGyyg0xt39h2jvnH83bc5Mv25
-        nLcdr8npKmLRejTgyhYzM6oLZQ==
-X-Google-Smtp-Source: APXvYqyvpSQNfobxxQwiiXvZY3yr8ZcLuoARu9hecr9HmrkXZ0MbPJKjK3A1aoOdotynZTKYgs+/9Q==
-X-Received: by 2002:adf:ff8c:: with SMTP id j12mr8305770wrr.75.1573219350956;
-        Fri, 08 Nov 2019 05:22:30 -0800 (PST)
-Received: from localhost (ip-94-113-220-175.net.upcbroadband.cz. [94.113.220.175])
-        by smtp.gmail.com with ESMTPSA id m13sm5457672wmc.41.2019.11.08.05.22.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Nov 2019 05:22:30 -0800 (PST)
-Date:   Fri, 8 Nov 2019 14:22:30 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Parav Pandit <parav@mellanox.com>
-Cc:     alex.williamson@redhat.com, davem@davemloft.net,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, saeedm@mellanox.com,
-        kwankhede@nvidia.com, leon@kernel.org, cohuck@redhat.com,
-        jiri@mellanox.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 09/19] vfio/mdev: Expose mdev alias in sysfs tree
-Message-ID: <20191108132230.GK6990@nanopsycho>
-References: <20191107160448.20962-1-parav@mellanox.com>
- <20191107160834.21087-1-parav@mellanox.com>
- <20191107160834.21087-9-parav@mellanox.com>
+        id S1726101AbfKHNnl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Nov 2019 08:43:41 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:36773 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726005AbfKHNnl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 08:43:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1573220620;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p2GiDgurLDTLnKDD84ZeRHZfEMXgwhDnYu1U65URo2k=;
+        b=X5L1L1Dvt2VD4wgLd2ThvFRorrC8z5//fvXQ9/D1v1E/2zDmfPkj32me7SDxMbtG0L4sQn
+        CWXx1Nib6/EE+M5vWD+6/6K4N0sYzAxoqKyEz2zyI467tQ0pjwgXzk4nv99/lpjOMppzID
+        zGpLW6xlhs2eIVVkQm7VD/4jFld+RT8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-337-Rd7IsiSjOY2MUWNuakLiow-1; Fri, 08 Nov 2019 08:43:36 -0500
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 69BA41800D7B;
+        Fri,  8 Nov 2019 13:43:33 +0000 (UTC)
+Received: from redhat.com (ovpn-123-175.rdu2.redhat.com [10.10.123.175])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 57C09196AE;
+        Fri,  8 Nov 2019 13:43:30 +0000 (UTC)
+Date:   Fri, 8 Nov 2019 08:43:28 -0500
+From:   Jerome Glisse <jglisse@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Zhou <David1.Zhou@amd.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Petr Cvek <petrcvekcz@gmail.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH v2 02/15] mm/mmu_notifier: add an interval tree notifier
+Message-ID: <20191108134328.GA4456@redhat.com>
+References: <20191028201032.6352-1-jgg@ziepe.ca>
+ <20191028201032.6352-3-jgg@ziepe.ca>
+ <35c2b322-004e-0e18-87e4-1920dc71bfd5@nvidia.com>
+ <20191107200604.GB21728@mellanox.com>
+ <20191108063302.GA18778@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191107160834.21087-9-parav@mellanox.com>
+In-Reply-To: <20191108063302.GA18778@infradead.org>
 User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-MC-Unique: Rd7IsiSjOY2MUWNuakLiow-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Thu, Nov 07, 2019 at 05:08:24PM CET, parav@mellanox.com wrote:
+On Thu, Nov 07, 2019 at 10:33:02PM -0800, Christoph Hellwig wrote:
+> On Thu, Nov 07, 2019 at 08:06:08PM +0000, Jason Gunthorpe wrote:
+> > >=20
+> > > enum mmu_range_notifier_event {
+> > > =09MMU_NOTIFY_RELEASE,
+> > > };
+> > >=20
+> > > ...assuming that we stay with "mmu_range_notifier" as a core name for=
+ this=20
+> > > whole thing.
+> > >=20
+> > > Also, it is best moved down to be next to the new MNR structs, so tha=
+t all the
+> > > MNR stuff is in one group.
+> >=20
+> > I agree with Jerome, this enum is part of the 'struct
+> > mmu_notifier_range' (ie the description of the invalidation) and it
+> > doesn't really matter that only these new notifiers can be called with
+> > this type, it is still part of the mmu_notifier_range.
+> >=20
+> > The comment already says it only applies to the mmu_range_notifier
+> > scheme..
+>=20
+> In fact the enum is entirely unused.  We might as well just kill it off
+> entirely.
 
-[...]
+I had patches to use it, i need to re-post them. I posted them long ago
+and i droped the ball. I will re-spin after this.
 
-> 
->+static ssize_t alias_show(struct device *device,
->+			  struct device_attribute *attr, char *buf)
->+{
->+	struct mdev_device *dev = mdev_from_dev(device);
->+
->+	if (!dev->alias)
->+		return -EOPNOTSUPP;
->+
->+	return sprintf(buf, "%s\n", dev->alias);
->+}
->+static DEVICE_ATTR_RO(alias);
+Cheers,
+J=E9r=F4me
 
-I wonder, rather than adding another sysfs file, why the alias can't be
-simply a symlink to the aliased mdev directory?
-
-
->+
-> static const struct attribute *mdev_device_attrs[] = {
->+	&dev_attr_alias.attr,
-> 	&dev_attr_remove.attr,
-> 	NULL,
-> };
->-- 
->2.19.2
->
