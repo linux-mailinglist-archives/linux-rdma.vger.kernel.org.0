@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0373BF434C
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 10:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D70F43D0
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 10:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730308AbfKHJaF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Nov 2019 04:30:05 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:53744 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731672AbfKHJaF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 04:30:05 -0500
-Received: by mail-wm1-f65.google.com with SMTP id x4so5401610wmi.3
-        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2019 01:30:03 -0800 (PST)
+        id S1730573AbfKHJqv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Nov 2019 04:46:51 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:50522 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731032AbfKHJqv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 04:46:51 -0500
+Received: by mail-wm1-f68.google.com with SMTP id l17so4662664wmh.0
+        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2019 01:46:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=resnulli-us.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=eRd0zmMB4Oip3e8n6DWloWHkrMJLlIZOg5WL86fDovg=;
-        b=0NSpx/IDuQdnoIZy19Y0yM2QJt58YDICwJ4a7AMmOg48/omhFz00Y3Q7fjfm/u43pS
-         qJoPv2TxzTidCqU4Yk+KCzg8RliD/nMvHjLYCL9c0cX0jN2V4noSCASC26saLAeIkPqY
-         B0I+MLE22D+vDwKXA0hKALOrmVcEu1pRQ3Cv24z6vZhCi8eIhlJEEQvsQoPv5syyEA3+
-         KHHBcFYYgqqe9H7QLxc9f4OtSkxXu1KaZJBSfRVoce1L7aKqElEruVQJRS6ejpTcibWr
-         FSD5MV3h+aYhvB97vgIWI2eXYP9O93ZIcdrpsz9ulyaPcr83FZrftkrKcCREv4DCmhgo
-         v63w==
+        bh=qBRUcqrHuAkFcWrhiG6W90kEr3iLZdNuck5vTxZOE2I=;
+        b=UbF+OC5/QhYL6bxs2u7StcX3ebTL9g9YHKrEP2nwnfBGwg4Fq5bQTYRTJEKFb4XOK+
+         UxDBJ6e/zTjvZtYIdn2o87NPPiNE/ZI+rL6T+2rsNY87r0FT1vAjA/pZzFG8U9W1T2+P
+         wCgjO3FNoXmgI7d+JVNNvL9kBXgNBvU1q0Hssq55C94jglwM9O8u526fL6qEsOo9lJL0
+         ROmCeVJbjOyUg/HBR5AarDeIq5ZgXrkY6uoPieI0K3W5tmAZOpqVreRSXHjP/dVhWNe3
+         /3/tyryBAXb8YOpuP2HYYZTlVQZYmNrDc1J7zYdC4mJwctQwwLBT/k1AFAqwbhWqxiiu
+         nQeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=eRd0zmMB4Oip3e8n6DWloWHkrMJLlIZOg5WL86fDovg=;
-        b=iLsH79ZG19PC4i1jwFEFrPZ/G6KFe0tgG+Ri/RSwRFObJmrI9llSh28d0GvxWrPnFU
-         qKZwtxyEhACBXX5I+1J7F1KIb0SILRcFH2Mz+K+LKGZ/lrYf5HNxXaFBiUJT7Jw9F/vZ
-         sRdUeQMuvcN8h63liNgXAQHUNetS+kStCho1nnBn2IfAGe7F/DDdjltaY3RjPKl8jIuK
-         emXCCacR2McE17VBytHkMNRsot/p2AdHdMpnkA8hpKe98uxNprW0vU0aoBZesyDJGI38
-         W2Sg/Bhn4t8YY9XxKPacUpz6PlXTZixQ4nYJcrHNrYhopi7FEyykV3GlUaX0ODf4qmwl
-         +6mw==
-X-Gm-Message-State: APjAAAX885BapvqKrZbtoYj3LyGqXBjpWpKp1kktObXzq1wT24J7k8VT
-        sF697b/3vpMHWK559mhbnDI0aA==
-X-Google-Smtp-Source: APXvYqxFxGq6zoV4dqGUNzRMeIm6xAvEtpyaWMtpTKpSJPx4AuHUcLsFpiL3EB2rj/hFxjSgv7WKcg==
-X-Received: by 2002:a7b:c408:: with SMTP id k8mr7630339wmi.67.1573205402525;
-        Fri, 08 Nov 2019 01:30:02 -0800 (PST)
+        bh=qBRUcqrHuAkFcWrhiG6W90kEr3iLZdNuck5vTxZOE2I=;
+        b=lXPQXKF92GLeTxGEnho9/+/QX9lH+SCZtDqw2+QR4oLZJU8J0QGcyCsLBpIxAwQXSW
+         3VM+4DJoAHaEpiHPKP2P2gYoVvPfCTPcCwqfnpNyehxIzrQCyUF2AvbJpNB5JJZZuEJs
+         JN1sM49k285Q/ojradhX15/H/uod9lV0nby6Ze09zslOItB4lNqw9dsEbpe3xU28JAvG
+         VGNHVBSllZezyLfS7T9O2EV/vbi5qP1+0IlkfiFY6TpMG0QmENaSOFgjCWNwrdKhq4N4
+         y/B62sg1V1L4SyjjIpt+UaHF7B+JOj/MWaNpKKUTx2UH96dZ3iytQOHdbIqehqijjFhn
+         Y++w==
+X-Gm-Message-State: APjAAAVkhav1ip0VnBnRV2bAgfZWFC1aVZhHipXlfUYjcnDJKeVDKmj+
+        +TGgCwHSeyn+rpsk5kQwYHjhsQ==
+X-Google-Smtp-Source: APXvYqxwQwEMMzdKCCodb94kb+6Ua49RiWNSBUkEAh1vhuZWOkYle1LRVhIrgMYj3SGmQ3ZyiKHs8g==
+X-Received: by 2002:a1c:9e58:: with SMTP id h85mr7618811wme.77.1573206407491;
+        Fri, 08 Nov 2019 01:46:47 -0800 (PST)
 Received: from localhost (ip-94-113-220-175.net.upcbroadband.cz. [94.113.220.175])
-        by smtp.gmail.com with ESMTPSA id z13sm5907160wrm.64.2019.11.08.01.30.01
+        by smtp.gmail.com with ESMTPSA id r15sm4761749wrc.5.2019.11.08.01.46.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Nov 2019 01:30:02 -0800 (PST)
-Date:   Fri, 8 Nov 2019 10:30:01 +0100
+        Fri, 08 Nov 2019 01:46:47 -0800 (PST)
+Date:   Fri, 8 Nov 2019 10:46:46 +0100
 From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Parav Pandit <parav@mellanox.com>,
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
         "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
         "davem@davemloft.net" <davem@davemloft.net>,
         "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
@@ -59,7 +59,7 @@ Cc:     Parav Pandit <parav@mellanox.com>,
         Jiri Pirko <jiri@mellanox.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
 Subject: Re: [PATCH net-next 12/19] devlink: Introduce mdev port flavour
-Message-ID: <20191108093001.GA6990@nanopsycho>
+Message-ID: <20191108094646.GB6990@nanopsycho>
 References: <20191107160448.20962-1-parav@mellanox.com>
  <20191107160834.21087-1-parav@mellanox.com>
  <20191107160834.21087-12-parav@mellanox.com>
@@ -68,49 +68,113 @@ References: <20191107160448.20962-1-parav@mellanox.com>
  <20191107201750.6ac54aed@cakuba>
  <AM0PR05MB4866BEC2A2B586AA72BAA9ABD17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
  <20191107212024.61926e11@cakuba>
+ <AM0PR05MB4866C0798EA5746EE23F2D2BD17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191107212024.61926e11@cakuba>
+In-Reply-To: <AM0PR05MB4866C0798EA5746EE23F2D2BD17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fri, Nov 08, 2019 at 03:20:24AM CET, jakub.kicinski@netronome.com wrote:
->On Fri, 8 Nov 2019 01:44:53 +0000, Parav Pandit wrote:
-
-[...]
-
->> > > > > @@ -6649,6 +6678,9 @@ static int  
->> > > > __devlink_port_phys_port_name_get(struct devlink_port *devlink_port,  
->> > > > >  		n = snprintf(name, len, "pf%uvf%u",
->> > > > >  			     attrs->pci_vf.pf, attrs->pci_vf.vf);
->> > > > >  		break;
->> > > > > +	case DEVLINK_PORT_FLAVOUR_MDEV:
->> > > > > +		n = snprintf(name, len, "p%s", attrs->mdev.mdev_alias);  
->> > > >
->> > > > Didn't you say m$alias in the cover letter? Not p$alias?
->> > > >  
->> > > In cover letter I described the naming scheme for the netdevice of the
->> > > mdev device (not the representor). Representor follows current unique
->> > > phys_port_name method.  
->> > 
->> > So we're reusing the letter that normal ports use?
->> >  
->> I initially had 'm' as prefix to make it easy to recognize as mdev's port, instead of 'p', but during internal review Jiri's input was to just use 'p'.
+Fri, Nov 08, 2019 at 03:31:02AM CET, parav@mellanox.com wrote:
 >
->Let's way for Jiri to weigh in then.
+>
+>> -----Original Message-----
+>> From: Jakub Kicinski <jakub.kicinski@netronome.com>
+>> Sent: Thursday, November 7, 2019 8:20 PM
+>> To: Parav Pandit <parav@mellanox.com>
+>> Cc: alex.williamson@redhat.com; davem@davemloft.net;
+>> kvm@vger.kernel.org; netdev@vger.kernel.org; Saeed Mahameed
+>> <saeedm@mellanox.com>; kwankhede@nvidia.com; leon@kernel.org;
+>> cohuck@redhat.com; Jiri Pirko <jiri@mellanox.com>; linux-
+>> rdma@vger.kernel.org
+>> Subject: Re: [PATCH net-next 12/19] devlink: Introduce mdev port flavour
+>> 
+>> On Fri, 8 Nov 2019 01:44:53 +0000, Parav Pandit wrote:
+>> > > I'm talking about netlink attributes. I'm not suggesting to sprintf
+>> > > it all into the phys_port_name.
+>> > >
+>> > I didn't follow your comment. For devlink port show command output you
+>> > said,
+>> >
+>> > "Surely those devices are anchored in on of the PF (or possibly VFs)
+>> > that should be exposed here from the start."
+>> > So I was trying to explain why we don't expose PF/VF detail in the
+>> > port attributes which contains
+>> > (a) flavour
+>> > (b) netdev representor (name derived from phys_port_name)
+>> > (c) mdev alias
+>> >
+>> > Can you please describe which netlink attribute I missed?
+>> 
+>> Identification of the PCI device. The PCI devices are not linked to devlink
+>> ports, so the sysfs hierarchy (a) is irrelevant, (b) may not be visible in multi-
+>> host (or SmartNIC).
+>>
+>
+>It's the unique mdev device alias. It is not right to attach to the PCI device.
+>Mdev is bus in itself where devices are identified uniquely. So an alias suffice that identity.
 
-Hmm, it's been so far I can't really recall. But looking at what we have
-now:
-DEVLINK_PORT_FLAVOUR_PHYSICAL "p%u"/"p%us%u"
-DEVLINK_PORT_FLAVOUR_PCI_PF   "pf%u"
-DEVLINK_PORT_FLAVOUR_PCI_VF   "pf%uvf%u"
-For mdev, the ideal format would be:
-"pf%um%s" or "pf%uvf%um%s", but that would be too long.
-I guess that "m%s" is fine.
-"p" is probably not a good idea as phys ports already have that.
+Wait a sec. For mdev, what you say is correct. But here we talk about
+devlink_port which is representing this mdev. And this devlink_port is
+very similar to VF devlink_port. It is bound to specific PF (in case of
+mdev it could be PF-VF).
 
-[...]
+
+>
+>> > > > > > Signed-off-by: Parav Pandit <parav@mellanox.com>
+>> > > > >
+>> > > > > > @@ -6649,6 +6678,9 @@ static int
+>> > > > > __devlink_port_phys_port_name_get(struct devlink_port
+>> > > > > *devlink_port,
+>> > > > > >  		n = snprintf(name, len, "pf%uvf%u",
+>> > > > > >  			     attrs->pci_vf.pf, attrs->pci_vf.vf);
+>> > > > > >  		break;
+>> > > > > > +	case DEVLINK_PORT_FLAVOUR_MDEV:
+>> > > > > > +		n = snprintf(name, len, "p%s", attrs-
+>> >mdev.mdev_alias);
+>> > > > >
+>> > > > > Didn't you say m$alias in the cover letter? Not p$alias?
+>> > > > >
+>> > > > In cover letter I described the naming scheme for the netdevice of
+>> > > > the mdev device (not the representor). Representor follows current
+>> > > > unique phys_port_name method.
+>> > >
+>> > > So we're reusing the letter that normal ports use?
+>> > >
+>> > I initially had 'm' as prefix to make it easy to recognize as mdev's port,
+>> instead of 'p', but during internal review Jiri's input was to just use 'p'.
+>> 
+>> Let's way for Jiri to weigh in then.
+>
+>Yeah.
+>I remember his point was to not confuse the <en><m> prefix in the persistent device name with 'm' prefix in phys_port_name.
+>Hence, his input was just 'p'.
+
+Not sure what are you referring to. Udev places "n" in front of whatever
+string we construct here, so the namespace is entirely in our hands.
+
+
+>
+>> 
+>> > > Why does it matter to name the virtualized device? In case of other
+>> > > reprs its the repr that has the canonical name, in case of
+>> > > containers and VMs they will not care at all what hypervisor identifier
+>> the device has.
+>> > >
+>> > Well, many orchestration framework probably won't care of what name is
+>> picked up.
+>> > And such name will likely get renamed to eth0 in VM or container.
+>> > Unlike vxlan, macvlan interfaces, user explicitly specify the netdevice name,
+>> and when newlink() netlink command completes with success, user know the
+>> device to use.
+>> > If we don't have persistent name for mdev, if a random name ethX is
+>> picked up, user needs refer to sysfs device hierarchy to know its netdev.
+>> > Its super easy to do refer that, but having persistent name based out of
+>> alias makes things aligned like naming device on PCI bus.
+>> > This way devices can be used without VM/container use cases too, for
+>> example user is interested in only 4 or 8 mdev devices in system and its
+>> setup is done through systemd.service.
