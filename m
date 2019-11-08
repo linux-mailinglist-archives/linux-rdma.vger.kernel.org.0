@@ -2,100 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84460F58D9
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 21:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26CFCF58E8
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 21:58:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbfKHUpO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Nov 2019 15:45:14 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:47063 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbfKHUpO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 15:45:14 -0500
-Received: by mail-qt1-f193.google.com with SMTP id u22so7914522qtq.13
-        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2019 12:45:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=I0yt9NOlPdQK4pyk5XNp8rpDRerWCyST/QKR+ZIGp7I=;
-        b=daBP5yttn6q4281Z5E49tomMsOLnNcvRGabMGn6L0ed5HA5thy++7vEU6k7xYq/mFI
-         oWEyBugz4CknDd6Hk7/s9aRmw7poZJ00Fft4+hAMffrXlMhHF2XOroYrm/gzFidUXIS2
-         642o9bXR9vaeMXBssOzweJwOhe2XxEYyRrXZmrE3sAxaAvO8kt9fw1yjjuWtApFb0deh
-         QGqEPNs3AptmqVLQudHEymgwsZjIn0KDkKQucH1XTqTrIYYwy9Ayoyqibm2bAAHSaai9
-         gx7wOAQ9u4xWzqNOzbN1UyUXYic/b/xOJD0QJ4D2hGYzT4B3NZknkxwkYU/Xm7JinTaN
-         to/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=I0yt9NOlPdQK4pyk5XNp8rpDRerWCyST/QKR+ZIGp7I=;
-        b=XndEhgbMAyVbdVSu2xA1YqMUZrCEzNaGuhWyWvCbQG4yM1XOlSuvIfZZ1GlD4Iaw2E
-         2b77krRSyf+jwngDqFJDLVNqgS3Df76aXHBmC9v2eNa+aoyxrY5ruDzpG44ayFIrauvu
-         SkgoUTWv5pVYQFByGxzCHYc5XuFTESZsQ6JSiesJyRSSLH2mbgbatP9u1L14CpZkfDr4
-         CD76Ae5Ky/MHszmRXS1VeHhBotXUEuuhs1pj/1xIXrR8oQYTQyvd38AMe1gvknuRHweh
-         CZ9zz+iaOjnI8QQHHQXY9XbKxULiMeHYaq3qdiWTbcg7fPqSOj6SPFIIpRBu0DAdwvHD
-         gqIg==
-X-Gm-Message-State: APjAAAWvc5XGsR0XOVAFCWuJy3uwRy3bwPtzvcxmilygKK4msf4DTpVC
-        Yf8n3PnZ239uGzfxiOhF4Kx17eEo6Dw=
-X-Google-Smtp-Source: APXvYqxgUT53RW4NVQ9tg8tiMY38meWm1+jqOeg3xBEipjtwDLK8gZBsUMmSZBnliGIcC9zfYFJ/qQ==
-X-Received: by 2002:ac8:6641:: with SMTP id j1mr13076208qtp.48.1573245913393;
-        Fri, 08 Nov 2019 12:45:13 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id y33sm5486311qta.18.2019.11.08.12.45.12
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Nov 2019 12:45:12 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iTB84-0007SZ-5k; Fri, 08 Nov 2019 16:45:12 -0400
-Date:   Fri, 8 Nov 2019 16:45:12 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Weihang Li <liweihang@hisilicon.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v2 for-next 0/9] RDMA/hns: Cleanups for hip08
-Message-ID: <20191108204512.GA28649@ziepe.ca>
-References: <1572952082-6681-1-git-send-email-liweihang@hisilicon.com>
+        id S1730598AbfKHUwK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Nov 2019 15:52:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51382 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727903AbfKHUwJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 8 Nov 2019 15:52:09 -0500
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8172D215EA;
+        Fri,  8 Nov 2019 20:52:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1573246327;
+        bh=rZ2fzRBjTIttDv3ZKd9CF9dBPvTjqYQBSYwZ0sNc1TU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1SdgK2KQQ8K5KhLdq9xeml+m1kO8wwQl6pj6zXQi3GutHANkGEeHPsMAHoiDHbQqm
+         Z2RHe10OEOfrBHyS3s+Z2UYWDjC8Fxo5MKqbFnnsJdto3XrsiHKtov7+ZcMMN+br2G
+         hIyywKk3i7RmpkxFtDhBcJRJkQcW2jxQuBTE3Ccw=
+Date:   Fri, 8 Nov 2019 21:52:04 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Parav Pandit <parav@mellanox.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        David M <david.m.ertman@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Or Gerlitz <gerlitz.or@gmail.com>
+Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
+Message-ID: <20191108205204.GB1277001@kroah.com>
+References: <20191107160448.20962-1-parav@mellanox.com>
+ <20191107153234.0d735c1f@cakuba.netronome.com>
+ <20191108121233.GJ6990@nanopsycho>
+ <20191108144054.GC10956@ziepe.ca>
+ <AM0PR05MB486658D1D2A4F3999ED95D45D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <20191108111238.578f44f1@cakuba>
+ <20191108201253.GE10956@ziepe.ca>
+ <AM0PR05MB4866299C3AE2448C8226DC00D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <20191108203209.GF10956@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1572952082-6681-1-git-send-email-liweihang@hisilicon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191108203209.GF10956@ziepe.ca>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 05, 2019 at 07:07:53PM +0800, Weihang Li wrote:
-> These series just make cleanups without changing code logic.
+On Fri, Nov 08, 2019 at 04:32:09PM -0400, Jason Gunthorpe wrote:
+> On Fri, Nov 08, 2019 at 08:20:43PM +0000, Parav Pandit wrote:
+> > 
+> > 
+> > > From: Jason Gunthorpe <jgg@ziepe.ca>
+> > > On Fri, Nov 08, 2019 at 11:12:38AM -0800, Jakub Kicinski wrote:
+> > > > On Fri, 8 Nov 2019 15:40:22 +0000, Parav Pandit wrote:
+> > > > > > The new intel driver has been having a very similar discussion
+> > > > > > about how to model their 'multi function device' ie to bind RDMA
+> > > > > > and other drivers to a shared PCI function, and I think that discussion
+> > > settled on adding a new bus?
+> > > > > >
+> > > > > > Really these things are all very similar, it would be nice to have
+> > > > > > a clear methodology on how to use the device core if a single PCI
+> > > > > > device is split by software into multiple different functional
+> > > > > > units and attached to different driver instances.
+> > > > > >
+> > > > > > Currently there is alot of hacking in this area.. And a consistent
+> > > > > > scheme might resolve the ugliness with the dma_ops wrappers.
+> > > > > >
+> > > > > > We already have the 'mfd' stuff to support splitting platform
+> > > > > > devices, maybe we need to create a 'pci-mfd' to support splitting PCI
+> > > devices?
+> > > > > >
+> > > > > > I'm not really clear how mfd and mdev relate, I always thought
+> > > > > > mdev was strongly linked to vfio.
+> > > > > >
+> > > > >
+> > > > > Mdev at beginning was strongly linked to vfio, but as I mentioned
+> > > > > above it is addressing more use case.
+> > > > >
+> > > > > I observed that discussion, but was not sure of extending mdev further.
+> > > > >
+> > > > > One way to do for Intel drivers to do is after series [9].
+> > > > > Where PCI driver says, MDEV_CLASS_ID_I40_FOO RDMA driver
+> > > > > mdev_register_driver(), matches on it and does the probe().
+> > > >
+> > > > Yup, FWIW to me the benefit of reusing mdevs for the Intel case vs
+> > > > muddying the purpose of mdevs is not a clear trade off.
+> > > 
+> > > IMHO, mdev has amdev_parent_ops structure clearly intended to link it to vfio,
+> > > so using a mdev for something not related to vfio seems like a poor choice.
+> > > 
+> > Splitting mdev_parent_ops{} is already in works for larger use case in series [1] for virtio.
+> > 
+> > [1] https://patchwork.kernel.org/patch/11233127/
 > 
-> [patch 1/9 ~ 3/9] remove unused variables and structures.
-> [patch 4/9 ~ 5/9] modify field and function names.
-> [patch 6/9 ~ 7/9] remove dead codes to simplify functions.
-> [patch 8/9] replaces non-standard return value with linux error codes.
-> [patch 9/9] does some fixes on printings.
+> Weird. So what is mdev actually providing and what does it represent
+> if the entire driver facing API surface is under a union?
 > 
-> Changelog
-> v1->v2: Remove "{topost}" in titles.
-> 
-> Lang Cheng (3):
->   RDMA/hns: Remove unnecessary structure hns_roce_sqp
->   RDMA/hns: Simplify doorbell initialization code
->   RDMA/hns: Modify hns_roce_hw_v2_get_cfg to simplify the code
-> 
-> Wenpeng Liang (1):
->   RDMA/hns: Modify appropriate printings
-> 
-> Yixian Liu (4):
->   RDMA/hns: Delete unnecessary variable max_post
->   RDMA/hns: Delete unnecessary uar from hns_roce_cq
->   RDMA/hns: Modify fields of struct hns_roce_srq
->   RDMA/hns: Fix non-standard error codes
-> 
-> Yixing Liu (1):
->   RDMA/hns: Replace not intuitive function/macro names
+> This smells a lot like it is re-implementing a bus.. AFAIK bus is
+> supposed to represent the in-kernel API the struct device presents to
+> drivers.
 
-Something should probably be done about that custom bitmap stuff Leon
-noted, but that isn't related to these patches, so applied to for-next
+Yes, yes yes yes...
 
-Thanks,
-Jason
+I'm getting tired of saying the same thing here, just use a bus, that's
+what it is there for.
+
+greg k-h
