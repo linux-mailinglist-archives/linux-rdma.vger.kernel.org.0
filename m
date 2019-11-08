@@ -2,169 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC66DF3DCC
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 03:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB71F3DE4
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 03:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726094AbfKHCAz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Nov 2019 21:00:55 -0500
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:58323 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725940AbfKHCAy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Nov 2019 21:00:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1573178452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qmaB2CyqCtOYzlfv/kbgamUkAPvC2mHzu/cckynz8S8=;
-        b=G4poe+r/wEa/NSI3+U0S5UlSzP+df7vM9qlOZYeRK0WOxB7kKfwnGpTCFfLPQJgl+kUchP
-        tCjadp06C5KGcRAMFN5gC1np4W2oKJTguDVVwEpBkwOt2ul482h7OD2u2kNJf+8U65/Z24
-        U8zFsJxJFR7YC3Qk9oH4+Z1n3JvCIbA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-170-qWlwQnQQOJmU_alVVJU2pA-1; Thu, 07 Nov 2019 21:00:43 -0500
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF2891800D7B;
-        Fri,  8 Nov 2019 02:00:40 +0000 (UTC)
-Received: from redhat.com (ovpn-122-19.rdu2.redhat.com [10.10.122.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E5B6B600D3;
-        Fri,  8 Nov 2019 02:00:36 +0000 (UTC)
-Date:   Thu, 7 Nov 2019 21:00:34 -0500
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        "Felix.Kuehling@amd.com" <Felix.Kuehling@amd.com>,
+        id S1726118AbfKHCMZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Nov 2019 21:12:25 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:34453 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726094AbfKHCMZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Nov 2019 21:12:25 -0500
+Received: by mail-qt1-f193.google.com with SMTP id c25so4103904qtq.1
+        for <linux-rdma@vger.kernel.org>; Thu, 07 Nov 2019 18:12:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=eAgTqO2CBGsFfoPKpJ+zoPJCqaIJ3RlYgE4wqrS13Hk=;
+        b=Hcqa1Osn/dHZWkILtOOY2fDMYaArvCcqRPgPNElaMU75F5O8a4296CYXGxCcgM7BTT
+         YVrUA342zbusmIkNvZ9cEJamjYHrhMzxQqOCtaDgzXjkxNh99MRSp1QUhA79ceh7dAT+
+         YecR9sWRIc2rxiiDirJ/U5KbVv7FFwfYYdvth7uTnmcfhQMCv4MMhGxkrh9BnT7Wni7S
+         ZlppnTnqtmbM4AB6jSlA9STOZhTsZ3Lh4uZzO/e0WMx7fFrduv/FC7jrPl78KxugA6K3
+         uiYCxHsSVQnvWXgvtCGMefgY//taSdfLSTGQPYFjcdSNDJ3oMivIFFlfGoAnlirNU+5K
+         pdHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=eAgTqO2CBGsFfoPKpJ+zoPJCqaIJ3RlYgE4wqrS13Hk=;
+        b=O5APc+n570dIQD3thkvWvt8Z0NvbyUz91U6MQka0UaBKqAOoWOhcBqZ2TGao9tlPS5
+         S2HUixx3H50gMDolO/uz32FmgVgqTOCAD6bN4tGd6bORtI1EKBy1iHtFuieJxVN/QDVv
+         4JGYoMrYSIYfbMbh2+hgjjVt2fKeINGyYV2xYxW/4EbQp4dcD4FfX0+MJs1ufRnK1Aiw
+         ctlUrPCFIIonJDDa7dNc/RCBbbUPJnvezpaW2Sva3a5Ud1CnSoYxzuaR42L6c7orpKVZ
+         0NOkO70w7iP9b5+QybMtriPS2KoHC126ZSc9lDok6yN7FNNBWD995GQRgNZoF5Afix8I
+         5DvQ==
+X-Gm-Message-State: APjAAAWsojZEuK1ECWfLFt+V/g8MJFMBJUHcknuSIXxxXTAAG3l4t2Ah
+        8HYcuxcSKqYgLCfjmbPHta/OiA==
+X-Google-Smtp-Source: APXvYqxPB8R3pI8IZ8O00rOVtc4vWXkeE67gsczJNXPQcKMptySyqAb90uxdq5yrBVkKrPL96z/Cmw==
+X-Received: by 2002:ac8:7b91:: with SMTP id p17mr7548688qtu.318.1573179144640;
+        Thu, 07 Nov 2019 18:12:24 -0800 (PST)
+Received: from cakuba ([65.196.126.174])
+        by smtp.gmail.com with ESMTPSA id a137sm2106325qkg.75.2019.11.07.18.12.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Nov 2019 18:12:24 -0800 (PST)
+Date:   Thu, 7 Nov 2019 21:12:20 -0500
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        Jiri Pirko <jiri@mellanox.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Zhou <David1.Zhou@amd.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Petr Cvek <petrcvekcz@gmail.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH v2 02/15] mm/mmu_notifier: add an interval tree notifier
-Message-ID: <20191108020034.GA470884@redhat.com>
-References: <20191028201032.6352-1-jgg@ziepe.ca>
- <20191028201032.6352-3-jgg@ziepe.ca>
- <35c2b322-004e-0e18-87e4-1920dc71bfd5@nvidia.com>
- <20191107020807.GA747656@redhat.com>
- <20191107201102.GC21728@mellanox.com>
- <20191107210408.GA4716@redhat.com>
- <20191108003219.GD21728@mellanox.com>
+        Or Gerlitz <gerlitz.or@gmail.com>
+Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
+Message-ID: <20191107211220.798321c4@cakuba>
+In-Reply-To: <AM0PR05MB48668E29F1811F496602079ED17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+References: <20191107160448.20962-1-parav@mellanox.com>
+        <20191107153234.0d735c1f@cakuba.netronome.com>
+        <AM0PR05MB4866A2B92A64DDF345DB14F5D1780@AM0PR05MB4866.eurprd05.prod.outlook.com>
+        <20191107201627.68728686@cakuba>
+        <AM0PR05MB48668E29F1811F496602079ED17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-In-Reply-To: <20191108003219.GD21728@mellanox.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-MC-Unique: qWlwQnQQOJmU_alVVJU2pA-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 08, 2019 at 12:32:25AM +0000, Jason Gunthorpe wrote:
-> On Thu, Nov 07, 2019 at 04:04:08PM -0500, Jerome Glisse wrote:
-> > On Thu, Nov 07, 2019 at 08:11:06PM +0000, Jason Gunthorpe wrote:
-> > > On Wed, Nov 06, 2019 at 09:08:07PM -0500, Jerome Glisse wrote:
-> > >=20
-> > > > >=20
-> > > > > Extra credit: IMHO, this clearly deserves to all be in a new mmu_=
-range_notifier.h
-> > > > > header file, but I know that's extra work. Maybe later as a follo=
-w-up patch,
-> > > > > if anyone has the time.
-> > > >=20
-> > > > The range notifier should get the event too, it would be a waste, i=
- think it is
-> > > > an oversight here. The release event is fine so NAK to you separate=
- event. Event
-> > > > is really an helper for notifier i had a set of patch for nouveau t=
-o leverage
-> > > > this i need to resucite them. So no need to split thing, i would ju=
-st forward
-> > > > the event ie add event to mmu_range_notifier_ops.invalidate() i fai=
-led to catch
-> > > > that in v1 sorry.
-> > >=20
-> > > I think what you mean is already done?
-> > >=20
-> > > struct mmu_range_notifier_ops {
-> > > =09bool (*invalidate)(struct mmu_range_notifier *mrn,
-> > > =09=09=09   const struct mmu_notifier_range *range,
-> > > =09=09=09   unsigned long cur_seq);
-> >=20
-> > Yes it is sorry, i got confuse with mmu_range_notifier and mmu_notifier=
-_range :)
-> > It is almost a palyndrome structure ;)
->=20
-> Lets change the name then, this is clearly not working. I'll reflow
-> everything tomorrow
+On Fri, 8 Nov 2019 01:49:09 +0000, Parav Pandit wrote:
+> > > What I remember discussing offline/mailing list is
+> > > (a) exposing mdev/sub fuctions as devlink sub ports is not so good
+> > > abstraction
+> > > (b) user creating/deleting eswitch sub ports would be hard to fit in
+> > > the whole usage model  
+> > 
+> > Okay, so I can repost the "basic" sub functions?
+> >   
+> I think so. Would you like post on top of this series as port flavour
+> etc would come by default? Also there is vfio/mdev dependency exist
+> in this series...
 
-Semantic patch to do that run from your linux kernel directory with your pa=
-tch
-applied (you can run it one patch after the other and the git commit -a --f=
-ixup HEAD)
-
-spatch --sp-file name-of-the-file-below --dir . --all-includes --in-place
-
-%< ------------------------------------------------------------------
-@@
-@@
-struct
--mmu_range_notifier
-+mmu_interval_notifier
-
-@@
-@@
-struct
--mmu_range_notifier
-+mmu_interval_notifier
-{...};
-
-// Change mrn name to mmu_in
-@@
-struct mmu_interval_notifier *mrn;
-@@
--mrn
-+mmu_in
-
-@@
-identifier fn;
-@@
-fn(...,=20
--struct mmu_interval_notifier *mrn,
-+struct mmu_interval_notifier *mmu_in,
-...) {...}
------------------------------------------------------------------- >%
-
-You need coccinelle (which provides spatch). It is untested but it should w=
-ork
-also i could not come up with a nice name to update mrn as min is way too
-confusing. If you have better name feel free to use it.
-
-Oh and coccinelle is pretty clever about code formating so it should do a g=
-ood
-jobs at keeping things nicely formated and align.
-
-Cheers,
-J=E9r=F4me
-
+I don't mind the ordering.
