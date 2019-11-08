@@ -2,135 +2,225 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D6CF4AEF
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 13:13:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F76F4C44
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 14:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391270AbfKHMMg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Nov 2019 07:12:36 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:56267 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732830AbfKHMMg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 07:12:36 -0500
-Received: by mail-wm1-f67.google.com with SMTP id b11so5938608wmb.5
-        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2019 04:12:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vi0FXEb1SaKZF+1W08jxMvHKOZ5OFQySHO0NRC440W8=;
-        b=k63tbg3ComKTwLI7+A1lutM9sDSJqb95sZk2Bbq4O05Sg5yWeq5zkkNHdIw6xvDmrC
-         euJGRWxMCSlcwjvNTfZ82ueGzCQiYa/6POan1a/f9HsxbcNhsse+bqBFXUzBDt8Xnibi
-         qGce4fdYovXckgOKtMI9rFnE4e1ZP6pR9xvGLIIcsHGQvaXCpYSz1tq4MSGpnsJo2XFu
-         B5PAbUZ/RW2h0cwPeCDqssLxNgKzGiFEv8CikCvCb+NBCLtjIghXvVI7ZSI2Ux13+XH9
-         iygblYqwJLz0u3VZyjVQI8qDa7ftROqQ/SROAdW6SHeXdGYvixBnp4LQC7k5hfdEBohT
-         RqKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vi0FXEb1SaKZF+1W08jxMvHKOZ5OFQySHO0NRC440W8=;
-        b=rb5ixPAe55NO4ly+NEJymHUVgcBYg7wkKt9kGWYij1I+Dy1FZYzcCV/xYK/4YrXiH8
-         Zt5veQviDr7wSpBjFPIElLDC2SiDkmXN8LDxeno0aj61tsuttH/IvYXNSpw3WQWr1N3t
-         i59w/vpJI7pt6emxXInyWL+iYLmr9F3xmhE+uUkyOIkiAG71hhCSnp+likx4iaoWM0ih
-         7S7bPH02h41xw0PuAHCdqvKQLgEfpzOGpfH2z2o3ogw4RnFtco7vcg+WQEE1gIB0vgmK
-         In6Uej4kMvHjUEsa76kxLAgsbNFH7/sFJ2qc+xe1DATxZ3RPg7qoo0pHsMi4iIXvHRpI
-         ksug==
-X-Gm-Message-State: APjAAAXQp5hUQn1oxhYRLbC/JaNoYhIJOgFIJrhVLpVKfhkIeh/zxCCH
-        pie8ASDMIQBN4FUg0ld76qcDwQ==
-X-Google-Smtp-Source: APXvYqyaVvcyf53tsacNRyq5/ftg7f45Rs1oRCuUUTHNz0pnl3bHqejbD4wPXM08nTvMBhQQvwJoOw==
-X-Received: by 2002:a05:600c:2945:: with SMTP id n5mr8532196wmd.80.1573215154142;
-        Fri, 08 Nov 2019 04:12:34 -0800 (PST)
-Received: from localhost (ip-94-113-220-175.net.upcbroadband.cz. [94.113.220.175])
-        by smtp.gmail.com with ESMTPSA id p10sm6917186wmi.44.2019.11.08.04.12.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Nov 2019 04:12:33 -0800 (PST)
-Date:   Fri, 8 Nov 2019 13:12:33 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Parav Pandit <parav@mellanox.com>, alex.williamson@redhat.com,
-        davem@davemloft.net, kvm@vger.kernel.org, netdev@vger.kernel.org,
-        saeedm@mellanox.com, kwankhede@nvidia.com, leon@kernel.org,
-        cohuck@redhat.com, jiri@mellanox.com, linux-rdma@vger.kernel.org,
-        Or Gerlitz <gerlitz.or@gmail.com>
-Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
-Message-ID: <20191108121233.GJ6990@nanopsycho>
+        id S1727257AbfKHNBW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Nov 2019 08:01:22 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:40552 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726806AbfKHNBW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 08:01:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1573218079;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bpI/ahUOZhhlk3+f5KkOU8l+IXeGkvFmZKFU1Kcz+SU=;
+        b=BzmjK4j08efztCA8u/8m8JzlzTcdlhJNIefy70Axm14qrDTZLXVIttKN1ocDRIPgSzwcfC
+        MtFpSwS/vPEl1FKfK31OOCTxbl0SbzIYS/gnN6vM6mxjTNqMFIH3x2VdT73RhwxEmH269x
+        UoTk/SCGDcc1dGyEdkfeMEhHGRGDdSk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-305-vsxWXVKxMWel8GNfGNrNXw-1; Fri, 08 Nov 2019 08:01:16 -0500
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 946F8477;
+        Fri,  8 Nov 2019 13:01:14 +0000 (UTC)
+Received: from gondolin (dhcp-192-218.str.redhat.com [10.33.192.218])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B1E865D6AE;
+        Fri,  8 Nov 2019 13:01:12 +0000 (UTC)
+Date:   Fri, 8 Nov 2019 14:01:10 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     alex.williamson@redhat.com, davem@davemloft.net,
+        kvm@vger.kernel.org, netdev@vger.kernel.org, saeedm@mellanox.com,
+        kwankhede@nvidia.com, leon@kernel.org, jiri@mellanox.com,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next 11/19] vfio/mdev: Improvise mdev life cycle and
+ parent removal scheme
+Message-ID: <20191108140110.6f24916b.cohuck@redhat.com>
+In-Reply-To: <20191107160834.21087-11-parav@mellanox.com>
 References: <20191107160448.20962-1-parav@mellanox.com>
- <20191107153234.0d735c1f@cakuba.netronome.com>
+        <20191107160834.21087-1-parav@mellanox.com>
+        <20191107160834.21087-11-parav@mellanox.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191107153234.0d735c1f@cakuba.netronome.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-MC-Unique: vsxWXVKxMWel8GNfGNrNXw-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Thu, Nov 07, 2019 at 09:32:34PM CET, jakub.kicinski@netronome.com wrote:
->On Thu,  7 Nov 2019 10:04:48 -0600, Parav Pandit wrote:
->> Mellanox sub function capability allows users to create several hundreds
->> of networking and/or rdma devices without depending on PCI SR-IOV support.
->
->You call the new port type "sub function" but the devlink port flavour
->is mdev.
->
->As I'm sure you remember you nacked my patches exposing NFP's PCI 
->sub functions which are just regions of the BAR without any mdev
->capability. Am I in the clear to repost those now? Jiri?
+On Thu,  7 Nov 2019 10:08:26 -0600
+Parav Pandit <parav@mellanox.com> wrote:
 
-Well question is, if it makes sense to have SFs without having them as
-mdev? I mean, we discussed the modelling thoroughtly and eventually we
-realized that in order to model this correctly, we need SFs on "a bus".
-Originally we were thinking about custom bus, but mdev is already there
-to handle this.
+I guess that should be s/Improvise/improve/ in $SUBJECT, no?
 
-Our SFs are also just regions of the BAR, same thing as you have.
+> mdev creation and removal sequence synchronization with parent device
+> removal is improved in [1].
+>=20
+> However such improvement using semaphore either limiting or leads to
+> complex locking scheme when used across multiple subsystem such as mdev
+> and devlink.
+>=20
+> When mdev devices are used with devlink eswitch device, following
+> deadlock sequence can be witnessed.
+>=20
+> mlx5_core 0000:06:00.0: E-Switch: Disable: mode(OFFLOADS), nvfs(4), activ=
+e vports(5)
+> mlx5_core 0000:06:00.0: MDEV: Unregistering
+>=20
+> WARNING: possible circular locking dependency detected
+> ------------------------------------------------------
+> devlink/42094 is trying to acquire lock:
+> 00000000eb6fb4c7 (&parent->unreg_sem){++++}, at: mdev_unregister_device+0=
+xf1/0x160 [mdev]
+> 012but task is already holding lock:
+> 00000000efcd208e (devlink_mutex){+.+.}, at: devlink_nl_pre_doit+0x1d/0x17=
+0
+> 012which lock already depends on the new lock.
+> 012the existing dependency chain (in reverse order) is:
+> 012-> #1 (devlink_mutex){+.+.}:
+>       lock_acquire+0xbd/0x1a0
+>       __mutex_lock+0x84/0x8b0
+>       devlink_unregister+0x17/0x60
+>       mlx5_sf_unload+0x21/0x60 [mlx5_core]
+>       mdev_remove+0x1e/0x40 [mdev]
+>       device_release_driver_internal+0xdc/0x1a0
+>       bus_remove_device+0xef/0x160
+>       device_del+0x163/0x360
+>       mdev_device_remove_common+0x1e/0xa0 [mdev]
+>       mdev_device_remove+0x8d/0xd0 [mdev]
+>       remove_store+0x71/0x90 [mdev]
+>       kernfs_fop_write+0x113/0x1a0
+>       vfs_write+0xad/0x1b0
+>       ksys_write+0x5c/0xd0
+>       do_syscall_64+0x5a/0x270
+>       entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 012-> #0 (&parent->unreg_sem){++++}:
+>       check_prev_add+0xb0/0x810
+>       __lock_acquire+0xd4b/0x1090
+>       lock_acquire+0xbd/0x1a0
+>       down_write+0x33/0x70
+>       mdev_unregister_device+0xf1/0x160 [mdev]
+>       esw_offloads_disable+0xe/0x70 [mlx5_core]
+>       mlx5_eswitch_disable+0x149/0x190 [mlx5_core]
+>       mlx5_devlink_eswitch_mode_set+0xd0/0x180 [mlx5_core]
+>       devlink_nl_cmd_eswitch_set_doit+0x3e/0xb0
+>       genl_family_rcv_msg+0x3a2/0x420
+>       genl_rcv_msg+0x47/0x90
+>       netlink_rcv_skb+0xc9/0x100
+>       genl_rcv+0x24/0x40
+>       netlink_unicast+0x179/0x220
+>       netlink_sendmsg+0x2f6/0x3f0
+>       sock_sendmsg+0x30/0x40
+>       __sys_sendto+0xdc/0x160
+>       __x64_sys_sendto+0x24/0x30
+>       do_syscall_64+0x5a/0x270
+>       entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> Possible unsafe locking scenario:
+>       CPU0                    CPU1
+>       ----                    ----
+>  lock(devlink_mutex);
+>                               lock(&parent->unreg_sem);
+>                               lock(devlink_mutex);
+>  lock(&parent->unreg_sem);
+> 012 *** DEADLOCK ***
+> 3 locks held by devlink/42094:
+> 0: 0000000097a0c4aa (cb_lock){++++}, at: genl_rcv+0x15/0x40
+> 1: 00000000baf61ad2 (genl_mutex){+.+.}, at: genl_rcv_msg+0x66/0x90
+> 2: 00000000efcd208e (devlink_mutex){+.+.}, at: devlink_nl_pre_doit+0x1d/0=
+x170
+>=20
+> To summarize,
+> mdev_remove()
+>   read locks -> unreg_sem [ lock-A ]
+>   [..]
+>   devlink_unregister();
+>     mutex lock devlink_mutex [ lock-B ]
+>=20
+> devlink eswitch->switchdev-legacy mode change.
+>  devlink_nl_cmd_eswitch_set_doit()
+>    mutex lock devlink_mutex [ lock-B ]
+>    mdev_unregister_device()
+>    write locks -> unreg_sem [ lock-A]
 
-Can't you do the same for nfp SFs?
-Then the "mdev" flavour is enough for all.
+So, this problem starts to pop up once you hook up that devlink stuff
+with the mdev stuff, and previous users of mdev just did not have a
+locking scheme similar to devlink?
 
+>=20
+> Hence, instead of using semaphore, such synchronization is achieved
+> using srcu which is more flexible that eliminates nested locking.
+>=20
+> SRCU based solution is already proposed before at [2].
+>=20
+> [1] commit 5715c4dd66a3 ("vfio/mdev: Synchronize device create/remove wit=
+h parent removal")
+> [2] https://lore.kernel.org/patchwork/patch/1055254/
 
->
->> Overview:
->> ---------
->> Mellanox ConnectX sub functions are exposed to user as a mediated
->> device (mdev) [2] as discussed in RFC [3] and further during
->> netdevconf0x13 at [4].
->> 
->> mlx5 mediated device (mdev) enables users to create multiple netdevices
->> and/or RDMA devices from single PCI function.
->> 
->> Each mdev maps to a mlx5 sub function.
->> mlx5 sub function is similar to PCI VF. However it doesn't have its own
->> PCI function and MSI-X vectors.
->> 
->> mlx5 mdevs share common PCI resources such as PCI BAR region,
->> MSI-X interrupts.
->> 
->> Each mdev has its own window in the PCI BAR region, which is
->> accessible only to that mdev and applications using it.
->> 
->> Each mlx5 sub function has its own resource namespace for RDMA resources.
->> 
->> mdevs are supported when eswitch mode of the devlink instance
->> is in switchdev mode described in devlink documentation [5].
->
->So presumably the mdevs don't spawn their own devlink instance today,
->but once mapped via VIRTIO to a VM they will create one?
+I don't quite recall the discussion there... is this a rework of a
+patch you proposed before? Confused.
 
-I don't think it is needed for anything. Maybe one day if there is a
-need to create devlink instance for VF or SF, we can add it. But
-currently, I don't see the need.
+>=20
+> Signed-off-by: Parav Pandit <parav@mellanox.com>
+> ---
+>  drivers/vfio/mdev/mdev_core.c    | 56 +++++++++++++++++++++++---------
+>  drivers/vfio/mdev/mdev_private.h |  3 +-
+>  2 files changed, 43 insertions(+), 16 deletions(-)
 
+(...)
 
->
->It could be useful to specify.
->
->> Network side:
->> - By default the netdevice and the rdma device of mlx5 mdev cannot send or
->> receive any packets over the network or to any other mlx5 mdev.
->
->Does this mean the frames don't fall back to the repr by default?
+> @@ -207,6 +207,7 @@ int mdev_register_device(struct device *dev, const st=
+ruct mdev_parent_ops *ops)
+>  =09=09dev_warn(dev, "Failed to create compatibility class link\n");
+> =20
+>  =09list_add(&parent->next, &parent_list);
+> +=09rcu_assign_pointer(parent->self, parent);
+>  =09mutex_unlock(&parent_list_lock);
+> =20
+>  =09dev_info(dev, "MDEV: Registered\n");
+> @@ -250,14 +251,29 @@ void mdev_unregister_device(struct device *dev)
+>  =09list_del(&parent->next);
+>  =09mutex_unlock(&parent_list_lock);
+> =20
+> -=09down_write(&parent->unreg_sem);
+> +=09/*
+> +=09 * Publish that this mdev parent is unregistering. So any new
+> +=09 * create/remove cannot start on this parent anymore by user.
+> +=09 */
+> +=09rcu_assign_pointer(parent->self, NULL);
+> +
+> +=09/*
+> +=09 * Wait for any active create() or remove() mdev ops on the parent
+> +=09 * to complete.
+> +=09 */
+> +=09synchronize_srcu(&parent->unreg_srcu);
+> +
+> +=09/*
+> +=09 * At this point it is confirmed that any pending user initiated
+> +=09 * create or remove callbacks accessing the parent are completed.
+> +=09 * It is safe to remove the parent now.
+> +=09 */
 
-That would be the sane default. If I up the representor, I should see
-packets coming in from SF/VF and I should be able to send packets back.
+So, you're putting an srcu-handled self reference there and use that as
+an indication whether the parent is unregistering?
+
+> =20
+>  =09class_compat_remove_link(mdev_bus_compat_class, dev, NULL);
+> =20
+>  =09device_for_each_child(dev, NULL, mdev_device_remove_cb);
+> =20
+>  =09parent_remove_sysfs_files(parent);
+> -=09up_write(&parent->unreg_sem);
+> =20
+>  =09mdev_put_parent(parent);
+> =20
+
