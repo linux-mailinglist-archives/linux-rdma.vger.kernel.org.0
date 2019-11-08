@@ -2,78 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF931F4D81
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 14:46:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9B8F4DF9
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 15:22:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbfKHNq2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Nov 2019 08:46:28 -0500
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:58386 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726307AbfKHNq2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 08:46:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1573220787;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=abFJLQvhwwMDqvaF1flYGUAxUh2Wuo8PpGQBX/mlRlI=;
-        b=hHdWqQFHLwKXW5fRIhYV0zVLXjgMgtVxE5jMpdXcFdcaQdnQ2VD4PneZxPmciq0QKKSzLy
-        zwdqnt6y9CnHvK0H/3EmMOR0Ww6h48hb58uVrrl0VrhTrB9uvyuoEPboE6fuxFPMtK5wnY
-        rLwucNFzCp43B9Yc/LJ6fdc/b7QYcf8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-366-iIZk8fUgO9iSyGwXaeeOog-1; Fri, 08 Nov 2019 08:46:24 -0500
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E28E1800D7B;
-        Fri,  8 Nov 2019 13:46:22 +0000 (UTC)
-Received: from gondolin (dhcp-192-218.str.redhat.com [10.33.192.218])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 76C5161F36;
-        Fri,  8 Nov 2019 13:46:17 +0000 (UTC)
-Date:   Fri, 8 Nov 2019 14:46:15 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Parav Pandit <parav@mellanox.com>
-Cc:     alex.williamson@redhat.com, davem@davemloft.net,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, saeedm@mellanox.com,
-        kwankhede@nvidia.com, leon@kernel.org, jiri@mellanox.com,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 19/19] mtty: Optionally support mtty alias
-Message-ID: <20191108144615.3646e9bb.cohuck@redhat.com>
-In-Reply-To: <20191107160834.21087-19-parav@mellanox.com>
-References: <20191107160448.20962-1-parav@mellanox.com>
-        <20191107160834.21087-1-parav@mellanox.com>
-        <20191107160834.21087-19-parav@mellanox.com>
-Organization: Red Hat GmbH
+        id S1726095AbfKHOWA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Nov 2019 09:22:00 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:35447 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725995AbfKHOWA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 09:22:00 -0500
+Received: by mail-qk1-f196.google.com with SMTP id i19so5409574qki.2
+        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2019 06:21:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WjO2btyA4fH/g01Vok9AFfjtQqDDRIYayaN738hzydg=;
+        b=L1Ag7UQyrDVfHd2FeVUoTHv/zhF7Z4cMIA0bf+T4Oen6FJb7r7d3qnhjca2k3KY1qp
+         sHHI90Wqfrejml4lXzY/AZkPkINN/GFu+OLu98CSiAtijt4StXdHXhosPt3HPJYvx4RB
+         p25rhzxh5qaUvg0uXFwqd4iSLJGwCUvIirhfOvZhi7iAD2kvNP4mPsTTnJ5glzRgm7FH
+         fpLfmRNBzYToRs0ST1NjJ2Uq8L8iGmrAsVN5u0XFtVSyruanLHa9m7CkJXye7vEqyGZY
+         IDHmZsK1QD6b8Dk1yfzQGYMOUXx7erX62SSJSNowr8OxiLaldcaaBWjL7WGNAU+T3PPM
+         V2zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WjO2btyA4fH/g01Vok9AFfjtQqDDRIYayaN738hzydg=;
+        b=WVQdrxZTcTPh6Tti5Y4C++FIEoA58FGrgM31NyLgxz4IzYvDw98vRWqcdaKFXqorwp
+         TgYb3Wfv+27iD6qHILlUTJq7f6B4bmFDHAdPI5LsTw9p/9mTD28FQXtOGCorZLAW8yQz
+         mi9el5U3rIFPXHL9n45dfMlzYdaTphZyIcplhFNbXB9BbQ2/BeNRsUBeLsqDVZr+Xbd9
+         W0kWVkr5+YrEGod3+BjYmmMR8/O3z+Qvsb1Xs+Le3Mjw6SfWucyh0Ms+xxfTPx8oQp8F
+         K1xkiRNVMYcoMobDf4zRnTzuW/B6V0Hx7jV+daUUW3fXhsHiGekAAdbthXMjC05OBvSc
+         IgVg==
+X-Gm-Message-State: APjAAAWJzaLZgk1FgXIeerg42UoxWavZUUZydYlDqa7eWtIhTQl86a6F
+        53AGp2azBvfx4lYR82InvUEHE8pAGY8=
+X-Google-Smtp-Source: APXvYqwGougD0MyvL6qGKLiPVNSUJfg8RsdKSUQAddb1iaS6XJ69j5cqR8gjTAV+x5KbIOjxIoG3UQ==
+X-Received: by 2002:a37:a00f:: with SMTP id j15mr9322047qke.103.1573222919242;
+        Fri, 08 Nov 2019 06:21:59 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id w69sm2871249qkb.26.2019.11.08.06.21.58
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 08 Nov 2019 06:21:58 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iT59B-0003CS-W8; Fri, 08 Nov 2019 10:21:58 -0400
+Date:   Fri, 8 Nov 2019 10:21:57 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v5] IB/core: Trace points for diagnosing completion queue
+ issues
+Message-ID: <20191108142157.GB10956@ziepe.ca>
+References: <20191107205239.23193.69879.stgit@manet.1015granger.net>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-MC-Unique: iIZk8fUgO9iSyGwXaeeOog-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191107205239.23193.69879.stgit@manet.1015granger.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu,  7 Nov 2019 10:08:34 -0600
-Parav Pandit <parav@mellanox.com> wrote:
+On Thu, Nov 07, 2019 at 03:54:34PM -0500, Chuck Lever wrote:
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> Reviewed-by: Parav Pandit <parav@mellanox.com>
+>  drivers/infiniband/core/Makefile |    2 
+>  drivers/infiniband/core/cq.c     |   36 +++++
+>  drivers/infiniband/core/trace.c  |   14 ++
+>  include/rdma/ib_verbs.h          |   11 +-
+>  include/trace/events/rdma_core.h |  251 ++++++++++++++++++++++++++++++++++++++
+>  5 files changed, 307 insertions(+), 7 deletions(-)
+>  create mode 100644 drivers/infiniband/core/trace.c
+>  create mode 100644 include/trace/events/rdma_core.h
+> 
+> Changes since v4:
+> - Removed __ib_poll_cq, uninlined ib_poll_cq
 
-> Provide a module parameter to set alias length to optionally generate
-> mdev alias.
->=20
-> Example to request mdev alias.
-> $ modprobe mtty alias_length=3D12
->=20
-> Make use of mtty_alias() API when alias_length module parameter is set.
->=20
-> Signed-off-by: Parav Pandit <parav@mellanox.com>
-> ---
->  samples/vfio-mdev/mtty.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+Oh I don't think uninlining is such a good idea, isn't this rather
+performance sensitive?
 
-If you already have code using the alias interface, you probably don't
-need to add it to the sample driver here. Especially as the alias looks
-kind of pointless here.
-
+Jason
