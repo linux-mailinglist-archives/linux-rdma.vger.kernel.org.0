@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 04511F462E
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 12:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2724F48E1
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Nov 2019 12:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388582AbfKHLkW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Nov 2019 06:40:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53306 "EHLO mail.kernel.org"
+        id S1733257AbfKHL71 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Nov 2019 06:59:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732112AbfKHLkV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 8 Nov 2019 06:40:21 -0500
+        id S2389081AbfKHLoM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 8 Nov 2019 06:44:12 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F27221D7F;
-        Fri,  8 Nov 2019 11:40:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5FDF21D82;
+        Fri,  8 Nov 2019 11:44:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573213220;
-        bh=SbUMUnJim/VLR30Kb/P0spszcZpvqXA7aR6Fp6ri25M=;
+        s=default; t=1573213451;
+        bh=5y7jySM1EY7FEWm+rSzD2iseCEIB0/ban7fS0k4+TEA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x1lIGmfqshZUnBzpx1fQl6v/7QFqCftNA0hGDgev0l5afRjWjU3rlTBoVWTrbQ3pg
-         fA8WGWM+sk/FR+lz5yqnJ3OfJHCQB5Mki5a1lrOKrxVfoc5ziLJu5cadSDxxNiIBcH
-         sPAvoDQszeZJoVSYSfYw9xPCdzcrysBr7t6MqMOg=
+        b=xB5ZKhuEwLL3DvBsRxoo7BG7So4ogzWgNAd/1nvlmBepbMEsmy85UeJ6/rT7zR0Or
+         aq4e7TPHLk8Q1hpBKQCECp5/wgkL815betMAZbXnk+QhKrIVtYS4t2dpz+I7cPPGk/
+         dOeH0jgDa4HbxfZGudeiGcw09kJUNl9xaosq0Q00=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Muhammad Sammar <muhammads@mellanox.com>,
@@ -30,12 +30,12 @@ Cc:     Muhammad Sammar <muhammads@mellanox.com>,
         Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 097/205] IB/ipoib: Ensure that MTU isn't less than minimum permitted
-Date:   Fri,  8 Nov 2019 06:36:04 -0500
-Message-Id: <20191108113752.12502-97-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 043/103] IB/ipoib: Ensure that MTU isn't less than minimum permitted
+Date:   Fri,  8 Nov 2019 06:42:08 -0500
+Message-Id: <20191108114310.14363-43-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191108113752.12502-1-sashal@kernel.org>
-References: <20191108113752.12502-1-sashal@kernel.org>
+In-Reply-To: <20191108114310.14363-1-sashal@kernel.org>
+References: <20191108114310.14363-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -65,10 +65,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-index 78dd36daac00e..d8cb5bbe6eb58 100644
+index 1a93d3d58c8a4..caae4bfab950d 100644
 --- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
 +++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-@@ -243,7 +243,8 @@ static int ipoib_change_mtu(struct net_device *dev, int new_mtu)
+@@ -249,7 +249,8 @@ static int ipoib_change_mtu(struct net_device *dev, int new_mtu)
  		return 0;
  	}
  
