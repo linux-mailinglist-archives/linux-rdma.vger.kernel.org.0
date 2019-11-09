@@ -2,121 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 90862F5C93
-	for <lists+linux-rdma@lfdr.de>; Sat,  9 Nov 2019 01:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF73F5CE2
+	for <lists+linux-rdma@lfdr.de>; Sat,  9 Nov 2019 03:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726133AbfKIA5K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Nov 2019 19:57:10 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:33716 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725895AbfKIA5K (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 19:57:10 -0500
-Received: by mail-qt1-f193.google.com with SMTP id y39so8753964qty.0
-        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2019 16:57:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VuQrMxWBxO6EoV/i1I70FM4gejpCWbnlTsIzbiitkKw=;
-        b=h4qr1KxZ3XNnC+jXtuxPRFXMOnak60RHW2iWRXsgbjeBZc34SAWLDFquD64WYuwycq
-         8Ke00fCQS+xYkvq/VMGYtZTkeq5C4rTFwHUU+/SLtom3DqZfAHKXX9shV4dCILHI9TJk
-         VyoGcxT9dDwW9xgkATwDHK0ZgCGToxBG2B1B4EtFuV71F4jOUEz3PPn+Zma7YOUq5poP
-         1HuXFvs3ig2p+BM3KW15n8w+bTqiX9VIcpsl8rSRb6Q80MNeRhNGBOoYOLXqcyK4Gsk4
-         WhnoDW7jwRoaElJiJonLVlB9k4TKTPLK1RMyobAWgnuZgV/hwz2ekxqwKxk3L5bQ3X2V
-         EVNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VuQrMxWBxO6EoV/i1I70FM4gejpCWbnlTsIzbiitkKw=;
-        b=f/kHfs2SGqRXQ64o/ai9ccLdAKS7PrtN6zz3E/tEBf8gD8JG1c5yQKxgppFYpEivGc
-         zJu4q+ZbQNqXKoV7XDXytOeBcPhxUfqDddyOawom3cBq87HPEWKe6fE2pGcMEicWq0fp
-         oCyR+IO+dkrSzxAz6WPVMAdhR24T7PWJ4OrZB1hEW9jfH0Jr8AHs/gNluNz37FeNIg1Z
-         PZ3UVzA1C54lzIeMlz4n+wPN9VdhR9B8lipDV6mvwayIXzosZTSZ6aZxWYXcRju99pMg
-         xa0FYzGnZmhP+IwBe6mjBpADlMDQxKw/VyUy0CEeaxqgdAkCFZgLI9lBSVZ0CGHfIpue
-         vMWg==
-X-Gm-Message-State: APjAAAXa20s23/L9+Jpl9K42hlv4XQTfn9MKthC2YZPg6ziXH70aC84t
-        7vGtWrdAIf8fHjTJ6iXt/uL41g==
-X-Google-Smtp-Source: APXvYqxs5fv/Czk0u6Tq8dTd/u4S8g8hDvWuHaY0HMCDHty7xYz8WVMHbxQhmupy/IfwHd7AiQeq5Q==
-X-Received: by 2002:ac8:608:: with SMTP id d8mr14458157qth.258.1573261029435;
-        Fri, 08 Nov 2019 16:57:09 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id u9sm4353467qke.50.2019.11.08.16.57.08
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Nov 2019 16:57:08 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iTF3s-0001G7-Bx; Fri, 08 Nov 2019 20:57:08 -0400
-Date:   Fri, 8 Nov 2019 20:57:08 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Parav Pandit <parav@mellanox.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        David M <david.m.ertman@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Or Gerlitz <gerlitz.or@gmail.com>,
-        "Jason Wang (jasowang@redhat.com)" <jasowang@redhat.com>
-Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
-Message-ID: <20191109005708.GC31761@ziepe.ca>
-References: <20191107153234.0d735c1f@cakuba.netronome.com>
- <20191108121233.GJ6990@nanopsycho>
- <20191108144054.GC10956@ziepe.ca>
- <AM0PR05MB486658D1D2A4F3999ED95D45D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <20191108111238.578f44f1@cakuba>
- <20191108201253.GE10956@ziepe.ca>
- <20191108133435.6dcc80bd@x1.home>
- <20191108210545.GG10956@ziepe.ca>
- <20191108145210.7ad6351c@x1.home>
- <AM0PR05MB4866444210721BC4EE775D27D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+        id S1726099AbfKICEk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Nov 2019 21:04:40 -0500
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:16412 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726227AbfKICEj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 21:04:39 -0500
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dc61e7a0002>; Fri, 08 Nov 2019 18:03:38 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 08 Nov 2019 18:04:39 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Fri, 08 Nov 2019 18:04:39 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 9 Nov
+ 2019 02:04:35 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Sat, 9 Nov 2019 02:04:35 +0000
+Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5dc61eb30000>; Fri, 08 Nov 2019 18:04:35 -0800
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Ira Weiny <ira.weiny@intel.com>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH 0/1] IB/umem: use get_user_pages_fast() to pin DMA pages
+Date:   Fri, 8 Nov 2019 18:04:33 -0800
+Message-ID: <20191109020434.389855-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM0PR05MB4866444210721BC4EE775D27D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1573265018; bh=OqJk4HwxLFuiZxdO7FdtWiG3lR2+WoDbxn35lzBPFEw=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=YOCyGKxWMrdneUTApO1JO0AD8WOGde1bL/i2yAwWv9uB/2L10471+O5wB9x8Z0fw/
+         TpmNgOUBtwduig9BYJ5LfK9tDpHgLYbDqeegbLVsY4krqNGwM7Q4uvSibNlFQdzjQ/
+         CZ6bRrmWwfOzM3KDmnDSpJm74cIlI7Nm89IaJa8SnX46RBO0WvJ9dlG0squYSR4AGT
+         Fb4HYE4t/Y+1VfG8lpweNGrsEL2MvOnQ/oHyThXUXDsj+qGbS48d21+vj55/jo+Os8
+         pAc5nVyWGSsQT8FiD75YWNFQvVRFdiDwFZoHaFYiIE9lHwIvmu8QXlWwvsfL4ixkj9
+         LqCoDBxhGIvCw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 08, 2019 at 10:48:31PM +0000, Parav Pandit wrote:
-> We should be creating 3 different buses, instead of mdev bus being de-multiplexer of that?
-> 
-> Hence, depending the device flavour specified, create such device on right bus?
-> 
-> For example,
-> $ devlink create subdev pci/0000:05:00.0 flavour virtio name foo subdev_id 1
-> $ devlink create subdev pci/0000:05:00.0 flavour mdev <uuid> subdev_id 2
-> $ devlink create subdev pci/0000:05:00.0 flavour mlx5 id 1 subdev_id 3
+Hi Jason, Andrew,
 
-I like the idea of specifying what kind of interface you want at sub
-device creation time. It fits the driver model pretty well and doesn't
-require abusing the vfio mdev for binding to a netdev driver.
+Jason: Here is the change to get_user_pages_fast(), that you requested
+during the review of "mm/gup: track dma-pinned pages: FOLL_PIN,
+FOLL_LONGTERM" [1].
 
-> $ devlink subdev pci/0000:05:00.0/<subdev_id> config <params>
-> $ echo <respective_device_id> <sysfs_path>/bind
+This is a stand-alone patch that applies to today's 5.4.0-rc6 linux.git.
 
-Is explicit binding really needed? If you specify a vfio flavour why
-shouldn't the vfio driver autoload and bind to it right away? That is
-kind of the point of the driver model...
+If anyone could please provide any run-time testing (and of course,
+Reviewed-by's), that would be huge. I've compiled and run it, but
+bpftrace tells me (as I already knew) that my current anemic IB setup
+is not actually exercising this code path.
 
-(kind of related, but I don't get while all that GUID and lifecycle
-stuff in mdev should apply for something like a SF)
+Andrew: unless instructed otherwise, I plan to also re-post this as part
+of the next (v3) version of [1], and hopefully have the whole series go
+through your tree. That would avoid merge conflicts, and as I understand
+it, there is no particular urgency for this patch, so we might as well
+do it the easy way.
 
-> Implement power management callbacks also on all above 3 buses?
-> Abstract out mlx5_bus into more generic virtual bus (vdev bus?) so
-> that multiple vendors can reuse?
 
-In this specific case, why does the SF in mlx5 mode even need a bus?
-Is it only because of devlink? That would be unfortunate
+John Hubbard (1):
+  IB/umem: use get_user_pages_fast() to pin DMA pages
 
-Jason
+ drivers/infiniband/core/umem.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
+
+--=20
+2.24.0
+
