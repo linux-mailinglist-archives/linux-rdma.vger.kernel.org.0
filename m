@@ -2,126 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F01CF5E77
-	for <lists+linux-rdma@lfdr.de>; Sat,  9 Nov 2019 11:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CCAF5EA9
+	for <lists+linux-rdma@lfdr.de>; Sat,  9 Nov 2019 12:18:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726301AbfKIKcF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 9 Nov 2019 05:32:05 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6174 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726149AbfKIKcE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 9 Nov 2019 05:32:04 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 65CE938C63BD73A6E770;
-        Sat,  9 Nov 2019 18:32:03 +0800 (CST)
-Received: from [127.0.0.1] (10.74.223.196) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.439.0; Sat, 9 Nov 2019
- 18:31:54 +0800
-Subject: Re: [PATCH for-next 1/2] RDMA/hns: Add the workqueue framework for
- flush cqe handler
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <dledford@redhat.com>, <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1572255945-20297-1-git-send-email-liuyixian@huawei.com>
- <1572255945-20297-2-git-send-email-liuyixian@huawei.com>
- <20191106204013.GA26459@ziepe.ca>
- <e2e0f478-a057-c297-7e1e-d9b09eee2986@huawei.com>
- <20191107182850.GB6730@ziepe.ca>
-From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
-Message-ID: <0bbc16e9-0bf0-76f3-f9c8-1bd9cd8dcdff@huawei.com>
-Date:   Sat, 9 Nov 2019 18:30:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.1
+        id S1726424AbfKILSO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 9 Nov 2019 06:18:14 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:44441 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726143AbfKILSO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 9 Nov 2019 06:18:14 -0500
+Received: by mail-wr1-f65.google.com with SMTP id f2so9720967wrs.11
+        for <linux-rdma@vger.kernel.org>; Sat, 09 Nov 2019 03:18:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lV8hsrpV1/CMqW5H35jpAhibR2n/EfxU4U4hpbJbzmA=;
+        b=lefa59EPd0gxstPKf3O9h6NkqIxDk7oRkQwnqI1H4BQt2PsIKG3RCECBKO92Z/sZU5
+         vv+bRD5U0ECT/rqoyGJt6wNABR5da/ke0ZpldJjobVbcfcBeDNZXOOyP+13aqIuC16eT
+         dZrUyfJdDOUHV7W6qIU6HASKg3txt1bfbYiaXgBeSMfVkESmbSP3iJmBeeBVc8aooBMh
+         TCWE1l468lvYG0N32PPoXqB/G9f14ytM3Nhhv/zPZzz4GFo0Nkh7cFc/xZUpp+oAmfGq
+         EfwdO5o7qdZVP4fzKDLBm7j50S2WxXxVz7ztX3AjgEbCgKd23S3WeFiUvrHrk7p47ubd
+         xJCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lV8hsrpV1/CMqW5H35jpAhibR2n/EfxU4U4hpbJbzmA=;
+        b=KzKG6J4hB9WCyIHK56aKBeSoVR5pyE6EV4TVxp3WAqZUqE4A0W05ItgKtuhRFWMAeT
+         upm+42IyTAxyo3foTuojkf97eeJ3edkAOpi2XMdRite6UUa6HqERj3ZYt2889/aeuJ+Z
+         nBjEdhdWnLqqHm+Gv6zjFuUAvokKrfc1rMycriCEJtqU6b/fNmQHcbNsLs3hfTgN7Qm3
+         EYD14/dKkowRNyQiNy/7DeAChcRPIz5E79ceCPw0iHwAK6WFKFQonTk7GQLD6Y/pOF20
+         Yf/mYbf4GV8cA69+PrgD6AAY44c4Cr+tnOsHrwiBlfJThLEjsSJOU2Rs9Ui2k4IMY/yk
+         Ykog==
+X-Gm-Message-State: APjAAAW37treOWDiy7+bT9SPTStICGlme337q1fidtMZEQIt3gaQQ+QL
+        q/UNrp1pRVFRMNJAapPWfkx6bA==
+X-Google-Smtp-Source: APXvYqxEEl878jIf6IfioC+KhBx68+cuPbduRA51yoF2RJH6ODhB0oWi8jy8ob4tQie1H4BhbuTlHg==
+X-Received: by 2002:adf:eb41:: with SMTP id u1mr12329876wrn.89.1573298291131;
+        Sat, 09 Nov 2019 03:18:11 -0800 (PST)
+Received: from localhost (ip-94-113-220-175.net.upcbroadband.cz. [94.113.220.175])
+        by smtp.gmail.com with ESMTPSA id 62sm9593721wre.38.2019.11.09.03.18.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Nov 2019 03:18:10 -0800 (PST)
+Date:   Sat, 9 Nov 2019 12:18:09 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Parav Pandit <parav@mellanox.com>,
+        David M <david.m.ertman@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Or Gerlitz <gerlitz.or@gmail.com>
+Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
+Message-ID: <20191109111809.GA9565@nanopsycho>
+References: <20191107160448.20962-1-parav@mellanox.com>
+ <20191107153234.0d735c1f@cakuba.netronome.com>
+ <20191108121233.GJ6990@nanopsycho>
+ <20191108144054.GC10956@ziepe.ca>
+ <AM0PR05MB486658D1D2A4F3999ED95D45D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <20191108111238.578f44f1@cakuba>
+ <20191108201253.GE10956@ziepe.ca>
+ <20191108134559.42fbceff@cakuba>
+ <20191109004426.GB31761@ziepe.ca>
+ <20191109084659.GB1289838@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20191107182850.GB6730@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.223.196]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191109084659.GB1289838@kroah.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Sat, Nov 09, 2019 at 09:46:59AM CET, gregkh@linuxfoundation.org wrote:
+>On Fri, Nov 08, 2019 at 08:44:26PM -0400, Jason Gunthorpe wrote:
+>> There has been some lack of clarity on what the ?? should be. People
+>> have proposed platform and MFD, and those seem to be no-goes. So, it
+>> looks like ?? will be a mlx5_driver on a mlx5_bus, and Intel will use
+>> an ice_driver on a ice_bus, ditto for cxgb4, if I understand Greg's
+>> guidance.
+>
+>Yes, that is the only way it can work because you really are just
+>sharing a single PCI device in a vendor-specific way, and they all need
+>to get along with each one properly for that vendor-specific way.  So
+>each vendor needs its own "bus" to be able to work out things properly,
+>I doubt you can make this more generic than that easily.
+>
+>> Though I'm wondering if we should have a 'multi_subsystem_device' that
+>> was really just about passing a 'void *core_handle' from the 'core'
+>> (ie the bus) to the driver (ie RDMA, netdev, etc). 
+>
+>Ick, no.
+>
+>> It seems weakly defined, but also exactly what every driver doing this
+>> needs.. It is basically what this series is abusing mdev to accomplish.
+>
+>What is so hard about writing a bus?  Last I tried it was just a few
+>hundred lines of code, if that.  I know it's not the easiest in places,
+>but we have loads of examples to crib from.  If you have
+>problems/questions, just ask!
+>
+>Or, worst case, you just do what I asked in this thread somewhere, and
+>write a "virtual bus" where you just create devices and bind them to the
+>driver before registering and away you go.  No auto-loading needed (or
+>possible), but then you have a generic layer that everyone can use if
+>they want to (but you loose some functionality at the expense of
+>generic code.)
+
+Pardon my ignorance, just to be clear: You suggest to have
+one-virtual-bus-per-driver or rather some common "xbus" to serve this
+purpose for all of them, right?
+If so, isn't that a bit ugly to have a bus in every driver? I wonder if
+there can be some abstraction found.
 
 
-On 2019/11/8 2:28, Jason Gunthorpe wrote:
-> On Thu, Nov 07, 2019 at 08:48:25PM +0800, Liuyixian (Eason) wrote:
->>
->>
->> On 2019/11/7 4:40, Jason Gunthorpe wrote:
->>> On Mon, Oct 28, 2019 at 05:45:44PM +0800, Yixian Liu wrote:
->>>> @@ -1998,6 +2000,17 @@ static int hns_roce_v2_init(struct hns_roce_dev *hr_dev)
->>>>  		}
->>>>  	}
->>>>  
->>>> +	snprintf(workq_name, HNS_ROCE_WORKQ_NAME_LEN - 1,
->>>> +		 "hns_roce_%d_flush_wq", device_id);
->>>> +	device_id++;
->>>> +
->>>> +	hr_dev->flush_workq = alloc_workqueue(workq_name, WQ_HIGHPRI, 0);
->>>> +	if (!hr_dev->flush_workq) {
->>>
->>> Why is this so time critical?
->>
->> Hi Jason,
->>
->> I am not quite sure whether you concerned with the flag "WQ_HIGHPRI" or
->> why WQ is created in hns_roce_v2_init.
-> 
-> Yes, why do you need a dedicated HIGHPRI work queue.
+>
+>Are these constant long email threads a way that people are just trying
+>to get me to do this work for them?  Because if it is, it's working...
 
-As hip08 hardware needs driver to help to do flush operation, I am not
-sure the application can perceive that qp state is error without receiving
-flush cqe if work in WQ is not scheduled in time.
+Maybe they are just confused, like I am :)
 
-> 
->> If it is WQ_HIGHPRI, yes, it is much better to implement flush operation
->> ASAP to help generating flushed cqe as ULP may poll cqe urgently. If you
->> concerned allocation stage, as flush operation is support for hip08 only,
->> there is no other place proper than here I think.
-> 
-> Why? This is only something that happens in error cases.
 
-Yes, maybe we can move out WQ_HIGHPRI flag safely, will fix it in v2.
-
-> 
->>> Why don't you do this from hns_roce_irq_work_handle() ?
->>
->> As described in the cover letter, here we used CMWQ (concurrency management workqueue)
->> to make sure that flush operation can be implemented ASAP. Current irq workqueue is
->> a singlethread workqueue, which may delay the flush too long when the system is heavy.
->>
->> Do you mean we can change irq workqueue to CMWQ to put flush work into it?
-> 
-> As far as I could tell the only thing the triggered the work to run
-> was some variable which was only set in another work queue 'hns_roce_irq_work_handle()'
-
-OK, thanks. I will consider you suggestion and reuse the irq workqueue.
-
->  
->>>> +}
->>>> +
->>>> +void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
->>>> +{
->>>> +	struct hns_roce_flush_work *flush_work;
->>>> +
->>>> +	flush_work = kzalloc(sizeof(struct hns_roce_flush_work), GFP_ATOMIC);
->>>> +	if (!flush_work)
->>>> +		return;
->>>
->>> Don't do things that can fail here
->>
->> Do you mean that as "GFP_ATOMIC" is used, the if branch can be deleted?
-> 
-> No, don't do allocations at all if you can't allow them to fail.
-
-OK, thanks! I will initialize this structure at compile time.
-
-> 
-> Jason
-> 
-> .
-> 
-
+>
+>thanks,
+>
+>greg k-h
