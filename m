@@ -2,188 +2,173 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2EAF5BFE
-	for <lists+linux-rdma@lfdr.de>; Sat,  9 Nov 2019 00:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3D1F5C37
+	for <lists+linux-rdma@lfdr.de>; Sat,  9 Nov 2019 01:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726804AbfKHXpi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Nov 2019 18:45:38 -0500
-Received: from mail-eopbgr70072.outbound.protection.outlook.com ([40.107.7.72]:11398
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726640AbfKHXpi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 8 Nov 2019 18:45:38 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ONeOfssIQPjBz8ex3Ai8MeSH9yeKeoTIIDjjpAF5VKl4jUIo1vnhzY9YK7PA9HdJGCa2V2TrUjKQB/1wNIOp3Qp+m/jpMxxHLKSMxvMs67/QDsyDVsaRMTpbDMayWbpxQhjmbSDvjUzraB75bq9Tv9xnEfOdtUva2nzuUcQLxHd3Yaw2GSHEhZzxqk4R+ZRi8pRIP6gFCg6s72Cmo/y/AwSvp3XhnJ+MuQeZJcUryQq/NXTbea3HVq/u9XmJNREsCeq83w1fixO+uK7WmHl67pUJBD5vgDNkxV+2St6ROnwV+ATWRqFpC4fj2je0TPOPT/9MOYaOHnTT9zwwxF5h0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=idJgm98GIKO+oVDEEcP93mknZAWQ36hc2cZ0gG6UTuY=;
- b=gAvmDSULyYeR3CbFB8zbWX6bSnS8/O01/sYbMVDASEuorTabRYEbLkqsEiie9fcTZvOdZU+4xOOdbWzEtOgwinYiXAliI9lILun4YeX61IT45XLqaGx+NZWdjyLLVDLJjhIF5WgaLVab8wnaYNPWWxPpVMw3/LYk7jUTB7mzyuxJ6KR74k7Slx7kBqtnvjo720PExy9ZaFOHLkWgzncfh19nXRZp+sTifPHwPyocd8R8g3+3yJ7hZI0/hVMGda8POak8NnQEH9CM5l+se9wV2n1Zmfet9W73tWEKk/08UVCb9xA5IukTrt8rxc3lhs8TDbzafW/+brBkORoPG5IgLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=idJgm98GIKO+oVDEEcP93mknZAWQ36hc2cZ0gG6UTuY=;
- b=atypCSxidba72QzGZLc38JHS3WDBO/E0Bd8J0HaTCPDH3qoMR0zbeougWj7GNV08cTZuHMqwdBM086oHr1IXAjw1dF1GAMGWg4Ep8k3dCd0nlrhQR4C7v/xnpWfZWdhHwPVLFqvOXl5vN2KcJbOpxkoQCVHLc9q4N1tWMsbMT5o=
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (20.177.51.151) by
- VI1PR05MB4334.eurprd05.prod.outlook.com (52.133.14.30) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2430.22; Fri, 8 Nov 2019 23:45:28 +0000
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::d41a:9a5d:5482:497e]) by VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::d41a:9a5d:5482:497e%5]) with mapi id 15.20.2430.023; Fri, 8 Nov 2019
- 23:45:28 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-CC:     Jiri Pirko <jiri@mellanox.com>,
+        id S1726394AbfKIAM2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Nov 2019 19:12:28 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:45145 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726349AbfKIAM2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Nov 2019 19:12:28 -0500
+Received: by mail-qt1-f193.google.com with SMTP id 30so8530360qtz.12
+        for <linux-rdma@vger.kernel.org>; Fri, 08 Nov 2019 16:12:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=V+15hNGWzZ5qdAfugIMzQNocbiPB7oellkFZJC8HU+Q=;
+        b=CUHMKRDJ5tIhmsKfKQcIrK1q4kMvL7T0lx88oBNrL++oHEg04jkrk1YwQdycyyHz5E
+         a4XpiwUbzcKOA62eo2pCGiGNdruvP+b23CNQvntc5MgIpuHvxRj3gjuZ96c1BjdzFvVJ
+         UgjuohFfwdIhlb94wMtwp4VRynfYFZPO0GuwdmuPOgdgAqU2QL+Dy4x9PgKMFuhrTYrv
+         avtj+1MHl+sn3QFnvC9dm/lGI/HbUDcqGz2ikMgfDNBM4+TkBiq33oqOHUK9oka1Fn2f
+         QJDMmHHEEYpbtsbhn1c4JejANZZPCUOG3TfjTn6vF/HTt5w+ad2lv4xcuyL5I+Sxy7iM
+         8SJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=V+15hNGWzZ5qdAfugIMzQNocbiPB7oellkFZJC8HU+Q=;
+        b=pVzkKEaun877VD1BdHhJB1jMfk/JiW1CNjOageHqxltAkfbkDSxIZLiHst1eWxn2z1
+         Io0WTb9fI+6ujhSi+mC5ZxDyx4AJjF3nnBZrMnh8AUc8mjjG7XtnzRBBuK5VelCg2Wpi
+         7EdDAXVG24Ca1biR9wi8SRqSgdfx6aU47PBvK54nAEPY6hWNbyETKUzd6coipaV3PsNc
+         +AqgOqtJkiaCVGCRAMwIyr1E+28LHilqSpAr4r4mNvKaRPyfu3M4DK+ip3K8tNU3OLr7
+         jvEq34HwBSlHC2xgrbTp++yZiFqmts0AmQHO0ai4KO72PQeP6IkSsjdsr46DadrqWYDm
+         F4CQ==
+X-Gm-Message-State: APjAAAXkqrhHDwRLVbPlgE8FXwTSBU0g/imk63vS3fVtsIc8Hc8Ba47W
+        hFp4GShIHpOxnZBMtc7ilgMoEg==
+X-Google-Smtp-Source: APXvYqwGjEX/efryjqRxpApNrzdHA5Q4BXecu4pIPdHnxbnFY0nysNKTeSjPWN0g6MMd7lX1mc1Bvg==
+X-Received: by 2002:ac8:28c7:: with SMTP id j7mr14729514qtj.4.1573258347052;
+        Fri, 08 Nov 2019 16:12:27 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id m22sm3400409qka.28.2019.11.08.16.12.26
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 08 Nov 2019 16:12:26 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iTEMb-0000r5-TV; Fri, 08 Nov 2019 20:12:25 -0400
+Date:   Fri, 8 Nov 2019 20:12:25 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        David M <david.m.ertman@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        Jiri Pirko <jiri@mellanox.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>
-Subject: [PATCH mlx5-next 5/5] IB/mlx5: Load profile according to RoCE
- enablement state
-Thread-Topic: [PATCH mlx5-next 5/5] IB/mlx5: Load profile according to RoCE
- enablement state
-Thread-Index: AQHVlo6ZAC9IYd90fUmSMsgGmMmAbQ==
-Date:   Fri, 8 Nov 2019 23:45:28 +0000
-Message-ID: <20191108234451.31660-6-saeedm@mellanox.com>
-References: <20191108234451.31660-1-saeedm@mellanox.com>
-In-Reply-To: <20191108234451.31660-1-saeedm@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: git-send-email 2.21.0
-x-originating-ip: [209.116.155.178]
-x-clientproxiedby: BYAPR21CA0030.namprd21.prod.outlook.com
- (2603:10b6:a03:114::40) To VI1PR05MB5102.eurprd05.prod.outlook.com
- (2603:10a6:803:5e::23)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1d5619f4-f6aa-46de-e016-08d764a5bbfc
-x-ms-traffictypediagnostic: VI1PR05MB4334:|VI1PR05MB4334:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB43347EB9FA740883FE49AA18BE7B0@VI1PR05MB4334.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3276;
-x-forefront-prvs: 0215D7173F
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(366004)(136003)(396003)(376002)(39860400002)(189003)(199004)(2616005)(102836004)(36756003)(450100002)(52116002)(486006)(71200400001)(1076003)(71190400001)(6636002)(107886003)(14454004)(4326008)(478600001)(110136005)(256004)(66946007)(25786009)(66476007)(66556008)(64756008)(66446008)(86362001)(5660300002)(316002)(6506007)(6116002)(8936002)(50226002)(3846002)(186003)(6436002)(6486002)(81156014)(446003)(8676002)(26005)(14444005)(2906002)(76176011)(305945005)(99286004)(6512007)(386003)(7736002)(66066001)(54906003)(11346002)(81166006)(476003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4334;H:VI1PR05MB5102.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: J5+qvuees15q/TwRhJnWK03+6WvwuNSdRfbD6JPvGKCub+qQPML3W+WC3cq3TlIB0mbfeAINp794/IcmJRVB9+WAMZErfHod+cojzzXayjeuISwLu2Tt+emf6q9e71RgauQ/9vJZOlFKwtLD1UDGIEAvv3uwBUijs5CsbeF8EMzkXWXHSRt8CMys35q5FFTTEbWCjbnpNi8eN3meCUCJgKzEnNFoyEgZE3Y6lq8/hRbiXTCmQ+CEgYaWOvUQLsv5OKqH9pPCrGkHgkWIV7FfMkVBOYRwzIGuDdf72ML4gldnFxK71Pwu0ojB8dlH2UGuNeim6p/8zJrUW4lPVx2RhF5eGPmGAACB5qEJ64q0JejOeP+gkTfZwIee0ekaY9uNLf+w/qacBYFIcv7FE2pVkYWdKE9oS5jZIuOtIgzwCNhXpQZj36vwGrsGdUyE+uji
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Or Gerlitz <gerlitz.or@gmail.com>,
+        "Jason Wang (jasowang@redhat.com)" <jasowang@redhat.com>
+Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
+Message-ID: <20191109001225.GA31761@ziepe.ca>
+References: <20191107160448.20962-1-parav@mellanox.com>
+ <20191107153234.0d735c1f@cakuba.netronome.com>
+ <20191108121233.GJ6990@nanopsycho>
+ <20191108144054.GC10956@ziepe.ca>
+ <AM0PR05MB486658D1D2A4F3999ED95D45D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <20191108111238.578f44f1@cakuba>
+ <20191108201253.GE10956@ziepe.ca>
+ <20191108133435.6dcc80bd@x1.home>
+ <20191108210545.GG10956@ziepe.ca>
+ <20191108145210.7ad6351c@x1.home>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d5619f4-f6aa-46de-e016-08d764a5bbfc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Nov 2019 23:45:28.5895
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RjwDMoGjvNWrCqVQZaFTlwzwUtQbE6nybD0RtLJ/G0rEA6XqBpTRD1gTGjjFw1TobGuOFb0WXcfOe3Hczmiblw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4334
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191108145210.7ad6351c@x1.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Michael Guralnik <michaelgur@mellanox.com>
+On Fri, Nov 08, 2019 at 02:52:10PM -0700, Alex Williamson wrote:
+> > > 
+> > > Unless there's some opposition, I'm intended to queue this for v5.5:
+> > > 
+> > > https://www.spinics.net/lists/kvm/msg199613.html
+> > > 
+> > > mdev has started out as tied to vfio, but at it's core, it's just a
+> > > device life cycle infrastructure with callbacks between bus drivers
+> > > and vendor devices.  If virtio is on the wrong path with the above
+> > > series, please speak up.  Thanks,  
+> > 
+> > Well, I think Greg just objected pretty strongly.
+> > 
+> > IMHO it is wrong to turn mdev into some API multiplexor. That is what
+> > the driver core already does and AFAIK your bus type is supposed to
+> > represent your API contract to your drivers.
+> > 
+> > Since the bus type is ABI, 'mdev' is really all about vfio I guess?
+> > 
+> > Maybe mdev should grow by factoring the special GUID life cycle stuff
+> > into a helper library that can make it simpler to build proper API
+> > specific bus's using that lifecycle model? ie the virtio I saw
+> > proposed should probably be a mdev-virtio bus type providing this new
+> > virtio API contract using a 'struct mdev_virtio'?
+> 
+> I see, the bus:API contract is more clear when we're talking about
+> physical buses and physical devices following a hardware
+> specification.
 
-When RoCE is disabled load mlx5_ib in raw_eth profile.
-Clean pf_profile roce capability checks as it will not be used without
-roce capability.
+Well, I don't think it matters, this is a software contract inside the
+kernel between the 'struct foo_device' (as provided by the foo_bus)
+and the 'struct foo_driver'
 
-Signed-off-by: Michael Guralnik <michaelgur@mellanox.com>
-Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
----
- drivers/infiniband/hw/mlx5/main.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+This contract is certainly easier to define when a HW specification
+dictates basically how it works.
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5=
-/main.c
-index d6afe33d56ac..46ea4f0b9b51 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -5145,8 +5145,7 @@ static int mlx5_port_immutable(struct ib_device *ibde=
-v, u8 port_num,
- 	immutable->pkey_tbl_len =3D attr.pkey_tbl_len;
- 	immutable->gid_tbl_len =3D attr.gid_tbl_len;
- 	immutable->core_cap_flags =3D get_core_cap_flags(ibdev, &rep);
--	if ((ll =3D=3D IB_LINK_LAYER_INFINIBAND) || MLX5_CAP_GEN(dev->mdev, roce)=
-)
--		immutable->max_mad_size =3D IB_MGMT_MAD_SIZE;
-+	immutable->max_mad_size =3D IB_MGMT_MAD_SIZE;
-=20
- 	return 0;
- }
-@@ -5249,11 +5248,9 @@ static int mlx5_enable_eth(struct mlx5_ib_dev *dev)
- {
- 	int err;
-=20
--	if (MLX5_CAP_GEN(dev->mdev, roce)) {
--		err =3D mlx5_nic_vport_enable_roce(dev->mdev);
--		if (err)
--			return err;
--	}
-+	err =3D mlx5_nic_vport_enable_roce(dev->mdev);
-+	if (err)
-+		return err;
-=20
- 	err =3D mlx5_eth_lag_init(dev);
- 	if (err)
-@@ -5262,8 +5259,7 @@ static int mlx5_enable_eth(struct mlx5_ib_dev *dev)
- 	return 0;
-=20
- err_disable_roce:
--	if (MLX5_CAP_GEN(dev->mdev, roce))
--		mlx5_nic_vport_disable_roce(dev->mdev);
-+	mlx5_nic_vport_disable_roce(dev->mdev);
-=20
- 	return err;
- }
-@@ -5271,8 +5267,7 @@ static int mlx5_enable_eth(struct mlx5_ib_dev *dev)
- static void mlx5_disable_eth(struct mlx5_ib_dev *dev)
- {
- 	mlx5_eth_lag_cleanup(dev);
--	if (MLX5_CAP_GEN(dev->mdev, roce))
--		mlx5_nic_vport_disable_roce(dev->mdev);
-+	mlx5_nic_vport_disable_roce(dev->mdev);
- }
-=20
- struct mlx5_ib_counter {
-@@ -6898,6 +6893,7 @@ static void *mlx5_ib_add_slave_port(struct mlx5_core_=
-dev *mdev)
-=20
- static void *mlx5_ib_add(struct mlx5_core_dev *mdev)
- {
-+	const struct mlx5_ib_profile *profile;
- 	enum rdma_link_layer ll;
- 	struct mlx5_ib_dev *dev;
- 	int port_type_cap;
-@@ -6933,7 +6929,12 @@ static void *mlx5_ib_add(struct mlx5_core_dev *mdev)
- 	dev->mdev =3D mdev;
- 	dev->num_ports =3D num_ports;
-=20
--	return __mlx5_ib_add(dev, &pf_profile);
-+	if (ll =3D=3D IB_LINK_LAYER_ETHERNET && !mlx5_is_roce_enabled(mdev))
-+		profile =3D &raw_eth_profile;
-+	else
-+		profile =3D &pf_profile;
-+
-+	return __mlx5_ib_add(dev, profile);
- }
-=20
- static void mlx5_ib_remove(struct mlx5_core_dev *mdev, void *context)
---=20
-2.21.0
+> But if we take PCI for example, each PCI device has it's own internal
+> API that operates on the bus API.  PCI bus drivers match devices based
+> on vendor and device ID, which defines that internal API, not the bus
+> API.  
 
+Yes, this matching is part of the API contract between the bus and
+device driver.
+
+But all of the pci_* functions that accept a 'struct pci_device *' are
+also part of this API contract toward the driver.
+
+> The bus API is pretty thin when we're talking virtual devices and
+> virtual buses though.  The bus "API" is essentially that lifecycle
+> management, so I'm having a bit of a hard time differentiating this
+
+But Parav just pointed out to a virtio SW API that had something like
+20 API entry points.
+
+> instead?"  Essentially for virtual devices, we're dictating a bus per
+> device type, whereas it seemed like a reasonable idea at the time to
+
+Well, what does a driver binding to a virtual device need to know?
+
+The virtual device API should provide all of that information.
+
+I think things like vfio and virtio APIs are very reasonable bus
+types. virtio in particular has a published 'hw-like' specification
+with some good layers that can build a bus API.
+
+Not so sure about the very HW specific things like the Intel driver and
+these SFs. These will really only ever bind to one driver and seem to
+have no commonalities.
+
+For those we either create a bus per driver-specific proprietary API
+(feels kind of wrong) or we have a generic bus essentially for managed
+multi-function hardware that uses a simple 'void *hw_data' as the
+driver API and some matching logic to support that.
+
+> create a common virtual device bus, but maybe it went into the weeds
+> when trying to figure out how device drivers match to devices on that
+> bus and actually interact with them.
+
+I think it is important to focus on the the SW API the 'struct
+foo_device' is supposed to provide toward the driver that binds to it.
+
+It should be a sensible API covering some well defined area..
+
+Jason
