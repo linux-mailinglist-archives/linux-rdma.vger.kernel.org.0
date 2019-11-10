@@ -2,107 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B36DF60C0
-	for <lists+linux-rdma@lfdr.de>; Sat,  9 Nov 2019 18:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20997F62A5
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Nov 2019 03:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbfKIRlI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 9 Nov 2019 12:41:08 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:36326 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726514AbfKIRlI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 9 Nov 2019 12:41:08 -0500
-Received: by mail-pg1-f194.google.com with SMTP id k13so6258060pgh.3
-        for <linux-rdma@vger.kernel.org>; Sat, 09 Nov 2019 09:41:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=2B7miXvo12sd3AwR/N24hvrji1TnW/1jP59Zv1D2zxA=;
-        b=Ux66y2/Kev7fAowQYcNDFqBF2oMucxESjkkRfo8IKup+pQkx6c41HWBsZj9GcF/XH7
-         9q5bddJ0Ib4aWwuzqXvZ/f6ExZS0BhSgfZfP25ahtYi6cRFgd6bNKGUNcmMNHudNagcC
-         gCsZz3t6Mq+E1k40G+tbKVjUsRtLsUqFwOo01ugae2GCJvy2GLhJrtoc20el2oh7SbBf
-         ROYWJC/rPRLGrqeXE6yeGN7xdj1TF4KXEbxh+FAYZYVgj9tCuD0GO2qMFAKfYbcAHD09
-         n6ptYL86QvSyY/z14h/xrMQJ/T5NEtw6+1My7DBq0+zYNnCHlHm/tL1osxRC9TA7a9Sc
-         ltcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=2B7miXvo12sd3AwR/N24hvrji1TnW/1jP59Zv1D2zxA=;
-        b=dnffddjztzB9GAE2s2xvmng5Ij+7ptNb4rVElrE8pZsB5whZ6L+XB1wTNU1NbRH9Kf
-         ySOmFMkLmcNEEDIhZV5qTwUoNi2MtJk8M3gTdY0O+1anTGdW0EpFzLkukYwu/XjWcPLE
-         OTcb/JD/GqZLsR0VJEdj4EgIuGZytlz7vskR3eagUyHKH2uGCAeVFks51tQMPLb1wWgN
-         icYFubqO2R4+65x+tjl5diJx9wwOQHHiHF7jSk+6H3Ih185kRn24JpvYKDnRDy29+TrV
-         rGh68Og9c2Ik8P3TDv73eRBh1D4V9QKcLr/RJ0ZLK//sH64hpEC4HpJdrItZm7aWNvCo
-         XlOQ==
-X-Gm-Message-State: APjAAAWqOY2L1y8+MLtkKjLED+0qZVINUB2mPIHjnERPawfW6CSdVUN4
-        cR+XJHC2+sd5h+77+pqQ39Z3qA==
-X-Google-Smtp-Source: APXvYqzxYgwMmVIq1JfKtIHriDl97HY1zcdcpAYzr8weQ2+HF6xR/h1VetUuPsLmf6vJjuss1CYESw==
-X-Received: by 2002:a63:3205:: with SMTP id y5mr19364349pgy.42.1573321267604;
-        Sat, 09 Nov 2019 09:41:07 -0800 (PST)
-Received: from cakuba (c-73-202-202-92.hsd1.ca.comcast.net. [73.202.202.92])
-        by smtp.gmail.com with ESMTPSA id a23sm5103400pjv.26.2019.11.09.09.41.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Nov 2019 09:41:07 -0800 (PST)
-Date:   Sat, 9 Nov 2019 09:41:03 -0800
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Parav Pandit <parav@mellanox.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        David M <david.m.ertman@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Or Gerlitz <gerlitz.or@gmail.com>,
-        "Jason Wang (jasowang@redhat.com)" <jasowang@redhat.com>
-Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
-Message-ID: <20191109094103.739033a3@cakuba>
-In-Reply-To: <20191109005708.GC31761@ziepe.ca>
-References: <20191107153234.0d735c1f@cakuba.netronome.com>
-        <20191108121233.GJ6990@nanopsycho>
-        <20191108144054.GC10956@ziepe.ca>
-        <AM0PR05MB486658D1D2A4F3999ED95D45D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-        <20191108111238.578f44f1@cakuba>
-        <20191108201253.GE10956@ziepe.ca>
-        <20191108133435.6dcc80bd@x1.home>
-        <20191108210545.GG10956@ziepe.ca>
-        <20191108145210.7ad6351c@x1.home>
-        <AM0PR05MB4866444210721BC4EE775D27D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-        <20191109005708.GC31761@ziepe.ca>
-Organization: Netronome Systems, Ltd.
+        id S1728569AbfKJCoa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 9 Nov 2019 21:44:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728564AbfKJCoa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 9 Nov 2019 21:44:30 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2E8C222BE;
+        Sun, 10 Nov 2019 02:44:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1573353869;
+        bh=xscJ7EClHwitBaxZMa5jBEldDG3fG8cJaiC13LZuq10=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=MfLJIDYfNRw+8U99Mpg5RLuBQb4OPIBz30RJHxU0TnFtqn7oZi4EWx9l3MBewDUqG
+         55YtaOT4SYPTJ24UVsVb6tsfGLX2OaJ5HxzQeKHi+NVzdcNoL0iGxHAI7sX/IxW7wd
+         i31QvPyr1W19Q/OtH7ewZWevwq5MctwbSiLRCUOI=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 149/191] RDMA: Fix dependencies for rdma_user_mmap_io
+Date:   Sat,  9 Nov 2019 21:39:31 -0500
+Message-Id: <20191110024013.29782-149-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191110024013.29782-1-sashal@kernel.org>
+References: <20191110024013.29782-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 8 Nov 2019 20:57:08 -0400, Jason Gunthorpe wrote:
-> On Fri, Nov 08, 2019 at 10:48:31PM +0000, Parav Pandit wrote:
-> > We should be creating 3 different buses, instead of mdev bus being de-multiplexer of that?
-> > 
-> > Hence, depending the device flavour specified, create such device on right bus?
-> > 
-> > For example,
-> > $ devlink create subdev pci/0000:05:00.0 flavour virtio name foo subdev_id 1
-> > $ devlink create subdev pci/0000:05:00.0 flavour mdev <uuid> subdev_id 2
-> > $ devlink create subdev pci/0000:05:00.0 flavour mlx5 id 1 subdev_id 3  
-> 
-> I like the idea of specifying what kind of interface you want at sub
-> device creation time. It fits the driver model pretty well and doesn't
-> require abusing the vfio mdev for binding to a netdev driver.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Aren't the HW resources spun out in all three cases exactly identical?
+[ Upstream commit 46bdf777685677c1cc6b3da9220aace9da690731 ]
 
-IMHO creation of sub device should only define which HW resources are
-provisioned/relegated. Specifying a driver when recreating a device
-seems a little backwards.
+The mlx4 driver produces a link error when it is configured
+as built-in while CONFIG_INFINIBAND_USER_ACCESS is set to =m:
+
+drivers/infiniband/hw/mlx4/main.o: In function `mlx4_ib_mmap':
+main.c:(.text+0x1af4): undefined reference to `rdma_user_mmap_io'
+
+The same function is called from mlx5, which already has a
+dependency to ensure we can call it, and from hns, which
+appears to suffer from the same problem.
+
+This adds the same dependency that mlx5 uses to the other two.
+
+Fixes: 6745d356ab39 ("RDMA/hns: Use rdma_user_mmap_io")
+Fixes: c282da4109e4 ("RDMA/mlx4: Use rdma_user_mmap_io")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/hw/hns/Kconfig  | 1 +
+ drivers/infiniband/hw/mlx4/Kconfig | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/drivers/infiniband/hw/hns/Kconfig b/drivers/infiniband/hw/hns/Kconfig
+index fddb5fdf92de8..21c2100b2ea98 100644
+--- a/drivers/infiniband/hw/hns/Kconfig
++++ b/drivers/infiniband/hw/hns/Kconfig
+@@ -1,6 +1,7 @@
+ config INFINIBAND_HNS
+ 	tristate "HNS RoCE Driver"
+ 	depends on NET_VENDOR_HISILICON
++	depends on INFINIBAND_USER_ACCESS || !INFINIBAND_USER_ACCESS
+ 	depends on ARM64 || (COMPILE_TEST && 64BIT)
+ 	---help---
+ 	  This is a RoCE/RDMA driver for the Hisilicon RoCE engine. The engine
+diff --git a/drivers/infiniband/hw/mlx4/Kconfig b/drivers/infiniband/hw/mlx4/Kconfig
+index db4aa13ebae0c..d1de3285fd885 100644
+--- a/drivers/infiniband/hw/mlx4/Kconfig
++++ b/drivers/infiniband/hw/mlx4/Kconfig
+@@ -1,6 +1,7 @@
+ config MLX4_INFINIBAND
+ 	tristate "Mellanox ConnectX HCA support"
+ 	depends on NETDEVICES && ETHERNET && PCI && INET
++	depends on INFINIBAND_USER_ACCESS || !INFINIBAND_USER_ACCESS
+ 	depends on MAY_USE_DEVLINK
+ 	select NET_VENDOR_MELLANOX
+ 	select MLX4_CORE
+-- 
+2.20.1
+
