@@ -2,96 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6320DF6D3F
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2019 04:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CB1F6D63
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2019 04:46:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbfKKDVN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 Nov 2019 22:21:13 -0500
-Received: from mga11.intel.com ([192.55.52.93]:22964 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726749AbfKKDVN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 10 Nov 2019 22:21:13 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Nov 2019 19:21:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,291,1569308400"; 
-   d="scan'208";a="207006324"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga006.jf.intel.com with ESMTP; 10 Nov 2019 19:21:11 -0800
-Date:   Sun, 10 Nov 2019 19:21:11 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] IB/umem: use get_user_pages_fast() to pin DMA pages
-Message-ID: <20191111032111.GA30123@iweiny-DESK2.sc.intel.com>
-References: <20191109020434.389855-1-jhubbard@nvidia.com>
- <20191109020434.389855-2-jhubbard@nvidia.com>
+        id S1726877AbfKKDqH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 10 Nov 2019 22:46:07 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:46640 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726871AbfKKDqG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 Nov 2019 22:46:06 -0500
+Received: by mail-pf1-f194.google.com with SMTP id 193so9685471pfc.13
+        for <linux-rdma@vger.kernel.org>; Sun, 10 Nov 2019 19:46:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=AqhM9u1bzCnw7qhUa4mHnqgFKW6TzFtxLFQ8BM/epMs=;
+        b=SOIlwK5mjoyFW/tXHeVmYa4IK11qYjcalG4RreXwkjwE6o05256yuTEZ4tqlNqlfGD
+         shDyAVTcAHfRAPjk0HgUUKt78RLGstgu/5t3Xt/YTXXdCjfzs9mSIpOwHV2fBRUr4arr
+         AimZYIbgl6d67DxMbwVkHuQhEjqCZvV6SfPQ8uDxtE9RoCr+xi1KecnA+sD5oHcnju5t
+         dFGKlm2zNCLvQWMxLDvuJZZCdRP6iqrhDPSdCZijkrYJ/JogxXmCgPyhTq2g5iRb3//X
+         4ZXSpxzZA92++uyYySNgIfmELbtXgsdpqUoyYO5dKpkYYGsBdF1TrYchrVlxN9pAY8EW
+         +iRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=AqhM9u1bzCnw7qhUa4mHnqgFKW6TzFtxLFQ8BM/epMs=;
+        b=ZEqqZIj2V44pPv/ryU2vCSlayZ6s/y8Li5ljUL5moNVs/stoPs0dlAEEhk+yXWkUSi
+         4D6YCApEHKAp40OciRbCyAW8mhaDWdcyogBnQIRl4eann89LP949SpiF6IIdiVSjO3hn
+         cIbzi31kSTFU4GSFRXZPhHvzuWerotBjQuklCcqD+Tf55hRHV96jlly4KltS/MY9RyBI
+         AecSKFPxCK6WFzBkBfvYeFvYVAtFoQZLndn05PJIZ86qRGLC/Yg7CochkIJB6Ae8zy6R
+         X84qEQk9pPdKGkiaaM0pLCocpexPPNCSVJTI+Rw6ftRfoSt3jFHkUWROe/If8h2Hj1Ol
+         L50w==
+X-Gm-Message-State: APjAAAVxfOa9QYWbb00Eik7ZkI4NENmDVuPSxOUsEEmjsDDb8bGeWpGk
+        NYBtnhGDcZ1CFjKey2BFco5XZg==
+X-Google-Smtp-Source: APXvYqyvsmmGRubdY0eCp6Hd53IA2QHIUdVnV/J9ottQSlb0FTBMpy9oBY7rLSA0rhkW3bsD3dRtVQ==
+X-Received: by 2002:a63:86c6:: with SMTP id x189mr25278222pgd.341.1573443966052;
+        Sun, 10 Nov 2019 19:46:06 -0800 (PST)
+Received: from cakuba (c-73-202-202-92.hsd1.ca.comcast.net. [73.202.202.92])
+        by smtp.gmail.com with ESMTPSA id w8sm12009631pfi.60.2019.11.10.19.46.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Nov 2019 19:46:05 -0800 (PST)
+Date:   Sun, 10 Nov 2019 19:46:01 -0800
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Parav Pandit <parav@mellanox.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        David M <david.m.ertman@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Or Gerlitz <gerlitz.or@gmail.com>
+Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
+Message-ID: <20191110194601.0d6ed1a0@cakuba>
+In-Reply-To: <20191110091855.GE1435668@kroah.com>
+References: <20191107160448.20962-1-parav@mellanox.com>
+        <20191107153234.0d735c1f@cakuba.netronome.com>
+        <20191108121233.GJ6990@nanopsycho>
+        <20191108144054.GC10956@ziepe.ca>
+        <AM0PR05MB486658D1D2A4F3999ED95D45D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+        <20191108111238.578f44f1@cakuba>
+        <20191108201253.GE10956@ziepe.ca>
+        <20191108134559.42fbceff@cakuba>
+        <20191109004426.GB31761@ziepe.ca>
+        <20191109092747.26a1a37e@cakuba>
+        <20191110091855.GE1435668@kroah.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191109020434.389855-2-jhubbard@nvidia.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 08, 2019 at 06:04:34PM -0800, John Hubbard wrote:
-> And get rid of the mmap_sem calls, as part of that. Note
-> that get_user_pages_fast() will, if necessary, fall back to
-> __gup_longterm_unlocked(), which takes the mmap_sem as needed.
+On Sun, 10 Nov 2019 10:18:55 +0100, gregkh@linuxfoundation.org wrote:
+> > What I'm missing is why is it so bad to have a driver register to
+> > multiple subsystems.  
 > 
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Ira Weiny <ira.weiny@intel.com>
+> Because these PCI devices seem to do "different" things all in one PCI
+> resource set.  Blame the hardware designers :)
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+See below, I don't think you can blame the HW designers in this
+particular case :)
 
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  drivers/infiniband/core/umem.c | 17 ++++++-----------
->  1 file changed, 6 insertions(+), 11 deletions(-)
+> > For the nfp I think the _real_ reason to have a bus was that it
+> > was expected to have some out-of-tree modules bind to it. Something 
+> > I would not encourage :)  
 > 
-> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-> index 24244a2f68cc..3d664a2539eb 100644
-> --- a/drivers/infiniband/core/umem.c
-> +++ b/drivers/infiniband/core/umem.c
-> @@ -271,16 +271,13 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
->  	sg = umem->sg_head.sgl;
->  
->  	while (npages) {
-> -		down_read(&mm->mmap_sem);
-> -		ret = get_user_pages(cur_base,
-> -				     min_t(unsigned long, npages,
-> -					   PAGE_SIZE / sizeof (struct page *)),
-> -				     gup_flags | FOLL_LONGTERM,
-> -				     page_list, NULL);
-> -		if (ret < 0) {
-> -			up_read(&mm->mmap_sem);
-> +		ret = get_user_pages_fast(cur_base,
-> +					  min_t(unsigned long, npages,
-> +						PAGE_SIZE /
-> +						sizeof(struct page *)),
-> +					  gup_flags | FOLL_LONGTERM, page_list);
-> +		if (ret < 0)
->  			goto umem_release;
-> -		}
->  
->  		cur_base += ret * PAGE_SIZE;
->  		npages   -= ret;
-> @@ -288,8 +285,6 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
->  		sg = ib_umem_add_sg_table(sg, page_list, ret,
->  			dma_get_max_seg_size(context->device->dma_device),
->  			&umem->sg_nents);
-> -
-> -		up_read(&mm->mmap_sem);
->  	}
->  
->  	sg_mark_end(sg);
-> -- 
-> 2.24.0
+> That's not ok, and I agree with you.
 > 
+> But there seems to be some more complex PCI devices that do lots of
+> different things all at once.  Kind of like a PCI device that wants to
+> be both a keyboard and a storage device at the same time (i.e. a button
+> on a disk drive...)
+
+The keyboard which is also a storage device may be a clear cut case
+where multiple devices were integrated into one bus endpoint.
+
+The case with these advanced networking adapters is a little different
+in that they are one HW device which has oodles of FW implementing
+clients or acceleration for various networking protocols.
+
+The nice thing about having a fake bus is you can load out-of-tree
+drivers to operate extra protocols quite cleanly.
+
+I'm not saying that's what the code in question is doing, I'm saying 
+I'd personally like to understand the motivation more clearly before
+every networking driver out there starts spawning buses. The only
+argument I've heard so far for the separate devices is reloading subset
+of the drivers, which I'd rate as moderately convincing.
