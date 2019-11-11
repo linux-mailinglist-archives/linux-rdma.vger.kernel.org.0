@@ -2,110 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C95F6F35
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2019 08:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6092EF74E1
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2019 14:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726785AbfKKHqT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 Nov 2019 02:46:19 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:56058 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726360AbfKKHqT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Nov 2019 02:46:19 -0500
-Received: by mail-wm1-f66.google.com with SMTP id b11so12145065wmb.5
-        for <linux-rdma@vger.kernel.org>; Sun, 10 Nov 2019 23:46:17 -0800 (PST)
+        id S1727020AbfKKNaa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 Nov 2019 08:30:30 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:34495 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727002AbfKKNa3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Nov 2019 08:30:29 -0500
+Received: by mail-wm1-f67.google.com with SMTP id j18so3173315wmk.1
+        for <linux-rdma@vger.kernel.org>; Mon, 11 Nov 2019 05:30:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EI8aChzwfAWkyMCZFCy4LE3/+zUA+FObXBInOoUvoJs=;
-        b=I6l+X27r8WsuxZH9ZPwTY3OpBDeB8W4Pq+R+qkYF8St87HjbG1Wqjm+uKVw8AnwQVV
-         FJ6dpmkPzO8icBsSo2GrHDWV0IP9ERt9oF9z+/7KyqSUcbgb2ow6isEmmafk6KKkmKAZ
-         g3fTIP5htUrnVod2adwRGTXeJL19If6+0HaMhdBmxC7IBx/KAr07fRZnEDXr6/1YjcoA
-         ZO8DaTxBGBk1/J6UlMWx76bVBfAl84U9pqy9rAhnTaRq6ag9NziejTeG6fXT8CaWaZL9
-         TRNvJkd1XURnb3KNcBg04zNDZuD6BEnXZKQagMddsoDtQ1Q42INmvCodTsENwljSiNbR
-         AAOA==
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mkwenBuk+yOAxdES4LJS2kpTu2gXDKAkkdekG5IpFbI=;
+        b=s328wBZB9kmOFPu4tqfyJMK+7A3waE1Qg75T6g83rUmKO/zjxLvxrHVvPNXJXpOeH/
+         GCzJ3BeVkRa+0fRmeqCMvHYDRtabAIkSO0KudD+4MoildGDktJiNurEd4Bx21E6OTAZ9
+         aYVXy7VSZXvm5EPSjShNaklxzwzydP4jKIu7REnJq3uxQwFHZqCeqtnpfXJm/QU95wIt
+         uGZKN+tGdH1/uclUdMnOBG1Ax5e2u/121WZVo6BkUpFVC/JPqDJoaaRO0wR7Jxd0lYqF
+         H0LR03kV+Y8BEZH76EZqZsUT1s0JV9D3yejviqk66P8pM+m6DWg7vpTJmaWyaw8TpwGz
+         a2eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EI8aChzwfAWkyMCZFCy4LE3/+zUA+FObXBInOoUvoJs=;
-        b=WEsJ7voIHHuCKXXbH6cXkDeqRnHVTk8HVy1deZwnDQB0JO3apvQOvLgiScroj6XwL5
-         hphAKuitSTGw6OOE0bchBpl7Q6NUJqzOjCE4XXuRG/z6qjvRy1dMPxH3J3FYITlTWMWK
-         zU12HXGQKXbjGGr/Au7QopSGDrEX7D6y22cxwLfVEmy3h2TMRJ8ytaMGWY+Jvu/k8YxB
-         7vzjK/NsWrvbctDsSbGMKTqcd5yKRV351ecqLRppQSnSLAjAd8Q2r8O5G2v+ZrqpBY/M
-         BVeKm34R3Rd9BvDCN817LHvDc7RQ3aFDulnMZaEOKNEt+nE376OTBZEFKMf0JTvMdVAG
-         r8ag==
-X-Gm-Message-State: APjAAAUHqZ8qlucoPDBWLXUJRe3HNI9PCpk6KHuHctBpdboeX/vovl0t
-        a/vcLk0h6x13lJpV5Ggx5TDm3P4XPzQ=
-X-Google-Smtp-Source: APXvYqwZDGYrWjh4QySPtj1LH+MOg7ciBDpudRJfLglUoq4TKF2NfSLr6+XcdUr8UxVXgKcPwRftmQ==
-X-Received: by 2002:a7b:c747:: with SMTP id w7mr20367155wmk.62.1573458376923;
-        Sun, 10 Nov 2019 23:46:16 -0800 (PST)
-Received: from [10.80.2.221] ([193.47.165.251])
-        by smtp.googlemail.com with ESMTPSA id v8sm20955617wra.79.2019.11.10.23.46.15
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 10 Nov 2019 23:46:16 -0800 (PST)
-Subject: Re: [PATCH rdma-core 0/6] verbs: Custom parent-domain allocators
-To:     linux-rdma@vger.kernel.org
-Cc:     Yishai Hadas <yishaih@mellanox.com>, haggaie@mellanox.com,
-        jgg@mellanox.com, maorg@mellanox.com
-References: <1572254099-30864-1-git-send-email-yishaih@mellanox.com>
-From:   Yishai Hadas <yishaih@dev.mellanox.co.il>
-Message-ID: <47e62c53-2032-bdb6-e288-d1dbcc9b0e9f@dev.mellanox.co.il>
-Date:   Mon, 11 Nov 2019 09:46:14 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mkwenBuk+yOAxdES4LJS2kpTu2gXDKAkkdekG5IpFbI=;
+        b=n2DRI55l3gr6bVPG6CBQ97wnEzgV5EMlHcz9MaU0BgeqBbWngHSheF0t55FZgr3iHJ
+         T2PIasTw8hc3nuJYuDB3lCzXnwnQmY+p6qHy5eUECmNBHfznp1M1mTIIzlOA+vaynCeU
+         QqjHmA2slUpzMXwkKOVTJE5TMUi2VdhoSIOgSBc4cXSvUfSH95RNOEgooYgxJdBqrunb
+         MejIALGo7sHaYE38vfITBNe1+3MMYqlOLFGwvfofUQZ0CqmeJfo21UFg0bkZ0wdVN/2Z
+         plIkEyePysynZuKvmeAGEklNTH7OzscRgGMTUAVhr/C05IYrlsOWbR0J+hlnbebo4hTw
+         0DeA==
+X-Gm-Message-State: APjAAAXN5bd0k/YjASxviuAJl8CFfJXoSJ1Jsmb3vnkehRaKrMZytjer
+        2wq4/lo8yPf/7rKa/nD2hzA/kQ==
+X-Google-Smtp-Source: APXvYqzwooUbxzm69efOp0rljYcE0gAn6F/FddFwTjRmADcvS5J3lQevJ5I6HflzU4YKaBn7XXxoTw==
+X-Received: by 2002:a1c:1d48:: with SMTP id d69mr19104416wmd.160.1573479028082;
+        Mon, 11 Nov 2019 05:30:28 -0800 (PST)
+Received: from localhost (jirka.pirko.cz. [84.16.102.26])
+        by smtp.gmail.com with ESMTPSA id y6sm9905517wrn.21.2019.11.11.05.30.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Nov 2019 05:30:27 -0800 (PST)
+Date:   Mon, 11 Nov 2019 14:30:26 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Parav Pandit <parav@mellanox.com>,
+        David M <david.m.ertman@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Or Gerlitz <gerlitz.or@gmail.com>
+Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
+Message-ID: <20191111133026.GA2202@nanopsycho>
+References: <20191108121233.GJ6990@nanopsycho>
+ <20191108144054.GC10956@ziepe.ca>
+ <AM0PR05MB486658D1D2A4F3999ED95D45D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <20191108111238.578f44f1@cakuba>
+ <20191108201253.GE10956@ziepe.ca>
+ <20191108134559.42fbceff@cakuba>
+ <20191109004426.GB31761@ziepe.ca>
+ <20191109092747.26a1a37e@cakuba>
+ <20191110091855.GE1435668@kroah.com>
+ <20191110194601.0d6ed1a0@cakuba>
 MIME-Version: 1.0
-In-Reply-To: <1572254099-30864-1-git-send-email-yishaih@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191110194601.0d6ed1a0@cakuba>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/28/2019 11:14 AM, Yishai Hadas wrote:
-> This series extends the parent domain object with custom allocation callbacks
-> that can be used by user-applications to override the provider allocation.
-> 
-> This can be used for example to add NUMA aware allocation.
-> 
-> The API was introduced in the mailing list by the below RFC [1] and was
-> implemented by mlx5 provider.
-> 
-> A detailed man page exists as part of the series to describe the usage and the
-> behavior.
-> 
-> A PR was sent as well [2].
-> 
-> [1] https://www.spinics.net/lists/linux-rdma/msg84590.html
-> [2] https://github.com/linux-rdma/rdma-core/pull/596
-> 
-> Haggai Eran (1):
->    verbs: custom parent-domain allocators
-> 
-> Yishai Hadas (5):
->    Update kernel headers
->    mlx5: Extend mlx5_alloc_parent_domain() to support custom allocator
->    mlx5: Add custom allocation support for QP and RWQ buffers
->    mlx5: Add custom allocation support for DBR
->    mlx5: Add custom allocation support for SRQ buffer
-> 
->   kernel-headers/rdma/ib_user_ioctl_verbs.h  |  22 ++++++
->   kernel-headers/rdma/rdma_user_ioctl_cmds.h |  22 ------
->   libibverbs/man/ibv_alloc_parent_domain.3   |  54 +++++++++++++++
->   libibverbs/verbs.h                         |  12 ++++
->   providers/mlx5/buf.c                       |  59 +++++++++++++++++
->   providers/mlx5/cq.c                        |   2 +-
->   providers/mlx5/dbrec.c                     |  34 +++++++++-
->   providers/mlx5/mlx5.h                      |  23 ++++++-
->   providers/mlx5/mlx5dv.h                    |   6 ++
->   providers/mlx5/srq.c                       |  25 +++++--
->   providers/mlx5/verbs.c                     | 103 ++++++++++++++++++++---------
->   11 files changed, 297 insertions(+), 65 deletions(-)
-> 
+Mon, Nov 11, 2019 at 04:46:01AM CET, jakub.kicinski@netronome.com wrote:
+>On Sun, 10 Nov 2019 10:18:55 +0100, gregkh@linuxfoundation.org wrote:
+>> > What I'm missing is why is it so bad to have a driver register to
+>> > multiple subsystems.  
+>> 
+>> Because these PCI devices seem to do "different" things all in one PCI
+>> resource set.  Blame the hardware designers :)
+>
+>See below, I don't think you can blame the HW designers in this
+>particular case :)
+>
+>> > For the nfp I think the _real_ reason to have a bus was that it
+>> > was expected to have some out-of-tree modules bind to it. Something 
+>> > I would not encourage :)  
+>> 
+>> That's not ok, and I agree with you.
+>> 
+>> But there seems to be some more complex PCI devices that do lots of
+>> different things all at once.  Kind of like a PCI device that wants to
+>> be both a keyboard and a storage device at the same time (i.e. a button
+>> on a disk drive...)
+>
+>The keyboard which is also a storage device may be a clear cut case
+>where multiple devices were integrated into one bus endpoint.
 
-The PR was merged, thanks.
+Also, I think that very important differentiator between keyboard/button
+and NIC is that keyboard/button is fixed. You have driver bus with 2
+devices on constant addresses.
 
-Yishai
+However in case of NIC subfunctions. You have 0 at he beginning and user
+instructs to create more (maybe hundreds). Now important questions
+appear:
+
+1) How to create devices (what API) - mdev has this figured out
+2) How to to do the addressing of the devices. Needs to be
+   predictable/defined by the user - mdev has this figured out
+3) Udev names of netdevices - udev names that according to the
+   bus/address. That is straightforeward with mdev.
+   I can't really see how to figure this one in particular with
+   per-driver busses :/
+
+
+>
+>The case with these advanced networking adapters is a little different
+>in that they are one HW device which has oodles of FW implementing
+>clients or acceleration for various networking protocols.
+>
+>The nice thing about having a fake bus is you can load out-of-tree
+>drivers to operate extra protocols quite cleanly.
+>
+>I'm not saying that's what the code in question is doing, I'm saying 
+>I'd personally like to understand the motivation more clearly before
+>every networking driver out there starts spawning buses. The only
+>argument I've heard so far for the separate devices is reloading subset
+>of the drivers, which I'd rate as moderately convincing.
