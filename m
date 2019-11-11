@@ -2,140 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6092EF74E1
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2019 14:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3145F7507
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2019 14:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbfKKNaa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 Nov 2019 08:30:30 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:34495 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727002AbfKKNa3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Nov 2019 08:30:29 -0500
-Received: by mail-wm1-f67.google.com with SMTP id j18so3173315wmk.1
-        for <linux-rdma@vger.kernel.org>; Mon, 11 Nov 2019 05:30:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mkwenBuk+yOAxdES4LJS2kpTu2gXDKAkkdekG5IpFbI=;
-        b=s328wBZB9kmOFPu4tqfyJMK+7A3waE1Qg75T6g83rUmKO/zjxLvxrHVvPNXJXpOeH/
-         GCzJ3BeVkRa+0fRmeqCMvHYDRtabAIkSO0KudD+4MoildGDktJiNurEd4Bx21E6OTAZ9
-         aYVXy7VSZXvm5EPSjShNaklxzwzydP4jKIu7REnJq3uxQwFHZqCeqtnpfXJm/QU95wIt
-         uGZKN+tGdH1/uclUdMnOBG1Ax5e2u/121WZVo6BkUpFVC/JPqDJoaaRO0wR7Jxd0lYqF
-         H0LR03kV+Y8BEZH76EZqZsUT1s0JV9D3yejviqk66P8pM+m6DWg7vpTJmaWyaw8TpwGz
-         a2eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mkwenBuk+yOAxdES4LJS2kpTu2gXDKAkkdekG5IpFbI=;
-        b=n2DRI55l3gr6bVPG6CBQ97wnEzgV5EMlHcz9MaU0BgeqBbWngHSheF0t55FZgr3iHJ
-         T2PIasTw8hc3nuJYuDB3lCzXnwnQmY+p6qHy5eUECmNBHfznp1M1mTIIzlOA+vaynCeU
-         QqjHmA2slUpzMXwkKOVTJE5TMUi2VdhoSIOgSBc4cXSvUfSH95RNOEgooYgxJdBqrunb
-         MejIALGo7sHaYE38vfITBNe1+3MMYqlOLFGwvfofUQZ0CqmeJfo21UFg0bkZ0wdVN/2Z
-         plIkEyePysynZuKvmeAGEklNTH7OzscRgGMTUAVhr/C05IYrlsOWbR0J+hlnbebo4hTw
-         0DeA==
-X-Gm-Message-State: APjAAAXN5bd0k/YjASxviuAJl8CFfJXoSJ1Jsmb3vnkehRaKrMZytjer
-        2wq4/lo8yPf/7rKa/nD2hzA/kQ==
-X-Google-Smtp-Source: APXvYqzwooUbxzm69efOp0rljYcE0gAn6F/FddFwTjRmADcvS5J3lQevJ5I6HflzU4YKaBn7XXxoTw==
-X-Received: by 2002:a1c:1d48:: with SMTP id d69mr19104416wmd.160.1573479028082;
-        Mon, 11 Nov 2019 05:30:28 -0800 (PST)
-Received: from localhost (jirka.pirko.cz. [84.16.102.26])
-        by smtp.gmail.com with ESMTPSA id y6sm9905517wrn.21.2019.11.11.05.30.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2019 05:30:27 -0800 (PST)
-Date:   Mon, 11 Nov 2019 14:30:26 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Parav Pandit <parav@mellanox.com>,
-        David M <david.m.ertman@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Or Gerlitz <gerlitz.or@gmail.com>
-Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
-Message-ID: <20191111133026.GA2202@nanopsycho>
-References: <20191108121233.GJ6990@nanopsycho>
- <20191108144054.GC10956@ziepe.ca>
- <AM0PR05MB486658D1D2A4F3999ED95D45D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <20191108111238.578f44f1@cakuba>
- <20191108201253.GE10956@ziepe.ca>
- <20191108134559.42fbceff@cakuba>
- <20191109004426.GB31761@ziepe.ca>
- <20191109092747.26a1a37e@cakuba>
- <20191110091855.GE1435668@kroah.com>
- <20191110194601.0d6ed1a0@cakuba>
+        id S1726834AbfKKNeC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 11 Nov 2019 08:34:02 -0500
+Received: from mga02.intel.com ([134.134.136.20]:50894 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726832AbfKKNeB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 11 Nov 2019 08:34:01 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Nov 2019 05:33:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,293,1569308400"; 
+   d="scan'208";a="197670958"
+Received: from orsmsx102.amr.corp.intel.com ([10.22.225.129])
+  by orsmga008.jf.intel.com with ESMTP; 11 Nov 2019 05:33:58 -0800
+Received: from orsmsx158.amr.corp.intel.com (10.22.240.20) by
+ ORSMSX102.amr.corp.intel.com (10.22.225.129) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Mon, 11 Nov 2019 05:33:58 -0800
+Received: from orsmsx160.amr.corp.intel.com ([169.254.13.204]) by
+ ORSMSX158.amr.corp.intel.com ([169.254.10.131]) with mapi id 14.03.0439.000;
+ Mon, 11 Nov 2019 05:33:57 -0800
+From:   "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+CC:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Ralph Campbell <ralph.campbell@qlogic.com>
+Subject: RE: [PATCH rdma-next 16/16] RDMA: Change MAD processing function to
+ remove extra casting and parameter
+Thread-Topic: [PATCH rdma-next 16/16] RDMA: Change MAD processing function
+ to remove extra casting and parameter
+Thread-Index: AQHVjiIi6oSG3mnZKUWKNWhjPS34VaeGDHAQ
+Date:   Mon, 11 Nov 2019 13:33:57 +0000
+Message-ID: <32E1700B9017364D9B60AED9960492BC74671E3A@ORSMSX160.amr.corp.intel.com>
+References: <20191029062745.7932-1-leon@kernel.org>
+ <20191029062745.7932-17-leon@kernel.org>
+In-Reply-To: <20191029062745.7932-17-leon@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiNDYxY2U5MzAtNWEyNi00MWYzLThlYmQtN2YyODhkMzdiODUzIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiVWtvMmV0N3lGUTczVldVbmVPRFBPWDdKTVMzeDN3aUhobHp1QklESFBsM2dpK1BjUFBPV2REVFk3SGJuZFR5ZCJ9
+x-ctpclassification: CTP_NT
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.22.254.138]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191110194601.0d6ed1a0@cakuba>
-User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Mon, Nov 11, 2019 at 04:46:01AM CET, jakub.kicinski@netronome.com wrote:
->On Sun, 10 Nov 2019 10:18:55 +0100, gregkh@linuxfoundation.org wrote:
->> > What I'm missing is why is it so bad to have a driver register to
->> > multiple subsystems.  
->> 
->> Because these PCI devices seem to do "different" things all in one PCI
->> resource set.  Blame the hardware designers :)
->
->See below, I don't think you can blame the HW designers in this
->particular case :)
->
->> > For the nfp I think the _real_ reason to have a bus was that it
->> > was expected to have some out-of-tree modules bind to it. Something 
->> > I would not encourage :)  
->> 
->> That's not ok, and I agree with you.
->> 
->> But there seems to be some more complex PCI devices that do lots of
->> different things all at once.  Kind of like a PCI device that wants to
->> be both a keyboard and a storage device at the same time (i.e. a button
->> on a disk drive...)
->
->The keyboard which is also a storage device may be a clear cut case
->where multiple devices were integrated into one bus endpoint.
+> Subject: [PATCH rdma-next 16/16] RDMA: Change MAD processing function
+> to remove extra casting and parameter
+> 
+> From: Leon Romanovsky <leonro@mellanox.com>
+> 
+> All users of process_mad() converts input pointers from ib_mad_hdr
+> to be ib_mad, update the function declaration to use ib_mad directly.
+> 
+> Also remove not used input MAD size parameter.
+> 
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
 
-Also, I think that very important differentiator between keyboard/button
-and NIC is that keyboard/button is fixed. You have driver bus with 2
-devices on constant addresses.
+One workqueue failure we have been fighting  for a while, so the mad stuff looks fine.
 
-However in case of NIC subfunctions. You have 0 at he beginning and user
-instructs to create more (maybe hundreds). Now important questions
-appear:
-
-1) How to create devices (what API) - mdev has this figured out
-2) How to to do the addressing of the devices. Needs to be
-   predictable/defined by the user - mdev has this figured out
-3) Udev names of netdevices - udev names that according to the
-   bus/address. That is straightforeward with mdev.
-   I can't really see how to figure this one in particular with
-   per-driver busses :/
-
-
->
->The case with these advanced networking adapters is a little different
->in that they are one HW device which has oodles of FW implementing
->clients or acceleration for various networking protocols.
->
->The nice thing about having a fake bus is you can load out-of-tree
->drivers to operate extra protocols quite cleanly.
->
->I'm not saying that's what the code in question is doing, I'm saying 
->I'd personally like to understand the motivation more clearly before
->every networking driver out there starts spawning buses. The only
->argument I've heard so far for the separate devices is reloading subset
->of the drivers, which I'd rate as moderately convincing.
+Tested-By: Mike Marciniszyn <mike.marciniszyn@intel.com>
