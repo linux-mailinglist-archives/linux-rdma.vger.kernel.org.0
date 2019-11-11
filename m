@@ -2,41 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B397F8267
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2019 22:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0EAF827A
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2019 22:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbfKKVoJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 Nov 2019 16:44:09 -0500
-Received: from hqemgate15.nvidia.com ([216.228.121.64]:9312 "EHLO
+        id S1727771AbfKKVqV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 Nov 2019 16:46:21 -0500
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:9442 "EHLO
         hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727040AbfKKVoI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Nov 2019 16:44:08 -0500
+        with ESMTP id S1727121AbfKKVqU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Nov 2019 16:46:20 -0500
 Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dc9d5ea0000>; Mon, 11 Nov 2019 13:43:06 -0800
+        id <B5dc9d66d0000>; Mon, 11 Nov 2019 13:45:17 -0800
 Received: from hqmail.nvidia.com ([172.20.161.6])
   by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 11 Nov 2019 13:44:08 -0800
+  Mon, 11 Nov 2019 13:46:18 -0800
 X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 11 Nov 2019 13:44:08 -0800
+        by hqpgpgate101.nvidia.com on Mon, 11 Nov 2019 13:46:18 -0800
 Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 11 Nov
- 2019 21:44:07 +0000
-Subject: Re: [PATCH 1/1] IB/umem: use get_user_pages_fast() to pin DMA pages
-To:     Ira Weiny <ira.weiny@intel.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
+ 2019 21:46:18 +0000
+Subject: Re: [PATCH v2 04/18] media/v4l2-core: set pages dirty upon releasing
+ DMA buffers
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
         <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20191109020434.389855-1-jhubbard@nvidia.com>
- <20191109020434.389855-2-jhubbard@nvidia.com>
- <20191111032111.GA30123@iweiny-DESK2.sc.intel.com>
+References: <20191103211813.213227-1-jhubbard@nvidia.com>
+ <20191103211813.213227-5-jhubbard@nvidia.com>
+ <4b2337f6-102d-ae9d-e690-4331d77660c4@xs4all.nl>
 From:   John Hubbard <jhubbard@nvidia.com>
 X-Nvconfidentiality: public
-Message-ID: <1730ced5-a280-1825-54fe-61b9340f8ac6@nvidia.com>
-Date:   Mon, 11 Nov 2019 13:44:07 -0800
+Message-ID: <5846f15d-f03b-cd1a-051c-42b1519c4c48@nvidia.com>
+Date:   Mon, 11 Nov 2019 13:46:18 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191111032111.GA30123@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <4b2337f6-102d-ae9d-e690-4331d77660c4@xs4all.nl>
 X-Originating-IP: [10.124.1.5]
 X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
  HQMAIL107.nvidia.com (172.20.187.13)
@@ -44,85 +71,68 @@ Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1573508586; bh=yieNXEWI2py9mI29IscrDXJH38weu1ilyh60Q2W8ILg=;
+        t=1573508717; bh=JgFNDA0v0XtnqpGBZO9zS12edBVCSHH4nhh2s8SsfW8=;
         h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
          Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
          X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
          Content-Transfer-Encoding;
-        b=JjTN4WKJKNmGnmx0Ulub6NGPQ+dTDSHthvdAaABKuIKi5DQxmHuxZaBwqfxJBaEgs
-         6skuSdfqoL9H6AcvRF0VgBGA2jdfUsmrGtQFiwnZMJW0Zamo5LVsIqGsi2qLpptu+L
-         RDXRE6hmfQGYZOfR0T8pFLWAUXk/+KM7k1QQpHhRLgsQtZBCE/oGidV/vbcIATvpBn
-         66Rr/yI7VXRJjdVCWaQGOTOmAxs3kcDwbfXhY2z2wRPfuzEGtVY9c2BxlwRxv1T3bb
-         zBnwTH8LRmI3fay5kjUkkBTmP5NXnDRRGa8tgHrvw74cPxKv/Wb3Mu6KtvWPGNxt5Y
-         wjBZxXvUu1zlg==
+        b=KJdHonRoY4lGZsGGXFA+s6C9dAs+F+pw/0M4pYcPJTv8UjN4AOAtOKwCMIML32E4J
+         r1oa+qdIiwIStrqpxJM1Ivl0+B4WzoS3hMuEMwbOHFQnWENnyAiOG7rxglRiMPOsG2
+         P1hEnkWRlMLt+KFRHY1ADSR7l9DzNOzOUd8zjn8ytb8H6XjFU3HR0TMaYulAaIN8Ej
+         W15iUuEbFCS+gYNQ7bbS2hBGFlr0gEiNZEHH94kd699lxQXaw52Pbe2bTEp8/kn2Gi
+         RR0P48w8xGu3BkU/HHy5EhGqoz+wSP++cOtfAjoHUddj6CK5tYXuhTndLB24+KM9Al
+         oii/NsVBT+BQA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/10/19 7:21 PM, Ira Weiny wrote:
-> On Fri, Nov 08, 2019 at 06:04:34PM -0800, John Hubbard wrote:
->> And get rid of the mmap_sem calls, as part of that. Note
->> that get_user_pages_fast() will, if necessary, fall back to
->> __gup_longterm_unlocked(), which takes the mmap_sem as needed.
+On 11/10/19 2:10 AM, Hans Verkuil wrote:
+> On 11/3/19 10:17 PM, John Hubbard wrote:
+>> After DMA is complete, and the device and CPU caches are synchronized,
+>> it's still required to mark the CPU pages as dirty, if the data was
+>> coming from the device. However, this driver was just issuing a
+>> bare put_page() call, without any set_page_dirty*() call.
 >>
->> Cc: Jason Gunthorpe <jgg@ziepe.ca>
->> Cc: Ira Weiny <ira.weiny@intel.com>
+>> Fix the problem, by calling set_page_dirty_lock() if the CPU pages
+>> were potentially receiving data from the device.
+>>
+>> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+>> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 > 
-> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+> Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> 
+> Looks good, thanks!
 > 
 
-Thanks for the review, Ira! This will show up shortly, in the v3
-series of "mm/gup: track dma-pinned pages: FOLL_PIN, FOLL_LONGTERM".
+Hi Hans, it's great that you could take a look at this and the other v4l2 
+patch, much appreciated.
 
 
 thanks,
 -- 
 John Hubbard
 NVIDIA
-
->> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 >> ---
->>  drivers/infiniband/core/umem.c | 17 ++++++-----------
->>  1 file changed, 6 insertions(+), 11 deletions(-)
+>>  drivers/media/v4l2-core/videobuf-dma-sg.c | 5 ++++-
+>>  1 file changed, 4 insertions(+), 1 deletion(-)
 >>
->> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
->> index 24244a2f68cc..3d664a2539eb 100644
->> --- a/drivers/infiniband/core/umem.c
->> +++ b/drivers/infiniband/core/umem.c
->> @@ -271,16 +271,13 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
->>  	sg = umem->sg_head.sgl;
+>> diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
+>> index 66a6c6c236a7..28262190c3ab 100644
+>> --- a/drivers/media/v4l2-core/videobuf-dma-sg.c
+>> +++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
+>> @@ -349,8 +349,11 @@ int videobuf_dma_free(struct videobuf_dmabuf *dma)
+>>  	BUG_ON(dma->sglen);
 >>  
->>  	while (npages) {
->> -		down_read(&mm->mmap_sem);
->> -		ret = get_user_pages(cur_base,
->> -				     min_t(unsigned long, npages,
->> -					   PAGE_SIZE / sizeof (struct page *)),
->> -				     gup_flags | FOLL_LONGTERM,
->> -				     page_list, NULL);
->> -		if (ret < 0) {
->> -			up_read(&mm->mmap_sem);
->> +		ret = get_user_pages_fast(cur_base,
->> +					  min_t(unsigned long, npages,
->> +						PAGE_SIZE /
->> +						sizeof(struct page *)),
->> +					  gup_flags | FOLL_LONGTERM, page_list);
->> +		if (ret < 0)
->>  			goto umem_release;
->> -		}
->>  
->>  		cur_base += ret * PAGE_SIZE;
->>  		npages   -= ret;
->> @@ -288,8 +285,6 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
->>  		sg = ib_umem_add_sg_table(sg, page_list, ret,
->>  			dma_get_max_seg_size(context->device->dma_device),
->>  			&umem->sg_nents);
->> -
->> -		up_read(&mm->mmap_sem);
+>>  	if (dma->pages) {
+>> -		for (i = 0; i < dma->nr_pages; i++)
+>> +		for (i = 0; i < dma->nr_pages; i++) {
+>> +			if (dma->direction == DMA_FROM_DEVICE)
+>> +				set_page_dirty_lock(dma->pages[i]);
+>>  			put_page(dma->pages[i]);
+>> +		}
+>>  		kfree(dma->pages);
+>>  		dma->pages = NULL;
 >>  	}
->>  
->>  	sg_mark_end(sg);
->> -- 
->> 2.24.0
 >>
 > 
