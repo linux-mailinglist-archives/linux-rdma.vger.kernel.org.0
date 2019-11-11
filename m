@@ -2,179 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2942BF6C99
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2019 03:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6320DF6D3F
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Nov 2019 04:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726763AbfKKCTy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 Nov 2019 21:19:54 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:24548 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726742AbfKKCTx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 10 Nov 2019 21:19:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1573438792;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TeoYXuf+oFqFCktCDolOS7Y5kKTl7vEKyx5nLQaehgc=;
-        b=Ne4u0pxEg2GAivEGiHaWv2wdk2KUzX/zlBVGWhdw2z9aSTdI4jTBwUukk6mq63nnEWkaIQ
-        p0lEgCNF1zE5dcXCnyMyDwdANhCi001isRodA0uFC2UDllz2MSOKUa+5mZrdzKSFkIY5ta
-        PI/Lu7iXgp2TaYfmLHlrgcmyXPdtIsA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-wNLGTRscNhKXoR8seBYvjA-1; Sun, 10 Nov 2019 21:19:49 -0500
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CF91801FA1;
-        Mon, 11 Nov 2019 02:19:46 +0000 (UTC)
-Received: from [10.72.12.227] (ovpn-12-227.pek2.redhat.com [10.72.12.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A97B5DD64;
-        Mon, 11 Nov 2019 02:19:24 +0000 (UTC)
-Subject: Re: [PATCH net-next 00/19] Mellanox, mlx5 sub function support
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        David M <david.m.ertman@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Or Gerlitz <gerlitz.or@gmail.com>
-References: <20191107160448.20962-1-parav@mellanox.com>
- <20191107153234.0d735c1f@cakuba.netronome.com>
- <20191108121233.GJ6990@nanopsycho> <20191108144054.GC10956@ziepe.ca>
- <AM0PR05MB486658D1D2A4F3999ED95D45D17B0@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <20191108111238.578f44f1@cakuba> <20191108201253.GE10956@ziepe.ca>
- <20191108133435.6dcc80bd@x1.home> <20191108210545.GG10956@ziepe.ca>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <30d00588-cc19-fdc8-330e-d98b8611a75e@redhat.com>
-Date:   Mon, 11 Nov 2019 10:19:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726764AbfKKDVN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 10 Nov 2019 22:21:13 -0500
+Received: from mga11.intel.com ([192.55.52.93]:22964 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726749AbfKKDVN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 10 Nov 2019 22:21:13 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Nov 2019 19:21:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,291,1569308400"; 
+   d="scan'208";a="207006324"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by orsmga006.jf.intel.com with ESMTP; 10 Nov 2019 19:21:11 -0800
+Date:   Sun, 10 Nov 2019 19:21:11 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] IB/umem: use get_user_pages_fast() to pin DMA pages
+Message-ID: <20191111032111.GA30123@iweiny-DESK2.sc.intel.com>
+References: <20191109020434.389855-1-jhubbard@nvidia.com>
+ <20191109020434.389855-2-jhubbard@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20191108210545.GG10956@ziepe.ca>
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-MC-Unique: wNLGTRscNhKXoR8seBYvjA-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191109020434.389855-2-jhubbard@nvidia.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Fri, Nov 08, 2019 at 06:04:34PM -0800, John Hubbard wrote:
+> And get rid of the mmap_sem calls, as part of that. Note
+> that get_user_pages_fast() will, if necessary, fall back to
+> __gup_longterm_unlocked(), which takes the mmap_sem as needed.
+> 
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Ira Weiny <ira.weiny@intel.com>
 
-On 2019/11/9 =E4=B8=8A=E5=8D=885:05, Jason Gunthorpe wrote:
-> On Fri, Nov 08, 2019 at 01:34:35PM -0700, Alex Williamson wrote:
->> On Fri, 8 Nov 2019 16:12:53 -0400
->> Jason Gunthorpe <jgg@ziepe.ca> wrote:
->>
->>> On Fri, Nov 08, 2019 at 11:12:38AM -0800, Jakub Kicinski wrote:
->>>> On Fri, 8 Nov 2019 15:40:22 +0000, Parav Pandit wrote:
->>>>>> The new intel driver has been having a very similar discussion about=
- how to
->>>>>> model their 'multi function device' ie to bind RDMA and other driver=
-s to a
->>>>>> shared PCI function, and I think that discussion settled on adding a=
- new bus?
->>>>>>
->>>>>> Really these things are all very similar, it would be nice to have a=
- clear
->>>>>> methodology on how to use the device core if a single PCI device is =
-split by
->>>>>> software into multiple different functional units and attached to di=
-fferent
->>>>>> driver instances.
->>>>>>
->>>>>> Currently there is alot of hacking in this area.. And a consistent s=
-cheme
->>>>>> might resolve the ugliness with the dma_ops wrappers.
->>>>>>
->>>>>> We already have the 'mfd' stuff to support splitting platform device=
-s, maybe
->>>>>> we need to create a 'pci-mfd' to support splitting PCI devices?
->>>>>>
->>>>>> I'm not really clear how mfd and mdev relate, I always thought mdev =
-was
->>>>>> strongly linked to vfio.
->>>>>>  =20
->>>>> Mdev at beginning was strongly linked to vfio, but as I mentioned
->>>>> above it is addressing more use case.
->>>>>
->>>>> I observed that discussion, but was not sure of extending mdev furthe=
-r.
->>>>>
->>>>> One way to do for Intel drivers to do is after series [9].
->>>>> Where PCI driver says, MDEV_CLASS_ID_I40_FOO
->>>>> RDMA driver mdev_register_driver(), matches on it and does the probe(=
-).
->>>> Yup, FWIW to me the benefit of reusing mdevs for the Intel case vs
->>>> muddying the purpose of mdevs is not a clear trade off.
->>> IMHO, mdev has amdev_parent_ops structure clearly intended to link it
->>> to vfio, so using a mdev for something not related to vfio seems like
->>> a poor choice.
->> Unless there's some opposition, I'm intended to queue this for v5.5:
->>
->> https://www.spinics.net/lists/kvm/msg199613.html
->>
->> mdev has started out as tied to vfio, but at it's core, it's just a
->> device life cycle infrastructure with callbacks between bus drivers
->> and vendor devices.  If virtio is on the wrong path with the above
->> series, please speak up.  Thanks,
-> Well, I think Greg just objected pretty strongly.
->
-> IMHO it is wrong to turn mdev into some API multiplexor. That is what
-> the driver core already does and AFAIK your bus type is supposed to
-> represent your API contract to your drivers.
->
-> Since the bus type is ABI, 'mdev' is really all about vfio I guess?
->
-> Maybe mdev should grow by factoring the special GUID life cycle stuff
-> into a helper library that can make it simpler to build proper API
-> specific bus's using that lifecycle model? ie the virtio I saw
-> proposed should probably be a mdev-virtio bus type providing this new
-> virtio API contract using a 'struct mdev_virtio'?
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
-
-Yes, and probably just decouple the vfio a little bit more from mdev,=20
-and allow mdev to register multiple types of buses. Vfio-mdev still go=20
-for mdev bus, but for virtio and other they will go their own.
-
-Thanks
-
-
->
-> I only looked briefly but mdev seems like an unusual way to use the
-> driver core. *generally* I would expect that if a driver wants to
-> provide a foo_device (on a foo bus, providing the foo API contract) it
-> looks very broadly like:
->
->    struct foo_device {
->         struct device dev;
->         const struct foo_ops *ops;
->    };
->    struct my_foo_device {
->        struct foo_device fdev;
->    };
->
->    foo_device_register(&mydev->fdev);
->
-> Which means we can use normal container_of() patterns, while mdev
-> seems to want to allocate all the structs internally.. I guess this is
-> because of how the lifecycle stuff works? From a device core view it
-> looks quite unnatural.
->
-> Jason
-
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+>  drivers/infiniband/core/umem.c | 17 ++++++-----------
+>  1 file changed, 6 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+> index 24244a2f68cc..3d664a2539eb 100644
+> --- a/drivers/infiniband/core/umem.c
+> +++ b/drivers/infiniband/core/umem.c
+> @@ -271,16 +271,13 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
+>  	sg = umem->sg_head.sgl;
+>  
+>  	while (npages) {
+> -		down_read(&mm->mmap_sem);
+> -		ret = get_user_pages(cur_base,
+> -				     min_t(unsigned long, npages,
+> -					   PAGE_SIZE / sizeof (struct page *)),
+> -				     gup_flags | FOLL_LONGTERM,
+> -				     page_list, NULL);
+> -		if (ret < 0) {
+> -			up_read(&mm->mmap_sem);
+> +		ret = get_user_pages_fast(cur_base,
+> +					  min_t(unsigned long, npages,
+> +						PAGE_SIZE /
+> +						sizeof(struct page *)),
+> +					  gup_flags | FOLL_LONGTERM, page_list);
+> +		if (ret < 0)
+>  			goto umem_release;
+> -		}
+>  
+>  		cur_base += ret * PAGE_SIZE;
+>  		npages   -= ret;
+> @@ -288,8 +285,6 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
+>  		sg = ib_umem_add_sg_table(sg, page_list, ret,
+>  			dma_get_max_seg_size(context->device->dma_device),
+>  			&umem->sg_nents);
+> -
+> -		up_read(&mm->mmap_sem);
+>  	}
+>  
+>  	sg_mark_end(sg);
+> -- 
+> 2.24.0
+> 
