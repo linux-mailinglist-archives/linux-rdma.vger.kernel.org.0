@@ -2,94 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6A5F8BAA
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2019 10:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3863EF8FF6
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2019 13:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727113AbfKLJ0V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Nov 2019 04:26:21 -0500
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:62856 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726960AbfKLJ0U (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 Nov 2019 04:26:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1573550780; x=1605086780;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=c5ue4zW/Jg9vutnQiDXwWVYJSnDh7bMHm7lWiQw0hLA=;
-  b=QFqimPRps7YTwixqowwtoOiTGTRPkyL3otBUWk+cRdmTjyUI4jm4cgUv
-   ntsIB2La9Enpagcl1BEcWxoNjoc5cYHepJydW4BusxH9UWCatFYx4/6gJ
-   TeyFz+kaU5GdUk9aYeYXR3Gelo4xYtPDkV2+LiqOf0fkzPovo3Z63BL/r
-   g=;
-IronPort-SDR: coD7J2hQVvurLsU6lKNViPtH7h+7hWd/33dLrM7YOgteDyhxRzs2D8xzevI0ViEc0Xvrb8oRiu
- ju92vq/KCr7Q==
-X-IronPort-AV: E=Sophos;i="5.68,295,1569283200"; 
-   d="scan'208";a="6371055"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-67b371d8.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 12 Nov 2019 09:26:20 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1a-67b371d8.us-east-1.amazon.com (Postfix) with ESMTPS id 83359A20BA;
-        Tue, 12 Nov 2019 09:26:18 +0000 (UTC)
-Received: from EX13D22EUA003.ant.amazon.com (10.43.165.210) by
- EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 12 Nov 2019 09:26:17 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
- EX13D22EUA003.ant.amazon.com (10.43.165.210) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 12 Nov 2019 09:26:16 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.218.69.136) by
- mail-relay.amazon.com (10.43.160.118) with Microsoft SMTP Server id
- 15.0.1367.3 via Frontend Transport; Tue, 12 Nov 2019 09:26:13 +0000
-From:   Gal Pressman <galpress@amazon.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
-CC:     <linux-rdma@vger.kernel.org>, Gal Pressman <galpress@amazon.com>,
-        "Daniel Kranzdorf" <dkkranzd@amazon.com>,
-        Firas JahJah <firasj@amazon.com>
-Subject: [PATCH for-rc] RDMA/efa: Clear the admin command buffer prior to its submission
-Date:   Tue, 12 Nov 2019 11:26:08 +0200
-Message-ID: <20191112092608.46964-1-galpress@amazon.com>
-X-Mailer: git-send-email 2.24.0
+        id S1725919AbfKLMvl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Nov 2019 07:51:41 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6209 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725847AbfKLMvl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 12 Nov 2019 07:51:41 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 321B0513771E3DAA7619;
+        Tue, 12 Nov 2019 20:51:40 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.439.0; Tue, 12 Nov 2019 20:51:29 +0800
+From:   Yixian Liu <liuyixian@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH v2 for-next 0/2] Fix crash due to sleepy mutex while holding lock in post_{send|recv|poll}
+Date:   Tue, 12 Nov 2019 20:52:02 +0800
+Message-ID: <1573563124-12579-1-git-send-email-liuyixian@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-We cannot rely on the entry memcpy as we only copy the actual size of
-the command, the rest of the bytes must be memset to zero.
+Earlier Background:
+HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
+outstanding WQEs if QP state gets into errored mode for some reason.
+To overcome this hardware problem and as a workaround, when QP is
+detected to be in errored state during various legs like post send,
+post receive etc [1], flush needs to be performed from the driver.
 
-Fixes: 0420e542569b ("RDMA/efa: Implement functions that submit and complete admin commands")
-Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
-Reviewed-by: Firas JahJah <firasj@amazon.com>
-Signed-off-by: Gal Pressman <galpress@amazon.com>
----
- drivers/infiniband/hw/efa/efa_com.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+These data-path legs might get called concurrently from various context,
+like thread and interrupt as well (like NVMe driver). Hence, these need
+to be protected with spin-locks for the concurrency. This code exists
+within the driver.
 
-diff --git a/drivers/infiniband/hw/efa/efa_com.c b/drivers/infiniband/hw/efa/efa_com.c
-index 3c412bc5b94f..0778f4f7dccd 100644
---- a/drivers/infiniband/hw/efa/efa_com.c
-+++ b/drivers/infiniband/hw/efa/efa_com.c
-@@ -317,6 +317,7 @@ static struct efa_comp_ctx *__efa_com_submit_admin_cmd(struct efa_com_admin_queu
- 						       struct efa_admin_acq_entry *comp,
- 						       size_t comp_size_in_bytes)
- {
-+	struct efa_admin_aq_entry *aqe;
- 	struct efa_comp_ctx *comp_ctx;
- 	u16 queue_size_mask;
- 	u16 cmd_id;
-@@ -350,7 +351,9 @@ static struct efa_comp_ctx *__efa_com_submit_admin_cmd(struct efa_com_admin_queu
- 
- 	reinit_completion(&comp_ctx->wait_event);
- 
--	memcpy(&aq->sq.entries[pi], cmd, cmd_size_in_bytes);
-+	aqe = &aq->sq.entries[pi];
-+	memset(aqe, 0, sizeof(*aqe));
-+	memcpy(aqe, cmd, cmd_size_in_bytes);
- 
- 	aq->sq.pc++;
- 	atomic64_inc(&aq->stats.submitted_cmd);
+Problem:
+Earlier The patch[1] sent to solve the hardware limitation explained
+in the background section had a bug in the software flushing leg. It
+acquired mutex while modifying QP state to errored state and while
+conveying it to the hardware using the mailbox. This caused leg to
+sleep while holding spin-lock and caused crash.
+
+Suggested Solution:
+In this patch, we have proposed to defer the flushing of the QP in
+Errored state using the workqueue.
+
+We do understand that this might have an impact on the recovery times
+as scheduling of the wqorkqueue handler depends upon the occupancy of
+the system. Therefore to roughly mitigate this affect we have tried
+to use Concurrency Managed workqueue to give worker thread (and
+hence handler) a chance to run over more than one core.
+
+
+[1] https://patchwork.kernel.org/patch/10534271/
+
+
+This patch-set consists of:
+[Patch 001] Introduce workqueue based WQE Flush Handler
+[Patch 002] Call WQE flush handler in post {send|receive|poll}
+
+v2 changes:
+1. Remove new created workqueue according to Jason's comment
+2. Remove dynamic allocation for flush_work according to Jason's comment
+3. Change current irq singlethread workqueue to concurrency management
+   workqueue to ensure work unblocked.
+
+Yixian Liu (2):
+  RDMA/hns: Add the workqueue framework for flush cqe handler
+  RDMA/hns: Delayed flush cqe process with workqueue
+
+ drivers/infiniband/hw/hns/hns_roce_device.h |  3 +
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 88 +++++++++++++----------------
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 33 +++++++++++
+ 3 files changed, 76 insertions(+), 48 deletions(-)
+
 -- 
-2.23.0
+2.7.4
 
