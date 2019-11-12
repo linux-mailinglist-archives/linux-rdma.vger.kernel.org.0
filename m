@@ -2,119 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B2CF941B
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2019 16:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B67FF94F7
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2019 17:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbfKLPZZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Nov 2019 10:25:25 -0500
-Received: from verein.lst.de ([213.95.11.211]:56403 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726896AbfKLPZZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 12 Nov 2019 10:25:25 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 1C20F68BE1; Tue, 12 Nov 2019 16:25:22 +0100 (CET)
-Date:   Tue, 12 Nov 2019 16:25:21 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Shuah Khan <shuah@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] mm/hmm/test: add self tests for HMM
-Message-ID: <20191112152521.GC12550@lst.de>
-References: <20191104222141.5173-1-rcampbell@nvidia.com> <20191104222141.5173-3-rcampbell@nvidia.com>
+        id S1726923AbfKLP7k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Nov 2019 10:59:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56904 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725954AbfKLP7k (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 12 Nov 2019 10:59:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id E801CB3BC;
+        Tue, 12 Nov 2019 15:59:37 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     andrew.murray@arm.com, maz@kernel.org, linux-kernel@vger.kernel.org
+Cc:     james.quinlan@broadcom.com, mbrugger@suse.com,
+        f.fainelli@gmail.com, phil@raspberrypi.org, wahrenst@gmx.net,
+        jeremy.linton@arm.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        iommu@lists.linux-foundation.org
+Subject: [PATCH v2 0/6] Raspberry Pi 4 PCIe support
+Date:   Tue, 12 Nov 2019 16:59:19 +0100
+Message-Id: <20191112155926.16476-1-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191104222141.5173-3-rcampbell@nvidia.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Shouldn't this go into mm/ instead? It certainly doesn't seem
-like a library.
+This series aims at providing support for Raspberry Pi 4's PCIe
+controller, which is also shared with the Broadcom STB family of
+devices.
 
-> +static int dmirror_bounce_copy_from(struct dmirror_bounce *bounce,
-> +				    unsigned long addr)
-> +{
-> +	unsigned long end = addr + bounce->size;
-> +	char __user *uptr = (void __user *)addr;
-> +	void *ptr = bounce->ptr;
-> +
-> +	for (; addr < end; addr += PAGE_SIZE, ptr += PAGE_SIZE,
-> +					      uptr += PAGE_SIZE) {
-> +		int ret;
-> +
-> +		ret = copy_from_user(ptr, uptr, PAGE_SIZE);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
+There was a previous attempt to upstream this some years ago[1] but was
+blocked as most STB PCIe integrations have a sparse DMA mapping[2] which
+is something currently not supported by the kernel.  Luckily this is not
+the case for the Raspberry Pi 4.
 
-Why does this iterate in page sized chunks?  I don't remember a page
-size limit on copy_{from,to}_user.
+Note that the driver code is to be based on top of Rob Herring's series
+simplifying inbound and outbound range parsing.
 
-> +static int dmirror_invalidate_range_start(struct mmu_notifier *mn,
-> +				const struct mmu_notifier_range *update)
-> +{
-> +	struct dmirror *dmirror = container_of(mn, struct dmirror, notifier);
-> +
-> +	if (mmu_notifier_range_blockable(update))
-> +		mutex_lock(&dmirror->mutex);
-> +	else if (!mutex_trylock(&dmirror->mutex))
-> +		return -EAGAIN;
-> +
-> +	dmirror_do_update(dmirror, update->start, update->end);
-> +	mutex_unlock(&dmirror->mutex);
-> +	return 0;
-> +}
+[1] https://patchwork.kernel.org/cover/10605933/
+[2] https://patchwork.kernel.org/patch/10605957/
 
-Can we adopts this to Jasons new interval tree invalidate?
+---
 
-> +static int dmirror_fops_open(struct inode *inode, struct file *filp)
-> +{
-> +	struct cdev *cdev = inode->i_cdev;
-> +	struct dmirror_device *mdevice;
-> +	struct dmirror *dmirror;
-> +
-> +	/* No exclusive opens. */
-> +	if (filp->f_flags & O_EXCL)
-> +		return -EINVAL;
+Changes since v1:
+  - add generic rounddown/roundup_pow_two64() patch
+  - Add MAINTAINERS patch
+  - Fix Kconfig
+  - Cleanup probe, use up to date APIs, exit on MSI failure
+  - Get rid of linux,pci-domain and other unused constructs
+  - Use edge triggered setup for MSI
+  - Cleanup MSI implementation
+  - Fix multiple cosmetic issues
+  - Remove supend/resume code
 
-Device files usually just ignore O_EXCL, I don't see why this one
-would be any different.
+Jim Quinlan (3):
+  dt-bindings: PCI: Add bindings for brcmstb's PCIe device
+  PCI: brcmstb: add Broadcom STB PCIe host controller driver
+  PCI: brcmstb: add MSI capability
 
-> +	mdevice = container_of(cdev, struct dmirror_device, cdevice);
-> +	dmirror = dmirror_new(mdevice);
-> +	if (!dmirror)
-> +		return -ENOMEM;
-> +
-> +	/* Only the first open registers the address space. */
-> +	mutex_lock(&mdevice->devmem_lock);
-> +	if (filp->private_data)
-> +		goto err_busy;
-> +	filp->private_data = dmirror;
-> +	mutex_unlock(&mdevice->devmem_lock);
+Nicolas Saenz Julienne (3):
+  linux/log2.h: Add roundup/rounddown_pow_two64() family of functions
+  ARM: dts: bcm2711: Enable PCIe controller
+  MAINTAINERS: Add brcmstb PCIe controller
 
-->open is only called for the first open of a given file structure..
+ .../bindings/pci/brcm,stb-pcie.yaml           |  110 ++
+ MAINTAINERS                                   |    4 +
+ arch/arm/boot/dts/bcm2711.dtsi                |   46 +
+ drivers/net/ethernet/mellanox/mlx4/en_clock.c |    3 +-
+ drivers/pci/controller/Kconfig                |    9 +
+ drivers/pci/controller/Makefile               |    1 +
+ drivers/pci/controller/pcie-brcmstb.c         | 1179 +++++++++++++++++
+ drivers/pci/controller/pcie-cadence-ep.c      |    7 +-
+ drivers/pci/controller/pcie-cadence.c         |    7 +-
+ drivers/pci/controller/pcie-rockchip-ep.c     |    9 +-
+ include/linux/log2.h                          |   52 +
+ kernel/dma/direct.c                           |    3 +-
+ 12 files changed, 1412 insertions(+), 18 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+ create mode 100644 drivers/pci/controller/pcie-brcmstb.c
 
-> +static int dmirror_fops_release(struct inode *inode, struct file *filp)
-> +{
-> +	struct dmirror *dmirror = filp->private_data;
-> +
-> +	if (!dmirror)
-> +		return 0;
+-- 
+2.24.0
 
-This can't happen if your ->open never returns 0 without setting the
-private data.
-
-> +	filp->private_data = NULL;
-
-The file is feed afterwards, no need to clear the private data.
