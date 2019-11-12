@@ -2,101 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 468ABF9B60
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2019 22:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0404F9B8F
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Nov 2019 22:11:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbfKLVAC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Nov 2019 16:00:02 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:36045 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726645AbfKLVAC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 Nov 2019 16:00:02 -0500
-Received: by mail-qt1-f194.google.com with SMTP id y10so27989qto.3
-        for <linux-rdma@vger.kernel.org>; Tue, 12 Nov 2019 13:00:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RcA1vdVtYr2ysVNVJFn5DcgKL3bMRqBRJU+TaaCpfL0=;
-        b=gsLyECWBq7P2ygaM5CenSPIK2Bb9Vzk/GapR143RLs/FRENjwLSRxB75aYNhw5984F
-         rKvpW++sjGFPZRLl5Gkywo/VH4TZSIMo3Kz1Zdcr5u/c49gDlDhrtWbIqu252GfATxmH
-         huRGQsHzg7f8DK06/AdCV6NOn3chUF3DGq+OsDZLShQQwKQsyC0eXXArp6Z2p2RNRQVX
-         SFaLXbxKX5ZisLYH3fNPGdqqW8GGEVa5htyEoRcrHF79nrnEeGrlnGSrJ2Mhl/FUgXb5
-         BZggyE+OornQNmefaRE6HGW52cGEvmbEcBgxTiDrOI4NDDUARx1mjzZFS7R5MrQt2IQH
-         2PmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RcA1vdVtYr2ysVNVJFn5DcgKL3bMRqBRJU+TaaCpfL0=;
-        b=QM+nYnh7DRh15ezUmUeyc2Nxyu/2i2ZVEYUQyr6O2rGWyUlS2ScQViiDMP57uZ0w+8
-         fbsW7l1Jj0ydyjZddFjU53FKY8AeEuOEGG4GqHiitPRez1PoQ5UHcFTQr3OSdFZmzCvY
-         OZ+rTB0fhcRMvLvZS5Jnj8slallbJvjlmqADzaKjfitehDUN/4T+nvUBchvCis9j7AH6
-         mfFGgdwL3HA9XhILaVGQ96kQuOTyzVI5vaGazmQJDH5IOfXL8wNJa0Dq+JdgiTq3RR5F
-         ABlmVPOb9hcVdEk4i7uBk353MTj7AXxlT/wKgwFFK0JV6DDh01lNmQ3h4aCSccESjSpq
-         5P1Q==
-X-Gm-Message-State: APjAAAUq6VCb4PD3CQLgrhQ2BF2HO0NfRzGZi2RU0oWrWwvvfav2B+pQ
-        AOPz90cmrVCepNlQbyuvWM78xA==
-X-Google-Smtp-Source: APXvYqzqv+RVz+VwrSvo2+CFjhM5L0G7lxnRYD0DPmy0gOr43rtZwxesUpgTldGoOYGZryde9POElg==
-X-Received: by 2002:aed:255c:: with SMTP id w28mr34148037qtc.185.1573592400902;
-        Tue, 12 Nov 2019 13:00:00 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id w69sm9693057qkb.26.2019.11.12.12.59.59
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 12 Nov 2019 12:59:59 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iUdGY-0004I0-Te; Tue, 12 Nov 2019 16:59:58 -0400
-Date:   Tue, 12 Nov 2019 16:59:58 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc:     davem@davemloft.net, gregkh@linuxfoundation.org,
-        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, parav@mellanox.com,
-        Kiran Patil <kiran.patil@intel.com>
-Subject: Re: [net-next 1/1] virtual-bus: Implementation of Virtual Bus
-Message-ID: <20191112205958.GH5584@ziepe.ca>
-References: <20191111192219.30259-1-jeffrey.t.kirsher@intel.com>
+        id S1727276AbfKLVKx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Nov 2019 16:10:53 -0500
+Received: from hqemgate16.nvidia.com ([216.228.121.65]:1270 "EHLO
+        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727239AbfKLVKw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 Nov 2019 16:10:52 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dcb1fa00000>; Tue, 12 Nov 2019 13:09:52 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 12 Nov 2019 13:10:48 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 12 Nov 2019 13:10:48 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 12 Nov
+ 2019 21:10:47 +0000
+Subject: Re: [PATCH v3 00/23] mm/gup: track dma-pinned pages: FOLL_PIN,
+ FOLL_LONGTERM
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20191112000700.3455038-1-jhubbard@nvidia.com>
+ <20191112203802.GD5584@ziepe.ca>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <02fa935c-3469-b766-b691-5660084b60b9@nvidia.com>
+Date:   Tue, 12 Nov 2019 13:10:47 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191111192219.30259-1-jeffrey.t.kirsher@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191112203802.GD5584@ziepe.ca>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1573592992; bh=FYNiQqIIwAjaPTLdgZDFjzpc3PZA+IOd8Qzq/L3NYFI=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=XDTPGbX/pfLSLEPMZj0U4ST8nWeqLQb9L0gJo2fojuRXhn2sbJZCbDvwG00vq+XIQ
+         colylZtLpZg40dx1ABr6UMyL7nDz+Ko0zZq5udmfA2v8o8KV6jbQ8nMJaMjSxXz3jT
+         /IQas6U39IMXowKsu+Lp15YvwNvsj9I4GEW1qSNrdbdQur8MbFNPpL74slNbnNTKiw
+         2tvXn1JIXwNPZ2+bJmHJ2nQzCpfl0RwWLH4Y7hj0SisnidmxgFdWv36tY7VU9S2345
+         uRxyqWTOY6lQqCfoY1uSgUmsGBjI6laWSw8oWM5BJSMXcH/MubF7tkJ0NoA3AfLsvB
+         eNrIf7Db8lhiQ==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 11, 2019 at 11:22:19AM -0800, Jeff Kirsher wrote:
-> From: Dave Ertman <david.m.ertman@intel.com>
+On 11/12/19 12:38 PM, Jason Gunthorpe wrote:
+> On Mon, Nov 11, 2019 at 04:06:37PM -0800, John Hubbard wrote:
+>> Hi,
+>>
+>> The cover letter is long, so the more important stuff is first:
+>>
+>> * Jason, if you or someone could look at the the VFIO cleanup (patch 8)
+>>   and conversion to FOLL_PIN (patch 18), to make sure it's use of
+>>   remote and longterm gup matches what we discussed during the review
+>>   of v2, I'd appreciate it.
+>>
+>> * Also for Jason and IB: as noted below, in patch 11, I am (too?) boldly
+>>   converting from put_user_pages() to release_pages().
 > 
-> This is the initial implementation of the Virtual Bus,
-> virtbus_device and virtbus_driver.  The virtual bus is
-> a software based bus intended to support lightweight
-> devices and drivers and provide matching between them
-> and probing of the registered drivers.
+> Why are we doing this? I think things got confused here someplace, as
+
+
+Because:
+
+a) These need put_page() calls,  and
+
+b) there is no put_pages() call, but there is a release_pages() call that
+is, arguably, what put_pages() would be.
+
+
+> the comment still says:
 > 
-> Files added:
-> 	drivers/bus/virtual_bus.c
-> 	include/linux/virtual_bus.h
-> 	Documentation/driver-api/virtual_bus.rst
+> /**
+>  * put_user_page() - release a gup-pinned page
+>  * @page:            pointer to page to be released
+>  *
+>  * Pages that were pinned via get_user_pages*() must be released via
+>  * either put_user_page(), or one of the put_user_pages*() routines
+>  * below.
+
+
+Ohhh, I missed those comments. They need to all be changed over to
+say "pages that were pinned via pin_user_pages*() or 
+pin_longterm_pages*() must be released via put_user_page*()."
+
+The get_user_pages*() pages must still be released via put_page.
+
+The churn is due to a fairly significant change in strategy, whis
+is: instead of changing all get_user_pages*() sites to call 
+put_user_page(), change selected sites to call pin_user_pages*() or 
+pin_longterm_pages*(), plus put_user_page().
+
+That allows incrementally converting the kernel over to using the
+new pin APIs, without taking on the huge risk of a big one-shot
+conversion. 
+
+So, I've ended up with one place that actually needs to get reverted
+back to get_user_pages(), and that's the IB ODP code.
+
 > 
-> The primary purpose of the virual bus is to provide
-> matching services and to pass the data pointer
-> contained in the virtbus_device to the virtbus_driver
-> during its probe call.  This will allow two separate
-> kernel objects to match up and start communication.
+> I feel like if put_user_pages() is not the correct way to undo
+> get_user_pages() then it needs to be deleted.
+> 
 
-I think this is the 'multi_subsystem_device' idea I threw out in this
-thread. ie pass an opaque void *pointer, done here by
-virtbus_get_devdata():
- 
- https://lore.kernel.org/r/20191109084659.GB1289838@kroah.com
+Yes, you're right. I'll fix the put_user_page comments() as described.
 
-And Greg said 'Ick, no'..
 
-So each driver should makes its own bus, and perhaps we should provide
-some helper stuff for the repeating code, like PM function reflection?
+thanks,
 
-Jason
+John Hubbard
+NVIDIA
