@@ -2,127 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE0AF9E54
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 00:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A545F9EDA
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 01:08:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbfKLXp5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Nov 2019 18:45:57 -0500
-Received: from mail-eopbgr00078.outbound.protection.outlook.com ([40.107.0.78]:10113
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726936AbfKLXp4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 12 Nov 2019 18:45:56 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SJiwN5YxrytMCzVdav2ElxEHLXuBfXkCwn+d9nRuW1AGk8lNBbBapQB8ddCsD9X7yDSlmJOP+CtFQdREunMVawuxTR9mwDLzvbi0xw+Ymf7v8k/hpd24WMgg6Xhu21g+YT4YmaQvUbCvwv15HtoA/IBcDM8GJBZu8eokX76zKDhRgf1DibfE4D9W56J/b+m7RJ2s++6pcrYAP7n+Wc9OwNN0p/xE1o37s1Si1b8LttMXAtYrByU72n/PqOBoPiID7RL9MLz2R9BjnNNLD97ios4WpPhob1SPvJFpc6WFxxTkntgHqy36UxpPK+m3oil+5ve5of3znXDeh/Bfwacw0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=skoDK31U0/7SDkc3ZpaX+MWHCrcSYVcNoz07elFWxKE=;
- b=LW/KWRFGfWeb3vr/UCLnY3MkDQyPRnsvD4uf+r3sKVEGXKKVwysZsVgGz1xFt+owNthjBAkwo4yrDvOB5Q8iAQGC09V1fs1hQFwqm8ULvuMiJu3d7R+xmh214WvTca/jE3FISZJFRYZdS6MGp4G05x8AnU4sJpZ9tRhP5OPHEAFJ0t9GYvqcxgun4zTegJhzMJKgk+Y4JtR2tEfzzx1e7+TQo+GM+axoK0PB/tSpzoZu46jsbcDE8pGB7QXgJa44+y1PfVakfOyVfADe7nmuTTpDugAdmcId5aRnrZKyVA6n2UgcxZ527aSXLmo20eKqAlg8Q8xYm+EDwWHx/NO46A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=skoDK31U0/7SDkc3ZpaX+MWHCrcSYVcNoz07elFWxKE=;
- b=Z/Vffv5huEvFCw4I22gKLJhWhCVToIU1sjt1ThVs0Zas3VjoVekVnHz42iVdNPU3EgszcPS39FUDAYz04WlPzQGIVidEUVIlGZ7xi4vtr3qHOe40r8szM2EyDF7SWAj2ny55GwEOXdLxMpnAwUkV9u3JmE7LSJ/7EjvcF6cwxOw=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB4958.eurprd05.prod.outlook.com (20.177.50.31) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2430.20; Tue, 12 Nov 2019 23:45:52 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::b179:e8bf:22d4:bf8d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::b179:e8bf:22d4:bf8d%5]) with mapi id 15.20.2430.027; Tue, 12 Nov 2019
- 23:45:52 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-CC:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Shuah Khan <shuah@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH v4 2/2] mm/hmm/test: add self tests for HMM
-Thread-Topic: [PATCH v4 2/2] mm/hmm/test: add self tests for HMM
-Thread-Index: AQHVk15BHkNBC+HAokukKxKzDG+3w6eHtA6AgABrzYCAACAHgA==
-Date:   Tue, 12 Nov 2019 23:45:52 +0000
-Message-ID: <20191112234549.GX21728@mellanox.com>
-References: <20191104222141.5173-1-rcampbell@nvidia.com>
- <20191104222141.5173-3-rcampbell@nvidia.com> <20191112152521.GC12550@lst.de>
- <07589a71-3984-b2a6-b24b-6b9a23e1b60d@nvidia.com>
-In-Reply-To: <07589a71-3984-b2a6-b24b-6b9a23e1b60d@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MN2PR20CA0010.namprd20.prod.outlook.com
- (2603:10b6:208:e8::23) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [142.162.113.180]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: dd714597-929c-406a-8a71-08d767ca73fd
-x-ms-traffictypediagnostic: VI1PR05MB4958:
-x-microsoft-antispam-prvs: <VI1PR05MB4958DC049DE912254177A423CF770@VI1PR05MB4958.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 021975AE46
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(136003)(346002)(366004)(396003)(39860400002)(189003)(199004)(6246003)(14454004)(2906002)(7416002)(14444005)(256004)(8676002)(8936002)(81156014)(81166006)(4744005)(5660300002)(4326008)(6486002)(6436002)(229853002)(3846002)(6512007)(6916009)(1076003)(71200400001)(25786009)(71190400001)(305945005)(7736002)(6116002)(386003)(6506007)(99286004)(76176011)(86362001)(102836004)(316002)(486006)(52116002)(26005)(54906003)(36756003)(33656002)(476003)(66446008)(64756008)(66556008)(66476007)(11346002)(478600001)(66946007)(66066001)(186003)(2616005)(446003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4958;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IwrEwufdOhJnbn0VmgOE440YYxCz3gIlVfovu6drMVFTKTxpViYeNVcdpMMw5aGUA3skjtBd/dBIDBGdneVBmdQeaCdNvmdO0ZU0XSk8acFakrbLo8VRYgMMQzjSdsmb0Y41dDtoFuBQSlZZdGtWTuGmiBSUUiNZrRvJE6jlvTUsfOyIleF9KT+xa/i4nR4otnQyI/HXE3JX4VTlU8gZaw9m5p42E1Xl+Al+YH80dQ9isqdbNc1RuxBIiMxWzKw8Znyg4m9ZxCEhDNYS9EUwK4WT6ZO/QdcsQ4bWdcR1T5GkoNAy6A5nn5cOvX32Q2WAVO74a6y1V9GKW4WOpSOhmg2woeFRUAyD3p48Efxh7XPvgM/pv6fet0lOT8qBgu9/HxLvBrc5wFrm0Ifr4a15uwRCnuNLGP9nGtEjzinNvT2YcjhGRMyKVC8SNQJxJ2Tr
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <9F4164E7B161C4499113C50B183C779A@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727020AbfKMAIV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Nov 2019 19:08:21 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:36587 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726969AbfKMAIV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 Nov 2019 19:08:21 -0500
+Received: by mail-qk1-f195.google.com with SMTP id d13so205403qko.3
+        for <linux-rdma@vger.kernel.org>; Tue, 12 Nov 2019 16:08:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=r4K7R0tR2iKjDwGj7h2AdFnAhKVb+PEh8hKXGhwzheo=;
+        b=fZud3ib9ugZ1H45gqE3Ufx6TkhfidwZqwWlQe2U/+whtXNqUICQgqqYOrhI9G7ja5h
+         8wz4z83SrHf90CcjxE/pqx7yyuqeqCwhGO/PglcW50daiLjpDhHLPtWIatjp83enLA1i
+         eCn9Cyh3/+6bkiKsYvohTq3vxERaDLgekZag44JZToiXvIR712sgs35f7P5IOnKrux9T
+         5/A7S2MFI7LRleIsmz6Z3nMdOR0RBtn0kvaVabK8o6Xbo0T11MJiJ4l+a9OV5hwhSrKI
+         CO6qigj/t+1GvMCaBySSbYJ+NLrLbAnXsZiSCRrRr749BBN2dmr4pM9uOxk+1bx6QohQ
+         /xig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=r4K7R0tR2iKjDwGj7h2AdFnAhKVb+PEh8hKXGhwzheo=;
+        b=JApYtqoXSlH/a1pFCxPdMSp8iiNTfhQc/TJPvCUIEXxqGv+Cjp5NDOEtRCoxqswyvf
+         2/uBOSEzWwuA/Yu9bGyxbFppd7XexfHr3TMhJadBECupjZompmGU/b9hIOgpSkb4shc2
+         Pc3G5xXu1Cn7fG/H/BYwFGRBPbZfF/QYNTi8TTTcWMrytbkywQF6ELOTBsBtmAiFP1+r
+         iY8kuCML2eTxdpp/hcPGhgUORwEahB2FFwy/trpI2Pi0bLdDXTh8FLrm/KaYR2ejFNbD
+         cIXTJ3/XGEvIRExWhv4MSE04ztK29CrM+YPpFWjdhLZGQD9GAFXyFXyUe/19lW/ocpvb
+         RIFg==
+X-Gm-Message-State: APjAAAWhK1GQG/SmA/N0Fpj4HkKowjGSOzuubwhuEsowG6p+u3Z/9jFe
+        F0RuRyfK3GZpB6CJ5jnCZZM6pQ==
+X-Google-Smtp-Source: APXvYqxUvDZJyIu1NzBqLzNMQJZcQEwGmA0sBjLaQeHkMjfR4xinoVbyQQ2cr4JogKuX1pAuI/x5jw==
+X-Received: by 2002:a05:620a:205d:: with SMTP id d29mr156309qka.152.1573603700172;
+        Tue, 12 Nov 2019 16:08:20 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id m25sm309243qtc.0.2019.11.12.16.08.19
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 12 Nov 2019 16:08:19 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iUgCp-0005iu-4h; Tue, 12 Nov 2019 20:08:19 -0400
+Date:   Tue, 12 Nov 2019 20:08:19 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>, davem@davemloft.net,
+        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, parav@mellanox.com,
+        Kiran Patil <kiran.patil@intel.com>
+Subject: Re: [net-next 1/1] virtual-bus: Implementation of Virtual Bus
+Message-ID: <20191113000819.GB19615@ziepe.ca>
+References: <20191111192219.30259-1-jeffrey.t.kirsher@intel.com>
+ <20191112212826.GA1837470@kroah.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd714597-929c-406a-8a71-08d767ca73fd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Nov 2019 23:45:52.4574
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ateme6P/6lZt75AAoy5NBSqzB+PRwXltwwp28YrIrRGsPPP8sgJQ74lRo2/1RZkHAkdmFXlf0/SuxNLIYZKYbA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4958
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191112212826.GA1837470@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 12, 2019 at 01:51:11PM -0800, Ralph Campbell wrote:
+On Tue, Nov 12, 2019 at 10:28:26PM +0100, Greg KH wrote:
 
-> > > +static int dmirror_invalidate_range_start(struct mmu_notifier *mn,
-> > > +				const struct mmu_notifier_range *update)
-> > > +{
-> > > +	struct dmirror *dmirror =3D container_of(mn, struct dmirror, notifi=
-er);
-> > > +
-> > > +	if (mmu_notifier_range_blockable(update))
-> > > +		mutex_lock(&dmirror->mutex);
-> > > +	else if (!mutex_trylock(&dmirror->mutex))
-> > > +		return -EAGAIN;
-> > > +
-> > > +	dmirror_do_update(dmirror, update->start, update->end);
-> > > +	mutex_unlock(&dmirror->mutex);
-> > > +	return 0;
-> > > +}
-> >=20
-> > Can we adopts this to Jasons new interval tree invalidate?
->=20
-> Well, it would mean registering for the whole process address space.
-> I'll give it a try.
+> > + */
+> > +struct virtbus_device {
+> > +	const char			*name;
+> > +	int				id;
+> > +	const struct virtbus_dev_id	*dev_id;
+> > +	struct device			dev;
+> > +	void				*data;
+> > +};
+> > +
+> > +struct virtbus_driver {
+> > +	int (*probe)(struct virtbus_device *);
+> > +	int (*remove)(struct virtbus_device *);
+> > +	void (*shutdown)(struct virtbus_device *);
+> > +	int (*suspend)(struct virtbus_device *, pm_message_t state);
+> > +	int (*resume)(struct virtbus_device *);
+> > +	struct device_driver driver;
+> > +	const struct virtbus_dev_id *id_table;
+> > +};
+> > +
+> > +#define virtbus_get_dev_id(vdev)	((vdev)->id_entry)
+> > +#define virtbus_get_devdata(dev)	((dev)->devdata)
+> 
+> What are these for?
 
-I'm not sure it makes much sense that this testing is essentially
-modeled after nouveau's usage which is very strange compared to the
-other drivers.
+As far as I can see, the scheme here, using the language from the most
+recent discussion is:
+
+   // in core or netdev module
+   int mlx5_core_create()
+   {
+      struct mlx5_core_dev *core = kzalloc(..)
+
+      [..]
+
+      core->vdev = virtbus_dev_alloc("mlx5_core", core);
+   }
+
+
+   // in rdma module
+   static int mlx5_rdma_probe(struct virtbus_device *dev)
+   {
+        // Get the value passed to virtbus_dev_alloc()
+	struct mlx5_core_dev *core = virtbus_get_devdata(dev)
+
+	// Use the huge API surrounding struct mlx5_core_dev
+	qp = mlx5_core_create_qp(core, ...);
+   }
+
+   static struct virtbus_driver mlx5_rdma_driver = {
+      .probe = mlx5_rdma_probe,
+      .match = {"mlx5_core"}
+   }
+
+Drivers that match "mlx5_core" know that the opaque
+'virtbus_get_devdata()' is a 'struct mlx5_core_dev *' and use that
+access the core driver.
+
+A "ice_core" would know it is some 'struct ice_core_dev *' for Intel
+and uses that pointer, etc.
+
+ie it is just a way to a pass a 'void *' from one module to another
+while using the driver core to manage module autoloading and binding.
 
 Jason
