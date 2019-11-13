@@ -2,40 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1E8FA311
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 03:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4344DFA29A
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 03:05:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730438AbfKMCAL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Nov 2019 21:00:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55278 "EHLO mail.kernel.org"
+        id S1730928AbfKMCCC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Nov 2019 21:02:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729568AbfKMCAL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 12 Nov 2019 21:00:11 -0500
+        id S1730923AbfKMCCB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 12 Nov 2019 21:02:01 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5FDE222CF;
-        Wed, 13 Nov 2019 02:00:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1E0F204EC;
+        Wed, 13 Nov 2019 02:01:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573610410;
-        bh=vTpcVYcvxzR34taHLSLfCiRR7n/iUpgwaOY9lPqklpo=;
+        s=default; t=1573610520;
+        bh=7Oz3PQNUNgCniA01lkUK3vBCs4s5pP39V23TBiRS1qQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HxL9Hz5NW1TegaPM3z9xX7Ipdcr/q8XgqTSBhXFwyveXMMVvPWhnl9P/lRU8OLioN
-         jXNGy3nqgJGk9GA3nnrvddN36hrfwIbDtzetkXnHqra9xy0U5wI0HYACEAXqkKBhCs
-         2P1ss0vyzUtg35leiDInZXpq7BHcUQCM95XTryRw=
+        b=IU2uhWvwcsP7YWD+yt5A8fH7YW0lhjC4TF9LnnfGdD5BO0NEf0GEF7ZqGvpCU0vKu
+         EuD1YZHaVzqJzvKZvtfkrdNuAkwmhioJScvv0i8r0jni0DHbsTNEddy7Y6nCiDuj2q
+         vryNoRpbyGzZsq6X2vREUjzRPlc3aty+4/xbFyTg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
+Cc:     Wei Yongjun <weiyongjun1@huawei.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 4.9 24/68] IB/mlx4: Avoid implicit enumerated type conversion
-Date:   Tue, 12 Nov 2019 20:58:48 -0500
-Message-Id: <20191113015932.12655-24-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.4 18/48] IB/mthca: Fix error return code in __mthca_init_one()
+Date:   Tue, 12 Nov 2019 21:01:01 -0500
+Message-Id: <20191113020131.13356-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191113015932.12655-1-sashal@kernel.org>
-References: <20191113015932.12655-1-sashal@kernel.org>
+In-Reply-To: <20191113020131.13356-1-sashal@kernel.org>
+References: <20191113020131.13356-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,49 +43,35 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-[ Upstream commit b56511c15713ba6c7572e77a41f7ddba9c1053ec ]
+[ Upstream commit 39f2495618c5e980d2873ea3f2d1877dd253e07a ]
 
-Clang warns when one enumerated type is implicitly converted to another.
+Fix to return a negative error code from the mthca_cmd_init() error
+handling case instead of 0, as done elsewhere in this function.
 
-drivers/infiniband/hw/mlx4/mad.c:1811:41: warning: implicit conversion
-from enumeration type 'enum mlx4_ib_qp_flags' to different enumeration
-type 'enum ib_qp_create_flags' [-Wenum-conversion]
-                qp_init_attr.init_attr.create_flags = MLX4_IB_SRIOV_TUNNEL_QP;
-                                                    ~ ^~~~~~~~~~~~~~~~~~~~~~~
-
-drivers/infiniband/hw/mlx4/mad.c:1819:41: warning: implicit conversion
-from enumeration type 'enum mlx4_ib_qp_flags' to different enumeration
-type 'enum ib_qp_create_flags' [-Wenum-conversion]
-                qp_init_attr.init_attr.create_flags = MLX4_IB_SRIOV_SQP;
-                                                    ~ ^~~~~~~~~~~~~~~~~
-
-The type mlx4_ib_qp_flags explicitly provides supplemental values to the
-type ib_qp_create_flags. Make that clear to Clang by changing the
-create_flags type to u32.
-
-Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Fixes: 80fd8238734c ("[PATCH] IB/mthca: Encapsulate command interface init")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/rdma/ib_verbs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/mthca/mthca_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 0638b8aeba34d..1d9c701b1c7b3 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -1026,7 +1026,7 @@ struct ib_qp_init_attr {
- 	struct ib_qp_cap	cap;
- 	enum ib_sig_type	sq_sig_type;
- 	enum ib_qp_type		qp_type;
--	enum ib_qp_create_flags	create_flags;
-+	u32			create_flags;
+diff --git a/drivers/infiniband/hw/mthca/mthca_main.c b/drivers/infiniband/hw/mthca/mthca_main.c
+index ded76c101dde3..834b06aacc2bf 100644
+--- a/drivers/infiniband/hw/mthca/mthca_main.c
++++ b/drivers/infiniband/hw/mthca/mthca_main.c
+@@ -989,7 +989,8 @@ static int __mthca_init_one(struct pci_dev *pdev, int hca_type)
+ 		goto err_free_dev;
+ 	}
  
- 	/*
- 	 * Only needed for special QP types, or when using the RW API.
+-	if (mthca_cmd_init(mdev)) {
++	err = mthca_cmd_init(mdev);
++	if (err) {
+ 		mthca_err(mdev, "Failed to init command interface, aborting.\n");
+ 		goto err_free_dev;
+ 	}
 -- 
 2.20.1
 
