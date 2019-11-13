@@ -2,35 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E06FA0BD
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 02:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F7CFA0C0
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 02:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728162AbfKMBwI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Nov 2019 20:52:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40554 "EHLO mail.kernel.org"
+        id S1728195AbfKMBwO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Nov 2019 20:52:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728150AbfKMBwH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 12 Nov 2019 20:52:07 -0500
+        id S1728150AbfKMBwM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 12 Nov 2019 20:52:12 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9EAB20674;
-        Wed, 13 Nov 2019 01:52:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67B6522478;
+        Wed, 13 Nov 2019 01:52:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573609926;
-        bh=UAiA5p4GwIPMn4XuVsudYM5hQDLrQ1ON5FvGJrnxOCU=;
+        s=default; t=1573609932;
+        bh=zdczaHM1e+s0MRupJD+CEuuKe5ZjbXKKvyHmelqZHoE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TDsv+p7eZQiw1fG5QC721nryichxqkuXpkBmYX1lxGyC3GexIK2XQuMqdXhGoU/U7
-         9MaxNZd/R4aznUcmbiz6rL1xWifnsn+/uhyNXu8ljv1f7cMubN1dK3d73L7nn+uEdQ
-         /fiDCkkopU+ilamRZ8+NvV1esvrsLHveeFxa7S6o=
+        b=YvP0o1ULQatkR30ulkK+iOvZqPO8RHdFX3Yj16bhqw2RxmLWJ+m/AoqXwCpTYb7Ws
+         LP5LJKePUZH52wfkceKr4sfwrwpT5L1+LTpN4TZKfXZ5gvWQ7SAtEXfuYQoPtTML0R
+         qSRK17cgzHE+vJr6XtK2P0iPKszfb2bcnCfmMTDE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhu Yanjun <yanjun.zhu@oracle.com>,
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 072/209] IB/rxe: avoid srq memory leak
-Date:   Tue, 12 Nov 2019 20:48:08 -0500
-Message-Id: <20191113015025.9685-72-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH AUTOSEL 4.19 077/209] IB/mlx4: Avoid implicit enumerated type conversion
+Date:   Tue, 12 Nov 2019 20:48:13 -0500
+Message-Id: <20191113015025.9685-77-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191113015025.9685-1-sashal@kernel.org>
 References: <20191113015025.9685-1-sashal@kernel.org>
@@ -43,54 +45,49 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@oracle.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit aae0484e15f062ad2c2502e68e15dfb8b8f84608 ]
+[ Upstream commit b56511c15713ba6c7572e77a41f7ddba9c1053ec ]
 
-In rxe_queue_init, q and q->buf are allocated. In do_mmap_info, q->ip is
-allocated. When error occurs, rxe_srq_from_init and the later error
-handler do not free these allocated memories.  This will make memory leak.
+Clang warns when one enumerated type is implicitly converted to another.
 
-Signed-off-by: Zhu Yanjun <yanjun.zhu@oracle.com>
+drivers/infiniband/hw/mlx4/mad.c:1811:41: warning: implicit conversion
+from enumeration type 'enum mlx4_ib_qp_flags' to different enumeration
+type 'enum ib_qp_create_flags' [-Wenum-conversion]
+                qp_init_attr.init_attr.create_flags = MLX4_IB_SRIOV_TUNNEL_QP;
+                                                    ~ ^~~~~~~~~~~~~~~~~~~~~~~
+
+drivers/infiniband/hw/mlx4/mad.c:1819:41: warning: implicit conversion
+from enumeration type 'enum mlx4_ib_qp_flags' to different enumeration
+type 'enum ib_qp_create_flags' [-Wenum-conversion]
+                qp_init_attr.init_attr.create_flags = MLX4_IB_SRIOV_SQP;
+                                                    ~ ^~~~~~~~~~~~~~~~~
+
+The type mlx4_ib_qp_flags explicitly provides supplemental values to the
+type ib_qp_create_flags. Make that clear to Clang by changing the
+create_flags type to u32.
+
+Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_srq.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ include/rdma/ib_verbs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_srq.c b/drivers/infiniband/sw/rxe/rxe_srq.c
-index 0d6c04ba7fc36..c41a5fee81f71 100644
---- a/drivers/infiniband/sw/rxe/rxe_srq.c
-+++ b/drivers/infiniband/sw/rxe/rxe_srq.c
-@@ -31,6 +31,7 @@
-  * SOFTWARE.
-  */
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index b7d63c3970d18..decb708b5530f 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -1147,7 +1147,7 @@ struct ib_qp_init_attr {
+ 	struct ib_qp_cap	cap;
+ 	enum ib_sig_type	sq_sig_type;
+ 	enum ib_qp_type		qp_type;
+-	enum ib_qp_create_flags	create_flags;
++	u32			create_flags;
  
-+#include <linux/vmalloc.h>
- #include "rxe.h"
- #include "rxe_loc.h"
- #include "rxe_queue.h"
-@@ -129,13 +130,18 @@ int rxe_srq_from_init(struct rxe_dev *rxe, struct rxe_srq *srq,
- 
- 	err = do_mmap_info(rxe, uresp ? &uresp->mi : NULL, context, q->buf,
- 			   q->buf_size, &q->ip);
--	if (err)
-+	if (err) {
-+		vfree(q->buf);
-+		kfree(q);
- 		return err;
-+	}
- 
- 	if (uresp) {
- 		if (copy_to_user(&uresp->srq_num, &srq->srq_num,
--				 sizeof(uresp->srq_num)))
-+				 sizeof(uresp->srq_num))) {
-+			rxe_queue_cleanup(q);
- 			return -EFAULT;
-+		}
- 	}
- 
- 	return 0;
+ 	/*
+ 	 * Only needed for special QP types, or when using the RW API.
 -- 
 2.20.1
 
