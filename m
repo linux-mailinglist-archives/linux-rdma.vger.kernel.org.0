@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95739FA087
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 02:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E06FA0BD
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 02:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727506AbfKMBuq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Nov 2019 20:50:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37696 "EHLO mail.kernel.org"
+        id S1728162AbfKMBwI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Nov 2019 20:52:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727498AbfKMBuq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 12 Nov 2019 20:50:46 -0500
+        id S1728150AbfKMBwH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 12 Nov 2019 20:52:07 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 136502245B;
-        Wed, 13 Nov 2019 01:50:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9EAB20674;
+        Wed, 13 Nov 2019 01:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573609845;
-        bh=ag3Pt1+cczd014vnvka/WOIYakAcbIlIgSnRJhqISu0=;
+        s=default; t=1573609926;
+        bh=UAiA5p4GwIPMn4XuVsudYM5hQDLrQ1ON5FvGJrnxOCU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CA9YIf0q6W0Y4izY11kM0aMFCd3tZc+GjjNxUa9V6uWyPhkEPWxwFSBlQfBKG/1LP
-         HNcwjFzTYYojgZWw8njq/GQvPyy5otPMeAYj/IRPk7/07m5FQxtIa5OG6y1Q0SeW6l
-         owjJ+rcwQJ8DbpVH1jLMaxp3iIX6GdjqtW8UuSnw=
+        b=TDsv+p7eZQiw1fG5QC721nryichxqkuXpkBmYX1lxGyC3GexIK2XQuMqdXhGoU/U7
+         9MaxNZd/R4aznUcmbiz6rL1xWifnsn+/uhyNXu8ljv1f7cMubN1dK3d73L7nn+uEdQ
+         /fiDCkkopU+ilamRZ8+NvV1esvrsLHveeFxa7S6o=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
+Cc:     Zhu Yanjun <yanjun.zhu@oracle.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 017/209] IB/hfi1: Ensure ucast_dlid access doesnt exceed bounds
-Date:   Tue, 12 Nov 2019 20:47:13 -0500
-Message-Id: <20191113015025.9685-17-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 072/209] IB/rxe: avoid srq memory leak
+Date:   Tue, 12 Nov 2019 20:48:08 -0500
+Message-Id: <20191113015025.9685-72-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191113015025.9685-1-sashal@kernel.org>
 References: <20191113015025.9685-1-sashal@kernel.org>
@@ -43,36 +43,54 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Dennis Dalessandro <dennis.dalessandro@intel.com>
+From: Zhu Yanjun <yanjun.zhu@oracle.com>
 
-[ Upstream commit 3144533bf667c8e53bb20656b78295960073e57b ]
+[ Upstream commit aae0484e15f062ad2c2502e68e15dfb8b8f84608 ]
 
-The dlid assignment made by looking into the u_ucast_dlid array does not
-do an explicit check for the size of the array. The code path to arrive at
-def_port, the index value is long and complicated so its best to just have
-an explicit check here.
+In rxe_queue_init, q and q->buf are allocated. In do_mmap_info, q->ip is
+allocated. When error occurs, rxe_srq_from_init and the later error
+handler do not free these allocated memories.  This will make memory leak.
 
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Signed-off-by: Zhu Yanjun <yanjun.zhu@oracle.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/infiniband/sw/rxe/rxe_srq.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.c b/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.c
-index 267da8215e08f..31cd361416ac9 100644
---- a/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.c
-+++ b/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.c
-@@ -351,7 +351,8 @@ static uint32_t opa_vnic_get_dlid(struct opa_vnic_adapter *adapter,
- 			if (unlikely(!dlid))
- 				v_warn("Null dlid in MAC address\n");
- 		} else if (def_port != OPA_VNIC_INVALID_PORT) {
--			dlid = info->vesw.u_ucast_dlid[def_port];
-+			if (def_port < OPA_VESW_MAX_NUM_DEF_PORT)
-+				dlid = info->vesw.u_ucast_dlid[def_port];
- 		}
+diff --git a/drivers/infiniband/sw/rxe/rxe_srq.c b/drivers/infiniband/sw/rxe/rxe_srq.c
+index 0d6c04ba7fc36..c41a5fee81f71 100644
+--- a/drivers/infiniband/sw/rxe/rxe_srq.c
++++ b/drivers/infiniband/sw/rxe/rxe_srq.c
+@@ -31,6 +31,7 @@
+  * SOFTWARE.
+  */
+ 
++#include <linux/vmalloc.h>
+ #include "rxe.h"
+ #include "rxe_loc.h"
+ #include "rxe_queue.h"
+@@ -129,13 +130,18 @@ int rxe_srq_from_init(struct rxe_dev *rxe, struct rxe_srq *srq,
+ 
+ 	err = do_mmap_info(rxe, uresp ? &uresp->mi : NULL, context, q->buf,
+ 			   q->buf_size, &q->ip);
+-	if (err)
++	if (err) {
++		vfree(q->buf);
++		kfree(q);
+ 		return err;
++	}
+ 
+ 	if (uresp) {
+ 		if (copy_to_user(&uresp->srq_num, &srq->srq_num,
+-				 sizeof(uresp->srq_num)))
++				 sizeof(uresp->srq_num))) {
++			rxe_queue_cleanup(q);
+ 			return -EFAULT;
++		}
  	}
  
+ 	return 0;
 -- 
 2.20.1
 
