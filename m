@@ -2,101 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71035FB927
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 20:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76028FB9AA
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 21:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726173AbfKMTtW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 Nov 2019 14:49:22 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:40221 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbfKMTtW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Nov 2019 14:49:22 -0500
-Received: by mail-qk1-f195.google.com with SMTP id z16so2865783qkg.7
-        for <linux-rdma@vger.kernel.org>; Wed, 13 Nov 2019 11:49:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3mi6sW3W5ZM1D0DHkb9VxuJO2aRMXFgI/taHNSN2vUM=;
-        b=Q5wJ+9lm2aCrb6tKkkiTyzpDTbzuMOK4xcM8bBk2XXK9XrWXgoLVLRBDEVQlo1qUxq
-         JJc3OajhC8KsxFX9OtPEihUMEdrgg4qgQDNCVS6yo0RkIeToAJaFhfiQEfWwCwAL8d9+
-         QhASo5Umwlm0X4TzzvqPYYANIRcqiVOy8DI8SRyozKnTb+VrvCx+PKbZuxwr3oc1Cqy2
-         QIKOqAHIpAEnQoz73ZXhkgMJaLOEoA4ZK+Bmkv3fBdrq0zVcpUWRjlLpjq2c2PKYnU0X
-         Dv7Jwz1V/OeNYSyvLJrd/v96VH3LzkntwOAvUJ+nWZsO8kiryP2oMBQItEuOvu/OkBup
-         h7Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3mi6sW3W5ZM1D0DHkb9VxuJO2aRMXFgI/taHNSN2vUM=;
-        b=SH6g7K/dpUtyQ2gIDMpHy2eejXBD5diSzsPUC3YJNQjSmL7Z7sN19hkpD0HUw+Pslb
-         xjRXPYQRL93XMRuScf8eRWknZTrSceG5n2kBlBTqRcwvp3bnOewMduWTpS7/xF8wksOw
-         KAaWWWQeDLpPYvFP501aiBZDekfa66UG9ai3e1YXOERRE8pRUDVkr54TYR95K23YrHml
-         X16GdxdKoUnt/M52qMheprNdzAsGiTAfYG9sgNkKHqZucxqsUFiz61Zbnq4/QOrN6e/k
-         b2/xObOnGk1XVglnH+JZ9Thekzgfvu6+8C/9lFxIvSycuyizWjIsdjATDmCu9DUqh6Bh
-         q0Wg==
-X-Gm-Message-State: APjAAAXtISyiHHkvp9VPbNfbfEMEHnRSRZSS+HkqM+HD7CYJGPAQCtY8
-        DEnoQ74fUDWjSZz8KxIReXLLvQ==
-X-Google-Smtp-Source: APXvYqxHvIFa6V/a52v4K9U8d2IQqaLkBTYuKetI61JRU3EHMfABU0b/IMHzJZu5E7PeQYiZ+4IZfA==
-X-Received: by 2002:a05:620a:112c:: with SMTP id p12mr4018360qkk.179.1573674561333;
-        Wed, 13 Nov 2019 11:49:21 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id d13sm1810084qta.67.2019.11.13.11.49.20
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 Nov 2019 11:49:20 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iUydj-0005WF-Pn; Wed, 13 Nov 2019 15:49:19 -0400
-Date:   Wed, 13 Nov 2019 15:49:19 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Yevgeny Kliteynik <kliteyn@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: Re: [PATCH rdma-next v2] IB/mlx5: Support flow counters offset for
- bulk counters
-Message-ID: <20191113194919.GA21173@ziepe.ca>
-References: <20191103140723.77411-1-leon@kernel.org>
+        id S1727080AbfKMUWi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 Nov 2019 15:22:38 -0500
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:3801 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbfKMUWh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Nov 2019 15:22:37 -0500
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dcc660b0000>; Wed, 13 Nov 2019 12:22:35 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 13 Nov 2019 12:22:36 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Wed, 13 Nov 2019 12:22:36 -0800
+Received: from [10.2.160.107] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 13 Nov
+ 2019 20:22:35 +0000
+Subject: Re: [PATCH v4 08/23] vfio, mm: fix get_user_pages_remote() and
+ FOLL_LONGTERM
+To:     Ira Weiny <ira.weiny@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20191113042710.3997854-1-jhubbard@nvidia.com>
+ <20191113042710.3997854-9-jhubbard@nvidia.com>
+ <20191113130202.GA26068@ziepe.ca>
+ <20191113191705.GE12947@iweiny-DESK2.sc.intel.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <290ba4aa-247e-6570-9eff-ccf2087e1120@nvidia.com>
+Date:   Wed, 13 Nov 2019 12:19:50 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191103140723.77411-1-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191113191705.GE12947@iweiny-DESK2.sc.intel.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1573676555; bh=FW0krwPwWqciO/Z2LS4wGz5Cikl4rg4mIFXWQ1mXpqU=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=n1t9MMHier43EuFZpftpwQVDKG8oSo9TdOvV+OMzrOIN0Kprv6dkR4Jpu6/PqCqXm
+         /jCxLMJDxPPXF7oklQ45MeW/Fl3jyAJJ4cfyLvk1YJ3ZXQloakTUN/6QsjTZ2e8wLd
+         Vi5ItQz0+ykvg9G6LEUGgX0gLMaFmq2awJU2Kk5qVpihlMSAmAuGK9LjnFEEtlsHOE
+         JOaWrzJR8vtoHRO1QeIa0YnKmF32io8xAGlhrbiuGj5eUhM/rh5jJ0AdTIvnBhqGbA
+         tSsPrYCj4XsKBHj/d5S4XMsaWdBoBg5n+7WnTPKexUFAUitbBsugmf2TNoS/6cs3Dr
+         dZibHSHNj0z1Q==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Nov 03, 2019 at 04:07:23PM +0200, Leon Romanovsky wrote:
-> From: Yevgeny Kliteynik <kliteyn@mellanox.com>
+On 11/13/19 11:17 AM, Ira Weiny wrote:
+...
+>>> @@ -348,33 +347,13 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+>>>   		flags |= FOLL_WRITE;
+>>>   
+>>>   	down_read(&mm->mmap_sem);
+>>> -	if (mm == current->mm) {
+>>> -		ret = get_user_pages(vaddr, 1, flags | FOLL_LONGTERM, page,
+>>> -				     vmas);
+>>> -	} else {
+>>> -		ret = get_user_pages_remote(NULL, mm, vaddr, 1, flags, page,
+>>> -					    vmas, NULL);
+>>> -		/*
+>>> -		 * The lifetime of a vaddr_get_pfn() page pin is
+>>> -		 * userspace-controlled. In the fs-dax case this could
+>>> -		 * lead to indefinite stalls in filesystem operations.
+>>> -		 * Disallow attempts to pin fs-dax pages via this
+>>> -		 * interface.
+>>> -		 */
+>>> -		if (ret > 0 && vma_is_fsdax(vmas[0])) {
+>>> -			ret = -EOPNOTSUPP;
+>>> -			put_page(page[0]);
+>>> -		}
+>>> -	}
+>>> -	up_read(&mm->mmap_sem);
+>>> -
+>>> +	ret = get_user_pages_remote(NULL, mm, vaddr, 1, flags | FOLL_LONGTERM,
+>>> +				    page, NULL, NULL);
+>>>   	if (ret == 1) {
+>>>   		*pfn = page_to_pfn(page[0]);
+>>>   		return 0;
+>>
+>> Mind the return with the lock held this needs some goto unwind
 > 
-> Add support for flow steering counters action with
-> a non-base counter ID (offset) for bulk counters.
+> Ah yea...  retract my reviewed by...  :-(
 > 
-> When creating a flow counter object, save the bulk value.
-> This value is used when a flow action with a non-base
-> counter ID is requested - to validate that the required
-> offset is in the range of the allocated bulk.
-> 
-> Signed-off-by: Yevgeny Kliteynik <kliteyn@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> Reviewed-by: Mark Bloch <markb@mellanox.com>
-> ---
->  Changelog
->  v1->v2: https://lore.kernel.org/linux-rdma/20191029155020.20792-1-leon@kernel.org
->  * Fixed mlx5_ib_devx_is_flow_counter() logic
->  v0 -> v1: https://lore.kernel.org/linux-rdma/20191029055916.7322-1-leon@kernel.org
->  * Change ffs to multiply bitmap
->  * Changed uint32_t to be u32
->  * Added offset to mlx5_ib_devx_is_flow_counter()
-> ---
->  drivers/infiniband/hw/mlx5/devx.c        | 15 +++++++++++-
->  drivers/infiniband/hw/mlx5/flow.c        | 29 ++++++++++++++++++++++--
->  drivers/infiniband/hw/mlx5/mlx5_ib.h     |  2 +-
->  include/uapi/rdma/mlx5_user_ioctl_cmds.h |  1 +
->  4 files changed, 43 insertions(+), 4 deletions(-)
 
-Applied to for-next
+ooops, embarrassed that I missed that, good catch. Will repost with it fixed.
 
-Jason
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
