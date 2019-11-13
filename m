@@ -2,199 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FAEFAFE8
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 12:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B16FB089
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 13:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbfKMLnS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 Nov 2019 06:43:18 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:44270 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727834AbfKMLnS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Nov 2019 06:43:18 -0500
-Received: by mail-wr1-f65.google.com with SMTP id f2so1959882wrs.11
-        for <linux-rdma@vger.kernel.org>; Wed, 13 Nov 2019 03:43:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=sender:date:from:to:cc:subject:message-id:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NWmx5zlrVzI636UV5zn7jwNNYyPpT2kzazOSeqZFCPQ=;
-        b=C0Dbe7TCduZqSim4I/9b7E74bGQO34GH/iKoO+dE+3EHLfWv1lLPGbvorBCoaRGMDb
-         48v7HTSQHP1LaVgvLNGy/yOxyJTlvTeKuq2CZR/Q7GIgmnQIbkvYhHi8TV/Ec+0WSA8P
-         awH+k+k5IQBNK5RO6uqKbJl7dFmz19ED4sy2I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=NWmx5zlrVzI636UV5zn7jwNNYyPpT2kzazOSeqZFCPQ=;
-        b=J3YMiSqz/Z1vBd8MTHT6rWgwMFjpdC8klfVm8nCV6utGRTsWPbFV21MCLPylk1kWTn
-         DTUYuShDu5jYZ6/vKT8ZdvV2WcXeFcJLYvmxMHN73WcsqW2EIE4X6GMoGvxcD2JLvmRu
-         eGFu1bion8mlqDNf5PHQZ8QDy1AjJfmd9axZ2Rp02CweqJyYN01xfApxMXzuk+I4Ka2X
-         JJiz92DvpHWocPQax3B+a+aZ6/LjtKJw+b8VmaqQDiwXMvQjgBwt+rhtRWVkgVT+4l1Y
-         5MurBxUcNO7TAG8wMIFlMLyIFKyfYrdsRrO/UgKoba6MHIIvIDOmDC8MFKVNLdnYKn/z
-         S99A==
-X-Gm-Message-State: APjAAAVeSGxek468wcQVjRtrprPulGWyru9ce7qANwafLwDgLGmc1hc/
-        0aSX+AmgW9v/WGUR1S2I/uKMhQ==
-X-Google-Smtp-Source: APXvYqw4ALVmGTh9KFISsJCvLVpFEzXuyu2WMWEkcAdM7khXUlUWKA93QR1nKFP8k/o5YdLFIE0ItA==
-X-Received: by 2002:a5d:50ce:: with SMTP id f14mr2625324wrt.219.1573645394576;
-        Wed, 13 Nov 2019 03:43:14 -0800 (PST)
-Received: from phenom.ffwll.local (212-51-149-96.fiber7.init7.net. [212.51.149.96])
-        by smtp.gmail.com with ESMTPSA id w4sm2544060wrs.1.2019.11.13.03.43.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Nov 2019 03:43:13 -0800 (PST)
-Date:   Wed, 13 Nov 2019 12:43:11 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Jan Kara <jack@suse.cz>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf <bpf@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 00/23] mm/gup: track dma-pinned pages: FOLL_PIN,
- FOLL_LONGTERM
-Message-ID: <20191113114311.GP23790@phenom.ffwll.local>
-Mail-Followup-To: Jan Kara <jack@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>, David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>, Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf <bpf@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>,
-        linux-rdma@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20191112000700.3455038-1-jhubbard@nvidia.com>
- <20191112203802.GD5584@ziepe.ca>
- <02fa935c-3469-b766-b691-5660084b60b9@nvidia.com>
- <CAKMK7uHvk+ti00mCCF2006U003w1dofFg9nSfmZ4bS2Z2pEDNQ@mail.gmail.com>
- <7b671bf9-4d94-f2cc-8453-863acd5a1115@nvidia.com>
- <20191113101210.GD6367@quack2.suse.cz>
+        id S1726543AbfKMMft (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 Nov 2019 07:35:49 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:37158 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726066AbfKMMft (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 13 Nov 2019 07:35:49 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 400F5E162C397BAD5A80;
+        Wed, 13 Nov 2019 20:35:44 +0800 (CST)
+Received: from [127.0.0.1] (10.61.25.96) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.439.0; Wed, 13 Nov 2019
+ 20:35:43 +0800
+Subject: =?UTF-8?B?UmU6IOOAkEFzayBmb3IgaGVscOOAkSBBIHF1ZXN0aW9uIGZvciBfX2li?=
+ =?UTF-8?B?X2NhY2hlX2dpZF9hZGQoKQ==?=
+To:     Parav Pandit <parav@mellanox.com>, Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Doug Ledford <dledford@redhat.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+References: <fd2a9385-f6c7-8471-b20c-476d4e9fada7@huawei.com>
+ <20191101130540.GB30938@ziepe.ca>
+ <AM0PR05MB4866715D6F149927D4B31C46D1620@AM0PR05MB4866.eurprd05.prod.outlook.com>
+From:   oulijun <oulijun@huawei.com>
+Message-ID: <a1b0cf5f-e52e-99b2-9888-6a40c4d71702@huawei.com>
+Date:   Wed, 13 Nov 2019 20:35:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191113101210.GD6367@quack2.suse.cz>
-X-Operating-System: Linux phenom 5.2.0-3-amd64 
-User-Agent: Mutt/1.12.2 (2019-09-21)
+In-Reply-To: <AM0PR05MB4866715D6F149927D4B31C46D1620@AM0PR05MB4866.eurprd05.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.61.25.96]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 13, 2019 at 11:12:10AM +0100, Jan Kara wrote:
-> On Wed 13-11-19 01:02:02, John Hubbard wrote:
-> > On 11/13/19 12:22 AM, Daniel Vetter wrote:
-> > ...
-> > > > > Why are we doing this? I think things got confused here someplace, as
-> > > > 
-> > > > 
-> > > > Because:
-> > > > 
-> > > > a) These need put_page() calls,  and
-> > > > 
-> > > > b) there is no put_pages() call, but there is a release_pages() call that
-> > > > is, arguably, what put_pages() would be.
-> > > > 
-> > > > 
-> > > > > the comment still says:
-> > > > > 
-> > > > > /**
-> > > > >   * put_user_page() - release a gup-pinned page
-> > > > >   * @page:            pointer to page to be released
-> > > > >   *
-> > > > >   * Pages that were pinned via get_user_pages*() must be released via
-> > > > >   * either put_user_page(), or one of the put_user_pages*() routines
-> > > > >   * below.
-> > > > 
-> > > > 
-> > > > Ohhh, I missed those comments. They need to all be changed over to
-> > > > say "pages that were pinned via pin_user_pages*() or
-> > > > pin_longterm_pages*() must be released via put_user_page*()."
-> > > > 
-> > > > The get_user_pages*() pages must still be released via put_page.
-> > > > 
-> > > > The churn is due to a fairly significant change in strategy, whis
-> > > > is: instead of changing all get_user_pages*() sites to call
-> > > > put_user_page(), change selected sites to call pin_user_pages*() or
-> > > > pin_longterm_pages*(), plus put_user_page().
-> > > 
-> > > Can't we call this unpin_user_page then, for some symmetry? Or is that
-> > > even more churn?
-> > > 
-> > > Looking from afar the naming here seems really confusing.
-> > 
-> > 
-> > That look from afar is valuable, because I'm too close to the problem to see
-> > how the naming looks. :)
-> > 
-> > unpin_user_page() sounds symmetrical. It's true that it would cause more
-> > churn (which is why I started off with a proposal that avoids changing the
-> > names of put_user_page*() APIs). But OTOH, the amount of churn is proportional
-> > to the change in direction here, and it's really only 10 or 20 lines changed,
-> > in the end.
-> > 
-> > So I'm open to changing to that naming. It would be nice to hear what others
-> > prefer, too...
-> 
-> FWIW I'd find unpin_user_page() also better than put_user_page() as a
-> counterpart to pin_user_pages().
+在 2019/11/2 0:00, Parav Pandit 写道:
+> Hi Lijun,
+>
+>> -----Original Message-----
+>> From: Jason Gunthorpe <jgg@ziepe.ca>
+>> Sent: Friday, November 1, 2019 8:06 AM
+>> To: oulijun <oulijun@huawei.com>; Parav Pandit <parav@mellanox.com>
+>> Cc: Doug Ledford <dledford@redhat.com>; linux-rdma <linux-
+>> rdma@vger.kernel.org>
+>> Subject: Re: 【Ask for help】 A question for __ib_cache_gid_add()
+>>
+>> On Fri, Nov 01, 2019 at 05:36:36PM +0800, oulijun wrote:
+>>> Hi
+>>>   I am using the ubuntu system(5.0.0 kernel) to test the hip08 NIC
+>>> port,. When I modify the perr mac1 to mac2,then restore to mac1, it will
+>> cause the gid0 and gid 1 of the roce to be unavailable, and check that the
+>> /sys/class/infiniband/hns_0/ports/1/gid_attrs/ndevs/0 is show invalid.
+>>> the protocol stack print will appear.
+>>>
+>>>   Oct 16 17:59:36 ubuntu kernel: [200635.496317] __ib_cache_gid_add:
+>>> unable to add gid fe80:0000:0000:0000:4600:4dff:fea7:9599 error=-28
+>>> Oct 16 17:59:37 ubuntu kernel: [200636.705848] 8021q: adding VLAN 0 to
+>>> HW filter on device enp189s0f0 Oct 16 17:59:37 ubuntu kernel:
+>>> [200636.705854] __ib_cache_gid_add: unable to add gid
+>>> fe80:0000:0000:0000:4600:4dff:fea7:9599 error=-28 Oct 16 17:59:39
+>>> ubuntu kernel: [200638.755828] hns3 0000:bd:00.0 enp189s0f0: link up
+>>> Oct 16 17:59:39 ubuntu kernel: [200638.755847] IPv6:
+>>> ADDRCONF(NETDEV_CHANGE): enp189s0f0: link becomes ready Oct 16
+>>> 18:00:56 ubuntu kernel: [200715.699961] hns3 0000:bd:00.0 enp189s0f0:
+>>> link down Oct 16 18:00:56 ubuntu kernel: [200716.016142]
+>>> __ib_cache_gid_add: unable to add gid
+>>> fe80:0000:0000:0000:4600:4dff:fea7:95f4 error=-28 Oct 16 18:00:58
+>>> ubuntu kernel: [200717.229857] 8021q: adding VLAN 0 to HW filter on
+>>> device enp189s0f0 Oct 16 18:00:58 ubuntu kernel: [200717.229863]
+>>> __ib_cache_gid_add: unable to add gid
+>>> fe80:0000:0000:0000:4600:4dff:fea7:95f4 error=-28
+>>>
+>>> Has anyone else encounterd a similar problem ? I wonder if the
+>> _ib_cache_add_gid() is defective in 5.0 kernel?
+>>
+>> Maybe Parav knows?
+> I used the kernel from [1], which seems to be fine; it has the required commits [2], [3], [4].
+>
+> Are you running RDMA traffic/applications which are using GID 0 and 1 when changing MAC?
+> If so, administrative operation such as MAC address change during active RDMA traffic is unsupported, which can lead to this error.
+> Can you please confirm?
+Hi, parav Pandit
+    if running RDMA traffic/application which are using vlan gid when vconfig rem the vlan, it will happen the following error?
+   
+ Oct 11 13:51:13 ubuntu kernel: [10408.846497] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
+Oct 11 13:51:23 ubuntu kernel: [10418.926477] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
+Oct 11 13:51:33 ubuntu kernel: [10429.006489] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
+Oct 11 13:51:43 ubuntu kernel: [10439.086477] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
+Oct 11 13:51:53 ubuntu kernel: [10449.166493] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
+Oct 11 13:52:04 ubuntu kernel: [10459.246473] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
+Oct 11 13:52:14 ubuntu kernel: [10469.326478] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
+Oct 11 13:52:24 ubuntu kernel: [10479.406470] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
+Oct 11 13:52:34 ubuntu kernel: [10489.486495] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
+Oct 11 13:52:44 ubuntu kernel: [10499.566476] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
+Oct 11 13:52:54 ubuntu kernel: [10509.646600] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
 
-One more point from afar on pin/unpin: We use that a lot in graphics for
-permanently pinned graphics buffer objects. Which really only should be
-used for scanout. So at least graphics folks should have an appropriate
-mindset and try to make sure we don't overuse this stuff.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+
+Thanks
+
+> If you are not running RDMA traffic while changing the mac, I need more debug logs.
+> Can you please enable ftrace and share the output file mac_change_trace.txt using below steps?
+>
+> echo 0 > /sys/kernel/debug/tracing/tracing_on
+> echo function_graph > /sys/kernel/debug/tracing/current_tracer
+> echo > /sys/kernel/debug/tracing/trace
+> echo > /sys/kernel/debug/tracing/set_ftrace_filter
+> echo ':mod:ib*' > /sys/kernel/debug/tracing/set_ftrace_filter
+> echo ':mod:rdma*' >> /sys/kernel/debug/tracing/set_ftrace_filter
+> echo 1 > /sys/kernel/debug/tracing/tracing_on
+>
+> ip link set <netdev> address <new_mac1>
+> ip link set <netdev> address <new_mac2>
+> cat /sys/kernel/debug/tracing/trace > mac_change_trace.txt
+>
+> [1] git://git.launchpad.net/~ubuntu-kernel-test/ubuntu/+source/linux/+git/mainline-crack v5.0
+> [2] commit 5c5702e259dc ("RDMA/core: Set right entry state before releasing reference")
+> [3] commit be5914c124bc ("RDMA/core: Delete RoCE GID in hw when corresponding IP is deleted")
+> [4] commit d12e2eed2743 ("IB/core: Update GID entries for netdevice whose mac address changes")
+>
+>
+> .
+>
+
+
