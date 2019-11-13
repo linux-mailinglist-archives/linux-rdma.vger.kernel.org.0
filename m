@@ -2,205 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 179EBFB8B9
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 20:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71035FB927
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 20:49:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727054AbfKMTXi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 Nov 2019 14:23:38 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:40206 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726505AbfKMTXc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Nov 2019 14:23:32 -0500
-Received: by mail-oi1-f194.google.com with SMTP id 22so2851691oip.7
-        for <linux-rdma@vger.kernel.org>; Wed, 13 Nov 2019 11:23:31 -0800 (PST)
+        id S1726173AbfKMTtW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 Nov 2019 14:49:22 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:40221 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbfKMTtW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Nov 2019 14:49:22 -0500
+Received: by mail-qk1-f195.google.com with SMTP id z16so2865783qkg.7
+        for <linux-rdma@vger.kernel.org>; Wed, 13 Nov 2019 11:49:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4HKVOkxUXCqQFAssnrt5HN+d13KJzjRJ1pFFkgydGzo=;
-        b=bb6122LJyN4TYG5IK7mHh5xygfwPeVWP6I4JnFmlEb2IzPnSXePzt9c7h6VlwCNKNf
-         6iTeoCZ+WCekF2UjJKYypJ3VDkp2bZI1sBd8OZia/73qpNgBlVpDNRkT98ztqaV4Pdpl
-         ZVL0JboDgCGP8I4MHVFtdYs0p8UDQrSyipyLboTogqOsqYbQVAZcsnUwAJG32rUPMPmj
-         ssxQ90TSW2CRqTDYyVFKczonUtqdX4nXBKSakXhSzcp3X5BqgSICBAOxp0Q1Cy1lQWwq
-         g444805boKvN2nKVTBF8Zd13UMFnq8mUuIPok109u72I0derPDbhoGvKrYVRikRhE4Pc
-         Y6hQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3mi6sW3W5ZM1D0DHkb9VxuJO2aRMXFgI/taHNSN2vUM=;
+        b=Q5wJ+9lm2aCrb6tKkkiTyzpDTbzuMOK4xcM8bBk2XXK9XrWXgoLVLRBDEVQlo1qUxq
+         JJc3OajhC8KsxFX9OtPEihUMEdrgg4qgQDNCVS6yo0RkIeToAJaFhfiQEfWwCwAL8d9+
+         QhASo5Umwlm0X4TzzvqPYYANIRcqiVOy8DI8SRyozKnTb+VrvCx+PKbZuxwr3oc1Cqy2
+         QIKOqAHIpAEnQoz73ZXhkgMJaLOEoA4ZK+Bmkv3fBdrq0zVcpUWRjlLpjq2c2PKYnU0X
+         Dv7Jwz1V/OeNYSyvLJrd/v96VH3LzkntwOAvUJ+nWZsO8kiryP2oMBQItEuOvu/OkBup
+         h7Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4HKVOkxUXCqQFAssnrt5HN+d13KJzjRJ1pFFkgydGzo=;
-        b=EEYXPXgI9PohjUTJoBNugpdMv6N0mG6AB0hWtCNNulUVl9Qk38tyZMMU/o7HntI63E
-         RZ3dYwHWPnRUAr7MCv9gJaoMm5Y4zlMqKl/ARKIB5nmiwhg9sO40T/rg3mhN4x8mA7is
-         XQBjL4XjL8xPaAm2+4Okocvs82FZNlQ3vFULJMjRYwpdSugeIb4j3HUIKgp4hRioh9oY
-         aRNyyR3CSDO6fxtVD9Ytb68OSrNbKSH7I9Fn7oFDgmiqzTiMnLdFQBJ5OGvWV+pBa8/0
-         e84Fi/xO/djt1JlGrRhI13KGq9iLgNhOI4A0+WoDtI47u8vfVUoUf1FutLzH+JQ6CfL+
-         BWjg==
-X-Gm-Message-State: APjAAAVY556pOjke5bUc7VpVcXP6kGk9mSlVik+C2Ko90BHtyv18hVeV
-        L2bx8mOYcqUDvXX8KWSTsjEwufkqWt5OXY9XOIaflg==
-X-Google-Smtp-Source: APXvYqw/J/xJikM9Sn2uJoSKIkSXprx6L2hjLUq/51PEKKOZdQDk8LIwVzxcWXUccXtFtayP/c8+SilHtOvsl5tzGrQ=
-X-Received: by 2002:aca:ea57:: with SMTP id i84mr174326oih.73.1573673011067;
- Wed, 13 Nov 2019 11:23:31 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3mi6sW3W5ZM1D0DHkb9VxuJO2aRMXFgI/taHNSN2vUM=;
+        b=SH6g7K/dpUtyQ2gIDMpHy2eejXBD5diSzsPUC3YJNQjSmL7Z7sN19hkpD0HUw+Pslb
+         xjRXPYQRL93XMRuScf8eRWknZTrSceG5n2kBlBTqRcwvp3bnOewMduWTpS7/xF8wksOw
+         KAaWWWQeDLpPYvFP501aiBZDekfa66UG9ai3e1YXOERRE8pRUDVkr54TYR95K23YrHml
+         X16GdxdKoUnt/M52qMheprNdzAsGiTAfYG9sgNkKHqZucxqsUFiz61Zbnq4/QOrN6e/k
+         b2/xObOnGk1XVglnH+JZ9Thekzgfvu6+8C/9lFxIvSycuyizWjIsdjATDmCu9DUqh6Bh
+         q0Wg==
+X-Gm-Message-State: APjAAAXtISyiHHkvp9VPbNfbfEMEHnRSRZSS+HkqM+HD7CYJGPAQCtY8
+        DEnoQ74fUDWjSZz8KxIReXLLvQ==
+X-Google-Smtp-Source: APXvYqxHvIFa6V/a52v4K9U8d2IQqaLkBTYuKetI61JRU3EHMfABU0b/IMHzJZu5E7PeQYiZ+4IZfA==
+X-Received: by 2002:a05:620a:112c:: with SMTP id p12mr4018360qkk.179.1573674561333;
+        Wed, 13 Nov 2019 11:49:21 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id d13sm1810084qta.67.2019.11.13.11.49.20
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 13 Nov 2019 11:49:20 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iUydj-0005WF-Pn; Wed, 13 Nov 2019 15:49:19 -0400
+Date:   Wed, 13 Nov 2019 15:49:19 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Yevgeny Kliteynik <kliteyn@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: Re: [PATCH rdma-next v2] IB/mlx5: Support flow counters offset for
+ bulk counters
+Message-ID: <20191113194919.GA21173@ziepe.ca>
+References: <20191103140723.77411-1-leon@kernel.org>
 MIME-Version: 1.0
-References: <20191113042710.3997854-1-jhubbard@nvidia.com> <20191113042710.3997854-5-jhubbard@nvidia.com>
-In-Reply-To: <20191113042710.3997854-5-jhubbard@nvidia.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 13 Nov 2019 11:23:19 -0800
-Message-ID: <CAPcyv4gGu=G-c1czSAYJ3joTYS_ZYOJ6i9umKzCQEFzpwZMiiA@mail.gmail.com>
-Subject: Re: [PATCH v4 04/23] mm: devmap: refactor 1-based refcounting for
- ZONE_DEVICE pages
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, KVM list <kvm@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191103140723.77411-1-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 12, 2019 at 8:27 PM John Hubbard <jhubbard@nvidia.com> wrote:
->
-> An upcoming patch changes and complicates the refcounting and
-> especially the "put page" aspects of it. In order to keep
-> everything clean, refactor the devmap page release routines:
->
-> * Rename put_devmap_managed_page() to page_is_devmap_managed(),
->   and limit the functionality to "read only": return a bool,
->   with no side effects.
->
-> * Add a new routine, put_devmap_managed_page(), to handle checking
->   what kind of page it is, and what kind of refcount handling it
->   requires.
->
-> * Rename __put_devmap_managed_page() to free_devmap_managed_page(),
->   and limit the functionality to unconditionally freeing a devmap
->   page.
->
-> This is originally based on a separate patch by Ira Weiny, which
-> applied to an early version of the put_user_page() experiments.
-> Since then, J=C3=A9r=C3=B4me Glisse suggested the refactoring described a=
-bove.
->
-> Suggested-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+On Sun, Nov 03, 2019 at 04:07:23PM +0200, Leon Romanovsky wrote:
+> From: Yevgeny Kliteynik <kliteyn@mellanox.com>
+> 
+> Add support for flow steering counters action with
+> a non-base counter ID (offset) for bulk counters.
+> 
+> When creating a flow counter object, save the bulk value.
+> This value is used when a flow action with a non-base
+> counter ID is requested - to validate that the required
+> offset is in the range of the allocated bulk.
+> 
+> Signed-off-by: Yevgeny Kliteynik <kliteyn@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> Reviewed-by: Mark Bloch <markb@mellanox.com>
 > ---
->  include/linux/mm.h | 27 ++++++++++++++++---
->  mm/memremap.c      | 67 ++++++++++++++++++++--------------------------
->  2 files changed, 53 insertions(+), 41 deletions(-)
->
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index a2adf95b3f9c..96228376139c 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -967,9 +967,10 @@ static inline bool is_zone_device_page(const struct =
-page *page)
->  #endif
->
->  #ifdef CONFIG_DEV_PAGEMAP_OPS
-> -void __put_devmap_managed_page(struct page *page);
-> +void free_devmap_managed_page(struct page *page);
->  DECLARE_STATIC_KEY_FALSE(devmap_managed_key);
-> -static inline bool put_devmap_managed_page(struct page *page)
-> +
-> +static inline bool page_is_devmap_managed(struct page *page)
->  {
->         if (!static_branch_unlikely(&devmap_managed_key))
->                 return false;
-> @@ -978,7 +979,6 @@ static inline bool put_devmap_managed_page(struct pag=
-e *page)
->         switch (page->pgmap->type) {
->         case MEMORY_DEVICE_PRIVATE:
->         case MEMORY_DEVICE_FS_DAX:
-> -               __put_devmap_managed_page(page);
->                 return true;
->         default:
->                 break;
-> @@ -986,6 +986,27 @@ static inline bool put_devmap_managed_page(struct pa=
-ge *page)
->         return false;
->  }
->
-> +static inline bool put_devmap_managed_page(struct page *page)
-> +{
-> +       bool is_devmap =3D page_is_devmap_managed(page);
-> +
-> +       if (is_devmap) {
-> +               int count =3D page_ref_dec_return(page);
-> +
-> +               /*
-> +                * devmap page refcounts are 1-based, rather than 0-based=
-: if
-> +                * refcount is 1, then the page is free and the refcount =
-is
-> +                * stable because nobody holds a reference on the page.
-> +                */
-> +               if (count =3D=3D 1)
-> +                       free_devmap_managed_page(page);
-> +               else if (!count)
-> +                       __put_page(page);
-> +       }
-> +
-> +       return is_devmap;
-> +}
-> +
->  #else /* CONFIG_DEV_PAGEMAP_OPS */
->  static inline bool put_devmap_managed_page(struct page *page)
->  {
-> diff --git a/mm/memremap.c b/mm/memremap.c
-> index 03ccbdfeb697..bc7e2a27d025 100644
-> --- a/mm/memremap.c
-> +++ b/mm/memremap.c
-> @@ -410,48 +410,39 @@ struct dev_pagemap *get_dev_pagemap(unsigned long p=
-fn,
->  EXPORT_SYMBOL_GPL(get_dev_pagemap);
->
->  #ifdef CONFIG_DEV_PAGEMAP_OPS
-> -void __put_devmap_managed_page(struct page *page)
-> +void free_devmap_managed_page(struct page *page)
->  {
-> -       int count =3D page_ref_dec_return(page);
-> +       /* Clear Active bit in case of parallel mark_page_accessed */
-> +       __ClearPageActive(page);
-> +       __ClearPageWaiters(page);
-> +
-> +       mem_cgroup_uncharge(page);
+>  Changelog
+>  v1->v2: https://lore.kernel.org/linux-rdma/20191029155020.20792-1-leon@kernel.org
+>  * Fixed mlx5_ib_devx_is_flow_counter() logic
+>  v0 -> v1: https://lore.kernel.org/linux-rdma/20191029055916.7322-1-leon@kernel.org
+>  * Change ffs to multiply bitmap
+>  * Changed uint32_t to be u32
+>  * Added offset to mlx5_ib_devx_is_flow_counter()
+> ---
+>  drivers/infiniband/hw/mlx5/devx.c        | 15 +++++++++++-
+>  drivers/infiniband/hw/mlx5/flow.c        | 29 ++++++++++++++++++++++--
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h     |  2 +-
+>  include/uapi/rdma/mlx5_user_ioctl_cmds.h |  1 +
+>  4 files changed, 43 insertions(+), 4 deletions(-)
 
-Ugh, when did all this HMM specific manipulation sneak into the
-generic ZONE_DEVICE path? It used to be gated by pgmap type with its
-own put_zone_device_private_page(). For example it's certainly
-unnecessary and might be broken (would need to check) to call
-mem_cgroup_uncharge() on a DAX page. ZONE_DEVICE users are not a
-monolith and the HMM use case leaks pages into code paths that DAX
-explicitly avoids.
+Applied to for-next
+
+Jason
