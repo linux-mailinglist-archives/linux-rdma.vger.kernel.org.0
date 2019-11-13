@@ -2,131 +2,174 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B16FB089
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 13:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 354F7FB0FF
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 14:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbfKMMft (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 Nov 2019 07:35:49 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:37158 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726066AbfKMMft (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 13 Nov 2019 07:35:49 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 400F5E162C397BAD5A80;
-        Wed, 13 Nov 2019 20:35:44 +0800 (CST)
-Received: from [127.0.0.1] (10.61.25.96) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.439.0; Wed, 13 Nov 2019
- 20:35:43 +0800
-Subject: =?UTF-8?B?UmU6IOOAkEFzayBmb3IgaGVscOOAkSBBIHF1ZXN0aW9uIGZvciBfX2li?=
- =?UTF-8?B?X2NhY2hlX2dpZF9hZGQoKQ==?=
-To:     Parav Pandit <parav@mellanox.com>, Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Doug Ledford <dledford@redhat.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-References: <fd2a9385-f6c7-8471-b20c-476d4e9fada7@huawei.com>
- <20191101130540.GB30938@ziepe.ca>
- <AM0PR05MB4866715D6F149927D4B31C46D1620@AM0PR05MB4866.eurprd05.prod.outlook.com>
-From:   oulijun <oulijun@huawei.com>
-Message-ID: <a1b0cf5f-e52e-99b2-9888-6a40c4d71702@huawei.com>
-Date:   Wed, 13 Nov 2019 20:35:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.0
+        id S1727137AbfKMNCF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 Nov 2019 08:02:05 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:38069 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726957AbfKMNCF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Nov 2019 08:02:05 -0500
+Received: by mail-qt1-f195.google.com with SMTP id p20so2453501qtq.5
+        for <linux-rdma@vger.kernel.org>; Wed, 13 Nov 2019 05:02:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=oMayMeIif+74vqoR9Hg244XFAjXhPl1nedXCyPx66Cc=;
+        b=nx3682LY4M40wGJ/sVGEu1B6oRowx3yCQZUXaDyQPZ8wp2PPM1JbbnvXpnwJ+1w7kN
+         lveYAqZtu6ZiCNE2GeOgCzqCbaPveYJh+bEnyDI89VRNGCHDXS9A7L5ZDDa96GF+3bm0
+         VmapuAT4FqF5vTUEuSGlcRA+NIY79GOrBmWnh2u551hGbiYfLURBD9nS87LvoXBLbrK0
+         o1TB/3BSIGkHlZVczCO3ubOoj5u0dVQwEYLzu7svoxCzx/+RmvcCH+ACjaNBf3sl94Zf
+         NRZR8twQGuvzHtghZ4nzQu/TUj0hyyqfJ3dXa+O6cdFNGC6w6BZNjOabe9aQdvwtecNu
+         AUCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=oMayMeIif+74vqoR9Hg244XFAjXhPl1nedXCyPx66Cc=;
+        b=OEJEBVaBuIN86xQu+FP1xHsIVjG/b//VJTOwaijCyObbmK97eoOS4TFFZF8yNmlFhi
+         HOKGvtWzmxg44bjc/DyGGIDhAtTr2H59U2W+OVGvh0zOSOl8vVmTKiabmCFINGAlnjIY
+         49m7J9C7PnXmxhnuPtF4L53lv4A37EvcOJdn2DS/gBJKCrjoVpVbi5BjYTt5zTU3l0fv
+         Dzo7D2zPdfnmvjxKsdckMTjuyD2htDATyi4MmwVB1yhPX2IsonSSdvAyyfynRQT0FAIS
+         fOSGQNormdACRTRTT3nLyDeaCpuycOBtLZoyVROO5I947XYMupqC5l6mkW3vDpwim9HB
+         8I6A==
+X-Gm-Message-State: APjAAAUPzjwVUY+ckACnKseewA63yxdJqcJuLTItqnHdAa2E2HQmpoP9
+        ML8PT9FoWuScTB/pdzz7syVIXg==
+X-Google-Smtp-Source: APXvYqwGbusmGQAfGHn3CXk2dU2JO4knhTY4prDGLzmyu8apMpc1WOd3WOgt9K6JkDyAWe/3c1LxDA==
+X-Received: by 2002:ac8:724f:: with SMTP id l15mr2476006qtp.234.1573650124104;
+        Wed, 13 Nov 2019 05:02:04 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id 187sm918223qkk.103.2019.11.13.05.02.03
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 13 Nov 2019 05:02:03 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iUsHa-000767-Jc; Wed, 13 Nov 2019 09:02:02 -0400
+Date:   Wed, 13 Nov 2019 09:02:02 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 08/23] vfio, mm: fix get_user_pages_remote() and
+ FOLL_LONGTERM
+Message-ID: <20191113130202.GA26068@ziepe.ca>
+References: <20191113042710.3997854-1-jhubbard@nvidia.com>
+ <20191113042710.3997854-9-jhubbard@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <AM0PR05MB4866715D6F149927D4B31C46D1620@AM0PR05MB4866.eurprd05.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.61.25.96]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191113042710.3997854-9-jhubbard@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2019/11/2 0:00, Parav Pandit 写道:
-> Hi Lijun,
->
->> -----Original Message-----
->> From: Jason Gunthorpe <jgg@ziepe.ca>
->> Sent: Friday, November 1, 2019 8:06 AM
->> To: oulijun <oulijun@huawei.com>; Parav Pandit <parav@mellanox.com>
->> Cc: Doug Ledford <dledford@redhat.com>; linux-rdma <linux-
->> rdma@vger.kernel.org>
->> Subject: Re: 【Ask for help】 A question for __ib_cache_gid_add()
->>
->> On Fri, Nov 01, 2019 at 05:36:36PM +0800, oulijun wrote:
->>> Hi
->>>   I am using the ubuntu system(5.0.0 kernel) to test the hip08 NIC
->>> port,. When I modify the perr mac1 to mac2,then restore to mac1, it will
->> cause the gid0 and gid 1 of the roce to be unavailable, and check that the
->> /sys/class/infiniband/hns_0/ports/1/gid_attrs/ndevs/0 is show invalid.
->>> the protocol stack print will appear.
->>>
->>>   Oct 16 17:59:36 ubuntu kernel: [200635.496317] __ib_cache_gid_add:
->>> unable to add gid fe80:0000:0000:0000:4600:4dff:fea7:9599 error=-28
->>> Oct 16 17:59:37 ubuntu kernel: [200636.705848] 8021q: adding VLAN 0 to
->>> HW filter on device enp189s0f0 Oct 16 17:59:37 ubuntu kernel:
->>> [200636.705854] __ib_cache_gid_add: unable to add gid
->>> fe80:0000:0000:0000:4600:4dff:fea7:9599 error=-28 Oct 16 17:59:39
->>> ubuntu kernel: [200638.755828] hns3 0000:bd:00.0 enp189s0f0: link up
->>> Oct 16 17:59:39 ubuntu kernel: [200638.755847] IPv6:
->>> ADDRCONF(NETDEV_CHANGE): enp189s0f0: link becomes ready Oct 16
->>> 18:00:56 ubuntu kernel: [200715.699961] hns3 0000:bd:00.0 enp189s0f0:
->>> link down Oct 16 18:00:56 ubuntu kernel: [200716.016142]
->>> __ib_cache_gid_add: unable to add gid
->>> fe80:0000:0000:0000:4600:4dff:fea7:95f4 error=-28 Oct 16 18:00:58
->>> ubuntu kernel: [200717.229857] 8021q: adding VLAN 0 to HW filter on
->>> device enp189s0f0 Oct 16 18:00:58 ubuntu kernel: [200717.229863]
->>> __ib_cache_gid_add: unable to add gid
->>> fe80:0000:0000:0000:4600:4dff:fea7:95f4 error=-28
->>>
->>> Has anyone else encounterd a similar problem ? I wonder if the
->> _ib_cache_add_gid() is defective in 5.0 kernel?
->>
->> Maybe Parav knows?
-> I used the kernel from [1], which seems to be fine; it has the required commits [2], [3], [4].
->
-> Are you running RDMA traffic/applications which are using GID 0 and 1 when changing MAC?
-> If so, administrative operation such as MAC address change during active RDMA traffic is unsupported, which can lead to this error.
-> Can you please confirm?
-Hi, parav Pandit
-    if running RDMA traffic/application which are using vlan gid when vconfig rem the vlan, it will happen the following error?
-   
- Oct 11 13:51:13 ubuntu kernel: [10408.846497] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
-Oct 11 13:51:23 ubuntu kernel: [10418.926477] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
-Oct 11 13:51:33 ubuntu kernel: [10429.006489] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
-Oct 11 13:51:43 ubuntu kernel: [10439.086477] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
-Oct 11 13:51:53 ubuntu kernel: [10449.166493] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
-Oct 11 13:52:04 ubuntu kernel: [10459.246473] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
-Oct 11 13:52:14 ubuntu kernel: [10469.326478] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
-Oct 11 13:52:24 ubuntu kernel: [10479.406470] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
-Oct 11 13:52:34 ubuntu kernel: [10489.486495] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
-Oct 11 13:52:44 ubuntu kernel: [10499.566476] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
-Oct 11 13:52:54 ubuntu kernel: [10509.646600] unregister_netdevice: waiting for eno1.1000 to become free. Usage count = 4
+On Tue, Nov 12, 2019 at 08:26:55PM -0800, John Hubbard wrote:
+> As it says in the updated comment in gup.c: current FOLL_LONGTERM
+> behavior is incompatible with FAULT_FLAG_ALLOW_RETRY because of the
+> FS DAX check requirement on vmas.
+> 
+> However, the corresponding restriction in get_user_pages_remote() was
+> slightly stricter than is actually required: it forbade all
+> FOLL_LONGTERM callers, but we can actually allow FOLL_LONGTERM callers
+> that do not set the "locked" arg.
+> 
+> Update the code and comments accordingly, and update the VFIO caller
+> to take advantage of this, fixing a bug as a result: the VFIO caller
+> is logically a FOLL_LONGTERM user.
+> 
+> Also, remove an unnessary pair of calls that were releasing and
+> reacquiring the mmap_sem. There is no need to avoid holding mmap_sem
+> just in order to call page_to_pfn().
+> 
+> Also, move the DAX check ("if a VMA is DAX, don't allow long term
+> pinning") from the VFIO call site, all the way into the internals
+> of get_user_pages_remote() and __gup_longterm_locked(). That is:
+> get_user_pages_remote() calls __gup_longterm_locked(), which in turn
+> calls check_dax_vmas(). It's lightly explained in the comments as well.
+> 
+> Thanks to Jason Gunthorpe for pointing out a clean way to fix this,
+> and to Dan Williams for helping clarify the DAX refactoring.
+> 
+> Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Jerome Glisse <jglisse@redhat.com>
+> Cc: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+>  drivers/vfio/vfio_iommu_type1.c | 25 ++-----------------------
+>  mm/gup.c                        | 27 ++++++++++++++++++++++-----
+>  2 files changed, 24 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index d864277ea16f..7301b710c9a4 100644
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -340,7 +340,6 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+>  {
+>  	struct page *page[1];
+>  	struct vm_area_struct *vma;
+> -	struct vm_area_struct *vmas[1];
+>  	unsigned int flags = 0;
+>  	int ret;
+>  
+> @@ -348,33 +347,13 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+>  		flags |= FOLL_WRITE;
+>  
+>  	down_read(&mm->mmap_sem);
+> -	if (mm == current->mm) {
+> -		ret = get_user_pages(vaddr, 1, flags | FOLL_LONGTERM, page,
+> -				     vmas);
+> -	} else {
+> -		ret = get_user_pages_remote(NULL, mm, vaddr, 1, flags, page,
+> -					    vmas, NULL);
+> -		/*
+> -		 * The lifetime of a vaddr_get_pfn() page pin is
+> -		 * userspace-controlled. In the fs-dax case this could
+> -		 * lead to indefinite stalls in filesystem operations.
+> -		 * Disallow attempts to pin fs-dax pages via this
+> -		 * interface.
+> -		 */
+> -		if (ret > 0 && vma_is_fsdax(vmas[0])) {
+> -			ret = -EOPNOTSUPP;
+> -			put_page(page[0]);
+> -		}
+> -	}
+> -	up_read(&mm->mmap_sem);
+> -
+> +	ret = get_user_pages_remote(NULL, mm, vaddr, 1, flags | FOLL_LONGTERM,
+> +				    page, NULL, NULL);
+>  	if (ret == 1) {
+>  		*pfn = page_to_pfn(page[0]);
+>  		return 0;
 
+Mind the return with the lock held this needs some goto unwind
 
-Thanks
-
-> If you are not running RDMA traffic while changing the mac, I need more debug logs.
-> Can you please enable ftrace and share the output file mac_change_trace.txt using below steps?
->
-> echo 0 > /sys/kernel/debug/tracing/tracing_on
-> echo function_graph > /sys/kernel/debug/tracing/current_tracer
-> echo > /sys/kernel/debug/tracing/trace
-> echo > /sys/kernel/debug/tracing/set_ftrace_filter
-> echo ':mod:ib*' > /sys/kernel/debug/tracing/set_ftrace_filter
-> echo ':mod:rdma*' >> /sys/kernel/debug/tracing/set_ftrace_filter
-> echo 1 > /sys/kernel/debug/tracing/tracing_on
->
-> ip link set <netdev> address <new_mac1>
-> ip link set <netdev> address <new_mac2>
-> cat /sys/kernel/debug/tracing/trace > mac_change_trace.txt
->
-> [1] git://git.launchpad.net/~ubuntu-kernel-test/ubuntu/+source/linux/+git/mainline-crack v5.0
-> [2] commit 5c5702e259dc ("RDMA/core: Set right entry state before releasing reference")
-> [3] commit be5914c124bc ("RDMA/core: Delete RoCE GID in hw when corresponding IP is deleted")
-> [4] commit d12e2eed2743 ("IB/core: Update GID entries for netdevice whose mac address changes")
->
->
-> .
->
-
-
+Jason
