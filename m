@@ -2,136 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A545F9EDA
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 01:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77CD6F9EDE
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 01:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbfKMAIV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Nov 2019 19:08:21 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:36587 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726969AbfKMAIV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 Nov 2019 19:08:21 -0500
-Received: by mail-qk1-f195.google.com with SMTP id d13so205403qko.3
-        for <linux-rdma@vger.kernel.org>; Tue, 12 Nov 2019 16:08:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=r4K7R0tR2iKjDwGj7h2AdFnAhKVb+PEh8hKXGhwzheo=;
-        b=fZud3ib9ugZ1H45gqE3Ufx6TkhfidwZqwWlQe2U/+whtXNqUICQgqqYOrhI9G7ja5h
-         8wz4z83SrHf90CcjxE/pqx7yyuqeqCwhGO/PglcW50daiLjpDhHLPtWIatjp83enLA1i
-         eCn9Cyh3/+6bkiKsYvohTq3vxERaDLgekZag44JZToiXvIR712sgs35f7P5IOnKrux9T
-         5/A7S2MFI7LRleIsmz6Z3nMdOR0RBtn0kvaVabK8o6Xbo0T11MJiJ4l+a9OV5hwhSrKI
-         CO6qigj/t+1GvMCaBySSbYJ+NLrLbAnXsZiSCRrRr749BBN2dmr4pM9uOxk+1bx6QohQ
-         /xig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=r4K7R0tR2iKjDwGj7h2AdFnAhKVb+PEh8hKXGhwzheo=;
-        b=JApYtqoXSlH/a1pFCxPdMSp8iiNTfhQc/TJPvCUIEXxqGv+Cjp5NDOEtRCoxqswyvf
-         2/uBOSEzWwuA/Yu9bGyxbFppd7XexfHr3TMhJadBECupjZompmGU/b9hIOgpSkb4shc2
-         Pc3G5xXu1Cn7fG/H/BYwFGRBPbZfF/QYNTi8TTTcWMrytbkywQF6ELOTBsBtmAiFP1+r
-         iY8kuCML2eTxdpp/hcPGhgUORwEahB2FFwy/trpI2Pi0bLdDXTh8FLrm/KaYR2ejFNbD
-         cIXTJ3/XGEvIRExWhv4MSE04ztK29CrM+YPpFWjdhLZGQD9GAFXyFXyUe/19lW/ocpvb
-         RIFg==
-X-Gm-Message-State: APjAAAWhK1GQG/SmA/N0Fpj4HkKowjGSOzuubwhuEsowG6p+u3Z/9jFe
-        F0RuRyfK3GZpB6CJ5jnCZZM6pQ==
-X-Google-Smtp-Source: APXvYqxUvDZJyIu1NzBqLzNMQJZcQEwGmA0sBjLaQeHkMjfR4xinoVbyQQ2cr4JogKuX1pAuI/x5jw==
-X-Received: by 2002:a05:620a:205d:: with SMTP id d29mr156309qka.152.1573603700172;
-        Tue, 12 Nov 2019 16:08:20 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id m25sm309243qtc.0.2019.11.12.16.08.19
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 12 Nov 2019 16:08:19 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iUgCp-0005iu-4h; Tue, 12 Nov 2019 20:08:19 -0400
-Date:   Tue, 12 Nov 2019 20:08:19 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>, davem@davemloft.net,
-        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, parav@mellanox.com,
-        Kiran Patil <kiran.patil@intel.com>
-Subject: Re: [net-next 1/1] virtual-bus: Implementation of Virtual Bus
-Message-ID: <20191113000819.GB19615@ziepe.ca>
-References: <20191111192219.30259-1-jeffrey.t.kirsher@intel.com>
- <20191112212826.GA1837470@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191112212826.GA1837470@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1727069AbfKMAIj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Nov 2019 19:08:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726957AbfKMAIj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 12 Nov 2019 19:08:39 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 273AA2196E;
+        Wed, 13 Nov 2019 00:08:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1573603718;
+        bh=KjzzTcYnHTbPiZHHU3oiNXK2IO0S++IshKJ56E3fWIM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LOiGsvx+c2husp91s1WCl9gljHVh7c5xjNQNDyeBqhxPkRhboXxQqmqoTBCQPqQZ1
+         V2L9yuouLTv+rFxK1urn3WJ2bX10DDbmxjicANXYOddYCrZUMzv4RI1uer5JQH180k
+         Lv+aNCMejDxus+4oUYACPPj8wFzi6MgoCQydwG18=
+Date:   Tue, 12 Nov 2019 16:08:35 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Shuah Khan <shuah@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH v4 2/2] mm/hmm/test: add self tests for HMM
+Message-Id: <20191112160835.9bfa58cf756683ddc8d470fd@linux-foundation.org>
+In-Reply-To: <07589a71-3984-b2a6-b24b-6b9a23e1b60d@nvidia.com>
+References: <20191104222141.5173-1-rcampbell@nvidia.com>
+        <20191104222141.5173-3-rcampbell@nvidia.com>
+        <20191112152521.GC12550@lst.de>
+        <07589a71-3984-b2a6-b24b-6b9a23e1b60d@nvidia.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 12, 2019 at 10:28:26PM +0100, Greg KH wrote:
+On Tue, 12 Nov 2019 13:51:11 -0800 Ralph Campbell <rcampbell@nvidia.com> wrote:
 
-> > + */
-> > +struct virtbus_device {
-> > +	const char			*name;
-> > +	int				id;
-> > +	const struct virtbus_dev_id	*dev_id;
-> > +	struct device			dev;
-> > +	void				*data;
-> > +};
-> > +
-> > +struct virtbus_driver {
-> > +	int (*probe)(struct virtbus_device *);
-> > +	int (*remove)(struct virtbus_device *);
-> > +	void (*shutdown)(struct virtbus_device *);
-> > +	int (*suspend)(struct virtbus_device *, pm_message_t state);
-> > +	int (*resume)(struct virtbus_device *);
-> > +	struct device_driver driver;
-> > +	const struct virtbus_dev_id *id_table;
-> > +};
-> > +
-> > +#define virtbus_get_dev_id(vdev)	((vdev)->id_entry)
-> > +#define virtbus_get_devdata(dev)	((dev)->devdata)
+> On 11/12/19 7:25 AM, Christoph Hellwig wrote:
+> > Shouldn't this go into mm/ instead? It certainly doesn't seem
+> > like a library.
 > 
-> What are these for?
+> I was following the convention for the other vm test kernel modules.
+> I see a couple of modules in mm/ but I don't have a personal
+> preference for where to place it.
+> 
+> Andrew, do you have a preference?
 
-As far as I can see, the scheme here, using the language from the most
-recent discussion is:
+q:/usr/src/25> ls -l lib/test_*.c|wc 
+     33     297    2051
 
-   // in core or netdev module
-   int mlx5_core_create()
-   {
-      struct mlx5_core_dev *core = kzalloc(..)
+lib/ is a somewhat strange place, but I'd use that for now.
 
-      [..]
+Presumably one day someone will (pointlessly) move these into
+lib/test-modules/.
 
-      core->vdev = virtbus_dev_alloc("mlx5_core", core);
-   }
-
-
-   // in rdma module
-   static int mlx5_rdma_probe(struct virtbus_device *dev)
-   {
-        // Get the value passed to virtbus_dev_alloc()
-	struct mlx5_core_dev *core = virtbus_get_devdata(dev)
-
-	// Use the huge API surrounding struct mlx5_core_dev
-	qp = mlx5_core_create_qp(core, ...);
-   }
-
-   static struct virtbus_driver mlx5_rdma_driver = {
-      .probe = mlx5_rdma_probe,
-      .match = {"mlx5_core"}
-   }
-
-Drivers that match "mlx5_core" know that the opaque
-'virtbus_get_devdata()' is a 'struct mlx5_core_dev *' and use that
-access the core driver.
-
-A "ice_core" would know it is some 'struct ice_core_dev *' for Intel
-and uses that pointer, etc.
-
-ie it is just a way to a pass a 'void *' from one module to another
-while using the driver core to manage module autoloading and binding.
-
-Jason
+Then into lib/test-modules/mm/, etc..
