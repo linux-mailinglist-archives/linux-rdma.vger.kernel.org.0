@@ -2,67 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F18FB1CA
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 14:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C7AFB1D8
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Nov 2019 14:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726957AbfKMNwY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 Nov 2019 08:52:24 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:54338 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726186AbfKMNwY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Nov 2019 08:52:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=lsFpyN32fHQMMKTZG1mpVdfof
-        /D08pyw9rWIJAM4UoAtf/Z4QYZRmBePtNAQa4qknik5nq7OBdxrcXXfGPTKkiPLNCC6HAJdWWu2IE
-        u489Jnalyt8cdKZoY6mmcb49pVi7Y+BKuYmfLlZ4rEw4VcITqkFejAFytgki0bnvZE765yomtg2HF
-        Tz85Vzn//ZbMa13ksDg8rStx/qLOVu4KySeGoc22qPGRLSPUQ8j9oR4FiaOQH1VrlJvYdnIDOsW2l
-        r7unWCrAIFC4HGhenJ4+rkLhDuenbyk5TycBTMeemHmOwD7/ScW9YPrO0CEJQgx1hIrG8gWz/ZKAX
-        w0z42hAVg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iUt4E-00072P-Ln; Wed, 13 Nov 2019 13:52:18 +0000
-Date:   Wed, 13 Nov 2019 05:52:18 -0800
-From:   Christoph Hellwig <hch@infradead.org>
+        id S1726410AbfKMNz0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 Nov 2019 08:55:26 -0500
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:54613 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726190AbfKMNz0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Nov 2019 08:55:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1573653326; x=1605189326;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=iIiYyqy3+v7h0DhRWndZafBxyMYnvSa/OIOzxrOzoG4=;
+  b=TarxC9U2L3fgsJ2hZimcevNI47umeonmF9+ME6IokW0YTVZo1zhlrVVG
+   O9WgHisif2CYP2MUUzoxDJcxLlMMusx9CvddZijon1sx9fHE3X5LQDUTV
+   1+E5TE5K87wNm5tjyScj17EfiYc26nGo6JMFzWVWxMZnK5qUois6aRlIC
+   Q=;
+IronPort-SDR: l5Uqu/8gT/UHixcRKzwHPAu03fWphwMIy5wfrDX9fbB2ODmbl9YUjeBWv9Tr3DYS/x8GaMKbfo
+ dj5fJfZ/UvCA==
+X-IronPort-AV: E=Sophos;i="5.68,300,1569283200"; 
+   d="scan'208";a="4203078"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-53356bf6.us-west-2.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 13 Nov 2019 13:55:24 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-53356bf6.us-west-2.amazon.com (Postfix) with ESMTPS id A3222A21DA;
+        Wed, 13 Nov 2019 13:55:23 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 13 Nov 2019 13:55:23 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.213) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 13 Nov 2019 13:55:19 +0000
+Subject: Re: [PATCH for-rc] RDMA/efa: Clear the admin command buffer prior to
+ its submission
 To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-mm@kvack.org, Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>, Felix.Kuehling@amd.com,
-        linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Zhou <David1.Zhou@amd.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Petr Cvek <petrcvekcz@gmail.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        nouveau@lists.freedesktop.org, xen-devel@lists.xenproject.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Subject: Re: [PATCH v3 01/14] mm/mmu_notifier: define the header
- pre-processor parts even if disabled
-Message-ID: <20191113135218.GA20531@infradead.org>
-References: <20191112202231.3856-1-jgg@ziepe.ca>
- <20191112202231.3856-2-jgg@ziepe.ca>
+CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        "Daniel Kranzdorf" <dkkranzd@amazon.com>,
+        Firas JahJah <firasj@amazon.com>
+References: <20191112092608.46964-1-galpress@amazon.com>
+ <20191113001730.GA28611@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <85aac664-a34e-4759-8f3c-9d774596d3d4@amazon.com>
+Date:   Wed, 13 Nov 2019 15:55:13 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191112202231.3856-2-jgg@ziepe.ca>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20191113001730.GA28611@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.213]
+X-ClientProxiedBy: EX13D03UWA003.ant.amazon.com (10.43.160.39) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Looks good,
+On 13/11/2019 2:17, Jason Gunthorpe wrote:
+> On Tue, Nov 12, 2019 at 11:26:08AM +0200, Gal Pressman wrote:
+>> We cannot rely on the entry memcpy as we only copy the actual size of
+>> the command, the rest of the bytes must be memset to zero.
+>>
+>> Fixes: 0420e542569b ("RDMA/efa: Implement functions that submit and complete admin commands")
+>> Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
+>> Reviewed-by: Firas JahJah <firasj@amazon.com>
+>> Signed-off-by: Gal Pressman <galpress@amazon.com>
+>> ---
+>>  drivers/infiniband/hw/efa/efa_com.c | 5 ++++-
+>>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> This is quite late in the -rc cycle for such a vauge description. What
+> is the user visible impact of passing non-zero memory beyond the
+> command length?
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Currently providing non-zero memory will not have any user visible impact.
+However, since admin commands are extendable (in a backwards compatible way)
+everything beyond the size of the command must be cleared to prevent issues in
+the future.
