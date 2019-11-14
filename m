@@ -2,108 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFA2FCB5E
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2019 18:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA9BFCD60
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2019 19:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbfKNREG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Nov 2019 12:04:06 -0500
-Received: from mail-eopbgr20050.outbound.protection.outlook.com ([40.107.2.50]:59006
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726214AbfKNREE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 14 Nov 2019 12:04:04 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YvD3ddzINKY0saAMJxaSg3AvATZ4C3oNrARecxrVEXeeJAeLJ3HE0oxYNkF0tRkwfDX5ENaStpf6iHu7ZJlRJMA9FktUXkYkOXBHVX6z5SHceKTaBf3FAjQkrO5/0t0r3YJ8rLxF+YUSHvrVBMtRe6efjSfviM+C8IDOQ8Rb71yAPzpnktCuRuxypJxakY+flOQYpSraU6TbijMxlassdaQFh4VVlt25lazm6jKpNXnmWP6PkeBvEamSyPpUueZwwx4FiR4pn/pVXEU5r7p+i4YTbn2L9n40nKf5jeuwR89801pASRp1r6Vch+axEUyUzkJ5I9jwbc0Qq9izg4FcxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lW96u36lBPTDoliDwh38MXjP/jnb0pZhZahdn/X3bDk=;
- b=dUDoS3eBmEVZmVUgQhLN6b+bT1OEE0gM6NqJP+EUjf2RiZvrGnG6+AU6xdU4AASoVuLlXvfHzuPZ/vwxceRqzbIVDmPoUoOaxli3Uaw7VZTbPVwQeG3re2DGoHSBTq6M/U8B6Fja5EKm8J2fy8VtZJbKC8oLtySm/8F406wWP3gKgWz8KBfX8Ti3y6vwz3qDviZny6VsZlXXEWO3lg870gq8p4nLjk+zmY4FcFARtFzxiTSGwnN4FwzjN5OhDR0r+H3EPJ/Tn11lOAgQxf404YP/vd0rS0ZJ72EQ5jMLCzfxjI4ADdFuLCO0lmpkYfC07GvPNsvfoEZdrmiWk1aFBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lW96u36lBPTDoliDwh38MXjP/jnb0pZhZahdn/X3bDk=;
- b=c9Ld2sowY/hc1op/RY44L6ZycOXKa/UdcXx2TqkLLMGyzCWYJWhMmIFM1Wy80nbpnwLKHB7Fm8AVFocKKrIowWkGzgfmvq52waZDfadJBBIrDQ6wuxY8JBcAQhuFGp70zuiqBap5z86/4rG3IVLHtQR8J0rXZsvOqoFop3STleA=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB5645.eurprd05.prod.outlook.com (20.178.120.151) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2430.20; Thu, 14 Nov 2019 17:04:01 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::b179:e8bf:22d4:bf8d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::b179:e8bf:22d4:bf8d%5]) with mapi id 15.20.2430.028; Thu, 14 Nov 2019
- 17:04:01 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Edward Srouji <edwards@mellanox.com>
-CC:     Noa Osherovich <noaos@mellanox.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Daria Velikovsky <daria@mellanox.com>
-Subject: Re: [PATCH rdma-core 1/4] pyverbs: Add memory allocation class
-Thread-Topic: [PATCH rdma-core 1/4] pyverbs: Add memory allocation class
-Thread-Index: AQHVms8rzs2wkDxYSUeydp5vKVoinaeKqqeAgAA20ECAAAPqAA==
-Date:   Thu, 14 Nov 2019 17:04:01 +0000
-Message-ID: <20191114170356.GW21728@mellanox.com>
-References: <20191114093732.12637-1-noaos@mellanox.com>
- <20191114093732.12637-2-noaos@mellanox.com>
- <20191114133345.GS21728@mellanox.com>
- <AM6PR05MB41529E366C190E52B0C58518D7710@AM6PR05MB4152.eurprd05.prod.outlook.com>
-In-Reply-To: <AM6PR05MB41529E366C190E52B0C58518D7710@AM6PR05MB4152.eurprd05.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: SN4PR0501CA0148.namprd05.prod.outlook.com
- (2603:10b6:803:2c::26) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [142.162.113.180]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 5fb1e522-6421-468e-fdcc-08d76924a554
-x-ms-traffictypediagnostic: VI1PR05MB5645:|VI1PR05MB5645:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB564507E2367A54110338440ECF710@VI1PR05MB5645.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 02213C82F8
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(979002)(4636009)(376002)(366004)(136003)(346002)(39860400002)(396003)(199004)(189003)(33656002)(4744005)(54906003)(6436002)(316002)(7736002)(6512007)(229853002)(305945005)(37006003)(476003)(256004)(6486002)(5660300002)(36756003)(446003)(11346002)(86362001)(6636002)(2616005)(486006)(66066001)(6862004)(25786009)(66476007)(64756008)(66446008)(102836004)(4326008)(66556008)(8676002)(8936002)(478600001)(1076003)(66946007)(3846002)(26005)(81166006)(6506007)(99286004)(2906002)(186003)(52116002)(71190400001)(76176011)(107886003)(386003)(14454004)(6246003)(81156014)(6116002)(71200400001)(969003)(989001)(999001)(1009001)(1019001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5645;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HKj3yYMq5ks446pAuWzWGUrhopvbzO7FkQU77cAkG15SS6/Y6N4kWiEpDd0JyQDHnxu8tac84zyIxIJ68SktQTHV5j5VUDNkd1ggjcTAzZg5PgIjdBVtj7f68s8N9b3PCD2ThG2Pzq0PiEhFPtspY7Y1eGpQY7eFWTe6Y8G6vOr2HuY0meV1aG/gwYq54JcQA/H+EEfiFrhKyg8VaNVJ2n6P8WKPZqez2vTyYoqgTNfWZgy44aF11SwW2ncBT/5Sw+GaYsHLrvDWFMmwx80oOdyxUenTNUn3r99xh5xSnyYvK6uiGpwAw5AVBHJe+QdoV9nHr+K1vn8b8Y2GJTVIhDTa4MuzjyvAVTG+fuFEJPREQoM5XQVnwWFQK/hL1qKdPFgjZeW54NnP1ExbI1FD87uTH+dNCTzWFKtbDLnr446qE+lJF0/WF90hmJ4ftnv9
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2D6CB8A6302F2A4CB8A47CCCFCCF41FB@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726786AbfKNSXF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Nov 2019 13:23:05 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:39254 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726969AbfKNSXF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Nov 2019 13:23:05 -0500
+Received: by mail-qt1-f195.google.com with SMTP id t8so7837077qtc.6
+        for <linux-rdma@vger.kernel.org>; Thu, 14 Nov 2019 10:23:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BZpbNyceFmO3/Vbl5Ka3YtEiXE22oq/IC6LtKtPgmrU=;
+        b=Dq3qLRwfRX4oLpT6zzHD2JT6vC4q0PYGlWr76+9aT/JKXktJvg1MRaT4K0WJUbzYRJ
+         lWUMxebFIwGE1BKukZM/ikNtESz5vUam+BhC494zdOl6KheSGyu2N+a4zHaUzUcpLzuM
+         5xMVXXG+yeQc5/n5eGRbFYJNSDbTxFMqVOSY/JsiBebW/SQDTtCO4ho6gqipHqiNFzlD
+         X0s1GooFdaXgQaVGDg2OkxhnfXvF2+1TcZp5b16rwvxo+K1dIfXWXA4W0DhTxuDoJM0E
+         8VbRgIoRqWDFwNbDx6W7RAltLzWKXeJdjx3jP6gTSQD0he77PUuOy8kVdqWaCZAT+Dlm
+         6TeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BZpbNyceFmO3/Vbl5Ka3YtEiXE22oq/IC6LtKtPgmrU=;
+        b=JwN8pvtVI+vkfr6cmnc0aakqKxnBUOTP74g4KZ+ZPsG4aGSuU3gXFnAO1zjx9RvdV+
+         e0l9xSlmE8JSuhJNhuJgT0WztHCOZh0ujytumjwWkKjf27Mvgdx0NCOBkx8zaXoYFMx8
+         cYPmK20k8j3kleIf/FdsK5RzaJXR2XOE/en0hcwHk+16gs/+zAnrS4VK+xxS07CKsHC4
+         Ypar2558lFha/jualQ67E6nXHEcNs+QGs+NZdx27sLwUclIwuj/F9JPotVZQlsc02451
+         YxdKEgbdzOPVX1n+PsGiPmKx+eECeceZOlVjpD9cjf37zAGHr6fcmmLdrHx1l+Jbw6qO
+         YLcw==
+X-Gm-Message-State: APjAAAXTXKBpZS61TaO8wK0gwfOf2D2XNHOhXbmfgWwq01ZGM/xYnQwu
+        Y8HRvEicXvG4lMM3tjVO9MKIhQ==
+X-Google-Smtp-Source: APXvYqyBiaBbcNqy1rmudd4fmc8ctCp1bidAc+QrE8F82EV4TmQjHqb5Rz0V8xR2O64Tyd1Tl+g84A==
+X-Received: by 2002:aed:2907:: with SMTP id s7mr9637139qtd.265.1573755783693;
+        Thu, 14 Nov 2019 10:23:03 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id f10sm3216323qth.40.2019.11.14.10.23.03
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 14 Nov 2019 10:23:03 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iVJlm-0004aM-QL; Thu, 14 Nov 2019 14:23:02 -0400
+Date:   Thu, 14 Nov 2019 14:23:02 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        iommu@lists.linux-foundation.org, linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Ariel Elior <aelior@marvell.com>
+Subject: Re: remove DMA_ATTR_WRITE_BARRIER
+Message-ID: <20191114182302.GA7862@ziepe.ca>
+References: <20191113073214.9514-1-hch@lst.de>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5fb1e522-6421-468e-fdcc-08d76924a554
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Nov 2019 17:04:01.1223
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qRmzR/tb3+M3hipDGwlDvF18BMLpgE5/35BCK9PT2t9S38gUAUAfUWnMCGJ9J8y1qIoIQHspAV9XPhElqJjt+g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5645
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191113073214.9514-1-hch@lst.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 14, 2019 at 05:00:00PM +0000, Edward Srouji wrote:
-> I put the memory related functions under MemAlloc for multiple reasons:
-> - The methods won't be confused with the C functions
-> - The class is extensible with more memory related methods and functional=
-ity
->=20
-> I think the other option would be defining them in another, separate, mod=
-ule (outside "base" module - which I less preferred)
+On Wed, Nov 13, 2019 at 08:32:12AM +0100, Christoph Hellwig wrote:
 
-It is an improper way to use a class
+> There is no implementation of the DMA_ATTR_WRITE_BARRIER flag left
+> now that the ia64 sn2 code has been removed.  Drop the flag and the
+> calling convention to set it in the RDMA code.
 
+Applied to rdma.git for-next
+
+There were a number of conflicts in qedr, I fixed them up, but Michal
+probably should check it.
+
+Thanks,
 Jason
