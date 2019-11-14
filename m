@@ -2,123 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B066BFC00F
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2019 07:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55409FC2B8
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2019 10:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726319AbfKNGIP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Nov 2019 01:08:15 -0500
-Received: from hqemgate15.nvidia.com ([216.228.121.64]:16008 "EHLO
-        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbfKNGIO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Nov 2019 01:08:14 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dccef4c0000>; Wed, 13 Nov 2019 22:08:12 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 13 Nov 2019 22:08:13 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 13 Nov 2019 22:08:13 -0800
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 14 Nov
- 2019 06:08:12 +0000
-Subject: Re: [PATCH v4 09/23] mm/gup: introduce pin_user_pages*() and FOLL_PIN
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Jan Kara <jack@suse.cz>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-References: <20191113042710.3997854-1-jhubbard@nvidia.com>
- <20191113042710.3997854-10-jhubbard@nvidia.com>
- <20191113104308.GE6367@quack2.suse.cz>
- <3850aa22-6f03-bd2b-024f-5736c4461199@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <7c590a1a-25c6-a8e7-d471-8855ceea8606@nvidia.com>
-Date:   Wed, 13 Nov 2019 22:08:12 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <3850aa22-6f03-bd2b-024f-5736c4461199@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
+        id S1726409AbfKNJhs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Nov 2019 04:37:48 -0500
+Received: from mail-eopbgr40065.outbound.protection.outlook.com ([40.107.4.65]:56641
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725977AbfKNJhs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 Nov 2019 04:37:48 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cMZFZGWFBYI9QxbhyHc14jqWYO1pk2NYmDB0uxmxpz83nBQHu/KgL4bKKDig30K1EUGJZyvlp7r7x3i8WEH9oeoK/ZasnriN0WSNbCvZHgxWxN5Fkn+ADqCylkKxGcsH9Mm8m4QCPpM4CkRtnH8XQnnT8sRgX+j4xnYlAbfY47SFeHfDBojx/hU4FWvuqIsDgmBXiKuqHeT7u37z5HzcmQpYLxk7JFnkkW/nc1qBu6bKhE3g5ALJLrQsVN8TWEHhGKT5V7uN+N79uIkRSeLUXMrVq7yCQeDEMWfkQIpKO+gSJlhArhCwwIS/6a8xXLL0kxqafakR7M5zwrRKIF3Qhw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pCVVJn8x/tc+QcopN3nYhHVwlM99qZe2rSURGTVqr4Y=;
+ b=g+fnikho5RgpGJCoAMVEAKLpxraty4d928pMzeG4eSXA4ScOdg0CSLf/kTJcJLTTDQ8RfAIb5Q2ac7u3wNSkQ33ne1Ti0eVQTIx6+e6Z5Y6iDzyAxPHKfBWDWeGws251UkvsARSLH74zmRfcTCB1UApHa67edjGOQ0muoKDX4oJeqZXS9QjtkUWjxZlsauF9bL22zaEFrsmDDI5pOoaMEL2AEjIEwGLaISPqCK3Re2iNoGXS0LkpAw9xpc4b2L3of5VUK+5wjUK2Imkb5ObybSe6JEC4v73cIAxMD3xn5OWix91jH4dP8rtdSNpN0tgKG6dPcBh2IGgIXIYM5VZOkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pCVVJn8x/tc+QcopN3nYhHVwlM99qZe2rSURGTVqr4Y=;
+ b=I8uu1Tz6RrUypVDxriqTbUzvkkNNf4u/sGVofLnbxgkeJGYMcLi6Mt/CKEfL4BXIgu0wePpndfBt+tgt9cXnu+G1cE+VhwTyCSVoV5kb/6MFKeLM3EQa3ROJMbaOnZWLbfnbGI4GiwFDLm34w/GaTiQweF/ohb5lL9AuCjK2eq8=
+Received: from AM6PR05MB4968.eurprd05.prod.outlook.com (20.177.33.17) by
+ AM6PR05MB5783.eurprd05.prod.outlook.com (20.178.86.87) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2451.23; Thu, 14 Nov 2019 09:37:43 +0000
+Received: from AM6PR05MB4968.eurprd05.prod.outlook.com
+ ([fe80::505f:e3f8:3f87:e3ff]) by AM6PR05MB4968.eurprd05.prod.outlook.com
+ ([fe80::505f:e3f8:3f87:e3ff%7]) with mapi id 15.20.2430.028; Thu, 14 Nov 2019
+ 09:37:43 +0000
+From:   Noa Osherovich <noaos@mellanox.com>
+To:     "dledford@redhat.com" <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Noa Osherovich <noaos@mellanox.com>
+Subject: [PATCH rdma-core 0/4] pyverbs: Introduce parent domain
+Thread-Topic: [PATCH rdma-core 0/4] pyverbs: Introduce parent domain
+Thread-Index: AQHVms8qVtpEX3kItUOO1C82KZnE4g==
+Date:   Thu, 14 Nov 2019 09:37:43 +0000
+Message-ID: <20191114093732.12637-1-noaos@mellanox.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1573711692; bh=DIdS7z+upWWwriggk7xvQh6W6C7nto/Dlb+Yd8YHyyo=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=f9GCQv7TfzjvQX+YKkhiJDV/kP32g+HvR9S+vDLbLe8tqa50A8oxNI045niH9oWR6
-         Q+cRQMMuOwkhrc3UyHNB5dnYTxj30KiXA71H5zxupkKbZfd2ps9XV2bsxg1JSEMDdw
-         qf9Vcd6U4xnrGLaZQaGULc5hp7BtrN3TQq1+4QNeiyHZ0EANBdTplhxuReTGSebwB/
-         f90gLRmPU4TtSLCTxR2K8crrcttWruVUEFFlnGiNse7TapK6yl28TNAEQQYeEakb+c
-         3z6jTyDq+9/ON54Pzsd2O5eKTbjzgyBeQwB7ztFRyxIYohzwkLXX9l0JxAXtOLXL+I
-         x4TC/t1hFahNQ==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: git-send-email 2.21.0
+x-clientproxiedby: AM0PR0402CA0012.eurprd04.prod.outlook.com
+ (2603:10a6:208:15::25) To AM6PR05MB4968.eurprd05.prod.outlook.com
+ (2603:10a6:20b:4::17)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=noaos@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [94.188.199.18]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 03a3c1c7-f08d-4e04-d1f1-08d768e64caa
+x-ms-traffictypediagnostic: AM6PR05MB5783:|AM6PR05MB5783:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR05MB578319B03D953A655CEED61CD9710@AM6PR05MB5783.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-forefront-prvs: 02213C82F8
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(376002)(136003)(366004)(346002)(39860400002)(189003)(199004)(52116002)(4326008)(8936002)(8676002)(81166006)(81156014)(50226002)(7736002)(3846002)(6116002)(6486002)(305945005)(36756003)(107886003)(2906002)(6436002)(6512007)(66946007)(478600001)(66476007)(66446008)(64756008)(66556008)(71200400001)(110136005)(99286004)(54906003)(316002)(256004)(25786009)(5660300002)(1076003)(71190400001)(6506007)(26005)(86362001)(186003)(14444005)(486006)(2501003)(476003)(2616005)(6636002)(66066001)(386003)(14454004)(102836004);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB5783;H:AM6PR05MB4968.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: zMx5++ZUk04gbs3WzpB1PuaZ2oMFE7db9SNo9XA/iPmtKCCjjmFQofQpxtdMN4EhB3q8oci0jMOdq020E6bsXlfvG3yiRdcfyp674l9FA8AzzcRnPW+d0X1zCYRHroIghwHCYi24BbxrG4VUT0odTRAhst4VJr/2MWBEmp82GApsoAkksHjDGDnmR3slliRRfvN3HiK56VN6Z7dGqOWwLPmZ1pVcCfzrKZzi4mYigGg0CZEUlG/c4TBNnHhQ6ZzSFP38uBbuX5rMDNR2ZBlgQcC0XV9NOYjoT+lKAGjpj4sSQcai8wK+UcI0wO1UsdYwZSRLUIBqCviMUv8RNnU7lBS+ksTySFAoX57B6n1IuId7efcXB6iCogbfyWnZ3RSw6QVGgTXo0aQZXUhjirhySmZCsTF6KBSKiHs+Om8p+Os7o4IDs7qshXbyrr7da6ZZ
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 03a3c1c7-f08d-4e04-d1f1-08d768e64caa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Nov 2019 09:37:43.8686
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XYc0unJMvcYSGlF8IGjbSLibMjd8BIb0H03udXMdVr2XXcIBvbtS6LsTTkI/qz/96b1O2Y4k5DqU1dv+9b7e8w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB5783
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/13/19 3:22 PM, John Hubbard wrote:
-> On 11/13/19 2:43 AM, Jan Kara wrote:
-> ...
->> How does FOLL_PIN result in grabbing (at least normal, for now) page reference?
->> I didn't find that anywhere in this patch but it is a prerequisite to
->> converting any user to pin_user_pages() interface, right?
-> 
-> 
-> ohhh, I messed up on this intermediate patch: it doesn't quite stand alone as
-> it should, as you noticed. To correct this, I can do one of the following:
-> 
-> a) move the new pin*() routines into the later patch 16 ("mm/gup:
-> track FOLL_PIN pages"), or
-> 
-> b) do a temporary thing here, such as setting FOLL_GET and adding a TODO,
-> within the pin*() implementations. And this switching it over to FOLL_PIN
-> in patch 16.
-> 
-> I'm thinking (a) is less error-prone, so I'm going with that unless someone
-> points out that that is stupid. :)
-> 
+Parent domains extend protection domains with custom allocators
+callbacks given by the user and override the provider's allocation.
 
-OK, just to save anyone from wasting time reading the above: (a) is, in fact,
-stupid, after all. ha. That is because pin_user_pages() is called in the 
-intervening patches.
- 
-So anyway, I'll work out an ordering to fix it up, it's not complicated.
+This series adds support for parent domain in pyverbs, including
+a basic test and a documentation.
 
+In order to allow Python users to provide Python allocators, pyverbs
+is using the pd_context object and an internal wrapper that makes the
+Python functions to be called from the provider.
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+Edward Srouji (4):
+  pyverbs: Add memory allocation class
+  pyverbs: Introduce ParentDomain class
+  pyverbs: Document ParentDomain class and add a simple example
+  tests: Add a test for parent domain
+
+ Documentation/pyverbs.md                |  27 +++++
+ pyverbs/base.pxd                        |   3 +
+ pyverbs/base.pyx                        |  26 ++++
+ pyverbs/libibverbs.pxd                  |  11 ++
+ pyverbs/libibverbs_enums.pxd            |   7 ++
+ pyverbs/pd.pxd                          |  17 +++
+ pyverbs/pd.pyx                          | 150 ++++++++++++++++++++++--
+ pyverbs/providers/mlx5/mlx5dv_enums.pxd |  11 ++
+ pyverbs/srq.pyx                         |   2 +-
+ tests/CMakeLists.txt                    |   1 +
+ tests/test_parent_domain.py             |  86 ++++++++++++++
+ 11 files changed, 330 insertions(+), 11 deletions(-)
+ create mode 100644 tests/test_parent_domain.py
+
+--=20
+2.21.0
 
