@@ -2,119 +2,158 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D31DFC788
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2019 14:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB57FC7C1
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2019 14:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727142AbfKNNbq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Nov 2019 08:31:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727134AbfKNNbp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 14 Nov 2019 08:31:45 -0500
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D827B205C9;
-        Thu, 14 Nov 2019 13:31:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573738304;
-        bh=DY1NJIYWIGWG99+4n8+vknfj2UfNByQ/y9ppYdflykE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K4wCtEeMw37H/72DEy/NWBiPZ44KV8KeqVkiLEZktfgQMP2ac2TvOzChWO8HMLB8k
-         EvrWYZ/lGxrGk+SpjQsDH0E9yiWq9GIFRZqTN/o5DfeLe/eC14izuVhS/N5Run394t
-         xcemia1z2wkcPaM4iY0Yps6l+tfbXaTpDF8+nZuw=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Danit Goldberg <danitg@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: [PATCH rdma-next 4/4] IB/mlx5: Implement callbacks for getting VFs GUID attributes
-Date:   Thu, 14 Nov 2019 15:31:26 +0200
-Message-Id: <20191114133126.238128-6-leon@kernel.org>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191114133126.238128-1-leon@kernel.org>
-References: <20191114133126.238128-1-leon@kernel.org>
+        id S1726674AbfKNNeB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Nov 2019 08:34:01 -0500
+Received: from mail-eopbgr70088.outbound.protection.outlook.com ([40.107.7.88]:41349
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726374AbfKNNeB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 Nov 2019 08:34:01 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nfm4qZ0eclr45Rr6k0Xw36Sd5v8iz3wAH+nyR/5HjTW8AtvPY8wT6+GQpVeVNR9IsDJzz5PyXKUTT5trMEgEHABFf2PqHhFUIXoG4MBW2uJDUVGS/tDbgPE8nvivJOWY4/VrMFVJ4OBHypXheLou79/c3f9t+KUMacz5MHtqnTvvPvlDgvzC00IZgaUSSpVqLZn4NrnxiaqBO9HeajrolMYNTFNR7LF7pcCb/3aCNA7Ce78SL0HgJVBkpJZ88g3fzwQCAojyKY/t8eCKO4LimTjKBsV/3QWAniyCQnN0SavKuHpEG+IEiVetDe/BNDveUx3r/phxQQe3l/hxqJeCTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9kfsUgDX2ANa4+h1VCSSvFO+28nSQNuCreayJu/tAks=;
+ b=noW7sdL079FNREkYiT7188sS1JjyagfdiVS0nw5Ipkqbp+cTQOa6r/cFe3ptdspruZM3VCq4BqvXrc/7uELWa7uU8Sb/SDeeHSQ7dbfUfMH2O83M730bKJtddoci6IciFFYXFzoqSdZ/qyEGcgYjTS2hBR1dqYmEk8MBScc+J5BakseQ6FYvc79eVkj1TSnLvOQEOvbNB4/9qogztMVYO2bb0dcCNEKwF6+wxNec8DH+LxzlRMtWFzq3ZhoYdN1ORJGEKX/NQhel3zpoVH+R4V2PS0LSiXLKWNU7WxzfO3gtOaFRFrUduf3RUVhCcd+YpEoZQ6uacuFHBanuUgUC5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9kfsUgDX2ANa4+h1VCSSvFO+28nSQNuCreayJu/tAks=;
+ b=P52lXJZwLER+ykCYRi0T1dCKxPrpHdoQW18f08hvkKgI/TlhoToIm8MeeXGkS4+6TtKHRSU/iJzrCZ8P9tdp17A/+ciKWaFaTUyzBc6jcs8pPP3Coms5qVrC2KNRlJCUio8B7C/nmkmq87MQokQZmBzZmGzNzVbm70vg0GkA2Z0=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB3501.eurprd05.prod.outlook.com (10.170.239.31) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2451.23; Thu, 14 Nov 2019 13:33:50 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::b179:e8bf:22d4:bf8d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::b179:e8bf:22d4:bf8d%5]) with mapi id 15.20.2430.028; Thu, 14 Nov 2019
+ 13:33:50 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Noa Osherovich <noaos@mellanox.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Edward Srouji <edwards@mellanox.com>,
+        Daria Velikovsky <daria@mellanox.com>
+Subject: Re: [PATCH rdma-core 1/4] pyverbs: Add memory allocation class
+Thread-Topic: [PATCH rdma-core 1/4] pyverbs: Add memory allocation class
+Thread-Index: AQHVms8rzs2wkDxYSUeydp5vKVoinaeKqqeA
+Date:   Thu, 14 Nov 2019 13:33:50 +0000
+Message-ID: <20191114133345.GS21728@mellanox.com>
+References: <20191114093732.12637-1-noaos@mellanox.com>
+ <20191114093732.12637-2-noaos@mellanox.com>
+In-Reply-To: <20191114093732.12637-2-noaos@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BN8PR12CA0010.namprd12.prod.outlook.com
+ (2603:10b6:408:60::23) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.162.113.180]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 5fa8479d-9034-4d86-f914-08d769074873
+x-ms-traffictypediagnostic: VI1PR05MB3501:|VI1PR05MB3501:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB35011B00A96CC531AF9E52BDCF710@VI1PR05MB3501.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 02213C82F8
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(376002)(136003)(396003)(366004)(346002)(189003)(199004)(37006003)(2906002)(14454004)(8936002)(229853002)(66066001)(107886003)(8676002)(81156014)(6862004)(81166006)(6246003)(6512007)(6116002)(6486002)(3846002)(4326008)(6436002)(36756003)(26005)(14444005)(186003)(256004)(102836004)(99286004)(6506007)(386003)(52116002)(305945005)(6636002)(33656002)(7736002)(476003)(2616005)(486006)(71200400001)(446003)(71190400001)(11346002)(5660300002)(64756008)(66556008)(66476007)(66446008)(478600001)(1076003)(25786009)(316002)(66946007)(86362001)(54906003)(76176011);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3501;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: N/ug4cB/09TIPQLa8ZISqE4BU098nwTdN8q6m7CbA+miYnt9OafJF9L455MzlAQNGPcWtdchaci2WOcymXr5pgpClntGtGbcl81Msd2pAL/MvtwcLaV9ia/ZZVA5VJbIcxV5CsMWqUVg/UyYDpZgBxJvRN1GwNgeNy4N6S8sxbr0/k4nArfy3J8L+k7MP/te+ve9nOUD/ULVsKTkjJTpWXwaj20KOBXoiV7oAytHgCwg951uaR8flpkAYF6yWtkkwI+sZDV8/N9BZRQt5IVJO/1iJWvAL2uGENjeUf1jnNlWdPbjjb3gZEDDRhpXlgzWGtAJhBjOshbEKT5vHaBADSHZ3mtLNcMCYD0xl6QL8pj4REXlO2aakdMP9O+YOZjJSz2f1iPC4zW42AhUubUzt1EdyHk9NhgZG34IQ7f2LJjAnWlvIX4tN21QiyCrLiro
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <9148FD59D5FA664888328576256ACDDD@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5fa8479d-9034-4d86-f914-08d769074873
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Nov 2019 13:33:50.1809
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qTZvyyNk5aEPZ4iJ/58IytMKFEnHbzeHBUnyVN/dWRnGRAsvCdXpOK94IC1w3uQJE9cwCf7VjYaGZXCSk4UvCQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3501
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Danit Goldberg <danitg@mellanox.com>
+On Thu, Nov 14, 2019 at 09:37:45AM +0000, Noa Osherovich wrote:
+> From: Edward Srouji <edwards@mellanox.com>
+>=20
+> Add new MemAlloc class which wraps some C memory allocation functions
+> such as aligned_alloc, malloc and free.
+> This allows Pyverbs' users to easily allocate and free memory in C
+> style, i.e when the memory address must be passed to a driver API.
+>=20
+> Signed-off-by: Edward Srouji <edwards@mellanox.com>
+> Reviewd-by: Daria Velikovsky <daria@mellanox.com>
+> Reviewd-by: Noa Osherovich <noaos@mellanox.com>
+>  pyverbs/base.pxd |  3 +++
+>  pyverbs/base.pyx | 26 ++++++++++++++++++++++++++
+>  2 files changed, 29 insertions(+)
+>=20
+> diff --git a/pyverbs/base.pxd b/pyverbs/base.pxd
+> index e85f7c020e1c..e956a79915ff 100644
+> +++ b/pyverbs/base.pxd
+> @@ -9,3 +9,6 @@ cdef class PyverbsObject(object):
+> =20
+>  cdef class PyverbsCM(PyverbsObject):
+>      cpdef close(self)
+> +
+> +cdef class MemAlloc(object):
+> +   pass
+> diff --git a/pyverbs/base.pyx b/pyverbs/base.pyx
+> index 8b3e6741ae19..a41cfc748ad0 100644
+> +++ b/pyverbs/base.pyx
+> @@ -3,8 +3,14 @@
+> =20
+>  import logging
+>  from pyverbs.pyverbs_error import PyverbsRDMAError
+> +from libc.stdlib cimport malloc, free
+> +from libc.stdint cimport uintptr_t
+>  from libc.errno cimport errno
+> =20
+> +cdef extern from 'stdlib.h':
+> +    void *aligned_alloc(size_t alignment, size_t size)
 
-Implement the IB defined callback mlx5_ib_get_vf_guid used to query FW
-for VFs attributes and return node and port GUIDs.
+posix_memalign() is the correct function to use, and a cdef for it is
+already in posix.stdlib
 
-Signed-off-by: Danit Goldberg <danitg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/mlx5/ib_virt.c | 24 ++++++++++++++++++++++++
- drivers/infiniband/hw/mlx5/main.c    |  1 +
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  3 +++
- 3 files changed, 28 insertions(+)
+> +cdef class MemAlloc(object):
+> +    @staticmethod
+> +    def malloc(size):
+> +        ptr =3D malloc(size)
+> +        if not ptr:
+> +            raise MemoryError('Failed to allocate memory')
+> +        return <uintptr_t>ptr
+> +
+> +    @staticmethod
+> +    def aligned_alloc(size, alignment=3D8):
+> +        ptr =3D aligned_alloc(alignment, size)
+> +        if not ptr:
+> +            raise MemoryError('Failed to allocate memory')
+> +        return <uintptr_t>ptr
+> +
+> +    @staticmethod
+> +    def free(ptr):
+> +        free(<void*><uintptr_t>ptr)
 
-diff --git a/drivers/infiniband/hw/mlx5/ib_virt.c b/drivers/infiniband/hw/mlx5/ib_virt.c
-index 649a3364f838..4f0edd4832bd 100644
---- a/drivers/infiniband/hw/mlx5/ib_virt.c
-+++ b/drivers/infiniband/hw/mlx5/ib_virt.c
-@@ -201,3 +201,27 @@ int mlx5_ib_set_vf_guid(struct ib_device *device, int vf, u8 port,
+Why is this in a class?
 
- 	return -EINVAL;
- }
-+
-+int mlx5_ib_get_vf_guid(struct ib_device *device, int vf, u8 port,
-+			struct ifla_vf_guid *node_guid,
-+			struct ifla_vf_guid *port_guid)
-+{
-+	struct mlx5_ib_dev *dev = to_mdev(device);
-+	struct mlx5_core_dev *mdev = dev->mdev;
-+	struct mlx5_hca_vport_context *rep;
-+	int err;
-+
-+	rep = kzalloc(sizeof(*rep), GFP_KERNEL);
-+	if (!rep)
-+		return -ENOMEM;
-+
-+	err = mlx5_query_hca_vport_context(mdev, 1, 1, vf+1, rep);
-+	if (err)
-+		goto ex;
-+
-+	port_guid->guid = rep->port_guid;
-+	node_guid->guid = rep->node_guid;
-+ex:
-+	kfree(rep);
-+	return err;
-+}
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 2d83f8c1d7ba..7127cdd313c1 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -6313,6 +6313,7 @@ static const struct ib_device_ops mlx5_ib_dev_ipoib_enhanced_ops = {
-
- static const struct ib_device_ops mlx5_ib_dev_sriov_ops = {
- 	.get_vf_config = mlx5_ib_get_vf_config,
-+	.get_vf_guid = mlx5_ib_get_vf_guid,
- 	.get_vf_stats = mlx5_ib_get_vf_stats,
- 	.set_vf_guid = mlx5_ib_set_vf_guid,
- 	.set_vf_link_state = mlx5_ib_set_vf_link_state,
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 00fd412ef686..3ad20b120bf4 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1315,6 +1315,9 @@ int mlx5_ib_set_vf_link_state(struct ib_device *device, int vf,
- 			      u8 port, int state);
- int mlx5_ib_get_vf_stats(struct ib_device *device, int vf,
- 			 u8 port, struct ifla_vf_stats *stats);
-+int mlx5_ib_get_vf_guid(struct ib_device *device, int vf, u8 port,
-+			struct ifla_vf_guid *node_guid,
-+			struct ifla_vf_guid *port_guid);
- int mlx5_ib_set_vf_guid(struct ib_device *device, int vf, u8 port,
- 			u64 guid, int type);
-
---
-2.20.1
-
+Jason
