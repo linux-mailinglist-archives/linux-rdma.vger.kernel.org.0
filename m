@@ -2,170 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 404B5FCB3D
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2019 18:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFA2FCB5E
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Nov 2019 18:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbfKNRAq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Nov 2019 12:00:46 -0500
-Received: from mail-eopbgr130082.outbound.protection.outlook.com ([40.107.13.82]:41027
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        id S1726766AbfKNREG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Nov 2019 12:04:06 -0500
+Received: from mail-eopbgr20050.outbound.protection.outlook.com ([40.107.2.50]:59006
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726482AbfKNRAq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 14 Nov 2019 12:00:46 -0500
+        id S1726214AbfKNREE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 Nov 2019 12:04:04 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kDUwSt445QfEkRno9+7JNLKhlXsrkclembvq2cRG7K6c50zPBtcobXHVWJr8tKoO8Rtyv1+S8gIx+BODPvADlzu9E2qD83UyUq/WR6jY0nr38ZnswW/bs5TCD991JAZ6Q/HR8yQc1X54Fh48Eo1AkaGLQxUERZStszLSrTZeLgCYJvxHkgWF9oU/AkG7pCFhQ/EALb4Af4THPqhmF4bu5I782QZpbYjedPsQq87SFvvtSCIAZ7xbGclVrThYnsARVrFFr3lIQzucdyHxypyxUx0lNe/wZemjvkaAAl9Hhe2HLitogRgjMhCj+K1gIG8+MhnGvhWhOnQjB0SCKnx20w==
+ b=YvD3ddzINKY0saAMJxaSg3AvATZ4C3oNrARecxrVEXeeJAeLJ3HE0oxYNkF0tRkwfDX5ENaStpf6iHu7ZJlRJMA9FktUXkYkOXBHVX6z5SHceKTaBf3FAjQkrO5/0t0r3YJ8rLxF+YUSHvrVBMtRe6efjSfviM+C8IDOQ8Rb71yAPzpnktCuRuxypJxakY+flOQYpSraU6TbijMxlassdaQFh4VVlt25lazm6jKpNXnmWP6PkeBvEamSyPpUueZwwx4FiR4pn/pVXEU5r7p+i4YTbn2L9n40nKf5jeuwR89801pASRp1r6Vch+axEUyUzkJ5I9jwbc0Qq9izg4FcxA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3vIgOJ9y1IaDErXUz5vy0ec8KV/QKyf7qyqO0a4J9Pg=;
- b=NYppn24W88EYsAaXIxla2QykWSCpLwva7Nk2v68ET2LyLcE19hjkuzYxPZRygL5AWgpb4ds/f7Dbu6hAY2rAhvfed5+GqTzO7dVXGAOOId6Gdi6UamHXjoKcs7KANQ1w564QJ3JYDvNWMwgaL63np66k5gPv2Y5iLuqgADb6wnBf4O6dG4mqGugS2xq7MiX8NQn68+1PsO1FW2Cy1d9t1S23Ebyt9Z/W6SvH8wMXXmjmnrlfDC59O9o2+SH9OeDPUo00YiwEFuMKC0R+j3R5QFqv7Q1QvREj2n8TDfDeKV7Cb7NDRHEUdG1E484pnbr0Qa4UHPRJwo+PZCPEerwQGA==
+ bh=lW96u36lBPTDoliDwh38MXjP/jnb0pZhZahdn/X3bDk=;
+ b=dUDoS3eBmEVZmVUgQhLN6b+bT1OEE0gM6NqJP+EUjf2RiZvrGnG6+AU6xdU4AASoVuLlXvfHzuPZ/vwxceRqzbIVDmPoUoOaxli3Uaw7VZTbPVwQeG3re2DGoHSBTq6M/U8B6Fja5EKm8J2fy8VtZJbKC8oLtySm/8F406wWP3gKgWz8KBfX8Ti3y6vwz3qDviZny6VsZlXXEWO3lg870gq8p4nLjk+zmY4FcFARtFzxiTSGwnN4FwzjN5OhDR0r+H3EPJ/Tn11lOAgQxf404YP/vd0rS0ZJ72EQ5jMLCzfxjI4ADdFuLCO0lmpkYfC07GvPNsvfoEZdrmiWk1aFBQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3vIgOJ9y1IaDErXUz5vy0ec8KV/QKyf7qyqO0a4J9Pg=;
- b=DATutpGFAHJpNlYBPHvOPjaRRs16cEf6e7nkLoydgvWF8tOyjT0+s+pAUOkAv1Bp2TDZllbaRjDzbJjbVZvqqZ+nouskzvXPn1mbITjlSXr6ogRPzxwIgbSCAbRSszmYeTJY6PBl44Du9MIqEldfn45pke++XsOe/4MJKlH8NH0=
-Received: from AM6PR05MB4152.eurprd05.prod.outlook.com (52.135.161.21) by
- AM6PR05MB6406.eurprd05.prod.outlook.com (20.179.6.81) with Microsoft SMTP
+ bh=lW96u36lBPTDoliDwh38MXjP/jnb0pZhZahdn/X3bDk=;
+ b=c9Ld2sowY/hc1op/RY44L6ZycOXKa/UdcXx2TqkLLMGyzCWYJWhMmIFM1Wy80nbpnwLKHB7Fm8AVFocKKrIowWkGzgfmvq52waZDfadJBBIrDQ6wuxY8JBcAQhuFGp70zuiqBap5z86/4rG3IVLHtQR8J0rXZsvOqoFop3STleA=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB5645.eurprd05.prod.outlook.com (20.178.120.151) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2451.27; Thu, 14 Nov 2019 17:00:00 +0000
-Received: from AM6PR05MB4152.eurprd05.prod.outlook.com
- ([fe80::28c2:5ab:f383:fed]) by AM6PR05MB4152.eurprd05.prod.outlook.com
- ([fe80::28c2:5ab:f383:fed%3]) with mapi id 15.20.2451.024; Thu, 14 Nov 2019
- 17:00:00 +0000
-From:   Edward Srouji <edwards@mellanox.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        Noa Osherovich <noaos@mellanox.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
+ 15.20.2430.20; Thu, 14 Nov 2019 17:04:01 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::b179:e8bf:22d4:bf8d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::b179:e8bf:22d4:bf8d%5]) with mapi id 15.20.2430.028; Thu, 14 Nov 2019
+ 17:04:01 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Edward Srouji <edwards@mellanox.com>
+CC:     Noa Osherovich <noaos@mellanox.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
         Leon Romanovsky <leonro@mellanox.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         Daria Velikovsky <daria@mellanox.com>
-Subject: RE: [PATCH rdma-core 1/4] pyverbs: Add memory allocation class
+Subject: Re: [PATCH rdma-core 1/4] pyverbs: Add memory allocation class
 Thread-Topic: [PATCH rdma-core 1/4] pyverbs: Add memory allocation class
-Thread-Index: AQHVms8rzs2wkDxYSUeydp5vKVoinaeKqqeAgAA20EA=
-Date:   Thu, 14 Nov 2019 17:00:00 +0000
-Message-ID: <AM6PR05MB41529E366C190E52B0C58518D7710@AM6PR05MB4152.eurprd05.prod.outlook.com>
+Thread-Index: AQHVms8rzs2wkDxYSUeydp5vKVoinaeKqqeAgAA20ECAAAPqAA==
+Date:   Thu, 14 Nov 2019 17:04:01 +0000
+Message-ID: <20191114170356.GW21728@mellanox.com>
 References: <20191114093732.12637-1-noaos@mellanox.com>
  <20191114093732.12637-2-noaos@mellanox.com>
  <20191114133345.GS21728@mellanox.com>
-In-Reply-To: <20191114133345.GS21728@mellanox.com>
+ <AM6PR05MB41529E366C190E52B0C58518D7710@AM6PR05MB4152.eurprd05.prod.outlook.com>
+In-Reply-To: <AM6PR05MB41529E366C190E52B0C58518D7710@AM6PR05MB4152.eurprd05.prod.outlook.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
+x-clientproxiedby: SN4PR0501CA0148.namprd05.prod.outlook.com
+ (2603:10b6:803:2c::26) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
 authentication-results: spf=none (sender IP is )
- smtp.mailfrom=edwards@mellanox.com; 
-x-originating-ip: [77.125.32.72]
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.162.113.180]
 x-ms-publictraffictype: Email
 x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6dba6bf0-dc84-48e7-7a18-08d769241609
-x-ms-traffictypediagnostic: AM6PR05MB6406:|AM6PR05MB6406:
+x-ms-office365-filtering-correlation-id: 5fb1e522-6421-468e-fdcc-08d76924a554
+x-ms-traffictypediagnostic: VI1PR05MB5645:|VI1PR05MB5645:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR05MB64065C4680BBCB1EC15D4D10D7710@AM6PR05MB6406.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-microsoft-antispam-prvs: <VI1PR05MB564507E2367A54110338440ECF710@VI1PR05MB5645.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
 x-forefront-prvs: 02213C82F8
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(396003)(39860400002)(346002)(376002)(136003)(13464003)(199004)(189003)(14454004)(486006)(5660300002)(66066001)(7696005)(76176011)(52536014)(478600001)(26005)(107886003)(81156014)(6506007)(102836004)(81166006)(4326008)(8676002)(6246003)(55016002)(9686003)(186003)(25786009)(14444005)(256004)(76116006)(53546011)(6636002)(3846002)(6116002)(54906003)(33656002)(99286004)(71190400001)(86362001)(71200400001)(7736002)(74316002)(305945005)(110136005)(2906002)(229853002)(11346002)(8936002)(66946007)(66446008)(476003)(6436002)(64756008)(66556008)(66476007)(446003)(316002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB6406;H:AM6PR05MB4152.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(979002)(4636009)(376002)(366004)(136003)(346002)(39860400002)(396003)(199004)(189003)(33656002)(4744005)(54906003)(6436002)(316002)(7736002)(6512007)(229853002)(305945005)(37006003)(476003)(256004)(6486002)(5660300002)(36756003)(446003)(11346002)(86362001)(6636002)(2616005)(486006)(66066001)(6862004)(25786009)(66476007)(64756008)(66446008)(102836004)(4326008)(66556008)(8676002)(8936002)(478600001)(1076003)(66946007)(3846002)(26005)(81166006)(6506007)(99286004)(2906002)(186003)(52116002)(71190400001)(76176011)(107886003)(386003)(14454004)(6246003)(81156014)(6116002)(71200400001)(969003)(989001)(999001)(1009001)(1019001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5645;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +8cZBdHYBlojfmb2M/da2iQQZWgBT5l/q/CttzZj0KAFhMcG1jk85VztTfskoqGOAtAipmM3Ts5GOPK6z5PgyDEAjIQ2fKPWlIVJN6MwWIxNDvhCbuEbXz9Arle9T+J0pzzxSSd8Vzpy/zcZRe0a7Fc1sHN4JsmO2GsgM7HdGDLPM2ZaV+Io/e+s7TbWUSDod6xO7PvpxFkuCjWuaP6WKtBxD/ZvLEQHKAyUK05flHY/s0I6xJPRr338gaYr9jt4j6PNREAEmxTaFxSSl93YVruwjjcUGN3lTDu6VkQPUq0N+PIzr6l0myp+8yW5PcYcKn0NBr09Hl90OUWtCY05r8YA0xotETXOCPJIdC/Ltaxb50ptxD6qXDO3yaL+DeuTVzfV66WQQciPWL/3Pg20XV8txjZ6ofmaW4Kg/UkGSI/NQGjO688w1a8KciLBIxon
+x-microsoft-antispam-message-info: HKj3yYMq5ks446pAuWzWGUrhopvbzO7FkQU77cAkG15SS6/Y6N4kWiEpDd0JyQDHnxu8tac84zyIxIJ68SktQTHV5j5VUDNkd1ggjcTAzZg5PgIjdBVtj7f68s8N9b3PCD2ThG2Pzq0PiEhFPtspY7Y1eGpQY7eFWTe6Y8G6vOr2HuY0meV1aG/gwYq54JcQA/H+EEfiFrhKyg8VaNVJ2n6P8WKPZqez2vTyYoqgTNfWZgy44aF11SwW2ncBT/5Sw+GaYsHLrvDWFMmwx80oOdyxUenTNUn3r99xh5xSnyYvK6uiGpwAw5AVBHJe+QdoV9nHr+K1vn8b8Y2GJTVIhDTa4MuzjyvAVTG+fuFEJPREQoM5XQVnwWFQK/hL1qKdPFgjZeW54NnP1ExbI1FD87uTH+dNCTzWFKtbDLnr446qE+lJF0/WF90hmJ4ftnv9
 Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2D6CB8A6302F2A4CB8A47CCCFCCF41FB@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6dba6bf0-dc84-48e7-7a18-08d769241609
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Nov 2019 17:00:00.2565
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5fb1e522-6421-468e-fdcc-08d76924a554
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Nov 2019 17:04:01.1223
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WVPdwXJbVBCf13m/knQSEIBQF2ozJVDtjfR/NjQ00yd23U8gsMRDAsXADboq+5t1IjP60s+pFSJ19BztCcDdOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6406
+X-MS-Exchange-CrossTenant-userprincipalname: qRmzR/tb3+M3hipDGwlDvF18BMLpgE5/35BCK9PT2t9S38gUAUAfUWnMCGJ9J8y1qIoIQHspAV9XPhElqJjt+g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5645
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I put the memory related functions under MemAlloc for multiple reasons:
-- The methods won't be confused with the C functions
-- The class is extensible with more memory related methods and functionalit=
-y
-
-I think the other option would be defining them in another, separate, modul=
-e (outside "base" module - which I less preferred)
-
------Original Message-----
-From: Jason Gunthorpe <jgg@mellanox.com>=20
-Sent: Thursday, November 14, 2019 3:34 PM
-To: Noa Osherovich <noaos@mellanox.com>
-Cc: dledford@redhat.com; Leon Romanovsky <leonro@mellanox.com>; linux-rdma@=
-vger.kernel.org; Edward Srouji <edwards@mellanox.com>; Daria Velikovsky <da=
-ria@mellanox.com>
-Subject: Re: [PATCH rdma-core 1/4] pyverbs: Add memory allocation class
-
-On Thu, Nov 14, 2019 at 09:37:45AM +0000, Noa Osherovich wrote:
-> From: Edward Srouji <edwards@mellanox.com>
+On Thu, Nov 14, 2019 at 05:00:00PM +0000, Edward Srouji wrote:
+> I put the memory related functions under MemAlloc for multiple reasons:
+> - The methods won't be confused with the C functions
+> - The class is extensible with more memory related methods and functional=
+ity
 >=20
-> Add new MemAlloc class which wraps some C memory allocation functions=20
-> such as aligned_alloc, malloc and free.
-> This allows Pyverbs' users to easily allocate and free memory in C=20
-> style, i.e when the memory address must be passed to a driver API.
->=20
-> Signed-off-by: Edward Srouji <edwards@mellanox.com>
-> Reviewd-by: Daria Velikovsky <daria@mellanox.com>
-> Reviewd-by: Noa Osherovich <noaos@mellanox.com>  pyverbs/base.pxd |  3=20
-> +++  pyverbs/base.pyx | 26 ++++++++++++++++++++++++++
->  2 files changed, 29 insertions(+)
->=20
-> diff --git a/pyverbs/base.pxd b/pyverbs/base.pxd index=20
-> e85f7c020e1c..e956a79915ff 100644
-> +++ b/pyverbs/base.pxd
-> @@ -9,3 +9,6 @@ cdef class PyverbsObject(object):
-> =20
->  cdef class PyverbsCM(PyverbsObject):
->      cpdef close(self)
-> +
-> +cdef class MemAlloc(object):
-> +   pass
-> diff --git a/pyverbs/base.pyx b/pyverbs/base.pyx index=20
-> 8b3e6741ae19..a41cfc748ad0 100644
-> +++ b/pyverbs/base.pyx
-> @@ -3,8 +3,14 @@
-> =20
->  import logging
->  from pyverbs.pyverbs_error import PyverbsRDMAError
-> +from libc.stdlib cimport malloc, free from libc.stdint cimport=20
-> +uintptr_t
->  from libc.errno cimport errno
-> =20
-> +cdef extern from 'stdlib.h':
-> +    void *aligned_alloc(size_t alignment, size_t size)
+> I think the other option would be defining them in another, separate, mod=
+ule (outside "base" module - which I less preferred)
 
-posix_memalign() is the correct function to use, and a cdef for it is alrea=
-dy in posix.stdlib
-
-> +cdef class MemAlloc(object):
-> +    @staticmethod
-> +    def malloc(size):
-> +        ptr =3D malloc(size)
-> +        if not ptr:
-> +            raise MemoryError('Failed to allocate memory')
-> +        return <uintptr_t>ptr
-> +
-> +    @staticmethod
-> +    def aligned_alloc(size, alignment=3D8):
-> +        ptr =3D aligned_alloc(alignment, size)
-> +        if not ptr:
-> +            raise MemoryError('Failed to allocate memory')
-> +        return <uintptr_t>ptr
-> +
-> +    @staticmethod
-> +    def free(ptr):
-> +        free(<void*><uintptr_t>ptr)
-
-Why is this in a class?
+It is an improper way to use a class
 
 Jason
