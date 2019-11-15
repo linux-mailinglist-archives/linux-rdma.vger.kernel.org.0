@@ -2,438 +2,800 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CCAFE711
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Nov 2019 22:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3EFFE804
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Nov 2019 23:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbfKOVRo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Nov 2019 16:17:44 -0500
-Received: from mga11.intel.com ([192.55.52.93]:44002 "EHLO mga11.intel.com"
+        id S1727119AbfKOWeA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 Nov 2019 17:34:00 -0500
+Received: from mga05.intel.com ([192.55.52.43]:30088 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726598AbfKOVRo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 15 Nov 2019 16:17:44 -0500
+        id S1727080AbfKOWd7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 15 Nov 2019 17:33:59 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Nov 2019 13:17:42 -0800
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Nov 2019 14:33:59 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.68,309,1569308400"; 
-   d="scan'208";a="356226040"
-Received: from orsmsx108.amr.corp.intel.com ([10.22.240.6])
-  by orsmga004.jf.intel.com with ESMTP; 15 Nov 2019 13:17:42 -0800
-Received: from orsmsx101.amr.corp.intel.com ([169.254.8.229]) by
- ORSMSX108.amr.corp.intel.com ([169.254.2.82]) with mapi id 14.03.0439.000;
- Fri, 15 Nov 2019 13:17:41 -0800
-From:   "Ertman, David M" <david.m.ertman@intel.com>
-To:     'Greg KH' <gregkh@linuxfoundation.org>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "Patil, Kiran" <kiran.patil@intel.com>
-Subject: RE: [net-next 1/1] virtual-bus: Implementation of Virtual Bus
-Thread-Topic: [net-next 1/1] virtual-bus: Implementation of Virtual Bus
-Thread-Index: AQHVmMVm9b0Ngs5xNEiEdFE1b2GqoqeIlM4AgAEGwxA=
-Date:   Fri, 15 Nov 2019 21:17:41 +0000
-Message-ID: <2B0E3F215D1AB84DA946C8BEE234CCC97B3008C1@ORSMSX101.amr.corp.intel.com>
-References: <20191111192219.30259-1-jeffrey.t.kirsher@intel.com>
- <20191112212826.GA1837470@kroah.com>
-In-Reply-To: <20191112212826.GA1837470@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.138]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+   d="scan'208";a="406810723"
+Received: from jtkirshe-desk1.jf.intel.com ([134.134.177.74])
+  by fmsmga006.fm.intel.com with ESMTP; 15 Nov 2019 14:33:57 -0800
+From:   Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+To:     davem@davemloft.net, gregkh@linuxfoundation.org
+Cc:     Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, jgg@ziepe.ca, parav@mellanox.com,
+        Kiran Patil <kiran.patil@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Subject: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Date:   Fri, 15 Nov 2019 14:33:55 -0800
+Message-Id: <20191115223355.1277139-1-jeffrey.t.kirsher@intel.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBHcmVnIEtIIDxncmVna2hAbGlu
-dXhmb3VuZGF0aW9uLm9yZz4NCj4gU2VudDogVHVlc2RheSwgTm92ZW1iZXIgMTIsIDIwMTkgMToy
-OCBQTQ0KPiBUbzogS2lyc2hlciwgSmVmZnJleSBUIDxqZWZmcmV5LnQua2lyc2hlckBpbnRlbC5j
-b20+DQo+IENjOiBkYXZlbUBkYXZlbWxvZnQubmV0OyBFcnRtYW4sIERhdmlkIE0gPGRhdmlkLm0u
-ZXJ0bWFuQGludGVsLmNvbT47DQo+IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LXJkbWFA
-dmdlci5rZXJuZWwub3JnOw0KPiBuaG9ybWFuQHJlZGhhdC5jb207IHNhc3NtYW5uQHJlZGhhdC5j
-b207IHBhcmF2QG1lbGxhbm94LmNvbTsNCj4gamdnQHppZXBlLmNhOyBQYXRpbCwgS2lyYW4gPGtp
-cmFuLnBhdGlsQGludGVsLmNvbT4NCj4gU3ViamVjdDogUmU6IFtuZXQtbmV4dCAxLzFdIHZpcnR1
-YWwtYnVzOiBJbXBsZW1lbnRhdGlvbiBvZiBWaXJ0dWFsIEJ1cw0KPiANCj4gT24gTW9uLCBOb3Yg
-MTEsIDIwMTkgYXQgMTE6MjI6MTlBTSAtMDgwMCwgSmVmZiBLaXJzaGVyIHdyb3RlOg0KPiA+IEZy
-b206IERhdmUgRXJ0bWFuIDxkYXZpZC5tLmVydG1hbkBpbnRlbC5jb20+DQo+ID4NCj4gPiBUaGlz
-IGlzIHRoZSBpbml0aWFsIGltcGxlbWVudGF0aW9uIG9mIHRoZSBWaXJ0dWFsIEJ1cywgdmlydGJ1
-c19kZXZpY2UNCj4gPiBhbmQgdmlydGJ1c19kcml2ZXIuICBUaGUgdmlydHVhbCBidXMgaXMgYSBz
-b2Z0d2FyZSBiYXNlZCBidXMgaW50ZW5kZWQNCj4gPiB0byBzdXBwb3J0IGxpZ2h0d2VpZ2h0IGRl
-dmljZXMgYW5kIGRyaXZlcnMgYW5kIHByb3ZpZGUgbWF0Y2hpbmcNCj4gPiBiZXR3ZWVuIHRoZW0g
-YW5kIHByb2Jpbmcgb2YgdGhlIHJlZ2lzdGVyZWQgZHJpdmVycy4NCj4gPg0KPiA+IEZpbGVzIGFk
-ZGVkOg0KPiA+IAlkcml2ZXJzL2J1cy92aXJ0dWFsX2J1cy5jDQo+ID4gCWluY2x1ZGUvbGludXgv
-dmlydHVhbF9idXMuaA0KPiA+IAlEb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvdmlydHVhbF9idXMu
-cnN0DQo+ID4NCj4gPiBUaGUgcHJpbWFyeSBwdXJwb3NlIG9mIHRoZSB2aXJ1YWwgYnVzIGlzIHRv
-IHByb3ZpZGUgbWF0Y2hpbmcgc2VydmljZXMNCj4gPiBhbmQgdG8gcGFzcyB0aGUgZGF0YSBwb2lu
-dGVyIGNvbnRhaW5lZCBpbiB0aGUgdmlydGJ1c19kZXZpY2UgdG8gdGhlDQo+ID4gdmlydGJ1c19k
-cml2ZXIgZHVyaW5nIGl0cyBwcm9iZSBjYWxsLiAgVGhpcyB3aWxsIGFsbG93IHR3byBzZXBhcmF0
-ZQ0KPiA+IGtlcm5lbCBvYmplY3RzIHRvIG1hdGNoIHVwIGFuZCBzdGFydCBjb21tdW5pY2F0aW9u
-Lg0KPiA+DQo+ID4gVGhlIGJ1cyB3aWxsIHN1cHBvcnQgcHJvYmUvcmVtb3ZlIHNodXRkb3duIGFu
-ZCBzdXNwZW5kL3Jlc3VtZQ0KPiA+IGNhbGxiYWNrcy4NCj4gPg0KPiA+IEtjb25maWcgYW5kIE1h
-a2VmaWxlIGFsdGVyYXRpb25zIGFyZSBpbmNsdWRlZA0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTog
-RGF2ZSBFcnRtYW4gPGRhdmlkLm0uZXJ0bWFuQGludGVsLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5
-OiBLaXJhbiBQYXRpbCA8a2lyYW4ucGF0aWxAaW50ZWwuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6
-IEplZmYgS2lyc2hlciA8amVmZnJleS50LmtpcnNoZXJAaW50ZWwuY29tPg0KPiANCj4gSW50ZXJl
-c3RpbmcsIGFuZCBraW5kIG9mIHdoYXQgSSB3YXMgdGhpbmtpbmcgb2YsIGJ1dCB0aGUgaW1wbGVt
-ZW50YXRpb24gaXMgb2RkDQo+IGFuZCBJIGRvbid0IHJlYWxseSBzZWUgaG93IHlvdSBjYW4gdXNl
-IGl0Lg0KPiANCj4gQ2FuIHlvdSBwcm92aWRlIGEgc2Vjb25kIHBhdGNoIHRoYXQgYWN0dWFsbHkg
-dXNlcyB0aGlzIGFwaT8NCj4gDQo+IENvZGUgY29tbWVudHMgYmVsb3cgZm9yIHdoZW4geW91IHJl
-c2VuZDoNCj4gDQo+ID4gK1ZpcnR1YWwgQnVzIFN0cnVjdHMNCj4gPiArfn5+fn5+fn5+fn5+fn5+
-fn5+fg0KPiA+ICtzdHJ1Y3QgZGV2aWNlIHZpcnR1YWxfYnVzID0gew0KPiA+ICsgICAgICAgIC5p
-bml0X25hbWUgICAgICA9ICJ2aXJ0YnVzIiwNCj4gPiArICAgICAgICAucmVsZWFzZSAgICAgICAg
-PSB2aXJ0dWFsX2J1c19yZWxlYXNlLA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArc3RydWN0IGJ1c190
-eXBlIHZpcnR1YWxfYnVzX3R5cGUgPSB7DQo+ID4gKyAgICAgICAgLm5hbWUgICAgICAgICAgID0g
-InZpcnRidXMiLA0KPiA+ICsgICAgICAgIC5tYXRjaCAgICAgICAgICA9IHZpcnRidXNfbWF0Y2gs
-DQo+ID4gKyAgICAgICAgLnByb2JlICAgICAgICAgID0gdmlydGJ1c19wcm9iZSwNCj4gPiArICAg
-ICAgICAucmVtb3ZlICAgICAgICAgPSB2aXJ0YnVzX3JlbW92ZSwNCj4gPiArICAgICAgICAuc2h1
-dGRvd24gICAgICAgPSB2aXJ0YnVzX3NodXRkb3duLA0KPiA+ICsgICAgICAgIC5zdXNwZW5kICAg
-ICAgICA9IHZpcnRidXNfc3VzcGVuZCwNCj4gPiArICAgICAgICAucmVzdW1lICAgICAgICAgPSB2
-aXJ0YnVzX3Jlc3VtZSwNCj4gPiArfTsNCj4gPiArDQo+ID4gK3N0cnVjdCB2aXJ0YnVzX2Rldmlj
-ZSB7DQo+ID4gKyAgICAgICAgY29uc3QgY2hhciAgICAgICAgICAgICAgICAgICAgICAqbmFtZTsN
-Cj4gPiArICAgICAgICBpbnQgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlkOw0KPiA+ICsg
-ICAgICAgIGNvbnN0IHN0cnVjdCB2aXJ0YnVzX2Rldl9pZCAgICAgKmRldl9pZDsNCj4gPiArICAg
-ICAgICBzdHJ1Y3QgZGV2aWNlICAgICAgICAgICAgICAgICAgIGRldjsNCj4gPiArICAgICAgICB2
-b2lkICAgICAgICAgICAgICAgICAgICAgICAgICAgICpkYXRhOw0KPiA+ICt9Ow0KPiA+ICsNCj4g
-PiArc3RydWN0IHZpcnRidXNfZHJpdmVyIHsNCj4gPiArICAgICAgICBpbnQgKCpwcm9iZSkoc3Ry
-dWN0IHZpcnRidXNfZGV2aWNlICopOw0KPiA+ICsgICAgICAgIGludCAoKnJlbW92ZSkoc3RydWN0
-IHZpcnRidXNfZGV2aWNlICopOw0KPiA+ICsgICAgICAgIHZvaWQgKCpzaHV0ZG93bikoc3RydWN0
-IHZpcnRidXNfZGV2aWNlICopOw0KPiA+ICsgICAgICAgIGludCAoKnN1c3BlbmQpKHN0cnVjdCB2
-aXJ0YnVzX2RldmljZSAqLCBwbV9tZXNzYWdlX3Qgc3RhdGUpOw0KPiA+ICsgICAgICAgIGludCAo
-KnJlc3VtZSkoc3RydWN0IHZpcnRidXNfZGV2aWNlICopOw0KPiA+ICsgICAgICAgIHN0cnVjdCBk
-ZXZpY2VfZHJpdmVyIGRyaXZlcjsNCj4gPiArfTsNCj4gDQo+IA0KPiBBbGwgb2YgdGhlIGFib3Zl
-IHNob3VsZCBjb21lIHN0cmFpZ2h0IGZyb20gdGhlIC5jLy5oIGZpbGVzLCBubyBuZWVkIHRvDQo+
-IGR1cGxpY2F0ZSBpdCBpbiBhIHRleHQgZmlsZSB0aGF0IHdpbGwgYmUgZ3VhcmFudGVlZCB0byBn
-ZXQgb3V0IG9mIHN5bmMuDQoNClJlbW92ZWQNCg0KPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9idXMvdmlydHVhbF9idXMuYyBiL2RyaXZlcnMvYnVzL3ZpcnR1YWxfYnVzLmMgbmV3DQo+ID4g
-ZmlsZSBtb2RlIDEwMDY0NCBpbmRleCAwMDAwMDAwMDAwMDAuLmFmM2Y2ZDliNjBmNA0KPiA+IC0t
-LSAvZGV2L251bGwNCj4gPiArKysgYi9kcml2ZXJzL2J1cy92aXJ0dWFsX2J1cy5jDQo+ID4gQEAg
-LTAsMCArMSwzMzkgQEANCj4gPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAN
-Cj4gPiArLyoNCj4gPiArICogdmlydHVhbF9idXMuYyAtIGxpZ2h0d2VpZ2h0IHNvZnR3YXJlIGJh
-c2VkIGJ1cyBmb3IgdmlydHVhbCBkZXZpY2VzDQo+ID4gKyAqDQo+ID4gKyAqIENvcHlyaWdodCAo
-YykgMjAxOS0yMCBJbnRlbCBDb3Jwb3JhdGlvbg0KPiA+ICsgKg0KPiA+ICsgKiBQbGVhc2Ugc2Vl
-IERvY3VtZW50YXRpb24vZHJpdmVyLWFwaS92aXJ0dWFsX2J1cy5yc3QgZm9yDQo+ID4gKyAqIG1v
-cmUgaW5mb3JtYXRpb24NCj4gPiArICovDQo+ID4gKw0KPiA+ICsjaW5jbHVkZSA8bGludXgvc3Ry
-aW5nLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51eC92aXJ0dWFsX2J1cy5oPg0KPiA+ICsjaW5jbHVk
-ZSA8bGludXgvb2ZfaXJxLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCj4gPiAr
-I2luY2x1ZGUgPGxpbnV4L2luaXQuaD4NCj4gPiArI2luY2x1ZGUgPGxpbnV4L3BtX3J1bnRpbWUu
-aD4NCj4gPiArI2luY2x1ZGUgPGxpbnV4L3BtX2RvbWFpbi5oPg0KPiA+ICsjaW5jbHVkZSA8bGlu
-dXgvYWNwaS5oPg0KPiA+ICsjaW5jbHVkZSA8bGludXgvZGV2aWNlLmg+DQo+ID4gKw0KPiA+ICtN
-T0RVTEVfTElDRU5TRSgiR1BMIHYyIik7DQo+ID4gK01PRFVMRV9ERVNDUklQVElPTigiTGlnaHR3
-ZWlnaHQgVmlydHVhbCBCdXMiKTsNCj4gTU9EVUxFX0FVVEhPUigiRGF2aWQNCj4gPiArRXJ0bWFu
-IDxkYXZpZC5tLmVydG1hbkBpbnRlbC5jb20+Iik7IE1PRFVMRV9BVVRIT1IoIktpcmFuIFBhdGls
-DQo+ID4gKzxraXJhbi5wYXRpbEBpbnRlbC5jb20+Iik7DQo+ID4gKw0KPiA+ICtzdGF0aWMgREVG
-SU5FX0lEQSh2aXJ0YnVzX2Rldl9pZCk7DQo+ID4gKw0KPiA+ICtzdGF0aWMgdm9pZCB2aXJ0dWFs
-X2J1c19yZWxlYXNlKHN0cnVjdCBkZXZpY2UgKmRldikgew0KPiA+ICsJcHJfaW5mbygiUmVtb3Zp
-bmcgdmlydHVhbCBidXMgZGV2aWNlLlxuIik7IH0NCj4gDQo+IFRoaXMgaXMganVzdCBvbmUgc3Rl
-cCBhd2F5IGZyb20gZG9pbmcgaG9ycmlibGUgdGhpbmdzLg0KPiANCj4gQSByZWxlYXNlIGZ1bmN0
-aW9uIHNob3VsZCBmcmVlIHRoZSBtZW1vcnkuICBOb3QganVzdCBwcmludCBhIG1lc3NhZ2UgOigN
-Cj4gDQo+IEFsc28sIHRoaXMgaXMgdGhlIGRyaXZlciBjb2RlLCB1c2UgZGV2X2luZm8oKSBhbmQg
-ZnJpZW5kcywgbmV2ZXIgdXNlDQo+IHByXyooKSAgIFNhbWUgZ29lcyBmb3IgYWxsIHBsYWNlcyBp
-biB0aGlzIGNvZGUuDQo+IA0KPiBTbyB0aGlzIGlzIGEgZGVidWdnaW5nIGxpbmUsIHdoeT8NCj4g
-SG93IGNhbiB0aGlzIGJlIGNhbGxlZD8gIFlvdSBvbmx5IHVzZSBpdDoNCg0KVGhpcyB3YXMgbGVm
-dG92ZXIgYW5kIG5vdCBuZWNlc3NhcnksIHNvcnJ5IGZvciB0aGUgdGhyYXNoLg0KUmVtb3ZlZCB1
-bm5lY2Vzc2FyeSBjb2RlLg0KDQo+IA0KPiA+ICsNCj4gPiArc3RydWN0IGRldmljZSB2aXJ0dWFs
-X2J1cyA9IHsNCj4gPiArCS5pbml0X25hbWUJPSAidmlydGJ1cyIsDQo+ID4gKwkucmVsZWFzZQk9
-IHZpcnR1YWxfYnVzX3JlbGVhc2UsDQo+ID4gK307DQo+ID4gK0VYUE9SVF9TWU1CT0xfR1BMKHZp
-cnR1YWxfYnVzKTsNCj4gDQo+IEhlcmUuDQo+IA0KPiBJY2suDQo+IA0KPiBBIHN0YXRpYyBzdHJ1
-Y3QgZGV2aWNlPyAgQ2FsbGVkICdidXMnPyAgVGhhdCdzIF9SRUFMTFlfIGNvbmZ1c2luZy4gIFdo
-YXQgaXMgdGhpcw0KPiBmb3I/ICBBbmQgd2h5IGV4cG9ydCBpdD8gIFRoYXQncyBndWFyYW50ZWVk
-IHRvIGNhdXNlIHByb2JsZW1zIChoaW50LCBjb2RlDQo+IGxpZmVjeWNsZSB2cy4gZGF0YSBsaWZl
-Y3ljbGVzLi4uKQ0KPiANCg0KRVhQT1JUX1NZTUJPTCByZW1vdmVkLg0KDQpUaGlzIHdhcyBvcmln
-aW5hbGx5IGdvaW5nIHRvIGFjdCBhcyBhIGRlZmF1bHQgcGFyZW50IGRldmljZSBmb3IgdGhlIGJ1
-cyBkZXZpY2VzLA0KYnV0IGFmdGVyIGZ1cnRoZXIgaW52ZXN0aWdhdGlvbiwgdGhpcyB3YXMgdW5u
-ZWNlc3NhcnkgZm9yIHRoZSBpbnRlbmRlZA0KZnVuY3Rpb25hbGl0eSBvZiB0aGUgYnVzIC0gcmVt
-b3ZlZC4NCg0KPiA+ICsvKioNCj4gPiArICogdmlydGJ1c19hZGRfZGV2IC0gYWRkIGEgdmlydHVh
-bCBidXMgZGV2aWNlDQo+ID4gKyAqIEB2ZGV2OiB2aXJ0dWFsIGJ1cyBkZXZpY2UgdG8gYWRkDQo+
-ID4gKyAqLw0KPiA+ICtpbnQgdmlydGJ1c19kZXZfYWRkKHN0cnVjdCB2aXJ0YnVzX2RldmljZSAq
-dmRldikgew0KPiA+ICsJaW50IHJldDsNCj4gPiArDQo+ID4gKwlpZiAoIXZkZXYpDQo+ID4gKwkJ
-cmV0dXJuIC1FSU5WQUw7DQo+ID4gKw0KPiA+ICsJZGV2aWNlX2luaXRpYWxpemUoJnZkZXYtPmRl
-dik7DQo+ID4gKwlpZiAoIXZkZXYtPmRldi5wYXJlbnQpDQo+ID4gKwkJdmRldi0+ZGV2LnBhcmVu
-dCA9ICZ2aXJ0dWFsX2J1czsNCj4gDQo+IFNvIGl0J3MgYSBwYXJlbnQ/ICBPaywgdGhlbiB3aHkg
-ZXhwb3J0IGl0Pw0KPiANCj4gQWdhaW4gSSB3YW50IHRvIHNlZSBhIHVzZXIgcGxlYXNlLi4uDQoN
-ClJlbW92ZWQsIGFuZCBjb25zdW1lcnMgd2lsbCBiZSBzZW50IDopDQoNCj4gDQo+ID4gKw0KPiA+
-ICsJdmRldi0+ZGV2LmJ1cyA9ICZ2aXJ0dWFsX2J1c190eXBlOw0KPiA+ICsJLyogQWxsIGRldmlj
-ZSBJRHMgYXJlIGF1dG9tYXRpY2FsbHkgYWxsb2NhdGVkICovDQo+ID4gKwlyZXQgPSBpZGFfc2lt
-cGxlX2dldCgmdmlydGJ1c19kZXZfaWQsIDAsIDAsIEdGUF9LRVJORUwpOw0KPiA+ICsJaWYgKHJl
-dCA8IDApDQo+ID4gKwkJcmV0dXJuIHJldDsNCj4gPiArDQo+ID4gKwl2ZGV2LT5pZCA9IHJldDsN
-Cj4gPiArCWRldl9zZXRfbmFtZSgmdmRldi0+ZGV2LCAiJXMuJWQiLCB2ZGV2LT5uYW1lLCB2ZGV2
-LT5pZCk7DQo+ID4gKw0KPiA+ICsJcHJfZGVidWcoIlJlZ2lzdGVyaW5nIFZpcnRCdXMgZGV2aWNl
-ICclcycuIFBhcmVudCBhdCAlc1xuIiwNCj4gPiArCQkgZGV2X25hbWUoJnZkZXYtPmRldiksIGRl
-dl9uYW1lKHZkZXYtPmRldi5wYXJlbnQpKTsNCj4gDQo+IGRldl9kYmcoKS4NCj4gDQo+ID4gKw0K
-PiA+ICsJcmV0ID0gZGV2aWNlX2FkZCgmdmRldi0+ZGV2KTsNCj4gPiArCWlmICghcmV0KQ0KPiA+
-ICsJCXJldHVybiByZXQ7DQo+ID4gKw0KPiA+ICsJLyogRXJyb3IgYWRkaW5nIHZpcnR1YWwgZGV2
-aWNlICovDQo+ID4gKwlpZGFfc2ltcGxlX3JlbW92ZSgmdmlydGJ1c19kZXZfaWQsIHZkZXYtPmlk
-KTsNCj4gPiArCXZkZXYtPmlkID0gVklSVEJVU19ERVZJRF9OT05FOw0KPiANCj4gVGhhdCdzIGFs
-bCB5b3UgbmVlZCB0byBjbGVhbiB1cD8gIERpZCB5b3UgcmVhZCB0aGUgZGV2aWNlX2FkZCgpDQo+
-IGRvY3VtZW50YXRpb24/ICBQbGVhc2UgZG8gc28uDQoNCkRldmljZV9kZWwoKSBhZGRlZCB0byBl
-cnJvciBjaGFpbi4NCg0KPiANCj4gQW5kIHdoYXQncyB1cCB3aXRoIHRoaXMgREVWSURfTk9ORSBz
-dHVmZj8NCg0KVXNpbmcgVklSVEJVU19ERVZJRF9OT05FIGRlZmluZWQgdG8gYmUgLTEsIHRoaXMg
-aXMgc28gdGhlIGNvbnN1bWVyIGNhbiBjaGVjaw0KVGhlIHZkZXYtPmlkIGZpZWxkIHRvIHNlZSBp
-ZiBpdCBjb250YWlucyBhIHZhbGlkIGlkICgwLCAxLCAuLi4sIG4pLg0KDQo+IA0KPiA+ICsNCj4g
-PiArCXJldHVybiByZXQ7DQo+ID4gK30NCj4gPiArRVhQT1JUX1NZTUJPTF9HUEwodmlydGJ1c19k
-ZXZfYWRkKTsNCj4gPiArDQo+ID4gKy8qKg0KPiA+ICsgKiB2aXJ0YnVzX2Rldl9kZWwgLSByZW1v
-dmUgYSB2aXJ0dWFsIGJ1cyBkZXZpY2UNCj4gPiArICogdmRldjogdmlydHVhbCBidXMgZGV2aWNl
-IHdlIGFyZSByZW1vdmluZyAgKi8gdm9pZA0KPiA+ICt2aXJ0YnVzX2Rldl9kZWwoc3RydWN0IHZp
-cnRidXNfZGV2aWNlICp2ZGV2KSB7DQo+ID4gKwlpZiAoIUlTX0VSUl9PUl9OVUxMKHZkZXYpKSB7
-DQo+ID4gKwkJZGV2aWNlX2RlbCgmdmRldi0+ZGV2KTsNCj4gPiArDQo+ID4gKwkJaWRhX3NpbXBs
-ZV9yZW1vdmUoJnZpcnRidXNfZGV2X2lkLCB2ZGV2LT5pZCk7DQo+ID4gKwkJdmRldi0+aWQgPSBW
-SVJUQlVTX0RFVklEX05PTkU7DQo+ID4gKwl9DQo+ID4gK30NCj4gPiArRVhQT1JUX1NZTUJPTF9H
-UEwodmlydGJ1c19kZXZfZGVsKTsNCj4gPiArDQo+ID4gK3N0cnVjdCB2aXJ0YnVzX29iamVjdCB7
-DQo+ID4gKwlzdHJ1Y3QgdmlydGJ1c19kZXZpY2UgdmRldjsNCj4gPiArCWNoYXIgbmFtZVtdOw0K
-PiA+ICt9Ow0KPiANCj4gQSBkZXZpY2UgaGFzIGEgbmFtZSwgd2h5IGhhdmUgYW5vdGhlciBvbmU/
-DQoNCkkgYWxzbyBmb2xsb3dlZCB0aGUgcGxhdGZvcm0gZGV2aWNlJ3MgbWV0aG9kIGhlcmUgZm9y
-IGFkZHJlc3NpbmcgYSBwcm9ibGVtDQphcm91bmQgYXNzaWduaW5nIHRoZSBzdHJpbmcgZmVkIGlu
-IGZvciBuYW1lIHRvIHRoZSBjb25zdCBjaGFyKiBmb3IgbmFtZQ0KaW4gdGhlIHN0cnVjdC4gIFdl
-IGJvdGggY3JlYXRlZCBhbiBvYmplY3QgdG8gY29udGFpbiB0aGUgbWVtb3J5IGZvcg0KYm90aCB0
-aGUgZGV2aWNlIGFuZCB0aGUgc3RyaW5nIGZvciB0aGUgbmFtZSwgdGhlbiBqdXN0IGFzc2lnbiB0
-aGUgcG9pbnRlcg0KaW4gdGhlIGRldmljZSBmb3IgbmFtZSB0byB0aGlzIG1lbW9yeSBsb2NhdGlv
-bi4gIFRoaXMgd2F5IHRoZSBhbGxvY2F0ZWQNCnNwYWNlIGZvciB0aGUgbmFtZSBsaXZlcyBhcyBs
-b25nIGFzIHRoZSBkZXZpY2UgZG9lcy4NCiANCj4gDQo+ID4gKw0KPiA+ICsvKioNCj4gPiArICog
-dmlydGJ1c19kZXZfcmVsZWFzZSAtIERlc3Ryb3kgYSB2aXJ0YnVzIGRldmljZQ0KPiA+ICsgKiBA
-dmRldjogdmlydHVhbCBkZXZpY2UgdG8gcmVsZWFzZQ0KPiA+ICsgKg0KPiA+ICsgKiBOb3RlIHRo
-YXQgdGhlIHZkZXYtPmRhdGEgd2hpY2ggaXMgc2VwYXJhdGVseSBhbGxvY2F0ZWQgbmVlZHMgdG8g
-YmUNCj4gPiArICogc2VwYXJhdGVseSBmcmVlZCBvbiBpdCBvd24uDQo+ID4gKyAqLw0KPiA+ICtz
-dGF0aWMgdm9pZCB2aXJ0YnVzX2Rldl9yZWxlYXNlKHN0cnVjdCBkZXZpY2UgKmRldikgew0KPiA+
-ICsJc3RydWN0IHZpcnRidXNfb2JqZWN0ICp2byA9IGNvbnRhaW5lcl9vZihkZXYsIHN0cnVjdCB2
-aXJ0YnVzX29iamVjdCwNCj4gPiArCQkJCQkJIHZkZXYuZGV2KTsNCj4gPiArDQo+ID4gKwlrZnJl
-ZSh2byk7DQo+ID4gK30NCj4gPiArDQo+ID4gKy8qKg0KPiA+ICsgKiB2aXJ0YnVzX2Rldl9hbGxv
-YyAtIGFsbG9jYXRlIGEgdmlydGJ1cyBkZXZpY2UNCj4gPiArICogQG5hbWU6IG5hbWUgdG8gYXNz
-b2NpYXRlIHdpdGggdGhlIHZkZXYNCj4gPiArICogQGRhdGE6IHBvaW50ZXIgdG8gZGF0YSB0byBi
-ZSBhc3NvY2lhdGVkIHdpdGggdGhpcyBkZXZpY2UgICovDQo+ID4gK3N0cnVjdCB2aXJ0YnVzX2Rl
-dmljZSAqdmlydGJ1c19kZXZfYWxsb2MoY29uc3QgY2hhciAqbmFtZSwgdm9pZA0KPiA+ICsqZGF0
-YSkgew0KPiA+ICsJc3RydWN0IHZpcnRidXNfb2JqZWN0ICp2bzsNCj4gPiArDQo+ID4gKwkvKiBD
-cmVhdGUgYSB2aXJ0YnVzIG9iamVjdCB0byBjb250YWluIHRoZSB2ZGV2IGFuZCBuYW1lLiAgVGhp
-cw0KPiA+ICsJICogYXZvaWRzIGEgcHJvYmxlbSB3aXRoIHRoZSBjb25zdCBhdHRyaWJ1dGUgb2Yg
-bmFtZSBpbiB0aGUgdmRldi4NCj4gPiArCSAqIFRoZSB2aXJ0YnVzX29iamVjdCB3aWxsIGJlIGFs
-bG9jYXRlZCBoZXJlIGFuZCBmcmVlZCBpbiB0aGUNCj4gPiArCSAqIHJlbGVhc2UgZnVuY3Rpb24u
-DQo+ID4gKwkgKi8NCj4gPiArCXZvID0ga3phbGxvYyhzaXplb2YoKnZvKSArIHN0cmxlbihuYW1l
-KSArIDEsIEdGUF9LRVJORUwpOw0KPiA+ICsJaWYgKCF2bykNCj4gPiArCQlyZXR1cm4gTlVMTDsN
-Cj4gDQo+IFdoYXQgcHJvYmxlbSBhcmUgeW91IHRyeWluZyB0byB3b3JrIGFyb3VuZCB3aXRoIHRo
-ZSBuYW1lPw0KDQpTaW5jZSB0aGUgbmFtZSBpcyBhIGNvbnN0IGNoYXIsIHlvdSBjYW5ub3Qgc3Ry
-Y3B5IGludG8gaXQuICBUaGlzIGFsbG93cw0KZm9yIGp1c3QgYXNzaWduaW5nIGEgcG9pbnRlciBm
-b3IgdGhpcyBzdHJ1Y3QgZWxlbWVudCB0byBhbiBhbHJlYWR5IGNyZWF0ZWQNCnN0cmluZyBhbmQg
-YmVpbmcgc3VyZSB0aGF0IHRoZSBtZW1vcnkgYWxsb2NhdGVkIGZvciB0aGUgc3RyaW5nIGxpdmVz
-IGFzDQpsb25nIGFzIHRoZSB2aXJ0YnVzX2RldmljZSBsaXZlcy4NCg0KPiANCj4gPiArDQo+ID4g
-KwlzdHJjcHkodm8tPm5hbWUsIG5hbWUpOw0KPiA+ICsJdm8tPnZkZXYubmFtZSA9IHZvLT5uYW1l
-Ow0KPiA+ICsJdm8tPnZkZXYuZGF0YSA9IGRhdGE7DQo+ID4gKwl2by0+dmRldi5kZXYucmVsZWFz
-ZSA9IHZpcnRidXNfZGV2X3JlbGVhc2U7DQo+ID4gKw0KPiA+ICsJcmV0dXJuICZ2by0+dmRldjsN
-Cj4gPiArfQ0KPiA+ICtFWFBPUlRfU1lNQk9MX0dQTCh2aXJ0YnVzX2Rldl9hbGxvYyk7DQo+IA0K
-PiBXaHkgaGF2ZSBhbiBhbGxvYy9hZGQgcGFpciBvZiBmdW5jdGlvbnM/ICBXaHkgbm90IGp1c3Qg
-b25lPw0KDQpPbmNlIHRoZSBkZXZpY2UgaGFzIGJlZW4gYWxsb2NhdGVkLCB0aGUgY29uc3VtZXIg
-aGFzIHRoZSBvcHRpb24gb2YNCmRpcmVjdGx5IGNoYW5naW5nIGFueXRoaW5nIGluIHRoZSBuZXds
-eSBjcmVhdGVkIHN0cnVjdCBhbmQgYXNzb2NpYXRlZA0KZGV2aWNlIGJlZm9yZSBhZGRpbmcgaXQg
-dG8gdGhlIGJ1cyAoZS5nLiBjaGFuZ2luZyBwYXJlbnQgb2YgZGV2aWNlKS4NCg0KPiANCj4gPiAr
-DQo+ID4gK3N0YXRpYyBpbnQgdmlydGJ1c19kcnZfcHJvYmUoc3RydWN0IGRldmljZSAqX2Rldikg
-ew0KPiA+ICsJc3RydWN0IHZpcnRidXNfZHJpdmVyICp2ZHJ2ID0gdG9fdmlydGJ1c19kcnYoX2Rl
-di0+ZHJpdmVyKTsNCj4gPiArCXN0cnVjdCB2aXJ0YnVzX2RldmljZSAqdmRldiA9IHRvX3ZpcnRi
-dXNfZGV2KF9kZXYpOw0KPiA+ICsJaW50IHJldDsNCj4gPiArDQo+ID4gKwlyZXQgPSBkZXZfcG1f
-ZG9tYWluX2F0dGFjaChfZGV2LCB0cnVlKTsNCj4gPiArCWlmIChyZXQpIHsNCj4gPiArCQlkZXZf
-d2FybihfZGV2LCAiRmFpbGVkIHRvIGF0dGF0Y2ggdG8gUE0gRG9tYWluIDogJWRcbiIsDQo+IHJl
-dCk7DQo+ID4gKwkJcmV0dXJuIHJldDsNCj4gPiArCX0NCj4gPiArDQo+ID4gKwlpZiAodmRydi0+
-cHJvYmUpIHsNCj4gPiArCQlyZXQgPSB2ZHJ2LT5wcm9iZSh2ZGV2KTsNCj4gPiArCQlpZiAocmV0
-KQ0KPiA+ICsJCQlkZXZfcG1fZG9tYWluX2RldGFjaChfZGV2LCB0cnVlKTsNCj4gPiArCX0NCj4g
-PiArDQo+ID4gKwlyZXR1cm4gcmV0Ow0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgaW50IHZp
-cnRidXNfZHJ2X3JlbW92ZShzdHJ1Y3QgZGV2aWNlICpfZGV2KSB7DQo+ID4gKwlzdHJ1Y3Qgdmly
-dGJ1c19kcml2ZXIgKnZkcnYgPSB0b192aXJ0YnVzX2RydihfZGV2LT5kcml2ZXIpOw0KPiA+ICsJ
-c3RydWN0IHZpcnRidXNfZGV2aWNlICp2ZGV2ID0gdG9fdmlydGJ1c19kZXYoX2Rldik7DQo+ID4g
-KwlpbnQgcmV0ID0gMDsNCj4gPiArDQo+ID4gKwlpZiAodmRydi0+cmVtb3ZlKQ0KPiA+ICsJCXJl
-dCA9IHZkcnYtPnJlbW92ZSh2ZGV2KTsNCj4gPiArDQo+ID4gKwlkZXZfcG1fZG9tYWluX2RldGFj
-aChfZGV2LCB0cnVlKTsNCj4gPiArDQo+ID4gKwlyZXR1cm4gcmV0Ow0KPiA+ICt9DQo+ID4gKw0K
-PiA+ICtzdGF0aWMgdm9pZCB2aXJ0YnVzX2Rydl9zaHV0ZG93bihzdHJ1Y3QgZGV2aWNlICpfZGV2
-KSB7DQo+ID4gKwlzdHJ1Y3QgdmlydGJ1c19kcml2ZXIgKnZkcnYgPSB0b192aXJ0YnVzX2Rydihf
-ZGV2LT5kcml2ZXIpOw0KPiA+ICsJc3RydWN0IHZpcnRidXNfZGV2aWNlICp2ZGV2ID0gdG9fdmly
-dGJ1c19kZXYoX2Rldik7DQo+ID4gKw0KPiA+ICsJaWYgKHZkcnYtPnNodXRkb3duKQ0KPiA+ICsJ
-CXZkcnYtPnNodXRkb3duKHZkZXYpOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgaW50IHZp
-cnRidXNfZHJ2X3N1c3BlbmQoc3RydWN0IGRldmljZSAqX2RldiwgcG1fbWVzc2FnZV90DQo+ID4g
-K3N0YXRlKSB7DQo+ID4gKwlzdHJ1Y3QgdmlydGJ1c19kcml2ZXIgKnZkcnYgPSB0b192aXJ0YnVz
-X2RydihfZGV2LT5kcml2ZXIpOw0KPiA+ICsJc3RydWN0IHZpcnRidXNfZGV2aWNlICp2ZGV2ID0g
-dG9fdmlydGJ1c19kZXYoX2Rldik7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIHZkcnYtPnN1c3BlbmQg
-PyB2ZHJ2LT5zdXNwZW5kKHZkZXYsIHN0YXRlKSA6IDA7IH0NCj4gPiArDQo+ID4gK3N0YXRpYyBp
-bnQgdmlydGJ1c19kcnZfcmVzdW1lKHN0cnVjdCBkZXZpY2UgKl9kZXYpIHsNCj4gPiArCXN0cnVj
-dCB2aXJ0YnVzX2RyaXZlciAqdmRydiA9IHRvX3ZpcnRidXNfZHJ2KF9kZXYtPmRyaXZlcik7DQo+
-ID4gKwlzdHJ1Y3QgdmlydGJ1c19kZXZpY2UgKnZkZXYgPSB0b192aXJ0YnVzX2RldihfZGV2KTsN
-Cj4gPiArDQo+ID4gKwlyZXR1cm4gdmRydi0+cmVzdW1lID8gdmRydi0+cmVzdW1lKHZkZXYpIDog
-MDsgfQ0KPiA+ICsNCj4gPiArLyoqDQo+ID4gKyAqIHZpcnRidXNfZHJ2X3JlZ2lzdGVyIC0gcmVn
-aXN0ZXIgYSBkcml2ZXIgZm9yIHZpcnR1YWwgYnVzIGRldmljZXMNCj4gPiArICogQHZkcnY6IHZp
-cnRidXNfZHJpdmVyIHN0cnVjdHVyZQ0KPiA+ICsgKiBAb3duZXI6IG93bmluZyBtb2R1bGUvZHJp
-dmVyDQo+ID4gKyAqLw0KPiA+ICtpbnQgdmlydGJ1c19kcnZfcmVnaXN0ZXIoc3RydWN0IHZpcnRi
-dXNfZHJpdmVyICp2ZHJ2LCBzdHJ1Y3QgbW9kdWxlDQo+ID4gKypvd25lcikNCj4gDQo+IERvbid0
-IGZvcmNlIHNvbWVvbmUgdG8gdHlwZSBUSElTX01PRFVMRSBmb3IgdGhpcyBjYWxsLCB1c2UgdGhl
-IG1hY3JvIHRyaWNrDQo+IGluc3RlYWQgdGhhdCBtb3N0IHN1YnN5c3RlbXMgdXNlLg0KDQpDaGFu
-Z2VkIHRvIHVzZSBtYWNybyB0cmljay4NCg0KPiANCj4gQWdhaW4sIEkgd2FudCB0byBzZWUgYSB1
-c2VyLCB0aGF0IHdpbGwgY2F1c2UgbG90cyBvZiB0aGVzZSB0eXBlcyBvZiB0aGluZ3MgdG8gYmUN
-Cj4gcGFpbmZ1bGx5IG9idmlvdXMgOikNCj4gDQo+IA0KPiA+ICt7DQo+ID4gKwl2ZHJ2LT5kcml2
-ZXIub3duZXIgPSBvd25lcjsNCj4gPiArCXZkcnYtPmRyaXZlci5idXMgPSAmdmlydHVhbF9idXNf
-dHlwZTsNCj4gPiArCXZkcnYtPmRyaXZlci5wcm9iZSA9IHZpcnRidXNfZHJ2X3Byb2JlOw0KPiA+
-ICsJdmRydi0+ZHJpdmVyLnJlbW92ZSA9IHZpcnRidXNfZHJ2X3JlbW92ZTsNCj4gPiArCXZkcnYt
-PmRyaXZlci5zaHV0ZG93biA9IHZpcnRidXNfZHJ2X3NodXRkb3duOw0KPiA+ICsJdmRydi0+ZHJp
-dmVyLnN1c3BlbmQgPSB2aXJ0YnVzX2Rydl9zdXNwZW5kOw0KPiA+ICsJdmRydi0+ZHJpdmVyLnJl
-c3VtZSA9IHZpcnRidXNfZHJ2X3Jlc3VtZTsNCj4gPiArDQo+ID4gKwlyZXR1cm4gZHJpdmVyX3Jl
-Z2lzdGVyKCZ2ZHJ2LT5kcml2ZXIpOyB9DQo+ID4gK0VYUE9SVF9TWU1CT0xfR1BMKHZpcnRidXNf
-ZHJ2X3JlZ2lzdGVyKTsNCj4gPiArDQo+ID4gKy8qKg0KPiA+ICsgKiB2aXJ0YnVzX2Rydl91bnJl
-Z2lzdGVyIC0gdW5yZWdpc3RlciBhIGRyaXZlciBmb3IgdmlydHVhbCBidXMNCj4gPiArZGV2aWNl
-cw0KPiA+ICsgKiBAZHJ2OiB2aXJ0YnVzX2RyaXZlciBzdHJ1Y3R1cmUNCj4gPiArICovDQo+ID4g
-K3ZvaWQgdmlydGJ1c19kcnZfdW5yZWdpc3RlcihzdHJ1Y3QgdmlydGJ1c19kcml2ZXIgKnZkcnYp
-IHsNCj4gPiArCWRyaXZlcl91bnJlZ2lzdGVyKCZ2ZHJ2LT5kcml2ZXIpOw0KPiA+ICt9DQo+ID4g
-K0VYUE9SVF9TWU1CT0xfR1BMKHZpcnRidXNfZHJ2X3VucmVnaXN0ZXIpOw0KPiA+ICsNCj4gPiAr
-c3RhdGljIGNvbnN0DQo+ID4gK3N0cnVjdCB2aXJ0YnVzX2Rldl9pZCAqdmlydGJ1c19tYXRjaF9p
-ZChjb25zdCBzdHJ1Y3QgdmlydGJ1c19kZXZfaWQgKmlkLA0KPiA+ICsJCQkJCXN0cnVjdCB2aXJ0
-YnVzX2RldmljZSAqdmRldikNCj4gPiArew0KPiA+ICsJd2hpbGUgKGlkLT5uYW1lWzBdKSB7DQo+
-ID4gKwkJaWYgKHN0cmNtcCh2ZGV2LT5uYW1lLCBpZC0+bmFtZSkgPT0gMCkgew0KPiA+ICsJCQl2
-ZGV2LT5kZXZfaWQgPSBpZDsNCj4gPiArCQkJcmV0dXJuIGlkOw0KPiA+ICsJCX0NCj4gPiArCQlp
-ZCsrOw0KPiA+ICsJfQ0KPiA+ICsJcmV0dXJuIE5VTEw7DQo+ID4gK30NCj4gPiArDQo+ID4gKy8q
-Kg0KPiA+ICsgKiB2aXJ0YnVzX21hdGNoIC0gYmluZCB2aXJ0YnVzIGRldmljZSB0byB2aXJ0YnVz
-IGRyaXZlcg0KPiA+ICsgKiBAZGV2OiBkZXZpY2UNCj4gPiArICogQGRydjogZHJpdmVyDQo+ID4g
-KyAqDQo+ID4gKyAqIFZpcnRidXMgZGV2aWNlIElEcyBhcmUgYWx3YXlzIGluICI8bmFtZT4uPGlu
-c3RhbmNlPiIgZm9ybWF0Lg0KPiA+ICsgKiBJbnN0YW5jZXMgYXJlIGF1dG9tYXRpY2FsbHkgc2Vs
-ZWN0ZWQgdGhyb3VnaCBhbiBpZGFfc2ltcGxlX2dldCBzbw0KPiA+ICsgKiBhcmUgcG9zaXRpdmUg
-aW50ZWdlcnMuIE5hbWVzIGFyZSB0YWtlbiBmcm9tIHRoZSBkZXZpY2UgbmFtZSBmaWVsZC4NCj4g
-PiArICogRHJpdmVyIElEcyBhcmUgc2ltcGxlIDxuYW1lPi4gIE5lZWQgdG8gZXh0cmFjdCB0aGUg
-bmFtZSBmcm9tIHRoZQ0KPiA+ICsgKiBWaXJ0dWFsIERldmljZSBjb21wYXJlIHRvIG5hbWUgb2Yg
-dGhlIGRyaXZlci4NCj4gPiArICovDQo+ID4gK3N0YXRpYyBpbnQgdmlydGJ1c19tYXRjaChzdHJ1
-Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBkZXZpY2VfZHJpdmVyDQo+ID4gKypkcnYpIHsNCj4gPiAr
-CXN0cnVjdCB2aXJ0YnVzX2RyaXZlciAqdmRydiA9IHRvX3ZpcnRidXNfZHJ2KGRydik7DQo+ID4g
-KwlzdHJ1Y3QgdmlydGJ1c19kZXZpY2UgKnZkZXYgPSB0b192aXJ0YnVzX2RldihkZXYpOw0KPiA+
-ICsNCj4gPiArCWlmICh2ZHJ2LT5pZF90YWJsZSkNCj4gPiArCQlyZXR1cm4gdmlydGJ1c19tYXRj
-aF9pZCh2ZHJ2LT5pZF90YWJsZSwgdmRldikgIT0gTlVMTDsNCj4gPiArDQo+ID4gKwlyZXR1cm4g
-KHN0cmNtcCh2ZGV2LT5uYW1lLCBkcnYtPm5hbWUpID09IDApOyB9DQo+ID4gKw0KPiA+ICsvKioN
-Cj4gPiArICogdmlydGJ1c19wcm9iZSAtIGNhbGwgcHJvYmUgb2YgdGhlIHZpcnRidXNfZHJ2DQo+
-ID4gKyAqIEBkZXY6IGRldmljZSBzdHJ1Y3QNCj4gPiArICovDQo+ID4gK3N0YXRpYyBpbnQgdmly
-dGJ1c19wcm9iZShzdHJ1Y3QgZGV2aWNlICpkZXYpIHsNCj4gPiArCXJldHVybiBkZXYtPmRyaXZl
-ci0+cHJvYmUgPyBkZXYtPmRyaXZlci0+cHJvYmUoZGV2KSA6IDA7IH0NCj4gPiArDQo+ID4gK3N0
-YXRpYyBpbnQgdmlydGJ1c19yZW1vdmUoc3RydWN0IGRldmljZSAqZGV2KSB7DQo+ID4gKwlyZXR1
-cm4gZGV2LT5kcml2ZXItPnJlbW92ZSA/IGRldi0+ZHJpdmVyLT5yZW1vdmUoZGV2KSA6IDA7IH0N
-Cj4gPiArDQo+ID4gK3N0YXRpYyB2b2lkIHZpcnRidXNfc2h1dGRvd24oc3RydWN0IGRldmljZSAq
-ZGV2KSB7DQo+ID4gKwlpZiAoZGV2LT5kcml2ZXItPnNodXRkb3duKQ0KPiA+ICsJCWRldi0+ZHJp
-dmVyLT5zaHV0ZG93bihkZXYpOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgaW50IHZpcnRi
-dXNfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYsIHBtX21lc3NhZ2VfdCBzdGF0ZSkgew0KPiA+
-ICsJaWYgKGRldi0+ZHJpdmVyLT5zdXNwZW5kKQ0KPiA+ICsJCXJldHVybiBkZXYtPmRyaXZlci0+
-c3VzcGVuZChkZXYsIHN0YXRlKTsNCj4gDQo+IFlvdSBoYXZlIHR3byBkaWZmZXJlbnQgc3R5bGVz
-IGhlcmUgd2l0aCB0aGVzZSBjYWxscywgdXNlIHRoaXMgb25lIGluc3RlYWQgb2YNCj4gdGhlIGNy
-YXp5ID8gOiBzdHlsZSBhYm92ZSBpbiBwcm9iZS9yZW1vdmUgcGxlYXNlLg0KDQpTdHlsZSBjaGFu
-Z2VkIHRvIHVzZSB0aGlzIG9uZSB1cCBhYm92ZS4NCg0KPiANCj4gPiArDQo+ID4gKwlyZXR1cm4g
-MDsNCj4gPiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIGludCB2aXJ0YnVzX3Jlc3VtZShzdHJ1Y3Qg
-ZGV2aWNlICpkZXYpIHsNCj4gPiArCWlmIChkZXYtPmRyaXZlci0+cmVzdW1lKQ0KPiA+ICsJCXJl
-dHVybiBkZXYtPmRyaXZlci0+cmVzdW1lKGRldik7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIDA7DQo+
-ID4gK30NCj4gPiArDQo+ID4gK3N0cnVjdCBidXNfdHlwZSB2aXJ0dWFsX2J1c190eXBlID0gew0K
-PiA+ICsJLm5hbWUJCT0gInZpcnRidXMiLA0KPiA+ICsJLm1hdGNoCQk9IHZpcnRidXNfbWF0Y2gs
-DQo+ID4gKwkucHJvYmUJCT0gdmlydGJ1c19wcm9iZSwNCj4gPiArCS5yZW1vdmUJCT0gdmlydGJ1
-c19yZW1vdmUsDQo+ID4gKwkuc2h1dGRvd24JPSB2aXJ0YnVzX3NodXRkb3duLA0KPiA+ICsJLnN1
-c3BlbmQJPSB2aXJ0YnVzX3N1c3BlbmQsDQo+ID4gKwkucmVzdW1lCQk9IHZpcnRidXNfcmVzdW1l
-LA0KPiA+ICt9Ow0KPiA+ICtFWFBPUlRfU1lNQk9MX0dQTCh2aXJ0dWFsX2J1c190eXBlKTsNCj4g
-DQo+IFdoeSBpcyB0aGlzIGV4cG9ydGVkPw0KDQpFeHBvcnQgcmVtb3ZlZA0KDQo+IA0KPiA+ICsN
-Cj4gPiArc3RhdGljIGludCBfX2luaXQgdmlydHVhbF9idXNfaW5pdCh2b2lkKSB7DQo+ID4gKwlp
-bnQgZXJyOw0KPiA+ICsNCj4gPiArCWVyciA9IGRldmljZV9yZWdpc3RlcigmdmlydHVhbF9idXMp
-Ow0KPiA+ICsJaWYgKGVycikgew0KPiA+ICsJCXB1dF9kZXZpY2UoJnZpcnR1YWxfYnVzKTsNCj4g
-PiArCQlyZXR1cm4gZXJyOw0KPiA+ICsJfQ0KPiA+ICsNCj4gPiArCWVyciA9IGJ1c19yZWdpc3Rl
-cigmdmlydHVhbF9idXNfdHlwZSk7DQo+ID4gKwlpZiAoZXJyKSB7DQo+ID4gKwkJZGV2aWNlX3Vu
-cmVnaXN0ZXIoJnZpcnR1YWxfYnVzKTsNCj4gPiArCQlyZXR1cm4gZXJyOw0KPiA+ICsJfQ0KPiA+
-ICsNCj4gPiArCXByX2RlYnVnKCJWaXJ0dWFsIEJ1cyAodmlydGJ1cykgcmVnaXN0ZXJlZCB3aXRo
-IGtlcm5lbFxuIik7DQo+IA0KPiBEb24ndCBiZSBub2lzeS4gIEFuZCByZW1vdmUgeW91ciBkZWJ1
-Z2dpbmcgY29kZSA6KQ0KDQpSZW1vdmVkIDopDQoNCj4gDQo+IA0KPiA+ICsJcmV0dXJuIGVycjsN
-Cj4gPiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIHZvaWQgX19leGl0IHZpcnR1YWxfYnVzX2V4aXQo
-dm9pZCkgew0KPiA+ICsJYnVzX3VucmVnaXN0ZXIoJnZpcnR1YWxfYnVzX3R5cGUpOw0KPiA+ICsJ
-ZGV2aWNlX3VucmVnaXN0ZXIoJnZpcnR1YWxfYnVzKTsNCj4gPiArfQ0KPiA+ICsNCj4gPiArbW9k
-dWxlX2luaXQodmlydHVhbF9idXNfaW5pdCk7DQo+ID4gK21vZHVsZV9leGl0KHZpcnR1YWxfYnVz
-X2V4aXQpOw0KPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3ZpcnR1YWxfYnVzLmggYi9p
-bmNsdWRlL2xpbnV4L3ZpcnR1YWxfYnVzLmgNCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NCBpbmRl
-eCAwMDAwMDAwMDAwMDAuLjcyMmYwMjBhYzUzYg0KPiA+IC0tLSAvZGV2L251bGwNCj4gPiArKysg
-Yi9pbmNsdWRlL2xpbnV4L3ZpcnR1YWxfYnVzLmgNCj4gPiBAQCAtMCwwICsxLDY0IEBADQo+ID4g
-Ky8qIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9ubHkgKi8NCj4gPiArLyoNCj4g
-PiArICogdmlydHVhbF9idXMuaCAtIGxpZ2h0d2VpZ2h0IHNvZnR3YXJlIGJ1cw0KPiA+ICsgKg0K
-PiA+ICsgKiBDb3B5cmlnaHQgKGMpIDIwMTktMjAgSW50ZWwgQ29ycG9yYXRpb24NCj4gPiArICoN
-Cj4gPiArICogUGxlYXNlIHNlZSBEb2N1bWVudGF0aW9uL2RyaXZlci1hcGkvdmlydHVhbF9idXMu
-cnN0IGZvciBtb3JlDQo+ID4gK2luZm9ybWF0aW9uICAqLw0KPiA+ICsNCj4gPiArI2lmbmRlZiBf
-VklSVFVBTF9CVVNfSF8NCj4gPiArI2RlZmluZSBfVklSVFVBTF9CVVNfSF8NCj4gPiArDQo+ID4g
-KyNpbmNsdWRlIDxsaW51eC9kZXZpY2UuaD4NCj4gPiArDQo+ID4gKyNkZWZpbmUgVklSVEJVU19E
-RVZJRF9OT05FCSgtMSkNCj4gDQo+IFdoYXQgaXMgdGhpcyBmb3I/DQoNCk5lZ2F0aXZlIHZhbHVl
-cyBjYW5ub3QgYmUgdmFsaWQgZGV2aWNlIGlkcyBvYnRhaW5lZCBmcm9tDQp0aGUgSURBIG1ldGhv
-ZC4gIFVzaW5nIHRoaXMgYWxsb3dzIGZvciB0aGUgY29uc3VtZXIgdG8NCmNoZWNrIHRoYXQgdGhl
-IGlkIGlzID49MCBvciBtYXliZSAhPSBWSVJUQlVTX0RFVklEX05PTkUNCnRvIHNlZSBpZiB0aGV5
-IGhhdmUgYSB2YWxpZCB2aXJ0YnVzX2RldmljZS4NCg0KPiANCj4gPiArI2RlZmluZSBWSVJUQlVT
-X05BTUVfU0laRQkyMA0KPiANCj4gV2h5PyAgV2h5IGlzIDIwICJvayI/DQoNCkFyYml0cmFyeSB2
-YWx1ZS4gIEkgd2FudGVkIHNvbWV0aGluZyBub3QgdG9vIGJpZyBhbmQgbm90IHRvbw0Kc21hbGws
-IHNvIEkgbG9va2VkIGF0IHdoYXQgcGxhdGZvcm0gYnVzIHdhcyB1c2luZyBhbmQgY29waWVkDQp0
-aGVtLg0KDQo+IA0KPiA+ICsNCj4gPiArc3RydWN0IHZpcnRidXNfZGV2X2lkIHsNCj4gPiArCWNo
-YXIgbmFtZVtWSVJUQlVTX05BTUVfU0laRV07DQo+ID4gKwl1NjQgZHJpdmVyX2RhdGE7DQo+IA0K
-PiB1NjQgb3IgYSBwb2ludGVyPyAgWW91IHVzZSBib3RoLCBwaWNrIG9uZSBwbGVhc2UuDQoNCkFy
-ZSB5b3UgdGhpbmtpbmcgb2YgdGhlIHZvaWQgKmRhdGEgaW4gdGhlIHN0cnVjdCB2aXJ0YnVzX2Rl
-dmljZT8NCg0KVGhpcyB1NjQgZWxlbWVudCBpcyBwYXJ0IG9mIHRoZSBpZF90YWJsZSB0aGF0IHRo
-ZSBkcml2ZXIgd2lsbCB1c2UNCmlmIG5lZWRlZCB0byBiZSBhYmxlIHRvIG1hdGNoIHdpdGggbW9y
-ZSB0aGFuIGEgc2luZ2xlIGRldmljZSBuYW1lLg0KSSB3aWxsIGRpc2N1c3MgaG93IHRoaXMgaXMg
-dXNlZCBiZWxvdyBpbiBhbnN3ZXJpbmcgeW91ciBuZXh0DQpxdWVzdGlvbiBiZWxvdy4NCg0KPiAN
-Cj4gPiArfTsNCj4gPiArDQo+ID4gKy8qIG1lbW9yeSBhbGxvY2F0aW9uIGZvciBkZXZfaWQgaXMg
-ZXhwZWN0ZWQgdG8gYmUgZG9uZSBieSB0aGUNCj4gPiArdmlydGJ1c19kcml2ZXINCj4gPiArICog
-dGhhdCB3aWxsIG1hdGNoIHdpdGggdGhlIHZpcnRidXNfZGV2aWNlLCBhbmQgdGhlIG1hdGNoaW5n
-IHByb2Nlc3MNCj4gPiArd2lsbA0KPiA+ICsgKiBjb3B5IHRoZSBwb2ludGVyIGZyb20gdGhlIG1h
-dGNoZWQgZWxlbWVudCBmcm9tIHRoZSBkcml2ZXIgdG8gdGhlDQo+IGRldmljZS4NCj4gDQo+IFdo
-YXQgcG9pbnRlcj8gIEkgZG9uJ3QgdW5kZXJzdGFuZC4NCg0KVGhlIG1hdGNoaW5nIHByb2Nlc3Mg
-Y2FuIHRha2Ugb25lIG9mIHR3byBmb3JtczoNCjEgLSBmYWxsYmFjayBtYXRjaGluZyAobm8gcG9p
-bnRlciBpc3N1ZXMgaW4gdGhpcyBtZXRob2QpDQpUaGlzIGlzIGEgc2ltcGxlIGRvIHRoZSBuYW1l
-cyBtYXRjaCBpbiB0aGUgZHJpdmVyIGFuZCBkZXZpY2UuDQoNCjIgLSBpZF90YWJsZSBtYXRjaGlu
-Zy4gIElmIHRoZSB2aXJ0YnVzIGRyaXZlciB3YW50cyB0byBiZSBhYmxlIHRvDQpiZSBtYXRjaGVk
-IHdpdGggbW9yZSB0aGFuIG9uZSB2aXJ0YnVzX2RldmljZSwgdGhleSBjYW4gc3VwcGx5DQphbiBp
-ZF90YWJsZSB0aGF0IGxvb2tzIGxpa2UgLQ0KCXsNCgluYW1lDQoJZGF0YQ0KCX0NCgl7DQoJbmFt
-ZQ0KCWRhdGENCgl9DQoJLi4uDQoNCkluIHRoaXMgbWV0aG9kLCB0aGUgZWxlbWVudCBpbiBpZF90
-YWJsZSAob2Ygc3RydWN0IHZpcnRidXNfZGV2X2lkICopIHRoYXQNCmlzIG1hdGNoZWQgYnkgbmFt
-ZSwgd2lsbCBiZSBjb3BpZWQgdG8gdGhlIHZpcnRidXNfZGV2aWNlJ3MgZGV2X2lkDQplbGVtZW50
-LiAgVGhhdCB3YXkgZWFjaCBkaWZmZXJlbnQgZGV2aWNlIHR5cGUgY2FuIGhhdmUgaXRzIG93biB1
-bmlxdWUNCmRyaXZlcl9kYXRhIGZlZCBiYWNrIHRvIHRoZSBkcml2ZXIgdmlhIGl0cyBwcm9iZS4N
-Cg0KSSB3aWxsIG1ha2UgdGhlIGNvbW1lbnQgKGhvcGVmdWxseSkgbW9yZSB1bmRlcnN0YW5kYWJs
-ZS4NCj4gDQo+ID4gKyAqLw0KPiA+ICtzdHJ1Y3QgdmlydGJ1c19kZXZpY2Ugew0KPiA+ICsJY29u
-c3QgY2hhcgkJCSpuYW1lOw0KPiA+ICsJaW50CQkJCWlkOw0KPiA+ICsJY29uc3Qgc3RydWN0IHZp
-cnRidXNfZGV2X2lkCSpkZXZfaWQ7DQo+ID4gKwlzdHJ1Y3QgZGV2aWNlCQkJZGV2Ow0KPiA+ICsJ
-dm9pZAkJCQkqZGF0YTsNCj4gPiArfTsNCj4gPiArDQo+ID4gK3N0cnVjdCB2aXJ0YnVzX2RyaXZl
-ciB7DQo+ID4gKwlpbnQgKCpwcm9iZSkoc3RydWN0IHZpcnRidXNfZGV2aWNlICopOw0KPiA+ICsJ
-aW50ICgqcmVtb3ZlKShzdHJ1Y3QgdmlydGJ1c19kZXZpY2UgKik7DQo+ID4gKwl2b2lkICgqc2h1
-dGRvd24pKHN0cnVjdCB2aXJ0YnVzX2RldmljZSAqKTsNCj4gPiArCWludCAoKnN1c3BlbmQpKHN0
-cnVjdCB2aXJ0YnVzX2RldmljZSAqLCBwbV9tZXNzYWdlX3Qgc3RhdGUpOw0KPiA+ICsJaW50ICgq
-cmVzdW1lKShzdHJ1Y3QgdmlydGJ1c19kZXZpY2UgKik7DQo+ID4gKwlzdHJ1Y3QgZGV2aWNlX2Ry
-aXZlciBkcml2ZXI7DQo+ID4gKwljb25zdCBzdHJ1Y3QgdmlydGJ1c19kZXZfaWQgKmlkX3RhYmxl
-OyB9Ow0KPiA+ICsNCj4gPiArI2RlZmluZSB2aXJ0YnVzX2dldF9kZXZfaWQodmRldikJKCh2ZGV2
-KS0+aWRfZW50cnkpDQo+ID4gKyNkZWZpbmUgdmlydGJ1c19nZXRfZGV2ZGF0YShkZXYpCSgoZGV2
-KS0+ZGV2ZGF0YSkNCj4gDQo+IFdoYXQgYXJlIHRoZXNlIGZvcj8NCj4gDQo+ID4gKyNkZWZpbmUg
-ZGV2X2lzX3ZpcnRidXMoZGV2KQkoKGRldiktPmJ1cyA9PSAmdmlydGJ1c190eXBlKQ0KPiANCj4g
-V2hvIG5lZWRzIHRoaXM/DQoNCkkgd2FzIHBsYW5uaW5nIG9uIHVzaW5nIHRoZXNlIHdoZW4gSSB3
-YXMgZG9pbmcgc2V0dXAgYW5kIGVuZGVkIHVwDQpub3QgdXNpbmcgdGhlbS4gIFJlbW92aW5nLg0K
-DQo+IA0KPiA+ICsjZGVmaW5lIHRvX3ZpcnRidXNfZGV2KHgpCWNvbnRhaW5lcl9vZigoeCksIHN0
-cnVjdCB2aXJ0YnVzX2RldmljZSwgZGV2KQ0KPiA+ICsjZGVmaW5lIHRvX3ZpcnRidXNfZHJ2KGRy
-dikJKGNvbnRhaW5lcl9vZigoZHJ2KSwgc3RydWN0DQo+IHZpcnRidXNfZHJpdmVyLCBcDQo+ID4g
-KwkJCQkgZHJpdmVyKSkNCj4gDQo+IFdoeSBhcmUgdGhlc2UgaW4gYSBwdWJsaWMgLmggZmlsZT8N
-Cg0KTW92ZWQgdG8gLmMgZmlsZQ0KDQo+IA0KPiA+ICsNCj4gPiArZXh0ZXJuIHN0cnVjdCBidXNf
-dHlwZSB2aXJ0dWFsX2J1c190eXBlOyBleHRlcm4gc3RydWN0IGRldmljZQ0KPiA+ICt2aXJ0dWFs
-X2J1czsNCj4gDQo+IEFnYWluLCB3aHkgZXhwb3J0ZWQ/DQoNCkV4cG9ydCByZW1vdmVkLCBleHRl
-cm4gcmVtb3ZlZA0KDQo+IA0KPiA+ICsNCj4gPiAraW50IHZpcnRidXNfZGV2X2FkZChzdHJ1Y3Qg
-dmlydGJ1c19kZXZpY2UgKnZkZXYpOyB2b2lkDQo+ID4gK3ZpcnRidXNfZGV2X2RlbChzdHJ1Y3Qg
-dmlydGJ1c19kZXZpY2UgKnZkZXYpOyBzdHJ1Y3QgdmlydGJ1c19kZXZpY2UNCj4gPiArKnZpcnRi
-dXNfZGV2X2FsbG9jKGNvbnN0IGNoYXIgKm5hbWUsIHZvaWQgKmRldmRhdGEpOyBpbnQNCj4gPiAr
-dmlydGJ1c19kcnZfcmVnaXN0ZXIoc3RydWN0IHZpcnRidXNfZHJpdmVyICp2ZHJ2LCBzdHJ1Y3Qg
-bW9kdWxlDQo+ID4gKypvd25lcik7IHZvaWQgdmlydGJ1c19kcnZfdW5yZWdpc3RlcihzdHJ1Y3Qg
-dmlydGJ1c19kcml2ZXIgKnZkcnYpOw0KPiA+ICsNCj4gPiAraW50IHZpcnRidXNfZm9yX2VhY2hf
-ZGV2KHZvaWQgKmRhdGEsIGludCAoKmZuKShzdHJ1Y3QgZGV2aWNlICosIHZvaWQNCj4gPiArKikp
-OyBpbnQgdmlydGJ1c19mb3JfZWFjaF9kcnYodm9pZCAqZGF0YSwgaW50KCpmbikoc3RydWN0DQo+
-ID4gK2RldmljZV9kcml2ZXIgKiwgdm9pZCAqKSk7DQo+IA0KPiBwaWNrIGEgY29kaW5nIHN0eWxl
-IGFuZCBzdGljayB3aXRoIGl0IHBsZWFzZS4uLg0KDQpPcHRlZCBmb3IgYWRkL2RlbCBzaW5jZSBp
-dCBpcyBzaG9ydGVyIHRvIHR5cGUgOikNCg0KPiANCj4gdGhhbmtzLA0KDQpUaGFuayBZb3UhISBH
-cmVhdCBmZWVkYmFjayENCg0KPiANCj4gZ3JlZyBrLWgNCg0KSSBoYXZlIGluY2x1ZGVkIGEgc21h
-bGwgc2FtcGxlIGRyaXZlciBhbmQgZGV2aWNlIGluOg0KdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMv
-dmlydHVhbF9idXMvdmlydHVhbF9idXNfW2RydnxkZXZdLw0KDQpUaGVzZSB3aWxsIGFkZCB0aGVp
-ciByZXNwZWN0aXZlIGVsZW1lbnRzIHRvIHRoZSBidXMgYW5kIGluIHRoZQ0KcHJvYmUgb2YgdGhl
-IGRyaXZlciwgaXQgd2lsbCBhY2Nlc3MgdGhlIGRhdGEgZnJvbSB0aGUgZGV2aWNlDQppbiBhIHNp
-bXBsaXN0aWMgd2F5Lg0KDQpBbHNvLCB0aGUgcmV3b3JrIGZvciB0aGUgaWNlIGRyaXZlciB1c2lu
-ZyB0aGUgdmlydGJ1cyBpcyBkb25lLA0KYW5kIGdvaW5nIHRocm91Z2ggdGhlIHByb2Nlc3Mgb2Yg
-aGVhZGluZyB1cHN0cmVhbSBpZiB5b3UgbmVlZA0KYSByZWFsIHdvcmxkIGV4YW1wbGUgb2YgaG93
-IHdlIHBsYW4gdG8gdXNlIHRoaXMuDQoNCi1EYXZlIEUNCg==
+From: Dave Ertman <david.m.ertman@intel.com>
+
+This is the initial implementation of the Virtual Bus,
+virtbus_device and virtbus_driver.  The virtual bus is
+a software based bus intended to support lightweight
+devices and drivers and provide matching between them
+and probing of the registered drivers.
+
+The primary purpose of the virual bus is to provide
+matching services and to pass the data pointer
+contained in the virtbus_device to the virtbus_driver
+during its probe call.  This will allow two separate
+kernel objects to match up and start communication.
+
+The bus will support probe/remove shutdown and
+suspend/resume callbacks.
+
+Kconfig and Makefile alterations are included
+
+Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+---
+v2: Cleaned up the virtual bus interface based on feedback from Greg KH
+    and provided a test driver and test virtual bus device as an example
+    of how to implement the virtual bus.
+
+ Documentation/driver-api/virtual_bus.rst      |  76 ++++
+ drivers/bus/Kconfig                           |  14 +
+ drivers/bus/Makefile                          |   1 +
+ drivers/bus/virtual_bus.c                     | 326 ++++++++++++++++++
+ include/linux/virtual_bus.h                   |  55 +++
+ .../virtual_bus/virtual_bus_dev/Makefile      |   7 +
+ .../virtual_bus_dev/virtual_bus_dev.c         |  67 ++++
+ .../virtual_bus/virtual_bus_drv/Makefile      |   7 +
+ .../virtual_bus_drv/virtual_bus_drv.c         | 101 ++++++
+ 9 files changed, 654 insertions(+)
+ create mode 100644 Documentation/driver-api/virtual_bus.rst
+ create mode 100644 drivers/bus/virtual_bus.c
+ create mode 100644 include/linux/virtual_bus.h
+ create mode 100644 tools/testing/selftests/virtual_bus/virtual_bus_dev/Makefile
+ create mode 100644 tools/testing/selftests/virtual_bus/virtual_bus_dev/virtual_bus_dev.c
+ create mode 100644 tools/testing/selftests/virtual_bus/virtual_bus_drv/Makefile
+ create mode 100644 tools/testing/selftests/virtual_bus/virtual_bus_drv/virtual_bus_drv.c
+
+diff --git a/Documentation/driver-api/virtual_bus.rst b/Documentation/driver-api/virtual_bus.rst
+new file mode 100644
+index 000000000000..970e06267284
+--- /dev/null
++++ b/Documentation/driver-api/virtual_bus.rst
+@@ -0,0 +1,76 @@
++===============================
++Virtual Bus Devices and Drivers
++===============================
++
++See <linux/virtual_bus.h> for the models for virtbus_device and virtbus_driver.
++This bus is meant to be a lightweight software based bus to attach generic
++devices and drivers to so that a chunk of data can be passed between them.
++
++One use case example is an rdma driver needing to connect with several
++different types of PCI LAN devices to be able to request resources from
++them (queue sets).  Each LAN driver that supports rdma will register a
++virtbus_device on the virtual bus for each physical function.  The rdma
++driver will register as a virtbus_driver on the virtual bus to be
++matched up with multiple virtbus_devices and receive a pointer to a
++struct containing the callbacks that the PCI LAN drivers support for
++registering with them.
++
++Sections in this document:
++        Virtbus devices
++        Virtbus drivers
++        Device Enumeration
++        Device naming and driver binding
++        Virtual Bus API entry points
++
++Virtbus devices
++~~~~~~~~~~~~~~~
++Virtbus_devices are lightweight objects that support the minimal device
++functionality.  Devices will accept a name, and then an automatically
++generated index is concatenated onto it for the virtbus_device->name.
++
++The memory backing the "void *data" element of the virtbus_device is
++expected to be allocated and freed outside the context of the bus
++operations.  This memory is also expected to remain viable for the
++duration of the time that the virtbus_device is registered to the
++virtual bus. (e.g. from before the virtbus_dev_register until after
++the paired virtbus_dev_unregister).
++
++The provided API for virtbus_dev_alloc is an efficient way of allocating
++the memory for the virtbus_device (except for the data element) and
++automatically freeing it when the device is removed from the bus.
++
++Virtbus drivers
++~~~~~~~~~~~~~~~
++Virtbus drivers register with the virtual bus to be matched with virtbus
++devices.  They expect to be registered with a probe and remove callback,
++and also support shutdown, suspend, and resume callbacks.  They otherwise
++follow the standard driver behavior of having discovery and enumeration
++handled in the bus infrastructure.
++
++Virtbus drivers register themselves with the API entry point virtbus_drv_reg
++and unregister with virtbus_drv_unreg.
++
++Device Enumeration
++~~~~~~~~~~~~~~~~~~
++Enumeration is handled automatically by the bus infrastructure via the
++ida_simple methods.
++
++Device naming and driver binding
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++The virtbus_device.dev.name is the canonical name for the device. It is
++built from two other parts:
++
++        - virtbus_device.name (also used for matching).
++        - virtbus_device.id (generated automatically from ida_simple calls)
++
++This allows for multiple virtbus_devices with the same name, which will all
++be matched to the same virtbus_driver. Driver binding is performed by the
++driver core, invoking driver probe() after finding a match between device and driver.
++
++Virtual Bus API entry points
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++struct virtbus_device *virtbus_dev_alloc(const char *name, void *data)
++int virtbus_dev_register(struct virtbus_device *vdev)
++void virtbus_dev_unregister(struct virtbus_device *vdev)
++int virtbus_drv_register(struct virtbus_driver *vdrv, struct module *owner)
++void virtbus_drv_unregister(struct virtbus_driver *vdrv)
+diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
+index 6b331061d34b..30cef35b0c30 100644
+--- a/drivers/bus/Kconfig
++++ b/drivers/bus/Kconfig
+@@ -193,4 +193,18 @@ config DA8XX_MSTPRI
+ 
+ source "drivers/bus/fsl-mc/Kconfig"
+ 
++config VIRTUAL_BUS
++       tristate "lightweight Virtual Bus"
++       depends on PM
++       help
++         Provides a lightweight bus for virtbus_devices to be added to it
++         and virtbus_drivers to be registered on it.  Will create a match
++         between the driver and device, then call the driver's probe with
++         the virtbus_device's struct (including a pointer for data).
++         One example is the irdma driver needing to connect with various
++         PCI LAN drivers to request resources (queues) to be able to perform
++         its function.  The data in the virtbus_device created by the
++         PCI LAN driver is a set of ops (function pointers) for the irdma
++         driver to use to register and communicate with the PCI LAN driver.
++
+ endmenu
+diff --git a/drivers/bus/Makefile b/drivers/bus/Makefile
+index 16b43d3468c6..0b0ba53cbe5b 100644
+--- a/drivers/bus/Makefile
++++ b/drivers/bus/Makefile
+@@ -33,3 +33,4 @@ obj-$(CONFIG_UNIPHIER_SYSTEM_BUS)	+= uniphier-system-bus.o
+ obj-$(CONFIG_VEXPRESS_CONFIG)	+= vexpress-config.o
+ 
+ obj-$(CONFIG_DA8XX_MSTPRI)	+= da8xx-mstpri.o
++obj-$(CONFIG_VIRTUAL_BUS)	+= virtual_bus.o
+diff --git a/drivers/bus/virtual_bus.c b/drivers/bus/virtual_bus.c
+new file mode 100644
+index 000000000000..c6eab1658391
+--- /dev/null
++++ b/drivers/bus/virtual_bus.c
+@@ -0,0 +1,326 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * virtual_bus.c - lightweight software based bus for virtual devices
++ *
++ * Copyright (c) 2019-20 Intel Corporation
++ *
++ * Please see Documentation/driver-api/virtual_bus.rst for
++ * more information
++ */
++
++#include <linux/string.h>
++#include <linux/virtual_bus.h>
++#include <linux/of_irq.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/pm_runtime.h>
++#include <linux/pm_domain.h>
++#include <linux/acpi.h>
++#include <linux/device.h>
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Lightweight Virtual Bus");
++MODULE_AUTHOR("David Ertman <david.m.ertman@intel.com>");
++MODULE_AUTHOR("Kiran Patil <kiran.patil@intel.com>");
++
++static DEFINE_IDA(virtbus_dev_ida);
++
++static const
++struct virtbus_dev_id *virtbus_match_id(const struct virtbus_dev_id *id,
++					struct virtbus_device *vdev)
++{
++	while (id->name[0]) {
++		if (!strcmp(vdev->name, id->name)) {
++			vdev->dev_id = id;
++			return id;
++		}
++		id++;
++	}
++	return NULL;
++}
++
++#define to_virtbus_dev(x)	(container_of((x), struct virtbus_device, dev))
++#define to_virtbus_drv(x)	(container_of((x), struct virtbus_driver, \
++				 driver))
++
++/**
++ * virtbus_match - bind virtbus device to virtbus driver
++ * @dev: device
++ * @drv: driver
++ *
++ * Virtbus device IDs are always in "<name>.<instance>" format.
++ * Instances are automatically selected through an ida_simple_get so
++ * are positive integers. Names are taken from the device name field.
++ * Driver IDs are simple <name>.  Need to extract the name from the
++ * Virtual Device compare to name of the driver.
++ */
++static int virtbus_match(struct device *dev, struct device_driver *drv)
++{
++	struct virtbus_driver *vdrv = to_virtbus_drv(drv);
++	struct virtbus_device *vdev = to_virtbus_dev(dev);
++
++	if (vdrv->id_table)
++		return virtbus_match_id(vdrv->id_table, vdev) != NULL;
++
++	return !strcmp(vdev->name, drv->name);
++}
++
++/**
++ * virtbus_probe - call probe of the virtbus_drv
++ * @dev: device struct
++ */
++static int virtbus_probe(struct device *dev)
++{
++	if (dev->driver->probe)
++		return dev->driver->probe(dev);
++
++	return 0;
++}
++
++static int virtbus_remove(struct device *dev)
++{
++	if (dev->driver->remove)
++		return dev->driver->remove(dev);
++
++	return 0;
++}
++
++static void virtbus_shutdown(struct device *dev)
++{
++	if (dev->driver->shutdown)
++		dev->driver->shutdown(dev);
++}
++
++static int virtbus_suspend(struct device *dev, pm_message_t state)
++{
++	if (dev->driver->suspend)
++		return dev->driver->suspend(dev, state);
++
++	return 0;
++}
++
++static int virtbus_resume(struct device *dev)
++{
++	if (dev->driver->resume)
++		return dev->driver->resume(dev);
++
++	return 0;
++}
++
++struct bus_type virtual_bus_type = {
++	.name		= "virtbus",
++	.match		= virtbus_match,
++	.probe		= virtbus_probe,
++	.remove		= virtbus_remove,
++	.shutdown	= virtbus_shutdown,
++	.suspend	= virtbus_suspend,
++	.resume		= virtbus_resume,
++};
++
++/**
++ * virtbus_dev_register - add a virtual bus device
++ * @vdev: virtual bus device to add
++ */
++int virtbus_dev_register(struct virtbus_device *vdev)
++{
++	int ret;
++
++	if (!vdev)
++		return -EINVAL;
++
++	device_initialize(&vdev->dev);
++
++	vdev->dev.bus = &virtual_bus_type;
++	/* All device IDs are automatically allocated */
++	ret = ida_simple_get(&virtbus_dev_ida, 0, 0, GFP_KERNEL);
++	if (ret < 0)
++		return ret;
++
++	vdev->id = ret;
++	dev_set_name(&vdev->dev, "%s.%d", vdev->name, vdev->id);
++
++	dev_dbg(&vdev->dev, "Registering VirtBus device '%s'\n",
++		dev_name(&vdev->dev));
++
++	ret = device_add(&vdev->dev);
++	if (!ret)
++		return ret;
++
++	/* Error adding virtual device */
++	device_del(&vdev->dev);
++	ida_simple_remove(&virtbus_dev_ida, vdev->id);
++	vdev->id = VIRTBUS_DEVID_NONE;
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(virtbus_dev_register);
++
++/**
++ * virtbus_dev_unregister - remove a virtual bus device
++ * vdev: virtual bus device we are removing
++ */
++void virtbus_dev_unregister(struct virtbus_device *vdev)
++{
++	if (!IS_ERR_OR_NULL(vdev)) {
++		device_del(&vdev->dev);
++
++		ida_simple_remove(&virtbus_dev_ida, vdev->id);
++		vdev->id = VIRTBUS_DEVID_NONE;
++	}
++}
++EXPORT_SYMBOL_GPL(virtbus_dev_unregister);
++
++struct virtbus_object {
++	struct virtbus_device vdev;
++	char name[];
++};
++
++/**
++ * virtbus_dev_release - Destroy a virtbus device
++ * @vdev: virtual device to release
++ *
++ * Note that the vdev->data which is separately allocated needs to be
++ * separately freed on it own.
++ */
++static void virtbus_dev_release(struct device *dev)
++{
++	struct virtbus_object *vo = container_of(dev, struct virtbus_object,
++						 vdev.dev);
++
++	kfree(vo);
++}
++
++/**
++ * virtbus_dev_alloc - allocate a virtbus device
++ * @name: name to associate with the vdev
++ * @data: pointer to data to be associated with this device
++ */
++struct virtbus_device *virtbus_dev_alloc(const char *name, void *data)
++{
++	struct virtbus_object *vo;
++
++	/* Create a virtbus object to contain the vdev and name.  This
++	 * avoids a problem with the const attribute of name in the vdev.
++	 * The virtbus_object will be allocated here and freed in the
++	 * release function.
++	 */
++	vo = kzalloc(sizeof(*vo) + strlen(name) + 1, GFP_KERNEL);
++	if (!vo)
++		return NULL;
++
++	strcpy(vo->name, name);
++	vo->vdev.name = vo->name;
++	vo->vdev.data = data;
++	vo->vdev.dev.release = virtbus_dev_release;
++
++	return &vo->vdev;
++}
++EXPORT_SYMBOL_GPL(virtbus_dev_alloc);
++
++static int virtbus_drv_probe(struct device *_dev)
++{
++	struct virtbus_driver *vdrv = to_virtbus_drv(_dev->driver);
++	struct virtbus_device *vdev = to_virtbus_dev(_dev);
++	int ret;
++
++	ret = dev_pm_domain_attach(_dev, true);
++	if (ret) {
++		dev_warn(_dev, "Failed to attatch to PM Domain : %d\n", ret);
++		return ret;
++	}
++
++	if (vdrv->probe) {
++		ret = vdrv->probe(vdev);
++		if (ret)
++			dev_pm_domain_detach(_dev, true);
++	}
++
++	return ret;
++}
++
++static int virtbus_drv_remove(struct device *_dev)
++{
++	struct virtbus_driver *vdrv = to_virtbus_drv(_dev->driver);
++	struct virtbus_device *vdev = to_virtbus_dev(_dev);
++	int ret = 0;
++
++	if (vdrv->remove)
++		ret = vdrv->remove(vdev);
++
++	dev_pm_domain_detach(_dev, true);
++
++	return ret;
++}
++
++static void virtbus_drv_shutdown(struct device *_dev)
++{
++	struct virtbus_driver *vdrv = to_virtbus_drv(_dev->driver);
++	struct virtbus_device *vdev = to_virtbus_dev(_dev);
++
++	if (vdrv->shutdown)
++		vdrv->shutdown(vdev);
++}
++
++static int virtbus_drv_suspend(struct device *_dev, pm_message_t state)
++{
++	struct virtbus_driver *vdrv = to_virtbus_drv(_dev->driver);
++	struct virtbus_device *vdev = to_virtbus_dev(_dev);
++
++	if (vdrv->suspend)
++		return vdrv->suspend(vdev, state);
++
++	return 0;
++}
++
++static int virtbus_drv_resume(struct device *_dev)
++{
++	struct virtbus_driver *vdrv = to_virtbus_drv(_dev->driver);
++	struct virtbus_device *vdev = to_virtbus_dev(_dev);
++
++	if (vdrv->resume)
++		return vdrv->resume(vdev);
++
++	return 0;
++}
++
++/**
++ * __virtbus_drv_register - register a driver for virtual bus devices
++ * @vdrv: virtbus_driver structure
++ * @owner: owning module/driver
++ */
++int __virtbus_drv_register(struct virtbus_driver *vdrv, struct module *owner)
++{
++	vdrv->driver.owner = owner;
++	vdrv->driver.bus = &virtual_bus_type;
++	vdrv->driver.probe = virtbus_drv_probe;
++	vdrv->driver.remove = virtbus_drv_remove;
++	vdrv->driver.shutdown = virtbus_drv_shutdown;
++	vdrv->driver.suspend = virtbus_drv_suspend;
++	vdrv->driver.resume = virtbus_drv_resume;
++
++	return driver_register(&vdrv->driver);
++}
++EXPORT_SYMBOL_GPL(__virtbus_drv_register);
++
++/**
++ * virtbus_drv_unregister - unregister a driver for virtual bus devices
++ * @drv: virtbus_driver structure
++ */
++void virtbus_drv_unregister(struct virtbus_driver *vdrv)
++{
++	driver_unregister(&vdrv->driver);
++}
++EXPORT_SYMBOL_GPL(virtbus_drv_unregister);
++
++static int __init virtual_bus_init(void)
++{
++	return bus_register(&virtual_bus_type);
++}
++
++static void __exit virtual_bus_exit(void)
++{
++	bus_unregister(&virtual_bus_type);
++}
++
++module_init(virtual_bus_init);
++module_exit(virtual_bus_exit);
+diff --git a/include/linux/virtual_bus.h b/include/linux/virtual_bus.h
+new file mode 100644
+index 000000000000..b6f2406180f8
+--- /dev/null
++++ b/include/linux/virtual_bus.h
+@@ -0,0 +1,55 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * virtual_bus.h - lightweight software bus
++ *
++ * Copyright (c) 2019-20 Intel Corporation
++ *
++ * Please see Documentation/driver-api/virtual_bus.rst for more information
++ */
++
++#ifndef _VIRTUAL_BUS_H_
++#define _VIRTUAL_BUS_H_
++
++#include <linux/device.h>
++
++#define VIRTBUS_DEVID_NONE	(-1)
++#define VIRTBUS_NAME_SIZE	20
++
++struct virtbus_dev_id {
++	char name[VIRTBUS_NAME_SIZE];
++	u64 driver_data;
++};
++
++struct virtbus_device {
++	const char			*name;
++	int				id;
++	const struct virtbus_dev_id	*dev_id;
++	struct device			dev;
++	void				*data;
++};
++
++/* If the driver uses a id_table to match with virtbus_devices, then the
++ * memory for the table is expected to remain allocated for the duration
++ * of the pairing between driver and device.  The pointer for the matching
++ * element will be copied to the dev_id field of the virtbus_device.
++ */
++struct virtbus_driver {
++	int (*probe)(struct virtbus_device *);
++	int (*remove)(struct virtbus_device *);
++	void (*shutdown)(struct virtbus_device *);
++	int (*suspend)(struct virtbus_device *, pm_message_t);
++	int (*resume)(struct virtbus_device *);
++	struct device_driver driver;
++	const struct virtbus_dev_id *id_table;
++};
++
++int virtbus_dev_register(struct virtbus_device *vdev);
++void virtbus_dev_unregister(struct virtbus_device *vdev);
++struct virtbus_device *virtbus_dev_alloc(const char *name, void *devdata);
++int __virtbus_drv_register(struct virtbus_driver *vdrv, struct module *owner);
++void virtbus_drv_unregister(struct virtbus_driver *vdrv);
++
++#define virtbus_drv_register(vdrv) \
++	__virtbus_drv_register(vdrv, THIS_MODULE)
++
++#endif /* _VIRTUAL_BUS_H_ */
+diff --git a/tools/testing/selftests/virtual_bus/virtual_bus_dev/Makefile b/tools/testing/selftests/virtual_bus/virtual_bus_dev/Makefile
+new file mode 100644
+index 000000000000..ddd5088eb26b
+--- /dev/null
++++ b/tools/testing/selftests/virtual_bus/virtual_bus_dev/Makefile
+@@ -0,0 +1,7 @@
++obj-m += virtual_bus_dev.o
++
++all:
++	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
++
++clean:
++	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+diff --git a/tools/testing/selftests/virtual_bus/virtual_bus_dev/virtual_bus_dev.c b/tools/testing/selftests/virtual_bus/virtual_bus_dev/virtual_bus_dev.c
+new file mode 100644
+index 000000000000..7257e599f12b
+--- /dev/null
++++ b/tools/testing/selftests/virtual_bus/virtual_bus_dev/virtual_bus_dev.c
+@@ -0,0 +1,67 @@
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/module.h>
++#include <linux/virtual_bus.h>
++#include <linux/string.h>
++#include <linux/slab.h>
++
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("Dave Ertman");
++MODULE_DESCRIPTION("Test to create a device on virtual bus");
++MODULE_VERSION("1.0");
++
++static struct virtbus_device *vdev;
++static char *data;
++
++static int __init test_dev_init(void)
++{
++	int ret = 0;
++	static char *name;
++
++	printk(KERN_INFO "Loading Virtual Bus Test Device\n");
++
++	name = kzalloc(VIRTBUS_NAME_SIZE, GFP_KERNEL);
++	if (!name)
++		return -ENOMEM;
++	strcpy(name, "virtual_bus_dev");
++
++	data = kzalloc(128, GFP_KERNEL);
++	if (!data) {
++		kfree(name);
++		return -ENOMEM;
++	}
++	strcpy(data, "This is my data string - isn't it wonderful!");
++
++	vdev = virtbus_dev_alloc(name, data);
++	if (!vdev) {
++		kfree(name);
++		kfree(data);
++		return -EINVAL;
++	}
++
++	printk(KERN_ERR "Virtbus Device allocated:\n\t%s\n\t%s\n", vdev->name,
++	       (char *)vdev->data);
++
++	ret = virtbus_dev_register(vdev);
++	kfree(name);
++	if (ret) {
++		printk(KERN_ERR "FAILED TO ADD VIRTBUS DEVICE %d\n", ret);
++		return ret;
++	}
++
++	printk(KERN_INFO "Virtual Device created\n");
++	return ret;
++}
++
++static void __exit test_dev_exit(void)
++{
++	printk(KERN_INFO "Exiting Virtual Bus Test Device");
++
++	virtbus_dev_unregister(vdev);
++	kfree(data);
++
++	printk(KERN_INFO "Virtual Bus Test Device removed\n");
++}
++
++module_init(test_dev_init);
++module_exit(test_dev_exit);
+diff --git a/tools/testing/selftests/virtual_bus/virtual_bus_drv/Makefile b/tools/testing/selftests/virtual_bus/virtual_bus_drv/Makefile
+new file mode 100644
+index 000000000000..a4b7467f7878
+--- /dev/null
++++ b/tools/testing/selftests/virtual_bus/virtual_bus_drv/Makefile
+@@ -0,0 +1,7 @@
++obj-m += virtual_bus_drv.o
++
++all:
++	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
++
++clean:
++	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+diff --git a/tools/testing/selftests/virtual_bus/virtual_bus_drv/virtual_bus_drv.c b/tools/testing/selftests/virtual_bus/virtual_bus_drv/virtual_bus_drv.c
+new file mode 100644
+index 000000000000..202288809b1c
+--- /dev/null
++++ b/tools/testing/selftests/virtual_bus/virtual_bus_drv/virtual_bus_drv.c
+@@ -0,0 +1,101 @@
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/module.h>
++#include <linux/virtual_bus.h>
++#include <linux/string.h>
++#include <linux/slab.h>
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Dave Ertman");
++MODULE_DESCRIPTION("Test to register a driver on virtual bus");
++MODULE_VERSION("1.0");
++
++static int td_probe(struct virtbus_device *vdev)
++{
++	printk(KERN_ERR "VIRTBUS DRIVER PROBED\n");
++	printk(KERN_ERR "DATA IS %s", vdev->data ? "NOT NULL" : "NULL");
++	if (vdev->dev_id) {
++		printk(KERN_ERR "DEV_ID->DATA 0x%08x\n",
++			(uint)vdev->dev_id->driver_data);
++		if (vdev->dev_id->driver_data == 1)
++			printk(KERN_ERR "DATA STRING: %s\n",
++			       (char *)vdev->data);
++	} else {
++		printk(KERN_ERR "DEV_ID->DATA is NULL\n");
++	}
++
++	return 0;
++}
++
++static int td_remove(struct virtbus_device *vdev)
++{
++	printk(KERN_ERR "VIRTBUS DRIVER REMOVED\n");
++	return 0;
++}
++
++static void td_shutdown(struct virtbus_device *vdev)
++{
++	printk(KERN_ERR "VIRTBUS DRIVER SHUTDOWN\n");
++}
++
++static const struct virtbus_dev_id vdev_id_table[] = {
++
++	{
++		.name = "NOT THE NAME",
++		.driver_data = 0x00000000,
++	},
++	{
++		.name = "virtual_bus_dev",
++		.driver_data = 0x00000001,
++	},
++	{
++		.name = "ice_rdma",
++		.driver_data = 0x00000002,
++	},
++	{
++		.name = "YET AGAIN NOT NAME",
++		.driver_data = 0x00000003,
++	},
++};
++
++static struct virtbus_driver vdrv = {
++	.probe = td_probe,
++	.remove = td_remove,
++	.shutdown = td_shutdown,
++	.driver = {
++		.name = "virtual_bus_dev",
++	},
++};
++
++static int __init test_drv_init(void)
++{
++	int ret;
++
++	printk(KERN_INFO "Registering Virtual Bus Test Driver\n");
++
++	/* To do a simple match, leave the id_table as NULL */
++	vdrv.id_table = &vdev_id_table[0];
++
++	printk(KERN_ERR "name of 0 is %s\n", vdrv.id_table->name);
++
++	ret = virtbus_drv_register(&vdrv);
++
++	if (!ret)
++		printk(KERN_INFO "Virtual Driver registered\n");
++	else
++		printk(KERN_INFO "Virtual Driver FAILED!!\n");
++
++	return ret;
++}
++
++static void __exit test_drv_exit(void)
++{
++	printk(KERN_INFO "Exiting Virtual Bus Test Driver");
++
++	virtbus_drv_unregister(&vdrv);
++
++	printk(KERN_INFO "Virtual Bus Test Driver removed\n");
++}
++
++module_init(test_drv_init);
++module_exit(test_drv_exit);
+-- 
+2.23.0
+
