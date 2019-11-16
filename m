@@ -2,89 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36302FF1B5
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 Nov 2019 17:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A680FF5B9
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 Nov 2019 22:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730301AbfKPQOB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 16 Nov 2019 11:14:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54730 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728458AbfKPPry (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 16 Nov 2019 10:47:54 -0500
-Received: from sasha-vm.mshome.net (unknown [50.234.116.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C2652086A;
-        Sat, 16 Nov 2019 15:47:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573919274;
-        bh=lk+Xh0MaiD1FoRGNeq29i40Di3Mj0VgeUVYmCBBoJno=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ygkS7N6wjRqLBg1qvRb0YJ9C0VtBqo/ewZavPGUdPnleUCANYrJRVQ2/aFrA/F4LJ
-         ibpRvoMnZNBPTKcVdKWap1i8d8u86uermwstMP3lYGWqTFc78tm9/eN/9GcZZJcjqG
-         Depv/gkmwN4TmOM3KJBDJTWDkYd+8zb6SYofi3YA=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Devesh Sharma <devesh.sharma@broadcom.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 022/150] RDMA/bnxt_re: Fix qp async event reporting
-Date:   Sat, 16 Nov 2019 10:45:20 -0500
-Message-Id: <20191116154729.9573-22-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191116154729.9573-1-sashal@kernel.org>
-References: <20191116154729.9573-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1727505AbfKPVK7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 16 Nov 2019 16:10:59 -0500
+Received: from shards.monkeyblade.net ([23.128.96.9]:53888 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727485AbfKPVK7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 16 Nov 2019 16:10:59 -0500
+Received: from localhost (unknown [IPv6:2601:601:9f00:1e2::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 8FE22151A2092;
+        Sat, 16 Nov 2019 13:10:58 -0800 (PST)
+Date:   Sat, 16 Nov 2019 13:10:58 -0800 (PST)
+Message-Id: <20191116.131058.1856199123293908506.davem@davemloft.net>
+To:     lrizzo@google.com
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tariqt@mellanox.com
+Subject: Re: [PATCH] net/mlx4_en: fix mlx4 ethtool -N insertion
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20191115201225.92888-1-lrizzo@google.com>
+References: <20191115201225.92888-1-lrizzo@google.com>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sat, 16 Nov 2019 13:10:58 -0800 (PST)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Devesh Sharma <devesh.sharma@broadcom.com>
+From: Luigi Rizzo <lrizzo@google.com>
+Date: Fri, 15 Nov 2019 12:12:25 -0800
 
-[ Upstream commit 4c01f2e3a906a0d2d798be5751c331cf501bc129 ]
+> ethtool expects ETHTOOL_GRXCLSRLALL to set ethtool_rxnfc->data with the
+> total number of entries in the rx classifier table.  Surprisingly, mlx4
+> is missing this part (in principle ethtool could still move forward and
+> try the insert).
+> 
+> Tested: compiled and run command:
+> 	phh13:~# ethtool -N eth1 flow-type udp4  queue 4
+> 	Added rule with ID 255
+> 
+> Signed-off-by: Luigi Rizzo <lrizzo@google.com>
+> Change-Id: I18a72f08dfcfb6b9f6aa80fbc12d58553e1fda76
 
-Reports affiliated async event on the qp-async event channel instead of
-global event channel.
+Luigi, _always_ CC: the appropriate maintainer when making changes to the
+kernel, as per the top-level MAINTAINERS file.
 
-Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/hw/bnxt_re/main.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index bf811b23bc953..7d00b6a53ed8c 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -782,12 +782,17 @@ static void bnxt_re_dispatch_event(struct ib_device *ibdev, struct ib_qp *qp,
- 	struct ib_event ib_event;
- 
- 	ib_event.device = ibdev;
--	if (qp)
-+	if (qp) {
- 		ib_event.element.qp = qp;
--	else
-+		ib_event.event = event;
-+		if (qp->event_handler)
-+			qp->event_handler(&ib_event, qp->qp_context);
-+
-+	} else {
- 		ib_event.element.port_num = port_num;
--	ib_event.event = event;
--	ib_dispatch_event(&ib_event);
-+		ib_event.event = event;
-+		ib_dispatch_event(&ib_event);
-+	}
- }
- 
- #define HWRM_QUEUE_PRI2COS_QCFG_INPUT_FLAGS_IVLAN      0x02
--- 
-2.20.1
-
+Tariq et al., please review.
