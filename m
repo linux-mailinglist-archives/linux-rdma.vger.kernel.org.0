@@ -2,75 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 965ABFFA51
-	for <lists+linux-rdma@lfdr.de>; Sun, 17 Nov 2019 15:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D931FFA57
+	for <lists+linux-rdma@lfdr.de>; Sun, 17 Nov 2019 15:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbfKQOj0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 17 Nov 2019 09:39:26 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:39816 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726076AbfKQOj0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 17 Nov 2019 09:39:26 -0500
-Received: by mail-qv1-f67.google.com with SMTP id v16so5511099qvq.6
-        for <linux-rdma@vger.kernel.org>; Sun, 17 Nov 2019 06:39:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Cq5Ov1YK9vLmOZr3fVeR+/6ChvhhepiVxMeRQ1P/Qx4=;
-        b=HynsQ1Gj4YX9qXLHkLUP1HZBgGgHX8LscoCbzVWEMdjnO6VubPie/ATcjQm0O/TY5X
-         JzOYrgvQSNvMmDyUnOfaWCLk/w0xrNm2p9kzDsZ3lQpiG4wGigdjR0RoQ1L2DOGqNcOu
-         WpsHRW3dKj5p6QHvTcXb/LRHYiCMJ2COC2E9d95bQplQbyZeP3y9KRI8SXmApBf4Rhvr
-         XVRFNC8roaPibMEZ/+8uScjs/PKeJX+WX+DCWoqfrTRTTSgw6vHkhX474owKD5blTJS9
-         p6Kt1DN4uDrIo+7H/e0zlRvhkC71ALdWp/vuUEzOQbAgdgZHNzJQfmzH/e4YEG3tkaqi
-         ef5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Cq5Ov1YK9vLmOZr3fVeR+/6ChvhhepiVxMeRQ1P/Qx4=;
-        b=kkEAVZCnw8sQKTJ3iKvWYheYEFd7ZkfR0T5KInaMrdpEJi4eI4LK2yY1EbjG0IZ2Et
-         gnqGpB2bj0mYgD8Y5A7R58mLVPdnLG1nMAoEHG8CdjhVJuk6oHT9QudLv7Dbkm6CTIsQ
-         GeaM7ImAtPPUuGviIoyM15s7YyZrDVXkLzHCIA8a9wr25h+5xnHsnMThyIE21KJFn7sm
-         3qE9puKVYBVFXg2zqcZliwFXKNUyGeS8w0+N1P8Vt+VV6XwtofhYQV7vg1m+3PXZwV/n
-         dDJLMaAeskJs1/CzJyB5Vu95OofmdnrrL6eCV30jfHiSrQPhySbLtedn9hLxlHGaKEZq
-         U4HA==
-X-Gm-Message-State: APjAAAWPpNu5xKxJhpCZ9pk1FG5hquvdsBHJ3vp/Qn92kOIHkSKNhRB/
-        t62Evdg75zqICunwgSMirdKxH80GYIQ=
-X-Google-Smtp-Source: APXvYqy33BiJZvqVl/YsPkjxQZ3W9X8UygwmkdouxuAEZRcRA30MukHeNKrxySV6gsIEj72Ao7d4iQ==
-X-Received: by 2002:a0c:9956:: with SMTP id i22mr22121740qvd.215.1574001565161;
-        Sun, 17 Nov 2019 06:39:25 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id q204sm7373013qke.39.2019.11.17.06.39.24
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 17 Nov 2019 06:39:24 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iWLhz-0000xM-VL; Sun, 17 Nov 2019 10:39:23 -0400
-Date:   Sun, 17 Nov 2019 10:39:23 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        linux-rdma@vger.kernel.org
-Subject: Re: Problem in for-next commit 6ffedfe3ae38 ("IB/umem: remove the
- dmasync argument to ib_umem_get")
-Message-ID: <20191117143923.GA2149@ziepe.ca>
-References: <1fda84d9-a4b7-4d3f-fec2-82344e1cb220@amazon.com>
+        id S1726096AbfKQOq6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 17 Nov 2019 09:46:58 -0500
+Received: from mail-eopbgr70057.outbound.protection.outlook.com ([40.107.7.57]:53056
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726076AbfKQOq6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 17 Nov 2019 09:46:58 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dDhXpoJjWl823hncD0Jd+4Jg/Lqwh0StzYFtdOGjSPXmJOqToXWynNb+PJjGigupbqwG9MX2AmW8HbSczVVRa+ujR4rm+04XKlnWPLbSxG1pwscH/Fe38eojFxF3Be5E9uO/MOYUI+XKlgBHBKFKPQKgijEiESs3eWBvzQ/kcHJIeZwziljraHTAfP5XyH2Gm/jKQbOPrP5vWmTkViBBsBJIpYqH4pWJMeO+puKxyIei0ZQiQjJar/oWWnPOCO+laOSZfddpjVQTsij0yoMtWXBW6vXn+VlFSPYrBNjMGCgzE2EXpgcmQyNAbtxx/4JG9zRQaKehVJn8Z4nLFF5F/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EE71lzoqzMyXH6VgBWRWPWryiSV+F3JaTieuM6tVfJE=;
+ b=RVhd7tQI/3RLT6gzZcRcV2CcBKj0j1YTF/QVkXaWjn7IuEqMLkJ9oUxnpIVLquFv6i/n6S95gBihwZRmVfR/p7nGfYvlvYnicx0ZYqTaC47xTjOOKmMbQKZhjIWUJA7CSdGLHdfFRwxugtY8BK0tBCa8MDsQmFWTG84lG0CeZVBpKM+ngHykpcEyiA+gYOAr3JvSixWHZAUF8tFEmP3qT/hRaIQKpPAEsJEme44MWrKN7TcV7pH3qsWoimtuD32NOY2YokQE9N+EwS+TzptfKvE0pBF5I8IrD29BgeokVSNgNk2EPOzAYJQPqP0uW1YvEMp5Y3Bv0c1AJ1ezN/hxQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EE71lzoqzMyXH6VgBWRWPWryiSV+F3JaTieuM6tVfJE=;
+ b=CRlv6pSe5BpokpNiCHDYLjEyoV8DFZUuDHs9FM/HexmUC8moXJGEHBZZfPb/Im5Mtp81fRMjh6FKFgJFV+xVSsrIyf6kzUvYLZtiyzB47+IrtfuIf/NXQWGyKtZZbiRjyYMMR0I77n4ozaR4YDeWRu1BBWdJ+06yN8obKSKJ4Bg=
+Received: from DBBPR05MB6283.eurprd05.prod.outlook.com (20.179.43.208) by
+ DBBPR05MB6329.eurprd05.prod.outlook.com (20.179.41.81) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2451.28; Sun, 17 Nov 2019 14:46:51 +0000
+Received: from DBBPR05MB6283.eurprd05.prod.outlook.com
+ ([fe80::8032:b650:9659:1c3a]) by DBBPR05MB6283.eurprd05.prod.outlook.com
+ ([fe80::8032:b650:9659:1c3a%7]) with mapi id 15.20.2451.029; Sun, 17 Nov 2019
+ 14:46:51 +0000
+From:   Tariq Toukan <tariqt@mellanox.com>
+To:     David Miller <davem@davemloft.net>,
+        "lrizzo@google.com" <lrizzo@google.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Tariq Toukan <tariqt@mellanox.com>
+Subject: Re: [PATCH] net/mlx4_en: fix mlx4 ethtool -N insertion
+Thread-Topic: [PATCH] net/mlx4_en: fix mlx4 ethtool -N insertion
+Thread-Index: AQHVm/EMSXbZQwpspUCUKjixDQl+CaeOTMwAgAEm8oA=
+Date:   Sun, 17 Nov 2019 14:46:50 +0000
+Message-ID: <59ebfae8-ac93-75a1-7a60-2bb3820a9a79@mellanox.com>
+References: <20191115201225.92888-1-lrizzo@google.com>
+ <20191116.131058.1856199123293908506.davem@davemloft.net>
+In-Reply-To: <20191116.131058.1856199123293908506.davem@davemloft.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM0PR05CA0044.eurprd05.prod.outlook.com
+ (2603:10a6:208:be::21) To DBBPR05MB6283.eurprd05.prod.outlook.com
+ (2603:10a6:10:cf::16)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=tariqt@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [193.47.165.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 59a30144-7fc4-49d7-4f94-08d76b6cfaf6
+x-ms-traffictypediagnostic: DBBPR05MB6329:|DBBPR05MB6329:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DBBPR05MB63297890DFAF3823BB75B079AE720@DBBPR05MB6329.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 02243C58C6
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(366004)(136003)(39860400002)(376002)(396003)(189003)(199004)(81166006)(64756008)(102836004)(31686004)(6246003)(6506007)(386003)(53546011)(25786009)(6116002)(81156014)(107886003)(4326008)(71190400001)(71200400001)(52116002)(3846002)(478600001)(8936002)(8676002)(4744005)(186003)(110136005)(99286004)(5660300002)(476003)(2616005)(66066001)(54906003)(486006)(2906002)(14454004)(36756003)(11346002)(86362001)(2501003)(6512007)(446003)(66476007)(66556008)(7736002)(305945005)(6436002)(26005)(229853002)(76176011)(66946007)(316002)(66446008)(6486002)(256004)(31696002);DIR:OUT;SFP:1101;SCL:1;SRVR:DBBPR05MB6329;H:DBBPR05MB6283.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3ZdbnTcxux7tOm/kDH+RVmPixafWDf4wQCbMxhpKpKx+lhDABCuU3Kq9zUXKHmmAgh1Bj0GeLUuql8cw40J54wg3jeARdkKl5M/WQDPpUx+/Au48LVok49QyARG7y6NNu7b7HxAYi0Vzs6IPq5aQebovCNvzk9n4wiCEdHzsrOFDHA8eTqkAZUqo651pfTNOD70XdZ8cuteDjm6uI9ZydLUo/Ud4KDDVI+WQXCJC68yjBdP3tDMqfhSg/m/EURKiOt/FWC+POIgVpfenzjZK7g7m8fHoihLh7KxgsdaoI+BeKIzVhhjtReUXHhy4wkBcWvOQA5brtq7O0gWG3p47yphjW7vKdiGhXRnFG2qgN/lZ7O+hLQgjkswZRu7VS4g7BGyMuOr3ja6vZYaQ9YSzuSgiEqFQ3GtofqvfFjpeRHyFbFefX2rGiubpiRQ6w8a9
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <282A150AF2EFA74EAF7BDCC7A301575A@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1fda84d9-a4b7-4d3f-fec2-82344e1cb220@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59a30144-7fc4-49d7-4f94-08d76b6cfaf6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2019 14:46:50.9999
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nd7oNg8/3e25tICBJ+FQP4TNHgyIX7YtVV6BHBXMheny9M9s6qEOi6qwgij3ZFEu6+P9zhChKHAvhazTc6KkdA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR05MB6329
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Nov 17, 2019 at 04:30:30PM +0200, Gal Pressman wrote:
-> FYI, looks like something got messed up in commit 6ffedfe3ae38 ("IB/umem: remove
-> the dmasync argument to ib_umem_get"), it brings back the entire deleted
-> iwch_provider.c file.
-
-Ah, thanks git am flubbed, I fixed it up.
-
-Jason
+DQoNCk9uIDExLzE2LzIwMTkgMTE6MTAgUE0sIERhdmlkIE1pbGxlciB3cm90ZToNCj4gRnJvbTog
+THVpZ2kgUml6em8gPGxyaXp6b0Bnb29nbGUuY29tPg0KPiBEYXRlOiBGcmksIDE1IE5vdiAyMDE5
+IDEyOjEyOjI1IC0wODAwDQo+IA0KPj4gZXRodG9vbCBleHBlY3RzIEVUSFRPT0xfR1JYQ0xTUkxB
+TEwgdG8gc2V0IGV0aHRvb2xfcnhuZmMtPmRhdGEgd2l0aCB0aGUNCj4+IHRvdGFsIG51bWJlciBv
+ZiBlbnRyaWVzIGluIHRoZSByeCBjbGFzc2lmaWVyIHRhYmxlLiAgU3VycHJpc2luZ2x5LCBtbHg0
+DQo+PiBpcyBtaXNzaW5nIHRoaXMgcGFydCAoaW4gcHJpbmNpcGxlIGV0aHRvb2wgY291bGQgc3Rp
+bGwgbW92ZSBmb3J3YXJkIGFuZA0KPj4gdHJ5IHRoZSBpbnNlcnQpLg0KPj4NCj4+IFRlc3RlZDog
+Y29tcGlsZWQgYW5kIHJ1biBjb21tYW5kOg0KPj4gCXBoaDEzOn4jIGV0aHRvb2wgLU4gZXRoMSBm
+bG93LXR5cGUgdWRwNCAgcXVldWUgNA0KPj4gCUFkZGVkIHJ1bGUgd2l0aCBJRCAyNTUNCj4+DQo+
+PiBTaWduZWQtb2ZmLWJ5OiBMdWlnaSBSaXp6byA8bHJpenpvQGdvb2dsZS5jb20+DQo+PiBDaGFu
+Z2UtSWQ6IEkxOGE3MmYwOGRmY2ZiNmI5ZjZhYTgwZmJjMTJkNTg1NTNlMWZkYTc2DQo+IA0KPiBM
+dWlnaSwgX2Fsd2F5c18gQ0M6IHRoZSBhcHByb3ByaWF0ZSBtYWludGFpbmVyIHdoZW4gbWFraW5n
+IGNoYW5nZXMgdG8gdGhlDQo+IGtlcm5lbCwgYXMgcGVyIHRoZSB0b3AtbGV2ZWwgTUFJTlRBSU5F
+UlMgZmlsZS4NCj4gDQo+IFRhcmlxIGV0IGFsLiwgcGxlYXNlIHJldmlldy4NCj4gDQoNClJldmll
+d2VkLWJ5OiBUYXJpcSBUb3VrYW4gPHRhcmlxdEBtZWxsYW5veC5jb20+DQoNClRoYW5rcyBmb3Ig
+eW91ciBwYXRjaC4NCg0KVGFyaXENCg==
