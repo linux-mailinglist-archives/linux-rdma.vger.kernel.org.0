@@ -2,197 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B2353FFD20
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2019 03:38:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EEBCFFDAB
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2019 05:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbfKRCi0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 17 Nov 2019 21:38:26 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:60772 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726201AbfKRCi0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 17 Nov 2019 21:38:26 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 992779BBF385BB7BED9F;
-        Mon, 18 Nov 2019 10:38:24 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.439.0; Mon, 18 Nov 2019 10:38:14 +0800
-From:   Weihang Li <liweihang@hisilicon.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH for-next 4/4] RDMA/hns: Delete unnecessary callback functions for cq
-Date:   Mon, 18 Nov 2019 10:34:53 +0800
-Message-ID: <1574044493-46984-5-git-send-email-liweihang@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1574044493-46984-1-git-send-email-liweihang@hisilicon.com>
-References: <1574044493-46984-1-git-send-email-liweihang@hisilicon.com>
+        id S1726328AbfKRE7i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 17 Nov 2019 23:59:38 -0500
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:42281 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726314AbfKRE7i (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 17 Nov 2019 23:59:38 -0500
+Received: by mail-pl1-f196.google.com with SMTP id j12so9035482plt.9
+        for <linux-rdma@vger.kernel.org>; Sun, 17 Nov 2019 20:59:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ryussi-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=7CVKJX4iKY/TyW+AjcBFkCW+JCWb9TO+uAsM/3K11s0=;
+        b=XzKqzgTFDiAjJsqjbko2C8EtVXoL9hlbcC4IzsRAXtyiFzdKvvRHI2BryEjrm4b2YO
+         /S+0+QIdyQ4AkqXsugG4wCIAVVaoX1UtS2ruDuJjC+7mft1sj+0B4WMagWSf6xMmrdOJ
+         dXLP81WTShGVAoRsUGhNTR6cPAqgeMEvnQbezcRZMKlgDYkrQFcgzV1w5E7ELsKwGZX2
+         2JQQEDFHf0UD6hQzTr3I4I0ctiiG2uZ2nJM8INyIniNUREPhNpul42Ks2MktoH/xUw6M
+         0irvj2TOi2DtKXHzHE67AgvBVrlxM/ZuUAXHikYzmObTovfxkEevexHk6Mo3BdNF26Rt
+         vpBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=7CVKJX4iKY/TyW+AjcBFkCW+JCWb9TO+uAsM/3K11s0=;
+        b=HYMvZ2XOywArjgUsrlk28c8HknffTtUkhX3bQo50sJqyIvPZTPk0lv8PWPEB1dIf65
+         KKzUAB0QLMiXdbu3ESVMtlIUSn2jqsw1kacxvYTjJN8+/RczlWzhaVL3Q/HEixi7UeFi
+         RHcafYCslNV4PNVnRQHOMJOpGTzRCxk3njK0Bx5q0uksR3zRDuWdEjXzBbDVhFbz3vrc
+         pigq7zZRKXW0XwAZRXg28AC4sW99RQ5FOdVYqUC+sf+uLxCx71usK9rCiZZ0LkUdRrFR
+         eNJSP+PYz9TezZl8wJVMmUA9DsFTncBWotdRDWsxfGhnUjZIKo2EiUHqKprs2JwN/6d2
+         aoig==
+X-Gm-Message-State: APjAAAXeLEqCWC/wmqyo6Sup7AITf9E01uicz1ZumrE9nEKV4FSYGdYh
+        o6ncyJd9//NKbVm5/UXhXvKCd5OE7jQ=
+X-Google-Smtp-Source: APXvYqyxO645VOu0HSClxidfDJSaXFFaUcHtuyt/g9x68hTallClJdTcATiab5fRVaiV+iRc9HfDJw==
+X-Received: by 2002:a17:90a:a58b:: with SMTP id b11mr37417244pjq.46.1574053176883;
+        Sun, 17 Nov 2019 20:59:36 -0800 (PST)
+Received: from [172.31.254.84] ([182.73.204.74])
+        by smtp.gmail.com with ESMTPSA id p3sm20238000pfb.163.2019.11.17.20.59.34
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 Nov 2019 20:59:36 -0800 (PST)
+Subject: Re: [question] ibv_reg_mr() returning EACCESS
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org
+References: <141f4c07-b7f1-1355-7ff7-d62605ee63b5@ryussi.com>
+ <20191115141210.GC4055@ziepe.ca>
+From:   Vinit Agnihotri <vinita@ryussi.com>
+Message-ID: <cc6543bd-0c8d-40e3-f384-68a847b873b3@ryussi.com>
+Date:   Mon, 18 Nov 2019 10:29:33 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20191115141210.GC4055@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yixian Liu <liuyixian@huawei.com>
+Thank you Jason.
 
-Currently, when cq event occurred, we first call our own callback
-functions in the event process function, then call ib callback
-functions. Actually, we can directly call ib callback functions.
+I did went through archives for the same.
 
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-Signed-off-by: Weihang Li <liweihang@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_cq.c     | 91 ++++++++++++-----------------
- drivers/infiniband/hw/hns/hns_roce_device.h |  3 -
- 2 files changed, 36 insertions(+), 58 deletions(-)
+Can you please provide pointer towards documentation or
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index 9174d33..af1d882 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -39,40 +39,6 @@
- #include <rdma/hns-abi.h>
- #include "hns_roce_common.h"
- 
--static void hns_roce_ib_cq_comp(struct hns_roce_cq *hr_cq)
--{
--	struct ib_cq *ibcq = &hr_cq->ib_cq;
--
--	ibcq->comp_handler(ibcq, ibcq->cq_context);
--}
--
--static void hns_roce_ib_cq_event(struct hns_roce_cq *hr_cq,
--				 enum hns_roce_event event_type)
--{
--	struct hns_roce_dev *hr_dev;
--	struct ib_event event;
--	struct ib_cq *ibcq;
--
--	ibcq = &hr_cq->ib_cq;
--	hr_dev = to_hr_dev(ibcq->device);
--
--	if (event_type != HNS_ROCE_EVENT_TYPE_CQ_ID_INVALID &&
--	    event_type != HNS_ROCE_EVENT_TYPE_CQ_ACCESS_ERROR &&
--	    event_type != HNS_ROCE_EVENT_TYPE_CQ_OVERFLOW) {
--		dev_err(hr_dev->dev,
--			"hns_roce_ib: Unexpected event type 0x%x on CQ %06lx\n",
--			event_type, hr_cq->cqn);
--		return;
--	}
--
--	if (ibcq->event_handler) {
--		event.device = ibcq->device;
--		event.event = IB_EVENT_CQ_ERR;
--		event.element.cq = ibcq;
--		ibcq->event_handler(&event, ibcq->cq_context);
--	}
--}
--
- static int hns_roce_alloc_cqc(struct hns_roce_dev *hr_dev,
- 			      struct hns_roce_cq *hr_cq)
- {
-@@ -434,10 +400,6 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
- 	if (!udata && hr_cq->tptr_addr)
- 		*hr_cq->tptr_addr = 0;
- 
--	/* Get created cq handler and carry out event */
--	hr_cq->comp = hns_roce_ib_cq_comp;
--	hr_cq->event = hns_roce_ib_cq_event;
--
- 	if (udata) {
- 		resp.cqn = hr_cq->cqn;
- 		ret = ib_copy_to_udata(udata, &resp, sizeof(resp));
-@@ -491,38 +453,57 @@ void hns_roce_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
- 
- void hns_roce_cq_completion(struct hns_roce_dev *hr_dev, u32 cqn)
- {
--	struct device *dev = hr_dev->dev;
--	struct hns_roce_cq *cq;
-+	struct hns_roce_cq *hr_cq;
-+	struct ib_cq *ibcq;
- 
--	cq = xa_load(&hr_dev->cq_table.array, cqn & (hr_dev->caps.num_cqs - 1));
--	if (!cq) {
--		dev_warn(dev, "Completion event for bogus CQ 0x%08x\n", cqn);
-+	hr_cq = xa_load(&hr_dev->cq_table.array,
-+			cqn & (hr_dev->caps.num_cqs - 1));
-+	if (!hr_cq) {
-+		dev_warn(hr_dev->dev, "Completion event for bogus CQ 0x%06x\n",
-+			 cqn);
- 		return;
- 	}
- 
--	++cq->arm_sn;
--	cq->comp(cq);
-+	++hr_cq->arm_sn;
-+	ibcq = &hr_cq->ib_cq;
-+	if (ibcq->comp_handler)
-+		ibcq->comp_handler(ibcq, ibcq->cq_context);
- }
- 
- void hns_roce_cq_event(struct hns_roce_dev *hr_dev, u32 cqn, int event_type)
- {
--	struct hns_roce_cq_table *cq_table = &hr_dev->cq_table;
- 	struct device *dev = hr_dev->dev;
--	struct hns_roce_cq *cq;
-+	struct hns_roce_cq *hr_cq;
-+	struct ib_event event;
-+	struct ib_cq *ibcq;
- 
--	cq = xa_load(&cq_table->array, cqn & (hr_dev->caps.num_cqs - 1));
--	if (cq)
--		atomic_inc(&cq->refcount);
-+	hr_cq = xa_load(&hr_dev->cq_table.array,
-+			cqn & (hr_dev->caps.num_cqs - 1));
-+	if (!hr_cq) {
-+		dev_warn(dev, "Async event for bogus CQ 0x%06x\n", cqn);
-+		return;
-+	}
- 
--	if (!cq) {
--		dev_warn(dev, "Async event for bogus CQ %08x\n", cqn);
-+	if (event_type != HNS_ROCE_EVENT_TYPE_CQ_ID_INVALID &&
-+	    event_type != HNS_ROCE_EVENT_TYPE_CQ_ACCESS_ERROR &&
-+	    event_type != HNS_ROCE_EVENT_TYPE_CQ_OVERFLOW) {
-+		dev_err(dev, "Unexpected event type 0x%x on CQ 0x%06x\n",
-+			event_type, cqn);
- 		return;
- 	}
- 
--	cq->event(cq, (enum hns_roce_event)event_type);
-+	atomic_inc(&hr_cq->refcount);
- 
--	if (atomic_dec_and_test(&cq->refcount))
--		complete(&cq->free);
-+	ibcq = &hr_cq->ib_cq;
-+	if (ibcq->event_handler) {
-+		event.device = ibcq->device;
-+		event.element.cq = ibcq;
-+		event.event = IB_EVENT_CQ_ERR;
-+		ibcq->event_handler(&event, ibcq->cq_context);
-+	}
-+
-+	if (atomic_dec_and_test(&hr_cq->refcount))
-+		complete(&hr_cq->free);
- }
- 
- int hns_roce_init_cq_table(struct hns_roce_dev *hr_dev)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 152701e..5617434 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -488,9 +488,6 @@ struct hns_roce_cq {
- 	u8				db_en;
- 	spinlock_t			lock;
- 	struct ib_umem			*umem;
--	void (*comp)(struct hns_roce_cq *cq);
--	void (*event)(struct hns_roce_cq *cq, enum hns_roce_event event_type);
--
- 	u32				cq_depth;
- 	u32				cons_index;
- 	u32				*set_ci_db;
--- 
-2.8.1
+sample userspace usage for the same? Or which kernel version to be 
+looked into?
 
+
+Thanks & Regards,
+
+Vinit.
+
+On 15/11/19 7:42 PM, Jason Gunthorpe wrote:
+> On Fri, Nov 15, 2019 at 09:27:40AM +0530, Vinit Agnihotri wrote:
+>> Hi,
+>>
+>> I am trying to use setfsgid()/setfssid() calls to ensure proper access check
+>> for linux users.
+>>
+>> However if user is non-root then ibv_reg_mr() returns EACCESS. While I am
+>> sure I am calling ibv_reg_mr()
+>>
+>> as root user, not sure why it still returns EACCESS.
+>>
+>> While going through libibverbs sources I realize EACCESS might be returned
+>> by this call:
+>>
+>> if (write(pd->context->cmd_fd, cmd, cmd_size) != cmd_size)
+>>          return errno;
+>>
+>> Can anyone provide any insight into this behavior? Does calling these
+>> systems calls in threads can affect
+>>
+>> entire process? I checked /dev/infiniband/* has appropriate privileges.
+> This is a security limitation, if you want do this flow you need a new
+> enough kernel and rdma-core to support the ioctl() scheme for calling
+> verbs
+>
+> Jason
