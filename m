@@ -2,126 +2,180 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACF81006B5
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2019 14:43:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9F01006D4
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2019 14:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbfKRNnP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Nov 2019 08:43:15 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:46966 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726596AbfKRNnP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Nov 2019 08:43:15 -0500
-Received: by mail-qk1-f194.google.com with SMTP id h15so14358557qka.13
-        for <linux-rdma@vger.kernel.org>; Mon, 18 Nov 2019 05:43:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3g8tS5Jc2G2PAFMuiWbMklSL+98VUQZEKpML5HbJOt0=;
-        b=NXCHZheT1zj+S8y136bZxaXya2gC+7Y1VXgLtU8CbobwXrMD4eNRz/BLb4VdsWjYoc
-         aICvxOdMozmvtIUpWeVaKa3lWFPxOokZBBRYyb2Qkqih4XEMni+2OYnLln2QTjHBf5Xr
-         s12myINJPV2Ubo9EygBgLuXew0Jnt17y+zFMLMmDjm2GqM8sgJk8JboIOrNkFhmYkxls
-         THUd0FxGxyjChjWcxzfBSWo4rpMUinDMN4KJ4u96xlhRiYLOTG3kDH6aj2TshBngRXqS
-         1NXyLMNwn+c/M77qiRvFxlWubj5vbnywHelh028vNiXD1W0DzXUFErx4Q+qG02xwfO+U
-         pisw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3g8tS5Jc2G2PAFMuiWbMklSL+98VUQZEKpML5HbJOt0=;
-        b=GRAZi3YB2jSfmopkcry8OaP71TWQS4kieRI+zikUk6vwekIx2u9spWE3edLstfLPXU
-         buqJ0w0sFnjFmcwZRr2F4H9Imp5Kv1n9xegWc2/TC832nyxQOPaEMj48KbWLXRfuZvSb
-         Wv5/Uc826Zp/OlbToUJxwcrgi3rEOPjcLuDFCYbTDf/lMvhaJMg7PvPsruftfU/uDgGb
-         /Zx81+S6hYHswBXDtljUZ76I4y93jZFGEiw+/nrI0dAGXPeKGe9DALlOdyiy44V4h4oP
-         n4WwGE2oWVTLc78zne5rmvv/MPW9lejqbdTlfel6NWLQI0G9feUPqbzGfv99KfHXb7v2
-         HCVw==
-X-Gm-Message-State: APjAAAWFc4s/CvQN0h9SDxRhyB61gaFxo7qKM08EVAs+fOTcR7vPPziV
-        maktTvHH+ygcN6KlN9ZNR4dIDA==
-X-Google-Smtp-Source: APXvYqwx5mgCvR3FFWKMWbjy8UKWVDzKtsS4kMiS9udEEWoXFHywtrl3hX03/TkeGYkJD7sn9BYLOQ==
-X-Received: by 2002:a05:620a:242:: with SMTP id q2mr24540535qkn.87.1574084594119;
-        Mon, 18 Nov 2019 05:43:14 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id m13sm8515240qka.109.2019.11.18.05.43.13
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 18 Nov 2019 05:43:13 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iWhJA-0006XJ-I0; Mon, 18 Nov 2019 09:43:12 -0400
-Date:   Mon, 18 Nov 2019 09:43:12 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 01/43] RDMA/cm: Add naive SET/GET
- implementations to hide CM wire format
-Message-ID: <20191118134312.GB2149@ziepe.ca>
-References: <20191027070621.11711-1-leon@kernel.org>
- <20191027070621.11711-2-leon@kernel.org>
- <20191115204558.GA22185@ziepe.ca>
- <20191118130458.GD52766@unreal>
+        id S1726654AbfKRNwt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Nov 2019 08:52:49 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:58432 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726703AbfKRNwt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 18 Nov 2019 08:52:49 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id C950D3C28F15D918035F;
+        Mon, 18 Nov 2019 21:52:46 +0800 (CST)
+Received: from [127.0.0.1] (10.74.223.196) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.439.0; Mon, 18 Nov 2019
+ 21:52:40 +0800
+Subject: Re: [PATCH v2 for-next 1/2] RDMA/hns: Add the workqueue framework for
+ flush cqe handler
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <dledford@redhat.com>, <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+References: <1573563124-12579-1-git-send-email-liuyixian@huawei.com>
+ <1573563124-12579-2-git-send-email-liuyixian@huawei.com>
+ <20191115210621.GE4055@ziepe.ca>
+From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
+Message-ID: <523cf93d-a849-ab24-36f0-903fb1afe7ff@huawei.com>
+Date:   Mon, 18 Nov 2019 21:50:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191118130458.GD52766@unreal>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191115210621.GE4055@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.223.196]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 18, 2019 at 03:04:58PM +0200, Leon Romanovsky wrote:
-> On Fri, Nov 15, 2019 at 04:45:58PM -0400, Jason Gunthorpe wrote:
-> > On Sun, Oct 27, 2019 at 09:05:39AM +0200, Leon Romanovsky wrote:
-> >
-> > >  #define IB_CM_CLASS_VERSION	2 /* IB specification 1.2 */
-> > > +#define _CM_SET(p, offset, mask, value)                                        \
-> > > +	({                                                                     \
-> > > +		void *field = (u8 *)p + sizeof(struct ib_mad_hdr) + offset;    \
-> > > +		u8 bytes =                                                     \
-> > > +			DIV_ROUND_UP(__builtin_popcount(mask), BITS_PER_BYTE); \
-> > > +		switch (bytes) {                                               \
-> > > +		case 1: {                                                      \
-> > > +			*(u8 *)field &= ~mask;                                 \
-> > > +			*(u8 *)field |= FIELD_PREP(mask, value);               \
-> > > +		} break;                                                       \
-> > > +		case 2: {                                                      \
-> > > +			u16 val = ntohs(*(__be16 *)field) & ~mask;             \
-> > > +			val |= FIELD_PREP(mask, value);                        \
-> > > +			*(__be16 *)field = htons(val);                         \
-> > > +		} break;                                                       \
-> > > +		case 3: {                                                      \
-> > > +			u32 val = ntohl(*(__be32 *)field) & ~(mask << 8);      \
-> > > +			val |= FIELD_PREP(mask, value) << 8;                   \
-> > > +			*(__be32 *)field = htonl(val);                         \
-> >
-> > This doesn't work for flow label which has a 20 byte field, the <<8 is
-> > just a hack to fix the 24 byte case.
-> >
-> > This is also some typo's:
-> >
-> > > + #define CM_REQ_LOCAL_EECN_OFFSET 36
-> > > + #define CM_REQ_LOCAL_EECN_MASK GENMASK(24, 0)
-> >
-> > Should be 23, 0
-> >
-> > > + #define CM_REQ_PRIMARY_PACKET_RATE_OFFSET 91
-> > > + #define CM_REQ_PRIMARY_PACKET_RATE_MASK GENMASK(3, 2)
-> >
-> > Packet rate is a 6 bit field, not a 2 bit field
-> >
-> > I only looked at REQ. I assume all the others have a similar error
-> > rate.
-> >
-> > Overall, I don't like this approach. The macros are messy/buggy and
-> > there isn't a clear mapping of the data in the tables to the C code.
-> >
-> > How about this instead:
+
+
+On 2019/11/16 5:06, Jason Gunthorpe wrote:
+> On Tue, Nov 12, 2019 at 08:52:03PM +0800, Yixian Liu wrote:
+>> HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
+>> outstanding WQEs if QP state gets into errored mode for some reason.
+>> To overcome this hardware problem and as a workaround, when QP is
+>> detected to be in errored state during various legs like post send,
+>> post receive etc [1], flush needs to be performed from the driver.
+>>
+>> The earlier patch[1] sent to solve the hardware limitation explained
+>> in the cover-letter had a bug in the software flushing leg. It
+>> acquired mutex while modifying QP state to errored state and while
+>> conveying it to the hardware using the mailbox. This caused leg to
+>> sleep while holding spin-lock and caused crash.
+>>
+>> Suggested Solution:
+>> we have proposed to defer the flushing of the QP in the Errored state
+>> using the workqueue to get around with the limitation of our hardware.
+>>
+>> This patch adds the framework of the workqueue and the flush handler
+>> function.
+>>
+>> [1] https://patchwork.kernel.org/patch/10534271/
+>>
+>> Signed-off-by: Yixian Liu <liuyixian@huawei.com>
+>> Reviewed-by: Salil Mehta <salil.mehta@huawei.com>
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  3 +++
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  4 ++--
+>>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 33 +++++++++++++++++++++++++++++
+>>  3 files changed, 38 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+>> index a1b712e..42d8a5a 100644
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+>> @@ -906,6 +906,7 @@ struct hns_roce_caps {
+>>  struct hns_roce_work {
+>>  	struct hns_roce_dev *hr_dev;
+>>  	struct work_struct work;
+>> +	struct hns_roce_qp *hr_qp;
+>>  	u32 qpn;
+>>  	u32 cqn;
+>>  	int event_type;
+>> @@ -1034,6 +1035,7 @@ struct hns_roce_dev {
+>>  	const struct hns_roce_hw *hw;
+>>  	void			*priv;
+>>  	struct workqueue_struct *irq_workq;
+>> +	struct hns_roce_work flush_work;
+>>  	const struct hns_roce_dfx_hw *dfx;
+>>  };
+>>  
+>> @@ -1226,6 +1228,7 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *ib_pd,
+>>  				 struct ib_udata *udata);
+>>  int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+>>  		       int attr_mask, struct ib_udata *udata);
+>> +void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp);
+>>  void *get_recv_wqe(struct hns_roce_qp *hr_qp, int n);
+>>  void *get_send_wqe(struct hns_roce_qp *hr_qp, int n);
+>>  void *get_send_extend_sge(struct hns_roce_qp *hr_qp, int n);
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> index 907c951..ec48e7e 100644
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> @@ -5967,8 +5967,8 @@ static int hns_roce_v2_init_eq_table(struct hns_roce_dev *hr_dev)
+>>  		goto err_request_irq_fail;
+>>  	}
+>>  
+>> -	hr_dev->irq_workq =
+>> -		create_singlethread_workqueue("hns_roce_irq_workqueue");
+>> +	hr_dev->irq_workq = alloc_workqueue("hns_roce_irq_workqueue",
+>> +					    WQ_MEM_RECLAIM, 0);
+>>  	if (!hr_dev->irq_workq) {
+>>  		dev_err(dev, "Create irq workqueue failed!\n");
+>>  		ret = -ENOMEM;
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+>> index 9442f01..0111f2e 100644
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+>> @@ -43,6 +43,39 @@
+>>  
+>>  #define SQP_NUM				(2 * HNS_ROCE_MAX_PORTS)
+>>  
+>> +static void flush_work_handle(struct work_struct *work)
+>> +{
+>> +	struct hns_roce_work *flush_work = container_of(work,
+>> +					struct hns_roce_work, work);
+>> +	struct hns_roce_qp *hr_qp = flush_work->hr_qp;
+>> +	struct device *dev = flush_work->hr_dev->dev;
+>> +	struct ib_qp_attr attr;
+>> +	int attr_mask;
+>> +	int ret;
+>> +
+>> +	attr_mask = IB_QP_STATE;
+>> +	attr.qp_state = IB_QPS_ERR;
+>> +
+>> +	ret = hns_roce_modify_qp(&hr_qp->ibqp, &attr, attr_mask, NULL);
+>> +	if (ret)
+>> +		dev_err(dev, "Modify QP to error state failed(%d) during CQE flush\n",
+>> +			ret);
+>> +
+>> +	if (atomic_dec_and_test(&hr_qp->refcount))
+>> +		complete(&hr_qp->free);
+>> +}
+>> +
+>> +void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+>> +{
+>> +	struct hns_roce_work *flush_work = &hr_dev->flush_work;
+>> +
+>> +	flush_work->hr_dev = hr_dev;
+>> +	flush_work->hr_qp = hr_qp;
+>> +	INIT_WORK(&flush_work->work, flush_work_handle);
+>> +	atomic_inc(&hr_qp->refcount);
+>> +	queue_work(hr_dev->irq_workq, &flush_work->work);
 > 
-> I very liked type safety in your solution, but I think that IBA_FIELD*_LOC()
-> macros add too much magic into such simple thing like spec declarations.
+> It kind of looks like this can be called multiple times? It won't work
+> right unless it is called exactly once
+> 
+> Jason
 
-That 'magic' means we can just copy the spec text directly and don't
-have to reprocess it by hand via different magic, which caused all the
-mistakes above.
+Yes, you are right.
 
-Jason
+So I think the reasonable solution is to allocate it dynamically, and I think
+it is a very very little chance that the allocation will be failed. If this happened,
+I think the application also needs to be over.
+
+So I will fall back to v1 for this part in next version.
+
+	flush_work = kzalloc(sizeof(struct hns_roce_flush_work), GFP_ATOMIC)
+	if (!flush_work)
+		return;
+
+Or, could you give me some advice for it?
+
+Thanks.
+
+> 
+> .
+> 
+
