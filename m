@@ -2,163 +2,195 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A774100228
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2019 11:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 310571004DB
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2019 12:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbfKRKNQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Nov 2019 05:13:16 -0500
-Received: from zg8tmtu5ljy1ljeznc42.icoremail.net ([159.65.134.6]:52175 "HELO
-        zg8tmtu5ljy1ljeznc42.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S1726460AbfKRKNQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 18 Nov 2019 05:13:16 -0500
-Received: from [192.168.43.114] (unknown [223.104.212.185])
-        by mail-app4 (Coremail) with SMTP id cS_KCgBHD4m0btJdNs_eAQ--.54059S3;
-        Mon, 18 Nov 2019 18:13:09 +0800 (CST)
-Subject: Re: [question]Why our soft-RoCE throughput is quite low compared with
- TCP
-To:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
-References: <f97b72b6-4def-2970-c9f6-f11b97d5378e@zju.edu.cn>
- <20191115160707.GG6763@unreal>
- <df9fb9b8-4b1f-2cf7-2498-648627556006@zju.edu.cn>
- <20191118094924.GA52766@unreal>
-From:   wangqi <3100102071@zju.edu.cn>
-Message-ID: <0bb80672-3980-04e7-5cf1-846b517ad53e@zju.edu.cn>
-Date:   Mon, 18 Nov 2019 18:13:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726985AbfKRL6p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Nov 2019 06:58:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36158 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726506AbfKRL6m (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 18 Nov 2019 06:58:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 67C34AE68;
+        Mon, 18 Nov 2019 11:58:37 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 912131E4B0C; Mon, 18 Nov 2019 12:58:29 +0100 (CET)
+Date:   Mon, 18 Nov 2019 12:58:29 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 17/24] mm/gup: track FOLL_PIN pages
+Message-ID: <20191118115829.GJ17319@quack2.suse.cz>
+References: <20191115055340.1825745-1-jhubbard@nvidia.com>
+ <20191115055340.1825745-18-jhubbard@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20191118094924.GA52766@unreal>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: cS_KCgBHD4m0btJdNs_eAQ--.54059S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxCFWxGryxtry8uryxuw4Uurg_yoWrZr15pa
-        yrZF9IkF98GFZ8J392yw18Za4FqrZay39rXw1F9FWkGFs8uryjqrn7trWY9a4DWrn3Cr1Y
-        vr1DZrW7ZF1DZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9Sb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x0
-        82IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXw
-        Av7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0
-        xIA0c2IEe2xFo4CEbIxvr21lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxC20s026x
-        CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
-        JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
-        1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_
-        Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
-        1UYxBIdaVFxhVjvjDU0xZFpf9x07b52-OUUUUU=
-X-CM-SenderInfo: qtrqiiyqsqlio62m3hxhgxhubq/
+In-Reply-To: <20191115055340.1825745-18-jhubbard@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu 14-11-19 21:53:33, John Hubbard wrote:
+> Add tracking of pages that were pinned via FOLL_PIN.
+> 
+> As mentioned in the FOLL_PIN documentation, callers who effectively set
+> FOLL_PIN are required to ultimately free such pages via put_user_page().
+> The effect is similar to FOLL_GET, and may be thought of as "FOLL_GET
+> for DIO and/or RDMA use".
+> 
+> Pages that have been pinned via FOLL_PIN are identifiable via a
+> new function call:
+> 
+>    bool page_dma_pinned(struct page *page);
+> 
+> What to do in response to encountering such a page, is left to later
+> patchsets. There is discussion about this in [1].
+						^^ missing this reference
+in the changelog...
 
-On 2019/11/18 下午5:49, Leon Romanovsky wrote:
-> On Mon, Nov 18, 2019 at 02:38:19PM +0800, wangqi wrote:
->> On 2019/11/16 上午12:07, Leon Romanovsky wrote:
->>
->>> On Fri, Nov 15, 2019 at 09:26:41PM +0800, QWang wrote:
->>>> Dear experts on RDMA,
->>>>       We are sorry to disturb you. Because of a project, we need to
->>>> integrate soft-RoCE in our system. However ,we are very confused by our
->>>> soft-RoCE throughput results, which are quite low compared with TCP
->>>> throughput. The throughput of soft-RoCE in our tests measured by ib_send_bw
->>>> and ib_read_bw is only 2 Gbps (the net link bandwidth is 100 Gbps and the
->>>> two Xeon E5 servers with Mellanox ConnectX-4 cards are connected via
->>>> back-to-back, the OS is ubuntu16.04 with kernel 4.15.0-041500-generic). The
->>>> throughput of hard-RoCE and TCP are normal, which are 100 Gbps and 20 Gbps,
->>>> respectively. But in the figure 6 in the attached paper "A Performance
->>>> Comparison of Container Networking Alternatives", the throughput of
->>>> soft-RoCE can be up to 23 Gbps.  In our tests, we get the open-source
->>>> soft-RoCE from github in https://github.com/linux-rdma. Do you know how can
->>>> we get such high bandwidth? Do we need to configure some OS system settings?
->>>>       We find that in 2017, someone finds the same problem and he posts all
->>>> his detailed results on https://bugzilla.kernel.org/show_bug.cgi?id=190951  
->>>> . But it remains unsolved. His results are nearly the same with our's. For
->>>> simplicity,  we do not post our results in this email. You can get very
->>>> detailed information in the web page listed above.
->>>>       We are very confused by our results. We will very appreciate it if we
->>>> can receive your early reply. Best wishes,
->>>> Wang Qi
->>> Can you please fix your email client?
->>> The email text looks like one big sentence.
->>>
->>> From the perf report attached to this bugzilla, looks like RXE does a
->>> lot of CRC32 calculations and it is consistent with what Matan said
->>> a long time ago, RXE "stuck" in ICRC calculations required by spec.
->>>
->>> I'm curios what are your CONFIG_CRYPTO_* configs?
->>>
->>> ThanksCONFIG_CRYPTO_* configs
->>>
->>>
->>
->> I'm sorry for the editor problem in my last email. Now I use another editor.
-> Now your email has extra line between lines.
->
->> We get our rdma-core and perftest from
->>
->> https://github.com/linux-rdma/rdma-core/archive/v25.0.tar.gz
->> and https://github.com/linux-rdma/perftest/archive/4.4-0.8.tar.gz, respectively.
->>
->> We attach five files to clarify our problem.
->>
->> * The first file "server_tcp_vs_softroce_performance.txt" is the results of TCP
->>
->> and softroce throughput in our two servers (connected via back to back).
->>
->> * The second file "server_CONFIG_CRYPTO_result.txt" is the
->>
->> CONFIG_CRYPTO_* config results in the two servers..
->>
->> * The third file "server_perf.txt" is the "ib_send_bw - n 10000 192.168.0.20
->>
->> & perf record -ags sleep 10 & wait" results in our two servers (we use
->>
->> "perf report --header >perf" to make the file).
->>
->> * The fourth file "vm_tcp_vs_softroce_performance.txt" is the results of TCP
->>
->> and softroce throughput in two virtual machines with the latest linux kernel
->>
->> 5.4.0-rc7
->>
->> (we get the kernel from https://github.com/torvalds/linux/archive/v5.4-rc7.zip).
->>
->> * The fifth  file "vm_CONFIG_CRYPTO_result.txt" is the result in two virtual
->>
->> machines.
->>
->> * The sixth file "vm_perf.txt" is the "ib_send_bw - n 10000 192.168.122.228
->>
->> & perf record -ags sleep 10 & wait " result in the two virtual machines.
->>
->> On the other side, we tried to use the rxe command "rxe_cfg crc disable"
-> I don't see any parsing of "crc disable" in upstream variant of rxe_cfg
-> and there is no such module parameter in the kernel.
->
-> Thanks
+> This also changes a BUG_ON(), to a WARN_ON(), in follow_page_mask().
+> 
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Suggested-by: J�r�me Glisse <jglisse@redhat.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 6588d2e02628..db872766480f 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1054,6 +1054,8 @@ static inline __must_check bool try_get_page(struct page *page)
+>  	return true;
+>  }
+>  
+> +__must_check bool user_page_ref_inc(struct page *page);
+> +
+>  static inline void put_page(struct page *page)
+>  {
+>  	page = compound_head(page);
+> @@ -1071,29 +1073,70 @@ static inline void put_page(struct page *page)
+>  		__put_page(page);
+>  }
+>  
+> -/**
+> - * put_user_page() - release a gup-pinned page
+> - * @page:            pointer to page to be released
+> +/*
+> + * GUP_PIN_COUNTING_BIAS, and the associated functions that use it, overload
+> + * the page's refcount so that two separate items are tracked: the original page
+> + * reference count, and also a new count of how many get_user_pages() calls were
+							^^ pin_user_pages()
 
+> + * made against the page. ("gup-pinned" is another term for the latter).
+> + *
+> + * With this scheme, get_user_pages() becomes special: such pages are marked
+			^^^ pin_user_pages()
 
-We get the command "rxe_cfg crc disable" from the following webpages:
+> + * as distinct from normal pages. As such, the put_user_page() call (and its
+> + * variants) must be used in order to release gup-pinned pages.
+> + *
+> + * Choice of value:
+>   *
+> - * Pages that were pinned via pin_user_pages*() must be released via either
+> - * put_user_page(), or one of the put_user_pages*() routines. This is so that
+> - * eventually such pages can be separately tracked and uniquely handled. In
+> - * particular, interactions with RDMA and filesystems need special handling.
+> + * By making GUP_PIN_COUNTING_BIAS a power of two, debugging of page reference
+> + * counts with respect to get_user_pages() and put_user_page() becomes simpler,
+				^^^ pin_user_pages()
 
-https://www.systutorials.com/docs/linux/man/8-rxe_cfg/
+> + * due to the fact that adding an even power of two to the page refcount has
+> + * the effect of using only the upper N bits, for the code that counts up using
+> + * the bias value. This means that the lower bits are left for the exclusive
+> + * use of the original code that increments and decrements by one (or at least,
+> + * by much smaller values than the bias value).
+>   *
+> - * put_user_page() and put_page() are not interchangeable, despite this early
+> - * implementation that makes them look the same. put_user_page() calls must
+> - * be perfectly matched up with pin*() calls.
+> + * Of course, once the lower bits overflow into the upper bits (and this is
+> + * OK, because subtraction recovers the original values), then visual inspection
+> + * no longer suffices to directly view the separate counts. However, for normal
+> + * applications that don't have huge page reference counts, this won't be an
+> + * issue.
+> + *
+> + * Locking: the lockless algorithm described in page_cache_get_speculative()
+> + * and page_cache_gup_pin_speculative() provides safe operation for
+> + * get_user_pages and page_mkclean and other calls that race to set up page
+> + * table entries.
+>   */
+...
+> @@ -2070,9 +2191,16 @@ static int gup_hugepte(pte_t *ptep, unsigned long sz, unsigned long addr,
+>  	page = head + ((addr & (sz-1)) >> PAGE_SHIFT);
+>  	refs = __record_subpages(page, addr, end, pages + *nr);
+>  
+> -	head = try_get_compound_head(head, refs);
+> -	if (!head)
+> -		return 0;
+> +	if (flags & FOLL_PIN) {
+> +		head = page;
+> +		if (unlikely(!user_page_ref_inc(head)))
+> +			return 0;
+> +		head = page;
 
-https://www.reflectionsofthevoid.com/2011/08/
+Why do you assign 'head' twice? Also the refcounting logic is repeated
+several times so perhaps you can factor it out in to a helper function or
+even move it to __record_subpages()?
 
-It may be removed in the present soft-roce edition.
+> +	} else {
+> +		head = try_get_compound_head(head, refs);
+> +		if (!head)
+> +			return 0;
+> +	}
+>  
+>  	if (unlikely(pte_val(pte) != pte_val(*ptep))) {
+>  		put_compound_head(head, refs);
 
-Can you figure out why our softroce throughput is so low from the six
+So this will do the wrong thing for FOLL_PIN. We took just one "pin"
+reference there but here we'll release 'refs' normal references AFAICT.
+Also the fact that you take just one pin reference for each huge page
+substantially changes how GUP refcounting works in the huge page case.
+Currently, FOLL_GET users can be completely agnostic of huge pages. So you
+can e.g. GUP whole 2 MB page, submit it as 2 different bios and then
+drop page references from each bio completion function. With your new
+FOLL_PIN behavior you cannot do that and I believe it will be a problem for
+some users. So I think you have to maintain the behavior that you increase
+the head->_refcount by (refs * GUP_PIN_COUNTING_BIAS) here.
 
-files in our last email? We hope to get a much higher softroce throughput,
-
-like 20 Gbps in our systems (now it's only 2 Gbps, and hard-roce can be
-
-up to 100 Gbps in our system).
-
-Qi
-
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
