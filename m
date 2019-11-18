@@ -2,119 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD361007E5
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2019 16:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 608A51009DF
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2019 18:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727220AbfKRPJo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Nov 2019 10:09:44 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:12960 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726654AbfKRPJo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 18 Nov 2019 10:09:44 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAIExY3R009686;
-        Mon, 18 Nov 2019 07:09:41 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0818;
- bh=RAYQ7Gcndt4ftRtTg6mREK+LzB+/1m7ttyluaCZyg90=;
- b=Yi16fPxM7xF1H8vEnY0xaNtggOW+fqV7u6uIe0Xhi6nQpA++/5vleTPhsJsQJ+0jYqNC
- 5W6Usgm9kxRtOs3F8VQCGP2eBSc6HOL9qHteZq2fgasnpeVk5CMmJ43UyVpAoJ1lSHlv
- 7/XzqILhIsb07xWFdDiWunZ6ynV80R1lNRC3Tq0pNiunFLcsJvckG+Dj7p/whpbAQJPN
- z6vcbpc5NqeOB5uZifgSVdj175m5woEQLdGvlXN260N56XDv39f1bWyviS1azgVQ1KYe
- Axw8ttQvtwsAFO5fr0K4yQAph1LfQf6Kn37XoPfWo1tXWGUBnn2jySGutakYNKaly254 rg== 
-Received: from sc-exch04.marvell.com ([199.233.58.184])
-        by mx0a-0016f401.pphosted.com with ESMTP id 2wafbv732k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 18 Nov 2019 07:09:40 -0800
-Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Mon, 18 Nov
- 2019 07:09:39 -0800
-Received: from maili.marvell.com (10.93.176.43) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Mon, 18 Nov 2019 07:09:39 -0800
-Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id 230C03F703F;
-        Mon, 18 Nov 2019 07:09:37 -0800 (PST)
-From:   Michal Kalderon <michal.kalderon@marvell.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <ariel.elior@marvell.com>,
-        <michal.kalderon@marvell.com>
-CC:     <linux-rdma@vger.kernel.org>
-Subject: [PATCH rdma-next] RDMA/qedr: Fix null-pointer dereference when calling rdma_user_mmap_get_offset
-Date:   Mon, 18 Nov 2019 17:06:45 +0200
-Message-ID: <20191118150645.26602-1-michal.kalderon@marvell.com>
-X-Mailer: git-send-email 2.14.5
+        id S1726638AbfKRRCc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Nov 2019 12:02:32 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:35358 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726314AbfKRRCc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Nov 2019 12:02:32 -0500
+Received: by mail-qt1-f196.google.com with SMTP id n4so21054852qte.2
+        for <linux-rdma@vger.kernel.org>; Mon, 18 Nov 2019 09:02:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Z79zwwsgji4SFMXHEfSp1PS5lpwQeTqxylnYvnO5YvQ=;
+        b=G4gmT8u/dhtRz502SOpELmvfKZaDH0xdZDUeQ3PzvM+F/8TPFINhW9XiVilxcKlccr
+         woeNITS+ALb3RzpArVrTV0TjJs6o7oaZ813EI+MVSgBI3vvBZw2iQdRphXw0Sf8PQFpN
+         6SPSmfSD18ohdgcdzEU7xp83HpPclbv4ALFywYKr399DR5Ti1m7VRwsVT/KVFELzQyfy
+         OtZfk45caXF/V08az/efd3DkKUlsEb3BDkOidcV/gBfBznIS81r3DB7wwmIevHRtm/5a
+         bUL7bmjaBkEdaLi2T9dz8scfwDdC2+RipbT11lU7ZT3TdT5S0P/pyItqwVRBXIEPHMOr
+         Qd4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Z79zwwsgji4SFMXHEfSp1PS5lpwQeTqxylnYvnO5YvQ=;
+        b=ouMFw3tfvFaJbGBLfIF+OiqnH/cxcVblfrkVnP4o8auss4EMtaDNwD68p6ZuthCVRh
+         ALgTDmc8pya4c4JPU42WYPlfxsaLMg4C3ZicIQtcizhUZnu1MsLQr9cs1gy1k7yZ3fo4
+         LGJakmnHzCG5bJ3/5lHGr2yYCB59JB1WTNgTJTLJICPHtYNNwWzbfOu1kvsgZfV1q9vh
+         vgPkfsxhyirIMYtLZJl4rsqMcFmttuZP0jxJa6ICNs2jWXSoKWoLGA05iHj7AwxLNYIk
+         Yw8aSjemoAueLUC5H+R+lV2S+AXw8iSIrJQtCprqmI67VupYWaMeRbFeS4f9D991mpBd
+         OGsw==
+X-Gm-Message-State: APjAAAXSev+e+7YGJtjnBbSdX5P6BlmYU69kP4O7pMU+bPb56tZOCYTO
+        gaZHTlMaW4iSwFR1weSq7f66K3EMoZA=
+X-Google-Smtp-Source: APXvYqy78ipw8tY78yi3KhGGIw8CBROg3VW67rKwZaFwFBJfha5aNvI+jhL+u11bty10GiyzfCqdTA==
+X-Received: by 2002:ac8:539a:: with SMTP id x26mr2616351qtp.390.1574096551102;
+        Mon, 18 Nov 2019 09:02:31 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id j7sm8710039qkd.46.2019.11.18.09.02.30
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 18 Nov 2019 09:02:30 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iWkQ1-00016I-Mj; Mon, 18 Nov 2019 13:02:29 -0400
+Date:   Mon, 18 Nov 2019 13:02:29 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Liuyixian (Eason)" <liuyixian@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH v2 for-next 1/2] RDMA/hns: Add the workqueue framework
+ for flush cqe handler
+Message-ID: <20191118170229.GC2149@ziepe.ca>
+References: <1573563124-12579-1-git-send-email-liuyixian@huawei.com>
+ <1573563124-12579-2-git-send-email-liuyixian@huawei.com>
+ <20191115210621.GE4055@ziepe.ca>
+ <523cf93d-a849-ab24-36f0-903fb1afe7ff@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-18_03:2019-11-15,2019-11-18 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <523cf93d-a849-ab24-36f0-903fb1afe7ff@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When running against rdma-core that doesn't support doorbell
-recovery, the rdma_user_mmap_entry won't be allocated for
-doorbell recovery related mappings.
-We have a flag indicating whether rdma-core supports doorbell
-recovery or not which was used during initialization, however
-some cases didn't check that the rdma_user_mmap_entry exists
-before attempting to acquire it's offset.
+On Mon, Nov 18, 2019 at 09:50:24PM +0800, Liuyixian (Eason) wrote:
+> > It kind of looks like this can be called multiple times? It won't work
+> > right unless it is called exactly once
+> > 
+> > Jason
+> 
+> Yes, you are right.
+> 
+> So I think the reasonable solution is to allocate it dynamically, and I think
+> it is a very very little chance that the allocation will be failed. If this happened,
+> I think the application also needs to be over.
 
-Fixes: 97f612509294 ("RDMA/qedr: Add doorbell overflow recovery support")
-Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
----
- drivers/infiniband/hw/qedr/verbs.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+Why do you need more than one work in parallel for this? Once you
+start to move the HW to error that only has to happen once, surely?
 
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 9c0887c61f72..3f3f0ef2f901 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -697,7 +697,9 @@ static int qedr_copy_cq_uresp(struct qedr_dev *dev,
- 
- 	uresp.db_offset = db_offset;
- 	uresp.icid = cq->icid;
--	uresp.db_rec_addr = rdma_user_mmap_get_offset(cq->q.db_mmap_entry);
-+	if (cq->q.db_mmap_entry)
-+		uresp.db_rec_addr =
-+			rdma_user_mmap_get_offset(cq->q.db_mmap_entry);
- 
- 	rc = qedr_ib_copy_to_udata(udata, &uresp, sizeof(uresp));
- 	if (rc)
-@@ -1026,7 +1028,7 @@ int qedr_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	if (udata) {
- 		qedr_free_pbl(dev, &cq->q.pbl_info, cq->q.pbl_tbl);
- 		ib_umem_release(cq->q.umem);
--		if (ctx)
-+		if (cq->q.db_mmap_entry)
- 			rdma_user_mmap_entry_remove(cq->q.db_mmap_entry);
- 	} else {
- 		dev->ops->common->chain_free(dev->cdev, &cq->pbl);
-@@ -1259,7 +1261,9 @@ static void qedr_copy_rq_uresp(struct qedr_dev *dev,
- 	}
- 
- 	uresp->rq_icid = qp->icid;
--	uresp->rq_db_rec_addr = rdma_user_mmap_get_offset(qp->urq.db_mmap_entry);
-+	if (qp->urq.db_mmap_entry)
-+		uresp->rq_db_rec_addr =
-+			rdma_user_mmap_get_offset(qp->urq.db_mmap_entry);
- }
- 
- static void qedr_copy_sq_uresp(struct qedr_dev *dev,
-@@ -1274,8 +1278,9 @@ static void qedr_copy_sq_uresp(struct qedr_dev *dev,
- 	else
- 		uresp->sq_icid = qp->icid + 1;
- 
--	uresp->sq_db_rec_addr =
--		rdma_user_mmap_get_offset(qp->usq.db_mmap_entry);
-+	if (qp->usq.db_mmap_entry)
-+		uresp->sq_db_rec_addr =
-+			rdma_user_mmap_get_offset(qp->usq.db_mmap_entry);
- }
- 
- static int qedr_copy_qp_uresp(struct qedr_dev *dev,
--- 
-2.20.1
-
+Jason
