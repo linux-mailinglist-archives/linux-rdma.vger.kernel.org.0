@@ -2,63 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B0A100BEC
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2019 20:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3CA100C69
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2019 20:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbfKRTB5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Nov 2019 14:01:57 -0500
-Received: from mga05.intel.com ([192.55.52.43]:15449 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726427AbfKRTB4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 18 Nov 2019 14:01:56 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Nov 2019 11:01:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,321,1569308400"; 
-   d="scan'208";a="407489833"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga006.fm.intel.com with ESMTP; 18 Nov 2019 11:01:56 -0800
-Date:   Mon, 18 Nov 2019 11:01:56 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     oulijun <oulijun@huawei.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Subject: Re: =?utf-8?B?44CQaW5maW5pYmFuZF9kaWFncyB0?=
- =?utf-8?B?b29sIHF1ZXN0aW9u44CR?=
-Message-ID: <20191118190155.GA22418@iweiny-DESK2.sc.intel.com>
-References: <eca1607e-5c25-f816-9325-281b6a2d0069@huawei.com>
- <20191118172144.GD2149@ziepe.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191118172144.GD2149@ziepe.ca>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+        id S1726435AbfKRTys (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Nov 2019 14:54:48 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:32948 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726250AbfKRTys (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Nov 2019 14:54:48 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAIJsK6m110830;
+        Mon, 18 Nov 2019 19:54:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id; s=corp-2019-08-05;
+ bh=j1BXwsUDklwenftg815pFd1iW2NIFhwDjT4BkXgsHYo=;
+ b=dzOSmpP3vC/mDY5UCofTguW0WlQ6foqFkUkEKkVGNiUfD0FQbac8fqegWCsvvuC7kLgP
+ adnGyljTHWvJxvIzjJxjn4Fmx/84Rv1J/VwFpyQ0/wwI90j0V3hiIYGcDtnIn7RMGmjf
+ 0AOAUjanJxH9QxUHR44LRKb6KWIZm+XQDhhE0q5Hc1wemGM08r+s74cF2c7PW86RqDs1
+ wUAgsr2g0/PHPF3WSZdo/JZ1bEO/c8SbbXeLDnjLIShmhb86NByXvulwBhsoJK6A2wzs
+ /q9xydaYIhMGXJI9xJ+rs1hXgRwcVm5Ve7tq5Z2aMot43YZVi/Mk8o9DhHL8BwX/Ocyw /Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 2wa8htjk3p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 Nov 2019 19:54:40 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAIJs5aF146997;
+        Mon, 18 Nov 2019 19:54:40 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 2wc09w4kyf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 18 Nov 2019 19:54:40 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id xAIJsd7I149983;
+        Mon, 18 Nov 2019 19:54:39 GMT
+Received: from ca-dev107.us.oracle.com (ca-dev107.us.oracle.com [10.129.135.36])
+        by userp3020.oracle.com with ESMTP id 2wc09w4kxp-1;
+        Mon, 18 Nov 2019 19:54:39 +0000
+From:   rao Shoaib <rao.shoaib@oracle.com>
+To:     monis@mellanox.com, dledford@redhat.com, sean.hefty@intel.com,
+        hal.rosenstock@gmail.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rao.shoaib@oracle.com
+Subject: [PATCH v2 0/2] rxe should use same buffer size for SGE's and inline data
+Date:   Mon, 18 Nov 2019 11:54:37 -0800
+Message-Id: <1574106879-19211-1-git-send-email-rao.shoaib@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9445 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=955 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1911180170
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 18, 2019 at 01:21:44PM -0400, Jason Gunthorpe wrote:
-> On Sat, Nov 16, 2019 at 10:20:19AM +0800, oulijun wrote:
-> > Hi, Jason Gunthorpe
-> >     I have noticed that you have integrated infiniband_diags in the new rdma-core repo.
-> > I want to try to using it in RoCE. it is fail. the print as flows:
-> > roo
-> > root@(none)# ./ibaddr -g 0
-> >  ibwarn: [1054] mad_rpc_open_port: client_register for mgmt 1 failed
-> >   Failed to open (null) port 0
-> > 
-> > I found through process analysis that it needs ca to support IB_QPT_SMI.
-> > I understand that if hca does not support SMI, then we will not be able to use infiniband_diags tool?
-> 
-> I didn't think diags were really relevant for roce? The only thing
-> that should work is perfquery
+From: Rao Shoaib <rao.shoaib@oracle.com>
 
-This is correct.   infiniband-diags are not really relevant to RoCE or OPA.
-While some tools will work.  They are not specifically designed for nor
-intended to support anything other than InfiniBand.
+I have incorportaed suggestions from Jason. There are two patches.
+Patch #1 introduces max WQE size as suggested by Jason
+Patch #2 allocates resources requested and makes sure that the buffer size
+         is same for SG entries and inline data, maximum of the two values
+	 requested is used.
 
-Ira
+Rao Shoaib (2):
+  Introduce maximum WQE size to check limits
+  SGE buffer and max_inline data must have same size
+
+ drivers/infiniband/sw/rxe/rxe_param.h |  3 ++-
+ drivers/infiniband/sw/rxe/rxe_qp.c    | 26 ++++++++++++++------------
+ 2 files changed, 16 insertions(+), 13 deletions(-)
+
+-- 
+1.8.3.1
+
