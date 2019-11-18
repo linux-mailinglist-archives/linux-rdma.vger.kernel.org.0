@@ -2,180 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9F01006D4
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2019 14:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D21D6100793
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2019 15:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbfKRNwt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Nov 2019 08:52:49 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:58432 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726703AbfKRNwt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 18 Nov 2019 08:52:49 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id C950D3C28F15D918035F;
-        Mon, 18 Nov 2019 21:52:46 +0800 (CST)
-Received: from [127.0.0.1] (10.74.223.196) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.439.0; Mon, 18 Nov 2019
- 21:52:40 +0800
-Subject: Re: [PATCH v2 for-next 1/2] RDMA/hns: Add the workqueue framework for
- flush cqe handler
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <dledford@redhat.com>, <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1573563124-12579-1-git-send-email-liuyixian@huawei.com>
- <1573563124-12579-2-git-send-email-liuyixian@huawei.com>
- <20191115210621.GE4055@ziepe.ca>
-From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
-Message-ID: <523cf93d-a849-ab24-36f0-903fb1afe7ff@huawei.com>
-Date:   Mon, 18 Nov 2019 21:50:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.1
+        id S1727121AbfKROmA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Nov 2019 09:42:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726668AbfKROl7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 18 Nov 2019 09:41:59 -0500
+Received: from localhost (unknown [5.29.147.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E7A0F206B6;
+        Mon, 18 Nov 2019 14:41:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1574088118;
+        bh=z+TGrQ61Yn+JYGlppRs/r4rrQ2uTvjw3A/AQ6OmLFKY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e8rZCMFpEfGzIBTEKjyEhSxcK8HLT/F2lyNhkz97L3TKjdRVEsRXm4coreOVfszRQ
+         WWnNHpYt/2mHOUk+jfcpi396vJHzjVmHJjr6noMa1NbAc+855GhLhlwmFVhU4U15k/
+         gij+i+tv9kn7ExlNfMFzJkI7u329aG29O572CixA=
+Date:   Mon, 18 Nov 2019 16:41:55 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     wangqi <3100102071@zju.edu.cn>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [question]Why our soft-RoCE throughput is quite low compared
+ with TCP
+Message-ID: <20191118144155.GE52766@unreal>
+References: <f97b72b6-4def-2970-c9f6-f11b97d5378e@zju.edu.cn>
+ <20191115160707.GG6763@unreal>
+ <df9fb9b8-4b1f-2cf7-2498-648627556006@zju.edu.cn>
+ <20191118094924.GA52766@unreal>
+ <0bb80672-3980-04e7-5cf1-846b517ad53e@zju.edu.cn>
+ <20191118122803.GC52766@unreal>
+ <b522945c-6995-06de-b22c-9285fbe65d66@zju.edu.cn>
 MIME-Version: 1.0
-In-Reply-To: <20191115210621.GE4055@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.223.196]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b522945c-6995-06de-b22c-9285fbe65d66@zju.edu.cn>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Nov 18, 2019 at 08:56:35PM +0800, wangqi wrote:
+>
+> On 2019/11/18 下午8:28, Leon Romanovsky wrote:
+> > On Mon, Nov 18, 2019 at 06:13:07PM +0800, wangqi wrote:
+> >> On 2019/11/18 下午5:49, Leon Romanovsky wrote:
+> >>> On Mon, Nov 18, 2019 at 02:38:19PM +0800, wangqi wrote:
+> >>>> On 2019/11/16 上午12:07, Leon Romanovsky wrote:
+> >>>>
+> >>>>> On Fri, Nov 15, 2019 at 09:26:41PM +0800, QWang wrote:
+> >>>>>> Dear experts on RDMA,
+> >>>>>>       We are sorry to disturb you. Because of a project, we need to
+> >>>>>> integrate soft-RoCE in our system. However ,we are very confused by our
+> >>>>>> soft-RoCE throughput results, which are quite low compared with TCP
+> >>>>>> throughput. The throughput of soft-RoCE in our tests measured by ib_send_bw
+> >>>>>> and ib_read_bw is only 2 Gbps (the net link bandwidth is 100 Gbps and the
+> >>>>>> two Xeon E5 servers with Mellanox ConnectX-4 cards are connected via
+> >>>>>> back-to-back, the OS is ubuntu16.04 with kernel 4.15.0-041500-generic). The
+> >>>>>> throughput of hard-RoCE and TCP are normal, which are 100 Gbps and 20 Gbps,
+> >>>>>> respectively. But in the figure 6 in the attached paper "A Performance
+> >>>>>> Comparison of Container Networking Alternatives", the throughput of
+> >>>>>> soft-RoCE can be up to 23 Gbps.  In our tests, we get the open-source
+> >>>>>> soft-RoCE from github in https://github.com/linux-rdma. Do you know how can
+> >>>>>> we get such high bandwidth? Do we need to configure some OS system settings?
+> >>>>>>       We find that in 2017, someone finds the same problem and he posts all
+> >>>>>> his detailed results on https://bugzilla.kernel.org/show_bug.cgi?id=190951  
+> >>>>>> . But it remains unsolved. His results are nearly the same with our's. For
+> >>>>>> simplicity,  we do not post our results in this email. You can get very
+> >>>>>> detailed information in the web page listed above.
+> >>>>>>       We are very confused by our results. We will very appreciate it if we
+> >>>>>> can receive your early reply. Best wishes,
+> >>>>>> Wang Qi
+> >>>>> Can you please fix your email client?
+> >>>>> The email text looks like one big sentence.
+> >>>>>
+> >>>>> From the perf report attached to this bugzilla, looks like RXE does a
+> >>>>> lot of CRC32 calculations and it is consistent with what Matan said
+> >>>>> a long time ago, RXE "stuck" in ICRC calculations required by spec.
+> >>>>>
+> >>>>> I'm curios what are your CONFIG_CRYPTO_* configs?
+> >>>>>
+> >>>>> ThanksCONFIG_CRYPTO_* configs
+> >>>>>
+> >>>>>
+> >>>> I'm sorry for the editor problem in my last email. Now I use another editor.
+> >>> Now your email has extra line between lines.
+> >>>
+> >>>> We get our rdma-core and perftest from
+> >>>>
+> >>>> https://github.com/linux-rdma/rdma-core/archive/v25.0.tar.gz
+> >>>> and https://github.com/linux-rdma/perftest/archive/4.4-0.8.tar.gz, respectively.
+> >>>>
+> >>>> We attach five files to clarify our problem.
+> >>>>
+> >>>> * The first file "server_tcp_vs_softroce_performance.txt" is the results of TCP
+> >>>>
+> >>>> and softroce throughput in our two servers (connected via back to back).
+> >>>>
+> >>>> * The second file "server_CONFIG_CRYPTO_result.txt" is the
+> >>>>
+> >>>> CONFIG_CRYPTO_* config results in the two servers..
+> >>>>
+> >>>> * The third file "server_perf.txt" is the "ib_send_bw - n 10000 192.168.0.20
+> >>>>
+> >>>> & perf record -ags sleep 10 & wait" results in our two servers (we use
+> >>>>
+> >>>> "perf report --header >perf" to make the file).
+> >>>>
+> >>>> * The fourth file "vm_tcp_vs_softroce_performance.txt" is the results of TCP
+> >>>>
+> >>>> and softroce throughput in two virtual machines with the latest linux kernel
+> >>>>
+> >>>> 5.4.0-rc7
+> >>>>
+> >>>> (we get the kernel from https://github.com/torvalds/linux/archive/v5.4-rc7.zip).
+> >>>>
+> >>>> * The fifth  file "vm_CONFIG_CRYPTO_result.txt" is the result in two virtual
+> >>>>
+> >>>> machines.
+> >>>>
+> >>>> * The sixth file "vm_perf.txt" is the "ib_send_bw - n 10000 192.168.122.228
+> >>>>
+> >>>> & perf record -ags sleep 10 & wait " result in the two virtual machines.
+> >>>>
+> >>>> On the other side, we tried to use the rxe command "rxe_cfg crc disable"
+> >>> I don't see any parsing of "crc disable" in upstream variant of rxe_cfg
+> >>> and there is no such module parameter in the kernel.
+> >>>
+> >>> Thanks
+> >>
+> >> We get the command "rxe_cfg crc disable" from the following webpages:
+> >>
+> >> https://www.systutorials.com/docs/linux/man/8-rxe_cfg/
+> >>
+> >> https://www.reflectionsofthevoid.com/2011/08/
+> >>
+> >> It may be removed in the present soft-roce edition.
+> > It was never existed in upstream variant and in the kernel you are testing.
+> >
+> >> Can you figure out why our softroce throughput is so low from the six
+> > According to the logs, it is ICRC.
+> >
+> >> files in our last email? We hope to get a much higher softroce throughput,
+> >>
+> >> like 20 Gbps in our systems (now it's only 2 Gbps, and hard-roce can be
+> >>
+> >> up to 100 Gbps in our system).
+> >>
+> >> Qi
+> >>
+> >>
+> We try to use "rxe_cfg icrc disable" and "rxe_cfg ICRC disable", but it
+>
+> seems that the performance doesn't change at all.
 
+Why are you continuing to try "disable" if your kernel and rdma-core don't support it?
 
-On 2019/11/16 5:06, Jason Gunthorpe wrote:
-> On Tue, Nov 12, 2019 at 08:52:03PM +0800, Yixian Liu wrote:
->> HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
->> outstanding WQEs if QP state gets into errored mode for some reason.
->> To overcome this hardware problem and as a workaround, when QP is
->> detected to be in errored state during various legs like post send,
->> post receive etc [1], flush needs to be performed from the driver.
->>
->> The earlier patch[1] sent to solve the hardware limitation explained
->> in the cover-letter had a bug in the software flushing leg. It
->> acquired mutex while modifying QP state to errored state and while
->> conveying it to the hardware using the mailbox. This caused leg to
->> sleep while holding spin-lock and caused crash.
->>
->> Suggested Solution:
->> we have proposed to defer the flushing of the QP in the Errored state
->> using the workqueue to get around with the limitation of our hardware.
->>
->> This patch adds the framework of the workqueue and the flush handler
->> function.
->>
->> [1] https://patchwork.kernel.org/patch/10534271/
->>
->> Signed-off-by: Yixian Liu <liuyixian@huawei.com>
->> Reviewed-by: Salil Mehta <salil.mehta@huawei.com>
->>  drivers/infiniband/hw/hns/hns_roce_device.h |  3 +++
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  4 ++--
->>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 33 +++++++++++++++++++++++++++++
->>  3 files changed, 38 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
->> index a1b712e..42d8a5a 100644
->> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
->> @@ -906,6 +906,7 @@ struct hns_roce_caps {
->>  struct hns_roce_work {
->>  	struct hns_roce_dev *hr_dev;
->>  	struct work_struct work;
->> +	struct hns_roce_qp *hr_qp;
->>  	u32 qpn;
->>  	u32 cqn;
->>  	int event_type;
->> @@ -1034,6 +1035,7 @@ struct hns_roce_dev {
->>  	const struct hns_roce_hw *hw;
->>  	void			*priv;
->>  	struct workqueue_struct *irq_workq;
->> +	struct hns_roce_work flush_work;
->>  	const struct hns_roce_dfx_hw *dfx;
->>  };
->>  
->> @@ -1226,6 +1228,7 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *ib_pd,
->>  				 struct ib_udata *udata);
->>  int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
->>  		       int attr_mask, struct ib_udata *udata);
->> +void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp);
->>  void *get_recv_wqe(struct hns_roce_qp *hr_qp, int n);
->>  void *get_send_wqe(struct hns_roce_qp *hr_qp, int n);
->>  void *get_send_extend_sge(struct hns_roce_qp *hr_qp, int n);
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> index 907c951..ec48e7e 100644
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> @@ -5967,8 +5967,8 @@ static int hns_roce_v2_init_eq_table(struct hns_roce_dev *hr_dev)
->>  		goto err_request_irq_fail;
->>  	}
->>  
->> -	hr_dev->irq_workq =
->> -		create_singlethread_workqueue("hns_roce_irq_workqueue");
->> +	hr_dev->irq_workq = alloc_workqueue("hns_roce_irq_workqueue",
->> +					    WQ_MEM_RECLAIM, 0);
->>  	if (!hr_dev->irq_workq) {
->>  		dev_err(dev, "Create irq workqueue failed!\n");
->>  		ret = -ENOMEM;
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
->> index 9442f01..0111f2e 100644
->> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
->> @@ -43,6 +43,39 @@
->>  
->>  #define SQP_NUM				(2 * HNS_ROCE_MAX_PORTS)
->>  
->> +static void flush_work_handle(struct work_struct *work)
->> +{
->> +	struct hns_roce_work *flush_work = container_of(work,
->> +					struct hns_roce_work, work);
->> +	struct hns_roce_qp *hr_qp = flush_work->hr_qp;
->> +	struct device *dev = flush_work->hr_dev->dev;
->> +	struct ib_qp_attr attr;
->> +	int attr_mask;
->> +	int ret;
->> +
->> +	attr_mask = IB_QP_STATE;
->> +	attr.qp_state = IB_QPS_ERR;
->> +
->> +	ret = hns_roce_modify_qp(&hr_qp->ibqp, &attr, attr_mask, NULL);
->> +	if (ret)
->> +		dev_err(dev, "Modify QP to error state failed(%d) during CQE flush\n",
->> +			ret);
->> +
->> +	if (atomic_dec_and_test(&hr_qp->refcount))
->> +		complete(&hr_qp->free);
->> +}
->> +
->> +void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
->> +{
->> +	struct hns_roce_work *flush_work = &hr_dev->flush_work;
->> +
->> +	flush_work->hr_dev = hr_dev;
->> +	flush_work->hr_qp = hr_qp;
->> +	INIT_WORK(&flush_work->work, flush_work_handle);
->> +	atomic_inc(&hr_qp->refcount);
->> +	queue_work(hr_dev->irq_workq, &flush_work->work);
-> 
-> It kind of looks like this can be called multiple times? It won't work
-> right unless it is called exactly once
-> 
-> Jason
+Thanks
 
-Yes, you are right.
-
-So I think the reasonable solution is to allocate it dynamically, and I think
-it is a very very little chance that the allocation will be failed. If this happened,
-I think the application also needs to be over.
-
-So I will fall back to v1 for this part in next version.
-
-	flush_work = kzalloc(sizeof(struct hns_roce_flush_work), GFP_ATOMIC)
-	if (!flush_work)
-		return;
-
-Or, could you give me some advice for it?
-
-Thanks.
-
-> 
-> .
-> 
-
+>
+> Qi
+>
+>
+>
