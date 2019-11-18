@@ -2,82 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADB7100A21
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2019 18:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 681D9100A6F
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Nov 2019 18:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbfKRRVr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Nov 2019 12:21:47 -0500
-Received: from mail-qk1-f182.google.com ([209.85.222.182]:34536 "EHLO
-        mail-qk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbfKRRVq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Nov 2019 12:21:46 -0500
-Received: by mail-qk1-f182.google.com with SMTP id 205so15144708qkk.1
-        for <linux-rdma@vger.kernel.org>; Mon, 18 Nov 2019 09:21:46 -0800 (PST)
+        id S1727073AbfKRRjH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Nov 2019 12:39:07 -0500
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:41656 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726314AbfKRRjH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Nov 2019 12:39:07 -0500
+Received: by mail-ed1-f68.google.com with SMTP id a21so14336859edj.8
+        for <linux-rdma@vger.kernel.org>; Mon, 18 Nov 2019 09:39:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=46kRQEGjLXi/13Wdc4yUky5fYGfAmzoz6ObUALeCZRc=;
-        b=h+c6PAV1FQZNNOkGNpB0VUIry3PDvT9ukQxRXLzBQa+hUs3vQ7G4Bdg3q+4ILScOKf
-         RbEtqx42O5EKNvPnToWCRIvE4QcnIEXUrgV8vozYVYIkdLQQohPzHfgFeeN2jXuvSumW
-         qLKEBdpU3GiZMVXX3S0r++BY9mOEEsXlo6yUDipOYJ8RdPvVxKpNw1ad4CP3Tz7HP2Ok
-         sEpfQifZFjJhaZuHCgZ/XuhoTjdrQQ0uuCVVW14uZn212dUs92RlxOKJC5+74qQuhDMr
-         j2vyav5RkCLpJDY983w0AHehp65uoiU714MlUPKfjRQQ3PqZ8/3uabPPY786fvc1xFbu
-         QrPQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wwy7y1a6q/DuAvJKNf/i3hevC3KWqafGydm34BlW9lE=;
+        b=iPNrBghv59Zs8dDX8Xz9bhEBRWgibTBZWXihskroBECqP/sEwdJ6WgRmPmFVDKT0S8
+         y2jkd991PONOD9wU8fUMCdZMwJhIHvI/cmQQJT37eN2UgMCfSVjbL5EVkcz1rbcAfxz8
+         qfkZGYgdcJ7wv673TYNQfofZYRDGP4zoZadY6Eg5XwxOTMvhvPVqGzYe716AwaNYwWtR
+         3j1Q03SmWJ+MhxHwi7MYaosE2D1v6GLGODfgD9GAPI4LmJJyJT5lqU6rFY7sVjvDIq1+
+         4OR4wAWEaWw7Tfmx2FblvHroNIxCEHmxj0HtlgmdouzWKMbv1EpWrhwNXoVHe5vs+xQ1
+         3DHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=46kRQEGjLXi/13Wdc4yUky5fYGfAmzoz6ObUALeCZRc=;
-        b=GinVmMkuFcFwR4SWuAamInj0pmjxEPZSVn/oErQNcfsdUnPq9Lxvfrz0OWBMGbbP2+
-         Jsaik26M+Xyv8qfJ3yNYvcV4lPXPdEvy+MfceCgi3tHefOAJ7SFPnUKJieTGyGC4IobL
-         xC1L0CpmA97eVEq33KSuWHWbDbOczseZTzF4Nrn6kMXVSgLffmdPlP8rA1FtjJz4Pvr+
-         sNuVD14ZJDpWptOW4eOQFtwlcQbF0wIZyd7DR2q6W81qVFZG+4J6PghcsJFzvayL2Ik4
-         aLANQdZ/lFvUt5Dv/dplpt/7txTB8BoiruiYR3b0kcGpSOey+He/wUCkoVdYEHYAh+TK
-         dRbw==
-X-Gm-Message-State: APjAAAWV7agk7QqtzgWbQ8T1kG3lAuH/lGMwqT+QZtV73slkpX0pTsfg
-        ZVbpTKFTEdIJFiz/CzOK+rn8Kg==
-X-Google-Smtp-Source: APXvYqzgmLD4aoTINwFxiv31l0f8m8rcEREr9P438Y8NZVX149IH9KMWyQtx3ai3FBlv4+Szo1mJgg==
-X-Received: by 2002:a37:ac09:: with SMTP id e9mr5777537qkm.63.1574097705836;
-        Mon, 18 Nov 2019 09:21:45 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id 132sm8770253qki.114.2019.11.18.09.21.45
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 18 Nov 2019 09:21:45 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iWkie-0001Nt-Nk; Mon, 18 Nov 2019 13:21:44 -0400
-Date:   Mon, 18 Nov 2019 13:21:44 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     oulijun <oulijun@huawei.com>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>
-Subject: Re: =?utf-8?B?44CQaW5maW5pYmFuZF9kaWFncyB0?=
- =?utf-8?B?b29sIHF1ZXN0aW9u44CR?=
-Message-ID: <20191118172144.GD2149@ziepe.ca>
-References: <eca1607e-5c25-f816-9325-281b6a2d0069@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wwy7y1a6q/DuAvJKNf/i3hevC3KWqafGydm34BlW9lE=;
+        b=B/K2Cv/1t31YG3hJKagVyxFN3ZUsgBKhX0qSvP4wxJQLL68v2At15583DAXR43bVRT
+         RsvLli5SYCwtuOoka5g0qihaYE9PkomAp4tHcjp/nxZnZpCJCdNJwy7oRmi7oPQ3D12q
+         oXmr28NYiMoQysQc8+Ly+n41zaN2X3OrAuwngEy2J0zNke/x99w9GlpGhZdcEbhM43d7
+         umZQH70PpcUn+dRkwRmWmjqRriVd/RzzwPrUWTWLCzGECvdlndixu/nh0IADANgJAYKD
+         eWLbQG081teRVaaRb3bb5VdiRZL0M3apNlycbHYsHbijctQiHYUSrvVBz9uJXjanSynj
+         3TpQ==
+X-Gm-Message-State: APjAAAXvdidxBlFAShwW8gu3UTvlV5QL/bg8aVYu9GnAPhmO9PatuTyL
+        xOG0vlkrMSRx0Pb2Ujc9GYLJ39PW2tKvTnIHpZVBXQ==
+X-Google-Smtp-Source: APXvYqxhqeJRdUmC8N6VoZ8p/rHkoYIm1VNdzTaP9BU/3q7mXDVI7F4KpAAS8GbGgAVSgvqFOqMqz+pAp1Tx2gzpvwI=
+X-Received: by 2002:a17:906:7c4e:: with SMTP id g14mr27917513ejp.150.1574098743309;
+ Mon, 18 Nov 2019 09:39:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eca1607e-5c25-f816-9325-281b6a2d0069@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20191115201225.92888-1-lrizzo@google.com> <20191116.131058.1856199123293908506.davem@davemloft.net>
+ <59ebfae8-ac93-75a1-7a60-2bb3820a9a79@mellanox.com> <20191117.102949.1712366954266607838.davem@davemloft.net>
+In-Reply-To: <20191117.102949.1712366954266607838.davem@davemloft.net>
+From:   Luigi Rizzo <lrizzo@google.com>
+Date:   Mon, 18 Nov 2019 09:38:52 -0800
+Message-ID: <CAMOZA0LWNaK+bwDvUchRdB3enz=Dw4jUDCAY-6e0ty=iT6pytw@mail.gmail.com>
+Subject: Re: [PATCH] net/mlx4_en: fix mlx4 ethtool -N insertion
+To:     David Miller <davem@davemloft.net>
+Cc:     tariqt@mellanox.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Nov 16, 2019 at 10:20:19AM +0800, oulijun wrote:
-> Hi, Jason Gunthorpe
->     I have noticed that you have integrated infiniband_diags in the new rdma-core repo.
-> I want to try to using it in RoCE. it is fail. the print as flows:
-> roo
-> root@(none)# ./ibaddr -g 0
->  ibwarn: [1054] mad_rpc_open_port: client_register for mgmt 1 failed
->   Failed to open (null) port 0
-> 
-> I found through process analysis that it needs ca to support IB_QPT_SMI.
-> I understand that if hca does not support SMI, then we will not be able to use infiniband_diags tool?
+On Sun, Nov 17, 2019 at 10:29 AM David Miller <davem@davemloft.net> wrote:
+>
+> From: Tariq Toukan <tariqt@mellanox.com>
+> Date: Sun, 17 Nov 2019 14:46:50 +0000
+>
+> >
+> >
+> > On 11/16/2019 11:10 PM, David Miller wrote:
+> >> From: Luigi Rizzo <lrizzo@google.com>
+> >> Date: Fri, 15 Nov 2019 12:12:25 -0800
+> >>
+> >>> ethtool expects ETHTOOL_GRXCLSRLALL to set ethtool_rxnfc->data with the
+> >>> total number of entries in the rx classifier table.  Surprisingly, mlx4
+> >>> is missing this part (in principle ethtool could still move forward and
+> >>> try the insert).
+> >>>
+> >>> Tested: compiled and run command:
+> >>>     phh13:~# ethtool -N eth1 flow-type udp4  queue 4
+> >>>     Added rule with ID 255
+> >>>
+> >>> Signed-off-by: Luigi Rizzo <lrizzo@google.com>
+> >>> Change-Id: I18a72f08dfcfb6b9f6aa80fbc12d58553e1fda76
+> >>
+> >> Luigi, _always_ CC: the appropriate maintainer when making changes to the
+> >> kernel, as per the top-level MAINTAINERS file.
+> >>
+> >> Tariq et al., please review.
+> >>
+> >
+> > Reviewed-by: Tariq Toukan <tariqt@mellanox.com>
+>
+> Applied and queued up for -stable, with Change-Id: removed.
 
-I didn't think diags were really relevant for roce? The only thing
-that should work is perfquery
 
-Jason
+Thank you all, apologies for mistakes.
+
+cheers
+luigi
