@@ -2,122 +2,235 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 30187102A78
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 18:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A63102AED
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 18:44:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727560AbfKSRHT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Nov 2019 12:07:19 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:43900 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726985AbfKSRHT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 12:07:19 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAJGsTqT112670;
-        Tue, 19 Nov 2019 17:07:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2019-08-05; bh=w1eei1hZoUI0m62iwdrQhbOZrycKSzcIm9ieHShuiyQ=;
- b=fAa1OSo0e2US1kgxhb7zceRs/dKSXG8W7pvvYiMwipPe6MeSsWycIKE+KGVmo0I42Wt3
- s6Fda+kx4IH1UBDiA+oqw3elbFCK1jXSpM/r0Gxw+sXaiscc/GyJza28YSIiLJeFDXtG
- wcN9+TjiMOxNUWVZHbKsdbEkd2zl+kJIt3uCrR/5nEO4SJZ6Lvf7cssyivfEovDA2BCx
- eIcF5kl22rE5D/f2VFS8bM2+Tpb2/18o5U198TiLV8x0NgVIW+ufeO/FJLgGYVVsaJC+
- mz7IdOKdpYS2wiSxX5igS41jnc7GbyyrMuVY00DvKJMnkjpI/2zRC6/gAFDijAA5jRDq WQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2wa9rqg8ku-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Nov 2019 17:07:17 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAJGsRL6095385;
-        Tue, 19 Nov 2019 17:07:16 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2wcema2gbn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Nov 2019 17:07:16 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAJH7Eut021522;
-        Tue, 19 Nov 2019 17:07:15 GMT
-Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 19 Nov 2019 09:07:14 -0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v6 1/2] RDMA/core: Trace points for diagnosing completion
- queue issues
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <20191119170141.GE4991@ziepe.ca>
-Date:   Tue, 19 Nov 2019 12:07:13 -0500
-Cc:     linux-rdma@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <7E8981E6-71F4-4CC8-A30A-7E08338C6D75@oracle.com>
-References: <20191118214447.27891.58814.stgit@manet.1015granger.net>
- <20191118214906.27891.14380.stgit@manet.1015granger.net>
- <20191119170141.GE4991@ziepe.ca>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9445 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1911190148
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9445 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1911190148
+        id S1727517AbfKSRoO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 19 Nov 2019 12:44:14 -0500
+Received: from mga09.intel.com ([134.134.136.24]:31363 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727254AbfKSRoO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Nov 2019 12:44:14 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Nov 2019 09:44:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,218,1571727600"; 
+   d="scan'208";a="204573186"
+Received: from orsmsx107.amr.corp.intel.com ([10.22.240.5])
+  by fmsmga007.fm.intel.com with ESMTP; 19 Nov 2019 09:44:13 -0800
+Received: from orsmsx155.amr.corp.intel.com (10.22.240.21) by
+ ORSMSX107.amr.corp.intel.com (10.22.240.5) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 19 Nov 2019 09:44:12 -0800
+Received: from orsmsx101.amr.corp.intel.com ([169.254.8.229]) by
+ ORSMSX155.amr.corp.intel.com ([169.254.7.211]) with mapi id 14.03.0439.000;
+ Tue, 19 Nov 2019 09:44:12 -0800
+From:   "Ertman, David M" <david.m.ertman@intel.com>
+To:     Parav Pandit <parav@mellanox.com>,
+        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "Patil, Kiran" <kiran.patil@intel.com>
+Subject: RE: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Thread-Topic: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Thread-Index: AQHVnATHptCZx1o750+cmj+dZwSi7aeNZheAgAPN0JCAAT64AIAAVeNg
+Date:   Tue, 19 Nov 2019 17:44:11 +0000
+Message-ID: <2B0E3F215D1AB84DA946C8BEE234CCC97B301648@ORSMSX101.amr.corp.intel.com>
+References: <20191115223355.1277139-1-jeffrey.t.kirsher@intel.com>
+ <AM0PR05MB4866CF61828A458319899664D1700@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <2B0E3F215D1AB84DA946C8BEE234CCC97B301493@ORSMSX101.amr.corp.intel.com>
+ <AM0PR05MB4866169E38D7F157F0B4DC49D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+In-Reply-To: <AM0PR05MB4866169E38D7F157F0B4DC49D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.22.254.139]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-> On Nov 19, 2019, at 12:01 PM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> -----Original Message-----
+> From: Parav Pandit <parav@mellanox.com>
+> Sent: Monday, November 18, 2019 8:32 PM
+> To: Ertman, David M <david.m.ertman@intel.com>; Kirsher, Jeffrey T
+> <jeffrey.t.kirsher@intel.com>; davem@davemloft.net;
+> gregkh@linuxfoundation.org
+> Cc: netdev@vger.kernel.org; linux-rdma@vger.kernel.org;
+> nhorman@redhat.com; sassmann@redhat.com; jgg@ziepe.ca; Patil, Kiran
+> <kiran.patil@intel.com>
+> Subject: RE: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
 > 
-> On Mon, Nov 18, 2019 at 04:49:09PM -0500, Chuck Lever wrote:
->> @@ -65,11 +68,35 @@ static void rdma_dim_init(struct ib_cq *cq)
->> 	INIT_WORK(&dim->work, ib_cq_rdma_dim_work);
->> }
->> 
->> +/**
->> + * ib_poll_cq - poll a CQ for completion(s)
->> + * @cq: the CQ being polled
->> + * @num_entries: maximum number of completions to return
->> + * @wc: array of at least @num_entries &struct ib_wc where completions
->> + *      will be returned
->> + *
->> + * Poll a CQ for (possibly multiple) completions.  If the return value
->> + * is < 0, an error occurred.  If the return value is >= 0, it is the
->> + * number of completions returned.  If the return value is
->> + * non-negative and < num_entries, then the CQ was emptied.
->> + */
->> +int ib_poll_cq(struct ib_cq *cq, int num_entries, struct ib_wc *wc)
->> +{
->> +	int rc;
->> +
->> +	rc = cq->device->ops.poll_cq(cq, num_entries, wc);
->> +	trace_cq_poll(cq, num_entries, rc);
->> +	return rc;
->> +}
->> +EXPORT_SYMBOL(ib_poll_cq);
+> Hi David,
 > 
-> Back to the non-inlined function?
+> > From: Ertman, David M <david.m.ertman@intel.com>
+> > Sent: Monday, November 18, 2019 9:59 PM
+> > Subject: RE: [net-next v2 1/1] virtual-bus: Implementation of Virtual
+> > Bus
+> >
+> > > -----Original Message-----
+> > > From: Parav Pandit <parav@mellanox.com>
+> > > Sent: Friday, November 15, 2019 3:26 PM
+> > > To: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>;
+> > > davem@davemloft.net; gregkh@linuxfoundation.org
+> > > Cc: Ertman, David M <david.m.ertman@intel.com>;
+> > > netdev@vger.kernel.org; linux-rdma@vger.kernel.org;
+> > > nhorman@redhat.com; sassmann@redhat.com; jgg@ziepe.ca; Patil,
+> Kiran
+> > > <kiran.patil@intel.com>
+> > > Subject: RE: [net-next v2 1/1] virtual-bus: Implementation of
+> > > Virtual Bus
+> > >
+> > > Hi Jeff,
+> > >
+> > > > From: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+> > > > Sent: Friday, November 15, 2019 4:34 PM
+> > > >
+> > > > From: Dave Ertman <david.m.ertman@intel.com>
+> > > >
+> > > > This is the initial implementation of the Virtual Bus,
+> > > > virtbus_device and virtbus_driver.  The virtual bus is a software
+> > > > based bus intended to support lightweight devices and drivers and
+> > > > provide matching between them and probing of the registered drivers.
+> > > >
+> > > > The primary purpose of the virual bus is to provide matching
+> > > > services and to pass the data pointer contained in the
+> > > > virtbus_device to the virtbus_driver during its probe call.  This
+> > > > will allow two separate kernel objects to match up and start
+> > communication.
+> > > >
+> > > It is fundamental to know that rdma device created by virtbus_driver
+> > > will be anchored to which bus for an non abusive use.
+> > > virtbus or parent pci bus?
+> > > I asked this question in v1 version of this patch.
+> >
+> > The model we will be using is a PCI LAN driver that will allocate and
+> > register a virtbus_device.  The virtbus_device will be anchored to the
+> > virtual bus, not the PCI bus.
+> o.k.
+> 
+> >
+> > The virtbus does not have a requirement that elements registering with
+> > it have any association with another outside bus or device.
+> >
+> This is what I want to capture in cover letter and documentation.
+> 
+> > RDMA is not attached to any bus when it's init is called.  The
+> > virtbus_driver that it will create will be attached to the virtual bus.
+> >
+> > The RDMA driver will register a virtbus_driver object.  Its probe will
+> > accept the data pointer from the virtbus_device that the PCI LAN driver
+> created.
+> >
+> What I am saying that RDMA device created by the irdma driver or mlx5_ib
+> driver should be anchored to the PCI device and not the virtbus device.
+> 
+> struct ib_device.dev.parent = &pci_dev->dev;
+> 
+> if this is not done, and if it is,
+> 
+> struct ib_device.dev.parent = &virtbus_dev->dev;
+> 
+> Than we are inviting huge burden as below.
+> (a) user compatibility with several tools, orchestration etc is broken, because
+> rdma cannot be reached back to its PCI device as before.
+> This is some internal kernel change for 'better code handling', which is
+> surfacing to rdma device name changing - systemd/udev broken, until all
+> distros upgrade and implement this virtbus naming scheme.
+> Even with that orchestration tools shipped outside of distro are broken.
+> 
+> (b) virtbus must extend iommu support in intel, arm, amd, ppc systems
+> otherwise straight away rdma is broken in those environments with this
+> 'internal code restructure'.
+> These iommu doesn't support non PCI buses.
+> 
+> (c) anchoring on virtbus brings challenge to get unique id for persistent
+> naming when irdma/mlx5_ib device is not created by 'user'.
+> 
+> This improvement by bus matching service != 'ethX to ens2f0 improvement
+> of netdevs happened few years back'.
+> Hence, my input is,
+> 
+> irdma_virtubus_probe() {
+> 	struct ib_device.dev.parent = &pci_dev->dev;
+> 	ib_register_driver();
+> }
+> 
 
-I never got a clear answer about your preference either way.
+Sounds reasonable.  In our actual consumer, we will set the parent device to the PCI device,
+which I believe we are doing in the irdma driver already.
+But, this is a consideration outside of the virtbus scope, since its purpose is only matching
+up two kernel objects.
 
-IMO making this into a non-inline function is necessary to support
-either a static trace point here, or to have a place to put a
-convenient dynamic trace point via eBPF. I don't believe it will
-add noticeable overhead -- in particular, under heavy load, poll_cq
-is invoked once every 16 completions.
+> > >
+> > > Also since it says - 'to support lightweight devices', documenting
+> > > that information is critical to avoid ambiguity.
+> > >
+> > > Since for a while I am working on the subbus/subdev_bus/xbus/mdev
+> > > [1] whatever we want to call it, it overlaps with your comment about
+> > > 'to support lightweight devices'.
+> > > Hence let's make things crystal clear weather the purpose is 'only
+> > > matching service' or also 'lightweight devices'.
+> > > If this is only matching service, lets please remove lightweight devices
+> part..
+> > >
+> >
+> > This is only for matching services for kernel objects, I will work on
+> > phrasing this clearer.
+> >
+> 
+> Ok. Great. Due to above two fundamental points, we clearly write up the
+> matching service.
+> Not sure naming virtbus to 'virbus_service' in bus_type is an extreme way to
+> make this clear.
+> 
+> > > You additionally need modpost support for id table integration to
+> > > modifo, modprobe and other tools.
+> > > A small patch similar to this one [2] is needed.
+> > > Please include in the series.
+> > >
+> >
+> > modpost support added - thanks for that catch!
+> >
+> > > [..]
+> > >
+> > > > +static const
+> > > > +struct virtbus_dev_id *virtbus_match_id(const struct virtbus_dev_id
+> *id,
+> > > > +					struct virtbus_device *vdev) {
+> > > > +	while (id->name[0]) {
+> > > > +		if (!strcmp(vdev->name, id->name)) {
+> > > > +			vdev->dev_id = id;
+> > > Matching function shouldn't be modifying the id.
+> >
+> > This is not the main id of the virtbus_device.  This is copying the
+> > element in the driver id_table that was matched into the
+> > virtbus_device struct, so that when the virtbus_device struct is
+> > passed to the virtbus_driver's probe, it can access the correct driver_data.
+> >
+> > I chose a poor name for this field, I will change the name of this
+> > part of the struct to matched_element and include a comment on what is
+> going on here.
+> >
+> When virtbus_device is created, its class_id or device_id identifying the
+> device is decided.
+> So it should be set in the create() routine.
 
-On the other hand, it's not clear to me that the latency calculation
-will work correctly with callers outside of cq.c ...
+That is where it is set.  What is happening in the match routine is the same thing that the
+platform bus is doing in its id_table match, copying a piece of data specific to this match
+into the device so that the driver can access it in the probe call.
 
---
-Chuck Lever
-
-
-
+Again, I *really* appreciate the feedback.  It has been very helpful!
