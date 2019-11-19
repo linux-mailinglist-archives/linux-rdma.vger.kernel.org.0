@@ -2,107 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6A4102BE1
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 19:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 836D2102C2C
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 19:58:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbfKSSqz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Nov 2019 13:46:55 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:41597 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727016AbfKSSqz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 13:46:55 -0500
-Received: by mail-qt1-f195.google.com with SMTP id o3so25785844qtj.8
-        for <linux-rdma@vger.kernel.org>; Tue, 19 Nov 2019 10:46:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=waPjNxESq+kQZWKTUPCCcC8rNU3LzzlpjxRRJn5dBkY=;
-        b=dMVRKRRRyS/Z2VjIRMF5u0HVZohbRbYjFI9925oSG5pnpJIDlQBjgnxkqlYMtIES66
-         magdmktzu82CONI1D6A731J+jKUTo9yQlyHN/cOCjj66zWbkms+zMVBAaPA6CsFnTYPj
-         uJ6Z1SOlLzAjD0S1so69PjXwBA5CzbebtzPimiDo5/Ek29cIyhwlImlMBWoYt1eGEhX1
-         03Ppca8MHX+rWTzY5fz7qyqYgY0HaXm96b5Y1jO8MrofSj6Yw9KkIAi2PDdiL+WK8JTH
-         tnvWUuPr1KJ4Au+1ZOGvyLjSUddTvssm/rTYcpeCS/AwusqTfOuVV4QgEszzZ6xmBHUw
-         HFsA==
+        id S1727436AbfKSS6z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Nov 2019 13:58:55 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39766 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726939AbfKSS6z (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 13:58:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1574189934;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gFWTHuIB+L6IZSct+FIzo+M5q3SYg/8/nPaBMk+3VaU=;
+        b=AQbhOkW9xl9SMxD6jF+ytByFSscsCtEsDGnnpUZyYH91sQ2tLDTUhhzHH/dSO0lZxzVGYF
+        t5WqJ89+cUrDR0kv5KjsiaJihB495DXCOIgcVGP3vyYjqhgQ8sLgjweN7DeDR+uOIJWOm+
+        qnKVfr15QamYKrgndjyjg2LHnt7K26Y=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-150-DNT1VujGOwyooLM-KGKRCA-1; Tue, 19 Nov 2019 13:58:50 -0500
+Received: by mail-qt1-f199.google.com with SMTP id n34so15272802qta.12
+        for <linux-rdma@vger.kernel.org>; Tue, 19 Nov 2019 10:58:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=waPjNxESq+kQZWKTUPCCcC8rNU3LzzlpjxRRJn5dBkY=;
-        b=YvjhyDGZKsxP+YrrBtyepgQMRJY91tqnXVRmNm0GtQnkepSPla8CwwHiN/GTZVP0Ek
-         kZSz6kv/FYQLOGDlMua9YpUrxIF2XETzYiJOXsm37C4pu0HVAXLXoKYxIpzOQwlt7vfO
-         YbrXSyOM3d2rOUWE84dWu4AIIp678u3Sr27gVGdcKmfW7NrmGiTxzmPegUa33D8zZqvK
-         f9J8QhTKPLWz3xz1a+PuFEy2InMwvPCRSo5HcfyuslLWdeI5xZ4sp8IXe3qJ5juECQBm
-         9dfBxSMs3cx1HQQCotdtd2ZVBFtYN5mWYgMKrExqvVfpGY9qDgmpgSQy2raTOUVsszVJ
-         5wcg==
-X-Gm-Message-State: APjAAAWLp/WJirJ602aBF/pIBGCI/pR1RkmWmK1oBXG8RC+quQg8x9x+
-        Km8NgVw65ixzet59WVhr8hmNxw==
-X-Google-Smtp-Source: APXvYqzxMOh9qTELll3W9OpwNWBs1NyGIZl+b9apMVYhjp8Zd8wYsT0KHsLoAM9YOAv8kVNYYsuW7g==
-X-Received: by 2002:ac8:33fb:: with SMTP id d56mr35085102qtb.377.1574189214045;
-        Tue, 19 Nov 2019 10:46:54 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id f2sm10104929qkm.130.2019.11.19.10.46.52
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 19 Nov 2019 10:46:53 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iX8Wa-0002NY-Ds; Tue, 19 Nov 2019 14:46:52 -0400
-Date:   Tue, 19 Nov 2019 14:46:52 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Liuyixian (Eason)" <liuyixian@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v2 for-next 1/2] RDMA/hns: Add the workqueue framework
- for flush cqe handler
-Message-ID: <20191119184652.GH4991@ziepe.ca>
-References: <1573563124-12579-1-git-send-email-liuyixian@huawei.com>
- <1573563124-12579-2-git-send-email-liuyixian@huawei.com>
- <20191115210621.GE4055@ziepe.ca>
- <523cf93d-a849-ab24-36f0-903fb1afe7ff@huawei.com>
- <20191118170229.GC2149@ziepe.ca>
- <ace6095b-f8ba-80ca-7466-fcbf0c848a33@huawei.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=EjrhTZUF7jtDysVYJRqGuNLeGXSR7KDqe9NefhbwW0U=;
+        b=K7Tjki7bQBgX3oENH/c0h7azTcCMvuz+VPl1pELwmuzlf/CEhQiPAruMu6PGXkSNcd
+         FVRQ4H4EhaCCRaICCjVXsM4WN+DcITVsmyQrY8evc2qMdLtkUEMkK9xm6DXQ/jJshohE
+         Ic0eQJYD3V60YhkLGbyOLchY3/8JGt9K0XURflSHySdwwoqHHhxKr0Q9O8Fu0nSDKL3u
+         G41DSGgbT4IWtDu1pmHkxnX5KRcKeIWs+wQjM3qvO1HgYhbD6HafWC4eNDO43IxgA+tv
+         d+k1yANYhNyGdDF66mvugKtOghxg405i/agMk7VSPtVP+cOKHASJxMbjgBCTXIlm4hjn
+         SLkQ==
+X-Gm-Message-State: APjAAAVg70BmS9LG/qLpjl3AAII72r5iWiY0EPoXeZp/ClD0uLfPK9F0
+        DUFn0CSYGlfSnY4cqM+LPUOqXcoLmttS68nlFf1bpm/wvGDqig7pTm7apP1TKbUDQtsroVUNMa4
+        mVmrsuV71FBtCSEda806Eog==
+X-Received: by 2002:a37:3c8:: with SMTP id 191mr29472492qkd.77.1574189930455;
+        Tue, 19 Nov 2019 10:58:50 -0800 (PST)
+X-Google-Smtp-Source: APXvYqwnBZAF+Wt1CXxfcMn6Q/+Z+4iK6XGfqiua/IbAXSkx+t9b7Vkf5iIeIpKwNaUzLal2VrJvnQ==
+X-Received: by 2002:a37:3c8:: with SMTP id 191mr29472450qkd.77.1574189930141;
+        Tue, 19 Nov 2019 10:58:50 -0800 (PST)
+Received: from redhat.com (bzq-79-176-6-42.red.bezeqint.net. [79.176.6.42])
+        by smtp.gmail.com with ESMTPSA id y29sm13298234qtc.8.2019.11.19.10.58.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Nov 2019 10:58:49 -0800 (PST)
+Date:   Tue, 19 Nov 2019 13:58:42 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        Kiran Patil <kiran.patil@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Bie, Tiwei" <tiwei.bie@intel.com>
+Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Message-ID: <20191119134822-mutt-send-email-mst@kernel.org>
+References: <20191115223355.1277139-1-jeffrey.t.kirsher@intel.com>
+ <AM0PR05MB4866CF61828A458319899664D1700@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <a40c09ee-0915-f10c-650e-7539726a887b@redhat.com>
+ <AM0PR05MB4866C40A177D3D60BFC558F7D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <13946106-dab2-6bbe-df79-ca6dfdeb4c51@redhat.com>
+ <AM0PR05MB486685F7C839AD8A5F3EEA91D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <ead356f5-db81-cb01-0d74-b9e34965a20f@redhat.com>
+ <20191119164632.GA4991@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20191119164632.GA4991@ziepe.ca>
+X-MC-Unique: DNT1VujGOwyooLM-KGKRCA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-In-Reply-To: <ace6095b-f8ba-80ca-7466-fcbf0c848a33@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 19, 2019 at 04:00:00PM +0800, Liuyixian (Eason) wrote:
-> 
-> 
-> On 2019/11/19 1:02, Jason Gunthorpe wrote:
-> > On Mon, Nov 18, 2019 at 09:50:24PM +0800, Liuyixian (Eason) wrote:
-> >>> It kind of looks like this can be called multiple times? It won't work
-> >>> right unless it is called exactly once
-> >>>
-> >>> Jason
-> >>
-> >> Yes, you are right.
-> >>
-> >> So I think the reasonable solution is to allocate it dynamically, and I think
-> >> it is a very very little chance that the allocation will be failed. If this happened,
-> >> I think the application also needs to be over.
-> > 
-> > Why do you need more than one work in parallel for this? Once you
-> > start to move the HW to error that only has to happen once, surely?
-> > 
-> > Jason
->
-> The flush operation moves QP, not the HW to error.
-> 
-> For the QP, maybe the process A is posting send while the other
-> process B is modifying qp to error, both of these two operation
-> needs to initialize one flush work. That's why it could be called
-> multiple times.
+On Tue, Nov 19, 2019 at 12:46:32PM -0400, Jason Gunthorpe wrote:
+> As always, this is all very hard to tell without actually seeing real
+> accelerated drivers implement this.=20
+>=20
+> Your patch series might be a bit premature in this regard.
 
-The work function does something that looks like it only has to happen
-once per QP.
+Actually drivers implementing this have been posted, haven't they?
+See e.g. https://lwn.net/Articles/804379/
 
-One do you need to keep re-queing this thing every time the user posts
-a WR?
+--=20
+MST
 
-Jason
