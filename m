@@ -2,196 +2,383 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E32101A66
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 08:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E64F8101A79
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 08:45:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727345AbfKSHjA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Nov 2019 02:39:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60374 "EHLO mail.kernel.org"
+        id S1725869AbfKSHpU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Nov 2019 02:45:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbfKSHi7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 19 Nov 2019 02:38:59 -0500
+        id S1725536AbfKSHpU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Nov 2019 02:45:20 -0500
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B4AE21850;
-        Tue, 19 Nov 2019 07:38:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 96EC721850;
+        Tue, 19 Nov 2019 07:45:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574149139;
-        bh=DhlSvKBrxz4Njc9o1R2La335E0GDrmcz/MzyQYVftBs=;
+        s=default; t=1574149519;
+        bh=cssjwG9WVXokLPyucCxY3vhhz41ZBfpfA4hUhjKkQOc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xMIizeLive0Ny05YRpZLV96JJtTaXzpeS9/tq0RojVPMql8Xzp3u46TBwdhuYlsj0
-         1dbjbbvd6bd2iU6c1cs1Pk3l0nFYZdcRGgUiE9TelTEDQcBnPxsNxsOCsqRa0Rg0Zg
-         yX52h2Emu/CFcQvo7ntoQrCotWyyTUMXLxx6+g2M=
-Date:   Tue, 19 Nov 2019 09:38:54 +0200
+        b=sWoHuSCcGz+ekVhGi1ymDXjHXeByXLNxnlDHqNeCbYxfYSFn/7TyzzyfzJDpdSlk7
+         N7DrBgP3uw6i6gMEAm8hUQVn2oW6j77May/BTSqxmS57BONRo/KgR2AoN6g0ftFlbK
+         kIUkSbH4kOX7zIgDibbwl1VvbW1YieySxVThBjXI=
+Date:   Tue, 19 Nov 2019 09:45:16 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     wangqi <3100102071@zju.edu.cn>
+To:     Chuck Lever <chuck.lever@oracle.com>
 Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [question]Why our soft-RoCE throughput is quite low compared
- with TCP
-Message-ID: <20191119073854.GF52766@unreal>
-References: <f97b72b6-4def-2970-c9f6-f11b97d5378e@zju.edu.cn>
- <20191115160707.GG6763@unreal>
- <df9fb9b8-4b1f-2cf7-2498-648627556006@zju.edu.cn>
- <20191118094924.GA52766@unreal>
- <0bb80672-3980-04e7-5cf1-846b517ad53e@zju.edu.cn>
- <20191118122803.GC52766@unreal>
- <b522945c-6995-06de-b22c-9285fbe65d66@zju.edu.cn>
- <20191118144155.GE52766@unreal>
- <95220ca0-5df5-b70c-8f29-30410fd568c7@zju.edu.cn>
+Subject: Re: [PATCH v6 2/2] RDMA/cma: Add trace points in RDMA Connection
+ Manager
+Message-ID: <20191119074516.GG52766@unreal>
+References: <20191118214447.27891.58814.stgit@manet.1015granger.net>
+ <20191118214915.27891.61202.stgit@manet.1015granger.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <95220ca0-5df5-b70c-8f29-30410fd568c7@zju.edu.cn>
+In-Reply-To: <20191118214915.27891.61202.stgit@manet.1015granger.net>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 19, 2019 at 08:22:34AM +0800, wangqi wrote:
+On Mon, Nov 18, 2019 at 04:49:15PM -0500, Chuck Lever wrote:
+> Record state transitions as each connection is established. The IP
+> address of both peers and the Type of Service is reported. These
+> new trace points are not in performance hot paths.
 >
-> On 2019/11/18 下午10:41, Leon Romanovsky wrote:
-> > On Mon, Nov 18, 2019 at 08:56:35PM +0800, wangqi wrote:
-> >> On 2019/11/18 下午8:28, Leon Romanovsky wrote:
-> >>> On Mon, Nov 18, 2019 at 06:13:07PM +0800, wangqi wrote:
-> >>>> On 2019/11/18 下午5:49, Leon Romanovsky wrote:
-> >>>>> On Mon, Nov 18, 2019 at 02:38:19PM +0800, wangqi wrote:
-> >>>>>> On 2019/11/16 上午12:07, Leon Romanovsky wrote:
-> >>>>>>
-> >>>>>>> On Fri, Nov 15, 2019 at 09:26:41PM +0800, QWang wrote:
-> >>>>>>>> Dear experts on RDMA,
-> >>>>>>>>       We are sorry to disturb you. Because of a project, we need to
-> >>>>>>>> integrate soft-RoCE in our system. However ,we are very confused by our
-> >>>>>>>> soft-RoCE throughput results, which are quite low compared with TCP
-> >>>>>>>> throughput. The throughput of soft-RoCE in our tests measured by ib_send_bw
-> >>>>>>>> and ib_read_bw is only 2 Gbps (the net link bandwidth is 100 Gbps and the
-> >>>>>>>> two Xeon E5 servers with Mellanox ConnectX-4 cards are connected via
-> >>>>>>>> back-to-back, the OS is ubuntu16.04 with kernel 4.15.0-041500-generic). The
-> >>>>>>>> throughput of hard-RoCE and TCP are normal, which are 100 Gbps and 20 Gbps,
-> >>>>>>>> respectively. But in the figure 6 in the attached paper "A Performance
-> >>>>>>>> Comparison of Container Networking Alternatives", the throughput of
-> >>>>>>>> soft-RoCE can be up to 23 Gbps.  In our tests, we get the open-source
-> >>>>>>>> soft-RoCE from github in https://github.com/linux-rdma. Do you know how can
-> >>>>>>>> we get such high bandwidth? Do we need to configure some OS system settings?
-> >>>>>>>>       We find that in 2017, someone finds the same problem and he posts all
-> >>>>>>>> his detailed results on https://bugzilla.kernel.org/show_bug.cgi?id=190951  
-> >>>>>>>> . But it remains unsolved. His results are nearly the same with our's. For
-> >>>>>>>> simplicity,  we do not post our results in this email. You can get very
-> >>>>>>>> detailed information in the web page listed above.
-> >>>>>>>>       We are very confused by our results. We will very appreciate it if we
-> >>>>>>>> can receive your early reply. Best wishes,
-> >>>>>>>> Wang Qi
-> >>>>>>> Can you please fix your email client?
-> >>>>>>> The email text looks like one big sentence.
-> >>>>>>>
-> >>>>>>> From the perf report attached to this bugzilla, looks like RXE does a
-> >>>>>>> lot of CRC32 calculations and it is consistent with what Matan said
-> >>>>>>> a long time ago, RXE "stuck" in ICRC calculations required by spec.
-> >>>>>>>
-> >>>>>>> I'm curios what are your CONFIG_CRYPTO_* configs?
-> >>>>>>>
-> >>>>>>> ThanksCONFIG_CRYPTO_* configs
-> >>>>>>>
-> >>>>>>>
-> >>>>>> I'm sorry for the editor problem in my last email. Now I use another editor.
-> >>>>> Now your email has extra line between lines.
-> >>>>>
-> >>>>>> We get our rdma-core and perftest from
-> >>>>>>
-> >>>>>> https://github.com/linux-rdma/rdma-core/archive/v25.0.tar.gz
-> >>>>>> and https://github.com/linux-rdma/perftest/archive/4.4-0.8.tar.gz, respectively.
-> >>>>>>
-> >>>>>> We attach five files to clarify our problem.
-> >>>>>>
-> >>>>>> * The first file "server_tcp_vs_softroce_performance.txt" is the results of TCP
-> >>>>>>
-> >>>>>> and softroce throughput in our two servers (connected via back to back).
-> >>>>>>
-> >>>>>> * The second file "server_CONFIG_CRYPTO_result.txt" is the
-> >>>>>>
-> >>>>>> CONFIG_CRYPTO_* config results in the two servers..
-> >>>>>>
-> >>>>>> * The third file "server_perf.txt" is the "ib_send_bw - n 10000 192.168.0.20
-> >>>>>>
-> >>>>>> & perf record -ags sleep 10 & wait" results in our two servers (we use
-> >>>>>>
-> >>>>>> "perf report --header >perf" to make the file).
-> >>>>>>
-> >>>>>> * The fourth file "vm_tcp_vs_softroce_performance.txt" is the results of TCP
-> >>>>>>
-> >>>>>> and softroce throughput in two virtual machines with the latest linux kernel
-> >>>>>>
-> >>>>>> 5.4.0-rc7
-> >>>>>>
-> >>>>>> (we get the kernel from https://github.com/torvalds/linux/archive/v5.4-rc7.zip).
-> >>>>>>
-> >>>>>> * The fifth  file "vm_CONFIG_CRYPTO_result.txt" is the result in two virtual
-> >>>>>>
-> >>>>>> machines.
-> >>>>>>
-> >>>>>> * The sixth file "vm_perf.txt" is the "ib_send_bw - n 10000 192.168.122.228
-> >>>>>>
-> >>>>>> & perf record -ags sleep 10 & wait " result in the two virtual machines.
-> >>>>>>
-> >>>>>> On the other side, we tried to use the rxe command "rxe_cfg crc disable"
-> >>>>> I don't see any parsing of "crc disable" in upstream variant of rxe_cfg
-> >>>>> and there is no such module parameter in the kernel.
-> >>>>>
-> >>>>> Thanks
-> >>>> We get the command "rxe_cfg crc disable" from the following webpages:
-> >>>>
-> >>>> https://www.systutorials.com/docs/linux/man/8-rxe_cfg/
-> >>>>
-> >>>> https://www.reflectionsofthevoid.com/2011/08/
-> >>>>
-> >>>> It may be removed in the present soft-roce edition.
-> >>> It was never existed in upstream variant and in the kernel you are testing.
-> >>>
-> >>>> Can you figure out why our softroce throughput is so low from the six
-> >>> According to the logs, it is ICRC.
-> >>>
-> >>>> files in our last email? We hope to get a much higher softroce throughput,
-> >>>>
-> >>>> like 20 Gbps in our systems (now it's only 2 Gbps, and hard-roce can be
-> >>>>
-> >>>> up to 100 Gbps in our system).
-> >>>>
-> >>>> Qi
-> >>>>
-> >>>>
-> >> We try to use "rxe_cfg icrc disable" and "rxe_cfg ICRC disable", but it
-> >>
-> >> seems that the performance doesn't change at all.
-> > Why are you continuing to try "disable" if your kernel and rdma-core don't support it?
-> >
-> > Thanks
-> >
-> >> Qi
-> >>
-> >>
-> >>
+> Also, record each cm_event_handler call to ULPs. This eliminates the
+> need for each ULP to add its own similar trace point in its CM event
+> handler function.
 >
-> Thank you.
+> These new trace points appear in a new trace subsystem called
+> "rdma_cma".
 >
-> Can you tell us the edition of OS, kernel and softroce in your system?
+> This patch is based on previous work by:
 >
-> So we can install the same edition and make our softroce work well.
+> Saeed Mahameed <saeedm@mellanox.com>
+> Mukesh Kacker <mukesh.kacker@oracle.com>
+> Ajaykumar Hotchandani <ajaykumar.hotchandani@oracle.com>
+> Aron Silverton <aron.silverton@oracle.com>
+> Avinash Repaka <avinash.repaka@oracle.com>
+> Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
 >
-> By the way, can you tell me the softroce throughput (measured by
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+>  drivers/infiniband/core/Makefile    |    2
+>  drivers/infiniband/core/cma.c       |   60 +++++++---
+>  drivers/infiniband/core/cma_trace.c |   16 +++
+>  include/trace/events/rdma_cma.h     |  218 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 279 insertions(+), 17 deletions(-)
+>  create mode 100644 drivers/infiniband/core/cma_trace.c
+>  create mode 100644 include/trace/events/rdma_cma.h
 >
-> ib_send_bw or ib_read_bw) and the TCP throughput (measured by
+> diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
+> index 68d9e27c3c61..bab7b6f01982 100644
+> --- a/drivers/infiniband/core/Makefile
+> +++ b/drivers/infiniband/core/Makefile
+> @@ -20,7 +20,7 @@ ib_cm-y :=			cm.o
 >
-> iperf) in your system?
+>  iw_cm-y :=			iwcm.o iwpm_util.o iwpm_msg.o
+>
+> -rdma_cm-y :=			cma.o
+> +rdma_cm-y :=			cma.o cma_trace.o
+>
+>  rdma_cm-$(CONFIG_INFINIBAND_ADDR_TRANS_CONFIGFS) += cma_configfs.o
+>
+> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> index d78f67623f24..5d5e63336954 100644
+> --- a/drivers/infiniband/core/cma.c
+> +++ b/drivers/infiniband/core/cma.c
+> @@ -64,6 +64,8 @@
+>  #include "core_priv.h"
+>  #include "cma_priv.h"
+>
+> +#include <trace/events/rdma_cma.h>
+> +
+>  MODULE_AUTHOR("Sean Hefty");
+>  MODULE_DESCRIPTION("Generic RDMA CM Agent");
+>  MODULE_LICENSE("Dual BSD/GPL");
+> @@ -1890,6 +1892,7 @@ static int cma_rep_recv(struct rdma_id_private *id_priv)
+>  	if (ret)
+>  		goto reject;
+>
+> +	trace_cm_send_rtu(id_priv);
+>  	ret = ib_send_cm_rtu(id_priv->cm_id.ib, NULL, 0);
+>  	if (ret)
+>  		goto reject;
+> @@ -1898,6 +1901,7 @@ static int cma_rep_recv(struct rdma_id_private *id_priv)
+>  reject:
+>  	pr_debug_ratelimited("RDMA CM: CONNECT_ERROR: failed to handle reply. status %d\n", ret);
+>  	cma_modify_qp_err(id_priv);
+> +	trace_cm_send_rej(id_priv);
+>  	ib_send_cm_rej(id_priv->cm_id.ib, IB_CM_REJ_CONSUMER_DEFINED,
+>  		       NULL, 0, NULL, 0);
+>  	return ret;
+> @@ -1917,6 +1921,13 @@ static void cma_set_rep_event_data(struct rdma_cm_event *event,
+>  	event->param.conn.qp_num = rep_data->remote_qpn;
+>  }
+>
+> +static int cma_cm_event_handler(struct rdma_id_private *id_priv,
+> +				struct rdma_cm_event *event)
+> +{
+> +	trace_cm_event_handler(id_priv, event);
+> +	return id_priv->id.event_handler(&id_priv->id, event);
+> +}
+> +
+>  static int cma_ib_handler(struct ib_cm_id *cm_id,
+>  			  const struct ib_cm_event *ib_event)
+>  {
+> @@ -1939,8 +1950,10 @@ static int cma_ib_handler(struct ib_cm_id *cm_id,
+>  		break;
+>  	case IB_CM_REP_RECEIVED:
+>  		if (cma_comp(id_priv, RDMA_CM_CONNECT) &&
+> -		    (id_priv->id.qp_type != IB_QPT_UD))
+> +		    (id_priv->id.qp_type != IB_QPT_UD)) {
+> +			trace_cm_send_mra(id_priv);
+>  			ib_send_cm_mra(cm_id, CMA_CM_MRA_SETTING, NULL, 0);
+> +		}
+>  		if (id_priv->id.qp) {
+>  			event.status = cma_rep_recv(id_priv);
+>  			event.event = event.status ? RDMA_CM_EVENT_CONNECT_ERROR :
+> @@ -1985,7 +1998,7 @@ static int cma_ib_handler(struct ib_cm_id *cm_id,
+>  		goto out;
+>  	}
+>
+> -	ret = id_priv->id.event_handler(&id_priv->id, &event);
+> +	ret = cma_cm_event_handler(id_priv, &event);
+>  	if (ret) {
+>  		/* Destroy the CM ID by returning a non-zero value. */
+>  		id_priv->cm_id.ib = NULL;
+> @@ -2146,6 +2159,7 @@ static int cma_ib_req_handler(struct ib_cm_id *cm_id,
+>  	if (IS_ERR(listen_id))
+>  		return PTR_ERR(listen_id);
+>
+> +	trace_cm_req_handler(listen_id, ib_event->event);
+>  	if (!cma_ib_check_req_qp_type(&listen_id->id, ib_event)) {
+>  		ret = -EINVAL;
+>  		goto net_dev_put;
+> @@ -2188,7 +2202,7 @@ static int cma_ib_req_handler(struct ib_cm_id *cm_id,
+>  	 * until we're done accessing it.
+>  	 */
+>  	atomic_inc(&conn_id->refcount);
+> -	ret = conn_id->id.event_handler(&conn_id->id, &event);
+> +	ret = cma_cm_event_handler(conn_id, &event);
+>  	if (ret)
+>  		goto err3;
+>  	/*
+> @@ -2197,8 +2211,10 @@ static int cma_ib_req_handler(struct ib_cm_id *cm_id,
+>  	 */
+>  	mutex_lock(&lock);
+>  	if (cma_comp(conn_id, RDMA_CM_CONNECT) &&
+> -	    (conn_id->id.qp_type != IB_QPT_UD))
+> +	    (conn_id->id.qp_type != IB_QPT_UD)) {
+> +		trace_cm_send_mra(cm_id->context);
+>  		ib_send_cm_mra(cm_id, CMA_CM_MRA_SETTING, NULL, 0);
+> +	}
+>  	mutex_unlock(&lock);
+>  	mutex_unlock(&conn_id->handler_mutex);
+>  	mutex_unlock(&listen_id->handler_mutex);
+> @@ -2313,7 +2329,7 @@ static int cma_iw_handler(struct iw_cm_id *iw_id, struct iw_cm_event *iw_event)
+>  	event.status = iw_event->status;
+>  	event.param.conn.private_data = iw_event->private_data;
+>  	event.param.conn.private_data_len = iw_event->private_data_len;
+> -	ret = id_priv->id.event_handler(&id_priv->id, &event);
+> +	ret = cma_cm_event_handler(id_priv, &event);
+>  	if (ret) {
+>  		/* Destroy the CM ID by returning a non-zero value. */
+>  		id_priv->cm_id.iw = NULL;
+> @@ -2390,7 +2406,7 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
+>  	 * until we're done accessing it.
+>  	 */
+>  	atomic_inc(&conn_id->refcount);
+> -	ret = conn_id->id.event_handler(&conn_id->id, &event);
+> +	ret = cma_cm_event_handler(conn_id, &event);
+>  	if (ret) {
+>  		/* User wants to destroy the CM ID */
+>  		conn_id->cm_id.iw = NULL;
+> @@ -2462,6 +2478,7 @@ static int cma_listen_handler(struct rdma_cm_id *id,
+>
+>  	id->context = id_priv->id.context;
+>  	id->event_handler = id_priv->id.event_handler;
+> +	trace_cm_event_handler(id_priv, event);
+>  	return id_priv->id.event_handler(id, event);
+>  }
+>
+> @@ -2636,7 +2653,7 @@ static void cma_work_handler(struct work_struct *_work)
+>  	if (!cma_comp_exch(id_priv, work->old_state, work->new_state))
+>  		goto out;
+>
+> -	if (id_priv->id.event_handler(&id_priv->id, &work->event)) {
+> +	if (cma_cm_event_handler(id_priv, &work->event)) {
+>  		cma_exch(id_priv, RDMA_CM_DESTROYING);
+>  		destroy = 1;
+>  	}
+> @@ -2659,7 +2676,7 @@ static void cma_ndev_work_handler(struct work_struct *_work)
+>  	    id_priv->state == RDMA_CM_DEVICE_REMOVAL)
+>  		goto out;
+>
+> -	if (id_priv->id.event_handler(&id_priv->id, &work->event)) {
+> +	if (cma_cm_event_handler(id_priv, &work->event)) {
+>  		cma_exch(id_priv, RDMA_CM_DESTROYING);
+>  		destroy = 1;
+>  	}
+> @@ -3062,7 +3079,7 @@ static void addr_handler(int status, struct sockaddr *src_addr,
+>  	} else
+>  		event.event = RDMA_CM_EVENT_ADDR_RESOLVED;
+>
+> -	if (id_priv->id.event_handler(&id_priv->id, &event)) {
+> +	if (cma_cm_event_handler(id_priv, &event)) {
+>  		cma_exch(id_priv, RDMA_CM_DESTROYING);
+>  		mutex_unlock(&id_priv->handler_mutex);
+>  		rdma_destroy_id(&id_priv->id);
+> @@ -3709,7 +3726,7 @@ static int cma_sidr_rep_handler(struct ib_cm_id *cm_id,
+>  		goto out;
+>  	}
+>
+> -	ret = id_priv->id.event_handler(&id_priv->id, &event);
+> +	ret = cma_cm_event_handler(id_priv, &event);
+>
+>  	rdma_destroy_ah_attr(&event.param.ud.ah_attr);
+>  	if (ret) {
+> @@ -3773,6 +3790,7 @@ static int cma_resolve_ib_udp(struct rdma_id_private *id_priv,
+>  	req.timeout_ms = 1 << (CMA_CM_RESPONSE_TIMEOUT - 8);
+>  	req.max_cm_retries = CMA_MAX_CM_RETRIES;
+>
+> +	trace_cm_send_sidr_req(id_priv);
+>  	ret = ib_send_cm_sidr_req(id_priv->cm_id.ib, &req);
+>  	if (ret) {
+>  		ib_destroy_cm_id(id_priv->cm_id.ib);
+> @@ -3846,6 +3864,7 @@ static int cma_connect_ib(struct rdma_id_private *id_priv,
+>  	req.max_cm_retries = CMA_MAX_CM_RETRIES;
+>  	req.srq = id_priv->srq ? 1 : 0;
+>
+> +	trace_cm_send_req(id_priv);
+>  	ret = ib_send_cm_req(id_priv->cm_id.ib, &req);
+>  out:
+>  	if (ret && !IS_ERR(id)) {
+> @@ -3959,6 +3978,7 @@ static int cma_accept_ib(struct rdma_id_private *id_priv,
+>  	rep.rnr_retry_count = min_t(u8, 7, conn_param->rnr_retry_count);
+>  	rep.srq = id_priv->srq ? 1 : 0;
+>
+> +	trace_cm_send_rep(id_priv);
+>  	ret = ib_send_cm_rep(id_priv->cm_id.ib, &rep);
+>  out:
+>  	return ret;
+> @@ -4008,6 +4028,7 @@ static int cma_send_sidr_rep(struct rdma_id_private *id_priv,
+>  	rep.private_data = private_data;
+>  	rep.private_data_len = private_data_len;
+>
+> +	trace_cm_send_sidr_rep(id_priv);
+>  	return ib_send_cm_sidr_rep(id_priv->cm_id.ib, &rep);
+>  }
+>
+> @@ -4093,13 +4114,15 @@ int rdma_reject(struct rdma_cm_id *id, const void *private_data,
+>  		return -EINVAL;
+>
+>  	if (rdma_cap_ib_cm(id->device, id->port_num)) {
+> -		if (id->qp_type == IB_QPT_UD)
+> +		if (id->qp_type == IB_QPT_UD) {
+>  			ret = cma_send_sidr_rep(id_priv, IB_SIDR_REJECT, 0,
+>  						private_data, private_data_len);
+> -		else
+> +		} else {
+> +			trace_cm_send_rej(id_priv);
+>  			ret = ib_send_cm_rej(id_priv->cm_id.ib,
+>  					     IB_CM_REJ_CONSUMER_DEFINED, NULL,
+>  					     0, private_data, private_data_len);
+> +		}
+>  	} else if (rdma_cap_iw_cm(id->device, id->port_num)) {
+>  		ret = iw_cm_reject(id_priv->cm_id.iw,
+>  				   private_data, private_data_len);
+> @@ -4124,8 +4147,13 @@ int rdma_disconnect(struct rdma_cm_id *id)
+>  		if (ret)
+>  			goto out;
+>  		/* Initiate or respond to a disconnect. */
+> -		if (ib_send_cm_dreq(id_priv->cm_id.ib, NULL, 0))
+> -			ib_send_cm_drep(id_priv->cm_id.ib, NULL, 0);
+> +		trace_cm_disconnect(id_priv);
+> +		if (ib_send_cm_dreq(id_priv->cm_id.ib, NULL, 0)) {
+> +			if (!ib_send_cm_drep(id_priv->cm_id.ib, NULL, 0))
+> +				trace_cm_sent_drep(id_priv);
+> +		} else {
+> +			trace_cm_sent_dreq(id_priv);
+> +		}
+>  	} else if (rdma_cap_iw_cm(id->device, id->port_num)) {
+>  		ret = iw_cm_disconnect(id_priv->cm_id.iw, 0);
+>  	} else
+> @@ -4191,7 +4219,7 @@ static int cma_ib_mc_handler(int status, struct ib_sa_multicast *multicast)
+>  	} else
+>  		event.event = RDMA_CM_EVENT_MULTICAST_ERROR;
+>
+> -	ret = id_priv->id.event_handler(&id_priv->id, &event);
+> +	ret = cma_cm_event_handler(id_priv, &event);
+>
+>  	rdma_destroy_ah_attr(&event.param.ud.ah_attr);
+>  	if (ret) {
+> @@ -4626,7 +4654,7 @@ static int cma_remove_id_dev(struct rdma_id_private *id_priv)
+>  		goto out;
+>
+>  	event.event = RDMA_CM_EVENT_DEVICE_REMOVAL;
+> -	ret = id_priv->id.event_handler(&id_priv->id, &event);
+> +	ret = cma_cm_event_handler(id_priv, &event);
+>  out:
+>  	mutex_unlock(&id_priv->handler_mutex);
+>  	return ret;
+> diff --git a/drivers/infiniband/core/cma_trace.c b/drivers/infiniband/core/cma_trace.c
+> new file mode 100644
+> index 000000000000..1093fa813bc1
+> --- /dev/null
+> +++ b/drivers/infiniband/core/cma_trace.c
+> @@ -0,0 +1,16 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Trace points for the RDMA Connection Manager.
+> + *
+> + * Author: Chuck Lever <chuck.lever@oracle.com>
+> + *
+> + * Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
+> + */
+> +
+> +#define CREATE_TRACE_POINTS
+> +
+> +#include <rdma/rdma_cm.h>
+> +#include <rdma/ib_cm.h>
+> +#include "cma_priv.h"
+> +
+> +#include <trace/events/rdma_cma.h>
+> diff --git a/include/trace/events/rdma_cma.h b/include/trace/events/rdma_cma.h
+> new file mode 100644
+> index 000000000000..b6ccdade651c
+> --- /dev/null
+> +++ b/include/trace/events/rdma_cma.h
+> @@ -0,0 +1,218 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Trace point definitions for the RDMA Connect Manager.
+> + *
+> + * Author: Chuck Lever <chuck.lever@oracle.com>
+> + *
+> + * Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
+> + */
+> +
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM rdma_cma
+> +
+> +#if !defined(_TRACE_RDMA_CMA_H) || defined(TRACE_HEADER_MULTI_READ)
+> +
+> +#define _TRACE_RDMA_CMA_H
+> +
+> +#include <linux/tracepoint.h>
+> +#include <rdma/rdma_cm.h>
+> +#include "cma_priv.h"
 
-I'm sorry, but I'm not running anything performance related on RXE,
-so I imagine that my results will be aligned with yours.
+Did it compile?
+cma_priv.h is located in drivers/infiniband/core/ and unlikely to be
+accessible from "include/trace/events/rdma_cma.h" file.
 
-RXE is used as my rapid development platform.
+BTW, can you please add example of trace output to your commit message?
+It will help users to understand immediately what they are expected to
+see after this series is applied.
 
 Thanks
-
->
-> Qi
->
