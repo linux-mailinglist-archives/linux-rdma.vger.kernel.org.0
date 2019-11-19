@@ -2,162 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E376E1019ED
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 08:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F80A101A18
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 08:13:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727545AbfKSHAh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Nov 2019 02:00:37 -0500
-Received: from hqemgate15.nvidia.com ([216.228.121.64]:14990 "EHLO
-        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726792AbfKSHAg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 02:00:36 -0500
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dd3930f0000>; Mon, 18 Nov 2019 23:00:32 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 18 Nov 2019 23:00:34 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Mon, 18 Nov 2019 23:00:34 -0800
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Nov
- 2019 07:00:34 +0000
-Subject: Re: [PATCH v5 02/24] mm/gup: factor out duplicate code from four
- routines
-To:     Jan Kara <jack@suse.cz>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        id S1726962AbfKSHNq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Nov 2019 02:13:46 -0500
+Received: from mail-eopbgr00045.outbound.protection.outlook.com ([40.107.0.45]:52968
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725869AbfKSHNq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Nov 2019 02:13:46 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WV96+Jy+32lGI5U+I1O735BHSNjLg8JqlZU9ApF5UY6j6Vo3p6E/GcGAe5xCGu49spymh6jZXddD8YyODcthwEvPkPOXZ9Og4+4ohH1aRQhZyPlGScRtd/hx7Qmopy+EBpoYBB0Xite05rnL+4CjNhsgi9x32m3YbsSgTlfPkcU21ofglVAhw3QtXqv+NKhEcjOf2lSPT28y3os9dtoWno7UVyASFUA6kfYmkEIiiTNP9WH2RRmFyFtEdm10WPtzBOdu/zi7V0s0Gu9PHC7Il7AZrJH/qCP2AF5AP/zjReooeDUhnN50pbcYwagRZom6R2QzWyOugoggrjk1Mj3HOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WydvYJfKC7ziVn8f359QmGI7zDAuEGWT8T0tDGBZkaw=;
+ b=JNTIDW6/0psb8vadeEGhWOeHUAIhee7BWD78ZjMdDS+SZJh/lheUM+HzzIeUPQ+kxaPghhbzzAAO1XqGIlBGKeEW7Ox/qq/jOHhv5X3p7m3/IT2c/BWJCf5o6OiQXBHZfPaUFeClwMAkuEYoYipvtT1Qc6wE4xMS8M1kV8oAIFUiqaKuk5/wQtcqS5g/VuyrMEg97j6EVH66+CrFtMSV+Mr7dY7XyVOGM7146mjuo/J6eq5YAX0Gihw2RwoVHMZjnRPX0fQLFfAkET/LHnDsd0nKl8KXYwDACQHkV1EXuc7nSoeVLl7Y9zu0LKtzBfTqX0ZBQ0HZKo2VCl/SNv0Bug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WydvYJfKC7ziVn8f359QmGI7zDAuEGWT8T0tDGBZkaw=;
+ b=CZH/QPijtpiPGPkyQ6UqdOdtjHt6W0ylrfxsefdVaKAnpiEALWczeT4j6cNnJLE7ppe2RbBemcmY+nUtWne3xd/8QpwldNXVTcqhQMgjJVRjVx4XfeTIe7SpCaCmxNmk6RdgltPTt/UC/jG+fYjS5wsl1SX1w8WomFENz4FRC4Q=
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
+ AM0PR05MB6306.eurprd05.prod.outlook.com (20.179.35.85) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2451.22; Tue, 19 Nov 2019 07:13:41 +0000
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::e5c2:b650:f89:12d4]) by AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::e5c2:b650:f89:12d4%7]) with mapi id 15.20.2451.029; Tue, 19 Nov 2019
+ 07:13:41 +0000
+From:   Parav Pandit <parav@mellanox.com>
+To:     Jason Wang <jasowang@redhat.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     Dave Ertman <david.m.ertman@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, Kiran Patil <kiran.patil@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-References: <20191115055340.1825745-1-jhubbard@nvidia.com>
- <20191115055340.1825745-3-jhubbard@nvidia.com>
- <20191118094604.GC17319@quack2.suse.cz>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <152e2ea9-edd9-f868-7731-ff467d692f5f@nvidia.com>
-Date:   Mon, 18 Nov 2019 23:00:33 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <20191118094604.GC17319@quack2.suse.cz>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
+        "Bie, Tiwei" <tiwei.bie@intel.com>
+Subject: RE: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Thread-Topic: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Thread-Index: AQHVnATItanP+SK9PEuJkGaYy2/dTKeM1NrAgAURC4CAAAcf0IAAJnyAgAAC1aA=
+Date:   Tue, 19 Nov 2019 07:13:41 +0000
+Message-ID: <AM0PR05MB486685F7C839AD8A5F3EEA91D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+References: <20191115223355.1277139-1-jeffrey.t.kirsher@intel.com>
+ <AM0PR05MB4866CF61828A458319899664D1700@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <a40c09ee-0915-f10c-650e-7539726a887b@redhat.com>
+ <AM0PR05MB4866C40A177D3D60BFC558F7D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <13946106-dab2-6bbe-df79-ca6dfdeb4c51@redhat.com>
+In-Reply-To: <13946106-dab2-6bbe-df79-ca6dfdeb4c51@redhat.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1574146832; bh=u3YCRE77HsuXbqK9BxFmzDLl8JhQHMG9gXXaYRfagTQ=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=OHB+eUp2jQQmHLrGYBTtAkydhQax1jgPbRIdqXv/zT7mJheOoxm2jC/o00J+31bDd
-         psR1uWZTYTlZpkmYbJIlMzoHbpxnwxoe7ZrZ8UMQNDddfR1HU1k+hUj3JCOx3ZRd5b
-         XT8Ag7PAkGX6G4pIQ7geJmQblkDOtgu1RTN+An2f8z0fTBevVuF5GINewI0N+iPfcv
-         YgagSYh5LQVW6KL8izWZSAMBRDSFlAEl3uHonusWk1CkuRAUgvh73saFcEMPgIKbUo
-         7msrJOumHG3EP3Mzt2Z3Dov3XH2Wq2MWpaj0JPNxYk4UIQaUft9LMOT0FAc0/WGi6i
-         OtciRBna4adWA==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=parav@mellanox.com; 
+x-originating-ip: [68.203.16.89]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 56e3641d-2224-419c-4823-08d76cc001b0
+x-ms-traffictypediagnostic: AM0PR05MB6306:
+x-ms-exchange-purlcount: 2
+x-microsoft-antispam-prvs: <AM0PR05MB6306D43B941FD94AC0002438D14C0@AM0PR05MB6306.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-forefront-prvs: 022649CC2C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(346002)(396003)(39860400002)(136003)(376002)(189003)(199004)(66946007)(86362001)(2906002)(102836004)(9686003)(6306002)(66476007)(66556008)(66066001)(25786009)(2201001)(64756008)(66446008)(99286004)(3846002)(486006)(476003)(478600001)(2501003)(26005)(6246003)(446003)(11346002)(7416002)(966005)(256004)(71190400001)(71200400001)(6116002)(33656002)(55016002)(14454004)(4326008)(229853002)(74316002)(186003)(8936002)(6506007)(6436002)(316002)(110136005)(54906003)(81166006)(76176011)(5660300002)(81156014)(8676002)(305945005)(7696005)(76116006)(7736002)(52536014);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB6306;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: re4ISLLvoPhCNa9tHpHt8Vd4Au4DVGHcm2xcxndYipUBy8oI+1fU2YgapmrbCewA+Akc+nwRHX01umFrG+xEuLjIch6BeSvjBXYbtw/aCyjP8rhnXLN335Q8/h2hmlU7gihjwkilvHCdqH6OrXclXoeCQubXqKao1z2qO1cFCocvS6bgLBMoSd/8F+orHFhfjXiq0UoET7VycTrMopdGG/Hrz5z7E3eEnmGw6DPdmSVGxYqOj9O0ItQnfcgceEi+Ty28WyrnhFoWAhHRiwey3A/rTyzHPlwFPuVLLjXQl63cvzci+CMK7/xmla6DvNfGfwD07H1efZkFXqyhiVWSce8CddLgnj61EElyCCIPcXrNZa/Oy9Ud0UTtrw2HTbB0BHBmYVbER1xK8R9AMmdVKPYDg7sMzg9zPx2o6cANZCjcrJyO8VImQM+s6gCRpNgLU9Q0XnjAqfkCAYe3NiHbFKsqTjiXWFgv19RUsoaEvW8=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56e3641d-2224-419c-4823-08d76cc001b0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Nov 2019 07:13:41.3455
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cOOfwcEaoQ1puT5aaS4GZDSTsqXQ/bHi3eGEa+ZnXsCupBLG6WWpgTuMct3+j8cohfKGsMM7G6kRSOAI5soGWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6306
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/18/19 1:46 AM, Jan Kara wrote:
-> On Thu 14-11-19 21:53:18, John Hubbard wrote:
->> There are four locations in gup.c that have a fair amount of code
->> duplication. This means that changing one requires making the same
->> changes in four places, not to mention reading the same code four
->> times, and wondering if there are subtle differences.
->>
->> Factor out the common code into static functions, thus reducing the
->> overall line count and the code's complexity.
->>
->> Also, take the opportunity to slightly improve the efficiency of the
->> error cases, by doing a mass subtraction of the refcount, surrounded
->> by get_page()/put_page().
->>
->> Also, further simplify (slightly), by waiting until the the successful
->> end of each routine, to increment *nr.
->>
->> Reviewed-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
->> Cc: Jan Kara <jack@suse.cz>
->> Cc: Ira Weiny <ira.weiny@intel.com>
->> Cc: Christoph Hellwig <hch@lst.de>
->> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
->> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
->> ---
->>  mm/gup.c | 95 ++++++++++++++++++++++++--------------------------------
->>  1 file changed, 40 insertions(+), 55 deletions(-)
->>
->> diff --git a/mm/gup.c b/mm/gup.c
->> index 85caf76b3012..858541ea30ce 100644
->> --- a/mm/gup.c
->> +++ b/mm/gup.c
->> @@ -1969,6 +1969,29 @@ static int __gup_device_huge_pud(pud_t pud, pud_t=
- *pudp, unsigned long addr,
->>  }
->>  #endif
->> =20
->> +static int __record_subpages(struct page *page, unsigned long addr,
->> +			     unsigned long end, struct page **pages)
->> +{
->> +	int nr =3D 0;
->> +	int nr_recorded_pages =3D 0;
->> +
->> +	do {
->> +		pages[nr] =3D page;
->> +		nr++;
->> +		page++;
->> +		nr_recorded_pages++;
->> +	} while (addr +=3D PAGE_SIZE, addr !=3D end);
->> +	return nr_recorded_pages;
->=20
-> nr =3D=3D nr_recorded_pages so no need for both... BTW, structuring this =
-as a
-> for loop would be probably more logical and shorter now:
->=20
-> 	for (nr =3D 0; addr !=3D end; addr +=3D PAGE_SIZE)
-> 		pages[nr++] =3D page++;
-> 	return nr;
->=20
-
-Nice touch, I've applied it.
-
-thanks,
---=20
-John Hubbard
-NVIDIA
-
-
-
-> The rest of the patch looks good to me.
->=20
-> 								Honza
->=20
+DQo+IEZyb206IEphc29uIFdhbmcgPGphc293YW5nQHJlZGhhdC5jb20+DQo+IFN1YmplY3Q6IFJl
+OiBbbmV0LW5leHQgdjIgMS8xXSB2aXJ0dWFsLWJ1czogSW1wbGVtZW50YXRpb24gb2YgVmlydHVh
+bCBCdXMNCj4gDQo+IA0KWy4uXQ0KDQo+IA0KPiBQcm9iYWJseSwgZm9yIHZpcnRpbyBtZGV2IHdl
+IG5lZWQgbW9yZSB0aGFuIGp1c3QgbWF0Y2hpbmc6IGxpZmUgY3ljbGUNCj4gbWFuYWdlbWVudCwg
+Y29vcGVyYXRpb24gd2l0aCBWRklPIGFuZCB3ZSBhbHNvIHdhbnQgdG8gYmUgcHJlcGFyZWQgZm9y
+DQo+IHRoZSBkZXZpY2Ugc2xpY2luZyAobGlrZSBzdWIgZnVuY3Rpb25zKS4NCg0KV2VsbCBJIGFt
+IHJldmlzaW5nIG15IHBhdGNoZXMgdG8gbGlmZSBjeWNsZSBzdWIgZnVuY3Rpb25zIHZpYSBkZXZs
+aW5rIGludGVyZmFjZSBmb3IgZmV3IHJlYXNvbnMsIGFzDQoNCihhKSBhdm9pZCBtZGV2IGJ1cyBh
+YnVzZSAoc3RpbGwgbmFtZWQgYXMgbWRldiBpbiB5b3VyIHYxMyBzZXJpZXMsIHRob3VnaCBpdCBp
+cyBhY3R1YWxseSBmb3IgdmZpby1tZGV2KQ0KKGIpIHN1cHBvcnQgaW9tbXUNCihjKSBtYW5hZ2Ug
+YW5kIGhhdmUgY291cGxpbmcgd2l0aCBkZXZsaW5rIGVzd2l0Y2ggZnJhbWV3b3JrLCB3aGljaCBp
+cyB2ZXJ5IHJpY2ggaW4gc2V2ZXJhbCBhc3BlY3RzDQooZCkgZ2V0IHJpZCBvZiBsaW1pdGVkIHN5
+c2ZzIGludGVyZmFjZSBmb3IgbWRldiBjcmVhdGlvbiwgYXMgbmV0bGluayBpcyBzdGFuZGFyZCBh
+bmQgZmxleGlibGUgdG8gYWRkIHBhcmFtcyBldGMuDQoNCklmIHlvdSB3YW50IHRvIGdldCBhIGds
+aW1wc2Ugb2Ygb2xkIFJGQyB3b3JrIG9mIG15IHJldmlzZWQgc2VyaWVzLCBwbGVhc2UgcmVmZXIg
+dG8gWzFdLg0KDQpKaXJpLCBKYXNvbiwgbWUgdGhpbmsgdGhhdCBldmVuIHZpcnRpbyBhY2NlbGVy
+YXRlZCBkZXZpY2VzIHdpbGwgbmVlZCBlc3dpdGNoIHN1cHBvcnQuIEFuZCBoZW5jZSwgbGlmZSBj
+eWNsaW5nIHZpcnRpbyBhY2NlbGVyYXRlZCBkZXZpY2VzIHZpYSBkZXZsaW5rIG1ha2VzIGEgbG90
+IG9mIHNlbnNlIHRvIHVzLg0KVGhpcyB3YXkgdXNlciBoYXMgc2luZ2xlIHRvb2wgdG8gY2hvb3Nl
+IHdoYXQgdHlwZSBvZiBkZXZpY2UgaGUgd2FudCB0byB1c2UgKHNpbWlsYXIgdG8gaXAgbGluayBh
+ZGQgbGluayB0eXBlKS4NClNvIHN1YiBmdW5jdGlvbiBmbGF2b3VyIHdpbGwgYmUgc29tZXRoaW5n
+IGxpa2UgKHZpcnRpbyBvciBzZikuDQoNClNvIEkgYW0gcmV2aXZpbmcgbXkgb2xkIFJGQyBbMV0g
+YmFjayBub3cgaW4gZmV3IGRheXMgYXMgYWN0dWFsIHBhdGNoZXMgYmFzZWQgb24gc2VyaWVzIFsy
+XS4NCg0KWzFdIGh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDE5LzMvMS8xOQ0KWzJdIGh0dHBzOi8v
+bG9yZS5rZXJuZWwub3JnL2xpbnV4LXJkbWEvMjAxOTExMDcxNjA0NDguMjA5NjItMS1wYXJhdkBt
+ZWxsYW5veC5jb20vDQoNCg==
