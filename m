@@ -2,91 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 662DD1028A5
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 16:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A8D1028FA
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 17:11:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728371AbfKSPtX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Nov 2019 10:49:23 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:39812 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727937AbfKSPtX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 10:49:23 -0500
-Received: by mail-pl1-f195.google.com with SMTP id o9so11964371plk.6
-        for <linux-rdma@vger.kernel.org>; Tue, 19 Nov 2019 07:49:23 -0800 (PST)
+        id S1728371AbfKSQLC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Nov 2019 11:11:02 -0500
+Received: from mail-io1-f65.google.com ([209.85.166.65]:46032 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728341AbfKSQLA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 11:11:00 -0500
+Received: by mail-io1-f65.google.com with SMTP id v17so12686906iol.12
+        for <linux-rdma@vger.kernel.org>; Tue, 19 Nov 2019 08:10:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=R1ASv1uSb+2yAWLsBi9prViTqXk/F+FbyHZh9azDYUs=;
-        b=KmIdMaUIOmsh/2p0FfLb2LJw2+OlcwZkj3j0hg5kPRFq7pUA+7qjK3Ifr9tGXbWb2+
-         lEbxqs4jGaLwemeAKUN8MtDtG0gWP3NzKsxGB5A3Swf5u4yiRBhftJYhXvmwksSgMSVN
-         8sSMZGdkOrqwheUaBnYGH72AVRmzmOf6DmY+4=
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yxTg9Jz6CUPbj7hb+zClDPA6shnTNr7Uh8vLjm12KTA=;
+        b=oGIJW8HfkgkobB0o2Qa1NbNfnl9mEqSGpPEO2LkogyZvOuMJQ7TF55da86qlugqMCd
+         338Wge2YPFXsoEIf9RGDawq7jpCCeV3jwC0W058T6wHLBemhZJS3koszJqUTfQULDiaX
+         2B6RyRY6HS9AE+8hVENsQBKSpUdhkmyAKNXz0Nm/Cxj0QFJRN/CWS+DE/OAhOnYHg0xk
+         tK1FlPGkzCpUU1kARsuIumFoSGAGKhbP5ourqDXhrP7e5xrJzr7bWyrrGYocI1tJI7bI
+         UgAaDI7OLq1bomHv0lR8zAsfor6M3fEsHwxDtlUp7bVspKwb2e69Lw3GuCnkI9VLqTxF
+         /QFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=R1ASv1uSb+2yAWLsBi9prViTqXk/F+FbyHZh9azDYUs=;
-        b=Xb6ddHOP3qELhHoM0qAxxx33FQGNGTfNWGg/1J/R6SF7WQU8pZKD18NpC8gFck3jTN
-         pn6OnN9dSlnqV+6pRrEJ/aEGl11Lf5Ue8kY/TKXQC0fHzosTdSukzwiyAq035e/wXTAy
-         W3n+1EcIvEpcmNuVefZylR6i+Kxrb/MIeI/UI1RCWiDSbtOQCoR7KGo+dhQ0/x31omZC
-         H0KcfkJ8KmAwLhAQupznQ/O7joeWZL6TAroyb+kNdNGGPbG5h+MZPUJ26m4E3eipZ06q
-         tIvOBfF5GEp4xpmTTKfxRP0/hHanO/5P/c8SLDEjLuKzFO4H13sIEA8qIs2kMInrsZhc
-         dPBA==
-X-Gm-Message-State: APjAAAUTOloMWAwfDNUQIQEVDB9SHoJa5e5NI9fn8+leZXWG0aD60GZg
-        kp8OFS83bRllE5ijymg2yBgcXw==
-X-Google-Smtp-Source: APXvYqwCWgnFbtPr+WOkyXtw/lhlKpeNAJXk+LGQlqjvK15orBeEtuOLcD/iLFaWFiYSEccs8w+k0w==
-X-Received: by 2002:a17:902:bd96:: with SMTP id q22mr36314522pls.169.1574178562849;
-        Tue, 19 Nov 2019 07:49:22 -0800 (PST)
-Received: from neo00-el73.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 10sm24263620pgs.11.2019.11.19.07.49.20
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yxTg9Jz6CUPbj7hb+zClDPA6shnTNr7Uh8vLjm12KTA=;
+        b=CpyUPk/qJ6QeWjy2+8ActSK6vi4fLRCX5c+oAcMcjs0HRkETew38QrnulAzhnKQ2Ln
+         0yEAgWF0Lx8TgHwZEjGoXYYLqsGhl22En5sGEAb5Nzzqlz97Q4ru6vHHIGzBg5meNdu8
+         G/zmBTAjvUdnf+LP7b4a5MndVomD4vBV0PApZMIXljIbaicmvoSt13JR6tlY8NzPjFef
+         H1GswDKeVh8L4E8VtWZ7n6n0MX5KbO9gDCWIhxm3gtPXjbyeCUZ5XpOhSpnxCeHwSTIk
+         PaMKEvDbqW6/2hBNmF0R8yWg5HjoMwTpksnz44G2/xkcdBjbji2U0F2tzrpawQh1vJ9+
+         RkoQ==
+X-Gm-Message-State: APjAAAUNrxTOt7CWj28IzYqycQQ0ymAig1daYMEIHjmLt+7FCMEJPYQY
+        5Y+eCsXosgG32UZHbLWOnRbx1w==
+X-Google-Smtp-Source: APXvYqw/6l4rejQYc8a+bdmv6/89DOI3Ir5+fK0WCl1y9yQpIdn8Kiz4M9g4FLh+4h0UiHB53RA+ow==
+X-Received: by 2002:a02:140a:: with SMTP id 10mr18915165jag.72.1574179857938;
+        Tue, 19 Nov 2019 08:10:57 -0800 (PST)
+Received: from [192.168.1.159] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id u6sm5616560ilm.22.2019.11.19.08.10.55
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Nov 2019 07:49:22 -0800 (PST)
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-To:     dledford@redhat.com, jgg@mellanox.com
-Cc:     linux-rdma@vger.kernel.org,
-        Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [PATCH for-rc 3/3] RDMA/bnxt_re: fix sparse warnings
-Date:   Tue, 19 Nov 2019 10:48:51 -0500
-Message-Id: <1574178531-15898-4-git-send-email-devesh.sharma@broadcom.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1574178531-15898-1-git-send-email-devesh.sharma@broadcom.com>
-References: <1574178531-15898-1-git-send-email-devesh.sharma@broadcom.com>
+        Tue, 19 Nov 2019 08:10:56 -0800 (PST)
+Subject: Re: [PATCH v6 15/24] fs/io_uring: set FOLL_PIN via pin_user_pages()
+To:     John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+References: <20191119081643.1866232-1-jhubbard@nvidia.com>
+ <20191119081643.1866232-16-jhubbard@nvidia.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <2ae65d1b-a3eb-74ed-afce-c493de5bbfd3@kernel.dk>
+Date:   Tue, 19 Nov 2019 09:10:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <20191119081643.1866232-16-jhubbard@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Making a change to fix following sparse warnings
- CHECK   drivers/infiniband/hw/bnxt_re/main.c
-drivers/infiniband/hw/bnxt_re/main.c:1274:18: warning: cast from restricted __le16
-drivers/infiniband/hw/bnxt_re/main.c:1275:18: warning: cast from restricted __le16
-drivers/infiniband/hw/bnxt_re/main.c:1276:18: warning: cast from restricted __le16
-drivers/infiniband/hw/bnxt_re/main.c:1277:21: warning: restricted __le16 degrades to integer
+On 11/19/19 1:16 AM, John Hubbard wrote:
+> Convert fs/io_uring to use the new pin_user_pages() call, which sets
+> FOLL_PIN. Setting FOLL_PIN is now required for code that requires
+> tracking of pinned pages, and therefore for any code that calls
+> put_user_page().
+> 
+> In partial anticipation of this work, the io_uring code was already
+> calling put_user_page() instead of put_page(). Therefore, in order to
+> convert from the get_user_pages()/put_page() model, to the
+> pin_user_pages()/put_user_page() model, the only change required
+> here is to change get_user_pages() to pin_user_pages().
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 
-Fixes: 2b827ea1926b ("RDMA/bnxt_re: Query HWRM Interface version from FW")
-Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/main.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+You dropped my reviewed-by now... Given the file, you'd probably want
+to keep that.
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 2ee2cd4..27e2df4 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -1271,10 +1271,10 @@ static void bnxt_re_query_hwrm_intf_version(struct bnxt_re_dev *rdev)
- 		return;
- 	}
- 	rdev->qplib_ctx.hwrm_intf_ver =
--		(u64)resp.hwrm_intf_major << 48 |
--		(u64)resp.hwrm_intf_minor << 32 |
--		(u64)resp.hwrm_intf_build << 16 |
--		resp.hwrm_intf_patch;
-+		(u64)le16_to_cpu(resp.hwrm_intf_major) << 48 |
-+		(u64)le16_to_cpu(resp.hwrm_intf_minor) << 32 |
-+		(u64)le16_to_cpu(resp.hwrm_intf_build) << 16 |
-+		le16_to_cpu(resp.hwrm_intf_patch);
- }
- 
- static void bnxt_re_ib_unreg(struct bnxt_re_dev *rdev)
 -- 
-1.8.3.1
+Jens Axboe
 
