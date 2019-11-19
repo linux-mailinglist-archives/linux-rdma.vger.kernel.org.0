@@ -2,162 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7329B102F6E
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 23:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 955E4102FB7
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 00:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbfKSWio (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Nov 2019 17:38:44 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:37872 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725978AbfKSWio (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 17:38:44 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAJMY7KZ038676;
-        Tue, 19 Nov 2019 22:38:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=D3oARNJ2UQxodD4sfGGWeqhqmbKMgFluXMZC7zvMJNw=;
- b=qg+dVJqD7i4qTBlf+jZOFX4Rm/4NJ2ydIaKS9lV5JcuAY8oLnke2NOQ10Smlvv8u6oub
- uvWalHqrjWUHGu7ltBnGoEiZbsbN3yZqaCi7qlgrpls/E3QbvJt7mi4eAXaVJB3SKum+
- M5xSBC/PEZmU1h81APmviZFakiV0cDMDDhOT5tz2dLzgOvTOuryORB7O/FJFTM/Vi9oq
- 4PiT1k3U4ZIu+PSFK9bwKq2qk80uQz8CPFZ8cK3YZe55n5hCtZyBPWtiX99G88wt6sBd
- kVMsve7859y731n42uC/MIBRg7TsoDWnBlGEch0i+xI9Japr+FaMbxXU//jafEwscJKO /g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2wa8htt4a2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Nov 2019 22:38:29 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAJMcREK168207;
-        Tue, 19 Nov 2019 22:38:29 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2wc0ah5feg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 19 Nov 2019 22:38:28 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xAJMcO6o028111;
-        Tue, 19 Nov 2019 22:38:25 GMT
-Received: from [192.168.1.2] (/98.210.179.99)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 19 Nov 2019 14:38:24 -0800
-Subject: Re: [PATCH v2 1/2] Introduce maximum WQE size to check limits
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     monis@mellanox.com, dledford@redhat.com, sean.hefty@intel.com,
-        hal.rosenstock@gmail.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1574106879-19211-1-git-send-email-rao.shoaib@oracle.com>
- <1574106879-19211-2-git-send-email-rao.shoaib@oracle.com>
- <20191119203138.GA13145@ziepe.ca>
-From:   Rao Shoaib <rao.shoaib@oracle.com>
-Message-ID: <44d1242a-fc32-9918-dd53-cd27ebf61811@oracle.com>
-Date:   Tue, 19 Nov 2019 14:38:23 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
+        id S1726948AbfKSXK0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Nov 2019 18:10:26 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:33835 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726025AbfKSXKZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 18:10:25 -0500
+Received: by mail-qt1-f195.google.com with SMTP id i17so26737834qtq.1
+        for <linux-rdma@vger.kernel.org>; Tue, 19 Nov 2019 15:10:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=9PMAt9BpsUAZp7Bq1/geFdXKwd/meD5cyXpSWT+Lwjw=;
+        b=pE71tkb4vz6SNRqGBbLLdLfetZLPw3HitJWCvIUNNIpyeTQh2eXlnQnH/Kfd//LZ1b
+         k5g6pc66cOli0osrRQfkd/iJ7Wqt4ogWX9G1drEftRQG0+huQYwK77FnWqvnXnKvfh75
+         1NO0F9IQS8S7S6ggZ7pY8UrfoUAMQZfXpYfoPMkGKhSl5u+YY9PcUnPeRylw7t9jCING
+         ZZqkMNA8BRIhV5nI/jrILCSSim4qtwFNlb6VYnUeXkTxjRxL1sUGV7qe1QehW572+M3P
+         BM4YOI5Io5j+4xAUK02y/VcmRTBkC5v684YEVYTZ5n+Xlj3d+kP5LFNoxzqFRWfgZePq
+         rMcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9PMAt9BpsUAZp7Bq1/geFdXKwd/meD5cyXpSWT+Lwjw=;
+        b=uhxl+FF1wypqE7HiW+m2/+so6PieJ9b+yU8mPvzZk/U4+tuyANxuaZAxnxlvmJUv36
+         VMsj2m0Tt0HABxfHW62VcPfswM2hPVv6eIyjtASnGXK/7ocUKbzxs0zpBkHJM9oGLB/v
+         tgMCwwOMhDlt3f06JxQ7O8ECp1H/9ZE600qRLpj5JruNdoTjqustKaMyoWMJWDhysOvd
+         27mWjT+ss0NVQGCk2xRWMAVVD9DtNctaxzc9weCNi5MyfIlFTizwZSNPUwfXSzgK43Bw
+         ox9Q+5y5jR8BuwkjwZ1JlkaC4IysV7Tl1NKz6nYlvNV9cx2w0dOidAqwoa8ZOqDS0rCy
+         7G4Q==
+X-Gm-Message-State: APjAAAXn7uyqefWL5CfxT+9sUNMRxBqZEZDDSCpQoyKiwMUWoV7YMiTH
+        rCDvfuDLaSxbmXWWikcF9tJAlw==
+X-Google-Smtp-Source: APXvYqzesiXM2A+pKq+Xz4FHwQgAiCe2v9inGm0MQBdQeEcjFmSBfQkf/yh83hwKuJJZQN0EGsfZwQ==
+X-Received: by 2002:ac8:3475:: with SMTP id v50mr334772qtb.105.1574205024721;
+        Tue, 19 Nov 2019 15:10:24 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id d131sm122112qkg.62.2019.11.19.15.10.23
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 19 Nov 2019 15:10:24 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iXCdb-0004gv-0x; Tue, 19 Nov 2019 19:10:23 -0400
+Date:   Tue, 19 Nov 2019 19:10:23 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        Kiran Patil <kiran.patil@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Bie, Tiwei" <tiwei.bie@intel.com>
+Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Message-ID: <20191119231023.GN4991@ziepe.ca>
+References: <AM0PR05MB4866CF61828A458319899664D1700@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <a40c09ee-0915-f10c-650e-7539726a887b@redhat.com>
+ <AM0PR05MB4866C40A177D3D60BFC558F7D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <13946106-dab2-6bbe-df79-ca6dfdeb4c51@redhat.com>
+ <AM0PR05MB486685F7C839AD8A5F3EEA91D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <ead356f5-db81-cb01-0d74-b9e34965a20f@redhat.com>
+ <20191119164632.GA4991@ziepe.ca>
+ <20191119134822-mutt-send-email-mst@kernel.org>
+ <20191119191547.GL4991@ziepe.ca>
+ <20191119163147-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20191119203138.GA13145@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9446 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1911190180
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9446 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1911190180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191119163147-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Nov 19, 2019 at 04:33:40PM -0500, Michael S. Tsirkin wrote:
+> On Tue, Nov 19, 2019 at 03:15:47PM -0400, Jason Gunthorpe wrote:
+> > On Tue, Nov 19, 2019 at 01:58:42PM -0500, Michael S. Tsirkin wrote:
+> > > On Tue, Nov 19, 2019 at 12:46:32PM -0400, Jason Gunthorpe wrote:
+> > > > As always, this is all very hard to tell without actually seeing real
+> > > > accelerated drivers implement this. 
+> > > > 
+> > > > Your patch series might be a bit premature in this regard.
+> > > 
+> > > Actually drivers implementing this have been posted, haven't they?
+> > > See e.g. https://lwn.net/Articles/804379/
+> > 
+> > Is that a real driver? It looks like another example quality
+> > thing. 
+> > 
+> > For instance why do we need any of this if it has '#define
+> > IFCVF_MDEV_LIMIT 1' ?
+> > 
+> > Surely for this HW just use vfio over the entire PCI function and be
+> > done with it?
+> 
+> What this does is allow using it with unmodified virtio drivers
+> within guests.  You won't get this with passthrough as it only
+> implements parts of virtio in hardware.
 
-On 11/19/19 12:31 PM, Jason Gunthorpe wrote:
-> On Mon, Nov 18, 2019 at 11:54:38AM -0800, rao Shoaib wrote:
->> From: Rao Shoaib <rao.shoaib@oracle.com>
->>
->> Introduce maximum WQE size to impose limits on max SGE's and inline data
->>
->> Signed-off-by: Rao Shoaib <rao.shoaib@oracle.com>
->>   drivers/infiniband/sw/rxe/rxe_param.h | 3 ++-
->>   drivers/infiniband/sw/rxe/rxe_qp.c    | 7 +++++--
->>   2 files changed, 7 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
->> index 1b596fb..31fb5c7 100644
->> +++ b/drivers/infiniband/sw/rxe/rxe_param.h
->> @@ -68,7 +68,6 @@ enum rxe_device_param {
->>   	RXE_HW_VER			= 0,
->>   	RXE_MAX_QP			= 0x10000,
->>   	RXE_MAX_QP_WR			= 0x4000,
->> -	RXE_MAX_INLINE_DATA		= 400,
->>   	RXE_DEVICE_CAP_FLAGS		= IB_DEVICE_BAD_PKEY_CNTR
->>   					| IB_DEVICE_BAD_QKEY_CNTR
->>   					| IB_DEVICE_AUTO_PATH_MIG
->> @@ -79,7 +78,9 @@ enum rxe_device_param {
->>   					| IB_DEVICE_RC_RNR_NAK_GEN
->>   					| IB_DEVICE_SRQ_RESIZE
->>   					| IB_DEVICE_MEM_MGT_EXTENSIONS,
->> +	RXE_MAX_WQE_SIZE		= 0x2d0, /* For RXE_MAX_SGE */
-> This shouldn't just be a random constant, I think you are trying to
-> say:
->
->    RXE_MAX_WQE_SIZE = sizeof(struct rxe_send_wqe) + sizeof(struct ib_sge)*RXE_MAX_SGE
-I thought you wanted this value to be independent of RXE_MAX_SGE, else 
-why are defining it.
->
-> Just say that
->
->>   	RXE_MAX_SGE			= 32,
->> +	RXE_MAX_INLINE_DATA		= RXE_MAX_WQE_SIZE,
-> This is mixed up now, it should be
->
->    RXE_MAX_INLINE_DATA = RXE_MAX_WQE_SIZE - sizeof(rxe_send_wqe)
+I don't mean use vfio to perform passthrough, I mean to use vfio to
+implement the software parts in userspace while vfio to talk to the
+hardware.
 
-I agree to what you are suggesting, it will make the current patch 
-better. However, In my previous patch I had
+  kernel -> vfio -> user space virtio driver -> qemu -> guest
 
-RXE_MAX_INLINE_DATA		= RXE_MAX_SGE * sizeof(struct ib_sge)
+Generally we don't want to see things in the kernel that can be done
+in userspace, and to me, at least for this driver, this looks
+completely solvable in userspace.
 
-IMHO that conveys the intent much better. I do not see the reason for 
-defining RXE_MAX_WQE_SIZE, ib_device_attr does not even have an entry 
-for it and hence the value is not used anywhere by rxe or by any other 
-relevant driver.
-
-I will re-submit with the changes you have suggested.
-
-Shoaib
-
-
->
->> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
->> index aeea994..323e43d 100644
->> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
->> @@ -78,9 +78,12 @@ static int rxe_qp_chk_cap(struct rxe_dev *rxe, struct ib_qp_cap *cap,
->>   		}
->>   	}
->>   
->> -	if (cap->max_inline_data > rxe->max_inline_data) {
->> +	if (cap->max_inline_data >
->> +	    rxe->max_inline_data - sizeof(struct rxe_send_wqe)) {
->>   		pr_warn("invalid max inline data = %d > %d\n",
->> -			cap->max_inline_data, rxe->max_inline_data);
->> +			cap->max_inline_data,
->> +			rxe->max_inline_data -
->> +			    (u32)sizeof(struct rxe_send_wqe));
-> Then this isn't needed
->
-> And this code in the other patch:
->
-> +	wqe_size = max_t(int, init->cap.max_send_sge * sizeof(struct ib_sge),
-> +			 init->cap.max_inline_data);
-> +	qp->sq.max_sge = wqe_size/sizeof(struct ib_sge);
-> +	qp->sq.max_inline = wqe_size;
->
-> Makes sense as both max_inline_data and 'init->cap.max_send_sge *
-> sizeof(struct ib_sge)' are exclusive of the wqe header
->
-> Jason
+Jason
