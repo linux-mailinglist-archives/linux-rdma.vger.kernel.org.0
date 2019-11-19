@@ -2,138 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC44102D9B
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 21:31:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DCB102DCB
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 21:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726892AbfKSUbk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Nov 2019 15:31:40 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:45580 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726711AbfKSUbk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 15:31:40 -0500
-Received: by mail-qk1-f193.google.com with SMTP id q70so19109792qke.12
-        for <linux-rdma@vger.kernel.org>; Tue, 19 Nov 2019 12:31:39 -0800 (PST)
+        id S1726911AbfKSUuT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Nov 2019 15:50:19 -0500
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:46672 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726874AbfKSUuT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 15:50:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ffL3XiM0LtkLjeoyTC4fynmObhqLJBu0oAAkB1Sv6bg=;
-        b=QQpEdvQrv3VxEyEYawc6fHFuZTPgaWu6FsHVD1e1ezyhaWuRpUshlK+MeazAk2Yb5c
-         WdHqQAt7ivBcTNSFX+SeqsrF/JATfpYGHbtKF9ZWf/kyX3NaiwyEQMwEL1nkfMSCAwYZ
-         t4OIx6yol25quBvST7aX7t+bwogjXEt24v+18KV7WVflf5ZgdKKOBb1IJsebR8NVP7MP
-         03sq5wcV+rHoLsGqOZhto/2fT/FHkbdJD+L0KtvgjAaXKCGBqOT1pcW4JFQcZWrCjMLx
-         ADqyaSIsUC/Vs7bEx9q9hfSBfSAD83fckZKmhgYBNkAHRMgRj9Teu0ct9fKFBDZsDIhs
-         MmZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ffL3XiM0LtkLjeoyTC4fynmObhqLJBu0oAAkB1Sv6bg=;
-        b=OtfJZowlOJNosgAY2JIBZSSW4/0fD2M8M+6Ziechhwb6Judz2RigUjQjjH4GCVhNtg
-         r2gXDCPudQCXbaR+oC5pqmxqEU67c/0YpexVelV7T5Waq3TLJJN0YUSTHeTM2kKbgwez
-         2QTyxrcdDAZHYosF9OzrjqsxGV6wiAeh7tcHurXdetRPcrNtuA21ytKC8CvDXD3EXpAf
-         lWYiBqCPVdfiVUtVynW+Psoy0JOnZV4+OpDhC17j+e1Opn4GluikwHmMssocHzzR46cu
-         xG/LbTZkZIsWgFL7z5eV9nEF2+vCihePHMYD2ZdniFDeNeXUYuhLKvghjHzF4uBba89B
-         JHXg==
-X-Gm-Message-State: APjAAAWU0n2uqMlFro9gr56RPQXquGqt5bzCXWsToltFkU+h4kE6/Lex
-        RmEN0kKltEK5ethE3oZiR/WYxQ==
-X-Google-Smtp-Source: APXvYqzq78z4Kwl63piCU4DA6NkhH7ZUgZoHCweA3yZzD+3qAZFN3jAYRSTk9DhNa8iA9vWigiyilw==
-X-Received: by 2002:a05:620a:1375:: with SMTP id d21mr1191457qkl.285.1574195499276;
-        Tue, 19 Nov 2019 12:31:39 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id k199sm10614778qke.0.2019.11.19.12.31.38
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 19 Nov 2019 12:31:38 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iXA9y-0003RM-6w; Tue, 19 Nov 2019 16:31:38 -0400
-Date:   Tue, 19 Nov 2019 16:31:38 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     rao Shoaib <rao.shoaib@oracle.com>
-Cc:     monis@mellanox.com, dledford@redhat.com, sean.hefty@intel.com,
-        hal.rosenstock@gmail.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] Introduce maximum WQE size to check limits
-Message-ID: <20191119203138.GA13145@ziepe.ca>
-References: <1574106879-19211-1-git-send-email-rao.shoaib@oracle.com>
- <1574106879-19211-2-git-send-email-rao.shoaib@oracle.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1574196618; x=1605732618;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=URuR4/vnlL1tBV0DX1t6c5/dOgpbT4Edhln8DThtqcY=;
+  b=G9PwvlVkeJX2dbPWBbCql6kL8Gu5OgB9I3R//eenPnuk436eFRBBIf2r
+   3AP4F04ikKPaq/0CrS+2RDnSYArJ63+edn7ox00j7BV/EplM6DVNo3zsy
+   6tIRJSTGJhl4GBnn0/KD4qbol4694zbH/JV+/DWdlKGASIcKVeOJtsUzO
+   8=;
+IronPort-SDR: X0m6qzYU964rbtPzH3VmCkhaKHie/tGBYlQmOQh1rmqrnUdftdnpl5RwLCGH6lF6K65JA68kdF
+ C2TnBN+G8Uyw==
+X-IronPort-AV: E=Sophos;i="5.69,219,1571702400"; 
+   d="scan'208";a="4783341"
+Received: from iad6-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-c300ac87.us-west-2.amazon.com) ([10.124.125.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 19 Nov 2019 20:50:16 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-c300ac87.us-west-2.amazon.com (Postfix) with ESMTPS id 2FF5EA2525;
+        Tue, 19 Nov 2019 20:50:16 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 19 Nov 2019 20:50:15 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.160) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 19 Nov 2019 20:50:11 +0000
+Subject: Re: [PATCH for-next 3/3] RDMA/efa: Expose RDMA read related
+ attributes
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        "Daniel Kranzdorf" <dkkranzd@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>
+References: <20191112091737.40204-1-galpress@amazon.com>
+ <20191112091737.40204-4-galpress@amazon.com>
+ <20191119195637.GA17863@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <60eb8f53-5284-6824-a723-f2e3fc79e921@amazon.com>
+Date:   Tue, 19 Nov 2019 22:50:06 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1574106879-19211-2-git-send-email-rao.shoaib@oracle.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191119195637.GA17863@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.160]
+X-ClientProxiedBy: EX13D22UWB004.ant.amazon.com (10.43.161.165) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 18, 2019 at 11:54:38AM -0800, rao Shoaib wrote:
-> From: Rao Shoaib <rao.shoaib@oracle.com>
+On 19/11/2019 21:56, Jason Gunthorpe wrote:
+> On Tue, Nov 12, 2019 at 11:17:37AM +0200, Gal Pressman wrote:
+>> diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
+>> index 9599a2a62be8..442804572118 100644
+>> +++ b/include/uapi/rdma/efa-abi.h
+>> @@ -90,12 +90,21 @@ struct efa_ibv_create_ah_resp {
+>>  	__u8 reserved_30[2];
+>>  };
+>>  
+>> +enum {
+>> +	EFA_QUERY_DEVICE_CAPS_RDMA_READ = 1 << 0,
+>> +};
 > 
-> Introduce maximum WQE size to impose limits on max SGE's and inline data
+> This doesn't seem needed, caps should only be used if a zero filled
+> reply from an old kernel is not OK.
+
+This isn't a compatibility mask, it's our way to indicate the userspace whether
+the device supports RDMA read. Old kernel/lack of support will return 0, new
+kernel will return 0/1 according to the device support.
+
+>>  struct efa_ibv_ex_query_device_resp {
+>>  	__u32 comp_mask;
+>>  	__u32 max_sq_wr;
+>>  	__u32 max_rq_wr;
+>>  	__u16 max_sq_sge;
+>>  	__u16 max_rq_sge;
+>> +	__u32 max_rdma_size;
+>> +	__u16 max_wr_rdma_sge;
+>> +	__u8 reserved_b0[2];
+>> +	__u32 device_caps;
+>> +	__u8 reserved_e0[4];
+>>  };
 > 
-> Signed-off-by: Rao Shoaib <rao.shoaib@oracle.com>
->  drivers/infiniband/sw/rxe/rxe_param.h | 3 ++-
->  drivers/infiniband/sw/rxe/rxe_qp.c    | 7 +++++--
->  2 files changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
-> index 1b596fb..31fb5c7 100644
-> +++ b/drivers/infiniband/sw/rxe/rxe_param.h
-> @@ -68,7 +68,6 @@ enum rxe_device_param {
->  	RXE_HW_VER			= 0,
->  	RXE_MAX_QP			= 0x10000,
->  	RXE_MAX_QP_WR			= 0x4000,
-> -	RXE_MAX_INLINE_DATA		= 400,
->  	RXE_DEVICE_CAP_FLAGS		= IB_DEVICE_BAD_PKEY_CNTR
->  					| IB_DEVICE_BAD_QKEY_CNTR
->  					| IB_DEVICE_AUTO_PATH_MIG
-> @@ -79,7 +78,9 @@ enum rxe_device_param {
->  					| IB_DEVICE_RC_RNR_NAK_GEN
->  					| IB_DEVICE_SRQ_RESIZE
->  					| IB_DEVICE_MEM_MGT_EXTENSIONS,
-> +	RXE_MAX_WQE_SIZE		= 0x2d0, /* For RXE_MAX_SGE */
+> This has the same problem as we talked about in userspace, the
+> max_wr_rdma_sge duplicates the field in the normal query_device
+> response
 
-This shouldn't just be a random constant, I think you are trying to
-say:
-
-  RXE_MAX_WQE_SIZE = sizeof(struct rxe_send_wqe) + sizeof(struct ib_sge)*RXE_MAX_SGE
-
-Just say that
-
->  	RXE_MAX_SGE			= 32,
-> +	RXE_MAX_INLINE_DATA		= RXE_MAX_WQE_SIZE,
-
-This is mixed up now, it should be
-
-  RXE_MAX_INLINE_DATA = RXE_MAX_WQE_SIZE - sizeof(rxe_send_wqe)
-
-> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-> index aeea994..323e43d 100644
-> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-> @@ -78,9 +78,12 @@ static int rxe_qp_chk_cap(struct rxe_dev *rxe, struct ib_qp_cap *cap,
->  		}
->  	}
->  
-> -	if (cap->max_inline_data > rxe->max_inline_data) {
-> +	if (cap->max_inline_data >
-> +	    rxe->max_inline_data - sizeof(struct rxe_send_wqe)) {
->  		pr_warn("invalid max inline data = %d > %d\n",
-> -			cap->max_inline_data, rxe->max_inline_data);
-> +			cap->max_inline_data,
-> +			rxe->max_inline_data -
-> +			    (u32)sizeof(struct rxe_send_wqe));
-
-Then this isn't needed
-
-And this code in the other patch:
-
-+	wqe_size = max_t(int, init->cap.max_send_sge * sizeof(struct ib_sge),
-+			 init->cap.max_inline_data);
-+	qp->sq.max_sge = wqe_size/sizeof(struct ib_sge);
-+	qp->sq.max_inline = wqe_size;
-
-Makes sense as both max_inline_data and 'init->cap.max_send_sge *
-sizeof(struct ib_sge)' are exclusive of the wqe header
-
-Jason
+Sure, will remove from both.
