@@ -2,261 +2,369 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8790110102C
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 01:22:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C3110124D
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 04:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbfKSAWq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Nov 2019 19:22:46 -0500
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:6982 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726952AbfKSAWp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Nov 2019 19:22:45 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dd335d60001>; Mon, 18 Nov 2019 16:22:46 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 18 Nov 2019 16:22:44 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 18 Nov 2019 16:22:44 -0800
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Nov
- 2019 00:22:43 +0000
-Subject: Re: [PATCH v5 17/24] mm/gup: track FOLL_PIN pages
-To:     Jan Kara <jack@suse.cz>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20191115055340.1825745-1-jhubbard@nvidia.com>
- <20191115055340.1825745-18-jhubbard@nvidia.com>
- <20191118115829.GJ17319@quack2.suse.cz>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <8424f891-271d-5c34-8f7c-ebf3e3aa6664@nvidia.com>
-Date:   Mon, 18 Nov 2019 16:22:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <20191118115829.GJ17319@quack2.suse.cz>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
+        id S1727352AbfKSD6l convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 18 Nov 2019 22:58:41 -0500
+Received: from mga09.intel.com ([134.134.136.24]:14881 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727217AbfKSD6l (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 18 Nov 2019 22:58:41 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Nov 2019 19:58:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,322,1569308400"; 
+   d="scan'208";a="215441102"
+Received: from orsmsx108.amr.corp.intel.com ([10.22.240.6])
+  by fmsmga001.fm.intel.com with ESMTP; 18 Nov 2019 19:58:40 -0800
+Received: from orsmsx123.amr.corp.intel.com (10.22.240.116) by
+ ORSMSX108.amr.corp.intel.com (10.22.240.6) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Mon, 18 Nov 2019 19:58:39 -0800
+Received: from orsmsx101.amr.corp.intel.com ([169.254.8.229]) by
+ ORSMSX123.amr.corp.intel.com ([169.254.1.236]) with mapi id 14.03.0439.000;
+ Mon, 18 Nov 2019 19:58:39 -0800
+From:   "Ertman, David M" <david.m.ertman@intel.com>
+To:     Parav Pandit <parav@mellanox.com>,
+        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "Patil, Kiran" <kiran.patil@intel.com>
+Subject: RE: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Thread-Topic: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Thread-Index: AQHVnATHptCZx1o750+cmj+dZwSi7aeNZheAgAPN0JA=
+Date:   Tue, 19 Nov 2019 03:58:38 +0000
+Message-ID: <2B0E3F215D1AB84DA946C8BEE234CCC97B301493@ORSMSX101.amr.corp.intel.com>
+References: <20191115223355.1277139-1-jeffrey.t.kirsher@intel.com>
+ <AM0PR05MB4866CF61828A458319899664D1700@AM0PR05MB4866.eurprd05.prod.outlook.com>
+In-Reply-To: <AM0PR05MB4866CF61828A458319899664D1700@AM0PR05MB4866.eurprd05.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1574122967; bh=ip2xVJC+jxbL/7d2eWhZjqdIi4kB0uoxgzyWnYDs5q4=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=kZWTJaB6BUYpdW+z0HXxRztjdsBPgYMtIagp6++GXQ1xMYEqmDvkuTu5SJexcfc3Z
-         aqvcG/+YbvfnrntTmKpTzXcCcJ1vacUs8Vt+kkZFmecCKGt5ESA8XOWs62Cbve3dr3
-         XsCtQVKM4yFI8r3EtkYIToV94nBwkk0bzSnRfhI6IY4EfMEr9iYp9o7iElBN+PNDoe
-         GYMLDs4YJjT+MkCB6avfM8/DST4lwWHJbTQrh01mIBzcPCF4cBGDQd1OqtdqCqvly5
-         URQ6TTy1wBAC/IlVtHZs8b+E7d7tANvL2AVJcuHSx7ushKjPgli8Izd92XqBpLulsV
-         NLxmWdrhMpwGw==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.22.254.139]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/18/19 3:58 AM, Jan Kara wrote:
-> On Thu 14-11-19 21:53:33, John Hubbard wrote:
->> Add tracking of pages that were pinned via FOLL_PIN.
->>
->> As mentioned in the FOLL_PIN documentation, callers who effectively set
->> FOLL_PIN are required to ultimately free such pages via put_user_page().
->> The effect is similar to FOLL_GET, and may be thought of as "FOLL_GET
->> for DIO and/or RDMA use".
->>
->> Pages that have been pinned via FOLL_PIN are identifiable via a
->> new function call:
->>
->>    bool page_dma_pinned(struct page *page);
->>
->> What to do in response to encountering such a page, is left to later
->> patchsets. There is discussion about this in [1].
-> 						^^ missing this reference
-> in the changelog...
+> -----Original Message-----
+> From: Parav Pandit <parav@mellanox.com>
+> Sent: Friday, November 15, 2019 3:26 PM
+> To: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>; davem@davemloft.net;
+> gregkh@linuxfoundation.org
+> Cc: Ertman, David M <david.m.ertman@intel.com>;
+> netdev@vger.kernel.org; linux-rdma@vger.kernel.org;
+> nhorman@redhat.com; sassmann@redhat.com; jgg@ziepe.ca; Patil, Kiran
+> <kiran.patil@intel.com>
+> Subject: RE: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+> 
+> Hi Jeff,
+> 
+> > From: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+> > Sent: Friday, November 15, 2019 4:34 PM
+> >
+> > From: Dave Ertman <david.m.ertman@intel.com>
+> >
+> > This is the initial implementation of the Virtual Bus, virtbus_device
+> > and virtbus_driver.  The virtual bus is a software based bus intended
+> > to support lightweight devices and drivers and provide matching
+> > between them and probing of the registered drivers.
+> >
+> > The primary purpose of the virual bus is to provide matching services
+> > and to pass the data pointer contained in the virtbus_device to the
+> > virtbus_driver during its probe call.  This will allow two separate
+> > kernel objects to match up and start communication.
+> >
+> It is fundamental to know that rdma device created by virtbus_driver will be
+> anchored to which bus for an non abusive use.
+> virtbus or parent pci bus?
+> I asked this question in v1 version of this patch.
 
-I'll add that.=20
+The model we will be using is a PCI LAN driver that will allocate and
+register a virtbus_device.  The virtbus_device will be anchored to the virtual
+bus, not the PCI bus.
 
->=20
->> This also changes a BUG_ON(), to a WARN_ON(), in follow_page_mask().
->>
->> Suggested-by: Jan Kara <jack@suse.cz>
->> Suggested-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
->> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
->> ---
->> diff --git a/include/linux/mm.h b/include/linux/mm.h
->> index 6588d2e02628..db872766480f 100644
->> --- a/include/linux/mm.h
->> +++ b/include/linux/mm.h
->> @@ -1054,6 +1054,8 @@ static inline __must_check bool try_get_page(struc=
-t page *page)
->>  	return true;
->>  }
->> =20
->> +__must_check bool user_page_ref_inc(struct page *page);
->> +
->>  static inline void put_page(struct page *page)
->>  {
->>  	page =3D compound_head(page);
->> @@ -1071,29 +1073,70 @@ static inline void put_page(struct page *page)
->>  		__put_page(page);
->>  }
->> =20
->> -/**
->> - * put_user_page() - release a gup-pinned page
->> - * @page:            pointer to page to be released
->> +/*
->> + * GUP_PIN_COUNTING_BIAS, and the associated functions that use it, ove=
-rload
->> + * the page's refcount so that two separate items are tracked: the orig=
-inal page
->> + * reference count, and also a new count of how many get_user_pages() c=
-alls were
-> 							^^ pin_user_pages()
->=20
->> + * made against the page. ("gup-pinned" is another term for the latter)=
-.
->> + *
->> + * With this scheme, get_user_pages() becomes special: such pages are m=
-arked
-> 			^^^ pin_user_pages()
->=20
->> + * as distinct from normal pages. As such, the put_user_page() call (an=
-d its
->> + * variants) must be used in order to release gup-pinned pages.
->> + *
->> + * Choice of value:
->>   *
->> - * Pages that were pinned via pin_user_pages*() must be released via ei=
-ther
->> - * put_user_page(), or one of the put_user_pages*() routines. This is s=
-o that
->> - * eventually such pages can be separately tracked and uniquely handled=
-. In
->> - * particular, interactions with RDMA and filesystems need special hand=
-ling.
->> + * By making GUP_PIN_COUNTING_BIAS a power of two, debugging of page re=
-ference
->> + * counts with respect to get_user_pages() and put_user_page() becomes =
-simpler,
-> 				^^^ pin_user_pages()
->=20
+The virtbus does not have a requirement that elements registering with it
+have any association with another outside bus or device.
 
-Yes.
+RDMA is not attached to any bus when it's init is called.  The virtbus_driver
+that it will create will be attached to the virtual bus.
 
->> + * due to the fact that adding an even power of two to the page refcoun=
-t has
->> + * the effect of using only the upper N bits, for the code that counts =
-up using
->> + * the bias value. This means that the lower bits are left for the excl=
-usive
->> + * use of the original code that increments and decrements by one (or a=
-t least,
->> + * by much smaller values than the bias value).
->>   *
->> - * put_user_page() and put_page() are not interchangeable, despite this=
- early
->> - * implementation that makes them look the same. put_user_page() calls =
-must
->> - * be perfectly matched up with pin*() calls.
->> + * Of course, once the lower bits overflow into the upper bits (and thi=
-s is
->> + * OK, because subtraction recovers the original values), then visual i=
-nspection
->> + * no longer suffices to directly view the separate counts. However, fo=
-r normal
->> + * applications that don't have huge page reference counts, this won't =
-be an
->> + * issue.
->> + *
->> + * Locking: the lockless algorithm described in page_cache_get_speculat=
-ive()
->> + * and page_cache_gup_pin_speculative() provides safe operation for
->> + * get_user_pages and page_mkclean and other calls that race to set up =
-page
->> + * table entries.
->>   */
-> ...
->> @@ -2070,9 +2191,16 @@ static int gup_hugepte(pte_t *ptep, unsigned long=
- sz, unsigned long addr,
->>  	page =3D head + ((addr & (sz-1)) >> PAGE_SHIFT);
->>  	refs =3D __record_subpages(page, addr, end, pages + *nr);
->> =20
->> -	head =3D try_get_compound_head(head, refs);
->> -	if (!head)
->> -		return 0;
->> +	if (flags & FOLL_PIN) {
->> +		head =3D page;
->> +		if (unlikely(!user_page_ref_inc(head)))
->> +			return 0;
->> +		head =3D page;
->=20
-> Why do you assign 'head' twice? Also the refcounting logic is repeated
-> several times so perhaps you can factor it out in to a helper function or
-> even move it to __record_subpages()?
+The RDMA driver will register a virtbus_driver object.  Its probe will
+accept the data pointer from the virtbus_device that the PCI LAN driver
+created.
 
-OK.
+> 
+> Also since it says - 'to support lightweight devices', documenting that
+> information is critical to avoid ambiguity.
+> 
+> Since for a while I am working on the subbus/subdev_bus/xbus/mdev [1]
+> whatever we want to call it, it overlaps with your comment about 'to support
+> lightweight devices'.
+> Hence let's make things crystal clear weather the purpose is 'only matching
+> service' or also 'lightweight devices'.
+> If this is only matching service, lets please remove lightweight devices part..
+> 
 
->=20
->> +	} else {
->> +		head =3D try_get_compound_head(head, refs);
->> +		if (!head)
->> +			return 0;
->> +	}
->> =20
->>  	if (unlikely(pte_val(pte) !=3D pte_val(*ptep))) {
->>  		put_compound_head(head, refs);
->=20
-> So this will do the wrong thing for FOLL_PIN. We took just one "pin"
-> reference there but here we'll release 'refs' normal references AFAICT.
-> Also the fact that you take just one pin reference for each huge page
-> substantially changes how GUP refcounting works in the huge page case.
-> Currently, FOLL_GET users can be completely agnostic of huge pages. So yo=
-u
-> can e.g. GUP whole 2 MB page, submit it as 2 different bios and then
-> drop page references from each bio completion function. With your new
-> FOLL_PIN behavior you cannot do that and I believe it will be a problem f=
-or
-> some users. So I think you have to maintain the behavior that you increas=
-e
-> the head->_refcount by (refs * GUP_PIN_COUNTING_BIAS) here.
->=20
+This is only for matching services for kernel objects, I will work on
+phrasing this clearer.
 
-Yes, completely agreed, this was a (big) oversight. I went through the same
-reasoning and reached your conclusions, in __gup_device_huge(), but then
-did it wrong in these functions. Will fix.
+> You additionally need modpost support for id table integration to modifo,
+> modprobe and other tools.
+> A small patch similar to this one [2] is needed.
+> Please include in the series.
+> 
 
-thanks,
---=20
-John Hubbard
-NVIDIA
+modpost support added - thanks for that catch!
+
+> [..]
+> 
+> > +static const
+> > +struct virtbus_dev_id *virtbus_match_id(const struct virtbus_dev_id *id,
+> > +					struct virtbus_device *vdev)
+> > +{
+> > +	while (id->name[0]) {
+> > +		if (!strcmp(vdev->name, id->name)) {
+> > +			vdev->dev_id = id;
+> Matching function shouldn't be modifying the id.
+
+This is not the main id of the virtbus_device.  This is copying the
+element in the driver id_table that was matched into the virtbus_device
+struct, so that when the virtbus_device struct is passed to the
+virtbus_driver's probe, it can access the correct driver_data.
+
+I chose a poor name for this field, I will change the name of this part of the
+struct to matched_element and include a comment on what is going on here.
+
+> 
+> > +			return id;
+> > +		}
+> > +		id++;
+> > +	}
+> > +	return NULL;
+> > +}
+> > +
+> > +#define to_virtbus_dev(x)	(container_of((x), struct virtbus_device,
+> dev))
+> > +#define to_virtbus_drv(x)	(container_of((x), struct virtbus_driver, \
+> > +				 driver))
+> > +
+> > +/**
+> > + * virtbus_match - bind virtbus device to virtbus driver
+> > + * @dev: device
+> > + * @drv: driver
+> > + *
+> > + * Virtbus device IDs are always in "<name>.<instance>" format.
+> We might have to change this scheme depending on the first question I
+> asked in the email about device anchoring.
+> 
+> > +
+> > +struct bus_type virtual_bus_type = {
+> > +	.name		= "virtbus",
+> > +	.match		= virtbus_match,
+> > +	.probe		= virtbus_probe,
+> > +	.remove		= virtbus_remove,
+> > +	.shutdown	= virtbus_shutdown,
+> > +	.suspend	= virtbus_suspend,
+> > +	.resume		= virtbus_resume,
+> > +};
+> Drop the tab alignment.
+> 
+
+Dropped :)
+
+> > +
+> > +/**
+> > + * virtbus_dev_register - add a virtual bus device
+> > + * @vdev: virtual bus device to add
+> > + */
+> > +int virtbus_dev_register(struct virtbus_device *vdev) {
+> > +	int ret;
+> > +
+> > +	if (!vdev)
+> > +		return -EINVAL;
+> No need for this check.
+> Driver shouldn't be called null device registration.
+
+check removed.
+
+> 
+> > +
+> > +	device_initialize(&vdev->dev);
+> > +
+> > +	vdev->dev.bus = &virtual_bus_type;
+> > +	/* All device IDs are automatically allocated */
+> > +	ret = ida_simple_get(&virtbus_dev_ida, 0, 0, GFP_KERNEL);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> This is bug, once device_initialize() is done, it must do put_device() and
+> follow the release sequence.
+> 
+
+changed to use put_device().
+
+> > +	vdev->id = ret;
+> > +	dev_set_name(&vdev->dev, "%s.%d", vdev->name, vdev->id);
+> > +
+> > +	dev_dbg(&vdev->dev, "Registering VirtBus device '%s'\n",
+> I think 'virtbus' naming is better instead of 'VirtBus' all over. We don't do "Pci'
+> in prints etc.
+> 
+
+Changed to virtbus.
+
+> > +		dev_name(&vdev->dev));
+> > +
+> > +	ret = device_add(&vdev->dev);
+> > +	if (!ret)
+> > +		return ret;
+> > +
+> > +	/* Error adding virtual device */
+> > +	device_del(&vdev->dev);
+> > +	ida_simple_remove(&virtbus_dev_ida, vdev->id);
+> > +	vdev->id = VIRTBUS_DEVID_NONE;
+> > +
+> > +	return ret;
+> > +}
+> > +EXPORT_SYMBOL_GPL(virtbus_dev_register);
+> > +
+> > +/**
+> > + * virtbus_dev_unregister - remove a virtual bus device
+> > + * vdev: virtual bus device we are removing  */ void
+> > +virtbus_dev_unregister(struct virtbus_device *vdev) {
+> > +	if (!IS_ERR_OR_NULL(vdev)) {
+> > +		device_del(&vdev->dev);
+> > +
+> > +		ida_simple_remove(&virtbus_dev_ida, vdev->id);
+> I believe this should be done in the release() because above device_del()
+> may not ensure that all references to the devices are dropped.
+> 
+
+ida_release moved to .release() function.
+
+> > +		vdev->id = VIRTBUS_DEVID_NONE;
+> > +	}
+> > +}
+> > +EXPORT_SYMBOL_GPL(virtbus_dev_unregister);
+> > +
+> > +struct virtbus_object {
+> > +	struct virtbus_device vdev;
+> > +	char name[];
+> > +};
+> > +
+> This shouldn't be needed once. More below.
+> 
+> > +/**
+> > + * virtbus_dev_release - Destroy a virtbus device
+> > + * @vdev: virtual device to release
+> > + *
+> > + * Note that the vdev->data which is separately allocated needs to be
+> > + * separately freed on it own.
+> > + */
+> > +static void virtbus_dev_release(struct device *dev) {
+> > +	struct virtbus_object *vo = container_of(dev, struct virtbus_object,
+> > +						 vdev.dev);
+> > +
+> > +	kfree(vo);
+> > +}
+> > +
+> > +/**
+> > + * virtbus_dev_alloc - allocate a virtbus device
+> > + * @name: name to associate with the vdev
+> > + * @data: pointer to data to be associated with this device  */
+> > +struct virtbus_device *virtbus_dev_alloc(const char *name, void *data) {
+> > +	struct virtbus_object *vo;
+> > +
+> Data should not be used.
+> Caller needs to give a size of the object to allocate.
+> I discussed the example in detail with Jason in v1 of this patch. Please refer in
+> that email.
+> It should be something like this.
+> 
+> /* size = sizeof(struct i40_virtbus_dev), and it is the first member */
+> virtbus_dev_alloc(size)
+> {
+> 	[..]
+> }
+> 
+> struct i40_virtbus_dev {
+> 	struct virbus_dev virtdev;
+> 	/*... more fields that you want to share with other driver and to use
+> in probe() */ };
+> 
+> irdma_probe(..)
+> {
+> 	struct i40_virtbus_dev dev = container_of(dev, struct
+> i40_virtbus_dev, dev); }
+> 
+> [..]
+> 
+> > diff --git a/include/linux/virtual_bus.h b/include/linux/virtual_bus.h
+> > new file mode 100644 index 000000000000..b6f2406180f8
+> > --- /dev/null
+> > +++ b/include/linux/virtual_bus.h
+> > @@ -0,0 +1,55 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +/*
+> > + * virtual_bus.h - lightweight software bus
+> > + *
+> > + * Copyright (c) 2019-20 Intel Corporation
+> > + *
+> > + * Please see Documentation/driver-api/virtual_bus.rst for more
+> > +information  */
+> > +
+> > +#ifndef _VIRTUAL_BUS_H_
+> > +#define _VIRTUAL_BUS_H_
+> > +
+> > +#include <linux/device.h>
+> > +
+> > +#define VIRTBUS_DEVID_NONE	(-1)
+> > +#define VIRTBUS_NAME_SIZE	20
+> > +
+> > +struct virtbus_dev_id {
+> > +	char name[VIRTBUS_NAME_SIZE];
+> > +	u64 driver_data;
+> > +};
+> > +
+> > +struct virtbus_device {
+> > +	const char			*name;
+> > +	int				id;
+> > +	const struct virtbus_dev_id	*dev_id;
+> > +	struct device			dev;
+> Drop the tab based alignment and just please follow format of virtbus_driver
+> you did below.
+> > +	void				*data;
+> Please drop data. we need only wrapper API virtbus_get/set_drvdata().
+> > +};
+> 
+
+Data dropped in favor of the device creator using a struct to contain the
+virtbus_device and data field, and the virtbus_driver using a container_of()
+to get to the data after receiving the virtbus_device struct in probe.
+
+Function virtbus_dev_alloc removed from patch (since the device creator will
+need to allocate for the container object).
+
+> [1] https://lore.kernel.org/linux-rdma/20191107160448.20962-1-
+> parav@mellanox.com/
+> [2] https://lore.kernel.org/patchwork/patch/1046991/
+
+
+Thanks for the feedback!
+
+-Dave E
