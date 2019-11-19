@@ -2,701 +2,428 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4A3101BF2
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 09:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5976101FF9
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 10:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727960AbfKSIRZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Nov 2019 03:17:25 -0500
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:12900 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727905AbfKSIRT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 03:17:19 -0500
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dd3a50c0002>; Tue, 19 Nov 2019 00:17:16 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 19 Nov 2019 00:17:16 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 19 Nov 2019 00:17:16 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Nov
- 2019 08:17:15 +0000
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Nov
- 2019 08:17:15 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Tue, 19 Nov 2019 08:17:14 +0000
-Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5dd3a5080005>; Tue, 19 Nov 2019 00:17:13 -0800
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Paul Mackerras" <paulus@samba.org>, Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v6 24/24] mm, tree-wide: rename put_user_page*() to unpin_user_page*()
-Date:   Tue, 19 Nov 2019 00:16:43 -0800
-Message-ID: <20191119081643.1866232-25-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191119081643.1866232-1-jhubbard@nvidia.com>
-References: <20191119081643.1866232-1-jhubbard@nvidia.com>
+        id S1726573AbfKSJSd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 19 Nov 2019 04:18:33 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2088 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725784AbfKSJSd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Nov 2019 04:18:33 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id 9CE51FC5626347C4C1ED;
+        Tue, 19 Nov 2019 17:18:28 +0800 (CST)
+Received: from DGGEMM526-MBX.china.huawei.com ([169.254.8.127]) by
+ DGGEMM404-HUB.china.huawei.com ([10.3.20.212]) with mapi id 14.03.0439.000;
+ Tue, 19 Nov 2019 17:18:27 +0800
+From:   "Zengtao (B)" <prime.zeng@hisilicon.com>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH v6 2/2] RDMA/cma: Add trace points in RDMA Connection
+ Manager
+Thread-Topic: [PATCH v6 2/2] RDMA/cma: Add trace points in RDMA Connection
+ Manager
+Thread-Index: AQHVnloJdrUlMhRtgEuilW9Cp7qD16eRl8AAgACekUA=
+Date:   Tue, 19 Nov 2019 09:18:26 +0000
+Message-ID: <678F3D1BB717D949B966B68EAEB446ED300C5619@dggemm526-mbx.china.huawei.com>
+References: <20191118214447.27891.58814.stgit@manet.1015granger.net>
+ <20191118214915.27891.61202.stgit@manet.1015granger.net>
+ <20191119074516.GG52766@unreal>
+In-Reply-To: <20191119074516.GG52766@unreal>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.74.221.187]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1574151437; bh=MEfoBt+IiZ18Wgtp83kPA3LpPDKdQT5/Eab3lDhjAQc=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=aeVxSY5gm5IcJdWiwfRgw51S1BP0HaTyt2fkHCtpIKjABn2BCXf33C+HIPt4vfVzv
-         I1VPCH730m4uuy367P31K4BaO5OQuC1wt9qHIdlnmM9pdDHrRJ63sY2+jxLaa/27Bv
-         5hX8Ndh3uWu1P3bwaBr0TK0SaSeeoiGnq6qVeCfCGst6mfY+hSzxK2KJdbH9JyLTsh
-         tLZs5Lgy+lK55cJGEQ2ZaYiL6GO/DEo/i3ZdRz9W6ccdz9krNF1t7YgPw0VYHHYzIF
-         xILP1peASqVD57X55obP/iJbzvYka5T2db367iM6wVxcYRCUZqCR0LYyOiFBWBtJq7
-         CDbhpz/3AtaBA==
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In order to provide a clearer, more symmetric API for pinning
-and unpinning DMA pages. This way, pin_user_pages*() calls
-match up with unpin_user_pages*() calls, and the API is a lot
-closer to being self-explanatory.
+> -----Original Message-----
+> From: linux-rdma-owner@vger.kernel.org
+> [mailto:linux-rdma-owner@vger.kernel.org] On Behalf Of Leon Romanovsky
+> Sent: Tuesday, November 19, 2019 3:45 PM
+> To: Chuck Lever
+> Cc: linux-rdma@vger.kernel.org
+> Subject: Re: [PATCH v6 2/2] RDMA/cma: Add trace points in RDMA Connection
+> Manager
+> 
+> On Mon, Nov 18, 2019 at 04:49:15PM -0500, Chuck Lever wrote:
+> > Record state transitions as each connection is established. The IP
+> > address of both peers and the Type of Service is reported. These
+> > new trace points are not in performance hot paths.
+> >
+> > Also, record each cm_event_handler call to ULPs. This eliminates the
+> > need for each ULP to add its own similar trace point in its CM event
+> > handler function.
+> >
+> > These new trace points appear in a new trace subsystem called
+> > "rdma_cma".
+> >
+> > This patch is based on previous work by:
+> >
+> > Saeed Mahameed <saeedm@mellanox.com>
+> > Mukesh Kacker <mukesh.kacker@oracle.com>
+> > Ajaykumar Hotchandani <ajaykumar.hotchandani@oracle.com>
+> > Aron Silverton <aron.silverton@oracle.com>
+> > Avinash Repaka <avinash.repaka@oracle.com>
+> > Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
+> >
+> > Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> > ---
+> >  drivers/infiniband/core/Makefile    |    2
+> >  drivers/infiniband/core/cma.c       |   60 +++++++---
+> >  drivers/infiniband/core/cma_trace.c |   16 +++
+> >  include/trace/events/rdma_cma.h     |  218
+> +++++++++++++++++++++++++++++++++++
+> >  4 files changed, 279 insertions(+), 17 deletions(-)
+> >  create mode 100644 drivers/infiniband/core/cma_trace.c
+> >  create mode 100644 include/trace/events/rdma_cma.h
+> >
+> > diff --git a/drivers/infiniband/core/Makefile
+> b/drivers/infiniband/core/Makefile
+> > index 68d9e27c3c61..bab7b6f01982 100644
+> > --- a/drivers/infiniband/core/Makefile
+> > +++ b/drivers/infiniband/core/Makefile
+> > @@ -20,7 +20,7 @@ ib_cm-y :=			cm.o
+> >
+> >  iw_cm-y :=			iwcm.o iwpm_util.o iwpm_msg.o
+> >
+> > -rdma_cm-y :=			cma.o
+> > +rdma_cm-y :=			cma.o cma_trace.o
+> >
+> >  rdma_cm-$(CONFIG_INFINIBAND_ADDR_TRANS_CONFIGFS) +=
+> cma_configfs.o
+> >
+> > diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> > index d78f67623f24..5d5e63336954 100644
+> > --- a/drivers/infiniband/core/cma.c
+> > +++ b/drivers/infiniband/core/cma.c
+> > @@ -64,6 +64,8 @@
+> >  #include "core_priv.h"
+> >  #include "cma_priv.h"
+> >
+> > +#include <trace/events/rdma_cma.h>
+> > +
+> >  MODULE_AUTHOR("Sean Hefty");
+> >  MODULE_DESCRIPTION("Generic RDMA CM Agent");
+> >  MODULE_LICENSE("Dual BSD/GPL");
+> > @@ -1890,6 +1892,7 @@ static int cma_rep_recv(struct rdma_id_private
+> *id_priv)
+> >  	if (ret)
+> >  		goto reject;
+> >
+> > +	trace_cm_send_rtu(id_priv);
+> >  	ret = ib_send_cm_rtu(id_priv->cm_id.ib, NULL, 0);
+> >  	if (ret)
+> >  		goto reject;
+> > @@ -1898,6 +1901,7 @@ static int cma_rep_recv(struct rdma_id_private
+> *id_priv)
+> >  reject:
+> >  	pr_debug_ratelimited("RDMA CM: CONNECT_ERROR: failed to handle
+> reply. status %d\n", ret);
+> >  	cma_modify_qp_err(id_priv);
+> > +	trace_cm_send_rej(id_priv);
+> >  	ib_send_cm_rej(id_priv->cm_id.ib, IB_CM_REJ_CONSUMER_DEFINED,
+> >  		       NULL, 0, NULL, 0);
+> >  	return ret;
+> > @@ -1917,6 +1921,13 @@ static void cma_set_rep_event_data(struct
+> rdma_cm_event *event,
+> >  	event->param.conn.qp_num = rep_data->remote_qpn;
+> >  }
+> >
+> > +static int cma_cm_event_handler(struct rdma_id_private *id_priv,
+> > +				struct rdma_cm_event *event)
+> > +{
+> > +	trace_cm_event_handler(id_priv, event);
+> > +	return id_priv->id.event_handler(&id_priv->id, event);
+> > +}
+> > +
+> >  static int cma_ib_handler(struct ib_cm_id *cm_id,
+> >  			  const struct ib_cm_event *ib_event)
+> >  {
+> > @@ -1939,8 +1950,10 @@ static int cma_ib_handler(struct ib_cm_id
+> *cm_id,
+> >  		break;
+> >  	case IB_CM_REP_RECEIVED:
+> >  		if (cma_comp(id_priv, RDMA_CM_CONNECT) &&
+> > -		    (id_priv->id.qp_type != IB_QPT_UD))
+> > +		    (id_priv->id.qp_type != IB_QPT_UD)) {
+> > +			trace_cm_send_mra(id_priv);
+> >  			ib_send_cm_mra(cm_id, CMA_CM_MRA_SETTING, NULL, 0);
+> > +		}
+> >  		if (id_priv->id.qp) {
+> >  			event.status = cma_rep_recv(id_priv);
+> >  			event.event = event.status ?
+> RDMA_CM_EVENT_CONNECT_ERROR :
+> > @@ -1985,7 +1998,7 @@ static int cma_ib_handler(struct ib_cm_id *cm_id,
+> >  		goto out;
+> >  	}
+> >
+> > -	ret = id_priv->id.event_handler(&id_priv->id, &event);
+> > +	ret = cma_cm_event_handler(id_priv, &event);
+> >  	if (ret) {
+> >  		/* Destroy the CM ID by returning a non-zero value. */
+> >  		id_priv->cm_id.ib = NULL;
+> > @@ -2146,6 +2159,7 @@ static int cma_ib_req_handler(struct ib_cm_id
+> *cm_id,
+> >  	if (IS_ERR(listen_id))
+> >  		return PTR_ERR(listen_id);
+> >
+> > +	trace_cm_req_handler(listen_id, ib_event->event);
+> >  	if (!cma_ib_check_req_qp_type(&listen_id->id, ib_event)) {
+> >  		ret = -EINVAL;
+> >  		goto net_dev_put;
+> > @@ -2188,7 +2202,7 @@ static int cma_ib_req_handler(struct ib_cm_id
+> *cm_id,
+> >  	 * until we're done accessing it.
+> >  	 */
+> >  	atomic_inc(&conn_id->refcount);
+> > -	ret = conn_id->id.event_handler(&conn_id->id, &event);
+> > +	ret = cma_cm_event_handler(conn_id, &event);
+> >  	if (ret)
+> >  		goto err3;
+> >  	/*
+> > @@ -2197,8 +2211,10 @@ static int cma_ib_req_handler(struct ib_cm_id
+> *cm_id,
+> >  	 */
+> >  	mutex_lock(&lock);
+> >  	if (cma_comp(conn_id, RDMA_CM_CONNECT) &&
+> > -	    (conn_id->id.qp_type != IB_QPT_UD))
+> > +	    (conn_id->id.qp_type != IB_QPT_UD)) {
+> > +		trace_cm_send_mra(cm_id->context);
+> >  		ib_send_cm_mra(cm_id, CMA_CM_MRA_SETTING, NULL, 0);
+> > +	}
+> >  	mutex_unlock(&lock);
+> >  	mutex_unlock(&conn_id->handler_mutex);
+> >  	mutex_unlock(&listen_id->handler_mutex);
+> > @@ -2313,7 +2329,7 @@ static int cma_iw_handler(struct iw_cm_id *iw_id,
+> struct iw_cm_event *iw_event)
+> >  	event.status = iw_event->status;
+> >  	event.param.conn.private_data = iw_event->private_data;
+> >  	event.param.conn.private_data_len = iw_event->private_data_len;
+> > -	ret = id_priv->id.event_handler(&id_priv->id, &event);
+> > +	ret = cma_cm_event_handler(id_priv, &event);
+> >  	if (ret) {
+> >  		/* Destroy the CM ID by returning a non-zero value. */
+> >  		id_priv->cm_id.iw = NULL;
+> > @@ -2390,7 +2406,7 @@ static int iw_conn_req_handler(struct iw_cm_id
+> *cm_id,
+> >  	 * until we're done accessing it.
+> >  	 */
+> >  	atomic_inc(&conn_id->refcount);
+> > -	ret = conn_id->id.event_handler(&conn_id->id, &event);
+> > +	ret = cma_cm_event_handler(conn_id, &event);
+> >  	if (ret) {
+> >  		/* User wants to destroy the CM ID */
+> >  		conn_id->cm_id.iw = NULL;
+> > @@ -2462,6 +2478,7 @@ static int cma_listen_handler(struct rdma_cm_id
+> *id,
+> >
+> >  	id->context = id_priv->id.context;
+> >  	id->event_handler = id_priv->id.event_handler;
+> > +	trace_cm_event_handler(id_priv, event);
+> >  	return id_priv->id.event_handler(id, event);
+> >  }
+> >
+> > @@ -2636,7 +2653,7 @@ static void cma_work_handler(struct work_struct
+> *_work)
+> >  	if (!cma_comp_exch(id_priv, work->old_state, work->new_state))
+> >  		goto out;
+> >
+> > -	if (id_priv->id.event_handler(&id_priv->id, &work->event)) {
+> > +	if (cma_cm_event_handler(id_priv, &work->event)) {
+> >  		cma_exch(id_priv, RDMA_CM_DESTROYING);
+> >  		destroy = 1;
+> >  	}
+> > @@ -2659,7 +2676,7 @@ static void cma_ndev_work_handler(struct
+> work_struct *_work)
+> >  	    id_priv->state == RDMA_CM_DEVICE_REMOVAL)
+> >  		goto out;
+> >
+> > -	if (id_priv->id.event_handler(&id_priv->id, &work->event)) {
+> > +	if (cma_cm_event_handler(id_priv, &work->event)) {
+> >  		cma_exch(id_priv, RDMA_CM_DESTROYING);
+> >  		destroy = 1;
+> >  	}
+> > @@ -3062,7 +3079,7 @@ static void addr_handler(int status, struct
+> sockaddr *src_addr,
+> >  	} else
+> >  		event.event = RDMA_CM_EVENT_ADDR_RESOLVED;
+> >
+> > -	if (id_priv->id.event_handler(&id_priv->id, &event)) {
+> > +	if (cma_cm_event_handler(id_priv, &event)) {
+> >  		cma_exch(id_priv, RDMA_CM_DESTROYING);
+> >  		mutex_unlock(&id_priv->handler_mutex);
+> >  		rdma_destroy_id(&id_priv->id);
+> > @@ -3709,7 +3726,7 @@ static int cma_sidr_rep_handler(struct ib_cm_id
+> *cm_id,
+> >  		goto out;
+> >  	}
+> >
+> > -	ret = id_priv->id.event_handler(&id_priv->id, &event);
+> > +	ret = cma_cm_event_handler(id_priv, &event);
+> >
+> >  	rdma_destroy_ah_attr(&event.param.ud.ah_attr);
+> >  	if (ret) {
+> > @@ -3773,6 +3790,7 @@ static int cma_resolve_ib_udp(struct
+> rdma_id_private *id_priv,
+> >  	req.timeout_ms = 1 << (CMA_CM_RESPONSE_TIMEOUT - 8);
+> >  	req.max_cm_retries = CMA_MAX_CM_RETRIES;
+> >
+> > +	trace_cm_send_sidr_req(id_priv);
+> >  	ret = ib_send_cm_sidr_req(id_priv->cm_id.ib, &req);
+> >  	if (ret) {
+> >  		ib_destroy_cm_id(id_priv->cm_id.ib);
+> > @@ -3846,6 +3864,7 @@ static int cma_connect_ib(struct rdma_id_private
+> *id_priv,
+> >  	req.max_cm_retries = CMA_MAX_CM_RETRIES;
+> >  	req.srq = id_priv->srq ? 1 : 0;
+> >
+> > +	trace_cm_send_req(id_priv);
+> >  	ret = ib_send_cm_req(id_priv->cm_id.ib, &req);
+> >  out:
+> >  	if (ret && !IS_ERR(id)) {
+> > @@ -3959,6 +3978,7 @@ static int cma_accept_ib(struct rdma_id_private
+> *id_priv,
+> >  	rep.rnr_retry_count = min_t(u8, 7, conn_param->rnr_retry_count);
+> >  	rep.srq = id_priv->srq ? 1 : 0;
+> >
+> > +	trace_cm_send_rep(id_priv);
+> >  	ret = ib_send_cm_rep(id_priv->cm_id.ib, &rep);
+> >  out:
+> >  	return ret;
+> > @@ -4008,6 +4028,7 @@ static int cma_send_sidr_rep(struct
+> rdma_id_private *id_priv,
+> >  	rep.private_data = private_data;
+> >  	rep.private_data_len = private_data_len;
+> >
+> > +	trace_cm_send_sidr_rep(id_priv);
+> >  	return ib_send_cm_sidr_rep(id_priv->cm_id.ib, &rep);
+> >  }
+> >
+> > @@ -4093,13 +4114,15 @@ int rdma_reject(struct rdma_cm_id *id, const
+> void *private_data,
+> >  		return -EINVAL;
+> >
+> >  	if (rdma_cap_ib_cm(id->device, id->port_num)) {
+> > -		if (id->qp_type == IB_QPT_UD)
+> > +		if (id->qp_type == IB_QPT_UD) {
+> >  			ret = cma_send_sidr_rep(id_priv, IB_SIDR_REJECT, 0,
+> >  						private_data, private_data_len);
+> > -		else
+> > +		} else {
+> > +			trace_cm_send_rej(id_priv);
+> >  			ret = ib_send_cm_rej(id_priv->cm_id.ib,
+> >  					     IB_CM_REJ_CONSUMER_DEFINED, NULL,
+> >  					     0, private_data, private_data_len);
+> > +		}
+> >  	} else if (rdma_cap_iw_cm(id->device, id->port_num)) {
+> >  		ret = iw_cm_reject(id_priv->cm_id.iw,
+> >  				   private_data, private_data_len);
+> > @@ -4124,8 +4147,13 @@ int rdma_disconnect(struct rdma_cm_id *id)
+> >  		if (ret)
+> >  			goto out;
+> >  		/* Initiate or respond to a disconnect. */
+> > -		if (ib_send_cm_dreq(id_priv->cm_id.ib, NULL, 0))
+> > -			ib_send_cm_drep(id_priv->cm_id.ib, NULL, 0);
+> > +		trace_cm_disconnect(id_priv);
+> > +		if (ib_send_cm_dreq(id_priv->cm_id.ib, NULL, 0)) {
+> > +			if (!ib_send_cm_drep(id_priv->cm_id.ib, NULL, 0))
+> > +				trace_cm_sent_drep(id_priv);
+> > +		} else {
+> > +			trace_cm_sent_dreq(id_priv);
+> > +		}
+> >  	} else if (rdma_cap_iw_cm(id->device, id->port_num)) {
+> >  		ret = iw_cm_disconnect(id_priv->cm_id.iw, 0);
+> >  	} else
+> > @@ -4191,7 +4219,7 @@ static int cma_ib_mc_handler(int status, struct
+> ib_sa_multicast *multicast)
+> >  	} else
+> >  		event.event = RDMA_CM_EVENT_MULTICAST_ERROR;
+> >
+> > -	ret = id_priv->id.event_handler(&id_priv->id, &event);
+> > +	ret = cma_cm_event_handler(id_priv, &event);
+> >
+> >  	rdma_destroy_ah_attr(&event.param.ud.ah_attr);
+> >  	if (ret) {
+> > @@ -4626,7 +4654,7 @@ static int cma_remove_id_dev(struct
+> rdma_id_private *id_priv)
+> >  		goto out;
+> >
+> >  	event.event = RDMA_CM_EVENT_DEVICE_REMOVAL;
+> > -	ret = id_priv->id.event_handler(&id_priv->id, &event);
+> > +	ret = cma_cm_event_handler(id_priv, &event);
+> >  out:
+> >  	mutex_unlock(&id_priv->handler_mutex);
+> >  	return ret;
+> > diff --git a/drivers/infiniband/core/cma_trace.c
+> b/drivers/infiniband/core/cma_trace.c
+> > new file mode 100644
+> > index 000000000000..1093fa813bc1
+> > --- /dev/null
+> > +++ b/drivers/infiniband/core/cma_trace.c
+> > @@ -0,0 +1,16 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Trace points for the RDMA Connection Manager.
+> > + *
+> > + * Author: Chuck Lever <chuck.lever@oracle.com>
+> > + *
+> > + * Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
+> > + */
+> > +
+> > +#define CREATE_TRACE_POINTS
+> > +
+> > +#include <rdma/rdma_cm.h>
+> > +#include <rdma/ib_cm.h>
+> > +#include "cma_priv.h"
+> > +
+> > +#include <trace/events/rdma_cma.h>
+> > diff --git a/include/trace/events/rdma_cma.h
+> b/include/trace/events/rdma_cma.h
+> > new file mode 100644
+> > index 000000000000..b6ccdade651c
+> > --- /dev/null
+> > +++ b/include/trace/events/rdma_cma.h
+> > @@ -0,0 +1,218 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +/*
+> > + * Trace point definitions for the RDMA Connect Manager.
+> > + *
+> > + * Author: Chuck Lever <chuck.lever@oracle.com>
+> > + *
+> > + * Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
+> > + */
+> > +
+> > +#undef TRACE_SYSTEM
+> > +#define TRACE_SYSTEM rdma_cma
+> > +
+> > +#if !defined(_TRACE_RDMA_CMA_H) ||
+> defined(TRACE_HEADER_MULTI_READ)
+> > +
+> > +#define _TRACE_RDMA_CMA_H
+> > +
+> > +#include <linux/tracepoint.h>
+> > +#include <rdma/rdma_cm.h>
+> > +#include "cma_priv.h"
+> 
+> Did it compile?
+> cma_priv.h is located in drivers/infiniband/core/ and unlikely to be
+> accessible from "include/trace/events/rdma_cma.h" file.
+> 
+Exactly , I have applied this patch and compile failed, and it seems
+that just simply remove "#cma_priv.h" works.
 
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- Documentation/core-api/pin_user_pages.rst   |  2 +-
- arch/powerpc/mm/book3s64/iommu_api.c        |  6 +--
- drivers/gpu/drm/via/via_dmablit.c           |  4 +-
- drivers/infiniband/core/umem.c              |  2 +-
- drivers/infiniband/hw/hfi1/user_pages.c     |  2 +-
- drivers/infiniband/hw/mthca/mthca_memfree.c |  6 +--
- drivers/infiniband/hw/qib/qib_user_pages.c  |  2 +-
- drivers/infiniband/hw/qib/qib_user_sdma.c   |  6 +--
- drivers/infiniband/hw/usnic/usnic_uiom.c    |  2 +-
- drivers/infiniband/sw/siw/siw_mem.c         |  2 +-
- drivers/media/v4l2-core/videobuf-dma-sg.c   |  4 +-
- drivers/platform/goldfish/goldfish_pipe.c   |  4 +-
- drivers/vfio/vfio_iommu_type1.c             |  2 +-
- fs/io_uring.c                               |  4 +-
- include/linux/mm.h                          | 30 +++++++-------
- include/linux/mmzone.h                      |  2 +-
- mm/gup.c                                    | 46 ++++++++++-----------
- mm/gup_benchmark.c                          |  2 +-
- mm/process_vm_access.c                      |  4 +-
- net/xdp/xdp_umem.c                          |  2 +-
- 20 files changed, 67 insertions(+), 67 deletions(-)
-
-diff --git a/Documentation/core-api/pin_user_pages.rst b/Documentation/core=
--api/pin_user_pages.rst
-index baa288a44a77..6d93ef203561 100644
---- a/Documentation/core-api/pin_user_pages.rst
-+++ b/Documentation/core-api/pin_user_pages.rst
-@@ -220,7 +220,7 @@ since the system was booted, via two new /proc/vmstat e=
-ntries: ::
-     /proc/vmstat/nr_foll_pin_requested
-=20
- Those are both going to show zero, unless CONFIG_DEBUG_VM is set. This is
--because there is a noticeable performance drop in put_user_page(), when th=
-ey
-+because there is a noticeable performance drop in unpin_user_page(), when =
-they
- are activated.
-=20
- References
-diff --git a/arch/powerpc/mm/book3s64/iommu_api.c b/arch/powerpc/mm/book3s6=
-4/iommu_api.c
-index 196383e8e5a9..dd7aa5a4f33c 100644
---- a/arch/powerpc/mm/book3s64/iommu_api.c
-+++ b/arch/powerpc/mm/book3s64/iommu_api.c
-@@ -168,7 +168,7 @@ static long mm_iommu_do_alloc(struct mm_struct *mm, uns=
-igned long ua,
-=20
- free_exit:
- 	/* free the references taken */
--	put_user_pages(mem->hpages, pinned);
-+	unpin_user_pages(mem->hpages, pinned);
-=20
- 	vfree(mem->hpas);
- 	kfree(mem);
-@@ -211,8 +211,8 @@ static void mm_iommu_unpin(struct mm_iommu_table_group_=
-mem_t *mem)
- 		if (!page)
- 			continue;
-=20
--		put_user_pages_dirty_lock(&mem->hpages[i], 1,
--					  MM_IOMMU_TABLE_GROUP_PAGE_DIRTY);
-+		unpin_user_pages_dirty_lock(&mem->hpages[i], 1,
-+					    MM_IOMMU_TABLE_GROUP_PAGE_DIRTY);
-=20
- 		mem->hpas[i] =3D 0;
- 	}
-diff --git a/drivers/gpu/drm/via/via_dmablit.c b/drivers/gpu/drm/via/via_dm=
-ablit.c
-index 37c5e572993a..719d036c9384 100644
---- a/drivers/gpu/drm/via/via_dmablit.c
-+++ b/drivers/gpu/drm/via/via_dmablit.c
-@@ -188,8 +188,8 @@ via_free_sg_info(struct pci_dev *pdev, drm_via_sg_info_=
-t *vsg)
- 		kfree(vsg->desc_pages);
- 		/* fall through */
- 	case dr_via_pages_locked:
--		put_user_pages_dirty_lock(vsg->pages, vsg->num_pages,
--					  (vsg->direction =3D=3D DMA_FROM_DEVICE));
-+		unpin_user_pages_dirty_lock(vsg->pages, vsg->num_pages,
-+					   (vsg->direction =3D=3D DMA_FROM_DEVICE));
- 		/* fall through */
- 	case dr_via_pages_alloc:
- 		vfree(vsg->pages);
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.=
-c
-index 2c287ced3439..119a147da904 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -54,7 +54,7 @@ static void __ib_umem_release(struct ib_device *dev, stru=
-ct ib_umem *umem, int d
-=20
- 	for_each_sg_page(umem->sg_head.sgl, &sg_iter, umem->sg_nents, 0) {
- 		page =3D sg_page_iter_page(&sg_iter);
--		put_user_pages_dirty_lock(&page, 1, umem->writable && dirty);
-+		unpin_user_pages_dirty_lock(&page, 1, umem->writable && dirty);
- 	}
-=20
- 	sg_free_table(&umem->sg_head);
-diff --git a/drivers/infiniband/hw/hfi1/user_pages.c b/drivers/infiniband/h=
-w/hfi1/user_pages.c
-index 9a94761765c0..3b505006c0a6 100644
---- a/drivers/infiniband/hw/hfi1/user_pages.c
-+++ b/drivers/infiniband/hw/hfi1/user_pages.c
-@@ -118,7 +118,7 @@ int hfi1_acquire_user_pages(struct mm_struct *mm, unsig=
-ned long vaddr, size_t np
- void hfi1_release_user_pages(struct mm_struct *mm, struct page **p,
- 			     size_t npages, bool dirty)
- {
--	put_user_pages_dirty_lock(p, npages, dirty);
-+	unpin_user_pages_dirty_lock(p, npages, dirty);
-=20
- 	if (mm) { /* during close after signal, mm can be NULL */
- 		atomic64_sub(npages, &mm->pinned_vm);
-diff --git a/drivers/infiniband/hw/mthca/mthca_memfree.c b/drivers/infiniba=
-nd/hw/mthca/mthca_memfree.c
-index 8269ab040c21..78a48aea3faf 100644
---- a/drivers/infiniband/hw/mthca/mthca_memfree.c
-+++ b/drivers/infiniband/hw/mthca/mthca_memfree.c
-@@ -482,7 +482,7 @@ int mthca_map_user_db(struct mthca_dev *dev, struct mth=
-ca_uar *uar,
-=20
- 	ret =3D pci_map_sg(dev->pdev, &db_tab->page[i].mem, 1, PCI_DMA_TODEVICE);
- 	if (ret < 0) {
--		put_user_page(pages[0]);
-+		unpin_user_page(pages[0]);
- 		goto out;
- 	}
-=20
-@@ -490,7 +490,7 @@ int mthca_map_user_db(struct mthca_dev *dev, struct mth=
-ca_uar *uar,
- 				 mthca_uarc_virt(dev, uar, i));
- 	if (ret) {
- 		pci_unmap_sg(dev->pdev, &db_tab->page[i].mem, 1, PCI_DMA_TODEVICE);
--		put_user_page(sg_page(&db_tab->page[i].mem));
-+		unpin_user_page(sg_page(&db_tab->page[i].mem));
- 		goto out;
- 	}
-=20
-@@ -556,7 +556,7 @@ void mthca_cleanup_user_db_tab(struct mthca_dev *dev, s=
-truct mthca_uar *uar,
- 		if (db_tab->page[i].uvirt) {
- 			mthca_UNMAP_ICM(dev, mthca_uarc_virt(dev, uar, i), 1);
- 			pci_unmap_sg(dev->pdev, &db_tab->page[i].mem, 1, PCI_DMA_TODEVICE);
--			put_user_page(sg_page(&db_tab->page[i].mem));
-+			unpin_user_page(sg_page(&db_tab->page[i].mem));
- 		}
- 	}
-=20
-diff --git a/drivers/infiniband/hw/qib/qib_user_pages.c b/drivers/infiniban=
-d/hw/qib/qib_user_pages.c
-index 7fc4b5f81fcd..342e3172ca40 100644
---- a/drivers/infiniband/hw/qib/qib_user_pages.c
-+++ b/drivers/infiniband/hw/qib/qib_user_pages.c
-@@ -40,7 +40,7 @@
- static void __qib_release_user_pages(struct page **p, size_t num_pages,
- 				     int dirty)
- {
--	put_user_pages_dirty_lock(p, num_pages, dirty);
-+	unpin_user_pages_dirty_lock(p, num_pages, dirty);
- }
-=20
- /**
-diff --git a/drivers/infiniband/hw/qib/qib_user_sdma.c b/drivers/infiniband=
-/hw/qib/qib_user_sdma.c
-index 1a3cc2957e3a..a67599b5a550 100644
---- a/drivers/infiniband/hw/qib/qib_user_sdma.c
-+++ b/drivers/infiniband/hw/qib/qib_user_sdma.c
-@@ -317,7 +317,7 @@ static int qib_user_sdma_page_to_frags(const struct qib=
-_devdata *dd,
- 		 * the caller can ignore this page.
- 		 */
- 		if (put) {
--			put_user_page(page);
-+			unpin_user_page(page);
- 		} else {
- 			/* coalesce case */
- 			kunmap(page);
-@@ -631,7 +631,7 @@ static void qib_user_sdma_free_pkt_frag(struct device *=
-dev,
- 			kunmap(pkt->addr[i].page);
-=20
- 		if (pkt->addr[i].put_page)
--			put_user_page(pkt->addr[i].page);
-+			unpin_user_page(pkt->addr[i].page);
- 		else
- 			__free_page(pkt->addr[i].page);
- 	} else if (pkt->addr[i].kvaddr) {
-@@ -706,7 +706,7 @@ static int qib_user_sdma_pin_pages(const struct qib_dev=
-data *dd,
- 	/* if error, return all pages not managed by pkt */
- free_pages:
- 	while (i < j)
--		put_user_page(pages[i++]);
-+		unpin_user_page(pages[i++]);
-=20
- done:
- 	return ret;
-diff --git a/drivers/infiniband/hw/usnic/usnic_uiom.c b/drivers/infiniband/=
-hw/usnic/usnic_uiom.c
-index 600896727d34..bd9f944b68fc 100644
---- a/drivers/infiniband/hw/usnic/usnic_uiom.c
-+++ b/drivers/infiniband/hw/usnic/usnic_uiom.c
-@@ -75,7 +75,7 @@ static void usnic_uiom_put_pages(struct list_head *chunk_=
-list, int dirty)
- 		for_each_sg(chunk->page_list, sg, chunk->nents, i) {
- 			page =3D sg_page(sg);
- 			pa =3D sg_phys(sg);
--			put_user_pages_dirty_lock(&page, 1, dirty);
-+			unpin_user_pages_dirty_lock(&page, 1, dirty);
- 			usnic_dbg("pa: %pa\n", &pa);
- 		}
- 		kfree(chunk);
-diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/si=
-w/siw_mem.c
-index e53b07dcfed5..e2061dc0b043 100644
---- a/drivers/infiniband/sw/siw/siw_mem.c
-+++ b/drivers/infiniband/sw/siw/siw_mem.c
-@@ -63,7 +63,7 @@ struct siw_mem *siw_mem_id2obj(struct siw_device *sdev, i=
-nt stag_index)
- static void siw_free_plist(struct siw_page_chunk *chunk, int num_pages,
- 			   bool dirty)
- {
--	put_user_pages_dirty_lock(chunk->plist, num_pages, dirty);
-+	unpin_user_pages_dirty_lock(chunk->plist, num_pages, dirty);
- }
-=20
- void siw_umem_release(struct siw_umem *umem, bool dirty)
-diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2=
--core/videobuf-dma-sg.c
-index 162a2633b1e3..13b65ed9e74c 100644
---- a/drivers/media/v4l2-core/videobuf-dma-sg.c
-+++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
-@@ -349,8 +349,8 @@ int videobuf_dma_free(struct videobuf_dmabuf *dma)
- 	BUG_ON(dma->sglen);
-=20
- 	if (dma->pages) {
--		put_user_pages_dirty_lock(dma->pages, dma->nr_pages,
--					  dma->direction =3D=3D DMA_FROM_DEVICE);
-+		unpin_user_pages_dirty_lock(dma->pages, dma->nr_pages,
-+					    dma->direction =3D=3D DMA_FROM_DEVICE);
- 		kfree(dma->pages);
- 		dma->pages =3D NULL;
- 	}
-diff --git a/drivers/platform/goldfish/goldfish_pipe.c b/drivers/platform/g=
-oldfish/goldfish_pipe.c
-index 635a8bc1b480..bf523df2a90d 100644
---- a/drivers/platform/goldfish/goldfish_pipe.c
-+++ b/drivers/platform/goldfish/goldfish_pipe.c
-@@ -360,8 +360,8 @@ static int transfer_max_buffers(struct goldfish_pipe *p=
-ipe,
-=20
- 	*consumed_size =3D pipe->command_buffer->rw_params.consumed_size;
-=20
--	put_user_pages_dirty_lock(pipe->pages, pages_count,
--				  !is_write && *consumed_size > 0);
-+	unpin_user_pages_dirty_lock(pipe->pages, pages_count,
-+				    !is_write && *consumed_size > 0);
-=20
- 	mutex_unlock(&pipe->lock);
- 	return 0;
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type=
-1.c
-index 18aa36b56896..c48ac1567f14 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -328,7 +328,7 @@ static int put_pfn(unsigned long pfn, int prot)
- 	if (!is_invalid_reserved_pfn(pfn)) {
- 		struct page *page =3D pfn_to_page(pfn);
-=20
--		put_user_pages_dirty_lock(&page, 1, prot & IOMMU_WRITE);
-+		unpin_user_pages_dirty_lock(&page, 1, prot & IOMMU_WRITE);
- 		return 1;
- 	}
- 	return 0;
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 15715eeebaec..0253a4d8fdc8 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -3328,7 +3328,7 @@ static int io_sqe_buffer_unregister(struct io_ring_ct=
-x *ctx)
- 		struct io_mapped_ubuf *imu =3D &ctx->user_bufs[i];
-=20
- 		for (j =3D 0; j < imu->nr_bvecs; j++)
--			put_user_page(imu->bvec[j].bv_page);
-+			unpin_user_page(imu->bvec[j].bv_page);
-=20
- 		if (ctx->account_mem)
- 			io_unaccount_mem(ctx->user, imu->nr_bvecs);
-@@ -3473,7 +3473,7 @@ static int io_sqe_buffer_register(struct io_ring_ctx =
-*ctx, void __user *arg,
- 			 * release any pages we did get
- 			 */
- 			if (pret > 0)
--				put_user_pages(pages, pret);
-+				unpin_user_pages(pages, pret);
- 			if (ctx->account_mem)
- 				io_unaccount_mem(ctx->user, nr_pages);
- 			kvfree(imu->bvec);
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index ab311b356ab1..775f6a3d615b 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1093,18 +1093,18 @@ static inline void put_page(struct page *page)
-  * made against the page. ("gup-pinned" is another term for the latter).
-  *
-  * With this scheme, pin_user_pages() becomes special: such pages are mark=
-ed as
-- * distinct from normal pages. As such, the put_user_page() call (and its
-+ * distinct from normal pages. As such, the unpin_user_page() call (and it=
-s
-  * variants) must be used in order to release gup-pinned pages.
-  *
-  * Choice of value:
-  *
-  * By making GUP_PIN_COUNTING_BIAS a power of two, debugging of page refer=
-ence
-- * counts with respect to pin_user_pages() and put_user_page() becomes sim=
-pler,
-- * due to the fact that adding an even power of two to the page refcount h=
-as the
-- * effect of using only the upper N bits, for the code that counts up usin=
-g the
-- * bias value. This means that the lower bits are left for the exclusive u=
-se of
-- * the original code that increments and decrements by one (or at least, b=
-y much
-- * smaller values than the bias value).
-+ * counts with respect to pin_user_pages() and unpin_user_page() becomes
-+ * simpler, due to the fact that adding an even power of two to the page
-+ * refcount has the effect of using only the upper N bits, for the code th=
-at
-+ * counts up using the bias value. This means that the lower bits are left=
- for
-+ * the exclusive use of the original code that increments and decrements b=
-y one
-+ * (or at least, by much smaller values than the bias value).
-  *
-  * Of course, once the lower bits overflow into the upper bits (and this i=
-s
-  * OK, because subtraction recovers the original values), then visual insp=
-ection
-@@ -1119,10 +1119,10 @@ static inline void put_page(struct page *page)
-  */
- #define GUP_PIN_COUNTING_BIAS (1UL << 10)
-=20
--void put_user_page(struct page *page);
--void put_user_pages_dirty_lock(struct page **pages, unsigned long npages,
--			       bool make_dirty);
--void put_user_pages(struct page **pages, unsigned long npages);
-+void unpin_user_page(struct page *page);
-+void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages=
-,
-+				 bool make_dirty);
-+void unpin_user_pages(struct page **pages, unsigned long npages);
-=20
- /**
-  * page_dma_pinned() - report if a page is pinned for DMA.
-@@ -2673,7 +2673,7 @@ struct page *follow_page(struct vm_area_struct *vma, =
-unsigned long address,
- #define FOLL_ANON	0x8000	/* don't do file mappings */
- #define FOLL_LONGTERM	0x10000	/* mapping lifetime is indefinite: see below=
- */
- #define FOLL_SPLIT_PMD	0x20000	/* split huge pmd before returning */
--#define FOLL_PIN	0x40000	/* pages must be released via put_user_page() */
-+#define FOLL_PIN	0x40000	/* pages must be released via unpin_user_page */
-=20
- /*
-  * FOLL_PIN and FOLL_LONGTERM may be used in various combinations with eac=
-h
-@@ -2708,7 +2708,7 @@ struct page *follow_page(struct vm_area_struct *vma, =
-unsigned long address,
-  * Direct IO). This lets the filesystem know that some non-file-system ent=
-ity is
-  * potentially changing the pages' data. In contrast to FOLL_GET (whose pa=
-ges
-  * are released via put_page()), FOLL_PIN pages must be released, ultimate=
-ly, by
-- * a call to put_user_page().
-+ * a call to unpin_user_page().
-  *
-  * FOLL_PIN is similar to FOLL_GET: both of these pin pages. They use diff=
-erent
-  * and separate refcounting mechanisms, however, and that means that each =
-has
-@@ -2716,7 +2716,7 @@ struct page *follow_page(struct vm_area_struct *vma, =
-unsigned long address,
-  *
-  *     FOLL_GET: get_user_pages*() to acquire, and put_page() to release.
-  *
-- *     FOLL_PIN: pin_user_pages*() to acquire, and put_user_pages to relea=
-se.
-+ *     FOLL_PIN: pin_user_pages*() to acquire, and unpin_user_pages to rel=
-ease.
-  *
-  * FOLL_PIN and FOLL_GET are mutually exclusive for a given function call.
-  * (The underlying pages may experience both FOLL_GET-based and FOLL_PIN-b=
-ased
-@@ -2726,7 +2726,7 @@ struct page *follow_page(struct vm_area_struct *vma, =
-unsigned long address,
-  * FOLL_PIN should be set internally by the pin_user_pages*() APIs, never
-  * directly by the caller. That's in order to help avoid mismatches when
-  * releasing pages: get_user_pages*() pages must be released via put_page(=
-),
-- * while pin_user_pages*() pages must be released via put_user_page().
-+ * while pin_user_pages*() pages must be released via unpin_user_page().
-  *
-  * Please see Documentation/vm/pin_user_pages.rst for more information.
-  */
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 0485cba38d23..d66c1fb9d45e 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -245,7 +245,7 @@ enum node_stat_item {
- 	NR_WRITTEN,		/* page writings since bootup */
- 	NR_KERNEL_MISC_RECLAIMABLE,	/* reclaimable non-slab kernel pages */
- 	NR_FOLL_PIN_REQUESTED,	/* via: pin_user_page(), gup flag: FOLL_PIN */
--	NR_FOLL_PIN_RETURNED,	/* pages returned via put_user_page() */
-+	NR_FOLL_PIN_RETURNED,	/* pages returned via unpin_user_page() */
- 	NR_VM_NODE_STAT_ITEMS
- };
-=20
-diff --git a/mm/gup.c b/mm/gup.c
-index 002816526670..cebaf2d02f59 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -113,15 +113,15 @@ static bool __put_devmap_managed_user_page(struct pag=
-e *page)
- #endif /* CONFIG_DEV_PAGEMAP_OPS */
-=20
- /**
-- * put_user_page() - release a dma-pinned page
-+ * unpin_user_page() - release a dma-pinned page
-  * @page:            pointer to page to be released
-  *
-  * Pages that were pinned via pin_user_pages*() must be released via eithe=
-r
-- * put_user_page(), or one of the put_user_pages*() routines. This is so t=
-hat
-- * such pages can be separately tracked and uniquely handled. In particula=
-r,
-- * interactions with RDMA and filesystems need special handling.
-+ * unpin_user_page(), or one of the unpin_user_pages*() routines. This is =
-so
-+ * that such pages can be separately tracked and uniquely handled. In
-+ * particular, interactions with RDMA and filesystems need special handlin=
-g.
-  */
--void put_user_page(struct page *page)
-+void unpin_user_page(struct page *page)
- {
- 	page =3D compound_head(page);
-=20
-@@ -139,10 +139,10 @@ void put_user_page(struct page *page)
-=20
- 	__update_proc_vmstat(page, NR_FOLL_PIN_RETURNED, 1);
- }
--EXPORT_SYMBOL(put_user_page);
-+EXPORT_SYMBOL(unpin_user_page);
-=20
- /**
-- * put_user_pages_dirty_lock() - release and optionally dirty gup-pinned p=
-ages
-+ * unpin_user_pages_dirty_lock() - release and optionally dirty gup-pinned=
- pages
-  * @pages:  array of pages to be maybe marked dirty, and definitely releas=
-ed.
-  * @npages: number of pages in the @pages array.
-  * @make_dirty: whether to mark the pages dirty
-@@ -152,19 +152,19 @@ EXPORT_SYMBOL(put_user_page);
-  *
-  * For each page in the @pages array, make that page (or its head page, if=
- a
-  * compound page) dirty, if @make_dirty is true, and if the page was previ=
-ously
-- * listed as clean. In any case, releases all pages using put_user_page(),
-- * possibly via put_user_pages(), for the non-dirty case.
-+ * listed as clean. In any case, releases all pages using unpin_user_page(=
-),
-+ * possibly via unpin_user_pages(), for the non-dirty case.
-  *
-- * Please see the put_user_page() documentation for details.
-+ * Please see the unpin_user_page() documentation for details.
-  *
-  * set_page_dirty_lock() is used internally. If instead, set_page_dirty() =
-is
-  * required, then the caller should a) verify that this is really correct,
-  * because _lock() is usually required, and b) hand code it:
-- * set_page_dirty_lock(), put_user_page().
-+ * set_page_dirty_lock(), unpin_user_page().
-  *
-  */
--void put_user_pages_dirty_lock(struct page **pages, unsigned long npages,
--			       bool make_dirty)
-+void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages=
-,
-+				 bool make_dirty)
- {
- 	unsigned long index;
-=20
-@@ -175,7 +175,7 @@ void put_user_pages_dirty_lock(struct page **pages, uns=
-igned long npages,
- 	 */
-=20
- 	if (!make_dirty) {
--		put_user_pages(pages, npages);
-+		unpin_user_pages(pages, npages);
- 		return;
- 	}
-=20
-@@ -203,21 +203,21 @@ void put_user_pages_dirty_lock(struct page **pages, u=
-nsigned long npages,
- 		 */
- 		if (!PageDirty(page))
- 			set_page_dirty_lock(page);
--		put_user_page(page);
-+		unpin_user_page(page);
- 	}
- }
--EXPORT_SYMBOL(put_user_pages_dirty_lock);
-+EXPORT_SYMBOL(unpin_user_pages_dirty_lock);
-=20
- /**
-- * put_user_pages() - release an array of gup-pinned pages.
-+ * unpin_user_pages() - release an array of gup-pinned pages.
-  * @pages:  array of pages to be marked dirty and released.
-  * @npages: number of pages in the @pages array.
-  *
-- * For each page in the @pages array, release the page using put_user_page=
-().
-+ * For each page in the @pages array, release the page using unpin_user_pa=
-ge().
-  *
-- * Please see the put_user_page() documentation for details.
-+ * Please see the unpin_user_page() documentation for details.
-  */
--void put_user_pages(struct page **pages, unsigned long npages)
-+void unpin_user_pages(struct page **pages, unsigned long npages)
- {
- 	unsigned long index;
-=20
-@@ -227,9 +227,9 @@ void put_user_pages(struct page **pages, unsigned long =
-npages)
- 	 * single operation to the head page should suffice.
- 	 */
- 	for (index =3D 0; index < npages; index++)
--		put_user_page(pages[index]);
-+		unpin_user_page(pages[index]);
- }
--EXPORT_SYMBOL(put_user_pages);
-+EXPORT_SYMBOL(unpin_user_pages);
-=20
- #ifdef CONFIG_MMU
- static struct page *no_page_table(struct vm_area_struct *vma,
-@@ -1956,7 +1956,7 @@ static void __maybe_unused undo_dev_pagemap(int *nr, =
-int nr_start,
-=20
- 		ClearPageReferenced(page);
- 		if (flags & FOLL_PIN)
--			put_user_page(page);
-+			unpin_user_page(page);
- 		else
- 			put_page(page);
- 	}
-diff --git a/mm/gup_benchmark.c b/mm/gup_benchmark.c
-index 1ac089ad815f..76d32db48af8 100644
---- a/mm/gup_benchmark.c
-+++ b/mm/gup_benchmark.c
-@@ -35,7 +35,7 @@ static void put_back_pages(int cmd, struct page **pages, =
-unsigned long nr_pages)
-=20
- 	case PIN_FAST_BENCHMARK:
- 	case PIN_BENCHMARK:
--		put_user_pages(pages, nr_pages);
-+		unpin_user_pages(pages, nr_pages);
- 		break;
- 	}
- }
-diff --git a/mm/process_vm_access.c b/mm/process_vm_access.c
-index fd20ab675b85..de41e830cdac 100644
---- a/mm/process_vm_access.c
-+++ b/mm/process_vm_access.c
-@@ -126,8 +126,8 @@ static int process_vm_rw_single_vec(unsigned long addr,
- 		pa +=3D pinned_pages * PAGE_SIZE;
-=20
- 		/* If vm_write is set, the pages need to be made dirty: */
--		put_user_pages_dirty_lock(process_pages, pinned_pages,
--					  vm_write);
-+		unpin_user_pages_dirty_lock(process_pages, pinned_pages,
-+					    vm_write);
- 	}
-=20
- 	return rc;
-diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-index d071003b5e76..ac182c38f7b0 100644
---- a/net/xdp/xdp_umem.c
-+++ b/net/xdp/xdp_umem.c
-@@ -212,7 +212,7 @@ static int xdp_umem_map_pages(struct xdp_umem *umem)
-=20
- static void xdp_umem_unpin_pages(struct xdp_umem *umem)
- {
--	put_user_pages_dirty_lock(umem->pgs, umem->npgs, true);
-+	unpin_user_pages_dirty_lock(umem->pgs, umem->npgs, true);
-=20
- 	kfree(umem->pgs);
- 	umem->pgs =3D NULL;
---=20
-2.24.0
-
+> BTW, can you please add example of trace output to your commit message?
+> It will help users to understand immediately what they are expected to
+> see after this series is applied.
+> 
+> Thanks
