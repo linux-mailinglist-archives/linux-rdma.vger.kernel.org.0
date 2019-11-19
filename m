@@ -2,49 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8873D102AF1
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 18:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D79102AF7
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Nov 2019 18:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbfKSRqw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 19 Nov 2019 12:46:52 -0500
-Received: from mga14.intel.com ([192.55.52.115]:17295 "EHLO mga14.intel.com"
+        id S1727118AbfKSRuS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Nov 2019 12:50:18 -0500
+Received: from mga11.intel.com ([192.55.52.93]:50044 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725904AbfKSRqw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 19 Nov 2019 12:46:52 -0500
+        id S1727117AbfKSRuS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Nov 2019 12:50:18 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Nov 2019 09:46:51 -0800
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Nov 2019 09:50:17 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,218,1571727600"; 
-   d="scan'208";a="357176507"
-Received: from orsmsx103.amr.corp.intel.com ([10.22.225.130])
-  by orsmga004.jf.intel.com with ESMTP; 19 Nov 2019 09:46:50 -0800
+   d="scan'208";a="357177188"
+Received: from orsmsx107.amr.corp.intel.com ([10.22.240.5])
+  by orsmga004.jf.intel.com with ESMTP; 19 Nov 2019 09:50:17 -0800
+Received: from orsmsx157.amr.corp.intel.com (10.22.240.23) by
+ ORSMSX107.amr.corp.intel.com (10.22.240.5) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 19 Nov 2019 09:50:16 -0800
 Received: from orsmsx101.amr.corp.intel.com ([169.254.8.229]) by
- ORSMSX103.amr.corp.intel.com ([169.254.5.179]) with mapi id 14.03.0439.000;
- Tue, 19 Nov 2019 09:46:50 -0800
+ ORSMSX157.amr.corp.intel.com ([169.254.9.64]) with mapi id 14.03.0439.000;
+ Tue, 19 Nov 2019 09:50:16 -0800
 From:   "Ertman, David M" <david.m.ertman@intel.com>
-To:     Parav Pandit <parav@mellanox.com>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+To:     Jason Wang <jasowang@redhat.com>,
+        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
         "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "nhorman@redhat.com" <nhorman@redhat.com>,
         "sassmann@redhat.com" <sassmann@redhat.com>,
         "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "parav@mellanox.com" <parav@mellanox.com>,
         "Patil, Kiran" <kiran.patil@intel.com>
 Subject: RE: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
 Thread-Topic: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
-Thread-Index: AQHVnATHptCZx1o750+cmj+dZwSi7aeNZheAgAPN0JCAAT64AIAAAj2AgABVRRA=
-Date:   Tue, 19 Nov 2019 17:46:50 +0000
-Message-ID: <2B0E3F215D1AB84DA946C8BEE234CCC97B30165F@ORSMSX101.amr.corp.intel.com>
+Thread-Index: AQHVnATHptCZx1o750+cmj+dZwSi7aeRFzoAgAGW4ICAAB04EA==
+Date:   Tue, 19 Nov 2019 17:50:15 +0000
+Message-ID: <2B0E3F215D1AB84DA946C8BEE234CCC97B301688@ORSMSX101.amr.corp.intel.com>
 References: <20191115223355.1277139-1-jeffrey.t.kirsher@intel.com>
- <AM0PR05MB4866CF61828A458319899664D1700@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <2B0E3F215D1AB84DA946C8BEE234CCC97B301493@ORSMSX101.amr.corp.intel.com>
- <AM0PR05MB4866169E38D7F157F0B4DC49D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <AM0PR05MB486682813F89233048FCB3D1D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-In-Reply-To: <AM0PR05MB486682813F89233048FCB3D1D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <20191118074834.GA130507@kroah.com>
+ <d3ee845d-cc9f-a4f7-2f21-511fde61dd5e@redhat.com>
+In-Reply-To: <d3ee845d-cc9f-a4f7-2f21-511fde61dd5e@redhat.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -53,148 +55,62 @@ dlp-product: dlpe-windows
 dlp-version: 11.2.0.6
 dlp-reaction: no-action
 x-originating-ip: [10.22.254.139]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> -----Original Message-----
-> From: Parav Pandit <parav@mellanox.com>
-> Sent: Monday, November 18, 2019 8:40 PM
-> To: Parav Pandit <parav@mellanox.com>; Ertman, David M
-> <david.m.ertman@intel.com>; Kirsher, Jeffrey T
-> <jeffrey.t.kirsher@intel.com>; davem@davemloft.net;
-> gregkh@linuxfoundation.org
-> Cc: netdev@vger.kernel.org; linux-rdma@vger.kernel.org;
-> nhorman@redhat.com; sassmann@redhat.com; jgg@ziepe.ca; Patil, Kiran
-> <kiran.patil@intel.com>
-> Subject: RE: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
-> 
-> Hi David,
-> 
-> > Sent: Monday, November 18, 2019 10:32 PM
-> > To: Ertman, David M <david.m.ertman@intel.com>; Kirsher, Jeffrey T
-> > <jeffrey.t.kirsher@intel.com>; davem@davemloft.net;
-> > gregkh@linuxfoundation.org
-> > Cc: netdev@vger.kernel.org; linux-rdma@vger.kernel.org;
-> > nhorman@redhat.com; sassmann@redhat.com; jgg@ziepe.ca; Patil, Kiran
-> > <kiran.patil@intel.com>
-> > Subject: RE: [net-next v2 1/1] virtual-bus: Implementation of Virtual
-> > Bus
-> >
-> > Hi David,
-> >
-> > > From: Ertman, David M <david.m.ertman@intel.com>
-> > > Sent: Monday, November 18, 2019 9:59 PM
-> > > Subject: RE: [net-next v2 1/1] virtual-bus: Implementation of
-> > > Virtual Bus
-> > >
-> > > > -----Original Message-----
-> > > > From: Parav Pandit <parav@mellanox.com>
-> > > > Sent: Friday, November 15, 2019 3:26 PM
-> > > > To: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>;
-> > > > davem@davemloft.net; gregkh@linuxfoundation.org
-> > > > Cc: Ertman, David M <david.m.ertman@intel.com>;
-> > > > netdev@vger.kernel.org; linux-rdma@vger.kernel.org;
-> > > > nhorman@redhat.com; sassmann@redhat.com; jgg@ziepe.ca; Patil,
-> > > > Kiran <kiran.patil@intel.com>
-> > > > Subject: RE: [net-next v2 1/1] virtual-bus: Implementation of
-> > > > Virtual Bus
-> > > >
-> > > > Hi Jeff,
-> > > >
-> > > > > From: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-> > > > > Sent: Friday, November 15, 2019 4:34 PM
-> > > > >
-> > > > > From: Dave Ertman <david.m.ertman@intel.com>
-> > > > >
-> > > > > This is the initial implementation of the Virtual Bus,
-> > > > > virtbus_device and virtbus_driver.  The virtual bus is a
-> > > > > software based bus intended to support lightweight devices and
-> > > > > drivers and provide matching between them and probing of the
-> registered drivers.
-> > > > >
-> > > > > The primary purpose of the virual bus is to provide matching
-> > > > > services and to pass the data pointer contained in the
-> > > > > virtbus_device to the virtbus_driver during its probe call.
-> > > > > This will allow two separate kernel objects to match up and
-> > > > > start
-> > > communication.
-> > > > >
-> > > > It is fundamental to know that rdma device created by
-> > > > virtbus_driver will be anchored to which bus for an non abusive use.
-> > > > virtbus or parent pci bus?
-> > > > I asked this question in v1 version of this patch.
-> > >
-> > > The model we will be using is a PCI LAN driver that will allocate
-> > > and register a virtbus_device.  The virtbus_device will be anchored
-> > > to the virtual bus, not the PCI bus.
-> > o.k.
-> >
-> > >
-> > > The virtbus does not have a requirement that elements registering
-> > > with it have any association with another outside bus or device.
-> > >
-> > This is what I want to capture in cover letter and documentation.
-> >
-> > > RDMA is not attached to any bus when it's init is called.  The
-> > > virtbus_driver that it will create will be attached to the virtual bus.
-> > >
-> > > The RDMA driver will register a virtbus_driver object.  Its probe
-> > > will accept the data pointer from the virtbus_device that the PCI
-> > > LAN driver
-> > created.
-> > >
-> > What I am saying that RDMA device created by the irdma driver or
-> > mlx5_ib driver should be anchored to the PCI device and not the virtbus
-> device.
-> >
-> > struct ib_device.dev.parent = &pci_dev->dev;
-> >
-> > if this is not done, and if it is,
-> >
-> > struct ib_device.dev.parent = &virtbus_dev->dev;
-> >
-> > Than we are inviting huge burden as below.
-> > (a) user compatibility with several tools, orchestration etc is
-> > broken, because rdma cannot be reached back to its PCI device as before.
-> > This is some internal kernel change for 'better code handling', which
-> > is surfacing to rdma device name changing - systemd/udev broken, until
-> > all distros upgrade and implement this virtbus naming scheme.
-> > Even with that orchestration tools shipped outside of distro are broken.
-> >
-> > (b) virtbus must extend iommu support in intel, arm, amd, ppc systems
-> > otherwise straight away rdma is broken in those environments with this
-> > 'internal code restructure'.
-> > These iommu doesn't support non PCI buses.
-> >
-> > (c) anchoring on virtbus brings challenge to get unique id for
-> > persistent naming when irdma/mlx5_ib device is not created by 'user'.
-> >
-> > This improvement by bus matching service != 'ethX to ens2f0
-> > improvement of netdevs happened few years back'.
-> > Hence, my input is,
-> >
-> > irdma_virtubus_probe() {
-> > 	struct ib_device.dev.parent = &pci_dev->dev;
-> > 	ib_register_driver();
-> > }
-> >
-> With this, I forgot to mention that, virtbus doesn't need PM callbacks,
-> because PM core layer works on suspend/resume devices in reverse order
-> of their creation.
-> Given that protocol devices (like rdma and netdev) devices shouldn't be
-> anchored on virtbus, it doesn't need PM callbacks.
-> Please remove them.
-> 
-> suspend() will be called first on rdma device (because it was created last).
-
-This is only true in the rdma/PLCI LAN situation.  virtbus can be used on two
-kernel objects that have no connection to another bus or device, but only use
-the virtbus for connecting up.  In that case, those entities will need the PM
-callbacks.
-
--Dave E
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKYXNvbiBXYW5nIDxqYXNvd2Fu
+Z0ByZWRoYXQuY29tPg0KPiBTZW50OiBUdWVzZGF5LCBOb3ZlbWJlciAxOSwgMjAxOSAxMjowNSBB
+TQ0KPiBUbzogS2lyc2hlciwgSmVmZnJleSBUIDxqZWZmcmV5LnQua2lyc2hlckBpbnRlbC5jb20+
+OyBFcnRtYW4sIERhdmlkIE0NCj4gPGRhdmlkLm0uZXJ0bWFuQGludGVsLmNvbT4NCj4gQ2M6IEdy
+ZWcgS0ggPGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPjsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsN
+Cj4gbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmc7DQo+
+IG5ob3JtYW5AcmVkaGF0LmNvbTsgc2Fzc21hbm5AcmVkaGF0LmNvbTsgamdnQHppZXBlLmNhOw0K
+PiBwYXJhdkBtZWxsYW5veC5jb207IFBhdGlsLCBLaXJhbiA8a2lyYW4ucGF0aWxAaW50ZWwuY29t
+Pg0KPiBTdWJqZWN0OiBSZTogW25ldC1uZXh0IHYyIDEvMV0gdmlydHVhbC1idXM6IEltcGxlbWVu
+dGF0aW9uIG9mIFZpcnR1YWwgQnVzDQo+IA0KPiANCj4gT24gMjAxOS8xMS8xOCDkuIvljYgzOjQ4
+LCBHcmVnIEtIIHdyb3RlOg0KPiA+ICtWaXJ0YnVzIGRyaXZlcnMNCj4gPiArfn5+fn5+fn5+fn5+
+fn5+DQo+ID4gK1ZpcnRidXMgZHJpdmVycyByZWdpc3RlciB3aXRoIHRoZSB2aXJ0dWFsIGJ1cyB0
+byBiZSBtYXRjaGVkIHdpdGgNCj4gPiArdmlydGJ1cyBkZXZpY2VzLiAgVGhleSBleHBlY3QgdG8g
+YmUgcmVnaXN0ZXJlZCB3aXRoIGEgcHJvYmUgYW5kDQo+ID4gK3JlbW92ZSBjYWxsYmFjaywgYW5k
+IGFsc28gc3VwcG9ydCBzaHV0ZG93biwgc3VzcGVuZCwgYW5kIHJlc3VtZQ0KPiA+ICtjYWxsYmFj
+a3MuICBUaGV5IG90aGVyd2lzZSBmb2xsb3cgdGhlIHN0YW5kYXJkIGRyaXZlciBiZWhhdmlvciBv
+Zg0KPiA+ICtoYXZpbmcgZGlzY292ZXJ5IGFuZCBlbnVtZXJhdGlvbiBoYW5kbGVkIGluIHRoZSBi
+dXMgaW5mcmFzdHJ1Y3R1cmUuDQo+ID4gKw0KPiA+ICtWaXJ0YnVzIGRyaXZlcnMgcmVnaXN0ZXIg
+dGhlbXNlbHZlcyB3aXRoIHRoZSBBUEkgZW50cnkgcG9pbnQNCj4gPiArdmlydGJ1c19kcnZfcmVn
+IGFuZCB1bnJlZ2lzdGVyIHdpdGggdmlydGJ1c19kcnZfdW5yZWcuDQo+ID4gKw0KPiA+ICtEZXZp
+Y2UgRW51bWVyYXRpb24NCj4gPiArfn5+fn5+fn5+fn5+fn5+fn5+DQo+ID4gK0VudW1lcmF0aW9u
+IGlzIGhhbmRsZWQgYXV0b21hdGljYWxseSBieSB0aGUgYnVzIGluZnJhc3RydWN0dXJlIHZpYQ0K
+PiA+ICt0aGUgaWRhX3NpbXBsZSBtZXRob2RzLg0KPiA+ICsNCj4gPiArRGV2aWNlIG5hbWluZyBh
+bmQgZHJpdmVyIGJpbmRpbmcNCj4gPiArfn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4N
+Cj4gPiArVGhlIHZpcnRidXNfZGV2aWNlLmRldi5uYW1lIGlzIHRoZSBjYW5vbmljYWwgbmFtZSBm
+b3IgdGhlIGRldmljZS4gSXQNCj4gPiAraXMgYnVpbHQgZnJvbSB0d28gb3RoZXIgcGFydHM6DQo+
+ID4gKw0KPiA+ICsgICAgICAgIC0gdmlydGJ1c19kZXZpY2UubmFtZSAoYWxzbyB1c2VkIGZvciBt
+YXRjaGluZykuDQo+ID4gKyAgICAgICAgLSB2aXJ0YnVzX2RldmljZS5pZCAoZ2VuZXJhdGVkIGF1
+dG9tYXRpY2FsbHkgZnJvbSBpZGFfc2ltcGxlDQo+ID4gKyBjYWxscykNCj4gPiArDQo+ID4gK1Ro
+aXMgYWxsb3dzIGZvciBtdWx0aXBsZSB2aXJ0YnVzX2RldmljZXMgd2l0aCB0aGUgc2FtZSBuYW1l
+LCB3aGljaA0KPiA+ICt3aWxsIGFsbCBiZSBtYXRjaGVkIHRvIHRoZSBzYW1lIHZpcnRidXNfZHJp
+dmVyLiBEcml2ZXIgYmluZGluZyBpcw0KPiA+ICtwZXJmb3JtZWQgYnkgdGhlIGRyaXZlciBjb3Jl
+LCBpbnZva2luZyBkcml2ZXIgcHJvYmUoKSBhZnRlciBmaW5kaW5nIGENCj4gbWF0Y2ggYmV0d2Vl
+biBkZXZpY2UgYW5kIGRyaXZlci4NCj4gPiArDQo+ID4gK1ZpcnR1YWwgQnVzIEFQSSBlbnRyeSBw
+b2ludHMNCj4gPiArfn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fg0KPiA+ICtzdHJ1Y3Qgdmly
+dGJ1c19kZXZpY2UgKnZpcnRidXNfZGV2X2FsbG9jKGNvbnN0IGNoYXIgKm5hbWUsIHZvaWQNCj4g
+PiArKmRhdGEpDQo+IA0KPiANCj4gSGk6DQo+IA0KPiBTZXZlcmFsIHF1ZXN0aW9ucyBhYm91dCB0
+aGUgbmFtZSBwYXJhbWV0ZXIgaGVyZToNCj4gDQo+IC0gSWYgd2Ugd2FudCB0byBoYXZlIG11bHRp
+cGxlIHR5cGVzIG9mIGRldmljZSB0byBiZSBhdHRhY2hlZCwgc29tZQ0KPiBjb252ZW50aW9uIGlz
+IG5lZWRlZCB0byBhdm9pZCBjb25mdXNpb24gZHVyaW5nIHRoZSBtYXRjaC4gQnV0IGlmIHdlIGhh
+ZA0KPiBzdWNoIG9uZSAoZS5nIHByZWZpeCBvciBzdWZmaXgpLCBpdCBiYXNpY2FsbHkgYW5vdGhl
+ciBidXM/DQo+IC0gV2hvIGRlY2lkZXMgdGhlIG5hbWUgb2YgdGhpcyB2aXJ0YnVzIGRldiwgaXMg
+aXQgdW5kZXIgdGhlIGNvbnRyb2wgb2YNCj4gdXNlcnNwYWNlPyBJZiB5ZXMsIGEgbWFuYWdlbWVu
+dCBpbnRlcmZhY2UgaXMgcmVxdWlyZWQuDQo+IA0KPiBUaGFua3MNCj4gDQpUaGlzIGZ1bmN0aW9u
+IGhhcyBiZWVuIHJlbW92ZWQgZnJvbSB0aGUgQVBJLiAgTmV3IHBhdGNoIHNldCBpbmJvdW5kDQpp
+bXBsZW1lbnRpbmcgY2hhbmdlcyB0aGF0IFBhcmF2IHN1Z2dlc3RlZC4NCg0KPiANCj4gPiAraW50
+IHZpcnRidXNfZGV2X3JlZ2lzdGVyKHN0cnVjdCB2aXJ0YnVzX2RldmljZSAqdmRldikgdm9pZA0K
+PiA+ICt2aXJ0YnVzX2Rldl91bnJlZ2lzdGVyKHN0cnVjdCB2aXJ0YnVzX2RldmljZSAqdmRldikg
+aW50DQo+ID4gK3ZpcnRidXNfZHJ2X3JlZ2lzdGVyKHN0cnVjdCB2aXJ0YnVzX2RyaXZlciAqdmRy
+diwgc3RydWN0IG1vZHVsZQ0KPiA+ICsqb3duZXIpIHZvaWQgdmlydGJ1c19kcnZfdW5yZWdpc3Rl
+cihzdHJ1Y3QgdmlydGJ1c19kcml2ZXIgKnZkcnYpDQoNCg==
