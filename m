@@ -2,139 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 884DE104309
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 19:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0AD0104648
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 23:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728276AbfKTSLL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Nov 2019 13:11:11 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:46413 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727965AbfKTSLL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 13:11:11 -0500
-Received: by mail-qt1-f193.google.com with SMTP id r20so471944qtp.13
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Nov 2019 10:11:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Vo33mvOdIBVwdbi/zp6EAjbvy6FDvq9aw43Ml6yjZ2A=;
-        b=g1C+cXPLqZidOvbA+sNdc6fv4dHqqQoFBLHTRyK1KotsleyXpj8HEK1Gnsx5kmq0sG
-         fS+tcSooC4hWKZTWZqUBcnWoh98NYq+0Nl9L0cBdYCG5nImbUQBKrfjefDq/hH3zpF9y
-         ALQ3oIbxXOi/0oz10S75GQJMT3AEt7dBXYmBWnvCpSReg+I2ajQWm9e99dNIcK+ZDvBx
-         TKFcbTn2BVto4+Axu67NvKPUKm46peO7oIT2CyVWLqMGTTVT4ec81k+JTlx9+UrWqbGq
-         zFNusAQ/g6zyE4hUFzRedSI2p4IBpWQTzV1wRI4qKlfBMB2IS+5p7LEVNQL8muRV7bAv
-         oEsQ==
+        id S1726270AbfKTWFN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Nov 2019 17:05:13 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:20617 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726038AbfKTWFM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 20 Nov 2019 17:05:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1574287511;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4YpMbJX5XyxRp8q7h/jm7rfnus2WLxi2XgTkFPCvRSw=;
+        b=MXe31K3A6uIY0r6FExhRw40dIBFUMT92ACDxvESsjJfqPLEIve0Hw+KOYE0bo+VjZR06/S
+        pe0t74I069xbpCzvjt5p9oZpRSCGyLPGgkMMG7JJ11nXwozEV/d3yyrIUpIUDgvcagki5p
+        44Ay9cJNxpvYmCquw3lXtYBtCF1fsdw=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-330-QOXeT9vIOnKEa2Q9Q0PbVA-1; Wed, 20 Nov 2019 17:05:08 -0500
+Received: by mail-qv1-f72.google.com with SMTP id m12so821176qvv.8
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Nov 2019 14:05:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Vo33mvOdIBVwdbi/zp6EAjbvy6FDvq9aw43Ml6yjZ2A=;
-        b=o3jJyV3J5mO12Wc8S7VZ2epL6g1B/+8ZlqVOpgdsAXSBs3JNImqKIsYlLKkYhxd9sX
-         IipzSGXS+9dAVaNBchpJ893RhzMndvORSY5aW/UvYi4Q4UzYYnCsifIndtxg7H/8QEIR
-         urcBxd3QAYgzdalwfOrfVRcc+EAIlrnYPw8eBycKo4kH9jR7YW0nkJu0Yb4e1K1GAh+i
-         zMJaWikSH9y8g/h17G4abYrB3mpmlpuBlcjgMk5mCgtiXjtrGUUz6crmH7bBWAjabNJp
-         G0iO0qQLdbkqTb6by3m+MtoxnnsRWkgkA2EAJmTmEjqdUONnoqtaIbSFmslzrK5b052f
-         V4xA==
-X-Gm-Message-State: APjAAAX8LbxcPIGt8XZ2YjwIW9tlo3vCuy7+fjapBsMhSWbwt5VSlLS1
-        d97f7UPJq6+0vgnRYm/yaLDUkQ==
-X-Google-Smtp-Source: APXvYqwVzVio3KUjbooubC21c9kEbruFWe7zxNFcJREryi0+l1imlxXI3hyp/LCI8xcYcTCNTFku8Q==
-X-Received: by 2002:ac8:31c5:: with SMTP id i5mr4047242qte.33.1574273470036;
-        Wed, 20 Nov 2019 10:11:10 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id w5sm11988292qkf.43.2019.11.20.10.11.09
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 20 Nov 2019 10:11:09 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iXURY-000096-KP; Wed, 20 Nov 2019 14:11:08 -0400
-Date:   Wed, 20 Nov 2019 14:11:08 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Alex Williamson <alex.williamson@redhat.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ix0u7hdNyTJABkb8oloHDZIWR+Nd0ngaOCu5R4X4iSI=;
+        b=AJQTyMH9bMVKO2Nt5l2vVfKn1D+9y3ZTrEEfW32BN4/Go9ruyOIq4tZwv9aaFUrCMy
+         BDJymNqoXvn1kuxeEJ3juVROW4XPvSkxewjfKjpm3yC95md1GL7MiLaNyVDovYF3ayHB
+         Ax7DgeNxLwUilfN9w8dd3IwHDRw1IS1JR9Y9QL6FGtTz8NwMCkopF1SZicu7kEXp2r7V
+         U2QERUwWTO9wArR2eODAP1eAKwpFlvtMtmTqcvxGz94tSGPPBudWsG4gQQJhifBGGasS
+         qhAQ1TBIopCzB5J/wBaaxR5pkm9EbRGWX7xHZRcASCszjQNVfX2f0DwXGgd9dUEtUifw
+         JnRQ==
+X-Gm-Message-State: APjAAAWM21cgGRHKrilB8SfCPIMCQt5hVwo/v9mRpCyiDhmRBuwTT7sA
+        f2afgbG/PNjfSm5LO5+VUd5ZbJtYwQmL3wy2Ptrl1Fa6ngFZPqUZS0LqGb8q1xKqFFNVwIj4olR
+        xN7xs4JLEIOcMbs5K9lVtjA==
+X-Received: by 2002:ac8:51c3:: with SMTP id d3mr5040944qtn.14.1574287508112;
+        Wed, 20 Nov 2019 14:05:08 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxdsih9DHA5lFir/c/3IJa6bxqZOBG7X8LxPArtXfaUgPz+4d3X0P+nI2I9fnkkPKWKJeAeIg==
+X-Received: by 2002:ac8:51c3:: with SMTP id d3mr5040914qtn.14.1574287507889;
+        Wed, 20 Nov 2019 14:05:07 -0800 (PST)
+Received: from redhat.com (bzq-79-176-6-42.red.bezeqint.net. [79.176.6.42])
+        by smtp.gmail.com with ESMTPSA id i75sm353431qke.22.2019.11.20.14.05.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Nov 2019 14:05:06 -0800 (PST)
+Date:   Wed, 20 Nov 2019 17:05:00 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
         Parav Pandit <parav@mellanox.com>,
         Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        davem@davemloft.net, gregkh@linuxfoundation.org,
-        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, Kiran Patil <kiran.patil@intel.com>,
-        Tiwei Bie <tiwei.bie@intel.com>
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        Kiran Patil <kiran.patil@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Bie, Tiwei" <tiwei.bie@intel.com>
 Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
-Message-ID: <20191120181108.GJ22515@ziepe.ca>
-References: <20191119164632.GA4991@ziepe.ca>
- <20191119134822-mutt-send-email-mst@kernel.org>
- <20191119191547.GL4991@ziepe.ca>
- <20191119163147-mutt-send-email-mst@kernel.org>
+Message-ID: <20191120165748-mutt-send-email-mst@kernel.org>
+References: <20191119163147-mutt-send-email-mst@kernel.org>
  <20191119231023.GN4991@ziepe.ca>
  <20191119191053-mutt-send-email-mst@kernel.org>
  <20191120014653.GR4991@ziepe.ca>
- <134058913.35624136.1574222360435.JavaMail.zimbra@redhat.com>
- <20191120133835.GC22515@ziepe.ca>
- <20191120102856.7e01e2e2@x1.home>
+ <20191120022141-mutt-send-email-mst@kernel.org>
+ <20191120130319.GA22515@ziepe.ca>
+ <20191120083908-mutt-send-email-mst@kernel.org>
+ <20191120143054.GF22515@ziepe.ca>
+ <20191120093607-mutt-send-email-mst@kernel.org>
+ <20191120164525.GH22515@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20191120164525.GH22515@ziepe.ca>
+X-MC-Unique: QOXeT9vIOnKEa2Q9Q0PbVA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-In-Reply-To: <20191120102856.7e01e2e2@x1.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 20, 2019 at 10:28:56AM -0700, Alex Williamson wrote:
-> > > Are you objecting the mdev_set_iommu_deivce() stuffs here?  
-> > 
-> > I'm questioning if it fits the vfio PCI device security model, yes.
-> 
-> The mdev IOMMU backing device model is for when an mdev device has
-> IOMMU based isolation, either via the PCI requester ID or via requester
-> ID + PASID.  For example, an SR-IOV VF may be used by a vendor to
-> provide IOMMU based translation and isolation, but the VF may not be
-> complete otherwise to provide a self contained device.  It might
-> require explicit coordination and interaction with the PF driver, ie.
-> mediation.  
+On Wed, Nov 20, 2019 at 12:45:25PM -0400, Jason Gunthorpe wrote:
+> > > For instance, this VFIO based approach might be very suitable to the
+> > > intel VF based ICF driver, but we don't yet have an example of non-VF
+> > > HW that might not be well suited to VFIO.
+> >
+> > I don't think we should keep moving the goalposts like this.
+>=20
+> It is ABI, it should be done as best we can as we have to live with it
+> for a long time. Right now HW is just starting to come to market with
+> VDPA and it feels rushed to design a whole subsystem style ABI around
+> one, quite simplistic, driver example.
 
-In this case the PF does not look to be involved, the ICF kernel
-driver is only manipulating registers in the same VF that the vfio
-owns the IOMMU for.
+Well one has to enable hardware in some way. It's not really reasonable
+to ask for multiple devices to be available just so there's a driver and
+people can use them. At this rate no one will want to be the first to
+ship new devices ;)
 
-This is why I keep calling it a "so-called mediated device" because it
-is absolutely not clear what the kernel driver is mediating. Nearly
-all its work is providing a subsystem-style IOCTL interface under the
-existing vfio multiplexer unrelated to vfio requirements for DMA.
+> > If people write drivers and find some infrastruture useful,
+> > and it looks more or less generic on the outset, then I don't
+> > see why it's a bad idea to merge it.
+>=20
+> Because it is userspace ABI, caution is always justified when defining
+> new ABI.
 
-> The IOMMU backing device is certainly not meant to share an IOMMU
-> address space with host drivers, except as necessary for the
-> mediation of the device.  The vfio model manages the IOMMU domain of
-> the backing device exclusively, any attempt to dual-host the device
-> respective to the IOMMU should fault in the dma/iommu-ops.  Thanks,
 
-Sounds more reasonable if the kernel dma_ops are prevented while vfio
-is using the device.
+Reasonable caution, sure. Asking Alex to block Intel's driver until
+someone else catches up and ships competing hardware isn't reasonable
+though. If that's your proposal I guess we'll have to agree to disagree.
 
-However, to me it feels wrong that just because a driver wishes to use
-PASID or IOMMU features it should go through vfio and mediated
-devices.
+--=20
+MST
 
-It is not even necessary as we have several examples already of
-drivers using these features without vfio.
-
-I feel like mdev is suffering from mission creep. I see people
-proposing to use mdev for many wild things, the Mellanox SF stuff in
-the other thread and this 'virtio subsystem' being the two that have
-come up publicly this month.
-
-Putting some boundaries on mdev usage would really help people know
-when to use it. My top two from this discussion would be:
-
-- mdev devices should only bind to vfio. It is not a general kernel
-  driver matcher mechanism. It is not 'virtual-bus'.
-
-- mdev & vfio are not a substitute for a proper kernel subsystem. We
-  shouldn't export a complex subsystem-like ioctl API through
-  vfio ioctl extensions. Make a proper subsystem, it is not so hard.
-
-Maybe others agree?
-
-Thanks,
-Jason
