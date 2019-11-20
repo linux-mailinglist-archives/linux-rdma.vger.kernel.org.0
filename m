@@ -2,139 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 380CD103B34
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 14:23:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EBE103B75
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 14:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730493AbfKTNXI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Nov 2019 08:23:08 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:48440 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730146AbfKTNXH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 20 Nov 2019 08:23:07 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAKDLUOb000412;
-        Wed, 20 Nov 2019 05:23:03 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0818;
- bh=I8WotPkBXAy/27+KakBfYjKQw40op12FsfifnddDoKk=;
- b=UuKcAcuH4nk4XxLBAkhFs/jOw1z4u6nMbaXemG8o6LdSGTlcEKpJF8dVqN9slQdI1DNk
- LpTzq3JkRq7ZRsFzZqb/3hAuKu7+7osOPiMcdMBvaujP6+FKPp8BrWtNLjSy5Dcr++H6
- dyekKy8KXmombwUeAS8dgmm+xKvkZPcY0APMZae8uCQrXqMLViFhLyY22iCIkn2YBCra
- qL7iJD5i3t9FkGBv1yvjtuciRaRnKT5eJYiqmEu8s+rfslJtP6cnVMV9lNl/Pwl6xHd2
- hq5eGdU9ws1ac6ub0EDgc6GAD0TOM0UgByXLkfXjxPJChWYzm9mB3qbg7rIvC2MhMHDS Uw== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 2wd090sgk9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 20 Nov 2019 05:23:02 -0800
-Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Wed, 20 Nov
- 2019 05:23:01 -0800
-Received: from maili.marvell.com (10.93.176.43) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
- Transport; Wed, 20 Nov 2019 05:23:01 -0800
-Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
-        by maili.marvell.com (Postfix) with ESMTP id AEA3B3F703F;
-        Wed, 20 Nov 2019 05:22:59 -0800 (PST)
-From:   Michal Kalderon <michal.kalderon@marvell.com>
-To:     <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
-        <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>
-Subject: [PATCH rdma-next] RDMA/qedr: Add kernel capability flags for dpm enabled mode
-Date:   Wed, 20 Nov 2019 15:20:09 +0200
-Message-ID: <20191120132009.14107-1-michal.kalderon@marvell.com>
-X-Mailer: git-send-email 2.14.5
+        id S1730631AbfKTNc1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Nov 2019 08:32:27 -0500
+Received: from mail-eopbgr70075.outbound.protection.outlook.com ([40.107.7.75]:20959
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729366AbfKTNc0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 20 Nov 2019 08:32:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lqOQzUedUyRwz8ZA6c0NGgDC8QQZvijKMXm2ClkENQ2awa05vtq1T4FGFSUgYlZEybmB4lDrLrlVaV1wYn38EmniavBQ9NSUpoQITVdAJLhxfDJ5opGBv6RGpVx/xSFs3WtGd+fKZEECHZmQyxZoppZmCd703aIcwKPp5j6CjMGLwpi8ot62jTDvHCIg+EWqpY5W8THb5p/X0KBbsK2HSP7Z8E+kSggSdoaZv+e9dWYU+QyJG3m1CuhvML9AbQvBWdXLDbwFl5MVguHLqTQ8MUpQyHO1+VAsaGy1I6kgPyvuxmz0EJp/J0TrfYF992LKEE9vGOPm61QwctTrvIzcfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xh1DzTdgIAqpThhi8L545s9cHWKy+AxlqCsW9yfnGqw=;
+ b=YJKiHDUk0YUGlnI0LumcqfsHZkJ2XLXDMsz9c23iHAwzL8KupzwHtjaVeB61T4blU2gUQH/7OVOBfuEV0166v2OUUbQ25+BctNeb6TkBSeW10CtjPPVXibQp0/vK8Eo6YjSvwMtWy1gk6cJ8Lj6aEnCbIdvh6G+5pdxIMYTwngbQ0zkiN68MsXEwXwE5hcIeG3zRTgxOZ4JJB21Ne8O6c6zx6tE2oFjLHGNh0NkDxRbhD88XwIKWs8lsTRL2Wsmb0QukhgIUGE9vIOvVZgKcMtjkT+NoyognDIJDQ1F4sVeIJ6c5vOASxBhYlIeNDBRo3q1dDbOk6t/LGWUe2QFLrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xh1DzTdgIAqpThhi8L545s9cHWKy+AxlqCsW9yfnGqw=;
+ b=PGf/MdGfTAxk8dQ+Qa9HJ1EJDhg2wAu8BzDnReirN92/3ZId+tNKYu2kIUNmGvJ09C8ZR87e0IMJ/g4+wlwMbeN8S0xmBCnBpJoqUQl7T6dZWBokraewEr6IF8wOTGY5pJmNEZlAsgobkUN82FrGaa7DrN0ohavbCwlWoWoGE4M=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB4109.eurprd05.prod.outlook.com (10.171.182.30) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2474.16; Wed, 20 Nov 2019 13:32:22 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::b179:e8bf:22d4:bf8d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::b179:e8bf:22d4:bf8d%5]) with mapi id 15.20.2474.015; Wed, 20 Nov 2019
+ 13:32:22 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Devesh Sharma <devesh.sharma@broadcom.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH for-rc 0/3] Broadcom's roce dirver bug fixes
+Thread-Topic: [PATCH for-rc 0/3] Broadcom's roce dirver bug fixes
+Thread-Index: AQHVnvDlBrbxo1T5mkqjQ0RrgyeVG6eS49yAgACjIYCAAIj9gA==
+Date:   Wed, 20 Nov 2019 13:32:22 +0000
+Message-ID: <20191120133219.GB22466@mellanox.com>
+References: <1574178531-15898-1-git-send-email-devesh.sharma@broadcom.com>
+ <20191119193809.GG4967@mellanox.com>
+ <CANjDDBg_xUZYirF=zuA7Yn8od4+qzvv3mwKrxRj7Sd3Xx7MX-w@mail.gmail.com>
+In-Reply-To: <CANjDDBg_xUZYirF=zuA7Yn8od4+qzvv3mwKrxRj7Sd3Xx7MX-w@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR19CA0019.namprd19.prod.outlook.com
+ (2603:10b6:208:178::32) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.162.113.180]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 383ec564-1f7f-46cc-ac25-08d76dbe12b3
+x-ms-traffictypediagnostic: VI1PR05MB4109:
+x-microsoft-antispam-prvs: <VI1PR05MB4109E84C0D162EB189A98257CF4F0@VI1PR05MB4109.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:469;
+x-forefront-prvs: 02272225C5
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(376002)(396003)(366004)(136003)(39860400002)(189003)(199004)(81156014)(446003)(478600001)(8936002)(81166006)(14454004)(86362001)(53546011)(6506007)(386003)(99286004)(8676002)(316002)(229853002)(64756008)(2906002)(33656002)(66556008)(66946007)(6246003)(66476007)(66446008)(3846002)(6116002)(4326008)(6436002)(6486002)(6512007)(305945005)(486006)(36756003)(7736002)(11346002)(2616005)(71200400001)(102836004)(6916009)(71190400001)(14444005)(256004)(476003)(54906003)(66066001)(52116002)(4744005)(26005)(186003)(1076003)(76176011)(5660300002)(25786009);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4109;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PtsQUF6nCs++Is+ERl33AphFMni9xPnxLfHmq6dYAd1bQAx0x898HhcAX5kOFsJOyEwKp7x0zgqcPvBoWiJi4E+iISY7UAcRr6/wFlZj52HL+K5Ek56e7udSWqi/dsry6qZQ3QWgX7wD5Zuf1wECNUcgpY5Li2aT7C3e7INtoycC/45Rpcxgb1xKgZVRsWiD2Neaw6KTAxkXhPkX6vr/C4hoOGADVC2+rfTXiXTdqOOXboHg13yqp20lteXspvxlrZeQJlKOqFgLqSkfY/xNVZSEtBg+k/XQ66de8Kho7b1rxKgUtjuko1hDcQxBcc2tBsaGXzXvuqrOZt/rtkaD4cAca6jOllvqbJoK6hNkSkbamVoTSDk5vhNMWaQqBIBsn8Udfh4u19R4Snpb8bHgLAe2dh6/nJ12GRuz77nWMhwLHto40xy5bp6JZjZFe2bS
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <D3FAB996CCCE7B41B9A3604D7E60231B@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-20_03:2019-11-15,2019-11-20 signatures=0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 383ec564-1f7f-46cc-ac25-08d76dbe12b3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2019 13:32:22.3971
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6MiWLjXgPYiVUugXjXVMk3BN7QEwalbWzPD8yuYYG53mA9jwjE0zvVoYXwLkWJyEsCnZTv6bJBHgDGLTPQUykg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4109
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-HW/FW support two types of latency enhancement features.
-Until now user-space implemented only edpm (enhanced dpm).
-We add kernel capability flags to differentiate between current
-FW in kernel that supports both ldpm and edpm.
-Since edpm is not yet supported for iWARP we add different flags
-for iWARP + RoCE.
-We also fix bad practice of defining sizes in rdma-core and pass
-initialization to kernel, for forward compatibility.
+On Wed, Nov 20, 2019 at 10:52:01AM +0530, Devesh Sharma wrote:
+> On Wed, Nov 20, 2019 at 1:08 AM Jason Gunthorpe <jgg@mellanox.com> wrote:
+> >
+> > On Tue, Nov 19, 2019 at 10:48:48AM -0500, Devesh Sharma wrote:
+> > > This series contain 3 patches patch 1 and patch 2 are specific to
+> > > Gen P5 devices. Patch 3 is a generic fix to silence few sparse
+> > > warnings.
+> >
+> > These commit messages are not suitable for -rc, and a sparse warning
+> > fix is rarely appropriate
+> >
+> > You need to describe what the user impact is of these bugs.
+> >
+> > -rc is done anyhow unless something urgent comes up.
+> Got your point. Let's drop sparse fixes patch from this series.
 
-The capability flags are added for backward-forward compatibility
-between kernel and rdma-core for qedr.
+Why? it can go to -next, like I said, there won't be another -rc
 
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
----
-rdma-core changes in pr #622 https://github.com/linux-rdma/rdma-core/pull/622
----
- drivers/infiniband/hw/qedr/verbs.c | 13 ++++++++++++-
- include/uapi/rdma/qedr-abi.h       | 18 ++++++++++++++++--
- 2 files changed, 28 insertions(+), 3 deletions(-)
+> For first patch the impact catastrophic as consumer wont be able to use t=
+he
+> cards as it won't be listed the dev_list.
 
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 8096b8fcab4e..54cce8969594 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -312,7 +312,18 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
- 	}
- 	ctx->db_mmap_entry = &entry->rdma_entry;
- 
--	uresp.dpm_enabled = dev->user_dpm_enabled;
-+	if (!dev->user_dpm_enabled)
-+		uresp.dpm_flags = 0;
-+	else if (rdma_protocol_iwarp(&dev->ibdev, 1))
-+		uresp.dpm_flags = QEDR_DPM_TYPE_IWARP_LEGACY;
-+	else
-+		uresp.dpm_flags = QEDR_DPM_TYPE_ROCE_ENHANCED |
-+				  QEDR_DPM_TYPE_ROCE_LEGACY;
-+
-+	uresp.dpm_flags |= QEDR_DPM_SIZES_SET;
-+	uresp.ldpm_limit_size = QEDR_LDPM_MAX_SIZE;
-+	uresp.edpm_trans_size = QEDR_EDPM_TRANS_SIZE;
-+
- 	uresp.wids_enabled = 1;
- 	uresp.wid_count = oparams.wid_count;
- 	uresp.db_pa = rdma_user_mmap_get_offset(ctx->db_mmap_entry);
-diff --git a/include/uapi/rdma/qedr-abi.h b/include/uapi/rdma/qedr-abi.h
-index c022ee26089b..a0b83c9d4498 100644
---- a/include/uapi/rdma/qedr-abi.h
-+++ b/include/uapi/rdma/qedr-abi.h
-@@ -48,6 +48,18 @@ struct qedr_alloc_ucontext_req {
- 	__u32 reserved;
- };
- 
-+#define QEDR_LDPM_MAX_SIZE	(8192)
-+#define QEDR_EDPM_TRANS_SIZE	(64)
-+
-+enum qedr_rdma_dpm_type {
-+	QEDR_DPM_TYPE_NONE		= 0,
-+	QEDR_DPM_TYPE_ROCE_ENHANCED	= 1 << 0,
-+	QEDR_DPM_TYPE_ROCE_LEGACY	= 1 << 1,
-+	QEDR_DPM_TYPE_IWARP_LEGACY	= 1 << 2,
-+	QEDR_DPM_TYPE_RESERVED		= 1 << 3,
-+	QEDR_DPM_SIZES_SET		= 1 << 4,
-+};
-+
- struct qedr_alloc_ucontext_resp {
- 	__aligned_u64 db_pa;
- 	__u32 db_size;
-@@ -59,10 +71,12 @@ struct qedr_alloc_ucontext_resp {
- 	__u32 sges_per_recv_wr;
- 	__u32 sges_per_srq_wr;
- 	__u32 max_cqes;
--	__u8 dpm_enabled;
-+	__u8 dpm_flags;
- 	__u8 wids_enabled;
- 	__u16 wid_count;
--	__u32 reserved;
-+	__u16 ldpm_limit_size;
-+	__u8 edpm_trans_size;
-+	__u8 reserved;
- };
- 
- struct qedr_alloc_pd_ureq {
--- 
-2.14.5
+Supporting a new card is a new feature, not -rc material
 
+Jason
