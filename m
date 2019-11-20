@@ -2,85 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E24104090
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 17:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A466F1040FD
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 17:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732730AbfKTQSe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Nov 2019 11:18:34 -0500
-Received: from mail-io1-f65.google.com ([209.85.166.65]:45767 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728972AbfKTQSe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 11:18:34 -0500
-Received: by mail-io1-f65.google.com with SMTP id v17so17130657iol.12
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Nov 2019 08:18:33 -0800 (PST)
+        id S1730319AbfKTQlF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Nov 2019 11:41:05 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:41627 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728632AbfKTQlF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 11:41:05 -0500
+Received: by mail-pf1-f193.google.com with SMTP id p26so14484871pfq.8;
+        Wed, 20 Nov 2019 08:41:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kBQeDuj+IEqzHWWtY/8voXPAUZm2RrCLLc7o4EUzybo=;
-        b=Dx+c5L5bWBx167SQ4SDS5vpoqVcAb9YKFBektAFg1Oj3zLIGcvq4uqvGf+v5oDuMKf
-         W/9NTIDTsJ7J5kNK+41MN5TQBEjHnxF6m4nALDmESklEc6KvdExEzZEsaBCnbC4EuHxt
-         VgisfogzYTE37Opek+l0k7KRrwaG/g9NlgDuE=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WNg69dI6lMPTZ5pehKVsjQeKR7hVlS+w6JYy8Hbf0mU=;
+        b=HrM8tdU5FNrjIQsOwuwPfFU/2fzWigHO2d3TqHW0SxUKIviQQ7e77FxbOlGDifHCRR
+         uyjdCcPSFYeG+V4wBNFI+0PLbBL4s8lwDsQN+9eapsIZ0oGOBcp7JDmaKBbdGW3Isq00
+         HK05nJ4uomvKkuNt/PVBoPUSC/zv+Fu4DpHVUHOsCtSRvvGEWlTyiOla/CW5Peb/SteM
+         5wfY10x7cTSj89OdZs4y0qG8YK8tAqQDaAKwx6lQjpb9BYLq+I9CaTrj2aY0FbdbdBPD
+         +reoZLEXT4Uo98eI/1ZDf5xNM6cXpGv1c1o1yu+xvOYLlVyYHnscqp8f8h2kOddpXpgU
+         k+2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kBQeDuj+IEqzHWWtY/8voXPAUZm2RrCLLc7o4EUzybo=;
-        b=Buf7ylycxBo3XiKRiY4btdLV8rUddoYEN1KPrIUWEJAjdLhxRYnxwnn2OGgK89bfQn
-         seygwQUNH/EN9tdKFF15ITSLA7L9kHft+h3nmyX40CsDjAoQp86IJpP4evDQB+iyrCt5
-         UnF789mYWzF9eqGz3oY8YNIRb1s39LJ9Ra8dmg/7+oSPrJbY6v3E5dCaGAGwM+Dfdhga
-         +fJA5A5h761u95IuVimlp1hLGuH38ywDYw6sRWU/5mZ+L9HJb1S9OlS+sq9VTB190IM+
-         vFUu0OhvlYhmCN5V8AktRAgBb877E9lpF4aRirS3WOg0sKE8TgRkBsHEZiSX4mP3p1Wl
-         kJhA==
-X-Gm-Message-State: APjAAAVMD2CJ2L3K69jdtuSvrL3J6eCD1jSJYWx5Q7tTDX+mHz3Yer2/
-        pBT8C3lyIPg8lpwLldb8TMCOiWrqOs9C5SXPiI5o+sPY
-X-Google-Smtp-Source: APXvYqxUeuoVVyDPHkDgCWS1UIKmua3iTJ1gvBd2tNpkFM2lhvFTWTy4v8PCUOl69WSLFJkxfEn9doejbKUuVgZ/96c=
-X-Received: by 2002:a02:601a:: with SMTP id i26mr6556jac.50.1574266711963;
- Wed, 20 Nov 2019 08:18:31 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WNg69dI6lMPTZ5pehKVsjQeKR7hVlS+w6JYy8Hbf0mU=;
+        b=Wc9qVR954fWTiNW/svr3MrnSTPKYQnSHsTDSCYx7nBXwrHzByZbT9K5zpW1pz4f46e
+         Ak+gtXERX6LVtb82jwP9f+OPMhlRtTUstS9oYNpU1OuLN1OlbxLZ0li8Gh4uhoXoj5Xn
+         jzMfGM992vH9OmbOVmdhw4blIte6QqAelxlijmeWHmeLBo/utZybHuKgCWWKvBgH54Vy
+         UEmTNklMAoTRXG3yKSG9PqKOkwl7gjzPtzSQ29339CaLkB9v6il/xLKjPiN7AEeGG8rk
+         Eh07Eb1geqWR0kqBahQgiQin+Az+QMqNHfVXg1NoRpLErKg9qM0aa4lBlcYQ/p6Xryrf
+         51hw==
+X-Gm-Message-State: APjAAAUfcYh1wiCr3b2Ci4IJ11fJIjMLPquQ5PyzCSDrMPjccQkZ3oBo
+        jnLvCWliq/ePAvws2MRxfcDjr+vJ
+X-Google-Smtp-Source: APXvYqyULMxeTP6qjjM5EJ+roB8mJcF17Y8Myrb6oSIKbO+tyKNkU7aHQs9aGpLtTu+vVXWJaoWNbQ==
+X-Received: by 2002:a63:524e:: with SMTP id s14mr4409429pgl.412.1574268064492;
+        Wed, 20 Nov 2019 08:41:04 -0800 (PST)
+Received: from dahern-DO-MB.local ([2601:282:800:fd80:d52e:b788:c6dc:7675])
+        by smtp.googlemail.com with ESMTPSA id e11sm29815362pff.104.2019.11.20.08.41.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Nov 2019 08:41:03 -0800 (PST)
+Subject: Re: [PATCH net] net: rtnetlink: prevent underflows in do_setvfinfo()
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Jiri Pirko <jiri@mellanox.com>, Ido Schimmel <idosch@mellanox.com>,
+        Petr Machata <petrm@mellanox.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Michal Kubecek <mkubecek@suse.cz>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <20191120123438.vxn2ngnxzpcaqot4@kili.mountain>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <24d0482c-f23f-83b1-e79e-fb84694d0a54@gmail.com>
+Date:   Wed, 20 Nov 2019 09:41:01 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <1574178531-15898-1-git-send-email-devesh.sharma@broadcom.com>
- <20191119193809.GG4967@mellanox.com> <CANjDDBg_xUZYirF=zuA7Yn8od4+qzvv3mwKrxRj7Sd3Xx7MX-w@mail.gmail.com>
- <20191120133219.GB22466@mellanox.com>
-In-Reply-To: <20191120133219.GB22466@mellanox.com>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Wed, 20 Nov 2019 21:47:55 +0530
-Message-ID: <CANjDDBiMuL9Sj778=fKWsHPVXOxuemOWG+P-Xg+fDeDtDDqcPw@mail.gmail.com>
-Subject: Re: [PATCH for-rc 0/3] Broadcom's roce dirver bug fixes
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20191120123438.vxn2ngnxzpcaqot4@kili.mountain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 20, 2019 at 7:02 PM Jason Gunthorpe <jgg@mellanox.com> wrote:
->
-> On Wed, Nov 20, 2019 at 10:52:01AM +0530, Devesh Sharma wrote:
-> > On Wed, Nov 20, 2019 at 1:08 AM Jason Gunthorpe <jgg@mellanox.com> wrote:
-> > >
-> > > On Tue, Nov 19, 2019 at 10:48:48AM -0500, Devesh Sharma wrote:
-> > > > This series contain 3 patches patch 1 and patch 2 are specific to
-> > > > Gen P5 devices. Patch 3 is a generic fix to silence few sparse
-> > > > warnings.
-> > >
-> > > These commit messages are not suitable for -rc, and a sparse warning
-> > > fix is rarely appropriate
-> > >
-> > > You need to describe what the user impact is of these bugs.
-> > >
-> > > -rc is done anyhow unless something urgent comes up.
-> > Got your point. Let's drop sparse fixes patch from this series.
->
-> Why? it can go to -next, like I said, there won't be another -rc
-Yup, it can certainly go.
->
-> > For first patch the impact catastrophic as consumer wont be able to use the
-> > cards as it won't be listed the dev_list.
->
-> Supporting a new card is a new feature, not -rc material
-Alright, I shall move the series to for-next and add back the sparse
-warning fix. Please ignore V2 which have posted already.
->
-> Jason
+On 11/20/19 5:34 AM, Dan Carpenter wrote:
+> I reported this bug to the linux-rdma mailing list in April and this
+> patch wasn't considered very elegant.  I can see how that's true.  The
+> developer offered to write a fix which would update all the drivers to
+> use u32 throughout.  I reminded him in September that this bug still
+> needs to be fixed.
+
+Since the uapi (ifla_vf_mac, ifla_vf_vlan, ...) all have u32, I agree
+with that comment -- it seems like the ndo functions should be changed
+from 'int vf' to 'u32 vf'.
