@@ -2,96 +2,181 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7D210319B
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 03:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3831031E5
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 04:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727348AbfKTCdQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Nov 2019 21:33:16 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:38491 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727082AbfKTCdQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 21:33:16 -0500
-Received: by mail-pj1-f68.google.com with SMTP id f7so3491633pjw.5;
-        Tue, 19 Nov 2019 18:33:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=T2WeYV80OjrUzdOrjzmYOJ2I4YAFnUZSAbDhvntIAp8=;
-        b=FyNaE1UKSW58uV3K2ZK1Z09ArgGHMkKMntVt5f7bbcWIdrutXpcS2Uu7XX7r8VrMDs
-         A4A2SH7N48r1uuVnos1Ph+0TQ6aqHNfXBUiZjebIU9eSk3PLQpkpAXNv2u4f1zO3IiQQ
-         Jyt/VBPMhfU8sJoc/zFUAlGj37DH7h8xyvTHobHykZxjxU5dnO2YQwdqyI8MnY4DQW4e
-         T2Cq7hGYHDCLd3fF9vt4dztO2+JdgZovF1760mCT+vHIhHkeUHCmGse2cKHeEc7+UiBL
-         iUWB0Q2W13XicZjIcGFW9cieW0ZNHPZGC+XcDN3SPJzGhPCiW9IGkBI4o3qOPySQopo9
-         xd6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=T2WeYV80OjrUzdOrjzmYOJ2I4YAFnUZSAbDhvntIAp8=;
-        b=nlyObrURcOWFV/gSPcXA0ukHqmmswrmBkYWGh0G5tSmv+Kw+WIeINw1ELvkeQo1457
-         oQ22PIrDLKu3rfAsXrFMZU2rkSm3ixFKEyywk0ZTTCLfe+1nXNPXjKLgZ9fajdM18Yh8
-         6dSnAjGo6zl8o88dyFxH66afM3jYcn7esDuC7qfRreaYS+ja2WGeshXJEFsiPA71A+wh
-         9nKdWzwjoVJpt1JCG4svY8gutXDkYEYxhsN8BaPUB7VmI5huLvFuYZO3FbLRmosUGRfi
-         VIp4TbqgN/UzDWBRw4FQJEuXyiOiLNF3WQlC9gYGCK23PNmyJlXRBNZ6/DYAv+7/WwNe
-         XonA==
-X-Gm-Message-State: APjAAAWgxXmUkXFAjLQuRnMMOBFvVU4zjmqxYyyo70KbYo88olEWgRQH
-        erOLJd2fzvs5/EJyW4brJ54=
-X-Google-Smtp-Source: APXvYqwmbEdf3pSy+UgHLOEa0MOaoeSnCCbhwfYBR1/Ae79rhLVo0glt2AoUoy5fi5dv4tcT8wyHCg==
-X-Received: by 2002:a17:90a:aa8c:: with SMTP id l12mr944325pjq.92.1574217195868;
-        Tue, 19 Nov 2019 18:33:15 -0800 (PST)
-Received: from dahern-DO-MB.local ([2601:282:800:fd80:3071:8113:4ecc:7f4c])
-        by smtp.googlemail.com with ESMTPSA id y24sm28713411pfr.116.2019.11.19.18.33.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Nov 2019 18:33:15 -0800 (PST)
-Subject: Re: [PATCH iproute2-next] rdma: Rewrite custom JSON and prints logic
- to use common API
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Ido Kalir <idok@mellanox.com>, netdev <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Leon Romanovsky <leonro@mellanox.com>
-References: <20191118083530.51788-1-leon@kernel.org>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <afe19f2b-a2dc-f1ad-9186-0505d7ea61ca@gmail.com>
-Date:   Tue, 19 Nov 2019 19:33:13 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.2.2
+        id S1727383AbfKTDPg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Nov 2019 22:15:36 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:38229 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727362AbfKTDPg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Nov 2019 22:15:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1574219735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pYSQR6cjfnJIT1vfOCF2hDFIXTDQo109Z4Iwx+wsbqg=;
+        b=Ujlj+Ni7VDAuKijC0pEcmciWFKr4B2SQHT/Gn00cwc0HpA0Ns4yFq80TCxI45yz2mmCDOh
+        kzu79gtk8MqcViF8U112J/6tXnzuxNmL4yn9BKWG+4JwNJbn49h7ONWOEXqj5qXXcuyh/z
+        GeqmkYMgMAbO6tIqmg4Xj8lIjfvDto8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-310-74XahVNiPoyJ0BajaFUarQ-1; Tue, 19 Nov 2019 22:15:31 -0500
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 263A21883522;
+        Wed, 20 Nov 2019 03:15:30 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0C22066D43;
+        Wed, 20 Nov 2019 03:15:30 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id AC24C4BB5B;
+        Wed, 20 Nov 2019 03:15:29 +0000 (UTC)
+Date:   Tue, 19 Nov 2019 22:15:28 -0500 (EST)
+From:   Jason Wang <jasowang@redhat.com>
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>, davem@davemloft.net,
+        gregkh@linuxfoundation.org, Dave Ertman <david.m.ertman@intel.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        nhorman@redhat.com, sassmann@redhat.com, jgg@ziepe.ca,
+        Kiran Patil <kiran.patil@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Tiwei Bie <tiwei.bie@intel.com>
+Message-ID: <743601510.35622214.1574219728585.JavaMail.zimbra@redhat.com>
+In-Reply-To: <AM0PR05MB486605742430D120769F6C45D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+References: <20191115223355.1277139-1-jeffrey.t.kirsher@intel.com> <AM0PR05MB4866CF61828A458319899664D1700@AM0PR05MB4866.eurprd05.prod.outlook.com> <a40c09ee-0915-f10c-650e-7539726a887b@redhat.com> <AM0PR05MB4866C40A177D3D60BFC558F7D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com> <13946106-dab2-6bbe-df79-ca6dfdeb4c51@redhat.com> <AM0PR05MB486685F7C839AD8A5F3EEA91D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com> <ead356f5-db81-cb01-0d74-b9e34965a20f@redhat.com> <AM0PR05MB486605742430D120769F6C45D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
 MIME-Version: 1.0
-In-Reply-To: <20191118083530.51788-1-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.68.5.20, 10.4.195.3]
+Thread-Topic: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Thread-Index: AQHVnATItanP+SK9PEuJkGaYy2/dTKeM1NrAgAURC4CAAAcf0IAAJnyAgAAC1aCAAAnmgIAAf31QXxyMZiM=
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-MC-Unique: 74XahVNiPoyJ0BajaFUarQ-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/18/19 1:35 AM, Leon Romanovsky wrote:
-> From: Ido Kalir <idok@mellanox.com>
-> 
-> Instead of doing open-coded solution to generate JSON and prints, let's
-> reuse existing infrastructure and APIs to do the same as ip/*.
-> 
-> Before this change:
->  if (rd->json_output)
->      jsonw_uint_field(rd->jw, "sm_lid", sm_lid);
->  else
->      pr_out("sm_lid %u ", sm_lid);
-> 
-> After this change:
->  print_uint(PRINT_ANY, "sm_lid", "sm_lid %u ", sm_lid);
-> 
-> All the print functions are converted to support color but for now the
-> type of color is COLOR_NONE. This is done as a preparation to addition
-> of color enable option. Such change will require rewrite of command line
-> arguments parser which is out-of-scope for this patch.
-> 
-> Signed-off-by: Ido Kalir <idok@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 
-Applied to iproute2-next. Thank you for doing this!
 
-Now we just devlink to be converted.
+----- Original Message -----
+>=20
+>=20
+> > From: Jason Wang <jasowang@redhat.com>
+> > Sent: Tuesday, November 19, 2019 1:37 AM
+> >=20
+> > On 2019/11/19 =E4=B8=8B=E5=8D=883:13, Parav Pandit wrote:
+> > >> From: Jason Wang <jasowang@redhat.com>
+> > >> Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtua=
+l
+> > >> Bus
+> > >>
+> > >>
+> > > [..]
+> > >
+> > >> Probably, for virtio mdev we need more than just matching: life cycl=
+e
+> > >> management, cooperation with VFIO and we also want to be prepared fo=
+r
+> > >> the device slicing (like sub functions).
+> > > Well I am revising my patches to life cycle sub functions via devlink
+> > > interface for few reasons, as
+> > >
+> > > (a) avoid mdev bus abuse (still named as mdev in your v13 series,
+> > > though it is actually for vfio-mdev)
+> >=20
+> >=20
+> > Yes, but it could be simply renamed to "vfio-mdev".
+> >=20
+> >=20
+> > > (b) support iommu
+> >=20
+> >=20
+> > That is already supported by mdev.
+> >=20
+> >=20
+> > > (c) manage and have coupling with devlink eswitch framework, which is
+> > > very rich in several aspects
+> >=20
+> >=20
+> > Good point.
+> >=20
+> >=20
+> > > (d) get rid of limited sysfs interface for mdev creation, as netlink =
+is
+> > standard and flexible to add params etc.
+> >=20
+> >=20
+> > Standard but net specific.
+> >=20
+> >=20
+> > >
+> > > If you want to get a glimpse of old RFC work of my revised series, pl=
+ease
+> > refer to [1].
+> >=20
+> >=20
+> > Will do.
+> >=20
+> >=20
+> > >
+> > > Jiri, Jason, me think that even virtio accelerated devices will need
+> > > eswitch
+> > support. And hence, life cycling virtio accelerated devices via devlink
+> > makes a
+> > lot of sense to us.
+> > > This way user has single tool to choose what type of device he want t=
+o
+> > > use
+> > (similar to ip link add link type).
+> > > So sub function flavour will be something like (virtio or sf).
+> >=20
+> >=20
+> > Networking is only one of the types that is supported in virtio-mdev.
+> > The codes are generic enough to support any kind of virtio device (bloc=
+k,
+> > scsi, crypto etc). Sysfs is less flexible but type independent.
+> > I agree that devlink is standard and feature richer but still network
+> > specific.
+> > It's probably hard to add devlink to other type of physical drivers. I'=
+m
+> > thinking whether it's possible to combine syfs and devlink:
+> > e.g the mdev is available only after the sub fuction is created and ful=
+ly
+> > configured by devlink.
+> >=20
+>=20
+> Nop. Devlink is NOT net specific. It works at the bus/device level.
+> Any block/scsi/crypto can register devlink instance and implement the
+> necessary ops as long as device has bus.
+>=20
+
+Well, uapi/linux/devlink.h told me:
+
+"
+ * include/uapi/linux/devlink.h - Network physical device Netlink interface
+"
+
+And the userspace tool was packaged into iproute2, the command was
+named as "TC", "PORT", "ESWITCH". All of those were strong hints that it
+was network specific. Even for networking, only few vendors choose to
+implement this.
+
+So technically it could be extended but how hard it can be achieved in
+reality?
+
+I still don't see why devlink is conflicted with GUID/sysfs, you can
+hook sysfs events to devlink or do post or pre configuration through
+devlink. This is much more easier than forcing all vendors to use
+devlink.
+
+Thanks
 
