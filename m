@@ -2,54 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF874103440
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 07:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE3C103441
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 07:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727305AbfKTGUf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Nov 2019 01:20:35 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:40686 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725832AbfKTGUf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 01:20:35 -0500
-Received: by mail-wm1-f68.google.com with SMTP id y5so263166wmi.5
-        for <linux-rdma@vger.kernel.org>; Tue, 19 Nov 2019 22:20:33 -0800 (PST)
+        id S1727313AbfKTGUh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Nov 2019 01:20:37 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:34550 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725832AbfKTGUh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 01:20:37 -0500
+Received: by mail-wm1-f66.google.com with SMTP id j18so4224170wmk.1
+        for <linux-rdma@vger.kernel.org>; Tue, 19 Nov 2019 22:20:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=b1VMUXLMfFtqtg1d5fgksjrRHSmcXvmqNc/pq4Zicfc=;
-        b=Lnqb/Kz65sfvfCnLkGQFHWjhyDz9bKe8DbWCLD3YMATLLK9Ay3V8XKmrbACwY6zRaz
-         SBW4RVX45WL6fHYEKDgZ16Os9regzILlOj1UV10bKIXD9g8eLuw+qdObzmufDyWxsdaJ
-         tSAvBF9KerSNa1QGWZ3oiFGJyp3NkrNTiOCwY=
+        bh=kMms/Y764ZCYDBYwMWs0FXH18Gmx1KkXXZPTiNKK92E=;
+        b=AEFGcw1grAICBa2o/zf4RDRRsKL/WopcYLmyoJ1FPVTFxtata8TNt/ebqMmLQ3ulmu
+         8zCXcL0egZWOtV5Cf+o/2GtuOhvv9L1CTQzpSzIzJpCev5JMJb2uIS9yh1ZqJQEqcXD7
+         SjlPQSrzBuHJ2N05tXTKvYFhUjNZyVkiMWU9Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=b1VMUXLMfFtqtg1d5fgksjrRHSmcXvmqNc/pq4Zicfc=;
-        b=rhvqUR6nS1PhPJKeFDHHKqUGSVAuqY+eGE+wwRn3xEUvsHboVbbPcAri03ThbVLT2Z
-         33NQQq5Urwd3YvGtZl3dibaflkwd7keuBLkRLSYsjanmmFD3xf7/zGxY8moebGnYE45+
-         0I3pSgNv6JPpnghZlClJgbpCKYW0hEKsb0K/lxSwxVGNZq5Z5NmdqhQC03+/M/RWaz3X
-         BPm/pfz8b6p1WVF5lBBmMQivh2yOojJmrdWDSWQXBbxkNAZzS3lkKOW5BCE6p1WZ8Xc4
-         5Ijk4et42PFNZkW8ZoD6tucnSaYYhjBZE9rQoqaOkVmDUqTrL6dfnvx9PyadWXBGsTsH
-         ECZg==
-X-Gm-Message-State: APjAAAXpmeBoHE9kqxN2VdW6AWNc0c1VizGzJ+KqIRZDJHMSEu7cgFYg
-        dfGrl2MZO9KSXRSwAmsL2Hjgxg==
-X-Google-Smtp-Source: APXvYqxtvKc55EI/JmPd4AYEwoSd1gjWkeXGUALAhJPrb29a9BmBoSIiWeP7U05nyi1pdugiQPBx0A==
-X-Received: by 2002:a7b:c642:: with SMTP id q2mr1142150wmk.169.1574230832651;
-        Tue, 19 Nov 2019 22:20:32 -0800 (PST)
+        bh=kMms/Y764ZCYDBYwMWs0FXH18Gmx1KkXXZPTiNKK92E=;
+        b=GFM2cATMrhqUiFfDhEuR+Nu5YXbWrHJc3peGNHXkXlSEAaw+ylkCB7dwKTwDoYZ8kM
+         qPIrQG3dGQ5Jwx3Wps8qYsW9g9FgVAP1MMcWZ4D1pkXzEN7iETt1911cvFO3dBss8IMz
+         8Sc2Z8s8Ew9q0fFHCiKe6Mret4SqgMWzsRzNNpl9FPuUStQNrX+MkLi7DQz0Ir/GlXhD
+         6zw2Q/LOZ+OsZ6xa+jqiM7DmlgKGbMmhCpNd7970CleH1RG1RYZG06uyLXEbPzmaISU+
+         iA2VoH7WDdjc7QdKNtgExc5FJEeoBLbatLdStvlPxSnFjT5GYGjTI+OmEXc+RoqPnUUI
+         KBpQ==
+X-Gm-Message-State: APjAAAWVzs4K4tZa3zgk5MaN+XS3gNA6J2MuG7leuaEd1mT+8NVCEmwO
+        7DxFVwCBTnyLy4mAeXfRn6J/CmmiJu4=
+X-Google-Smtp-Source: APXvYqwh45YE4ThKOFWmUaocLZ0wNEPONLsK6v8FPYZgqGVir4wOZ83iw6HUBJakkZvFAvA/7QVjVw==
+X-Received: by 2002:a1c:7f54:: with SMTP id a81mr1204141wmd.48.1574230835369;
+        Tue, 19 Nov 2019 22:20:35 -0800 (PST)
 Received: from neo00-el73.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id j7sm32466705wro.54.2019.11.19.22.20.29
+        by smtp.gmail.com with ESMTPSA id j7sm32466705wro.54.2019.11.19.22.20.32
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Nov 2019 22:20:32 -0800 (PST)
+        Tue, 19 Nov 2019 22:20:34 -0800 (PST)
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
 To:     dledford@redhat.com, jgg@mellanox.com
 Cc:     linux-rdma@vger.kernel.org,
-        Luke Starrett <luke.starrett@broadcom.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
         Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [PATCH V2 for-rc 1/2] RDMA/bnxt_re: Fix chip number validation Broadcom's Gen P5 series
-Date:   Wed, 20 Nov 2019 01:20:17 -0500
-Message-Id: <1574230818-30295-2-git-send-email-devesh.sharma@broadcom.com>
+Subject: [PATCH V2 for-rc 2/2] RDMA/bnxt_re: fix stat push into dma buffer on gen p5  devices
+Date:   Wed, 20 Nov 2019 01:20:18 -0500
+Message-Id: <1574230818-30295-3-git-send-email-devesh.sharma@broadcom.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1574230818-30295-1-git-send-email-devesh.sharma@broadcom.com>
 References: <1574230818-30295-1-git-send-email-devesh.sharma@broadcom.com>
@@ -58,54 +55,33 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Luke Starrett <luke.starrett@broadcom.com>
+Due to recent advances in the firmware for Broadcom's
+gen p5 series of adaptors the driver code to report
+hardware counters has been broken w.r.t. roce devices.
 
-In the first version of Gen P5 ASIC, chip-id was always
-set to 0x1750 for all adaptor port configurations. This
-has been fixed in the new chip rev.
+Making a change to match the expectaion of newer firmware
+version when stat dma buffer is created. The new firmware
+command expects dma length to be specified during stat
+dma buffer allocation.
 
-Due to this missing fix the end customer are not able to
-use adaptors based on latest chip rev of Broadcom's Gen
-P5 adaptors.
-
-Making a change in chip-number validation check to honor
-other chip-ids as well.
-
-Fixes: ae8637e13185 ("RDMA/bnxt_re: Add chip context to identify 57500 series")
-Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-Signed-off-by: Luke Starrett <luke.starrett@broadcom.com>
+Fixes: 2792b5b95ed5 ("bnxt_en: Update firmware interface spec. to 1.10.0.89")
 Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_res.h | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/bnxt_re/main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-index fbda11a..aaa76d7 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-@@ -186,7 +186,9 @@ struct bnxt_qplib_chip_ctx {
- 	u8	chip_metal;
- };
- 
--#define CHIP_NUM_57500          0x1750
-+#define CHIP_NUM_57508		0x1750
-+#define CHIP_NUM_57504		0x1751
-+#define CHIP_NUM_57502		0x1752
- 
- struct bnxt_qplib_res {
- 	struct pci_dev			*pdev;
-@@ -203,7 +205,9 @@ struct bnxt_qplib_res {
- 
- static inline bool bnxt_qplib_is_chip_gen_p5(struct bnxt_qplib_chip_ctx *cctx)
- {
--	return (cctx->chip_num == CHIP_NUM_57500);
-+	return (cctx->chip_num == CHIP_NUM_57508 ||
-+		cctx->chip_num == CHIP_NUM_57504 ||
-+		cctx->chip_num == CHIP_NUM_57502);
- }
- 
- static inline u8 bnxt_qplib_get_hwq_type(struct bnxt_qplib_res *res)
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 30a54f8..2ee2cd4 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -477,6 +477,7 @@ static int bnxt_re_net_stats_ctx_alloc(struct bnxt_re_dev *rdev,
+ 	bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_STAT_CTX_ALLOC, -1, -1);
+ 	req.update_period_ms = cpu_to_le32(1000);
+ 	req.stats_dma_addr = cpu_to_le64(dma_map);
++	req.stats_dma_length = cpu_to_le16(sizeof(struct ctx_hw_stats_ext));
+ 	req.stat_ctx_flags = STAT_CTX_ALLOC_REQ_STAT_CTX_FLAGS_ROCE;
+ 	bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
+ 			    sizeof(resp), DFLT_HWRM_CMD_TIMEOUT);
 -- 
 1.8.3.1
 
