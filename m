@@ -2,97 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B291042F5
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 19:08:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884DE104309
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 19:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727958AbfKTSIF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Nov 2019 13:08:05 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:52726 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726999AbfKTSIF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 13:08:05 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAKI453R155903;
-        Wed, 20 Nov 2019 18:07:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=7Iuk+cmislWerMgl6GxZr/jsZWnl3r60L9MDrOd/kek=;
- b=nbE8NfUyEi19XhG3AmSub6bubypkT66Nq2ANkiIGUjKGFeEzof7rLjoxbBQBP4ipdUwb
- P+hIj/eiWUZGrc5mzo/sdkgpqFaJGyzahqVLkfLIZcddTCzjg/THeUqpkZgvqFDWnkEp
- y4BVL6WC/iPGGa1/HV6gSMSdHIK2tpHAyc2nh1bXgKQYIOmpRCASGU7LS3eX/gQSgFny
- EHjjargxtwQzRn3E3u6s4ZFt2PUZQygJJKYl7ze2FZYGoNZAGec+6OZImzIbDHuQLkn8
- /uzsYkkAcEV/PDzxFDASVMYZKVm1xFByXbKHh+iYhhDysQsChyOiy16Asjm2x+Oovn3s mA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2wa9rqq70h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Nov 2019 18:07:49 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAKI4W78033063;
-        Wed, 20 Nov 2019 18:07:48 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2wda04hga8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Nov 2019 18:07:48 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xAKI7kU0001726;
-        Wed, 20 Nov 2019 18:07:46 GMT
-Received: from kadam (/41.210.141.247)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 20 Nov 2019 10:07:46 -0800
-Date:   Wed, 20 Nov 2019 21:07:35 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Petr Machata <petrm@mellanox.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        id S1728276AbfKTSLL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Nov 2019 13:11:11 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:46413 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727965AbfKTSLL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 13:11:11 -0500
+Received: by mail-qt1-f193.google.com with SMTP id r20so471944qtp.13
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Nov 2019 10:11:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Vo33mvOdIBVwdbi/zp6EAjbvy6FDvq9aw43Ml6yjZ2A=;
+        b=g1C+cXPLqZidOvbA+sNdc6fv4dHqqQoFBLHTRyK1KotsleyXpj8HEK1Gnsx5kmq0sG
+         fS+tcSooC4hWKZTWZqUBcnWoh98NYq+0Nl9L0cBdYCG5nImbUQBKrfjefDq/hH3zpF9y
+         ALQ3oIbxXOi/0oz10S75GQJMT3AEt7dBXYmBWnvCpSReg+I2ajQWm9e99dNIcK+ZDvBx
+         TKFcbTn2BVto4+Axu67NvKPUKm46peO7oIT2CyVWLqMGTTVT4ec81k+JTlx9+UrWqbGq
+         zFNusAQ/g6zyE4hUFzRedSI2p4IBpWQTzV1wRI4qKlfBMB2IS+5p7LEVNQL8muRV7bAv
+         oEsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Vo33mvOdIBVwdbi/zp6EAjbvy6FDvq9aw43Ml6yjZ2A=;
+        b=o3jJyV3J5mO12Wc8S7VZ2epL6g1B/+8ZlqVOpgdsAXSBs3JNImqKIsYlLKkYhxd9sX
+         IipzSGXS+9dAVaNBchpJ893RhzMndvORSY5aW/UvYi4Q4UzYYnCsifIndtxg7H/8QEIR
+         urcBxd3QAYgzdalwfOrfVRcc+EAIlrnYPw8eBycKo4kH9jR7YW0nkJu0Yb4e1K1GAh+i
+         zMJaWikSH9y8g/h17G4abYrB3mpmlpuBlcjgMk5mCgtiXjtrGUUz6crmH7bBWAjabNJp
+         G0iO0qQLdbkqTb6by3m+MtoxnnsRWkgkA2EAJmTmEjqdUONnoqtaIbSFmslzrK5b052f
+         V4xA==
+X-Gm-Message-State: APjAAAX8LbxcPIGt8XZ2YjwIW9tlo3vCuy7+fjapBsMhSWbwt5VSlLS1
+        d97f7UPJq6+0vgnRYm/yaLDUkQ==
+X-Google-Smtp-Source: APXvYqwVzVio3KUjbooubC21c9kEbruFWe7zxNFcJREryi0+l1imlxXI3hyp/LCI8xcYcTCNTFku8Q==
+X-Received: by 2002:ac8:31c5:: with SMTP id i5mr4047242qte.33.1574273470036;
+        Wed, 20 Nov 2019 10:11:10 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id w5sm11988292qkf.43.2019.11.20.10.11.09
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 20 Nov 2019 10:11:09 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iXURY-000096-KP; Wed, 20 Nov 2019 14:11:08 -0400
+Date:   Wed, 20 Nov 2019 14:11:08 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Parav Pandit <parav@mellanox.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Michal Kubecek <mkubecek@suse.cz>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH net] net: rtnetlink: prevent underflows in do_setvfinfo()
-Message-ID: <20191120180735.GD5604@kadam>
-References: <20191120123438.vxn2ngnxzpcaqot4@kili.mountain>
- <24d0482c-f23f-83b1-e79e-fb84694d0a54@gmail.com>
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        davem@davemloft.net, gregkh@linuxfoundation.org,
+        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, Kiran Patil <kiran.patil@intel.com>,
+        Tiwei Bie <tiwei.bie@intel.com>
+Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Message-ID: <20191120181108.GJ22515@ziepe.ca>
+References: <20191119164632.GA4991@ziepe.ca>
+ <20191119134822-mutt-send-email-mst@kernel.org>
+ <20191119191547.GL4991@ziepe.ca>
+ <20191119163147-mutt-send-email-mst@kernel.org>
+ <20191119231023.GN4991@ziepe.ca>
+ <20191119191053-mutt-send-email-mst@kernel.org>
+ <20191120014653.GR4991@ziepe.ca>
+ <134058913.35624136.1574222360435.JavaMail.zimbra@redhat.com>
+ <20191120133835.GC22515@ziepe.ca>
+ <20191120102856.7e01e2e2@x1.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <24d0482c-f23f-83b1-e79e-fb84694d0a54@gmail.com>
+In-Reply-To: <20191120102856.7e01e2e2@x1.home>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9446 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=959
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1911200152
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9446 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1911200152
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 20, 2019 at 09:41:01AM -0700, David Ahern wrote:
-> On 11/20/19 5:34 AM, Dan Carpenter wrote:
-> > I reported this bug to the linux-rdma mailing list in April and this
-> > patch wasn't considered very elegant.  I can see how that's true.  The
-> > developer offered to write a fix which would update all the drivers to
-> > use u32 throughout.  I reminded him in September that this bug still
-> > needs to be fixed.
+On Wed, Nov 20, 2019 at 10:28:56AM -0700, Alex Williamson wrote:
+> > > Are you objecting the mdev_set_iommu_deivce() stuffs here?  
+> > 
+> > I'm questioning if it fits the vfio PCI device security model, yes.
 > 
-> Since the uapi (ifla_vf_mac, ifla_vf_vlan, ...) all have u32, I agree
-> with that comment -- it seems like the ndo functions should be changed
-> from 'int vf' to 'u32 vf'.
+> The mdev IOMMU backing device model is for when an mdev device has
+> IOMMU based isolation, either via the PCI requester ID or via requester
+> ID + PASID.  For example, an SR-IOV VF may be used by a vendor to
+> provide IOMMU based translation and isolation, but the VF may not be
+> complete otherwise to provide a self contained device.  It might
+> require explicit coordination and interaction with the PF driver, ie.
+> mediation.  
 
-It's a lot of changes and there is no way to be sure the static checker
-isn't missing any bugs.
+In this case the PF does not look to be involved, the ICF kernel
+driver is only manipulating registers in the same VF that the vfio
+owns the IOMMU for.
 
-regards,
-dan carpenter
+This is why I keep calling it a "so-called mediated device" because it
+is absolutely not clear what the kernel driver is mediating. Nearly
+all its work is providing a subsystem-style IOCTL interface under the
+existing vfio multiplexer unrelated to vfio requirements for DMA.
+
+> The IOMMU backing device is certainly not meant to share an IOMMU
+> address space with host drivers, except as necessary for the
+> mediation of the device.  The vfio model manages the IOMMU domain of
+> the backing device exclusively, any attempt to dual-host the device
+> respective to the IOMMU should fault in the dma/iommu-ops.  Thanks,
+
+Sounds more reasonable if the kernel dma_ops are prevented while vfio
+is using the device.
+
+However, to me it feels wrong that just because a driver wishes to use
+PASID or IOMMU features it should go through vfio and mediated
+devices.
+
+It is not even necessary as we have several examples already of
+drivers using these features without vfio.
+
+I feel like mdev is suffering from mission creep. I see people
+proposing to use mdev for many wild things, the Mellanox SF stuff in
+the other thread and this 'virtio subsystem' being the two that have
+come up publicly this month.
+
+Putting some boundaries on mdev usage would really help people know
+when to use it. My top two from this discussion would be:
+
+- mdev devices should only bind to vfio. It is not a general kernel
+  driver matcher mechanism. It is not 'virtual-bus'.
+
+- mdev & vfio are not a substitute for a proper kernel subsystem. We
+  shouldn't export a complex subsystem-like ioctl API through
+  vfio ioctl extensions. Make a proper subsystem, it is not so hard.
+
+Maybe others agree?
+
+Thanks,
+Jason
