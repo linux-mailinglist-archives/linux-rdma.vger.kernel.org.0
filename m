@@ -2,144 +2,232 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3592010320F
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 04:38:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F4D10325F
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 04:59:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727298AbfKTDiX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Nov 2019 22:38:23 -0500
-Received: from mail-eopbgr00061.outbound.protection.outlook.com ([40.107.0.61]:41184
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727262AbfKTDiX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 19 Nov 2019 22:38:23 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TjS4ByRE7t+BYpJ5+zVeVZo1no8s4AFx9xpZasNcr8t54VUwXYIuBOgJDs9ypbgW1/ZczVS2VP1590vFoAKUFTiFRAIPxta9mlykldx7xxZ7Q2DBMpZPHU9n45qGY7Qp3bF5tJ4BfQAi90ryom8L9LPjmHhByXe2BndmsdWT5uaU6KuCLJp8RUXFde5O3HTEQbvJacbwoxfCDl07WtODKY4nDMn/6rpp4Ej6+y9f0cRqqv9zdF7xNnp+L51udmXCCWIXC9YXNxkU2MwKL45QMUIT/23ihjw0TstEsoYyXpI2k8Q3LuTEXSq5fzgpV52jSzvGvqEwUxhnbjEMfZUpEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1GM7yP400xVVufhsm69K+RE08hU1qNpi5ol4xeVtvCM=;
- b=ng/bwDcRtK4j4sOYCAFDPFm/Qd9uVasKAqgU4hCKgPPinXlOafHzq/xA2Oh4MpyOyNpaF8L4qSqiwVK2vbo37lEJORJsFDKqmedyUtvem0zZcbReh11DW2s3xFuMd5/Szsk2wL1fA5rFa1bU3ECTsjXay51+YPA1VXUli8AYc7gpQMfdLZHio7I56B9iYvyTzoYF6w5LoFj4ceAROE54BCiX+cvd8KlEU41oMatqcnXVKUO0PHfgA7cTv8JbBs28GSqHBUHrDpux8q3/VppyaN9PadWvcv3aSEwuo/+EVpNd41X4BPV+6f1W+gR4xQFpuR23kBU0l0QO+zjeoF43QA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1GM7yP400xVVufhsm69K+RE08hU1qNpi5ol4xeVtvCM=;
- b=IF8KsxqFU5gwgPrXGKDUmte3C5v3IPgG0f5J7xdCCr9sS7MQ3gxefeRfHtSMarnKmzk/TOwhEoSll/geXMaaJQ3q1DZUcmvhtq17nh+NimTzX3A8F1nBOZvcWSMFtSsHAMYRupa7Vw+p2RsqDkrPwcM64iW834R1iCYzriFPz3M=
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
- AM0PR05MB6609.eurprd05.prod.outlook.com (20.178.117.74) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2451.30; Wed, 20 Nov 2019 03:38:18 +0000
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::e5c2:b650:f89:12d4]) by AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::e5c2:b650:f89:12d4%7]) with mapi id 15.20.2451.029; Wed, 20 Nov 2019
- 03:38:18 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     Jason Wang <jasowang@redhat.com>
-CC:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, Kiran Patil <kiran.patil@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        id S1727586AbfKTD73 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Nov 2019 22:59:29 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:26859 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727385AbfKTD73 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 22:59:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1574222366;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CXnwiK0Y1iLRPCM3j/TkttSX1L0IsRa9v3ZpAGpmQhg=;
+        b=hxCmqDk/lJy+o9okI7F0iiKSkxcoDdjktz6FROTYFs95/i1GqKHFB6NmNjnYJP//KfA5cF
+        3UI7+H61IXHDdm+R8lTO6gulHsNjFZvmzYXMGFIdPsj0O5It296TYsvdrh7RL5jzC+Qqax
+        PWCUvHeY2weNUOcK/Rh+M6zSQq8l4RQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-38-7mbJFjw5NYa9Fba_z-EB-w-1; Tue, 19 Nov 2019 22:59:23 -0500
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A4D55801FBF;
+        Wed, 20 Nov 2019 03:59:21 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 921D867673;
+        Wed, 20 Nov 2019 03:59:21 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 66C691809567;
+        Wed, 20 Nov 2019 03:59:21 +0000 (UTC)
+Date:   Tue, 19 Nov 2019 22:59:20 -0500 (EST)
+From:   Jason Wang <jasowang@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        davem@davemloft.net, gregkh@linuxfoundation.org,
+        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, Kiran Patil <kiran.patil@intel.com>,
         Alex Williamson <alex.williamson@redhat.com>,
         Tiwei Bie <tiwei.bie@intel.com>
-Subject: RE: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
-Thread-Topic: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
-Thread-Index: AQHVnATItanP+SK9PEuJkGaYy2/dTKeM1NrAgAURC4CAAAcf0IAAJnyAgAAC1aCAAAnmgIAAf31QXxyMZiP9B+YeIA==
-Date:   Wed, 20 Nov 2019 03:38:18 +0000
-Message-ID: <AM0PR05MB48664221FB6B1C14BDF6C74AD14F0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-References: <20191115223355.1277139-1-jeffrey.t.kirsher@intel.com>
- <AM0PR05MB4866CF61828A458319899664D1700@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <a40c09ee-0915-f10c-650e-7539726a887b@redhat.com>
- <AM0PR05MB4866C40A177D3D60BFC558F7D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <13946106-dab2-6bbe-df79-ca6dfdeb4c51@redhat.com>
- <AM0PR05MB486685F7C839AD8A5F3EEA91D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <ead356f5-db81-cb01-0d74-b9e34965a20f@redhat.com>
- <AM0PR05MB486605742430D120769F6C45D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <743601510.35622214.1574219728585.JavaMail.zimbra@redhat.com>
-In-Reply-To: <743601510.35622214.1574219728585.JavaMail.zimbra@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [68.203.16.89]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 0454dd17-11d2-4ddb-93a9-08d76d6b159b
-x-ms-traffictypediagnostic: AM0PR05MB6609:
-x-microsoft-antispam-prvs: <AM0PR05MB6609C1B77EF2C2DD6C760388D14F0@AM0PR05MB6609.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 02272225C5
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(346002)(376002)(39860400002)(366004)(396003)(13464003)(189003)(199004)(66946007)(33656002)(478600001)(99286004)(256004)(54906003)(7696005)(86362001)(66476007)(5660300002)(26005)(446003)(55016002)(25786009)(7736002)(66066001)(305945005)(7416002)(11346002)(229853002)(476003)(6916009)(74316002)(14454004)(6436002)(81166006)(8936002)(81156014)(9686003)(4326008)(6246003)(486006)(71190400001)(71200400001)(6116002)(8676002)(6506007)(186003)(3846002)(76176011)(52536014)(102836004)(66446008)(2906002)(64756008)(66556008)(76116006)(316002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB6609;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0aT8vgkFb/O4lG1aQ1TGQUV5VgBmzRC+6ABCzie3VefSDtyVsIg9iMTcf3wJ8HLA1ja6sXxuu07/3yYVV/D9RE2oJ8GXTsGLHVtb67mJMaKidALtElLUHl1D9TZYmIQt/zd6CXFHY3DTZ4oghb+sPbj30hvk6zmXcV+eG3E+ARWxjTs2pr9eYksJr3VKS6QmrFL5vGJjFCzphc6dYZtSAeNTkLmCuTtID7qFGGzDrPzh88ofhOoBJY/8dQ3PPhJxni9O2hzSAaacFw3PZ+unbF2nanjGxPyeu7DrSAKpKW6CdLuTZMsk6oo8sg9GnBiY/WnldbrwDtFgya9bQYZ/mpTsNSxTBb6mF2G6x6iYFNOtqIvwz6+6MrhRps9F+ygU7ah806wCKX3mWvIDl9YcikYlQt1ey0LC18+r3Nsb83h8nx6MKEz4CY6TvKTCYpeX
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Message-ID: <134058913.35624136.1574222360435.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20191120014653.GR4991@ziepe.ca>
+References: <AM0PR05MB4866C40A177D3D60BFC558F7D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com> <20191119164632.GA4991@ziepe.ca> <20191119134822-mutt-send-email-mst@kernel.org> <20191119191547.GL4991@ziepe.ca> <20191119163147-mutt-send-email-mst@kernel.org> <20191119231023.GN4991@ziepe.ca> <20191119191053-mutt-send-email-mst@kernel.org> <20191120014653.GR4991@ziepe.ca>
+Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0454dd17-11d2-4ddb-93a9-08d76d6b159b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2019 03:38:18.6151
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YzBLP60z2GMZZPmtS6HvxwjU5efmcxxEkfAUHO/wXcwVwuFvAa9iLbJzk3UjFp0rG08S4HMVrQs2tYJxwbmjqQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6609
+X-Originating-IP: [10.68.5.20, 10.4.195.6]
+Thread-Topic: virtual-bus: Implementation of Virtual Bus
+Thread-Index: n9NEk+gP4p+eAlBUPqjybmA1P5VVfg==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-MC-Unique: 7mbJFjw5NYa9Fba_z-EB-w-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCj4gRnJvbTogSmFzb24gV2FuZyA8amFzb3dhbmdAcmVkaGF0LmNvbT4NCj4gU2VudDogVHVl
-c2RheSwgTm92ZW1iZXIgMTksIDIwMTkgOToxNSBQTQ0KPiANCj4gLS0tLS0gT3JpZ2luYWwgTWVz
-c2FnZSAtLS0tLQ0KPiA+DQo+ID4NCj4gPiA+IEZyb206IEphc29uIFdhbmcgPGphc293YW5nQHJl
-ZGhhdC5jb20+DQo+ID4gPiBTZW50OiBUdWVzZGF5LCBOb3ZlbWJlciAxOSwgMjAxOSAxOjM3IEFN
-DQo+ID4gPg0KPiA+DQo+ID4gTm9wLiBEZXZsaW5rIGlzIE5PVCBuZXQgc3BlY2lmaWMuIEl0IHdv
-cmtzIGF0IHRoZSBidXMvZGV2aWNlIGxldmVsLg0KPiA+IEFueSBibG9jay9zY3NpL2NyeXB0byBj
-YW4gcmVnaXN0ZXIgZGV2bGluayBpbnN0YW5jZSBhbmQgaW1wbGVtZW50IHRoZQ0KPiA+IG5lY2Vz
-c2FyeSBvcHMgYXMgbG9uZyBhcyBkZXZpY2UgaGFzIGJ1cy4NCj4gPg0KPiANCj4gV2VsbCwgdWFw
-aS9saW51eC9kZXZsaW5rLmggdG9sZCBtZToNCj4gDQo+ICINCj4gICogaW5jbHVkZS91YXBpL2xp
-bnV4L2RldmxpbmsuaCAtIE5ldHdvcmsgcGh5c2ljYWwgZGV2aWNlIE5ldGxpbmsgaW50ZXJmYWNl
-ICINCj4gDQo+IEFuZCB0aGUgdXNlcnNwYWNlIHRvb2wgd2FzIHBhY2thZ2VkIGludG8gaXByb3V0
-ZTIsIHRoZSBjb21tYW5kIHdhcyBuYW1lZA0KPiBhcyAiVEMiLCAiUE9SVCIsICJFU1dJVENIIi4g
-QWxsIG9mIHRob3NlIHdlcmUgc3Ryb25nIGhpbnRzIHRoYXQgaXQgd2FzIG5ldHdvcmsNCj4gc3Bl
-Y2lmaWMuIEV2ZW4gZm9yIG5ldHdvcmtpbmcsIG9ubHkgZmV3IHZlbmRvcnMgY2hvb3NlIHRvIGlt
-cGxlbWVudCB0aGlzLg0KPiANCkl0IGlzIHVuZGVyIGlwcm91dGUyIHRvb2wgYnV0IGl0IGlzIG5v
-dCBsaW1pdGVkIHRvIG5ldHdvcmtpbmcuDQpUaG91Z2ggdG9kYXkgbW9zdCB1c2VycyBhcmUgbmV0
-d29ya2luZyBkcml2ZXJzLg0KDQpJIGRvIG5vdCBrbm93IGhvdyBvdnMgb2ZmbG9hZHMgYXJlIGRv
-bmUgd2l0aG91dCBkZXZsaW5rIGJ5IG90aGVyIHZlbmRvcnMgZG9pbmcgaW4ta2VybmVsIGRyaXZl
-cnMuDQoNCj4gU28gdGVjaG5pY2FsbHkgaXQgY291bGQgYmUgZXh0ZW5kZWQgYnV0IGhvdyBoYXJk
-IGl0IGNhbiBiZSBhY2hpZXZlZCBpbiByZWFsaXR5Pw0KPiANCldoYXQgYXJlIHRoZSBtaXNzaW5n
-IHRoaW5ncz8NCkkgYW0gZXh0ZW5kaW5nIGl0IGZvciBzdWJmdW5jdGlvbnMgbGlmZWN5Y2xlLiBJ
-IHNlZSB2aXJ0aW8gYXMgeWV0IGFub3RoZXIgZmxhdm91ci90eXBlIG9mIHN1YmZ1bmN0aW9uLg0K
-DQo+IEkgc3RpbGwgZG9uJ3Qgc2VlIHdoeSBkZXZsaW5rIGlzIGNvbmZsaWN0ZWQgd2l0aCBHVUlE
-L3N5c2ZzLCB5b3UgY2FuIGhvb2sgc3lzZnMNCkl0IGlzIG5vdCBjb25mbGljdGluZy4gSWYgeW91
-IGxvb2sgYXQgd2hhdCBhbGwgZGV2bGluayBpbmZyYXN0cnVjdHVyZSBwcm92aWRlcywgeW91IHdp
-bGwgZW5kIHVwIHJlcGxpY2F0aW5nIGFsbCBvZiBpdCB2aWEgc3lzZnMuLg0KSXQgZ290IHN5c2Nh
-bGxlciBzdXBwb3J0IHRvbywgd2hpY2ggaXMgZ3JlYXQgZm9yIHZhbGlkYXRpb24uDQpJIGhhdmUg
-cG9zdGVkIHN1YmZ1bmN0aW9uIHNlcmllcyB3aXRoIG1kZXYgYW5kIHVzZWQgZGV2bGluayBmb3Ig
-YWxsIHJlc3Qgb2YgdGhlIGVzdyBhbmQgbWdtdC4gaW50ZXJmYWNlIHRvIHV0aWxpemUgaXQuDQoN
-CnNyaW92IHZpYSBzeXNmcyBhbmQgZGV2bGluayBzcmlvdi9lc3cgaGFuZGxpbmcgaGFzIHNvbWUg
-c2V2ZXJlIGxvY2tpbmcgaXNzdWVzLCBtYWlubHkgYmVjYXVzZSB0aGV5IGFyZSBmcm9tIHR3byBk
-aWZmZXJlbnQgaW50ZXJmYWNlcy4NCg0KPiBldmVudHMgdG8gZGV2bGluayBvciBkbyBwb3N0IG9y
-IHByZSBjb25maWd1cmF0aW9uIHRocm91Z2ggZGV2bGluay4gVGhpcyBpcyBtdWNoDQo+IG1vcmUg
-ZWFzaWVyIHRoYW4gZm9yY2luZyBhbGwgdmVuZG9ycyB0byB1c2UgZGV2bGluay4NCj4NCkl0IGlz
-IG5vdCBhYm91dCBmb3JjaW5nLiBJdCBpcyBhYm91dCBsZXZlcmFnaW5nIGV4aXN0aW5nIGtlcm5l
-bCBmcmFtZXdvcmsgYXZhaWxhYmxlIHdpdGhvdXQgcmVpbnZlbnRpbmcgdGhlIHdoZWVsLg0KSSBh
-bSAxMDAlIHN1cmUsIGltcGxlbWVudGluZyBoZWFsdGgsIGR1bXBzLCB0cmFjZXMsIHJlcG9ydGVy
-cywgc3lzY2FsbGVyLCBtb25pdG9ycywgaW50ZXJydXB0IGNvbmZpZ3MsIGV4dGVuZGluZyBwYXJh
-bXMgdmlhIHN5c2ZzIHdpbGwgYmUgbm8tZ28uDQpzeXNmcyBpcyBub3QgbWVhbnQgZm9yIHN1Y2gg
-dGhpbmdzIGFueW1vcmUuIEFueSBtb2Rlcm4gZGV2aWNlIG1hbmFnZW1lbnQgd2lsbCBuZWVkIGFs
-bCBvZiBpdC4NCg==
+----- Original Message -----
+> On Tue, Nov 19, 2019 at 07:16:21PM -0500, Michael S. Tsirkin wrote:
+> > On Tue, Nov 19, 2019 at 07:10:23PM -0400, Jason Gunthorpe wrote:
+> > > On Tue, Nov 19, 2019 at 04:33:40PM -0500, Michael S. Tsirkin wrote:
+> > > > On Tue, Nov 19, 2019 at 03:15:47PM -0400, Jason Gunthorpe wrote:
+> > > > > On Tue, Nov 19, 2019 at 01:58:42PM -0500, Michael S. Tsirkin wrot=
+e:
+> > > > > > On Tue, Nov 19, 2019 at 12:46:32PM -0400, Jason Gunthorpe wrote=
+:
+> > > > > > > As always, this is all very hard to tell without actually see=
+ing
+> > > > > > > real
+> > > > > > > accelerated drivers implement this.
+> > > > > > >=20
+> > > > > > > Your patch series might be a bit premature in this regard.
+> > > > > >=20
+> > > > > > Actually drivers implementing this have been posted, haven't th=
+ey?
+> > > > > > See e.g. https://lwn.net/Articles/804379/
+> > > > >=20
+> > > > > Is that a real driver? It looks like another example quality
+> > > > > thing.
+> > > > >=20
+> > > > > For instance why do we need any of this if it has '#define
+> > > > > IFCVF_MDEV_LIMIT 1' ?
+> > > > >=20
+> > > > > Surely for this HW just use vfio over the entire PCI function and=
+ be
+> > > > > done with it?
+> > > >=20
+> > > > What this does is allow using it with unmodified virtio drivers
+> > > > within guests.  You won't get this with passthrough as it only
+> > > > implements parts of virtio in hardware.
+> > >=20
+> > > I don't mean use vfio to perform passthrough, I mean to use vfio to
+> > > implement the software parts in userspace while vfio to talk to the
+> > > hardware.
+> >=20
+> > You repeated vfio twice here, hard to decode what you meant actually.
+>=20
+> 'while using vifo to talk to the hardware'
+>=20
+> > >   kernel -> vfio -> user space virtio driver -> qemu -> guest
+> >
+> > Exactly what has been implemented for control path.
+>=20
+> I do not mean the modified mediated vfio this series proposes, I mean
+> vfio-pci, on a full PCI VF, exactly like we have today.
+>=20
+> > The interface between vfio and userspace is
+> > based on virtio which is IMHO much better than
+> > a vendor specific one. userspace stays vendor agnostic.
+>=20
+> Why is that even a good thing? It is much easier to provide drivers
+> via qemu/etc in user space then it is to make kernel upgrades. We've
+> learned this lesson many times.
+
+For upgrades, since we had a unified interface. It could be done
+through:
+
+1) switch the datapath from hardware to software (e.g vhost)
+2) unload and load the driver
+3) switch teh datapath back
+
+Having drivers in user space have other issues, there're a lot of
+customers want to stick to kernel drivers.
+
+>=20
+> This is why we have had the philosophy that if it doesn't need to be
+> in the kernel it should be in userspace.
+
+Let me clarify again. For this framework, it aims to support both
+kernel driver and userspce driver. For this series, it only contains
+the kernel driver part. What it did is to allow kernel virtio driver
+to control vDPA devices. Then we can provide a unified interface for
+all of the VM, containers and bare metal. For this use case, I don't
+see a way to leave the driver in userspace other than injecting
+traffic back through vhost/TAP which is ugly.
+
+>=20
+> > > Generally we don't want to see things in the kernel that can be done
+> > > in userspace, and to me, at least for this driver, this looks
+> > > completely solvable in userspace.
+> >=20
+> > I don't think that extends as far as actively encouraging userspace
+> > drivers poking at hardware in a vendor specific way.
+>=20
+> Yes, it does, if you can implement your user space requirements using
+> vfio then why do you need a kernel driver?
+>
+
+VFIO is only for userspace driver, we want kernel virtio driver run as
+well. That's why a unified API is designed for both.
+
+> The kernel needs to be involved when there are things only the kernel
+> can do. If IFC has such things they should be spelled out to justify
+> using a mediated device.
+
+Why? It allows a full functional virtio driver run on the host.
+
+
+>=20
+> > That has lots of security and portability implications and isn't
+> > appropriate for everyone.
+>=20
+> This is already using vfio. It doesn't make sense to claim that using
+> vfio properly is somehow less secure or less portable.
+>=20
+> What I find particularly ugly is that this 'IFC VF NIC' driver
+> pretends to be a mediated vfio device, but actually bypasses all the
+> mediated device ops for managing dma security and just directly plugs
+> the system IOMMU for the underlying PCI device into vfio.
+
+Well, VFIO have multiple types of API. The design is to stick the VFIO
+DMA model like container work for making DMA API work for userspace
+driver. We can invent something our own but it must duplicate with the
+exist API and it will be extra overhead when VFIO DMA API starts to
+support stuffs like nesting or PASID.
+
+So in conclusion for vhost-mdev:
+
+- DMA is still done through VFIO manner e.g container fd etc.
+- device API is totally virtio specific.
+
+Compared with vfio-pci device, the only difference is the device API,
+we don't use device fd but vhost-net fd, but of course we can switch
+to use device fd. I'm sure we can settle this part down by having a
+way that is acceptable by both sides.
+
+>=20
+> I suppose this little hack is what is motivating this abuse of vfio in
+> the first place?
+>=20
+> Frankly I think a kernel driver touching a PCI function for which vfio
+> is now controlling the system iommu for is a violation of the security
+> model, and I'm very surprised AlexW didn't NAK this idea.
+>
+> Perhaps it is because none of the patches actually describe how the
+> DMA security model for this so-called mediated device works? :(
+>
+> Or perhaps it is because this submission is split up so much it is
+> hard to see what is being proposed? (I note this IFC driver is the
+> first user of the mdev_set_iommu_device() function)
+>
+
+Are you objecting the mdev_set_iommu_deivce() stuffs here?
+
+> > It is kernel's job to abstract hardware away and present a unified
+> > interface as far as possible.
+>=20
+> Sure, you could create a virtio accelerator driver framework in our
+> new drivers/accel I hear was started. That could make some sense, if
+> we had HW that actually required/benefited from kernel involvement.
+
+The framework is not designed specifically for your card. It tries to be
+generic to support every types of virtio hardware devices, it's not
+tied to any bus (e.g PCI) and any vendor. So it's not only a question
+of how to slice a PCIE ethernet device.
+
+Thanks
+
+>=20
+> Jason
+>=20
+>=20
+
