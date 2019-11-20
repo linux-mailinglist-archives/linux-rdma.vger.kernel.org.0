@@ -2,101 +2,165 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4552910417A
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 17:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4196D104214
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 18:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728462AbfKTQxE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Nov 2019 11:53:04 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:36400 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728314AbfKTQxE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 11:53:04 -0500
-Received: by mail-qv1-f67.google.com with SMTP id cv8so186454qvb.3
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Nov 2019 08:53:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OFGGhPq6BvNyMYQknLW2ICQHPGQUtXRdqVnFI2VHGSI=;
-        b=PJkuJ3WOcSOagcNL5sWyrdv8Yfy8YmvJNeMs53qw1CKiU9pJPJgtfO4YVOTYlWm6lM
-         e9TZPx2mMLMFgz9GVqMktw8qWNzd761whV1R4YjE3uOXrGMpkCueEz2FRWXIfXh9U68q
-         V4soFtyPEgGYaDyk8GapoUQKeYUA3M5vVQTfEDUfHPxiQg5m82YI/KEW/65kElGIAmm2
-         nAdqqly8Rhdmwbk7j005kL0jcMlrGUywRVarzNBp7jJzeef89Qhpq+j4QhASK6MXLR/s
-         zCsFPGbDKglWHMF30ksMYllefH0/glMnbdwR3g7W5YdEa1N1HXnSlPjhcdtq85CY7szs
-         1Nog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OFGGhPq6BvNyMYQknLW2ICQHPGQUtXRdqVnFI2VHGSI=;
-        b=Pm3IdAqAGDtTQgol4c7r5N1hR9FzDlZ6jXwRIKVL66VhmvEdfDaAD+yA4egT98CSTB
-         75CejMiscSGJ2taQLfU18HriShzNdRpInRIlQjKYrH4xl4BDzqnmc9GpdSDb61akiQnr
-         7G/c7ABdVmcag9zu9u1RiwRz5gY8hh7+GiH1QjpkLQAOQR9caluf5r/bkOCBvnIOVPhR
-         59RLMrwCgFzKE0iODWZWyLNTCrc6JH8NVHbEaDX0MSrvHS1AcSgTUxTeX3dSKYe/HAGN
-         PVWbl3lOYdszMQMSqNKNK/VtL/ND5IFMYol1GzuYvASDibw0NWokOKEXcNPQrEDm7tMc
-         MwRQ==
-X-Gm-Message-State: APjAAAUebJR0n4jo7UluV4sX0tea8i2a2OOn1A2F4ySEE8odPItojMz3
-        fDvAiTOkUa/O7VZvpN3eQ8Qvs+XDFHg=
-X-Google-Smtp-Source: APXvYqzwvp+OG4OS4I+OyMWZPElP5WbUvHGKlSzxtIhUw2tkSzInAZNRlThJ4u/qsER6CCghdT7fuw==
-X-Received: by 2002:a0c:802f:: with SMTP id 44mr3421453qva.116.1574268782991;
-        Wed, 20 Nov 2019 08:53:02 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id u22sm14860591qtb.59.2019.11.20.08.53.02
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 20 Nov 2019 08:53:02 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iXTDx-0007sK-Q0; Wed, 20 Nov 2019 12:53:01 -0400
-Date:   Wed, 20 Nov 2019 12:53:01 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Michal Kalderon <michal.kalderon@marvell.com>
-Cc:     ariel.elior@marvell.com, dledford@redhat.com,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/qedr: Add kernel capability flags for dpm
- enabled mode
-Message-ID: <20191120165301.GI22515@ziepe.ca>
-References: <20191120132009.14107-1-michal.kalderon@marvell.com>
+        id S1727998AbfKTR3H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Nov 2019 12:29:07 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20223 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727639AbfKTR3H (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 12:29:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1574270945;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FM5VdnRbXM1pwoUeS+uKGn/v8Dwx+uJBhZdqVHKSqgY=;
+        b=ZZSk8PeDkmCYC3OJMej/fmZe9r1GWZJdBn8hKTpLTJH01C2ZjR1pWIDk4kR6OoU2dcgDoU
+        om32Vz8ydTaNw2/C6HHr2xGw/PT2owUQJmEw4JhmZ/9C7MoteMXvgh5h1XpiTJ7cH0yIkA
+        BsVQWctzgKOwIll1eCWOQf+2GedzoVg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-297-9vHOO7QHO2yHep94Ojfm7w-1; Wed, 20 Nov 2019 12:29:02 -0500
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C1D4107ACE3;
+        Wed, 20 Nov 2019 17:29:00 +0000 (UTC)
+Received: from x1.home (ovpn-116-56.phx2.redhat.com [10.3.116.56])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AF85B19EE3;
+        Wed, 20 Nov 2019 17:28:56 +0000 (UTC)
+Date:   Wed, 20 Nov 2019 10:28:56 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        davem@davemloft.net, gregkh@linuxfoundation.org,
+        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, Kiran Patil <kiran.patil@intel.com>,
+        Tiwei Bie <tiwei.bie@intel.com>
+Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Message-ID: <20191120102856.7e01e2e2@x1.home>
+In-Reply-To: <20191120133835.GC22515@ziepe.ca>
+References: <AM0PR05MB4866C40A177D3D60BFC558F7D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+        <20191119164632.GA4991@ziepe.ca>
+        <20191119134822-mutt-send-email-mst@kernel.org>
+        <20191119191547.GL4991@ziepe.ca>
+        <20191119163147-mutt-send-email-mst@kernel.org>
+        <20191119231023.GN4991@ziepe.ca>
+        <20191119191053-mutt-send-email-mst@kernel.org>
+        <20191120014653.GR4991@ziepe.ca>
+        <134058913.35624136.1574222360435.JavaMail.zimbra@redhat.com>
+        <20191120133835.GC22515@ziepe.ca>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191120132009.14107-1-michal.kalderon@marvell.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MC-Unique: 9vHOO7QHO2yHep94Ojfm7w-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 20, 2019 at 03:20:09PM +0200, Michal Kalderon wrote:
-> diff --git a/include/uapi/rdma/qedr-abi.h b/include/uapi/rdma/qedr-abi.h
-> index c022ee26089b..a0b83c9d4498 100644
-> +++ b/include/uapi/rdma/qedr-abi.h
-> @@ -48,6 +48,18 @@ struct qedr_alloc_ucontext_req {
->  	__u32 reserved;
->  };
->  
-> +#define QEDR_LDPM_MAX_SIZE	(8192)
-> +#define QEDR_EDPM_TRANS_SIZE	(64)
-> +
-> +enum qedr_rdma_dpm_type {
-> +	QEDR_DPM_TYPE_NONE		= 0,
-> +	QEDR_DPM_TYPE_ROCE_ENHANCED	= 1 << 0,
-> +	QEDR_DPM_TYPE_ROCE_LEGACY	= 1 << 1,
-> +	QEDR_DPM_TYPE_IWARP_LEGACY	= 1 << 2,
-> +	QEDR_DPM_TYPE_RESERVED		= 1 << 3,
-> +	QEDR_DPM_SIZES_SET		= 1 << 4,
-> +};
-> +
->  struct qedr_alloc_ucontext_resp {
->  	__aligned_u64 db_pa;
->  	__u32 db_size;
-> @@ -59,10 +71,12 @@ struct qedr_alloc_ucontext_resp {
->  	__u32 sges_per_recv_wr;
->  	__u32 sges_per_srq_wr;
->  	__u32 max_cqes;
-> -	__u8 dpm_enabled;
-> +	__u8 dpm_flags;
+On Wed, 20 Nov 2019 09:38:35 -0400
+Jason Gunthorpe <jgg@ziepe.ca> wrote:
 
-Is this redefinition backwards compatible with old user space?
-That should be described in the commit message
+> On Tue, Nov 19, 2019 at 10:59:20PM -0500, Jason Wang wrote:
+>=20
+> > > > The interface between vfio and userspace is
+> > > > based on virtio which is IMHO much better than
+> > > > a vendor specific one. userspace stays vendor agnostic. =20
+> > >=20
+> > > Why is that even a good thing? It is much easier to provide drivers
+> > > via qemu/etc in user space then it is to make kernel upgrades. We've
+> > > learned this lesson many times. =20
+> >=20
+> > For upgrades, since we had a unified interface. It could be done
+> > through:
+> >=20
+> > 1) switch the datapath from hardware to software (e.g vhost)
+> > 2) unload and load the driver
+> > 3) switch teh datapath back
+> >=20
+> > Having drivers in user space have other issues, there're a lot of
+> > customers want to stick to kernel drivers. =20
+>=20
+> So you want to support upgrade of kernel modules, but runtime
+> upgrading the userspace part is impossible? Seems very strange to me.
+>=20
+> > > This is why we have had the philosophy that if it doesn't need to be
+> > > in the kernel it should be in userspace. =20
+> >=20
+> > Let me clarify again. For this framework, it aims to support both
+> > kernel driver and userspce driver. For this series, it only contains
+> > the kernel driver part. What it did is to allow kernel virtio driver
+> > to control vDPA devices. Then we can provide a unified interface for
+> > all of the VM, containers and bare metal. For this use case, I don't
+> > see a way to leave the driver in userspace other than injecting
+> > traffic back through vhost/TAP which is ugly. =20
+>=20
+> Binding to the other kernel virtio drivers is a reasonable
+> justification, but none of this comes through in the patch cover
+> letters or patch commit messages.
+>=20
+> > > > That has lots of security and portability implications and isn't
+> > > > appropriate for everyone. =20
+> > >=20
+> > > This is already using vfio. It doesn't make sense to claim that using
+> > > vfio properly is somehow less secure or less portable.
+> > >=20
+> > > What I find particularly ugly is that this 'IFC VF NIC' driver
+> > > pretends to be a mediated vfio device, but actually bypasses all the
+> > > mediated device ops for managing dma security and just directly plugs
+> > > the system IOMMU for the underlying PCI device into vfio. =20
+> >=20
+> > Well, VFIO have multiple types of API. The design is to stick the VFIO
+> > DMA model like container work for making DMA API work for userspace
+> > driver. =20
+>=20
+> Well, it doesn't, that model, for security, is predicated on vfio
+> being the exclusive owner of the device. For instance if the kernel
+> driver were to perform DMA as well then security would be lost.
+>=20
+> > > I suppose this little hack is what is motivating this abuse of vfio i=
+n
+> > > the first place?
+> > >=20
+> > > Frankly I think a kernel driver touching a PCI function for which vfi=
+o
+> > > is now controlling the system iommu for is a violation of the securit=
+y
+> > > model, and I'm very surprised AlexW didn't NAK this idea.
+> > >
+> > > Perhaps it is because none of the patches actually describe how the
+> > > DMA security model for this so-called mediated device works? :(
+> > >
+> > > Or perhaps it is because this submission is split up so much it is
+> > > hard to see what is being proposed? (I note this IFC driver is the
+> > > first user of the mdev_set_iommu_device() function) =20
+> >=20
+> > Are you objecting the mdev_set_iommu_deivce() stuffs here? =20
+>=20
+> I'm questioning if it fits the vfio PCI device security model, yes.
 
-Jason
+The mdev IOMMU backing device model is for when an mdev device has
+IOMMU based isolation, either via the PCI requester ID or via requester
+ID + PASID.  For example, an SR-IOV VF may be used by a vendor to
+provide IOMMU based translation and isolation, but the VF may not be
+complete otherwise to provide a self contained device.  It might
+require explicit coordination and interaction with the PF driver, ie.
+mediation.  The IOMMU backing device is certainly not meant to share an
+IOMMU address space with host drivers, except as necessary for the
+mediation of the device.  The vfio model manages the IOMMU domain of
+the backing device exclusively, any attempt to dual-host the device
+respective to the IOMMU should fault in the dma/iommu-ops.  Thanks,
+
+Alex
+
