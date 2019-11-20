@@ -2,175 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CABC103DD0
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 15:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E24104090
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 17:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731102AbfKTO5a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Nov 2019 09:57:30 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20393 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731086AbfKTO5a (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 09:57:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574261848;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/e2L4fQWIbJeH29Bf8OxPRM2k6SA+48XsmsKWLAdNU8=;
-        b=DaTCOZ0T7avormhKmjfK8toj9qw7OqE5l57WwZcYMaTZM8U45hBzfSw1rQHOG+CI1UJNXu
-        iycay0agqDfqzXOM/dLU/SMF9u1oM0cOJExXR0FK6DMHVOXH+qjvSkB1tmZKW0KFJEaMCp
-        4YWJHEvT8OJD3vGYjOuWYPCh+dIlVLc=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-253-CBY8F25_OHm0SUoLOjLsfg-1; Wed, 20 Nov 2019 09:57:25 -0500
-Received: by mail-qk1-f198.google.com with SMTP id a13so15952867qkc.17
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Nov 2019 06:57:25 -0800 (PST)
+        id S1732730AbfKTQSe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Nov 2019 11:18:34 -0500
+Received: from mail-io1-f65.google.com ([209.85.166.65]:45767 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728972AbfKTQSe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 11:18:34 -0500
+Received: by mail-io1-f65.google.com with SMTP id v17so17130657iol.12
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Nov 2019 08:18:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kBQeDuj+IEqzHWWtY/8voXPAUZm2RrCLLc7o4EUzybo=;
+        b=Dx+c5L5bWBx167SQ4SDS5vpoqVcAb9YKFBektAFg1Oj3zLIGcvq4uqvGf+v5oDuMKf
+         W/9NTIDTsJ7J5kNK+41MN5TQBEjHnxF6m4nALDmESklEc6KvdExEzZEsaBCnbC4EuHxt
+         VgisfogzYTE37Opek+l0k7KRrwaG/g9NlgDuE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WqDORYpJqHQ9F17SzT1sEQBjLsrWPnppxBhytxuFIy4=;
-        b=s4HUE/jDs20zxLMKgt2mP/D3nEhbv40rwo+zTYNKZMCmBHirmtL5sxX2tR6LWmL9ua
-         CB1IzFnHoApjPAtHZv8SKuww7J17ZAji/ZJRYY+JxyA1EqDpXb+55q7T1X4SlqhvcM4b
-         y+Z6cnV5p/K45tGW35U/gTt+rLmYJR4f8LjKzYKi+fmuNz86IqkaKFQvZLSF7FGqYHsd
-         KCcKQO4ffJRtscNvuFyENv2AtpY2rtrliCu+A2bHagZN5JVhTTIYD7xW4zILMIIQJIim
-         CvkWlqUXwuioj3VnAkrf/pZNDR7mjSMEnNkgGsySOhSOH+SqAqPiePZX0fgsgWhKhTOQ
-         1rvQ==
-X-Gm-Message-State: APjAAAWwjh83y9qR8kez789yxJi+xmuq4H4r138/MnIlO31993K93MMh
-        azIrexg4/vcAiANMd4ic9tcGDK/mSwCtLUrAN+hy4L8m7U9q3lm6HeQ7384B+tHRGMeKw+ELTFa
-        gBzo9VS6SJ/e9pzX/7B2N1g==
-X-Received: by 2002:a37:6643:: with SMTP id a64mr2892523qkc.144.1574261845189;
-        Wed, 20 Nov 2019 06:57:25 -0800 (PST)
-X-Google-Smtp-Source: APXvYqw6JJ9cNfodNG4pgBosP1ZHICUrPMUHOY0gwifDWTQqZF970JqUvdyeDoC863pJc6/AhmD/xw==
-X-Received: by 2002:a37:6643:: with SMTP id a64mr2892489qkc.144.1574261844817;
-        Wed, 20 Nov 2019 06:57:24 -0800 (PST)
-Received: from redhat.com (bzq-79-176-6-42.red.bezeqint.net. [79.176.6.42])
-        by smtp.gmail.com with ESMTPSA id z3sm14404597qtu.83.2019.11.20.06.57.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Nov 2019 06:57:23 -0800 (PST)
-Date:   Wed, 20 Nov 2019 09:57:17 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Bie, Tiwei" <tiwei.bie@intel.com>
-Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
-Message-ID: <20191120093607-mutt-send-email-mst@kernel.org>
-References: <20191119134822-mutt-send-email-mst@kernel.org>
- <20191119191547.GL4991@ziepe.ca>
- <20191119163147-mutt-send-email-mst@kernel.org>
- <20191119231023.GN4991@ziepe.ca>
- <20191119191053-mutt-send-email-mst@kernel.org>
- <20191120014653.GR4991@ziepe.ca>
- <20191120022141-mutt-send-email-mst@kernel.org>
- <20191120130319.GA22515@ziepe.ca>
- <20191120083908-mutt-send-email-mst@kernel.org>
- <20191120143054.GF22515@ziepe.ca>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kBQeDuj+IEqzHWWtY/8voXPAUZm2RrCLLc7o4EUzybo=;
+        b=Buf7ylycxBo3XiKRiY4btdLV8rUddoYEN1KPrIUWEJAjdLhxRYnxwnn2OGgK89bfQn
+         seygwQUNH/EN9tdKFF15ITSLA7L9kHft+h3nmyX40CsDjAoQp86IJpP4evDQB+iyrCt5
+         UnF789mYWzF9eqGz3oY8YNIRb1s39LJ9Ra8dmg/7+oSPrJbY6v3E5dCaGAGwM+Dfdhga
+         +fJA5A5h761u95IuVimlp1hLGuH38ywDYw6sRWU/5mZ+L9HJb1S9OlS+sq9VTB190IM+
+         vFUu0OhvlYhmCN5V8AktRAgBb877E9lpF4aRirS3WOg0sKE8TgRkBsHEZiSX4mP3p1Wl
+         kJhA==
+X-Gm-Message-State: APjAAAVMD2CJ2L3K69jdtuSvrL3J6eCD1jSJYWx5Q7tTDX+mHz3Yer2/
+        pBT8C3lyIPg8lpwLldb8TMCOiWrqOs9C5SXPiI5o+sPY
+X-Google-Smtp-Source: APXvYqxUeuoVVyDPHkDgCWS1UIKmua3iTJ1gvBd2tNpkFM2lhvFTWTy4v8PCUOl69WSLFJkxfEn9doejbKUuVgZ/96c=
+X-Received: by 2002:a02:601a:: with SMTP id i26mr6556jac.50.1574266711963;
+ Wed, 20 Nov 2019 08:18:31 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191120143054.GF22515@ziepe.ca>
-X-MC-Unique: CBY8F25_OHm0SUoLOjLsfg-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+References: <1574178531-15898-1-git-send-email-devesh.sharma@broadcom.com>
+ <20191119193809.GG4967@mellanox.com> <CANjDDBg_xUZYirF=zuA7Yn8od4+qzvv3mwKrxRj7Sd3Xx7MX-w@mail.gmail.com>
+ <20191120133219.GB22466@mellanox.com>
+In-Reply-To: <20191120133219.GB22466@mellanox.com>
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+Date:   Wed, 20 Nov 2019 21:47:55 +0530
+Message-ID: <CANjDDBiMuL9Sj778=fKWsHPVXOxuemOWG+P-Xg+fDeDtDDqcPw@mail.gmail.com>
+Subject: Re: [PATCH for-rc 0/3] Broadcom's roce dirver bug fixes
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 20, 2019 at 10:30:54AM -0400, Jason Gunthorpe wrote:
-> On Wed, Nov 20, 2019 at 08:43:20AM -0500, Michael S. Tsirkin wrote:
-> > On Wed, Nov 20, 2019 at 09:03:19AM -0400, Jason Gunthorpe wrote:
-> > > On Wed, Nov 20, 2019 at 02:38:08AM -0500, Michael S. Tsirkin wrote:
-> > > > > > I don't think that extends as far as actively encouraging users=
-pace
-> > > > > > drivers poking at hardware in a vendor specific way. =20
-> > > > >=20
-> > > > > Yes, it does, if you can implement your user space requirements u=
-sing
-> > > > > vfio then why do you need a kernel driver?
-> > > >=20
-> > > > People's requirements differ. You are happy with just pass through =
-a VF
-> > > > you can already use it. Case closed. There are enough people who ha=
-ve
-> > > > a fixed userspace that people have built virtio accelerators,
-> > > > now there's value in supporting that, and a vendor specific
-> > > > userspace blob is not supporting that requirement.
-> > >=20
-> > > I have no idea what you are trying to explain here. I'm not advocatin=
-g
-> > > for vfio pass through.
-> >=20
-> > You seem to come from an RDMA background, used to userspace linking to
-> > vendor libraries to do basic things like push bits out on the network,
-> > because users live on the performance edge and rebuild their
-> > userspace often anyway.
-> >=20
-> > Lots of people are not like that, they would rather have the
-> > vendor-specific driver live in the kernel, with userspace being
-> > portable, thank you very much.
->=20
-> You are actually proposing a very RDMA like approach with a split
-> kernel/user driver design. Maybe the virtio user driver will turn out
-> to be 'portable'.
->=20
-> Based on the last 20 years of experience, the kernel component has
-> proven to be the larger burden and drag than the userspace part. I
-> think the high interest in DPDK, SPDK and others show this is a common
-> principle.
-
-And I guess the interest in BPF shows the opposite?
-I don't see how this kind of argument proves anything.  DPDK/SPDK are
-written by a group of developers who care about raw speed and nothing
-else. I guess in that setting you want a userspace driver. I know you
-work for a hardware company so to you it looks like that's all people
-care about.  More power to you, but that need seems to be
-addressed by dpdk.
-But lots of people would rather have e.g. better security
-than a 0.1% faster networking.
-
-> At the very least for new approaches like this it makes alot of sense
-> to have a user space driver until enough HW is available that a
-> proper, well thought out kernel side can be built.
-
-But hardware is available, driver has been posted by Intel.
-Have you looked at that?
-
-So I am not sure it's a good idea to discuss whether code is "proper" or
-"so-called", that just does not sound like constructive criticism.
-And I think it might be helpful if you look at the code and provide
-comments, so far your comments are just on the cover letter and commit
-logs. If you look at that you might find your answer to why Alex did not
-nak this.
-
-> For instance, this VFIO based approach might be very suitable to the
-> intel VF based ICF driver, but we don't yet have an example of non-VF
-> HW that might not be well suited to VFIO.
->=20
+On Wed, Nov 20, 2019 at 7:02 PM Jason Gunthorpe <jgg@mellanox.com> wrote:
+>
+> On Wed, Nov 20, 2019 at 10:52:01AM +0530, Devesh Sharma wrote:
+> > On Wed, Nov 20, 2019 at 1:08 AM Jason Gunthorpe <jgg@mellanox.com> wrote:
+> > >
+> > > On Tue, Nov 19, 2019 at 10:48:48AM -0500, Devesh Sharma wrote:
+> > > > This series contain 3 patches patch 1 and patch 2 are specific to
+> > > > Gen P5 devices. Patch 3 is a generic fix to silence few sparse
+> > > > warnings.
+> > >
+> > > These commit messages are not suitable for -rc, and a sparse warning
+> > > fix is rarely appropriate
+> > >
+> > > You need to describe what the user impact is of these bugs.
+> > >
+> > > -rc is done anyhow unless something urgent comes up.
+> > Got your point. Let's drop sparse fixes patch from this series.
+>
+> Why? it can go to -next, like I said, there won't be another -rc
+Yup, it can certainly go.
+>
+> > For first patch the impact catastrophic as consumer wont be able to use the
+> > cards as it won't be listed the dev_list.
+>
+> Supporting a new card is a new feature, not -rc material
+Alright, I shall move the series to for-next and add back the sparse
+warning fix. Please ignore V2 which have posted already.
+>
 > Jason
-
-I don't think we should keep moving the goalposts like this.
-
-If people write drivers and find some infrastruture useful,
-and it looks more or less generic on the outset, then I don't
-see why it's a bad idea to merge it.
-
-*We don't want to decide how to support this hardware, write a userspace dr=
-iver*
-isn't a reasonable approach IMHO.
-
---=20
-MST
-
