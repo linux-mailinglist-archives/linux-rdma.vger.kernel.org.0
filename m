@@ -2,97 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 247DB1033F0
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 06:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E5210343F
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 07:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726044AbfKTFgl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Nov 2019 00:36:41 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25847 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725832AbfKTFgl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 00:36:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574228199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=knznamAEiTfG9nRki0ZkB5/yRqneVEsD5AOtQiV05Uk=;
-        b=GQ04AGt0HfWZv9EINlhOuHDucUzO4CRVGDESO2KMqZ0oLxLRomPPw1z8ErHUmS8vOMUhJ9
-        c/mi45sUIw2gXbLfUl0j0NaAKjKmQIxZrCPz0hVoAhP9OLuLFBSTvu7WuLx/my4+6bDLVj
-        nZ89UEQ8gHLnwX688v/d+2E9pkKSR/k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-162-rr-kAgRyNyeLrJBfzRHjFw-1; Wed, 20 Nov 2019 00:36:36 -0500
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 09F91800052;
-        Wed, 20 Nov 2019 05:36:35 +0000 (UTC)
-Received: from [10.72.12.82] (ovpn-12-82.pek2.redhat.com [10.72.12.82])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 817EA60BFB;
-        Wed, 20 Nov 2019 05:35:24 +0000 (UTC)
-Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
-From:   Jason Wang <jasowang@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        davem@davemloft.net, gregkh@linuxfoundation.org,
-        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, Kiran Patil <kiran.patil@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Tiwei Bie <tiwei.bie@intel.com>
-References: <AM0PR05MB4866C40A177D3D60BFC558F7D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <20191119164632.GA4991@ziepe.ca>
- <20191119134822-mutt-send-email-mst@kernel.org>
- <20191119191547.GL4991@ziepe.ca>
- <20191119163147-mutt-send-email-mst@kernel.org>
- <20191119231023.GN4991@ziepe.ca>
- <20191119191053-mutt-send-email-mst@kernel.org>
- <20191120014653.GR4991@ziepe.ca>
- <134058913.35624136.1574222360435.JavaMail.zimbra@redhat.com>
-Message-ID: <3ef5bc09-dd74-44bc-30f1-b773fac448a2@redhat.com>
-Date:   Wed, 20 Nov 2019 13:34:51 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <134058913.35624136.1574222360435.JavaMail.zimbra@redhat.com>
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-MC-Unique: rr-kAgRyNyeLrJBfzRHjFw-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+        id S1727303AbfKTGUb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Nov 2019 01:20:31 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:56127 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725832AbfKTGUb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 01:20:31 -0500
+Received: by mail-wm1-f65.google.com with SMTP id b11so5686715wmb.5
+        for <linux-rdma@vger.kernel.org>; Tue, 19 Nov 2019 22:20:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=V5Z7rMtfH/Ud14ZS0lwM/6hxRu9Guu+XhxgsWYgmhko=;
+        b=MqZMFDLucnb9F3ggb8efT3zM4ulJCHvY9KiCr4mGOHrxcxPcJ99KI9Ix00u6zpt3z1
+         tLFkd7IjuoGu6Lfyga8mlJlsihBytjzOefY+eBr7Nmut85/BxLPD8dYNOn+aeqw0rH38
+         Vy0pR5j+O7RIRJjARUPeR3F/3lJhrVLG26j8M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=V5Z7rMtfH/Ud14ZS0lwM/6hxRu9Guu+XhxgsWYgmhko=;
+        b=sasW273hAY4B51Ot3r009QT7B31Mi09/3+eMhFHFmVfd7HQXMLfDpbGkqE5ixDq3a3
+         r2NO7gPUoy7VImF216FcojfZfyX//VGbatWMYFuuFb2KWDsSHS2vEzpCG+b3lljv1TAy
+         r/fEZF/zbR4xtDX1bx7Iqw0CMhXAQ0DBCCM45n8gpC2PIURb7naHpOQ/8FlGKhM5zm3z
+         vXOhZyjSXFnmZ85Y2v/2dZek0lmI8FCuJWFX8dnnrk1vcpRvYLruhZ5aG4GwPBXIkjSg
+         46IcuA+IidATNtZkEOopYX5UrRK7FzYZ+bFEmgBN5iqJndgC3+UiYzyqvd/RXyrKVHB3
+         ZHmg==
+X-Gm-Message-State: APjAAAVU+oF6/at5HXIznWie5bcd7KVBqy7Sn7F9GVDrZi+qY/7nNnF7
+        8p/OICvbvu7lRd06pcpCwsng8w==
+X-Google-Smtp-Source: APXvYqxH7lvipbR5JGuMPqC1QNz2Knu2PIkXr+yBpmT5v5elTTN5Q1Y6x2mpWb9buLZi7T+9MAQM6w==
+X-Received: by 2002:a1c:4606:: with SMTP id t6mr1123097wma.73.1574230829275;
+        Tue, 19 Nov 2019 22:20:29 -0800 (PST)
+Received: from neo00-el73.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id j7sm32466705wro.54.2019.11.19.22.20.26
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 19 Nov 2019 22:20:28 -0800 (PST)
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+To:     dledford@redhat.com, jgg@mellanox.com
+Cc:     linux-rdma@vger.kernel.org,
+        Devesh Sharma <devesh.sharma@broadcom.com>
+Subject: [PATCH V2 for-rc 0/2] Broadcom's roce driver bug fixes
+Date:   Wed, 20 Nov 2019 01:20:16 -0500
+Message-Id: <1574230818-30295-1-git-send-email-devesh.sharma@broadcom.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+This submission for for-rc branch contains 2 patches, both the
+patches are important urgent fixes for Gen P5 device. The first
+patch deals with device detection in device open. While second 
+patch fixes hardware counters.
 
-On 2019/11/20 =E4=B8=8A=E5=8D=8811:59, Jason Wang wrote:
-> Well, VFIO have multiple types of API. The design is to stick the VFIO
-> DMA model like container work for making DMA API work for userspace
-> driver. We can invent something our own but it must duplicate with the
-> exist API and it will be extra overhead when VFIO DMA API starts to
-> support stuffs like nesting or PASID.
->
-> So in conclusion for vhost-mdev:
->
-> - DMA is still done through VFIO manner e.g container fd etc.
-> - device API is totally virtio specific.
->
-> Compared with vfio-pci device, the only difference is the device API,
-> we don't use device fd but vhost-net fd,
+changes from V1 to V2
+ - dropped patch related to sparse warnings.
+ - updated patch description to report the motivation
+   for submission to for-rc branch.
 
+changes for V0 to V1
+ - originally this series had only 1 patch which is the first patch.
+ - Added Fixes tag on the first patch.
+ - added two more patches to fix other quick bug fixes.
 
-Correction here, device fd is used here instead of vhost-net fd.
+Devesh Sharma (1):
+  RDMA/bnxt_re: fix stat push into dma buffer on gen p5      devices
 
-Thanks
+Luke Starrett (1):
+  RDMA/bnxt_re: Fix chip number validation Broadcom's Gen P5 series
 
+ drivers/infiniband/hw/bnxt_re/main.c      | 1 +
+ drivers/infiniband/hw/bnxt_re/qplib_res.h | 8 ++++++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
->   but of course we can switch
-> to use device fd. I'm sure we can settle this part down by having a
-> way that is acceptable by both sides.
+-- 
+1.8.3.1
 
