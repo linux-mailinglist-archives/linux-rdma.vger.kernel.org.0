@@ -2,103 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AED2103AA0
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 14:03:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 380CD103B34
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 14:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728654AbfKTNDW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Nov 2019 08:03:22 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:45363 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728585AbfKTNDW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 08:03:22 -0500
-Received: by mail-qk1-f196.google.com with SMTP id q70so21105627qke.12
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Nov 2019 05:03:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2iApCzjf1i0i8p6WofoOUizgrWbsRLbQ/wv4IGhkU0A=;
-        b=m/VMHG+uRCb3VVp1GM0DQ5XsVo2Qh25ThKGP0SitRfdu0jAo8zb18pKiolOeM7PEl3
-         Ark8M2kJf6n9+eYppMkXnO4jPHfMbN0yhF4RJRCrdaoczNceWxH02iGYuJ9RLD7l3M62
-         DSQAat/pbzLFW4HpECk1fbrIfr9CG7mwq57BeOIc/cdizT350uxVUoKsC6UCJM2pEqK8
-         oe4LDYHlRPliRchk2SlinyZjnoAAlb9wcnExU/LGYFhNXEKOotYDaKeLh1GA9YHdBOCF
-         6e3AAEPF6mzw0Y9KHaacx2N4myjmoGasSbXjGHUIUeFjK5vzTbNz33zAfoYtom8XiwS8
-         XgWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2iApCzjf1i0i8p6WofoOUizgrWbsRLbQ/wv4IGhkU0A=;
-        b=mg0iMDFZWsrdUugSZPDdL4n2JRFhQMJppfUvAq+Hj8WdbGgAaYJn1/PVKJj5WT+f7b
-         JUVfbzUZnjSfHTnvyX/8NCIMV8td5IgQWtlw7aW0w5x0iaK6hO7/SyMvVK6xZyq13nzt
-         ZFKgyGjkH3QgsWRb3wvWqgVxqaKxjnAERCHTFCDvwWnte0M604KIvJmv/o8HGOLhSsQH
-         5Urdtz3ljILPkO/ovWlaMYnUcrDtM9q79OELyMf3GOETF+aZjyRaWJW49OWvX7UE8JXR
-         vIygywDw28VLHETUP9fyxPV4HsG1F3BvBZMairK68NVudART3x/pH+aLBC3xjFt8UkiR
-         DSTA==
-X-Gm-Message-State: APjAAAXHnVMtDS2uCBZmH/1pJ+1iY/49sanUeXO1d5TAsyw48XnvXXND
-        cBTTQLHKiFtdg4sfcIAkbM2h7w==
-X-Google-Smtp-Source: APXvYqygO70Cv/t+j9/8s9HBurSMwIFonOfaFlMMFysL0d9D4NFlxgF/aCweEzaUW2xMpjMWb2TPgA==
-X-Received: by 2002:a05:620a:12a3:: with SMTP id x3mr2191656qki.336.1574255000938;
-        Wed, 20 Nov 2019 05:03:20 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id l198sm11808585qke.70.2019.11.20.05.03.19
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 20 Nov 2019 05:03:20 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iXPdf-00062Y-D3; Wed, 20 Nov 2019 09:03:19 -0400
-Date:   Wed, 20 Nov 2019 09:03:19 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        Kiran Patil <kiran.patil@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Bie, Tiwei" <tiwei.bie@intel.com>
-Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
-Message-ID: <20191120130319.GA22515@ziepe.ca>
-References: <AM0PR05MB486685F7C839AD8A5F3EEA91D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <ead356f5-db81-cb01-0d74-b9e34965a20f@redhat.com>
- <20191119164632.GA4991@ziepe.ca>
- <20191119134822-mutt-send-email-mst@kernel.org>
- <20191119191547.GL4991@ziepe.ca>
- <20191119163147-mutt-send-email-mst@kernel.org>
- <20191119231023.GN4991@ziepe.ca>
- <20191119191053-mutt-send-email-mst@kernel.org>
- <20191120014653.GR4991@ziepe.ca>
- <20191120022141-mutt-send-email-mst@kernel.org>
+        id S1730493AbfKTNXI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Nov 2019 08:23:08 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:48440 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730146AbfKTNXH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 20 Nov 2019 08:23:07 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAKDLUOb000412;
+        Wed, 20 Nov 2019 05:23:03 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0818;
+ bh=I8WotPkBXAy/27+KakBfYjKQw40op12FsfifnddDoKk=;
+ b=UuKcAcuH4nk4XxLBAkhFs/jOw1z4u6nMbaXemG8o6LdSGTlcEKpJF8dVqN9slQdI1DNk
+ LpTzq3JkRq7ZRsFzZqb/3hAuKu7+7osOPiMcdMBvaujP6+FKPp8BrWtNLjSy5Dcr++H6
+ dyekKy8KXmombwUeAS8dgmm+xKvkZPcY0APMZae8uCQrXqMLViFhLyY22iCIkn2YBCra
+ qL7iJD5i3t9FkGBv1yvjtuciRaRnKT5eJYiqmEu8s+rfslJtP6cnVMV9lNl/Pwl6xHd2
+ hq5eGdU9ws1ac6ub0EDgc6GAD0TOM0UgByXLkfXjxPJChWYzm9mB3qbg7rIvC2MhMHDS Uw== 
+Received: from sc-exch01.marvell.com ([199.233.58.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 2wd090sgk9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 20 Nov 2019 05:23:02 -0800
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Wed, 20 Nov
+ 2019 05:23:01 -0800
+Received: from maili.marvell.com (10.93.176.43) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
+ Transport; Wed, 20 Nov 2019 05:23:01 -0800
+Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
+        by maili.marvell.com (Postfix) with ESMTP id AEA3B3F703F;
+        Wed, 20 Nov 2019 05:22:59 -0800 (PST)
+From:   Michal Kalderon <michal.kalderon@marvell.com>
+To:     <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
+        <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>
+Subject: [PATCH rdma-next] RDMA/qedr: Add kernel capability flags for dpm enabled mode
+Date:   Wed, 20 Nov 2019 15:20:09 +0200
+Message-ID: <20191120132009.14107-1-michal.kalderon@marvell.com>
+X-Mailer: git-send-email 2.14.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191120022141-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-11-20_03:2019-11-15,2019-11-20 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 20, 2019 at 02:38:08AM -0500, Michael S. Tsirkin wrote:
-> > > I don't think that extends as far as actively encouraging userspace
-> > > drivers poking at hardware in a vendor specific way.  
-> > 
-> > Yes, it does, if you can implement your user space requirements using
-> > vfio then why do you need a kernel driver?
-> 
-> People's requirements differ. You are happy with just pass through a VF
-> you can already use it. Case closed. There are enough people who have
-> a fixed userspace that people have built virtio accelerators,
-> now there's value in supporting that, and a vendor specific
-> userspace blob is not supporting that requirement.
+HW/FW support two types of latency enhancement features.
+Until now user-space implemented only edpm (enhanced dpm).
+We add kernel capability flags to differentiate between current
+FW in kernel that supports both ldpm and edpm.
+Since edpm is not yet supported for iWARP we add different flags
+for iWARP + RoCE.
+We also fix bad practice of defining sizes in rdma-core and pass
+initialization to kernel, for forward compatibility.
 
-I have no idea what you are trying to explain here. I'm not advocating
-for vfio pass through.
+The capability flags are added for backward-forward compatibility
+between kernel and rdma-core for qedr.
 
-Jason
+Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+---
+rdma-core changes in pr #622 https://github.com/linux-rdma/rdma-core/pull/622
+---
+ drivers/infiniband/hw/qedr/verbs.c | 13 ++++++++++++-
+ include/uapi/rdma/qedr-abi.h       | 18 ++++++++++++++++--
+ 2 files changed, 28 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+index 8096b8fcab4e..54cce8969594 100644
+--- a/drivers/infiniband/hw/qedr/verbs.c
++++ b/drivers/infiniband/hw/qedr/verbs.c
+@@ -312,7 +312,18 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
+ 	}
+ 	ctx->db_mmap_entry = &entry->rdma_entry;
+ 
+-	uresp.dpm_enabled = dev->user_dpm_enabled;
++	if (!dev->user_dpm_enabled)
++		uresp.dpm_flags = 0;
++	else if (rdma_protocol_iwarp(&dev->ibdev, 1))
++		uresp.dpm_flags = QEDR_DPM_TYPE_IWARP_LEGACY;
++	else
++		uresp.dpm_flags = QEDR_DPM_TYPE_ROCE_ENHANCED |
++				  QEDR_DPM_TYPE_ROCE_LEGACY;
++
++	uresp.dpm_flags |= QEDR_DPM_SIZES_SET;
++	uresp.ldpm_limit_size = QEDR_LDPM_MAX_SIZE;
++	uresp.edpm_trans_size = QEDR_EDPM_TRANS_SIZE;
++
+ 	uresp.wids_enabled = 1;
+ 	uresp.wid_count = oparams.wid_count;
+ 	uresp.db_pa = rdma_user_mmap_get_offset(ctx->db_mmap_entry);
+diff --git a/include/uapi/rdma/qedr-abi.h b/include/uapi/rdma/qedr-abi.h
+index c022ee26089b..a0b83c9d4498 100644
+--- a/include/uapi/rdma/qedr-abi.h
++++ b/include/uapi/rdma/qedr-abi.h
+@@ -48,6 +48,18 @@ struct qedr_alloc_ucontext_req {
+ 	__u32 reserved;
+ };
+ 
++#define QEDR_LDPM_MAX_SIZE	(8192)
++#define QEDR_EDPM_TRANS_SIZE	(64)
++
++enum qedr_rdma_dpm_type {
++	QEDR_DPM_TYPE_NONE		= 0,
++	QEDR_DPM_TYPE_ROCE_ENHANCED	= 1 << 0,
++	QEDR_DPM_TYPE_ROCE_LEGACY	= 1 << 1,
++	QEDR_DPM_TYPE_IWARP_LEGACY	= 1 << 2,
++	QEDR_DPM_TYPE_RESERVED		= 1 << 3,
++	QEDR_DPM_SIZES_SET		= 1 << 4,
++};
++
+ struct qedr_alloc_ucontext_resp {
+ 	__aligned_u64 db_pa;
+ 	__u32 db_size;
+@@ -59,10 +71,12 @@ struct qedr_alloc_ucontext_resp {
+ 	__u32 sges_per_recv_wr;
+ 	__u32 sges_per_srq_wr;
+ 	__u32 max_cqes;
+-	__u8 dpm_enabled;
++	__u8 dpm_flags;
+ 	__u8 wids_enabled;
+ 	__u16 wid_count;
+-	__u32 reserved;
++	__u16 ldpm_limit_size;
++	__u8 edpm_trans_size;
++	__u8 reserved;
+ };
+ 
+ struct qedr_alloc_pd_ureq {
+-- 
+2.14.5
+
