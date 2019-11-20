@@ -2,270 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C690E104665
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 23:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD53A1046A8
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 23:39:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbfKTWWk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Nov 2019 17:22:40 -0500
-Received: from mail-eopbgr10048.outbound.protection.outlook.com ([40.107.1.48]:31714
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        id S1725878AbfKTWjU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Nov 2019 17:39:20 -0500
+Received: from mail-eopbgr70043.outbound.protection.outlook.com ([40.107.7.43]:45285
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725878AbfKTWWj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 20 Nov 2019 17:22:39 -0500
+        id S1725820AbfKTWjT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 20 Nov 2019 17:39:19 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RXLZ1iIoIstpv7SUWQpgr8Xi+WTCtESzP33YTrkpZalEZUgvKfxCQ6VIQdre85buDpasaHaDGT8aaSKwdai6Gv2dBj+xcUatU/oiUUKDb0naRcUMsWXh5QosjeMkqAUjxPv764XsdRdPNt13rcsAWRAF4xCTQAu1phv3qbZTovp3N4J2qoQMpRa/cIb4/g9AKRMiUtct6Ux6bc98l6RZorWPx6RYfs5Iryvb7HkPOhW2pXO6UbS0IH+ocWSVBK95EN9xbEYzlJ0C9a0fglh5SOR16xjohBiMyUXBUhf1HfMWBKxVBKyYBUepMFgEf1177JsgvJkEp9jPAKaoVPiL8w==
+ b=Jsg505b0ztZKQJpB+3mXKkSMCUHZqdqf9o8+PoTsft2NYNM3piX+rJpNQloYGr+29/wH9M34COJnIHzyw6xeeLpYXfGLJ0u9NyIXsuGdL7IETI11siaZJvcTuaIXWfoWydTBJ7p28yvVLK3pRmjHkpgZS6KABe30YAwvUPUogpfRkqg27jtVOxNu94jYWuX/sC8z9N56mYujf7/fReJIdk9pcNJ8bEJGrIcgMfZHW3zY3PL8t8rgR9j9wXswmOLPPqfilmmK2DtoWBHGBkDTtuMLlHokFo8ZOvu4RuwFgozeRF8cEG/cBzeDDlmQ5elRauOIGYAr3VanHMxnO3PFRA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s5v3Pmxv0dSIn9wGEsp8rSgJZG5V1DohEXKE1lHJ/Tg=;
- b=HB3nU+epv/2xXbPUEbskjFkX7gSDrPegPTCJI6alDcKKVAfJvQf7+YfaDbvaD6eUu2uWr1Yt5rpEwRv6y5GRh9mUpHN9up1aBnBMfhepa9wnZ2qziy5xdoJ5mf5ltuvAzy/Sq9bu3CSj9mn43D5F41rSxTRo7UkMlGLFVYiUF92Gm+3y9kn5DhcDH7dmIssJRmE5xvqWjaTARcBd1/VmH/2g+pVeA1z9u383rv/2AAz/ZcTIhLN1V1mZhKGRwM72Srr/s6QhG0jYEmgQwMSjes1KFzg6/pphSGU4KBDOL/KYgdpnST7ZoKHj+o3GPT/3XXOXY0SfxZp7hQFJNsDLrg==
+ bh=IGIk8gTd5ViMoAcw4p/WsLt7obdUlzNG0mpUj3XcJ4o=;
+ b=VgQnUogR2xNAS9yEzDFtjIbppMi2KqQ05KSxL+VTSfZnbR6U8SaZgo8CBTMZVUpJBti+RYQnhFdy2UBi/EiTZL5jqGihEqLTC1nOdf+yq2e1nuEzf1251CsqTEgN/ig0vgFWEsy4H75flHA2XgFoC/+W3r2vmAJi34qymT/xDwcaJw/M4dNMgmgR/BzqXdJcVxExosrN1IVGrmIgHimSD0otV+tZzmuFgK+GU9iNRWY58jodRJqC0f6Kffc5roy7wO8eebm3tHh64+9fp9FrElY0O3gM13crW13MxVlM58HlVCoVv0lc6TRwQVS/BxT2XuGgkaLyhCLVCZcMsOy7qQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s5v3Pmxv0dSIn9wGEsp8rSgJZG5V1DohEXKE1lHJ/Tg=;
- b=UMxk5B4SMsvTTSEPXmcTLzeFVuqSC/VV4zZJVK6qNYMKNx5ayFgjtoV+9dwXgq4ywc5/vRxCoZC+wzuYuOVJZcnQPGIArzHiTMcqw9W4Yg+ok36+X9PhY9Owvlf4kvm8jzOmAcVVW4UR4t4uHcZiv2a7OR34Gh5kLPpRMo+IX2E=
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (20.177.51.151) by
- VI1PR05MB5341.eurprd05.prod.outlook.com (20.178.8.218) with Microsoft SMTP
+ bh=IGIk8gTd5ViMoAcw4p/WsLt7obdUlzNG0mpUj3XcJ4o=;
+ b=rODFYtyGishjyqJWFzVmA+JbNgPH4mDMUf15R3vuXP5420ckq3Ilf6AZj8LgR1KWtVjygH4MeUP3vIALooFYUxMQ80Vj3vUfMmI5gkVpaaHTy78gpjqKyqSbdjNKgEswoMvZISiXGJqtcpzmwLjbmKyXR1iO4NJqpj0bNP8rz5A=
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
+ AM0PR05MB5650.eurprd05.prod.outlook.com (20.178.115.214) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2474.17; Wed, 20 Nov 2019 22:22:30 +0000
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::d41a:9a5d:5482:497e]) by VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::d41a:9a5d:5482:497e%5]) with mapi id 15.20.2474.015; Wed, 20 Nov 2019
- 22:22:30 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ 15.20.2451.29; Wed, 20 Nov 2019 22:39:02 +0000
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::e5c2:b650:f89:12d4]) by AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::e5c2:b650:f89:12d4%7]) with mapi id 15.20.2451.029; Wed, 20 Nov 2019
+ 22:39:02 +0000
+From:   Parav Pandit <parav@mellanox.com>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Aya Levin <ayal@mellanox.com>,
-        Moshe Shemesh <moshe@mellanox.com>
-Subject: [PATCH mlx5-next 5/5] net/mlx5: Expose resource dump register mapping
-Thread-Topic: [PATCH mlx5-next 5/5] net/mlx5: Expose resource dump register
- mapping
-Thread-Index: AQHVn/D/ELG/SdH05Uakfhb1bvWXbQ==
-Date:   Wed, 20 Nov 2019 22:22:30 +0000
-Message-ID: <20191120222128.29646-6-saeedm@mellanox.com>
-References: <20191120222128.29646-1-saeedm@mellanox.com>
-In-Reply-To: <20191120222128.29646-1-saeedm@mellanox.com>
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        Kiran Patil <kiran.patil@intel.com>,
+        Tiwei Bie <tiwei.bie@intel.com>
+Subject: RE: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Thread-Topic: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Thread-Index: AQHVnATItanP+SK9PEuJkGaYy2/dTKeM1NrAgAURC4CAAAcf0IAAJnyAgAAC1aCAAAnmgIAAmYYAgAAk7gCAAATGgIAAJoYAgAAbBYCAABJvgIAAGUuAgAAlAgCAAKHXgIAAQFwAgAALygCAAEINAIAABO/w
+Date:   Wed, 20 Nov 2019 22:39:02 +0000
+Message-ID: <AM0PR05MB48663ADB0A470C78694F6B8DD14F0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+References: <20191119164632.GA4991@ziepe.ca>
+        <20191119134822-mutt-send-email-mst@kernel.org>
+        <20191119191547.GL4991@ziepe.ca>
+        <20191119163147-mutt-send-email-mst@kernel.org>
+        <20191119231023.GN4991@ziepe.ca>
+        <20191119191053-mutt-send-email-mst@kernel.org>
+        <20191120014653.GR4991@ziepe.ca>
+        <134058913.35624136.1574222360435.JavaMail.zimbra@redhat.com>
+        <20191120133835.GC22515@ziepe.ca>       <20191120102856.7e01e2e2@x1.home>
+        <20191120181108.GJ22515@ziepe.ca> <20191120150732.2fffa141@x1.home>
+In-Reply-To: <20191120150732.2fffa141@x1.home>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-mailer: git-send-email 2.21.0
-x-originating-ip: [209.116.155.178]
-x-clientproxiedby: BYAPR03CA0001.namprd03.prod.outlook.com
- (2603:10b6:a02:a8::14) To VI1PR05MB5102.eurprd05.prod.outlook.com
- (2603:10a6:803:5e::23)
 authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
+ smtp.mailfrom=parav@mellanox.com; 
+x-originating-ip: [208.176.44.194]
 x-ms-publictraffictype: Email
 x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 22f276a7-b310-41f6-20c5-08d76e0821c2
-x-ms-traffictypediagnostic: VI1PR05MB5341:|VI1PR05MB5341:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB5341FE4A3BDA95F258CC75EDBE4F0@VI1PR05MB5341.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2276;
+x-ms-office365-filtering-correlation-id: 81f1233f-2522-4d75-6b38-08d76e0a711a
+x-ms-traffictypediagnostic: AM0PR05MB5650:
+x-ms-exchange-purlcount: 3
+x-microsoft-antispam-prvs: <AM0PR05MB5650447EED21D70A3FDE7CECD14F0@AM0PR05MB5650.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
 x-forefront-prvs: 02272225C5
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(346002)(366004)(396003)(39860400002)(376002)(199004)(189003)(476003)(102836004)(316002)(99286004)(66476007)(76176011)(8936002)(14454004)(386003)(2906002)(6506007)(52116002)(110136005)(6436002)(446003)(6486002)(66556008)(54906003)(2616005)(66446008)(478600001)(64756008)(66066001)(66946007)(6636002)(5660300002)(11346002)(486006)(50226002)(81166006)(71190400001)(71200400001)(7736002)(186003)(305945005)(81156014)(36756003)(25786009)(8676002)(4326008)(6512007)(450100002)(14444005)(256004)(86362001)(6116002)(3846002)(1076003)(107886003)(26005);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5341;H:VI1PR05MB5102.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(346002)(396003)(39860400002)(366004)(136003)(189003)(199004)(26005)(6306002)(55016002)(9686003)(5024004)(186003)(486006)(110136005)(4326008)(256004)(33656002)(99286004)(71190400001)(8676002)(54906003)(6436002)(71200400001)(6506007)(7696005)(25786009)(102836004)(478600001)(81166006)(966005)(81156014)(66066001)(86362001)(3846002)(76176011)(316002)(6116002)(229853002)(66446008)(66556008)(8936002)(5660300002)(66946007)(64756008)(66476007)(6246003)(14454004)(476003)(2906002)(52536014)(76116006)(7736002)(446003)(11346002)(305945005)(74316002)(561944003)(7416002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB5650;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: uUi3Nirs6DgOiJFaVae5bVYAmLE4H74+qC7ttLqBXgivyOPoTJs1Kwv3pX7n175a6QZeoq3Kxd3p84tM5Tk902QTMbTDGtAoHa0ba1rE6H4VPWq2+481/PCNrPK0y6aKMQzGyw3Y6GjKyBo4eagnu+q+fISkUyUCadqVV+13dO0VLmRxgWpIhPuCVyUcpCpM4L85bSBDQPfmLS7R4MZ+5FQXPJq/FOb291b58d6OybyN17EVaLc7kXVKMEV8HNVy2OEPcyYoe9JGNt5efgbHT32KQ3iNVNsAUHBqNcu+rzbRNbKSvEFNv5hkjcIWYFWWWnYj0FN//pEMziMUBXo4V+P2RkmuJpAdYTUTrQlEwYtdDt0xIDN5X14/3P9XlGZvXaA7Iq6pOdkhZa8I7Q6z9NLsVZuXsxWRRpMC/6C60xaEJGFkIrB6kT9DiCya9nrw
-Content-Type: text/plain; charset="iso-8859-1"
+x-microsoft-antispam-message-info: k8/L6TV9lEBetwZu2pgaDkqGFrenFNR4YgqjancpZ5q3RZF1cfTTbHifJjwfL5aT+DMsAZLoZRrdymIEGFSQh/pmF7+ilErhP1aKRK+9xCFXMR7KoVReLU99yPZClgOmzgCzD8F/XgRpigS04QfhyJDPSI0Ede4Fk5p5vTE5gA1RL9y7zeG32hCeqJd9cID07rl+kh3KM2EKoF+ZU+tqy7NaOokrAb2mYt3YeByAs4KI6hurIjNeekxpz29EgbGIpWd0DX+gGYczU6eIhOjv6sVGyGRR+qzdGYoleP5/g+Tg0nQLJj3tAa/RGNhZAMUE4Ih4GCWXhHzFDT5y9Cf+SD3W/j03fwzOqnQQ3lKrocsFGNUS5/MLYeKOLQTc5ykNaTmUJd/YxqUk9tplemkhKemjKKcklKB1R8Qzql8x2qEr/+++wMv1i2X2XWvknSp+f+QGZ+cEtudG23NmmH/barwQDj+y4ieiKgQw4Z9rafs=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22f276a7-b310-41f6-20c5-08d76e0821c2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2019 22:22:30.3037
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81f1233f-2522-4d75-6b38-08d76e0a711a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2019 22:39:02.0950
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YB1aimL4Z/qWm1E/15pABKljpuuOwMHOUsQL5j7syji0kY08vTWuUbzqIkYdbjTqbsJzqy+m9QPvJgA1eLEGQg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5341
+X-MS-Exchange-CrossTenant-userprincipalname: REoNIB2Lb6FuKSQhK6zln9GVKt8bTVKG4+eUtGzP3wroVAG6jH//uJkmWVNk86lmv1WGyNdEBUB/BkBe4jQ0mw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5650
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Aya Levin <ayal@mellanox.com>
 
-Add new register enumeration for resource dump. Add layout mapping for
-resource dump: access command and response.
 
-Signed-off-by: Aya Levin <ayal@mellanox.com>
-Reviewed-by: Moshe Shemesh <moshe@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
----
- include/linux/mlx5/driver.h   |   1 +
- include/linux/mlx5/mlx5_ifc.h | 130 +++++++++++++++++++++++++++++++++-
- 2 files changed, 130 insertions(+), 1 deletion(-)
+> From: Alex Williamson <alex.williamson@redhat.com>
+> Sent: Wednesday, November 20, 2019 4:08 PM
+>=20
+> On Wed, 20 Nov 2019 14:11:08 -0400
+> Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>=20
+> > I feel like mdev is suffering from mission creep. I see people
+> > proposing to use mdev for many wild things, the Mellanox SF stuff in
+> > the other thread and this 'virtio subsystem' being the two that have
+> > come up publicly this month.
+>=20
+> Tell me about it... ;)
+>=20
+Initial Mellanox sub function proposal was done using dedicated non-mdev su=
+bdev bus in [1] because mdev looked very vfio-ish.
 
-diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index d479c5e48295..8165d30e8b81 100644
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -146,6 +146,7 @@ enum {
- 	MLX5_REG_MCDA		 =3D 0x9063,
- 	MLX5_REG_MCAM		 =3D 0x907f,
- 	MLX5_REG_MIRC		 =3D 0x9162,
-+	MLX5_REG_RESOURCE_DUMP   =3D 0xC000,
- };
-=20
- enum mlx5_qpts_trust_state {
-diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-index 9107c032062f..a96c9ce4e27a 100644
---- a/include/linux/mlx5/mlx5_ifc.h
-+++ b/include/linux/mlx5/mlx5_ifc.h
-@@ -822,7 +822,9 @@ struct mlx5_ifc_qos_cap_bits {
- struct mlx5_ifc_debug_cap_bits {
- 	u8         core_dump_general[0x1];
- 	u8         core_dump_qp[0x1];
--	u8         reserved_at_2[0x1e];
-+	u8         reserved_at_2[0x7];
-+	u8         resource_dump[0x1];
-+	u8         reserved_at_a[0x16];
-=20
- 	u8         reserved_at_20[0x2];
- 	u8         stall_detect[0x1];
-@@ -1753,6 +1755,132 @@ struct mlx5_ifc_resize_field_select_bits {
- 	u8         resize_field_select[0x20];
- };
-=20
-+struct mlx5_ifc_resource_dump_bits {
-+	u8         more_dump[0x1];
-+	u8         inline_dump[0x1];
-+	u8         reserved_at_2[0xa];
-+	u8         seq_num[0x4];
-+	u8         segment_type[0x10];
-+
-+	u8         reserved_at_20[0x10];
-+	u8         vhca_id[0x10];
-+
-+	u8         index1[0x20];
-+
-+	u8         index2[0x20];
-+
-+	u8         num_of_obj1[0x10];
-+	u8         num_of_obj2[0x10];
-+
-+	u8         reserved_at_a0[0x20];
-+
-+	u8         device_opaque[0x40];
-+
-+	u8         mkey[0x20];
-+
-+	u8         size[0x20];
-+
-+	u8         address[0x40];
-+
-+	u8         inline_data[52][0x20];
-+};
-+
-+struct mlx5_ifc_resource_dump_menu_record_bits {
-+	u8         reserved_at_0[0x4];
-+	u8         num_of_obj2_supports_active[0x1];
-+	u8         num_of_obj2_supports_all[0x1];
-+	u8         must_have_num_of_obj2[0x1];
-+	u8         support_num_of_obj2[0x1];
-+	u8         num_of_obj1_supports_active[0x1];
-+	u8         num_of_obj1_supports_all[0x1];
-+	u8         must_have_num_of_obj1[0x1];
-+	u8         support_num_of_obj1[0x1];
-+	u8         must_have_index2[0x1];
-+	u8         support_index2[0x1];
-+	u8         must_have_index1[0x1];
-+	u8         support_index1[0x1];
-+	u8         segment_type[0x10];
-+
-+	u8         segment_name[4][0x20];
-+
-+	u8         index1_name[4][0x20];
-+
-+	u8         index2_name[4][0x20];
-+};
-+
-+struct mlx5_ifc_resource_dump_segment_header_bits {
-+	u8         length_dw[0x10];
-+	u8         segment_type[0x10];
-+};
-+
-+struct mlx5_ifc_resource_dump_command_segment_bits {
-+	struct mlx5_ifc_resource_dump_segment_header_bits segment_header;
-+
-+	u8         segment_called[0x10];
-+	u8         vhca_id[0x10];
-+
-+	u8         index1[0x20];
-+
-+	u8         index2[0x20];
-+
-+	u8         num_of_obj1[0x10];
-+	u8         num_of_obj2[0x10];
-+};
-+
-+struct mlx5_ifc_resource_dump_error_segment_bits {
-+	struct mlx5_ifc_resource_dump_segment_header_bits segment_header;
-+
-+	u8         reserved_at_20[0x10];
-+	u8         syndrome_id[0x10];
-+
-+	u8         reserved_at_40[0x40];
-+
-+	u8         error[8][0x20];
-+};
-+
-+struct mlx5_ifc_resource_dump_info_segment_bits {
-+	struct mlx5_ifc_resource_dump_segment_header_bits segment_header;
-+
-+	u8         reserved_at_20[0x18];
-+	u8         dump_version[0x8];
-+
-+	u8         hw_version[0x20];
-+
-+	u8         fw_version[0x20];
-+};
-+
-+struct mlx5_ifc_resource_dump_menu_segment_bits {
-+	struct mlx5_ifc_resource_dump_segment_header_bits segment_header;
-+
-+	u8         reserved_at_20[0x10];
-+	u8         num_of_records[0x10];
-+
-+	struct mlx5_ifc_resource_dump_menu_record_bits record[0];
-+};
-+
-+struct mlx5_ifc_resource_dump_resource_segment_bits {
-+	struct mlx5_ifc_resource_dump_segment_header_bits segment_header;
-+
-+	u8         reserved_at_20[0x20];
-+
-+	u8         index1[0x20];
-+
-+	u8         index2[0x20];
-+
-+	u8         payload[0][0x20];
-+};
-+
-+struct mlx5_ifc_resource_dump_terminate_segment_bits {
-+	struct mlx5_ifc_resource_dump_segment_header_bits segment_header;
-+};
-+
-+struct mlx5_ifc_menu_resource_dump_response_bits {
-+	struct mlx5_ifc_resource_dump_info_segment_bits info;
-+	struct mlx5_ifc_resource_dump_command_segment_bits cmd;
-+	struct mlx5_ifc_resource_dump_menu_segment_bits menu;
-+	struct mlx5_ifc_resource_dump_terminate_segment_bits terminate;
-+};
-+
- enum {
- 	MLX5_MODIFY_FIELD_SELECT_MODIFY_FIELD_SELECT_CQ_PERIOD     =3D 0x1,
- 	MLX5_MODIFY_FIELD_SELECT_MODIFY_FIELD_SELECT_CQ_MAX_COUNT  =3D 0x2,
---=20
-2.21.0
+Along the way mdev proposal was suggested at [2] by mdev maintainers to use=
+.
+The bus existed that detached two drivers (mdev and vfio_mdev), there was s=
+ome motivation to attach other drivers.
 
+After that we continued discussion and mdev extension using alias to have p=
+ersistent naming in [3].
+
+So far so good, but when we want to have actual use of mdev driver, it does=
+n't look right. :-)
+
+> > Putting some boundaries on mdev usage would really help people know
+> > when to use it. My top two from this discussion would be:
+> >
+> > - mdev devices should only bind to vfio. It is not a general kernel
+> >   driver matcher mechanism. It is not 'virtual-bus'.
+>=20
+So yes, we must define the scope of mdev and have right documentation to ca=
+pture that.
+
+If mdev is not supposed to be extended beyond vfio, why do you even need a =
+bus? For iommu attachment?
+
+[1] https://lkml.org/lkml/2019/3/1/19
+[2] https://lkml.org/lkml/2019/3/7/696
+[3] https://lkml.org/lkml/2019/8/26/854
