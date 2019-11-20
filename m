@@ -2,86 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE3C103441
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 07:20:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA9410344B
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 07:29:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727313AbfKTGUh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Nov 2019 01:20:37 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:34550 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725832AbfKTGUh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 01:20:37 -0500
-Received: by mail-wm1-f66.google.com with SMTP id j18so4224170wmk.1
-        for <linux-rdma@vger.kernel.org>; Tue, 19 Nov 2019 22:20:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=kMms/Y764ZCYDBYwMWs0FXH18Gmx1KkXXZPTiNKK92E=;
-        b=AEFGcw1grAICBa2o/zf4RDRRsKL/WopcYLmyoJ1FPVTFxtata8TNt/ebqMmLQ3ulmu
-         8zCXcL0egZWOtV5Cf+o/2GtuOhvv9L1CTQzpSzIzJpCev5JMJb2uIS9yh1ZqJQEqcXD7
-         SjlPQSrzBuHJ2N05tXTKvYFhUjNZyVkiMWU9Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=kMms/Y764ZCYDBYwMWs0FXH18Gmx1KkXXZPTiNKK92E=;
-        b=GFM2cATMrhqUiFfDhEuR+Nu5YXbWrHJc3peGNHXkXlSEAaw+ylkCB7dwKTwDoYZ8kM
-         qPIrQG3dGQ5Jwx3Wps8qYsW9g9FgVAP1MMcWZ4D1pkXzEN7iETt1911cvFO3dBss8IMz
-         8Sc2Z8s8Ew9q0fFHCiKe6Mret4SqgMWzsRzNNpl9FPuUStQNrX+MkLi7DQz0Ir/GlXhD
-         6zw2Q/LOZ+OsZ6xa+jqiM7DmlgKGbMmhCpNd7970CleH1RG1RYZG06uyLXEbPzmaISU+
-         iA2VoH7WDdjc7QdKNtgExc5FJEeoBLbatLdStvlPxSnFjT5GYGjTI+OmEXc+RoqPnUUI
-         KBpQ==
-X-Gm-Message-State: APjAAAWVzs4K4tZa3zgk5MaN+XS3gNA6J2MuG7leuaEd1mT+8NVCEmwO
-        7DxFVwCBTnyLy4mAeXfRn6J/CmmiJu4=
-X-Google-Smtp-Source: APXvYqwh45YE4ThKOFWmUaocLZ0wNEPONLsK6v8FPYZgqGVir4wOZ83iw6HUBJakkZvFAvA/7QVjVw==
-X-Received: by 2002:a1c:7f54:: with SMTP id a81mr1204141wmd.48.1574230835369;
-        Tue, 19 Nov 2019 22:20:35 -0800 (PST)
-Received: from neo00-el73.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id j7sm32466705wro.54.2019.11.19.22.20.32
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Nov 2019 22:20:34 -0800 (PST)
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-To:     dledford@redhat.com, jgg@mellanox.com
-Cc:     linux-rdma@vger.kernel.org,
-        Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [PATCH V2 for-rc 2/2] RDMA/bnxt_re: fix stat push into dma buffer on gen p5  devices
-Date:   Wed, 20 Nov 2019 01:20:18 -0500
-Message-Id: <1574230818-30295-3-git-send-email-devesh.sharma@broadcom.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1574230818-30295-1-git-send-email-devesh.sharma@broadcom.com>
-References: <1574230818-30295-1-git-send-email-devesh.sharma@broadcom.com>
+        id S1726044AbfKTG3j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Nov 2019 01:29:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727165AbfKTG3j (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 20 Nov 2019 01:29:39 -0500
+Received: from localhost (unknown [5.29.147.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 099B92245B;
+        Wed, 20 Nov 2019 06:29:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1574231378;
+        bh=GaHkYRAChvW9cg+edJISXgJWxvX1BqSnKg+czQMDK2E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cocvET+b5QHr3McFg9835OuagXVQ6OFHEzKCYOAXp5s06cmkTib8a8XaH17XTntkm
+         OVUfcEi3biuxgjJvohi40OBS6d6z53E/WvrsTKcmVLFZs4rjoy9jgXiZI03edMhquf
+         qRFESv7sqO89lFK05+/bjC9yoj4ViRVhkqEEwlPw=
+Date:   Wed, 20 Nov 2019 08:29:35 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v7 2/2] RDMA/cma: Add trace points in RDMA Connection
+ Manager
+Message-ID: <20191120062935.GL52766@unreal>
+References: <20191120004308.5860.40857.stgit@manet.1015granger.net>
+ <20191120004606.5860.87252.stgit@manet.1015granger.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191120004606.5860.87252.stgit@manet.1015granger.net>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Due to recent advances in the firmware for Broadcom's
-gen p5 series of adaptors the driver code to report
-hardware counters has been broken w.r.t. roce devices.
+On Tue, Nov 19, 2019 at 07:46:06PM -0500, Chuck Lever wrote:
+> Record state transitions as each connection is established. The IP
+> address of both peers and the Type of Service is reported. These
+> trace points are not in performance hot paths.
+>
+> Also, record each cm_event_handler call to ULPs. This eliminates the
+> need for each ULP to add its own similar trace point in its CM event
+> handler function.
+>
+> These new trace points appear in a new trace subsystem called
+> "rdma_cma".
+>
+> Sample events:
+>
+>    kworker/u24:2-2127  [011]   696.746254: cm_event_handler:     cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0 ADDR_RESOLVED (0/0)
+>    kworker/u24:2-2127  [011]   696.746880: cm_event_handler:     cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0 ROUTE_RESOLVED (2/0)
+>    kworker/u28:2-2214  [001]   696.776316: cm_send_req:          cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0 qp_num=526
+>      kworker/1:3-972   [001]   696.777603: cm_send_mra:          cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0
+>      kworker/1:3-972   [001]   696.778062: cm_send_rtu:          cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0
+>      kworker/1:3-972   [001]   696.778198: cm_event_handler:     cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0 ESTABLISHED (9/0)
+>      kworker/1:3-972   [001]   700.621750: cm_disconnect:        cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0
+>      kworker/1:3-972   [001]   700.621881: cm_sent_dreq:         cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0
+>      kworker/3:2-512   [003]   700.622354: cm_event_handler:     cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0 DISCONNECTED (10/0)
+>
+> Some features to note:
+> - restracker ID of the rdma_cm_id is tagged on each trace event
+> - The source and destination IP addresses and TOS are reported
+> - CM event upcalls are shown with decoded event and status
+> - CM state transitions are reported
+>
+> This patch is based on previous work by:
+>
+> Saeed Mahameed <saeedm@mellanox.com>
+> Mukesh Kacker <mukesh.kacker@oracle.com>
+> Ajaykumar Hotchandani <ajaykumar.hotchandani@oracle.com>
+> Aron Silverton <aron.silverton@oracle.com>
+> Avinash Repaka <avinash.repaka@oracle.com>
+> Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
+>
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+>  drivers/infiniband/core/Makefile    |    2
+>  drivers/infiniband/core/cma.c       |   59 +++++++--
+>  drivers/infiniband/core/cma_trace.c |   16 +++
+>  drivers/infiniband/core/cma_trace.h |  219 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 279 insertions(+), 17 deletions(-)
+>  create mode 100644 drivers/infiniband/core/cma_trace.c
+>  create mode 100644 drivers/infiniband/core/cma_trace.h
 
-Making a change to match the expectaion of newer firmware
-version when stat dma buffer is created. The new firmware
-command expects dma length to be specified during stat
-dma buffer allocation.
+Chuck, thanks for the updated commit message, the patches look very good.
+Unfortunately, I wasn't able to compile latest series as well.
 
-Fixes: 2792b5b95ed5 ("bnxt_en: Update firmware interface spec. to 1.10.0.89")
-Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/main.c | 1 +
- 1 file changed, 1 insertion(+)
+_  kernel git:(24005116b337) mkt build
+Start kernel compilation in silent mode
+In file included from drivers/infiniband/core/cma_trace.h:219,
+                 from drivers/infiniband/core/cma_trace.c:16:
+./include/trace/define_trace.h:95:42: fatal error: ./cma_trace.h: No such file or directory
+   95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+      |                                          ^
+compilation terminated.
+make[3]: *** [scripts/Makefile.build:265: drivers/infiniband/core/cma_trace.o] Error 1
+make[3]: *** Waiting for unfinished jobs....
+make[2]: *** [scripts/Makefile.build:509: drivers/infiniband/core] Error 2
+make[1]: *** [scripts/Makefile.build:509: drivers/infiniband] Error 2
+make: *** [Makefile:1649: drivers] Error 2
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 30a54f8..2ee2cd4 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -477,6 +477,7 @@ static int bnxt_re_net_stats_ctx_alloc(struct bnxt_re_dev *rdev,
- 	bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_STAT_CTX_ALLOC, -1, -1);
- 	req.update_period_ms = cpu_to_le32(1000);
- 	req.stats_dma_addr = cpu_to_le64(dma_map);
-+	req.stats_dma_length = cpu_to_le16(sizeof(struct ctx_hw_stats_ext));
- 	req.stat_ctx_flags = STAT_CTX_ALLOC_REQ_STAT_CTX_FLAGS_ROCE;
- 	bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
- 			    sizeof(resp), DFLT_HWRM_CMD_TIMEOUT);
--- 
-1.8.3.1
+_  kernel git:(173822da8f6f) git l -n 3
+173822da8f6f (HEAD) RDMA/cma: Add trace points in RDMA Connection Manager
+24005116b337 RDMA/core: Trace points for diagnosing completion queue issues
+a25984f3baaa (rdma/wip/jgg-for-next) RDMA/qedr: Fix null-pointer dereference when calling rdma_user_mmap_get_offset
 
+Thanks
