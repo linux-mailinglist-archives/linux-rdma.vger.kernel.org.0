@@ -2,91 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3369103086
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 01:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF2510309F
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Nov 2019 01:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727222AbfKTAIm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Nov 2019 19:08:42 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:37658 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726874AbfKTAIm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 19:08:42 -0500
-Received: by mail-qv1-f67.google.com with SMTP id s18so8994648qvr.4
-        for <linux-rdma@vger.kernel.org>; Tue, 19 Nov 2019 16:08:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=c87ZRnKfkFwb+Er5Nz+pUba1hzgIl8uANKfWQXKhD+E=;
-        b=LC/n02Z1CrZwRGFSmBGeBRviEPvtZmLFw64zCE6Py0/spL5OmmjJpX9qSS+1BNRP8Y
-         rBOnJ08/3J7IIqS2AmNzXh9ePuEIjDvGWgbpARXTadUZj7GSwd3Tfiz6U0aNYFlOD8yk
-         oOKEttqnJ+ZIrvNTlKweQhhXPKM0Npi+CqImU6BEnf3Zy0oh2Xockiqo6nCsHsbFmn5q
-         E/1XDcF+Asd0eJdyVIHphfyQf0Q1aWMiQPD9T8A6yZwSC2HZtGAVi44f0hIGf/8ui5ju
-         5ykb4Fk/vDB80qjwizzbiFrALqXGvHsT282EdxTdaYrEP6IlyZ/6+tCHa7KBIFB3oCfE
-         vJFw==
+        id S1727202AbfKTAQg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Nov 2019 19:16:36 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:46697 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727324AbfKTAQg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Nov 2019 19:16:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1574208995;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Ab41kp1XjjxVLY8i+Hks9bWT2aTG+H1xMaXg6cmt40=;
+        b=euoDXZqFrxOKOWAed4IwyLAR9k0TlNF4aKu8irQN0IjRwG54TLeiqFbmiXW9XrmC4tx8zY
+        sXO/8QtNacKZxA6e9IgNVon5YVW80u9uwvDz3VZG9t4hTy+3R6QXoHQA7IyZRaHc9DXvq1
+        MJRxl3OCeqW+1HChSugzwraEuEHwmwE=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-DCk8r_7FMXW88yfUbpsOtg-1; Tue, 19 Nov 2019 19:16:28 -0500
+Received: by mail-wr1-f69.google.com with SMTP id q12so20182238wrr.3
+        for <linux-rdma@vger.kernel.org>; Tue, 19 Nov 2019 16:16:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=c87ZRnKfkFwb+Er5Nz+pUba1hzgIl8uANKfWQXKhD+E=;
-        b=ddI/ax95IwcDHT4MFFMZo31xiAhbnMdoERWlVc+B2btEHW8bZZqTeMnGwrhh6+/x5R
-         /lRG0BAYqqEau8frL5t/uvsL/VA3xAftyU0iaU496L7HZj96Q0TDSG4660HaLtzxHV/I
-         SjjZWv5E7WLoa2eod0UY7ZWvrxlkqo/Imu6k/lOhk82WXwjeesUI8SYzEBe6mh8lQ0Mm
-         cW2NF/+3IFDupHHG8sm045g+/TSxyd/h1A+kexX/qPGaFKD7TpywsCQHt+a7LqX2wugz
-         gK9WHq2hLqTV8jHWGOsd4fZmFN5g2wvfd3nJ3YFsLoE8QzmBRVrhnf9hK3fhZdwjDWak
-         QojQ==
-X-Gm-Message-State: APjAAAVcQWx+L20e6aAbxS70oCga9yBr4phkTEw3LXbvCxaJgGcFoNmv
-        K3IubQVDB8//t0C5NFoTL2IOSw==
-X-Google-Smtp-Source: APXvYqyHC6JpsyUgMnFH/vHr6GurwqIC7phi/jGWbasG+gvRWYCFc2oItzSzTNaOD726Ktw1Y+eW3Q==
-X-Received: by 2002:a0c:dd01:: with SMTP id u1mr49357qvk.69.1574208521502;
-        Tue, 19 Nov 2019 16:08:41 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id s42sm13113000qtk.60.2019.11.19.16.08.40
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 19 Nov 2019 16:08:40 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iXDY0-0005ir-DI; Tue, 19 Nov 2019 20:08:40 -0400
-Date:   Tue, 19 Nov 2019 20:08:40 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Rao Shoaib <rao.shoaib@oracle.com>
-Cc:     monis@mellanox.com, dledford@redhat.com, sean.hefty@intel.com,
-        hal.rosenstock@gmail.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] Introduce maximum WQE size to check limits
-Message-ID: <20191120000840.GQ4991@ziepe.ca>
-References: <1574106879-19211-1-git-send-email-rao.shoaib@oracle.com>
- <1574106879-19211-2-git-send-email-rao.shoaib@oracle.com>
- <20191119203138.GA13145@ziepe.ca>
- <44d1242a-fc32-9918-dd53-cd27ebf61811@oracle.com>
- <20191119231334.GO4991@ziepe.ca>
- <dff3da9b-06a3-3904-e9eb-7feaa1ae9e01@oracle.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=t06Tsi72ww7TuIa1C3fnMcRmbN5Hgd2Lx1VIhbta3sI=;
+        b=rj8uWHt+QWG1R4X27Uo80qjmF0eXA3nCgieGev+umwWq3JE9uTzcd24bgrueNPfftC
+         b6BeDZeNiofHILCeYk9KG9qLSO+xg5U25Vg+SINbOQZMhLpZxqK2d46qnH/Eu654rCL4
+         qYC4ePh7KN/9dRO91k5rD1kFimy88uCT+q8jABn5ZIy4oZSdDlvKcL1P48vKk3eMdsnA
+         c+3aabP87JAR3dTLIb/0Gu3/GclrKP262vrKwUYmViwxnzYlZC5JuGlJA+c136JBkp3T
+         FCxjqNnfNT1y+2aTbq1j/MpYO7YgWEqjVWVIo4Y+Lurwt67TAsngHaT/k7I1xoXNL/P9
+         4dag==
+X-Gm-Message-State: APjAAAU18Gp7IpPQ+JBfEAyIpUn6PLZU37caSMWxe6Aifh43Okbk6I5V
+        ffsn6ECqCbq9NVYO8eA9EpUP7aY/r2hzmjIwzTz2rsQqz4+JM0RHjG/rEwPUTWeiMoiK1eh4j2b
+        C4n6AUFERRd9NsnFaAT8fnw==
+X-Received: by 2002:a5d:640d:: with SMTP id z13mr176774wru.68.1574208986904;
+        Tue, 19 Nov 2019 16:16:26 -0800 (PST)
+X-Google-Smtp-Source: APXvYqww9q4ij+sss666iKTsmZRfAAMuCzQa3zKx/jQ28gxGtZf3qmHixfXYtuem1SU5TdSxOdvdCw==
+X-Received: by 2002:a5d:640d:: with SMTP id z13mr176751wru.68.1574208986660;
+        Tue, 19 Nov 2019 16:16:26 -0800 (PST)
+Received: from redhat.com (bzq-79-176-6-42.red.bezeqint.net. [79.176.6.42])
+        by smtp.gmail.com with ESMTPSA id q15sm5097043wmq.0.2019.11.19.16.16.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Nov 2019 16:16:25 -0800 (PST)
+Date:   Tue, 19 Nov 2019 19:16:21 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        Kiran Patil <kiran.patil@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Bie, Tiwei" <tiwei.bie@intel.com>
+Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Message-ID: <20191119191053-mutt-send-email-mst@kernel.org>
+References: <a40c09ee-0915-f10c-650e-7539726a887b@redhat.com>
+ <AM0PR05MB4866C40A177D3D60BFC558F7D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <13946106-dab2-6bbe-df79-ca6dfdeb4c51@redhat.com>
+ <AM0PR05MB486685F7C839AD8A5F3EEA91D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <ead356f5-db81-cb01-0d74-b9e34965a20f@redhat.com>
+ <20191119164632.GA4991@ziepe.ca>
+ <20191119134822-mutt-send-email-mst@kernel.org>
+ <20191119191547.GL4991@ziepe.ca>
+ <20191119163147-mutt-send-email-mst@kernel.org>
+ <20191119231023.GN4991@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20191119231023.GN4991@ziepe.ca>
+X-MC-Unique: DCk8r_7FMXW88yfUbpsOtg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-In-Reply-To: <dff3da9b-06a3-3904-e9eb-7feaa1ae9e01@oracle.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 19, 2019 at 03:55:35PM -0800, Rao Shoaib wrote:
+On Tue, Nov 19, 2019 at 07:10:23PM -0400, Jason Gunthorpe wrote:
+> On Tue, Nov 19, 2019 at 04:33:40PM -0500, Michael S. Tsirkin wrote:
+> > On Tue, Nov 19, 2019 at 03:15:47PM -0400, Jason Gunthorpe wrote:
+> > > On Tue, Nov 19, 2019 at 01:58:42PM -0500, Michael S. Tsirkin wrote:
+> > > > On Tue, Nov 19, 2019 at 12:46:32PM -0400, Jason Gunthorpe wrote:
+> > > > > As always, this is all very hard to tell without actually seeing =
+real
+> > > > > accelerated drivers implement this.=20
+> > > > >=20
+> > > > > Your patch series might be a bit premature in this regard.
+> > > >=20
+> > > > Actually drivers implementing this have been posted, haven't they?
+> > > > See e.g. https://lwn.net/Articles/804379/
+> > >=20
+> > > Is that a real driver? It looks like another example quality
+> > > thing.=20
+> > >=20
+> > > For instance why do we need any of this if it has '#define
+> > > IFCVF_MDEV_LIMIT 1' ?
+> > >=20
+> > > Surely for this HW just use vfio over the entire PCI function and be
+> > > done with it?
+> >=20
+> > What this does is allow using it with unmodified virtio drivers
+> > within guests.  You won't get this with passthrough as it only
+> > implements parts of virtio in hardware.
+>=20
+> I don't mean use vfio to perform passthrough, I mean to use vfio to
+> implement the software parts in userspace while vfio to talk to the
+> hardware.
 
-> My intent is that we calculate and use the maximum buffer size using the
-> maximum of, number of SGE's and inline data requested, not controlling the
-> size of WQE buffer. If I was trying to limit WQE size I would agree with
-> you. Defining MAX_WQE_SIZE based on MAX_SGE and recalculating MAX_SGE does
-> not make sense to me. MAX_SGE and inline_data are independent variables and
-> define the size of wqe size not the other wise around. I did make
-> inline_dependent on MAX_SGE.
+You repeated vfio twice here, hard to decode what you meant actually.
 
-What you are trying to do is limit the size of the WQE to some maximum
-and from there you can compute the upper limit on the SGE and the
-inline data arrays, depending on how the WQE is being used.
+>   kernel -> vfio -> user space virtio driver -> qemu -> guest
 
-If a limit must be had then the limit is the WQE size. It is also
-reasonable to ask why rxe has a limit at all, or why the limit is so
-small ie why can't it be 2k or something? But that is something else
+Exactly what has been implemented for control path.
+The interface between vfio and userspace is
+based on virtio which is IMHO much better than
+a vendor specific one. userspace stays vendor agnostic.
 
-Jason
+> Generally we don't want to see things in the kernel that can be done
+> in userspace, and to me, at least for this driver, this looks
+> completely solvable in userspace.
+
+I don't think that extends as far as actively encouraging userspace
+drivers poking at hardware in a vendor specific way.  That has lots of
+security and portability implications and isn't appropriate for
+everyone. It is kernel's job to abstract hardware away and present
+a unified interface as far as possible.
+
+--=20
+MST
+
