@@ -2,106 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 389C910536D
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 14:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FA0105428
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 15:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbfKUNol (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Nov 2019 08:44:41 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:45135 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726676AbfKUNol (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Nov 2019 08:44:41 -0500
-Received: by mail-qk1-f194.google.com with SMTP id q70so2992238qke.12
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Nov 2019 05:44:40 -0800 (PST)
+        id S1726852AbfKUOPb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Nov 2019 09:15:31 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:29156 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726747AbfKUOPb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Nov 2019 09:15:31 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sfhj/BSpAXObGx+Uv9hTYzsrf84iVXtz5oXZyiZdeuk=;
-        b=aD0tG2KM+cuLPXFQVDIolHb83uQBvoIv6SUHiABQp0tUGCUKg8utJnNZCBA0Ny6YT1
-         bUkfqKhY8qGK8GmIcS+uubUZ8tcOnuG43Hhah64TPdrqISKZrLfvf1vf1u7jBWxP/Awn
-         4jyaYiatRdPnvmqxPe0Y6usPOyGiwVPocK1+BTJcwhErQDxSQl7JM4Y2Gc2knN6FJK+Y
-         8pzXexyHb1IElwZVk8C1MVn+NKHGIafiaFtGPmM+DYtlh/B/RWu6AOZGc9UOjA6ltWAN
-         Gk6Rx9q+FAug6ZidnXXrYcoea0y2rIiJiUHUZA5//CxfZLTWGJfqidpje/5nFV3uVbge
-         /ilw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sfhj/BSpAXObGx+Uv9hTYzsrf84iVXtz5oXZyiZdeuk=;
-        b=hCNiqz7dMafy0kfsQWm8P8FhY8jem+MfHUI1/m7LcG2zUEC6sVH1Om3Dk8puyKMLJa
-         5NubfBBWpCgRm8e/9sqFVVvaZPGVrppmFUMKMLfCpQfYaHV5FBPJpbvt7N69nykhDM+e
-         mvqXVEtpO82BMV9cYi8qd92JgoMm9DBFZHQTsBJiAkroanrPhukYEIQLpksBkEokruKJ
-         Pux/3vUh+3SMaxOJ6oTwT9ZBv7por7/rDQfPzwQUMKfkt11L9dmiaMJtbQEMvndPd565
-         /1BD+qLQ0kRgSRpwMq6YbXHhIXk41CkMb4ZPI1zqPMCX7NhrJRbk78/ghOCKPlbUVwCR
-         AKGw==
-X-Gm-Message-State: APjAAAV4O+ky/wMeEl32xLQJ6sz4hCT0+hUoBAKu5SSt4+0fP+wwiSKg
-        QUM/BlHAxCUjA/CXj4nL74PBwQ==
-X-Google-Smtp-Source: APXvYqwWIbMyx3iFrKk95JWvSl6/fsnsiqMLBdbVXS3zWSqrU5zmc0Ff5bmuvBhA5/C3CTAOexD04g==
-X-Received: by 2002:a05:620a:2185:: with SMTP id g5mr8024518qka.129.1574343879984;
-        Thu, 21 Nov 2019 05:44:39 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id o201sm1395090qka.17.2019.11.21.05.44.38
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 21 Nov 2019 05:44:38 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iXmlC-0002Gd-Fz; Thu, 21 Nov 2019 09:44:38 -0400
-Date:   Thu, 21 Nov 2019 09:44:38 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        davem@davemloft.net, gregkh@linuxfoundation.org,
-        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, Kiran Patil <kiran.patil@intel.com>,
-        Tiwei Bie <tiwei.bie@intel.com>
-Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
-Message-ID: <20191121134438.GA7448@ziepe.ca>
-References: <20191119231023.GN4991@ziepe.ca>
- <20191119191053-mutt-send-email-mst@kernel.org>
- <20191120014653.GR4991@ziepe.ca>
- <134058913.35624136.1574222360435.JavaMail.zimbra@redhat.com>
- <20191120133835.GC22515@ziepe.ca>
- <20191120102856.7e01e2e2@x1.home>
- <20191120181108.GJ22515@ziepe.ca>
- <20191120150732.2fffa141@x1.home>
- <20191121030357.GB16914@ziepe.ca>
- <20191120232320-mutt-send-email-mst@kernel.org>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1574345731; x=1605881731;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=KChwu6oA3qOJ3twdUWqxa+Xt4l0VqafubX92VAlUWZo=;
+  b=Y1NN9/azYTrp9F0cflHHEmdTIO7VMYJoW242ddwsojC0qDpe+TD6s7lj
+   xuWrniTxQfvCQRcqM6XqeNqQddJSYvYgLIU1Bwttx4KJ1lfiiF72SG3oB
+   QAYdwhoXaHxD32+3mWXzyd6o92dZFt4PLktsWsVEGX6oSQviuElGBnovc
+   M=;
+IronPort-SDR: 7iWbSuhbn4rEmD8n/O24LvCEdZ3dN5rnlkipuPNpn8v7wcejnVOmjjkPVPLP/84HOL8L+VhmSD
+ kAScLKqBe2fw==
+X-IronPort-AV: E=Sophos;i="5.69,226,1571702400"; 
+   d="scan'208";a="647604"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 21 Nov 2019 14:15:18 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com (Postfix) with ESMTPS id C9147A224F;
+        Thu, 21 Nov 2019 14:15:17 +0000 (UTC)
+Received: from EX13D19EUA002.ant.amazon.com (10.43.165.247) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Thu, 21 Nov 2019 14:15:17 +0000
+Received: from EX13MTAUEB001.ant.amazon.com (10.43.60.96) by
+ EX13D19EUA002.ant.amazon.com (10.43.165.247) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Thu, 21 Nov 2019 14:15:16 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.218.69.146) by
+ mail-relay.amazon.com (10.43.60.129) with Microsoft SMTP Server id
+ 15.0.1367.3 via Frontend Transport; Thu, 21 Nov 2019 14:15:14 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Gal Pressman <galpress@amazon.com>
+Subject: [PATCH for-next v2 0/3] EFA RDMA read support
+Date:   Thu, 21 Nov 2019 16:15:06 +0200
+Message-ID: <20191121141509.59297-1-galpress@amazon.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191120232320-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 20, 2019 at 11:24:03PM -0500, Michael S. Tsirkin wrote:
-> On Wed, Nov 20, 2019 at 11:03:57PM -0400, Jason Gunthorpe wrote:
-> > Frankly, when I look at what this virtio stuff is doing I see RDMA:
-> >  - Both have a secure BAR pages for mmaping to userspace (or VM)
-> >  - Both are prevented from interacting with the device at a register
-> >    level and must call to the kernel - ie creating resources is a
-> >    kernel call - for security.
-> >  - Both create command request/response rings in userspace controlled
-> >    memory and have HW DMA to read requests and DMA to generate responses
-> >  - Both allow the work on the rings to DMA outside the ring to
-> >    addresses controlled by userspace.
-> >  - Both have to support a mixture of HW that uses on-device security
-> >    or IOMMU based security.
-> 
-> The main difference is userspace/drivers need to be portable with
-> virtio.
+Hello all,
 
-rdma also has a stable/portable user space library API that is
-portable to multiple operating systems.
+The following series introduces RDMA read support and capabilities
+reporting to the EFA driver.
 
-What you don't like is that RDMA userspace has driver-specific
-code. Ie the kernel interface is not fully hardware independent.
+RDMA read support, maximum transfer size and max SGEs per RDMA WR are
+now being reported to the userspace library through the query device
+verb.
+In addition, remote read access is supported by the register MR verb.
 
-Jason
+PR was sent:
+https://github.com/linux-rdma/rdma-core/pull/613
+
+Changelog -
+v1->v2: https://lore.kernel.org/linux-rdma/20191112091737.40204-1-galpress@amazon.com/
+* Use max_sge_rd field in ib_device_attr struct instead of duplicating
+  it in vendor specific ABI.
+
+Thanks,
+Gal
+
+Daniel Kranzdorf (2):
+  RDMA/efa: Support remote read access in MR registration
+  RDMA/efa: Expose RDMA read related attributes
+
+Gal Pressman (1):
+  RDMA/efa: Store network attributes in device attributes
+
+ drivers/infiniband/hw/efa/efa.h               |  2 -
+ .../infiniband/hw/efa/efa_admin_cmds_defs.h   | 29 ++++++++++++--
+ drivers/infiniband/hw/efa/efa_com_cmd.c       | 40 ++++++++-----------
+ drivers/infiniband/hw/efa/efa_com_cmd.h       | 19 +++------
+ drivers/infiniband/hw/efa/efa_main.c          | 16 --------
+ drivers/infiniband/hw/efa/efa_verbs.c         | 31 +++++++++-----
+ include/uapi/rdma/efa-abi.h                   |  6 +++
+ 7 files changed, 76 insertions(+), 67 deletions(-)
+
+-- 
+2.24.0
+
