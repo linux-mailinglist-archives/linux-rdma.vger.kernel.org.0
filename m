@@ -2,104 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B825F1049F7
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 06:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9102B104ABC
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 07:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726170AbfKUFXJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Nov 2019 00:23:09 -0500
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:30767 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725819AbfKUFXI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Nov 2019 00:23:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574313787;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hhoJJeMZNrnDwldtVK+Mq0KcgLm9YBFAdIN9ju4qGzM=;
-        b=D5CxW7AeoO5lDnen40CQtAfUywdE7FTpOsxvMutZWCrMvZRG50fdElzNRm8JDlPwUuubV+
-        9Y9H80rrl70ZAx7/Go0NpI8ciDjQp+Xt5/K3GrZpVMelfhaeUTGITxO29OXIVGZdGltqPY
-        gacx3Tu0RLvspQZ42uOM8N7suhu4ZG8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-168-_Oj-2s8pNEK25LIz8fytXg-1; Thu, 21 Nov 2019 00:23:04 -0500
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6FB90800054;
-        Thu, 21 Nov 2019 05:23:02 +0000 (UTC)
-Received: from [10.72.12.204] (ovpn-12-204.pek2.redhat.com [10.72.12.204])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 98509106F966;
-        Thu, 21 Nov 2019 05:22:52 +0000 (UTC)
-Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        davem@davemloft.net, gregkh@linuxfoundation.org,
-        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, Kiran Patil <kiran.patil@intel.com>,
-        Tiwei Bie <tiwei.bie@intel.com>
-References: <20191119164632.GA4991@ziepe.ca>
- <20191119134822-mutt-send-email-mst@kernel.org>
- <20191119191547.GL4991@ziepe.ca>
- <20191119163147-mutt-send-email-mst@kernel.org>
- <20191119231023.GN4991@ziepe.ca>
- <20191119191053-mutt-send-email-mst@kernel.org>
- <20191120014653.GR4991@ziepe.ca>
- <134058913.35624136.1574222360435.JavaMail.zimbra@redhat.com>
- <20191120133835.GC22515@ziepe.ca> <20191120102856.7e01e2e2@x1.home>
- <20191120181108.GJ22515@ziepe.ca> <20191120150732.2fffa141@x1.home>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <fb73ceea-afc9-de6e-3a62-ac3bbc345fd2@redhat.com>
-Date:   Thu, 21 Nov 2019 13:22:50 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20191120150732.2fffa141@x1.home>
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-MC-Unique: _Oj-2s8pNEK25LIz8fytXg-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+        id S1725904AbfKUGWk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Nov 2019 01:22:40 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:35356 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725842AbfKUGWk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Nov 2019 01:22:40 -0500
+Received: by mail-wr1-f66.google.com with SMTP id s5so2922436wrw.2
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Nov 2019 22:22:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=LM0svKfF+hpHyc9fqDL2OBns88RTteUTdttR1bJ9fBs=;
+        b=eabETdM4j7Arh9hEGUIRIF2z+llBiCVih4VcK75FMI8ytTwXh4f7kh2tTs8pEPxRAi
+         PF2V/RUx7XWFjSLqF68FAyU8+ZL4L58CoKDrQRbj8jv9Q4KTPjlMJbc1/1BDgkGRDXbB
+         A67RFXMpBiI5aKUiA9/t7h4ZWbHIURY7vlUXc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=LM0svKfF+hpHyc9fqDL2OBns88RTteUTdttR1bJ9fBs=;
+        b=VaZiuMfldiNHAgqULhuMlcaLE1XUB3C7aSeACmdqAQmm9GVahKqWkagF7XFjuI5mJO
+         ZG7AGemE1pFTc6X+tddIJO6MrKo+GZmPc5L+6dnEO4EKn1CZcYwAJehJ5A84cWvqzdEx
+         AYnu0zZ7xR8FIMaAHhZH+fHetZpbyUhX+hP4RomJeMUBuGn//b2WEmCvMPNi0aKQNLAz
+         YL1anRQ/Ij1HgzUKc4JAI0JNJjc0onH7CuIoISQlBZNVwPtPsPU1JZI0x3Ok7d8cY6xz
+         r0qmcE6Ip+I44nKe52kV3viTm2erClE4ShwEt7QwBaKq4WKwNjKihNGVZ5LQKhLRxiaA
+         gjvQ==
+X-Gm-Message-State: APjAAAWwBt6+YCp0MLMTmPqQeuwK97hEBA/IzNjbdrBDKUrjpapa/9aS
+        oKoqZebhGqgJ7kUg3Hhq6E6uhA==
+X-Google-Smtp-Source: APXvYqwa1l7hXZuPQ+vQWg2kFd7+7j71a5iWvtlaYS58BYf17xmT9O5wQBsSQ9UI1CmAsDFpPMUzvA==
+X-Received: by 2002:adf:f6d1:: with SMTP id y17mr8066005wrp.255.1574317357343;
+        Wed, 20 Nov 2019 22:22:37 -0800 (PST)
+Received: from neo00-el73.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id y11sm76377wrq.12.2019.11.20.22.22.34
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Nov 2019 22:22:36 -0800 (PST)
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+To:     dledford@redhat.com, jgg@mellanox.com
+Cc:     linux-rdma@vger.kernel.org,
+        Devesh Sharma <devesh.sharma@broadcom.com>
+Subject: [PATCH V3 for-next 0/3] Broadcom's roce driver bug fixes
+Date:   Thu, 21 Nov 2019 01:22:20 -0500
+Message-Id: <1574317343-23300-1-git-send-email-devesh.sharma@broadcom.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+This submission for for-next branch contains 3 patches, first two
+patches are important urgent fixes for Gen P5 device. The first
+patch deals with device detection in device open. While second
+patch fixes hardware counters.
 
-On 2019/11/21 =E4=B8=8A=E5=8D=886:07, Alex Williamson wrote:
-> On Wed, 20 Nov 2019 14:11:08 -0400
-> Jason Gunthorpe<jgg@ziepe.ca>  wrote:
->
->> On Wed, Nov 20, 2019 at 10:28:56AM -0700, Alex Williamson wrote:
->>>>> Are you objecting the mdev_set_iommu_deivce() stuffs here?
->>>> I'm questioning if it fits the vfio PCI device security model, yes.
->>> The mdev IOMMU backing device model is for when an mdev device has
->>> IOMMU based isolation, either via the PCI requester ID or via requester
->>> ID + PASID.  For example, an SR-IOV VF may be used by a vendor to
->>> provide IOMMU based translation and isolation, but the VF may not be
->>> complete otherwise to provide a self contained device.  It might
->>> require explicit coordination and interaction with the PF driver, ie.
->>> mediation.
->> In this case the PF does not look to be involved, the ICF kernel
->> driver is only manipulating registers in the same VF that the vfio
->> owns the IOMMU for.
-> The mdev_set_iommu_device() call is probably getting caught up in the
-> confusion of mdev as it exists today being vfio specific.  What I
-> described in my reply is vfio specific.  The vfio iommu backend is
-> currently the only code that calls mdev_get_iommu_device(), JasonW
-> doesn't use it in the virtio-mdev code, so this seems like a stray vfio
-> specific interface that's setup by IFC but never used.
->
+The third patch fixes few sparse warnings from main.c.
 
-It will be used by userspace driver through vhost-mdev code for having a=20
-correct IOMMU when doing DMA mappings.
+changes from V2 to V3
+ - moved the series from for-rc to for-next
+ - added back the sparse warning fix patch.
 
-Thanks
+changes from V1 to V2
+ - dropped patch related to sparse warnings.
+ - updated patch description to report the motivation
+   for submission to for-rc branch.
+
+changes for V0 to V1
+ - originally this series had only 1 patch which is the first patch.
+ - Added Fixes tag on the first patch.
+ - added two more patches to fix other quick bug fixes.
+
+Devesh Sharma (2):
+  RDMA/bnxt_re: fix stat push into dma buffer on gen p5 devices
+  RDMA/bnxt_re: fix sparse warnings
+
+Luke Starrett (1):
+  RDMA/bnxt_re: Fix chip number validation Broadcom's Gen P5 series
+
+ drivers/infiniband/hw/bnxt_re/main.c      | 9 +++++----
+ drivers/infiniband/hw/bnxt_re/qplib_res.h | 8 ++++++--
+ 2 files changed, 11 insertions(+), 6 deletions(-)
+
+-- 
+1.8.3.1
 
