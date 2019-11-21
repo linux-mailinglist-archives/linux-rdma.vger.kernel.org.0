@@ -2,71 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 651ED104804
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 02:23:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8EE104821
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 02:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbfKUBXF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Nov 2019 20:23:05 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7158 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727121AbfKUBXF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 20 Nov 2019 20:23:05 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 2D982E0C53144B1BB534;
-        Thu, 21 Nov 2019 09:23:04 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.439.0; Thu, 21 Nov 2019 09:22:53 +0800
-From:   Weihang Li <liweihang@hisilicon.com>
-To:     <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH rdma-core 7/7] libhns: Return correct value of cqe num when flushing cqe failed
-Date:   Thu, 21 Nov 2019 09:19:29 +0800
-Message-ID: <1574299169-31457-8-git-send-email-liweihang@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1574299169-31457-1-git-send-email-liweihang@hisilicon.com>
-References: <1574299169-31457-1-git-send-email-liweihang@hisilicon.com>
+        id S1725842AbfKUBiT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Nov 2019 20:38:19 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:35831 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725819AbfKUBiT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 20:38:19 -0500
+Received: by mail-qv1-f65.google.com with SMTP id y18so777860qve.2
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Nov 2019 17:38:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=c40M1cst4ML5N7ApczvXgI2sQfbBl98vL2Dm1XX73oQ=;
+        b=aPQefoVORKlqsxMSCgSGYy45ZOjexE/92layDmnOnX7nQDs7xmKRpalOXJSDjbJWGd
+         JNtn/yTU9UddEN+q/ZbGxvSXBbB4poMjtT0rg3uUYt1xImEcGUmj9gr9Ps11PSWzpTd3
+         hzWsBfItntrDqlh8NpaayzGJ4K+P6/bXTL99hoKRJfeB76gWwGJ9/xP38+j0DvSeU2ZV
+         ypkvbEAylZS/TzK0fHFSgW8zl+NHZ29XP9XjfVXKLvCr0uoQguuAuZSTcQt7yCgoycs4
+         gbDG4zVb0LTYwjSHTxpzpQA+OHe//fk/wI9GWHfIG4l2Bd/hNCmoC86VoSKJDqbAyLVb
+         z6xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=c40M1cst4ML5N7ApczvXgI2sQfbBl98vL2Dm1XX73oQ=;
+        b=Shr0PXBxjN29+KEi+2MabCCLoz3alXZe1JhiCdJt1e9Vk8oXllYauVroYx2RWohoYU
+         icWtTMZfcrAOrdWtB75YJ2qI2TC4HW8K8KS9LO4REQX0rn9H9c00+0QSTd6m2EU/vVpU
+         qHhC0bSJpOKovMoxusx6IY/cRBner7EqEgeCByXglnyrFicSfKv2xM1TGgBIXqXiD5cS
+         KYbYWMxXc1ODsZDoCS15dJkWkHAHfN4IIKJaK2dBAuhNLuMhPbND+5B8hX4YdaRaciV5
+         eUTNq5J07vEs5ZAMW6yCNLqReoKs+Ni+Em+hwm28z0faV8W4SutSpOzTNXfqXocdLJOk
+         3qzw==
+X-Gm-Message-State: APjAAAWhp0vc6TJ6ZW/xBxd6MrWzPXQaxhR/H1ZRnusTMiVvZ0CLyNDH
+        KHduWmNf8CKaTlQ5qfOpHK0o3g==
+X-Google-Smtp-Source: APXvYqxfD0egClyACS2Sz5SOlGnKnevgwWbZBp6kTtoP7xYygY+jpMRDwbE+sqwiF3tdcI6b23Czhw==
+X-Received: by 2002:a0c:f4d2:: with SMTP id o18mr5856536qvm.100.1574300298519;
+        Wed, 20 Nov 2019 17:38:18 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id t65sm617238qkh.99.2019.11.20.17.38.17
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 20 Nov 2019 17:38:17 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iXbQH-0000cf-5H; Wed, 20 Nov 2019 21:38:17 -0400
+Date:   Wed, 20 Nov 2019 21:38:17 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        Kiran Patil <kiran.patil@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Bie, Tiwei" <tiwei.bie@intel.com>
+Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Message-ID: <20191121013817.GA16914@ziepe.ca>
+References: <20191119231023.GN4991@ziepe.ca>
+ <20191119191053-mutt-send-email-mst@kernel.org>
+ <20191120014653.GR4991@ziepe.ca>
+ <20191120022141-mutt-send-email-mst@kernel.org>
+ <20191120130319.GA22515@ziepe.ca>
+ <20191120083908-mutt-send-email-mst@kernel.org>
+ <20191120143054.GF22515@ziepe.ca>
+ <20191120093607-mutt-send-email-mst@kernel.org>
+ <20191120164525.GH22515@ziepe.ca>
+ <20191120165748-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191120165748-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yangyang Li <liyangyang20@huawei.com>
+On Wed, Nov 20, 2019 at 05:05:00PM -0500, Michael S. Tsirkin wrote:
+> On Wed, Nov 20, 2019 at 12:45:25PM -0400, Jason Gunthorpe wrote:
+> > > > For instance, this VFIO based approach might be very suitable to the
+> > > > intel VF based ICF driver, but we don't yet have an example of non-VF
+> > > > HW that might not be well suited to VFIO.
+> > >
+> > > I don't think we should keep moving the goalposts like this.
+> > 
+> > It is ABI, it should be done as best we can as we have to live with it
+> > for a long time. Right now HW is just starting to come to market with
+> > VDPA and it feels rushed to design a whole subsystem style ABI around
+> > one, quite simplistic, driver example.
+> 
+> Well one has to enable hardware in some way. It's not really reasonable
+> to ask for multiple devices to be available just so there's a driver and
+> people can use them.
 
-When flushing cqe failed, it will return a error code to
-hns_roce_v2_poll_one() and no longer update cqe number which is necessary
-for ULPs, that will lead to a process suspension.
-Because error code of flush cqe is meaningless for ULPs, so we delete it.
+Er, this has actually been a fairly standard ask for new subsystems.
 
-Fixes: 321ec6d04c0b ("libhns: Package for polling cqe function")
-Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
-Signed-off-by: Weihang Li <liweihang@hisilicon.com>
----
- providers/hns/hns_roce_u_hw_v2.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+I think virtio is well grounded here compared to other things I've
+seen, but it should still be done with a lot more NIC community involvement.
 
-diff --git a/providers/hns/hns_roce_u_hw_v2.c b/providers/hns/hns_roce_u_hw_v2.c
-index 64dea8e..a8d3d11 100644
---- a/providers/hns/hns_roce_u_hw_v2.c
-+++ b/providers/hns/hns_roce_u_hw_v2.c
-@@ -287,10 +287,9 @@ static int hns_roce_flush_cqe(struct hns_roce_qp **cur_qp, struct ibv_wc *wc)
- 		attr.qp_state = IBV_QPS_ERR;
- 		ret = hns_roce_u_v2_modify_qp(&(*cur_qp)->ibv_qp,
- 						      &attr, attr_mask);
--		if (ret) {
-+		if (ret)
- 			fprintf(stderr, PFX "failed to modify qp!\n");
--			return ret;
--		}
-+
- 		(*cur_qp)->ibv_qp.state = IBV_QPS_ERR;
- 	}
+> At this rate no one will want to be the first to ship new devices ;)
+
+Why?
  
--- 
-2.8.1
+> > > If people write drivers and find some infrastruture useful,
+> > > and it looks more or less generic on the outset, then I don't
+> > > see why it's a bad idea to merge it.
+> > 
+> > Because it is userspace ABI, caution is always justified when defining
+> > new ABI.
+> 
+> Reasonable caution, sure. Asking Alex to block Intel's driver until
+> someone else catches up and ships competing hardware isn't reasonable
+> though. If that's your proposal I guess we'll have to agree to disagree.
 
+Vendors may be willing to participate, as Mellanox is doing,
+pre-product.
+
+Jason
