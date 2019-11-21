@@ -2,154 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B981058A5
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 18:36:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53595105915
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 19:13:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbfKURgn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Nov 2019 12:36:43 -0500
-Received: from mail-eopbgr80084.outbound.protection.outlook.com ([40.107.8.84]:61668
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726279AbfKURgn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Nov 2019 12:36:43 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iuM0zyoODYaxSN67KLzq/oLmiDzOsn61HXVFZkZ0DwEIRB/7YOhBI0N5M2gQ5RGqndnab66l0J/xekbUEDA8mpn7/JmhL1bNUlv/VTGLSPdD7iO3LyVjJ5mENXhcddmmz5dG7whrHuHZVlOs1tDHbgXIhUU5AJdkzSl2MPwoC/QklUdgBSyCCtZ5BOK3KcGRQEODYMjc8UHoyAppO8zvZKl42DvVVHjmMt3JjF86220453jfjqR3o8z1RWvDNxOWXe+kSS2KYbuvnUTHP4bbNqFx8AD8hDnXJysI4Oe+4dOmh1eZW2XzYD1fo/qWIC+j7dqrctD+aaOG9iUT2IXwww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cCy13xVXiGyn7F2nCljvUIczWHxN7Gn3eM7O/fEsBEY=;
- b=MDH1nJSIA+YQgKsLOcDQ7XV0in0JAL/jtHSMzMSjsUwE/tsjn2bptEHsGHNkvcyYqh7++J0QpuesaBHPwK3JQoiCVpPRcwg2EWIiBaWsIxoQSysrgdUhxPxWiCS/AYAE53VNPZxegswxHfe0kKA+XFQBB54CXY5T4lRZI9gi2SNiaYiBTZWHeY6xQCHR4WHupa9aIo7jZj7fvXGt7fOyh5akIqH+VRhxIpuk1XmuLbtpDCgdIxvzq6SfZAutIwqcJfjwvnsQMYAICkrlJf58+dLuo/jNLUj6HFDQY3PV3DtP0XYdBeJ+39ETej+0OtICtlqDdZ2rsU6HDbU9O8900w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cCy13xVXiGyn7F2nCljvUIczWHxN7Gn3eM7O/fEsBEY=;
- b=KQg4x3GFqvVMPEaqaU/u2eLVnoB9EY4Zr1QvVufctts8lI3tegM7Fvwx6kl/Gb1mhXiN+UHVs6zMa7IPaza4ZxgQYGIxLN93lb14x2vl7Ye38fjNP8sM5wKdhggj7byJcxl5pIDhY/P7reknbotRaYfrqP5aEGGtApvljCEGrRA=
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com (10.171.188.155) by
- AM4PR05MB3252.eurprd05.prod.outlook.com (10.171.186.149) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2474.16; Thu, 21 Nov 2019 17:36:39 +0000
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::70c3:1586:88a:1493]) by AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::70c3:1586:88a:1493%7]) with mapi id 15.20.2474.015; Thu, 21 Nov 2019
- 17:36:39 +0000
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     "David S. Miller" <davem@davemloft.net>
-CC:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Danit Goldberg <danitg@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 0/4] Get IB port and node GUIDs through
- rtnetlink
-Thread-Topic: [PATCH rdma-next 0/4] Get IB port and node GUIDs through
- rtnetlink
-Thread-Index: AQHVmu/Vfdk+oqiBkUy0e40m6XWwa6eQjLIAgAVh4AA=
-Date:   Thu, 21 Nov 2019 17:36:39 +0000
-Message-ID: <20191121173636.GC107486@unreal>
-References: <20191114133126.238128-1-leon@kernel.org>
- <20191118072500.GI4716@unreal>
-In-Reply-To: <20191118072500.GI4716@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM0PR01CA0087.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:10e::28) To AM4PR05MB3137.eurprd05.prod.outlook.com
- (2603:10a6:205:8::27)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=leonro@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [5.29.147.182]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f3d0bbab-e1bd-49e8-135e-08d76ea95d59
-x-ms-traffictypediagnostic: AM4PR05MB3252:|AM4PR05MB3252:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM4PR05MB325298A0D3E08DE2EF6258C3B04E0@AM4PR05MB3252.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-forefront-prvs: 0228DDDDD7
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(7916004)(4636009)(396003)(39850400004)(346002)(376002)(366004)(136003)(189003)(199004)(33656002)(81156014)(478600001)(5660300002)(86362001)(81166006)(7736002)(6916009)(8936002)(14444005)(9686003)(25786009)(256004)(229853002)(66946007)(6512007)(11346002)(99286004)(8676002)(66066001)(1076003)(71200400001)(71190400001)(6486002)(26005)(66446008)(64756008)(66556008)(66476007)(316002)(2906002)(33716001)(446003)(6436002)(54906003)(6246003)(305945005)(6506007)(52116002)(386003)(14454004)(3846002)(6116002)(76176011)(186003)(4326008)(102836004);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR05MB3252;H:AM4PR05MB3137.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cD8b9MoYtWUuXJ+2O3Au6jQUtGcVAHG4N/TSi7Mrvvt5peBPqglDzHSJ63L3v82nVVPOPyxpDmL2adUjV6nkR9rRbTOIyhfQj5Rm/FB05KOpd1SdKG5N5diBo8/a5R3ZLrxnQwQ1ys2As9H12TV95OqjkCY24yqwAoTL+re/sxEyjsztD19LVIGFp+ToyLC63y0byisnsNxr9YbW3A91rwXHoH8q4q4OhbXa4Ek1ec3epy2vFWknYDoXwNYxjwyCS5L7wtJN+fz2w/r7xd04/2F6AWwarAWxJVox3iYD1amSEeXirji3aZJSxd7cuBctytri9P0D8rnVbJ7v7MT5a3a2hGhLU9wOQVun3h9wyWSBzXsON14wMjVm1NgMAnY5l0YnzQ3QKVy/oiFhtpC/1PcYxNmi/QZ7IlYHkR86zvHMXEw/L3JhffR2xQ3JMZ+1
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <8A869D72D8870F40851757ED895AE818@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726293AbfKUSNT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Nov 2019 13:13:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726279AbfKUSNT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 21 Nov 2019 13:13:19 -0500
+Received: from localhost (unknown [5.29.147.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4EFC42068E;
+        Thu, 21 Nov 2019 18:13:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1574359998;
+        bh=+f4t3nVPuFtbRmRnpGYpkiTzKzxlBLGsUIy9LBUySRQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=u4GsWdNINxmTUa67/Ct9OMVwqRL7TfBHaNNG2+Jm4lz+oT+xje2UpZM5G60sotdIv
+         dQbVkSyWEzY+DCz7V678PdHfuAVzDbOO1cupF1t86nlg0CIaVDK0EOQmGgsAE3g5KX
+         GHF9Pwa4CxiCyh9zM2Omy11W20d3EmEgRhkfcHcM=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Sean Hefty <sean.hefty@intel.com>
+Subject: [PATCH rdma-next v1 00/48] Organize code according to IBTA layout
+Date:   Thu, 21 Nov 2019 20:12:25 +0200
+Message-Id: <20191121181313.129430-1-leon@kernel.org>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3d0bbab-e1bd-49e8-135e-08d76ea95d59
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Nov 2019 17:36:39.3160
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QOwmWD0VwQldvy5/IMg3y8hAtB/iXC3KmUqjYBEeX0DPZuGme9DSmBMfh62VBUPe7wZbj6n/Y3qH7wvLQfMydw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3252
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 18, 2019 at 07:25:02AM +0000, Leon Romanovsky wrote:
-> On Thu, Nov 14, 2019 at 03:31:21PM +0200, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> >
-> > Hi,
-> >
-> > This series from Danit extends RTNETLINK to provide IB port and node
-> > GUIDs, which were configured for Infiniband VFs.
-> >
-> > The functionality to set VF GUIDs already existed for a long time, and =
-here
-> > we are adding the missing "get" so that netlink will be symmetric
-> > and various cloud orchestration tools will be able to manage such
-> > VFs more naturally.
-> >
-> > The iproute2 was extended too to present those GUIDs.
-> >
-> > - ip link show <device>
-> >
-> > For example:
-> > - ip link set ib4 vf 0 node_guid 22:44:33:00:33:11:00:33
-> > - ip link set ib4 vf 0 port_guid 10:21:33:12:00:11:22:10
-> > - ip link show ib4
-> >     ib4: <BROADCAST,MULTICAST> mtu 4092 qdisc noop state DOWN mode DEFA=
-ULT group default qlen 256
-> >     link/infiniband 00:00:0a:2d:fe:80:00:00:00:00:00:00:ec:0d:9a:03:00:=
-44:36:8d brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
-> >     vf 0     link/infiniband 00:00:0a:2d:fe:80:00:00:00:00:00:00:ec:0d:=
-9a:03:00:44:36:8d brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff=
-:ff:ff,
-> >     spoof checking off, NODE_GUID 22:44:33:00:33:11:00:33, PORT_GUID 10=
-:21:33:12:00:11:22:10, link-state disable, trust off, query_rss off
-> >
-> > Due to the fact that this series touches both net and RDMA, we assume
-> > that it needs to be applied to our shared branch (mlx5-next) and pulled
-> > later by Dave and Doug/Jason.
-> >
-> > Thanks
-> >
-> > Danit Goldberg (4):
-> >   net/core: Add support for getting VF GUIDs
-> >   IB/core: Add interfaces to get VF node and port GUIDs
-> >   IB/ipoib: Add ndo operation for getting VFs GUID attributes
-> >   IB/mlx5: Implement callbacks for getting VFs GUID attributes
->
-> Dave,
->
-> I see that you marked these patches as "not applicable" in patchworks.
->
-> Can I assume that you are OK with them and we can take them through RDMA
-> tree? If yes, can you give your Ack on the first patch?
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Kindly reminder.
+Changelog:
+v0->v1: https://lore.kernel.org/linux-rdma/20191027070621.11711-1-leon@kernel.org
+ * Used Jason's macros as a basis for all get/set operation for wire protocol.
+ * Fixed wrong offsets
+ * Grouped all CM related patches in one patchset bomb
+----------------------------------------------------------------------
+Hi,
+
+This series continues already started task to clean up CM related code.
+
+Over the years, the IB/core gained a number of anti-patterns which
+led to mistakes. First and most distracting is spread of hardware
+specification types (e.g. __beXX) to the core logic. Second, endless
+copy/paste to access IBTA binary blobs, which made any IBTA extensions
+not an easy task.
+
+In this series, we add Enhance Connection Establishment bits which
+were added recently to IBTA and will continue to convert rest of the CM
+code to propose macros by eliminating __beXX variables from core code.
+
+All IBTA CM declarations are places into new header
+file: include/rdma/ibta_vol1_c12.h and the idea that every
+spec chapter will have separate header file, so we will see
+immediately the relations between declarations and values.
 
 Thanks
 
->
-> Thanks
+BTW,
+1. The whole area near private_data looks sketchy to me and needs
+   separate cleanup.
+2. I know that it is more than 15 patches, but they are small and
+   self-contained.
+
+Leon Romanovsky (48):
+  RDMA/cm: Provide private data size to CM users
+  RDMA/srpt: Use private_data_len instead of hardcoded value
+  RDMA/ucma: Mask QPN to be 24 bits according to IBTA
+  RDMA/cm: Add SET/GET implementations to hide IBA wire format
+  RDMA/cm: Request For Communication (REQ) message definitions
+  RDMA/cm: Message Receipt Acknowledgment (MRA) message definitions
+  RDMA/cm: Reject (REJ) message definitions
+  RDMA/cm: Reply To Request for communication (REP) definitions
+  RDMA/cm: Ready To Use (RTU) definitions
+  RDMA/cm: Request For Communication Release (DREQ) definitions
+  RDMA/cm: Reply To Request For Communication Release (DREP) definitions
+  RDMA/cm: Load Alternate Path (LAP) definitions
+  RDMA/cm: Alternate Path Response (APR) message definitions
+  RDMA/cm: Service ID Resolution Request (SIDR_REQ) definitions
+  RDMA/cm: Service ID Resolution Response (SIDR_REP) definitions
+  RDMA/cm: Convert QPN and EECN to be u32 variables
+  RDMA/cm: Convert REQ responded resources to the new scheme
+  RDMA/cm: Convert REQ initiator depth to the new scheme
+  RDMA/cm: Convert REQ remote response timeout
+  RDMA/cm: Simplify QP type to wire protocol translation
+  RDMA/cm: Convert REQ flow control
+  RDMA/cm: Convert starting PSN to be u32 variable
+  RDMA/cm: Update REQ local response timeout
+  RDMA/cm: Convert REQ retry count to use new scheme
+  RDMA/cm: Update REQ path MTU field
+  RDMA/cm: Convert REQ RNR retry timeout counter
+  RDMA/cm: Convert REQ MAX CM retries
+  RDMA/cm: Convert REQ SRQ field
+  RDMA/cm: Convert REQ flow label field
+  RDMA/cm: Convert REQ packet rate
+  RDMA/cm: Convert REQ SL fields
+  RDMA/cm: Convert REQ subnet local fields
+  RDMA/cm: Convert REQ local ack timeout
+  RDMA/cm: Convert MRA MRAed field
+  RDMA/cm: Convert MRA service timeout
+  RDMA/cm: Update REJ struct to use new scheme
+  RDMA/cm: Convert REP target ack delay field
+  RDMA/cm: Convert REP failover accepted field
+  RDMA/cm: Convert REP flow control field
+  RDMA/cm: Convert REP RNR retry count field
+  RDMA/cm: Convert REP SRQ field
+  RDMA/cm: Delete unused CM LAP functions
+  RDMA/cm: Convert LAP flow label field
+  RDMA/cm: Convert LAP fields
+  RDMA/cm: Delete unused CM ARP functions
+  RDMA/cm: Convert SIDR_REP to new scheme
+  RDMA/cm: Add Enhanced Connection Establishment (ECE) bits
+  RDMA/cm: Convert private_date access
+
+ drivers/infiniband/core/cm.c          | 554 ++++++++++--------------
+ drivers/infiniband/core/cm_msgs.h     | 600 +-------------------------
+ drivers/infiniband/core/cma.c         |  11 +-
+ drivers/infiniband/core/ucma.c        |   2 +-
+ drivers/infiniband/ulp/srpt/ib_srpt.c |   2 +-
+ include/rdma/ib_cm.h                  |  55 +--
+ include/rdma/iba.h                    | 137 ++++++
+ include/rdma/ibta_vol1_c12.h          | 208 +++++++++
+ 8 files changed, 595 insertions(+), 974 deletions(-)
+ create mode 100644 include/rdma/iba.h
+ create mode 100644 include/rdma/ibta_vol1_c12.h
+
+--
+2.20.1
+
