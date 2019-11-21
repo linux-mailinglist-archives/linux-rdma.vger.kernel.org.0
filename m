@@ -2,90 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A274104FBB
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 10:54:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBF810514D
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 12:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726922AbfKUJyR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Nov 2019 04:54:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42156 "EHLO mx1.suse.de"
+        id S1726881AbfKULTl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Nov 2019 06:19:41 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6262 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726132AbfKUJyQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Nov 2019 04:54:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1B5FCAC46;
-        Thu, 21 Nov 2019 09:54:13 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5A11F1E47FC; Thu, 21 Nov 2019 10:54:11 +0100 (CET)
-Date:   Thu, 21 Nov 2019 10:54:11 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-Subject: Re: [PATCH v7 02/24] mm/gup: factor out duplicate code from four
- routines
-Message-ID: <20191121095411.GC18190@quack2.suse.cz>
-References: <20191121071354.456618-1-jhubbard@nvidia.com>
- <20191121071354.456618-3-jhubbard@nvidia.com>
- <20191121080356.GA24784@lst.de>
- <852f6c27-8b65-547b-89e0-e8f32a4d17b9@nvidia.com>
+        id S1726293AbfKULTl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 21 Nov 2019 06:19:41 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 424B8857199527613F4E;
+        Thu, 21 Nov 2019 19:19:37 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.439.0; Thu, 21 Nov 2019 19:19:30 +0800
+From:   Yixian Liu <liuyixian@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH v3 for-next 0/2] Fix crash due to sleepy mutex while holding lock in post_{send|recv|poll}
+Date:   Thu, 21 Nov 2019 19:19:58 +0800
+Message-ID: <1574335200-34923-1-git-send-email-liuyixian@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <852f6c27-8b65-547b-89e0-e8f32a4d17b9@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu 21-11-19 00:29:59, John Hubbard wrote:
-> > 
-> > Otherwise this looks fine and might be a worthwhile cleanup to feed
-> > Andrew for 5.5 independent of the gut of the changes.
-> > 
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> > 
-> 
-> Thanks for the reviews! Say, it sounds like your view here is that this
-> series should be targeted at 5.6 (not 5.5), is that what you have in mind?
-> And get the preparatory patches (1-9, and maybe even 10-16) into 5.5?
+Earlier Background:
+HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
+outstanding WQEs if QP state gets into errored mode for some reason.
+To overcome this hardware problem and as a workaround, when QP is
+detected to be in errored state during various legs like post send,
+post receive etc [1], flush needs to be performed from the driver.
 
-One more note :) If you are going to push pin_user_pages() interfaces
-(which I'm fine with), it would probably make sense to push also the
-put_user_pages() -> unpin_user_pages() renaming so that that inconsistency
-in naming does not exist in the released upstream kernel.
+These data-path legs might get called concurrently from various context,
+like thread and interrupt as well (like NVMe driver). Hence, these need
+to be protected with spin-locks for the concurrency. This code exists
+within the driver.
 
-								Honza
+Problem:
+Earlier The patch[1] sent to solve the hardware limitation explained
+in the background section had a bug in the software flushing leg. It
+acquired mutex while modifying QP state to errored state and while
+conveying it to the hardware using the mailbox. This caused leg to
+sleep while holding spin-lock and caused crash.
+
+Suggested Solution:
+In this patch, we have proposed to defer the flushing of the QP in
+Errored state using the workqueue.
+
+We do understand that this might have an impact on the recovery times
+as scheduling of the wqorkqueue handler depends upon the occupancy of
+the system. Therefore to roughly mitigate this affect we have tried
+to use Concurrency Managed workqueue to give worker thread (and
+hence handler) a chance to run over more than one core.
+
+
+[1] https://patchwork.kernel.org/patch/10534271/
+
+
+This patch-set consists of:
+[Patch 001] Introduce workqueue based WQE Flush Handler
+[Patch 002] Call WQE flush handler in post {send|receive|poll}
+
+v3 changes:
+1. Fall back to dynamically allocate flush_work.
+
+v2 changes:
+1. Remove new created workqueue according to Jason's comment
+2. Remove dynamic allocation for flush_work according to Jason's comment
+3. Change current irq singlethread workqueue to concurrency management
+   workqueue to ensure work unblocked.
+
+Yixian Liu (2):
+  RDMA/hns: Add the workqueue framework for flush cqe handler
+  RDMA/hns: Delayed flush cqe process with workqueue
+
+ drivers/infiniband/hw/hns/hns_roce_device.h |  2 +
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 88 +++++++++++++----------------
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 43 ++++++++++++++
+ 3 files changed, 85 insertions(+), 48 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.7.4
+
