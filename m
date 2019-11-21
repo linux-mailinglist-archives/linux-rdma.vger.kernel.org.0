@@ -2,229 +2,205 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9911048CB
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 04:04:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0950104973
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 04:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725936AbfKUDEB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Nov 2019 22:04:01 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:35593 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725819AbfKUDEB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 22:04:01 -0500
-Received: by mail-qv1-f68.google.com with SMTP id y18so840057qve.2
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Nov 2019 19:04:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Y8zqQB43OT7mspDmm2HPH0UPJTT75TQo6PszWy4b0WQ=;
-        b=g+GFcHrHaQW3vt2GDhSjVpwmoqPPLU/+Q7yA2yR+7UC6Q7JdNmC1eO4wqw3m5PS1A7
-         dEOx0O5iNgqQr+fHzvEbWP2hf6Ttv9erZluGV7ItXeaKPjTYeBLr6Jt4o1GSMzSR62be
-         X0B85FXkUYxvNQSLpJTlyX4m16D4fU7LfQ6Ubk2N9feq3AAASFH+XNiqdMtU14FaK7SQ
-         Z8TKJ8oaMfe+4InX5kFjHvcvreOiZPAWhMbiFx/uhBlXQ5X8W2kElO2CYFYuppK7zwQ+
-         8bzyghPJLVEg4/FwkyeDDYKHku63c4853rO4W6G4oEtTyhKZqPfYBZFS4vLxUhoJ/Zu7
-         U36Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Y8zqQB43OT7mspDmm2HPH0UPJTT75TQo6PszWy4b0WQ=;
-        b=JHRTTTtiN01MSMwrwo/AG4OgxrdoTYxgbkQhnoqIR5tVhFl60JnBf0hOoA5hIqypU2
-         qGekYBsqHBO2ssONpKZyqMFKNcXfpB8YXC1J3b+FHZFulRBhS1KIZsjxkcTj9L10HyE0
-         OL3k9Nu9WDpxao2ycSl9nXpzF22TrgIAEJNdA/sWRElovx3OpjA53TxvUoKNTJswqi0O
-         GwA4e/6bw6JzOYqGrkhA+6rKzZLC8vK8TsRD63btvAag12nSDWXwo0+vGawpsVaJyo6V
-         TwzcsgxREeLHLu5xhdq5JTII7zHuFT3qP/lMRHDq9gLPbuHjp3hucS3hAwDifPpFEkb5
-         f7mg==
-X-Gm-Message-State: APjAAAWK2sS/FPjQxWdiZhyZbuOH4HbOHyRqQ4CX7S2Xm4du+z+5yq0W
-        raQ8PJcpwioRZN46DpqkMRlX1g==
-X-Google-Smtp-Source: APXvYqztSoUyjIQ48gtcQAq6uX/e2l6rDFs8G7WyT9PUYa5hRtW9nd3d75WHJtSSbfexgjYpi7SBGg==
-X-Received: by 2002:a05:6214:8d4:: with SMTP id da20mr1232813qvb.2.1574305439701;
-        Wed, 20 Nov 2019 19:03:59 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id c128sm715471qkg.124.2019.11.20.19.03.58
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 20 Nov 2019 19:03:58 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iXclB-0001C0-Tf; Wed, 20 Nov 2019 23:03:57 -0400
-Date:   Wed, 20 Nov 2019 23:03:57 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        id S1725819AbfKUDws (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Nov 2019 22:52:48 -0500
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:29530 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725854AbfKUDwr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 20 Nov 2019 22:52:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1574308365;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=65ygqnreLxFHb6Sgokez95OEwNyLjTrZt0mZ7AES6/U=;
+        b=BJYCf2+RKdHGt5BxYyz5hEJGAp0Y5qCdn2rog0H/udtXVzxycR/xHKgAAiZ2/xSKwJbd6B
+        NsUKY/vWmMgLv9W27+yMPfLsiVxiNrgZekwHVvhoYF7b56ij7ggg+V0doZmcorYim0/JUW
+        P0EEOHzneKRhuhjw+Uuak68MtC5UreE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-325-z4pLlIzbPGaCAefK2wMnfg-1; Wed, 20 Nov 2019 22:52:43 -0500
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DFA341005502;
+        Thu, 21 Nov 2019 03:52:41 +0000 (UTC)
+Received: from [10.72.12.204] (ovpn-12-204.pek2.redhat.com [10.72.12.204])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8316A60BC8;
+        Thu, 21 Nov 2019 03:52:31 +0000 (UTC)
+Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
         Parav Pandit <parav@mellanox.com>,
         Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
         davem@davemloft.net, gregkh@linuxfoundation.org,
         Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, nhorman@redhat.com,
         sassmann@redhat.com, Kiran Patil <kiran.patil@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
         Tiwei Bie <tiwei.bie@intel.com>
-Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
-Message-ID: <20191121030357.GB16914@ziepe.ca>
-References: <20191119191547.GL4991@ziepe.ca>
+References: <AM0PR05MB4866C40A177D3D60BFC558F7D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
+ <20191119164632.GA4991@ziepe.ca>
+ <20191119134822-mutt-send-email-mst@kernel.org>
+ <20191119191547.GL4991@ziepe.ca>
  <20191119163147-mutt-send-email-mst@kernel.org>
  <20191119231023.GN4991@ziepe.ca>
  <20191119191053-mutt-send-email-mst@kernel.org>
  <20191120014653.GR4991@ziepe.ca>
  <134058913.35624136.1574222360435.JavaMail.zimbra@redhat.com>
  <20191120133835.GC22515@ziepe.ca>
- <20191120102856.7e01e2e2@x1.home>
- <20191120181108.GJ22515@ziepe.ca>
- <20191120150732.2fffa141@x1.home>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <d6cb6bd4-b6d7-2732-27b8-ea4d7f10e4ba@redhat.com>
+Date:   Thu, 21 Nov 2019 11:52:30 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191120150732.2fffa141@x1.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191120133835.GC22515@ziepe.ca>
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MC-Unique: z4pLlIzbPGaCAefK2wMnfg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 20, 2019 at 03:07:32PM -0700, Alex Williamson wrote:
 
-> > On Wed, Nov 20, 2019 at 10:28:56AM -0700, Alex Williamson wrote:
-> > > > > Are you objecting the mdev_set_iommu_deivce() stuffs here?    
-> > > > 
-> > > > I'm questioning if it fits the vfio PCI device security model, yes.  
-> > > 
-> > > The mdev IOMMU backing device model is for when an mdev device has
-> > > IOMMU based isolation, either via the PCI requester ID or via requester
-> > > ID + PASID.  For example, an SR-IOV VF may be used by a vendor to
-> > > provide IOMMU based translation and isolation, but the VF may not be
-> > > complete otherwise to provide a self contained device.  It might
-> > > require explicit coordination and interaction with the PF driver, ie.
-> > > mediation.    
-> > 
-> > In this case the PF does not look to be involved, the ICF kernel
-> > driver is only manipulating registers in the same VF that the vfio
-> > owns the IOMMU for.
-> 
-> The mdev_set_iommu_device() call is probably getting caught up in the
-> confusion of mdev as it exists today being vfio specific.  What I
-> described in my reply is vfio specific.  The vfio iommu backend is
-> currently the only code that calls mdev_get_iommu_device(), JasonW
-> doesn't use it in the virtio-mdev code, so this seems like a stray vfio
-> specific interface that's setup by IFC but never used.
+On 2019/11/20 =E4=B8=8B=E5=8D=889:38, Jason Gunthorpe wrote:
+> On Tue, Nov 19, 2019 at 10:59:20PM -0500, Jason Wang wrote:
+>
+>>>> The interface between vfio and userspace is
+>>>> based on virtio which is IMHO much better than
+>>>> a vendor specific one. userspace stays vendor agnostic.
+>>> Why is that even a good thing? It is much easier to provide drivers
+>>> via qemu/etc in user space then it is to make kernel upgrades. We've
+>>> learned this lesson many times.
+>> For upgrades, since we had a unified interface. It could be done
+>> through:
+>>
+>> 1) switch the datapath from hardware to software (e.g vhost)
+>> 2) unload and load the driver
+>> 3) switch teh datapath back
+>>
+>> Having drivers in user space have other issues, there're a lot of
+>> customers want to stick to kernel drivers.
+> So you want to support upgrade of kernel modules, but runtime
+> upgrading the userspace part is impossible? Seems very strange to me.
 
-I couldn't really say, it was the only thing I noticed in IFC that
-seemed to have anything to do with identifying what IOMMU group to use
-for the vfio interface..
- 
-> > This is why I keep calling it a "so-called mediated device" because it
-> > is absolutely not clear what the kernel driver is mediating. Nearly
-> > all its work is providing a subsystem-style IOCTL interface under the
-> > existing vfio multiplexer unrelated to vfio requirements for DMA.
-> 
-> Names don't always evolve well to what an interface becomes, see for
-> example vfio.  However, even in the vfio sense of mediated devices we
-> have protocol translation.  The mdev vendor driver translates vfio API
-> callbacks into hardware specific interactions.  Is this really much
-> different?
 
-I think the name was fine if you constrain 'mediated' to mean
-'mediated IOMMU'
+Since you're talking about kernel upgrades, so comes such technical=20
+possibility.
 
-Broading to be basically any driver interface is starting to overlap
-with the role of the driver core and subsystems in Linux.
 
-> > However, to me it feels wrong that just because a driver wishes to use
-> > PASID or IOMMU features it should go through vfio and mediated
-> > devices.
-> 
-> I don't think I said this.  IOMMU backing of an mdev is an acceleration
-> feature as far as vfio-mdev is concerned.  There are clearly other ways
-> to use the IOMMU.
+>
+>>> This is why we have had the philosophy that if it doesn't need to be
+>>> in the kernel it should be in userspace.
+>> Let me clarify again. For this framework, it aims to support both
+>> kernel driver and userspce driver. For this series, it only contains
+>> the kernel driver part. What it did is to allow kernel virtio driver
+>> to control vDPA devices. Then we can provide a unified interface for
+>> all of the VM, containers and bare metal. For this use case, I don't
+>> see a way to leave the driver in userspace other than injecting
+>> traffic back through vhost/TAP which is ugly.
+> Binding to the other kernel virtio drivers is a reasonable
+> justification, but none of this comes through in the patch cover
+> letters or patch commit messages.
 
-Sorry, I didn't mean to imply you said this, I was mearly reflecting
-on the mission creep comment below. Often in private converstations
-the use of mdev has been justified by 'because it uses IOMMU'
 
-> > I feel like mdev is suffering from mission creep. I see people
-> > proposing to use mdev for many wild things, the Mellanox SF stuff in
-> > the other thread and this 'virtio subsystem' being the two that have
-> > come up publicly this month.
-> 
-> Tell me about it... ;)
->  
-> > Putting some boundaries on mdev usage would really help people know
-> > when to use it. My top two from this discussion would be:
-> > 
-> > - mdev devices should only bind to vfio. It is not a general kernel
-> >   driver matcher mechanism. It is not 'virtual-bus'.
-> 
-> I think this requires the driver-core knowledge to really appreciate.
-> Otherwise there's apparently a common need to create sub-devices and
-> without closer inspection of the bus:driver API contract, it's too easy
-> to try to abstract the device:driver API via the bus.  mdev already has
-> a notion that the device itself can use any API, but the interface to
-> the bus is the vendor provided, vfio compatible callbacks.
+In the cover letter it had (of course I'm not native speaker but I will=20
+try my best to make it more readable for next version).
 
-But now that we are talking about this, I think there is a pretty
-clear opinion forming that if you want to do kernel-kernel drivers
-that is 'virtual bus' as proposed in this threads patch, not mdev.
+"
+There are hardwares that can do virtio datapath offloading while
+having its own control path. This path tries to implement a mdev based
+unified API to support using kernel virtio driver to drive those
+devices. This is done by introducing a new mdev transport for virtio
+(virtio_mdev) and register itself as a new kind of mdev driver. Then
+it provides a unified way for kernel virtio driver to talk with mdev
+device implementation.
 
-Adding that knowledge to the mdev documentation would probably help
-future people.
+Though the series only contains kernel driver support, the goal is to
+make the transport generic enough to support userspace drivers. This
+means vhost-mdev[1] could be built on top as well by reusing the
+transport.
 
-> > - mdev & vfio are not a substitute for a proper kernel subsystem. We
-> >   shouldn't export a complex subsystem-like ioctl API through
-> >   vfio ioctl extensions. Make a proper subsystem, it is not so hard.
-> 
-> This is not as clear to me, is "ioctl" used once or twice too often or
-> are you describing a defined structure of callbacks as an ioctl API?
-> The vfio mdev interface is just an extension of the file descriptor
-> based vfio device API.  The device needs to handle actual ioctls, but
-> JasonW's virtio-mdev series had their own set of callbacks.  Maybe a
-> concrete example of this item would be helpful.  Thanks,
+"
 
-I did not intend it to be a clear opinion, more of a vauge guide for
-documentation. I think as a maintainer you will be asked to make this
-call.
 
-The role of a subsystem in Linux is traditionally to take many
-different kinds of HW devices and bring them to a common programming
-API. Provide management and diagnostics, and expose some user ABI to
-access the HW.
+>
+>>>> That has lots of security and portability implications and isn't
+>>>> appropriate for everyone.
+>>> This is already using vfio. It doesn't make sense to claim that using
+>>> vfio properly is somehow less secure or less portable.
+>>>
+>>> What I find particularly ugly is that this 'IFC VF NIC' driver
+>>> pretends to be a mediated vfio device, but actually bypasses all the
+>>> mediated device ops for managing dma security and just directly plugs
+>>> the system IOMMU for the underlying PCI device into vfio.
+>> Well, VFIO have multiple types of API. The design is to stick the VFIO
+>> DMA model like container work for making DMA API work for userspace
+>> driver.
+> Well, it doesn't, that model, for security, is predicated on vfio
+> being the exclusive owner of the device. For instance if the kernel
+> driver were to perform DMA as well then security would be lost.
 
-The role of vfio has traditionally been around secure device
-assignment of a HW resource to a VM. I'm not totally clear on what the
-role if mdev is seen to be, but all the mdev drivers in the tree seem
-to make 'and pass it to KVM' a big part of their description.
 
-So, looking at the virtio patches, I see some intended use is to map
-some BAR pages into the VM. I see an ops struct to take different
-kinds of HW devices to a common internal kernel API. I understand a
-desire to bind kernel drivers that are not vfio to those ops, and I
-see a user ioctl ABI based around those ops.
+It's the responsibility of the kernel mdev driver to preserve the DMA=20
+isolation. And it's possible that mdev needs communicate with the master=20
+(PF or other) using its own memory, this should be allowed.
 
-I also understand the BAR map is not registers, but just a write-only
-doorbell page. So I suppose any interaction the guest will have with
-the device prior to starting DMA is going to be software emulated in
-qemu, and relayed into ioctls. (?) ie this is no longer strictly
-"device assignment" but "accelerated device emulation".
 
-Is virtio more vfio or more subsystem? The biggest thing that points
-toward vfio is the intended use. The other items push away.
+> to
+>>> I suppose this little hack is what is motivating this abuse of vfio in
+>>> the first place?
+>>>
+>>> Frankly I think a kernel driver touching a PCI function for which vfio
+>>> is now controlling the system iommu for is a violation of the security
+>>> model, and I'm very surprised AlexW didn't NAK this idea.
+>>>
+>>> Perhaps it is because none of the patches actually describe how the
+>>> DMA security model for this so-called mediated device works? :(
+>>>
+>>> Or perhaps it is because this submission is split up so much it is
+>>> hard to see what is being proposed? (I note this IFC driver is the
+>>> first user of the mdev_set_iommu_device() function)
+>> Are you objecting the mdev_set_iommu_deivce() stuffs here?
+> I'm questioning if it fits the vfio PCI device security model, yes.
+>
+>>>> It is kernel's job to abstract hardware away and present a unified
+>>>> interface as far as possible.
+>>> Sure, you could create a virtio accelerator driver framework in our
+>>> new drivers/accel I hear was started. That could make some sense, if
+>>> we had HW that actually required/benefited from kernel involvement.
+>> The framework is not designed specifically for your card. It tries to be
+>> generic to support every types of virtio hardware devices, it's not
+>> tied to any bus (e.g PCI) and any vendor. So it's not only a question
+>> of how to slice a PCIE ethernet device.
+> That doesn't explain why this isn't some new driver subsystem
 
-Frankly, when I look at what this virtio stuff is doing I see RDMA:
- - Both have a secure BAR pages for mmaping to userspace (or VM)
- - Both are prevented from interacting with the device at a register
-   level and must call to the kernel - ie creating resources is a
-   kernel call - for security.
- - Both create command request/response rings in userspace controlled
-   memory and have HW DMA to read requests and DMA to generate responses
- - Both allow the work on the rings to DMA outside the ring to
-   addresses controlled by userspace.
- - Both have to support a mixture of HW that uses on-device security
-   or IOMMU based security.
 
-(I actually gave a talk on how alot of modern HW is following the RDMA
- design patterns at plumbers, maybe video will come out soon)
+The vhost-mdev is a vfio-mdev device. It sticks to the VFIO programming=20
+model. Any reason to reinvent the wheel?
 
-We've had the same debate with RDMA. Like VFIO it has an extensible
-file descriptor with a driver-specific path that can serve an
-unlimited range of uses. We have had to come up with some sensability
-and definition for "what is RDMA" and is appropriate for the FD.
 
-Jason
+> and
+> instead treats vfio as a driver multiplexer.
+
+
+I fail to understand this. VFIO had already support PCI, AP, mdev, and=20
+possible other buses (e.g vmbus) in the future. VFIO is not PCI=20
+specific, why requires vfio-mdev to be PCI specific?
+
+Thanks
+
+>
+> Jason
+>
+
