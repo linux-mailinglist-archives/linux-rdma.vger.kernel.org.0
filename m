@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1755105955
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 19:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C29105952
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 19:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727194AbfKUSQI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Nov 2019 13:16:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54736 "EHLO mail.kernel.org"
+        id S1727188AbfKUSQA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Nov 2019 13:16:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726279AbfKUSQI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Nov 2019 13:16:08 -0500
+        id S1727187AbfKUSQA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 21 Nov 2019 13:16:00 -0500
 Received: from localhost (unknown [5.29.147.182])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3CEA62068E;
-        Thu, 21 Nov 2019 18:16:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E4242068E;
+        Thu, 21 Nov 2019 18:15:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574360166;
-        bh=rid3HTm6rY2jcUrHuYnN3h0yk8IqJIRA4Mkvmfum/W0=;
+        s=default; t=1574360159;
+        bh=7hNskEVNwc6LhuevTICnnP/BERfwGilqWLZ2zaR4xmo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ll0HF5Vcu6TZnNUxa7B9ypLml5iS7IgS36TXDoZtY62O4doaonp9KQXlDlnS6d1N6
-         WMqAMsr4oqm04KNsOPzxFukNu9Fam8Hft7af2srS1vmF1/cZYtkuLXV8SCV3M5duqs
-         PNIbQrNqnFj+o1bdbQ/s47vPjbMS2Li4P5FRlZFY=
+        b=uSAxCB7RFQBCq9Pid1SeoeDPaBx4X0XCFKG3MSJbFdIp3PDlnUGn4vjXBQin1Wz1L
+         Awqx8NiD5QBeVGvfQe+DBbUfpXPjD/LmYWQTbo1Y1/OsgvTmCrqGvXA0wWhH0VbvhT
+         oZSWFynVRIyxNUHNXeZUBh5z5NqTXWJYOCQJ5jlA=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -30,9 +30,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Bart Van Assche <bvanassche@acm.org>,
         Sean Hefty <sean.hefty@intel.com>
-Subject: [PATCH rdma-next v1 46/48] RDMA/cm: Convert SIDR_REP to new scheme
-Date:   Thu, 21 Nov 2019 20:13:11 +0200
-Message-Id: <20191121181313.129430-47-leon@kernel.org>
+Subject: [PATCH rdma-next v1 47/48] RDMA/cm: Add Enhanced Connection Establishment (ECE) bits
+Date:   Thu, 21 Nov 2019 20:13:12 +0200
+Message-Id: <20191121181313.129430-48-leon@kernel.org>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191121181313.129430-1-leon@kernel.org>
 References: <20191121181313.129430-1-leon@kernel.org>
@@ -45,72 +45,57 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-Use new scheme to access SIDR_REP fields.
+Extend REQ (request for communications), REP (reply to request
+for communication), rejected reason and SIDR_REP (service ID
+resolution response) structures with hardware vendor ID bits
+according to approved IBA Comment #9434.
 
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/cm.c      | 15 ++++++++-------
- drivers/infiniband/core/cm_msgs.h | 14 --------------
- 2 files changed, 8 insertions(+), 21 deletions(-)
+ include/rdma/ib_cm.h         | 3 ++-
+ include/rdma/ibta_vol1_c12.h | 5 +++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 41422bf13279..f197f9740362 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -3483,10 +3483,10 @@ static void cm_format_sidr_rep(struct cm_sidr_rep_msg *sidr_rep_msg,
- 	cm_format_mad_hdr(&sidr_rep_msg->hdr, CM_SIDR_REP_ATTR_ID,
- 			  cm_id_priv->tid);
- 	sidr_rep_msg->request_id = cm_id_priv->id.remote_id;
--	sidr_rep_msg->status = param->status;
--	cm_sidr_rep_set_qpn(sidr_rep_msg, cpu_to_be32(param->qp_num));
-+	IBA_SET(CM_SIDR_REP_STATUS, sidr_rep_msg, param->status);
-+	IBA_SET(CM_SIDR_REP_QPN, sidr_rep_msg, param->qp_num);
- 	sidr_rep_msg->service_id = cm_id_priv->id.service_id;
--	sidr_rep_msg->qkey = cpu_to_be32(param->qkey);
-+	IBA_SET(CM_SIDR_REP_Q_KEY, sidr_rep_msg, param->qkey);
+diff --git a/include/rdma/ib_cm.h b/include/rdma/ib_cm.h
+index adccdc12b8e3..72348475eee8 100644
+--- a/include/rdma/ib_cm.h
++++ b/include/rdma/ib_cm.h
+@@ -147,7 +147,8 @@ enum ib_cm_rej_reason {
+ 	IB_CM_REJ_DUPLICATE_LOCAL_COMM_ID	= 30,
+ 	IB_CM_REJ_INVALID_CLASS_VERSION		= 31,
+ 	IB_CM_REJ_INVALID_FLOW_LABEL		= 32,
+-	IB_CM_REJ_INVALID_ALT_FLOW_LABEL	= 33
++	IB_CM_REJ_INVALID_ALT_FLOW_LABEL	= 33,
++	IB_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED	= 35
+ };
  
- 	if (param->info && param->info_length)
- 		memcpy(sidr_rep_msg->info, param->info, param->info_length);
-@@ -3554,11 +3554,12 @@ static void cm_format_sidr_rep_event(struct cm_work *work,
- 	sidr_rep_msg = (struct cm_sidr_rep_msg *)
- 				work->mad_recv_wc->recv_buf.mad;
- 	param = &work->cm_event.param.sidr_rep_rcvd;
--	param->status = sidr_rep_msg->status;
--	param->qkey = be32_to_cpu(sidr_rep_msg->qkey);
--	param->qpn = be32_to_cpu(cm_sidr_rep_get_qpn(sidr_rep_msg));
-+	param->status = IBA_GET(CM_SIDR_REP_STATUS, sidr_rep_msg);
-+	param->qkey = IBA_GET(CM_SIDR_REP_Q_KEY, sidr_rep_msg);
-+	param->qpn = IBA_GET(CM_SIDR_REP_QPN, sidr_rep_msg);
- 	param->info = &sidr_rep_msg->info;
--	param->info_len = sidr_rep_msg->info_length;
-+	param->info_len =
-+		IBA_GET(CM_SIDR_REP_ADDITIONAL_INFORMATION_LENGTH, sidr_rep_msg);
- 	param->sgid_attr = cm_id_priv->av.ah_attr.grh.sgid_attr;
- 	work->cm_event.private_data = &sidr_rep_msg->private_data;
- 	work->cm_event.private_data_len = CM_SIDR_REP_PRIVATE_DATA_SIZE;
-diff --git a/drivers/infiniband/core/cm_msgs.h b/drivers/infiniband/core/cm_msgs.h
-index 0f3f9f3cd1cb..ee3bd6f7dc47 100644
---- a/drivers/infiniband/core/cm_msgs.h
-+++ b/drivers/infiniband/core/cm_msgs.h
-@@ -232,18 +232,4 @@ struct cm_sidr_rep_msg {
- 
- 	u8 private_data[CM_SIDR_REP_PRIVATE_DATA_SIZE];
- } __packed;
--
--static inline __be32 cm_sidr_rep_get_qpn(struct cm_sidr_rep_msg *sidr_rep_msg)
--{
--	return cpu_to_be32(be32_to_cpu(sidr_rep_msg->offset8) >> 8);
--}
--
--static inline void cm_sidr_rep_set_qpn(struct cm_sidr_rep_msg *sidr_rep_msg,
--				       __be32 qpn)
--{
--	sidr_rep_msg->offset8 = cpu_to_be32((be32_to_cpu(qpn) << 8) |
--					(be32_to_cpu(sidr_rep_msg->offset8) &
--					 0x000000FF));
--}
--
- #endif /* CM_MSGS_H */
+ struct ib_cm_rej_event_param {
+diff --git a/include/rdma/ibta_vol1_c12.h b/include/rdma/ibta_vol1_c12.h
+index 9fd19ccb993f..a3056903a3c4 100644
+--- a/include/rdma/ibta_vol1_c12.h
++++ b/include/rdma/ibta_vol1_c12.h
+@@ -109,8 +109,11 @@
+ #define CM_REP_REMOTE_COMM_ID CM_FIELD32_LOC(struct cm_rep_msg, 4, 32)
+ #define CM_REP_LOCAL_Q_KEY CM_FIELD32_LOC(struct cm_rep_msg, 8, 32)
+ #define CM_REP_LOCAL_QPN CM_FIELD32_LOC(struct cm_rep_msg, 12, 24)
++#define CM_REP_VENDORID_H CM_FIELD8_LOC(struct cm_rep_msg, 15, 8)
+ #define CM_REP_LOCAL_EE_CONTEXT_NUMBER CM_FIELD32_LOC(struct cm_rep_msg, 16, 24)
++#define CM_REP_VENDORID_M CM_FIELD8_LOC(struct cm_rep_msg, 19, 8)
+ #define CM_REP_STARTING_PSN CM_FIELD32_LOC(struct cm_rep_msg, 20, 24)
++#define CM_REP_VENDORID_L CM_FIELD8_LOC(struct cm_rep_msg, 23, 8)
+ #define CM_REP_RESPONDER_RESOURCES CM_FIELD8_LOC(struct cm_rep_msg, 24, 8)
+ #define CM_REP_INITIATOR_DEPTH CM_FIELD8_LOC(struct cm_rep_msg, 25, 8)
+ #define CM_REP_TARGET_ACK_DELAY CM_FIELD8_LOC(struct cm_rep_msg, 26, 5)
+@@ -191,7 +194,9 @@
+ #define CM_SIDR_REP_STATUS CM_FIELD8_LOC(struct cm_sidr_rep_msg, 4, 8)
+ #define CM_SIDR_REP_ADDITIONAL_INFORMATION_LENGTH                              \
+ 	CM_FIELD8_LOC(struct cm_sidr_rep_msg, 5, 8)
++#define CM_SIDR_REP_VENDORID_H CM_FIELD16_LOC(struct cm_sidr_rep_msg, 6, 16)
+ #define CM_SIDR_REP_QPN CM_FIELD32_LOC(struct cm_sidr_rep_msg, 8, 24)
++#define CM_SIDR_REP_VENDORID_L CM_FIELD8_LOC(struct cm_sidr_rep_msg, 11, 8)
+ #define CM_SIDR_REP_SERVICEID CM_FIELD64_LOC(struct cm_sidr_rep_msg, 12, 64)
+ #define CM_SIDR_REP_Q_KEY CM_FIELD32_LOC(struct cm_sidr_rep_msg, 20, 32)
+ #define CM_SIDR_REP_ADDITIONAL_INFORMATION                                     \
 -- 
 2.20.1
 
