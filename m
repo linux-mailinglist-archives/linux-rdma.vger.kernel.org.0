@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBDD105918
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 19:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83239105919
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 19:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbfKUSN3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Nov 2019 13:13:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52034 "EHLO mail.kernel.org"
+        id S1726546AbfKUSNe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Nov 2019 13:13:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726279AbfKUSN3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Nov 2019 13:13:29 -0500
+        id S1726279AbfKUSNd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 21 Nov 2019 13:13:33 -0500
 Received: from localhost (unknown [5.29.147.182])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03A8A206D8;
-        Thu, 21 Nov 2019 18:13:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A6402068E;
+        Thu, 21 Nov 2019 18:13:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574360008;
-        bh=HlVW3N6C7d6L5Aer8EluCk54MCLHAsDbvkt0Q2aoEHY=;
+        s=default; t=1574360012;
+        bh=GgkZpg+nHtEm/0A4ixmifsOmCfJsSdj/BmIsHdgClWc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vfKWgeeaW0HvRLZMBvbIXgO/R48OHm7Fl5fUU42kTPwQlNgizsgIT8YDVMKnZg1/7
-         fsyyGP+OA2TlztERQAUbcUOmbj38V5QnEzJmFKE8iu/bpCEwq0/w8gmA8ZyZ7iOdXl
-         YgfVDkhTTztKL5vQy1mUFyZgy+sEmR7ZMqZhkcoo=
+        b=LNSuJPBmq+nI4kH8XD+OGEN8NT4rxXQ5HOn8ETIrxo3gjZ8oL9zmnIkQJ7iVpFJxn
+         XJF7kA8FKcI4qsJv+8Bt5BcnVdNe9a6nC8dHBguYn0HJDqIZ7scsTjY2B90ayQuUNW
+         tTxOAwUYhK/AHiYfXSuUmeetS8ngcnpOJ11OFMpg=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -30,9 +30,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Bart Van Assche <bvanassche@acm.org>,
         Sean Hefty <sean.hefty@intel.com>
-Subject: [PATCH rdma-next v1 04/48] RDMA/cm: Add SET/GET implementations to hide IBA wire format
-Date:   Thu, 21 Nov 2019 20:12:29 +0200
-Message-Id: <20191121181313.129430-5-leon@kernel.org>
+Subject: [PATCH rdma-next v1 05/48] RDMA/cm: Request For Communication (REQ) message definitions
+Date:   Thu, 21 Nov 2019 20:12:30 +0200
+Message-Id: <20191121181313.129430-6-leon@kernel.org>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191121181313.129430-1-leon@kernel.org>
 References: <20191121181313.129430-1-leon@kernel.org>
@@ -45,185 +45,195 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-There is no separation between RDMA-CM wire format as it is declared in
-IBTA and kernel logic which implements needed support. Such situation
-causes to many mistakes in conversion between big-endian (wire format)
-and CPU format used by kernel. It also mixes RDMA core code with
-combination of uXX and beXX variables.
+Add Request For Communication (REQ) message definitions as it is written
+in IBTA release 1.3 volume 1.
 
-The idea that all accesses to IBA definitions will go through special
-GET/SET macros to ensure that no conversion mistakes are done.
+There are three types of definitions:
+1. Regular ones with offset and mask, they will be accessible
+   by IBA_GET()/IBA_SET().
+2. GIDs and private data will be accessible by IBA_GET_MEM()/IBA_SET_MEM().
 
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/cm_msgs.h |   6 +-
- include/rdma/iba.h                | 137 ++++++++++++++++++++++++++++++
- 2 files changed, 138 insertions(+), 5 deletions(-)
- create mode 100644 include/rdma/iba.h
+ drivers/infiniband/core/cm.c      |  4 +-
+ drivers/infiniband/core/cm_msgs.h |  4 +-
+ drivers/infiniband/core/cma.c     |  3 +-
+ include/rdma/ib_cm.h              |  1 -
+ include/rdma/ibta_vol1_c12.h      | 88 +++++++++++++++++++++++++++++++
+ 5 files changed, 94 insertions(+), 6 deletions(-)
+ create mode 100644 include/rdma/ibta_vol1_c12.h
 
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index efa2d329da30..3c0cbdc748ac 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -1368,7 +1368,7 @@ static int cm_validate_req_param(struct ib_cm_req_param *param)
+ 		return -EINVAL;
+ 
+ 	if (param->private_data &&
+-	    param->private_data_len > IB_CM_REQ_PRIVATE_DATA_SIZE)
++	    param->private_data_len > CM_REQ_PRIVATE_DATA_SIZE)
+ 		return -EINVAL;
+ 
+ 	if (param->alternate_path &&
+@@ -1681,7 +1681,7 @@ static void cm_format_req_event(struct cm_work *work,
+ 	param->srq = cm_req_get_srq(req_msg);
+ 	param->ppath_sgid_attr = cm_id_priv->av.ah_attr.grh.sgid_attr;
+ 	work->cm_event.private_data = &req_msg->private_data;
+-	work->cm_event.private_data_len = IB_CM_REQ_PRIVATE_DATA_SIZE;
++	work->cm_event.private_data_len = CM_REQ_PRIVATE_DATA_SIZE;
+ }
+ 
+ static void cm_process_work(struct cm_id_private *cm_id_priv,
 diff --git a/drivers/infiniband/core/cm_msgs.h b/drivers/infiniband/core/cm_msgs.h
-index 92d7260ac913..9bc468833831 100644
+index 9bc468833831..9e50da044c43 100644
 --- a/drivers/infiniband/core/cm_msgs.h
 +++ b/drivers/infiniband/core/cm_msgs.h
-@@ -8,14 +8,10 @@
+@@ -8,7 +8,7 @@
  #ifndef CM_MSGS_H
  #define CM_MSGS_H
  
-+#include <rdma/iba.h>
+-#include <rdma/iba.h>
++#include <rdma/ibta_vol1_c12.h>
  #include <rdma/ib_mad.h>
  #include <rdma/ib_cm.h>
  
--/*
-- * Parameters to routines below should be in network-byte order, and values
-- * are returned in network-byte order.
-- */
--
- #define IB_CM_CLASS_VERSION	2 /* IB specification 1.2 */
+@@ -66,7 +66,7 @@ struct cm_req_msg {
+ 	/* local ACK timeout:5, rsvd:3 */
+ 	u8 alt_offset139;
  
- struct cm_req_msg {
-diff --git a/include/rdma/iba.h b/include/rdma/iba.h
+-	u32 private_data[IB_CM_REQ_PRIVATE_DATA_SIZE / sizeof(u32)];
++	u32 private_data[CM_REQ_PRIVATE_DATA_SIZE / sizeof(u32)];
+ 
+ } __packed;
+ 
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 25f2b70fd8ef..02490a3c11f3 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -36,6 +36,7 @@
+ 
+ #include "core_priv.h"
+ #include "cma_priv.h"
++#include "cm_msgs.h"
+ 
+ MODULE_AUTHOR("Sean Hefty");
+ MODULE_DESCRIPTION("Generic RDMA CM Agent");
+@@ -2085,7 +2086,7 @@ static void cma_set_req_event_data(struct rdma_cm_event *event,
+ 				   void *private_data, int offset)
+ {
+ 	event->param.conn.private_data = private_data + offset;
+-	event->param.conn.private_data_len = IB_CM_REQ_PRIVATE_DATA_SIZE - offset;
++	event->param.conn.private_data_len = CM_REQ_PRIVATE_DATA_SIZE - offset;
+ 	event->param.conn.responder_resources = req_data->responder_resources;
+ 	event->param.conn.initiator_depth = req_data->initiator_depth;
+ 	event->param.conn.flow_control = req_data->flow_control;
+diff --git a/include/rdma/ib_cm.h b/include/rdma/ib_cm.h
+index b476e0e27ec9..956256b2fc5d 100644
+--- a/include/rdma/ib_cm.h
++++ b/include/rdma/ib_cm.h
+@@ -65,7 +65,6 @@ enum ib_cm_event_type {
+ };
+ 
+ enum ib_cm_data_size {
+-	IB_CM_REQ_PRIVATE_DATA_SIZE	 = 92,
+ 	IB_CM_MRA_PRIVATE_DATA_SIZE	 = 222,
+ 	IB_CM_REJ_PRIVATE_DATA_SIZE	 = 148,
+ 	IB_CM_REP_PRIVATE_DATA_SIZE	 = 196,
+diff --git a/include/rdma/ibta_vol1_c12.h b/include/rdma/ibta_vol1_c12.h
 new file mode 100644
-index 000000000000..454dbaa452a7
+index 000000000000..885b7b7fdb86
 --- /dev/null
-+++ b/include/rdma/iba.h
-@@ -0,0 +1,137 @@
++++ b/include/rdma/ibta_vol1_c12.h
+@@ -0,0 +1,88 @@
 +/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
 +/*
-+ * Copyright (c) 2019, Mellanox Technologies inc.  All rights reserved.
++ * Copyright (c) 2019, Mellanox Technologies inc. All rights reserved.
++ *
++ * This file is IBTA volume 1, chapter 12 declarations:
++ * * CHAPTER 12: C OMMUNICATION MANAGEMENT
 + */
-+#ifndef _IBA_DEFS_H_
-+#define _IBA_DEFS_H_
++#ifndef _IBTA_VOL1_C12_H_
++#define _IBTA_VOL1_C12_H_
 +
-+#include <linux/kernel.h>
-+#include <linux/bitfield.h>
++#include <rdma/iba.h>
 +
-+static inline u32 _iba_get8(const u8 *ptr)
-+{
-+	return *ptr;
-+}
++#define CM_FIELD_BLOC(field_struct, byte_offset, bits_offset, width)           \
++	IBA_FIELD_BLOC(field_struct,                                           \
++		       (byte_offset + sizeof(struct ib_mad_hdr)), bits_offset, \
++		       width)
++#define CM_FIELD8_LOC(field_struct, byte_offset, width)                        \
++	IBA_FIELD8_LOC(field_struct,                                           \
++		       (byte_offset + sizeof(struct ib_mad_hdr)), width)
++#define CM_FIELD16_LOC(field_struct, byte_offset, width)                       \
++	IBA_FIELD16_LOC(field_struct,                                          \
++			(byte_offset + sizeof(struct ib_mad_hdr)), width)
++#define CM_FIELD32_LOC(field_struct, byte_offset, width)                       \
++	IBA_FIELD32_LOC(field_struct,                                          \
++			(byte_offset + sizeof(struct ib_mad_hdr)), width)
++#define CM_FIELD_MLOC(field_struct, byte_offset, width)                        \
++	IBA_FIELD_MLOC(field_struct,                                           \
++		       (byte_offset + sizeof(struct ib_mad_hdr)), width)
 +
-+static inline void _iba_set8(u8 *ptr, u32 mask, u32 prep_value)
-+{
-+	*ptr = (*ptr & ~mask) | prep_value;
-+}
++/* Table 106 REQ Message Contents */
++#define CM_REQ_LOCAL_COMM_ID CM_FIELD32_LOC(struct cm_req_msg, 0, 32)
++#define CM_REQ_SERVICE_ID CM_FIELD64_LOC(struct cm_req_msg, 8, 64)
++#define CM_REQ_LOCAL_CA_GUID CM_FIELD64_LOC(struct cm_req_msg, 16, 64)
++#define CM_REQ_LOCAL_Q_KEY CM_FIELD32_LOC(struct cm_req_msg, 28, 32)
++#define CM_REQ_LOCAL_QPN CM_FIELD32_LOC(struct cm_req_msg, 32, 24)
++#define CM_REQ_RESPONDED_RESOURCES CM_FIELD8_LOC(struct cm_req_msg, 35, 8)
++#define CM_REQ_LOCAL_EECN CM_FIELD32_LOC(struct cm_req_msg, 36, 24)
++#define CM_REQ_INITIATOR_DEPTH CM_FIELD8_LOC(struct cm_req_msg, 39, 8)
++#define CM_REQ_REMOTE_EECN CM_FIELD32_LOC(struct cm_req_msg, 40, 24)
++#define CM_REQ_REMOTE_CM_RESPONSE_TIMEOUT                                      \
++	CM_FIELD8_LOC(struct cm_req_msg, 43, 5)
++#define CM_REQ_TRANSPORT_SERVICE_TYPE CM_FIELD_BLOC(struct cm_req_msg, 43, 5, 2)
++#define CM_REQ_END_TO_END_FLOW_CONTROL                                         \
++	CM_FIELD_BLOC(struct cm_req_msg, 43, 7, 1)
++#define CM_REQ_STARTING_PSN CM_FIELD32_LOC(struct cm_req_msg, 44, 24)
++#define CM_REQ_LOCAL_CM_RESPONSE_TIMEOUT CM_FIELD8_LOC(struct cm_req_msg, 47, 5)
++#define CM_REQ_RETRY_COUNT CM_FIELD_BLOC(struct cm_req_msg, 47, 5, 3)
++#define CM_REQ_PARTITION_KEY CM_FIELD16_LOC(struct cm_req_msg, 48, 16)
++#define CM_REQ_PATH_PACKET_PAYLOAD_MTU CM_FIELD8_LOC(struct cm_req_msg, 50, 4)
++#define CM_REQ_RDC_EXISTS CM_FIELD_BLOC(struct cm_req_msg, 50, 4, 1)
++#define CM_REQ_RNR_RETRY_COUNT CM_FIELD_BLOC(struct cm_req_msg, 50, 5, 3)
++#define CM_REQ_MAX_CM_RETRIES CM_FIELD8_LOC(struct cm_req_msg, 51, 4)
++#define CM_REQ_SRQ CM_FIELD_BLOC(struct cm_req_msg, 51, 4, 1)
++#define CM_REQ_EXTENDED_TRANSPORT_TYPE                                         \
++	CM_FIELD_BLOC(struct cm_req_msg, 51, 5, 3)
++#define CM_REQ_PRIMARY_LOCAL_PORT_LID CM_FIELD16_LOC(struct cm_req_msg, 52, 16)
++#define CM_REQ_PRIMARY_REMOTE_PORT_LID CM_FIELD16_LOC(struct cm_req_msg, 54, 16)
++#define CM_REQ_PRIMARY_LOCAL_PORT_GID CM_FIELD_MLOC(struct cm_req_msg, 56, 128)
++#define CM_REQ_PRIMARY_REMOTE_PORT_GID CM_FIELD_MLOC(struct cm_req_msg, 72, 128)
++#define CM_REQ_PRIMARY_FLOW_LABEL CM_FIELD32_LOC(struct cm_req_msg, 88, 20)
++#define CM_REQ_PRIMARY_PACKET_RATE CM_FIELD_BLOC(struct cm_req_msg, 91, 2, 2)
++#define CM_REQ_PRIMARY_TRAFFIC_CLASS CM_FIELD8_LOC(struct cm_req_msg, 92, 8)
++#define CM_REQ_PRIMARY_HOP_LIMIT CM_FIELD8_LOC(struct cm_req_msg, 93, 8)
++#define CM_REQ_PRIMARY_SL CM_FIELD8_LOC(struct cm_req_msg, 94, 4)
++#define CM_REQ_PRIMARY_SUBNET_LOCAL CM_FIELD_BLOC(struct cm_req_msg, 94, 4, 1)
++#define CM_REQ_PRIMARY_LOCAL_ACK_TIMEOUT CM_FIELD8_LOC(struct cm_req_msg, 95, 5)
++#define CM_REQ_ALTERNATE_LOCAL_PORT_LID                                        \
++	CM_FIELD16_LOC(struct cm_req_msg, 96, 16)
++#define CM_REQ_ALTERNATE_REMOTE_PORT_LID                                       \
++	CM_FIELD16_LOC(struct cm_req_msg, 98, 16)
++#define CM_REQ_ALTERNATE_LOCAL_PORT_GID                                        \
++	CM_FIELD_MLOC(struct cm_req_msg, 100, 128)
++#define CM_REQ_ALTERNATE_REMOTE_PORT_GID                                       \
++	CM_FIELD_MLOC(struct cm_req_msg, 116, 128)
++#define CM_REQ_ALTERNATE_FLOW_LABEL CM_FIELD32_LOC(struct cm_req_msg, 132, 20)
++#define CM_REQ_ALTERNATE_PACKET_RATE CM_FIELD_BLOC(struct cm_req_msg, 135, 2, 6)
++#define CM_REQ_ALTERNATE_TRAFFIC_CLASS CM_FIELD8_LOC(struct cm_req_msg, 136, 8)
++#define CM_REQ_ALTERNATE_HOP_LIMIT CM_FIELD8_LOC(struct cm_req_msg, 137, 8)
++#define CM_REQ_ALTERNATE_SL CM_FIELD8_LOC(struct cm_req_msg, 138, 4)
++#define CM_REQ_ALTERNATE_SUBNET_LOCAL                                          \
++	CM_FIELD_BLOC(struct cm_req_msg, 138, 4, 1)
++#define CM_REQ_ALTERNATE_LOCAL_ACK_TIMEOUT                                     \
++	CM_FIELD8_LOC(struct cm_req_msg, 139, 5)
++#define CM_REQ_SAP_SUPPORTED CM_FIELD_BLOC(struct cm_req_msg, 139, 5, 1)
++#define CM_REQ_PRIVATE_DATA CM_FIELD_MLOC(struct cm_req_msg, 140, 736)
++#define CM_REQ_PRIVATE_DATA_SIZE 92
 +
-+static inline u16 _iba_get16(const __be16 *ptr)
-+{
-+	return be16_to_cpu(*ptr);
-+}
-+
-+static inline void _iba_set16(__be16 *ptr, u16 mask, u16 prep_value)
-+{
-+	*ptr = cpu_to_be16((be16_to_cpu(*ptr) & ~mask) | prep_value);
-+}
-+
-+static inline u32 _iba_get32(const __be32 *ptr)
-+{
-+	return be32_to_cpu(*ptr);
-+}
-+
-+static inline void _iba_set32(__be32 *ptr, u32 mask, u32 prep_value)
-+{
-+	*ptr = cpu_to_be32((be32_to_cpu(*ptr) & ~mask) | prep_value);
-+}
-+
-+static inline u64 _iba_get64(const __be64 *ptr)
-+{
-+	/*
-+	 * The mads are constructed so that 32 bit and smaller are naturally
-+	 * aligned, everything larger has a max alignment of 4 bytes.
-+	 */
-+	return be64_to_cpu(get_unaligned(ptr));
-+}
-+
-+static inline void _iba_set64(__be64 *ptr, u64 mask, u64 prep_value)
-+{
-+	put_unaligned(cpu_to_be64((_iba_get64(ptr) & ~mask) | prep_value), ptr);
-+}
-+
-+#define _IBA_SET(field_struct, field_offset, field_mask, mask_width, ptr,      \
-+		 value)                                                        \
-+	({                                                                     \
-+		field_struct *_ptr = ptr;                                      \
-+		_iba_set##mask_width((void *)_ptr + (field_offset),            \
-+				     field_mask,                               \
-+				     FIELD_PREP(field_mask, value));           \
-+	})
-+#define IBA_SET(field, ptr, value) _IBA_SET(field, ptr, value)
-+
-+#define _IBA_SET_MEM(field_struct, field_offset, byte_size, ptr, in, bytes)    \
-+	({                                                                     \
-+		WARN_ON(bytes > byte_size);                                    \
-+		if (in && bytes) {                                             \
-+			field_struct *_ptr = ptr;                              \
-+			memcpy((void *)_ptr + (field_offset), in, bytes);      \
-+		}                                                              \
-+	})
-+#define IBA_SET_MEM(field, ptr, in, bytes) _IBA_SET_MEM(field, ptr, in, bytes)
-+
-+#define _IBA_GET(field_struct, field_offset, field_mask, mask_width, ptr)      \
-+	({                                                                     \
-+		const field_struct *_ptr = ptr;                                \
-+		(u##mask_width) FIELD_GET(                                     \
-+			field_mask, _iba_get##mask_width((const void *)_ptr +  \
-+							 (field_offset)));     \
-+	})
-+#define IBA_GET(field, ptr) _IBA_GET(field, ptr)
-+
-+#define _IBA_GET_MEM(field_struct, field_offset, byte_size, ptr, out, bytes)   \
-+	({                                                                     \
-+		WARN_ON(bytes > byte_size);                                    \
-+		if (out && bytes) {                                            \
-+			const field_struct *_ptr = ptr;                        \
-+			memcpy(out, (void *)_ptr + (field_offset), bytes);     \
-+		}                                                              \
-+	})
-+#define IBA_GET_MEM(field, ptr, out, bytes) _IBA_GET_MEM(field, ptr, out, bytes)
-+
-+/*
-+ * The generated list becomes the parameters to the macros, the order is:
-+ *  - struct this applies to
-+ *  - starting offset of the max
-+ *  - GENMASK or GENMASK_ULL in CPU order
-+ *  - The width of data the mask operations should work on, in bits
-+ */
-+
-+/*
-+ * Extraction using a tabular description like table 106. bit_offset is from
-+ * the Byte[Bit] notation.
-+ */
-+#define IBA_FIELD_BLOC(field_struct, byte_offset, bit_offset, num_bits)        \
-+	field_struct, byte_offset,                                             \
-+		GENMASK(7 - (bit_offset), 7 - (bit_offset) - (num_bits - 1)),  \
-+		8
-+#define IBA_FIELD8_LOC(field_struct, byte_offset, num_bits)                    \
-+	IBA_FIELD_BLOC(field_struct, byte_offset, 0, num_bits)
-+
-+#define IBA_FIELD16_LOC(field_struct, byte_offset, num_bits)                   \
-+	field_struct, (byte_offset)&0xFFFE,                                    \
-+		GENMASK(15 - (((byte_offset) % 2) * 8),                        \
-+			15 - (((byte_offset) % 2) * 8) - (num_bits - 1)),      \
-+		16
-+
-+#define IBA_FIELD32_LOC(field_struct, byte_offset, num_bits)                   \
-+	field_struct, (byte_offset)&0xFFFC,                                    \
-+		GENMASK(31 - (((byte_offset) % 4) * 8),                        \
-+			31 - (((byte_offset) % 4) * 8) - (num_bits - 1)),      \
-+		32
-+
-+#define IBA_FIELD64_LOC(field_struct, byte_offset, num_bits)                   \
-+	field_struct, (byte_offset)&0xFFF8,                                    \
-+		GENMASK_ULL(63 - (((byte_offset) % 8) * 8),                    \
-+			    63 - (((byte_offset) % 8) * 8) - (num_bits - 1)),  \
-+		64
-+/*
-+ * In IBTA spec, everything that is more than 64bits is multiple
-+ * of bytes without leftover bits.
-+ */
-+#define IBA_FIELD_MLOC(field_struct, byte_offset, num_bits)                    \
-+	field_struct, (byte_offset)&0xFFFC, (num_bits / 8)
-+
-+#endif /* _IBA_DEFS_H_ */
++#endif /* _IBTA_VOL1_C12_H_ */
 -- 
 2.20.1
 
