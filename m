@@ -2,134 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA0A10498C
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 05:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DABE11049A6
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 05:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726038AbfKUEHZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Nov 2019 23:07:25 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:37133 "EHLO
+        id S1725842AbfKUEYN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Nov 2019 23:24:13 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26132 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725842AbfKUEHZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 23:07:25 -0500
+        with ESMTP id S1725819AbfKUEYN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Nov 2019 23:24:13 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574309243;
+        s=mimecast20190719; t=1574310252;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4xPmtYqEvwApqpheQllbkBpuzyfIA/fCCLuuQtfXsnw=;
-        b=MeWvJc0+e6+UEKMvGJ1XtmwF3H3gN1QAFH+NoSbL9LRKsrZvpdPe+eSuVSWVtlTwknOmv/
-        6MwIJ9ucOi7+/MvF6ru0t9CFJ0cxnE3wM4wz4+3czUtVOPV+HGF4OgUQtBQhNlPo7gb2r+
-        dtlxSjg6/yF2zp6xfSRb8BhFpBmHjtE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-345-Xu_mjR_fPQ2kgYFI6ozcxQ-1; Wed, 20 Nov 2019 23:07:20 -0500
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C2BF107ACC5;
-        Thu, 21 Nov 2019 04:07:17 +0000 (UTC)
-Received: from [10.72.12.204] (ovpn-12-204.pek2.redhat.com [10.72.12.204])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DFF6960BA9;
-        Thu, 21 Nov 2019 04:06:02 +0000 (UTC)
-Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+        bh=7MiQoAlmb+4j2v6SgDa1Q9v4RQh84PVKLEKwv2xgY9M=;
+        b=P9PYpmjfPBV+S5ClgSCNkwO6DV7joiQ6/7nzOEaeS4WaE6VCtyjqC9x9onmKxukpmAVwfG
+        OwzF1P3GZZiLa16Ou7/A4ifSJW8VjVptddh8YMB1vbrbm+IQY+W/5rD2BY2tK88MGo59G5
+        iUSjbVaTUAYTcVvYXho0W1t5RRvNUyU=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-225-GMbWaODiMbmRP-QSpKdrQA-1; Wed, 20 Nov 2019 23:24:10 -0500
+Received: by mail-qt1-f197.google.com with SMTP id t5so876917qtp.5
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Nov 2019 20:24:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h002/KfwzNnHwaVFHvMAKKzPg+NcqTlO07ep/sFR+MI=;
+        b=goCT/iH1HSc82e24rqXxxETKHjk5GUAF3ocffiNFRa/IY+zEhj6gFW+1CFz6Nh/Cat
+         3xaVj9OCI+FJHjN7BCrXyrAtlK521f96cGOyT2pDq0OGdhc+Qi1+URddu0W/tIEL/AA1
+         VbMfYxIC4j0AtB4HhhulewaMgfajncSEGUaKAbkjA4GQTWjS9THI9k7mQJEtS+4yrpmK
+         S5pYBDbXXnwyg0M9VH8C/gyLfAdsa4woDOQ6v612ZZxlpgt3kN9+W6xo2lxBItiboCxo
+         Oo8gDnS6HpUvh/bkeXApbm7htfHdZrDII7XgMPHsR+ygcNcuuvhoUD4Do2ZopTeHRD9W
+         nSOQ==
+X-Gm-Message-State: APjAAAWG/VLUygEvm0st7uIenSHBX9UZnuv+YsHzWoZGV7lAGVE3wyKS
+        XxA4S+HFPgD/sGk+rA3AoxR06Tw5K3pSYxquSVII/sAmyBXyK5PXOBHPT/DkcA2mlx79f2l0sld
+        C/aMUlcCEi44J7mzIySgGVw==
+X-Received: by 2002:a37:ac09:: with SMTP id e9mr6184770qkm.258.1574310250073;
+        Wed, 20 Nov 2019 20:24:10 -0800 (PST)
+X-Google-Smtp-Source: APXvYqw7XNl+H+UW6snu6/5KF765mQrBqtDgv/zVy1Mne2H0maYjusu3isdX7aEJ7G7ZUYWVtX6mNw==
+X-Received: by 2002:a37:ac09:: with SMTP id e9mr6184754qkm.258.1574310249852;
+        Wed, 20 Nov 2019 20:24:09 -0800 (PST)
+Received: from redhat.com (bzq-79-176-6-42.red.bezeqint.net. [79.176.6.42])
+        by smtp.gmail.com with ESMTPSA id b185sm809197qkg.45.2019.11.20.20.24.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Nov 2019 20:24:08 -0800 (PST)
+Date:   Wed, 20 Nov 2019 23:24:03 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Parav Pandit <parav@mellanox.com>,
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Parav Pandit <parav@mellanox.com>,
         Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        Kiran Patil <kiran.patil@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        davem@davemloft.net, gregkh@linuxfoundation.org,
+        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, Kiran Patil <kiran.patil@intel.com>,
         Tiwei Bie <tiwei.bie@intel.com>
-References: <AM0PR05MB4866CF61828A458319899664D1700@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <a40c09ee-0915-f10c-650e-7539726a887b@redhat.com>
- <AM0PR05MB4866C40A177D3D60BFC558F7D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <13946106-dab2-6bbe-df79-ca6dfdeb4c51@redhat.com>
- <AM0PR05MB486685F7C839AD8A5F3EEA91D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <ead356f5-db81-cb01-0d74-b9e34965a20f@redhat.com>
- <AM0PR05MB486605742430D120769F6C45D14C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <743601510.35622214.1574219728585.JavaMail.zimbra@redhat.com>
- <AM0PR05MB48664221FB6B1C14BDF6C74AD14F0@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <21106743-57b2-2ca7-258c-e37a0880c70f@redhat.com>
- <20191120134126.GD22515@ziepe.ca>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <2b5db5d9-5421-7277-acde-13862a629381@redhat.com>
-Date:   Thu, 21 Nov 2019 12:06:01 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Message-ID: <20191120232320-mutt-send-email-mst@kernel.org>
+References: <20191119163147-mutt-send-email-mst@kernel.org>
+ <20191119231023.GN4991@ziepe.ca>
+ <20191119191053-mutt-send-email-mst@kernel.org>
+ <20191120014653.GR4991@ziepe.ca>
+ <134058913.35624136.1574222360435.JavaMail.zimbra@redhat.com>
+ <20191120133835.GC22515@ziepe.ca>
+ <20191120102856.7e01e2e2@x1.home>
+ <20191120181108.GJ22515@ziepe.ca>
+ <20191120150732.2fffa141@x1.home>
+ <20191121030357.GB16914@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <20191120134126.GD22515@ziepe.ca>
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-MC-Unique: Xu_mjR_fPQ2kgYFI6ozcxQ-1
+In-Reply-To: <20191121030357.GB16914@ziepe.ca>
+X-MC-Unique: GMbWaODiMbmRP-QSpKdrQA-1
 X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=WINDOWS-1252
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Nov 20, 2019 at 11:03:57PM -0400, Jason Gunthorpe wrote:
+> Frankly, when I look at what this virtio stuff is doing I see RDMA:
+>  - Both have a secure BAR pages for mmaping to userspace (or VM)
+>  - Both are prevented from interacting with the device at a register
+>    level and must call to the kernel - ie creating resources is a
+>    kernel call - for security.
+>  - Both create command request/response rings in userspace controlled
+>    memory and have HW DMA to read requests and DMA to generate responses
+>  - Both allow the work on the rings to DMA outside the ring to
+>    addresses controlled by userspace.
+>  - Both have to support a mixture of HW that uses on-device security
+>    or IOMMU based security.
 
-On 2019/11/20 =E4=B8=8B=E5=8D=889:41, Jason Gunthorpe wrote:
-> On Wed, Nov 20, 2019 at 12:07:59PM +0800, Jason Wang wrote:
->
->> 1) create sub fucntion and do must to have pre configuration through dev=
-link
->> 2) only after sub function is created one more available instance was ad=
-ded
->> and shown through sysfs
->> 3) user can choose to create and use that mdev instance as it did for ot=
-her
->> type of device like vGPU
->> 4) devlink can still use to report other stuffs
-> Why do we want the extra step #3? The user already indicated they want
-> a mdev via #1
+The main difference is userspace/drivers need to be portable with
+virtio.
 
-
-It's about the compatibility, but if you wish, I think we can develop=20
-devlink based lifecycle for mdev for sure.
-
-
->
-> I have the same question for the PF and VF cases, why doesn't a mdev
-> get created automatically when the VF is probed? Why does this need
-> the guid stuff?
-
-
-All you said here is possible, it's a design choice for the management=20
-interface.
-
-
->
-> The guid stuff was intended for, essentially, multi-function devices
-> that could be sliced up, I don't think it makes sense to use it for
-> single-function VF devices like the ICF driver.
-
-
-It doesn't harm, and indeed we have other choice, we can do it gradually=20
-on top.
-
-
->
-> Overall the guid thing should be optional. Drivers providing mdev
-> should be able to use another scheme, like devlink, to on demand
-> create their mdevs.
-
-
-Yes, that's for sure. I'm not against to devlink for mdev/subdev, I just=20
-say we should not make devlink the only choice for mdev/subdev.
-
-Thanks
-
-
->
-> Jason
->
+--=20
+MST
 
