@@ -2,223 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C762710514E
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 12:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0674A105178
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 12:32:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbfKULTl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Nov 2019 06:19:41 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6263 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726502AbfKULTl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Nov 2019 06:19:41 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 48832B60B6936E9F22D0;
-        Thu, 21 Nov 2019 19:19:37 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.439.0; Thu, 21 Nov 2019 19:19:31 +0800
-From:   Yixian Liu <liuyixian@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v3 for-next 2/2] RDMA/hns: Delayed flush cqe process with workqueue
-Date:   Thu, 21 Nov 2019 19:20:00 +0800
-Message-ID: <1574335200-34923-3-git-send-email-liuyixian@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1574335200-34923-1-git-send-email-liuyixian@huawei.com>
-References: <1574335200-34923-1-git-send-email-liuyixian@huawei.com>
+        id S1726342AbfKULc4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Nov 2019 06:32:56 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:53934 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726170AbfKULcz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 21 Nov 2019 06:32:55 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xALBURJt021453;
+        Thu, 21 Nov 2019 03:32:52 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0818;
+ bh=LjOA9XpJJVbAIJpLOdFdZtBym/eOwFyvOmlar6alpj0=;
+ b=NOOokDwgWqd9CrWQgDKZcXZmAqkBTJT+GzBFkCan88lF1QMvtg547FNXAL/eY49OBmY3
+ +3Nq00GEH3RKSpWyHGH1LwSRWqY3dparsxlAg3L/DXzcvQfIiJRWzlj9Njy8CI38O/bI
+ 1wWAIK3pOSdm+LLl5+v/yz009a15zEwCivvukgiXv4+Z7DJhEFQzV5nE4GKXhwX71mLP
+ Or1uiXx/NvU32stMGS3gVFt5UtwWmuM67riKbaP+dWN5/t3lIgYFLNbj8yPaeLtGnCW8
+ cYdh2vcZTsXB/JJS+5OWhzLshZ90mMs47gQYV9Twb9UF9Ske+VV3PIopti8jOjlTq+dB XA== 
+Received: from sc-exch04.marvell.com ([199.233.58.184])
+        by mx0b-0016f401.pphosted.com with ESMTP id 2wd090xead-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 21 Nov 2019 03:32:52 -0800
+Received: from SC-EXCH01.marvell.com (10.93.176.81) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1367.3; Thu, 21 Nov
+ 2019 03:32:50 -0800
+Received: from maili.marvell.com (10.93.176.43) by SC-EXCH01.marvell.com
+ (10.93.176.81) with Microsoft SMTP Server id 15.0.1367.3 via Frontend
+ Transport; Thu, 21 Nov 2019 03:32:50 -0800
+Received: from lb-tlvb-michal.il.qlogic.org (unknown [10.5.220.215])
+        by maili.marvell.com (Postfix) with ESMTP id 125EA3F703F;
+        Thu, 21 Nov 2019 03:32:48 -0800 (PST)
+From:   Michal Kalderon <michal.kalderon@marvell.com>
+To:     <michal.kalderon@marvell.com>, <aelior@marvell.com>,
+        <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>
+Subject: [PATCH v2 rdma-next] RDMA/qedr: Add kernel capability flags for dpm enabled mode
+Date:   Thu, 21 Nov 2019 13:29:57 +0200
+Message-ID: <20191121112957.25162-1-michal.kalderon@marvell.com>
+X-Mailer: git-send-email 2.14.5
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-11-21_02:2019-11-21,2019-11-21 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
-outstanding WQEs if QP state gets into errored mode for some reason.
-To overcome this hardware problem and as a workaround, when QP is
-detected to be in errored state during various legs like post send,
-post receive etc[1], flush needs to be performed from the driver.
+HW/FW support two types of latency enhancement features.
+Until now user-space implemented only edpm (enhanced dpm).
+We add kernel capability flags to differentiate between current
+FW in kernel that supports both ldpm and edpm.
+Since edpm is not yet supported for iWARP we add different flags
+for iWARP + RoCE.
+We also fix bad practice of defining sizes in rdma-core and pass
+initialization to kernel, for forward compatibility.
 
-The earlier patch[1] sent to solve the hardware limitation explained
-in the cover-letter had a bug in the software flushing leg. It
-acquired mutex while modifying QP state to errored state and while
-conveying it to the hardware using the mailbox. This caused leg to
-sleep while holding spin-lock and caused crash.
+The capability flags are added for backward-forward compatibility
+between kernel and rdma-core for qedr.
+Before this change there was a field called dpm_enabled which could
+hold either 0 or 1 value, this indicated whether RoCE edpm was
+enabled or not. We modified this field to be dpm_flags, and bit 1
+still holds the same meaning of RoCE edpm being enabled or not.
 
-Suggested Solution:
-we have proposed to defer the flushing of the QP in the Errored state
-using the workqueue to get around with the limitation of our hardware.
-
-This patch specifically adds the calls to the flush handler from
-where parts of the code like post_send/post_recv etc. when the QP
-state gets into the errored mode.
-
-[1] https://patchwork.kernel.org/patch/10534271/
-
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-Reviewed-by: Salil Mehta <salil.mehta@huawei.com>
+Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 84 ++++++++++++++----------------
- 1 file changed, 38 insertions(+), 46 deletions(-)
+rdma-core changes in pr #622 https://github.com/linux-rdma/rdma-core/pull/622
+Changes from V1:
+	Add better description in commit message of how
+backward-compatibility is maintained
+---
+ drivers/infiniband/hw/qedr/verbs.c | 13 ++++++++++++-
+ include/uapi/rdma/qedr-abi.h       | 18 ++++++++++++++++--
+ 2 files changed, 28 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index ec48e7e..bf8a710 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -221,11 +221,6 @@ static int set_rwqe_data_seg(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 	return 0;
- }
- 
--static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
--				 const struct ib_qp_attr *attr,
--				 int attr_mask, enum ib_qp_state cur_state,
--				 enum ib_qp_state new_state);
--
- static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 				 const struct ib_send_wr *wr,
- 				 const struct ib_send_wr **bad_wr)
-@@ -238,14 +233,12 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 	struct hns_roce_wqe_frmr_seg *fseg;
- 	struct device *dev = hr_dev->dev;
- 	struct hns_roce_v2_db sq_db;
--	struct ib_qp_attr attr;
- 	unsigned int sge_ind;
- 	unsigned int owner_bit;
- 	unsigned long flags;
- 	unsigned int ind;
- 	void *wqe = NULL;
- 	bool loopback;
--	int attr_mask;
- 	u32 tmp_len;
- 	int ret = 0;
- 	u32 hr_op;
-@@ -591,18 +584,17 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 		qp->sq_next_wqe = ind;
- 		qp->next_sge = sge_ind;
- 
--		if (qp->state == IB_QPS_ERR) {
--			attr_mask = IB_QP_STATE;
--			attr.qp_state = IB_QPS_ERR;
--
--			ret = hns_roce_v2_modify_qp(&qp->ibqp, &attr, attr_mask,
--						    qp->state, IB_QPS_ERR);
--			if (ret) {
--				spin_unlock_irqrestore(&qp->sq.lock, flags);
--				*bad_wr = wr;
--				return ret;
--			}
--		}
-+		/*
-+		 * Hip08 hardware cannot flush the WQEs in SQ if the QP state
-+		 * gets into errored mode. Hence, as a workaround to this
-+		 * hardware limitation, driver needs to assist in flushing. But
-+		 * the flushing operation uses mailbox to convey the QP state to
-+		 * the hardware and which can sleep due to the mutex protection
-+		 * around the mailbox calls. Hence, use the deferred flush for
-+		 * now.
-+		 */
-+		if (qp->state == IB_QPS_ERR)
-+			init_flush_work(hr_dev, qp);
+diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+index 8096b8fcab4e..54cce8969594 100644
+--- a/drivers/infiniband/hw/qedr/verbs.c
++++ b/drivers/infiniband/hw/qedr/verbs.c
+@@ -312,7 +312,18 @@ int qedr_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
  	}
+ 	ctx->db_mmap_entry = &entry->rdma_entry;
  
- 	spin_unlock_irqrestore(&qp->sq.lock, flags);
-@@ -619,10 +611,8 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
- 	struct hns_roce_v2_wqe_data_seg *dseg;
- 	struct hns_roce_rinl_sge *sge_list;
- 	struct device *dev = hr_dev->dev;
--	struct ib_qp_attr attr;
- 	unsigned long flags;
- 	void *wqe = NULL;
--	int attr_mask;
- 	int ret = 0;
- 	int nreq;
- 	int ind;
-@@ -692,19 +682,17 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
+-	uresp.dpm_enabled = dev->user_dpm_enabled;
++	if (!dev->user_dpm_enabled)
++		uresp.dpm_flags = 0;
++	else if (rdma_protocol_iwarp(&dev->ibdev, 1))
++		uresp.dpm_flags = QEDR_DPM_TYPE_IWARP_LEGACY;
++	else
++		uresp.dpm_flags = QEDR_DPM_TYPE_ROCE_ENHANCED |
++				  QEDR_DPM_TYPE_ROCE_LEGACY;
++
++	uresp.dpm_flags |= QEDR_DPM_SIZES_SET;
++	uresp.ldpm_limit_size = QEDR_LDPM_MAX_SIZE;
++	uresp.edpm_trans_size = QEDR_EDPM_TRANS_SIZE;
++
+ 	uresp.wids_enabled = 1;
+ 	uresp.wid_count = oparams.wid_count;
+ 	uresp.db_pa = rdma_user_mmap_get_offset(ctx->db_mmap_entry);
+diff --git a/include/uapi/rdma/qedr-abi.h b/include/uapi/rdma/qedr-abi.h
+index c022ee26089b..a0b83c9d4498 100644
+--- a/include/uapi/rdma/qedr-abi.h
++++ b/include/uapi/rdma/qedr-abi.h
+@@ -48,6 +48,18 @@ struct qedr_alloc_ucontext_req {
+ 	__u32 reserved;
+ };
  
- 		*hr_qp->rdb.db_record = hr_qp->rq.head & 0xffff;
++#define QEDR_LDPM_MAX_SIZE	(8192)
++#define QEDR_EDPM_TRANS_SIZE	(64)
++
++enum qedr_rdma_dpm_type {
++	QEDR_DPM_TYPE_NONE		= 0,
++	QEDR_DPM_TYPE_ROCE_ENHANCED	= 1 << 0,
++	QEDR_DPM_TYPE_ROCE_LEGACY	= 1 << 1,
++	QEDR_DPM_TYPE_IWARP_LEGACY	= 1 << 2,
++	QEDR_DPM_TYPE_RESERVED		= 1 << 3,
++	QEDR_DPM_SIZES_SET		= 1 << 4,
++};
++
+ struct qedr_alloc_ucontext_resp {
+ 	__aligned_u64 db_pa;
+ 	__u32 db_size;
+@@ -59,10 +71,12 @@ struct qedr_alloc_ucontext_resp {
+ 	__u32 sges_per_recv_wr;
+ 	__u32 sges_per_srq_wr;
+ 	__u32 max_cqes;
+-	__u8 dpm_enabled;
++	__u8 dpm_flags;
+ 	__u8 wids_enabled;
+ 	__u16 wid_count;
+-	__u32 reserved;
++	__u16 ldpm_limit_size;
++	__u8 edpm_trans_size;
++	__u8 reserved;
+ };
  
--		if (hr_qp->state == IB_QPS_ERR) {
--			attr_mask = IB_QP_STATE;
--			attr.qp_state = IB_QPS_ERR;
--
--			ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, &attr,
--						    attr_mask, hr_qp->state,
--						    IB_QPS_ERR);
--			if (ret) {
--				spin_unlock_irqrestore(&hr_qp->rq.lock, flags);
--				*bad_wr = wr;
--				return ret;
--			}
--		}
-+		/*
-+		 * Hip08 hardware cannot flush the WQEs in RQ if the QP state
-+		 * gets into errored mode. Hence, as a workaround to this
-+		 * hardware limitation, driver needs to assist in flushing. But
-+		 * the flushing operation uses mailbox to convey the QP state to
-+		 * the hardware and which can sleep due to the mutex protection
-+		 * around the mailbox calls. Hence, use the deferred flush for
-+		 * now.
-+		 */
-+		if (hr_qp->state == IB_QPS_ERR)
-+			init_flush_work(hr_dev, hr_qp);
- 	}
- 	spin_unlock_irqrestore(&hr_qp->rq.lock, flags);
- 
-@@ -2691,13 +2679,11 @@ static int hns_roce_handle_recv_inl_wqe(struct hns_roce_v2_cqe *cqe,
- static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 				struct hns_roce_qp **cur_qp, struct ib_wc *wc)
- {
-+	struct hns_roce_dev *hr_dev = to_hr_dev(hr_cq->ib_cq.device);
- 	struct hns_roce_srq *srq = NULL;
--	struct hns_roce_dev *hr_dev;
- 	struct hns_roce_v2_cqe *cqe;
- 	struct hns_roce_qp *hr_qp;
- 	struct hns_roce_wq *wq;
--	struct ib_qp_attr attr;
--	int attr_mask;
- 	int is_send;
- 	u16 wqe_ctr;
- 	u32 opcode;
-@@ -2721,7 +2707,6 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 				V2_CQE_BYTE_16_LCL_QPN_S);
- 
- 	if (!*cur_qp || (qpn & HNS_ROCE_V2_CQE_QPN_MASK) != (*cur_qp)->qpn) {
--		hr_dev = to_hr_dev(hr_cq->ib_cq.device);
- 		hr_qp = __hns_roce_qp_lookup(hr_dev, qpn);
- 		if (unlikely(!hr_qp)) {
- 			dev_err(hr_dev->dev, "CQ %06lx with entry for unknown QPN %06x\n",
-@@ -2815,14 +2800,21 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 		break;
- 	}
- 
--	/* flush cqe if wc status is error, excluding flush error */
--	if ((wc->status != IB_WC_SUCCESS) &&
--	    (wc->status != IB_WC_WR_FLUSH_ERR)) {
--		attr_mask = IB_QP_STATE;
--		attr.qp_state = IB_QPS_ERR;
--		return hns_roce_v2_modify_qp(&(*cur_qp)->ibqp,
--					     &attr, attr_mask,
--					     (*cur_qp)->state, IB_QPS_ERR);
-+	/*
-+	 * Hip08 hardware cannot flush the WQEs in SQ/RQ if the QP state gets
-+	 * into errored mode. Hence, as a workaround to this hardware
-+	 * limitation, driver needs to assist in flushing. But the flushing
-+	 * operation uses mailbox to convey the QP state to the hardware and
-+	 * which can sleep due to the mutex protection around the mailbox calls.
-+	 * Hence, use the deferred flush for now. Once wc error detected, the
-+	 * flushing operation is needed.
-+	 */
-+	if (wc->status != IB_WC_SUCCESS &&
-+	    wc->status != IB_WC_WR_FLUSH_ERR) {
-+		dev_err(hr_dev->dev, "error cqe status is: 0x%x\n",
-+			status & HNS_ROCE_V2_CQE_STATUS_MASK);
-+		init_flush_work(hr_dev, *cur_qp);
-+		return 0;
- 	}
- 
- 	if (wc->status == IB_WC_WR_FLUSH_ERR)
+ struct qedr_alloc_pd_ureq {
 -- 
-2.7.4
+2.14.5
 
