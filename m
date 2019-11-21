@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF469105925
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 19:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F5A105926
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 19:14:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbfKUSOI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Nov 2019 13:14:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52600 "EHLO mail.kernel.org"
+        id S1726947AbfKUSOM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Nov 2019 13:14:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726279AbfKUSOI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Nov 2019 13:14:08 -0500
+        id S1726279AbfKUSOM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 21 Nov 2019 13:14:12 -0500
 Received: from localhost (unknown [5.29.147.182])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C758F2068E;
-        Thu, 21 Nov 2019 18:14:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50BBF2068E;
+        Thu, 21 Nov 2019 18:14:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574360047;
-        bh=oe8TL+S+41Dqhdd+1ul1Xrv3gX7pr++lQIhyZn6wVtk=;
+        s=default; t=1574360051;
+        bh=BGSDKMjaheWV4Lfmz1O+3NmUfINrABOTX792Tg3Db74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f2Abfm1yE5AQrcbYHfN0kbxHdLm7JAL6qsQzlMnX12kf0egpx35zegokP7yMl23t7
-         q7E9FIrHsQyAyZ4Qt2/KSf65jSSrzqwkW2Nnk36Lo5JgnYv/HG4Lww2kVxsoC9qqPK
-         C6jktww0uX5cHnZ73NDEYoZnwc1Qk3iqf/kvv5cY=
+        b=pDSQlsVmjZ78dakeEzRROB4/xX4n+FmZIlzb7DiUrj0Z8qzzwvvnBimMhEFUIF3Mm
+         tsXMkcXOti/ExwtrbJ/ocxpMDF1CkMDmxLNfH8M7/RZks6ssIUXzLVO4QmgFOVZKag
+         1Eqf5477yraF93tvTRrPM+et5HSjY09zTOORvSYo=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -30,9 +30,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Bart Van Assche <bvanassche@acm.org>,
         Sean Hefty <sean.hefty@intel.com>
-Subject: [PATCH rdma-next v1 15/48] RDMA/cm: Service ID Resolution Response (SIDR_REP) definitions
-Date:   Thu, 21 Nov 2019 20:12:40 +0200
-Message-Id: <20191121181313.129430-16-leon@kernel.org>
+Subject: [PATCH rdma-next v1 16/48] RDMA/cm: Convert QPN and EECN to be u32 variables
+Date:   Thu, 21 Nov 2019 20:12:41 +0200
+Message-Id: <20191121181313.129430-17-leon@kernel.org>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191121181313.129430-1-leon@kernel.org>
 References: <20191121181313.129430-1-leon@kernel.org>
@@ -45,112 +45,305 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-Add SIDR_REP message definitions as it is written
-in IBTA release 1.3 volume 1.
+Remove unnecessary ambiguity in mixing be32<->u32 declarations
+of QPN and EECN, convert them from be32 to u32 with help
+of newly introduced CM_GET/CM_SET macros.
 
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/cm.c      |  7 ++++---
- drivers/infiniband/core/cm_msgs.h |  4 ++--
- drivers/infiniband/core/cma.c     |  2 +-
- include/rdma/ib_cm.h              |  5 -----
- include/rdma/ibta_vol1_c12.h      | 14 ++++++++++++++
- 5 files changed, 21 insertions(+), 11 deletions(-)
+ drivers/infiniband/core/cm.c      | 55 ++++++++++++++++----------
+ drivers/infiniband/core/cm_msgs.h | 64 +------------------------------
+ 2 files changed, 35 insertions(+), 84 deletions(-)
 
 diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index db17421beeff..fd79605c9e8b 100644
+index fd79605c9e8b..247238469af1 100644
 --- a/drivers/infiniband/core/cm.c
 +++ b/drivers/infiniband/core/cm.c
-@@ -3621,9 +3621,10 @@ int ib_send_cm_sidr_rep(struct ib_cm_id *cm_id,
- 	unsigned long flags;
- 	int ret;
+@@ -225,7 +225,7 @@ struct cm_timewait_info {
+ 	struct rb_node remote_qp_node;
+ 	struct rb_node remote_id_node;
+ 	__be64 remote_ca_guid;
+-	__be32 remote_qpn;
++	u32 remote_qpn;
+ 	u8 inserted_remote_qp;
+ 	u8 inserted_remote_id;
+ };
+@@ -250,8 +250,8 @@ struct cm_id_private {
  
--	if ((param->info && param->info_length > IB_CM_SIDR_REP_INFO_LENGTH) ||
-+	if ((param->info &&
-+	     param->info_length > CM_SIDR_REP_ADDITIONAL_INFORMATION_SIZE) ||
- 	    (param->private_data &&
--	     param->private_data_len > IB_CM_SIDR_REP_PRIVATE_DATA_SIZE))
-+	     param->private_data_len > CM_SIDR_REP_PRIVATE_DATA_SIZE))
- 		return -EINVAL;
+ 	void *private_data;
+ 	__be64 tid;
+-	__be32 local_qpn;
+-	__be32 remote_qpn;
++	u32 local_qpn;
++	u32 remote_qpn;
+ 	enum ib_qp_type qp_type;
+ 	__be32 sq_psn;
+ 	__be32 rq_psn;
+@@ -764,15 +764,15 @@ static struct cm_timewait_info * cm_insert_remote_qpn(struct cm_timewait_info
+ 	struct rb_node *parent = NULL;
+ 	struct cm_timewait_info *cur_timewait_info;
+ 	__be64 remote_ca_guid = timewait_info->remote_ca_guid;
+-	__be32 remote_qpn = timewait_info->remote_qpn;
++	u32 remote_qpn = timewait_info->remote_qpn;
  
- 	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
-@@ -3677,7 +3678,7 @@ static void cm_format_sidr_rep_event(struct cm_work *work,
- 	param->info_len = sidr_rep_msg->info_length;
- 	param->sgid_attr = cm_id_priv->av.ah_attr.grh.sgid_attr;
- 	work->cm_event.private_data = &sidr_rep_msg->private_data;
--	work->cm_event.private_data_len = IB_CM_SIDR_REP_PRIVATE_DATA_SIZE;
-+	work->cm_event.private_data_len = CM_SIDR_REP_PRIVATE_DATA_SIZE;
- }
+ 	while (*link) {
+ 		parent = *link;
+ 		cur_timewait_info = rb_entry(parent, struct cm_timewait_info,
+ 					     remote_qp_node);
+-		if (be32_lt(remote_qpn, cur_timewait_info->remote_qpn))
++		if (remote_qpn < cur_timewait_info->remote_qpn)
+ 			link = &(*link)->rb_left;
+-		else if (be32_gt(remote_qpn, cur_timewait_info->remote_qpn))
++		else if (remote_qpn > cur_timewait_info->remote_qpn)
+ 			link = &(*link)->rb_right;
+ 		else if (be64_lt(remote_ca_guid, cur_timewait_info->remote_ca_guid))
+ 			link = &(*link)->rb_left;
+@@ -1265,7 +1265,7 @@ static void cm_format_req(struct cm_req_msg *req_msg,
+ 	req_msg->local_comm_id = cm_id_priv->id.local_id;
+ 	req_msg->service_id = param->service_id;
+ 	req_msg->local_ca_guid = cm_id_priv->id.device->node_guid;
+-	cm_req_set_local_qpn(req_msg, cpu_to_be32(param->qp_num));
++	IBA_SET(CM_REQ_LOCAL_QPN, req_msg, param->qp_num);
+ 	cm_req_set_init_depth(req_msg, param->initiator_depth);
+ 	cm_req_set_remote_resp_timeout(req_msg,
+ 				       param->remote_cm_response_timeout);
+@@ -1443,7 +1443,7 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
+ 	cm_id_priv->msg->timeout_ms = cm_id_priv->timeout_ms;
+ 	cm_id_priv->msg->context[1] = (void *) (unsigned long) IB_CM_REQ_SENT;
  
- static int cm_sidr_rep_handler(struct cm_work *work)
+-	cm_id_priv->local_qpn = cm_req_get_local_qpn(req_msg);
++	cm_id_priv->local_qpn = IBA_GET(CM_REQ_LOCAL_QPN, req_msg);
+ 	cm_id_priv->rq_psn = cm_req_get_starting_psn(req_msg);
+ 
+ 	spin_lock_irqsave(&cm_id_priv->lock, flags);
+@@ -1666,7 +1666,7 @@ static void cm_format_req_event(struct cm_work *work,
+ 	}
+ 	param->remote_ca_guid = req_msg->local_ca_guid;
+ 	param->remote_qkey = be32_to_cpu(req_msg->local_qkey);
+-	param->remote_qpn = be32_to_cpu(cm_req_get_local_qpn(req_msg));
++	param->remote_qpn = IBA_GET(CM_REQ_LOCAL_QPN, req_msg);
+ 	param->qp_type = cm_req_get_qp_type(req_msg);
+ 	param->starting_psn = be32_to_cpu(cm_req_get_starting_psn(req_msg));
+ 	param->responder_resources = cm_req_get_init_depth(req_msg);
+@@ -1929,7 +1929,7 @@ static int cm_req_handler(struct cm_work *work)
+ 	}
+ 	cm_id_priv->timewait_info->work.remote_id = req_msg->local_comm_id;
+ 	cm_id_priv->timewait_info->remote_ca_guid = req_msg->local_ca_guid;
+-	cm_id_priv->timewait_info->remote_qpn = cm_req_get_local_qpn(req_msg);
++	cm_id_priv->timewait_info->remote_qpn = IBA_GET(CM_REQ_LOCAL_QPN, req_msg);
+ 
+ 	listen_cm_id_priv = cm_match_req(work, cm_id_priv);
+ 	if (!listen_cm_id_priv) {
+@@ -2003,7 +2003,7 @@ static int cm_req_handler(struct cm_work *work)
+ 	cm_id_priv->timeout_ms = cm_convert_to_ms(
+ 					cm_req_get_local_resp_timeout(req_msg));
+ 	cm_id_priv->max_cm_retries = cm_req_get_max_cm_retries(req_msg);
+-	cm_id_priv->remote_qpn = cm_req_get_local_qpn(req_msg);
++	cm_id_priv->remote_qpn = IBA_GET(CM_REQ_LOCAL_QPN, req_msg);
+ 	cm_id_priv->initiator_depth = cm_req_get_resp_res(req_msg);
+ 	cm_id_priv->responder_resources = cm_req_get_init_depth(req_msg);
+ 	cm_id_priv->path_mtu = cm_req_get_path_mtu(req_msg);
+@@ -2047,10 +2047,10 @@ static void cm_format_rep(struct cm_rep_msg *rep_msg,
+ 		rep_msg->initiator_depth = param->initiator_depth;
+ 		cm_rep_set_flow_ctrl(rep_msg, param->flow_control);
+ 		cm_rep_set_srq(rep_msg, param->srq);
+-		cm_rep_set_local_qpn(rep_msg, cpu_to_be32(param->qp_num));
++		IBA_SET(CM_REP_LOCAL_QPN, rep_msg, param->qp_num);
+ 	} else {
+ 		cm_rep_set_srq(rep_msg, 1);
+-		cm_rep_set_local_eecn(rep_msg, cpu_to_be32(param->qp_num));
++		IBA_SET(CM_REP_LOCAL_EE_CONTEXT_NUMBER, rep_msg, param->qp_num);
+ 	}
+ 
+ 	if (param->private_data && param->private_data_len)
+@@ -2105,7 +2105,7 @@ int ib_send_cm_rep(struct ib_cm_id *cm_id,
+ 	WARN_ONCE(param->qp_num & 0xFF000000,
+ 		  "IBTA declares QPN to be 24 bits, but it is 0x%X\n",
+ 		  param->qp_num);
+-	cm_id_priv->local_qpn = cpu_to_be32(param->qp_num);
++	cm_id_priv->local_qpn = param->qp_num;
+ 
+ out:	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+ 	return ret;
+@@ -2187,7 +2187,11 @@ static void cm_format_rep_event(struct cm_work *work, enum ib_qp_type qp_type)
+ 	param = &work->cm_event.param.rep_rcvd;
+ 	param->remote_ca_guid = rep_msg->local_ca_guid;
+ 	param->remote_qkey = be32_to_cpu(rep_msg->local_qkey);
+-	param->remote_qpn = be32_to_cpu(cm_rep_get_qpn(rep_msg, qp_type));
++	if (qp_type == IB_QPT_XRC_INI)
++		param->remote_qpn =
++			IBA_GET(CM_REP_LOCAL_EE_CONTEXT_NUMBER, rep_msg);
++	else
++		param->remote_qpn = IBA_GET(CM_REP_LOCAL_QPN, rep_msg);
+ 	param->starting_psn = be32_to_cpu(cm_rep_get_starting_psn(rep_msg));
+ 	param->responder_resources = rep_msg->initiator_depth;
+ 	param->initiator_depth = rep_msg->resp_resources;
+@@ -2280,7 +2284,12 @@ static int cm_rep_handler(struct cm_work *work)
+ 
+ 	cm_id_priv->timewait_info->work.remote_id = rep_msg->local_comm_id;
+ 	cm_id_priv->timewait_info->remote_ca_guid = rep_msg->local_ca_guid;
+-	cm_id_priv->timewait_info->remote_qpn = cm_rep_get_qpn(rep_msg, cm_id_priv->qp_type);
++	if (cm_id_priv->qp_type == IB_QPT_XRC_INI)
++		cm_id_priv->timewait_info->remote_qpn =
++			IBA_GET(CM_REP_LOCAL_EE_CONTEXT_NUMBER, rep_msg);
++	else
++		cm_id_priv->timewait_info->remote_qpn =
++			IBA_GET(CM_REP_LOCAL_QPN, rep_msg);
+ 
+ 	spin_lock(&cm.lock);
+ 	/* Check for duplicate REP. */
+@@ -2323,7 +2332,11 @@ static int cm_rep_handler(struct cm_work *work)
+ 
+ 	cm_id_priv->id.state = IB_CM_REP_RCVD;
+ 	cm_id_priv->id.remote_id = rep_msg->local_comm_id;
+-	cm_id_priv->remote_qpn = cm_rep_get_qpn(rep_msg, cm_id_priv->qp_type);
++	if (cm_id_priv->qp_type == IB_QPT_XRC_INI)
++		cm_id_priv->remote_qpn =
++			IBA_GET(CM_REP_LOCAL_EE_CONTEXT_NUMBER, rep_msg);
++	else
++		cm_id_priv->remote_qpn = IBA_GET(CM_REP_LOCAL_QPN, rep_msg);
+ 	cm_id_priv->initiator_depth = rep_msg->resp_resources;
+ 	cm_id_priv->responder_resources = rep_msg->initiator_depth;
+ 	cm_id_priv->sq_psn = cm_rep_get_starting_psn(rep_msg);
+@@ -2437,7 +2450,7 @@ static void cm_format_dreq(struct cm_dreq_msg *dreq_msg,
+ 			  cm_form_tid(cm_id_priv));
+ 	dreq_msg->local_comm_id = cm_id_priv->id.local_id;
+ 	dreq_msg->remote_comm_id = cm_id_priv->id.remote_id;
+-	cm_dreq_set_remote_qpn(dreq_msg, cm_id_priv->remote_qpn);
++	IBA_SET(CM_DREQ_REMOTE_QPN_EECN, dreq_msg, cm_id_priv->remote_qpn);
+ 
+ 	if (private_data && private_data_len)
+ 		memcpy(dreq_msg->private_data, private_data, private_data_len);
+@@ -2606,7 +2619,7 @@ static int cm_dreq_handler(struct cm_work *work)
+ 	work->cm_event.private_data_len = CM_DREQ_PRIVATE_DATA_SIZE;
+ 
+ 	spin_lock_irq(&cm_id_priv->lock);
+-	if (cm_id_priv->local_qpn != cm_dreq_get_remote_qpn(dreq_msg))
++	if (cm_id_priv->local_qpn != IBA_GET(CM_DREQ_REMOTE_QPN_EECN, dreq_msg))
+ 		goto unlock;
+ 
+ 	switch (cm_id_priv->id.state) {
+@@ -3071,7 +3084,7 @@ static void cm_format_lap(struct cm_lap_msg *lap_msg,
+ 			  cm_form_tid(cm_id_priv));
+ 	lap_msg->local_comm_id = cm_id_priv->id.local_id;
+ 	lap_msg->remote_comm_id = cm_id_priv->id.remote_id;
+-	cm_lap_set_remote_qpn(lap_msg, cm_id_priv->remote_qpn);
++	IBA_SET(CM_LAP_REMOTE_QPN_EECN, lap_msg, cm_id_priv->remote_qpn);
+ 	/* todo: need remote CM response timeout */
+ 	cm_lap_set_remote_resp_timeout(lap_msg, 0x1F);
+ 	lap_msg->alt_local_lid =
+@@ -4114,7 +4127,7 @@ static int cm_init_qp_rtr_attr(struct cm_id_private *cm_id_priv,
+ 				IB_QP_DEST_QPN | IB_QP_RQ_PSN;
+ 		qp_attr->ah_attr = cm_id_priv->av.ah_attr;
+ 		qp_attr->path_mtu = cm_id_priv->path_mtu;
+-		qp_attr->dest_qp_num = be32_to_cpu(cm_id_priv->remote_qpn);
++		qp_attr->dest_qp_num = cm_id_priv->remote_qpn;
+ 		qp_attr->rq_psn = be32_to_cpu(cm_id_priv->rq_psn);
+ 		if (cm_id_priv->qp_type == IB_QPT_RC ||
+ 		    cm_id_priv->qp_type == IB_QPT_XRC_TGT) {
 diff --git a/drivers/infiniband/core/cm_msgs.h b/drivers/infiniband/core/cm_msgs.h
-index 47f7ce1ac143..ed887be775e3 100644
+index ed887be775e3..650d6fb312c8 100644
 --- a/drivers/infiniband/core/cm_msgs.h
 +++ b/drivers/infiniband/core/cm_msgs.h
-@@ -778,9 +778,9 @@ struct cm_sidr_rep_msg {
- 	__be32 offset8;
- 	__be64 service_id;
- 	__be32 qkey;
--	u8 info[IB_CM_SIDR_REP_INFO_LENGTH];
-+	u8 info[CM_SIDR_REP_ADDITIONAL_INFORMATION_SIZE];
+@@ -70,18 +70,6 @@ struct cm_req_msg {
  
--	u8 private_data[IB_CM_SIDR_REP_PRIVATE_DATA_SIZE];
-+	u8 private_data[CM_SIDR_REP_PRIVATE_DATA_SIZE];
  } __packed;
  
- static inline __be32 cm_sidr_rep_get_qpn(struct cm_sidr_rep_msg *sidr_rep_msg)
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index aeb528b2aa49..6c8beabc3363 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -3706,7 +3706,7 @@ static int cma_sidr_rep_handler(struct ib_cm_id *cm_id,
- 		break;
- 	case IB_CM_SIDR_REP_RECEIVED:
- 		event.param.ud.private_data = ib_event->private_data;
--		event.param.ud.private_data_len = IB_CM_SIDR_REP_PRIVATE_DATA_SIZE;
-+		event.param.ud.private_data_len = CM_SIDR_REP_PRIVATE_DATA_SIZE;
- 		if (rep->status != IB_SIDR_SUCCESS) {
- 			event.event = RDMA_CM_EVENT_UNREACHABLE;
- 			event.status = ib_event->param.sidr_rep_rcvd.status;
-diff --git a/include/rdma/ib_cm.h b/include/rdma/ib_cm.h
-index 8f0c377ad250..6237c369dbd6 100644
---- a/include/rdma/ib_cm.h
-+++ b/include/rdma/ib_cm.h
-@@ -64,11 +64,6 @@ enum ib_cm_event_type {
- 	IB_CM_SIDR_REP_RECEIVED
- };
- 
--enum ib_cm_data_size {
--	IB_CM_SIDR_REP_PRIVATE_DATA_SIZE = 136,
--	IB_CM_SIDR_REP_INFO_LENGTH	 = 72,
--};
+-static inline __be32 cm_req_get_local_qpn(struct cm_req_msg *req_msg)
+-{
+-	return cpu_to_be32(be32_to_cpu(req_msg->offset32) >> 8);
+-}
 -
- struct ib_cm_id;
- 
- struct ib_cm_req_event_param {
-diff --git a/include/rdma/ibta_vol1_c12.h b/include/rdma/ibta_vol1_c12.h
-index 36bb04ee7634..9fd19ccb993f 100644
---- a/include/rdma/ibta_vol1_c12.h
-+++ b/include/rdma/ibta_vol1_c12.h
-@@ -186,4 +186,18 @@
- #define CM_SIDR_REQ_PRIVATE_DATA CM_FIELD_MLOC(struct cm_sidr_req_msg, 16, 1728)
- #define CM_SIDR_REQ_PRIVATE_DATA_SIZE 216
- 
-+/* Table 120 SIDR_REP Message Contents */
-+#define CM_SIDR_REP_REQUESTID CM_FIELD32_LOC(struct cm_sidr_rep_msg, 0, 32)
-+#define CM_SIDR_REP_STATUS CM_FIELD8_LOC(struct cm_sidr_rep_msg, 4, 8)
-+#define CM_SIDR_REP_ADDITIONAL_INFORMATION_LENGTH                              \
-+	CM_FIELD8_LOC(struct cm_sidr_rep_msg, 5, 8)
-+#define CM_SIDR_REP_QPN CM_FIELD32_LOC(struct cm_sidr_rep_msg, 8, 24)
-+#define CM_SIDR_REP_SERVICEID CM_FIELD64_LOC(struct cm_sidr_rep_msg, 12, 64)
-+#define CM_SIDR_REP_Q_KEY CM_FIELD32_LOC(struct cm_sidr_rep_msg, 20, 32)
-+#define CM_SIDR_REP_ADDITIONAL_INFORMATION                                     \
-+	CM_FIELD_MLOC(struct cm_sidr_rep_msg, 24, 576)
-+#define CM_SIDR_REP_ADDITIONAL_INFORMATION_SIZE 72
-+#define CM_SIDR_REP_PRIVATE_DATA CM_FIELD_MLOC(struct cm_sidr_rep_msg, 96, 1088)
-+#define CM_SIDR_REP_PRIVATE_DATA_SIZE 136
+-static inline void cm_req_set_local_qpn(struct cm_req_msg *req_msg, __be32 qpn)
+-{
+-	req_msg->offset32 = cpu_to_be32((be32_to_cpu(qpn) << 8) |
+-					 (be32_to_cpu(req_msg->offset32) &
+-					  0x000000FF));
+-}
+-
+ static inline u8 cm_req_get_resp_res(struct cm_req_msg *req_msg)
+ {
+ 	return (u8) be32_to_cpu(req_msg->offset32);
+@@ -462,6 +450,7 @@ struct cm_rep_msg {
+ 	__be32 local_qkey;
+ 	/* local QPN:24, rsvd:8 */
+ 	__be32 offset12;
 +
- #endif /* _IBTA_VOL1_C12_H_ */
+ 	/* local EECN:24, rsvd:8 */
+ 	__be32 offset16;
+ 	/* starting PSN:24 rsvd:8 */
+@@ -478,34 +467,6 @@ struct cm_rep_msg {
+ 
+ } __packed;
+ 
+-static inline __be32 cm_rep_get_local_qpn(struct cm_rep_msg *rep_msg)
+-{
+-	return cpu_to_be32(be32_to_cpu(rep_msg->offset12) >> 8);
+-}
+-
+-static inline void cm_rep_set_local_qpn(struct cm_rep_msg *rep_msg, __be32 qpn)
+-{
+-	rep_msg->offset12 = cpu_to_be32((be32_to_cpu(qpn) << 8) |
+-			    (be32_to_cpu(rep_msg->offset12) & 0x000000FF));
+-}
+-
+-static inline __be32 cm_rep_get_local_eecn(struct cm_rep_msg *rep_msg)
+-{
+-	return cpu_to_be32(be32_to_cpu(rep_msg->offset16) >> 8);
+-}
+-
+-static inline void cm_rep_set_local_eecn(struct cm_rep_msg *rep_msg, __be32 eecn)
+-{
+-	rep_msg->offset16 = cpu_to_be32((be32_to_cpu(eecn) << 8) |
+-			    (be32_to_cpu(rep_msg->offset16) & 0x000000FF));
+-}
+-
+-static inline __be32 cm_rep_get_qpn(struct cm_rep_msg *rep_msg, enum ib_qp_type qp_type)
+-{
+-	return (qp_type == IB_QPT_XRC_INI) ?
+-		cm_rep_get_local_eecn(rep_msg) : cm_rep_get_local_qpn(rep_msg);
+-}
+-
+ static inline __be32 cm_rep_get_starting_psn(struct cm_rep_msg *rep_msg)
+ {
+ 	return cpu_to_be32(be32_to_cpu(rep_msg->offset20) >> 8);
+@@ -598,17 +559,6 @@ struct cm_dreq_msg {
+ 
+ } __packed;
+ 
+-static inline __be32 cm_dreq_get_remote_qpn(struct cm_dreq_msg *dreq_msg)
+-{
+-	return cpu_to_be32(be32_to_cpu(dreq_msg->offset8) >> 8);
+-}
+-
+-static inline void cm_dreq_set_remote_qpn(struct cm_dreq_msg *dreq_msg, __be32 qpn)
+-{
+-	dreq_msg->offset8 = cpu_to_be32((be32_to_cpu(qpn) << 8) |
+-			    (be32_to_cpu(dreq_msg->offset8) & 0x000000FF));
+-}
+-
+ struct cm_drep_msg {
+ 	struct ib_mad_hdr hdr;
+ 
+@@ -647,18 +597,6 @@ struct cm_lap_msg {
+ 	u8 private_data[CM_LAP_PRIVATE_DATA_SIZE];
+ } __packed;
+ 
+-static inline __be32 cm_lap_get_remote_qpn(struct cm_lap_msg *lap_msg)
+-{
+-	return cpu_to_be32(be32_to_cpu(lap_msg->offset12) >> 8);
+-}
+-
+-static inline void cm_lap_set_remote_qpn(struct cm_lap_msg *lap_msg, __be32 qpn)
+-{
+-	lap_msg->offset12 = cpu_to_be32((be32_to_cpu(qpn) << 8) |
+-					 (be32_to_cpu(lap_msg->offset12) &
+-					  0x000000FF));
+-}
+-
+ static inline u8 cm_lap_get_remote_resp_timeout(struct cm_lap_msg *lap_msg)
+ {
+ 	return (u8) ((be32_to_cpu(lap_msg->offset12) & 0xF8) >> 3);
 -- 
 2.20.1
 
