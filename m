@@ -2,109 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3C4105349
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 14:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389C910536D
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Nov 2019 14:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbfKUNiy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Nov 2019 08:38:54 -0500
-Received: from mail-eopbgr10059.outbound.protection.outlook.com ([40.107.1.59]:25650
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726532AbfKUNix (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Nov 2019 08:38:53 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AnpRpXbdpzhucvmMTjcD4FQz6VS9xQSk7befPccR+h8woQ4b5vVhoXZxvM80UdKx9LdUxy4Z1B7rYUY1mwfG+GJyn7Wv3d+ctNTsWoTVxwxyYCPanZwlbCaeyrfnZqW578liLh/QSwoH4dVU2bype93ZW0vk2cTXXa5YOB/ml/HdpVLGO6UNLwsaVLcLH7Qrav0+PahcFqQn9Ncq0zBkZRvVkb920UEvH/nPQ/HUbRd2aj3MIej4O8c193iHgz+G1+HctxbsRs9wAf11QBJ9UtzgpD4ap9uFEebQXE8JjwUMJ+Sr5CZj2mOpMg0ZvhTUcLaskJCuegKI8c2wfG9rkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cY4q9UEMZZkqYIHlgGnJJy5bsix1Ex2jmf2K3PxFmbM=;
- b=cPb47mUt/jJ4HLwXYQZECyUmN9oFou/nlAtWoz1AiYuX1ijKtprJgmVIX+2YTz/3vogxTitnqHFQ7N24aEChgkiU5Da6HmaBq3/F4KuGJ+ly5O3YcFs4WrMfUtGWcPy4pDrOuF/hEWPX0shkVgGBU9S1V6neLHyyfZKZjcjS9XBhCgNI3FpDrymtJMk8AojEhlOIDEsYetX59Y6T0PiiUuczmzrddFLixDurEMAWx0ApwcT894BdWQ/ytF+DPJmwmCONqRqHEgEr0mTmCmpyI6NUYpxYzaFRhXj3ITeQ3sFbQs2DWAfENQbMXucsgEVqOWp0AjqMGJEjzG3D5TncBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cY4q9UEMZZkqYIHlgGnJJy5bsix1Ex2jmf2K3PxFmbM=;
- b=F/lxChIScESzdizlowtJX6cB2rcRqYiGqn6xz4Y7HfvA1Ix6/TNbodawzGkmOhJlugS7VPmSmJCZ17B0i40+T4CLyou129JsFmlYyBpFwXC5q9ZE7YubMMwVKTxi4VHIJu7xfQU3qTZUgS+QwsU9TSUCP9LiBvR/rVOGcKTXHG0=
-Received: from AM6PR05MB4167.eurprd05.prod.outlook.com (52.135.166.156) by
- AM6PR05MB6087.eurprd05.prod.outlook.com (20.179.0.81) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2474.17; Thu, 21 Nov 2019 13:38:50 +0000
-Received: from AM6PR05MB4167.eurprd05.prod.outlook.com
- ([fe80::e9ad:6a8:bed8:306]) by AM6PR05MB4167.eurprd05.prod.outlook.com
- ([fe80::e9ad:6a8:bed8:306%5]) with mapi id 15.20.2474.019; Thu, 21 Nov 2019
- 13:38:50 +0000
-From:   Haggai Eran <haggaie@mellanox.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Michael Guralnik <michaelgur@mellanox.com>
-Subject: Re: [PATCH RFC rdma-core] verbs: relaxed ordering memory regions
-Thread-Topic: [PATCH RFC rdma-core] verbs: relaxed ordering memory regions
-Thread-Index: AQHVnRp3D2/R564WAkqHJj8pbuc4PKeS5RGAgALCq4A=
-Date:   Thu, 21 Nov 2019 13:38:49 +0000
-Message-ID: <ceb93ff8-80f0-f321-531f-4c534da38e07@mellanox.com>
-References: <1573976488-24301-1-git-send-email-haggaie@mellanox.com>
- <20191119192919.GA16030@ziepe.ca>
-In-Reply-To: <20191119192919.GA16030@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM4PR0501CA0055.eurprd05.prod.outlook.com
- (2603:10a6:200:68::23) To AM6PR05MB4167.eurprd05.prod.outlook.com
- (2603:10a6:209:4b::28)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=haggaie@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [193.47.165.251]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3b5e4933-9bf0-4da8-ecd1-08d76e882422
-x-ms-traffictypediagnostic: AM6PR05MB6087:|AM6PR05MB6087:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR05MB6087442B9297907826ADE724C14E0@AM6PR05MB6087.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 0228DDDDD7
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(39860400002)(396003)(376002)(346002)(366004)(199004)(189003)(6116002)(8936002)(25786009)(8676002)(66946007)(66066001)(6246003)(99286004)(4326008)(86362001)(6486002)(53546011)(6506007)(386003)(4744005)(64756008)(54906003)(66446008)(3846002)(66556008)(14444005)(36756003)(71200400001)(71190400001)(107886003)(446003)(11346002)(2616005)(256004)(66476007)(26005)(81166006)(316002)(186003)(81156014)(2906002)(229853002)(6436002)(14454004)(6512007)(7736002)(102836004)(52116002)(478600001)(5660300002)(31696002)(305945005)(6916009)(31686004)(76176011);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB6087;H:AM6PR05MB4167.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AgnjvcPxYjKKOVFgUNf00NCKynNePI+Y4vT5Unvm4JOV60yld/xGxtLDoc/v/ppqtBHamUe4u6EJ5YIB+E49ALpR+ZSQChlTsmEoyFXNOE2KkwNxvhVSYbtdvsKl6zSMzktH2v5GSHpIWeBmvnldQeGQf5EmFPzgs3sn6qJ5wzmrzO0cqJhWd0uYfICyxFjoJRRvBqNVuT/rNimQhzhh5eNS+BCyEkKucwqb8KYX21wE23VXqGd18pX9TyBmX10uzqtg4k6hICtdQXnjCXTKmsXU0jx2s3IvtsV0jYP9DUMtgjR6ZgEs8ipR+euiHAsaTyIlBRKJeLz5YCwcRPy7QwZ6vq6wTnb3lVJ4PKcmB6gfV4iAYn6GzAVVxmd3i4IKyu0zruNOis8V+m65uweIvDbKQAXOkO7/c/q108shOH9x9gmnzmnBTTI5PM8bQ/ld
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0957FCBE4185B3429002E0FD38C281A7@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726546AbfKUNol (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Nov 2019 08:44:41 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:45135 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726676AbfKUNol (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Nov 2019 08:44:41 -0500
+Received: by mail-qk1-f194.google.com with SMTP id q70so2992238qke.12
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Nov 2019 05:44:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=sfhj/BSpAXObGx+Uv9hTYzsrf84iVXtz5oXZyiZdeuk=;
+        b=aD0tG2KM+cuLPXFQVDIolHb83uQBvoIv6SUHiABQp0tUGCUKg8utJnNZCBA0Ny6YT1
+         bUkfqKhY8qGK8GmIcS+uubUZ8tcOnuG43Hhah64TPdrqISKZrLfvf1vf1u7jBWxP/Awn
+         4jyaYiatRdPnvmqxPe0Y6usPOyGiwVPocK1+BTJcwhErQDxSQl7JM4Y2Gc2knN6FJK+Y
+         8pzXexyHb1IElwZVk8C1MVn+NKHGIafiaFtGPmM+DYtlh/B/RWu6AOZGc9UOjA6ltWAN
+         Gk6Rx9q+FAug6ZidnXXrYcoea0y2rIiJiUHUZA5//CxfZLTWGJfqidpje/5nFV3uVbge
+         /ilw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=sfhj/BSpAXObGx+Uv9hTYzsrf84iVXtz5oXZyiZdeuk=;
+        b=hCNiqz7dMafy0kfsQWm8P8FhY8jem+MfHUI1/m7LcG2zUEC6sVH1Om3Dk8puyKMLJa
+         5NubfBBWpCgRm8e/9sqFVVvaZPGVrppmFUMKMLfCpQfYaHV5FBPJpbvt7N69nykhDM+e
+         mvqXVEtpO82BMV9cYi8qd92JgoMm9DBFZHQTsBJiAkroanrPhukYEIQLpksBkEokruKJ
+         Pux/3vUh+3SMaxOJ6oTwT9ZBv7por7/rDQfPzwQUMKfkt11L9dmiaMJtbQEMvndPd565
+         /1BD+qLQ0kRgSRpwMq6YbXHhIXk41CkMb4ZPI1zqPMCX7NhrJRbk78/ghOCKPlbUVwCR
+         AKGw==
+X-Gm-Message-State: APjAAAV4O+ky/wMeEl32xLQJ6sz4hCT0+hUoBAKu5SSt4+0fP+wwiSKg
+        QUM/BlHAxCUjA/CXj4nL74PBwQ==
+X-Google-Smtp-Source: APXvYqwWIbMyx3iFrKk95JWvSl6/fsnsiqMLBdbVXS3zWSqrU5zmc0Ff5bmuvBhA5/C3CTAOexD04g==
+X-Received: by 2002:a05:620a:2185:: with SMTP id g5mr8024518qka.129.1574343879984;
+        Thu, 21 Nov 2019 05:44:39 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id o201sm1395090qka.17.2019.11.21.05.44.38
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 21 Nov 2019 05:44:38 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iXmlC-0002Gd-Fz; Thu, 21 Nov 2019 09:44:38 -0400
+Date:   Thu, 21 Nov 2019 09:44:38 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        davem@davemloft.net, gregkh@linuxfoundation.org,
+        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, Kiran Patil <kiran.patil@intel.com>,
+        Tiwei Bie <tiwei.bie@intel.com>
+Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Message-ID: <20191121134438.GA7448@ziepe.ca>
+References: <20191119231023.GN4991@ziepe.ca>
+ <20191119191053-mutt-send-email-mst@kernel.org>
+ <20191120014653.GR4991@ziepe.ca>
+ <134058913.35624136.1574222360435.JavaMail.zimbra@redhat.com>
+ <20191120133835.GC22515@ziepe.ca>
+ <20191120102856.7e01e2e2@x1.home>
+ <20191120181108.GJ22515@ziepe.ca>
+ <20191120150732.2fffa141@x1.home>
+ <20191121030357.GB16914@ziepe.ca>
+ <20191120232320-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3b5e4933-9bf0-4da8-ecd1-08d76e882422
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Nov 2019 13:38:49.9419
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7d27Y+Iqg0ulguIPt4CPLVhsKsJNnqh/y0VBkQwlxOUHDGBKC45ZpZ/hQfzAocXfT6oGOL1rKU570yPAC+QyuQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6087
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191120232320-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gMTEvMTkvMjAxOSA5OjI5IFBNLCBKYXNvbiBHdW50aG9ycGUgd3JvdGU6DQo+IE9uIFN1biwg
-Tm92IDE3LCAyMDE5IGF0IDA5OjQxOjI4QU0gKzAyMDAsIEhhZ2dhaSBFcmFuIHdyb3RlOg0KPj4g
-Ky8qIFVzZSB0aGUgbmV3IHZlcnNpb24gb2YgaWJ2X3JlZ19tciBvbmx5IGlmIGZsYWdzIHRoYXQg
-cmVxdWlyZSBpdCBhcmUgdXNlZC4gKi8NCj4+ICsjZGVmaW5lIGlidl9yZWdfbXIocGQsIGFkZHIs
-IGxlbmd0aCwgYWNjZXNzKSAoe1wNCj4+ICsJY29uc3QgaW50IG9wdGlvbmFsX2FjY2Vzc19mbGFn
-cyA9IElCVl9BQ0NFU1NfUkVMQVhFRF9PUkRFUklORzsNCj4+IFwNCj4gDQo+IFdlIG5lZWQgdG8g
-c2V0IGFzaWRlIG1vcmUgYml0cyBmb3Igb3B0aW9uYWwgYXMgd2UgY2FuJ3Qga2VlcCByZXZpc2lu
-Zw0KPiB0aGlzDQoNClN1cmUuIElzIDEwIGJpdHMgb2theT8NCg0KI2RlZmluZSBJQlZfQUNDRVNT
-X09QVElPTkFMICgoMSA8PCAxMCkgLSAxKSA8PCA4DQoNCj4gDQo+PiArCXN0cnVjdCBpYnZfbXIg
-Kl9fbXI7IFwNCj4+ICsJXA0KPj4gKwlpZiAoX19idWlsdGluX2NvbnN0YW50X3AoYWNjZXNzKSAm
-JiBcDQo+PiArCSAgICAhKChhY2Nlc3MpICYgb3B0aW9uYWxfYWNjZXNzX2ZsYWdzKSkgXA0KPj4g
-KwkJX19tciA9IGlidl9yZWdfbXIocGQsIGFkZHIsIGxlbmd0aCwgYWNjZXNzKTsgXA0KPj4gKwll
-bHNlIFwNCj4+ICsJCV9fbXIgPSBpYnZfcmVnX21yX2lvdmEyKHBkLCBhZGRyLCBsZW5ndGgsICh1
-aW50cHRyX3QpYWRkciwgXA0KPj4gKwkJCQkJYWNjZXNzKTsgXA0KPiANCj4gTWlzc2luZyBicmFj
-a2V0cyBhcm91bmQgYWRkcg0KPiANCj4gVGhpcyBhbHNvIHdhbnRzIHRvIGJlIGEgPzogZXhwcmVz
-c2lvbiB0byBhdm9pZCB0aGUgKHt9KSBleHRlbnNpb24NClN1cmUsIEknbGwgZG8gdGhhdC4NCg0K
-VGhhbmtzLA0KSGFnZ2FpDQo=
+On Wed, Nov 20, 2019 at 11:24:03PM -0500, Michael S. Tsirkin wrote:
+> On Wed, Nov 20, 2019 at 11:03:57PM -0400, Jason Gunthorpe wrote:
+> > Frankly, when I look at what this virtio stuff is doing I see RDMA:
+> >  - Both have a secure BAR pages for mmaping to userspace (or VM)
+> >  - Both are prevented from interacting with the device at a register
+> >    level and must call to the kernel - ie creating resources is a
+> >    kernel call - for security.
+> >  - Both create command request/response rings in userspace controlled
+> >    memory and have HW DMA to read requests and DMA to generate responses
+> >  - Both allow the work on the rings to DMA outside the ring to
+> >    addresses controlled by userspace.
+> >  - Both have to support a mixture of HW that uses on-device security
+> >    or IOMMU based security.
+> 
+> The main difference is userspace/drivers need to be portable with
+> virtio.
+
+rdma also has a stable/portable user space library API that is
+portable to multiple operating systems.
+
+What you don't like is that RDMA userspace has driver-specific
+code. Ie the kernel interface is not fully hardware independent.
+
+Jason
