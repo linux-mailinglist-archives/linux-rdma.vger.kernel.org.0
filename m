@@ -2,124 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9BA105EC8
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2019 03:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE84105ECF
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2019 03:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbfKVC5A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Nov 2019 21:57:00 -0500
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:4158 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbfKVC47 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Nov 2019 21:56:59 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dd74e740000>; Thu, 21 Nov 2019 18:56:52 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 21 Nov 2019 18:56:51 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 21 Nov 2019 18:56:51 -0800
-Received: from [10.2.168.213] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 Nov
- 2019 02:56:50 +0000
-Subject: Re: [PATCH v7 02/24] mm/gup: factor out duplicate code from four
- routines
-To:     Jan Kara <jack@suse.cz>
-CC:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-References: <20191121071354.456618-1-jhubbard@nvidia.com>
- <20191121071354.456618-3-jhubbard@nvidia.com> <20191121080356.GA24784@lst.de>
- <852f6c27-8b65-547b-89e0-e8f32a4d17b9@nvidia.com>
- <20191121095411.GC18190@quack2.suse.cz>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <9d0846af-2c4f-7cda-dfcb-1f642943afea@nvidia.com>
-Date:   Thu, 21 Nov 2019 18:54:02 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1726343AbfKVC64 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 21 Nov 2019 21:58:56 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:58016 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726335AbfKVC64 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 21 Nov 2019 21:58:56 -0500
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.57])
+        by Forcepoint Email with ESMTP id DCCD63840DB641BC80FC;
+        Fri, 22 Nov 2019 10:58:53 +0800 (CST)
+Received: from DGGEMM526-MBX.china.huawei.com ([169.254.8.127]) by
+ DGGEMM402-HUB.china.huawei.com ([10.3.20.210]) with mapi id 14.03.0439.000;
+ Fri, 22 Nov 2019 10:58:45 +0800
+From:   "Zengtao (B)" <prime.zeng@hisilicon.com>
+To:     liweihang <liweihang@hisilicon.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "leon@kernel.org" <leon@kernel.org>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: RE: [PATCH rdma-core 1/7] libhns: Fix calculation errors with
+ ilog32()
+Thread-Topic: [PATCH rdma-core 1/7] libhns: Fix calculation errors with
+ ilog32()
+Thread-Index: AQHVoAo7Qv7b6bhdREOl0yi3XoMtM6eWgFRA
+Date:   Fri, 22 Nov 2019 02:58:44 +0000
+Message-ID: <678F3D1BB717D949B966B68EAEB446ED300CC8A5@dggemm526-mbx.china.huawei.com>
+References: <1574299169-31457-1-git-send-email-liweihang@hisilicon.com>
+ <1574299169-31457-2-git-send-email-liweihang@hisilicon.com>
+In-Reply-To: <1574299169-31457-2-git-send-email-liweihang@hisilicon.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.74.221.187]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <20191121095411.GC18190@quack2.suse.cz>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1574391412; bh=qs/HIaIDAchvyMkQnxvFfFcxB81lObthoFNUVM9HFsU=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=ea5W7/2c5vGNy7OLObdGvq5o0IpGBD08qzI9LgcD4V8BzKvR7hLDcVgsFBzIPWltE
-         d8PXmpt/WgSDLuhJB1bSFzEA5jjhwY4dlcU7E+jQRx3TB5rkLOwlZyYegEL3tsBCr8
-         8qN6mxRQSSTP+FNbJyR7Zo1HLIMkYFYKo0hlXeg0mt5hFKo6iVEhrdf4E8SgIeOW2y
-         us/ORlXUDHvqcnaCH9l42SZAxDz+ZaaZrH8tpmFx0pDTmT79WYa//P0TZxa1PMT2Ec
-         60tYwrFVvqZaHos2D7eAOKA1eeY7xDL9USjPj3cYeVVtnic4Fxyow9kLNCXK7YejUg
-         or0Rt6li4HM5w==
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/21/19 1:54 AM, Jan Kara wrote:
-> On Thu 21-11-19 00:29:59, John Hubbard wrote:
->>>
->>> Otherwise this looks fine and might be a worthwhile cleanup to feed
->>> Andrew for 5.5 independent of the gut of the changes.
->>>
->>> Reviewed-by: Christoph Hellwig <hch@lst.de>
->>>
->>
->> Thanks for the reviews! Say, it sounds like your view here is that this
->> series should be targeted at 5.6 (not 5.5), is that what you have in mind?
->> And get the preparatory patches (1-9, and maybe even 10-16) into 5.5?
+> -----Original Message-----
+> From: linux-rdma-owner@vger.kernel.org
+> [mailto:linux-rdma-owner@vger.kernel.org] On Behalf Of Weihang Li
+> Sent: Thursday, November 21, 2019 9:19 AM
+> To: jgg@ziepe.ca; leon@kernel.org
+> Cc: dledford@redhat.com; linux-rdma@vger.kernel.org; Linuxarm
+> Subject: [PATCH rdma-core 1/7] libhns: Fix calculation errors with ilog32()
 > 
-> One more note :) If you are going to push pin_user_pages() interfaces
-> (which I'm fine with), it would probably make sense to push also the
-> put_user_pages() -> unpin_user_pages() renaming so that that inconsistency
-> in naming does not exist in the released upstream kernel.
+> Current calculation results using ilog32() is larger than expected, which
+> will lead to driver broken. The following is the log when QP creations
+> fails:
 > 
-> 								Honza
+> [   81.294844] hns3 0000:7d:00.0 hns_0: check SQ size error!
+> [   81.294848] hns3 0000:7d:00.0 hns_0: check SQ size error!
+> [   81.300225] hns3 0000:7d:00.0 hns_0: Sanity check sq size failed
+> [   81.300227] hns3 0000:7d:00.0: hns_roce_set_user_sq_size error for
+> create qp
+> [   81.305602] hns3 0000:7d:00.0 hns_0: Sanity check sq size failed
+> [   81.305603] hns3 0000:7d:00.0: hns_roce_set_user_sq_size error for
+> create qp
+> [   81.311589] hns3 0000:7d:00.0 hns_0: Create RC QP 0x000000
+> failed(-22)
+> [   81.318603] hns3 0000:7d:00.0 hns_0: Create RC QP 0x000000
+> failed(-22)
+> 
+> Fixes: b6cd213b276f ("libhns: Refactor for creating qp")
+> Signed-off-by: Weihang Li <liweihang@hisilicon.com>
+> ---
+>  providers/hns/hns_roce_u_verbs.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/providers/hns/hns_roce_u_verbs.c
+> b/providers/hns/hns_roce_u_verbs.c
+> index 9d222c0..bd5060d 100644
+> --- a/providers/hns/hns_roce_u_verbs.c
+> +++ b/providers/hns/hns_roce_u_verbs.c
+> @@ -645,7 +645,8 @@ static int hns_roce_calc_qp_buff_size(struct
+> ibv_pd *pd, struct ibv_qp_cap *cap,
+>  	int page_size = to_hr_dev(pd->context->device)->page_size;
+> 
+>  	if (to_hr_dev(pd->context->device)->hw_version ==
+> HNS_ROCE_HW_VER1) {
+> -		qp->rq.wqe_shift = ilog32(sizeof(struct hns_roce_rc_rq_wqe));
+> +		qp->rq.wqe_shift =
+> +				ilog32(sizeof(struct hns_roce_rc_rq_wqe)) - 1;
+> 
+>  		qp->buf_size = align((qp->sq.wqe_cnt << qp->sq.wqe_shift),
+>  				     page_size) +
+> @@ -662,7 +663,7 @@ static int hns_roce_calc_qp_buff_size(struct
+> ibv_pd *pd, struct ibv_qp_cap *cap,
+>  	} else {
+>  		unsigned int rqwqe_size = HNS_ROCE_SGE_SIZE *
+> cap->max_recv_sge;
+> 
+> -		qp->rq.wqe_shift = ilog32(rqwqe_size);
+> +		qp->rq.wqe_shift = ilog32(rqwqe_size) - 1;
+> 
+>  		if (qp->sq.max_gs > HNS_ROCE_SGE_IN_WQE || type ==
+> IBV_QPT_UD)
+>  			qp->sge.sge_shift = HNS_ROCE_SGE_SHIFT;
+> @@ -747,8 +748,8 @@ static void hns_roce_set_qp_params(struct
+> ibv_pd *pd,
+>  		qp->rq.wqe_cnt =
+> roundup_pow_of_two(attr->cap.max_recv_wr);
+>  	}
+> 
+> -	qp->sq.wqe_shift = ilog32(sizeof(struct hns_roce_rc_send_wqe));
+> -	qp->sq.shift = ilog32(qp->sq.wqe_cnt);
+> +	qp->sq.wqe_shift = ilog32(sizeof(struct hns_roce_rc_send_wqe)) - 1;
+> +	qp->sq.shift = ilog32(qp->sq.wqe_cnt) - 1;
 
-Yes, that's what this patch series does. But I'm not sure if "push" here
-means, "push out: defer to 5.6", "push (now) into 5.5", or "advocate for"?
+One suggestion, it's better to introduce a new micro instead of ilog32(x) -1.
 
-I will note that it's not going to be easy to rename in one step, now
-that this is being split up. Because various put_user_pages()-based items
-are going into 5.5 via different maintainer trees now. Probably I'd need
-to introduce unpin_user_page() alongside put_user_page()...thoughts?
+>  	qp->rq.max_gs = attr->cap.max_recv_sge;
+> 
+>  	if (to_hr_dev(pd->context->device)->hw_version ==
+> HNS_ROCE_HW_VER1) {
+> @@ -884,7 +885,7 @@ struct ibv_qp *hns_roce_u_create_qp(struct
+> ibv_pd *pd,
+> 
+>  	cmd.buf_addr = (uintptr_t) qp->buf.buf;
+>  	cmd.log_sq_stride = qp->sq.wqe_shift;
+> -	cmd.log_sq_bb_count = ilog32(qp->sq.wqe_cnt);
+> +	cmd.log_sq_bb_count = ilog32(qp->sq.wqe_cnt) - 1;
+> 
+>  	pthread_mutex_lock(&context->qp_table_mutex);
+> 
+> --
+> 2.8.1
 
-thanks,
--- 
-John Hubbard
-NVIDIA
-  
