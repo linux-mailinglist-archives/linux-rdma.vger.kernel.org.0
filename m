@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D84D1078E9
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2019 20:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9871078C8
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2019 20:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbfKVTtD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Nov 2019 14:49:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47886 "EHLO mail.kernel.org"
+        id S1727469AbfKVTtf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Nov 2019 14:49:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726568AbfKVTtC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 22 Nov 2019 14:49:02 -0500
+        id S1727416AbfKVTtf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 22 Nov 2019 14:49:35 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B7242071F;
-        Fri, 22 Nov 2019 19:49:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3FC020865;
+        Fri, 22 Nov 2019 19:49:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574452142;
-        bh=wy3YIPHob0rwT7NgwqV/wiFK4T5Z5pn4dDmhgqJTP9I=;
+        s=default; t=1574452174;
+        bh=QncCh4pQTgUhpPvU4k9NamkWDYyRUhFGs+V6hZtJi64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OLQqs2vVs2CKH/FL3/DQBFJHl8vAdWh+Ot6BDRjsPSJahmV1R7uHvUBpfUa1uWAAD
-         LiwBoZSTCNRen4xM9amhM+4E/M2PIPqXxlz6QMgRq8ZFvh30c4KPifjkKsuLYgmNE1
-         nrZ7az66pmSqJJ0DIj0xC6MYS4skz5oA2Acy6L5w=
+        b=oQUJpmtz3pFZeHwVXWexildxMLL+8C0wm0AQgNYx8v6uAouoF/7uM9EZmSQBLn1yf
+         lqhcEoE/6gomG+QGZ584Bo420QyRfMjKsaVHcS751eqfuXGZbf9aVwLOuJm/CUmwtJ
+         gdBX5qBHaomH95E8YUI/r5pF2PSFnxIZFTGl+Qd8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Sirong Wang <wangsirong@huawei.com>,
         Weihang Li <liweihang@hisilicon.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 02/25] RDMA/hns: Correct the value of HNS_ROCE_HEM_CHUNK_LEN
-Date:   Fri, 22 Nov 2019 14:48:35 -0500
-Message-Id: <20191122194859.24508-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 02/21] RDMA/hns: Correct the value of HNS_ROCE_HEM_CHUNK_LEN
+Date:   Fri, 22 Nov 2019 14:49:12 -0500
+Message-Id: <20191122194931.24732-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191122194859.24508-1-sashal@kernel.org>
-References: <20191122194859.24508-1-sashal@kernel.org>
+In-Reply-To: <20191122194931.24732-1-sashal@kernel.org>
+References: <20191122194931.24732-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -63,18 +63,18 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.h b/drivers/infiniband/hw/hns/hns_roce_hem.h
-index e8850d59e7804..a94444db3045a 100644
+index 435748858252d..8e8917ebb013b 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hem.h
 +++ b/drivers/infiniband/hw/hns/hns_roce_hem.h
-@@ -54,7 +54,7 @@ enum {
+@@ -52,7 +52,7 @@ enum {
  
  #define HNS_ROCE_HEM_CHUNK_LEN	\
  	 ((256 - sizeof(struct list_head) - 2 * sizeof(int)) /	 \
 -	 (sizeof(struct scatterlist)))
 +	 (sizeof(struct scatterlist) + sizeof(void *)))
  
- #define check_whether_bt_num_3(type, hop_num) \
- 	(type < HEM_TYPE_MTT && hop_num == 2)
+ enum {
+ 	 HNS_ROCE_HEM_PAGE_SHIFT = 12,
 -- 
 2.20.1
 
