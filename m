@@ -2,152 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C83107954
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2019 21:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C1A107962
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2019 21:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbfKVUPm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Nov 2019 15:15:42 -0500
-Received: from mail-eopbgr10054.outbound.protection.outlook.com ([40.107.1.54]:21320
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726187AbfKVUPl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 22 Nov 2019 15:15:41 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GmOWcr7UFLgGMuz257YJ/3HNxLwioCiyLlhlZq0GnM5B7eRQwayJMEln4HdBqlQ3IDfSrZIKXZFwCK4W//PPT0AF8IJzCn/JyKWRJXKFeRJVOWQjO+5luwqQZsr+zTHvZEzMGtUejojuhgz6KFldx+4Sv+dzM35sXvK4bbinjKWfK5ggVuashHyD6/eIzDVMiQaPAVj3fSfU+hnpo6Mjs61TfmBPWwaqaFfgyUQ+xngNJSVFlFkYTBNP2C9gZec3YDXJD3zxjtYNoLq5jScPvJ15gFQGhuNG1YyEu10zu9aH8y06XhfgckEeJOG4+jFGxzU22UdbkOOAhxxRtr9HEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zGl59mBHxOs9lReCN6F5H5vE0SMDtvSvz4hWg/bpY3Q=;
- b=i/xsC4AQLjOb2cn/SInRamR5oNURZPek5EXuJk+x9nqryxLgbArvsVacTLIK/H3cFY+QwOxAoeoJ8s0XJm34lc4I3+YMgl4dmWLAScSlBlyJ9JPniLlA/UUcolfXDN+If5ykZC+vJk9ljzxGyo2qjokH8M4ytCOtnPgnDXROuTYWB5LnRyTZFyU/P/AfS3S/XkHxklo2ZzT1JL+lrGvoX/mZ2e3VTW4f0dpby/xzbUrhCE6MEHZ7px+NGsCHtG/OMOJKZW7Dm5fvdiiF58fDNnMPuXdAKCkbLRqIDs//Oie3ECnOyDLpeDciF7OKWtEmH1yKeSA/OAXXuj0CGRfMsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zGl59mBHxOs9lReCN6F5H5vE0SMDtvSvz4hWg/bpY3Q=;
- b=RLZgg5Gekoy/9Hc7FEpQXjKW+bAPmw937jhG7hvK7OBOOz4WNYYeMIQPvwA9yCSv+Yd7/VYdh55ZCIeHxpWJAGAcPQdHQ/xSkcr8ULMA6jlDQ03q8erPyxWXvs2EYKzWaCfX62gxex+/chmmhGzRLK8MOwzaFaodnIN+zltoReM=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB5598.eurprd05.prod.outlook.com (20.177.201.77) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2474.17; Fri, 22 Nov 2019 20:15:36 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::b179:e8bf:22d4:bf8d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::b179:e8bf:22d4:bf8d%5]) with mapi id 15.20.2474.021; Fri, 22 Nov 2019
- 20:15:36 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Leon Romanovsky <leonro@mellanox.com>
-CC:     Doug Ledford <dledford@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Danit Goldberg <danitg@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 0/4] Get IB port and node GUIDs through
- rtnetlink
-Thread-Topic: [PATCH rdma-next 0/4] Get IB port and node GUIDs through
- rtnetlink
-Thread-Index: AQHVmu/VidtZI1C/oEW5L41u4D2OO6eXa9CAgABBfYA=
-Date:   Fri, 22 Nov 2019 20:15:35 +0000
-Message-ID: <20191122201531.GZ7481@mellanox.com>
-References: <20191114133126.238128-1-leon@kernel.org>
- <20191122162104.GE136476@unreal>
-In-Reply-To: <20191122162104.GE136476@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MN2PR04CA0008.namprd04.prod.outlook.com
- (2603:10b6:208:d4::21) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [142.162.113.180]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 55f9cb62-72e4-4b90-0392-08d76f88bc04
-x-ms-traffictypediagnostic: VI1PR05MB5598:|VI1PR05MB5598:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB5598FC172B66CC7EDA13E549CF490@VI1PR05MB5598.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 02296943FF
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(396003)(136003)(376002)(346002)(366004)(199004)(189003)(54906003)(229853002)(6862004)(6246003)(7736002)(4326008)(305945005)(6512007)(256004)(6116002)(66946007)(6436002)(6486002)(3846002)(25786009)(86362001)(66446008)(66556008)(71200400001)(71190400001)(186003)(102836004)(36756003)(1076003)(8936002)(6636002)(66476007)(478600001)(26005)(81166006)(81156014)(14454004)(2616005)(11346002)(446003)(386003)(316002)(37006003)(76176011)(52116002)(66066001)(5660300002)(8676002)(99286004)(64756008)(33656002)(6506007)(2906002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5598;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zzMioTLNFWplEuWbdDEU6xl9e1UAYYfbT2ZHkw3DX6ScgwU4DohQSjoBXlK2eEACVgSTzAOgej7ADF0ukLwkXagJb0EpLDYMe9WgrXxg6FnlIlm73xHeZyOYkGse6qiDmZ3RcUoNT+bkOVicfAzTXVY4i6/tZgOwEcr8814WFrb9y/A9s85p1/uwmLVTmSseGuOYT1W5J4F5pHaJ1eWGA40qCkMmpTY9sm1oEIsw8IdXqG8I/lx+lgzeMseJUL7hWL5zlX3TEiA3O4xRvtsexboncaGAyjTW8tRVSK8EjwR8kH2w/7qMDm0mjRRTWTBrwcGReO+iLH/7hCHBPH3Z6CWYNWA0FHlaTXiLKQNjrU6Vp95FHTKDZwG2t240m6Dam1Jee9rWSWQ8fOxnrntNjd+JdJvyLjI6i3EoD9kCHKPAk5cLQiYvtgFkcy9/h2ZG
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <5DEB2C5DF4ADEF44AD2400768D2B7D46@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727097AbfKVUVd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Nov 2019 15:21:33 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:44977 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726792AbfKVUVd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Nov 2019 15:21:33 -0500
+Received: by mail-qk1-f196.google.com with SMTP id m16so7393362qki.11
+        for <linux-rdma@vger.kernel.org>; Fri, 22 Nov 2019 12:21:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ZJNST5spgJ+9+0zEr716mDrZrSEXVq6warPi8NwZbrs=;
+        b=JhjAtp9Hhcee9dePtJRpLRpEX/HZaH15EcThHJwgzedX9w3iqvQW1XlNZs9lmKnMB5
+         YHYRCtAhRXlYs+eaY/ppkhvKUDTXiE8JMKdVfpRw1/pEP9gch35FrKHITd/Z2d10XqkZ
+         lmRigj1GfsO+Njc212aBszSd9MJNmFB0E+XQwbOHM4YwkVTBK29vpHgqJOqrwDdBQtsp
+         6mwjwjiQtOiT5cPg8djKRQscdB1JKUiC/ubhBGKQfx34lMK/UVG1paKgZzCpk6izxgnX
+         ikNa4k+s/6pQodVJh3YK88nJk3YSVSr2RkrK7ws34RT+Sl3hMBC8ARskMN9jFT1LEudO
+         ma5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ZJNST5spgJ+9+0zEr716mDrZrSEXVq6warPi8NwZbrs=;
+        b=LUzBUHtC2iXiOXlTrSXWdrDMrx6zN4YBKNdwLt974BuBfubCa5J8H4DGeRikvFlryV
+         NZTO24gtLmVPBs/MsmfBdJQ/+feYl3ixkJxCln+UgnzjQX/ncZ4t71T0z1rHOd0ti87P
+         SKp9ZTuXsONC1ZujC4JSbXWL7jFhwVvsr5Ag7z+zHxspJO56JIo//v8GjsTPuAqqgRQl
+         iocAzs8uoPYwnVsN7uEM/j5LsMFuhG4OQpqxanyhbgS6iepLjzh5fgamVjHCftPBAXyZ
+         Hoi1K/m6H8k1zuRsWN+aFOGpYC0MiDC4ksuWyO95LftNaG7MTlvAkKhwmQoJVxHpHM3l
+         lMtQ==
+X-Gm-Message-State: APjAAAWWjHCE89ehWypi3QR65mpAgkI+mDbzKB5k9TNiILDCg2J4fzJN
+        mgVKhbM+XW0vJD/6xsuZjMjSPg==
+X-Google-Smtp-Source: APXvYqxrPOvst0p298a7SIdNeCNXyIrt9qTv1oLj3gIr0rfw32Pl2OLk5QHxmI1OaJ4/l7n/eDJ7vg==
+X-Received: by 2002:a37:7dc2:: with SMTP id y185mr4828809qkc.380.1574454092120;
+        Fri, 22 Nov 2019 12:21:32 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id h37sm4083006qth.78.2019.11.22.12.21.28
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 22 Nov 2019 12:21:28 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iYFQm-0000J6-Do; Fri, 22 Nov 2019 16:21:28 -0400
+Date:   Fri, 22 Nov 2019 16:21:28 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] infiniband: Fix Kconfig indentation
+Message-ID: <20191122202128.GA905@ziepe.ca>
+References: <20191120134138.15245-1-krzk@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55f9cb62-72e4-4b90-0392-08d76f88bc04
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Nov 2019 20:15:35.8328
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AUGiUldH99KYGWoVCSvgDarIqZdP9pHNmbPl93uEarMI3kMZeUwquOTYWvsM/Kp3kak/gq5V2KZ8T4T5iPHjog==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5598
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191120134138.15245-1-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 22, 2019 at 04:21:07PM +0000, Leon Romanovsky wrote:
-> On Thu, Nov 14, 2019 at 03:31:21PM +0200, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> >
-> > Hi,
-> >
-> > This series from Danit extends RTNETLINK to provide IB port and node
-> > GUIDs, which were configured for Infiniband VFs.
-> >
-> > The functionality to set VF GUIDs already existed for a long time, and =
-here
-> > we are adding the missing "get" so that netlink will be symmetric
-> > and various cloud orchestration tools will be able to manage such
-> > VFs more naturally.
-> >
-> > The iproute2 was extended too to present those GUIDs.
-> >
-> > - ip link show <device>
-> >
-> > For example:
-> > - ip link set ib4 vf 0 node_guid 22:44:33:00:33:11:00:33
-> > - ip link set ib4 vf 0 port_guid 10:21:33:12:00:11:22:10
-> > - ip link show ib4
-> >     ib4: <BROADCAST,MULTICAST> mtu 4092 qdisc noop state DOWN mode DEFA=
-ULT group default qlen 256
-> >     link/infiniband 00:00:0a:2d:fe:80:00:00:00:00:00:00:ec:0d:9a:03:00:=
-44:36:8d brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
-> >     vf 0     link/infiniband 00:00:0a:2d:fe:80:00:00:00:00:00:00:ec:0d:=
-9a:03:00:44:36:8d brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff=
-:ff:ff,
-> >     spoof checking off, NODE_GUID 22:44:33:00:33:11:00:33, PORT_GUID 10=
-:21:33:12:00:11:22:10, link-state disable, trust off, query_rss off
-> >
-> > Due to the fact that this series touches both net and RDMA, we assume
-> > that it needs to be applied to our shared branch (mlx5-next) and pulled
-> > later by Dave and Doug/Jason.
-> >
-> > Thanks
-> >
-> > Danit Goldberg (4):
-> >   net/core: Add support for getting VF GUIDs
-> >   IB/core: Add interfaces to get VF node and port GUIDs
-> >   IB/ipoib: Add ndo operation for getting VFs GUID attributes
-> >   IB/mlx5: Implement callbacks for getting VFs GUID attributes
->=20
-> Applied to mlx5-next,
-> Doug, Jason please pull.
->=20
-> 9c0015ef0928 IB/mlx5: Implement callbacks for getting VFs GUID attributes
-> 2446887ed226 IB/ipoib: Add ndo operation for getting VFs GUID attributes
-> bfcb3c5d1485 IB/core: Add interfaces to get VF node and port GUIDs
-> 30aad41721e0 net/core: Add support for getting VF GUIDs
+On Wed, Nov 20, 2019 at 09:41:38PM +0800, Krzysztof Kozlowski wrote:
+> Adjust indentation from spaces to tab (+optional two spaces) as in
+> coding style with command like:
+> 	$ sed -e 's/^        /\t/' -i */Kconfig
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  drivers/infiniband/hw/bnxt_re/Kconfig | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 
-Okay, done.
+Applied to for-next, thanks
 
 Jason
