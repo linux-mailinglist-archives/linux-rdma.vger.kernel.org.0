@@ -2,94 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6092C105EDC
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2019 04:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 457C4106115
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2019 06:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbfKVDCR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 21 Nov 2019 22:02:17 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2519 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726335AbfKVDCR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Nov 2019 22:02:17 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.53])
-        by Forcepoint Email with ESMTP id 6D4EAD9C3EE80349DEDF;
-        Fri, 22 Nov 2019 11:02:10 +0800 (CST)
-Received: from DGGEMM526-MBX.china.huawei.com ([169.254.8.127]) by
- DGGEMM404-HUB.china.huawei.com ([10.3.20.212]) with mapi id 14.03.0439.000;
- Fri, 22 Nov 2019 11:02:03 +0800
-From:   "Zengtao (B)" <prime.zeng@hisilicon.com>
-To:     liweihang <liweihang@hisilicon.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "leon@kernel.org" <leon@kernel.org>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: RE: [PATCH rdma-core 2/7] libhns: Optimize bind_mw for fixing null
- pointer access
-Thread-Topic: [PATCH rdma-core 2/7] libhns: Optimize bind_mw for fixing null
- pointer access
-Thread-Index: AQHVoAo+j8+fx7N7IEC0P/jm/KoNN6eWgXsw
-Date:   Fri, 22 Nov 2019 03:02:03 +0000
-Message-ID: <678F3D1BB717D949B966B68EAEB446ED300CC8B9@dggemm526-mbx.china.huawei.com>
-References: <1574299169-31457-1-git-send-email-liweihang@hisilicon.com>
- <1574299169-31457-3-git-send-email-liweihang@hisilicon.com>
-In-Reply-To: <1574299169-31457-3-git-send-email-liweihang@hisilicon.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.74.221.187]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727455AbfKVFyH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Nov 2019 00:54:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728809AbfKVFxN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 22 Nov 2019 00:53:13 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C76352072E;
+        Fri, 22 Nov 2019 05:53:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1574401993;
+        bh=pfDGKXJw3nG4tZ0fJyMwmMdPCGBmkSkiDYf0U28/+5w=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TEQKB8S+UPTX9SKUywy2aoKmBsgdPHIPDnK47g5Pn/UBjv1nqJfCsmpFdumwp2OTZ
+         ugq3tPWvS0xp6b3bnnKbA9EzAMUk0anCIccCtyQMehd4gYckzASW1OTkO3BPoSzieI
+         H47nARJX8Vd4F38xfFrXuuJ47UC6zNTRt9p+6mLA=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Lijun Ou <oulijun@huawei.com>, Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 211/219] RDMA/hns: Fix the bug with updating rq head pointer when flush cqe
+Date:   Fri, 22 Nov 2019 00:49:02 -0500
+Message-Id: <20191122054911.1750-203-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191122054911.1750-1-sashal@kernel.org>
+References: <20191122054911.1750-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> -----Original Message-----
-> From: linux-rdma-owner@vger.kernel.org
-> [mailto:linux-rdma-owner@vger.kernel.org] On Behalf Of Weihang Li
-> Sent: Thursday, November 21, 2019 9:19 AM
-> To: jgg@ziepe.ca; leon@kernel.org
-> Cc: dledford@redhat.com; linux-rdma@vger.kernel.org; Linuxarm
-> Subject: [PATCH rdma-core 2/7] libhns: Optimize bind_mw for fixing null
-> pointer access
-> 
-> From: Xi Wang <wangxi11@huawei.com>
-> 
-> The argument checking flow in hns_roce_u_bind_mw() will leads to access
-> on
-> a null address when the mr is not initialized in mw_bind.
-> 
-> Fixes: 47eff6e8624d ("libhns: Adjust the order of parameter checking")
-> Signed-off-by: Xi Wang <wangxi11@huawei.com>
-> Signed-off-by: Weihang Li <liweihang@hisilicon.com>
-> ---
->  providers/hns/hns_roce_u_verbs.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/providers/hns/hns_roce_u_verbs.c
-> b/providers/hns/hns_roce_u_verbs.c
-> index bd5060d..0acfd9a 100644
-> --- a/providers/hns/hns_roce_u_verbs.c
-> +++ b/providers/hns/hns_roce_u_verbs.c
-> @@ -186,7 +186,10 @@ int hns_roce_u_bind_mw(struct ibv_qp *qp,
-> struct ibv_mw *mw,
->  	if (!bind_info->mr && bind_info->length)
->  		return EINVAL;
-> 
-> -	if ((mw->pd != qp->pd) || (mw->pd != bind_info->mr->pd))
-> +	if (mw->pd != qp->pd)
-> +		return EINVAL;
-> +
-> +	if (bind_info->mr && (mw->pd != bind_info->mr->pd))
->  		return EINVAL;
-> 
-Errno should also be set properly in this function, please refer to:
-http://man7.org/linux/man-pages/man3/ibv_bind_mw.3.html
+From: Lijun Ou <oulijun@huawei.com>
 
->  	if (mw->type != IBV_MW_TYPE_1)
-> --
-> 2.8.1
+[ Upstream commit 9c6ccc035c209dda07685e8dba829a203ba17499 ]
+
+When flush cqe with srq, the driver disable to update the rq head pointer
+into the hardware.
+
+Signed-off-by: Lijun Ou <oulijun@huawei.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index cf878e1b71fc1..587db5cf3be15 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -3499,13 +3499,16 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
+ 		roce_set_field(qpc_mask->byte_160_sq_ci_pi,
+ 			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_M,
+ 			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_S, 0);
+-		roce_set_field(context->byte_84_rq_ci_pi,
++
++		if (!ibqp->srq) {
++			roce_set_field(context->byte_84_rq_ci_pi,
+ 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_M,
+ 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_S,
+ 			       hr_qp->rq.head);
+-		roce_set_field(qpc_mask->byte_84_rq_ci_pi,
++			roce_set_field(qpc_mask->byte_84_rq_ci_pi,
+ 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_M,
+ 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_S, 0);
++		}
+ 	}
+ 
+ 	if (attr_mask & IB_QP_AV) {
+@@ -3967,7 +3970,8 @@ static void hns_roce_set_qps_to_err(struct hns_roce_dev *hr_dev, u32 qpn)
+ 	if (hr_qp->ibqp.uobject) {
+ 		if (hr_qp->sdb_en == 1) {
+ 			hr_qp->sq.head = *(int *)(hr_qp->sdb.virt_addr);
+-			hr_qp->rq.head = *(int *)(hr_qp->rdb.virt_addr);
++			if (hr_qp->rdb_en == 1)
++				hr_qp->rq.head = *(int *)(hr_qp->rdb.virt_addr);
+ 		} else {
+ 			dev_warn(hr_dev->dev, "flush cqe is unsupported in userspace!\n");
+ 			return;
+-- 
+2.20.1
 
