@@ -2,102 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DE3105DDF
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2019 01:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9BA105EC8
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2019 03:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbfKVAyg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Nov 2019 19:54:36 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:34323 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbfKVAyg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Nov 2019 19:54:36 -0500
-Received: by mail-qv1-f68.google.com with SMTP id n12so2249113qvt.1;
-        Thu, 21 Nov 2019 16:54:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EPQAEqBFNpkDyyTK+R9WPTLjmSkdfSxe7vIkaj9qO1I=;
-        b=Kqc6NQKeFqK45usUnJ0MSuILDlZ+3IXLesAys1Ix1KWiF5+GI3jN5vTI9pFbokkh6x
-         Z8pz9hn+UCIKozNwRwxXagR8jI8vM5/ljKCVSvxjCwvq/ZTFTYo0JfORxNkzAZGXwKEM
-         GgiCRcrf2TJhNePmxcKrKjkn14Wns0m9wDrzdhCMTA5L9exOjEOmMALqdFYxBdiUf56h
-         aPK5alvOQ7f4WCuBCQi1jaKr8hDPwnnzo8HMj2oAt/GF6P5f/bvGrxHIo3ARIKzYuF/c
-         VznYGsZwzUzKkQEtCx2NdU55X3Xn6phDfMPQ+1uzMRDOdkoph+9XWtQhjEHndmWNY5KD
-         Ry5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EPQAEqBFNpkDyyTK+R9WPTLjmSkdfSxe7vIkaj9qO1I=;
-        b=UIB0RmYWT6Uin8FsaR2LHkxolq+noY6cde+quAHI8fmwAWIK5ko3n+vKKiLxvcjmnr
-         4vKBPNHWw2Zclwj8ewxFns96/TrqbPVbFlTlb/Yf9ePk+Lpdsun6ntblc1QuU8sbLL/u
-         Rz7jcXszARLwM8av9csJnd9U1ZDC533golFx3otjHY0qOBFNXDDUElJ7pRskh2bKkiYo
-         cMAH3oyQDcyp2lwdP3Jv8MYx2g+lC1eUhoKlgtiWNtaXpkAd3pMmkkUX7tCYP7Hwue3I
-         Iyv+jKyI97IclTSgfS60Pyg2EeJVUXen/MAZxkyDbADJ3upEEbpy4/ka2xfj/FmhkHeX
-         cajA==
-X-Gm-Message-State: APjAAAVuInnNcHbEogvwAH6rFiMINj1htQkem4xxjlAkt1rHlF7AKr0v
-        +a9+1IYh0iar+kxhH5sQwGoKXXUA
-X-Google-Smtp-Source: APXvYqzzVIsMw+6PPWPqn0YKP551Jn/0Io+mxPjxk6HcDTnHAv1Mia7EtVFVwotM3m7LbXQKWuO31w==
-X-Received: by 2002:a0c:ee41:: with SMTP id m1mr11206534qvs.201.1574384073348;
-        Thu, 21 Nov 2019 16:54:33 -0800 (PST)
-Received: from dahern-DO-MB.local ([2601:282:800:fd80:b9b1:601f:b338:feda])
-        by smtp.googlemail.com with ESMTPSA id r8sm2529598qti.6.2019.11.21.16.54.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Nov 2019 16:54:32 -0800 (PST)
-Subject: Re: [PATCH rdma-next 1/4] net/core: Add support for getting VF GUIDs
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Danit Goldberg <danitg@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-References: <20191114133126.238128-1-leon@kernel.org>
- <20191114133126.238128-3-leon@kernel.org>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <0e99c61b-ee89-a2cb-6f7a-b0ab5d06249c@gmail.com>
-Date:   Thu, 21 Nov 2019 17:54:30 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.2.2
+        id S1726719AbfKVC5A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Nov 2019 21:57:00 -0500
+Received: from hqemgate16.nvidia.com ([216.228.121.65]:4158 "EHLO
+        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbfKVC47 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Nov 2019 21:56:59 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dd74e740000>; Thu, 21 Nov 2019 18:56:52 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 21 Nov 2019 18:56:51 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 21 Nov 2019 18:56:51 -0800
+Received: from [10.2.168.213] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 Nov
+ 2019 02:56:50 +0000
+Subject: Re: [PATCH v7 02/24] mm/gup: factor out duplicate code from four
+ routines
+To:     Jan Kara <jack@suse.cz>
+CC:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+References: <20191121071354.456618-1-jhubbard@nvidia.com>
+ <20191121071354.456618-3-jhubbard@nvidia.com> <20191121080356.GA24784@lst.de>
+ <852f6c27-8b65-547b-89e0-e8f32a4d17b9@nvidia.com>
+ <20191121095411.GC18190@quack2.suse.cz>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <9d0846af-2c4f-7cda-dfcb-1f642943afea@nvidia.com>
+Date:   Thu, 21 Nov 2019 18:54:02 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20191114133126.238128-3-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20191121095411.GC18190@quack2.suse.cz>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1574391412; bh=qs/HIaIDAchvyMkQnxvFfFcxB81lObthoFNUVM9HFsU=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=ea5W7/2c5vGNy7OLObdGvq5o0IpGBD08qzI9LgcD4V8BzKvR7hLDcVgsFBzIPWltE
+         d8PXmpt/WgSDLuhJB1bSFzEA5jjhwY4dlcU7E+jQRx3TB5rkLOwlZyYegEL3tsBCr8
+         8qN6mxRQSSTP+FNbJyR7Zo1HLIMkYFYKo0hlXeg0mt5hFKo6iVEhrdf4E8SgIeOW2y
+         us/ORlXUDHvqcnaCH9l42SZAxDz+ZaaZrH8tpmFx0pDTmT79WYa//P0TZxa1PMT2Ec
+         60tYwrFVvqZaHos2D7eAOKA1eeY7xDL9USjPj3cYeVVtnic4Fxyow9kLNCXK7YejUg
+         or0Rt6li4HM5w==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/14/19 6:31 AM, Leon Romanovsky wrote:
-> From: Danit Goldberg <danitg@mellanox.com>
+On 11/21/19 1:54 AM, Jan Kara wrote:
+> On Thu 21-11-19 00:29:59, John Hubbard wrote:
+>>>
+>>> Otherwise this looks fine and might be a worthwhile cleanup to feed
+>>> Andrew for 5.5 independent of the gut of the changes.
+>>>
+>>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>>>
+>>
+>> Thanks for the reviews! Say, it sounds like your view here is that this
+>> series should be targeted at 5.6 (not 5.5), is that what you have in mind?
+>> And get the preparatory patches (1-9, and maybe even 10-16) into 5.5?
 > 
+> One more note :) If you are going to push pin_user_pages() interfaces
+> (which I'm fine with), it would probably make sense to push also the
+> put_user_pages() -> unpin_user_pages() renaming so that that inconsistency
+> in naming does not exist in the released upstream kernel.
 > 
-> Introduce a new ndo: ndo_get_vf_guid, to get from the net
-> device the port and node GUID.
-> 
-> New applications can choose to use this interface to show
-> GUIDs with iproute2 with commands such as:
-> 
-> - ip link show ib4
-> ib4: <BROADCAST,MULTICAST> mtu 4092 qdisc noop state DOWN mode DEFAULT group default qlen 256
-> link/infiniband 00:00:0a:2d:fe:80:00:00:00:00:00:00:ec:0d:9a:03:00:44:36:8d brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
-> vf 0     link/infiniband 00:00:0a:2d:fe:80:00:00:00:00:00:00:ec:0d:9a:03:00:44:36:8d brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff,
-> spoof checking off, NODE_GUID 22:44:33:00:33:11:00:33, PORT_GUID 10:21:33:12:00:11:22:10, link-state disable, trust off, query_rss off
-> 
-> Signed-off-by: Danit Goldberg <danitg@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  include/linux/netdevice.h |  4 ++++
->  net/core/rtnetlink.c      | 11 +++++++++++
->  2 files changed, 15 insertions(+)
-> 
+> 								Honza
 
+Yes, that's what this patch series does. But I'm not sure if "push" here
+means, "push out: defer to 5.6", "push (now) into 5.5", or "advocate for"?
 
-LGTM
+I will note that it's not going to be easy to rename in one step, now
+that this is being split up. Because various put_user_pages()-based items
+are going into 5.5 via different maintainer trees now. Probably I'd need
+to introduce unpin_user_page() alongside put_user_page()...thoughts?
 
-Acked-by: David Ahern <dsahern@gmail.com>
-
-
+thanks,
+-- 
+John Hubbard
+NVIDIA
+  
