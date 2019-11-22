@@ -2,35 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B901A10659A
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2019 07:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA18710657F
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2019 07:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728003AbfKVFvI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Nov 2019 00:51:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56088 "EHLO mail.kernel.org"
+        id S1728087AbfKVFvS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Nov 2019 00:51:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727999AbfKVFvI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 22 Nov 2019 00:51:08 -0500
+        id S1728078AbfKVFvR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 22 Nov 2019 00:51:17 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CEE252070E;
-        Fri, 22 Nov 2019 05:51:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CD632068F;
+        Fri, 22 Nov 2019 05:51:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574401867;
-        bh=7jsGRtCxAHLdVRqPPVCUZabSwN7tXyWjLgh3iSCiD4Q=;
+        s=default; t=1574401877;
+        bh=2x30nZXFV0sUECMoA1FbWjsjuLWBzowiKIpvdc/4eTk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uoBDT4A/Uj+O74lZxBRjPdIperN79xI9Gg1nbzLpJX4G2QKaiJezmsFY+FxtEtsty
-         3PMS9Y3m5amBUb40NGplRaOC/wvZl6K+EGwB1EvofPa1+WruRijFuNLm4uCDoGdxPW
-         Je8rIET/CEbmZ3fbpibM3YcO2v/VsLd//fQLIwpw=
+        b=abvf3/JiOLTJfcVUQNb2IqE5lgBFXIYx95+ZMKT8M0uzyH2gkJeyNIIQPEZU07d7b
+         MJYGEPVsPkO801baQjyuNh2ocW36udbqyw2zu3ZiPCDJ9Ouw1RXEp5iKtZETvbDidT
+         sxK3lGJ81hV0uj98xEtATf+M435OKJW2zvUv74uw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Sergey Gorenko <sergeygo@mellanox.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        Doug Ledford <dledford@redhat.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 103/219] IB/qib: Fix an error code in qib_sdma_verbs_send()
-Date:   Fri, 22 Nov 2019 00:47:15 -0500
-Message-Id: <20191122054911.1750-96-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 112/219] RDMA/srp: Propagate ib_post_send() failures to the SCSI mid-layer
+Date:   Fri, 22 Nov 2019 00:47:24 -0500
+Message-Id: <20191122054911.1750-105-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191122054911.1750-1-sashal@kernel.org>
 References: <20191122054911.1750-1-sashal@kernel.org>
@@ -43,36 +46,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit 5050ae5fa3d54c8e83e1e447cc7e3591110a7f57 ]
+[ Upstream commit 2ee00f6a98c36f7e4ba07cc33f24cc5a69060cc9 ]
 
-We accidentally return success on this error path.
+This patch avoids that the SCSI mid-layer keeps retrying forever if
+ib_post_send() fails. This was discovered while testing immediate
+data support and passing a too large num_sge value to ib_post_send().
 
-Fixes: f931551bafe1 ("IB/qib: Add new qib driver for QLogic PCIe InfiniBand adapters")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Cc: Sergey Gorenko <sergeygo@mellanox.com>
+Cc: Max Gurtovoy <maxg@mellanox.com>
+Cc: Laurence Oberman <loberman@redhat.com>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Doug Ledford <dledford@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/qib/qib_sdma.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/infiniband/ulp/srp/ib_srp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/qib/qib_sdma.c b/drivers/infiniband/hw/qib/qib_sdma.c
-index d0723d4aef5c9..7424e88b0d918 100644
---- a/drivers/infiniband/hw/qib/qib_sdma.c
-+++ b/drivers/infiniband/hw/qib/qib_sdma.c
-@@ -576,8 +576,10 @@ int qib_sdma_verbs_send(struct qib_pportdata *ppd,
- 		dw = (len + 3) >> 2;
- 		addr = dma_map_single(&ppd->dd->pcidev->dev, sge->vaddr,
- 				      dw << 2, DMA_TO_DEVICE);
--		if (dma_mapping_error(&ppd->dd->pcidev->dev, addr))
-+		if (dma_mapping_error(&ppd->dd->pcidev->dev, addr)) {
-+			ret = -ENOMEM;
- 			goto unmap;
-+		}
- 		sdmadesc[0] = 0;
- 		make_sdma_desc(ppd, sdmadesc, (u64) addr, dw, dwoffset);
- 		/* SDmaUseLargeBuf has to be set in every descriptor */
+diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
+index bc6a44a16445c..03ee53adaacd2 100644
+--- a/drivers/infiniband/ulp/srp/ib_srp.c
++++ b/drivers/infiniband/ulp/srp/ib_srp.c
+@@ -2357,6 +2357,7 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
+ 
+ 	if (srp_post_send(ch, iu, len)) {
+ 		shost_printk(KERN_ERR, target->scsi_host, PFX "Send failed\n");
++		scmnd->result = DID_ERROR << 16;
+ 		goto err_unmap;
+ 	}
+ 
 -- 
 2.20.1
 
