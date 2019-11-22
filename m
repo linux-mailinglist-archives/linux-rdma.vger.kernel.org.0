@@ -2,38 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA1510634D
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2019 07:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB2E106345
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Nov 2019 07:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729276AbfKVF4w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Nov 2019 00:56:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34776 "EHLO mail.kernel.org"
+        id S1726613AbfKVGJ3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Nov 2019 01:09:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728874AbfKVF4v (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 22 Nov 2019 00:56:51 -0500
+        id S1729366AbfKVF5I (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 22 Nov 2019 00:57:08 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E05F20717;
-        Fri, 22 Nov 2019 05:56:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B46C120659;
+        Fri, 22 Nov 2019 05:57:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574402211;
-        bh=+WTmaawSFZUDjVsY9VTEerUrq2y3yubX2tca8Lyc2ZQ=;
+        s=default; t=1574402228;
+        bh=VvRfFCC/KgixHFcsaFYlG0r52DlU90PC4AO4Z5QVs/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BSafoTyNRSDs6gaU9SjUdySTpScY+5s/l7ll1AcBk8h1qpGZluGnTfJNfJgbsiiad
-         1e5HQPQk9lEFWtXax/iK71+PxZwl9QHQf/XH3YztLoo7rYyMHaWm5j6r4TBb0nIK+A
-         uktYZePvICVzSD1OvThq9TweFHoEBqjJw8TR/8Kk=
+        b=z0iACGkfDu4PzmKpKb6vasJHlraKGiFqbsCPUT42z/Q8tA8j8b42C0GNKWHntFgDu
+         i+uE1YDyPW9unWObavtQoVg6b/s3vr04BrKj6CUiDvQ6z+UHeMlnChzFgskkWivk+R
+         S3rbDlHEy1Jgx+R73Q7lqOY/jvBUaTwgvohIEc/8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Sergey Gorenko <sergeygo@mellanox.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Doug Ledford <dledford@redhat.com>,
+Cc:     Parav Pandit <parav@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 059/127] RDMA/srp: Propagate ib_post_send() failures to the SCSI mid-layer
-Date:   Fri, 22 Nov 2019 00:54:37 -0500
-Message-Id: <20191122055544.3299-58-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 074/127] IB/rxe: Make counters thread safe
+Date:   Fri, 22 Nov 2019 00:54:52 -0500
+Message-Id: <20191122055544.3299-73-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191122055544.3299-1-sashal@kernel.org>
 References: <20191122055544.3299-1-sashal@kernel.org>
@@ -46,36 +43,60 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Parav Pandit <parav@mellanox.com>
 
-[ Upstream commit 2ee00f6a98c36f7e4ba07cc33f24cc5a69060cc9 ]
+[ Upstream commit d5108e69fe013ff47ab815b849caba9cc33ca1e5 ]
 
-This patch avoids that the SCSI mid-layer keeps retrying forever if
-ib_post_send() fails. This was discovered while testing immediate
-data support and passing a too large num_sge value to ib_post_send().
+Current rxe device counters are not thread safe.
+When multiple QPs are used, they can be racy.
+Make them thread safe by making it atomic64.
 
-Cc: Sergey Gorenko <sergeygo@mellanox.com>
-Cc: Max Gurtovoy <maxg@mellanox.com>
-Cc: Laurence Oberman <loberman@redhat.com>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Doug Ledford <dledford@redhat.com>
+Fixes: 0b1e5b99a48b ("IB/rxe: Add port protocol stats")
+Signed-off-by: Parav Pandit <parav@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/srp/ib_srp.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/sw/rxe/rxe_hw_counters.c | 2 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.h       | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index 3f5b5893792cd..9f7287f45d06f 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -2210,6 +2210,7 @@ static int srp_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *scmnd)
+diff --git a/drivers/infiniband/sw/rxe/rxe_hw_counters.c b/drivers/infiniband/sw/rxe/rxe_hw_counters.c
+index 6aeb7a165e469..ea4542a9d69e6 100644
+--- a/drivers/infiniband/sw/rxe/rxe_hw_counters.c
++++ b/drivers/infiniband/sw/rxe/rxe_hw_counters.c
+@@ -59,7 +59,7 @@ int rxe_ib_get_hw_stats(struct ib_device *ibdev,
+ 		return -EINVAL;
  
- 	if (srp_post_send(ch, iu, len)) {
- 		shost_printk(KERN_ERR, target->scsi_host, PFX "Send failed\n");
-+		scmnd->result = DID_ERROR << 16;
- 		goto err_unmap;
- 	}
+ 	for (cnt = 0; cnt  < ARRAY_SIZE(rxe_counter_name); cnt++)
+-		stats->value[cnt] = dev->stats_counters[cnt];
++		stats->value[cnt] = atomic64_read(&dev->stats_counters[cnt]);
  
+ 	return ARRAY_SIZE(rxe_counter_name);
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index b2b76a316ebae..d1cc89f6f2e33 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -410,16 +410,16 @@ struct rxe_dev {
+ 	spinlock_t		mmap_offset_lock; /* guard mmap_offset */
+ 	int			mmap_offset;
+ 
+-	u64			stats_counters[RXE_NUM_OF_COUNTERS];
++	atomic64_t		stats_counters[RXE_NUM_OF_COUNTERS];
+ 
+ 	struct rxe_port		port;
+ 	struct list_head	list;
+ 	struct crypto_shash	*tfm;
+ };
+ 
+-static inline void rxe_counter_inc(struct rxe_dev *rxe, enum rxe_counters cnt)
++static inline void rxe_counter_inc(struct rxe_dev *rxe, enum rxe_counters index)
+ {
+-	rxe->stats_counters[cnt]++;
++	atomic64_inc(&rxe->stats_counters[index]);
+ }
+ 
+ static inline struct rxe_dev *to_rdev(struct ib_device *dev)
 -- 
 2.20.1
 
