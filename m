@@ -2,148 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F11B107C86
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 Nov 2019 03:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17498107CCF
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 Nov 2019 05:39:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725962AbfKWCnO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Nov 2019 21:43:14 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6702 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726085AbfKWCnO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 22 Nov 2019 21:43:14 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id BA4A7C69B205942F1671;
-        Sat, 23 Nov 2019 10:43:12 +0800 (CST)
-Received: from [127.0.0.1] (10.40.168.149) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Sat, 23 Nov 2019
- 10:43:03 +0800
-Subject: Re: [PATCH rdma-core 1/7] libhns: Fix calculation errors with
- ilog32()
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>
-CC:     "leon@kernel.org" <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-References: <1574299169-31457-1-git-send-email-liweihang@hisilicon.com>
- <1574299169-31457-2-git-send-email-liweihang@hisilicon.com>
- <678F3D1BB717D949B966B68EAEB446ED300CC8A5@dggemm526-mbx.china.huawei.com>
- <20191122180933.GE7448@ziepe.ca>
-From:   Weihang Li <liweihang@hisilicon.com>
-Message-ID: <35086d20-0f48-c5a8-dae7-afaa9b4ed3e4@hisilicon.com>
-Date:   Sat, 23 Nov 2019 10:43:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726357AbfKWEjV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Nov 2019 23:39:21 -0500
+Received: from mga06.intel.com ([134.134.136.31]:35372 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726304AbfKWEjV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 22 Nov 2019 23:39:21 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Nov 2019 20:39:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,232,1571727600"; 
+   d="scan'208";a="205590768"
+Received: from dpdk-virtio-tbie-2.sh.intel.com (HELO ___) ([10.67.104.74])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Nov 2019 20:39:17 -0800
+Date:   Sat, 23 Nov 2019 12:39:51 +0800
+From:   Tiwei Bie <tiwei.bie@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        davem@davemloft.net, gregkh@linuxfoundation.org,
+        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, Kiran Patil <kiran.patil@intel.com>
+Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+Message-ID: <20191123043951.GA364267@___>
+References: <134058913.35624136.1574222360435.JavaMail.zimbra@redhat.com>
+ <20191120133835.GC22515@ziepe.ca>
+ <20191120102856.7e01e2e2@x1.home>
+ <20191120181108.GJ22515@ziepe.ca>
+ <20191120150732.2fffa141@x1.home>
+ <20191121030357.GB16914@ziepe.ca>
+ <5dcef4ab-feb5-d116-b2a9-50608784a054@redhat.com>
+ <20191121141732.GB7448@ziepe.ca>
+ <721e49c2-a2e1-853f-298b-9601c32fcf9e@redhat.com>
+ <20191122180214.GD7448@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <20191122180933.GE7448@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.168.149]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191122180214.GD7448@ziepe.ca>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 2019/11/23 2:09, Jason Gunthorpe wrote:
-> On Fri, Nov 22, 2019 at 02:58:44AM +0000, Zengtao (B) wrote:
->>> From: linux-rdma-owner@vger.kernel.org
->>> [mailto:linux-rdma-owner@vger.kernel.org] On Behalf Of Weihang Li
->>> Sent: Thursday, November 21, 2019 9:19 AM
->>> To: jgg@ziepe.ca; leon@kernel.org
->>> Cc: dledford@redhat.com; linux-rdma@vger.kernel.org; Linuxarm
->>> Subject: [PATCH rdma-core 1/7] libhns: Fix calculation errors with ilog32()
->>>
->>> Current calculation results using ilog32() is larger than expected, which
->>> will lead to driver broken. The following is the log when QP creations
->>> fails:
->>>
->>> [   81.294844] hns3 0000:7d:00.0 hns_0: check SQ size error!
->>> [   81.294848] hns3 0000:7d:00.0 hns_0: check SQ size error!
->>> [   81.300225] hns3 0000:7d:00.0 hns_0: Sanity check sq size failed
->>> [   81.300227] hns3 0000:7d:00.0: hns_roce_set_user_sq_size error for
->>> create qp
->>> [   81.305602] hns3 0000:7d:00.0 hns_0: Sanity check sq size failed
->>> [   81.305603] hns3 0000:7d:00.0: hns_roce_set_user_sq_size error for
->>> create qp
->>> [   81.311589] hns3 0000:7d:00.0 hns_0: Create RC QP 0x000000
->>> failed(-22)
->>> [   81.318603] hns3 0000:7d:00.0 hns_0: Create RC QP 0x000000
->>> failed(-22)
->>>
->>> Fixes: b6cd213b276f ("libhns: Refactor for creating qp")
->>> Signed-off-by: Weihang Li <liweihang@hisilicon.com>
->>>  providers/hns/hns_roce_u_verbs.c | 11 ++++++-----
->>>  1 file changed, 6 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/providers/hns/hns_roce_u_verbs.c
->>> b/providers/hns/hns_roce_u_verbs.c
->>> index 9d222c0..bd5060d 100644
->>> +++ b/providers/hns/hns_roce_u_verbs.c
->>> @@ -645,7 +645,8 @@ static int hns_roce_calc_qp_buff_size(struct
->>> ibv_pd *pd, struct ibv_qp_cap *cap,
->>>  	int page_size = to_hr_dev(pd->context->device)->page_size;
->>>
->>>  	if (to_hr_dev(pd->context->device)->hw_version ==
->>> HNS_ROCE_HW_VER1) {
->>> -		qp->rq.wqe_shift = ilog32(sizeof(struct hns_roce_rc_rq_wqe));
->>> +		qp->rq.wqe_shift =
->>> +				ilog32(sizeof(struct hns_roce_rc_rq_wqe)) - 1;
->>>
->>>  		qp->buf_size = align((qp->sq.wqe_cnt << qp->sq.wqe_shift),
->>>  				     page_size) +
->>> @@ -662,7 +663,7 @@ static int hns_roce_calc_qp_buff_size(struct
->>> ibv_pd *pd, struct ibv_qp_cap *cap,
->>>  	} else {
->>>  		unsigned int rqwqe_size = HNS_ROCE_SGE_SIZE *
->>> cap->max_recv_sge;
->>>
->>> -		qp->rq.wqe_shift = ilog32(rqwqe_size);
->>> +		qp->rq.wqe_shift = ilog32(rqwqe_size) - 1;
->>>
->>>  		if (qp->sq.max_gs > HNS_ROCE_SGE_IN_WQE || type ==
->>> IBV_QPT_UD)
->>>  			qp->sge.sge_shift = HNS_ROCE_SGE_SHIFT;
->>> @@ -747,8 +748,8 @@ static void hns_roce_set_qp_params(struct
->>> ibv_pd *pd,
->>>  		qp->rq.wqe_cnt =
->>> roundup_pow_of_two(attr->cap.max_recv_wr);
->>>  	}
->>>
->>> -	qp->sq.wqe_shift = ilog32(sizeof(struct hns_roce_rc_send_wqe));
->>> -	qp->sq.shift = ilog32(qp->sq.wqe_cnt);
->>> +	qp->sq.wqe_shift = ilog32(sizeof(struct hns_roce_rc_send_wqe)) - 1;
->>> +	qp->sq.shift = ilog32(qp->sq.wqe_cnt) - 1;
->>
->> One suggestion, it's better to introduce a new micro instead of ilog32(x) -1.
+On Fri, Nov 22, 2019 at 02:02:14PM -0400, Jason Gunthorpe wrote:
+> On Fri, Nov 22, 2019 at 04:45:38PM +0800, Jason Wang wrote:
+> > On 2019/11/21 下午10:17, Jason Gunthorpe wrote:
+> > > On Thu, Nov 21, 2019 at 03:21:29PM +0800, Jason Wang wrote:
+> > > > > The role of vfio has traditionally been around secure device
+> > > > > assignment of a HW resource to a VM. I'm not totally clear on what the
+> > > > > role if mdev is seen to be, but all the mdev drivers in the tree seem
+> > > > > to make 'and pass it to KVM' a big part of their description.
+> > > > > 
+> > > > > So, looking at the virtio patches, I see some intended use is to map
+> > > > > some BAR pages into the VM.
+> > > > Nope, at least not for the current stage. It still depends on the
+> > > > virtio-net-pci emulatio in qemu to work. In the future, we will allow such
+> > > > mapping only for dorbell.
+> > > There has been a lot of emails today, but I think this is the main
+> > > point I want to respond to.
+> > > 
+> > > Using vfio when you don't even assign any part of the device BAR to
+> > > the VM is, frankly, a gigantic misuse, IMHO.
+> > 
+> > That's not a compelling point. 
 > 
-> Is the -1 even correct?
-> 
-> I would have guessed something called shift wants to be:
-> 
->    shift = ilog32(qp->sq.wqe_cnt - 1)
-> 
-> Such that 
->    1 << shift == wqe_cnt
->        When wqe_cnt is a power of two.
->    1 << shift > wqe_cnt
->        When wqe_cnt is not a power of two.
-> 
-> Jason
-> 
+> Well, this discussion is going nowhere.
 
-That's right, shift = ilog32(n - 1) is always right, but result of
-ilog32(n) - 1 is only correct when n is a power of two.
+You removed JasonW's other reply in above quote. He said it clearly
+that we do want/need to assign parts of device BAR to the VM.
 
-Will modify to ilog32(n - 1).
-
-Thank you
-Weihang
-
-
-> .
 > 
+> > > Just needing userspace DMA is not, in any way, a justification to use
+> > > vfio.
+> > > 
+> > > We have extensive library interfaces in the kernel to do userspace DMA
+> > > and subsystems like GPU and RDMA are full of example uses of this kind
+> > > of stuff.
+> > 
+> > I'm not sure which library did you mean here. Is any of those library used
+> > by qemu? If not, what's the reason?
+> 
+> I mean the library functions in the kernel that vfio uses to implement
+> all the user dma stuff. Other subsystems use them too, it is not
+> exclusive to vfio.
 
+IIUC, your point is to suggest us invent new DMA API for userspace to
+use instead of leveraging VFIO's well defined DMA API. Even if we don't
+use VFIO at all, I would imagine it could be very VFIO-like (e.g. caps
+for BAR + container/group for DMA) eventually.
+
+> 
+> > > Further, I do not think it is wise to design the userspace ABI around
+> > > a simplistict implementation that can't do BAR assignment,
+> > 
+> > Again, the vhost-mdev follow the VFIO ABI, no new ABI is invented, and
+> > mmap() was kept their for mapping device regions.
+> 
+> The patches have a new file in include/uapi.
+
+I guess you didn't look at the code. Just to clarify, there is no
+new file introduced in include/uapi. Only small vhost extensions to
+the existing vhost uapi are involved in vhost-mdev.
+
+> 
