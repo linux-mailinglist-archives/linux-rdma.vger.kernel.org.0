@@ -2,121 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCEB107F7D
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 Nov 2019 17:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E066F1080FC
+	for <lists+linux-rdma@lfdr.de>; Sun, 24 Nov 2019 00:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726922AbfKWQuV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 23 Nov 2019 11:50:21 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:57088 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726762AbfKWQuV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 23 Nov 2019 11:50:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574527820;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iQ1nYZicRuCsr2N4GxCFhhF1w/8zoaTyzM1kGYuOUrs=;
-        b=RaK7RGaLv6d1oAkRsguEZ9uMYYkncoFGq88NFmY0+crPFFgCjAbJUNtjNczMg+Kz30rbRq
-        mm0w1p2icQPH3Gz9stCC1YEptxOFGT1yIsP2n4srk2DzjPXcdwYOB1TO0pWezqWV18LyCW
-        +bgKhnojPPT4MrP6knu2hMW4cByOw4A=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-31-VQke9K2TNmyyI_9D_JMhZg-1; Sat, 23 Nov 2019 11:50:19 -0500
-Received: by mail-qv1-f71.google.com with SMTP id g33so7029806qvd.7
-        for <linux-rdma@vger.kernel.org>; Sat, 23 Nov 2019 08:50:19 -0800 (PST)
+        id S1726759AbfKWXJw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 23 Nov 2019 18:09:52 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:46996 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726765AbfKWXJw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 23 Nov 2019 18:09:52 -0500
+Received: by mail-qt1-f196.google.com with SMTP id r20so12484637qtp.13
+        for <linux-rdma@vger.kernel.org>; Sat, 23 Nov 2019 15:09:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=QUKMDS+SD49m7VZLfzH9P44dw/EqmARrwz8HhZZaElQ=;
+        b=cNkJNbyAl16DROUBXLPus9MoFSX2b+v5mrC1huoFuIPbPNqcxLUcBBvcyTWwob1/Oa
+         LhV6FITLF2T0Nf4gK8nckmwZyPpWAwh+uq91xUqTnl5xuA0INYxMGkHNBUqYX1IrlyjM
+         HkwiQANXqPKUiNjEe369Yw/lGc6IvOD1bAucs2uaYJRjo72akB0ww6FFqP6wmGHsezya
+         347O1wj5PzuZWzDZirS300CZzuwgkgM4rSJb6z1Y32BnLf9y8GESxl6iMRFl1OwXFz+g
+         cNsDhqTus9IcxgTe9KMwbO8TXEXMOs/PMRelw1puH0RpOYJYm+pmAQN9tDB8MeQIwENp
+         Tr/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sHQia/lsWr35bKNwE4bTfDIwWlqfBFukr8BZYG19Bvg=;
-        b=HKTJTE1sEbvd/uhetsFbHdKonfPCgoDk90M8dBX5duDc7F/RZxbEUe15fF94izXH1x
-         QsT+4AEyn0figPsKmYigtw/Pwp9LDvkgJd7G/AkmaRKOyaNA8k9LJ1N9pOVs46TXo8wW
-         q5zEaU35dbTkTNq/8GeasZte4wdwUZJjkbsxk7Wb9GaLYMjw4GcSuKOUcdxUz3fOqSli
-         b+lEll1WOeoHf9wdGH0WXjPPwxzWh7tfPoZE8j/uRpT44Njzy5rQX8x5Pnke9CKsrjau
-         yMkfxs2Sxg3qMKx0Hr3Z45ZbRGJhXyiiLbwFyw01h0qIXmXWAIbyfdbwfy8LN0np159A
-         epFw==
-X-Gm-Message-State: APjAAAV/qu4A/yqhOWpvOzwjNT6Nrzew0fJDXGK7MlyQK3skToaJfUKt
-        I7xXax+NXZ6asJOn/T0iRAqt3P0iZEAQZ9EngaDjDXYxud1BshIr66ZogtBvmTIKDt5lvMFPQOu
-        RHhPvgo/XkNFUYW9iels20g==
-X-Received: by 2002:a05:6214:714:: with SMTP id b20mr19350114qvz.39.1574527818915;
-        Sat, 23 Nov 2019 08:50:18 -0800 (PST)
-X-Google-Smtp-Source: APXvYqwQkY9bRii1J8sOZZLrXlXUoek5EdKj2DISUCJ7pbGOCucB5U5NnqaFttqpKqneVM87FnK6NQ==
-X-Received: by 2002:a05:6214:714:: with SMTP id b20mr19350084qvz.39.1574527818689;
-        Sat, 23 Nov 2019 08:50:18 -0800 (PST)
-Received: from redhat.com (bzq-79-176-6-42.red.bezeqint.net. [79.176.6.42])
-        by smtp.gmail.com with ESMTPSA id j2sm609954qka.88.2019.11.23.08.50.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Nov 2019 08:50:17 -0800 (PST)
-Date:   Sat, 23 Nov 2019 11:50:11 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=QUKMDS+SD49m7VZLfzH9P44dw/EqmARrwz8HhZZaElQ=;
+        b=lBL79tkvbxiRvVr/HH9JdNRo3pmjRN9RaQ+zWP1Yr6gP07Hnewo35CZtBkMjurfnp3
+         ktDdSE3cy9waTcnosktsOsWnXW35SoKxZul5xJHOWo3Yij5ueu0ftkylwNoq77G1FM6b
+         bP5QZ0Du7iM+xNoyTsNLK9u4ZO01Y2NWmhSS1pE1H7mkfurngEfxgluyqXvdRhqaMeTT
+         rHqO1lPYYZ9dcvL061K/TmTgfW3viTRLnkQE1FU0l77w8gFVspR1wgSDNOQo51/+RoYH
+         ZIbvAv36OX/fBkOIIBir0p02tFfEndjPqhJ48ivsZa0XkbIzBRJ/kwKb7ghVYqUfyjQ+
+         yDEQ==
+X-Gm-Message-State: APjAAAWrh9fw+XjsIQbkhF7Juvo9lLMN1Mn2PPoOa84TsBG7CgunHEJt
+        jpArugogTiSkuWnlqu934EeSMA==
+X-Google-Smtp-Source: APXvYqx99DfDccErQ7Wk72kTbrFwA6HWXUk6CZmWF24dpLPXyC4iSn+fW8B46GNZlFTGLpGj/pF4/Q==
+X-Received: by 2002:ac8:2279:: with SMTP id p54mr3948523qtp.368.1574550590916;
+        Sat, 23 Nov 2019 15:09:50 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id a62sm1020273qkf.81.2019.11.23.15.09.49
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 23 Nov 2019 15:09:49 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iYeXE-0006hw-V3; Sat, 23 Nov 2019 19:09:48 -0400
+Date:   Sat, 23 Nov 2019 19:09:48 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Tiwei Bie <tiwei.bie@intel.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Parav Pandit <parav@mellanox.com>,
         Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
         davem@davemloft.net, gregkh@linuxfoundation.org,
         Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, Kiran Patil <kiran.patil@intel.com>,
-        Tiwei Bie <tiwei.bie@intel.com>
+        sassmann@redhat.com, Kiran Patil <kiran.patil@intel.com>
 Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
-Message-ID: <20191123114911-mutt-send-email-mst@kernel.org>
-References: <20191119191053-mutt-send-email-mst@kernel.org>
- <20191120014653.GR4991@ziepe.ca>
- <134058913.35624136.1574222360435.JavaMail.zimbra@redhat.com>
- <20191120133835.GC22515@ziepe.ca>
+Message-ID: <20191123230948.GF7448@ziepe.ca>
+References: <20191120133835.GC22515@ziepe.ca>
  <20191120102856.7e01e2e2@x1.home>
  <20191120181108.GJ22515@ziepe.ca>
  <20191120150732.2fffa141@x1.home>
  <20191121030357.GB16914@ziepe.ca>
- <20191120232320-mutt-send-email-mst@kernel.org>
- <20191121134438.GA7448@ziepe.ca>
+ <5dcef4ab-feb5-d116-b2a9-50608784a054@redhat.com>
+ <20191121141732.GB7448@ziepe.ca>
+ <721e49c2-a2e1-853f-298b-9601c32fcf9e@redhat.com>
+ <20191122180214.GD7448@ziepe.ca>
+ <20191123043951.GA364267@___>
 MIME-Version: 1.0
-In-Reply-To: <20191121134438.GA7448@ziepe.ca>
-X-MC-Unique: VQke9K2TNmyyI_9D_JMhZg-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191123043951.GA364267@___>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 21, 2019 at 09:44:38AM -0400, Jason Gunthorpe wrote:
-> On Wed, Nov 20, 2019 at 11:24:03PM -0500, Michael S. Tsirkin wrote:
-> > On Wed, Nov 20, 2019 at 11:03:57PM -0400, Jason Gunthorpe wrote:
-> > > Frankly, when I look at what this virtio stuff is doing I see RDMA:
-> > >  - Both have a secure BAR pages for mmaping to userspace (or VM)
-> > >  - Both are prevented from interacting with the device at a register
-> > >    level and must call to the kernel - ie creating resources is a
-> > >    kernel call - for security.
-> > >  - Both create command request/response rings in userspace controlled
-> > >    memory and have HW DMA to read requests and DMA to generate respon=
-ses
-> > >  - Both allow the work on the rings to DMA outside the ring to
-> > >    addresses controlled by userspace.
-> > >  - Both have to support a mixture of HW that uses on-device security
-> > >    or IOMMU based security.
-> >=20
-> > The main difference is userspace/drivers need to be portable with
-> > virtio.
->=20
-> rdma also has a stable/portable user space library API that is
-> portable to multiple operating systems.
->=20
-> What you don't like is that RDMA userspace has driver-specific
-> code. Ie the kernel interface is not fully hardware independent.
->=20
-> Jason
+On Sat, Nov 23, 2019 at 12:39:51PM +0800, Tiwei Bie wrote:
+> On Fri, Nov 22, 2019 at 02:02:14PM -0400, Jason Gunthorpe wrote:
+> > On Fri, Nov 22, 2019 at 04:45:38PM +0800, Jason Wang wrote:
+> > > On 2019/11/21 下午10:17, Jason Gunthorpe wrote:
+> > > > On Thu, Nov 21, 2019 at 03:21:29PM +0800, Jason Wang wrote:
+> > > > > > The role of vfio has traditionally been around secure device
+> > > > > > assignment of a HW resource to a VM. I'm not totally clear on what the
+> > > > > > role if mdev is seen to be, but all the mdev drivers in the tree seem
+> > > > > > to make 'and pass it to KVM' a big part of their description.
+> > > > > > 
+> > > > > > So, looking at the virtio patches, I see some intended use is to map
+> > > > > > some BAR pages into the VM.
+> > > > > Nope, at least not for the current stage. It still depends on the
+> > > > > virtio-net-pci emulatio in qemu to work. In the future, we will allow such
+> > > > > mapping only for dorbell.
+> > > > There has been a lot of emails today, but I think this is the main
+> > > > point I want to respond to.
+> > > > 
+> > > > Using vfio when you don't even assign any part of the device BAR to
+> > > > the VM is, frankly, a gigantic misuse, IMHO.
+> > > 
+> > > That's not a compelling point. 
+> > 
+> > Well, this discussion is going nowhere.
+> 
+> You removed JasonW's other reply in above quote. He said it clearly
+> that we do want/need to assign parts of device BAR to the VM.
 
-Right. Not that I don't like it, it has some advantages too.
-But it's addressing a different need which a vendor
-specific userspace driver doesn't address.
+Generally we don't look at patches based on stuff that isn't in them.
 
---=20
-MST
+> > I mean the library functions in the kernel that vfio uses to implement
+> > all the user dma stuff. Other subsystems use them too, it is not
+> > exclusive to vfio.
+> 
+> IIUC, your point is to suggest us invent new DMA API for userspace to
+> use instead of leveraging VFIO's well defined DMA API. Even if we don't
+> use VFIO at all, I would imagine it could be very VFIO-like (e.g. caps
+> for BAR + container/group for DMA) eventually.
 
+None of the other user dma subsystems seem to have the problems you
+are imagining here. Perhaps you should try it first?
+ 
+> > > > Further, I do not think it is wise to design the userspace ABI around
+> > > > a simplistict implementation that can't do BAR assignment,
+> > > 
+> > > Again, the vhost-mdev follow the VFIO ABI, no new ABI is invented, and
+> > > mmap() was kept their for mapping device regions.
+> > 
+> > The patches have a new file in include/uapi.
+> 
+> I guess you didn't look at the code. Just to clarify, there is no
+> new file introduced in include/uapi. Only small vhost extensions to
+> the existing vhost uapi are involved in vhost-mdev.
+
+You know, I review alot of patches every week, and sometimes I make
+mistakes, but not this time. From the ICF cover letter:
+
+https://lkml.org/lkml/2019/11/7/62
+
+ drivers/vfio/mdev/mdev_core.c    |  21 ++
+ drivers/vhost/Kconfig            |  12 +
+ drivers/vhost/Makefile           |   3 +
+ drivers/vhost/mdev.c             | 556 +++++++++++++++++++++++++++++++
+ include/linux/mdev.h             |   5 +
+ include/uapi/linux/vhost.h       |  21 ++
+ include/uapi/linux/vhost_types.h |   8 +
+      ^^^^^^^^^^^^^^
+
+Perhaps you thought I ment ICF was adding uapi? My remarks cover all
+three of the series involved here.
+
+Jason
