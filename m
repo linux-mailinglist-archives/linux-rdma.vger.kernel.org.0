@@ -2,133 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E674108A60
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Nov 2019 09:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42507108E56
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Nov 2019 14:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbfKYI7V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Nov 2019 03:59:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56606 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725793AbfKYI7V (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 25 Nov 2019 03:59:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id F1475B308;
-        Mon, 25 Nov 2019 08:59:16 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 1906B1E0A57; Mon, 25 Nov 2019 09:59:15 +0100 (CET)
-Date:   Mon, 25 Nov 2019 09:59:15 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 17/19] powerpc: book3s64: convert to pin_user_pages() and
- put_user_page()
-Message-ID: <20191125085915.GB1797@quack2.suse.cz>
-References: <20191125042011.3002372-1-jhubbard@nvidia.com>
- <20191125042011.3002372-18-jhubbard@nvidia.com>
+        id S1725823AbfKYM77 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Nov 2019 07:59:59 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:46534 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727300AbfKYM77 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 25 Nov 2019 07:59:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1574686797;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cdk+dECH005B5t1f94C8RSsQ86cze75hgG33FXnZQFU=;
+        b=CphYnXv+bpPfuNFEhKZm+3AXAaisJZjz58mT91A44sgGbIBW+2mLo+jennpmAIVGdDEDIk
+        1ESZAQYD4ClF+VupllcWTZcmFtP3tl6yV8PeXjJogtMzm8yhgfkWL27mBvqr3j6G0Cfm/H
+        F7EtDLrMX5AIMXg7YA4T2SYfTS7WXf4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-50-EC6sypjEMtSlqN8YDpjaPg-1; Mon, 25 Nov 2019 07:59:56 -0500
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D18664A80;
+        Mon, 25 Nov 2019 12:59:54 +0000 (UTC)
+Received: from [10.72.12.44] (ovpn-12-44.pek2.redhat.com [10.72.12.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 01F665C1D4;
+        Mon, 25 Nov 2019 12:59:43 +0000 (UTC)
+Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Tiwei Bie <tiwei.bie@intel.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        davem@davemloft.net, gregkh@linuxfoundation.org,
+        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, Kiran Patil <kiran.patil@intel.com>
+References: <20191120181108.GJ22515@ziepe.ca>
+ <20191120150732.2fffa141@x1.home> <20191121030357.GB16914@ziepe.ca>
+ <5dcef4ab-feb5-d116-b2a9-50608784a054@redhat.com>
+ <20191121141732.GB7448@ziepe.ca>
+ <721e49c2-a2e1-853f-298b-9601c32fcf9e@redhat.com>
+ <20191122180214.GD7448@ziepe.ca> <20191123043951.GA364267@___>
+ <20191123230948.GF7448@ziepe.ca> <20191124145124.GA374942@___>
+ <20191125000919.GB5634@ziepe.ca>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <1ea2fa65-650e-bb09-f9c6-361dfd9b0b77@redhat.com>
+Date:   Mon, 25 Nov 2019 20:59:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191125042011.3002372-18-jhubbard@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191125000919.GB5634@ziepe.ca>
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-MC-Unique: EC6sypjEMtSlqN8YDpjaPg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun 24-11-19 20:20:09, John Hubbard wrote:
-> 1. Convert from get_user_pages() to pin_user_pages().
-> 
-> 2. As required by pin_user_pages(), release these pages via
-> put_user_page(). In this case, do so via put_user_pages_dirty_lock().
-> 
-> That has the side effect of calling set_page_dirty_lock(), instead
-> of set_page_dirty(). This is probably more accurate.
-> 
-> As Christoph Hellwig put it, "set_page_dirty() is only safe if we are
-> dealing with a file backed page where we have reference on the inode it
-> hangs off." [1]
-> 
-> 3. Release each page in mem->hpages[] (instead of mem->hpas[]), because
-> that is the array that pin_longterm_pages() filled in. This is more
-> accurate and should be a little safer from a maintenance point of
-> view.
 
-Except that this breaks the code. hpages is unioned with hpas...
+On 2019/11/25 =E4=B8=8A=E5=8D=888:09, Jason Gunthorpe wrote:
+> On Sun, Nov 24, 2019 at 10:51:24PM +0800, Tiwei Bie wrote:
+>
+>>>> You removed JasonW's other reply in above quote. He said it clearly
+>>>> that we do want/need to assign parts of device BAR to the VM.
+>>> Generally we don't look at patches based on stuff that isn't in them.
+>> The hardware is ready, and it's something really necessary (for
+>> the performance). It was planned to be added immediately after
+>> current series. If you want, it certainly can be included right now.
+> I don't think it makes a significant difference, there are enough
+> reasons already that this does not belong in vfio. Both Greg and I
+> already were very against using mdev as an alterative to the driver
+> core.
 
-> [1] https://lore.kernel.org/r/20190723153640.GB720@lst.de
-> 
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  arch/powerpc/mm/book3s64/iommu_api.c | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/powerpc/mm/book3s64/iommu_api.c b/arch/powerpc/mm/book3s64/iommu_api.c
-> index 56cc84520577..196383e8e5a9 100644
-> --- a/arch/powerpc/mm/book3s64/iommu_api.c
-> +++ b/arch/powerpc/mm/book3s64/iommu_api.c
-> @@ -103,7 +103,7 @@ static long mm_iommu_do_alloc(struct mm_struct *mm, unsigned long ua,
->  	for (entry = 0; entry < entries; entry += chunk) {
->  		unsigned long n = min(entries - entry, chunk);
->  
-> -		ret = get_user_pages(ua + (entry << PAGE_SHIFT), n,
-> +		ret = pin_user_pages(ua + (entry << PAGE_SHIFT), n,
->  				FOLL_WRITE | FOLL_LONGTERM,
->  				mem->hpages + entry, NULL);
->  		if (ret == n) {
-> @@ -167,9 +167,8 @@ static long mm_iommu_do_alloc(struct mm_struct *mm, unsigned long ua,
->  	return 0;
->  
->  free_exit:
-> -	/* free the reference taken */
-> -	for (i = 0; i < pinned; i++)
-> -		put_page(mem->hpages[i]);
-> +	/* free the references taken */
-> +	put_user_pages(mem->hpages, pinned);
->  
->  	vfree(mem->hpas);
->  	kfree(mem);
-> @@ -212,10 +211,9 @@ static void mm_iommu_unpin(struct mm_iommu_table_group_mem_t *mem)
->  		if (!page)
->  			continue;
->  
-> -		if (mem->hpas[i] & MM_IOMMU_TABLE_GROUP_PAGE_DIRTY)
-> -			SetPageDirty(page);
-> +		put_user_pages_dirty_lock(&mem->hpages[i], 1,
-> +					  MM_IOMMU_TABLE_GROUP_PAGE_DIRTY);
 
-And the dirtying condition is wrong here as well. Currently it is always
-true.
+Don't get us wrong, in v13 this is what Greg said [1].
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+"
+Also, see the other conversations we are having about a "virtual" bus
+and devices.  I do not want to have two different ways of doing the same
+thing in the kernel at the same time please.  Please work together with
+the Intel developers to solve this in a unified way, as you both
+need/want the same thing here.
+
+Neither this, nor the other proposal can be accepted until you all agree
+on the design and implementation.
+"
+
+[1] https://lkml.org/lkml/2019/11/18/521
+
+
+>
+>>>> IIUC, your point is to suggest us invent new DMA API for userspace to
+>>>> use instead of leveraging VFIO's well defined DMA API. Even if we don'=
+t
+>>>> use VFIO at all, I would imagine it could be very VFIO-like (e.g. caps
+>>>> for BAR + container/group for DMA) eventually.
+>>> None of the other user dma subsystems seem to have the problems you
+>>> are imagining here. Perhaps you should try it first?
+>> Actually VFIO DMA API wasn't used at the beginning of vhost-mdev. But
+>> after the discussion in upstream during the RFC stage since the last
+>> year, the conclusion is that leveraging VFIO's existing DMA API would
+>> be the better choice and then vhost-mdev switched to that direction.
+> Well, unfortunately, I think that discussion may have led you
+> wrong. Do you have a link? Did you post an ICF driver that didn't use vfi=
+o?
+
+
+Why do you think the driver posted in [2] use vfio?
+
+[2] https://lkml.org/lkml/2019/11/21/479
+
+Thanks
+
+
+>
+> Jason
+>
+
