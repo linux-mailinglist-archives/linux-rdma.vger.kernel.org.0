@@ -2,129 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A60109485
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Nov 2019 21:11:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 861E6109492
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Nov 2019 21:14:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725868AbfKYUIJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Nov 2019 15:08:09 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:32878 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbfKYUIJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Nov 2019 15:08:09 -0500
-Received: by mail-qt1-f193.google.com with SMTP id y39so18683800qty.0
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Nov 2019 12:08:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=xnKRBuGpbapwl5qx4tOnjv58lsXYoNDPMkQeB9na7sM=;
-        b=jEJAc6l8Og8mswOwJIYjQxjxJ8ELKtVuERyuOyp+51Hx6FPf2NKZvtwH/GvpgKbVOC
-         +N87m/b+mPLoXYS6rnSZTbpf8oxCiczMY4ZaNXXwNLnFzv2A7+InNSZiRfqnDFv8hAAv
-         ap9uldbLa0UtqYc/DBhQxCnfWU4nuaABIOOTrlWHAeHwbUniN/jraoB7QKjSya8f1tXI
-         NFX6ELEvSrfxn+HnUbl05N8TUb2ecx8eS359c/GQHooL/3BR9ZzZWJ7gQjoDZdgOXkOP
-         Gb1zSw6c8Ro+Qf4nLFaBZYTSNJnmNGq+gXpDfUNJtSMXBKbJ3KOPLA5f0jeczPR30UGW
-         Fagw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=xnKRBuGpbapwl5qx4tOnjv58lsXYoNDPMkQeB9na7sM=;
-        b=nh9s/NQ9+oo+h8l0jLfUFP9cpD/p3IVZVHLrOh37xS1Idonk9sNQwJccERCGX657r9
-         ky6UM2VV+k2rVm6QHVY7YBlUtHAkwNoJEz9xFjPr99RgY3NCNISdgHYyaMxYDCcRMK6V
-         4YMK3qJXaf/gK7TTel2/uSJ+ffyWi9wjiKaOz3RDhwpYPPpzTbpWZVslftd0B2VAua+y
-         4XfoT+I55RtD+qyQZDXzMFhcoMyseTMfA7Xb8Fhr0QEYM8TZhwLb058o+1TeouIW3Gxr
-         +ae6H9eCJvwtiiJcyCOODFl1mYMXV9O3UY3ryaHMCtGKtsV1zkvG7iryzLy5PzgsxNMc
-         3R+w==
-X-Gm-Message-State: APjAAAU0QREmCKeMCoCb4/m1bzbL/3lA93CmBtdHbYkEn/Yau/qu/Pdr
-        2mOerDF6o5VnQnD1JPf5G9e5dw==
-X-Google-Smtp-Source: APXvYqwkk9bKxhaeHcT9UzPJEELRlFai1GTqvW4eF5PcDqejFR2WYQ2+lPLeCVqcK65jUSmNTQxm0w==
-X-Received: by 2002:ac8:721a:: with SMTP id a26mr30548586qtp.208.1574712488391;
-        Mon, 25 Nov 2019 12:08:08 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id e10sm4565381qte.51.2019.11.25.12.08.07
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 25 Nov 2019 12:08:07 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iZKeV-0005SQ-Ay; Mon, 25 Nov 2019 16:08:07 -0400
-Date:   Mon, 25 Nov 2019 16:08:07 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Andrew Boyer <aboyer@pensando.io>
-Cc:     linux-rdma@vger.kernel.org, allenbh@pensando.io
-Subject: Re: [PATCH] rdma-core: Recognize IBV_DEVICE_LOCAL_DMA_LKEY in
- ibv_devinfo
-Message-ID: <20191125200807.GF11270@ziepe.ca>
-References: <20191125152237.19084-1-aboyer@pensando.io>
- <20191125175603.GB11270@ziepe.ca>
- <77FA0F51-7A7D-42E3-AC2A-BF65550A4396@pensando.io>
+        id S1727006AbfKYUN6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Nov 2019 15:13:58 -0500
+Received: from hqemgate14.nvidia.com ([216.228.121.143]:10773 "EHLO
+        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbfKYUN5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Nov 2019 15:13:57 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ddc36070000>; Mon, 25 Nov 2019 12:14:00 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 25 Nov 2019 12:13:56 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 25 Nov 2019 12:13:56 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Nov
+ 2019 20:13:55 +0000
+Subject: Re: [PATCH 07/19] mm/gup: introduce pin_user_pages*() and FOLL_PIN
+To:     kbuild test robot <lkp@intel.com>
+CC:     <kbuild-all@lists.01.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>,
+        <kvm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Dave Chinner <david@fromorbit.com>,
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Paul Mackerras <paulus@samba.org>,
+        <linux-kselftest@vger.kernel.org>, Ira Weiny <ira.weiny@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>, <linux-rdma@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        <linux-media@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        <linux-block@vger.kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jens Axboe <axboe@kernel.dk>, <netdev@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        <linux-fsdevel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+References: <20191125042011.3002372-8-jhubbard@nvidia.com>
+ <201911251639.UWS3hE3Y%lkp@intel.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <3989f406-c333-59f8-027a-e3506af59028@nvidia.com>
+Date:   Mon, 25 Nov 2019 12:13:55 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <77FA0F51-7A7D-42E3-AC2A-BF65550A4396@pensando.io>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <201911251639.UWS3hE3Y%lkp@intel.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1574712840; bh=xIrvhzi9FQlGBM90SU8S2M4hsd9JLL89vrPzYePQebc=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=nLQ5e77gFGxdvd47gRiRGHQbc1wVG8bwNbuGbyST1Q+jBowT4WflUsZ9otzD54lLB
+         J2wcW1AWxZ1vtAVadAvnnzHYEB9/RMQVx2Q02xRhkx6jKeVYJqp1Vzd24M3MZT/KvC
+         2r/IXfhmoHhQNFs1s+Ijlm3sbCcfcCTqQLXfh/u6EJodBjYv13WjZ+5uA/qpRqF5KJ
+         cgfhkSAYwIIVs+guU8WDjo4g7p8fk0VqKWKusesTvojs5xnlpb4TJcK/V2onbK8LWW
+         ksqnqfXGTA8sAX8XklRUC+OhMkFBYvdHQY7BxmxtkVVkFbYIpBRqVJEp1i5QjV+FwU
+         IkbF7UmcnHQ6g==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 25, 2019 at 02:32:31PM -0500, Andrew Boyer wrote:
+On 11/25/19 12:44 AM, kbuild test robot wrote:
+> Hi John,
 > 
-> > On Nov 25, 2019, at 12:56 PM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > 
-> > On Mon, Nov 25, 2019 at 07:22:37AM -0800, Andrew Boyer wrote:
-> >> This bit is defined in the kernel but not displayed by ibv_devinfo.
-> >> 
-> >> Signed-off-by: Andrew Boyer <aboyer@pensando.io>
-> >> libibverbs/examples/devinfo.c | 3 +++
-> >> libibverbs/verbs.h            | 1 +
-> >> 2 files changed, 4 insertions(+)
-> >> 
-> >> diff --git a/libibverbs/examples/devinfo.c b/libibverbs/examples/devinfo.c
-> >> index bf53eac2..e3210f6e 100644
-> >> +++ b/libibverbs/examples/devinfo.c
-> >> @@ -220,6 +220,7 @@ static void print_device_cap_flags(uint32_t dev_cap_flags)
-> >> 				   IBV_DEVICE_RC_RNR_NAK_GEN |
-> >> 				   IBV_DEVICE_SRQ_RESIZE |
-> >> 				   IBV_DEVICE_N_NOTIFY_CQ |
-> >> +				   IBV_DEVICE_LOCAL_DMA_LKEY |
-> >> 				   IBV_DEVICE_MEM_WINDOW |
-> >> 				   IBV_DEVICE_UD_IP_CSUM |
-> >> 				   IBV_DEVICE_XRC |
-> >> @@ -260,6 +261,8 @@ static void print_device_cap_flags(uint32_t dev_cap_flags)
-> >> 		printf("\t\t\t\t\tSRQ_RESIZE\n");
-> >> 	if (dev_cap_flags & IBV_DEVICE_N_NOTIFY_CQ)
-> >> 		printf("\t\t\t\t\tN_NOTIFY_CQ\n");
-> >> +	if (dev_cap_flags & IBV_DEVICE_LOCAL_DMA_LKEY)
-> >> +		printf("\t\t\t\t\tLOCAL_DMA_LKEY\n");
-> >> 	if (dev_cap_flags & IBV_DEVICE_MEM_WINDOW)
-> >> 		printf("\t\t\t\t\tMEM_WINDOW\n");
-> >> 	if (dev_cap_flags & IBV_DEVICE_UD_IP_CSUM)
-> >> diff --git a/libibverbs/verbs.h b/libibverbs/verbs.h
-> >> index 7b8d4310..81e5812c 100644
-> >> +++ b/libibverbs/verbs.h
-> >> @@ -112,6 +112,7 @@ enum ibv_device_cap_flags {
-> >> 	IBV_DEVICE_RC_RNR_NAK_GEN	= 1 << 12,
-> >> 	IBV_DEVICE_SRQ_RESIZE		= 1 << 13,
-> >> 	IBV_DEVICE_N_NOTIFY_CQ		= 1 << 14,
-> >> +	IBV_DEVICE_LOCAL_DMA_LKEY	= 1 << 15,
-> >> 	IBV_DEVICE_MEM_WINDOW           = 1 << 17,
-> >> 	IBV_DEVICE_UD_IP_CSUM		= 1 << 18,
-> >> 	IBV_DEVICE_XRC			= 1 << 20,
-> > 
-> > This flag really only has meaning for the kernel, it should come out
-> > of the uapi at all.
-> > 
-> > It is a mistake that kernel internal bits have been mixed in with
-> > userspace bits.
-> > 
-> > Jason
+> Thank you for the patch! Yet something to improve:
 > 
-> Isn’t there value in having the userspace tools tell the user about
-> a device’s in-kernel capabilities?
+> [auto build test ERROR on rdma/for-next]
+> [cannot apply to v5.4 next-20191122]
+> [if your patch is applied to the wrong git tree, please drop us a note to help
+> improve the system. BTW, we also suggest to use '--base' option to specify the
+> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+> 
+> url:    https://github.com/0day-ci/linux/commits/John-Hubbard/pin_user_pages-reduced-risk-series-for-Linux-5-5/20191125-125637
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+> config: arm-randconfig-a001-20191125 (attached as .config)
+> compiler: arm-linux-gnueabi-gcc (GCC) 7.4.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # save the attached .config to linux build tree
+>         GCC_VERSION=7.4.0 make.cross ARCH=arm 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kbuild test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    mm/gup.o: In function `pin_user_pages_remote':
+>>> mm/gup.c:2528: undefined reference to `get_user_pages_remote'
+> 
+> vim +2528 mm/gup.c
 
-Sure, but that is more a rdmatool thing, not uverbs
 
-Jason
+This, and the other (sh) report, is due to !CONFIG_MMU lacking a get_user_pages_remote(), 
+but pin_user_pages_remote() needs it for a (temporary) implementation. I'll post the fix, 
+in v2.
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
