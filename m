@@ -2,41 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 615DE10A002
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Nov 2019 15:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1349D109FFA
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Nov 2019 15:12:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728120AbfKZONY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Nov 2019 09:13:24 -0500
-Received: from mga05.intel.com ([192.55.52.43]:41954 "EHLO mga05.intel.com"
+        id S1727716AbfKZOMm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Nov 2019 09:12:42 -0500
+Received: from mga06.intel.com ([134.134.136.31]:29194 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726536AbfKZONY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 26 Nov 2019 09:13:24 -0500
+        id S1726536AbfKZOMm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 Nov 2019 09:12:42 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Nov 2019 06:12:35 -0800
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Nov 2019 06:12:41 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,246,1571727600"; 
-   d="scan'208";a="383160082"
+   d="scan'208";a="408673215"
 Received: from sedona.ch.intel.com ([10.2.136.157])
-  by orsmga005.jf.intel.com with ESMTP; 26 Nov 2019 06:12:35 -0800
+  by fmsmga005.fm.intel.com with ESMTP; 26 Nov 2019 06:12:42 -0800
 Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id xAQECYTd042039;
-        Tue, 26 Nov 2019 07:12:34 -0700
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id xAQECeew042056;
+        Tue, 26 Nov 2019 07:12:41 -0700
 Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id xAQECWIC059073;
-        Tue, 26 Nov 2019 09:12:33 -0500
-Subject: [PATCH for-next v2 04/11] IB/hfi1: Add fast and slow handlers for
- receive context
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id xAQECd2H059088;
+        Tue, 26 Nov 2019 09:12:39 -0500
+Subject: [PATCH for-next v2 05/11] IB/hfi1: Move common receive IRQ code to
+ function
 From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
 To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
+Cc:     linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
         Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>,
-        linux-rdma@vger.kernel.org, Kaike Wan <kaike.wan@intel.com>,
-        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
-        Sadanand Warrier <sadanand.warrier@intel.com>
-Date:   Tue, 26 Nov 2019 09:12:32 -0500
-Message-ID: <20191126141232.58836.58520.stgit@awfm-01.aw.intel.com>
+        Kaike Wan <kaike.wan@intel.com>
+Date:   Tue, 26 Nov 2019 09:12:39 -0500
+Message-ID: <20191126141239.58836.99861.stgit@awfm-01.aw.intel.com>
 In-Reply-To: <20191126141055.58836.79452.stgit@awfm-01.aw.intel.com>
 References: <20191126141055.58836.79452.stgit@awfm-01.aw.intel.com>
 User-Agent: StGit/0.17.1-dirty
@@ -48,242 +47,140 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mike Marciniszyn <mike.marciniszyn@intel.com>
+From: Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>
 
-This patch eliminate special cases by adding a fast_handler member to
-the receive context and changes to the fast handler as specified in the
-new variable. Initialize the variable as soon as the setting for dma
-tail is known when the context is created.
+Tracing interrupts, incrementing interrupt counter and ASPM
+are part that will be reused by HFI1 receive IRQ handlers.
 
-Setting fast path is called every time when any context has entered
-slow path. Add function to check if contexts is using fast path and do
-not set fast path when it is already done to improve RCD fastpath
-setting.
+Create common function to have shared code in one place.
 
 Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Reviewed-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
 Signed-off-by: Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>
-Signed-off-by: Sadanand Warrier <sadanand.warrier@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
 Signed-off-by: Kaike Wan <kaike.wan@intel.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
 ---
- drivers/infiniband/hw/hfi1/driver.c   |   66 ++++++---------------------------
- drivers/infiniband/hw/hfi1/hfi.h      |   41 ++++++++++++++++++++-
- drivers/infiniband/hw/hfi1/init.c     |    5 +++
- drivers/infiniband/hw/hfi1/trace_rx.h |    6 +--
- 4 files changed, 58 insertions(+), 60 deletions(-)
+ drivers/infiniband/hw/hfi1/chip.c |   82 +++++++++++++++++++++++--------------
+ 1 file changed, 52 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/driver.c b/drivers/infiniband/hw/hfi1/driver.c
-index 8374922..3671191 100644
---- a/drivers/infiniband/hw/hfi1/driver.c
-+++ b/drivers/infiniband/hw/hfi1/driver.c
-@@ -883,9 +883,8 @@ int handle_receive_interrupt_dma_rtail(struct hfi1_ctxtdata *rcd, int thread)
- 	return last;
+diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
+index 860615d..9e2bf99 100644
+--- a/drivers/infiniband/hw/hfi1/chip.c
++++ b/drivers/infiniband/hw/hfi1/chip.c
+@@ -8403,6 +8403,55 @@ static inline int check_packet_present(struct hfi1_ctxtdata *rcd)
+ 	return hfi1_rcd_head(rcd) != tail;
  }
  
--static inline void set_nodma_rtail(struct hfi1_devdata *dd, u16 ctxt)
-+static void set_all_fastpath(struct hfi1_devdata *dd, struct hfi1_ctxtdata *rcd)
++/**
++ * Common code for receive contexts interrupt handlers.
++ * Update traces, increment kernel IRQ counter and
++ * setup ASPM when needed.
++ */
++static void receive_interrupt_common(struct hfi1_ctxtdata *rcd)
++{
++	struct hfi1_devdata *dd = rcd->dd;
++
++	trace_hfi1_receive_interrupt(dd, rcd);
++	this_cpu_inc(*dd->int_counter);
++	aspm_ctx_disable(rcd);
++}
++
++/**
++ * __hfi1_rcd_eoi_intr() - Make HW issue receive interrupt
++ * when there are packets present in the queue. When calling
++ * with interrupts enabled please use hfi1_rcd_eoi_intr.
++ *
++ * @rcd: valid receive context
++ */
++static void __hfi1_rcd_eoi_intr(struct hfi1_ctxtdata *rcd)
++{
++	clear_recv_intr(rcd);
++	if (check_packet_present(rcd))
++		force_recv_intr(rcd);
++}
++
++/**
++ * hfi1_rcd_eoi_intr() - End of Interrupt processing action
++ *
++ * @rcd: Ptr to hfi1_ctxtdata of receive context
++ *
++ *  Hold IRQs so we can safely clear the interrupt and
++ *  recheck for a packet that may have arrived after the previous
++ *  check and the interrupt clear.  If a packet arrived, force another
++ *  interrupt. This routine can be called at the end of receive packet
++ *  processing in interrupt service routines, interrupt service thread
++ *  and softirqs
++ */
++static void hfi1_rcd_eoi_intr(struct hfi1_ctxtdata *rcd)
++{
++	unsigned long flags;
++
++	local_irq_save(flags);
++	__hfi1_rcd_eoi_intr(rcd);
++	local_irq_restore(flags);
++}
++
+ /*
+  * Receive packet IRQ handler.  This routine expects to be on its own IRQ.
+  * This routine will try to handle packets immediately (latency), but if
+@@ -8414,13 +8463,9 @@ static inline int check_packet_present(struct hfi1_ctxtdata *rcd)
+ irqreturn_t receive_context_interrupt(int irq, void *data)
  {
--	struct hfi1_ctxtdata *rcd;
- 	u16 i;
+ 	struct hfi1_ctxtdata *rcd = data;
+-	struct hfi1_devdata *dd = rcd->dd;
+ 	int disposition;
+-	int present;
  
- 	/*
-@@ -893,50 +892,17 @@ static inline void set_nodma_rtail(struct hfi1_devdata *dd, u16 ctxt)
- 	 * interrupt handler only for that context. Otherwise, switch
- 	 * interrupt handler for all statically allocated kernel contexts.
- 	 */
--	if (ctxt >= dd->first_dyn_alloc_ctxt) {
--		rcd = hfi1_rcd_get_by_index_safe(dd, ctxt);
--		if (rcd) {
--			rcd->do_interrupt =
--				&handle_receive_interrupt_nodma_rtail;
--			hfi1_rcd_put(rcd);
--		}
--		return;
--	}
--
--	for (i = HFI1_CTRL_CTXT + 1; i < dd->first_dyn_alloc_ctxt; i++) {
--		rcd = hfi1_rcd_get_by_index(dd, i);
--		if (rcd)
--			rcd->do_interrupt =
--				&handle_receive_interrupt_nodma_rtail;
-+	if (rcd->ctxt >= dd->first_dyn_alloc_ctxt && !rcd->is_vnic) {
-+		hfi1_rcd_get(rcd);
-+		hfi1_set_fast(rcd);
- 		hfi1_rcd_put(rcd);
--	}
--}
--
--static inline void set_dma_rtail(struct hfi1_devdata *dd, u16 ctxt)
--{
--	struct hfi1_ctxtdata *rcd;
--	u16 i;
--
+-	trace_hfi1_receive_interrupt(dd, rcd);
+-	this_cpu_inc(*dd->int_counter);
+-	aspm_ctx_disable(rcd);
++	receive_interrupt_common(rcd);
+ 
+ 	/* receive interrupt remains blocked while processing packets */
+ 	disposition = rcd->do_interrupt(rcd, 0);
+@@ -8433,17 +8478,7 @@ irqreturn_t receive_context_interrupt(int irq, void *data)
+ 	if (disposition == RCV_PKT_LIMIT)
+ 		return IRQ_WAKE_THREAD;
+ 
 -	/*
--	 * For dynamically allocated kernel contexts (like vnic) switch
--	 * interrupt handler only for that context. Otherwise, switch
--	 * interrupt handler for all statically allocated kernel contexts.
+-	 * The packet processor detected no more packets.  Clear the receive
+-	 * interrupt and recheck for a packet packet that may have arrived
+-	 * after the previous check and interrupt clear.  If a packet arrived,
+-	 * force another interrupt.
 -	 */
--	if (ctxt >= dd->first_dyn_alloc_ctxt) {
--		rcd = hfi1_rcd_get_by_index_safe(dd, ctxt);
--		if (rcd) {
--			rcd->do_interrupt =
--				&handle_receive_interrupt_dma_rtail;
--			hfi1_rcd_put(rcd);
--		}
- 		return;
- 	}
- 
--	for (i = HFI1_CTRL_CTXT + 1; i < dd->first_dyn_alloc_ctxt; i++) {
-+	for (i = HFI1_CTRL_CTXT + 1; i < dd->num_rcv_contexts; i++) {
- 		rcd = hfi1_rcd_get_by_index(dd, i);
--		if (rcd)
--			rcd->do_interrupt =
--				&handle_receive_interrupt_dma_rtail;
-+		if (rcd && (i < dd->first_dyn_alloc_ctxt || rcd->is_vnic))
-+			hfi1_set_fast(rcd);
- 		hfi1_rcd_put(rcd);
- 	}
- }
-@@ -952,7 +918,7 @@ void set_all_slowpath(struct hfi1_devdata *dd)
- 		if (!rcd)
- 			continue;
- 		if (i < dd->first_dyn_alloc_ctxt || rcd->is_vnic)
--			rcd->do_interrupt = &handle_receive_interrupt;
-+			rcd->do_interrupt = rcd->slow_handler;
- 
- 		hfi1_rcd_put(rcd);
- 	}
-@@ -1065,11 +1031,6 @@ int handle_receive_interrupt(struct hfi1_ctxtdata *rcd, int thread)
- 		if (!get_dma_rtail_setting(rcd)) {
- 			if (hfi1_seq_incr(rcd, rhf_rcv_seq(packet.rhf)))
- 				last = RCV_PKT_DONE;
--			if (needset) {
--				dd_dev_info(dd, "Switching to NO_DMA_RTAIL\n");
--				set_nodma_rtail(dd, rcd->ctxt);
--				needset = 0;
--			}
- 		} else {
- 			if (packet.rhqoff == hdrqtail)
- 				last = RCV_PKT_DONE;
-@@ -1085,15 +1046,12 @@ int handle_receive_interrupt(struct hfi1_ctxtdata *rcd, int thread)
- 				if (!last && lseq)
- 					skip_pkt = 1;
- 			}
+-	clear_recv_intr(rcd);
+-	present = check_packet_present(rcd);
+-	if (present)
+-		force_recv_intr(rcd);
 -
--			if (needset) {
--				dd_dev_info(dd,
--					    "Switching to DMA_RTAIL\n");
--				set_dma_rtail(dd, rcd->ctxt);
--				needset = 0;
--			}
- 		}
- 
-+		if (needset) {
-+			needset = false;
-+			set_all_fastpath(dd, rcd);
-+		}
- 		process_rcv_update(last, &packet);
- 	}
- 
-diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
-index a5d8b62..b819d7d 100644
---- a/drivers/infiniband/hw/hfi1/hfi.h
-+++ b/drivers/infiniband/hw/hfi1/hfi.h
-@@ -197,6 +197,8 @@ struct exp_tid_set {
- 	u32 count;
- };
- 
-+struct hfi1_ctxtdata;
-+typedef int (*intr_handler)(struct hfi1_ctxtdata *rcd, int data);
- typedef int (*rhf_rcv_function_ptr)(struct hfi1_packet *packet);
- 
- struct tid_queue {
-@@ -226,7 +228,11 @@ struct hfi1_ctxtdata {
- 	 * be valid. Worst case is we process an extra interrupt and up to 64
- 	 * packets with the wrong interrupt handler.
- 	 */
--	int (*do_interrupt)(struct hfi1_ctxtdata *rcd, int threaded);
-+	intr_handler do_interrupt;
-+	/** fast handler after autoactive */
-+	intr_handler fast_handler;
-+	/** slow handler */
-+	intr_handler slow_handler;
- 	/* verbs rx_stats per rcd */
- 	struct hfi1_opcode_stats_perctx *opstats;
- 	/* clear interrupt mask */
-@@ -1616,6 +1622,39 @@ static inline u16 get_hdrq_cnt(struct hfi1_ctxtdata *rcd)
- 	return rcd->rcvhdrq_cnt;
++	__hfi1_rcd_eoi_intr(rcd);
+ 	return IRQ_HANDLED;
  }
  
-+/**
-+ * hfi1_is_slowpath - check if this context is slow path
-+ * @rcd: the receive context
-+ */
-+static inline bool hfi1_is_slowpath(struct hfi1_ctxtdata *rcd)
-+{
-+	return rcd->do_interrupt == rcd->slow_handler;
-+}
-+
-+/**
-+ * hfi1_is_fastpath - check if this context is fast path
-+ * @rcd: the receive context
-+ */
-+static inline bool hfi1_is_fastpath(struct hfi1_ctxtdata *rcd)
-+{
-+	if (rcd->ctxt == HFI1_CTRL_CTXT)
-+		return false;
-+
-+	return rcd->do_interrupt == rcd->fast_handler;
-+}
-+
-+/**
-+ * hfi1_set_fast - change to the fast handler
-+ * @rcd: the receive context
-+ */
-+static inline void hfi1_set_fast(struct hfi1_ctxtdata *rcd)
-+{
-+	if (unlikely(!rcd))
-+		return;
-+	if (unlikely(!hfi1_is_fastpath(rcd)))
-+		rcd->do_interrupt = rcd->fast_handler;
-+}
-+
- int hfi1_reset_device(int);
+@@ -8454,24 +8489,11 @@ irqreturn_t receive_context_interrupt(int irq, void *data)
+ irqreturn_t receive_context_thread(int irq, void *data)
+ {
+ 	struct hfi1_ctxtdata *rcd = data;
+-	int present;
  
- void receive_interrupt_work(struct work_struct *work);
-diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
-index 821e6fe..55adc97 100644
---- a/drivers/infiniband/hw/hfi1/init.c
-+++ b/drivers/infiniband/hw/hfi1/init.c
-@@ -150,6 +150,11 @@ static int hfi1_create_kctxt(struct hfi1_devdata *dd,
- 	/* Control context must use DMA_RTAIL */
- 	if (rcd->ctxt == HFI1_CTRL_CTXT)
- 		rcd->flags |= HFI1_CAP_DMA_RTAIL;
-+	rcd->fast_handler = get_dma_rtail_setting(rcd) ?
-+				handle_receive_interrupt_dma_rtail :
-+				handle_receive_interrupt_nodma_rtail;
-+	rcd->slow_handler = handle_receive_interrupt;
-+
- 	hfi1_set_seq_cnt(rcd, 1);
+ 	/* receive interrupt is still blocked from the IRQ handler */
+ 	(void)rcd->do_interrupt(rcd, 1);
  
- 	rcd->sc = sc_alloc(dd, SC_ACK, rcd->rcvhdrqentsize, dd->node);
-diff --git a/drivers/infiniband/hw/hfi1/trace_rx.h b/drivers/infiniband/hw/hfi1/trace_rx.h
-index ebce81c..168079e 100644
---- a/drivers/infiniband/hw/hfi1/trace_rx.h
-+++ b/drivers/infiniband/hw/hfi1/trace_rx.h
-@@ -106,11 +106,7 @@
- 			     ),
- 	    TP_fast_assign(DD_DEV_ASSIGN(dd);
- 			__entry->ctxt = rcd->ctxt;
--			if (rcd->do_interrupt ==
--			    &handle_receive_interrupt)
--				__entry->slow_path = 1;
--			else
--				__entry->slow_path = 0;
-+			__entry->slow_path = hfi1_is_slowpath(rcd);
- 			__entry->dma_rtail = get_dma_rtail_setting(rcd);
- 			),
- 	    TP_printk("[%s] ctxt %d SlowPath: %d DmaRtail: %d",
+-	/*
+-	 * The packet processor will only return if it detected no more
+-	 * packets.  Hold IRQs here so we can safely clear the interrupt and
+-	 * recheck for a packet that may have arrived after the previous
+-	 * check and the interrupt clear.  If a packet arrived, force another
+-	 * interrupt.
+-	 */
+-	local_irq_disable();
+-	clear_recv_intr(rcd);
+-	present = check_packet_present(rcd);
+-	if (present)
+-		force_recv_intr(rcd);
+-	local_irq_enable();
++	hfi1_rcd_eoi_intr(rcd);
+ 
+ 	return IRQ_HANDLED;
+ }
 
