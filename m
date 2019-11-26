@@ -2,39 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F33109FCC
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Nov 2019 15:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40103109FCD
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Nov 2019 15:04:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728118AbfKZOD4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Nov 2019 09:03:56 -0500
-Received: from mga12.intel.com ([192.55.52.136]:44771 "EHLO mga12.intel.com"
+        id S1728123AbfKZOEE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Nov 2019 09:04:04 -0500
+Received: from mga02.intel.com ([134.134.136.20]:13390 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727719AbfKZOD4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 26 Nov 2019 09:03:56 -0500
+        id S1727719AbfKZOEE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 Nov 2019 09:04:04 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Nov 2019 06:03:56 -0800
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Nov 2019 06:04:02 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,245,1571727600"; 
-   d="scan'208";a="408670138"
+   d="scan'208";a="217168268"
 Received: from sedona.ch.intel.com ([10.2.136.157])
-  by fmsmga005.fm.intel.com with ESMTP; 26 Nov 2019 06:03:57 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 26 Nov 2019 06:04:01 -0800
 Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id xAQE3tgX038538;
-        Tue, 26 Nov 2019 07:03:55 -0700
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id xAQE41NO038544;
+        Tue, 26 Nov 2019 07:04:01 -0700
 Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id xAQE3s8P057871;
-        Tue, 26 Nov 2019 09:03:54 -0500
-Subject: [PATCH for-next 07/11] IB/hfi1: Create API for auto activate
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id xAQE403G057885;
+        Tue, 26 Nov 2019 09:04:00 -0500
+Subject: [PATCH for-next 08/11] IB/hfi1: Decouple IRQ name from type
 From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
 To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+Cc:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>,
         Dennis Dalessandro <dennis.alessandro@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>
-Date:   Tue, 26 Nov 2019 09:03:54 -0500
-Message-ID: <20191126140354.57492.69531.stgit@awfm-01.aw.intel.com>
+        linux-rdma@vger.kernel.org, Kaike Wan <kaike.wan@intel.com>,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>
+Date:   Tue, 26 Nov 2019 09:04:00 -0500
+Message-ID: <20191126140400.57492.53275.stgit@awfm-01.aw.intel.com>
 In-Reply-To: <20191126140020.57492.67772.stgit@awfm-01.aw.intel.com>
 References: <20191126140020.57492.67772.stgit@awfm-01.aw.intel.com>
 User-Agent: StGit/0.17.1-dirty
@@ -46,86 +47,210 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mike Marciniszyn <mike.marciniszyn@intel.com>
+From: Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>
 
-Add an auto activate routine for use by the interrupt handler.
+IRQ name was connected to IRQ type, this is not sufficient and it would
+be better to use name as argument to msix_request_irq instead of
+assigning it to variables when function is called.
+
+Index argument was required to generate name and now it can be removed.
+
+To generate name correctly helpers function were added and updated.
 
 Reviewed-by: Dennis Dalessandro <dennis.alessandro@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Reviewed-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+Signed-off-by: Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>
 Signed-off-by: Kaike Wan <kaike.wan@intel.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
 ---
- drivers/infiniband/hw/hfi1/driver.c |   37 ++++++++++++++++++++++-------------
- 1 file changed, 23 insertions(+), 14 deletions(-)
+ drivers/infiniband/hw/hfi1/msix.c |  106 ++++++++++++++++++++-----------------
+ drivers/infiniband/hw/hfi1/msix.h |    1 
+ 2 files changed, 59 insertions(+), 48 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/driver.c b/drivers/infiniband/hw/hfi1/driver.c
-index bbc7458..46c1be0 100644
---- a/drivers/infiniband/hw/hfi1/driver.c
-+++ b/drivers/infiniband/hw/hfi1/driver.c
-@@ -924,11 +924,8 @@ void set_all_slowpath(struct hfi1_devdata *dd)
- 	}
+diff --git a/drivers/infiniband/hw/hfi1/msix.c b/drivers/infiniband/hw/hfi1/msix.c
+index d920b16..4a620cf 100644
+--- a/drivers/infiniband/hw/hfi1/msix.c
++++ b/drivers/infiniband/hw/hfi1/msix.c
+@@ -115,13 +115,11 @@ int msix_initialize(struct hfi1_devdata *dd)
+  */
+ static int msix_request_irq(struct hfi1_devdata *dd, void *arg,
+ 			    irq_handler_t handler, irq_handler_t thread,
+-			    u32 idx, enum irq_type type)
++			    enum irq_type type, const char *name)
+ {
+ 	unsigned long nr;
+ 	int irq;
+ 	int ret;
+-	const char *err_info;
+-	char name[MAX_NAME_SIZE];
+ 	struct hfi1_msix_entry *me;
+ 
+ 	/* Allocate an MSIx vector */
+@@ -135,43 +133,15 @@ static int msix_request_irq(struct hfi1_devdata *dd, void *arg,
+ 	if (nr == dd->msix_info.max_requested)
+ 		return -ENOSPC;
+ 
+-	/* Specific verification and determine the name */
+-	switch (type) {
+-	case IRQ_GENERAL:
+-		/* general interrupt must be MSIx vector 0 */
+-		if (nr) {
+-			spin_lock(&dd->msix_info.msix_lock);
+-			__clear_bit(nr, dd->msix_info.in_use_msix);
+-			spin_unlock(&dd->msix_info.msix_lock);
+-			dd_dev_err(dd, "Invalid index %lu for GENERAL IRQ\n",
+-				   nr);
+-			return -EINVAL;
+-		}
+-		snprintf(name, sizeof(name), DRIVER_NAME "_%d", dd->unit);
+-		err_info = "general";
+-		break;
+-	case IRQ_SDMA:
+-		snprintf(name, sizeof(name), DRIVER_NAME "_%d sdma%d",
+-			 dd->unit, idx);
+-		err_info = "sdma";
+-		break;
+-	case IRQ_RCVCTXT:
+-		snprintf(name, sizeof(name), DRIVER_NAME "_%d kctxt%d",
+-			 dd->unit, idx);
+-		err_info = "receive context";
+-		break;
+-	case IRQ_OTHER:
+-	default:
++	if (type < IRQ_SDMA && type >= IRQ_OTHER)
+ 		return -EINVAL;
+-	}
+-	name[sizeof(name) - 1] = 0;
+ 
+ 	irq = pci_irq_vector(dd->pcidev, nr);
+ 	ret = pci_request_irq(dd->pcidev, nr, handler, thread, arg, name);
+ 	if (ret) {
+ 		dd_dev_err(dd,
+-			   "%s: request for IRQ %d failed, MSIx %d, err %d\n",
+-			   err_info, irq, idx, ret);
++			   "%s: request for IRQ %d failed, MSIx %lu, err %d\n",
++			   name, irq, nr, ret);
+ 		spin_lock(&dd->msix_info.msix_lock);
+ 		__clear_bit(nr, dd->msix_info.in_use_msix);
+ 		spin_unlock(&dd->msix_info.msix_lock);
+@@ -195,17 +165,13 @@ static int msix_request_irq(struct hfi1_devdata *dd, void *arg,
+ 	return nr;
  }
  
--static inline int set_armed_to_active(struct hfi1_ctxtdata *rcd,
--				      struct hfi1_packet *packet,
--				      struct hfi1_devdata *dd)
-+static bool __set_armed_to_active(struct hfi1_packet *packet)
+-/**
+- * msix_request_rcd_irq() - Helper function for RCVAVAIL IRQs
+- * @rcd: valid rcd context
+- *
+- */
+-int msix_request_rcd_irq(struct hfi1_ctxtdata *rcd)
++static int msix_request_rcd_irq_common(struct hfi1_ctxtdata *rcd,
++				       irq_handler_t handler,
++				       irq_handler_t thread,
++				       const char *name)
  {
--	struct work_struct *lsaw = &rcd->ppd->linkstate_active_work;
- 	u8 etype = rhf_rcv_type(packet->rhf);
- 	u8 sc = SC15_PACKET;
+-	int nr;
+-
+-	nr = msix_request_irq(rcd->dd, rcd, receive_context_interrupt,
+-			      receive_context_thread, rcd->ctxt, IRQ_RCVCTXT);
++	int nr = msix_request_irq(rcd->dd, rcd, handler, thread,
++				  IRQ_RCVCTXT, name);
+ 	if (nr < 0)
+ 		return nr;
  
-@@ -943,19 +940,34 @@ static inline int set_armed_to_active(struct hfi1_ctxtdata *rcd,
- 		sc = hfi1_16B_get_sc(hdr);
- 	}
- 	if (sc != SC15_PACKET) {
--		int hwstate = driver_lstate(rcd->ppd);
-+		int hwstate = driver_lstate(packet->rcd->ppd);
-+		struct work_struct *lsaw =
-+				&packet->rcd->ppd->linkstate_active_work;
+@@ -222,6 +188,22 @@ int msix_request_rcd_irq(struct hfi1_ctxtdata *rcd)
+ }
  
- 		if (hwstate != IB_PORT_ACTIVE) {
--			dd_dev_info(dd,
-+			dd_dev_info(packet->rcd->dd,
- 				    "Unexpected link state %s\n",
- 				    opa_lstate_name(hwstate));
--			return 0;
-+			return false;
- 		}
- 
--		queue_work(rcd->ppd->link_wq, lsaw);
--		return 1;
-+		queue_work(packet->rcd->ppd->link_wq, lsaw);
-+		return true;
- 	}
--	return 0;
-+	return false;
+ /**
++ * msix_request_rcd_irq() - Helper function for RCVAVAIL IRQs
++ * @rcd: valid rcd context
++ *
++ */
++int msix_request_rcd_irq(struct hfi1_ctxtdata *rcd)
++{
++	char name[MAX_NAME_SIZE];
++
++	snprintf(name, sizeof(name), DRIVER_NAME "_%d kctxt%d",
++		 rcd->dd->unit, rcd->ctxt);
++
++	return msix_request_rcd_irq_common(rcd, receive_context_interrupt,
++					   receive_context_thread, name);
 +}
 +
 +/**
-+ * armed to active - the fast path for armed to active
-+ * @packet: the packet structure
-+ *
-+ * Return true if packet processing needs to bail.
-+ */
-+static bool set_armed_to_active(struct hfi1_packet *packet)
-+{
-+	if (likely(packet->rcd->ppd->host_link_state != HLS_UP_ARMED))
-+		return false;
-+	return __set_armed_to_active(packet);
+  * msix_request_smda_ira() - Helper for getting SDMA IRQ resources
+  * @sde: valid sdma engine
+  *
+@@ -229,9 +211,12 @@ int msix_request_rcd_irq(struct hfi1_ctxtdata *rcd)
+ int msix_request_sdma_irq(struct sdma_engine *sde)
+ {
+ 	int nr;
++	char name[MAX_NAME_SIZE];
+ 
++	snprintf(name, sizeof(name), DRIVER_NAME "_%d sdma%d",
++		 sde->dd->unit, sde->this_idx);
+ 	nr = msix_request_irq(sde->dd, sde, sdma_interrupt, NULL,
+-			      sde->this_idx, IRQ_SDMA);
++			      IRQ_SDMA, name);
+ 	if (nr < 0)
+ 		return nr;
+ 	sde->msix_intr = nr;
+@@ -241,6 +226,32 @@ int msix_request_sdma_irq(struct sdma_engine *sde)
  }
  
- /*
-@@ -1016,10 +1028,7 @@ int handle_receive_interrupt(struct hfi1_ctxtdata *rcd, int thread)
- 			last = skip_rcv_packet(&packet, thread);
- 			skip_pkt = 0;
- 		} else {
--			/* Auto activate link on non-SC15 packet receive */
--			if (unlikely(rcd->ppd->host_link_state ==
--				     HLS_UP_ARMED) &&
--			    set_armed_to_active(rcd, &packet, dd))
-+			if (set_armed_to_active(&packet))
- 				goto bail;
- 			last = process_rcv_packet(&packet, thread);
- 		}
+ /**
++ * msix_request_general_irq(void) - Helper for getting general IRQ
++ * resources
++ * @dd: valid device data
++ */
++int msix_request_general_irq(struct hfi1_devdata *dd)
++{
++	int nr;
++	char name[MAX_NAME_SIZE];
++
++	snprintf(name, sizeof(name), DRIVER_NAME "_%d", dd->unit);
++	nr = msix_request_irq(dd, dd, general_interrupt, NULL, IRQ_GENERAL,
++			      name);
++	if (nr < 0)
++		return nr;
++
++	/* general interrupt must be MSIx vector 0 */
++	if (nr) {
++		msix_free_irq(dd, (u8)nr);
++		dd_dev_err(dd, "Invalid index %d for GENERAL IRQ\n", nr);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++/**
+  * enable_sdma_src() - Helper to enable SDMA IRQ srcs
+  * @dd: valid devdata structure
+  * @i: index of SDMA engine
+@@ -265,10 +276,9 @@ static void enable_sdma_srcs(struct hfi1_devdata *dd, int i)
+ int msix_request_irqs(struct hfi1_devdata *dd)
+ {
+ 	int i;
+-	int ret;
++	int ret = msix_request_general_irq(dd);
+ 
+-	ret = msix_request_irq(dd, dd, general_interrupt, NULL, 0, IRQ_GENERAL);
+-	if (ret < 0)
++	if (ret)
+ 		return ret;
+ 
+ 	for (i = 0; i < dd->num_sdma; i++) {
+diff --git a/drivers/infiniband/hw/hfi1/msix.h b/drivers/infiniband/hw/hfi1/msix.h
+index a514881..1a02ab7 100644
+--- a/drivers/infiniband/hw/hfi1/msix.h
++++ b/drivers/infiniband/hw/hfi1/msix.h
+@@ -54,6 +54,7 @@
+ int msix_initialize(struct hfi1_devdata *dd);
+ int msix_request_irqs(struct hfi1_devdata *dd);
+ void msix_clean_up_interrupts(struct hfi1_devdata *dd);
++int msix_request_general_irq(struct hfi1_devdata *dd);
+ int msix_request_rcd_irq(struct hfi1_ctxtdata *rcd);
+ int msix_request_sdma_irq(struct sdma_engine *sde);
+ void msix_free_irq(struct hfi1_devdata *dd, u8 msix_intr);
 
