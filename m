@@ -2,40 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1349D109FFA
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Nov 2019 15:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 318B8109FFB
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Nov 2019 15:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727716AbfKZOMm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Nov 2019 09:12:42 -0500
-Received: from mga06.intel.com ([134.134.136.31]:29194 "EHLO mga06.intel.com"
+        id S1727727AbfKZOMt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Nov 2019 09:12:49 -0500
+Received: from mga14.intel.com ([192.55.52.115]:13387 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726536AbfKZOMm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 26 Nov 2019 09:12:42 -0500
+        id S1726536AbfKZOMt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 Nov 2019 09:12:49 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Nov 2019 06:12:41 -0800
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Nov 2019 06:12:48 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,246,1571727600"; 
-   d="scan'208";a="408673215"
+   d="scan'208";a="211424335"
 Received: from sedona.ch.intel.com ([10.2.136.157])
-  by fmsmga005.fm.intel.com with ESMTP; 26 Nov 2019 06:12:42 -0800
+  by orsmga006.jf.intel.com with ESMTP; 26 Nov 2019 06:12:48 -0800
 Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id xAQECeew042056;
-        Tue, 26 Nov 2019 07:12:41 -0700
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id xAQEClTo042060;
+        Tue, 26 Nov 2019 07:12:47 -0700
 Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id xAQECd2H059088;
-        Tue, 26 Nov 2019 09:12:39 -0500
-Subject: [PATCH for-next v2 05/11] IB/hfi1: Move common receive IRQ code to
- function
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id xAQECjFx059102;
+        Tue, 26 Nov 2019 09:12:45 -0500
+Subject: [PATCH for-next v2 06/11] IB/hfi1: IB/hfi1: Add an API to handle
+ special case drop
 From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
 To:     jgg@ziepe.ca, dledford@redhat.com
 Cc:     linux-rdma@vger.kernel.org,
         Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>,
         Kaike Wan <kaike.wan@intel.com>
-Date:   Tue, 26 Nov 2019 09:12:39 -0500
-Message-ID: <20191126141239.58836.99861.stgit@awfm-01.aw.intel.com>
+Date:   Tue, 26 Nov 2019 09:12:45 -0500
+Message-ID: <20191126141245.58836.286.stgit@awfm-01.aw.intel.com>
 In-Reply-To: <20191126141055.58836.79452.stgit@awfm-01.aw.intel.com>
 References: <20191126141055.58836.79452.stgit@awfm-01.aw.intel.com>
 User-Agent: StGit/0.17.1-dirty
@@ -47,140 +46,94 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>
+From: Mike Marciniszyn <mike.marciniszyn@intel.com>
 
-Tracing interrupts, incrementing interrupt counter and ASPM
-are part that will be reused by HFI1 receive IRQ handlers.
+This patch pushes special case drop logic into an API to be shared by
+all interrupt handlers.
 
-Create common function to have shared code in one place.
+Additionally, convert do_drop to a bool.
 
 Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
 Signed-off-by: Kaike Wan <kaike.wan@intel.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
 ---
- drivers/infiniband/hw/hfi1/chip.c |   82 +++++++++++++++++++++++--------------
- 1 file changed, 52 insertions(+), 30 deletions(-)
+ drivers/infiniband/hw/hfi1/driver.c |    6 +-----
+ drivers/infiniband/hw/hfi1/hfi.h    |   21 ++++++++++++++++++++-
+ drivers/infiniband/hw/hfi1/init.c   |    4 ++--
+ 3 files changed, 23 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
-index 860615d..9e2bf99 100644
---- a/drivers/infiniband/hw/hfi1/chip.c
-+++ b/drivers/infiniband/hw/hfi1/chip.c
-@@ -8403,6 +8403,55 @@ static inline int check_packet_present(struct hfi1_ctxtdata *rcd)
- 	return hfi1_rcd_head(rcd) != tail;
- }
+diff --git a/drivers/infiniband/hw/hfi1/driver.c b/drivers/infiniband/hw/hfi1/driver.c
+index 3671191..bbc7458 100644
+--- a/drivers/infiniband/hw/hfi1/driver.c
++++ b/drivers/infiniband/hw/hfi1/driver.c
+@@ -1004,11 +1004,7 @@ int handle_receive_interrupt(struct hfi1_ctxtdata *rcd, int thread)
+ 	prescan_rxq(rcd, &packet);
  
-+/**
-+ * Common code for receive contexts interrupt handlers.
-+ * Update traces, increment kernel IRQ counter and
-+ * setup ASPM when needed.
-+ */
-+static void receive_interrupt_common(struct hfi1_ctxtdata *rcd)
-+{
-+	struct hfi1_devdata *dd = rcd->dd;
-+
-+	trace_hfi1_receive_interrupt(dd, rcd);
-+	this_cpu_inc(*dd->int_counter);
-+	aspm_ctx_disable(rcd);
-+}
-+
-+/**
-+ * __hfi1_rcd_eoi_intr() - Make HW issue receive interrupt
-+ * when there are packets present in the queue. When calling
-+ * with interrupts enabled please use hfi1_rcd_eoi_intr.
-+ *
-+ * @rcd: valid receive context
-+ */
-+static void __hfi1_rcd_eoi_intr(struct hfi1_ctxtdata *rcd)
-+{
-+	clear_recv_intr(rcd);
-+	if (check_packet_present(rcd))
-+		force_recv_intr(rcd);
-+}
-+
-+/**
-+ * hfi1_rcd_eoi_intr() - End of Interrupt processing action
-+ *
-+ * @rcd: Ptr to hfi1_ctxtdata of receive context
-+ *
-+ *  Hold IRQs so we can safely clear the interrupt and
-+ *  recheck for a packet that may have arrived after the previous
-+ *  check and the interrupt clear.  If a packet arrived, force another
-+ *  interrupt. This routine can be called at the end of receive packet
-+ *  processing in interrupt service routines, interrupt service thread
-+ *  and softirqs
-+ */
-+static void hfi1_rcd_eoi_intr(struct hfi1_ctxtdata *rcd)
-+{
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	__hfi1_rcd_eoi_intr(rcd);
-+	local_irq_restore(flags);
-+}
-+
- /*
-  * Receive packet IRQ handler.  This routine expects to be on its own IRQ.
-  * This routine will try to handle packets immediately (latency), but if
-@@ -8414,13 +8463,9 @@ static inline int check_packet_present(struct hfi1_ctxtdata *rcd)
- irqreturn_t receive_context_interrupt(int irq, void *data)
- {
- 	struct hfi1_ctxtdata *rcd = data;
--	struct hfi1_devdata *dd = rcd->dd;
- 	int disposition;
--	int present;
- 
--	trace_hfi1_receive_interrupt(dd, rcd);
--	this_cpu_inc(*dd->int_counter);
--	aspm_ctx_disable(rcd);
-+	receive_interrupt_common(rcd);
- 
- 	/* receive interrupt remains blocked while processing packets */
- 	disposition = rcd->do_interrupt(rcd, 0);
-@@ -8433,17 +8478,7 @@ irqreturn_t receive_context_interrupt(int irq, void *data)
- 	if (disposition == RCV_PKT_LIMIT)
- 		return IRQ_WAKE_THREAD;
- 
--	/*
--	 * The packet processor detected no more packets.  Clear the receive
--	 * interrupt and recheck for a packet packet that may have arrived
--	 * after the previous check and interrupt clear.  If a packet arrived,
--	 * force another interrupt.
--	 */
--	clear_recv_intr(rcd);
--	present = check_packet_present(rcd);
--	if (present)
--		force_recv_intr(rcd);
+ 	while (last == RCV_PKT_OK) {
+-		if (unlikely(dd->do_drop &&
+-			     atomic_xchg(&dd->drop_packet, DROP_PACKET_OFF) ==
+-			     DROP_PACKET_ON)) {
+-			dd->do_drop = 0;
 -
-+	__hfi1_rcd_eoi_intr(rcd);
- 	return IRQ_HANDLED;
++		if (hfi1_need_drop(dd)) {
+ 			/* On to the next packet */
+ 			packet.rhqoff += packet.rsize;
+ 			packet.rhf_addr = (__le32 *)rcd->rcvhdrq +
+diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
+index b819d7d..9480499 100644
+--- a/drivers/infiniband/hw/hfi1/hfi.h
++++ b/drivers/infiniband/hw/hfi1/hfi.h
+@@ -1316,7 +1316,7 @@ struct hfi1_devdata {
+ 	struct err_info_constraint err_info_xmit_constraint;
+ 
+ 	atomic_t drop_packet;
+-	u8 do_drop;
++	bool do_drop;
+ 	u8 err_info_uncorrectable;
+ 	u8 err_info_fmconfig;
+ 
+@@ -2462,6 +2462,25 @@ static inline bool is_integrated(struct hfi1_devdata *dd)
+ 	return dd->pcidev->device == PCI_DEVICE_ID_INTEL1;
  }
  
-@@ -8454,24 +8489,11 @@ irqreturn_t receive_context_interrupt(int irq, void *data)
- irqreturn_t receive_context_thread(int irq, void *data)
- {
- 	struct hfi1_ctxtdata *rcd = data;
--	int present;
++/**
++ * hfi1_need_drop - detect need for drop
++ * @dd: - the device
++ *
++ * In some cases, the first packet needs to be dropped.
++ *
++ * Return true is the current packet needs to be dropped and false otherwise.
++ */
++static inline bool hfi1_need_drop(struct hfi1_devdata *dd)
++{
++	if (unlikely(dd->do_drop &&
++		     atomic_xchg(&dd->drop_packet, DROP_PACKET_OFF) ==
++		     DROP_PACKET_ON)) {
++		dd->do_drop = false;
++		return true;
++	}
++	return false;
++}
++
+ int hfi1_tempsense_rd(struct hfi1_devdata *dd, struct hfi1_temp *temp);
  
- 	/* receive interrupt is still blocked from the IRQ handler */
- 	(void)rcd->do_interrupt(rcd, 1);
+ #define DD_DEV_ENTRY(dd)       __string(dev, dev_name(&(dd)->pcidev->dev))
+diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
+index 55adc97..2e6938c 100644
+--- a/drivers/infiniband/hw/hfi1/init.c
++++ b/drivers/infiniband/hw/hfi1/init.c
+@@ -876,10 +876,10 @@ int hfi1_init(struct hfi1_devdata *dd, int reinit)
  
--	/*
--	 * The packet processor will only return if it detected no more
--	 * packets.  Hold IRQs here so we can safely clear the interrupt and
--	 * recheck for a packet that may have arrived after the previous
--	 * check and the interrupt clear.  If a packet arrived, force another
--	 * interrupt.
--	 */
--	local_irq_disable();
--	clear_recv_intr(rcd);
--	present = check_packet_present(rcd);
--	if (present)
--		force_recv_intr(rcd);
--	local_irq_enable();
-+	hfi1_rcd_eoi_intr(rcd);
+ 	if (is_ax(dd)) {
+ 		atomic_set(&dd->drop_packet, DROP_PACKET_ON);
+-		dd->do_drop = 1;
++		dd->do_drop = true;
+ 	} else {
+ 		atomic_set(&dd->drop_packet, DROP_PACKET_OFF);
+-		dd->do_drop = 0;
++		dd->do_drop = false;
+ 	}
  
- 	return IRQ_HANDLED;
- }
+ 	/* make sure the link is not "up" */
 
