@@ -2,40 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF508109FFE
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Nov 2019 15:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20285109FFF
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Nov 2019 15:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbfKZONH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Nov 2019 09:13:07 -0500
-Received: from mga06.intel.com ([134.134.136.31]:29223 "EHLO mga06.intel.com"
+        id S1727897AbfKZONM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Nov 2019 09:13:12 -0500
+Received: from mga12.intel.com ([192.55.52.136]:45598 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726536AbfKZONH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 26 Nov 2019 09:13:07 -0500
+        id S1727637AbfKZONM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 Nov 2019 09:13:12 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Nov 2019 06:13:06 -0800
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Nov 2019 06:13:12 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,246,1571727600"; 
-   d="scan'208";a="409989553"
+   d="scan'208";a="409989575"
 Received: from sedona.ch.intel.com ([10.2.136.157])
-  by fmsmga006.fm.intel.com with ESMTP; 26 Nov 2019 06:13:05 -0800
+  by fmsmga006.fm.intel.com with ESMTP; 26 Nov 2019 06:13:11 -0800
 Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id xAQED5ph042072;
-        Tue, 26 Nov 2019 07:13:05 -0700
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id xAQEDBh4042075;
+        Tue, 26 Nov 2019 07:13:11 -0700
 Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id xAQED3rc059144;
-        Tue, 26 Nov 2019 09:13:03 -0500
-Subject: [PATCH for-next v2 09/11] IB/hfi1: Return void in packet receiving
- functions
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id xAQED9xk059158;
+        Tue, 26 Nov 2019 09:13:10 -0500
+Subject: [PATCH for-next v2 10/11] IB/rdmavt: Correct comments in
+ rdmavt_qp.h header
 From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
 To:     jgg@ziepe.ca, dledford@redhat.com
 Cc:     linux-rdma@vger.kernel.org,
         Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>,
         Kaike Wan <kaike.wan@intel.com>
-Date:   Tue, 26 Nov 2019 09:13:03 -0500
-Message-ID: <20191126141303.58836.74507.stgit@awfm-01.aw.intel.com>
+Date:   Tue, 26 Nov 2019 09:13:09 -0500
+Message-ID: <20191126141309.58836.66443.stgit@awfm-01.aw.intel.com>
 In-Reply-To: <20191126141055.58836.79452.stgit@awfm-01.aw.intel.com>
 References: <20191126141055.58836.79452.stgit@awfm-01.aw.intel.com>
 User-Agent: StGit/0.17.1-dirty
@@ -47,172 +46,81 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>
+From: Mike Marciniszyn <mike.marciniszyn@intel.com>
 
-Packet receiving functions returns int value, and yet the return values
-are not used at all.
+Comments need to be with the definition of rvt_restart_sge().
 
-This patch converts the functions to return void.
+Other comments were duplicated in sw/rdmavt/rc.c and were
+removed.
 
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>
-Signed-off-by: Kaike Wan <kaike.wan@intel.com>
+Fixes: 385156c5f2a6 ("IB/hfi: Move RC functions into a header file")
+Reviewed-by: Kaike Wan <kaike.wan@intel.com>
+Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
 ---
- drivers/infiniband/hw/hfi1/driver.c |   41 +++++++++++++++--------------------
- drivers/infiniband/hw/hfi1/hfi.h    |    2 +-
- 2 files changed, 18 insertions(+), 25 deletions(-)
+ drivers/infiniband/sw/rdmavt/rc.c |    9 ++++++++-
+ include/rdma/rdmavt_qp.h          |   22 +---------------------
+ 2 files changed, 9 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/driver.c b/drivers/infiniband/hw/hfi1/driver.c
-index 46c1be0..0b9fbfa 100644
---- a/drivers/infiniband/hw/hfi1/driver.c
-+++ b/drivers/infiniband/hw/hfi1/driver.c
-@@ -1553,23 +1553,22 @@ void handle_eflags(struct hfi1_packet *packet)
-  * The following functions are called by the interrupt handler. They are type
-  * specific handlers for each packet type.
-  */
--static int process_receive_ib(struct hfi1_packet *packet)
-+static void process_receive_ib(struct hfi1_packet *packet)
+diff --git a/drivers/infiniband/sw/rdmavt/rc.c b/drivers/infiniband/sw/rdmavt/rc.c
+index 890d7b7..977906c 100644
+--- a/drivers/infiniband/sw/rdmavt/rc.c
++++ b/drivers/infiniband/sw/rdmavt/rc.c
+@@ -195,7 +195,14 @@ void rvt_get_credit(struct rvt_qp *qp, u32 aeth)
+ }
+ EXPORT_SYMBOL(rvt_get_credit);
+ 
+-/* rvt_restart_sge - rewind the sge state for a wqe */
++/**
++ * rvt_restart_sge - rewind the sge state for a wqe
++ * @ss: the sge state pointer
++ * @wqe: the wqe to rewind
++ * @len: the data length from the start of the wqe in bytes
++ *
++ * Returns the remaining data length.
++ */
+ u32 rvt_restart_sge(struct rvt_sge_state *ss, struct rvt_swqe *wqe, u32 len)
  {
- 	if (hfi1_setup_9B_packet(packet))
--		return RHF_RCV_CONTINUE;
-+		return;
- 
- 	if (unlikely(hfi1_dbg_should_fault_rx(packet)))
--		return RHF_RCV_CONTINUE;
-+		return;
- 
- 	trace_hfi1_rcvhdr(packet);
- 
- 	if (unlikely(rhf_err_flags(packet->rhf))) {
- 		handle_eflags(packet);
--		return RHF_RCV_CONTINUE;
-+		return;
- 	}
- 
- 	hfi1_ib_rcv(packet);
--	return RHF_RCV_CONTINUE;
+ 	ss->sge = wqe->sg_list[0];
+diff --git a/include/rdma/rdmavt_qp.h b/include/rdma/rdmavt_qp.h
+index b550ae8..0d5c70e 100644
+--- a/include/rdma/rdmavt_qp.h
++++ b/include/rdma/rdmavt_qp.h
+@@ -640,34 +640,14 @@ static inline int rvt_cmp_msn(u32 a, u32 b)
+ 	return (((int)a) - ((int)b)) << 8;
  }
  
- static inline bool hfi1_is_vnic_packet(struct hfi1_packet *packet)
-@@ -1585,23 +1584,23 @@ static inline bool hfi1_is_vnic_packet(struct hfi1_packet *packet)
- 	return false;
- }
+-/**
+- * rvt_compute_aeth - compute the AETH (syndrome + MSN)
+- * @qp: the queue pair to compute the AETH for
+- *
+- * Returns the AETH.
+- */
+ __be32 rvt_compute_aeth(struct rvt_qp *qp);
  
--static int process_receive_bypass(struct hfi1_packet *packet)
-+static void process_receive_bypass(struct hfi1_packet *packet)
- {
- 	struct hfi1_devdata *dd = packet->rcd->dd;
+-/**
+- * rvt_get_credit - flush the send work queue of a QP
+- * @qp: the qp who's send work queue to flush
+- * @aeth: the Acknowledge Extended Transport Header
+- *
+- * The QP s_lock should be held.
+- */
+ void rvt_get_credit(struct rvt_qp *qp, u32 aeth);
  
- 	if (hfi1_is_vnic_packet(packet)) {
- 		hfi1_vnic_bypass_rcv(packet);
--		return RHF_RCV_CONTINUE;
-+		return;
- 	}
+-/**
+- * rvt_restart_sge - rewind the sge state for a wqe
+- * @ss: the sge state pointer
+- * @wqe: the wqe to rewind
+- * @len: the data length from the start of the wqe in bytes
+- *
+- * Returns the remaining data length.
+- */
+ u32 rvt_restart_sge(struct rvt_sge_state *ss, struct rvt_swqe *wqe, u32 len);
  
- 	if (hfi1_setup_bypass_packet(packet))
--		return RHF_RCV_CONTINUE;
-+		return;
- 
- 	trace_hfi1_rcvhdr(packet);
- 
- 	if (unlikely(rhf_err_flags(packet->rhf))) {
- 		handle_eflags(packet);
--		return RHF_RCV_CONTINUE;
-+		return;
- 	}
- 
- 	if (hfi1_16B_get_l2(packet->hdr) == 0x2) {
-@@ -1624,17 +1623,16 @@ static int process_receive_bypass(struct hfi1_packet *packet)
- 				(OPA_EI_STATUS_SMASK | BAD_L2_ERR);
- 		}
- 	}
--	return RHF_RCV_CONTINUE;
- }
- 
--static int process_receive_error(struct hfi1_packet *packet)
-+static void process_receive_error(struct hfi1_packet *packet)
- {
- 	/* KHdrHCRCErr -- KDETH packet with a bad HCRC */
- 	if (unlikely(
- 		 hfi1_dbg_fault_suppress_err(&packet->rcd->dd->verbs_dev) &&
- 		 (rhf_rcv_type_err(packet->rhf) == RHF_RCV_TYPE_ERROR ||
- 		  packet->rhf & RHF_DC_ERR)))
--		return RHF_RCV_CONTINUE;
-+		return;
- 
- 	hfi1_setup_ib_header(packet);
- 	handle_eflags(packet);
-@@ -1642,32 +1640,29 @@ static int process_receive_error(struct hfi1_packet *packet)
- 	if (unlikely(rhf_err_flags(packet->rhf)))
- 		dd_dev_err(packet->rcd->dd,
- 			   "Unhandled error packet received. Dropping.\n");
--
--	return RHF_RCV_CONTINUE;
- }
- 
--static int kdeth_process_expected(struct hfi1_packet *packet)
-+static void kdeth_process_expected(struct hfi1_packet *packet)
- {
- 	hfi1_setup_9B_packet(packet);
- 	if (unlikely(hfi1_dbg_should_fault_rx(packet)))
--		return RHF_RCV_CONTINUE;
-+		return;
- 
- 	if (unlikely(rhf_err_flags(packet->rhf))) {
- 		struct hfi1_ctxtdata *rcd = packet->rcd;
- 
- 		if (hfi1_handle_kdeth_eflags(rcd, rcd->ppd, packet))
--			return RHF_RCV_CONTINUE;
-+			return;
- 	}
- 
- 	hfi1_kdeth_expected_rcv(packet);
--	return RHF_RCV_CONTINUE;
- }
- 
--static int kdeth_process_eager(struct hfi1_packet *packet)
-+static void kdeth_process_eager(struct hfi1_packet *packet)
- {
- 	hfi1_setup_9B_packet(packet);
- 	if (unlikely(hfi1_dbg_should_fault_rx(packet)))
--		return RHF_RCV_CONTINUE;
-+		return;
- 
- 	trace_hfi1_rcvhdr(packet);
- 	if (unlikely(rhf_err_flags(packet->rhf))) {
-@@ -1675,18 +1670,16 @@ static int kdeth_process_eager(struct hfi1_packet *packet)
- 
- 		show_eflags_errs(packet);
- 		if (hfi1_handle_kdeth_eflags(rcd, rcd->ppd, packet))
--			return RHF_RCV_CONTINUE;
-+			return;
- 	}
- 
- 	hfi1_kdeth_eager_rcv(packet);
--	return RHF_RCV_CONTINUE;
- }
- 
--static int process_receive_invalid(struct hfi1_packet *packet)
-+static void process_receive_invalid(struct hfi1_packet *packet)
- {
- 	dd_dev_err(packet->rcd->dd, "Invalid packet type %d. Dropping\n",
- 		   rhf_rcv_type(packet->rhf));
--	return RHF_RCV_CONTINUE;
- }
- 
- #define HFI1_RCVHDR_DUMP_MAX	5
-diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
-index 9480499..691a2fb 100644
---- a/drivers/infiniband/hw/hfi1/hfi.h
-+++ b/drivers/infiniband/hw/hfi1/hfi.h
-@@ -199,7 +199,7 @@ struct exp_tid_set {
- 
- struct hfi1_ctxtdata;
- typedef int (*intr_handler)(struct hfi1_ctxtdata *rcd, int data);
--typedef int (*rhf_rcv_function_ptr)(struct hfi1_packet *packet);
-+typedef void (*rhf_rcv_function_ptr)(struct hfi1_packet *packet);
- 
- struct tid_queue {
- 	struct list_head queue_head;
+ /**
++ * rvt_div_round_up_mtu - round up divide
+  * @qp - the qp pair
+  * @len - the length
+  *
 
