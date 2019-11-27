@@ -2,74 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B6910A7A8
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2019 01:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA06510AE03
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2019 11:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbfK0AxS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Nov 2019 19:53:18 -0500
-Received: from mail-pl1-f172.google.com ([209.85.214.172]:35993 "EHLO
-        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726876AbfK0AxR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Nov 2019 19:53:17 -0500
-Received: by mail-pl1-f172.google.com with SMTP id d7so8952355pls.3
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Nov 2019 16:53:17 -0800 (PST)
+        id S1726512AbfK0Knr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Nov 2019 05:43:47 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:45462 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726240AbfK0Knr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Nov 2019 05:43:47 -0500
+Received: by mail-pf1-f194.google.com with SMTP id z4so10775560pfn.12
+        for <linux-rdma@vger.kernel.org>; Wed, 27 Nov 2019 02:43:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=a2IDbK4WuaZerW8XjnZl4XtXagKskHz70T8fYIVz2As=;
+        b=DWagZbApiL2hYJgpSCrcGkLous9dAYVPBuznsk+yz+ymfn4XO2wobhukMvLS/fUbfU
+         hkiBydLhowGOi4TO2hrtFYdgPpVlvCt1pP3DK4wjbt+Y349insMZHg+vkfTQXm+nloYo
+         Yw0CTG7XKUPpG9dst2gpDqq9igHk7cQYEllWM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vmaTkXMxrbdFow4O1dinxRByMlpX/XyjAqyAFS/go0M=;
-        b=O12m3a5I11TQ3OcuDzqnngXuueQCGGHcxA0At9yhvBfDvhfme9th1GpIzErvmSfgwy
-         yVqUf79J4c0Rr8X7nD5u/PMq8siXEmz9iwXShxgAgoF6/nUOIkTh21ZS7NyW3rK0jIEy
-         2af3lNJ/7OXkL17CZjY3YLCoQWiCyZ6nPFlIgw5jXk6fGSqT1lKNqXns/wmcHjYt/+jP
-         rGNJNSHiaE8Y4SJdl21St3siBVgUO8BnI9UV1ITn8AhxoQgY385WquJ8GiJaAszRtcuO
-         2hqOupXk8eIQxRYr8I2tun8ToFW6uRWKHIS1w+VcK2xQL1sVN5Fc2GazLnpvsvD7GD9d
-         Iplg==
-X-Gm-Message-State: APjAAAVx0IQCneH1UbuUNAn+eAERsfTwAlWhUeH8t9Q8dvLbIDw1qrCa
-        tQNr42qYoWnxJ8a6LZ9CXuMi2M8d
-X-Google-Smtp-Source: APXvYqyGRfZoE9YmcpcqDngTwSpJPPJvSa7qgQH2VI4DKTWyh21dgSLxP+2kA5Hg3GPr5XBwCJmOCA==
-X-Received: by 2002:a17:902:bd45:: with SMTP id b5mr1204077plx.247.1574815996451;
-        Tue, 26 Nov 2019 16:53:16 -0800 (PST)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id s18sm14102813pfm.27.2019.11.26.16.53.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Nov 2019 16:53:15 -0800 (PST)
-Subject: Re: [question]can hard roce and soft roce communicate with each
- other?
-To:     wangqi <3100102071@zju.edu.cn>, Leon Romanovsky <leon@kernel.org>,
-        linux-rdma@vger.kernel.org
-References: <53ed2e18-c58e-1e9c-55f8-60b14dfa2052@zju.edu.cn>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <4433c97d-218a-294e-3c03-214e0ef1379f@acm.org>
-Date:   Tue, 26 Nov 2019 16:53:14 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <53ed2e18-c58e-1e9c-55f8-60b14dfa2052@zju.edu.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=a2IDbK4WuaZerW8XjnZl4XtXagKskHz70T8fYIVz2As=;
+        b=l4MCQTNdZ5p5WQXEKt8RNlPxWswOb/JQ5V0oRvuLYIkmpo3uXuEgCi3KDrFDAN2XrS
+         oxD2THKB7oeUnl4+zSs3nBfRYuOkkK0xBWimp9c8cTFn5/Mt56OQLUpBTcIPkq2sUnNW
+         VJenJ33szE+lH9I5R1QbVpZvrFnWG3AczUuQRF0LsaWRXovjqxL2dWBQ2Y0IdpkvRPPl
+         Bw7jViUwHrwXIF/UFH/NUB3O/1jbMV/pNMSZaAFtVOoTdZ4swqRYCnsJKzjLNzQv2XuT
+         fZr768PK4m8LP3hq2GVwz3bgV8cL0UUM0Xb8vdPU645Skdyyta9m9WLtfO2tZ3RsBPr1
+         IXBA==
+X-Gm-Message-State: APjAAAVNhUK0HD4BMnps1VyoIDldMG/LlnAg5D60o2yBysBhnMteSOLl
+        skLGkzQ3R5DVaNlIzALh7Z29yQ==
+X-Google-Smtp-Source: APXvYqwQSHhT13mDYeNWGZXyly2F4rG7fT44sKnXAU8udMs1erMXVd8genI9ZoofJ2hBP7zAXWd8yg==
+X-Received: by 2002:a63:4553:: with SMTP id u19mr4103899pgk.436.1574851426071;
+        Wed, 27 Nov 2019 02:43:46 -0800 (PST)
+Received: from neo00-el73.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id x190sm16104286pfc.89.2019.11.27.02.43.43
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Nov 2019 02:43:45 -0800 (PST)
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+To:     dledford@redhat.com, jgg@mellanox.com, leonro@mellanox.com
+Cc:     nmoreychaisemartin@suse.com, linux-rdma@vger.kernel.org,
+        Devesh Sharma <devesh.sharma@broadcom.com>
+Subject: [PATCH rdma-core 0/2] bnxt_re/lib: libbnxt_re bug fixes
+Date:   Wed, 27 Nov 2019 05:43:33 -0500
+Message-Id: <1574851415-4407-1-git-send-email-devesh.sharma@broadcom.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/21/19 11:19 PM, wangqi wrote:
->      Do you know how to make soft-roce (on server) can send message
-> to the hard-roce (like Mellanox cx4 card) on a client? We tried rdma-core
-> 25.0 and 26.0. The rdma-core can support both soft-roce and hard-roce.
-> 
-> But it seems that the soft-roce (server) and hard-roce (client) can not
-> communicate via "ib_send_bw", "ib_read_bw" and so on, but can
-> communicate via "rping".
-> 
->      Do you ever try to use soft-roce and hard-roce together?
-> Do they work well? I really wonder why they can not communicate with
-> each other. Best wishes,
+This series contains two patches which are important urgent
+fixes. The first patch adds missing PCI ids. The second patch
+enables adaptors based on new gen p5 chip revs.
 
-I think this should be possible. The diagram on the following web page 
-shows a RoCE NIC and softROCE connected to each other:
+Luke Starrett (1):
+  bnxt_re/lib: Recognize additional 5750x device ID's
 
-http://www.roceinitiative.org/software-based-roce-a-new-way-to-experience-rdma/
+Naresh Kumar PBS (1):
+  bnxt_re/lib: Add remaining pci ids for gen P5 devices
 
-Bart.
+ providers/bnxt_re/main.c | 14 +++++++++++---
+ providers/bnxt_re/main.h |  5 ++++-
+ 2 files changed, 15 insertions(+), 4 deletions(-)
+
+-- 
+1.8.3.1
+
