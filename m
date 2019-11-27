@@ -2,173 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7D810B68F
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2019 20:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7578E10B6A2
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2019 20:23:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbfK0TQk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Nov 2019 14:16:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34596 "EHLO mx1.suse.de"
+        id S1727107AbfK0TX0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Nov 2019 14:23:26 -0500
+Received: from mail-eopbgr80054.outbound.protection.outlook.com ([40.107.8.54]:38534
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726593AbfK0TQk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 27 Nov 2019 14:16:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C825BACEF;
-        Wed, 27 Nov 2019 19:16:36 +0000 (UTC)
-Message-ID: <c3885c2ed8bec892290c3d957c8c5012039b6759.camel@suse.de>
-Subject: Re: [PATCH v3 1/7] linux/log2.h: Add roundup/rounddown_pow_two64()
- family of functions
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     andrew.murray@arm.com, maz@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        james.quinlan@broadcom.com, mbrugger@suse.com,
-        f.fainelli@gmail.com, phil@raspberrypi.org, wahrenst@gmx.net,
-        jeremy.linton@arm.com, linux-pci@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        iommu@lists.linux-foundation.org
-Date:   Wed, 27 Nov 2019 20:16:27 +0100
-In-Reply-To: <c08863a7-49c6-962e-e968-92adb8ee2cc9@arm.com>
-References: <20191126091946.7970-1-nsaenzjulienne@suse.de>
-         <20191126091946.7970-2-nsaenzjulienne@suse.de>
-         <20191126125137.GA10331@unreal>
-         <6e0b9079-9efd-2884-26d1-3db2d622079d@arm.com>
-         <b30002d48c9d010a1ee81c16cd29beee914c3b1d.camel@suse.de>
-         <c08863a7-49c6-962e-e968-92adb8ee2cc9@arm.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-O+wgk4AZ6l++1CDkyqmb"
-User-Agent: Evolution 3.34.1 
+        id S1726593AbfK0TX0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 27 Nov 2019 14:23:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WB33nHUR0Zc5OITdAAaIVOrbOcYbeKLdELzgaMdaWbXELXtMySO8cpqNDYrRdI4ai6Tvl6sJeS2jNERhA9xR0huJM/GPGOAydhn2XjIPrxAYbzdlucXsgJ8oYEMHOlD8AUfUSQ5ZjF5/exxLqbOQKCxa0fgvUv/R8Hz8AvfynVyWOqjF5NViYaySC32DBu9DnjDO3KpwjpWK5T45pMNZ5YKqtH/uMfEcQrbFniIljKnq2TA0FZY39yajhu0wttdCyRrMtbHpMyHypXmowbBL2Hu+whqBHAGxzjCYun0OKT8N46EbGw78AhadTVUkB4MDFF+idBGAz1f1VmBLRYqYjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QerfRLXgovxYUgKnKYPFjD2dKNlF37N6oKL3+0xeMbc=;
+ b=gnVyaxqp6rA5umFLH4G9A60km1vdxorzQ7LleytFFS4mZpTRUNrh2uHEVLk643jysD2sjtyjmaRHysgnWqyZ6gwZytFgi/Avd/58BXSi/uPNdS8n63L+NRR1J6dVe9GnbeZ5WP6ivqSSTKJgNQmbzt+DR+WTy6kHUn7OhoBQLMFzRc0Mo3y61rQQ/BAg0kaEEp7X9AKgekKzih7n/QRKNrCcf7wggJ8+cKk5j2R9hCOvRPf77pLC7zBxWjfoirSgGkyDwmvVgC1GKyUsQy52T7evvYBbTwuE46DY2l1MgSx3dMRFzMApRw23P1UhxEHjvpdiYrUDgRGaY6BHkl0dmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QerfRLXgovxYUgKnKYPFjD2dKNlF37N6oKL3+0xeMbc=;
+ b=GqDXHTwknhQyn/ZwYoCpq2Y6KrH+sQhaxNpabWlqlH6LPjB6MroyOH8vGArJv7tRR4RPb9ra2dGly7MkQp2QiH6eH9uWEqOOXa/vy5kqWTHbMlthfHjkDFEUZ0AItZDOp56OoJPMg3PjMlDUIeK2Nos3ZcXjOxiaXcanwsxgRbQ=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB3295.eurprd05.prod.outlook.com (10.170.238.142) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2474.17; Wed, 27 Nov 2019 19:23:22 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::18df:a0fe:18eb:a96b]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::18df:a0fe:18eb:a96b%6]) with mapi id 15.20.2495.014; Wed, 27 Nov 2019
+ 19:23:21 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+Thread-Topic: [GIT PULL] Please pull RDMA subsystem changes
+Thread-Index: AQHVpLkPnC8STmq42Ee9zkHJq9D0u6efVRMAgAARtwA=
+Date:   Wed, 27 Nov 2019 19:23:21 +0000
+Message-ID: <20191127192316.GY7481@mellanox.com>
+References: <20191127002431.GA4861@ziepe.ca>
+ <CAHk-=whUhSMUfCoAmk9YsP-R28a7+_Lda780JOfeVTVeopa_Fw@mail.gmail.com>
+In-Reply-To: <CAHk-=whUhSMUfCoAmk9YsP-R28a7+_Lda780JOfeVTVeopa_Fw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR15CA0012.namprd15.prod.outlook.com
+ (2603:10b6:208:1b4::25) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.162.113.180]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8832172d-bb0d-4ed6-4514-08d7736f43f7
+x-ms-traffictypediagnostic: VI1PR05MB3295:
+x-microsoft-antispam-prvs: <VI1PR05MB329512083188A542FB508393CF440@VI1PR05MB3295.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-forefront-prvs: 023495660C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(39860400002)(366004)(396003)(376002)(346002)(189003)(199004)(2616005)(11346002)(446003)(14454004)(66556008)(66446008)(64756008)(99286004)(8936002)(81166006)(66476007)(81156014)(229853002)(478600001)(76176011)(66066001)(6512007)(6916009)(8676002)(66946007)(6506007)(256004)(53546011)(386003)(52116002)(54906003)(5660300002)(25786009)(7736002)(71200400001)(6116002)(3846002)(26005)(102836004)(305945005)(33656002)(71190400001)(36756003)(316002)(4326008)(1076003)(186003)(4744005)(86362001)(6486002)(6246003)(6436002)(2906002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3295;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: JPyzHqm7fs+tq3LCxoknOqbfUJurtwKwYz/RO6mlKNdkzNNgxprEYIq/aUixtuZZE8W/0cQb5JpTnGe38ii4pxg7i2ozL4zuTJbqSatZ9nkvd0AAkuQnTc7DtDYXdCbPxKySFaWhpLVxYV7d/c1XTbpFt+5FZmGsqUxpufi+J9PemySrneNNKRP8Tx76IQL57Lj1zxeHbJfekXSuuYdQgtNnfNsHSuuPnIbyl/RpNYvAeYIX/CHX3f+eHQekt9AQsyTqkT9KUKT/F2ZLDUEEtATSXvHjQazMBeejWrIYKSLKwu//6SsZxtFYtlcLnzI/waun1zrkhIy5tRjsiSDZ2rS/qca3OftI9N8ZbAcUnFePtBMHGhybkJ9Aq2qIwQ2CWtPO1tgKDjXF2Nf8M73Z7rD2J8BwHN5j/RAyzuNBMpmoGyTdNauwPmmbU2xBpPQo
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <9D5D41DADCB7DF43A29A9155F19D9658@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8832172d-bb0d-4ed6-4514-08d7736f43f7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2019 19:23:21.7475
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mNIUsNYaBqtOx3Vw8hbWWAlTXTjlvQJiISqwu4rbrNMGMMVR5Dzp1Jfbif7AudETEH812eIE/0keJg7S8UdnUw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3295
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
---=-O+wgk4AZ6l++1CDkyqmb
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 2019-11-27 at 19:06 +0000, Robin Murphy wrote:
-> On 27/11/2019 6:24 pm, Nicolas Saenz Julienne wrote:
-> > On Wed, 2019-11-27 at 18:06 +0000, Robin Murphy wrote:
-> > > On 26/11/2019 12:51 pm, Leon Romanovsky wrote:
-> > > > On Tue, Nov 26, 2019 at 10:19:39AM +0100, Nicolas Saenz Julienne wr=
-ote:
-> > > > > Some users need to make sure their rounding function accepts and
-> > > > > returns
-> > > > > 64bit long variables regardless of the architecture. Sadly
-> > > > > roundup/rounddown_pow_two() takes and returns unsigned longs. Cre=
-ate a
-> > > > > new generic 64bit variant of the function and cleanup rougue cust=
-om
-> > > > > implementations.
-> > > >=20
-> > > > Is it possible to create general roundup/rounddown_pow_two() which =
-will
-> > > > work correctly for any type of variables, instead of creating speci=
-al
-> > > > variant for every type?
-> > >=20
-> > > In fact, that is sort of the case already - roundup_pow_of_two() itse=
-lf
-> > > wraps ilog2() such that the constant case *is* type-independent. And
-> > > since ilog2() handles non-constant values anyway, might it be reasona=
-ble
-> > > to just take the strongly-typed __roundup_pow_of_two() helper out of =
-the
-> > > loop as below?
-> > >=20
-> > > Robin
-> > >=20
-> >=20
-> > That looks way better that's for sure. Some questions.
-> >=20
-> > > ----->8-----
-> > > diff --git a/include/linux/log2.h b/include/linux/log2.h
-> > > index 83a4a3ca3e8a..e825f8a6e8b5 100644
-> > > --- a/include/linux/log2.h
-> > > +++ b/include/linux/log2.h
-> > > @@ -172,11 +172,8 @@ unsigned long __rounddown_pow_of_two(unsigned lo=
-ng n)
-> > >     */
-> > >    #define roundup_pow_of_two(n)			\
-> > >    (						\
-> > > -	__builtin_constant_p(n) ? (		\
-> > > -		(n =3D=3D 1) ? 1 :			\
-> > > -		(1UL << (ilog2((n) - 1) + 1))	\
-> > > -				   ) :		\
-> > > -	__roundup_pow_of_two(n)			\
-> > > +	(__builtin_constant_p(n) && (n =3D=3D 1)) ?	\
-> > > +	1 : (1UL << (ilog2((n) - 1) + 1))	\
-> >=20
-> > Then here you'd have to use ULL instead of UL, right? I want my 64bit v=
-alue
-> > everywhere regardless of the CPU arch. The downside is that would affec=
-t
-> > performance to some extent (i.e. returning a 64bit value where you used=
- to
-> > have
-> > a 32bit one)?
+On Wed, Nov 27, 2019 at 10:19:52AM -0800, Linus Torvalds wrote:
+> On Tue, Nov 26, 2019 at 4:24 PM Jason Gunthorpe <jgg@mellanox.com> wrote:
+> >
+> > There is one conflict with v5.4, the hunk should be resolved in favor o=
+f
+> > rdma.git
 >=20
-> True, although it's possible that 1ULL might result in the same codegen=
-=20
-> if the compiler can see that the result is immediately truncated back to=
-=20
-> long anyway. Or at worst, I suppose "(typeof(n))1" could suffice,=20
-> however ugly. Either way, this diff was only an illustration rather than=
-=20
-> a concrete proposal, but it might be an interesting diversion to=20
-> investigate.
->=20
-> On that note, though, you should probably be using ULL in your current=
-=20
-> patch too.
+> Ok, so no need for the (now two!) xa_erase() calls to be the
+> "xa_erase_irq()" one?
 
-I actually meant to, the fix got lost. Thanks for pointing it out.
+Two? Yes dropping the irq is right.
 
-As I see Leon also likes this, I'll try out this implementation and come ba=
-ck
-with some results.
+-rc still had the irq call xa_store, but that part was removed in
+this code in -next.
 
-Regards,
-Nicolas
+This conflict is because the fixes sent to -rc accidently missed that
+-rc still had the irq and had a wrong xa_store.
 
+I wanted to include the combined diff here, but git doesn't want to
+show it to me :\
 
---=-O+wgk4AZ6l++1CDkyqmb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+$ git show -c for-linus-merged drivers/infiniband/hw/mlx5/mr.c
+$ git show --cc for-linus-merged drivers/infiniband/hw/mlx5/mr.c
 
------BEGIN PGP SIGNATURE-----
+It looks OK in your tree, thanks
 
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl3ey4sACgkQlfZmHno8
-x/4qGggAi4+Q7jM0+bmigNE35y3GihyLXM3ahA2qmQ9ftiZshh+Z8XQUYcRi7852
-LsPNmYpHjwV3LyoaBXdnHaIVR5I1rE6RXSAZEK4xRF872qqm9rKDeMGF1GXxrw3u
-BJl/LR2xhGkhYepUUAiZ+vGy3FyTfl8ADH/V9AHtFtvXuFTpStBZS3/xYgaO9mRa
-E0hCB01yKy14h+FAXRiEB0E6onkyAqWjLHPmAXCGmk4ZsJwAjdVr3QyVq6AUBBKt
-CaBQ7gUU8NOTg8ZE9WDRdTfIlQ+1Gpiu2xk1jML8Y1eCGxB3wtXy0t5GdjOaiwzi
-fzp73AN5N4UigGnR/sl3LgJQXPe3yA==
-=ixwn
------END PGP SIGNATURE-----
-
---=-O+wgk4AZ6l++1CDkyqmb--
-
+Jason
