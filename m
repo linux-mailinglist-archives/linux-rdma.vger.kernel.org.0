@@ -2,103 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F6D10B520
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2019 19:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 307B210B57A
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2019 19:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbfK0SG0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Nov 2019 13:06:26 -0500
-Received: from foss.arm.com ([217.140.110.172]:51138 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726729AbfK0SG0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 27 Nov 2019 13:06:26 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1924431B;
-        Wed, 27 Nov 2019 10:06:25 -0800 (PST)
-Received: from [10.1.196.37] (e121345-lin.cambridge.arm.com [10.1.196.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 210853F6C4;
-        Wed, 27 Nov 2019 10:06:20 -0800 (PST)
-Subject: Re: [PATCH v3 1/7] linux/log2.h: Add roundup/rounddown_pow_two64()
- family of functions
-To:     Leon Romanovsky <leon@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     andrew.murray@arm.com, maz@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        james.quinlan@broadcom.com, mbrugger@suse.com,
-        f.fainelli@gmail.com, phil@raspberrypi.org, wahrenst@gmx.net,
-        jeremy.linton@arm.com, linux-pci@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        iommu@lists.linux-foundation.org
-References: <20191126091946.7970-1-nsaenzjulienne@suse.de>
- <20191126091946.7970-2-nsaenzjulienne@suse.de>
- <20191126125137.GA10331@unreal>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <6e0b9079-9efd-2884-26d1-3db2d622079d@arm.com>
-Date:   Wed, 27 Nov 2019 18:06:18 +0000
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1727007AbfK0SUN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Nov 2019 13:20:13 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:38927 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727071AbfK0SUM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Nov 2019 13:20:12 -0500
+Received: by mail-lj1-f195.google.com with SMTP id e10so16362820ljj.6
+        for <linux-rdma@vger.kernel.org>; Wed, 27 Nov 2019 10:20:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cwpNndouEqIAQ7+k+dkJbISEfrceAc9l9U5/isaZ+uE=;
+        b=VCIoRanJ2BSoE96u/1A8Sh/MjKBNZOlFe6axmVbKRJpSN5et6ww6OxWHsYRv20kLos
+         fDeRLhVXN66pcYfCZ8b95qLf2djCsxLD43qN2pdmpoie+a4poE/4ta1yzu0u4yU2zlQD
+         Vl7A8lEJsjoPFz3Xr177Yku9/ocjKFVNLH4uI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cwpNndouEqIAQ7+k+dkJbISEfrceAc9l9U5/isaZ+uE=;
+        b=Uz5XPiE5OC3tEcLP6KHH769/l5v/fYtse0lHxpQ6gzrv2QMkrR2aAEdyOLyLceAYaQ
+         ijprnVr7cYeYwyFaT4Hazj4MSaZy5ovFbTlbL2mWM2dQHCuqvQ4ramWHmWEGTiPsGd5D
+         g+WH5VS9OUt60Qe+Dfys9gCQKTwjiD9aLbWYOZp0SkKKwm27XA+zjvG7GZAxJyW/+tBM
+         LQuh0k5LCXFEWiSWSOV/I/yzG5p0fXJJXV/pSgFVYznRHDosMIfubAxdldYMeuxwBIdW
+         6MAXGUqNjySeDPmmGRA7F3wWhOBki0+mAbCZCA5tROoH5rLmPRLux3FF6N19EoBm0ite
+         0jyw==
+X-Gm-Message-State: APjAAAX9aCrw5r0AsRBgBzM/0mkjllItd0QiNImB3nnQxvvpW0KVodyz
+        PafgzMRWICa49wqz5dDqPSHmXNtexyg=
+X-Google-Smtp-Source: APXvYqz/CTciDrxGTxRp04DdUo/m+3MruwD5xSYd6q4X31973VHmL2ABhVgRBS3/4EoAhTvr++7DIQ==
+X-Received: by 2002:a2e:9a41:: with SMTP id k1mr6177870ljj.235.1574878810071;
+        Wed, 27 Nov 2019 10:20:10 -0800 (PST)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id r7sm7465924ljc.74.2019.11.27.10.20.08
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Nov 2019 10:20:09 -0800 (PST)
+Received: by mail-lj1-f175.google.com with SMTP id e28so1344860ljo.9
+        for <linux-rdma@vger.kernel.org>; Wed, 27 Nov 2019 10:20:08 -0800 (PST)
+X-Received: by 2002:a2e:8809:: with SMTP id x9mr31883187ljh.82.1574878808221;
+ Wed, 27 Nov 2019 10:20:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191126125137.GA10331@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20191127002431.GA4861@ziepe.ca>
+In-Reply-To: <20191127002431.GA4861@ziepe.ca>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 27 Nov 2019 10:19:52 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whUhSMUfCoAmk9YsP-R28a7+_Lda780JOfeVTVeopa_Fw@mail.gmail.com>
+Message-ID: <CAHk-=whUhSMUfCoAmk9YsP-R28a7+_Lda780JOfeVTVeopa_Fw@mail.gmail.com>
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 26/11/2019 12:51 pm, Leon Romanovsky wrote:
-> On Tue, Nov 26, 2019 at 10:19:39AM +0100, Nicolas Saenz Julienne wrote:
->> Some users need to make sure their rounding function accepts and returns
->> 64bit long variables regardless of the architecture. Sadly
->> roundup/rounddown_pow_two() takes and returns unsigned longs. Create a
->> new generic 64bit variant of the function and cleanup rougue custom
->> implementations.
-> 
-> Is it possible to create general roundup/rounddown_pow_two() which will
-> work correctly for any type of variables, instead of creating special
-> variant for every type?
+On Tue, Nov 26, 2019 at 4:24 PM Jason Gunthorpe <jgg@mellanox.com> wrote:
+>
+> There is one conflict with v5.4, the hunk should be resolved in favor of
+> rdma.git
 
-In fact, that is sort of the case already - roundup_pow_of_two() itself 
-wraps ilog2() such that the constant case *is* type-independent. And 
-since ilog2() handles non-constant values anyway, might it be reasonable 
-to just take the strongly-typed __roundup_pow_of_two() helper out of the 
-loop as below?
+Ok, so no need for the (now two!) xa_erase() calls to be the
+"xa_erase_irq()" one?
 
-Robin
-
------>8-----
-diff --git a/include/linux/log2.h b/include/linux/log2.h
-index 83a4a3ca3e8a..e825f8a6e8b5 100644
---- a/include/linux/log2.h
-+++ b/include/linux/log2.h
-@@ -172,11 +172,8 @@ unsigned long __rounddown_pow_of_two(unsigned long n)
-   */
-  #define roundup_pow_of_two(n)			\
-  (						\
--	__builtin_constant_p(n) ? (		\
--		(n == 1) ? 1 :			\
--		(1UL << (ilog2((n) - 1) + 1))	\
--				   ) :		\
--	__roundup_pow_of_two(n)			\
-+	(__builtin_constant_p(n) && (n == 1)) ?	\
-+	1 : (1UL << (ilog2((n) - 1) + 1))	\
-   )
-
-  /**
+         Linus
