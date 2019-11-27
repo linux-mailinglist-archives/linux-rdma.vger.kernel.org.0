@@ -2,68 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4677510AE82
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2019 12:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB1F10B024
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2019 14:27:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbfK0LKM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Nov 2019 06:10:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726149AbfK0LKM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 27 Nov 2019 06:10:12 -0500
-Received: from localhost (unknown [5.29.147.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 020852053B;
-        Wed, 27 Nov 2019 11:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574853011;
-        bh=otGqLFEPO1x0EBYWrreVSMVv1PdqYvvV1HXYUyLaRW4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qeZxRCnP0iTEIh7wmto3+S0WObSe/gPle2UG7kO9GPX89e03hfMjQqQzXgeWeCWVz
-         MyP8HmEKkS6ErjfIUp2jWZ58K+Sr31PMARg26VXqs6Dxr+t498DwnrdazwWTbLdpQr
-         fcCtqL2Ke9dpet3TwOyqS9sHowvftjD1xCpdqn9A=
-Date:   Wed, 27 Nov 2019 13:10:08 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     wangqi <3100102071@zju.edu.cn>, linux-rdma@vger.kernel.org
-Subject: Re: [question]can hard roce and soft roce communicate with each
- other?
-Message-ID: <20191127111008.GC10331@unreal>
-References: <53ed2e18-c58e-1e9c-55f8-60b14dfa2052@zju.edu.cn>
- <4433c97d-218a-294e-3c03-214e0ef1379f@acm.org>
+        id S1726591AbfK0N12 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Nov 2019 08:27:28 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:56354 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726530AbfK0N12 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 27 Nov 2019 08:27:28 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 7F7B6D52F418488E1238;
+        Wed, 27 Nov 2019 21:27:26 +0800 (CST)
+Received: from localhost (10.133.213.239) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.439.0; Wed, 27 Nov 2019
+ 21:27:19 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <saeedm@mellanox.com>, <leon@kernel.org>, <davem@davemloft.net>,
+        <eli@mellanox.com>, <roid@mellanox.com>, <elibr@mellanox.com>,
+        <kliteyn@mellanox.com>, <ozsh@mellanox.com>, <pablo@netfilter.org>,
+        <yuehaibing@huawei.com>
+CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] net/mlx5e: Fix build error without IPV6
+Date:   Wed, 27 Nov 2019 21:27:00 +0800
+Message-ID: <20191127132700.25872-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4433c97d-218a-294e-3c03-214e0ef1379f@acm.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain
+X-Originating-IP: [10.133.213.239]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 26, 2019 at 04:53:14PM -0800, Bart Van Assche wrote:
-> On 11/21/19 11:19 PM, wangqi wrote:
-> >      Do you know how to make soft-roce (on server) can send message
-> > to the hard-roce (like Mellanox cx4 card) on a client? We tried rdma-core
-> > 25.0 and 26.0. The rdma-core can support both soft-roce and hard-roce.
-> >
-> > But it seems that the soft-roce (server) and hard-roce (client) can not
-> > communicate via "ib_send_bw", "ib_read_bw" and so on, but can
-> > communicate via "rping".
-> >
-> >      Do you ever try to use soft-roce and hard-roce together?
-> > Do they work well? I really wonder why they can not communicate with
-> > each other. Best wishes,
->
-> I think this should be possible. The diagram on the following web page shows
-> a RoCE NIC and softROCE connected to each other:
->
-> http://www.roceinitiative.org/software-based-roce-a-new-way-to-experience-rdma/
+If IPV6 is not set and CONFIG_MLX5_ESWITCH is y,
+building fails:
 
-It should work, but it didn't work for me now :)
+drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c:322:5: error: redefinition of mlx5e_tc_tun_create_header_ipv6
+ int mlx5e_tc_tun_create_header_ipv6(struct mlx5e_priv *priv,
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c:7:0:
+drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h:67:1: note: previous definition of mlx5e_tc_tun_create_header_ipv6 was here
+ mlx5e_tc_tun_create_header_ipv6(struct mlx5e_priv *priv,
+ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Thanks
+Use #ifdef to guard this, also move mlx5e_route_lookup_ipv6
+to cleanup unused warning.
 
->
-> Bart.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: e689e998e102 ("net/mlx5e: TC, Stub out ipv6 tun create header function")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ .../net/ethernet/mellanox/mlx5/core/en/tc_tun.c    | 74 +++++++++++-----------
+ 1 file changed, 38 insertions(+), 36 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
+index 784b1e2..6ed8753 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
+@@ -130,42 +130,6 @@ static const char *mlx5e_netdev_kind(struct net_device *dev)
+ 		return "unknown";
+ }
+ 
+-static int mlx5e_route_lookup_ipv6(struct mlx5e_priv *priv,
+-				   struct net_device *mirred_dev,
+-				   struct net_device **out_dev,
+-				   struct net_device **route_dev,
+-				   struct flowi6 *fl6,
+-				   struct neighbour **out_n,
+-				   u8 *out_ttl)
+-{
+-	struct dst_entry *dst;
+-	struct neighbour *n;
+-
+-	int ret;
+-
+-	ret = ipv6_stub->ipv6_dst_lookup(dev_net(mirred_dev), NULL, &dst,
+-					 fl6);
+-	if (ret < 0)
+-		return ret;
+-
+-	if (!(*out_ttl))
+-		*out_ttl = ip6_dst_hoplimit(dst);
+-
+-	ret = get_route_and_out_devs(priv, dst->dev, route_dev, out_dev);
+-	if (ret < 0) {
+-		dst_release(dst);
+-		return ret;
+-	}
+-
+-	n = dst_neigh_lookup(dst, &fl6->daddr);
+-	dst_release(dst);
+-	if (!n)
+-		return -ENOMEM;
+-
+-	*out_n = n;
+-	return 0;
+-}
+-
+ static int mlx5e_gen_ip_tunnel_header(char buf[], __u8 *ip_proto,
+ 				      struct mlx5e_encap_entry *e)
+ {
+@@ -319,6 +283,43 @@ int mlx5e_tc_tun_create_header_ipv4(struct mlx5e_priv *priv,
+ 	return err;
+ }
+ 
++#if IS_ENABLED(CONFIG_INET) && IS_ENABLED(CONFIG_IPV6)
++static int mlx5e_route_lookup_ipv6(struct mlx5e_priv *priv,
++				   struct net_device *mirred_dev,
++				   struct net_device **out_dev,
++				   struct net_device **route_dev,
++				   struct flowi6 *fl6,
++				   struct neighbour **out_n,
++				   u8 *out_ttl)
++{
++	struct dst_entry *dst;
++	struct neighbour *n;
++
++	int ret;
++
++	ret = ipv6_stub->ipv6_dst_lookup(dev_net(mirred_dev), NULL, &dst,
++					 fl6);
++	if (ret < 0)
++		return ret;
++
++	if (!(*out_ttl))
++		*out_ttl = ip6_dst_hoplimit(dst);
++
++	ret = get_route_and_out_devs(priv, dst->dev, route_dev, out_dev);
++	if (ret < 0) {
++		dst_release(dst);
++		return ret;
++	}
++
++	n = dst_neigh_lookup(dst, &fl6->daddr);
++	dst_release(dst);
++	if (!n)
++		return -ENOMEM;
++
++	*out_n = n;
++	return 0;
++}
++
+ int mlx5e_tc_tun_create_header_ipv6(struct mlx5e_priv *priv,
+ 				    struct net_device *mirred_dev,
+ 				    struct mlx5e_encap_entry *e)
+@@ -436,6 +437,7 @@ int mlx5e_tc_tun_create_header_ipv6(struct mlx5e_priv *priv,
+ 	neigh_release(n);
+ 	return err;
+ }
++#endif
+ 
+ bool mlx5e_tc_tun_device_to_offload(struct mlx5e_priv *priv,
+ 				    struct net_device *netdev)
+-- 
+2.7.4
+
+
