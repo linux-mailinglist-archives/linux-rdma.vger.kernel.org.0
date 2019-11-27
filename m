@@ -2,70 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA06510AE03
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2019 11:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9FD10AE04
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2019 11:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbfK0Knr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Nov 2019 05:43:47 -0500
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:45462 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726240AbfK0Knr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Nov 2019 05:43:47 -0500
-Received: by mail-pf1-f194.google.com with SMTP id z4so10775560pfn.12
-        for <linux-rdma@vger.kernel.org>; Wed, 27 Nov 2019 02:43:46 -0800 (PST)
+        id S1726240AbfK0Knv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Nov 2019 05:43:51 -0500
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:43982 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726219AbfK0Knv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Nov 2019 05:43:51 -0500
+Received: by mail-pj1-f68.google.com with SMTP id a10so9747291pju.10
+        for <linux-rdma@vger.kernel.org>; Wed, 27 Nov 2019 02:43:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=a2IDbK4WuaZerW8XjnZl4XtXagKskHz70T8fYIVz2As=;
-        b=DWagZbApiL2hYJgpSCrcGkLous9dAYVPBuznsk+yz+ymfn4XO2wobhukMvLS/fUbfU
-         hkiBydLhowGOi4TO2hrtFYdgPpVlvCt1pP3DK4wjbt+Y349insMZHg+vkfTQXm+nloYo
-         Yw0CTG7XKUPpG9dst2gpDqq9igHk7cQYEllWM=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=DZCoBwLAg/vEwZ81LAit0N9P4J55qWF5BiXLh3lbRG8=;
+        b=UN0J+RNJs2ENi84kWq1arWSsm7JvmU06SqOpsu/DYBK+Y1NC9klEgRk8UdrjHRtB05
+         oDWYVcKAyEz3tALDGtAtKARZVlevWZb4W7e83fB2pDIs2gV0JZwGHmKtX6I97uIltK3t
+         Cn3or9zZC56zdmTIZy7F+M3MmUETLCtYwOJqw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=a2IDbK4WuaZerW8XjnZl4XtXagKskHz70T8fYIVz2As=;
-        b=l4MCQTNdZ5p5WQXEKt8RNlPxWswOb/JQ5V0oRvuLYIkmpo3uXuEgCi3KDrFDAN2XrS
-         oxD2THKB7oeUnl4+zSs3nBfRYuOkkK0xBWimp9c8cTFn5/Mt56OQLUpBTcIPkq2sUnNW
-         VJenJ33szE+lH9I5R1QbVpZvrFnWG3AczUuQRF0LsaWRXovjqxL2dWBQ2Y0IdpkvRPPl
-         Bw7jViUwHrwXIF/UFH/NUB3O/1jbMV/pNMSZaAFtVOoTdZ4swqRYCnsJKzjLNzQv2XuT
-         fZr768PK4m8LP3hq2GVwz3bgV8cL0UUM0Xb8vdPU645Skdyyta9m9WLtfO2tZ3RsBPr1
-         IXBA==
-X-Gm-Message-State: APjAAAVNhUK0HD4BMnps1VyoIDldMG/LlnAg5D60o2yBysBhnMteSOLl
-        skLGkzQ3R5DVaNlIzALh7Z29yQ==
-X-Google-Smtp-Source: APXvYqwQSHhT13mDYeNWGZXyly2F4rG7fT44sKnXAU8udMs1erMXVd8genI9ZoofJ2hBP7zAXWd8yg==
-X-Received: by 2002:a63:4553:: with SMTP id u19mr4103899pgk.436.1574851426071;
-        Wed, 27 Nov 2019 02:43:46 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=DZCoBwLAg/vEwZ81LAit0N9P4J55qWF5BiXLh3lbRG8=;
+        b=Qv2GJl49Kg3f1JOBs59Juv4mV6kOXs3C/Gz/rtBuFtZ65XhW0ZCMFXB2cus7sgsyFL
+         dgGyHz0xh0qWFldCL8Elk0RIBPPYVjAj/cogROijo2ch2AbBIsg7MCpvA50WUjyeABco
+         EEqYihuzhqWqaGzcwkRa2WiE3wX4Ryao57Adg+Mx3DkLyMMCQxRcc3LAcxYJjAIfXg9p
+         9i19FzrGraMl5mRQtlKLLGyb+RavSdrqsUHJ8zebWWPxe+9E0AxEuCmemmyg+ryPbq+y
+         WbYDmkG1zo2AFn7W78EFbBKIkGUxu1of3pNJvOBhGZ/LYM/bUGuJ0UQwlC7boykZLv1y
+         fTMQ==
+X-Gm-Message-State: APjAAAWtUCbu7i3dzUmwvyiciJwXIMIQC7jPHaXyaCD0w8TRcBCgz5jY
+        +zHeZsJosbFFjCSTihlN+zoh0g==
+X-Google-Smtp-Source: APXvYqyqg/99pzWPGS0WJM+femn56d0b2iua+1SBnefZ5vZe3w6sV0uEMB271PV+U5Fw1IflUFlgwA==
+X-Received: by 2002:a17:90a:bb82:: with SMTP id v2mr5256663pjr.62.1574851429068;
+        Wed, 27 Nov 2019 02:43:49 -0800 (PST)
 Received: from neo00-el73.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id x190sm16104286pfc.89.2019.11.27.02.43.43
+        by smtp.gmail.com with ESMTPSA id x190sm16104286pfc.89.2019.11.27.02.43.46
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Nov 2019 02:43:45 -0800 (PST)
+        Wed, 27 Nov 2019 02:43:48 -0800 (PST)
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
 To:     dledford@redhat.com, jgg@mellanox.com, leonro@mellanox.com
 Cc:     nmoreychaisemartin@suse.com, linux-rdma@vger.kernel.org,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
         Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [PATCH rdma-core 0/2] bnxt_re/lib: libbnxt_re bug fixes
-Date:   Wed, 27 Nov 2019 05:43:33 -0500
-Message-Id: <1574851415-4407-1-git-send-email-devesh.sharma@broadcom.com>
+Subject: [PATCH rdma-core 1/2] bnxt_re/lib: Add remaining pci ids for gen P5 devices
+Date:   Wed, 27 Nov 2019 05:43:34 -0500
+Message-Id: <1574851415-4407-2-git-send-email-devesh.sharma@broadcom.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1574851415-4407-1-git-send-email-devesh.sharma@broadcom.com>
+References: <1574851415-4407-1-git-send-email-devesh.sharma@broadcom.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This series contains two patches which are important urgent
-fixes. The first patch adds missing PCI ids. The second patch
-enables adaptors based on new gen p5 chip revs.
+From: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
 
-Luke Starrett (1):
-  bnxt_re/lib: Recognize additional 5750x device ID's
+Making a change to add pci ids for VF and NPAR devices.
 
-Naresh Kumar PBS (1):
-  bnxt_re/lib: Add remaining pci ids for gen P5 devices
+Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
+Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+---
+ providers/bnxt_re/main.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
- providers/bnxt_re/main.c | 14 +++++++++++---
- providers/bnxt_re/main.h |  5 ++++-
- 2 files changed, 15 insertions(+), 4 deletions(-)
-
+diff --git a/providers/bnxt_re/main.c b/providers/bnxt_re/main.c
+index b1194db..e290a07 100644
+--- a/providers/bnxt_re/main.c
++++ b/providers/bnxt_re/main.c
+@@ -76,9 +76,15 @@ static const struct verbs_match_ent cna_table[] = {
+ 	CNA(BROADCOM, 0x16F0),  /* BCM58730 */
+ 	CNA(BROADCOM, 0x16F1),  /* BCM57452 */
+ 	CNA(BROADCOM, 0x1750),	/* BCM57500 */
++	CNA(BROADCOM, 0x1751),	/* BCM57504 */
++	CNA(BROADCOM, 0x1752),	/* BCM57502 */
++	CNA(BROADCOM, 0x1803),	/* BCM57508 NPAR */
++	CNA(BROADCOM, 0x1804),	/* BCM57504 NPAR */
++	CNA(BROADCOM, 0x1805),	/* BCM57502 NPAR */
++	CNA(BROADCOM, 0x1807),	/* BCM5750x VF */
+ 	CNA(BROADCOM, 0xD800),  /* BCM880xx VF */
+ 	CNA(BROADCOM, 0xD802),  /* BCM58802 */
+-	CNA(BROADCOM, 0xD804),   /* BCM8804 SR */
++	CNA(BROADCOM, 0xD804),  /* BCM8804 SR */
+ 	{}
+ };
+ 
 -- 
 1.8.3.1
 
