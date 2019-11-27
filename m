@@ -2,38 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF43F10AE54
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2019 11:59:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5C410AE6A
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2019 12:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726282AbfK0K7Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Nov 2019 05:59:16 -0500
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:39666 "EHLO
+        id S1726587AbfK0LD0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Nov 2019 06:03:26 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:23840 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726219AbfK0K7Q (ORCPT
+        by vger.kernel.org with ESMTP id S1726560AbfK0LD0 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 27 Nov 2019 05:59:16 -0500
+        Wed, 27 Nov 2019 06:03:26 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574852354;
+        s=mimecast20190719; t=1574852605;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=d3vy1tSD+75AOc1W4isJ3oQZhdb0GEOYttsw31Fy3lA=;
-        b=N/6F6baIlq8dE9Qnj2NNHYTco7udUo6kTqocMKbdr9aET1osqo8TqOa+zGIktqJczF/O9P
-        TFz1XlS+eSADtmV5EK5gdRNb8MjuHxU5QJ4Dr3p6tQFZLj2qIj5q3M1xgAvqZJb3UgbLR9
-        3sKCqT5vXG3jYGPhBUlg5cEmYAGqr38=
+        bh=k6afWhW0k+5vQvAI3+I3yvEiGsV/YiHUSVuZ0gqzLhc=;
+        b=EGplOT7rY6CUKzV1Ejux6aZGpVi0gzrAGTsnfLEoAnLZ/pjM2AW4SzY0VL2upxmvyWmPbo
+        lK9T3RBZkJ4bP9+v6KYieW6PhocEyDGm4RZCdDKA1nUbc030fn7/U4dDhUGH4JnkWME6eZ
+        ng+FICi9dp5pvtb+hAOTc6oPPj8GvE8=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-260-UcxD0TuwMESSHJcJUhxLxQ-1; Wed, 27 Nov 2019 05:59:13 -0500
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+ us-mta-158-VMx6fb4AN96ge09SQCM90Q-1; Wed, 27 Nov 2019 06:03:22 -0500
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B29A18A8C8B;
-        Wed, 27 Nov 2019 10:59:11 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B6A2593A1;
+        Wed, 27 Nov 2019 11:03:20 +0000 (UTC)
 Received: from [10.72.12.78] (ovpn-12-78.pek2.redhat.com [10.72.12.78])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B8FA608AC;
-        Wed, 27 Nov 2019 10:59:00 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 217425D9D6;
+        Wed, 27 Nov 2019 11:03:01 +0000 (UTC)
 Subject: Re: [net-next v2 1/1] virtual-bus: Implementation of Virtual Bus
+From:   Jason Wang <jasowang@redhat.com>
 To:     Martin Habets <mhabets@solarflare.com>,
         Parav Pandit <parav@mellanox.com>,
         Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
@@ -55,16 +56,16 @@ References: <20191115223355.1277139-1-jeffrey.t.kirsher@intel.com>
  <22dd6ae3-03f4-1432-2935-8df5e9a449de@redhat.com>
  <AM0PR05MB48660C6FDCC2397045A03139D1490@AM0PR05MB4866.eurprd05.prod.outlook.com>
  <e8ab3603-59e1-6e1c-67c2-e1a252ba0ac1@solarflare.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <0b845456-54b2-564a-0979-ba55bcf3269c@redhat.com>
-Date:   Wed, 27 Nov 2019 18:58:58 +0800
+ <0b845456-54b2-564a-0979-ba55bcf3269c@redhat.com>
+Message-ID: <1d9a5ee9-779e-6255-08c6-b4f57af701a6@redhat.com>
+Date:   Wed, 27 Nov 2019 19:03:00 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <e8ab3603-59e1-6e1c-67c2-e1a252ba0ac1@solarflare.com>
+In-Reply-To: <0b845456-54b2-564a-0979-ba55bcf3269c@redhat.com>
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-MC-Unique: UcxD0TuwMESSHJcJUhxLxQ-1
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-MC-Unique: VMx6fb4AN96ge09SQCM90Q-1
 X-Mimecast-Spam-Score: 0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
@@ -74,164 +75,22 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-On 2019/11/26 =E4=B8=8B=E5=8D=888:26, Martin Habets wrote:
-> On 22/11/2019 16:19, Parav Pandit wrote:
->>
->>> From: Jason Wang <jasowang@redhat.com>
->>> Sent: Friday, November 22, 2019 3:14 AM
->>>
->>> On 2019/11/21 =E4=B8=8B=E5=8D=8811:10, Martin Habets wrote:
->>>> On 19/11/2019 04:08, Jason Wang wrote:
->>>>> On 2019/11/16 =E4=B8=8A=E5=8D=887:25, Parav Pandit wrote:
->>>>>> Hi Jeff,
->>>>>>
->>>>>>> From: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
->>>>>>> Sent: Friday, November 15, 2019 4:34 PM
->>>>>>>
->>>>>>> From: Dave Ertman <david.m.ertman@intel.com>
->>>>>>>
->>>>>>> This is the initial implementation of the Virtual Bus,
->>>>>>> virtbus_device and virtbus_driver.=C2=A0 The virtual bus is a softw=
-are
->>>>>>> based bus intended to support lightweight devices and drivers and
->>>>>>> provide matching between them and probing of the registered drivers=
-.
->>>>>>>
->>>>>>> The primary purpose of the virual bus is to provide matching
->>>>>>> services and to pass the data pointer contained in the
->>>>>>> virtbus_device to the virtbus_driver during its probe call.=C2=A0 T=
-his
->>>>>>> will allow two separate kernel objects to match up and start
->>> communication.
->>>>>> It is fundamental to know that rdma device created by virtbus_driver=
- will
->>> be anchored to which bus for an non abusive use.
->>>>>> virtbus or parent pci bus?
->>>>>> I asked this question in v1 version of this patch.
->>>>>>
->>>>>> Also since it says - 'to support lightweight devices', documenting t=
-hat
->>> information is critical to avoid ambiguity.
->>>>>> Since for a while I am working on the subbus/subdev_bus/xbus/mdev [1=
-]
->>> whatever we want to call it, it overlaps with your comment about 'to su=
-pport
->>> lightweight devices'.
->>>>>> Hence let's make things crystal clear weather the purpose is 'only
->>> matching service' or also 'lightweight devices'.
->>>>>> If this is only matching service, lets please remove lightweight dev=
-ices
->>> part..
->>>>> Yes, if it's matching + lightweight device, its function is almost a =
-duplication
->>> of mdev. And I'm working on extending mdev[1] to be a generic module to
->>> support any types of virtual devices a while. The advantage of mdev is:
->>>>> 1) ready for the userspace driver (VFIO based)
->>>>> 2) have a sysfs/GUID based management interface
->>>> In my view this virtual-bus is more generic and more flexible than mde=
-v.
->>>
->>> Even after the series [1] here?
-> I have been following that series. It does make mdev more flexible, and a=
-lmost turns it into a real bus.
-> Even with those improvements to mdev the virtual-bus is in my view still =
-more generic and more flexible,
-> and hence more future-proof.
-
-
-So the only difference so far is after that series is:
-
-1) mdev has sysfs support
-2) mdev has support from vfio
-
-For 1) we can decouple that part to be more flexible, for 2) I think you=20
-would still need that part other than inventing a new VFIO driver (e.g=20
-vfio-virtual-bus)?
-
-
+On 2019/11/27 =E4=B8=8B=E5=8D=886:58, Jason Wang wrote:
 >
->>>> What for you are the advantages of mdev to me are some of it's
->>> disadvantages.
->>>> The way I see it we can provide rdma support in the driver using virtu=
-al-bus.
->> This is fine, because it is only used for matching service.
->>
->>> Yes, but since it does matching only, you can do everything you want.
->>> But it looks to me Greg does not want a bus to be an API multiplexer. S=
-o if a
->>> dedicated bus is desired, it won't be much of code to have a bus on you=
-r own.
-> I did not intend for it to be a multiplexer. And I very much prefer a gen=
-eric bus over a any driver specific bus.
+>> With the virtual bus we do have a solid foundation going forward, for=20
+>> the users we know now and for
+>> future ones.
 >
->> Right. virtbus shouldn't be a multiplexer.
->> Otherwise mdev can be improved (abused) exactly the way virtbus might. W=
-here 'mdev m stands for multiplexer too'. :-)
->> No, we shouldn=E2=80=99t do that.
->>
->> Listening to Greg and Jason G, I agree that virtbus shouldn't be a multi=
-plexer.
->> There are few basic differences between subfunctions and matching servic=
-e device object.
->> Subfunctions over period of time will have several attributes, few that =
-I think of right away are:
->> 1. BAR resource info, write combine info
->> 2. irq vectors details
->> 3. unique id assigned by user (while virtbus will not assign such user i=
-d as they are auto created for matching service for PF/VF)
->> 4. rdma device created by matched driver resides on pci bus or parent de=
-vice
->> While rdma and netdev created on over subfunctions are linked to their o=
-wn 'struct device'.
-> This is more aligned with my thinking as well, although I do not call the=
-se items subfunctions.
-> There can be different devices for different users, where multiple can be=
- active at the same time (with some constraints).
 >
-> One important thing to note is that there may not not be a netdev device.=
- What we traditionally call
-> a "network driver" will then only manage the virtualised devices.
+> If I understand correctly, if multiplexer is not preferred. It would=20
+> be hard to have a bus on your own code, there's no much code could be=20
+> reused.
 >
->> Due to that sysfs view for these two different types of devices is bit d=
-ifferent.
->> Putting both on same bus just doesn't appear right with above fundamenta=
-l differences of core layer.
-> Can you explain which code layer you mean?
->
->>>> At the moment we would need separate mdev support in the driver for
->>>> vdpa, but I hope at some point mdev would become a layer on top of vir=
-tual-
->>> bus.
->> How is it optimal to create multiple 'struct device' for single purpose?
->> Especially when one wants to create hundreds of such devices to begin wi=
-th.
->> User facing tool should be able to select device type and place the devi=
-ce on right bus.
-> At this point I think it is not possible to create a solution that is opt=
-imal right now for all use cases.
 
-
-Probably yes.
-
-
-> With the virtual bus we do have a solid foundation going forward, for the=
- users we know now and for
-> future ones.
-
-
-If I understand correctly, if multiplexer is not preferred. It would be=20
-hard to have a bus on your own code, there's no much code could be reused.
+Sorry, I meant "not hard to have" ...
 
 Thanks
 
 
->   Optimisation is something that needs to happen over time, without break=
-ing existing users.
->
-> As for the user facing tool, the only one I know of that always works is =
-"echo" into a sysfs file.
->
-> Best regards,
-> Martin
->
+> Thanks=20
 
