@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9FD10AE04
+	by mail.lfdr.de (Postfix) with ESMTP id 9735A10AE05
 	for <lists+linux-rdma@lfdr.de>; Wed, 27 Nov 2019 11:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726240AbfK0Knv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Nov 2019 05:43:51 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:43982 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbfK0Knv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Nov 2019 05:43:51 -0500
-Received: by mail-pj1-f68.google.com with SMTP id a10so9747291pju.10
-        for <linux-rdma@vger.kernel.org>; Wed, 27 Nov 2019 02:43:49 -0800 (PST)
+        id S1726881AbfK0Knx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Nov 2019 05:43:53 -0500
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:37511 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726219AbfK0Knw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Nov 2019 05:43:52 -0500
+Received: by mail-pl1-f196.google.com with SMTP id bb5so9582651plb.4
+        for <linux-rdma@vger.kernel.org>; Wed, 27 Nov 2019 02:43:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=DZCoBwLAg/vEwZ81LAit0N9P4J55qWF5BiXLh3lbRG8=;
-        b=UN0J+RNJs2ENi84kWq1arWSsm7JvmU06SqOpsu/DYBK+Y1NC9klEgRk8UdrjHRtB05
-         oDWYVcKAyEz3tALDGtAtKARZVlevWZb4W7e83fB2pDIs2gV0JZwGHmKtX6I97uIltK3t
-         Cn3or9zZC56zdmTIZy7F+M3MmUETLCtYwOJqw=
+        bh=ViIuyO3Gv6a7wDLuhwjZspkqlJjNUfYUkFdNpGhHua0=;
+        b=EO34lUdDTkJKxhaShSlFWnWrkSVmO4uyc5GWSzFCa6GvS9B4HcuHpkiJj1K8tj+9I6
+         R12oMeun5rtBCguFBhT7fi+CBe1FLHIFvCJsuIHow/tslfRUjRKXbhOFRjzyapP6bZHy
+         5rzwGajWpyGUjk/hwK45FUqIlkESJ1sIksJpM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=DZCoBwLAg/vEwZ81LAit0N9P4J55qWF5BiXLh3lbRG8=;
-        b=Qv2GJl49Kg3f1JOBs59Juv4mV6kOXs3C/Gz/rtBuFtZ65XhW0ZCMFXB2cus7sgsyFL
-         dgGyHz0xh0qWFldCL8Elk0RIBPPYVjAj/cogROijo2ch2AbBIsg7MCpvA50WUjyeABco
-         EEqYihuzhqWqaGzcwkRa2WiE3wX4Ryao57Adg+Mx3DkLyMMCQxRcc3LAcxYJjAIfXg9p
-         9i19FzrGraMl5mRQtlKLLGyb+RavSdrqsUHJ8zebWWPxe+9E0AxEuCmemmyg+ryPbq+y
-         WbYDmkG1zo2AFn7W78EFbBKIkGUxu1of3pNJvOBhGZ/LYM/bUGuJ0UQwlC7boykZLv1y
-         fTMQ==
-X-Gm-Message-State: APjAAAWtUCbu7i3dzUmwvyiciJwXIMIQC7jPHaXyaCD0w8TRcBCgz5jY
-        +zHeZsJosbFFjCSTihlN+zoh0g==
-X-Google-Smtp-Source: APXvYqyqg/99pzWPGS0WJM+femn56d0b2iua+1SBnefZ5vZe3w6sV0uEMB271PV+U5Fw1IflUFlgwA==
-X-Received: by 2002:a17:90a:bb82:: with SMTP id v2mr5256663pjr.62.1574851429068;
-        Wed, 27 Nov 2019 02:43:49 -0800 (PST)
+        bh=ViIuyO3Gv6a7wDLuhwjZspkqlJjNUfYUkFdNpGhHua0=;
+        b=WbWyNX0rih7Th8C8Nd06MmOsadyM8RpygToguGTF2kU6DiR5mADI4ZQUi26hc3I8GC
+         7qgb/3NMgP0X21McGINUUzwrK0NZHe4vic5VeoJRabBKsfGdam8RB36kFw3n00qrXXMI
+         5S9oMZisMbh9HOLQbCIoEaZMyubJfXFoYC/qluR53Du6EhAQUgRqQjPUYtmCG0aHFD3r
+         2C7J5jgll4pVWe3CFJ7XyeUY+tNszL1SC5rcU6E3vUmLazg6uflC0qaLY6og4tS2tyTx
+         VFMrtMk97xAp/QXyqj015YveEG31djWatMhLvjOf6j5Meb8wb/tU3HJx7OBmM3ZrGXOa
+         n+6w==
+X-Gm-Message-State: APjAAAXcguu7OJy5O5YtfadDEhMfMVgj50OToNNpF0ftGok0/npk2FNe
+        hKOkyfukGFxjwokxq3Qx2mrggA==
+X-Google-Smtp-Source: APXvYqx0FxP4nS3T7Z10ajyy0sbUKJ7yM+q8yRMHoiuuE3mvC6U1Wp6CmR4oJyhem/CPHTzu9921XQ==
+X-Received: by 2002:a17:902:143:: with SMTP id 61mr3361768plb.343.1574851431783;
+        Wed, 27 Nov 2019 02:43:51 -0800 (PST)
 Received: from neo00-el73.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id x190sm16104286pfc.89.2019.11.27.02.43.46
+        by smtp.gmail.com with ESMTPSA id x190sm16104286pfc.89.2019.11.27.02.43.49
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 27 Nov 2019 02:43:48 -0800 (PST)
+        Wed, 27 Nov 2019 02:43:51 -0800 (PST)
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
 To:     dledford@redhat.com, jgg@mellanox.com, leonro@mellanox.com
 Cc:     nmoreychaisemartin@suse.com, linux-rdma@vger.kernel.org,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Luke Starrett <luke.starrett@broadcom.com>,
         Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [PATCH rdma-core 1/2] bnxt_re/lib: Add remaining pci ids for gen P5 devices
-Date:   Wed, 27 Nov 2019 05:43:34 -0500
-Message-Id: <1574851415-4407-2-git-send-email-devesh.sharma@broadcom.com>
+Subject: [PATCH rdma-core 2/2] bnxt_re/lib: Recognize additional 5750x device ID's
+Date:   Wed, 27 Nov 2019 05:43:35 -0500
+Message-Id: <1574851415-4407-3-git-send-email-devesh.sharma@broadcom.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1574851415-4407-1-git-send-email-devesh.sharma@broadcom.com>
 References: <1574851415-4407-1-git-send-email-devesh.sharma@broadcom.com>
@@ -56,37 +56,60 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
+From: Luke Starrett <luke.starrett@broadcom.com>
 
-Making a change to add pci ids for VF and NPAR devices.
+BCM5750x family includes 57504 and 57502. Until recently the chip_num
+register always conveyed 0x1750 (57508). Recent devices properly
+reflect the SKU in the chip_num register. Update Phase5 checks to
+reflect this.
 
-Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
+Signed-off-by: Luke Starrett <luke.starrett@broadcom.com>
 Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
 ---
- providers/bnxt_re/main.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ providers/bnxt_re/main.c | 6 ++++--
+ providers/bnxt_re/main.h | 5 ++++-
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/providers/bnxt_re/main.c b/providers/bnxt_re/main.c
-index b1194db..e290a07 100644
+index e290a07..803eff7 100644
 --- a/providers/bnxt_re/main.c
 +++ b/providers/bnxt_re/main.c
-@@ -76,9 +76,15 @@ static const struct verbs_match_ent cna_table[] = {
+@@ -75,7 +75,7 @@ static const struct verbs_match_ent cna_table[] = {
+ 	CNA(BROADCOM, 0x16EF),  /* BCM57416 NPAR */
  	CNA(BROADCOM, 0x16F0),  /* BCM58730 */
  	CNA(BROADCOM, 0x16F1),  /* BCM57452 */
- 	CNA(BROADCOM, 0x1750),	/* BCM57500 */
-+	CNA(BROADCOM, 0x1751),	/* BCM57504 */
-+	CNA(BROADCOM, 0x1752),	/* BCM57502 */
-+	CNA(BROADCOM, 0x1803),	/* BCM57508 NPAR */
-+	CNA(BROADCOM, 0x1804),	/* BCM57504 NPAR */
-+	CNA(BROADCOM, 0x1805),	/* BCM57502 NPAR */
-+	CNA(BROADCOM, 0x1807),	/* BCM5750x VF */
- 	CNA(BROADCOM, 0xD800),  /* BCM880xx VF */
- 	CNA(BROADCOM, 0xD802),  /* BCM58802 */
--	CNA(BROADCOM, 0xD804),   /* BCM8804 SR */
-+	CNA(BROADCOM, 0xD804),  /* BCM8804 SR */
- 	{}
- };
+-	CNA(BROADCOM, 0x1750),	/* BCM57500 */
++	CNA(BROADCOM, 0x1750),	/* BCM57508 */
+ 	CNA(BROADCOM, 0x1751),	/* BCM57504 */
+ 	CNA(BROADCOM, 0x1752),	/* BCM57502 */
+ 	CNA(BROADCOM, 0x1803),	/* BCM57508 NPAR */
+@@ -118,7 +118,9 @@ static const struct verbs_context_ops bnxt_re_cntx_ops = {
  
+ bool bnxt_re_is_chip_gen_p5(struct bnxt_re_chip_ctx *cctx)
+ {
+-	return cctx->chip_num == CHIP_NUM_57500;
++	return (cctx->chip_num == CHIP_NUM_57508 ||
++		cctx->chip_num == CHIP_NUM_57504 ||
++		cctx->chip_num == CHIP_NUM_57502);
+ }
+ 
+ /* Context Init functions */
+diff --git a/providers/bnxt_re/main.h b/providers/bnxt_re/main.h
+index be57349..368297e 100644
+--- a/providers/bnxt_re/main.h
++++ b/providers/bnxt_re/main.h
+@@ -56,7 +56,10 @@
+ 
+ #define BNXT_RE_UD_QP_HW_STALL	0x400000
+ 
+-#define CHIP_NUM_57500		0x1750
++#define CHIP_NUM_57508		0x1750
++#define CHIP_NUM_57504		0x1751
++#define CHIP_NUM_57502		0x1752
++
+ struct bnxt_re_chip_ctx {
+ 	__u16 chip_num;
+ 	__u8 chip_rev;
 -- 
 1.8.3.1
 
