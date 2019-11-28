@@ -2,171 +2,325 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0E010C5BB
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Nov 2019 10:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D4610CA47
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Nov 2019 15:21:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbfK1JMb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 Nov 2019 04:12:31 -0500
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:57445 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726191AbfK1JMa (ORCPT
+        id S1726401AbfK1OVg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 28 Nov 2019 09:21:36 -0500
+Received: from m4a0039g.houston.softwaregrp.com ([15.124.2.85]:42073 "EHLO
+        m4a0039g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726545AbfK1OVf (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 28 Nov 2019 04:12:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574932349;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=93nTBfXZSHlR8+dS6GNm1bAKHx8uhAYoz9B1bYNCDvo=;
-        b=C6qAKSkuwRCnct1FekBqh2V4g1MfLksmOJFS7EmBjXWY1pB/BkEF0gBe9OYOYxGsiWHDuW
-        V1xRMz0cCJWhV78YC77VaRCdcB8L8mjSfpCw0NJVPdF2BKndKyD2afwB0crxq5WP66ln4w
-        sLlSBmj5TsZWWxLYAbH0EweLz6G7piY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-404-rBL7dYfcNgmQmzjigss6Gg-1; Thu, 28 Nov 2019 04:12:25 -0500
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E65B593A0;
-        Thu, 28 Nov 2019 09:12:24 +0000 (UTC)
-Received: from ming.t460p (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 499746084E;
-        Thu, 28 Nov 2019 09:12:15 +0000 (UTC)
-Date:   Thu, 28 Nov 2019 17:12:10 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Stephen Rust <srust@blockbridge.com>
-Cc:     Rob Townley <rob.townley@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        target-devel@vger.kernel.org
-Subject: Re: Data corruption in kernel 5.1+ with iSER attached ramdisk
-Message-ID: <20191128091210.GC15549@ming.t460p>
-References: <CAAFE1bd9wuuobpe4VK7Ty175j7mWT+kRmHCNhVD+6R8MWEAqmw@mail.gmail.com>
- <20191128015748.GA3277@ming.t460p>
- <CA+VdTb_-CGaPjKUQteKVFSGqDz-5o-tuRRkJYqt8B9iOQypiwQ@mail.gmail.com>
- <20191128025822.GC3277@ming.t460p>
- <CAAFE1bfsXsKGyw7SU_z4NanT+wmtuJT=XejBYbHHMCDQwm73sw@mail.gmail.com>
+        Thu, 28 Nov 2019 09:21:35 -0500
+Received: FROM m4a0039g.houston.softwaregrp.com (15.120.17.146) BY m4a0039g.houston.softwaregrp.com WITH ESMTP
+ FOR linux-rdma@vger.kernel.org;
+ Thu, 28 Nov 2019 14:16:42 +0000
+Received: from M4W0334.microfocus.com (2002:f78:1192::f78:1192) by
+ M4W0334.microfocus.com (2002:f78:1192::f78:1192) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Thu, 28 Nov 2019 14:18:16 +0000
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (15.124.8.13) by
+ M4W0334.microfocus.com (15.120.17.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Thu, 28 Nov 2019 14:18:16 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gsM52CP3hc/8R8bxjj3wCK26hwqeVJ5PxrZpLUaYshkcao18rZXVj40sU3d5HoYywfJK2T28mai1n2AKHs23JR7/YBARS9BlrOtVou6wan/x5s/g+9FuAgefTOnt6dWDoavAMH1/rHpwDmaGkYnsS3u14LUQeoiIuBflIl0eSfiOu/cMDIg/Br+Poh/TlMxPGtY3iGqEPqVbMzvL5gOcqY7/olvrGT9GutcZSsX1yG7HNf81MQmGu8mCW9zGWVbPcssVqm4Jv3JORPXxHakYp5kBUrSd4niAf8xPsGWcgeKPVHeD3YbYxrGxE8/ggFdz8Xr0UnMUFWkZdX1GWDyoWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yJktrLUDkAFNJCq6qVLOYQS+HurS2WBz8UhNy1fkNg4=;
+ b=AQiiEQOS8E26FZACnnliH6WdCYmE0WqdemSzlL92o2EAgmAid0nUP253bXiraf49N3yWlzxt5eyegWwmWwFxXJFRgjsuuu3iXTUytk8Le7u/mqLgXrk3fNzaSdk/2JiN7AA7zTn11yoT0otyGb7qHfHbJy7JaGy29bfYFlbNpGRr8EoFFfX/DLLDZqbKVuSsNTRzQo5UNxZ8qiImSGe/WBOZrqaX+mboFNixMtO1lSTerviJCHDrDxKyJu9vDwvPHfp9cFWWipSDX0tF4E1mJCT2sBGD5HXMrH8NO5k8JOo9xnv6faWreT9is7VJn288DkZd1Tx9EsrEmcBqCwS0iA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Received: from BY5PR18MB3298.namprd18.prod.outlook.com (10.255.138.224) by
+ BY5PR18MB3121.namprd18.prod.outlook.com (10.255.136.150) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2495.19; Thu, 28 Nov 2019 14:18:15 +0000
+Received: from BY5PR18MB3298.namprd18.prod.outlook.com
+ ([fe80::948e:c2f1:c1f9:2923]) by BY5PR18MB3298.namprd18.prod.outlook.com
+ ([fe80::948e:c2f1:c1f9:2923%7]) with mapi id 15.20.2474.022; Thu, 28 Nov 2019
+ 14:18:15 +0000
+From:   Nicolas Morey-Chaisemartin <NMoreyChaisemartin@suse.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: [ANNOUNCE] rdma-core: new stable releases
+Thread-Topic: [ANNOUNCE] rdma-core: new stable releases
+Thread-Index: AQHVpfar+MR4ZSh+skKhdX4KtXIbaQ==
+Date:   Thu, 28 Nov 2019 14:18:14 +0000
+Message-ID: <BY5PR18MB329819FFCF162131B7340091BF470@BY5PR18MB3298.namprd18.prod.outlook.com>
+Accept-Language: en-150, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=NMoreyChaisemartin@suse.com; 
+x-originating-ip: [90.114.93.0]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 99eac421-49d1-422e-25cc-08d7740dcee8
+x-ms-traffictypediagnostic: BY5PR18MB3121:
+x-microsoft-antispam-prvs: <BY5PR18MB312100E7590BC617EF07EF38BF470@BY5PR18MB3121.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 0235CBE7D0
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(366004)(39860400002)(396003)(346002)(136003)(376002)(189003)(199004)(66476007)(64756008)(8936002)(55016002)(7696005)(66556008)(66946007)(14454004)(9686003)(66446008)(5640700003)(66066001)(316002)(478600001)(71200400001)(71190400001)(6436002)(6306002)(966005)(33656002)(256004)(2351001)(6116002)(3846002)(52536014)(25786009)(26005)(7736002)(305945005)(186003)(74316002)(102836004)(6506007)(81166006)(86362001)(99286004)(81156014)(8676002)(80792005)(6916009)(5660300002)(76116006)(91956017)(2906002)(2501003);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3121;H:BY5PR18MB3298.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: suse.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ukzxfX/L4hSJSIB3vcJ0jNtAid7C2B9XQCZFIAV9ESvu1rO9c9wlsMGVyw0UPK1/CpwEIyFCFK8zcqm9QODAqMT9K5/ggiUcpO0qGXnk4oLhQpJCkDruVSDEwLzpVJl1WXlmHBPks6tbC+yAWtmW06k2LmJLmn1P7nAgIvMq34MfHsNFjt92c4WmNwUtubcE1I5r3PjmNuu+0OLvkSRh4SUv0YkF1JZlFvWrWFy5l8F0/YL5a4DWLV/2VMfrazT1ARfHHFK6MGAor9bHZafPn2IZIfaScPaeCPQDKMfpmfFCSdPMuUqHlFJosXg35rlPZvFr55DU5HNAp38I3yCMb6/9dZuFPs7vMzTbAwOwjpxLjEusSoIlU2Uhgbmw78lszNB1R9cFtRuFpRGs2cg8H2/SslDLygIBTdKyBcg9f7RlertXk7MN6FSMm82E7CD8msT0nYR9pqW61nBmj36jrpVjLr1/8eJ8G/06d6bqZCE=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <CAAFE1bfsXsKGyw7SU_z4NanT+wmtuJT=XejBYbHHMCDQwm73sw@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-MC-Unique: rBL7dYfcNgmQmzjigss6Gg-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99eac421-49d1-422e-25cc-08d7740dcee8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Nov 2019 14:18:14.9063
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1UySWz3r6Q5aJKQ08HZ8mxkbfuVb+WDzn2VSokk4FvPGpm756FNZiXjxRNwKoNG0FZMEN1Yu4CMHlBGLadWrHJgO9nuu0Y8/PvFDnf5B4FE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3121
+X-OriginatorOrg: suse.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 27, 2019 at 11:14:46PM -0500, Stephen Rust wrote:
-> Hi,
->=20
-> Thanks for your reply.
->=20
-> I agree it does seem surprising that the git bisect pointed to this
-> particular commit when tracking down this issue.
->=20
-> The ramdisk we export in LIO is a standard "brd" module ramdisk (ie:
-> /dev/ram*). We configure it as a "block" backstore in LIO, not using the
-> built-in LIO ramdisk.
+These version were tagged/released:
+* v15.10
+* v16.11
+* v17.7
+* v18.6
+* v19.5
+* v20.5
+* v21.4
+* v22.5
+* v23.3
 
-Then it isn't strange any more, since iblock code uses bio interface.
+It's available at the normal places:
 
->=20
-> LIO configuration is as follows:
->=20
->   o- backstores .........................................................=
-.
-> [...]
->   | o- block .............................................. [Storage
-> Objects: 1]
->   | | o- Blockbridge-952f0334-2535-5fae-9581-6c6524165067
->  [/dev/ram-bb.952f0334-2535-5fae-9581-6c6524165067.cm2 (16.0MiB) write-th=
-ru
-> activated]
->   | |   o- alua ............................................... [ALUA
-> Groups: 1]
->   | |     o- default_tg_pt_gp ................... [ALUA state:
-> Active/optimized]
->   | o- fileio ............................................. [Storage
-> Objects: 0]
->   | o- pscsi .............................................. [Storage
-> Objects: 0]
->   | o- ramdisk ............................................ [Storage
-> Objects: 0]
->   o- iscsi ........................................................
-> [Targets: 1]
->   | o-
-> iqn.2009-12.com.blockbridge:rda:1:952f0334-2535-5fae-9581-6c6524165067:rd=
-a
->  [TPGs: 1]
->   |   o- tpg1 ...................................... [no-gen-acls, auth
-> per-acl]
->   |     o- acls ......................................................
-> [ACLs: 1]
->   |     | o- iqn.1994-05.com.redhat:115ecc56a5c .. [mutual auth, Mapped
-> LUNs: 1]
->   |     |   o- mapped_lun0  [lun0
-> block/Blockbridge-952f0334-2535-5fae-9581-6c6524165067 (rw)]
->   |     o- luns ......................................................
-> [LUNs: 1]
->   |     | o- lun0  [block/Blockbridge-952f0334-2535-5fae-9581-6c652416506=
-7
-> (/dev/ram-bb.952f0334-2535-5fae-9581-6c6524165067.cm2) (default_tg_pt_gp)=
-]
->   |     o- portals ................................................
-> [Portals: 1]
->   |       o- 0.0.0.0:3260 ...............................................
-> [iser]
->=20
->=20
-> iSER is the iSCSI extension for RDMA, and it is important to note that we
-> have _only_ reproduced this when the writes occur over RDMA, with the
-> target portal in LIO having enabled "iser". The iscsi client (using
-> iscsiadm) connects to the target directly over iSER. We use the Mellanox
-> ConnectX-5 Ethernet NICs (mlx5* module) for this purpose, which utilizes
-> RoCE (RDMA over Converged Ethernet) instead of TCP.
+git://github.com/linux-rdma/rdma-core
+https://github.com/linux-rdma/rdma-core/releases
 
-I may get one machine with Mellanox NIC, is it easy to setup & reproduce
-just in the local machine(both host and target are setup on same machine)?
+---
 
->=20
-> The identical ramdisk configuration using TCP/IP target in LIO has _not_
-> reproduced this issue for us.
+Here's the information from the tags:
+tag v15.10
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date: Thu Nov 28 10:07:56 2019 +0100
 
-Yeah, I just tried iblock over brd, and can't reproduce it.
+rdma-core-15.10:
 
->=20
-> I installed bcc and used the stackcount tool to trace rd_execute_rw, but =
-I
-> suspect because we are not using the built-in LIO ramdisk this did not
-> catch anything. Are there other function traces we can provide for you?
+Updates from version 15.9
+* Backport fixes:
+* cxgb4: free appropriate pointer in error case
+* srp_daemon: fix a double free segment fault for ibsrpdm
+-----BEGIN PGP SIGNATURE-----
 
-Please try to trace bio_add_page() a bit via 'bpftrace ./ilo.bt'.
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl3fjm8cHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZC3OB/wNwM+JM1MR92460T4j
+V6fjqGjMrPsLqkEJD/9v6o9h9XpY8/AnwnZ/Q9Z8Xq2iOBEX5BcNaJk2U8Aam18z
+flUJxqeLZlfMFIxBZGYXMHXiYnsvocLrtKb3mlL00Lefggh055moR0kwxVVnSw9e
+mgfvPXOb8ZwAlte9jq9LVv5piDnY6DiaRTcAeZB3g9l9kmQHXN5fQG41EbHSRZrL
+kApnUQDXhiJON0ox6x/JdSKPdGdm9NzkK9A/TkOPGBDsVIvVboc/EOl83banl5tK
+dNF4QqmmCg/6+b3O1A3xoz/mgsyMs31ecGgATF/ET7W/g8ZhHAqtc8Y574AkSzcn
+t11O
+=wmY3
+-----END PGP SIGNATURE-----
 
-[root@ktest-01 func]# cat ilo.bt
-kprobe:iblock_execute_rw
-{
-    @start[tid]=3D1;
-}
+tag v16.11
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date: Thu Nov 28 10:08:04 2019 +0100
 
-kretprobe:iblock_execute_rw
-{
-    @start[tid]=3D0;
-}
+rdma-core-16.11:
 
-kprobe:bio_add_page
-/@start[tid]/
-{
-  printf("%d %d\n", arg2, arg3);
-}
+Updates from version 16.10
+* Backport fixes:
+* cxgb4: free appropriate pointer in error case
+* srp_daemon: fix a double free segment fault for ibsrpdm
+-----BEGIN PGP SIGNATURE-----
 
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl3fjnYcHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZC2hB/0YNyTF0K5m3izIx6zO
+046VVpJENTr2nkxN1IQWa5h+g2ttpRqTL1i0Ae223KyeJ5h7MxiYKmNPMFxM8sbz
+pBdxfmoISYqmJ5hDW9LAAi54Bjp3waAR7G83s72jdQK+JIpkd3TLAE3nWIXl55dS
+PettWsI9fiqmUPfuTYeKOllEL/i+to+t9ti2HWcsySARD8AdaNtqKiCuRy7tBEXq
+4asXAEChX0LoyfsbEm1eUVDpJFGSluFcqblhScfCbv94bf9MtiT3uhKO/ycwyJAb
+iEBL7/vnTirNhujcb2ek5eeQy/GDvzpMEK3v8gfF5iU7A/ENZ/+Z9SqZmgUMEl+4
+46gJ
+=cxgi
+-----END PGP SIGNATURE-----
 
+tag v17.7
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date: Thu Nov 28 10:08:09 2019 +0100
 
-Thanks,=20
-Ming
+rdma-core-17.7:
+
+Updates from version 17.6
+* Backport fixes:
+* cxgb4: free appropriate pointer in error case
+* srp_daemon: fix a double free segment fault for ibsrpdm
+-----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl3fjnocHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZIixCACNO71naAOf3epCHR/t
+n03o/1GLEgaIBzhKLe3LdpzJKxOeSPHDx8vJcRpfxDDzN/KP1EweMrQCs8Px17eb
+AGyjLgVjwvqyPiohDqiYgYUfyUkd/VpoHRF/APQvU/unkyVKMxFnq7Lj7xSxuQTG
+PGhotnweDKm6sVapPY/Ve5m+akX4VoSeltVx4DDXt3TBzmqlc8lBBkPO8a0W2R9u
+CNsboZuFz9wOMo5F6+YhTKd+6vQSXw64d5h4DNWv6WQYtb/0SkvQmzzgoWLENC7K
+eZ1LXCQkqOTpUHuUQ5f/4P35oV/dNiKvykHmPzwtF0kgX6auDf5Ou6NLECeYeIHT
+R2OY
+=d/gD
+-----END PGP SIGNATURE-----
+
+tag v18.6
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date: Thu Nov 28 10:08:13 2019 +0100
+
+rdma-core-18.6:
+
+Updates from version 18.5
+* Backport fixes:
+* man: Fix return value for ibv_reg_dm_mr
+* cxgb4: free appropriate pointer in error case
+* srp_daemon: fix a double free segment fault for ibsrpdm
+-----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl3fjn4cHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZMurB/9SStpyR6Su69X2GcnU
+YaqNUQ/pzw8q5H4mhIGBniy6XZska4+SpYLUxqeWk/ppq6kcPQGsLnmrOkx6iWcB
+IRtx+AR3FFbF5wTYPxogfoYdJlxGM3AEiukB2AxKz7GF7fbm8pbgi3v0Xm53uI5N
+0qOdeqiH8VCehEpIkVp/YJvCF8+rnYdFrrTgd6l0suJAbXBp2ur3Uubm9i5L+QR0
+YYtzLn6rd6wTIsEXLy4ZcZASazFcHrIvS9k4curzPoqNObo07cFARfDhhqkgdlSX
+7FI0Iy3CYjaVa+Ul/6nVwIKnQCf94WbRCEPfOYISF/jPfI9B/4tG/A2OVHjFeLBc
+Uanv
+=2dX6
+-----END PGP SIGNATURE-----
+
+tag v19.5
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date: Thu Nov 28 10:08:17 2019 +0100
+
+rdma-core-19.5:
+
+Updates from version 19.4
+* Backport fixes:
+* man: Fix return value for ibv_reg_dm_mr
+* cxgb4: free appropriate pointer in error case
+* srp_daemon: fix a double free segment fault for ibsrpdm
+-----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl3fjoMcHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZOJ0B/sHH4s7Xyc4Ql0/5jIz
+WTw94uFawdiuninGAepJLfjSobDyQGSKf+0wWoHuaB3BJy19KBMSh80n1KAKxPBb
+tQasm9gBJqzi4l5eUW9gN8wAZ0o7mpLWFldHuNBU9kKrrhDLuwAEQaQiRaskGd0Z
+TnUxpsLPQKXUryImRuEa7puTN6VAgLZhsxSO2+cOxdutPIdEzPevmqd83vRROOa7
+5PqfPo1O7eRe7QWwaO6xUDsEtHm9FRchjDAj9A55LU142ikbH4qkwX0GkChjBjgr
+Q+eRPSiWtqXD8tjLPlnG5KYf1knVkZNr3HqLzLIUVhtfoGCAEWFChUtme21qSghe
+KTMf
+=h5m2
+-----END PGP SIGNATURE-----
+
+tag v20.5
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date: Thu Nov 28 10:08:22 2019 +0100
+
+rdma-core-20.5:
+
+Updates from version 20.4
+* Backport fixes:
+* man: Fix return value for ibv_reg_dm_mr
+* cxgb4: free appropriate pointer in error case
+* srp_daemon: fix a double free segment fault for ibsrpdm
+-----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl3fjogcHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZAlnB/9uaWEEiBDv2i8thknH
+IIkHYZ4Mh1Ip9fzFpRzo/5NzqswNL1mk67vPQA9RZTb214ojmHhn+yiRp12cZY41
+/Nq5arQsEGqmZgzSrecLXWDoP2cltE8yK0NzGX4wigQAfPAt8Wo7czuRYu6t+7fZ
+Z3VGc99bxdcUgESk+fUOByirQeJQhT7fNDbO1KjAta4P4FtyrgQ1AZKoxAYVszwW
+DzpdbHdxlZOSKYZu51xU6R0kqAgvkcm/vFFw+v/LPl/QinpnlHBa+1+MdET/IUnb
+h/CT2i+uzo8AyozS1hJ4sZni8I7e++HqzKpzlylv+byXQIWrS8jbDJVBrltLAs6O
+33Sm
+=h/XJ
+-----END PGP SIGNATURE-----
+
+tag v21.4
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date: Thu Nov 28 10:08:27 2019 +0100
+
+rdma-core-21.4:
+
+Updates from version 21.3
+* Backport fixes:
+* man: Fix return value for ibv_reg_dm_mr
+* cxgb4: free appropriate pointer in error case
+* srp_daemon: fix a double free segment fault for ibsrpdm
+-----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl3fjo0cHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZAGoB/418E5/Qn/ezYM/Cahf
+ic/8r3/S66u69REiIqAIpAtErKjCm0eVW+vnhm/jIo/uPMTWGaxFOnqqas9YQen+
+JAxO3QpAoCPwbqDvoJ6zNx340HU7rea+YorKml5ast+DSNC4Zbht88rnroAuXPnI
+nqdPpkrktUkZAbYdTY49uow8ExAIpi3lUB1Jd+ZnwaelA5E5Iv63JvDG7i16uNKP
+PhmDUAnhGPkpfEr3xSjYFUv3zaegLPPnJdYs9MXhvrZT4FA5GYjs4Uu0Qq7iB33R
+eSLjv7m5KmdE1pwc1SGu79mOnyYtMSxhMHGjWeJKWRJtbHMlSq5F9yrfNZAFntng
+OLit
+=2f4v
+-----END PGP SIGNATURE-----
+
+tag v22.5
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date: Thu Nov 28 10:08:31 2019 +0100
+
+rdma-core-22.5:
+
+Updates from version 22.4
+* Backport fixes:
+* man: Fix return value for ibv_reg_dm_mr
+* cxgb4: free appropriate pointer in error case
+* srp_daemon: fix a double free segment fault for ibsrpdm
+-----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl3fjpEcHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZI7mB/98VU0RhrXYgxFRQaaN
+awqHYDiWTlF6DWbsCnLE26dnTVQeSdA89/R4I0BnLdKWc4ZAOne8tOA9ltC7u8T1
+QQxdxc8Uog/FL2qTI14UQk4e5BF0l7gvWCjUGm354sgSTIM5td0CSLOyYbGHLfX5
+2399h+MKDrZ6fxxv9/MTJk3sWpR25fiYIU7CKDHpNAyqfZRKmcI1Eud4HemQErbp
+7syFBoPNU1RA3xfRfal8f/fAuAxaxI/j/hbaYr0glnTOCMASGh+YmRbtDtUhIGP8
+zaC4XiJsdctU9IN02p/jIBvQcryNRBU0eF5re/6PxBGiqfCyDYeogKvZ+Ss/mYHk
+BPfU
+=YYdY
+-----END PGP SIGNATURE-----
+
+tag v23.3
+Tagger: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
+Date: Thu Nov 28 10:08:36 2019 +0100
+
+rdma-core-23.3:
+
+Updates from version 23.2
+* Backport fixes:
+* man: Fix return value for ibv_reg_dm_mr
+* cxgb4: free appropriate pointer in error case
+* verbs: Set missing errno in ibv_cmd_reg_mr
+* srp_daemon: fix a double free segment fault for ibsrpdm
+-----BEGIN PGP SIGNATURE-----
+
+iQFQBAABCAA6FiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAl3fjpUcHG5tb3JleWNo
+YWlzZW1hcnRpbkBzdXNlLmNvbQAKCRCAG924JZiPZFkKB/4l147FUSszvCNDxOaF
+RgL85kAN4WaKc8eLh5deb1oPaBl3FW7D72fYJqGQ4bsBo9VkWICbt4Q+0/QP2Ko+
+65KFygT59oZcMhBZ8OHE+pXKQ9xVelXm1pKea8n/QjIqho4TjNxtsWAsEta3uk/g
+PjQ3IyHCdlnDWB9zU1HqM7W/80tAZnqPzR5d2N5Mq/37n3m5KHjWIFJz7PYiqsmf
+YlOt4MUVoZRfZnE5xDxgfhjQ6MA+oVW4dnbG45EXeN8g/qdh1+DpcvwKcpjWjf6T
+JjaRIiwhZHItgHfF90ZY34uekW/2BGji10roklWbHoBbbi7GBPmL79HPo/eBE1QC
+Du4q
+=dfqh
+-----END PGP SIGNATURE-----
+
+It's available at the normal places:
+
+git://github.com/linux-rdma/rdma-core
+https://github.com/linux-rdma/rdma-core/releases
+
 
