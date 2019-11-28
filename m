@@ -2,153 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F19A710C350
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Nov 2019 05:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAB910C3CD
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Nov 2019 06:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727320AbfK1E7d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Nov 2019 23:59:33 -0500
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:44071 "EHLO
-        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726401AbfK1E7d (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Nov 2019 23:59:33 -0500
-Received: by mail-vs1-f66.google.com with SMTP id p6so11494501vsj.11
-        for <linux-rdma@vger.kernel.org>; Wed, 27 Nov 2019 20:59:31 -0800 (PST)
+        id S1726561AbfK1FwK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 Nov 2019 00:52:10 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:37755 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbfK1FwJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Nov 2019 00:52:09 -0500
+Received: by mail-ot1-f66.google.com with SMTP id k14so5526519otn.4;
+        Wed, 27 Nov 2019 21:52:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pwai5oTW2bQ1eWRb873S9jfTQbd174poDORijQeYdKY=;
-        b=aIKXM44PBPhTgm7lgE9RNKHHEgo8pZ58y+Lp7f5OALee/QSx+NmrfL7cdiuMRNDA+o
-         8PcrnucWRguv5X7sDXOFOTkfumVTmesgrW9yt+OaoidD6gIJj6Nxoktr0EnJZ5twttHt
-         VdpPKj+HmSjdEp9QRH2xjygdk3ozuuRXSyE7/PWmdcqTujYl2+EKAapY6E6EQ8bgVUWC
-         ligIEpkcw/DonspK2o5fplNK0znS5FsPaaTqd73aKwzUUBKUljEqMbKtOio/kc2YRrJ6
-         CWuRq+79y12XTP0gYf8VbK0zy27fm2T2+tluQ93Rlyo4/6Y+qFAEN0B3Dn9PbzzoOjUi
-         lCxg==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=MdEQJsY/Utok4Nn4+LSSZV9QETD4DTsPXrGDp9ayac4=;
+        b=Z3NN7fiHFI9tkEJAgOlXc51rDZn+xxgMgdk7rPkm9wgF4Zz+vN7+/qRf7w68iU0HqU
+         tR53nYsKhSUS7MzbIxv1z6l+WafuABRpWjliag64+oXmT44ZS5s56lTO+6mrhoWRRsju
+         Klbt3nY54+8Li5g0+aYbfmu6ZHajsExFHUw6OPuvB8ExHiXpU92jAQ0+7vIJpGvNxEEH
+         2q6aY+dRWWDRM9igBG52X1ZAwdREsfDG8xlB0q+lXOKvImYblnPlueY10Nuwh0ThP1rP
+         f8WmfTQ4vJ/qa2CibOatlR+zpSJiYoGsEw6rdOep/88R8M8qMnlJ5DgQiMgjUGnSGboZ
+         MeUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pwai5oTW2bQ1eWRb873S9jfTQbd174poDORijQeYdKY=;
-        b=hYgXTVeFoX6rzWG9SByjbJLA5u5kvN4j3DbfZ8QbROua2DPTLi3JlMsC8kqTg1IeOG
-         Fybd76RN3KGYVn9R99gkPN1ouUpf2Nt1Zdfkyv4tk6cVu+AAQBYXJHnkyg+JsQTYqp0R
-         xhXL37y5RC2Qjih8B2dOG7HvYZ7bvO0uEQK/6OX8Xa/3UxzsQ5/FydYwA863BX3bXfAc
-         dVDLKUip3BchxyBWXoSj2N0S0v3yjV3lrhi52Oo1XNvETeIcEWqDv8wA7PrRgEsTD7eU
-         +AtwL1dDz5ncdiHuX4OBSGL0lf1ieDZBbQUE18uA7JgXVm8PA3Q1HyPn/akWQwcoGBBW
-         3w5w==
-X-Gm-Message-State: APjAAAWXbYQ9LjkC4wUxo/6aB+kWCVAAPD9+3BC2mKG5Ej/7y8/SBtPA
-        +OmPlf1F/irOUX3PLO5SO6l17uPbgqXxsEQjlPM=
-X-Google-Smtp-Source: APXvYqwmA8LHcYkF9ECLswuFTHA9TIWEf/YjuznBoSPyEInQvrFT+dWVyB2CHEsLk1i/nb0OGINf2hB/yGnGbBERzpg=
-X-Received: by 2002:a05:6102:1261:: with SMTP id q1mr15895080vsg.182.1574917170974;
- Wed, 27 Nov 2019 20:59:30 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=MdEQJsY/Utok4Nn4+LSSZV9QETD4DTsPXrGDp9ayac4=;
+        b=b185ckKuy5QCIcV2HuLwvIY1GGHiCZj+5/l0XUI+SaWEtGS9omfZ42BVxf5aiuR0TZ
+         mixibzGPcY1q1ndu63hLJ7l4THwXV91rWgkzQ8RJDu6Ly1lQu36wsvqrRuEyaKKOAQS6
+         utYLgHPcUzk2yukOc8n49DxUo8lLTywqaAhY1wEvuMJo/4P2gaOQr4QUOeNQV4Jzbodj
+         cyRJo4ICmndHcKR2FNnthxiIliexkjzXVajhonMzDdhOvZ3uciv7S+pE0qbsdHekJwAZ
+         dD3yoFKop5nJ1jYkMTfdkyDBQXx5JFUJcfnXjbWItviG5digyfhYNVzhIBAhkfP6BbSA
+         e/Sw==
+X-Gm-Message-State: APjAAAWq9pyysncPKCRHqbODvUnQWeCV6+TnC7smM7pJDEB2rgyksyaq
+        mHJjtKW1jI59p+REdO+bB1K5ajOBCrdaZ2GSGl8=
+X-Google-Smtp-Source: APXvYqzInsY7hophOQP2+nEZGGNXBok7RANKqxBeOZYae1OgjLLxGPRqV70MTIeInLmoCGA432X8l3eaGcInyEDdSxg=
+X-Received: by 2002:a05:6830:1158:: with SMTP id x24mr6121936otq.109.1574920328102;
+ Wed, 27 Nov 2019 21:52:08 -0800 (PST)
 MIME-Version: 1.0
-References: <1574655875-3475-1-git-send-email-yanjun.zhu@oracle.com> <20191127200751.GB23284@ziepe.ca>
-In-Reply-To: <20191127200751.GB23284@ziepe.ca>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Thu, 28 Nov 2019 13:06:51 +0800
-Message-ID: <CAD=hENfecFwAzdor=H160OTQKfEWt1qHqJLLtQN2zb3R993_og@mail.gmail.com>
-Subject: Re: [PATCHv2 1/1] RDMA/core: avoid kernel NULL pointer error
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Zhu Yanjun <yanjun.zhu@oracle.com>, dledford@redhat.com,
-        michael.j.ruhl@intel.com, ira.weiny@intel.com, rostedt@goodmis.org,
-        leon@kernel.org, kamalheib1@gmail.com, linux-rdma@vger.kernel.org
+References: <CAAFE1bd9wuuobpe4VK7Ty175j7mWT+kRmHCNhVD+6R8MWEAqmw@mail.gmail.com>
+ <20191128015748.GA3277@ming.t460p> <CA+VdTb_-CGaPjKUQteKVFSGqDz-5o-tuRRkJYqt8B9iOQypiwQ@mail.gmail.com>
+ <20191128025822.GC3277@ming.t460p> <CAAFE1bfsXsKGyw7SU_z4NanT+wmtuJT=XejBYbHHMCDQwm73sw@mail.gmail.com>
+ <CAAFE1bdGCx96tLKgSkNf7=MDZEZMnC==PJghpsRctvZpPLaX5w@mail.gmail.com>
+In-Reply-To: <CAAFE1bdGCx96tLKgSkNf7=MDZEZMnC==PJghpsRctvZpPLaX5w@mail.gmail.com>
+Reply-To: Rob.Townley@gmail.com
+From:   Rob Townley <rob.townley@gmail.com>
+Date:   Wed, 27 Nov 2019 23:51:56 -0600
+Message-ID: <CA+VdTb-HTXidfFVmzV2ynJgOGdmb-Ps=j9vQfZ-iZBPFm4RWJg@mail.gmail.com>
+Subject: Re: Data corruption in kernel 5.1+ with iSER attached ramdisk
+To:     Stephen Rust <srust@blockbridge.com>
+Cc:     Ming Lei <ming.lei@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, target-devel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 28, 2019 at 4:07 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Sun, Nov 24, 2019 at 11:24:35PM -0500, Zhu Yanjun wrote:
-> > When the interface related with IB device is set to down/up over and
-> > over again, the following call trace will pop out.
-> > "
-> >  Call Trace:
-> >   [<ffffffffa039ff8d>] ib_mad_completion_handler+0x7d/0xa0 [ib_mad]
-> >   [<ffffffff810a1a41>] process_one_work+0x151/0x4b0
-> >   [<ffffffff810a1ec0>] worker_thread+0x120/0x480
-> >   [<ffffffff810a709e>] kthread+0xce/0xf0
-> >   [<ffffffff816e9962>] ret_from_fork+0x42/0x70
-> >
-> >  RIP  [<ffffffffa039f926>] ib_mad_recv_done_handler+0x26/0x610 [ib_mad]
-> > "
-> > From vmcore, we can find the following:
-> > "
-> > crash7lates> struct ib_mad_list_head ffff881fb3713400
-> > struct ib_mad_list_head {
-> >   list = {
-> >     next = 0xffff881fb3713800,
-> >     prev = 0xffff881fe01395c0
-> >   },
-> >   mad_queue = 0x0
-> > }
-> > "
-> >
-> > Before the call trace, a lot of ib_cancel_mad is sent to the sender.
-> > So it is necessary to check mad_queue in struct ib_mad_list_head to avoid
-> > "kernel NULL pointer" error.
-> >
-> > From the new customer report, when there is something wrong with IB HW/FW,
-> > the above call trace will appear. It seems that bad IB HW/FW will cause
-> > this problem.
-> >
-> > Signed-off-by: Zhu Yanjun <yanjun.zhu@oracle.com>
-> > V1->V2: Add new bug symptoms.
-> >  drivers/infiniband/core/mad.c | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> >
-> > diff --git a/drivers/infiniband/core/mad.c b/drivers/infiniband/core/mad.c
-> > index 9947d16..43f596c 100644
-> > +++ b/drivers/infiniband/core/mad.c
-> > @@ -2279,6 +2279,17 @@ static void ib_mad_recv_done(struct ib_cq *cq, struct ib_wc *wc)
-> >               return;
-> >       }
-> >
-> > +     if (unlikely(!mad_list->mad_queue)) {
-> > +             /*
-> > +              * When the interface related with IB device is set to down/up,
-> > +              * a lot of ib_cancel_mad packets are sent to the sender. In
-> > +              * sender, the mad packets are cancelled.  The receiver will
-> > +              * find mad_queue NULL. If the receiver does not test mad_queue,
-> > +              * the receiver will crash with "kernel NULL pointer" error.
-> > +              */
-> > +             return;
-> > +     }
->
-> I feel like this patch was sent already?
->
-> It is not possible for mad_queue to be NULL here without another bug,
-> so this can't be the right fix.
->
-> This is because:
->
->                 mad_priv->header.mad_list.mad_queue = recv_queue;
->                 mad_priv->header.mad_list.cqe.done = ib_mad_recv_done;
->                 recv_wr.wr_cqe = &mad_priv->header.mad_list.cqe;
->
-> And then we do
->
->         struct ib_mad_list_head *mad_list =
->                 container_of(wc->wr_cqe, struct ib_mad_list_head, cqe);
->
-> So there is no point where the mad_list could be legimiately NULL'd
-> before getting here, something else must be happening, you must figure
-> out and describe how the NULL is happening.
+Interesting case to follow as there are many types of RamDisks.  The
+common tmpfs kind will use its RAM allocation and all free harddrive
+space.
 
-Yes. From the kernel source code, this bug does not occur. But from
-the bug symptoms, it is possible that this bug is caused by the HW/FW.
-From the commit logs, in 2 scenarios,  this bug will occur. One is to
-set IB interface down/up over and over again, the other is bad IB
-device.
-After the bad IB device is replaced, this bug did not appear again.
+The ramdisk in CentOS 7 backed by LIO will overflow its size in RAM
+and fill up all remaining free space on spinning platters.  So if the
+RamDisk is 4GB out of 192GB RAM in the lightly used machine. Free
+filesystem space is 16GB.  Writes to the 4GB RamDisk will only error
+out at 21GB when there is no space left on filesystem.
 
-The reason that I sent this patch again is to let the developer
-suspect the HW/FW when this bug occurs again. I can not check the
-HW/FW since I can not access these IB devices and FW source code.
+dd if=/dev/zero of=/dev/iscsiRamDisk
+Will keep writing way past 4GB and not stop till hardrive is full
+which is totally different than normal disks.
 
-Just as a reminder, not to expect to merge this patch into mainline.
+Wonder what exact kind of RamDisk is in that kernel?
 
-Zhu Yanjun
-
+On Wed, Nov 27, 2019 at 10:26 PM Stephen Rust <srust@blockbridge.com> wrote:
 >
-> Jason
+> [Apologies for dup, re-sending without text formatting to lists]
+>
+> Hi,
+>
+> Thanks for your reply.
+>
+> I agree it does seem surprising that the git bisect pointed to this
+> particular commit when tracking down this issue.
+>
+> > Stephen, could you share us how you setup the ramdisk in your test?
+>
+> The ramdisk we export in LIO is a standard "brd" module ramdisk (ie:
+> /dev/ram*). We configure it as a "block" backstore in LIO, not using
+> the built-in LIO ramdisk.
+>
+> LIO configuration is as follows:
+>
+>   o- backstores .......................................................... [...]
+>   | o- block .............................................. [Storage Objects: 1]
+>   | | o- Blockbridge-952f0334-2535-5fae-9581-6c6524165067
+> [/dev/ram-bb.952f0334-2535-5fae-9581-6c6524165067.cm2 (16.0MiB)
+> write-thru activated]
+>   | |   o- alua ............................................... [ALUA Groups: 1]
+>   | |     o- default_tg_pt_gp ................... [ALUA state: Active/optimized]
+>   | o- fileio ............................................. [Storage Objects: 0]
+>   | o- pscsi .............................................. [Storage Objects: 0]
+>   | o- ramdisk ............................................ [Storage Objects: 0]
+>   o- iscsi ........................................................ [Targets: 1]
+>   | o- iqn.2009-12.com.blockbridge:rda:1:952f0334-2535-5fae-9581-6c6524165067:rda
+>  [TPGs: 1]
+>   |   o- tpg1 ...................................... [no-gen-acls, auth per-acl]
+>   |     o- acls ...................................................... [ACLs: 1]
+>   |     | o- iqn.1994-05.com.redhat:115ecc56a5c .. [mutual auth, Mapped LUNs: 1]
+>   |     |   o- mapped_lun0  [lun0
+> block/Blockbridge-952f0334-2535-5fae-9581-6c6524165067 (rw)]
+>   |     o- luns ...................................................... [LUNs: 1]
+>   |     | o- lun0
+> [block/Blockbridge-952f0334-2535-5fae-9581-6c6524165067
+> (/dev/ram-bb.952f0334-2535-5fae-9581-6c6524165067.cm2)
+> (default_tg_pt_gp)]
+>   |     o- portals ................................................ [Portals: 1]
+>   |       o- 0.0.0.0:3260 ............................................... [iser]
+>
+> > > > Could you explain a bit what is iSCSI attached with iSER / RDMA? Is the
+> > > > actual transport TCP over RDMA? What is related target driver involved?
+>
+> iSER is the iSCSI extension for RDMA, and it is important to note that
+> we have _only_ reproduced this when the writes occur over RDMA, with
+> the target portal in LIO having enabled "iser". The iscsi client
+> (using iscsiadm) connects to the target directly over iSER. We use the
+> Mellanox ConnectX-5 Ethernet NICs (mlx5* module) for this purpose,
+> which utilizes RoCE (RDMA over Converged Ethernet) instead of TCP.
+>
+> The identical ramdisk configuration using TCP/IP target in LIO has
+> _not_ reproduced this issue for us.
+>
+> > > > /usr/share/bcc/tools/stackcount -K rd_execute_rw
+>
+> I installed bcc and used the stackcount tool to trace rd_execute_rw,
+> but I suspect because we are not using the built-in LIO ramdisk this
+> did not catch anything. Are there other function traces we can provide
+> for you?
+>
+> Thanks,
+> Steve
