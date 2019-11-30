@@ -2,133 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7189F10DB52
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Nov 2019 22:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A53410DCF4
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Nov 2019 08:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727236AbfK2Vro (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 29 Nov 2019 16:47:44 -0500
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:6093 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727073AbfK2Vro (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 29 Nov 2019 16:47:44 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5de192010000>; Fri, 29 Nov 2019 13:47:46 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 29 Nov 2019 13:47:42 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Fri, 29 Nov 2019 13:47:42 -0800
-Received: from [10.2.169.205] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 29 Nov
- 2019 21:47:41 +0000
-Subject: Re: [PATCH v2 17/19] powerpc: book3s64: convert to pin_user_pages()
- and put_user_page()
-To:     Jan Kara <jack@suse.cz>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20191125231035.1539120-1-jhubbard@nvidia.com>
- <20191125231035.1539120-18-jhubbard@nvidia.com>
- <20191129112315.GB1121@quack2.suse.cz>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <cb3e2acc-0a83-4053-fbcc-6d75dc47f174@nvidia.com>
-Date:   Fri, 29 Nov 2019 13:44:53 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <20191129112315.GB1121@quack2.suse.cz>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        id S1725811AbfK3Hcp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 30 Nov 2019 02:32:45 -0500
+Received: from mail-eopbgr10046.outbound.protection.outlook.com ([40.107.1.46]:43892
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725298AbfK3Hco (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 30 Nov 2019 02:32:44 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fhHAbsc54XUevHByedkCg1MVLh7GyoaBswlmaGeCxQGdvZ3UsH7Jv6RZh1P/pCzHIlhYrRpRdZQE+5jUZFzbW6gVCQnSLAvoHehSIoctatTVoeg5CLpr3r+HsrEkXZ4dynQ2RTPrHPHBUQnbTkndroJmZ3YNlg/FvKXZhPoYsHwx2PMhgHAFAEc400n5szn70ZBjRUjMPXLsslRGyeGWjbdLQFHGQPvjAdbMDX2pTukmOwtnPrsvi9U+nVBTEBjCw5+7D29W0uuzMFxUA1iG/rN4SAO21Sqjudf3vfw31asEzL3dBJSuiE5nqU9ZJKrUXk6gvpkGr5lCeTll7T7KkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eeY0I2g6RFhdmN6yqcuG4rlfiI0Yp1vurt4OViGrbBI=;
+ b=X8m59HhQRW7RIabuES8uw+GWg8PmZJY5dxBJBhzylwRabRPFzWS2fKe3EKC/UY2UCPuLZM0IYWhlYztJBloPg3KyP1QAUJxSMWeEVGtnIhn9r5xoUHPl1UcgNLvdXaRlNBmECEY0L+Ej96avDrq9R5C3eJ25Wfrn9WUZHQzWJ4FHSOp1lWRN6zu2HnKOYKK0TlaLU592dusCQqSP134bPPMTWxH0a/i9p8QmbZJelL4x62+8uZRDALP9cBW+Xv7Ew7LyiT807tjOcR5sHd7LAWYqq6CGjs7Cm9XXoTe1k+Hi/y27yaG1vTAmhAkq8qSCnKjJHGhtkYg5sn5ZUOUGMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eeY0I2g6RFhdmN6yqcuG4rlfiI0Yp1vurt4OViGrbBI=;
+ b=q87TpYmkMXXyue2VjOY26FEFWnLB6Gnxh/k3nTQDz5RvLnC0CE5+9cL9qdh6Xlo+d92xzwPZjNFbTHorme5XQvg181M8t2r5RyMiiPJjoPXSLJhK3qv9YZHzYVFMrcJfhH6PjXPhqFxEoogqV6FPQwlLlAgtDm5JGxmnGCYhnDw=
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (20.177.51.151) by
+ VI1PR05MB3421.eurprd05.prod.outlook.com (10.170.239.11) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2495.22; Sat, 30 Nov 2019 07:32:38 +0000
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::c872:cf66:4a5c:c881]) by VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::c872:cf66:4a5c:c881%5]) with mapi id 15.20.2495.014; Sat, 30 Nov 2019
+ 07:32:38 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     "davem@davemloft.net" <davem@davemloft.net>,
+        Yevgeny Kliteynik <kliteyn@mellanox.com>,
+        "pablo@netfilter.org" <pablo@netfilter.org>,
+        Oz Shlomo <ozsh@mellanox.com>, Eli Cohen <eli@mellanox.com>,
+        Eli Britstein <elibr@mellanox.com>,
+        "yuehaibing@huawei.com" <yuehaibing@huawei.com>,
+        "leon@kernel.org" <leon@kernel.org>, Roi Dayan <roid@mellanox.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net/mlx5e: Fix build error without IPV6
+Thread-Topic: [PATCH] net/mlx5e: Fix build error without IPV6
+Thread-Index: AQHVpSZsTv6MbE28T0uVnnRWLx0w9KejVl6A
+Date:   Sat, 30 Nov 2019 07:32:38 +0000
+Message-ID: <0225e67bfeedebca1dc5d1daef12f2cdc13452d4.camel@mellanox.com>
+References: <20191127132700.25872-1-yuehaibing@huawei.com>
+In-Reply-To: <20191127132700.25872-1-yuehaibing@huawei.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1575064066; bh=tMvn6asqZgJ/8yczcC9lnf1pHEf7TJzCvRVZqLzUEIk=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=P515JTdy70KP3oimNK/fSAtObgW4JDQsh/LN+dj31w7qtgH6JUdGJYKS3j5J8enBM
-         oN04vymJSqszX58P75QNc1cW3k/Ll0LB9zwNlmlBWaR7zw2qd7/o9t2Cy3EugW3wgY
-         XBlQyEsBEMcfywkDPj201lclcvfOCs5gFzs/O+2QmSmHzciD31eTMBkNB0W6VGXEOL
-         BbnrGM91l0GAwjLm+XJmL4eoGQAce5JVCz6FfueQA4/sc24hO2mmz2R1mloKHyP2Ej
-         3q1StOVbP0t0OEBFEGay8puwUyC8jwyLEftGIYNcVrkaz5szmNasFETh2Ir0Xi5Q1g
-         8xDwDUM/1ii9A==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-originating-ip: [73.15.39.150]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 20592e94-ca01-4a5f-33b5-08d775677a26
+x-ms-traffictypediagnostic: VI1PR05MB3421:|VI1PR05MB3421:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB34219DF3077D1856B3D76B89BE410@VI1PR05MB3421.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2803;
+x-forefront-prvs: 02379661A3
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39850400004)(396003)(346002)(376002)(366004)(136003)(189003)(199004)(102836004)(6506007)(110136005)(4326008)(256004)(5660300002)(6246003)(186003)(54906003)(66066001)(6512007)(305945005)(7736002)(6636002)(3846002)(6116002)(66556008)(118296001)(316002)(14454004)(6436002)(64756008)(26005)(2616005)(66446008)(8936002)(71190400001)(2501003)(478600001)(66946007)(66476007)(71200400001)(36756003)(76176011)(81166006)(2906002)(4744005)(6486002)(91956017)(86362001)(76116006)(4001150100001)(11346002)(81156014)(25786009)(446003)(58126008)(8676002)(99286004)(229853002)(2201001)(14444005);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3421;H:VI1PR05MB5102.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xlcu1QyYzt4xCOMwbMdRI6F1+5rO3kpaQ6sE7t+WG8gZhEb+Nz0Hx1HOpG416kiEIWzsSOb951wNDy4FZAFKHCKsSbosXv9h17gLHJDYfSUFjvG7fDZCgx6RfdlNEiJuZyAfCWe9avFOrE27hZF1kMZQjA1CP+jrcsItKvYCeRL/E/1nWzMUoHp2UgefFPmUkJL05rgKIkDpvl2w8glEehOMU1x9jQou8G6EB1QSrxIsfTeok5x/x1fTGP/uMSJQU/9Y8B8Dyur6cHsvpqGJHgdPlkd6Aqy3YAmjG4YNH7IihNmmRgpF7MVpDNvJ1lrDDu0Jao7pQFUaRH/Ftd8VO3rRfOuh17iJmi0NjFflpNNS1zW7N++jzez0BfWZZFpzRazXEnZU2vif0jSN/SmUBHkzwb46sDslo2cq2JCI911cHvyiuljIWlk7dUILgPGq
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <483D765392B63443A76D76282BB220F0@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20592e94-ca01-4a5f-33b5-08d775677a26
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Nov 2019 07:32:38.6490
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 455zh+4+IE/sj1mtSMdKIM2dfmD99rDPRM9uyi9sedMG+jzlaj6cmKvD29Cwhi1etwXi1mo6k66Xyim7D9aydw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3421
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/29/19 3:23 AM, Jan Kara wrote:
-> On Mon 25-11-19 15:10:33, John Hubbard wrote:
->> 1. Convert from get_user_pages() to pin_user_pages().
->>
->> 2. As required by pin_user_pages(), release these pages via
->> put_user_page(). In this case, do so via put_user_pages_dirty_lock().
->>
->> That has the side effect of calling set_page_dirty_lock(), instead
->> of set_page_dirty(). This is probably more accurate.
-> 
-> Maybe more accurate but it doesn't work for mm_iommu_unpin(). As I'm
-> checking mm_iommu_unpin() gets called from RCU callback which is executed
-> interrupt context and you cannot lock pages from such context. So you need
-> to queue work from the RCU callback and then do the real work from the
-> workqueue...
-> 
-> 								Honza
-
-ah yes, fixed locally. (In order to avoid  distracting people during the merge
-window, I won't post any more versions of the series until the merge window is
-over, unless a maintainer tells me that any of these patches are desired for
-5.5.)
-
-With that, we are back to a one-line diff for this part:
-
-@@ -215,7 +214,7 @@ static void mm_iommu_unpin(struct mm_iommu_table_group_mem_t *mem)
-                 if (mem->hpas[i] & MM_IOMMU_TABLE_GROUP_PAGE_DIRTY)
-                         SetPageDirty(page);
-  
--               put_page(page);
-+               put_user_page(page);
-                 mem->hpas[i] = 0;
-         }
-  }
-
-btw, I'm also working on your feedback for patch 17 (mm/gup: track FOLL_PIN pages [1]),
-from a few days earlier, it's not being ignored, I'm just trying to avoid distracting
-people during the merge window.
-
-[1] https://lore.kernel.org/r/20191121093941.GA18190@quack2.suse.cz
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+T24gV2VkLCAyMDE5LTExLTI3IGF0IDIxOjI3ICswODAwLCBZdWVIYWliaW5nIHdyb3RlOg0KPiBJ
+ZiBJUFY2IGlzIG5vdCBzZXQgYW5kIENPTkZJR19NTFg1X0VTV0lUQ0ggaXMgeSwNCj4gYnVpbGRp
+bmcgZmFpbHM6DQo+IA0KPiBkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUv
+ZW4vdGNfdHVuLmM6MzIyOjU6IGVycm9yOg0KPiByZWRlZmluaXRpb24gb2YgbWx4NWVfdGNfdHVu
+X2NyZWF0ZV9oZWFkZXJfaXB2Ng0KPiAgaW50IG1seDVlX3RjX3R1bl9jcmVhdGVfaGVhZGVyX2lw
+djYoc3RydWN0IG1seDVlX3ByaXYgKnByaXYsDQo+ICAgICAgXn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fg0KPiBJbiBmaWxlIGluY2x1ZGVkIGZyb20NCj4gZHJpdmVycy9uZXQvZXRoZXJu
+ZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuL3RjX3R1bi5jOjc6MDoNCj4gZHJpdmVycy9uZXQvZXRo
+ZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuL3RjX3R1bi5oOjY3OjE6IG5vdGU6DQo+IHByZXZp
+b3VzIGRlZmluaXRpb24gb2YgbWx4NWVfdGNfdHVuX2NyZWF0ZV9oZWFkZXJfaXB2NiB3YXMgaGVy
+ZQ0KPiAgbWx4NWVfdGNfdHVuX2NyZWF0ZV9oZWFkZXJfaXB2NihzdHJ1Y3QgbWx4NWVfcHJpdiAq
+cHJpdiwNCj4gIF5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4gDQo+IFVzZSAjaWZk
+ZWYgdG8gZ3VhcmQgdGhpcywgYWxzbyBtb3ZlIG1seDVlX3JvdXRlX2xvb2t1cF9pcHY2DQo+IHRv
+IGNsZWFudXAgdW51c2VkIHdhcm5pbmcuDQo+IA0KPiBSZXBvcnRlZC1ieTogSHVsayBSb2JvdCA8
+aHVsa2NpQGh1YXdlaS5jb20+DQo+IEZpeGVzOiBlNjg5ZTk5OGUxMDIgKCJuZXQvbWx4NWU6IFRD
+LCBTdHViIG91dCBpcHY2IHR1biBjcmVhdGUgaGVhZGVyDQo+IGZ1bmN0aW9uIikNCj4gU2lnbmVk
+LW9mZi1ieTogWXVlSGFpYmluZyA8eXVlaGFpYmluZ0BodWF3ZWkuY29tPg0KDQpBY2tlZC1ieTog
+U2FlZWQgTWFoYW1lZWQgPHNhZWVkbUBtZWxsYW5veC5jb20+DQoNCg==
