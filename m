@@ -2,58 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4654F10ECFC
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Dec 2019 17:21:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6E510ECFD
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Dec 2019 17:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727553AbfLBQVE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Dec 2019 11:21:04 -0500
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:40441 "EHLO
-        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727418AbfLBQVE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Dec 2019 11:21:04 -0500
-Received: by mail-yb1-f193.google.com with SMTP id n3so178645ybm.7
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Dec 2019 08:21:03 -0800 (PST)
+        id S1727589AbfLBQVJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Dec 2019 11:21:09 -0500
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:46885 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727555AbfLBQVJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Dec 2019 11:21:09 -0500
+Received: by mail-yb1-f194.google.com with SMTP id v15so158240ybp.13
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Dec 2019 08:21:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:subject:from:to:date:message-id:in-reply-to:references
          :user-agent:mime-version:content-transfer-encoding;
-        bh=05O/nehwqublQouCX90lv63raUCh5CR8VJ93aTwrn3c=;
-        b=dlm/zvqLv3xQiKnGJgpmRdMyOQc1rPf0sFw0TYJ908gA9oD0VQGEHQTyKEObW3n2Zb
-         ek5GVHdAvEJOydIoIyHV92Xfl6LpqQl5PkYO9a9llWjb60VodalmJ/t9CoXvyM0SuJN5
-         7iQEVLJwhs0/K3QcYI9NtPX/GJW0YM46AWq1XdHbDrCk0eKXEHLeYJGrKLPDXujaDrZg
-         g5nGNKvRwyF3tKqwIjWR3gjLD1eVvrPKnvfxdJte7KGXkS0NQjY0KUnxOottd+vipYM7
-         hH6RlaaBIQg1foSH3CWRmza5QdxdDBgQYD9dpApR7XBCPgxBLUKpQTOdzFONVASbcs+V
-         KYoA==
+        bh=27AlpLomhaKow9hE4P76YXbS2JD3hgzhXuCAYDaQZK0=;
+        b=R+fEAto5aBhE2jDkJxhRMVMD36Hi1nmuZp8mETZJKgm/TK48/ETlsTMpbfvcim5ldS
+         Pg3Tdd2bWpq6Nh6kf2svXeQkXTVgJs25dh/MHU7P90J1wJ7kZKaIKScu5Lrw3AxbWP7x
+         J2VOxGSkCtXaItAbWCUpUt1db+RIMGRZSdKBftBc1Zw1ndO3L+qqAw6REsIWGql1o/J8
+         Rz95hcC5mvrPd8AUEq7+Vlc4nBYMuXZmSAmxayl5LH2TSxQ24FTKMrjVWqk/FpWzY2in
+         l+GgPs3VL+WeQDdRJyHkyHWBxxG3cgmRpTYToB7uqVMDrFvNgdJVK6txUYEVwhDvghH6
+         yW2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:subject:from:to:date:message-id
          :in-reply-to:references:user-agent:mime-version
          :content-transfer-encoding;
-        bh=05O/nehwqublQouCX90lv63raUCh5CR8VJ93aTwrn3c=;
-        b=C8fKuadx6Or7X2mAZPnqEgjNnrQSTrs75Nb9U7iTDqE36sf4+uIHRbwZCBRld90L0f
-         ZqJr2JOn4iyqT/w9UGhkfmODDiv9gQFopUs0JUpYB3E41xvuyX9QHY1GoPEqonXAM2Dg
-         AZpfR7FRx+DJzSVaA7lUY2f7xplmmq4SIQqP8OW5YQV/5CCCyCuNVRzKvMqGdDZ/w6cp
-         L4cZe9r8A2SpgeP6ZFpL1rV1GKE15LvvvA5kWs+sPc6z9otp1129Bj4EYpuzC24ZEwzS
-         NgY+alIuFxPudw16YBowS4LxW1mtqxSjtR8B4blAJZLN0IpQZFvK2zvsr3lsM0tDJdGg
-         yLqQ==
-X-Gm-Message-State: APjAAAWCYL1HUUZw4bGyS2tURnBpxLzp03huplR1GTpDs/Nl86ApIZS9
-        cwPJR+zfmbw9GTt/NOwSBmofqWtP
-X-Google-Smtp-Source: APXvYqwFH1ZrsZx2Fnjcoqqg0jfQiSYevvLo+d5wDJhbORAGQRAXCZVT2qgSeMhKgBH4N/7KewbKQw==
-X-Received: by 2002:a25:2787:: with SMTP id n129mr202659ybn.50.1575303661952;
-        Mon, 02 Dec 2019 08:21:01 -0800 (PST)
+        bh=27AlpLomhaKow9hE4P76YXbS2JD3hgzhXuCAYDaQZK0=;
+        b=EuMgsJgSGEWvcXtj2glTh/QH3ERs8yzsF8olDhTJBQfhf7i9gYIIB7GQjVAdVOBEKj
+         mffPJ4/U/CJKFI1Dra9fhuPWfjmqRNg2uIL20MTQv15uJavHF9VxsTvp/Ztaqg8+h7+W
+         vJdATJiO9id0g1bnRfivmn0wlG1ScVqX1ZSRcp5AnSFbpF6dEiUd4MuXpLqsjf6nYhNa
+         OkyGMZQ0icyQitFHWZpx7ktUAcPV5PKILYs2ZtWCBUtk+FTc+wcV1aFMGIECZEP3v+dL
+         +RQMS44mZ5hndhwawhBrryjreFPGY7S0Bh+p6Hg2/+v8mMbWwQ7K34XGETbqAImyXoUd
+         /Alg==
+X-Gm-Message-State: APjAAAXPYaxysWny4h7OMqPU9XmX45MZbOcI6MC+hsy9cdxQFc6FyOO3
+        Y+LRaDY02wEcDPH+lSBIsm0satgg
+X-Google-Smtp-Source: APXvYqxHeXYcexZVaVmVyysOq3iBfcItes1ukjOadEv577JaDY790gBnRdk9PxEmPpQtD4rKE/mr8A==
+X-Received: by 2002:a25:e791:: with SMTP id e139mr163929ybh.348.1575303667336;
+        Mon, 02 Dec 2019 08:21:07 -0800 (PST)
 Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
-        by smtp.gmail.com with ESMTPSA id a74sm34025ywe.42.2019.12.02.08.21.00
+        by smtp.gmail.com with ESMTPSA id x66sm15637ywf.98.2019.12.02.08.21.06
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Dec 2019 08:21:01 -0800 (PST)
+        Mon, 02 Dec 2019 08:21:06 -0800 (PST)
 Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
-        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id xB2GL0GO014245
-        for <linux-rdma@vger.kernel.org>; Mon, 2 Dec 2019 16:21:00 GMT
-Subject: [PATCH v8 1/3] RDMA/cma: Add trace points in RDMA Connection Manager
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id xB2GL5BK014248
+        for <linux-rdma@vger.kernel.org>; Mon, 2 Dec 2019 16:21:05 GMT
+Subject: [PATCH v8 2/3] RDMA/core: Trace points for diagnosing completion
+ queue issues
 From:   Chuck Lever <chuck.lever@oracle.com>
 To:     linux-rdma@vger.kernel.org
-Date:   Mon, 02 Dec 2019 11:21:00 -0500
-Message-ID: <20191202162059.3950.33654.stgit@manet.1015granger.net>
+Date:   Mon, 02 Dec 2019 11:21:05 -0500
+Message-ID: <20191202162105.3950.50883.stgit@manet.1015granger.net>
 In-Reply-To: <20191202161518.3950.61082.stgit@manet.1015granger.net>
 References: <20191202161518.3950.61082.stgit@manet.1015granger.net>
 User-Agent: StGit/0.17.1-dirty
@@ -65,354 +66,177 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Record state transitions as each connection is established. The IP
-address of both peers and the Type of Service is reported. These
-trace points are not in performance hot paths.
+Sample trace events:
 
-Also, record each cm_event_handler call to ULPs. This eliminates the
-need for each ULP to add its own similar trace point in its CM event
-handler function.
+   kworker/u29:0-300   [007]   120.042217: cq_alloc:             cq.id=4 nr_cqe=161 comp_vector=2 poll_ctx=WORKQUEUE
+          <idle>-0     [002]   120.056292: cq_schedule:          cq.id=4
+    kworker/2:1H-482   [002]   120.056402: cq_process:           cq.id=4 wake-up took 109 [us] from interrupt
+    kworker/2:1H-482   [002]   120.056407: cq_poll:              cq.id=4 requested 16, returned 1
+          <idle>-0     [002]   120.067503: cq_schedule:          cq.id=4
+    kworker/2:1H-482   [002]   120.067537: cq_process:           cq.id=4 wake-up took 34 [us] from interrupt
+    kworker/2:1H-482   [002]   120.067541: cq_poll:              cq.id=4 requested 16, returned 1
+          <idle>-0     [002]   120.067657: cq_schedule:          cq.id=4
+    kworker/2:1H-482   [002]   120.067672: cq_process:           cq.id=4 wake-up took 15 [us] from interrupt
+    kworker/2:1H-482   [002]   120.067674: cq_poll:              cq.id=4 requested 16, returned 1
 
-These new trace points appear in a new trace subsystem called
-"rdma_cma".
+ ...
 
-Sample events:
+         systemd-1     [002]   122.392653: cq_schedule:          cq.id=4
+    kworker/2:1H-482   [002]   122.392688: cq_process:           cq.id=4 wake-up took 35 [us] from interrupt
+    kworker/2:1H-482   [002]   122.392693: cq_poll:              cq.id=4 requested 16, returned 16
+    kworker/2:1H-482   [002]   122.392836: cq_poll:              cq.id=4 requested 16, returned 16
+    kworker/2:1H-482   [002]   122.392970: cq_poll:              cq.id=4 requested 16, returned 16
+    kworker/2:1H-482   [002]   122.393083: cq_poll:              cq.id=4 requested 16, returned 16
+    kworker/2:1H-482   [002]   122.393195: cq_poll:              cq.id=4 requested 16, returned 3
 
-   kworker/u24:2-2127  [011]   696.746254: cm_event_handler:     cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0 ADDR_RESOLVED (0/0)
-   kworker/u24:2-2127  [011]   696.746880: cm_event_handler:     cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0 ROUTE_RESOLVED (2/0)
-   kworker/u28:2-2214  [001]   696.776316: cm_send_req:          cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0 qp_num=526
-     kworker/1:3-972   [001]   696.777603: cm_send_mra:          cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0
-     kworker/1:3-972   [001]   696.778062: cm_send_rtu:          cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0
-     kworker/1:3-972   [001]   696.778198: cm_event_handler:     cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0 ESTABLISHED (9/0)
-     kworker/1:3-972   [001]   700.621750: cm_disconnect:        cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0
-     kworker/1:3-972   [001]   700.621881: cm_sent_dreq:         cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0
-     kworker/3:2-512   [003]   700.622354: cm_event_handler:     cm_id.id=1 src: 192.168.2.51:57696 dst: 192.168.2.55:20049 tos=0 DISCONNECTED (10/0)
-
-Some features to note:
-- restracker ID of the rdma_cm_id is tagged on each trace event
-- The source and destination IP addresses and TOS are reported
-- CM event upcalls are shown with decoded event and status
-- CM state transitions are reported
-- rdma_cm_id lifetime events are captured
-- The latency of ULP CM event handlers is reported
-- Device removal and insertion is reported
-
-This patch is based on previous work by:
-
-Saeed Mahameed <saeedm@mellanox.com>
-Mukesh Kacker <mukesh.kacker@oracle.com>
-Ajaykumar Hotchandani <ajaykumar.hotchandani@oracle.com>
-Aron Silverton <aron.silverton@oracle.com>
-Avinash Repaka <avinash.repaka@oracle.com>
-Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
+Several features to note in this output:
+ - The WCE count and context type are reported at allocation time
+ - The CPU and kworker for each CQ is evident
+ - The CQ's restracker ID is tagged on each trace event
+ - CQ poll scheduling latency is measured
+ - Details about how often single completions occur versus multiple
+   completions are evident
+ - The cost of the ULP's completion handler is recorded
 
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Reviewed-by: Parav Pandit <parav@mellanox.com>
 ---
- drivers/infiniband/core/Makefile    |    2 
- drivers/infiniband/core/cma.c       |   68 ++++++--
- drivers/infiniband/core/cma_trace.c |   16 ++
- drivers/infiniband/core/cma_trace.h |  302 +++++++++++++++++++++++++++++++++++
- 4 files changed, 371 insertions(+), 17 deletions(-)
- create mode 100644 drivers/infiniband/core/cma_trace.c
- create mode 100644 drivers/infiniband/core/cma_trace.h
+ drivers/infiniband/core/Makefile |    2 
+ drivers/infiniband/core/cq.c     |   27 ++++
+ drivers/infiniband/core/trace.c  |   14 ++
+ include/rdma/ib_verbs.h          |    5 +
+ include/trace/events/rdma_core.h |  250 ++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 294 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/infiniband/core/trace.c
+ create mode 100644 include/trace/events/rdma_core.h
 
 diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
-index 09881bd5f12d..c8f89f0a3e8f 100644
+index c8f89f0a3e8f..bab7b6f01982 100644
 --- a/drivers/infiniband/core/Makefile
 +++ b/drivers/infiniband/core/Makefile
-@@ -20,7 +20,7 @@ ib_cm-y :=			cm.o
+@@ -11,7 +11,7 @@ ib_core-y :=			packer.o ud_header.o verbs.o cq.o rw.o sysfs.o \
+ 				device.o fmr_pool.o cache.o netlink.o \
+ 				roce_gid_mgmt.o mr_pool.o addr.o sa_query.o \
+ 				multicast.o mad.o smi.o agent.o mad_rmpp.o \
+-				nldev.o restrack.o counters.o
++				nldev.o restrack.o counters.o trace.o
  
- iw_cm-y :=			iwcm.o iwpm_util.o iwpm_msg.o
+ ib_core-$(CONFIG_SECURITY_INFINIBAND) += security.o
+ ib_core-$(CONFIG_CGROUP_RDMA) += cgroup.o
+diff --git a/drivers/infiniband/core/cq.c b/drivers/infiniband/core/cq.c
+index bbfded6d5d3d..4f25b2400694 100644
+--- a/drivers/infiniband/core/cq.c
++++ b/drivers/infiniband/core/cq.c
+@@ -7,6 +7,8 @@
+ #include <linux/slab.h>
+ #include <rdma/ib_verbs.h>
  
--rdma_cm-y :=			cma.o
-+rdma_cm-y :=			cma.o cma_trace.o
- 
- rdma_cm-$(CONFIG_INFINIBAND_ADDR_TRANS_CONFIGFS) += cma_configfs.o
- 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index d78f67623f24..9f68d716efd5 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -63,6 +63,7 @@
- 
- #include "core_priv.h"
- #include "cma_priv.h"
-+#include "cma_trace.h"
- 
- MODULE_AUTHOR("Sean Hefty");
- MODULE_DESCRIPTION("Generic RDMA CM Agent");
-@@ -904,6 +905,7 @@ struct rdma_cm_id *__rdma_create_id(struct net *net,
- 	id_priv->id.route.addr.dev_addr.net = get_net(net);
- 	id_priv->seq_num &= 0x00ffffff;
- 
-+	trace_cm_create(id_priv);
- 	return &id_priv->id;
- }
- EXPORT_SYMBOL(__rdma_create_id);
-@@ -1838,6 +1840,7 @@ void rdma_destroy_id(struct rdma_cm_id *id)
- 	enum rdma_cm_state state;
- 
- 	id_priv = container_of(id, struct rdma_id_private, id);
-+	trace_cm_destroy(id_priv);
- 	state = cma_exch(id_priv, RDMA_CM_DESTROYING);
- 	cma_cancel_operation(id_priv, state);
- 
-@@ -1890,6 +1893,7 @@ static int cma_rep_recv(struct rdma_id_private *id_priv)
- 	if (ret)
- 		goto reject;
- 
-+	trace_cm_send_rtu(id_priv);
- 	ret = ib_send_cm_rtu(id_priv->cm_id.ib, NULL, 0);
- 	if (ret)
- 		goto reject;
-@@ -1898,6 +1902,7 @@ static int cma_rep_recv(struct rdma_id_private *id_priv)
- reject:
- 	pr_debug_ratelimited("RDMA CM: CONNECT_ERROR: failed to handle reply. status %d\n", ret);
- 	cma_modify_qp_err(id_priv);
-+	trace_cm_send_rej(id_priv);
- 	ib_send_cm_rej(id_priv->cm_id.ib, IB_CM_REJ_CONSUMER_DEFINED,
- 		       NULL, 0, NULL, 0);
- 	return ret;
-@@ -1917,6 +1922,17 @@ static void cma_set_rep_event_data(struct rdma_cm_event *event,
- 	event->param.conn.qp_num = rep_data->remote_qpn;
- }
- 
-+static int cma_cm_event_handler(struct rdma_id_private *id_priv,
-+				struct rdma_cm_event *event)
-+{
-+	int ret;
++#include <trace/events/rdma_core.h>
 +
-+	trace_cm_event_handler(id_priv, event);
-+	ret = id_priv->id.event_handler(&id_priv->id, event);
-+	trace_cm_event_done(id_priv, ret);
-+	return ret;
+ /* # of WCs to poll for with a single call to ib_poll_cq */
+ #define IB_POLL_BATCH			16
+ #define IB_POLL_BATCH_DIRECT		8
+@@ -41,6 +43,7 @@ static void ib_cq_rdma_dim_work(struct work_struct *w)
+ 
+ 	dim->state = DIM_START_MEASURE;
+ 
++	trace_cq_modify(cq, comps, usec);
+ 	cq->device->ops.modify_cq(cq, comps, usec);
+ }
+ 
+@@ -65,18 +68,29 @@ static void rdma_dim_init(struct ib_cq *cq)
+ 	INIT_WORK(&dim->work, ib_cq_rdma_dim_work);
+ }
+ 
++static int __poll_cq(struct ib_cq *cq, int num_entries, struct ib_wc *wc)
++{
++	int rc;
++
++	rc = ib_poll_cq(cq, num_entries, wc);
++	trace_cq_poll(cq, num_entries, rc);
++	return rc;
 +}
 +
- static int cma_ib_handler(struct ib_cm_id *cm_id,
- 			  const struct ib_cm_event *ib_event)
+ static int __ib_process_cq(struct ib_cq *cq, int budget, struct ib_wc *wcs,
+ 			   int batch)
  {
-@@ -1939,8 +1955,10 @@ static int cma_ib_handler(struct ib_cm_id *cm_id,
- 		break;
- 	case IB_CM_REP_RECEIVED:
- 		if (cma_comp(id_priv, RDMA_CM_CONNECT) &&
--		    (id_priv->id.qp_type != IB_QPT_UD))
-+		    (id_priv->id.qp_type != IB_QPT_UD)) {
-+			trace_cm_send_mra(id_priv);
- 			ib_send_cm_mra(cm_id, CMA_CM_MRA_SETTING, NULL, 0);
-+		}
- 		if (id_priv->id.qp) {
- 			event.status = cma_rep_recv(id_priv);
- 			event.event = event.status ? RDMA_CM_EVENT_CONNECT_ERROR :
-@@ -1985,7 +2003,7 @@ static int cma_ib_handler(struct ib_cm_id *cm_id,
- 		goto out;
- 	}
+ 	int i, n, completed = 0;
  
--	ret = id_priv->id.event_handler(&id_priv->id, &event);
-+	ret = cma_cm_event_handler(id_priv, &event);
- 	if (ret) {
- 		/* Destroy the CM ID by returning a non-zero value. */
- 		id_priv->cm_id.ib = NULL;
-@@ -2146,6 +2164,7 @@ static int cma_ib_req_handler(struct ib_cm_id *cm_id,
- 	if (IS_ERR(listen_id))
- 		return PTR_ERR(listen_id);
- 
-+	trace_cm_req_handler(listen_id, ib_event->event);
- 	if (!cma_ib_check_req_qp_type(&listen_id->id, ib_event)) {
- 		ret = -EINVAL;
- 		goto net_dev_put;
-@@ -2188,7 +2207,7 @@ static int cma_ib_req_handler(struct ib_cm_id *cm_id,
- 	 * until we're done accessing it.
- 	 */
- 	atomic_inc(&conn_id->refcount);
--	ret = conn_id->id.event_handler(&conn_id->id, &event);
-+	ret = cma_cm_event_handler(conn_id, &event);
- 	if (ret)
- 		goto err3;
- 	/*
-@@ -2197,8 +2216,10 @@ static int cma_ib_req_handler(struct ib_cm_id *cm_id,
- 	 */
- 	mutex_lock(&lock);
- 	if (cma_comp(conn_id, RDMA_CM_CONNECT) &&
--	    (conn_id->id.qp_type != IB_QPT_UD))
-+	    (conn_id->id.qp_type != IB_QPT_UD)) {
-+		trace_cm_send_mra(cm_id->context);
- 		ib_send_cm_mra(cm_id, CMA_CM_MRA_SETTING, NULL, 0);
-+	}
- 	mutex_unlock(&lock);
- 	mutex_unlock(&conn_id->handler_mutex);
- 	mutex_unlock(&listen_id->handler_mutex);
-@@ -2313,7 +2334,7 @@ static int cma_iw_handler(struct iw_cm_id *iw_id, struct iw_cm_event *iw_event)
- 	event.status = iw_event->status;
- 	event.param.conn.private_data = iw_event->private_data;
- 	event.param.conn.private_data_len = iw_event->private_data_len;
--	ret = id_priv->id.event_handler(&id_priv->id, &event);
-+	ret = cma_cm_event_handler(id_priv, &event);
- 	if (ret) {
- 		/* Destroy the CM ID by returning a non-zero value. */
- 		id_priv->cm_id.iw = NULL;
-@@ -2390,7 +2411,7 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
- 	 * until we're done accessing it.
- 	 */
- 	atomic_inc(&conn_id->refcount);
--	ret = conn_id->id.event_handler(&conn_id->id, &event);
-+	ret = cma_cm_event_handler(conn_id, &event);
- 	if (ret) {
- 		/* User wants to destroy the CM ID */
- 		conn_id->cm_id.iw = NULL;
-@@ -2462,6 +2483,7 @@ static int cma_listen_handler(struct rdma_cm_id *id,
- 
- 	id->context = id_priv->id.context;
- 	id->event_handler = id_priv->id.event_handler;
-+	trace_cm_event_handler(id_priv, event);
- 	return id_priv->id.event_handler(id, event);
- }
- 
-@@ -2636,7 +2658,7 @@ static void cma_work_handler(struct work_struct *_work)
- 	if (!cma_comp_exch(id_priv, work->old_state, work->new_state))
- 		goto out;
- 
--	if (id_priv->id.event_handler(&id_priv->id, &work->event)) {
-+	if (cma_cm_event_handler(id_priv, &work->event)) {
- 		cma_exch(id_priv, RDMA_CM_DESTROYING);
- 		destroy = 1;
- 	}
-@@ -2659,7 +2681,7 @@ static void cma_ndev_work_handler(struct work_struct *_work)
- 	    id_priv->state == RDMA_CM_DEVICE_REMOVAL)
- 		goto out;
- 
--	if (id_priv->id.event_handler(&id_priv->id, &work->event)) {
-+	if (cma_cm_event_handler(id_priv, &work->event)) {
- 		cma_exch(id_priv, RDMA_CM_DESTROYING);
- 		destroy = 1;
- 	}
-@@ -3062,7 +3084,7 @@ static void addr_handler(int status, struct sockaddr *src_addr,
- 	} else
- 		event.event = RDMA_CM_EVENT_ADDR_RESOLVED;
- 
--	if (id_priv->id.event_handler(&id_priv->id, &event)) {
-+	if (cma_cm_event_handler(id_priv, &event)) {
- 		cma_exch(id_priv, RDMA_CM_DESTROYING);
- 		mutex_unlock(&id_priv->handler_mutex);
- 		rdma_destroy_id(&id_priv->id);
-@@ -3709,7 +3731,7 @@ static int cma_sidr_rep_handler(struct ib_cm_id *cm_id,
- 		goto out;
- 	}
- 
--	ret = id_priv->id.event_handler(&id_priv->id, &event);
-+	ret = cma_cm_event_handler(id_priv, &event);
- 
- 	rdma_destroy_ah_attr(&event.param.ud.ah_attr);
- 	if (ret) {
-@@ -3773,6 +3795,7 @@ static int cma_resolve_ib_udp(struct rdma_id_private *id_priv,
- 	req.timeout_ms = 1 << (CMA_CM_RESPONSE_TIMEOUT - 8);
- 	req.max_cm_retries = CMA_MAX_CM_RETRIES;
- 
-+	trace_cm_send_sidr_req(id_priv);
- 	ret = ib_send_cm_sidr_req(id_priv->cm_id.ib, &req);
- 	if (ret) {
- 		ib_destroy_cm_id(id_priv->cm_id.ib);
-@@ -3846,6 +3869,7 @@ static int cma_connect_ib(struct rdma_id_private *id_priv,
- 	req.max_cm_retries = CMA_MAX_CM_RETRIES;
- 	req.srq = id_priv->srq ? 1 : 0;
- 
-+	trace_cm_send_req(id_priv);
- 	ret = ib_send_cm_req(id_priv->cm_id.ib, &req);
- out:
- 	if (ret && !IS_ERR(id)) {
-@@ -3959,6 +3983,7 @@ static int cma_accept_ib(struct rdma_id_private *id_priv,
- 	rep.rnr_retry_count = min_t(u8, 7, conn_param->rnr_retry_count);
- 	rep.srq = id_priv->srq ? 1 : 0;
- 
-+	trace_cm_send_rep(id_priv);
- 	ret = ib_send_cm_rep(id_priv->cm_id.ib, &rep);
- out:
- 	return ret;
-@@ -4008,6 +4033,7 @@ static int cma_send_sidr_rep(struct rdma_id_private *id_priv,
- 	rep.private_data = private_data;
- 	rep.private_data_len = private_data_len;
- 
-+	trace_cm_send_sidr_rep(id_priv);
- 	return ib_send_cm_sidr_rep(id_priv->cm_id.ib, &rep);
- }
- 
-@@ -4093,13 +4119,15 @@ int rdma_reject(struct rdma_cm_id *id, const void *private_data,
- 		return -EINVAL;
- 
- 	if (rdma_cap_ib_cm(id->device, id->port_num)) {
--		if (id->qp_type == IB_QPT_UD)
-+		if (id->qp_type == IB_QPT_UD) {
- 			ret = cma_send_sidr_rep(id_priv, IB_SIDR_REJECT, 0,
- 						private_data, private_data_len);
--		else
-+		} else {
-+			trace_cm_send_rej(id_priv);
- 			ret = ib_send_cm_rej(id_priv->cm_id.ib,
- 					     IB_CM_REJ_CONSUMER_DEFINED, NULL,
- 					     0, private_data, private_data_len);
-+		}
- 	} else if (rdma_cap_iw_cm(id->device, id->port_num)) {
- 		ret = iw_cm_reject(id_priv->cm_id.iw,
- 				   private_data, private_data_len);
-@@ -4124,8 +4152,13 @@ int rdma_disconnect(struct rdma_cm_id *id)
- 		if (ret)
- 			goto out;
- 		/* Initiate or respond to a disconnect. */
--		if (ib_send_cm_dreq(id_priv->cm_id.ib, NULL, 0))
--			ib_send_cm_drep(id_priv->cm_id.ib, NULL, 0);
-+		trace_cm_disconnect(id_priv);
-+		if (ib_send_cm_dreq(id_priv->cm_id.ib, NULL, 0)) {
-+			if (!ib_send_cm_drep(id_priv->cm_id.ib, NULL, 0))
-+				trace_cm_sent_drep(id_priv);
-+		} else {
-+			trace_cm_sent_dreq(id_priv);
-+		}
- 	} else if (rdma_cap_iw_cm(id->device, id->port_num)) {
- 		ret = iw_cm_disconnect(id_priv->cm_id.iw, 0);
- 	} else
-@@ -4191,7 +4224,7 @@ static int cma_ib_mc_handler(int status, struct ib_sa_multicast *multicast)
- 	} else
- 		event.event = RDMA_CM_EVENT_MULTICAST_ERROR;
- 
--	ret = id_priv->id.event_handler(&id_priv->id, &event);
-+	ret = cma_cm_event_handler(id_priv, &event);
- 
- 	rdma_destroy_ah_attr(&event.param.ud.ah_attr);
- 	if (ret) {
-@@ -4596,6 +4629,7 @@ static void cma_add_one(struct ib_device *device)
- 		cma_listen_on_dev(id_priv, cma_dev);
- 	mutex_unlock(&lock);
- 
-+	trace_cm_add_one(device);
- 	return;
- 
- free_gid_type:
-@@ -4626,7 +4660,7 @@ static int cma_remove_id_dev(struct rdma_id_private *id_priv)
- 		goto out;
- 
- 	event.event = RDMA_CM_EVENT_DEVICE_REMOVAL;
--	ret = id_priv->id.event_handler(&id_priv->id, &event);
-+	ret = cma_cm_event_handler(id_priv, &event);
- out:
- 	mutex_unlock(&id_priv->handler_mutex);
- 	return ret;
-@@ -4664,6 +4698,8 @@ static void cma_remove_one(struct ib_device *device, void *client_data)
- {
- 	struct cma_device *cma_dev = client_data;
- 
-+	trace_cm_remove_one(device);
++	trace_cq_process(cq);
 +
- 	if (!cma_dev)
- 		return;
+ 	/*
+ 	 * budget might be (-1) if the caller does not
+ 	 * want to bound this call, thus we need unsigned
+ 	 * minimum here.
+ 	 */
+-	while ((n = ib_poll_cq(cq, min_t(u32, batch,
+-					 budget - completed), wcs)) > 0) {
++	while ((n = __poll_cq(cq, min_t(u32, batch,
++					budget - completed), wcs)) > 0) {
+ 		for (i = 0; i < n; i++) {
+ 			struct ib_wc *wc = &wcs[i];
  
-diff --git a/drivers/infiniband/core/cma_trace.c b/drivers/infiniband/core/cma_trace.c
+@@ -131,8 +145,10 @@ static int ib_poll_handler(struct irq_poll *iop, int budget)
+ 	completed = __ib_process_cq(cq, budget, cq->wc, IB_POLL_BATCH);
+ 	if (completed < budget) {
+ 		irq_poll_complete(&cq->iop);
+-		if (ib_req_notify_cq(cq, IB_POLL_FLAGS) > 0)
++		if (ib_req_notify_cq(cq, IB_POLL_FLAGS) > 0) {
++			trace_cq_reschedule(cq);
+ 			irq_poll_sched(&cq->iop);
++		}
+ 	}
+ 
+ 	if (dim)
+@@ -143,6 +159,7 @@ static int ib_poll_handler(struct irq_poll *iop, int budget)
+ 
+ static void ib_cq_completion_softirq(struct ib_cq *cq, void *private)
+ {
++	trace_cq_schedule(cq);
+ 	irq_poll_sched(&cq->iop);
+ }
+ 
+@@ -162,6 +179,7 @@ static void ib_cq_poll_work(struct work_struct *work)
+ 
+ static void ib_cq_completion_workqueue(struct ib_cq *cq, void *private)
+ {
++	trace_cq_schedule(cq);
+ 	queue_work(cq->comp_wq, &cq->work);
+ }
+ 
+@@ -239,6 +257,7 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
+ 		goto out_destroy_cq;
+ 	}
+ 
++	trace_cq_alloc(cq, nr_cqe, comp_vector, poll_ctx);
+ 	return cq;
+ 
+ out_destroy_cq:
+@@ -248,6 +267,7 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device *dev, void *private,
+ 	kfree(cq->wc);
+ out_free_cq:
+ 	kfree(cq);
++	trace_cq_alloc_error(nr_cqe, comp_vector, poll_ctx, ret);
+ 	return ERR_PTR(ret);
+ }
+ EXPORT_SYMBOL(__ib_alloc_cq_user);
+@@ -304,6 +324,7 @@ void ib_free_cq_user(struct ib_cq *cq, struct ib_udata *udata)
+ 		WARN_ON_ONCE(1);
+ 	}
+ 
++	trace_cq_free(cq);
+ 	rdma_restrack_del(&cq->res);
+ 	cq->device->ops.destroy_cq(cq, udata);
+ 	if (cq->dim)
+diff --git a/drivers/infiniband/core/trace.c b/drivers/infiniband/core/trace.c
 new file mode 100644
-index 000000000000..b314a281e10e
+index 000000000000..6c3514beac4d
 --- /dev/null
-+++ b/drivers/infiniband/core/cma_trace.c
-@@ -0,0 +1,16 @@
++++ b/drivers/infiniband/core/trace.c
+@@ -0,0 +1,14 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * Trace points for the RDMA Connection Manager.
++ * Trace points for core RDMA functions.
 + *
 + * Author: Chuck Lever <chuck.lever@oracle.com>
 + *
@@ -421,20 +245,34 @@ index 000000000000..b314a281e10e
 +
 +#define CREATE_TRACE_POINTS
 +
-+#include <rdma/rdma_cm.h>
-+#include <rdma/ib_cm.h>
-+#include "cma_priv.h"
++#include <rdma/ib_verbs.h>
 +
-+#include "cma_trace.h"
-diff --git a/drivers/infiniband/core/cma_trace.h b/drivers/infiniband/core/cma_trace.h
++#include <trace/events/rdma_core.h>
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index e7e733add99f..d5b5039e4af0 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -1555,6 +1555,11 @@ struct ib_cq {
+ 	};
+ 	struct workqueue_struct *comp_wq;
+ 	struct dim *dim;
++
++	/* updated only by trace points */
++	ktime_t timestamp;
++	bool interrupt;
++
+ 	/*
+ 	 * Implementation details of the RDMA core, don't use in drivers:
+ 	 */
+diff --git a/include/trace/events/rdma_core.h b/include/trace/events/rdma_core.h
 new file mode 100644
-index 000000000000..2ca45622f215
+index 000000000000..45f74c52ae24
 --- /dev/null
-+++ b/drivers/infiniband/core/cma_trace.h
-@@ -0,0 +1,302 @@
++++ b/include/trace/events/rdma_core.h
+@@ -0,0 +1,250 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
-+ * Trace point definitions for the RDMA Connect Manager.
++ * Trace point definitions for core RDMA functions.
 + *
 + * Author: Chuck Lever <chuck.lever@oracle.com>
 + *
@@ -442,296 +280,244 @@ index 000000000000..2ca45622f215
 + */
 +
 +#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM rdma_cma
++#define TRACE_SYSTEM rdma_core
 +
-+#if !defined(_TRACE_RDMA_CMA_H) || defined(TRACE_HEADER_MULTI_READ)
-+
-+#define _TRACE_RDMA_CMA_H
++#if !defined(_TRACE_RDMA_CORE_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_RDMA_CORE_H
 +
 +#include <linux/tracepoint.h>
-+#include <trace/events/rdma.h>
++#include <rdma/ib_verbs.h>
 +
 +/*
-+ * enum ib_cm_event_type, from include/rdma/ib_cm.h
++ * enum ib_poll_context, from include/rdma/ib_verbs.h
 + */
-+#define IB_CM_EVENT_LIST			\
-+	ib_cm_event(REQ_ERROR)			\
-+	ib_cm_event(REQ_RECEIVED)		\
-+	ib_cm_event(REP_ERROR)			\
-+	ib_cm_event(REP_RECEIVED)		\
-+	ib_cm_event(RTU_RECEIVED)		\
-+	ib_cm_event(USER_ESTABLISHED)		\
-+	ib_cm_event(DREQ_ERROR)			\
-+	ib_cm_event(DREQ_RECEIVED)		\
-+	ib_cm_event(DREP_RECEIVED)		\
-+	ib_cm_event(TIMEWAIT_EXIT)		\
-+	ib_cm_event(MRA_RECEIVED)		\
-+	ib_cm_event(REJ_RECEIVED)		\
-+	ib_cm_event(LAP_ERROR)			\
-+	ib_cm_event(LAP_RECEIVED)		\
-+	ib_cm_event(APR_RECEIVED)		\
-+	ib_cm_event(SIDR_REQ_ERROR)		\
-+	ib_cm_event(SIDR_REQ_RECEIVED)		\
-+	ib_cm_event_end(SIDR_REP_RECEIVED)
++#define IB_POLL_CTX_LIST			\
++	ib_poll_ctx(DIRECT)			\
++	ib_poll_ctx(SOFTIRQ)			\
++	ib_poll_ctx(WORKQUEUE)			\
++	ib_poll_ctx_end(UNBOUND_WORKQUEUE)
 +
-+#undef ib_cm_event
-+#undef ib_cm_event_end
++#undef ib_poll_ctx
++#undef ib_poll_ctx_end
 +
-+#define ib_cm_event(x)		TRACE_DEFINE_ENUM(IB_CM_##x);
-+#define ib_cm_event_end(x)	TRACE_DEFINE_ENUM(IB_CM_##x);
++#define ib_poll_ctx(x)		TRACE_DEFINE_ENUM(IB_POLL_##x);
++#define ib_poll_ctx_end(x)	TRACE_DEFINE_ENUM(IB_POLL_##x);
 +
-+IB_CM_EVENT_LIST
++IB_POLL_CTX_LIST
 +
-+#undef ib_cm_event
-+#undef ib_cm_event_end
++#undef ib_poll_ctx
++#undef ib_poll_ctx_end
 +
-+#define ib_cm_event(x)		{ IB_CM_##x, #x },
-+#define ib_cm_event_end(x)	{ IB_CM_##x, #x }
++#define ib_poll_ctx(x)		{ IB_POLL_##x, #x },
++#define ib_poll_ctx_end(x)	{ IB_POLL_##x, #x }
 +
-+#define rdma_show_ib_cm_event(x) \
-+		__print_symbolic(x, IB_CM_EVENT_LIST)
++#define rdma_show_ib_poll_ctx(x) \
++		__print_symbolic(x, IB_POLL_CTX_LIST)
 +
++/**
++ ** Completion Queue events
++ **/
 +
-+DECLARE_EVENT_CLASS(cma_fsm_class,
++TRACE_EVENT(cq_schedule,
 +	TP_PROTO(
-+		const struct rdma_id_private *id_priv
++		struct ib_cq *cq
 +	),
 +
-+	TP_ARGS(id_priv),
-+
-+	TP_STRUCT__entry(
-+		__field(u32, id)
-+		__field(u32, tos)
-+		__array(unsigned char, srcaddr, sizeof(struct sockaddr_in6))
-+		__array(unsigned char, dstaddr, sizeof(struct sockaddr_in6))
-+	),
-+
-+	TP_fast_assign(
-+		__entry->id = id_priv->res.id;
-+		__entry->tos = id_priv->tos;
-+		memcpy(__entry->srcaddr, &id_priv->id.route.addr.src_addr,
-+		       sizeof(struct sockaddr_in6));
-+		memcpy(__entry->dstaddr, &id_priv->id.route.addr.dst_addr,
-+		       sizeof(struct sockaddr_in6));
-+	),
-+
-+	TP_printk("cm_id.id=%u src: %pISpc dst: %pISpc tos=%u",
-+		__entry->id, __entry->srcaddr, __entry->dstaddr, __entry->tos
-+	)
-+);
-+
-+#define DEFINE_CMA_FSM_EVENT(name)						\
-+		DEFINE_EVENT(cma_fsm_class, cm_##name,				\
-+				TP_PROTO(					\
-+					const struct rdma_id_private *id_priv	\
-+				),						\
-+				TP_ARGS(id_priv))
-+
-+DEFINE_CMA_FSM_EVENT(send_rtu);
-+DEFINE_CMA_FSM_EVENT(send_rej);
-+DEFINE_CMA_FSM_EVENT(send_mra);
-+DEFINE_CMA_FSM_EVENT(send_sidr_req);
-+DEFINE_CMA_FSM_EVENT(send_sidr_rep);
-+DEFINE_CMA_FSM_EVENT(disconnect);
-+DEFINE_CMA_FSM_EVENT(sent_drep);
-+DEFINE_CMA_FSM_EVENT(sent_dreq);
-+DEFINE_CMA_FSM_EVENT(destroy);
-+
-+TRACE_EVENT(cm_create,
-+	TP_PROTO(
-+		const struct rdma_id_private *id_priv
-+	),
-+
-+	TP_ARGS(id_priv),
++	TP_ARGS(cq),
 +
 +	TP_STRUCT__entry(
 +		__field(u32, id)
 +	),
 +
 +	TP_fast_assign(
-+		__entry->id = id_priv->res.id;
++		cq->timestamp = ktime_get();
++		cq->interrupt = true;
++
++		__entry->id = cq->res.id;
 +	),
 +
-+	TP_printk("cm_id.id=%u",
-+		__entry->id
-+	)
++	TP_printk("cq.id=%u", __entry->id)
 +);
 +
-+DECLARE_EVENT_CLASS(cma_qp_class,
++TRACE_EVENT(cq_reschedule,
 +	TP_PROTO(
-+		const struct rdma_id_private *id_priv
++		struct ib_cq *cq
 +	),
 +
-+	TP_ARGS(id_priv),
++	TP_ARGS(cq),
 +
 +	TP_STRUCT__entry(
 +		__field(u32, id)
-+		__field(u32, tos)
-+		__field(u32, qp_num)
-+		__array(unsigned char, srcaddr, sizeof(struct sockaddr_in6))
-+		__array(unsigned char, dstaddr, sizeof(struct sockaddr_in6))
 +	),
 +
 +	TP_fast_assign(
-+		__entry->id = id_priv->res.id;
-+		__entry->tos = id_priv->tos;
-+		__entry->qp_num = id_priv->qp_num;
-+		memcpy(__entry->srcaddr, &id_priv->id.route.addr.src_addr,
-+		       sizeof(struct sockaddr_in6));
-+		memcpy(__entry->dstaddr, &id_priv->id.route.addr.dst_addr,
-+		       sizeof(struct sockaddr_in6));
++		cq->timestamp = ktime_get();
++		cq->interrupt = false;
++
++		__entry->id = cq->res.id;
 +	),
 +
-+	TP_printk("cm_id.id=%u src: %pISpc dst: %pISpc tos=%u qp_num=%u",
-+		__entry->id, __entry->srcaddr, __entry->dstaddr, __entry->tos,
-+		__entry->qp_num
++	TP_printk("cq.id=%u", __entry->id)
++);
++
++TRACE_EVENT(cq_process,
++	TP_PROTO(
++		const struct ib_cq *cq
++	),
++
++	TP_ARGS(cq),
++
++	TP_STRUCT__entry(
++		__field(s64, latency)
++		__field(u32, id)
++		__field(bool, interrupt)
++	),
++
++	TP_fast_assign(
++		ktime_t latency = ktime_sub(ktime_get(), cq->timestamp);
++
++		__entry->id = cq->res.id;
++		__entry->latency = ktime_to_us(latency);
++		__entry->interrupt = cq->interrupt;
++	),
++
++	TP_printk("cq.id=%u wake-up took %lld [us] from %s",
++		__entry->id, __entry->latency,
++		__entry->interrupt ? "interrupt" : "reschedule"
 +	)
 +);
 +
-+#define DEFINE_CMA_QP_EVENT(name)						\
-+		DEFINE_EVENT(cma_qp_class, cm_##name,				\
-+				TP_PROTO(					\
-+					const struct rdma_id_private *id_priv	\
-+				),						\
-+				TP_ARGS(id_priv))
-+
-+DEFINE_CMA_QP_EVENT(send_req);
-+DEFINE_CMA_QP_EVENT(send_rep);
-+
-+TRACE_EVENT(cm_req_handler,
++TRACE_EVENT(cq_poll,
 +	TP_PROTO(
-+		const struct rdma_id_private *id_priv,
-+		int event
++		const struct ib_cq *cq,
++		int requested,
++		int rc
 +	),
 +
-+	TP_ARGS(id_priv, event),
++	TP_ARGS(cq, requested, rc),
 +
 +	TP_STRUCT__entry(
 +		__field(u32, id)
-+		__field(u32, tos)
-+		__field(unsigned long, event)
-+		__array(unsigned char, srcaddr, sizeof(struct sockaddr_in6))
-+		__array(unsigned char, dstaddr, sizeof(struct sockaddr_in6))
++		__field(int, requested)
++		__field(int, rc)
 +	),
 +
 +	TP_fast_assign(
-+		__entry->id = id_priv->res.id;
-+		__entry->tos = id_priv->tos;
-+		__entry->event = event;
-+		memcpy(__entry->srcaddr, &id_priv->id.route.addr.src_addr,
-+		       sizeof(struct sockaddr_in6));
-+		memcpy(__entry->dstaddr, &id_priv->id.route.addr.dst_addr,
-+		       sizeof(struct sockaddr_in6));
++		__entry->id = cq->res.id;
++		__entry->requested = requested;
++		__entry->rc = rc;
 +	),
 +
-+	TP_printk("cm_id.id=%u src: %pISpc dst: %pISpc tos=%u %s (%lu)",
-+		__entry->id, __entry->srcaddr, __entry->dstaddr, __entry->tos,
-+		rdma_show_ib_cm_event(__entry->event), __entry->event
++	TP_printk("cq.id=%u requested %d, returned %d",
++		__entry->id, __entry->requested, __entry->rc
 +	)
 +);
 +
-+TRACE_EVENT(cm_event_handler,
++TRACE_EVENT(cq_modify,
 +	TP_PROTO(
-+		const struct rdma_id_private *id_priv,
-+		const struct rdma_cm_event *event
++		const struct ib_cq *cq,
++		u16 comps,
++		u16 usec
 +	),
 +
-+	TP_ARGS(id_priv, event),
++	TP_ARGS(cq, comps, usec),
 +
 +	TP_STRUCT__entry(
 +		__field(u32, id)
-+		__field(u32, tos)
-+		__field(unsigned long, event)
-+		__field(int, status)
-+		__array(unsigned char, srcaddr, sizeof(struct sockaddr_in6))
-+		__array(unsigned char, dstaddr, sizeof(struct sockaddr_in6))
++		__field(unsigned int, comps)
++		__field(unsigned int, usec)
 +	),
 +
 +	TP_fast_assign(
-+		__entry->id = id_priv->res.id;
-+		__entry->tos = id_priv->tos;
-+		__entry->event = event->event;
-+		__entry->status = event->status;
-+		memcpy(__entry->srcaddr, &id_priv->id.route.addr.src_addr,
-+		       sizeof(struct sockaddr_in6));
-+		memcpy(__entry->dstaddr, &id_priv->id.route.addr.dst_addr,
-+		       sizeof(struct sockaddr_in6));
++		__entry->id = cq->res.id;
++		__entry->comps = comps;
++		__entry->usec = usec;
 +	),
 +
-+	TP_printk("cm_id.id=%u src: %pISpc dst: %pISpc tos=%u %s (%lu/%d)",
-+		__entry->id, __entry->srcaddr, __entry->dstaddr, __entry->tos,
-+		rdma_show_cm_event(__entry->event), __entry->event,
-+		__entry->status
++	TP_printk("cq.id=%u comps=%u usec=%u",
++		__entry->id, __entry->comps, __entry->usec
 +	)
 +);
 +
-+TRACE_EVENT(cm_event_done,
++TRACE_EVENT(cq_alloc,
 +	TP_PROTO(
-+		const struct rdma_id_private *id_priv,
-+		int result
++		const struct ib_cq *cq,
++		int nr_cqe,
++		int comp_vector,
++		enum ib_poll_context poll_ctx
 +	),
 +
-+	TP_ARGS(id_priv, result),
++	TP_ARGS(cq, nr_cqe, comp_vector, poll_ctx),
 +
 +	TP_STRUCT__entry(
 +		__field(u32, id)
-+		__field(u32, tos)
-+		__field(int, result)
-+		__array(unsigned char, srcaddr, sizeof(struct sockaddr_in6))
-+		__array(unsigned char, dstaddr, sizeof(struct sockaddr_in6))
++		__field(int, nr_cqe)
++		__field(int, comp_vector)
++		__field(unsigned long, poll_ctx)
 +	),
 +
 +	TP_fast_assign(
-+		__entry->id = id_priv->res.id;
-+		__entry->tos = id_priv->tos;
-+		__entry->result = result;
-+		memcpy(__entry->srcaddr, &id_priv->id.route.addr.src_addr,
-+		       sizeof(struct sockaddr_in6));
-+		memcpy(__entry->dstaddr, &id_priv->id.route.addr.dst_addr,
-+		       sizeof(struct sockaddr_in6));
++		__entry->id = cq->res.id;
++		__entry->nr_cqe = nr_cqe;
++		__entry->comp_vector = comp_vector;
++		__entry->poll_ctx = poll_ctx;
 +	),
 +
-+	TP_printk("cm_id.id=%u src: %pISpc dst: %pISpc tos=%u result=%d",
-+		__entry->id, __entry->srcaddr, __entry->dstaddr, __entry->tos,
-+		__entry->result
++	TP_printk("cq.id=%u nr_cqe=%d comp_vector=%d poll_ctx=%s",
++		__entry->id, __entry->nr_cqe, __entry->comp_vector,
++		rdma_show_ib_poll_ctx(__entry->poll_ctx)
 +	)
 +);
 +
-+DECLARE_EVENT_CLASS(cma_client_class,
++TRACE_EVENT(cq_alloc_error,
 +	TP_PROTO(
-+		const struct ib_device *device
++		int nr_cqe,
++		int comp_vector,
++		enum ib_poll_context poll_ctx,
++		int rc
 +	),
 +
-+	TP_ARGS(device),
++	TP_ARGS(nr_cqe, comp_vector, poll_ctx, rc),
 +
 +	TP_STRUCT__entry(
-+		__string(name, device->name)
++		__field(int, rc)
++		__field(int, nr_cqe)
++		__field(int, comp_vector)
++		__field(unsigned long, poll_ctx)
 +	),
 +
 +	TP_fast_assign(
-+		__assign_str(name, device->name);
++		__entry->rc = rc;
++		__entry->nr_cqe = nr_cqe;
++		__entry->comp_vector = comp_vector;
++		__entry->poll_ctx = poll_ctx;
 +	),
 +
-+	TP_printk("device name=%s",
-+		__get_str(name)
++	TP_printk("nr_cqe=%d comp_vector=%d poll_ctx=%s rc=%d",
++		__entry->nr_cqe, __entry->comp_vector,
++		rdma_show_ib_poll_ctx(__entry->poll_ctx), __entry->rc
 +	)
 +);
 +
-+#define DEFINE_CMA_CLIENT_EVENT(name)						\
-+		DEFINE_EVENT(cma_client_class, cm_##name,			\
-+				TP_PROTO(					\
-+					const struct ib_device *device		\
-+				),						\
-+				TP_ARGS(device))
++TRACE_EVENT(cq_free,
++	TP_PROTO(
++		const struct ib_cq *cq
++	),
 +
-+DEFINE_CMA_CLIENT_EVENT(add_one);
-+DEFINE_CMA_CLIENT_EVENT(remove_one);
++	TP_ARGS(cq),
 +
-+#endif /* _TRACE_RDMA_CMA_H */
++	TP_STRUCT__entry(
++		__field(u32, id)
++	),
 +
-+#undef TRACE_INCLUDE_PATH
-+#define TRACE_INCLUDE_PATH .
-+#define TRACE_INCLUDE_FILE cma_trace
++	TP_fast_assign(
++		__entry->id = cq->res.id;
++	),
++
++	TP_printk("cq.id=%u", __entry->id)
++);
++
++#endif /* _TRACE_RDMA_CORE_H */
 +
 +#include <trace/define_trace.h>
 
