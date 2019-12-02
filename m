@@ -2,101 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4333D10ED29
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Dec 2019 17:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F6610ED59
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Dec 2019 17:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727566AbfLBQ2t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Dec 2019 11:28:49 -0500
-Received: from mail-yw1-f68.google.com ([209.85.161.68]:45145 "EHLO
-        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727431AbfLBQ2t (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Dec 2019 11:28:49 -0500
-Received: by mail-yw1-f68.google.com with SMTP id d12so1093431ywl.12;
-        Mon, 02 Dec 2019 08:28:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=1KMF89ftAC0pRgaGlDtXn05bQOnIkD3TExE/eWsb9wc=;
-        b=e25RtPl3HW25pK8+g3gg1ukJIsvLP6akRp0ao9tjWVVWlSKXlxOLstsnd76Tocrdnf
-         hksXYtpweOWt11ZchBVRzDbu/u/NyqwNNzZjCDJxBGSJ86SLjKVwp/iCoipLX9J0jM5E
-         bwgcx+4DU4oU3QNSj4t6qE+kjGIliQOqYAJT2JseUq38OIsaCJ6NVA1X1ZauCuOS2P+x
-         x404KUdVbTDk27Q5b7h6cl0Cs43aW6hcePNFhxdMUgWX3LY7lxxRUmf+pQO4muSi4DYN
-         F4DBPJm0yilrgIY97dGE6pJAMcydO8sRsOn9eNVFWRJbJ/wsxnvoU1GfBWuMuhHRY2UG
-         q7Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:cc:date:message-id
-         :in-reply-to:references:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=1KMF89ftAC0pRgaGlDtXn05bQOnIkD3TExE/eWsb9wc=;
-        b=nhnnIVg5dq6SAoQ7Z5FRb1zlI9OnB8wif6yOjiXgK7uCkHxZQriC1vE9qpMz3+puCO
-         ZeZJjPhNyZMlOrAeQY38pT4QYcHmTvjPo2g34mPi9+PK0+OJh+WVtvurSUPVRcRnsCIl
-         j4pFNIaXXC2YxGHubXym5Ig3wIZaxvm3wa+F2fBeMe4bX4HdM+kbtSqqGLpilZgpYM+b
-         OefA7C3LEycjU3nd3z3ZmCvNRWFWzUGxtU70J/g2ycj2cfINdc9Sgj/puyxUuadatYMe
-         Ll+2vUVnTVqsUyWSU6fzXOyJRcKqhOsapelr0VG8rM/O28hLCaCcD5EZ4FQNzu0ANEoe
-         n5CQ==
-X-Gm-Message-State: APjAAAWZSRzOg0l5fdBoo1DtXw5QQi7hKdI/coKFHG3nwexzzOt18kYQ
-        UvraS6fNYZQa5AXF7fBxvwTsfBwf
-X-Google-Smtp-Source: APXvYqxYqeQmFdx5f0sk2cZnfBtQRF7EmhBh0LI5ZgGN4rzjDGARfoT+yVhVzVdadrczbOvkCWMogw==
-X-Received: by 2002:a0d:e107:: with SMTP id k7mr23717024ywe.399.1575304126754;
-        Mon, 02 Dec 2019 08:28:46 -0800 (PST)
-Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
-        by smtp.gmail.com with ESMTPSA id c188sm40326ywb.56.2019.12.02.08.28.45
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Dec 2019 08:28:46 -0800 (PST)
-Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
-        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id xB2GSiJS014264;
-        Mon, 2 Dec 2019 16:28:44 GMT
-Subject: [PATCH 2/2] xprtrdma: Fix completion wait during device removal
+        id S1727420AbfLBQlD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Dec 2019 11:41:03 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:56080 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727418AbfLBQlC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Dec 2019 11:41:02 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB2GdNoZ187935;
+        Mon, 2 Dec 2019 16:41:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2019-08-05; bh=D5yZrNJ2lm91CuKzidzYnf/nIzH0R2h1tAZaPjporno=;
+ b=dZswlBlb04YTVfZjcjTLslw9RvOdPRaNTyf0RQGtI1S7IWqf1awDqAiIGvr0zJRsm5xT
+ XyiWB77VHcx1Clv9Ttn6z08fwltMpDa3Jc1KMNKIxpvP7SK4BK+kszWIoP0ASMUQMF6q
+ gRxMLNqvXKoJ7hwYrcRffvZjwdzuXUe1GRBDo0ayZlJwE5NjQjoFdcizvoz0pNnDwY0m
+ oXk+RPXerMVeRUYy53+4gZplwcbLxKx71G2gIGWPQRGIGdIyZL0jBbftCk/kTcZ+Nr9i
+ aYYMoitzHNXcJ94SZiMJ69wqu2CuGEZLn8MGaNB75V1KsJt0pFNX5NWd0as0OKfPsyVB aQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 2wkgcq18yu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 02 Dec 2019 16:41:00 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB2GdfF6022184;
+        Mon, 2 Dec 2019 16:40:59 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 2wm1xny214-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 02 Dec 2019 16:40:59 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xB2GewEZ008591;
+        Mon, 2 Dec 2019 16:40:58 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 02 Dec 2019 08:40:58 -0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH 2/2] xprtrdma: Fix completion wait during device removal
 From:   Chuck Lever <chuck.lever@oracle.com>
-To:     anna.schumaker@netapp.com
-Cc:     linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org
-Date:   Mon, 02 Dec 2019 11:28:44 -0500
-Message-ID: <20191202162844.4115.30993.stgit@manet.1015granger.net>
-In-Reply-To: <20191202162242.4115.94732.stgit@manet.1015granger.net>
+In-Reply-To: <20191202162844.4115.30993.stgit@manet.1015granger.net>
+Date:   Mon, 2 Dec 2019 11:40:56 -0500
+Cc:     linux-rdma@vger.kernel.org,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <151A3628-C7E2-4307-ACB6-6EC2C3593105@oracle.com>
 References: <20191202162242.4115.94732.stgit@manet.1015granger.net>
-User-Agent: StGit/0.17.1-dirty
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+ <20191202162844.4115.30993.stgit@manet.1015granger.net>
+To:     Anna Schumaker <anna.schumaker@netapp.com>
+X-Mailer: Apple Mail (2.3445.104.11)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9459 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1912020143
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9459 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1912020143
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I've found that on occasion, "rmmod <dev>" will hang while if an NFS
+
+
+> On Dec 2, 2019, at 11:28 AM, Chuck Lever <chuck.lever@oracle.com> =
+wrote:
+>=20
+> I've found that on occasion, "rmmod <dev>" will hang while if an NFS
+> is under load.
+
+ETOOMUCHTURKEY. How about:
+
+I've found that on occasion, "rmmod <dev>" hangs while an NFS mount
 is under load.
 
-Ensure that ri_remove_done is initialized only just before the
-transport is woken up to force a close. This avoids the completion
-possibly getting initialized again while the CM event handler is
-waiting for a wake-up.
 
-Fixes: bebd031866ca ("xprtrdma: Support unplugging an HCA from under an NFS mount")
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- net/sunrpc/xprtrdma/verbs.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Ensure that ri_remove_done is initialized only just before the
+> transport is woken up to force a close. This avoids the completion
+> possibly getting initialized again while the CM event handler is
+> waiting for a wake-up.
+>=20
+> Fixes: bebd031866ca ("xprtrdma: Support unplugging an HCA from under =
+an NFS mount")
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+> net/sunrpc/xprtrdma/verbs.c |    2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
+> index 3a56458e8c05..2c40465a19e1 100644
+> --- a/net/sunrpc/xprtrdma/verbs.c
+> +++ b/net/sunrpc/xprtrdma/verbs.c
+> @@ -244,6 +244,7 @@ static void rpcrdma_update_cm_private(struct =
+rpcrdma_xprt *r_xprt,
+> 			ia->ri_id->device->name,
+> 			rpcrdma_addrstr(r_xprt), =
+rpcrdma_portstr(r_xprt));
+> #endif
+> +		init_completion(&ia->ri_remove_done);
+> 		set_bit(RPCRDMA_IAF_REMOVING, &ia->ri_flags);
+> 		ep->rep_connected =3D -ENODEV;
+> 		xprt_force_disconnect(xprt);
+> @@ -297,7 +298,6 @@ static void rpcrdma_update_cm_private(struct =
+rpcrdma_xprt *r_xprt,
+> 	int rc;
+>=20
+> 	init_completion(&ia->ri_done);
+> -	init_completion(&ia->ri_remove_done);
+>=20
+> 	id =3D rdma_create_id(xprt->rx_xprt.xprt_net, =
+rpcrdma_cm_event_handler,
+> 			    xprt, RDMA_PS_TCP, IB_QPT_RC);
+>=20
 
-diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
-index 3a56458e8c05..2c40465a19e1 100644
---- a/net/sunrpc/xprtrdma/verbs.c
-+++ b/net/sunrpc/xprtrdma/verbs.c
-@@ -244,6 +244,7 @@ static void rpcrdma_update_cm_private(struct rpcrdma_xprt *r_xprt,
- 			ia->ri_id->device->name,
- 			rpcrdma_addrstr(r_xprt), rpcrdma_portstr(r_xprt));
- #endif
-+		init_completion(&ia->ri_remove_done);
- 		set_bit(RPCRDMA_IAF_REMOVING, &ia->ri_flags);
- 		ep->rep_connected = -ENODEV;
- 		xprt_force_disconnect(xprt);
-@@ -297,7 +298,6 @@ static void rpcrdma_update_cm_private(struct rpcrdma_xprt *r_xprt,
- 	int rc;
- 
- 	init_completion(&ia->ri_done);
--	init_completion(&ia->ri_remove_done);
- 
- 	id = rdma_create_id(xprt->rx_xprt.xprt_net, rpcrdma_cm_event_handler,
- 			    xprt, RDMA_PS_TCP, IB_QPT_RC);
+--
+Chuck Lever
+
+
 
