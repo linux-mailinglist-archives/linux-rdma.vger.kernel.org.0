@@ -2,297 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9521010EF66
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Dec 2019 19:42:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EAE010F44A
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2019 01:57:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727521AbfLBSm1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Dec 2019 13:42:27 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:41159 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727510AbfLBSm1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Dec 2019 13:42:27 -0500
-Received: by mail-oi1-f193.google.com with SMTP id e9so619082oif.8
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Dec 2019 10:42:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blockbridge-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4hnWxYJS6UwvHgZfL5C7ZAjZ6VkkzMMU7kmsT3ouMqc=;
-        b=sWeec0pqiWKAQx6GsxOcoExatEOX6Ri6zErHouUpuNZpUk/3VfbcqEwSFH7asbdMSf
-         d4f2fjQLHSCzDMPSVv4Cn/X9DfYRH+7UAPZPnqRzxcPG46x+TDGPpFyXwer35ezQhlJC
-         cnsd6L+RkdSCVCJtC7novckEhsoBhoIBfGAkkLXORzSyiK36mGhxkTIyLbbuOI6iZPNM
-         g/qHMLGvVlTGuNrea+fojo24uRyvurwCb4yjtIiMp71WlWOqRbVb349azrXNKpjzRmHK
-         Cs9K6yF5HNIaOX3UyeOY/WPL1fGhP+Rl8wUvORPSkfMgAMmfnOzO4ApZlbRiDzwCDf4Y
-         4XJQ==
+        id S1725903AbfLCA5C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Dec 2019 19:57:02 -0500
+Received: from mail-pg1-f171.google.com ([209.85.215.171]:46152 "EHLO
+        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725853AbfLCA5C (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Dec 2019 19:57:02 -0500
+Received: by mail-pg1-f171.google.com with SMTP id z124so699535pgb.13
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Dec 2019 16:57:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4hnWxYJS6UwvHgZfL5C7ZAjZ6VkkzMMU7kmsT3ouMqc=;
-        b=ITCkDYOtdwvYwOvhunrgksr2xpo7vym025kqOiD6fWJyBfLh6xE5sSELpVYuFJcyYp
-         PKC8iS9EKVJR1fCh7TI+57yycKne09j23NBzU3hgG1SWzpR9Qe1Rp+tG2C/C1LCCZv9w
-         d7i+b69tpzMgobOiC+QqAsDmm2Houf1i6I4kHQmiklyTRTXMXBi9KliTArkS2br81bpE
-         bst7OarrHcgNuRY/qtjII+tEVNbbFbkkDtXKaidCczdxY8IMRVhFOwMqcJLbc8Oz3GlE
-         /4lB+YClOVhc05T5XzaYAE76pp4HMs11BfYeTRvU01C+A8fyuszPw/uFnT1t4bRYXK/T
-         nX4Q==
-X-Gm-Message-State: APjAAAV4ayc0ksMINEzjojuMloUqed43/34794gCPhE+w+r+i8yGyTKF
-        hUOuyLxjM5xm9RWWpVcIZdtLvNbn3moErZO+0hxP7w==
-X-Google-Smtp-Source: APXvYqxtoqDm0j7pzYiqmwJ79qHV4hqM09C5CPP7ue5y+F2n1QpcowgAf6qc+AUIL/MdTjBqctZ4jZ5qS8oYDDkHW6c=
-X-Received: by 2002:aca:4e90:: with SMTP id c138mr359970oib.147.1575312146080;
- Mon, 02 Dec 2019 10:42:26 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wA1n/F7XrdUO02DC+GAIWyjmkhz2Qc0KPGNZuwg12WE=;
+        b=BVLXlFxO4H6LjCYS1riMI7yNBipyUAFpz5vWJo5oLC5Ip8mjDtSPMe9jmoNZ6KoP/j
+         B4QIiW1Ptsb/MU2303I5gHPhKpCOWJGRGyQltK+Pj5kIbIzsA6S7qHWYThqNePw4KNLv
+         FJ+lTIp4HOX73UCD9FGlcz+Swn9waCoA+SxKbE8joPhymagLMFdwIufx3MDZoYRVUCIT
+         rLf0IGIw2knVnffyCpWvBmsnM6BHunhfCtWGU17B7YHu4L9E57mtg3qAbI6PJiJ9MRzT
+         F5jeuUd0XjF8CkhSQmzqKsiS1hpgUaZVpMWvUnj5DeZpf79oBJ71tfC77kb4pNG5jGTA
+         MKSA==
+X-Gm-Message-State: APjAAAUybFWNLO1m8DEAHdbIhD4E5hTQOyBD0zFdacT/2U6YqXnuzZIi
+        yJEBD0aRPPP71IrMcAa98fYPSQDL
+X-Google-Smtp-Source: APXvYqwBRfLk7cM7zJiTJBRoiOX5bjW5H487noj5jYIbJbDOQ+REazjNBBXkEpJTJNK1Sodv67O4gg==
+X-Received: by 2002:a62:ee09:: with SMTP id e9mr1708629pfi.243.1575334621302;
+        Mon, 02 Dec 2019 16:57:01 -0800 (PST)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id s3sm802389pgi.31.2019.12.02.16.57.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Dec 2019 16:57:00 -0800 (PST)
+Subject: Re: [question]can hard roce and soft roce communicate with each
+ other?
+To:     Steve Wise <larrystevenwise@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     wangqi <3100102071@zju.edu.cn>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+References: <53ed2e18-c58e-1e9c-55f8-60b14dfa2052@zju.edu.cn>
+ <4433c97d-218a-294e-3c03-214e0ef1379f@acm.org>
+ <20191127111008.GC10331@unreal>
+ <CADmRdJfEr405W1+m=jYDYV=MZtk_0mEamUA7UXt6rKangnAC1g@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <8e8d9ecc-9406-11b3-242b-3a84f3702f79@acm.org>
+Date:   Mon, 2 Dec 2019 16:56:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <CAAFE1bd9wuuobpe4VK7Ty175j7mWT+kRmHCNhVD+6R8MWEAqmw@mail.gmail.com>
- <20191128015748.GA3277@ming.t460p> <CA+VdTb_-CGaPjKUQteKVFSGqDz-5o-tuRRkJYqt8B9iOQypiwQ@mail.gmail.com>
- <20191128025822.GC3277@ming.t460p> <CAAFE1bfsXsKGyw7SU_z4NanT+wmtuJT=XejBYbHHMCDQwm73sw@mail.gmail.com>
- <20191128091210.GC15549@ming.t460p>
-In-Reply-To: <20191128091210.GC15549@ming.t460p>
-From:   Stephen Rust <srust@blockbridge.com>
-Date:   Mon, 2 Dec 2019 13:42:15 -0500
-Message-ID: <CAAFE1beMkvyRctGqpffd3o_QtDH0CrmQSb=fV4GzqMUXWzPyOw@mail.gmail.com>
-Subject: Re: Data corruption in kernel 5.1+ with iSER attached ramdisk
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Rob Townley <rob.townley@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        target-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CADmRdJfEr405W1+m=jYDYV=MZtk_0mEamUA7UXt6rKangnAC1g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Ming,
+On 11/27/19 6:24 AM, Steve Wise wrote:
+> I've recently uncovered a bug in RXE that causes iCRC errors when
+> running between RXE and a correct RoCE implementation.  The bug is
+> that RXE is not including pad bytes in its iCRC calculations.  So if
+> the application payload is not 4B aligned then you'll hit this bug.
+> You can see this by running ib_write_bw, for example, between mlnx_ib
+> and rxe.
+> 
+> works:  ib_write_bw -s 32 -n 5
+> fails: ib_write_bw -s 33 -n 5
+> 
+> I'll post a patch this coming weekend hopefully.
+  Hi Steve,
 
-> I may get one machine with Mellanox NIC, is it easy to setup & reproduce
-> just in the local machine(both host and target are setup on same machine)?
-
-Yes, I have reproduced locally on one machine (using the IP address of
-the Mellanox NIC as the target IP), with iser enabled on the target,
-and iscsiadm connected via iser.
-
-e.g.:
-target:
-/iscsi/iqn.20.../0.0.0.0:3260> enable_iser true
-iSER enable now: True
-
-  | |   o- portals
-....................................................................................................
-[Portals: 1]
-  | |     o- 0.0.0.0:3260
-...................................................................................................
-[iser]
-
-client:
-# iscsiadm -m node -o update --targetname <target> -n
-iface.transport_name -v iser
-# iscsiadm -m node --targetname <target> --login
-# iscsiadm -m session
-iser: [3] 172.16.XX.XX:3260,1
-iqn.2003-01.org.linux-iscsi.x8664:sn.c46c084919b0 (non-flash)
-
-> Please try to trace bio_add_page() a bit via 'bpftrace ./ilo.bt'.
-
-Here is the output of this trace from a failed run:
-
-# bpftrace lio.bt
-modprobe: FATAL: Module kheaders not found.
-Attaching 3 probes...
-512 76
-4096 0
-4096 0
-4096 0
-4096 76
-512 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-4096 0
-^C
-
-@start[14475]: 0
-@start[14384]: 0
-@start[6764]: 0
-@start[14477]: 0
-@start[7771]: 0
-@start[13788]: 0
-@start[6879]: 0
-@start[11842]: 0
-@start[7765]: 0
-@start[7782]: 0
-@start[14476]: 0
-@start[14385]: 0
-@start[14474]: 0
-@start[11564]: 0
-@start[7753]: 0
-@start[7786]: 0
-@start[7791]: 0
-@start[6878]: 0
-@start[7411]: 0
-@start[14473]: 0
-@start[11563]: 0
-@start[7681]: 0
-@start[7756]: 0
-
+Will that patch support coexistence of softRoCE implementations that use 
+different CRC calculation methods?
 
 Thanks,
-Steve
+
+Bart.
