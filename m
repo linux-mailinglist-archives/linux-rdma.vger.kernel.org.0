@@ -2,135 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D611101D0
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2019 17:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54AFC110224
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2019 17:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbfLCQGv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Dec 2019 11:06:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51528 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725848AbfLCQGv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 3 Dec 2019 11:06:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id AD9186A2F7;
-        Tue,  3 Dec 2019 16:06:47 +0000 (UTC)
-Message-ID: <d1c87c83f38e74f0c6b0692248fe88dfd2bdec3e.camel@suse.de>
-Subject: Re: [PATCH v4 8/8] linux/log2.h: Use roundup/dow_pow_two() on 64bit
- calculations
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Andrew Murray <andrew.murray@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Eric Anholt <eric@anholt.net>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        james.quinlan@broadcom.com, Matthias Brugger <mbrugger@suse.com>,
-        Phil Elwell <phil@raspberrypi.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-acpi@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>
-Date:   Tue, 03 Dec 2019 17:06:43 +0100
-In-Reply-To: <CAL_JsqLMCXdnZag3jihV_dzuR+wFaVKFb7q_PdKTxTg0LVA6cw@mail.gmail.com>
-References: <20191203114743.1294-1-nsaenzjulienne@suse.de>
-         <20191203114743.1294-9-nsaenzjulienne@suse.de>
-         <CAL_JsqLMCXdnZag3jihV_dzuR+wFaVKFb7q_PdKTxTg0LVA6cw@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-VHC+bPmpbRjqhnK2ykxw"
-User-Agent: Evolution 3.34.1 
+        id S1727134AbfLCQZE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Dec 2019 11:25:04 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:34307 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727132AbfLCQZE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Dec 2019 11:25:04 -0500
+Received: by mail-pf1-f196.google.com with SMTP id n13so2109662pff.1
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Dec 2019 08:25:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s2ZJ52Lp3moeubwpd5H4H9JV30W8DY/jyWt/3XYBZxU=;
+        b=AMuJ7NHwLzHLKalCxxfNSOD1tb2ufUCtxb8No42CGheMOHwnYODriPV2b8oIc80Xd4
+         yzqQJxBdWx1wo75R9iJ/4kimCaycNS2eeLkiucuhwqtim8iz7TAYBmyD7m62j013Ba1o
+         C1ufanKOr+5ZUGTmS2UcUCwI0K4k9IqMSisSgEYttHztfUCXxzqsPf+KYExmYr3w/HK0
+         yksqSGRjACBYPxbNVeSp/pOQMxRkC7cxv5K/WJ0CLRfETZ7kyl85ug0ZRW7mj8psR6CK
+         uk1NaPyNtQ5v7oza6B+kdQ2K8F3ehooO7suiMIfvR+M1gJ92dIQZcqd95eUO/cv5fKGY
+         ywOw==
+X-Gm-Message-State: APjAAAUw6qSohMYkYZuxmJ3kqsKbLp7/U1MtBdJ0WYdVp8aPcpgo9+SU
+        YgN0Vq1JIoHuDNLMPwQs4aM=
+X-Google-Smtp-Source: APXvYqzJyQSUQ0RVk50h9Foo0dWFP4Mz1bcAgbmH/aRHZyodAsG5huid4vNNyk3WX639Ktjc8PlgUQ==
+X-Received: by 2002:a63:710:: with SMTP id 16mr6238626pgh.58.1575390303338;
+        Tue, 03 Dec 2019 08:25:03 -0800 (PST)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id u26sm4121043pfn.46.2019.12.03.08.25.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Dec 2019 08:25:02 -0800 (PST)
+Subject: Re: [PATCH 2/2] rxe: correctly calculate iCRC for unaligned payloads
+To:     Steve Wise <larrystevenwise@gmail.com>, linux-rdma@vger.kernel.org,
+        3100102071@zju.edu.cn, leon@kernel.org
+References: <20191203020319.15036-1-larrystevenwise@gmail.com>
+ <20191203020319.15036-2-larrystevenwise@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <a0003c88-10f5-c14a-220d-c100fa160163@acm.org>
+Date:   Tue, 3 Dec 2019 08:25:01 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <20191203020319.15036-2-larrystevenwise@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 12/2/19 6:03 PM, Steve Wise wrote:
+> If RoCE PDUs being sent or received contain pad bytes, then the iCRC
+> is miscalculated resulting PDUs being emitted by RXE with an incorrect
+> iCRC, as well as ingress PDUs being dropped due to erroneously detecting
+> a bad iCRC in the PDU.  The fix is to include the pad bytes, if any,
+> in iCRC computations.
 
---=-VHC+bPmpbRjqhnK2ykxw
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Should this description mention that this patch breaks compatibility 
+with SoftRoCE drivers that do not include this fix? Do we need a kernel 
+module parameter that allows to select either the old or the new behavior?
 
-Hi Rob,
+> CC: bvanassche@acm.org,3100102071@zju.edu.cn,leon@kernel.org
 
-On Tue, 2019-12-03 at 09:53 -0600, Rob Herring wrote:
-> On Tue, Dec 3, 2019 at 5:48 AM Nicolas Saenz Julienne
-> <nsaenzjulienne@suse.de> wrote:
-> > The function now is safe to use while expecting a 64bit value. Use it
-> > where relevant.
->=20
-> What was wrong with the existing code? This is missing some context.
+Should this Cc-line perhaps be converted into three Cc-lines?
 
-You're right, I'll update it.
+Otherwise this patch looks fine to me.
 
-For most of files changed the benefit here is factoring out a common patter=
-n
-using the standard function roundup/down_pow_two() which now provides corre=
-ct
-64bit results.
+Thanks,
 
-As for of/device.c and arm64/iort.c it's more of a readability enhancement.=
- I
-consider it's easier to understand than the current calculation as it abstr=
-acts
-the math.
-
-> > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > ---
-> >  drivers/acpi/arm64/iort.c                        | 2 +-
-> >  drivers/net/ethernet/mellanox/mlx4/en_clock.c    | 3 ++-
-> >  drivers/of/device.c                              | 3 ++-
->=20
-> In any case,
->=20
-> Acked-by: Rob Herring <robh@kernel.org>
->=20
-
-Thanks!
-
-Regards,
-Nicolas
-
-
---=-VHC+bPmpbRjqhnK2ykxw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl3miBMACgkQlfZmHno8
-x/5s+Af/a2icSd66GHrsABoMtUfJXpQclSae81ThRP5Bfx6+mK4Ty4en3T+IxOK+
-NPmneod0gjSfyqqQniFbEcmlKAd8wXyUnBCCi6urRvuqOWcw65h10DA3fQCivaOt
-NWn3FRWMlPZbBIAYr/XOcsdOOkbD+VaFE/PaBYmxU/rWaCLGMWpYYBhF/Vcm+ASd
-VPQ4g8AfxyGvQW9EgbmRTMC0k7kMP6qrpmgIjNWvUPyJ+8ytD2Zly2xvbVf9TqhX
-/PP/t19fWayTqhsg+B04K0aN0oriRqSFX44yvCOApKhLBSsF6Nyc40m2sreqKMYY
-98kwrOrux/Fb3OeV/Wzdhhh8VhH+Sg==
-=4wmf
------END PGP SIGNATURE-----
-
---=-VHC+bPmpbRjqhnK2ykxw--
-
+Bart.
