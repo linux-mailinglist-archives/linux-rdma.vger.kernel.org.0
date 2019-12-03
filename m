@@ -2,109 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3695310F8BE
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2019 08:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3908C10FCB9
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2019 12:48:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727472AbfLCHc0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Dec 2019 02:32:26 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:29035 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727501AbfLCHcX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Dec 2019 02:32:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575358342;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I8wShJUZhIPRvHwuVROe4jfsRpfx1Wn6vaFNLNcy50o=;
-        b=GpEiArsVVr0xpm/Ns4SgCv9bIDOP7Oa0Goub0jyQvesAMY2aoUiNzCGhwbxnkA5eWpB9JH
-        x0qgIf7do8ULN+nKwPnOxgXxpb06ePNHmlGmg61IeWaUYIFWnih9TE/E8z4W6yUqp8ZYJ+
-        dWmVekHb21wXRvhPvu2TIAqaanJgvFc=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-b7c3FKTVOkqrFmZ_7iqKqQ-1; Tue, 03 Dec 2019 02:32:19 -0500
-Received: by mail-qt1-f200.google.com with SMTP id j18so1807357qtp.15
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Dec 2019 23:32:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jwSFHekH13o2QJMVsrxXSIHF6QQ380ubnLoCLySwb1o=;
-        b=l5U/0PP0Jk/6+BQoRjo14noCbCo/3hvto8bVtPZMkiJRUV1qV20+8YUstPOzMowtiO
-         oUAMjuxsybvoY1oCxH4vaWq0/4y30EF+vTkfHBw2fkEnsFS1M5UosZyGmEHXvNUvFr8w
-         2v+CGJPIVTahlfGduJEcmLj/I4jbGmAcN1EGJUpgeHbgmw998f93ivfA8eVduKWFolHL
-         3xc8bbfY4yDy0nCAnQA1meKP70tiFLOEcDJ67OB9ZsNsZJ0yoowYRzwGtHavs35b7JWr
-         hOCrAaqFb/nma0an818QPo/LL9Bfz5/8a3k/NBLCwOWaH1E6X3JM6GpDFfsmxI1jgyF9
-         fJuA==
-X-Gm-Message-State: APjAAAUx4syFCU6MFFdtCv/zYhq6a/gKcGJX/hWJFBpjSeYD6VUd85e1
-        P75Qfont5MlHQX4V9jIrdLowigfKMWKZ/jW/2IBDrUbExEQybf+AkoV6nuhOlQygfq1E35Dng1s
-        Kfsl/VeJimP1PYOyHR7zCaA==
-X-Received: by 2002:a37:404c:: with SMTP id n73mr3711274qka.292.1575358339503;
-        Mon, 02 Dec 2019 23:32:19 -0800 (PST)
-X-Google-Smtp-Source: APXvYqyPaIxtXBZQ4fHmWb1RYGKoL1DTAUuB7vZrs880mGPQQ0Qr4coSTbpggTuqOoohiw8W26zU9w==
-X-Received: by 2002:a37:404c:: with SMTP id n73mr3711260qka.292.1575358339311;
-        Mon, 02 Dec 2019 23:32:19 -0800 (PST)
-Received: from redhat.com (bzq-79-181-48-215.red.bezeqint.net. [79.181.48.215])
-        by smtp.gmail.com with ESMTPSA id 132sm1285704qkh.14.2019.12.02.23.32.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Dec 2019 23:32:18 -0800 (PST)
-Date:   Tue, 3 Dec 2019 02:32:14 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Tariq Toukan <tariqt@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        oss-drivers@netronome.com
-Subject: [PATCH RFC v7 net-next 3/1] netronome: use the new txqueue timeout
- argument
-Message-ID: <20191203072757.429125-2-mst@redhat.com>
-References: <20191203071101.427592-1-mst@redhat.com>
+        id S1726098AbfLCLrx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Dec 2019 06:47:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49394 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725773AbfLCLrw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 3 Dec 2019 06:47:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 6C137B183;
+        Tue,  3 Dec 2019 11:47:49 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     andrew.murray@arm.com, maz@kernel.org, linux-kernel@vger.kernel.org
+Cc:     james.quinlan@broadcom.com, mbrugger@suse.com,
+        f.fainelli@gmail.com, phil@raspberrypi.org, wahrenst@gmx.net,
+        jeremy.linton@arm.com, linux-pci@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-rdma@vger.kernel.org, iommu@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        kexec@lists.infradead.org, linux-nfs@vger.kernel.org
+Subject: [PATCH v4 0/8] Raspberry Pi 4 PCIe support
+Date:   Tue,  3 Dec 2019 12:47:33 +0100
+Message-Id: <20191203114743.1294-1-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-In-Reply-To: <20191203072757.429125-1-mst@redhat.com>
-X-Mailer: git-send-email 2.22.0.678.g13338e74b8
-X-Mutt-Fcc: =sent
-X-MC-Unique: b7c3FKTVOkqrFmZ_7iqKqQ-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+This series aims at providing support for Raspberry Pi 4's PCIe
+controller, which is also shared with the Broadcom STB family of
+devices.
+
+There was a previous attempt to upstream this some years ago[1] but was
+blocked as most STB PCIe integrations have a sparse DMA mapping[2] which
+is something currently not supported by the kernel.  Luckily this is not
+the case for the Raspberry Pi 4.
+
+Note that the driver code is to be based on top of Rob Herring's series
+simplifying inbound and outbound range parsing.
+
+[1] https://patchwork.kernel.org/cover/10605933/
+[2] https://patchwork.kernel.org/patch/10605957/
+
 ---
 
-untested
+Changes since v3:
+  - Moved all the log2.h related changes at the end of the series, as I
+    presume they will be contentious and I don't want the PCIe patches
+    to depend on them. Ultimately I think I'll respin them on their own
+    series but wanted to keep them in for this submission just for the
+    sake of continuity.
+  - Addressed small nits here and there.
 
- drivers/net/ethernet/netronome/nfp/nfp_net_common.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+Changes since v2:
+  - Redo register access in driver avoiding indirection while keeping
+    the naming intact
+  - Add patch editing ARM64's config
+  - Last MSI cleanups, notably removing MSIX flag
+  - Got rid of all _RB writes
+  - Got rid of all of_data
+  - Overall churn removal
+  - Address the rest of Andrew's comments
 
-diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/drivers/=
-net/ethernet/netronome/nfp/nfp_net_common.c
-index 41a808b14d76..26f1fb19d0aa 100644
---- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-+++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-@@ -1323,13 +1323,8 @@ nfp_net_tx_ring_reset(struct nfp_net_dp *dp, struct =
-nfp_net_tx_ring *tx_ring)
- static void nfp_net_tx_timeout(struct net_device *netdev, unsigned int txq=
-ueue)
- {
- =09struct nfp_net *nn =3D netdev_priv(netdev);
--=09int i;
-=20
--=09for (i =3D 0; i < nn->dp.netdev->real_num_tx_queues; i++) {
--=09=09if (!netif_tx_queue_stopped(netdev_get_tx_queue(netdev, i)))
--=09=09=09continue;
--=09=09nn_warn(nn, "TX timeout on ring: %d\n", i);
--=09}
-+=09nn_warn(nn, "TX timeout on ring: %d\n", txqueue);
- =09nn_warn(nn, "TX watchdog timeout\n");
- }
-=20
---=20
-MST
+Changes since v1:
+  - add generic rounddown/roundup_pow_two64() patch
+  - Add MAINTAINERS patch
+  - Fix Kconfig
+  - Cleanup probe, use up to date APIs, exit on MSI failure
+  - Get rid of linux,pci-domain and other unused constructs
+  - Use edge triggered setup for MSI
+  - Cleanup MSI implementation
+  - Fix multiple cosmetic issues
+  - Remove supend/resume code
+
+Jim Quinlan (3):
+  dt-bindings: PCI: Add bindings for brcmstb's PCIe device
+  PCI: brcmstb: Add Broadcom STB PCIe host controller driver
+  PCI: brcmstb: Add MSI support
+
+Nicolas Saenz Julienne (5):
+  ARM: dts: bcm2711: Enable PCIe controller
+  MAINTAINERS: Add brcmstb PCIe controller
+  arm64: defconfig: Enable Broadcom's STB PCIe controller
+  linux/log2.h: Fix 64bit calculations in roundup/down_pow_two()
+  linux/log2.h: Use roundup/dow_pow_two() on 64bit calculations
+
+ .../bindings/pci/brcm,stb-pcie.yaml           |   97 ++
+ MAINTAINERS                                   |    4 +
+ arch/arm/boot/dts/bcm2711.dtsi                |   37 +
+ arch/arm64/configs/defconfig                  |    1 +
+ drivers/acpi/arm64/iort.c                     |    2 +-
+ drivers/clk/clk-divider.c                     |    8 +-
+ drivers/clk/sunxi/clk-sunxi.c                 |    2 +-
+ drivers/infiniband/hw/hfi1/chip.c             |    4 +-
+ drivers/infiniband/hw/hfi1/init.c             |    4 +-
+ drivers/infiniband/hw/mlx4/srq.c              |    2 +-
+ drivers/infiniband/hw/mthca/mthca_srq.c       |    2 +-
+ drivers/infiniband/sw/rxe/rxe_qp.c            |    4 +-
+ drivers/iommu/intel-iommu.c                   |    4 +-
+ drivers/iommu/intel-svm.c                     |    4 +-
+ drivers/iommu/intel_irq_remapping.c           |    2 +-
+ drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c  |    4 +-
+ drivers/net/ethernet/marvell/sky2.c           |    2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_clock.c |    3 +-
+ drivers/net/ethernet/rocker/rocker_hw.h       |    4 +-
+ drivers/net/ethernet/sfc/ef10.c               |    2 +-
+ drivers/net/ethernet/sfc/efx.h                |    2 +-
+ drivers/net/ethernet/sfc/falcon/efx.h         |    2 +-
+ drivers/of/device.c                           |    3 +-
+ drivers/pci/controller/Kconfig                |    9 +
+ drivers/pci/controller/Makefile               |    1 +
+ .../pci/controller/cadence/pcie-cadence-ep.c  |    3 +-
+ drivers/pci/controller/cadence/pcie-cadence.c |    3 +-
+ drivers/pci/controller/pcie-brcmstb.c         | 1008 +++++++++++++++++
+ drivers/pci/controller/pcie-rockchip-ep.c     |    5 +-
+ drivers/pci/msi.c                             |    2 +-
+ include/linux/log2.h                          |   44 +-
+ kernel/dma/direct.c                           |    2 +-
+ kernel/kexec_core.c                           |    3 +-
+ lib/rhashtable.c                              |    2 +-
+ net/sunrpc/xprtrdma/verbs.c                   |    2 +-
+ 35 files changed, 1211 insertions(+), 72 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+ create mode 100644 drivers/pci/controller/pcie-brcmstb.c
+
+-- 
+2.24.0
 
