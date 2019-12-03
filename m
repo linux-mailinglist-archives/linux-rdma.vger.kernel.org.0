@@ -2,80 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EAE010F44A
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2019 01:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 131F610F44F
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2019 01:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725903AbfLCA5C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Dec 2019 19:57:02 -0500
-Received: from mail-pg1-f171.google.com ([209.85.215.171]:46152 "EHLO
-        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725853AbfLCA5C (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Dec 2019 19:57:02 -0500
-Received: by mail-pg1-f171.google.com with SMTP id z124so699535pgb.13
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Dec 2019 16:57:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wA1n/F7XrdUO02DC+GAIWyjmkhz2Qc0KPGNZuwg12WE=;
-        b=BVLXlFxO4H6LjCYS1riMI7yNBipyUAFpz5vWJo5oLC5Ip8mjDtSPMe9jmoNZ6KoP/j
-         B4QIiW1Ptsb/MU2303I5gHPhKpCOWJGRGyQltK+Pj5kIbIzsA6S7qHWYThqNePw4KNLv
-         FJ+lTIp4HOX73UCD9FGlcz+Swn9waCoA+SxKbE8joPhymagLMFdwIufx3MDZoYRVUCIT
-         rLf0IGIw2knVnffyCpWvBmsnM6BHunhfCtWGU17B7YHu4L9E57mtg3qAbI6PJiJ9MRzT
-         F5jeuUd0XjF8CkhSQmzqKsiS1hpgUaZVpMWvUnj5DeZpf79oBJ71tfC77kb4pNG5jGTA
-         MKSA==
-X-Gm-Message-State: APjAAAUybFWNLO1m8DEAHdbIhD4E5hTQOyBD0zFdacT/2U6YqXnuzZIi
-        yJEBD0aRPPP71IrMcAa98fYPSQDL
-X-Google-Smtp-Source: APXvYqwBRfLk7cM7zJiTJBRoiOX5bjW5H487noj5jYIbJbDOQ+REazjNBBXkEpJTJNK1Sodv67O4gg==
-X-Received: by 2002:a62:ee09:: with SMTP id e9mr1708629pfi.243.1575334621302;
-        Mon, 02 Dec 2019 16:57:01 -0800 (PST)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id s3sm802389pgi.31.2019.12.02.16.57.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Dec 2019 16:57:00 -0800 (PST)
-Subject: Re: [question]can hard roce and soft roce communicate with each
- other?
-To:     Steve Wise <larrystevenwise@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     wangqi <3100102071@zju.edu.cn>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-References: <53ed2e18-c58e-1e9c-55f8-60b14dfa2052@zju.edu.cn>
- <4433c97d-218a-294e-3c03-214e0ef1379f@acm.org>
- <20191127111008.GC10331@unreal>
- <CADmRdJfEr405W1+m=jYDYV=MZtk_0mEamUA7UXt6rKangnAC1g@mail.gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <8e8d9ecc-9406-11b3-242b-3a84f3702f79@acm.org>
-Date:   Mon, 2 Dec 2019 16:56:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726107AbfLCA7H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Dec 2019 19:59:07 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35586 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725899AbfLCA7H (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Dec 2019 19:59:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575334746;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DJsbufhtBhVAM9akbCFhx8OR37KN18Pkh0f3aJ/wr48=;
+        b=Ino9xIkzmEb9DHkvfwl6hvT8TMRg7FxvCDLcN/ReYqwcgwP7xLVuZATO8bEwJnfBmv3DVm
+        IIUaMtNs6BtxAKVs9d/HdcF+Ux88Gd6Ft7C5iVzKGKT86xAjeJoiJ15s07IeqHXFbIIBO8
+        JW1DWOgAeBCTMcKLLc3c5XMkN7xA9Mw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-id8hnlJZMgy_H_WpJIWsrQ-1; Mon, 02 Dec 2019 19:59:02 -0500
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A00E800D41;
+        Tue,  3 Dec 2019 00:59:01 +0000 (UTC)
+Received: from ming.t460p (ovpn-8-19.pek2.redhat.com [10.72.8.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D658619C68;
+        Tue,  3 Dec 2019 00:58:53 +0000 (UTC)
+Date:   Tue, 3 Dec 2019 08:58:49 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Stephen Rust <srust@blockbridge.com>
+Cc:     Rob Townley <rob.townley@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        target-devel@vger.kernel.org
+Subject: Re: Data corruption in kernel 5.1+ with iSER attached ramdisk
+Message-ID: <20191203005849.GB25002@ming.t460p>
+References: <CAAFE1bd9wuuobpe4VK7Ty175j7mWT+kRmHCNhVD+6R8MWEAqmw@mail.gmail.com>
+ <20191128015748.GA3277@ming.t460p>
+ <CA+VdTb_-CGaPjKUQteKVFSGqDz-5o-tuRRkJYqt8B9iOQypiwQ@mail.gmail.com>
+ <20191128025822.GC3277@ming.t460p>
+ <CAAFE1bfsXsKGyw7SU_z4NanT+wmtuJT=XejBYbHHMCDQwm73sw@mail.gmail.com>
+ <20191128091210.GC15549@ming.t460p>
+ <CAAFE1beMkvyRctGqpffd3o_QtDH0CrmQSb=fV4GzqMUXWzPyOw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CADmRdJfEr405W1+m=jYDYV=MZtk_0mEamUA7UXt6rKangnAC1g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAAFE1beMkvyRctGqpffd3o_QtDH0CrmQSb=fV4GzqMUXWzPyOw@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-MC-Unique: id8hnlJZMgy_H_WpJIWsrQ-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/27/19 6:24 AM, Steve Wise wrote:
-> I've recently uncovered a bug in RXE that causes iCRC errors when
-> running between RXE and a correct RoCE implementation.  The bug is
-> that RXE is not including pad bytes in its iCRC calculations.  So if
-> the application payload is not 4B aligned then you'll hit this bug.
-> You can see this by running ib_write_bw, for example, between mlnx_ib
-> and rxe.
-> 
-> works:  ib_write_bw -s 32 -n 5
-> fails: ib_write_bw -s 33 -n 5
-> 
-> I'll post a patch this coming weekend hopefully.
-  Hi Steve,
+On Mon, Dec 02, 2019 at 01:42:15PM -0500, Stephen Rust wrote:
+> Hi Ming,
+>=20
+> > I may get one machine with Mellanox NIC, is it easy to setup & reproduc=
+e
+> > just in the local machine(both host and target are setup on same machin=
+e)?
+>=20
+> Yes, I have reproduced locally on one machine (using the IP address of
+> the Mellanox NIC as the target IP), with iser enabled on the target,
+> and iscsiadm connected via iser.
+>=20
+> e.g.:
+> target:
+> /iscsi/iqn.20.../0.0.0.0:3260> enable_iser true
+> iSER enable now: True
+>=20
+>   | |   o- portals
+> .........................................................................=
+...........................
+> [Portals: 1]
+>   | |     o- 0.0.0.0:3260
+> .........................................................................=
+..........................
+> [iser]
+>=20
+> client:
+> # iscsiadm -m node -o update --targetname <target> -n
+> iface.transport_name -v iser
+> # iscsiadm -m node --targetname <target> --login
+> # iscsiadm -m session
+> iser: [3] 172.16.XX.XX:3260,1
+> iqn.2003-01.org.linux-iscsi.x8664:sn.c46c084919b0 (non-flash)
+>=20
+> > Please try to trace bio_add_page() a bit via 'bpftrace ./ilo.bt'.
+>=20
+> Here is the output of this trace from a failed run:
+>=20
+> # bpftrace lio.bt
+> modprobe: FATAL: Module kheaders not found.
+> Attaching 3 probes...
+> 512 76
+> 4096 0
+> 4096 0
+> 4096 0
+> 4096 76
 
-Will that patch support coexistence of softRoCE implementations that use 
-different CRC calculation methods?
+The above buffer might be the reason, 4096 is length, and 76 is the
+offset, that means the added buffer crosses two pages, meantime the
+buffer isn't aligned.
+
+We need to figure out why the magic 76 offset is passed from target or
+driver.
+
+Please install bcc and collect the following log:
+
+/usr/share/bcc/tools/trace -K 'bio_add_page ((arg4 & 512) !=3D 0) "%d %d", =
+arg3, arg4 '
+
 
 Thanks,
+Ming
 
-Bart.
