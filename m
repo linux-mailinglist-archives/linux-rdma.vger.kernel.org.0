@@ -2,103 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE063110414
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2019 19:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0533B11044A
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2019 19:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbfLCSJo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Dec 2019 13:09:44 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:39082 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726763AbfLCSJo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Dec 2019 13:09:44 -0500
-Received: by mail-pg1-f194.google.com with SMTP id b137so2015164pga.6
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Dec 2019 10:09:44 -0800 (PST)
+        id S1726741AbfLCSdK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Dec 2019 13:33:10 -0500
+Received: from mail-io1-f67.google.com ([209.85.166.67]:46087 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbfLCSdK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Dec 2019 13:33:10 -0500
+Received: by mail-io1-f67.google.com with SMTP id i11so4823932iol.13
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Dec 2019 10:33:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=loykSnf98Wtp3TswEHEtBrf07V1DthMDfsibxgCSjdE=;
-        b=polSkby/2rPftEWzAa2mR2P/AQVU1TyZPkOR2+OvDZVoDx/+YFkLk2AHfp422MbJws
-         MXF0fY0WkdAB2Obk+kK5NspG6Mladz7tkDLx/YrSbCL2WJuhzWHSEyHLw42lS1CmFoHJ
-         5F68HXn7NvaPWpyltr4OM080sSVvgDjTyPonfequpLY+neG1NkT1f/kyGfkvF2OJUXOO
-         Pm0Qy1/alLPv6wCPlGMkPZt1YkvkqT59u4Qh14NkuQmVo5cL7a2T+R8hN0u7EMA0EVXQ
-         GNo75rvQe7rfpfnUY0nAfZdc+UhViTY/ol6Ktgi5wS8Y9pxf+ABFSZF9td10pnED6g8b
-         oBvw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DM0ZKvBsebvlDMUIQZhcODMOVPA8hHr63fCXOyp0vS8=;
+        b=LMYqa1lsSfDHXt8q0R6epQBV7toU4SVgqyP0qZ4JrvF8aU/+ynEothKpef/p3HXXGN
+         Ri80793bsuvcQQyMhPZpg+trodCMEKKvJmYNgQSkp/Xygiu2S0GuVfhltB/iXDEi2lQi
+         rhCw+jLOwotQKvREsBoK3a/nGeOev6u1iXL48nf1Sg2SsKW39hrlAr6Rk2vOXHEYlch7
+         rpvhWPEOjOhgTjtxd4a1mZSLhyS/6FKk5osZ1DLb1Q+LdjyKGRMKZZvFveu4hj8esUqh
+         9uRaa+LWihYPBvTyY9KEjufn3b8SxTXMRDUa9pxIU1G6Mb71uziR6D0t7MApINH83c6v
+         c5Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=loykSnf98Wtp3TswEHEtBrf07V1DthMDfsibxgCSjdE=;
-        b=KRg8IwBluP9h+ODdn8AZzavDul3kgEdeBCfC1wYECooNMDzAgGpxvjQPSDk5TrWz+X
-         hy5sn88KYwRhbE0JP0nF0ufF9B/xgLZgpivwi2Y7fytIXvgY67DtnzTLtvhlN6FwnKm6
-         1A535qw1xPBZVWWOgWMDCZtLa4vU49kxkgd/ZNDvZefr9+pCAwNYfWgpQd+lgmAIuXXG
-         9GbEO7pugHFmdBtr8a9IK5cbu1cS4+444lQg5s0ljn8QRfBXm3IOOixI+Y3/tJCHzfDo
-         Ah8jclZHWGg6GRt3WWa3HE5Dq+r2ouSj9wQsCuMdxXiaajQguCieiS76mMPvclD0F0S1
-         Nfmg==
-X-Gm-Message-State: APjAAAUPgn4/ndS6/PuUcmGMJ/Dv5dAl0k9uh0Y7MRGT5OVAAS4V8Yly
-        x1d2WrEnXxPB0bW0RPrWQrhZWA==
-X-Google-Smtp-Source: APXvYqwgcBHZb9FDCJA3pZujOlfUAYFHnofoTF/uSqyTQfnonhv6YHeyo017p/RUkIqtyKU4a20hZg==
-X-Received: by 2002:a62:5cc1:: with SMTP id q184mr6181056pfb.116.1575396584005;
-        Tue, 03 Dec 2019 10:09:44 -0800 (PST)
-Received: from cakuba.netronome.com (c-73-202-202-92.hsd1.ca.comcast.net. [73.202.202.92])
-        by smtp.gmail.com with ESMTPSA id x11sm4454147pfn.53.2019.12.03.10.09.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Dec 2019 10:09:43 -0800 (PST)
-Date:   Tue, 3 Dec 2019 10:09:31 -0800
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Tariq Toukan <tariqt@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, oss-drivers@netronome.com
-Subject: Re: [PATCH RFC v7 net-next 3/1] netronome: use the new txqueue
- timeout argument
-Message-ID: <20191203100931.43207030@cakuba.netronome.com>
-In-Reply-To: <20191203072757.429125-2-mst@redhat.com>
-References: <20191203071101.427592-1-mst@redhat.com>
-        <20191203072757.429125-2-mst@redhat.com>
-Organization: Netronome Systems, Ltd.
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DM0ZKvBsebvlDMUIQZhcODMOVPA8hHr63fCXOyp0vS8=;
+        b=Nyg973MtWR3lZPnRO0t2gQftCl2BEQ3RB+5QuPH5jfRU0ZIwiyn6HB0e1JZ1TVJm7M
+         YXVkSJ/KgjaQlUYlIZZhzTWEs44hZZfYjxwrbE7SXLyROXZZy4Rweg1hEKnUaRpMyTe6
+         sRgQIeD7BHlEEp5okCivuSj9F0Gto3LDSO+Oul1d5A1X951ajLb8hwlkS0wnVar5w9em
+         vRbvyGHuhEB1qHHDjIyRk3/YF9D1gMktXd6z8MtxgzN4s9MaA5r9X3Jsy7UfPI7zcezV
+         ziOxXo7ifgNpo5e8UiLj7OxuQWKQ6ZCsZjUUdEon6JjkIX9Fff86g+RSaaK7ERYVQVLd
+         zr+Q==
+X-Gm-Message-State: APjAAAVB8GaJxIsUh5yDySiW7lCqv5P3wHsT6oKG2sW14i8mwglhOqQc
+        Qa2HWRNyd7PryYEuk43WCaml1m6BBRNinrXwePM=
+X-Google-Smtp-Source: APXvYqwnv0gEhnt2U9QrVnr8sU0NFDyCy9lXh42/KH7VEgWsL25n7Cnfgmb5SIxMA4YeGWabvd2e4qRRRvW+bIDiTC8=
+X-Received: by 2002:a02:6944:: with SMTP id e65mr6653422jac.11.1575397989417;
+ Tue, 03 Dec 2019 10:33:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20191203020319.15036-1-larrystevenwise@gmail.com>
+ <20191203020319.15036-2-larrystevenwise@gmail.com> <a0003c88-10f5-c14a-220d-c100fa160163@acm.org>
+In-Reply-To: <a0003c88-10f5-c14a-220d-c100fa160163@acm.org>
+From:   Steve Wise <larrystevenwise@gmail.com>
+Date:   Tue, 3 Dec 2019 12:32:58 -0600
+Message-ID: <CADmRdJfGBt-k1uXZK3Uvjkj0hyCOoPjBzxx_UmRKUq7rcQ1ouQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] rxe: correctly calculate iCRC for unaligned payloads
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        wangqi <3100102071@zju.edu.cn>, Leon Romanovsky <leon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 3 Dec 2019 02:32:14 -0500, Michael S. Tsirkin wrote:
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
-> 
-> untested
-> 
->  drivers/net/ethernet/netronome/nfp/nfp_net_common.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-> index 41a808b14d76..26f1fb19d0aa 100644
-> --- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-> +++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
-> @@ -1323,13 +1323,8 @@ nfp_net_tx_ring_reset(struct nfp_net_dp *dp, struct nfp_net_tx_ring *tx_ring)
->  static void nfp_net_tx_timeout(struct net_device *netdev, unsigned int txqueue)
->  {
->  	struct nfp_net *nn = netdev_priv(netdev);
-> -	int i;
->  
-> -	for (i = 0; i < nn->dp.netdev->real_num_tx_queues; i++) {
-> -		if (!netif_tx_queue_stopped(netdev_get_tx_queue(netdev, i)))
-> -			continue;
-> -		nn_warn(nn, "TX timeout on ring: %d\n", i);
-> -	}
-> +	nn_warn(nn, "TX timeout on ring: %d\n", txqueue);
+On Tue, Dec 3, 2019 at 10:25 AM Bart Van Assche <bvanassche@acm.org> wrote:
+>
+> On 12/2/19 6:03 PM, Steve Wise wrote:
+> > If RoCE PDUs being sent or received contain pad bytes, then the iCRC
+> > is miscalculated resulting PDUs being emitted by RXE with an incorrect
+> > iCRC, as well as ingress PDUs being dropped due to erroneously detecting
+> > a bad iCRC in the PDU.  The fix is to include the pad bytes, if any,
+> > in iCRC computations.
+>
+> Should this description mention that this patch breaks compatibility
+> with SoftRoCE drivers that do not include this fix? Do we need a kernel
+> module parameter that allows to select either the old or the new behavior?
+>
 
-%u
+Good point.  I defer to others on how they want to handle that.
 
->  	nn_warn(nn, "TX watchdog timeout\n");
+> > CC: bvanassche@acm.org,3100102071@zju.edu.cn,leon@kernel.org
+>
+> Should this Cc-line perhaps be converted into three Cc-lines?
 
-I think we can drop this warning now.
+Yea I screwed this up.   I really didn't want this in the commit log
+vs just CCing on the email submission, but I was having issues with
+git send-email.  Pilot error. ;)
 
-With that:
 
-Acked-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-
-Thanks!
+Stevo
