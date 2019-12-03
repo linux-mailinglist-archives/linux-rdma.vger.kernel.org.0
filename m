@@ -2,84 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0533B11044A
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2019 19:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4824F11058E
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2019 20:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbfLCSdK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Dec 2019 13:33:10 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:46087 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726057AbfLCSdK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Dec 2019 13:33:10 -0500
-Received: by mail-io1-f67.google.com with SMTP id i11so4823932iol.13
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Dec 2019 10:33:10 -0800 (PST)
+        id S1727026AbfLCT4U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Dec 2019 14:56:20 -0500
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:42073 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbfLCT4U (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Dec 2019 14:56:20 -0500
+Received: by mail-ot1-f67.google.com with SMTP id 66so4062148otd.9
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Dec 2019 11:56:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=blockbridge-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DM0ZKvBsebvlDMUIQZhcODMOVPA8hHr63fCXOyp0vS8=;
-        b=LMYqa1lsSfDHXt8q0R6epQBV7toU4SVgqyP0qZ4JrvF8aU/+ynEothKpef/p3HXXGN
-         Ri80793bsuvcQQyMhPZpg+trodCMEKKvJmYNgQSkp/Xygiu2S0GuVfhltB/iXDEi2lQi
-         rhCw+jLOwotQKvREsBoK3a/nGeOev6u1iXL48nf1Sg2SsKW39hrlAr6Rk2vOXHEYlch7
-         rpvhWPEOjOhgTjtxd4a1mZSLhyS/6FKk5osZ1DLb1Q+LdjyKGRMKZZvFveu4hj8esUqh
-         9uRaa+LWihYPBvTyY9KEjufn3b8SxTXMRDUa9pxIU1G6Mb71uziR6D0t7MApINH83c6v
-         c5Ag==
+        bh=c2eSaP9cJhqPHyzDC8w3CbFx7JCZ6KKxOyraLwR9PhA=;
+        b=wLTIGZ++NbsJM2gFEzkW3jFKZShTPG1f0lsuIQOltlAXcRb5EdTwEBJEbZqvi56cYV
+         PxGHzJBqm2IUSJUdsJnmk+JX0dumKWOVdZo56piubBOVXekQKPppFIt64Nd1w467qyEE
+         RIcaiqRojms1cvrkcuLcWooyxWpal0suWcPT3OTSqHS3RpJzFukQBKDAkIWaUFG3fEHn
+         uWRLqYak21px3vZvwIXwHiydJOe6Uj1/z4PDOQxlJgF9+vZxpVVMPsb3OUBPAJy6FgFX
+         aCFMxshhUvyvHYW6naiBXQQ6k8gmWf/cJg/Ce+oSdkMWYIm9IPawU2/E2H564UQnyidg
+         MXqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DM0ZKvBsebvlDMUIQZhcODMOVPA8hHr63fCXOyp0vS8=;
-        b=Nyg973MtWR3lZPnRO0t2gQftCl2BEQ3RB+5QuPH5jfRU0ZIwiyn6HB0e1JZ1TVJm7M
-         YXVkSJ/KgjaQlUYlIZZhzTWEs44hZZfYjxwrbE7SXLyROXZZy4Rweg1hEKnUaRpMyTe6
-         sRgQIeD7BHlEEp5okCivuSj9F0Gto3LDSO+Oul1d5A1X951ajLb8hwlkS0wnVar5w9em
-         vRbvyGHuhEB1qHHDjIyRk3/YF9D1gMktXd6z8MtxgzN4s9MaA5r9X3Jsy7UfPI7zcezV
-         ziOxXo7ifgNpo5e8UiLj7OxuQWKQ6ZCsZjUUdEon6JjkIX9Fff86g+RSaaK7ERYVQVLd
-         zr+Q==
-X-Gm-Message-State: APjAAAVB8GaJxIsUh5yDySiW7lCqv5P3wHsT6oKG2sW14i8mwglhOqQc
-        Qa2HWRNyd7PryYEuk43WCaml1m6BBRNinrXwePM=
-X-Google-Smtp-Source: APXvYqwnv0gEhnt2U9QrVnr8sU0NFDyCy9lXh42/KH7VEgWsL25n7Cnfgmb5SIxMA4YeGWabvd2e4qRRRvW+bIDiTC8=
-X-Received: by 2002:a02:6944:: with SMTP id e65mr6653422jac.11.1575397989417;
- Tue, 03 Dec 2019 10:33:09 -0800 (PST)
+        bh=c2eSaP9cJhqPHyzDC8w3CbFx7JCZ6KKxOyraLwR9PhA=;
+        b=IyJsK5MTpmyr9kh8HmZcEuhrRluSkksJ6t5mBvDAJwdwXIf6Q4SBlBLAVntSRRrJTv
+         /KH1j4mlmHAqpJg+nA8GjRgtW0ZhXyGloBN56sk5Iz96VtOGlBgGz5SwFdVpjgWbafTT
+         +s4mybebUEkHA4LG+KvwhRf/ZrNTjKCwwxQ/ciUiJO5/U9KMy3qtjTr5v8qyR1ZY9LvY
+         JVJnGfX9KmcfIXefsgrF4nlkCKkMd8I30+htrj59lJx6440lzEy9+T+7jEPlfq9QL29L
+         xtGG/BWZbCryx2R66cYPVh6O1lWSAx9AHy4Z9Myw/FFH9k3e6XQyc48A49OXR/bK97uQ
+         Aqdw==
+X-Gm-Message-State: APjAAAX8GKlz5u8fQnPc0iwLB4Rl6sODe6LG6zVbuembgk+LR1kCYspK
+        9uyBuZETSTIsvcF+kZhyNx2vLqAi413dstmxa1ssGQ==
+X-Google-Smtp-Source: APXvYqwe49MzVy71zFCSDiZoF+VH7cE8Gtkn2FX6bQOskDctJh/Gw/DbDHrh82SW4A7nARSNeWI6ROO1GDn0hqM3dG4=
+X-Received: by 2002:a05:6830:58:: with SMTP id d24mr4555139otp.356.1575402979934;
+ Tue, 03 Dec 2019 11:56:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20191203020319.15036-1-larrystevenwise@gmail.com>
- <20191203020319.15036-2-larrystevenwise@gmail.com> <a0003c88-10f5-c14a-220d-c100fa160163@acm.org>
-In-Reply-To: <a0003c88-10f5-c14a-220d-c100fa160163@acm.org>
-From:   Steve Wise <larrystevenwise@gmail.com>
-Date:   Tue, 3 Dec 2019 12:32:58 -0600
-Message-ID: <CADmRdJfGBt-k1uXZK3Uvjkj0hyCOoPjBzxx_UmRKUq7rcQ1ouQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] rxe: correctly calculate iCRC for unaligned payloads
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        wangqi <3100102071@zju.edu.cn>, Leon Romanovsky <leon@kernel.org>
+References: <CA+VdTb_-CGaPjKUQteKVFSGqDz-5o-tuRRkJYqt8B9iOQypiwQ@mail.gmail.com>
+ <20191128025822.GC3277@ming.t460p> <CAAFE1bfsXsKGyw7SU_z4NanT+wmtuJT=XejBYbHHMCDQwm73sw@mail.gmail.com>
+ <20191128091210.GC15549@ming.t460p> <CAAFE1beMkvyRctGqpffd3o_QtDH0CrmQSb=fV4GzqMUXWzPyOw@mail.gmail.com>
+ <20191203005849.GB25002@ming.t460p> <CAAFE1bcG8c1Q3iwh-LUjruBMAuFTJ4qWxNGsnhfKvGWHNLAeEQ@mail.gmail.com>
+ <20191203031444.GB6245@ming.t460p> <CAAFE1besnb=HV4C_buORYpWbkXecmtybwX8d_Ka2NsKmiym53w@mail.gmail.com>
+ <CAAFE1bfpUWCZrtR8v3S++0-+gi8DJ79X3e0XqDe93i8nuGTnNg@mail.gmail.com> <20191203124558.GA22805@ming.t460p>
+In-Reply-To: <20191203124558.GA22805@ming.t460p>
+From:   Stephen Rust <srust@blockbridge.com>
+Date:   Tue, 3 Dec 2019 14:56:08 -0500
+Message-ID: <CAAFE1bfB2Km+e=T0ahwq0r9BQrBMnSguQQ+y=yzYi3tursS+TQ@mail.gmail.com>
+Subject: Re: Data corruption in kernel 5.1+ with iSER attached ramdisk
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Rob Townley <rob.townley@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        target-devel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 3, 2019 at 10:25 AM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 12/2/19 6:03 PM, Steve Wise wrote:
-> > If RoCE PDUs being sent or received contain pad bytes, then the iCRC
-> > is miscalculated resulting PDUs being emitted by RXE with an incorrect
-> > iCRC, as well as ingress PDUs being dropped due to erroneously detecting
-> > a bad iCRC in the PDU.  The fix is to include the pad bytes, if any,
-> > in iCRC computations.
->
-> Should this description mention that this patch breaks compatibility
-> with SoftRoCE drivers that do not include this fix? Do we need a kernel
-> module parameter that allows to select either the old or the new behavior?
->
+Hi Ming,
 
-Good point.  I defer to others on how they want to handle that.
+Thanks very much for the patch.
 
-> > CC: bvanassche@acm.org,3100102071@zju.edu.cn,leon@kernel.org
->
-> Should this Cc-line perhaps be converted into three Cc-lines?
+> BTW, you may try the attached test patch. If the issue can be fixed by
+> this patch, that means it is really caused by un-aligned buffer, and
+> the iser driver needs to be fixed.
 
-Yea I screwed this up.   I really didn't want this in the commit log
-vs just CCing on the email submission, but I was having issues with
-git send-email.  Pilot error. ;)
+I have tried the patch, and re-run the test. Results are mixed.
 
+To recap, our test writes the last bytes of an iser attached iscsi
+device. The target device is a LIO iblock, backed by a brd ramdisk.
+The client does a simple `dd`, doing a seek to "size - offset" of the
+device, and writing a buffer of "length" which is equivalent to the
+offset.
 
-Stevo
+For example, to test a write at a 512 offset, seek to device "size -
+512", and write a length of data 512 bytes.
+
+WITHOUT the patch, writing data at the following offsets from the end
+of the device failed to write all the correct data (rather, the write
+succeeded, but reading the data back it was invalid):
+
+- failed: 512,1024, 2048, 4096, 8192
+
+Anything larger worked fine.
+
+WITH the patch applied, writing data up to an offset of 4096 all now
+worked and verified correctly. However, offsets between 4096 and 8192
+all still failed. I started at 512, and incremented by 512 all the way
+up to 16384. The following offsets all failed to verify the write:
+
+- failed: 4608, 5120, 5632, 6144, 6656, 7168, 7680, 8192
+
+Anything larger continues to work fine with the patch.
+
+As an example, for the failed 8192 case, the `bpftrace lio.bt` trace shows:
+
+8192 76
+4096 0
+4096 0
+8192 76
+4096 0
+4096 0
+...
+[snip]
+
+What do you think are appropriate next steps? Do you think you have an
+idea on why the specific "multi-page bvec helpers" commit could have
+exposed this particular latent issue? Please let me know what else I
+can try, or additional data I can provide for you.
+
+Thanks,
+Steve
