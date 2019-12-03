@@ -2,231 +2,225 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 304C310FCC3
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2019 12:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B38D10FDF4
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Dec 2019 13:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbfLCLsH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Dec 2019 06:48:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49822 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726653AbfLCLsG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 3 Dec 2019 06:48:06 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 523B6AF93;
-        Tue,  3 Dec 2019 11:48:03 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     andrew.murray@arm.com, maz@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Eric Anholt <eric@anholt.net>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     james.quinlan@broadcom.com, mbrugger@suse.com,
-        phil@raspberrypi.org, jeremy.linton@arm.com,
-        linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        iommu@lists.linux-foundation.org
-Subject: [PATCH v4 8/8] linux/log2.h: Use roundup/dow_pow_two() on 64bit calculations
-Date:   Tue,  3 Dec 2019 12:47:41 +0100
-Message-Id: <20191203114743.1294-9-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191203114743.1294-1-nsaenzjulienne@suse.de>
-References: <20191203114743.1294-1-nsaenzjulienne@suse.de>
+        id S1726086AbfLCMqf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Dec 2019 07:46:35 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39073 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726017AbfLCMqf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Dec 2019 07:46:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575377193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bY3tu33uM0AN7ABx5DnYQhbsOL7dFeYwJWHS5k7Rwgc=;
+        b=UTOT7yWbaHQ44XHKI1W33R275sCstLYRRsALy1GzLipI8g5stfbwBWZ7T8Ybokqk7Kl2Iz
+        V2MUnGe32wFVtrU6KUzdUK/c68TeuCSROgA3w1lkUcW8sg0J4amQoEClf5d9+Vlxq1AcpN
+        +9eOSWwm/oX5YKXYemPTEA0tzBbhEHk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-291-ThT0QIs4MXqG05REW0bKFA-1; Tue, 03 Dec 2019 07:46:29 -0500
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 53CB9800EB8;
+        Tue,  3 Dec 2019 12:46:27 +0000 (UTC)
+Received: from ming.t460p (ovpn-8-36.pek2.redhat.com [10.72.8.36])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 39AFA19C68;
+        Tue,  3 Dec 2019 12:46:08 +0000 (UTC)
+Date:   Tue, 3 Dec 2019 20:45:58 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Stephen Rust <srust@blockbridge.com>
+Cc:     Rob Townley <rob.townley@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        target-devel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: Data corruption in kernel 5.1+ with iSER attached ramdisk
+Message-ID: <20191203124558.GA22805@ming.t460p>
+References: <CA+VdTb_-CGaPjKUQteKVFSGqDz-5o-tuRRkJYqt8B9iOQypiwQ@mail.gmail.com>
+ <20191128025822.GC3277@ming.t460p>
+ <CAAFE1bfsXsKGyw7SU_z4NanT+wmtuJT=XejBYbHHMCDQwm73sw@mail.gmail.com>
+ <20191128091210.GC15549@ming.t460p>
+ <CAAFE1beMkvyRctGqpffd3o_QtDH0CrmQSb=fV4GzqMUXWzPyOw@mail.gmail.com>
+ <20191203005849.GB25002@ming.t460p>
+ <CAAFE1bcG8c1Q3iwh-LUjruBMAuFTJ4qWxNGsnhfKvGWHNLAeEQ@mail.gmail.com>
+ <20191203031444.GB6245@ming.t460p>
+ <CAAFE1besnb=HV4C_buORYpWbkXecmtybwX8d_Ka2NsKmiym53w@mail.gmail.com>
+ <CAAFE1bfpUWCZrtR8v3S++0-+gi8DJ79X3e0XqDe93i8nuGTnNg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAFE1bfpUWCZrtR8v3S++0-+gi8DJ79X3e0XqDe93i8nuGTnNg@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-MC-Unique: ThT0QIs4MXqG05REW0bKFA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The function now is safe to use while expecting a 64bit value. Use it
-where relevant.
+On Mon, Dec 02, 2019 at 10:50:32PM -0500, Stephen Rust wrote:
+> Hi,
+>=20
+> Another datapoint.
+>=20
+> I enabled "isert_debug" tracing and re-ran the test. Here is a small
+> snippet of the debug data. FWIW, the "length of 76" in the "lkey
+> mismatch" is a pattern that repeats quite often during the exchange.
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+That is because ISER_HEADERS_LEN is 76.
+
+From our trace, 76 is bvec->bv_offset, is it possible that IO buffer
+just follows the ISER HEADER suppose that iser applies zero-copy?
+
+BTW, you may try the attached test patch. If the issue can be fixed by
+this patch, that means it is really caused by un-aligned buffer, and
+the iser driver needs to be fixed.
+
+From 0368ee8a756384116fa1d0415f51389d438a6e40 Mon Sep 17 00:00:00 2001
+From: Ming Lei <ming.lei@redhat.com>
+Date: Tue, 3 Dec 2019 20:00:53 +0800
+Subject: [PATCH] brd: handle un-aligned bvec->bv_len
+
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
 ---
- drivers/acpi/arm64/iort.c                        | 2 +-
- drivers/net/ethernet/mellanox/mlx4/en_clock.c    | 3 ++-
- drivers/of/device.c                              | 3 ++-
- drivers/pci/controller/cadence/pcie-cadence-ep.c | 3 ++-
- drivers/pci/controller/cadence/pcie-cadence.c    | 3 ++-
- drivers/pci/controller/pcie-brcmstb.c            | 3 ++-
- drivers/pci/controller/pcie-rockchip-ep.c        | 5 +++--
- kernel/dma/direct.c                              | 2 +-
- 8 files changed, 15 insertions(+), 9 deletions(-)
+ drivers/block/brd.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-index 33f71983e001..9950c9757092 100644
---- a/drivers/acpi/arm64/iort.c
-+++ b/drivers/acpi/arm64/iort.c
-@@ -1090,7 +1090,7 @@ void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *dma_size)
- 		 * firmware.
- 		 */
- 		end = dmaaddr + size - 1;
--		mask = DMA_BIT_MASK(ilog2(end) + 1);
-+		mask = roundup_pow_of_two(end) - 1;
- 		dev->bus_dma_limit = end;
- 		dev->coherent_dma_mask = mask;
- 		*dev->dma_mask = mask;
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_clock.c b/drivers/net/ethernet/mellanox/mlx4/en_clock.c
-index 024788549c25..23dcb18224d4 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_clock.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_clock.c
-@@ -33,6 +33,7 @@
- 
- #include <linux/mlx4/device.h>
- #include <linux/clocksource.h>
-+#include <linux/log2.h>
- 
- #include "mlx4_en.h"
- 
-@@ -252,7 +253,7 @@ static u32 freq_to_shift(u16 freq)
+diff --git a/drivers/block/brd.c b/drivers/block/brd.c
+index c548a5a6c1a0..9ea1894c820d 100644
+--- a/drivers/block/brd.c
++++ b/drivers/block/brd.c
+@@ -190,13 +190,15 @@ static int copy_to_brd_setup(struct brd_device *brd, =
+sector_t sector, size_t n)
+  * Copy n bytes from src to the brd starting at sector. Does not sleep.
+  */
+ static void copy_to_brd(struct brd_device *brd, const void *src,
+-=09=09=09sector_t sector, size_t n)
++=09=09=09sector_t sector, unsigned off_in_sec, size_t n)
  {
- 	u32 freq_khz = freq * 1000;
- 	u64 max_val_cycles = freq_khz * 1000 * MLX4_EN_WRAP_AROUND_SEC;
--	u64 max_val_cycles_rounded = 1ULL << fls64(max_val_cycles - 1);
-+	u64 max_val_cycles_rounded = roundup_pow_of_two(max_val_cycles);
- 	/* calculate max possible multiplier in order to fit in 64bit */
- 	u64 max_mul = div64_u64(ULLONG_MAX, max_val_cycles_rounded);
- 
-diff --git a/drivers/of/device.c b/drivers/of/device.c
-index e9127db7b067..7259922d2078 100644
---- a/drivers/of/device.c
-+++ b/drivers/of/device.c
-@@ -11,6 +11,7 @@
- #include <linux/mod_devicetable.h>
- #include <linux/slab.h>
- #include <linux/platform_device.h>
-+#include <linux/log2.h>
- 
- #include <asm/errno.h>
- #include "of_private.h"
-@@ -149,7 +150,7 @@ int of_dma_configure(struct device *dev, struct device_node *np, bool force_dma)
- 	 * set by the driver.
- 	 */
- 	end = dma_addr + size - 1;
--	mask = DMA_BIT_MASK(ilog2(end) + 1);
-+	mask = roundup_pow_of_two(end) - 1;
- 	dev->coherent_dma_mask &= mask;
- 	*dev->dma_mask &= mask;
- 	/* ...but only set bus limit if we found valid dma-ranges earlier */
-diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-index 1c173dad67d1..72eda0b2f939 100644
---- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
-+++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-@@ -10,6 +10,7 @@
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/sizes.h>
-+#include <linux/log2.h>
- 
- #include "pcie-cadence.h"
- 
-@@ -65,7 +66,7 @@ static int cdns_pcie_ep_set_bar(struct pci_epc *epc, u8 fn,
- 	 * roundup_pow_of_two() returns an unsigned long, which is not suited
- 	 * for 64bit values.
- 	 */
--	sz = 1ULL << fls64(sz - 1);
-+	sz = roundup_pow_of_two(sz);
- 	aperture = ilog2(sz) - 7; /* 128B -> 0, 256B -> 1, 512B -> 2, ... */
- 
- 	if ((flags & PCI_BASE_ADDRESS_SPACE) == PCI_BASE_ADDRESS_SPACE_IO) {
-diff --git a/drivers/pci/controller/cadence/pcie-cadence.c b/drivers/pci/controller/cadence/pcie-cadence.c
-index cd795f6fc1e2..b1689f725b41 100644
---- a/drivers/pci/controller/cadence/pcie-cadence.c
-+++ b/drivers/pci/controller/cadence/pcie-cadence.c
-@@ -4,6 +4,7 @@
- // Author: Cyrille Pitchen <cyrille.pitchen@free-electrons.com>
- 
- #include <linux/kernel.h>
-+#include <linux/log2.h>
- 
- #include "pcie-cadence.h"
- 
-@@ -15,7 +16,7 @@ void cdns_pcie_set_outbound_region(struct cdns_pcie *pcie, u8 fn,
- 	 * roundup_pow_of_two() returns an unsigned long, which is not suited
- 	 * for 64bit values.
- 	 */
--	u64 sz = 1ULL << fls64(size - 1);
-+	u64 sz = roundup_pow_of_two(size);
- 	int nbits = ilog2(sz);
- 	u32 addr0, addr1, desc0, desc1;
- 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index 7ba06a0e1a71..e705d9d73030 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -627,7 +627,8 @@ static inline int brcm_pcie_get_rc_bar2_size_and_offset(struct brcm_pcie *pcie,
- 		return -ENODEV;
- 
- 	*rc_bar2_offset = -entry->offset;
--	*rc_bar2_size = 1ULL << fls64(entry->res->end - entry->res->start);
-+	*rc_bar2_size = roundup_pow_of_two(entry->res->end -
-+					   entry->res->start + 1);
- 
- 	/*
- 	 * We validate the inbound memory view even though we should trust
-diff --git a/drivers/pci/controller/pcie-rockchip-ep.c b/drivers/pci/controller/pcie-rockchip-ep.c
-index d743b0a48988..83665f5f804a 100644
---- a/drivers/pci/controller/pcie-rockchip-ep.c
-+++ b/drivers/pci/controller/pcie-rockchip-ep.c
-@@ -16,6 +16,7 @@
- #include <linux/platform_device.h>
- #include <linux/pci-epf.h>
- #include <linux/sizes.h>
-+#include <linux/log2.h>
- 
- #include "pcie-rockchip.h"
- 
-@@ -70,7 +71,7 @@ static void rockchip_pcie_prog_ep_ob_atu(struct rockchip_pcie *rockchip, u8 fn,
- 					 u32 r, u32 type, u64 cpu_addr,
- 					 u64 pci_addr, size_t size)
+ =09struct page *page;
+ =09void *dst;
+ =09unsigned int offset =3D (sector & (PAGE_SECTORS-1)) << SECTOR_SHIFT;
+ =09size_t copy;
+=20
++=09offset +=3D off_in_sec;
++
+ =09copy =3D min_t(size_t, n, PAGE_SIZE - offset);
+ =09page =3D brd_lookup_page(brd, sector);
+ =09BUG_ON(!page);
+@@ -207,7 +209,7 @@ static void copy_to_brd(struct brd_device *brd, const v=
+oid *src,
+=20
+ =09if (copy < n) {
+ =09=09src +=3D copy;
+-=09=09sector +=3D copy >> SECTOR_SHIFT;
++=09=09sector +=3D (copy + off_in_sec) >> SECTOR_SHIFT;
+ =09=09copy =3D n - copy;
+ =09=09page =3D brd_lookup_page(brd, sector);
+ =09=09BUG_ON(!page);
+@@ -222,13 +224,15 @@ static void copy_to_brd(struct brd_device *brd, const=
+ void *src,
+  * Copy n bytes to dst from the brd starting at sector. Does not sleep.
+  */
+ static void copy_from_brd(void *dst, struct brd_device *brd,
+-=09=09=09sector_t sector, size_t n)
++=09=09=09sector_t sector, unsigned off_in_sec, size_t n)
  {
--	u64 sz = 1ULL << fls64(size - 1);
-+	u64 sz = roundup_pow_of_two(size);
- 	int num_pass_bits = ilog2(sz);
- 	u32 addr0, addr1, desc0, desc1;
- 	bool is_nor_msg = (type == AXI_WRAPPER_NOR_MSG);
-@@ -176,7 +177,7 @@ static int rockchip_pcie_ep_set_bar(struct pci_epc *epc, u8 fn,
- 	 * roundup_pow_of_two() returns an unsigned long, which is not suited
- 	 * for 64bit values.
- 	 */
--	sz = 1ULL << fls64(sz - 1);
-+	sz = roundup_pow_of_two(sz);
- 	aperture = ilog2(sz) - 7; /* 128B -> 0, 256B -> 1, 512B -> 2, ... */
- 
- 	if ((flags & PCI_BASE_ADDRESS_SPACE) == PCI_BASE_ADDRESS_SPACE_IO) {
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index 6af7ae83c4ad..056886c4efec 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -53,7 +53,7 @@ u64 dma_direct_get_required_mask(struct device *dev)
+ =09struct page *page;
+ =09void *src;
+ =09unsigned int offset =3D (sector & (PAGE_SECTORS-1)) << SECTOR_SHIFT;
+ =09size_t copy;
+=20
++=09offset +=3D off_in_sec;
++
+ =09copy =3D min_t(size_t, n, PAGE_SIZE - offset);
+ =09page =3D brd_lookup_page(brd, sector);
+ =09if (page) {
+@@ -240,7 +244,7 @@ static void copy_from_brd(void *dst, struct brd_device =
+*brd,
+=20
+ =09if (copy < n) {
+ =09=09dst +=3D copy;
+-=09=09sector +=3D copy >> SECTOR_SHIFT;
++=09=09sector +=3D (copy + off_in_sec) >> SECTOR_SHIFT;
+ =09=09copy =3D n - copy;
+ =09=09page =3D brd_lookup_page(brd, sector);
+ =09=09if (page) {
+@@ -257,7 +261,7 @@ static void copy_from_brd(void *dst, struct brd_device =
+*brd,
+  */
+ static int brd_do_bvec(struct brd_device *brd, struct page *page,
+ =09=09=09unsigned int len, unsigned int off, unsigned int op,
+-=09=09=09sector_t sector)
++=09=09=09sector_t sector, unsigned int off_in_sec)
  {
- 	u64 max_dma = phys_to_dma_direct(dev, (max_pfn - 1) << PAGE_SHIFT);
- 
--	return (1ULL << (fls64(max_dma) - 1)) * 2 - 1;
-+	return rounddown_pow_of_two(max_dma) * 2 - 1;
+ =09void *mem;
+ =09int err =3D 0;
+@@ -270,11 +274,11 @@ static int brd_do_bvec(struct brd_device *brd, struct=
+ page *page,
+=20
+ =09mem =3D kmap_atomic(page);
+ =09if (!op_is_write(op)) {
+-=09=09copy_from_brd(mem + off, brd, sector, len);
++=09=09copy_from_brd(mem + off, brd, sector, off_in_sec, len);
+ =09=09flush_dcache_page(page);
+ =09} else {
+ =09=09flush_dcache_page(page);
+-=09=09copy_to_brd(brd, mem + off, sector, len);
++=09=09copy_to_brd(brd, mem + off, sector, off_in_sec, len);
+ =09}
+ =09kunmap_atomic(mem);
+=20
+@@ -287,6 +291,7 @@ static blk_qc_t brd_make_request(struct request_queue *=
+q, struct bio *bio)
+ =09struct brd_device *brd =3D bio->bi_disk->private_data;
+ =09struct bio_vec bvec;
+ =09sector_t sector;
++=09unsigned offset_in_sec =3D 0;
+ =09struct bvec_iter iter;
+=20
+ =09sector =3D bio->bi_iter.bi_sector;
+@@ -296,12 +301,14 @@ static blk_qc_t brd_make_request(struct request_queue=
+ *q, struct bio *bio)
+ =09bio_for_each_segment(bvec, bio, iter) {
+ =09=09unsigned int len =3D bvec.bv_len;
+ =09=09int err;
++=09=09unsigned int secs =3D len >> SECTOR_SHIFT;
+=20
+ =09=09err =3D brd_do_bvec(brd, bvec.bv_page, len, bvec.bv_offset,
+-=09=09=09=09  bio_op(bio), sector);
++=09=09=09=09  bio_op(bio), sector, offset_in_sec);
+ =09=09if (err)
+ =09=09=09goto io_error;
+-=09=09sector +=3D len >> SECTOR_SHIFT;
++=09=09sector +=3D secs;
++=09=09offset_in_sec =3D len - (secs << SECTOR_SHIFT);
+ =09}
+=20
+ =09bio_endio(bio);
+@@ -319,7 +326,7 @@ static int brd_rw_page(struct block_device *bdev, secto=
+r_t sector,
+=20
+ =09if (PageTransHuge(page))
+ =09=09return -ENOTSUPP;
+-=09err =3D brd_do_bvec(brd, page, PAGE_SIZE, 0, op, sector);
++=09err =3D brd_do_bvec(brd, page, PAGE_SIZE, 0, op, sector, 0);
+ =09page_endio(page, op_is_write(op), err);
+ =09return err;
  }
- 
- static gfp_t __dma_direct_optimal_gfp_mask(struct device *dev, u64 dma_mask,
--- 
-2.24.0
+--=20
+2.20.1
+
+
+Thanks,
+Ming
 
