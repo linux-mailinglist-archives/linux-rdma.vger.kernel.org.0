@@ -2,37 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3D01120DC
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2019 02:05:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA0B11217F
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2019 03:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbfLDBFz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Dec 2019 20:05:55 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:26087 "EHLO
+        id S1726856AbfLDCkA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Dec 2019 21:40:00 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:27803 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726593AbfLDBFz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Dec 2019 20:05:55 -0500
+        by vger.kernel.org with ESMTP id S1726897AbfLDCkA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Dec 2019 21:40:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575421554;
+        s=mimecast20190719; t=1575427199;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mb2uA8H8LkeFlI3MZDn+f+z590eg/6oojJfUikjRY5I=;
-        b=iEN/Izj3DsrL34qziqj7Fgw+OA0WcimyH4s8NkYWnFHhMoJfhydTZst7Zk8sjD23eIizw+
-        waMrwvRk1uoh5VyHC6EWGsbSy7T5lWLS5CyzbgJgHw6usNa6pmeH98/qLsxD9nkg7ychdw
-        N58rP4SeaFp7yMzSfUcR1mVUVYFUcMc=
+        bh=lUNcibfkDj9cICd3L3313R4P5SZt0kUgexQ7UYbZQvw=;
+        b=eJ6yMl5YXoveElD3aSR0Pnld+fedmrUFcjnlNpqzKmOCQdF4229NhtsOAfpVMlT0+ooqIF
+        4HDunz6/0jvA9DyabHyzwn0rm4hlBYZ2Ix0Odvyf2cj1Glvh3P8kKe8UUQ2+J6Lro4fGzf
+        NijyYtGAZjjH1d+2vd4xN7AexSka5iA=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-233-oxdtObirPLa0FlLmaJrW7g-1; Tue, 03 Dec 2019 20:05:50 -0500
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-407-eal7FyFpPpS8Ce4pW7mcwg-1; Tue, 03 Dec 2019 21:39:55 -0500
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AD3218557C2;
-        Wed,  4 Dec 2019 01:05:42 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E3DFA10054E3;
+        Wed,  4 Dec 2019 02:39:53 +0000 (UTC)
 Received: from ming.t460p (ovpn-8-17.pek2.redhat.com [10.72.8.17])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6EEEF100194E;
-        Wed,  4 Dec 2019 01:05:34 +0000 (UTC)
-Date:   Wed, 4 Dec 2019 09:05:29 +0800
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CBA6C5D6AE;
+        Wed,  4 Dec 2019 02:39:44 +0000 (UTC)
+Date:   Wed, 4 Dec 2019 10:39:39 +0800
 From:   Ming Lei <ming.lei@redhat.com>
 To:     Stephen Rust <srust@blockbridge.com>
 Cc:     Rob Townley <rob.townley@gmail.com>,
@@ -42,7 +42,7 @@ Cc:     Rob Townley <rob.townley@gmail.com>,
         target-devel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>
 Subject: Re: Data corruption in kernel 5.1+ with iSER attached ramdisk
-Message-ID: <20191204010529.GA3910@ming.t460p>
+Message-ID: <20191204023939.GD3910@ming.t460p>
 References: <CAAFE1bfsXsKGyw7SU_z4NanT+wmtuJT=XejBYbHHMCDQwm73sw@mail.gmail.com>
  <20191128091210.GC15549@ming.t460p>
  <CAAFE1beMkvyRctGqpffd3o_QtDH0CrmQSb=fV4GzqMUXWzPyOw@mail.gmail.com>
@@ -56,8 +56,8 @@ References: <CAAFE1bfsXsKGyw7SU_z4NanT+wmtuJT=XejBYbHHMCDQwm73sw@mail.gmail.com>
 MIME-Version: 1.0
 In-Reply-To: <CAAFE1bfB2Km+e=T0ahwq0r9BQrBMnSguQQ+y=yzYi3tursS+TQ@mail.gmail.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-MC-Unique: oxdtObirPLa0FlLmaJrW7g-1
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-MC-Unique: eal7FyFpPpS8Ce4pW7mcwg-1
 X-Mimecast-Spam-Score: 0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: quoted-printable
@@ -113,52 +113,29 @@ s:
 > 8192 76
 > 4096 0
 > 4096 0
-> ...
-> [snip]
->=20
-> What do you think are appropriate next steps?
 
-OK, my guess should be correct, and the issue is related with un-aligned
-bvec->bv_offset.
+The following delta change against last patch should fix the issue
+with >4096 bvec length:
 
-So firstly, I'd suggest to investigate from RDMA driver side to see why
-un-aligned buffer is passed to block layer.
+diff --git a/drivers/block/brd.c b/drivers/block/brd.c
+index 9ea1894c820d..49e37a7dda63 100644
+--- a/drivers/block/brd.c
++++ b/drivers/block/brd.c
+@@ -308,7 +308,7 @@ static blk_qc_t brd_make_request(struct request_queue *=
+q, struct bio *bio)
+                if (err)
+                        goto io_error;
+                sector +=3D secs;
+-               offset_in_sec =3D len - (secs << SECTOR_SHIFT);
++               offset_in_sec +=3D len - (secs << SECTOR_SHIFT);
+        }
 
-According to previous discussion, 512 aligned buffer should be provided
-to block layer.
+        bio_endio(bio);
 
-So looks the driver needs to be fixed.
-
-> Do you think you have an
-> idea on why the specific "multi-page bvec helpers" commit could have
-> exposed this particular latent issue? Please let me know what else I
-> can try, or additional data I can provide for you.
-=20
-The patch might not cover the big offset case, could you collect bpftrace
-via the following script when you reproduce the issue with >4096 offset?
-
-kprobe:iblock_execute_rw
-{
-    @start[tid]=3D1;
-}
-
-kretprobe:iblock_execute_rw
-{
-    @start[tid]=3D0;
-}
-
-kprobe:bio_add_page
-/@start[tid]/
-{
-  printf("%d %d\n", arg2, arg3);
-}
-
-kprobe:brd_do_bvec
-{
-  printf("%d %d %d %d\n", arg2, arg3, arg4, arg5);
-}
+However, the change on brd is a workaround just for confirming the
+issue.
 
 
-Thanks,
+Thanks,=20
 Ming
 
