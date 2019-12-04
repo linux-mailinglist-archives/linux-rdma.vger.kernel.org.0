@@ -2,185 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F8E112D80
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2019 15:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6201130BA
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2019 18:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727989AbfLDOeS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Dec 2019 09:34:18 -0500
-Received: from a.mx.secunet.com ([62.96.220.36]:45832 "EHLO a.mx.secunet.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727958AbfLDOeR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 4 Dec 2019 09:34:17 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 2C41320299
-        for <linux-rdma@vger.kernel.org>; Wed,  4 Dec 2019 15:34:16 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id FI_F8pA-0Vri for <linux-rdma@vger.kernel.org>;
-        Wed,  4 Dec 2019 15:34:15 +0100 (CET)
-Received: from mail-essen-01.secunet.de (mail-essen-01.secunet.de [10.53.40.204])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 94C46201AA
-        for <linux-rdma@vger.kernel.org>; Wed,  4 Dec 2019 15:34:15 +0100 (CET)
-Received: from [10.183.7.132] (10.183.7.132) by mail-essen-01.secunet.de
- (10.53.40.204) with Microsoft SMTP Server (TLS) id 14.3.439.0; Wed, 4 Dec
- 2019 15:34:15 +0100
-To:     <linux-rdma@vger.kernel.org>
-From:   =?UTF-8?Q?Thorben_R=c3=b6mer?= <thorben.roemer@secunet.com>
-Subject: install-step fails for pandoc-prebuilt man-pages in
- infiniband-diags/man
-Openpgp: preference=signencrypt
-Autocrypt: addr=thorben.roemer@secunet.com; keydata=
- mQENBFr8RUwBCADK68hRaA7dKwwHV9UcR3+sJNCnYtevf34u7SajYwCBx4a7Api+q38b6Hj9
- 7eHqhr1G54N4PTis2MUWoG58DaGcUGTgtUgcXBjqZ1EBPtQ6Picf/R7QPNigXLr5oA7Fl3DQ
- Zq3JL7uVRgM23DU1L6rnsWlhfmnwZBAjYY/74KjhhGN4IyxTxnDkyYVhuic91gAm7JdNbCDc
- eylzUkqMgNXbolmOkHJcW/5Wz05OfW5WTOs7ob+uV0G+HtQNTwd+q8EmQ+bvIO7eZ1tHrYCN
- iz1WC8rW0sARugJvUBdE9Z6SAV0XEMbADzvS7fT5UoiHpQYkovD6gRfRCge1d66v8qeXABEB
- AAG0K1Rob3JiZW4gUsO2bWVyIDx0aG9yYmVuLnJvZW1lckBzZWN1bmV0LmNvbT6JAU4EEwEI
- ADgWIQSdqxhsLVCkUA0xpRP4KqBQOtapQgUCWvxFTAIbIwULCQgHAgYVCgkICwIEFgIDAQIe
- AQIXgAAKCRD4KqBQOtapQrVtB/9MihVdyhNPo/OxZhNzUVTN9yHTSS6u9mxdCklFbufMrHj+
- 1ymBIi8hHdA6Dkn/x9IA78JWZnFKtNI1/G2cSwyb3RH3aU/3NW5YC+Ht3RXKCq0GARbG4+E6
- mz7Zdz45iJvJZt+ip1Zjp9g9Mtotkt/EHrGyM6PX7+2ek/3JlOGTIGrnzBSpdIcfQ0QNj89F
- i/V27lR3jptxMyQaqEzX8r8Qpt7OQa0E9e0w/rPBLHn023VbpZiZjFa/xGXbs+TID6oHrSCV
- r1WjdC8FHIntAB7674nCiua7M4W40r3/9hlbpD2Zoxz9qHgRSgMBTwY/5hQduSjGV23dC/hu
- fpvE9MVpuQENBFr8RUwBCADuCg+VosRepPXtAloHmUGay7ClpC7pjccPKmyeQkDcO8HVXP0y
- WPxer0YtoPPUhiMZBLAs8p1RIFQ0NGPP/c2Umee8Fh7O5IQYwjFlF8mDC48XC6I2KJQj6xao
- hzbQrl6C2Ef1+R/o+jExUGfcQYQmxhwB4DocQ6D2PoQdTx7IJxNGSrhx+cD+timWSaG25pzQ
- RrcXYG+YAusKUGhkqMmTnz+yV2u08OyCBezcLrX9qpcFXmU0K6FyBU7YZAuUsYYLyFu4dfAW
- mFfQndIsewvrbOWvcQ+xvCvn+V6/siFLayMw511yYeZfXC2EN9nWDj7UErcjFL2jNU4uNejC
- jmirABEBAAGJATYEGAEIACAWIQSdqxhsLVCkUA0xpRP4KqBQOtapQgUCWvxFTAIbDAAKCRD4
- KqBQOtapQnoVB/9jxi2yHgFBiiV7/vrRZfFlzroy8ewUIxLUtzChL/EJQ8jtIzacNg0GRcrb
- spZ7C+QIR6IJ+8/CriNeHWD9f3U1eEuH1CNgxNo5/LydLb84pskZQVuB6Udd3Nn4KCLiCuOS
- VKZlmN4siVbPoRyliDm2prZN/2zHGluFH0dbfnzv2GABD/EeK0L07queXm6SwrtX9cyBIfR2
- t47ew2YeehdUvt3ZmCnwhjii22C5Dqo6tEwdncYGzYVS4akrawkDp2ApNJOMXXEoEkTBWWQu
- 4GL2pWTxEtCP3WQoGKJLow/EH76dasTG2YJqGOkxZdoRhLmnlkSOGqXn1BC4M5VsJCum
-Message-ID: <5d754108-7020-6041-1b7d-bbb3fb2f089b@secunet.com>
-Date:   Wed, 4 Dec 2019 15:34:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728261AbfLDRXm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Dec 2019 12:23:42 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:37387 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727033AbfLDRXm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Dec 2019 12:23:42 -0500
+Received: by mail-ot1-f66.google.com with SMTP id k14so7053178otn.4
+        for <linux-rdma@vger.kernel.org>; Wed, 04 Dec 2019 09:23:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=blockbridge-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OsCzQi8E+i59OetclexFEuGwaInTqcScwjzkGJ7Iw3Y=;
+        b=fT1/3V8zo6Ho8bQmHchM2zRNQciwQJZW83Ik+qPSTDEnFA/ysUxVKKsXA+WmPkadC5
+         objdZHiPkRjebVmcem9kDUUetJIQ0/Fm3ubn8hT/aQ5BWtsffjrNgistyM4scWf1nYjl
+         j5z4c0FvG281u+UrCXrHaBAovfyUU6iYXwS6TNeBlQLAZ8fycGYxNtygb6FaMHMNQ+dY
+         1EuFdzdUtyCHKpUi2eNzpgGIwWgRT7fBO9iNty7repmudXsrhLYmjw+t9TU+X2OaW/hC
+         whhkGZmNOMBjwL7fb3w6lO3AJ1E1+JCnXLvucw3l8HwMOChWwtyNefnvtvnJ5OSIUCw+
+         ksvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OsCzQi8E+i59OetclexFEuGwaInTqcScwjzkGJ7Iw3Y=;
+        b=Y+9sRWaPr8TkZbkgKmNO3HUcArH/QBJH+3zdOcKi+DwgrHZJ10wW8yEkyekJsyJhEb
+         u6YsUl6mot4BvwKvc6Vzu2P7FcwakQEZjcoIRRJNJRjsSRQyYWEz/s0y5b8riKWCVnCq
+         Qtg4nthd7e0pkmtmIluPHipbrFUeU/sSEL5DNm4TiZbxIEz2nfLjY5iQ3fJKtNFmWVzX
+         09umgTanHDDujADwVkZLOWybkPbWOyHQh7z9+vFMqQuwhQcqyYaRAmi/rkqsjEmrcDxr
+         LHm79wAY7KWhULhIuRmFm1NcjDDJR91G4vn6HMH+/1knRqZR7EHFsaswuKyw1NY8/c1d
+         Rr4g==
+X-Gm-Message-State: APjAAAUj6ctPZU1w06e5lGAZudVR/qMInNZ/qCiuVzRMd22Uny/IVgNH
+        WHbjUbAG6TRF9eVE3vCsF50ldKBRZpokyal7xpNYfw==
+X-Google-Smtp-Source: APXvYqxDzeT0lRIVPfz0OUxh4T5CV12SKPG3ZsGFxNj7PMyfRcQk4TUX55GUPPYWTmDJouOQEO7uecQGcSnynq4egtY=
+X-Received: by 2002:a05:6830:58:: with SMTP id d24mr3349473otp.356.1575480221331;
+ Wed, 04 Dec 2019 09:23:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+References: <CAAFE1bfsXsKGyw7SU_z4NanT+wmtuJT=XejBYbHHMCDQwm73sw@mail.gmail.com>
+ <20191128091210.GC15549@ming.t460p> <CAAFE1beMkvyRctGqpffd3o_QtDH0CrmQSb=fV4GzqMUXWzPyOw@mail.gmail.com>
+ <20191203005849.GB25002@ming.t460p> <CAAFE1bcG8c1Q3iwh-LUjruBMAuFTJ4qWxNGsnhfKvGWHNLAeEQ@mail.gmail.com>
+ <20191203031444.GB6245@ming.t460p> <CAAFE1besnb=HV4C_buORYpWbkXecmtybwX8d_Ka2NsKmiym53w@mail.gmail.com>
+ <CAAFE1bfpUWCZrtR8v3S++0-+gi8DJ79X3e0XqDe93i8nuGTnNg@mail.gmail.com>
+ <20191203124558.GA22805@ming.t460p> <CAAFE1bfB2Km+e=T0ahwq0r9BQrBMnSguQQ+y=yzYi3tursS+TQ@mail.gmail.com>
+ <20191204010529.GA3910@ming.t460p>
+In-Reply-To: <20191204010529.GA3910@ming.t460p>
+From:   Stephen Rust <srust@blockbridge.com>
+Date:   Wed, 4 Dec 2019 12:23:39 -0500
+Message-ID: <CAAFE1bcJmRP5OSu=5asNTpvkF=kjEZu=GafaS9h52776tVgpPA@mail.gmail.com>
+Subject: Re: Data corruption in kernel 5.1+ with iSER attached ramdisk
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Rob Townley <rob.townley@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        target-devel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I tested the following on release 0.26.0 and 0.26.1, with the *.tar.gz
-provided on github. It is probably relevant for a lot more released
-archives and future releases. My build environment is restricted and
-does not have access to pandoc or rst2man.
+Hi Ming,
 
-The command 'ninja install' fails in environments without pandoc and/or
-rst2man. There is an automatic fallback to use man-pages in
-buildlib/pandoc-prebuilt that are added for every release-archive.
-However, the install step fails with error such as:
+I have tried your latest "workaround" patch in brd including the fix
+for large offsets, and it does appear to work. I tried the same tests
+and the data was written correctly for all offsets I tried. Thanks!
 
-CMake Error at infiniband-diags/man/cmake_install.cmake:40 (file):
-file INSTALL cannot find
-"rdma-core-26.0/buildlib/pandoc-prebuilt/64a3de4dd91635b29f4f8d11a987670751827c60".
-Call Stack (most recent call first):
-cmake_install.cmake:166 (include)
+I include the updated additional bpftrace below.
 
-To reproduce the issue, you can try building (and installing) one of the
-*.tar.gz releases from github, while preventing the checks in
-buildlib/Findpandoc.cmake and /Findrst2man.cmake from finding anything
-(e.g. by appending random letters to the searched binary name).
+> So firstly, I'd suggest to investigate from RDMA driver side to see why
+> un-aligned buffer is passed to block layer.
+>
+> According to previous discussion, 512 aligned buffer should be provided
+> to block layer.
+>
+> So looks the driver needs to be fixed.
 
-While investigating, I came up with the following explanation: The
-hashes (generated by buildlib/pandoc-prebuilt.py) differ from machine to
-machine, as the contents of the *.rst-files are hashed. Most of these
-files are processed via cmake's configure_file from *.in.rst-files and
-contain custom-per-build-data such as absolute paths. This means that
-hashing *.rst-files will produce differing hashes based on the
-build-directory-path (among other data points, possibly). I tested this
-by looking at the hashes produced by two of my machines, they were
-different for all but 3 files (ibcacheedit.8.rst, ibstatus.8.rst and
-check_lft_balance.8.rst). These files (and their includes, as their
-content is also hashed!) are the only files that to not contain any
-differing data when being transformed from *.in.rst to *.rst via
-configure_file, which supports my hypothesis.
+If it does appear to be an RDMA driver issue, do you know who we
+should follow up with directly from the RDMA driver side of the world?
 
-From my viewpoint, this tells me that
+Presumably non-brd devices, ie: real scsi devices work for these test
+cases because they accept un-aligned buffers?
 
-a) many/all released archives do not contain the correct pandoc-prebuilt
-files for infiniband-diags/man
-b) there is no automated test that builds and installs releases without
-pandoc/rst2man present
+> The patch might not cover the big offset case, could you collect bpftrace
+> via the following script when you reproduce the issue with >4096 offset?
 
-With my limited time and expertise in the rdma-core project, I was only
-able to come up with a solution that I don't find very practical. I will
-append a diff of pandoc-prebuilt.py nonetheless, which replaces
-hashing-calls for *.rst to *.in.rst if applicable. With these changes,
-the hashes for all files are stable between my two machines. I tested
-this by building rdma-core with my pandoc-prebuilt.py on a machine with
-pandoc+rst2man, which produces the pandoc-prebuilt files. I can copy
-those files to buildlib/pandoc-prebuilt on my other machine in the
-restricted build environment (that also has my pandoc-prebuilt.py) and
-the 'ninja install' step succeeds.
+Here is the updated bpftrace output for an offset of 8192:
 
-This is probably not the most suitable solution for this problem and I
-do NOT consider it fit for production. But maybe it helps someone
-understand and/or fix the root issue. Another fix could be to just hash
-the filenames instead of their contents.
+8192 76
+4020 76 1 131056
+4096 0 1 131063
+76 0 1 131071
+4096 0
+4096 0 0 0
+4096 0
+4096 0 0 8
+4096 0
+4096 0 0 130944
+8192 76
+4020 76 1 131056
+4096 0 1 131063
+76 0 1 131071
+4096 0
+4096 0 0 130808
+4096 0
+4096 0
+4096 0 0 131056
+4096 0 0 131064
+[snip]
 
-Thorben
-
---- rdma-core-26.0/buildlib/pandoc-prebuilt.py  2019-10-02
-12:57:38.000000000 +0200
-+++ pandoc-prebuilt.py  2019-12-04 15:21:14.755359320 +0100
-@@ -6,10 +6,35 @@
- import hashlib
- import re
-
-+# we shouldn't hash *.rst-files, as they can contain absolute paths
-after being
-+# transformed from an *.in.rst-file via cmake's configure_file. this
-leads to
-+# differing pandoc-prebuilt-ids from the build process and other build
-+# environments that use pandoc-prebuilt (no rst2man and pandoc).
-+# this functions instead corrects the filename from *.rst to *.in.rst
-+# if applicable (file exists, correct file ext, ...)
-+def infile_if_possible(SRC):
-+    # only check *.rst files
-+    if not SRC.endswith(".rst"):
-+        return SRC;
-+
-+    # already the desired file
-+    if SRC.endswith(".in.rst"):
-+        return SRC;
-+
-+    infile = SRC.rsplit(".", 1)[0] + ".in.rst";
-+
-+    # use *.in.rst file if possible
-+    if os.path.exists(infile):
-+        return infile;
-+
-+    # *fallback*, this still leads to the same error
-+    # maybe throw / fail here?
-+    return SRC;
-+
- def hash_rst_includes(incdir,txt):
-     h = ""
-     for fn in re.findall(br"^..\s+include::\s+(.*)$", txt,
-flags=re.MULTILINE):
--        with open(os.path.join(incdir,fn.decode()),"rb") as F:
-+        with
-open(infile_if_possible(os.path.join(incdir,fn.decode())),"rb") as F:
-             h = h +  hashlib.sha1(F.read()).hexdigest();
-     return h.encode();
-
-@@ -17,7 +42,7 @@
-     """Return a unique ID for the SRC file. For simplicity and
-robustness we just
-     content hash it"""
-     incdir = os.path.dirname(SRC)
--    with open(SRC,"rb") as F:
-+    with open(infile_if_possible(SRC),"rb") as F:
-         txt = F.read();
-         if SRC.endswith(".rst"):
-             txt = txt + hash_rst_includes(incdir,txt);
+Thanks,
+Steve
