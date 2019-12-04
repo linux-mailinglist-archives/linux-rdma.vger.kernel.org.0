@@ -2,118 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 799A3113720
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Dec 2019 22:36:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ADAC1137F8
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2019 00:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727982AbfLDVgM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Dec 2019 16:36:12 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:3166 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728011AbfLDVgI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Dec 2019 16:36:08 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5de826c30000>; Wed, 04 Dec 2019 13:36:03 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 04 Dec 2019 13:36:07 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 04 Dec 2019 13:36:07 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 4 Dec
- 2019 21:36:04 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 4 Dec 2019 21:36:04 +0000
-Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5de826c40005>; Wed, 04 Dec 2019 13:36:04 -0800
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
+        id S1728132AbfLDXCr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Dec 2019 18:02:47 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:27903 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728428AbfLDXCq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Dec 2019 18:02:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575500565;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XZ22V+LeKTL9G9FnuhA8dKqo40g1wb7UNh59Umr7gyQ=;
+        b=XJy/60+9q7ElTCPCs1hT9jrK8Y5S5mHTF3L3Ddi2lSSGd3MRRQNwAqlMVaqVJbgKV+j+9y
+        bPovq5zvsj8tHmPdlHE6Xq2Dvr3LxiXZEPJW2xb7hzJDxeWpyWSjdw46YUBRhu1u2TN6KX
+        wIoe3ycdpDijJktVvAwXcxghBs4Qu8A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-61-Q7h8s4WqOmWuL4vDXNMIeA-1; Wed, 04 Dec 2019 18:02:42 -0500
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7BEB3107ACC4;
+        Wed,  4 Dec 2019 23:02:40 +0000 (UTC)
+Received: from ming.t460p (ovpn-8-23.pek2.redhat.com [10.72.8.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 96ABE19C6A;
+        Wed,  4 Dec 2019 23:02:30 +0000 (UTC)
+Date:   Thu, 5 Dec 2019 07:02:25 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Stephen Rust <srust@blockbridge.com>
+Cc:     Rob Townley <rob.townley@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        target-devel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-CC:     Ira Weiny <ira.weiny@intel.com>, <linux-rdma@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH v2 2/2] IB/umem: use get_user_pages_fast() to pin DMA pages
-Date:   Wed, 4 Dec 2019 13:36:03 -0800
-Message-ID: <20191204213603.464373-3-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191204213603.464373-1-jhubbard@nvidia.com>
-References: <20191204213603.464373-1-jhubbard@nvidia.com>
+        Sagi Grimberg <sagi@grimberg.me>,
+        Max Gurtovoy <maxg@mellanox.com>
+Subject: Re: Data corruption in kernel 5.1+ with iSER attached ramdisk
+Message-ID: <20191204230225.GA26189@ming.t460p>
+References: <CAAFE1beMkvyRctGqpffd3o_QtDH0CrmQSb=fV4GzqMUXWzPyOw@mail.gmail.com>
+ <20191203005849.GB25002@ming.t460p>
+ <CAAFE1bcG8c1Q3iwh-LUjruBMAuFTJ4qWxNGsnhfKvGWHNLAeEQ@mail.gmail.com>
+ <20191203031444.GB6245@ming.t460p>
+ <CAAFE1besnb=HV4C_buORYpWbkXecmtybwX8d_Ka2NsKmiym53w@mail.gmail.com>
+ <CAAFE1bfpUWCZrtR8v3S++0-+gi8DJ79X3e0XqDe93i8nuGTnNg@mail.gmail.com>
+ <20191203124558.GA22805@ming.t460p>
+ <CAAFE1bfB2Km+e=T0ahwq0r9BQrBMnSguQQ+y=yzYi3tursS+TQ@mail.gmail.com>
+ <20191204010529.GA3910@ming.t460p>
+ <CAAFE1bcJmRP5OSu=5asNTpvkF=kjEZu=GafaS9h52776tVgpPA@mail.gmail.com>
 MIME-Version: 1.0
-X-NVConfidentiality: public
+In-Reply-To: <CAAFE1bcJmRP5OSu=5asNTpvkF=kjEZu=GafaS9h52776tVgpPA@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-MC-Unique: Q7h8s4WqOmWuL4vDXNMIeA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1575495363; bh=wK/7Zcr9JkY1oVaBb+a1odFvVDUbZPXG7o4esu8lpZI=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=ptXEQ04xcPn8GdBQs2rp1XVY1OuF77GjHPSFFgY17UMuAVXRuuciVJqui9dCSv87B
-         yCbOSxw7VjnSJQGnrVsT1Xq5Wqzv4+IqtS9m8ZPYl8LmZw6MkaTA5hLyDoM0xHXNPO
-         Av16EWu/XC/kClF+whWx+5CFr/TIxNY7i2Se1qYu2a6jWWeRXdqPqg3uus4rEBVfaS
-         i+8V/puwLz7IlHI2zyKxfZlWG0cjzbtmv0aDISe02uxsmQUApNlguxclaR436XBAyk
-         7gYqtM6Sg/CovzDx0g3o8qQgztOvXDyXdmH1W1G4A4gb863I1mfGx+WrBqJHiFIclE
-         Pb9Y3ZnPvGwUQ==
+Content-Disposition: inline
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-And get rid of the mmap_sem calls, as part of that. Note
-that get_user_pages_fast() will, if necessary, fall back to
-__gup_longterm_unlocked(), which takes the mmap_sem as needed.
+On Wed, Dec 04, 2019 at 12:23:39PM -0500, Stephen Rust wrote:
+> Hi Ming,
+>=20
+> I have tried your latest "workaround" patch in brd including the fix
+> for large offsets, and it does appear to work. I tried the same tests
+> and the data was written correctly for all offsets I tried. Thanks!
+>=20
+> I include the updated additional bpftrace below.
+>=20
+> > So firstly, I'd suggest to investigate from RDMA driver side to see why
+> > un-aligned buffer is passed to block layer.
+> >
+> > According to previous discussion, 512 aligned buffer should be provided
+> > to block layer.
+> >
+> > So looks the driver needs to be fixed.
+>=20
+> If it does appear to be an RDMA driver issue, do you know who we
+> should follow up with directly from the RDMA driver side of the world?
+>=20
+> Presumably non-brd devices, ie: real scsi devices work for these test
+> cases because they accept un-aligned buffers?
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- drivers/infiniband/core/umem.c | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
+Right, not every driver supports such un-aligned buffer.
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.=
-c
-index 7a3b99597ead..214e87aa609d 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -266,16 +266,13 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, u=
-nsigned long addr,
- 	sg =3D umem->sg_head.sgl;
-=20
- 	while (npages) {
--		down_read(&mm->mmap_sem);
--		ret =3D get_user_pages(cur_base,
--				     min_t(unsigned long, npages,
--					   PAGE_SIZE / sizeof (struct page *)),
--				     gup_flags | FOLL_LONGTERM,
--				     page_list, NULL);
--		if (ret < 0) {
--			up_read(&mm->mmap_sem);
-+		ret =3D get_user_pages_fast(cur_base,
-+					  min_t(unsigned long, npages,
-+						PAGE_SIZE /
-+						sizeof(struct page *)),
-+					  gup_flags | FOLL_LONGTERM, page_list);
-+		if (ret < 0)
- 			goto umem_release;
--		}
-=20
- 		cur_base +=3D ret * PAGE_SIZE;
- 		npages   -=3D ret;
-@@ -283,8 +280,6 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, uns=
-igned long addr,
- 		sg =3D ib_umem_add_sg_table(sg, page_list, ret,
- 			dma_get_max_seg_size(context->device->dma_device),
- 			&umem->sg_nents);
--
--		up_read(&mm->mmap_sem);
- 	}
-=20
- 	sg_mark_end(sg);
---=20
-2.24.0
+I am not familiar with RDMA, but from the trace we have done so far,
+it is highly related with iser driver.=20
+
+
+Thanks,
+Ming
 
