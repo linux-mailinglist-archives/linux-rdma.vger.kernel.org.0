@@ -2,115 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 91298113DA2
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2019 10:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B27D1141EF
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2019 14:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728735AbfLEJRp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Dec 2019 04:17:45 -0500
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:33826 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbfLEJRo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Dec 2019 04:17:44 -0500
-Received: by mail-pj1-f67.google.com with SMTP id t21so1059494pjq.1;
-        Thu, 05 Dec 2019 01:17:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mpsG86sd4T09I7P2DAlwBFPfPNyOEVYKwWpez6CRCnc=;
-        b=UdPGYpCdM1uBV5D00GLTYXGydw1GfjbQBf502M5VBJN/gCJUoZKrRQck4lWVzj0nEb
-         doOk7OtjuJkT6rJTvnfdYhkUoXPKSPEPg5UMinvSi6WfPNwFqt4hor/pKNZQZz7pGA3c
-         RhDWPoRhkV/TD1sW0J3ksoDzom57mccLCee2d1svMRFYMZZjfp2iWtVOOcGzJq7KZYGX
-         nVFxw7pqiMldnStBnEGYxKNuulLrH5XBM8qZfnqHkTsIN6U15Y5qnAxsCYq0sqrkTNyT
-         XoB02vk9iOI3pu7VpLDAONgrygcB5lh3E5Pso0NGPLWVAHg30Ddz/5VJanyjjwp4ohnH
-         bZ5Q==
-X-Gm-Message-State: APjAAAUZhuNZu0xICrjDz9N/r2fHpXNRUzPOGXRsf70K0yBzdJ2xezsK
-        HZ6epnugYfxt5GM5z8Z3p48=
-X-Google-Smtp-Source: APXvYqxfaFK3+QfEn193+C425meNjKEK0ariotT0uyS1f9F1Pn7ElWgYYXA5GpaPRCcHYVBQUI8zKQ==
-X-Received: by 2002:a17:902:7448:: with SMTP id e8mr7401226plt.299.1575537464051;
-        Thu, 05 Dec 2019 01:17:44 -0800 (PST)
-Received: from ?IPv6:2601:647:4802:9070:8dfa:c3a5:24e2:57ab? ([2601:647:4802:9070:8dfa:c3a5:24e2:57ab])
-        by smtp.gmail.com with ESMTPSA id i16sm10887509pfo.12.2019.12.05.01.17.41
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Dec 2019 01:17:43 -0800 (PST)
-Subject: Re: Data corruption in kernel 5.1+ with iSER attached ramdisk
-To:     Ming Lei <ming.lei@redhat.com>,
-        Stephen Rust <srust@blockbridge.com>
-Cc:     Rob Townley <rob.townley@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        target-devel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Max Gurtovoy <maxg@mellanox.com>
-References: <CAAFE1beMkvyRctGqpffd3o_QtDH0CrmQSb=fV4GzqMUXWzPyOw@mail.gmail.com>
- <20191203005849.GB25002@ming.t460p>
- <CAAFE1bcG8c1Q3iwh-LUjruBMAuFTJ4qWxNGsnhfKvGWHNLAeEQ@mail.gmail.com>
- <20191203031444.GB6245@ming.t460p>
- <CAAFE1besnb=HV4C_buORYpWbkXecmtybwX8d_Ka2NsKmiym53w@mail.gmail.com>
- <CAAFE1bfpUWCZrtR8v3S++0-+gi8DJ79X3e0XqDe93i8nuGTnNg@mail.gmail.com>
- <20191203124558.GA22805@ming.t460p>
- <CAAFE1bfB2Km+e=T0ahwq0r9BQrBMnSguQQ+y=yzYi3tursS+TQ@mail.gmail.com>
- <20191204010529.GA3910@ming.t460p>
- <CAAFE1bcJmRP5OSu=5asNTpvkF=kjEZu=GafaS9h52776tVgpPA@mail.gmail.com>
- <20191204230225.GA26189@ming.t460p>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <d9d39d10-d3f3-f2d8-b32e-96896ba0cdb2@grimberg.me>
-Date:   Thu, 5 Dec 2019 01:17:41 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729402AbfLENto (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Dec 2019 08:49:44 -0500
+Received: from mga04.intel.com ([192.55.52.120]:57525 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729396AbfLENtn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 5 Dec 2019 08:49:43 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 05 Dec 2019 05:49:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,281,1571727600"; 
+   d="scan'208";a="411638248"
+Received: from sedona.ch.intel.com ([10.2.136.157])
+  by fmsmga005.fm.intel.com with ESMTP; 05 Dec 2019 05:49:42 -0800
+Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id xB5Dnfx1049462;
+        Thu, 5 Dec 2019 06:49:41 -0700
+Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id xB5Dnch5048244;
+        Thu, 5 Dec 2019 08:49:38 -0500
+Subject: [PATCH for-next v3] IB/hfi1: List all receive contexts from debugfs
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+To:     jgg@ziepe.ca, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>
+Date:   Thu, 05 Dec 2019 08:49:38 -0500
+Message-ID: <20191205134938.48219.50954.stgit@awfm-01.aw.intel.com>
+In-Reply-To: <20191126141220.58836.41480.stgit@awfm-01.aw.intel.com>
+References: <20191126141220.58836.41480.stgit@awfm-01.aw.intel.com>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-In-Reply-To: <20191204230225.GA26189@ming.t460p>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Michael J. Ruhl <michael.j.ruhl@intel.com>
 
->> Hi Ming,
->>
->> I have tried your latest "workaround" patch in brd including the fix
->> for large offsets, and it does appear to work. I tried the same tests
->> and the data was written correctly for all offsets I tried. Thanks!
->>
->> I include the updated additional bpftrace below.
->>
->>> So firstly, I'd suggest to investigate from RDMA driver side to see why
->>> un-aligned buffer is passed to block layer.
->>>
->>> According to previous discussion, 512 aligned buffer should be provided
->>> to block layer.
->>>
->>> So looks the driver needs to be fixed.
->>
->> If it does appear to be an RDMA driver issue, do you know who we
->> should follow up with directly from the RDMA driver side of the world?
->>
->> Presumably non-brd devices, ie: real scsi devices work for these test
->> cases because they accept un-aligned buffers?
-> 
-> Right, not every driver supports such un-aligned buffer.
-> 
-> I am not familiar with RDMA, but from the trace we have done so far,
-> it is highly related with iser driver.
+The current debugfs output for receive contexts (rcds), stops after
+the kernel receive contexts have been displayed.  This is not enough
+information.
 
-Hi guys,
+Display all of the receive contexts.
 
-Just got this one (Thanks for CCing me Ming, been extremely busy
-lately).
+Augment the output with some more context information.
 
-So it looks from the report that this is the immediate-data and
-unsolicited data-out flows, which indeed seem to violate the alignment
-assumption. The reason is that isert post recv a contig rx_desc which
-has both the headers and the data, and when it gets immediate_data it
-will set the data sg to rx_desc+offset (which are the headers).
+Limit the ring buffer header output to 5 entries to avoid
+overextending the sequential file output.
 
-Stephen,
-As a work-around for now, you should turn off immediate-data in your LIO
-target. I'll work on a fix.
+Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Signed-off-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+Signed-off-by: Kaike Wan <kaike.wan@intel.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
 
-Thanks for reporting!
+---
+Changes since v1:
+Update nit in commit message
+---
+ drivers/infiniband/hw/hfi1/debugfs.c |    2 +-
+ drivers/infiniband/hw/hfi1/driver.c  |   12 +++++++++---
+ 2 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/debugfs.c b/drivers/infiniband/hw/hfi1/debugfs.c
+index d268bf9..4633a0c 100644
+--- a/drivers/infiniband/hw/hfi1/debugfs.c
++++ b/drivers/infiniband/hw/hfi1/debugfs.c
+@@ -379,7 +379,7 @@ static void *_rcds_seq_next(struct seq_file *s, void *v, loff_t *pos)
+ 	struct hfi1_devdata *dd = dd_from_dev(ibd);
+ 
+ 	++*pos;
+-	if (!dd->rcd || *pos >= dd->n_krcv_queues)
++	if (!dd->rcd || *pos >= dd->num_rcv_contexts)
+ 		return NULL;
+ 	return pos;
+ }
+diff --git a/drivers/infiniband/hw/hfi1/driver.c b/drivers/infiniband/hw/hfi1/driver.c
+index cbc5219..8374922 100644
+--- a/drivers/infiniband/hw/hfi1/driver.c
++++ b/drivers/infiniband/hw/hfi1/driver.c
+@@ -1726,23 +1726,29 @@ static int process_receive_invalid(struct hfi1_packet *packet)
+ 	return RHF_RCV_CONTINUE;
+ }
+ 
++#define HFI1_RCVHDR_DUMP_MAX	5
++
+ void seqfile_dump_rcd(struct seq_file *s, struct hfi1_ctxtdata *rcd)
+ {
+ 	struct hfi1_packet packet;
+ 	struct ps_mdata mdata;
++	int i;
+ 
+-	seq_printf(s, "Rcd %u: RcvHdr cnt %u entsize %u %s head %llu tail %llu\n",
++	seq_printf(s, "Rcd %u: RcvHdr cnt %u entsize %u %s ctrl 0x%08llx status 0x%08llx, head %llu tail %llu  sw head %u\n",
+ 		   rcd->ctxt, get_hdrq_cnt(rcd), get_hdrqentsize(rcd),
+ 		   get_dma_rtail_setting(rcd) ?
+ 		   "dma_rtail" : "nodma_rtail",
++		   read_kctxt_csr(rcd->dd, rcd->ctxt, RCV_CTXT_CTRL),
++		   read_kctxt_csr(rcd->dd, rcd->ctxt, RCV_CTXT_STATUS),
+ 		   read_uctxt_csr(rcd->dd, rcd->ctxt, RCV_HDR_HEAD) &
+ 		   RCV_HDR_HEAD_HEAD_MASK,
+-		   read_uctxt_csr(rcd->dd, rcd->ctxt, RCV_HDR_TAIL));
++		   read_uctxt_csr(rcd->dd, rcd->ctxt, RCV_HDR_TAIL),
++		   rcd->head);
+ 
+ 	init_packet(rcd, &packet);
+ 	init_ps_mdata(&mdata, &packet);
+ 
+-	while (1) {
++	for (i = 0; i < HFI1_RCVHDR_DUMP_MAX; i++) {
+ 		__le32 *rhf_addr = (__le32 *)rcd->rcvhdrq + mdata.ps_head +
+ 					 rcd->rhf_offset;
+ 		struct ib_header *hdr;
+
