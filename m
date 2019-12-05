@@ -2,151 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4B2114456
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2019 17:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8E9114461
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2019 17:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbfLEQDe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Dec 2019 11:03:34 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55922 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726028AbfLEQDe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Dec 2019 11:03:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575561813;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oHd+4w0V9iVfUn6tAMIGauQiWjLxMUn18cIdw9bXNzA=;
-        b=NflRHuan3Ju5klAhlrEXMl70Z+Nt6vNMBsLB/ZlTnZy7JceiILsAOhCviPFhdXSSqDnFY+
-        znBjHD49pobspjTV2Gvy9hls09bod4y5Lpdaf+9soOLkbbzCvVeg3tJd0lrnOLIF14d1eq
-        A8b7o2Yj78jH44rp19PDzURgGwzS3iQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-385-MoRTtIA4PDWwtQt6J_dX7Q-1; Thu, 05 Dec 2019 11:03:30 -0500
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E4D312A7E49;
-        Thu,  5 Dec 2019 16:03:28 +0000 (UTC)
-Received: from redhat.com (unknown [10.20.6.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1CC4D600D1;
-        Thu,  5 Dec 2019 16:03:26 +0000 (UTC)
-Date:   Thu, 5 Dec 2019 11:03:24 -0500
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        David Airlie <airlied@linux.ie>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [GIT PULL] Please pull hmm changes
-Message-ID: <20191205160324.GB5819@redhat.com>
-References: <20191125204248.GA2485@ziepe.ca>
- <CAHk-=wiqguF5NakpL4L9XCmmYr4wY0wk__+6+wHVReF2sVVZhA@mail.gmail.com>
- <CAHk-=wiQtTsZfgTwLYgfV8Gr_0JJiboZOzVUTAgJ2xTdf5bMiw@mail.gmail.com>
- <20191203024206.GC5795@mellanox.com>
+        id S1729971AbfLEQGl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Dec 2019 11:06:41 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:33693 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726028AbfLEQGl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Dec 2019 11:06:41 -0500
+Received: by mail-pf1-f194.google.com with SMTP id y206so1838268pfb.0;
+        Thu, 05 Dec 2019 08:06:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vIaDjzjUVZua/rYrb/jl7QK530FXe/2Wn3RwlERrkCo=;
+        b=d0jH72yLnpXqxHnMrTHriP3XhEHdk+f3kfafMkwUE3e3ICRC7ZWuoN/XszRzEaOwWi
+         8nOv4humeBKBYOm7WkR4TDNk8gkXwiemZGVltYsZvrHKeHQq5w0xIsbJKgEgzzdL9W6W
+         SFujGiFwbrtnpBLe2tY2yCR/D6eAv4haGfatOJIDDmlKujizGZZ6u/UelhIvF16XLIo7
+         JZTCPOiz5CX6yQO5wmNFLLwKV9N0jyM0Ye7zocY9IS1f9XV2SyRoM+MCZV9lyEcn8jhd
+         UBhBfNYSvvJeCNdAMdbtSg1EO7VHRYeX/T+ceK54Jzv6dsFhm3rS4m2Vg3uZXFWRHIf9
+         iEwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vIaDjzjUVZua/rYrb/jl7QK530FXe/2Wn3RwlERrkCo=;
+        b=esoTPGRGcEivZCDetC/x8xZl4nTdwyiutl3qGSM70BlX4HOTYkOqnsJDHATdHeIgSD
+         AkfO3lJ+HWBvyd9g+jBqIvhsBosbF6dJKVIqZlJbuBfV2ND4NXIqDOt2TnWhElhPhGtd
+         fHMhmCCAzV+t0sKK/j2RO+OzBTTm95VJOgOsrF32NunF2HsOCxMORB9JbRp5mIe1da2d
+         hebjoqltYcU2+GZzTt4BStQXBssS+EhyOqvutZ4ariciy5CHXA/nZCs3ERaIFmOOQsZ3
+         2jsHcDCwyKs94udV8oWy+2kRFO5HIkJoC9cXKaW8uo+YROhzaj7QsZWci1IKCoFgyZqd
+         pjNA==
+X-Gm-Message-State: APjAAAVcSHf343YhLVjfaK5VOqNh+zO9b05pQP/9Fg8/fc1zrY7DC78S
+        BshoRHsJh6/mXACyB9pC96c=
+X-Google-Smtp-Source: APXvYqxrFIKp1hFOwTZtgbdNanH/gWLjg60RdtE37uDZJ0yHOAVyoOK1UB4By2GgKJn9695qkNj/zg==
+X-Received: by 2002:a63:214e:: with SMTP id s14mr9992681pgm.428.1575562000625;
+        Thu, 05 Dec 2019 08:06:40 -0800 (PST)
+Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
+        by smtp.gmail.com with ESMTPSA id k4sm5380616pfk.11.2019.12.05.08.06.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Dec 2019 08:06:40 -0800 (PST)
+From:   Chuhong Yuan <hslester96@gmail.com>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chuhong Yuan <hslester96@gmail.com>
+Subject: [PATCH] RDMA/cma: add missed unregister_pernet_subsys in init failure
+Date:   Fri,  6 Dec 2019 00:06:32 +0800
+Message-Id: <20191205160632.32132-1-hslester96@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-In-Reply-To: <20191203024206.GC5795@mellanox.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-MC-Unique: MoRTtIA4PDWwtQt6J_dX7Q-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 03, 2019 at 02:42:12AM +0000, Jason Gunthorpe wrote:
-> On Sat, Nov 30, 2019 at 10:23:31AM -0800, Linus Torvalds wrote:
-> > On Sat, Nov 30, 2019 at 10:03 AM Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > I'll try to figure the code out, but my initial reaction was "yeah,
-> > > not in my VM".
-> >=20
-> > Why is it ok to sometimes do
-> >=20
-> >     WRITE_ONCE(mni->invalidate_seq, cur_seq);
-> >=20
-> > (to pair with the unlocked READ_ONCE), and sometimes then do
-> >=20
-> >     mni->invalidate_seq =3D mmn_mm->invalidate_seq;
-> >=20
-> > My initial guess was that latter is only done at initialization time,
-> > but at least in one case it's done *after* the mni has been added to
-> > the mmn_mm (oh, how I despise those names - I can only repeat: WTF?).
->=20
-> Yes, the only occurrences are in the notifier_insert, under the
-> spinlock. The one case where it is out of the natural order was to
-> make the manipulation of seq a bit saner, but in all cases since the
-> spinlock is held there is no way for another thread to get the pointer
-> to the 'mmu_interval_notifier *' to do the unlocked read.
->=20
-> Regarding the ugly names.. Naming has been really hard here because
-> currently everything is a 'mmu notifier' and the natural abberviations
-> from there are crummy. Here is the basic summary:
->=20
-> struct mmu_notifier_mm (ie the mm->mmu_notifier_mm)
->    -> mmn_mm
-> struct mm_struct=20
->    -> mm
-> struct mmu_notifier (ie the user subscription to the mm_struct)
->    -> mn
-> struct mmu_interval_notifier (the other kind of user subscription)
->    -> mni
+The driver forgets to call unregister_pernet_subsys() in the error path
+of cma_init().
+Add the missed call to fix it.
 
-What about "interval" the context should already tell people
-it is related to mmu notifier and thus a notifier. I would
-just remove the notifier suffix, this would match the below
-range.
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+---
+ drivers/infiniband/core/cma.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> struct mmu_notifier_range (ie the args to invalidate_range)
->    -> range
-
-Yeah range as context should tell you it is related to mmu
-notifier.
-
->=20
-> I can send a patch to switch mmn_mm to mmu_notifier_mm, which is the
-> only pre-existing name for this value. But IIRC, it is a somewhat ugly
-> with long line wrapping. 'mni' is a pain, I have to reflect on that.
-> (honesly, I dislike mmu_notififer_mm quite a lot too)
->=20
-> I think it would be overall nicer with better names for the original
-> structs. Perhaps:
->=20
->  mmn_* - MMU notifier prefix
->  mmn_state <- struct mmu_notifier_mm
->  mmn_subscription (mmn_sub) <- struct mmu_notifier
->  mmn_range_subscription (mmn_range_sub) <- struct mmu_interval_notifier
->  mmn_invalidate_desc <- struct mmu_notifier_range
-
-This looks good.
-
->=20
-> At least this is how I describe them in my mind..  This is a lot of
-> churn, and spreads through many drivers. This is why I kept the names
-> as-is and we ended up with the also quite bad 'mmu_interval_notifier'
->=20
-> Maybe just switch mmu_notifier_mm for mmn_state and leave the drivers
-> alone?
->=20
-> Anyone on the CC list have advice?
-
-Maybe we can do a semantic patch to do convertion and then Linus
-can easily apply the patch by just re-running the coccinelle.
-
-Cheers,
-J=E9r=F4me
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 25f2b70fd8ef..43a6f07e0afe 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -4763,6 +4763,7 @@ static int __init cma_init(void)
+ err:
+ 	unregister_netdevice_notifier(&cma_nb);
+ 	ib_sa_unregister_client(&sa_client);
++	unregister_pernet_subsys(&cma_pernet_operations);
+ err_wq:
+ 	destroy_workqueue(cma_wq);
+ 	return ret;
+-- 
+2.24.0
 
