@@ -2,196 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD53114837
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2019 21:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC316114952
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2019 23:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729799AbfLEUit (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Dec 2019 15:38:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41292 "EHLO mail.kernel.org"
+        id S1727890AbfLEWas (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Dec 2019 17:30:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729145AbfLEUit (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Dec 2019 15:38:49 -0500
+        id S1727595AbfLEWas (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 5 Dec 2019 17:30:48 -0500
 Received: from localhost (mobile-166-170-221-197.mycingular.net [166.170.221.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B455D205F4;
-        Thu,  5 Dec 2019 20:38:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84F6520707;
+        Thu,  5 Dec 2019 22:30:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575578328;
-        bh=K7c3qaYFnXWMMqmwVGrwX7rG4+uwWtUsCcODfBtRF1k=;
+        s=default; t=1575585047;
+        bh=rwc2W/J/V58JZoKOWg2doRruK6KWPbQgM5Sb2F/Ai60=;
         h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=NWmiSx+ex1TjiKC4MaIx3xgvijveWrSbxbs+XjqnQh8NtXiBsDxOC54dxgdSCwY2Q
-         JFbBLgr1/UwBKIqUKv7MLbUuUhoa33JyMTyHQS/JVBgESXzRhy4V3aJStQ6g6aSYgd
-         BMEn5r9MAm2BdXlEKpf1Z9W0pYFSQT6+AX76sG20=
-Date:   Thu, 5 Dec 2019 14:38:45 -0600
+        b=cliOZcUxDWzGZ1UQTKJkPsD++s/EPrjyE7H/snJuA3uqE7NURH520sOnVje6nd0Ts
+         Td38CmfeZyMBlRyr+Rypsepv/EG8hoAOa7B7sJiJzOVgMDkiBquX3yxdZnHzKOkS/c
+         BBv+wew7DxEj2QDNBsIebdp/nYnu0CS5l8OPwMaM=
+Date:   Thu, 5 Dec 2019 16:30:44 -0600
 From:   Bjorn Helgaas <helgaas@kernel.org>
 To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 Cc:     andrew.murray@arm.com, maz@kernel.org,
         linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Eric Anholt <eric@anholt.net>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thomas Graf <tgraf@suug.ch>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         james.quinlan@broadcom.com, mbrugger@suse.com,
-        phil@raspberrypi.org, jeremy.linton@arm.com,
-        linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
+        f.fainelli@gmail.com, phil@raspberrypi.org, wahrenst@gmx.net,
+        jeremy.linton@arm.com, linux-pci@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        Robin Murphy <robin.murphy@arm.con>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         "David S. Miller" <davem@davemloft.net>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        iommu@lists.linux-foundation.org
-Subject: Re: [PATCH v4 8/8] linux/log2.h: Use roundup/dow_pow_two() on 64bit
- calculations
-Message-ID: <20191205203845.GA243596@google.com>
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rdma@vger.kernel.org, iommu@lists.linux-foundation.org,
+        netdev@vger.kernel.org, kexec@lists.infradead.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH v4 7/8] linux/log2.h: Fix 64bit calculations in
+ roundup/down_pow_two()
+Message-ID: <20191205223044.GA250573@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191203114743.1294-9-nsaenzjulienne@suse.de>
+In-Reply-To: <20191203114743.1294-8-nsaenzjulienne@suse.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The subject contains a couple typos: it's missing "of" and it's
-missing the "n" on "down".
+You got the "n" on "down" in the subject, but still missing "of" ;)
 
-On Tue, Dec 03, 2019 at 12:47:41PM +0100, Nicolas Saenz Julienne wrote:
-> The function now is safe to use while expecting a 64bit value. Use it
-> where relevant.
+On Tue, Dec 03, 2019 at 12:47:40PM +0100, Nicolas Saenz Julienne wrote:
+> Some users need to make sure their rounding function accepts and returns
+> 64bit long variables regardless of the architecture. Sadly
+> roundup/rounddown_pow_two() takes and returns unsigned longs. It turns
+> out ilog2() already handles 32/64bit calculations properly, and being
+> the building block to the round functions we can rework them as a
+> wrapper around it.
 
-Please include the function names ("roundup_pow_of_two()",
-"rounddown_pow_of_two()") in the changelog so it is self-contained and
-doesn't depend on the subject.
+Missing "of" in the function names here.
+s/a wrapper/wrappers/
 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+IIUC the point of this is that roundup_pow_of_two() returned
+"unsigned long", which can be either 32 or 64 bits (worth pointing
+out, I think), and many callers need something that returns
+"unsigned long long" (always 64 bits).
 
-With the nits above and below addressed,
+It's a nice simplification to remove the "__" variants.  Just as a
+casual reader of this commit message, I'd like to know why we had both
+the roundup and the __roundup versions in the first place, and why we
+no longer need both.
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>	# drivers/pci
+> -#define roundup_pow_of_two(n)			\
+> -(						\
+> -	__builtin_constant_p(n) ? (		\
+> -		(n == 1) ? 1 :			\
+> -		(1UL << (ilog2((n) - 1) + 1))	\
+> -				   ) :		\
+> -	__roundup_pow_of_two(n)			\
+> - )
+> +#define roundup_pow_of_two(n)			  \
+> +(						  \
+> +	(__builtin_constant_p(n) && ((n) == 1)) ? \
+> +	1 : (1ULL << (ilog2((n) - 1) + 1))        \
+> +)
 
-> ---
->  drivers/acpi/arm64/iort.c                        | 2 +-
->  drivers/net/ethernet/mellanox/mlx4/en_clock.c    | 3 ++-
->  drivers/of/device.c                              | 3 ++-
->  drivers/pci/controller/cadence/pcie-cadence-ep.c | 3 ++-
->  drivers/pci/controller/cadence/pcie-cadence.c    | 3 ++-
->  drivers/pci/controller/pcie-brcmstb.c            | 3 ++-
->  drivers/pci/controller/pcie-rockchip-ep.c        | 5 +++--
->  kernel/dma/direct.c                              | 2 +-
->  8 files changed, 15 insertions(+), 9 deletions(-)
+Should the resulting type of this expression always be a ULL, even
+when n==1, i.e., should it be this?
 
-> --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> @@ -10,6 +10,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/sizes.h>
-> +#include <linux/log2.h>
->  
->  #include "pcie-cadence.h"
->  
-> @@ -65,7 +66,7 @@ static int cdns_pcie_ep_set_bar(struct pci_epc *epc, u8 fn,
->  	 * roundup_pow_of_two() returns an unsigned long, which is not suited
->  	 * for 64bit values.
->  	 */
+  1ULL : (1ULL << (ilog2((n) - 1) + 1))        \
 
-Please remove the comment above since it no longer applies.
+Or maybe there's no case where that makes a difference?
 
-> -	sz = 1ULL << fls64(sz - 1);
-> +	sz = roundup_pow_of_two(sz);
->  	aperture = ilog2(sz) - 7; /* 128B -> 0, 256B -> 1, 512B -> 2, ... */
->  
->  	if ((flags & PCI_BASE_ADDRESS_SPACE) == PCI_BASE_ADDRESS_SPACE_IO) {
-> diff --git a/drivers/pci/controller/cadence/pcie-cadence.c b/drivers/pci/controller/cadence/pcie-cadence.c
-> index cd795f6fc1e2..b1689f725b41 100644
-> --- a/drivers/pci/controller/cadence/pcie-cadence.c
-> +++ b/drivers/pci/controller/cadence/pcie-cadence.c
-> @@ -4,6 +4,7 @@
->  // Author: Cyrille Pitchen <cyrille.pitchen@free-electrons.com>
->  
->  #include <linux/kernel.h>
-> +#include <linux/log2.h>
->  
->  #include "pcie-cadence.h"
->  
-> @@ -15,7 +16,7 @@ void cdns_pcie_set_outbound_region(struct cdns_pcie *pcie, u8 fn,
->  	 * roundup_pow_of_two() returns an unsigned long, which is not suited
->  	 * for 64bit values.
->  	 */
-
-Same here.
-
-> -	u64 sz = 1ULL << fls64(size - 1);
-> +	u64 sz = roundup_pow_of_two(size);
->  	int nbits = ilog2(sz);
->  	u32 addr0, addr1, desc0, desc1;
->  
-> --- a/drivers/pci/controller/pcie-rockchip-ep.c
-> +++ b/drivers/pci/controller/pcie-rockchip-ep.c
-> @@ -16,6 +16,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/pci-epf.h>
->  #include <linux/sizes.h>
-> +#include <linux/log2.h>
->  
->  #include "pcie-rockchip.h"
->  
-> @@ -70,7 +71,7 @@ static void rockchip_pcie_prog_ep_ob_atu(struct rockchip_pcie *rockchip, u8 fn,
->  					 u32 r, u32 type, u64 cpu_addr,
->  					 u64 pci_addr, size_t size)
->  {
-> -	u64 sz = 1ULL << fls64(size - 1);
-> +	u64 sz = roundup_pow_of_two(size);
->  	int num_pass_bits = ilog2(sz);
->  	u32 addr0, addr1, desc0, desc1;
->  	bool is_nor_msg = (type == AXI_WRAPPER_NOR_MSG);
-> @@ -176,7 +177,7 @@ static int rockchip_pcie_ep_set_bar(struct pci_epc *epc, u8 fn,
->  	 * roundup_pow_of_two() returns an unsigned long, which is not suited
->  	 * for 64bit values.
->  	 */
-
-And here.
-
-> -	sz = 1ULL << fls64(sz - 1);
-> +	sz = roundup_pow_of_two(sz);
->  	aperture = ilog2(sz) - 7; /* 128B -> 0, 256B -> 1, 512B -> 2, ... */
->  
->  	if ((flags & PCI_BASE_ADDRESS_SPACE) == PCI_BASE_ADDRESS_SPACE_IO) {
-> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-> index 6af7ae83c4ad..056886c4efec 100644
-> --- a/kernel/dma/direct.c
-> +++ b/kernel/dma/direct.c
-> @@ -53,7 +53,7 @@ u64 dma_direct_get_required_mask(struct device *dev)
->  {
->  	u64 max_dma = phys_to_dma_direct(dev, (max_pfn - 1) << PAGE_SHIFT);
->  
-> -	return (1ULL << (fls64(max_dma) - 1)) * 2 - 1;
-> +	return rounddown_pow_of_two(max_dma) * 2 - 1;
-
-Personally I would probably make this one a separate patch since it's
-qualitatively different than the others and it would avoid the slight
-awkwardness of the non-greppable "roundup/down_pow_of_two()"
-construction in the commit subject.
-
-But it's fine either way.
-
->  }
->  
->  static gfp_t __dma_direct_optimal_gfp_mask(struct device *dev, u64 dma_mask,
-> -- 
-> 2.24.0
-> 
+Bjorn
