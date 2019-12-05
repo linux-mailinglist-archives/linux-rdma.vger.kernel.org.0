@@ -2,124 +2,230 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0367011474C
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2019 19:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 924431147D3
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Dec 2019 20:46:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729653AbfLESuD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Dec 2019 13:50:03 -0500
-Received: from mail-eopbgr130079.outbound.protection.outlook.com ([40.107.13.79]:48151
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726589AbfLESuD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Dec 2019 13:50:03 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GVDj72VqtyNDHGWlqpFL2BAv12SYw2NTlY6lccOdHIy5cRWEblMMex5xxfyB5PkGQRaUAvsbEnS+U3wTFAJ0mrNegtDFlJ9qmQeeQW3qt3V6tKBzp3Sq87+u/EF3CO2JM/WMOhiCEjgskAOEn+GKxYAfHYXNIS9gzuPGM5jsK6RUrX/eSkiLAPMTLQrq/Q0wDDjVtKlcJ3Ors9dTF2Sl4BICbfBqOvATjBt8xdHckkNg5mCPuVZLw6X9IJST99yS7cnL3Z4JcDdYnOeP/+WHK2sfKz1hp4AlSV68Xlue/VjRHxZc5b3MqrxlOv70gt4Veis8CTs9utBxI8bNrRL7GA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EqpEX+GRcN85lqr7uGDwuxAtDob+08CroYaIAD23nEE=;
- b=gqhDU/PaFx9LwscmckX+3O5F9KjPNShGxFt35MRbYbBpNstDcF0hUm9kWxSmS9OzfMVEtqHt6p50/l5i8QzP8oMAys09KzXOC2OFEFF34gABOtJTHzaHsEfJNyTCuexU63vfnASjrIu/8joSJ27s2ijlnOdkgFqh7mPvsh1BSpy1ZMTrFzHfrxmc5KtAoQGKDIQ4mVsPvkPc86wTmxUirJoPYEINk0By7gm/A4Ilht5TQYG/E+9LzVLF/jAwJ3cOQXrUeHabaswR6oxIMIfk15WqXR9A0akzEBXbabCXpL58gBEV8/rnAuTVYDmTPK4Ys0dsFMTbKG5ALmfimotbIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EqpEX+GRcN85lqr7uGDwuxAtDob+08CroYaIAD23nEE=;
- b=Jd4bTje69b75n46bjKpVVhUn5MW8a23mmiR/GzFa5jjJXutQ6rtTP3e7c01cCF61oak2wsi2qoXkgz2gcH12YhI/5pNWAAQHTClLPAzgp8buxq/35VaDN9fggx2waql+Qf8NHIrPj1xcUF8s2THa4BbSaFyl+Ua3oRJyD+kfTsA=
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
- AM0PR05MB4756.eurprd05.prod.outlook.com (52.133.61.29) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2516.14; Thu, 5 Dec 2019 18:49:58 +0000
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::16:9951:5a4b:9ec6]) by AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::16:9951:5a4b:9ec6%7]) with mapi id 15.20.2516.014; Thu, 5 Dec 2019
- 18:49:58 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     Chuhong Yuan <hslester96@gmail.com>
-CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] RDMA/cma: add missed unregister_pernet_subsys in init
- failure
-Thread-Topic: [PATCH] RDMA/cma: add missed unregister_pernet_subsys in init
- failure
-Thread-Index: AQHVq4X+uZCTp3HGm0yAWTgo2WdDwaer4g5w
-Date:   Thu, 5 Dec 2019 18:49:58 +0000
-Message-ID: <AM0PR05MB486638F7997D643FAD64B482D15C0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-References: <20191205160632.32132-1-hslester96@gmail.com>
-In-Reply-To: <20191205160632.32132-1-hslester96@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [208.176.44.194]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 70c08c0a-fbb7-49a4-57f4-08d779b3ed95
-x-ms-traffictypediagnostic: AM0PR05MB4756:
-x-microsoft-antispam-prvs: <AM0PR05MB4756336E7C79D24302188A11D15C0@AM0PR05MB4756.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:83;
-x-forefront-prvs: 02426D11FE
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(136003)(366004)(39860400002)(346002)(376002)(189003)(199004)(71190400001)(71200400001)(305945005)(4326008)(11346002)(14454004)(186003)(74316002)(33656002)(102836004)(26005)(478600001)(76116006)(6506007)(66556008)(99286004)(8676002)(66476007)(66446008)(316002)(55016002)(86362001)(66946007)(6916009)(81166006)(5660300002)(8936002)(25786009)(4744005)(81156014)(52536014)(2906002)(229853002)(64756008)(9686003)(76176011)(7696005)(54906003);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB4756;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: c2S6h+9siS6ywIxMFrzlNiqQKHp/iaBcfaf/QLWze0lkWvdhKKvZPq8zsKBKVi1d/ZrTFYwDZvaZr3Y3meJzI/KE6itOcZmuuoZCCtIJfDqTAthM9SMlSESgYzwI7Z7cw4nlA8Z5JxDv7Df5hGeC7R0tsYjqeSxLrHpuFwP+2wtBnscNjShBYD2IjtJGVBPRWO3MgbZB8dZ4IeiYn1OW+j2EieaHoY6KGfFH9+Ml1P2i8OZ6lSeNf8v73/PQSppOpSc/iw7ni4XlUkhRnXb5fOYN1dWsqnXQjELE/vpAk4JLk/KT7whPSbR5xSQWcehVn2gavTOSvrjJN4sNXP/7yleGrh2L9TQbzFrjonLlhEQvR05g3gjyV68WicQBPBF5/Dl4ScBucSvf5Uv/Wkvysmb4+MGywi8RF21njTqjg/ZNv/g9Mqtg0ruqs9lejCXK
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1729240AbfLETqs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Dec 2019 14:46:48 -0500
+Received: from mail-yw1-f65.google.com ([209.85.161.65]:43274 "EHLO
+        mail-yw1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729145AbfLETqr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Dec 2019 14:46:47 -0500
+Received: by mail-yw1-f65.google.com with SMTP id s187so1687009ywe.10;
+        Thu, 05 Dec 2019 11:46:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=ID+WgpQbemipC4nB1OMRUAGYoAfNxs0rXv34346QFJo=;
+        b=By8TO7cbKcxMqv1fiyofccgizYVnBjBtut3RZ8lk+Hfm30+ykCwEkHxpm9vKKhFe7a
+         1dBoNnugoZV55oSjkep2M3O4bKdtJwasKbkW6EM1U9msgCsov03u1M4cG2kpIJvoT7cG
+         iO41Z1ZtQEeeTliUN4eWATe2N92sOQptDnmNnSdoigWWZwwLLfDFIvZ7ZO1eRpD75dKb
+         7P2kP+4JVpFIWkCPE4Q+xeTRl0ldoJI2ZyRvxIsoS85u1VokxVa0X0uJLrjBFJUdhEYA
+         +4Ez5KOaw2OOmE+xcnAmFPJTbcjB08OfRQmr3Ox63L3sbT6APCCxesbk3dzG6ilqGxby
+         LmqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:from:to:cc:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=ID+WgpQbemipC4nB1OMRUAGYoAfNxs0rXv34346QFJo=;
+        b=OEp2m38bok/B0LGp9bVJ2j0y6KrIef/dfHXhsqRTpzpSieK4T7JhfIPQ5A+rZsBz8f
+         qiOV0DvZSjifGhXbOwhykMhegxaW2eBsP6I3TKdf49J0lj4OPUFyyEC3mygaMrpBrJrc
+         fkhGj5Jc4/zrVLwAME4TwED9Lv0NkH/o8SGVs3KJsMaIXWHYKVeG9D0/Ji0B9PIGFvrQ
+         +VZLOV3TWybUqaSbJMFB7R7a9Sb1GJLy5GYcqVU5Kg9A0eJswvw9/w1AaKxjH9XYZGIs
+         4m5XqfORDoed4xNchDyJK4rhEclyd6aHahU3JgwO0QKngZ/cBqpKXtXsmEBbl21pAuWH
+         W53A==
+X-Gm-Message-State: APjAAAXGGtM8MhCArGxQkpp4cQqjvAk3EFSuqFkUbEtDj8E92WemD6SZ
+        RbRJBC1a9AU1EvfXojsF7d98qhH6
+X-Google-Smtp-Source: APXvYqzZdOiKNZWvUo9wF50djrrXtfGjvtGPD+y1bV2b9EZ9oDNY1DPb/vi4qNBgUh86r/UMFfBWrw==
+X-Received: by 2002:a0d:cd44:: with SMTP id p65mr7574328ywd.118.1575575205655;
+        Thu, 05 Dec 2019 11:46:45 -0800 (PST)
+Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id e198sm5403416ywa.51.2019.12.05.11.46.44
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Dec 2019 11:46:44 -0800 (PST)
+Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id xB5Jkhoa003647;
+        Thu, 5 Dec 2019 19:46:43 GMT
+Subject: [PATCH] xprtrdma: Fix oops in Receive handler after device removal
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     anna.schumaker@netapp.com
+Cc:     linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org
+Date:   Thu, 05 Dec 2019 14:46:43 -0500
+Message-ID: <20191205194518.4319.92892.stgit@manet.1015granger.net>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 70c08c0a-fbb7-49a4-57f4-08d779b3ed95
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2019 18:49:58.7469
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZCTPfvtrtJCOD51xShImtjP2qFBRU2AbQ4t1QS3bjMyQWVSf5CU/T+OUkRMSu9eAEs7z/UhfccuvSc8+8n/cbw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB4756
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Since v5.4, a device removal occasionally triggered this oops:
+
+Dec  2 17:13:53 manet kernel: BUG: unable to handle page fault for address: 0000000c00000219
+Dec  2 17:13:53 manet kernel: #PF: supervisor read access in kernel mode
+Dec  2 17:13:53 manet kernel: #PF: error_code(0x0000) - not-present page
+Dec  2 17:13:53 manet kernel: PGD 0 P4D 0
+Dec  2 17:13:53 manet kernel: Oops: 0000 [#1] SMP
+Dec  2 17:13:53 manet kernel: CPU: 2 PID: 468 Comm: kworker/2:1H Tainted: G        W         5.4.0-00050-g53717e43af61 #883
+Dec  2 17:13:53 manet kernel: Hardware name: Supermicro SYS-6028R-T/X10DRi, BIOS 1.1a 10/16/2015
+Dec  2 17:13:53 manet kernel: Workqueue: ib-comp-wq ib_cq_poll_work [ib_core]
+Dec  2 17:13:53 manet kernel: RIP: 0010:rpcrdma_wc_receive+0x7c/0xf6 [rpcrdma]
+Dec  2 17:13:53 manet kernel: Code: 6d 8b 43 14 89 c1 89 45 78 48 89 4d 40 8b 43 2c 89 45 14 8b 43 20 89 45 18 48 8b 45 20 8b 53 14 48 8b 30 48 8b 40 10 48 8b 38 <48> 8b 87 18 02 00 00 48 85 c0 75 18 48 8b 05 1e 24 c4 e1 48 85 c0
+Dec  2 17:13:53 manet kernel: RSP: 0018:ffffc900035dfe00 EFLAGS: 00010246
+Dec  2 17:13:53 manet kernel: RAX: ffff888467290000 RBX: ffff88846c638400 RCX: 0000000000000048
+Dec  2 17:13:53 manet kernel: RDX: 0000000000000048 RSI: 00000000f942e000 RDI: 0000000c00000001
+Dec  2 17:13:53 manet kernel: RBP: ffff888467611b00 R08: ffff888464e4a3c4 R09: 0000000000000000
+Dec  2 17:13:53 manet kernel: R10: ffffc900035dfc88 R11: fefefefefefefeff R12: ffff888865af4428
+Dec  2 17:13:53 manet kernel: R13: ffff888466023000 R14: ffff88846c63f000 R15: 0000000000000010
+Dec  2 17:13:53 manet kernel: FS:  0000000000000000(0000) GS:ffff88846fa80000(0000) knlGS:0000000000000000
+Dec  2 17:13:53 manet kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+Dec  2 17:13:53 manet kernel: CR2: 0000000c00000219 CR3: 0000000002009002 CR4: 00000000001606e0
+Dec  2 17:13:53 manet kernel: Call Trace:
+Dec  2 17:13:53 manet kernel: __ib_process_cq+0x5c/0x14e [ib_core]
+Dec  2 17:13:53 manet kernel: ib_cq_poll_work+0x26/0x70 [ib_core]
+Dec  2 17:13:53 manet kernel: process_one_work+0x19d/0x2cd
+Dec  2 17:13:53 manet kernel: ? cancel_delayed_work_sync+0xf/0xf
+Dec  2 17:13:53 manet kernel: worker_thread+0x1a6/0x25a
+Dec  2 17:13:53 manet kernel: ? cancel_delayed_work_sync+0xf/0xf
+Dec  2 17:13:53 manet kernel: kthread+0xf4/0xf9
+Dec  2 17:13:53 manet kernel: ? kthread_queue_delayed_work+0x74/0x74
+Dec  2 17:13:53 manet kernel: ret_from_fork+0x24/0x30
+
+The proximal cause is that this rpcrdma_rep has a rr_rdmabuf that
+is still pointing to the old ib_device, which has been freed. The
+only way that is possible is if this rpcrdma_rep was not destroyed
+by rpcrdma_ia_remove.
+
+Debugging showed that was indeed the case: this rpcrdma_rep was
+still in use by a completing RPC at the time of the device removal,
+and thus wasn't on the rep free list. So, it was not found by
+rpcrdma_reps_destroy().
+
+The fix is to introduce a list of all rpcrdma_reps so that they all
+can be found when a device is removed. That list is used to perform
+only regbuf DMA unmapping, replacing that call to
+rpcrdma_reps_destroy().
+
+Meanwhile, to prevent corruption of this list, I've moved the
+destruction of temp rpcrdma_rep objects to rpcrdma_post_recvs().
+rpcrdma_xprt_drain() ensures that post_recvs (and thus rep_destroy) is
+not invoked while rpcrdma_reps_unmap is walking rb_all_reps, thus
+protecting the rb_all_reps list.
+
+Fixes: b0b227f071a0 ("xprtrdma: Use an llist to manage free rpcrdma_reps")
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+---
+ net/sunrpc/xprtrdma/verbs.c     |   25 +++++++++++++++++++------
+ net/sunrpc/xprtrdma/xprt_rdma.h |    2 ++
+ 2 files changed, 21 insertions(+), 6 deletions(-)
+
+Hi Anna-
+
+Here's the third RPC/RDMA fix that I mentioned in the earlier
+e-mail. Please review, and consider this one for v5.5-rc.
+
+Thanks!
 
 
-> From: linux-kernel-owner@vger.kernel.org <linux-kernel-
-> owner@vger.kernel.org> On Behalf Of Chuhong Yuan
-> Sent: Thursday, December 5, 2019 10:07 AM
-> The driver forgets to call unregister_pernet_subsys() in the error path o=
-f
-> cma_init().
-> Add the missed call to fix it.
->=20
-> Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-> ---
->  drivers/infiniband/core/cma.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.=
-c
-> index 25f2b70fd8ef..43a6f07e0afe 100644
-> --- a/drivers/infiniband/core/cma.c
-> +++ b/drivers/infiniband/core/cma.c
-> @@ -4763,6 +4763,7 @@ static int __init cma_init(void)
->  err:
->  	unregister_netdevice_notifier(&cma_nb);
->  	ib_sa_unregister_client(&sa_client);
-> +	unregister_pernet_subsys(&cma_pernet_operations);
->  err_wq:
->  	destroy_workqueue(cma_wq);
->  	return ret;
-> --
-> 2.24.0
-Please add to commit log.
+diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
+index 2c40465a19e1..fda3889993cb 100644
+--- a/net/sunrpc/xprtrdma/verbs.c
++++ b/net/sunrpc/xprtrdma/verbs.c
+@@ -77,7 +77,7 @@
+ static void rpcrdma_sendctx_put_locked(struct rpcrdma_xprt *r_xprt,
+ 				       struct rpcrdma_sendctx *sc);
+ static void rpcrdma_reqs_reset(struct rpcrdma_xprt *r_xprt);
+-static void rpcrdma_reps_destroy(struct rpcrdma_buffer *buf);
++static void rpcrdma_reps_unmap(struct rpcrdma_xprt *r_xprt);
+ static void rpcrdma_mrs_create(struct rpcrdma_xprt *r_xprt);
+ static void rpcrdma_mrs_destroy(struct rpcrdma_xprt *r_xprt);
+ static struct rpcrdma_regbuf *
+@@ -421,7 +421,7 @@ static void rpcrdma_update_cm_private(struct rpcrdma_xprt *r_xprt,
+ 	/* The ULP is responsible for ensuring all DMA
+ 	 * mappings and MRs are gone.
+ 	 */
+-	rpcrdma_reps_destroy(buf);
++	rpcrdma_reps_unmap(r_xprt);
+ 	list_for_each_entry(req, &buf->rb_allreqs, rl_all) {
+ 		rpcrdma_regbuf_dma_unmap(req->rl_rdmabuf);
+ 		rpcrdma_regbuf_dma_unmap(req->rl_sendbuf);
+@@ -1092,6 +1092,7 @@ static struct rpcrdma_rep *rpcrdma_rep_create(struct rpcrdma_xprt *r_xprt,
+ 	rep->rr_recv_wr.sg_list = &rep->rr_rdmabuf->rg_iov;
+ 	rep->rr_recv_wr.num_sge = 1;
+ 	rep->rr_temp = temp;
++	list_add(&rep->rr_all, &r_xprt->rx_buf.rb_all_reps);
+ 	return rep;
+ 
+ out_free:
+@@ -1102,6 +1103,7 @@ static struct rpcrdma_rep *rpcrdma_rep_create(struct rpcrdma_xprt *r_xprt,
+ 
+ static void rpcrdma_rep_destroy(struct rpcrdma_rep *rep)
+ {
++	list_del(&rep->rr_all);
+ 	rpcrdma_regbuf_free(rep->rr_rdmabuf);
+ 	kfree(rep);
+ }
+@@ -1120,10 +1122,16 @@ static struct rpcrdma_rep *rpcrdma_rep_get_locked(struct rpcrdma_buffer *buf)
+ static void rpcrdma_rep_put(struct rpcrdma_buffer *buf,
+ 			    struct rpcrdma_rep *rep)
+ {
+-	if (!rep->rr_temp)
+-		llist_add(&rep->rr_node, &buf->rb_free_reps);
+-	else
+-		rpcrdma_rep_destroy(rep);
++	llist_add(&rep->rr_node, &buf->rb_free_reps);
++}
++
++static void rpcrdma_reps_unmap(struct rpcrdma_xprt *r_xprt)
++{
++	struct rpcrdma_buffer *buf = &r_xprt->rx_buf;
++	struct rpcrdma_rep *rep;
++
++	list_for_each_entry(rep, &buf->rb_all_reps, rr_all)
++		rpcrdma_regbuf_dma_unmap(rep->rr_rdmabuf);
+ }
+ 
+ static void rpcrdma_reps_destroy(struct rpcrdma_buffer *buf)
+@@ -1154,6 +1162,7 @@ int rpcrdma_buffer_create(struct rpcrdma_xprt *r_xprt)
+ 
+ 	INIT_LIST_HEAD(&buf->rb_send_bufs);
+ 	INIT_LIST_HEAD(&buf->rb_allreqs);
++	INIT_LIST_HEAD(&buf->rb_all_reps);
+ 
+ 	rc = -ENOMEM;
+ 	for (i = 0; i < buf->rb_max_requests; i++) {
+@@ -1506,6 +1515,10 @@ void rpcrdma_post_recvs(struct rpcrdma_xprt *r_xprt, bool temp)
+ 	wr = NULL;
+ 	while (needed) {
+ 		rep = rpcrdma_rep_get_locked(buf);
++		if (rep && rep->rr_temp) {
++			rpcrdma_rep_destroy(rep);
++			continue;
++		}
+ 		if (!rep)
+ 			rep = rpcrdma_rep_create(r_xprt, temp);
+ 		if (!rep)
+diff --git a/net/sunrpc/xprtrdma/xprt_rdma.h b/net/sunrpc/xprtrdma/xprt_rdma.h
+index 5d15140a0266..d796d68609ed 100644
+--- a/net/sunrpc/xprtrdma/xprt_rdma.h
++++ b/net/sunrpc/xprtrdma/xprt_rdma.h
+@@ -203,6 +203,7 @@ struct rpcrdma_rep {
+ 	struct xdr_stream	rr_stream;
+ 	struct llist_node	rr_node;
+ 	struct ib_recv_wr	rr_recv_wr;
++	struct list_head	rr_all;
+ };
+ 
+ /* To reduce the rate at which a transport invokes ib_post_recv
+@@ -368,6 +369,7 @@ struct rpcrdma_buffer {
+ 
+ 	struct list_head	rb_allreqs;
+ 	struct list_head	rb_all_mrs;
++	struct list_head	rb_all_reps;
+ 
+ 	struct llist_head	rb_free_reps;
+ 
 
-Fixes: 4be74b42a6d0 ("IB/cma: Separate port allocation to network namespace=
-s ")=20
-
-Reviewed-by: Parav Pandit <parav@mellanox.com>
