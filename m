@@ -2,89 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE86114A76
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Dec 2019 02:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB20114BAD
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Dec 2019 05:32:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726073AbfLFBYg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Dec 2019 20:24:36 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:45724 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726065AbfLFBYg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Dec 2019 20:24:36 -0500
-Received: by mail-pl1-f194.google.com with SMTP id w7so1976534plz.12;
-        Thu, 05 Dec 2019 17:24:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yEsrWVW0HwmOsVFJJw4nLhvKEtLDOtBM/LHp3eOGtHg=;
-        b=Cttvg7su4A6+PVhvW09cCHSYKvWVkwU9RVk0Q7zmD5/W746mWH8Ef5+i3gG1uJ/d60
-         umQFZ1vbS9Xuygej+dIzwLhbO/S0QDk/F7QIlbgrwNE7K+4j7athkWaEbQqiQZIrQ9Ms
-         NwsiZ/7hz7BvTltRqtfUphFuYDk6Uyw/FJDbkmpfx7qBRIXt+Kc0cSD/esMR5zAXW3DM
-         oqjss2BAJ14GKXpNXgnHechy3iklgT0QQaPYtTtVw7iZgIOK5bMuMzrZqVRQ2MVpsvoo
-         0P6SQxlBHykKrFba+VO273H23qLfVdlMbtFUkkUVK9OrZVmVJIm52Y1P//PFFXA/Pjsi
-         TaIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yEsrWVW0HwmOsVFJJw4nLhvKEtLDOtBM/LHp3eOGtHg=;
-        b=Cb8BIa6cpJyC3cPbPpSUgCO5E8GBklnk8KALxA8gB8GIQRFTGDdfuVnCcVxKXc3YyZ
-         JVFM1w/KyF+IRRQxDpOaE9rN2xrau3/1K1bhpkpsaqJZ6RPW4CYLOPNIHkl2A4CH5Qpt
-         /XP8WfuPQVRLoZnhQ9PrR5svdxBj6sfBQ32+7Wae3T5uJ7p+7ulUnSlmlNvKq/Cl6qOF
-         FcAviaovvj/ml/3iJxLbzw7vFZQSyS/CAIEcPZFp/cLo3nZnjH87wfxqZzJL11NenYE3
-         LN8BdSgDC+d2en9zRvuqqFlTCu/1gNdt5PUQiR3MQ5FJ5zb0wqnGD/BGpOG4hwT+MaxI
-         CHZg==
-X-Gm-Message-State: APjAAAV514z2pFYF5ESBnDDJ6xCBC3SgqDZQppzARbzlJRrTIaBgLeN7
-        vKPEThc9plrIg6/ClQOKPus=
-X-Google-Smtp-Source: APXvYqwRAjcAuD553Owy+TPa2K5/wy5j4g/ih8l5A6lrWw0Lfa17tJW9vcvEvoRUfp5G9jzouTfCjA==
-X-Received: by 2002:a17:90a:f0d6:: with SMTP id fa22mr12659929pjb.136.1575595475535;
-        Thu, 05 Dec 2019 17:24:35 -0800 (PST)
-Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
-        by smtp.gmail.com with ESMTPSA id c9sm13282596pfn.65.2019.12.05.17.24.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Dec 2019 17:24:34 -0800 (PST)
-From:   Chuhong Yuan <hslester96@gmail.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Parav Pandit <parav@mellanox.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>
-Subject: [PATCH v2] RDMA/cma: add missed unregister_pernet_subsys in init failure
-Date:   Fri,  6 Dec 2019 09:24:26 +0800
-Message-Id: <20191206012426.12744-1-hslester96@gmail.com>
-X-Mailer: git-send-email 2.24.0
+        id S1726474AbfLFEcr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Dec 2019 23:32:47 -0500
+Received: from mail-eopbgr80082.outbound.protection.outlook.com ([40.107.8.82]:50670
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726273AbfLFEcr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 5 Dec 2019 23:32:47 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=It5vYAAyAC07tkPuM+thhsUzef22H6EhsqGeR9E3EeOUt1q39YrgeZDAOK2ovALuAGJHPjKU7hb94v391eby4l2cpsXRbFnYAeOWIdkQMvvQunBiG6AOQ9z56D7BDAhis+p0/67sE2RyeaFVc6hNml4awhrEFG/s/0cQF5eL/1lVmfZ59GaAKhaAefwG6j2c1T33Zp9kDuH1T3Li+TO7YnsNGvGTR/Jd5/Ee4jq7uJhPu4j3MOXaexpX6NKHCUFKSGbSF5xhkNFnp0/id9+wegiikj7OiJKUvNM0OTF4VxapwLTb6lpOD97piwf1pjxpVMARggCnOM0mnvCVtSQbcg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8WYgzwjpnUyQpURA6qRvLVTB+nB/CAQJjlnw8TcKIug=;
+ b=S5H6vMdFwCbFr/QTlC4ceLU8XPmNm3SxCRXE2L3WUdOX86Sc3i667dicew0SXQw61cZZYNpEfW2usnukugdhSgNZbjo4bElAVW8bw7LXzSUpxaepTZ0zvfy2f/GaCxyvkdDUkC+iM0HSdiw6dxBx07gneppOJ19Rlis4pRmhNP5RPGCjHLcksetPVycj/jDBvDjaXRFUg4hoZyPb0R6UmdLqO15z6VbPM61cAMpIcKGOY6F3AAc7TNWf8Hn5ZIjZ9hdr18RKymwHrHGgQFQumSgxHsIAYbnSQDx+rXg3dDrl0HF/6utnCpYHzmA704aWGu0/pT/0StAr4yKnZdfQyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8WYgzwjpnUyQpURA6qRvLVTB+nB/CAQJjlnw8TcKIug=;
+ b=lCzaXkE+cexN1EBaDBwB4nFjTxgBT1nMpPTrQZcsm3ie76UtNBgB2VywqLMcKZItjugEYIDfkDOArMHnZcofjMMpb/kRRkKDkCbAMEd3t+DUzSBiigEw0mJ+4zfgW2QxHUoGEsboym8kitGKbrPQxIKPWyVCcGxtskqQ/faFo5M=
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
+ AM0PR05MB5617.eurprd05.prod.outlook.com (20.178.114.157) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2516.16; Fri, 6 Dec 2019 04:32:43 +0000
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::16:9951:5a4b:9ec6]) by AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::16:9951:5a4b:9ec6%7]) with mapi id 15.20.2516.014; Fri, 6 Dec 2019
+ 04:32:43 +0000
+From:   Parav Pandit <parav@mellanox.com>
+To:     Chuhong Yuan <hslester96@gmail.com>
+CC:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] RDMA/cma: add missed unregister_pernet_subsys in init
+ failure
+Thread-Topic: [PATCH v2] RDMA/cma: add missed unregister_pernet_subsys in init
+ failure
+Thread-Index: AQHVq9Pt89YatrMAwEiYHZZ5ODPWQqeshL0A
+Date:   Fri, 6 Dec 2019 04:32:43 +0000
+Message-ID: <005ae1f8-3241-4a7e-aa1e-eb26275d15a9@mellanox.com>
+References: <20191206012426.12744-1-hslester96@gmail.com>
+In-Reply-To: <20191206012426.12744-1-hslester96@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=parav@mellanox.com; 
+x-originating-ip: [68.203.16.89]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 43a1bdad-d94c-4959-a987-08d77a055656
+x-ms-traffictypediagnostic: AM0PR05MB5617:
+x-microsoft-antispam-prvs: <AM0PR05MB561721424592D800FAC15C6BD15F0@AM0PR05MB5617.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2733;
+x-forefront-prvs: 0243E5FD68
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(366004)(396003)(376002)(346002)(136003)(189003)(199004)(229853002)(2616005)(25786009)(5660300002)(11346002)(26005)(186003)(2906002)(64756008)(4744005)(66556008)(66446008)(66946007)(76116006)(91956017)(66476007)(71190400001)(71200400001)(76176011)(478600001)(86362001)(6512007)(31696002)(99286004)(4326008)(54906003)(316002)(102836004)(6486002)(14454004)(6506007)(53546011)(81156014)(8676002)(81166006)(8936002)(305945005)(36756003)(6916009)(31686004);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB5617;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /NCxkO7grzZZCfzEOjrRODY+tw+5Dmta/+/rnc9FBLVVpuMb02mNn6YVr5cHuAdXecBNWup7PNtbx8km7bMWplc4S+B6CfDW7VQlex9U5zYXKkvQSFtPhtvGlF2SKyb6u7pm+xz0nKIbv9+qPwOe1NGrMldq6klTK+ajHMGnwEyhqocFuEFk94PXwdJYiwCKZlumMq6uH5Z7CviKfu6EnqL7v0SCDkFmr5AiqE3l8keqNFGuLliR2PRlsR/YZRnLgmQ2EEbePMNGapGm536tbkJe02d6nIzIfAJ063rVr3c9ooh9kJlAmTUcCpqGiacm2k79r0V6Vd/y9BY6XXT5YopVQ77QK0OxBo+oZ5LaYzS7AWxFTft52d3xO1PwoWAoBAWijsiiNGq82/135aXLubgvQ0U58ksOn70RtRks50QrHQ8xmEETXnkuyEMpPuPW
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <EAC5438D2C75384D89383C38EA7F5F06@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 43a1bdad-d94c-4959-a987-08d77a055656
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Dec 2019 04:32:43.6690
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: aElmBjhqrAA814HgbqTQuo7Msps1AVXQEDo9BWZWzgc9CYVk7Ob7L6wmtvUYAyoWXC8jm6WLJPUmY9ewTkgf3A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5617
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The driver forgets to call unregister_pernet_subsys() in the error path
-of cma_init().
-Add the missed call to fix it.
-
-Fixes: 4be74b42a6d0 ("IB/cma: Separate port allocation to network namespaces")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
----
-Changes in v2:
-  - Add fixes tag.
-
- drivers/infiniband/core/cma.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 25f2b70fd8ef..43a6f07e0afe 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -4763,6 +4763,7 @@ static int __init cma_init(void)
- err:
- 	unregister_netdevice_notifier(&cma_nb);
- 	ib_sa_unregister_client(&sa_client);
-+	unregister_pernet_subsys(&cma_pernet_operations);
- err_wq:
- 	destroy_workqueue(cma_wq);
- 	return ret;
--- 
-2.24.0
-
+T24gMTIvNS8yMDE5IDc6MjQgUE0sIENodWhvbmcgWXVhbiB3cm90ZToNCj4gVGhlIGRyaXZlciBm
+b3JnZXRzIHRvIGNhbGwgdW5yZWdpc3Rlcl9wZXJuZXRfc3Vic3lzKCkgaW4gdGhlIGVycm9yIHBh
+dGgNCj4gb2YgY21hX2luaXQoKS4NCj4gQWRkIHRoZSBtaXNzZWQgY2FsbCB0byBmaXggaXQuDQo+
+IA0KPiBGaXhlczogNGJlNzRiNDJhNmQwICgiSUIvY21hOiBTZXBhcmF0ZSBwb3J0IGFsbG9jYXRp
+b24gdG8gbmV0d29yayBuYW1lc3BhY2VzIikNCj4gU2lnbmVkLW9mZi1ieTogQ2h1aG9uZyBZdWFu
+IDxoc2xlc3Rlcjk2QGdtYWlsLmNvbT4NCj4gLS0tDQo+IENoYW5nZXMgaW4gdjI6DQo+ICAgLSBB
+ZGQgZml4ZXMgdGFnLg0KPiANCj4gIGRyaXZlcnMvaW5maW5pYmFuZC9jb3JlL2NtYS5jIHwgMSAr
+DQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4gDQo+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL2luZmluaWJhbmQvY29yZS9jbWEuYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL2Nt
+YS5jDQo+IGluZGV4IDI1ZjJiNzBmZDhlZi4uNDNhNmYwN2UwYWZlIDEwMDY0NA0KPiAtLS0gYS9k
+cml2ZXJzL2luZmluaWJhbmQvY29yZS9jbWEuYw0KPiArKysgYi9kcml2ZXJzL2luZmluaWJhbmQv
+Y29yZS9jbWEuYw0KPiBAQCAtNDc2Myw2ICs0NzYzLDcgQEAgc3RhdGljIGludCBfX2luaXQgY21h
+X2luaXQodm9pZCkNCj4gIGVycjoNCj4gIAl1bnJlZ2lzdGVyX25ldGRldmljZV9ub3RpZmllcigm
+Y21hX25iKTsNCj4gIAlpYl9zYV91bnJlZ2lzdGVyX2NsaWVudCgmc2FfY2xpZW50KTsNCj4gKwl1
+bnJlZ2lzdGVyX3Blcm5ldF9zdWJzeXMoJmNtYV9wZXJuZXRfb3BlcmF0aW9ucyk7DQo+ICBlcnJf
+d3E6DQo+ICAJZGVzdHJveV93b3JrcXVldWUoY21hX3dxKTsNCj4gIAlyZXR1cm4gcmV0Ow0KPiAN
+ClJldmlld2VkLWJ5OiBQYXJhdiBQYW5kaXQgPHBhcmF2QG1lbGxhbm94LmNvbT4NCg==
