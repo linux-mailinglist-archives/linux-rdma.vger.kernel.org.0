@@ -2,113 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F40C117223
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Dec 2019 17:50:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 635EA117272
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Dec 2019 18:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbfLIQuc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 9 Dec 2019 11:50:32 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49750 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726354AbfLIQuc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Dec 2019 11:50:32 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xB9Glh6K042966
-        for <linux-rdma@vger.kernel.org>; Mon, 9 Dec 2019 11:50:30 -0500
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.91])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2wrt59k7ke-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Mon, 09 Dec 2019 11:50:30 -0500
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Mon, 9 Dec 2019 16:50:30 -0000
-Received: from us1a3-smtp08.a3.dal06.isc4sb.com (10.146.103.57)
-        by smtp.notes.na.collabserv.com (10.106.227.143) with smtp.notes.na.collabserv.com ESMTP;
-        Mon, 9 Dec 2019 16:50:25 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp08.a3.dal06.isc4sb.com
-          with ESMTP id 2019120916502316-737080 ;
-          Mon, 9 Dec 2019 16:50:23 +0000 
-In-Reply-To: <20191209160701.GD3790@ziepe.ca>
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Jason Gunthorpe" <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, krishna2@chelsio.com, leon@kernel.org
-Date:   Mon, 9 Dec 2019 16:50:23 +0000
+        id S1726354AbfLIRIP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Dec 2019 12:08:15 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:53261 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726538AbfLIRIP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Dec 2019 12:08:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575911294;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=waScVUeDSycUf+PrN96I4z+R7/A+aBcxkketQWg+fiM=;
+        b=MUTVDb8Mq7su+VKR8Opr9YvbQQfX4hY7c9mi+VRdMTcxvpbddqPCkEx/DHijNummt/6xUV
+        YgvRkU2uG6EVeUs6XOhf2FVQPnIweqqW+Ble/s2NYThGRnzpVOcFf0EaDZO3F7VcMB39Hu
+        JwjBdCddo9y5Fs5pBW/qkbzRyMoyHUM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-184-EQSvobaJO0S_WUDWy8kurA-1; Mon, 09 Dec 2019 12:08:10 -0500
+X-MC-Unique: EQSvobaJO0S_WUDWy8kurA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 847F91090B62;
+        Mon,  9 Dec 2019 17:08:09 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-42.rdu2.redhat.com [10.10.112.42])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B2DB279AC;
+        Mon,  9 Dec 2019 17:08:08 +0000 (UTC)
+Message-ID: <fcbf09317ccf0c3662616f38f1c0c3e874ec0c15.camel@redhat.com>
+Subject: Re: [PATCH v2] RDMA/cma: add missed unregister_pernet_subsys in
+ init failure
+From:   Doug Ledford <dledford@redhat.com>
+To:     Parav Pandit <parav@mellanox.com>,
+        Chuhong Yuan <hslester96@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Mon, 09 Dec 2019 12:08:05 -0500
+In-Reply-To: <005ae1f8-3241-4a7e-aa1e-eb26275d15a9@mellanox.com>
+References: <20191206012426.12744-1-hslester96@gmail.com>
+         <005ae1f8-3241-4a7e-aa1e-eb26275d15a9@mellanox.com>
+Organization: Red Hat, Inc.
+User-Agent: Evolution 3.32.5 (3.32.5-1.fc30)
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20191209160701.GD3790@ziepe.ca>,<20191129162509.26576-1-bmt@zurich.ibm.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP62 November 04, 2019 at 09:47
-X-LLNOutbound: False
-X-Disclaimed: 7195
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 19120916-2475-0000-0000-000001ADF9F6
-X-IBM-SpamModules-Scores: BY=0.004; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.015419
-X-IBM-SpamModules-Versions: BY=3.00012214; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000292; SDB=6.01301911; UDB=6.00691372; IPR=6.01084197;
- MB=3.00029905; MTD=3.00000008; XFM=3.00000015; UTC=2019-12-09 16:50:29
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2019-12-09 14:56:11 - 6.00010746
-x-cbparentid: 19120916-2476-0000-0000-000047BE17A9
-Message-Id: <OF3F5E9911.A6946CC7-ON002584CB.0059DED2-002584CB.005C8103@notes.na.collabserv.com>
-Subject: RE: [PATCH for-next] RDMA/siw: Simplify QP representation.
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-09_04:2019-12-09,2019-12-09 signatures=0
-X-Proofpoint-Spam-Reason: safe
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Mimecast-Spam-Score: 0
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-PkZpq8e+oUxr9ZBOflcr"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
+--=-PkZpq8e+oUxr9ZBOflcr
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->To: "Bernard Metzler" <bmt@zurich.ibm.com>
->From: "Jason Gunthorpe" <jgg@ziepe.ca>
->Date: 12/09/2019 05:07PM
->Cc: linux-rdma@vger.kernel.org, krishna2@chelsio.com, leon@kernel.org
->Subject: [EXTERNAL] Re: [PATCH for-next] RDMA/siw: Simplify QP
->representation.
->
->On Fri, Nov 29, 2019 at 05:25:09PM +0100, Bernard Metzler wrote:
->> Change siw_qp to contain ib_qp. Use ib_qp's uobject pointer
->> to distinguish kernel level and user level applications.
->> Apply same mechanism for kerne/user level application
->> detection to shared receive queues and completion queues.
->
->Drivers should not touch the uobject. If I recall you can use
->restrack
->to tell if it is kernel or user created
->
-'bool res->user' would probably be it, but I stumbled
-upon this comment (e.g. in struct ib_qp):
+On Fri, 2019-12-06 at 04:32 +0000, Parav Pandit wrote:
+> On 12/5/2019 7:24 PM, Chuhong Yuan wrote:
+> > The driver forgets to call unregister_pernet_subsys() in the error
+> > path
+> > of cma_init().
+> > Add the missed call to fix it.
+> >=20
+> > Fixes: 4be74b42a6d0 ("IB/cma: Separate port allocation to network
+> > namespaces")
+> > Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+> > ---
+> > Changes in v2:
+> >   - Add fixes tag.
+> >=20
+> >  drivers/infiniband/core/cma.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >=20
+> > diff --git a/drivers/infiniband/core/cma.c
+> > b/drivers/infiniband/core/cma.c
+> > index 25f2b70fd8ef..43a6f07e0afe 100644
+> > --- a/drivers/infiniband/core/cma.c
+> > +++ b/drivers/infiniband/core/cma.c
+> > @@ -4763,6 +4763,7 @@ static int __init cma_init(void)
+> >  err:
+> >  =09unregister_netdevice_notifier(&cma_nb);
+> >  =09ib_sa_unregister_client(&sa_client);
+> > +=09unregister_pernet_subsys(&cma_pernet_operations);
+> >  err_wq:
+> >  =09destroy_workqueue(cma_wq);
+> >  =09return ret;
+> >=20
+> Reviewed-by: Parav Pandit <parav@mellanox.com>
 
-        /*
-         * Implementation details of the RDMA core, don't use in drivers:
-         */
-        struct rdma_restrack_entry     res;
+Thanks, applied to for-rc.
 
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
 
-So we shall not use restrack information in drivers..?
-Shall restrack better export a query such as
-'rdma_restrack_is_user(resource)'?
+--=-PkZpq8e+oUxr9ZBOflcr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
+-----BEGIN PGP SIGNATURE-----
 
-After a quick investigation, current drivers do have
-their own solution for the issue:
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl3uf3UACgkQuCajMw5X
+L9389A//XLWJPE7g6hqtjC/3TatYIkTJLtyosceKCgRgYpear/j1W49VM+EnC3aS
+7nWsEyffVueWMDdorNzXnwAlSUWzxwQNJZ92u17uABb6bUOvWjO2ccaSIprgEHQg
+RnCDKsderPFMkfH9EsA8uZk5wXtci8Vu1wzl7oHZfQzyjhznwCVIjtV4SGYGhgMO
+XtsZCrvWxPdpHn50d3WSrf6jKCOtCUDLBxW/1mM48h3svwk2u30wmmzwftKCH6db
+bODbTchBbiJ8SKbGuuezHQPeU2rSQiXJC8w+ENrgmVmFeTjgjTVfithviLU+snp8
+lh9r/TvpCuq+qcseL2hDr8tsayTteyi7+ORIeZM+yk+jIRATxeYN/8O00Og2qwLn
+e0M46dtpSOAD9NiGmPaW62KSNsenhLqRh4QDY9CztbUe/2bgfu9URrrEpC6yZPSz
+5AqIVER07cEtjncBopvueHuMWNZzrynfevdykjZGXsMvqhbVpfpYlrh886VosbZ+
+ytD97uMajUnmxIjmnGBMd6yLpquG2c6O4zyW9HITfrj4EDzB0ntZW7hRnLUVhpse
+7EpLfT1KKm6c5buD+1n6okvuDg0l13b7qr1AhP8Cu2sMvAHLZ6t1NpKGOfr6tbQd
+uzYh5pDZJzyvmRTXdteHBEUBwVICqxJG0ORFgEz+pwhnt/2xAaE=
+=iVCy
+-----END PGP SIGNATURE-----
 
-mlx5, mlx4, mthca, hns, cxgb4, qedr:
-tests ib_xx->uobject as I proposed here for siw as well.
-
-bnxt_re, qedr, hfi, i40iw, vmw_pvrdma:
-use their own local resource flag ('is_user', 'is_kernel',
-whatever), as siw does it until now, and what is not
-preferred as well. How shall we proceed?
-
-Thanks,
-Bernard.
+--=-PkZpq8e+oUxr9ZBOflcr--
 
