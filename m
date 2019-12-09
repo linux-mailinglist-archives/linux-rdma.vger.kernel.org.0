@@ -2,83 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 718E611742F
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Dec 2019 19:29:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6379117530
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Dec 2019 20:07:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbfLIS3t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Dec 2019 13:29:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726354AbfLIS3t (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 9 Dec 2019 13:29:49 -0500
-Received: from localhost (unknown [5.29.147.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726365AbfLITHR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Dec 2019 14:07:17 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:33478 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726354AbfLITHR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Dec 2019 14:07:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575918435;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kw5jm2n65Z3vBV6N4noRKjy7xGgRiwD0j1qA6Co3h9c=;
+        b=a3GvwM99Y4edPiZIbP5awdAW15MYBszqjeh8yQsRtfwhZ+LXo06Xf0GcBx98FGmNJQc7/A
+        JtFSjhY3TkQP2yWJ4hrHLRIpVgUNM4NjWGyZLrgufvZvkAZGQqn6z4OGCA9VGnIxlJeovp
+        YHQhTqaYCxsSJPinh+xqTMM0jmTYQ04=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-72-Qiy2XgCFOFSdQZlExV51tg-1; Mon, 09 Dec 2019 14:07:11 -0500
+X-MC-Unique: Qiy2XgCFOFSdQZlExV51tg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20C7C2077B;
-        Mon,  9 Dec 2019 18:29:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575916189;
-        bh=10O+VoIovfwCskMewNy1SMPPar1H8jRX+oOO+JDykrU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fjsey3cJztMIkqaR8AEUVnYlC4Y/dftODmeLxDNxNWsRPrecHlVMQDp4qz/JADJtz
-         9oriw+qqIBQCM05e+ZH8oTPii5/UW7lJTaDoAtWk0+zKkfHy04pXDXMPqoabF+Va8z
-         HEpn4J1cKErPwJJnnWPxwYAFXG32GyNGyx9CUpTo=
-Date:   Mon, 9 Dec 2019 20:29:44 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        krishna2@chelsio.com
-Subject: Re: [PATCH for-next] RDMA/siw: Simplify QP representation.
-Message-ID: <20191209182944.GE67461@unreal>
-References: <20191209160701.GD3790@ziepe.ca>
- <20191129162509.26576-1-bmt@zurich.ibm.com>
- <OF3F5E9911.A6946CC7-ON002584CB.0059DED2-002584CB.005C8103@notes.na.collabserv.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D6191005512;
+        Mon,  9 Dec 2019 19:07:10 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-42.rdu2.redhat.com [10.10.112.42])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F39B55C1B2;
+        Mon,  9 Dec 2019 19:07:08 +0000 (UTC)
+Message-ID: <1aee0f71873a4c9da7f965c12419d81333f3a0b4.camel@redhat.com>
+Subject: Re: [PATCH 2/2] rxe: correctly calculate iCRC for unaligned payloads
+From:   Doug Ledford <dledford@redhat.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Steve Wise <larrystevenwise@gmail.com>,
+        linux-rdma@vger.kernel.org, 3100102071@zju.edu.cn, leon@kernel.org
+Date:   Mon, 09 Dec 2019 14:07:06 -0500
+In-Reply-To: <0f8d9087c48e986d08cf85ef8b59bdca25425eaa.camel@redhat.com>
+References: <20191203020319.15036-1-larrystevenwise@gmail.com>
+         <20191203020319.15036-2-larrystevenwise@gmail.com>
+         <a0003c88-10f5-c14a-220d-c100fa160163@acm.org>
+         <0f8d9087c48e986d08cf85ef8b59bdca25425eaa.camel@redhat.com>
+Organization: Red Hat, Inc.
+User-Agent: Evolution 3.32.5 (3.32.5-1.fc30)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OF3F5E9911.A6946CC7-ON002584CB.0059DED2-002584CB.005C8103@notes.na.collabserv.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Mimecast-Spam-Score: 0
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-YBIBRiuCbjMLNJGh2KBq"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Dec 09, 2019 at 04:50:23PM +0000, Bernard Metzler wrote:
-> -----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
->
-> >To: "Bernard Metzler" <bmt@zurich.ibm.com>
-> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
-> >Date: 12/09/2019 05:07PM
-> >Cc: linux-rdma@vger.kernel.org, krishna2@chelsio.com, leon@kernel.org
-> >Subject: [EXTERNAL] Re: [PATCH for-next] RDMA/siw: Simplify QP
-> >representation.
-> >
-> >On Fri, Nov 29, 2019 at 05:25:09PM +0100, Bernard Metzler wrote:
-> >> Change siw_qp to contain ib_qp. Use ib_qp's uobject pointer
-> >> to distinguish kernel level and user level applications.
-> >> Apply same mechanism for kerne/user level application
-> >> detection to shared receive queues and completion queues.
-> >
-> >Drivers should not touch the uobject. If I recall you can use
-> >restrack
-> >to tell if it is kernel or user created
-> >
-> 'bool res->user' would probably be it, but I stumbled
-> upon this comment (e.g. in struct ib_qp):
->
->         /*
->          * Implementation details of the RDMA core, don't use in drivers:
->          */
->         struct rdma_restrack_entry     res;
->
->
-> So we shall not use restrack information in drivers..?
-> Shall restrack better export a query such as
-> 'rdma_restrack_is_user(resource)'?
+--=-YBIBRiuCbjMLNJGh2KBq
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-rdma_is_kernel_res() inside include/rdma/restrack.h
+On Tue, 2019-12-03 at 19:46 -0500, Doug Ledford wrote:
+> On Tue, 2019-12-03 at 08:25 -0800, Bart Van Assche wrote:
+> > On 12/2/19 6:03 PM, Steve Wise wrote:
+> > > If RoCE PDUs being sent or received contain pad bytes, then the
+> > > iCRC
+> > > is miscalculated resulting PDUs being emitted by RXE with an
+> > > incorrect
+> > > iCRC, as well as ingress PDUs being dropped due to erroneously
+> > > detecting
+> > > a bad iCRC in the PDU.  The fix is to include the pad bytes, if
+> > > any,
+> > > in iCRC computations.
+> >=20
+> > Should this description mention that this patch breaks
+> > compatibility=20
+> > with SoftRoCE drivers that do not include this fix? Do we need a
+> > kernel=20
+> > module parameter that allows to select either the old or the new
+> > behavior?
+>=20
+> No.  The original soft-RoCE driver was supposed to be compatible with
+> hardware devices.  Because of this bug, it obviously wasn't.  This is
+> a
+> bug fix, and we do not need to do anything to be compatible with the
+> broken behavior.  Instead, it just needs noting that the soft-RoCE
+> implementation in prior kernels has a known wire format bug that
+> impacts
+> communications with both fixed versions of the driver and real
+> hardware
+> devices.
 
-I added the comment mentioned above before we started to remove uobject
-accesses.
+I've taken these two patches into for-rc (with fixups to the commit
+message on the second, as well as adding a Fixes: tag on the second).
 
-Thanks
+I stand by what I said about not needing a compatibility flag or module
+option for the user to set.  However, that isn't to say that we can't
+autodetect old soft-RoCE peers.  If we get a packet that fails CRC and
+has pad bytes, then re-run the CRC without the pad bytes and see if it
+matches.  If it does, we could A) mark the current QP as being to an old
+soft-RoCE device (causing us to send without including the pad bytes in
+the CRC) and B) allocate a struct old_soft_roce_peer and save the guid
+into that struct and then put that struct on a list that we then search
+any time we are creating a new queue pair and if the new queue pair goes
+to a guid in the list, then we immediately flag that qp as being to an
+old soft roce device and get the right behavior.  It would slow down qp
+creation somewhat due to the list search, but probably not enough to
+worry about.  No one will be doing a 1,000 node cluster MPI job over
+soft-RoCE, so we should never notice the list length causing search
+problems.  A patch to do something like that would be welcome.
+
+--=20
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-YBIBRiuCbjMLNJGh2KBq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl3um1oACgkQuCajMw5X
+L92g0xAAnqQegJ44HMMnxocKaXb16S1w7HGC8zXGthohWrD8XJWIx82iXGXfW+WD
+yqASVmIoQjPVr5EFs0Bw+VdAPvNcZL2775LXx3p+AsEs7YX096J1GsL0r/gFL4Au
+JwyCPWTjXmGBwYASTI0mddcDFehbWUHsMzrTvhYuUgqs21OMxq5ZJNOCmCSpFHML
+LEhN5QlUHZY42JzO/lh1lG1fMrKfRqasvbvV4iop7AkP0S/Bhbi/QnkvjjXqPaNR
+PJDUrZO4AV2iq4Gs165a9FFmz3IaqQXxUvkqM6QpYKVmR6I5COmaW39jlw8XDBUE
+9fcXNIoqS7Ste00w1sDTk6o/iV6NfVNtqXQ2MFQt7JlDxeWiKTcNp9iENAEZYswj
+AK9exRvMl0JBy/lhD/156l/mVVjT+Tkd7yq4GYNK4abmaUYuXJD9sODyzvcP+aqr
++GWR4tjPbIj4wMx7d53HCiUptPiTy9GCXz1N0D4R9qnut/IyTAesLt7Qc+hRGcIU
+0iuUQf0qLnyYZy10f0spxOHL76hn+RNnUc99y0cHNrAl6KF83muUCqJJ1b8piXkl
+4aVEaG0ANJBKUdEbXJpaQtc68gQr2yOdHQ9OdmIhLeE+nilTUF/vcmx9Q5+NFILL
+GQu6AxpPs6om8+hXclawTEWnzX3nltlVT+9PD8BJNML3w85ZYLw=
+=0iQf
+-----END PGP SIGNATURE-----
+
+--=-YBIBRiuCbjMLNJGh2KBq--
+
