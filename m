@@ -2,75 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D74D2117128
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Dec 2019 17:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F40C117223
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Dec 2019 17:50:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbfLIQHL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Dec 2019 11:07:11 -0500
-Received: from mail-yw1-f68.google.com ([209.85.161.68]:37577 "EHLO
-        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbfLIQHL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Dec 2019 11:07:11 -0500
-Received: by mail-yw1-f68.google.com with SMTP id 4so5985735ywx.4
-        for <linux-rdma@vger.kernel.org>; Mon, 09 Dec 2019 08:07:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hJ1Rm2XXKJAPsVlE7zKM8ChfzT1hjLMkCfLQQ1dIU5c=;
-        b=BCwndaVElJFKDSh54khXoUyby0y6dw4JzLsaWZNQlJEV55WukaPjB8MCUaqbCkHUne
-         fmU31HpPwDtDi8/QWQSihu3LskFKAA26OVa3eC72uL4PTZTnrU72x8vlSw8gzQMOecJk
-         7UGwrjkXvdr/jaRWJ0etUMcJBhWHDmfM4TbR135AWm2xAwp16r6vMCAKwHLyZXZTP7Yi
-         IBNuQJBoKtmZuWjRVTDWQ8LQ/AXJlqbhbNYupbi0hpL33cAEpJASqCuwTWZUgdLddUXT
-         NMd15NsLqxpnbtsX13mVru6S0L8auTMX1sMwMkGiMrufz9PXyGwSDgp/YrSZwqj78pm/
-         fKOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hJ1Rm2XXKJAPsVlE7zKM8ChfzT1hjLMkCfLQQ1dIU5c=;
-        b=lyu1NhipWw84aOKLWoDHhCpKXFPQeFIcaZcwd4I8e0Qzt2upPxdHHP+vGuXsXFvc4S
-         3nQ4Ie+eZnS6AR6i6XzzCnrnAknWiX1JIMv6Mtrsa79+1j0egVa4fg+jK27LPfgbSgkR
-         ytoxjCQCHcXKg6rYInp7XUgJd/RLurX2+qeq4FjXrLQ+xCZ0Zu4dzzu/0Usl5y/7GVz9
-         5e71r02im6GOUZdBhJrfvbu1x/LAFgmsSanyRDWVqGnY42vNJSqnFdAAhCQJXFM06s32
-         0h7Tnx1WRP3GdwXXK5md/bzHrBBgQ9LxcmALE4mF5RpJtqzVPVZn+xp4iDChst1Ift+y
-         uSkA==
-X-Gm-Message-State: APjAAAWxggo0uay5Zgexa17Or3QWYnopZsiYcgC/nLUgyAiGCtLz4QvN
-        BnacMWshaxQtutJprhaC6JTJXw==
-X-Google-Smtp-Source: APXvYqyZEfgAfRBIpmLB987J7kQy0tf9sFkvkNfIZLg/XI2UCOunAYR2zZw+PkK3/bBmqYCw1tObKw==
-X-Received: by 2002:a81:5584:: with SMTP id j126mr21570624ywb.420.1575907630194;
-        Mon, 09 Dec 2019 08:07:10 -0800 (PST)
-Received: from ziepe.ca ([199.167.24.131])
-        by smtp.gmail.com with ESMTPSA id 189sm100522ywx.45.2019.12.09.08.07.09
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 09 Dec 2019 08:07:09 -0800 (PST)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ieLYr-0001DK-6h; Mon, 09 Dec 2019 12:07:01 -0400
-Date:   Mon, 9 Dec 2019 12:07:01 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bernard Metzler <bmt@zurich.ibm.com>
+        id S1726379AbfLIQuc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 9 Dec 2019 11:50:32 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49750 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726354AbfLIQuc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Dec 2019 11:50:32 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xB9Glh6K042966
+        for <linux-rdma@vger.kernel.org>; Mon, 9 Dec 2019 11:50:30 -0500
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.91])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2wrt59k7ke-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Mon, 09 Dec 2019 11:50:30 -0500
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Mon, 9 Dec 2019 16:50:30 -0000
+Received: from us1a3-smtp08.a3.dal06.isc4sb.com (10.146.103.57)
+        by smtp.notes.na.collabserv.com (10.106.227.143) with smtp.notes.na.collabserv.com ESMTP;
+        Mon, 9 Dec 2019 16:50:25 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp08.a3.dal06.isc4sb.com
+          with ESMTP id 2019120916502316-737080 ;
+          Mon, 9 Dec 2019 16:50:23 +0000 
+In-Reply-To: <20191209160701.GD3790@ziepe.ca>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
 Cc:     linux-rdma@vger.kernel.org, krishna2@chelsio.com, leon@kernel.org
-Subject: Re: [PATCH for-next] RDMA/siw: Simplify QP representation.
-Message-ID: <20191209160701.GD3790@ziepe.ca>
-References: <20191129162509.26576-1-bmt@zurich.ibm.com>
+Date:   Mon, 9 Dec 2019 16:50:23 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191129162509.26576-1-bmt@zurich.ibm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20191209160701.GD3790@ziepe.ca>,<20191129162509.26576-1-bmt@zurich.ibm.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP62 November 04, 2019 at 09:47
+X-LLNOutbound: False
+X-Disclaimed: 7195
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 19120916-2475-0000-0000-000001ADF9F6
+X-IBM-SpamModules-Scores: BY=0.004; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.015419
+X-IBM-SpamModules-Versions: BY=3.00012214; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000292; SDB=6.01301911; UDB=6.00691372; IPR=6.01084197;
+ MB=3.00029905; MTD=3.00000008; XFM=3.00000015; UTC=2019-12-09 16:50:29
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2019-12-09 14:56:11 - 6.00010746
+x-cbparentid: 19120916-2476-0000-0000-000047BE17A9
+Message-Id: <OF3F5E9911.A6946CC7-ON002584CB.0059DED2-002584CB.005C8103@notes.na.collabserv.com>
+Subject: RE: [PATCH for-next] RDMA/siw: Simplify QP representation.
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-09_04:2019-12-09,2019-12-09 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 29, 2019 at 05:25:09PM +0100, Bernard Metzler wrote:
-> Change siw_qp to contain ib_qp. Use ib_qp's uobject pointer
-> to distinguish kernel level and user level applications.
-> Apply same mechanism for kerne/user level application
-> detection to shared receive queues and completion queues.
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
-Drivers should not touch the uobject. If I recall you can use restrack
-to tell if it is kernel or user created
+>To: "Bernard Metzler" <bmt@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 12/09/2019 05:07PM
+>Cc: linux-rdma@vger.kernel.org, krishna2@chelsio.com, leon@kernel.org
+>Subject: [EXTERNAL] Re: [PATCH for-next] RDMA/siw: Simplify QP
+>representation.
+>
+>On Fri, Nov 29, 2019 at 05:25:09PM +0100, Bernard Metzler wrote:
+>> Change siw_qp to contain ib_qp. Use ib_qp's uobject pointer
+>> to distinguish kernel level and user level applications.
+>> Apply same mechanism for kerne/user level application
+>> detection to shared receive queues and completion queues.
+>
+>Drivers should not touch the uobject. If I recall you can use
+>restrack
+>to tell if it is kernel or user created
+>
+'bool res->user' would probably be it, but I stumbled
+upon this comment (e.g. in struct ib_qp):
 
-Jason
+        /*
+         * Implementation details of the RDMA core, don't use in drivers:
+         */
+        struct rdma_restrack_entry     res;
+
+
+So we shall not use restrack information in drivers..?
+Shall restrack better export a query such as
+'rdma_restrack_is_user(resource)'?
+
+
+After a quick investigation, current drivers do have
+their own solution for the issue:
+
+mlx5, mlx4, mthca, hns, cxgb4, qedr:
+tests ib_xx->uobject as I proposed here for siw as well.
+
+bnxt_re, qedr, hfi, i40iw, vmw_pvrdma:
+use their own local resource flag ('is_user', 'is_kernel',
+whatever), as siw does it until now, and what is not
+preferred as well. How shall we proceed?
+
+Thanks,
+Bernard.
+
