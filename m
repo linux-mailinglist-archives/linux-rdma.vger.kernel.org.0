@@ -2,104 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 17728117607
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Dec 2019 20:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C676711765B
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Dec 2019 20:54:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726354AbfLITjj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Dec 2019 14:39:39 -0500
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:43183 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726342AbfLITjj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Dec 2019 14:39:39 -0500
-Received: by mail-oi1-f170.google.com with SMTP id x14so7432999oic.10
-        for <linux-rdma@vger.kernel.org>; Mon, 09 Dec 2019 11:39:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=vEDacINzJXblL4Uy3342kCr+ZBLkrpqbrNvusQA4qf4=;
-        b=ivWRzgyW68FBC63BW4vtKZ+/m89q1v0hGOVk5uHszWTVMwVpnq6CWS7EJumfMJ9Sqf
-         80pGGHdGemsVXO2hnYqi4I4L0DpYWWoUdI4TJNHZZcD+E48XtFzr7GgKmMvAvUNBxzy+
-         naiyemd6sDzoSuClmjhoxGdRNZ/4tX6Cubpp9VuxHejrwh7vGFa/vuYBWIAIAzbUtaCe
-         Iwje/WMuFKKvot8zYt/n+Lmy+AiSY1TmYkWlniKsJYkWJXDN+cCbF9Z0RO1Au23XJUSE
-         FvgUk+FYLXYHapNNJ/Wf8J60eVpUmKOhdUN1jCXcgXd3VsiiXElAB0jM7NqKGpcNSEvo
-         p47A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=vEDacINzJXblL4Uy3342kCr+ZBLkrpqbrNvusQA4qf4=;
-        b=E447UjxD5WfQ45PxXRv5/6C7u/DKB1p/L/ZGmZzvy8ev/+HOKb/AqaNozXtsrZtQVN
-         e4tRDdg+iYSKCV5jhzZKFosMgCqfz1KL0PxeqWUuTUVD94QwWaH+4HUGd52Wt6dR++hi
-         MgvYJGrUL5nrv/C4DnQpJljeO3Rvruu19YaOPTC0kTNUPkazUs/rOM4UsqGvLYpuSlN1
-         0h4Te9F9Fn/yQYruFnMz9A5HiQjK+th6K9AMo6dzQVMIOkfovNMm/nI5BJVdw8SY8Foh
-         UDZn0gIyrgo2sAPQ6PxVdJMUpIfo4/SbZbcctgeWPhF3oJaP1hjeV4HH7qnRMElJBmZ0
-         G35Q==
-X-Gm-Message-State: APjAAAU+GEmWSaurcffB3ow7dQCoxWK5YAk/dUP6XAT0gUgruL6MSAHz
-        CZXecDnAQgqsyJ+hEbGIEkfU5w7nKEpqmQ==
-X-Google-Smtp-Source: APXvYqy/FOAxRNLiDeDBuJN2/wMrbqgzCLUB/3Kiuee175CxLB1JIUTTvEGiSgk2dJMlacMdv9r0aA==
-X-Received: by 2002:a05:6808:210:: with SMTP id l16mr690963oie.95.1575920377982;
-        Mon, 09 Dec 2019 11:39:37 -0800 (PST)
-Received: from ziepe.ca ([217.140.111.136])
-        by smtp.gmail.com with ESMTPSA id r24sm300842ota.61.2019.12.09.11.39.37
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 09 Dec 2019 11:39:37 -0800 (PST)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ieOsa-00012k-EF; Mon, 09 Dec 2019 15:39:36 -0400
-Date:   Mon, 9 Dec 2019 15:39:36 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Thorben =?utf-8?B?UsO2bWVy?= <thorben.roemer@secunet.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: install-step fails for pandoc-prebuilt man-pages in
- infiniband-diags/man
-Message-ID: <20191209193936.GA3471@ziepe.ca>
-References: <5d754108-7020-6041-1b7d-bbb3fb2f089b@secunet.com>
+        id S1726366AbfLITyi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Dec 2019 14:54:38 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:19955 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726354AbfLITyi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Dec 2019 14:54:38 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5deea6770001>; Mon, 09 Dec 2019 11:54:31 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 09 Dec 2019 11:54:37 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 09 Dec 2019 11:54:37 -0800
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Dec
+ 2019 19:54:37 +0000
+Received: from [10.110.48.28] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Dec 2019
+ 19:54:37 +0000
+Subject: Re: [PATCH v2 1/2] mm/gup: allow FOLL_FORCE for get_user_pages_fast()
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+References: <20191204213603.464373-1-jhubbard@nvidia.com>
+ <20191204213603.464373-2-jhubbard@nvidia.com> <20191209182536.GC67461@unreal>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <7ceb9a54-6e2f-6d1f-70ba-f6ad5ba0b37f@nvidia.com>
+Date:   Mon, 9 Dec 2019 11:54:36 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5d754108-7020-6041-1b7d-bbb3fb2f089b@secunet.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191209182536.GC67461@unreal>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1575921271; bh=aYYf+3MgNx882/6bWA0YHWVT6GLALSpA6F24y/9AlO0=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=SnYpIJZa36DGx3o90G2KZqfxdnVww5TQO7kjIc3RDrtpF/iyFp2WoOL6Yz2JLgp37
+         Vhjgo48MYabYW7yhYCN/bPjnZAs/EZJgAH2u5TtH+05tdTxM/H3tAFtmYZETQ8PYuB
+         qAB1nLeSN+ROLL4dEdqKgJkiuriINbvQyu0gCzeaFRrQJrAlrlBBYxhnFkMMLU3mMJ
+         h1epTVMihjJIV9dv9Fa+7Z2z33mn71vAU1s0XcMnB6brv+gco7gWPN2vInCq+e4xs+
+         1GvK0+aUaComW80KYf6KZcqAa5BBR2jqqE1Lpx4nUm091EZ2LH9C7IaGxgIrAMXbuH
+         Xy83MRJlaAAPg==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Dec 04, 2019 at 03:34:14PM +0100, Thorben Römer wrote:
+On 12/9/19 10:25 AM, Leon Romanovsky wrote:
+> On Wed, Dec 04, 2019 at 01:36:02PM -0800, John Hubbard wrote:
+>> Commit 817be129e6f2 ("mm: validate get_user_pages_fast flags") allowed
+>> only FOLL_WRITE and FOLL_LONGTERM to be passed to get_user_pages_fast().
+>> This, combined with the fact that get_user_pages_fast() falls back to
+>> "slow gup", which *does* accept FOLL_FORCE, leads to an odd situation:
+>> if you need FOLL_FORCE, you cannot call get_user_pages_fast().
+>>
+>> There does not appear to be any reason for filtering out FOLL_FORCE.
+>> There is nothing in the _fast() implementation that requires that we
+>> avoid writing to the pages. So it appears to have been an oversight.
+>>
+>> Fix by allowing FOLL_FORCE to be set for get_user_pages_fast().
+>>
+>> Fixes: 817be129e6f2 ("mm: validate get_user_pages_fast flags")
+>> Cc: Christoph Hellwig <hch@lst.de>
+>> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+>> ---
+>>  mm/gup.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+> 
+> Thanks,
+> Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+> 
 
-> While investigating, I came up with the following explanation: The
-> hashes (generated by buildlib/pandoc-prebuilt.py) differ from machine to
-> machine, as the contents of the *.rst-files are hashed. Most of these
-> files are processed via cmake's configure_file from *.in.rst-files and
-> contain custom-per-build-data such as absolute paths. This means that
-> hashing *.rst-files will produce differing hashes based on the
-> build-directory-path (among other data points, possibly).
+Hi Leon, thanks for the reviews, great timing! I'll add the tags to
+the commits, which I'm just about to post as part of the larger 
+"pin user pages" patchset.
 
-It is not the build directory path, it is the install directory path,
-and yes, the no-pandoc builds have to use the standard paths.
 
-> by looking at the hashes produced by two of my machines, they were
-> different for all but 3 files (ibcacheedit.8.rst, ibstatus.8.rst and
-> check_lft_balance.8.rst). These files (and their includes, as their
-> content is also hashed!) are the only files that to not contain any
-> differing data when being transformed from *.in.rst to *.rst via
-> configure_file, which supports my hypothesis.
-
-This only happens if each machine is configuring to use different
-paths, or something has gone quite wrong. What are the actual diffs
-from the two .rst's ?
-
-> With my limited time and expertise in the rdma-core project, I was only
-> able to come up with a solution that I don't find very practical. I will
-> append a diff of pandoc-prebuilt.py nonetheless, which replaces
-> hashing-calls for *.rst to *.in.rst if applicable.
-
-This just makes broken output if pandoc is not present, it is not practical.
-
-The only good options is to shift the substition to after
-pandoc/rst2man run - but I'm not sure if that is doable..
-
-Jason
+thanks,
+-- 
+John Hubbard
+NVIDIA
