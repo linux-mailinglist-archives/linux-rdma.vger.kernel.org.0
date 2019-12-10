@@ -2,127 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7353B118161
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 08:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B89EE118164
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 08:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727004AbfLJHbX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Dec 2019 02:31:23 -0500
-Received: from a.mx.secunet.com ([62.96.220.36]:45610 "EHLO a.mx.secunet.com"
+        id S1727119AbfLJHdb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Dec 2019 02:33:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726819AbfLJHbX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Dec 2019 02:31:23 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id B29FB2052E;
-        Tue, 10 Dec 2019 08:31:21 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ljY1HpVoMp3z; Tue, 10 Dec 2019 08:31:21 +0100 (CET)
-Received: from mail-essen-01.secunet.de (mail-essen-01.secunet.de [10.53.40.204])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1726819AbfLJHdb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Dec 2019 02:33:31 -0500
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 3ADD12009B;
-        Tue, 10 Dec 2019 08:31:21 +0100 (CET)
-Received: from [10.183.7.132] (10.183.7.132) by mail-essen-01.secunet.de
- (10.53.40.204) with Microsoft SMTP Server (TLS) id 14.3.439.0; Tue, 10 Dec
- 2019 08:31:21 +0100
-Subject: Re: install-step fails for pandoc-prebuilt man-pages in
- infiniband-diags/man
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>
-References: <5d754108-7020-6041-1b7d-bbb3fb2f089b@secunet.com>
- <20191209193936.GA3471@ziepe.ca>
-From:   =?UTF-8?Q?Thorben_R=c3=b6mer?= <thorben.roemer@secunet.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=thorben.roemer@secunet.com; keydata=
- mQENBFr8RUwBCADK68hRaA7dKwwHV9UcR3+sJNCnYtevf34u7SajYwCBx4a7Api+q38b6Hj9
- 7eHqhr1G54N4PTis2MUWoG58DaGcUGTgtUgcXBjqZ1EBPtQ6Picf/R7QPNigXLr5oA7Fl3DQ
- Zq3JL7uVRgM23DU1L6rnsWlhfmnwZBAjYY/74KjhhGN4IyxTxnDkyYVhuic91gAm7JdNbCDc
- eylzUkqMgNXbolmOkHJcW/5Wz05OfW5WTOs7ob+uV0G+HtQNTwd+q8EmQ+bvIO7eZ1tHrYCN
- iz1WC8rW0sARugJvUBdE9Z6SAV0XEMbADzvS7fT5UoiHpQYkovD6gRfRCge1d66v8qeXABEB
- AAG0K1Rob3JiZW4gUsO2bWVyIDx0aG9yYmVuLnJvZW1lckBzZWN1bmV0LmNvbT6JAU4EEwEI
- ADgWIQSdqxhsLVCkUA0xpRP4KqBQOtapQgUCWvxFTAIbIwULCQgHAgYVCgkICwIEFgIDAQIe
- AQIXgAAKCRD4KqBQOtapQrVtB/9MihVdyhNPo/OxZhNzUVTN9yHTSS6u9mxdCklFbufMrHj+
- 1ymBIi8hHdA6Dkn/x9IA78JWZnFKtNI1/G2cSwyb3RH3aU/3NW5YC+Ht3RXKCq0GARbG4+E6
- mz7Zdz45iJvJZt+ip1Zjp9g9Mtotkt/EHrGyM6PX7+2ek/3JlOGTIGrnzBSpdIcfQ0QNj89F
- i/V27lR3jptxMyQaqEzX8r8Qpt7OQa0E9e0w/rPBLHn023VbpZiZjFa/xGXbs+TID6oHrSCV
- r1WjdC8FHIntAB7674nCiua7M4W40r3/9hlbpD2Zoxz9qHgRSgMBTwY/5hQduSjGV23dC/hu
- fpvE9MVpuQENBFr8RUwBCADuCg+VosRepPXtAloHmUGay7ClpC7pjccPKmyeQkDcO8HVXP0y
- WPxer0YtoPPUhiMZBLAs8p1RIFQ0NGPP/c2Umee8Fh7O5IQYwjFlF8mDC48XC6I2KJQj6xao
- hzbQrl6C2Ef1+R/o+jExUGfcQYQmxhwB4DocQ6D2PoQdTx7IJxNGSrhx+cD+timWSaG25pzQ
- RrcXYG+YAusKUGhkqMmTnz+yV2u08OyCBezcLrX9qpcFXmU0K6FyBU7YZAuUsYYLyFu4dfAW
- mFfQndIsewvrbOWvcQ+xvCvn+V6/siFLayMw511yYeZfXC2EN9nWDj7UErcjFL2jNU4uNejC
- jmirABEBAAGJATYEGAEIACAWIQSdqxhsLVCkUA0xpRP4KqBQOtapQgUCWvxFTAIbDAAKCRD4
- KqBQOtapQnoVB/9jxi2yHgFBiiV7/vrRZfFlzroy8ewUIxLUtzChL/EJQ8jtIzacNg0GRcrb
- spZ7C+QIR6IJ+8/CriNeHWD9f3U1eEuH1CNgxNo5/LydLb84pskZQVuB6Udd3Nn4KCLiCuOS
- VKZlmN4siVbPoRyliDm2prZN/2zHGluFH0dbfnzv2GABD/EeK0L07queXm6SwrtX9cyBIfR2
- t47ew2YeehdUvt3ZmCnwhjii22C5Dqo6tEwdncYGzYVS4akrawkDp2ApNJOMXXEoEkTBWWQu
- 4GL2pWTxEtCP3WQoGKJLow/EH76dasTG2YJqGOkxZdoRhLmnlkSOGqXn1BC4M5VsJCum
-Message-ID: <1602a0d4-4849-d9a8-2123-852966815cd0@secunet.com>
-Date:   Tue, 10 Dec 2019 08:31:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 56308206D5;
+        Tue, 10 Dec 2019 07:33:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1575963210;
+        bh=JPqMrsYFGc0/85JOVZhoNHjbP97FSnCpRd17R/WrPzU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1UwTEDsR+4Fc3q31V3+3yVI/WwROe8vR+e0jXcZam40sdwqFCzYqvuy3uFElovoPi
+         IaxV5PvYi5VUQgksQt4ZCf9eQWYbGMH+K5JTo8g8Gbtw7+T7Qg6G5rUiwZibcrt1Fy
+         lK3Aqyg/Qqzu3HInmOcp+A60teQWglSPyGvjX3w0=
+Date:   Tue, 10 Dec 2019 08:33:26 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, jgg@ziepe.ca, parav@mellanox.com
+Subject: Re: [net-next v3 00/20][pull request] Intel Wired LAN Driver Updates
+ 2019-12-09
+Message-ID: <20191210073326.GA3077639@kroah.com>
+References: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20191209193936.GA3471@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Dec 09, 2019 at 02:49:15PM -0800, Jeff Kirsher wrote:
+> This series contains the initial implementation of the Virtual Bus,
+> virtbus_device, virtbus_driver, updates to 'ice' and 'i40e' to use the new
+> Virtual Bus and the new RDMA driver 'irdma' for use with 'ice' and 'i40e'.
 > 
->> While investigating, I came up with the following explanation: The
->> hashes (generated by buildlib/pandoc-prebuilt.py) differ from machine to
->> machine, as the contents of the *.rst-files are hashed. Most of these
->> files are processed via cmake's configure_file from *.in.rst-files and
->> contain custom-per-build-data such as absolute paths. This means that
->> hashing *.rst-files will produce differing hashes based on the
->> build-directory-path (among other data points, possibly).
+> The primary purpose of the Virtual bus is to provide a matching service
+> and to pass the data pointer contained in the virtbus_device to the
+> virtbus_driver during its probe call.  This will allow two separate
+> kernel objects to match up and start communication.
 > 
-> It is not the build directory path, it is the install directory path,
-
-You are right, the culprit is @IBDIAG_CONFIG_PATH@, which is based on
-CMAKE_INSTALL_PREFIX.
-
-> and yes, the no-pandoc builds have to use the standard paths.
-
-Is this documented somewhere?
-
->> by looking at the hashes produced by two of my machines, they were
->> different for all but 3 files (ibcacheedit.8.rst, ibstatus.8.rst and
->> check_lft_balance.8.rst). These files (and their includes, as their
->> content is also hashed!) are the only files that to not contain any
->> differing data when being transformed from *.in.rst to *.rst via
->> configure_file, which supports my hypothesis.
-> This only happens if each machine is configuring to use different
-> paths, or something has gone quite wrong. What are the actual diffs
-> from the two .rst's ?
-
-This is also correct, I was/am using different CMAKE_INSTALL_PREFIX
-paths on my testing machines (mainly due to restrictions in the build
-environment). Both paths differ from the one used to produce the
-github-release.
-
->> With my limited time and expertise in the rdma-core project, I was only
->> able to come up with a solution that I don't find very practical. I will
->> append a diff of pandoc-prebuilt.py nonetheless, which replaces
->> hashing-calls for *.rst to *.in.rst if applicable.
+> The last 16 patches of the series adds a unified Intel Ethernet Protocol
+> driver for RDMA that supports a new network device E810 (iWARP and
+> RoCEv2 capable) and the existing X722 iWARP device.  The driver
+> architecture provides the extensibility for future generations of Intel
+> hardware supporting RDMA.
 > 
-> This just makes broken output if pandoc is not present, it is not practical.
+> The 'irdma' driver replaces the legacy X722 driver i40iw and extends the
+> ABI already defined for i40iw.  It is backward compatible with legacy
+> X722 rdma-core provider (libi40iw).
+> 
+> This series currently builds against net-next tree AND the rdma "for-next"
+> branch.
+> 
+> v1: Initial virtual bus submission
+> v2: Added example virtbus_dev and virtbus_drv in
+>     tools/testing/sefltests/ to test the virtual bus and provide an
+>     example on how to implement
+> v3: Added ice and i40e driver changes to implement the virtual bus, also
+>     added the new irdma driver which is the RDMA driver which
+>     communicates with the ice and i40e drivers
 
-The diff just changes the filename from *.rst to *.in.rst before hashing
-(get_id()). pandoc/rst2man are still called on the *.rst files (NOT the
-*.in.rst files), but the filename is now based on the *.in.rst-file.
+Seems pretty premature to ask for a pull request after I rejected your
+first 2 submissions and have not seen a valid implementation yet.
 
-> The only good options is to shift the substition to after
-> pandoc/rst2man run - but I'm not sure if that is doable..
+Please give me a few days to review this...
 
-To my understanding, this is basically what my diff does (although it
-does not "shift" the substition, but rather just uses the unsubsituted
-files to produce the names (hashes) for the prebuilt documentation). But
-as I said previously, I also do not consider it a good fix for the problem.
-
-Thorben
+greg k-h
