@@ -2,91 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 837B8119B1A
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 23:11:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 965A9119B74
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 23:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729438AbfLJWFO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Dec 2019 17:05:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729415AbfLJWFN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Dec 2019 17:05:13 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2692E20637;
-        Tue, 10 Dec 2019 22:05:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576015512;
-        bh=HmliciBZzqsRqRN7RPFZjJ+IVzmrgEi6yiabt3TzylU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eCY1FX5gHK5o9vQQQQ/U+kReQhH9WOP6YWdWuQtWXDH8WlGQWnaS3ZPibSuXI8mJ+
-         emUgJeQIGb2WUHpOjrkRspqVf4iKPKQRPIpL0RmynT/y4byDFNNG+V9ol/2XPVyRdG
-         EqoBsEzDvn21zeSSfs0CaqcJVJ7PUW6L0dJcvAsA=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 110/130] RDMA/qib: Validate ->show()/store() callbacks before calling them
-Date:   Tue, 10 Dec 2019 17:02:41 -0500
-Message-Id: <20191210220301.13262-110-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191210220301.13262-1-sashal@kernel.org>
-References: <20191210220301.13262-1-sashal@kernel.org>
+        id S1728849AbfLJWID (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Dec 2019 17:08:03 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:33547 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729801AbfLJWIC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Dec 2019 17:08:02 -0500
+Received: by mail-il1-f199.google.com with SMTP id s9so4882597ilk.0
+        for <linux-rdma@vger.kernel.org>; Tue, 10 Dec 2019 14:08:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=GwENJOhReXSoSX4FCZp3Vso0XyIxIAaoh96r/uvXuy4=;
+        b=nGqDNpATGCFmdStNG002LrpbflxpXsUCDYTF0a/AgbEPw+QlGLqDgCq6hn9sajKO+3
+         UErf3KyZCbp0DMj8XtnMhWB6kLVOcT38Teb0vCzkXFkBr699FKoMR1EIDa+uAKOpGdMZ
+         GO/ju1eyS2b3Ru/2p6tVYDjyvJbocoWQUarR1qMvqeYiGzZqtZL7pVlJq4Lop9PxDVWz
+         R9kJtqIkUC346j7BvBwvyZ1rBU1CAuKQN9v6f/KJvNvsyqOdp6jSMrU4rOJ/zQ3XiVIg
+         tTlM0Z3afQrwNuNYi1B6C4Km6MzPMROyAvLtNeQ5MmPQVaKaP+tpqz78wgD7D0zx8+UQ
+         OEKw==
+X-Gm-Message-State: APjAAAUyiLDUi8wZCb6SDsnEiPJ/UN5lV8PHfLYFvntnz5shE3/oP16I
+        pOZh60KAv62DDqOyvNB08kx6RHaqj5oZ57LevUJGefk4Ei+E
+X-Google-Smtp-Source: APXvYqw1nemikCJS5D7M4N4f0bYbahpKkcyiyjQt4kL1XP7Z9X8CJ3ZOIh4k/9LB4ygXcYMr/mw1sHHvGwAuiBpmhzif60YWo58S
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5d:9f05:: with SMTP id q5mr234717iot.295.1576015681954;
+ Tue, 10 Dec 2019 14:08:01 -0800 (PST)
+Date:   Tue, 10 Dec 2019 14:08:01 -0800
+In-Reply-To: <0000000000005175bf057617c71d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e22b3c059960bebd@google.com>
+Subject: Re: KASAN: slab-out-of-bounds Read in ip6_tnl_parse_tlv_enc_lim
+From:   syzbot <syzbot+68dce7caebd8543121de@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, ast@kernel.org, boqun.feng@gmail.com,
+        byungchul.park@lge.com, daniel@iogearbox.net, davem@davemloft.net,
+        dledford@redhat.com, jgg@mellanox.com, jgg@ziepe.ca,
+        kernel-team@lge.com, kirill@shutemov.name, kuznet@ms2.inr.ac.ru,
+        leon@kernel.org, leonro@mellanox.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-rdma@vger.kernel.org, mingo@kernel.org,
+        netdev@vger.kernel.org, npiggin@gmail.com, parav@mellanox.com,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, torvalds@linux-foundation.org,
+        walken@google.com, willy@infradead.org, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Viresh Kumar <viresh.kumar@linaro.org>
+syzbot suspects this bug was fixed by commit:
 
-[ Upstream commit 7ee23491b39259ae83899dd93b2a29ef0f22f0a7 ]
+commit 30471d4b20335d9bd9ae9b2382a1e1e97d18d86d
+Author: Leon Romanovsky <leonro@mellanox.com>
+Date:   Sun Feb 3 12:55:50 2019 +0000
 
-The permissions of the read-only or write-only sysfs files can be
-changed (as root) and the user can then try to read a write-only file or
-write to a read-only file which will lead to kernel crash here.
+     RDMA/core: Share driver structure size with core
 
-Protect against that by always validating the show/store callbacks.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16b7bb7ae00000
+start commit:   3a5af36b Merge tag '4.19-rc3-smb3-cifs' of git://git.samba..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9c4a80625153107e
+dashboard link: https://syzkaller.appspot.com/bug?extid=68dce7caebd8543121de
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1068a44e400000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=146386c6400000
 
-Link: https://lore.kernel.org/r/d45cc26361a174ae12dbb86c994ef334d257924b.1573096807.git.viresh.kumar@linaro.org
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/hw/qib/qib_sysfs.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+If the result looks correct, please mark the bug fixed by replying with:
 
-diff --git a/drivers/infiniband/hw/qib/qib_sysfs.c b/drivers/infiniband/hw/qib/qib_sysfs.c
-index ca2638d8f35ef..d831f3e61ae8f 100644
---- a/drivers/infiniband/hw/qib/qib_sysfs.c
-+++ b/drivers/infiniband/hw/qib/qib_sysfs.c
-@@ -301,6 +301,9 @@ static ssize_t qib_portattr_show(struct kobject *kobj,
- 	struct qib_pportdata *ppd =
- 		container_of(kobj, struct qib_pportdata, pport_kobj);
- 
-+	if (!pattr->show)
-+		return -EIO;
-+
- 	return pattr->show(ppd, buf);
- }
- 
-@@ -312,6 +315,9 @@ static ssize_t qib_portattr_store(struct kobject *kobj,
- 	struct qib_pportdata *ppd =
- 		container_of(kobj, struct qib_pportdata, pport_kobj);
- 
-+	if (!pattr->store)
-+		return -EIO;
-+
- 	return pattr->store(ppd, buf, len);
- }
- 
--- 
-2.20.1
+#syz fix: RDMA/core: Share driver structure size with core
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
