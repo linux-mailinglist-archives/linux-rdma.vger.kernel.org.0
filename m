@@ -2,260 +2,204 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D56118955
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 14:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C24BD118A04
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 14:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727295AbfLJNKw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Dec 2019 08:10:52 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7208 "EHLO huawei.com"
+        id S1727426AbfLJNjl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Dec 2019 08:39:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40646 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727334AbfLJNKw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Dec 2019 08:10:52 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id C2D7D4C4E46191AE2554;
-        Tue, 10 Dec 2019 21:10:33 +0800 (CST)
-Received: from [127.0.0.1] (10.40.168.149) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.439.0; Tue, 10 Dec 2019
- 21:10:25 +0800
-Subject: Re: [PATCH for-next] RDMA/hns: Add support for extended atomic
-From:   Weihang Li <liweihang@hisilicon.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1573781966-45800-1-git-send-email-liweihang@hisilicon.com>
-Message-ID: <d48e1f2c-4a2e-42ee-08d6-69eab4aacde0@hisilicon.com>
-Date:   Tue, 10 Dec 2019 21:10:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727145AbfLJNjk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Dec 2019 08:39:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 816B4B016;
+        Tue, 10 Dec 2019 13:39:35 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id AF0221E0B23; Tue, 10 Dec 2019 14:39:32 +0100 (CET)
+Date:   Tue, 10 Dec 2019 14:39:32 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 24/26] mm/gup: track FOLL_PIN pages
+Message-ID: <20191210133932.GH1551@quack2.suse.cz>
+References: <20191209225344.99740-1-jhubbard@nvidia.com>
+ <20191209225344.99740-25-jhubbard@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <1573781966-45800-1-git-send-email-liweihang@hisilicon.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.168.149]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191209225344.99740-25-jhubbard@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jason and Doug,
-
-Do you have some comments on this patch?
-
-Thanks,
-Weihang
-
-On 2019/11/15 9:39, Weihang Li wrote:
-> From: Jiaran Zhang <zhangjiaran@huawei.com>
+On Mon 09-12-19 14:53:42, John Hubbard wrote:
+> Add tracking of pages that were pinned via FOLL_PIN.
 > 
-> Support extended atomic operations including cmp & swap and fetch & add
-> of 8 bytes, 16 bytes, 32 bytes, 64 bytes on hip08.
+> As mentioned in the FOLL_PIN documentation, callers who effectively set
+> FOLL_PIN are required to ultimately free such pages via unpin_user_page().
+> The effect is similar to FOLL_GET, and may be thought of as "FOLL_GET
+> for DIO and/or RDMA use".
 > 
-> Signed-off-by: Jiaran Zhang <zhangjiaran@huawei.com>
-> Signed-off-by: Weihang Li <liweihang@hisilicon.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 100 ++++++++++++++++++++++++-----
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.h |   8 +++
->  2 files changed, 93 insertions(+), 15 deletions(-)
+> Pages that have been pinned via FOLL_PIN are identifiable via a
+> new function call:
 > 
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> index 907c951..74ccb08 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> @@ -97,18 +97,68 @@ static void set_frmr_seg(struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
->  		     V2_RC_FRMR_WQE_BYTE_40_BLK_MODE_S, 0);
->  }
->  
-> -static void set_atomic_seg(struct hns_roce_wqe_atomic_seg *aseg,
-> -			   const struct ib_atomic_wr *wr)
-> +static void set_extend_atomic_seg(struct hns_roce_qp *qp,
-> +				  u32 ex_sge_num, unsigned int *sge_idx,
-> +				  u64 *data_addr)
->  {
-> -	if (wr->wr.opcode == IB_WR_ATOMIC_CMP_AND_SWP) {
-> -		aseg->fetchadd_swap_data = cpu_to_le64(wr->swap);
-> -		aseg->cmp_data  = cpu_to_le64(wr->compare_add);
-> -	} else {
-> -		aseg->fetchadd_swap_data = cpu_to_le64(wr->compare_add);
-> -		aseg->cmp_data  = 0;
-> +	__le64 *ext_seg;
-> +	int i;
-> +
-> +	for (i = 0; i < ex_sge_num; i += EXT_SGE_BYTE_8_NUM, (*sge_idx)++) {
-> +		ext_seg = get_send_extend_sge(qp, ((*sge_idx) &
-> +					      (qp->sge.sge_cnt - 1)));
-> +		/* In the extended atomic scenario, the data_add parameter
-> +		 * passes the address where the extended atomic data is stored.
-> +		 */
-> +		*ext_seg = data_addr ? cpu_to_le64(*(data_addr + i)) : 0;
-> +		*(ext_seg + 1) = data_addr ?
-> +				 cpu_to_le64(*(data_addr + (i + 1))) : 0;
->  	}
->  }
->  
-> +static int set_atomic_seg(struct hns_roce_qp *qp,
-> +			  const struct ib_send_wr *wr, unsigned int msg_len,
-> +			  void *dseg, unsigned int *sge_idx)
+>    bool page_dma_pinned(struct page *page);
+> 
+> What to do in response to encountering such a page, is left to later
+> patchsets. There is discussion about this in [1], [2], and [3].
+> 
+> This also changes a BUG_ON(), to a WARN_ON(), in follow_page_mask().
+> 
+> [1] Some slow progress on get_user_pages() (Apr 2, 2019):
+>     https://lwn.net/Articles/784574/
+> [2] DMA and get_user_pages() (LPC: Dec 12, 2018):
+>     https://lwn.net/Articles/774411/
+> [3] The trouble with get_user_pages() (Apr 30, 2018):
+>     https://lwn.net/Articles/753027/
+> 
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Suggested-by: Jérôme Glisse <jglisse@redhat.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+
+Looks nice, some comments below...
+
+> +/*
+> + * try_grab_compound_head() - attempt to elevate a page's refcount, by a
+> + * flags-dependent amount.
+> + *
+> + * This has a default assumption of "use FOLL_GET behavior, if FOLL_PIN is not
+> + * set".
+> + *
+> + * "grab" names in this file mean, "look at flags to decide with to use FOLL_PIN
+> + * or FOLL_GET behavior, when incrementing the page's refcount.
+> + */
+> +static struct page *try_grab_compound_head(struct page *page, int refs,
+> +					   unsigned int flags)
 > +{
-> +	struct hns_roce_wqe_atomic_seg *aseg;
-> +	u32 ex_sge_num;
+> +	if (flags & FOLL_PIN)
+> +		return try_pin_compound_head(page, refs);
 > +
-> +	dseg += sizeof(struct hns_roce_v2_wqe_data_seg);
-> +	aseg = dseg;
-> +
-> +	if (msg_len == STANDARD_ATOMIC_BYTE_8) {
-> +		if (wr->opcode == IB_WR_ATOMIC_CMP_AND_SWP) {
-> +			aseg->fetchadd_swap_data =
-> +				cpu_to_le64(atomic_wr(wr)->swap);
-> +			aseg->cmp_data =
-> +				cpu_to_le64(atomic_wr(wr)->compare_add);
-> +		} else {
-> +			aseg->fetchadd_swap_data =
-> +				cpu_to_le64(atomic_wr(wr)->compare_add);
-> +			aseg->cmp_data = 0;
-> +		}
-> +	} else if (msg_len == EXTEND_ATOMIC_BYTE_16 ||
-> +		   msg_len == EXTEND_ATOMIC_BYTE_32 ||
-> +		   msg_len == EXTEND_ATOMIC_BYTE_64) {
-> +		ex_sge_num = msg_len >> 3;
-> +		aseg->fetchadd_swap_data = 0;
-> +		aseg->cmp_data = 0;
-> +		if (wr->opcode == IB_WR_ATOMIC_CMP_AND_SWP) {
-> +			set_extend_atomic_seg(qp, ex_sge_num, sge_idx,
-> +					(u64 *)atomic_wr(wr)->swap);
-> +			set_extend_atomic_seg(qp, ex_sge_num, sge_idx,
-> +					(u64 *)atomic_wr(wr)->compare_add);
-> +		} else {
-> +			set_extend_atomic_seg(qp, ex_sge_num, sge_idx,
-> +					(u64 *)atomic_wr(wr)->compare_add);
-> +			set_extend_atomic_seg(qp, ex_sge_num, sge_idx, 0);
-> +		}
-> +	} else
-> +		return -EINVAL;
-> +
-> +	return 0;
+> +	return try_get_compound_head(page, refs);
 > +}
 > +
->  static void set_extend_sge(struct hns_roce_qp *qp, const struct ib_send_wr *wr,
->  			   unsigned int *sge_ind)
->  {
-> @@ -545,8 +595,12 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
->  
->  				dseg = wqe;
->  				set_data_seg_v2(dseg, wr->sg_list);
-> -				wqe += sizeof(struct hns_roce_v2_wqe_data_seg);
-> -				set_atomic_seg(wqe, atomic_wr(wr));
-> +				ret = set_atomic_seg(qp, wr, rc_sq_wqe->msg_len,
-> +						     dseg, &sge_idx);
-> +				if (ret) {
-> +					*bad_wr = wr;
-> +					goto out;
-> +				}
->  				roce_set_field(rc_sq_wqe->byte_16,
->  					       V2_RC_SEND_WQE_BYTE_16_SGE_NUM_M,
->  					       V2_RC_SEND_WQE_BYTE_16_SGE_NUM_S,
-> @@ -1668,7 +1722,7 @@ static int hns_roce_v2_profile(struct hns_roce_dev *hr_dev)
->  	caps->max_srq_desc_sz	= HNS_ROCE_V2_MAX_SRQ_DESC_SZ;
->  	caps->qpc_entry_sz	= HNS_ROCE_V2_QPC_ENTRY_SZ;
->  	caps->irrl_entry_sz	= HNS_ROCE_V2_IRRL_ENTRY_SZ;
-> -	caps->trrl_entry_sz	= HNS_ROCE_V2_TRRL_ENTRY_SZ;
-> +	caps->trrl_entry_sz	= HNS_ROCE_V2_EXT_ATOMIC_TRRL_ENTRY_SZ;
->  	caps->cqc_entry_sz	= HNS_ROCE_V2_CQC_ENTRY_SZ;
->  	caps->srqc_entry_sz	= HNS_ROCE_V2_SRQC_ENTRY_SZ;
->  	caps->mtpt_entry_sz	= HNS_ROCE_V2_MTPT_ENTRY_SZ;
-> @@ -2860,19 +2914,19 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
->  			break;
->  		case HNS_ROCE_SQ_OPCODE_ATOMIC_COMP_AND_SWAP:
->  			wc->opcode = IB_WC_COMP_SWAP;
-> -			wc->byte_len  = 8;
-> +			wc->byte_len  = le32_to_cpu(cqe->byte_cnt);
->  			break;
->  		case HNS_ROCE_SQ_OPCODE_ATOMIC_FETCH_AND_ADD:
->  			wc->opcode = IB_WC_FETCH_ADD;
-> -			wc->byte_len  = 8;
-> +			wc->byte_len  = le32_to_cpu(cqe->byte_cnt);
->  			break;
->  		case HNS_ROCE_SQ_OPCODE_ATOMIC_MASK_COMP_AND_SWAP:
->  			wc->opcode = IB_WC_MASKED_COMP_SWAP;
-> -			wc->byte_len  = 8;
-> +			wc->byte_len  = le32_to_cpu(cqe->byte_cnt);
->  			break;
->  		case HNS_ROCE_SQ_OPCODE_ATOMIC_MASK_FETCH_AND_ADD:
->  			wc->opcode = IB_WC_MASKED_FETCH_ADD;
-> -			wc->byte_len  = 8;
-> +			wc->byte_len  = le32_to_cpu(cqe->byte_cnt);
->  			break;
->  		case HNS_ROCE_SQ_OPCODE_FAST_REG_WR:
->  			wc->opcode = IB_WC_REG_MR;
-> @@ -3211,6 +3265,9 @@ static void set_access_flags(struct hns_roce_qp *hr_qp,
->  	roce_set_bit(context->byte_76_srqn_op_en, V2_QPC_BYTE_76_ATE_S,
->  		     !!(access_flags & IB_ACCESS_REMOTE_ATOMIC));
->  	roce_set_bit(qpc_mask->byte_76_srqn_op_en, V2_QPC_BYTE_76_ATE_S, 0);
-> +	roce_set_bit(context->byte_76_srqn_op_en, V2_QPC_BYTE_76_EXT_ATE_S,
-> +		     !!(access_flags & IB_ACCESS_REMOTE_ATOMIC));
-> +	roce_set_bit(qpc_mask->byte_76_srqn_op_en, V2_QPC_BYTE_76_EXT_ATE_S, 0);
->  }
->  
->  static void set_qpc_wqe_cnt(struct hns_roce_qp *hr_qp,
-> @@ -3578,6 +3635,12 @@ static void modify_qp_init_to_init(struct ib_qp *ibqp,
->  			     IB_ACCESS_REMOTE_ATOMIC));
->  		roce_set_bit(qpc_mask->byte_76_srqn_op_en, V2_QPC_BYTE_76_ATE_S,
->  			     0);
-> +		roce_set_bit(context->byte_76_srqn_op_en,
-> +			     V2_QPC_BYTE_76_EXT_ATE_S,
-> +			     !!(attr->qp_access_flags &
-> +				IB_ACCESS_REMOTE_ATOMIC));
-> +		roce_set_bit(qpc_mask->byte_76_srqn_op_en,
-> +			     V2_QPC_BYTE_76_EXT_ATE_S, 0);
->  	} else {
->  		roce_set_bit(context->byte_76_srqn_op_en, V2_QPC_BYTE_76_RRE_S,
->  			     !!(hr_qp->access_flags & IB_ACCESS_REMOTE_READ));
-> @@ -3593,6 +3656,13 @@ static void modify_qp_init_to_init(struct ib_qp *ibqp,
->  			     !!(hr_qp->access_flags & IB_ACCESS_REMOTE_ATOMIC));
->  		roce_set_bit(qpc_mask->byte_76_srqn_op_en, V2_QPC_BYTE_76_ATE_S,
->  			     0);
-> +
-> +		roce_set_bit(context->byte_76_srqn_op_en,
-> +			     V2_QPC_BYTE_76_EXT_ATE_S,
-> +			     !!(hr_qp->access_flags &
-> +				IB_ACCESS_REMOTE_ATOMIC));
-> +		roce_set_bit(qpc_mask->byte_76_srqn_op_en,
-> +			     V2_QPC_BYTE_76_EXT_ATE_S, 0);
+> +/**
+> + * grab_page() - elevate a page's refcount by a flag-dependent amount
+> + *
+> + * This might not do anything at all, depending on the flags argument.
+> + *
+> + * "grab" names in this file mean, "look at flags to decide with to use FOLL_PIN
+                                                               ^^^ whether
+
+> + * or FOLL_GET behavior, when incrementing the page's refcount.
+> + *
+> + * @page:	pointer to page to be grabbed
+> + * @flags:	gup flags: these are the FOLL_* flag values.
+> + *
+> + * Either FOLL_PIN or FOLL_GET (or neither) may be set, but not both at the same
+> + * time. (That's true throughout the get_user_pages*() and pin_user_pages*()
+> + * APIs.) Cases:
+> + *
+> + *	FOLL_GET: page's refcount will be incremented by 1.
+> + *	FOLL_PIN: page's refcount will be incremented by GUP_PIN_COUNTING_BIAS.
+> + */
+> +void grab_page(struct page *page, unsigned int flags)
+> +{
+> +	if (flags & FOLL_GET)
+> +		get_page(page);
+> +	else if (flags & FOLL_PIN) {
+> +		get_page(page);
+> +		WARN_ON_ONCE(flags & FOLL_GET);
+> +		/*
+> +		 * Use get_page(), above, to do the refcount error
+> +		 * checking. Then just add in the remaining references:
+> +		 */
+> +		page_ref_add(page, GUP_PIN_COUNTING_BIAS - 1);
+
+This is wrong for two reasons:
+
+1) You miss compound_head() indirection from get_page() for this
+page_ref_add().
+
+2) page_ref_add() could overflow the counter without noticing.
+
+Especially with GUP_PIN_COUNTING_BIAS being non-trivial, it is realistic
+that an attacker might try to overflow the page refcount and we have to
+protect the kernel against that. So I think that all the places that would
+use grab_page() actually need to use try_grab_page() and then gracefully
+deal with the failure.
+
+> @@ -278,11 +425,23 @@ static struct page *follow_page_pte(struct vm_area_struct *vma,
+>  		goto retry;
 >  	}
 >  
->  	roce_set_field(context->byte_16_buf_ba_pg_sz, V2_QPC_BYTE_16_PD_M,
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-> index 76a14db..0a9d1e5 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-> @@ -81,6 +81,7 @@
->  #define HNS_ROCE_V2_QPC_ENTRY_SZ		256
->  #define HNS_ROCE_V2_IRRL_ENTRY_SZ		64
->  #define HNS_ROCE_V2_TRRL_ENTRY_SZ		48
-> +#define HNS_ROCE_V2_EXT_ATOMIC_TRRL_ENTRY_SZ	100
->  #define HNS_ROCE_V2_CQC_ENTRY_SZ		64
->  #define HNS_ROCE_V2_SRQC_ENTRY_SZ		64
->  #define HNS_ROCE_V2_MTPT_ENTRY_SZ		64
-> @@ -158,6 +159,12 @@ enum {
->  
->  #define HNS_ROCE_V2_CQE_QPN_MASK		0x3ffff
->  
-> +#define EXT_SGE_BYTE_8_NUM	2
-> +#define STANDARD_ATOMIC_BYTE_8	0x8
-> +#define EXTEND_ATOMIC_BYTE_16	0x10
-> +#define EXTEND_ATOMIC_BYTE_32	0x20
-> +#define EXTEND_ATOMIC_BYTE_64	0x40
+> -	if (flags & FOLL_GET) {
+> +	if (flags & (FOLL_PIN | FOLL_GET)) {
+> +		/*
+> +		 * Allow try_get_page() to take care of error handling, for
+> +		 * both cases: FOLL_GET or FOLL_PIN:
+> +		 */
+>  		if (unlikely(!try_get_page(page))) {
+>  			page = ERR_PTR(-ENOMEM);
+>  			goto out;
+>  		}
 > +
->  enum {
->  	HNS_ROCE_V2_WQE_OP_SEND				= 0x0,
->  	HNS_ROCE_V2_WQE_OP_SEND_WITH_INV		= 0x1,
-> @@ -644,6 +651,7 @@ struct hns_roce_v2_qp_context {
->  
->  #define	V2_QPC_BYTE_76_RQIE_S 28
->  
-> +#define	V2_QPC_BYTE_76_EXT_ATE_S 29
->  #define	V2_QPC_BYTE_76_RQ_VLAN_EN_S 30
->  #define	V2_QPC_BYTE_80_RX_CQN_S 0
->  #define V2_QPC_BYTE_80_RX_CQN_M GENMASK(23, 0)
-> 
+> +		if (flags & FOLL_PIN) {
+> +			WARN_ON_ONCE(flags & FOLL_GET);
+> +
+> +			/* We got a +1 refcount from try_get_page(), above. */
+> +			page_ref_add(page, GUP_PIN_COUNTING_BIAS - 1);
+> +			__update_proc_vmstat(page, NR_FOLL_PIN_REQUESTED, 1);
+> +		}
+>  	}
 
+The same problem here as above, plus this place should use the same
+try_grab..() helper, shouldn't it?
+
+> @@ -544,8 +703,8 @@ static struct page *follow_page_mask(struct vm_area_struct *vma,
+>  	/* make this handle hugepd */
+>  	page = follow_huge_addr(mm, address, flags & FOLL_WRITE);
+>  	if (!IS_ERR(page)) {
+> -		BUG_ON(flags & FOLL_GET);
+> -		return page;
+> +		WARN_ON_ONCE(flags & (FOLL_GET | FOLL_PIN));
+> +		return NULL;
+
+I agree with the change to WARN_ON_ONCE but why is correct the change of
+the return value? Note that this is actually a "success branch".
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
