@@ -2,193 +2,260 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BA51188D7
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 13:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D56118955
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 14:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727420AbfLJMuF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Dec 2019 07:50:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37718 "EHLO mx1.suse.de"
+        id S1727295AbfLJNKw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Dec 2019 08:10:52 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7208 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727131AbfLJMuE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Dec 2019 07:50:04 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E26C9AF76;
-        Tue, 10 Dec 2019 12:49:59 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 84F101E0B23; Tue, 10 Dec 2019 13:49:57 +0100 (CET)
-Date:   Tue, 10 Dec 2019 13:49:57 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v8 23/26] mm/gup: pass flags arg to __gup_device_*
- functions
-Message-ID: <20191210124957.GG1551@quack2.suse.cz>
-References: <20191209225344.99740-1-jhubbard@nvidia.com>
- <20191209225344.99740-24-jhubbard@nvidia.com>
+        id S1727334AbfLJNKw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Dec 2019 08:10:52 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id C2D7D4C4E46191AE2554;
+        Tue, 10 Dec 2019 21:10:33 +0800 (CST)
+Received: from [127.0.0.1] (10.40.168.149) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.439.0; Tue, 10 Dec 2019
+ 21:10:25 +0800
+Subject: Re: [PATCH for-next] RDMA/hns: Add support for extended atomic
+From:   Weihang Li <liweihang@hisilicon.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+References: <1573781966-45800-1-git-send-email-liweihang@hisilicon.com>
+Message-ID: <d48e1f2c-4a2e-42ee-08d6-69eab4aacde0@hisilicon.com>
+Date:   Tue, 10 Dec 2019 21:10:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20191209225344.99740-24-jhubbard@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1573781966-45800-1-git-send-email-liweihang@hisilicon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.168.149]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon 09-12-19 14:53:41, John Hubbard wrote:
-> A subsequent patch requires access to gup flags, so pass the flags
-> argument through to the __gup_device_* functions.
-> 
-> Also placate checkpatch.pl by shortening a nearby line.
-> 
-> TODO: Christoph Hellwig requested folding this into the patch the uses
-> the gup flags arguments.
+Hi Jason and Doug,
 
-You should probably implement this TODO? :)
+Do you have some comments on this patch?
 
-								Honza
+Thanks,
+Weihang
 
+On 2019/11/15 9:39, Weihang Li wrote:
+> From: Jiaran Zhang <zhangjiaran@huawei.com>
 > 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Reviewed-by: Jérôme Glisse <jglisse@redhat.com>
-> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> Support extended atomic operations including cmp & swap and fetch & add
+> of 8 bytes, 16 bytes, 32 bytes, 64 bytes on hip08.
+> 
+> Signed-off-by: Jiaran Zhang <zhangjiaran@huawei.com>
+> Signed-off-by: Weihang Li <liweihang@hisilicon.com>
 > ---
->  mm/gup.c | 28 ++++++++++++++++++----------
->  1 file changed, 18 insertions(+), 10 deletions(-)
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 100 ++++++++++++++++++++++++-----
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h |   8 +++
+>  2 files changed, 93 insertions(+), 15 deletions(-)
 > 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 73aedcefa4bd..687d48506f04 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1957,7 +1957,8 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
->  
->  #if defined(CONFIG_ARCH_HAS_PTE_DEVMAP) && defined(CONFIG_TRANSPARENT_HUGEPAGE)
->  static int __gup_device_huge(unsigned long pfn, unsigned long addr,
-> -		unsigned long end, struct page **pages, int *nr)
-> +			     unsigned long end, unsigned int flags,
-> +			     struct page **pages, int *nr)
->  {
->  	int nr_start = *nr;
->  	struct dev_pagemap *pgmap = NULL;
-> @@ -1983,13 +1984,14 @@ static int __gup_device_huge(unsigned long pfn, unsigned long addr,
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> index 907c951..74ccb08 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> @@ -97,18 +97,68 @@ static void set_frmr_seg(struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
+>  		     V2_RC_FRMR_WQE_BYTE_40_BLK_MODE_S, 0);
 >  }
 >  
->  static int __gup_device_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
-> -		unsigned long end, struct page **pages, int *nr)
-> +				 unsigned long end, unsigned int flags,
-> +				 struct page **pages, int *nr)
+> -static void set_atomic_seg(struct hns_roce_wqe_atomic_seg *aseg,
+> -			   const struct ib_atomic_wr *wr)
+> +static void set_extend_atomic_seg(struct hns_roce_qp *qp,
+> +				  u32 ex_sge_num, unsigned int *sge_idx,
+> +				  u64 *data_addr)
 >  {
->  	unsigned long fault_pfn;
->  	int nr_start = *nr;
->  
->  	fault_pfn = pmd_pfn(orig) + ((addr & ~PMD_MASK) >> PAGE_SHIFT);
-> -	if (!__gup_device_huge(fault_pfn, addr, end, pages, nr))
-> +	if (!__gup_device_huge(fault_pfn, addr, end, flags, pages, nr))
->  		return 0;
->  
->  	if (unlikely(pmd_val(orig) != pmd_val(*pmdp))) {
-> @@ -2000,13 +2002,14 @@ static int __gup_device_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
+> -	if (wr->wr.opcode == IB_WR_ATOMIC_CMP_AND_SWP) {
+> -		aseg->fetchadd_swap_data = cpu_to_le64(wr->swap);
+> -		aseg->cmp_data  = cpu_to_le64(wr->compare_add);
+> -	} else {
+> -		aseg->fetchadd_swap_data = cpu_to_le64(wr->compare_add);
+> -		aseg->cmp_data  = 0;
+> +	__le64 *ext_seg;
+> +	int i;
+> +
+> +	for (i = 0; i < ex_sge_num; i += EXT_SGE_BYTE_8_NUM, (*sge_idx)++) {
+> +		ext_seg = get_send_extend_sge(qp, ((*sge_idx) &
+> +					      (qp->sge.sge_cnt - 1)));
+> +		/* In the extended atomic scenario, the data_add parameter
+> +		 * passes the address where the extended atomic data is stored.
+> +		 */
+> +		*ext_seg = data_addr ? cpu_to_le64(*(data_addr + i)) : 0;
+> +		*(ext_seg + 1) = data_addr ?
+> +				 cpu_to_le64(*(data_addr + (i + 1))) : 0;
+>  	}
 >  }
 >  
->  static int __gup_device_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
-> -		unsigned long end, struct page **pages, int *nr)
-> +				 unsigned long end, unsigned int flags,
-> +				 struct page **pages, int *nr)
+> +static int set_atomic_seg(struct hns_roce_qp *qp,
+> +			  const struct ib_send_wr *wr, unsigned int msg_len,
+> +			  void *dseg, unsigned int *sge_idx)
+> +{
+> +	struct hns_roce_wqe_atomic_seg *aseg;
+> +	u32 ex_sge_num;
+> +
+> +	dseg += sizeof(struct hns_roce_v2_wqe_data_seg);
+> +	aseg = dseg;
+> +
+> +	if (msg_len == STANDARD_ATOMIC_BYTE_8) {
+> +		if (wr->opcode == IB_WR_ATOMIC_CMP_AND_SWP) {
+> +			aseg->fetchadd_swap_data =
+> +				cpu_to_le64(atomic_wr(wr)->swap);
+> +			aseg->cmp_data =
+> +				cpu_to_le64(atomic_wr(wr)->compare_add);
+> +		} else {
+> +			aseg->fetchadd_swap_data =
+> +				cpu_to_le64(atomic_wr(wr)->compare_add);
+> +			aseg->cmp_data = 0;
+> +		}
+> +	} else if (msg_len == EXTEND_ATOMIC_BYTE_16 ||
+> +		   msg_len == EXTEND_ATOMIC_BYTE_32 ||
+> +		   msg_len == EXTEND_ATOMIC_BYTE_64) {
+> +		ex_sge_num = msg_len >> 3;
+> +		aseg->fetchadd_swap_data = 0;
+> +		aseg->cmp_data = 0;
+> +		if (wr->opcode == IB_WR_ATOMIC_CMP_AND_SWP) {
+> +			set_extend_atomic_seg(qp, ex_sge_num, sge_idx,
+> +					(u64 *)atomic_wr(wr)->swap);
+> +			set_extend_atomic_seg(qp, ex_sge_num, sge_idx,
+> +					(u64 *)atomic_wr(wr)->compare_add);
+> +		} else {
+> +			set_extend_atomic_seg(qp, ex_sge_num, sge_idx,
+> +					(u64 *)atomic_wr(wr)->compare_add);
+> +			set_extend_atomic_seg(qp, ex_sge_num, sge_idx, 0);
+> +		}
+> +	} else
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+>  static void set_extend_sge(struct hns_roce_qp *qp, const struct ib_send_wr *wr,
+>  			   unsigned int *sge_ind)
 >  {
->  	unsigned long fault_pfn;
->  	int nr_start = *nr;
+> @@ -545,8 +595,12 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
 >  
->  	fault_pfn = pud_pfn(orig) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
-> -	if (!__gup_device_huge(fault_pfn, addr, end, pages, nr))
-> +	if (!__gup_device_huge(fault_pfn, addr, end, flags, pages, nr))
->  		return 0;
->  
->  	if (unlikely(pud_val(orig) != pud_val(*pudp))) {
-> @@ -2017,14 +2020,16 @@ static int __gup_device_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
+>  				dseg = wqe;
+>  				set_data_seg_v2(dseg, wr->sg_list);
+> -				wqe += sizeof(struct hns_roce_v2_wqe_data_seg);
+> -				set_atomic_seg(wqe, atomic_wr(wr));
+> +				ret = set_atomic_seg(qp, wr, rc_sq_wqe->msg_len,
+> +						     dseg, &sge_idx);
+> +				if (ret) {
+> +					*bad_wr = wr;
+> +					goto out;
+> +				}
+>  				roce_set_field(rc_sq_wqe->byte_16,
+>  					       V2_RC_SEND_WQE_BYTE_16_SGE_NUM_M,
+>  					       V2_RC_SEND_WQE_BYTE_16_SGE_NUM_S,
+> @@ -1668,7 +1722,7 @@ static int hns_roce_v2_profile(struct hns_roce_dev *hr_dev)
+>  	caps->max_srq_desc_sz	= HNS_ROCE_V2_MAX_SRQ_DESC_SZ;
+>  	caps->qpc_entry_sz	= HNS_ROCE_V2_QPC_ENTRY_SZ;
+>  	caps->irrl_entry_sz	= HNS_ROCE_V2_IRRL_ENTRY_SZ;
+> -	caps->trrl_entry_sz	= HNS_ROCE_V2_TRRL_ENTRY_SZ;
+> +	caps->trrl_entry_sz	= HNS_ROCE_V2_EXT_ATOMIC_TRRL_ENTRY_SZ;
+>  	caps->cqc_entry_sz	= HNS_ROCE_V2_CQC_ENTRY_SZ;
+>  	caps->srqc_entry_sz	= HNS_ROCE_V2_SRQC_ENTRY_SZ;
+>  	caps->mtpt_entry_sz	= HNS_ROCE_V2_MTPT_ENTRY_SZ;
+> @@ -2860,19 +2914,19 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
+>  			break;
+>  		case HNS_ROCE_SQ_OPCODE_ATOMIC_COMP_AND_SWAP:
+>  			wc->opcode = IB_WC_COMP_SWAP;
+> -			wc->byte_len  = 8;
+> +			wc->byte_len  = le32_to_cpu(cqe->byte_cnt);
+>  			break;
+>  		case HNS_ROCE_SQ_OPCODE_ATOMIC_FETCH_AND_ADD:
+>  			wc->opcode = IB_WC_FETCH_ADD;
+> -			wc->byte_len  = 8;
+> +			wc->byte_len  = le32_to_cpu(cqe->byte_cnt);
+>  			break;
+>  		case HNS_ROCE_SQ_OPCODE_ATOMIC_MASK_COMP_AND_SWAP:
+>  			wc->opcode = IB_WC_MASKED_COMP_SWAP;
+> -			wc->byte_len  = 8;
+> +			wc->byte_len  = le32_to_cpu(cqe->byte_cnt);
+>  			break;
+>  		case HNS_ROCE_SQ_OPCODE_ATOMIC_MASK_FETCH_AND_ADD:
+>  			wc->opcode = IB_WC_MASKED_FETCH_ADD;
+> -			wc->byte_len  = 8;
+> +			wc->byte_len  = le32_to_cpu(cqe->byte_cnt);
+>  			break;
+>  		case HNS_ROCE_SQ_OPCODE_FAST_REG_WR:
+>  			wc->opcode = IB_WC_REG_MR;
+> @@ -3211,6 +3265,9 @@ static void set_access_flags(struct hns_roce_qp *hr_qp,
+>  	roce_set_bit(context->byte_76_srqn_op_en, V2_QPC_BYTE_76_ATE_S,
+>  		     !!(access_flags & IB_ACCESS_REMOTE_ATOMIC));
+>  	roce_set_bit(qpc_mask->byte_76_srqn_op_en, V2_QPC_BYTE_76_ATE_S, 0);
+> +	roce_set_bit(context->byte_76_srqn_op_en, V2_QPC_BYTE_76_EXT_ATE_S,
+> +		     !!(access_flags & IB_ACCESS_REMOTE_ATOMIC));
+> +	roce_set_bit(qpc_mask->byte_76_srqn_op_en, V2_QPC_BYTE_76_EXT_ATE_S, 0);
 >  }
->  #else
->  static int __gup_device_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
-> -		unsigned long end, struct page **pages, int *nr)
-> +				 unsigned long end, unsigned int flags,
-> +				 struct page **pages, int *nr)
->  {
->  	BUILD_BUG();
->  	return 0;
->  }
 >  
->  static int __gup_device_huge_pud(pud_t pud, pud_t *pudp, unsigned long addr,
-> -		unsigned long end, struct page **pages, int *nr)
-> +				 unsigned long end, unsigned int flags,
-> +				 struct page **pages, int *nr)
->  {
->  	BUILD_BUG();
->  	return 0;
-> @@ -2136,7 +2141,8 @@ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
->  	if (pmd_devmap(orig)) {
->  		if (unlikely(flags & FOLL_LONGTERM))
->  			return 0;
-> -		return __gup_device_huge_pmd(orig, pmdp, addr, end, pages, nr);
-> +		return __gup_device_huge_pmd(orig, pmdp, addr, end, flags,
-> +					     pages, nr);
+>  static void set_qpc_wqe_cnt(struct hns_roce_qp *hr_qp,
+> @@ -3578,6 +3635,12 @@ static void modify_qp_init_to_init(struct ib_qp *ibqp,
+>  			     IB_ACCESS_REMOTE_ATOMIC));
+>  		roce_set_bit(qpc_mask->byte_76_srqn_op_en, V2_QPC_BYTE_76_ATE_S,
+>  			     0);
+> +		roce_set_bit(context->byte_76_srqn_op_en,
+> +			     V2_QPC_BYTE_76_EXT_ATE_S,
+> +			     !!(attr->qp_access_flags &
+> +				IB_ACCESS_REMOTE_ATOMIC));
+> +		roce_set_bit(qpc_mask->byte_76_srqn_op_en,
+> +			     V2_QPC_BYTE_76_EXT_ATE_S, 0);
+>  	} else {
+>  		roce_set_bit(context->byte_76_srqn_op_en, V2_QPC_BYTE_76_RRE_S,
+>  			     !!(hr_qp->access_flags & IB_ACCESS_REMOTE_READ));
+> @@ -3593,6 +3656,13 @@ static void modify_qp_init_to_init(struct ib_qp *ibqp,
+>  			     !!(hr_qp->access_flags & IB_ACCESS_REMOTE_ATOMIC));
+>  		roce_set_bit(qpc_mask->byte_76_srqn_op_en, V2_QPC_BYTE_76_ATE_S,
+>  			     0);
+> +
+> +		roce_set_bit(context->byte_76_srqn_op_en,
+> +			     V2_QPC_BYTE_76_EXT_ATE_S,
+> +			     !!(hr_qp->access_flags &
+> +				IB_ACCESS_REMOTE_ATOMIC));
+> +		roce_set_bit(qpc_mask->byte_76_srqn_op_en,
+> +			     V2_QPC_BYTE_76_EXT_ATE_S, 0);
 >  	}
 >  
->  	page = pmd_page(orig) + ((addr & ~PMD_MASK) >> PAGE_SHIFT);
-> @@ -2157,7 +2163,8 @@ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
->  }
+>  	roce_set_field(context->byte_16_buf_ba_pg_sz, V2_QPC_BYTE_16_PD_M,
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+> index 76a14db..0a9d1e5 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+> @@ -81,6 +81,7 @@
+>  #define HNS_ROCE_V2_QPC_ENTRY_SZ		256
+>  #define HNS_ROCE_V2_IRRL_ENTRY_SZ		64
+>  #define HNS_ROCE_V2_TRRL_ENTRY_SZ		48
+> +#define HNS_ROCE_V2_EXT_ATOMIC_TRRL_ENTRY_SZ	100
+>  #define HNS_ROCE_V2_CQC_ENTRY_SZ		64
+>  #define HNS_ROCE_V2_SRQC_ENTRY_SZ		64
+>  #define HNS_ROCE_V2_MTPT_ENTRY_SZ		64
+> @@ -158,6 +159,12 @@ enum {
 >  
->  static int gup_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
-> -		unsigned long end, unsigned int flags, struct page **pages, int *nr)
-> +			unsigned long end, unsigned int flags,
-> +			struct page **pages, int *nr)
->  {
->  	struct page *head, *page;
->  	int refs;
-> @@ -2168,7 +2175,8 @@ static int gup_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
->  	if (pud_devmap(orig)) {
->  		if (unlikely(flags & FOLL_LONGTERM))
->  			return 0;
-> -		return __gup_device_huge_pud(orig, pudp, addr, end, pages, nr);
-> +		return __gup_device_huge_pud(orig, pudp, addr, end, flags,
-> +					     pages, nr);
->  	}
+>  #define HNS_ROCE_V2_CQE_QPN_MASK		0x3ffff
 >  
->  	page = pud_page(orig) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
-> -- 
-> 2.24.0
+> +#define EXT_SGE_BYTE_8_NUM	2
+> +#define STANDARD_ATOMIC_BYTE_8	0x8
+> +#define EXTEND_ATOMIC_BYTE_16	0x10
+> +#define EXTEND_ATOMIC_BYTE_32	0x20
+> +#define EXTEND_ATOMIC_BYTE_64	0x40
+> +
+>  enum {
+>  	HNS_ROCE_V2_WQE_OP_SEND				= 0x0,
+>  	HNS_ROCE_V2_WQE_OP_SEND_WITH_INV		= 0x1,
+> @@ -644,6 +651,7 @@ struct hns_roce_v2_qp_context {
+>  
+>  #define	V2_QPC_BYTE_76_RQIE_S 28
+>  
+> +#define	V2_QPC_BYTE_76_EXT_ATE_S 29
+>  #define	V2_QPC_BYTE_76_RQ_VLAN_EN_S 30
+>  #define	V2_QPC_BYTE_80_RX_CQN_S 0
+>  #define V2_QPC_BYTE_80_RX_CQN_M GENMASK(23, 0)
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
