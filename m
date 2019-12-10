@@ -2,35 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 41AAC1195CB
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 22:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FD911951A
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 22:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728711AbfLJVLL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Dec 2019 16:11:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33578 "EHLO mail.kernel.org"
+        id S1727324AbfLJVSp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Dec 2019 16:18:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728708AbfLJVLK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Dec 2019 16:11:10 -0500
+        id S1729022AbfLJVMh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Dec 2019 16:12:37 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BD2424697;
-        Tue, 10 Dec 2019 21:11:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81B782077B;
+        Tue, 10 Dec 2019 21:12:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576012270;
-        bh=6IUHqtOId68VED+dBh6FQNdwiznKbRUy/0McKi+HpdE=;
+        s=default; t=1576012357;
+        bh=vDRPh9wTYaDAmoixDIR+6bx0yktkFQddfVJ1Qt6o5IM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MuLD4ui110tRoBgynjrLw2A7OHf8/osKuXcQtnQM3ix9n6e/NKPGIjUqqxP8E+cSY
-         VDSalQGC7xI3GLc02FinaOT2l/eUhIjQGolfumNHp82XD9wDPxl20kPaVpnHvuPvs7
-         jpNNTO9TB585VXQG3tEjXHgIfHFZnmd+0f97lZ6U=
+        b=lmoW985C65a7prL1bKpjNANPlFSgaJEb5wuYQx5xH63OYG3khzToolieidCZFf0nx
+         j3UGkbt9m5PCkwIJFsqYRRFwlopjLik4sFEpRGzoFHPoWaTFD/VwVR2/xRibirEohx
+         jYkpp52gd7JYB2/ugYKsY3q5drQnp9wTNZkaD0zA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kamal Heib <kamalheib1@gmail.com>,
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 215/350] RDMA/core: Fix return code when modify_port isn't supported
-Date:   Tue, 10 Dec 2019 16:05:20 -0500
-Message-Id: <20191210210735.9077-176-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 285/350] RDMA/qib: Validate ->show()/store() callbacks before calling them
+Date:   Tue, 10 Dec 2019 16:06:30 -0500
+Message-Id: <20191210210735.9077-246-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210210735.9077-1-sashal@kernel.org>
 References: <20191210210735.9077-1-sashal@kernel.org>
@@ -43,45 +44,49 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Kamal Heib <kamalheib1@gmail.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
 
-[ Upstream commit 55bfe905fa97633438c13fb029aed85371d85480 ]
+[ Upstream commit 7ee23491b39259ae83899dd93b2a29ef0f22f0a7 ]
 
-Improve return code from ib_modify_port() by doing the following:
- - Use "-EOPNOTSUPP" instead "-ENOSYS" which is the proper return code
+The permissions of the read-only or write-only sysfs files can be
+changed (as root) and the user can then try to read a write-only file or
+write to a read-only file which will lead to kernel crash here.
 
- - Allow only fake IB_PORT_CM_SUP manipulation for RoCE providers that
-   didn't implement the modify_port callback, otherwise return
-   "-EOPNOTSUPP"
+Protect against that by always validating the show/store callbacks.
 
-Fixes: 61e0962d5221 ("IB: Avoid ib_modify_port() failure for RoCE devices")
-Link: https://lore.kernel.org/r/20191028155931.1114-2-kamalheib1@gmail.com
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+Link: https://lore.kernel.org/r/d45cc26361a174ae12dbb86c994ef334d257924b.1573096807.git.viresh.kumar@linaro.org
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/device.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/qib/qib_sysfs.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index e6327d8f5b79a..2b5bd7206fc6e 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -2409,8 +2409,12 @@ int ib_modify_port(struct ib_device *device,
- 		rc = device->ops.modify_port(device, port_num,
- 					     port_modify_mask,
- 					     port_modify);
-+	else if (rdma_protocol_roce(device, port_num) &&
-+		 ((port_modify->set_port_cap_mask & ~IB_PORT_CM_SUP) == 0 ||
-+		  (port_modify->clr_port_cap_mask & ~IB_PORT_CM_SUP) == 0))
-+		rc = 0;
- 	else
--		rc = rdma_protocol_roce(device, port_num) ? 0 : -ENOSYS;
-+		rc = -EOPNOTSUPP;
- 	return rc;
+diff --git a/drivers/infiniband/hw/qib/qib_sysfs.c b/drivers/infiniband/hw/qib/qib_sysfs.c
+index 3926be78036ee..568b21eb6ea15 100644
+--- a/drivers/infiniband/hw/qib/qib_sysfs.c
++++ b/drivers/infiniband/hw/qib/qib_sysfs.c
+@@ -301,6 +301,9 @@ static ssize_t qib_portattr_show(struct kobject *kobj,
+ 	struct qib_pportdata *ppd =
+ 		container_of(kobj, struct qib_pportdata, pport_kobj);
+ 
++	if (!pattr->show)
++		return -EIO;
++
+ 	return pattr->show(ppd, buf);
  }
- EXPORT_SYMBOL(ib_modify_port);
+ 
+@@ -312,6 +315,9 @@ static ssize_t qib_portattr_store(struct kobject *kobj,
+ 	struct qib_pportdata *ppd =
+ 		container_of(kobj, struct qib_pportdata, pport_kobj);
+ 
++	if (!pattr->store)
++		return -EIO;
++
+ 	return pattr->store(ppd, buf, len);
+ }
+ 
 -- 
 2.20.1
 
