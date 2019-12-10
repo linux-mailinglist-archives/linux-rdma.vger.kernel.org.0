@@ -2,80 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B89EE118164
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 08:33:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 893381184C9
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 11:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbfLJHdb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Dec 2019 02:33:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57284 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726819AbfLJHdb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Dec 2019 02:33:31 -0500
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56308206D5;
-        Tue, 10 Dec 2019 07:33:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575963210;
-        bh=JPqMrsYFGc0/85JOVZhoNHjbP97FSnCpRd17R/WrPzU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1UwTEDsR+4Fc3q31V3+3yVI/WwROe8vR+e0jXcZam40sdwqFCzYqvuy3uFElovoPi
-         IaxV5PvYi5VUQgksQt4ZCf9eQWYbGMH+K5JTo8g8Gbtw7+T7Qg6G5rUiwZibcrt1Fy
-         lK3Aqyg/Qqzu3HInmOcp+A60teQWglSPyGvjX3w0=
-Date:   Tue, 10 Dec 2019 08:33:26 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, jgg@ziepe.ca, parav@mellanox.com
-Subject: Re: [net-next v3 00/20][pull request] Intel Wired LAN Driver Updates
- 2019-12-09
-Message-ID: <20191210073326.GA3077639@kroah.com>
-References: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
+        id S1727325AbfLJKRr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Dec 2019 05:17:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48892 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726574AbfLJKRq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Dec 2019 05:17:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 99CB6AD4A;
+        Tue, 10 Dec 2019 10:17:42 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 8681F1E0B23; Tue, 10 Dec 2019 11:17:38 +0100 (CET)
+Date:   Tue, 10 Dec 2019 11:17:38 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>, stable@vger.kernel.org
+Subject: Re: [PATCH v8 17/26] media/v4l2-core: set pages dirty upon releasing
+ DMA buffers
+Message-ID: <20191210101738.GE1551@quack2.suse.cz>
+References: <20191209225344.99740-1-jhubbard@nvidia.com>
+ <20191209225344.99740-18-jhubbard@nvidia.com>
+ <20191209165627.bf657cb8fdf660e8f91e966c@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
+In-Reply-To: <20191209165627.bf657cb8fdf660e8f91e966c@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Dec 09, 2019 at 02:49:15PM -0800, Jeff Kirsher wrote:
-> This series contains the initial implementation of the Virtual Bus,
-> virtbus_device, virtbus_driver, updates to 'ice' and 'i40e' to use the new
-> Virtual Bus and the new RDMA driver 'irdma' for use with 'ice' and 'i40e'.
+On Mon 09-12-19 16:56:27, Andrew Morton wrote:
+> On Mon, 9 Dec 2019 14:53:35 -0800 John Hubbard <jhubbard@nvidia.com> wrote:
 > 
-> The primary purpose of the Virtual bus is to provide a matching service
-> and to pass the data pointer contained in the virtbus_device to the
-> virtbus_driver during its probe call.  This will allow two separate
-> kernel objects to match up and start communication.
+> > After DMA is complete, and the device and CPU caches are synchronized,
+> > it's still required to mark the CPU pages as dirty, if the data was
+> > coming from the device. However, this driver was just issuing a
+> > bare put_page() call, without any set_page_dirty*() call.
+> > 
+> > Fix the problem, by calling set_page_dirty_lock() if the CPU pages
+> > were potentially receiving data from the device.
+> > 
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > Cc: <stable@vger.kernel.org>
 > 
-> The last 16 patches of the series adds a unified Intel Ethernet Protocol
-> driver for RDMA that supports a new network device E810 (iWARP and
-> RoCEv2 capable) and the existing X722 iWARP device.  The driver
-> architecture provides the extensibility for future generations of Intel
-> hardware supporting RDMA.
-> 
-> The 'irdma' driver replaces the legacy X722 driver i40iw and extends the
-> ABI already defined for i40iw.  It is backward compatible with legacy
-> X722 rdma-core provider (libi40iw).
-> 
-> This series currently builds against net-next tree AND the rdma "for-next"
-> branch.
-> 
-> v1: Initial virtual bus submission
-> v2: Added example virtbus_dev and virtbus_drv in
->     tools/testing/sefltests/ to test the virtual bus and provide an
->     example on how to implement
-> v3: Added ice and i40e driver changes to implement the virtual bus, also
->     added the new irdma driver which is the RDMA driver which
->     communicates with the ice and i40e drivers
+> What are the user-visible effects of this change?
 
-Seems pretty premature to ask for a pull request after I rejected your
-first 2 submissions and have not seen a valid implementation yet.
+Presumably loss of captured video data if the page writeback hits in the
+wrong moment (i.e., after the page was faulted in but before the video HW
+stored data in the page) and the page then gets evicted from the page cache.
 
-Please give me a few days to review this...
+								Honza
 
-greg k-h
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
