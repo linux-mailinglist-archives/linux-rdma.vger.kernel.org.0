@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD97B119909
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 22:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6E01197E0
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 22:38:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729872AbfLJVmM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Dec 2019 16:42:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38868 "EHLO mail.kernel.org"
+        id S1730239AbfLJVfX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Dec 2019 16:35:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729916AbfLJVeE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Dec 2019 16:34:04 -0500
+        id S1730234AbfLJVfU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Dec 2019 16:35:20 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11FCE2073B;
-        Tue, 10 Dec 2019 21:34:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8460C2073B;
+        Tue, 10 Dec 2019 21:35:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576013643;
-        bh=dpw+An5gttVv6+XYF5TNT6KIUmVBKrlCC8WcCZ+QxbY=;
+        s=default; t=1576013720;
+        bh=HmliciBZzqsRqRN7RPFZjJ+IVzmrgEi6yiabt3TzylU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nyzf8T3Wn0WwkOYLvMvS+vuITDuEat92Kyjwz+vHJMgp4Vua8+4SIfglOg08uGCRt
-         dII/FVTxGyZQ9eqRD09hSi2Dp44wjbXhzEe/Xa1DSPcp/LM0i6Ida+iFtI23r2yAcu
-         U2wbde1Y/O8M2zV2qcUL1umO7BSdy5xIa46Tq/wM=
+        b=PHm0m5BIDR0oqO/xhh0DsGlRLHLZTZMh5JhnjCOsKqBGzOSIxl5QUq+D8Qp0pOq/r
+         qemjxr6pe9iCA3cC99WqW0S23wA51pfU4OcKU7cCp1Za6wtH7MYVv1jkiI7ijWCxow
+         YhJjr1uX4HPvog/+bMCPbeR8OWH33y1XH0+vH6aU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Michal Kalderon <michal.kalderon@marvell.com>,
-        Ariel Elior <ariel.elior@marvell.com>,
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 083/177] RDMA/qedr: Fix memory leak in user qp and mr
-Date:   Tue, 10 Dec 2019 16:30:47 -0500
-Message-Id: <20191210213221.11921-83-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 146/177] RDMA/qib: Validate ->show()/store() callbacks before calling them
+Date:   Tue, 10 Dec 2019 16:31:50 -0500
+Message-Id: <20191210213221.11921-146-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210213221.11921-1-sashal@kernel.org>
 References: <20191210213221.11921-1-sashal@kernel.org>
@@ -44,53 +44,49 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Michal Kalderon <michal.kalderon@marvell.com>
+From: Viresh Kumar <viresh.kumar@linaro.org>
 
-[ Upstream commit 24e412c1e00ebfe73619e6b88cbc26c2c7d41b85 ]
+[ Upstream commit 7ee23491b39259ae83899dd93b2a29ef0f22f0a7 ]
 
-User QPs pbl's weren't freed properly.
-MR pbls weren't freed properly.
+The permissions of the read-only or write-only sysfs files can be
+changed (as root) and the user can then try to read a write-only file or
+write to a read-only file which will lead to kernel crash here.
 
-Fixes: e0290cce6ac0 ("qedr: Add support for memory registeration verbs")
-Link: https://lore.kernel.org/r/20191027200451.28187-5-michal.kalderon@marvell.com
-Signed-off-by: Ariel Elior <ariel.elior@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+Protect against that by always validating the show/store callbacks.
+
+Link: https://lore.kernel.org/r/d45cc26361a174ae12dbb86c994ef334d257924b.1573096807.git.viresh.kumar@linaro.org
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/qedr/verbs.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/qib/qib_sysfs.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 8cc3df24e04e4..9167a1c40bcf5 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -1701,6 +1701,14 @@ static void qedr_cleanup_user(struct qedr_dev *dev, struct qedr_qp *qp)
- 	if (qp->urq.umem)
- 		ib_umem_release(qp->urq.umem);
- 	qp->urq.umem = NULL;
+diff --git a/drivers/infiniband/hw/qib/qib_sysfs.c b/drivers/infiniband/hw/qib/qib_sysfs.c
+index ca2638d8f35ef..d831f3e61ae8f 100644
+--- a/drivers/infiniband/hw/qib/qib_sysfs.c
++++ b/drivers/infiniband/hw/qib/qib_sysfs.c
+@@ -301,6 +301,9 @@ static ssize_t qib_portattr_show(struct kobject *kobj,
+ 	struct qib_pportdata *ppd =
+ 		container_of(kobj, struct qib_pportdata, pport_kobj);
+ 
++	if (!pattr->show)
++		return -EIO;
 +
-+	if (rdma_protocol_roce(&dev->ibdev, 1)) {
-+		qedr_free_pbl(dev, &qp->usq.pbl_info, qp->usq.pbl_tbl);
-+		qedr_free_pbl(dev, &qp->urq.pbl_info, qp->urq.pbl_tbl);
-+	} else {
-+		kfree(qp->usq.pbl_tbl);
-+		kfree(qp->urq.pbl_tbl);
-+	}
+ 	return pattr->show(ppd, buf);
  }
  
- static int qedr_create_user_qp(struct qedr_dev *dev,
-@@ -2809,8 +2817,8 @@ int qedr_dereg_mr(struct ib_mr *ib_mr)
+@@ -312,6 +315,9 @@ static ssize_t qib_portattr_store(struct kobject *kobj,
+ 	struct qib_pportdata *ppd =
+ 		container_of(kobj, struct qib_pportdata, pport_kobj);
  
- 	dev->ops->rdma_free_tid(dev->rdma_ctx, mr->hw_mr.itid);
++	if (!pattr->store)
++		return -EIO;
++
+ 	return pattr->store(ppd, buf, len);
+ }
  
--	if ((mr->type != QEDR_MR_DMA) && (mr->type != QEDR_MR_FRMR))
--		qedr_free_pbl(dev, &mr->info.pbl_info, mr->info.pbl_table);
-+	if (mr->type != QEDR_MR_DMA)
-+		free_mr_info(dev, &mr->info);
- 
- 	/* it could be user registered memory. */
- 	if (mr->umem)
 -- 
 2.20.1
 
