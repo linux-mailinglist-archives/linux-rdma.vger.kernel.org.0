@@ -2,37 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3B4119403
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 22:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B91E6119428
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Dec 2019 22:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729045AbfLJVMj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Dec 2019 16:12:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37302 "EHLO mail.kernel.org"
+        id S1729469AbfLJVNv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Dec 2019 16:13:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729037AbfLJVMi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Dec 2019 16:12:38 -0500
+        id S1729462AbfLJVNv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Dec 2019 16:13:51 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99A3D208C3;
-        Tue, 10 Dec 2019 21:12:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D82AE214AF;
+        Tue, 10 Dec 2019 21:13:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576012358;
-        bh=TRwGKMpNMAvDMTxkNkuhEWzAfg0IAMCbSfX9dgiBUaA=;
+        s=default; t=1576012430;
+        bh=oTyZE3PvvugiXgfACgNDGttm2rPWx87oWQPYoTVhVU8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IsY0KZh1JFaZUWBabwhX1b9egKpM+hW6a+UeGCr71ww1JIhK7A3T6HLWhWlpE9+gf
-         avfYq07ptdPuqNkfRFMHZaf7PAItraq4W0pO5mNhvnzVdMqC5kmbhVOP0XZsKAVIJR
-         Lwqr0diP0Qq1NK2jSMbLsz/2VHmaLjJka5oKMeYc=
+        b=qRII+pLErXEVEWtbRyFYDk59yv7DT7DVb2WMcJbmklEv4YERqYr0hhUxjf8QRSFyd
+         ALA7/Pw9ZevCwzTAyrNHookGe8scrKh5IGdD9G3rI4E8/KV6HWHoGx6zPnDio06dTY
+         PP32RTtIhdfAUn9tluV5xfy2p85xVxpwPv19Suw4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gal Pressman <galpress@amazon.com>,
-        Daniel Kranzdorf <dkkranzd@amazon.com>,
-        Firas JahJah <firasj@amazon.com>,
+Cc:     Devesh Sharma <devesh.sharma@broadcom.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 286/350] RDMA/efa: Clear the admin command buffer prior to its submission
-Date:   Tue, 10 Dec 2019 16:06:31 -0500
-Message-Id: <20191210210735.9077-247-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 344/350] RDMA/bnxt_re: Fix missing le16_to_cpu
+Date:   Tue, 10 Dec 2019 16:07:29 -0500
+Message-Id: <20191210210735.9077-305-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210210735.9077-1-sashal@kernel.org>
 References: <20191210210735.9077-1-sashal@kernel.org>
@@ -45,52 +43,45 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gal Pressman <galpress@amazon.com>
+From: Devesh Sharma <devesh.sharma@broadcom.com>
 
-[ Upstream commit 64c264872b8879e2ab9017eefe9514d4c045c60e ]
+[ Upstream commit fca5b9dc0986aa49b3f0a7cfe24b6c82422ac1d7 ]
 
-We cannot rely on the entry memcpy as we only copy the actual size of the
-command, the rest of the bytes must be memset to zero.
+From sparse:
 
-Currently providing non-zero memory will not have any user visible impact.
-However, since admin commands are extendable (in a backwards compatible
-way) everything beyond the size of the command must be cleared to prevent
-issues in the future.
+drivers/infiniband/hw/bnxt_re/main.c:1274:18: warning: cast from restricted __le16
+drivers/infiniband/hw/bnxt_re/main.c:1275:18: warning: cast from restricted __le16
+drivers/infiniband/hw/bnxt_re/main.c:1276:18: warning: cast from restricted __le16
+drivers/infiniband/hw/bnxt_re/main.c:1277:21: warning: restricted __le16 degrades to integer
 
-Fixes: 0420e542569b ("RDMA/efa: Implement functions that submit and complete admin commands")
-Link: https://lore.kernel.org/r/20191112092608.46964-1-galpress@amazon.com
-Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
-Reviewed-by: Firas JahJah <firasj@amazon.com>
-Signed-off-by: Gal Pressman <galpress@amazon.com>
+Fixes: 2b827ea1926b ("RDMA/bnxt_re: Query HWRM Interface version from FW")
+Link: https://lore.kernel.org/r/1574317343-23300-4-git-send-email-devesh.sharma@broadcom.com
+Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/efa/efa_com.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/bnxt_re/main.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/efa/efa_com.c b/drivers/infiniband/hw/efa/efa_com.c
-index 3c412bc5b94f1..0778f4f7dccd7 100644
---- a/drivers/infiniband/hw/efa/efa_com.c
-+++ b/drivers/infiniband/hw/efa/efa_com.c
-@@ -317,6 +317,7 @@ static struct efa_comp_ctx *__efa_com_submit_admin_cmd(struct efa_com_admin_queu
- 						       struct efa_admin_acq_entry *comp,
- 						       size_t comp_size_in_bytes)
- {
-+	struct efa_admin_aq_entry *aqe;
- 	struct efa_comp_ctx *comp_ctx;
- 	u16 queue_size_mask;
- 	u16 cmd_id;
-@@ -350,7 +351,9 @@ static struct efa_comp_ctx *__efa_com_submit_admin_cmd(struct efa_com_admin_queu
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 30a54f8aa42c0..b31e215882004 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -1270,10 +1270,10 @@ static void bnxt_re_query_hwrm_intf_version(struct bnxt_re_dev *rdev)
+ 		return;
+ 	}
+ 	rdev->qplib_ctx.hwrm_intf_ver =
+-		(u64)resp.hwrm_intf_major << 48 |
+-		(u64)resp.hwrm_intf_minor << 32 |
+-		(u64)resp.hwrm_intf_build << 16 |
+-		resp.hwrm_intf_patch;
++		(u64)le16_to_cpu(resp.hwrm_intf_major) << 48 |
++		(u64)le16_to_cpu(resp.hwrm_intf_minor) << 32 |
++		(u64)le16_to_cpu(resp.hwrm_intf_build) << 16 |
++		le16_to_cpu(resp.hwrm_intf_patch);
+ }
  
- 	reinit_completion(&comp_ctx->wait_event);
- 
--	memcpy(&aq->sq.entries[pi], cmd, cmd_size_in_bytes);
-+	aqe = &aq->sq.entries[pi];
-+	memset(aqe, 0, sizeof(*aqe));
-+	memcpy(aqe, cmd, cmd_size_in_bytes);
- 
- 	aq->sq.pc++;
- 	atomic64_inc(&aq->stats.submitted_cmd);
+ static void bnxt_re_ib_unreg(struct bnxt_re_dev *rdev)
 -- 
 2.20.1
 
