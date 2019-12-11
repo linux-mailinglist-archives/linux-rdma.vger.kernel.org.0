@@ -2,96 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E1811BD92
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2019 21:02:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DAF11BEB2
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2019 21:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbfLKUCD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Dec 2019 15:02:03 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:42492 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726647AbfLKUCD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Dec 2019 15:02:03 -0500
-Received: by mail-oi1-f193.google.com with SMTP id j22so14365171oij.9
-        for <linux-rdma@vger.kernel.org>; Wed, 11 Dec 2019 12:02:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=g3bJuUaLyL2VFZYFbkaoSwsmrv1zbc4GsOZTr/pd6to=;
-        b=GLc8U8ER8mC5XiReAgATgNGs2Ol6tiFV/1Vh5KIjgwHR1Fdc1pEVFrr5jyBVpLt/Hj
-         THIcIhky0YndpEIWHf5z2T/PXD/VY1w9H607XgMjtDuwSrSxHkO7PKIWD6M4j+9IaFt+
-         2VYkz270LcDP79S8+LYwGigH8uv+bypMWjvyEWdP5wPiCxhEhOGFuW518GoiCyHK/XwV
-         UXT6D73jx290uJH1ju9IaTk9YFxhUq16oq/uz7o5ss5nkyJKX5RH4LZl8H0xPpg9iXtv
-         cP17q+GPZ2xvXZMVOMTHfdgrruI6+a+11V2SBATvFAOnh90d19HcUH8IyTPQg0A1C7YQ
-         VBVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=g3bJuUaLyL2VFZYFbkaoSwsmrv1zbc4GsOZTr/pd6to=;
-        b=h2gYOGmS7KnT8U5dKzI6g3fH8eqRDveAMeaR+e3VeoZbswIhwjso7xl/TG7GnNV3iK
-         u4wYkYkEMpz/ThU+RMXXHkJlDtmIpv7BLUANDYmL9cy0gQBLFRHgyBusH5CzbENvhpie
-         6e6yYWcC19PC0M/d1x2OKa/nwhooRoRdHhY8vWr3TYY6g18iP9jWQwx8Kqqp6kcKQIiQ
-         Cuz6T6kYDbAOYfAmGxyjhpyRZo5RBcMi9iMV1wD7afXEp0HBoloolFwykaqJX7DEtgVq
-         qrwVw/qWKdTyy4cAM2g1Upii92M4da+U+9mrD6qlq+/NGa62E8M5BI3GiOXLcrtxkhcr
-         0bfA==
-X-Gm-Message-State: APjAAAVGrd9vyJ//TqCir5ZHOUbvca7SaIMeAq6F7u0y5STR7Z7k1sBO
-        SmByy3wznTjJDW0XDXQxL9noSg==
-X-Google-Smtp-Source: APXvYqwSNfEpmU+gcH5IN9C9kiT1CF65+u4xWW8KPWPrB/3SN3QTyW62PKOIKtmB4JHlQvwUfISiUw==
-X-Received: by 2002:a05:6808:f:: with SMTP id u15mr4011672oic.164.1576094522380;
-        Wed, 11 Dec 2019 12:02:02 -0800 (PST)
-Received: from ziepe.ca ([217.140.111.136])
-        by smtp.gmail.com with ESMTPSA id j202sm1147859oih.8.2019.12.11.12.02.01
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 11 Dec 2019 12:02:01 -0800 (PST)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1if8BN-0003dP-04; Wed, 11 Dec 2019 16:02:01 -0400
-Date:   Wed, 11 Dec 2019 16:02:00 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc:     davem@davemloft.net, gregkh@linuxfoundation.org,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        nhorman@redhat.com, sassmann@redhat.com, parav@mellanox.com
-Subject: Re: [PATCH v3 19/20] RDMA: Add irdma Kconfig/Makefile and remove
- i40iw
-Message-ID: <20191211200200.GA13279@ziepe.ca>
-References: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
- <20191209224935.1780117-20-jeffrey.t.kirsher@intel.com>
+        id S1726916AbfLKU5m (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Dec 2019 15:57:42 -0500
+Received: from ms.lwn.net ([45.79.88.28]:58190 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726141AbfLKU5l (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 11 Dec 2019 15:57:41 -0500
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 7D799739;
+        Wed, 11 Dec 2019 20:57:38 +0000 (UTC)
+Date:   Wed, 11 Dec 2019 13:57:37 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFQ=?= =?UTF-8?B?w7ZwZWw=?= 
+        <bjorn.topel@intel.com>, Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        =?UTF-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH v9 10/25] mm/gup: introduce pin_user_pages*() and
+ FOLL_PIN
+Message-ID: <20191211135737.581add2f@lwn.net>
+In-Reply-To: <20191211025318.457113-11-jhubbard@nvidia.com>
+References: <20191211025318.457113-1-jhubbard@nvidia.com>
+        <20191211025318.457113-11-jhubbard@nvidia.com>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191209224935.1780117-20-jeffrey.t.kirsher@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Dec 09, 2019 at 02:49:34PM -0800, Jeff Kirsher wrote:
-> From: Shiraz Saleem <shiraz.saleem@intel.com>
-> 
-> Add Kconfig and Makefile to build irdma driver.
-> 
-> Remove i40iw driver. irdma is the replacement driver
-> that supports X722.
+On Tue, 10 Dec 2019 18:53:03 -0800
+John Hubbard <jhubbard@nvidia.com> wrote:
 
-I looked through this for a litle while, it is very very big. I'd like
-some of the other people who have sent drivers lately to give it a go
-over as well..
+> Introduce pin_user_pages*() variations of get_user_pages*() calls,
+> and also pin_longterm_pages*() variations.
 
-A few broad comments 
- - Do not use the 'err1', 'err2', etc labels for goto unwind
- - Please check all uses of rcu, I could not see why some existed
- - Use the new rdma mmap api. The whole mmap flow looked wonky to me
- - Check explicit casts, I saw alot that where questionable
- - Make sure rdma-core still builds after all the kernel uapi header
-   changes - looks to me like it breaks the build
- - Check that atomics should not actually be a refcount_t
- - New drivers should use the ops->driver_unregister flow
- - devlink in the rdma driver seems very strange, I thought this
-   should be in the PCI function driver?
- - The whole cqp_compl_thread thing looks really weird
+Just a couple of nits on the documentation patch
 
-Jason
+> +++ b/Documentation/core-api/pin_user_pages.rst
+> @@ -0,0 +1,232 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +====================================================
+> +pin_user_pages() and related calls
+> +====================================================
+> +
+> +.. contents:: :local:
+> +
+> +Overview
+> +========
+> +
+> +This document describes the following functions: ::
+> +
+> + pin_user_pages
+> + pin_user_pages_fast
+> + pin_user_pages_remote
+
+You could just say "the following functions::" and get the result you're
+after with a slightly less alien plain-text reading experience.
+
+Of course, you could also just say "This document describes
+pin_user_pages(), pin_user_pages_fast(), and pin_user_pages_remote()." But
+that's a matter of personal taste, I guess.  Using the function() notation
+will cause the docs system to automatically link to the kerneldoc info,
+though.  
+
+> +Basic description of FOLL_PIN
+> +=============================
+> +
+> +FOLL_PIN and FOLL_LONGTERM are flags that can be passed to the get_user_pages*()
+> +("gup") family of functions. FOLL_PIN has significant interactions and
+> +interdependencies with FOLL_LONGTERM, so both are covered here.
+> +
+> +FOLL_PIN is internal to gup, meaning that it should not appear at the gup call
+> +sites. This allows the associated wrapper functions  (pin_user_pages*() and
+> +others) to set the correct combination of these flags, and to check for problems
+> +as well.
+> +
+> +FOLL_LONGTERM, on the other hand, *is* allowed to be set at the gup call sites.
+> +This is in order to avoid creating a large number of wrapper functions to cover
+> +all combinations of get*(), pin*(), FOLL_LONGTERM, and more. Also, the
+> +pin_user_pages*() APIs are clearly distinct from the get_user_pages*() APIs, so
+> +that's a natural dividing line, and a good point to make separate wrapper calls.
+> +In other words, use pin_user_pages*() for DMA-pinned pages, and
+> +get_user_pages*() for other cases. There are four cases described later on in
+> +this document, to further clarify that concept.
+> +
+> +FOLL_PIN and FOLL_GET are mutually exclusive for a given gup call. However,
+> +multiple threads and call sites are free to pin the same struct pages, via both
+> +FOLL_PIN and FOLL_GET. It's just the call site that needs to choose one or the
+> +other, not the struct page(s).
+> +
+> +The FOLL_PIN implementation is nearly the same as FOLL_GET, except that FOLL_PIN
+> +uses a different reference counting technique.
+> +
+> +FOLL_PIN is a prerequisite to FOLL_LONGTGERM. Another way of saying that is,
+
+FOLL_LONGTERM typoed there.
+
+Thanks,
+
+jon
