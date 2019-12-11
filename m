@@ -2,147 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD37B11A1EA
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2019 03:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA23111A35E
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2019 05:24:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728141AbfLKCyJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Dec 2019 21:54:09 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17227 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728039AbfLKCxk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Dec 2019 21:53:40 -0500
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5df05a1d0001>; Tue, 10 Dec 2019 18:53:17 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 10 Dec 2019 18:53:38 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 10 Dec 2019 18:53:38 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Dec
- 2019 02:53:38 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 11 Dec 2019 02:53:37 +0000
-Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5df05a300002>; Tue, 10 Dec 2019 18:53:37 -0800
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v9 25/25] selftests/vm: run_vmtests: invoke gup_benchmark with basic FOLL_PIN coverage
-Date:   Tue, 10 Dec 2019 18:53:18 -0800
-Message-ID: <20191211025318.457113-26-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191211025318.457113-1-jhubbard@nvidia.com>
-References: <20191211025318.457113-1-jhubbard@nvidia.com>
+        id S1726897AbfLKEYa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Dec 2019 23:24:30 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40310 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726718AbfLKEYa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Dec 2019 23:24:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576038269;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TK38JnGxZMaz8frisHHO+Z0eZRL+92+DHWRZoGUewsg=;
+        b=ceD3uctA2jX46eVeeRJBzEtjXP88UNWAbNbco54pmolLXHI2/gpMDIDsI4nKY/CqWo6pEx
+        r5PQKp1TKokYli+ru8Zi/AUp/taL/DgcvGk+LFQMX6QiSkGPsL+JOVif8ndTs3f7uZsqQG
+        RDyue8xGGNiWmnRrwQ0rIEeEU8dBg9U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-133-l24wJ9vFPd2RSp0dYsNuvQ-1; Tue, 10 Dec 2019 23:24:26 -0500
+X-MC-Unique: l24wJ9vFPd2RSp0dYsNuvQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD91E800EC0;
+        Wed, 11 Dec 2019 04:24:24 +0000 (UTC)
+Received: from linux-ws.nc.xsintricity.com (ovpn-112-42.rdu2.redhat.com [10.10.112.42])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AB4725EE1A;
+        Wed, 11 Dec 2019 04:24:23 +0000 (UTC)
+Message-ID: <c20696208c239bd11621ad3101735255738bcc97.camel@redhat.com>
+Subject: Re: [PATCH 2/2] rxe: correctly calculate iCRC for unaligned payloads
+From:   Doug Ledford <dledford@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Steve Wise <larrystevenwise@gmail.com>,
+        linux-rdma@vger.kernel.org, 3100102071@zju.edu.cn
+Date:   Tue, 10 Dec 2019 23:24:21 -0500
+In-Reply-To: <20191210065410.GK67461@unreal>
+References: <20191203020319.15036-1-larrystevenwise@gmail.com>
+         <20191203020319.15036-2-larrystevenwise@gmail.com>
+         <a0003c88-10f5-c14a-220d-c100fa160163@acm.org>
+         <0f8d9087c48e986d08cf85ef8b59bdca25425eaa.camel@redhat.com>
+         <1aee0f71873a4c9da7f965c12419d81333f3a0b4.camel@redhat.com>
+         <20191210065410.GK67461@unreal>
+Organization: Red Hat, Inc.
+User-Agent: Evolution 3.32.5 (3.32.5-1.fc30)
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1576032797; bh=efjW/rF0EGuRthlOGEU05IQnyHi57jZRzyopoxtDk8c=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=jHA0ByLj6QYFV7n2rBCzqPPa0Q5IP+7x/G8P6mLvVFTEJzqowAWdJqPwWnruswBro
-         lpqfRzvKktTAc+zH4nLabgjThi49XGxeN4DzH53ip1UebXi644j4LuLdlW9mBohUa6
-         SqdUZeet0abo7Kiy7j2yqxOvyhcj3tYFHqQG/LZggQlkcI6EZw4H9s49zoYBV6eHmG
-         8C2IAQPjpWKhfziN+V9Kfo//HwuPhn/a7K84mDN+lqXArlPK/gOgmyBFj7ACDpGNEx
-         eiEUFhIGc89HsbF2aNRnPaRmMHQo4tuBuTQNPTmDKBJn39TpGjnTZWk4Eqa+uj+5g4
-         0zJ9szbQSw+FA==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Mimecast-Spam-Score: 0
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-wgQDn3NDwUaUn33QzQLS"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-It's good to have basic unit test coverage of the new FOLL_PIN
-behavior. Fortunately, the gup_benchmark unit test is extremely
-fast (a few milliseconds), so adding it the the run_vmtests suite
-is going to cause no noticeable change in running time.
+--=-wgQDn3NDwUaUn33QzQLS
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-So, add two new invocations to run_vmtests:
+On Tue, 2019-12-10 at 08:54 +0200, Leon Romanovsky wrote:
+> On Mon, Dec 09, 2019 at 02:07:06PM -0500, Doug Ledford wrote:
+> >=20
+> > I've taken these two patches into for-rc (with fixups to the commit
+> > message on the second, as well as adding a Fixes: tag on the
+> > second).
+> >=20
+> > I stand by what I said about not needing a compatibility flag or
+> > module
+> > option for the user to set.  However, that isn't to say that we
+> > can't
+> > autodetect old soft-RoCE peers.  If we get a packet that fails CRC
+> > and
+> > has pad bytes, then re-run the CRC without the pad bytes and see if
+> > it
+> > matches.  If it does, we could A) mark the current QP as being to an
+> > old
+> > soft-RoCE device (causing us to send without including the pad bytes
+> > in
+> > the CRC) and B) allocate a struct old_soft_roce_peer and save the
+> > guid
+> > into that struct and then put that struct on a list that we then
+> > search
+> > any time we are creating a new queue pair and if the new queue pair
+> > goes
+> > to a guid in the list, then we immediately flag that qp as being to
+> > an
+> > old soft roce device and get the right behavior.  It would slow down
+> > qp
+> > creation somewhat due to the list search, but probably not enough to
+> > worry about.  No one will be doing a 1,000 node cluster MPI job over
+> > soft-RoCE, so we should never notice the list length causing search
+> > problems.  A patch to do something like that would be welcome.
+>=20
+> Do you find this implementation needed? I see RXE as a development
+> platform and in my view it is unlikely that someone will run RXE in
+> production with mixture of different kernel versions, which requires
+> such compatibility fallback.
 
-1) Run gup_benchmark with normal get_user_pages().
+It's not a requirement, that's why I took the patches as they were.  It
+would just be a "nice to have".
 
-2) Run gup_benchmark with pin_user_pages(). This is much like
-the first call, except that it sets FOLL_PIN.
-
-Running these two in quick succession also provide a visual
-comparison of the running times, which is convenient.
-
-The new invocations are fairly early in the run_vmtests script,
-because with test suites, it's usually preferable to put the
-shorter, faster tests first, all other things being equal.
-
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- tools/testing/selftests/vm/run_vmtests | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/tools/testing/selftests/vm/run_vmtests b/tools/testing/selftes=
-ts/vm/run_vmtests
-index a692ea828317..df6a6bf3f238 100755
---- a/tools/testing/selftests/vm/run_vmtests
-+++ b/tools/testing/selftests/vm/run_vmtests
-@@ -112,6 +112,28 @@ echo "NOTE: The above hugetlb tests provide minimal co=
-verage.  Use"
- echo "      https://github.com/libhugetlbfs/libhugetlbfs.git for"
- echo "      hugetlb regression testing."
-=20
-+echo "--------------------------------------------"
-+echo "running 'gup_benchmark -U' (normal/slow gup)"
-+echo "--------------------------------------------"
-+./gup_benchmark -U
-+if [ $? -ne 0 ]; then
-+	echo "[FAIL]"
-+	exitcode=3D1
-+else
-+	echo "[PASS]"
-+fi
-+
-+echo "------------------------------------------"
-+echo "running gup_benchmark -b (pin_user_pages)"
-+echo "------------------------------------------"
-+./gup_benchmark -b
-+if [ $? -ne 0 ]; then
-+	echo "[FAIL]"
-+	exitcode=3D1
-+else
-+	echo "[PASS]"
-+fi
-+
- echo "-------------------"
- echo "running userfaultfd"
- echo "-------------------"
 --=20
-2.24.0
+Doug Ledford <dledford@redhat.com>
+    GPG KeyID: B826A3330E572FDD
+    Fingerprint =3D AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+
+--=-wgQDn3NDwUaUn33QzQLS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEErmsb2hIrI7QmWxJ0uCajMw5XL90FAl3wb3UACgkQuCajMw5X
+L91n+g/+PZDfjW8bJBURqu1nAkxP+mHOZjJCYU4GWZJr25OxlJiUrPPU6vRFiB2q
+f0QBqTXhnRscY86KvUBSeT8VsgJzOVhXq8Cg0disjaiciACFoaAJJ1SYwv+M+2IV
+AQGjNQhhyT9GJSrUL819QyHjNWzMWAN0LtRT8vFlg4LCWA+BUo/wggz6aw6bTXe5
+LqqcU1XPcH5HdiwwYPpB2lgJfdoAklPzlWl+7on2JSMYh24rnRGRAVaBouxCFu41
+/hfiP91pPAuUl7ZR8BEsn6RMEzOOBhz95bQjwdmbZsyVO7nYr7JVVL6TKboixG4m
+lqudo6tFMJp9dZTv36qA/pXG7ui+rE9dXgmhK3xmdsNU38uW68Mwhk4LMqyRtulM
+32GT4KjQss9VUkTzhI2i6uFpAv/JQ/cBbfJTK7m08MITrRdATybC1OZJfu0gCQsM
+D7KAbj6JHwIknKD6lQZ6RGUIH4Hs3kter40fWKCsyIknKIra6nPZwoRPBZ18nev+
+6I91YVn98KB8thKZKmA9s6a0E7yrK7ln7cHXdfAlK2HWtFFPe+B/rxIxH5IJ7QGf
+61OKoFG1FS017VRTgy2nlN7j3lF/AgyFqIE8NgGm2DG/kJeN60XP5jPs+EDuiTjU
+pNI97S5IelJQkRIWbP5HTvMbtJw+qDSbh3UAWSjtBJt1lC+w8JM=
+=VQOm
+-----END PGP SIGNATURE-----
+
+--=-wgQDn3NDwUaUn33QzQLS--
 
