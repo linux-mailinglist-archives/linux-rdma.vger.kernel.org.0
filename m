@@ -2,101 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E4311A43F
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2019 06:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF68F11A44D
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2019 07:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbfLKF7y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Dec 2019 00:59:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33880 "EHLO mail.kernel.org"
+        id S1726082AbfLKGHg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Dec 2019 01:07:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725800AbfLKF7y (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 11 Dec 2019 00:59:54 -0500
+        id S1725800AbfLKGHg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 11 Dec 2019 01:07:36 -0500
 Received: from localhost (unknown [5.29.147.182])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D10272077B;
-        Wed, 11 Dec 2019 05:59:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5163B208C3;
+        Wed, 11 Dec 2019 06:07:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576043993;
-        bh=AMQfvMUe50fmxFTfX8iP4OTXclYSPRTORX5GBphVd9E=;
+        s=default; t=1576044456;
+        bh=ltXmRoOtGxpgBjIm2UR3qK/Vo+/qTfNv38dHDjf+8W4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zxEiJ8F6WcKaorpbHOnxtoOfXh1XuoZyDa2XPlstb37EQzPfQtd3mgepvb33jUE/5
-         hDZzPm6VXPrfZq0SwJob3M/iG3QDQNOd0NP8oNFQ+o45cLCZ1vlM0VMa161X6d2dzb
-         S5xqdGumw5mrF5aGjJZkZ1KNKJ9nBc/F5sU2/Clo=
-Date:   Wed, 11 Dec 2019 07:59:50 +0200
+        b=M9G6U7WXXcw6Z9UgjN8MZUYtndGqSPk3JHUJ+Jk7iF3uXRJbbUWsCk/9yUwIQrFUH
+         tEevlbnXeo6XVqKtaXplJPiI1J7igfWu0ac9LSTIKmeuRr/dqb2T89C+EZCvcg2ba8
+         cj69HEK0+I9Ko/mM1OBslDoONX4FrzOzpTrBYBXQ=
+Date:   Wed, 11 Dec 2019 08:07:32 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Steve Wise <larrystevenwise@gmail.com>,
-        linux-rdma@vger.kernel.org, 3100102071@zju.edu.cn
-Subject: Re: [PATCH 2/2] rxe: correctly calculate iCRC for unaligned payloads
-Message-ID: <20191211055950.GQ67461@unreal>
-References: <20191203020319.15036-1-larrystevenwise@gmail.com>
- <20191203020319.15036-2-larrystevenwise@gmail.com>
- <a0003c88-10f5-c14a-220d-c100fa160163@acm.org>
- <0f8d9087c48e986d08cf85ef8b59bdca25425eaa.camel@redhat.com>
- <1aee0f71873a4c9da7f965c12419d81333f3a0b4.camel@redhat.com>
- <20191210065410.GK67461@unreal>
- <c20696208c239bd11621ad3101735255738bcc97.camel@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>, davem@davemloft.net,
+        gregkh@linuxfoundation.org,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        nhorman@redhat.com, sassmann@redhat.com, parav@mellanox.com,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: Re: [PATCH v3 05/20] RDMA/irdma: Add driver framework definitions
+Message-ID: <20191211060732.GR67461@unreal>
+References: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
+ <20191209224935.1780117-6-jeffrey.t.kirsher@intel.com>
+ <20191210190438.GF46@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c20696208c239bd11621ad3101735255738bcc97.camel@redhat.com>
+In-Reply-To: <20191210190438.GF46@ziepe.ca>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 11:24:21PM -0500, Doug Ledford wrote:
-> On Tue, 2019-12-10 at 08:54 +0200, Leon Romanovsky wrote:
-> > On Mon, Dec 09, 2019 at 02:07:06PM -0500, Doug Ledford wrote:
-> > >
-> > > I've taken these two patches into for-rc (with fixups to the commit
-> > > message on the second, as well as adding a Fixes: tag on the
-> > > second).
-> > >
-> > > I stand by what I said about not needing a compatibility flag or
-> > > module
-> > > option for the user to set.  However, that isn't to say that we
-> > > can't
-> > > autodetect old soft-RoCE peers.  If we get a packet that fails CRC
-> > > and
-> > > has pad bytes, then re-run the CRC without the pad bytes and see if
-> > > it
-> > > matches.  If it does, we could A) mark the current QP as being to an
-> > > old
-> > > soft-RoCE device (causing us to send without including the pad bytes
-> > > in
-> > > the CRC) and B) allocate a struct old_soft_roce_peer and save the
-> > > guid
-> > > into that struct and then put that struct on a list that we then
-> > > search
-> > > any time we are creating a new queue pair and if the new queue pair
-> > > goes
-> > > to a guid in the list, then we immediately flag that qp as being to
-> > > an
-> > > old soft roce device and get the right behavior.  It would slow down
-> > > qp
-> > > creation somewhat due to the list search, but probably not enough to
-> > > worry about.  No one will be doing a 1,000 node cluster MPI job over
-> > > soft-RoCE, so we should never notice the list length causing search
-> > > problems.  A patch to do something like that would be welcome.
-> >
-> > Do you find this implementation needed? I see RXE as a development
-> > platform and in my view it is unlikely that someone will run RXE in
-> > production with mixture of different kernel versions, which requires
-> > such compatibility fallback.
+On Tue, Dec 10, 2019 at 03:04:38PM -0400, Jason Gunthorpe wrote:
+> On Mon, Dec 09, 2019 at 02:49:20PM -0800, Jeff Kirsher wrote:
+> > +{
+> > +	struct i40e_info *ldev = (struct i40e_info *)rf->ldev.if_ldev;
 >
-> It's not a requirement, that's why I took the patches as they were.  It
-> would just be a "nice to have".
-
-I see, thanks
-
+> Why are there so many casts in this file? Is this really container of?
 >
-> --
-> Doug Ledford <dledford@redhat.com>
->     GPG KeyID: B826A3330E572FDD
->     Fingerprint = AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+> > +	hdl = kzalloc((sizeof(*hdl) + sizeof(*iwdev)), GFP_KERNEL);
+> > +	if (!hdl)
+> > +		return -ENOMEM;
+> > +
+> > +	iwdev = (struct irdma_device *)((u8 *)hdl + sizeof(*hdl));
+>
+> Yikes, use structs and container of for things like this please.
+>
+> > +	iwdev->param_wq = alloc_ordered_workqueue("l2params", WQ_MEM_RECLAIM);
+> > +	if (!iwdev->param_wq)
+> > +		goto error;
+>
+> Leon usually asks why another work queue at this point, at least have
+> a comment justifying why. Shouldn't it have a better name?
 
+Yeah, combination of WQ_MEM_RECLAIM flag and "params" in the name raises
+eyebrows immediately.
 
+Thanks
