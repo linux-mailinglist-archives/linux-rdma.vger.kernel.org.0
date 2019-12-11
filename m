@@ -2,130 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B14F11A925
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2019 11:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4745211A9B9
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2019 12:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729004AbfLKKmn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Dec 2019 05:42:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59588 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728030AbfLKKmn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 11 Dec 2019 05:42:43 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D483FB178;
-        Wed, 11 Dec 2019 10:42:38 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id F3EB81E0B23; Wed, 11 Dec 2019 11:42:36 +0100 (CET)
-Date:   Wed, 11 Dec 2019 11:42:36 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v9 20/25] powerpc: book3s64: convert to pin_user_pages()
- and put_user_page()
-Message-ID: <20191211104236.GM1551@quack2.suse.cz>
-References: <20191211025318.457113-1-jhubbard@nvidia.com>
- <20191211025318.457113-21-jhubbard@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191211025318.457113-21-jhubbard@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728030AbfLKLQm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Dec 2019 06:16:42 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:35777 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728027AbfLKLQm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Dec 2019 06:16:42 -0500
+Received: by mail-qk1-f194.google.com with SMTP id z76so2611129qka.2;
+        Wed, 11 Dec 2019 03:16:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=/3VanHZmbF0755d2iFbA3E2Cbgc2bj93oc0GoMrmjNk=;
+        b=sE9N3zNVZuaeIFqI5DUSTHpF/sxH32iejKagn9ACHdNURHgc0FvK/F8NeZ43Km+Mv3
+         94esEzjYq64lt8IXfqWtnNTM+mKIZZApZDprATZXD3cJEHxEs3Px0XOL9Hfg9A2qrAA3
+         uh2JdyxiAujoigNRF+lt16CGBbz6ysFUqnnd8CkHOvcFoGReZvV/lGIOD9FnBCnHKm9S
+         VfNnXy8FnMSBJ71i1mEKa9sUiE/qYdefMoIPqrm5vx1Cq03gZc3N7mLnT3YdTTqcgVlO
+         BDCdTppRddIIrQ3v4dBJsMT4ZYieiJQqPtdYjKSAScdgAv9BWc1tg0B7xX+/+DR0oyjO
+         I3Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/3VanHZmbF0755d2iFbA3E2Cbgc2bj93oc0GoMrmjNk=;
+        b=AzUVHGkfeiSjyXR9FbpCV8veg2A5Q6O4y93IjRbSTx/QRGoQ/X5pJCOrKMMPVMC8eX
+         gX2zA0HfUghuwYYmqzXYiVe03480mrvg9JLUH3mn76ex+KLSbW1GxLaGKKMlruV3RF96
+         DIPOLlK9MhC2rkK90sWyyC0Uvk1/dIXa7ne22P4zxw4R/is6uC5urYN9Nh6eQk7YmH2k
+         H68EYZJ47cP8OoQtZlDNPOwmQtMbr6evne2kMwfVX9kkpsDxW5E4erObWIq5TwQig+xn
+         S75255WGtaSjeZ2crwgMdrujbB091lX0Jzer5T8t+ivF9HN54on5+q2SvTlPUxwoWcsS
+         z34g==
+X-Gm-Message-State: APjAAAUphcfvO9Vu6/yqck9SkH+wILR/ih/9pz+a+y2cEUe6znFlQ8rN
+        MmjtNxfHDJt89eQbjoNf59A=
+X-Google-Smtp-Source: APXvYqxpqmganWvOu/AytAOAkqr6p++/a7SavUFCa3CB6PyOBOvZE+57eR9t1aCrOnEnvmkmttOBrA==
+X-Received: by 2002:a37:9906:: with SMTP id b6mr2191465qke.406.1576063001108;
+        Wed, 11 Dec 2019 03:16:41 -0800 (PST)
+Received: from linux.hsd1.pa.comcast.net (c-76-124-64-60.hsd1.pa.comcast.net. [76.124.64.60])
+        by smtp.gmail.com with ESMTPSA id f21sm752178qto.82.2019.12.11.03.16.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Dec 2019 03:16:40 -0800 (PST)
+From:   Max Hirsch <max.hirsch@gmail.com>
+Cc:     Max Hirsch <max.hirsch@gmail.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Parav Pandit <parav@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Steve Wise <swise@opengridcomputing.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Danit Goldberg <danitg@mellanox.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dag Moxnes <dag.moxnes@oracle.com>,
+        Myungho Jung <mhjungk@gmail.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] RDMA/cma: Fix checkpatch error
+Date:   Wed, 11 Dec 2019 11:16:26 +0000
+Message-Id: <20191211111628.2955-1-max.hirsch@gmail.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue 10-12-19 18:53:13, John Hubbard wrote:
-> 1. Convert from get_user_pages() to pin_user_pages().
-> 
-> 2. As required by pin_user_pages(), release these pages via
-> put_user_page().
-> 
-> Cc: Jan Kara <jack@suse.cz>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+When running checkpatch on cma.c the following error was found:
 
-The patch looks good to me. You can add:
+ERROR: do not use assignment in if condition
+#413: FILE: drivers/infiniband/tmp.c:413:
++	if ((ret = (id_priv->state == comp)))
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+This patch moves the assignment of ret to the previous line. The if statement then checks the value of ret assigned on the previous line. The assigned value of ret is not changed. Testing involved recompiling and loading the kernel. After the changes checkpatch does not report this the error in cma.c.
 
-I'd just note that mm_iommu_do_alloc() has a pre-existing bug that the last
-jump to 'free_exit' (at line 157) happens already after converting page
-pointers to physical addresses so put_page() calls there will just crash.
-But that's completely unrelated to your change. I'll send a fix separately.
+Signed-off-by: Max Hirsch <max.hirsch@gmail.com>
+---
+ drivers/infiniband/core/cma.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-								Honza
-
-> ---
->  arch/powerpc/mm/book3s64/iommu_api.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/powerpc/mm/book3s64/iommu_api.c b/arch/powerpc/mm/book3s64/iommu_api.c
-> index 56cc84520577..a86547822034 100644
-> --- a/arch/powerpc/mm/book3s64/iommu_api.c
-> +++ b/arch/powerpc/mm/book3s64/iommu_api.c
-> @@ -103,7 +103,7 @@ static long mm_iommu_do_alloc(struct mm_struct *mm, unsigned long ua,
->  	for (entry = 0; entry < entries; entry += chunk) {
->  		unsigned long n = min(entries - entry, chunk);
->  
-> -		ret = get_user_pages(ua + (entry << PAGE_SHIFT), n,
-> +		ret = pin_user_pages(ua + (entry << PAGE_SHIFT), n,
->  				FOLL_WRITE | FOLL_LONGTERM,
->  				mem->hpages + entry, NULL);
->  		if (ret == n) {
-> @@ -167,9 +167,8 @@ static long mm_iommu_do_alloc(struct mm_struct *mm, unsigned long ua,
->  	return 0;
->  
->  free_exit:
-> -	/* free the reference taken */
-> -	for (i = 0; i < pinned; i++)
-> -		put_page(mem->hpages[i]);
-> +	/* free the references taken */
-> +	put_user_pages(mem->hpages, pinned);
->  
->  	vfree(mem->hpas);
->  	kfree(mem);
-> @@ -215,7 +214,8 @@ static void mm_iommu_unpin(struct mm_iommu_table_group_mem_t *mem)
->  		if (mem->hpas[i] & MM_IOMMU_TABLE_GROUP_PAGE_DIRTY)
->  			SetPageDirty(page);
->  
-> -		put_page(page);
-> +		put_user_page(page);
-> +
->  		mem->hpas[i] = 0;
->  	}
->  }
-> -- 
-> 2.24.0
-> 
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 25f2b70fd8ef..bdb7a8493517 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -410,7 +410,8 @@ static int cma_comp_exch(struct rdma_id_private *id_priv,
+ 	int ret;
+ 
+ 	spin_lock_irqsave(&id_priv->lock, flags);
+-	if ((ret = (id_priv->state == comp)))
++	ret = (id_priv->state == comp);
++	if (ret)
+ 		id_priv->state = exch;
+ 	spin_unlock_irqrestore(&id_priv->lock, flags);
+ 	return ret;
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.17.1
+
