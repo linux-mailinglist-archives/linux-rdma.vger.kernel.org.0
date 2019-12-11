@@ -2,68 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F1C11A54B
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2019 08:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D41F311A8FB
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2019 11:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbfLKHpR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Dec 2019 02:45:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726151AbfLKHpR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 11 Dec 2019 02:45:17 -0500
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7AAAA20637;
-        Wed, 11 Dec 2019 07:45:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576050316;
-        bh=ORoZNGYLwU3ulSzICh6bzHMq1V1v92C9tqa77JQUmCo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kB9SJhnssCAG6VbTJh99wkwijYY/4H1H/oQWmyPW7d/wM/kDHzp4hPhd5/7mFbbBJ
-         Iv/yizG2h1MVCDL8D6hj6dFVGpVuhzQ82JwCbGo3FCmT+vbu8bc7yPcB3eLQ5n+yeS
-         moX5bNIbwlCJLcVu1jslaVL3SjvCm6J9dYuMaTKc=
-Date:   Wed, 11 Dec 2019 08:45:14 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jason Gunthorpe <jgg@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 4.9 75/91] RDMA/qib: Validate ->show()/store()
- callbacks before calling them
-Message-ID: <20191211074514.GD398293@kroah.com>
-References: <20191210223035.14270-1-sashal@kernel.org>
- <20191210223035.14270-75-sashal@kernel.org>
+        id S1728888AbfLKKeV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Dec 2019 05:34:21 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:51870 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728862AbfLKKeV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Dec 2019 05:34:21 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBBAXtXh079335;
+        Wed, 11 Dec 2019 10:34:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2019-08-05;
+ bh=KrJgP+hPrA6HIMRw0ThGFo1a08LINcQPwDgkb5xVXm8=;
+ b=CJqZO1Zsk3Zz1BNTdqb2Xfd7N/Eq5z1uXvBTrygNq20LT5h8kZJGjtRGAQBf43vFklus
+ cB0y0AxXvAJVO2W1BXmTkHPLPyHJZPxQut6MaZnXvCCqJka2JR4GdOnY5qGSFkKqxxFi
+ /tGc3/AKkrVA6ZpTvacj7ib3Gr7GWrEt4GKRTlX0ZYretfQ6S//Y4AR5oYyKbrV/CPWk
+ CcIZPC5hQ2sINxn5Q5SzHPzcRdQoqoAnT++BlFijxPXOzjhHOJTbv355//RRcmDzGRUc
+ HrIp6zuWrJCyr8qFK/dC/DwNlav/qODuvbYrHir5H+qM0mw0vVniu1WpxDo9Lo4RxJqY wQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2wr41qbsu0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Dec 2019 10:34:13 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBBAXIa8128335;
+        Wed, 11 Dec 2019 10:34:12 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2wte9brkyx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Dec 2019 10:34:12 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xBBAYBRk004650;
+        Wed, 11 Dec 2019 10:34:11 GMT
+Received: from lab02.no.oracle.com (/10.172.144.56)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 11 Dec 2019 02:34:10 -0800
+From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Mark Haywood <mark.haywood@oracle.com>
+Subject: [PATCH RDMA/netlink] RDMA/netlink: Adhere to returning zero on success
+Date:   Wed, 11 Dec 2019 11:34:00 +0100
+Message-Id: <20191211103400.2949140-1-haakon.bugge@oracle.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191210223035.14270-75-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9467 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1912110093
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9467 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1912110093
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 05:30:19PM -0500, Sasha Levin wrote:
-> From: Viresh Kumar <viresh.kumar@linaro.org>
-> 
-> [ Upstream commit 7ee23491b39259ae83899dd93b2a29ef0f22f0a7 ]
-> 
-> The permissions of the read-only or write-only sysfs files can be
-> changed (as root) and the user can then try to read a write-only file or
-> write to a read-only file which will lead to kernel crash here.
-> 
-> Protect against that by always validating the show/store callbacks.
-> 
-> Link: https://lore.kernel.org/r/d45cc26361a174ae12dbb86c994ef334d257924b.1573096807.git.viresh.kumar@linaro.org
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/infiniband/hw/qib/qib_sysfs.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+In rdma_nl_rcv_skb(), the local variable err is assigned the return
+value of the supplied callback function, which could be one of
+ib_nl_handle_resolve_resp(), ib_nl_handle_set_timeout(), or
+ib_nl_handle_ip_res_resp(). These three functions all return skb->len
+on success.
 
-Good catch, I was looking for this one but somehow the stable tag got
-dropped from it.
+rdma_nl_rcv_skb() is merely a copy of netlink_rcv_skb(). The callback
+functions used by the latter have the convention: "Returns 0 on
+success or a negative error code".
 
-greg k-h
+In particular, the statement (equal for both functions):
+
+   if (nlh->nlmsg_flags & NLM_F_ACK || err)
+
+implies that rdma_nl_rcv_skb() always will ack a message, independent
+of the NLM_F_ACK being set in nlmsg_flags or not.
+
+The fix could be to change the above statement, but it is better to
+keep the two *_rcv_skb() functions equal in this respect and instead
+change the callback functions in the rdma subsystem to the correct
+convention.
+
+Suggested-by: Mark Haywood <mark.haywood@oracle.com>
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+Tested-by: Mark Haywood <mark.haywood@oracle.com>
+---
+ drivers/infiniband/core/addr.c     | 2 +-
+ drivers/infiniband/core/sa_query.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+index 606fa6d86685..9449ed2536fa 100644
+--- a/drivers/infiniband/core/addr.c
++++ b/drivers/infiniband/core/addr.c
+@@ -139,7 +139,7 @@ int ib_nl_handle_ip_res_resp(struct sk_buff *skb,
+ 	if (ib_nl_is_good_ip_resp(nlh))
+ 		ib_nl_process_good_ip_rsep(nlh);
+ 
+-	return skb->len;
++	return skb->len > 0 ? 0 : skb->len;
+ }
+ 
+ static int ib_nl_ip_send_msg(struct rdma_dev_addr *dev_addr,
+diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+index 8917125ea16d..dc249e382367 100644
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -1068,7 +1068,7 @@ int ib_nl_handle_set_timeout(struct sk_buff *skb,
+ 	}
+ 
+ settimeout_out:
+-	return skb->len;
++	return skb->len > 0 ? 0 : skb->len;
+ }
+ 
+ static inline int ib_nl_is_good_resolve_resp(const struct nlmsghdr *nlh)
+@@ -1139,7 +1139,7 @@ int ib_nl_handle_resolve_resp(struct sk_buff *skb,
+ 	}
+ 
+ resp_out:
+-	return skb->len;
++	return skb->len > 0 ? 0 : skb->len;
+ }
+ 
+ static void free_sm_ah(struct kref *kref)
+-- 
+2.20.1
+
