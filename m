@@ -2,69 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B4A11CE08
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 14:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE9C11CE2B
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 14:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729405AbfLLNQl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Dec 2019 08:16:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48780 "EHLO mx1.suse.de"
+        id S1729421AbfLLNVH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Dec 2019 08:21:07 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50418 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729338AbfLLNQl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Dec 2019 08:16:41 -0500
+        id S1729378AbfLLNVH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Dec 2019 08:21:07 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9BC24AD07;
-        Thu, 12 Dec 2019 13:16:36 +0000 (UTC)
-Message-ID: <b35922dfd7f62489d35ab15362891a90bf46c3d2.camel@suse.de>
-Subject: Re: [PATCH v4 7/8] linux/log2.h: Fix 64bit calculations in
- roundup/down_pow_two()
+        by mx1.suse.de (Postfix) with ESMTP id B70EFAFD8;
+        Thu, 12 Dec 2019 13:21:03 +0000 (UTC)
+Message-ID: <ff60337c5f6f324fb121fa7cad24e763af29cfe2.camel@suse.de>
+Subject: Re: [PATCH v4 8/8] linux/log2.h: Use roundup/dow_pow_two() on 64bit
+ calculations
 From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 To:     Bjorn Helgaas <helgaas@kernel.org>
 Cc:     andrew.murray@arm.com, maz@kernel.org,
         linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Emilio =?ISO-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Thomas Graf <tgraf@suug.ch>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Eric Anholt <eric@anholt.net>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
         james.quinlan@broadcom.com, mbrugger@suse.com,
-        f.fainelli@gmail.com, phil@raspberrypi.org, wahrenst@gmx.net,
-        jeremy.linton@arm.com, linux-pci@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        Robin Murphy <robin.murphy@arm.con>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
+        phil@raspberrypi.org, jeremy.linton@arm.com,
+        linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rdma@vger.kernel.org, iommu@lists.linux-foundation.org,
-        netdev@vger.kernel.org, kexec@lists.infradead.org,
-        linux-nfs@vger.kernel.org
-Date:   Thu, 12 Dec 2019 14:16:27 +0100
-In-Reply-To: <20191205223044.GA250573@google.com>
-References: <20191205223044.GA250573@google.com>
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        iommu@lists.linux-foundation.org
+Date:   Thu, 12 Dec 2019 14:21:00 +0100
+In-Reply-To: <20191205203845.GA243596@google.com>
+References: <20191205203845.GA243596@google.com>
 Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-vpJ9shRBsDfxzY4jD4N5"
+        protocol="application/pgp-signature"; boundary="=-lcx9Dpdc/nSfdN+F0tca"
 User-Agent: Evolution 3.34.2 
 MIME-Version: 1.0
 Sender: linux-rdma-owner@vger.kernel.org
@@ -73,96 +60,106 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
---=-vpJ9shRBsDfxzY4jD4N5
+--=-lcx9Dpdc/nSfdN+F0tca
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2019-12-05 at 16:30 -0600, Bjorn Helgaas wrote:
-> You got the "n" on "down" in the subject, but still missing "of" ;)
+On Thu, 2019-12-05 at 14:38 -0600, Bjorn Helgaas wrote:
+> The subject contains a couple typos: it's missing "of" and it's
+> missing the "n" on "down".
 
-Yes, sorry about that, I tend to re-read what I meant to say instead of wha=
-t
-it's actually written.
-
-> On Tue, Dec 03, 2019 at 12:47:40PM +0100, Nicolas Saenz Julienne wrote:
-> > Some users need to make sure their rounding function accepts and return=
-s
-> > 64bit long variables regardless of the architecture. Sadly
-> > roundup/rounddown_pow_two() takes and returns unsigned longs. It turns
-> > out ilog2() already handles 32/64bit calculations properly, and being
-> > the building block to the round functions we can rework them as a
-> > wrapper around it.
+Noted >=20
+> On Tue, Dec 03, 2019 at 12:47:41PM +0100, Nicolas Saenz Julienne wrote:
+> > The function now is safe to use while expecting a 64bit value. Use it
+> > where relevant.
 >=20
-> Missing "of" in the function names here.
-> s/a wrapper/wrappers/
+> Please include the function names ("roundup_pow_of_two()",
+> "rounddown_pow_of_two()") in the changelog so it is self-contained and
+> doesn't depend on the subject.
 
 Noted
 
-> IIUC the point of this is that roundup_pow_of_two() returned
-> "unsigned long", which can be either 32 or 64 bits (worth pointing
-> out, I think), and many callers need something that returns
-> "unsigned long long" (always 64 bits).
-
-I'll update the commit message to be a more explicit.
-
-> It's a nice simplification to remove the "__" variants.  Just as a
-> casual reader of this commit message, I'd like to know why we had both
-> the roundup and the __roundup versions in the first place, and why we
-> no longer need both.
-
-So, the commit that introduced it (312a0c170945b) meant to use the '__' var=
-iant
-as a helper, but, due to the fact this is a header file, some found it and =
-made
-use of it. I went over some if the commits introducing '__' usages and none=
- of
-them seem to acknowledge its use as opposed to the macro version. I think i=
-t's
-fair to say it's a case of cargo-culting.
-
-> > -#define roundup_pow_of_two(n)			\
-> > -(						\
-> > -	__builtin_constant_p(n) ? (		\
-> > -		(n =3D=3D 1) ? 1 :			\
-> > -		(1UL << (ilog2((n) - 1) + 1))	\
-> > -				   ) :		\
-> > -	__roundup_pow_of_two(n)			\
-> > - )
-> > +#define roundup_pow_of_two(n)			  \
-> > +(						  \
-> > +	(__builtin_constant_p(n) && ((n) =3D=3D 1)) ? \
-> > +	1 : (1ULL << (ilog2((n) - 1) + 1))        \
-> > +)
+> > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 >=20
-> Should the resulting type of this expression always be a ULL, even
-> when n=3D=3D1, i.e., should it be this?
+> With the nits above and below addressed,
 >=20
->   1ULL : (1ULL << (ilog2((n) - 1) + 1))        \
->=20
-> Or maybe there's no case where that makes a difference?
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>	# drivers/pci
 
-It should be 1ULL on either case.
+Thanks!
+
+> > ---
+> >  drivers/acpi/arm64/iort.c                        | 2 +-
+> >  drivers/net/ethernet/mellanox/mlx4/en_clock.c    | 3 ++-
+> >  drivers/of/device.c                              | 3 ++-
+> >  drivers/pci/controller/cadence/pcie-cadence-ep.c | 3 ++-
+> >  drivers/pci/controller/cadence/pcie-cadence.c    | 3 ++-
+> >  drivers/pci/controller/pcie-brcmstb.c            | 3 ++-
+> >  drivers/pci/controller/pcie-rockchip-ep.c        | 5 +++--
+> >  kernel/dma/direct.c                              | 2 +-
+> >  8 files changed, 15 insertions(+), 9 deletions(-)
+> > --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> > +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> > @@ -10,6 +10,7 @@
+> >  #include <linux/platform_device.h>
+> >  #include <linux/pm_runtime.h>
+> >  #include <linux/sizes.h>
+> > +#include <linux/log2.h>
+> > =20
+> >  #include "pcie-cadence.h"
+> > =20
+> > @@ -65,7 +66,7 @@ static int cdns_pcie_ep_set_bar(struct pci_epc *epc, =
+u8
+> > fn,
+> >  	 * roundup_pow_of_two() returns an unsigned long, which is not suited
+> >  	 * for 64bit values.
+> >  	 */
+>=20
+> Please remove the comment above since it no longer applies.
+
+Noted
+
+[...]
+
+> > diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+> > index 6af7ae83c4ad..056886c4efec 100644
+> > --- a/kernel/dma/direct.c
+> > +++ b/kernel/dma/direct.c
+> > @@ -53,7 +53,7 @@ u64 dma_direct_get_required_mask(struct device *dev)
+> >  {
+> >  	u64 max_dma =3D phys_to_dma_direct(dev, (max_pfn - 1) << PAGE_SHIFT);
+> > =20
+> > -	return (1ULL << (fls64(max_dma) - 1)) * 2 - 1;
+> > +	return rounddown_pow_of_two(max_dma) * 2 - 1;
+>=20
+> Personally I would probably make this one a separate patch since it's
+> qualitatively different than the others and it would avoid the slight
+> awkwardness of the non-greppable "roundup/down_pow_of_two()"
+> construction in the commit subject.
+>=20
+> But it's fine either way.
+
+I'll split it into two parts, as RobH made a similar complaint.
 
 Regards,
 Nicolas
 
 
---=-vpJ9shRBsDfxzY4jD4N5
+--=-lcx9Dpdc/nSfdN+F0tca
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl3yPasACgkQlfZmHno8
-x/4qrgf9GTaIX4ZRG0TCYwOuyJCzR/7cg3GMSsuHo8bknRFfBKmZUwtS0JmNNrn7
-f1Av7IZ0OAbAWPJQkzOXw4OxNhVxq0ItdXAktetVKaF6U5Dz/5tWkkwHLFdhSepV
-FcS4qxWo8nOugcgYRzN6kDaihMFUqbAIioU7n1HGLRGN2s9vaJM1rNmOrGMPovU3
-BbGTs4/7BMM3FmqoGwWUKX5FPFNamYrxAaaOknMUVa16iI7MN7hYH5scWUUK56ER
-57y4jC6vGu17Cku4HBlynsoZpm6z6SvHDoXIMZCbUKbJogsiQo+b1+cZTWLVGi2P
-qQGX/jHjIhYWNVa2Le9F3qgxxmf0uA==
-=hg1F
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl3yPrwACgkQlfZmHno8
+x/4DxAf/dUNU44c6C5UlupKkHs1V09AR3yPNPOe8GrxrtpnzWAaNQ9L4S0ZG9ocS
+gey8W3CCPJPrWmqSAjQ8ddX9w+wKaaRaGFE3wHRFiGVMDSN8kGzHySuWi1ytfy0Y
+x0msb/bX87L3SwSegRTGlvbRJ1rDZl4WxCVFSrhCNRwem2R+v668VGifVS24Ay1f
+dwS7xyDUcMTmaiCfpK8KyJK1GdbScI6kVPFUM57deANw/I60zWGWykBnTeTQtlrM
+gLN2fGNP1wLRKZ5IEHObKLWo0rXTRKBjsouzL4/D5dW69LXZK1nS02rJsdu5bpUl
+WepA96OKnIgxngbBiO8z4btiMgZ1Jw==
+=QTsG
 -----END PGP SIGNATURE-----
 
---=-vpJ9shRBsDfxzY4jD4N5--
+--=-lcx9Dpdc/nSfdN+F0tca--
 
