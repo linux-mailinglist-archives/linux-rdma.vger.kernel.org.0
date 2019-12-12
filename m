@@ -2,149 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 178EE11C71C
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 09:20:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D7611C855
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 09:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728497AbfLLITi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Dec 2019 03:19:38 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:4024 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728457AbfLLITf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Dec 2019 03:19:35 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5df1f8040002>; Thu, 12 Dec 2019 00:19:16 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 12 Dec 2019 00:19:23 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 12 Dec 2019 00:19:23 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Dec
- 2019 08:19:21 +0000
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Dec
- 2019 08:19:21 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Thu, 12 Dec 2019 08:19:21 +0000
-Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5df1f8090001>; Thu, 12 Dec 2019 00:19:21 -0800
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Paul Mackerras" <paulus@samba.org>, Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v10 25/25] selftests/vm: run_vmtests: invoke gup_benchmark with basic FOLL_PIN coverage
-Date:   Thu, 12 Dec 2019 00:19:17 -0800
-Message-ID: <20191212081917.1264184-26-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191212081917.1264184-1-jhubbard@nvidia.com>
-References: <20191212081917.1264184-1-jhubbard@nvidia.com>
+        id S1728221AbfLLIjI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Dec 2019 03:39:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728110AbfLLIjI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Dec 2019 03:39:08 -0500
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDE88214AF;
+        Thu, 12 Dec 2019 08:39:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1576139947;
+        bh=cqSA+BBmuxnW0DeRg7wYxrHXTet8s8DkuXKihlBn1Po=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Indm809ScNJyXc0kbJaplRDJr8tIkaaOO45qAUSVozv1GCYaTtXHi1AplY/nRX34D
+         0X/v0vJVMF386dGYqlQ/oYhwY7oDeMwHo2GQnYYEHrW7KG+62kRlVujGI1uMTRf7jB
+         dNjITeHekpyXpMziKBbEBnY/Gsu65aAElsw1E6n8=
+Date:   Thu, 12 Dec 2019 10:39:04 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>
+Subject: Re: [PATCH v3 05/20] RDMA/irdma: Add driver framework definitions
+Message-ID: <20191212083904.GT67461@unreal>
+References: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
+ <20191209224935.1780117-6-jeffrey.t.kirsher@intel.com>
+ <20191210190438.GF46@ziepe.ca>
+ <9DD61F30A802C4429A01CA4200E302A7B6B8FBCA@fmsmsx124.amr.corp.intel.com>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1576138757; bh=efjW/rF0EGuRthlOGEU05IQnyHi57jZRzyopoxtDk8c=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=WWDMGVYOnHd3iWE+NQQYwhBWbPaghrkNlNIExThbsN/YXyZZxolHhixKxcf8GqE/k
-         zF9jZ17Pvol2P/BjE3xhCV/rhnk5thJMSeLFQqOfOazFqY5oolm1j6pVo0cd95tKbN
-         F31zukDFvOKYBV2dvENEhMUn1B91vbhd3i4wJGjJ4RPIwCJFToXC8m4sBIBpz2px5U
-         F9hMccp4L8YeXaEKmlNprmiR65S6O7E7EzTLOutDvfCdRwF9rvkBaMisYbAmbMtoYZ
-         vv3yw+6/SqlvDkIXoOmGW7/OgE7PrZmOTmWZH9P9/nHXXZF5hmGt2C7TTl7TTSsXNI
-         G9Ljkzb2cb+0w==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7B6B8FBCA@fmsmsx124.amr.corp.intel.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-It's good to have basic unit test coverage of the new FOLL_PIN
-behavior. Fortunately, the gup_benchmark unit test is extremely
-fast (a few milliseconds), so adding it the the run_vmtests suite
-is going to cause no noticeable change in running time.
+On Thu, Dec 12, 2019 at 01:40:27AM +0000, Saleem, Shiraz wrote:
+> > Subject: Re: [PATCH v3 05/20] RDMA/irdma: Add driver framework definitions
 
-So, add two new invocations to run_vmtests:
+<...>
 
-1) Run gup_benchmark with normal get_user_pages().
+> >
+> > > +		ldev->ops->reg_for_notification(ldev, &events);
+> > > +	dev_info(rfdev_to_dev(dev), "IRDMA VSI Open Successful");
+> >
+> > Lets not do this kind of logging..
+> >
+>
+> There is some dev_info which should be cleaned up to dev_dbg.
+> But logging this info is useful to know that this functions VSI (and associated ibdev)
+> is up and reading for RDMA traffic.
+> Is info logging to be avoided altogether?
 
-2) Run gup_benchmark with pin_user_pages(). This is much like
-the first call, except that it sets FOLL_PIN.
+Will function tracer (ftrace) output be sufficient here?
+https://www.kernel.org/doc/html/latest/trace/ftrace.html
 
-Running these two in quick succession also provide a visual
-comparison of the running times, which is convenient.
+>
+> > > +static void irdma_close(struct iidc_peer_dev *ldev, enum
+> > > +iidc_close_reason reason) {
+> > > +	struct irdma_device *iwdev;
+> > > +	struct irdma_pci_f *rf;
+> > > +
+> > > +	iwdev = irdma_get_device(ldev->netdev);
+> > > +	if (!iwdev)
+> > > +		return;
+> > > +
+> > > +	irdma_put_device(iwdev);
+> > > +	rf = iwdev->rf;
+> > > +	if (reason == IIDC_REASON_GLOBR_REQ || reason ==
+> > IIDC_REASON_CORER_REQ ||
+> > > +	    reason == IIDC_REASON_PFR_REQ || rf->reset) {
+> > > +		iwdev->reset = true;
+> > > +		rf->reset = true;
+> > > +	}
+> > > +
+> > > +	if (iwdev->init_state >= CEQ0_CREATED)
+> > > +		irdma_deinit_rt_device(iwdev);
+> > > +
+> > > +	kfree(iwdev);
+> >
+> > Mixing put and kfree? So confusing. Why are there so many structs and so much
+> > indirection? Very hard to understand if this is right or not.
+>
+> This does look weird. I think the irdma_get_device() was here
+> just to get to iwdev. And put_device is releasing the refcnt immediately.
+> Since we are in a VSI close(), we should not need to take refcnt on ibdev
+> and just deregister it. Will fix this.
+>
+> >
+> > > new file mode 100644
+> > > index 000000000000..b418e76a3302
+> > > +++ b/drivers/infiniband/hw/irdma/main.c
+> > > @@ -0,0 +1,630 @@
+> > > +// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
+> > > +/* Copyright (c) 2015 - 2019 Intel Corporation */ #include "main.h"
+> > > +
+> > > +/* Legacy i40iw module parameters */
+> > > +static int resource_profile;
+> > > +module_param(resource_profile, int, 0644);
+> > > +MODULE_PARM_DESC(resource_profile, "Resource Profile: 0=PF only,
+> > > +1=Weighted VF, 2=Even Distribution");
+> > > +
+> > > +static int max_rdma_vfs = 32;
+> > > +module_param(max_rdma_vfs, int, 0644);
+> > MODULE_PARM_DESC(max_rdma_vfs,
+> > > +"Maximum VF count: 0-32 32=default");
+> > > +
+> > > +static int mpa_version = 2;
+> > > +module_param(mpa_version, int, 0644); MODULE_PARM_DESC(mpa_version,
+> > > +"MPA version: deprecated parameter");
+> > > +
+> > > +static int push_mode;
+> > > +module_param(push_mode, int, 0644);
+> > > +MODULE_PARM_DESC(push_mode, "Low latency mode: deprecated
+> > > +parameter");
+> > > +
+> > > +static int debug;
+> > > +module_param(debug, int, 0644);
+> > > +MODULE_PARM_DESC(debug, "debug flags: deprecated parameter");
+> >
+> > Generally no to module parameters
+>
+> Agree. But these are module params that existed in i40iw.
+> And irdma replaces i40iw and has a module alias
+> for it.
 
-The new invocations are fairly early in the run_vmtests script,
-because with test suites, it's usually preferable to put the
-shorter, faster tests first, all other things being equal.
+Maybe use this opportunity and ditch "deprecated" module parameters?
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- tools/testing/selftests/vm/run_vmtests | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/tools/testing/selftests/vm/run_vmtests b/tools/testing/selftes=
-ts/vm/run_vmtests
-index a692ea828317..df6a6bf3f238 100755
---- a/tools/testing/selftests/vm/run_vmtests
-+++ b/tools/testing/selftests/vm/run_vmtests
-@@ -112,6 +112,28 @@ echo "NOTE: The above hugetlb tests provide minimal co=
-verage.  Use"
- echo "      https://github.com/libhugetlbfs/libhugetlbfs.git for"
- echo "      hugetlb regression testing."
-=20
-+echo "--------------------------------------------"
-+echo "running 'gup_benchmark -U' (normal/slow gup)"
-+echo "--------------------------------------------"
-+./gup_benchmark -U
-+if [ $? -ne 0 ]; then
-+	echo "[FAIL]"
-+	exitcode=3D1
-+else
-+	echo "[PASS]"
-+fi
-+
-+echo "------------------------------------------"
-+echo "running gup_benchmark -b (pin_user_pages)"
-+echo "------------------------------------------"
-+./gup_benchmark -b
-+if [ $? -ne 0 ]; then
-+	echo "[FAIL]"
-+	exitcode=3D1
-+else
-+	echo "[PASS]"
-+fi
-+
- echo "-------------------"
- echo "running userfaultfd"
- echo "-------------------"
---=20
-2.24.0
-
+Thanks
