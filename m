@@ -2,334 +2,191 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EB511C25B
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 02:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EECEB11C5B0
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 06:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727504AbfLLBka convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 11 Dec 2019 20:40:30 -0500
-Received: from mga14.intel.com ([192.55.52.115]:7916 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727297AbfLLBk3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 11 Dec 2019 20:40:29 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Dec 2019 17:40:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,303,1571727600"; 
-   d="scan'208";a="363799229"
-Received: from fmsmsx103.amr.corp.intel.com ([10.18.124.201])
-  by orsmga004.jf.intel.com with ESMTP; 11 Dec 2019 17:40:28 -0800
-Received: from fmsmsx162.amr.corp.intel.com (10.18.125.71) by
- FMSMSX103.amr.corp.intel.com (10.18.124.201) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Wed, 11 Dec 2019 17:40:28 -0800
-Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.10]) by
- fmsmsx162.amr.corp.intel.com ([169.254.5.87]) with mapi id 14.03.0439.000;
- Wed, 11 Dec 2019 17:40:28 -0800
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>
-Subject: RE: [PATCH v3 05/20] RDMA/irdma: Add driver framework definitions
-Thread-Topic: [PATCH v3 05/20] RDMA/irdma: Add driver framework definitions
-Thread-Index: AQHVruL5SWTxLWjtI0m5sVTIVSLbtKe0QawAgAEkwDA=
-Date:   Thu, 12 Dec 2019 01:40:27 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A7B6B8FBCA@fmsmsx124.amr.corp.intel.com>
-References: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
- <20191209224935.1780117-6-jeffrey.t.kirsher@intel.com>
- <20191210190438.GF46@ziepe.ca>
-In-Reply-To: <20191210190438.GF46@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ctpclassification: CTP_NT
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiYjc4MjA2ZTItYjhjMC00ZDUzLTg3ZTEtMTFiMjRjZDhkYzM2IiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiUGFLTm04Mm9qeUpnSkFvazFpNHo3eUxsUmcyYVBJdXB2MVBDeElTTTY1VlFPUnRZRTN4ZUlzanhcL2VFY3JnYTcifQ==
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.106]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727922AbfLLF4i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Dec 2019 00:56:38 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14305 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726798AbfLLF4h (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Dec 2019 00:56:37 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5df1d68d0000>; Wed, 11 Dec 2019 21:56:29 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 11 Dec 2019 21:56:36 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 11 Dec 2019 21:56:36 -0800
+Received: from [10.2.165.195] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Dec
+ 2019 05:56:35 +0000
+Subject: Re: [PATCH v9 23/25] mm/gup: track FOLL_PIN pages
+To:     Jan Kara <jack@suse.cz>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20191211025318.457113-1-jhubbard@nvidia.com>
+ <20191211025318.457113-24-jhubbard@nvidia.com>
+ <20191211112807.GN1551@quack2.suse.cz>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <f961d0b6-c660-85b9-ad01-53bce74e39e9@nvidia.com>
+Date:   Wed, 11 Dec 2019 21:53:45 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
+In-Reply-To: <20191211112807.GN1551@quack2.suse.cz>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1576130189; bh=WUvMFBOwsTbLT+9CzNbxGtAponFsFsmTJOyg8MjL8ds=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=lsWfVOx2mYuCSEqMXkqo0p3SpKqw9VwSL+20QlVcuyoMSELQtTCN0YxM6RzLVo9oa
+         uq4Hl9KFn70q6l1bzqmgaiV5HLk4+H2168Aq1l5uWc+mWWgNKPzhftF1QMyxl40GPe
+         nNNgDtbzvAru+MjxE1MbEaMe+90vfqRYKPVuX/JzejQXCe2EVI5eyYy9CwInRuqtjp
+         2idGFh4dXFAMfDwQiKAN1Pz/TUuUoswEkyfXdQEyWp7z5jAlzfpntkPH8s96FOaimZ
+         1olYa+8gPiG8ccYKitvEKwCbv3GPr0UXUD+T0zjEzw7D9d6fQ9awWSzCOfMJ4VZl20
+         16ivttgOjkh4A==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [PATCH v3 05/20] RDMA/irdma: Add driver framework definitions
-> 
-> On Mon, Dec 09, 2019 at 02:49:20PM -0800, Jeff Kirsher wrote:
-> > +{
-> > +	struct i40e_info *ldev = (struct i40e_info *)rf->ldev.if_ldev;
-> 
-> Why are there so many casts in this file? Is this really container of?
+On 12/11/19 3:28 AM, Jan Kara wrote:
+...
+>=20
+> The patch looks mostly good to me now. Just a few smaller comments below.
+>=20
+>> Suggested-by: Jan Kara <jack@suse.cz>
+>> Suggested-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+>> Reviewed-by: Jan Kara <jack@suse.cz>
+>> Reviewed-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+>> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+>=20
+> I think you inherited here the Reviewed-by tags from the "add flags" patc=
+h
+> you've merged into this one but that's not really fair since this patch
+> does much more... In particular I didn't give my Reviewed-by tag for this
+> patch yet.
 
-The casting here is redundant. Will clean up.
+OK, I've removed those reviewed-by's. (I felt bad about dropping them, afte=
+r
+people had devoted time to reviewing, but I do see that it's wrong to imply
+that they've reviewed this much much larger thing.)
 
-> 
-> > +	hdl = kzalloc((sizeof(*hdl) + sizeof(*iwdev)), GFP_KERNEL);
-> > +	if (!hdl)
-> > +		return -ENOMEM;
-> > +
-> > +	iwdev = (struct irdma_device *)((u8 *)hdl + sizeof(*hdl));
-> 
-> Yikes, use structs and container of for things like this please.
+...
+>=20
+> I somewhat wonder about the asymmetry of try_grab_compound_head() vs
+> try_grab_page() in the treatment of 'flags'. How costly would it be to ma=
+ke
+> them symmetric (i.e., either set FOLL_GET for try_grab_compound_head()
+> callers or make sure one of FOLL_GET, FOLL_PIN is set for try_grab_page()=
+)?
+>=20
+> Because this difference looks like a subtle catch in the long run...
 
-iwdev object alloc should be split here from hdl. Will fix.
+Done. It is only a modest code-level change, at least the way I've done it,=
+ which is
+setting FOLL_GET for try_grab_compound_head(). In order to do that, I set
+it at the top of the internal gup fast calling stacks, which is actually a =
+good
+design anyway: gup fast is logically doing FOLL_GET in all cases. So settin=
+g
+the flag internally is accurate and consistent with the overall design.
 
-> 
-> > +	iwdev->param_wq = alloc_ordered_workqueue("l2params",
-> WQ_MEM_RECLAIM);
-> > +	if (!iwdev->param_wq)
-> > +		goto error;
-> 
-> Leon usually asks why another work queue at this point, at least have a comment
-> justifying why. Shouldn't it have a better name?
->
 
-Ugh! The l2 param changes is made synchronous based on
-prior feedback from Leon. This wq should be removed.
+> ...
+>=20
+>> @@ -1522,8 +1536,8 @@ struct page *follow_trans_huge_pmd(struct vm_area_=
+struct *vma,
+>>   skip_mlock:
+>>   	page +=3D (addr & ~HPAGE_PMD_MASK) >> PAGE_SHIFT;
+>>   	VM_BUG_ON_PAGE(!PageCompound(page) && !is_zone_device_page(page), pag=
+e);
+>> -	if (flags & FOLL_GET)
+>> -		get_page(page);
+>> +	if (!try_grab_page(page, flags))
+>> +		page =3D ERR_PTR(-EFAULT);
+>=20
+> I think you need to also move the try_grab_page() earlier in the function=
+.
+> At this point the page may be marked as mlocked and you'd need to undo th=
+at
+> in case try_grab_page() fails.
 
-> > +/* client interface functions */
-> > +static const struct i40e_client_ops i40e_ops = {
-> > +	.open = i40iw_open,
-> > +	.close = i40iw_close,
-> > +	.l2_param_change = i40iw_l2param_change };
-> 
-> Wasn't the whole point of virtual bus to avoid stuff like this? Why isn't a client the
-> virtual bus object and this information extended into the driver ops?
 
-These are the private interface calls between lan and rdma.
-These ops are implemented by RDMA driver but invoked by
-netdev driver.
+OK, I've moved it up, adding a "subpage" variable in order to make that wor=
+k.
 
-> 
-> > +int i40iw_probe(struct virtbus_device *vdev) {
-> > +	struct i40e_info *ldev =
-> > +		container_of(vdev, struct i40e_info, vdev);
-> > +
-> > +	if (!ldev)
-> > +		return -EINVAL;
-> 
-> eh? how can that happen
-> 
-> > +
-> > +	if (!ldev->ops->client_device_register)
-> > +		return -EINVAL;
-> 
-> How can this happen too? If it doesn't support register then don't create a virtual
-> device, surely?
-> 
-> I've really developed a strong distate to these random non-functional 'ifs' that
-> seem to get into things.
-> 
-> If it is functional then fine, but if it is an assertion write it as if (WARN_ON()) to
-> make it clear to readers it can't happen by design
->
+>=20
+>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>> index ac65bb5e38ac..0aab6fe0072f 100644
+>> --- a/mm/hugetlb.c
+>> +++ b/mm/hugetlb.c
+>> @@ -4356,7 +4356,13 @@ long follow_hugetlb_page(struct mm_struct *mm, st=
+ruct vm_area_struct *vma,
+>>   same_page:
+>>   		if (pages) {
+>>   			pages[i] =3D mem_map_offset(page, pfn_offset);
+>> -			get_page(pages[i]);
+>> +			if (!try_grab_page(pages[i], flags)) {
+>> +				spin_unlock(ptl);
+>> +				remainder =3D 0;
+>> +				err =3D -ENOMEM;
+>> +				WARN_ON_ONCE(1);
+>> +				break;
+>> +			}
+>>   		}
+>=20
+> This function does a refcount overflow check early so that it doesn't hav=
+e
+> to do try_get_page() here. So that check can be now removed when you do
+> try_grab_page() here anyway since that early check seems to be just a tin=
+y
+> optimization AFAICT.
+>=20
+> 								Honza
+>=20
 
-Yeah. These cant happen by design and should be treated as assertion. Will fix.
+Yes. I've removed it, good spot.
 
-> 
-> > +/**
-> > + * irdma_lan_register_qset - Register qset with LAN driver
-> > + * @vsi: vsi structure
-> > + * @tc_node: Traffic class node
-> > + */
-> > +static enum irdma_status_code irdma_lan_register_qset(struct irdma_sc_vsi
-> *vsi,
-> > +						      struct irdma_ws_node
-> *tc_node) {
-> > +	struct irdma_device *iwdev = vsi->back_vsi;
-> > +	struct iidc_peer_dev *ldev = (struct iidc_peer_dev
-> > +*)iwdev->ldev->if_ldev;
-> 
-> Again with the casts.. Please try to clean up the casting in this driver
->
 
-Ditto as my previous comment.
-
-> > +	struct iidc_res rdma_qset_res = {};
-> > +	int ret;
-> > +
-> > +	if (ldev->ops->alloc_res) {
-> 
-> Quite an abnormal coding style to put the entire function under an if, just if() return
-> 0 ? Many examples of this
-
-Will fix.
-> 
-> > +/**
-> > + * irdma_log_invalid_mtu: log warning on invalid mtu
-> > + * @mtu: maximum tranmission unit
-> > + */
-> > +static void irdma_log_invalid_mtu(u16 mtu) {
-> > +	if (mtu < IRDMA_MIN_MTU_IPV4)
-> > +		pr_warn("Current MTU setting of %d is too low for RDMA traffic.
-> Minimum MTU is 576 for IPv4 and 1280 for IPv6\n",
-> > +			mtu);
-> > +	else if (mtu < IRDMA_MIN_MTU_IPV6)
-> > +		pr_warn("Current MTU setting of %d is too low for IPv6 RDMA
-> traffic, the minimum is 1280\n",
-> > +			mtu);
-> > +}
-> 
-> Don't use pr_* stuff in drivers that have a struct device.
->
-Will fix.
-
-> > +/**
-> > + * irdma_event_handler - Called by LAN driver to notify events
-> > + * @ldev: Peer device structure
-> > + * @event: event from LAN driver
-> > + */
-> > +static void irdma_event_handler(struct iidc_peer_dev *ldev,
-> > +				struct iidc_event *event)
-> > +{
-> > +	struct irdma_l2params l2params = {};
-> > +	struct irdma_device *iwdev;
-> > +	int i;
-> > +
-> > +	iwdev = irdma_get_device(ldev->netdev);
-> > +	if (!iwdev)
-> > +		return;
-> > +
-> > +	if (test_bit(IIDC_EVENT_LINK_CHANGE, event->type)) {
-> 
-> Is this atomic? Why using test_bit?
-No its not. What do you suggest we use?
-
-> 
-> > +		ldev->ops->reg_for_notification(ldev, &events);
-> > +	dev_info(rfdev_to_dev(dev), "IRDMA VSI Open Successful");
-> 
-> Lets not do this kind of logging..
->
-
-There is some dev_info which should be cleaned up to dev_dbg.
-But logging this info is useful to know that this functions VSI (and associated ibdev)
-is up and reading for RDMA traffic.
-Is info logging to be avoided altogether?
-
-> > +static void irdma_close(struct iidc_peer_dev *ldev, enum
-> > +iidc_close_reason reason) {
-> > +	struct irdma_device *iwdev;
-> > +	struct irdma_pci_f *rf;
-> > +
-> > +	iwdev = irdma_get_device(ldev->netdev);
-> > +	if (!iwdev)
-> > +		return;
-> > +
-> > +	irdma_put_device(iwdev);
-> > +	rf = iwdev->rf;
-> > +	if (reason == IIDC_REASON_GLOBR_REQ || reason ==
-> IIDC_REASON_CORER_REQ ||
-> > +	    reason == IIDC_REASON_PFR_REQ || rf->reset) {
-> > +		iwdev->reset = true;
-> > +		rf->reset = true;
-> > +	}
-> > +
-> > +	if (iwdev->init_state >= CEQ0_CREATED)
-> > +		irdma_deinit_rt_device(iwdev);
-> > +
-> > +	kfree(iwdev);
-> 
-> Mixing put and kfree? So confusing. Why are there so many structs and so much
-> indirection? Very hard to understand if this is right or not.
-
-This does look weird. I think the irdma_get_device() was here
-just to get to iwdev. And put_device is releasing the refcnt immediately.
-Since we are in a VSI close(), we should not need to take refcnt on ibdev
-and just deregister it. Will fix this.
-
-> 
-> > new file mode 100644
-> > index 000000000000..b418e76a3302
-> > +++ b/drivers/infiniband/hw/irdma/main.c
-> > @@ -0,0 +1,630 @@
-> > +// SPDX-License-Identifier: GPL-2.0 or Linux-OpenIB
-> > +/* Copyright (c) 2015 - 2019 Intel Corporation */ #include "main.h"
-> > +
-> > +/* Legacy i40iw module parameters */
-> > +static int resource_profile;
-> > +module_param(resource_profile, int, 0644);
-> > +MODULE_PARM_DESC(resource_profile, "Resource Profile: 0=PF only,
-> > +1=Weighted VF, 2=Even Distribution");
-> > +
-> > +static int max_rdma_vfs = 32;
-> > +module_param(max_rdma_vfs, int, 0644);
-> MODULE_PARM_DESC(max_rdma_vfs,
-> > +"Maximum VF count: 0-32 32=default");
-> > +
-> > +static int mpa_version = 2;
-> > +module_param(mpa_version, int, 0644); MODULE_PARM_DESC(mpa_version,
-> > +"MPA version: deprecated parameter");
-> > +
-> > +static int push_mode;
-> > +module_param(push_mode, int, 0644);
-> > +MODULE_PARM_DESC(push_mode, "Low latency mode: deprecated
-> > +parameter");
-> > +
-> > +static int debug;
-> > +module_param(debug, int, 0644);
-> > +MODULE_PARM_DESC(debug, "debug flags: deprecated parameter");
-> 
-> Generally no to module parameters
-
-Agree. But these are module params that existed in i40iw.
-And irdma replaces i40iw and has a module alias
-for it.
-
-> 
-> > +static struct workqueue_struct *irdma_wq;
-> 
-> Another wq already?
-This wq is used for deferred handling of irdma service tasks.
-Such as rebuild/recovery after reset.
-
-> 
-> > +struct irdma_pci_f {
-> > +	bool ooo;
-> > +	bool reset;
-> > +	bool rsrc_created;
-> > +	bool stop_cqp_thread;
-> > +	bool msix_shared;
-> 
-> Linus has spoken poorly about lots of bools in a struct. Can this be a bitfield?
-Possibly. Yes. Will look into it.
-
-> 
-> > +/***********************************************************/
-> > +/**
-> > + * to_iwdev - get device
-> > + * @ibdev: ib device
-> > + **/
-> 
-> Maybe some of these comment blocks are not so valuable :\
-
-Will fix.
-
-> 
-> > +	spin_lock_irqsave(&rf->rsrc_lock, flags);
-> > +
-> > +	bit_is_set = test_bit(rsrc_num, rsrc_array);
-> 
-> Again, are these atomics? Looks like no, why test_bit?
-
-This helper is not used and to be removed.
-
-But, yes integrity needs to be assured while read/modify rsrc_array. 
-irdma_alloc_rsrc() and irdma_free_rsrc() probably warrant
-using the non-atomic ver. of set/clear bit since its inside
-a lock.
-
-Thanks for the feedback!
-
-Shiraz
+thanks,
+--=20
+John Hubbard
+NVIDIA
