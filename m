@@ -2,94 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8DF11CD26
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 13:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D78EB11CD30
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 13:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729136AbfLLM23 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Dec 2019 07:28:29 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:40097 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729130AbfLLM22 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Dec 2019 07:28:28 -0500
-Received: by mail-oi1-f194.google.com with SMTP id 6so291256oix.7;
-        Thu, 12 Dec 2019 04:28:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0Y9iHDYGIFVGjHT5t86r21P03HUM56r+DzbAOwdCIy0=;
-        b=DPJQrSypuwzJDFhhvWXFStMNHtDK4kRMnhohRqhhatDVu9ZRXwM9/nQYrdW0mL2KzZ
-         VUXVsBWblyD4X7mfsXhoKHR6c84+0fUc43IevkvAgFsE63KeEbBzHzeh65kZavFfpHDa
-         Rs7HDhqV97tQTXQ03MP7757pq6cqcVGmQul9g1XOJgBta4Zy2BlZvinSeZSTQiKXbahp
-         A0ikDora4rH7jVEyZFiEUHo65KK3iK+qwwAiOS52bh3HCtGTXUEi8WNsse5XHhttHd2J
-         3zrJW06o4wXd1wY8f1xmJhMaI8pRcHU1vYBJpndhclVw++Gx6tt5qg1gzhj2s3XwM06w
-         C56w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0Y9iHDYGIFVGjHT5t86r21P03HUM56r+DzbAOwdCIy0=;
-        b=WqWpkyZAZULDQzKhhyCaGGBslYLzKRt0sxNpci955O89UB2U1uJ5367Pu68kS4iVLZ
-         PFJpk+sMxe7gi6vcH21RcwLsSUK7U8mkFiAIUWAsDThErU0hcecJu19QbB9Kptj2q7xQ
-         /oJr8HbXca/weFBWSJG3w1Yv8FXo+3PQG4GkssmVmiLMfphkl8ynI3EBFRgYMSVhTH70
-         FywWkegkgqicIabV+cxQPmHeKgNFlPsZedM6ldJnqX1dEIe4bSNNQ+G6ofPPmc7x0FUM
-         6tZo+mLZ9qA87cFXzBYNy+RQ+VBcZJ5l9kbhwhh2eJvojvz1aavhJih4LPu55fx8rgy6
-         +NDw==
-X-Gm-Message-State: APjAAAXIttvs21RdUchcJDnBzkDclvPxCh6TmTHNRC44aBYkcvTFkPAl
-        a6rMcq76LK0umsqkoaPni8KBb0nN3X/ChRHbrXg=
-X-Google-Smtp-Source: APXvYqwaEQwiecwpvxxqqhQAiSr5hflX5ePMX5oN5FvbSb4Y/nShYsYdSRVg1zBpGo5ZeTc04K0P1SRIsSeQTdK1BEE=
-X-Received: by 2002:aca:b04:: with SMTP id 4mr4598119oil.151.1576153707873;
- Thu, 12 Dec 2019 04:28:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20191211111628.2955-1-max.hirsch@gmail.com> <20191211162654.GD6622@ziepe.ca>
- <20191212084907.GU67461@unreal> <e5123cbb-9871-d9c3-62e9-5b3172d1adf8@amazon.com>
-In-Reply-To: <e5123cbb-9871-d9c3-62e9-5b3172d1adf8@amazon.com>
-From:   Max Hirsch <max.hirsch@gmail.com>
-Date:   Thu, 12 Dec 2019 07:28:19 -0500
-Message-ID: <CADgTo8_mD6Z7WuA7wdEwh+7AR8YOy8nfJeaa2RbEAeftLGod7g@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/cma: Fix checkpatch error
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        id S1729136AbfLLMcM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Dec 2019 07:32:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53394 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729092AbfLLMcL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Dec 2019 07:32:11 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 1D740AC35;
+        Thu, 12 Dec 2019 12:32:07 +0000 (UTC)
+Message-ID: <0a3e22d627a70cb60237c811b5874b9a4413329f.camel@suse.de>
+Subject: Re: [PATCH v4 7/8] linux/log2.h: Fix 64bit calculations in
+ roundup/down_pow_two()
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Robin Murphy <robin.murphy@arm.com>, andrew.murray@arm.com,
+        maz@kernel.org, linux-kernel@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Emilio =?ISO-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thomas Graf <tgraf@suug.ch>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     james.quinlan@broadcom.com, mbrugger@suse.com,
+        f.fainelli@gmail.com, phil@raspberrypi.org, wahrenst@gmx.net,
+        jeremy.linton@arm.com, linux-pci@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        Robin Murphy <robin.murphy@arm.con>,
         Doug Ledford <dledford@redhat.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Steve Wise <swise@opengridcomputing.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Danit Goldberg <danitg@mellanox.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dag Moxnes <dag.moxnes@oracle.com>,
-        Myungho Jung <mhjungk@gmail.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rdma@vger.kernel.org, iommu@lists.linux-foundation.org,
+        netdev@vger.kernel.org, kexec@lists.infradead.org,
+        linux-nfs@vger.kernel.org
+Date:   Thu, 12 Dec 2019 13:31:57 +0100
+In-Reply-To: <70c6b704-a12a-fb44-e93f-a6db12ed928f@arm.com>
+References: <20191203114743.1294-1-nsaenzjulienne@suse.de>
+         <20191203114743.1294-8-nsaenzjulienne@suse.de>
+         <70c6b704-a12a-fb44-e93f-a6db12ed928f@arm.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-FrLm7Huzs2OM/GGn8vDZ"
+User-Agent: Evolution 3.34.2 
+MIME-Version: 1.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I am happy to make a larger/functional change. From what I read,
-desired patch scope is proportional to linux community involvement but
-if that not how you guys do the infiniband driver that fine. Whats a
-feature you guys want but no one is working on yet, or rather where is
-such a list kept?
 
-On Thu, Dec 12, 2019 at 7:10 AM Gal Pressman <galpress@amazon.com> wrote:
->
-> On 12/12/2019 10:49, Leon Romanovsky wrote:
-> > On Wed, Dec 11, 2019 at 12:26:54PM -0400, Jason Gunthorpe wrote:
-> >> On Wed, Dec 11, 2019 at 11:16:26AM +0000, Max Hirsch wrote:
-> >>> When running checkpatch on cma.c the following error was found:
-> >>
-> >> I think checkpatch will complain about your patch, did you run it?
-> >
-> > Jason, Doug
-> >
-> > I would like to ask to refrain from accepting checkpatch.pl patches
-> > which are not part of other large submission. Such standalone cleanups
-> > do more harm than actual benefit from them for old and more or less
-> > stable code (e.g. RDMA-CM).
->
-> Sounds like a great approach to prevent new developers from contributing code.
-> You have to start somewhere and checkpatch patches are a good entry point for
-> such developers, discouraging them will only hurt us in the long term.
->
-> Linus had an interesting post on the subject:
-> https://lkml.org/lkml/2004/12/20/255
+--=-FrLm7Huzs2OM/GGn8vDZ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Robin,
+
+On Thu, 2019-12-05 at 17:48 +0000, Robin Murphy wrote:
+> On 03/12/2019 11:47 am, Nicolas Saenz Julienne wrote:
+> > Some users need to make sure their rounding function accepts and return=
+s
+> > 64bit long variables regardless of the architecture. Sadly
+> > roundup/rounddown_pow_two() takes and returns unsigned longs. It turns
+> > out ilog2() already handles 32/64bit calculations properly, and being
+> > the building block to the round functions we can rework them as a
+> > wrapper around it.
+>=20
+> Neat! Although all the additional ULL casts this introduces seem=20
+> somewhat unwelcome - I suppose the (1ULL << (ilog2(n))) makes it=20
+> effectively always return unsigned long long now. Might it make sense to=
+=20
+> cast the return value to typeof(n) to avoid this slightly non-obvious=20
+> behaviour (and the associated churn)?
+
+It might alleviate some of the churn alright but I don't think a cast is re=
+ally
+going to make the behaviour more obvious. Say your expression is a big mess=
+,
+you'll have to analyze it to infer the output type, keeping in mind things =
+like
+integer promotion. See this example, 'params->nelem_hint' and
+'params->min_size' are u16:
+
+	diff --git a/lib/rhashtable.c b/lib/rhashtable.c
+	index bdb7e4cadf05..70908678c7a8 100644
+	--- a/lib/rhashtable.c
+	+++ b/lib/rhashtable.c
+	@@ -950,7 +950,7 @@ static size_t rounded_hashtable_size(const struct rhas=
+htable_params *params)
+
+		if (params->nelem_hint)
+			retsize =3D max(roundup_pow_of_two(params->nelem_hint * 4 / 3),
+	-                             (unsigned long)params->min_size);
+	+                             (unsigned long long)params->min_size);
+		else
+			retsize =3D max(HASH_DEFAULT_SIZE,
+				      (unsigned long)params->min_size);
+
+With a cast the patch will look like this:
+
+	diff --git a/lib/rhashtable.c b/lib/rhashtable.c
+	index bdb7e4cadf05..70908678c7a8 100644
+	--- a/lib/rhashtable.c
+	+++ b/lib/rhashtable.c
+	@@ -950,7 +950,7 @@ static size_t rounded_hashtable_size(const struct rhas=
+htable_params *params)
+
+		if (params->nelem_hint)
+			retsize =3D max(roundup_pow_of_two(params->nelem_hint * 4 / 3),
+	-                             (unsigned long)params->min_size);
+	+                             (int)params->min_size);
+		else
+			retsize =3D max(HASH_DEFAULT_SIZE,
+				      (unsigned long)params->min_size);
+
+To me it's even less obvious than with a fixed ULL.
+
+My intuition tells me to keep it as similar as the old behaviour, at the
+expense of the extra churn (which is not that different from the current st=
+atus
+quo anyway). That said, I'll be happy to change it.
+
+Regards,
+Nicolas
+
+
+--=-FrLm7Huzs2OM/GGn8vDZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl3yMz0ACgkQlfZmHno8
+x/50Nwf8DZv64TadvwE8CB4bWgsqMtbiu/fef5NUbUYuFUED8TIdE3BewSgcKkjR
+UcmnTnVxq9m204FNfGnEcHAS2TjDnv2GvkRDGKIAoXt2ewgnMSoS5cwHJrHfHLr9
+KX2ULSnGQqqtWEYGUe9h/hzd1mfC0gun3Mqafs1lQD7h2XeckKMt0iEa/WtfYGnP
+8UJbPU5wHnCJwEbQHCtc+mV/kcQfh+3u5OHh3O4KQHcBo5TJVJovpZ6jBV4uBV1G
+ePj2s84UCGZcXy1ZuwV2g32zpn8RgDXDWmdEgJ3hi1bTYZZzG4YQc2sTpjidvRB7
+86UCrw4pWQ/M0pNf1UdlDlf+jz7Njw==
+=1uX6
+-----END PGP SIGNATURE-----
+
+--=-FrLm7Huzs2OM/GGn8vDZ--
+
