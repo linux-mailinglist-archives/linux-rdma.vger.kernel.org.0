@@ -2,151 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD0511C02F
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Dec 2019 23:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C49911C235
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 02:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbfLKW5S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Dec 2019 17:57:18 -0500
-Received: from mail-eopbgr20065.outbound.protection.outlook.com ([40.107.2.65]:21258
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726141AbfLKW5S (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 11 Dec 2019 17:57:18 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fbI8FjhSUl1AUlfrYj6SSubl8UFPoaGfDy7xfnUvKjZauRhUZvMIRFE4/qOSE5OAmplZemcsQvn2Ld54Y2d3psEaMkyZXfGe7X1SLJJaZHpTI2rQrwoPu82IjxD7yNuz8lAINPMSwVKCjn+h0bpjRQTdSuFcZjmK3Ss55vjFj7DL/fzQ9HNdVxrPWCTcRxILgkJe6QERdp0G1XxBttMXuy9CvaAJGmGgLm/rfYAitxvhvNZLtOTDIE5NqsRuMCRubu130Av61C/Cm1cGbQuVmGVulZ4NVtow/RjJWro28oTnh4b/M34mVTR0LCWd2S3yQq2BjR2T5y0Nh5UrOkIdJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8JSCeP37ZJyxEfjg2snOSnM6nokCTo9q9SIJAZ9QCJ4=;
- b=b3JspRaquwFZ8CzLAOUOP39qzpz6AOVI2MjlUdksvBHEane/c5uK+eXbnD6iZO6b3AJ7PoOmhgIoZZukCXhcLoLEjt0touNXeWhRNJTOUsfya2NaUWK0LLA1KsNKDeDHBl+GoGUJ6l49P/Ew4vDxviA2gB9Sd394qWDGCiVVbwz7PRVL7wa98i5mv7q+r7c34qnEp7cpHoaAU7+SI3TKjsMVUgf6okEORS4ZihzT5xcaiAaDBaSMO6iouh6jd+qInk9GP2SLpfO/atSFqDk+wCeOPy1EVl7fInKhY+Boqgytqp1mK8i3jJ2FVyfuwIdtd6gUgHWulDG3RwXlgGhkQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8JSCeP37ZJyxEfjg2snOSnM6nokCTo9q9SIJAZ9QCJ4=;
- b=o0hYwfnxTaZy0UoAwsSi0HIg+at9jaqmRbX1xwpo+nLpLgLjnPabEwpTtcDy05X/SCvfdNO6luZlHAKy0w4pDIOBzEgOt5FlOdP98WVbMnyK/lDw3aFlh3rgEb3kJkwSqNGx0hoxurJbNRQCemuT2KDBD5555HQxBmTOgNPFm/A=
-Received: from DB7PR05MB4138.eurprd05.prod.outlook.com (52.135.129.16) by
- DB7PR05MB4908.eurprd05.prod.outlook.com (20.176.233.205) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2538.15; Wed, 11 Dec 2019 22:57:13 +0000
-Received: from DB7PR05MB4138.eurprd05.prod.outlook.com
- ([fe80::f9f4:95d6:71ab:7003]) by DB7PR05MB4138.eurprd05.prod.outlook.com
- ([fe80::f9f4:95d6:71ab:7003%5]) with mapi id 15.20.2516.018; Wed, 11 Dec 2019
- 22:57:13 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Jerome Glisse <jglisse@redhat.com>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        David Airlie <airlied@linux.ie>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [GIT PULL] Please pull hmm changes
-Thread-Topic: [GIT PULL] Please pull hmm changes
-Thread-Index: AQHVo9Dog/MtwM8aJU6I/7345tJKuKekCWkAgAAFfoCAA6/3AIAEBIsAgAnhkIA=
-Date:   Wed, 11 Dec 2019 22:57:13 +0000
-Message-ID: <20191211225703.GE3434@mellanox.com>
-References: <20191125204248.GA2485@ziepe.ca>
- <CAHk-=wiqguF5NakpL4L9XCmmYr4wY0wk__+6+wHVReF2sVVZhA@mail.gmail.com>
- <CAHk-=wiQtTsZfgTwLYgfV8Gr_0JJiboZOzVUTAgJ2xTdf5bMiw@mail.gmail.com>
- <20191203024206.GC5795@mellanox.com> <20191205160324.GB5819@redhat.com>
-In-Reply-To: <20191205160324.GB5819@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: SN4PR0501CA0019.namprd05.prod.outlook.com
- (2603:10b6:803:40::32) To DB7PR05MB4138.eurprd05.prod.outlook.com
- (2603:10a6:5:23::16)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [217.140.111.136]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 2fbf81f5-a5ea-4237-c645-08d77e8d7644
-x-ms-traffictypediagnostic: DB7PR05MB4908:
-x-microsoft-antispam-prvs: <DB7PR05MB4908DB95A805FB8EE5F5A0D6CF5A0@DB7PR05MB4908.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 024847EE92
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(366004)(396003)(376002)(39860400002)(136003)(189003)(199004)(54906003)(4326008)(478600001)(6916009)(6506007)(2616005)(2906002)(5660300002)(1076003)(8936002)(66476007)(86362001)(6512007)(66946007)(8676002)(81166006)(7416002)(66556008)(36756003)(186003)(52116002)(81156014)(33656002)(64756008)(66446008)(6486002)(26005)(71200400001)(316002);DIR:OUT;SFP:1101;SCL:1;SRVR:DB7PR05MB4908;H:DB7PR05MB4138.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WNJVRO42MBAZa2BuOnnkcmtX1DyIJW7lLW/kAOIH70oJ+QaW8QTPTWMiMlllDzKIi7hWbJ4lgeef9VTD59fGurIB/B4sBO0EGlV9yXFnJbKwcWyab2zG+NvH/Umi1pYgrJLb5hB7Rot63BAynGm/9naJOQRkN9Nu54YHwZgaU4I+BddphW8zQ+YPWLgGkjc9cq/l6ewCXFzMbpaA1WkX82eF7wqkzKxzAvJ4RVs8yj4MRFY+WEZftSR7N3vKjd5X16Qkl9w79xkHNy4LM8AuGY2hNtxj3enwMmv8kgU89H0HkU0ycTpAvP9u1DR0SLVa3C9HGvO0Attbp32TYLFJC29UGvGhXEeQnBChIs836el1M2zhtGxZVZZ7SQZLrdJQjYGyYbrEJw1pMLK7AUVBnWAbTLekJPuwozubPoxb92G/euROO9LYLfJFaeOJhv2V
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <7D48963BDE69684698F1C710FEB0EADA@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727443AbfLLBdV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Dec 2019 20:33:21 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:34677 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727351AbfLLBdV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Dec 2019 20:33:21 -0500
+Received: by mail-ot1-f65.google.com with SMTP id a15so769710otf.1;
+        Wed, 11 Dec 2019 17:33:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lzwdJDAmxJY1eABknzBM4VRQbsIRzOn9IbtmF0lZgCU=;
+        b=CnvWkqCIuOLMkvjfdwAteNxGWDSx/41p6Mxfq1pDteizNN4eSX3TrU6hCvEzwzGHlL
+         I2savvk5kobSLwvhb4l+JPtAKAh8/XZ1NmIkNmpROXN7N5lh5J9orwRJDGIkeTp1tL/E
+         m0XcH3/8Eyh4ItkJ/KDVbAMRGKx2OhWPC0JfDvt0vhbj0O+CTVWUWartgVImJ0XYDshT
+         6VTQLpE9QWbAX6CpKEvQHP4K/cDUDi23fUOqxC0tjOkb0AryP2A0X8yURAUt1dvqC22c
+         VwODXc0/eTYZdanR/YwU6TyOywUphf1zXBRPZIf9n5pQBT+I/xGvMyEv/8uJP8s6ftFw
+         EtdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lzwdJDAmxJY1eABknzBM4VRQbsIRzOn9IbtmF0lZgCU=;
+        b=m0jOsNtog8EEZ/u2IZb6wSgEGtX0d3ISa23+XZV8gFjXMQzjYEdkjZ7y/jakWZX9xQ
+         mASGPEG+N1UN1J7TqAM/mVuU0BRX2xdYaYfuxNKinBkAzopV7gQ4WzmQEPgEaUbKomIh
+         l5pFJofALXhNj5hneZBx5R1aBqcmGYos78B3kf2tb6Ii8OHlS0ImNmufbL4wB4gz0CEz
+         UkDzyKiCbTQ5czzdMPeHPAqkV7DxOrn3QlHq1hBrWjwgyMDKdcLWY2v5/JuvuiLn8A7B
+         c0BAqiibI1YqxAoDH43YVuhKwPFGvRJ/YaD5x+ZWNo7srLMKm6zoSJ+Su/h40gz5Gsm9
+         tNOg==
+X-Gm-Message-State: APjAAAX2KS6xmRAwASB3kPJMVQsa2iyFtwBjkALk99+JLSF7wIRx0ILH
+        qsMdjTW7i9fEgzNc1La6ODh0lNPqqiSUQDOekSc=
+X-Google-Smtp-Source: APXvYqx0Veo01LY+lVcztJhE85CJaZ2sZ5n/EcknAKg/M7aXZfNy5+ZipN+IhtT0o3fqlLmnElL+3FhI+5yErdlFwlY=
+X-Received: by 2002:a05:6830:158d:: with SMTP id i13mr5301485otr.33.1576114400042;
+ Wed, 11 Dec 2019 17:33:20 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2fbf81f5-a5ea-4237-c645-08d77e8d7644
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2019 22:57:13.7960
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Fn2wH02dOCkojCc2nR39rClE8tellR3RczxSTIRTVzoDG+yz86Z3NRg/a7OWwmAgBkrnFhI9CJvVvdYHcivOMw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR05MB4908
+References: <20191211111628.2955-1-max.hirsch@gmail.com> <20191211162654.GD6622@ziepe.ca>
+In-Reply-To: <20191211162654.GD6622@ziepe.ca>
+From:   Max Hirsch <max.hirsch@gmail.com>
+Date:   Wed, 11 Dec 2019 20:33:10 -0500
+Message-ID: <CADgTo880aSn++fcf_rt0+8DCE4Y=xgXtZxFx9B0nzM_M1HdWPw@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/cma: Fix checkpatch error
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Steve Wise <swise@opengridcomputing.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Danit Goldberg <danitg@mellanox.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dag Moxnes <dag.moxnes@oracle.com>,
+        Myungho Jung <mhjungk@gmail.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 05, 2019 at 11:03:24AM -0500, Jerome Glisse wrote:
+Thanks for the quick response. This is my first patch, so I want to
+follow the correct protocol. I reran checkpatch after making the
+changes and there were no errors or warnings in the region I changed.
 
-> > struct mmu_notifier_mm (ie the mm->mmu_notifier_mm)
-> >    -> mmn_mm
-> > struct mm_struct=20
-> >    -> mm
-> > struct mmu_notifier (ie the user subscription to the mm_struct)
-> >    -> mn
-> > struct mmu_interval_notifier (the other kind of user subscription)
-> >    -> mni
->=20
-> What about "interval" the context should already tell people
-> it is related to mmu notifier and thus a notifier. I would
-> just remove the notifier suffix, this would match the below
-> range.
+...
+WARNING: line over 80 characters
+#308: FILE: drivers/infiniband/core/cma.c:308:
++ return cma_dev->default_roce_tos[port - rdma_start_port(cma_dev->device)]=
+;
 
-Interval could be a good replacement for mni in the mm/mmu_notififer
-file if we don't do the wholesale rename
+<<<<<<<<<<<<<<<<<< HERE IS WHERE THE ERROR WAS
 
-> > I think it would be overall nicer with better names for the original
-> > structs. Perhaps:
-> >=20
-> >  mmn_* - MMU notifier prefix
-> >  mmn_state <- struct mmu_notifier_mm
-> >  mmn_subscription (mmn_sub) <- struct mmu_notifier
-> >  mmn_range_subscription (mmn_range_sub) <- struct mmu_interval_notifier
-> >  mmn_invalidate_desc <- struct mmu_notifier_range
->=20
-> This looks good.
+WARNING: line over 80 characters
+#495: FILE: drivers/infiniband/core/cma.c:495:
++ struct cma_multicast *mc =3D container_of(kref, struct cma_multicast, mcr=
+ef);
+...
 
-Well, lets just bite the bullet then and switch it. Do you like
-'state'? I thought that was the weakest one
+I was have read that it is beneficial to make the changes very small.
+I wanted to target a specific checkpatch error. If you believe it
+would be better I can make a patch cleaning up the entire function.
 
-We could use mmnotif as the prefix, this makes the longest:
+I can also make a second patch changing ret to a bool. I did not want
+to do that as a part of this patch because: I wanted a VERY small
+change (increase acceptance likelihood), and there is a specific
+protocol for submitting multiple commits in a patch, i.e. ordering
+them correctly. I did not want to introduce a potential error source
+when submitting a patch i.e. I submitted 2 commits in the wrong order.
 
-  struct mmnotif_range_subscription
+Since you have the comment to remove the brackets around the ret
+assign how would I go about modifying this patch? Should I resubmit a
+patch i.e. start a new email with with your proposed changes?
 
-Which is reasonable enough
 
-> Maybe we can do a semantic patch to do convertion and then Linus
-> can easily apply the patch by just re-running the coccinelle.
-
-I tried this last time I renamed everything, it was OK, but it missed
-updating the comments. So it still needs some by-hand helping.
-
-I'll make some patches next week when I get back.
-
-Jason
+On Wed, Dec 11, 2019 at 11:26 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Wed, Dec 11, 2019 at 11:16:26AM +0000, Max Hirsch wrote:
+> > When running checkpatch on cma.c the following error was found:
+>
+> I think checkpatch will complain about your patch, did you run it?
+>
+> > ERROR: do not use assignment in if condition
+> > #413: FILE: drivers/infiniband/tmp.c:413:
+> > +     if ((ret =3D (id_priv->state =3D=3D comp)))
+> >
+> > This patch moves the assignment of ret to the previous line. The if sta=
+tement then checks the value of ret assigned on the previous line. The assi=
+gned value of ret is not changed. Testing involved recompiling and loading =
+the kernel. After the changes checkpatch does not report this the error in =
+cma.c.
+> >
+> > Signed-off-by: Max Hirsch <max.hirsch@gmail.com>
+> >  drivers/infiniband/core/cma.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cm=
+a.c
+> > index 25f2b70fd8ef..bdb7a8493517 100644
+> > +++ b/drivers/infiniband/core/cma.c
+> > @@ -410,7 +410,8 @@ static int cma_comp_exch(struct rdma_id_private *id=
+_priv,
+> >       int ret;
+> >
+> >       spin_lock_irqsave(&id_priv->lock, flags);
+> > -     if ((ret =3D (id_priv->state =3D=3D comp)))
+> > +     ret =3D (id_priv->state =3D=3D comp);
+>
+> Brackets are not needed
+>
+> Ret and the return result should be changed to a bool
+>
+> Jason
