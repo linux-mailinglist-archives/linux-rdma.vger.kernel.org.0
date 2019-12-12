@@ -2,374 +2,329 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9768F11CA1E
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 11:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0002711CA6B
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 11:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728389AbfLLKCq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Dec 2019 05:02:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728349AbfLLKCp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Dec 2019 05:02:45 -0500
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C38662464B;
-        Thu, 12 Dec 2019 10:02:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576144964;
-        bh=kYMY7gGK1wN2xgLg75GQ3mswV8grlwda7MyIxpok1Xo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P5XzLEclWE+jjpnOsXofE8kSfKCUh/3gkowHWxj1riTnfqmqi+8loM3sCqfhtRVSr
-         IGq5n4bWpsNR2GLS35gLMeSZUX98A78s/FFr5jIRsASm6wZcnjQ+wdsMCk71Sq5+NH
-         PfwughhIOokIn7hNmwf4l449tuBqecffS8NzmMj4=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH rdma-rc 2/2] IB/mlx5: Fix device memory flows
-Date:   Thu, 12 Dec 2019 12:02:37 +0200
-Message-Id: <20191212100237.330654-3-leon@kernel.org>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191212100237.330654-1-leon@kernel.org>
-References: <20191212100237.330654-1-leon@kernel.org>
+        id S1728607AbfLLKRw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Dec 2019 05:17:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33086 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726382AbfLLKRv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Dec 2019 05:17:51 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 340DEB16C;
+        Thu, 12 Dec 2019 10:17:45 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 66CA41E0B8F; Thu, 12 Dec 2019 11:17:41 +0100 (CET)
+Date:   Thu, 12 Dec 2019 11:17:41 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v10 23/25] mm/gup: track FOLL_PIN pages
+Message-ID: <20191212101741.GD10065@quack2.suse.cz>
+References: <20191212081917.1264184-1-jhubbard@nvidia.com>
+ <20191212081917.1264184-24-jhubbard@nvidia.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191212081917.1264184-24-jhubbard@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yishai Hadas <yishaih@mellanox.com>
+On Thu 12-12-19 00:19:15, John Hubbard wrote:
+> Add tracking of pages that were pinned via FOLL_PIN.
+> 
+> As mentioned in the FOLL_PIN documentation, callers who effectively set
+> FOLL_PIN are required to ultimately free such pages via unpin_user_page().
+> The effect is similar to FOLL_GET, and may be thought of as "FOLL_GET
+> for DIO and/or RDMA use".
+> 
+> Pages that have been pinned via FOLL_PIN are identifiable via a
+> new function call:
+> 
+>    bool page_dma_pinned(struct page *page);
+> 
+> What to do in response to encountering such a page, is left to later
+> patchsets. There is discussion about this in [1], [2], and [3].
+> 
+> This also changes a BUG_ON(), to a WARN_ON(), in follow_page_mask().
+> 
+> [1] Some slow progress on get_user_pages() (Apr 2, 2019):
+>     https://lwn.net/Articles/784574/
+> [2] DMA and get_user_pages() (LPC: Dec 12, 2018):
+>     https://lwn.net/Articles/774411/
+> [3] The trouble with get_user_pages() (Apr 30, 2018):
+>     https://lwn.net/Articles/753027/
+> 
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Suggested-by: Jérôme Glisse <jglisse@redhat.com>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 
-Fix device memory flows so that only once there will be no live mmaped
-VA to a given allocation the matching object will be destroyed.
+Thanks for the patch. As a side note, given this series is rather big, it
+may be better to send just individual updated patches (as replies to the
+review comments) instead of resending the whole series every time. And then
+you can resend the whole series once enough changes accumulate or we reach
+seemingly final state.  That way people don't have to crawl through lots of
+uninteresing emails...  Just something to keep in mind for the future.
 
-This prevents a potential scenario that existing VA that was mmaped by
-one process might still be used post its deallocation despite that it's
-owned now by other process.
+I've spotted just one issue in this patch (see below), the rest are just
+small style nits.
 
-The above is achieved by integrating with IB core APIs to manage
-mmap/munmap. Only once the refcount will become 0 the DM object and its
-underlay area will be freed.
+> +#define page_ref_zero_or_close_to_bias_overflow(page) \
+> +	((unsigned int) page_ref_count(page) + \
+> +		GUP_PIN_COUNTING_BIAS <= GUP_PIN_COUNTING_BIAS)
+> +
 
-Fixes: 3b113a1ec3d4 ("IB/mlx5: Support device memory type attribute")
-Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/mlx5/cmd.c     |  16 ++--
- drivers/infiniband/hw/mlx5/cmd.h     |   2 +-
- drivers/infiniband/hw/mlx5/main.c    | 120 ++++++++++++++++++---------
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  19 ++++-
- 4 files changed, 105 insertions(+), 52 deletions(-)
+...
 
-diff --git a/drivers/infiniband/hw/mlx5/cmd.c b/drivers/infiniband/hw/mlx5/cmd.c
-index 4937947400cd..4c26492ab8a3 100644
---- a/drivers/infiniband/hw/mlx5/cmd.c
-+++ b/drivers/infiniband/hw/mlx5/cmd.c
-@@ -157,7 +157,7 @@ int mlx5_cmd_alloc_memic(struct mlx5_dm *dm, phys_addr_t *addr,
- 	return -ENOMEM;
- }
- 
--int mlx5_cmd_dealloc_memic(struct mlx5_dm *dm, phys_addr_t addr, u64 length)
-+void mlx5_cmd_dealloc_memic(struct mlx5_dm *dm, phys_addr_t addr, u64 length)
- {
- 	struct mlx5_core_dev *dev = dm->dev;
- 	u64 hw_start_addr = MLX5_CAP64_DEV_MEM(dev, memic_bar_start_addr);
-@@ -175,15 +175,13 @@ int mlx5_cmd_dealloc_memic(struct mlx5_dm *dm, phys_addr_t addr, u64 length)
- 	MLX5_SET(dealloc_memic_in, in, memic_size, length);
- 
- 	err =  mlx5_cmd_exec(dev, in, sizeof(in), out, sizeof(out));
-+	if (err)
-+		return;
- 
--	if (!err) {
--		spin_lock(&dm->lock);
--		bitmap_clear(dm->memic_alloc_pages,
--			     start_page_idx, num_pages);
--		spin_unlock(&dm->lock);
--	}
--
--	return err;
-+	spin_lock(&dm->lock);
-+	bitmap_clear(dm->memic_alloc_pages,
-+		     start_page_idx, num_pages);
-+	spin_unlock(&dm->lock);
- }
- 
- int mlx5_cmd_query_ext_ppcnt_counters(struct mlx5_core_dev *dev, void *out)
-diff --git a/drivers/infiniband/hw/mlx5/cmd.h b/drivers/infiniband/hw/mlx5/cmd.h
-index 169cab4915e3..945ebce73613 100644
---- a/drivers/infiniband/hw/mlx5/cmd.h
-+++ b/drivers/infiniband/hw/mlx5/cmd.h
-@@ -46,7 +46,7 @@ int mlx5_cmd_modify_cong_params(struct mlx5_core_dev *mdev,
- 				void *in, int in_size);
- int mlx5_cmd_alloc_memic(struct mlx5_dm *dm, phys_addr_t *addr,
- 			 u64 length, u32 alignment);
--int mlx5_cmd_dealloc_memic(struct mlx5_dm *dm, phys_addr_t addr, u64 length);
-+void mlx5_cmd_dealloc_memic(struct mlx5_dm *dm, phys_addr_t addr, u64 length);
- void mlx5_cmd_dealloc_pd(struct mlx5_core_dev *dev, u32 pdn, u16 uid);
- void mlx5_cmd_destroy_tir(struct mlx5_core_dev *dev, u32 tirn, u16 uid);
- void mlx5_cmd_destroy_tis(struct mlx5_core_dev *dev, u32 tisn, u16 uid);
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 2f5a159cbe1c..4d89d85226c2 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -2074,6 +2074,24 @@ static int mlx5_ib_mmap_clock_info_page(struct mlx5_ib_dev *dev,
- 			      virt_to_page(dev->mdev->clock_info));
- }
- 
-+static void mlx5_ib_mmap_free(struct rdma_user_mmap_entry *entry)
-+{
-+	struct mlx5_user_mmap_entry *mentry = to_mmmap(entry);
-+	struct mlx5_ib_dev *dev = to_mdev(entry->ucontext->device);
-+	struct mlx5_ib_dm *mdm;
-+
-+	switch (mentry->mmap_flag) {
-+	case MLX5_IB_MMAP_TYPE_MEMIC:
-+		mdm = container_of(mentry, struct mlx5_ib_dm, mentry);
-+		mlx5_cmd_dealloc_memic(&dev->dm, mdm->dev_addr,
-+				       mdm->size);
-+		kfree(mdm);
-+		break;
-+	default:
-+		WARN_ON(true);
-+	}
-+}
-+
- static int uar_mmap(struct mlx5_ib_dev *dev, enum mlx5_ib_mmap_cmd cmd,
- 		    struct vm_area_struct *vma,
- 		    struct mlx5_ib_ucontext *context)
-@@ -2186,26 +2204,55 @@ static int uar_mmap(struct mlx5_ib_dev *dev, enum mlx5_ib_mmap_cmd cmd,
- 	return err;
- }
- 
--static int dm_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
-+static int add_dm_mmap_entry(struct ib_ucontext *context,
-+			     struct mlx5_ib_dm *mdm,
-+			     u64 address)
-+{
-+	mdm->mentry.mmap_flag = MLX5_IB_MMAP_TYPE_MEMIC;
-+	mdm->mentry.address = address;
-+	return rdma_user_mmap_entry_insert_range(
-+			context, &mdm->mentry.rdma_entry,
-+			mdm->size,
-+			MLX5_IB_MMAP_DEVICE_MEM << 16,
-+			(MLX5_IB_MMAP_DEVICE_MEM << 16) + (1UL << 16) - 1);
-+}
-+
-+static unsigned long mlx5_vma_to_pgoff(struct vm_area_struct *vma)
-+{
-+	unsigned long idx;
-+	u8 command;
-+
-+	command = get_command(vma->vm_pgoff);
-+	idx = get_extended_index(vma->vm_pgoff);
-+
-+	return (command << 16 | idx);
-+}
-+
-+static int mlx5_ib_mmap_offset(struct mlx5_ib_dev *dev,
-+			       struct vm_area_struct *vma,
-+			       struct ib_ucontext *ucontext)
- {
--	struct mlx5_ib_ucontext *mctx = to_mucontext(context);
--	struct mlx5_ib_dev *dev = to_mdev(context->device);
--	u16 page_idx = get_extended_index(vma->vm_pgoff);
--	size_t map_size = vma->vm_end - vma->vm_start;
--	u32 npages = map_size >> PAGE_SHIFT;
-+	struct mlx5_user_mmap_entry *mentry;
-+	struct rdma_user_mmap_entry *entry;
-+	unsigned long pgoff;
-+	pgprot_t prot;
- 	phys_addr_t pfn;
-+	int ret;
- 
--	if (find_next_zero_bit(mctx->dm_pages, page_idx + npages, page_idx) !=
--	    page_idx + npages)
-+	pgoff = mlx5_vma_to_pgoff(vma);
-+	entry = rdma_user_mmap_entry_get_pgoff(ucontext, pgoff);
-+	if (!entry)
- 		return -EINVAL;
- 
--	pfn = ((dev->mdev->bar_addr +
--	      MLX5_CAP64_DEV_MEM(dev->mdev, memic_bar_start_addr)) >>
--	      PAGE_SHIFT) +
--	      page_idx;
--	return rdma_user_mmap_io(context, vma, pfn, map_size,
--				 pgprot_writecombine(vma->vm_page_prot),
--				 NULL);
-+	mentry = to_mmmap(entry);
-+	pfn = (mentry->address >> PAGE_SHIFT);
-+	prot = pgprot_writecombine(vma->vm_page_prot);
-+	ret = rdma_user_mmap_io(ucontext, vma, pfn,
-+				entry->npages * PAGE_SIZE,
-+				prot,
-+				entry);
-+	rdma_user_mmap_entry_put(&mentry->rdma_entry);
-+	return ret;
- }
- 
- static int mlx5_ib_mmap(struct ib_ucontext *ibcontext, struct vm_area_struct *vma)
-@@ -2248,11 +2295,8 @@ static int mlx5_ib_mmap(struct ib_ucontext *ibcontext, struct vm_area_struct *vm
- 	case MLX5_IB_MMAP_CLOCK_INFO:
- 		return mlx5_ib_mmap_clock_info_page(dev, vma, context);
- 
--	case MLX5_IB_MMAP_DEVICE_MEM:
--		return dm_mmap(ibcontext, vma);
--
- 	default:
--		return -EINVAL;
-+		return mlx5_ib_mmap_offset(dev, vma, ibcontext);
- 	}
- 
- 	return 0;
-@@ -2288,8 +2332,9 @@ static int handle_alloc_dm_memic(struct ib_ucontext *ctx,
- {
- 	struct mlx5_dm *dm_db = &to_mdev(ctx->device)->dm;
- 	u64 start_offset;
--	u32 page_idx;
-+	u16 page_idx = 0;
- 	int err;
-+	u64 address;
- 
- 	dm->size = roundup(attr->length, MLX5_MEMIC_BASE_SIZE);
- 
-@@ -2298,28 +2343,30 @@ static int handle_alloc_dm_memic(struct ib_ucontext *ctx,
- 	if (err)
- 		return err;
- 
--	page_idx = (dm->dev_addr - pci_resource_start(dm_db->dev->pdev, 0) -
--		    MLX5_CAP64_DEV_MEM(dm_db->dev, memic_bar_start_addr)) >>
--		    PAGE_SHIFT;
-+	address = dm->dev_addr & PAGE_MASK;
-+	err = add_dm_mmap_entry(ctx, dm, address);
-+	if (err)
-+		goto err_dealloc;
- 
-+	page_idx = dm->mentry.rdma_entry.start_pgoff & 0xFFFF;
- 	err = uverbs_copy_to(attrs,
- 			     MLX5_IB_ATTR_ALLOC_DM_RESP_PAGE_INDEX,
--			     &page_idx, sizeof(page_idx));
-+			     &page_idx,
-+			     sizeof(page_idx));
- 	if (err)
--		goto err_dealloc;
-+		goto err_copy;
- 
- 	start_offset = dm->dev_addr & ~PAGE_MASK;
- 	err = uverbs_copy_to(attrs,
- 			     MLX5_IB_ATTR_ALLOC_DM_RESP_START_OFFSET,
- 			     &start_offset, sizeof(start_offset));
- 	if (err)
--		goto err_dealloc;
--
--	bitmap_set(to_mucontext(ctx)->dm_pages, page_idx,
--		   DIV_ROUND_UP(dm->size, PAGE_SIZE));
-+		goto err_copy;
- 
- 	return 0;
- 
-+err_copy:
-+	rdma_user_mmap_entry_remove(&dm->mentry.rdma_entry);
- err_dealloc:
- 	mlx5_cmd_dealloc_memic(dm_db, dm->dev_addr, dm->size);
- 
-@@ -2423,23 +2470,13 @@ int mlx5_ib_dealloc_dm(struct ib_dm *ibdm, struct uverbs_attr_bundle *attrs)
- 	struct mlx5_ib_ucontext *ctx = rdma_udata_to_drv_context(
- 		&attrs->driver_udata, struct mlx5_ib_ucontext, ibucontext);
- 	struct mlx5_core_dev *dev = to_mdev(ibdm->device)->mdev;
--	struct mlx5_dm *dm_db = &to_mdev(ibdm->device)->dm;
- 	struct mlx5_ib_dm *dm = to_mdm(ibdm);
--	u32 page_idx;
- 	int ret;
- 
- 	switch (dm->type) {
- 	case MLX5_IB_UAPI_DM_TYPE_MEMIC:
--		ret = mlx5_cmd_dealloc_memic(dm_db, dm->dev_addr, dm->size);
--		if (ret)
--			return ret;
--
--		page_idx = (dm->dev_addr - pci_resource_start(dev->pdev, 0) -
--			    MLX5_CAP64_DEV_MEM(dev, memic_bar_start_addr)) >>
--			    PAGE_SHIFT;
--		bitmap_clear(ctx->dm_pages, page_idx,
--			     DIV_ROUND_UP(dm->size, PAGE_SIZE));
--		break;
-+		rdma_user_mmap_entry_remove(&dm->mentry.rdma_entry);
-+		return 0;
- 	case MLX5_IB_UAPI_DM_TYPE_STEERING_SW_ICM:
- 		ret = mlx5_dm_sw_icm_dealloc(dev, MLX5_SW_ICM_TYPE_STEERING,
- 					     dm->size, ctx->devx_uid, dm->dev_addr,
-@@ -6235,6 +6272,7 @@ static const struct ib_device_ops mlx5_ib_dev_ops = {
- 	.map_mr_sg = mlx5_ib_map_mr_sg,
- 	.map_mr_sg_pi = mlx5_ib_map_mr_sg_pi,
- 	.mmap = mlx5_ib_mmap,
-+	.mmap_free = mlx5_ib_mmap_free,
- 	.modify_cq = mlx5_ib_modify_cq,
- 	.modify_device = mlx5_ib_modify_device,
- 	.modify_port = mlx5_ib_modify_port,
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 5986953ec2fa..b06f32ff5748 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -118,6 +118,10 @@ enum {
- 	MLX5_MEMIC_BASE_SIZE	= 1 << MLX5_MEMIC_BASE_ALIGN,
- };
- 
-+enum mlx5_ib_mmap_type {
-+	MLX5_IB_MMAP_TYPE_MEMIC = 1,
-+};
-+
- #define MLX5_LOG_SW_ICM_BLOCK_SIZE(dev)                                        \
- 	(MLX5_CAP_DEV_MEM(dev, log_sw_icm_alloc_granularity))
- #define MLX5_SW_ICM_BLOCK_SIZE(dev) (1 << MLX5_LOG_SW_ICM_BLOCK_SIZE(dev))
-@@ -135,7 +139,6 @@ struct mlx5_ib_ucontext {
- 	u32			tdn;
- 
- 	u64			lib_caps;
--	DECLARE_BITMAP(dm_pages, MLX5_MAX_MEMIC_PAGES);
- 	u16			devx_uid;
- 	/* For RoCE LAG TX affinity */
- 	atomic_t		tx_port_affinity;
-@@ -556,6 +559,12 @@ enum mlx5_ib_mtt_access_flags {
- 	MLX5_IB_MTT_WRITE = (1 << 1),
- };
- 
-+struct mlx5_user_mmap_entry {
-+	struct rdma_user_mmap_entry rdma_entry;
-+	u8 mmap_flag;
-+	u64 address;
-+};
-+
- struct mlx5_ib_dm {
- 	struct ib_dm		ibdm;
- 	phys_addr_t		dev_addr;
-@@ -567,6 +576,7 @@ struct mlx5_ib_dm {
- 		} icm_dm;
- 		/* other dm types specific params should be added here */
- 	};
-+	struct mlx5_user_mmap_entry mentry;
- };
- 
- #define MLX5_IB_MTT_PRESENT (MLX5_IB_MTT_READ | MLX5_IB_MTT_WRITE)
-@@ -1101,6 +1111,13 @@ to_mflow_act(struct ib_flow_action *ibact)
- 	return container_of(ibact, struct mlx5_ib_flow_action, ib_action);
- }
- 
-+static inline struct mlx5_user_mmap_entry *
-+to_mmmap(struct rdma_user_mmap_entry *rdma_entry)
-+{
-+	return container_of(rdma_entry,
-+		struct mlx5_user_mmap_entry, rdma_entry);
-+}
-+
- int mlx5_ib_db_map_user(struct mlx5_ib_ucontext *context,
- 			struct ib_udata *udata, unsigned long virt,
- 			struct mlx5_db *db);
+> +/**
+> + * page_dma_pinned() - report if a page is pinned for DMA.
+> + *
+> + * This function checks if a page has been pinned via a call to
+> + * pin_user_pages*().
+> + *
+> + * The return value is partially fuzzy: false is not fuzzy, because it means
+> + * "definitely not pinned for DMA", but true means "probably pinned for DMA, but
+> + * possibly a false positive due to having at least GUP_PIN_COUNTING_BIAS worth
+> + * of normal page references".
+> + *
+> + * False positives are OK, because: a) it's unlikely for a page to get that many
+> + * refcounts, and b) all the callers of this routine are expected to be able to
+> + * deal gracefully with a false positive.
+> + *
+> + * For more information, please see Documentation/vm/pin_user_pages.rst.
+> + *
+> + * @page:	pointer to page to be queried.
+> + * @Return:	True, if it is likely that the page has been "dma-pinned".
+> + *		False, if the page is definitely not dma-pinned.
+> + */
+> +static inline bool page_dma_pinned(struct page *page)
+> +{
+> +	return (page_ref_count(compound_head(page))) >= GUP_PIN_COUNTING_BIAS;
+> +}
+> +
+
+I realized one think WRT handling of page refcount overflow: Page refcount is
+signed and e.g. try_get_page() fails once the refcount is negative. That
+means that:
+
+a) page_ref_zero_or_close_to_bias_overflow() is not necessary - all places
+that use pinning (i.e., advance refcount by GUP_PIN_COUNTING_BIAS) are not
+necesary, we should just rely on the check for negative value for
+consistency.
+
+b) page_dma_pinned() has to be careful and type page_ref_count() to
+unsigned type for comparison as otherwise overflowed refcount would
+suddently appear as not-pinned.
+
+> +/**
+> + * try_pin_compound_head() - mark a compound page as being used by
+> + * pin_user_pages*().
+> + *
+> + * This is the FOLL_PIN counterpart to try_get_compound_head().
+> + *
+> + * @page:	pointer to page to be marked
+> + * @Return:	the compound head page, with ref appropriately incremented,
+> + * or NULL upon failure.
+> + */
+> +__must_check struct page *try_pin_compound_head(struct page *page, int refs)
+> +{
+> +	struct page *head = try_get_compound_head(page,
+> +						  GUP_PIN_COUNTING_BIAS * refs);
+> +	if (!head)
+> +		return NULL;
+> +
+> +	__update_proc_vmstat(page, NR_FOLL_PIN_REQUESTED, refs);
+> +	return head;
+> +}
+> +
+> +/*
+> + * try_grab_compound_head() - attempt to elevate a page's refcount, by a
+> + * flags-dependent amount.
+> + *
+> + * "grab" names in this file mean, "look at flags to decide whether to use
+> + * FOLL_PIN or FOLL_GET behavior, when incrementing the page's refcount.
+> + *
+> + * Either FOLL_PIN or FOLL_GET (or neither) must be set, but not both at the
+> + * same time. (That's true throughout the get_user_pages*() and
+> + * pin_user_pages*() APIs.) Cases:
+> + *
+> + *	FOLL_GET: page's refcount will be incremented by 1.
+> + *      FOLL_PIN: page's refcount will be incremented by GUP_PIN_COUNTING_BIAS.
+
+Some tab vs space issue here... Generally we don't use tabs inside comments
+for indenting so I'd wote for using just spaces.
+
+> + *
+> + * Return: head page (with refcount appropriately incremented) for success, or
+> + * NULL upon failure. If neither FOLL_GET nor FOLL_PIN was set, that's
+> + * considered failure, and furthermore, a likely bug in the caller, so a warning
+> + * is also emitted.
+> + */
+> +static __maybe_unused struct page *try_grab_compound_head(struct page *page,
+> +							  int refs,
+> +							  unsigned int flags)
+> +{
+> +	if (flags & FOLL_GET)
+> +		return try_get_compound_head(page, refs);
+> +	else if (flags & FOLL_PIN)
+> +		return try_pin_compound_head(page, refs);
+> +
+> +	WARN_ON_ONCE((flags & (FOLL_GET | FOLL_PIN)) == 0);
+
+This could be just WARN_ON_ONCE(1), right?
+
+> +	return NULL;
+> +}
+> +
+> +/**
+> + * try_grab_page() - elevate a page's refcount by a flag-dependent amount
+> + *
+> + * This might not do anything at all, depending on the flags argument.
+> + *
+> + * "grab" names in this file mean, "look at flags to decide whether to use
+> + * FOLL_PIN or FOLL_GET behavior, when incrementing the page's refcount.
+> + *
+> + * @page:	pointer to page to be grabbed
+> + * @flags:	gup flags: these are the FOLL_* flag values.
+> + *
+> + * Either FOLL_PIN or FOLL_GET (or neither) may be set, but not both at the same
+> + * time. Cases:
+> + *
+> + *	FOLL_GET: page's refcount will be incremented by 1.
+> + *      FOLL_PIN: page's refcount will be incremented by GUP_PIN_COUNTING_BIAS.
+
+Again tab vs space difference here.
+
+> + *
+> + * Return: true for success, or if no action was required (if neither FOLL_PIN
+> + * nor FOLL_GET was set, nothing is done). False for failure: FOLL_GET or
+> + * FOLL_PIN was set, but the page could not be grabbed.
+> + */
+> +bool __must_check try_grab_page(struct page *page, unsigned int flags)
+> +{
+> +	if (flags & FOLL_GET)
+> +		return try_get_page(page);
+> +	else if (flags & FOLL_PIN) {
+> +		page = compound_head(page);
+> +		WARN_ON_ONCE(flags & FOLL_GET);
+> +
+> +		if (WARN_ON_ONCE(page_ref_zero_or_close_to_bias_overflow(page)))
+> +			return false;
+
+As I mentioned above, this will need "negative refcount" check instead...
+
+> +
+> +		page_ref_add(page, GUP_PIN_COUNTING_BIAS);
+> +		__update_proc_vmstat(page, NR_FOLL_PIN_REQUESTED, 1);
+> +	}
+> +
+> +	return true;
+> +}
+
+...
+
+> @@ -1468,6 +1482,7 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
+>  {
+>  	struct mm_struct *mm = vma->vm_mm;
+>  	struct page *page = NULL;
+> +	struct page *subpage = NULL;
+>  
+>  	assert_spin_locked(pmd_lockptr(mm, pmd));
+>  
+> @@ -1486,6 +1501,14 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
+>  	VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
+>  	if (flags & FOLL_TOUCH)
+>  		touch_pmd(vma, addr, pmd, flags);
+> +
+> +	subpage = page;
+> +	subpage += (addr & ~HPAGE_PMD_MASK) >> PAGE_SHIFT;
+> +	VM_BUG_ON_PAGE(!PageCompound(subpage) &&
+> +		       !is_zone_device_page(subpage), subpage);
+> +	if (!try_grab_page(subpage, flags))
+> +		return ERR_PTR(-EFAULT);
+> +
+
+Hum, I think you've made this change more complex than it has to be.
+try_grab_page() is the same for head page or subpage because we increment
+the refcount on the compound_head(page) anyway. So I'd leave this function
+as is (not add subpage or move VM_BUG_ON_PAGE()), just have at this place:
+
+	if (!try_grab_page(page, flags))
+		return ERR_PTR(-EFAULT);
+
+Also one comment regarding the error code. Some places seem to return -ENOMEM
+when they fail to grab page reference. Shouldn't we rather return that one
+for consistency?
+
+>  	if ((flags & FOLL_MLOCK) && (vma->vm_flags & VM_LOCKED)) {
+>  		/*
+>  		 * We don't mlock() pte-mapped THPs. This way we can avoid
+> @@ -1509,24 +1532,18 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
+>  		 */
+>  
+>  		if (PageAnon(page) && compound_mapcount(page) != 1)
+> -			goto skip_mlock;
+> +			goto out;
+>  		if (PageDoubleMap(page) || !page->mapping)
+> -			goto skip_mlock;
+> +			goto out;
+>  		if (!trylock_page(page))
+> -			goto skip_mlock;
+> +			goto out;
+>  		lru_add_drain();
+>  		if (page->mapping && !PageDoubleMap(page))
+>  			mlock_vma_page(page);
+>  		unlock_page(page);
+>  	}
+> -skip_mlock:
+> -	page += (addr & ~HPAGE_PMD_MASK) >> PAGE_SHIFT;
+> -	VM_BUG_ON_PAGE(!PageCompound(page) && !is_zone_device_page(page), page);
+> -	if (flags & FOLL_GET)
+> -		get_page(page);
+> -
+>  out:
+> -	return page;
+> +	return subpage;
+>  }
+>  
+
+									Honza
 -- 
-2.20.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
