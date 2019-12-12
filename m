@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4EA11C98C
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 10:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 692DB11C98D
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 10:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728381AbfLLJkU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Dec 2019 04:40:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40768 "EHLO mail.kernel.org"
+        id S1728373AbfLLJkX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Dec 2019 04:40:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728422AbfLLJkU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Dec 2019 04:40:20 -0500
+        id S1728422AbfLLJkX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Dec 2019 04:40:23 -0500
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 905AA2173E;
-        Thu, 12 Dec 2019 09:40:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFD3D2465B;
+        Thu, 12 Dec 2019 09:40:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576143619;
-        bh=1MUaeCQCqDeb3pyieL5IHACYtN3paRyQK9IRSQC418I=;
+        s=default; t=1576143622;
+        bh=ChyQy0qHh6OLei+VapxDBfb7hdq0L4HelfN63CaWDew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zYDbJEse9Eyy8DlNZzQ5qjYH7axDeOIti66EJEz0s3dgHrHHxW8f99q/McTmwzWeo
-         1sEC+26JNre2P7Zqb/j9AoZ0v1cHOxUqXMzTdkxJ5pXE3r7MGC/EOTKXBq1ozy3s5v
-         EOd6bv/uKyI+4N6bbuCF2cCyD4vCbU8WSDtr8xD8=
+        b=1xcz0sDDAobwlergLYZbyDn5N+pGMjoxszzv5GcZcm5nKAsyicWn2zeIm348toQ/d
+         8/rVzG1xxCHdw4YnLRWWf6BfmHC2Bvzt052Kfk3sefVZ+btA0ZEpTMHn9d6gHOMIGO
+         Ae2PghmgRUCQwO4t9d2jjFoHf2i2I5LXBUbidb1g=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -30,9 +30,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Bart Van Assche <bvanassche@acm.org>,
         Sean Hefty <sean.hefty@intel.com>
-Subject: [PATCH rdma-rc v2 32/48] RDMA/cm: Convert REQ subnet local fields
-Date:   Thu, 12 Dec 2019 11:38:14 +0200
-Message-Id: <20191212093830.316934-33-leon@kernel.org>
+Subject: [PATCH rdma-rc v2 33/48] RDMA/cm: Convert REQ local ack timeout
+Date:   Thu, 12 Dec 2019 11:38:15 +0200
+Message-Id: <20191212093830.316934-34-leon@kernel.org>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191212093830.316934-1-leon@kernel.org>
 References: <20191212093830.316934-1-leon@kernel.org>
@@ -45,97 +45,99 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-Convert REQ subnet local fields.
+Convert REQ local ack timeout fields.
 
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/cm.c      |  9 +++++----
+ drivers/infiniband/core/cm.c      | 18 +++++++++---------
  drivers/infiniband/core/cm_msgs.h | 24 ------------------------
- 2 files changed, 5 insertions(+), 28 deletions(-)
+ 2 files changed, 9 insertions(+), 33 deletions(-)
 
 diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index b6da28d43b46..1a5d5d401c72 100644
+index 1a5d5d401c72..e25629a910f0 100644
 --- a/drivers/infiniband/core/cm.c
 +++ b/drivers/infiniband/core/cm.c
-@@ -1324,7 +1324,7 @@ static void cm_format_req(struct cm_req_msg *req_msg,
- 	req_msg->primary_traffic_class = pri_path->traffic_class;
+@@ -1325,9 +1325,9 @@ static void cm_format_req(struct cm_req_msg *req_msg,
  	req_msg->primary_hop_limit = pri_path->hop_limit;
  	IBA_SET(CM_REQ_PRIMARY_SL, req_msg, pri_path->sl);
--	cm_req_set_primary_subnet_local(req_msg, (pri_path->hop_limit <= 1));
-+	IBA_SET(CM_REQ_PRIMARY_SUBNET_LOCAL, req_msg, (pri_path->hop_limit <= 1));
- 	cm_req_set_primary_local_ack_timeout(req_msg,
- 		cm_ack_timeout(cm_id_priv->av.port->cm_dev->ack_delay,
- 			       pri_path->packet_life_time));
-@@ -1359,7 +1359,8 @@ static void cm_format_req(struct cm_req_msg *req_msg,
- 		req_msg->alt_traffic_class = alt_path->traffic_class;
+ 	IBA_SET(CM_REQ_PRIMARY_SUBNET_LOCAL, req_msg, (pri_path->hop_limit <= 1));
+-	cm_req_set_primary_local_ack_timeout(req_msg,
+-		cm_ack_timeout(cm_id_priv->av.port->cm_dev->ack_delay,
+-			       pri_path->packet_life_time));
++	IBA_SET(CM_REQ_PRIMARY_LOCAL_ACK_TIMEOUT, req_msg,
++	       cm_ack_timeout(cm_id_priv->av.port->cm_dev->ack_delay,
++			      pri_path->packet_life_time));
+ 
+ 	if (alt_path) {
+ 		bool alt_ext = false;
+@@ -1360,10 +1360,10 @@ static void cm_format_req(struct cm_req_msg *req_msg,
  		req_msg->alt_hop_limit = alt_path->hop_limit;
  		IBA_SET(CM_REQ_ALTERNATE_SL, req_msg, alt_path->sl);
--		cm_req_set_alt_subnet_local(req_msg, (alt_path->hop_limit <= 1));
-+		IBA_SET(CM_REQ_ALTERNATE_SUBNET_LOCAL, req_msg,
-+			(alt_path->hop_limit <= 1));
- 		cm_req_set_alt_local_ack_timeout(req_msg,
- 			cm_ack_timeout(cm_id_priv->av.port->cm_dev->ack_delay,
- 				       alt_path->packet_life_time));
-@@ -1907,7 +1908,7 @@ static struct cm_id_private * cm_match_req(struct cm_work *work,
-  */
- static void cm_process_routed_req(struct cm_req_msg *req_msg, struct ib_wc *wc)
- {
--	if (!cm_req_get_primary_subnet_local(req_msg)) {
-+	if (!IBA_GET(CM_REQ_PRIMARY_SUBNET_LOCAL, req_msg)) {
- 		if (req_msg->primary_local_lid == IB_LID_PERMISSIVE) {
- 			req_msg->primary_local_lid = ib_lid_be16(wc->slid);
- 			IBA_SET(CM_REQ_PRIMARY_SL, req_msg, wc->sl);
-@@ -1917,7 +1918,7 @@ static void cm_process_routed_req(struct cm_req_msg *req_msg, struct ib_wc *wc)
- 			req_msg->primary_remote_lid = cpu_to_be16(wc->dlid_path_bits);
+ 		IBA_SET(CM_REQ_ALTERNATE_SUBNET_LOCAL, req_msg,
+-			(alt_path->hop_limit <= 1));
+-		cm_req_set_alt_local_ack_timeout(req_msg,
+-			cm_ack_timeout(cm_id_priv->av.port->cm_dev->ack_delay,
+-				       alt_path->packet_life_time));
++		       (alt_path->hop_limit <= 1));
++		IBA_SET(CM_REQ_ALTERNATE_LOCAL_ACK_TIMEOUT, req_msg,
++		       cm_ack_timeout(cm_id_priv->av.port->cm_dev->ack_delay,
++				      alt_path->packet_life_time));
  	}
  
--	if (!cm_req_get_alt_subnet_local(req_msg)) {
-+	if (!IBA_GET(CM_REQ_ALTERNATE_SUBNET_LOCAL, req_msg)) {
- 		if (req_msg->alt_local_lid == IB_LID_PERMISSIVE) {
- 			req_msg->alt_local_lid = ib_lid_be16(wc->slid);
- 			IBA_SET(CM_REQ_ALTERNATE_SL, req_msg, wc->sl);
+ 	if (param->private_data && param->private_data_len)
+@@ -1584,7 +1584,7 @@ static void cm_format_paths_from_req(struct cm_req_msg *req_msg,
+ 	primary_path->rate = IBA_GET(CM_REQ_PRIMARY_PACKET_RATE, req_msg);
+ 	primary_path->packet_life_time_selector = IB_SA_EQ;
+ 	primary_path->packet_life_time =
+-		cm_req_get_primary_local_ack_timeout(req_msg);
++		IBA_GET(CM_REQ_PRIMARY_LOCAL_ACK_TIMEOUT, req_msg);
+ 	primary_path->packet_life_time -= (primary_path->packet_life_time > 0);
+ 	primary_path->service_id = req_msg->service_id;
+ 	if (sa_path_is_roce(primary_path))
+@@ -1606,7 +1606,7 @@ static void cm_format_paths_from_req(struct cm_req_msg *req_msg,
+ 		alt_path->rate = IBA_GET(CM_REQ_ALTERNATE_PACKET_RATE, req_msg);
+ 		alt_path->packet_life_time_selector = IB_SA_EQ;
+ 		alt_path->packet_life_time =
+-			cm_req_get_alt_local_ack_timeout(req_msg);
++			IBA_GET(CM_REQ_ALTERNATE_LOCAL_ACK_TIMEOUT, req_msg);
+ 		alt_path->packet_life_time -= (alt_path->packet_life_time > 0);
+ 		alt_path->service_id = req_msg->service_id;
+ 
 diff --git a/drivers/infiniband/core/cm_msgs.h b/drivers/infiniband/core/cm_msgs.h
-index b82eb10e22f6..3933c29b569b 100644
+index 3933c29b569b..6f52a8f0bee3 100644
 --- a/drivers/infiniband/core/cm_msgs.h
 +++ b/drivers/infiniband/core/cm_msgs.h
-@@ -70,18 +70,6 @@ struct cm_req_msg {
+@@ -70,30 +70,6 @@ struct cm_req_msg {
  
  } __packed;
  
--static inline u8 cm_req_get_primary_subnet_local(struct cm_req_msg *req_msg)
+-static inline u8 cm_req_get_primary_local_ack_timeout(struct cm_req_msg *req_msg)
 -{
--	return (u8) ((req_msg->primary_offset94 & 0x08) >> 3);
+-	return (u8) (req_msg->primary_offset95 >> 3);
 -}
 -
--static inline void cm_req_set_primary_subnet_local(struct cm_req_msg *req_msg,
--						   u8 subnet_local)
+-static inline void cm_req_set_primary_local_ack_timeout(struct cm_req_msg *req_msg,
+-							u8 local_ack_timeout)
 -{
--	req_msg->primary_offset94 = (u8) ((req_msg->primary_offset94 & 0xF7) |
--					  ((subnet_local & 0x1) << 3));
+-	req_msg->primary_offset95 = (u8) ((req_msg->primary_offset95 & 0x07) |
+-					  (local_ack_timeout << 3));
 -}
 -
- static inline u8 cm_req_get_primary_local_ack_timeout(struct cm_req_msg *req_msg)
- {
- 	return (u8) (req_msg->primary_offset95 >> 3);
-@@ -94,18 +82,6 @@ static inline void cm_req_set_primary_local_ack_timeout(struct cm_req_msg *req_m
- 					  (local_ack_timeout << 3));
- }
- 
--static inline u8 cm_req_get_alt_subnet_local(struct cm_req_msg *req_msg)
+-static inline u8 cm_req_get_alt_local_ack_timeout(struct cm_req_msg *req_msg)
 -{
--	return (u8) ((req_msg->alt_offset138 & 0x08) >> 3);
+-	return (u8) (req_msg->alt_offset139 >> 3);
 -}
 -
--static inline void cm_req_set_alt_subnet_local(struct cm_req_msg *req_msg,
--					       u8 subnet_local)
+-static inline void cm_req_set_alt_local_ack_timeout(struct cm_req_msg *req_msg,
+-						    u8 local_ack_timeout)
 -{
--	req_msg->alt_offset138 = (u8) ((req_msg->alt_offset138 & 0xF7) |
--				       ((subnet_local & 0x1) << 3));
+-	req_msg->alt_offset139 = (u8) ((req_msg->alt_offset139 & 0x07) |
+-				       (local_ack_timeout << 3));
 -}
 -
- static inline u8 cm_req_get_alt_local_ack_timeout(struct cm_req_msg *req_msg)
- {
- 	return (u8) (req_msg->alt_offset139 >> 3);
+ /* Message REJected or MRAed */
+ enum cm_msg_response {
+ 	CM_MSG_RESPONSE_REQ = 0x0,
 -- 
 2.20.1
 
