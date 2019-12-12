@@ -2,31 +2,31 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 834E011CE97
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 14:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0389611CEB0
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 14:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729429AbfLLNl4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Dec 2019 08:41:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41250 "EHLO mail.kernel.org"
+        id S1729470AbfLLNr1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Dec 2019 08:47:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729418AbfLLNl4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Dec 2019 08:41:56 -0500
+        id S1729405AbfLLNr1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Dec 2019 08:47:27 -0500
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8A722077B;
-        Thu, 12 Dec 2019 13:41:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 127752077B;
+        Thu, 12 Dec 2019 13:47:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576158115;
-        bh=eKIpRDx+zfn9tjbkvPcwD44F+RZgeuddmRcdxODecF4=;
+        s=default; t=1576158446;
+        bh=8jARIPs48uIHQQNiDuuXoNKYzXnmQvXLMeBWkTsS+aU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EDAQC728DMmhZg3qL4jAR538yfhDTJ0lm6Kf+9fpYSdnhWz7nT0DicXenTE+nLnrb
-         i1+Eho4lCWrAClTzN+L7XkHJhwcfQEaR44cPTD94jsd6VNWM8bLU3/CT2cVXi3lhKj
-         6+uVNGLXoeQK6BaGmxNf4SBFFt3MJgYTS0p68kJs=
-Date:   Thu, 12 Dec 2019 15:41:52 +0200
+        b=HVao0AXbwUkQNQu4RTlpR503jiNJk+fM6aUCVbOfhGX9LP+ZemWOvd4GKXFf5UaVT
+         dTj1Lz1JDN6J6JILOBXQm4eYrRgF7s3SbqhVHeoUau/y2+jxEQdVnp+JJKkywbf01F
+         R1TOS1jlWNrCE1A4hk6tgCA9//ehihVdybHCHgeY=
+Date:   Thu, 12 Dec 2019 15:47:23 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Max Hirsch <max.hirsch@gmail.com>,
+To:     Max Hirsch <max.hirsch@gmail.com>
+Cc:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>,
         Doug Ledford <dledford@redhat.com>,
         Parav Pandit <parav@mellanox.com>,
         Steve Wise <swise@opengridcomputing.com>,
@@ -37,49 +37,39 @@ Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Max Hirsch <max.hirsch@gmail.com>,
         Myungho Jung <mhjungk@gmail.com>, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] RDMA/cma: Fix checkpatch error
-Message-ID: <20191212134152.GB67461@unreal>
+Message-ID: <20191212134723.GC67461@unreal>
 References: <20191211111628.2955-1-max.hirsch@gmail.com>
  <20191211162654.GD6622@ziepe.ca>
  <20191212084907.GU67461@unreal>
  <e5123cbb-9871-d9c3-62e9-5b3172d1adf8@amazon.com>
+ <CADgTo8_mD6Z7WuA7wdEwh+7AR8YOy8nfJeaa2RbEAeftLGod7g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e5123cbb-9871-d9c3-62e9-5b3172d1adf8@amazon.com>
+In-Reply-To: <CADgTo8_mD6Z7WuA7wdEwh+7AR8YOy8nfJeaa2RbEAeftLGod7g@mail.gmail.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 12, 2019 at 02:10:12PM +0200, Gal Pressman wrote:
-> On 12/12/2019 10:49, Leon Romanovsky wrote:
-> > On Wed, Dec 11, 2019 at 12:26:54PM -0400, Jason Gunthorpe wrote:
-> >> On Wed, Dec 11, 2019 at 11:16:26AM +0000, Max Hirsch wrote:
-> >>> When running checkpatch on cma.c the following error was found:
-> >>
-> >> I think checkpatch will complain about your patch, did you run it?
-> >
-> > Jason, Doug
-> >
-> > I would like to ask to refrain from accepting checkpatch.pl patches
-> > which are not part of other large submission. Such standalone cleanups
-> > do more harm than actual benefit from them for old and more or less
-> > stable code (e.g. RDMA-CM).
->
-> Sounds like a great approach to prevent new developers from contributing code.
-> You have to start somewhere and checkpatch patches are a good entry point for
-> such developers, discouraging them will only hurt us in the long term.
+On Thu, Dec 12, 2019 at 07:28:19AM -0500, Max Hirsch wrote:
+> I am happy to make a larger/functional change. From what I read,
+> desired patch scope is proportional to linux community involvement but
+> if that not how you guys do the infiniband driver that fine. Whats a
+> feature you guys want but no one is working on yet, or rather where is
+> such a list kept?
 
-We have staging tree where new developer can train their checkpatch patches.
+I'm assuming that you don't have RDMA HW, so let's start from
+compilation only task.
 
-What about fixing smatch and sparse errors? It doesn't require HW for
-that and much better entry point for the new developers.
+You can start from fixing smatch and sparse compilation warnings.
 
->
-> Linus had an interesting post on the subject:
-> https://lkml.org/lkml/2004/12/20/255
+Smatch:
+make -j 32 CHECK=smatch -p=kernel drivers/infiniband
+Sparse:
+make -j 32 CHECK=sparse C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' -p=kernel drivers/infiniband
 
-We are in 2019 and our opinions, Linus's back 15 years ago and mine can be different.
+And we will be thrilled to see your patches merged.
 
 Thanks
