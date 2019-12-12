@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 560BB11C987
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 10:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E39C911C98E
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 10:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728339AbfLLJkH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Dec 2019 04:40:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40464 "EHLO mail.kernel.org"
+        id S1728355AbfLLJk0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Dec 2019 04:40:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728383AbfLLJkH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Dec 2019 04:40:07 -0500
+        id S1728465AbfLLJk0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Dec 2019 04:40:26 -0500
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D5FB2173E;
-        Thu, 12 Dec 2019 09:40:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE9432173E;
+        Thu, 12 Dec 2019 09:40:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576143606;
-        bh=30SzVLqrvzScTMJIRpaN7UgMLpXBcNAOjRTRVlvaPS4=;
+        s=default; t=1576143625;
+        bh=mdZ/svik/ZnMyMqdHBHNFHOQLjbJv3j/pdNqOQQ3wKU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SH92CDqs9KeGUqAF71ncJZP1VPgDuPkTwmGopkA2DBKfX5Dfy9rqsbEBNoN8+f40H
-         Esqa9OvTDR9P8gV41tR5YE/ZKgEEnizUKlvt+l8HySuBKq6xEU1AvzrSMcZHWV5Fja
-         gsFdVvmRVVImD08qWMRNkAE3jzOZnNXpUbMKDnrA=
+        b=Fy4za8CkXeX3J+x2bMO6CMYN9HY7nz4cvjgVV700s4cQ9lLGvke11D6YrQqBTfH5v
+         ca+INKmj67CsrYtIyWt9uJmG3vE6e7Sh8plwN7qPOuxvu11Ul+kpNFmzBSY21SOzuw
+         BDyBWNwuQs2VbES7oUQXMCzCF2PAiN6wTCe0scbI=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -30,9 +30,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Bart Van Assche <bvanassche@acm.org>,
         Sean Hefty <sean.hefty@intel.com>
-Subject: [PATCH rdma-rc v2 28/48] RDMA/cm: Convert REQ SRQ field
-Date:   Thu, 12 Dec 2019 11:38:10 +0200
-Message-Id: <20191212093830.316934-29-leon@kernel.org>
+Subject: [PATCH rdma-rc v2 29/48] RDMA/cm: Convert REQ flow label field
+Date:   Thu, 12 Dec 2019 11:38:11 +0200
+Message-Id: <20191212093830.316934-30-leon@kernel.org>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191212093830.316934-1-leon@kernel.org>
 References: <20191212093830.316934-1-leon@kernel.org>
@@ -45,58 +45,105 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-Convert REQ SRQ field to new scheme.
+Use new IBA_GET/IBA_SET macros.
 
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/cm.c      |  4 ++--
- drivers/infiniband/core/cm_msgs.h | 11 -----------
- 2 files changed, 2 insertions(+), 13 deletions(-)
+ drivers/infiniband/core/cm.c      | 13 ++++++++-----
+ drivers/infiniband/core/cm_msgs.h | 28 ----------------------------
+ 2 files changed, 8 insertions(+), 33 deletions(-)
 
 diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 1b0cdaea035e..673ff1da05bd 100644
+index 673ff1da05bd..eebb98b48ec4 100644
 --- a/drivers/infiniband/core/cm.c
 +++ b/drivers/infiniband/core/cm.c
-@@ -1297,7 +1297,7 @@ static void cm_format_req(struct cm_req_msg *req_msg,
- 		       param->responder_resources);
- 		IBA_SET(CM_REQ_RETRY_COUNT, req_msg, param->retry_count);
- 		IBA_SET(CM_REQ_RNR_RETRY_COUNT, req_msg, param->rnr_retry_count);
--		cm_req_set_srq(req_msg, param->srq);
-+		IBA_SET(CM_REQ_SRQ, req_msg, param->srq);
+@@ -1318,7 +1318,8 @@ static void cm_format_req(struct cm_req_msg *req_msg,
+ 		req_msg->primary_local_lid = IB_LID_PERMISSIVE;
+ 		req_msg->primary_remote_lid = IB_LID_PERMISSIVE;
  	}
- 
- 	req_msg->primary_local_gid = pri_path->sgid;
-@@ -1704,7 +1704,7 @@ static void cm_format_req_event(struct cm_work *work,
- 		IBA_GET(CM_REQ_LOCAL_CM_RESPONSE_TIMEOUT, req_msg);
- 	param->retry_count = IBA_GET(CM_REQ_RETRY_COUNT, req_msg);
- 	param->rnr_retry_count = IBA_GET(CM_REQ_RNR_RETRY_COUNT, req_msg);
--	param->srq = cm_req_get_srq(req_msg);
-+	param->srq = IBA_GET(CM_REQ_SRQ, req_msg);
- 	param->ppath_sgid_attr = cm_id_priv->av.ah_attr.grh.sgid_attr;
- 	work->cm_event.private_data = &req_msg->private_data;
- 	work->cm_event.private_data_len = CM_REQ_PRIVATE_DATA_SIZE;
+-	cm_req_set_primary_flow_label(req_msg, pri_path->flow_label);
++	IBA_SET(CM_REQ_PRIMARY_FLOW_LABEL, req_msg,
++	       be32_to_cpu(pri_path->flow_label));
+ 	cm_req_set_primary_packet_rate(req_msg, pri_path->rate);
+ 	req_msg->primary_traffic_class = pri_path->traffic_class;
+ 	req_msg->primary_hop_limit = pri_path->hop_limit;
+@@ -1352,8 +1353,8 @@ static void cm_format_req(struct cm_req_msg *req_msg,
+ 			req_msg->alt_local_lid = IB_LID_PERMISSIVE;
+ 			req_msg->alt_remote_lid = IB_LID_PERMISSIVE;
+ 		}
+-		cm_req_set_alt_flow_label(req_msg,
+-					  alt_path->flow_label);
++		IBA_SET(CM_REQ_ALTERNATE_FLOW_LABEL, req_msg,
++		       be32_to_cpu(alt_path->flow_label));
+ 		cm_req_set_alt_packet_rate(req_msg, alt_path->rate);
+ 		req_msg->alt_traffic_class = alt_path->traffic_class;
+ 		req_msg->alt_hop_limit = alt_path->hop_limit;
+@@ -1569,7 +1570,8 @@ static void cm_format_paths_from_req(struct cm_req_msg *req_msg,
+ {
+ 	primary_path->dgid = req_msg->primary_local_gid;
+ 	primary_path->sgid = req_msg->primary_remote_gid;
+-	primary_path->flow_label = cm_req_get_primary_flow_label(req_msg);
++	primary_path->flow_label =
++		cpu_to_be32(IBA_GET(CM_REQ_PRIMARY_FLOW_LABEL, req_msg));
+ 	primary_path->hop_limit = req_msg->primary_hop_limit;
+ 	primary_path->traffic_class = req_msg->primary_traffic_class;
+ 	primary_path->reversible = 1;
+@@ -1590,7 +1592,8 @@ static void cm_format_paths_from_req(struct cm_req_msg *req_msg,
+ 	if (cm_req_has_alt_path(req_msg)) {
+ 		alt_path->dgid = req_msg->alt_local_gid;
+ 		alt_path->sgid = req_msg->alt_remote_gid;
+-		alt_path->flow_label = cm_req_get_alt_flow_label(req_msg);
++		alt_path->flow_label = cpu_to_be32(
++			IBA_GET(CM_REQ_ALTERNATE_FLOW_LABEL, req_msg));
+ 		alt_path->hop_limit = req_msg->alt_hop_limit;
+ 		alt_path->traffic_class = req_msg->alt_traffic_class;
+ 		alt_path->reversible = 1;
 diff --git a/drivers/infiniband/core/cm_msgs.h b/drivers/infiniband/core/cm_msgs.h
-index 54573280652a..23a48211d15e 100644
+index 23a48211d15e..09c6a393b6a1 100644
 --- a/drivers/infiniband/core/cm_msgs.h
 +++ b/drivers/infiniband/core/cm_msgs.h
-@@ -70,17 +70,6 @@ struct cm_req_msg {
+@@ -70,20 +70,6 @@ struct cm_req_msg {
  
  } __packed;
  
--static inline u8 cm_req_get_srq(struct cm_req_msg *req_msg)
+-static inline __be32 cm_req_get_primary_flow_label(struct cm_req_msg *req_msg)
 -{
--	return (req_msg->offset51 & 0x8) >> 3;
+-	return cpu_to_be32(be32_to_cpu(req_msg->primary_offset88) >> 12);
 -}
 -
--static inline void cm_req_set_srq(struct cm_req_msg *req_msg, u8 srq)
+-static inline void cm_req_set_primary_flow_label(struct cm_req_msg *req_msg,
+-						 __be32 flow_label)
 -{
--	req_msg->offset51 = (u8) ((req_msg->offset51 & 0xF7) |
--				  ((srq & 0x1) << 3));
+-	req_msg->primary_offset88 = cpu_to_be32(
+-				    (be32_to_cpu(req_msg->primary_offset88) &
+-				     0x00000FFF) |
+-				     (be32_to_cpu(flow_label) << 12));
 -}
 -
- static inline __be32 cm_req_get_primary_flow_label(struct cm_req_msg *req_msg)
+ static inline u8 cm_req_get_primary_packet_rate(struct cm_req_msg *req_msg)
  {
- 	return cpu_to_be32(be32_to_cpu(req_msg->primary_offset88) >> 12);
+ 	return (u8) (be32_to_cpu(req_msg->primary_offset88) & 0x3F);
+@@ -132,20 +118,6 @@ static inline void cm_req_set_primary_local_ack_timeout(struct cm_req_msg *req_m
+ 					  (local_ack_timeout << 3));
+ }
+ 
+-static inline __be32 cm_req_get_alt_flow_label(struct cm_req_msg *req_msg)
+-{
+-	return cpu_to_be32(be32_to_cpu(req_msg->alt_offset132) >> 12);
+-}
+-
+-static inline void cm_req_set_alt_flow_label(struct cm_req_msg *req_msg,
+-					     __be32 flow_label)
+-{
+-	req_msg->alt_offset132 = cpu_to_be32(
+-				 (be32_to_cpu(req_msg->alt_offset132) &
+-				  0x00000FFF) |
+-				  (be32_to_cpu(flow_label) << 12));
+-}
+-
+ static inline u8 cm_req_get_alt_packet_rate(struct cm_req_msg *req_msg)
+ {
+ 	return (u8) (be32_to_cpu(req_msg->alt_offset132) & 0x3F);
 -- 
 2.20.1
 
