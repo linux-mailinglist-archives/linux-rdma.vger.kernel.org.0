@@ -2,191 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EECEB11C5B0
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 06:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B796F11C63F
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 08:15:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727922AbfLLF4i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Dec 2019 00:56:38 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14305 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726798AbfLLF4h (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Dec 2019 00:56:37 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5df1d68d0000>; Wed, 11 Dec 2019 21:56:29 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 11 Dec 2019 21:56:36 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 11 Dec 2019 21:56:36 -0800
-Received: from [10.2.165.195] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 12 Dec
- 2019 05:56:35 +0000
-Subject: Re: [PATCH v9 23/25] mm/gup: track FOLL_PIN pages
-To:     Jan Kara <jack@suse.cz>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20191211025318.457113-1-jhubbard@nvidia.com>
- <20191211025318.457113-24-jhubbard@nvidia.com>
- <20191211112807.GN1551@quack2.suse.cz>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <f961d0b6-c660-85b9-ad01-53bce74e39e9@nvidia.com>
-Date:   Wed, 11 Dec 2019 21:53:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
-MIME-Version: 1.0
-In-Reply-To: <20191211112807.GN1551@quack2.suse.cz>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        id S1728052AbfLLHPW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 12 Dec 2019 02:15:22 -0500
+Received: from m9a0013g.houston.softwaregrp.com ([15.124.64.91]:55770 "EHLO
+        m9a0013g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728048AbfLLHPW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Dec 2019 02:15:22 -0500
+Received: FROM m9a0013g.houston.softwaregrp.com (15.121.0.190) BY m9a0013g.houston.softwaregrp.com WITH ESMTP
+ FOR linux-rdma@vger.kernel.org;
+ Thu, 12 Dec 2019 07:14:14 +0000
+Received: from M4W0334.microfocus.com (2002:f78:1192::f78:1192) by
+ M9W0067.microfocus.com (2002:f79:be::f79:be) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Thu, 12 Dec 2019 07:14:59 +0000
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (15.124.8.11) by
+ M4W0334.microfocus.com (15.120.17.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Thu, 12 Dec 2019 07:14:59 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AX+1yg57SnvjllBwSX0FaF2RNK7QkrSHiDJ95kP9HqM0Acb8hx+DiVWNqyTARLHT8JMVvTN/o1cYD6i92RAL28lEXFyu9QS6A3mmuUGUh1eZULOp1qF+8ukv/REFPhZ7LYgCwNqI0c0SRScEIZCOlZYMVNfuGtsVUKCj9/iFeUyMMHShvsD/nHVSZQLqrbC1JGuNy7tlmvijiC++IZTn1HMMvllyxuFJrWrVeAsV1OGpCRA9KTrW21OWq3P5QRDdP8bmCeX8PpD0JtHaB411p85iqlXXkjq7KCQa2GG6tiGjIkgTA2MpdkhwyZ6qBkpuf4t0P32xCsiU1lLAiVzt4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WhhUAUXZSmS7QiWCwQlFdA7jR2rnWECWP3Wp99D99v0=;
+ b=CTspu47jJXjImNq5vmwZ8iCJx+k89x+2eDnvDmAXG4EBS7BkTfeSYXaF34klHZsHwblnjLcj+82+Iw889VSKQ+3fWBKB8/klBeOSatW0ArxIb3Bu+MmKQUfUlnRVYhFuUAH0Uhb1G6H8vb2IXMH8mIEjwtKNRTkxgayqURVADvBvWdYMiZoC1wBr+YMTjHT/0Q8fayy4YRmXTnPtJCmFK7YBgjr/KrLQdHhoxD9wNLeNdQ+uv72zXGdC6x/eHjE8GfdP22AgRVNDOuh7CpkaBg6K1OQCg55fQU0VaabuDq2gBl1j7b/tOjy1UkfM7TTt2OHwxd9tfX0xNKNFc/UTTQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Received: from BY5PR18MB3298.namprd18.prod.outlook.com (10.255.138.224) by
+ BY5PR18MB3138.namprd18.prod.outlook.com (10.255.137.211) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2538.17; Thu, 12 Dec 2019 07:14:57 +0000
+Received: from BY5PR18MB3298.namprd18.prod.outlook.com
+ ([fe80::a1de:6942:4244:53fe]) by BY5PR18MB3298.namprd18.prod.outlook.com
+ ([fe80::a1de:6942:4244:53fe%4]) with mapi id 15.20.2516.018; Thu, 12 Dec 2019
+ 07:14:57 +0000
+From:   Nicolas Morey-Chaisemartin <NMoreyChaisemartin@suse.com>
+To:     "Mijakovic, Robert" <Robert.Mijakovic@lrz.de>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: Problem installing rdma-core 25+ due to incorrect file name in
+ rdma_man_pages
+Thread-Topic: Problem installing rdma-core 25+ due to incorrect file name in
+ rdma_man_pages
+Thread-Index: AQHVr37F3p1rauN9vEC6zsBA1OSa1w==
+Date:   Thu, 12 Dec 2019 07:14:56 +0000
+Message-ID: <BY5PR18MB329888306491E78089EF2644BF550@BY5PR18MB3298.namprd18.prod.outlook.com>
+References: <1CF347E8-9262-4957-B7BE-0C22DBB30E63@lrz.de>
+Accept-Language: en-150, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1576130189; bh=WUvMFBOwsTbLT+9CzNbxGtAponFsFsmTJOyg8MjL8ds=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=lsWfVOx2mYuCSEqMXkqo0p3SpKqw9VwSL+20QlVcuyoMSELQtTCN0YxM6RzLVo9oa
-         uq4Hl9KFn70q6l1bzqmgaiV5HLk4+H2168Aq1l5uWc+mWWgNKPzhftF1QMyxl40GPe
-         nNNgDtbzvAru+MjxE1MbEaMe+90vfqRYKPVuX/JzejQXCe2EVI5eyYy9CwInRuqtjp
-         2idGFh4dXFAMfDwQiKAN1Pz/TUuUoswEkyfXdQEyWp7z5jAlzfpntkPH8s96FOaimZ
-         1olYa+8gPiG8ccYKitvEKwCbv3GPr0UXUD+T0zjEzw7D9d6fQ9awWSzCOfMJ4VZl20
-         16ivttgOjkh4A==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=NMoreyChaisemartin@suse.com; 
+x-originating-ip: [86.200.148.234]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a68ebd6d-a6f5-4cd3-dfb9-08d77ed2fe48
+x-ms-traffictypediagnostic: BY5PR18MB3138:
+x-microsoft-antispam-prvs: <BY5PR18MB31386850C0BCD98F3DAB543DBF550@BY5PR18MB3138.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0249EFCB0B
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(366004)(396003)(136003)(39860400002)(346002)(376002)(504964003)(199004)(189003)(316002)(52536014)(110136005)(966005)(5660300002)(8936002)(81156014)(66446008)(8676002)(81166006)(66556008)(64756008)(33656002)(6506007)(66476007)(53546011)(91956017)(76116006)(66946007)(71200400001)(86362001)(186003)(7696005)(2906002)(26005)(478600001)(9686003)(55016002)(6606295002);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3138;H:BY5PR18MB3298.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: suse.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AdCqf2yVxWNaKMgQzLaf1hLO0v+slHDjX8f/tjn7u0dXdP2wPaEbSAKi47HdfMvJhRbMNPcE9wST6nIpOvrN/Ngvi71qGQEppuKzZYiOBmYz4y9r9sZenaKjWSFW74IAXeNa+qhfNuK+TVWDLqipYYld9+zNb6KPAjCV031czGv3bmbae3zMR29jUMJNt0x2DllqmFryqcqM3s05oQ7iX2H9BUdQwEPBVBKjSQatv95KM88+XUpla6UZ3CHc1A6X/x512eU8d9y8/3tZBn73iNeDEYCCNP2YXZ3CoD1nFIowCSr0zjKMDSQNhMNBCYdD0jYiNu8kzWjN7eVQfHmWfd6Gc3xjCAo5htHCcFE2wPd9SjQXGj280shQog9wqrfdt8aXDcb7OZq3ajMaKstprBeh5N7t+lvO9swt71JvS+EqFAIH0oSm4A+6qrMH5GltvMdGuL5R30U3tRiCvlt2p0uJkFmBOnVQs2KEGQfO4Y6EvXXhhlnpQnS101aquj+gKj66cm8MdGA3IkHldrX8CXzKsm6rbi2eTHm6d0+fujuqE9QPXCLDTjo45cE+BofM
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: a68ebd6d-a6f5-4cd3-dfb9-08d77ed2fe48
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Dec 2019 07:14:56.9136
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OV/QXsSeWGEj5hs55fRquHK2dNYOYvKMki6O7umeyfb0AO0wujlenUcPQA6M3bMm2XM7wRN+NLj0NT5YvjWkbPntUn5D4Eir9+Bb8Vh2lf8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3138
+X-OriginatorOrg: suse.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 12/11/19 3:28 AM, Jan Kara wrote:
-...
->=20
-> The patch looks mostly good to me now. Just a few smaller comments below.
->=20
->> Suggested-by: Jan Kara <jack@suse.cz>
->> Suggested-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
->> Reviewed-by: Jan Kara <jack@suse.cz>
->> Reviewed-by: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
->> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
->=20
-> I think you inherited here the Reviewed-by tags from the "add flags" patc=
-h
-> you've merged into this one but that's not really fair since this patch
-> does much more... In particular I didn't give my Reviewed-by tag for this
-> patch yet.
+Hi,
 
-OK, I've removed those reviewed-by's. (I felt bad about dropping them, afte=
-r
-people had devoted time to reviewing, but I do see that it's wrong to imply
-that they've reviewed this much much larger thing.)
+On 12/10/19 6:25 PM, Mijakovic, Robert wrote:
+> Hi guys,
+> 
+> while installing rdma-core newer that 25 on one of our clusters through spack I have experienced an error:
+> -- Installing: <home_directory>/rdma-core/25.0-gcc-matncbz/share/man/man8/check_lft_balance.8
+> CMake Error at spack-src/infiniband-diags/man/CMakeLists.txt:45 (file):
+>   file INSTALL cannot find
+>   “<scratch_directory>/rdma-core-25.0-matncbzfxrol36acyyahlx23fgxyafk6/spack-src/buildlib/pandoc-prebuilt/8dd347a2a5edc4ffd18f9205922fa35a3c8777e9".
+> Call Stack (most recent call first):
+>   cmake_install.cmake:83 (include)
+> 
+> Makefile:120: recipe for target 'install' failed
+> make: *** [install] Error 1
+> 
+> Linux distribution and version: SLES 12.SP4
+> Linux kernel and version: 4.12.14-95.32-default
+> InfiniBand hardware and firmware version: Mellanox Technologies MT27600 Family [Connect-IB], 10.16.1200
+> Kernel driver in use: mlx5_core
+> 
+> Configured with:
+> 'cmake' '<scratch_directory>/rdma-core-25.0-matncbzfxrol36acyyahlx23fgxyafk6/spack-src' '-G' 'Unix Makefiles' '-DCMAKE_INSTALL_PREFIX:PATH=<home_directory>/rdma-core/25.0-gcc-matncbz' '-DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo' '-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON' '-DCMAKE_INSTALL_RPATH_USE_LINK_PATH:BOOL=FALSE' '-DCMAKE_INSTALL_RPATH:STRING=<home_directory>/rdma-core/25.0-gcc-matncbz/lib;<home_directory>/rdma-core/25.0-gcc-matncbz/lib64;<home_directory>/libnl/3.3.0-gcc-5k5xt7d/lib' '-DCMAKE_PREFIX_PATH:STRING=<home_directory>/libnl/3.3.0-gcc-5k5xt7d;<home_directory>/pandoc/2.7.3-gcc-klngaxi;<home_directory>/cmake/3.15.3-gcc-whfqqyj;<home_directory>/pkgconf/1.6.1-gcc-fn4iyyb' '-DCMAKE_INSTALL_SYSCONFDIR=<home_directory>/rdma-core/25.0-gcc-matncbz/etc' '-DCMAKE_INSTALL_RUNDIR=/var/run'
+> 
+> Compiled with:
+> 'make' '-j24’
+> Installed with:
+> 'make' '-j24' 'install’
+> 
+> The file that was suppose to be copied (8dd347a2a5edc4ffd18f9205922fa35a3c8777e9) is not there.
+> Based on the content of the input file (dump_fts.8.in.rst) from which 8dd347a2a5edc4ffd18f9205922fa35a3c8777e9 is suppose to be generated it seems that it is stored under different name, i.e., b003d15c599b5ef09af22508eeec09d65fc91a4e.
+> I have checked the process of file creation and it seems that files are listed in rdma_man_pages which are then processed by function(rdma_man_pages) which does something wrong once the file is suppose to be copied back to the install location.
+> 
+> The question is what and how to patch this thing other than commenting out the man pages?
+> Thank you in advance for your time.
+> 
+> Best regards,
+> Robert
+> 
 
-...
->=20
-> I somewhat wonder about the asymmetry of try_grab_compound_head() vs
-> try_grab_page() in the treatment of 'flags'. How costly would it be to ma=
-ke
-> them symmetric (i.e., either set FOLL_GET for try_grab_compound_head()
-> callers or make sure one of FOLL_GET, FOLL_PIN is set for try_grab_page()=
-)?
->=20
-> Because this difference looks like a subtle catch in the long run...
+There was a thread a couple of days ago on the ML discussing that:
+https://marc.info/?l=linux-rdma&m=157553355626314&w=2
 
-Done. It is only a modest code-level change, at least the way I've done it,=
- which is
-setting FOLL_GET for try_grab_compound_head(). In order to do that, I set
-it at the top of the internal gup fast calling stacks, which is actually a =
-good
-design anyway: gup fast is logically doing FOLL_GET in all cases. So settin=
-g
-the flag internally is accurate and consistent with the overall design.
+There's also a SLE12SP4 package available on OBS: https://build.opensuse.org/package/show/science:HPC/rdma-core
 
+As the SUSE maintainer for this, I feel obligated to point out that this is not officially supported by SUSE. It should unofficially work though :)
 
-> ...
->=20
->> @@ -1522,8 +1536,8 @@ struct page *follow_trans_huge_pmd(struct vm_area_=
-struct *vma,
->>   skip_mlock:
->>   	page +=3D (addr & ~HPAGE_PMD_MASK) >> PAGE_SHIFT;
->>   	VM_BUG_ON_PAGE(!PageCompound(page) && !is_zone_device_page(page), pag=
-e);
->> -	if (flags & FOLL_GET)
->> -		get_page(page);
->> +	if (!try_grab_page(page, flags))
->> +		page =3D ERR_PTR(-EFAULT);
->=20
-> I think you need to also move the try_grab_page() earlier in the function=
-.
-> At this point the page may be marked as mlocked and you'd need to undo th=
-at
-> in case try_grab_page() fails.
+Nicolas
 
-
-OK, I've moved it up, adding a "subpage" variable in order to make that wor=
-k.
-
->=20
->> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->> index ac65bb5e38ac..0aab6fe0072f 100644
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -4356,7 +4356,13 @@ long follow_hugetlb_page(struct mm_struct *mm, st=
-ruct vm_area_struct *vma,
->>   same_page:
->>   		if (pages) {
->>   			pages[i] =3D mem_map_offset(page, pfn_offset);
->> -			get_page(pages[i]);
->> +			if (!try_grab_page(pages[i], flags)) {
->> +				spin_unlock(ptl);
->> +				remainder =3D 0;
->> +				err =3D -ENOMEM;
->> +				WARN_ON_ONCE(1);
->> +				break;
->> +			}
->>   		}
->=20
-> This function does a refcount overflow check early so that it doesn't hav=
-e
-> to do try_get_page() here. So that check can be now removed when you do
-> try_grab_page() here anyway since that early check seems to be just a tin=
-y
-> optimization AFAICT.
->=20
-> 								Honza
->=20
-
-Yes. I've removed it, good spot.
-
-
-thanks,
---=20
-John Hubbard
-NVIDIA
