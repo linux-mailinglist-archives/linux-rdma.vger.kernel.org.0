@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D890711C8E3
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 10:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1566E11C8E5
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 10:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728261AbfLLJMX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Dec 2019 04:12:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49024 "EHLO mail.kernel.org"
+        id S1728256AbfLLJM1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Dec 2019 04:12:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728147AbfLLJMX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Dec 2019 04:12:23 -0500
+        id S1728147AbfLLJM0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Dec 2019 04:12:26 -0500
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC2272465B;
-        Thu, 12 Dec 2019 09:12:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2D63214D8;
+        Thu, 12 Dec 2019 09:12:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576141942;
-        bh=YRhnLQVoFBKzbz/fSnip22B18lPy8MouGZ1Fzdt7Eak=;
+        s=default; t=1576141945;
+        bh=nOvqCIr1zkJKaAaw1jgCqcFCfADixbZOl3kgPkCh4hM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YCQ8zLVCp9IF6muQ9BzT1oCKzzkOWuxGPHP+EI6FO1M++XhF5YWtrE+egeD3n2nHY
-         mIpcLVOzgJNpAt6kFe+i4sAKdivPiK/zTT1o1h2tTa65sZEErkpqEWGhYK1lTPauxq
-         657VJYjE5mzSN69HWtXTeuqxhLdPtt9U+qtzQXpw=
+        b=IcvgXvuCoIDxYwsDnYlPAqV/qB7dU9xeT5dJeaF+MXB0GFeAHM6qBxe1UEGCSYCsj
+         I7KKG7M2BMcqgqevWF5SPwviDAAqxWSe1oMW65gSmXk/AoLUSeAvCUa2t8hUU8ifhG
+         H9ITjPt4nJYGjnCpEcl+qKq9jACby+rrFF/C8Sio=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -33,9 +33,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Mark Zhang <markz@mellanox.com>,
         Parav Pandit <parav@mellanox.com>,
         Raed Salem <raeds@mellanox.com>
-Subject: [PATCH rdma-rc 1/3] RDMA/counter: Prevent auto-binding a QP which are not tracked with res
-Date:   Thu, 12 Dec 2019 11:12:12 +0200
-Message-Id: <20191212091214.315005-2-leon@kernel.org>
+Subject: [PATCH rdma-rc 2/3] IB/mlx4: Follow mirror sequence of device add during device removal
+Date:   Thu, 12 Dec 2019 11:12:13 +0200
+Message-Id: <20191212091214.315005-3-leon@kernel.org>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191212091214.315005-1-leon@kernel.org>
 References: <20191212091214.315005-1-leon@kernel.org>
@@ -46,72 +46,59 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mark Zhang <markz@mellanox.com>
+From: Parav Pandit <parav@mellanox.com>
 
-Some QPs (e.g. XRC QP) are not tracked in kernel, in this case they have
-an invalid res and should not be bound to any dynamically-allocated
-counter in auto mode.
+Current code device add sequence is:
 
-This fixes below call trace:
-BUG: kernel NULL pointer dereference, address: 0000000000000390
-PGD 80000001a7233067 P4D 80000001a7233067 PUD 1a7215067 PMD 0
-Oops: 0000 [#1] SMP PTI
-CPU: 2 PID: 24822 Comm: ibv_xsrq_pingpo Not tainted 5.4.0-rc5+ #21
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-2.fc27 04/01/2014
-RIP: 0010:rdma_counter_bind_qp_auto+0x142/0x270 [ib_core]
-Code: e1 48 85 c0 48 89 c2 0f 84 bc 00 00 00 49 8b 06 48 39 42 48 75 d6 40 3a aa 90 00 00 00 75 cd 49 8b 86 00 01 00 00 48 8b 4a 28 <8b> 80 90 03 00 00 39 81 90 03 00 00 75 b4 85 c0 74 b0 48 8b 04 24
-RSP: 0018:ffffc900003f39c0 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: ffff88820020ec00 RSI: 0000000000000004 RDI: ffffffffffffffc0
-RBP: 0000000000000001 R08: ffff888224149ff0 R09: ffffc900003f3968
-R10: ffffffffffffffff R11: ffff8882249c5848 R12: ffffffffffffffff
-R13: ffff88821d5aca50 R14: ffff8881f7690800 R15: ffff8881ff890000
-FS:  00007fe53a3e1740(0000) GS:ffff888237b00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000390 CR3: 00000001a7292006 CR4: 00000000003606a0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- _ib_modify_qp+0x3a4/0x3f0 [ib_core]
- ? lookup_get_idr_uobject.part.8+0x23/0x40 [ib_uverbs]
- modify_qp+0x322/0x3e0 [ib_uverbs]
- ib_uverbs_modify_qp+0x43/0x70 [ib_uverbs]
- ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xb1/0xf0 [ib_uverbs]
- ib_uverbs_run_method+0x6be/0x760 [ib_uverbs]
- ? uverbs_disassociate_api+0xd0/0xd0 [ib_uverbs]
- ib_uverbs_cmd_verbs+0x18d/0x3a0 [ib_uverbs]
- ? get_acl+0x1a/0x120
- ? __alloc_pages_nodemask+0x15d/0x2c0
- ib_uverbs_ioctl+0xa7/0x110 [ib_uverbs]
- do_vfs_ioctl+0xa5/0x610
- ksys_ioctl+0x60/0x90
- __x64_sys_ioctl+0x16/0x20
- do_syscall_64+0x48/0x110
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ib_register_device()
+ib_mad_init()
+init_sriov_init()
+register_netdev_notifier()
 
-Fixes: 99fa331dc862 ("RDMA/counter: Add "auto" configuration mode support")
-Signed-off-by: Mark Zhang <markz@mellanox.com>
+Therefore, the remove sequence should be,
+
+unregister_netdev_notifier()
+close_sriov()
+mad_cleanup()
+ib_unregister_device()
+
+However it is not above.
+Hence, make do above remove sequence.
+
+Fixes: fa417f7b520ee ("IB/mlx4: Add support for IBoE")
+Signed-off-by: Parav Pandit <parav@mellanox.com>
 Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Reviewed-by: Ido Kalir <idok@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/counters.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/hw/mlx4/main.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/core/counters.c b/drivers/infiniband/core/counters.c
-index 8434ec082c3a..2257d7f7810f 100644
---- a/drivers/infiniband/core/counters.c
-+++ b/drivers/infiniband/core/counters.c
-@@ -286,6 +286,9 @@ int rdma_counter_bind_qp_auto(struct ib_qp *qp, u8 port)
- 	struct rdma_counter *counter;
- 	int ret;
+diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+index 0b5dc1d5928f..34055cbab38c 100644
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -3018,16 +3018,17 @@ static void mlx4_ib_remove(struct mlx4_dev *dev, void *ibdev_ptr)
+ 	ibdev->ib_active = false;
+ 	flush_workqueue(wq);
  
-+	if (!qp->res.valid)
-+		return 0;
+-	mlx4_ib_close_sriov(ibdev);
+-	mlx4_ib_mad_cleanup(ibdev);
+-	ib_unregister_device(&ibdev->ib_dev);
+-	mlx4_ib_diag_cleanup(ibdev);
+ 	if (ibdev->iboe.nb.notifier_call) {
+ 		if (unregister_netdevice_notifier(&ibdev->iboe.nb))
+ 			pr_warn("failure unregistering notifier\n");
+ 		ibdev->iboe.nb.notifier_call = NULL;
+ 	}
+ 
++	mlx4_ib_close_sriov(ibdev);
++	mlx4_ib_mad_cleanup(ibdev);
++	ib_unregister_device(&ibdev->ib_dev);
++	mlx4_ib_diag_cleanup(ibdev);
 +
- 	if (!rdma_is_port_valid(dev, port))
- 		return -EINVAL;
- 
+ 	mlx4_qp_release_range(dev, ibdev->steer_qpn_base,
+ 			      ibdev->steer_qpn_count);
+ 	kfree(ibdev->ib_uc_qpns_bitmap);
 -- 
 2.20.1
 
