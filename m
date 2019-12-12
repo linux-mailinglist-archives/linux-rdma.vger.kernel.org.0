@@ -2,75 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 162B311C8E7
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 10:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2275D11C963
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 10:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728316AbfLLJMl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Dec 2019 04:12:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49260 "EHLO mail.kernel.org"
+        id S1728400AbfLLJil (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Dec 2019 04:38:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728313AbfLLJMl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Dec 2019 04:12:41 -0500
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1728348AbfLLJil (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Dec 2019 04:38:41 -0500
+Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53567214D8;
-        Thu, 12 Dec 2019 09:12:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E7A9F2173E;
+        Thu, 12 Dec 2019 09:38:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576141960;
-        bh=650VajuygiE4/MpnVz9+nPFd2DW177e2B2RedNSMY/s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tNJFc9zceE29r2/eostnzq6iUM1pIn8kZzobjTY0U/nGUH3ETpVwEfU3Iz3u7RGfr
-         wDZUobF/sla9m9iHYO5SZdisGMtUQnoP2r3mcWSKcNy2Ls4A7RSA3J4fvfGM+UBA9D
-         OLpQn62cNFE9hkEJkl0CfWtAXmZ5pgfkkhjH9C8Q=
-Date:   Thu, 12 Dec 2019 10:12:38 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>
-Subject: Re: [PATCH v3 05/20] RDMA/irdma: Add driver framework definitions
-Message-ID: <20191212091238.GA1373130@kroah.com>
-References: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
- <20191209224935.1780117-6-jeffrey.t.kirsher@intel.com>
- <20191210190438.GF46@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7B6B8FBCA@fmsmsx124.amr.corp.intel.com>
- <20191212083904.GT67461@unreal>
+        s=default; t=1576143520;
+        bh=XJWd2DS4SZ4kowUBQn2qHZtJw5N3g/Z3dJmXDcAH+hI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DYxgiOQ/Ueiy7842+aSgpInYOA6/rbTv2YWUjx4EWXl4ZA0ouFtywLG5oERlFGrIf
+         v4laDQBjQT+kuI72RqnimRuOBgBv3J3rb1Ue5ZJfpNXCZO6ZsHDG6TF3igu+Ane2W9
+         YQ3cUuJBm2Q8M0pgpxKUXDoXbRlfqa/mfXoh6RC4=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Sean Hefty <sean.hefty@intel.com>
+Subject: [PATCH rdma-rc v2 00/48] Organize code according to IBTA layout
+Date:   Thu, 12 Dec 2019 11:37:42 +0200
+Message-Id: <20191212093830.316934-1-leon@kernel.org>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191212083904.GT67461@unreal>
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 12, 2019 at 10:39:04AM +0200, Leon Romanovsky wrote:
-> On Thu, Dec 12, 2019 at 01:40:27AM +0000, Saleem, Shiraz wrote:
-> > > Subject: Re: [PATCH v3 05/20] RDMA/irdma: Add driver framework definitions
-> 
-> <...>
-> 
-> > >
-> > > > +		ldev->ops->reg_for_notification(ldev, &events);
-> > > > +	dev_info(rfdev_to_dev(dev), "IRDMA VSI Open Successful");
-> > >
-> > > Lets not do this kind of logging..
-> > >
-> >
-> > There is some dev_info which should be cleaned up to dev_dbg.
-> > But logging this info is useful to know that this functions VSI (and associated ibdev)
-> > is up and reading for RDMA traffic.
-> > Is info logging to be avoided altogether?
-> 
-> Will function tracer (ftrace) output be sufficient here?
-> https://www.kernel.org/doc/html/latest/trace/ftrace.html
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Yes it should.
+Changelog:
+v1->v2: https://lore.kernel.org/linux-rdma/20191121181313.129430-1-leon@kernel.org
+ * Added forgotten CM_FIELD64_LOC().
+v0->v1: https://lore.kernel.org/linux-rdma/20191027070621.11711-1-leon@kernel.org
+ * Used Jason's macros as a basis for all get/set operation for wire protocol.
+ * Fixed wrong offsets.
+ * Grouped all CM related patches in one patchset bomb.
+----------------------------------------------------------------------
+Hi,
+
+This series continues already started task to clean up CM related code.
+
+Over the years, the IB/core gained a number of anti-patterns which
+led to mistakes. First and most distracting is spread of hardware
+specification types (e.g. __beXX) to the core logic. Second, endless
+copy/paste to access IBTA binary blobs, which made any IBTA extensions
+not an easy task.
+In this series, we add Enhance Connection Establishment bits which
+were added recently to IBTA and will continue to convert rest of the CM
+code to propose macros by eliminating __beXX variables from core code.
+
+All IBTA CM declarations are places into new header
+file: include/rdma/ibta_vol1_c12.h and the idea that every
+spec chapter will have separate header file, so we will see
+immediately the relations between declarations and values.
+
+Thanks
+
+BTW,
+1. The whole area near private_data looks sketchy to me and needs
+   separate cleanup.
+2. I know that it is more than 15 patches, but they are small and
+   self-contained.
+
+Leon Romanovsky (48):
+  RDMA/cm: Provide private data size to CM users
+  RDMA/srpt: Use private_data_len instead of hardcoded value
+  RDMA/ucma: Mask QPN to be 24 bits according to IBTA
+  RDMA/cm: Add SET/GET implementations to hide IBA wire format
+  RDMA/cm: Request For Communication (REQ) message definitions
+  RDMA/cm: Message Receipt Acknowledgment (MRA) message definitions
+  RDMA/cm: Reject (REJ) message definitions
+  RDMA/cm: Reply To Request for communication (REP) definitions
+  RDMA/cm: Ready To Use (RTU) definitions
+  RDMA/cm: Request For Communication Release (DREQ) definitions
+  RDMA/cm: Reply To Request For Communication Release (DREP) definitions
+  RDMA/cm: Load Alternate Path (LAP) definitions
+  RDMA/cm: Alternate Path Response (APR) message definitions
+  RDMA/cm: Service ID Resolution Request (SIDR_REQ) definitions
+  RDMA/cm: Service ID Resolution Response (SIDR_REP) definitions
+  RDMA/cm: Convert QPN and EECN to be u32 variables
+  RDMA/cm: Convert REQ responded resources to the new scheme
+  RDMA/cm: Convert REQ initiator depth to the new scheme
+  RDMA/cm: Convert REQ remote response timeout
+  RDMA/cm: Simplify QP type to wire protocol translation
+  RDMA/cm: Convert REQ flow control
+  RDMA/cm: Convert starting PSN to be u32 variable
+  RDMA/cm: Update REQ local response timeout
+  RDMA/cm: Convert REQ retry count to use new scheme
+  RDMA/cm: Update REQ path MTU field
+  RDMA/cm: Convert REQ RNR retry timeout counter
+  RDMA/cm: Convert REQ MAX CM retries
+  RDMA/cm: Convert REQ SRQ field
+  RDMA/cm: Convert REQ flow label field
+  RDMA/cm: Convert REQ packet rate
+  RDMA/cm: Convert REQ SL fields
+  RDMA/cm: Convert REQ subnet local fields
+  RDMA/cm: Convert REQ local ack timeout
+  RDMA/cm: Convert MRA MRAed field
+  RDMA/cm: Convert MRA service timeout
+  RDMA/cm: Update REJ struct to use new scheme
+  RDMA/cm: Convert REP target ack delay field
+  RDMA/cm: Convert REP failover accepted field
+  RDMA/cm: Convert REP flow control field
+  RDMA/cm: Convert REP RNR retry count field
+  RDMA/cm: Convert REP SRQ field
+  RDMA/cm: Delete unused CM LAP functions
+  RDMA/cm: Convert LAP flow label field
+  RDMA/cm: Convert LAP fields
+  RDMA/cm: Delete unused CM ARP functions
+  RDMA/cm: Convert SIDR_REP to new scheme
+  RDMA/cm: Add Enhanced Connection Establishment (ECE) bits
+  RDMA/cm: Convert private_date access
+
+ drivers/infiniband/core/cm.c          | 554 ++++++++++--------------
+ drivers/infiniband/core/cm_msgs.h     | 600 +-------------------------
+ drivers/infiniband/core/cma.c         |  11 +-
+ drivers/infiniband/core/ucma.c        |   2 +-
+ drivers/infiniband/ulp/srpt/ib_srpt.c |   2 +-
+ include/rdma/ib_cm.h                  |  55 +--
+ include/rdma/iba.h                    | 138 ++++++
+ include/rdma/ibta_vol1_c12.h          | 211 +++++++++
+ 8 files changed, 599 insertions(+), 974 deletions(-)
+ create mode 100644 include/rdma/iba.h
+ create mode 100644 include/rdma/ibta_vol1_c12.h
+
+--
+2.20.1
+
