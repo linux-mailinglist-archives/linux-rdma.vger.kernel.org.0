@@ -2,180 +2,167 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B5811CD60
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 13:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B4A11CE08
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Dec 2019 14:16:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729208AbfLLMjg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Dec 2019 07:39:36 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:60846 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729232AbfLLMjf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Dec 2019 07:39:35 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBCCdA3x135764;
-        Thu, 12 Dec 2019 12:39:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2019-08-05; bh=lqyvGPrwbhl5VeQONLfI27x8cb8Or9OGtDfNxmp73ME=;
- b=sjwPJa7IZ7SGJek8pKz5hDbo4+DS07cxMQk8KyAiSz5rybzicxk82b+7UYp45LZghpxV
- 83JqAi5uaIe4D+/zcOVa+kBWb6qljyQTTyTLfPfvez2OmJhGbOnv5RHQgtCWeMYqMJXl
- BM0VyIem/4AaB44qLn7fZM3KxDNybI+cfixJk7VejcEmks9w2a/jEWPwtp4fRje7kGE1
- 4o83aysVxnu7/Ejj1TgzLeO+GHM5uifvkbNR+buE/QxQdUoE9h+zonB58bat/CRHsr8N
- Ue+lgGi94x3lIDPVKVW1f/SAf0nnF2nT7fwPEZdlg356+Z6lYkEHilhGYd0OZ4VYasxS 1A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2wr4qrtnu3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Dec 2019 12:39:25 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBCCdHwU129870;
-        Thu, 12 Dec 2019 12:39:24 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2wumvy49s3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Dec 2019 12:39:20 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xBCCbxq6014625;
-        Thu, 12 Dec 2019 12:37:59 GMT
-Received: from dhcp-10-175-185-179.vpn.oracle.com (/10.175.185.179)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 12 Dec 2019 04:37:59 -0800
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3601.0.10\))
-Subject: Re: [PATCH RDMA/netlink] RDMA/netlink: Adhere to returning zero on
- success
-From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
-In-Reply-To: <20191212122719.GA67461@unreal>
-Date:   Thu, 12 Dec 2019 13:37:56 +0100
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        Mark Haywood <mark.haywood@oracle.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F6B487BC-CEBA-47D5-9E01-B15A8A1902E1@oracle.com>
-References: <20191211103400.2949140-1-haakon.bugge@oracle.com>
- <20191211123955.GS67461@unreal>
- <75D5DC74-A39B-425F-BCF7-E0AEBBE464CD@oracle.com>
- <697DC4C7-223E-4321-A304-C950EB93D2B1@oracle.com>
- <20191212114038.GX67461@unreal>
- <AD5EE341-4238-439A-A078-299F00C61B85@oracle.com>
- <20191212121020.GZ67461@unreal>
- <CB8FC366-9983-417D-8280-DD1EB0DCB778@oracle.com>
- <20191212122719.GA67461@unreal>
-To:     Leon Romanovsky <leon@kernel.org>
-X-Mailer: Apple Mail (2.3601.0.10)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9468 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912120095
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9468 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912120095
+        id S1729405AbfLLNQl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Dec 2019 08:16:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48780 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729338AbfLLNQl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Dec 2019 08:16:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 9BC24AD07;
+        Thu, 12 Dec 2019 13:16:36 +0000 (UTC)
+Message-ID: <b35922dfd7f62489d35ab15362891a90bf46c3d2.camel@suse.de>
+Subject: Re: [PATCH v4 7/8] linux/log2.h: Fix 64bit calculations in
+ roundup/down_pow_two()
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     andrew.murray@arm.com, maz@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Emilio =?ISO-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thomas Graf <tgraf@suug.ch>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        james.quinlan@broadcom.com, mbrugger@suse.com,
+        f.fainelli@gmail.com, phil@raspberrypi.org, wahrenst@gmx.net,
+        jeremy.linton@arm.com, linux-pci@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        Robin Murphy <robin.murphy@arm.con>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rdma@vger.kernel.org, iommu@lists.linux-foundation.org,
+        netdev@vger.kernel.org, kexec@lists.infradead.org,
+        linux-nfs@vger.kernel.org
+Date:   Thu, 12 Dec 2019 14:16:27 +0100
+In-Reply-To: <20191205223044.GA250573@google.com>
+References: <20191205223044.GA250573@google.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-vpJ9shRBsDfxzY4jD4N5"
+User-Agent: Evolution 3.34.2 
+MIME-Version: 1.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
+--=-vpJ9shRBsDfxzY4jD4N5
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> On 12 Dec 2019, at 13:27, Leon Romanovsky <leon@kernel.org> wrote:
+On Thu, 2019-12-05 at 16:30 -0600, Bjorn Helgaas wrote:
+> You got the "n" on "down" in the subject, but still missing "of" ;)
+
+Yes, sorry about that, I tend to re-read what I meant to say instead of wha=
+t
+it's actually written.
+
+> On Tue, Dec 03, 2019 at 12:47:40PM +0100, Nicolas Saenz Julienne wrote:
+> > Some users need to make sure their rounding function accepts and return=
+s
+> > 64bit long variables regardless of the architecture. Sadly
+> > roundup/rounddown_pow_two() takes and returns unsigned longs. It turns
+> > out ilog2() already handles 32/64bit calculations properly, and being
+> > the building block to the round functions we can rework them as a
+> > wrapper around it.
 >=20
-> On Thu, Dec 12, 2019 at 01:16:54PM +0100, H=C3=A5kon Bugge wrote:
->>=20
->>=20
->>> On 12 Dec 2019, at 13:10, Leon Romanovsky <leon@kernel.org> wrote:
->>>=20
->>> On Thu, Dec 12, 2019 at 12:59:51PM +0100, H=C3=A5kon Bugge wrote:
->>>>=20
->>>>=20
->>>>> On 12 Dec 2019, at 12:40, Leon Romanovsky <leon@kernel.org> wrote:
->>>>>=20
->>>>> On Wed, Dec 11, 2019 at 08:31:18PM +0100, H=C3=A5kon Bugge wrote:
->>>>>>=20
->>>>>>=20
->>>>>>> On 11 Dec 2019, at 14:13, H=C3=A5kon Bugge =
-<haakon.bugge@oracle.com> wrote:
->>>>>>>=20
->>>>>>>=20
->>>>>>>=20
->>>>>>>> On 11 Dec 2019, at 13:39, Leon Romanovsky <leon@kernel.org> =
-wrote:
->>>>>>>>=20
->>>>>>>> On Wed, Dec 11, 2019 at 11:34:00AM +0100, H=C3=A5kon Bugge =
-wrote:
->>>>>>>>> In rdma_nl_rcv_skb(), the local variable err is assigned the =
-return
->>>>>>>>> value of the supplied callback function, which could be one of
->>>>>>>>> ib_nl_handle_resolve_resp(), ib_nl_handle_set_timeout(), or
->>>>>>>>> ib_nl_handle_ip_res_resp(). These three functions all return =
-skb->len
->>>>>>>>> on success.
->>>>>>>>>=20
->>>>>>>>> rdma_nl_rcv_skb() is merely a copy of netlink_rcv_skb(). The =
-callback
->>>>>>>>> functions used by the latter have the convention: "Returns 0 =
-on
->>>>>>>>> success or a negative error code".
->>>>>>>>>=20
->>>>>>>>> In particular, the statement (equal for both functions):
->>>>>>>>>=20
->>>>>>>>> if (nlh->nlmsg_flags & NLM_F_ACK || err)
->>>>>>>>>=20
->>>>>>>>> implies that rdma_nl_rcv_skb() always will ack a message, =
-independent
->>>>>>>>> of the NLM_F_ACK being set in nlmsg_flags or not.
->>>>>>>>=20
->>>>>>>> The more accurate description is that rdma_nl_rcv_skb() always =
-generates
->>>>>>>> NLMSG_ERROR without relation to NLM_F_ACK flag. The NLM_F_ACK =
-flag is
->>>>>>>> requested to get acknowledges for the success.
->>>>>>=20
->>>>>>=20
->>>>>> Yes. And when, lets say a legitimate path record response, =
-containing N positive bytes, is sent back from ibacm to the kernel, =
-rdma_nl_rcv_skb() think this is an error, due to "if (nlh->nlmsg_flags & =
-NLM_F_ACK || err)" _and_ ib_nl_handle_resolve_resp() returning N.
->>>>>=20
->>>>> How did you test this patch?
->>>>> Do we have open-source applications which don't set NLM_F_ACK for
->>>>> ib_nl_*() calls?
->>>>=20
->>>> As I alluded to above, yes, ibacm doesn't set it.
->>>=20
->>> In this regards, I'm amazed that this patch didn't break ibacm.
->>=20
->> On the contrary. The patch avoids the kernel sending back an =
-error/ACK for every path record / resolve response.
+> Missing "of" in the function names here.
+> s/a wrapper/wrappers/
+
+Noted
+
+> IIUC the point of this is that roundup_pow_of_two() returned
+> "unsigned long", which can be either 32 or 64 bits (worth pointing
+> out, I think), and many callers need something that returns
+> "unsigned long long" (always 64 bits).
+
+I'll update the commit message to be a more explicit.
+
+> It's a nice simplification to remove the "__" variants.  Just as a
+> casual reader of this commit message, I'd like to know why we had both
+> the roundup and the __roundup versions in the first place, and why we
+> no longer need both.
+
+So, the commit that introduced it (312a0c170945b) meant to use the '__' var=
+iant
+as a helper, but, due to the fact this is a header file, some found it and =
+made
+use of it. I went over some if the commits introducing '__' usages and none=
+ of
+them seem to acknowledge its use as opposed to the macro version. I think i=
+t's
+fair to say it's a case of cargo-culting.
+
+> > -#define roundup_pow_of_two(n)			\
+> > -(						\
+> > -	__builtin_constant_p(n) ? (		\
+> > -		(n =3D=3D 1) ? 1 :			\
+> > -		(1UL << (ilog2((n) - 1) + 1))	\
+> > -				   ) :		\
+> > -	__roundup_pow_of_two(n)			\
+> > - )
+> > +#define roundup_pow_of_two(n)			  \
+> > +(						  \
+> > +	(__builtin_constant_p(n) && ((n) =3D=3D 1)) ? \
+> > +	1 : (1ULL << (ilog2((n) - 1) + 1))        \
+> > +)
 >=20
-> As long as ibacm continues to work with this patch, i'm ok.
-> What type of testing did you perform?
-
-I'll let Mark respond to the testing. The background is that ibacm was =
-very *liberal* when it comes checking the requests it received from the =
-kernel. In an attempt to tighten that, Mark discovered that ibacm =
-received an unexpected ACK from the kernel just after having sent a =
-response.
-
-That aside, I think the RDMA NL callbacks shall adhere to the RTNETLINK =
-conventions, thus, that's why this commit changes the callbacks and not =
-the  rdma_nl_rcv_skb().
-
-
-Thxs, H=C3=A5kon
-
+> Should the resulting type of this expression always be a ULL, even
+> when n=3D=3D1, i.e., should it be this?
 >=20
-> Thanks
+>   1ULL : (1ULL << (ilog2((n) - 1) + 1))        \
 >=20
->>=20
->>=20
->> H=C3=A5kon
->>=20
->>>=20
->>> Thanks
+> Or maybe there's no case where that makes a difference?
+
+It should be 1ULL on either case.
+
+Regards,
+Nicolas
+
+
+--=-vpJ9shRBsDfxzY4jD4N5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl3yPasACgkQlfZmHno8
+x/4qrgf9GTaIX4ZRG0TCYwOuyJCzR/7cg3GMSsuHo8bknRFfBKmZUwtS0JmNNrn7
+f1Av7IZ0OAbAWPJQkzOXw4OxNhVxq0ItdXAktetVKaF6U5Dz/5tWkkwHLFdhSepV
+FcS4qxWo8nOugcgYRzN6kDaihMFUqbAIioU7n1HGLRGN2s9vaJM1rNmOrGMPovU3
+BbGTs4/7BMM3FmqoGwWUKX5FPFNamYrxAaaOknMUVa16iI7MN7hYH5scWUUK56ER
+57y4jC6vGu17Cku4HBlynsoZpm6z6SvHDoXIMZCbUKbJogsiQo+b1+cZTWLVGi2P
+qQGX/jHjIhYWNVa2Le9F3qgxxmf0uA==
+=hg1F
+-----END PGP SIGNATURE-----
+
+--=-vpJ9shRBsDfxzY4jD4N5--
 
