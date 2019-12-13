@@ -2,80 +2,169 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C74D611DAF3
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2019 01:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5877E11E1CE
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Dec 2019 11:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731397AbfLMALc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Dec 2019 19:11:32 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:45791 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731773AbfLMALc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Dec 2019 19:11:32 -0500
-Received: by mail-pl1-f195.google.com with SMTP id bc8so378477plb.12
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Dec 2019 16:11:32 -0800 (PST)
+        id S1725818AbfLMKTX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Dec 2019 05:19:23 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:33689 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbfLMKTX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Dec 2019 05:19:23 -0500
+Received: by mail-wr1-f66.google.com with SMTP id b6so6077918wrq.0
+        for <linux-rdma@vger.kernel.org>; Fri, 13 Dec 2019 02:19:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=Pd7GfhuUEHJZyG7XGzIe2UpFrPycUVkSSTmNupOIeC4=;
-        b=hdyXdhgs3C5VDni3JTL3oqICCy8sXPNZRcfGRPW64b6uE9svSqesYtaqTue5KPGmVX
-         HS/Zo6qzuGCh0EbVkil4fz5EfC3eiURBwkVEGLnsgttb1ZkNgN4sqqFrYPTurc3BEP1K
-         UJ3ZTwXjIDZ97hVCII0xkaiMlG9nmq8tPeXDQ=
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rl6ZcpYNx9OU5/nEbfBo5yylHG5ar169zdHs7M50F4Q=;
+        b=Ap0FGuiBLoc7CtJsj51ddw+Fe6G5hC9uLNn75596J5Cu1boRP8Hx4/X+SsUFptCl/Q
+         4QdXTyu9jjysyr2JBOZZkONFripkTFG1nJ6Je9FXEKJyJV3CS23bW7QqwatOtTVrW34S
+         /3MuLnSkpFz69g6E4iETKNuOb9eg/WRwlc/rI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Pd7GfhuUEHJZyG7XGzIe2UpFrPycUVkSSTmNupOIeC4=;
-        b=cTzk+jylDDDOJFPQvZlKhU30WrhRf4IvJxDALc7WTHpLk+cyjFpPIqUlDNsRsCcE+A
-         /umPaaI8UhsOn1M9eujJWd0Jcs7nWkQzpAaR+2m/s1V8uuzDT+d7fAcFqTnylCRvZ+3Y
-         qrcj+lrWILDFHr9v7nuZG9CVBjD/1W9tFGvncHEFKB0+C4ldcqHLDGCihh59eVLIQGmw
-         MVI8oC3hT3XPwMIj3S0PdP11jvPe5h2om6kJ28wO1PiK0v43u1Ef+mz7Rvol4vL5/pWq
-         qwveguuUSbkIurrLkqGG825DBK7N4bFH/nbKtirIq89MLv2frceccXG78BgUxuMwox6S
-         3wCA==
-X-Gm-Message-State: APjAAAXg1RXjiT9PakFCY2Zt0nC9nwpaeTrY0hOYQ+HZVMlCsAcD/PC2
-        n61U+NP7DP61lSA9VyYwGYMDRQ==
-X-Google-Smtp-Source: APXvYqwgyEYZ1f9G6YcS2hIlmZ4ZtPRC3P/H4yYOBzAwxvz5JYD1jZmXNXXZMGrzei5rLzk1LWUI3Q==
-X-Received: by 2002:a17:90a:ff12:: with SMTP id ce18mr13208040pjb.117.1576195891651;
-        Thu, 12 Dec 2019 16:11:31 -0800 (PST)
-Received: from dev-psajeepa.dev.purestorage.com ([192.30.188.252])
-        by smtp.googlemail.com with ESMTPSA id s18sm8081281pfh.47.2019.12.12.16.11.30
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Thu, 12 Dec 2019 16:11:30 -0800 (PST)
-From:   Prabhath Sajeepa <psajeepa@purestorage.com>
-To:     leon@kernel.org, dledford@redhat.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     roland@purestorage.com, psajeepa@purestorage.com
-Subject: [PATCH] IB/mlx5: Fix outstanding_pi index for GSI qps
-Date:   Thu, 12 Dec 2019 17:11:29 -0700
-Message-Id: <1576195889-23527-1-git-send-email-psajeepa@purestorage.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=rl6ZcpYNx9OU5/nEbfBo5yylHG5ar169zdHs7M50F4Q=;
+        b=kirN2K/vvp96I3mmqqhM478Q5AGn/ASjfwQHASFiIMKLKw+DIFJtOqLKC9UDwBVWbH
+         uDXPDKa/qShIgV+sj6Sw1xS6T4EzjcPHpDpfh6se29MOzjrLJMbefChSl65ffj8zlBME
+         26tWdH5mDexW+0iZ/Dje4uQz2x2EeZ1DBJuYQcjeIOw/Bh6TLPqBUNAsh3VM/rMwOMv2
+         6IBKZIvj20zY8MkDEWAb6wOfx2tl654zO/DeFbQ+JMpxXeV1ASLeAAeMswXyBo63eRhe
+         zUnZ1Dg+nmntTHQnLtKZIRUJylJEV1ENei1wt9r91CUYwzqZiECdapm9wQQezgKOx1SQ
+         Fg2g==
+X-Gm-Message-State: APjAAAVffeFe+F6wWiM8DzlbYQulAAfEHnIbinWaotp3/vfLxhMzJrtF
+        LQMhhLifDrQQpoBSeVenDd8k6Q==
+X-Google-Smtp-Source: APXvYqyhmTb9L+Ty2qqWHWby6TsBUoPJB8m/X3BYq7Z4RTM7jDbTx/v8gsKAoFlcC2n53nTyeYCmrQ==
+X-Received: by 2002:adf:fe12:: with SMTP id n18mr11521520wrr.158.1576232359891;
+        Fri, 13 Dec 2019 02:19:19 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:564b:0:7567:bb67:3d7f:f863])
+        by smtp.gmail.com with ESMTPSA id x1sm9393930wru.50.2019.12.13.02.19.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Dec 2019 02:19:18 -0800 (PST)
+Date:   Fri, 13 Dec 2019 11:19:16 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        David Airlie <airlied@linux.ie>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [GIT PULL] Please pull hmm changes
+Message-ID: <20191213101916.GD624164@phenom.ffwll.local>
+Mail-Followup-To: Jason Gunthorpe <jgg@mellanox.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        David Airlie <airlied@linux.ie>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20191125204248.GA2485@ziepe.ca>
+ <CAHk-=wiqguF5NakpL4L9XCmmYr4wY0wk__+6+wHVReF2sVVZhA@mail.gmail.com>
+ <CAHk-=wiQtTsZfgTwLYgfV8Gr_0JJiboZOzVUTAgJ2xTdf5bMiw@mail.gmail.com>
+ <20191203024206.GC5795@mellanox.com>
+ <20191205160324.GB5819@redhat.com>
+ <20191211225703.GE3434@mellanox.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191211225703.GE3434@mellanox.com>
+X-Operating-System: Linux phenom 5.3.0-2-amd64 
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-b0ffeb537f3a changed the way how outstanding WRs are tracked for GSI QP. But the
-fix did not cover the case when a call to ib_post_send fails and index
-to track outstanding WRs need to be updated correctly.
+On Wed, Dec 11, 2019 at 10:57:13PM +0000, Jason Gunthorpe wrote:
+> On Thu, Dec 05, 2019 at 11:03:24AM -0500, Jerome Glisse wrote:
+> 
+> > > struct mmu_notifier_mm (ie the mm->mmu_notifier_mm)
+> > >    -> mmn_mm
+> > > struct mm_struct 
+> > >    -> mm
+> > > struct mmu_notifier (ie the user subscription to the mm_struct)
+> > >    -> mn
+> > > struct mmu_interval_notifier (the other kind of user subscription)
+> > >    -> mni
+> > 
+> > What about "interval" the context should already tell people
+> > it is related to mmu notifier and thus a notifier. I would
+> > just remove the notifier suffix, this would match the below
+> > range.
+> 
+> Interval could be a good replacement for mni in the mm/mmu_notififer
+> file if we don't do the wholesale rename
+> 
+> > > I think it would be overall nicer with better names for the original
+> > > structs. Perhaps:
+> > > 
+> > >  mmn_* - MMU notifier prefix
+> > >  mmn_state <- struct mmu_notifier_mm
+> > >  mmn_subscription (mmn_sub) <- struct mmu_notifier
+> > >  mmn_range_subscription (mmn_range_sub) <- struct mmu_interval_notifier
+> > >  mmn_invalidate_desc <- struct mmu_notifier_range
+> > 
+> > This looks good.
+> 
+> Well, lets just bite the bullet then and switch it. Do you like
+> 'state'? I thought that was the weakest one
 
-Fixes: b0ffeb537f3a ('IB/mlx5: Fix iteration overrun in GSI qps ')
-Signed-off-by: Prabhath Sajeepa <psajeepa@purestorage.com>
----
- drivers/infiniband/hw/mlx5/gsi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Since you're asking, here's my bikeshed. I kinda agree _state looks a bit
+strange for this, what about a _link suffix in the spirit of
 
-diff --git a/drivers/infiniband/hw/mlx5/gsi.c b/drivers/infiniband/hw/mlx5/gsi.c
-index ac4d8d1..1ae6fd9 100644
---- a/drivers/infiniband/hw/mlx5/gsi.c
-+++ b/drivers/infiniband/hw/mlx5/gsi.c
-@@ -507,8 +507,7 @@ int mlx5_ib_gsi_post_send(struct ib_qp *qp, const struct ib_send_wr *wr,
- 		ret = ib_post_send(tx_qp, &cur_wr.wr, bad_wr);
- 		if (ret) {
- 			/* Undo the effect of adding the outstanding wr */
--			gsi->outstanding_pi = (gsi->outstanding_pi - 1) %
--					      gsi->cap.max_send_wr;
-+			gsi->outstanding_pi--;
- 			goto err;
- 		}
- 		spin_unlock_irqrestore(&gsi->lock, flags);
+	struct list_head link;
+
+The other common name is "node", but I think that's confusing in the
+context of mm code. The purpose of this struct is to link everything
+together (and yes it carries also some state, but the main job is to link
+a mm_struct to a mmu_notifier). At least for me a _state is configuration
+state for a specific object, not something that links a bunch of things
+together. But I'm biased on this, since we use that pattern in drm for all
+the display state tracking.
+
+Also feel free to ignore my bikeshed :-)
+
+Aside from this I think the proposed names are a solid improvement.
+-Daniel
+
+> 
+> We could use mmnotif as the prefix, this makes the longest:
+> 
+>   struct mmnotif_range_subscription
+> 
+> Which is reasonable enough
+> 
+> > Maybe we can do a semantic patch to do convertion and then Linus
+> > can easily apply the patch by just re-running the coccinelle.
+> 
+> I tried this last time I renamed everything, it was OK, but it missed
+> updating the comments. So it still needs some by-hand helping.
+> 
+> I'll make some patches next week when I get back.
+> 
+> Jason
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
 -- 
-2.7.4
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
