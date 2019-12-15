@@ -2,165 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4148011F0F7
-	for <lists+linux-rdma@lfdr.de>; Sat, 14 Dec 2019 09:38:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7C311F73B
+	for <lists+linux-rdma@lfdr.de>; Sun, 15 Dec 2019 11:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726148AbfLNIh6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 14 Dec 2019 03:37:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725895AbfLNIh6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 14 Dec 2019 03:37:58 -0500
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2349B24125;
-        Sat, 14 Dec 2019 08:37:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576312676;
-        bh=bBqXNqepPrUnfTEsgIJIVQE60S3PLIE7bqcl+SWbyf0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2B1MmkBN2XkZO/EHfDdd0M5ZuY81cL9M8usKucsCiVupHXMYl1oJZT8nyWkt0Y9BK
-         zJZ1IZliqNl7dCFC2Z9pi193DcRNnNO02Mkr6lplLFJOvsxJ84e8Vqz8IjsmVxC4y5
-         8wXiE2RiWPPdXkDxnkHM6RDn1ROdwhFu7ZAgWD4Q=
-Date:   Sat, 14 Dec 2019 09:37:53 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>
-Subject: Re: [PATCH v3 04/20] i40e: Register a virtbus device to provide RDMA
-Message-ID: <20191214083753.GB3318534@kroah.com>
-References: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
- <20191209224935.1780117-5-jeffrey.t.kirsher@intel.com>
- <20191210153959.GD4053085@kroah.com>
- <9DD61F30A802C4429A01CA4200E302A7B6B9345E@fmsmsx124.amr.corp.intel.com>
+        id S1726118AbfLOKp2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 15 Dec 2019 05:45:28 -0500
+Received: from mail.baskent.edu.tr ([193.140.164.51]:58290 "EHLO
+        mail.baskent.edu.tr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726081AbfLOKp1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 15 Dec 2019 05:45:27 -0500
+X-Greylist: delayed 1778 seconds by postgrey-1.27 at vger.kernel.org; Sun, 15 Dec 2019 05:45:25 EST
+Received: from mail.baskent.edu.tr (mail.baskent.edu.tr [193.140.164.51])
+        by mail.baskent.edu.tr (Postfix) with ESMTPA id 8F6F11AF6ED;
+        Sun, 15 Dec 2019 13:06:49 +0300 (+03)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7B6B9345E@fmsmsx124.amr.corp.intel.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sun, 15 Dec 2019 04:06:48 -0600
+From:   Mr Pressley Anton <info@anton.co.za>
+To:     undisclosed-recipients:;
+Subject: Love Greetings
+Reply-To: infoantonnp@gmail.com
+Mail-Reply-To: infoantonnp@gmail.com
+Message-ID: <c5d07996cc0a087abf22fe18fce4672e@mail.baskent.edu.tr>
+X-Sender: info@anton.co.za
+User-Agent: Roundcube Webmail/1.0.12
+X-mailyeni-MailScanner-Information: Please contact the ISP for more information
+X-mailyeni-MailScanner-ID: 8F6F11AF6ED.A93DD
+X-mailyeni-MailScanner: Found to be clean
+X-mailyeni-MailScanner-SpamCheck: not spam, SpamAssassin (cached,
+        score=2.132, required 6, ALL_TRUSTED -1.00, AWL 0.43, BAYES_20 -0.00,
+        MILLION_HUNDRED 2.70)
+X-mailyeni-MailScanner-SpamScore: ss
+X-mailyeni-MailScanner-From: info@anton.co.za
+X-Spam-Status: No
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 11:08:34PM +0000, Saleem, Shiraz wrote:
-> > Subject: Re: [PATCH v3 04/20] i40e: Register a virtbus device to provide RDMA
-> > 
-> 
-> [....]
-> 
-> > >  /**
-> > > @@ -275,6 +281,27 @@ void i40e_client_update_msix_info(struct i40e_pf *pf)
-> > >  	cdev->lan_info.msix_entries =
-> > > &pf->msix_entries[pf->iwarp_base_vector];
-> > >  }
-> > >
-> > > +static int i40e_init_client_virtdev(struct i40e_pf *pf) {
-> > > +	struct i40e_info *ldev = &pf->cinst->lan_info;
-> > > +	struct pci_dev *pdev = pf->pdev;
-> > > +	struct virtbus_device *vdev;
-> > > +	int ret;
-> > > +
-> > > +	vdev = &ldev->vdev;
-> > > +	vdev->name = I40E_PEER_RDMA_NAME;
-> > > +	vdev->dev.parent = &pf->pdev->dev;
-> > 
-> > What a total and complete mess of a tangled web you just wove here.
-> > 
-> > Ok, so you pass in a single pointer, that then dereferences 3 pointers deep to find
-> > the pointer to the virtbus_device structure, but then you point the parent of that
-> > device, back at the original structure's sub-pointer's device itself.
-> > 
-> > WTF?
-> 
-> OK. This is convoluted. Passing a pointer to the i40e_info object should suffice. So something like,
-> 
-> +static int i40e_init_client_virtdev(struct i40e_info *ldev) {
-> +       struct pci_dev *pdev = ldev->pcidev;
-> +       struct virtbus_device *vdev = &ldev->vdev;
-> +       int ret;
-> +
-> +       vdev->name = I40E_PEER_RDMA_NAME;
-> +       vdev->dev.parent = &pdev->dev;
-> +       ret = virtbus_dev_register(vdev);
-> +       if (ret)
-> +               return ret;
-> +
-> +       return 0;
-> +}
-> +
-> 
-> > 
-> > And who owns the memory of this thing that is supposed to be dynamically
-> > controlled by something OUTSIDE of this driver?  Who created that thing 3
-> > pointers deep?  What happens when you leak the memory below (hint, you did),
-> > and who is supposed to clean it up if you need to properly clean it up if something
-> > bad happens?
-> 
-> The i40e_info object memory is tied to the PF driver.
 
-What is a "PF"?
 
-> The object hierarchy is,
-> 
-> i40e_pf: pointer to i40e_client_instance 
-> 	----- i40e_client_instance: i40e_info
-> 		----- i40e_info: virtbus_device
+-- 
+Love Greetings
 
-So you are 3 pointers deep to get a structure that is dynamically
-controlled?  Why are those "3 pointers" not also represented in sysfs?
-You have a heiarchy within the kernel that is not being represented that
-way to userspace, why?
+I will introduce myself as Mr. Pressley Anton. a South African citizen 
+living in East London. A director of accounting who oversees the bank's 
+financial network
 
-Hint, I think this is totally wrong, you need to rework this to be sane.
+I ask for your approval to introduce you to our bank as a business 
+partner. Ms. Surti Dahlia, a German / Dutch businesswoman and widow from 
+the Netherlands, who died in a MH370 Malaysia aircraft
 
-> For each PF, there is a client_instance object allocated.
+So we can say that their fund was worth eight million five hundred 
+thousand pounds
 
-Great, make it dynamic and in the device tree.
 
-> The i40e_info object is populated and the virtbus_device hanging off this object is registered.
 
-Great, make that dynamic and inthe device tree.
+We can legally move this amount if you are interested.
+Many thanks
 
-If you think this is too much, then your whole mess here is too much and
-needs to be made a lot simpler.
+Greetings,
+Mr. Pressley Anton.
+E-post :infoantonnp@gmail.com
+Telephone : +27678841926
+(Director) Department International System.
+Accounting,
+Monitoring the financial network
 
-> In irdma probe(), we use the container_of macro to get to this i40e_info object from the
-> virtbus_device. It contains all the ops/info which RDMA driver needs from the PCI function driver.
+-- 
+This message has been scanned for viruses and
+dangerous content by MailScanner, and is
+believed to be clean.
 
-Ok, that's what you are supposed to do, but why walk back 3 levels?
-
-> The lifetime of the i40e_info object (and the virtbus device) is tied to the PF.
-
-Careful, these are dynamic structures, you don't get to fully "tie"
-anything here.
-
-> When PF goes away, virtbus_device is unregistered and the client_instance object memory
-> is freed.
-
-Hopefully, if no one else has a reference (hint, you never know this.)
-If you are relying on this, then you are not using the driver model
-correctly.
-
-> > Also, what ever happened to my "YOU ALL MUST AGREE TO WORK TOGETHER"
-> > requirement between this group, and the other group trying to do the same thing?  I
-> > want to see signed-off-by from EVERYONE involved before we are going to
-> > consider this thing.
-> > 
-> We will have all parties cc'ed in the next submission. Would encourage folks to review
-> and hopefully we can get some consensus.
-
-Then when you post your patches, do so to be obvious that is what you
-are asking for, don't try to do a "here's a pull request to take!" type
-request like you did here, that's not nice.
-
-thanks,
-
-greg k-h
