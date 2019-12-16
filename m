@@ -2,104 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5644B12065B
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2019 13:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B50B120666
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2019 13:55:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727641AbfLPMvN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Dec 2019 07:51:13 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8130 "EHLO huawei.com"
+        id S1727657AbfLPMyA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Dec 2019 07:54:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39022 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727553AbfLPMvN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 16 Dec 2019 07:51:13 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 85797E5434FBF8E94350;
-        Mon, 16 Dec 2019 20:51:11 +0800 (CST)
-Received: from [127.0.0.1] (10.74.223.196) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.439.0; Mon, 16 Dec 2019
- 20:51:03 +0800
-Subject: Re: [PATCH v3 for-next 0/2] Fix crash due to sleepy mutex while
- holding lock in post_{send|recv|poll}
-From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1574335200-34923-1-git-send-email-liuyixian@huawei.com>
-Message-ID: <c6d0f4bb-aca6-86f6-f909-d91ed9e58216@huawei.com>
-Date:   Mon, 16 Dec 2019 20:51:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.1
+        id S1727550AbfLPMx7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 16 Dec 2019 07:53:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 29D62AFAF;
+        Mon, 16 Dec 2019 12:53:55 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 69B531E0B2E; Mon, 16 Dec 2019 13:53:53 +0100 (CET)
+Date:   Mon, 16 Dec 2019 13:53:53 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v11 23/25] mm/gup: track FOLL_PIN pages
+Message-ID: <20191216125353.GF22157@quack2.suse.cz>
+References: <20191212101741.GD10065@quack2.suse.cz>
+ <20191214032617.1670759-1-jhubbard@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <1574335200-34923-1-git-send-email-liuyixian@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.223.196]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191214032617.1670759-1-jhubbard@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jason,
+On Fri 13-12-19 19:26:17, John Hubbard wrote:
+> Add tracking of pages that were pinned via FOLL_PIN.
+> 
+> As mentioned in the FOLL_PIN documentation, callers who effectively set
+> FOLL_PIN are required to ultimately free such pages via unpin_user_page().
+> The effect is similar to FOLL_GET, and may be thought of as "FOLL_GET
+> for DIO and/or RDMA use".
+> 
+> Pages that have been pinned via FOLL_PIN are identifiable via a
+> new function call:
+> 
+>    bool page_dma_pinned(struct page *page);
+> 
+> What to do in response to encountering such a page, is left to later
+> patchsets. There is discussion about this in [1], [2], and [3].
+> 
+> This also changes a BUG_ON(), to a WARN_ON(), in follow_page_mask().
+> 
+> [1] Some slow progress on get_user_pages() (Apr 2, 2019):
+>     https://lwn.net/Articles/784574/
+> [2] DMA and get_user_pages() (LPC: Dec 12, 2018):
+>     https://lwn.net/Articles/774411/
+> [3] The trouble with get_user_pages() (Apr 30, 2018):
+>     https://lwn.net/Articles/753027/
+> 
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Suggested-by: Jérôme Glisse <jglisse@redhat.com>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+> 
+> Hi Jan,
+> 
+> This should address all of your comments for patch 23!
 
-I want to make sure that is there any further comments on this patch set?
+Thanks. One comment below:
 
-Thanks!
-Eason
+> @@ -1486,6 +1500,10 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
+>  	VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
+>  	if (flags & FOLL_TOUCH)
+>  		touch_pmd(vma, addr, pmd, flags);
+> +
+> +	if (!try_grab_page(page, flags))
+> +		return ERR_PTR(-ENOMEM);
+> +
+>  	if ((flags & FOLL_MLOCK) && (vma->vm_flags & VM_LOCKED)) {
+>  		/*
+>  		 * We don't mlock() pte-mapped THPs. This way we can avoid
 
-On 2019/11/21 19:19, Yixian Liu wrote:
-> Earlier Background:
-> HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
-> outstanding WQEs if QP state gets into errored mode for some reason.
-> To overcome this hardware problem and as a workaround, when QP is
-> detected to be in errored state during various legs like post send,
-> post receive etc [1], flush needs to be performed from the driver.
-> 
-> These data-path legs might get called concurrently from various context,
-> like thread and interrupt as well (like NVMe driver). Hence, these need
-> to be protected with spin-locks for the concurrency. This code exists
-> within the driver.
-> 
-> Problem:
-> Earlier The patch[1] sent to solve the hardware limitation explained
-> in the background section had a bug in the software flushing leg. It
-> acquired mutex while modifying QP state to errored state and while
-> conveying it to the hardware using the mailbox. This caused leg to
-> sleep while holding spin-lock and caused crash.
-> 
-> Suggested Solution:
-> In this patch, we have proposed to defer the flushing of the QP in
-> Errored state using the workqueue.
-> 
-> We do understand that this might have an impact on the recovery times
-> as scheduling of the wqorkqueue handler depends upon the occupancy of
-> the system. Therefore to roughly mitigate this affect we have tried
-> to use Concurrency Managed workqueue to give worker thread (and
-> hence handler) a chance to run over more than one core.
-> 
-> 
-> [1] https://patchwork.kernel.org/patch/10534271/
-> 
-> 
-> This patch-set consists of:
-> [Patch 001] Introduce workqueue based WQE Flush Handler
-> [Patch 002] Call WQE flush handler in post {send|receive|poll}
-> 
-> v3 changes:
-> 1. Fall back to dynamically allocate flush_work.
-> 
-> v2 changes:
-> 1. Remove new created workqueue according to Jason's comment
-> 2. Remove dynamic allocation for flush_work according to Jason's comment
-> 3. Change current irq singlethread workqueue to concurrency management
->    workqueue to ensure work unblocked.
-> 
-> Yixian Liu (2):
->   RDMA/hns: Add the workqueue framework for flush cqe handler
->   RDMA/hns: Delayed flush cqe process with workqueue
-> 
->  drivers/infiniband/hw/hns/hns_roce_device.h |  2 +
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 88 +++++++++++++----------------
->  drivers/infiniband/hw/hns/hns_roce_qp.c     | 43 ++++++++++++++
->  3 files changed, 85 insertions(+), 48 deletions(-)
-> 
+I'd move this still a bit higher - just after VM_BUG_ON_PAGE() and before
+if (flags & FOLL_TOUCH) test. Because touch_pmd() can update page tables
+and we don't won't that if we're going to fail the fault.
 
+With this fixed, the patch looks good to me so you can then add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
