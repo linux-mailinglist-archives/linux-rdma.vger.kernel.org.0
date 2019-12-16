@@ -2,127 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B50B120666
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2019 13:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9575F120E9D
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2019 16:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727657AbfLPMyA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Dec 2019 07:54:00 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39022 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727550AbfLPMx7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 16 Dec 2019 07:53:59 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 29D62AFAF;
-        Mon, 16 Dec 2019 12:53:55 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 69B531E0B2E; Mon, 16 Dec 2019 13:53:53 +0100 (CET)
-Date:   Mon, 16 Dec 2019 13:53:53 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v11 23/25] mm/gup: track FOLL_PIN pages
-Message-ID: <20191216125353.GF22157@quack2.suse.cz>
-References: <20191212101741.GD10065@quack2.suse.cz>
- <20191214032617.1670759-1-jhubbard@nvidia.com>
+        id S1727516AbfLPPxq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Dec 2019 10:53:46 -0500
+Received: from mail-yw1-f67.google.com ([209.85.161.67]:41505 "EHLO
+        mail-yw1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727388AbfLPPxq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Dec 2019 10:53:46 -0500
+Received: by mail-yw1-f67.google.com with SMTP id l22so2620365ywc.8
+        for <linux-rdma@vger.kernel.org>; Mon, 16 Dec 2019 07:53:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=Gzw6S9crG67zdWmMRSJia6mpZc9fjFAy3SgR5svbEao=;
+        b=SeQoGd/zjnOAsJd1y/yCSC4t5mUovmynEPhnwAm1v2jY9JXBWrdflZWZkrLo9QTgss
+         RUUKegPJnwK4GrYbns7xUIxQRKQHaHePla0Dn0GRSPR0tiQV/9xu7z7VbD5F13OJhws2
+         G3wTAMTv9lByXCa7IdiaAo3zej6BC/KfuCITdNeDv1W9yfHlp9m19705qPfokdwmFZi6
+         8XM7zkbjHi5QSTMMIr+GXkPYuoyzUfKgrbz9Nyg5+aLWXshOYBgzbd95P/7AOGFjajyJ
+         aDOjUlHUtU6NZtFWHkUVpGIUgBZ6FzGpSxB6dqaKQ3g768+W1y0M8n1CAfMO1GDXvLn0
+         6EnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:from:to:cc:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Gzw6S9crG67zdWmMRSJia6mpZc9fjFAy3SgR5svbEao=;
+        b=lKURH8MMMJ2/DWSXhe0YEgU70vAfIy/NrOQjN1ARdtAKTA84r4/3e2eMK6tlpPRX1o
+         WZ6z8Iw82jFjUylEesOpHMt42B0KF0pj7gL8nGkL69krEphUL96Z0ZbabeBLuL/1ykwB
+         OSXqPkwiml3XRv6oizKBN3/WNirBOWUeuyMmvZpnXrBaaaAFNbEwchY9cHi464tuag1Q
+         IV519cl/yzkyYbGtR3+oWsX0lkdhwBJncSYIMI0oulqyFGl7BoVCp4NiMjv/pMYTinLC
+         bRCtPLZ59v20gsIvOidCIUPRjxEdbXzdiRKULR4tvPO47I7Q27bhuITDHAwk9Dk4ubjK
+         gXgw==
+X-Gm-Message-State: APjAAAX9Is2fwOBzgktnc1HHWjqs4TY3Dtke2IH+oCwI+FVY1if/qPts
+        C5FCwooo8KEMA2x8nZGZiYk=
+X-Google-Smtp-Source: APXvYqzvDlAGWr81Gg/3N4K1++sbvMWNTk8e+IyfCXwFbge0VlWQ7DTT3u+3IKwXif0ZZc1p7bQNVA==
+X-Received: by 2002:a81:7007:: with SMTP id l7mr19412103ywc.148.1576511625352;
+        Mon, 16 Dec 2019 07:53:45 -0800 (PST)
+Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id b76sm2785803ywb.77.2019.12.16.07.53.44
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 16 Dec 2019 07:53:44 -0800 (PST)
+Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id xBGFrhIO014698;
+        Mon, 16 Dec 2019 15:53:43 GMT
+Subject: [PATCH v9 0/3] Proposed trace points for RDMA/core
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     dledford@redhat.com, jgg@mellanox.com, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org
+Date:   Mon, 16 Dec 2019 10:53:43 -0500
+Message-ID: <20191216154924.21101.64860.stgit@manet.1015granger.net>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20191214032617.1670759-1-jhubbard@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri 13-12-19 19:26:17, John Hubbard wrote:
-> Add tracking of pages that were pinned via FOLL_PIN.
-> 
-> As mentioned in the FOLL_PIN documentation, callers who effectively set
-> FOLL_PIN are required to ultimately free such pages via unpin_user_page().
-> The effect is similar to FOLL_GET, and may be thought of as "FOLL_GET
-> for DIO and/or RDMA use".
-> 
-> Pages that have been pinned via FOLL_PIN are identifiable via a
-> new function call:
-> 
->    bool page_dma_pinned(struct page *page);
-> 
-> What to do in response to encountering such a page, is left to later
-> patchsets. There is discussion about this in [1], [2], and [3].
-> 
-> This also changes a BUG_ON(), to a WARN_ON(), in follow_page_mask().
-> 
-> [1] Some slow progress on get_user_pages() (Apr 2, 2019):
->     https://lwn.net/Articles/784574/
-> [2] DMA and get_user_pages() (LPC: Dec 12, 2018):
->     https://lwn.net/Articles/774411/
-> [3] The trouble with get_user_pages() (Apr 30, 2018):
->     https://lwn.net/Articles/753027/
-> 
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Suggested-by: Jérôme Glisse <jglisse@redhat.com>
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
-> 
-> Hi Jan,
-> 
-> This should address all of your comments for patch 23!
+Hey y'all-
 
-Thanks. One comment below:
+Refresh of the RDMA/core trace point patches. Anything else needed
+before these are acceptable?
 
-> @@ -1486,6 +1500,10 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
->  	VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
->  	if (flags & FOLL_TOUCH)
->  		touch_pmd(vma, addr, pmd, flags);
-> +
-> +	if (!try_grab_page(page, flags))
-> +		return ERR_PTR(-ENOMEM);
-> +
->  	if ((flags & FOLL_MLOCK) && (vma->vm_flags & VM_LOCKED)) {
->  		/*
->  		 * We don't mlock() pte-mapped THPs. This way we can avoid
 
-I'd move this still a bit higher - just after VM_BUG_ON_PAGE() and before
-if (flags & FOLL_TOUCH) test. Because touch_pmd() can update page tables
-and we don't won't that if we're going to fail the fault.
+Changes since v8:
+- Merged up to v5.5-rc2
+- Added trace points to record lifetime of rdma_cm_id's QP
+- Added trace points in the "drain QP" path
+- Various other clean-ups
 
-With this fixed, the patch looks good to me so you can then add:
+Changes since v7:
+- Capture the return value from the ULP's CM event handler
+- Record the lifetime of each rdma_cm_id
+- Include an example patch for capturing MR lifetime
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Changes since v6:
+- Move include/trace/events/rmda_cma.h to drivers/infiniband/core/cma_trace.h
+- Add sample trace log output to the patch descriptions
+- Back to the inlined version of ib_poll_cq()
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Changes since v5:
+- Add low-overhead trace points in the Connection Manager
+- Address #include heartburn found by lkp
+
+Changes since v4:
+- Removed __ib_poll_cq, uninlined ib_poll_cq
+
+Changes since v3:
+- Reverted unnecessary behavior change in __ib_process_cq
+- Clarified what "id" is in trace point output
+- Added comment before new fields in struct ib_cq
+- New trace point that fires when there is a CQ allocation failure
+
+Changes since v2:
+- Removed extraneous changes to include/trace/events/rdma.h
+
+Changes since RFC:
+- Display CQ's global resource ID instead of it's pointer address
+
+---
+
+Chuck Lever (3):
+      RDMA/cma: Add trace points in RDMA Connection Manager
+      RDMA/core: Trace points for diagnosing completion queue issues
+      RDMA/core: Add trace points to follow MR allocation
+
+
+ drivers/infiniband/core/Makefile    |    5 
+ drivers/infiniband/core/cma.c       |   88 ++++++--
+ drivers/infiniband/core/cma_trace.c |   16 +
+ drivers/infiniband/core/cma_trace.h |  391 +++++++++++++++++++++++++++++++++++
+ drivers/infiniband/core/cq.c        |   27 ++
+ drivers/infiniband/core/trace.c     |   14 +
+ drivers/infiniband/core/verbs.c     |   43 +++-
+ include/rdma/ib_verbs.h             |    5 
+ include/trace/events/rdma_core.h    |  394 +++++++++++++++++++++++++++++++++++
+ 9 files changed, 945 insertions(+), 38 deletions(-)
+ create mode 100644 drivers/infiniband/core/cma_trace.c
+ create mode 100644 drivers/infiniband/core/cma_trace.h
+ create mode 100644 drivers/infiniband/core/trace.c
+ create mode 100644 include/trace/events/rdma_core.h
+
+--
+Chuck Lever
