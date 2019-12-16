@@ -2,152 +2,266 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 777A511FE6D
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2019 07:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB4E11FECC
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Dec 2019 08:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726054AbfLPGUX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Dec 2019 01:20:23 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:35040 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbfLPGUX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 Dec 2019 01:20:23 -0500
-Received: by mail-wr1-f65.google.com with SMTP id g17so5743879wro.2
-        for <linux-rdma@vger.kernel.org>; Sun, 15 Dec 2019 22:20:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=QByDstfhDJ20xCva0sgOY5XM9gfyZNSRlYjytnPYU/0=;
-        b=Q14k70GWJpF0K/gGKK7SkeLR70ByuiDty0Z+yIbhB3aGNhRQVM6EedCF0/6hI6RoBM
-         NNh1WJfJuSurlxX2NLV5TGXxCKRuQVcM0pkwZCo4FswRTku7pdlpmAxpMMMbSS8TQ4Xb
-         mi5t+iWq/gW9xI4OoJKvM/AOFvoyu+p6omZ5s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=QByDstfhDJ20xCva0sgOY5XM9gfyZNSRlYjytnPYU/0=;
-        b=dzmI3Scca8g5vluWUMdVYXQLW5p+4dvUJKOHv7vIFIXXtpibvFzaW7NZDBjvjrTNj0
-         cI0BI1qJlNa5B+N/H+vochroLA1lKfKfq3BHdX0aGOTTkBDjxvYHZjRtT7eJqowkp3C9
-         iMmNZpzdndpaeBjqMCTGe8Ez1Pg1CC+E6Lba/+FAzgzpdYzZZmnAGrTa5tuRrXlzzrzv
-         wuzEXGcNsUeIc9JY5YAWTgmUXcjuhuSEpDzP/eA8d+DzYtGLBuwkn1g/vskjL52nxazZ
-         gqJMmH/CpzsLrz3ZMd76YXD4ye/pV9u98HOmExPEUH6KVOiXgNm3mS2tYyHP2v3h4WDc
-         HFPQ==
-X-Gm-Message-State: APjAAAUMmy5onraTYaggF1BWlmwCiXXt4ZiPI5QgEzGo5kyUkChEP2vR
-        lXtP08qmVENLzDlbJZxhdd83qg==
-X-Google-Smtp-Source: APXvYqyy4qggv7JktzW+Y5IpQ+59ahCXfWwN3XbgH5SDu24gmqIze1kTalXNguLRo54K132jX4Q45Q==
-X-Received: by 2002:a05:6000:118d:: with SMTP id g13mr29604428wrx.141.1576477220996;
-        Sun, 15 Dec 2019 22:20:20 -0800 (PST)
-Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 60sm20663639wrn.86.2019.12.15.22.20.18
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 15 Dec 2019 22:20:20 -0800 (PST)
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-To:     dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [PATCH for-next v2 2/2] RDMA/bnxt_re: Retrieve the driver gid context from gid_attr
-Date:   Sun, 15 Dec 2019 22:20:01 -0800
-Message-Id: <1576477201-2842-3-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1576477201-2842-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1576477201-2842-1-git-send-email-selvin.xavier@broadcom.com>
+        id S1726681AbfLPHPO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Dec 2019 02:15:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726252AbfLPHPN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 16 Dec 2019 02:15:13 -0500
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BD14620725;
+        Mon, 16 Dec 2019 07:15:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1576480512;
+        bh=pKqQQNnDd3ZeYaiE4cvdGComgf5HQYYdohLT10A/axw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GIjhqILk2S6nuV9gptlSm19Z5js493UU9HNqFEah+SZwP70JntHDNP/c9BycoDJUD
+         BVytDMEoScqB7PFrmr3cgBG/SqEHQ3mYN9NlaiD95n8ILiXY5lNNKbljHr1NL8chUV
+         Iki5gK60K3iC+ZsixQLTvfrFNY6XC4eyE6uszukw=
+Date:   Mon, 16 Dec 2019 08:15:09 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        Mustafa Ismail <mustafa.ismail@intel.com>
+Subject: Re: [PATCH v3 04/20] i40e: Register a virtbus device to provide RDMA
+Message-ID: <20191216071509.GA916540@kroah.com>
+References: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
+ <20191209224935.1780117-5-jeffrey.t.kirsher@intel.com>
+ <20191210153959.GD4053085@kroah.com>
+ <4b7ee2ce-1415-7c58-f00e-6fdad08c1e99@mellanox.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4b7ee2ce-1415-7c58-f00e-6fdad08c1e99@mellanox.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Use the container_of macro to retrieve the driver gid
-context.
+On Mon, Dec 16, 2019 at 03:48:05AM +0000, Parav Pandit wrote:
+> Hi Greg,
+> 
+> On 12/10/2019 9:09 PM, Greg KH wrote:
+> > On Mon, Dec 09, 2019 at 02:49:19PM -0800, Jeff Kirsher wrote:
+> >> From: Shiraz Saleem <shiraz.saleem@intel.com>
+> >>
+> >> Register client virtbus device on the virtbus for the RDMA
+> >> virtbus driver (irdma) to bind to. It allows to realize a
+> >> single RDMA driver capable of working with multiple netdev
+> >> drivers over multi-generation Intel HW supporting RDMA.
+> >> There is also no load ordering dependencies between i40e and
+> >> irdma.
+> >>
+> >> Summary of changes:
+> >> * Support to add/remove virtbus devices
+> >> * Add 2 new client ops.
+> >> 	* i40e_client_device_register() which is called during RDMA
+> >> 	  probe() per PF. Validate client drv OPs and schedule service
+> >> 	  task to call open()
+> >> 	* i40e_client_device_unregister() called during RDMA remove()
+> >> 	  per PF. Call client close() and release_qvlist.
+> >> * The global register/unregister calls exported for i40iw are retained
+> >>   until i40iw is removed from the kernel.
+> >>
+> >> Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
+> >> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> >> Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+> >> ---
+> >>  drivers/infiniband/hw/i40iw/Makefile          |   1 -
+> >>  drivers/infiniband/hw/i40iw/i40iw.h           |   2 +-
+> >>  drivers/net/ethernet/intel/Kconfig            |   1 +
+> >>  drivers/net/ethernet/intel/i40e/i40e.h        |   3 +-
+> >>  drivers/net/ethernet/intel/i40e/i40e_client.c | 109 +++++++++++++++---
+> >>  .../linux/net/intel}/i40e_client.h            |  20 +++-
+> >>  6 files changed, 112 insertions(+), 24 deletions(-)
+> >>  rename {drivers/net/ethernet/intel/i40e => include/linux/net/intel}/i40e_client.h (92%)
+> >>
+> >> diff --git a/drivers/infiniband/hw/i40iw/Makefile b/drivers/infiniband/hw/i40iw/Makefile
+> >> index 8942f8229945..34da9eba8a7c 100644
+> >> --- a/drivers/infiniband/hw/i40iw/Makefile
+> >> +++ b/drivers/infiniband/hw/i40iw/Makefile
+> >> @@ -1,5 +1,4 @@
+> >>  # SPDX-License-Identifier: GPL-2.0
+> >> -ccflags-y :=  -I $(srctree)/drivers/net/ethernet/intel/i40e
+> >>  
+> >>  obj-$(CONFIG_INFINIBAND_I40IW) += i40iw.o
+> >>  
+> >> diff --git a/drivers/infiniband/hw/i40iw/i40iw.h b/drivers/infiniband/hw/i40iw/i40iw.h
+> >> index 8feec35f95a7..3197e3536d5c 100644
+> >> --- a/drivers/infiniband/hw/i40iw/i40iw.h
+> >> +++ b/drivers/infiniband/hw/i40iw/i40iw.h
+> >> @@ -57,7 +57,7 @@
+> >>  #include "i40iw_d.h"
+> >>  #include "i40iw_hmc.h"
+> >>  
+> >> -#include <i40e_client.h>
+> >> +#include <linux/net/intel/i40e_client.h>
+> >>  #include "i40iw_type.h"
+> >>  #include "i40iw_p.h"
+> >>  #include <rdma/i40iw-abi.h>
+> >> diff --git a/drivers/net/ethernet/intel/Kconfig b/drivers/net/ethernet/intel/Kconfig
+> >> index b88328fea1d0..8595f578fbe7 100644
+> >> --- a/drivers/net/ethernet/intel/Kconfig
+> >> +++ b/drivers/net/ethernet/intel/Kconfig
+> >> @@ -241,6 +241,7 @@ config I40E
+> >>  	tristate "Intel(R) Ethernet Controller XL710 Family support"
+> >>  	imply PTP_1588_CLOCK
+> >>  	depends on PCI
+> >> +	select VIRTUAL_BUS
+> >>  	---help---
+> >>  	  This driver supports Intel(R) Ethernet Controller XL710 Family of
+> >>  	  devices.  For more information on how to identify your adapter, go
+> >> diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
+> >> index cb6367334ca7..4321e81d347c 100644
+> >> --- a/drivers/net/ethernet/intel/i40e/i40e.h
+> >> +++ b/drivers/net/ethernet/intel/i40e/i40e.h
+> >> @@ -38,7 +38,7 @@
+> >>  #include <net/xdp_sock.h>
+> >>  #include "i40e_type.h"
+> >>  #include "i40e_prototype.h"
+> >> -#include "i40e_client.h"
+> >> +#include <linux/net/intel/i40e_client.h>
+> >>  #include <linux/avf/virtchnl.h>
+> >>  #include "i40e_virtchnl_pf.h"
+> >>  #include "i40e_txrx.h"
+> >> @@ -655,6 +655,7 @@ struct i40e_pf {
+> >>  	u16 last_sw_conf_valid_flags;
+> >>  	/* List to keep previous DDP profiles to be rolled back in the future */
+> >>  	struct list_head ddp_old_prof;
+> >> +	int peer_idx;
+> >>  };
+> >>  
+> >>  /**
+> >> diff --git a/drivers/net/ethernet/intel/i40e/i40e_client.c b/drivers/net/ethernet/intel/i40e/i40e_client.c
+> >> index e81530ca08d0..a3dee729719b 100644
+> >> --- a/drivers/net/ethernet/intel/i40e/i40e_client.c
+> >> +++ b/drivers/net/ethernet/intel/i40e/i40e_client.c
+> >> @@ -1,12 +1,12 @@
+> >>  // SPDX-License-Identifier: GPL-2.0
+> >>  /* Copyright(c) 2013 - 2018 Intel Corporation. */
+> >>  
+> >> +#include <linux/net/intel/i40e_client.h>
+> >>  #include <linux/list.h>
+> >>  #include <linux/errno.h>
+> >>  
+> >>  #include "i40e.h"
+> >>  #include "i40e_prototype.h"
+> >> -#include "i40e_client.h"
+> >>  
+> >>  static const char i40e_client_interface_version_str[] = I40E_CLIENT_VERSION_STR;
+> >>  static struct i40e_client *registered_client;
+> >> @@ -30,11 +30,17 @@ static int i40e_client_update_vsi_ctxt(struct i40e_info *ldev,
+> >>  				       bool is_vf, u32 vf_id,
+> >>  				       u32 flag, u32 valid_flag);
+> >>  
+> >> +static int i40e_client_device_register(struct i40e_info *ldev);
+> >> +
+> >> +static void i40e_client_device_unregister(struct i40e_info *ldev);
+> >> +
+> >>  static struct i40e_ops i40e_lan_ops = {
+> >>  	.virtchnl_send = i40e_client_virtchnl_send,
+> >>  	.setup_qvlist = i40e_client_setup_qvlist,
+> >>  	.request_reset = i40e_client_request_reset,
+> >>  	.update_vsi_ctxt = i40e_client_update_vsi_ctxt,
+> >> +	.client_device_register = i40e_client_device_register,
+> >> +	.client_device_unregister = i40e_client_device_unregister,
+> >>  };
+> >>  
+> >>  /**
+> >> @@ -275,6 +281,27 @@ void i40e_client_update_msix_info(struct i40e_pf *pf)
+> >>  	cdev->lan_info.msix_entries = &pf->msix_entries[pf->iwarp_base_vector];
+> >>  }
+> >>  
+> >> +static int i40e_init_client_virtdev(struct i40e_pf *pf)
+> >> +{
+> >> +	struct i40e_info *ldev = &pf->cinst->lan_info;
+> >> +	struct pci_dev *pdev = pf->pdev;
+> >> +	struct virtbus_device *vdev;
+> >> +	int ret;
+> >> +
+> >> +	vdev = &ldev->vdev;
+> >> +	vdev->name = I40E_PEER_RDMA_NAME;
+> >> +	vdev->dev.parent = &pf->pdev->dev;
+> > 
+> > What a total and complete mess of a tangled web you just wove here.
+> > 
+> > Ok, so you pass in a single pointer, that then dereferences 3 pointers
+> > deep to find the pointer to the virtbus_device structure, but then you
+> > point the parent of that device, back at the original structure's
+> > sub-pointer's device itself.
+> > 
+> > WTF?
+> > 
+> > And who owns the memory of this thing that is supposed to be
+> > dynamically controlled by something OUTSIDE of this driver?  Who created
+> > that thing 3 pointers deep?  What happens when you leak the memory below
+> > (hint, you did), and who is supposed to clean it up if you need to
+> > properly clean it up if something bad happens?
+> > 
+> >> +
+> >> +	ret = virtbus_dev_register(vdev);
+> >> +	if (ret) {
+> >> +		dev_err(&pdev->dev, "Failure adding client virtbus dev %s %d\n",
+> >> +			I40E_PEER_RDMA_NAME, ret);
+> > 
+> > Again, the core should handle this, right?
+> > 
+> >> +		return ret;
+> > 
+> > Did you just leak memory?
+> > 
+> > Yup, you did, you never actually checked the return value of this
+> > function :(
+> > 
+> > Ugh.
+> > 
+> > I feel like the virtual bus code is getting better, but this use of the
+> > code, um, no, not ok.
+> > 
+> > Either way, this series is NOT ready to be merged anywhere, please do
+> > not try to rush things.
+> > 
+> > Also, what ever happened to my "YOU ALL MUST AGREE TO WORK TOGETHER"
+> > requirement between this group, and the other group trying to do the
+> > same thing?  I want to see signed-off-by from EVERYONE involved before
+> > we are going to consider this thing.
+> 
+> I am working on RFC where PCI device is sliced to create sub-functions.
+> Each sub-function/slice is created dynamically by the user.
+> User gives sf-number at creation time which will be used for plumbing by
+> systemd/udev, devlink ports.
 
-Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+That sounds exactly what is wanted here as well, right?
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index ad5112a..b5f611f 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -640,6 +640,8 @@ int bnxt_re_create_ah(struct ib_ah *ib_ah, struct rdma_ah_attr *ah_attr,
- 	struct bnxt_re_dev *rdev = pd->rdev;
- 	const struct ib_gid_attr *sgid_attr;
- 	struct bnxt_re_ah *ah = container_of(ib_ah, struct bnxt_re_ah, ib_ah);
-+	struct ib_gid_attr_info *info;
-+	struct bnxt_re_gid_ctx *ctx;
- 	u8 nw_type;
- 	int rc;
- 
-@@ -651,22 +653,21 @@ int bnxt_re_create_ah(struct ib_ah *ib_ah, struct rdma_ah_attr *ah_attr,
- 	ah->rdev = rdev;
- 	ah->qplib_ah.pd = &pd->qplib_pd;
- 
-+	sgid_attr = grh->sgid_attr;
-+
-+	info = container_of(sgid_attr, struct ib_gid_attr_info, attr);
-+	ctx = info->context;
-+
- 	/* Supply the configuration for the HW */
- 	memcpy(ah->qplib_ah.dgid.data, grh->dgid.raw,
- 	       sizeof(union ib_gid));
--	/*
--	 * If RoCE V2 is enabled, stack will have two entries for
--	 * each GID entry. Avoiding this duplicte entry in HW. Dividing
--	 * the GID index by 2 for RoCE V2
--	 */
--	ah->qplib_ah.sgid_index = grh->sgid_index / 2;
-+	ah->qplib_ah.sgid_index = ctx->idx;
- 	ah->qplib_ah.host_sgid_index = grh->sgid_index;
- 	ah->qplib_ah.traffic_class = grh->traffic_class;
- 	ah->qplib_ah.flow_label = grh->flow_label;
- 	ah->qplib_ah.hop_limit = grh->hop_limit;
- 	ah->qplib_ah.sl = rdma_ah_get_sl(ah_attr);
- 
--	sgid_attr = grh->sgid_attr;
- 	/* Get network header type for this GID */
- 	nw_type = rdma_gid_attr_network_type(sgid_attr);
- 	ah->qplib_ah.nw_type = bnxt_re_stack_to_dev_nw_type(nw_type);
-@@ -1521,6 +1522,8 @@ int bnxt_re_modify_qp(struct ib_qp *ib_qp, struct ib_qp_attr *qp_attr,
- 	struct bnxt_re_dev *rdev = qp->rdev;
- 	struct bnxt_qplib_dev_attr *dev_attr = &rdev->dev_attr;
- 	enum ib_qp_state curr_qp_state, new_qp_state;
-+	struct ib_gid_attr_info *info;
-+	struct bnxt_re_gid_ctx *ctx;
- 	int rc, entries;
- 	unsigned int flags;
- 	u8 nw_type;
-@@ -1592,6 +1595,10 @@ int bnxt_re_modify_qp(struct ib_qp *ib_qp, struct ib_qp_attr *qp_attr,
- 			rdma_ah_read_grh(&qp_attr->ah_attr);
- 		const struct ib_gid_attr *sgid_attr;
- 
-+		sgid_attr = qp_attr->ah_attr.grh.sgid_attr;
-+		info = container_of(sgid_attr, struct ib_gid_attr_info, attr);
-+		ctx = info->context;
-+
- 		qp->qplib_qp.modify_flags |= CMDQ_MODIFY_QP_MODIFY_MASK_DGID |
- 				     CMDQ_MODIFY_QP_MODIFY_MASK_FLOW_LABEL |
- 				     CMDQ_MODIFY_QP_MODIFY_MASK_SGID_INDEX |
-@@ -1602,11 +1609,7 @@ int bnxt_re_modify_qp(struct ib_qp *ib_qp, struct ib_qp_attr *qp_attr,
- 		memcpy(qp->qplib_qp.ah.dgid.data, grh->dgid.raw,
- 		       sizeof(qp->qplib_qp.ah.dgid.data));
- 		qp->qplib_qp.ah.flow_label = grh->flow_label;
--		/* If RoCE V2 is enabled, stack will have two entries for
--		 * each GID entry. Avoiding this duplicte entry in HW. Dividing
--		 * the GID index by 2 for RoCE V2
--		 */
--		qp->qplib_qp.ah.sgid_index = grh->sgid_index / 2;
-+		qp->qplib_qp.ah.sgid_index = ctx->idx;
- 		qp->qplib_qp.ah.host_sgid_index = grh->sgid_index;
- 		qp->qplib_qp.ah.hop_limit = grh->hop_limit;
- 		qp->qplib_qp.ah.traffic_class = grh->traffic_class;
-@@ -1614,7 +1617,6 @@ int bnxt_re_modify_qp(struct ib_qp *ib_qp, struct ib_qp_attr *qp_attr,
- 		ether_addr_copy(qp->qplib_qp.ah.dmac,
- 				qp_attr->ah_attr.roce.dmac);
- 
--		sgid_attr = qp_attr->ah_attr.grh.sgid_attr;
- 		rc = rdma_read_gid_l2_fields(sgid_attr, NULL,
- 					     &qp->qplib_qp.smac[0]);
- 		if (rc)
--- 
-2.5.5
+> This sub-function will have sysfs attributes = sfnumber, irq vectors,
+> PCI BAR resource files.
+> sfnumber as sysfs file will be used by systemd/udev to have
+> deterministic names of netdev and rdma device created on top of
+> sub-function's 'struct device'.
+> 
+> As opposed to that, matching service devices won't have such attributes.
+> 
+> We stayed away from using mdev bus for such dual purpose in past.
 
+That is good.
+
+> Should we have virtbus that holds 'struct device' created for different
+> purpose and have different sysfs attributes? Is it ok?
+
+That's fine to do, I was expecting that to happen.
+
+thanks,
+
+greg k-h
