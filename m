@@ -2,104 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C971235D8
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2019 20:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 650371235E2
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2019 20:44:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727571AbfLQTj7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Dec 2019 14:39:59 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:58992 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbfLQTj7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Dec 2019 14:39:59 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBHJdRCa141549;
-        Tue, 17 Dec 2019 19:39:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=4BOYuh8ulGkl59qgWqeVCwB1Pn9zKhrhGzuQ4x5Zzo0=;
- b=UW/MyzniC+tOP5JQCUjy9b4S2goYhh4DThJU30eJdLwZYzHESG2EJJu5Vaa2V4tCiV/x
- IAPPGONQ5/K3ExCc4KcL2hT1A6gSW8O8WL4g7s6BR/fqghgMhAi2Y85KcxQ2k2m+fstu
- L9WiaAMOV6S4IoNhSBzVFc6As6I05WwB2rkvlDd6bEJ16aM2a13/46a5d2edis2QMuWD
- DHlUd35uy7IA2YQ4anYU79xq5R9OutbKVM41OVZf0pHIEjccZiVSI0ZgOjV0+j+g934s
- dsXIprRPCQ5moKF3o9ZvybjWMVk8UUjlkURD+ywI4EnM7uOGMcOeJnFEIr7IGpGeBu5P 6A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2wvrcr8tu0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Dec 2019 19:39:50 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBHJdSni163573;
-        Tue, 17 Dec 2019 19:39:50 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2wxm73c5k7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Dec 2019 19:39:45 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xBHJcrJv016366;
-        Tue, 17 Dec 2019 19:38:54 GMT
-Received: from [10.159.228.128] (/10.159.228.128)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 17 Dec 2019 11:38:53 -0800
-Subject: Re: [PATCH v2 1/2] Introduce maximum WQE size to check limits
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     monis@mellanox.com, dledford@redhat.com, sean.hefty@intel.com,
-        hal.rosenstock@gmail.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1574106879-19211-1-git-send-email-rao.shoaib@oracle.com>
- <1574106879-19211-2-git-send-email-rao.shoaib@oracle.com>
- <20191119203138.GA13145@ziepe.ca>
- <44d1242a-fc32-9918-dd53-cd27ebf61811@oracle.com>
- <20191119231334.GO4991@ziepe.ca>
- <dff3da9b-06a3-3904-e9eb-7feaa1ae9e01@oracle.com>
- <20191120000840.GQ4991@ziepe.ca>
-From:   Rao Shoaib <rao.shoaib@oracle.com>
-Message-ID: <ccceac68-db4f-77a3-500d-12f60a8a1354@oracle.com>
-Date:   Tue, 17 Dec 2019 11:38:52 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <20191120000840.GQ4991@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S1727621AbfLQToO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Dec 2019 14:44:14 -0500
+Received: from mail-eopbgr60066.outbound.protection.outlook.com ([40.107.6.66]:45253
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727529AbfLQToO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 17 Dec 2019 14:44:14 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NcR0xntdaJaCEi0SFLZ5vsPNqZjyMmX3kv/FRFskyIjVG0Kz6ooje9bajZNhmtxarUS5YRw8xL4Y3i1s4ll4oBK2bdaAZL0Z3PcuqEE7yVU48Em1n/YtMjnl6k2HR6UMY3Je5kGijA4yL/gJ1+TX+Q76L1hkEMZuoUm5DDo2Go66XrSKa9WeoFf2GgYaI+S331z4ppHQN7esRA46mWcIqcsgOczzvc6rIw0XaBgnJ+92/NIjT/ROIzA9hdGj6aTqFhuq+UwXymYUA/6oqHJz3bML8/QOZAu/mZ2P0YEVfhoNvpY8MUgScoDupdbtTFk9OtbnIyxrhll74tep4I0u1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vdFVR07OXu8CFRt8vZrcUv2ZPzji8ARqN/wV6jgySn4=;
+ b=P2RlplGcoKDfOeGDHzig96Y4d46YWo2PrsRzO7sqa9LUKP051T94XNjS9N4ob2al/ZRhmmjWV4P7XkDPTO+ONyZSrRtaD1nYV2YTuvfrlShz4VZYAPD/dAafgPep1KRMSWUvGYVfE4jA5plaHiwgi0ziZrT6VWQJpm59v9e8AQew/6Sj34ITqLhW9+T7fFbJLtdu98WLh+DxIWteGQ5hWphwJRU92wXifadxuo4EmpqEBaZPJ4eQndvUqcDgqjms6+T26tdRp7PBAMePhrWz7xl/jJLkeoQ4Ddi5C3hPf7yZKbzQZ+zWo6L7EBA3hx/EqNOKjTxPPJ76NKkjAqY9mg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vdFVR07OXu8CFRt8vZrcUv2ZPzji8ARqN/wV6jgySn4=;
+ b=XJ0Y4p9N5NY/uSp10r12gnigzHJ22sWhhShoskNs+eQY+J8ENU0NDwyUOMU5+tMPlEliIS2Ekd175qWBZR3B5s6u25JKMSD6sILZ/6umGIdaJyObWxqCKvG1BTALNqFflgdKKbKsSonwIbiYERLjixjlIJCsXqKTn0aR6i6m0yk=
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (20.177.51.151) by
+ VI1PR05MB6016.eurprd05.prod.outlook.com (20.178.204.217) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2538.18; Tue, 17 Dec 2019 19:44:10 +0000
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::c872:cf66:4a5c:c881]) by VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::c872:cf66:4a5c:c881%5]) with mapi id 15.20.2538.019; Tue, 17 Dec 2019
+ 19:44:09 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Yanjun Zhu <yanjunz@mellanox.com>,
+        "leon@kernel.org" <leon@kernel.org>
+CC:     "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH 1/1] net/mlx5: limit the function in local scope
+Thread-Topic: [PATCH 1/1] net/mlx5: limit the function in local scope
+Thread-Index: AQHVsluu9QD/TOG5nUKb7aELbFVCFKe+v/iA
+Date:   Tue, 17 Dec 2019 19:44:09 +0000
+Message-ID: <f87b61499831bdc4100f7959d3a95c58c488df1d.camel@mellanox.com>
+References: <1576313477-20401-1-git-send-email-yanjunz@mellanox.com>
+In-Reply-To: <1576313477-20401-1-git-send-email-yanjunz@mellanox.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9474 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912170156
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9474 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912170156
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.32.5 (3.32.5-1.fc30) 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-originating-ip: [209.116.155.178]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 521d609f-165f-4a79-851b-08d783297c59
+x-ms-traffictypediagnostic: VI1PR05MB6016:|VI1PR05MB6016:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB60167F6404309534858194C1BE500@VI1PR05MB6016.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 02543CD7CD
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(396003)(366004)(39860400002)(346002)(376002)(189003)(199004)(76116006)(64756008)(6506007)(2616005)(5660300002)(2906002)(86362001)(478600001)(8676002)(71200400001)(6512007)(26005)(4001150100001)(8936002)(81166006)(4326008)(186003)(6486002)(110136005)(66946007)(66446008)(66556008)(66476007)(36756003)(81156014)(91956017)(316002);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6016;H:VI1PR05MB5102.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PrjwjWXQj9hMkQKoQiUNHUjsE5/kA4lL/hY2MvChpPdEuMDWQplht70iGMuDAtfNkEN+o42DI5uFXHjmVb6Ai7aG2TXBsfoiVQlbcwoGHorga2J9d+HYtZAm6lENAolMVK71MpxJyCNuLXtSaX3deUBXehkBJa5nRKPfWevAswnsdXsDpTZW2YFMbtiNDcKXFnuS7S12rO9ycUnNaOZ0OaU/VgIjlSbnLpyFpKvnrCbhMwnWz7EcVj+X9v87oXMiPqAVso4VwT7R8wpIoADq6CdvR6CMhiM2xLQoZ/jqYxbtRKFUlq3uxlI6Vl1L6869TCR1TaMYm2Eb7oh38gKJ68GTNzes8x/V08vIEWaf/1mfdBniaWAFQh276by1WHq85SsDR5eQ7qayrOxio1sTU7P9/jNfxBTLMxC/6eQtTB0c/Cqftk9qAlovSBbe0gSl
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4C03FD73680652478E9DF8601DCA9C92@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 521d609f-165f-4a79-851b-08d783297c59
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Dec 2019 19:44:09.6845
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9viho9SOl8ZmcVevScP9PcPnJymULjkwa1u6OrvDe+K2uyGINhtKi8twFgtHKK1lDSFUQR5Tc8rVzei8C2K4+Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6016
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Any update on my patch?
-
-If there is some change needed please let me know.
-
-Shoaib
-
-On 11/19/19 4:08 PM, Jason Gunthorpe wrote:
-> On Tue, Nov 19, 2019 at 03:55:35PM -0800, Rao Shoaib wrote:
->
->> My intent is that we calculate and use the maximum buffer size using the
->> maximum of, number of SGE's and inline data requested, not controlling the
->> size of WQE buffer. If I was trying to limit WQE size I would agree with
->> you. Defining MAX_WQE_SIZE based on MAX_SGE and recalculating MAX_SGE does
->> not make sense to me. MAX_SGE and inline_data are independent variables and
->> define the size of wqe size not the other wise around. I did make
->> inline_dependent on MAX_SGE.
-> What you are trying to do is limit the size of the WQE to some maximum
-> and from there you can compute the upper limit on the SGE and the
-> inline data arrays, depending on how the WQE is being used.
->
-> If a limit must be had then the limit is the WQE size. It is also
-> reasonable to ask why rxe has a limit at all, or why the limit is so
-> small ie why can't it be 2k or something? But that is something else
->
-> Jason
+T24gU2F0LCAyMDE5LTEyLTE0IGF0IDEwOjUxICswMjAwLCBaaHUgWWFuanVuIHdyb3RlOg0KPiBG
+cm9tOiBaaHUgWWFuanVuIDx6eWp6eWoyMDAwQGdtYWlsLmNvbT4NCj4gDQo+IFRoZSBmdW5jdGlv
+biBtbHg1X2J1Zl9hbGxvY19ub2RlIGlzIG9ubHkgdXNlZCBieSB0aGUgZnVuY3Rpb24gaW4gdGhl
+DQo+IGxvY2FsIHNjb3BlLiBTbyBpdCBpcyBhcHByb3ByaWF0ZSB0byBsaW1pdCB0aGlzIGZ1bmN0
+aW9uIGluIHRoZSBsb2NhbA0KPiBzY29wZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFpodSBZYW5q
+dW4gPHp5anp5ajIwMDBAZ21haWwuY29tPg0KDQpMR1RNLCB3aWxsIGFwcGx5IHRvIG1seDUtbmV4
+dCBzb29uLg0KDQpUaGFua3MsDQpTYWVlZC4NCg0KPiAtLS0NCj4gIGRyaXZlcnMvbmV0L2V0aGVy
+bmV0L21lbGxhbm94L21seDUvY29yZS9hbGxvYy5jIHwgNCArKy0tDQo+ICBpbmNsdWRlL2xpbnV4
+L21seDUvZHJpdmVyLmggICAgICAgICAgICAgICAgICAgICB8IDIgLS0NCj4gIDIgZmlsZXMgY2hh
+bmdlZCwgMiBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9hbGxvYy5jDQo+IGIvZHJp
+dmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2FsbG9jLmMNCj4gaW5kZXggNTQ5
+Zjk2Mi4uNDIxOThlNiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFu
+b3gvbWx4NS9jb3JlL2FsbG9jLmMNCj4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFu
+b3gvbWx4NS9jb3JlL2FsbG9jLmMNCj4gQEAgLTcxLDggKzcxLDggQEAgc3RhdGljIHZvaWQgKm1s
+eDVfZG1hX3phbGxvY19jb2hlcmVudF9ub2RlKHN0cnVjdA0KPiBtbHg1X2NvcmVfZGV2ICpkZXYs
+DQo+ICAJcmV0dXJuIGNwdV9oYW5kbGU7DQo+ICB9DQo+ICANCj4gLWludCBtbHg1X2J1Zl9hbGxv
+Y19ub2RlKHN0cnVjdCBtbHg1X2NvcmVfZGV2ICpkZXYsIGludCBzaXplLA0KPiAtCQkJc3RydWN0
+IG1seDVfZnJhZ19idWYgKmJ1ZiwgaW50IG5vZGUpDQo+ICtzdGF0aWMgaW50IG1seDVfYnVmX2Fs
+bG9jX25vZGUoc3RydWN0IG1seDVfY29yZV9kZXYgKmRldiwgaW50IHNpemUsDQo+ICsJCQkgICAg
+ICAgc3RydWN0IG1seDVfZnJhZ19idWYgKmJ1ZiwgaW50IG5vZGUpDQo+ICB7DQo+ICAJZG1hX2Fk
+ZHJfdCB0Ow0KPiAgDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L21seDUvZHJpdmVyLmgN
+Cj4gYi9pbmNsdWRlL2xpbnV4L21seDUvZHJpdmVyLmgNCj4gaW5kZXggMjcyMDBkZS4uNTljZmYz
+OCAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9tbHg1L2RyaXZlci5oDQo+ICsrKyBiL2lu
+Y2x1ZGUvbGludXgvbWx4NS9kcml2ZXIuaA0KPiBAQCAtOTI4LDggKzkyOCw2IEBAIGludCBtbHg1
+X2NtZF9leGVjX3BvbGxpbmcoc3RydWN0IG1seDVfY29yZV9kZXYNCj4gKmRldiwgdm9pZCAqaW4s
+IGludCBpbl9zaXplLA0KPiAgdm9pZCBtbHg1X3N0b3BfaGVhbHRoX3BvbGwoc3RydWN0IG1seDVf
+Y29yZV9kZXYgKmRldiwgYm9vbA0KPiBkaXNhYmxlX2hlYWx0aCk7DQo+ICB2b2lkIG1seDVfZHJh
+aW5faGVhbHRoX3dxKHN0cnVjdCBtbHg1X2NvcmVfZGV2ICpkZXYpOw0KPiAgdm9pZCBtbHg1X3Ry
+aWdnZXJfaGVhbHRoX3dvcmsoc3RydWN0IG1seDVfY29yZV9kZXYgKmRldik7DQo+IC1pbnQgbWx4
+NV9idWZfYWxsb2Nfbm9kZShzdHJ1Y3QgbWx4NV9jb3JlX2RldiAqZGV2LCBpbnQgc2l6ZSwNCj4g
+LQkJCXN0cnVjdCBtbHg1X2ZyYWdfYnVmICpidWYsIGludCBub2RlKTsNCj4gIGludCBtbHg1X2J1
+Zl9hbGxvYyhzdHJ1Y3QgbWx4NV9jb3JlX2RldiAqZGV2LA0KPiAgCQkgICBpbnQgc2l6ZSwgc3Ry
+dWN0IG1seDVfZnJhZ19idWYgKmJ1Zik7DQo+ICB2b2lkIG1seDVfYnVmX2ZyZWUoc3RydWN0IG1s
+eDVfY29yZV9kZXYgKmRldiwgc3RydWN0IG1seDVfZnJhZ19idWYNCj4gKmJ1Zik7DQo=
