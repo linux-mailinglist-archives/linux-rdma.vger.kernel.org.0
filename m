@@ -2,133 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 772DD122B90
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2019 13:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A63F0122DD6
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2019 15:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbfLQMdI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Dec 2019 07:33:08 -0500
-Received: from mail-eopbgr30050.outbound.protection.outlook.com ([40.107.3.50]:19444
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727926AbfLQMdI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 17 Dec 2019 07:33:08 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d8iDg/Mox9rwBRkWkMFi7xQH024Rl78x5TJQ3SHJgMLQHGG1wbMIvdAg6UZnWVbEJ3maQ4NIvQ6ojrypE31WRGlLXZcCiQb2Hg6cCpLoGt0JR8abLRMXwLvNzRzZLmP+JMBZH3ZIcJ8OBh1alZLG/vXvjhn4UTeErcrAgKAvvgVV/wHrcOIcPNt01Vb0lhpjXTBHRZ8LVqQVjIlt5kdn3m3VFVn6ApPQlnR+R6fhyuqGVJ1GW+1zt1hpHMmjm52IFQs77AVMgfaPKmZTAk5xR4Jg6W53KeZiFA3byVkwV1TMMV4mMS0jrntYXqY1KBqFrapZ1OkIlbGH4yfrhnWi/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZxrQQFiB41/w9/nhMHmP+N1gdeP8u8IzpaPFOnIjpS8=;
- b=E+gZPZ/dbCrgXjsxeaE2yM0qVfXmDx7BHg83lrer9YN2OhLPa/+x4rpv+OzT1HXnXC2ZsJGhjyPJJF7OE9VRMU98YFrhPe3qrNoX+Pcnbah9FxIBYtF2zjpQrb3bugh+JtPYquAh61WPar9v/gx23rYMVtr327WizRWRkrhI9H/+wz72UUfNP82soW3yxETIdbNkIVLHqNvRmqMJKOmB9lO2+ftMULGwWb+Q0iI4qyhS5cuwryV928faq86iOGjA4I+6k7Ao+kkXAdK7YXatsrbB6zzMmBn6j1lP1k7ZbFYpk70RSvEyrsrc+FEepYs3JXqzwiObFNOXe6gDh5sBEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZxrQQFiB41/w9/nhMHmP+N1gdeP8u8IzpaPFOnIjpS8=;
- b=ktPit2fzRT2eq1vlbssD7oW93B9313n2SqkgHrt1d2mR6SNaKFkxZ9uinnio+hdgE6Nv9PubLazfcnSuZ3dYmAaIYfufqG8VcLhhbWINDm82XQ6ecD9Fon/UZC6Bcv8XreyfqewICslt5mxayWRUDMOAZRwRtQSJmqRTeMUxSic=
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com (10.171.188.155) by
- AM4PR05MB3219.eurprd05.prod.outlook.com (10.170.126.15) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2538.18; Tue, 17 Dec 2019 12:33:06 +0000
-Received: from AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::e5c3:58e:7e9:d398]) by AM4PR05MB3137.eurprd05.prod.outlook.com
- ([fe80::e5c3:58e:7e9:d398%7]) with mapi id 15.20.2538.019; Tue, 17 Dec 2019
- 12:33:06 +0000
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-CC:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Sean Hefty <sean.hefty@intel.com>
-Subject: Re: [PATCH rdma-rc v2 47/48] RDMA/cm: Add Enhanced Connection
- Establishment (ECE) bits
-Thread-Topic: [PATCH rdma-rc v2 47/48] RDMA/cm: Add Enhanced Connection
- Establishment (ECE) bits
-Thread-Index: AQHVtNYhZG5McucKM0a3+8DG+WJBJA==
-Date:   Tue, 17 Dec 2019 12:33:06 +0000
-Message-ID: <20191217123303.GF66555@unreal>
-References: <20191212093830.316934-1-leon@kernel.org>
- <20191212093830.316934-48-leon@kernel.org>
-In-Reply-To: <20191212093830.316934-48-leon@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM0PR04CA0022.eurprd04.prod.outlook.com
- (2603:10a6:208:122::35) To AM4PR05MB3137.eurprd05.prod.outlook.com
- (2603:10a6:205:8::27)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=leonro@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [193.47.165.251]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 5bef3f6c-38f3-47cc-4c25-08d782ed4428
-x-ms-traffictypediagnostic: AM4PR05MB3219:|AM4PR05MB3219:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM4PR05MB3219F4B01839702D25790C90B0500@AM4PR05MB3219.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:131;
-x-forefront-prvs: 02543CD7CD
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(7916004)(4636009)(376002)(136003)(346002)(39860400002)(366004)(396003)(199004)(189003)(6506007)(110136005)(478600001)(8676002)(81156014)(26005)(81166006)(2906002)(54906003)(186003)(6486002)(4326008)(1076003)(71200400001)(66556008)(64756008)(5660300002)(33716001)(66446008)(66946007)(66476007)(6636002)(86362001)(6512007)(9686003)(8936002)(52116002)(316002)(33656002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM4PR05MB3219;H:AM4PR05MB3137.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /Yi3iYjTheGwBtMAACzI7VYsAkeK1gL+A+kiFQFyMDswoyG0yiRhOc3n8OyKlHVnR/W2ffPp+wvYBe64ZF5nz2hMZJ6ysFB8r7k98d66dsxy9ZIE2MoynhJBezwawr6EKssmX7P5ZiAY4tu0kxboC7sRK+8aYmQ5qcSwFX5Rw8DbxMKzY2kPYv5cX6WlNXhqwu5knZQ85rXByLM8deB9pTfbPoKmiDegexDjw+p2WRuroLkyK3PFhvHxmxQpwgWPijSLwJIKeWQqUAmTepfvvDdEDhDMs45gFt+usEFxJ3GdA4csMI6ErsM0sP+D7VGy0j18OFlih1MAiXZ1oiWzPC4UijYL5/XehZ1m88r2UAP2KyEcpXrEwfzEe2yXTnCKMjY/zNhOpyY4fpcw7+HsjeZR31pjw/Jx8c5CCN/U3yaCRPs4b0fXPJRrnI2bQmTR
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <8B5728312EBEB047B076C5FD680B701C@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1728739AbfLQN7v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Dec 2019 08:59:51 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:15008 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728539AbfLQN7u (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Dec 2019 08:59:50 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5df8df4b0000>; Tue, 17 Dec 2019 05:59:40 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 17 Dec 2019 05:59:49 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 17 Dec 2019 05:59:49 -0800
+Received: from [10.2.165.11] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Dec
+ 2019 13:59:48 +0000
+Subject: Re: [RFC PATCH] mm/gup: try_pin_compound_head() can be static
+To:     kbuild test robot <lkp@intel.com>
+CC:     <kbuild-all@lists.01.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20191211025318.457113-24-jhubbard@nvidia.com>
+ <20191217080358.q3k57ta62txvip5h@4978f4969bb8>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <7828a101-e422-8e2a-ef9b-9c0285065ed5@nvidia.com>
+Date:   Tue, 17 Dec 2019 05:56:56 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5bef3f6c-38f3-47cc-4c25-08d782ed4428
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Dec 2019 12:33:06.1134
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6OtoN5bhZdnYQ6YRlua6Z+7m+pMI95WM77uOdSEo6eUJqBPuh2JlsmnLEvCtVstpn3vsbuBaZ7NO/MfPscVdIQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3219
+In-Reply-To: <20191217080358.q3k57ta62txvip5h@4978f4969bb8>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1576591180; bh=+kY6WrbKA7lSfaR6JiJsMhpW0kY3DW4edAlAk5Ve1Ws=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=GbGZzaEh7giluV7bpN/IIAOj3Mc18AXcjLeuEGsTgM8/schRNFGUqCq00YAc4ARRK
+         0PVe1s7+qdvFmh1Ttru614AJtLodM6wJzZ2UNnA1jIm2+JCvQssDVh7rwrwji91hSp
+         Dmomrx8a2mkRdKDi+zuehTjS+cK+ceZUGuV2qS+Q00TgS6unnj2J/spZ+jPwNEGl3X
+         xJTAKof+O0alRzDH3cC7VTlXjNJwIWhcBZya8mbb62MvfcrAHYE78VekfobHefcZXx
+         ueLyg5p/jxUNWHBbbcLlFxuQBAi3TiHxhM/GsO23RipjSLUTZwruxA+61/WfeUhUby
+         xcvllM2I0K27A==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 12, 2019 at 11:38:29AM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
->
-> Extend REQ (request for communications), REP (reply to request
-> for communication), rejected reason and SIDR_REP (service ID
-> resolution response) structures with hardware vendor ID bits
-> according to approved IBA Comment #9434.
->
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+On 12/17/19 12:03 AM, kbuild test robot wrote:
+> 
+> Fixes: 8086d1c61970 ("mm/gup: track FOLL_PIN pages")
+> Signed-off-by: kbuild test robot <lkp@intel.com>
 > ---
->  include/rdma/ib_cm.h         | 3 ++-
->  include/rdma/ibta_vol1_c12.h | 5 +++++
->  2 files changed, 7 insertions(+), 1 deletion(-)
->
+>   gup.c |    2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 038b71165a761..849a6f55938e6 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -75,7 +75,7 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
+>    * @Return:	the compound head page, with ref appropriately incremented,
+>    * or NULL upon failure.
+>    */
+> -__must_check struct page *try_pin_compound_head(struct page *page, int refs)
+> +static __must_check struct page *try_pin_compound_head(struct page *page, int refs)
+>   {
+>   	struct page *head = try_get_compound_head(page,
+>   						  GUP_PIN_COUNTING_BIAS * refs);
+> 
+
+Yes, it should have been declared static. And this also applies to the latest version
+(v11). The preferred fix would stay within 80 columns, like this:
+
+diff --git a/mm/gup.c b/mm/gup.c
+index c2793a86450e..39b2f683bd2e 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -75,7 +75,8 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
+   * @Return:    the compound head page, with ref appropriately incremented,
+   * or NULL upon failure.
+   */
+-__must_check struct page *try_pin_compound_head(struct page *page, int refs)
++static __must_check struct page *try_pin_compound_head(struct page *page,
++                                                      int refs)
+  {
+         struct page *head = try_get_compound_head(page,
+                                                   GUP_PIN_COUNTING_BIAS * refs);
 
 
-commit 0238bd12e7601ed09725feba43ca2b228ba4d5a3 (HEAD -> rdma-next)
-Author: Leon Romanovsky <leonro@mellanox.com>
-Date:   Tue Dec 17 14:30:22 2019 +0200
-
-    fixup! RDMA/cm: Add Enhanced Connection Establishment (ECE) bits
-
-    Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-
-diff --git a/include/rdma/ibta_vol1_c12.h b/include/rdma/ibta_vol1_c12.h
-index 6fc4f1b89ca6..d642a040be18 100644
---- a/include/rdma/ibta_vol1_c12.h
-+++ b/include/rdma/ibta_vol1_c12.h
-@@ -32,6 +32,7 @@
-
- /* Table 106 REQ Message Contents */
- #define CM_REQ_LOCAL_COMM_ID CM_FIELD32_LOC(struct cm_req_msg, 0, 32)
-+#define CM_REQ_VENDORID CM_FIELD32_LOC(struct cm_req_msg, 5, 24)
- #define CM_REQ_SERVICE_ID CM_FIELD64_LOC(struct cm_req_msg, 8, 64)
- #define CM_REQ_LOCAL_CA_GUID CM_FIELD64_LOC(struct cm_req_msg, 16, 64)
- #define CM_REQ_LOCAL_Q_KEY CM_FIELD32_LOC(struct cm_req_msg, 28, 32)
-(END)
-
+thanks,
+-- 
+John Hubbard
+NVIDIA
