@@ -2,139 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9623C123846
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2019 22:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82ABC1238DB
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2019 22:50:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728671AbfLQVEJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Dec 2019 16:04:09 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:43282 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728527AbfLQVEJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Dec 2019 16:04:09 -0500
-Received: by mail-qk1-f194.google.com with SMTP id t129so3269756qke.10
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Dec 2019 13:04:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6basBJ6bM0j6BIPp8FG95aWLrLObNXSRO6/Wx7nPGjY=;
-        b=MqyUdMfDcn1codoO31HcLME2le2sLXyLFynO1aor9WdcSUUHFJj8e7WJ1wlScWOt8V
-         ds9acIoM8rNyPBicQN1yW3twnBov9xjL32hPtQQebZF+vSHvcSonwS/aTmamMuPP47t7
-         x6TvFdqpQIpBKUp0sUj+10F71lrKsyoBu/brC+NpWN9TqOZuPZzIf/FcAa942WpjiWo8
-         xI1xwP8SHgi20M+kLpmTcZ3pxmDS61XuYw4dxQJBuJOGGwStQMbbstPcTCpyV1wwnP4h
-         md45sLBNYkiJ/E3Sj0/nhHn859WhF+7XFog3lmxGbfSxwhvIgdIJAqG3qnhNBCc035Y2
-         e/ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6basBJ6bM0j6BIPp8FG95aWLrLObNXSRO6/Wx7nPGjY=;
-        b=FnLIszjw+i30W4HCr6OOHxdClefrL2cea7Ev5u4AIdblbnaznCc22RPFeiTWduYyhK
-         adsPSxXMZf0ndaS7oXNHTik9FRTscFS1AScQWXoZb8/9lVGdZFBmJgRXb5MuV/iR2Y3h
-         wTn0dSUxOZ4FyV5TZdk23eC14jcFOkdSncLRuXdSkI0WYD0xOa6uSa86ZaGg4k2g1gyv
-         +yuG2zl9wctQ782kDuULO6gkM6aZHTi4leFhoSdEuVXPhfMBwuxxUlpt+CUkFHdngmBC
-         njKiypz5MSncWryrbmJX/TMZouJKG2dFi5NzGfjxm3BUaPnDIvv1KTzgvBExuT7/gIVz
-         Y/dw==
-X-Gm-Message-State: APjAAAXlEL1YDSrhtd5f7JOCUvvOY9w5YEPx4nQeFlaEIwnIPxoty8kd
-        OyHldtXcKnmasXHoyERXBLPVa7IMEEU=
-X-Google-Smtp-Source: APXvYqyzYJJV+qjvB1KgzPsRbFym4uUi8J69hEABpIIEYSve0pHQPh+4NJELcoakOoShpzx0k97Ukw==
-X-Received: by 2002:a37:b93:: with SMTP id 141mr7106576qkl.54.1576616648005;
-        Tue, 17 Dec 2019 13:04:08 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id g18sm4128qtc.83.2019.12.17.13.04.07
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 17 Dec 2019 13:04:07 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ihK0k-0002IT-KH; Tue, 17 Dec 2019 17:04:06 -0400
-Date:   Tue, 17 Dec 2019 17:04:06 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>
-Subject: Re: [PATCH v3 19/20] RDMA: Add irdma Kconfig/Makefile and remove
- i40iw
-Message-ID: <20191217210406.GC17227@ziepe.ca>
-References: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
- <20191209224935.1780117-20-jeffrey.t.kirsher@intel.com>
- <20191211200200.GA13279@ziepe.ca>
- <9DD61F30A802C4429A01CA4200E302A7B6B9343F@fmsmsx124.amr.corp.intel.com>
+        id S1727490AbfLQVuc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Dec 2019 16:50:32 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2035 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726764AbfLQVub (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Dec 2019 16:50:31 -0500
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5df94d9d0001>; Tue, 17 Dec 2019 13:50:21 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Tue, 17 Dec 2019 13:50:30 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Tue, 17 Dec 2019 13:50:30 -0800
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Dec
+ 2019 21:50:25 +0000
+Subject: Re: [PATCH v5 1/2] mm/mmu_notifier: make interval notifier updates
+ safe
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>
+References: <20191216195733.28353-1-rcampbell@nvidia.com>
+ <20191216195733.28353-2-rcampbell@nvidia.com>
+ <20191217205147.GI16762@mellanox.com>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <59d4ea9e-3f6b-11c2-75d1-5baecd5b4ae2@nvidia.com>
+Date:   Tue, 17 Dec 2019 13:50:24 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7B6B9343F@fmsmsx124.amr.corp.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191217205147.GI16762@mellanox.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1576619421; bh=ubRwwOL58AcjmKU930Mo4/AFRBsWefx09sMu3dEEirc=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=o9X58MhU1lozHt8qde/Q5U6KjYd3qMmrQyCLe2/+dszqfziDR3n8ceyKtdUt/KX2T
+         TqANXJM1PO5DhmjicCs066E7UMKoUTge6kuelmVtI2V9U/sGPLHcT03CF66JpnjXip
+         enuLbXhSPdGSMkoV24owjgKJgocKN8sCz5K5vOie5/e5qQDxECTI6zFOuSfSwGJhVo
+         8zFisarGWYrEei1T7nwS6gVgSyZ7TWeD3NMJnTuAWn1zGKaZPOjLQvlqMmJtbUg9Pi
+         kGfdoBRjEL93SOfMYpJQYz1+bIA1eSUOemZh5H0qWX7H3nPekrmfWwJMbg4pMuWy7r
+         BUPx+RMAK+nOA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 11:06:45PM +0000, Saleem, Shiraz wrote:
-> > Subject: Re: [PATCH v3 19/20] RDMA: Add irdma Kconfig/Makefile and remove
-> > i40iw
-> > 
-> > On Mon, Dec 09, 2019 at 02:49:34PM -0800, Jeff Kirsher wrote:
-> > > From: Shiraz Saleem <shiraz.saleem@intel.com>
-> > >
-> > > Add Kconfig and Makefile to build irdma driver.
-> > >
-> > > Remove i40iw driver. irdma is the replacement driver that supports
-> > > X722.
-> > 
-> > I looked through this for a litle while, it is very very big. I'd like some of the other
-> > people who have sent drivers lately to give it a go over as well..
-> > 
-> > A few broad comments
-> >  - Do not use the 'err1', 'err2', etc labels for goto unwind
-> >  - Please check all uses of rcu, I could not see why some existed
-> >  - Use the new rdma mmap api. The whole mmap flow looked wonky to me
-> Presume your referring to this series?
-> https://github.com/jgunthorpe/linux/commits/rdma_mmap
 
-Yes, it is merged now
-
-> At the time it was published, I didn't think it applied to irdma, but rather
-> benefit those drivers that keyed off an mmap database in their mmap function.
-
-All drivers using mmap should be using it.
-
-New drivers should not be using mmap via hard coded keys. The offset
-to pass to mmap should always be returned from a system call.
-
-For compatibility insert the hard coded key with the mmap stuff and
-use the APIs for lifetime management.
-
-> In irdma, there is a doorbell and a push page that are mapped. 
-
-Pretty much all hardware requires these to be per-security domain, so
-you have a lifecycle model that matches what the mmap API is now
-providing.
-
-> >  - New drivers should use the ops->driver_unregister flow
-> https://www.spinics.net/lists/linux-rdma/msg75466.html
-> "These APIs are intended to support drivers that exist outside the usual
-> driver core probe()/remove() callbacks. Normally the driver core will
-> prevent remove() from running concurrently with probe(), once this safety
-> is lost drivers need more support to get the locking and lifetimes right."
+On 12/17/19 12:51 PM, Jason Gunthorpe wrote:
+> On Mon, Dec 16, 2019 at 11:57:32AM -0800, Ralph Campbell wrote:
+>> mmu_interval_notifier_insert() and mmu_interval_notifier_remove() can't
+>> be called safely from inside the invalidate() callback. This is fine for
+>> devices with explicit memory region register and unregister calls but it
+>> is desirable from a programming model standpoint to not require explicit
+>> memory region registration. Regions can be registered based on device
+>> address faults but without a mechanism for updating or removing the mmu
+>> interval notifiers in response to munmap(), the invalidation callbacks
+>> will be for regions that are stale or apply to different mmaped regions.
 > 
-> As per this description, it seems ib_unregister_driver() would be
-> redundant for irdma to use in module exit? 
+> What we do in RDMA is drive the removal from a work queue, as we need
+> a synchronize_srcu anyhow to serialize everything to do with
+> destroying a part of the address space mirror.
+> 
+> Is it really necessary to have all this stuff just to save doing
+> something like a work queue?
 
-Yes, this driver doesn't need that call
+Well, the invalidates already have to use the driver lock to synchronize
+so handling the range tracking updates semi-synchronously seems more
+straightforward to me.
 
-> Or did you mean just instrument ops->dealloc_driver?
+Do you feel strongly that adding a work queue is the right way to handle
+this?
 
-Yes
+> Also, I think we are not taking core kernel APIs like this with out an
+> in-kernel user??
 
-> >  - The whole cqp_compl_thread thing looks really weird
-> What is the concern?
+Right. I was looking for feedback before updating nouveau to use it.
 
-It looks like an open coded work queue
+>> diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+>> index 9e6caa8ecd19..55fbefcdc564 100644
+>> +++ b/include/linux/mmu_notifier.h
+>> @@ -233,11 +233,18 @@ struct mmu_notifier {
+>>    * @invalidate: Upon return the caller must stop using any SPTEs within this
+>>    *              range. This function can sleep. Return false only if sleeping
+>>    *              was required but mmu_notifier_range_blockable(range) is false.
+>> + * @release:	This function will be called when the mmu_interval_notifier
+>> + *		is removed from the interval tree. Defining this function also
+>> + *		allows mmu_interval_notifier_remove() and
+>> + *		mmu_interval_notifier_update() to be called from the
+>> + *		invalidate() callback function (i.e., they won't block waiting
+>> + *		for invalidations to finish.
+> 
+> Having a function called remove that doesn't block seems like very
+> poor choice of language, we've tended to use put to describe that
+> operation.
+> 
+> The difference is meaningful as people often create use after free
+> bugs in drivers when presented with interfaces named 'remove' or
+> 'destroy' that don't actually guarentee there is not going to be
+> continued accesses to the memory.
 
-Jason
+OK. I can rename it put().
+
+>>    */
+>>   struct mmu_interval_notifier_ops {
+>>   	bool (*invalidate)(struct mmu_interval_notifier *mni,
+>>   			   const struct mmu_notifier_range *range,
+>>   			   unsigned long cur_seq);
+>> +	void (*release)(struct mmu_interval_notifier *mni);
+>>   };
+>>   
+>>   struct mmu_interval_notifier {
+>> @@ -246,6 +253,8 @@ struct mmu_interval_notifier {
+>>   	struct mm_struct *mm;
+>>   	struct hlist_node deferred_item;
+>>   	unsigned long invalidate_seq;
+>> +	unsigned long deferred_start;
+>> +	unsigned long deferred_last;
+> 
+> I couldn't quite understand how something like this can work, what is
+> preventing parallel updates?
+
+It is serialized by the struct mmu_notifier_mm lock.
+If there are no tasks walking the interval tree, the update
+happens synchronously under the lock. If there are walkers,
+the start/last values are stored under the lock and the last caller's
+values are used to update the interval tree when the last walker
+finishes (under the lock again).
+
+>> +/**
+>> + * mmu_interval_notifier_update - Update interval notifier end
+>> + * @mni: Interval notifier to update
+>> + * @start: New starting virtual address to monitor
+>> + * @length: New length of the range to monitor
+>> + *
+>> + * This function updates the range being monitored.
+>> + * If there is no release() function defined, the call will wait for the
+>> + * update to finish before returning.
+>> + */
+>> +int mmu_interval_notifier_update(struct mmu_interval_notifier *mni,
+>> +				 unsigned long start, unsigned long length)
+>> +{
+> 
+> Update should probably be its own patch
+> 
+> Jason
+
+OK.
+Thanks for the review.
