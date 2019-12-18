@@ -2,122 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C09C712440F
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Dec 2019 11:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7646B12474A
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Dec 2019 13:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725799AbfLRKPF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Dec 2019 05:15:05 -0500
-Received: from smtp56.i.mail.ru ([217.69.128.36]:34276 "EHLO smtp56.i.mail.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725785AbfLRKPF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 18 Dec 2019 05:15:05 -0500
-X-Greylist: delayed 5140 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Dec 2019 05:15:03 EST
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail2;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:Message-ID:Subject:From:To; bh=E8N9P+OFAwA0+JGvQbtCmfl+sIDkAgxdssD7mBzAlWw=;
-        b=rwJ4OkJXjJgzkmfrCJWQAkL6wybd0ZGqC1kZyY7sWP1i6p7S8a5iQPk+Ite5/HekhueODXYJnEv1AMvrlg2mBcm/xJQ9SZmNR/d88pmVa+2dIPBE4rKv0dZVBeHRbaSr4PQCcEoOVJtwEB3QjkPQMWTamtyJDZ7XCi3YJLlIYoM=;
-Received: by smtp56.i.mail.ru with esmtpa (envelope-from <6ax@mail.ru>)
-        id 1ihWMA-0006yJ-3l
-        for linux-rdma@vger.kernel.org; Wed, 18 Dec 2019 13:15:02 +0300
-To:     linux-rdma@vger.kernel.org
-From:   =?UTF-8?B?0KHQtdGA0LPQtdC5INChLiDQmNCz0L7RiNC60LjQvQ==?= 
-        <6ax@mail.ru>
-Subject: bug when working with the LAG interface. (bonding)
-Message-ID: <29d399ba-696b-3e96-37ef-6fcc868c26ab@mail.ru>
-Date:   Wed, 18 Dec 2019 13:15:01 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        id S1726913AbfLRMxA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Dec 2019 07:53:00 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:35695 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726723AbfLRMw7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Dec 2019 07:52:59 -0500
+Received: by mail-qk1-f194.google.com with SMTP id z76so1802193qka.2
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Dec 2019 04:52:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=b+CCGksXD0vuDKfmVp0tkHiA2uWnVRsyUsg9W47Em0w=;
+        b=V4cUClr1kHNL9cE/3hnbLIPHpTlNhp+WtY4uxMwUV+5JpJW2ZkRU/U2kLhqFzz1Cb7
+         /6jIEZjMyCvlYCe4JbT1Mh6uH4++6hoygmRC5fDbvFGRZ05jI+NWTdo/u6g5O8Q6zBqL
+         FycUbuQdsTBjDLiDIwi1aSJaUvU9OUxVZaLUftubjgFli8Hxx04lNuXEjWrTYvHBgQDu
+         +CeDQJIlzU1f5VErJatobGIzIy5/kPrwvGC8+B/zoYX+60m+ukJ5fG22X5JIKmfL8WpS
+         IdI54cOJmFZ/47PZih3TuNKxgQ8S+JlYPvFqHCpBcp6oSFw7YFK2nxGgZ1NqAJH2dBpG
+         OWXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=b+CCGksXD0vuDKfmVp0tkHiA2uWnVRsyUsg9W47Em0w=;
+        b=pOgffNV/niF5yH41MsfN0Di304QHHUTpmxSBbbzHX3TaLyQs9vmpjtYGzFVSn/9qlK
+         4X6KjuQQQctEmR5gZiX/jiKb0wt2KILKl5wiKqwfe21Eu9pYHdyPwTV+cQ66AjCnxaVS
+         HTAMlXMZilGdKUgLJegEWNMSJOTB8WNsr6+O2ovN619axQzhnvmenmfyzpOonkJ7WAW0
+         sCge9ppVPVARCiqUEGrh8paN2keHcRgSQedOjbY2XJ3uzDdVpis3pQK2Ntj/WILRdAkD
+         uj465ict2tMLy/gMmOcxajCIKUYWrij20TmkMkBd2EX6Osi8YmzVh9CpuKYGxecUkhBh
+         UGiw==
+X-Gm-Message-State: APjAAAWYicUsuWsOwNZz1rBQLpTE0C5RAmI2yYkt64mTtjF5rmdfFImg
+        OMw1JMewgnzgTRYbpeahtlu0Zg==
+X-Google-Smtp-Source: APXvYqwXxvLIXwbnaU0pbtUaahmQsTY4WJgvs7cvIfEp9WJEolUF/3Lr4p9rKDGIxgul5lRhDBUKSg==
+X-Received: by 2002:a05:620a:109c:: with SMTP id g28mr2275683qkk.0.1576673578884;
+        Wed, 18 Dec 2019 04:52:58 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id l49sm709602qtk.7.2019.12.18.04.52.58
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 18 Dec 2019 04:52:58 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1ihYoz-0006wl-U1; Wed, 18 Dec 2019 08:52:57 -0400
+Date:   Wed, 18 Dec 2019 08:52:57 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Max Hirsch <max.hirsch@gmail.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Steve Wise <swise@opengridcomputing.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Danit Goldberg <danitg@mellanox.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dag Moxnes <dag.moxnes@oracle.com>,
+        Myungho Jung <mhjungk@gmail.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/cma: Fix checkpatch error
+Message-ID: <20191218125257.GD17227@ziepe.ca>
+References: <20191211111628.2955-1-max.hirsch@gmail.com>
+ <20191211162654.GD6622@ziepe.ca>
+ <CADgTo880aSn++fcf_rt0+8DCE4Y=xgXtZxFx9B0nzM_M1HdWPw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: ru
-Authentication-Results: smtp56.i.mail.ru; auth=pass smtp.auth=6ax@mail.ru smtp.mailfrom=6ax@mail.ru
-X-7564579A: 646B95376F6C166E
-X-77F55803: 0A44E481635329DB0E1AA8A03B3923177A2A728850F00CFA73C14FAFA54B165C0692F7C3A22934DAF688BCB05C26794D7071740998BDA682440EFDCD17049B815D807779A4B662C34C855CF868C0B04F
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE729508FF2E8683A3EB287FD4696A6DC2FA8DF7F3B2552694A4E2F5AFA99E116B42401471946AA11AF855697CD6E926167AC83A81C8FD4AD23D82A6BABE6F325ACE7DDDDC251EA7DAB1B59CA4C82EFA6585F6761126049B72FFEEF38DE3786ADE8F6B57BC7E64490618DEB871D839B73339E8FC8737B5C2249042F1592492B88C6CC7F00164DA146DAFE8445B8C89999725571747095F342E8C26CFBAC0749D213D2E47CDBA5A9658378DA827A17800CE74601F13E4625331C9FA2833FD35BB23DF004C906525384303BDABC7E18AA350CD8FC6C240DEA76428AA50765F7900637224F82CDA6A39718D81D268191BDAD3DBD4B6F7A4D31EC0B291844D9D418CE69D81D268191BDAD3D78DA827A17800CE72AD5C920F2753418EC76A7562686271ED187B4DA314F1B5535872C767BF85DA227C277FBC8AE2E8BE9E2ED79D3AF902F8AD3058B3B2BA07F35872C767BF85DA2F004C906525384306FED454B719173D6462275124DF8B9C99B0B8D173C204012BD9CCCA9EDD067B1EDA766A37F9254B7
-X-Mailru-Sender: EC4C7D74DBFAC2FBDE12C530951EB8CC718CA5EBE01A29473B3636DAE75C4E6F8818783B3234F304CD5CD1582D869527FB559BB5D741EB96CF1F2746847450F4B93E98C39DA16A030DA7A0AF5A3A8387
-X-Mras: OK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADgTo880aSn++fcf_rt0+8DCE4Y=xgXtZxFx9B0nzM_M1HdWPw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello. I apologize for my English. Apparently there is a bug when 
-working with the LAG interface. (bonding)
+On Wed, Dec 11, 2019 at 08:33:10PM -0500, Max Hirsch wrote:
+> Thanks for the quick response. This is my first patch, so I want to
+> follow the correct protocol. I reran checkpatch after making the
+> changes and there were no errors or warnings in the region I changed.
 
-root@server:~# cat /proc/net/bonding/bond0
-Ethernet Channel Bonding Driver: v3.7.1 (April 27, 2011)
+You are supposed to run the patch itself through checkpatch:
 
-Bonding Mode: load balancing (xor)
-Transmit Hash Policy: layer2 (0)
-MII Status: up
-MII Polling Interval (ms): 100
-Up Delay (ms): 200
-Down Delay (ms): 200
+$ git format-patch HEAD^!
+0001-RDMA-cma-Fix-checkpatch-error.patch
+$ scripts/checkpatch.pl 0001-RDMA-cma-Fix-checkpatch-error.patch
+WARNING: A patch subject line should describe the change not the tool that found it
+#4: 
+Subject: [PATCH] RDMA/cma: Fix checkpatch error
 
-Slave Interface: enp1s0f1
-MII Status: up
-Speed: 10000 Mbps
-Duplex: full
-Link Failure Count: 0
-Permanent HW addr: 00:1b:21:bc:6e:7d
-Slave queue ID: 0
+WARNING: Possible unwrapped commit description (prefer a maximum 75 chars per line)
+#12: 
+This patch moves the assignment of ret to the previous line. The if statement then checks the value of ret assigned on the previous line. The assigned value of ret is not changed. Testing involved recompiling and loading the kernel. After the changes checkpatch does not report this the error in cma.c.
 
-Slave Interface: enp1s0f0
-MII Status: up
-Speed: 10000 Mbps
-Duplex: full
-Link Failure Count: 0
-Permanent HW addr: 00:1b:21:bc:6e:7c
-Slave queue ID: 0
+total: 0 errors, 2 warnings, 9 lines checked
 
-Linux distribution and version: Ubuntu 18.04 LTS and  Arch Linux 
-(2019-11-01)
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or --fix-inplace.
 
-Linux kernel and version: Linux server 4.15.0-72-generic #81-Ubuntu SMP 
-and  Linux Arch 4.19.88-1-lts
+0001-RDMA-cma-Fix-checkpatch-error.patch has style problems, please review.
 
-InfiniBand hardware and firmware version: 10-Gigabit SFI/SFP+ Network 
-Connection (Ethernet Server Adapter X520-2) 
-https://ark.intel.com/content/www/us/en/ark/products/39776/intel-ethernet-converged-network-adapter-x520-da2.html
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
 
-Configuring Soft-RoCE.
-
-Reproduce the bug:
-
-root@server:~# rxe_cfg add bond0
-
-   Name        Link  Driver   Speed  NMTU  IPv4_addr      RDEV RMTU
-   bond0       yes   bonding         9000  192.168.90.1   rxe0  (?)
-   eno1        yes   e1000e          1500  192.168.5.208
-   enp1s0f0    yes   ixgbe           9000
-   enp1s0f1    yes   ixgbe           9000
-   virbr0      no    bridge          1500  192.168.122.1
-
-root@server:~# rxe_cfg status
-
-IB device 'rxe0' wasn't found
-   Name        Link  Driver   Speed  NMTU  IPv4_addr      RDEV RMTU
-   bond0       yes   bonding         9000  192.168.90.1   rxe0 (?)
-   eno1        yes   e1000e          1500  192.168.5.208
-   enp1s0f0    yes   ixgbe           9000
-   enp1s0f1    yes   ixgbe           9000
-   virbr0      no    bridge          1500  192.168.122.1
-   virbr0-nic  no    tun             1500
-
-root@server:~# ibv_devices
-     device                 node GUID
-     ------              ----------------
-root@server:~# ibv_devinfo
-No IB devices found
-
-root@server:~# ibstat rxe0
-ibpanic: [1715] main: 'rxe0' IB device can't be found: Success
-
-Also have problems with:
-[root@test ~]# rdma link add rxe0 type rxe netdev bond1
-error: Invalid argument
-[root@test ~]# rdma link add rxe0 type rxe netdev enp0s3
-error: Invalid argument
-
-Tnx.
-
+Jason
