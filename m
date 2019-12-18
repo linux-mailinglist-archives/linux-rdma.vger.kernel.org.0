@@ -2,116 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6313A1251B0
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Dec 2019 20:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEFA1251EB
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Dec 2019 20:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727145AbfLRTVB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Dec 2019 14:21:01 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:44216 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726824AbfLRTVB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Dec 2019 14:21:01 -0500
-Received: by mail-qk1-f196.google.com with SMTP id w127so2506209qkb.11
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Dec 2019 11:21:00 -0800 (PST)
+        id S1727145AbfLRTdp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Dec 2019 14:33:45 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:39118 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726960AbfLRTdp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Dec 2019 14:33:45 -0500
+Received: by mail-lj1-f193.google.com with SMTP id l2so3446299lja.6
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Dec 2019 11:33:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kngeUhN0+/tB1LD8Ax/eWo93efkPx0yMU7mcnSsLERk=;
-        b=eSqT27M0qhGrc+jC0LvEIIcg6NJyRpHkR+VE02wJpO01FK2GBG0jjGDVMAV257fe32
-         pAGGzSii60Mxyt+yF/6sj8p7QryDjiXv3c0BzqJ56nKhXTWkfABmno2ly6qvsxn2sOiI
-         DqCsM1KULVH6NpONzmRLs50iPsKYT7PRSoMR090Y6MLb7R8kJU8ydIt7FxQzfN1MvNMb
-         aJ3dVEYFIpCLl1qDUpESfPfD5P7CzT8GQf3A4dgkrRaF7/frxRo4u+R7z3+MoxB4OfyH
-         iKpNOYds8KnVC3Xk4P05x89M+75hnqcYHVIBD+BpjvW6h8FYFVDCXwX8UO/9fz+lLLLm
-         Cklg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Nkv/j0DmOufir99TeJBSwrc+MG8sCcIZ06VqqtU6qj4=;
+        b=HB5BhhATDpbdm4h+jVarT9wg6GBJI7KN8S7Moxw6piTnQ1m9cOBJIQS/PaCI6gTwMC
+         KcFBk1wxizpJ2F1l9fk+BZCervlQw4eLP6hIx3WTFqvuEuuqo1YSkFlmKAawJkGux2PE
+         vW9q2+l9GY9Z481m0TD7EghEJOC9eulnbmi7c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kngeUhN0+/tB1LD8Ax/eWo93efkPx0yMU7mcnSsLERk=;
-        b=WvyGhR47bRrVlGf0/1HaXwM2R+85JLvEqz8o2rZE0ESyskrzkfGRNAZRhlIPgcBs0A
-         SN+N0mjni15HEzG+NHnmI6K8m2Bw/okUP2GyqdZNjnirEmG+Kb8/2c/YqzFQaJdVPh/d
-         wwNps7K9vwb6zIyk3f8umSktyR5Gbs0lCIa3QR3RHmDf0gucw51bhVACRl5CFcohx11/
-         +qsm/PQmCucM9i4fO/TPzJ7xBlS+QmulUrfXp0d30/GAHek/TsV+AuH36KJEC/obP2Ir
-         LkwOwQ0nM/HL69g+rpj/rK2LQlXfv1Ob2Ufy1I1VZUu2mafwaB0+AhHma4NFl102PrwH
-         tumQ==
-X-Gm-Message-State: APjAAAXrLLEdoYBe/0DabnQeolPLVQOjTFNjvO91RZvg9GuJelZ97/zw
-        T6qBTnb84JHfY3E8XmSVGEfuIw==
-X-Google-Smtp-Source: APXvYqyaiElVYz/it9vtIykNw+hkQRqNn63ZNd+Cc0/OBh0tj0rDprBsWVafJuA+yBucr2joJNCI0Q==
-X-Received: by 2002:a05:620a:a0b:: with SMTP id i11mr4366979qka.11.1576696860196;
-        Wed, 18 Dec 2019 11:21:00 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id d25sm910105qka.39.2019.12.18.11.20.59
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 18 Dec 2019 11:20:59 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ihesU-0003Y2-QV; Wed, 18 Dec 2019 15:20:58 -0400
-Date:   Wed, 18 Dec 2019 15:20:58 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     'Greg KH' <gregkh@linuxfoundation.org>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>
-Subject: Re: [PATCH v3 04/20] i40e: Register a virtbus device to provide RDMA
-Message-ID: <20191218192058.GH17227@ziepe.ca>
-References: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
- <20191209224935.1780117-5-jeffrey.t.kirsher@intel.com>
- <20191210153959.GD4053085@kroah.com>
- <9DD61F30A802C4429A01CA4200E302A7B6B9345E@fmsmsx124.amr.corp.intel.com>
- <20191214083753.GB3318534@kroah.com>
- <9DD61F30A802C4429A01CA4200E302A7B6B9AFF7@fmsmsx124.amr.corp.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nkv/j0DmOufir99TeJBSwrc+MG8sCcIZ06VqqtU6qj4=;
+        b=GqhUojuppGUlkLws79X2LlANmQY1nbfMao/KsfTg9W/fwA6qaX3Zi7rxZ9L03W9ALK
+         sA+kXNwV2sZdEy0YU8thPv0uz/7NIDT2gPvLVtBw3JXjFOKzokJl9bNX3KsXVfytxo/H
+         maK68pAQM0HaA2KiUPdwXIMV6fOh3QdrJQ1ULRCp27qwwZ24tke8fcBcJzxUUcXnfNyh
+         9OTEWNQmhNkZrYPgYI/wYGkf98JLmSH7sg3m6bLTBVtUxJHrHvDL0KyF3CRwPvb9KrfD
+         aPnMgn7Q3tzXUCRjbl+x5OUp+Aoy6JiFTJqAJscSAVZcgm+wMDRluUyufOPvXmwEJdw4
+         P0EQ==
+X-Gm-Message-State: APjAAAVfcaYVQHHOlDTFzo2T7q+Bcmu9f+1vrnRsQrwnnl5dtQ4TWYWl
+        zYfVqJULxphPtX+syjv7BVf4UF0MnJo=
+X-Google-Smtp-Source: APXvYqxS7x8o8+24J3kj/QjZU+glahmLbckPzCYkAOrrLOO4EqRyfMIiiSecymHjn/oVGXQtiUovDg==
+X-Received: by 2002:a2e:804c:: with SMTP id p12mr3043220ljg.31.1576697623046;
+        Wed, 18 Dec 2019 11:33:43 -0800 (PST)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id h24sm1619128ljc.84.2019.12.18.11.33.41
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Dec 2019 11:33:41 -0800 (PST)
+Received: by mail-lf1-f45.google.com with SMTP id m30so2535418lfp.8
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Dec 2019 11:33:41 -0800 (PST)
+X-Received: by 2002:ac2:555c:: with SMTP id l28mr2827166lfk.52.1576697621256;
+ Wed, 18 Dec 2019 11:33:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7B6B9AFF7@fmsmsx124.amr.corp.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20191125204248.GA2485@ziepe.ca> <CAHk-=wiqguF5NakpL4L9XCmmYr4wY0wk__+6+wHVReF2sVVZhA@mail.gmail.com>
+ <CAHk-=wiQtTsZfgTwLYgfV8Gr_0JJiboZOzVUTAgJ2xTdf5bMiw@mail.gmail.com>
+ <20191203024206.GC5795@mellanox.com> <20191205160324.GB5819@redhat.com>
+ <20191211225703.GE3434@mellanox.com> <20191213101916.GD624164@phenom.ffwll.local>
+ <20191218145913.GO16762@mellanox.com> <CAHk-=wgR7OSE9Bn2+MbOYDbiu7n1RQaQhdc6gkEywXL9rMFcpw@mail.gmail.com>
+ <20191218183704.GT16762@mellanox.com>
+In-Reply-To: <20191218183704.GT16762@mellanox.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 18 Dec 2019 11:33:25 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh=9MNwP6gAqhMZ+T7GBVCt-VZyw8qb-i_eXQ61izBKrA@mail.gmail.com>
+Message-ID: <CAHk-=wh=9MNwP6gAqhMZ+T7GBVCt-VZyw8qb-i_eXQ61izBKrA@mail.gmail.com>
+Subject: Re: [GIT PULL] Please pull hmm changes
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        David Airlie <airlied@linux.ie>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Dec 18, 2019 at 06:57:10PM +0000, Saleem, Shiraz wrote:
-> diff --git a/include/linux/net/intel/i40e_client.h b/include/linux/net/intel/i40e_client.h
-> index 7e147d3..5c81261 100644
-> +++ b/include/linux/net/intel/i40e_client.h
-> @@ -83,11 +83,11 @@ struct i40e_params {
->  
->  /* Structure to hold Lan device info for a client device */
->  struct i40e_info {
->  	struct i40e_client_version version;
+On Wed, Dec 18, 2019 at 10:37 AM Jason Gunthorpe <jgg@mellanox.com> wrote:
+>
+> I think this is what you are looking for?
 
-I hope this isn't the inter-module versioning stuff we already Nak'd?
+I think that with these names, I would have had an easier time reading
+the original patch that made me go "Eww", yes.
 
->  	u8 lanmac[6];
+Of course, now that it's just a rename patch, it's not like the patch
+is all that legible, but yeah, I think the naming is saner.
 
-Is this different from the mac reachable from the netdev?
-
->  	struct net_device *netdev;
->  	struct pci_dev *pcidev;
-> +	struct virtbus_device *vdev;
-
-If there is only one of these per virtbus_device then why do we need
-to split the structure?
-
->  	u8 __iomem *hw_addr;
->  	u8 fid;	/* function id, PF id or VF id */
->  #define I40E_CLIENT_FTYPE_PF 0
-> @@ -112,6 +112,11 @@ struct i40e_info {
->  	u32 fw_build;                   /* firmware build number */
->  };
->  
-> +struct i40e_virtbus_device {
-> +	struct virtbus_device vdev;
-> +	struct i40e_info *ldev;
-
-Is the lifetime actually any better? Will ldev be freed and left
-danling before virtbus_device is released?
-
-Jason
+              Linus
