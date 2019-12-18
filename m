@@ -2,151 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E164A124A80
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Dec 2019 15:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20146124B3C
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Dec 2019 16:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726996AbfLRO7U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Dec 2019 09:59:20 -0500
-Received: from mail-eopbgr50053.outbound.protection.outlook.com ([40.107.5.53]:54912
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727181AbfLRO7U (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 18 Dec 2019 09:59:20 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aBhz6Xt/VwnL3LaV6C4ftnUv/Lo76F8bWxzl7vVKs3iNNEhOrMiBeiZVfaJTJwVamySrSxdyOVgvgMwaTeI/tuy13chTRWq7ZuAXqIaYqY4J414NlekkA6pNsrMP1uF4DXX97t1XXUoQB4XNOCy6LzyhdXhanekjv9C1vyn5eIXORn6ODwj6p/p2/Rxc34YPw0lTKZLnxOi5fIkhawyef7hLGTCCtdUeaNZqvQfefFpoMXkrwHj2kXx56vq4xGPrNIbDnNi1pe/0683/wTsjLzDH265o4d4OeZ87KoB2J9KyiHccH1yQyivt4UumoQa1GJFp54n2ZspyOTQnIvLMcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9nQM+trVujHI3Qoc/dgMx+kQgATSWF4kZScyp+AAMWU=;
- b=OHqBzZ+mrohdkVNKDkHYLn07QcauNAfXhjIyx4wTRHEI7IfNW2oZQHRrWitOF+KNy6+U3tg06F1+OvfkgLk+t/q4GJiSA4DLoso0XxpcTv4GJLkbqEm/g3R71RF7EoyNAv3JOat5CXZc8zueRvOgeIfMqsd3iO8Pl7ZYGTs6U5AJT8tsGwPNu03d49gl91B1yleVbzdtJ/wBUHXlQszoHTwcrrj4MGAGo1Psx4/pnS7zFg5VXWJtP2eaHuJFo0hevgpNemwswHAkGge6nQDtoeoFir8rZuFmy1/ejqBUUq9eNib7n1KYgx35k3bQ2QAIe7DrOUgCkq86Fj67hOEzTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9nQM+trVujHI3Qoc/dgMx+kQgATSWF4kZScyp+AAMWU=;
- b=fmlMWkkh5G4KHjVttSNopPJ00jsiNUkfJin3ufl+05LQgdc07Oq0p6DXq+MWMwUirGg9oq1h+prj8WvTzIoJp17lZ31If8dc/FujCXOWmF2/A5mzvwiczj/E2vozfkUOeEBiuewOIcRYMvpIDiI+nhEWsZPaR2sNho8tc7ItOEk=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB3471.eurprd05.prod.outlook.com (10.170.239.25) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2538.19; Wed, 18 Dec 2019 14:59:16 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::18df:a0fe:18eb:a96b]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::18df:a0fe:18eb:a96b%6]) with mapi id 15.20.2559.012; Wed, 18 Dec 2019
- 14:59:16 +0000
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        David Airlie <airlied@linux.ie>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [GIT PULL] Please pull hmm changes
-Thread-Topic: [GIT PULL] Please pull hmm changes
-Thread-Index: AQHVo9Dog/MtwM8aJU6I/7345tJKuKekCWkAgAAFfoCAA6/3AIAEBIsAgAnhkICAAlDwAIAIKeCA
-Date:   Wed, 18 Dec 2019 14:59:16 +0000
-Message-ID: <20191218145913.GO16762@mellanox.com>
-References: <20191125204248.GA2485@ziepe.ca>
- <CAHk-=wiqguF5NakpL4L9XCmmYr4wY0wk__+6+wHVReF2sVVZhA@mail.gmail.com>
- <CAHk-=wiQtTsZfgTwLYgfV8Gr_0JJiboZOzVUTAgJ2xTdf5bMiw@mail.gmail.com>
- <20191203024206.GC5795@mellanox.com> <20191205160324.GB5819@redhat.com>
- <20191211225703.GE3434@mellanox.com>
- <20191213101916.GD624164@phenom.ffwll.local>
-In-Reply-To: <20191213101916.GD624164@phenom.ffwll.local>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MN2PR07CA0026.namprd07.prod.outlook.com
- (2603:10b6:208:1a0::36) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [142.68.57.212]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1a27aaff-284f-43c2-60f4-08d783cada23
-x-ms-traffictypediagnostic: VI1PR05MB3471:
-x-microsoft-antispam-prvs: <VI1PR05MB34718FC1BC216A7489BA16F0CF530@VI1PR05MB3471.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-forefront-prvs: 0255DF69B9
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(346002)(376002)(366004)(136003)(396003)(199004)(189003)(1076003)(7416002)(81166006)(186003)(5660300002)(36756003)(8936002)(26005)(6506007)(2906002)(8676002)(6486002)(52116002)(33656002)(81156014)(86362001)(64756008)(66446008)(66556008)(110136005)(66946007)(66476007)(316002)(2616005)(6512007)(71200400001)(478600001)(921003)(1121003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3471;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: YFsKJi3o+DFtc1adYty2n8ozGQozHR6/e2CYa3A3ET4WBHrq3ofdX2qWppElBG9I5VEWG+nM4nsk+Shtap+lkqvdOm4mlXNv9fcty5qFV4abEiuxriIoDF+HVoXWR43obPelf3GLBbigEHh4BQv9czHO9DxNT1pDiD20kLCt4k85Q9ZQGYxQ6EoHBPJ9GTXJ5aT2UBkpih5yPEat3yaVk4eLCYPtUbnHBmG3GdnCCQmoxJMm2gZRCCAJSycJB+X5HDC72ps7PcMSMYD/H6zmC9m6VeJvBUXo/Ah0O49Vrr2AGinYTA7tkLAO8I264wkz4/SoFNzNUKLsHwYINbEJAWAstBJRFUGhP0vNt2E88l2izg4il0m8rSPLt8qrST2atrUPjNifCODyXWqirHkN3T/jva8GWotiF6Bh9KSvHRp2181+CS8VGjryCDCh0FSljjCBwldRhsKUetiUYQsVN/oh0vDZeisnYWsD5tcHC680BnFmVnC6HNQdnRDqsMQi
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <992CF74742407543825A7104C3898395@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727380AbfLRPOO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Dec 2019 10:14:14 -0500
+Received: from mail-io1-f66.google.com ([209.85.166.66]:44565 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727395AbfLRPOE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Dec 2019 10:14:04 -0500
+Received: by mail-io1-f66.google.com with SMTP id b10so2309868iof.11
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Dec 2019 07:14:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=R9l9mbjTMtC+3agOxuj88vgGSGUSi1shzIvbtHPQHDA=;
+        b=RfaUJbE64AqObBUWyZFAX00yFzfv+PMQBeMlfEbyOTSSIZSlP9dNPzblRe9C4/Xp5G
+         OOrfzjlEIPRCszaxaclLviha/Gl6J+8MNE2wJIlQr3g8uWJn+m5NNx6dyOIWXJDzHKAu
+         CFfw6ayoPSChbR+RAE0+B68G/pEf5o1uZqam8GCW/DM3JVJn1rrKg09G5nyaA4x8K46C
+         DidFmOGbhUnnebgzWtKvL2IYqcm0dJ4hRYsroJX5h4wZl5ygcdMBOrPylnEG0iZgtaC4
+         tctA6UVKTV1ZO7eaOpJeM3zJ9lY8Otzi6Az77Sm1wv6CYLTS/yvcKPbBaIHIL7wY9gk+
+         23sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=R9l9mbjTMtC+3agOxuj88vgGSGUSi1shzIvbtHPQHDA=;
+        b=JSt6EHM77yoWJcCOYIuCDGlxrFHUFoeXSG0Jxa+nv/rJTTj5E/YbHHikDSPYh99qRB
+         Uf826ZcfqXmRer/AzAoaVP7gkNmR1vY5zqE2bO85XDQkUatJr/wuOHZTefAn0QI7aTCZ
+         Pke78CXr78jak8tkhGFPUBf8N4U7h4QqE/xmPMrSowVtETQpryopW/v+If/dwgOaXHN6
+         b7+DNb/5xu17CxVF8lGQdxyCGYfz645qZwfzm+GTEpV3S3evdM43ZfifBNlZqn8Bd6VY
+         wrgsIpqFcf1/7GAbx5v7jccuLDGnzMU1Suy3J1wAYRxLiordJcXP3oVJw48BR62R5cfh
+         YGTQ==
+X-Gm-Message-State: APjAAAWV/bt1XElrJpRUdZCNbyB3mY3hgl3hWd2biirRx2nmhseA0ayZ
+        wHsJzanngQ/1V8QgNklLYtQL98PFx9hxiX3Qgw==
+X-Google-Smtp-Source: APXvYqyIz9CrpHcrXivylieLEiE1VxRyGUw+E9DXz6VIYz+kYlOCef915g/qsmML8+OoqrwbsBK3G0eW6o6RBALrF/E=
+X-Received: by 2002:a05:6638:950:: with SMTP id f16mr2789501jad.107.1576682043767;
+ Wed, 18 Dec 2019 07:14:03 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a27aaff-284f-43c2-60f4-08d783cada23
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Dec 2019 14:59:16.8325
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ujlj0Eul7WyBl6CVrl1kbsMBy6FDBXGRJFsC4dqgK6rD7TyFTQWnMpVYLAq8EIdqtcVEvx8g3SbHFT5VHqXbQg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3471
+Received: by 2002:a02:6603:0:0:0:0:0 with HTTP; Wed, 18 Dec 2019 07:14:03
+ -0800 (PST)
+Reply-To: dhl.expresscourier102156@outlook.fr
+From:   "MS. MARYANNA B. THOMASON" <info.zennitbankplcnigerian@gmail.com>
+Date:   Wed, 18 Dec 2019 16:14:03 +0100
+Message-ID: <CABHzvr=Pq7-TqhY8TPvFCsr+5-DhDQy=XOg-TM13qqbFWeemfQ@mail.gmail.com>
+Subject: =?UTF-8?Q?Urgent_delivery_Notification_of_your_ATM_MASTER_CARD?=
+        =?UTF-8?Q?_Amount=2C=2415=2E800=E2=80=99000=E2=80=9900=2C?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 11:19:16AM +0100, Daniel Vetter wrote:
-> On Wed, Dec 11, 2019 at 10:57:13PM +0000, Jason Gunthorpe wrote:
-> > On Thu, Dec 05, 2019 at 11:03:24AM -0500, Jerome Glisse wrote:
-> >=20
-> > > > struct mmu_notifier_mm (ie the mm->mmu_notifier_mm)
-> > > >    -> mmn_mm
-> > > > struct mm_struct=20
-> > > >    -> mm
-> > > > struct mmu_notifier (ie the user subscription to the mm_struct)
-> > > >    -> mn
-> > > > struct mmu_interval_notifier (the other kind of user subscription)
-> > > >    -> mni
-> > >=20
-> > > What about "interval" the context should already tell people
-> > > it is related to mmu notifier and thus a notifier. I would
-> > > just remove the notifier suffix, this would match the below
-> > > range.
-> >=20
-> > Interval could be a good replacement for mni in the mm/mmu_notififer
-> > file if we don't do the wholesale rename
-> >=20
-> > > > I think it would be overall nicer with better names for the origina=
-l
-> > > > structs. Perhaps:
-> > > >=20
-> > > >  mmn_* - MMU notifier prefix
-> > > >  mmn_state <- struct mmu_notifier_mm
-> > > >  mmn_subscription (mmn_sub) <- struct mmu_notifier
-> > > >  mmn_range_subscription (mmn_range_sub) <- struct mmu_interval_noti=
-fier
-> > > >  mmn_invalidate_desc <- struct mmu_notifier_range
-> > >=20
-> > > This looks good.
-> >=20
-> > Well, lets just bite the bullet then and switch it. Do you like
-> > 'state'? I thought that was the weakest one
->=20
-> Since you're asking, here's my bikeshed. I kinda agree _state looks a bit
-> strange for this, what about a _link suffix in the spirit of
+Attn Dear.
 
-Do you think calling it 'mmn_subscriptions' is clear?
+Urgent delivery Notification of your ATM MASTER CARD, Dhl-Benin is
+ready for delivery of your ATM Master card worth $15.800=E2=80=99000=E2=80=
+=9900, as
+approved this morning, Date, 18/12/2019. Through the Intruction from
+INTERNATIONAL MONETARY FUNDS, I.M.F official Directors.
 
-Ie a struct mmn_subscriptions holds the lists of struct
-mmn_subscription and struct mmn_range_subscription?
+REGISTRATION NO :EG58945
+PARCEL NUMBER: 140479
+Delivery Schuleded now,
+Finally all we required from you is your ATM Card Proccessing Delivery
+fees $19.00 only which you must send to this DHL service to enable us
+dispatch the parcel to your destination today.
 
-Jason
+Here is our receiving payment details.
+You are advised to send it Via Money Gram Service.
+
+Receiver's Name--------Alan Ude
+Country-------Benin Republic.
+City/ Address--------Cotonou
+Test Question--------In God
+Answer-------We Trust
+Amount------------$US19.00 only
+Mtcn-------------
+Sender's Name-------
+
+Your delivery  ATM card worth $15.800=E2=80=99000=E2=80=9900,
+Is Due for delivery to your address today upon confirmation of
+required fee from you asap.
+
+Call us on this phone number for any inquiry. +229 62819378
+Awaiting your urgent response.
+
+MS. MARYANNA B. THOMASON, Shipment director, DHL Express
+Courier Company-Benin
