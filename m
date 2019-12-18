@@ -2,170 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82ABC1238DB
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Dec 2019 22:50:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 053BC123B78
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Dec 2019 01:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727490AbfLQVuc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Dec 2019 16:50:32 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2035 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726764AbfLQVub (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Dec 2019 16:50:31 -0500
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5df94d9d0001>; Tue, 17 Dec 2019 13:50:21 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 17 Dec 2019 13:50:30 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 17 Dec 2019 13:50:30 -0800
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 17 Dec
- 2019 21:50:25 +0000
-Subject: Re: [PATCH v5 1/2] mm/mmu_notifier: make interval notifier updates
- safe
-To:     Jason Gunthorpe <jgg@mellanox.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "John Hubbard" <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>
-References: <20191216195733.28353-1-rcampbell@nvidia.com>
- <20191216195733.28353-2-rcampbell@nvidia.com>
- <20191217205147.GI16762@mellanox.com>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <59d4ea9e-3f6b-11c2-75d1-5baecd5b4ae2@nvidia.com>
-Date:   Tue, 17 Dec 2019 13:50:24 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
-MIME-Version: 1.0
-In-Reply-To: <20191217205147.GI16762@mellanox.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        id S1726143AbfLRAWX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Dec 2019 19:22:23 -0500
+Received: from mail-eopbgr20058.outbound.protection.outlook.com ([40.107.2.58]:24293
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725946AbfLRAWX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 17 Dec 2019 19:22:23 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hySS7TkC3Q2T3nEJtCK89nGE4dtheHFg7G6M6DO06cUyNH4nJKwRtSmkUgMZN/uippjFsALVa0ieJqUP1LSu10zU+be2d1VgFF+jWif99OogIdG00Qm2J7wfqk9JdTF478jSJLSBHLsjfTJ9quoLGsu5VxQoKQqSW2WYUce7DVStPoS+3oQDwhLs0HTlhWqOG1n6q6hdDHVe9AcADuBRUbOJ4QaJPUXz0O30wU+FU9yuI/+LOQg/8eVKnGwck5rl6r37AcawLGrGqUDRIsezBm3o0fY4u94/U8VKEvzpk0Ij1/6lO7HRVIs/u+8p2qUnXWCXsiUr5j6Zm+6NFcR3bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1LLuEBlfjGYDslFsqrugjQ8vIpCnNGeiRxMHE9ZZJKg=;
+ b=T4RCD+E7A1eDHClPzYC4QwWh/pEfKZO1c3zi8Fgf5rh9yfKdM4xFpVrdH2MooqVsUS69n+4zA60hQ1s+1tmf0WxBMwGXPboys3lk7q2bbMio7iXXHPx0jRivXlCpyl3itsinmwsvJxMHnYeZRZ3Ned5YIgvs/4OCcsO2bY15hIACE1bMa+c7QbbxS0ZazyFrVaE9zVVVAkrdTAAXJwhS9SYZ4+0KMtTa4Os6blK/+n97YxLireaDAqc1zp1Vkp6g8f1gjrlqW3JWqNUyLlFZFHMAujgcq8PfEfNsB8DLxJqbfkjexkw8QGNl5i4pW9nhP1ty3wAJ4Cajh5AnNO9gOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1LLuEBlfjGYDslFsqrugjQ8vIpCnNGeiRxMHE9ZZJKg=;
+ b=j2TJTioLM3Us0aUCyZzBMP4XPryy23YpXQNa3PSvLFgS8WNa3aQpjFAmS+JkeKRiKVrSchDyj4X0e/jpqhBdMgLVFlfQdHfDhKp69CA+ckiJqtVC2DihLq8LFrPQOfx59QfxeyJ0iv4Nr9U3Y10XJJbT3844AOaQIFnoeBlJQ5U=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB4526.eurprd05.prod.outlook.com (20.176.7.149) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2538.19; Wed, 18 Dec 2019 00:22:19 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::18df:a0fe:18eb:a96b]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::18df:a0fe:18eb:a96b%6]) with mapi id 15.20.2538.019; Wed, 18 Dec 2019
+ 00:22:19 +0000
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Chuck Lever <chuck.lever@oracle.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH v9 0/3] Proposed trace points for RDMA/core
+Thread-Topic: [PATCH v9 0/3] Proposed trace points for RDMA/core
+Thread-Index: AQHVtCkCpkkMdtEp20WJZMhNN3z0bae/ChIA
+Date:   Wed, 18 Dec 2019 00:22:19 +0000
+Message-ID: <20191218002214.GL16762@mellanox.com>
+References: <20191216154924.21101.64860.stgit@manet.1015granger.net>
+In-Reply-To: <20191216154924.21101.64860.stgit@manet.1015granger.net>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1576619421; bh=ubRwwOL58AcjmKU930Mo4/AFRBsWefx09sMu3dEEirc=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=o9X58MhU1lozHt8qde/Q5U6KjYd3qMmrQyCLe2/+dszqfziDR3n8ceyKtdUt/KX2T
-         TqANXJM1PO5DhmjicCs066E7UMKoUTge6kuelmVtI2V9U/sGPLHcT03CF66JpnjXip
-         enuLbXhSPdGSMkoV24owjgKJgocKN8sCz5K5vOie5/e5qQDxECTI6zFOuSfSwGJhVo
-         8zFisarGWYrEei1T7nwS6gVgSyZ7TWeD3NMJnTuAWn1zGKaZPOjLQvlqMmJtbUg9Pi
-         kGfdoBRjEL93SOfMYpJQYz1+bIA1eSUOemZh5H0qWX7H3nPekrmfWwJMbg4pMuWy7r
-         BUPx+RMAK+nOA==
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BL0PR02CA0006.namprd02.prod.outlook.com
+ (2603:10b6:207:3c::19) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.68.57.212]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: e45235a1-0a0b-46b6-0d18-08d7835057cc
+x-ms-traffictypediagnostic: VI1PR05MB4526:
+x-microsoft-antispam-prvs: <VI1PR05MB45269EA07EAA151D13245FEACF530@VI1PR05MB4526.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:800;
+x-forefront-prvs: 0255DF69B9
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(39860400002)(376002)(366004)(136003)(396003)(199004)(53754006)(189003)(2906002)(4326008)(8676002)(1076003)(558084003)(86362001)(6506007)(33656002)(26005)(66446008)(64756008)(186003)(52116002)(71200400001)(6512007)(36756003)(6486002)(8936002)(2616005)(316002)(478600001)(54906003)(81156014)(5660300002)(81166006)(66946007)(66556008)(66476007)(6916009);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4526;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 68fOTfAnNDnDK1PfwdMqCT5vU2cjsfjt+sR3BtVxnSBeTima9uzr3pzssTbouRMMrsJCMs7ikX3knZjvKeFHNpJ5dFcff6aIGXqrYUEDNOlOcyJBAH+lUrFpIPp0aOK3akQuygv4AmS7DQ/fEU6JtkdlF1MiNdUgp2lppiOJp9wzd1ZLbegoXdoWYLqtlGK/B5LGrmK4+0gafnzXTJv2P5N2aATcENYXWfjrY+AVaYw/xjqJQSwc5IdDNe2HnQ4sgQPW3BmkgogkZPoES5plmyb7KWkHoXFxzJsUkFSuPjEQrQtM0TLIyuJXjEKztKuXa5a0sDQFfLs6Fpox7yPfVXkEJ/GjLbBhUISlMngUAwsViyPz49TYtzUzvBUkfkwQ9YB76wumt4Dk9zj606HcWQYfa39GW+lQn4f/30mwh4tXtKxjl2lXccQOPHVwjg7nBIvRu7dSpjtxxJ70O1/cjhIbs9KWWooDOT5Axt1fAJ2YZ4oRaf7jbWDY4x2+QFUP
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <999D04209907164C8032FBEDF102AAF3@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e45235a1-0a0b-46b6-0d18-08d7835057cc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Dec 2019 00:22:19.6043
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: C+zQrfmnEEYWV5WtkJ+QrctBtFDjVjN8uk4Nzeyf8sDnwVMZ5WZTCEKgbrpmGYjHiqFhpabk3JBrxD1Fiu7mjw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4526
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Dec 16, 2019 at 10:53:43AM -0500, Chuck Lever wrote:
+> Hey y'all-
+>=20
+> Refresh of the RDMA/core trace point patches. Anything else needed
+> before these are acceptable?
 
-On 12/17/19 12:51 PM, Jason Gunthorpe wrote:
-> On Mon, Dec 16, 2019 at 11:57:32AM -0800, Ralph Campbell wrote:
->> mmu_interval_notifier_insert() and mmu_interval_notifier_remove() can't
->> be called safely from inside the invalidate() callback. This is fine for
->> devices with explicit memory region register and unregister calls but it
->> is desirable from a programming model standpoint to not require explicit
->> memory region registration. Regions can be registered based on device
->> address faults but without a mechanism for updating or removing the mmu
->> interval notifiers in response to munmap(), the invalidation callbacks
->> will be for regions that are stale or apply to different mmaped regions.
-> 
-> What we do in RDMA is drive the removal from a work queue, as we need
-> a synchronize_srcu anyhow to serialize everything to do with
-> destroying a part of the address space mirror.
-> 
-> Is it really necessary to have all this stuff just to save doing
-> something like a work queue?
+Can Leon compile and run it yet?
 
-Well, the invalidates already have to use the driver lock to synchronize
-so handling the range tracking updates semi-synchronously seems more
-straightforward to me.
-
-Do you feel strongly that adding a work queue is the right way to handle
-this?
-
-> Also, I think we are not taking core kernel APIs like this with out an
-> in-kernel user??
-
-Right. I was looking for feedback before updating nouveau to use it.
-
->> diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
->> index 9e6caa8ecd19..55fbefcdc564 100644
->> +++ b/include/linux/mmu_notifier.h
->> @@ -233,11 +233,18 @@ struct mmu_notifier {
->>    * @invalidate: Upon return the caller must stop using any SPTEs within this
->>    *              range. This function can sleep. Return false only if sleeping
->>    *              was required but mmu_notifier_range_blockable(range) is false.
->> + * @release:	This function will be called when the mmu_interval_notifier
->> + *		is removed from the interval tree. Defining this function also
->> + *		allows mmu_interval_notifier_remove() and
->> + *		mmu_interval_notifier_update() to be called from the
->> + *		invalidate() callback function (i.e., they won't block waiting
->> + *		for invalidations to finish.
-> 
-> Having a function called remove that doesn't block seems like very
-> poor choice of language, we've tended to use put to describe that
-> operation.
-> 
-> The difference is meaningful as people often create use after free
-> bugs in drivers when presented with interfaces named 'remove' or
-> 'destroy' that don't actually guarentee there is not going to be
-> continued accesses to the memory.
-
-OK. I can rename it put().
-
->>    */
->>   struct mmu_interval_notifier_ops {
->>   	bool (*invalidate)(struct mmu_interval_notifier *mni,
->>   			   const struct mmu_notifier_range *range,
->>   			   unsigned long cur_seq);
->> +	void (*release)(struct mmu_interval_notifier *mni);
->>   };
->>   
->>   struct mmu_interval_notifier {
->> @@ -246,6 +253,8 @@ struct mmu_interval_notifier {
->>   	struct mm_struct *mm;
->>   	struct hlist_node deferred_item;
->>   	unsigned long invalidate_seq;
->> +	unsigned long deferred_start;
->> +	unsigned long deferred_last;
-> 
-> I couldn't quite understand how something like this can work, what is
-> preventing parallel updates?
-
-It is serialized by the struct mmu_notifier_mm lock.
-If there are no tasks walking the interval tree, the update
-happens synchronously under the lock. If there are walkers,
-the start/last values are stored under the lock and the last caller's
-values are used to update the interval tree when the last walker
-finishes (under the lock again).
-
->> +/**
->> + * mmu_interval_notifier_update - Update interval notifier end
->> + * @mni: Interval notifier to update
->> + * @start: New starting virtual address to monitor
->> + * @length: New length of the range to monitor
->> + *
->> + * This function updates the range being monitored.
->> + * If there is no release() function defined, the call will wait for the
->> + * update to finish before returning.
->> + */
->> +int mmu_interval_notifier_update(struct mmu_interval_notifier *mni,
->> +				 unsigned long start, unsigned long length)
->> +{
-> 
-> Update should probably be its own patch
-> 
-> Jason
-
-OK.
-Thanks for the review.
+Jason
