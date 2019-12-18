@@ -2,90 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEFA1251EB
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Dec 2019 20:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43986125308
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Dec 2019 21:18:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727145AbfLRTdp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Dec 2019 14:33:45 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:39118 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726960AbfLRTdp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Dec 2019 14:33:45 -0500
-Received: by mail-lj1-f193.google.com with SMTP id l2so3446299lja.6
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Dec 2019 11:33:44 -0800 (PST)
+        id S1726591AbfLRUSH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Dec 2019 15:18:07 -0500
+Received: from mail-yb1-f193.google.com ([209.85.219.193]:36296 "EHLO
+        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725818AbfLRUSH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Dec 2019 15:18:07 -0500
+Received: by mail-yb1-f193.google.com with SMTP id i72so1290026ybg.3
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Dec 2019 12:18:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nkv/j0DmOufir99TeJBSwrc+MG8sCcIZ06VqqtU6qj4=;
-        b=HB5BhhATDpbdm4h+jVarT9wg6GBJI7KN8S7Moxw6piTnQ1m9cOBJIQS/PaCI6gTwMC
-         KcFBk1wxizpJ2F1l9fk+BZCervlQw4eLP6hIx3WTFqvuEuuqo1YSkFlmKAawJkGux2PE
-         vW9q2+l9GY9Z481m0TD7EghEJOC9eulnbmi7c=
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=GdxdX5oK4XzJU09CrM+z3XIDAAXxc1KNCFcWath6hjY=;
+        b=IIcg+sPhkmgrHAnH0KKtw9H08NUQTiCmWBD8+pQEqiH2g660UUmYDgCBme0OXQ2NxC
+         NgYt0V4r8TvsWgu1LjPQtyzY7tziKfJb+9GZoe6aqSAVV0PM6iwf+RAqtaOAxOYrdcJ4
+         SqFgB0IFjFUiC0FQHghYGIB4hngb6FIUauc75K3IbmKcTU6xM1LOqvWSzpqLq06W0Kmw
+         6rIdDOLdIBY477Ehgh84kUfGOVNaNEuNIssxqSQx9TQdeNHpfECX4PKtd5jOIeHGG8AN
+         siAuFNr8a359Ud5aiYkaq68j6E4VGYusya2Oosi+ltETEYs9nbsA5QX2h3RLmKVgpKr9
+         m0mQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nkv/j0DmOufir99TeJBSwrc+MG8sCcIZ06VqqtU6qj4=;
-        b=GqhUojuppGUlkLws79X2LlANmQY1nbfMao/KsfTg9W/fwA6qaX3Zi7rxZ9L03W9ALK
-         sA+kXNwV2sZdEy0YU8thPv0uz/7NIDT2gPvLVtBw3JXjFOKzokJl9bNX3KsXVfytxo/H
-         maK68pAQM0HaA2KiUPdwXIMV6fOh3QdrJQ1ULRCp27qwwZ24tke8fcBcJzxUUcXnfNyh
-         9OTEWNQmhNkZrYPgYI/wYGkf98JLmSH7sg3m6bLTBVtUxJHrHvDL0KyF3CRwPvb9KrfD
-         aPnMgn7Q3tzXUCRjbl+x5OUp+Aoy6JiFTJqAJscSAVZcgm+wMDRluUyufOPvXmwEJdw4
-         P0EQ==
-X-Gm-Message-State: APjAAAVfcaYVQHHOlDTFzo2T7q+Bcmu9f+1vrnRsQrwnnl5dtQ4TWYWl
-        zYfVqJULxphPtX+syjv7BVf4UF0MnJo=
-X-Google-Smtp-Source: APXvYqxS7x8o8+24J3kj/QjZU+glahmLbckPzCYkAOrrLOO4EqRyfMIiiSecymHjn/oVGXQtiUovDg==
-X-Received: by 2002:a2e:804c:: with SMTP id p12mr3043220ljg.31.1576697623046;
-        Wed, 18 Dec 2019 11:33:43 -0800 (PST)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id h24sm1619128ljc.84.2019.12.18.11.33.41
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Dec 2019 11:33:41 -0800 (PST)
-Received: by mail-lf1-f45.google.com with SMTP id m30so2535418lfp.8
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Dec 2019 11:33:41 -0800 (PST)
-X-Received: by 2002:ac2:555c:: with SMTP id l28mr2827166lfk.52.1576697621256;
- Wed, 18 Dec 2019 11:33:41 -0800 (PST)
+        h=x-gm-message-state:sender:subject:from:to:cc:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=GdxdX5oK4XzJU09CrM+z3XIDAAXxc1KNCFcWath6hjY=;
+        b=twnbqmYqRdZInH/ES8aFxITXwwtKDzmR1oFGInDbx/eDDR8ilzgRQd9eTJMCHtQWub
+         iaIQmq4BihNKRkTPhGAfwHLBMEIZajAJJgHOMkOe4byPfGR3wQgrxBK6sWXMF0pJGYhy
+         nArjJ0S8dLV4X25ONIsYoCzjwttOnnE/eDjuJzzpxI1OXzD6GYmc86Bg6w53wKdmiDiR
+         d/N6US7JA1s1BvxNjPO1hg1AcUmxjm0vlKmQgfm+ny7ccHLgojkez4xfVxuXQ1opgALY
+         4YX6iwNXARdxJJjK0ZD2SHsg7beFXh+h5j+cYKrngzwdPeT4oRbA/TljJKRQfo6Ya9n0
+         MV/A==
+X-Gm-Message-State: APjAAAUrJzPm3fxHC4B4h1QDs6lScedFZNRR29FLSQm736rnK+ATwBCY
+        eLIo+95vMIvd1NQ3IFdskNk=
+X-Google-Smtp-Source: APXvYqx9P7TZwmIlmnqgvhRUv41jKOOopuQxUVh7FwmVH+Y/DdnFpIRFja3ylO4eI58vBEFpRQMCVw==
+X-Received: by 2002:a25:8509:: with SMTP id w9mr3205005ybk.89.1576700286225;
+        Wed, 18 Dec 2019 12:18:06 -0800 (PST)
+Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id i72sm1378692ywg.49.2019.12.18.12.18.05
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 18 Dec 2019 12:18:05 -0800 (PST)
+Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id xBIKI40e022494;
+        Wed, 18 Dec 2019 20:18:04 GMT
+Subject: [PATCH v10 0/3] Proposed trace points for RDMA/core
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     dledford@redhat.com, jgg@mellanox.com, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org
+Date:   Wed, 18 Dec 2019 15:18:04 -0500
+Message-ID: <20191218201631.30584.53987.stgit@manet.1015granger.net>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-References: <20191125204248.GA2485@ziepe.ca> <CAHk-=wiqguF5NakpL4L9XCmmYr4wY0wk__+6+wHVReF2sVVZhA@mail.gmail.com>
- <CAHk-=wiQtTsZfgTwLYgfV8Gr_0JJiboZOzVUTAgJ2xTdf5bMiw@mail.gmail.com>
- <20191203024206.GC5795@mellanox.com> <20191205160324.GB5819@redhat.com>
- <20191211225703.GE3434@mellanox.com> <20191213101916.GD624164@phenom.ffwll.local>
- <20191218145913.GO16762@mellanox.com> <CAHk-=wgR7OSE9Bn2+MbOYDbiu7n1RQaQhdc6gkEywXL9rMFcpw@mail.gmail.com>
- <20191218183704.GT16762@mellanox.com>
-In-Reply-To: <20191218183704.GT16762@mellanox.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 18 Dec 2019 11:33:25 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wh=9MNwP6gAqhMZ+T7GBVCt-VZyw8qb-i_eXQ61izBKrA@mail.gmail.com>
-Message-ID: <CAHk-=wh=9MNwP6gAqhMZ+T7GBVCt-VZyw8qb-i_eXQ61izBKrA@mail.gmail.com>
-Subject: Re: [GIT PULL] Please pull hmm changes
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Jerome Glisse <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        David Airlie <airlied@linux.ie>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Dec 18, 2019 at 10:37 AM Jason Gunthorpe <jgg@mellanox.com> wrote:
->
-> I think this is what you are looking for?
+Hey y'all-
 
-I think that with these names, I would have had an easier time reading
-the original patch that made me go "Eww", yes.
+Refresh of the RDMA/core trace point patches.
 
-Of course, now that it's just a rename patch, it's not like the patch
-is all that legible, but yeah, I think the naming is saner.
 
-              Linus
+Changes since v9:
+- One-line Makefile fix to ensure patch 1/3 compiles
+
+Changes since v8:
+- Merged up to v5.5-rc2
+- Added trace points to record lifetime of rdma_cm_id's QP
+- Added trace points in the "drain QP" path
+- Various other clean-ups
+
+Changes since v7:
+- Capture the return value from the ULP's CM event handler
+- Record the lifetime of each rdma_cm_id
+- Include an example patch for capturing MR lifetime
+
+Changes since v6:
+- Move include/trace/events/rmda_cma.h to drivers/infiniband/core/cma_trace.h
+- Add sample trace log output to the patch descriptions
+- Back to the inlined version of ib_poll_cq()
+
+Changes since v5:
+- Add low-overhead trace points in the Connection Manager
+- Address #include heartburn found by lkp
+
+Changes since v4:
+- Removed __ib_poll_cq, uninlined ib_poll_cq
+
+Changes since v3:
+- Reverted unnecessary behavior change in __ib_process_cq
+- Clarified what "id" is in trace point output
+- Added comment before new fields in struct ib_cq
+- New trace point that fires when there is a CQ allocation failure
+
+Changes since v2:
+- Removed extraneous changes to include/trace/events/rdma.h
+
+Changes since RFC:
+- Display CQ's global resource ID instead of it's pointer address
+
+---
+
+Chuck Lever (3):
+      RDMA/cma: Add trace points in RDMA Connection Manager
+      RDMA/core: Trace points for diagnosing completion queue issues
+      RDMA/core: Add trace points to follow MR allocation
+
+
+ drivers/infiniband/core/Makefile    |    6 -
+ drivers/infiniband/core/cma.c       |   88 ++++++--
+ drivers/infiniband/core/cma_trace.c |   16 +
+ drivers/infiniband/core/cma_trace.h |  391 +++++++++++++++++++++++++++++++++++
+ drivers/infiniband/core/cq.c        |   27 ++
+ drivers/infiniband/core/trace.c     |   14 +
+ drivers/infiniband/core/verbs.c     |   43 +++-
+ include/rdma/ib_verbs.h             |    5 
+ include/trace/events/rdma_core.h    |  394 +++++++++++++++++++++++++++++++++++
+ 9 files changed, 946 insertions(+), 38 deletions(-)
+ create mode 100644 drivers/infiniband/core/cma_trace.c
+ create mode 100644 drivers/infiniband/core/cma_trace.h
+ create mode 100644 drivers/infiniband/core/trace.c
+ create mode 100644 include/trace/events/rdma_core.h
+
+--
+Chuck Lever
