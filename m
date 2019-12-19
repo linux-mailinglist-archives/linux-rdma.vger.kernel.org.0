@@ -2,113 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A42012691C
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2019 19:32:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F7E126DBE
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2019 20:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbfLSSck (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Dec 2019 13:32:40 -0500
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:45808 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726797AbfLSScj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Dec 2019 13:32:39 -0500
-Received: by mail-qv1-f66.google.com with SMTP id l14so2593913qvu.12
-        for <linux-rdma@vger.kernel.org>; Thu, 19 Dec 2019 10:32:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KxcAK175SXL4s98mUKxTuuJ7ApUPNEwbeHFqCNm/gdI=;
-        b=c0z6n6wI2C7woz0UNzkhmPm0PQzVoP6JePPgWqUEQJp/GYy6Pr7Qt3gLsT1KXppodC
-         2Q90ACexm58xXPm6CEdV4ZoxOxDlTl7Ybn/8wQ/8KkcPIil4E6OyGjIz56nkIsn+U6YI
-         SXn8Ksce1W3RHcxY3HxAOMiYsqqAShluqVumGtJVLPDS3itUVXN4jpGUfCuwcTfJFXKU
-         3LAEqaS2YHQmVaa/bGtia6dJVXhEqHD8yucH3TCrYpxmq3KtF0F8jlUEQYSCKV8jMhmf
-         +B3YzHJqjuy/abeb1Fi+mZz3fdl5cciXDftUMHUOgWbKuiyO4ZN1ioXA4Ikjt1ZR4FYH
-         N6mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KxcAK175SXL4s98mUKxTuuJ7ApUPNEwbeHFqCNm/gdI=;
-        b=YaI3GhizjetM2wkLD/PnnnWr+TfbbFdwK2A0x7pqIAcZL3ERzspa182ZKe4ZmWfbq3
-         RqYoLYQBR5/jKTvWcZs3LxdbLuLDg5aymsTOfhNlVUGi1l3VdOZBAE8A1S8wTF3n44sW
-         FbK4YQrhO87CKfw/Y4Gh3G/8pq+qx/RAscSWmtzTwsG7cUI/Heogggeuepz6zcvNUyTu
-         y6aWLXO+Osp+SXADVaLbVxTjzwzVgU+pMKOSJ8isofai8LkRrjWAwS0I8VZRBSF13Y8n
-         DWDOUB2Oqzijgb3/MMweKRcNV3J5qwouRIewo1QZTMXMTU2Wl2i6jgnfBn8Gfk4JFC90
-         0xyg==
-X-Gm-Message-State: APjAAAW5I5ScE/gGusnTVAaNBKiY370JKKeETg3yJ06MBTw3vo8t7Rrp
-        IgnjJ6NxsoQqYMxyBEH4CwLaYg==
-X-Google-Smtp-Source: APXvYqwq0vZcEKpwsnjKVJ+KNGjmOXo8T/Hj3JN0Hf2BVg5OetervvdcnHhSZLCFy3X8/01pKuL9TA==
-X-Received: by 2002:a0c:8a93:: with SMTP id 19mr9084450qvv.157.1576780358913;
-        Thu, 19 Dec 2019 10:32:38 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id s27sm1922474qkm.97.2019.12.19.10.32.38
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 19 Dec 2019 10:32:38 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ii0bF-0007fP-W7; Thu, 19 Dec 2019 14:32:38 -0400
-Date:   Thu, 19 Dec 2019 14:32:37 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Artemy Kovalyov <artemyko@mellanox.com>,
-        Aviad Yehezkel <aviadye@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH rdma-rc 3/3] IB/core: Fix ODP with IB_ACCESS_HUGETLB
- handling
-Message-ID: <20191219183237.GJ17227@ziepe.ca>
-References: <20191219134646.413164-1-leon@kernel.org>
- <20191219134646.413164-4-leon@kernel.org>
+        id S1727918AbfLSTL5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Dec 2019 14:11:57 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:60540 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727419AbfLSSh3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Dec 2019 13:37:29 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBJIRKut040429;
+        Thu, 19 Dec 2019 18:37:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=6VMYi03ucpKRxaK+aRiAulrKES+92kJ5vwbETKnXJTg=;
+ b=nP0dp7dl8t4EUJQ7Fi36v526PnHIr5hBJ1CC4MzOPmHOjnffyiYdVCZ5CP3OGWfYn6IZ
+ XRwFksgGgXkNjofQI2nKX+5hAmif8v5PQx1v8WFHFlR+B5f22yQbc7S+1Hp/CDtHJNJD
+ rW4+zELA/c+zkuO0QwUXNcG5/R4YGqzk5YGqMwL0AI+rsvDiyJk2DAmMb4EfU6LXWUSB
+ AH2O5oMrzYSOSJTrQVVoNFYoiT47iHdhq13u6HFghFj6h7D9TYCJUrhnzbFr/Qn/Q4sD
+ NQPrX1MBqADjqBFDvzjTVYG3TBM1p23/zJT2wkDqi2W9FCCji9nClagDdctNA38M3/50 ag== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 2x0ag11p43-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Dec 2019 18:37:18 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBJGEKcj035094;
+        Thu, 19 Dec 2019 18:37:18 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 2wyxqj3x8h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Dec 2019 18:37:17 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xBJIbGuk032674;
+        Thu, 19 Dec 2019 18:37:16 GMT
+Received: from [192.168.1.2] (/98.210.179.99)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 19 Dec 2019 10:37:16 -0800
+Subject: Re: [PATCH v2 1/2] Introduce maximum WQE size to check limits
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     monis@mellanox.com, dledford@redhat.com, sean.hefty@intel.com,
+        hal.rosenstock@gmail.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1574106879-19211-1-git-send-email-rao.shoaib@oracle.com>
+ <1574106879-19211-2-git-send-email-rao.shoaib@oracle.com>
+ <20191119203138.GA13145@ziepe.ca>
+ <44d1242a-fc32-9918-dd53-cd27ebf61811@oracle.com>
+ <20191119231334.GO4991@ziepe.ca>
+ <dff3da9b-06a3-3904-e9eb-7feaa1ae9e01@oracle.com>
+ <20191120000840.GQ4991@ziepe.ca>
+ <ccceac68-db4f-77a3-500d-12f60a8a1354@oracle.com>
+ <20191219182511.GI17227@ziepe.ca>
+From:   Rao Shoaib <rao.shoaib@oracle.com>
+Message-ID: <91987df4-8853-a087-97a0-a2f09f906340@oracle.com>
+Date:   Thu, 19 Dec 2019 10:37:15 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191219134646.413164-4-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191219182511.GI17227@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9476 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=707
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1912190135
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9476 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=746 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1912190135
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 19, 2019 at 03:46:46PM +0200, Leon Romanovsky wrote:
+Hi Jason,
 
-> @@ -403,6 +390,7 @@ int ib_umem_odp_map_dma_pages(struct ib_umem_odp *umem_odp, u64 user_virt,
->  	int j, k, ret = 0, start_idx, npages = 0;
->  	unsigned int flags = 0, page_shift;
->  	phys_addr_t p = 0;
-> +	struct vm_area_struct **vmas;
->  
->  	if (access_mask == 0)
->  		return -EINVAL;
-> @@ -415,6 +403,12 @@ int ib_umem_odp_map_dma_pages(struct ib_umem_odp *umem_odp, u64 user_virt,
->  	if (!local_page_list)
->  		return -ENOMEM;
->  
-> +	vmas = (struct vm_area_struct **)__get_free_page(GFP_KERNEL);
-> +	if (!vmas) {
-> +		ret = -ENOMEM;
-> +		goto out_free_page_list;
-> +	}
+I thought I had addressed the comments and literally did what you 
+suggested. Sorry if I missed something, can you please point it out.
 
-I'd rather not do this on the fast path
+Shoaib
 
-> +			if ((1 << page_shift) > vma_kernel_pagesize(vmas[j])) {
-> +				ret = -EFAULT;
-> +				break;
-> +			}
-
-And vma's cannot be de-refenced outside the mmap_sem
-
-There is already logic checking for linear contiguous pages:
-
-                        if (user_virt & ~page_mask) {
-                                p += PAGE_SIZE;
-                                if (page_to_phys(local_page_list[j]) != p) {
-                                        ret = -EFAULT;
-                                        break;
-                                }
-
-Why do we need to add the vma check?
-
-Jason
+On 12/19/19 10:25 AM, Jason Gunthorpe wrote:
+> On Tue, Dec 17, 2019 at 11:38:52AM -0800, Rao Shoaib wrote:
+>> Any update on my patch?
+>>
+>> If there is some change needed please let me know.
+> You need to repost it with the comments addressed
+>
+> https://patchwork.kernel.org/patch/11250179/
+>
+> Jason
+>
