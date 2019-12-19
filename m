@@ -2,204 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AA0127117
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2019 00:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E02127157
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2019 00:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbfLSXBm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Dec 2019 18:01:42 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:15328 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726880AbfLSXBl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Dec 2019 18:01:41 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dfc01460000>; Thu, 19 Dec 2019 15:01:26 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 19 Dec 2019 15:01:36 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 19 Dec 2019 15:01:36 -0800
-Received: from [10.2.165.11] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 19 Dec
- 2019 23:01:32 +0000
-Subject: Re: [PATCH v11 00/25] mm/gup: track dma-pinned pages: FOLL_PIN
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Alex Williamson" <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Maor Gottlieb <maorg@mellanox.com>
-References: <20191216222537.491123-1-jhubbard@nvidia.com>
- <20191219132607.GA410823@unreal>
- <a4849322-8e17-119e-a664-80d9f95d850b@nvidia.com>
- <20191219210743.GN17227@ziepe.ca>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <f10b2a18-a109-d87d-f156-2e5941cbf4a0@nvidia.com>
-Date:   Thu, 19 Dec 2019 14:58:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1726945AbfLSXTZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Dec 2019 18:19:25 -0500
+Received: from mga17.intel.com ([192.55.52.151]:29904 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726818AbfLSXTZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 19 Dec 2019 18:19:25 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Dec 2019 15:19:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,333,1571727600"; 
+   d="scan'208";a="241326119"
+Received: from sedona.ch.intel.com ([10.2.136.157])
+  by fmsmga004.fm.intel.com with ESMTP; 19 Dec 2019 15:19:24 -0800
+Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id xBJNJMHV016425;
+        Thu, 19 Dec 2019 16:19:23 -0700
+Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id xBJNJKOg051093;
+        Thu, 19 Dec 2019 18:19:20 -0500
+Subject: [PATCH for-rc] IB/hfi1: Adjust flow PSN with the correct resync_psn
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+To:     jgg@ziepe.ca, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        stable@vger.kernel.org, Kaike Wan <kaike.wan@intel.com>
+Date:   Thu, 19 Dec 2019 18:19:20 -0500
+Message-ID: <20191219231920.51069.37147.stgit@awfm-01.aw.intel.com>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-In-Reply-To: <20191219210743.GN17227@ziepe.ca>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1576796486; bh=tiz2hjGylLUwQicEfM7bbVznNfOI7NYEds0c0vA1QMM=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=ax5pfVwRTOuRMGRTTENUug1V5pL/RA0R/ro68Ef6qbAC2dMIpaMVof5lAjrJh/YsQ
-         tzguzyOG/LzutEbtWDwyfHV9sKc8B+QE/oAsfQggRxnppIAZTNjdwjoShd1hqL3Scp
-         PwDEgdunQ5+3RZaDnDjRY1Ma0ZpDqQcVz1QAXQFHukq22+SRzGz1hOWdS1Kam2nyY2
-         CDT0AZ+Yyg+ZRHDTJHnr4JvmQTB2CGF09WlCJB69OrCNdaPzyZjzlP0CWvWnN5wMNt
-         lrxupzD+I8Xm9/TBpPiZ2SZw5etOEm+wZ4cFWC8o/KBZNRn3emLZ8rxxX3WRl4ZX7o
-         4lpXlR7HRSRdg==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 12/19/19 1:07 PM, Jason Gunthorpe wrote:
-...
->> 3. It would be nice if I could reproduce this. I have a two-node mlx5 Infiniband
->> test setup, but I have done only the tiniest bit of user space IB coding, so
->> if you have any test programs that aren't too hard to deal with that could
->> possibly hit this, or be tweaked to hit it, I'd be grateful. Keeping in mind
->> that I'm not an advanced IB programmer. At all. :)
-> 
-> Clone this:
-> 
-> https://github.com/linux-rdma/rdma-core.git
-> 
-> Install all the required deps to build it (notably cython), see the README.md
-> 
-> $ ./build.sh
-> $ build/bin/run_tests.py
-> 
-> If you get things that far I think Leon can get a reproduction for you
-> 
+From: Kaike Wan <kaike.wan@intel.com>
 
-Cool, it's up and running (1 failure, 3 skipped, out of 67 tests).
+When a TID RDMA ACK to RESYNC request is received, the flow PSNs for
+pending TID RDMA WRITE segments will be adjusted with the next flow
+generation number, based on the resync_psn value extracted from the
+flow PSN of the TID RDMA ACK packet. The resync_psn value indicates
+the last flow PSN for which a TID RDMA WRITE DATA packet has been
+received by the responder and the requester should resend TID RDMA
+WRITE DATA packets, starting from the next flow PSN. However, if
+resync_psn points to the last flow PSN for a segment and the next
+segment flow PSN starts with a new generation number, use of the
+old resync_psn to adjust the flow PSN for the next segment will
+lead to miscalculation, resulting in WARN_ON and sge rewinding
+errors:
+[2419460.492485] WARNING: CPU: 4 PID: 146961 at /nfs/site/home/phcvs2/gitrepo/ifs-all/components/Drivers/tmp/rpmbuild/BUILD/ifs-kernel-updates-3.10.0_957.el7.x86_64/hfi1/tid_rdma.c:4764 hfi1_rc_rcv_tid_rdma_ack+0x8f6/0xa90 [hfi1]
+[2419460.514565] Modules linked in: ib_ipoib(OE) hfi1(OE) rdmavt(OE) rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver nfsv3 nfs_acl nfs lockd grace fscache iTCO_wdt iTCO_vendor_support skx_edac intel_powerclamp coretemp intel_rapl iosf_mbi kvm irqbypass crc32_pclmul ghash_clmulni_intel ib_isert iscsi_target_mod target_core_mod aesni_intel lrw gf128mul glue_helper ablk_helper cryptd rpcrdma sunrpc opa_vnic ast ttm ib_iser libiscsi drm_kms_helper scsi_transport_iscsi ipmi_ssif syscopyarea sysfillrect sysimgblt fb_sys_fops drm joydev ipmi_si pcspkr sg drm_panel_orientation_quirks ipmi_devintf lpc_ich i2c_i801 ipmi_msghandler wmi rdma_ucm ib_ucm ib_uverbs acpi_cpufreq acpi_power_meter ib_umad rdma_cm ib_cm iw_cm ip_tables ext4 mbcache jbd2 sd_mod crc_t10dif crct10dif_generic crct10dif_pclmul i2c_algo_bit crct10dif_common
+[2419460.594432]  crc32c_intel e1000e ib_core ahci libahci ptp libata pps_core nfit libnvdimm [last unloaded: rdmavt]
+[2419460.605645] CPU: 4 PID: 146961 Comm: kworker/4:0H Kdump: loaded Tainted: G        W  OE  ------------   3.10.0-957.el7.x86_64 #1
+[2419460.619424] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.0X.02.0117.040420182310 04/04/2018
+[2419460.631062] Workqueue: hfi0_0 _hfi1_do_tid_send [hfi1]
+[2419460.637423] Call Trace:
+[2419460.641044]  <IRQ>  [<ffffffff9e361dc1>] dump_stack+0x19/0x1b
+[2419460.647980]  [<ffffffff9dc97648>] __warn+0xd8/0x100
+[2419460.654023]  [<ffffffff9dc9778d>] warn_slowpath_null+0x1d/0x20
+[2419460.661025]  [<ffffffffc05d28c6>] hfi1_rc_rcv_tid_rdma_ack+0x8f6/0xa90 [hfi1]
+[2419460.669333]  [<ffffffffc05c21cc>] hfi1_kdeth_eager_rcv+0x1dc/0x210 [hfi1]
+[2419460.677295]  [<ffffffffc05c23ef>] ? hfi1_kdeth_expected_rcv+0x1ef/0x210 [hfi1]
+[2419460.685693]  [<ffffffffc0574f15>] kdeth_process_eager+0x35/0x90 [hfi1]
+[2419460.693394]  [<ffffffffc0575b5a>] handle_receive_interrupt_nodma_rtail+0x17a/0x2b0 [hfi1]
+[2419460.702745]  [<ffffffffc056a623>] receive_context_interrupt+0x23/0x40 [hfi1]
+[2419460.710963]  [<ffffffff9dd4a294>] __handle_irq_event_percpu+0x44/0x1c0
+[2419460.718659]  [<ffffffff9dd4a442>] handle_irq_event_percpu+0x32/0x80
+[2419460.726086]  [<ffffffff9dd4a4cc>] handle_irq_event+0x3c/0x60
+[2419460.732903]  [<ffffffff9dd4d27f>] handle_edge_irq+0x7f/0x150
+[2419460.739710]  [<ffffffff9dc2e554>] handle_irq+0xe4/0x1a0
+[2419460.746091]  [<ffffffff9e3795dd>] do_IRQ+0x4d/0xf0
+[2419460.752040]  [<ffffffff9e36b362>] common_interrupt+0x162/0x162
+[2419460.759029]  <EOI>  [<ffffffff9dfa0f79>] ? swiotlb_map_page+0x49/0x150
+[2419460.766758]  [<ffffffffc05c2ed1>] hfi1_verbs_send_dma+0x291/0xb70 [hfi1]
+[2419460.774637]  [<ffffffffc05c2c40>] ? hfi1_wait_kmem+0xf0/0xf0 [hfi1]
+[2419460.782080]  [<ffffffffc05c3f26>] hfi1_verbs_send+0x126/0x2b0 [hfi1]
+[2419460.789606]  [<ffffffffc05ce683>] _hfi1_do_tid_send+0x1d3/0x320 [hfi1]
+[2419460.797298]  [<ffffffff9dcb9d4f>] process_one_work+0x17f/0x440
+[2419460.804292]  [<ffffffff9dcbade6>] worker_thread+0x126/0x3c0
+[2419460.811025]  [<ffffffff9dcbacc0>] ? manage_workers.isra.25+0x2a0/0x2a0
+[2419460.818710]  [<ffffffff9dcc1c31>] kthread+0xd1/0xe0
+[2419460.824751]  [<ffffffff9dcc1b60>] ? insert_kthread_work+0x40/0x40
+[2419460.832013]  [<ffffffff9e374c1d>] ret_from_fork_nospec_begin+0x7/0x21
+[2419460.839611]  [<ffffffff9dcc1b60>] ? insert_kthread_work+0x40/0x40
 
-This is a great test suite to have running, I'll add it to my scripts. Here's the
-full output in case the failure or skip cases are a problem:
+This patch fixes the issue by adjusting the resync_psn first if the flow
+generation has been advanced for a pending segment.
 
-$ sudo ./build/bin/run_tests.py --verbose
+Fixes: 9e93e967f7b4 ("IB/hfi1: Add a function to receive TID RDMA ACK packet")
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Signed-off-by: Kaike Wan <kaike.wan@intel.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+---
+ drivers/infiniband/hw/hfi1/tid_rdma.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-test_create_ah (tests.test_addr.AHTest) ... ok
-test_create_ah_roce (tests.test_addr.AHTest) ... skipped "Can't run RoCE tests on IB link layer"
-test_destroy_ah (tests.test_addr.AHTest) ... ok
-test_create_comp_channel (tests.test_cq.CCTest) ... ok
-test_destroy_comp_channel (tests.test_cq.CCTest) ... ok
-test_create_cq_ex (tests.test_cq.CQEXTest) ... ok
-test_create_cq_ex_bad_flow (tests.test_cq.CQEXTest) ... ok
-test_destroy_cq_ex (tests.test_cq.CQEXTest) ... ok
-test_create_cq (tests.test_cq.CQTest) ... ok
-test_create_cq_bad_flow (tests.test_cq.CQTest) ... ok
-test_destroy_cq (tests.test_cq.CQTest) ... ok
-test_rc_traffic_cq_ex (tests.test_cqex.CqExTestCase) ... ok
-test_ud_traffic_cq_ex (tests.test_cqex.CqExTestCase) ... ok
-test_xrc_traffic_cq_ex (tests.test_cqex.CqExTestCase) ... ok
-test_create_dm (tests.test_device.DMTest) ... ok
-test_create_dm_bad_flow (tests.test_device.DMTest) ... ok
-test_destroy_dm (tests.test_device.DMTest) ... ok
-test_destroy_dm_bad_flow (tests.test_device.DMTest) ... ok
-test_dm_read (tests.test_device.DMTest) ... ok
-test_dm_write (tests.test_device.DMTest) ... ok
-test_dm_write_bad_flow (tests.test_device.DMTest) ... ok
-test_dev_list (tests.test_device.DeviceTest) ... ok
-test_open_dev (tests.test_device.DeviceTest) ... ok
-test_query_device (tests.test_device.DeviceTest) ... ok
-test_query_device_ex (tests.test_device.DeviceTest) ... ok
-test_query_gid (tests.test_device.DeviceTest) ... ok
-test_query_port (tests.test_device.DeviceTest) ... FAIL
-test_query_port_bad_flow (tests.test_device.DeviceTest) ... ok
-test_create_dm_mr (tests.test_mr.DMMRTest) ... ok
-test_destroy_dm_mr (tests.test_mr.DMMRTest) ... ok
-test_buffer (tests.test_mr.MRTest) ... ok
-test_dereg_mr (tests.test_mr.MRTest) ... ok
-test_dereg_mr_twice (tests.test_mr.MRTest) ... ok
-test_lkey (tests.test_mr.MRTest) ... ok
-test_read (tests.test_mr.MRTest) ... ok
-test_reg_mr (tests.test_mr.MRTest) ... ok
-test_reg_mr_bad_flags (tests.test_mr.MRTest) ... ok
-test_reg_mr_bad_flow (tests.test_mr.MRTest) ... ok
-test_rkey (tests.test_mr.MRTest) ... ok
-test_write (tests.test_mr.MRTest) ... ok
-test_dereg_mw_type1 (tests.test_mr.MWTest) ... ok
-test_dereg_mw_type2 (tests.test_mr.MWTest) ... ok
-test_reg_mw_type1 (tests.test_mr.MWTest) ... ok
-test_reg_mw_type2 (tests.test_mr.MWTest) ... ok
-test_reg_mw_wrong_type (tests.test_mr.MWTest) ... ok
-test_odp_rc_traffic (tests.test_odp.OdpTestCase) ... ok
-test_odp_ud_traffic (tests.test_odp.OdpTestCase) ... skipped 'ODP is not supported - ODP recv not supported'
-test_odp_xrc_traffic (tests.test_odp.OdpTestCase) ... ok
-test_default_allocators (tests.test_parent_domain.ParentDomainTestCase) ... ok
-test_mem_align_allocators (tests.test_parent_domain.ParentDomainTestCase) ... ok
-test_without_allocators (tests.test_parent_domain.ParentDomainTestCase) ... ok
-test_alloc_pd (tests.test_pd.PDTest) ... ok
-test_create_pd_none_ctx (tests.test_pd.PDTest) ... ok
-test_dealloc_pd (tests.test_pd.PDTest) ... ok
-test_destroy_pd_twice (tests.test_pd.PDTest) ... ok
-test_multiple_pd_creation (tests.test_pd.PDTest) ... ok
-test_create_qp_ex_no_attr (tests.test_qp.QPTest) ... ok
-test_create_qp_ex_no_attr_connected (tests.test_qp.QPTest) ... ok
-test_create_qp_ex_with_attr (tests.test_qp.QPTest) ... ok
-test_create_qp_ex_with_attr_connected (tests.test_qp.QPTest) ... ok
-test_create_qp_no_attr (tests.test_qp.QPTest) ... ok
-test_create_qp_no_attr_connected (tests.test_qp.QPTest) ... ok
-test_create_qp_with_attr (tests.test_qp.QPTest) ... ok
-test_create_qp_with_attr_connected (tests.test_qp.QPTest) ... ok
-test_modify_qp (tests.test_qp.QPTest) ... ok
-test_query_qp (tests.test_qp.QPTest) ... ok
-test_rdmacm_sync_traffic (tests.test_rdmacm.CMTestCase) ... skipped 'No devices with net interface'
+diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
+index e53f542..8a2e0d9 100644
+--- a/drivers/infiniband/hw/hfi1/tid_rdma.c
++++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
+@@ -4633,6 +4633,15 @@ void hfi1_rc_rcv_tid_rdma_ack(struct hfi1_packet *packet)
+ 			 */
+ 			fpsn = full_flow_psn(flow, flow->flow_state.spsn);
+ 			req->r_ack_psn = psn;
++			/*
++			 * If resync_psn points to the last flow PSN for a
++			 * segment and the new segment (likely from a new
++			 * request) starts with a new generation number, we
++			 * need to adjust resync_psn accordingly.
++			 */
++			if (flow->flow_state.generation !=
++			    (resync_psn >> HFI1_KDETH_BTH_SEQ_SHIFT))
++				resync_psn = mask_psn(fpsn - 1);
+ 			flow->resync_npkts +=
+ 				delta_psn(mask_psn(resync_psn + 1), fpsn);
+ 			/*
 
-======================================================================
-FAIL: test_query_port (tests.test_device.DeviceTest)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-   File "/kernel_work/rdma-core/tests/test_device.py", line 129, in test_query_port
-     self.verify_port_attr(port_attr)
-   File "/kernel_work/rdma-core/tests/test_device.py", line 113, in verify_port_attr
-     assert 'Invalid' not in d.speed_to_str(attr.active_speed)
-AssertionError
-
-----------------------------------------------------------------------
-Ran 67 tests in 10.058s
-
-FAILED (failures=1, skipped=3)
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
