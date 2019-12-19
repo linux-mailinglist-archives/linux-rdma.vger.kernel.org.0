@@ -2,42 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3DE1263E4
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2019 14:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3A91263E7
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2019 14:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbfLSNq6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Dec 2019 08:46:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42498 "EHLO mail.kernel.org"
+        id S1726751AbfLSNrz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Dec 2019 08:47:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726760AbfLSNq6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 19 Dec 2019 08:46:58 -0500
+        id S1726712AbfLSNry (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 19 Dec 2019 08:47:54 -0500
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E77AF2146E;
-        Thu, 19 Dec 2019 13:46:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 777BB2146E;
+        Thu, 19 Dec 2019 13:47:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576763217;
-        bh=VsLfTUku33zvot5WYdZcbWRLK6vVEOoRivEr+ORl5z8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OrwxMG5muJIV8GXT4TU3Yc+1VhoszsXk0ySvDTAyT4xGwgsVzaDelFOKh29RHS3Sy
-         okeRlBTy6HxsToqZibRYVJuI9Bh5Zhl/LDb+RdRkHzNZp0UO2/0Zr37168XFwutHCa
-         RHl7gMDIDgmsDKG/3yM+JaKMwjaOGzvyoyk6M6Qs=
+        s=default; t=1576763274;
+        bh=2BijuLgfuM1PhL0ovkHwVTOglSF+z/jBP3VaE8vScmg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ijyqlJ3jv3S8BJ//wL7w+64QkELoaWb3i+7+CXPcax9Z1t9kOSrkVwd701e+fhCtf
+         8Lubhk5v3DTgEmxl++8XwLJGerTuObf8ZEOk1jzeCayhr1x9A0An7h4nSkHXeStp8q
+         /hsJrHiFEmD1v8jH5goJt1qinT1y/bb0V1gryi9Y=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
+Cc:     Danit Goldberg <danitg@mellanox.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Artemy Kovalyov <artemyko@mellanox.com>,
-        Aviad Yehezkel <aviadye@mellanox.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH rdma-rc 3/3] IB/core: Fix ODP with IB_ACCESS_HUGETLB handling
-Date:   Thu, 19 Dec 2019 15:46:46 +0200
-Message-Id: <20191219134646.413164-4-leon@kernel.org>
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: [PATCH rdma-next] RDMA/cm: Use RCU synchronization mechanism to protect cm_id_private xa_load()
+Date:   Thu, 19 Dec 2019 15:47:50 +0200
+Message-Id: <20191219134750.413429-1-leon@kernel.org>
 X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191219134646.413164-1-leon@kernel.org>
-References: <20191219134646.413164-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -45,115 +40,126 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yishai Hadas <yishaih@mellanox.com>
+From: Danit Goldberg <danitg@mellanox.com>
 
-As VMAs for a given range might not be available as part of the
-registration phase in ODP, IB_ACCESS_HUGETLB/page_shift must be checked
-as part of the page fault flow.
+The RCU mechanism is optimized for read-mostly scenarios and therefore
+more suitable to protect the cm_id_private to decrease "cm.lock"
+congestion.
 
-If the application didn't mmap the backed memory with huge pages or
-released part of that hugepage area, an error will be set as part of the
-page fault flow once be detected.
+This patch replaces the existing spinlock locking mechanism
+and kfree with RCU mechanism in places where spinlock(cm.lock)
+protected cm_id_priv xa_load.
 
-Fixes: 0008b84ea9af ("IB/umem: Add support to huge ODP")
-Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-Reviewed-by: Artemy Kovalyov <artemyko@mellanox.com>
-Reviewed-by: Aviad Yehezkel <aviadye@mellanox.com>
+In addition, deletes cm_get_id function and use cm_acquire_id directly
+with the correct locking. The patch also removes an open coded version
+of cm_get_id, and replaces it with a call to cm_acquire_id.
+
+Signed-off-by: Danit Goldberg <danitg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/umem_odp.c | 37 +++++++++++++++---------------
- 1 file changed, 19 insertions(+), 18 deletions(-)
+ drivers/infiniband/core/cm.c | 43 +++++++++++-------------------------
+ 1 file changed, 13 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
-index 2e9ee7adab13..533271897908 100644
---- a/drivers/infiniband/core/umem_odp.c
-+++ b/drivers/infiniband/core/umem_odp.c
-@@ -241,22 +241,10 @@ struct ib_umem_odp *ib_umem_odp_get(struct ib_udata *udata, unsigned long addr,
- 	umem_odp->umem.owning_mm = mm = current->mm;
- 	umem_odp->notifier.ops = ops;
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index d42a3887057b..0ed69e213bf8 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -241,6 +241,7 @@ struct cm_id_private {
+ 	/* Number of clients sharing this ib_cm_id. Only valid for listeners.
+ 	 * Protected by the cm.lock spinlock. */
+ 	int listen_sharecount;
++	struct rcu_head rcu;
  
--	umem_odp->page_shift = PAGE_SHIFT;
--	if (access & IB_ACCESS_HUGETLB) {
--		struct vm_area_struct *vma;
--		struct hstate *h;
--
--		down_read(&mm->mmap_sem);
--		vma = find_vma(mm, ib_umem_start(umem_odp));
--		if (!vma || !is_vm_hugetlb_page(vma)) {
--			up_read(&mm->mmap_sem);
--			ret = -EINVAL;
--			goto err_free;
--		}
--		h = hstate_vma(vma);
--		umem_odp->page_shift = huge_page_shift(h);
--		up_read(&mm->mmap_sem);
+ 	struct ib_mad_send_buf *msg;
+ 	struct cm_timewait_info *timewait_info;
+@@ -593,28 +594,16 @@ static void cm_free_id(__be32 local_id)
+ 	xa_erase_irq(&cm.local_id_table, cm_local_id(local_id));
+ }
+ 
+-static struct cm_id_private * cm_get_id(__be32 local_id, __be32 remote_id)
++static struct cm_id_private *cm_acquire_id(__be32 local_id, __be32 remote_id)
+ {
+ 	struct cm_id_private *cm_id_priv;
+ 
++	rcu_read_lock();
+ 	cm_id_priv = xa_load(&cm.local_id_table, cm_local_id(local_id));
+-	if (cm_id_priv) {
+-		if (cm_id_priv->id.remote_id == remote_id)
+-			refcount_inc(&cm_id_priv->refcount);
+-		else
+-			cm_id_priv = NULL;
 -	}
-+	if (access & IB_ACCESS_HUGETLB)
-+		umem_odp->page_shift = HPAGE_SHIFT;
-+	else
-+		umem_odp->page_shift = PAGE_SHIFT;
+-
+-	return cm_id_priv;
+-}
+-
+-static struct cm_id_private * cm_acquire_id(__be32 local_id, __be32 remote_id)
+-{
+-	struct cm_id_private *cm_id_priv;
+-
+-	spin_lock_irq(&cm.lock);
+-	cm_id_priv = cm_get_id(local_id, remote_id);
+-	spin_unlock_irq(&cm.lock);
++	if (!cm_id_priv || cm_id_priv->id.remote_id != remote_id ||
++	    !refcount_inc_not_zero(&cm_id_priv->refcount))
++		cm_id_priv = NULL;
++	rcu_read_unlock();
  
- 	umem_odp->tgid = get_task_pid(current->group_leader, PIDTYPE_PID);
- 	ret = ib_init_umem_odp(umem_odp, ops);
-@@ -266,7 +254,6 @@ struct ib_umem_odp *ib_umem_odp_get(struct ib_udata *udata, unsigned long addr,
- 
- err_put_pid:
- 	put_pid(umem_odp->tgid);
--err_free:
- 	kfree(umem_odp);
- 	return ERR_PTR(ret);
+ 	return cm_id_priv;
  }
-@@ -403,6 +390,7 @@ int ib_umem_odp_map_dma_pages(struct ib_umem_odp *umem_odp, u64 user_virt,
- 	int j, k, ret = 0, start_idx, npages = 0;
- 	unsigned int flags = 0, page_shift;
- 	phys_addr_t p = 0;
-+	struct vm_area_struct **vmas;
- 
- 	if (access_mask == 0)
- 		return -EINVAL;
-@@ -415,6 +403,12 @@ int ib_umem_odp_map_dma_pages(struct ib_umem_odp *umem_odp, u64 user_virt,
- 	if (!local_page_list)
- 		return -ENOMEM;
- 
-+	vmas = (struct vm_area_struct **)__get_free_page(GFP_KERNEL);
-+	if (!vmas) {
-+		ret = -ENOMEM;
-+		goto out_free_page_list;
-+	}
-+
- 	page_shift = umem_odp->page_shift;
- 	page_mask = ~(BIT(page_shift) - 1);
- 	off = user_virt & (~page_mask);
-@@ -453,7 +447,7 @@ int ib_umem_odp_map_dma_pages(struct ib_umem_odp *umem_odp, u64 user_virt,
- 		 */
- 		npages = get_user_pages_remote(owning_process, owning_mm,
- 				user_virt, gup_num_pages,
--				flags, local_page_list, NULL, NULL);
-+				flags, local_page_list, vmas, NULL);
- 		up_read(&owning_mm->mmap_sem);
- 
- 		if (npages < 0) {
-@@ -477,6 +471,11 @@ int ib_umem_odp_map_dma_pages(struct ib_umem_odp *umem_odp, u64 user_virt,
- 				continue;
- 			}
- 
-+			if ((1 << page_shift) > vma_kernel_pagesize(vmas[j])) {
-+				ret = -EFAULT;
-+				break;
-+			}
-+
- 			ret = ib_umem_odp_map_dma_single_page(
- 					umem_odp, k, local_page_list[j],
- 					access_mask, current_seq);
-@@ -517,6 +516,8 @@ int ib_umem_odp_map_dma_pages(struct ib_umem_odp *umem_odp, u64 user_virt,
- out_put_task:
- 	if (owning_process)
- 		put_task_struct(owning_process);
-+	free_page((unsigned long)vmas);
-+out_free_page_list:
- 	free_page((unsigned long)local_page_list);
- 	return ret;
+@@ -1089,7 +1078,7 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ 	rdma_destroy_ah_attr(&cm_id_priv->av.ah_attr);
+ 	rdma_destroy_ah_attr(&cm_id_priv->alt_av.ah_attr);
+ 	kfree(cm_id_priv->private_data);
+-	kfree(cm_id_priv);
++	kfree_rcu(cm_id_priv, rcu);
  }
+ 
+ void ib_destroy_cm_id(struct ib_cm_id *cm_id)
+@@ -1851,7 +1840,7 @@ static struct cm_id_private * cm_match_req(struct cm_work *work,
+ 	spin_lock_irq(&cm.lock);
+ 	timewait_info = cm_insert_remote_id(cm_id_priv->timewait_info);
+ 	if (timewait_info) {
+-		cur_cm_id_priv = cm_get_id(timewait_info->work.local_id,
++		cur_cm_id_priv = cm_acquire_id(timewait_info->work.local_id,
+ 					   timewait_info->work.remote_id);
+ 		spin_unlock_irq(&cm.lock);
+ 		if (cur_cm_id_priv) {
+@@ -1865,7 +1854,7 @@ static struct cm_id_private * cm_match_req(struct cm_work *work,
+ 	timewait_info = cm_insert_remote_qpn(cm_id_priv->timewait_info);
+ 	if (timewait_info) {
+ 		cm_cleanup_timewait(cm_id_priv->timewait_info);
+-		cur_cm_id_priv = cm_get_id(timewait_info->work.local_id,
++		cur_cm_id_priv = cm_acquire_id(timewait_info->work.local_id,
+ 					   timewait_info->work.remote_id);
+ 
+ 		spin_unlock_irq(&cm.lock);
+@@ -2336,7 +2325,7 @@ static int cm_rep_handler(struct cm_work *work)
+ 		rb_erase(&cm_id_priv->timewait_info->remote_id_node,
+ 			 &cm.remote_id_table);
+ 		cm_id_priv->timewait_info->inserted_remote_id = 0;
+-		cur_cm_id_priv = cm_get_id(timewait_info->work.local_id,
++		cur_cm_id_priv = cm_acquire_id(timewait_info->work.local_id,
+ 					   timewait_info->work.remote_id);
+ 
+ 		spin_unlock(&cm.lock);
+@@ -2837,14 +2826,8 @@ static struct cm_id_private * cm_acquire_rejected_id(struct cm_rej_msg *rej_msg)
+ 			spin_unlock_irq(&cm.lock);
+ 			return NULL;
+ 		}
+-		cm_id_priv = xa_load(&cm.local_id_table,
+-				cm_local_id(timewait_info->work.local_id));
+-		if (cm_id_priv) {
+-			if (cm_id_priv->id.remote_id == remote_id)
+-				refcount_inc(&cm_id_priv->refcount);
+-			else
+-				cm_id_priv = NULL;
+-		}
++		cm_id_priv =
++			cm_acquire_id(timewait_info->work.local_id, remote_id);
+ 		spin_unlock_irq(&cm.lock);
+ 	} else if (IBA_GET(CM_REJ_MESSAGE_REJECTED, rej_msg) == CM_MSG_RESPONSE_REQ)
+ 		cm_id_priv = cm_acquire_id(rej_msg->remote_comm_id, 0);
 -- 
 2.20.1
 
