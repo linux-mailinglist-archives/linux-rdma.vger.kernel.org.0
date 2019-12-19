@@ -2,39 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB5F126F9F
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2019 22:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 784F6126FA0
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2019 22:19:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbfLSVTc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Dec 2019 16:19:32 -0500
-Received: from mga04.intel.com ([192.55.52.120]:24350 "EHLO mga04.intel.com"
+        id S1727179AbfLSVTi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Dec 2019 16:19:38 -0500
+Received: from mga09.intel.com ([134.134.136.24]:28906 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726984AbfLSVTc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 19 Dec 2019 16:19:32 -0500
+        id S1726984AbfLSVTh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 19 Dec 2019 16:19:37 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Dec 2019 13:19:31 -0800
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Dec 2019 13:19:37 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,333,1571727600"; 
-   d="scan'208";a="206338290"
+   d="scan'208";a="417738428"
 Received: from sedona.ch.intel.com ([10.2.136.157])
-  by orsmga007.jf.intel.com with ESMTP; 19 Dec 2019 13:19:30 -0800
+  by fmsmga006.fm.intel.com with ESMTP; 19 Dec 2019 13:19:36 -0800
 Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id xBJLJUA2002711;
-        Thu, 19 Dec 2019 14:19:30 -0700
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id xBJLJanb002714;
+        Thu, 19 Dec 2019 14:19:36 -0700
 Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id xBJLJSf5058635;
-        Thu, 19 Dec 2019 16:19:28 -0500
-Subject: [PATCH for-rc 2/4] IB/hfi1: List all receive contexts from debugfs
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id xBJLJY3K058654;
+        Thu, 19 Dec 2019 16:19:35 -0500
+Subject: [PATCH for-rc 3/4] IB/rdmavt: Correct comments in rdmavt_qp.h header
 From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
 To:     jgg@ziepe.ca, dledford@redhat.com
 Cc:     linux-rdma@vger.kernel.org,
-        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
         Mike Marciniszyn <mike.marciniszyn@intel.com>,
         Kaike Wan <kaike.wan@intel.com>
-Date:   Thu, 19 Dec 2019 16:19:28 -0500
-Message-ID: <20191219211928.58387.20737.stgit@awfm-01.aw.intel.com>
+Date:   Thu, 19 Dec 2019 16:19:34 -0500
+Message-ID: <20191219211934.58387.88014.stgit@awfm-01.aw.intel.com>
 In-Reply-To: <20191219211609.58387.86077.stgit@awfm-01.aw.intel.com>
 References: <20191219211609.58387.86077.stgit@awfm-01.aw.intel.com>
 User-Agent: StGit/0.17.1-dirty
@@ -46,77 +45,80 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Michael J. Ruhl <michael.j.ruhl@intel.com>
+From: Mike Marciniszyn <mike.marciniszyn@intel.com>
 
-The current debugfs output for receive contexts (rcds), stops after
-the kernel receive contexts have been displayed.  This is not enough
-information to fully diagnose packet drops.
+Comments need to be with the definition of rvt_restart_sge().
 
-Display all of the receive contexts.
+Other comments were duplicated in sw/rdmavt/rc.c and were
+removed.
 
-Augment the output with some more context information.
-
-Limit the ring buffer header output to 5 entries to avoid
-overextending the sequential file output.
-
-Fixes: bf808b5039c ("IB/hfi1: Add kernel receive context info to debugfs")
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
-Signed-off-by: Kaike Wan <kaike.wan@intel.com>
+Fixes: 385156c5f2a6 ("IB/hfi: Move RC functions into a header file")
+Reviewed-by: Kaike Wan <kaike.wan@intel.com>
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
 ---
- drivers/infiniband/hw/hfi1/debugfs.c |    2 +-
- drivers/infiniband/hw/hfi1/driver.c  |   12 +++++++++---
- 2 files changed, 10 insertions(+), 4 deletions(-)
+ drivers/infiniband/sw/rdmavt/rc.c |    9 ++++++++-
+ include/rdma/rdmavt_qp.h          |   22 +---------------------
+ 2 files changed, 9 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/debugfs.c b/drivers/infiniband/hw/hfi1/debugfs.c
-index d268bf9..4633a0c 100644
---- a/drivers/infiniband/hw/hfi1/debugfs.c
-+++ b/drivers/infiniband/hw/hfi1/debugfs.c
-@@ -379,7 +379,7 @@ static void *_rcds_seq_next(struct seq_file *s, void *v, loff_t *pos)
- 	struct hfi1_devdata *dd = dd_from_dev(ibd);
- 
- 	++*pos;
--	if (!dd->rcd || *pos >= dd->n_krcv_queues)
-+	if (!dd->rcd || *pos >= dd->num_rcv_contexts)
- 		return NULL;
- 	return pos;
+diff --git a/drivers/infiniband/sw/rdmavt/rc.c b/drivers/infiniband/sw/rdmavt/rc.c
+index 890d7b7..977906c 100644
+--- a/drivers/infiniband/sw/rdmavt/rc.c
++++ b/drivers/infiniband/sw/rdmavt/rc.c
+@@ -195,7 +195,14 @@ void rvt_get_credit(struct rvt_qp *qp, u32 aeth)
  }
-diff --git a/drivers/infiniband/hw/hfi1/driver.c b/drivers/infiniband/hw/hfi1/driver.c
-index cbc5219..8374922 100644
---- a/drivers/infiniband/hw/hfi1/driver.c
-+++ b/drivers/infiniband/hw/hfi1/driver.c
-@@ -1726,23 +1726,29 @@ static int process_receive_invalid(struct hfi1_packet *packet)
- 	return RHF_RCV_CONTINUE;
- }
+ EXPORT_SYMBOL(rvt_get_credit);
  
-+#define HFI1_RCVHDR_DUMP_MAX	5
-+
- void seqfile_dump_rcd(struct seq_file *s, struct hfi1_ctxtdata *rcd)
+-/* rvt_restart_sge - rewind the sge state for a wqe */
++/**
++ * rvt_restart_sge - rewind the sge state for a wqe
++ * @ss: the sge state pointer
++ * @wqe: the wqe to rewind
++ * @len: the data length from the start of the wqe in bytes
++ *
++ * Returns the remaining data length.
++ */
+ u32 rvt_restart_sge(struct rvt_sge_state *ss, struct rvt_swqe *wqe, u32 len)
  {
- 	struct hfi1_packet packet;
- 	struct ps_mdata mdata;
-+	int i;
+ 	ss->sge = wqe->sg_list[0];
+diff --git a/include/rdma/rdmavt_qp.h b/include/rdma/rdmavt_qp.h
+index b550ae8..0d5c70e 100644
+--- a/include/rdma/rdmavt_qp.h
++++ b/include/rdma/rdmavt_qp.h
+@@ -640,34 +640,14 @@ static inline int rvt_cmp_msn(u32 a, u32 b)
+ 	return (((int)a) - ((int)b)) << 8;
+ }
  
--	seq_printf(s, "Rcd %u: RcvHdr cnt %u entsize %u %s head %llu tail %llu\n",
-+	seq_printf(s, "Rcd %u: RcvHdr cnt %u entsize %u %s ctrl 0x%08llx status 0x%08llx, head %llu tail %llu  sw head %u\n",
- 		   rcd->ctxt, get_hdrq_cnt(rcd), get_hdrqentsize(rcd),
- 		   get_dma_rtail_setting(rcd) ?
- 		   "dma_rtail" : "nodma_rtail",
-+		   read_kctxt_csr(rcd->dd, rcd->ctxt, RCV_CTXT_CTRL),
-+		   read_kctxt_csr(rcd->dd, rcd->ctxt, RCV_CTXT_STATUS),
- 		   read_uctxt_csr(rcd->dd, rcd->ctxt, RCV_HDR_HEAD) &
- 		   RCV_HDR_HEAD_HEAD_MASK,
--		   read_uctxt_csr(rcd->dd, rcd->ctxt, RCV_HDR_TAIL));
-+		   read_uctxt_csr(rcd->dd, rcd->ctxt, RCV_HDR_TAIL),
-+		   rcd->head);
+-/**
+- * rvt_compute_aeth - compute the AETH (syndrome + MSN)
+- * @qp: the queue pair to compute the AETH for
+- *
+- * Returns the AETH.
+- */
+ __be32 rvt_compute_aeth(struct rvt_qp *qp);
  
- 	init_packet(rcd, &packet);
- 	init_ps_mdata(&mdata, &packet);
+-/**
+- * rvt_get_credit - flush the send work queue of a QP
+- * @qp: the qp who's send work queue to flush
+- * @aeth: the Acknowledge Extended Transport Header
+- *
+- * The QP s_lock should be held.
+- */
+ void rvt_get_credit(struct rvt_qp *qp, u32 aeth);
  
--	while (1) {
-+	for (i = 0; i < HFI1_RCVHDR_DUMP_MAX; i++) {
- 		__le32 *rhf_addr = (__le32 *)rcd->rcvhdrq + mdata.ps_head +
- 					 rcd->rhf_offset;
- 		struct ib_header *hdr;
+-/**
+- * rvt_restart_sge - rewind the sge state for a wqe
+- * @ss: the sge state pointer
+- * @wqe: the wqe to rewind
+- * @len: the data length from the start of the wqe in bytes
+- *
+- * Returns the remaining data length.
+- */
+ u32 rvt_restart_sge(struct rvt_sge_state *ss, struct rvt_swqe *wqe, u32 len);
+ 
+ /**
++ * rvt_div_round_up_mtu - round up divide
+  * @qp - the qp pair
+  * @len - the length
+  *
 
