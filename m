@@ -2,149 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5FC125C0E
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2019 08:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6E5125CEB
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Dec 2019 09:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbfLSHg3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Dec 2019 02:36:29 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:4230 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726340AbfLSHg3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Dec 2019 02:36:29 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dfb28710000>; Wed, 18 Dec 2019 23:36:17 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 18 Dec 2019 23:36:27 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 18 Dec 2019 23:36:27 -0800
-Received: from [10.2.165.11] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 19 Dec
- 2019 07:36:25 +0000
-Subject: Re: [PATCH v11 04/25] mm: devmap: refactor 1-based refcounting for
- ZONE_DEVICE pages
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, KVM list <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20191216222537.491123-1-jhubbard@nvidia.com>
- <20191216222537.491123-5-jhubbard@nvidia.com>
- <CAPcyv4hQBMxYMurxG=Vwh0=FKWoT3z-Kf=dqES1-icRV5bLwKg@mail.gmail.com>
- <d0a99e75-0175-0f31-f176-8c37c18a4108@nvidia.com>
- <CAPcyv4j+Zgom17UZ-6Njkij1R0UQ=vUQdnaEZj9qDezEUJSZGg@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <a9782048-0c6a-b906-2bd6-3800269f4b01@nvidia.com>
-Date:   Wed, 18 Dec 2019 23:33:36 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1726664AbfLSIqR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Dec 2019 03:46:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726652AbfLSIqR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 19 Dec 2019 03:46:17 -0500
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3EB0D24650;
+        Thu, 19 Dec 2019 08:46:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1576745176;
+        bh=0jcEw8Q6rcPxPmipvd7zTyTGS8RWxVITekelo7p9D3A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jnMDfrMClBY7y+umTB+2x2S2If75qx+UJMU4/JYHG7MmEmWf0ts2/JVk73aQvXqYP
+         136HC9o6AiAgNHK/o6pyDB0Eo2qXi7hZbUitnoCCTbvDu9MLhanWCo2hh8KHw7xvG1
+         u86wp9wh5usbmJeipbA4U1icImtI0SKx6P6/DNe4=
+Date:   Thu, 19 Dec 2019 09:46:14 +0100
+From:   'Greg KH' <gregkh@linuxfoundation.org>
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Cc:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "nhorman@redhat.com" <nhorman@redhat.com>,
+        "sassmann@redhat.com" <sassmann@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>
+Subject: Re: [PATCH v3 04/20] i40e: Register a virtbus device to provide RDMA
+Message-ID: <20191219084614.GC1027830@kroah.com>
+References: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
+ <20191209224935.1780117-5-jeffrey.t.kirsher@intel.com>
+ <20191210153959.GD4053085@kroah.com>
+ <9DD61F30A802C4429A01CA4200E302A7B6B9345E@fmsmsx124.amr.corp.intel.com>
+ <20191214083753.GB3318534@kroah.com>
+ <9DD61F30A802C4429A01CA4200E302A7B6B9AFF7@fmsmsx124.amr.corp.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4j+Zgom17UZ-6Njkij1R0UQ=vUQdnaEZj9qDezEUJSZGg@mail.gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1576740978; bh=AwGIHszd33R/kLZlUt1Z4JwwlD2NSoQAiltNw2UIah0=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=rn2yGjgwQ9+/2v2mcxWjrZFxdrk3/eEgjxRU1LJiuOVyjVOa62J0tvoTcmLOK6fXS
-         xTiiEKdaSrRaYvKoHJFISdC+5xDr9wuGKGy6eL+p8mnXTv3WmxTBQ5uSD1vNUHW7Zv
-         FL1u5zml1dT0aGOGbVIB8FGZRe/vZmwx0E0SfZqPp5XPLjqF6k+D7FwuHs+yKnEljh
-         6K2DgflrDdhvNm7j657NcorkWkt+15POYkE/QPPC6A7qk9vcVVLh/jftFFqBiaLSef
-         +CbFHF0Oi6KJR9YDOdsjceXX460BQcgisIE59hm4mMu6iV3pT5dz1gvUWjcugiRrZC
-         tT/WLbmWB9r/w==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7B6B9AFF7@fmsmsx124.amr.corp.intel.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 12/18/19 10:52 PM, Dan Williams wrote:
-> On Wed, Dec 18, 2019 at 9:51 PM John Hubbard <jhubbard@nvidia.com> wrote:
->>
->> On 12/18/19 9:27 PM, Dan Williams wrote:
->> ...
->>>> @@ -461,5 +449,5 @@ void __put_devmap_managed_page(struct page *page)
->>>>           page->mapping = NULL;
->>>>           page->pgmap->ops->page_free(page);
->>>>    }
->>>> -EXPORT_SYMBOL(__put_devmap_managed_page);
->>>> +EXPORT_SYMBOL(free_devmap_managed_page);
->>>
->>> This patch does not have a module consumer for
->>> free_devmap_managed_page(), so the export should move to the patch
->>> that needs the new export.
->>
->> Hi Dan,
->>
->> OK, I know that's a policy--although it seems quite pointless here given
->> that this is definitely going to need an EXPORT.
->>
->> At the moment, the series doesn't use it in any module at all, so I'll just
->> delete the EXPORT for now.
->>
->>>
->>> Also the only reason that put_devmap_managed_page() is EXPORT_SYMBOL
->>> instead of EXPORT_SYMBOL_GPL is that there was no practical way to
->>> hide the devmap details from evey module in the kernel that did
->>> put_page(). I would expect free_devmap_managed_page() to
->>> EXPORT_SYMBOL_GPL if it is not inlined into an existing exported
->>> static inline api.
->>>
->>
->> Sure, I'll change it to EXPORT_SYMBOL_GPL when the time comes. We do have
->> to be careful that we don't shut out normal put_page() types of callers,
->> but...glancing through the current callers, that doesn't look to be a problem.
->> Good. So it should be OK to do EXPORT_SYMBOL_GPL here.
->>
->> Are you *sure* you don't want to just pre-emptively EXPORT now, and save
->> looking at it again?
+On Wed, Dec 18, 2019 at 06:57:10PM +0000, Saleem, Shiraz wrote:
+> > > > Subject: Re: [PATCH v3 04/20] i40e: Register a virtbus device to
+> > > > provide RDMA
+> [.....]
 > 
-> I'm positive. There is enough history for "trust me the consumer is
-> coming" turning out not to be true to justify the hassle in my mind. I
-> do trust you, but things happen.
+> > > >
+> > > > And who owns the memory of this thing that is supposed to be
+> > > > dynamically controlled by something OUTSIDE of this driver?  Who
+> > > > created that thing 3 pointers deep?  What happens when you leak the
+> > > > memory below (hint, you did), and who is supposed to clean it up if
+> > > > you need to properly clean it up if something bad happens?
+> > >
+> > > The i40e_info object memory is tied to the PF driver.
+> > 
+> > What is a "PF"?
 > 
+> physical function.
+> 
+> > 
+> > > The object hierarchy is,
+> > >
+> > > i40e_pf: pointer to i40e_client_instance
+> > > 	----- i40e_client_instance: i40e_info
+> > > 		----- i40e_info: virtbus_device
+> > 
+> > So you are 3 pointers deep to get a structure that is dynamically controlled?  Why
+> > are those "3 pointers" not also represented in sysfs?
+> > You have a heiarchy within the kernel that is not being represented that way to
+> > userspace, why?
+> > 
+> > Hint, I think this is totally wrong, you need to rework this to be sane.
+> > 
+> > > For each PF, there is a client_instance object allocated.
+> > 
+> > Great, make it dynamic and in the device tree.
+> > 
+> > > The i40e_info object is populated and the virtbus_device hanging off this object
+> > is registered.
+> > 
+> > Great, make that dynamic and inthe device tree.
+> > 
+> > If you think this is too much, then your whole mess here is too much and needs to
+> > be made a lot simpler.
+> >
+> 
+> I think we can decouple the virtbus_device object from i40e_info object.
+> 
+> Instead allocate a i40e_virtbus_device object which contains
+> the virtbus_device and a pointer to i40e_info object for the
+> RDMA driver to consume on probe(). Register it the virtbus, and provide
+> a release callback to free up its memory.
+> 
+> Sending a patch snippet to hopefully make it clearer.
 
-OK, it's deleted locally. Thanks for looking at the patch. I'll post a v12 series
-that includes the change, once it looks like reviews are slowing down.
+Yes, this looks a little bit more sane.
 
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+greg k-h
