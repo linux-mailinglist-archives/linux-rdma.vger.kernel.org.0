@@ -2,40 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55CCD127E0B
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2019 15:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3D4127EB4
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2019 15:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727700AbfLTOiU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Dec 2019 09:38:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42216 "EHLO mail.kernel.org"
+        id S1727499AbfLTOrD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Dec 2019 09:47:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728375AbfLTOiC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 20 Dec 2019 09:38:02 -0500
+        id S1727381AbfLTOrC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 20 Dec 2019 09:47:02 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FDB224680;
-        Fri, 20 Dec 2019 14:38:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33BDD2465E;
+        Fri, 20 Dec 2019 14:47:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576852682;
-        bh=zE+BRqmnKr+jbHG/Cga+KLRk6OY0s4FD3cgOwKOtbIE=;
+        s=default; t=1576853222;
+        bh=JXTV5rA+VR9UgylwUbsmCMZjorEv2/sD5C3a50xkd4Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zgETLJ13tgwstPP/dgY7Jog+3DsS30k/oCS5s2dP5VW6a6SFcn1iiXocy8bBHZHRm
-         IH1NHVHv3eQbWrpQUgGUJwzCSZRGM0UWAMp4TXu3WO38EOTCrn1icIUDmJV/TaW3Sz
-         Ra8RSp/5irzbjBdezYMnXAXUkJbL8XD1PR3K+RB0=
+        b=Q2g2SlNF0cbRiANpB4trWQKWIdTGYRjt3yO1jJfZn78GuID5rASs1tuAIeEB2UX2r
+         /r+uCr60/wBu9SsKO7CXi8pFdfQLgRmDLdVegyGF+uLabfV8NEMfk8wJ7TNNul1azm
+         dkXe/ijTC8pUxshqa0x+ZbLj/8dIbk7v7XSvf6oQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Parav Pandit <parav@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
+Cc:     Chuhong Yuan <hslester96@gmail.com>,
+        Parav Pandit <parav@mellanox.com>,
         Doug Ledford <dledford@redhat.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 16/19] IB/mlx4: Follow mirror sequence of device add during device removal
-Date:   Fri, 20 Dec 2019 09:37:37 -0500
-Message-Id: <20191220143741.10220-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 02/14] RDMA/cma: add missed unregister_pernet_subsys in init failure
+Date:   Fri, 20 Dec 2019 09:46:46 -0500
+Message-Id: <20191220144658.10414-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191220143741.10220-1-sashal@kernel.org>
-References: <20191220143741.10220-1-sashal@kernel.org>
+In-Reply-To: <20191220144658.10414-1-sashal@kernel.org>
+References: <20191220144658.10414-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,64 +44,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@mellanox.com>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit 89f988d93c62384758b19323c886db917a80c371 ]
+[ Upstream commit 44a7b6759000ac51b92715579a7bba9e3f9245c2 ]
 
-Current code device add sequence is:
+The driver forgets to call unregister_pernet_subsys() in the error path
+of cma_init().
+Add the missed call to fix it.
 
-ib_register_device()
-ib_mad_init()
-init_sriov_init()
-register_netdev_notifier()
-
-Therefore, the remove sequence should be,
-
-unregister_netdev_notifier()
-close_sriov()
-mad_cleanup()
-ib_unregister_device()
-
-However it is not above.
-Hence, make do above remove sequence.
-
-Fixes: fa417f7b520ee ("IB/mlx4: Add support for IBoE")
-Signed-off-by: Parav Pandit <parav@mellanox.com>
-Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Link: https://lore.kernel.org/r/20191212091214.315005-3-leon@kernel.org
+Fixes: 4be74b42a6d0 ("IB/cma: Separate port allocation to network namespaces")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Reviewed-by: Parav Pandit <parav@mellanox.com>
+Link: https://lore.kernel.org/r/20191206012426.12744-1-hslester96@gmail.com
 Signed-off-by: Doug Ledford <dledford@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx4/main.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/infiniband/core/cma.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index 0299c0642de81..7e73a1a6cb671 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -3073,16 +3073,17 @@ static void mlx4_ib_remove(struct mlx4_dev *dev, void *ibdev_ptr)
- 	ibdev->ib_active = false;
- 	flush_workqueue(wq);
- 
--	mlx4_ib_close_sriov(ibdev);
--	mlx4_ib_mad_cleanup(ibdev);
--	ib_unregister_device(&ibdev->ib_dev);
--	mlx4_ib_diag_cleanup(ibdev);
- 	if (ibdev->iboe.nb.notifier_call) {
- 		if (unregister_netdevice_notifier(&ibdev->iboe.nb))
- 			pr_warn("failure unregistering notifier\n");
- 		ibdev->iboe.nb.notifier_call = NULL;
- 	}
- 
-+	mlx4_ib_close_sriov(ibdev);
-+	mlx4_ib_mad_cleanup(ibdev);
-+	ib_unregister_device(&ibdev->ib_dev);
-+	mlx4_ib_diag_cleanup(ibdev);
-+
- 	mlx4_qp_release_range(dev, ibdev->steer_qpn_base,
- 			      ibdev->steer_qpn_count);
- 	kfree(ibdev->ib_uc_qpns_bitmap);
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index dcfbf326f45c9..27653aad8f218 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -4440,6 +4440,7 @@ static int __init cma_init(void)
+ 	unregister_netdevice_notifier(&cma_nb);
+ 	rdma_addr_unregister_client(&addr_client);
+ 	ib_sa_unregister_client(&sa_client);
++	unregister_pernet_subsys(&cma_pernet_operations);
+ err_wq:
+ 	destroy_workqueue(cma_wq);
+ 	return ret;
 -- 
 2.20.1
 
