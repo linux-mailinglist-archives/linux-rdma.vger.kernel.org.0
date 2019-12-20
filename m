@@ -2,86 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11876127BC8
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2019 14:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8A6127BD1
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2019 14:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727351AbfLTNft (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Dec 2019 08:35:49 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:34157 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727344AbfLTNfs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Dec 2019 08:35:48 -0500
-Received: by mail-qt1-f193.google.com with SMTP id 5so8209101qtz.1
-        for <linux-rdma@vger.kernel.org>; Fri, 20 Dec 2019 05:35:48 -0800 (PST)
+        id S1727401AbfLTNhf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Dec 2019 08:37:35 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:33790 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727360AbfLTNhf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Dec 2019 08:37:35 -0500
+Received: by mail-qt1-f195.google.com with SMTP id d5so8222346qto.0
+        for <linux-rdma@vger.kernel.org>; Fri, 20 Dec 2019 05:37:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=QVNOXiGKgcBgMmMlzoR4ooNZNWnMDq3Y/3uiKqkZYh4=;
-        b=m31Z6t8jW/qPB1XwBqMlpizQ+VyLn0eBiWzB9UmFZ4jNdDvRQCk4dLRUULpc8nH6oc
-         AXvZQHt2a+g73UH5dn0smiWaf2zHjs86dstQAJnCn57AHxU9MtPzuV1NBo2ThHJqGtW8
-         g6kR/N2FkmTf6tMPZxWFQm+uBZ4oVZPttL4zBPS6d8SKcLllzxlk3xksrEAP2LgVWOZP
-         HtIoO68TTiFqkC5TMRd5DnvTCVYyeC8QxZ/UiQ4byeVis7rY8eIRy04FImdSiKJs0OYV
-         y1kH2qQcdNm2D7hNEgTVjkGgim2mL3ks5bvFdjZf8t3DrV4H+Ugy3ngerZcuw7U6ZprK
-         M16A==
+        bh=mvBh76+lJR/tpWro2ArGZFD1Hq86uRUb7a5a0yDgkGc=;
+        b=hMYSlvoYNOdjz3XtP4atybP8qik9sOul7OqD9jb4TGKLvrXwtHhFsdsC0dIyrJFGUa
+         iGsh+ab7ST/fNWD+XmbNVJNm/GoclR5NzYaU/d9tMjFYZ0DqF1CDt/Jz0dAoMNX5E/IK
+         HUFai45FGmI0IexwnlGbEKnQAveL4Tc/qtfqkpKX2Z3UaUM2oa8Lt6jrN0kx7GO0YgMj
+         ZnOtOryN+jjMwM5ZU9vjSCqN/s10gh6eWf+omUGiHKUsPVXsOT3YkJqTQy2hRP6TolVi
+         BI4RhRSEMuUnr+cVABloD2G0Zd/aiktIkZBhImH0r09GxZVsml+hGfzqLSzgwFlPHlAF
+         LEPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QVNOXiGKgcBgMmMlzoR4ooNZNWnMDq3Y/3uiKqkZYh4=;
-        b=UP+N/MGc1VRnvvJjKzBM1N70ULhCPvmNK/CNjU89g0UKnfxjk87JgVJKBq5z7x7ZB2
-         z46UPBqFX9UkF8EHDeUAVFsddhI1JsyiZk5CPVnkAmj3z2Mx3uQy+nYXSd09dQWN0Ys2
-         2u73utY+Kkp3duLmIKkWPkBrcL5C5t8PKzcE0D8Je4UvH1vqiN6wkjepSd1XEJyf/Wd8
-         JymVwainCoR7mlt5LC9UVb57xl2D2j53OnuL7e+jbUJp2SbZOLsMnWhE5YyCJBBVwrIE
-         NHDqKklrUz3T5sfxoZr4RzTxgJxvvqOw8sqbdps6xNwlkrrix3MlycG31AP7jxA41CBk
-         hhkA==
-X-Gm-Message-State: APjAAAXUM7mO7wWmCPeA1Fzxf5hWtUHslz//Rx/lMXVAmBVgSL5bY1Dr
-        7ECo9/SNZIw31PHCxM58jsmfYw==
-X-Google-Smtp-Source: APXvYqxVyzei+4muXN8DBkGlKCzKr8IXxLgr8bgWhHB93i2sPzX1gq1wdmZs2n7Nvrm/s6WIxwP8hg==
-X-Received: by 2002:aed:2202:: with SMTP id n2mr11973492qtc.4.1576848948070;
-        Fri, 20 Dec 2019 05:35:48 -0800 (PST)
+        bh=mvBh76+lJR/tpWro2ArGZFD1Hq86uRUb7a5a0yDgkGc=;
+        b=iGPdnist5Yh3neJy5GaxIatKUesk4FAHgmkZnCyE9dTLgvqVM5biXgS02pOZaFladZ
+         Pvoej4Td+f27xBjXwtidbiQPIkXUcZDjKzSpYrBJ4y0L1t9/fd0Smq1McTmNPrhmQvde
+         A58E+Iz084fPHcHrJVInyCJrT9gjmeLVLgX6ii+qQAhdHYmdPDolir7+2yG6KNYI9Av7
+         z2+7qIYFevOC1cu/qethheZNKKoEB6wka4Ix5yxfxu28pZPsytpyIpaGwzg4Fyu4UTZl
+         4SPZP/FwBZo1G8F8jcox3vwcGD3Fzu/CYtsRowp6OY2k0SE463Dex8KzvODWTkZqUcOE
+         kaZw==
+X-Gm-Message-State: APjAAAXmu4DV9GexGjlTGTaHCDK52AoYb/71ccBkpvxsTk35svqCwZAs
+        8u8LqYZL5Xinu5KGu46FDFin4g==
+X-Google-Smtp-Source: APXvYqwtcqG36DRuM1PAWiAueB9pXE6vWKe+SSvyym8AO9qCPp1WQAQZiw4xUQx/hB44pzIQnORw0w==
+X-Received: by 2002:ac8:602:: with SMTP id d2mr11809807qth.245.1576849054355;
+        Fri, 20 Dec 2019 05:37:34 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id l17sm2828951qkk.22.2019.12.20.05.35.47
+        by smtp.gmail.com with ESMTPSA id 16sm2870532qkj.77.2019.12.20.05.37.33
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 20 Dec 2019 05:35:47 -0800 (PST)
+        Fri, 20 Dec 2019 05:37:33 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iiIRX-0003eb-1p; Fri, 20 Dec 2019 09:35:47 -0400
-Date:   Fri, 20 Dec 2019 09:35:47 -0400
+        id 1iiITF-0003nH-5f; Fri, 20 Dec 2019 09:37:33 -0400
+Date:   Fri, 20 Dec 2019 09:37:33 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Artemy Kovalyov <artemyko@mellanox.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Aviad Yehezkel <aviadye@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH rdma-rc 3/3] IB/core: Fix ODP with IB_ACCESS_HUGETLB
- handling
-Message-ID: <20191220133547.GB13506@ziepe.ca>
-References: <20191219134646.413164-1-leon@kernel.org>
- <20191219134646.413164-4-leon@kernel.org>
- <20191219183237.GJ17227@ziepe.ca>
- <AM6PR0502MB3638228D4DD3E713A5AE8951B72D0@AM6PR0502MB3638.eurprd05.prod.outlook.com>
+To:     "Liuyixian (Eason)" <liuyixian@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH v3 for-next 0/2] Fix crash due to sleepy mutex while
+ holding lock in post_{send|recv|poll}
+Message-ID: <20191220133733.GC13506@ziepe.ca>
+References: <1574335200-34923-1-git-send-email-liuyixian@huawei.com>
+ <c6d0f4bb-aca6-86f6-f909-d91ed9e58216@huawei.com>
+ <20191218140026.GF17227@ziepe.ca>
+ <8e7fd052-1d3e-c408-5589-af0344084874@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <AM6PR0502MB3638228D4DD3E713A5AE8951B72D0@AM6PR0502MB3638.eurprd05.prod.outlook.com>
+In-Reply-To: <8e7fd052-1d3e-c408-5589-af0344084874@huawei.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Dec 20, 2019 at 04:51:00AM +0000, Artemy Kovalyov wrote:
+On Fri, Dec 20, 2019 at 06:12:51PM +0800, Liuyixian (Eason) wrote:
+> 
+> 
+> On 2019/12/18 22:00, Jason Gunthorpe wrote:
+> > On Mon, Dec 16, 2019 at 08:51:03PM +0800, Liuyixian (Eason) wrote:
+> >> Hi Jason,
+> >>
+> >> I want to make sure that is there any further comments on this patch set?
+> > 
+> > I still dislike it alot.
+> > 
+> 
+> Hi Jason,
+> 
+> Thanks for reply :)
+> Let us recall the previous discussions and check is there anything is pending on.
+> 
+> Comments in patch set V1:
+> 1: why do you need a dedicated HIGHPRI work queue?
+> 2. As far as I could tell the only thing the triggered the work to run
+>    was some variable which was only set in another work queue 'hns_roce_irq_work_handle()'
+> 3. don't do allocations at all if you can't allow them to fail.
+> 
+> Comments in patch set V2:
+> 1. It kind of looks like this can be called multiple times? It won't work
+>    right unless it is called exactly once.
+> 2. Why do you need more than one work in parallel for this? Once you
+>    start to move the HW to error that only has to happen once, surely?
+>       Flush operation should be implemented once the QP state is going to
+>       be error or the producer index is updated for the QP in error state.
+> 3. The work function does something that looks like it only has to happen
+>    once per QP. One do you need to keep re-queing this thing every time the user posts
+>    a WR?
+>       wqe every time the PI is updated. That's re-queuing is needed.
+> 
+> In conclusion, we have accepted all the comments in V1, and explained to all 3 comments in V2
+> but no further response. Do I have missed to cover any of your concerns?
+> 
+> I would really appreciate it if you could help to point out the unsolved issue.
 
-> AK: checking for linear contiguity may be not enough, page may be
-> transparent huge page, so in addition we also ensure its indeed
-> persistent.
+You explained you need to push the latest PI to the HW, so I still
+don't understand why it needs to be coded in such a confusing
 
-??
-
-I don't understand how it makes a difference. If the physical is
-linear we don't care if it is THP or just a lucky list of 4k pages?
+Keep a note if the PI is being pushed, if not, start pushing it. If
+yes, update that PI that will be pushed and do nothing
 
 Jason
