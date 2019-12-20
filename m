@@ -2,35 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6808C127DD0
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2019 15:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE775127DBA
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2019 15:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727510AbfLTOgl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Dec 2019 09:36:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39060 "EHLO mail.kernel.org"
+        id S1727816AbfLTOfs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Dec 2019 09:35:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728305AbfLTOev (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 20 Dec 2019 09:34:51 -0500
+        id S1728376AbfLTOfN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 20 Dec 2019 09:35:13 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 205402465E;
-        Fri, 20 Dec 2019 14:34:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5E3121D7E;
+        Fri, 20 Dec 2019 14:35:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576852490;
-        bh=W9zbRmuy6oxxYdUeD2QHIDLLTPNGatBeVljSEgekXjo=;
+        s=default; t=1576852512;
+        bh=HgNU+6xGYufx4iwzAlrIbH0amQfl2E2FmuW1mVCZUxs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xrp4ynRjHCIT5Jj2iumv7CBDg+PeEtS1OrUtyK6ex6KOO8YLsYEDO4IcR+LBbim0R
-         /Bk0TqQ7s2j6DCCcysxc+4HwOaB6BUPOoe+5EhAwYgD9MZiZPMaITTF3+49cjE48qa
-         3Zx5lIJB4+adK/sS+G9caS/YVcvWRj5DaVmoiBbk=
+        b=IN7qZEDHa3AsirPVcq4tMUGuQlMJwDgDmPPQztW0ANw21wu4mR+rozQKFOoqGx1ju
+         6dManef87NDBfljJFbIV9yg8FClXSi31Yr1MNTJhG5Ec1FXJ5lBk61s7FbvDFIRC7+
+         IJPkv94ORgOO3Q1e0Gzyf5xcrW9xz3wz6p9PR6AA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Steve Wise <larrystevenwise@gmail.com>,
+Cc:     Parav Pandit <parav@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Doug Ledford <dledford@redhat.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 13/34] rxe: correctly calculate iCRC for unaligned payloads
-Date:   Fri, 20 Dec 2019 09:34:12 -0500
-Message-Id: <20191220143433.9922-13-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 30/34] IB/mlx4: Follow mirror sequence of device add during device removal
+Date:   Fri, 20 Dec 2019 09:34:29 -0500
+Message-Id: <20191220143433.9922-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191220143433.9922-1-sashal@kernel.org>
 References: <20191220143433.9922-1-sashal@kernel.org>
@@ -43,81 +45,64 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Steve Wise <larrystevenwise@gmail.com>
+From: Parav Pandit <parav@mellanox.com>
 
-[ Upstream commit 2030abddec6884aaf5892f5724c48fc340e6826f ]
+[ Upstream commit 89f988d93c62384758b19323c886db917a80c371 ]
 
-If RoCE PDUs being sent or received contain pad bytes, then the iCRC
-is miscalculated, resulting in PDUs being emitted by RXE with an incorrect
-iCRC, as well as ingress PDUs being dropped due to erroneously detecting
-a bad iCRC in the PDU.  The fix is to include the pad bytes, if any,
-in iCRC computations.
+Current code device add sequence is:
 
-Note: This bug has caused broken on-the-wire compatibility with actual
-hardware RoCE devices since the soft-RoCE driver was first put into the
-mainstream kernel.  Fixing it will create an incompatibility with the
-original soft-RoCE devices, but is necessary to be compatible with real
-hardware devices.
+ib_register_device()
+ib_mad_init()
+init_sriov_init()
+register_netdev_notifier()
 
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Signed-off-by: Steve Wise <larrystevenwise@gmail.com>
-Link: https://lore.kernel.org/r/20191203020319.15036-2-larrystevenwise@gmail.com
+Therefore, the remove sequence should be,
+
+unregister_netdev_notifier()
+close_sriov()
+mad_cleanup()
+ib_unregister_device()
+
+However it is not above.
+Hence, make do above remove sequence.
+
+Fixes: fa417f7b520ee ("IB/mlx4: Add support for IBoE")
+Signed-off-by: Parav Pandit <parav@mellanox.com>
+Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Link: https://lore.kernel.org/r/20191212091214.315005-3-leon@kernel.org
 Signed-off-by: Doug Ledford <dledford@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_recv.c | 2 +-
- drivers/infiniband/sw/rxe/rxe_req.c  | 6 ++++++
- drivers/infiniband/sw/rxe/rxe_resp.c | 7 +++++++
- 3 files changed, 14 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx4/main.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-index d30dbac24583a..695a607e2d14c 100644
---- a/drivers/infiniband/sw/rxe/rxe_recv.c
-+++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-@@ -391,7 +391,7 @@ void rxe_rcv(struct sk_buff *skb)
+diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+index 0bbeaaae47e07..9386bb57b3d71 100644
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -3069,16 +3069,17 @@ static void mlx4_ib_remove(struct mlx4_dev *dev, void *ibdev_ptr)
+ 	ibdev->ib_active = false;
+ 	flush_workqueue(wq);
  
- 	calc_icrc = rxe_icrc_hdr(pkt, skb);
- 	calc_icrc = rxe_crc32(rxe, calc_icrc, (u8 *)payload_addr(pkt),
--			      payload_size(pkt));
-+			      payload_size(pkt) + bth_pad(pkt));
- 	calc_icrc = (__force u32)cpu_to_be32(~calc_icrc);
- 	if (unlikely(calc_icrc != pack_icrc)) {
- 		if (skb->protocol == htons(ETH_P_IPV6))
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index f7dd8de799415..1c1eae0ef8c28 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -500,6 +500,12 @@ static int fill_packet(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
- 			if (err)
- 				return err;
- 		}
-+		if (bth_pad(pkt)) {
-+			u8 *pad = payload_addr(pkt) + paylen;
-+
-+			memset(pad, 0, bth_pad(pkt));
-+			crc = rxe_crc32(rxe, crc, pad, bth_pad(pkt));
-+		}
+-	mlx4_ib_close_sriov(ibdev);
+-	mlx4_ib_mad_cleanup(ibdev);
+-	ib_unregister_device(&ibdev->ib_dev);
+-	mlx4_ib_diag_cleanup(ibdev);
+ 	if (ibdev->iboe.nb.notifier_call) {
+ 		if (unregister_netdevice_notifier(&ibdev->iboe.nb))
+ 			pr_warn("failure unregistering notifier\n");
+ 		ibdev->iboe.nb.notifier_call = NULL;
  	}
- 	p = payload_addr(pkt) + paylen + bth_pad(pkt);
  
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 681d8e0913d06..9078cfd3b8bdd 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -737,6 +737,13 @@ static enum resp_states read_reply(struct rxe_qp *qp,
- 	if (err)
- 		pr_err("Failed copying memory\n");
- 
-+	if (bth_pad(&ack_pkt)) {
-+		struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
-+		u8 *pad = payload_addr(&ack_pkt) + payload;
++	mlx4_ib_close_sriov(ibdev);
++	mlx4_ib_mad_cleanup(ibdev);
++	ib_unregister_device(&ibdev->ib_dev);
++	mlx4_ib_diag_cleanup(ibdev);
 +
-+		memset(pad, 0, bth_pad(&ack_pkt));
-+		icrc = rxe_crc32(rxe, icrc, pad, bth_pad(&ack_pkt));
-+	}
- 	p = payload_addr(&ack_pkt) + payload + bth_pad(&ack_pkt);
- 	*p = ~icrc;
- 
+ 	mlx4_qp_release_range(dev, ibdev->steer_qpn_base,
+ 			      ibdev->steer_qpn_count);
+ 	kfree(ibdev->ib_uc_qpns_bitmap);
 -- 
 2.20.1
 
