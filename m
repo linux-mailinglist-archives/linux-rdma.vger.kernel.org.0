@@ -2,90 +2,160 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A97EE1278F6
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2019 11:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6257127BC4
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2019 14:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727261AbfLTKNG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Dec 2019 05:13:06 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7724 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727235AbfLTKNG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 20 Dec 2019 05:13:06 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 9BD44B9CFF79908F03D0;
-        Fri, 20 Dec 2019 18:13:02 +0800 (CST)
-Received: from [127.0.0.1] (10.74.223.196) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.439.0; Fri, 20 Dec 2019
- 18:12:52 +0800
-Subject: Re: [PATCH v3 for-next 0/2] Fix crash due to sleepy mutex while
- holding lock in post_{send|recv|poll}
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <dledford@redhat.com>, <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1574335200-34923-1-git-send-email-liuyixian@huawei.com>
- <c6d0f4bb-aca6-86f6-f909-d91ed9e58216@huawei.com>
- <20191218140026.GF17227@ziepe.ca>
-From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
-Message-ID: <8e7fd052-1d3e-c408-5589-af0344084874@huawei.com>
-Date:   Fri, 20 Dec 2019 18:12:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.1
+        id S1727390AbfLTNe1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Dec 2019 08:34:27 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:43781 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727378AbfLTNe0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 Dec 2019 08:34:26 -0500
+Received: by mail-qv1-f65.google.com with SMTP id p2so3594792qvo.10
+        for <linux-rdma@vger.kernel.org>; Fri, 20 Dec 2019 05:34:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5r9Zi+Au/gtKbsFaE0fKhn5Z9mh4Uiv+qjM4b27ESt8=;
+        b=gS91bsS4NjRyWzEDV454oc5qOgomjYBCltRmKzH7Nu9vdI8tQd65a6Yp2TVGSlgA1T
+         37v5Lb1zFtvOvSi94i0Yt83/4AqEpVzmzRwSkFPiESUgqKx4PUFqFCjV/s3xXBOVi9U4
+         w+ZUvVeXy6xbZ8B7zSi+DLnr0w1yjX7v6UIJiebq6UOkRZYcGvU4/THsXU/G/ZDo26P9
+         Xc2y8nF265eAeIX5xgl66hBVWEixNbJ1XzQjNRNan6ViT+Wn6RFHm+C8bWOAWNCFyUU3
+         D0D+BCr//3+mjkgiCcFfBfObTFOz8gI7nHowmgBdF1XYr9LIFcBR6SXbWA6e0W7l8hfH
+         tNRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5r9Zi+Au/gtKbsFaE0fKhn5Z9mh4Uiv+qjM4b27ESt8=;
+        b=m8bxxoAMsjWdMtm4D1yb76QbFOLKmhm+g/re/+Qqt0IFMuN2FkhUiX8EQRlO3IkZOZ
+         mRDUmZewUo8H3LhlaImpw4kITk4Gwg6UfFZ+j6s1+lY+daLMu6n4+raNVKzkmvWiwpXw
+         ns9CdFDe3WyJnrgwl+1R/9FfvUnv8yeQMvQnNSQrIH+Fnv0FlpwXb7xLUFemXaarj0Dq
+         c0GPcdQ6kYqopH0qI/+to1Ya/ZEGZAnx+pQ7zZr0DhtUs606Yt4DgrbQ0a7Y3rIRlmmy
+         6ycuwp2TRG1G5UPXMy+ojMQDtoLBqscEry0aZlVrvqoqRL63QDNQWGFCyD6zaCE43duu
+         BWSg==
+X-Gm-Message-State: APjAAAVcZjd5WZ3Z3RiXtfcsVgx2F8kPQFuVC1X3pCESmLoZVNAej4Ei
+        0PY+xAMM9TN94d3kdsTtnZjFyg==
+X-Google-Smtp-Source: APXvYqz9az5JjtCMEl1OLVSzBMZYIFm7RbLMGJ3PjpAUx1pKMUVrf5ynor78RCoLoFWtbwHwcCO7NQ==
+X-Received: by 2002:a0c:893d:: with SMTP id 58mr4949386qvp.4.1576848864984;
+        Fri, 20 Dec 2019 05:34:24 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id q73sm2786969qka.56.2019.12.20.05.34.23
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 20 Dec 2019 05:34:24 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iiIQB-0003cq-Co; Fri, 20 Dec 2019 09:34:23 -0400
+Date:   Fri, 20 Dec 2019 09:34:23 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: Re: [PATCH v11 00/25] mm/gup: track dma-pinned pages: FOLL_PIN
+Message-ID: <20191220133423.GA13506@ziepe.ca>
+References: <20191216222537.491123-1-jhubbard@nvidia.com>
+ <20191219132607.GA410823@unreal>
+ <a4849322-8e17-119e-a664-80d9f95d850b@nvidia.com>
+ <20191219210743.GN17227@ziepe.ca>
+ <42a3e5c1-6301-db0b-5d09-212edf5ecf2a@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20191218140026.GF17227@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.223.196]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <42a3e5c1-6301-db0b-5d09-212edf5ecf2a@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 2019/12/18 22:00, Jason Gunthorpe wrote:
-> On Mon, Dec 16, 2019 at 08:51:03PM +0800, Liuyixian (Eason) wrote:
->> Hi Jason,
->>
->> I want to make sure that is there any further comments on this patch set?
+On Thu, Dec 19, 2019 at 01:13:54PM -0800, John Hubbard wrote:
+> On 12/19/19 1:07 PM, Jason Gunthorpe wrote:
+> > On Thu, Dec 19, 2019 at 12:30:31PM -0800, John Hubbard wrote:
+> > > On 12/19/19 5:26 AM, Leon Romanovsky wrote:
+> > > > On Mon, Dec 16, 2019 at 02:25:12PM -0800, John Hubbard wrote:
+> > > > > Hi,
+> > > > > 
+> > > > > This implements an API naming change (put_user_page*() -->
+> > > > > unpin_user_page*()), and also implements tracking of FOLL_PIN pages. It
+> > > > > extends that tracking to a few select subsystems. More subsystems will
+> > > > > be added in follow up work.
+> > > > 
+> > > > Hi John,
+> > > > 
+> > > > The patchset generates kernel panics in our IB testing. In our tests, we
+> > > > allocated single memory block and registered multiple MRs using the single
+> > > > block.
+> > > > 
+> > > > The possible bad flow is:
+> > > >    ib_umem_geti() ->
+> > > >     pin_user_pages_fast(FOLL_WRITE) ->
+> > > >      internal_get_user_pages_fast(FOLL_WRITE) ->
+> > > >       gup_pgd_range() ->
+> > > >        gup_huge_pd() ->
+> > > >         gup_hugepte() ->
+> > > >          try_grab_compound_head() ->
+> > > 
+> > > Hi Leon,
+> > > 
+> > > Thanks very much for the detailed report! So we're overflowing...
+> > > 
+> > > At first look, this seems likely to be hitting a weak point in the
+> > > GUP_PIN_COUNTING_BIAS-based design, one that I believed could be deferred
+> > > (there's a writeup in Documentation/core-api/pin_user_page.rst, lines
+> > > 99-121). Basically it's pretty easy to overflow the page->_refcount
+> > > with huge pages if the pages have a *lot* of subpages.
+> > > 
+> > > We can only do about 7 pins on 1GB huge pages that use 4KB subpages.
+> > 
+> > Considering that establishing these pins is entirely under user
+> > control, we can't have a limit here.
 > 
-> I still dislike it alot.
+> There's already a limit, it's just a much larger one. :) What does "no limit"
+> really mean, numerically, to you in this case?
+
+I guess I mean 'hidden limit' - hitting the limit and failing would
+be managable.
+
+I think 7 is probably too low though, but we are not using 1GB huge
+pages, only 2M..
+
+> > If the number of allowed pins are exhausted then the
+> > pin_user_pages_fast() must fail back to the user.
 > 
+> I'll poke around the IB call stack and see how much of that return
+> path is in place, if any. Because it's the same situation for
+> get_user_pages_fast().  This code just added a warning on overflow
+> so we could spot it early.
 
-Hi Jason,
+All GUP callers must be prepared for failure, IB should be fine...
 
-Thanks for reply :)
-Let us recall the previous discussions and check is there anything is pending on.
-
-Comments in patch set V1:
-1: why do you need a dedicated HIGHPRI work queue?
-   -- Accepted. The HIGHPRI flag was moved out from v2.
-2. As far as I could tell the only thing the triggered the work to run
-   was some variable which was only set in another work queue 'hns_roce_irq_work_handle()'
-   -- Accepted. No new work queue is created but the irq WQ is reused from v2.
-3. don't do allocations at all if you can't allow them to fail.
-   -- Accepted. The flush_work structure is initialized at compile time.
-
-Comments in patch set V2:
-1. It kind of looks like this can be called multiple times? It won't work
-   right unless it is called exactly once.
-   -- Agreed. So I proposed to fall back to V1 in V3 again.
-2. Why do you need more than one work in parallel for this? Once you
-   start to move the HW to error that only has to happen once, surely?
-   -- Explained. This question has raised out the key point of our solution.
-      Flush operation should be implemented once the QP state is going to
-      be error or the producer index is updated for the QP in error state.
-3. The work function does something that looks like it only has to happen
-   once per QP. One do you need to keep re-queing this thing every time the user posts
-   a WR?
-   -- Explained. The root cause is that hip08 needs the newest PI to flush the outstanding
-      wqe every time the PI is updated. That's re-queuing is needed.
-
-In conclusion, we have accepted all the comments in V1, and explained to all 3 comments in V2
-but no further response. Do I have missed to cover any of your concerns?
-
-I would really appreciate it if you could help to point out the unsolved issue.
-
-Thanks.
-
+Jason
