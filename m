@@ -2,40 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1580127D02
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2019 15:32:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DC8127D8B
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2019 15:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727402AbfLTOcF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 Dec 2019 09:32:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35084 "EHLO mail.kernel.org"
+        id S1728268AbfLTOeu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 Dec 2019 09:34:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727968AbfLTObA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 20 Dec 2019 09:31:00 -0500
+        id S1727683AbfLTOeu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 20 Dec 2019 09:34:50 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0821321D7E;
-        Fri, 20 Dec 2019 14:30:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B66E024680;
+        Fri, 20 Dec 2019 14:34:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576852259;
-        bh=yLVIhH+swugmzM/oMFaJtbU7LLW0/139xHCniGzhzic=;
+        s=default; t=1576852489;
+        bh=0tGg4+AZJaHWkUwSGa+LofvkLvWtlVY6XMsyeejDtKo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ImqkofKcK1LnNNf/Wzj3YG4MIePYQBtC8YjMWslj+TKDaRWWu4olnmlJlhB+a2mh+
-         +M/4eZqMiVMjeVVKnsJKwXdxcQjBGuPHc4iKPWkYH++c6l5J8AfYdG9SFedcAZLwDg
-         jqSPhyrCdXMhvnz7cx1mCcUKtPayGcspmhQZoUiM=
+        b=2Ms6UJJ0vKvtGgfPWD0JG4NbA5PROHP5pUyRe+xLTrevb7bmVcx+//aQxX2m0IQQe
+         0ZubZfqv0i6XN/e8xc4fdG51UgCLhVCl7Ucptu4ydA2hnLdkyPuG/APmb0XX2OMT6X
+         QaxgQ7iV5fN5JvMuM+cS69K1Ex0OL6wqOXaz+Fm4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Maor Gottlieb <maorg@mellanox.com>,
-        Raed Salem <raeds@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
+Cc:     Chuhong Yuan <hslester96@gmail.com>,
+        Parav Pandit <parav@mellanox.com>,
         Doug Ledford <dledford@redhat.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 49/52] IB/mlx5: Fix steering rule of drop and count
-Date:   Fri, 20 Dec 2019 09:29:51 -0500
-Message-Id: <20191220142954.9500-49-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 12/34] RDMA/cma: add missed unregister_pernet_subsys in init failure
+Date:   Fri, 20 Dec 2019 09:34:11 -0500
+Message-Id: <20191220143433.9922-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191220142954.9500-1-sashal@kernel.org>
-References: <20191220142954.9500-1-sashal@kernel.org>
+In-Reply-To: <20191220143433.9922-1-sashal@kernel.org>
+References: <20191220143433.9922-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,63 +44,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maor Gottlieb <maorg@mellanox.com>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit ed9085fed9d95d5921582e3c8474f3736c5d2782 ]
+[ Upstream commit 44a7b6759000ac51b92715579a7bba9e3f9245c2 ]
 
-There are two flow rule destinations: QP and packet. While users are
-setting DROP packet rule, the QP should not be set as a destination.
+The driver forgets to call unregister_pernet_subsys() in the error path
+of cma_init().
+Add the missed call to fix it.
 
-Fixes: 3b3233fbf02e ("IB/mlx5: Add flow counters binding support")
-Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-Reviewed-by: Raed Salem <raeds@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Link: https://lore.kernel.org/r/20191212091214.315005-4-leon@kernel.org
+Fixes: 4be74b42a6d0 ("IB/cma: Separate port allocation to network namespaces")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Reviewed-by: Parav Pandit <parav@mellanox.com>
+Link: https://lore.kernel.org/r/20191206012426.12744-1-hslester96@gmail.com
 Signed-off-by: Doug Ledford <dledford@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/main.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/infiniband/core/cma.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 831539419c301..e1cfbedefcbc9 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -3548,10 +3548,6 @@ static struct mlx5_ib_flow_handler *_create_flow_rule(struct mlx5_ib_dev *dev,
- 	}
- 
- 	INIT_LIST_HEAD(&handler->list);
--	if (dst) {
--		memcpy(&dest_arr[0], dst, sizeof(*dst));
--		dest_num++;
--	}
- 
- 	for (spec_index = 0; spec_index < flow_attr->num_of_specs; spec_index++) {
- 		err = parse_flow_attr(dev->mdev, spec,
-@@ -3564,6 +3560,11 @@ static struct mlx5_ib_flow_handler *_create_flow_rule(struct mlx5_ib_dev *dev,
- 		ib_flow += ((union ib_flow_spec *)ib_flow)->size;
- 	}
- 
-+	if (dst && !(flow_act.action & MLX5_FLOW_CONTEXT_ACTION_DROP)) {
-+		memcpy(&dest_arr[0], dst, sizeof(*dst));
-+		dest_num++;
-+	}
-+
- 	if (!flow_is_multicast_only(flow_attr))
- 		set_underlay_qp(dev, spec, underlay_qpn);
- 
-@@ -3604,10 +3605,8 @@ static struct mlx5_ib_flow_handler *_create_flow_rule(struct mlx5_ib_dev *dev,
- 	}
- 
- 	if (flow_act.action & MLX5_FLOW_CONTEXT_ACTION_DROP) {
--		if (!(flow_act.action & MLX5_FLOW_CONTEXT_ACTION_COUNT)) {
-+		if (!dest_num)
- 			rule_dst = NULL;
--			dest_num = 0;
--		}
- 	} else {
- 		if (is_egress)
- 			flow_act.action |= MLX5_FLOW_CONTEXT_ACTION_ALLOW;
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 1f373ba573b6d..319bfef00a4a8 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -4658,6 +4658,7 @@ static int __init cma_init(void)
+ err:
+ 	unregister_netdevice_notifier(&cma_nb);
+ 	ib_sa_unregister_client(&sa_client);
++	unregister_pernet_subsys(&cma_pernet_operations);
+ err_wq:
+ 	destroy_workqueue(cma_wq);
+ 	return ret;
 -- 
 2.20.1
 
