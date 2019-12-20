@@ -2,127 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E02127157
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2019 00:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A073127214
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Dec 2019 01:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbfLSXTZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Dec 2019 18:19:25 -0500
-Received: from mga17.intel.com ([192.55.52.151]:29904 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726818AbfLSXTZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 19 Dec 2019 18:19:25 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Dec 2019 15:19:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,333,1571727600"; 
-   d="scan'208";a="241326119"
-Received: from sedona.ch.intel.com ([10.2.136.157])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Dec 2019 15:19:24 -0800
-Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id xBJNJMHV016425;
-        Thu, 19 Dec 2019 16:19:23 -0700
-Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id xBJNJKOg051093;
-        Thu, 19 Dec 2019 18:19:20 -0500
-Subject: [PATCH for-rc] IB/hfi1: Adjust flow PSN with the correct resync_psn
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        stable@vger.kernel.org, Kaike Wan <kaike.wan@intel.com>
-Date:   Thu, 19 Dec 2019 18:19:20 -0500
-Message-ID: <20191219231920.51069.37147.stgit@awfm-01.aw.intel.com>
-User-Agent: StGit/0.17.1-dirty
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S1726992AbfLTAPk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Dec 2019 19:15:40 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:38826 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726964AbfLTAPk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Dec 2019 19:15:40 -0500
+Received: by mail-pf1-f194.google.com with SMTP id x185so4211644pfc.5
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Dec 2019 16:15:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lixom-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=Xza35VKEvSvjMP8PzRVZ35j7UizUwWQ11TtoEWfsA3Q=;
+        b=NNy98T7dz4IUNnNLaJQft6RAEhtwCcTFXv02GozymvM1Ea1jNkJFQv2PQ+QRRXSLFk
+         Mk5zTLKbBusvQPv+bg/u7qv8XzRqAPNTtdH+4maUWOK8PwJVrv6imA3+TuoGotcjr/rq
+         WeaXXWd19uZ6bdYkMrnQAJmo+Q55zv1IfdYygUO/CGVTxuS5zngvmsySsLuWoGoKa2zG
+         PxqsjNI4ya8KxN5qjphBTmkxJTPQoMpLZ6fLFikgoG2+MMx6ywYVBEYidrg7wqU/s40N
+         8g6m8CfYBp5/K3xC38QRkgsNQ2VUJEBe9gbcJJnF5RGAFwvBjneY+pxLSV0c3juCFZnW
+         T5JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Xza35VKEvSvjMP8PzRVZ35j7UizUwWQ11TtoEWfsA3Q=;
+        b=JobzISjRGTK2xztlvvDHTGlqjeeXOspLT62XDId7VbIi3BYGatZk89gvK5SU5x8n9q
+         abSz3qW0G2hCLjQryn8duUBPShFnYqOZmYfr/IhWrm5+zDG3j/dMb1hfboBzyyjXgxaO
+         GwtqgZIbNmbCI1H/XLKM0K/XsijaSXM7Sq9yhY/GRuxggfH6u0mbbWYxiVafHqBM4OwF
+         qR9Dtolc/zun1zo+wXlMesVHqpcxA9fpdt14mPw+EnNmERi7aBg7d0oK10xtuX3W0vSx
+         BurFnipyLaNsgtxQxfwmDnFgmuBm7bJayUD4KdiDryO4QB/WFcXNTPN9yZQYEPwKWeDe
+         +orA==
+X-Gm-Message-State: APjAAAUryaCibYrBUHolUh9FWpjzT3mfNGDDXQY2uZdQkZmEiAXTq1aA
+        6GmLNhWUffcynNtILztYP8pirw==
+X-Google-Smtp-Source: APXvYqzHTcFOfPjIOzxBXsbVb01FSma/OGljIvD3S6xqG+A2sFrTNEZIUktiv1IzutARjpJbzkpXRg==
+X-Received: by 2002:a65:58ce:: with SMTP id e14mr11807199pgu.153.1576800939356;
+        Thu, 19 Dec 2019 16:15:39 -0800 (PST)
+Received: from rip.lixom.net (99-152-116-91.lightspeed.sntcca.sbcglobal.net. [99.152.116.91])
+        by smtp.gmail.com with ESMTPSA id e16sm8603679pgk.77.2019.12.19.16.15.37
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 19 Dec 2019 16:15:37 -0800 (PST)
+From:   Olof Johansson <olof@lixom.net>
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Olof Johansson <olof@lixom.net>
+Subject: [PATCH] net/mlx5e: Fix printk format warning
+Date:   Thu, 19 Dec 2019 16:15:17 -0800
+Message-Id: <20191220001517.105297-1-olof@lixom.net>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Kaike Wan <kaike.wan@intel.com>
+Use "%zu" for size_t. Seen on ARM allmodconfig:
 
-When a TID RDMA ACK to RESYNC request is received, the flow PSNs for
-pending TID RDMA WRITE segments will be adjusted with the next flow
-generation number, based on the resync_psn value extracted from the
-flow PSN of the TID RDMA ACK packet. The resync_psn value indicates
-the last flow PSN for which a TID RDMA WRITE DATA packet has been
-received by the responder and the requester should resend TID RDMA
-WRITE DATA packets, starting from the next flow PSN. However, if
-resync_psn points to the last flow PSN for a segment and the next
-segment flow PSN starts with a new generation number, use of the
-old resync_psn to adjust the flow PSN for the next segment will
-lead to miscalculation, resulting in WARN_ON and sge rewinding
-errors:
-[2419460.492485] WARNING: CPU: 4 PID: 146961 at /nfs/site/home/phcvs2/gitrepo/ifs-all/components/Drivers/tmp/rpmbuild/BUILD/ifs-kernel-updates-3.10.0_957.el7.x86_64/hfi1/tid_rdma.c:4764 hfi1_rc_rcv_tid_rdma_ack+0x8f6/0xa90 [hfi1]
-[2419460.514565] Modules linked in: ib_ipoib(OE) hfi1(OE) rdmavt(OE) rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver nfsv3 nfs_acl nfs lockd grace fscache iTCO_wdt iTCO_vendor_support skx_edac intel_powerclamp coretemp intel_rapl iosf_mbi kvm irqbypass crc32_pclmul ghash_clmulni_intel ib_isert iscsi_target_mod target_core_mod aesni_intel lrw gf128mul glue_helper ablk_helper cryptd rpcrdma sunrpc opa_vnic ast ttm ib_iser libiscsi drm_kms_helper scsi_transport_iscsi ipmi_ssif syscopyarea sysfillrect sysimgblt fb_sys_fops drm joydev ipmi_si pcspkr sg drm_panel_orientation_quirks ipmi_devintf lpc_ich i2c_i801 ipmi_msghandler wmi rdma_ucm ib_ucm ib_uverbs acpi_cpufreq acpi_power_meter ib_umad rdma_cm ib_cm iw_cm ip_tables ext4 mbcache jbd2 sd_mod crc_t10dif crct10dif_generic crct10dif_pclmul i2c_algo_bit crct10dif_common
-[2419460.594432]  crc32c_intel e1000e ib_core ahci libahci ptp libata pps_core nfit libnvdimm [last unloaded: rdmavt]
-[2419460.605645] CPU: 4 PID: 146961 Comm: kworker/4:0H Kdump: loaded Tainted: G        W  OE  ------------   3.10.0-957.el7.x86_64 #1
-[2419460.619424] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.0X.02.0117.040420182310 04/04/2018
-[2419460.631062] Workqueue: hfi0_0 _hfi1_do_tid_send [hfi1]
-[2419460.637423] Call Trace:
-[2419460.641044]  <IRQ>  [<ffffffff9e361dc1>] dump_stack+0x19/0x1b
-[2419460.647980]  [<ffffffff9dc97648>] __warn+0xd8/0x100
-[2419460.654023]  [<ffffffff9dc9778d>] warn_slowpath_null+0x1d/0x20
-[2419460.661025]  [<ffffffffc05d28c6>] hfi1_rc_rcv_tid_rdma_ack+0x8f6/0xa90 [hfi1]
-[2419460.669333]  [<ffffffffc05c21cc>] hfi1_kdeth_eager_rcv+0x1dc/0x210 [hfi1]
-[2419460.677295]  [<ffffffffc05c23ef>] ? hfi1_kdeth_expected_rcv+0x1ef/0x210 [hfi1]
-[2419460.685693]  [<ffffffffc0574f15>] kdeth_process_eager+0x35/0x90 [hfi1]
-[2419460.693394]  [<ffffffffc0575b5a>] handle_receive_interrupt_nodma_rtail+0x17a/0x2b0 [hfi1]
-[2419460.702745]  [<ffffffffc056a623>] receive_context_interrupt+0x23/0x40 [hfi1]
-[2419460.710963]  [<ffffffff9dd4a294>] __handle_irq_event_percpu+0x44/0x1c0
-[2419460.718659]  [<ffffffff9dd4a442>] handle_irq_event_percpu+0x32/0x80
-[2419460.726086]  [<ffffffff9dd4a4cc>] handle_irq_event+0x3c/0x60
-[2419460.732903]  [<ffffffff9dd4d27f>] handle_edge_irq+0x7f/0x150
-[2419460.739710]  [<ffffffff9dc2e554>] handle_irq+0xe4/0x1a0
-[2419460.746091]  [<ffffffff9e3795dd>] do_IRQ+0x4d/0xf0
-[2419460.752040]  [<ffffffff9e36b362>] common_interrupt+0x162/0x162
-[2419460.759029]  <EOI>  [<ffffffff9dfa0f79>] ? swiotlb_map_page+0x49/0x150
-[2419460.766758]  [<ffffffffc05c2ed1>] hfi1_verbs_send_dma+0x291/0xb70 [hfi1]
-[2419460.774637]  [<ffffffffc05c2c40>] ? hfi1_wait_kmem+0xf0/0xf0 [hfi1]
-[2419460.782080]  [<ffffffffc05c3f26>] hfi1_verbs_send+0x126/0x2b0 [hfi1]
-[2419460.789606]  [<ffffffffc05ce683>] _hfi1_do_tid_send+0x1d3/0x320 [hfi1]
-[2419460.797298]  [<ffffffff9dcb9d4f>] process_one_work+0x17f/0x440
-[2419460.804292]  [<ffffffff9dcbade6>] worker_thread+0x126/0x3c0
-[2419460.811025]  [<ffffffff9dcbacc0>] ? manage_workers.isra.25+0x2a0/0x2a0
-[2419460.818710]  [<ffffffff9dcc1c31>] kthread+0xd1/0xe0
-[2419460.824751]  [<ffffffff9dcc1b60>] ? insert_kthread_work+0x40/0x40
-[2419460.832013]  [<ffffffff9e374c1d>] ret_from_fork_nospec_begin+0x7/0x21
-[2419460.839611]  [<ffffffff9dcc1b60>] ? insert_kthread_work+0x40/0x40
+drivers/net/ethernet/mellanox/mlx5/core/wq.c: In function 'mlx5_wq_cyc_wqe_dump':
+include/linux/kern_levels.h:5:18: warning: format '%ld' expects argument of type 'long int', but argument 5 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
 
-This patch fixes the issue by adjusting the resync_psn first if the flow
-generation has been advanced for a pending segment.
-
-Fixes: 9e93e967f7b4 ("IB/hfi1: Add a function to receive TID RDMA ACK packet")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Fixes: 130c7b46c93d ("net/mlx5e: TX, Dump WQs wqe descriptors on CQE with error events")
+Signed-off-by: Olof Johansson <olof@lixom.net>
 ---
- drivers/infiniband/hw/hfi1/tid_rdma.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/wq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
-index e53f542..8a2e0d9 100644
---- a/drivers/infiniband/hw/hfi1/tid_rdma.c
-+++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
-@@ -4633,6 +4633,15 @@ void hfi1_rc_rcv_tid_rdma_ack(struct hfi1_packet *packet)
- 			 */
- 			fpsn = full_flow_psn(flow, flow->flow_state.spsn);
- 			req->r_ack_psn = psn;
-+			/*
-+			 * If resync_psn points to the last flow PSN for a
-+			 * segment and the new segment (likely from a new
-+			 * request) starts with a new generation number, we
-+			 * need to adjust resync_psn accordingly.
-+			 */
-+			if (flow->flow_state.generation !=
-+			    (resync_psn >> HFI1_KDETH_BTH_SEQ_SHIFT))
-+				resync_psn = mask_psn(fpsn - 1);
- 			flow->resync_npkts +=
- 				delta_psn(mask_psn(resync_psn + 1), fpsn);
- 			/*
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/wq.c b/drivers/net/ethernet/mellanox/mlx5/core/wq.c
+index f2a0e72285bac..02f7e4a39578a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/wq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/wq.c
+@@ -89,7 +89,7 @@ void mlx5_wq_cyc_wqe_dump(struct mlx5_wq_cyc *wq, u16 ix, u8 nstrides)
+ 	len = nstrides << wq->fbc.log_stride;
+ 	wqe = mlx5_wq_cyc_get_wqe(wq, ix);
+ 
+-	pr_info("WQE DUMP: WQ size %d WQ cur size %d, WQE index 0x%x, len: %ld\n",
++	pr_info("WQE DUMP: WQ size %d WQ cur size %d, WQE index 0x%x, len: %zu\n",
+ 		mlx5_wq_cyc_get_size(wq), wq->cur_sz, ix, len);
+ 	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1, wqe, len, false);
+ }
+-- 
+2.11.0
 
