@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD14128880
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Dec 2019 11:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6962128885
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Dec 2019 11:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbfLUKPf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 21 Dec 2019 05:15:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
+        id S1726482AbfLUKRL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 21 Dec 2019 05:17:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726074AbfLUKPf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 21 Dec 2019 05:15:35 -0500
+        id S1726074AbfLUKRL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 21 Dec 2019 05:17:11 -0500
 Received: from localhost (unknown [5.29.147.182])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13EEE2072B;
-        Sat, 21 Dec 2019 10:15:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A52F2072B;
+        Sat, 21 Dec 2019 10:17:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576923334;
-        bh=28FLe1Rig0f46+KUWV/d5T4094Hd1K1D6/bIkj1jpXY=;
+        s=default; t=1576923430;
+        bh=bDlgy8lsRzxzzBg1z25vE4MtL8FCduXazTqCT3s0Zkc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=w8msgnEDhgLmjU+mSN3ZIvBSsMTi4GZtVib54F/SUTX4bE0nJbJwWsx84I15NGvzn
-         y7p/KiTuJ4/QLqZI1LFBIlQd1S808Y66uvey4Zx4Lyp5BRmbleX6KxiaAiWPJBC8Im
-         jGDK94V0oPz/DHL8+A8ElXlaIA8cCJm65RXbtVBM=
-Date:   Sat, 21 Dec 2019 12:15:30 +0200
+        b=b1Ab1jcaZqv7qcZRUP+4KwcYx7r+yfjDPhA96l9lmtUB464PHkk2oaFIAcrC/Jjh2
+         piK4/oTurT1Zfa+p/uaO0hDMYOQLfinJ+IgC+WEEfMJaSlsPPi4bFRmLzggY2XzDRq
+         K16uxxYMYRemXUfo1Mp/BWFYiQWRr15dxoVV5ST4=
+Date:   Sat, 21 Dec 2019 12:17:05 +0200
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jack Wang <jinpuwang@gmail.com>
 Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
@@ -31,89 +31,56 @@ Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
         bvanassche@acm.org, dledford@redhat.com,
         danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
         rpenyaev@suse.de
-Subject: Re: [PATCH v5 02/25] rtrs: public interface header to establish RDMA
- connections
-Message-ID: <20191221101530.GC13335@unreal>
+Subject: Re: [PATCH v5 00/25] RTRS (former IBTRS) rdma transport library and
+ the corresponding RNBD (former IBNBD) rdma network block device
+Message-ID: <20191221101705.GD13335@unreal>
 References: <20191220155109.8959-1-jinpuwang@gmail.com>
- <20191220155109.8959-3-jinpuwang@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191220155109.8959-3-jinpuwang@gmail.com>
+In-Reply-To: <20191220155109.8959-1-jinpuwang@gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Dec 20, 2019 at 04:50:46PM +0100, Jack Wang wrote:
-> From: Jack Wang <jinpu.wang@cloud.ionos.com>
+On Fri, Dec 20, 2019 at 04:50:44PM +0100, Jack Wang wrote:
+> Hi all,
 >
-> Introduce public header which provides set of API functions to
-> establish RDMA connections from client to server machine using
-> RTRS protocol, which manages RDMA connections for each session,
-> does multipathing and load balancing.
+> here is V5 of the RTRS (former IBTRS) rdma transport library and the
+> corresponding RNBD (former IBNBD) rdma network block device.
 >
-> Main functions for client (active) side:
+> Main changes are the following:
+> 1. Fix the security problem pointed out by Jason
+> 2. Implement code-style/readability/API/etc suggestions by Bart van Assche
+> 3. Rename IBTRS and IBNBD to RTRS and RNBD accordingly
+> 4. Fileio mode support in rnbd-srv has been removed.
 >
->  rtrs_clt_open() - Creates set of RDMA connections incapsulated
->                     in IBTRS session and returns pointer on RTRS
-> 		    session object.
->  rtrs_clt_close() - Closes RDMA connections associated with RTRS
->                      session.
->  rtrs_clt_request() - Requests zero-copy RDMA transfer to/from
->                        server.
+> The main functional change is a fix for the security problem pointed out by
+> Jason and discussed both on the mailing list and during the last LPC RDMA MC 2019.
+> On the server side we now invalidate in RTRS each rdma buffer before we hand it
+> over to RNBD server and in turn to the block layer. A new rkey is generated and
+> registered for the buffer after it returns back from the block layer and RNBD
+> server. The new rkey is sent back to the client along with the IO result.
+> The procedure is the default behaviour of the driver. This invalidation and
+> registration on each IO causes performance drop of up to 20%. A user of the
+> driver may choose to load the modules with this mechanism switched off
+> (always_invalidate=N), if he understands and can take the risk of a malicious
+> client being able to corrupt memory of a server it is connected to. This might
+> be a reasonable option in a scenario where all the clients and all the servers
+> are located within a secure datacenter.
 >
-> Main functions for server (passive) side:
+> Huge thanks to Bart van Assche for the very detailed review of both RNBD and
+> RTRS. These included suggestions for style fixes, better readability and
+> documentation, code simplifications, eliminating usage of deprecated APIs,
+> too many to name.
 >
->  rtrs_srv_open() - Starts listening for RTRS clients on specified
->                     port and invokes RTRS callbacks for incoming
-> 		    RDMA requests or link events.
->  rtrs_srv_close() - Closes RTRS server context.
+> The transport library and the network block device using it have been renamed to
+> RTRS and RNBD accordingly in order to reflect the fact that they are based on
+> the rdma subsystem and not bound to InfiniBand only.
 >
-> Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> ---
->  drivers/infiniband/ulp/rtrs/rtrs.h | 334 +++++++++++++++++++++++++++++
->  1 file changed, 334 insertions(+)
->  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs.h
->
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs.h b/drivers/infiniband/ulp/rtrs/rtrs.h
-> new file mode 100644
-> index 000000000000..5b55ad163505
-> --- /dev/null
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs.h
-> @@ -0,0 +1,334 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * InfiniBand Transport Layer
-> + *
-> + * Copyright (c) 2014 - 2017 ProfitBricks GmbH. All rights reserved.
-> + * Authors: Fabian Holler <mail@fholler.de>
-> + *          Jack Wang <jinpu.wang@profitbricks.com>
-> + *          Kleber Souza <kleber.souza@profitbricks.com>
-> + *          Danil Kipnis <danil.kipnis@profitbricks.com>
-> + *          Roman Penyaev <roman.penyaev@profitbricks.com>
-> + *          Milind Dumbare <Milind.dumbare@gmail.com>
-> + *
-> + * Copyright (c) 2017 - 2018 ProfitBricks GmbH. All rights reserved.
-> + * Authors: Danil Kipnis <danil.kipnis@profitbricks.com>
-> + *          Roman Penyaev <roman.penyaev@profitbricks.com>
-> + *
-> + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
-> + * Authors: Roman Penyaev <roman.penyaev@profitbricks.com>
-> + *          Jinpu Wang <jinpu.wang@cloud.ionos.com>
-> + *          Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> + */
-> +
-> +/* Copyright (c) 2019 1&1 IONOS SE. All rights reserved.
-> + * Authors: Jack Wang <jinpu.wang@cloud.ionos.com>
-> + *          Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> + *          Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-> + *          Lutz Pogrell <lutz.pogrell@cloud.ionos.com>
-> + */
+> Fileio mode support in rnbd-server is not so efficent as pointed out by Bart,
+> and we can use loop device in between if there is need, hence we just
+> removed the fileio mode support.
 
-Perhaps it is normal practice to write half a company as authors,
-and I'm wrong in the following, but code authorship is determined by
-multiple tags in the commit messages.
-
-Thanks
+Thanks for pushing the code forward.
