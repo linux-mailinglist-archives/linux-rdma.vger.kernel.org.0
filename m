@@ -2,85 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6962128885
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Dec 2019 11:17:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 216D2128987
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Dec 2019 15:28:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbfLUKRL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 21 Dec 2019 05:17:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726074AbfLUKRL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 21 Dec 2019 05:17:11 -0500
-Received: from localhost (unknown [5.29.147.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A52F2072B;
-        Sat, 21 Dec 2019 10:17:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576923430;
-        bh=bDlgy8lsRzxzzBg1z25vE4MtL8FCduXazTqCT3s0Zkc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b1Ab1jcaZqv7qcZRUP+4KwcYx7r+yfjDPhA96l9lmtUB464PHkk2oaFIAcrC/Jjh2
-         piK4/oTurT1Zfa+p/uaO0hDMYOQLfinJ+IgC+WEEfMJaSlsPPi4bFRmLzggY2XzDRq
-         K16uxxYMYRemXUfo1Mp/BWFYiQWRr15dxoVV5ST4=
-Date:   Sat, 21 Dec 2019 12:17:05 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jack Wang <jinpuwang@gmail.com>
-Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
-        bvanassche@acm.org, dledford@redhat.com,
-        danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
-        rpenyaev@suse.de
-Subject: Re: [PATCH v5 00/25] RTRS (former IBTRS) rdma transport library and
- the corresponding RNBD (former IBNBD) rdma network block device
-Message-ID: <20191221101705.GD13335@unreal>
-References: <20191220155109.8959-1-jinpuwang@gmail.com>
+        id S1726339AbfLUO2H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 21 Dec 2019 09:28:07 -0500
+Received: from mail-io1-f65.google.com ([209.85.166.65]:38727 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726363AbfLUO2G (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 21 Dec 2019 09:28:06 -0500
+Received: by mail-io1-f65.google.com with SMTP id v3so12260437ioj.5
+        for <linux-rdma@vger.kernel.org>; Sat, 21 Dec 2019 06:28:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Prd73x3m1oH2epmhiGL3DVbj6k1ituH6b/G8OUPXtR0=;
+        b=CZdIRwnvAf8usj6GfyZc4kMlzNjW6Ln8nxKlXFcc/5q8nJCvtg+MkoS5x9+RyP9mr0
+         UiEYlvsGcyFqTibPBI+qI+NTUDZe0j9dObsnkzsBi4hfmi45eTRrQsB2NRW33rDQuzql
+         TxdxqGK+1NkTI6XaNgumky/VpPQLPnZjXXjzdVE/SAf5v9HRfLW/7ltUQYzUSR991I53
+         P3OiuqU91y294hJqkoQnwbs7/4DXQV+pS0l0srOJIbBtQkMTnLZnqWPkZxEdKmiRt9vu
+         qBTj3kfR1ttUVzHBNHKVpXZl+5hVo2ydTThCSzrPNrihWy+Jl7SMxfuHtxEU2NxmyoqD
+         LL7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Prd73x3m1oH2epmhiGL3DVbj6k1ituH6b/G8OUPXtR0=;
+        b=TtrDEoexF4Umvxkyp+M9V9ZDqkDT28D/pPgDUzz+XPjotPXBKHqetmxIZxQTTggYr7
+         7AXdF0xJ05iAHOv5HriKNfww0rVHXrQkWAChlUr8t2KbxJLc16KbzMR50zeLFKrPb7FI
+         /q0OZ7ieRRPJks8Ch8Sc6ksxv5i0KFFuqXguD7IOVLPDR92nusrSb7J15Ss8bAPW7Wf3
+         p7iyRDD5LiZ5zyiMAXf+ddDPfreUtt04gq82/fLQMyx5I8s5em2rXXaW0WBBidwvEgZC
+         MPcTRJkuHmL6wvsKV66NecZMoXBSg7TqKQgV18qZi8AKEOQsRnivE48/INVbJXyF7GvT
+         0R6A==
+X-Gm-Message-State: APjAAAWQrgwRcGDtWnS/OirSaC0UC1rdf2tUdpTHtdv3Gi/nKJ6UaogV
+        pVyhbyTKa2FQlMFIme1hxnfGUxR33lTQ+Q3mOOFfy58=
+X-Google-Smtp-Source: APXvYqxCao/ASHWi/KROdKEZlBEBZwYnWwjdjl+mM9lQuL/kqN11QE/EHFHGWMmmndchgbHqo37EFHTtfekrGT1XWM8=
+X-Received: by 2002:a5e:c314:: with SMTP id a20mr14285199iok.300.1576938485965;
+ Sat, 21 Dec 2019 06:28:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191220155109.8959-1-jinpuwang@gmail.com>
+References: <20191220155109.8959-1-jinpuwang@gmail.com> <20191220155109.8959-3-jinpuwang@gmail.com>
+ <20191221101530.GC13335@unreal>
+In-Reply-To: <20191221101530.GC13335@unreal>
+From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Date:   Sat, 21 Dec 2019 15:27:55 +0100
+Message-ID: <CAHg0HuxC9b+E9CRKuw4qDeEfz7=rwUceG+fFGfNHK5=H2aQMGw@mail.gmail.com>
+Subject: Re: [PATCH v5 02/25] rtrs: public interface header to establish RDMA connections
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>, rpenyaev@suse.de
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Dec 20, 2019 at 04:50:44PM +0100, Jack Wang wrote:
-> Hi all,
->
-> here is V5 of the RTRS (former IBTRS) rdma transport library and the
-> corresponding RNBD (former IBNBD) rdma network block device.
->
-> Main changes are the following:
-> 1. Fix the security problem pointed out by Jason
-> 2. Implement code-style/readability/API/etc suggestions by Bart van Assche
-> 3. Rename IBTRS and IBNBD to RTRS and RNBD accordingly
-> 4. Fileio mode support in rnbd-srv has been removed.
->
-> The main functional change is a fix for the security problem pointed out by
-> Jason and discussed both on the mailing list and during the last LPC RDMA MC 2019.
-> On the server side we now invalidate in RTRS each rdma buffer before we hand it
-> over to RNBD server and in turn to the block layer. A new rkey is generated and
-> registered for the buffer after it returns back from the block layer and RNBD
-> server. The new rkey is sent back to the client along with the IO result.
-> The procedure is the default behaviour of the driver. This invalidation and
-> registration on each IO causes performance drop of up to 20%. A user of the
-> driver may choose to load the modules with this mechanism switched off
-> (always_invalidate=N), if he understands and can take the risk of a malicious
-> client being able to corrupt memory of a server it is connected to. This might
-> be a reasonable option in a scenario where all the clients and all the servers
-> are located within a secure datacenter.
->
-> Huge thanks to Bart van Assche for the very detailed review of both RNBD and
-> RTRS. These included suggestions for style fixes, better readability and
-> documentation, code simplifications, eliminating usage of deprecated APIs,
-> too many to name.
->
-> The transport library and the network block device using it have been renamed to
-> RTRS and RNBD accordingly in order to reflect the fact that they are based on
-> the rdma subsystem and not bound to InfiniBand only.
->
-> Fileio mode support in rnbd-server is not so efficent as pointed out by Bart,
-> and we can use loop device in between if there is need, hence we just
-> removed the fileio mode support.
+Hi Leon,
 
-Thanks for pushing the code forward.
+On Sat, Dec 21, 2019 at 11:15 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> Perhaps it is normal practice to write half a company as authors,
+> and I'm wrong in the following, but code authorship is determined by
+> multiple tags in the commit messages.
+
+Different developers contributed to the driver over the last several
+years. Currently they are not working any more on this code. What tags
+in the commit message do you think would be appropriate to give those
+people credit for their work?
+
+Best,
+Danil
