@@ -2,116 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FE4129797
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Dec 2019 15:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F011299D4
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Dec 2019 19:24:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726763AbfLWOjX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Dec 2019 09:39:23 -0500
-Received: from mail-eopbgr70079.outbound.protection.outlook.com ([40.107.7.79]:29056
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726733AbfLWOjX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Dec 2019 09:39:23 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AVKQrRkFLZBf7uu6SMUe078IIvvjZJxh6jIbfFbPHARFNUQ1rsqW9aybJ3+hScaxO6iToFySOmL3hwPoXQEiUp9hTfTXkqd4eYXbXti1RKvNSHReJFsIcfli86rE7JJWyZMZe3Y5vmpr5CM2hzg5JN9BohreqHkMHR1OfYS5z6L2IkUdCOwyu48yEDzxkImf66+7+1WHjXNiPovL30a86D2pXJSviufK4UtPamJ8Ln4WDgFBQj7oXyMBTqVL423ocZARm/i0yOyP46qiRwDWF4LcWJWOwcuhOGAvTjTvjNZymchqJtRDP2D2ujKqAaV/ktxon0FC2pCYINEYnMSvIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lAiCPmFKSJrH5faOVEsMNod3b44xAaz7tWU7JxUNwN4=;
- b=ccqc1EtnLId4uHUjDeX7QFvCJJIHP9OfD+gz4AEOhcdQb6E+oQJ76KC8O7cRRYKwXurKa6zng1vSE/BcqzCF0K1kSS4ufI6ATDjIpc+xDGDSesxooxvwI8b9CyBRF2g5f+Cwqwb9Si7kaE6yamt8/L0fW1WIdZPcMvtZIaoZwZoyRXMvfNXdwKSJomtx5+m1xG9eVOo9NVuXUw1qrHHuoEofQpNopJA1uO2pmK0GZ9waK/CIFTumcAUdwQ89QuMcF6mrEy4GTOb8PRdHCm6MmvvPtV8X40K++sNfyusX/fcM5hI/IvJrN1my9Bg9oslzSNL7N15GiNb8cYLUm6KfbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lAiCPmFKSJrH5faOVEsMNod3b44xAaz7tWU7JxUNwN4=;
- b=lTgwtkENA1QqHrLC4XQtr3eOBW3M/Arcx+922AH0BSyxAqdDWLInCADhOZHu8Yt3Wgj3t5g+H1+w7FFl1F1oxa4NCSaQPmHN6ukUkb3H3MY9T2FY2H/SjARwtm5pqFC0X68iIsV1JeuIumNK+qOaUE0PlrpQZuYnu/HAwswGRzs=
-Received: from AM6PR05MB4968.eurprd05.prod.outlook.com (20.177.33.17) by
- AM6PR05MB6215.eurprd05.prod.outlook.com (20.178.94.146) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2559.17; Mon, 23 Dec 2019 14:39:18 +0000
-Received: from AM6PR05MB4968.eurprd05.prod.outlook.com
- ([fe80::bc8c:12ca:edd3:92ca]) by AM6PR05MB4968.eurprd05.prod.outlook.com
- ([fe80::bc8c:12ca:edd3:92ca%4]) with mapi id 15.20.2559.017; Mon, 23 Dec 2019
- 14:39:18 +0000
-From:   Noa Osherovich <noaos@mellanox.com>
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH 1/1] pyverbs: fix speed_to_str(), to handle disabled links
-Thread-Topic: [PATCH 1/1] pyverbs: fix speed_to_str(), to handle disabled
- links
-Thread-Index: AQHVt56YMvfNdL2zKUuiBqNr6rZVmKfHziqA
-Date:   Mon, 23 Dec 2019 14:39:18 +0000
-Message-ID: <fefd5386-d54b-a58e-29df-91a6dd94ccf0@mellanox.com>
-References: <20191221013256.100409-1-jhubbard@nvidia.com>
- <20191221013256.100409-2-jhubbard@nvidia.com>
-In-Reply-To: <20191221013256.100409-2-jhubbard@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM0PR0202CA0024.eurprd02.prod.outlook.com
- (2603:10a6:208:1::37) To AM6PR05MB4968.eurprd05.prod.outlook.com
- (2603:10a6:20b:4::17)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=noaos@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [193.47.165.251]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 983939b2-8a92-43c4-0b59-08d787b5e43d
-x-ms-traffictypediagnostic: AM6PR05MB6215:
-x-microsoft-antispam-prvs: <AM6PR05MB6215627A1729188885841E96D92E0@AM6PR05MB6215.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:328;
-x-forefront-prvs: 0260457E99
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(366004)(396003)(376002)(39860400002)(346002)(199004)(189003)(66446008)(478600001)(54906003)(36756003)(66946007)(2906002)(110136005)(6506007)(53546011)(64756008)(26005)(66556008)(66476007)(186003)(71200400001)(316002)(4326008)(2616005)(6512007)(86362001)(31696002)(31686004)(6486002)(8676002)(81156014)(81166006)(52116002)(8936002)(5660300002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB6215;H:AM6PR05MB4968.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fAllXakSFQILdveZGuULUvQMAIk4Xq0sz7XunLNjlSLa8NUt3bK/oQlhsEx1xBgc/HaxKUfeIvGZlK2HuG6Y8PtJipen5U0+SHrKJETRHpfB3QMSWRVmnzGBUvOQ55qLN82IGs+k2nA+L3vav5peiWR6l331kAPQfJVTD75YMF15Vc1ok7ajI5zjudh+/HEnx7z8STqmBQ7SyCVF38dXvFd/QQKbQRRGbrwXR9JxtAORZM78MONKh7hoEBTzO02W8xGq+HbHl/1m5o2WxcCScQYcqoWfri4zXXyALLzKWk1xG7+dFAKvCwngh5oG0+8ByZsN1PD8NL9QLDpkzH13qN0463LAdfei5h69Pzh2mITgJx1SOt7qP7GdHV/WwWhCdIOfDICbiHsgV3BCF3bdTJrgtWIAWsaq42kUYDtjEIt6czHUnJ/xWulIBMPo+FdO
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4D4C42BBF5B8914BBC20A64A68FCED4C@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726805AbfLWSYv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Dec 2019 13:24:51 -0500
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:37617 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726821AbfLWSYv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Dec 2019 13:24:51 -0500
+Received: by mail-qv1-f68.google.com with SMTP id f16so6666134qvi.4
+        for <linux-rdma@vger.kernel.org>; Mon, 23 Dec 2019 10:24:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=KNSp0xKzXXca6h2YP8X3emLAqK9GuJuCbstCZTI5ulI=;
+        b=FctYOOrJ074bGu2erxfD+ggi+amf34vJ2+/SB/OaLs8ZFEcoEOPSKxrX7J7vfW72iX
+         iaD1ph6XI9oWEr/nnku4Pr+MbBh9He5Xr+rBPzoju6TBhM7n5pqaYtl/oqkKFK9Nr8fH
+         Us04jbJ3zTX0WDIVdGhJyQO5EPn2JUvIhBvTug4ZRXtCzaFxharK0qUYwO9ZIkwiEqhS
+         c9Aa/tUvtqh3RdzKBnkDvwefmOBkVu9RUXlbwmdawA3jtTcA8wQCgHrvBfiWYN8r7VQg
+         T/hlkSjI6vXJcCVxYIXrbbrRmfsaCa4t09oEgSwlogc3AYXQW7LtDW06LM/jq8bAmut6
+         WCJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KNSp0xKzXXca6h2YP8X3emLAqK9GuJuCbstCZTI5ulI=;
+        b=mZC5IO4BXV/Xt1bXXLPREvjLF1HSnezkYnyPYhXfCfKuxJqQk2jTJxkWDv2KhcFPBh
+         i7HznzZGxWQOSr+nlvNTE3D9VPQGiPar3yWGsKeZ4FhaAXHL5YXWIumcWKGL5cZ+fe3P
+         ZnJBAAoU1AGjYgeWMOINPn/kB+HwlD78NqWIHgI0mqmTjCeIT6pj5RG279IKZ1N2mk2x
+         R4v0kqff8/wBKPZ7+GrD23cNCPGYG7LC7FSYW3VWYQ9umerYrRoLztBLyJIlI/I0Whxk
+         u/7+jSsYMJb34/42n+/5fyy/vfOzvMUheKu3mclHgVc4J4TT8U48E6D588czI27K/YBu
+         d12g==
+X-Gm-Message-State: APjAAAVgorRix6AZ8DB2ZqE6JySE+/Lm8VL+cWvS/ptg8yxbYiGxBzmy
+        eQu2Yclxa4CoiQJ/CSGxEu/zag==
+X-Google-Smtp-Source: APXvYqyOJm+HA/OOXOk1TxOLC8pk6pJEfZhfUy8M7as0rtMhyNSoNfAsriRZZomXf9eRLN7qDrjm+A==
+X-Received: by 2002:a0c:e150:: with SMTP id c16mr25637620qvl.51.1577125488455;
+        Mon, 23 Dec 2019 10:24:48 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id b7sm6449933qtj.15.2019.12.23.10.24.47
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 23 Dec 2019 10:24:47 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1ijSNq-0007Pv-LV; Mon, 23 Dec 2019 14:24:46 -0400
+Date:   Mon, 23 Dec 2019 14:24:46 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, KVM list <kvm@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: Re: [PATCH v11 00/25] mm/gup: track dma-pinned pages: FOLL_PIN
+Message-ID: <20191223182446.GA28321@ziepe.ca>
+References: <20191216222537.491123-1-jhubbard@nvidia.com>
+ <20191219132607.GA410823@unreal>
+ <a4849322-8e17-119e-a664-80d9f95d850b@nvidia.com>
+ <20191219210743.GN17227@ziepe.ca>
+ <42a3e5c1-6301-db0b-5d09-212edf5ecf2a@nvidia.com>
+ <20191220133423.GA13506@ziepe.ca>
+ <CAPcyv4hX9TsTMjsv2hnbEM-TpkC9abtWGSVskr9nPwpR8c5E1Q@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 983939b2-8a92-43c4-0b59-08d787b5e43d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Dec 2019 14:39:18.6909
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KeYCXQ5FS6njSj3V3lUQzVPjAZa5Y820yAE6AZ/S4+9/HgH/wXWCAX0v1A1A3RGZaaqG9UknhX9WRdq03NrPIg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6215
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4hX9TsTMjsv2hnbEM-TpkC9abtWGSVskr9nPwpR8c5E1Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-SGkgSm9obg0KDQpPbiAxMi8yMS8yMDE5IDM6MzIgQU0sIEpvaG4gSHViYmFyZCB3cm90ZToNCg0K
-PiBGb3IgZGlzYWJsZWQgbGlua3MsIHRoZSByYXcgc3BlZWQgdG9rZW4gaXMgMC4gSG93ZXZlciwg
-c3BlZWRfdG9fc3RyKCkNCj4gZG9lc24ndCBoYXZlIHRoYXQgaW4gdGhlIGxpc3QuIFRoaXMgbGVh
-ZHMgdG8gYW4gYXNzZXJ0aW9uIHdoZW4gcnVubmluZw0KPiB0ZXN0cyAodGVzdF9xdWVyeV9wb3J0
-KSB3aGVuIG9uZSBsaW5rIGlzIGRvd24gYW5kIG90aGVyIGxpbmsocykgYXJlIHVwLg0KPg0KPiBG
-aXggdGhpcyBieSByZXR1cm5pbmcgJzAuMCBHYnBzJyBmb3IgdGhlIHplcm8gc3BlZWQgY2FzZS4N
-Cj4NCj4gQ2M6IE5vYSBPc2hlcm92aWNoIDxub2Fvc0BtZWxsYW5veC5jb20+DQo+IFNpZ25lZC1v
-ZmYtYnk6IEpvaG4gSHViYmFyZCA8amh1YmJhcmRAbnZpZGlhLmNvbT4NCj4gLS0tDQo+ICAgcHl2
-ZXJicy9kZXZpY2UucHl4IHwgNCArKy0tDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9u
-cygrKSwgMiBkZWxldGlvbnMoLSkNCj4NCj4gZGlmZiAtLWdpdCBhL3B5dmVyYnMvZGV2aWNlLnB5
-eCBiL3B5dmVyYnMvZGV2aWNlLnB5eA0KPiBpbmRleCAzM2QxMzNmZC4uY2Y3Yjc1ZGUgMTAwNzU1
-DQo+IC0tLSBhL3B5dmVyYnMvZGV2aWNlLnB5eA0KPiArKysgYi9weXZlcmJzL2RldmljZS5weXgN
-Cj4gQEAgLTkyMyw4ICs5MjMsOCBAQCBkZWYgd2lkdGhfdG9fc3RyKHdpZHRoKToNCj4gICANCj4g
-ICANCj4gICBkZWYgc3BlZWRfdG9fc3RyKHNwZWVkKToNCj4gLSAgICBsID0gezE6ICcyLjUgR2Jw
-cycsIDI6ICc1LjAgR2JwcycsIDQ6ICc1LjAgR2JwcycsIDg6ICcxMC4wIEdicHMnLA0KPiAtICAg
-ICAgICAgMTY6ICcxNC4wIEdicHMnLCAzMjogJzI1LjAgR2JwcycsIDY0OiAnNTAuMCBHYnBzJ30N
-Cj4gKyAgICBsID0gezA6ICcwLjAgR2JwcycsIDE6ICcyLjUgR2JwcycsIDI6ICc1LjAgR2Jwcycs
-IDQ6ICc1LjAgR2JwcycsDQo+ICsgICAgICAgICA4OiAnMTAuMCBHYnBzJywgMTY6ICcxNC4wIEdi
-cHMnLCAzMjogJzI1LjAgR2JwcycsIDY0OiAnNTAuMCBHYnBzJ30NCj4gICAgICAgdHJ5Og0KPiAg
-ICAgICAgICAgcmV0dXJuICd7c30gKHtufSknLmZvcm1hdChzPWxbc3BlZWRdLCBuPXNwZWVkKQ0K
-PiAgICAgICBleGNlcHQgS2V5RXJyb3I6DQoNClRoaXMgc2VlbXMgT0sgdG8gbWUuIEJUVywgd2hh
-dCdzIHRoZSByZXBvcnRlZCBhY3RpdmVfd2lkdGggZm9yIGRpc2FibGVkIGxpbmtzPw0KTWF5YmUg
-d2lkdGhfdG9fc3RyIGNvdWxkIHVzZSBhIHNpbWlsYXIgZml4Lg0KDQpUaGFua3MsDQpOb2ENCg0K
+On Fri, Dec 20, 2019 at 04:32:13PM -0800, Dan Williams wrote:
+
+> > > There's already a limit, it's just a much larger one. :) What does "no limit"
+> > > really mean, numerically, to you in this case?
+> >
+> > I guess I mean 'hidden limit' - hitting the limit and failing would
+> > be managable.
+> >
+> > I think 7 is probably too low though, but we are not using 1GB huge
+> > pages, only 2M..
+> 
+> What about RDMA to 1GB-hugetlbfs and 1GB-device-dax mappings?
+
+I don't think the failing testing is doing that.
+
+It is also less likely that 1GB regions will need multi-mapping, IMHO.
+
+Jason
