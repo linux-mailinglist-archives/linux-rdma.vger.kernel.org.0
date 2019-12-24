@@ -2,72 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 21421129FD4
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2019 10:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B222612A1A3
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2019 14:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726091AbfLXJux (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Dec 2019 04:50:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726084AbfLXJux (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 24 Dec 2019 04:50:53 -0500
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35318206CB;
-        Tue, 24 Dec 2019 09:50:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577181052;
-        bh=VVgs2tO7LIN86tacpClBg6g3oNKBjk1Z4pbfQe3WIx4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V4hWRfijJ1+kq/Iw5zlZCxvlvAA+n01PUGuOxR8Pox8Ng/i/gqG6us/+34kR5bmKA
-         TcZgpTtUjLMUN2BpiDjrtkETjvK1lTkz5zQV4bYNYSekGodYIO8GMgus6QfZTncJU0
-         2xjds2W+9TOspN/2ClooRXx6IPOq1A6ezRmhDAS0=
-Date:   Tue, 24 Dec 2019 11:50:49 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     zhengbin <zhengbin13@huawei.com>
-Cc:     bmt@zurich.ibm.com, dledford@redhat.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 1/5] RDMA/siw: use true,false for bool variable
-Message-ID: <20191224095049.GE120310@unreal>
-References: <1577176812-2238-1-git-send-email-zhengbin13@huawei.com>
- <1577176812-2238-2-git-send-email-zhengbin13@huawei.com>
+        id S1726183AbfLXNKL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Dec 2019 08:10:11 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8176 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726213AbfLXNKL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 24 Dec 2019 08:10:11 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id D76909E1F0072F25B993;
+        Tue, 24 Dec 2019 21:10:08 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.439.0; Tue, 24 Dec 2019 21:10:01 +0800
+From:   Yixian Liu <liuyixian@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH v4 for-next 0/2] Fix crash due to sleepy mutex while holding lock in post_{send|recv|poll}
+Date:   Tue, 24 Dec 2019 21:10:12 +0800
+Message-ID: <1577193014-42646-1-git-send-email-liuyixian@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1577176812-2238-2-git-send-email-zhengbin13@huawei.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 24, 2019 at 04:40:08PM +0800, zhengbin wrote:
-> Fixes coccicheck warning:
->
-> drivers/infiniband/sw/siw/siw_cm.c:32:18-41: WARNING: Assignment of 0/1 to bool variable
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: zhengbin <zhengbin13@huawei.com>
-> ---
->  drivers/infiniband/sw/siw/siw_cm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
-> index 3bccfef4..0c3f058 100644
-> --- a/drivers/infiniband/sw/siw/siw_cm.c
-> +++ b/drivers/infiniband/sw/siw/siw_cm.c
-> @@ -29,7 +29,7 @@
->   * MPA_V2_RDMA_NO_RTR, MPA_V2_RDMA_READ_RTR, MPA_V2_RDMA_WRITE_RTR
->   */
->  static __be16 rtr_type = MPA_V2_RDMA_READ_RTR | MPA_V2_RDMA_WRITE_RTR;
-> -static const bool relaxed_ird_negotiation = 1;
-> +static const bool relaxed_ird_negotiation = true;
+Earlier Background:
+HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
+outstanding WQEs if QP state gets into errored mode for some reason.
+To overcome this hardware problem and as a workaround, when QP is
+detected to be in errored state during various legs like post send,
+post receive etc [1], flush needs to be performed from the driver.
 
-It is worth to simply delete this variable.
+These data-path legs might get called concurrently from various context,
+like thread and interrupt as well (like NVMe driver). Hence, these need
+to be protected with spin-locks for the concurrency. This code exists
+within the driver.
 
->
->  static void siw_cm_llp_state_change(struct sock *s);
->  static void siw_cm_llp_data_ready(struct sock *s);
-> --
-> 2.7.4
->
+Problem:
+Earlier The patch[1] sent to solve the hardware limitation explained
+in the background section had a bug in the software flushing leg. It
+acquired mutex while modifying QP state to errored state and while
+conveying it to the hardware using the mailbox. This caused leg to
+sleep while holding spin-lock and caused crash.
+
+Suggested Solution:
+In this patch, we have proposed to defer the flushing of the QP in
+Errored state using the workqueue.
+
+We do understand that this might have an impact on the recovery times
+as scheduling of the workqueue handler depends upon the occupancy of
+the system. Therefore to roughly mitigate this affect we have tried
+to use Concurrency Managed workqueue to give worker thread (and
+hence handler) a chance to run over more than one core.
+
+
+[1] https://patchwork.kernel.org/patch/10534271/
+
+
+This patch-set consists of:
+[Patch 001] Introduce workqueue based WQE Flush Handler
+[Patch 002] Call WQE flush handler in post {send|receive|poll}
+
+v4 changes:
+1. Add flag for PI is being pushed according to Jason's suggestion
+   to reduce unnecessary works submitted to workqueue.
+
+v3 changes:
+1. Fall back to dynamically allocate flush_work.
+
+v2 changes:
+1. Remove new created workqueue according to Jason's comment
+2. Remove dynamic allocation for flush_work according to Jason's comment
+3. Change current irq singlethread workqueue to concurrency management
+   workqueue to ensure work unblocked.
+
+Yixian Liu (2):
+  RDMA/hns: Add the workqueue framework for flush cqe handler
+  RDMA/hns: Delayed flush cqe process with workqueue
+
+ drivers/infiniband/hw/hns/hns_roce_device.h |  4 ++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 98 +++++++++++++++--------------
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 45 +++++++++++++
+ 3 files changed, 99 insertions(+), 48 deletions(-)
+
+-- 
+2.7.4
+
