@@ -2,305 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5BE12A1A2
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Dec 2019 14:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB3212A571
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Dec 2019 02:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726124AbfLXNKL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Dec 2019 08:10:11 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8178 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726183AbfLXNKL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 24 Dec 2019 08:10:11 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id E04109E8E16E204B8072;
-        Tue, 24 Dec 2019 21:10:08 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.439.0; Tue, 24 Dec 2019 21:10:02 +0800
-From:   Yixian Liu <liuyixian@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v4 for-next 2/2] RDMA/hns: Delayed flush cqe process with workqueue
-Date:   Tue, 24 Dec 2019 21:10:14 +0800
-Message-ID: <1577193014-42646-3-git-send-email-liuyixian@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1577193014-42646-1-git-send-email-liuyixian@huawei.com>
-References: <1577193014-42646-1-git-send-email-liuyixian@huawei.com>
+        id S1726256AbfLYBnL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Dec 2019 20:43:11 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8269 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726251AbfLYBnL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Dec 2019 20:43:11 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e02be8b0000>; Tue, 24 Dec 2019 17:42:36 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 24 Dec 2019 17:43:10 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 24 Dec 2019 17:43:10 -0800
+Received: from [10.2.174.185] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 25 Dec
+ 2019 01:43:09 +0000
+Subject: Re: [PATCH 1/1] pyverbs: fix speed_to_str(), to handle disabled links
+To:     Noa Osherovich <noaos@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20191221013256.100409-1-jhubbard@nvidia.com>
+ <20191221013256.100409-2-jhubbard@nvidia.com>
+ <fefd5386-d54b-a58e-29df-91a6dd94ccf0@mellanox.com>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <6fa745c5-dc74-aae0-c3be-6564e146b068@nvidia.com>
+Date:   Tue, 24 Dec 2019 17:40:15 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <fefd5386-d54b-a58e-29df-91a6dd94ccf0@mellanox.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1577238156; bh=D7JQpiAYYmZ1q8B5dq6c/FNn5WNecZogCYfvYiqEUc8=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=UCsgZimOPDROFUxrU0HvpCcRhh4TjBXDRTX22tiZm8S7rmzD+QzQXvcPkD7S/U5mb
+         2jVg17jv9AO/7vYMnKiGSlQu3+YWx4n8S/hHFnqpEmLF/0HvtF1qGB0L2HY0UUKJgp
+         p9rEV3za24mvQ0z5msXcBSkVjwmqY/ELu2nSMM9HNftSR24mCxoB/XPZXypnZtWod9
+         ZWsWjYljqQQaTjvL7KqlMpC2R7ApTwiTUfUNMZEjCckfp8EiN0w5aVVpw8IO0IcCp6
+         Vz82AhBUjj82RDHCF6c+Fe6lMe+zUy9GH82WdLseIDTWHv+doKdWGjgYicC7IeCWTM
+         MaL+0bPWjwP8w==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
-outstanding WQEs if QP state gets into errored mode for some reason.
-To overcome this hardware problem and as a workaround, when QP is
-detected to be in errored state during various legs like post send,
-post receive etc[1], flush needs to be performed from the driver.
+On 12/23/19 6:39 AM, Noa Osherovich wrote:
+...
+>> diff --git a/pyverbs/device.pyx b/pyverbs/device.pyx
+>> index 33d133fd..cf7b75de 100755
+>> --- a/pyverbs/device.pyx
+>> +++ b/pyverbs/device.pyx
+>> @@ -923,8 +923,8 @@ def width_to_str(width):
+>>    
+>>    
+>>    def speed_to_str(speed):
+>> -    l = {1: '2.5 Gbps', 2: '5.0 Gbps', 4: '5.0 Gbps', 8: '10.0 Gbps',
+>> -         16: '14.0 Gbps', 32: '25.0 Gbps', 64: '50.0 Gbps'}
+>> +    l = {0: '0.0 Gbps', 1: '2.5 Gbps', 2: '5.0 Gbps', 4: '5.0 Gbps',
+>> +         8: '10.0 Gbps', 16: '14.0 Gbps', 32: '25.0 Gbps', 64: '50.0 Gbps'}
+>>        try:
+>>            return '{s} ({n})'.format(s=l[speed], n=speed)
+>>        except KeyError:
+> 
+> This seems OK to me. BTW, what's the reported active_width for disabled links?
+> Maybe width_to_str could use a similar fix.
+> 
 
-The earlier patch[1] sent to solve the hardware limitation explained
-in the cover-letter had a bug in the software flushing leg. It
-acquired mutex while modifying QP state to errored state and while
-conveying it to the hardware using the mailbox. This caused leg to
-sleep while holding spin-lock and caused crash.
+Thanks for reviewing this! The reported active_width for disabled links on my
+systems is showing up the same as for active links ("4X" in this case). So I don't
+think we need a fix for width_to_str().
 
-Suggested Solution:
-we have proposed to defer the flushing of the QP in the Errored state
-using the workqueue to get around with the limitation of our hardware.
-
-This patch specifically adds the calls to the flush handler from
-where parts of the code like post_send/post_recv etc. when the QP
-state gets into the errored mode.
-
-[1] https://patchwork.kernel.org/patch/10534271/
-
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-Reviewed-by: Salil Mehta <salil.mehta@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  2 +
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 94 +++++++++++++++--------------
- drivers/infiniband/hw/hns/hns_roce_qp.c     |  2 +
- 3 files changed, 52 insertions(+), 46 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 292b712..8b018717 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -673,6 +673,8 @@ struct hns_roce_qp {
- 	u8			sl;
- 	u8			resp_depth;
- 	u8			state;
-+	/* 1: PI is being pushed, 0: PI is not being pushed */
-+	u8			being_pushed;
- 	u32			access_flags;
- 	u32                     atomic_rd_en;
- 	u32			pkey_index;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index ec48e7e..f363b21 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -221,11 +221,6 @@ static int set_rwqe_data_seg(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 	return 0;
- }
- 
--static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
--				 const struct ib_qp_attr *attr,
--				 int attr_mask, enum ib_qp_state cur_state,
--				 enum ib_qp_state new_state);
--
- static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 				 const struct ib_send_wr *wr,
- 				 const struct ib_send_wr **bad_wr)
-@@ -238,14 +233,12 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 	struct hns_roce_wqe_frmr_seg *fseg;
- 	struct device *dev = hr_dev->dev;
- 	struct hns_roce_v2_db sq_db;
--	struct ib_qp_attr attr;
- 	unsigned int sge_ind;
- 	unsigned int owner_bit;
- 	unsigned long flags;
- 	unsigned int ind;
- 	void *wqe = NULL;
- 	bool loopback;
--	int attr_mask;
- 	u32 tmp_len;
- 	int ret = 0;
- 	u32 hr_op;
-@@ -591,18 +584,17 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 		qp->sq_next_wqe = ind;
- 		qp->next_sge = sge_ind;
- 
--		if (qp->state == IB_QPS_ERR) {
--			attr_mask = IB_QP_STATE;
--			attr.qp_state = IB_QPS_ERR;
--
--			ret = hns_roce_v2_modify_qp(&qp->ibqp, &attr, attr_mask,
--						    qp->state, IB_QPS_ERR);
--			if (ret) {
--				spin_unlock_irqrestore(&qp->sq.lock, flags);
--				*bad_wr = wr;
--				return ret;
--			}
--		}
-+		/*
-+		 * Hip08 hardware cannot flush the WQEs in SQ if the QP state
-+		 * gets into errored mode. Hence, as a workaround to this
-+		 * hardware limitation, driver needs to assist in flushing. But
-+		 * the flushing operation uses mailbox to convey the QP state to
-+		 * the hardware and which can sleep due to the mutex protection
-+		 * around the mailbox calls. Hence, use the deferred flush for
-+		 * now.
-+		 */
-+		if (qp->state == IB_QPS_ERR && !qp->being_pushed)
-+			init_flush_work(hr_dev, qp);
- 	}
- 
- 	spin_unlock_irqrestore(&qp->sq.lock, flags);
-@@ -619,10 +611,8 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
- 	struct hns_roce_v2_wqe_data_seg *dseg;
- 	struct hns_roce_rinl_sge *sge_list;
- 	struct device *dev = hr_dev->dev;
--	struct ib_qp_attr attr;
- 	unsigned long flags;
- 	void *wqe = NULL;
--	int attr_mask;
- 	int ret = 0;
- 	int nreq;
- 	int ind;
-@@ -692,19 +682,17 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
- 
- 		*hr_qp->rdb.db_record = hr_qp->rq.head & 0xffff;
- 
--		if (hr_qp->state == IB_QPS_ERR) {
--			attr_mask = IB_QP_STATE;
--			attr.qp_state = IB_QPS_ERR;
--
--			ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, &attr,
--						    attr_mask, hr_qp->state,
--						    IB_QPS_ERR);
--			if (ret) {
--				spin_unlock_irqrestore(&hr_qp->rq.lock, flags);
--				*bad_wr = wr;
--				return ret;
--			}
--		}
-+		/*
-+		 * Hip08 hardware cannot flush the WQEs in RQ if the QP state
-+		 * gets into errored mode. Hence, as a workaround to this
-+		 * hardware limitation, driver needs to assist in flushing. But
-+		 * the flushing operation uses mailbox to convey the QP state to
-+		 * the hardware and which can sleep due to the mutex protection
-+		 * around the mailbox calls. Hence, use the deferred flush for
-+		 * now.
-+		 */
-+		if (hr_qp->state == IB_QPS_ERR && !hr_qp->being_pushed)
-+			init_flush_work(hr_dev, hr_qp);
- 	}
- 	spin_unlock_irqrestore(&hr_qp->rq.lock, flags);
- 
-@@ -2691,13 +2679,11 @@ static int hns_roce_handle_recv_inl_wqe(struct hns_roce_v2_cqe *cqe,
- static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 				struct hns_roce_qp **cur_qp, struct ib_wc *wc)
- {
-+	struct hns_roce_dev *hr_dev = to_hr_dev(hr_cq->ib_cq.device);
- 	struct hns_roce_srq *srq = NULL;
--	struct hns_roce_dev *hr_dev;
- 	struct hns_roce_v2_cqe *cqe;
- 	struct hns_roce_qp *hr_qp;
- 	struct hns_roce_wq *wq;
--	struct ib_qp_attr attr;
--	int attr_mask;
- 	int is_send;
- 	u16 wqe_ctr;
- 	u32 opcode;
-@@ -2721,7 +2707,6 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 				V2_CQE_BYTE_16_LCL_QPN_S);
- 
- 	if (!*cur_qp || (qpn & HNS_ROCE_V2_CQE_QPN_MASK) != (*cur_qp)->qpn) {
--		hr_dev = to_hr_dev(hr_cq->ib_cq.device);
- 		hr_qp = __hns_roce_qp_lookup(hr_dev, qpn);
- 		if (unlikely(!hr_qp)) {
- 			dev_err(hr_dev->dev, "CQ %06lx with entry for unknown QPN %06x\n",
-@@ -2815,14 +2800,22 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 		break;
- 	}
- 
--	/* flush cqe if wc status is error, excluding flush error */
--	if ((wc->status != IB_WC_SUCCESS) &&
--	    (wc->status != IB_WC_WR_FLUSH_ERR)) {
--		attr_mask = IB_QP_STATE;
--		attr.qp_state = IB_QPS_ERR;
--		return hns_roce_v2_modify_qp(&(*cur_qp)->ibqp,
--					     &attr, attr_mask,
--					     (*cur_qp)->state, IB_QPS_ERR);
-+	/*
-+	 * Hip08 hardware cannot flush the WQEs in SQ/RQ if the QP state gets
-+	 * into errored mode. Hence, as a workaround to this hardware
-+	 * limitation, driver needs to assist in flushing. But the flushing
-+	 * operation uses mailbox to convey the QP state to the hardware and
-+	 * which can sleep due to the mutex protection around the mailbox calls.
-+	 * Hence, use the deferred flush for now. Once wc error detected, the
-+	 * flushing operation is needed.
-+	 */
-+	if (wc->status != IB_WC_SUCCESS &&
-+	    wc->status != IB_WC_WR_FLUSH_ERR &&
-+	    !(*cur_qp)->being_pushed) {
-+		dev_err(hr_dev->dev, "error cqe status is: 0x%x\n",
-+			status & HNS_ROCE_V2_CQE_STATUS_MASK);
-+		init_flush_work(hr_dev, *cur_qp);
-+		return 0;
- 	}
- 
- 	if (wc->status == IB_WC_WR_FLUSH_ERR)
-@@ -4390,6 +4383,8 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 	struct hns_roce_v2_qp_context *context = ctx;
- 	struct hns_roce_v2_qp_context *qpc_mask = ctx + 1;
- 	struct device *dev = hr_dev->dev;
-+	unsigned long sq_flags = 0;
-+	unsigned long rq_flags = 0;
- 	int ret;
- 
- 	/*
-@@ -4407,6 +4402,7 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 
- 	/* When QP state is err, SQ and RQ WQE should be flushed */
- 	if (new_state == IB_QPS_ERR) {
-+		spin_lock_irqsave(&hr_qp->sq.lock, sq_flags);
- 		roce_set_field(context->byte_160_sq_ci_pi,
- 			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_M,
- 			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_S,
-@@ -4414,8 +4410,12 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 		roce_set_field(qpc_mask->byte_160_sq_ci_pi,
- 			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_M,
- 			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_S, 0);
-+		hr_qp->state = IB_QPS_ERR;
-+		hr_qp->being_pushed = 0;
-+		spin_unlock_irqrestore(&hr_qp->sq.lock, sq_flags);
- 
- 		if (!ibqp->srq) {
-+			spin_lock_irqsave(&hr_qp->rq.lock, rq_flags);
- 			roce_set_field(context->byte_84_rq_ci_pi,
- 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_M,
- 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_S,
-@@ -4423,6 +4423,7 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 			roce_set_field(qpc_mask->byte_84_rq_ci_pi,
- 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_M,
- 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_S, 0);
-+			spin_unlock_irqrestore(&hr_qp->rq.lock, rq_flags);
- 		}
- 	}
- 
-@@ -4467,6 +4468,7 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 		hr_qp->sq.tail = 0;
- 		hr_qp->sq_next_wqe = 0;
- 		hr_qp->next_sge = 0;
-+		hr_qp->being_pushed = 0;
- 		if (hr_qp->rq.wqe_cnt)
- 			*hr_qp->rdb.db_record = 0;
- 	}
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 0c1e74a..a30f86c 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -79,6 +79,7 @@ void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- 	if (!flush_work)
- 		return;
- 
-+	hr_qp->being_pushed = 1;
- 	flush_work->hr_dev = hr_dev;
- 	flush_work->hr_qp = hr_qp;
- 	INIT_WORK(&flush_work->work, flush_work_handle);
-@@ -748,6 +749,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 	spin_lock_init(&hr_qp->rq.lock);
- 
- 	hr_qp->state = IB_QPS_RESET;
-+	hr_qp->being_pushed = 0;
- 
- 	hr_qp->ibqp.qp_type = init_attr->qp_type;
- 
+thanks,
 -- 
-2.7.4
-
+John Hubbard
+NVIDIA
