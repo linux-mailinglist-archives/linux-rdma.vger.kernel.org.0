@@ -2,115 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD8D12B3C2
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Dec 2019 10:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1499612B43E
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Dec 2019 12:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726014AbfL0J72 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Dec 2019 04:59:28 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33108 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726509AbfL0J70 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Dec 2019 04:59:26 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 1ADF5D914ACF702EC144;
-        Fri, 27 Dec 2019 17:59:24 +0800 (CST)
-Received: from [127.0.0.1] (10.74.223.196) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.439.0; Fri, 27 Dec 2019
- 17:59:17 +0800
-Subject: Re: [PATCH v4 for-next 1/2] RDMA/hns: Add the workqueue framework for
- flush cqe handler
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <dledford@redhat.com>, <jgg@ziepe.ca>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1577193014-42646-1-git-send-email-liuyixian@huawei.com>
- <1577193014-42646-2-git-send-email-liuyixian@huawei.com>
- <20191226081923.GB6285@unreal>
-From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
-Message-ID: <a507777e-e1cb-1473-f0cf-35346b2706ee@huawei.com>
-Date:   Fri, 27 Dec 2019 17:59:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.1
-MIME-Version: 1.0
-In-Reply-To: <20191226081923.GB6285@unreal>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.223.196]
-X-CFilter-Loop: Reflected
+        id S1727040AbfL0Lg2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Dec 2019 06:36:28 -0500
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:37943 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727028AbfL0Lg1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Dec 2019 06:36:27 -0500
+Received: by mail-pj1-f67.google.com with SMTP id l35so4801417pje.3
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Dec 2019 03:36:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=5o6xy4w9KqWAzHR2B5q4KywrORiGxCxx72uqlsPOoG4=;
+        b=jY47e1Kf0npiBUk6SHB5+l2EQyZYzJvgZoH1d9zAtsdGKiY589AbUWPKyYpZKAUO1f
+         0JSS2tp85bmtbOG3Ittp7Bn7TOi2hWFwrv2++99J9t9B1imPN7V4XQRLpVwPwGebUQjX
+         UP7oYF7SWnjmu6Oh8i36ZgkEc/u6FNNOEtapqn0SzgmdsrL9+/9EGavhmcu6+65kPDaa
+         tOO14A2CAfihMfnZUHyu7QNBssambKKFhDrJrcex36InwnsSQvuOsaY2eWvZUhrzTMPw
+         tZFIfTWlIj930YJmZH/v9RPOZNyNGxkwYVsLlDUtkE5WXdJTHj4BHcGklZrFgTluB50c
+         mwMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=5o6xy4w9KqWAzHR2B5q4KywrORiGxCxx72uqlsPOoG4=;
+        b=K0mM8F6SiRRwarnOeZll+Ka3lh4q9beyLTn8a122S8bIIz7u5bqQ+6l6w7fsxjp8Pv
+         A7zFHKoFCJsXh5sJ3jt8xR/WAYPWhtq8m9oBU7jIcSWlHzCxvzIrEUqsrgpkLggTqRxz
+         bgpInEYW2rxI59t2HxyQ8KS+JyPvBjl8OeNaZ+TZ2CxACDJOPv87SeM9hDG4ZF8HohSS
+         wCRO9MNuxBkOni/8WOIxNm23DSaKiwzppaeg5gfy7oundaHvJACEe5zSI4GS3EMgkVTY
+         GuA+V2LDJRlOF6oGcWAf4bnGwISnUozlvzzLfq2cFa8y1MV1LUZTLIOrbviIQ+N+3xGw
+         r21Q==
+X-Gm-Message-State: APjAAAVpBNmW0ikP0F4FPiFk8wtHLEhpRzNJMkvFMjkBTGd0DMEa9CqW
+        u4tvov6qaL8nmNrXCmB7tFk6tJy3B5sPGQ==
+X-Google-Smtp-Source: APXvYqyqyTg7t+qL90A/qMlJf55nH5sibVX39P52Tj9zRFNmAEHCJ0Ea5IlNRkUBokTz77rolzrpXg==
+X-Received: by 2002:a17:90a:8008:: with SMTP id b8mr25654957pjn.37.1577446587075;
+        Fri, 27 Dec 2019 03:36:27 -0800 (PST)
+Received: from localhost.localdomain (199.168.142.16.16clouds.com. [199.168.142.16])
+        by smtp.gmail.com with ESMTPSA id c19sm42229439pfc.144.2019.12.27.03.36.25
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 27 Dec 2019 03:36:26 -0800 (PST)
+From:   Jiewei Ke <kejiewei.cn@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     monis@mellanox.com, dledford@redhat.com, jgg@ziepe.ca,
+        Jiewei Ke <kejiewei.cn@gmail.com>
+Subject: [PATCH] RDMA/rxe: Fix error type of mmap_offset
+Date:   Fri, 27 Dec 2019 19:36:13 +0800
+Message-Id: <20191227113613.5020-1-kejiewei.cn@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+The type of mmap_offset should be u64 instead of int to match the
+type of mminfo.offset. If otherwise, after we create several thousands
+of CQs, it will run into overflow issue.
 
+Signed-off-by: Jiewei Ke <kejiewei.cn@gmail.com>
+---
+ drivers/infiniband/sw/rxe/rxe_verbs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 2019/12/26 16:19, Leon Romanovsky wrote:
-> On Tue, Dec 24, 2019 at 09:10:13PM +0800, Yixian Liu wrote:
->> HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
->> outstanding WQEs if QP state gets into errored mode for some reason.
->> To overcome this hardware problem and as a workaround, when QP is
->> detected to be in errored state during various legs like post send,
->> post receive etc [1], flush needs to be performed from the driver.
->>
->> The earlier patch[1] sent to solve the hardware limitation explained
->> in the cover-letter had a bug in the software flushing leg. It
->> acquired mutex while modifying QP state to errored state and while
->> conveying it to the hardware using the mailbox. This caused leg to
->> sleep while holding spin-lock and caused crash.
->>
->> Suggested Solution:
->> we have proposed to defer the flushing of the QP in the Errored state
->> using the workqueue to get around with the limitation of our hardware.
->>
->> This patch adds the framework of the workqueue and the flush handler
->> function.
->>
->> [1] https://patchwork.kernel.org/patch/10534271/
->>
->> Signed-off-by: Yixian Liu <liuyixian@huawei.com>
->> Reviewed-by: Salil Mehta <salil.mehta@huawei.com>
->> ---
->>  drivers/infiniband/hw/hns/hns_roce_device.h |  2 ++
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  4 +--
->>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 43 +++++++++++++++++++++++++++++
->>  3 files changed, 47 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
->> index a1b712e..292b712 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
->> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
->> @@ -906,6 +906,7 @@ struct hns_roce_caps {
->>  struct hns_roce_work {
->>  	struct hns_roce_dev *hr_dev;
->>  	struct work_struct work;
->> +	struct hns_roce_qp *hr_qp;
->>  	u32 qpn;
->>  	u32 cqn;
->>  	int event_type;
->> @@ -1226,6 +1227,7 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *ib_pd,
->>  				 struct ib_udata *udata);
->>  int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
->>  		       int attr_mask, struct ib_udata *udata);
->> +void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp);
->>  void *get_recv_wqe(struct hns_roce_qp *hr_qp, int n);
->>  void *get_send_wqe(struct hns_roce_qp *hr_qp, int n);
->>  void *get_send_extend_sge(struct hns_roce_qp *hr_qp, int n);
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> index 907c951..ec48e7e 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> @@ -5967,8 +5967,8 @@ static int hns_roce_v2_init_eq_table(struct hns_roce_dev *hr_dev)
->>  		goto err_request_irq_fail;
->>  	}
->>
->> -	hr_dev->irq_workq =
->> -		create_singlethread_workqueue("hns_roce_irq_workqueue");
->> +	hr_dev->irq_workq = alloc_workqueue("hns_roce_irq_workqueue",
->> +					    WQ_MEM_RECLAIM, 0);
-> 
-> Combination of WQ_MEM_RECLAIM flag with kzalloc inside init_flush_work()
-> can't be correct at the same time.
-> 
-Thanks a lot for reminder!
-I will check with previous discussion on the flag WQ_MEM_RECLAIM and fix it next version.
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index 95834206c80c..92de39c4a7c1 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -408,7 +408,7 @@ struct rxe_dev {
+ 	struct list_head	pending_mmaps;
+ 
+ 	spinlock_t		mmap_offset_lock; /* guard mmap_offset */
+-	int			mmap_offset;
++	u64			mmap_offset;
+ 
+ 	atomic64_t		stats_counters[RXE_NUM_OF_COUNTERS];
+ 
+-- 
+2.11.0
 
