@@ -2,305 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C9312BC73
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Dec 2019 04:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A55312BEC2
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Dec 2019 20:50:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbfL1D25 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Dec 2019 22:28:57 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8635 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725957AbfL1D25 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Dec 2019 22:28:57 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 8F6C4FC1208BAC34A059;
-        Sat, 28 Dec 2019 11:28:55 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.439.0; Sat, 28 Dec 2019 11:28:45 +0800
-From:   Yixian Liu <liuyixian@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v5 for-next 2/2] RDMA/hns: Delayed flush cqe process with workqueue
-Date:   Sat, 28 Dec 2019 11:28:55 +0800
-Message-ID: <1577503735-26685-3-git-send-email-liuyixian@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1577503735-26685-1-git-send-email-liuyixian@huawei.com>
-References: <1577503735-26685-1-git-send-email-liuyixian@huawei.com>
+        id S1726425AbfL1Tui (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 28 Dec 2019 14:50:38 -0500
+Received: from mout.web.de ([217.72.192.78]:60589 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726371AbfL1Tui (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 28 Dec 2019 14:50:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1577562613;
+        bh=gVkocQ6dvTlNJZDA/nSvVYaaGzqc+Yg6goCIHCtEybU=;
+        h=X-UI-Sender-Class:To:Cc:References:Subject:From:Date:In-Reply-To;
+        b=IK/iM2RdPP17FqTKtrt4sJJamY+cLhiGPYGkaR/dTKAgZDJpOAfJO+l7qH+6bjsmH
+         +/NfZBaWlYCOeR4Sz8T4XXsXo7LeC4rncb7++aGJf6tbZdq4oetkUtJdieNFQMrofz
+         caJqPPfFX5YAe2xdNjCGgv/+Y73++0pMRlcmMqDM=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([78.48.3.151]) by smtp.web.de (mrweb101
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0M5fsK-1jiboj0Hlo-00xdaw; Sat, 28
+ Dec 2019 20:50:13 +0100
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, linux-rdma@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Kangjie Lu <kjlu@umn.edu>,
+        Leon Romanovsky <leon@kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Yuan Zhang <yuanxzhang@fudan.edu.cn>
+References: <1577366516-19556-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Subject: Re: [PATCH v3] infiniband: i40iw: fix a potential NULL pointer
+ dereference
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <29610962-92d4-2989-f18c-fa4a0a13ccb4@web.de>
+Date:   Sat, 28 Dec 2019 20:50:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <1577366516-19556-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:AO7i+cISfLt0FtG3yWD5ETpUfo9By9c5U4OWdLtgUG3d+SwnNk5
+ l6WTaX7cts+YkFWnSaBqLVo8moascvEpCvxVavDViHA3tUM3wU1irGPrWSfH6XSiRnpAHT+
+ CM1XkeRh9mPLJ1V8BP1OR2BfT9ZfaCkf5YvBJgz9/Ef7jjwhuqa5CaW3eni0jlAzx28PEV+
+ OHQUDarsV8jKUprsYH6Sg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SCp/jdZ6XDE=:j+xW+fQYZjEhM/nmz8N0Ee
+ T6j/u1XAQGWNNJLTYptcM9yhnWfgGIRJodNZTSeLby3iauIIRE6ku8FtX+TeeXYtP+dFKJyAN
+ fxErf3tvDNRm0GQOBY813AB9b60AsSDOvzsRNw/1tebPQcmj1Q54ZCsOt5SqqXaLLMBUiGmER
+ c9uN7/isvMNfe7bKyzPN06Oc6CjtvPlvwRTzVUDpX2PTpYaR33MHpz3Q8VSQw2J0dPnHlNYtb
+ Ry0s+wiWQF4TbDqIVC1ItY4AxksiaOogwpLbqvdtnWCVh4PZBnSu0KCe1rs9DDYzSu+YKTIDd
+ zBEoK26M3w0X9FkMQRkFEPbCrujz4t2MT5j/sqF0gb3dT0HJUNCuYN3M4VjIJ2MAoCrZHFFvd
+ uUVfDxiYYFcbjSsOKbodMJa89pCGA//9VywKqIxrIebe56VnCyu5DsQMxXO0rTKtGrxsys2aG
+ 0ruFAnqjOxQOW5OWhe6v/L5bPxzyJiOSFf4J6wFhW8R7q5VL70h1uOu+ncxFWaxtKFHYhIQmM
+ +YtI/7+J2yAA7LitvSvpJ+vAu6iE9+vDPkIu6eMTKB6J/e7Raa/7taskrzNUKXnaYXrLIcdq3
+ BLbYMwOqv5YlD+Uuu+wBO9x37aG0cZu4UfrUBHOwxQi6+LKvSEzG5DerNz8jgtwpGLVghJQZS
+ 7u/w17EJQVFQPpy11PEAsH3a1XEG8Db01BImVNpl77uQB9Q2VQueXh5+g3zG/2GgGwzAfLP2l
+ RwV0aVSW9Psf9ZviEZueFXKH6Pha36uW/Gt3OY3rAb1XGYH/kyF9eaMWwZoznwODtS7S/MaPr
+ a9+IwJ8XEmw6FbLZoc98dAzh3MxSQXBGymWPLS3VS+jwugzvp7t9V5/tpa0Mgw9galo60mJ/G
+ rliJiC2DTfH0kicb9GGNCbOr23cd0gZwMnYSpWnkwf6ebULkd4rUvYc2g0gvJkOq8OMEaIl4B
+ 1qqMRqg2LJJp22iCcqiEZas0Lf3Q+EnBGD7s43n+cSysJq8D+lFJUoRJTT++LbRnMhJTvM/3b
+ mj7g/Tt8Ta6QjBjSvcbggEQwXL138LuayyHjiNm4WBG2rXy53fpQawPGV9BX0kiJ2VosUd8Ib
+ WgemnZHsDxEj96RDuSuH28Sj+6wZHVvfKO2WVZBS5ern//+yO+l8nt9OVrWYw66H4zJ2kke1e
+ ONkFlKpFOM4Bnqc/Fj7qb4HwXJ4umwmstQUBl4BRP3+rmVaGfz7UhSupxPwBePtq84Zz4WFE+
+ /fzCBWQaqmjlZh72VyLXLVhQItpcJPXLq+RJNq6Vq+RM2xXWj9MOx2pqgL7Q=
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
-outstanding WQEs if QP state gets into errored mode for some reason.
-To overcome this hardware problem and as a workaround, when QP is
-detected to be in errored state during various legs like post send,
-post receive etc[1], flush needs to be performed from the driver.
+> in_dev_get may return a NULL object.
 
-The earlier patch[1] sent to solve the hardware limitation explained
-in the cover-letter had a bug in the software flushing leg. It
-acquired mutex while modifying QP state to errored state and while
-conveying it to the hardware using the mailbox. This caused leg to
-sleep while holding spin-lock and caused crash.
+I would prefer a wording like =E2=80=9CA null pointer can be returned by i=
+n_dev_get().=E2=80=9D.
 
-Suggested Solution:
-we have proposed to defer the flushing of the QP in the Errored state
-using the workqueue to get around with the limitation of our hardware.
 
-This patch specifically adds the calls to the flush handler from
-where parts of the code like post_send/post_recv etc. when the QP
-state gets into the errored mode.
+> The fix handles the situation
+> by adding a check to avoid NULL pointer dereference on idev,
+> as pick_local_ipaddrs does.
 
-[1] https://patchwork.kernel.org/patch/10534271/
+How do you think about the wording suggestion =E2=80=9CThus add a correspo=
+nding check
+so that a null pointer dereference will be avoided at this place.=E2=80=9D=
+?
 
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-Reviewed-by: Salil Mehta <salil.mehta@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  2 +
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 94 +++++++++++++++--------------
- drivers/infiniband/hw/hns/hns_roce_qp.c     |  2 +
- 3 files changed, 52 insertions(+), 46 deletions(-)
+Please add also the tag =E2=80=9CFixes=E2=80=9D to your change description=
+.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index a87a838..0ba2387 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -667,6 +667,8 @@ struct hns_roce_qp {
- 	u8			sl;
- 	u8			resp_depth;
- 	u8			state;
-+	/* 1: PI is being pushed, 0: PI is not being pushed */
-+	u8			being_pushed;
- 	u32			access_flags;
- 	u32                     atomic_rd_en;
- 	u32			pkey_index;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 2afcedd..2e8ce21 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -221,11 +221,6 @@ static int set_rwqe_data_seg(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 	return 0;
- }
- 
--static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
--				 const struct ib_qp_attr *attr,
--				 int attr_mask, enum ib_qp_state cur_state,
--				 enum ib_qp_state new_state);
--
- static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 				 const struct ib_send_wr *wr,
- 				 const struct ib_send_wr **bad_wr)
-@@ -238,14 +233,12 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 	struct hns_roce_wqe_frmr_seg *fseg;
- 	struct device *dev = hr_dev->dev;
- 	struct hns_roce_v2_db sq_db;
--	struct ib_qp_attr attr;
- 	unsigned int sge_ind;
- 	unsigned int owner_bit;
- 	unsigned long flags;
- 	unsigned int ind;
- 	void *wqe = NULL;
- 	bool loopback;
--	int attr_mask;
- 	u32 tmp_len;
- 	int ret = 0;
- 	u32 hr_op;
-@@ -591,18 +584,17 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 		qp->sq_next_wqe = ind;
- 		qp->next_sge = sge_ind;
- 
--		if (qp->state == IB_QPS_ERR) {
--			attr_mask = IB_QP_STATE;
--			attr.qp_state = IB_QPS_ERR;
--
--			ret = hns_roce_v2_modify_qp(&qp->ibqp, &attr, attr_mask,
--						    qp->state, IB_QPS_ERR);
--			if (ret) {
--				spin_unlock_irqrestore(&qp->sq.lock, flags);
--				*bad_wr = wr;
--				return ret;
--			}
--		}
-+		/*
-+		 * Hip08 hardware cannot flush the WQEs in SQ if the QP state
-+		 * gets into errored mode. Hence, as a workaround to this
-+		 * hardware limitation, driver needs to assist in flushing. But
-+		 * the flushing operation uses mailbox to convey the QP state to
-+		 * the hardware and which can sleep due to the mutex protection
-+		 * around the mailbox calls. Hence, use the deferred flush for
-+		 * now.
-+		 */
-+		if (qp->state == IB_QPS_ERR && !qp->being_pushed)
-+			init_flush_work(hr_dev, qp);
- 	}
- 
- 	spin_unlock_irqrestore(&qp->sq.lock, flags);
-@@ -619,10 +611,8 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
- 	struct hns_roce_v2_wqe_data_seg *dseg;
- 	struct hns_roce_rinl_sge *sge_list;
- 	struct device *dev = hr_dev->dev;
--	struct ib_qp_attr attr;
- 	unsigned long flags;
- 	void *wqe = NULL;
--	int attr_mask;
- 	int ret = 0;
- 	int nreq;
- 	int ind;
-@@ -692,19 +682,17 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
- 
- 		*hr_qp->rdb.db_record = hr_qp->rq.head & 0xffff;
- 
--		if (hr_qp->state == IB_QPS_ERR) {
--			attr_mask = IB_QP_STATE;
--			attr.qp_state = IB_QPS_ERR;
--
--			ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, &attr,
--						    attr_mask, hr_qp->state,
--						    IB_QPS_ERR);
--			if (ret) {
--				spin_unlock_irqrestore(&hr_qp->rq.lock, flags);
--				*bad_wr = wr;
--				return ret;
--			}
--		}
-+		/*
-+		 * Hip08 hardware cannot flush the WQEs in RQ if the QP state
-+		 * gets into errored mode. Hence, as a workaround to this
-+		 * hardware limitation, driver needs to assist in flushing. But
-+		 * the flushing operation uses mailbox to convey the QP state to
-+		 * the hardware and which can sleep due to the mutex protection
-+		 * around the mailbox calls. Hence, use the deferred flush for
-+		 * now.
-+		 */
-+		if (hr_qp->state == IB_QPS_ERR && !hr_qp->being_pushed)
-+			init_flush_work(hr_dev, hr_qp);
- 	}
- 	spin_unlock_irqrestore(&hr_qp->rq.lock, flags);
- 
-@@ -2690,13 +2678,11 @@ static int hns_roce_handle_recv_inl_wqe(struct hns_roce_v2_cqe *cqe,
- static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 				struct hns_roce_qp **cur_qp, struct ib_wc *wc)
- {
-+	struct hns_roce_dev *hr_dev = to_hr_dev(hr_cq->ib_cq.device);
- 	struct hns_roce_srq *srq = NULL;
--	struct hns_roce_dev *hr_dev;
- 	struct hns_roce_v2_cqe *cqe;
- 	struct hns_roce_qp *hr_qp;
- 	struct hns_roce_wq *wq;
--	struct ib_qp_attr attr;
--	int attr_mask;
- 	int is_send;
- 	u16 wqe_ctr;
- 	u32 opcode;
-@@ -2720,7 +2706,6 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 				V2_CQE_BYTE_16_LCL_QPN_S);
- 
- 	if (!*cur_qp || (qpn & HNS_ROCE_V2_CQE_QPN_MASK) != (*cur_qp)->qpn) {
--		hr_dev = to_hr_dev(hr_cq->ib_cq.device);
- 		hr_qp = __hns_roce_qp_lookup(hr_dev, qpn);
- 		if (unlikely(!hr_qp)) {
- 			dev_err(hr_dev->dev, "CQ %06lx with entry for unknown QPN %06x\n",
-@@ -2814,14 +2799,22 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 		break;
- 	}
- 
--	/* flush cqe if wc status is error, excluding flush error */
--	if ((wc->status != IB_WC_SUCCESS) &&
--	    (wc->status != IB_WC_WR_FLUSH_ERR)) {
--		attr_mask = IB_QP_STATE;
--		attr.qp_state = IB_QPS_ERR;
--		return hns_roce_v2_modify_qp(&(*cur_qp)->ibqp,
--					     &attr, attr_mask,
--					     (*cur_qp)->state, IB_QPS_ERR);
-+	/*
-+	 * Hip08 hardware cannot flush the WQEs in SQ/RQ if the QP state gets
-+	 * into errored mode. Hence, as a workaround to this hardware
-+	 * limitation, driver needs to assist in flushing. But the flushing
-+	 * operation uses mailbox to convey the QP state to the hardware and
-+	 * which can sleep due to the mutex protection around the mailbox calls.
-+	 * Hence, use the deferred flush for now. Once wc error detected, the
-+	 * flushing operation is needed.
-+	 */
-+	if (wc->status != IB_WC_SUCCESS &&
-+	    wc->status != IB_WC_WR_FLUSH_ERR &&
-+	    !(*cur_qp)->being_pushed) {
-+		dev_err(hr_dev->dev, "error cqe status is: 0x%x\n",
-+			status & HNS_ROCE_V2_CQE_STATUS_MASK);
-+		init_flush_work(hr_dev, *cur_qp);
-+		return 0;
- 	}
- 
- 	if (wc->status == IB_WC_WR_FLUSH_ERR)
-@@ -4389,6 +4382,8 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 	struct hns_roce_v2_qp_context *context = ctx;
- 	struct hns_roce_v2_qp_context *qpc_mask = ctx + 1;
- 	struct device *dev = hr_dev->dev;
-+	unsigned long sq_flags = 0;
-+	unsigned long rq_flags = 0;
- 	int ret;
- 
- 	/*
-@@ -4406,6 +4401,7 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 
- 	/* When QP state is err, SQ and RQ WQE should be flushed */
- 	if (new_state == IB_QPS_ERR) {
-+		spin_lock_irqsave(&hr_qp->sq.lock, sq_flags);
- 		roce_set_field(context->byte_160_sq_ci_pi,
- 			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_M,
- 			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_S,
-@@ -4413,8 +4409,12 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 		roce_set_field(qpc_mask->byte_160_sq_ci_pi,
- 			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_M,
- 			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_S, 0);
-+		hr_qp->state = IB_QPS_ERR;
-+		hr_qp->being_pushed = 0;
-+		spin_unlock_irqrestore(&hr_qp->sq.lock, sq_flags);
- 
- 		if (!ibqp->srq) {
-+			spin_lock_irqsave(&hr_qp->rq.lock, rq_flags);
- 			roce_set_field(context->byte_84_rq_ci_pi,
- 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_M,
- 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_S,
-@@ -4422,6 +4422,7 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 			roce_set_field(qpc_mask->byte_84_rq_ci_pi,
- 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_M,
- 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_S, 0);
-+			spin_unlock_irqrestore(&hr_qp->rq.lock, rq_flags);
- 		}
- 	}
- 
-@@ -4466,6 +4467,7 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 		hr_qp->sq.tail = 0;
- 		hr_qp->sq_next_wqe = 0;
- 		hr_qp->next_sge = 0;
-+		hr_qp->being_pushed = 0;
- 		if (hr_qp->rq.wqe_cnt)
- 			*hr_qp->rdb.db_record = 0;
- 	}
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 0c1e74a..a30f86c 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -79,6 +79,7 @@ void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- 	if (!flush_work)
- 		return;
- 
-+	hr_qp->being_pushed = 1;
- 	flush_work->hr_dev = hr_dev;
- 	flush_work->hr_qp = hr_qp;
- 	INIT_WORK(&flush_work->work, flush_work_handle);
-@@ -748,6 +749,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 	spin_lock_init(&hr_qp->rq.lock);
- 
- 	hr_qp->state = IB_QPS_RESET;
-+	hr_qp->being_pushed = 0;
- 
- 	hr_qp->ibqp.qp_type = init_attr->qp_type;
- 
--- 
-2.7.4
-
+Regards,
+Markus
