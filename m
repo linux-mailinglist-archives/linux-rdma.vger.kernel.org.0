@@ -2,64 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C72A12C7C7
-	for <lists+linux-rdma@lfdr.de>; Sun, 29 Dec 2019 19:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC75812CBEA
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Dec 2019 03:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731077AbfL2Rq1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 29 Dec 2019 12:46:27 -0500
-Received: from smtpgwv02.dogantelekom.com ([213.243.1.84]:62138 "EHLO
-        smtpgwv02.dogantelekom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731060AbfL2Rq0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 29 Dec 2019 12:46:26 -0500
-X-Greylist: delayed 901 seconds by postgrey-1.27 at vger.kernel.org; Sun, 29 Dec 2019 12:46:22 EST
-X-AuditID: d5f30154-30bff70000001822-12-5e08e2e6441c
-Received: from dolhst01.dol.com.tr (ftp.kozayonetim.com.tr [213.243.39.2])
-        by smtpgwv02.dogantelekom.com (D-Smart Corporate Messaging Gateway) with SMTP id 9C.BC.06178.6E2E80E5; Sun, 29 Dec 2019 20:31:18 +0300 (MSK)
-Received: from 69.164.194.72 ([69.164.194.72]) by dsmartkurumsal.com with MailEnable WebMail; Sun, 29 Dec 2019 20:31:11 +0300
-From:   "Norman HKMA cs" <nener@enercompany.com>
-Subject: 
-Date:   Sun, 29 Dec 2019 18:31:11 +0100
-Message-ID: <34CBFE7BA78C444F8FC1548BA2453ED7.MAI@dsmartkurumsal.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-        boundary="--=_NextPart_000_000B_4401273EFF49482890298C2F150C4C64"
-X-Mailer: MailEnable WebMail.NET
-X-MimeOLE: Produced By MailEnable WebMail.NET V2.0.0.0
-X-Read: 0
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf0wTZxzG8969793BvO1WGbzDLHHN5oyLCItuX5LNmCxmtyVbXDYXsyWw
-        Uy4tgdKuBww2NaDIFlpGoaJrxSqxqwP9Y1RIUEmIRTMHA3Qd2onIOoVl/FJwoYSg7mw187/P
-        +z7P833+eQTW4OLShfyiYtVepBQauWQ8dPcVZu34X0JOZrV7BbTWBQjUtw2wcHr+GIbF1gss
-        OBudDBzub8Mw3TeCYMg/x8CIb4aBpivfseA7P4MhUJEK4TNNHDh/6iBw4+QDAv2+nzkYD9Vi
-        uBU6zsBvnVEWLrU38LBQPUeg8mwMQW3PKIETDj8PF6bfgj2RkyyEDupHrnWeRVDT/TeB4cZT
-        BIIXz+nPvkEMg/tK4Fq0ncDly7ME3FdOcXC/7jYHUwvjGNzfaOAYOYo3rZZnwkO83HVvlpGD
-        tR28HGu5wcmnvSO8XHngXyLfdP7Kyf3nYlh211RhOTjXwMt9Y1lyQ8/vrNxcP8rJh9pcvPxP
-        ZEp3hD/ZkvJp8pt5amF+qWpft/HzZPPV3jucrZ0tc/n3kwo0z9SgJIFK6+m92DT/kA3SH4g6
-        wjsTvIsuRj1xT4qEaUsshh8yJ2XQSs+ZuH+5lESDjsE4Y+llGvXXx1mUNtPKQPgRP0t/8dyK
-        Z1lpO/VXHeYTvSvp4v0mkuDXae/S0CNOopfGvMiFRO8Tce8T8QRn0pare9gEv0oDzZPsUYRb
-        UbpmKbaZvizNfC0jz2pS9L0UqgVWS8YOqyWI4qtBH3eiH6o+CCFJQMZl4vcHhRwDUUq1cksI
-        PS8wxufEI3X619PbrXnlZkUz59pLClUthKjAGlPEIhPJMYh5SvlXqt36WFohYGOamPvS29sM
-        kkkpVgtU1abaH6uMkDSB0vSy5WI0ql9epq9Yyzcl5AmULTBSpJtIkT+JNHnT42PTsWZTLHrX
-        ewKnd2nFyv/2NU8JcY8kUxdKr0BpW8wkt8txaLbl+Bt7N0L1ys+uL6YOh23zBz70KltD2asi
-        /me6l1KO3RVzs3wvLMwNBHYrX6e+XzK+2hKo8wW+HS6b2TrWvMk5saOx01M9tqFoybUuObvd
-        7Or+aFX2F2WjvQO71l5kB/bxBe71XR32H08c2dyTNbuteWrynfP7w+++aMSaWclaw9o15T8a
-        0270owMAAA==
-To:     unlisted-recipients:; (no To-header on input)
+        id S1726729AbfL3CZh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 29 Dec 2019 21:25:37 -0500
+Received: from mail.fudan.edu.cn ([61.129.42.10]:35169 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726726AbfL3CZh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 29 Dec 2019 21:25:37 -0500
+Received: from localhost.localdomain (unknown [10.222.182.212])
+        by app2 (Coremail) with SMTP id XQUFCgC3vJgGYAlejTybAA--.686S3;
+        Mon, 30 Dec 2019 10:25:10 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     xiyuyang19@fudan.edu.cn
+Cc:     yuanxzhang@fudan.edu.cn, kjlu@umn.edu, leon@kernel.org,
+        Markus.Elfring@web.de, Xin Tan <tanxin.ctf@gmail.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Shannon Nelson <shannon.nelson@intel.com>,
+        Anjali Singhai Jain <anjali.singhai@intel.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4] infiniband: i40iw: fix a potential NULL pointer dereference
+Date:   Mon, 30 Dec 2019 10:24:28 +0800
+Message-Id: <1577672668-46499-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XQUFCgC3vJgGYAlejTybAA--.686S3
+X-Coremail-Antispam: 1UD129KBjvJXoWrKF48tw47uw48CFWkur4fGrg_yoW8Jr1Dpw
+        48JF9FkrWrAF1UZa18Kw42vFyfJas8Jw1qvr1ktwn8urn8GFZrtryrKFnrWFW8ZrW5Cw4I
+        vFs0gF4kCF4rWw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvI1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
+        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4
+        x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28E
+        F7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzx
+        vE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VCjz48v1sIEY20_Xry5
+        Jr1UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5c
+        I20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVCm-wCF04k20xvY0x0EwIxG
+        rwCF04k20xvE74AGY7Cv6cx26ry5Xr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x0JjaSoXUUUUU=
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This is a multi-part message in MIME format.
+A NULL pointer can be returned by in_dev_get(). Thus add
+a corresponding check so that a NULL pointer dereference
+will be avoided at this place.
 
-----=_NextPart_000_000B_4401273EFF49482890298C2F150C4C64
-Content-type: text/plain; charset="windows-1254"
-Content-Transfer-Encoding: quoted-printable
+Fixes: 8e06af711bf2 ("i40iw: add main, hdr, status")
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+---
+Changes in v2:
+- Release rtnl lock when in_dev_get return NULL
+Changes in v3:
+- Continue the next loop when in_dev_get return NULL
+Changes in v4:
+- Change commit message
 
-I have a business deal worth $150 Million USD which can be invested
-in any business area in your country, reply to me for more info via
-Email: Normanhkma@gmail.com
+ drivers/infiniband/hw/i40iw/i40iw_main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-
-----=_NextPart_000_000B_4401273EFF49482890298C2F150C4C64--
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_main.c b/drivers/infiniband/hw/i40iw/i40iw_main.c
+index d44cf33df81a..238614370927 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_main.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_main.c
+@@ -1225,6 +1225,8 @@ static void i40iw_add_ipv4_addr(struct i40iw_device *iwdev)
+ 			const struct in_ifaddr *ifa;
+ 
+ 			idev = in_dev_get(dev);
++			if (!idev)
++				continue;
+ 			in_dev_for_each_ifa_rtnl(ifa, idev) {
+ 				i40iw_debug(&iwdev->sc_dev, I40IW_DEBUG_CM,
+ 					    "IP=%pI4, vlan_id=%d, MAC=%pM\n", &ifa->ifa_address,
+-- 
+2.7.4
 
