@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B60E12D41B
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Dec 2019 20:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7CD12D4D2
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Dec 2019 23:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbfL3Tsa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Dec 2019 14:48:30 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:42560 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727654AbfL3Tsa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Dec 2019 14:48:30 -0500
-Received: by mail-pf1-f195.google.com with SMTP id 4so18701432pfz.9;
-        Mon, 30 Dec 2019 11:48:29 -0800 (PST)
+        id S1727732AbfL3WZV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Dec 2019 17:25:21 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:43037 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727691AbfL3WZV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Dec 2019 17:25:21 -0500
+Received: by mail-pf1-f194.google.com with SMTP id x6so17800538pfo.10;
+        Mon, 30 Dec 2019 14:25:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=uNViMZmh5LhULoDD6aH25yjCL/0Vaq95EzZj7IWZ7ew=;
-        b=rQBJUFd1BtO5A5EOrSh0JxdR5ix56ZWoogwPTs5SXQbYqSnpQQCDbLLGq84b9+2rsn
-         ZJCoITuOaurxGC9kjvjgH/O5sseNCdLfHvQ5PePchsc4VuUtflP/h8NdE/C/BURPH9CO
-         xDT6ObIf9dykuFinuGoM/sVzD5TXb962wWUDf0D2Ss+xeBGIcZr1+Ksw8RZT/sqwym68
-         NClWA7Cn5QfgYFXpfZSFDKvQinXCwamBuniUTSYNb1Jbub5/pBLkomB4tcrQTfZ2DjGK
-         2BlR4DSaPRHkgG8DMNbZX9V4y361MXPW3hfvCl2GzhMmrQDVqRC8pxzs88m8lP0486IV
-         TTFg==
-X-Gm-Message-State: APjAAAUwLGpggbHmeKlMHMMV7m6WTsqnMaHIVz8n3DSeNYCxGi4KVwPj
-        bAbcEAnuUhVYJ/Sntm1kWUw=
-X-Google-Smtp-Source: APXvYqyxTQ1LBFhxVp0E+ifbvWpsFooOcLL4M62TivJC+01A14YThQmbG9YS3Q7aegUPXnXXq0N2gQ==
-X-Received: by 2002:a63:a54d:: with SMTP id r13mr73430331pgu.138.1577735309132;
-        Mon, 30 Dec 2019 11:48:29 -0800 (PST)
+        bh=K2BO2LUROHaNIho7rOp6VAnB+9aiSzF+xQJYuD//s44=;
+        b=AfYd5X/DVwNeR5Pm4l/lJifCYeE8+BJWzt3OmGzQnVYoyQ+LPvMUctT4l7pYSAV9o8
+         xBxT/4kKTMiEM4t66Ch3KARCAme16iHF16eWd4MFWypfdWqfRSqWigzPsh8ceiGOzUif
+         Jmce1WDcb5KTHwYX5Othh8va2CvXiAA1dQTmsHfSH/Jj8g9Spygd/58ypW+rgZKL5Lv/
+         8Zds7bYlmy8OqPp8s6lWFCpDbkl2IWp9/CapIu65b0f/ecsELJqv08fPT00s+dVWgS4r
+         /Dr2F3T7gguXzja9+9lWOWZ2SW+1KAMz95KREhBO1kODm5PSacLIKIr9XbUL9sY1j+51
+         Db0A==
+X-Gm-Message-State: APjAAAUV+0774nxcvDSireCSvnQYj+Kh4RkO1Zparhmlk7Llwh//1LA0
+        ox2ak0xhs6kT8/Q+YRvysSE=
+X-Google-Smtp-Source: APXvYqxW/MrvAaVEwPmYFNG7SyueGAkqCXfQtH4JRzpP1v0TceqOgInWaI99wchIdomtCAITrYrX6Q==
+X-Received: by 2002:a63:150d:: with SMTP id v13mr73138152pgl.342.1577744720207;
+        Mon, 30 Dec 2019 14:25:20 -0800 (PST)
 Received: from ?IPv6:2601:647:4000:10b0:5d64:b7bb:4214:150f? ([2601:647:4000:10b0:5d64:b7bb:4214:150f])
-        by smtp.gmail.com with ESMTPSA id d27sm48590209pgm.53.2019.12.30.11.48.27
+        by smtp.gmail.com with ESMTPSA id y4sm566027pjw.9.2019.12.30.14.25.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Dec 2019 11:48:28 -0800 (PST)
-Subject: Re: [PATCH v6 03/25] rtrs: private headers with rtrs protocol structs
- and helpers
+        Mon, 30 Dec 2019 14:25:19 -0800 (PST)
+Subject: Re: [PATCH v6 04/25] rtrs: core: lib functions shared between client
+ and server modules
 To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         leon@kernel.org, dledford@redhat.com, danil.kipnis@cloud.ionos.com,
         jinpu.wang@cloud.ionos.com, rpenyaev@suse.de
 References: <20191230102942.18395-1-jinpuwang@gmail.com>
- <20191230102942.18395-4-jinpuwang@gmail.com>
+ <20191230102942.18395-5-jinpuwang@gmail.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -67,12 +67,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <b13eccdd-09a2-70d5-1c78-3c4dbf1aefe8@acm.org>
-Date:   Mon, 30 Dec 2019 11:48:26 -0800
+Message-ID: <d4288d41-b000-9a98-d12a-0738a0f647e8@acm.org>
+Date:   Mon, 30 Dec 2019 14:25:18 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20191230102942.18395-4-jinpuwang@gmail.com>
+In-Reply-To: <20191230102942.18395-5-jinpuwang@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -86,150 +86,225 @@ On 2019-12-30 02:29, Jack Wang wrote:
 
 Is RTRS an InfiniBand or an RDMA transport layer?
 
-> +#define rtrs_prefix(obj) (obj->sessname)
+> +MODULE_DESCRIPTION("RTRS Core");
 
-Is it really worth it to introduce a macro for accessing a single member
-of a single pointer?
+Please write out RTRS in full and consider changing the word "Core" into
+"client and server".
 
-> + * InfiniBand Transport Layer
+> +	WARN_ON(!queue_size);
+> +	ius = kcalloc(queue_size, sizeof(*ius), gfp_mask);
+> +
+> +	if (unlikely(!ius))
+> +		return NULL;
 
-Same question here: is RTRS an InfiniBand or an RDMA transport layer?
+No blank line between the 'ius' assignment and the 'ius' check please.
 
-> +enum {
-> +	SERVICE_CON_QUEUE_DEPTH = 512,
-
-What is a service connection?
-
-> +	/*
-> +	 * With the current size of the tag allocated on the client, 4K
-> +	 * is the maximum number of tags we can allocate.  This number is
-> +	 * also used on the client to allocate the IU for the user connection
-> +	 * to receive the RDMA addresses from the server.
-> +	 */
-
-What does the word 'tag' mean in the context of the RTRS protocol?
-
-> +struct rtrs_ib_dev;
-
-What does the "rtrs_ib_dev" data structure represent? Additionally, I
-think it's confusing that a single name has an "r" that refers to "RDMA"
-and "ib" that refers to InfiniBand.
-
-> +struct rtrs_ib_dev_pool {
-> +	struct mutex		mutex;
-> +	struct list_head	list;
-> +	enum ib_pd_flags	pd_flags;
-> +	const struct rtrs_ib_dev_pool_ops *ops;
-> +};
-
-What is the purpose of an rtrs_ib_dev_pool and what does it contain?
-
-> +struct rtrs_iu {
-
-A comment that explains what the "iu" abbreviation stands for would be
-welcome.
-
-> +/**
-> + * enum rtrs_msg_types - RTRS message types.
-> + * @RTRS_MSG_INFO_REQ:		Client additional info request to the server
-> + * @RTRS_MSG_INFO_RSP:		Server additional info response to the client
-> + * @RTRS_MSG_WRITE:		Client writes data per RDMA to server
-> + * @RTRS_MSG_READ:		Client requests data transfer from server
-> + * @RTRS_MSG_RKEY_RSP:		Server refreshed rkey for rbuf
-> + */
-
-What is "additional info" in this context?
-
-> +/**
-> + * struct rtrs_msg_conn_req - Client connection request to the server
-> + * @magic:	   RTRS magic
-> + * @version:	   RTRS protocol version
-> + * @cid:	   Current connection id
-> + * @cid_num:	   Number of connections per session
-> + * @recon_cnt:	   Reconnections counter
-> + * @sess_uuid:	   UUID of a session (path)
-> + * @paths_uuid:	   UUID of a group of sessions (paths)
-> + *
-> + * NOTE: max size 56 bytes, see man rdma_connect().
-> + */
-> +struct rtrs_msg_conn_req {
-> +	u8		__cma_version; /* Is set to 0 by cma.c in case of
-> +					* AF_IB, do not touch that.
-> +					*/
-> +	u8		__ip_version;  /* On sender side that should be
-> +					* set to 0, or cma_save_ip_info()
-> +					* extract garbage and will fail.
-> +					*/
-
-The above two fields and the comments next to it look suspicious to me.
-Does RTRS perhaps try to generate CMA-formatted messages without using
-the CMA to format these messages?
-
-> +	u8		reserved[12];
-
-Please leave out the reserved data. If future versions of the protocol
-would need any of these bytes it is easy to add more data to this structure.
-
-> +/**
-> + * struct rtrs_msg_conn_rsp - Server connection response to the client
-> + * @magic:	   RTRS magic
-> + * @version:	   RTRS protocol version
-> + * @errno:	   If rdma_accept() then 0, if rdma_reject() indicates error
-> + * @queue_depth:   max inflight messages (queue-depth) in this session
-> + * @max_io_size:   max io size server supports
-> + * @max_hdr_size:  max msg header size server supports
-> + *
-> + * NOTE: size is 56 bytes, max possible is 136 bytes, see man rdma_accept().
-> + */
-> +struct rtrs_msg_conn_rsp {
-> +	__le16		magic;
-> +	__le16		version;
-> +	__le16		errno;
-> +	__le16		queue_depth;
-> +	__le32		max_io_size;
-> +	__le32		max_hdr_size;
-> +	__le32		flags;
-> +	u8		reserved[36];
-> +};
-
-Same comment here: please leave out the "reserved[]" array. Sending a
-bunch of zero-bytes at the end of a message over the wire is not useful.
-
-> +static inline void rtrs_from_imm(u32 imm, u32 *type, u32 *payload)
+> +int rtrs_iu_post_recv(struct rtrs_con *con, struct rtrs_iu *iu)
 > +{
-> +	*payload = (imm & MAX_IMM_PAYL_MASK);
-> +	*type = (imm >> MAX_IMM_PAYL_BITS);
+> +	struct rtrs_sess *sess = con->sess;
+> +	struct ib_recv_wr wr;
+> +	const struct ib_recv_wr *bad_wr;
+> +	struct ib_sge list;
+> +
+> +	list.addr   = iu->dma_addr;
+> +	list.length = iu->size;
+> +	list.lkey   = sess->dev->ib_pd->local_dma_lkey;
+> +
+> +	if (WARN_ON(list.length == 0)) {
+> +		rtrs_wrn(con->sess,
+> +			  "Posting receive work request failed, sg list is empty\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	wr.next    = NULL;
+> +	wr.wr_cqe  = &iu->cqe;
+> +	wr.sg_list = &list;
+> +	wr.num_sge = 1;
+> +
+> +	return ib_post_recv(con->qp, &wr, &bad_wr);
 > +}
+> +EXPORT_SYMBOL_GPL(rtrs_iu_post_recv);
 
-Please do not use parentheses when not necessary. Such superfluous
-parentheses namely hurt readability of the code.
+The above code is fragile: although this is unlikely, if a member would
+be added in struct ib_sge or in struct ib_recv_wr then the above code
+will leave some member variables uninitialized. Has it been considered
+to initialize these structures using a single assignment statement, e.g.
+as follows:
 
-> +	type = (w_inval ? RTRS_IO_RSP_W_INV_IMM : RTRS_IO_RSP_IMM);
+	wr = (struct ib_recv_wr) {
+		.wr_cqe = ...,
+		.sg_list = ...,
+		.num_sge = 1,
+	};
 
-Same comment here: I think the parentheses can be left out from the
-above statement.
-
-> +static inline void rtrs_from_io_rsp_imm(u32 payload, u32 *msg_id, int *errno)
+> +int rtrs_post_recv_empty(struct rtrs_con *con, struct ib_cqe *cqe)
 > +{
-> +	/* 9 bits for errno, 19 bits for msg_id */
-> +	*msg_id = (payload & 0x7ffff);
+> +	struct ib_recv_wr wr;
+> +	const struct ib_recv_wr *bad_wr;
+> +
+> +	wr.next    = NULL;
+> +	wr.wr_cqe  = cqe;
+> +	wr.sg_list = NULL;
+> +	wr.num_sge = 0;
+> +
+> +	return ib_post_recv(con->qp, &wr, &bad_wr);
+> +}
+> +EXPORT_SYMBOL_GPL(rtrs_post_recv_empty);
 
-Are the parentheses in the above expression necessary?
+Same comment for this function.
 
-> +	*errno = -(int)((payload >> 19) & 0x1ff);
+> +int rtrs_post_recv_empty_x2(struct rtrs_con *con, struct ib_cqe *cqe)
+> +{
+> +	struct ib_recv_wr wr_arr[2], *wr;
+> +	const struct ib_recv_wr *bad_wr;
+> +	int i;
+> +
+> +	memset(wr_arr, 0, sizeof(wr_arr));
+> +	for (i = 0; i < ARRAY_SIZE(wr_arr); i++) {
+> +		wr = &wr_arr[i];
+> +		wr->wr_cqe  = cqe;
+> +		if (i)
+> +			/* Chain backwards */
+> +			wr->next = &wr_arr[i - 1];
+> +	}
+> +
+> +	return ib_post_recv(con->qp, wr, &bad_wr);
+> +}
+> +EXPORT_SYMBOL_GPL(rtrs_post_recv_empty_x2);
 
-Is the '(int)' cast useful in the above expression? Can it be left out?
+I have not yet seen any other RDMA code that is similar to the above
+function. A comment above this function that explains its purpose would
+be more than welcome.
 
-> +#define STAT_ATTR(type, stat, print, reset)				\
-> +STAT_STORE_FUNC(type, stat, reset)					\
-> +STAT_SHOW_FUNC(type, stat, print)					\
-> +static struct kobj_attribute stat##_attr =				\
-> +		__ATTR(stat, 0644,					\
-> +		       stat##_show,					\
-> +		       stat##_store)
+> +int rtrs_iu_post_send(struct rtrs_con *con, struct rtrs_iu *iu, size_t size,
+> +		       struct ib_send_wr *head)
+> +{
+> +	struct rtrs_sess *sess = con->sess;
+> +	struct ib_send_wr wr;
+> +	const struct ib_send_wr *bad_wr;
+> +	struct ib_sge list;
+> +
+> +	if ((WARN_ON(size == 0)))
+> +		return -EINVAL;
 
-Is the above use of __ATTR() perhaps an open-coded version of __ATTR_RW()?
+No superfluous parentheses please.
+
+> +	list.addr   = iu->dma_addr;
+> +	list.length = size;
+> +	list.lkey   = sess->dev->ib_pd->local_dma_lkey;
+> +
+> +	memset(&wr, 0, sizeof(wr));
+> +	wr.next       = NULL;
+> +	wr.wr_cqe     = &iu->cqe;
+> +	wr.sg_list    = &list;
+> +	wr.num_sge    = 1;
+> +	wr.opcode     = IB_WR_SEND;
+> +	wr.send_flags = IB_SEND_SIGNALED;
+
+Has it been considered to use designated initializers instead of a
+memset() followed by multiple assignments? Same question for
+rtrs_iu_post_rdma_write_imm() and rtrs_post_rdma_write_imm_empty().
+
+> +static int create_qp(struct rtrs_con *con, struct ib_pd *pd,
+> +		     u16 wr_queue_size, u32 max_sge)
+> +{
+> +	struct ib_qp_init_attr init_attr = {NULL};
+> +	struct rdma_cm_id *cm_id = con->cm_id;
+> +	int ret;
+> +
+> +	init_attr.cap.max_send_wr = wr_queue_size;
+> +	init_attr.cap.max_recv_wr = wr_queue_size;
+
+What code is responsible for ensuring that neither max_send_wr nor
+max_recv_wr exceeds the device limits? Please document this in a comment
+above this function.
+
+> +	init_attr.cap.max_recv_sge = 1;
+> +	init_attr.event_handler = qp_event_handler;
+> +	init_attr.qp_context = con;
+> +#undef max_send_sge
+> +	init_attr.cap.max_send_sge = max_sge;
+
+Is the "undef max_send_sge" really necessary? If so, please add a
+comment that explains why it is necessary.
+
+> +static int rtrs_str_gid_to_sockaddr(const char *addr, size_t len,
+> +				     short port, struct sockaddr_storage *dst)
+> +{
+> +	struct sockaddr_ib *dst_ib = (struct sockaddr_ib *)dst;
+> +	int ret;
+> +
+> +	/*
+> +	 * We can use some of the I6 functions since GID is a valid
+> +	 * IPv6 address format
+> +	 */
+> +	ret = in6_pton(addr, len, dst_ib->sib_addr.sib_raw, '\0', NULL);
+> +	if (ret == 0)
+> +		return -EINVAL;
+
+What is "I6"?
+
+Is the fourth argument to this function correct? From the comment above
+in6_pton(): "@delim: the delimiter of the IPv6 address in @src, -1 means
+no delimiter".
+
+> +int sockaddr_to_str(const struct sockaddr *addr, char *buf, size_t len)
+> +{
+> +	int cnt;
+> +
+> +	switch (addr->sa_family) {
+> +	case AF_IB:
+> +		cnt = scnprintf(buf, len, "gid:%pI6",
+> +			&((struct sockaddr_ib *)addr)->sib_addr.sib_raw);
+> +		return cnt;
+> +	case AF_INET:
+> +		cnt = scnprintf(buf, len, "ip:%pI4",
+> +			&((struct sockaddr_in *)addr)->sin_addr);
+> +		return cnt;
+> +	case AF_INET6:
+> +		cnt = scnprintf(buf, len, "ip:%pI6c",
+> +			  &((struct sockaddr_in6 *)addr)->sin6_addr);
+> +		return cnt;
+> +	}
+> +	cnt = scnprintf(buf, len, "<invalid address family>");
+> +	pr_err("Invalid address family\n");
+> +	return cnt;
+> +}
+> +EXPORT_SYMBOL(sockaddr_to_str);
+
+Is the pr_err() statement in the above function useful? Will anyone be
+able to figure out what is going on if the "Invalid address family"
+string appears in the system log? Please consider changing that pr_err()
+statement into a WARN_ON_ONCE() statement.
+
+> +	ret = rtrs_str_to_sockaddr(str, len, port, addr->dst);
+> +
+> +	return ret;
+
+Please change this into a single return statement.
+
+> +EXPORT_SYMBOL(rtrs_addr_to_sockaddr);
+> +
+> +void rtrs_ib_dev_pool_init(enum ib_pd_flags pd_flags,
+> +			    struct rtrs_ib_dev_pool *pool)
+> +{
+> +	WARN_ON(pool->ops && (!pool->ops->alloc ^ !pool->ops->free));
+> +	INIT_LIST_HEAD(&pool->list);
+> +	mutex_init(&pool->mutex);
+> +	pool->pd_flags = pd_flags;
+> +}
+> +EXPORT_SYMBOL(rtrs_ib_dev_pool_init);
+> +
+> +void rtrs_ib_dev_pool_deinit(struct rtrs_ib_dev_pool *pool)
+> +{
+> +	WARN_ON(!list_empty(&pool->list));
+> +}
+> +EXPORT_SYMBOL(rtrs_ib_dev_pool_deinit);
+
+Since rtrs_ib_dev_pool_init() calls mutex_init(), should
+rtrs_ib_dev_pool_deinit() call mutex_destroy()?
 
 Thanks,
 
 Bart.
+
