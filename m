@@ -2,38 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5907712D4E0
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Dec 2019 23:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DBDB12D4ED
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Dec 2019 00:03:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727741AbfL3Wvg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Dec 2019 17:51:36 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:45132 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727732AbfL3Wvg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Dec 2019 17:51:36 -0500
-Received: by mail-pg1-f194.google.com with SMTP id b9so18683777pgk.12;
-        Mon, 30 Dec 2019 14:51:35 -0800 (PST)
+        id S1727751AbfL3XD5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Dec 2019 18:03:57 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:54748 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727695AbfL3XD5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Dec 2019 18:03:57 -0500
+Received: by mail-pj1-f66.google.com with SMTP id kx11so409788pjb.4;
+        Mon, 30 Dec 2019 15:03:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=X7UMZsK19/JCsq+hQSWAWireoAP5gI8TurD1CBiX95c=;
-        b=gV8K6dFRVM1arXBvi4eZM9kbKaH21Oaw/Ew4Dre98F8MUQmzrpm3PYGOgP//kQSR8Q
-         Dj+qCQcBBWnsOvvnOM+kpnbSrR0VBVYc1Ne6ZWi/6aVmfp6hNBhohQh37LiTInP7k2fp
-         fiS2JHwqq5Lw+cKPPKXnoj6+E0FWeyixPIxEl4sIEOH/K3/Z7XehyCe2A4SYBuNCClBO
-         bz/9hRjOA6g9nA5TNSE6eUH8trgSFqhB2qkq+QX3K4ejBXpWSmg+jDVR0OwOSyA4sYAm
-         sXXMiOR34deR9coZwaxbdaZdP2HKrDdLmdIQ+thDfZpDwbXPCKrFuZGb8VlXj30z7/ej
-         64FQ==
-X-Gm-Message-State: APjAAAW4/nIbNokilDKUBd4e5XPN9QztdKHh3lIfBVNWe58Bhj7mAHCw
-        pkupPqFNiFKk71fXudco2ow=
-X-Google-Smtp-Source: APXvYqyDPDn9e2WV9muz5ba8c6BjWKN3zyqN/odYEn84B4EOJ/W090WuvJ6kHNBRVDKfdK7fHjQtxA==
-X-Received: by 2002:a63:e4b:: with SMTP id 11mr74920358pgo.5.1577746295350;
-        Mon, 30 Dec 2019 14:51:35 -0800 (PST)
+        bh=tb+pIE5KSrk39weTnVvY/o6oJav0YZbPRsxSQSObMLU=;
+        b=p05QL87XpB6kfJ8o6slXmS23nRiU3y/LIfgQo75D2ocrVuKm38f78ihHNaRddfxXR/
+         sbfkGkB1VNr7YARNZCdRYMlGswQkOM8qUatzK9hEFQ0m1pq+EPiSifzwDQuWcabrcPxY
+         iatbKAMk0MuIlPGo5nPGeadrZll/CYLQhzOIVUGII1EhN1bRgCusQU+2g7+xPUcpIE77
+         wMjwDPFHKyAqxtt98OwGGVt1hWzBvYQvW06GlS9A24aKfnhZdbR2qeRje0slYjTXLiIH
+         iGud668WFZJLq/8c+lKpg56SY+kJmppl42iU9X/1aSMlfcMGyMeGzOXWrZhFPeUovK7q
+         raxg==
+X-Gm-Message-State: APjAAAVMLNRV0qMY47DTPo0Hfj20nylX8YYstmm0buojPN3S4TLdT/7f
+        KVOdMxMwP3L0jdA1d9GDubU=
+X-Google-Smtp-Source: APXvYqyNFqMcY1wvzmRKyWnNLEx9vUW1o3tbC7E9VtBrEVsAeKljRG7phcpPZL1tDoBy+TdFsJNekQ==
+X-Received: by 2002:a17:902:bb93:: with SMTP id m19mr70383368pls.37.1577747036503;
+        Mon, 30 Dec 2019 15:03:56 -0800 (PST)
 Received: from ?IPv6:2601:647:4000:10b0:5d64:b7bb:4214:150f? ([2601:647:4000:10b0:5d64:b7bb:4214:150f])
-        by smtp.gmail.com with ESMTPSA id c1sm53891496pfa.51.2019.12.30.14.51.33
+        by smtp.gmail.com with ESMTPSA id o98sm612161pjb.15.2019.12.30.15.03.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Dec 2019 14:51:34 -0800 (PST)
+        Mon, 30 Dec 2019 15:03:55 -0800 (PST)
 Subject: Re: [PATCH v6 05/25] rtrs: client: private header with client structs
  and functions
 To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
@@ -67,8 +67,8 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <02d1f022-8f60-714c-24c8-e2100984e90f@acm.org>
-Date:   Mon, 30 Dec 2019 14:51:33 -0800
+Message-ID: <db1bc453-7ea5-978a-7418-af05c7c8cba7@acm.org>
+Date:   Mon, 30 Dec 2019 15:03:54 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.0
 MIME-Version: 1.0
@@ -82,53 +82,9 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 2019-12-30 02:29, Jack Wang wrote:
-> + * InfiniBand Transport Layer
+> +#define GET_PERMIT(clt, idx) ((clt)->permits + PERMIT_SIZE(clt) * idx)
 
-InfiniBand or RDMA?
-
-> +static inline const char *rtrs_clt_state_str(enum rtrs_clt_state state)
-> +{
-> +	switch (state) {
-> +	case RTRS_CLT_CONNECTING:
-> +		return "RTRS_CLT_CONNECTING";
-> +	case RTRS_CLT_CONNECTING_ERR:
-> +		return "RTRS_CLT_CONNECTING_ERR";
-> +	case RTRS_CLT_RECONNECTING:
-> +		return "RTRS_CLT_RECONNECTING";
-> +	case RTRS_CLT_CONNECTED:
-> +		return "RTRS_CLT_CONNECTED";
-> +	case RTRS_CLT_CLOSING:
-> +		return "RTRS_CLT_CLOSING";
-> +	case RTRS_CLT_CLOSED:
-> +		return "RTRS_CLT_CLOSED";
-> +	case RTRS_CLT_DEAD:
-> +		return "RTRS_CLT_DEAD";
-> +	default:
-> +		return "UNKNOWN";
-> +	}
-> +}
-
-This function is not in the hot path so it shouldn't be inline.
-
-> +#define MIN_LOG_SG 2
-> +#define MAX_LOG_SG 5
-> +#define MAX_LIN_SG BIT(MIN_LOG_SG)
-> +#define SG_DISTR_SZ (MAX_LOG_SG - MIN_LOG_SG + MAX_LIN_SG + 2)
-
-I think these constants deserve a comment that explains what their
-meaning is.
-
-> +/**
-> + * rtrs_permit - permits the memory allocation for future RDMA operation
-> + */
-> +struct rtrs_permit {
-> +	enum rtrs_clt_con_type con_type;
-> +	unsigned int cpu_id;
-> +	unsigned int mem_id;
-> +	unsigned int mem_off;
-> +};
-
-The comment above this structure is confusing. Please make it more clear.
+Please surround 'idx' with parentheses.
 
 Thanks,
 
