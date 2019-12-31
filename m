@@ -2,105 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D1E12D5D1
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Dec 2019 03:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA0812D62F
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Dec 2019 05:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726119AbfLaCjE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Dec 2019 21:39:04 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:32848 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbfLaCjD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Dec 2019 21:39:03 -0500
-Received: by mail-pg1-f194.google.com with SMTP id 6so18923849pgk.0;
-        Mon, 30 Dec 2019 18:39:03 -0800 (PST)
+        id S1726627AbfLaEfk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Dec 2019 23:35:40 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:33675 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726490AbfLaEfk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Dec 2019 23:35:40 -0500
+Received: by mail-lj1-f193.google.com with SMTP id y6so27247442lji.0
+        for <linux-rdma@vger.kernel.org>; Mon, 30 Dec 2019 20:35:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HSpiwI9s4O/EziRMdZMFTUugUs0mUBaOxkNkmeopwNQ=;
+        b=iUYw0o7+XJOUGoTvTe6bhrXu2hXu0zjKIVy95hfIrqSzkYxXP7ly103cbFGxcPcLgU
+         +MzxlfrjcEKFPApcxeRRgPtDSjwji5OHjgI4vc4QQLirOEBMlfWcqtkG3yrjSbRhK997
+         JMghloI2Jug35QlDTqCK1tX4qTVBH5k1Z30DtEdfG1Xi1XMnesKagvC6fbCNRL9W5j+I
+         vfvdqe3neE1R/pGmQQrRojesvxzVbrqMxWhGeHALwVLnSVSDDtH/Ndum1ZyPoJa7sSQ8
+         3WOYVYGJtngHpLDFZPt5yOH1V9wvjfw/x2Cekhb2+Q8iosMuKTz2WBvWOm3ym/xwVmDO
+         VTHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=MikzkHh0za+uYxjbFgHfII/aiEKefwUWCBUIacolOKU=;
-        b=sw1mJzqCjwD2DhyZzZ7ippZ/a3y6k6Gee/w7AKbVej2FUe5vIZmqRouf47QGK3fkYl
-         f3SUaJUeJI/ApdJfUREFuJTj6JW+o6NN5i6kOZmGAXeGqcqtHe5fCqy7qbpfydc84fEc
-         LXmWhRzIxT5ROQcSaQCd0ON60shOk7ymglIT56KgqnCvHy6e1VXLps4Oli+eLnmMDzsS
-         yGj5NZkVfNMYKt4E7+LTcsdYFgrjtN8LHndvqnEruTiPyh3Xj/scXCwzFUhwg53GnkB3
-         t0tdnnV2KRNT2MKa38td315iDtBeEgZYbs1ffEyx2/XXmnKYLcoZ+2nNbAVWVp+Y2b18
-         fkSQ==
-X-Gm-Message-State: APjAAAWdBaiPSWeR1N2W2BR5XhytepPWfPQ3xAxLXYFX+X5r+qIWY1wW
-        dd0Qcd5gtq3dqICTyNe1wvo=
-X-Google-Smtp-Source: APXvYqzD5o1mUhbbJN06jtPKf98owUns5FiVMWq0Pnlz2VZhW/5uUBARv0d//MWk8vF7rRv7+9oeRQ==
-X-Received: by 2002:a63:7311:: with SMTP id o17mr71845332pgc.29.1577759943053;
-        Mon, 30 Dec 2019 18:39:03 -0800 (PST)
-Received: from ?IPv6:2601:647:4000:10b0:5d64:b7bb:4214:150f? ([2601:647:4000:10b0:5d64:b7bb:4214:150f])
-        by smtp.gmail.com with ESMTPSA id e16sm48009988pgk.77.2019.12.30.18.39.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Dec 2019 18:39:02 -0800 (PST)
-Subject: Re: [PATCH v6 00/25] RTRS (former IBTRS) rdma transport library and
- RNBD (former IBNBD) rdma network block device
-To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
-        leon@kernel.org, dledford@redhat.com, danil.kipnis@cloud.ionos.com,
-        jinpu.wang@cloud.ionos.com, rpenyaev@suse.de
-References: <20191230102942.18395-1-jinpuwang@gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <a56985f4-fbd3-3546-34e1-4185150f4af2@acm.org>
-Date:   Mon, 30 Dec 2019 18:39:00 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HSpiwI9s4O/EziRMdZMFTUugUs0mUBaOxkNkmeopwNQ=;
+        b=TXbAPh436k6dtyoxbBGqa1qmGZWe6zB1oNxgy3qgruDR+4sNxBMrtHgHjB8O0t9dut
+         0cIXKf1/Ze+v0w1gnHAMIfuGWGOHoe3MsF9OFOkHue1+4fTyVpOzTSbDo3YHzpEXzRfj
+         AgMv8adEcjkd4PCrYGqCnw6/3WMXlW43oAXLR5baV0FtqWeN5rLp0UBKVUd34FYhrFNv
+         SjIUdlhCjaW5yJNCXfzqM9vGScNp9V1uA0QaqGatUXz+rjv/LgKYgOZDaciheqODCk3L
+         VRVp18YG5JOyMQOkYgx29NasbFGGTTTaVFl2OfUvu3e4ED4qSW7N++R4mZeTbIU0G4wV
+         jquQ==
+X-Gm-Message-State: APjAAAUeI1y6ZBZJgzcfB7Ut0CCoKJcxAO9bkWwLsc7PELeA8kESIMt1
+        TDFdxAss3gyqdNopBNEseIS8sO8Upk42rxDo6zZEgw==
+X-Google-Smtp-Source: APXvYqw9pKpIHVYqzHChu9RtfVxT0QHAILhm5glD7s/C+CFXzMz0oqAS5Fvcr5fU8IKJgpyl+Vz4Q+1N7uzO7Lv03lc=
+X-Received: by 2002:a2e:9a51:: with SMTP id k17mr38588764ljj.206.1577766937915;
+ Mon, 30 Dec 2019 20:35:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191230102942.18395-1-jinpuwang@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20191220001517.105297-1-olof@lixom.net> <ff6dc8997083c5d8968df48cc191e5b9e8797618.camel@perches.com>
+ <CAOesGMgxHGBdkdVOoWYpqSF-13iP3itJksCRL8QSiS0diL26dA@mail.gmail.com>
+In-Reply-To: <CAOesGMgxHGBdkdVOoWYpqSF-13iP3itJksCRL8QSiS0diL26dA@mail.gmail.com>
+From:   Saeed Mahameed <saeedm@dev.mellanox.co.il>
+Date:   Mon, 30 Dec 2019 20:35:27 -0800
+Message-ID: <CALzJLG-L+0dgW=5AXAB8eMjAa3jaSHVaDLuDsSBf9ahqM0Ti-A@mail.gmail.com>
+Subject: Re: [PATCH] net/mlx5e: Fix printk format warning
+To:     Olof Johansson <olof@lixom.net>
+Cc:     Joe Perches <joe@perches.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2019-12-30 02:29, Jack Wang wrote:
-> here is V6 of the RTRS (former IBTRS) rdma transport library and the
-> corresponding RNBD (former IBNBD) rdma network block device.
-> 
-> Changelog since v5:
-> 1 rebased to linux-5.5-rc4
-> 2 fix typo in my email address in first patch
-> 3 cleanup copyright as suggested by Leon Romanovsky
-> 4 remove 2 redudant kobject_del in error path as suggested by Leon Romanovsky
-> 5 add MAINTAINERS entries in alphabetical order as Gal Pressman suggested
+On Sat, Dec 21, 2019 at 1:19 PM Olof Johansson <olof@lixom.net> wrote:
+>
+> On Thu, Dec 19, 2019 at 6:07 PM Joe Perches <joe@perches.com> wrote:
+> >
+> > On Thu, 2019-12-19 at 16:15 -0800, Olof Johansson wrote:
+> > > Use "%zu" for size_t. Seen on ARM allmodconfig:
+> > []
+> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/wq.c b/drivers/net/ethernet/mellanox/mlx5/core/wq.c
+> > []
+> > > @@ -89,7 +89,7 @@ void mlx5_wq_cyc_wqe_dump(struct mlx5_wq_cyc *wq, u16 ix, u8 nstrides)
+> > >       len = nstrides << wq->fbc.log_stride;
+> > >       wqe = mlx5_wq_cyc_get_wqe(wq, ix);
+> > >
+> > > -     pr_info("WQE DUMP: WQ size %d WQ cur size %d, WQE index 0x%x, len: %ld\n",
+> > > +     pr_info("WQE DUMP: WQ size %d WQ cur size %d, WQE index 0x%x, len: %zu\n",
+> > >               mlx5_wq_cyc_get_size(wq), wq->cur_sz, ix, len);
+> > >       print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1, wqe, len, false);
+> > >  }
+> >
+> > One might expect these 2 outputs to be at the same KERN_<LEVEL> too.
+> > One is KERN_INFO the other KERN_WARNING
+>
+> Sure, but I'll leave that up to the driver maintainers to decide/fix
+> -- I'm just addressing the type warning here.
 
-Please always include the full changelog when posting a new version.
-Every other Linux kernel patch series I have seen includes a full
-changelog in version two and later versions of its cover letter.
+Hi Olof, sorry for the delay, and thanks for the patch,
 
-Information about how this patch series has been tested would be
-welcome. How big were the changes between v4 and v5 and how much testing
-have these changes received? Was this patch series tested in the Ionos
-data center or is it the out-of-tree version of these drivers that runs
-in the Ionos data center?
+I will apply this to net-next-mlx5 and will submit to net-next myself.
+we will fixup and address the warning level comment by Joe.
 
-Thanks,
-
-Bart.
+>
+>
+> -Olof
