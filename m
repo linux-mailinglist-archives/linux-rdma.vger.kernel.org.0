@@ -2,95 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA0812D62F
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Dec 2019 05:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2360B12D74A
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Dec 2019 10:19:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbfLaEfk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Dec 2019 23:35:40 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:33675 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726490AbfLaEfk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Dec 2019 23:35:40 -0500
-Received: by mail-lj1-f193.google.com with SMTP id y6so27247442lji.0
-        for <linux-rdma@vger.kernel.org>; Mon, 30 Dec 2019 20:35:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HSpiwI9s4O/EziRMdZMFTUugUs0mUBaOxkNkmeopwNQ=;
-        b=iUYw0o7+XJOUGoTvTe6bhrXu2hXu0zjKIVy95hfIrqSzkYxXP7ly103cbFGxcPcLgU
-         +MzxlfrjcEKFPApcxeRRgPtDSjwji5OHjgI4vc4QQLirOEBMlfWcqtkG3yrjSbRhK997
-         JMghloI2Jug35QlDTqCK1tX4qTVBH5k1Z30DtEdfG1Xi1XMnesKagvC6fbCNRL9W5j+I
-         vfvdqe3neE1R/pGmQQrRojesvxzVbrqMxWhGeHALwVLnSVSDDtH/Ndum1ZyPoJa7sSQ8
-         3WOYVYGJtngHpLDFZPt5yOH1V9wvjfw/x2Cekhb2+Q8iosMuKTz2WBvWOm3ym/xwVmDO
-         VTHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HSpiwI9s4O/EziRMdZMFTUugUs0mUBaOxkNkmeopwNQ=;
-        b=TXbAPh436k6dtyoxbBGqa1qmGZWe6zB1oNxgy3qgruDR+4sNxBMrtHgHjB8O0t9dut
-         0cIXKf1/Ze+v0w1gnHAMIfuGWGOHoe3MsF9OFOkHue1+4fTyVpOzTSbDo3YHzpEXzRfj
-         AgMv8adEcjkd4PCrYGqCnw6/3WMXlW43oAXLR5baV0FtqWeN5rLp0UBKVUd34FYhrFNv
-         SjIUdlhCjaW5yJNCXfzqM9vGScNp9V1uA0QaqGatUXz+rjv/LgKYgOZDaciheqODCk3L
-         VRVp18YG5JOyMQOkYgx29NasbFGGTTTaVFl2OfUvu3e4ED4qSW7N++R4mZeTbIU0G4wV
-         jquQ==
-X-Gm-Message-State: APjAAAUeI1y6ZBZJgzcfB7Ut0CCoKJcxAO9bkWwLsc7PELeA8kESIMt1
-        TDFdxAss3gyqdNopBNEseIS8sO8Upk42rxDo6zZEgw==
-X-Google-Smtp-Source: APXvYqw9pKpIHVYqzHChu9RtfVxT0QHAILhm5glD7s/C+CFXzMz0oqAS5Fvcr5fU8IKJgpyl+Vz4Q+1N7uzO7Lv03lc=
-X-Received: by 2002:a2e:9a51:: with SMTP id k17mr38588764ljj.206.1577766937915;
- Mon, 30 Dec 2019 20:35:37 -0800 (PST)
+        id S1725875AbfLaJTa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 31 Dec 2019 04:19:30 -0500
+Received: from mail-eopbgr00084.outbound.protection.outlook.com ([40.107.0.84]:29969
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725770AbfLaJT3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 31 Dec 2019 04:19:29 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bt/ge9AjY0mWlblnBjChZ/4jDBJaHFGUE4td7UcCn1WEPBh5rtw06LbhswKbRBHEG+aClp5gC5qmrpj7efOhAI9ddvazjTBt0Q/o4mU3Qy++l5lotXDKpHxE+TkCcdEdMfMPfF93oJVhBGnkBI7DMl3XFEtd5FxhRV3HiJ6kuLaRonxclHYiSl8AI52EsxAEO5/2H7tiurLDTK0TanlmJe0MpEvgwTGg4Tat8vJ/KhKTg/KaGvaCddXwS+BUhjDiiNzD1vZIrPMJ9WVAX8JujDcvjMJ9CYufUzRWE0FwkkE27kp9rVUBJ3Oe1UxE/P6WyOlGrIf59SfLt0slQ1p7hw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nBsh+Kq66tHxdu8oh45wvmTaoKMEZpzu3hstZX+TyPw=;
+ b=Ag9TcCDqBVO/48Ac1pLtzAyxi9VkQUnZ3Iq8MGdvmSVZiSeDMGmZ7N1zCLDIw2/pnsLUgnjVTux/lQpzFm3LDmZ9/4N9Hm2XjK91RCm9MeYJEvEjN+SZTdkMMCy2KwhZmWlSxiBy0PJCPYVpYa2qzBNO9EEh3QxQVj87qBGcaPQIwW8hjnVewfQfGN/mSQnaKf5xLAc0mMAVxS/uAPC/gXpzVgeHZP5u1pa19XoakUkhwaA1O2LCVxUjxl14yRKb77kpujKQQ2uguiT9ZXETZ+df4FJ9SFpgyOS86D++1IOg+ReyDmDiGVQKQv9q1/S+DUg/esYfwqtMxdpi+7QJpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nBsh+Kq66tHxdu8oh45wvmTaoKMEZpzu3hstZX+TyPw=;
+ b=CFZOuvF60raERb97kBxQ7vgYiDfYcds/FmcVHjSYj5sN0DNYiAjLN7JxmE6G8vovhOddxiEognSuOc3BR2n6pH2x8aIFkcxo3JDcwY1DOiKC4Js/34BwU28uzCaA8hnaCGIcTdmgnMuX4OkCJroncgxOKjF/Y3ENUJwZyimZ9WM=
+Received: from VI1PR0502MB3006.eurprd05.prod.outlook.com (10.175.21.136) by
+ VI1PR0502MB3742.eurprd05.prod.outlook.com (52.134.1.16) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2602.10; Tue, 31 Dec 2019 09:19:26 +0000
+Received: from VI1PR0502MB3006.eurprd05.prod.outlook.com
+ ([fe80::b9ec:a465:4659:7427]) by VI1PR0502MB3006.eurprd05.prod.outlook.com
+ ([fe80::b9ec:a465:4659:7427%5]) with mapi id 15.20.2581.013; Tue, 31 Dec 2019
+ 09:19:26 +0000
+Received: from reg-l-vrt-059-007.mtl.labs.mlnx (94.188.199.18) by AM0PR0102CA0016.eurprd01.prod.exchangelabs.com (2603:10a6:208:14::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2581.11 via Frontend Transport; Tue, 31 Dec 2019 09:19:25 +0000
+From:   Noa Osherovich <noaos@mellanox.com>
+To:     "dledford@redhat.com" <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Noa Osherovich <noaos@mellanox.com>
+Subject: [PATCH rdma-core 0/8] pyverbs: Add support for the new post send API
+Thread-Topic: [PATCH rdma-core 0/8] pyverbs: Add support for the new post send
+ API
+Thread-Index: AQHVv7tlpMlqjJMoRk2OZv2IHbVzNA==
+Date:   Tue, 31 Dec 2019 09:19:25 +0000
+Message-ID: <20191231091915.23874-1-noaos@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: git-send-email 2.21.0
+x-clientproxiedby: AM0PR0102CA0016.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:14::29) To VI1PR0502MB3006.eurprd05.prod.outlook.com
+ (2603:10a6:800:b2::8)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=noaos@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [94.188.199.18]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 560b366b-06e8-4244-32e4-08d78dd287c7
+x-ms-traffictypediagnostic: VI1PR0502MB3742:|VI1PR0502MB3742:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR0502MB3742A2027ACD93AE6F2A8627D9260@VI1PR0502MB3742.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-forefront-prvs: 0268246AE7
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(346002)(376002)(39860400002)(136003)(396003)(199004)(189003)(54906003)(1076003)(316002)(107886003)(36756003)(6636002)(2616005)(956004)(110136005)(478600001)(52116002)(71200400001)(66476007)(4326008)(66946007)(81156014)(81166006)(6506007)(64756008)(86362001)(5660300002)(2906002)(8676002)(186003)(66446008)(8936002)(6486002)(66556008)(16526019)(26005)(6512007);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR0502MB3742;H:VI1PR0502MB3006.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ZbRBxEqWCMwYV7cTLi1cXWUGahUU5awvoRgeq/hRtQUnCRy4/UhKRalmZeMdX//7LZrRHrxm2BT1DECfXbnz5XqpRlcIbRGcix9ZFbKotU7F882Vl3AuCN7ou1M6TwWW1a8fDENMoEvyoCpY/a91e5rRrnTHX/ffC5ZFJJrgsuOxgEe+YqV2qfSKaNCq+9VUgrgUr6j3gW1f3+QRtdzh6dGHwzrf1DQZCIoSs62B7TCX37oIZvT+wD9e6K4vd2Do/J/CgBua8NDDYQZCrTMJs+1EhZiyosONfnfDxFtXYRAWhK8UqR9QEWZ12yV8cUHkSriQU8oDasaKU5wEmjoPiGV/eU/Zd60vcKO5QuaQ4ALa8QzkfmH+P5wLjjgvZWLH36gYZlL6HOqWNKFPSBfYi+3P/xKoATQP7ilM9IgoVyuxsMWTfveaAbiB9il07NYV
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20191220001517.105297-1-olof@lixom.net> <ff6dc8997083c5d8968df48cc191e5b9e8797618.camel@perches.com>
- <CAOesGMgxHGBdkdVOoWYpqSF-13iP3itJksCRL8QSiS0diL26dA@mail.gmail.com>
-In-Reply-To: <CAOesGMgxHGBdkdVOoWYpqSF-13iP3itJksCRL8QSiS0diL26dA@mail.gmail.com>
-From:   Saeed Mahameed <saeedm@dev.mellanox.co.il>
-Date:   Mon, 30 Dec 2019 20:35:27 -0800
-Message-ID: <CALzJLG-L+0dgW=5AXAB8eMjAa3jaSHVaDLuDsSBf9ahqM0Ti-A@mail.gmail.com>
-Subject: Re: [PATCH] net/mlx5e: Fix printk format warning
-To:     Olof Johansson <olof@lixom.net>
-Cc:     Joe Perches <joe@perches.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 560b366b-06e8-4244-32e4-08d78dd287c7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Dec 2019 09:19:25.9810
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qf7LiNygrFd9H4u9KDqdnPYHQrpZhlSuC9CrYHu/wtRvaE0NK4VY7rMhjhlGR0tOjxcPuVL56A3dWK/KY/HeEw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0502MB3742
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Dec 21, 2019 at 1:19 PM Olof Johansson <olof@lixom.net> wrote:
->
-> On Thu, Dec 19, 2019 at 6:07 PM Joe Perches <joe@perches.com> wrote:
-> >
-> > On Thu, 2019-12-19 at 16:15 -0800, Olof Johansson wrote:
-> > > Use "%zu" for size_t. Seen on ARM allmodconfig:
-> > []
-> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/wq.c b/drivers/net/ethernet/mellanox/mlx5/core/wq.c
-> > []
-> > > @@ -89,7 +89,7 @@ void mlx5_wq_cyc_wqe_dump(struct mlx5_wq_cyc *wq, u16 ix, u8 nstrides)
-> > >       len = nstrides << wq->fbc.log_stride;
-> > >       wqe = mlx5_wq_cyc_get_wqe(wq, ix);
-> > >
-> > > -     pr_info("WQE DUMP: WQ size %d WQ cur size %d, WQE index 0x%x, len: %ld\n",
-> > > +     pr_info("WQE DUMP: WQ size %d WQ cur size %d, WQE index 0x%x, len: %zu\n",
-> > >               mlx5_wq_cyc_get_size(wq), wq->cur_sz, ix, len);
-> > >       print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1, wqe, len, false);
-> > >  }
-> >
-> > One might expect these 2 outputs to be at the same KERN_<LEVEL> too.
-> > One is KERN_INFO the other KERN_WARNING
->
-> Sure, but I'll leave that up to the driver maintainers to decide/fix
-> -- I'm just addressing the type warning here.
+The following series adds pyverbs support for the new post send API.
+The first 5 patches add unrelated but needed support (e.g. memory
+window) and fixes for bugs that were found along the way.
+These patches are followed by the feature itself, a documentation and
+a test.
 
-Hi Olof, sorry for the delay, and thanks for the patch,
+Noa Osherovich (8):
+  pyverbs: Add support for memory window
+  pyverbs: Add TSO support
+  tests: Decrease maximal TSO header size
+  tests: Use post_recv in the right place
+  pyverbs: Expose MR's length property
+  pyverbs: Introduce extended QP and new post send
+  Documentation: Add extended QP to pyverbs's doc
+  tests: Add test using the new post send API
 
-I will apply this to net-next-mlx5 and will submit to net-next myself.
-we will fixup and address the warning level comment by Joe.
+ Documentation/pyverbs.md     |  24 +++
+ pyverbs/base.pyx             |   8 +-
+ pyverbs/libibverbs.pxd       |  48 +++++-
+ pyverbs/libibverbs_enums.pxd |  14 ++
+ pyverbs/mr.pxd               |   6 +
+ pyverbs/mr.pyx               |  23 +++
+ pyverbs/qp.pxd               |   6 +
+ pyverbs/qp.pyx               | 154 +++++++++++++++++-
+ pyverbs/wr.pxd               |   6 +
+ pyverbs/wr.pyx               |  60 ++++++-
+ tests/CMakeLists.txt         |   1 +
+ tests/test_odp.py            |  13 +-
+ tests/test_qpex.py           | 295 +++++++++++++++++++++++++++++++++++
+ tests/utils.py               | 213 +++++++++++++++++++++----
+ 14 files changed, 817 insertions(+), 54 deletions(-)
+ mode change 100755 =3D> 100644 tests/CMakeLists.txt
+ create mode 100644 tests/test_qpex.py
 
->
->
-> -Olof
+--=20
+2.21.0
+
