@@ -2,46 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA4612D51D
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Dec 2019 00:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 055C812D526
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Dec 2019 01:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727750AbfL3XxN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Dec 2019 18:53:13 -0500
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:54944 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727740AbfL3XxN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Dec 2019 18:53:13 -0500
-Received: by mail-pj1-f65.google.com with SMTP id kx11so449883pjb.4;
-        Mon, 30 Dec 2019 15:53:12 -0800 (PST)
+        id S1727771AbfLaAHc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Dec 2019 19:07:32 -0500
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:40070 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727762AbfLaAHc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Dec 2019 19:07:32 -0500
+Received: by mail-pl1-f195.google.com with SMTP id s21so12509912plr.7;
+        Mon, 30 Dec 2019 16:07:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=TT63d9a1sHF8wFQvd4QIUOX/d5chpggNB5tMfzvjsU8=;
-        b=YEhdICD5Sx1/Rw4mjr2u+otLqss2p/xkEOir8K5gR+TaDIwvOkLpHBWATTS6X+ykB1
-         8p2A5lyxFolcRaOB9uYwRvC47MU2sAdduHJ0H6KXkCDyT6mtOF6C0rCZbM0Oo20QS1zL
-         ekwoBL0XHz6YEskO7vjFI9DaLH12z6suAWpzz/00cCnsMS8eExyp9/bngBgI2RbfgTDi
-         TzCXbdrPqCtxFcZ/Z4AyIn5MvbAq/QuHgHF0uo2NrbM/aZsre2oFYEdSBPC1fLELw5i5
-         ecfX5M7BxyHTlmBhmW3pZTpGTYenSqtpqSdR50tfL7VXy6roEsffxmNyp0n1oSGkPwq0
-         2yIw==
-X-Gm-Message-State: APjAAAW+rTKRFnJPHJIm+Vb1WM3fG7IMy1zbkhDgJMo+B+2gCsCxEs7L
-        zG04wA+jY2oTTI9FIuF7Eyk=
-X-Google-Smtp-Source: APXvYqwt49DmF/9aJQlLinJNq/1+jPbu8suif6YRYEhJB8pGtMjB1bDhhe3u8VhfPlZHCdYUOBy0NQ==
-X-Received: by 2002:a17:90a:ab0c:: with SMTP id m12mr2291827pjq.81.1577749992494;
-        Mon, 30 Dec 2019 15:53:12 -0800 (PST)
+        bh=rXSHz6cfTkxeyk09H3vLkoTwTJ3k3wQfS2j82q1+peE=;
+        b=Uv3dIOUlykhaI+pwx+2pr4G082B7eby/o7ogpplesG4CivIpCxlekAWfaBzauk5Lgn
+         7Fe2XfdxJw6PwFFgeIZdWCqTmzgmGbUutDMgRBBXoXRwWXpcEkSjGpzoOjTtgU3wzANG
+         yTjlbF98mmdFMy1ceBxwW7F3buCZY09VVp338J7mvq9I63yFjb/Leg5xmTkRZYqyZesO
+         c9hHCdVNlFYunwWjFPNTtQZTFcw2oNYgq4w5rA+kCipHNsi2z2wXTYDn52dSvdIdocJq
+         M7tuIai6j79sBp9yAbLsKuQLQ+4bmLAmN2kMVnE6bfsWiov7usq2jpH62IiCwikmsNWF
+         9t7g==
+X-Gm-Message-State: APjAAAUDNfrtJ3Kr6sQYUbCDC7P281wnsKpppV0Xd2ieyg1Zih7SOtK5
+        FIae26h50h7BLrntQ1l0c60=
+X-Google-Smtp-Source: APXvYqwKp4Gf4sUVqS/FtQOFLn3L4WFzhCt+bY06eU9e3U6he6kciRN+s3VKmtyLKViOIFs+lgn/Ow==
+X-Received: by 2002:a17:90a:840a:: with SMTP id j10mr2415571pjn.35.1577750851792;
+        Mon, 30 Dec 2019 16:07:31 -0800 (PST)
 Received: from ?IPv6:2601:647:4000:10b0:5d64:b7bb:4214:150f? ([2601:647:4000:10b0:5d64:b7bb:4214:150f])
-        by smtp.gmail.com with ESMTPSA id c22sm30983811pfo.50.2019.12.30.15.53.10
+        by smtp.gmail.com with ESMTPSA id z26sm22848094pfa.90.2019.12.30.16.07.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Dec 2019 15:53:11 -0800 (PST)
-Subject: Re: [PATCH v6 06/25] rtrs: client: main functionality
+        Mon, 30 Dec 2019 16:07:30 -0800 (PST)
+Subject: Re: [PATCH v6 03/25] rtrs: private headers with rtrs protocol structs
+ and helpers
 To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         leon@kernel.org, dledford@redhat.com, danil.kipnis@cloud.ionos.com,
         jinpu.wang@cloud.ionos.com, rpenyaev@suse.de
 References: <20191230102942.18395-1-jinpuwang@gmail.com>
- <20191230102942.18395-7-jinpuwang@gmail.com>
+ <20191230102942.18395-4-jinpuwang@gmail.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -66,12 +67,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <e242c08f-68e0-49b7-82e6-924d0124b792@acm.org>
-Date:   Mon, 30 Dec 2019 15:53:10 -0800
+Message-ID: <1f826dca-86c7-41ab-eef8-0e15f723e993@acm.org>
+Date:   Mon, 30 Dec 2019 16:07:29 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20191230102942.18395-7-jinpuwang@gmail.com>
+In-Reply-To: <20191230102942.18395-4-jinpuwang@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -81,102 +82,28 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 2019-12-30 02:29, Jack Wang wrote:
-> + * InfiniBand Transport Layer
-
-InfiniBand or RDMA?
-
-> +MODULE_DESCRIPTION("RTRS Client");
-
-Please spell out RTRS in full.
-
-> +static const struct rtrs_ib_dev_pool_ops dev_pool_ops;
-
-Can this forward declaration be avoided?
-
-> +static struct rtrs_ib_dev_pool dev_pool = {
-> +	.ops = &dev_pool_ops
-> +};
-
-Can this structure be declared 'const'?
-
-> +static inline struct rtrs_permit *
-> +__rtrs_get_permit(struct rtrs_clt *clt, enum rtrs_clt_con_type con_type)
+> +static inline u32 rtrs_to_io_rsp_imm(u32 msg_id, int errno, bool w_inval)
 > +{
-> +	size_t max_depth = clt->queue_depth;
-> +	struct rtrs_permit *permit;
-> +	int cpu, bit;
+> +	enum rtrs_imm_type type;
+> +	u32 payload;
 > +
-> +	cpu = get_cpu();
-> +	do {
-> +		bit = find_first_zero_bit(clt->permits_map, max_depth);
-> +		if (unlikely(bit >= max_depth)) {
-> +			put_cpu();
-> +			return NULL;
-> +		}
+> +	/* 9 bits for errno, 19 bits for msg_id */
+> +	payload = (abs(errno) & 0x1ff) << 19 | (msg_id & 0x7ffff);
+> +	type = (w_inval ? RTRS_IO_RSP_W_INV_IMM : RTRS_IO_RSP_IMM);
 > +
-> +	} while (unlikely(test_and_set_bit_lock(bit, clt->permits_map)));
-> +	put_cpu();
-
-Are the get_cpu() and put_cpu() calls around this loop useful? If not,
-please remove these calls. Otherwise please add a comment that explains
-the purpose of these calls.
-
-An additional question: is it possible to replace the above loop with an
-sbitmap_get() call?
-
-> +static void complete_rdma_req(struct rtrs_clt_io_req *req, int errno,
-> +			      bool notify, bool can_wait)
+> +	return rtrs_to_imm(type, payload);
+> +}
+> +
+> +static inline void rtrs_from_io_rsp_imm(u32 payload, u32 *msg_id, int *errno)
 > +{
-> +	struct rtrs_clt_con *con = req->con;
-> +	struct rtrs_clt_sess *sess;
-> +	int err;
-> +
-> +	if (WARN_ON(!req->in_use))
-> +		return;
-> +	if (WARN_ON(!req->con))
-> +		return;
-> +	sess = to_clt_sess(con->c.sess);
-> +
-> +	if (req->sg_cnt) {
-> +		if (unlikely(req->dir == DMA_FROM_DEVICE && req->need_inv)) {
-> +			/*
-> +			 * We are here to invalidate RDMA read requests
-> +			 * ourselves.  In normal scenario server should
-> +			 * send INV for all requested RDMA reads, but
-> +			 * we are here, thus two things could happen:
-> +			 *
-> +			 *    1.  this is failover, when errno != 0
-> +			 *        and can_wait == 1,
-> +			 *
-> +			 *    2.  something totally bad happened and
-> +			 *        server forgot to send INV, so we
-> +			 *        should do that ourselves.
-> +			 */
-
-Please document in the protocol documentation when RDMA reads are used.
-
-What does "server forgot to send INV" mean?
-
-Additionally, if I remember correctly Jason considers it very important
-that invalidation happens from the submitting context because otherwise
-the RDMA retry mechanism can't work.
-
-> +static void process_io_rsp(struct rtrs_clt_sess *sess, u32 msg_id,
-> +			   s16 errno, bool w_inval)
-> +{
-> +	struct rtrs_clt_io_req *req;
-> +
-> +	if (WARN_ON(msg_id >= sess->queue_depth))
-> +		return;
-> +
-> +	req = &sess->reqs[msg_id];
-> +	/* Drop need_inv if server responsed with invalidation */
-> +	req->need_inv &= !w_inval;
-> +	complete_rdma_req(req, errno, true, false);
+> +	/* 9 bits for errno, 19 bits for msg_id */
+> +	*msg_id = (payload & 0x7ffff);
+> +	*errno = -(int)((payload >> 19) & 0x1ff);
 > +}
 
-Please document the meaning of the "w_inval" argument. Please also fix
-the spelling of "responsed".
+The above comments mention that 19 bits are used for msg_id. The 0x7ffff
+mask however has 23 bits set. Did I see that correctly? If so, does that
+mean that the errno and msg_id bitfields overlap partially?
 
 Thanks,
 
