@@ -2,38 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E47E812D52A
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Dec 2019 01:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D1E12D5D1
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Dec 2019 03:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727766AbfLaALX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Dec 2019 19:11:23 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:39473 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727744AbfLaALX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Dec 2019 19:11:23 -0500
-Received: by mail-pl1-f193.google.com with SMTP id g6so12298867plp.6;
-        Mon, 30 Dec 2019 16:11:23 -0800 (PST)
+        id S1726119AbfLaCjE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Dec 2019 21:39:04 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:32848 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbfLaCjD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Dec 2019 21:39:03 -0500
+Received: by mail-pg1-f194.google.com with SMTP id 6so18923849pgk.0;
+        Mon, 30 Dec 2019 18:39:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=NcWFYrBQqIF302SJ2hNBnvP4n7VdhNHtkbNOcKEwmEQ=;
-        b=NjuAk/vf9dXZHM1lfiBBXDqPGwWWOwovcL0F/UoedC4a1vFAcXEApnkfD7Nug78r59
-         0qPgWBw+eGlHzbrcO/dcMmAyyjove3FOba1HeKl1jBF3r5a/R5n8u/sH9ajqW/3pQdsY
-         w2oBFQat12uwrU/oIVtev8AtlhIyZ48Nm7ISb4sDQL6zjZLEa+d+rmE5pwg8zkmYGr6m
-         N02HrQuLH4dN6F3hGYntBC6fmhaj2q++rm+6gelMKZpYM27pGBx6iL4NLfUGPiRhKfLz
-         ZvBqY4x2QHkPUiR5E9D/TyK/jWD43QC5xSDqMc3FxhI4hZnW1IsRuzSwZ11WZn0l+uEJ
-         ZXng==
-X-Gm-Message-State: APjAAAX2pza9PzeHIr+3NKx7bXcqKFyBliv4UIH5hR1Bvg9apCZnfmth
-        u/5iGQeEsPvrqO2uQyhMtwE=
-X-Google-Smtp-Source: APXvYqwM6qHE8fhUpywwbH9Wy0glZdGi8BqmwKKQ1sTdPeZBlinpaGaBUcSvPbtYokq8JtpmmXsnOQ==
-X-Received: by 2002:a17:902:9348:: with SMTP id g8mr74049277plp.323.1577751082767;
-        Mon, 30 Dec 2019 16:11:22 -0800 (PST)
+        bh=MikzkHh0za+uYxjbFgHfII/aiEKefwUWCBUIacolOKU=;
+        b=sw1mJzqCjwD2DhyZzZ7ippZ/a3y6k6Gee/w7AKbVej2FUe5vIZmqRouf47QGK3fkYl
+         f3SUaJUeJI/ApdJfUREFuJTj6JW+o6NN5i6kOZmGAXeGqcqtHe5fCqy7qbpfydc84fEc
+         LXmWhRzIxT5ROQcSaQCd0ON60shOk7ymglIT56KgqnCvHy6e1VXLps4Oli+eLnmMDzsS
+         yGj5NZkVfNMYKt4E7+LTcsdYFgrjtN8LHndvqnEruTiPyh3Xj/scXCwzFUhwg53GnkB3
+         t0tdnnV2KRNT2MKa38td315iDtBeEgZYbs1ffEyx2/XXmnKYLcoZ+2nNbAVWVp+Y2b18
+         fkSQ==
+X-Gm-Message-State: APjAAAWdBaiPSWeR1N2W2BR5XhytepPWfPQ3xAxLXYFX+X5r+qIWY1wW
+        dd0Qcd5gtq3dqICTyNe1wvo=
+X-Google-Smtp-Source: APXvYqzD5o1mUhbbJN06jtPKf98owUns5FiVMWq0Pnlz2VZhW/5uUBARv0d//MWk8vF7rRv7+9oeRQ==
+X-Received: by 2002:a63:7311:: with SMTP id o17mr71845332pgc.29.1577759943053;
+        Mon, 30 Dec 2019 18:39:03 -0800 (PST)
 Received: from ?IPv6:2601:647:4000:10b0:5d64:b7bb:4214:150f? ([2601:647:4000:10b0:5d64:b7bb:4214:150f])
-        by smtp.gmail.com with ESMTPSA id h3sm7187585pfo.132.2019.12.30.16.11.21
+        by smtp.gmail.com with ESMTPSA id e16sm48009988pgk.77.2019.12.30.18.39.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Dec 2019 16:11:22 -0800 (PST)
+        Mon, 30 Dec 2019 18:39:02 -0800 (PST)
 Subject: Re: [PATCH v6 00/25] RTRS (former IBTRS) rdma transport library and
  RNBD (former IBNBD) rdma network block device
 To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
@@ -66,8 +66,8 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <2aa1afb8-3797-e8b6-456e-fda3a2a0c9b2@acm.org>
-Date:   Mon, 30 Dec 2019 16:11:20 -0800
+Message-ID: <a56985f4-fbd3-3546-34e1-4185150f4af2@acm.org>
+Date:   Mon, 30 Dec 2019 18:39:00 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.0
 MIME-Version: 1.0
@@ -83,11 +83,23 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 On 2019-12-30 02:29, Jack Wang wrote:
 > here is V6 of the RTRS (former IBTRS) rdma transport library and the
 > corresponding RNBD (former IBNBD) rdma network block device.
+> 
+> Changelog since v5:
+> 1 rebased to linux-5.5-rc4
+> 2 fix typo in my email address in first patch
+> 3 cleanup copyright as suggested by Leon Romanovsky
+> 4 remove 2 redudant kobject_del in error path as suggested by Leon Romanovsky
+> 5 add MAINTAINERS entries in alphabetical order as Gal Pressman suggested
 
-Please provide more information about the RTRS_IO_RSP_IMM and
-RTRS_IO_RSP_W_INV_IMM server to client message types. Does one of these
-message types perhaps mean that the receiver of the message is
-responsible for invalidating the rkey associated with the RDMA transfer?
+Please always include the full changelog when posting a new version.
+Every other Linux kernel patch series I have seen includes a full
+changelog in version two and later versions of its cover letter.
+
+Information about how this patch series has been tested would be
+welcome. How big were the changes between v4 and v5 and how much testing
+have these changes received? Was this patch series tested in the Ionos
+data center or is it the out-of-tree version of these drivers that runs
+in the Ionos data center?
 
 Thanks,
 
