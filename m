@@ -2,47 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 055C812D526
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Dec 2019 01:07:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E47E812D52A
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Dec 2019 01:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbfLaAHc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 Dec 2019 19:07:32 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:40070 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727762AbfLaAHc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Dec 2019 19:07:32 -0500
-Received: by mail-pl1-f195.google.com with SMTP id s21so12509912plr.7;
-        Mon, 30 Dec 2019 16:07:32 -0800 (PST)
+        id S1727766AbfLaALX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Dec 2019 19:11:23 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:39473 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727744AbfLaALX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 Dec 2019 19:11:23 -0500
+Received: by mail-pl1-f193.google.com with SMTP id g6so12298867plp.6;
+        Mon, 30 Dec 2019 16:11:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=rXSHz6cfTkxeyk09H3vLkoTwTJ3k3wQfS2j82q1+peE=;
-        b=Uv3dIOUlykhaI+pwx+2pr4G082B7eby/o7ogpplesG4CivIpCxlekAWfaBzauk5Lgn
-         7Fe2XfdxJw6PwFFgeIZdWCqTmzgmGbUutDMgRBBXoXRwWXpcEkSjGpzoOjTtgU3wzANG
-         yTjlbF98mmdFMy1ceBxwW7F3buCZY09VVp338J7mvq9I63yFjb/Leg5xmTkRZYqyZesO
-         c9hHCdVNlFYunwWjFPNTtQZTFcw2oNYgq4w5rA+kCipHNsi2z2wXTYDn52dSvdIdocJq
-         M7tuIai6j79sBp9yAbLsKuQLQ+4bmLAmN2kMVnE6bfsWiov7usq2jpH62IiCwikmsNWF
-         9t7g==
-X-Gm-Message-State: APjAAAUDNfrtJ3Kr6sQYUbCDC7P281wnsKpppV0Xd2ieyg1Zih7SOtK5
-        FIae26h50h7BLrntQ1l0c60=
-X-Google-Smtp-Source: APXvYqwKp4Gf4sUVqS/FtQOFLn3L4WFzhCt+bY06eU9e3U6he6kciRN+s3VKmtyLKViOIFs+lgn/Ow==
-X-Received: by 2002:a17:90a:840a:: with SMTP id j10mr2415571pjn.35.1577750851792;
-        Mon, 30 Dec 2019 16:07:31 -0800 (PST)
+        bh=NcWFYrBQqIF302SJ2hNBnvP4n7VdhNHtkbNOcKEwmEQ=;
+        b=NjuAk/vf9dXZHM1lfiBBXDqPGwWWOwovcL0F/UoedC4a1vFAcXEApnkfD7Nug78r59
+         0qPgWBw+eGlHzbrcO/dcMmAyyjove3FOba1HeKl1jBF3r5a/R5n8u/sH9ajqW/3pQdsY
+         w2oBFQat12uwrU/oIVtev8AtlhIyZ48Nm7ISb4sDQL6zjZLEa+d+rmE5pwg8zkmYGr6m
+         N02HrQuLH4dN6F3hGYntBC6fmhaj2q++rm+6gelMKZpYM27pGBx6iL4NLfUGPiRhKfLz
+         ZvBqY4x2QHkPUiR5E9D/TyK/jWD43QC5xSDqMc3FxhI4hZnW1IsRuzSwZ11WZn0l+uEJ
+         ZXng==
+X-Gm-Message-State: APjAAAX2pza9PzeHIr+3NKx7bXcqKFyBliv4UIH5hR1Bvg9apCZnfmth
+        u/5iGQeEsPvrqO2uQyhMtwE=
+X-Google-Smtp-Source: APXvYqwM6qHE8fhUpywwbH9Wy0glZdGi8BqmwKKQ1sTdPeZBlinpaGaBUcSvPbtYokq8JtpmmXsnOQ==
+X-Received: by 2002:a17:902:9348:: with SMTP id g8mr74049277plp.323.1577751082767;
+        Mon, 30 Dec 2019 16:11:22 -0800 (PST)
 Received: from ?IPv6:2601:647:4000:10b0:5d64:b7bb:4214:150f? ([2601:647:4000:10b0:5d64:b7bb:4214:150f])
-        by smtp.gmail.com with ESMTPSA id z26sm22848094pfa.90.2019.12.30.16.07.30
+        by smtp.gmail.com with ESMTPSA id h3sm7187585pfo.132.2019.12.30.16.11.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Dec 2019 16:07:30 -0800 (PST)
-Subject: Re: [PATCH v6 03/25] rtrs: private headers with rtrs protocol structs
- and helpers
+        Mon, 30 Dec 2019 16:11:22 -0800 (PST)
+Subject: Re: [PATCH v6 00/25] RTRS (former IBTRS) rdma transport library and
+ RNBD (former IBNBD) rdma network block device
 To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         leon@kernel.org, dledford@redhat.com, danil.kipnis@cloud.ionos.com,
         jinpu.wang@cloud.ionos.com, rpenyaev@suse.de
 References: <20191230102942.18395-1-jinpuwang@gmail.com>
- <20191230102942.18395-4-jinpuwang@gmail.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -67,12 +66,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <1f826dca-86c7-41ab-eef8-0e15f723e993@acm.org>
-Date:   Mon, 30 Dec 2019 16:07:29 -0800
+Message-ID: <2aa1afb8-3797-e8b6-456e-fda3a2a0c9b2@acm.org>
+Date:   Mon, 30 Dec 2019 16:11:20 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20191230102942.18395-4-jinpuwang@gmail.com>
+In-Reply-To: <20191230102942.18395-1-jinpuwang@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -82,28 +81,13 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 2019-12-30 02:29, Jack Wang wrote:
-> +static inline u32 rtrs_to_io_rsp_imm(u32 msg_id, int errno, bool w_inval)
-> +{
-> +	enum rtrs_imm_type type;
-> +	u32 payload;
-> +
-> +	/* 9 bits for errno, 19 bits for msg_id */
-> +	payload = (abs(errno) & 0x1ff) << 19 | (msg_id & 0x7ffff);
-> +	type = (w_inval ? RTRS_IO_RSP_W_INV_IMM : RTRS_IO_RSP_IMM);
-> +
-> +	return rtrs_to_imm(type, payload);
-> +}
-> +
-> +static inline void rtrs_from_io_rsp_imm(u32 payload, u32 *msg_id, int *errno)
-> +{
-> +	/* 9 bits for errno, 19 bits for msg_id */
-> +	*msg_id = (payload & 0x7ffff);
-> +	*errno = -(int)((payload >> 19) & 0x1ff);
-> +}
+> here is V6 of the RTRS (former IBTRS) rdma transport library and the
+> corresponding RNBD (former IBNBD) rdma network block device.
 
-The above comments mention that 19 bits are used for msg_id. The 0x7ffff
-mask however has 23 bits set. Did I see that correctly? If so, does that
-mean that the errno and msg_id bitfields overlap partially?
+Please provide more information about the RTRS_IO_RSP_IMM and
+RTRS_IO_RSP_W_INV_IMM server to client message types. Does one of these
+message types perhaps mean that the receiver of the message is
+responsible for invalidating the rkey associated with the RDMA transfer?
 
 Thanks,
 
