@@ -2,227 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3549C12EAF8
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2020 21:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9C512EB01
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2020 22:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725861AbgABU6u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Jan 2020 15:58:50 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:34745 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbgABU6u (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Jan 2020 15:58:50 -0500
-Received: by mail-qv1-f67.google.com with SMTP id o18so15497332qvf.1
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Jan 2020 12:58:49 -0800 (PST)
+        id S1725861AbgABVDx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Jan 2020 16:03:53 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:37771 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725851AbgABVDw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Jan 2020 16:03:52 -0500
+Received: by mail-qt1-f196.google.com with SMTP id w47so35553980qtk.4
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Jan 2020 13:03:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=HbbQW1SNhxlXdo8dRCo3E6RQ6shpJULnhLge56/pWLw=;
-        b=luXfpcsqbSZluOn7NXNq7cVW9QRBhsx0EZ3vnn61bEcip7knpE1Zq3mYr3UVFYKYDc
-         dGqiOtnTJDDaGkhCbFCYJvsBmDawvWxi3Ui5k0FyJhwX1oGh8j7HT/3+jxT5/jXM3MuM
-         iKCGgxV7rHTDeIUfZYlvagZoZz5kveuXD0auv3no2eAssAExqzfYaKmE3QvRHCO2hZkL
-         3bTG2b3PmNDCG+4foUqOSfakc08OiX23xH7r8UrJkenXMu687xCE0vYBgrV13Udra8g1
-         6s/Ll+Qht0zeDO+WjHfHhPbORPyjOLPo5KY2xjWk1d72zwfal4hAGvEFtCQCJNAwFqL8
-         +IIw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=u/1QWs2jPVwxNcjpbkDfisWtGO+dg+9ohdYz7wriUQg=;
+        b=V7cncm3blLDxWy8NZTHL6buNa8Y4NzotMofdHicMcndR64BhDiE8zzfb474TpkISje
+         mk9WX4kbXnmBRZ/KtwE80IXw/SL7BtRQsVuRCNawEtSdDc5vYf73nNmWnIApTNFxgqs6
+         Ec8+FHWTiuEldubJi6FhCN7abg8qxLGXusXxOpqvUVipmoNPdf+ead2oohOvVFlnMljo
+         6KjMQaXVT5rxl0pyDqhtyEqkJqtWttAtCmRJ9ef7dEP/2Ex7RynZb7qPkX3/o7+V+ZPQ
+         sMyvqTCpieAPwQYhfQsj7UXT5sTP/ZCeLzccOOacYloNzgD7hpdnav532lRWa+Uy3w1e
+         bYpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=HbbQW1SNhxlXdo8dRCo3E6RQ6shpJULnhLge56/pWLw=;
-        b=GpFDZhWzq9IjcFjVq19xqCShmmEd9LJW730F/m4SqOawrK5a/E2aWHi2wPfX8cWylg
-         dzXriSUWQihl7A6ijVYOXaXRcjY8BcZJ2TVwezgSCPdkpXkk6xxCBpO6xh9G1riLTmdt
-         PJ6VinRyqKfReqpMO2jsrXaVJ5qSP+Swhg04DVRYc0LFrnjiZVHD1Ut1n28h8WNioPHk
-         Oy1yu4juoqBxwMW7j/bhercVuRmDMPbvi/K+0sB1kr0mCuB0bLpn7lI5oW3h6wyu/yBk
-         ce1/GJzYXkjJr7lb1DtO97f+SNHTB6UVYOi6iAvANej0/Kc8uzGShmWO1p8u7751+3io
-         zLfQ==
-X-Gm-Message-State: APjAAAXQpiWxUS1QlIU5vDtAoWorwaGb45mVHKmWg+cQEQraCpMs4NlL
-        WUyDssd4RfGO6VcXI5ZmMc6Bvg==
-X-Google-Smtp-Source: APXvYqxdu7b7Fx1/rS3BQvK+CufVCJZ4TqFCc+X7ghDfnIN20RBoPM3aSN1SxVzaSDk84kwyh0PCPQ==
-X-Received: by 2002:a0c:f685:: with SMTP id p5mr62193558qvn.44.1577998729075;
-        Thu, 02 Jan 2020 12:58:49 -0800 (PST)
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=u/1QWs2jPVwxNcjpbkDfisWtGO+dg+9ohdYz7wriUQg=;
+        b=d7FbTXx4Uc4D1wCzQ6I+V5mzzTnTEKWz5fbaI5gVLTBQgClNb26t87WR89cJeJdP16
+         wqVFm/s1IYeou7z8SjPSr8XjHM3FJGh3XnWTxVXzezuDvsUb6JmP1x7KZl8P2zbltnEv
+         xONpBsUFBHW90bIwCoLOadetUGWXr/keDe/9MDb22PHbCXBK2Rx0m0Q/bFUezrFyRCye
+         S8P7/jbZJuREJG0CUCEIG8QKd1pjKRR9XTKsxZFLooM8zZxMTJzfkaFQ0rqa6SIY0w04
+         8bGuX9xRabq5WCwgIm4XlRcDX4iNCD0LDvOFKR76V2dAkSJlt/d6kWdpVqlE5a5z+zl7
+         NDQw==
+X-Gm-Message-State: APjAAAWn+z4xkRgXY8oGLzew60KFjHthviwbM7XWZUxIaKSBZilUCdWG
+        /Dzr7STpsNUN3ycV3szptl9EgQ==
+X-Google-Smtp-Source: APXvYqwWqT5eZ7AlBRxNxepchCjTvseU5D/TZ7TNk6KwRFCca7889MZHa7T4dk+whnabtltR2zc78w==
+X-Received: by 2002:ac8:1198:: with SMTP id d24mr61150163qtj.105.1577999032232;
+        Thu, 02 Jan 2020 13:03:52 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id o7sm15419804qkd.119.2020.01.02.12.58.48
+        by smtp.gmail.com with ESMTPSA id z4sm15357996qkz.62.2020.01.02.13.03.51
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 02 Jan 2020 12:58:48 -0800 (PST)
+        Thu, 02 Jan 2020 13:03:51 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1in7YO-0008Mv-0O; Thu, 02 Jan 2020 16:58:48 -0400
-Date:   Thu, 2 Jan 2020 16:58:48 -0400
+        id 1in7dH-00008j-9E; Thu, 02 Jan 2020 17:03:51 -0400
+Date:   Thu, 2 Jan 2020 17:03:51 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Liran Alon <liran.alon@oracle.com>, Will Deacon <will@kernel.org>
-Cc:     saeedm@mellanox.com, leon@kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, eli@mellanox.com, tariqt@mellanox.com,
-        danielm@mellanox.com,
-        =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>
-Subject: Re: [PATCH] net: mlx5: Use writeX() to ring doorbell and remove
- reduntant wmb()
-Message-ID: <20200102205847.GJ9282@ziepe.ca>
-References: <20200102174436.66329-1-liran.alon@oracle.com>
- <20200102192934.GH9282@ziepe.ca>
- <6524AE07-2ED7-41B5-B761-9F6BE8D2049B@oracle.com>
+To:     Weihang Li <liweihang@hisilicon.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next] RDMA/hns: Add support for extended atomic
+Message-ID: <20200102210351.GA398@ziepe.ca>
+References: <1573781966-45800-1-git-send-email-liweihang@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6524AE07-2ED7-41B5-B761-9F6BE8D2049B@oracle.com>
+In-Reply-To: <1573781966-45800-1-git-send-email-liweihang@hisilicon.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 02, 2020 at 09:45:52PM +0200, Liran Alon wrote:
+On Fri, Nov 15, 2019 at 09:39:26AM +0800, Weihang Li wrote:
+> From: Jiaran Zhang <zhangjiaran@huawei.com>
 > 
+> Support extended atomic operations including cmp & swap and fetch & add
+> of 8 bytes, 16 bytes, 32 bytes, 64 bytes on hip08.
 > 
-> > On 2 Jan 2020, at 21:29, Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > 
-> > On Thu, Jan 02, 2020 at 07:44:36PM +0200, Liran Alon wrote:
-> >> Currently, mlx5e_notify_hw() executes wmb() to complete writes to cache-coherent
-> >> memory before ringing doorbell. Doorbell is written to by mlx5_write64()
-> >> which use __raw_writeX().
-> >> 
-> >> This is semantically correct but executes reduntant wmb() in some architectures.
-> >> For example, in x86, a write to UC memory guarantees that any previous write to
-> >> WB memory will be globally visible before the write to UC memory. Therefore, there
-> >> is no need to also execute wmb() before write to doorbell which is mapped as UC memory.
-> >> 
-> >> The consideration regarding this between different architectures is handled
-> >> properly by the writeX() macro. Which is defined differently for different
-> >> architectures. E.g. On x86, it is just a memory write. However, on ARM, it
-> >> is defined as __iowmb() folowed by a memory write. __iowmb() is defined
-> >> as wmb().
-> > 
-> > This reasoning seems correct, though I would recommend directly
-> > refering to locking/memory-barriers.txt which explains this.
-> 
-> I find memory-barriers.txt not explicit enough on the semantics of writeX().
-> (For example: Should it flush write-combined buffers before writing to the UC memory?)
-> That’s why I preferred to explicitly state here how I perceive it.
+> Signed-off-by: Jiaran Zhang <zhangjiaran@huawei.com>
+> Signed-off-by: Weihang Li <liweihang@hisilicon.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 100 ++++++++++++++++++++++++-----
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h |   8 +++
+>  2 files changed, 93 insertions(+), 15 deletions(-)
 
-AFAIK WC is largely unspecified by the memory model. Is wmb() even
-formally specified to interact with WC?
+How is this related to the userspace patch:
 
-At least in this mlx5 case there is no WC, right? The kernel UAR is
-mapped UC?
+https://github.com/linux-rdma/rdma-core/pull/640
 
-So we don't need to worry about the poor specification of WC access
-and you can refer to memory-barriers.txt at least for this patch.
+?
 
-> > 
-> >> Therefore, change mlx5_write64() to use writeX() and remove wmb() from
-> >> it's callers.
-> > 
-> > Yes, wmb(); writel(); is always redundant
-> 
-> Well, unfortunately not…
-> See: https://marc.info/?l=linux-netdev&m=157798859215697&w=2
-> (See my suggestion to add flush_wc_writeX())
+Under what conditions would the kernel part be needed?
 
-Well, the last time wmb & writel came up Linus was pretty clear that
-writel is supposed to remain in program order and have the barriers
-needed to do that.
-
-I don't think WC was considered when that discussion happened, but we
-really don't have a formal model for how WC works at all within the
-kernel.
-
-The above patch is really not a wmb(); writel() pairing, the wmb() is
-actually closing/serializing an earlier WC transaction, and yes you need various
-special things to keep WC working right.
-
-IMHO you should start there before going around and adding/removing wmbs
-related to WC. Update membory-barriers.txt and related with the model
-ordering for WC access and get agreement.
-
-For instance does wmb() even effect WC? Does WC have to be contained
-by spinlocks? Do we need extra special barriers like flush_wc and
-flush_wc_before_spin_unlock ? etc.
-
-Perhaps Will has some advice?
-
-> >> diff --git a/include/linux/mlx5/cq.h b/include/linux/mlx5/cq.h
-> >> index 40748fc1b11b..28744a725e64 100644
-> >> +++ b/include/linux/mlx5/cq.h
-> >> @@ -162,11 +162,6 @@ static inline void mlx5_cq_arm(struct mlx5_core_cq *cq, u32 cmd,
-> >> 
-> >> 	*cq->arm_db = cpu_to_be32(sn << 28 | cmd | ci);
-> >> 
-> >> -	/* Make sure that the doorbell record in host memory is
-> >> -	 * written before ringing the doorbell via PCI MMIO.
-> >> -	 */
-> >> -	wmb();
-> >> -
-> > 
-> > Why did this one change? The doorbell memory here is not a writel():
-> 
-> Well, it’s not seen in the diff but actually the full code is:
-> 
->     /* Make sure that the doorbell record in host memory is
->      * written before ringing the doorbell via PCI MMIO.
->      */
->     wmb();
-> 
->     doorbell[0] = cpu_to_be32(sn << 28 | cmd | ci);
->     doorbell[1] = cpu_to_be32(cq->cqn);
-> 
->     mlx5_write64(doorbell, uar_page + MLX5_CQ_DOORBELL);
-
-Ah OK, we have another thing called doorbell which is actually DMA'ble
-memory.
-
-> >> 	doorbell[0] = cpu_to_be32(sn << 28 | cmd | ci);
-> >> 	doorbell[1] = cpu_to_be32(cq->cqn);
-> > 
-> >> static inline void mlx5_write64(__be32 val[2], void __iomem *dest)
-> >> {
-> >> #if BITS_PER_LONG == 64
-> >> -	__raw_writeq(*(u64 *)val, dest);
-> >> +	writeq(*(u64 *)val, dest);
-> > 
-> > I want to say this might cause problems with endian swapping as writeq
-> > also does some swaps that __raw does not? Is this true?
-> 
-> Hmm... Looking at ARM64 version, writeq() indeed calls cpu_to_le64()
-> on parameter before passing it to __raw_writeq().  Quite surprising
-> from API perspective to be honest.
-
-For PCI-E devices writel(x) is defined to generate the same TLP on the
-PCI-E bus, across all arches. __raw_* does something arch specific and
-should not be called from drivers. It is a long standing bug that this
-code is written like this.
-
-> So should I change this instead to iowrite64be(*(u64 *)val, dest)?
-
-This always made my head hurt, but IIRC, when I looked at it years ago
-the weird array construction caused problems with that simple conversion.
-
-The userspace version looks like this now:
-
-        uint64_t doorbell;
-        uint32_t sn;
-        uint32_t ci;
-        uint32_t cmd;
-
-        sn  = cq->arm_sn & 3;
-        ci  = cq->cons_index & 0xffffff;
-        cmd = solicited ? MLX5_CQ_DB_REQ_NOT_SOL : MLX5_CQ_DB_REQ_NOT;
-
-        doorbell = sn << 28 | cmd | ci;
-        doorbell <<= 32;
-        doorbell |= cq->cqn;
-
-        mmio_write64_be(ctx->uar[0].reg + MLX5_CQ_DOORBELL, htobe64(doorbell));
-
-Where on all supported platforms the mmio_write64_be() expands to a
-simple store (no swap)
-
-Which does look functionally the same as
-
-   iowrite64be(doorbell, dest);
-
-So this patch should change the mlx5_write64 to accept a u64 like we
-did in userspace when this was all cleaned there.
+Confused because we have no kernel users of extended atomic.
 
 Jason
