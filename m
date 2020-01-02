@@ -2,54 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6C812E8E5
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2020 17:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3746212E90B
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2020 18:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbgABQr0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Jan 2020 11:47:26 -0500
-Received: from mail-il1-f193.google.com ([209.85.166.193]:42349 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728795AbgABQr0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Jan 2020 11:47:26 -0500
-Received: by mail-il1-f193.google.com with SMTP id t2so19170565ilq.9
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Jan 2020 08:47:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ksNONd8klg8kx9Ylm3S3vUOncoKmkMwNPgBPckohfjY=;
-        b=AnVeo0UdvFetsO0p75bZBUA2c2sFDMGIBvIqhqo7vM7ws9KxLhPbN1T0hSPABQsNLS
-         +U2OLDDzxhuWA07CisSLV92vFEwy4IuIPvAVK3q4EKfgUtOI0AtKhZEatRgR+8kh6BOF
-         6vB4fjAnO+49hq3WVdz+okp7M++vdniW2mK6MBh9lthq+R4nlVoqXIfqUDmeuPEcLRgz
-         W1jdN3B+VUWPVYnCPRRpoJv3dp1fxza2bC5h2Ze4f39kDXQBk+lsxAFWgn1en/rbo1wT
-         adBuhiVWa4o+pZSu0Np28ffOwKmU7lIfEWMK3Z6udRFlwM4R8imlwOkbbmRY+Dz/A4xe
-         lODg==
+        id S1728847AbgABRA4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Jan 2020 12:00:56 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:43593 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728824AbgABRA4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Jan 2020 12:00:56 -0500
+Received: by mail-pg1-f193.google.com with SMTP id k197so22143307pga.10;
+        Thu, 02 Jan 2020 09:00:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ksNONd8klg8kx9Ylm3S3vUOncoKmkMwNPgBPckohfjY=;
-        b=V/pubNhzoH+SOmVqH0y14w+Jm7RvtcoLqUT/ygEEy5Htj5TY7uNtglHVN56ZmYXzG4
-         lTZ6P1r7mdOVXzsZrXQXqDxAycc35sOyMbgr1IXjCejBOPPFbLky56e2Vqk6AQIOQFWR
-         u78q32LofpncqZkidMeyaCpeVZIoPWa2zclkT5SvRiIfnI8vPUio17yHaN9O06uUBJFx
-         6z1DqO0ZEcqS79EOfLgSD0AIJyBfaoRdcRXdSWUyc81PF/GSviVJl9q91VhTGHsH1LRn
-         +VirE6U/wkzIpAbjb2VMSImq+BifANvII597/g4fWIGmgmd0V+0gs3amn5UmCmzVrXM7
-         4iqg==
-X-Gm-Message-State: APjAAAXGDwdKYSOpQyRv5958YeRcH+qnQgIig/BvzWCVaZPOaJfx7Lqx
-        jobUlQNNP6D3Q9xiHmMFG+GSeP7a890Coef+J9hmmg==
-X-Google-Smtp-Source: APXvYqzusMHJPXXcA9w++ZY4oIL1+zup1efU4ujaaWXOFhD7Wr3Lc+9aHWRf/0EAbLYsR7hqxbzteJqOtJZo8icaFak=
-X-Received: by 2002:a92:d2:: with SMTP id 201mr73828551ila.22.1577983645744;
- Thu, 02 Jan 2020 08:47:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20191230102942.18395-1-jinpuwang@gmail.com> <20191230102942.18395-3-jinpuwang@gmail.com>
- <cc66bb26-68da-8add-6813-a330dc23facd@acm.org> <CAMGffEmdQ2SuP6JTrPYyP70ZYPC+H+GSyL2Lib7mbG4-DUN6Kg@mail.gmail.com>
- <8b070c98-a9fd-3cb1-d619-8836bf38b851@acm.org>
-In-Reply-To: <8b070c98-a9fd-3cb1-d619-8836bf38b851@acm.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Thu, 2 Jan 2020 17:47:14 +0100
-Message-ID: <CAMGffEkkryXNJn18FNgKDUT6MOSm5Zo+1uHC84=_=XcrDLGi-Q@mail.gmail.com>
-Subject: Re: [PATCH v6 02/25] rtrs: public interface header to establish RDMA connections
-To:     Bart Van Assche <bvanassche@acm.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5tcamxKhmw09dyh0tkKc3Q6PTV+WMCx9Givmz6S60LQ=;
+        b=KOlo3qHbKd7XZqbHzb/9grUodPAk0+Am9zX2BU8lQ1IOww5fpTGqAV7pGm1vR2MbEk
+         MK0RaidpSYVJ2WH42AgMANxTywb9KyROAAWInCoX97kduS7dWMjnWpOL8tW2/PxqIXvr
+         uyVZnUNpOkSbHagT3U+KkyqjT0rtRTu0vCpa0ebtRO2sXoebpFZtlvy9PCjSAv1M67xJ
+         hyCOQ0oYN99os4953FxE4mqwrEsDPiuKSAo+u8KgJGXt5DppQ33LQxlU9yebj4SmzKGe
+         L8VVEGi6E2x8lawTxc0R3u6NlSjnwhrJAGsSimKbM4DirHj5w9SthItN1Yb8npPK08QX
+         9azw==
+X-Gm-Message-State: APjAAAVhtQhcK25R4HTrsoZQ9jqG+t/NKuWJsqVGbTf7mWD7Q9aXy1YF
+        vI0L+g9sf/26u7CdYx3GzgE=
+X-Google-Smtp-Source: APXvYqwyrBYOaUv7DWqRsHciOcNNNbvHXebcZmqcbPcH8oLGuN4W5bJR8/FM3sEQ8uPbM6rR49OB5w==
+X-Received: by 2002:a62:ed19:: with SMTP id u25mr91796220pfh.173.1577984455435;
+        Thu, 02 Jan 2020 09:00:55 -0800 (PST)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id b185sm47602432pfa.102.2020.01.02.09.00.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jan 2020 09:00:54 -0800 (PST)
+Subject: Re: [PATCH v6 03/25] rtrs: private headers with rtrs protocol structs
+ and helpers
+To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
 Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
@@ -57,38 +44,114 @@ Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
         Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de
-Content-Type: text/plain; charset="UTF-8"
+References: <20191230102942.18395-1-jinpuwang@gmail.com>
+ <20191230102942.18395-4-jinpuwang@gmail.com>
+ <b13eccdd-09a2-70d5-1c78-3c4dbf1aefe8@acm.org>
+ <CAMGffEmC3T9M+RmeOXX4ecE3E01azjD8fz2Lz8kHC9Ff-Xx-Aw@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <51f2aec2-db24-ce7b-b3e8-68f9561a584b@acm.org>
+Date:   Thu, 2 Jan 2020 09:00:53 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <CAMGffEmC3T9M+RmeOXX4ecE3E01azjD8fz2Lz8kHC9Ff-Xx-Aw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 2, 2020 at 5:36 PM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 1/2/20 5:35 AM, Jinpu Wang wrote:
-> > On Mon, Dec 30, 2019 at 8:25 PM Bart Van Assche <bvanassche@acm.org> wrote:
-> >>> +/**
-> >>> + * enum rtrs_clt_con_type() type of ib connection to use with a given permit
-> >>
-> >> What is a "permit"?
-> > Does use rtrs_permit sound better?
->
-> I think keeping the word "permit" is fine. How about adding a comment
-> above rtrs_permit that explains more clearly what the role of that data
-> structure is? This is what I found in rtrs-clt.h:
->
-> /**
->   * rtrs_permit - permits the memory allocation for future RDMA operation
->   */
-> struct rtrs_permit {
->          enum rtrs_clt_con_type con_type;
->          unsigned int cpu_id;
->          unsigned int mem_id;
->          unsigned int mem_off;
-> };
->
-> Thanks,
->
-> Bart.
-Ok, will do.
-Thanks.
+On 1/2/20 7:27 AM, Jinpu Wang wrote:
+> On Mon, Dec 30, 2019 at 8:48 PM Bart Van Assche <bvanassche@acm.org> wrote:
+>> On 2019-12-30 02:29, Jack Wang wrote:
+>>> +enum {
+>>> +     SERVICE_CON_QUEUE_DEPTH = 512,
+>>
+>> What is a service connection?
+> s/SERVICE_CON_QUEUE_DEPTH/CON_QUEUE_DEPTH/g, do you think
+> CON_QUEUE_DEPTH is better or just QUEUE_DEPTH?
+
+The name of the constant is fine, but what I meant is the following: has 
+it been documented anywhere what the role of a "service connection" is?
+
+>>> +struct rtrs_ib_dev_pool {
+>>> +     struct mutex            mutex;
+>>> +     struct list_head        list;
+>>> +     enum ib_pd_flags        pd_flags;
+>>> +     const struct rtrs_ib_dev_pool_ops *ops;
+>>> +};
+>>
+>> What is the purpose of an rtrs_ib_dev_pool and what does it contain?
+> The idea was documented in the patchset here:
+> https://www.spinics.net/lists/linux-rdma/msg64025.html
+> "'
+> This is an attempt to make a device pool API out of a common code,
+> which caches pair of ib_device and ib_pd pointers. I found 4 places,
+> where this common functionality can be replaced by some lib calls:
+> nvme, nvmet, iser and isert. Total deduplication gain in loc is not
+> quite significant, but eventually new ULP IB code can also require
+> the same device/pd pair cache, e.g. in our IBTRS module the same
+> code has to be repeated again, which was observed by Sagi and he
+> suggested to make a common helper function instead of producing
+> another copy.
+> '''
+
+The word "pool" suggest ownership. Since struct rtrs_ib_dev_pool owns 
+protection domains instead of RDMA devices, how about renaming that data 
+structure into rtrs_pd_per_rdma_dev, rtrs_rdma_dev_pd or something 
+similar? How about adding a comment like the following above that data 
+structure?
+
+/*
+  * Data structure used to associate one protection domain (PD) with each
+  * RDMA device.
+  */
+
+>>> +/**
+>>> + * struct rtrs_msg_conn_req - Client connection request to the server
+>>> + * @magic:      RTRS magic
+>>> + * @version:    RTRS protocol version
+>>> + * @cid:        Current connection id
+>>> + * @cid_num:    Number of connections per session
+>>> + * @recon_cnt:          Reconnections counter
+>>> + * @sess_uuid:          UUID of a session (path)
+>>> + * @paths_uuid:         UUID of a group of sessions (paths)
+>>> + *
+>>> + * NOTE: max size 56 bytes, see man rdma_connect().
+>>> + */
+>>> +struct rtrs_msg_conn_req {
+>>> +     u8              __cma_version; /* Is set to 0 by cma.c in case of
+>>> +                                     * AF_IB, do not touch that.
+>>> +                                     */
+>>> +     u8              __ip_version;  /* On sender side that should be
+>>> +                                     * set to 0, or cma_save_ip_info()
+>>> +                                     * extract garbage and will fail.
+>>> +                                     */
+>>
+>> The above two fields and the comments next to it look suspicious to me.
+>> Does RTRS perhaps try to generate CMA-formatted messages without using
+>> the CMA to format these messages?
+> The problem is in cma_format_hdr over-writes the first byte for AF_IB
+> https://www.spinics.net/lists/linux-rdma/msg22397.html
+> 
+> No one fixes the problem since then.
+
+How about adding that URL to the comment block above struct 
+rtrs_msg_conn_req?
+
+>>
+>>> +     *errno = -(int)((payload >> 19) & 0x1ff);
+>>
+>> Is the '(int)' cast useful in the above expression? Can it be left out?
+> I think it's necessary, and make it more clear errno is a negative int
+> value, isn't it?
+
+According to the C standard operations on unsigned integers "wrap 
+around" so removing the cast should be safe. Anyway, this is not 
+something I consider important.
+
+Thanks,
+
+Bart.
