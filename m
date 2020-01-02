@@ -2,123 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC8512EA4C
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2020 20:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8607D12EA7D
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2020 20:29:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727989AbgABTZi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Jan 2020 14:25:38 -0500
-Received: from mga17.intel.com ([192.55.52.151]:62620 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727951AbgABTZi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 Jan 2020 14:25:38 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 02 Jan 2020 11:25:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,387,1571727600"; 
-   d="scan'208";a="221449783"
-Received: from fmsmsx106.amr.corp.intel.com ([10.18.124.204])
-  by orsmga006.jf.intel.com with ESMTP; 02 Jan 2020 11:25:37 -0800
-Received: from fmsmsx153.amr.corp.intel.com (10.18.125.6) by
- FMSMSX106.amr.corp.intel.com (10.18.124.204) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 2 Jan 2020 11:25:36 -0800
-Received: from FMSEDG001.ED.cps.intel.com (10.1.192.133) by
- FMSMSX153.amr.corp.intel.com (10.18.125.6) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 2 Jan 2020 11:25:36 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server (TLS) id
- 14.3.439.0; Thu, 2 Jan 2020 11:25:36 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g213YqV11sKk+yiuoqCZ5ZY/0g0fQmvMowdSj+fVFrv4QfZlDntkciW6YQYm0OgrCc/QCJb3c41aG4PrlCuKz04LTRQNciu2gtp8eQq5bfX9M8YOv0s6EksVxD0IEErzboPWIKvD/YKM2gUfMwEFEJz8tiTSw+Zypr5sAnBnnERMDyHC6Vs8mECd/Sv3MnCIiXq/JCBy5J0y2vxWQv580JdumxdVTWMm8iG1qEdPTSEf/TTgQMGIr4Mt74EtHdn+p1rc0KlyfD7d+z1cOXfVycNyVC3agUTGBbjlGKx+rgGVhuYYeHfn/RdrDtUsf0lVGcMcvwz84/XWhE2tGAu4xg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LfgsJrtB57S6dHNYI3jv/vsChSYhdztv5JwOwhM0owI=;
- b=cLK4j5DxblkCQbLWZMG6vIbpfA3mAjeJtIDq5fY3Mmzke3YZcX9J3rVcGuNgPBnnKVrt0vlsCfSnc9ax9nkBIPJxRpcGLLqejWc3BPJdm4HK2I5rNKI6KHi/P4v2VABOyRBnnBxHrzVhuQwIjSF9rchVQxVeSyKnchd+FOgfPFMYZEFmJtoLWrbquIEdlW9NGuFmsxxhW9e4ZdL7ir0cXwaabmxx56P/VshwHx6Qk4gdf9Ny5Gr7xYXjIQZB8Hakw+GEaUsb6O9ryYBNHTNu1514h6p5xoI9pfOJhxDkVX117J1Y0Fm5vj+8GOOcf6Rap3aTN7HuTacuYRTbpEiz4A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LfgsJrtB57S6dHNYI3jv/vsChSYhdztv5JwOwhM0owI=;
- b=yg8SPf/jSbtRYTpueAEuM1kOCa0y4FCkp8uylKXkRC2NNO4Qoinnw9r3R7Tvmccu0yKoQfcAIPtX+SNNJxJA8imBMr7MMmS4vGrjtDjuB08sZmCv84ze8sUnY7KziCwC4HlxU16vpQ8L0hkaPrzwK2PIrjKX2D5i8J8MfJSxsIw=
-Received: from CY4PR11MB1430.namprd11.prod.outlook.com (10.172.69.137) by
- CY4PR11MB1814.namprd11.prod.outlook.com (10.175.60.135) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2602.11; Thu, 2 Jan 2020 19:25:35 +0000
-Received: from CY4PR11MB1430.namprd11.prod.outlook.com
- ([fe80::119a:24b1:20bb:6a87]) by CY4PR11MB1430.namprd11.prod.outlook.com
- ([fe80::119a:24b1:20bb:6a87%12]) with mapi id 15.20.2581.013; Thu, 2 Jan 2020
- 19:25:35 +0000
-From:   "Hefty, Sean" <sean.hefty@intel.com>
-To:     Terry Toole <toole@photodiagnostic.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: Is it possible to transfer a large file between two computers
- using RDMA UD?
-Thread-Topic: Is it possible to transfer a large file between two computers
- using RDMA UD?
-Thread-Index: AQHVwXueH8xDMADLcUKl7RjbvEP2UafXsjWAgAALuoCAAAKYwA==
-Date:   Thu, 2 Jan 2020 19:25:34 +0000
-Message-ID: <CY4PR11MB14302D923E9CFF0665E67B3F9E200@CY4PR11MB1430.namprd11.prod.outlook.com>
-References: <CADw-U9BHcoHy3WJ8iSdYjAw3RxQf2vhkOKyL7k0yJdR3mP7Mug@mail.gmail.com>
- <20200102182937.GG9282@ziepe.ca>
- <CADw-U9BTH1-2FztrKnC=tTTH93wOZg3FM2qJgjneNz-6-kywiw@mail.gmail.com>
-In-Reply-To: <CADw-U9BTH1-2FztrKnC=tTTH93wOZg3FM2qJgjneNz-6-kywiw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiNDlmNjkyOGYtNDBjZS00OGRkLTkyMzUtODYyNjExYTZmMmVkIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiMEI0VFdkYXRLeUlBUjJtOWlrYmZQMUw1RXhDbWkyRVZIXC9uMVU0N3NVVHUrcXdYUGJweWEyRlgrUHFrcDliR2UifQ==
-dlp-product: dlpe-windows
-x-ctpclassification: CTP_NT
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=sean.hefty@intel.com; 
-x-originating-ip: [134.134.136.211]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 05b21374-d13c-4993-96ec-08d78fb98a6f
-x-ms-traffictypediagnostic: CY4PR11MB1814:
-x-microsoft-antispam-prvs: <CY4PR11MB1814F27FA41F062B6C7EFF5D9E200@CY4PR11MB1814.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0270ED2845
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(376002)(396003)(39860400002)(366004)(136003)(189003)(199004)(55016002)(2906002)(26005)(86362001)(4326008)(5660300002)(4744005)(110136005)(52536014)(9686003)(316002)(81166006)(81156014)(33656002)(66446008)(64756008)(66556008)(8676002)(71200400001)(7696005)(478600001)(8936002)(76116006)(6506007)(66476007)(66946007)(186003);DIR:OUT;SFP:1102;SCL:1;SRVR:CY4PR11MB1814;H:CY4PR11MB1430.namprd11.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qgjBlBs9Ccl70UnjecXLdXWXQiHPM+AZ9CkXNcrbVFmFhz8gilF8dyKtISb9QDZV6A7NBasGummTuV16EfJu30y3al8XxYXd+Kiqo9csnHk1Z743wUI3fSWbiqpSgHwlizHxthd9v2cQyNK5GL1bGtcPX+k0OXaAaQNB+dmZ+C1Hp/9dDNO8HJR8rqb8tIKy8E2iG6uVyjR2uQxTtLqnoErREDs4703BhvhZz1r6i5bfiNo4pODImZTs05S8WnrIhWXRt98/mm5Q1wVuwH4RodC8l/Oyr3lXNj2WvHiUSYUFsNKr5e5trupRSzR5mPHEzSiZvawBCrokT3d97yYGUEf/U3tNe0vN957DRM2eRMe/lt2lGTLRB/6xbCpFfeeB/dH6d9q9fuJ/43hBWfrsyMTQ4kioOHwnGrGr3yuLJwFcs0rrzTM5tmNZ7IFnHSY/
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728552AbgABT3g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Jan 2020 14:29:36 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:44428 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728438AbgABT3g (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Jan 2020 14:29:36 -0500
+Received: by mail-qk1-f193.google.com with SMTP id w127so32121615qkb.11
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Jan 2020 11:29:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lZawS7LGBxSe67WYxo4+2TlBhXSo7e1vXlOhgZaRFGA=;
+        b=QdlVzk/9rTnnZmcfS4UM55LnlRhp1CQyFlnaGCqlttXPXPKK2C4PdVfXa4AqNKaz3f
+         qAJz2IbW8160zbhmmqlonOOuxN9pqxRt5R7ao9j6JiY+WXC6mbJNm4Ga3jQoOZ3xzMNN
+         hMJ/W9S4SCrPdYV2aj9AZPjfyAf+sixb9lyB92pBggsAObC1H9ttH5NEFN6VXvOy2PSN
+         sjPxtZqErcA5Rd4I8KJLpZo3Pa9VIhGQJ+7VI2DtFjSrp29jf8+7nrBPtyL7SalBYUtE
+         riv72932/EGIwk5LzYfyzaz0mu9tql65EGVnjXvWpmIW1TsDCdWDcjt7UyMa1/cOONmK
+         MQSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lZawS7LGBxSe67WYxo4+2TlBhXSo7e1vXlOhgZaRFGA=;
+        b=VWyMSGhXHPjWcWIlzRz86r7FftaKu2QEGJfdJRMOCZbeUOWNJVVXeKVitrwyVG0N4J
+         r1BrK6zrklXrtU1ysQ45YrK1Uu7gXSp6i6XVkCGohQvl7hPP4ShtmrsTTcVP+BK6ewuV
+         IJlU77VU4jnUQnJK3CU4TupgBTiwLiguNT8rVxhlZY0NpNJgHQchzljRhoSarhehAM/e
+         6lRmj5xFAWg/ShBypvxIwb5G1sp7oNwEuLNe5xZvk83gRtysd8CQyiLGeKmFyU8aCZ3p
+         Zzl5Z/lquxIMbH8qVmATpSveyqBofHbdCl46Dv1g6FMZ3RAzruLV80kmzXU3JPeDE2e4
+         Uugw==
+X-Gm-Message-State: APjAAAUCizk13QQ4qdsTKtkeZLaxETiJxkUr5/VOuYasxRvzaLW31QFg
+        Kg3+XmHYftMBD8TISvCvNPFactAq9Ac=
+X-Google-Smtp-Source: APXvYqyT0jnZMEQTogE6nq/iKpifSkHJ7/jv2qA6H8QXBJY9qsxB6DK1bc0V5PIcN/3wpFofDWoNMg==
+X-Received: by 2002:ae9:f016:: with SMTP id l22mr67838939qkg.101.1577993374877;
+        Thu, 02 Jan 2020 11:29:34 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id g52sm14467349qta.58.2020.01.02.11.29.34
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 02 Jan 2020 11:29:34 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1in6A2-0005bl-1D; Thu, 02 Jan 2020 15:29:34 -0400
+Date:   Thu, 2 Jan 2020 15:29:34 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Liran Alon <liran.alon@oracle.com>
+Cc:     saeedm@mellanox.com, leon@kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, eli@mellanox.com, tariqt@mellanox.com,
+        danielm@mellanox.com,
+        =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>
+Subject: Re: [PATCH] net: mlx5: Use writeX() to ring doorbell and remove
+ reduntant wmb()
+Message-ID: <20200102192934.GH9282@ziepe.ca>
+References: <20200102174436.66329-1-liran.alon@oracle.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 05b21374-d13c-4993-96ec-08d78fb98a6f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jan 2020 19:25:34.6167
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yXwLJSWYx+JTKiaTmRBazx5czB1JM8AzeZhRiuO8iv/N2Sdof7Et7IEDMx9DqQRo3fdyNDD0aRYTH2+khgCHAg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1814
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200102174436.66329-1-liran.alon@oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-PiA+ID4gSXMgaXQgcG9zc2libGUgdG8gdHJhbnNmZXIgYSBsYXJnZSBmaWxlLCBzYXkgMjVHQiwg
-YmV0d2VlbiB0d28gY29tcHV0ZXJzIHVzaW5nDQo+ID4gPiBSRE1BIFVELCBhbmQgaGF2ZSBhbiBl
-eGFjdCBjb3B5IG9mIHRoZSBvcmlnaW5hbCBmaWxlIG9uIHRoZSByZWNlaXZpbmcgc2lkZT8gTXkN
-Cj4gPiA+IHVuZGVyc3RhbmRpbmcgaXMgdGhhdCB0aGUgb3JkZXIgb2YgdGhlIG1lc3NhZ2VzIGlz
-IG5vdCBndWFyYW50ZWVkIHdpdGggVUQuDQo+ID4gPiBCdXQgSSB0aG91Z2h0IHRoYXQgaWYgSSBv
-bmx5IHVzZSBvbmUgUVAgSSBjb3VsZCBlbnN1cmUgdGhhdCB0aGUgb3JkZXJpbmcgb2YgdGhlDQo+
-ID4gPiBkYXRhIHdpbGwgYmUgcHJlZGljdGFibGUuDQo+ID4NCj4gPiBJdCBpcyBub3QgZ3VhcmFu
-dGVlZCB0byBiZSBpbiBvcmRlci4NCj4gPg0KPiA+IFdoeSB3b3VsZCB5b3UgZG8gdGhpcyBhbnlo
-b3c/IFRoZSBvdmVyaGVhZCB0byB1c2UgUkMgaXMgcHJldHR5IHNtYWxsDQo+ID4NCj4gU28gZXZl
-biBpZiBJIGFtIHVzaW5nIG9ubHkgMSBRUCwgaXQgaXMgc3RpbGwgbm90IGd1YXJhbnRlZWQgdG8g
-YmUgaW4NCj4gb3JkZXIuIE9rLiBUaGFua3MuDQoNClRoZSBzcGVjIGRvZXNuJ3QgZ3VhcmFudGVl
-IG9yZGVyaW5nLCB0aG91Z2ggSSBkb3VidCBtZXNzYWdlcyB3b3VsZCBldmVyIGJlIHVub3JkZXJl
-ZCBpbiBwcmFjdGljZS4gIFlvdSBjb3VsZCB0cmFuc2ZlciBhIHNlcXVlbmNlIG51bWJlciBhcyBp
-bW1lZGlhdGUgZGF0YSB0byBhbGxvdyB0aGUgcmVjZWl2ZXIgdG8gdmVyaWZ5IChhbmQgY29ycmVj
-dCkgcGFja2V0IG9yZGVyaW5nLCBhbmQgZGV0ZWN0IGxvc3QgcGFja2V0cy4NCg0KLSBTZWFuDQo=
+On Thu, Jan 02, 2020 at 07:44:36PM +0200, Liran Alon wrote:
+> Currently, mlx5e_notify_hw() executes wmb() to complete writes to cache-coherent
+> memory before ringing doorbell. Doorbell is written to by mlx5_write64()
+> which use __raw_writeX().
+> 
+> This is semantically correct but executes reduntant wmb() in some architectures.
+> For example, in x86, a write to UC memory guarantees that any previous write to
+> WB memory will be globally visible before the write to UC memory. Therefore, there
+> is no need to also execute wmb() before write to doorbell which is mapped as UC memory.
+> 
+> The consideration regarding this between different architectures is handled
+> properly by the writeX() macro. Which is defined differently for different
+> architectures. E.g. On x86, it is just a memory write. However, on ARM, it
+> is defined as __iowmb() folowed by a memory write. __iowmb() is defined
+> as wmb().
+
+This reasoning seems correct, though I would recommend directly
+refering to locking/memory-barriers.txt which explains this.
+
+> Therefore, change mlx5_write64() to use writeX() and remove wmb() from
+> it's callers.
+
+Yes, wmb(); writel(); is always redundant
+  
+> diff --git a/include/linux/mlx5/cq.h b/include/linux/mlx5/cq.h
+> index 40748fc1b11b..28744a725e64 100644
+> +++ b/include/linux/mlx5/cq.h
+> @@ -162,11 +162,6 @@ static inline void mlx5_cq_arm(struct mlx5_core_cq *cq, u32 cmd,
+>  
+>  	*cq->arm_db = cpu_to_be32(sn << 28 | cmd | ci);
+>  
+> -	/* Make sure that the doorbell record in host memory is
+> -	 * written before ringing the doorbell via PCI MMIO.
+> -	 */
+> -	wmb();
+> -
+
+Why did this one change? The doorbell memory here is not a writel():
+
+>  	doorbell[0] = cpu_to_be32(sn << 28 | cmd | ci);
+>  	doorbell[1] = cpu_to_be32(cq->cqn);
+
+>  static inline void mlx5_write64(__be32 val[2], void __iomem *dest)
+>  {
+>  #if BITS_PER_LONG == 64
+> -	__raw_writeq(*(u64 *)val, dest);
+> +	writeq(*(u64 *)val, dest);
+
+I want to say this might cause problems with endian swapping as writeq
+also does some swaps that __raw does not? Is this true?
+
+ie writeq does not accept a be32
+
+Some time ago I reworked this similar code in userspace to use a u64
+and remove the swapping from the caller.
+
+Jason
