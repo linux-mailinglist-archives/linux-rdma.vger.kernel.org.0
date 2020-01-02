@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71ADC12E458
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2020 10:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9281F12E6D6
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2020 14:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727884AbgABJUU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Jan 2020 04:20:20 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:35247 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727801AbgABJUU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Jan 2020 04:20:20 -0500
-Received: by mail-io1-f67.google.com with SMTP id v18so37734314iol.2
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Jan 2020 01:20:19 -0800 (PST)
+        id S1728344AbgABNgH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Jan 2020 08:36:07 -0500
+Received: from mail-io1-f68.google.com ([209.85.166.68]:45396 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728288AbgABNgH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Jan 2020 08:36:07 -0500
+Received: by mail-io1-f68.google.com with SMTP id i11so38256242ioi.12
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Jan 2020 05:36:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vbUMnEhVONcUmTCG15aMUc7YiHySA5edf1F2K8qXpwQ=;
-        b=NISew5diJ/aBKZxasMIUwOzyPWudSlvP8zgOWJPV/DgnuW/8IDiT0Qhuz1AGUS9Jdo
-         Wp9Om8LgUWEgGDa/8ZcmupRSjFxK1wwDT7+HTihMHnkbBVPmywXxKECIhHQ/FgobD25J
-         tZK+4HLJy3ZNhokZ8XHscenXNrsrptr0cOK7skYsLjs2OYrHTHf6tZAnXvDyqrZr8WrL
-         AIIE2zdYcr+a/rGloxFKDXMom9XsJzcFWd5ONH1GEbBJAU144YCf9HJgX+ayYj2NWkJz
-         oNUyLy8S+3b6vh3Jm58kTOnpJpQM17+GCDc7hOI2Zne6MOL9EA1mIztHpv7wBxEL7VIc
-         lb4w==
+        bh=XhevothgagHI/veyJj2E2XrnFq71ibbj9OxsYGO/W/8=;
+        b=RZpmITJ4Lwv/7mlo2ll/BdQMzDDlZ6/oCbITnVj1EOZrF8i45ontXkvhz9ATxd2Wx0
+         o13jvuIoaOUEmRZFWtsKKUJFdFKhilb3V7/YwZhOW7PVk9FE5HQ/xTxItp+AVcAqo0Z+
+         yP+9lxeSoZYWJW9GgDIsbqPRJ1ZRNI0wODlCEWLcYs8TZzP2NXKKchVDlhbuuqyeOU3w
+         58xxyW0pagAf3ocjtRe1UG/D/lxKSIqgVkW+PkbI/9AMwLMJajttLBZL0RBw6myPqyj7
+         oE94d6PEwlmP6VMVrZJfdJ/fhCKQHUJDy+CILsJn3yKtUoJhyER2qcVUYOr28XkeA1/O
+         xgOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vbUMnEhVONcUmTCG15aMUc7YiHySA5edf1F2K8qXpwQ=;
-        b=lOm5RqRFQyCzTEmN6aS7Dy6pCC/8qs+k9cVrr4Pw+L+Yz6yimHR5vH8H+K2C12G/0l
-         xyQpAQ8pPpEeyMaphhKu3jBcjk+1g7BtJ1+A2ehR6dU0KFd/+UDxD0bf7t8ZRQ9kyiaJ
-         3lT26dMmSQkx19fH2fKEKBOZ5JWtbov0wLT+HeZ1mS51kQYgBRqC2nihkVTGxInPsQs4
-         f/SLMU2N14+oNCO6j8bg+g1X2eIiQ1o9xP1Z+MEo8iaiOst5SnZcyDDHSJnhUTSlhvwS
-         11HbOUT1z5+j9Kc3fXIrorr6jL8Of2hkcdyjPbNKAjAhuC9Rv8rBnB9Z5lIhMD+Qy5dx
-         SFbw==
-X-Gm-Message-State: APjAAAWK5Db0qRnZ8Hz4dHNuomcCTuTnVe0EADA5BBaAvCo8Pjyt1WTC
-        tPHaVBsvgRk4x1LWZhK2F721SZ9M5LjpEYYvi6KkUg==
-X-Google-Smtp-Source: APXvYqyzBxl/QOWIAJrGW58UMnRiCgH15za7UccEuZ0hzX8YPObCcr18f+7efhszbjjY+fE3HcHXD3YIlrMCCsA/0Zs=
-X-Received: by 2002:a5e:c606:: with SMTP id f6mr14388153iok.71.1577956819160;
- Thu, 02 Jan 2020 01:20:19 -0800 (PST)
+        bh=XhevothgagHI/veyJj2E2XrnFq71ibbj9OxsYGO/W/8=;
+        b=pKNg8DuSy/gTuLtBm2UaeL2zUPJ1S9DVZGYCF25mGv019KSrAS06l5X6SfDAViPY1x
+         SwHjQvTPabAoFatv397ikxUdqKywH6B9DE3VKk1rpzhY7IiYdiEE5HXj6n5YIsCANHc7
+         KCnZIWsiD2jR18m/lo2SModY2eXrEVlSxJ5tU16KV9Sd/XZSDn0jvqU0ibInyvh+Cj8Q
+         FdosTRAC6Sz1yerBs6BT2vKZZ55I8Bmp9NdsziagY7vRpVWNBQ/h4eAJlNKmz4zqA86E
+         ymaBvEu1O1fUS6g92Tzy8XzaksfAG1FqxMrXDu/YjE+Fb2RIhymboCNLgtVE+8kGmO0U
+         4RvA==
+X-Gm-Message-State: APjAAAU1SYAIsc2t8/4L1ZznvU/jQC4Au7sz/oZ6Om+sPzb+DIFZoj6g
+        FcScdthH7Cc9fRFavRyiBrJS+R5iGoqV7wObPMvXfg==
+X-Google-Smtp-Source: APXvYqxF3bXG0cTEkPkpJKkFSi24+QpjzmsOhJ2ejAl8Z4LWgZgw0joytarQoEBuVO764JgLKpmtmd6idHK7Vp69DbA=
+X-Received: by 2002:a02:6957:: with SMTP id e84mr62172486jac.11.1577972166002;
+ Thu, 02 Jan 2020 05:36:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20191230102942.18395-1-jinpuwang@gmail.com> <a56985f4-fbd3-3546-34e1-4185150f4af2@acm.org>
-In-Reply-To: <a56985f4-fbd3-3546-34e1-4185150f4af2@acm.org>
+References: <20191230102942.18395-1-jinpuwang@gmail.com> <20191230102942.18395-3-jinpuwang@gmail.com>
+ <cc66bb26-68da-8add-6813-a330dc23facd@acm.org>
+In-Reply-To: <cc66bb26-68da-8add-6813-a330dc23facd@acm.org>
 From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Thu, 2 Jan 2020 10:20:08 +0100
-Message-ID: <CAMGffEkrL44tuGd8CB4o_F30QNnQez4fZ46dazD+BOBBp0tNbA@mail.gmail.com>
-Subject: Re: [PATCH v6 00/25] RTRS (former IBTRS) rdma transport library and
- RNBD (former IBNBD) rdma network block device
+Date:   Thu, 2 Jan 2020 14:35:55 +0100
+Message-ID: <CAMGffEmdQ2SuP6JTrPYyP70ZYPC+H+GSyL2Lib7mbG4-DUN6Kg@mail.gmail.com>
+Subject: Re: [PATCH v6 02/25] rtrs: public interface header to establish RDMA connections
 To:     Bart Van Assche <bvanassche@acm.org>
 Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
@@ -62,74 +62,94 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 31, 2019 at 3:39 AM Bart Van Assche <bvanassche@acm.org> wrote:
+On Mon, Dec 30, 2019 at 8:25 PM Bart Van Assche <bvanassche@acm.org> wrote:
 >
 > On 2019-12-30 02:29, Jack Wang wrote:
-> > here is V6 of the RTRS (former IBTRS) rdma transport library and the
-> > corresponding RNBD (former IBNBD) rdma network block device.
-> >
-> > Changelog since v5:
-> > 1 rebased to linux-5.5-rc4
-> > 2 fix typo in my email address in first patch
-> > 3 cleanup copyright as suggested by Leon Romanovsky
-> > 4 remove 2 redudant kobject_del in error path as suggested by Leon Romanovsky
-> > 5 add MAINTAINERS entries in alphabetical order as Gal Pressman suggested
+> > +/*
+> > + * Here goes RTRS client API
+> > + */
 >
-> Please always include the full changelog when posting a new version.
-> Every other Linux kernel patch series I have seen includes a full
-> changelog in version two and later versions of its cover letter.
-Sorry, it was my mistake, will include the full changelog next time.
+> A comment that explains what the abbreviation "RTRS" stands for would be
+> welcome here. Additionally, I think that "Here goes" can be left out.
+will do.
 >
-> Information about how this patch series has been tested would be
-> welcome. How big were the changes between v4 and v5 and how much testing
-> have these changes received? Was this patch series tested in the Ionos
-> data center or is it the out-of-tree version of these drivers that runs
-> in the Ionos data center?
-As mentioned in the v5 cover letter, the changes between v4 and v5
-"'
- Main changes are the following:
-1. Fix the security problem pointed out by Jason
-2. Implement code-style/readability/API/etc suggestions by Bart van Assche
-3. Rename IBTRS and IBNBD to RTRS and RNBD accordingly
-4. Fileio mode support in rnbd-srv has been removed.
-
-The main functional change is a fix for the security problem pointed out by
-Jason and discussed both on the mailing list and during the last LPC
-RDMA MC 2019.
-On the server side we now invalidate in RTRS each rdma buffer before we hand it
-over to RNBD server and in turn to the block layer. A new rkey is generated and
-registered for the buffer after it returns back from the block layer and RNBD
-server. The new rkey is sent back to the client along with the IO result.
-The procedure is the default behaviour of the driver. This invalidation and
-registration on each IO causes performance drop of up to 20%. A user of the
-driver may choose to load the modules with this mechanism switched off
-(always_invalidate=N), if he understands and can take the risk of a malicious
-client being able to corrupt memory of a server it is connected to. This might
-be a reasonable option in a scenario where all the clients and all the servers
-are located within a secure datacenter.
-
-Huge thanks to Bart van Assche for the very detailed review of both RNBD and
-RTRS. These included suggestions for style fixes, better readability and
-documentation, code simplifications, eliminating usage of deprecated APIs,
-too many to name.
-
-The transport library and the network block device using it have been renamed to
-RTRS and RNBD accordingly in order to reflect the fact that they are based on
-the rdma subsystem and not bound to InfiniBand only.
-
-Fileio mode support in rnbd-server is not so efficent as pointed out by Bart,
-and we can use loop device in between if there is need, hence we just
-removed the fileio mode support.
-"'
-Regarding testing, all the changes have been tested with our
-regression tests in our staging environment in IONOS data center.
-it's around 200 test cases, for both always_invalidate=N and
-always_invalidate=Y configurations.
-
-I will mention it in the cover letter next time.
-
-Thanks for your comments, Bart.
+> > +/**
+> > + * rtrs_clt_open() - Open a session to an RTRS server
+> > + * @priv: User supplied private data.
+> > + * @link_ev: Event notification for connection state changes
 >
-> Thanks,
+> Please mention that @link_ev is a callback function.
+Ok.
+>
+> > + *   @priv: User supplied data that was passed to rtrs_clt_open()
+> > + *   @ev: Occurred event
+>
+> Is this patch series W=1 clean? @link_ev arguments should be documented
+> above the link_clt_ev_fn typedef.
+We will make sure it's W=1 clean in next round.
+>
+> > + * @path_cnt: Number of elemnts in the @paths array
+>
+> elemnts -> elements?
+will fix.
+>
+> > + * Starts session establishment with the rtrs_server. The function can block
+> > + * up to ~2000ms until it returns.
+>
+> until -> before?
+will fix
+>
+> > +struct rtrs_clt *rtrs_clt_open(void *priv, link_clt_ev_fn *link_ev,
+> > +                              const char *sessname,
+> > +                              const struct rtrs_addr *paths,
+> > +                              size_t path_cnt, short port,
+> > +                              size_t pdu_sz, u8 reconnect_delay_sec,
+> > +                              u16 max_segments,
+> > +                              s16 max_reconnect_attempts);
+>
+> Since the range for port numbers is 1..65535, please change "short port"
+> into "u16 port".
+ok.
+>
+> > +/**
+> > + * enum rtrs_clt_con_type() type of ib connection to use with a given permit
+>
+> What is a "permit"?
+Does use rtrs_permit sound better?
+>
+> > + * @vec:     Message that is send to server together with the request.
+>
+> send -> sent?
+right.
+>
+> > + *           Sum of len of all @vec elements limited to <= IO_MSG_SIZE.
+> > + *           Since the msg is copied internally it can be allocated on stack.
+> > + * @nr:              Number of elements in @vec.
+> > + * @len:     length of data send to/from server
+>
+> send -> sent?
+right.
+>
+> > +/**
+> > + * link_ev_fn():     Events about connective state changes
+>
+> connective -> connection?
+connectivity I think, will fix.
+>
+> > +/**
+> > + * rtrs_srv_open() - open RTRS server context
+> > + * @ops:             callback functions
+> > + *
+> > + * Creates server context with specified callbacks.
+> > + *
+> > + * Return a valid pointer on success otherwise PTR_ERR.
+> > + */
+> > +struct rtrs_srv_ctx *rtrs_srv_open(rdma_ev_fn *rdma_ev, link_ev_fn *link_ev,
+> > +                                  unsigned int port);
+>
+> Is this patch series W=1 clean? The documented argument does not match
+> the actual argument list.
+As replied above we will make sure it's W=1 clean when sending next round.
 >
 > Bart.
+Thanks, Bart
