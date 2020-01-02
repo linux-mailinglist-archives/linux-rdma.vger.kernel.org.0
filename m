@@ -2,89 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D4F12E87A
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2020 17:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABF612E8C6
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2020 17:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728828AbgABQJo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 2 Jan 2020 11:09:44 -0500
-Received: from mga18.intel.com ([134.134.136.126]:58327 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728806AbgABQJk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 Jan 2020 11:09:40 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 02 Jan 2020 08:09:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,387,1571727600"; 
-   d="scan'208";a="231850442"
-Received: from fmsmsx104.amr.corp.intel.com ([10.18.124.202])
-  by orsmga002.jf.intel.com with ESMTP; 02 Jan 2020 08:09:39 -0800
-Received: from fmsmsx157.amr.corp.intel.com (10.18.116.73) by
- fmsmsx104.amr.corp.intel.com (10.18.124.202) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 2 Jan 2020 08:09:39 -0800
-Received: from fmsmsx123.amr.corp.intel.com ([169.254.7.87]) by
- FMSMSX157.amr.corp.intel.com ([169.254.14.70]) with mapi id 14.03.0439.000;
- Thu, 2 Jan 2020 08:09:39 -0800
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
-CC:     "yuanxzhang@fudan.edu.cn" <yuanxzhang@fudan.edu.cn>,
-        "kjlu@umn.edu" <kjlu@umn.edu>, "leon@kernel.org" <leon@kernel.org>,
-        "Markus.Elfring@web.de" <Markus.Elfring@web.de>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        "Latif, Faisal" <faisal.latif@intel.com>,
+        id S1728859AbgABQgs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Jan 2020 11:36:48 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:43916 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728812AbgABQgr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Jan 2020 11:36:47 -0500
+Received: by mail-pl1-f193.google.com with SMTP id p27so17990621pli.10;
+        Thu, 02 Jan 2020 08:36:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=F/bpBaStoBJx7wEMAMw9Q0zSpOG40c2sgoNWvrCquug=;
+        b=I+n2Zj5dJ8PiY9bn9PnSumk+pnHhH/opPdMbH5iU4/peAHMB5fbRSzF6smE2aHkzin
+         IU36fpP2HGw3LCZofAZei0/c/sbbcg5iUPxlZjt8Az+u7EUz99F1w7DQQ1dR7c+xCJ7L
+         kwKpPx1VvPFI+dGil14wlj/dvhDMY9LE9l7jx8YpRzDa+LHVXquJSzHfbTxqPYDU5qpv
+         LbbbeHcAg9RY9ule5sHzAgF8fDtTRf1bQ2x8zLfyHDT2cSWlbUyfEvzYKM7JKB5hYfFT
+         R/SR79q3m52+bl4/KNknaGr/UbfbD5qlb4ZFOZkc1W/k+uVttDIxtjsPmk23Xh/9fPMz
+         I3jA==
+X-Gm-Message-State: APjAAAUQH6/alexHkz8cCcvI7iiLwguZcL1ad3/sVnA156M3MEuhvKx2
+        I1viBo44nNxSGI3kFAAaXQM=
+X-Google-Smtp-Source: APXvYqx56IdmJiLXaMgdq04mVeR7eOhdvMcDh1NwoJiKStDEYkxTHq/VWzW4PEmmv79OI3RHbeAh4w==
+X-Received: by 2002:a17:902:700b:: with SMTP id y11mr87273466plk.304.1577983007154;
+        Thu, 02 Jan 2020 08:36:47 -0800 (PST)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id i66sm33301772pfg.85.2020.01.02.08.36.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jan 2020 08:36:45 -0800 (PST)
+Subject: Re: [PATCH v6 02/25] rtrs: public interface header to establish RDMA
+ connections
+To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Shannon Nelson <shannon.nelson@intel.com>,
-        "Singhai, Anjali" <anjali.singhai@intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4] infiniband: i40iw: fix a potential NULL pointer
- dereference
-Thread-Topic: [PATCH v4] infiniband: i40iw: fix a potential NULL pointer
- dereference
-Thread-Index: AQHVvrhzchRnSKHHyEuZXScGHS/Gk6fXj3Rw
-Date:   Thu, 2 Jan 2020 16:09:38 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A7C1DEF336@fmsmsx123.amr.corp.intel.com>
-References: <1577672668-46499-1-git-send-email-xiyuyang19@fudan.edu.cn>
-In-Reply-To: <1577672668-46499-1-git-send-email-xiyuyang19@fudan.edu.cn>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ctpclassification: CTP_NT
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiODBhY2NjNWQtN2Q4NS00OTg4LTkyNWEtNTgxZDJiNjk1Y2M5IiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiV0RweXNBWjVvdDBIQU9MbTBieTk0WFFnSUUwOVo5Ykw0NkpzckVpVDBNbHNpZ0lpS09mazVSMk5yKzh1cUo3TiJ9
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.108]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de
+References: <20191230102942.18395-1-jinpuwang@gmail.com>
+ <20191230102942.18395-3-jinpuwang@gmail.com>
+ <cc66bb26-68da-8add-6813-a330dc23facd@acm.org>
+ <CAMGffEmdQ2SuP6JTrPYyP70ZYPC+H+GSyL2Lib7mbG4-DUN6Kg@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <8b070c98-a9fd-3cb1-d619-8836bf38b851@acm.org>
+Date:   Thu, 2 Jan 2020 08:36:44 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
+In-Reply-To: <CAMGffEmdQ2SuP6JTrPYyP70ZYPC+H+GSyL2Lib7mbG4-DUN6Kg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: [PATCH v4] infiniband: i40iw: fix a potential NULL pointer dereference
-> 
-> A NULL pointer can be returned by in_dev_get(). Thus add a corresponding check
-> so that a NULL pointer dereference will be avoided at this place.
-> 
-> Fixes: 8e06af711bf2 ("i40iw: add main, hdr, status")
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
-> Changes in v2:
-> - Release rtnl lock when in_dev_get return NULL Changes in v3:
-> - Continue the next loop when in_dev_get return NULL Changes in v4:
-> - Change commit message
-> 
+On 1/2/20 5:35 AM, Jinpu Wang wrote:
+> On Mon, Dec 30, 2019 at 8:25 PM Bart Van Assche <bvanassche@acm.org> wrote:
+>>> +/**
+>>> + * enum rtrs_clt_con_type() type of ib connection to use with a given permit
+>>
+>> What is a "permit"?
+> Does use rtrs_permit sound better?
 
-Thanks! Looks ok.
+I think keeping the word "permit" is fine. How about adding a comment 
+above rtrs_permit that explains more clearly what the role of that data 
+structure is? This is what I found in rtrs-clt.h:
 
-I believe Leon caught another issue in how rtnl locking scheme is done in this function.
-Will fix.
+/**
+  * rtrs_permit - permits the memory allocation for future RDMA operation
+  */
+struct rtrs_permit {
+         enum rtrs_clt_con_type con_type;
+         unsigned int cpu_id;
+         unsigned int mem_id;
+         unsigned int mem_off;
+};
 
-Shiraz
+Thanks,
+
+Bart.
