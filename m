@@ -2,33 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6CB12E990
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2020 18:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6B312E9B4
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2020 19:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgABRur convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 2 Jan 2020 12:50:47 -0500
-Received: from mga02.intel.com ([134.134.136.20]:31106 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727706AbgABRur (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 Jan 2020 12:50:47 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 02 Jan 2020 09:50:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,387,1571727600"; 
-   d="scan'208";a="231872348"
-Received: from fmsmsx104.amr.corp.intel.com ([10.18.124.202])
-  by orsmga002.jf.intel.com with ESMTP; 02 Jan 2020 09:50:46 -0800
-Received: from fmsmsx155.amr.corp.intel.com (10.18.116.71) by
- fmsmsx104.amr.corp.intel.com (10.18.124.202) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 2 Jan 2020 09:50:46 -0800
-Received: from fmsmsx123.amr.corp.intel.com ([169.254.7.87]) by
- FMSMSX155.amr.corp.intel.com ([169.254.5.244]) with mapi id 14.03.0439.000;
- Thu, 2 Jan 2020 09:50:46 -0800
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        id S1727976AbgABSG5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Jan 2020 13:06:57 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:37003 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727958AbgABSG5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Jan 2020 13:06:57 -0500
+Received: by mail-qt1-f196.google.com with SMTP id w47so35230303qtk.4
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Jan 2020 10:06:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kKodLo/bwDXK8D0TLbyN4sF1my9cqh3pcja+/KKW6A8=;
+        b=Jal5LxvL4znSnvCGWhZHX1UxzRTC1NMg5N3vzxMVApWblzPxKXc84C/b0BegS9MkZr
+         fQTVzk0QJjEM+WtlXsH2FmriNHoOPCIlY1pQICUS9nyFpeWzHmd9TdsoDNRd0httOUbg
+         AcyC2is5KwCtI+7WQek6hoo2E40I5goBb81hp6/wlvkz/gIT5GXNFLtVuDf07uKUBlCJ
+         kzP+7Kgn6K1iENfcHPoNPRke8JvZJtMdWFLif20U6ZpgKrvH4jNkwrDjT5bvw32Ncvmi
+         5BD9Z5yY2kyNkLPQOBG7fDmYuhskV61HDaNWodCoBETKeIi//8ShhGwpqy+R38/U5iIw
+         eMWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kKodLo/bwDXK8D0TLbyN4sF1my9cqh3pcja+/KKW6A8=;
+        b=rsc0T0CGOGcBZH8j/8NWgGn/0Wc38szUXxpo3rei+nujafEzNYygFtE1lHJFoRhbhW
+         /uayWrUsASRXvCAknVJZfSFm8Bx/3gLhwU7Lh6+0Z4vV+dKPj3F5G4clej15qdM00OkX
+         6lPuTLZzzObcg7Mf3XxTjmJw7is4KNlIoUjwP/GQPJ1POz8J/PA3WhytL6lQQix5j+Mb
+         xN8Hj4N7xnDm1cG3wEfU1UmP/XMdge8uBilAcDtzG6RJ0m+eCDLqFYlNxP1eL4w80jg+
+         psPbiX7nWdn+0rxWejIa9zfhYis3J7o8wFXP3xtLe0XtGnN1XBziY2fQpzFmHwu5G0xE
+         GN+g==
+X-Gm-Message-State: APjAAAX/b6BLnMwPp11uZFhpSPAGFstNWy9NKlamffH8YtvTdPgaBA2m
+        L8OcxP1XFvlfy2fhSYC50u1lCw==
+X-Google-Smtp-Source: APXvYqxglEhq9d4CAJnBtJBjaPLfDCM65z+Q3Qr+0mNjpmBu3AjCflRpQWW8Zznps5r6KVFhxWfaug==
+X-Received: by 2002:ac8:5257:: with SMTP id y23mr60734501qtn.88.1577988416092;
+        Thu, 02 Jan 2020 10:06:56 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id u15sm15303346qku.67.2020.01.02.10.06.55
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 02 Jan 2020 10:06:55 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1in4s2-0002mo-Os; Thu, 02 Jan 2020 14:06:54 -0400
+Date:   Thu, 2 Jan 2020 14:06:54 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Cc:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
         "davem@davemloft.net" <davem@davemloft.net>,
         "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
@@ -36,13 +58,9 @@ CC:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
         "nhorman@redhat.com" <nhorman@redhat.com>,
         "sassmann@redhat.com" <sassmann@redhat.com>,
         "parav@mellanox.com" <parav@mellanox.com>
-Subject: RE: [PATCH v3 19/20] RDMA: Add irdma Kconfig/Makefile and remove
+Subject: Re: [PATCH v3 19/20] RDMA: Add irdma Kconfig/Makefile and remove
  i40iw
-Thread-Topic: [PATCH v3 19/20] RDMA: Add irdma Kconfig/Makefile and remove
- i40iw
-Thread-Index: AQHVruL28gEIgb9lXUm9x+ExMCj0FKe15AgAgAJKZ3CABzTwAIAYQRoAgAChPQD//332kA==
-Date:   Thu, 2 Jan 2020 17:50:45 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A7C1DEF79B@fmsmsx123.amr.corp.intel.com>
+Message-ID: <20200102180654.GB9282@ziepe.ca>
 References: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
  <20191209224935.1780117-20-jeffrey.t.kirsher@intel.com>
  <20191211200200.GA13279@ziepe.ca>
@@ -50,50 +68,50 @@ References: <20191209224935.1780117-1-jeffrey.t.kirsher@intel.com>
  <20191217210406.GC17227@ziepe.ca>
  <9DD61F30A802C4429A01CA4200E302A7C1DEF259@fmsmsx123.amr.corp.intel.com>
  <20200102170426.GA9282@ziepe.ca>
-In-Reply-To: <20200102170426.GA9282@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ctpclassification: CTP_NT
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiYjcxMDNlMjMtZTViMS00NjdmLWE1NjYtZjMwYzYwODAxY2JiIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiRHVHeUJYR0ZvQUJHdW5BR2MxWnpwdG9CeGhQb1wvV0tEOEdkZVhxYWYrUElySnpUQUUyekd6ejZkNGFNa1NXd1wvIn0=
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.108]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+ <9DD61F30A802C4429A01CA4200E302A7C1DEF79B@fmsmsx123.amr.corp.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7C1DEF79B@fmsmsx123.amr.corp.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [PATCH v3 19/20] RDMA: Add irdma Kconfig/Makefile and remove
-> i40iw
+On Thu, Jan 02, 2020 at 05:50:45PM +0000, Saleem, Shiraz wrote:
+> > Subject: Re: [PATCH v3 19/20] RDMA: Add irdma Kconfig/Makefile and remove
+> > i40iw
+> > 
+> > On Thu, Jan 02, 2020 at 04:00:37PM +0000, Saleem, Shiraz wrote:
+> > > > Subject: Re: [PATCH v3 19/20] RDMA: Add irdma Kconfig/Makefile and
+> > > > remove i40iw
+> > > >
+> > > >
+> > > > > >  - The whole cqp_compl_thread thing looks really weird
+> > > > > What is the concern?
+> > > >
+> > > > It looks like an open coded work queue
+> > > >
+> > >
+> > > The cqp_compl_thread is not a work queue in the sense that no work is
+> > > queued to it. It is a thread that is signaled to check for and handle
+> > > CQP completion events if present.
+> > 
+> > How is that not a work queue? The work is the signal to handle CQP completion
+> > events.
+> > 
 > 
-> On Thu, Jan 02, 2020 at 04:00:37PM +0000, Saleem, Shiraz wrote:
-> > > Subject: Re: [PATCH v3 19/20] RDMA: Add irdma Kconfig/Makefile and
-> > > remove i40iw
-> > >
-> > >
-> > > > >  - The whole cqp_compl_thread thing looks really weird
-> > > > What is the concern?
-> > >
-> > > It looks like an open coded work queue
-> > >
-> >
-> > The cqp_compl_thread is not a work queue in the sense that no work is
-> > queued to it. It is a thread that is signaled to check for and handle
-> > CQP completion events if present.
-> 
-> How is that not a work queue? The work is the signal to handle CQP completion
-> events.
-> 
+> Yes we could use the work as a signal. But this would mean,
+> we allocate a work item, initialize it to an 'identical' value,
+> queue it up and then free it.
 
-Yes we could use the work as a signal. But this would mean,
-we allocate a work item, initialize it to an 'identical' value,
-queue it up and then free it.
-Why is this better than using a single kthread that just
-wake ups to handle the CQP completion?
+You don't have to allocate a work item every time.
 
+> Why is this better than using a single kthread that just
+> wake ups to handle the CQP completion?
+
+We'd have endless kthreads if people did this everytime they needed a
+bit of async work.
+
+Jason
