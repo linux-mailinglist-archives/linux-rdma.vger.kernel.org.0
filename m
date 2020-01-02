@@ -2,154 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9281F12E6D6
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2020 14:36:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B4812E760
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Jan 2020 15:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728344AbgABNgH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Jan 2020 08:36:07 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:45396 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728288AbgABNgH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Jan 2020 08:36:07 -0500
-Received: by mail-io1-f68.google.com with SMTP id i11so38256242ioi.12
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Jan 2020 05:36:06 -0800 (PST)
+        id S1728532AbgABOrS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Jan 2020 09:47:18 -0500
+Received: from mail-wm1-f50.google.com ([209.85.128.50]:36065 "EHLO
+        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728531AbgABOrS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Jan 2020 09:47:18 -0500
+Received: by mail-wm1-f50.google.com with SMTP id p17so5859270wma.1
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Jan 2020 06:47:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XhevothgagHI/veyJj2E2XrnFq71ibbj9OxsYGO/W/8=;
-        b=RZpmITJ4Lwv/7mlo2ll/BdQMzDDlZ6/oCbITnVj1EOZrF8i45ontXkvhz9ATxd2Wx0
-         o13jvuIoaOUEmRZFWtsKKUJFdFKhilb3V7/YwZhOW7PVk9FE5HQ/xTxItp+AVcAqo0Z+
-         yP+9lxeSoZYWJW9GgDIsbqPRJ1ZRNI0wODlCEWLcYs8TZzP2NXKKchVDlhbuuqyeOU3w
-         58xxyW0pagAf3ocjtRe1UG/D/lxKSIqgVkW+PkbI/9AMwLMJajttLBZL0RBw6myPqyj7
-         oE94d6PEwlmP6VMVrZJfdJ/fhCKQHUJDy+CILsJn3yKtUoJhyER2qcVUYOr28XkeA1/O
-         xgOg==
+        d=photodiagnostic-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=2JWPdB3QJ73f3h4iVY70Nr+HqZV33Ph9JfKnmm6ogzc=;
+        b=orfBV1Go1tb54efv2cfPE80211aWMj77lGtEEJoqqhLMapgrn7dJIh4HUuadQCRU9o
+         uoIf8OYlR+DM2xWrfOuYpKM8rSud9TgCK/Ny+GP+6aRgeavzI3JfuwchaX+VCgTbQ5nc
+         rRwcbvimLZ+6t5lN5CCLJOuXhIwd7PyaPP0ax05AL1gLv5gWtHQE8dn/DXjZd1FxuDuJ
+         gqEAUJe1fq1Qu8hO69HqakM9zLEozO+vi//j43EetpSS21ALbjlo8GOTgrXuckNH0b75
+         k/rm8q9xa3x38UbK6aDL5bR7a7KVIyjkOF8DeiI/glS97W0/nBOtDb6F3YosuwoSxQMi
+         BIpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XhevothgagHI/veyJj2E2XrnFq71ibbj9OxsYGO/W/8=;
-        b=pKNg8DuSy/gTuLtBm2UaeL2zUPJ1S9DVZGYCF25mGv019KSrAS06l5X6SfDAViPY1x
-         SwHjQvTPabAoFatv397ikxUdqKywH6B9DE3VKk1rpzhY7IiYdiEE5HXj6n5YIsCANHc7
-         KCnZIWsiD2jR18m/lo2SModY2eXrEVlSxJ5tU16KV9Sd/XZSDn0jvqU0ibInyvh+Cj8Q
-         FdosTRAC6Sz1yerBs6BT2vKZZ55I8Bmp9NdsziagY7vRpVWNBQ/h4eAJlNKmz4zqA86E
-         ymaBvEu1O1fUS6g92Tzy8XzaksfAG1FqxMrXDu/YjE+Fb2RIhymboCNLgtVE+8kGmO0U
-         4RvA==
-X-Gm-Message-State: APjAAAU1SYAIsc2t8/4L1ZznvU/jQC4Au7sz/oZ6Om+sPzb+DIFZoj6g
-        FcScdthH7Cc9fRFavRyiBrJS+R5iGoqV7wObPMvXfg==
-X-Google-Smtp-Source: APXvYqxF3bXG0cTEkPkpJKkFSi24+QpjzmsOhJ2ejAl8Z4LWgZgw0joytarQoEBuVO764JgLKpmtmd6idHK7Vp69DbA=
-X-Received: by 2002:a02:6957:: with SMTP id e84mr62172486jac.11.1577972166002;
- Thu, 02 Jan 2020 05:36:06 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=2JWPdB3QJ73f3h4iVY70Nr+HqZV33Ph9JfKnmm6ogzc=;
+        b=oe7OK+HKNEsyWADNq4XmbO1l7eAoLLzVHxIYIpXbwBid31AD0lfnFBD+L0ZqWtqT48
+         HQD53VD6DxBUhBvq225IgWB+gQ4CSOlwC7zU+gaACq3G3xIFgmPylP1rgoR7LmgIm77t
+         mnUHHH7REk/TPKG2oEk/XmME5UBCnCs68X5QqfgYDkGkScGjhCIgoc4ODS2um84ncaM2
+         hzq1Wi0ISk1tFrU70eVJJEPrISjLnuN1yZpJBmoGlsXTx8hpeFSYR6nw8KKkDHri6gfb
+         zHP+Ck8ldUBLwq0M8XAKUMpNvyN2bEIpNqmzyqRQG8mEdF9C6E2G72vuaf0efEQjq9lB
+         v+8w==
+X-Gm-Message-State: APjAAAVhcsglvXMCP7TKWkEMoKVyEw9PK5kArvK6TN3OMMB8lpi1j2lx
+        KGWA6gJLdPhadBi6/JFrCXFLP2WdqG2u91Wdx9iTq735etSYtw==
+X-Google-Smtp-Source: APXvYqzIV/Ikpo7/TE3h+wxIYPqal1lhtegT7jY+ezhQ9qAPY81wKdW4s1UPP3rT/4ivHscovLZKU5NIr0XZk5C4ZfA=
+X-Received: by 2002:a7b:cd0a:: with SMTP id f10mr15284063wmj.56.1577976436948;
+ Thu, 02 Jan 2020 06:47:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20191230102942.18395-1-jinpuwang@gmail.com> <20191230102942.18395-3-jinpuwang@gmail.com>
- <cc66bb26-68da-8add-6813-a330dc23facd@acm.org>
-In-Reply-To: <cc66bb26-68da-8add-6813-a330dc23facd@acm.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Thu, 2 Jan 2020 14:35:55 +0100
-Message-ID: <CAMGffEmdQ2SuP6JTrPYyP70ZYPC+H+GSyL2Lib7mbG4-DUN6Kg@mail.gmail.com>
-Subject: Re: [PATCH v6 02/25] rtrs: public interface header to establish RDMA connections
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de
+From:   Terry Toole <toole@photodiagnostic.com>
+Date:   Thu, 2 Jan 2020 09:47:06 -0500
+Message-ID: <CADw-U9BHcoHy3WJ8iSdYjAw3RxQf2vhkOKyL7k0yJdR3mP7Mug@mail.gmail.com>
+Subject: Is it possible to transfer a large file between two computers using
+ RDMA UD?
+To:     linux-rdma@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Dec 30, 2019 at 8:25 PM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 2019-12-30 02:29, Jack Wang wrote:
-> > +/*
-> > + * Here goes RTRS client API
-> > + */
->
-> A comment that explains what the abbreviation "RTRS" stands for would be
-> welcome here. Additionally, I think that "Here goes" can be left out.
-will do.
->
-> > +/**
-> > + * rtrs_clt_open() - Open a session to an RTRS server
-> > + * @priv: User supplied private data.
-> > + * @link_ev: Event notification for connection state changes
->
-> Please mention that @link_ev is a callback function.
-Ok.
->
-> > + *   @priv: User supplied data that was passed to rtrs_clt_open()
-> > + *   @ev: Occurred event
->
-> Is this patch series W=1 clean? @link_ev arguments should be documented
-> above the link_clt_ev_fn typedef.
-We will make sure it's W=1 clean in next round.
->
-> > + * @path_cnt: Number of elemnts in the @paths array
->
-> elemnts -> elements?
-will fix.
->
-> > + * Starts session establishment with the rtrs_server. The function can block
-> > + * up to ~2000ms until it returns.
->
-> until -> before?
-will fix
->
-> > +struct rtrs_clt *rtrs_clt_open(void *priv, link_clt_ev_fn *link_ev,
-> > +                              const char *sessname,
-> > +                              const struct rtrs_addr *paths,
-> > +                              size_t path_cnt, short port,
-> > +                              size_t pdu_sz, u8 reconnect_delay_sec,
-> > +                              u16 max_segments,
-> > +                              s16 max_reconnect_attempts);
->
-> Since the range for port numbers is 1..65535, please change "short port"
-> into "u16 port".
-ok.
->
-> > +/**
-> > + * enum rtrs_clt_con_type() type of ib connection to use with a given permit
->
-> What is a "permit"?
-Does use rtrs_permit sound better?
->
-> > + * @vec:     Message that is send to server together with the request.
->
-> send -> sent?
-right.
->
-> > + *           Sum of len of all @vec elements limited to <= IO_MSG_SIZE.
-> > + *           Since the msg is copied internally it can be allocated on stack.
-> > + * @nr:              Number of elements in @vec.
-> > + * @len:     length of data send to/from server
->
-> send -> sent?
-right.
->
-> > +/**
-> > + * link_ev_fn():     Events about connective state changes
->
-> connective -> connection?
-connectivity I think, will fix.
->
-> > +/**
-> > + * rtrs_srv_open() - open RTRS server context
-> > + * @ops:             callback functions
-> > + *
-> > + * Creates server context with specified callbacks.
-> > + *
-> > + * Return a valid pointer on success otherwise PTR_ERR.
-> > + */
-> > +struct rtrs_srv_ctx *rtrs_srv_open(rdma_ev_fn *rdma_ev, link_ev_fn *link_ev,
-> > +                                  unsigned int port);
->
-> Is this patch series W=1 clean? The documented argument does not match
-> the actual argument list.
-As replied above we will make sure it's W=1 clean when sending next round.
->
-> Bart.
-Thanks, Bart
+Hi,
+Is it possible to transfer a large file, say 25GB, between two computers using
+RDMA UD, and have an exact copy of the original file on the receiving side? My
+understanding is that the order of the messages is not guaranteed with UD.
+But I thought that if I only use one QP I could ensure that the ordering of the
+data will be predictable.
+
+This is a proof of concept at this time. My thought was to load the file into
+memory on the client side and advance the address pointer after each
+transfer.  The same scheme would be used on the receiving side. That is,
+allocate a large region of memory and increment the address pointer
+after each message is received.
+
+I have been using the program ib_send_bw from perftest as a starting point.
+After increasing the buffer size on the client side and advancing sg_list->addr
+on the client side, I seem to be sending what I intend to send. At the present
+time I am not yet advancing sg_list->addr on the server side.  When I print out
+the first 100B of data after each transfer, I often see the data I
+expect, but not
+always.
+
+The commands I've been using to launch my modified version of ib_send_bw are
+client:
+./ib_send_bw -R   -d mlx5_0 -c UD -i 1 -F -q 1 --mmap=myInputfile.dat
+--report_gbits -n 1000 10.10.10.3
+
+server:
+./ib_send_bw -R -r 50 -d mlx5_0 -c UD -i 1 -q 1 -F -n 1000 --report_gbits
+
+The "-n 1000" is just for debugging. It will be increased later.
+
+Am I going about this in the correct way? Should I be able to copy a file using
+RDMA UD? Any thoughts or suggestions would be most appreciated.
+
+Thanks,
+
+Terry
