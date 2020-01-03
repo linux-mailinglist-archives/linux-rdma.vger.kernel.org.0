@@ -2,99 +2,224 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C1C12F851
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 13:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B5212F8D7
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 14:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727521AbgACMjk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Jan 2020 07:39:40 -0500
-Received: from mail-io1-f66.google.com ([209.85.166.66]:43879 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727507AbgACMjk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 07:39:40 -0500
-Received: by mail-io1-f66.google.com with SMTP id n21so39636484ioo.10
-        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2020 04:39:40 -0800 (PST)
+        id S1727678AbgACNhw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Jan 2020 08:37:52 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:37614 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727670AbgACNhv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 08:37:51 -0500
+Received: by mail-qv1-f65.google.com with SMTP id f16so16215152qvi.4
+        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2020 05:37:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cAe5HcMa95ZS+hogq0Ch8E/KQ7+bOnNlPN6CHTvuwVc=;
-        b=ehY6ksngLD2Alabqsy7PAjXpgPvGNIqTto5LLJyk/an47FZX1K+1cMUNrvDBbCWmZG
-         CoG0bAeR13drjgQ8PU8Bk2Ml2ZgQqNVVofB+88+ORb4GtqRJ5og/TphzQknZ0ZkDqShA
-         BuewhbiTHIOZ+CUNlGyDWUGCLwPjC0tTGuJTeQ3ayrO0oMoET+/dyP3wyLjk+XzBSn2Q
-         IMpst+i2G3qZ6BKg7Z0H16Itds45wjtYppREzXf9TkPrc55tmE8fdNzY8NyLFmhemxK+
-         nwM+9ijpkLwwCh+WBHBl6pLBmQgQ9RaDhzUMsQJNLlk5WZpypa1nWcxinkp+nhBzlB11
-         SuCw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=gZNZq3V1uCrbgfGqWICLfqmVUuafevWXFVX/Fr6naiI=;
+        b=mT7dALzUerjgpNzHfuz9BoQQ639nJFFwlLuYyZTiAEVcBh/JlOfvUomXstJKyBg9lD
+         4Vdep6q9DjpARGoQmh7O5QMTuzHzKecaf6bwS9z2j95xVt5XeGM2WlvNtGEHiYC5ITdt
+         /4xJPnE2S5XJAsv38tZXk4KmSSY1MnMjcuXOimfvk170E70tEufMQAGFOjo1rllkPk5x
+         OEQse/XbtPIOyfKdGPnfK1U4LzXo7e1N+XdjDLuq6A+79iTI1rGPgsyNFaal0eR3VjyS
+         BPyrZV7zzTgRxXTTfcIVPOKchn02eSQGpTTloyvOTBVd0JBle8Tlj3NiB0Kky7Q6gghe
+         xX0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cAe5HcMa95ZS+hogq0Ch8E/KQ7+bOnNlPN6CHTvuwVc=;
-        b=Ixz+a6e3T51e+DK21G12pAQdtOyBul0DrMOmJTFSmNKss4cTdXYCpwA20BwhcOEGPh
-         KPDscGdj001AcQ05IMk1LB+MVkEylQ2hIRpmtgileVwWUdp90BohFaBejdsR8wI7GdAZ
-         HBTpqvEQMgeSmcXBCld9IF+KgPP1+niyNtPJ+BOVs9akVuup77tf8FlQzRaAjBY2vral
-         jsd21rIMECxrFfejhzAlpth0UC6ZDmDQycHgrOmJd6XPZNkMfL75hWvCEOAmHsmANdmU
-         yvlD/4V/Q5sBW4LDDHDHGS19SaMhBpA52SUZdnh0ISyEH+K/JnRcN8EkgxAIxCBfwrgo
-         RSWw==
-X-Gm-Message-State: APjAAAXOddNDGPfHIor/FdCo8Yi08t3j30ScnQYcVhZ2wAWUttqJkB5S
-        vBfpcRXM7pXKi4HM+cjCD1N3iXyx/WjjzVt9aSA4dg==
-X-Google-Smtp-Source: APXvYqw9gUHKrjfDdiAi42fotiG2xzcc+wApMPhqxzYw3KcG/z9y36HbKX9/ogOj21lxFmI9dCVtjZ63vbDTrvpk8YI=
-X-Received: by 2002:a5d:84d6:: with SMTP id z22mr55730403ior.54.1578055179696;
- Fri, 03 Jan 2020 04:39:39 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=gZNZq3V1uCrbgfGqWICLfqmVUuafevWXFVX/Fr6naiI=;
+        b=qtzrwhw2jEylOb2uKtGfdRhQaULaWZJF7J+XI0E8mvHwYHSaidVECJvn29gKPLxUpc
+         51C3p/n6YNz97pNcb3vx6xfLKE04SqFCP6T/7vs+PAtg9u+IctottBA8eqDV9+rZfkPq
+         Osx+nG089iKDAAlDrJcwmgPOdPlWNz0Iw3hpMqGpdBTKDfNe6wa48VC7IiEpDJbPXIBg
+         0pJm4muR0Gre4Y1H1ca/JLAU5Pmjci30M2KCPooNP/5JekStpRIFSxXQffCSFi+d4l+G
+         rkjDfQ9BnlS5lKlkXBzJW3mKb6sNbpI+6peP9WzoxQvouOjiurUg40UWWZf8yLo51Kal
+         usPA==
+X-Gm-Message-State: APjAAAVkvV8HANwhd1TDu+cavcG/xRrWLQv/yMUIQjDn0nWd3LzqXLQg
+        UwyUkeVKNZhVE740l1x+KNONOx/dnOY=
+X-Google-Smtp-Source: APXvYqxttDT7F82aSDnbhCM/USMIPE14gkD51euP2/jKPDmxmxaAZuj6xdvIkg9//lzjzgb+DSZ+5Q==
+X-Received: by 2002:ad4:59c2:: with SMTP id el2mr65022462qvb.152.1578058670354;
+        Fri, 03 Jan 2020 05:37:50 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id o7sm16363014qkd.119.2020.01.03.05.37.49
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 03 Jan 2020 05:37:49 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1inN9B-0003T8-5K; Fri, 03 Jan 2020 09:37:49 -0400
+Date:   Fri, 3 Jan 2020 09:37:49 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Liran Alon <liran.alon@oracle.com>
+Cc:     Will Deacon <will@kernel.org>, saeedm@mellanox.com,
+        leon@kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, eli@mellanox.com, tariqt@mellanox.com,
+        danielm@mellanox.com,
+        =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>
+Subject: Re: [PATCH] net: mlx5: Use writeX() to ring doorbell and remove
+ reduntant wmb()
+Message-ID: <20200103133749.GA9706@ziepe.ca>
+References: <20200102174436.66329-1-liran.alon@oracle.com>
+ <20200102192934.GH9282@ziepe.ca>
+ <6524AE07-2ED7-41B5-B761-9F6BE8D2049B@oracle.com>
+ <20200102205847.GJ9282@ziepe.ca>
+ <79BB7EDF-406D-4FA1-ADDC-634D55F15C37@oracle.com>
 MIME-Version: 1.0
-References: <20191220155109.8959-1-jinpuwang@gmail.com> <20200102181859.GC9282@ziepe.ca>
-In-Reply-To: <20200102181859.GC9282@ziepe.ca>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Fri, 3 Jan 2020 13:39:29 +0100
-Message-ID: <CAMGffE=h24jmi0RnYks_rur71qrXCxJnPB5+cCACR50hKF6QRA@mail.gmail.com>
-Subject: Re: [PATCH v5 00/25] RTRS (former IBTRS) rdma transport library and
- the corresponding RNBD (former IBNBD) rdma network block device
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <79BB7EDF-406D-4FA1-ADDC-634D55F15C37@oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 2, 2020 at 7:19 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Fri, Dec 20, 2019 at 04:50:44PM +0100, Jack Wang wrote:
-> > Hi all,
-> >
-> > here is V5 of the RTRS (former IBTRS) rdma transport library and the
-> > corresponding RNBD (former IBNBD) rdma network block device.
-> >
-> > Main changes are the following:
-> > 1. Fix the security problem pointed out by Jason
-> > 2. Implement code-style/readability/API/etc suggestions by Bart van Assche
-> > 3. Rename IBTRS and IBNBD to RTRS and RNBD accordingly
-> > 4. Fileio mode support in rnbd-srv has been removed.
-> >
-> > The main functional change is a fix for the security problem pointed out by
-> > Jason and discussed both on the mailing list and during the last LPC RDMA MC 2019.
-> > On the server side we now invalidate in RTRS each rdma buffer before we hand it
-> > over to RNBD server and in turn to the block layer. A new rkey is generated and
-> > registered for the buffer after it returns back from the block layer and RNBD
-> > server. The new rkey is sent back to the client along with the IO result.
-> > The procedure is the default behaviour of the driver. This invalidation and
-> > registration on each IO causes performance drop of up to 20%. A user of the
-> > driver may choose to load the modules with this mechanism switched
-> > off
->
-> So, how does this compare now to nvme over fabrics?
->
-> I recall there were questiosn why we needed yet another RDMA block
-> transport?
->
-> Jason
-Performance results for the v5.5-rc1 kernel are here:
-  link: https://github.com/ionos-enterprise/ibnbd/tree/develop/performance/v5-v5.5-rc1
+On Fri, Jan 03, 2020 at 12:21:06AM +0200, Liran Alon wrote:
 
-Some workloads RNBD are faster, some workloads NVMeoF are faster.
+> > AFAIK WC is largely unspecified by the memory model. Is wmb() even
+> > formally specified to interact with WC?
+> 
+> As I said, I haven’t seen such semantics defined in kernel
+> documentation such as memory-barriers.txt.  However, in practice, it
+> does flush WC buffers. At least for x86 and ARM which I’m familiar
+> enough with.  I think it’s reasonable to assume that wmb() should
+> flush WC buffers while dma_wmb()/smp_wmb() doesn’t necessarily have
+> to do this.
+
+It is because WC is rarely used and laregly undefined for the kernel
+:(
+
+> >>>> Therefore, change mlx5_write64() to use writeX() and remove wmb() from
+> >>>> it's callers.
+> >>> 
+> >>> Yes, wmb(); writel(); is always redundant
+> >> 
+> >> Well, unfortunately not…
+> >> See: https://urldefense.proofpoint.com/v2/url?u=https-3A__marc.info_-3Fl-3Dlinux-2Dnetdev-26m-3D157798859215697-26w-3D2&d=DwIDaQ&c=RoP1YumCXCgaWHvlZYR8PZh8Bv7qIrMUB65eapI_JnE&r=Jk6Q8nNzkQ6LJ6g42qARkg6ryIDGQr-yKXPNGZbpTx0&m=Ox1lCS1KAGBvJrf24kiFQrranIaNi_zeo05sqCUEf7Y&s=Mz6MJzUQ862DGjgGnj3neX4ZpjI88nOI9KpZhNF9TqQ&e=
+> >> (See my suggestion to add flush_wc_writeX())
+> > 
+> > Well, the last time wmb & writel came up Linus was pretty clear that
+> > writel is supposed to remain in program order and have the barriers
+> > needed to do that.
+> 
+> Right. But that doesn’t take into account that WC writes are
+> considered completed when they are still posted in CPU WC buffers.
+
+> The semantics as I understand of writeX() is that it guarantees all
+> prior writes have been completed.  It means that all prior stores
+> have executed and that store-buffer is flushed. But it doesn’t mean
+> that WC buffers is flushed as-well.
+
+The semantic for writel is that prior program order stores will be
+observable by DMA from the device receiving the writel. This is
+required for UC and NC stores today. WC is undefined, I think.
+
+This is why ARM has the additional barrier in writel.
+
+It would logically make sense if WC followed the same rule, however,
+adding a barrier to writel to make WC ordered would not be popular, so
+I think we are left with using special accessors for WC and placing
+the barrier there..
+
+> > IMHO you should start there before going around and adding/removing wmbs
+> > related to WC. Update membory-barriers.txt and related with the model
+> > ordering for WC access and get agreement.
+> 
+> I disagree here. It’s more important to fix a real bug (e.g. Not
+> flushing WC buffers on x86 AMD).  Then, we can later formalise this
+> and refactor code as necessary. Which will also optimise it as-well.
+> Bug fix can be merged before we finish all these discussions and get
+> agreement.
+
+Is it a real bug that people actually hit? It wasn't clear from the
+commit message. If so, sure, it should be fixed and the commit message
+clarified. (but I'd put the wmb near the WC writes..)
+
+I am surprised that AMD is different here, the evolution of the WC
+feature on x86 was to transparently speed up graphics, so I'm pretty
+surprised AMD can get away with not ordering the same as Intel..
+
+> I do completely agree we should have this discussion on WC and
+> barriers and I already sent an email on this to all the
+> memory-barriers.txt maintainers. Waiting to see how that discussion
+> go and get community feedback before I will submit a patch-series
+> that will introduce new changes to memory-barriers.txt and probably
+> also new barrier macro.
+
+The barrier macros have been unpopular, ie the confusing mmiowb was
+dumped, and I strongly suspect to contain WC within a spinlock (which
+is very important!) you need a barrier instruction on some archs.
+
+New accessors might work better.
+
+> >>>> 	doorbell[0] = cpu_to_be32(sn << 28 | cmd | ci);
+> >>>> 	doorbell[1] = cpu_to_be32(cq->cqn);
+> >>> 
+> >>>> static inline void mlx5_write64(__be32 val[2], void __iomem *dest)
+> >>>> {
+> >>>> #if BITS_PER_LONG == 64
+> >>>> -	__raw_writeq(*(u64 *)val, dest);
+> >>>> +	writeq(*(u64 *)val, dest);
+> >>> 
+> >>> I want to say this might cause problems with endian swapping as writeq
+> >>> also does some swaps that __raw does not? Is this true?
+> >> 
+> >> Hmm... Looking at ARM64 version, writeq() indeed calls cpu_to_le64()
+> >> on parameter before passing it to __raw_writeq().  Quite surprising
+> >> from API perspective to be honest.
+> > 
+> > For PCI-E devices writel(x) is defined to generate the same TLP on the
+> > PCI-E bus, across all arches.
+> 
+> Good to know.
+> Question: Where is this documented?
+
+Hmm, haven't ever seen it documented like that. It is sort of a
+logical requirement. If writel(x) produces different TLPs (ie
+different byte order) how could a driver ever work with a PCI-E device
+that requires only one TLP for x?
+
+> >> So should I change this instead to iowrite64be(*(u64 *)val, dest)?
+> > 
+> > This always made my head hurt, but IIRC, when I looked at it years ago
+> > the weird array construction caused problems with that simple conversion.
+> > 
+> > The userspace version looks like this now:
+> > 
+> >        uint64_t doorbell;
+> >        uint32_t sn;
+> >        uint32_t ci;
+> >        uint32_t cmd;
+> > 
+> >        sn  = cq->arm_sn & 3;
+> >        ci  = cq->cons_index & 0xffffff;
+> >        cmd = solicited ? MLX5_CQ_DB_REQ_NOT_SOL : MLX5_CQ_DB_REQ_NOT;
+> > 
+> >        doorbell = sn << 28 | cmd | ci;
+> >        doorbell <<= 32;
+> >        doorbell |= cq->cqn;
+> > 
+> >        mmio_write64_be(ctx->uar[0].reg + MLX5_CQ_DOORBELL, htobe64(doorbell));
+> > 
+> > Where on all supported platforms the mmio_write64_be() expands to a
+> > simple store (no swap)
+> > 
+> > Which does look functionally the same as
+> > 
+> >   iowrite64be(doorbell, dest);
+> > 
+> > So this patch should change the mlx5_write64 to accept a u64 like we
+> > did in userspace when this was all cleaned there.
+> 
+> If I understand you correctly, you suggest to change callers to pass
+> here a standard u64 and then modify mlx5_write64() to just call
+> iowrite64be(). If so, I agree. Just want to confirm before sending
+> v2.
+
+Yes, this is what I did to userspace and it made this all make
+sense. I strongly recommend to do the same in the kernel, particularly
+now that we have iowrite64be()!
+
+Jason
