@@ -2,93 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B813E12FE03
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 21:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6935512FE1B
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 21:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbgACUjp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Jan 2020 15:39:45 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:38032 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727400AbgACUjo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 15:39:44 -0500
-Received: by mail-qt1-f195.google.com with SMTP id n15so37763283qtp.5
-        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2020 12:39:43 -0800 (PST)
+        id S1728373AbgACUrL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Jan 2020 15:47:11 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:35899 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727848AbgACUrL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 15:47:11 -0500
+Received: by mail-qv1-f65.google.com with SMTP id m14so796221qvl.3
+        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2020 12:47:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=6uwto7vrkUQtrWJSFJTS/1IavIxmcHeTYe+CAUsTCK8=;
-        b=mdaLcrzEKpM/uHGLst7j4AH8BnoPGBsJsMkhSaK2JE/d0CrmnhGLEACNNHDcm9oe11
-         nGCxR/SkcDbdgaeSuMtucHatxi1DJRGGu7eBwKc+D/PpxvVG3BTBMtn0EHS6FLgSz+Fq
-         wvSFHeplsm3gGW6CImSpO5vvpNIAQ5amusyEtp5hxX4R/6i9lDlZQxlN7u2HPLU+N7WG
-         i1MZ5UEiP2coNgiohexxWLN1xCaaFZNMiTqqahcuqZw6EOpP2zM/TdmKvi7D8JL9GUNn
-         S4Wg2ql8HAg3r27AMCkw7VmrOsqwTTp5wBsGbJ+g88+ikmmfwBJAhYmzU4oXWDdnZpJ5
-         JBDA==
+        bh=HWSgfSNckyAPcKwlqkqymBcotOO8BjxRLt7B5UyU6qI=;
+        b=WUTQZDd0eg+P2NQ9vupdbwGad7KeEdwooyufB+PSJjEHnyflRGaunTcRKM7+nNZ4Fh
+         6zHjOQbS6aVAuCnyMUXOpVXupFqgtGRSs1hbaeoyWG3zlgdjE5gmSMjAvVSVJwHnfltc
+         LvzFFp+BouK4qT4nZcWZQjKLdJsegEb7kQ+NDfgF7YJDOqbCPPGP26ZvNn8V/HuwhmN8
+         WcIAsThx5VSdGxcF0bKdv6PAU9KSzTgT3KjJheN/FhniD1tvoQvPUUdZp7wYM/bziKFN
+         Ttjd+wrdCJa/ZiEFaI6cc8eHOKb5YE/IC2/yZuNEzJU10pQLjZj6kTZQ26N3me1A3x3r
+         iPkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6uwto7vrkUQtrWJSFJTS/1IavIxmcHeTYe+CAUsTCK8=;
-        b=Az/y2/E6dr93ODYnt5G/4VWL6X9MQsv8ysXweFxpz6IlSnsBcMir1UaQAFwhJfZ05x
-         OuL1T92AEBij79muNSYh/zuBfwkgcHAFYgQG+20PCJrQnJ97PuIGoRGOdX4ZsNPlDCXh
-         RLkDT1CuAL69A9VX9MMPs059G+RTEXJQlPA7OO+Kthd/w5nlrh+qCkdB57XPNncqlh4H
-         8PfTe+Z/JQpe81HRjlUzmSFfaPv3rCQopFUJWeoj8CPy3G8ERfi36fsWL8CGsq05vVGd
-         l4ru1PJcI2gGn6Etb5gEnFCBcC9BezrZFUTWpxmI/dx6Yz6Oi6AjiscTCNfZHECG7fSS
-         A+Cw==
-X-Gm-Message-State: APjAAAUKj6pciX5FdCGiNWqqYHUsocE2b3abPpjqEg6p1TEMWnjNM0ow
-        QfbvMYqlnQ1AyLJrDcrKmSz5BcEdAhk=
-X-Google-Smtp-Source: APXvYqxmCn3DQIutZS61HOJcMmhKtrKjPZbHXqWUw14kj8WHHE43Pditftaui85GB9XN7iMwNrH1GA==
-X-Received: by 2002:ac8:4257:: with SMTP id r23mr64691006qtm.126.1578083983573;
-        Fri, 03 Jan 2020 12:39:43 -0800 (PST)
+        bh=HWSgfSNckyAPcKwlqkqymBcotOO8BjxRLt7B5UyU6qI=;
+        b=FyPlBI2BjAR3ozOfhcrJABRlmJ9VNYineAuA1KAiOw2hrLK/CoclIINhJseHieV3/W
+         nxNUFx7Vf9VLuN7gzSI10PYIXDn05rS+5HM7jTSKqGvi2ocwPntsPEazLqaJAHYndGep
+         B0ctUSy3rVk1/oGSHso536ka1e5vnCvK+P1N5cAc9T63bS262VVMIPknwGdNhWxNz+jA
+         NUf7sIl9wFcO3OKR0AotViqbibHJD/JfJVlYWazd5D3BXmxFCoEj6kam2YUVApRz9Jq6
+         2pKmKLBdgy0AGZi2FNueYAfdY7LmCTMQRoDPE4g1nuO4TbMhr6dsOZ9JQ92dSBkHzRY7
+         Prhg==
+X-Gm-Message-State: APjAAAVKx+g0xc+2lKQ6rStph2R1LmSETFyVw55I+8ykZHnjoBDLQAgK
+        WBU1F+J6/WXRhBwSIzeVBfDbig==
+X-Google-Smtp-Source: APXvYqz41nkq9lyt4ariwh1rlwK9va08w8y1fceIe/Vdut5EoDdiyk5BDoepM0s6g6WaDot83UH+pg==
+X-Received: by 2002:a0c:acc6:: with SMTP id n6mr70193159qvc.26.1578084430515;
+        Fri, 03 Jan 2020 12:47:10 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id u4sm16809273qkh.59.2020.01.03.12.39.43
+        by smtp.gmail.com with ESMTPSA id 24sm17187506qka.32.2020.01.03.12.47.09
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 Jan 2020 12:39:43 -0800 (PST)
+        Fri, 03 Jan 2020 12:47:09 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1inTjS-00016f-LW; Fri, 03 Jan 2020 16:39:42 -0400
-Date:   Fri, 3 Jan 2020 16:39:42 -0400
+        id 1inTqf-0002z0-Gc; Fri, 03 Jan 2020 16:47:09 -0400
+Date:   Fri, 3 Jan 2020 16:47:09 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Eugene Crosser <evgenii.cherkashin@profitbricks.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Jack Wang <jinpu.wang@profitbricks.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: Re: [PATCH rdma-next] RDMA/mlx4: Redo TX checksum offload in line
- with docs
-Message-ID: <20200103203942.GA4218@ziepe.ca>
-References: <20191219134847.413582-1-leon@kernel.org>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-rc 0/4] Patches for 5.5 rc
+Message-ID: <20200103204709.GA11402@ziepe.ca>
+References: <20191219211609.58387.86077.stgit@awfm-01.aw.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191219134847.413582-1-leon@kernel.org>
+In-Reply-To: <20191219211609.58387.86077.stgit@awfm-01.aw.intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 19, 2019 at 03:48:47PM +0200, Leon Romanovsky wrote:
-> From: Eugene Crosser <evgenii.cherkashin@profitbricks.com>
+On Thu, Dec 19, 2019 at 04:19:15PM -0500, Dennis Dalessandro wrote:
+> The first two patches I wouldn't ordinarily have sent for -rc but I noticed we
+> did this in the previous -rc post, add an API because we use it in the next fix.
+> That's what the first two patches here do. It's understandable if you are
+> skeptical that those are OK for -rc and in which case you can drop and we can
+> send for next.
 > 
-> Ingress checksum offload was not working for IPv6 frames because the
-> conditional expression that checks validation status passed from the
-> hardware was not matching the algorithm described in the documentation.
 > 
-> This patch defines L4_CSUM flag (which falls inside the badfcs_enc
-> field in the existing definition of the CQE layout) and replaces the
-> conditional expression with the one defined in the "ConnectX(r)
-> Family Programmer's Manual" document.
-> 
-> Signed-off-by: Eugene Crosser <evgenii.cherkashin@profitbricks.com>
-> Reviewed-by: Jack Wang <jinpu.wang@profitbricks.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/hw/mlx4/cq.c | 18 +++++++-----------
->  include/linux/mlx4/cq.h         |  5 +++++
->  2 files changed, 12 insertions(+), 11 deletions(-)
+> Kaike Wan (1):
+>       IB/hfi1: Don't cancel unused work item
 
-Applied to for-next, thanks
+As I said before, I took this one to -rc
 
+> Michael J. Ruhl (1):
+>       IB/hfi1: List all receive contexts from debugfs
+
+This version of the patch now applies cleanly, so please disregard my
+earlier email
+
+> Mike Marciniszyn (2):
+>       IB/hfi1: Add accessor API routines to access context members
+>       IB/rdmavt: Correct comments in rdmavt_qp.h header
+
+These three are applied to -next
+
+Thanks,
 Jason
