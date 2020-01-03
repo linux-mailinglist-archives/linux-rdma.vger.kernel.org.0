@@ -2,119 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B4612FD35
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 20:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8171312FD39
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 20:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728567AbgACTpA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Jan 2020 14:45:00 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:43414 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728562AbgACTpA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 14:45:00 -0500
-Received: by mail-qk1-f195.google.com with SMTP id t129so34625806qke.10
-        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2020 11:45:00 -0800 (PST)
+        id S1728564AbgACTqh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Jan 2020 14:46:37 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:34192 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728546AbgACTqh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 14:46:37 -0500
+Received: by mail-qt1-f193.google.com with SMTP id 5so37644172qtz.1
+        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2020 11:46:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=9eJ0zBJz79JBEzATjG7P+ZkVDd8SgalcSWzPRhfC4wA=;
-        b=pTe4v0WtYFXNfPeGwMdZq45WQA+46OzdBaosulTKTO4frO2NH45pBOpxhSQVADVgHD
-         fqj/no5RiguzaQW0o268LWcuNMuJKf//t/c2k3xESb5lj72BASPVxFm+tmsR+SMzT8UF
-         g0l3+HXdwPzZHAsv1MKKWy509JQrYogjubsdbDoQ/j8s8kjneHNeDA1fcy5j8qw3h13L
-         Z6YpgDI/WdvKuXK8QaVLX4ncrARVmLA/Zhx6D/Iciuy4gdRMPVn923pvdSMDUOdYZdcH
-         8Zc4ytDDzpdVX3K/H6y43XwJqBcOmOfdQYbNaQauutkBu/o6556A9tgj4t+1NRCitUiJ
-         beOA==
+        bh=QFEQqUuyVkEOkAkzZzWnCG8Pa+5PBz8reji8nYV/KRU=;
+        b=l3VT4epFg88GADGyl6jy9uxoGsxo4qy850idjn8z2XmbJjLTEXMcVmtS1ta+7Y9QR2
+         IQKcIZLhQwOkym9+qjaT/TI8qqb8jsxlHNnJSzX/W2B6jZSGkJ9XlgtTB4EDSZB5BMs1
+         Mk3kivbmcGG2acKZwcObUje/zi53IxrJZRO8pNRkuDQdWbryjzTHAb9ZOy7HxciUvSB9
+         Xe85jiI+rTDv5ufMSxVnu++s0oCoVpCy+uIQDWJhRIETKgW2W53C9/rAe8aOTEAfB9Cw
+         Um2XHS8Al6rqPg9yaM07A+QtJzM2T+Gkdp0R1bFHpJcvZHoZeDG/hU06WMt7uXk+BCNg
+         Hsyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9eJ0zBJz79JBEzATjG7P+ZkVDd8SgalcSWzPRhfC4wA=;
-        b=DXPVAOKA44QuqFhNUZCqbFefAcXAbsaIukphv7U6xdRUMoORX5l5yibLKDqPcVTMGH
-         3fRKybqJSX5xSTk7bUjPmW2+QmhNXWv8siRywizEOez+4IO7xBijWXV7kN+WXBasod0n
-         uZpqZofRIUA0KxWQdUskUNu93m9jA/4hSMvU/PHbF4ReDg/xO1VM7PR6KSjq0K7A2Bwq
-         bM7EEOdn/AdmllW1rUSoSG6TZIH/fYRoaOdzNMEW2h0YPzVqNLv6rOuUyaayv3p27JQG
-         JbVzRrk+aQVhScijTxNDc+CJPRyPJVmitcNCUhXtoui3cUAOer5pr/hKj8/6jgWn4BYX
-         V8LA==
-X-Gm-Message-State: APjAAAXO0lbkhJcSaAavvAzcYae4j+Dz83XsDe+utsZeiKkK3zeNmg3s
-        Go1LWVVTJG9oOXno3LY2Ef0Vzg==
-X-Google-Smtp-Source: APXvYqz+M79mf+Z1gs45Jkx6e0X3Cux2m70iL3TjVGEybZsB/GYyyza7/hSy52Zbj0UrHc+9fYmLVQ==
-X-Received: by 2002:a05:620a:992:: with SMTP id x18mr72861721qkx.327.1578080699640;
-        Fri, 03 Jan 2020 11:44:59 -0800 (PST)
+        bh=QFEQqUuyVkEOkAkzZzWnCG8Pa+5PBz8reji8nYV/KRU=;
+        b=ZMqbrlmoWPOGBloh7bWB3ddY2TVVIso43K5Qqv1uyKuioK5KSUM+ww/IVH4g9AJB9E
+         WGYvWxtBGw9JXuxmMThoZSKUVbqtlXd9oR83xVUgP6R/6EVLZUNgH8iBceC/KPjjVBk9
+         fzdY3c77pGiHrUxeiUTbkGxVgZ7fNz328n9uYRjchCS18tDQv/UCSJ9u0flTxv2RgLSg
+         jwN3MWFk2GZY6w1IQLDuY4uiMx2kSGO6QhrlPQ7cXDORCmMk2hQBWCdY0TpTEf7fGhYL
+         RqFFpmeBqJdeY6syZcFh3/5XbdCNXp7jy4WjdY+mRdy4KzdeaYR6jMZl0qqDuIf1l4Z+
+         zqAg==
+X-Gm-Message-State: APjAAAX4Wj5Lr0gG+cGJT4iOrDPtclVkcUr83x2o+JqsZlrPLQ8tDjpK
+        domLaHv0Cvc7mOjjvK7yps7VZg==
+X-Google-Smtp-Source: APXvYqy2xt1XYPlTd2PT4NbLWF5ZSRWs4fw2Raj+GWHa3xbxz4Xpc/Fxu3G9fyceaZjSbaKS/8JJXQ==
+X-Received: by 2002:ac8:614d:: with SMTP id d13mr60143522qtm.212.1578080796399;
+        Fri, 03 Jan 2020 11:46:36 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id y26sm19243438qtc.94.2020.01.03.11.44.59
+        by smtp.gmail.com with ESMTPSA id u24sm17048272qkm.40.2020.01.03.11.46.36
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 Jan 2020 11:44:59 -0800 (PST)
+        Fri, 03 Jan 2020 11:46:36 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1inSsU-0004iI-L6; Fri, 03 Jan 2020 15:44:58 -0400
-Date:   Fri, 3 Jan 2020 15:44:58 -0400
+        id 1inSu3-0004pY-Kv; Fri, 03 Jan 2020 15:46:35 -0400
+Date:   Fri, 3 Jan 2020 15:46:35 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Selvin Xavier <selvin.xavier@broadcom.com>
 Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next 5/6] RDMA/bnxt_re: Use driver_unregister and
- unregistration API
-Message-ID: <20200103194458.GA16980@ziepe.ca>
+Subject: Re: [PATCH for-next 6/6] RDMA/bnxt_re: Report more number of
+ completion vectors
+Message-ID: <20200103194635.GA18528@ziepe.ca>
 References: <1574671174-5064-1-git-send-email-selvin.xavier@broadcom.com>
- <1574671174-5064-6-git-send-email-selvin.xavier@broadcom.com>
+ <1574671174-5064-7-git-send-email-selvin.xavier@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1574671174-5064-6-git-send-email-selvin.xavier@broadcom.com>
+In-Reply-To: <1574671174-5064-7-git-send-email-selvin.xavier@broadcom.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 25, 2019 at 12:39:33AM -0800, Selvin Xavier wrote:
+On Mon, Nov 25, 2019 at 12:39:34AM -0800, Selvin Xavier wrote:
+> Report the the data path MSIx vectors allocated by driver as
+> number of completion vectors. One interrupt
+> vector is used for Control path. So reporting one
+> less than the total number of  MSIx vectors allocated
+> by the driver.
+> 
+> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> ---
+>  drivers/infiniband/hw/bnxt_re/main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
->  static void __exit bnxt_re_mod_exit(void)
->  {
-> -	struct bnxt_re_dev *rdev, *next;
-> -	LIST_HEAD(to_be_deleted);
-> +	struct bnxt_re_dev *rdev;
->  
-> +	flush_workqueue(bnxt_re_wq);
->  	mutex_lock(&bnxt_re_dev_lock);
-> -	/* Free all adapter allocated resources */
-> -	if (!list_empty(&bnxt_re_dev_list))
-> -		list_splice_init(&bnxt_re_dev_list, &to_be_deleted);
-> -	mutex_unlock(&bnxt_re_dev_lock);
-> -       /*
-> -	* Cleanup the devices in reverse order so that the VF device
-> -	* cleanup is done before PF cleanup
-> -	*/
-> -	list_for_each_entry_safe_reverse(rdev, next, &to_be_deleted, list) {
-> -		dev_info(rdev_to_dev(rdev), "Unregistering Device");
-> +	list_for_each_entry(rdev, &bnxt_re_dev_list, list) {
->  		/*
-> -		 * Flush out any scheduled tasks before destroying the
-> -		 * resources
-> +		 * Set unreg flag to avoid VF resource cleanup
-> +		 * in module unload path. This is required because
-> +		 * dealloc_driver for VF can come after PF cleaning
-> +		 * the VF resources.
->  		 */
-> -		flush_workqueue(bnxt_re_wq);
-> -		bnxt_re_dev_stop(rdev);
-> -		bnxt_re_ib_uninit(rdev);
-> -		/* Acquire the rtnl_lock as the L2 resources are freed here */
-> -		rtnl_lock();
-> -		bnxt_re_remove_device(rdev);
-> -		rtnl_unlock();
-> +		if (rdev->is_virtfn)
-> +			rdev->rcfw.res_deinit = true;
->  	}
-> +	mutex_unlock(&bnxt_re_dev_lock);
-
-This is super ugly. This driver already has bugs if it has a
-dependency on driver unbinding order as drivers can become unbound
-from userspace using sysfs or hot un-plug in any ordering.
-
-If the VF driver somehow depends on the PF driver then destruction of
-the PF must synchronize and fence the VFs during it's own shutdown.
-
-But this seems very very strange, how can it work if the VF is in a VM
-or something and the PF driver is unplugged?
+Applied to for-next, thanks
 
 Jason
