@@ -2,151 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E22D12FCEA
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 20:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521D212FCEE
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 20:18:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728512AbgACTRv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Jan 2020 14:17:51 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:43756 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728506AbgACTRu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 14:17:50 -0500
-Received: by mail-qt1-f195.google.com with SMTP id d18so34884608qtj.10
-        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2020 11:17:50 -0800 (PST)
+        id S1728380AbgACTSm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Jan 2020 14:18:42 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:39682 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728438AbgACTSl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 14:18:41 -0500
+Received: by mail-qk1-f196.google.com with SMTP id c16so34578335qko.6
+        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2020 11:18:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=AQfRgEzNKScVK7ORZRzMdOSrFYvw4wiqBCw8mzrg00M=;
-        b=VahfFbMWaYxHPKRzq0VsNrFDbBB1N2TcThK/1s9hxBQGZYFQ5mA51nr1pimQe777Ml
-         CjpkUL2i/i3/IV4UN8VQFIviQAAtaDaeBCBsk9Lre4Ut5A7tuCYeK9aAw6G0GSVpHeaH
-         4zKP+PrL+oY7E87MPsu0MtxmQgsanh5U6TO3og229B3aYcr2LZIXVvE9cZqkQ0NO8dk/
-         IetVU2OZYDn44grfPTj4+LkOi7YhxZU7nQeFK9+2Kzguy/7JipwNEw9YsogTZd8wwbQI
-         DmrK4Un0KJzeXCKS9ayuXwgy15WU5XpYAyzRHSWQ9Vxhhnvrx0UUm7EFZD5uxx9PIqg9
-         qCrA==
+        bh=Zw6ZDnCW9m9ykWPpF1D5uzE2Vc/UNm5rv/4erHJOMkY=;
+        b=KaLiodtEtOwM1EdQTRKZIObVxzdPZ1Gqirw3HQE/uw4MeTMbfWmezjhwlvDs4E1t6w
+         mCOWaV5s3hwom+dyNkMJoD44TwIzhVd5dTAry7JTCdTBp0Q5ho5H/mlpkwbNqEl+EeHg
+         fDZXG9BXyFdV6UJ0cvlQWVymu6LkHHBGWE3h39gkBOANVEL+A+5VHLEkGILQ58sREZIA
+         +pvuQpyYjiTEfUYfKSz74qS0F42A4ulSwegiWUAt6AlXrnVC31o0LLxnAv9EEf2VBhXm
+         eEgFXc9BpVDvv8rGYunrJXy68lXVvIxV3Kxwj4akoOav409xIfBLvox/+3n+A++T1Duz
+         /32A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AQfRgEzNKScVK7ORZRzMdOSrFYvw4wiqBCw8mzrg00M=;
-        b=FBpMbJnjx6izNdk1QqgXB2xjm7DPvIq36tHc4Sa97E4m2S7iZIYp0Mgby4O9+3G9n5
-         nGpLQGH8KSKnipyZP9TfM2TJ5/ZkaMJUcSO2NrdNgBI9o7Qt8mVN8rXuG+d5frSZdauc
-         9TjpUwHhCLskmmzKc6lWPpct/PfmAnDZlSpcNspbNdINz+goS5JrfAKTwZFczJjQZsde
-         5o4XPASRQEWoiqUOm4PWEqO2X5WDGE+l06WFDhCko2vhx9r+ylF+a+B9nR37hYUpEaSt
-         uOZzfKIzPZP1QtdPVxvKkrI/L7nQ6UVbWfbMu9YiGuVo3VDb/yhHHaKrgSBFVtYj6dS6
-         U/3g==
-X-Gm-Message-State: APjAAAVMWoJgzBx8mOKUIcpZ1+UPVypioyIf6uMJcvKBQj/R2EaHr4WA
-        K3VvO3NS8R+eTBvuhI9QbchomA==
-X-Google-Smtp-Source: APXvYqzq/nBgkpzyxtGJwi+WqXurr0HvLJDWrEu1KFzURvBrcPkzj7hOTvm0V83k6i3BZ+MA8SveVw==
-X-Received: by 2002:ac8:41cc:: with SMTP id o12mr52737417qtm.263.1578079070036;
-        Fri, 03 Jan 2020 11:17:50 -0800 (PST)
+        bh=Zw6ZDnCW9m9ykWPpF1D5uzE2Vc/UNm5rv/4erHJOMkY=;
+        b=qxhuhZRAGej6yOWnXde2Wgi1SJFx1zb40uEYzbMlZJpIsUFqce/o4h783tsm67Kbj8
+         K0Dh86dwCydCp/UTs7voPR3IvwvK2/qt/Nl+12eAn4OFXOXRc0oLmRPgjWZwCvspg0uc
+         rhlNs2sykb6ItM74JnGUNvm1MvmQFeUOZu97OMMd8fFi/TSL8pVZv+C4VTdyQI1LFhXz
+         RPYXQtvY2pTNoMGeghyppyPrWIQPwKAiAeCea7pD+hcuQaosxTd7tcvNv8Wo5KUW4l2p
+         QkQPEOvrkKgKBQLXEh7x5TC1m4UQbc2jsN0IxkuB7Yx+rxXZS0PQZ2Pd7mHOmWLxehmv
+         4DfA==
+X-Gm-Message-State: APjAAAUdlYBf4yFMNsEeNhsNT3Z+QYAammM876VriIyyPN/2rjzDSzBF
+        cX2+HHgBIKfOJMLVGt+tY4ejqg==
+X-Google-Smtp-Source: APXvYqwUIVef+KH3FX/17dXABCPtEYodfz5dVbyvTz0ZojENCXfPAsXLrW2o9W86GkXgCAr3OV5a7g==
+X-Received: by 2002:a05:620a:1116:: with SMTP id o22mr74010268qkk.190.1578079118545;
+        Fri, 03 Jan 2020 11:18:38 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id z8sm18853143qth.16.2020.01.03.11.17.49
+        by smtp.gmail.com with ESMTPSA id k73sm16906978qke.36.2020.01.03.11.18.38
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 Jan 2020 11:17:49 -0800 (PST)
+        Fri, 03 Jan 2020 11:18:38 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1inSSD-0005rm-2U; Fri, 03 Jan 2020 15:17:49 -0400
-Date:   Fri, 3 Jan 2020 15:17:49 -0400
+        id 1inSSz-0005we-Oj; Fri, 03 Jan 2020 15:18:37 -0400
+Date:   Fri, 3 Jan 2020 15:18:37 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Liran Alon <liran.alon@oracle.com>
-Cc:     saeedm@mellanox.com, leon@kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, eli@mellanox.com, tariqt@mellanox.com,
-        danielm@mellanox.com,
-        =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>
-Subject: Re: [PATCH v2] net: mlx5: Use iowriteXbe() to ring doorbell and
- remove reduntant wmb()
-Message-ID: <20200103191749.GE9706@ziepe.ca>
-References: <20200103175207.72655-1-liran.alon@oracle.com>
+To:     Michal Kalderon <michal.kalderon@marvell.com>
+Cc:     aelior@marvell.com, dledford@redhat.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v2 rdma-next] RDMA/qedr: Add kernel capability flags for
+ dpm enabled mode
+Message-ID: <20200103191837.GA22810@ziepe.ca>
+References: <20191121112957.25162-1-michal.kalderon@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200103175207.72655-1-liran.alon@oracle.com>
+In-Reply-To: <20191121112957.25162-1-michal.kalderon@marvell.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 03, 2020 at 07:52:07PM +0200, Liran Alon wrote:
-> diff --git a/include/linux/mlx5/cq.h b/include/linux/mlx5/cq.h
-> index 40748fc1b11b..4631ad35da53 100644
-> +++ b/include/linux/mlx5/cq.h
-> @@ -162,13 +162,8 @@ static inline void mlx5_cq_arm(struct mlx5_core_cq *cq, u32 cmd,
->  
->  	*cq->arm_db = cpu_to_be32(sn << 28 | cmd | ci);
->  
-> -	/* Make sure that the doorbell record in host memory is
-> -	 * written before ringing the doorbell via PCI MMIO.
-> -	 */
-> -	wmb();
-> -
-> -	doorbell[0] = cpu_to_be32(sn << 28 | cmd | ci);
-> -	doorbell[1] = cpu_to_be32(cq->cqn);
-> +	doorbell[0] = sn << 28 | cmd | ci;
-> +	doorbell[1] = cq->cqn;
+On Thu, Nov 21, 2019 at 01:29:57PM +0200, Michal Kalderon wrote:
+> HW/FW support two types of latency enhancement features.
+> Until now user-space implemented only edpm (enhanced dpm).
+> We add kernel capability flags to differentiate between current
+> FW in kernel that supports both ldpm and edpm.
+> Since edpm is not yet supported for iWARP we add different flags
+> for iWARP + RoCE.
+> We also fix bad practice of defining sizes in rdma-core and pass
+> initialization to kernel, for forward compatibility.
+> 
+> The capability flags are added for backward-forward compatibility
+> between kernel and rdma-core for qedr.
+> Before this change there was a field called dpm_enabled which could
+> hold either 0 or 1 value, this indicated whether RoCE edpm was
+> enabled or not. We modified this field to be dpm_flags, and bit 1
+> still holds the same meaning of RoCE edpm being enabled or not.
+> 
+> Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
+> ---
+> rdma-core changes in pr #622 https://github.com/linux-rdma/rdma-core/pull/622
+> Changes from V1:
+> 	Add better description in commit message of how
+> backward-compatibility is maintained
+> ---
+>  drivers/infiniband/hw/qedr/verbs.c | 13 ++++++++++++-
+>  include/uapi/rdma/qedr-abi.h       | 18 ++++++++++++++++--
+>  2 files changed, 28 insertions(+), 3 deletions(-)
 
-This does actually have to change to a u64 otherwise it is not the
-same.
-
-On x86 LE, it was
- db[0] = swab(a)
- db[1] = swab(b)
- __raw_writel(db)
-
-Now it is
- db[0] = a
- db[1] = b
- __raw_writel(swab(db))
-
-Putting the swab around the u64 swaps the order of a/b in the TLP.
-
-It might be tempting to swap db[0]/db[1] but IIRC this messed it up on
-BE.
-
-The sanest, simplest solution is to use a u64 natively, as the example
-I gave did.
-
-There is also the issue of casting a u32 to a u64 and possibly
-triggering a unaligned kernel access, presumably this doesn't happen
-today only by some lucky chance..
-
->  	mlx5_write64(doorbell, uar_page + MLX5_CQ_DOORBELL);
->  }
-> diff --git a/include/linux/mlx5/doorbell.h b/include/linux/mlx5/doorbell.h
-> index 5c267707e1df..9c1d35777323 100644
-> +++ b/include/linux/mlx5/doorbell.h
-> @@ -43,17 +43,15 @@
->   * Note that the write is not atomic on 32-bit systems! In contrast to 64-bit
->   * ones, it requires proper locking. mlx5_write64 doesn't do any locking, so use
->   * it at your own discretion, protected by some kind of lock on 32 bits.
-> - *
-> - * TODO: use write{q,l}_relaxed()
->   */
->  
-> -static inline void mlx5_write64(__be32 val[2], void __iomem *dest)
-> +static inline void mlx5_write64(u32 val[2], void __iomem *dest)
->  {
-
-So this should accept a straight u64, the goofy arrays have to go away
-
->  #if BITS_PER_LONG == 64
-> -	__raw_writeq(*(u64 *)val, dest);
-> +	iowrite64be(*(u64 *)val, dest);
->  #else
-> -	__raw_writel((__force u32) val[0], dest);
-> -	__raw_writel((__force u32) val[1], dest + 4);
-> +	iowrite32be(val[0], dest);
-> +	iowrite32be(val[1], dest + 4);
-
-With a u64 input this fallback is written as
-
-  iowrite32be(val >> 32, dest)
-  iowrite32be((u32)val, dest + 4)
-
-Which matches the definition for how write64 must construct a TLP.
-
-And arguably the first one should be _relaxed (but nobody cares about
-this code path)
+Applied to for-next, thanks
 
 Jason
