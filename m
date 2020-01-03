@@ -2,120 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 239FB12FD51
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 20:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CB812FD59
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 21:01:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728592AbgACTzt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Jan 2020 14:55:49 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:36272 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728564AbgACTzs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 14:55:48 -0500
-Received: by mail-qk1-f193.google.com with SMTP id a203so35029457qkc.3
-        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2020 11:55:48 -0800 (PST)
+        id S1728609AbgACUBH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Jan 2020 15:01:07 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:41950 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728488AbgACUBH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 15:01:07 -0500
+Received: by mail-qk1-f196.google.com with SMTP id x129so34670219qke.8
+        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2020 12:01:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=xCY4YU1eH+1UlfNCkb3OX3JUeC9TPIJMKWwKJzmuR6M=;
-        b=StS9T+T1SjSPvVOZL/6emn0F3Zwgy8tfiINoixHog4eR2Xrh7rv24GYbhLCz6nQumL
-         2uSlmWgr227sAVzxwDgppJKjSLnbG/mXwCIdMTqLSrLysBKSLyJQ+wcrQB4ZpjyxMHDA
-         bYx+p0NqgbEomcU+UhCOJxpa8HiNvtUS8QCRAkImK9qV1KsXndz4BJ25rJVFgmM3FFR+
-         8NhIo+kByXbF+NGDCmTkY6ptHcBVXs7WJ/omcBhdwD+ewKWSkrzDks7pvISZJs1kcdHr
-         0KHSQ1d4UhttTCejI6gLzO27qnTWiHTBjYICEYc4cBtk4ZO0vc8XgNgbiI8z9y7QnA32
-         /Xew==
+        bh=A56UC0w5GLRc6XImLwZB7Svehfi5E2iCOac3oz+4egQ=;
+        b=eBdvlKXe8GaxBJQX/G4csG9ZdMY/64O11qqgYWNPuXh3wqho3raAuCgAh9kCCpq2g0
+         7j1XotvkfcxEohD0N3dqehlZ7GBmRa5J2WHyXuQPLd/7qbTYFOfRh49L55jzFOZwQAZy
+         u62PGHppFudekxHvPtLgod9F8bBDIdEYROW8v2Fz+m+L+1apm8mxHTFAtMNAlC0vviGq
+         7KFS3sLs4L4ecxsPnRWuSDXoKxWMrG+7KtPj/KTeZAfhuuFGPrvRSx+6Ni0Ysyu2AlEL
+         BxkTHeozSqVxc0BcN3QhTWWpX/t7SbKWWemF7EHdAXhLokexWY55HBeytvQPG3oTwOp5
+         xlKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xCY4YU1eH+1UlfNCkb3OX3JUeC9TPIJMKWwKJzmuR6M=;
-        b=cduJgZkjYQWeyli/7fZenag1lqLc0Wn9G8OoDMEMnmI2NbrlbgJHPsWbGZSa8pCAcD
-         F0B9Nf38DifxF3aQcnG6UZYl7qEnnYUSCmjrklQuBgAzW4H53qPe+D2UFL/B/H5SuL7j
-         6srfY8QX2idkMceK8D2Auqs5LQq3nz8zCjj1pJUENqvGoF+UgOScok7mg4QylL5EGNJ+
-         D1wn5C0CUQZCVn4Kg7duCIJDs93uaUwzRQsfCKVe1egrbWsJEE3wz6eYmnifXSpChFzv
-         S61fP5J2dabbhKwoAvtVRkpZ3FipI0OtNLNWiHy+SblKL+dtBaOZQ/g/HuggXUY/7Cli
-         sc/A==
-X-Gm-Message-State: APjAAAVfhDjdMX7+5MQJ7tQvaP4Y57NOrw27Tw5mV/dQoOiuUBvBhvxM
-        Gl3VzU4bEuDZxpmuN/8kfhYsBQ==
-X-Google-Smtp-Source: APXvYqzG2wCotXsHknnWbILUDbHuuzQ5y91I3y2SOoWyGD8bRtagfuW5kufrAy+wG3heU2sk+ofrbw==
-X-Received: by 2002:a05:620a:1183:: with SMTP id b3mr69419706qkk.316.1578081347908;
-        Fri, 03 Jan 2020 11:55:47 -0800 (PST)
+        bh=A56UC0w5GLRc6XImLwZB7Svehfi5E2iCOac3oz+4egQ=;
+        b=hIYacceDhAA7dEJLhTy4xN4eI2ammjmtNPJ6n+wUBZgmyzIYTxO5OBJpANvtNRziUa
+         s+yLkswyyUg62KJb4qoncL3yhNpnnoa0q48cqbGe9Qt3f0HiU/2Rrk/vpUtGI/ux1WY/
+         H7FFdZYh1pchnh5ic97wp7vPNPPVu7xVEhyLhFmqougj/bOfLp1BT0owlIqVJnSIe/sC
+         j817DkHXxysHn2qsRoVYH/rk2CJHA/WgU3yfQfV/W7iRW5WAs/BtWAotL2pAgVjZKS7N
+         OmdHN4l6vX5PopoypJJ6G1jB39NiySI6Hf1yCFbsjNp6qn+SMjUXAukcDDCXjFGb21CR
+         zr+Q==
+X-Gm-Message-State: APjAAAUfRW9LMJG8J6/WwW3TCXz7iDSlG+Y6VT45GyedoouPOO43vuC1
+        iEHdFCTNb4j6A8/tGAdQjTwwaA==
+X-Google-Smtp-Source: APXvYqypm/JpMqcucNPfB12FjbVXHsbFsRwkB1xsS4u8ZlUIlgCQmEPJNMow8LKqUpKg1OdwMcnMmg==
+X-Received: by 2002:a37:6545:: with SMTP id z66mr75273804qkb.367.1578081666057;
+        Fri, 03 Jan 2020 12:01:06 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id c84sm16973836qkg.78.2020.01.03.11.55.47
+        by smtp.gmail.com with ESMTPSA id p19sm19280745qte.81.2020.01.03.12.01.05
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 Jan 2020 11:55:47 -0800 (PST)
+        Fri, 03 Jan 2020 12:01:05 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1inT2x-00078p-2Y; Fri, 03 Jan 2020 15:55:47 -0400
-Date:   Fri, 3 Jan 2020 15:55:47 -0400
+        id 1inT85-0000kn-4l; Fri, 03 Jan 2020 16:01:05 -0400
+Date:   Fri, 3 Jan 2020 16:01:05 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bernard Metzler <bmt@zurich.ibm.com>
-Cc:     linux-rdma@vger.kernel.org, krishna2@chelsio.com, leon@kernel.org
-Subject: Re: [PATCH for-next v2] RDMA/siw: Simplify QP representation.
-Message-ID: <20200103195547.GA27379@ziepe.ca>
-References: <20191210161729.31598-1-bmt@zurich.ibm.com>
+To:     Prabhath Sajeepa <psajeepa@purestorage.com>
+Cc:     leon@kernel.org, dledford@redhat.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, roland@purestorage.com
+Subject: Re: [PATCH] IB/mlx5: Fix outstanding_pi index for GSI qps
+Message-ID: <20200103200105.GA2761@ziepe.ca>
+References: <1576195889-23527-1-git-send-email-psajeepa@purestorage.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191210161729.31598-1-bmt@zurich.ibm.com>
+In-Reply-To: <1576195889-23527-1-git-send-email-psajeepa@purestorage.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 05:17:29PM +0100, Bernard Metzler wrote:
-> Change siw_qp to contain ib_qp. Use rdma_is_kernel_res()
-> on contained ib_qp to distinguish kernel level from user
-> level applications resources. Apply same mechanism for
-> kernel/user level application detection to completion queues.
+On Thu, Dec 12, 2019 at 05:11:29PM -0700, Prabhath Sajeepa wrote:
+> b0ffeb537f3a changed the way how outstanding WRs are tracked for GSI QP. But the
+> fix did not cover the case when a call to ib_post_send fails and index
+> to track outstanding WRs need to be updated correctly.
 > 
-> Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+> Fixes: b0ffeb537f3a ('IB/mlx5: Fix iteration overrun in GSI qps ')
+> Signed-off-by: Prabhath Sajeepa <psajeepa@purestorage.com>
+> Acked-by: Leon Romanovsky <leonro@mellanox.com>
 > ---
-> Changelog:
-> v1 -> v2: Use rdma_is_kernel_res() to detect
->           kernel level application.
-> 
->  drivers/infiniband/sw/siw/siw.h       | 26 +++---------
->  drivers/infiniband/sw/siw/siw_cq.c    |  2 +-
->  drivers/infiniband/sw/siw/siw_main.c  |  2 +-
->  drivers/infiniband/sw/siw/siw_qp.c    | 13 +++---
->  drivers/infiniband/sw/siw/siw_qp_rx.c |  6 +--
->  drivers/infiniband/sw/siw/siw_qp_tx.c |  2 +-
->  drivers/infiniband/sw/siw/siw_verbs.c | 61 +++++++++++----------------
->  7 files changed, 42 insertions(+), 70 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
-> index b939f489cd46..2bf7a7300343 100644
-> --- a/drivers/infiniband/sw/siw/siw.h
-> +++ b/drivers/infiniband/sw/siw/siw.h
-> @@ -7,6 +7,7 @@
->  #define _SIW_H
->  
->  #include <rdma/ib_verbs.h>
-> +#include <rdma/restrack.h>
->  #include <linux/socket.h>
->  #include <linux/skbuff.h>
->  #include <crypto/hash.h>
-> @@ -209,7 +210,6 @@ struct siw_cq {
->  	u32 cq_put;
->  	u32 cq_get;
->  	u32 num_cqe;
-> -	bool kernel_verbs;
->  	struct rdma_user_mmap_entry *cq_entry; /* mmap info for CQE array */
->  	u32 id; /* For debugging only */
->  };
-> @@ -254,8 +254,8 @@ struct siw_srq {
->  	u32 rq_get;
->  	u32 num_rqe; /* max # of wqe's allowed */
->  	struct rdma_user_mmap_entry *srq_entry; /* mmap info for SRQ array */
-> -	char armed; /* inform user if limit hit */
-> -	char kernel_verbs; /* '1' if kernel client */
-> +	bool armed; /* inform user if limit hit */
-> +	bool is_kernel_res; /* true if kernel client */
->  };
+>  drivers/infiniband/hw/mlx5/gsi.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
-I changed these bools into bool bitfields, and applied to for-next
+Applied to for-next with an updated commit message.
 
 Thanks,
 Jason
