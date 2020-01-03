@@ -2,54 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3450512FA31
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 17:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 553D012FA56
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 17:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727701AbgACQTw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Jan 2020 11:19:52 -0500
-Received: from mail-il1-f193.google.com ([209.85.166.193]:45451 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727905AbgACQTw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 11:19:52 -0500
-Received: by mail-il1-f193.google.com with SMTP id p8so36958289iln.12
-        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2020 08:19:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=05YrvVWWk/rZpAFGYlfJ9p7bDX0zz0zCE+5tItikZfU=;
-        b=Nv+QYmAf83A9eeErqft4+JNO24vhDOKS3zlOVz8dAGoyHDiLftgoqMKaJCgyFYhqL5
-         czZyHtXFPnj8DrLHX1UpX64zE1phGGImVeNAU5sqH3UXwMkREeFAIfHtjwS7OErAZa1n
-         njhzTi4cuzht+uDYEtKYj2lk+VmX7pWxOd5PYLKsPW+Q2n/E+Jr9190HxUWFkiuC+KuS
-         J16M49nhNMZMEkKZRHPCtqndCOVAsneD5rJ+0KUjjtZ33FFX7SYWMoaNk0OvMQR9guSi
-         HKhbXGAMo3KKNidvEqCISwqsHzUXRxSbMAAhFXRaQxTna1F6hQYLTs0HdAEtQBp8d+lO
-         E1dw==
+        id S1727907AbgACQ3C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Jan 2020 11:29:02 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:43337 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727793AbgACQ3C (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 11:29:02 -0500
+Received: by mail-pg1-f194.google.com with SMTP id k197so23634087pga.10;
+        Fri, 03 Jan 2020 08:29:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=05YrvVWWk/rZpAFGYlfJ9p7bDX0zz0zCE+5tItikZfU=;
-        b=PLYWFqWQ3Ec4ZjF9gRqZBhycePO/gLIngvTgCzvuZ7xt6cFhdE3iykUzbiKQb3vVB5
-         7tUT3H0zouN/kCZUXFybzUsGupxBCqTj+13WuUgQgdyP5rFhCoh6ta7jC/33Rh+IIsA/
-         uEdYp7UYUQlThd06oVcPXDv0To9Jr+2P7dHB8E0E/gqNg++lAXdGU8gAjjdwccFcshbK
-         j5sOqozrEE2jfqLeMOGukPknXxS+FicVBDx8LXcLYR/HL7Y0jHMxp9j1eiNN4vIWngbj
-         APiNHctdoLxrG4SFp0UiS2cJND6/75K6YC3sMGMdn6vFbezxo21Bj+DNxIpNVBc7SjWS
-         V9Gg==
-X-Gm-Message-State: APjAAAXufNvgiNVCN1zVGilI7bOeGfQMETfsOSVspwdw+LMVWXDMXtRj
-        gxaEck4mOp6/5QZsOQjxT4iqA/6aEZEPYBI1vxI5nQ==
-X-Google-Smtp-Source: APXvYqzovU0uBZ8ftzlLa62V+oIwtTpAa3pkdA26wZQ8mkNz8WV1vZilOv8yUwml4zAnr0ro4Ji8+WZoeAsDpn0EcK4=
-X-Received: by 2002:a92:8d88:: with SMTP id w8mr77578935ill.71.1578068391465;
- Fri, 03 Jan 2020 08:19:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20191230102942.18395-1-jinpuwang@gmail.com> <20191230102942.18395-14-jinpuwang@gmail.com>
- <81414f0d-ee6e-9477-ef85-12476faa257d@acm.org>
-In-Reply-To: <81414f0d-ee6e-9477-ef85-12476faa257d@acm.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Fri, 3 Jan 2020 17:19:40 +0100
-Message-ID: <CAMGffE=6Zvu08qeWCiK6poa787V+OcNQ+71ivdTiGK0mZu-z5w@mail.gmail.com>
-Subject: Re: [PATCH v6 13/25] rtrs: include client and server modules into
- kernel compilation
-To:     Bart Van Assche <bvanassche@acm.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JqvZcEu8W8qbxYaL1d0CeIMIcPYQQjtkLM1EHupMOTw=;
+        b=pkSMVe+mOkmpGhX/5kjiHQCYoIk/6az+FjYDZtOYadvUvtpHzVGtOnNxgbPYz/rca2
+         4r4yF8MioIZq+Vn6wbhEtaMaQHREnsB4fl44dzHYm5jSqOK5WuqkD4JpIeZ/VP7g/coJ
+         5ME5FZdoVZRbx3FjMHS/itg61FhgVmtlqP6yRiqU/KvAN1ERO1F+D0vMaVS3m7RkAQOm
+         Xkxgx86t4l13EIUNPx3UotxtrT7BaxkwJQxC47FvqH/Ym86Ros+Q4e8TtOwcmeZHQeeB
+         Hip9TuB8IoF13OWorloMA5+OjKyJuRPc/FOlKRbsLcb4dDD+biaxVjMSOxU7PiYljQMx
+         I30g==
+X-Gm-Message-State: APjAAAWrkOjTkKLEVdWzIkmC9cSdmBcYBAnOAGTjiYItUnT4tPjnWoUH
+        0juIk5HyXlvijlWP+FYYNgw=
+X-Google-Smtp-Source: APXvYqznV4MvK/lkK8CWTfG4BOxMM8tNc6vMJpxLLLOwaxirSgdxE3YG2JCSDNMjUGy+c2DE88WWEg==
+X-Received: by 2002:a63:1a08:: with SMTP id a8mr73067236pga.425.1578068941359;
+        Fri, 03 Jan 2020 08:29:01 -0800 (PST)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id k10sm15027522pjs.13.2020.01.03.08.29.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Jan 2020 08:29:00 -0800 (PST)
+Subject: Re: [PATCH v5 00/25] RTRS (former IBTRS) rdma transport library and
+ the corresponding RNBD (former IBNBD) rdma network block device
+To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
@@ -57,53 +45,44 @@ Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
         Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de
-Content-Type: text/plain; charset="UTF-8"
+References: <20191220155109.8959-1-jinpuwang@gmail.com>
+ <20200102181859.GC9282@ziepe.ca>
+ <CAMGffE=h24jmi0RnYks_rur71qrXCxJnPB5+cCACR50hKF6QRA@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <d5be42e2-94d4-ad13-43ac-fcc1bb108ad0@acm.org>
+Date:   Fri, 3 Jan 2020 08:28:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <CAMGffE=h24jmi0RnYks_rur71qrXCxJnPB5+cCACR50hKF6QRA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 2, 2020 at 11:11 PM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 12/30/19 2:29 AM, Jack Wang wrote:
-> > +config INFINIBAND_RTRS
-> > +     tristate
-> > +     depends on INFINIBAND_ADDR_TRANS
-> > +
-> > +config INFINIBAND_RTRS_CLIENT
-> > +     tristate "RTRS client module"
-> > +     depends on INFINIBAND_ADDR_TRANS
-> > +     select INFINIBAND_RTRS
-> > +     help
-> > +       RDMA transport client module.
-> > +
-> > +       RTRS client allows for simplified data transfer and connection
-> > +       establishment over RDMA (InfiniBand, RoCE, iWarp). Uses BIO-like
-> > +       READ/WRITE semantics and provides multipath capabilities.
->
-> What does "simplified" mean in this context? I'm concerned that
-> including that word will cause confusion. How about writing that RTRS
-> implements a reliable transport layer and also multipathing
-> functionality and that it is intended to be the base layer for a block
-> storage initiator over RDMA?
-Sounds fine, will explains what the RTRS abbreviation
->
-> > +config INFINIBAND_RTRS_SERVER
-> > +     tristate "RTRS server module"
-> > +     depends on INFINIBAND_ADDR_TRANS
-> > +     select INFINIBAND_RTRS
-> > +     help
-> > +       RDMA transport server module.
-> > +
-> > +       RTRS server module processing connection and IO requests received
-> > +       from the RTRS client module, it will pass the IO requests to its
-> > +       user eg. RNBD_server.
->
-> Users who see these help texts will be left wondering what RTRS stands
-> for. Please add some text that explains what the RTRS abbreviation
-> stands for.
->
-> Thanks,
->
-> Bart.
-Thanks.
+On 1/3/20 4:39 AM, Jinpu Wang wrote:
+> Performance results for the v5.5-rc1 kernel are here:
+>    link: https://github.com/ionos-enterprise/ibnbd/tree/develop/performance/v5-v5.5-rc1
+> 
+> Some workloads RNBD are faster, some workloads NVMeoF are faster.
+
+Thank you for having shared these graphs.
+
+Do the graphs in RNBD-SinglePath.pdf show that NVMeOF achieves similar 
+or higher IOPS, higher bandwidth and lower latency than RNBD for 
+workloads with a block size of 4 KB and also for mixed workloads with 
+less than 20 disks, whether or not invalidation is enabled for RNBD?
+
+Is it already clear why NVMeOF performance drops if the number of disks 
+is above 25? Is that perhaps caused by contention on the block layer tag 
+allocator because multiple NVMe namespaces share a tag set? Can that 
+contention be avoided by increasing the NVMeOF queue depth further?
+
+Thanks,
+
+Bart.
+
+
