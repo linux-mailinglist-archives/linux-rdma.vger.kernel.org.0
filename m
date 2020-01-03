@@ -2,157 +2,223 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5978A12FAF4
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 17:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 674B312FBD6
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 18:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbgACQ5M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Jan 2020 11:57:12 -0500
-Received: from mail-yw1-f68.google.com ([209.85.161.68]:44422 "EHLO
-        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727969AbgACQ5M (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 11:57:12 -0500
-Received: by mail-yw1-f68.google.com with SMTP id t141so18745569ywc.11;
-        Fri, 03 Jan 2020 08:57:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=2Q2YPq+rSLrKcR+aFtKjbLTauVxcEyEoCr3Nslf/jTc=;
-        b=IeMU7q1G1vhhLg/HXZ27mTcV/Oq3BvsOgOUQ2trLI+7HLpSZklrNgTl/oTfd9mRaLC
-         rhdsxaSV7TW2boIfupIY1Hzs9MlIl4og16H2JOTZLWIkNWEu81jSb+EUegFYV3h5EyP5
-         5q7XoQZlFAAfe5GR4f348v/c19JYJLBvnpXTTSgaedezR1ZGwTI+7w0Fcv5r3viXkM3s
-         HfKGOWHHxmVFy2J4jVVXWVtExC0uSZbLCC+Uy0d/hxxKH6jfkJCu6JkUN4C0U1tP0aIV
-         YlGcjWK7wmVGmE0qyLIYkwf++e1gyu1jZy2uL6Ig5GwofDLOT5GDUgABfAukZE1LTt+3
-         fyyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:date:message-id
-         :in-reply-to:references:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=2Q2YPq+rSLrKcR+aFtKjbLTauVxcEyEoCr3Nslf/jTc=;
-        b=IZsMdgX2yfEH+Xu372ePRRZuV7i/xXspMn8NWVYppGnVWQpkWl9uAmZHRVn8MeFWTh
-         hrgx744SH+jcIEu3tkE8MdhptT0hhcAKheXclgXm4y4GNTT7uRnIL+WhMf5UYMqJP7l2
-         cp+pZk1s0s0L8YSJoiNP2/mseKmPA43rrB87xWbD1myGSrlr7BdHWt93jfHrP/MnV5WC
-         0tMnVQQ0sJF1uCJfIqLQjMJDmzZ/kKIozE4+lhlo78XmEK7+SONNCm1khvJG5p6zJBCI
-         hWEkSpPNrg/S/PEys1o/k48ppefTDh8G5f3QY5nQay1uYCQXUrJpf/tl8VaRwXzz05st
-         bSUQ==
-X-Gm-Message-State: APjAAAWX8l9d+WiiVg+3vT0ubRSIp8OXALpCOmmnrdCjZs47nx6RtLn6
-        7M+UdOPccvg5S1N1g9lgEeukZeJj
-X-Google-Smtp-Source: APXvYqxHDnZoKxLEQC1+lhiHx0wNMD2on4pKiOk0U9z2qcCrZHQF84vjLgr14rk6/lG4QiS89KZBNA==
-X-Received: by 2002:a81:a906:: with SMTP id g6mr56576219ywh.186.1578070630736;
-        Fri, 03 Jan 2020 08:57:10 -0800 (PST)
-Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
-        by smtp.gmail.com with ESMTPSA id 189sm24351008ywc.16.2020.01.03.08.57.10
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 03 Jan 2020 08:57:10 -0800 (PST)
-Received: from morisot.1015granger.net (morisot.1015granger.net [192.168.1.67])
-        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 003Gv9F1016407;
-        Fri, 3 Jan 2020 16:57:09 GMT
-Subject: [PATCH v1 9/9] xprtrdma: DMA map rr_rdma_buf as each rpcrdma_rep is
- created
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Date:   Fri, 03 Jan 2020 11:57:09 -0500
-Message-ID: <157807062944.4606.8470156130970554891.stgit@morisot.1015granger.net>
-In-Reply-To: <157807044515.4606.732915438702066797.stgit@morisot.1015granger.net>
-References: <157807044515.4606.732915438702066797.stgit@morisot.1015granger.net>
-User-Agent: StGit/0.19
+        id S1728150AbgACRwd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Jan 2020 12:52:33 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:49572 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728110AbgACRwd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 12:52:33 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 003HiEsF132508;
+        Fri, 3 Jan 2020 17:52:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2019-08-05;
+ bh=3rvXjxhb73UH9jUVx/PUmcUyxptNGpIN+gad9QF2ih8=;
+ b=FA57/6TdDGXT+MNRaVGPvfwpETjl92jAdsOLZGr1zUgh/V3nia88ssHH5833s0ynAh6Z
+ KWa2D57Qro4RTHpo4DzF7gh9qYmwq/bhTzLtBu8eGEcagrsAyBrtySE9I+cZ9Z9VCpDL
+ c+mXk10TjO7tInjJwdCgUlo97eWXP0076abMSK37OMeH2kYQwFfvda49jg5tkX1Ty8X9
+ P1hfBwTi38Nq5nP8g2S0BDtU8178ur7PO2STilpyMDtbOWdehqmEFdIdzTm/at/BvzAb
+ dJWZp1maZSu8VEjKj8RGeYbSJwSLxJhS5mNG66slzvO8WR7kcWs99dOzYIVUt4HZY/wK mw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2x5y0pwf48-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Jan 2020 17:52:28 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 003HiWnD183872;
+        Fri, 3 Jan 2020 17:52:27 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2xa5fgnedc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Jan 2020 17:52:27 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 003HqNdI023996;
+        Fri, 3 Jan 2020 17:52:23 GMT
+Received: from Lirans-MBP.Home (/79.178.220.19)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 03 Jan 2020 09:52:23 -0800
+From:   Liran Alon <liran.alon@oracle.com>
+To:     saeedm@mellanox.com, leon@kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     eli@mellanox.com, tariqt@mellanox.com, danielm@mellanox.com,
+        jgg@ziepe.ca, Liran Alon <liran.alon@oracle.com>,
+        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+Subject: [PATCH v2] net: mlx5: Use iowriteXbe() to ring doorbell and remove reduntant wmb()
+Date:   Fri,  3 Jan 2020 19:52:07 +0200
+Message-Id: <20200103175207.72655-1-liran.alon@oracle.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9489 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=929
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001030163
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9489 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=992 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001030163
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Clean up: This simplifies the logic in rpcrdma_post_recvs.
+Currently, mlx5e_notify_hw() executes wmb() to complete writes to
+cache-coherent memory before ringing doorbell. Doorbell is written
+to by mlx5_write64() which use __raw_writeX().
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+This is semantically correct but executes reduntant wmb() in some
+architectures. For example, in x86, a write to UC memory guarantees
+that any previous write to WB/UC memory will be globally visible
+before the write to UC memory. Therefore, there is no need to also
+execute wmb() before write to doorbell which is mapped as UC memory.
+
+The consideration regarding this between different architectures is
+handled properly by the writeX() & iowriteX() accessors. Which is
+defined differently for different architectures. E.g. On x86, it is
+just a memory write. However, on ARM, it is defined as __iowmb()
+folowed by a memory write. __iowmb() is defined as wmb().
+
+Therefore, change mlx5_write64() to use iowriteXbe() and remove wmb()
+from it's callers.
+
+Note: This relies on the fact that mlx5 kernel driver currently don't
+use Mellanox BlueFlame technology that write Tx descriptors to WC memory.
+In that case, iowriteX() isn't sufficient to flush write-combined buffers
+(WCBs) on x86 AMD CPUs. That's because AMD CPUs do not flush WCBs on
+write to UC memory. In that case, a wmb() (SFENCE) is required before
+writing to Tx doorbell.
+
+In addition, change callers of mlx5_write64() to just pass value in
+CPU endianness as now mlx5_write64() explicitly pass value as big-endian
+to device by using iowriteXbe().
+
+Reviewed-by: Håkon Bugge <haakon.bugge@oracle.com>
+Signed-off-by: Liran Alon <liran.alon@oracle.com>
 ---
- net/sunrpc/xprtrdma/verbs.c |   31 +++++++++++--------------------
- 1 file changed, 11 insertions(+), 20 deletions(-)
+ drivers/infiniband/hw/mlx5/qp.c                        |  6 +-----
+ drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h      |  7 +------
+ drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c    |  2 --
+ .../net/ethernet/mellanox/mlx5/core/steering/dr_send.c |  4 ----
+ include/linux/mlx5/cq.h                                |  9 ++-------
+ include/linux/mlx5/doorbell.h                          | 10 ++++------
+ 6 files changed, 8 insertions(+), 30 deletions(-)
 
-diff --git a/net/sunrpc/xprtrdma/verbs.c b/net/sunrpc/xprtrdma/verbs.c
-index 3169887f8547..c3e92b5607b5 100644
---- a/net/sunrpc/xprtrdma/verbs.c
-+++ b/net/sunrpc/xprtrdma/verbs.c
-@@ -1109,8 +1109,9 @@ static void rpcrdma_reqs_reset(struct rpcrdma_xprt *r_xprt)
- /* No locking needed here. This function is called only by the
-  * Receive completion handler.
-  */
--static struct rpcrdma_rep *rpcrdma_rep_create(struct rpcrdma_xprt *r_xprt,
--					      bool temp)
-+static noinline
-+struct rpcrdma_rep *rpcrdma_rep_create(struct rpcrdma_xprt *r_xprt,
-+				       bool temp)
- {
- 	struct rpcrdma_rep *rep;
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index 7e51870e9e01..87cbecb693ea 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -5329,11 +5329,7 @@ static int _mlx5_ib_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
  
-@@ -1123,6 +1124,9 @@ static struct rpcrdma_rep *rpcrdma_rep_create(struct rpcrdma_xprt *r_xprt,
- 	if (!rep->rr_rdmabuf)
- 		goto out_free;
+ 		qp->db.db[MLX5_SND_DBR] = cpu_to_be32(qp->sq.cur_post);
  
-+	if (!rpcrdma_regbuf_dma_map(r_xprt, rep->rr_rdmabuf))
-+		goto out_free_regbuf;
-+
- 	xdr_buf_init(&rep->rr_hdrbuf, rdmab_data(rep->rr_rdmabuf),
- 		     rdmab_length(rep->rr_rdmabuf));
- 	rep->rr_cqe.done = rpcrdma_wc_receive;
-@@ -1135,6 +1139,8 @@ static struct rpcrdma_rep *rpcrdma_rep_create(struct rpcrdma_xprt *r_xprt,
- 	list_add(&rep->rr_all, &r_xprt->rx_buf.rb_all_reps);
- 	return rep;
- 
-+out_free_regbuf:
-+	rpcrdma_regbuf_free(rep->rr_rdmabuf);
- out_free:
- 	kfree(rep);
- out:
-@@ -1536,7 +1542,7 @@ void rpcrdma_post_recvs(struct rpcrdma_xprt *r_xprt, bool temp)
- {
- 	struct rpcrdma_buffer *buf = &r_xprt->rx_buf;
- 	struct rpcrdma_ep *ep = &r_xprt->rx_ep;
--	struct ib_recv_wr *i, *wr, *bad_wr;
-+	struct ib_recv_wr *wr, *bad_wr;
- 	struct rpcrdma_rep *rep;
- 	int needed, count, rc;
- 
-@@ -1563,23 +1569,15 @@ void rpcrdma_post_recvs(struct rpcrdma_xprt *r_xprt, bool temp)
- 		if (!rep)
- 			break;
- 
-+		trace_xprtrdma_post_recv(rep);
- 		rep->rr_recv_wr.next = wr;
- 		wr = &rep->rr_recv_wr;
- 		--needed;
-+		++count;
- 	}
- 	if (!wr)
- 		goto out;
- 
--	for (i = wr; i; i = i->next) {
--		rep = container_of(i, struct rpcrdma_rep, rr_recv_wr);
+-		/* Make sure doorbell record is visible to the HCA before
+-		 * we hit doorbell */
+-		wmb();
 -
--		if (!rpcrdma_regbuf_dma_map(r_xprt, rep->rr_rdmabuf))
--			goto release_wrs;
+-		mlx5_write64((__be32 *)ctrl, bf->bfreg->map + bf->offset);
++		mlx5_write64((u32 *)ctrl, bf->bfreg->map + bf->offset);
+ 		/* Make sure doorbells don't leak out of SQ spinlock
+ 		 * and reach the HCA out of order.
+ 		 */
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h b/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
+index 7c8796d9743f..ad3fd38456b1 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
+@@ -108,12 +108,7 @@ mlx5e_notify_hw(struct mlx5_wq_cyc *wq, u16 pc, void __iomem *uar_map,
+ 
+ 	*wq->db = cpu_to_be32(pc);
+ 
+-	/* ensure doorbell record is visible to device before ringing the
+-	 * doorbell
+-	 */
+-	wmb();
 -
--		trace_xprtrdma_post_recv(rep);
--		++count;
--	}
--
- 	rc = ib_post_recv(r_xprt->rx_ia.ri_id->qp, wr,
- 			  (const struct ib_recv_wr **)&bad_wr);
- out:
-@@ -1596,11 +1594,4 @@ void rpcrdma_post_recvs(struct rpcrdma_xprt *r_xprt, bool temp)
- 	}
- 	ep->rep_receive_count += count;
- 	return;
--
--release_wrs:
--	for (i = wr; i;) {
--		rep = container_of(i, struct rpcrdma_rep, rr_recv_wr);
--		i = i->next;
--		rpcrdma_recv_buffer_put(rep);
--	}
+-	mlx5_write64((__be32 *)ctrl, uar_map);
++	mlx5_write64((u32 *)ctrl, uar_map);
  }
-
+ 
+ static inline bool mlx5e_transport_inline_tx_wqe(struct mlx5_wqe_ctrl_seg *cseg)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
+index 61021133029e..e30b6c771218 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
+@@ -133,8 +133,6 @@ static void mlx5_fpga_conn_notify_hw(struct mlx5_fpga_conn *conn, void *wqe)
+ 	/* ensure wqe is visible to device before updating doorbell record */
+ 	dma_wmb();
+ 	*conn->qp.wq.sq.db = cpu_to_be32(conn->qp.sq.pc);
+-	/* Make sure that doorbell record is visible before ringing */
+-	wmb();
+ 	mlx5_write64(wqe, conn->fdev->conn_res.uar->map + MLX5_BF_OFFSET);
+ }
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
+index 51803eef13dd..cfcbd4e338cd 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
+@@ -213,10 +213,6 @@ static void dr_cmd_notify_hw(struct mlx5dr_qp *dr_qp, void *ctrl)
+ {
+ 	dma_wmb();
+ 	*dr_qp->wq.sq.db = cpu_to_be32(dr_qp->sq.pc & 0xfffff);
+-
+-	/* After wmb() the hw aware of new work */
+-	wmb();
+-
+ 	mlx5_write64(ctrl, dr_qp->uar->map + MLX5_BF_OFFSET);
+ }
+ 
+diff --git a/include/linux/mlx5/cq.h b/include/linux/mlx5/cq.h
+index 40748fc1b11b..4631ad35da53 100644
+--- a/include/linux/mlx5/cq.h
++++ b/include/linux/mlx5/cq.h
+@@ -162,13 +162,8 @@ static inline void mlx5_cq_arm(struct mlx5_core_cq *cq, u32 cmd,
+ 
+ 	*cq->arm_db = cpu_to_be32(sn << 28 | cmd | ci);
+ 
+-	/* Make sure that the doorbell record in host memory is
+-	 * written before ringing the doorbell via PCI MMIO.
+-	 */
+-	wmb();
+-
+-	doorbell[0] = cpu_to_be32(sn << 28 | cmd | ci);
+-	doorbell[1] = cpu_to_be32(cq->cqn);
++	doorbell[0] = sn << 28 | cmd | ci;
++	doorbell[1] = cq->cqn;
+ 
+ 	mlx5_write64(doorbell, uar_page + MLX5_CQ_DOORBELL);
+ }
+diff --git a/include/linux/mlx5/doorbell.h b/include/linux/mlx5/doorbell.h
+index 5c267707e1df..9c1d35777323 100644
+--- a/include/linux/mlx5/doorbell.h
++++ b/include/linux/mlx5/doorbell.h
+@@ -43,17 +43,15 @@
+  * Note that the write is not atomic on 32-bit systems! In contrast to 64-bit
+  * ones, it requires proper locking. mlx5_write64 doesn't do any locking, so use
+  * it at your own discretion, protected by some kind of lock on 32 bits.
+- *
+- * TODO: use write{q,l}_relaxed()
+  */
+ 
+-static inline void mlx5_write64(__be32 val[2], void __iomem *dest)
++static inline void mlx5_write64(u32 val[2], void __iomem *dest)
+ {
+ #if BITS_PER_LONG == 64
+-	__raw_writeq(*(u64 *)val, dest);
++	iowrite64be(*(u64 *)val, dest);
+ #else
+-	__raw_writel((__force u32) val[0], dest);
+-	__raw_writel((__force u32) val[1], dest + 4);
++	iowrite32be(val[0], dest);
++	iowrite32be(val[1], dest + 4);
+ #endif
+ }
+ 
+-- 
+2.20.1
 
