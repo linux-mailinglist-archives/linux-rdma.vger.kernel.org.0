@@ -2,82 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8171312FD39
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 20:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D63FE12FD3D
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Jan 2020 20:48:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728564AbgACTqh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Jan 2020 14:46:37 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:34192 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728546AbgACTqh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 14:46:37 -0500
-Received: by mail-qt1-f193.google.com with SMTP id 5so37644172qtz.1
-        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2020 11:46:36 -0800 (PST)
+        id S1728549AbgACTsJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Jan 2020 14:48:09 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:36940 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728546AbgACTsJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Jan 2020 14:48:09 -0500
+Received: by mail-qk1-f195.google.com with SMTP id 21so34683661qky.4
+        for <linux-rdma@vger.kernel.org>; Fri, 03 Jan 2020 11:48:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=QFEQqUuyVkEOkAkzZzWnCG8Pa+5PBz8reji8nYV/KRU=;
-        b=l3VT4epFg88GADGyl6jy9uxoGsxo4qy850idjn8z2XmbJjLTEXMcVmtS1ta+7Y9QR2
-         IQKcIZLhQwOkym9+qjaT/TI8qqb8jsxlHNnJSzX/W2B6jZSGkJ9XlgtTB4EDSZB5BMs1
-         Mk3kivbmcGG2acKZwcObUje/zi53IxrJZRO8pNRkuDQdWbryjzTHAb9ZOy7HxciUvSB9
-         Xe85jiI+rTDv5ufMSxVnu++s0oCoVpCy+uIQDWJhRIETKgW2W53C9/rAe8aOTEAfB9Cw
-         Um2XHS8Al6rqPg9yaM07A+QtJzM2T+Gkdp0R1bFHpJcvZHoZeDG/hU06WMt7uXk+BCNg
-         Hsyw==
+        bh=jKVtjHKUqOXNOUp35/jVYCzkPXvo9yPLOLSemwLqvOU=;
+        b=UGJmvPM4N8rxbJ1LlDhVjq3n2XsGxBZp7NUKBKLdWyvQuE691FfJ+S/Bw8jy9KFSi/
+         amI1Mw8AwtZ0lFH2U+2tC3qkreBLqrV+tixq1TVDN414XIhNAXCu8mGpAygKd5VOOruR
+         78zEgXcutt4srxU9VmhHW499G8/I8uJjhCC1QbGwwBaYkiyw3TulAU2nBG5KD2Z6d0rL
+         qLarM6Cwt1jt4VRCUpaUML9YRDl2XUh4pjRexIjIwI2M3PPa3nDuRWDGV9SqUlLn4XC2
+         zL9xvvG5PL+2NTkw3tLqi23U1epkVLeFr/QrP/6sffXa4zU0cckpaQmZm2JgjzvttP7d
+         5RGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QFEQqUuyVkEOkAkzZzWnCG8Pa+5PBz8reji8nYV/KRU=;
-        b=ZMqbrlmoWPOGBloh7bWB3ddY2TVVIso43K5Qqv1uyKuioK5KSUM+ww/IVH4g9AJB9E
-         WGYvWxtBGw9JXuxmMThoZSKUVbqtlXd9oR83xVUgP6R/6EVLZUNgH8iBceC/KPjjVBk9
-         fzdY3c77pGiHrUxeiUTbkGxVgZ7fNz328n9uYRjchCS18tDQv/UCSJ9u0flTxv2RgLSg
-         jwN3MWFk2GZY6w1IQLDuY4uiMx2kSGO6QhrlPQ7cXDORCmMk2hQBWCdY0TpTEf7fGhYL
-         RqFFpmeBqJdeY6syZcFh3/5XbdCNXp7jy4WjdY+mRdy4KzdeaYR6jMZl0qqDuIf1l4Z+
-         zqAg==
-X-Gm-Message-State: APjAAAX4Wj5Lr0gG+cGJT4iOrDPtclVkcUr83x2o+JqsZlrPLQ8tDjpK
-        domLaHv0Cvc7mOjjvK7yps7VZg==
-X-Google-Smtp-Source: APXvYqy2xt1XYPlTd2PT4NbLWF5ZSRWs4fw2Raj+GWHa3xbxz4Xpc/Fxu3G9fyceaZjSbaKS/8JJXQ==
-X-Received: by 2002:ac8:614d:: with SMTP id d13mr60143522qtm.212.1578080796399;
-        Fri, 03 Jan 2020 11:46:36 -0800 (PST)
+        bh=jKVtjHKUqOXNOUp35/jVYCzkPXvo9yPLOLSemwLqvOU=;
+        b=K50byoSqlkZh/qAhK0Qq8j7gcWj5eAl7ztXHj+kutrcpdPiMTEN/o/j9q1W5VlZJ6c
+         3DJ9UHdA8NCQZ2srfuTz3j2ajPvBcG5F5GNJQS0YTsg9mKZqgrJiJfpuWE0cNYeoHEGa
+         zHecFZ8E2N5lDO/aeyI3Zbdo7lERbJv0+rIwia0J4noZ2IRGZcKkjgpp1DwfiuUipXhp
+         pmrlnGj1qOd6x40evokIOMph+N5APbWe/y3o9VJq30uc/GIBdSd9Y0IKK/8Nhq4cCg9e
+         ARy6OV8+UOTtMkAhJVaiVxKmPBDhaNuYZddVvmZLsGZjgdYcDfUseyu/oaO1Rpl3ylfz
+         /9Tg==
+X-Gm-Message-State: APjAAAVYs8SkSZXIfyMq8a5I5cr01nAAnINjD09h7DxUIuo6bA+xJE92
+        zDxSL2ZgsSrImqyTSXsAMLn7tg==
+X-Google-Smtp-Source: APXvYqwfX553QYHm55Rvg3gDZiy9/4QomcGzIorg2dO2VM5fgRK26R4I558BXOepQqQGK3psrzu/RA==
+X-Received: by 2002:a37:a1c1:: with SMTP id k184mr72958574qke.66.1578080888679;
+        Fri, 03 Jan 2020 11:48:08 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id u24sm17048272qkm.40.2020.01.03.11.46.36
+        by smtp.gmail.com with ESMTPSA id r205sm16892432qke.34.2020.01.03.11.48.08
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 Jan 2020 11:46:36 -0800 (PST)
+        Fri, 03 Jan 2020 11:48:08 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1inSu3-0004pY-Kv; Fri, 03 Jan 2020 15:46:35 -0400
-Date:   Fri, 3 Jan 2020 15:46:35 -0400
+        id 1inSvX-0004wz-Te; Fri, 03 Jan 2020 15:48:07 -0400
+Date:   Fri, 3 Jan 2020 15:48:07 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next 6/6] RDMA/bnxt_re: Report more number of
- completion vectors
-Message-ID: <20200103194635.GA18528@ziepe.ca>
-References: <1574671174-5064-1-git-send-email-selvin.xavier@broadcom.com>
- <1574671174-5064-7-git-send-email-selvin.xavier@broadcom.com>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>
+Subject: Re: [PATCH for-next v3] IB/hfi1: List all receive contexts from
+ debugfs
+Message-ID: <20200103194807.GA18963@ziepe.ca>
+References: <20191126141220.58836.41480.stgit@awfm-01.aw.intel.com>
+ <20191205134938.48219.50954.stgit@awfm-01.aw.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1574671174-5064-7-git-send-email-selvin.xavier@broadcom.com>
+In-Reply-To: <20191205134938.48219.50954.stgit@awfm-01.aw.intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Nov 25, 2019 at 12:39:34AM -0800, Selvin Xavier wrote:
-> Report the the data path MSIx vectors allocated by driver as
-> number of completion vectors. One interrupt
-> vector is used for Control path. So reporting one
-> less than the total number of  MSIx vectors allocated
-> by the driver.
+On Thu, Dec 05, 2019 at 08:49:38AM -0500, Dennis Dalessandro wrote:
+> From: Michael J. Ruhl <michael.j.ruhl@intel.com>
 > 
-> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> ---
->  drivers/infiniband/hw/bnxt_re/main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> The current debugfs output for receive contexts (rcds), stops after
+> the kernel receive contexts have been displayed.  This is not enough
+> information.
+> 
+> Display all of the receive contexts.
+> 
+> Augment the output with some more context information.
+> 
+> Limit the ring buffer header output to 5 entries to avoid
+> overextending the sequential file output.
+> 
+> Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+> Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+> Signed-off-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+> Signed-off-by: Kaike Wan <kaike.wan@intel.com>
+> Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
 
-Applied to for-next, thanks
+This patch does not apply, please resend it.
 
 Jason
