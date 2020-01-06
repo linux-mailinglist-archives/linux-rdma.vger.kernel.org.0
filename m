@@ -2,39 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D51131323
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2020 14:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A74AA131327
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2020 14:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726383AbgAFNmH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Jan 2020 08:42:07 -0500
-Received: from mga17.intel.com ([192.55.52.151]:18781 "EHLO mga17.intel.com"
+        id S1726275AbgAFNmN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Jan 2020 08:42:13 -0500
+Received: from mga07.intel.com ([134.134.136.100]:19719 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726340AbgAFNmG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 6 Jan 2020 08:42:06 -0500
+        id S1726454AbgAFNmN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 6 Jan 2020 08:42:13 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 Jan 2020 05:42:06 -0800
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 Jan 2020 05:42:12 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,402,1571727600"; 
-   d="scan'208";a="253353205"
+   d="scan'208";a="271196701"
 Received: from sedona.ch.intel.com ([10.2.136.157])
-  by fmsmga002.fm.intel.com with ESMTP; 06 Jan 2020 05:42:05 -0800
+  by FMSMGA003.fm.intel.com with ESMTP; 06 Jan 2020 05:42:11 -0800
 Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 006Dg5Zb037336;
-        Mon, 6 Jan 2020 06:42:05 -0700
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 006DgBxY037340;
+        Mon, 6 Jan 2020 06:42:11 -0700
 Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 006Dg4os119667;
-        Mon, 6 Jan 2020 08:42:04 -0500
-Subject: [PATCH for-next 4/9] IB/hfi1: IB/hfi1: Add an API to handle special
- case drop
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 006DgAXj119685;
+        Mon, 6 Jan 2020 08:42:10 -0500
+Subject: [PATCH for-next 5/9] IB/hfi1: Create API for auto activate
 From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
 To:     jgg@ziepe.ca, dledford@redhat.com
 Cc:     linux-rdma@vger.kernel.org,
         Mike Marciniszyn <mike.marciniszyn@intel.com>,
         Kaike Wan <kaike.wan@intel.com>
-Date:   Mon, 06 Jan 2020 08:42:04 -0500
-Message-ID: <20200106134203.119356.36962.stgit@awfm-01.aw.intel.com>
+Date:   Mon, 06 Jan 2020 08:42:10 -0500
+Message-ID: <20200106134210.119356.43079.stgit@awfm-01.aw.intel.com>
 In-Reply-To: <20200106133845.119356.20115.stgit@awfm-01.aw.intel.com>
 References: <20200106133845.119356.20115.stgit@awfm-01.aw.intel.com>
 User-Agent: StGit/0.17.1-dirty
@@ -48,92 +47,84 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Mike Marciniszyn <mike.marciniszyn@intel.com>
 
-This patch pushes special case drop logic into an API to be shared by
-all interrupt handlers.
-
-Additionally, convert do_drop to a bool.
+Add an auto activate routine for use by the interrupt handler.
 
 Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
 Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
 Signed-off-by: Kaike Wan <kaike.wan@intel.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
 ---
- drivers/infiniband/hw/hfi1/driver.c |    6 +-----
- drivers/infiniband/hw/hfi1/hfi.h    |   21 ++++++++++++++++++++-
- drivers/infiniband/hw/hfi1/init.c   |    4 ++--
- 3 files changed, 23 insertions(+), 8 deletions(-)
+ drivers/infiniband/hw/hfi1/driver.c |   37 ++++++++++++++++++++++-------------
+ 1 file changed, 23 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/infiniband/hw/hfi1/driver.c b/drivers/infiniband/hw/hfi1/driver.c
-index 3671191..bbc7458 100644
+index bbc7458..46c1be0 100644
 --- a/drivers/infiniband/hw/hfi1/driver.c
 +++ b/drivers/infiniband/hw/hfi1/driver.c
-@@ -1004,11 +1004,7 @@ int handle_receive_interrupt(struct hfi1_ctxtdata *rcd, int thread)
- 	prescan_rxq(rcd, &packet);
- 
- 	while (last == RCV_PKT_OK) {
--		if (unlikely(dd->do_drop &&
--			     atomic_xchg(&dd->drop_packet, DROP_PACKET_OFF) ==
--			     DROP_PACKET_ON)) {
--			dd->do_drop = 0;
--
-+		if (hfi1_need_drop(dd)) {
- 			/* On to the next packet */
- 			packet.rhqoff += packet.rsize;
- 			packet.rhf_addr = (__le32 *)rcd->rcvhdrq +
-diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
-index 0c643bc..9212543 100644
---- a/drivers/infiniband/hw/hfi1/hfi.h
-+++ b/drivers/infiniband/hw/hfi1/hfi.h
-@@ -1316,7 +1316,7 @@ struct hfi1_devdata {
- 	struct err_info_constraint err_info_xmit_constraint;
- 
- 	atomic_t drop_packet;
--	u8 do_drop;
-+	bool do_drop;
- 	u8 err_info_uncorrectable;
- 	u8 err_info_fmconfig;
- 
-@@ -2462,6 +2462,25 @@ static inline bool is_integrated(struct hfi1_devdata *dd)
- 	return dd->pcidev->device == PCI_DEVICE_ID_INTEL1;
+@@ -924,11 +924,8 @@ void set_all_slowpath(struct hfi1_devdata *dd)
+ 	}
  }
  
-+/**
-+ * hfi1_need_drop - detect need for drop
-+ * @dd: - the device
-+ *
-+ * In some cases, the first packet needs to be dropped.
-+ *
-+ * Return true is the current packet needs to be dropped and false otherwise.
-+ */
-+static inline bool hfi1_need_drop(struct hfi1_devdata *dd)
-+{
-+	if (unlikely(dd->do_drop &&
-+		     atomic_xchg(&dd->drop_packet, DROP_PACKET_OFF) ==
-+		     DROP_PACKET_ON)) {
-+		dd->do_drop = false;
+-static inline int set_armed_to_active(struct hfi1_ctxtdata *rcd,
+-				      struct hfi1_packet *packet,
+-				      struct hfi1_devdata *dd)
++static bool __set_armed_to_active(struct hfi1_packet *packet)
+ {
+-	struct work_struct *lsaw = &rcd->ppd->linkstate_active_work;
+ 	u8 etype = rhf_rcv_type(packet->rhf);
+ 	u8 sc = SC15_PACKET;
+ 
+@@ -943,19 +940,34 @@ static inline int set_armed_to_active(struct hfi1_ctxtdata *rcd,
+ 		sc = hfi1_16B_get_sc(hdr);
+ 	}
+ 	if (sc != SC15_PACKET) {
+-		int hwstate = driver_lstate(rcd->ppd);
++		int hwstate = driver_lstate(packet->rcd->ppd);
++		struct work_struct *lsaw =
++				&packet->rcd->ppd->linkstate_active_work;
+ 
+ 		if (hwstate != IB_PORT_ACTIVE) {
+-			dd_dev_info(dd,
++			dd_dev_info(packet->rcd->dd,
+ 				    "Unexpected link state %s\n",
+ 				    opa_lstate_name(hwstate));
+-			return 0;
++			return false;
+ 		}
+ 
+-		queue_work(rcd->ppd->link_wq, lsaw);
+-		return 1;
++		queue_work(packet->rcd->ppd->link_wq, lsaw);
 +		return true;
-+	}
+ 	}
+-	return 0;
 +	return false;
 +}
 +
- int hfi1_tempsense_rd(struct hfi1_devdata *dd, struct hfi1_temp *temp);
++/**
++ * armed to active - the fast path for armed to active
++ * @packet: the packet structure
++ *
++ * Return true if packet processing needs to bail.
++ */
++static bool set_armed_to_active(struct hfi1_packet *packet)
++{
++	if (likely(packet->rcd->ppd->host_link_state != HLS_UP_ARMED))
++		return false;
++	return __set_armed_to_active(packet);
+ }
  
- #define DD_DEV_ENTRY(dd)       __string(dev, dev_name(&(dd)->pcidev->dev))
-diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
-index 925f75f9..e3acda7 100644
---- a/drivers/infiniband/hw/hfi1/init.c
-+++ b/drivers/infiniband/hw/hfi1/init.c
-@@ -876,10 +876,10 @@ int hfi1_init(struct hfi1_devdata *dd, int reinit)
- 
- 	if (is_ax(dd)) {
- 		atomic_set(&dd->drop_packet, DROP_PACKET_ON);
--		dd->do_drop = 1;
-+		dd->do_drop = true;
- 	} else {
- 		atomic_set(&dd->drop_packet, DROP_PACKET_OFF);
--		dd->do_drop = 0;
-+		dd->do_drop = false;
- 	}
- 
- 	/* make sure the link is not "up" */
+ /*
+@@ -1016,10 +1028,7 @@ int handle_receive_interrupt(struct hfi1_ctxtdata *rcd, int thread)
+ 			last = skip_rcv_packet(&packet, thread);
+ 			skip_pkt = 0;
+ 		} else {
+-			/* Auto activate link on non-SC15 packet receive */
+-			if (unlikely(rcd->ppd->host_link_state ==
+-				     HLS_UP_ARMED) &&
+-			    set_armed_to_active(rcd, &packet, dd))
++			if (set_armed_to_active(&packet))
+ 				goto bail;
+ 			last = process_rcv_packet(&packet, thread);
+ 		}
 
