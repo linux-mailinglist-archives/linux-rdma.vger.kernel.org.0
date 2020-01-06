@@ -2,156 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 66440131779
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2020 19:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DDD0131A89
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jan 2020 22:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgAFS3j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Jan 2020 13:29:39 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:38240 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726569AbgAFS3j (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Jan 2020 13:29:39 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 006IJoNQ027166;
-        Mon, 6 Jan 2020 18:29:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2019-08-05; bh=WT/bqZ0mVYvy9jSBIkR2+7A4aLK0ICwvg2gt+z3FX5A=;
- b=f1iUxTC+tXRXmzdFq+OJn34K1++5rHOK4x/i+ipypO53SicbbVZfosFNEMOa55KUuhhW
- o7tlc030s47mLhj010geHTuBya7cKOZI2Ypmqdq+cxjc14tNBD+Sxi0zigdGmUIpX9lB
- Sw59uI9Ofeg0+yFkDdCk5VoG6LsH7CS43arwxtHNk/FCH5CK4MjVcWiawfpjjfBgOo1p
- fVYooM27B8ptEMwm0DdzErUm5QOU7k1kxC2ZfgxSoNSDjBRJMCn46DGWDx2PHQUkOsbP
- G6HH1pH2RBtLjUvxMW6u9AAgI2gJLrtuXoN5GQom0RGCJufXfPx0cw/hK3QZbsTdJMR+ 6g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2xajnpruv3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 06 Jan 2020 18:29:33 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 006ITDtA030359;
-        Mon, 6 Jan 2020 18:29:32 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2xb4675y0n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 06 Jan 2020 18:29:28 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 006IShMF031096;
-        Mon, 6 Jan 2020 18:28:43 GMT
-Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 06 Jan 2020 10:28:42 -0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v10 0/3] Proposed trace points for RDMA/core
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <20191218201631.30584.53987.stgit@manet.1015granger.net>
-Date:   Mon, 6 Jan 2020 13:28:41 -0500
-Cc:     linux-rdma@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <94A656F2-577A-48A5-B845-568A10D30FCA@oracle.com>
-References: <20191218201631.30584.53987.stgit@manet.1015granger.net>
-To:     Jason Gunthorpe <jgg@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9492 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2001060153
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9492 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2001060152
+        id S1727027AbgAFVe7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Jan 2020 16:34:59 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:45707 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726739AbgAFVe7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Jan 2020 16:34:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1578346498;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=b3Wm+uXhIbTiq/MxKpttGGeUtpHNdSriyRcWo1I9x6Y=;
+        b=a+blDqN3c5YlzMPK8E+9PhdbaQiYA/RMgzewHOn7xN1GS+cfyb9KAvbXbPlpv9AguSJJi1
+        /ma9+EY6bi6G+gRRoJmlXtdQJXrzzVe243yaI8jSXjY72eab1vX5RR4BYpjW5YZUGu2D4S
+        VsfRhdZjPVJ5HFKpKk73PErZjoSey8g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-204-BjrI9V4_N92wKVXid-vgeQ-1; Mon, 06 Jan 2020 16:34:55 -0500
+X-MC-Unique: BjrI9V4_N92wKVXid-vgeQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F049477;
+        Mon,  6 Jan 2020 21:34:53 +0000 (UTC)
+Received: from localhost (ovpn-112-4.rdu2.redhat.com [10.10.112.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CC45B19C58;
+        Mon,  6 Jan 2020 21:34:49 +0000 (UTC)
+Date:   Mon, 06 Jan 2020 13:34:48 -0800 (PST)
+Message-Id: <20200106.133448.1654261172205332113.davem@redhat.com>
+To:     arnd@arndb.de
+Cc:     saeedm@mellanox.com, leon@kernel.org,
+        adhemerval.zanella@linaro.org, tariqt@mellanox.com,
+        shayag@mellanox.com, eranbe@mellanox.com, maximmi@mellanox.com,
+        ayal@mellanox.com, moshe@mellanox.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mlx5: work around high stack usage with gcc
+From:   David Miller <davem@redhat.com>
+In-Reply-To: <20200104215156.689245-1-arnd@arndb.de>
+References: <20200104215156.689245-1-arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Sat,  4 Jan 2020 22:51:44 +0100
 
+> In some configurations, gcc tries too hard to optimize this code:
+> 
+> drivers/net/ethernet/mellanox/mlx5/core/en_stats.c: In function 'mlx5e_grp_sw_update_stats':
+> drivers/net/ethernet/mellanox/mlx5/core/en_stats.c:302:1: error: the frame size of 1336 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+> 
+> As was stated in the bug report, the reason is that gcc runs into a corner
+> case in the register allocator that is rather hard to fix in a good way.
+> 
+> As there is an easy way to work around it, just add a comment and the
+> barrier that stops gcc from trying to overoptimize the function.
+> 
+> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92657
+> Cc: Adhemerval Zanella <adhemerval.zanella@linaro.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-> On Dec 18, 2019, at 3:18 PM, Chuck Lever <chuck.lever@oracle.com> =
-wrote:
->=20
-> Hey y'all-
->=20
-> Refresh of the RDMA/core trace point patches.
+Saeed, please take this.
 
-<ping>
-
-
-> Changes since v9:
-> - One-line Makefile fix to ensure patch 1/3 compiles
->=20
-> Changes since v8:
-> - Merged up to v5.5-rc2
-> - Added trace points to record lifetime of rdma_cm_id's QP
-> - Added trace points in the "drain QP" path
-> - Various other clean-ups
->=20
-> Changes since v7:
-> - Capture the return value from the ULP's CM event handler
-> - Record the lifetime of each rdma_cm_id
-> - Include an example patch for capturing MR lifetime
->=20
-> Changes since v6:
-> - Move include/trace/events/rmda_cma.h to =
-drivers/infiniband/core/cma_trace.h
-> - Add sample trace log output to the patch descriptions
-> - Back to the inlined version of ib_poll_cq()
->=20
-> Changes since v5:
-> - Add low-overhead trace points in the Connection Manager
-> - Address #include heartburn found by lkp
->=20
-> Changes since v4:
-> - Removed __ib_poll_cq, uninlined ib_poll_cq
->=20
-> Changes since v3:
-> - Reverted unnecessary behavior change in __ib_process_cq
-> - Clarified what "id" is in trace point output
-> - Added comment before new fields in struct ib_cq
-> - New trace point that fires when there is a CQ allocation failure
->=20
-> Changes since v2:
-> - Removed extraneous changes to include/trace/events/rdma.h
->=20
-> Changes since RFC:
-> - Display CQ's global resource ID instead of it's pointer address
->=20
-> ---
->=20
-> Chuck Lever (3):
->      RDMA/cma: Add trace points in RDMA Connection Manager
->      RDMA/core: Trace points for diagnosing completion queue issues
->      RDMA/core: Add trace points to follow MR allocation
->=20
->=20
-> drivers/infiniband/core/Makefile    |    6 -
-> drivers/infiniband/core/cma.c       |   88 ++++++--
-> drivers/infiniband/core/cma_trace.c |   16 +
-> drivers/infiniband/core/cma_trace.h |  391 =
-+++++++++++++++++++++++++++++++++++
-> drivers/infiniband/core/cq.c        |   27 ++
-> drivers/infiniband/core/trace.c     |   14 +
-> drivers/infiniband/core/verbs.c     |   43 +++-
-> include/rdma/ib_verbs.h             |    5=20
-> include/trace/events/rdma_core.h    |  394 =
-+++++++++++++++++++++++++++++++++++
-> 9 files changed, 946 insertions(+), 38 deletions(-)
-> create mode 100644 drivers/infiniband/core/cma_trace.c
-> create mode 100644 drivers/infiniband/core/cma_trace.h
-> create mode 100644 drivers/infiniband/core/trace.c
-> create mode 100644 include/trace/events/rdma_core.h
->=20
-> --
-> Chuck Lever
-
---
-Chuck Lever
-
-
+Thank you.
 
