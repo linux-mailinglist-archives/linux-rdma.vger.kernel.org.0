@@ -2,58 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E875913243D
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2020 11:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B2E132615
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2020 13:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727211AbgAGK4N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Jan 2020 05:56:13 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:41347 "EHLO
+        id S1727935AbgAGMWz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Jan 2020 07:22:55 -0500
+Received: from mail-io1-f67.google.com ([209.85.166.67]:43689 "EHLO
         mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727177AbgAGK4N (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Jan 2020 05:56:13 -0500
-Received: by mail-io1-f67.google.com with SMTP id c16so48553970ioo.8
-        for <linux-rdma@vger.kernel.org>; Tue, 07 Jan 2020 02:56:12 -0800 (PST)
+        with ESMTP id S1727978AbgAGMWz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Jan 2020 07:22:55 -0500
+Received: by mail-io1-f67.google.com with SMTP id n21so50799671ioo.10
+        for <linux-rdma@vger.kernel.org>; Tue, 07 Jan 2020 04:22:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cHC54axAtnG5sVXnSaBOV2n5YA7A7OaJy/0DeQOeXfY=;
-        b=cebVE+NVBJzxdgazVLiKrpz7/4um/woyHcMAVG7BjYJ5vPWeMllG4rwCGLCPZxSxe4
-         QKlun+wWwV59lpwlA8cxeuAvXvvOxazJLIPT4uWxK2XcaI/XLU6Z2dZRHK8pimjvtnCL
-         Mz6RiMRc5cbZa4MSH5Jhz6HtDt/a6VCdaiMtMSulkFNFfs7UOaGWmTOkTT0d1P09miQq
-         xfNHuFF13YUiid90mjjrD+z9Nzfq2Gy8rxj2XqgVlfYNup4eXd4JlU254pSi+WQxwOQn
-         brBUxJsvLD03VgcxYQO256twIf0kqvrBfM3qHrSrsBgMR2EWPHnGsfGsEELqwyUJ+/s8
-         K6oA==
+        bh=ijZNngKPrbpiSHbp4EiHV97XJQRwKlTlChFvzqASRMA=;
+        b=Cm9biH+3ATJN5g8MDXRplcSjNciYoVcPO+YfgEvfUUDhDOQq2jZ+mQEKh7RYyzUtis
+         fk1b3RExekpJB28oXbIJ22GjfE7nu4Y4GGkS4RjF2TZNg0xixmV6JuJRkpK4/9IOd+Ix
+         hXFY3++03Y4VWwtvL1uQ3/MtxJkdqP+sbUb8/hNBhylBKVBafTKx3hi4bPliMQMMQ30q
+         lr1QrJAhKsUwlCXGvikqYtWACW3p/oDqj1pUr5fQNkWK03hPW8udvT06VItLXUAfbitD
+         xSoyksHpWjFzo9tONLKYO/HxX6HOqkJWPdyfYfR4CArqJMQdZWg+593v/Z/a0MHebGbl
+         ZHfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cHC54axAtnG5sVXnSaBOV2n5YA7A7OaJy/0DeQOeXfY=;
-        b=eIAFm1aRtbgk736rqq2ZAqwuobwfeSZ92QvRUe411aeAxKodKBAzlIigT23/bcToIZ
-         M9ji8Ia2pHsVeIyD4hbx2fcadnoxz2tBWeuElMgVRjOXdcchf6xNrdx7pBgfteLYpRUT
-         5SRO1Fea7IIaVEzsyO/zVie6wU4R6/OURIfFyta4gy08OceMpCTU58gXAoE69LyHytge
-         Kwbeog9TZsrgms1dZMtbyXA5xuQ+2c0vynfQ/ik3Ld4M88vy/UV1m8sKttCNSzxyMrsj
-         JFEZPvrVKlTdil3wucWOMpmLEVELTodrFygaiePuxTKp9hZK/H6IA7pekA8CNOlGir4A
-         /YqQ==
-X-Gm-Message-State: APjAAAU3PrWPLa9yklHHQjMAZOG64SfngLqx1o2K8sIAOSOhJYiFp68W
-        zJHIp9bWOP+QcRztKzPLc3eNrSmpWXm9T6I8C4WRrA==
-X-Google-Smtp-Source: APXvYqx9zKimasGB5FwmxhmMrA+R0I8g/ElaBYfdXEgensSIA4fY5fcRSgs3gBGjO1KPz9MZT3LcW4dUiE3YA3zPnQ4=
-X-Received: by 2002:a5e:c606:: with SMTP id f6mr32705703iok.71.1578394572477;
- Tue, 07 Jan 2020 02:56:12 -0800 (PST)
+        bh=ijZNngKPrbpiSHbp4EiHV97XJQRwKlTlChFvzqASRMA=;
+        b=Zg+l8jlNYHvbioCo/iec5mqhrzrZ/M38+JMj9QmYEmbQDFqyjA9AjHsX+AFNTBs9Mb
+         oDarCABS+IXitWOY4y2d0brdFXY3ztZ6MG4rHyM6L21V0OXMpGW75qNGS9fumzGAvlyQ
+         fgfR6wTxG5xt3wEZTEsUAqPSBgt2QQZ5z2DpWxZasixPBgMsxf8Q4tWmVOrjUokxZAK6
+         sThPur3wGRDBUAsOC5DiHcfLYo/CpSfM8M72SJ+2kDr6tf7UbXJDzBM6Ux5qKfbcBab0
+         IpgyTn6yJ6qX57/wJnN1+9Hf/F9DKx0S3BypjPIAC6zhZh9uAZoPMayU1P0JjJ/PGwKY
+         1KAw==
+X-Gm-Message-State: APjAAAW0jiD+YfgOAVOJMsv/heCXROubilZSetaVOttMCI3sgl6j41kK
+        EhTobfTPiQ0C9oORzTq3A6lMq4dwigNPfO8rkt1wQA==
+X-Google-Smtp-Source: APXvYqxV0x2hwLXk6oIkLLahjGsyv/VGTdKmH3T4AjccMGFd3R38jyCUczX0QPn05xVr+JlCKw6z3KDCzunxNzxKTPk=
+X-Received: by 2002:a05:6602:25d3:: with SMTP id d19mr61296563iop.217.1578399774210;
+ Tue, 07 Jan 2020 04:22:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20191220155109.8959-1-jinpuwang@gmail.com> <20200102181859.GC9282@ziepe.ca>
- <CAMGffE=h24jmi0RnYks_rur71qrXCxJnPB5+cCACR50hKF6QRA@mail.gmail.com>
- <d5be42e2-94d4-ad13-43ac-fcc1bb108ad0@acm.org> <CAMGffEntYmFfGD8BGEtykoFXD_3DvNWQ8hrRmDoLtdr9ykTwug@mail.gmail.com>
-In-Reply-To: <CAMGffEntYmFfGD8BGEtykoFXD_3DvNWQ8hrRmDoLtdr9ykTwug@mail.gmail.com>
+References: <20191230102942.18395-1-jinpuwang@gmail.com> <20191230102942.18395-5-jinpuwang@gmail.com>
+ <d4288d41-b000-9a98-d12a-0738a0f647e8@acm.org>
+In-Reply-To: <d4288d41-b000-9a98-d12a-0738a0f647e8@acm.org>
 From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Tue, 7 Jan 2020 11:56:01 +0100
-Message-ID: <CAMGffEm=1ai=vkxLV7Qp0z3M-98BDej4mpc4WnsOpSHUJWuPeA@mail.gmail.com>
-Subject: Re: [PATCH v5 00/25] RTRS (former IBTRS) rdma transport library and
- the corresponding RNBD (former IBNBD) rdma network block device
+Date:   Tue, 7 Jan 2020 13:22:43 +0100
+Message-ID: <CAMGffEkG3N7ESyneN6PObq3L0Ps5cGSYboYac=Ti6yt-BqC2xA@mail.gmail.com>
+Subject: Re: [PATCH v6 04/25] rtrs: core: lib functions shared between client
+ and server modules
 To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jack Wang <jinpuwang@gmail.com>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
         Sagi Grimberg <sagi@grimberg.me>,
         Leon Romanovsky <leon@kernel.org>,
@@ -65,93 +63,255 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 6, 2020 at 6:07 PM Jinpu Wang <jinpu.wang@cloud.ionos.com> wrote:
+On Mon, Dec 30, 2019 at 11:25 PM Bart Van Assche <bvanassche@acm.org> wrote:
 >
-> On Fri, Jan 3, 2020 at 5:29 PM Bart Van Assche <bvanassche@acm.org> wrote:
-> >
-> > On 1/3/20 4:39 AM, Jinpu Wang wrote:
-> > > Performance results for the v5.5-rc1 kernel are here:
-> > >    link: https://github.com/ionos-enterprise/ibnbd/tree/develop/performance/v5-v5.5-rc1
-> > >
-> > > Some workloads RNBD are faster, some workloads NVMeoF are faster.
-> >
-> > Thank you for having shared these graphs.
-> >
-> > Do the graphs in RNBD-SinglePath.pdf show that NVMeOF achieves similar
-> > or higher IOPS, higher bandwidth and lower latency than RNBD for
-> > workloads with a block size of 4 KB and also for mixed workloads with
-> > less than 20 disks, whether or not invalidation is enabled for RNBD?
-> Hi Bart,
+> On 2019-12-30 02:29, Jack Wang wrote:
+> > + * InfiniBand Transport Layer
 >
-> Yes, that's the result on one pair of Server with Connect X4 HCA, I
-> did another test on another
-> 2 servers with Connect X5 HCA, results are quite different, we will
-> double-check the
-> performance results also on old machines, will share new results later.
+> Is RTRS an InfiniBand or an RDMA transport layer?
+will fix.
 >
-here are the results with ConnectX5 HCA MT4119 + Intel(R) Xeon(R) Gold
-6130 CPU @ 2.10GHz, sorry no graph for now,
-will prepare the next round.
+> > +MODULE_DESCRIPTION("RTRS Core");
+>
+> Please write out RTRS in full and consider changing the word "Core" into
+> "client and server".
+will do.
+>
+> > +     WARN_ON(!queue_size);
+> > +     ius = kcalloc(queue_size, sizeof(*ius), gfp_mask);
+> > +
+> > +     if (unlikely(!ius))
+> > +             return NULL;
+>
+> No blank line between the 'ius' assignment and the 'ius' check please.
+ok.
+>
+> > +int rtrs_iu_post_recv(struct rtrs_con *con, struct rtrs_iu *iu)
+> > +{
+> > +     struct rtrs_sess *sess = con->sess;
+> > +     struct ib_recv_wr wr;
+> > +     const struct ib_recv_wr *bad_wr;
+> > +     struct ib_sge list;
+> > +
+> > +     list.addr   = iu->dma_addr;
+> > +     list.length = iu->size;
+> > +     list.lkey   = sess->dev->ib_pd->local_dma_lkey;
+> > +
+> > +     if (WARN_ON(list.length == 0)) {
+> > +             rtrs_wrn(con->sess,
+> > +                       "Posting receive work request failed, sg list is empty\n");
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     wr.next    = NULL;
+> > +     wr.wr_cqe  = &iu->cqe;
+> > +     wr.sg_list = &list;
+> > +     wr.num_sge = 1;
+> > +
+> > +     return ib_post_recv(con->qp, &wr, &bad_wr);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rtrs_iu_post_recv);
+>
+> The above code is fragile: although this is unlikely, if a member would
+> be added in struct ib_sge or in struct ib_recv_wr then the above code
+> will leave some member variables uninitialized. Has it been considered
+> to initialize these structures using a single assignment statement, e.g.
+> as follows:
+>
+>         wr = (struct ib_recv_wr) {
+>                 .wr_cqe = ...,
+>                 .sg_list = ...,
+>                 .num_sge = 1,
+>         };
+Will do.
+>
+> > +int rtrs_post_recv_empty(struct rtrs_con *con, struct ib_cqe *cqe)
+> > +{
+> > +     struct ib_recv_wr wr;
+> > +     const struct ib_recv_wr *bad_wr;
+> > +
+> > +     wr.next    = NULL;
+> > +     wr.wr_cqe  = cqe;
+> > +     wr.sg_list = NULL;
+> > +     wr.num_sge = 0;
+> > +
+> > +     return ib_post_recv(con->qp, &wr, &bad_wr);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rtrs_post_recv_empty);
+>
+> Same comment for this function.
+dito.
+>
+> > +int rtrs_post_recv_empty_x2(struct rtrs_con *con, struct ib_cqe *cqe)
+> > +{
+> > +     struct ib_recv_wr wr_arr[2], *wr;
+> > +     const struct ib_recv_wr *bad_wr;
+> > +     int i;
+> > +
+> > +     memset(wr_arr, 0, sizeof(wr_arr));
+> > +     for (i = 0; i < ARRAY_SIZE(wr_arr); i++) {
+> > +             wr = &wr_arr[i];
+> > +             wr->wr_cqe  = cqe;
+> > +             if (i)
+> > +                     /* Chain backwards */
+> > +                     wr->next = &wr_arr[i - 1];
+> > +     }
+> > +
+> > +     return ib_post_recv(con->qp, wr, &bad_wr);
+> > +}
+> > +EXPORT_SYMBOL_GPL(rtrs_post_recv_empty_x2);
+>
+> I have not yet seen any other RDMA code that is similar to the above
+> function. A comment above this function that explains its purpose would
+> be more than welcome.
+Will add comment.
+>
+> > +int rtrs_iu_post_send(struct rtrs_con *con, struct rtrs_iu *iu, size_t size,
+> > +                    struct ib_send_wr *head)
+> > +{
+> > +     struct rtrs_sess *sess = con->sess;
+> > +     struct ib_send_wr wr;
+> > +     const struct ib_send_wr *bad_wr;
+> > +     struct ib_sge list;
+> > +
+> > +     if ((WARN_ON(size == 0)))
+> > +             return -EINVAL;
+>
+> No superfluous parentheses please.
+ok
 
- disks   4k nvme dual  4k nvme single    4k rnbd dual  4k rnbd single
-4k rnbd-inv dual  4k rnbd-inv single
-   x1  251637.436256   254312.068793   270886.311369   260934.306569
-  218632.336766       190800.519948
-   x2  460894.610539   463925.907409   496318.068193   466374.862514
-   418960.30397       372848.815118
-   x3  603263.673633    605004.49955   675073.892611   614552.144786
-  586223.077692       524221.977802
-   x4  731648.935106   733174.482552   850245.575442   743062.493751
-  744380.361964       656861.813819
-   x5  827732.326767   827444.855514  1026939.306069   840515.548445
-  897801.719828       762707.329267
-   x6  876705.329467     873963.0037  1142399.960004    876974.70253
- 1037773.522648       834073.892611
-   x7  893808.719128   893268.073193  1239282.471753   892728.027197
- 1135570.742926       871336.966303
-   x8  906589.741026   905938.006199  1287178.964207   906189.381062
-   1225040.9959       895292.070793
-   x9   912048.09519   912400.259974  1386211.878812   913885.311469
- 1302472.964884       910176.282372
-  x10  915566.243376   915602.739726   1442959.70403   916288.871113
- 1350296.325879        914966.40336
-  x11  917116.188381   916905.809419  1418574.942506   916264.373563
- 1370438.698083       915255.874413
-  x12  915852.814719   917710.128987  1423534.546545   916348.386452
- 1352357.364264       914966.656684
-  x13   919042.69573   918819.536093  1429697.830217   917631.036896
- 1378083.824558       916519.161677
-  x14   920000.49995    920031.59684  1443317.268273   917562.843716
-  1395023.56936       918935.706429
-  x15  920160.883912   920367.363264  1445306.425863   918278.472153
- 1440776.944611       916352.265921
-  x16  920652.869426   920673.832617  1454705.229477   917902.948526
-   1455708.2501       918198.001998
-  x17  916892.310769   916883.623275  1491071.841948   918936.706329
- 1436507.428457       917182.934132
-  x18  917247.775222   917762.523748  1612129.058036   918546.835949
- 1488716.583417       919521.095781
-  x19  920084.791521   920349.930014   1615690.87821   915371.496958
-  1406747.32954       918347.248577
-  x20  922339.232154   922208.058388  1591415.958404   917922.631526
- 1343806.744488       918903.393214
-  x21  923141.771646   923297.040592  1581547.169811   919371.025795
- 1342568.406347       919157.752944
-  x22  923063.787243   924072.385523  1574972.846162   919173.713143
- 1340318.639673       920577.995403
-  x23  923549.490102   924643.471306  1573597.440256   918705.060385
- 1333047.771337       917469.027431
-  x24  925584.483103   925224.955009  1578143.485651    921744.15117
- 1321494.708466       920001.498352
-  x25  926165.366927   926842.031594  1579288.271173   921845.392764
- 1319902.568202       920448.830702
-  x26  926852.729454   927382.123575  1585351.318945    922669.59912
- 1325670.791338       919137.796847
-  x27  928196.260748   928093.981204  1581427.557244   921379.155436
- 1325009.972078       919017.550858
-  x28  929330.433913   929606.778644  1581726.527347   924325.834833
- 1331721.074174       919557.761373
-  x29  929885.522895   929876.924615  1578317.436513   922977.240966
-  1333612.86783       921094.386736
-  x30  930635.972805   930599.520144  1583537.946205   922746.107784
- 1333446.651362       922821.171531
+>
+> > +     list.addr   = iu->dma_addr;
+> > +     list.length = size;
+> > +     list.lkey   = sess->dev->ib_pd->local_dma_lkey;
+> > +
+> > +     memset(&wr, 0, sizeof(wr));
+> > +     wr.next       = NULL;
+> > +     wr.wr_cqe     = &iu->cqe;
+> > +     wr.sg_list    = &list;
+> > +     wr.num_sge    = 1;
+> > +     wr.opcode     = IB_WR_SEND;
+> > +     wr.send_flags = IB_SEND_SIGNALED;
+>
+> Has it been considered to use designated initializers instead of a
+> memset() followed by multiple assignments? Same question for
+> rtrs_iu_post_rdma_write_imm() and rtrs_post_rdma_write_imm_empty().
+Sounds good, will do.
+
+>
+> > +static int create_qp(struct rtrs_con *con, struct ib_pd *pd,
+> > +                  u16 wr_queue_size, u32 max_sge)
+> > +{
+> > +     struct ib_qp_init_attr init_attr = {NULL};
+> > +     struct rdma_cm_id *cm_id = con->cm_id;
+> > +     int ret;
+> > +
+> > +     init_attr.cap.max_send_wr = wr_queue_size;
+> > +     init_attr.cap.max_recv_wr = wr_queue_size;
+>
+> What code is responsible for ensuring that neither max_send_wr nor
+> max_recv_wr exceeds the device limits? Please document this in a comment
+> above this function.
+rtrs-clt/srv queries device limits for ensuring the settings will not
+exceed the limits.
+will add comment.
+
+>
+> > +     init_attr.cap.max_recv_sge = 1;
+> > +     init_attr.event_handler = qp_event_handler;
+> > +     init_attr.qp_context = con;
+> > +#undef max_send_sge
+> > +     init_attr.cap.max_send_sge = max_sge;
+>
+> Is the "undef max_send_sge" really necessary? If so, please add a
+> comment that explains why it is necessary.
+it's not, will remove.
+>
+> > +static int rtrs_str_gid_to_sockaddr(const char *addr, size_t len,
+> > +                                  short port, struct sockaddr_storage *dst)
+> > +{
+> > +     struct sockaddr_ib *dst_ib = (struct sockaddr_ib *)dst;
+> > +     int ret;
+> > +
+> > +     /*
+> > +      * We can use some of the I6 functions since GID is a valid
+> > +      * IPv6 address format
+> > +      */
+> > +     ret = in6_pton(addr, len, dst_ib->sib_addr.sib_raw, '\0', NULL);
+> > +     if (ret == 0)
+> > +             return -EINVAL;
+>
+> What is "I6"?
+IPv6, will fix.
+>
+> Is the fourth argument to this function correct? From the comment above
+> in6_pton(): "@delim: the delimiter of the IPv6 address in @src, -1 means
+> no delimiter".
+'\0' means end of the string here, seems correct to me.
+>
+> > +int sockaddr_to_str(const struct sockaddr *addr, char *buf, size_t len)
+> > +{
+> > +     int cnt;
+> > +
+> > +     switch (addr->sa_family) {
+> > +     case AF_IB:
+> > +             cnt = scnprintf(buf, len, "gid:%pI6",
+> > +                     &((struct sockaddr_ib *)addr)->sib_addr.sib_raw);
+> > +             return cnt;
+> > +     case AF_INET:
+> > +             cnt = scnprintf(buf, len, "ip:%pI4",
+> > +                     &((struct sockaddr_in *)addr)->sin_addr);
+> > +             return cnt;
+> > +     case AF_INET6:
+> > +             cnt = scnprintf(buf, len, "ip:%pI6c",
+> > +                       &((struct sockaddr_in6 *)addr)->sin6_addr);
+> > +             return cnt;
+> > +     }
+> > +     cnt = scnprintf(buf, len, "<invalid address family>");
+> > +     pr_err("Invalid address family\n");
+> > +     return cnt;
+> > +}
+> > +EXPORT_SYMBOL(sockaddr_to_str);
+>
+> Is the pr_err() statement in the above function useful? Will anyone be
+> able to figure out what is going on if the "Invalid address family"
+> string appears in the system log? Please consider changing that pr_err()
+> statement into a WARN_ON_ONCE() statement.
+I expect the caller should also print something in syslog, combine
+them togather will help.
+>
+> > +     ret = rtrs_str_to_sockaddr(str, len, port, addr->dst);
+> > +
+> > +     return ret;
+>
+> Please change this into a single return statement.
+ok
+>
+> > +EXPORT_SYMBOL(rtrs_addr_to_sockaddr);
+> > +
+> > +void rtrs_ib_dev_pool_init(enum ib_pd_flags pd_flags,
+> > +                         struct rtrs_ib_dev_pool *pool)
+> > +{
+> > +     WARN_ON(pool->ops && (!pool->ops->alloc ^ !pool->ops->free));
+> > +     INIT_LIST_HEAD(&pool->list);
+> > +     mutex_init(&pool->mutex);
+> > +     pool->pd_flags = pd_flags;
+> > +}
+> > +EXPORT_SYMBOL(rtrs_ib_dev_pool_init);
+> > +
+> > +void rtrs_ib_dev_pool_deinit(struct rtrs_ib_dev_pool *pool)
+> > +{
+> > +     WARN_ON(!list_empty(&pool->list));
+> > +}
+> > +EXPORT_SYMBOL(rtrs_ib_dev_pool_deinit);
+>
+> Since rtrs_ib_dev_pool_init() calls mutex_init(), should
+> rtrs_ib_dev_pool_deinit() call mutex_destroy()?
+You're right.
+
+>
+> Thanks,
+>
+> Bart.
+>
+Thanks Bart.
