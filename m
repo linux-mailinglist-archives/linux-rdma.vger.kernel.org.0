@@ -2,93 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB6A131D79
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2020 03:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 085E0131DC7
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2020 03:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727332AbgAGCIo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 6 Jan 2020 21:08:44 -0500
-Received: from mga06.intel.com ([134.134.136.31]:8223 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727250AbgAGCIn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 6 Jan 2020 21:08:43 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 Jan 2020 18:08:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,404,1571727600"; 
-   d="scan'208";a="217583466"
-Received: from fmsmsx107.amr.corp.intel.com ([10.18.124.205])
-  by fmsmga008.fm.intel.com with ESMTP; 06 Jan 2020 18:08:42 -0800
-Received: from fmsmsx158.amr.corp.intel.com (10.18.116.75) by
- fmsmsx107.amr.corp.intel.com (10.18.124.205) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Mon, 6 Jan 2020 18:08:42 -0800
-Received: from fmsmsx123.amr.corp.intel.com ([169.254.7.87]) by
- fmsmsx158.amr.corp.intel.com ([169.254.15.85]) with mapi id 14.03.0439.000;
- Mon, 6 Jan 2020 18:08:42 -0800
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Xiyu Yang <xiyuyang19@fudan.edu.cn>
-CC:     "yuanxzhang@fudan.edu.cn" <yuanxzhang@fudan.edu.cn>,
-        "kjlu@umn.edu" <kjlu@umn.edu>, "leon@kernel.org" <leon@kernel.org>,
-        "Markus.Elfring@web.de" <Markus.Elfring@web.de>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        "Latif, Faisal" <faisal.latif@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Shannon Nelson <shannon.nelson@intel.com>,
-        "Singhai, Anjali" <anjali.singhai@intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4] infiniband: i40iw: fix a potential NULL pointer
- dereference
-Thread-Topic: [PATCH v4] infiniband: i40iw: fix a potential NULL pointer
- dereference
-Thread-Index: AQHVvrhzchRnSKHHyEuZXScGHS/Gk6faLOQAgARUNiA=
-Date:   Tue, 7 Jan 2020 02:08:41 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A7C1DF97F0@fmsmsx123.amr.corp.intel.com>
-References: <1577672668-46499-1-git-send-email-xiyuyang19@fudan.edu.cn>
- <20200104000128.GA20711@ziepe.ca>
-In-Reply-To: <20200104000128.GA20711@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ctpclassification: CTP_NT
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiYjI0MGQ1YjMtZGMxMS00MGRlLWE1ZTctNGI2ZTdlMDk2ZTkwIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoibDJqaU1hdDUzbzg3MGVnT2k0a1VDenZhd2FYbnRZTUNCdkFhT2xoQ1o0UkhDTTU0aDk0ZGV1eGk3WGZGOExCaSJ9
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.106]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727377AbgAGC4p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Jan 2020 21:56:45 -0500
+Received: from mail-pj1-f46.google.com ([209.85.216.46]:54753 "EHLO
+        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727295AbgAGC4p (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Jan 2020 21:56:45 -0500
+Received: by mail-pj1-f46.google.com with SMTP id kx11so8363940pjb.4;
+        Mon, 06 Jan 2020 18:56:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iJ76xh6dRGBK5I51/f7xLqV7Am1vCLOQtohVIzZUhs0=;
+        b=tcUBXVYW0iXGzle7lOQb3gX116Nm9GYntDNCYARuncmzEiMceoOxXE/XcWnt2hau1C
+         pnSaxr8diGPWZvp0ThQrGYt3paJSvGvRiCcUftYKm8QQELTT1BAAJdo/EfC5HgfBMq0L
+         CK3t7CoIT6DTExRkPj/8nFRayUdEsaLVhHs+wjI4AcXCpqLY002IgwRcuein9C6gJOnk
+         qWcWbth6MHuWCetGqMhjFHDkacRYq6L51C6uYVFl63oE9RBqI6+6WS/Ul5PXWVAMYId0
+         iSYdNl+4K6o5hVutswVrUDXg3xdjyzcitDqYaHI5h74bZ+/K7s74RJZ+Y8DT5rItWfwl
+         6UtA==
+X-Gm-Message-State: APjAAAV61e64ikBR8hb60fpwuGHdhzv5QCZKr9i44KVFEXmhRt5Q2Q0M
+        wJS4YPfab90KzduulgNm5NbGzam0
+X-Google-Smtp-Source: APXvYqxripukSjQGamAIrAP694EGXArjWAZ6wHH+sB0hky5ju4qvObN+j805Tw0b8pvZdsGCy/GrCA==
+X-Received: by 2002:a17:90a:b106:: with SMTP id z6mr47155130pjq.91.1578365803636;
+        Mon, 06 Jan 2020 18:56:43 -0800 (PST)
+Received: from ?IPv6:2601:647:4000:13e0:859b:a532:8457:1042? ([2601:647:4000:13e0:859b:a532:8457:1042])
+        by smtp.gmail.com with ESMTPSA id p17sm77626935pfn.31.2020.01.06.18.56.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Jan 2020 18:56:42 -0800 (PST)
+Subject: Re: Recent trace observed in target code during iSer testing
+To:     "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "'linux-rdma@vger.kernel.org'" <linux-rdma@vger.kernel.org>
+References: <MWHPR1101MB2271A83D246FAE4710E47BB2863C0@MWHPR1101MB2271.namprd11.prod.outlook.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <3b724797-275a-9a14-1503-1778780a5872@acm.org>
+Date:   Mon, 6 Jan 2020 18:56:41 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
+In-Reply-To: <MWHPR1101MB2271A83D246FAE4710E47BB2863C0@MWHPR1101MB2271.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [PATCH v4] infiniband: i40iw: fix a potential NULL pointer dereference
+On 2020-01-06 10:23, Marciniszyn, Mike wrote:
+> Seeing the following trace in some target testing for IB ulps:
 > 
-> On Mon, Dec 30, 2019 at 10:24:28AM +0800, Xiyu Yang wrote:
-> > A NULL pointer can be returned by in_dev_get(). Thus add a
-> > corresponding check so that a NULL pointer dereference will be avoided
-> > at this place.
-> >
-> > Fixes: 8e06af711bf2 ("i40iw: add main, hdr, status")
-> > Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> > Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> > Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
-> > ---
-> > Changes in v2:
-> > - Release rtnl lock when in_dev_get return NULL Changes in v3:
-> > - Continue the next loop when in_dev_get return NULL Changes in v4:
-> > - Change commit message
-> >
-> >  drivers/infiniband/hw/i40iw/i40iw_main.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> 
-> Applied to for-next
-> 
-> And Shiraz, Leon is right, that trylock stuff is completely wrong, let's fix it.
-> 
+> [28630.870878] ------------[ cut here ]------------
+> [28630.876936] percpu_ref_kill_and_confirm called more than once on target_release_sess_cmd_refcnt [target_core_mod]!
 
-Sure.
+A candidate fix has been posted but needs review and/or a Tested-by. See
+also https://www.spinics.net/lists/target-devel/msg17981.html.
+
+Thanks,
+
+Bart.
