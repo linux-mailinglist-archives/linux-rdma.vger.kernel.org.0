@@ -2,118 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 755B0131BFF
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2020 00:02:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B455C131D17
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Jan 2020 02:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgAFXCD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Jan 2020 18:02:03 -0500
-Received: from mta03.svc.cra.dublin.eircom.net ([159.134.118.145]:42072 "HELO
-        mta03.svc.cra.dublin.eircom.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S1726721AbgAFXCD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Jan 2020 18:02:03 -0500
-X-Greylist: delayed 397 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 Jan 2020 18:02:02 EST
-Received: (qmail 34862 messnum 15748895 invoked from network[213.94.190.11/avas00.vendorsvc.cra.dublin.eircom.net]); 6 Jan 2020 22:55:19 -0000
-Received: from avas00.vendorsvc.cra.dublin.eircom.net (HELO avas00) (213.94.190.11)
-  by mta03.svc.cra.dublin.eircom.net (qp 34862) with SMTP; 6 Jan 2020 22:55:19 -0000
-Received: from vzmbx18.eircom.net ([86.43.60.98])
-        by Cloudmark Gateway with SMTP
-        id obGMigljzUAb3obGMiWFQw; Mon, 06 Jan 2020 22:54:19 +0000
-X-Spam-Flag: NO
-X-CNFS-Analysis: v=2.2 cv=H4ir+6Qi c=1 sm=1 tr=0
- a=e7gqILOnBbllteVy7xBg4A==:117 a=9cW_t1CCXrUA:10 a=FKkrIqjQGGEA:10
- a=56OF8xidLmEA:10 a=0uCzU1F7OC4A:10 a=IkcTkHD0fZMA:10 a=x7bEGLp0ZPQA:10
- a=j-FYwdlVuk8A:10 a=sgm4F-J2Ld0A:10 a=ZZnuYtJkoWoA:10 a=UqCG9HQmAAAA:8
- a=Em65llmS2_cMR73qDeEA:9 a=PLSZQQfVPKqJUh-s:21 a=XauVkHYZTjVC1o0n:21
- a=QEXdDO2ut3YA:10 a=dRqJYu-X7R0A:10 a=UuxKnNfG_hQA:10 a=i0FYOed3za4A:10
-Date:   Mon, 6 Jan 2020 22:54:18 +0000 (GMT)
-From:   Ahmed <ahmed25442@eircom.net>
-Reply-To: ouedraogoahmed@outlook.com
-Message-ID: <907722808.114257.1578351258931.JavaMail.zimbra@eircom.net>
-Subject: Please Respond Urgently.
+        id S1727295AbgAGBRk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Jan 2020 20:17:40 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:43659 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727250AbgAGBRk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Jan 2020 20:17:40 -0500
+Received: by mail-qt1-f193.google.com with SMTP id d18so41356463qtj.10
+        for <linux-rdma@vger.kernel.org>; Mon, 06 Jan 2020 17:17:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bMjACsiL6KncNf0rovmI7z57gWx3xoTjZZNaMYoEg9w=;
+        b=IWJcZO/DOEyB6YYAI4GyDqKPc8Gtxhfsu8BNHDu9J9mAcqAJ6JEOKXM56vlU8afECz
+         wPzv+9rSUlO3Rd1I6sBVZsrMtzKDvYSRN4nnerzHR73qUXOScJo3Bci5TERzWkLQsuqo
+         yhj/eRoUY942ZQTQZkFCSZgp5XO/GtWk+RJij3cQzl/fEe0j9Egx24OMEApWFhxE57sd
+         zIQyXin/6qsLbkZsGGkXrNKtiX/qIcfnoIM0we44t/jUEPsXaXZRP3imWIZmbRRRbpR5
+         IJvSnoDeMbjn0Rpa8Jp409/PeYAgMhYZ2qt5KYHzbICZeYPQdKJ2qlg0F8qitDzKciox
+         W39Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bMjACsiL6KncNf0rovmI7z57gWx3xoTjZZNaMYoEg9w=;
+        b=tIIheNqz4hcWl39xwXBVZ/Ek//WiF56tmIQ0Qx+ZNYDaUS0GSNf7BJBNhIVqRxH+Wk
+         YbcLHFSUVkuhiHxqqEBAo+QjqQeE+SQFJlQk2aBr0ZAsl7i/Y1rQua4zwTnM9CQxIkvy
+         iq9MIFKaT+a4HmmWe/HtvduRe2Q/PKuJLwbPGYFSkqRfCtfeZm5Mips5vDWzTU/rWhZR
+         9S5rCCDE1/0eT3fjd1Bgdg7YL7b3u4gkMZ6m1B4GtG5ykdKt6vC21wnDnZS9BZ9oL2/n
+         HSVe6WwyEoWJkoZW+8RJJCBJOYUK0LdB2tufQijosoIoOMdXh7g3JIrs6rRg39zvWd+r
+         e0ig==
+X-Gm-Message-State: APjAAAVPhEBMAgkdBfsi3gbpBEelHbbYTkdBsYXefy+hHjxfN9MsHuDq
+        3uuyXdaWhlxUaUyTecqciNWdDg==
+X-Google-Smtp-Source: APXvYqx7cDEGS1MlF7exQfyGyqvwHqBi6GpVD2ES7T1yc5fqssey6AlQeEwK3pukf/+h/+VewFtUMg==
+X-Received: by 2002:ac8:5257:: with SMTP id y23mr77109147qtn.88.1578359859396;
+        Mon, 06 Jan 2020 17:17:39 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id g9sm21474176qkm.9.2020.01.06.17.17.38
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 06 Jan 2020 17:17:38 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iodV4-0005Mi-B9; Mon, 06 Jan 2020 21:17:38 -0400
+Date:   Mon, 6 Jan 2020 21:17:38 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Sean Hefty <sean.hefty@intel.com>
+Subject: Re: [PATCH rdma-rc v2 05/48] RDMA/cm: Request For Communication
+ (REQ) message definitions
+Message-ID: <20200107011738.GA19858@ziepe.ca>
+References: <20191212093830.316934-1-leon@kernel.org>
+ <20191212093830.316934-6-leon@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [196.52.38.31]
-X-Mailer: Zimbra 8.6.0_GA_1242 (zclient/8.6.0_GA_1242)
-Thread-Topic: Please Respond Urgently.
-Thread-Index: CkbPcAxuxzll7+nHwyUEZS1pB6welg==
-X-CMAE-Envelope: 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
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191212093830.316934-6-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Dear,
+On Thu, Dec 12, 2019 at 11:37:47AM +0200, Leon Romanovsky wrote:
 
-I want to transfer the sum of $11.3million immediately to your private account.By indicating your interest I will send you the full details on how the business will be executed.
+> +/* Table 106 REQ Message Contents */
+> +#define CM_REQ_LOCAL_COMM_ID CM_FIELD32_LOC(struct cm_req_msg, 0, 32)
+> +#define CM_REQ_SERVICE_ID CM_FIELD64_LOC(struct cm_req_msg, 8, 64)
+> +#define CM_REQ_LOCAL_CA_GUID CM_FIELD64_LOC(struct cm_req_msg, 16, 64)
+> +#define CM_REQ_LOCAL_Q_KEY CM_FIELD32_LOC(struct cm_req_msg, 28, 32)
+> +#define CM_REQ_LOCAL_QPN CM_FIELD32_LOC(struct cm_req_msg, 32, 24)
+> +#define CM_REQ_RESPONDED_RESOURCES CM_FIELD8_LOC(struct cm_req_msg, 35, 8)
 
-Please If you are interested send your reply to       ouedraogoahmed@outlook.com
+RESPONDER not RESPONDED
 
-Best Regards,
-Mr. Ahmed Ouedraogo.
+> +#define CM_REQ_PRIMARY_LOCAL_PORT_LID CM_FIELD16_LOC(struct cm_req_msg, 52, 16)
+> +#define CM_REQ_PRIMARY_REMOTE_PORT_LID CM_FIELD16_LOC(struct cm_req_msg, 54, 16)
+> +#define CM_REQ_PRIMARY_LOCAL_PORT_GID CM_FIELD_MLOC(struct cm_req_msg, 56, 128)
+> +#define CM_REQ_PRIMARY_REMOTE_PORT_GID CM_FIELD_MLOC(struct cm_req_msg, 72, 128)
+> +#define CM_REQ_PRIMARY_FLOW_LABEL CM_FIELD32_LOC(struct cm_req_msg, 88, 20)
+> +#define CM_REQ_PRIMARY_PACKET_RATE CM_FIELD_BLOC(struct cm_req_msg, 91, 2, 2)
+
+This field is 6 bits wide, not two. This is the only mistake in the
+field layouts.
+
+Jason
