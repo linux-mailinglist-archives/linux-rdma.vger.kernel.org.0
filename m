@@ -2,227 +2,235 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 371561344E4
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2020 15:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A50B21344EF
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2020 15:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728904AbgAHOWN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Jan 2020 09:22:13 -0500
-Received: from mail-il1-f193.google.com ([209.85.166.193]:38630 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726319AbgAHOWN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jan 2020 09:22:13 -0500
-Received: by mail-il1-f193.google.com with SMTP id f5so2792334ilq.5
-        for <linux-rdma@vger.kernel.org>; Wed, 08 Jan 2020 06:22:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4L0Pdx4M+dUNNcTlTOui4h4we5UqnwVlJk4ErC6HCoY=;
-        b=QHW2tlQ5jxhRzTYnqyTdODJ7Q5VHZnlneCPt3mEOWi01CGMrIIamgeD6I/zZVWs2Tf
-         /JhbtuDYov3ntH8/14x8F2T2YN+COCA2Lxl03iVg6vafuumyJqH8SDtfHVcjB07Op45i
-         FavpBedKvoJQVr3s41M27H3cCUCMAZiAUU96TPxMuk7atfsayqPcR17SHKuXyX9eypH6
-         iK3MgZiUfbsjll3yY3L0QM/uLTISuQxcsJ2Y8xG+nU9Mmc4+QmM58TgWZy5xMGm9DZzI
-         Zr1iqWq904nc7J+60fnqbe5FAus9L/MtPZ3x2jdYUMzZNMf0sP89R8yfNqu4prgj0auq
-         V1qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4L0Pdx4M+dUNNcTlTOui4h4we5UqnwVlJk4ErC6HCoY=;
-        b=i5rxrY7ItGkXOTd48K/BdwyTjW6+2EMiEuqwEwW863roXimKKDb5PaMgb8XOiNRAL9
-         Nbg1WUw2OB9ON0eY1utK/sLZ0G6uf/mDAUfZM2ZhYush3EKXjZ/dNwdBnU3O9xlCUTOW
-         cMai+wo0lh3JKHLLxC1Zvv9eOXp2VRDq9EAOVnsMqTVYvNVB06ef+zbJvlgLL/ljAbwd
-         mTwO4HD0kBhkaCqD7o5b6RWnc9v95Egc41L6R2kxH4WDC3dXvGHlSrSce1wOxyo6nFZn
-         WpQlLNQkoNZkN3emldReobsne2H5l63DWBGzIa05fFi/0Gfqmlwf2clgC9kMYZPOLs0w
-         XFOg==
-X-Gm-Message-State: APjAAAUGFfh11L9Cz/XHcO/K0YeoJeZdyDDF3p4t6/CadwP1Z5uq94e1
-        HBYZhsxq2Pb2IOcI9A3uoGWUzzibq649Q6gJyne6Jg==
-X-Google-Smtp-Source: APXvYqxE8DTjI/kYFc6Eod07f6NpDAfu9eUS8dRgkrrNH992e7HubiZpVGbeXDu2qQPUdchvf1qJIGa/WLL0E11MHMU=
-X-Received: by 2002:a05:6e02:4d2:: with SMTP id f18mr3906828ils.54.1578493332379;
- Wed, 08 Jan 2020 06:22:12 -0800 (PST)
-MIME-Version: 1.0
-References: <20191230102942.18395-1-jinpuwang@gmail.com> <20191230102942.18395-18-jinpuwang@gmail.com>
- <aa7eeeda-b3d7-4a26-9043-53ce8c80eef1@acm.org>
-In-Reply-To: <aa7eeeda-b3d7-4a26-9043-53ce8c80eef1@acm.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Wed, 8 Jan 2020 15:22:01 +0100
-Message-ID: <CAMGffEkYVzFJX2=pur7+_gqOsOSiMLpu08Z7eCVs4N3ruz=QWw@mail.gmail.com>
-Subject: Re: [PATCH v6 17/25] rnbd: client: main functionality
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de
-Content-Type: text/plain; charset="UTF-8"
+        id S1726401AbgAHOZG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Jan 2020 09:25:06 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:39710 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgAHOZG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jan 2020 09:25:06 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 008ENHb9117831;
+        Wed, 8 Jan 2020 14:25:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2019-08-05; bh=qWlKteoj7Sg5Q2Jn/BBcJmOkHUQ0uxB28fUw87c6TVU=;
+ b=caFtjJxEJ99PdogBXD8rJWQgvHXByBAbREqLHyR7eWHe5yssIGFpH24q3O/rSPqNnL1Y
+ EsP24KWSlKfQya86J7oNQaziM6GyMZFh/geJ9C0WDxKTy/sIjDMmYbfl9SRd5Vitt+Wq
+ JR8DIFZYgduMB3dQ05vZJHC1GIT0QWfdVLfXDWfHEHTrmUyATeoajAP9VKiyNna0XKfE
+ EwOkOCjmKP3YeMM4KAUf3VIvDtxLOPzTJH2aNCos501ERa5ud3de0nBNquaCaU/TRMLU
+ lmaSTcylJttnCVwI2FTOQYNkb4qsgkvKwq9RA4Qvt74Leb++Ve/8Z1bJrmQY4ut4VvTj BQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2xakbqv3gh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 08 Jan 2020 14:25:00 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 008EOMlY051881;
+        Wed, 8 Jan 2020 14:24:59 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 2xcqbnya51-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 08 Jan 2020 14:24:50 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 008ENw3b001185;
+        Wed, 8 Jan 2020 14:23:58 GMT
+Received: from dhcp-10-172-157-155.no.oracle.com (/10.172.157.155)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 08 Jan 2020 06:23:58 -0800
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.40.2.2.4\))
+Subject: Re: [PATCH RDMA/uverbs] RDMA/uverbs: Protect list_empty() by lock
+From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+In-Reply-To: <20200107184238.GA7928@ziepe.ca>
+Date:   Wed, 8 Jan 2020 15:23:55 +0100
+Cc:     Doug Ledford <dledford@redhat.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <EC6982F9-6AED-4EE7-9CF9-AB7564F27E88@oracle.com>
+References: <20200106122711.217198-1-haakon.bugge@oracle.com>
+ <20200107184238.GA7928@ziepe.ca>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Jason Gunthorpe <jgg@mellanox.com>
+X-Mailer: Apple Mail (2.3608.40.2.2.4)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9493 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=4 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001080123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9493 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=4 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001080123
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 3, 2020 at 12:55 AM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 12/30/19 2:29 AM, Jack Wang wrote:
-> > +MODULE_DESCRIPTION("InfiniBand Network Block Device Client");
->
-> InfiniBand or RDMA?
-will fix.
->
-> > +static int rnbd_clt_set_dev_attr(struct rnbd_clt_dev *dev,
-> > +                               const struct rnbd_msg_open_rsp *rsp)
-> > +{
-> > +     struct rnbd_clt_session *sess = dev->sess;
-> > +
-> > +     if (unlikely(!rsp->logical_block_size))
-> > +             return -EINVAL;
-> > +
-> > +     dev->device_id              = le32_to_cpu(rsp->device_id);
-> > +     dev->nsectors               = le64_to_cpu(rsp->nsectors);
-> > +     dev->logical_block_size     = le16_to_cpu(rsp->logical_block_size);
-> > +     dev->physical_block_size    = le16_to_cpu(rsp->physical_block_size);
-> > +     dev->max_write_same_sectors = le32_to_cpu(rsp->max_write_same_sectors);
-> > +     dev->max_discard_sectors    = le32_to_cpu(rsp->max_discard_sectors);
-> > +     dev->discard_granularity    = le32_to_cpu(rsp->discard_granularity);
-> > +     dev->discard_alignment      = le32_to_cpu(rsp->discard_alignment);
-> > +     dev->secure_discard         = le16_to_cpu(rsp->secure_discard);
-> > +     dev->rotational             = rsp->rotational;
-> > +
-> > +     dev->max_hw_sectors = sess->max_io_size / dev->logical_block_size;
->
-> The above statement looks suspicious to me. The unit of the second
-> argument of blk_queue_max_hw_sectors() is 512 bytes. Since
-> dev->max_hw_sectors is passed as the second argument to
-> blk_queue_max_hw_sectors() I think it should also have 512 bytes as unit
-> instead of the logical block size.
-You're right, will fix.
->
-> > +static int rnbd_clt_change_capacity(struct rnbd_clt_dev *dev,
-> > +                                  size_t new_nsectors)
-> > +{
-> > +     int err = 0;
-> > +
-> > +     rnbd_clt_info(dev, "Device size changed from %zu to %zu sectors\n",
-> > +                    dev->nsectors, new_nsectors);
-> > +     dev->nsectors = new_nsectors;
-> > +     set_capacity(dev->gd,
-> > +                  dev->nsectors * (dev->logical_block_size /
-> > +                                   SECTOR_SIZE));
-> > +     err = revalidate_disk(dev->gd);
-> > +     if (err)
-> > +             rnbd_clt_err(dev,
-> > +                           "Failed to change device size from %zu to %zu, err: %d\n",
-> > +                           dev->nsectors, new_nsectors, err);
-> > +     return err;
-> > +}
->
-> Please document the unit of nsectors in struct rnbd_clt_dev. Please also
-> document the unit of the 'new_nsectors' argument.
-will do. The unit of nsectors is 512b.
->
-> > +static void msg_io_conf(void *priv, int errno)
-> > +{
-> > +     struct rnbd_iu *iu = priv;
-> > +     struct rnbd_clt_dev *dev = iu->dev;
-> > +     struct request *rq = iu->rq;
-> > +
-> > +     iu->status = errno ? BLK_STS_IOERR : BLK_STS_OK;
-> > +
-> > +     blk_mq_complete_request(rq);
-> > +
-> > +     if (errno)
-> > +             rnbd_clt_info_rl(dev, "%s I/O failed with err: %d\n",
-> > +                               rq_data_dir(rq) == READ ? "read" : "write",
-> > +                               errno);
-> > +}
->
-> Accessing 'rq' after having called blk_mq_complete_request() may trigger
-> a use-after-free. Please don't do that.
-You are right, will fix.
-
->
-> > +static void wait_for_rtrs_disconnection(struct rnbd_clt_session *sess)
-> > +__releases(&sess_lock)
-> > +__acquires(&sess_lock)
->
-> Please indent __releases() and __acquires() annotations.
-ok.
 
 
->
-> > +static int setup_mq_tags(struct rnbd_clt_session *sess)
-> > +{
-> > +     struct blk_mq_tag_set *tags = &sess->tag_set;
-> > +
-> > +     memset(tags, 0, sizeof(*tags));
-> > +     tags->ops               = &rnbd_mq_ops;
-> > +     tags->queue_depth       = sess->queue_depth;
-> > +     tags->numa_node         = NUMA_NO_NODE;
-> > +     tags->flags             = BLK_MQ_F_SHOULD_MERGE |
-> > +                               BLK_MQ_F_TAG_SHARED;
-> > +     tags->cmd_size          = sizeof(struct rnbd_iu);
-> > +     tags->nr_hw_queues      = num_online_cpus();
-> > +
-> > +     return blk_mq_alloc_tag_set(tags);
-> > +}
->
-> Please change the name of the "tags" pointer into "tag_set".
-ok.
->
-> > +static int index_to_minor(int index)
-> > +{
-> > +     return index << RNBD_PART_BITS;
-> > +}
-> > +
-> > +static int minor_to_index(int minor)
-> > +{
-> > +     return minor >> RNBD_PART_BITS;
-> > +}
->
-> Is it useful to introduce functions that encapsulate a single shift
-> operation?
-can be dropped, althrough it's common to do it this way, plenty of
-examples in kernel tree.
->
-> > +     blk_queue_virt_boundary(dev->queue, 4095);
->
-> The virt_boundary parameter must match the RDMA memory registration page
-> size. Please introduce a symbolic constant for the RDMA memory
-> registration page size such that these two parameters stay in sync in
-> case anyone would want to change the memory registration page size.
->
-> > +static void rnbd_clt_setup_gen_disk(struct rnbd_clt_dev *dev, int idx)
-> > +{
-> > +     dev->gd->major          = rnbd_client_major;
-> > +     dev->gd->first_minor    = index_to_minor(idx);
-> > +     dev->gd->fops           = &rnbd_client_ops;
-> > +     dev->gd->queue          = dev->queue;
-> > +     dev->gd->private_data   = dev;
-> > +     snprintf(dev->gd->disk_name, sizeof(dev->gd->disk_name), "rnbd%d",
-> > +              idx);
-> > +     pr_debug("disk_name=%s, capacity=%zu\n",
-> > +              dev->gd->disk_name,
-> > +              dev->nsectors * (dev->logical_block_size / SECTOR_SIZE)
-> > +              );
-> > +
-> > +     set_capacity(dev->gd, dev->nsectors * (dev->logical_block_size /
-> > +                                            SECTOR_SIZE));
->
-> Again, what is the unit of dev->nsectors?
-The unit is 512b, I will remove the multipler, in most of the case
-logical_block_size is SECTOR_SIZE.
->
-> > +static void rnbd_clt_add_gen_disk(struct rnbd_clt_dev *dev)
-> > +{
-> > +     add_disk(dev->gd);
-> > +}
->
-> Is it useful to introduce this wrapper around add_disk()?
-will remove the wrapper.
+> On 7 Jan 2020, at 19:42, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>=20
+> On Mon, Jan 06, 2020 at 01:27:11PM +0100, H=C3=A5kon Bugge wrote:
+>> In ib_uverbs_event_read(), events are waited for, then pulled off the
+>> kernel's event queue, and finally returned to user space.
+>>=20
+>> There is an explicit check to see if the device is gone, and if so =
+and
+>> the there are no events pending, an -EIO is returned.
+>>=20
+>> However, said test does not check for queue empty whilst holding the
+>> lock, so there is a race where the existing code perceives the queue
+>> to be empty, when it in fact isn't. Fixed by acquiring the lock ahead
+>> of the list_empty() test.
+>>=20
+>> Fixes: 036b10635739 ("IB/uverbs: Enable device removal when there are =
+active user space applications")
+>> Signed-off-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
+>> ---
+>> drivers/infiniband/core/uverbs_main.c | 8 +++++---
+>> 1 file changed, 5 insertions(+), 3 deletions(-)
+>>=20
+>> diff --git a/drivers/infiniband/core/uverbs_main.c =
+b/drivers/infiniband/core/uverbs_main.c
+>> index 970d8e31dd65..7165e51790ed 100644
+>> --- a/drivers/infiniband/core/uverbs_main.c
+>> +++ b/drivers/infiniband/core/uverbs_main.c
+>> @@ -245,12 +245,14 @@ static ssize_t ib_uverbs_event_read(struct =
+ib_uverbs_event_queue *ev_queue,
+>> 					     =
+!uverbs_file->device->ib_dev)))
+>> 			return -ERESTARTSYS;
+>>=20
+>> +		spin_lock_irq(&ev_queue->lock);
+>> +
+>> 		/* If device was disassociated and no event exists set =
+an error */
+>> 		if (list_empty(&ev_queue->event_list) &&
+>> -		    !uverbs_file->device->ib_dev)
+>> +		    !uverbs_file->device->ib_dev) {
+>> +			spin_unlock_irq(&ev_queue->lock);
+>> 			return -EIO;
+>=20
+> I noticed this too last month. While this patch is an improvement, I
+> had written this one which also fixes the wrong use of devce->ib_dev
+> without a READ_ONCE or locking. It is just winding its way through
+> testing right now.
+>=20
+> What do you think?
+>=20
+> =46rom 37ddee0ea682eaf47e6167a090ae0a4e943f7f68 Mon Sep 17 00:00:00 =
+2001
+> From: Jason Gunthorpe <jgg@mellanox.com>
+> Date: Tue, 26 Nov 2019 20:58:04 -0400
+> Subject: [PATCH] RDMA/core: Fix locking in ib_uverbs_event_read
+>=20
+> This should not be using ib_dev to test for disassociation, during
+> disassociation is_closed is set under lock and the waitq is triggered.
+>=20
+> Instead check is_closed and be sure to re-obtain the lock to test the
+> value after the wait_event returns.
+>=20
+> Fixes: 036b10635739 ("IB/uverbs: Enable device removal when there are =
+active user space applications")
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 
->
-> Thanks,
->
-> Bart.
-Thanks Bart.
+LGTM,
+
+Reviewed-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
+(or feel free to use my s-o-b, as we coined 80% of this independently of =
+each other).
+
+
+Thxs, H=C3=A5kon
+
+
+> ---
+> drivers/infiniband/core/uverbs_main.c | 24 +++++++++---------------
+> 1 file changed, 9 insertions(+), 15 deletions(-)
+>=20
+> diff --git a/drivers/infiniband/core/uverbs_main.c =
+b/drivers/infiniband/core/uverbs_main.c
+> index 953a8c3fae64bd..2b7dc94b6a7a69 100644
+> --- a/drivers/infiniband/core/uverbs_main.c
+> +++ b/drivers/infiniband/core/uverbs_main.c
+> @@ -215,7 +215,6 @@ void ib_uverbs_release_file(struct kref *ref)
+> }
+>=20
+> static ssize_t ib_uverbs_event_read(struct ib_uverbs_event_queue =
+*ev_queue,
+> -				    struct ib_uverbs_file *uverbs_file,
+> 				    struct file *filp, char __user *buf,
+> 				    size_t count, loff_t *pos,
+> 				    size_t eventsz)
+> @@ -233,19 +232,16 @@ static ssize_t ib_uverbs_event_read(struct =
+ib_uverbs_event_queue *ev_queue,
+>=20
+> 		if (wait_event_interruptible(ev_queue->poll_wait,
+> 					     =
+(!list_empty(&ev_queue->event_list) ||
+> -			/* The barriers built into =
+wait_event_interruptible()
+> -			 * and wake_up() guarentee this will see the =
+null set
+> -			 * without using RCU
+> -			 */
+> -					     =
+!uverbs_file->device->ib_dev)))
+> +					      ev_queue->is_closed)))
+> 			return -ERESTARTSYS;
+>=20
+> +		spin_lock_irq(&ev_queue->lock);
+> +
+> 		/* If device was disassociated and no event exists set =
+an error */
+> -		if (list_empty(&ev_queue->event_list) &&
+> -		    !uverbs_file->device->ib_dev)
+> +		if (list_empty(&ev_queue->event_list) && =
+ev_queue->is_closed) {
+> +			spin_unlock_irq(&ev_queue->lock);
+> 			return -EIO;
+> -
+> -		spin_lock_irq(&ev_queue->lock);
+> +		}
+> 	}
+>=20
+> 	event =3D list_entry(ev_queue->event_list.next, struct =
+ib_uverbs_event, list);
+> @@ -280,8 +276,7 @@ static ssize_t ib_uverbs_async_event_read(struct =
+file *filp, char __user *buf,
+> {
+> 	struct ib_uverbs_async_event_file *file =3D filp->private_data;
+>=20
+> -	return ib_uverbs_event_read(&file->ev_queue, file->uverbs_file, =
+filp,
+> -				    buf, count, pos,
+> +	return ib_uverbs_event_read(&file->ev_queue, filp, buf, count, =
+pos,
+> 				    sizeof(struct =
+ib_uverbs_async_event_desc));
+> }
+>=20
+> @@ -291,9 +286,8 @@ static ssize_t ib_uverbs_comp_event_read(struct =
+file *filp, char __user *buf,
+> 	struct ib_uverbs_completion_event_file *comp_ev_file =3D
+> 		filp->private_data;
+>=20
+> -	return ib_uverbs_event_read(&comp_ev_file->ev_queue,
+> -				    comp_ev_file->uobj.ufile, filp,
+> -				    buf, count, pos,
+> +	return ib_uverbs_event_read(&comp_ev_file->ev_queue, filp, buf, =
+count,
+> +				    pos,
+> 				    sizeof(struct =
+ib_uverbs_comp_event_desc));
+> }
+>=20
+> --=20
+> 2.24.1
+>=20
+
