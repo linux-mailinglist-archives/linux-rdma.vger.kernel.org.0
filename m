@@ -2,147 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF31134614
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2020 16:24:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F6013478D
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2020 17:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728589AbgAHPYZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Jan 2020 10:24:25 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:35228 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726556AbgAHPYX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jan 2020 10:24:23 -0500
-Received: by mail-wr1-f66.google.com with SMTP id g17so3831858wro.2
-        for <linux-rdma@vger.kernel.org>; Wed, 08 Jan 2020 07:24:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WY8LswhWtBe+DJC/DEGAG0v0KweIWUFyKsy0DnI+itc=;
-        b=ZXUvw/vhiVbJH+1wtwf5xxWbV9B3EDKLGgk9nZLyC9y0XZMJuFRdJO5tuYwtkFbOyP
-         FralA2sMLvFQDB14ET8u6vgtQdJbh4cvA9p55FRNByr2yf3FXy/NIY9nTBGpK5LUxcq4
-         1by3MPlRENUwrEj+Sezq+4Hy2bCik9nFCqlZYFmw9NvFsGy8I8giq3+itv9gstEAWAmQ
-         2kV7+GrmtGpLDfnI2DKBBwsLOzcLLw9vSGgYAxKhrEejMx8BPnZpMfueADS0lPsoEpQB
-         1Wb/L2J/vP/di06i2RyNw0jRZM8kmLnNDOKlFV52GSMVHcCpiwYy7ZVl2Hil9XybPnRb
-         zn1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WY8LswhWtBe+DJC/DEGAG0v0KweIWUFyKsy0DnI+itc=;
-        b=Izs93z6L5CmYn0ePVoRkTBin1T6B+3XlxR2bBrHRT0h5D25P023YpydFDoLeEyacub
-         As7GY5ff/XrlH/sKAO59d45c1pWRA+l0wDVSl2kUp790fzyqvFmjzcZB7Vacksn2HKFG
-         5/4ExW11S8xsMR1M20zJ4elNJrBO5/lMgRgrR7siE9/xIi9qfCuGMbaCxROKaA7v+1Uh
-         ZYD0mmokqURapOxzwZz7eCQk0NglikwIzJTg61kEPRPEYlFuSLXhAIUmSbL0X9wqqQvK
-         RD1WdEOEmhUEn5CSJuvWgi9pjxxu9JB+AM2z9c2F5SEWZK/eT3QIGPBhXgCTnKGKQisz
-         SJXw==
-X-Gm-Message-State: APjAAAXu7Ijt1u0FGNVc453pIlKAc0vt6ogR1Rt/c9JWy1SDcQ0giDYa
-        ICR0JThwBAXiT6eXAL8I2Hmumg==
-X-Google-Smtp-Source: APXvYqy/vleudjcx/xMUWMn9iSG/9C+uIhSD3GlJinfMIalsB8y/BxdVFOkayIHlOLB7/RHQFVWGOw==
-X-Received: by 2002:adf:b605:: with SMTP id f5mr4964464wre.383.1578497061827;
-        Wed, 08 Jan 2020 07:24:21 -0800 (PST)
-Received: from [10.80.2.221] ([193.47.165.251])
-        by smtp.googlemail.com with ESMTPSA id o16sm4337490wmc.18.2020.01.08.07.24.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Jan 2020 07:24:21 -0800 (PST)
-Subject: Re: [PATCH rdma-rc 3/3] IB/core: Fix ODP with IB_ACCESS_HUGETLB
- handling
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Artemy Kovalyov <artemyko@mellanox.com>,
-        Aviad Yehezkel <aviadye@mellanox.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20191219134646.413164-1-leon@kernel.org>
- <20191219134646.413164-4-leon@kernel.org>
- <alpine.DEB.2.21.2001081352560.23971@ramsan.of.borg>
-From:   Yishai Hadas <yishaih@dev.mellanox.co.il>
-Message-ID: <ff4da6a1-609a-546c-e56c-e3ac529d4496@dev.mellanox.co.il>
-Date:   Wed, 8 Jan 2020 17:24:19 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
-MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2001081352560.23971@ramsan.of.borg>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1728288AbgAHQSg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Jan 2020 11:18:36 -0500
+Received: from mga11.intel.com ([192.55.52.93]:1769 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727825AbgAHQSf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 8 Jan 2020 11:18:35 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Jan 2020 08:18:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,410,1571727600"; 
+   d="scan'208";a="215998036"
+Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
+  by orsmga008.jf.intel.com with ESMTP; 08 Jan 2020 08:18:34 -0800
+Received: from fmsmsx117.amr.corp.intel.com (10.18.116.17) by
+ FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Wed, 8 Jan 2020 08:18:32 -0800
+Received: from FMSEDG002.ED.cps.intel.com (10.1.192.134) by
+ fmsmsx117.amr.corp.intel.com (10.18.116.17) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Wed, 8 Jan 2020 08:18:32 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.107)
+ by edgegateway.intel.com (192.55.55.69) with Microsoft SMTP Server (TLS) id
+ 14.3.439.0; Wed, 8 Jan 2020 08:18:32 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NQBA9KVslEuYyDeey67T6R/QEBKZUqh9v0ZHm5pPtKOHCkU6CAfzWyBqWXn/wobeAE0CRLXL6mxr/99AURjJZzGVVRKjwAsyoDc2THEzjVOFzHiZcli065pK5QlnoQpRhCKuIRVMUIKv1iZQTT7bMxkCHEy+diM6IBl+HRfSvtj+JMLeoEoRIQqpSoXDvaGiYPAs1vVoipethNJy+7gIw60CfjsNL5H6EocbMp7QNlNx87AHu7jZXg8MkKZC8p8uwrhyN4Ro2MFWMV35N/5jTbLl4Do1QpQEuB3gsJ12e6y5ZO0FHVjnGH4/fyKJbpnnbBku6Iahirjzhs6OxUWmkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4BZqtfKR7fMbB4nHEBUo/Bt3c/p1/bllZwGTnWDSDEo=;
+ b=ckEoLSgH8QxqL4aDWOhHhSCm2clKT6xxSdSm3vIuDJchgXWGJw7Hlnl+u6ml8BsBblo3jgGA3jBn7k2Em3EJm+xojXJfDDwmWESpyWa8KngepQRLJBQNsp5H+ygONOmI04B5JXYzzRcAnkZPL8+1k/pmBkr+BXRB3tYJXbATLmOmMRfGxumK2zJVMO4zaG6OpG9StYerTn8noVRfzn0VmJTwX4VDZkE2xqyhbWfzv0wlZDCaas9rt70S+Tj7LUNJRmEs1kT70F1bMkGf8Af/ndmRWirI/gXj84mkYM0QGmooioQLaR/dIcQUa7IIsSErz/KUjMJP61bNqu2Josf+tw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4BZqtfKR7fMbB4nHEBUo/Bt3c/p1/bllZwGTnWDSDEo=;
+ b=imd9YTqEQRne3I+tJO0efkKmWue+3PO2H2PbSkvWV2NWymrgvn84FZSUi2VuxV6YBuxzjnRuQx2Ay2C6FFxJ5HExyN7OUydSGKa6RP6KAXsg1trlA4TUFAjUyjbFltQwjjUwx3m1Y/caSukaZh3v+052g8V4fbP0emHli2TM9Co=
+Received: from MWHPR1101MB2271.namprd11.prod.outlook.com (10.174.97.23) by
+ MWHPR1101MB2286.namprd11.prod.outlook.com (10.174.101.137) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2602.10; Wed, 8 Jan 2020 16:18:31 +0000
+Received: from MWHPR1101MB2271.namprd11.prod.outlook.com
+ ([fe80::d551:b775:1efb:2ed4]) by MWHPR1101MB2271.namprd11.prod.outlook.com
+ ([fe80::d551:b775:1efb:2ed4%11]) with mapi id 15.20.2602.016; Wed, 8 Jan 2020
+ 16:18:30 +0000
+From:   "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+CC:     "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "'linux-rdma@vger.kernel.org'" <linux-rdma@vger.kernel.org>
+Subject: RE: Recent trace observed in target code during iSer testing
+Thread-Topic: Recent trace observed in target code during iSer testing
+Thread-Index: AdXEvi9yRk7s01oGS3qaCUi6aFPrnAAR+a+AAE5GdrA=
+Date:   Wed, 8 Jan 2020 16:18:30 +0000
+Message-ID: <MWHPR1101MB227100196B12AF2494BB184F863E0@MWHPR1101MB2271.namprd11.prod.outlook.com>
+References: <MWHPR1101MB2271A83D246FAE4710E47BB2863C0@MWHPR1101MB2271.namprd11.prod.outlook.com>
+ <3b724797-275a-9a14-1503-1778780a5872@acm.org>
+In-Reply-To: <3b724797-275a-9a14-1503-1778780a5872@acm.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=mike.marciniszyn@intel.com; 
+x-originating-ip: [192.55.52.215]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c4b672b1-d36b-40a7-4429-08d7945666d6
+x-ms-traffictypediagnostic: MWHPR1101MB2286:
+x-microsoft-antispam-prvs: <MWHPR1101MB228656D8402461DA910EC794863E0@MWHPR1101MB2286.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1468;
+x-forefront-prvs: 02760F0D1C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(39860400002)(396003)(136003)(376002)(346002)(199004)(189003)(66946007)(66476007)(186003)(86362001)(2906002)(81166006)(81156014)(76116006)(478600001)(966005)(26005)(8676002)(6506007)(33656002)(66556008)(66446008)(64756008)(8936002)(55016002)(4326008)(5660300002)(316002)(7696005)(54906003)(558084003)(9686003)(71200400001)(52536014)(6916009);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR1101MB2286;H:MWHPR1101MB2271.namprd11.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MDSllosKLGuWTo+pGdx8Gu2APxYvLHHH6GMEuRYHV0rlANUhbGP6Z1fAw6mUXA1bWFG+4n3hH0FgMa1NhWtsntt/McdxDh7SHQeeef+wLo3j4CKcqMfTp2itCuRoAOyan8Mq2ndsaCm3Ubge6Spar0vs/8QkevDXlMoKL2Q/zYHK1QmeKSaDc6P3ztel+czGRhOtr74hyVX2mHDF0ORovccbuoQ2KkHhy2JEfC9WM8+ZMND3B2gMS3yy10KYrDItywNF+HKmo6+pfRYrjj+uKrGFJfYD2tBn8BAnw5cwinngDcY+xVvKe5ZcuQOy2YjWlJJQ8jQ/nVjLn7lrjj9whIM26Zadbjcvst2ySFbNQxD7mRn5a77G8Gmb976IRZ4EENap0rY56MvYqeo6GKnQsl69WYj0iVseyiyJYsXbOrFIvlv7UAPDrU3bgSXuh8RIAKDnedMoKjBG43EXdP6aXKebBrXcTM6K4BuDAd0fqTKxIMybTAlPwLhJVPZCZws1vQ0KuV7hqrvyIqagqAYKqA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: c4b672b1-d36b-40a7-4429-08d7945666d6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2020 16:18:30.7821
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NWQHtwduKl30Be1A0WqL6WajbLVWhQG5t0LWDS6mC+Ipsy1Il1TclyhLMp4Ii5c6IvPEgDPVbLpxS3qyIlVlpq5m0hDFWET45jpveSR92fE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2286
+X-OriginatorOrg: intel.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/8/2020 2:56 PM, Geert Uytterhoeven wrote:
->      Hi Leon,
-> 
-> On Thu, 19 Dec 2019, Leon Romanovsky wrote:
->> From: Yishai Hadas <yishaih@mellanox.com>
->>
->> As VMAs for a given range might not be available as part of the
->> registration phase in ODP, IB_ACCESS_HUGETLB/page_shift must be checked
->> as part of the page fault flow.
->>
->> If the application didn't mmap the backed memory with huge pages or
->> released part of that hugepage area, an error will be set as part of the
->> page fault flow once be detected.
->>
->> Fixes: 0008b84ea9af ("IB/umem: Add support to huge ODP")
->> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
->> Reviewed-by: Artemy Kovalyov <artemyko@mellanox.com>
->> Reviewed-by: Aviad Yehezkel <aviadye@mellanox.com>
->> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> 
-> Thanks for your patch!
-> 
->> --- a/drivers/infiniband/core/umem_odp.c
->> +++ b/drivers/infiniband/core/umem_odp.c
->> @@ -241,22 +241,10 @@ struct ib_umem_odp *ib_umem_odp_get(struct 
->> ib_udata *udata, unsigned long addr,
->>     umem_odp->umem.owning_mm = mm = current->mm;
->>     umem_odp->notifier.ops = ops;
->>
->> -    umem_odp->page_shift = PAGE_SHIFT;
->> -    if (access & IB_ACCESS_HUGETLB) {
->> -        struct vm_area_struct *vma;
->> -        struct hstate *h;
->> -
->> -        down_read(&mm->mmap_sem);
->> -        vma = find_vma(mm, ib_umem_start(umem_odp));
->> -        if (!vma || !is_vm_hugetlb_page(vma)) {
->> -            up_read(&mm->mmap_sem);
->> -            ret = -EINVAL;
->> -            goto err_free;
->> -        }
->> -        h = hstate_vma(vma);
->> -        umem_odp->page_shift = huge_page_shift(h);
->> -        up_read(&mm->mmap_sem);
->> -    }
->> +    if (access & IB_ACCESS_HUGETLB)
->> +        umem_odp->page_shift = HPAGE_SHIFT;
->> +    else
->> +        umem_odp->page_shift = PAGE_SHIFT;
->>
->>     umem_odp->tgid = get_task_pid(current->group_leader, PIDTYPE_PID);
->>     ret = ib_init_umem_odp(umem_odp, ops);
-> 
-> noreply@ellerman.id.au reports for linux-next/m68k-allmodconfig/m68k:
-> 
->      drivers/infiniband/core/umem_odp.c:245:26: error: 'HPAGE_SHIFT' 
-> undeclared (first use in this function); did you mean 'PAGE_SHIFT'?
-> 
-> Should this depend on some HUGETLBFS option?
-> 
-
-Thanks for pointing on,
-We would expect to use #ifdef CONFIG_HUGETLB_PAGE as done in below 
-kernel code [1] that also used HPAGE_SHIFT.
-
-I'll send some patch to 'for-next' to handle it.
-
-[1] 
-https://elixir.bootlin.com/linux/v5.3-rc7/source/drivers/misc/sgi-gru/grufault.c#L183
+PiANCj4gQSBjYW5kaWRhdGUgZml4IGhhcyBiZWVuIHBvc3RlZCBidXQgbmVlZHMgcmV2aWV3IGFu
+ZC9vciBhIFRlc3RlZC1ieS4gU2VlDQo+IGFsc28gaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQvbGlz
+dHMvdGFyZ2V0LWRldmVsL21zZzE3OTgxLmh0bWwuDQo+IA0KPiBUaGFua3MsDQo+IA0KPiBCYXJ0
+Lg0KDQpJJ20gdGVzdGluZyB0aGlzIG5vdy4NCg0KTWlrZQ0K
