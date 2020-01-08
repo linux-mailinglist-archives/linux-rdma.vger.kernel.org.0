@@ -2,109 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3477713487E
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2020 17:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB324134937
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2020 18:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729328AbgAHQvl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Jan 2020 11:51:41 -0500
-Received: from mail-il1-f194.google.com ([209.85.166.194]:43366 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726401AbgAHQvl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jan 2020 11:51:41 -0500
-Received: by mail-il1-f194.google.com with SMTP id v69so3198312ili.10
-        for <linux-rdma@vger.kernel.org>; Wed, 08 Jan 2020 08:51:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=co7/buqnJ+QAQFW/aPPMtw9NyE3ymeGSAXf7J8t8yZg=;
-        b=MnKZjVacH0zMQk7STp7Vj/S3ld9XtAL8X25Ad/RB6AF374jBqQNA3OsVh5ceb9VnRv
-         M3V0K39I6Xt4YPmohA0nu03BkOW/WjgcG8ZxnaGiChs4oFKpQqba2nLBEQfJEWzuPUUG
-         JJPFWdhH1jMHRhrz+/sHRrWXFEZMEr2eWyWtWL4vfFLjP1OXVi7FRgX8qq8r7gwURcEI
-         hFpd4mOtYnh58haYR97vIOO8u00fHRj8UfDwFJZOw+MR98ciSf1G7imETXA0Mrv2KZHX
-         ZeWDMA57GPXiV8BqLZg7HEi6E1ZAxSgQh8ZV1X7rYzj9RPSBrgXHdT+7n9v9qx4gIxTS
-         qFfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=co7/buqnJ+QAQFW/aPPMtw9NyE3ymeGSAXf7J8t8yZg=;
-        b=cU37R7WggoLZapnwmrTqbFzmZcKSUQUWDsabotLEwQplW8jRuG5mc5TDzrRPce+Ufn
-         qDyLf8ZxqmM6yXkbnrhgIm7vTEJoL4EZIt2BTcQMMdO61uErm2tLy6HnO4Q3cioVY23G
-         3FZsbr3Vzm0edAne7Rp1BeLEpDnRNNdup9syNlcU1YedjtqQqRk//WEratXcJin6Kdf2
-         704zAZsBS9stqvpMVjvFu9e4vsjV2JWkd/pmt5dFBUdH192r/vas1LqdzroNVyQDmsO6
-         aBp70z3pfd6aU5VAt7i97HeTDx1D+CrR0uGvtg4ByqROu0fbpsaHwq/E+GHpHxI6fCKu
-         3Ujg==
-X-Gm-Message-State: APjAAAWRPyuV/57kS0NERNit5Vvm+rAAg4nXMT2IQlcSB2+fLWBRqzxG
-        sOZxKf9g5lntYCqFV/LzuhN7m6CVZluQDuOCHpp96A==
-X-Google-Smtp-Source: APXvYqzDNtn52z8BtswfS55RdLo1Ou4FfHpSAEHRnHXIJdAKCjg9h7lXV7dcihgcpxR6QupYLI91uvnSuhC76rN/5hU=
-X-Received: by 2002:a92:1090:: with SMTP id 16mr4531190ilq.298.1578502300812;
- Wed, 08 Jan 2020 08:51:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20191230102942.18395-1-jinpuwang@gmail.com> <20191230102942.18395-19-jinpuwang@gmail.com>
- <e0816733-89c0-87a5-bc86-6013a6c96df2@acm.org> <CAMGffEmRF+2SZ5Nf3at9SohZXTT3siakBYoZpErN=Tr_PCA9uw@mail.gmail.com>
- <a2748915-b88e-cc91-2ab8-1a95f678e444@acm.org>
-In-Reply-To: <a2748915-b88e-cc91-2ab8-1a95f678e444@acm.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Wed, 8 Jan 2020 17:51:30 +0100
-Message-ID: <CAMGffE=XKHnKSE9orD=TMhq5j0rikfpoOx5mEwRO4oLxEfHMPA@mail.gmail.com>
-Subject: Re: [PATCH v6 18/25] rnbd: client: sysfs interface functions
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>, rpenyaev@suse.de
-Content-Type: text/plain; charset="UTF-8"
+        id S1729741AbgAHRWh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Jan 2020 12:22:37 -0500
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:41794 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729516AbgAHRWh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jan 2020 12:22:37 -0500
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from yishaih@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 8 Jan 2020 19:22:31 +0200
+Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [10.7.2.17])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 008HMV8C009587;
+        Wed, 8 Jan 2020 19:22:31 +0200
+Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [127.0.0.1])
+        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8) with ESMTP id 008HMUkL009516;
+        Wed, 8 Jan 2020 19:22:30 +0200
+Received: (from yishaih@localhost)
+        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8/Submit) id 008HMOk5009512;
+        Wed, 8 Jan 2020 19:22:24 +0200
+From:   Yishai Hadas <yishaih@mellanox.com>
+To:     linux-rdma@vger.kernel.org, jgg@mellanox.com, dledford@redhat.com
+Cc:     yishaih@mellanox.com, maorg@mellanox.com, michaelgur@mellanox.com
+Subject: [PATCH rdma-next 00/14] Refactoring FD usage
+Date:   Wed,  8 Jan 2020 19:21:52 +0200
+Message-Id: <1578504126-9400-1-git-send-email-yishaih@mellanox.com>
+X-Mailer: git-send-email 1.8.2.3
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 8, 2020 at 5:39 PM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 1/8/20 5:06 AM, Jinpu Wang wrote:
-> > On Fri, Jan 3, 2020 at 1:03 AM Bart Van Assche <bvanassche@acm.org> wrote:
-> >> On 12/30/19 2:29 AM, Jack Wang wrote:
-> >>> +/* remove new line from string */
-> >>> +static void strip(char *s)
-> >>> +{
-> >>> +     char *p = s;
-> >>> +
-> >>> +     while (*s != '\0') {
-> >>> +             if (*s != '\n')
-> >>> +                     *p++ = *s++;
-> >>> +             else
-> >>> +                     ++s;
-> >>> +     }
-> >>> +     *p = '\0';
-> >>> +}
-> >>
-> >> Does this function change a multiline string into a single line? I'm not
-> >> sure that is how sysfs input should be processed ... Is this perhaps
-> >> what you want?
-> >>
-> >> static inline void kill_final_newline(char *str)
-> >> {
-> >>          char *newline = strrchr(str, '\n');
-> >>
-> >>          if (newline && !newline[1])
-> >>                  *newline = 0;
-> > probably you meant "*newline = '\0'"
-> >
-> > Your version only removes the last newline, our version removes all
-> > the newlines in the string.
->
-> Removing all newlines seems dubious to me. I am not aware of any other
-> sysfs code that does that.
->
-> Thanks,
->
-> Bart.
-I agree writing a string with many newlines is not common. We can
-require the user to write a single line.
-I will drop it after verify with our regression tests.
+This series refactors the usage of FDs in both IB core and mlx5 driver.
+It includes:
+- Simplify destruction of FD uobjects by making them pure uobjects and use
+   a generic release method for all struct file operations.
+- Make ib_uverbs_async_event_file into a uobject.
+- Improve locking in few related areas.
+- Simplify type usage for ib_uverbs_async_handler().
 
-Thanks Bart
+This refactoring series may be followed by some other series that will allow
+the async FD to be allocated separately from the context and then enables
+having the alloc_context command over ioctl.
+
+Yishai
+
+Jason Gunthorpe (14):
+  RDMA/mlx5: Use RCU and direct refcounts to keep memory alive
+  RDMA/core: Simplify destruction of FD uobjects
+  RDMA/mlx5: Simplify devx async commands
+  RDMA/core: Do not allow alloc_commit to fail
+  RDMA/core: Make ib_ucq_object use ib_uevent_object
+  RDMA/core: Do not erase the type of ib_cq.uobject
+  RDMA/core: Do not erase the type of ib_qp.uobject
+  RDMA/core: Do not erase the type of ib_srq.uobject
+  RDMA/core: Do not erase the type of ib_wq.uobject
+  RDMA/core: Simplify type usage for ib_uverbs_async_handler()
+  RDMA/core: Fix locking in ib_uverbs_event_read
+  RDMA/core: Remove the ufile arg from rdma_alloc_begin_uobject
+  RDMA/core: Make ib_uverbs_async_event_file into a uobject
+  RDMA/core: Use READ_ONCE for ib_ufile.async_file
+
+ drivers/infiniband/core/Makefile                   |   3 +-
+ drivers/infiniband/core/core_priv.h                |   2 +-
+ drivers/infiniband/core/nldev.c                    |   3 +-
+ drivers/infiniband/core/rdma_core.c                | 189 ++++++-------
+ drivers/infiniband/core/rdma_core.h                |  45 +---
+ drivers/infiniband/core/uverbs.h                   |  28 +-
+ drivers/infiniband/core/uverbs_cmd.c               | 201 +++++++-------
+ drivers/infiniband/core/uverbs_ioctl.c             |  45 +---
+ drivers/infiniband/core/uverbs_main.c              | 292 ++++++---------------
+ drivers/infiniband/core/uverbs_std_types.c         |  44 +++-
+ .../infiniband/core/uverbs_std_types_async_fd.c    |  33 +++
+ drivers/infiniband/core/uverbs_std_types_cq.c      |  19 +-
+ drivers/infiniband/core/uverbs_uapi.c              |   7 +-
+ drivers/infiniband/hw/mlx5/devx.c                  | 159 +++++------
+ include/rdma/ib_verbs.h                            |  13 +-
+ include/rdma/uverbs_std_types.h                    |  13 +-
+ include/rdma/uverbs_types.h                        |  33 ++-
+ include/uapi/rdma/ib_user_ioctl_cmds.h             |   1 +
+ 18 files changed, 494 insertions(+), 636 deletions(-)
+ create mode 100644 drivers/infiniband/core/uverbs_std_types_async_fd.c
+
+-- 
+1.8.3.1
+
