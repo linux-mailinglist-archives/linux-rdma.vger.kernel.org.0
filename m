@@ -2,235 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A50B21344EF
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2020 15:25:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C05151344F2
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2020 15:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726401AbgAHOZG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Jan 2020 09:25:06 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:39710 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726368AbgAHOZG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jan 2020 09:25:06 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 008ENHb9117831;
-        Wed, 8 Jan 2020 14:25:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2019-08-05; bh=qWlKteoj7Sg5Q2Jn/BBcJmOkHUQ0uxB28fUw87c6TVU=;
- b=caFtjJxEJ99PdogBXD8rJWQgvHXByBAbREqLHyR7eWHe5yssIGFpH24q3O/rSPqNnL1Y
- EsP24KWSlKfQya86J7oNQaziM6GyMZFh/geJ9C0WDxKTy/sIjDMmYbfl9SRd5Vitt+Wq
- JR8DIFZYgduMB3dQ05vZJHC1GIT0QWfdVLfXDWfHEHTrmUyATeoajAP9VKiyNna0XKfE
- EwOkOCjmKP3YeMM4KAUf3VIvDtxLOPzTJH2aNCos501ERa5ud3de0nBNquaCaU/TRMLU
- lmaSTcylJttnCVwI2FTOQYNkb4qsgkvKwq9RA4Qvt74Leb++Ve/8Z1bJrmQY4ut4VvTj BQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2xakbqv3gh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Jan 2020 14:25:00 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 008EOMlY051881;
-        Wed, 8 Jan 2020 14:24:59 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2xcqbnya51-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Jan 2020 14:24:50 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 008ENw3b001185;
-        Wed, 8 Jan 2020 14:23:58 GMT
-Received: from dhcp-10-172-157-155.no.oracle.com (/10.172.157.155)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 08 Jan 2020 06:23:58 -0800
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.40.2.2.4\))
-Subject: Re: [PATCH RDMA/uverbs] RDMA/uverbs: Protect list_empty() by lock
-From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
-In-Reply-To: <20200107184238.GA7928@ziepe.ca>
-Date:   Wed, 8 Jan 2020 15:23:55 +0100
-Cc:     Doug Ledford <dledford@redhat.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <EC6982F9-6AED-4EE7-9CF9-AB7564F27E88@oracle.com>
-References: <20200106122711.217198-1-haakon.bugge@oracle.com>
- <20200107184238.GA7928@ziepe.ca>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Jason Gunthorpe <jgg@mellanox.com>
-X-Mailer: Apple Mail (2.3608.40.2.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9493 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=4 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2001080123
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9493 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=4 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2001080123
+        id S1727773AbgAHO0x (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Jan 2020 09:26:53 -0500
+Received: from mail-wr1-f53.google.com ([209.85.221.53]:42440 "EHLO
+        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726830AbgAHO0x (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jan 2020 09:26:53 -0500
+Received: by mail-wr1-f53.google.com with SMTP id q6so3556029wro.9
+        for <linux-rdma@vger.kernel.org>; Wed, 08 Jan 2020 06:26:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=4WvNDw3/eniKf7oIGCh7BVc0gldEt5FmFrJIHu98lwM=;
+        b=ESPHMa6RgZcSh5nWsowz7rM/rQVEqxuI9RDaQXwWqfQZmxjQP9TDl6HCY2pzKTF5Tc
+         JeBtev/4ZBxKc+S/VFuL1ZZrNuvXILnvm8sT11RV9cIF9zHzxKcsWRbaVApodf5tAHc8
+         sQrkxZjlYPzm2dzVP30ZseXU5saD2Wqtl9ueA7zBpixIHLzTF2NBxHAJNvL1ZFZqDhuM
+         xFoZBByETTZSkUVWwSx/RLXqvIGlJzb6qjh9lSVlcw+r5aw0Mfr8b/NLvHbsARhbMEnw
+         JHlL3Yfe3NCP344DieyR4b/35cOrgqSkte95i/lsHWgNy4nhg/ULmHtiEEJWAuD7OOFy
+         hDJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=4WvNDw3/eniKf7oIGCh7BVc0gldEt5FmFrJIHu98lwM=;
+        b=epPqqTAMe9QyugRLWiQst98WuwcDXaALU81Hmjx2TnIkXX3Z9djmGuoHkpVcg2sj99
+         N+hZGOXzZuk8Unn9dQ1P5GN/mHiZrKU8se88csZihdkEdA+98GH++Jfara+kwDFdistC
+         STx8eLhg2srFoy3hSj6uPEFe37lcGe6+U8Rcpe9RSLNqZXZfh/O0NsZlN7PdOzvTP6DU
+         JaRF4+/zuNPfzMUgabr0hI9RE23G4MOVOGYHMry0st2rynO/vo5O+NfUi7/5qnIQoFrR
+         bi5+rImIvvkqp7pPv6M0AbOuCJ+auZfQy0W3Nzuc6fKoxnFzgiAf3IaKEtlRQRVssPB0
+         1h9Q==
+X-Gm-Message-State: APjAAAXrgPXyJUTX5h/Dtx+Eodpji2BvFuwrVce9nNDHWXFTyr7i00G3
+        4gF2LRCWW5cDw1B1zL0y0/F/l5bK3FXwJDOWNY2f4ugI
+X-Google-Smtp-Source: APXvYqxfPmUhNEcf7Jc4h1L923SB3DNAo4vRLxgO6CtLVULh9/QV2Bd8y3GNpl+WgsaFNV0h08sU6CLaDyAipfwXy4c=
+X-Received: by 2002:adf:eb51:: with SMTP id u17mr4921883wrn.29.1578493610247;
+ Wed, 08 Jan 2020 06:26:50 -0800 (PST)
+MIME-Version: 1.0
+From:   Alex Rosenbaum <rosenbaumalex@gmail.com>
+Date:   Wed, 8 Jan 2020 16:26:39 +0200
+Message-ID: <CAFgAxU8ArpoL9fMpJY5v-UZS5AMXom+TJ8HS57XeEOsCFFov8Q@mail.gmail.com>
+Subject: [RFC v2] RoCE v2.0 Entropy - IPv6 Flow Label and UDP Source Port
+To:     RDMA mailing list <linux-rdma@vger.kernel.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        "Alex @ Mellanox" <alexr@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+A combination of the flow_label field in the IPv6 header and UDP source port
+field in RoCE v2.0 are used to identify a group of packets that must be
+delivered in order by the network, end-to-end.
+These fields are used to create entropy for network routers (ECMP), load
+balancers and 802.3ad link aggregation switching that are not aware of RoCE IB
+headers.
 
+The flow_label field is defined by a 20 bit hash value. CM based connections
+will use a hash function definition based on the service type (QP Type) and
+Service ID (SID). Where CM services are not used, the 20 bit hash will be
+according to the source and destination QPN values.
+Drivers will derive the RoCE v2.0 UDP src_port from the flow_label result.
 
-> On 7 Jan 2020, at 19:42, Jason Gunthorpe <jgg@ziepe.ca> wrote:
->=20
-> On Mon, Jan 06, 2020 at 01:27:11PM +0100, H=C3=A5kon Bugge wrote:
->> In ib_uverbs_event_read(), events are waited for, then pulled off the
->> kernel's event queue, and finally returned to user space.
->>=20
->> There is an explicit check to see if the device is gone, and if so =
-and
->> the there are no events pending, an -EIO is returned.
->>=20
->> However, said test does not check for queue empty whilst holding the
->> lock, so there is a race where the existing code perceives the queue
->> to be empty, when it in fact isn't. Fixed by acquiring the lock ahead
->> of the list_empty() test.
->>=20
->> Fixes: 036b10635739 ("IB/uverbs: Enable device removal when there are =
-active user space applications")
->> Signed-off-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
->> ---
->> drivers/infiniband/core/uverbs_main.c | 8 +++++---
->> 1 file changed, 5 insertions(+), 3 deletions(-)
->>=20
->> diff --git a/drivers/infiniband/core/uverbs_main.c =
-b/drivers/infiniband/core/uverbs_main.c
->> index 970d8e31dd65..7165e51790ed 100644
->> --- a/drivers/infiniband/core/uverbs_main.c
->> +++ b/drivers/infiniband/core/uverbs_main.c
->> @@ -245,12 +245,14 @@ static ssize_t ib_uverbs_event_read(struct =
-ib_uverbs_event_queue *ev_queue,
->> 					     =
-!uverbs_file->device->ib_dev)))
->> 			return -ERESTARTSYS;
->>=20
->> +		spin_lock_irq(&ev_queue->lock);
->> +
->> 		/* If device was disassociated and no event exists set =
-an error */
->> 		if (list_empty(&ev_queue->event_list) &&
->> -		    !uverbs_file->device->ib_dev)
->> +		    !uverbs_file->device->ib_dev) {
->> +			spin_unlock_irq(&ev_queue->lock);
->> 			return -EIO;
->=20
-> I noticed this too last month. While this patch is an improvement, I
-> had written this one which also fixes the wrong use of devce->ib_dev
-> without a READ_ONCE or locking. It is just winding its way through
-> testing right now.
->=20
-> What do you think?
->=20
-> =46rom 37ddee0ea682eaf47e6167a090ae0a4e943f7f68 Mon Sep 17 00:00:00 =
-2001
-> From: Jason Gunthorpe <jgg@mellanox.com>
-> Date: Tue, 26 Nov 2019 20:58:04 -0400
-> Subject: [PATCH] RDMA/core: Fix locking in ib_uverbs_event_read
->=20
-> This should not be using ib_dev to test for disassociation, during
-> disassociation is_closed is set under lock and the waitq is triggered.
->=20
-> Instead check is_closed and be sure to re-obtain the lock to test the
-> value after the wait_event returns.
->=20
-> Fixes: 036b10635739 ("IB/uverbs: Enable device removal when there are =
-active user space applications")
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+UDP source port selection must adhere IANA port allocation ranges. Thus we will
+be using IANA recommendation for Ephemeral port range of: 49152-65535, or in
+hex: 0xC000-0xFFFF.
 
-LGTM,
+The below calculations take into account the importance of producing a symmetric
+hash result so we can support symmetric hash calculation of network elements.
 
-Reviewed-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
-(or feel free to use my s-o-b, as we coined 80% of this independently of =
-each other).
+Hash Calculation for RDMA IP CM Service
+=======================================
+For RDMA IP CM Services, based on QP1 iMAD usage and connected RC QPs using the
+RDMA IP CM Service ID, the flow label will be calculated according to IBTA CM
+REQ private data info and Service ID.
 
+Flow label hash function calculations definition will be defined as:
+Extract the following fields from the CM IP REQ:
+  CM_REQ.ServiceID.DstPort [2 Bytes]
+  CM_REQ.PrivateData.SrcPort [2 Bytes]
+  u32 hash = DstPort * SrcPort;
+  hash ^= (hash >> 16);
+  hash ^= (hash >> 8);
+  AH_ATTR.GRH.flow_label = hash AND IB_GRH_FLOWLABEL_MASK;
 
-Thxs, H=C3=A5kon
+  #define IB_GRH_FLOWLABEL_MASK  0x000FFFFF
 
+Result of the above hash will be kept in the CM's route path record connection
+context and will be used all across its vitality for all preceding CM messages
+on both ends of the connection (including REP, REJ, DREQ, DREP, ..).
+Once connection is established, the corresponding Connected RC QPs, on both
+ends of the connection, will update their context with the calculated RDMA IP
+CM Service based flow_label and UDP src_port values at the Connect phase of
+the active side and Accept phase of the passive side of the connection.
 
-> ---
-> drivers/infiniband/core/uverbs_main.c | 24 +++++++++---------------
-> 1 file changed, 9 insertions(+), 15 deletions(-)
->=20
-> diff --git a/drivers/infiniband/core/uverbs_main.c =
-b/drivers/infiniband/core/uverbs_main.c
-> index 953a8c3fae64bd..2b7dc94b6a7a69 100644
-> --- a/drivers/infiniband/core/uverbs_main.c
-> +++ b/drivers/infiniband/core/uverbs_main.c
-> @@ -215,7 +215,6 @@ void ib_uverbs_release_file(struct kref *ref)
-> }
->=20
-> static ssize_t ib_uverbs_event_read(struct ib_uverbs_event_queue =
-*ev_queue,
-> -				    struct ib_uverbs_file *uverbs_file,
-> 				    struct file *filp, char __user *buf,
-> 				    size_t count, loff_t *pos,
-> 				    size_t eventsz)
-> @@ -233,19 +232,16 @@ static ssize_t ib_uverbs_event_read(struct =
-ib_uverbs_event_queue *ev_queue,
->=20
-> 		if (wait_event_interruptible(ev_queue->poll_wait,
-> 					     =
-(!list_empty(&ev_queue->event_list) ||
-> -			/* The barriers built into =
-wait_event_interruptible()
-> -			 * and wake_up() guarentee this will see the =
-null set
-> -			 * without using RCU
-> -			 */
-> -					     =
-!uverbs_file->device->ib_dev)))
-> +					      ev_queue->is_closed)))
-> 			return -ERESTARTSYS;
->=20
-> +		spin_lock_irq(&ev_queue->lock);
-> +
-> 		/* If device was disassociated and no event exists set =
-an error */
-> -		if (list_empty(&ev_queue->event_list) &&
-> -		    !uverbs_file->device->ib_dev)
-> +		if (list_empty(&ev_queue->event_list) && =
-ev_queue->is_closed) {
-> +			spin_unlock_irq(&ev_queue->lock);
-> 			return -EIO;
-> -
-> -		spin_lock_irq(&ev_queue->lock);
-> +		}
-> 	}
->=20
-> 	event =3D list_entry(ev_queue->event_list.next, struct =
-ib_uverbs_event, list);
-> @@ -280,8 +276,7 @@ static ssize_t ib_uverbs_async_event_read(struct =
-file *filp, char __user *buf,
-> {
-> 	struct ib_uverbs_async_event_file *file =3D filp->private_data;
->=20
-> -	return ib_uverbs_event_read(&file->ev_queue, file->uverbs_file, =
-filp,
-> -				    buf, count, pos,
-> +	return ib_uverbs_event_read(&file->ev_queue, filp, buf, count, =
-pos,
-> 				    sizeof(struct =
-ib_uverbs_async_event_desc));
-> }
->=20
-> @@ -291,9 +286,8 @@ static ssize_t ib_uverbs_comp_event_read(struct =
-file *filp, char __user *buf,
-> 	struct ib_uverbs_completion_event_file *comp_ev_file =3D
-> 		filp->private_data;
->=20
-> -	return ib_uverbs_event_read(&comp_ev_file->ev_queue,
-> -				    comp_ev_file->uobj.ufile, filp,
-> -				    buf, count, pos,
-> +	return ib_uverbs_event_read(&comp_ev_file->ev_queue, filp, buf, =
-count,
-> +				    pos,
-> 				    sizeof(struct =
-ib_uverbs_comp_event_desc));
-> }
->=20
-> --=20
-> 2.24.1
->=20
+CM will provide to the calculated value of the flow_label hash (20 bit) result
+in the 'uint32_t flow_label' field of 'struct ibv_global_route' in 'struct
+ibv_ah_attr'.
+The 'struct ibv_ah_attr' is passed by the CM to the provider library when
+modifying a connected QP's (e.g.: RC) state by calling 'ibv_modify_qp(qp,
+ah_attr, attr_mask |= IBV_QP_AV)' or when create a AH for working with
+datagram QP's (e.g.: UD) by calling ibv_create_ah(ah_attr).
 
+Hash Calculation for non-RDMA CM Service ID
+===========================================
+For non CM QP's, the application can define the flow_label value in the
+'struct ibv_ah_attr' when modifying the connected QP's (e.g.: RC) or creating
+a AH for the datagram QP's (e.g.: UD).
+
+If the provided flow_label value is zero, not set by the application (e.g.:
+legacy cases), then verbs providers should use the src.QP[24bit] and
+dst.QP[24bit] as input arguments for flow_label calculation.
+As QPN's are an array of 3 bytes, the multiplication will result in 6 bytes
+value. We'll define a flow_label value as:
+  DstQPn [3 Bytes]
+  SrcQPn [3 Bytes]
+  u64 hash = DstQPn * SrcQPn;
+  hash ^= (hash >> 20);
+  hash ^= (hash >> 40);
+  AH_ATTR.GRH.flow_label = hash AND IB_GRH_FLOWLABEL_MASK;
+
+Hash Calculation for UDP src_port
+=================================
+Providers supporting RoCEv2 will use the 'flow_label' value as input to
+calculate the RoCEv2 UDP src_port, which will be used in the QP context or the
+AH context.
+
+UDP src_port calculations from flow label:
+[while considering the 14 bits UDP port range according to IANA recommendation]
+  AH_ATTR.GRH.flow_label [20 bits]
+  u32 fl_low  = fl & 0x03FFF;
+  u32 fl_high = fl & 0xFC000;
+  u16 udp_sport = fl_low XOR (fl_high >> 14);
+  RoCE.UDP.src_port = udp_sport OR IB_ROCE_UDP_ENCAP_VALID_PORT
+
+  #define IB_ROCE_UDP_ENCAP_VALID_PORT 0xC000
+
+This is a v2 follow-up on "[RFC] RoCE v2.0 UDP Source Port Entropy" [1]
+
+[1] https://www.spinics.net/lists/linux-rdma/msg73735.html
+
+Signed-off-by: Alex Rosenbaum <alexr@mellanox.com>
