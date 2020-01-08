@@ -2,331 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B0B133CBE
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2020 09:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2054C134098
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2020 12:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgAHIM0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Jan 2020 03:12:26 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:40049 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbgAHIMZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jan 2020 03:12:25 -0500
-Received: by mail-wr1-f67.google.com with SMTP id c14so2314886wrn.7
-        for <linux-rdma@vger.kernel.org>; Wed, 08 Jan 2020 00:12:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dMZqe76g3HeJVp3imNpZ/6c4OMHJ6wvKq/mNqHnHKlk=;
-        b=OlXLRP5JShf/Hd5vPV29pQnR5bWBKdlqYydFZK7ix+N4g/ml/mRZXAXG1MjKOklYrE
-         I2aofiuLEZC8uk9TiqmSmcsDEI6gwTiLr65xmOPIwcSuhyuRY94SH4VHVul3B73FSZVe
-         Ft8M8IUhdnykG03gNjZZaoBMp6U6DbO+H+iyFa6fWt57ynRljtYdOrNTAuhhlnkLZuxk
-         DNRR568cjU8AKF+US8MOzIrE4Jc5lSG+q3I8Rw6M6iOrHZezYll1EQrUVNXlg/EHXCj0
-         /WEHoGdEnYJxTrOkFqqZL/I/ZyLwT+wICYIUXKh1KmvQrhcaEcvImXxPxt/vyypaZGsG
-         TkiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dMZqe76g3HeJVp3imNpZ/6c4OMHJ6wvKq/mNqHnHKlk=;
-        b=X4EBNfSNo9hwt1l4u3jnfHrS0y5weyzRcB2yDMrcY5WeQ0AsHFg/FpPXoZ8bV9W4mW
-         pfAlZv3yM43F7oBlPmWs3KEIjbzcATex/+7PSmw5EGl/xYy6irqQQgvH08CWBsKyx442
-         fJmMweIzM+lHGc81saw5tCRGCA+uPULYDeIkjmnPmf1bwPSlzuZT5xzLP6TYe0GARNEm
-         6zPJWoTorWDxKZ7HRuCSLNJ2Ug1DBjUTy5Gws5w+UDfzAcGo/+BeVSpsvCgo0gbUcsp4
-         Lw3zyfAUSiLsQhWopyet7TIYVGkpyvf5gdnWBY+YynKUCHiGyKqm66pAh5dkzA9tZt+Y
-         Cz1A==
-X-Gm-Message-State: APjAAAUsOqo1OaVti+QqnI6BNDfAIOEpg7+lkW7+arWMz62cem0o2FuJ
-        MyYTiLpgM/jNiKpHEB7l25AjAg==
-X-Google-Smtp-Source: APXvYqyYVI75EWsO8IAc4YPcZAFSO5n6p8rkkF3EFGMDTh5sURQ7Q66YkXTX5SUNXjWpncY2Wm+PGA==
-X-Received: by 2002:a5d:5273:: with SMTP id l19mr3058608wrc.175.1578471141987;
-        Wed, 08 Jan 2020 00:12:21 -0800 (PST)
-Received: from [10.80.2.221] ([193.47.165.251])
-        by smtp.googlemail.com with ESMTPSA id q68sm3065530wme.14.2020.01.08.00.12.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Jan 2020 00:12:21 -0800 (PST)
-Subject: Re: [PATCH rdma-next 4/5] IB/mlx5: Introduce VAR object and its
- alloc/destroy methods
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
+        id S1726823AbgAHLfe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Jan 2020 06:35:34 -0500
+Received: from mail-eopbgr20087.outbound.protection.outlook.com ([40.107.2.87]:21988
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726107AbgAHLfd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 8 Jan 2020 06:35:33 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MnlRyzbyYDHcT/RTfGGCPzRA4RzF2wbOBbX/Uu05ZKod9BeXjvkUeisimzanfMwmz2CwfCbuNxB2cROEhHj4vckkI+FB5Pctjoga9PHXCZYG8YToQVXuz6VbKq3lIb+bCYS5GRLFz7i7dz3kV/E1fPXwsUXu9i8oBgIHN9z49YpjL1259HYdtb6A6OLAdMRA2Gu2yNMqB/MWmNq2DVNLgNDvMKk7U8R460qatKXU+MeUFN4GC+Wfv0eWeV5MipQzvf84mQYNyg0km23fNETTBrUigEFwNkWVnRU4kW6Y36hcvHFlpp+ZjdTIc40HGzPf/2YHy7MJ9mmZa1ZxHkGHrw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L/6T14B25MXc2hE3/CNlwpbfSnrohmTd+12LXElj+cU=;
+ b=NX19Ef5lrV3zxcg1j/r+Ku3JOKHkrBSgXMKsCdA+KNYevsX4qyKvR6/SmSbtPjAy5l0aBWAsfRdcO48716GU82ruLQjMYQEL7aDDFcBHsuRM6KjjzPxmN+qYYFNUgOckiQ5rHB38KHbb+VvhpZ/rKaUa4pwWyOawPnBAWOBuWs8g9e3MQIcjN+RM9s5gjs6hK8PnyZ0EmN/IdtPIEgTTFfCXZLSadxOhiPvaLwRpLhVRYGDSMcb00rVFTzoQW0/DfJBUJqaUzEoM+mUv4EBCKpSjbae/Drmr5nsy/GDkD0rEEGHW3SL7c7TiioIT7Ry/jnjtHtelHklXMaI+FkhTWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L/6T14B25MXc2hE3/CNlwpbfSnrohmTd+12LXElj+cU=;
+ b=HAiOIi5jcu8oz4K3ky7RQQrjZtjq4gfSTUS85ZFcZmXO0Rl/Kqsnduzd9sxm0bCFbMII5Az2wT2X5etRxnzd/j5XoGqNnmi7mhI6U98BrYP/FujfXUN2joOKXzIrrTfqV5+SMm4ZtctqeCsU6/6yi2eoOn8GDT7UC+6yYEBVi4k=
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
+ AM0PR05MB6818.eurprd05.prod.outlook.com (10.186.175.143) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2623.9; Wed, 8 Jan 2020 11:35:30 +0000
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::445c:4a14:1020:2346]) by AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::445c:4a14:1020:2346%7]) with mapi id 15.20.2602.017; Wed, 8 Jan 2020
+ 11:35:30 +0000
+From:   Parav Pandit <parav@mellanox.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
         Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Shahaf Shuler <shahafs@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-References: <20191212110928.334995-1-leon@kernel.org>
- <20191212110928.334995-5-leon@kernel.org> <20200107193643.GA18256@ziepe.ca>
-From:   Yishai Hadas <yishaih@dev.mellanox.co.il>
-Message-ID: <7de35c2d-ec3c-9d1e-b20c-76e9c5e0e3ff@dev.mellanox.co.il>
-Date:   Wed, 8 Jan 2020 10:12:20 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
-MIME-Version: 1.0
-In-Reply-To: <20200107193643.GA18256@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next v1 2/4] IB/core: Let IB core distribute cache
+ update events
+Thread-Topic: [PATCH rdma-next v1 2/4] IB/core: Let IB core distribute cache
+ update events
+Thread-Index: AQHVsN+WLT1q3001602HsZdJTK35Oaff2cwAgADz6YA=
+Date:   Wed, 8 Jan 2020 11:35:30 +0000
+Message-ID: <ff0e5aa8-d931-0270-9aa1-0a8aacd2a253@mellanox.com>
+References: <20191212113024.336702-1-leon@kernel.org>
+ <20191212113024.336702-3-leon@kernel.org> <20200107210230.GA7774@ziepe.ca>
+In-Reply-To: <20200107210230.GA7774@ziepe.ca>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=parav@mellanox.com; 
+x-originating-ip: [106.51.23.43]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: b74895b1-a424-4386-4f4d-08d7942edd8b
+x-ms-traffictypediagnostic: AM0PR05MB6818:|AM0PR05MB6818:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR05MB6818EE9FCDC9E766DE3480A0D13E0@AM0PR05MB6818.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3513;
+x-forefront-prvs: 02760F0D1C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(376002)(346002)(136003)(366004)(396003)(189003)(199004)(316002)(81166006)(81156014)(36756003)(54906003)(71200400001)(478600001)(5660300002)(8676002)(53546011)(186003)(8936002)(2906002)(55236004)(26005)(6506007)(110136005)(6512007)(2616005)(4326008)(66556008)(66946007)(66446008)(64756008)(86362001)(31696002)(76116006)(31686004)(91956017)(66476007)(6486002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB6818;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DyHy+xlpNJebYAQBOBqkW1T8IpGYCi17YRuaW7TP390H0gJNshgY36o33/YxJjXXfd/YxLgAYFyHypymSGOujvZU+4XZT9sIgDtoCuV1ZsEATuNdJw+Gv1XEY42n+jthnZNBE4DV5VnNkrHKORoPfLHkaE1eyn15xNeFDO/TbuwbKoThAeIYiZKDB9xT7R+jt4bhrRULZIQDgNQ1kiQL4xh77blpz8Pt9EgEvywLzPvLyID+gxlJGCZLqfjQ+9RvzvDbMPZQzi6nwEwzocmq+hQtrY0S++L2hmo4pqC9HN9TmRzK+O8lVG+dVuDEwJ5JQVY/VcZ6ITjootdAus4zKMDdfZ8C+PMy8UmMnjY3y440DUKpRlVMlfsk+EBWjqjIRRIB9KvkWv9dqOZvlz00dGEhx4div9qF5CRYdFiXd0J/+0JRdCSevAchz1Ou8NuJ
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9A37B0C9D79ED64BAAB6EEDEE7203069@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b74895b1-a424-4386-4f4d-08d7942edd8b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2020 11:35:30.1656
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vqYWNVsRvPnPdS4mYZSvqIb50+Scy80QpBVz9sQKvolBSqWvJtvIoA/PRgkyunABUJCghtYvVOJgyZp2l4S57w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6818
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/7/2020 9:36 PM, Jason Gunthorpe wrote:
-> On Thu, Dec 12, 2019 at 01:09:27PM +0200, Leon Romanovsky wrote:
->> From: Yishai Hadas <yishaih@mellanox.com>
->>
->> Introduce VAR object and its alloc/destroy KABI methods. The internal
->> implementation uses the IB core API to manage mmap/munamp calls.
->>
->> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
->> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->>   drivers/infiniband/hw/mlx5/main.c        | 157 +++++++++++++++++++++++
->>   drivers/infiniband/hw/mlx5/mlx5_ib.h     |   7 +
->>   include/uapi/rdma/mlx5_user_ioctl_cmds.h |  17 +++
->>   3 files changed, 181 insertions(+)
->>
->> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
->> index 79a5b8824b9d..873480b07686 100644
->> +++ b/drivers/infiniband/hw/mlx5/main.c
->> @@ -2078,6 +2078,7 @@ static void mlx5_ib_mmap_free(struct rdma_user_mmap_entry *entry)
->>   {
->>   	struct mlx5_user_mmap_entry *mentry = to_mmmap(entry);
->>   	struct mlx5_ib_dev *dev = to_mdev(entry->ucontext->device);
->> +	struct mlx5_var_table *var_table = &dev->var_table;
->>   	struct mlx5_ib_dm *mdm;
->>   
->>   	switch (mentry->mmap_flag) {
->> @@ -2087,6 +2088,12 @@ static void mlx5_ib_mmap_free(struct rdma_user_mmap_entry *entry)
->>   				       mdm->size);
->>   		kfree(mdm);
->>   		break;
->> +	case MLX5_IB_MMAP_TYPE_VAR:
->> +		mutex_lock(&var_table->bitmap_lock);
->> +		clear_bit(mentry->page_idx, var_table->bitmap);
->> +		mutex_unlock(&var_table->bitmap_lock);
->> +		kfree(mentry);
->> +		break;
->>   	default:
->>   		WARN_ON(true);
->>   	}
->> @@ -2255,6 +2262,15 @@ static int mlx5_ib_mmap_offset(struct mlx5_ib_dev *dev,
->>   	return ret;
->>   }
->>   
->> +static u64 mlx5_entry_to_mmap_offset(struct mlx5_user_mmap_entry *entry)
->> +{
->> +	u16 cmd = entry->rdma_entry.start_pgoff >> 16;
->> +	u16 index = entry->rdma_entry.start_pgoff & 0xFFFF;
->> +
->> +	return (((index >> 8) << 16) | (cmd << MLX5_IB_MMAP_CMD_SHIFT) |
->> +		(index & 0xFF)) << PAGE_SHIFT;
->> +}
->> +
->>   static int mlx5_ib_mmap(struct ib_ucontext *ibcontext, struct vm_area_struct *vma)
->>   {
->>   	struct mlx5_ib_ucontext *context = to_mucontext(ibcontext);
->> @@ -6034,6 +6050,145 @@ static void mlx5_ib_cleanup_multiport_master(struct mlx5_ib_dev *dev)
->>   	mlx5_nic_vport_disable_roce(dev->mdev);
->>   }
->>   
->> +static int var_obj_cleanup(struct ib_uobject *uobject,
->> +			   enum rdma_remove_reason why,
->> +			   struct uverbs_attr_bundle *attrs)
->> +{
->> +	struct mlx5_user_mmap_entry *obj = uobject->object;
->> +
->> +	rdma_user_mmap_entry_remove(&obj->rdma_entry);
->> +	return 0;
->> +}
->> +
->> +static struct mlx5_user_mmap_entry *
->> +alloc_var_entry(struct mlx5_ib_ucontext *c)
->> +{
->> +	struct mlx5_user_mmap_entry *entry;
->> +	struct mlx5_var_table *var_table;
->> +	u32 page_idx;
->> +	int err;
->> +
->> +	var_table = &to_mdev(c->ibucontext.device)->var_table;
->> +	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
->> +	if (!entry)
->> +		return ERR_PTR(-ENOMEM);
->> +
->> +	mutex_lock(&var_table->bitmap_lock);
->> +	page_idx = find_first_zero_bit(var_table->bitmap,
->> +				       var_table->num_var_hw_entries);
->> +	if (page_idx >= var_table->num_var_hw_entries) {
->> +		err = -ENOSPC;
->> +		mutex_unlock(&var_table->bitmap_lock);
->> +		goto end;
->> +	}
->> +
->> +	set_bit(page_idx, var_table->bitmap);
->> +	mutex_unlock(&var_table->bitmap_lock);
->> +
->> +	entry->address = var_table->hw_start_addr +
->> +				(page_idx * var_table->stride_size);
->> +	entry->page_idx = page_idx;
->> +	entry->mmap_flag = MLX5_IB_MMAP_TYPE_VAR;
->> +
->> +	err = rdma_user_mmap_entry_insert_range(
->> +		&c->ibucontext, &entry->rdma_entry, var_table->stride_size,
->> +		MLX5_IB_MMAP_OFFSET_START << 16,
->> +		(MLX5_IB_MMAP_OFFSET_END << 16) + (1UL << 16) - 1);
->> +	if (err)
->> +		goto err_insert;
->> +
->> +	return entry;
->> +
->> +err_insert:
->> +	mutex_lock(&var_table->bitmap_lock);
->> +	clear_bit(page_idx, var_table->bitmap);
->> +	mutex_unlock(&var_table->bitmap_lock);
->> +end:
->> +	kfree(entry);
->> +	return ERR_PTR(err);
->> +}
->> +
->> +static int UVERBS_HANDLER(MLX5_IB_METHOD_VAR_OBJ_ALLOC)(
->> +	struct uverbs_attr_bundle *attrs)
->> +{
->> +	struct ib_uobject *uobj = uverbs_attr_get_uobject(
->> +		attrs, MLX5_IB_ATTR_VAR_OBJ_ALLOC_HANDLE);
->> +	struct mlx5_ib_ucontext *c;
->> +	struct mlx5_user_mmap_entry *entry;
->> +	u64 mmap_offset;
->> +	u32 length;
->> +	int err;
->> +
->> +	c = to_mucontext(ib_uverbs_get_ucontext(attrs));
->> +	if (IS_ERR(c))
->> +		return PTR_ERR(c);
->> +
->> +	entry = alloc_var_entry(c);
->> +	if (IS_ERR(entry))
->> +		return PTR_ERR(entry);
->> +
->> +	mmap_offset = mlx5_entry_to_mmap_offset(entry);
->> +	length = entry->rdma_entry.npages * PAGE_SIZE;
->> +	uobj->object = entry;
->> +
->> +	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_VAR_OBJ_ALLOC_MMAP_OFFSET,
->> +			     &mmap_offset, sizeof(mmap_offset));
->> +	if (err)
->> +		goto err;
->> +
->> +	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_VAR_OBJ_ALLOC_PAGE_ID,
->> +			     &entry->page_idx, sizeof(entry->page_idx));
->> +	if (err)
->> +		goto err;
->> +
->> +	err = uverbs_copy_to(attrs, MLX5_IB_ATTR_VAR_OBJ_ALLOC_MMAP_LENGTH,
->> +			     &length, sizeof(length));
->> +	if (err)
->> +		goto err;
->> +
->> +	return 0;
->> +
->> +err:
->> +	rdma_user_mmap_entry_remove(&entry->rdma_entry);
->> +	return err;
->> +}
->> +
->> +DECLARE_UVERBS_NAMED_METHOD(
->> +	MLX5_IB_METHOD_VAR_OBJ_ALLOC,
->> +	UVERBS_ATTR_IDR(MLX5_IB_ATTR_VAR_OBJ_ALLOC_HANDLE,
->> +			MLX5_IB_OBJECT_VAR,
->> +			UVERBS_ACCESS_NEW,
->> +			UA_MANDATORY),
->> +	UVERBS_ATTR_PTR_OUT(MLX5_IB_ATTR_VAR_OBJ_ALLOC_PAGE_ID,
->> +			   UVERBS_ATTR_TYPE(u32),
->> +			   UA_MANDATORY),
->> +	UVERBS_ATTR_PTR_OUT(MLX5_IB_ATTR_VAR_OBJ_ALLOC_MMAP_LENGTH,
->> +			   UVERBS_ATTR_TYPE(u32),
->> +			   UA_MANDATORY),
->> +	UVERBS_ATTR_PTR_OUT(MLX5_IB_ATTR_VAR_OBJ_ALLOC_MMAP_OFFSET,
->> +			    UVERBS_ATTR_TYPE(u64),
->> +			    UA_MANDATORY));
->> +
->> +DECLARE_UVERBS_NAMED_METHOD_DESTROY(
->> +	MLX5_IB_METHOD_VAR_OBJ_DESTROY,
->> +	UVERBS_ATTR_IDR(MLX5_IB_ATTR_VAR_OBJ_DESTROY_HANDLE,
->> +			MLX5_IB_OBJECT_VAR,
->> +			UVERBS_ACCESS_DESTROY,
->> +			UA_MANDATORY));
->> +
->> +DECLARE_UVERBS_NAMED_OBJECT(MLX5_IB_OBJECT_VAR,
->> +			    UVERBS_TYPE_ALLOC_IDR(var_obj_cleanup),
->> +			    &UVERBS_METHOD(MLX5_IB_METHOD_VAR_OBJ_ALLOC),
->> +			    &UVERBS_METHOD(MLX5_IB_METHOD_VAR_OBJ_DESTROY));
->> +
->> +static bool var_is_supported(struct ib_device *device)
->> +{
->> +	struct mlx5_ib_dev *dev = to_mdev(device);
->> +
->> +	return (MLX5_CAP_GEN_64(dev->mdev, general_obj_types) &
->> +			MLX5_GENERAL_OBJ_TYPES_CAP_VIRTIO_NET_Q);
->> +}
->> +
->>   ADD_UVERBS_ATTRIBUTES_SIMPLE(
->>   	mlx5_ib_dm,
->>   	UVERBS_OBJECT_DM,
->> @@ -6064,6 +6219,8 @@ static const struct uapi_definition mlx5_ib_defs[] = {
->>   	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_FLOW_ACTION,
->>   				&mlx5_ib_flow_action),
->>   	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_DM, &mlx5_ib_dm),
->> +	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(MLX5_IB_OBJECT_VAR,
->> +				UAPI_DEF_IS_OBJ_SUPPORTED(var_is_supported)),
->>   	{}
->>   };
->>   
->> diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
->> index 23ad949e247f..489128fe8603 100644
->> +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
->> @@ -71,6 +71,11 @@
->>   
->>   #define MLX5_MKEY_PAGE_SHIFT_MASK __mlx5_mask(mkc, log_page_size)
->>   
->> +enum {
->> +	MLX5_IB_MMAP_OFFSET_START = 9,
->> +	MLX5_IB_MMAP_OFFSET_END = 255,
->> +};
->> +
->>   enum {
->>   	MLX5_IB_MMAP_CMD_SHIFT	= 8,
->>   	MLX5_IB_MMAP_CMD_MASK	= 0xff,
->> @@ -120,6 +125,7 @@ enum {
->>   
->>   enum mlx5_ib_mmap_type {
->>   	MLX5_IB_MMAP_TYPE_MEMIC = 1,
->> +	MLX5_IB_MMAP_TYPE_VAR = 2,
->>   };
->>   
->>   #define MLX5_LOG_SW_ICM_BLOCK_SIZE(dev)                                        \
->> @@ -563,6 +569,7 @@ struct mlx5_user_mmap_entry {
->>   	struct rdma_user_mmap_entry rdma_entry;
->>   	u8 mmap_flag;
->>   	u64 address;
->> +	u32 page_idx;
-> 
-> Why are we storing this in the global struct when it is never read
-> except by the caller of alloc_var_entry()? Return it from
-> alloc_var_entry?
-> 
-
-It's required as part of mlx5_ib_mmap_free() to claer the matching bit 
-map entry of the device var table, see above in this patch.
-
-> Also the final patch in the series should be here as at this point
-> mmap will succeed but return the wrong cachability flags.
-> 
-
-Right, let's squash it to this patch.
-
-> Since Leon is away I can fix this two things if you agree.
-
-Yes, thanks.
-
-Yishai
+T24gMS84LzIwMjAgMjozMiBBTSwgSmFzb24gR3VudGhvcnBlIHdyb3RlOg0KPiBPbiBUaHUsIERl
+YyAxMiwgMjAxOSBhdCAwMTozMDoyMlBNICswMjAwLCBMZW9uIFJvbWFub3Zza3kgd3JvdGU6DQo+
+IA0KPj4gQEAgLTI2MjcsNyArMjYyNiwxMSBAQCBzdHJ1Y3QgaWJfZGV2aWNlIHsNCj4+ICAJc3Ry
+dWN0IHJjdV9oZWFkIHJjdV9oZWFkOw0KPj4NCj4+ICAJc3RydWN0IGxpc3RfaGVhZCAgICAgICAg
+ICAgICAgZXZlbnRfaGFuZGxlcl9saXN0Ow0KPj4gLQlzcGlubG9ja190ICAgICAgICAgICAgICAg
+ICAgICBldmVudF9oYW5kbGVyX2xvY2s7DQo+PiArCS8qIFByb3RlY3RzIGV2ZW50X2hhbmRsZXJf
+bGlzdCAqLw0KPj4gKwlzdHJ1Y3Qgcndfc2VtYXBob3JlIGV2ZW50X2hhbmRsZXJfcndzZW07DQo+
+PiArDQo+PiArCS8qIFByb3RlY3RzIFFQJ3MgZXZlbnRfaGFuZGxlciBjYWxscyBhbmQgb3Blbl9x
+cCBsaXN0ICovDQo+PiArCXNwaW5sb2NrX3QgZXZlbnRfaGFuZGxlcl9sb2NrOw0KPiANCj4gVGhp
+cyBvbmx5IHByb3RlY3RzIHRoZSBvcGVuX3FwIGxpc3QgcmVhbGx5LCB0aGUgZXZlbnQgaGFuZGxl
+ciBjYWxsDQo+IGRvZXNuJ3QgbmVlZCBhIHNwaW5sb2NrLiBTbyBsZXRzIG5hbWUgaXQgcHJvcGVy
+bHkuIG9wZW5fbGlzdF9sb2NrID8NCj4gDQpZZXMuIGl0IHByb3RlY3RzIG9wZW5fcXAgbGlzdCBh
+bmQgZXZlbnQgaGFuZGxlciBpcyBjYWxsZWQgZm9yIGVhY2ggbGlzdA0KaXRlbS4gU28gaXQgZG9l
+c24ndCByZWFsbHkgbmVlZCB0byBwcm90ZWN0IGV2ZW50IGhhbmRsZXIgY2FsbHMuDQoNCj4gSXQg
+aXMgc29ydCBvZiB3ZWlyZCB0aGF0IHdlIGdsb2JhbGx5IHNlcmlhbGl6ZSBhbGwgdGhlIHFwIGV2
+ZW50DQo+IGhhbmRsZXJzPyBpZSB0aGF0IHRoaXMgbG9jayBpc24ndCBpbiB0aGUgaWJfcXAuDQo+
+IA0KSXQgcHJvYmFibHkgaXNuJ3QgaW4gZWFjaCBpYl9xcCBiZWNhdXNlIGliX3FwIGlzIGluIGh1
+bmRyZWQgdGhvdXNhbmRzDQphbmQgeHJjIHFwIGV2ZW50cyBhcmUgbm90IHNvIGZyZXF1ZW50IGV2
+ZW50IHRoYXQgY2FuIGdldCBjb250ZW50ZWQuDQpTbyBJIHRoaW5rIHBlciBkZXZpY2UgcXAgbGlz
+dCBsb2NrIHNlZW1zIGZpbmUuDQo=
