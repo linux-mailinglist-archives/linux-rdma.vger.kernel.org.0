@@ -2,150 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C05151344F2
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2020 15:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF31134614
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2020 16:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbgAHO0x (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Jan 2020 09:26:53 -0500
-Received: from mail-wr1-f53.google.com ([209.85.221.53]:42440 "EHLO
-        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726830AbgAHO0x (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jan 2020 09:26:53 -0500
-Received: by mail-wr1-f53.google.com with SMTP id q6so3556029wro.9
-        for <linux-rdma@vger.kernel.org>; Wed, 08 Jan 2020 06:26:51 -0800 (PST)
+        id S1728589AbgAHPYZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Jan 2020 10:24:25 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:35228 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726556AbgAHPYX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jan 2020 10:24:23 -0500
+Received: by mail-wr1-f66.google.com with SMTP id g17so3831858wro.2
+        for <linux-rdma@vger.kernel.org>; Wed, 08 Jan 2020 07:24:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=4WvNDw3/eniKf7oIGCh7BVc0gldEt5FmFrJIHu98lwM=;
-        b=ESPHMa6RgZcSh5nWsowz7rM/rQVEqxuI9RDaQXwWqfQZmxjQP9TDl6HCY2pzKTF5Tc
-         JeBtev/4ZBxKc+S/VFuL1ZZrNuvXILnvm8sT11RV9cIF9zHzxKcsWRbaVApodf5tAHc8
-         sQrkxZjlYPzm2dzVP30ZseXU5saD2Wqtl9ueA7zBpixIHLzTF2NBxHAJNvL1ZFZqDhuM
-         xFoZBByETTZSkUVWwSx/RLXqvIGlJzb6qjh9lSVlcw+r5aw0Mfr8b/NLvHbsARhbMEnw
-         JHlL3Yfe3NCP344DieyR4b/35cOrgqSkte95i/lsHWgNy4nhg/ULmHtiEEJWAuD7OOFy
-         hDJA==
+        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WY8LswhWtBe+DJC/DEGAG0v0KweIWUFyKsy0DnI+itc=;
+        b=ZXUvw/vhiVbJH+1wtwf5xxWbV9B3EDKLGgk9nZLyC9y0XZMJuFRdJO5tuYwtkFbOyP
+         FralA2sMLvFQDB14ET8u6vgtQdJbh4cvA9p55FRNByr2yf3FXy/NIY9nTBGpK5LUxcq4
+         1by3MPlRENUwrEj+Sezq+4Hy2bCik9nFCqlZYFmw9NvFsGy8I8giq3+itv9gstEAWAmQ
+         2kV7+GrmtGpLDfnI2DKBBwsLOzcLLw9vSGgYAxKhrEejMx8BPnZpMfueADS0lPsoEpQB
+         1Wb/L2J/vP/di06i2RyNw0jRZM8kmLnNDOKlFV52GSMVHcCpiwYy7ZVl2Hil9XybPnRb
+         zn1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=4WvNDw3/eniKf7oIGCh7BVc0gldEt5FmFrJIHu98lwM=;
-        b=epPqqTAMe9QyugRLWiQst98WuwcDXaALU81Hmjx2TnIkXX3Z9djmGuoHkpVcg2sj99
-         N+hZGOXzZuk8Unn9dQ1P5GN/mHiZrKU8se88csZihdkEdA+98GH++Jfara+kwDFdistC
-         STx8eLhg2srFoy3hSj6uPEFe37lcGe6+U8Rcpe9RSLNqZXZfh/O0NsZlN7PdOzvTP6DU
-         JaRF4+/zuNPfzMUgabr0hI9RE23G4MOVOGYHMry0st2rynO/vo5O+NfUi7/5qnIQoFrR
-         bi5+rImIvvkqp7pPv6M0AbOuCJ+auZfQy0W3Nzuc6fKoxnFzgiAf3IaKEtlRQRVssPB0
-         1h9Q==
-X-Gm-Message-State: APjAAAXrgPXyJUTX5h/Dtx+Eodpji2BvFuwrVce9nNDHWXFTyr7i00G3
-        4gF2LRCWW5cDw1B1zL0y0/F/l5bK3FXwJDOWNY2f4ugI
-X-Google-Smtp-Source: APXvYqxfPmUhNEcf7Jc4h1L923SB3DNAo4vRLxgO6CtLVULh9/QV2Bd8y3GNpl+WgsaFNV0h08sU6CLaDyAipfwXy4c=
-X-Received: by 2002:adf:eb51:: with SMTP id u17mr4921883wrn.29.1578493610247;
- Wed, 08 Jan 2020 06:26:50 -0800 (PST)
-MIME-Version: 1.0
-From:   Alex Rosenbaum <rosenbaumalex@gmail.com>
-Date:   Wed, 8 Jan 2020 16:26:39 +0200
-Message-ID: <CAFgAxU8ArpoL9fMpJY5v-UZS5AMXom+TJ8HS57XeEOsCFFov8Q@mail.gmail.com>
-Subject: [RFC v2] RoCE v2.0 Entropy - IPv6 Flow Label and UDP Source Port
-To:     RDMA mailing list <linux-rdma@vger.kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        "Alex @ Mellanox" <alexr@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WY8LswhWtBe+DJC/DEGAG0v0KweIWUFyKsy0DnI+itc=;
+        b=Izs93z6L5CmYn0ePVoRkTBin1T6B+3XlxR2bBrHRT0h5D25P023YpydFDoLeEyacub
+         As7GY5ff/XrlH/sKAO59d45c1pWRA+l0wDVSl2kUp790fzyqvFmjzcZB7Vacksn2HKFG
+         5/4ExW11S8xsMR1M20zJ4elNJrBO5/lMgRgrR7siE9/xIi9qfCuGMbaCxROKaA7v+1Uh
+         ZYD0mmokqURapOxzwZz7eCQk0NglikwIzJTg61kEPRPEYlFuSLXhAIUmSbL0X9wqqQvK
+         RD1WdEOEmhUEn5CSJuvWgi9pjxxu9JB+AM2z9c2F5SEWZK/eT3QIGPBhXgCTnKGKQisz
+         SJXw==
+X-Gm-Message-State: APjAAAXu7Ijt1u0FGNVc453pIlKAc0vt6ogR1Rt/c9JWy1SDcQ0giDYa
+        ICR0JThwBAXiT6eXAL8I2Hmumg==
+X-Google-Smtp-Source: APXvYqy/vleudjcx/xMUWMn9iSG/9C+uIhSD3GlJinfMIalsB8y/BxdVFOkayIHlOLB7/RHQFVWGOw==
+X-Received: by 2002:adf:b605:: with SMTP id f5mr4964464wre.383.1578497061827;
+        Wed, 08 Jan 2020 07:24:21 -0800 (PST)
+Received: from [10.80.2.221] ([193.47.165.251])
+        by smtp.googlemail.com with ESMTPSA id o16sm4337490wmc.18.2020.01.08.07.24.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Jan 2020 07:24:21 -0800 (PST)
+Subject: Re: [PATCH rdma-rc 3/3] IB/core: Fix ODP with IB_ACCESS_HUGETLB
+ handling
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Leon Romanovsky <leonro@mellanox.com>,
-        Mark Zhang <markz@mellanox.com>
-Content-Type: text/plain; charset="UTF-8"
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Artemy Kovalyov <artemyko@mellanox.com>,
+        Aviad Yehezkel <aviadye@mellanox.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20191219134646.413164-1-leon@kernel.org>
+ <20191219134646.413164-4-leon@kernel.org>
+ <alpine.DEB.2.21.2001081352560.23971@ramsan.of.borg>
+From:   Yishai Hadas <yishaih@dev.mellanox.co.il>
+Message-ID: <ff4da6a1-609a-546c-e56c-e3ac529d4496@dev.mellanox.co.il>
+Date:   Wed, 8 Jan 2020 17:24:19 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
+MIME-Version: 1.0
+In-Reply-To: <alpine.DEB.2.21.2001081352560.23971@ramsan.of.borg>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-A combination of the flow_label field in the IPv6 header and UDP source port
-field in RoCE v2.0 are used to identify a group of packets that must be
-delivered in order by the network, end-to-end.
-These fields are used to create entropy for network routers (ECMP), load
-balancers and 802.3ad link aggregation switching that are not aware of RoCE IB
-headers.
+On 1/8/2020 2:56 PM, Geert Uytterhoeven wrote:
+>      Hi Leon,
+> 
+> On Thu, 19 Dec 2019, Leon Romanovsky wrote:
+>> From: Yishai Hadas <yishaih@mellanox.com>
+>>
+>> As VMAs for a given range might not be available as part of the
+>> registration phase in ODP, IB_ACCESS_HUGETLB/page_shift must be checked
+>> as part of the page fault flow.
+>>
+>> If the application didn't mmap the backed memory with huge pages or
+>> released part of that hugepage area, an error will be set as part of the
+>> page fault flow once be detected.
+>>
+>> Fixes: 0008b84ea9af ("IB/umem: Add support to huge ODP")
+>> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+>> Reviewed-by: Artemy Kovalyov <artemyko@mellanox.com>
+>> Reviewed-by: Aviad Yehezkel <aviadye@mellanox.com>
+>> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> 
+> Thanks for your patch!
+> 
+>> --- a/drivers/infiniband/core/umem_odp.c
+>> +++ b/drivers/infiniband/core/umem_odp.c
+>> @@ -241,22 +241,10 @@ struct ib_umem_odp *ib_umem_odp_get(struct 
+>> ib_udata *udata, unsigned long addr,
+>>     umem_odp->umem.owning_mm = mm = current->mm;
+>>     umem_odp->notifier.ops = ops;
+>>
+>> -    umem_odp->page_shift = PAGE_SHIFT;
+>> -    if (access & IB_ACCESS_HUGETLB) {
+>> -        struct vm_area_struct *vma;
+>> -        struct hstate *h;
+>> -
+>> -        down_read(&mm->mmap_sem);
+>> -        vma = find_vma(mm, ib_umem_start(umem_odp));
+>> -        if (!vma || !is_vm_hugetlb_page(vma)) {
+>> -            up_read(&mm->mmap_sem);
+>> -            ret = -EINVAL;
+>> -            goto err_free;
+>> -        }
+>> -        h = hstate_vma(vma);
+>> -        umem_odp->page_shift = huge_page_shift(h);
+>> -        up_read(&mm->mmap_sem);
+>> -    }
+>> +    if (access & IB_ACCESS_HUGETLB)
+>> +        umem_odp->page_shift = HPAGE_SHIFT;
+>> +    else
+>> +        umem_odp->page_shift = PAGE_SHIFT;
+>>
+>>     umem_odp->tgid = get_task_pid(current->group_leader, PIDTYPE_PID);
+>>     ret = ib_init_umem_odp(umem_odp, ops);
+> 
+> noreply@ellerman.id.au reports for linux-next/m68k-allmodconfig/m68k:
+> 
+>      drivers/infiniband/core/umem_odp.c:245:26: error: 'HPAGE_SHIFT' 
+> undeclared (first use in this function); did you mean 'PAGE_SHIFT'?
+> 
+> Should this depend on some HUGETLBFS option?
+> 
 
-The flow_label field is defined by a 20 bit hash value. CM based connections
-will use a hash function definition based on the service type (QP Type) and
-Service ID (SID). Where CM services are not used, the 20 bit hash will be
-according to the source and destination QPN values.
-Drivers will derive the RoCE v2.0 UDP src_port from the flow_label result.
+Thanks for pointing on,
+We would expect to use #ifdef CONFIG_HUGETLB_PAGE as done in below 
+kernel code [1] that also used HPAGE_SHIFT.
 
-UDP source port selection must adhere IANA port allocation ranges. Thus we will
-be using IANA recommendation for Ephemeral port range of: 49152-65535, or in
-hex: 0xC000-0xFFFF.
+I'll send some patch to 'for-next' to handle it.
 
-The below calculations take into account the importance of producing a symmetric
-hash result so we can support symmetric hash calculation of network elements.
-
-Hash Calculation for RDMA IP CM Service
-=======================================
-For RDMA IP CM Services, based on QP1 iMAD usage and connected RC QPs using the
-RDMA IP CM Service ID, the flow label will be calculated according to IBTA CM
-REQ private data info and Service ID.
-
-Flow label hash function calculations definition will be defined as:
-Extract the following fields from the CM IP REQ:
-  CM_REQ.ServiceID.DstPort [2 Bytes]
-  CM_REQ.PrivateData.SrcPort [2 Bytes]
-  u32 hash = DstPort * SrcPort;
-  hash ^= (hash >> 16);
-  hash ^= (hash >> 8);
-  AH_ATTR.GRH.flow_label = hash AND IB_GRH_FLOWLABEL_MASK;
-
-  #define IB_GRH_FLOWLABEL_MASK  0x000FFFFF
-
-Result of the above hash will be kept in the CM's route path record connection
-context and will be used all across its vitality for all preceding CM messages
-on both ends of the connection (including REP, REJ, DREQ, DREP, ..).
-Once connection is established, the corresponding Connected RC QPs, on both
-ends of the connection, will update their context with the calculated RDMA IP
-CM Service based flow_label and UDP src_port values at the Connect phase of
-the active side and Accept phase of the passive side of the connection.
-
-CM will provide to the calculated value of the flow_label hash (20 bit) result
-in the 'uint32_t flow_label' field of 'struct ibv_global_route' in 'struct
-ibv_ah_attr'.
-The 'struct ibv_ah_attr' is passed by the CM to the provider library when
-modifying a connected QP's (e.g.: RC) state by calling 'ibv_modify_qp(qp,
-ah_attr, attr_mask |= IBV_QP_AV)' or when create a AH for working with
-datagram QP's (e.g.: UD) by calling ibv_create_ah(ah_attr).
-
-Hash Calculation for non-RDMA CM Service ID
-===========================================
-For non CM QP's, the application can define the flow_label value in the
-'struct ibv_ah_attr' when modifying the connected QP's (e.g.: RC) or creating
-a AH for the datagram QP's (e.g.: UD).
-
-If the provided flow_label value is zero, not set by the application (e.g.:
-legacy cases), then verbs providers should use the src.QP[24bit] and
-dst.QP[24bit] as input arguments for flow_label calculation.
-As QPN's are an array of 3 bytes, the multiplication will result in 6 bytes
-value. We'll define a flow_label value as:
-  DstQPn [3 Bytes]
-  SrcQPn [3 Bytes]
-  u64 hash = DstQPn * SrcQPn;
-  hash ^= (hash >> 20);
-  hash ^= (hash >> 40);
-  AH_ATTR.GRH.flow_label = hash AND IB_GRH_FLOWLABEL_MASK;
-
-Hash Calculation for UDP src_port
-=================================
-Providers supporting RoCEv2 will use the 'flow_label' value as input to
-calculate the RoCEv2 UDP src_port, which will be used in the QP context or the
-AH context.
-
-UDP src_port calculations from flow label:
-[while considering the 14 bits UDP port range according to IANA recommendation]
-  AH_ATTR.GRH.flow_label [20 bits]
-  u32 fl_low  = fl & 0x03FFF;
-  u32 fl_high = fl & 0xFC000;
-  u16 udp_sport = fl_low XOR (fl_high >> 14);
-  RoCE.UDP.src_port = udp_sport OR IB_ROCE_UDP_ENCAP_VALID_PORT
-
-  #define IB_ROCE_UDP_ENCAP_VALID_PORT 0xC000
-
-This is a v2 follow-up on "[RFC] RoCE v2.0 UDP Source Port Entropy" [1]
-
-[1] https://www.spinics.net/lists/linux-rdma/msg73735.html
-
-Signed-off-by: Alex Rosenbaum <alexr@mellanox.com>
+[1] 
+https://elixir.bootlin.com/linux/v5.3-rc7/source/drivers/misc/sgi-gru/grufault.c#L183
