@@ -2,162 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A96134A23
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jan 2020 19:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F371354AB
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jan 2020 09:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730119AbgAHSGU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Jan 2020 13:06:20 -0500
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:45131 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730101AbgAHSGM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jan 2020 13:06:12 -0500
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from yishaih@mellanox.com)
-        with ESMTPS (AES256-SHA encrypted); 8 Jan 2020 20:06:05 +0200
-Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [10.7.2.17])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 008I65Eu030047;
-        Wed, 8 Jan 2020 20:06:05 +0200
-Received: from vnc17.mtl.labs.mlnx (vnc17.mtl.labs.mlnx [127.0.0.1])
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8) with ESMTP id 008I65u4022359;
-        Wed, 8 Jan 2020 20:06:05 +0200
-Received: (from yishaih@localhost)
-        by vnc17.mtl.labs.mlnx (8.13.8/8.13.8/Submit) id 008I65xB022357;
-        Wed, 8 Jan 2020 20:06:05 +0200
-From:   Yishai Hadas <yishaih@mellanox.com>
-To:     linux-rdma@vger.kernel.org, jgg@mellanox.com, dledford@redhat.com
-Cc:     saeedm@mellanox.com, yishaih@mellanox.com, maorg@mellanox.com,
-        michaelgur@mellanox.com, netdev@vger.kernel.org
-Subject: [PATCH rdma-next 10/10] RDMA/mlx5: Set relaxed ordering when requested
-Date:   Wed,  8 Jan 2020 20:05:40 +0200
-Message-Id: <1578506740-22188-11-git-send-email-yishaih@mellanox.com>
-X-Mailer: git-send-email 1.8.2.3
-In-Reply-To: <1578506740-22188-1-git-send-email-yishaih@mellanox.com>
-References: <1578506740-22188-1-git-send-email-yishaih@mellanox.com>
+        id S1728565AbgAIIsB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Jan 2020 03:48:01 -0500
+Received: from mout.kundenserver.de ([212.227.126.131]:47331 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728448AbgAIIsB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Jan 2020 03:48:01 -0500
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1Mw99Y-1jey8c0CyC-00s2rY; Thu, 09 Jan 2020 09:47:46 +0100
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Artemy Kovalyov <artemyko@mellanox.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Moni Shoua <monis@mellanox.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] IB/core: Fix build failure without hugepages
+Date:   Thu,  9 Jan 2020 09:47:30 +0100
+Message-Id: <20200109084740.2872079-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.20.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:mkrhrw40NErOvP8CxwUXSW4llRsS42HydBRTLlnckgzOAZHs4E/
+ hAw/7GSlComduAO87UIxsrWBEWcIF+7ft/buqQtfeeqxApMdprqOpGlFDlfIhDQNy1E1LEd
+ 2Q9J9QMoA8Lp7KAaqUzbTAxbc2w0PjVgVJZEnlMdjvNGiewGek9MojVygyqKU2Zpmx+rZW7
+ 7C0RDFSmDuAbfH6Rn18MA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:03kATHjJVDc=:OV0JtzVoDE39MIMzD9tJrj
+ IYkYlVS89skmK73I+iAs19WcYvxf9Z3w+YV/Ly32JQYhnaTysEDXIRG85ttV280GphHPno7A9
+ 3PW7EbmUUQJPqSFUyVfjJ/P4WnmW4i4SN4iSDyJgP7cowHA9cyTtQTeDYN9xArJwqXuHp0GA4
+ LdK+cF8PEE1b03EtnlVrhibhltwQm+zEG/RI8fLHpv8GMRdRB4SjN/M5+acPjjwnirz1sHU9O
+ mb8hDzwVWeI6jP/52JbUbyOV4RRoITZkIC1BKNkCWO7/AI+1hwxAevhCO6Htqy7R1HV+WqHzq
+ Ruq174DQRlJuJxTHTJnylvvjr2pC1UAKFQcD4s8VqiVgnJK9t4NrtblGD3tNP/Zj0Fhi1fK2p
+ NJkTKkMWoojSKEFeSKrvLgtAGJl1LCHM8wuWeK1142iS1f20/rF0+VPldBCkJZjFtvagAkucB
+ KePnVLLnAjgjR44CI1Op9TGJSzd2ndiwVrl7hdgYJ0LtmvlIrPnPhExQ86wJ248dtRTYng6Bt
+ sD0+tdqXMuEQo5Hk/6KcuoRZiwj3O9jWKE/OwLNiDb/vfzaeUw4vEfdGsY3nkxD5FsuEMQx28
+ HRYnUBRCaiWan6Ikit6MNNwROhFc1m2EAW72evrSNRuu4CyL1kT6XOlAFiiCFBq8srPZaum1C
+ bUOoouGoI3+15NHBpOBq58N6eqWzMzjVvHLwdYnBlUYKTAbFCigx2iBzS0P4N7CIrbjH1V+ue
+ v+/LDRj2iLUivulKIWDOtN9fM6AAbBSHEM9rldw1UXeTz8lSM9IfBr5KkeNAg3nrdslG5BlCn
+ FZhY52Vgf+zP4b2XZgIrgxxqfYFlIvJdnFFlDFIB6w206b8OEh2tDP31rfqCl2hnRZL8wwK2J
+ xMKRZdN0K9IHPNvz8lfg==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Michael Guralnik <michaelgur@mellanox.com>
+HPAGE_SHIFT is only defined on architectures that support hugepages:
 
-Enable relaxed ordering in mkey context when requested.
-As relaxed ordering is not currently supported in UMR, disable UMR usage
-for relaxed ordering MRs.
+drivers/infiniband/core/umem_odp.c: In function 'ib_umem_odp_get':
+drivers/infiniband/core/umem_odp.c:245:26: error: 'HPAGE_SHIFT' undeclared (first use in this function); did you mean 'PAGE_SHIFT'?
 
-Signed-off-by: Michael Guralnik <michaelgur@mellanox.com>
-Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+Enclose this in an #ifdef.
+
+Fixes: 9ff1b6466a29 ("IB/core: Fix ODP with IB_ACCESS_HUGETLB handling")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  5 ++++-
- drivers/infiniband/hw/mlx5/mr.c      | 19 +++++++++++++++++--
- drivers/infiniband/hw/mlx5/odp.c     |  2 +-
- drivers/infiniband/hw/mlx5/qp.c      |  2 +-
- 4 files changed, 23 insertions(+), 5 deletions(-)
+ drivers/infiniband/core/umem_odp.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index b06f32f..3f0a55c 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1507,7 +1507,7 @@ int bfregn_to_uar_index(struct mlx5_ib_dev *dev,
- u16 mlx5_ib_get_counters_id(struct mlx5_ib_dev *dev, u8 port_num);
+diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
+index f42fa31c24a2..b9baf7d0a5cb 100644
+--- a/drivers/infiniband/core/umem_odp.c
++++ b/drivers/infiniband/core/umem_odp.c
+@@ -241,10 +241,11 @@ struct ib_umem_odp *ib_umem_odp_get(struct ib_udata *udata, unsigned long addr,
+ 	umem_odp->umem.owning_mm = mm = current->mm;
+ 	umem_odp->notifier.ops = ops;
  
- static inline bool mlx5_ib_can_use_umr(struct mlx5_ib_dev *dev,
--				       bool do_modify_atomic)
-+				       bool do_modify_atomic, int access_flags)
- {
- 	if (MLX5_CAP_GEN(dev->mdev, umr_modify_entity_size_disabled))
- 		return false;
-@@ -1517,6 +1517,9 @@ static inline bool mlx5_ib_can_use_umr(struct mlx5_ib_dev *dev,
- 	    MLX5_CAP_GEN(dev->mdev, umr_modify_atomic_disabled))
- 		return false;
++	umem_odp->page_shift = PAGE_SHIFT;
++#ifdef CONFIG_HUGETLB_PAGE
+ 	if (access & IB_ACCESS_HUGETLB)
+ 		umem_odp->page_shift = HPAGE_SHIFT;
+-	else
+-		umem_odp->page_shift = PAGE_SHIFT;
++#endif
  
-+	if (access_flags & IB_ACCESS_RELAXED_ORDERING)
-+		return false;
-+
- 	return true;
- }
- 
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index ea8bfc3..75b825a 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -661,12 +661,21 @@ int mlx5_mr_cache_cleanup(struct mlx5_ib_dev *dev)
- static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
- 					  struct ib_pd *pd)
- {
-+	struct mlx5_ib_dev *dev = to_mdev(pd->device);
-+
- 	MLX5_SET(mkc, mkc, a, !!(acc & IB_ACCESS_REMOTE_ATOMIC));
- 	MLX5_SET(mkc, mkc, rw, !!(acc & IB_ACCESS_REMOTE_WRITE));
- 	MLX5_SET(mkc, mkc, rr, !!(acc & IB_ACCESS_REMOTE_READ));
- 	MLX5_SET(mkc, mkc, lw, !!(acc & IB_ACCESS_LOCAL_WRITE));
- 	MLX5_SET(mkc, mkc, lr, 1);
- 
-+	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write))
-+		MLX5_SET(mkc, mkc, relaxed_ordering_write,
-+			 !!(acc & IB_ACCESS_RELAXED_ORDERING));
-+	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read))
-+		MLX5_SET(mkc, mkc, relaxed_ordering_read,
-+			 !!(acc & IB_ACCESS_RELAXED_ORDERING));
-+
- 	MLX5_SET(mkc, mkc, pd, to_mpd(pd)->pdn);
- 	MLX5_SET(mkc, mkc, qpn, 0xffffff);
- 	MLX5_SET64(mkc, mkc, start_addr, start_addr);
-@@ -1075,6 +1084,12 @@ static struct mlx5_ib_mr *reg_create(struct ib_mr *ibmr, struct ib_pd *pd,
- 	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
- 	MLX5_SET(mkc, mkc, free, !populate);
- 	MLX5_SET(mkc, mkc, access_mode_1_0, MLX5_MKC_ACCESS_MODE_MTT);
-+	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write))
-+		MLX5_SET(mkc, mkc, relaxed_ordering_write,
-+			 !!(access_flags & IB_ACCESS_RELAXED_ORDERING));
-+	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read))
-+		MLX5_SET(mkc, mkc, relaxed_ordering_read,
-+			 !!(access_flags & IB_ACCESS_RELAXED_ORDERING));
- 	MLX5_SET(mkc, mkc, a, !!(access_flags & IB_ACCESS_REMOTE_ATOMIC));
- 	MLX5_SET(mkc, mkc, rw, !!(access_flags & IB_ACCESS_REMOTE_WRITE));
- 	MLX5_SET(mkc, mkc, rr, !!(access_flags & IB_ACCESS_REMOTE_READ));
-@@ -1263,7 +1278,7 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 	if (err < 0)
- 		return ERR_PTR(err);
- 
--	use_umr = mlx5_ib_can_use_umr(dev, true);
-+	use_umr = mlx5_ib_can_use_umr(dev, true, access_flags);
- 
- 	if (order <= mr_cache_max_order(dev) && use_umr) {
- 		mr = alloc_mr_from_cache(pd, umem, virt_addr, length, ncont,
-@@ -1431,7 +1446,7 @@ int mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
- 			goto err;
- 	}
- 
--	if (!mlx5_ib_can_use_umr(dev, true) ||
-+	if (!mlx5_ib_can_use_umr(dev, true, access_flags) ||
- 	    (flags & IB_MR_REREG_TRANS && !use_umr_mtt_update(mr, addr, len))) {
- 		/*
- 		 * UMR can't be used - MKey needs to be replaced.
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index f924250..bed81dc 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -342,7 +342,7 @@ void mlx5_ib_internal_fill_odp_caps(struct mlx5_ib_dev *dev)
- 	memset(caps, 0, sizeof(*caps));
- 
- 	if (!MLX5_CAP_GEN(dev->mdev, pg) ||
--	    !mlx5_ib_can_use_umr(dev, true))
-+	    !mlx5_ib_can_use_umr(dev, true, 0))
- 		return;
- 
- 	caps->general_caps = IB_ODP_SUPPORT;
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 7e51870..76e30ad 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -4823,7 +4823,7 @@ static int set_reg_wr(struct mlx5_ib_qp *qp,
- 	bool atomic = wr->access & IB_ACCESS_REMOTE_ATOMIC;
- 	u8 flags = 0;
- 
--	if (!mlx5_ib_can_use_umr(dev, atomic)) {
-+	if (!mlx5_ib_can_use_umr(dev, atomic, wr->access)) {
- 		mlx5_ib_warn(to_mdev(qp->ibqp.device),
- 			     "Fast update of %s for MR is disabled\n",
- 			     (MLX5_CAP_GEN(dev->mdev,
+ 	umem_odp->tgid = get_task_pid(current->group_leader, PIDTYPE_PID);
+ 	ret = ib_init_umem_odp(umem_odp, ops);
 -- 
-1.8.3.1
+2.20.0
 
