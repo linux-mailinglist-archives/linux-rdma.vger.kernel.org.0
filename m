@@ -2,113 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B27A313715C
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2020 16:34:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 624041371DA
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2020 16:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbgAJPeM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Jan 2020 10:34:12 -0500
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:34332 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728310AbgAJPeM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jan 2020 10:34:12 -0500
-Received: by mail-ed1-f68.google.com with SMTP id l8so1924623edw.1
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2020 07:34:10 -0800 (PST)
+        id S1728402AbgAJPyK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 Jan 2020 10:54:10 -0500
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:34424 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728367AbgAJPyK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jan 2020 10:54:10 -0500
+Received: by mail-pf1-f195.google.com with SMTP id i6so1341955pfc.1
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2020 07:54:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Ie5aVHRs3fMg3l5fEJ6yUFTPMWafXXtxtwYKnx7eFk0=;
-        b=XfyG7FtK98khhd/EFD1f2/vOjJ1eehnC+AbNUXVxynz6llFzBio3KfSmMGlMzrILwy
-         wsWjnmW/HW2sq4Yfq+k/CCvSQFN047uuohfyD6hI5HkHh/5g5EEKazGHj7xTrhbFI+lO
-         iFcWWmuLyFaeQ65v+PK5QR9QcQfQZpqWGwNFteK8hwWmT64NuetZJ3F3DZnBt3FhuxN1
-         0OfQjLMRLgLIjxlBbkUe7llB8iLpVhRlmyftcbM1lh/4zQW34F/bjzhV7nBSxYN9yVZh
-         ywmltxtoGtWYJmHPXaEB7tcFEUyP2Sz1uPmd/0ANMvPFoo4XRN640Dw90SNuNymQDLZo
-         ntKQ==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=SK9SfM0s44elgGzLaJeFK5jMx7NIcHCDZF3x9nv0Lxs=;
+        b=aBV1vy75sNaosplHJ4H3qazVSebNElcAVlUb+HrjOZPq1vvWoFf9dEImAwbKzRGAey
+         WXFZW3qa2v84cafmXiduuTXYX7tiAt38D7DQCWgB/pNRtn4obYWkC9IU5eWvee8iLkNT
+         whWf5etBpitExpwXzzboEVpBB0lB6AIMlr6bM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Ie5aVHRs3fMg3l5fEJ6yUFTPMWafXXtxtwYKnx7eFk0=;
-        b=D3QEaxjToyTlMCZn37eeWSgTkU3wybPrtFFuahOn2BQl8N3/GawKQGetxFKyoPErPp
-         a0cmDBkuZyCg0+wmaEwPj2cd2HYUKNa8F3jtEKdGCzineSVGmk6ipaTGgqiw1gX6NjgT
-         teRxhklH0H46LgR7/o0kHPZdsRo4zwwApEHOvmzezzfGMrd4gwOwwM4GbIm2HyxKOndH
-         4TNuS+lfxSMThaPTz1QoEoKpGgZvpCqsu9hA6l87AABvlcdCrddNeYvm1l3dezv74n0v
-         0qrM6TaXPEeICvYUMNcz1WtScLTI/yGiJf34nU3h3kwm9LP/PZOPgfusmTQ+efj0unkd
-         YKlw==
-X-Gm-Message-State: APjAAAVd3oDAfL2QumiVy5fEZwI6hz1l490vIWmDhDPTrw47yhCcjRMh
-        zgP7VSk5RSdwBZNZ4l2FY0ZIRlk7D0Y=
-X-Google-Smtp-Source: APXvYqyJ+Sdgmr9ij1y2kEPGCCI89n656QcmUT/LKgLQnmTKTlpyO7aZSOscgFv4sC4fkpJxv8BxbA==
-X-Received: by 2002:a05:6402:1771:: with SMTP id da17mr4264311edb.68.1578670449966;
-        Fri, 10 Jan 2020 07:34:09 -0800 (PST)
-Received: from ?IPv6:2a02:247f:ffff:2540:b9cb:c00f:83d:e3ff? ([2001:1438:4010:2540:b9cb:c00f:83d:e3ff])
-        by smtp.gmail.com with ESMTPSA id ck28sm55835edb.45.2020.01.10.07.34.09
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 10 Jan 2020 07:34:09 -0800 (PST)
-Subject: Re: [RFC PATCH] RDMA/core: avoid potential memory leak in
- add_one_compat_dev
-To:     jgq516@gmail.com, dledford@redhat.com, jgg@ziepe.ca
-Cc:     Parav Pandit <parav@mellanox.com>, linux-rdma@vger.kernel.org
-References: <20200110153250.11898-1-guoqing.jiang@cloud.ionos.com>
-From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Message-ID: <0c67a2ec-9291-85c1-ba37-2b90849df314@cloud.ionos.com>
-Date:   Fri, 10 Jan 2020 16:34:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SK9SfM0s44elgGzLaJeFK5jMx7NIcHCDZF3x9nv0Lxs=;
+        b=BC5mOWRprGaqWqg+8sSyDo4VFEDr7ea+HoxLaFwqlVGgmZWHtHQ2Ku6Bql/Og+KQBL
+         tmh4eg1vJb7D+pf9LAZ1GwJanouttFilqPAaUp3Zgz9O4bKaWHsSBIcI6PgI9uGSuVxN
+         rbuPPWZdlf4XWQyX4PW/9cASZkCwKdF3DORAeOcLYPQNhTFfm6urELgRmi8UVrFyvGAD
+         S1zVpZXhSJDIeT/6rqkuZhxnObZK1Kyv1uFvcz+xvAHHlv195yeUZeLPAm3WNNggq9kZ
+         t+D37AmT+SzT08kHjpliGrO/W3/tuTLK5QH+p71aP7Y+JC5IWu8PaxHqiOEF02uMeGem
+         VHxg==
+X-Gm-Message-State: APjAAAXtbOmXI+Ku+IYqCLXDCMIenai5QKmZQib3ft7+qOiOx+Tqon3g
+        paAloT4pTad8LGTQTyiTDTXJSg==
+X-Google-Smtp-Source: APXvYqycGLOZaBaQu3Hqaeuta4YY/jPKmGOsSO3iqRpNJkIQ54WkKeTGxoc6scloX9pTQNenda0JAg==
+X-Received: by 2002:a63:541e:: with SMTP id i30mr5002051pgb.183.1578671649500;
+        Fri, 10 Jan 2020 07:54:09 -0800 (PST)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id w6sm3769223pfq.99.2020.01.10.07.54.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jan 2020 07:54:08 -0800 (PST)
+Date:   Fri, 10 Jan 2020 10:54:07 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     madhuparnabhowmik04@gmail.com
+Cc:     jgg@ziepe.ca, dennis.dalessandro@intel.com,
+        mike.marciniszyn@intel.com, dledford@redhat.com,
+        paulmck@kernel.org, rcu@vger.kernel.org, frextrite@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] infiniband: hw: hfi1: verbs.c: Use built-in RCU list
+ checking
+Message-ID: <20200110155407.GB128013@google.com>
+References: <20200107192912.22691-1-madhuparnabhowmik04@gmail.com>
+ <20200107203354.GD26174@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <20200110153250.11898-1-guoqing.jiang@cloud.ionos.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200107203354.GD26174@ziepe.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Forget to cc list, sorry.
+On Wed, Jan 08, 2020 at 01:35:07PM +0530, madhuparnabhowmik04@gmail.com wrote:
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> 
+> On Wed, Jan 08, 2020 at 12:59:12AM +0530, madhuparnabhowmik04@gmail.com wrote:
+> > From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+> > 
+> > list_for_each_entry_rcu has built-in RCU and lock checking.
+> > Pass cond argument to list_for_each_entry_rcu.
+> > 
+> > Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+> >  drivers/infiniband/hw/hfi1/verbs.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
+> > index 089e201d7550..e6abdbcb4ffb 100644
+> > +++ b/drivers/infiniband/hw/hfi1/verbs.c
+> > @@ -515,7 +515,8 @@ static inline void hfi1_handle_packet(struct hfi1_packet *packet,
+> >  				       opa_get_lid(packet->dlid, 9B));
+> >  		if (!mcast)
+> >  			goto drop;
+> > -		list_for_each_entry_rcu(p, &mcast->qp_list, list) {
+> > +		list_for_each_entry_rcu(p, &mcast->qp_list, list,
+> > +					lock_is_held(&(ibp->rvp.lock).dep_map)) {
+> 
+> Why .dep_map? Does this compile?
 
-On 1/10/20 4:32 PM, jgq516@gmail.com wrote:
-> From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
->
-> In add_one_compat_dev, if failure happens after cdev is allocated,
-> so we need to free the memory accordingly.
->
-> Fixes: 4e0f7b9070726 ("RDMA/core: Implement compat device/sysfs tree in net namespace")
-> Cc: Parav Pandit <parav@mellanox.com>
-> Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-> ---
-> Hi,
->
-> When reading the code, it looks no place to free cdev under those err condition.
-> And I guess remove_one_compat_dev needs to free cdev as well, something like:
->
-> @@ -937,6 +937,8 @@ static void remove_one_compat_dev(struct ib_device *device, u32 id)
->                  ib_free_port_attrs(cdev);
->                  device_del(&cdev->dev);
->                  put_device(&cdev->dev);
-> +               kfree(cdev);
-> +               cdev = NULL;
->          }
->   }
->
-> But since I am not know well about the code, so this is RFC.
->
+Yeah, have you really compiled this? Don't send patches without at least
+compile testing !!
+
+> Alternatively, it can be lockdep_is_held(ibp->rvp.lock).
+> Please refer to the macro(link below) and let me know if the usage of lock_is_held()
+> in the patch is correct.
+> 
+> https://elixir.bootlin.com/linux/v5.5-rc2/source/include/linux/lockdep.h#L364
+
+Please use lockdep_is_held(). Thanks.
+
+thanks,
+
+ - Joel
+
+> 
 > Thanks,
-> Guoqing
->
->   drivers/infiniband/core/device.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> index 84dd74fe13b8..dca8d9da4a75 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -918,6 +918,7 @@ static int add_one_compat_dev(struct ib_device *device,
->   	device_del(&cdev->dev);
->   add_err:
->   	put_device(&cdev->dev);
-> +	kfree(cdev);
->   cdev_err:
->   	xa_release(&device->compat_devs, rnet->id);
->   done:
-
+> Madhuparna
+> Jason
