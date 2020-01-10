@@ -2,87 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC5413704C
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2020 15:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF631370BE
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2020 16:09:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728401AbgAJOzB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Jan 2020 09:55:01 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:38551 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728422AbgAJOzA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jan 2020 09:55:00 -0500
-Received: by mail-qv1-f68.google.com with SMTP id t6so843899qvs.5
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2020 06:54:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=eqdBuQMonbSxQiNFPL1SEvEnhOLoHtuuNgfQWPDo/eY=;
-        b=DaSw8QjSbZBiFhOSj0lsT4/B6aeQ65sfbPvjsLxsO7tRw14mOj4woO0/f1XzLbeoQi
-         9rLGZJwWjQtSUN4bqiDY49jfxEGmyHTPpGDdOYRRuVCcAiRdI23BWgKtYxsw35oTkRYn
-         naqgETboK9D3Wp/9CwvsDp6v+HaFMg5k5Rj/EyTSkEmvbVr/Zy67SAKOtE35+Uhc3VPD
-         SzGjV0wmueHeOqfYgAycngz4QKaLKogEurt0kDof0redO7ajjd5yel14+a8r9xyxUrSy
-         bDvf3LHAC502b0xuzjt9FbEELkkNwep7GiP2goew3ayJfwbd6GQJjD96cZwu4dr3gZ6g
-         j6ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=eqdBuQMonbSxQiNFPL1SEvEnhOLoHtuuNgfQWPDo/eY=;
-        b=M8JC1Y+Uqc2IyLIyZp04t6JOTbZy9j5E8VRa79VjUlItK+e6QkLoGWw20sVZiAdkhM
-         kkJ7l1wWrdGRu7FUMBCV4pXWIn8H2vo4XZGZEppnzrkx4vSVtEVSu02aEguqfb2mzgPr
-         Cqj/y37nkxmGpXVdT/Q7Z/i58ko9R71pK8vwXwQPattel9tLvj2t6agmQG9CUsoAnVFR
-         HAqtBzpdbbnGV9LrVMOoaYEkah+VkbPBvys4Q/BG01IWaBkUMh+Ehy50Ni7SHX51EXGG
-         TtCTOKKIMSjXFUK/FEGNYvKRGu9bENdwq3JMKLV0ZrrtVs1t4NP3N4b6g4xp0q3KFRRc
-         Dl9A==
-X-Gm-Message-State: APjAAAXg4QMivieTS32nUzgrzijmyaRFGPnG83MkqOy94L/uesU5nNIo
-        NnWAn9QkINzOwolE9avRf+2mwQ==
-X-Google-Smtp-Source: APXvYqwhYDIEvu0BaV6KPIwfxOTx00CqmxIr5R6XwDOSPQD3PdF7/o24+sjozgpCJmD/xfLS1PoABQ==
-X-Received: by 2002:a0c:c24f:: with SMTP id w15mr3188012qvh.66.1578668099296;
-        Fri, 10 Jan 2020 06:54:59 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id x3sm1105355qts.35.2020.01.10.06.54.58
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 10 Jan 2020 06:54:58 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ipvgg-0004d1-C6; Fri, 10 Jan 2020 10:54:58 -0400
-Date:   Fri, 10 Jan 2020 10:54:58 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Yishai Hadas <yishaih@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, dledford@redhat.com,
-        maorg@mellanox.com, michaelgur@mellanox.com
-Subject: Re: [PATCH rdma-next 11/14] RDMA/core: Fix locking in
- ib_uverbs_event_read
-Message-ID: <20200110145458.GA17728@ziepe.ca>
-References: <1578504126-9400-1-git-send-email-yishaih@mellanox.com>
- <1578504126-9400-12-git-send-email-yishaih@mellanox.com>
+        id S1728184AbgAJPJq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 Jan 2020 10:09:46 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41422 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728152AbgAJPJq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 10 Jan 2020 10:09:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 86A6DB166;
+        Fri, 10 Jan 2020 15:09:44 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1578504126-9400-12-git-send-email-yishaih@mellanox.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 10 Jan 2020 16:09:43 +0100
+From:   Roman Penyaev <rpenyaev@suse.de>
+To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Subject: Re: [PATCH v6 17/25] rnbd: client: main functionality
+In-Reply-To: <CAMGffEm3tp_hjQT2kw9yKbuoXrkF5g6f-3prvx6buHoT+Mpb1Q@mail.gmail.com>
+References: <20191230102942.18395-1-jinpuwang@gmail.com>
+ <20191230102942.18395-18-jinpuwang@gmail.com>
+ <aa7eeeda-b3d7-4a26-9043-53ce8c80eef1@acm.org>
+ <CAMGffEm3tp_hjQT2kw9yKbuoXrkF5g6f-3prvx6buHoT+Mpb1Q@mail.gmail.com>
+Message-ID: <2616c4cd0aabcd112256fe2e3d7b9a24@suse.de>
+X-Sender: rpenyaev@suse.de
+User-Agent: Roundcube Webmail
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 08, 2020 at 07:22:03PM +0200, Yishai Hadas wrote:
-> From: Jason Gunthorpe <jgg@mellanox.com>
-> 
-> This should not be using ib_dev to test for disassociation, during
-> disassociation is_closed is set under lock and the waitq is triggered.
-> 
-> Instead check is_closed and be sure to re-obtain the lock to test the
-> value after the wait_event returns.
-> 
-> Fixes: 036b10635739 ("IB/uverbs: Enable device removal when there are active user space applications")
-> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> ---
->  drivers/infiniband/core/uverbs_main.c | 32 ++++++++++++++------------------
->  1 file changed, 14 insertions(+), 18 deletions(-)
+On 2020-01-10 15:45, Jinpu Wang wrote:
+>> > +{
+>> > +     DEFINE_WAIT_FUNC(wait, autoremove_wake_function);
+>> > +
+>> > +     prepare_to_wait(&sess->rtrs_waitq, &wait, TASK_UNINTERRUPTIBLE);
+>> > +     if (IS_ERR_OR_NULL(sess->rtrs)) {
+>> > +             finish_wait(&sess->rtrs_waitq, &wait);
+>> > +             return;
+>> > +     }
+>> > +     mutex_unlock(&sess_lock);
+>> > +     /* After unlock session can be freed, so careful */
+>> > +     schedule();
+>> > +     mutex_lock(&sess_lock);
+>> > +}
+>> 
+>> How can a function that calls schedule() and that is not surrounded by 
+>> a
+>> loop be correct? What if e.g. schedule() finishes due to a spurious 
+>> wakeup?
+> I checked in git history, this no clean explanation why we have to
+> call the mutex_unlock/schedul/mutex_lock magic
+> It's allowed to call schedule inside mutex, seems we can remove the
+> code snip, @Roman Penyaev do you remember why it was introduced?
 
-Applied to for-next instead of the version from Hakon
+The loop in question is in the caller, see __find_and_get_sess().
+You can't leave mutex locked and call schedule(), you will catch a
+deadlock with a caller of free_sess(), which has just put the last
+reference and is about to take the sess_lock in order to delete
+the session from the list.
 
-Jason
+--
+Roman
+
