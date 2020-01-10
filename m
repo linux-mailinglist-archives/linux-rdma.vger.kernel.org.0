@@ -2,81 +2,164 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73258136B90
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2020 11:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD811136FB4
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2020 15:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727607AbgAJK6q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Jan 2020 05:58:46 -0500
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:52149
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S1727598AbgAJK6p (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 10 Jan 2020 05:58:45 -0500
-X-Greylist: delayed 420 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Jan 2020 05:58:44 EST
-Received: from [192.168.43.114] (unknown [223.104.212.70])
-        by mail-app3 (Coremail) with SMTP id cC_KCgBnqlw7VxheS8whAA--.49199S3;
-        Fri, 10 Jan 2020 18:51:41 +0800 (CST)
-To:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
-From:   wangqi <3100102071@zju.edu.cn>
-Subject: [Discussion] can ROCE protocol work with NAT (Network Address
- Translation)?
-Message-ID: <c663da6a-486e-415e-0687-300239f0f56a@zju.edu.cn>
-Date:   Fri, 10 Jan 2020 18:51:39 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728112AbgAJOpv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 Jan 2020 09:45:51 -0500
+Received: from mail-io1-f65.google.com ([209.85.166.65]:33205 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727989AbgAJOpv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jan 2020 09:45:51 -0500
+Received: by mail-io1-f65.google.com with SMTP id z8so2368250ioh.0
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2020 06:45:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NPS+4vbJTb3h1ZYEXQxKrZ6be8Q4D5T0gpOiYiwlMLQ=;
+        b=Vf3RNYi+bJ0hnbwNHhRRjqz4NiSO9zOvrI77T1ZB53SXRlIucJUZfrGhX17PnK28hb
+         xgC+eTOHDlN6VEZ8Id5mqttqiinrTaMSn7l9ObyM6OkD8qkpiCEdLelPkKPJrQ8jbMes
+         Z95Mwht+bkkrfkqb1WV2GYp7l6zo1Q8yIfWEGVDH52CGURRFinx46PryMmPF1/aRWZ1E
+         MDnez3IvLY+79tvb3tbhuHIvcw9QFM2ni5Lgv/v7t+RCS67S70KlE7li+QK74H+zTKwS
+         7MUJuwNoCRySUnC92pnKapkxMddJozogPKUucrfDotovy4brVz6wrfjNdZ95SOqFh9FY
+         OTeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NPS+4vbJTb3h1ZYEXQxKrZ6be8Q4D5T0gpOiYiwlMLQ=;
+        b=kGLbANhNGkgxyhwe+hboZKk7JGEiMgatV6DTq+W0S856zku8r1+OX/9J9vZgb6SOYF
+         UfqmMaNh00N43TzVjVPWIixQAYFSZZ/tk5fBWNa1UoapZjgyeLpcMp0fMgtngDGq8Dcp
+         Xpv87fK8tZ28D/Gf/hhhSeF/2F+XK4weND7GYLQqJ2JJYwySex0wnoGmfooGhgitdTmZ
+         ohWAfI/yTZDY8OepM2YWCbKosdhdayZ1CExvuvmjFV2x55Vcld26wlc/vpnSP8yjdCrx
+         Q4EcSwrI0EMJkAiTYuTbVb8DaUriRQnkSu1lMFBLe3mNS/tViFtk+EJAtbisUHxD2DoC
+         /mjQ==
+X-Gm-Message-State: APjAAAWW3WuXSXuAHk/FiKGmq/r0QeJdkxTvpfnbmFMVP+mvRub7GD49
+        Bck6Ukr6dhzPdyj8XsmbRcPwWaF/GfA7TgbKV41+hUrUieY=
+X-Google-Smtp-Source: APXvYqy2PixOpxCY56TnWOfvL9+jgmMPg77A8pen2GTqIb3424QBdGz1L8eDrFcYosH5twvoy/jpn2LSEaxbNmEsU/g=
+X-Received: by 2002:a6b:600f:: with SMTP id r15mr2709398iog.54.1578667550545;
+ Fri, 10 Jan 2020 06:45:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: cC_KCgBnqlw7VxheS8whAA--.49199S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrurWUCryfuFyrCF1xKr15Jwb_yoWxZrXEva
-        s7Xryv9F18Zws8JF1UJrsakFW0q3Z7Kr1rKrW0qryUWw1DtF93ur90qrn09F4rWFWFgr1f
-        W3WIqFWrGwsrZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbskYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28I
-        cVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx
-        0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0S
-        jxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
-        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
-        xVWUXVWUAwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
-        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
-        IFyTuYvjxU4oUDDUUUU
-X-CM-SenderInfo: qtrqiiyqsqlio62m3hxhgxhubq/
+References: <20191230102942.18395-1-jinpuwang@gmail.com> <20191230102942.18395-18-jinpuwang@gmail.com>
+ <aa7eeeda-b3d7-4a26-9043-53ce8c80eef1@acm.org>
+In-Reply-To: <aa7eeeda-b3d7-4a26-9043-53ce8c80eef1@acm.org>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Fri, 10 Jan 2020 15:45:39 +0100
+Message-ID: <CAMGffEm3tp_hjQT2kw9yKbuoXrkF5g6f-3prvx6buHoT+Mpb1Q@mail.gmail.com>
+Subject: Re: [PATCH v6 17/25] rnbd: client: main functionality
+To:     Bart Van Assche <bvanassche@acm.org>, rpenyaev@suse.de
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dear experts,
+> > +{
+> > +     DEFINE_WAIT_FUNC(wait, autoremove_wake_function);
+> > +
+> > +     prepare_to_wait(&sess->rtrs_waitq, &wait, TASK_UNINTERRUPTIBLE);
+> > +     if (IS_ERR_OR_NULL(sess->rtrs)) {
+> > +             finish_wait(&sess->rtrs_waitq, &wait);
+> > +             return;
+> > +     }
+> > +     mutex_unlock(&sess_lock);
+> > +     /* After unlock session can be freed, so careful */
+> > +     schedule();
+> > +     mutex_lock(&sess_lock);
+> > +}
+>
+> How can a function that calls schedule() and that is not surrounded by a
+> loop be correct? What if e.g. schedule() finishes due to a spurious wakeup?
+I checked in git history, this no clean explanation why we have to
+call the mutex_unlock/schedul/mutex_lock magic
+It's allowed to call schedule inside mutex, seems we can remove the
+code snip, @Roman Penyaev do you remember why it was introduced?
+>
+> > +static struct rnbd_clt_session *__find_and_get_sess(const char *sessname)
+> > +__releases(&sess_lock)
+> > +__acquires(&sess_lock)
+> > +{
+> > +     struct rnbd_clt_session *sess;
+> > +     int err;
+> > +
+> > +again:
+> > +     list_for_each_entry(sess, &sess_list, list) {
+> > +             if (strcmp(sessname, sess->sessname))
+> > +                     continue;
+> > +
+> > +             if (unlikely(sess->rtrs_ready && IS_ERR_OR_NULL(sess->rtrs)))
+> > +                     /*
+> > +                      * No RTRS connection, session is dying.
+> > +                      */
+> > +                     continue;
+> > +
+> > +             if (likely(rnbd_clt_get_sess(sess))) {
+> > +                     /*
+> > +                      * Alive session is found, wait for RTRS connection.
+> > +                      */
+> > +                     mutex_unlock(&sess_lock);
+> > +                     err = wait_for_rtrs_connection(sess);
+> > +                     if (unlikely(err))
+> > +                             rnbd_clt_put_sess(sess);
+> > +                     mutex_lock(&sess_lock);
+> > +
+> > +                     if (unlikely(err))
+> > +                             /* Session is dying, repeat the loop */
+> > +                             goto again;
+> > +
+> > +                     return sess;
+> > +             }
+> > +             /*
+> > +              * Ref is 0, session is dying, wait for RTRS disconnect
+> > +              * in order to avoid session names clashes.
+> > +              */
+> > +             wait_for_rtrs_disconnection(sess);
+> > +             /*
+> > +              * RTRS is disconnected and soon session will be freed,
+> > +              * so repeat a loop.
+> > +              */
+> > +             goto again;
+> > +     }
+> > +
+> > +     return NULL;
+> > +}
+>
+> Since wait_for_rtrs_disconnection() unlocks sess_lock, can the
+> list_for_each_entry() above trigger a use-after-free of sess->next?
 
-    Because of a project, we need to use ROCE to send data from
 
-region A to region B. A and B are not in a same LAN, and it will
+>
+> > +static size_t rnbd_clt_get_sg_size(struct scatterlist *sglist, u32 len)
+> > +{
+> > +     struct scatterlist *sg;
+> > +     size_t tsize = 0;
+> > +     int i;
+> > +
+> > +     for_each_sg(sglist, sg, len, i)
+> > +             tsize += sg->length;
+> > +     return tsize;
+> > +}
+>
+> Please follow the example of other block drivers and use blk_rq_bytes()
+> instead of iterating over the sg-list.
+    The amount of data that belongs to an I/O and the amount of data that
+    should be read or written to the disk (bi_size) can differ.
 
-go through NAT (Network Address Translation). However, we found
+    E.g. When WRITE_SAME is used, only a small amount of data is
+    transfered that is then written repeatedly over a lot of sectors.
 
-that we can't send data successfully. We do some investigations
+    this is why we get the size of data to be transfered via RTRS by
+summing up the size
+    of the scather-gather list entries.
 
-and find that in an INTEL ppt, it says because "ICRC doesn't allow
+Will add a comment.
 
-IP header modifications", ROCE protocol can't work with NAT
-
-while iWARP can work with NAT. We want to ask a few questions.
-
-1. Can ROCE protocol work with NAT? Is the INTEL ppt right?
-
-2. Is there any method that we can use to make ROCE work with
-
-NAT? For example, can we modify or remove the ICRC part in the
-
-ROCE protocol? Is it a good idea?
-
-Best wishes,
-
-Qi
-
-
+Thanks
