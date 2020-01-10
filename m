@@ -2,83 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A85A91370F4
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2020 16:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0A91370F9
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2020 16:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgAJPSc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Jan 2020 10:18:32 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:38756 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbgAJPSc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jan 2020 10:18:32 -0500
-Received: by mail-qk1-f193.google.com with SMTP id k6so2137238qki.5
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2020 07:18:32 -0800 (PST)
+        id S1727866AbgAJPSr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 Jan 2020 10:18:47 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:37665 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726402AbgAJPSr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jan 2020 10:18:47 -0500
+Received: by mail-qv1-f65.google.com with SMTP id f16so882210qvi.4
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2020 07:18:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=B+3haEOPipgxF04LKi0J+YInzgh9D2MD8lHtCrVqiDM=;
-        b=QXvHjzkN3bl3FPwoElPIAcEffEe6FEsvkWYcnH5XDtB7WDXbGRF7cGrWjgBqOWsqDn
-         SXAs31Yolv9pnLf54Mmdtt0fNgBbzpzEgQ7SUqChFIni4MaWGywORjvr4MvRol9i4m1/
-         JoPYUmkOQGD/0BYpQIgfoKlIuw+PKGQFYgeR4ZN/kUIEWXxAwvtR+gzQkEmuEW58pbZd
-         A5dFxUzTlCeHaTrXxToyNHOoWuu4rOwSI0KOVuf7UPkzQBToBD/5Fwq4axLe88SDGihM
-         jOcvSBG/MLjU9la8nFmt2U5Cm55ywTE7GGNbxobZSTELnLsqI3Wu5U2OoRxUEMn+JmUS
-         E+3Q==
+        bh=/NAHPDZ41YWAQcL0rV62M3k49482xYdQRnrbQbQzte8=;
+        b=M9ykmeXLsboZbLH4O9rSATaYU6lBXBB+AD4sBRrLTf7PObftWddywv0H4BtF6saVht
+         45KNLXExddZTShIxQWOBaKFL4w+woIV7U2wTFP6QY7kfzHNtVBwSj2Z3C0Cvin6X5B2g
+         PqKGAov7uFOIV4r17IXfCVW9ba5b65obV0+j3kM6469IP94iVcTncSmhikLWRSZhpgaK
+         N9LjFUVWhJOEF8HYXZSpJttMVtQUmW1R/Qw1Z+U5mxnbLE6u98+IxlNK57TYCUaYyzjW
+         w24o0VYHWL+VcRzO5IM/MpOW7fv9mqrXsPUYFdVIS4P9GQ1GFE79NIhHNCvChWhapSQd
+         mKqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=B+3haEOPipgxF04LKi0J+YInzgh9D2MD8lHtCrVqiDM=;
-        b=HJUaSnWlsoIrc10LgA6EyIDLdKBoJ0GAwRivqi8st1dGjbEveDoOOGOsnyAcfGleDh
-         DPtuK9Z5pGVyaWoFEjqBpCZK++P5rO05FV7jkmP9Nh9IQ3ujFkA4wcy9F23NVTc1xKdY
-         7XPiMB9upZRsIPlwVIrfSInnRFjZpqIy/r+BIeOr8gXIYZk/6C2j+4p/kXp9GJcHcGBd
-         Dq2554Spmh9j0coqDwshWGJLxJxqUf2uUjXOJGT6RQl8hjCyMBcyuvr5f0fVG7ha3Fxu
-         pjQOKDhd1cN0Yo6T9ArGkXNCYXHUovK8fQ0XovCIJ3J32edCFUCQO17wG1FPLpejBddJ
-         CEzw==
-X-Gm-Message-State: APjAAAXGWZtoouwJU9hlTtG3k9LxJ+HK0ooW9v4ygsBRzrMp6JVcMj4G
-        pq0wW6TTCBIIPyoVDNDTbgVLPg==
-X-Google-Smtp-Source: APXvYqzBMOXJode2F7SI/B1+fbjNcnTWXuPJGDMESys3QTVdCMaKqVMJUntULHXPOnq02fycrVUJ/w==
-X-Received: by 2002:a37:8e44:: with SMTP id q65mr3708908qkd.70.1578669511611;
-        Fri, 10 Jan 2020 07:18:31 -0800 (PST)
+        bh=/NAHPDZ41YWAQcL0rV62M3k49482xYdQRnrbQbQzte8=;
+        b=ZVChsl7/9FmaluCMa+/4h9eCiGo2TD1jMArW28ya0x3HTtdxNeP/mOXFUsnRPuwzr7
+         U8cuKqDqyOYc7VeBlmSFxKpCPeBCbRhgtaigJdG8ECIoIyylJ1KcXnkqBKq/kPuHCB4U
+         eOC3gCBzqeLiC0gjft9WlEZJTfkVewPkHQ7xE+FTItept9kEYCb6ITaXtIW2aEuDMTP4
+         NJEGa0KH4XhSbhOBbg4yUOMqp2GOrOZcHkaTu/Smc4kvy/oj5ZyU+zpmzJ1LS6SLRA1Q
+         TVwPW7mhcz5Guovr7vckNiWqRsWUKaP0sE970yGyYWxGPTJiFwLIXf+O7sz2chPHaxF6
+         iWqw==
+X-Gm-Message-State: APjAAAWJ+ImeAgS0cxnkI1wL0uhFsRXp/Mp/aWKVGu5e+mt3T+q0Bv2J
+        DmUAF+nNAU4FFU2am6mK5/RCGw==
+X-Google-Smtp-Source: APXvYqwx+v8twhz13DceDK2rBIqkftuTw8OzROcgwKcrUqUy/IpDabTe+bzB9X8tyOnXlPNwLsiHDQ==
+X-Received: by 2002:a05:6214:4f2:: with SMTP id cl18mr3246825qvb.89.1578669526595;
+        Fri, 10 Jan 2020 07:18:46 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id e2sm974002qkb.112.2020.01.10.07.18.30
+        by smtp.gmail.com with ESMTPSA id l33sm1138160qtf.79.2020.01.10.07.18.46
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 10 Jan 2020 07:18:30 -0800 (PST)
+        Fri, 10 Jan 2020 07:18:46 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1ipw3S-0001wK-9q; Fri, 10 Jan 2020 11:18:30 -0400
-Date:   Fri, 10 Jan 2020 11:18:30 -0400
+        id 1ipw3h-0001wc-P7; Fri, 10 Jan 2020 11:18:45 -0400
+Date:   Fri, 10 Jan 2020 11:18:45 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Weihang Li <liweihang@huawei.com>
 Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
         linuxarm@huawei.com
-Subject: Re: [PATCH for-next] RDMA/hns: Bugfix for posting a wqe with sge
-Message-ID: <20200110151830.GA7407@ziepe.ca>
-References: <1578571852-13704-1-git-send-email-liweihang@huawei.com>
+Subject: Re: [PATCH v4 for-next] RDMA/hns: Add support for reporting wc as
+ software mode
+Message-ID: <20200110151845.GB7407@ziepe.ca>
+References: <1578572412-25756-1-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1578571852-13704-1-git-send-email-liweihang@huawei.com>
+In-Reply-To: <1578572412-25756-1-git-send-email-liweihang@huawei.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 09, 2020 at 08:10:52PM +0800, Weihang Li wrote:
-> From: Lijun Ou <oulijun@huawei.com>
+On Thu, Jan 09, 2020 at 08:20:12PM +0800, Weihang Li wrote:
+> From: Xi Wang <wangxi11@huawei.com>
 > 
-> Driver should first check whether the sge is valid, then fill the valid
-> sge and the caculated total into hardware, otherwise invalid sges will
-> cause an error.
+> When hardware is in resetting stage, we may can't poll back all the
+> expected work completions as the hardware won't generate cqe anymore.
 > 
-> Fixes: 52e3b42a2f58 ("RDMA/hns: Filter for zero length of sge in hip08 kernel mode")
-> Fixes: 7bdee4158b37 ("RDMA/hns: Fill sq wqe context of ud type in hip08")
-> Signed-off-by: Lijun Ou <oulijun@huawei.com>
+> This patch allows the driver to compose the expected wc instead of the
+> hardware during resetting stage. Once the hardware finished resetting, we
+> can poll cq from hardware again.
+> 
+> Signed-off-by: Xi Wang <wangxi11@huawei.com>
 > Signed-off-by: Weihang Li <liweihang@huawei.com>
 > ---
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 41 ++++++++++++++++++------------
->  1 file changed, 25 insertions(+), 16 deletions(-)
+> Sorry to keep sending new version of this patch. It was because some issues
+> were found since last version or there are some conflicts to apply it to
+> the branch.
+> 
+> Considering that this patch hasn't got comments from any others in the
+> community, please forget about previous versions and treat this as a new
+> one. Any suggestions will be appreciated.
+> 
+> Changes since v3:
+> - Fix conflicts with recently applied patches.
+> 
+> Changes since v2:
+> - Fix cq poll failure for qp1 when device reseting and do a rebase.
+> 
+> Changes since v1:
+> - Remove a deplicate cq_clean statement.
+> 
+>  drivers/infiniband/hw/hns/hns_roce_cq.c     |   2 +
+>  drivers/infiniband/hw/hns/hns_roce_device.h |  17 +++
+>  drivers/infiniband/hw/hns/hns_roce_hw_v1.c  |  14 ++-
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 158 +++++++++++++++++++++++-----
+>  drivers/infiniband/hw/hns/hns_roce_main.c   |  47 +++++++++
+>  drivers/infiniband/hw/hns/hns_roce_qp.c     |  48 ++++++++-
+>  6 files changed, 252 insertions(+), 34 deletions(-)
 
 Applied to for-next, thanks
 
