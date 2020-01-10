@@ -2,87 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 033F51370E8
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2020 16:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A85A91370F4
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2020 16:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728368AbgAJPP0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Jan 2020 10:15:26 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:33565 "EHLO
+        id S1728135AbgAJPSc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 Jan 2020 10:18:32 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:38756 "EHLO
         mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728358AbgAJPPZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jan 2020 10:15:25 -0500
-Received: by mail-qk1-f193.google.com with SMTP id d71so2159255qkc.0
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2020 07:15:25 -0800 (PST)
+        with ESMTP id S1726402AbgAJPSc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jan 2020 10:18:32 -0500
+Received: by mail-qk1-f193.google.com with SMTP id k6so2137238qki.5
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2020 07:18:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=lZPt4j3hF4vUAIVn/dD1UkWYns1dYb9oXxhrMUCGtf8=;
-        b=FbrsBjs+4QSuCqCU7tRRp7pU1umAa8POdrw50qnlRt//0cqg0vfQMcozrVQPKyFIo6
-         qd3SK7xoU/vnmQL6Nu+nP/0DFXAh2UU8v+QesVHeobkSrrOPFyY0JNrRxHiab4mkzf61
-         snyc5NOLtVvgc1JAbnxZ8078BVC1QHSy5aRODfRdtIEwtQNCrwwvjbTybdXTkY0O+eKl
-         VvXlts3Eem618MhcfGL2RF9YC6Sn4xQepVYU1iTzgoD0s8RV680Q0NCEtpMFawSd42OA
-         EcO2Q3Tc99bUoGGuP4aoEtuLLVnG0l29NZGqw1eXt1abqfk3/tb7z9cg0EnViqbl1PZd
-         scmA==
+        bh=B+3haEOPipgxF04LKi0J+YInzgh9D2MD8lHtCrVqiDM=;
+        b=QXvHjzkN3bl3FPwoElPIAcEffEe6FEsvkWYcnH5XDtB7WDXbGRF7cGrWjgBqOWsqDn
+         SXAs31Yolv9pnLf54Mmdtt0fNgBbzpzEgQ7SUqChFIni4MaWGywORjvr4MvRol9i4m1/
+         JoPYUmkOQGD/0BYpQIgfoKlIuw+PKGQFYgeR4ZN/kUIEWXxAwvtR+gzQkEmuEW58pbZd
+         A5dFxUzTlCeHaTrXxToyNHOoWuu4rOwSI0KOVuf7UPkzQBToBD/5Fwq4axLe88SDGihM
+         jOcvSBG/MLjU9la8nFmt2U5Cm55ywTE7GGNbxobZSTELnLsqI3Wu5U2OoRxUEMn+JmUS
+         E+3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lZPt4j3hF4vUAIVn/dD1UkWYns1dYb9oXxhrMUCGtf8=;
-        b=kOj6uIhPJn4y5lAQoLw2ljWJumVBkvwp7KljjHUu2Q+7LXyojjYGuWnUR9iwopTrZT
-         JXd0lSX0MvsuVSOCveNXrtvR+j4Nyrbk5Tj/qKLQBep/k9dEPgu3SaTXDbeszMJkJKw1
-         iGCjf2+u02J6iRBg/FeDcFlnJHxo34wUdmhZz0H0Ctqwwaen5EbN3dqSzNjveP+nD+Px
-         E0zt4iFV4ZdTXxCXObkmZONFugjSZHdMlyparhxBKsRus7dd1dr39L4/2z9HB8mmZgBq
-         FJQmZbe/UGWR1yfgCndMjySfSxvt7JVeSPvZlK4f5eD8TFHKz15FbqC2eCxV1VGUDQvl
-         5kbg==
-X-Gm-Message-State: APjAAAVBnZNbLanCP4ASt+h/LUAmmfKVkHNJSvsnmGGp08GCIGh3bSv8
-        uyuUFpL5mZ/HGFS+j1E+wWkQb20VfEI=
-X-Google-Smtp-Source: APXvYqzIm4Bq/aIDDou6IIG3B7ugoisqCmyP6ZY63X+vnjGRI+wjsFjVkz/faBSlY91r3vN9Ulu2gQ==
-X-Received: by 2002:ae9:dc82:: with SMTP id q124mr3691508qkf.20.1578669324891;
-        Fri, 10 Jan 2020 07:15:24 -0800 (PST)
+        bh=B+3haEOPipgxF04LKi0J+YInzgh9D2MD8lHtCrVqiDM=;
+        b=HJUaSnWlsoIrc10LgA6EyIDLdKBoJ0GAwRivqi8st1dGjbEveDoOOGOsnyAcfGleDh
+         DPtuK9Z5pGVyaWoFEjqBpCZK++P5rO05FV7jkmP9Nh9IQ3ujFkA4wcy9F23NVTc1xKdY
+         7XPiMB9upZRsIPlwVIrfSInnRFjZpqIy/r+BIeOr8gXIYZk/6C2j+4p/kXp9GJcHcGBd
+         Dq2554Spmh9j0coqDwshWGJLxJxqUf2uUjXOJGT6RQl8hjCyMBcyuvr5f0fVG7ha3Fxu
+         pjQOKDhd1cN0Yo6T9ArGkXNCYXHUovK8fQ0XovCIJ3J32edCFUCQO17wG1FPLpejBddJ
+         CEzw==
+X-Gm-Message-State: APjAAAXGWZtoouwJU9hlTtG3k9LxJ+HK0ooW9v4ygsBRzrMp6JVcMj4G
+        pq0wW6TTCBIIPyoVDNDTbgVLPg==
+X-Google-Smtp-Source: APXvYqzBMOXJode2F7SI/B1+fbjNcnTWXuPJGDMESys3QTVdCMaKqVMJUntULHXPOnq02fycrVUJ/w==
+X-Received: by 2002:a37:8e44:: with SMTP id q65mr3708908qkd.70.1578669511611;
+        Fri, 10 Jan 2020 07:18:31 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id d9sm1105077qth.34.2020.01.10.07.15.24
+        by smtp.gmail.com with ESMTPSA id e2sm974002qkb.112.2020.01.10.07.18.30
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 10 Jan 2020 07:15:24 -0800 (PST)
+        Fri, 10 Jan 2020 07:18:30 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1ipw0R-0008MS-Up; Fri, 10 Jan 2020 11:15:23 -0400
-Date:   Fri, 10 Jan 2020 11:15:23 -0400
+        id 1ipw3S-0001wK-9q; Fri, 10 Jan 2020 11:18:30 -0400
+Date:   Fri, 10 Jan 2020 11:18:30 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next 0/9] Clean ups, refactror, additions
-Message-ID: <20200110151523.GA32082@ziepe.ca>
-References: <20200106133845.119356.20115.stgit@awfm-01.aw.intel.com>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next] RDMA/hns: Bugfix for posting a wqe with sge
+Message-ID: <20200110151830.GA7407@ziepe.ca>
+References: <1578571852-13704-1-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200106133845.119356.20115.stgit@awfm-01.aw.intel.com>
+In-Reply-To: <1578571852-13704-1-git-send-email-liweihang@huawei.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 06, 2020 at 08:41:37AM -0500, Dennis Dalessandro wrote:
-> These patches add some recactoring and code clean ups to make things more
-> organized. There is a performance optimization and new counter/debugging stats
-> added as well. The new "API" that is added is a driver internal API not an
-> actual "API" that is exposed to the outside.
+On Thu, Jan 09, 2020 at 08:10:52PM +0800, Weihang Li wrote:
+> From: Lijun Ou <oulijun@huawei.com>
 > 
+> Driver should first check whether the sge is valid, then fill the valid
+> sge and the caculated total into hardware, otherwise invalid sges will
+> cause an error.
 > 
-> Grzegorz Andrejczuk (3):
->       IB/hfi1: Move common receive IRQ code to function
->       IB/hfi1: Decouple IRQ name from type
->       IB/hfi1: Return void in packet receiving functions
-> 
-> Mike Marciniszyn (6):
->       IB/hfi1: Move chip specific functions to chip.c
->       IB/hfi1: Add fast and slow handlers for receive context
->       IB/hfi1: IB/hfi1: Add an API to handle special case drop
->       IB/hfi1: Create API for auto activate
->       IB/hfi1: Add software counter for ctxt0 seq drop
->       IB/hfi1: Add RcvShortLengthErrCnt to hfi1stats
+> Fixes: 52e3b42a2f58 ("RDMA/hns: Filter for zero length of sge in hip08 kernel mode")
+> Fixes: 7bdee4158b37 ("RDMA/hns: Fill sq wqe context of ud type in hip08")
+> Signed-off-by: Lijun Ou <oulijun@huawei.com>
+> Signed-off-by: Weihang Li <liweihang@huawei.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 41 ++++++++++++++++++------------
+>  1 file changed, 25 insertions(+), 16 deletions(-)
 
 Applied to for-next, thanks
 
