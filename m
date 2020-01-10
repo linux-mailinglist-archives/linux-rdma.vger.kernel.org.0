@@ -2,164 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD811136FB4
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2020 15:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC5413704C
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2020 15:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728112AbgAJOpv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Jan 2020 09:45:51 -0500
-Received: from mail-io1-f65.google.com ([209.85.166.65]:33205 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727989AbgAJOpv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jan 2020 09:45:51 -0500
-Received: by mail-io1-f65.google.com with SMTP id z8so2368250ioh.0
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2020 06:45:51 -0800 (PST)
+        id S1728401AbgAJOzB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 Jan 2020 09:55:01 -0500
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:38551 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728422AbgAJOzA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jan 2020 09:55:00 -0500
+Received: by mail-qv1-f68.google.com with SMTP id t6so843899qvs.5
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Jan 2020 06:54:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NPS+4vbJTb3h1ZYEXQxKrZ6be8Q4D5T0gpOiYiwlMLQ=;
-        b=Vf3RNYi+bJ0hnbwNHhRRjqz4NiSO9zOvrI77T1ZB53SXRlIucJUZfrGhX17PnK28hb
-         xgC+eTOHDlN6VEZ8Id5mqttqiinrTaMSn7l9ObyM6OkD8qkpiCEdLelPkKPJrQ8jbMes
-         Z95Mwht+bkkrfkqb1WV2GYp7l6zo1Q8yIfWEGVDH52CGURRFinx46PryMmPF1/aRWZ1E
-         MDnez3IvLY+79tvb3tbhuHIvcw9QFM2ni5Lgv/v7t+RCS67S70KlE7li+QK74H+zTKwS
-         7MUJuwNoCRySUnC92pnKapkxMddJozogPKUucrfDotovy4brVz6wrfjNdZ95SOqFh9FY
-         OTeQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=eqdBuQMonbSxQiNFPL1SEvEnhOLoHtuuNgfQWPDo/eY=;
+        b=DaSw8QjSbZBiFhOSj0lsT4/B6aeQ65sfbPvjsLxsO7tRw14mOj4woO0/f1XzLbeoQi
+         9rLGZJwWjQtSUN4bqiDY49jfxEGmyHTPpGDdOYRRuVCcAiRdI23BWgKtYxsw35oTkRYn
+         naqgETboK9D3Wp/9CwvsDp6v+HaFMg5k5Rj/EyTSkEmvbVr/Zy67SAKOtE35+Uhc3VPD
+         SzGjV0wmueHeOqfYgAycngz4QKaLKogEurt0kDof0redO7ajjd5yel14+a8r9xyxUrSy
+         bDvf3LHAC502b0xuzjt9FbEELkkNwep7GiP2goew3ayJfwbd6GQJjD96cZwu4dr3gZ6g
+         j6ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NPS+4vbJTb3h1ZYEXQxKrZ6be8Q4D5T0gpOiYiwlMLQ=;
-        b=kGLbANhNGkgxyhwe+hboZKk7JGEiMgatV6DTq+W0S856zku8r1+OX/9J9vZgb6SOYF
-         UfqmMaNh00N43TzVjVPWIixQAYFSZZ/tk5fBWNa1UoapZjgyeLpcMp0fMgtngDGq8Dcp
-         Xpv87fK8tZ28D/Gf/hhhSeF/2F+XK4weND7GYLQqJ2JJYwySex0wnoGmfooGhgitdTmZ
-         ohWAfI/yTZDY8OepM2YWCbKosdhdayZ1CExvuvmjFV2x55Vcld26wlc/vpnSP8yjdCrx
-         Q4EcSwrI0EMJkAiTYuTbVb8DaUriRQnkSu1lMFBLe3mNS/tViFtk+EJAtbisUHxD2DoC
-         /mjQ==
-X-Gm-Message-State: APjAAAWW3WuXSXuAHk/FiKGmq/r0QeJdkxTvpfnbmFMVP+mvRub7GD49
-        Bck6Ukr6dhzPdyj8XsmbRcPwWaF/GfA7TgbKV41+hUrUieY=
-X-Google-Smtp-Source: APXvYqy2PixOpxCY56TnWOfvL9+jgmMPg77A8pen2GTqIb3424QBdGz1L8eDrFcYosH5twvoy/jpn2LSEaxbNmEsU/g=
-X-Received: by 2002:a6b:600f:: with SMTP id r15mr2709398iog.54.1578667550545;
- Fri, 10 Jan 2020 06:45:50 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=eqdBuQMonbSxQiNFPL1SEvEnhOLoHtuuNgfQWPDo/eY=;
+        b=M8JC1Y+Uqc2IyLIyZp04t6JOTbZy9j5E8VRa79VjUlItK+e6QkLoGWw20sVZiAdkhM
+         kkJ7l1wWrdGRu7FUMBCV4pXWIn8H2vo4XZGZEppnzrkx4vSVtEVSu02aEguqfb2mzgPr
+         Cqj/y37nkxmGpXVdT/Q7Z/i58ko9R71pK8vwXwQPattel9tLvj2t6agmQG9CUsoAnVFR
+         HAqtBzpdbbnGV9LrVMOoaYEkah+VkbPBvys4Q/BG01IWaBkUMh+Ehy50Ni7SHX51EXGG
+         TtCTOKKIMSjXFUK/FEGNYvKRGu9bENdwq3JMKLV0ZrrtVs1t4NP3N4b6g4xp0q3KFRRc
+         Dl9A==
+X-Gm-Message-State: APjAAAXg4QMivieTS32nUzgrzijmyaRFGPnG83MkqOy94L/uesU5nNIo
+        NnWAn9QkINzOwolE9avRf+2mwQ==
+X-Google-Smtp-Source: APXvYqwhYDIEvu0BaV6KPIwfxOTx00CqmxIr5R6XwDOSPQD3PdF7/o24+sjozgpCJmD/xfLS1PoABQ==
+X-Received: by 2002:a0c:c24f:: with SMTP id w15mr3188012qvh.66.1578668099296;
+        Fri, 10 Jan 2020 06:54:59 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id x3sm1105355qts.35.2020.01.10.06.54.58
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 10 Jan 2020 06:54:58 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1ipvgg-0004d1-C6; Fri, 10 Jan 2020 10:54:58 -0400
+Date:   Fri, 10 Jan 2020 10:54:58 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Yishai Hadas <yishaih@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, dledford@redhat.com,
+        maorg@mellanox.com, michaelgur@mellanox.com
+Subject: Re: [PATCH rdma-next 11/14] RDMA/core: Fix locking in
+ ib_uverbs_event_read
+Message-ID: <20200110145458.GA17728@ziepe.ca>
+References: <1578504126-9400-1-git-send-email-yishaih@mellanox.com>
+ <1578504126-9400-12-git-send-email-yishaih@mellanox.com>
 MIME-Version: 1.0
-References: <20191230102942.18395-1-jinpuwang@gmail.com> <20191230102942.18395-18-jinpuwang@gmail.com>
- <aa7eeeda-b3d7-4a26-9043-53ce8c80eef1@acm.org>
-In-Reply-To: <aa7eeeda-b3d7-4a26-9043-53ce8c80eef1@acm.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Fri, 10 Jan 2020 15:45:39 +0100
-Message-ID: <CAMGffEm3tp_hjQT2kw9yKbuoXrkF5g6f-3prvx6buHoT+Mpb1Q@mail.gmail.com>
-Subject: Re: [PATCH v6 17/25] rnbd: client: main functionality
-To:     Bart Van Assche <bvanassche@acm.org>, rpenyaev@suse.de
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1578504126-9400-12-git-send-email-yishaih@mellanox.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> > +{
-> > +     DEFINE_WAIT_FUNC(wait, autoremove_wake_function);
-> > +
-> > +     prepare_to_wait(&sess->rtrs_waitq, &wait, TASK_UNINTERRUPTIBLE);
-> > +     if (IS_ERR_OR_NULL(sess->rtrs)) {
-> > +             finish_wait(&sess->rtrs_waitq, &wait);
-> > +             return;
-> > +     }
-> > +     mutex_unlock(&sess_lock);
-> > +     /* After unlock session can be freed, so careful */
-> > +     schedule();
-> > +     mutex_lock(&sess_lock);
-> > +}
->
-> How can a function that calls schedule() and that is not surrounded by a
-> loop be correct? What if e.g. schedule() finishes due to a spurious wakeup?
-I checked in git history, this no clean explanation why we have to
-call the mutex_unlock/schedul/mutex_lock magic
-It's allowed to call schedule inside mutex, seems we can remove the
-code snip, @Roman Penyaev do you remember why it was introduced?
->
-> > +static struct rnbd_clt_session *__find_and_get_sess(const char *sessname)
-> > +__releases(&sess_lock)
-> > +__acquires(&sess_lock)
-> > +{
-> > +     struct rnbd_clt_session *sess;
-> > +     int err;
-> > +
-> > +again:
-> > +     list_for_each_entry(sess, &sess_list, list) {
-> > +             if (strcmp(sessname, sess->sessname))
-> > +                     continue;
-> > +
-> > +             if (unlikely(sess->rtrs_ready && IS_ERR_OR_NULL(sess->rtrs)))
-> > +                     /*
-> > +                      * No RTRS connection, session is dying.
-> > +                      */
-> > +                     continue;
-> > +
-> > +             if (likely(rnbd_clt_get_sess(sess))) {
-> > +                     /*
-> > +                      * Alive session is found, wait for RTRS connection.
-> > +                      */
-> > +                     mutex_unlock(&sess_lock);
-> > +                     err = wait_for_rtrs_connection(sess);
-> > +                     if (unlikely(err))
-> > +                             rnbd_clt_put_sess(sess);
-> > +                     mutex_lock(&sess_lock);
-> > +
-> > +                     if (unlikely(err))
-> > +                             /* Session is dying, repeat the loop */
-> > +                             goto again;
-> > +
-> > +                     return sess;
-> > +             }
-> > +             /*
-> > +              * Ref is 0, session is dying, wait for RTRS disconnect
-> > +              * in order to avoid session names clashes.
-> > +              */
-> > +             wait_for_rtrs_disconnection(sess);
-> > +             /*
-> > +              * RTRS is disconnected and soon session will be freed,
-> > +              * so repeat a loop.
-> > +              */
-> > +             goto again;
-> > +     }
-> > +
-> > +     return NULL;
-> > +}
->
-> Since wait_for_rtrs_disconnection() unlocks sess_lock, can the
-> list_for_each_entry() above trigger a use-after-free of sess->next?
+On Wed, Jan 08, 2020 at 07:22:03PM +0200, Yishai Hadas wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
+> 
+> This should not be using ib_dev to test for disassociation, during
+> disassociation is_closed is set under lock and the waitq is triggered.
+> 
+> Instead check is_closed and be sure to re-obtain the lock to test the
+> value after the wait_event returns.
+> 
+> Fixes: 036b10635739 ("IB/uverbs: Enable device removal when there are active user space applications")
+> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> ---
+>  drivers/infiniband/core/uverbs_main.c | 32 ++++++++++++++------------------
+>  1 file changed, 14 insertions(+), 18 deletions(-)
 
+Applied to for-next instead of the version from Hakon
 
->
-> > +static size_t rnbd_clt_get_sg_size(struct scatterlist *sglist, u32 len)
-> > +{
-> > +     struct scatterlist *sg;
-> > +     size_t tsize = 0;
-> > +     int i;
-> > +
-> > +     for_each_sg(sglist, sg, len, i)
-> > +             tsize += sg->length;
-> > +     return tsize;
-> > +}
->
-> Please follow the example of other block drivers and use blk_rq_bytes()
-> instead of iterating over the sg-list.
-    The amount of data that belongs to an I/O and the amount of data that
-    should be read or written to the disk (bi_size) can differ.
-
-    E.g. When WRITE_SAME is used, only a small amount of data is
-    transfered that is then written repeatedly over a lot of sectors.
-
-    this is why we get the size of data to be transfered via RTRS by
-summing up the size
-    of the scather-gather list entries.
-
-Will add a comment.
-
-Thanks
+Jason
