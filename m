@@ -2,71 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 839FA137609
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2020 19:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6222013767F
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jan 2020 20:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgAJSas (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Jan 2020 13:30:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49044 "EHLO mail.kernel.org"
+        id S1728722AbgAJTAv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 Jan 2020 14:00:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726346AbgAJSas (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 10 Jan 2020 13:30:48 -0500
+        id S1728719AbgAJTAv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 10 Jan 2020 14:00:51 -0500
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D017E2082E;
-        Fri, 10 Jan 2020 18:30:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C3AF205F4;
+        Fri, 10 Jan 2020 19:00:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578681048;
-        bh=fWYpDygwtZyYnO5ifpqIXsux7tX8m/qF/p7JS6nIZXM=;
+        s=default; t=1578682850;
+        bh=jFph1sWi6/+Sg6SeLwtuu+O9LnerVF80kCg8oNOgx14=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qnv9t4J2opmWf12DZJjT1oO+uQEftCdMN/t6S5GK8K4AVh9z0JsF4AtsbW4HTStGx
-         19Uf+uyHvoT/2KRZsLC3YpzLSRBywoFDwpAy2CZq7bO4t88LRC+kPG5E+Bn7ExWwPl
-         Ka3dplJpSjI2SGpcJpsZ+24M0zUABncfzLPynxxY=
-Date:   Fri, 10 Jan 2020 20:30:41 +0200
+        b=fxEbMOJkKw5mp6cbVOfDoal5eL+AlhQJK+E0XchdMbDv3m/EKtKsTjywOlXFPWB50
+         gA8MWVLT5wvV2bduwaVaoLhPGudT6LLNVK+ARq3rEdCuKKNIykI9d6tLeSvJNa2Ayf
+         XWjL6kT3d3NYQAUzigNCQ6D3mOuUKEjpNsa14Tzw=
+Date:   Fri, 10 Jan 2020 21:00:44 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Saeed Mahameed <saeedm@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Shahaf Shuler <shahafs@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 0/5] VIRTIO_NET Emulation Offload
-Message-ID: <20200110183041.GA6871@unreal>
-References: <20191212110928.334995-1-leon@kernel.org>
- <20200107193744.GB18256@ziepe.ca>
+To:     wangqi <3100102071@zju.edu.cn>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [Discussion] can ROCE protocol work with NAT (Network Address
+ Translation)?
+Message-ID: <20200110190044.GC6871@unreal>
+References: <c663da6a-486e-415e-0687-300239f0f56a@zju.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200107193744.GB18256@ziepe.ca>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c663da6a-486e-415e-0687-300239f0f56a@zju.edu.cn>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 07, 2020 at 03:37:44PM -0400, Jason Gunthorpe wrote:
-> On Thu, Dec 12, 2019 at 01:09:23PM +0200, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> >
-> > Hi,
-> >
-> > In this series, we introduce VIRTIO_NET_Q HW offload capability, so SW will
-> > be able to create special general object with relevant virtqueue properties.
-> >
-> > This series is based on -rc patches:
-> > https://lore.kernel.org/linux-rdma/20191212100237.330654-1-leon@kernel.org
-> >
-> > Thanks
-> >
-> > Yishai Hadas (5):
-> >   net/mlx5: Add Virtio Emulation related device capabilities
-> >   net/mlx5: Expose vDPA emulation device capabilities
+On Fri, Jan 10, 2020 at 06:51:39PM +0800, wangqi wrote:
+> Dear experts,
 >
-> This series looks OK enough to me. Saeed can you update the share
-> branch with the two patches?
+>     Because of a project, we need to use ROCE to send data from
+>
+> region A to region B. A and B are not in a same LAN, and it will
+>
+> go through NAT (Network Address Translation). However, we found
+>
+> that we can't send data successfully. We do some investigations
+>
+> and find that in an INTEL ppt, it says because "ICRC doesn't allow
+>
+> IP header modifications", ROCE protocol can't work with NAT
+>
+> while iWARP can work with NAT. We want to ask a few questions.
+>
+> 1. Can ROCE protocol work with NAT? Is the INTEL ppt right?
 
-Merged, thanks,
+I have no idea to which "INTEL ppt" you are referring, but RoCEv2
+is an extension of RoCEv1 to support routing over different subnets.
+Instead of IB GRH field in RoCEv1 packets, RoCEv2 uses IP and UDP
+headers.
 
-ca1992c62cad net/mlx5: Expose vDPA emulation device capabilities
-90fbca595243 net/mlx5: Add Virtio Emulation related device capabilities
+>
+> 2. Is there any method that we can use to make ROCE work with
+>
+> NAT? For example, can we modify or remove the ICRC part in the
+>
+> ROCE protocol? Is it a good idea?a
+
+Use proper hardware that supports RoCEv2.
+
+>
+> Best wishes,
+>
+> Qi
+>
+>
