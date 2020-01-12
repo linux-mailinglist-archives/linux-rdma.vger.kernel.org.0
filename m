@@ -2,86 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7FB138561
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jan 2020 09:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E48A4138823
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Jan 2020 21:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732317AbgALHva (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 12 Jan 2020 02:51:30 -0500
-Received: from mail3-bck.iservicesmail.com ([217.130.24.85]:13173 "EHLO
-        mail3-bck.iservicesmail.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732312AbgALHva (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 12 Jan 2020 02:51:30 -0500
-IronPort-SDR: noxj3EU7pRV3hcWemDTl1kzyWrcDqb5sDbbyXQ8t5N3mYYtJqWyRiXO5aPIp8qigI2HOsGjEVj
- qQYc2vgqddtQ==
-IronPort-PHdr: =?us-ascii?q?9a23=3AcgPWSxaJpusgXTxBuic3fGP/LSx+4OfEezUN45?=
- =?us-ascii?q?9isYplN5qZr8W6bnLW6fgltlLVR4KTs6sC17ON9fq+BidZvN6oizMrSNR0TR?=
- =?us-ascii?q?gLiMEbzUQLIfWuLgnFFsPsdDEwB89YVVVorDmROElRH9viNRWJ+iXhpTEdFQ?=
- =?us-ascii?q?/iOgVrO+/7BpDdj9it1+C15pbffxhEiCCybL9vIhi6txvdu8gUjIdtN6o8yg?=
- =?us-ascii?q?bCr2dVdehR2W5mP0+YkQzm5se38p5j8iBQtOwk+sVdT6j0fLk2QKJBAjg+PG?=
- =?us-ascii?q?87+MPktR/YTQuS/XQcSXkZkgBJAwfe8h73WIr6vzbguep83CmaOtD2TawxVD?=
- =?us-ascii?q?+/4apnVAPkhSEaPDI/923Zl9B/g7heoBOhvhBy3YnUYJuNNPp5ZKPSZ88aSn?=
- =?us-ascii?q?RYUslPUSxNG5+xb5cTD+UbIelYr5fyp14Qohu4GQmgHf3gyjlRinHx2q061f?=
- =?us-ascii?q?ouEAHf0AM+GdIFrXDYodvpOKsOVOy4yrTDwzfeYPNMwTrz5ojGcgo/r/+PQL?=
- =?us-ascii?q?x/ftbex0Y0GgPZjFiftZDpMy+J2ugTtWWQ8upuVfioi24iswx/uCagxtsyhY?=
- =?us-ascii?q?nTm4kaylfE9SN2wI0oItC4UFB0YcK6H5tKuSCaMI12Qsw5TmFooyY10aEJtY?=
- =?us-ascii?q?SncygNzZQr3R7fa/+efoWO/xntV/6RLC9miH54er+znQu+/Ea8xuHmSMW530?=
- =?us-ascii?q?xGoyRFn9TKq3sDzQbc6tKdRft45kqh3DGP2B3N5excOkA0kLbbK4Ymwr4tip?=
- =?us-ascii?q?ofqUTDETHymEXxlKKWc18r+ums6+T9fLrmooOQOoBuhgHgNaQhh9awAeo/Mg?=
- =?us-ascii?q?gIQWeX4/qz1Kb78U34RrVFkOE2n7HHvJzHJ8kXvLO1DgFJ3oo59RqyAC2q3d?=
- =?us-ascii?q?oYkHUfKVJKYhOHj4znO1HUJ/D4CO+yg0yynzd32f/GJLPgApLLLnjMi7rhfa?=
- =?us-ascii?q?195FVAxwYp0d9f4JdUBqsBIPLwQkPxrsDXDgclMwyoxObqENF91oIYWWKSDa?=
- =?us-ascii?q?6VKbnSvkKN5u01OOSMeoAVtyjnK/Q/5P7hk2U5mVkDcqmtx5cXb2q4Hvs1a3?=
- =?us-ascii?q?meNH7thMoRVH0GuwMWUuPnkhuBXCRVanL0WLgztQs2EIa3MYCWfo2xjabJ4y?=
- =?us-ascii?q?C9EdUCfm1aB0qTFnHnd4aEQP0HQC2XK85l1DcDUO7yZZUm0ESWuRP30fJYKe?=
- =?us-ascii?q?zbsnkAuI7uzsdy4eL7lQo4/np/CMHb02LbHDI8pX8BWzJjhfM3mkd60FrWiv?=
- =?us-ascii?q?Agjg=3D=3D?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2HrAgDuzhpelyMYgtkUBjMYGgEBAQE?=
- =?us-ascii?q?BAQEBAQMBAQEBEQEBAQICAQEBAYFoBAEBAQELAQEBGggBgSWBTVIgEpNQgU0?=
- =?us-ascii?q?fg0OLY4EAgx4VhgcUDIFbDQEBAQEBNQIBAYRATgEXgQ8kNQgOAgMNAQEFAQE?=
- =?us-ascii?q?BAQEFBAEBAhABAQEBAQYYBoVzgh0MHgEEAQEBAQMDAwEBDAGDXQcZDzlKTAE?=
- =?us-ascii?q?OAVODBIJLAQEzhUiYJwGNBA0NAoUdgkgECoEJgRojgTYBjBgagUE/gSMhgis?=
- =?us-ascii?q?IAYIBgn8BEgFsgkiCWQSNQhIhgQeIKZgXgkEEdolMjAKCNwEPiAGEMQMQgkU?=
- =?us-ascii?q?PgQmIA4ROgX2jN1d0AYEecTMagiYagSBPGA2IG44tQIEWEAJPjFuCMgEB?=
-X-IPAS-Result: =?us-ascii?q?A2HrAgDuzhpelyMYgtkUBjMYGgEBAQEBAQEBAQMBAQEBE?=
- =?us-ascii?q?QEBAQICAQEBAYFoBAEBAQELAQEBGggBgSWBTVIgEpNQgU0fg0OLY4EAgx4Vh?=
- =?us-ascii?q?gcUDIFbDQEBAQEBNQIBAYRATgEXgQ8kNQgOAgMNAQEFAQEBAQEFBAEBAhABA?=
- =?us-ascii?q?QEBAQYYBoVzgh0MHgEEAQEBAQMDAwEBDAGDXQcZDzlKTAEOAVODBIJLAQEzh?=
- =?us-ascii?q?UiYJwGNBA0NAoUdgkgECoEJgRojgTYBjBgagUE/gSMhgisIAYIBgn8BEgFsg?=
- =?us-ascii?q?kiCWQSNQhIhgQeIKZgXgkEEdolMjAKCNwEPiAGEMQMQgkUPgQmIA4ROgX2jN?=
- =?us-ascii?q?1d0AYEecTMagiYagSBPGA2IG44tQIEWEAJPjFuCMgEB?=
-X-IronPort-AV: E=Sophos;i="5.69,424,1571695200"; 
-   d="scan'208";a="323257044"
-Received: from mailrel04.vodafone.es ([217.130.24.35])
-  by mail02.vodafone.es with ESMTP; 12 Jan 2020 08:51:29 +0100
-Received: (qmail 24501 invoked from network); 12 Jan 2020 05:00:21 -0000
-Received: from unknown (HELO 192.168.1.3) (quesosbelda@[217.217.179.17])
-          (envelope-sender <peterwong@hsbc.com.hk>)
-          by mailrel04.vodafone.es (qmail-ldap-1.03) with SMTP
-          for <linux-rdma@vger.kernel.org>; 12 Jan 2020 05:00:21 -0000
-Date:   Sun, 12 Jan 2020 06:00:20 +0100 (CET)
-From:   Peter Wong <peterwong@hsbc.com.hk>
-Reply-To: Peter Wong <peterwonghkhsbc@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Message-ID: <7663848.460819.1578805221563.JavaMail.cash@217.130.24.55>
-Subject: Investment opportunity
+        id S1733294AbgALUC5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 12 Jan 2020 15:02:57 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:36141 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733212AbgALUC5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 12 Jan 2020 15:02:57 -0500
+Received: by mail-wr1-f67.google.com with SMTP id z3so6578568wru.3
+        for <linux-rdma@vger.kernel.org>; Sun, 12 Jan 2020 12:02:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=faIXdGPpZmJPBIRUgXj9/YDztvaQ38kmTeTF/uAkEoM=;
+        b=QdtROlHzyFhmTvUZt4CPaGhvvsMyuxNsMQYndorEkaIAPzHZxVGShKI+DXjNkA80B6
+         FBlnNU6sY1uoHfSqzw7cbkEhFgkHawCP6LJp3oQL6qJlzd4ZRa00jcsTFnMcxcDSk4pc
+         /SHTDWu0Y88WDxAG/ufbmhagnT9n/iwLXrXXZOm0ana/qnAJU7npLf0bVgRLuQhKTw2g
+         a8Tv0e7PGiZVGOhqeMZgWm0wtpB+DQAsozd9SlZBg1oXAwfYIo0HowugsUQ4fhp9j9iX
+         KPjatyhcEy/rbJKIAavzMYc2ojb/eSiHHvITo7TTcAYGFj/2Em5uCuXyn+B1b90L5HIg
+         OaVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=faIXdGPpZmJPBIRUgXj9/YDztvaQ38kmTeTF/uAkEoM=;
+        b=csz6UEnhB1tVc9s1WLhcjGIhRfksw+I/JJOoZcHSVKuOhYcxis24/6NNbi+AIp2dWb
+         AfQ3IGotSjDOstH2c6j/wRJ7lmDKF8Pu4le8WOrueDnPJn9GWHiOgJ+Q657vOYS3Lqqr
+         Yr7fHywdGAEEoWeUyAH8hdRBoL4J7zjTWn1bpe7Po8ogSPH4wFe9FjmTH91sOgw1zLUv
+         u13MQdSeOMscns9BSUii3MycV84v8e9hdrU1nnwThfzXcRfupgL2+ZM52ITzqDwCwIxq
+         IVUWlEEnvTxSO5mwdDZideRZ0G4ikCdrw0fBNhf1RoQZp2392s9M75bWyCsHRTf4UHDS
+         ux4A==
+X-Gm-Message-State: APjAAAUuhFjA0D8+XWBhAU/lhhBuc7H5MWz9TA+NR9nRXvT+UhRcFAZ+
+        Q/xKoLvWLQZx8zbCgrSasIUY82M2
+X-Google-Smtp-Source: APXvYqz94ZpNoRFVAGEYkBH+tNPEV1Qynznlt3Ri2jdzOGwqDLwomFtxTaZo3ssEEPVX15BQ7GoVQA==
+X-Received: by 2002:adf:fe8c:: with SMTP id l12mr13787516wrr.215.1578859375604;
+        Sun, 12 Jan 2020 12:02:55 -0800 (PST)
+Received: from kheib-workstation (bzq-79-181-7-148.red.bezeqint.net. [79.181.7.148])
+        by smtp.gmail.com with ESMTPSA id t131sm11690363wmb.13.2020.01.12.12.02.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Jan 2020 12:02:54 -0800 (PST)
+Date:   Sun, 12 Jan 2020 22:02:52 +0200
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: Re: [PATCH for-next] RDMA/core: Fix storing node_desc
+Message-ID: <20200112200252.GA5112@kheib-workstation>
+References: <20191223093943.17883-1-kamalheib1@gmail.com>
+ <20200103231212.GA18973@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200103231212.GA18973@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Greetings,
-Please read the attached investment proposal and reply for more details.
-Are you interested in loan?
-Sincerely: Peter Wong
+On Fri, Jan 03, 2020 at 07:12:12PM -0400, Jason Gunthorpe wrote:
+> On Mon, Dec 23, 2019 at 11:39:43AM +0200, Kamal Heib wrote:
+> > When writing to node_desc sysfs using echo a new line symbol will be
+> > stored at the end of the string, avoid that by dropping the new line
+> 
+> Why do we want to do this? AFAIK technically new line is valid in a
+> node description.
+>
 
+Self-Nack, please drop this patch, I didn't do a good job here.
 
+Thanks,
+Kamal
 
-
-----------------------------------------------------
-This email was sent by the shareware version of Postman Professional.
-
+> > symbol and also make sure to return -EINVAL when the supplied string is
+> > bigger then IB_DEVICE_NODE_DESC_MAX.
+> 
+> This makes sense though
+> 
+> > diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
+> > index 087682e6969e..2de5f6710c0b 100644
+> > +++ b/drivers/infiniband/core/sysfs.c
+> > @@ -1263,12 +1263,21 @@ static ssize_t node_desc_store(struct device *device,
+> >  {
+> >  	struct ib_device *dev = rdma_device_to_ibdev(device);
+> >  	struct ib_device_modify desc = {};
+> > +	size_t len;
+> >  	int ret;
+> >  
+> >  	if (!dev->ops.modify_device)
+> >  		return -EOPNOTSUPP;
+> >  
+> > -	memcpy(desc.node_desc, buf, min_t(int, count, IB_DEVICE_NODE_DESC_MAX));
+> 
+> > +	if (count > IB_DEVICE_NODE_DESC_MAX)
+> > +		return -EINVAL;
+> > +
+> > +	len = strlen(buf);
+> 
+> Why strlen? The buf is count bytes long.
+> 
+> > +	if (buf[len - 1] == '\n')
+> > +		len--;
+> 
+> And if it is zero bytes this buffer underflows
+> 
+> > +	strncpy(desc.node_desc, buf, len);
+> 
+> What was the point of switching away from memcpy?
+> 
+> > +	desc.node_desc[len] = 0;
+> >  	ret = ib_modify_device(dev, IB_DEVICE_MODIFY_NODE_DESC, &desc);
+> >  	if (ret)
+> >  		return ret;
+> 
+> Jason
