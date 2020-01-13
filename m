@@ -2,88 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 026EA139006
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jan 2020 12:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1082013904E
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jan 2020 12:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726163AbgAML06 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Jan 2020 06:26:58 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:47754 "EHLO huawei.com"
+        id S1726236AbgAMLon (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Jan 2020 06:44:43 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8708 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725992AbgAML05 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 13 Jan 2020 06:26:57 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 224AAA10E43C982CA489;
-        Mon, 13 Jan 2020 19:26:54 +0800 (CST)
-Received: from [127.0.0.1] (10.74.223.196) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.439.0; Mon, 13 Jan 2020
- 19:26:46 +0800
-Subject: Re: [PATCH v5 for-next 1/2] RDMA/hns: Add the workqueue framework for
- flush cqe handler
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <dledford@redhat.com>, <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1577503735-26685-1-git-send-email-liuyixian@huawei.com>
- <1577503735-26685-2-git-send-email-liuyixian@huawei.com>
- <20200110152602.GC8765@ziepe.ca>
-From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
-Message-ID: <65fb928c-5f85-02f9-c5ac-06037b3fe967@huawei.com>
-Date:   Mon, 13 Jan 2020 19:26:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.1.1
+        id S1726277AbgAMLon (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 13 Jan 2020 06:44:43 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id E7AF4A71BA3B80C46F30;
+        Mon, 13 Jan 2020 19:44:40 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.439.0; Mon, 13 Jan 2020 19:44:34 +0800
+From:   Yixian Liu <liuyixian@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH v6 for-next 0/2] RDMA/hns: Add the workqueue framework for flush cqe handler
+Date:   Mon, 13 Jan 2020 19:44:33 +0800
+Message-ID: <1578915875-26499-1-git-send-email-liuyixian@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20200110152602.GC8765@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.223.196]
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
 X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Earlier Background:
+HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
+outstanding WQEs if QP state gets into errored mode for some reason.
+To overcome this hardware problem and as a workaround, when QP is
+detected to be in errored state during various legs like post send,
+post receive etc [1], flush needs to be performed from the driver.
+
+These data-path legs might get called concurrently from various context,
+like thread and interrupt as well (like NVMe driver). Hence, these need
+to be protected with spin-locks for the concurrency. This code exists
+within the driver.
+
+Problem:
+Earlier The patch[1] sent to solve the hardware limitation explained
+in the background section had a bug in the software flushing leg. It
+acquired mutex while modifying QP state to errored state and while
+conveying it to the hardware using the mailbox. This caused leg to
+sleep while holding spin-lock and caused crash.
+
+Suggested Solution:
+In this patch, we have proposed to defer the flushing of the QP in
+Errored state using the workqueue.
+
+We do understand that this might have an impact on the recovery times
+as scheduling of the workqueue handler depends upon the occupancy of
+the system. Therefore to roughly mitigate this affect we have tried
+to use Concurrency Managed workqueue to give worker thread (and
+hence handler) a chance to run over more than one core.
 
 
-On 2020/1/10 23:26, Jason Gunthorpe wrote:
-> On Sat, Dec 28, 2019 at 11:28:54AM +0800, Yixian Liu wrote:
->> +void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
->> +{
->> +	struct hns_roce_work *flush_work;
->> +
->> +	flush_work = kzalloc(sizeof(struct hns_roce_work), GFP_ATOMIC);
->> +	if (!flush_work)
->> +		return;
-> 
-> You changed it to only queue once, so why do we need the allocation
-> now? That was the whole point..
+[1] https://patchwork.kernel.org/patch/10534271/
 
-Hi Jason,
 
-The flush work is queued **not only once**. As the flag being_pushed is set to 0 during
-the process of modifying qp like this:
-	hns_roce_v2_modify_qp {
-		...
-		if (new_state == IB_QPS_ERR) {
-			spin_lock_irqsave(&hr_qp->sq.lock, sq_flag);
-			...
-			hr_qp->state = IB_QPS_ERR;
-			hr_qp->being_push = 0;
-			...
-		}
-		...
-	}
-which means the new updated PI value needs to be updated with initializing a new flush work.
-Thus, maybe there are two flush work in the workqueue. Thus, we still need the allocation here.
+This patch-set consists of:
+[Patch 001] Introduce workqueue based WQE Flush Handler
+[Patch 002] Call WQE flush handler in post {send|receive|poll}
 
-> 
-> And the other patch shouldn't be manipulating being_pushed without
-> some kind of locking
+v6 changes:
+1. Holding lock when updating or referencing the flag being_push
+   according to Jason's comment, i.e., fix the lock holding in
+   hns_roce_v2_modify_qp and hns_roce_v2_poll_one.
 
-Agree. It needs to hold the spin lock of sq and rq when updating it in modify qp,
-will fix next version.
+v5 changes:
+1. Remove WQ_MEM_RECLAIM flag according to Leon's suggestion.
+2. Change to ordered workqueue for the requirement of flush work.
 
-> 
-> Jason
-> 
-> 
+v4 changes:
+1. Add flag for PI is being pushed according to Jason's suggestion
+   to reduce unnecessary works submitted to workqueue.
+
+v3 changes:
+1. Fall back to dynamically allocate flush_work.
+
+v2 changes:
+1. Remove new created workqueue according to Jason's comment
+2. Remove dynamic allocation for flush_work according to Jason's comment
+3. Change current irq singlethread workqueue to concurrency management
+   workqueue to ensure work unblocked.
+
+Yixian Liu (2):
+  RDMA/hns: Add the workqueue framework for flush cqe handler
+  RDMA/hns: Delayed flush cqe process with workqueue
+
+ drivers/infiniband/hw/hns/hns_roce_device.h |   4 ++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 108 +++++++++++++++-------------
+ drivers/infiniband/hw/hns/hns_roce_qp.c     |  45 ++++++++++++
+ 3 files changed, 109 insertions(+), 48 deletions(-)
+
+-- 
+2.7.4
 
