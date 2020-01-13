@@ -2,178 +2,185 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 957E51393B9
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jan 2020 15:33:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B1F1393F3
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jan 2020 15:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728759AbgAMOdN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Jan 2020 09:33:13 -0500
-Received: from mail-eopbgr50074.outbound.protection.outlook.com ([40.107.5.74]:59716
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        id S1728643AbgAMOtu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Jan 2020 09:49:50 -0500
+Received: from mail-db8eur05on2041.outbound.protection.outlook.com ([40.107.20.41]:18657
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726074AbgAMOdN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 13 Jan 2020 09:33:13 -0500
+        id S1726943AbgAMOtu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 13 Jan 2020 09:49:50 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fCSwoN67JsSHK9s3kg/h3y+uSQbK1OpEuKpfYkhYJGKRxMhbkcDz+unsBVvxwuZYBmcNHdpBaDqdHafq8YevC4vs3ouRh4lCe0jRO/YRgL0eB9m4Vqge5MxXja0OQWj7hB2hdTnD/+JiZOGyKs3ucmt1Yg3IcJHHcSDblsfXa2bsrkJLRuCEGQeB7pBhal1XkC0+GwNxPyzZEOMwp50Y6Q2KpgXqFpMlWKKXN+GKPmOYj9X2+4lDIetUTOOta95goFfSv1W5y0GhI0YdFAnrkbv/6LpiEhCEcxXQoQXJ+bfH4+pHqK/kOx52v3u7SDV7SJPbV0YhhKw6YmHOKGoz9A==
+ b=M07o4/DXcxhBi3un8YXzB4JS6MWtLuw6gkKKl3ku/+e74NdB+Usu4X8QV678jQkMOYhzb7WpVVFV3Osq3/BNpz0t+vcgAL8tAcs2geXsrkVB9hMnRa6IoxGC7FEkoDZ3O806UkyB5TDVYFknLAtmH5yFRBxmWC4eylisMd7E7r/jaQk+SnUeBvLdazDt3Ojyd+lUm9jIu35p8Ysk339jbf/tCFY+x+vN+wpWB/LtOXxqulDTe9Cqy2rVwp9z+lWiXbZVp2mZ2Tx9Zt6sZL6MRRZay8Loy9cZA4+3SaZnN3meuxFsif1zvfmmlWiiOmV0MCt8+aKMagqB4W4Ik9MrHg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gHCBPAKywv/JfX837DCFjQHzUzJYUaUmgc+khZJHHIQ=;
- b=VpFsXRYo3XYhg8QsWk4A2LDAkT3lmV1s2TRBA6WWp8ZmULV90AsgN4IHc6dRYZz5MW+MVmVZT2ogeKzEaEEvrb2t6dgsRX04MdWFMfEdLd3ytbkUy7dzZYQreyYMWSrrIcS78dpIBchiNYJfWBEHSdbl+SdWZGTAeNLqtdsjxyCWYuTOugK4CMP4BDs58FUZ9TlQ6XpZ7qXVERAIKzWxD3ZCDAjYVk5z0eGCJkciMhiJZNbBXBB8ot6FCIkp9xOfxr834BXIeBMnQO2hxAy0Nw3m/GHnc39c5Xa1COUIlKTSzZcj+WGUl2UWg7Q/b5wa05Ocz3RRbHsho9Mlk2YiHg==
+ bh=4cZpObHY6B0VESApGlV4qduJ3OM5B2Aips0Q5xpDqE0=;
+ b=EGAr3e5LL8aoWUa3JJUQ6XbUFVMJ7k40QmqPuiEtiIXuGQ9CQt4YO/r+m489d4KpAkWYVORwoA1Y5/y2GL3/sm+G7Dj4H4G15LcX/+ib18X0pUsLCupDYuhrqSzl2hn+tyeuIW3jk/ZI14bQENbzvKm0dLs4Diw+URDdRgrzo8fBcIhZWnng3NyGXHauSCWbA0jbO565cg8l2HA978M0h2tpO/J3d5vYapdF1GWLmOrv5B11iNcIltvT+SEp6HSXnLy9T13V7AvL4XC7UiiAr35VapVQT2TZ0BAoeofU/tbUywkTtNVg2TpKbyu1NHMWloYca1r+pvv3CPA2kiFvag==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gHCBPAKywv/JfX837DCFjQHzUzJYUaUmgc+khZJHHIQ=;
- b=If7Y3aoLqorcGH7sWSItrBF3byZPGbpnKGcchQ4YkAOJFr3+PxnEteUzWjmQH8MeEx1HaOaCqOG03ZbyKOgeYoeQeTNqOYDgdyDXhZ+ONL++S0NtSZliUgIXJqmLMojIuV6QYWggEb4dW2MJ0uDChtFNGqSmMbALSETJnAQ5I1A=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB6288.eurprd05.prod.outlook.com (20.179.24.138) with Microsoft SMTP
+ bh=4cZpObHY6B0VESApGlV4qduJ3OM5B2Aips0Q5xpDqE0=;
+ b=Ek4459e5DmGxvGqP6PW7wdvE8SOZIvNBeijx+nSqsFFVLB+nu5DuNIZvmnse3XX8UIde5hrTklctj5IPtZ5wV+uOiIHTyDXEl1C2rwkWe6mvaR1Xku8hSu8zMcucCxfzp8jaHgnHaAh2C/HmwxORGVzzCLEW/S3eZC5DHL4nvxc=
+Received: from HE1PR0501MB2249.eurprd05.prod.outlook.com (10.168.34.19) by
+ HE1PR0501MB2220.eurprd05.prod.outlook.com (10.168.36.7) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2623.12; Mon, 13 Jan 2020 14:33:10 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::1c00:7925:d5c6:d60d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::1c00:7925:d5c6:d60d%7]) with mapi id 15.20.2623.015; Mon, 13 Jan 2020
- 14:33:10 +0000
-Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR04CA0024.namprd04.prod.outlook.com (2603:10b6:208:d4::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2623.9 via Frontend Transport; Mon, 13 Jan 2020 14:33:10 +0000
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1ir0mB-0007ZD-0d; Mon, 13 Jan 2020 10:33:07 -0400
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC:     Michael Guralnik <michaelgur@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH] RDMA/uverbs: Remove needs_kfree_rcu from
- uverbs_obj_type_class
-Thread-Topic: [PATCH] RDMA/uverbs: Remove needs_kfree_rcu from
- uverbs_obj_type_class
-Thread-Index: AQHVyh5h4DGrlAJrz02SdJavNbXIxg==
-Date:   Mon, 13 Jan 2020 14:33:10 +0000
-Message-ID: <20200113143306.GA28717@ziepe.ca>
+ 15.20.2623.16; Mon, 13 Jan 2020 14:49:46 +0000
+Received: from HE1PR0501MB2249.eurprd05.prod.outlook.com
+ ([fe80::75b5:4765:e4d5:8501]) by HE1PR0501MB2249.eurprd05.prod.outlook.com
+ ([fe80::75b5:4765:e4d5:8501%6]) with mapi id 15.20.2623.015; Mon, 13 Jan 2020
+ 14:49:45 +0000
+From:   Alex Vesker <valex@mellanox.com>
+To:     Cengiz Can <cengiz@kernel.wtf>, Leon Romanovsky <leon@kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Yevgeny Kliteynik <kliteyn@mellanox.com>,
+        Erez Shitrit <erezsh@mellanox.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] net: mellanox: prevent resource leak on htbl
+Thread-Topic: [PATCH] net: mellanox: prevent resource leak on htbl
+Thread-Index: AQHVyhfXnbgha6qN0UO7Z+hw8A09HA==
+Date:   Mon, 13 Jan 2020 14:49:45 +0000
+Message-ID: <HE1PR0501MB22490CD10A5A258E8C08DE86C3350@HE1PR0501MB2249.eurprd05.prod.outlook.com>
+References: <20200113134415.86110-1-cengiz@kernel.wtf>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: MN2PR04CA0024.namprd04.prod.outlook.com
- (2603:10b6:208:d4::37) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
 authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [142.68.57.212]
+ smtp.mailfrom=valex@mellanox.com; 
+x-originating-ip: [193.47.165.251]
 x-ms-publictraffictype: Email
 x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: b05b8bab-7459-4f55-ddbd-08d798358383
-x-ms-traffictypediagnostic: VI1PR05MB6288:|VI1PR05MB6288:
+x-ms-office365-filtering-correlation-id: 83661a75-57e5-47c9-0b5d-08d79837d4f3
+x-ms-traffictypediagnostic: HE1PR0501MB2220:|HE1PR0501MB2220:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB62889F87ED4BFD343E005E55CF350@VI1PR05MB6288.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-microsoft-antispam-prvs: <HE1PR0501MB22200C83049DE30DC349441FC3350@HE1PR0501MB2220.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
 x-forefront-prvs: 028166BF91
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(346002)(39860400002)(136003)(376002)(396003)(199004)(189003)(66946007)(64756008)(33656002)(6666004)(52116002)(81166006)(81156014)(8676002)(26005)(186003)(9686003)(66556008)(66476007)(86362001)(66446008)(36756003)(9746002)(9786002)(107886003)(2906002)(8936002)(1076003)(71200400001)(316002)(5660300002)(6916009)(54906003)(478600001)(4326008)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6288;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(376002)(346002)(366004)(39860400002)(136003)(199004)(189003)(7696005)(26005)(91956017)(110136005)(76116006)(66946007)(5660300002)(66556008)(66476007)(186003)(66446008)(64756008)(4326008)(2906002)(54906003)(316002)(478600001)(86362001)(53546011)(55016002)(6506007)(9686003)(52536014)(71200400001)(8676002)(33656002)(8936002)(81156014)(81166006);DIR:OUT;SFP:1101;SCL:1;SRVR:HE1PR0501MB2220;H:HE1PR0501MB2249.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: u5sw/DNIvMec6FlidAUVJ09gmaZw3s2KgWofi5oMaKHa594gIps11IKvLv9ViwpeOAVxJzUpIuqlli5qJkPIV0ECIpaNTRkQ9R7iKqrhA6f+VyP8Svi18UYiBV9vjpr3wcpc2O2Y+Z26rDH5m5lnQ7Xkurqqw4CMsRiGdUbpHCQkB8kx7oOy2sGIWvnrD0Puc7UH5gk4KsleKE3RX5IbAVVEVY2D/Ys23nKtwh2wwumwPLunttOz06krswyFu02t4nSsHdY+ga7xzGQxmDaQcSyD69ciWFkEJoUEtHH7NAfPv2l16uzj1w5iyy5Ivw7jG0qiKQ8i5vNy9V/qzLBDEHuTDcDAirbK4P8VVgWGttee1gneDtkN9izuJCj+6JtT6Vt+WmFSLa9gwSpc+ga5R60raJUpFOWb+otAW1wPkR7BByaBypf0KFvBXdO4UbHVPaAWjfSBCFfiTaLsZ5fsJ0riRwKFcqUNhRG1kXv/MVD/vtQnmUPqHoENf+csYm5x
+x-microsoft-antispam-message-info: d9zFE6/1V3vaLfNdvgZCR+bMr6RxOQrWHjRGD3vHq4KdIndNBvL8LhW8Keppz5i1lyQfs3/zobtmcdBJQW+RO+CQZ8r822z01qYLuxST1VqE6wZgce1U5ZO9yuCETmeedc5Ul4EWhvuoAChBXFNfvbnIoPu0aDeCZdUja2Ume/GcohLWSwXGMHiJ9dIo2YlSj8RHr1SnqSc4JTNrEq0X2X6xMLeGG22TWVIxxbIJM5kYYREdoKMFQ7ZOKUah5J8ui6JxwieM0W0DbPelybiUt0Z+LTsPHa/fGwXD5MgH+RamH4AZF8yDzpkgFQiBxxkXe0h+gX2F+lpoVhA5NZgpM0Lkn8JwCtICvEjqnx53xFk6DXt3liNic/zozS5mnnxXg8bTshkH/AAaQVq2MJD5xeFV9H69c70/lSACSqJ3+PU2QEX7FoWwqNsGaXUiMbZc
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3543D026F7C8684AAFF60E5F7D704151@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b05b8bab-7459-4f55-ddbd-08d798358383
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jan 2020 14:33:10.5629
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83661a75-57e5-47c9-0b5d-08d79837d4f3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jan 2020 14:49:45.7336
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bv0c94wHo2T/3MX47UYi39VV94DNGbBz++xiXQDSOj62/fsXaS7zbHtW5lc8zN0hseG9NBmDgJByqmyzog5gIg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6288
+X-MS-Exchange-CrossTenant-userprincipalname: x940VeNSu89pQS0PwPAs4vDLvoZd3mynoshJ1uPi6rz8SdR7ZwN0yCo4kd46kFLpKNzl9SyDIl4QpvC4x3pV2Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0501MB2220
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-After device disassociation the uapi_objects are destroyed and freed,
-however it is still possible that core code can be holding a kref on the
-uobject. When it finally goes to uverbs_uobject_free() via the kref_put()
-it can trigger a use-after-free on the uapi_object.
-
-Since needs_kfree_rcu is a micro optimization that only benefits file
-uobjects, just get rid of it. There is no harm in using kfree_rcu even if
-it isn't required, and the number of involved objects is small.
-
-Signed-off-by: Michael Guralnik <michaelgur@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
----
- drivers/infiniband/core/rdma_core.c | 23 +----------------------
- include/rdma/uverbs_types.h         |  1 -
- 2 files changed, 1 insertion(+), 23 deletions(-)
-
-This should go before the 'refactoring fd usage' series as more
-testing has shown the reworked code can trivially trigger this
-existing bug.
-
-diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/=
-rdma_core.c
-index 6c72773faf2911..17bdbe38fdfa59 100644
---- a/drivers/infiniband/core/rdma_core.c
-+++ b/drivers/infiniband/core/rdma_core.c
-@@ -49,13 +49,7 @@ void uverbs_uobject_get(struct ib_uobject *uobject)
-=20
- static void uverbs_uobject_free(struct kref *ref)
- {
--	struct ib_uobject *uobj =3D
--		container_of(ref, struct ib_uobject, ref);
--
--	if (uobj->uapi_object->type_class->needs_kfree_rcu)
--		kfree_rcu(uobj, rcu);
--	else
--		kfree(uobj);
-+	kfree_rcu(container_of(ref, struct ib_uobject, ref), rcu);
- }
-=20
- void uverbs_uobject_put(struct ib_uobject *uobject)
-@@ -744,20 +738,6 @@ const struct uverbs_obj_type_class uverbs_idr_class =
-=3D {
- 	.lookup_put =3D lookup_put_idr_uobject,
- 	.destroy_hw =3D destroy_hw_idr_uobject,
- 	.remove_handle =3D remove_handle_idr_uobject,
--	/*
--	 * When we destroy an object, we first just lock it for WRITE and
--	 * actually DESTROY it in the finalize stage. So, the problematic
--	 * scenario is when we just started the finalize stage of the
--	 * destruction (nothing was executed yet). Now, the other thread
--	 * fetched the object for READ access, but it didn't lock it yet.
--	 * The DESTROY thread continues and starts destroying the object.
--	 * When the other thread continue - without the RCU, it would
--	 * access freed memory. However, the rcu_read_lock delays the free
--	 * until the rcu_read_lock of the READ operation quits. Since the
--	 * exclusive lock of the object is still taken by the DESTROY flow, the
--	 * READ operation will get -EBUSY and it'll just bail out.
--	 */
--	.needs_kfree_rcu =3D true,
- };
- EXPORT_SYMBOL(uverbs_idr_class);
-=20
-@@ -920,7 +900,6 @@ const struct uverbs_obj_type_class uverbs_fd_class =3D =
-{
- 	.lookup_put =3D lookup_put_fd_uobject,
- 	.destroy_hw =3D destroy_hw_fd_uobject,
- 	.remove_handle =3D remove_handle_fd_uobject,
--	.needs_kfree_rcu =3D false,
- };
- EXPORT_SYMBOL(uverbs_fd_class);
-=20
-diff --git a/include/rdma/uverbs_types.h b/include/rdma/uverbs_types.h
-index d57a5ba00c743e..0b0f5a5f392de7 100644
---- a/include/rdma/uverbs_types.h
-+++ b/include/rdma/uverbs_types.h
-@@ -98,7 +98,6 @@ struct uverbs_obj_type_class {
- 				       enum rdma_remove_reason why,
- 				       struct uverbs_attr_bundle *attrs);
- 	void (*remove_handle)(struct ib_uobject *uobj);
--	u8    needs_kfree_rcu;
- };
-=20
- struct uverbs_obj_type {
---=20
-2.24.1
-
+On 1/13/2020 3:46 PM, Cengiz Can wrote:=0A=
+> According to a Coverity static analysis tool,=0A=
+> `drivers/net/mellanox/mlx5/core/steering/dr_rule.c#63` leaks a=0A=
+> `struct mlx5dr_ste_htbl *` named `new_htbl` while returning from=0A=
+> `dr_rule_create_collision_htbl` function.=0A=
+>=0A=
+> A annotated snippet of the possible resource leak follows:=0A=
+>=0A=
+> ```=0A=
+> static struct mlx5dr_ste *=0A=
+> dr_rule_create_collision_htbl(struct mlx5dr_matcher *matcher,=0A=
+>                               struct mlx5dr_matcher_rx_tx *nic_matcher,=
+=0A=
+>                               u8 *hw_ste)=0A=
+>    /* ... */=0A=
+>    /* ... */=0A=
+>=0A=
+>    /* Storage is returned from allocation function mlx5dr_ste_htbl_alloc.=
+ */=0A=
+>    /* Assigning: new_htbl =3D storage returned from mlx5dr_ste_htbl_alloc=
+(..) */=0A=
+>         new_htbl =3D mlx5dr_ste_htbl_alloc(dmn->ste_icm_pool,=0A=
+>                                          DR_CHUNK_SIZE_1,=0A=
+>                                          MLX5DR_STE_LU_TYPE_DONT_CARE,=0A=
+>                                          0);=0A=
+>    /* Condition !new_htbl, taking false branch. */=0A=
+>         if (!new_htbl) {=0A=
+>                 mlx5dr_dbg(dmn, "Failed allocating collision table\n");=
+=0A=
+>                 return NULL;=0A=
+>         }=0A=
+>=0A=
+>         /* One and only entry, never grows */=0A=
+>         ste =3D new_htbl->ste_arr;=0A=
+>         mlx5dr_ste_set_miss_addr(hw_ste, nic_matcher->e_anchor->chunk->ic=
+m_addr);=0A=
+>    /* Resource new_htbl is not freed or pointed-to in mlx5dr_htbl_get */=
+=0A=
+>         mlx5dr_htbl_get(new_htbl);=0A=
+>=0A=
+>    /* Variable new_htbl going out of scope leaks the storage it points to=
+. */=0A=
+>         return ste;=0A=
+> ```=0A=
+>=0A=
+> There's a caller of this function which does refcounting and free'ing by=
+=0A=
+> itself but that function also skips free'ing `new_htbl` due to missing=0A=
+> jump to error label. (referring to `dr_rule_create_collision_entry lines=
+=0A=
+> 75-77. They don't jump to `free_tbl`)=0A=
+>=0A=
+> Added a `kfree(new_htbl)` just before returning `ste` pointer to fix the=
+=0A=
+> leak.=0A=
+>=0A=
+> Signed-off-by: Cengiz Can <cengiz@kernel.wtf>=0A=
+> ---=0A=
+>=0A=
+> This might be totally breaking the refcounting logic in the file so=0A=
+> please provide any feedback so I can evolve this into something more=0A=
+> suitable.=0A=
+>=0A=
+> For the record, Coverity scan id is CID 1457773.=0A=
+>=0A=
+>  drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c | 2 ++=0A=
+>  1 file changed, 2 insertions(+)=0A=
+>=0A=
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c b=
+/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c=0A=
+> index e4cff7abb348..047b403c61db 100644=0A=
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c=0A=
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c=0A=
+> @@ -60,6 +60,8 @@ dr_rule_create_collision_htbl(struct mlx5dr_matcher *ma=
+tcher,=0A=
+>  	mlx5dr_ste_set_miss_addr(hw_ste, nic_matcher->e_anchor->chunk->icm_addr=
+);=0A=
+>  	mlx5dr_htbl_get(new_htbl);=0A=
+>=0A=
+> +	kfree(new_htbl);=0A=
+> +=0A=
+>  	return ste;=0A=
+>  }=0A=
+>=0A=
+> --=0A=
+> 2.24.1=0A=
+>=0A=
+>=0A=
+The fix looks incorrect to me.=0A=
+The table is pointed by each ste in the ste_arr, ste->new_htbl and being=0A=
+freed on mlx5dr_htbl_put.=0A=
+We tested kmemleak a few days ago and came clean.=0A=
+usually coverity is not wrong, but in this case I don't see the bug...=0A=
+=0A=
