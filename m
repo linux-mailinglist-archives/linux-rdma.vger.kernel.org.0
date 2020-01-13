@@ -2,111 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E528139271
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jan 2020 14:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 168F913930E
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Jan 2020 15:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728689AbgAMNqU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Jan 2020 08:46:20 -0500
-Received: from relay12.mail.gandi.net ([217.70.178.232]:39949 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726074AbgAMNqU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Jan 2020 08:46:20 -0500
-Received: from nexussix.ar.arcelik (unknown [84.44.14.226])
-        (Authenticated sender: cengiz@kernel.wtf)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 01116200012;
-        Mon, 13 Jan 2020 13:46:10 +0000 (UTC)
-From:   Cengiz Can <cengiz@kernel.wtf>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Yevgeny Kliteynik <kliteyn@mellanox.com>,
-        Alex Vesker <valex@mellanox.com>,
-        Erez Shitrit <erezsh@mellanox.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Cengiz Can <cengiz@kernel.wtf>
-Subject: [PATCH] net: mellanox: prevent resource leak on htbl
-Date:   Mon, 13 Jan 2020 16:44:16 +0300
-Message-Id: <20200113134415.86110-1-cengiz@kernel.wtf>
-X-Mailer: git-send-email 2.24.1
+        id S1728765AbgAMOEp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Jan 2020 09:04:45 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:36692 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728621AbgAMOEp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Jan 2020 09:04:45 -0500
+Received: by mail-qk1-f195.google.com with SMTP id a203so8540877qkc.3
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Jan 2020 06:04:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xVZ+swt2o10HC3gUjrQY2WV1R9wJxiXtEbx6qnxQmdQ=;
+        b=TkVTWwSNBsaaX0/L7Zx9Hs32GJVpmBS8MrTtk3h4M377tZ9jIlH268lYz39vDI9yL1
+         32feN4koPI5o6eC/yuJ/BELC19mUGXmQalUD1udTEx9tHyGnAN/OjnCebq0y8fCAThHy
+         Fs8drQhi2rFcAmUb6kEgkkpW4gByeFhNa+0VGgfLpA8ykALsEFAlj6KltmVnIhs6OKCm
+         i+7j8qGtOtdKY8yHDooQzJGIJN7ilS+43tq3Cv27lKh6oZvUNPiz1NKgQCKCyJ+9uS42
+         bOgi0wG9NIsJqYmtjjfShq/UThG2y86pequSuF9vyYyT5jN8B+SmJg1HI6GjthEQSk9H
+         atJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xVZ+swt2o10HC3gUjrQY2WV1R9wJxiXtEbx6qnxQmdQ=;
+        b=DWRau8p0QaKp1rn+vEpJ0fDm4lJy0J0Mrpvqch+zsQiSyJ+qYQ0J06q8znYXrYpAsL
+         Ayb3WIo5FkOGJj/u/hlAxIhcAq+EqwF2tIc0tN4DN85J95rzKQfXBCSzu9/z5Uu/xTXE
+         G9Ojts4xsZL7RMLszWb4wooEjGDkFH1zhr43rCReA3VA9aY/wk5WeYl17xcKXnT5oT4+
+         GKqiD+2y+/Kt5ULzDRxAQJc3tSdWi/e1TqYG5IM/W6V0Kyd/Ui2IRCp8nTOJe/I6jDO7
+         6YJ7EKvd1WPmpRn6c9np4sCbO7Uralh3GtEDjgkM77N5PsmxNv4V/Ps/Rytx+5ocaOSg
+         iosA==
+X-Gm-Message-State: APjAAAUw6+rVjS+g46d2luLQ3zPCCGygfVjsW1bFxlKI1PRyqCLxau49
+        65ObOEPs0/Iu/5fSne1ATlWYcA==
+X-Google-Smtp-Source: APXvYqxsonoXsbuIaGl3PtS8+enZMQezgYbpy9n+raOqzmxz4GA+3NkaxKkS7PhUYZUO3xsZcXe4/w==
+X-Received: by 2002:a05:620a:2041:: with SMTP id d1mr16466119qka.113.1578924284133;
+        Mon, 13 Jan 2020 06:04:44 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id m68sm5009105qke.17.2020.01.13.06.04.43
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 13 Jan 2020 06:04:43 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1ir0Kg-0003BZ-Pq; Mon, 13 Jan 2020 10:04:42 -0400
+Date:   Mon, 13 Jan 2020 10:04:42 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Liuyixian (Eason)" <liuyixian@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH v5 for-next 1/2] RDMA/hns: Add the workqueue framework
+ for flush cqe handler
+Message-ID: <20200113140442.GA9861@ziepe.ca>
+References: <1577503735-26685-1-git-send-email-liuyixian@huawei.com>
+ <1577503735-26685-2-git-send-email-liuyixian@huawei.com>
+ <20200110152602.GC8765@ziepe.ca>
+ <65fb928c-5f85-02f9-c5ac-06037b3fe967@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <65fb928c-5f85-02f9-c5ac-06037b3fe967@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-According to a Coverity static analysis tool,
-`drivers/net/mellanox/mlx5/core/steering/dr_rule.c#63` leaks a
-`struct mlx5dr_ste_htbl *` named `new_htbl` while returning from
-`dr_rule_create_collision_htbl` function.
+On Mon, Jan 13, 2020 at 07:26:45PM +0800, Liuyixian (Eason) wrote:
+> 
+> 
+> On 2020/1/10 23:26, Jason Gunthorpe wrote:
+> > On Sat, Dec 28, 2019 at 11:28:54AM +0800, Yixian Liu wrote:
+> >> +void init_flush_work(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+> >> +{
+> >> +	struct hns_roce_work *flush_work;
+> >> +
+> >> +	flush_work = kzalloc(sizeof(struct hns_roce_work), GFP_ATOMIC);
+> >> +	if (!flush_work)
+> >> +		return;
+> > 
+> > You changed it to only queue once, so why do we need the allocation
+> > now? That was the whole point..
+> 
+> Hi Jason,
+> 
+> The flush work is queued **not only once**. As the flag being_pushed is set to 0 during
+> the process of modifying qp like this:
+> 	hns_roce_v2_modify_qp {
+> 		...
+> 		if (new_state == IB_QPS_ERR) {
+> 			spin_lock_irqsave(&hr_qp->sq.lock, sq_flag);
+> 			...
+> 			hr_qp->state = IB_QPS_ERR;
+> 			hr_qp->being_push = 0;
+> 			...
+> 		}
+> 		...
+> 	}
+> which means the new updated PI value needs to be updated with initializing a new flush work.
+> Thus, maybe there are two flush work in the workqueue. Thus, we still need the allocation here.
 
-A annotated snippet of the possible resource leak follows:
+I don't see how you should get two? One should be pending until the
+modify is done with the new PI, then once the PI is updated the same
+one should be re-queued the next time the PI needs changing.
 
-```
-static struct mlx5dr_ste *
-dr_rule_create_collision_htbl(struct mlx5dr_matcher *matcher,
-                              struct mlx5dr_matcher_rx_tx *nic_matcher,
-                              u8 *hw_ste)
-   /* ... */
-   /* ... */
-
-   /* Storage is returned from allocation function mlx5dr_ste_htbl_alloc. */
-   /* Assigning: new_htbl = storage returned from mlx5dr_ste_htbl_alloc(..) */
-        new_htbl = mlx5dr_ste_htbl_alloc(dmn->ste_icm_pool,
-                                         DR_CHUNK_SIZE_1,
-                                         MLX5DR_STE_LU_TYPE_DONT_CARE,
-                                         0);
-   /* Condition !new_htbl, taking false branch. */
-        if (!new_htbl) {
-                mlx5dr_dbg(dmn, "Failed allocating collision table\n");
-                return NULL;
-        }
-
-        /* One and only entry, never grows */
-        ste = new_htbl->ste_arr;
-        mlx5dr_ste_set_miss_addr(hw_ste, nic_matcher->e_anchor->chunk->icm_addr);
-   /* Resource new_htbl is not freed or pointed-to in mlx5dr_htbl_get */
-        mlx5dr_htbl_get(new_htbl);
-
-   /* Variable new_htbl going out of scope leaks the storage it points to. */
-        return ste;
-```
-
-There's a caller of this function which does refcounting and free'ing by
-itself but that function also skips free'ing `new_htbl` due to missing
-jump to error label. (referring to `dr_rule_create_collision_entry lines
-75-77. They don't jump to `free_tbl`)
-
-Added a `kfree(new_htbl)` just before returning `ste` pointer to fix the
-leak.
-
-Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
----
-
-This might be totally breaking the refcounting logic in the file so
-please provide any feedback so I can evolve this into something more
-suitable.
-
-For the record, Coverity scan id is CID 1457773.
-
- drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c
-index e4cff7abb348..047b403c61db 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_rule.c
-@@ -60,6 +60,8 @@ dr_rule_create_collision_htbl(struct mlx5dr_matcher *matcher,
- 	mlx5dr_ste_set_miss_addr(hw_ste, nic_matcher->e_anchor->chunk->icm_addr);
- 	mlx5dr_htbl_get(new_htbl);
-
-+	kfree(new_htbl);
-+
- 	return ste;
- }
-
---
-2.24.1
-
+Jason
