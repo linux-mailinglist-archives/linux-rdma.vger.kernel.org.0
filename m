@@ -2,87 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB96513A29F
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2020 09:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4790713A350
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2020 09:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728914AbgANIPR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Jan 2020 03:15:17 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:40724 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725956AbgANIPR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jan 2020 03:15:17 -0500
-Received: by mail-wr1-f65.google.com with SMTP id c14so11161953wrn.7
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jan 2020 00:15:15 -0800 (PST)
+        id S1727556AbgANI5U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Jan 2020 03:57:20 -0500
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:4604 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726452AbgANI5U (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jan 2020 03:57:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LSC2FfgJvSDgZwIhbJ4XrULOuTx9Qf60YsaiKMesJSQ=;
-        b=qrGYOgIBWq9vj3Nr+j3McFa/fperuS8Vc4TG1a4Vr7y1JyCHKzrQQwerCaMpAAsX+8
-         Wty3EkuwUlD2ErhRfqGLaMXOteiWpMYKaHTJdq3l6brlea06fhODxiTy2HOZ5O9FVJkP
-         GetjjB0QJPAA0e8AmO/8br0v5EOqgvRrjakE0jCbuEeXHEFleRLKuDeyhliCr9rzEEX7
-         +S2YvrNe3jvEkBCs7c3mpsSRDj9z+sERQnfmoGVPrZUFVTpqhxhn0DmmkIakJbd9ngIU
-         oM2HkbkexLUf9q8W4leQAYc4TTpYXuDpNWBqVyG3XKKW94NCe4lSnon1tMOdAPP4ulkD
-         mreg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LSC2FfgJvSDgZwIhbJ4XrULOuTx9Qf60YsaiKMesJSQ=;
-        b=sXU1fdxsWTa02cF09dbkyRrhA2BuBHEREOKTkLLnKBzx73dMR9yRTkk1MTRLf+GT6g
-         SMyM+7CcDnYP3+j4qo9k6225sfDruM60hypL52gDiGWoHBmFAkvshDnxlNVNiYkm5TCv
-         jx8GTl/D0lvjk9GCSK2wWsxYXbc3H/hlWv5EaMxvMdl9Qdyx5HBFp31K6paQmJT6xpoI
-         fziYd2dR3SSH4AIyJPeFrn2f5Es4mgkj4MZZPbJ4YlX6A6FT0m9B3uWYL9me8hqSmBGk
-         wBhf6+NW6rUKcajeS5PlQuuF/5PyzN3KsmAHINKptefHWPkKId38qypDyoUPvoGCWv0Q
-         mQWQ==
-X-Gm-Message-State: APjAAAVNhCW2QgpRhlsVdcnE80jFSe0EhWb9fzGQbLF5YrbN2FQDEUyZ
-        jYlEdjOz15/czRSamkkIYXrCu3D8
-X-Google-Smtp-Source: APXvYqyFppaW17GVCuhfm/S1APKSq7EgNuyiON/1rcY/t3Bx52Lczyci19QwYEaQWOsaJWgK2KYLlg==
-X-Received: by 2002:a5d:5273:: with SMTP id l19mr23753059wrc.175.1578989715028;
-        Tue, 14 Jan 2020 00:15:15 -0800 (PST)
-Received: from kheib-workstation.redhat.com (bzq-79-181-7-148.red.bezeqint.net. [79.181.7.148])
-        by smtp.gmail.com with ESMTPSA id n10sm18407049wrt.14.2020.01.14.00.15.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jan 2020 00:15:14 -0800 (PST)
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
-        Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH for-next V2] RDMA/core: Fix storing node description
-Date:   Tue, 14 Jan 2020 10:14:55 +0200
-Message-Id: <20200114081455.1240-1-kamalheib1@gmail.com>
-X-Mailer: git-send-email 2.21.1
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1578992239; x=1610528239;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=7P/QN+mE5uA2gC3RYx5bIwBMYDkch1X5kKWpc2yLi8E=;
+  b=EtWFR7AQ1gullRgjO3BcUXzlD+lI5bYvlWUy2WO3VWkEFp0YUQjWmnjF
+   FQAqWE5O4wdizHS8Kknqo6UoupHS2bFxnla6sd8QyM31h/yCWf+7uLxYY
+   GBjBuWoWKD73Au2Yx0ePk6mB334y8xuDSChWpGGUamwXJH1bB1Vapf+nM
+   g=;
+IronPort-SDR: +TywuTKnzQZ4QPbs6XJ1y6aZ1wY0cFv81BnNHl9doV7yAYvAwBnfasU0M+LSJdo1nKk+VbQjdJ
+ Dt75wT04oWdQ==
+X-IronPort-AV: E=Sophos;i="5.69,432,1571702400"; 
+   d="scan'208";a="12864385"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-16acd5e0.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 14 Jan 2020 08:57:18 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1a-16acd5e0.us-east-1.amazon.com (Postfix) with ESMTPS id CB56CA1DE7;
+        Tue, 14 Jan 2020 08:57:16 +0000 (UTC)
+Received: from EX13D02EUB004.ant.amazon.com (10.43.166.221) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.243) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 14 Jan 2020 08:57:16 +0000
+Received: from EX13MTAUEE002.ant.amazon.com (10.43.62.24) by
+ EX13D02EUB004.ant.amazon.com (10.43.166.221) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 14 Jan 2020 08:57:15 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.218.69.133) by
+ mail-relay.amazon.com (10.43.62.224) with Microsoft SMTP Server id
+ 15.0.1367.3 via Frontend Transport; Tue, 14 Jan 2020 08:57:12 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Gal Pressman <galpress@amazon.com>
+Subject: [PATCH for-next 0/6] EFA updates 2020-01-14
+Date:   Tue, 14 Jan 2020 10:57:00 +0200
+Message-ID: <20200114085706.82229-1-galpress@amazon.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Make sure to return -EINVAL when the supplied string is bigger then
-the node_desc array.
+This series contains various updates to the device definitions handling
+and documentation, and some cleanups to the recently introduced mmap
+code.
 
-Fixes: c5bcbbb9fe00 ("IB: Allow userspace to set node description")
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
----
- drivers/infiniband/core/sysfs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+The last patch is based on a discussion that came up during the recent
+mmap machanism review on list:
+https://lore.kernel.org/linux-rdma/20190920133817.GB7095@ziepe.ca/
 
-diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
-index 087682e6969e..aa90a42d6565 100644
---- a/drivers/infiniband/core/sysfs.c
-+++ b/drivers/infiniband/core/sysfs.c
-@@ -1268,7 +1268,9 @@ static ssize_t node_desc_store(struct device *device,
- 	if (!dev->ops.modify_device)
- 		return -EOPNOTSUPP;
- 
--	memcpy(desc.node_desc, buf, min_t(int, count, IB_DEVICE_NODE_DESC_MAX));
-+	if (strscpy(desc.node_desc, buf, sizeof(desc.node_desc)) == -E2BIG)
-+		return -EINVAL;
-+
- 	ret = ib_modify_device(dev, IB_DEVICE_MODIFY_NODE_DESC, &desc);
- 	if (ret)
- 		return ret;
+We no longer delay the free_pages_exact call of mmaped DMA pages, as the
+pages won't be freed in case they are still referenced by the vma.
+
+Regards,
+Gal
+
+Gal Pressman (6):
+  RDMA/efa: Unified getters/setters for device structs bitmask access
+  RDMA/efa: Properly document the interrupt mask register
+  RDMA/efa: Device definitions documentation updates
+  RDMA/efa: Remove {} brackets from single statement if
+  RDMA/efa: Remove unused ucontext parameter from
+    efa_qp_user_mmap_entries_remove
+  RDMA/efa: Do not delay freeing of DMA pages
+
+ .../infiniband/hw/efa/efa_admin_cmds_defs.h   |  43 +++++--
+ drivers/infiniband/hw/efa/efa_admin_defs.h    |   5 +
+ drivers/infiniband/hw/efa/efa_com.c           | 119 ++++++++----------
+ drivers/infiniband/hw/efa/efa_com_cmd.c       |  27 ++--
+ drivers/infiniband/hw/efa/efa_common_defs.h   |   6 +
+ drivers/infiniband/hw/efa/efa_regs_defs.h     |  13 ++
+ drivers/infiniband/hw/efa/efa_verbs.c         |  27 ++--
+ 7 files changed, 128 insertions(+), 112 deletions(-)
+
+
+base-commit: 74f75cda754eb69a77f910ceb5bc85f8e9ba56a5
 -- 
-2.21.1
+2.24.1
 
