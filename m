@@ -2,98 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F03D813B324
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2020 20:46:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D218713B381
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jan 2020 21:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728859AbgANTqz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Jan 2020 14:46:55 -0500
-Received: from mga03.intel.com ([134.134.136.65]:46993 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727102AbgANTqy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Jan 2020 14:46:54 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Jan 2020 11:46:54 -0800
-X-IronPort-AV: E=Sophos;i="5.70,320,1574150400"; 
-   d="scan'208";a="213448748"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.201.179]) ([10.254.201.179])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 14 Jan 2020 11:46:52 -0800
-Subject: Re: [PATCH 1/3] infiniband: hw: hfi1: verbs.c: Use built-in RCU list
- checking
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     madhuparnabhowmik04@gmail.com, mike.marciniszyn@intel.com,
-        paulmck@kernel.org, joel@joelfernandes.org, frextrite@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        rcu@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200114162345.19995-1-madhuparnabhowmik04@gmail.com>
- <20200114165740.GB22037@ziepe.ca>
- <74adec84-ec5b-ea1b-7adf-3f8608838259@intel.com>
- <25133367-6544-d0af-ae30-5178909748b1@intel.com>
- <20200114194148.GD22037@ziepe.ca>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <7959316e-7647-9ba3-5f1a-10c8d31a2994@intel.com>
-Date:   Tue, 14 Jan 2020 14:46:50 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        id S1728783AbgANUPM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Jan 2020 15:15:12 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13500 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726839AbgANUPL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jan 2020 15:15:11 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e1e21390001>; Tue, 14 Jan 2020 12:14:49 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 14 Jan 2020 12:15:09 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 14 Jan 2020 12:15:09 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 14 Jan
+ 2020 20:15:09 +0000
+Subject: Re: [PATCH v12 00/22] mm/gup: prereqs to track dma-pinned pages:
+ FOLL_PIN
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20200107224558.2362728-1-jhubbard@nvidia.com>
+ <2a9145d4-586e-6489-64e4-0c54f47afaa1@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <9d7f3c1a-6020-bdec-c513-80c5399e55d7@nvidia.com>
+Date:   Tue, 14 Jan 2020 12:15:08 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200114194148.GD22037@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <2a9145d4-586e-6489-64e4-0c54f47afaa1@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1579032890; bh=wLxNzNFRStaOZ7jAQIV4tH1wBKaWmBKZBOUdkq/PVGQ=;
+        h=X-PGP-Universal:Subject:From:To:CC:References:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=bNQcHd+kt2S6qArSD90PMkNX5LSRoo2toPf1fdY/D3ysgVjnnuMPbcBLvU4mGjBbT
+         LR4uZiIEi3/mAViybdXB1PH001dny/ndD230xDMGlhs7NAYpQR6mGLaj5Fl0H44uol
+         s/WH8SaFGbiYHrC+Jf2F7bChe3A2NqguquLvhseggPHll2epR/FoT6c0YMA6JGSKkp
+         eSDWR40pps95gbxdKKvy2DClT3lBSMdUwcemTQnf2Jrxy6nLuQLIDhcegQ+kyGcscI
+         uknj/1R1Mw2ETSzcXASW/vo/Q3g+SHupTZUPph9j3ZAnq/QlpAxhi10ckpA46Ke/0I
+         HjefW3dJ5Akvg==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/14/2020 2:41 PM, Jason Gunthorpe wrote:
-> On Tue, Jan 14, 2020 at 01:24:00PM -0500, Dennis Dalessandro wrote:
->> On 1/14/2020 12:00 PM, Dennis Dalessandro wrote:
->>> On 1/14/2020 11:57 AM, Jason Gunthorpe wrote:
->>>> On Tue, Jan 14, 2020 at 09:53:45PM +0530,
->>>> madhuparnabhowmik04@gmail.com wrote:
->>>>> From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
->>>>>
->>>>> list_for_each_entry_rcu has built-in RCU and lock checking.
->>>>> Pass cond argument to list_for_each_entry_rcu.
->>>>>
->>>>> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
->>>>>    drivers/infiniband/hw/hfi1/verbs.c | 2 +-
->>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/infiniband/hw/hfi1/verbs.c
->>>>> b/drivers/infiniband/hw/hfi1/verbs.c
->>>>> index 089e201d7550..22f2d4fd2577 100644
->>>>> +++ b/drivers/infiniband/hw/hfi1/verbs.c
->>>>> @@ -515,7 +515,7 @@ static inline void hfi1_handle_packet(struct
->>>>> hfi1_packet *packet,
->>>>>                           opa_get_lid(packet->dlid, 9B));
->>>>>            if (!mcast)
->>>>>                goto drop;
->>>>> -        list_for_each_entry_rcu(p, &mcast->qp_list, list) {
->>>>> +        list_for_each_entry_rcu(p, &mcast->qp_list, list,
->>>>> lockdep_is_held(&(ibp->rvp.lock))) {
->>>>
->>>> Okay, this looks reasonable
->>>>
->>>> Mike, Dennis, is this the right lock to test?
->>>>
->>>
->>> I'm looking at that right now actually, I don't think this is correct.
->>> Wanted to talk to Mike before I send a response though.
->>>
->>> -Denny
+On 1/9/20 2:07 PM, John Hubbard wrote:
+> On 1/7/20 2:45 PM, John Hubbard wrote:
+>> Hi,
 >>
->> That's definitely going to throw a ton of lock dep messages. It's not really
->> the right lock either. Instead what we probably need to do is what we do in
->> the non-multicast part of the code and take the rcu_read_lock().
+>> The "track FOLL_PIN pages" would have been the very next patch, but it is
+>> not included here because I'm still debugging a bug report from Leon.
+>> Let's get all of the prerequisite work (it's been reviewed) into the tree
+>> so that future reviews are easier. It's clear that any fixes that are
+>> required to the tracking patch, won't affect these patches here.
+>>
+>> This implements an API naming change (put_user_page*() -->
+>> unpin_user_page*()), and also adds FOLL_PIN page support, up to
+>> *but not including* actually tracking FOLL_PIN pages. It extends
+>> the FOLL_PIN support to a few select subsystems. More subsystems will
+>> be added in follow up work.
+>>
 > 
-> Uh.. why is this using the _rcu varient without holding the rcu lock?
-> That is quite wrong already.
->
+> Hi Andrew and all,
+> 
+> To clarify: I'm hoping that this series can go into 5.6.
+> 
+> Meanwhile, I'm working on tracking down and solving the problem that Leon
+> reported, in the "track FOLL_PIN pages" patch, and that patch is not part of
+> this series.
+> 
 
-Yep, seems like a bug to me. Patch forthcoming.
+Hi Andrew and all,
 
--Denny
+Any thoughts on this?
 
+As for the not-included-yet tracking patch, my local testing still suggests the
+need to allow for larger refcounts of huge pages (in other words, I can write a test
+to pin huge pages many times, and overflow with the same backtrace that Leon has
+reported).
+
+The second struct page (I recall Jan suggested) can hold those, so I'm going to proceed
+with that approach, while waiting to see if Leon has any more test data for me.
+
+Again, I think this series is worth getting out of the way, in the meantime.
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
