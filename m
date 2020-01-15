@@ -2,140 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B3713CE21
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 21:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C009E13CE26
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 21:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729117AbgAOUgw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jan 2020 15:36:52 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:42820 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729081AbgAOUgv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 15:36:51 -0500
-Received: by mail-qt1-f195.google.com with SMTP id j5so16964152qtq.9
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Jan 2020 12:36:51 -0800 (PST)
+        id S1729025AbgAOUiv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jan 2020 15:38:51 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:39970 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728963AbgAOUiu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 15:38:50 -0500
+Received: by mail-qk1-f195.google.com with SMTP id c17so16997687qkg.7
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Jan 2020 12:38:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=NAKUDwP/e+r+t9LGTDNQ9rNpiXN3ioEIzxfesocrhDI=;
-        b=KvJonJS+Dd0Iz0+3I2Kj9fRb9q3FU6BDpqEfY5leVMoT5F/QO9MUZSIazysdh7j3us
-         nk3a76Gs9jPYjrm6iM29FvRdFyd+3nOYz/tirrGsrnX7BAD/a7oUj5EldPv0QOyEPr6+
-         GXvo2UF5C2wYkvsaDBU+URYqWdj3Kyi9aqvtvXP0bkCNHLW925pNsQ9K5n7NweUtYJyz
-         pW7uqE8xBBpzRAzJ/Kot7TWgLVFJAHTBzL/zpVtflaYalpWKKDtA/EnyIBqMwi5qMmvE
-         /7Ka6Cc6HBvVJI+rlXs1zhhGUioFMYxelkxWWuQJC+bDWBPWtho6i0ufMEMYV4MqAT7K
-         K+kw==
+        bh=RCZyVnnXf0g1wEeIXMBB2dFBndxKT1SmeglxjnWp/4s=;
+        b=l+zgPQvmw9rXWL1ep1tC4ZOOLqWmTdtE7aIzdZ/57e6JMiRS5kc+scYlm+q3rX+3eP
+         z3MrK44d2+0sdSwZMhGUcdJGotOnKRVxh0YKHa+XwkgiB5LvDSKoJtoymnWLUx6cPcpV
+         n+tn4F4bpaCoVXCtMtYb3/gT+pIO2ZTCBL84dnox4w4wt2Ik6ha0ZMxaAuDhpLgyfKGd
+         86CacfVJBnjYsfaFcuJwV7/Vlyy3EtfaXXoyUHULlKPXogXO0nGGz72ZXiVn3Q0FIFQN
+         waMn6+fSbdhZzrv0k+J7ULE6nvaCJMud0s63t32LmBD4E57+boAghoNOKDJwC9yFFy3j
+         UWiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NAKUDwP/e+r+t9LGTDNQ9rNpiXN3ioEIzxfesocrhDI=;
-        b=VlKD4F7kN1ZoScU1UMrh9dEkq0Y0h32slQacAtnmLaY5xsvHMXbMLAl8P0WanB3IY1
-         CPlBuE+rV1DeVKHREzUOjMmgejYduAv5aZtHZXP5Td/44zjLEuV13KbxdDnfEwFF/kY0
-         s5D1GGXhq2Z7B3T817gBP+CBWwOHFQwwbF1io2h5Wo0c4rD+CJGU2/NHoM4R1Hae/NIq
-         SauDbRqLQrjLA1B7rs4+9sQ1siRITe4CKTXWAXr1hkaBUdEfmavsXMToEuXa69yxT1NC
-         KXBtLZHCv5rAB86ippfNdmTie2E1YQVakIzykHV1N6JKUcEHujrVND7afSkbEMxgmTn0
-         9WXg==
-X-Gm-Message-State: APjAAAVo6+dUMu25AO9OcRRCZqAt0o/3M9XJ5k8Ro0350D/Xlo3E+F/3
-        LzJIvv2RhKAOe5HPesoB8tiLLQ==
-X-Google-Smtp-Source: APXvYqxC0Ph+Y/AoR5bEI9/y5gzcaUeyBY6AMwhJR+GAt8K7RQMX4zLW+JPOJzlbzq+RGFKHMulisA==
-X-Received: by 2002:ac8:2b26:: with SMTP id 35mr417020qtu.341.1579120610811;
-        Wed, 15 Jan 2020 12:36:50 -0800 (PST)
+        bh=RCZyVnnXf0g1wEeIXMBB2dFBndxKT1SmeglxjnWp/4s=;
+        b=BMMA4OC/LbxRTIoTVUioaobgtC64rppQAPJTgaNblmqnc8kJHgW9ZAR6sTR+Ge3DRA
+         0aCQyIHA2oJuqR9j6j6D5bJkk5P2AJoxRhnBSXslmgYDApvrcMFdC/zI6/2ERwwUsbRL
+         cIMo5xlsAUg+GSaVoz1dPHWn4cX1U9Him/zNHvgR71KqYnbBBPVRp+wugrpFNohXSk/0
+         Rlk35msO1dmCWN/CCA18ZEDxbWeVOECT8N/hWAatdjNFNJsD1uNlDhwZc6HDdDwK2V5f
+         obATSwtGIOLs4jyd56rXgPHTB7l/9WR+s/VdlarOcVw0rAJuKa8BL3uShF2/gi6DetJK
+         LmAg==
+X-Gm-Message-State: APjAAAXUitwoKUq1Lv/B8LXGM0WkWbU80MqpS4LO1mROooJnZob+UIbZ
+        BDK4Gq5G4/1ZL7NOTY1pZy4N0+bleV8=
+X-Google-Smtp-Source: APXvYqznqI8LG+aHhL3IIwC8f8p9Uy3h3l2l8ylqyy+Yd8lwCZel76tHSlZwJJqRueXm3rU5gUsGng==
+X-Received: by 2002:a37:63c7:: with SMTP id x190mr29372078qkb.232.1579120729966;
+        Wed, 15 Jan 2020 12:38:49 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id g81sm9019830qkb.70.2020.01.15.12.36.50
+        by smtp.gmail.com with ESMTPSA id i2sm10110233qte.87.2020.01.15.12.38.49
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 15 Jan 2020 12:36:50 -0800 (PST)
+        Wed, 15 Jan 2020 12:38:49 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1irpPF-0006pM-SD; Wed, 15 Jan 2020 16:36:49 -0400
-Date:   Wed, 15 Jan 2020 16:36:49 -0400
+        id 1irpRA-0006xz-Ox; Wed, 15 Jan 2020 16:38:48 -0400
+Date:   Wed, 15 Jan 2020 16:38:48 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Rao Shoaib <rao.shoaib@oracle.com>
-Cc:     linux-rdma@vger.kernel.org, monis@mellanox.com,
-        dledford@redhat.com, sean.hefty@intel.com,
-        hal.rosenstock@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] SGE buffer and max_inline data must have same size
-Message-ID: <20200115203649.GF25201@ziepe.ca>
-References: <1578962480-17814-1-git-send-email-rao.shoaib@oracle.com>
- <1578962480-17814-3-git-send-email-rao.shoaib@oracle.com>
- <20200115182721.GE25201@ziepe.ca>
- <93b8e890-c4a9-6050-88b7-3667c023dd34@oracle.com>
+To:     Sergey Gorenko <sergeygo@mellanox.com>
+Cc:     bvanassche@acm.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] IB/srp: Never use immediate data if it is disabled by a
+ user
+Message-ID: <20200115203848.GA26741@ziepe.ca>
+References: <20200115133055.30232-1-sergeygo@mellanox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <93b8e890-c4a9-6050-88b7-3667c023dd34@oracle.com>
+In-Reply-To: <20200115133055.30232-1-sergeygo@mellanox.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 11:57:08AM -0800, Rao Shoaib wrote:
+On Wed, Jan 15, 2020 at 01:30:55PM +0000, Sergey Gorenko wrote:
+> Some SRP targets that do not support specification SRP-2, put
+> the garbage to the reserved bits of the SRP login response.
+> The problem was not detected for a long time because the SRP
+> initiator ignored those bits. But now one of them is used as
+> SRP_LOGIN_RSP_IMMED_SUPP. And it causes a critical error on
+> the target when the initiator sends immediate data.
 > 
-> On 1/15/20 10:27 AM, Jason Gunthorpe wrote:
-> > On Mon, Jan 13, 2020 at 04:41:20PM -0800, rao Shoaib wrote:
-> > > From: Rao Shoaib <rao.shoaib@oracle.com>
-> > > 
-> > > SGE buffer size and max_inline data should be same. Maximum of the
-> > > two values requested is used.
-> > > 
-> > > Signed-off-by: Rao Shoaib <rao.shoaib@oracle.com>
-> > >   drivers/infiniband/sw/rxe/rxe_qp.c | 23 +++++++++++------------
-> > >   1 file changed, 11 insertions(+), 12 deletions(-)
-> > > 
-> > > diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-> > > index aeea994..41c669c 100644
-> > > +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-> > > @@ -235,18 +235,17 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
-> > >   		return err;
-> > >   	qp->sk->sk->sk_user_data = qp;
-> > > -	qp->sq.max_wr		= init->cap.max_send_wr;
-> > > -	qp->sq.max_sge		= init->cap.max_send_sge;
-> > > -	qp->sq.max_inline	= init->cap.max_inline_data;
-> > > -
-> > > -	wqe_size = max_t(int, sizeof(struct rxe_send_wqe) +
-> > > -			 qp->sq.max_sge * sizeof(struct ib_sge),
-> > > -			 sizeof(struct rxe_send_wqe) +
-> > > -			 qp->sq.max_inline);
-> > > -
-> > > -	qp->sq.queue = rxe_queue_init(rxe,
-> > > -				      &qp->sq.max_wr,
-> > > -				      wqe_size);
-> > > +	wqe_size = max_t(int, init->cap.max_send_sge * sizeof(struct ib_sge),
-> > > +			 init->cap.max_inline_data);
-> > > +	qp->sq.max_sge = wqe_size/sizeof(struct ib_sge);
-> > > +	qp->sq.max_inline = wqe_size;
-> > > +
-> > > +	wqe_size += sizeof(struct rxe_send_wqe);
-> > Where does this limit the user's request to RXE_MAX_WQE_SIZE ?
+> The ib_srp module has a use_imm_date parameter to enable or
+> disable immediate data manually. But it does not help in the above
+> case, because use_imm_date is ignored at handling the SRP login
+> response. The problem is definitely caused by a bug on the target
+> side, but the initiator's behavior also does not look correct.
+> The initiator should not use immediate data if use_imm_date is
+> disabled by a user.
 > 
-> My understanding is that the user request can only specify sge's and/or
-> inline data. The check for those is made in rxe_qp_chk_cap. Since max sge's
-> and max inline data are constrained by RXE_MAX_WQE_SIZE the limit is
-> enforced.
-
-Okay, that is fine, it is a bit obtuse because of how distant
-rxe_qp_chk_cap() is from this function, lets just add a comment
-
-> > I seem to recall the if the requested max can't be satisified then
-> > that is an EINVAL?
-> > 
-> > And the init->cap should be updated with the actual allocation.
+> This commit adds an additional checking of use_imm_date at
+> the handling of SRP login response to avoid unexpected use of
+> immediate data.
 > 
-> Since the user request for both (sge's and inline data) has been satisfied I
-> decided not to update the values in case the return values are being
-> checked. If you prefer that I update the values I can do that.
+> Fixes: commit 882981f4a411 ("RDMA/srp: Add support for immediate data")
+> Signed-off-by: Sergey Gorenko <sergeygo@mellanox.com>
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> ---
+>  drivers/infiniband/ulp/srp/ib_srp.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-If the sizes are increased then the driver is supposed to return the
-actual maximums.
+Applied to for-next, thanks
 
-It is easy, I will fix it.
-
-Also, your patches don't apply cleanly. You need to send patches
-against the rdma for-next tree
-
-And subjects should start with some 'RDMA/rxe: ' tag
-
-I fixed it all and applied to for-next
-
-Thanks,
 Jason
