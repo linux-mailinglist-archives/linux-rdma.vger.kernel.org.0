@@ -2,96 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF1813CDAC
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 21:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB7013CE04
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 21:20:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729103AbgAOUFP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jan 2020 15:05:15 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:41698 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726527AbgAOUFP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 15:05:15 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00FJsYRj159328;
-        Wed, 15 Jan 2020 20:05:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=gyDthlyFU7qngJOjt5wFT45Eoa0mJNNxsALA0YG9p84=;
- b=Fbq1ONyfo9UVx9WRUhdV4aIidvDS22t/9x7pEnMlD7QJi2vTr6JzzFLOFnGUWDUMbOev
- bRxUcoPUtCxaR8kozJktbGJBun0Lobzqoq+sozLeR6GJbIN0Xm1S5vJ8Y59rEhvNwKbJ
- ohSxcQHUsPW3PHTBKhLdugkWSnP5ms1V9/5FqvFjVb32jRC2dRz3rAIK5DYWpJLJ7Asf
- I6uSBopo54KARJOmfRnS5P31jjEqIslzsvsX8IX1iVjBnRnKz2cShSpDKSvubudF/QI4
- vlo6nIQfVq2jl3goR2CWGDTPCxNLz6yNHe2K+j0/gw7cRd1n2gxAfzm4S0SOyjZHbGKF lQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2xf73txc97-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Jan 2020 20:05:07 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00FJsag8191303;
-        Wed, 15 Jan 2020 20:05:06 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2xhy220edh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Jan 2020 20:05:06 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00FK54CV004135;
-        Wed, 15 Jan 2020 20:05:04 GMT
-Received: from [10.159.151.219] (/10.159.151.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 15 Jan 2020 12:05:04 -0800
-Subject: Re: [PATCH v3 2/2] SGE buffer and max_inline data must have same size
-From:   Rao Shoaib <rao.shoaib@oracle.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, monis@mellanox.com,
-        dledford@redhat.com, sean.hefty@intel.com,
-        hal.rosenstock@gmail.com, linux-kernel@vger.kernel.org
-References: <1578962480-17814-1-git-send-email-rao.shoaib@oracle.com>
- <1578962480-17814-3-git-send-email-rao.shoaib@oracle.com>
- <20200115182721.GE25201@ziepe.ca>
- <93b8e890-c4a9-6050-88b7-3667c023dd34@oracle.com>
-Message-ID: <70651c3f-e5cb-2a33-1682-6564255e2307@oracle.com>
-Date:   Wed, 15 Jan 2020 12:05:03 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <93b8e890-c4a9-6050-88b7-3667c023dd34@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S1726778AbgAOUUt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jan 2020 15:20:49 -0500
+Received: from mail-eopbgr140040.outbound.protection.outlook.com ([40.107.14.40]:54820
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726018AbgAOUUt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 15 Jan 2020 15:20:49 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MbSJ1OJ5bbu38PYKrMhc9x6s58W/1dRfk/z7z9d9mHjYCCYzNet0u9mpCU5MCwZ2/vXxJH9p13E9ZqfEPcHBmIw7o6RO9yaB14hekBzIjVYCaBqcto0ILDT7fcHNfTk9b2ItLod1IJg0g7HKCkK9Dx2XzALEy9+Agz+yo5mrE8jV+fmVfOS6J0RB3/kcBMd0tlokIPaO+2is/5ICumw2ldnjIVvCcAPPJY8mYzrRKfzVcKGT3KYlCR+xQgoHC5d8nfrBnThhaTybv1JYP1AGiTG2MKzqHjhntl978/oowQuo/STxV10jVlu2XtbwCyAtDH/Yty+GpUbzuZBLnpphnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DKofr3tTQLDfn0chgpel8HFKhhFa8T6ZcaCJ2cCVgfg=;
+ b=TbndU1mWlIswpooMf062R1pqzexdGnikZiv9i8nPJP/DHAqcApCzQMGZHUcdyMx9kKej+sWzAR1FvSb4VCgTvmV1kX9uGa76wj0L+M6k8zxh/xXppBEGK2I4q0GAdPhRmkvGex62T7Ngq6II+ExmX/pfq34HFzW6IJJA2RV8rIRJYgDTEaZLQ8FEBdZg++7sY/g/XjejpWQAASSgv8pL+bXKyGAXuq8GyVgDYWB8HdV22uoLH0M38gIAVaKIxSOwSaC3qz4WrZr2L08m9tNhNHjpQi6Rj1NX1s3Zp1VyNc+rqnLPcPkTurh8m4DTZ/A7wkWjFVFwmNmH7qIlGCHx+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DKofr3tTQLDfn0chgpel8HFKhhFa8T6ZcaCJ2cCVgfg=;
+ b=bemJFdpAgL0S+1c/MHF6insqufnS5IerLoz0RB/IfDNlxrxsUAcfLKJv1j3IpaGj1Dadn9gfMZNpyy6CJPjU5ug1DMOTMl+F0LiNyJUHlfYrBx4EENgLdG9/BSLRXO3TZza0NjSHYDE+zO07jdaNLL1xnuiQr64jaY/vs9Aeh3o=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB4573.eurprd05.prod.outlook.com (20.176.3.26) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2644.20; Wed, 15 Jan 2020 20:20:45 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1c00:7925:d5c6:d60d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1c00:7925:d5c6:d60d%7]) with mapi id 15.20.2644.015; Wed, 15 Jan 2020
+ 20:20:45 +0000
+Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR03CA0027.namprd03.prod.outlook.com (2603:10b6:208:23a::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2623.13 via Frontend Transport; Wed, 15 Jan 2020 20:20:44 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1irp9d-0004VS-Eo; Wed, 15 Jan 2020 16:20:41 -0400
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        Gal Pressman <galpress@amazon.com>
+Subject: [PATCH] RDMA/core: Ensure that rdma_user_mmap_entry_remove() is a
+ fence
+Thread-Topic: [PATCH] RDMA/core: Ensure that rdma_user_mmap_entry_remove() is
+ a fence
+Thread-Index: AQHVy+FEjDSjACX4D0WvK+XBwBxvVw==
+Date:   Wed, 15 Jan 2020 20:20:44 +0000
+Message-ID: <20200115202041.GA17199@ziepe.ca>
+Accept-Language: en-US
 Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9501 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2001150153
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9501 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2001150153
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR03CA0027.namprd03.prod.outlook.com
+ (2603:10b6:208:23a::32) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.68.57.212]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 881f08a6-3cf6-4869-3736-08d799f86678
+x-ms-traffictypediagnostic: VI1PR05MB4573:
+x-microsoft-antispam-prvs: <VI1PR05MB4573737B2F3409CC95F87DA4CF370@VI1PR05MB4573.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2043;
+x-forefront-prvs: 02830F0362
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(136003)(39860400002)(396003)(366004)(346002)(189003)(199004)(52116002)(66556008)(66476007)(66946007)(1076003)(64756008)(9746002)(66446008)(9786002)(33656002)(316002)(86362001)(186003)(71200400001)(110136005)(2906002)(81166006)(8676002)(8936002)(81156014)(5660300002)(9686003)(26005)(478600001)(36756003)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4573;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: klGR/nxbwpVfua+60A9XnHf35WEYOKX2JZfhYrC7799xDUOZe29CzTIkU0UOWimYQytCjL9PmaqUBwsbcDrWB1HRhHJqKYNWtHTX8rEyrLvBOldJ5pjyxnppx5cHMt8DRHhUoq1JXKnUFvSxaHuAt+YF5jqG629qXQIkqSSjBYd2JGPknznkoPG538tBJyWUd8heYcFF8+gTK4RB9yUqex9v0xgHUzeE/6m6Nj4rDfcRXnpzDc+PV7cRT2SFCbBxtubzYol2zgnFyXWVAQo4aOG60hpgRQilYZvcyu3QAmuVeLOxn5xz9pCmhd1WglIwJpPy0EcNiTTvg1442qSPaEnDE6s+H5Kcb3kGzjx2p2Exj+Fv67G6pfkXdJaslmJ4mMbGyrkDJHLo2voQIMoJ5cN2fEkj80MEUvh5ug8Bny1ip7xi0MEgVDB9qMxrRjsWt6Fi1KImO4RxFVc2q7LJFFoOV9tICAadIlLlLmu5nByugi4bN49ERdeEQL2Qe8VF
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <8B33E2ACF966B44EACA1CBC0BB38C5EE@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 881f08a6-3cf6-4869-3736-08d799f86678
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jan 2020 20:20:44.7597
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: JaTeKljai2BSdLGpGjjaXiJ5iq3sY/yDMaM7StpdV2T1JCle6lNmYFNma0Vf9nKwFXbHslJC3pUZkj7Uz9/vAA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4573
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+The set of entry->driver_removed is missing locking, protect it with
+xa_lock() which is held by the only reader.
 
-On 1/15/20 11:57 AM, Rao Shoaib wrote:
->
->> I seem to recall the if the requested max can't be satisified then
->> that is an EINVAL?
->>
->> And the init->cap should be updated with the actual allocation.
->
-> Since the user request for both (sge's and inline data) has been 
-> satisfied I decided not to update the values in case the return values 
-> are being checked. If you prefer that I update the values I can do that.
->
-> Shoaib
->
-In my original v1 patch I did update init->cap, I must have overlooked 
-it. I will resubmit the patch with that change once I hear back from you 
-about the enforcement.
+Otherwise readers may continue to see driver_removed =3D false after
+rdma_user_mmap_entry_remove() returns and may continue to try and
+establish new mmaps.
 
-Shoaib
+Fixes: 3411f9f01b76 ("RDMA/core: Create mmap database and cookie helper fun=
+ctions")
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+ drivers/infiniband/core/ib_core_uverbs.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/drivers/infiniband/core/ib_core_uverbs.c b/drivers/infiniband/=
+core/ib_core_uverbs.c
+index b7cb59844ece45..b51bd7087a881f 100644
+--- a/drivers/infiniband/core/ib_core_uverbs.c
++++ b/drivers/infiniband/core/ib_core_uverbs.c
+@@ -232,7 +232,9 @@ void rdma_user_mmap_entry_remove(struct rdma_user_mmap_=
+entry *entry)
+ 	if (!entry)
+ 		return;
+=20
++	xa_lock(&entry->ucontext->mmap_xa);
+ 	entry->driver_removed =3D true;
++	xa_unlock(&entry->ucontext->mmap_xa);
+ 	kref_put(&entry->ref, rdma_user_mmap_entry_free);
+ }
+ EXPORT_SYMBOL(rdma_user_mmap_entry_remove);
+--=20
+2.24.1
