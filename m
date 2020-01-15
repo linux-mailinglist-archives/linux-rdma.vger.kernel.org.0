@@ -2,158 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B042E13CF73
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 22:53:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D17B113CFAF
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 23:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730313AbgAOVxf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jan 2020 16:53:35 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:33794 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729516AbgAOVxf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 16:53:35 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00FLd4Tc060892;
-        Wed, 15 Jan 2020 21:53:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=JSBaP9Tpyn/7z+t3DGmSMpMpboGWjDG7QjTppOxxi7A=;
- b=EB5ruYjw//7+59vA+JKRp3niGwDTICqxuwWDaO91t/yeLGm7ZTv0IenUktjil74pNwUc
- VfnS5S70UwXEIubOJqfHNgiTveanhv72nfTJfCaMpixDUi2Ac5jpgmoSzvXQ+4aWR+Nn
- gzHS7egxnNedaL0nS4VBsELVbgaS0cVeio18joyQS8e72+r1VadJw2b2ztKBh0X6Vw9t
- IhRYt8+6hT0igOFGwY0oL6S+NwCgpOUc1iyazzGkVVvMN8p6/STBb9vadPjf13qslWJX
- yh4qMRd8ncedGLI/4d5iFJ4tIE8Dy1Lv+2DQ6VKFxHDfh9RTzH8afrKp85mZwZ9bKSew gg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2xf73ypyj7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Jan 2020 21:53:27 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00FLd8wW140881;
-        Wed, 15 Jan 2020 21:51:26 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2xj1ar8x9y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Jan 2020 21:51:26 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 00FLpOmn026265;
-        Wed, 15 Jan 2020 21:51:24 GMT
-Received: from [10.209.227.41] (/10.209.227.41)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 15 Jan 2020 13:51:24 -0800
-Subject: Re: [PATCH mlx5-next 09/10] net/rds: Handle ODP mr
- registration/unregistration
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Hans Westgaard Ry <hans.westgaard.ry@oracle.com>,
-        Moni Shoua <monis@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-References: <20200115124340.79108-1-leon@kernel.org>
- <20200115124340.79108-10-leon@kernel.org>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <3c479d8a-f98a-a4c9-bd85-6332e919bf35@oracle.com>
-Date:   Wed, 15 Jan 2020 13:51:23 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.2
+        id S1729186AbgAOWEu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jan 2020 17:04:50 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18058 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726440AbgAOWEu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 17:04:50 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e1f8c490000>; Wed, 15 Jan 2020 14:03:53 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 15 Jan 2020 14:04:49 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 15 Jan 2020 14:04:49 -0800
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Jan
+ 2020 22:04:48 +0000
+Subject: Re: [PATCH v5 1/2] mm/mmu_notifier: make interval notifier updates
+ safe
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>
+References: <20191216195733.28353-1-rcampbell@nvidia.com>
+ <20191216195733.28353-2-rcampbell@nvidia.com>
+ <20200109194805.GK20978@mellanox.com>
+ <73225ded-c22d-33f2-ebcb-b9e9aa95266b@nvidia.com>
+ <20200109232548.GO20978@mellanox.com>
+ <633a3dda-d4d7-1233-b290-53d36fb8fda1@nvidia.com>
+ <20200114124523.GM20978@mellanox.com>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <c9458a81-da38-928f-d8f3-814e06674bec@nvidia.com>
+Date:   Wed, 15 Jan 2020 14:04:47 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-In-Reply-To: <20200115124340.79108-10-leon@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200114124523.GM20978@mellanox.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9501 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2001150163
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9501 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2001150163
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1579125833; bh=zg/R/7fcAgJd3kTJ0E7rg5d60gxfGzuCPQ4EqY74cnY=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=Py+RLeunrYDj7F8Wolf23qHH7d1DrtPHrVh74sZya0et6uVxkx6xWOIlCD5UlBPCn
+         Q38ysIPx2s0OiQL53XPVixI5ArOziARZa+5jq0cJkik43L9Gngu78OmEJfDdi9di5/
+         mTSiJSQBzoYj9y3Pz0CkSYYyTlH225hXoPzlgOIHwtEQJpuRSiWv4qi9/9mvcqbC1h
+         gqs+oQkOfh/ay4mbuuRYIsQ22oAhl+BTw4TVrKddvkPwq6dUECiKDLE58bSvfYQkKZ
+         bvWlQfBdSo4HUl7F4+9UQRMngJzXBCO3hWMcmmrGj76a+MSQSPIojSLkqPILNK5RLW
+         bvJnJjSxTVADA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/15/20 4:43 AM, Leon Romanovsky wrote:
-> From: Hans Westgaard Ry <hans.westgaard.ry@oracle.com>
-> 
-> On-Demand-Paging MRs are registered using ib_reg_user_mr and
-> unregistered with ib_dereg_mr.
-> 
-> Signed-off-by: Hans Westgaard Ry <hans.westgaard.ry@oracle.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
 
-Have already reviewed this patchset on internal list. Couple of
-minor nits below o.w patch looks good to me.
-
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-
-[...]
-
-> diff --git a/net/rds/ib_rdma.c b/net/rds/ib_rdma.c
-> index c8c1e3ae8d84..5a02b313ec50 100644
-> --- a/net/rds/ib_rdma.c
-> +++ b/net/rds/ib_rdma.c
-> @@ -37,8 +37,15 @@
+On 1/14/20 4:45 AM, Jason Gunthorpe wrote:
+> On Mon, Jan 13, 2020 at 02:44:52PM -0800, Ralph Campbell wrote:
 > 
->   #include "rds_single_path.h"
->   #include "ib_mr.h"
-> +#include "rds.h"
+>> I'm using the device driver lock to serialize find/insert/update/remove
+>> changes to the interval tree.
 > 
->   struct workqueue_struct *rds_ib_mr_wq;
-> +struct rds_ib_dereg_odp_mr {
-> +	struct work_struct work;
-> +	struct ib_mr *mr;
-> +};
-> +
-> +static void rds_ib_odp_mr_worker(struct work_struct *work);
+> The device driver lock can't really fully serialize this as it doesn't
+> effect how the intersection lookup runs.
 > 
->   static struct rds_ib_device *rds_ib_get_device(__be32 ipaddr)
->   {
-> @@ -213,6 +220,8 @@ void rds_ib_sync_mr(void *trans_private, int direction)
->   	struct rds_ib_mr *ibmr = trans_private;
->   	struct rds_ib_device *rds_ibdev = ibmr->device;
+> Jason
 > 
-> +	if (ibmr->odp)
-> +		return;
-Add a new line here.
->   	switch (direction) {
->   	case DMA_FROM_DEVICE:
->   		ib_dma_sync_sg_for_cpu(rds_ibdev->dev, ibmr->sg,
 
-[...]
+Single updates to the interval notifier are atomic due to the
+struct mmu_notifier_mm spinlock so the issue is with "punching a hole"
+in the interval. In that case, the existing interval is updated to cover
+one side of the hole and a new interval is inserted for the other side
+while holding the driver lock.
 
-> diff --git a/net/rds/rdma.c b/net/rds/rdma.c
-> index eb23c38ce2b3..3c6afdda709b 100644
-> --- a/net/rds/rdma.c
-> +++ b/net/rds/rdma.c
-> @@ -177,13 +177,14 @@ static int __rds_rdma_map(struct rds_sock *rs, struct rds_get_mr_args *args,
->   			  struct rds_conn_path *cp)
->   {
->   	struct rds_mr *mr = NULL, *found;
-> +	struct scatterlist *sg = NULL;
->   	unsigned int nr_pages;
->   	struct page **pages = NULL;
-> -	struct scatterlist *sg;
->   	void *trans_private;
->   	unsigned long flags;
->   	rds_rdma_cookie_t cookie;
-> -	unsigned int nents;
-> +	unsigned int nents = 0;
-> +	int need_odp = 0;
->   	long i;
->   	int ret;
-> 
-> @@ -196,6 +197,20 @@ static int __rds_rdma_map(struct rds_sock *rs, struct rds_get_mr_args *args,
->   		ret = -EOPNOTSUPP;
->   		goto out;
->   	}
-New line pls
+Since this sequence is done from the invalidate() callback, those two
+operations will be deferred until the callback returns and any other
+parallel invalidates complete (which would be serialized on
+the driver lock). So none of these changes will be visible to the
+interval tree walks until the last invalidate task calls
+mn_itree_inv_end() and all the deferred changes are applied atomically
+while holding the spinlock. I'll make sure to add comments explaining
+this.
 
+But I see your point if this sequence is done outside of the invalidate
+callback. In that case, if the driver shrank the interval, an invalidate
+callback for the right hand side could be missed before the insertion of
+the new interval for the right hand side.
+I'll explain this in the comments for nouveau_svmm_do_unmap() and
+dmirror_do_unmap().
