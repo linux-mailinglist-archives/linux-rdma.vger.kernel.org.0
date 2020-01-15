@@ -2,226 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A109113B8B9
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 05:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA0713BB7D
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 09:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728884AbgAOEvI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Jan 2020 23:51:08 -0500
-Received: from mga05.intel.com ([192.55.52.43]:64913 "EHLO mga05.intel.com"
+        id S1728899AbgAOIu4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jan 2020 03:50:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728880AbgAOEvI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Jan 2020 23:51:08 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Jan 2020 20:51:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,321,1574150400"; 
-   d="scan'208";a="424896529"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 14 Jan 2020 20:51:06 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1irae2-000GhV-Eh; Wed, 15 Jan 2020 12:51:06 +0800
-Date:   Wed, 15 Jan 2020 12:50:54 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD INCOMPLETE
- 3f59b6c3e600f9665dcf5b8e566cd7b778f03045
-Message-ID: <5e1e9a2e.w2ZURwYiz0Mnzc6I%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726472AbgAOIu4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 15 Jan 2020 03:50:56 -0500
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4AB48207E0;
+        Wed, 15 Jan 2020 08:50:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579078255;
+        bh=0V3umVshv5Bxqm0p3eemm1FA/YXC42BvryTY6Ov2KEs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=G6UgEW/SsAt9XgZ5J2V/16AdS8Nk5XzgyRC3hHLFwZfYt7Q6SMjY6dL/fUafjiiXD
+         2ziWAuIrCoqrCUB51tWJerUlZSsDNQ5jQjs81wBzrIz66r7Hz0AnoSz0DPR5IVQBNP
+         7iLzQ7naneJlx7JiAax35E8u3KDhzUpjgI7+Hfj8=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Jack Morgenstein <jackm@dev.mellanox.co.il>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Moni Shoua <monis@mellanox.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: [PATCH rdma-rc] IB/mlx4: Fix memory leak in add_gid error flow
+Date:   Wed, 15 Jan 2020 10:50:50 +0200
+Message-Id: <20200115085050.73746-1-leon@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: 3f59b6c3e600f9665dcf5b8e566cd7b778f03045  IB/mlx5: Add mmap support for VAR
+From: Jack Morgenstein <jackm@dev.mellanox.co.il>
 
-TIMEOUT after 2887m
+In procedure mlx4_ib_add_gid(), if the driver is unable to
+update the FW gid table, there is a memory leak in the driver's
+copy of the gid table: the gid entry's context buffer is not freed.
 
+If such an error occurs, free the entry's context buffer, and mark the
+entry as available (by setting its context pointer to NULL).
 
-Sorry we cannot finish the testset for your branch within a reasonable time.
-It's our fault -- either some build server is down or some build worker is busy
-doing bisects for _other_ trees. The branch will get more complete coverage and
-possible error reports when our build infrastructure is restored or catches up.
-There will be no more build success notification for this branch head, but you
-can expect reasonably good test coverage after waiting for 1 day.
-
-configs timed out: 31
-
-arm                               allnoconfig
-arm                              allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                                defconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                              allnoconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-s390                             alldefconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-
-configs tested: 132
-configs skipped: 1
-
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64               randconfig-c002-20200112
-i386                 randconfig-c003-20200112
-i386                 randconfig-c001-20200112
-i386                 randconfig-c002-20200112
-x86_64               randconfig-c001-20200112
-x86_64               randconfig-c003-20200112
-arm                              allmodconfig
-arm64                            allmodconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-m68k                           sun3_defconfig
-c6x                              allyesconfig
-c6x                        evmc6678_defconfig
-nios2                         10m50_defconfig
-nios2                         3c120_defconfig
-openrisc                    or1ksim_defconfig
-openrisc                 simple_smp_defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-alpha                               defconfig
-csky                                defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-parisc                            allnoconfig
-parisc                            allyesonfig
-parisc                         b180_defconfig
-parisc                        c3000_defconfig
-parisc                              defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-i386                             alldefconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-x86_64               randconfig-h001-20200115
-x86_64               randconfig-h002-20200115
-x86_64               randconfig-h003-20200115
-i386                 randconfig-h001-20200115
-i386                 randconfig-h002-20200115
-i386                 randconfig-h003-20200115
-sparc64              randconfig-a001-20200112
-microblaze           randconfig-a001-20200112
-nios2                randconfig-a001-20200112
-c6x                  randconfig-a001-20200112
-h8300                randconfig-a001-20200112
-arc                  randconfig-a001-20200114
-arm                  randconfig-a001-20200114
-arm64                randconfig-a001-20200114
-ia64                 randconfig-a001-20200114
-powerpc              randconfig-a001-20200114
-sparc                randconfig-a001-20200114
-um                                  defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-i386                 randconfig-h001-20200114
-i386                 randconfig-h002-20200114
-i386                 randconfig-h003-20200114
-csky                 randconfig-a001-20200114
-openrisc             randconfig-a001-20200114
-s390                 randconfig-a001-20200114
-sh                   randconfig-a001-20200114
-xtensa               randconfig-a001-20200114
-c6x                  randconfig-a001-20200114
-h8300                randconfig-a001-20200114
-microblaze           randconfig-a001-20200114
-nios2                randconfig-a001-20200114
-sparc64              randconfig-a001-20200114
-x86_64               randconfig-d001-20200112
-x86_64               randconfig-d002-20200112
-x86_64               randconfig-d003-20200112
-i386                 randconfig-d001-20200112
-i386                 randconfig-d002-20200112
-i386                 randconfig-d003-20200112
-x86_64               randconfig-a001-20200112
-x86_64               randconfig-a002-20200112
-x86_64               randconfig-a003-20200112
-i386                 randconfig-a001-20200112
-i386                 randconfig-a002-20200112
-i386                 randconfig-a003-20200112
-x86_64               randconfig-f001-20200114
-x86_64               randconfig-f002-20200114
-x86_64               randconfig-f003-20200114
-i386                 randconfig-f001-20200114
-i386                 randconfig-f002-20200114
-i386                 randconfig-f003-20200114
-csky                 randconfig-a001-20200112
-openrisc             randconfig-a001-20200112
-s390                 randconfig-a001-20200112
-sh                   randconfig-a001-20200112
-xtensa               randconfig-a001-20200112
-x86_64               randconfig-b002-20200114
-i386                 randconfig-b001-20200114
-i386                 randconfig-b002-20200114
-i386                 randconfig-b003-20200114
-mips                 randconfig-a001-20200112
-riscv                randconfig-a001-20200112
-parisc               randconfig-a001-20200112
-alpha                randconfig-a001-20200112
-m68k                 randconfig-a001-20200112
-nds32                randconfig-a001-20200112
-
+Fixes: e26be1bfef81 ("IB/mlx4: Implement ib_device callbacks")
+Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
+Reviewed-by: Parav Pandit <parav@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
-0-DAY kernel test infrastructure                 Open Source Technology Center
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
+ drivers/infiniband/hw/mlx4/main.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+index 34055cbab38c..2f5d9b181848 100644
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -246,6 +246,13 @@ static int mlx4_ib_update_gids(struct gid_entry *gids,
+ 	return mlx4_ib_update_gids_v1(gids, ibdev, port_num);
+ }
+ 
++static void free_gid_entry(struct gid_entry *entry)
++{
++	memset(&entry->gid, 0, sizeof(entry->gid));
++	kfree(entry->ctx);
++	entry->ctx = NULL;
++}
++
+ static int mlx4_ib_add_gid(const struct ib_gid_attr *attr, void **context)
+ {
+ 	struct mlx4_ib_dev *ibdev = to_mdev(attr->device);
+@@ -313,6 +320,8 @@ static int mlx4_ib_add_gid(const struct ib_gid_attr *attr, void **context)
+ 				     GFP_ATOMIC);
+ 		if (!gids) {
+ 			ret = -ENOMEM;
++			*context = NULL;
++			free_gid_entry(&port_gid_table->gids[free]);
+ 		} else {
+ 			for (i = 0; i < MLX4_MAX_PORT_GIDS; i++) {
+ 				memcpy(&gids[i].gid, &port_gid_table->gids[i].gid, sizeof(union ib_gid));
+@@ -324,6 +333,12 @@ static int mlx4_ib_add_gid(const struct ib_gid_attr *attr, void **context)
+ 
+ 	if (!ret && hw_update) {
+ 		ret = mlx4_ib_update_gids(gids, ibdev, attr->port_num);
++		if (ret) {
++			spin_lock_bh(&iboe->lock);
++			*context = NULL;
++			free_gid_entry(&port_gid_table->gids[free]);
++			spin_unlock_bh(&iboe->lock);
++		}
+ 		kfree(gids);
+ 	}
+ 
+@@ -353,10 +368,7 @@ static int mlx4_ib_del_gid(const struct ib_gid_attr *attr, void **context)
+ 		if (!ctx->refcount) {
+ 			unsigned int real_index = ctx->real_index;
+ 
+-			memset(&port_gid_table->gids[real_index].gid, 0,
+-			       sizeof(port_gid_table->gids[real_index].gid));
+-			kfree(port_gid_table->gids[real_index].ctx);
+-			port_gid_table->gids[real_index].ctx = NULL;
++			free_gid_entry(&port_gid_table->gids[real_index]);
+ 			hw_update = 1;
+ 		}
+ 	}
+-- 
+2.20.1
+
