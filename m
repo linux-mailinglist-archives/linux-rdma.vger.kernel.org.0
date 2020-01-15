@@ -2,323 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C134113BCBD
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 10:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9982013C149
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 13:43:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729524AbgAOJtW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jan 2020 04:49:22 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8725 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729519AbgAOJtV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 15 Jan 2020 04:49:21 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 2E0961C1B22EF53E53A3;
-        Wed, 15 Jan 2020 17:49:19 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.439.0; Wed, 15 Jan 2020 17:49:12 +0800
-From:   Yixian Liu <liuyixian@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v7 for-next 2/2] RDMA/hns: Delayed flush cqe process with workqueue
-Date:   Wed, 15 Jan 2020 17:49:13 +0800
-Message-ID: <1579081753-2839-3-git-send-email-liuyixian@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1579081753-2839-1-git-send-email-liuyixian@huawei.com>
-References: <1579081753-2839-1-git-send-email-liuyixian@huawei.com>
+        id S1728915AbgAOMnp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jan 2020 07:43:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728884AbgAOMnp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 15 Jan 2020 07:43:45 -0500
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CDFC222C3;
+        Wed, 15 Jan 2020 12:43:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579092224;
+        bh=X9sbDmmjEfGqMQAx2L+k/ZDn1gKCbHe3fFJYZS86pn4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QekXmLHeD8p8qPgEoDcsxV8vlvF/6t9iLMhIpp0Q+QNP1NTgqpLrmfhhWkDbZ3zvj
+         hkIvj3pKH7TkK2KkEGiqbQr8NBiqOHXv82zDnS5xjZOFwaOw+O1ABstt3E2Uzn92PN
+         5N7+v69oQ6bs6kZ79uRTDkWidBk1hbNsluxfolVY=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Hans Westgaard Ry <hans.westgaard.ry@oracle.com>,
+        Moni Shoua <monis@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: [PATCH mlx5-next 00/10] Use ODP MRs for kernel ULPs
+Date:   Wed, 15 Jan 2020 14:43:30 +0200
+Message-Id: <20200115124340.79108-1-leon@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
-outstanding WQEs if QP state gets into errored mode for some reason.
-To overcome this hardware problem and as a workaround, when QP is
-detected to be in errored state during various legs like post send,
-post receive etc[1], flush needs to be performed from the driver.
+From: Leon Romanovsky <leonro@mellanox.com>
 
-The earlier patch[1] sent to solve the hardware limitation explained
-in the cover-letter had a bug in the software flushing leg. It
-acquired mutex while modifying QP state to errored state and while
-conveying it to the hardware using the mailbox. This caused leg to
-sleep while holding spin-lock and caused crash.
+Hi,
 
-Suggested Solution:
-we have proposed to defer the flushing of the QP in the Errored state
-using the workqueue to get around with the limitation of our hardware.
+The following series extends MR creation routines to allow creation of
+user MRs through kernel ULPs as a proxy. The immediate use case is to
+allow RDS to work over FS-DAX, which requires ODP (on-demand-paging)
+MRs to be created and such MRs were not possible to create prior this
+series.
 
-This patch specifically adds the calls to the flush handler from
-where parts of the code like post_send/post_recv etc. when the QP
-state gets into the errored mode.
+The first part of this patchset extends RDMA to have special verb
+ib_reg_user_mr(). The common use case that uses this function is a userspace
+application that allocates memory for HCA access but the responsibility
+to register the memory at the HCA is on an kernel ULP. This ULP that acts
+as an agent for the userspace application.
 
-[1] https://patchwork.kernel.org/patch/10534271/
+The second part provides advise MR functionality for ULPs. This is
+integral part of ODP flows and used to trigger pagefaults in advance
+to prepare memory before running working set.
 
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-Reviewed-by: Salil Mehta <salil.mehta@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |   1 +
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 100 +++++++++++++++++-----------
- drivers/infiniband/hw/hns/hns_roce_qp.c     |  15 +++--
- 3 files changed, 72 insertions(+), 44 deletions(-)
+The third part is actual user of those in-kernel APIs.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 70f0b73..2422a11 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -676,6 +676,7 @@ struct hns_roce_qp {
- 	unsigned long		qpn;
- 
- 	atomic_t		refcount;
-+	atomic_t		flush_cnt;
- 	struct completion	free;
- 
- 	struct hns_roce_sge	sge;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 2afcedd..a7d10a9 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -221,11 +221,6 @@ static int set_rwqe_data_seg(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 	return 0;
- }
- 
--static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
--				 const struct ib_qp_attr *attr,
--				 int attr_mask, enum ib_qp_state cur_state,
--				 enum ib_qp_state new_state);
--
- static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 				 const struct ib_send_wr *wr,
- 				 const struct ib_send_wr **bad_wr)
-@@ -238,14 +233,12 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 	struct hns_roce_wqe_frmr_seg *fseg;
- 	struct device *dev = hr_dev->dev;
- 	struct hns_roce_v2_db sq_db;
--	struct ib_qp_attr attr;
- 	unsigned int sge_ind;
- 	unsigned int owner_bit;
- 	unsigned long flags;
- 	unsigned int ind;
- 	void *wqe = NULL;
- 	bool loopback;
--	int attr_mask;
- 	u32 tmp_len;
- 	int ret = 0;
- 	u32 hr_op;
-@@ -591,16 +584,21 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 		qp->sq_next_wqe = ind;
- 		qp->next_sge = sge_ind;
- 
-+		/*
-+		 * Hip08 hardware cannot flush the WQEs in SQ if the QP state
-+		 * gets into errored mode. Hence, as a workaround to this
-+		 * hardware limitation, driver needs to assist in flushing. But
-+		 * the flushing operation uses mailbox to convey the QP state to
-+		 * the hardware and which can sleep due to the mutex protection
-+		 * around the mailbox calls. Hence, use the deferred flush for
-+		 * now.
-+		 */
- 		if (qp->state == IB_QPS_ERR) {
--			attr_mask = IB_QP_STATE;
--			attr.qp_state = IB_QPS_ERR;
--
--			ret = hns_roce_v2_modify_qp(&qp->ibqp, &attr, attr_mask,
--						    qp->state, IB_QPS_ERR);
--			if (ret) {
--				spin_unlock_irqrestore(&qp->sq.lock, flags);
--				*bad_wr = wr;
--				return ret;
-+			if (atomic_read(&qp->flush_cnt) == 0) {
-+				atomic_set(&qp->flush_cnt, 1);
-+				init_flush_work(hr_dev, qp);
-+			} else {
-+				atomic_inc(&qp->flush_cnt);
- 			}
- 		}
- 	}
-@@ -619,10 +617,8 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
- 	struct hns_roce_v2_wqe_data_seg *dseg;
- 	struct hns_roce_rinl_sge *sge_list;
- 	struct device *dev = hr_dev->dev;
--	struct ib_qp_attr attr;
- 	unsigned long flags;
- 	void *wqe = NULL;
--	int attr_mask;
- 	int ret = 0;
- 	int nreq;
- 	int ind;
-@@ -692,17 +688,21 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
- 
- 		*hr_qp->rdb.db_record = hr_qp->rq.head & 0xffff;
- 
-+		/*
-+		 * Hip08 hardware cannot flush the WQEs in RQ if the QP state
-+		 * gets into errored mode. Hence, as a workaround to this
-+		 * hardware limitation, driver needs to assist in flushing. But
-+		 * the flushing operation uses mailbox to convey the QP state to
-+		 * the hardware and which can sleep due to the mutex protection
-+		 * around the mailbox calls. Hence, use the deferred flush for
-+		 * now.
-+		 */
- 		if (hr_qp->state == IB_QPS_ERR) {
--			attr_mask = IB_QP_STATE;
--			attr.qp_state = IB_QPS_ERR;
--
--			ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, &attr,
--						    attr_mask, hr_qp->state,
--						    IB_QPS_ERR);
--			if (ret) {
--				spin_unlock_irqrestore(&hr_qp->rq.lock, flags);
--				*bad_wr = wr;
--				return ret;
-+			if (atomic_read(&hr_qp->flush_cnt) == 0) {
-+				atomic_set(&hr_qp->flush_cnt, 1);
-+				init_flush_work(hr_dev, hr_qp);
-+			} else {
-+				atomic_inc(&hr_qp->flush_cnt);
- 			}
- 		}
- 	}
-@@ -2690,13 +2690,11 @@ static int hns_roce_handle_recv_inl_wqe(struct hns_roce_v2_cqe *cqe,
- static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 				struct hns_roce_qp **cur_qp, struct ib_wc *wc)
- {
-+	struct hns_roce_dev *hr_dev = to_hr_dev(hr_cq->ib_cq.device);
- 	struct hns_roce_srq *srq = NULL;
--	struct hns_roce_dev *hr_dev;
- 	struct hns_roce_v2_cqe *cqe;
- 	struct hns_roce_qp *hr_qp;
- 	struct hns_roce_wq *wq;
--	struct ib_qp_attr attr;
--	int attr_mask;
- 	int is_send;
- 	u16 wqe_ctr;
- 	u32 opcode;
-@@ -2720,7 +2718,6 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 				V2_CQE_BYTE_16_LCL_QPN_S);
- 
- 	if (!*cur_qp || (qpn & HNS_ROCE_V2_CQE_QPN_MASK) != (*cur_qp)->qpn) {
--		hr_dev = to_hr_dev(hr_cq->ib_cq.device);
- 		hr_qp = __hns_roce_qp_lookup(hr_dev, qpn);
- 		if (unlikely(!hr_qp)) {
- 			dev_err(hr_dev->dev, "CQ %06lx with entry for unknown QPN %06x\n",
-@@ -2730,6 +2727,7 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 		*cur_qp = hr_qp;
- 	}
- 
-+	hr_qp = *cur_qp;
- 	wc->qp = &(*cur_qp)->ibqp;
- 	wc->vendor_err = 0;
- 
-@@ -2814,14 +2812,27 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 		break;
- 	}
- 
--	/* flush cqe if wc status is error, excluding flush error */
--	if ((wc->status != IB_WC_SUCCESS) &&
--	    (wc->status != IB_WC_WR_FLUSH_ERR)) {
--		attr_mask = IB_QP_STATE;
--		attr.qp_state = IB_QPS_ERR;
--		return hns_roce_v2_modify_qp(&(*cur_qp)->ibqp,
--					     &attr, attr_mask,
--					     (*cur_qp)->state, IB_QPS_ERR);
-+	/*
-+	 * Hip08 hardware cannot flush the WQEs in SQ/RQ if the QP state gets
-+	 * into errored mode. Hence, as a workaround to this hardware
-+	 * limitation, driver needs to assist in flushing. But the flushing
-+	 * operation uses mailbox to convey the QP state to the hardware and
-+	 * which can sleep due to the mutex protection around the mailbox calls.
-+	 * Hence, use the deferred flush for now. Once wc error detected, the
-+	 * flushing operation is needed.
-+	 */
-+	if (wc->status != IB_WC_SUCCESS &&
-+	    wc->status != IB_WC_WR_FLUSH_ERR) {
-+		dev_err(hr_dev->dev, "error cqe status is: 0x%x\n",
-+			status & HNS_ROCE_V2_CQE_STATUS_MASK);
-+
-+		if (atomic_read(&hr_qp->flush_cnt) == 0) {
-+			atomic_set(&hr_qp->flush_cnt, 1);
-+			init_flush_work(hr_dev, hr_qp);
-+		} else {
-+			atomic_inc(&hr_qp->flush_cnt);
-+		}
-+		return 0;
- 	}
- 
- 	if (wc->status == IB_WC_WR_FLUSH_ERR)
-@@ -4389,6 +4400,8 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 	struct hns_roce_v2_qp_context *context = ctx;
- 	struct hns_roce_v2_qp_context *qpc_mask = ctx + 1;
- 	struct device *dev = hr_dev->dev;
-+	unsigned long sq_flag = 0;
-+	unsigned long rq_flag = 0;
- 	int ret;
- 
- 	/*
-@@ -4406,6 +4419,9 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 
- 	/* When QP state is err, SQ and RQ WQE should be flushed */
- 	if (new_state == IB_QPS_ERR) {
-+		spin_lock_irqsave(&hr_qp->sq.lock, sq_flag);
-+		spin_lock_irqsave(&hr_qp->rq.lock, rq_flag);
-+		hr_qp->state = IB_QPS_ERR;
- 		roce_set_field(context->byte_160_sq_ci_pi,
- 			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_M,
- 			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_S,
-@@ -4423,6 +4439,8 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_M,
- 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_S, 0);
- 		}
-+		spin_unlock_irqrestore(&hr_qp->rq.lock, rq_flag);
-+		spin_unlock_irqrestore(&hr_qp->sq.lock, sq_flag);
- 	}
- 
- 	/* Configure the optional fields */
-@@ -4468,6 +4486,8 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 		hr_qp->next_sge = 0;
- 		if (hr_qp->rq.wqe_cnt)
- 			*hr_qp->rdb.db_record = 0;
-+
-+		atomic_set(&hr_qp->flush_cnt, 0);
- 	}
- 
- out:
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index fa38582..ad7ed07 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -56,10 +56,16 @@ static void flush_work_handle(struct work_struct *work)
- 	attr_mask = IB_QP_STATE;
- 	attr.qp_state = IB_QPS_ERR;
- 
--	ret = hns_roce_modify_qp(&hr_qp->ibqp, &attr, attr_mask, NULL);
--	if (ret)
--		dev_err(dev, "Modify QP to error state failed(%d) during CQE flush\n",
--			ret);
-+	while (atomic_read(&hr_qp->flush_cnt)) {
-+		ret = hns_roce_modify_qp(&hr_qp->ibqp, &attr, attr_mask, NULL);
-+		if (ret)
-+			dev_err(dev, "Modify QP to error state failed(%d) during CQE flush\n",
-+				ret);
-+
-+		/* If flush_cnt larger than 1, only need one more time flush */
-+		if (atomic_dec_and_test(&hr_qp->flush_cnt))
-+			atomic_set(&hr_qp->flush_cnt, 1);
-+	}
- 
- 	/*
- 	 * make sure we signal QP destroy leg that flush QP was completed
-@@ -742,6 +748,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 	spin_lock_init(&hr_qp->rq.lock);
- 
- 	hr_qp->state = IB_QPS_RESET;
-+	atomic_set(&hr_qp->flush_cnt, 0);
- 
- 	hr_qp->ibqp.qp_type = init_attr->qp_type;
- 
--- 
-2.7.4
+Thanks
+
+Hans Westgaard Ry (3):
+  net/rds: Detect need of On-Demand-Paging memory registration
+  net/rds: Handle ODP mr registration/unregistration
+  net/rds: Use prefetch for On-Demand-Paging MR
+
+Jason Gunthorpe (1):
+  RDMA/mlx5: Fix handling of IOVA != user_va in ODP paths
+
+Leon Romanovsky (1):
+  RDMA/mlx5: Don't fake udata for kernel path
+
+Moni Shoua (5):
+  IB: Allow calls to ib_umem_get from kernel ULPs
+  IB/core: Introduce ib_reg_user_mr
+  IB/core: Add interface to advise_mr for kernel users
+  IB/mlx5: Add ODP WQE handlers for kernel QPs
+  IB/mlx5: Mask out unsupported ODP capabilities for kernel QPs
+
+ drivers/infiniband/core/umem.c                |  27 +--
+ drivers/infiniband/core/umem_odp.c            |  29 +--
+ drivers/infiniband/core/verbs.c               |  41 +++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c      |  12 +-
+ drivers/infiniband/hw/cxgb4/mem.c             |   2 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |   4 +-
+ drivers/infiniband/hw/hns/hns_roce_cq.c       |   2 +-
+ drivers/infiniband/hw/hns/hns_roce_db.c       |   3 +-
+ drivers/infiniband/hw/hns/hns_roce_mr.c       |   4 +-
+ drivers/infiniband/hw/hns/hns_roce_qp.c       |   2 +-
+ drivers/infiniband/hw/hns/hns_roce_srq.c      |   5 +-
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c     |   5 +-
+ drivers/infiniband/hw/mlx4/cq.c               |   2 +-
+ drivers/infiniband/hw/mlx4/doorbell.c         |   3 +-
+ drivers/infiniband/hw/mlx4/mr.c               |   8 +-
+ drivers/infiniband/hw/mlx4/qp.c               |   5 +-
+ drivers/infiniband/hw/mlx4/srq.c              |   3 +-
+ drivers/infiniband/hw/mlx5/cq.c               |   6 +-
+ drivers/infiniband/hw/mlx5/devx.c             |   2 +-
+ drivers/infiniband/hw/mlx5/doorbell.c         |   3 +-
+ drivers/infiniband/hw/mlx5/main.c             |  51 ++++--
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  12 +-
+ drivers/infiniband/hw/mlx5/mr.c               |  20 +--
+ drivers/infiniband/hw/mlx5/odp.c              |  33 ++--
+ drivers/infiniband/hw/mlx5/qp.c               | 167 +++++++++++-------
+ drivers/infiniband/hw/mlx5/srq.c              |   2 +-
+ drivers/infiniband/hw/mthca/mthca_provider.c  |   2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   |   2 +-
+ drivers/infiniband/hw/qedr/verbs.c            |   9 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c  |   2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c  |   2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c  |   7 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c |   2 +-
+ drivers/infiniband/sw/rdmavt/mr.c             |   2 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c            |   2 +-
+ include/rdma/ib_umem.h                        |   4 +-
+ include/rdma/ib_umem_odp.h                    |   6 +-
+ include/rdma/ib_verbs.h                       |   9 +
+ net/rds/ib.c                                  |   7 +
+ net/rds/ib.h                                  |   3 +-
+ net/rds/ib_mr.h                               |   7 +-
+ net/rds/ib_rdma.c                             |  83 ++++++++-
+ net/rds/ib_send.c                             |  44 +++--
+ net/rds/rdma.c                                | 156 +++++++++++-----
+ net/rds/rds.h                                 |  13 +-
+ 45 files changed, 559 insertions(+), 256 deletions(-)
+
+--
+2.20.1
 
