@@ -2,144 +2,177 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECBF213CA1C
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 17:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9489413CA6D
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 18:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728961AbgAOQ73 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jan 2020 11:59:29 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:35961 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726566AbgAOQ72 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 11:59:28 -0500
-Received: by mail-qk1-f194.google.com with SMTP id a203so16318205qkc.3;
-        Wed, 15 Jan 2020 08:59:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zXrVKnuJiXeQCR3gw20F62xg2np3z08kfj/7nG55paY=;
-        b=OSUmC/dYP9RIlJCOVjfv/a2ZhRCa/XB3teZH6z9cTlpa2INK4lmXFx7a7gmgRTDsrH
-         XHsV9vPzoCRYqP4WOtk/OaTnbdVzXYn07lB76lDBcUF9iDNNB5NUfM5medXGt9zKAxlL
-         V2Nrn3JZ2rvGTGW/rLuJOyVPFhrAfrIQ81c10nP0eVXKtfeeoq9AWdXLlqthZhhudP5C
-         Hr06gGZIn/xF51ZRbGZIT3gKDlM5fO2a0Tw4XTFygoUvgX5Zrk2+Ub8UuINh9tMB/PqK
-         fUoM/aAxz1W5jijfpabq4sgr7V2JQ3OhOott+NfJkhQ+5VGS5J9OjhLVtdRdDi8KPM6l
-         CMcg==
+        id S1729033AbgAORJN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jan 2020 12:09:13 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:32820 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728982AbgAORJN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 12:09:13 -0500
+Received: by mail-il1-f197.google.com with SMTP id s9so13813036ilk.0
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Jan 2020 09:09:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zXrVKnuJiXeQCR3gw20F62xg2np3z08kfj/7nG55paY=;
-        b=hS9jhCGJQd/5/visierr9+EDcPkghpZqAxKzEygKhZe6IypPgw2awBxQTnGzqifY36
-         fXBAq8ZNqZvFAQmZtYEQpKxHIX12q3tVtEzsbnTh0NHnSg179AfwDzosIggv7O5+0S8Q
-         TFFED6LME8ttaoqrcc4Mki940a7G4vAvyWTQhDBhdI+ZAcTOUbAXtlaBKpyMt95MSZql
-         t9bPIhHLIMrl4PKYpA6Xy6hJbqtmv7n9jquSXRMhl4ytl2CQte4m/remjNkJ1L64iVpM
-         zCrc3LPWAjT4uNnQgzxuT1PZGl6nTlQkX/l1hxrozaazdIavQX3wgUlBhtnoD1L7kNFZ
-         kIDA==
-X-Gm-Message-State: APjAAAVFmJhLXMUQgAGZKMLtgZPOBccM6BawzSOrBSqX80LIAvLc9yo1
-        G6JjIk8/SNzHvLZZRK5lqArRjXS8gft4IOVP2rc=
-X-Google-Smtp-Source: APXvYqyZzPUPKQU82RI/Xe8lh0YQjYoSLtx3Y3/ZmHRzsFSYleooQ9vaYsFcptvbv7JiDAeJrQDfYXfKhtZ6J3dr3Ko=
-X-Received: by 2002:a05:620a:14a2:: with SMTP id x2mr28643046qkj.36.1579107567235;
- Wed, 15 Jan 2020 08:59:27 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Qbzb5A9NTIdexzU3+GDyxXanOmczlUCSWJ+llDlUeKE=;
+        b=KNalGGaT55fV+NFRwwyQp8cXyKhkZRTw7M7fQBNrrRd725bLjngjGddrzscC9aUG93
+         nMG7ympYaD26i/IXjHoDny89kZl2WMO66rkOZUGFDVx2hVZVAl+48FKU2YrSSzjtulWo
+         Bx7I7PqkXAq5uJdg6JF8T01QVGWW6IDgbmz49ecI4sCW7Qbh7RADFGDup3p2BvNhlOHd
+         0aE/qg61S5stuGSR3tKUT/JUeFqV3uWdu2nrtNYMzyJnIy9IOFTcqQbnxFdl9n9rXISP
+         HkrxAlAkTGjRuQd4ue+AHqer/5kxhkjDQImfEug17MNmLO5cpJ5zcOCUNwH/jlcvPgT4
+         r29g==
+X-Gm-Message-State: APjAAAV4Fp5rrOGPPg3zO2enEJIdgC9O4t8caLciJUYOoqS/G+X6Kvzt
+        4RQUwioP7xpNi1GH8Qqy/JmBrS1MkrfR5DQhkOB7u6yF5Glh
+X-Google-Smtp-Source: APXvYqzgkin2QCBDKr+TM7mcvH98bIkCbsyiNGMto6b1TNj7A+Aq/twS6IkaV5fRkY2Wzhc/j9ccf9Q1q6yftx8JhzxOKT0o2ns9
 MIME-Version: 1.0
-References: <157909756858.1192265.6657542187065456112.stgit@toke.dk> <157909757089.1192265.9038866294345740126.stgit@toke.dk>
-In-Reply-To: <157909757089.1192265.9038866294345740126.stgit@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 15 Jan 2020 08:59:15 -0800
-Message-ID: <CAEf4BzbqY8zivZy637Xy=iTECzBAYQ7vo=M7TvsLM2Yp12bJpg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 02/10] tools/bpf/runqslower: Fix override
- option for VMLINUX_BTF
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-rdma@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a02:2446:: with SMTP id q6mr23887453jae.78.1579108152572;
+ Wed, 15 Jan 2020 09:09:12 -0800 (PST)
+Date:   Wed, 15 Jan 2020 09:09:12 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007f03ed059c30c4a0@google.com>
+Subject: KASAN: use-after-free Read in rds_inc_put (2)
+From:   syzbot <syzbot+8a25042506b5a9f010cd@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        rds-devel@oss.oracle.com, santosh.shilimkar@oracle.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 6:13 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->
-> The runqslower tool refuses to build without a file to read vmlinux BTF
-> from. The build fails with an error message to override the location by
-> setting the VMLINUX_BTF variable if autodetection fails. However, the
-> Makefile doesn't actually work with that override - the error message is
-> still emitted.
+Hello,
 
-Do you have example command with VMLINUX_BTF override that didn't work
-(and what error message was emitted)?
+syzbot found the following crash on:
 
->
-> Fix this by only doing auto-detection if no override is set. And while
-> we're at it, also look for a vmlinux file in the current kernel build dir
-> if none if found on the running kernel.
->
-> Fixes: 9c01546d26d2 ("tools/bpf: Add runqslower tool to tools/bpf")
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  tools/bpf/runqslower/Makefile |   16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
->
-> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefil=
-e
-> index cff2fbcd29a8..fb93ce2bf2fe 100644
-> --- a/tools/bpf/runqslower/Makefile
-> +++ b/tools/bpf/runqslower/Makefile
-> @@ -10,12 +10,16 @@ CFLAGS :=3D -g -Wall
->
->  # Try to detect best kernel BTF source
->  KERNEL_REL :=3D $(shell uname -r)
-> -ifneq ("$(wildcard /sys/kernel/btf/vmlinux)","")
-> -VMLINUX_BTF :=3D /sys/kernel/btf/vmlinux
-> -else ifneq ("$(wildcard /boot/vmlinux-$(KERNEL_REL))","")
-> -VMLINUX_BTF :=3D /boot/vmlinux-$(KERNEL_REL)
-> -else
-> -$(error "Can't detect kernel BTF, use VMLINUX_BTF to specify it explicit=
-ly")
-> +ifeq ("$(VMLINUX_BTF)","")
-> +  ifneq ("$(wildcard /sys/kernel/btf/vmlinux)","")
-> +  VMLINUX_BTF :=3D /sys/kernel/btf/vmlinux
-> +  else ifneq ("$(wildcard /boot/vmlinux-$(KERNEL_REL))","")
-> +  VMLINUX_BTF :=3D /boot/vmlinux-$(KERNEL_REL)
-> +  else ifneq ("$(wildcard $(abspath ../../../vmlinux))","")
-> +  VMLINUX_BTF :=3D $(abspath ../../../vmlinux)
+HEAD commit:    95e20af9 Merge tag 'nfs-for-5.5-2' of git://git.linux-nfs...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=119575e1e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d9290aeb7e6cf1c4
+dashboard link: https://syzkaller.appspot.com/bug?extid=8a25042506b5a9f010cd
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+userspace arch: i386
 
-I'm planning to mirror runqslower into libbpf Github repo and this
-../../../vmlinux piece will be completely out of place in that
-context. Also it only will help when building kernel in-tree. So I'd
-rather not add this.
+Unfortunately, I don't have any reproducer for this crash yet.
 
-> +  else
-> +  $(error "Can't detect kernel BTF, use VMLINUX_BTF to specify it explic=
-itly")
-> +  endif
->  endif
->
->  abs_out :=3D $(abspath $(OUTPUT))
->
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+8a25042506b5a9f010cd@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in rds_inc_put+0x19e/0x1b0 net/rds/recv.c:82
+Read of size 8 at addr ffff8880a8dd6650 by task syz-executor.5/9920
+
+CPU: 1 PID: 9920 Comm: syz-executor.5 Not tainted 5.5.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x197/0x210 lib/dump_stack.c:118
+  print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
+  __kasan_report.cold+0x1b/0x41 mm/kasan/report.c:506
+  kasan_report+0x12/0x20 mm/kasan/common.c:639
+  __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:135
+  rds_inc_put+0x19e/0x1b0 net/rds/recv.c:82
+  rds_clear_recv_queue+0x157/0x380 net/rds/recv.c:770
+  rds_release+0x117/0x430 net/rds/af_rds.c:73
+  __sock_release+0xce/0x280 net/socket.c:592
+  sock_close+0x1e/0x30 net/socket.c:1270
+  __fput+0x2ff/0x890 fs/file_table.c:280
+  ____fput+0x16/0x20 fs/file_table.c:313
+  task_work_run+0x145/0x1c0 kernel/task_work.c:113
+  exit_task_work include/linux/task_work.h:22 [inline]
+  do_exit+0xba9/0x2f50 kernel/exit.c:801
+  do_group_exit+0x135/0x360 kernel/exit.c:899
+  get_signal+0x47c/0x24f0 kernel/signal.c:2734
+  do_signal+0x87/0x1700 arch/x86/kernel/signal.c:815
+  exit_to_usermode_loop+0x286/0x380 arch/x86/entry/common.c:160
+  prepare_exit_to_usermode arch/x86/entry/common.c:195 [inline]
+  syscall_return_slowpath arch/x86/entry/common.c:278 [inline]
+  do_syscall_32_irqs_on arch/x86/entry/common.c:352 [inline]
+  do_fast_syscall_32+0xbbd/0xe16 arch/x86/entry/common.c:408
+  entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
+RIP: 0023:0xf7f49a39
+Code: Bad RIP value.
+RSP: 002b:00000000f5d2412c EFLAGS: 00000292 ORIG_RAX: 00000000000000f0
+RAX: fffffffffffffe00 RBX: 000000000817aff8 RCX: 0000000000000080
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000000000817affc
+RBP: 00000000f5d24228 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Allocated by task 25007:
+  save_stack+0x23/0x90 mm/kasan/common.c:72
+  set_track mm/kasan/common.c:80 [inline]
+  __kasan_kmalloc mm/kasan/common.c:513 [inline]
+  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:486
+  kasan_slab_alloc+0xf/0x20 mm/kasan/common.c:521
+  slab_post_alloc_hook mm/slab.h:584 [inline]
+  slab_alloc mm/slab.c:3320 [inline]
+  kmem_cache_alloc+0x121/0x710 mm/slab.c:3484
+  kmem_cache_zalloc include/linux/slab.h:660 [inline]
+  __rds_conn_create+0x63a/0x20a0 net/rds/connection.c:193
+  rds_conn_create_outgoing+0x4b/0x60 net/rds/connection.c:351
+  rds_sendmsg+0x19a4/0x35b0 net/rds/send.c:1294
+  sock_sendmsg_nosec net/socket.c:639 [inline]
+  sock_sendmsg+0xd7/0x130 net/socket.c:659
+  ____sys_sendmsg+0x753/0x880 net/socket.c:2330
+  ___sys_sendmsg+0x100/0x170 net/socket.c:2384
+  __sys_sendmsg+0x105/0x1d0 net/socket.c:2417
+  __compat_sys_sendmsg net/compat.c:642 [inline]
+  __do_compat_sys_sendmsg net/compat.c:649 [inline]
+  __se_compat_sys_sendmsg net/compat.c:646 [inline]
+  __ia32_compat_sys_sendmsg+0x7a/0xb0 net/compat.c:646
+  do_syscall_32_irqs_on arch/x86/entry/common.c:337 [inline]
+  do_fast_syscall_32+0x27b/0xe16 arch/x86/entry/common.c:408
+  entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
+
+Freed by task 72:
+  save_stack+0x23/0x90 mm/kasan/common.c:72
+  set_track mm/kasan/common.c:80 [inline]
+  kasan_set_free_info mm/kasan/common.c:335 [inline]
+  __kasan_slab_free+0x102/0x150 mm/kasan/common.c:474
+  kasan_slab_free+0xe/0x10 mm/kasan/common.c:483
+  __cache_free mm/slab.c:3426 [inline]
+  kmem_cache_free+0x86/0x320 mm/slab.c:3694
+  rds_conn_destroy+0x61f/0x880 net/rds/connection.c:501
+  rds_loop_kill_conns net/rds/loop.c:213 [inline]
+  rds_loop_exit_net+0x2fc/0x4a0 net/rds/loop.c:219
+  ops_exit_list.isra.0+0xb1/0x160 net/core/net_namespace.c:172
+  cleanup_net+0x538/0xaf0 net/core/net_namespace.c:597
+  process_one_work+0x9af/0x1740 kernel/workqueue.c:2264
+  worker_thread+0x98/0xe40 kernel/workqueue.c:2410
+  kthread+0x361/0x430 kernel/kthread.c:255
+  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+
+The buggy address belongs to the object at ffff8880a8dd6608
+  which belongs to the cache rds_connection of size 232
+The buggy address is located 72 bytes inside of
+  232-byte region [ffff8880a8dd6608, ffff8880a8dd66f0)
+The buggy address belongs to the page:
+page:ffffea0002a37580 refcount:1 mapcount:0 mapping:ffff8880a8eec380  
+index:0xffff8880a8dd6e20
+raw: 00fffe0000000200 ffff8880a86c8938 ffffea000292e348 ffff8880a8eec380
+raw: ffff8880a8dd6e20 ffff8880a8dd6040 000000010000000b 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+  ffff8880a8dd6500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  ffff8880a8dd6580: 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc
+> ffff8880a8dd6600: fc fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                  ^
+  ffff8880a8dd6680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc
+  ffff8880a8dd6700: fc fc fc fc fc fc 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
