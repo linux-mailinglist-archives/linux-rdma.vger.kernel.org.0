@@ -2,94 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF58213B5D2
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 00:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6C313B6E6
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 02:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728913AbgANX3c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Jan 2020 18:29:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728650AbgANX3b (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Jan 2020 18:29:31 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 76F8C24679;
-        Tue, 14 Jan 2020 23:29:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579044570;
-        bh=k4eU69C07g5/9QQrVCph8KAUUUUEi8RmXHDj6/HO/Ik=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Gu0y5RtywBnxt/5MHNzmIuAGL99UYOUTR4MOUoFz/V8A0XNK0I0bw+ID9QXrLG+b9
-         4yxWu1bIpxAgRKCCzCYPru9Le6et10vSO5ADJMjyl++hjxh7tjrdlkd5kSXYwv5i4H
-         zD3MC1qTDzqpxI561Q50RCSE3Ph+HIgvwbWCQkns=
-Date:   Tue, 14 Jan 2020 15:29:29 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?ISO-8859-1?Q?J=E9r?= =?ISO-8859-1?Q?=F4me?= Glisse 
-        <jglisse@redhat.com>, "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v12 00/22] mm/gup: prereqs to track dma-pinned pages:
- FOLL_PIN
-Message-Id: <20200114152929.807fecabfe2258ae2707a88b@linux-foundation.org>
-In-Reply-To: <9d7f3c1a-6020-bdec-c513-80c5399e55d7@nvidia.com>
-References: <20200107224558.2362728-1-jhubbard@nvidia.com>
-        <2a9145d4-586e-6489-64e4-0c54f47afaa1@nvidia.com>
-        <9d7f3c1a-6020-bdec-c513-80c5399e55d7@nvidia.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1728894AbgAOBai (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Jan 2020 20:30:38 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:40252 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728844AbgAOBah (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 14 Jan 2020 20:30:37 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 9D342FE65B6C0751AABA;
+        Wed, 15 Jan 2020 09:30:35 +0800 (CST)
+Received: from [127.0.0.1] (10.40.168.149) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Wed, 15 Jan 2020
+ 09:30:27 +0800
+Subject: Re: [PATCH for-next] RDMA/hns: Add support for extended atomic
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Weihang Li <liweihang@hisilicon.com>, <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+References: <1573781966-45800-1-git-send-email-liweihang@hisilicon.com>
+ <20200102210351.GA398@ziepe.ca>
+ <2b8eb4ac-ef0c-7c7f-270f-8d3768f7c2a7@huawei.com>
+ <20200103133907.GB9706@ziepe.ca>
+ <05e78494-20fc-b551-9a5b-2eb577206286@huawei.com>
+ <20200114132931.GA22037@ziepe.ca>
+From:   Weihang Li <liweihang@huawei.com>
+Message-ID: <fb051bcd-c4e6-1884-d52b-b740b81647f5@huawei.com>
+Date:   Wed, 15 Jan 2020 09:30:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200114132931.GA22037@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.168.149]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 14 Jan 2020 12:15:08 -0800 John Hubbard <jhubbard@nvidia.com> wrote:
 
-> > 
-> > Hi Andrew and all,
-> > 
-> > To clarify: I'm hoping that this series can go into 5.6.
-> > 
-> > Meanwhile, I'm working on tracking down and solving the problem that Leon
-> > reported, in the "track FOLL_PIN pages" patch, and that patch is not part of
-> > this series.
-> > 
+
+On 2020/1/14 21:29, Jason Gunthorpe wrote:
+> On Tue, Jan 14, 2020 at 09:53:07AM +0800, Weihang Li wrote:
+>> Thanks for your reminder about extended atomic in kernel and sorry for the
+>> delayed response.
+>>
+>> We cancel this patch as your suggestion, and will send another one which
+>> the user space extended atomic is dependent on.
 > 
-> Hi Andrew and all,
+> You should not have allowed your userspace to be merged until any
+> required kernel pieces were merged.
 > 
-> Any thoughts on this?
+> Jason
+> 
+> 
 
-5.6 is late.  But it was in -mm before (briefly) and appears to be
-mature and well-reviewed.
+Hi Jason,
 
-I'll toss it in there and shall push it into -next hopefully today. 
-Let's decide 2-3 weeks hence.
+Sorry for that, I missed two related changes to configure QP context to
+enable capability of extended atomic.
+Will send it as soon as possible.
+
+Weihang
 
