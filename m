@@ -2,104 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6126013CD22
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 20:31:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F81B13CD71
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 20:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729033AbgAOTbT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jan 2020 14:31:19 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:45873 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgAOTbT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 14:31:19 -0500
-Received: by mail-qt1-f193.google.com with SMTP id w30so16769104qtd.12
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Jan 2020 11:31:18 -0800 (PST)
+        id S1729436AbgAOTvG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jan 2020 14:51:06 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:36452 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729398AbgAOTvG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 14:51:06 -0500
+Received: by mail-qt1-f196.google.com with SMTP id i13so16873069qtr.3
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Jan 2020 11:51:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=vs5fXx1YPRmInM+lAByPuWeVhzmRU0igfNAFxCeFiww=;
-        b=kZX19/MkLh7Xlfpm3/z6XdTjbOUjoOQo+mNq+YiFXSC0+nIwRCsdIPTP4P0W2e6ge3
-         O3ASBYLAWclR7fF51UInI2FNJv/K6lDf1EpjnIHAt3zd1lpt4hruNeAFVC/X0X3rrNdZ
-         b94lf1XHm7P/Ny4FU5SJ4+efuFaXwkg4CnLJ7C5jtV2QaaqKv3ehUvwhdIxl0yBobK0Q
-         DlwaWp9m3iTgM8lnErmZC6Me8qN/VQ8dFdTYznWvGiAfGG3Dq+7fjpQq3jeM/u+EiSXd
-         XHmQUFWrwUPgXfJkDzd5X9hnY5ZmaDX2wglS6w9QQXxElx1KCc2L29BtmPlLWT2hCOqO
-         QydQ==
+        bh=C2GpoeMTQ3C5/SVINlCr1nzgHAc/1dkran4u5LeNZ88=;
+        b=Znvn5qEARetSUwwB8LYotuXnTuWwDA4GiC+sv7a/Hycrv/SxhV+6H6FvY31n68Lxes
+         mI/SIsvVyXhMgDASbF1MPfSRkkGKr0ObX1T2xuq1iXrSAdym4Qht3bGx689lO8/Gt5s+
+         ra6+Odj43XHAQ+xDanUB4D1iZjjCTPZM7bovzjVmybxPdGRVOYj6CrcyBKz/bRIXFx7s
+         r9P5gW4f/uMYiAYzTefzdp6GozDnM7zvP6j9F+BGxvShcMwZK7uaDyr2wX+jHhZoJA08
+         KcoOqgYAlryUYEOZNIQ+jBgtGc0VQWJwghJRL9DdFiarNViDr8ch+B+YsXjPSS1HEeZW
+         UkQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vs5fXx1YPRmInM+lAByPuWeVhzmRU0igfNAFxCeFiww=;
-        b=LxJThe8rU7cEbOkP42uXiCjeI+7MdhKeJ4vJOUi/9GpdZNpYT3ifx901MtzhyV0ebo
-         pcJ/C3U1+eNzrSl0FEmOn9Kjq5i2ygDOIj+BuHUUTVvDzlH9bvaxMLVcadDNW62ShyYk
-         KLcIhmhGx1vsOnoLWxlmqz5MwJxSZNkwaSbFlMO5aZhtH9qRCxVY8TjNYhHDQ0RrcktE
-         17/GC9JfBwo/IEjqH5OjOZSLYyZjbBmn6mKgHF+Sq6innLE2iPMMRbp3Go90m1NqQ28j
-         SUw9Eu8gIkyeuZxFuEW6Fg6IXzIHtxp/fBGSHoyMUILCn8hp9sEp8kRilvDe5Dlx03cN
-         WT/Q==
-X-Gm-Message-State: APjAAAWFZqISGGVHVJ2cuna9aJGqBErThx7BOyBzBYNiQumdqfFYZOKM
-        sIOIGY/qPDr+WRhC3785COpctg==
-X-Google-Smtp-Source: APXvYqzzfT8xl7zmF9JPIgttA0ym2CRQENHTsLyoyIOnXcBhL6pTTyIINNPzeAFhpegnlFG5Z2Ow6Q==
-X-Received: by 2002:ac8:478a:: with SMTP id k10mr192723qtq.260.1579116678359;
-        Wed, 15 Jan 2020 11:31:18 -0800 (PST)
+        bh=C2GpoeMTQ3C5/SVINlCr1nzgHAc/1dkran4u5LeNZ88=;
+        b=N1+zKG+7QG7X/nxHvLuoPjq1MuijO3mYx9ICGLHmjzKbhuIMteatz8ehnv7W/hH0sr
+         qzjbx0qTARbmNXgR/ivmfB9QTn5Pa+lVmS1A0Jc/H8vAR44EODjpAH0n0xyAbe8Ieddt
+         p38gNejWwrmVpD7v6TRujlvWASoR3sD9PcKtZFa5bYzSqYhh5JVGg2hWDObOjiLMJlvh
+         P+DbeqyoJxQBjts8AeYDdB/E6qFNxwVLfxjb/clKVzWT1zhGQddTVEILrnoSJjxnOlWd
+         bZayxzYgBxu+tppf637FyRW3p2ullLIh+p0WEDChOt8/6JC19PuzMQaqRT1awU/1vmUi
+         gXgg==
+X-Gm-Message-State: APjAAAXyTR3FQpOf488UH/yY4QP4TtvWzcUvnuAop7eU5QHv2lAxToAA
+        xnYXhs/4OLOeUNs64xvsSHWf1048q3I=
+X-Google-Smtp-Source: APXvYqy4FiqNvuyrkWFC383VYYWvp2eMDuTQI/yB7yQUbHYQOWqpK+GAa5n9CanLH/BN9s794ZXiDQ==
+X-Received: by 2002:ac8:5313:: with SMTP id t19mr236513qtn.375.1579117865477;
+        Wed, 15 Jan 2020 11:51:05 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id g18sm10150975qtc.83.2020.01.15.11.31.17
+        by smtp.gmail.com with ESMTPSA id g52sm10439241qta.58.2020.01.15.11.51.04
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 15 Jan 2020 11:31:17 -0800 (PST)
+        Wed, 15 Jan 2020 11:51:04 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1iroNp-0006a6-0b; Wed, 15 Jan 2020 15:31:17 -0400
-Date:   Wed, 15 Jan 2020 15:31:16 -0400
+        id 1irogy-0000QQ-GT; Wed, 15 Jan 2020 15:51:04 -0400
+Date:   Wed, 15 Jan 2020 15:51:04 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Gal Pressman <galpress@amazon.com>
 Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
         Alexander Matushevsky <matua@amazon.com>,
-        Daniel Kranzdorf <dkkranzd@amazon.com>,
-        Firas JahJah <firasj@amazon.com>
-Subject: Re: [PATCH for-next 1/6] RDMA/efa: Unified getters/setters for
- device structs bitmask access
-Message-ID: <20200115193116.GA11226@ziepe.ca>
+        Firas JahJah <firasj@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>
+Subject: Re: [PATCH for-next 6/6] RDMA/efa: Do not delay freeing of DMA pages
+Message-ID: <20200115195104.GA929@ziepe.ca>
 References: <20200114085706.82229-1-galpress@amazon.com>
- <20200114085706.82229-2-galpress@amazon.com>
+ <20200114085706.82229-7-galpress@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200114085706.82229-2-galpress@amazon.com>
+In-Reply-To: <20200114085706.82229-7-galpress@amazon.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 10:57:01AM +0200, Gal Pressman wrote:
-> diff --git a/drivers/infiniband/hw/efa/efa_common_defs.h b/drivers/infiniband/hw/efa/efa_common_defs.h
-> index c559ec08898e..845ea5ca9388 100644
-> +++ b/drivers/infiniband/hw/efa/efa_common_defs.h
-> @@ -9,6 +9,12 @@
->  #define EFA_COMMON_SPEC_VERSION_MAJOR        2
->  #define EFA_COMMON_SPEC_VERSION_MINOR        0
->  
-> +#define EFA_GET(ptr, type) \
-> +	((*(ptr) & type##_MASK) >> type##_SHIFT)
-> +
-> +#define EFA_SET(ptr, type, value) \
-> +	({ *(ptr) |= ((value) << type##_SHIFT) & type##_MASK; })
-> +
+On Tue, Jan 14, 2020 at 10:57:06AM +0200, Gal Pressman wrote:
+> When destroying a DMA mmapped object, there is no need to delay the
+> pages freeing to dealloc_ucontext as the kernel itself will keep
+> reference count for these pages.
 
-Why not just GENMASK properly? You don't need MASK and SHIFT, it is
-supposed to be written like:
+Why does the commit message talk about dealloc_ucontext but doesn't
+change dealloc_ucontext?
 
-  #define EFA_ADMIN_REG_MR_CMD_MEM_ADDR_PHY_MODE_EN GENMASK(8,7)
+> +	free_pages_exact(cq->cpu_addr, cq->size);
+> 	rdma_user_mmap_entry_remove(cq->mmap_entry);
 
-  *ptr |= FIELD_PREP(val, EFA_ADMIN_REG_MR_CMD_MEM_ADDR_PHY_MODE_EN)
+This is out of order, the pages can't be freed until the entry is
+removed.
 
-FIELD_PREP automatically deduces the correct shift.
-
-And it would be much nicer if this had some type safety.
-
-You should review the stuff Leon is prepping here:
-
-https://github.com/jgunthorpe/linux/commit/453e85ed7aa46db22d8be16f9b0c88b17b8968af
-
-Which is basically doing the same sorts of things, but with better
-type safety and no need for the various structs
+There is also a bug in rdma_user_mmap_entry_remove(),
+entry->driver_removed needs to be set while holding the xa_lock or
+this is not the required fence.
 
 Jason
