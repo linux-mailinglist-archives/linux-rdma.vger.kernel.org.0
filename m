@@ -2,133 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EDB13CF30
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 22:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B323513CF4E
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 22:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729457AbgAOVeW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jan 2020 16:34:22 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14312 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgAOVeV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 16:34:21 -0500
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e1f85210000>; Wed, 15 Jan 2020 13:33:21 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Wed, 15 Jan 2020 13:34:16 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Wed, 15 Jan 2020 13:34:16 -0800
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Jan
- 2020 21:34:16 +0000
-Subject: Re: [PATCH v12 11/22] mm/gup: introduce pin_user_pages*() and
- FOLL_PIN
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-References: <20200107224558.2362728-1-jhubbard@nvidia.com>
- <20200107224558.2362728-12-jhubbard@nvidia.com>
- <20200115153020.GF19546@infradead.org>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <1a0ee1db-5528-86a8-0713-3d820fbdf4ad@nvidia.com>
-Date:   Wed, 15 Jan 2020 13:34:16 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1729047AbgAOVms (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jan 2020 16:42:48 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:45630 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729072AbgAOVms (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 16:42:48 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00FLc6ju045653;
+        Wed, 15 Jan 2020 21:42:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=X+BdY+ZvXwY4sT2jfUjoNYvr6QN5Xkt/+7r9D8c7/lk=;
+ b=DeV0AhSP2798B5tV9r7l6ALIpEFwL2X7OR7TDQpXHHyoRYeRN4zZo7/oMWjnKgcFTvmA
+ gf1aMwxgtrVjRdm7TUloFjuvoxzPEkbzN6YBP0uV56gWW5wxyoBmmycWHoefGrB0ImVS
+ VQPUxYtezz98xdPR6AWXGIhT3vdSVMx+W1+rk6RDG7cxfHb+icQJrZYh+KEJKSxAarCV
+ d9T3V+yE+sIhPaW8M+ty55eiWfQSa/+Mia4lr+2mvEGU9clelZB00ZKCT14lMY5FYyr6
+ 4n+XdFTno26XTHsRbGB0eVD0DU+t4lhmDutk1TLS25L9WZVJrh46vKJrHrPyWoTX1YW7 1A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2xf73txun8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Jan 2020 21:42:28 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00FLcwF3072718;
+        Wed, 15 Jan 2020 21:42:28 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 2xj61kexgt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Jan 2020 21:42:27 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 00FLgQhF021025;
+        Wed, 15 Jan 2020 21:42:26 GMT
+Received: from [10.209.227.41] (/10.209.227.41)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 15 Jan 2020 13:42:26 -0800
+Subject: Re: [PATCH mlx5-next 08/10] net/rds: Detect need of On-Demand-Paging
+ memory registration
+To:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Hans Westgaard Ry <hans.westgaard.ry@oracle.com>,
+        Moni Shoua <monis@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+References: <20200115124340.79108-1-leon@kernel.org>
+ <20200115124340.79108-9-leon@kernel.org>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <2460ddee-9731-c980-67ed-15b75431724d@oracle.com>
+Date:   Wed, 15 Jan 2020 13:42:24 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200115153020.GF19546@infradead.org>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200115124340.79108-9-leon@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1579124001; bh=87Rlq6x45ruVW7JTVYUJt0mWD3kN4xgsTUgpHaSTwOs=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=dbP5SmA0QfbUlmT548bubiJAkEQguNXb+B22BE0nnic910e/52B3pTFYwo0R9gnOk
-         /mlFxNBraLMyXPTecP1trRDknv0CWyUqRUhn8AvgRKQEt/OrYnrlJ5ltQrtwu2/iZG
-         uXyWe/Tp3/8o2BssD5h12JhA8/Qf+tvLIUVBAfdgHpiHf/vpXBUQ/a29w86sKWsdhS
-         xLP+ysLSXK1OimxyU8GqDxRUN80ueCmWM+W82ScjqhN2l7u6YLSbkEfUVc40jSw+4n
-         1alFBQ4/aOAizIIaeTPZN6p/1uIoYyQqWqSWRALwuOXb5xR9ZMfEIX7FqzbdBDPZRO
-         IYaka2FAJgWiw==
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9501 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001150163
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9501 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001150163
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/15/20 7:30 AM, Christoph Hellwig wrote:
-> On Tue, Jan 07, 2020 at 02:45:47PM -0800, John Hubbard wrote:
->> Introduce pin_user_pages*() variations of get_user_pages*() calls,
->> and also pin_longterm_pages*() variations.
->>
->> For now, these are placeholder calls, until the various call sites
->> are converted to use the correct get_user_pages*() or
->> pin_user_pages*() API.
+On 1/15/20 4:43 AM, Leon Romanovsky wrote:
+> From: Hans Westgaard Ry <hans.westgaard.ry@oracle.com>
 > 
-> What do the pure placeholders buy us?  The API itself looks ok,
-> but until it actually is properly implemented it doesn't help at
-> all, and we've had all kinds of bad experiences with these sorts
-> of stub APIs.
+> Add code to check if memory intended for RDMA is FS-DAX-memory. RDS
+> will fail with error code EOPNOTSUPP if FS-DAX-memory is detected.
 > 
-
-Hi Christoph,
-
-Absolutely agreed, and in fact, after spending some time in this area I 
-am getting a much better understanding of just how problematic "this will 
-be used soon" APIs really are. However, this is not quite that case.
-
-The following things make this different from a "pure placeholder" API:
-
-1) These APIs are all exercised in the following patches in this series, 
-unless I've overlooked one, and
-
-2) The pages are actually tracked in the very next patch that I want to
-post. That patch was posted as part of the v11 series [1], but 
-Leon Romanovsky reported a problem with it, and so I'm going to add in
-the ability to handle larger "pin" refcounts for the huge page cases.
-
-Meanwhile, I wanted to get these long-simmering simpler preparatory
-patches submitted, because it's clear that the API is unaffected by the
-huge page refcount fix. (That fix will likely use the second struct page of
-the compound page, to count up higher.)
-
-
-[1] https://lore.kernel.org/r/20191216222537.491123-24-jhubbard@nvidia.com  
-    [PATCH v11 23/25] mm/gup: track FOLL_PIN pages
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+> Signed-off-by: Hans Westgaard Ry <hans.westgaard.ry@oracle.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
