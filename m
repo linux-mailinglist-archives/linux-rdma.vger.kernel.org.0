@@ -2,21 +2,21 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E1E13BC85
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 10:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADEC113BC90
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 10:40:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729429AbgAOJg6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jan 2020 04:36:58 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:36936 "EHLO huawei.com"
+        id S1729442AbgAOJkF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jan 2020 04:40:05 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:40734 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729518AbgAOJg6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 15 Jan 2020 04:36:58 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 5F08F3446F926F333B80;
-        Wed, 15 Jan 2020 17:36:55 +0800 (CST)
+        id S1729406AbgAOJkF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 15 Jan 2020 04:40:05 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 176D6F51066FB148731D;
+        Wed, 15 Jan 2020 17:40:03 +0800 (CST)
 Received: from [127.0.0.1] (10.74.223.196) by DGGEMS406-HUB.china.huawei.com
  (10.3.19.206) with Microsoft SMTP Server id 14.3.439.0; Wed, 15 Jan 2020
- 17:36:47 +0800
+ 17:39:56 +0800
 Subject: Re: [PATCH v5 for-next 1/2] RDMA/hns: Add the workqueue framework for
  flush cqe handler
 To:     Jason Gunthorpe <jgg@ziepe.ca>
@@ -28,8 +28,8 @@ References: <1577503735-26685-1-git-send-email-liuyixian@huawei.com>
  <65fb928c-5f85-02f9-c5ac-06037b3fe967@huawei.com>
  <20200113140442.GA9861@ziepe.ca>
 From:   "Liuyixian (Eason)" <liuyixian@huawei.com>
-Message-ID: <1a3850f4-971f-6eea-f624-f633999f7bfe@huawei.com>
-Date:   Wed, 15 Jan 2020 17:36:46 +0800
+Message-ID: <65f1590e-588a-3678-dc50-217a3affa8ab@huawei.com>
+Date:   Wed, 15 Jan 2020 17:39:55 +0800
 User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
  Thunderbird/52.1.1
 MIME-Version: 1.0
@@ -84,10 +84,9 @@ On 2020/1/13 22:04, Jason Gunthorpe wrote:
 > I don't see how you should get two? One should be pending until the
 > modify is done with the new PI, then once the PI is updated the same
 > one should be re-queued the next time the PI needs changing.
+> 
+Hi Jason,
 
-
-
-
-
+Thanks! I will fix it according to your suggestion in V7.
 
 
