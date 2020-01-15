@@ -2,88 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F81B13CD71
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 20:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 440F413CD94
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 20:58:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729436AbgAOTvG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jan 2020 14:51:06 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:36452 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729398AbgAOTvG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 14:51:06 -0500
-Received: by mail-qt1-f196.google.com with SMTP id i13so16873069qtr.3
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Jan 2020 11:51:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=C2GpoeMTQ3C5/SVINlCr1nzgHAc/1dkran4u5LeNZ88=;
-        b=Znvn5qEARetSUwwB8LYotuXnTuWwDA4GiC+sv7a/Hycrv/SxhV+6H6FvY31n68Lxes
-         mI/SIsvVyXhMgDASbF1MPfSRkkGKr0ObX1T2xuq1iXrSAdym4Qht3bGx689lO8/Gt5s+
-         ra6+Odj43XHAQ+xDanUB4D1iZjjCTPZM7bovzjVmybxPdGRVOYj6CrcyBKz/bRIXFx7s
-         r9P5gW4f/uMYiAYzTefzdp6GozDnM7zvP6j9F+BGxvShcMwZK7uaDyr2wX+jHhZoJA08
-         KcoOqgYAlryUYEOZNIQ+jBgtGc0VQWJwghJRL9DdFiarNViDr8ch+B+YsXjPSS1HEeZW
-         UkQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=C2GpoeMTQ3C5/SVINlCr1nzgHAc/1dkran4u5LeNZ88=;
-        b=N1+zKG+7QG7X/nxHvLuoPjq1MuijO3mYx9ICGLHmjzKbhuIMteatz8ehnv7W/hH0sr
-         qzjbx0qTARbmNXgR/ivmfB9QTn5Pa+lVmS1A0Jc/H8vAR44EODjpAH0n0xyAbe8Ieddt
-         p38gNejWwrmVpD7v6TRujlvWASoR3sD9PcKtZFa5bYzSqYhh5JVGg2hWDObOjiLMJlvh
-         P+DbeqyoJxQBjts8AeYDdB/E6qFNxwVLfxjb/clKVzWT1zhGQddTVEILrnoSJjxnOlWd
-         bZayxzYgBxu+tppf637FyRW3p2ullLIh+p0WEDChOt8/6JC19PuzMQaqRT1awU/1vmUi
-         gXgg==
-X-Gm-Message-State: APjAAAXyTR3FQpOf488UH/yY4QP4TtvWzcUvnuAop7eU5QHv2lAxToAA
-        xnYXhs/4OLOeUNs64xvsSHWf1048q3I=
-X-Google-Smtp-Source: APXvYqy4FiqNvuyrkWFC383VYYWvp2eMDuTQI/yB7yQUbHYQOWqpK+GAa5n9CanLH/BN9s794ZXiDQ==
-X-Received: by 2002:ac8:5313:: with SMTP id t19mr236513qtn.375.1579117865477;
-        Wed, 15 Jan 2020 11:51:05 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id g52sm10439241qta.58.2020.01.15.11.51.04
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 15 Jan 2020 11:51:04 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1irogy-0000QQ-GT; Wed, 15 Jan 2020 15:51:04 -0400
-Date:   Wed, 15 Jan 2020 15:51:04 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Alexander Matushevsky <matua@amazon.com>,
-        Firas JahJah <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-Subject: Re: [PATCH for-next 6/6] RDMA/efa: Do not delay freeing of DMA pages
-Message-ID: <20200115195104.GA929@ziepe.ca>
-References: <20200114085706.82229-1-galpress@amazon.com>
- <20200114085706.82229-7-galpress@amazon.com>
+        id S1729648AbgAOT5V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jan 2020 14:57:21 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:42652 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726566AbgAOT5V (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 14:57:21 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00FJsV6a174162;
+        Wed, 15 Jan 2020 19:57:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=5ZDwyoI8+PLdwrash2W6XsD4UspgG+i2MlaqGgMjC4U=;
+ b=QJ/JIVZvc28zM+OFKfi+yCenziwV0YsPWO9EoKy/5xXTUElQFXFjsbWQoI2NyUuylp26
+ xTUhp/MjkZYKg10uugDmezyYyLoxaTPIW/1G/LFmePIcJ6xDDv9T4Va1aUYqwjtx7tBt
+ I4OnOHuby3/eoIgKToM51xBJdjuqQ2RJ0q1b58JlVzx3xL/vZy/ldno2OxgkYQOXwaKK
+ ZKir6VIQPpK2M21kItZIb8T6hxX0ZZjC8jt571fMqWevhy1EyypQh6b9LbNdAtSrY4QE
+ 4a9a67droZEHA+COn4sRjOP7LaPLxdqhcvBK+PaHjHHKk/zk7t7+2+Jh64JxDx7L/0Wu ag== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 2xf73ypd47-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Jan 2020 19:57:13 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00FJsaXx191225;
+        Wed, 15 Jan 2020 19:57:12 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2xhy2201yf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Jan 2020 19:57:12 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 00FJvABT004993;
+        Wed, 15 Jan 2020 19:57:10 GMT
+Received: from [10.159.151.219] (/10.159.151.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 15 Jan 2020 11:57:10 -0800
+Subject: Re: [PATCH v3 2/2] SGE buffer and max_inline data must have same size
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, monis@mellanox.com,
+        dledford@redhat.com, sean.hefty@intel.com,
+        hal.rosenstock@gmail.com, linux-kernel@vger.kernel.org
+References: <1578962480-17814-1-git-send-email-rao.shoaib@oracle.com>
+ <1578962480-17814-3-git-send-email-rao.shoaib@oracle.com>
+ <20200115182721.GE25201@ziepe.ca>
+From:   Rao Shoaib <rao.shoaib@oracle.com>
+Message-ID: <93b8e890-c4a9-6050-88b7-3667c023dd34@oracle.com>
+Date:   Wed, 15 Jan 2020 11:57:08 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200114085706.82229-7-galpress@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200115182721.GE25201@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9501 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001150153
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9501 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001150153
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 10:57:06AM +0200, Gal Pressman wrote:
-> When destroying a DMA mmapped object, there is no need to delay the
-> pages freeing to dealloc_ucontext as the kernel itself will keep
-> reference count for these pages.
 
-Why does the commit message talk about dealloc_ucontext but doesn't
-change dealloc_ucontext?
+On 1/15/20 10:27 AM, Jason Gunthorpe wrote:
+> On Mon, Jan 13, 2020 at 04:41:20PM -0800, rao Shoaib wrote:
+>> From: Rao Shoaib <rao.shoaib@oracle.com>
+>>
+>> SGE buffer size and max_inline data should be same. Maximum of the
+>> two values requested is used.
+>>
+>> Signed-off-by: Rao Shoaib <rao.shoaib@oracle.com>
+>>   drivers/infiniband/sw/rxe/rxe_qp.c | 23 +++++++++++------------
+>>   1 file changed, 11 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+>> index aeea994..41c669c 100644
+>> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+>> @@ -235,18 +235,17 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+>>   		return err;
+>>   	qp->sk->sk->sk_user_data = qp;
+>>   
+>> -	qp->sq.max_wr		= init->cap.max_send_wr;
+>> -	qp->sq.max_sge		= init->cap.max_send_sge;
+>> -	qp->sq.max_inline	= init->cap.max_inline_data;
+>> -
+>> -	wqe_size = max_t(int, sizeof(struct rxe_send_wqe) +
+>> -			 qp->sq.max_sge * sizeof(struct ib_sge),
+>> -			 sizeof(struct rxe_send_wqe) +
+>> -			 qp->sq.max_inline);
+>> -
+>> -	qp->sq.queue = rxe_queue_init(rxe,
+>> -				      &qp->sq.max_wr,
+>> -				      wqe_size);
+>> +	wqe_size = max_t(int, init->cap.max_send_sge * sizeof(struct ib_sge),
+>> +			 init->cap.max_inline_data);
+>> +	qp->sq.max_sge = wqe_size/sizeof(struct ib_sge);
+>> +	qp->sq.max_inline = wqe_size;
+>> +
+>> +	wqe_size += sizeof(struct rxe_send_wqe);
+> Where does this limit the user's request to RXE_MAX_WQE_SIZE ?
 
-> +	free_pages_exact(cq->cpu_addr, cq->size);
-> 	rdma_user_mmap_entry_remove(cq->mmap_entry);
+My understanding is that the user request can only specify sge's and/or 
+inline data. The check for those is made in rxe_qp_chk_cap. Since max 
+sge's and max inline data are constrained by RXE_MAX_WQE_SIZE the limit 
+is enforced.
 
-This is out of order, the pages can't be freed until the entry is
-removed.
+>
+> I seem to recall the if the requested max can't be satisified then
+> that is an EINVAL?
+>
+> And the init->cap should be updated with the actual allocation.
 
-There is also a bug in rdma_user_mmap_entry_remove(),
-entry->driver_removed needs to be set while holding the xa_lock or
-this is not the required fence.
+Since the user request for both (sge's and inline data) has been 
+satisfied I decided not to update the values in case the return values 
+are being checked. If you prefer that I update the values I can do that.
 
-Jason
+Shoaib
+
+>
+> So more like:
+>
+>          if (init->cap.max_send_sge > RXE_MAX_SGE ||
+>             init->cap.max_inline_data > RXE_MAX_INLINE)
+>              return -EINVAL;
+>
+> 	wqe_size = max_t(int, init->cap.max_sge * sizeof(struct ib_sge),
+> 			 init->cap.max_inline_data)
+>                     sizeof(struct rxe_send_wqe);
+> 	qp->sq.max_sge = init->cap.max_send_sge = wqe_size/sizeof(struct ib_sge);
+> 	qp->sq.max_inline = init->cap.max_inline_data = wqe_size;
+> 	wqe_size += sizeof(struct rxe_send_wqe);
+>
+> Jason
