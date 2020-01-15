@@ -2,177 +2,209 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9489413CA6D
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 18:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 311D113CAD8
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 18:22:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729033AbgAORJN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jan 2020 12:09:13 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:32820 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728982AbgAORJN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 12:09:13 -0500
-Received: by mail-il1-f197.google.com with SMTP id s9so13813036ilk.0
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Jan 2020 09:09:12 -0800 (PST)
+        id S1728961AbgAORWO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jan 2020 12:22:14 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:46686 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726574AbgAORWO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 12:22:14 -0500
+Received: by mail-qk1-f193.google.com with SMTP id r14so16340078qke.13;
+        Wed, 15 Jan 2020 09:22:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=c+q9bObKfV/TNxL1HH2wA5LqldoKCgE44YTN9MzEObM=;
+        b=GrMEzUhQn0zT6crSejZhHzxJ565zwTFsxUR9ki86EyRy2cx7HvDN74IZyaV6aroql8
+         K3fgFCmV1hnJaRrk6iJf0Tg94tPjQrxxg4vuKsRva69odUjEQ4f4j2772ygYz+WmMFhL
+         cjrTGWoirgaXuP/24safNCO032yWaugbswo5hvRBFFN/4Ck+Dc1U7D+bf2ToYXx6Josa
+         W3ljqEgmBLdUSYqIwoM7CATcCYyJqse5xecvkBpyk5y2UoWJKzXNJU9v8zFVtbs8/AbH
+         ctM1VPLWN5+dHqy0WrXYem4qJXV+5LScvIQix21l+e/GP2j4mnZa2P2a72TqKUP5PgvQ
+         vx0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Qbzb5A9NTIdexzU3+GDyxXanOmczlUCSWJ+llDlUeKE=;
-        b=KNalGGaT55fV+NFRwwyQp8cXyKhkZRTw7M7fQBNrrRd725bLjngjGddrzscC9aUG93
-         nMG7ympYaD26i/IXjHoDny89kZl2WMO66rkOZUGFDVx2hVZVAl+48FKU2YrSSzjtulWo
-         Bx7I7PqkXAq5uJdg6JF8T01QVGWW6IDgbmz49ecI4sCW7Qbh7RADFGDup3p2BvNhlOHd
-         0aE/qg61S5stuGSR3tKUT/JUeFqV3uWdu2nrtNYMzyJnIy9IOFTcqQbnxFdl9n9rXISP
-         HkrxAlAkTGjRuQd4ue+AHqer/5kxhkjDQImfEug17MNmLO5cpJ5zcOCUNwH/jlcvPgT4
-         r29g==
-X-Gm-Message-State: APjAAAV4Fp5rrOGPPg3zO2enEJIdgC9O4t8caLciJUYOoqS/G+X6Kvzt
-        4RQUwioP7xpNi1GH8Qqy/JmBrS1MkrfR5DQhkOB7u6yF5Glh
-X-Google-Smtp-Source: APXvYqzgkin2QCBDKr+TM7mcvH98bIkCbsyiNGMto6b1TNj7A+Aq/twS6IkaV5fRkY2Wzhc/j9ccf9Q1q6yftx8JhzxOKT0o2ns9
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=c+q9bObKfV/TNxL1HH2wA5LqldoKCgE44YTN9MzEObM=;
+        b=tDXIFNgiMY6acOiV1NpgEXjQR6zYvEA0TSOfdkFhAxyGbodDwF7z41CrrMr9e3ReXw
+         Mgo8bR9mHKY2JW/A37gx7kteRqcMm2xkmLCe8/qvec1Vl9992g4oH0CNmHUdGvR42FL9
+         Lwpp63vjegzdjtX+pIzWxI0qUIENRreYVTHrClAB71T0ZR77+mKUv1gdABwJAWlxyVgD
+         6XbAxrG5p6EIB0Dgv2Qa6Xll7Zw4L1uJdKYXwPJzg8klzXjp1SejJErhoXE1ef+woECI
+         wNPU6ZyczaePQE4s5bnyN27rBh4UW3D0ujaRMNrV22ubQNRwzvDDG7/TuwfTHwBVzZUm
+         vggA==
+X-Gm-Message-State: APjAAAVmrvtqVMgfGrycNLtD1ciZttIyyrvkVL0sTroVprZAzeXsQiQP
+        4gb/HUOdp5SZ18k0sD2yn3CSrZRLdK06Cm3ASlY=
+X-Google-Smtp-Source: APXvYqyScdlmdVrGF9w3giFftAWTK3e0Gn2ZeH9X7LVvi8//1y3KSjgGhLXpszFvMNhgWxx4uor59cXxWZRukp51R/I=
+X-Received: by 2002:a05:620a:5ae:: with SMTP id q14mr24418928qkq.437.1579108932557;
+ Wed, 15 Jan 2020 09:22:12 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a02:2446:: with SMTP id q6mr23887453jae.78.1579108152572;
- Wed, 15 Jan 2020 09:09:12 -0800 (PST)
-Date:   Wed, 15 Jan 2020 09:09:12 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007f03ed059c30c4a0@google.com>
-Subject: KASAN: use-after-free Read in rds_inc_put (2)
-From:   syzbot <syzbot+8a25042506b5a9f010cd@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        rds-devel@oss.oracle.com, santosh.shilimkar@oracle.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+References: <157909756858.1192265.6657542187065456112.stgit@toke.dk> <157909757860.1192265.1725940708658939712.stgit@toke.dk>
+In-Reply-To: <157909757860.1192265.1725940708658939712.stgit@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 15 Jan 2020 09:22:01 -0800
+Message-ID: <CAEf4BzZ2jAQPKzzp+NhWXbUFcfdcXs+akFSY4O0JhabJy=9vag@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 09/10] selftests: Remove tools/lib/bpf from
+ include path
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+On Wed, Jan 15, 2020 at 6:16 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>
+> To make sure no new files are introduced that doesn't include the bpf/
+> prefix in its #include, remove tools/lib/bpf from the include path
+> entirely, and use tools/lib instead. To fix the original issue with
+> bpf_helper_defs.h being stale, change the Makefile rule to regenerate the
+> file in the lib/bpf dir instead of having a local copy in selftests.
+>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  tools/testing/selftests/bpf/.gitignore |    3 ++-
+>  tools/testing/selftests/bpf/Makefile   |   16 ++++++++--------
+>  2 files changed, 10 insertions(+), 9 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
+ests/bpf/.gitignore
+> index 1d14e3ab70be..17dd02651dee 100644
+> --- a/tools/testing/selftests/bpf/.gitignore
+> +++ b/tools/testing/selftests/bpf/.gitignore
+> @@ -33,10 +33,11 @@ libbpf.pc
+>  libbpf.so.*
+>  test_hashmap
+>  test_btf_dump
+> +test_cgroup_attach
+> +test_select_reuseport
 
-syzbot found the following crash on:
+These were moved into test_progs, they are not independent binaries
+anymore, you probably just had old leftovers lying in your
+selftests/bpf directory. Let's not re-add them.
 
-HEAD commit:    95e20af9 Merge tag 'nfs-for-5.5-2' of git://git.linux-nfs...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=119575e1e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d9290aeb7e6cf1c4
-dashboard link: https://syzkaller.appspot.com/bug?extid=8a25042506b5a9f010cd
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-userspace arch: i386
+>  xdping
+>  test_cpp
+>  *.skel.h
+>  /no_alu32
+>  /bpf_gcc
+>  /tools
+> -bpf_helper_defs.h
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index cd98ae875e30..4889cc3ead4b 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -21,7 +21,7 @@ LLC           ?=3D llc
+>  LLVM_OBJCOPY   ?=3D llvm-objcopy
+>  BPF_GCC                ?=3D $(shell command -v bpf-gcc;)
+>  CFLAGS +=3D -g -Wall -O2 $(GENFLAGS) -I$(CURDIR) -I$(APIDIR) -I$(LIBDIR)=
+  \
+> -         -I$(BPFDIR) -I$(GENDIR) -I$(TOOLSINCDIR)                      \
+> +         -I$(GENDIR) -I$(TOOLSINCDIR)                  \
+>           -Dbpf_prog_load=3Dbpf_prog_test_load                           =
+ \
+>           -Dbpf_load_program=3Dbpf_test_load_program
+>  LDLIBS +=3D -lcap -lelf -lz -lrt -lpthread
+> @@ -129,7 +129,7 @@ $(OUTPUT)/runqslower: force
+>         $(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower      =
+     \
+>                     OUTPUT=3D$(CURDIR)/tools/
+>
+> -BPFOBJ :=3D $(OUTPUT)/libbpf.a
+> +BPFOBJ :=3D $(BPFDIR)/libbpf.a
 
-Unfortunately, I don't have any reproducer for this crash yet.
+We can't do that. See fa633a0f8919 ("libbpf: Fix build on read-only
+filesystems") for why and why we have this problem with
+bpf_helper_defs.h in the first place.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+8a25042506b5a9f010cd@syzkaller.appspotmail.com
+>
+>  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(OUTPUT)/test_stub.o $(BP=
+FOBJ)
+>
+> @@ -155,17 +155,17 @@ force:
+>  DEFAULT_BPFTOOL :=3D $(OUTPUT)/tools/sbin/bpftool
+>  BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
+>
+> -$(DEFAULT_BPFTOOL): force
+> +$(DEFAULT_BPFTOOL): force $(BPFOBJ)
 
-==================================================================
-BUG: KASAN: use-after-free in rds_inc_put+0x19e/0x1b0 net/rds/recv.c:82
-Read of size 8 at addr ffff8880a8dd6650 by task syz-executor.5/9920
+do we need this? bpftool's makefile will build its own libbpf.a
+independently. We can probably optimize that, but see above, we need
+to ensure that we build only within selftest/bpf dirs.
 
-CPU: 1 PID: 9920 Comm: syz-executor.5 Not tainted 5.5.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x197/0x210 lib/dump_stack.c:118
-  print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
-  __kasan_report.cold+0x1b/0x41 mm/kasan/report.c:506
-  kasan_report+0x12/0x20 mm/kasan/common.c:639
-  __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:135
-  rds_inc_put+0x19e/0x1b0 net/rds/recv.c:82
-  rds_clear_recv_queue+0x157/0x380 net/rds/recv.c:770
-  rds_release+0x117/0x430 net/rds/af_rds.c:73
-  __sock_release+0xce/0x280 net/socket.c:592
-  sock_close+0x1e/0x30 net/socket.c:1270
-  __fput+0x2ff/0x890 fs/file_table.c:280
-  ____fput+0x16/0x20 fs/file_table.c:313
-  task_work_run+0x145/0x1c0 kernel/task_work.c:113
-  exit_task_work include/linux/task_work.h:22 [inline]
-  do_exit+0xba9/0x2f50 kernel/exit.c:801
-  do_group_exit+0x135/0x360 kernel/exit.c:899
-  get_signal+0x47c/0x24f0 kernel/signal.c:2734
-  do_signal+0x87/0x1700 arch/x86/kernel/signal.c:815
-  exit_to_usermode_loop+0x286/0x380 arch/x86/entry/common.c:160
-  prepare_exit_to_usermode arch/x86/entry/common.c:195 [inline]
-  syscall_return_slowpath arch/x86/entry/common.c:278 [inline]
-  do_syscall_32_irqs_on arch/x86/entry/common.c:352 [inline]
-  do_fast_syscall_32+0xbbd/0xe16 arch/x86/entry/common.c:408
-  entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
-RIP: 0023:0xf7f49a39
-Code: Bad RIP value.
-RSP: 002b:00000000f5d2412c EFLAGS: 00000292 ORIG_RAX: 00000000000000f0
-RAX: fffffffffffffe00 RBX: 000000000817aff8 RCX: 0000000000000080
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000000000817affc
-RBP: 00000000f5d24228 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+This "read-only outside of selftests/bpf" requirement actually made me
+realize that we probably need to specify OUTPUT pointing somewhere
+inside selftests/bpf/tools subdir to build entire bpftool within
+selftests/bpf directory and not touch anything outside. Do you mind
+fixing that while you are at it?
 
-Allocated by task 25007:
-  save_stack+0x23/0x90 mm/kasan/common.c:72
-  set_track mm/kasan/common.c:80 [inline]
-  __kasan_kmalloc mm/kasan/common.c:513 [inline]
-  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:486
-  kasan_slab_alloc+0xf/0x20 mm/kasan/common.c:521
-  slab_post_alloc_hook mm/slab.h:584 [inline]
-  slab_alloc mm/slab.c:3320 [inline]
-  kmem_cache_alloc+0x121/0x710 mm/slab.c:3484
-  kmem_cache_zalloc include/linux/slab.h:660 [inline]
-  __rds_conn_create+0x63a/0x20a0 net/rds/connection.c:193
-  rds_conn_create_outgoing+0x4b/0x60 net/rds/connection.c:351
-  rds_sendmsg+0x19a4/0x35b0 net/rds/send.c:1294
-  sock_sendmsg_nosec net/socket.c:639 [inline]
-  sock_sendmsg+0xd7/0x130 net/socket.c:659
-  ____sys_sendmsg+0x753/0x880 net/socket.c:2330
-  ___sys_sendmsg+0x100/0x170 net/socket.c:2384
-  __sys_sendmsg+0x105/0x1d0 net/socket.c:2417
-  __compat_sys_sendmsg net/compat.c:642 [inline]
-  __do_compat_sys_sendmsg net/compat.c:649 [inline]
-  __se_compat_sys_sendmsg net/compat.c:646 [inline]
-  __ia32_compat_sys_sendmsg+0x7a/0xb0 net/compat.c:646
-  do_syscall_32_irqs_on arch/x86/entry/common.c:337 [inline]
-  do_fast_syscall_32+0x27b/0xe16 arch/x86/entry/common.c:408
-  entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
-
-Freed by task 72:
-  save_stack+0x23/0x90 mm/kasan/common.c:72
-  set_track mm/kasan/common.c:80 [inline]
-  kasan_set_free_info mm/kasan/common.c:335 [inline]
-  __kasan_slab_free+0x102/0x150 mm/kasan/common.c:474
-  kasan_slab_free+0xe/0x10 mm/kasan/common.c:483
-  __cache_free mm/slab.c:3426 [inline]
-  kmem_cache_free+0x86/0x320 mm/slab.c:3694
-  rds_conn_destroy+0x61f/0x880 net/rds/connection.c:501
-  rds_loop_kill_conns net/rds/loop.c:213 [inline]
-  rds_loop_exit_net+0x2fc/0x4a0 net/rds/loop.c:219
-  ops_exit_list.isra.0+0xb1/0x160 net/core/net_namespace.c:172
-  cleanup_net+0x538/0xaf0 net/core/net_namespace.c:597
-  process_one_work+0x9af/0x1740 kernel/workqueue.c:2264
-  worker_thread+0x98/0xe40 kernel/workqueue.c:2410
-  kthread+0x361/0x430 kernel/kthread.c:255
-  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-
-The buggy address belongs to the object at ffff8880a8dd6608
-  which belongs to the cache rds_connection of size 232
-The buggy address is located 72 bytes inside of
-  232-byte region [ffff8880a8dd6608, ffff8880a8dd66f0)
-The buggy address belongs to the page:
-page:ffffea0002a37580 refcount:1 mapcount:0 mapping:ffff8880a8eec380  
-index:0xffff8880a8dd6e20
-raw: 00fffe0000000200 ffff8880a86c8938 ffffea000292e348 ffff8880a8eec380
-raw: ffff8880a8dd6e20 ffff8880a8dd6040 000000010000000b 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
-  ffff8880a8dd6500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  ffff8880a8dd6580: 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc
-> ffff8880a8dd6600: fc fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                  ^
-  ffff8880a8dd6680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc
-  ffff8880a8dd6700: fc fc fc fc fc fc 00 00 00 00 00 00 00 00 00 00
-==================================================================
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>         $(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)                  =
+     \
+>                     prefix=3D DESTDIR=3D$(OUTPUT)/tools/ install
+>
+>  $(BPFOBJ): force
+> -       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=3D$(OUTPUT)/
+> +       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=3D$(BPFDIR)/ $(=
+BPFOBJ)
+>
+> -BPF_HELPERS :=3D $(OUTPUT)/bpf_helper_defs.h $(wildcard $(BPFDIR)/bpf_*.=
+h)
+> -$(OUTPUT)/bpf_helper_defs.h: $(BPFOBJ)
+> +BPF_HELPERS :=3D $(BPFDIR)/bpf_helper_defs.h $(wildcard $(BPFDIR)/bpf_*.=
+h)
+> +$(BPFDIR)/bpf_helper_defs.h: $(BPFOBJ)
+>         $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR)                       =
+     \
+> -                   OUTPUT=3D$(OUTPUT)/ $(OUTPUT)/bpf_helper_defs.h
+> +               OUTPUT=3D$(BPFDIR)/ $(BPFDIR)/bpf_helper_defs.h
+>
+>  # Get Clang's default includes on this system, as opposed to those seen =
+by
+>  # '-target bpf'. This fixes "missing" files on some architectures/distro=
+s,
+> @@ -186,7 +186,7 @@ MENDIAN=3D$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-m=
+big-endian)
+>  CLANG_SYS_INCLUDES =3D $(call get_sys_includes,$(CLANG))
+>  BPF_CFLAGS =3D -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)                 =
+ \
+>              -I$(OUTPUT) -I$(CURDIR) -I$(CURDIR)/include/uapi           \
+> -            -I$(APIDIR) -I$(LIBDIR) -I$(BPFDIR) -I$(abspath $(OUTPUT)/..=
+/usr/include)
+> +            -I$(APIDIR) -I$(LIBDIR) -I$(abspath $(OUTPUT)/../usr/include=
+)
+>
+>  CLANG_CFLAGS =3D $(CLANG_SYS_INCLUDES) \
+>                -Wno-compare-distinct-pointer-types
+>
