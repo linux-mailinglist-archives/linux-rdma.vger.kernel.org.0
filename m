@@ -2,111 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D605413C6AB
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 15:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6636313C73C
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 16:19:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728912AbgAOOzI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jan 2020 09:55:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726165AbgAOOzH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 15 Jan 2020 09:55:07 -0500
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729008AbgAOPS7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jan 2020 10:18:59 -0500
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:51089 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728963AbgAOPS7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 15 Jan 2020 10:18:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579101538;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O28pugdE3ji8Z7d58Dp1KejMSWnJ7EsYgUczW6n+9NY=;
+        b=F69sbxVl2NEsx/ned4ezVnMKCxGPSrNFIiYJ/XZoSnTdymVkEJF/LdY0lMfcbTVUobZo3g
+        H0OWjArCJGolmqd/hXkUbqyvFEWjap7E+Cnue/czGNmt5tFitwkBxSErAeB+mmtFKIYLvV
+        u381+/3cNNLHk0FNETQoFkxhZATMfqw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-177-q6bYgGs4Pb6_ldebLaXl3g-1; Wed, 15 Jan 2020 10:18:54 -0500
+X-MC-Unique: q6bYgGs4Pb6_ldebLaXl3g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 972E0214AF;
-        Wed, 15 Jan 2020 14:55:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579100107;
-        bh=tHX+6rIYUFB4Wa31jN0d0j/bavquR82rDixYNbTHwEY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yem2lwjw2JfYnGCqPbPP/2+T4Qro42cDhJ8JIz+kXZ2DL3Vu5ivFzWjla/tV2FGDl
-         QF/w1QXZsOnPkRszpauGWl+qbctbR0PPqfEA7a6Ydn3tedSXzoSdX9DEWlbyTmYVuQ
-         +cwEzDth5FkHl7kDN8HAFHelyWOi4KYngH0Zcvb0=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Avihai Horon <avihaih@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: [PATCH rdma-next 2/2] IB/mlx5: Expose RoCE accelerator counters
-Date:   Wed, 15 Jan 2020 16:54:59 +0200
-Message-Id: <20200115145459.83280-3-leon@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200115145459.83280-1-leon@kernel.org>
-References: <20200115145459.83280-1-leon@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F20318F8A0F;
+        Wed, 15 Jan 2020 15:18:49 +0000 (UTC)
+Received: from carbon (ovpn-200-25.brq.redhat.com [10.40.200.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A1E6A66842;
+        Wed, 15 Jan 2020 15:18:26 +0000 (UTC)
+Date:   Wed, 15 Jan 2020 16:18:25 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        clang-built-linux@googlegroups.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next v2 07/10] samples/bpf: Use consistent include
+ paths for libbpf
+Message-ID: <20200115161825.351ebf23@carbon>
+In-Reply-To: <157909757639.1192265.16930011370158657444.stgit@toke.dk>
+References: <157909756858.1192265.6657542187065456112.stgit@toke.dk>
+        <157909757639.1192265.16930011370158657444.stgit@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Avihai Horon <avihaih@mellanox.com>
+On Wed, 15 Jan 2020 15:12:56 +0100
+Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
 
-Introduce the following RoCE accelerator counters:
-* roce_adp_retrans - number of adaptive retransmission for RoCE traffic.
-* roce_adp_retrans_to - number of times RoCE traffic reached time out
-due to adaptive retransmission.
-* roce_slow_restart - number of times RoCE slow restart was used.
-* roce_slow_restart_cnps - number of times RoCE slow restart
-generate CNP packets.
-* roce_slow_restart_trans - number of times RoCE slow restart change
-state to slow restart.
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>=20
+> Fix all files in samples/bpf to include libbpf header files with the bpf/
+> prefix, to be consistent with external users of the library. Also ensure
+> that all includes of exported libbpf header files (those that are exported
+> on 'make install' of the library) use bracketed includes instead of quote=
+d.
+>=20
+> To make sure no new files are introduced that doesn't include the bpf/
+> prefix in its include, remove tools/lib/bpf from the include path entirel=
+y,
+> and use tools/lib instead.
+>=20
+> Fixes: 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are taken f=
+rom selftests dir")
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
-Signed-off-by: Avihai Horon <avihaih@mellanox.com>
-Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/mlx5/main.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+I like this change. Maybe the reason so many samples/bpf/ files
+still included "libbpf.h" was that once-upon-a-time we had a "eBPF mini
+library" in the file samples/bpf/libbpf.h that were included.
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 97bcf01960ae..5d41a2c69400 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -5370,6 +5370,14 @@ static const struct mlx5_ib_counter extended_err_cnts[] = {
- 	INIT_Q_COUNTER(req_cqe_flush_error),
- };
- 
-+static const struct mlx5_ib_counter roce_accl_cnts[] = {
-+	INIT_Q_COUNTER(roce_adp_retrans),
-+	INIT_Q_COUNTER(roce_adp_retrans_to),
-+	INIT_Q_COUNTER(roce_slow_restart),
-+	INIT_Q_COUNTER(roce_slow_restart_cnps),
-+	INIT_Q_COUNTER(roce_slow_restart_trans),
-+};
-+
- #define INIT_EXT_PPCNT_COUNTER(_name)		\
- 	{ .name = #_name, .offset =	\
- 	MLX5_BYTE_OFF(ppcnt_reg, \
-@@ -5418,6 +5426,9 @@ static int __mlx5_ib_alloc_counters(struct mlx5_ib_dev *dev,
- 	if (MLX5_CAP_GEN(dev->mdev, enhanced_error_q_counters))
- 		num_counters += ARRAY_SIZE(extended_err_cnts);
- 
-+	if (MLX5_CAP_GEN(dev->mdev, roce_accl))
-+		num_counters += ARRAY_SIZE(roce_accl_cnts);
-+
- 	cnts->num_q_counters = num_counters;
- 
- 	if (MLX5_CAP_GEN(dev->mdev, cc_query_allowed)) {
-@@ -5478,6 +5489,13 @@ static void mlx5_ib_fill_counters(struct mlx5_ib_dev *dev,
- 		}
- 	}
- 
-+	if (MLX5_CAP_GEN(dev->mdev, roce_accl)) {
-+		for (i = 0; i < ARRAY_SIZE(roce_accl_cnts); i++, j++) {
-+			names[j] = roce_accl_cnts[i].name;
-+			offsets[j] = roce_accl_cnts[i].offset;
-+		}
-+	}
-+
- 	if (MLX5_CAP_GEN(dev->mdev, cc_query_allowed)) {
- 		for (i = 0; i < ARRAY_SIZE(cong_cnts); i++, j++) {
- 			names[j] = cong_cnts[i].name;
--- 
-2.20.1
+The file was removed/renamed in:
+ https://git.kernel.org/torvalds/c/8d93045077ae
+
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
