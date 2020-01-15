@@ -2,96 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A703A13CD97
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 20:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF1813CDAC
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jan 2020 21:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729469AbgAOT6N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jan 2020 14:58:13 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:36636 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729365AbgAOT6M (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 14:58:12 -0500
-Received: by mail-qv1-f68.google.com with SMTP id m14so7969723qvl.3
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Jan 2020 11:58:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cCtEol5uz/R2NMsJlZc6CUVGHTrK4IzFRH37n7jvMqA=;
-        b=mX50cwo1UDfO/aLmbb2inUlQk5hGyuRlJ+HegrriSKQEXWkdxTWh0AQdwU1l2g1Hsz
-         OqtjyfVByESbswe+n6SXTd106xPtOs/s+ypPB0nskpxwDnsSFrlA6zhegnpvhwY+ctOx
-         +YQYlHMyLdEQEqb/qldL9DSOtesBGH7cd9M3FN4KxeMVi8665d8gXjs1MThCUVd26+ci
-         lqt+4/Yr6yyBwKCDVZTc+fSdsZLh194YcGFtIsQf80IlS/Ure1PJ7QRiSlB0IwBcOckH
-         J2yOqEZTFyn4Jy9WT3jQe0SwD9FJBQqmbtbPpUjDYT/DQ4iN7IpuS6czRiLV2gT7QF6g
-         U9Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cCtEol5uz/R2NMsJlZc6CUVGHTrK4IzFRH37n7jvMqA=;
-        b=auLvqyzl9N3c0VHD6N3wDZRr0xx2jm0l6Q46+F+e/bYTZsAvlEp8/fceicyfldzKrm
-         7rmMww9q1lqbs0stgwzOG9KRP6RsJG38eUdBr+CZykDVrYRxokznmBrhHJbQImz/0Rl2
-         R1CDSQaTdQtgSCoNzt1qbKLlB5MCbf/p889/01Nei08kSU2K72x8mZd+CcKcjXMvT7ev
-         9i11hjM0FQ1ycpnUtUD9iHc0qwG4EfGeAUPOPUptVb3UwIMXIrn1aMQsh0aLH2G20vwg
-         oecpXCf5toKb3/n4axDZRmGN1QAHyD7Ew2ra+mQDaFcTKBnJeNLB8W/2t1wcr9pf6Cx/
-         VLSA==
-X-Gm-Message-State: APjAAAVAjD7MoM99M4PlruqBKZ/DM+pJkvrAw5tPIAKwTdbj3ko3T9yE
-        0/mbeDRgSAknTcTtXvXBzGJSzg==
-X-Google-Smtp-Source: APXvYqx5H/pOZ3BuKUo77jxeCZgg7fZL1gVJC/JhzsHsdRdebuzvGReDgRKpP3Ubq+zhcyhpIB8LgA==
-X-Received: by 2002:a0c:e58a:: with SMTP id t10mr23956092qvm.161.1579118290411;
-        Wed, 15 Jan 2020 11:58:10 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id k21sm9820094qtp.92.2020.01.15.11.58.10
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 15 Jan 2020 11:58:10 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ironp-0002Kz-Is; Wed, 15 Jan 2020 15:58:09 -0400
-Date:   Wed, 15 Jan 2020 15:58:09 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Alexander Matushevsky <matua@amazon.com>
-Subject: Re: [PATCH for-next 0/6] EFA updates 2020-01-14
-Message-ID: <20200115195809.GB929@ziepe.ca>
-References: <20200114085706.82229-1-galpress@amazon.com>
+        id S1729103AbgAOUFP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jan 2020 15:05:15 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:41698 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726527AbgAOUFP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jan 2020 15:05:15 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00FJsYRj159328;
+        Wed, 15 Jan 2020 20:05:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=gyDthlyFU7qngJOjt5wFT45Eoa0mJNNxsALA0YG9p84=;
+ b=Fbq1ONyfo9UVx9WRUhdV4aIidvDS22t/9x7pEnMlD7QJi2vTr6JzzFLOFnGUWDUMbOev
+ bRxUcoPUtCxaR8kozJktbGJBun0Lobzqoq+sozLeR6GJbIN0Xm1S5vJ8Y59rEhvNwKbJ
+ ohSxcQHUsPW3PHTBKhLdugkWSnP5ms1V9/5FqvFjVb32jRC2dRz3rAIK5DYWpJLJ7Asf
+ I6uSBopo54KARJOmfRnS5P31jjEqIslzsvsX8IX1iVjBnRnKz2cShSpDKSvubudF/QI4
+ vlo6nIQfVq2jl3goR2CWGDTPCxNLz6yNHe2K+j0/gw7cRd1n2gxAfzm4S0SOyjZHbGKF lQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2xf73txc97-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Jan 2020 20:05:07 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00FJsag8191303;
+        Wed, 15 Jan 2020 20:05:06 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 2xhy220edh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Jan 2020 20:05:06 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00FK54CV004135;
+        Wed, 15 Jan 2020 20:05:04 GMT
+Received: from [10.159.151.219] (/10.159.151.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 15 Jan 2020 12:05:04 -0800
+Subject: Re: [PATCH v3 2/2] SGE buffer and max_inline data must have same size
+From:   Rao Shoaib <rao.shoaib@oracle.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, monis@mellanox.com,
+        dledford@redhat.com, sean.hefty@intel.com,
+        hal.rosenstock@gmail.com, linux-kernel@vger.kernel.org
+References: <1578962480-17814-1-git-send-email-rao.shoaib@oracle.com>
+ <1578962480-17814-3-git-send-email-rao.shoaib@oracle.com>
+ <20200115182721.GE25201@ziepe.ca>
+ <93b8e890-c4a9-6050-88b7-3667c023dd34@oracle.com>
+Message-ID: <70651c3f-e5cb-2a33-1682-6564255e2307@oracle.com>
+Date:   Wed, 15 Jan 2020 12:05:03 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200114085706.82229-1-galpress@amazon.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <93b8e890-c4a9-6050-88b7-3667c023dd34@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9501 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001150153
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9501 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001150153
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 10:57:00AM +0200, Gal Pressman wrote:
-> This series contains various updates to the device definitions handling
-> and documentation, and some cleanups to the recently introduced mmap
-> code.
-> 
-> The last patch is based on a discussion that came up during the recent
-> mmap machanism review on list:
-> https://lore.kernel.org/linux-rdma/20190920133817.GB7095@ziepe.ca/
-> 
-> We no longer delay the free_pages_exact call of mmaped DMA pages, as the
-> pages won't be freed in case they are still referenced by the vma.
-> 
-> Regards,
-> Gal
-> 
-> Gal Pressman (6):
->   RDMA/efa: Unified getters/setters for device structs bitmask access
->   RDMA/efa: Properly document the interrupt mask register
->   RDMA/efa: Do not delay freeing of DMA pages
 
-These ones need some work
+On 1/15/20 11:57 AM, Rao Shoaib wrote:
+>
+>> I seem to recall the if the requested max can't be satisified then
+>> that is an EINVAL?
+>>
+>> And the init->cap should be updated with the actual allocation.
+>
+> Since the user request for both (sge's and inline data) has been 
+> satisfied I decided not to update the values in case the return values 
+> are being checked. If you prefer that I update the values I can do that.
+>
+> Shoaib
+>
+In my original v1 patch I did update init->cap, I must have overlooked 
+it. I will resubmit the patch with that change once I hear back from you 
+about the enforcement.
 
->   RDMA/efa: Device definitions documentation updates
->   RDMA/efa: Remove {} brackets from single statement if
->   RDMA/efa: Remove unused ucontext parameter from
->     efa_qp_user_mmap_entries_remove
+Shoaib
 
-I took these three to for-next, thanks
-
-Jason
