@@ -2,42 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C3613F6E4
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 20:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8722413F6A8
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 20:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388016AbgAPRBJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 12:01:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51822 "EHLO mail.kernel.org"
+        id S2388331AbgAPTGI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 14:06:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388012AbgAPRBJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:01:09 -0500
+        id S2388146AbgAPRBl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:01:41 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 512F420728;
-        Thu, 16 Jan 2020 17:01:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78DDE207FF;
+        Thu, 16 Jan 2020 17:01:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579194068;
-        bh=X5VRyzQa3hJjfuhA6NJZowxobC1AwamiQve1T3J5FX4=;
+        s=default; t=1579194100;
+        bh=GhkAe2zMQTLuD474ErZ/Me1pHST6ZgL9D3RwQAoHn7Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QQe7ER0lJaOKlesYPLdSPPYW/Bv5sXMdEdAKQpxPvlnDbfD2uN2+BAnSxUyWt432F
-         RyoJdZ5HcJwLPyla3WcjIhjOyT2iMCKSqTaoGYLjNMk8Je/VsbQIs5PbAInAbSYoux
-         cJcNw6W2ovVKBX1f9TTfkrEP9+p1mjtwjl8I9l28=
+        b=LO7eXqfRYz59eZLpguPf6nWIiHEUdQZV0ywtvDTnzInYBFyCHuE7ww3zuo6nNIIoS
+         /ozFr2lnb77ev3iUKkRJn+Y3n955N/pL/dacG7hB13ROAFNo3RG31pdlmmgTPgF5ww
+         3Rmubpy8gaTDlg6MBbUKy6yCs5SMbRnq+B7Yj6gM=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mark Bloch <markb@mellanox.com>, Bodong Wang <bodong@mellanox.com>,
-        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 178/671] RDMA/mlx5: Fix memory leak in case we fail to add an IB device
-Date:   Thu, 16 Jan 2020 11:51:27 -0500
-Message-Id: <20200116165940.10720-61-sashal@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 201/671] net/mlx5: Delete unused FPGA QPN variable
+Date:   Thu, 16 Jan 2020 11:51:50 -0500
+Message-Id: <20200116165940.10720-84-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116165940.10720-1-sashal@kernel.org>
 References: <20200116165940.10720-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -46,39 +44,47 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mark Bloch <markb@mellanox.com>
+From: Leon Romanovsky <leonro@mellanox.com>
 
-[ Upstream commit fc9e4477f924e84d7798f7a1d41401d699de1219 ]
+[ Upstream commit 566428375a53619196e31803130dd1a7010c4d7f ]
 
-Make sure the IB device is freed on failure.
+fpga_qpn was assigned but never used and compilation with W=1
+produced the following warning:
 
-Fixes: b5ca15ad7e61 ("IB/mlx5: Add proper representors support")
-Signed-off-by: Mark Bloch <markb@mellanox.com>
-Reviewed-by: Bodong Wang <bodong@mellanox.com>
-Reviewed-by: Håkon Bugge <haakon.bugge@oracle.com>
+drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c: In function _mlx5_fpga_event_:
+drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c:320:6: warning:
+variable _fpga_qpn_ set but not used [-Wunused-but-set-variable]
+  u32 fpga_qpn;
+      ^~~~~~~~
+
+Fixes: 98db16bab59f ("net/mlx5: FPGA, Handle QP error event")
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/ib_rep.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/ib_rep.c b/drivers/infiniband/hw/mlx5/ib_rep.c
-index 35a0e04c38f2..b841589c27c9 100644
---- a/drivers/infiniband/hw/mlx5/ib_rep.c
-+++ b/drivers/infiniband/hw/mlx5/ib_rep.c
-@@ -69,8 +69,10 @@ mlx5_ib_vport_rep_load(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
- 	ibdev->mdev = dev;
- 	ibdev->num_ports = max(MLX5_CAP_GEN(dev, num_ports),
- 			       MLX5_CAP_GEN(dev, num_vhca_ports));
--	if (!__mlx5_ib_add(ibdev, &rep_profile))
-+	if (!__mlx5_ib_add(ibdev, &rep_profile)) {
-+		ib_dealloc_device(&ibdev->ib_dev);
- 		return -EINVAL;
-+	}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
+index 436a8136f26f..310f9e7d8320 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/core.c
+@@ -289,7 +289,6 @@ void mlx5_fpga_event(struct mlx5_core_dev *mdev, u8 event, void *data)
+ 	const char *event_name;
+ 	bool teardown = false;
+ 	unsigned long flags;
+-	u32 fpga_qpn;
+ 	u8 syndrome;
  
- 	rep->rep_if[REP_IB].priv = ibdev;
- 
+ 	switch (event) {
+@@ -300,7 +299,6 @@ void mlx5_fpga_event(struct mlx5_core_dev *mdev, u8 event, void *data)
+ 	case MLX5_EVENT_TYPE_FPGA_QP_ERROR:
+ 		syndrome = MLX5_GET(fpga_qp_error_event, data, syndrome);
+ 		event_name = mlx5_fpga_qp_syndrome_to_string(syndrome);
+-		fpga_qpn = MLX5_GET(fpga_qp_error_event, data, fpga_qpn);
+ 		break;
+ 	default:
+ 		mlx5_fpga_warn_ratelimited(fdev, "Unexpected event %u\n",
 -- 
 2.20.1
 
