@@ -2,106 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8BD13D4E6
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 08:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAFD13D50D
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 08:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgAPHW7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 02:22:59 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:38836 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726763AbgAPHW7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 02:22:59 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00G7EFP2064860;
-        Thu, 16 Jan 2020 07:22:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=ztPML10tVKhr4G3sZtMznvxCB8SCNkabYW6q7cNW/cE=;
- b=kNzT1aBzo2uJuvKeWRAVGSDZHnnQnbnoJCSD3eks2rWAoj75ix+13g7/c8UArqzfPdGW
- h8GdZ+cQTsXMQLrDdaD+sEvEYOrAi/L4Q3ERgrH+mZuHlNE2ehH4989IZfk551CH+4t1
- hpreZ/JTqM+4Zlf488i2UAKxRT6VPx20qbMtAE7zQ3xtEw+08th8G1cw3k4i5vRS2H/G
- IcyHWLP9VOP/SSp0UFM9K3iQsLvnVILuwpGoxkUjPWue4yLzBiBkWjx7DZZTFoDzQQqB
- qjEM8KDIYiZ3b7U3SUtCMXCUe5O5D6jomNVY3M+CWjvPPLfa2ABYt432mQq+G8IE5bPC XA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2xf73yrpdw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Jan 2020 07:22:39 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00G7ECGD054105;
-        Thu, 16 Jan 2020 07:22:38 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2xj1atum3v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Jan 2020 07:22:38 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 00G7MbYX024575;
-        Thu, 16 Jan 2020 07:22:37 GMT
-Received: from [192.168.86.20] (/69.181.241.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 15 Jan 2020 23:22:36 -0800
-Subject: Re: [PATCH mlx5-next 09/10] net/rds: Handle ODP mr
- registration/unregistration
-To:     Leon Romanovsky <leon@kernel.org>
+        id S1726410AbgAPHcN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 02:32:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726230AbgAPHcN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jan 2020 02:32:13 -0500
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 853FF206D9;
+        Thu, 16 Jan 2020 07:32:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579159932;
+        bh=71p+ojXSFncYgtjwBte4i1//8EsdierqMI4JPvefN0U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2OlW3PLsZ9J5jY7zPjXU9ENigXmjDDeDmkiaIl73Okhxgh1lbgGjeoZEwZjcLHFKQ
+         ao9YwSJe3MjYOELfAI2J4qotAdWs/ffrXLqSJ4swvCkTVh1k9IaSvhZHSpt0PqliK9
+         ednWxwejV5ldfVWGVP58EXfZ3IL7RbsgFroMAogo=
+Date:   Thu, 16 Jan 2020 09:32:08 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "David S . Miller" <davem@davemloft.net>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Hans Westgaard Ry <hans.westgaard.ry@oracle.com>,
-        Moni Shoua <monis@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-References: <20200115124340.79108-1-leon@kernel.org>
- <20200115124340.79108-10-leon@kernel.org>
- <3c479d8a-f98a-a4c9-bd85-6332e919bf35@oracle.com>
- <20200116071110.GE76932@unreal>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <f11e3c44-3e14-b840-6277-1820bba38952@oracle.com>
-Date:   Wed, 15 Jan 2020 23:22:35 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.2
+        Bart Van Assche <bvanassche@acm.org>,
+        Sean Hefty <sean.hefty@intel.com>
+Subject: Re: [PATCH rdma-rc v2 00/48] Organize code according to IBTA layout
+Message-ID: <20200116073208.GG76932@unreal>
+References: <20191212093830.316934-1-leon@kernel.org>
+ <20200107184019.GA20166@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <20200116071110.GE76932@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9501 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2001160060
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9501 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2001160060
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200107184019.GA20166@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/15/20 11:11 PM, Leon Romanovsky wrote:
-> On Wed, Jan 15, 2020 at 01:51:23PM -0800, santosh.shilimkar@oracle.com wrote:
->> On 1/15/20 4:43 AM, Leon Romanovsky wrote:
->>> From: Hans Westgaard Ry <hans.westgaard.ry@oracle.com>
->>>
->>> On-Demand-Paging MRs are registered using ib_reg_user_mr and
->>> unregistered with ib_dereg_mr.
->>>
->>> Signed-off-by: Hans Westgaard Ry <hans.westgaard.ry@oracle.com>
->>> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->>> ---
->>
->> Have already reviewed this patchset on internal list. Couple of
->> minor nits below o.w patch looks good to me.
->>
->> Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-> 
-> Thanks Santosh, Once, I'll figure the apply path for this series,
-> I will add extra lines while applying the patches.
-> 
-Sure. Thanks for picking it up !!
+On Tue, Jan 07, 2020 at 02:40:19PM -0400, Jason Gunthorpe wrote:
+> On Thu, Dec 12, 2019 at 11:37:42AM +0200, Leon Romanovsky wrote:
+> >   RDMA/cm: Delete unused CM LAP functions
+> >   RDMA/cm: Delete unused CM ARP functions
+>
+> These are applied to for-next
+>
+> > Leon Romanovsky (48):
+> >   RDMA/cm: Provide private data size to CM users
+> >   RDMA/srpt: Use private_data_len instead of hardcoded value
+> >   RDMA/ucma: Mask QPN to be 24 bits according to IBTA
+> >   RDMA/cm: Add SET/GET implementations to hide IBA wire format
+> >   RDMA/cm: Request For Communication (REQ) message definitions
+> >   RDMA/cm: Message Receipt Acknowledgment (MRA) message definitions
+> >   RDMA/cm: Reject (REJ) message definitions
+> >   RDMA/cm: Reply To Request for communication (REP) definitions
+> >   RDMA/cm: Ready To Use (RTU) definitions
+> >   RDMA/cm: Request For Communication Release (DREQ) definitions
+> >   RDMA/cm: Reply To Request For Communication Release (DREP) definitions
+> >   RDMA/cm: Load Alternate Path (LAP) definitions
+> >   RDMA/cm: Alternate Path Response (APR) message definitions
+> >   RDMA/cm: Service ID Resolution Request (SIDR_REQ) definitions
+> >   RDMA/cm: Service ID Resolution Response (SIDR_REP) definitions
+> >   RDMA/cm: Convert QPN and EECN to be u32 variables
+> >   RDMA/cm: Convert REQ responded resources to the new scheme
+> >   RDMA/cm: Convert REQ initiator depth to the new scheme
+> >   RDMA/cm: Convert REQ remote response timeout
+> >   RDMA/cm: Simplify QP type to wire protocol translation
+> >   RDMA/cm: Convert REQ flow control
+> >   RDMA/cm: Convert starting PSN to be u32 variable
+> >   RDMA/cm: Update REQ local response timeout
+> >   RDMA/cm: Convert REQ retry count to use new scheme
+> >   RDMA/cm: Update REQ path MTU field
+> >   RDMA/cm: Convert REQ RNR retry timeout counter
+> >   RDMA/cm: Convert REQ MAX CM retries
+> >   RDMA/cm: Convert REQ SRQ field
+> >   RDMA/cm: Convert REQ flow label field
+> >   RDMA/cm: Convert REQ packet rate
+> >   RDMA/cm: Convert REQ SL fields
+> >   RDMA/cm: Convert REQ subnet local fields
+> >   RDMA/cm: Convert REQ local ack timeout
+> >   RDMA/cm: Convert MRA MRAed field
+> >   RDMA/cm: Convert MRA service timeout
+> >   RDMA/cm: Update REJ struct to use new scheme
+> >   RDMA/cm: Convert REP target ack delay field
+> >   RDMA/cm: Convert REP failover accepted field
+> >   RDMA/cm: Convert REP flow control field
+> >   RDMA/cm: Convert REP RNR retry count field
+> >   RDMA/cm: Convert REP SRQ field
+> >   RDMA/cm: Convert LAP flow label field
+> >   RDMA/cm: Convert LAP fields
+> >   RDMA/cm: Convert SIDR_REP to new scheme
+> >   RDMA/cm: Add Enhanced Connection Establishment (ECE) bits
+> >   RDMA/cm: Convert private_date access
+>
+> I spent a long, long time looking at this. Far too long.
+>
+> The series is too big, and the patches make too many changes all at
+> once. There are also many problems with the IBA_GET/etc macros I gave
+> you. Finally, I didn't like that it only did half the job and still
+> left the old structs around.
+>
+> I fixed it all up, and put it here:
+>
+> https://github.com/jgunthorpe/linux/commits/cm_rework
+>
+> I originaly started by just writing out the IBA_CHECK things in the
+> first patch. This showed that the IBA_ acessors were not working right
+> (I fixed all those too). At the end of that exercise I had full
+> confidence that the new macros and the field descriptors were OK.
+>
+> When I started to look at the actual conversion patches and doing the
+> missing ones, I realized this whole thing was trivially done via
+> spatch. So I made a script that took the proven mapping of new names
+> to old names and had it code gen a spatch script which then was
+> applied.
+>
+> I split the spatch rules into 4 patches bases on 'kind of thing' being
+> converted.
+>
+> The first two can be diffed against your series. I didn't observe any
+> problems, so the conversion was probably good. However, it was hard to
+> tell as there was lots of functional changes mixed in your series,
+> like dropping more BE's and what not.
+>
+> The last two complete the work and convert all the loose structure
+> members. The final one deletes most of cm_msgs.h
+>
+> I have a pretty high confidence in the spatch process and the input
+> markup. But I didn't run sparse or test it.
+>
+> While this does not do everything your series did, it gobbles up all
+> the high LOC stuff and the remaining things like dropping more of the
+> be's are best done as smaller followup patches which can be applied
+> right away.
+>
+> The full diffstat is ridiculous:
+>  5 files changed, 852 insertions(+), 1253 deletions(-)
+>
+> Please check the revised series and let me know.
 
-Regards,
-Santosh
+Hi Jason,
+
+We tested the series and I reviewed it on github, everything looks
+amazing, and I have only three nitpicks.
+
+1. "exta" -> "extra"
+2. IMHO, you don't need to include your selftest in final patches, because
+the whole series is going to be accepted and that code will be added and
+deleted at the same time. Especially printk part.
+3. Copyright needs to be 2020
+
+Thanks,
+Tested-by: Leon Romanovsky <leonro@mellanox.com>
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
