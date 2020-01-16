@@ -2,37 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDAD13F78C
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 20:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F8713F782
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 20:12:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387613AbgAPQ74 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 11:59:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49104 "EHLO mail.kernel.org"
+        id S2406007AbgAPTMZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 14:12:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387618AbgAPQ7y (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Jan 2020 11:59:54 -0500
+        id S2387630AbgAPQ77 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jan 2020 11:59:59 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DAA020728;
-        Thu, 16 Jan 2020 16:59:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B78C20730;
+        Thu, 16 Jan 2020 16:59:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579193993;
-        bh=oRd0E7SCdWtugFrhZ95B+IDGaaAgSbq3cQIPybCl4JM=;
+        s=default; t=1579193998;
+        bh=KjvFMa7OZIvtEkWLUk4GLsSCtEY8T/9x0pX/63vGGII=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y9r0CW0Qf50pFq0rVdYuNurUre/SudPkrBWBZHGvL5ypL5Mi+ohZW5OJo3s2+IGB8
-         mvxRD6/qMFU58fvMPD7439V9C0tbmKMxCQU/C5aefZ5zp8g5HZnNYyH0w7GD9sVKGD
-         zr2a4eMOu1Sietf3q/s6vjshcLrZiuRQ0dguM3mg=
+        b=tTSgCJDxyAJkHSrbnPoFVUs4Hh2nEXLW7tEOnVvbMPlLbRaxys7utsfM0s/Stph49
+         rt9Z9rJYghonltAZPek053MN8Xb6m9ZHBK53RZkuaBAD0j5NKtgCpgWKmBcfjJinWH
+         jurEeSYnQkLXJjcgU8mlhUgHO5qxt3XDQYgJKMfY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Israel Rukshin <israelr@mellanox.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
+Cc:     Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 123/671] IB/iser: Pass the correct number of entries for dma mapped SGL
-Date:   Thu, 16 Jan 2020 11:50:32 -0500
-Message-Id: <20200116165940.10720-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 126/671] IB/mlx5: Don't override existing ip_protocol
+Date:   Thu, 16 Jan 2020 11:50:35 -0500
+Message-Id: <20200116165940.10720-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116165940.10720-1-sashal@kernel.org>
 References: <20200116165940.10720-1-sashal@kernel.org>
@@ -45,59 +44,130 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Israel Rukshin <israelr@mellanox.com>
+From: Maor Gottlieb <maorg@mellanox.com>
 
-[ Upstream commit 57b26497fabe1b9379b59fbc7e35e608e114df16 ]
+[ Upstream commit 6113cc44015b41ca51c0a76fed82522b68108dac ]
 
-ib_dma_map_sg() augments the SGL into a 'dma mapped SGL'. This process may
-change the number of entries and the lengths of each entry.
+Two flow specifications can set the ip protocol field in
+the flow table entry:
 
-Code that touches dma_address is iterating over the 'dma mapped SGL' and
-must use dma_nents which returned from ib_dma_map_sg().
+1) IB_FLOW_SPEC_TCP/UDP/GRE - set the ip protocol accordingly.
+2) IB_FLOW_SPEC_IPV4/6 - has ip_protocol field for users
+who want to receive specific L4 packets.
 
-ib_sg_to_pages() and ib_map_mr_sg() are using dma_address so they must use
-dma_nents.
+We need to avoid overriding of the ip_protocol with zeros,
+in case that the user first put the L4 specification and
+only then the L3.
 
-Fixes: 39405885005a ("IB/iser: Port to new fast registration API")
-Fixes: bfe066e256d5 ("IB/iser: Reuse ib_sg_to_pages")
-Signed-off-by: Israel Rukshin <israelr@mellanox.com>
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
-Acked-by: Sagi Grimberg <sagi@grimberg.me>
+Fixes: ca0d47538528b ('IB/mlx5: Add support in TOS and protocol to flow steering')
+Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/iser/iser_memory.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/infiniband/hw/mlx5/main.c | 53 +++++++++++++++++++++----------
+ 1 file changed, 37 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/iser/iser_memory.c b/drivers/infiniband/ulp/iser/iser_memory.c
-index 009be8889d71..379bc0dfc388 100644
---- a/drivers/infiniband/ulp/iser/iser_memory.c
-+++ b/drivers/infiniband/ulp/iser/iser_memory.c
-@@ -240,8 +240,8 @@ int iser_fast_reg_fmr(struct iscsi_iser_task *iser_task,
- 	page_vec->npages = 0;
- 	page_vec->fake_mr.page_size = SIZE_4K;
- 	plen = ib_sg_to_pages(&page_vec->fake_mr, mem->sg,
--			      mem->size, NULL, iser_set_page);
--	if (unlikely(plen < mem->size)) {
-+			      mem->dma_nents, NULL, iser_set_page);
-+	if (unlikely(plen < mem->dma_nents)) {
- 		iser_err("page vec too short to hold this SG\n");
- 		iser_data_buf_dump(mem, device->ib_device);
- 		iser_dump_page_vec(page_vec);
-@@ -451,10 +451,10 @@ static int iser_fast_reg_mr(struct iscsi_iser_task *iser_task,
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index df5be462dd28..2db34f7b5ced 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -2390,10 +2390,29 @@ static u8 get_match_criteria_enable(u32 *match_criteria)
+ 	return match_criteria_enable;
+ }
  
- 	ib_update_fast_reg_key(mr, ib_inc_rkey(mr->rkey));
+-static void set_proto(void *outer_c, void *outer_v, u8 mask, u8 val)
++static int set_proto(void *outer_c, void *outer_v, u8 mask, u8 val)
+ {
+-	MLX5_SET(fte_match_set_lyr_2_4, outer_c, ip_protocol, mask);
+-	MLX5_SET(fte_match_set_lyr_2_4, outer_v, ip_protocol, val);
++	u8 entry_mask;
++	u8 entry_val;
++	int err = 0;
++
++	if (!mask)
++		goto out;
++
++	entry_mask = MLX5_GET(fte_match_set_lyr_2_4, outer_c,
++			      ip_protocol);
++	entry_val = MLX5_GET(fte_match_set_lyr_2_4, outer_v,
++			     ip_protocol);
++	if (!entry_mask) {
++		MLX5_SET(fte_match_set_lyr_2_4, outer_c, ip_protocol, mask);
++		MLX5_SET(fte_match_set_lyr_2_4, outer_v, ip_protocol, val);
++		goto out;
++	}
++	/* Don't override existing ip protocol */
++	if (mask != entry_mask || val != entry_val)
++		err = -EINVAL;
++out:
++	return err;
+ }
  
--	n = ib_map_mr_sg(mr, mem->sg, mem->size, NULL, SIZE_4K);
--	if (unlikely(n != mem->size)) {
-+	n = ib_map_mr_sg(mr, mem->sg, mem->dma_nents, NULL, SIZE_4K);
-+	if (unlikely(n != mem->dma_nents)) {
- 		iser_err("failed to map sg (%d/%d)\n",
--			 n, mem->size);
-+			 n, mem->dma_nents);
- 		return n < 0 ? n : -EINVAL;
- 	}
+ static void set_flow_label(void *misc_c, void *misc_v, u32 mask, u32 val,
+@@ -2597,8 +2616,10 @@ static int parse_flow_attr(struct mlx5_core_dev *mdev, u32 *match_c,
+ 		set_tos(headers_c, headers_v,
+ 			ib_spec->ipv4.mask.tos, ib_spec->ipv4.val.tos);
  
+-		set_proto(headers_c, headers_v,
+-			  ib_spec->ipv4.mask.proto, ib_spec->ipv4.val.proto);
++		if (set_proto(headers_c, headers_v,
++			      ib_spec->ipv4.mask.proto,
++			      ib_spec->ipv4.val.proto))
++			return -EINVAL;
+ 		break;
+ 	case IB_FLOW_SPEC_IPV6:
+ 		if (FIELDS_NOT_SUPPORTED(ib_spec->ipv6.mask, LAST_IPV6_FIELD))
+@@ -2637,9 +2658,10 @@ static int parse_flow_attr(struct mlx5_core_dev *mdev, u32 *match_c,
+ 			ib_spec->ipv6.mask.traffic_class,
+ 			ib_spec->ipv6.val.traffic_class);
+ 
+-		set_proto(headers_c, headers_v,
+-			  ib_spec->ipv6.mask.next_hdr,
+-			  ib_spec->ipv6.val.next_hdr);
++		if (set_proto(headers_c, headers_v,
++			      ib_spec->ipv6.mask.next_hdr,
++			      ib_spec->ipv6.val.next_hdr))
++			return -EINVAL;
+ 
+ 		set_flow_label(misc_params_c, misc_params_v,
+ 			       ntohl(ib_spec->ipv6.mask.flow_label),
+@@ -2660,10 +2682,8 @@ static int parse_flow_attr(struct mlx5_core_dev *mdev, u32 *match_c,
+ 					 LAST_TCP_UDP_FIELD))
+ 			return -EOPNOTSUPP;
+ 
+-		MLX5_SET(fte_match_set_lyr_2_4, headers_c, ip_protocol,
+-			 0xff);
+-		MLX5_SET(fte_match_set_lyr_2_4, headers_v, ip_protocol,
+-			 IPPROTO_TCP);
++		if (set_proto(headers_c, headers_v, 0xff, IPPROTO_TCP))
++			return -EINVAL;
+ 
+ 		MLX5_SET(fte_match_set_lyr_2_4, headers_c, tcp_sport,
+ 			 ntohs(ib_spec->tcp_udp.mask.src_port));
+@@ -2680,10 +2700,8 @@ static int parse_flow_attr(struct mlx5_core_dev *mdev, u32 *match_c,
+ 					 LAST_TCP_UDP_FIELD))
+ 			return -EOPNOTSUPP;
+ 
+-		MLX5_SET(fte_match_set_lyr_2_4, headers_c, ip_protocol,
+-			 0xff);
+-		MLX5_SET(fte_match_set_lyr_2_4, headers_v, ip_protocol,
+-			 IPPROTO_UDP);
++		if (set_proto(headers_c, headers_v, 0xff, IPPROTO_UDP))
++			return -EINVAL;
+ 
+ 		MLX5_SET(fte_match_set_lyr_2_4, headers_c, udp_sport,
+ 			 ntohs(ib_spec->tcp_udp.mask.src_port));
+@@ -2699,6 +2717,9 @@ static int parse_flow_attr(struct mlx5_core_dev *mdev, u32 *match_c,
+ 		if (ib_spec->gre.mask.c_ks_res0_ver)
+ 			return -EOPNOTSUPP;
+ 
++		if (set_proto(headers_c, headers_v, 0xff, IPPROTO_GRE))
++			return -EINVAL;
++
+ 		MLX5_SET(fte_match_set_lyr_2_4, headers_c, ip_protocol,
+ 			 0xff);
+ 		MLX5_SET(fte_match_set_lyr_2_4, headers_v, ip_protocol,
 -- 
 2.20.1
 
