@@ -2,84 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECF613F8CA
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 20:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 062DB13F94B
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 20:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437655AbgAPTU5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 14:20:57 -0500
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:45309 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437654AbgAPTU5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 14:20:57 -0500
-Received: by mail-qv1-f66.google.com with SMTP id l14so9601957qvu.12
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 11:20:57 -0800 (PST)
+        id S1730919AbgAPTYJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 14:24:09 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:38997 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733088AbgAPTYI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 14:24:08 -0500
+Received: by mail-qk1-f193.google.com with SMTP id c16so20296671qko.6
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 11:24:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=81kflwq1LKTJoJRd6zHjSIcQI0KmlXkcls9/tBo7nuA=;
-        b=Fez1PCHqieVREo0dLSh28taNzYtPlXRUhitMndvsYDHN1n41rUz0luanpBE0vOj92m
-         LurMdl64dXLzC3uruGzU/xkRJeY7AqQE73PlD2b/ATsdKAnuPIi3tRzVH7o7yVxIQUvQ
-         LoxsiYQGH1au9vFIV754rPw8hKPJTFIblURKLz7ZnV8D0CFZsj4m1BbljlVQJ2t9fUHC
-         YINLzw++UT+xSUxGnuGoYI2Nnyd6Lj/fwgPv+6tCws7oTJH+fltXlTITwh63inMrYFkN
-         hrJaZzEt3eDunOgXw7VfGJ/Ot0SvEdBfvEQQkG+Qg6XCDoMEhxV0/8z9h/4D7rpaG7ES
-         c1Vw==
+        bh=e4/z0umMohmgQB5HhskF+31qfU2NQcCR4vvmoWLJ4cE=;
+        b=owqavWUhKk1J6MPPCu7wzQDUMF+dd3/sRpNGOlaP3t0R+B94mcSwanMfizJDmd0AQJ
+         VzN0YNnbEoXkfn0ZewHSMch6LcHT+4uKXTRhzB5/tZfzcGfMDDUpX3c5/Pl8bStBHw+h
+         sVtAehKrEjOQLkckWet6hm+kVLKr2cwVcLQS742PSQ1TTOLWMhMcryzIcMFUiMi7wUKS
+         lF71vniGJ+Kd1X4x7WL+nlwa5ypIB35+jfzdxaKNFpRSfWuYDwXKgwD4tCeaBwpZn/Gc
+         UpV2k3GciUECCB6Osant4e2VefMsdm+kDlmFMGDm7dyYopROEDQcr5yFXMb42T/5w8al
+         wyzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=81kflwq1LKTJoJRd6zHjSIcQI0KmlXkcls9/tBo7nuA=;
-        b=cP5/j6QjbbZsjGSeRRxkT08bce1vSGcxUVH5qJHPGaebygLCKXwnQ63oAnU7BPTB45
-         3M1zrfvnFanMhxZ/jApoeyXw8kM4zz8+NmP8Lr1TgRLHuGRbfXHZPH/a1as1Gdu+dkr/
-         wz9pOLMLqIZ6hNMT03F0/0JWW7BNfjfTHDjiXiqmSALlnNt0KwOS5eZNcd6qloVKUx2Q
-         5wDu5glCB0dNsfhESvdB/2qyc1HWawgEYvNUg7TP/2GOfrECmmrCY17n0iXtNG0BnoKM
-         maWGk5O9zoMEW9QsEJoOKU+teaPYjobT0Iw/kDJaXgZSdtvF5lhFs579OfGwMdSdkRzr
-         YrhA==
-X-Gm-Message-State: APjAAAWVN4bQxesosK65g+WC7FoeXn4CN/Ch+Lss644phJCag0r7R/6i
-        rT9S8FpnG/0667TyP/p1imQzdg==
-X-Google-Smtp-Source: APXvYqzn+xRkLkCNs33bv/K5N2101y0EqVzvVTH+y2BK05cdkxkk2BDyz6ambGon1fg0n2v/t2jjrQ==
-X-Received: by 2002:ad4:4e34:: with SMTP id dm20mr4261496qvb.163.1579202456652;
-        Thu, 16 Jan 2020 11:20:56 -0800 (PST)
+        bh=e4/z0umMohmgQB5HhskF+31qfU2NQcCR4vvmoWLJ4cE=;
+        b=iWbxzeSwQoLMRve/f2/yUljGJXZH5JJ1rEkiMe4BWpscwXSiKtYkjTlW3MxevllxH3
+         VHMgsbSQO1og6MlwIsL4dAe/LnK7CfgJ9eG4MtoIxuQQtxcCyIvZCAzLRBqBsQmhgeIi
+         Di3bVxvS2ozLdX1pr3rOl/CcZPpbA2Y8m2IeLlhREAI/ci5v6kKicx174vnXP2UhyhSw
+         Xzjgogn3Ok9kA366Dq6PmUckNIGuD6oAmuvuSCNUCXENh52KRcX840aHQ1BLuQxUhxb2
+         s456x9iCSkAMoWSFT9eiyLlFt9cOLsepCbLkWWkpcQ8lDWjSiT8VX/t2ZCrNUYHSpb5H
+         ZoUA==
+X-Gm-Message-State: APjAAAXQLPA4tRDeZxhdkGm3bgrEZXqUeF/10Zr0ZnMf3xqZNv/VVgIb
+        sywE//N1pBZdYmRw1ghQKTJTSQ==
+X-Google-Smtp-Source: APXvYqybolHbGE3JTvmrEpeyIpUzCKU5N69jKxbjGpaXZG2hwfQRW3UenCJavr20+2XUd7MTXNZ3aQ==
+X-Received: by 2002:a37:801:: with SMTP id 1mr35686766qki.326.1579202647486;
+        Thu, 16 Jan 2020 11:24:07 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id i2sm11820744qte.87.2020.01.16.11.20.55
+        by smtp.gmail.com with ESMTPSA id i5sm11613265qtv.80.2020.01.16.11.24.05
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 Jan 2020 11:20:55 -0800 (PST)
+        Thu, 16 Jan 2020 11:24:06 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1isAhK-0002fJ-Ma; Thu, 16 Jan 2020 15:20:54 -0400
-Date:   Thu, 16 Jan 2020 15:20:54 -0400
+        id 1isAkO-0002jF-HP; Thu, 16 Jan 2020 15:24:04 -0400
+Date:   Thu, 16 Jan 2020 15:24:04 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     rao Shoaib <rao.shoaib@oracle.com>
-Cc:     linux-rdma@vger.kernel.org, monis@mellanox.com,
-        dledford@redhat.com, sean.hefty@intel.com,
-        hal.rosenstock@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/2] RDMA/rxe: rxe should use same buffer size for
- SGE's and inline data
-Message-ID: <20200116192054.GD10759@ziepe.ca>
-References: <1579199412-15741-1-git-send-email-rao.shoaib@oracle.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Sean Hefty <sean.hefty@intel.com>
+Subject: Re: [PATCH rdma-rc v2 00/48] Organize code according to IBTA layout
+Message-ID: <20200116192404.GE10759@ziepe.ca>
+References: <20191212093830.316934-1-leon@kernel.org>
+ <20200107184019.GA20166@ziepe.ca>
+ <20200116073208.GG76932@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1579199412-15741-1-git-send-email-rao.shoaib@oracle.com>
+In-Reply-To: <20200116073208.GG76932@unreal>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 10:30:10AM -0800, rao Shoaib wrote:
-> From: Rao Shoaib <rao.shoaib@oracle.com>
-> 
-> Incorportaed suggestions from Jason. There are two patches.
-> Patch #1 introduces max WQE size as suggested by Jason
-> Patch #2 allocates resources requested and makes sure that the buffer size
->          is same for SG entries and inline data, maximum of the two values
->          requested is used.
-> 
-> Rao Shoaib (2):
->   RDMA/rxe: use RXE_MAX_WQE_SIZE to enforce limits
->   RDMA/rxe: SGE buffer and max_inline data must have same size
+On Thu, Jan 16, 2020 at 09:32:08AM +0200, Leon Romanovsky wrote:
 
-I already took v3, with modifications
+> 2. IMHO, you don't need to include your selftest in final patches, because
+> the whole series is going to be accepted and that code will be added and
+> deleted at the same time. Especially printk part.
+
+I like seeing the tests. For a patch like this, which is so tedious to
+review, it makes the review a check of the tests, a check of the
+spatch and some spot checks of the transformations.
+
+Since it is a small number of lines, and it is much easier than
+sending the tests separately, it felt reasonable to leave them in the
+history.
+
+Will you be able to send the _be removal conversions you had done on
+top of this?
+
+I didn't show it, but all the private_data_len, etc should be some
+generic IBA_NUM_BYTES() accessor like get/set instead of more #defines.
 
 Jason
