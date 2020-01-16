@@ -2,131 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1019D13FAAD
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 21:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 346E313FBC4
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 22:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733280AbgAPUdZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 15:33:25 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3910 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729067AbgAPUdY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 15:33:24 -0500
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e20c8570000>; Thu, 16 Jan 2020 12:32:23 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 16 Jan 2020 12:33:20 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 16 Jan 2020 12:33:20 -0800
-Received: from [10.2.160.8] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 16 Jan
- 2020 20:33:19 +0000
-Subject: Re: [PATCH v12 04/22] mm: devmap: refactor 1-based refcounting for
- ZONE_DEVICE pages
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20200107224558.2362728-1-jhubbard@nvidia.com>
- <20200107224558.2362728-5-jhubbard@nvidia.com>
- <20200115152306.GA19546@infradead.org>
- <4707f191-86f8-db4a-c3de-0a84b415b658@nvidia.com>
- <20200116093712.GA11011@infradead.org>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <ccf2723a-dcce-57d3-f63d-ee96dbf6653a@nvidia.com>
-Date:   Thu, 16 Jan 2020 12:30:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1732980AbgAPV4P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 16:56:15 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:46697 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729153AbgAPV4P (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 16:56:15 -0500
+Received: by mail-qv1-f65.google.com with SMTP id u1so9818497qvk.13;
+        Thu, 16 Jan 2020 13:56:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=uYKEJj/GMP8sSDQFNnAjGhqY9XFCpZEuY6M+a4dSQeU=;
+        b=cJQqdoXQ0CnuvxdB8UKCrMhFl3pfRQmYy0E92RMM7YS3wWK2bpd1cVGG91pnVQXD6D
+         rVVDFwxqb0Bjzruz80mumk7k7PS+s0ClROc1+BN8zTeA5pWi+P+IHdOmLprmEwX7yJAW
+         dqMeWRZ5J5c98Fg6EpqQuCllyNOrZ5bJmWsj6a/IVjGkaQUl14Fe1YIqJ2owcDK2AAo+
+         NAb8l0yhDKmxNbogqSxC9iGP0ExKSRkgv8RGfpbY7V7AEJxEAE0FYhRZbS8mKBW4ZrgV
+         /mKkM8/aWPkiRjp0tHyin5jY8DtO2rosRPOk82GMb/F70zFzicESv+/TzeAw6SkbPDEA
+         y/pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uYKEJj/GMP8sSDQFNnAjGhqY9XFCpZEuY6M+a4dSQeU=;
+        b=rY0zitNH7C93O9XTk5wzjKhEB1/Jr+Ft0ZBUENM2v1zMpZI5odnlWlfwsJT4taGwI2
+         XRBfyudTOcovcMbRDAKMIdAn8Lp6Ve4FgJBMxZPeFrzHPVh+KvvmU3O4AGQkvPEx886t
+         uEryrjIVphyzReiP9hA0gUtVXbcc4PFI9EaGssa/wR35G1CdFhN6bKnOMsriaJYFwSIG
+         i1gR9TkxtfAh0Oe3SYusdSPMvzOdLYsD1rd91UmjC/PCF/vwTD4r1DF0ZLKymuY6rKGu
+         vofBtwQta0/amI2+tE6gqgwnMZtcFNtDm8gOe3WJSR1TzbxEZxAechSl5pzz04h152Sd
+         +kHg==
+X-Gm-Message-State: APjAAAWmyajr2ynBx4VB9Q00D7bDNMjIvIrUDfjrdyrG4QpE660+5qjx
+        Pl/JhXENcq8Zwm41inL3uwjZqwytqJs4gc9p5fY=
+X-Google-Smtp-Source: APXvYqwlOZAAm2G/5rmcVaC/i2nVwG0ZnEs5LNd+BqKVMpk8A+zSDsOF78JgY+/NQIXhKjtj4+TM9cz9V/EWM8Z9T/4=
+X-Received: by 2002:ad4:54d3:: with SMTP id j19mr4651801qvx.247.1579211774124;
+ Thu, 16 Jan 2020 13:56:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20200116093712.GA11011@infradead.org>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1579206743; bh=EQpRDmAadXrYPrWI0G8MSYR7uqZas3jC8zZTGB2Hfnk=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=B3a+nJMY1e/PvYKAT7LBGlwa/kugx+AfoqbMvj/EyT3hxrpeJ7sQMsWMdJQlxzKho
-         jy2YJ47pzKLca9QqrMI2qpXvMA46wU1dfzb3yzBY8NTIGraOJl+bg0Pq/59xdUBLNS
-         /bnG7fSxkcGgsGNzlzCgQWOOUXWSDOgkuZxsp+8IlbnfinKUcliv6MqWXSulEsNyXv
-         EIh2GmNEud9hkIp72ZuHMkWrhgwhMDnw4xjgxdJ2+W90cT6UoDxxzOl8PDPrjhQ9p0
-         IklTRq4Mlrg+UVduRNOxi7jCeWI/98S5JYFUwVk8qaaNzULyUj0q2zlHy86g76FXcR
-         ZxTytDejWJDcw==
+References: <157918093154.1357254.7616059374996162336.stgit@toke.dk> <157918093613.1357254.10230277763921623892.stgit@toke.dk>
+In-Reply-To: <157918093613.1357254.10230277763921623892.stgit@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 16 Jan 2020 13:56:03 -0800
+Message-ID: <CAEf4BzbJZ7JUyr8p3YKX-Rrth_B7OMbih50xxyt_YNBd--107w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 04/11] tools/runqslower: Use consistent
+ include paths for libbpf
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/16/20 1:37 AM, Christoph Hellwig wrote:
-> On Wed, Jan 15, 2020 at 01:19:41PM -0800, John Hubbard wrote:
->> On 1/15/20 7:23 AM, Christoph Hellwig wrote:
->> ...
->>>
->>> I'm really not sold on this scheme.  Note that I think it is
->>> particularly bad, but it also doesn't seem any better than what
->>> we had before, and it introduced quite a bit more code.
->>>
->>
->> Hi Christoph,
->>
->> All by itself, yes. But the very next patch (which needs a little
->> rework for other reasons, so not included here) needs to reuse some of
->> these functions within __unpin_devmap_managed_user_page():
-> 
-> Well, then combine it with the series that actually does the change.
+On Thu, Jan 16, 2020 at 5:23 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>
+> Fix the runqslower tool to include libbpf header files with the bpf/
+> prefix, to be consistent with external users of the library. Also ensure
+> that all includes of exported libbpf header files (those that are exporte=
+d
+> on 'make install' of the library) use bracketed includes instead of quote=
+d.
+>
+> To not break the build, keep the old include path until everything has be=
+en
+> changed to the new one; a subsequent patch will remove that.
+>
+> Fixes: 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are taken f=
+rom selftests dir")
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  tools/bpf/runqslower/Makefile         |    5 +++--
+>  tools/bpf/runqslower/runqslower.bpf.c |    2 +-
+>  tools/bpf/runqslower/runqslower.c     |    4 ++--
+>  3 files changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefil=
+e
+> index 89fb7cd30f1a..c0512b830805 100644
+> --- a/tools/bpf/runqslower/Makefile
+> +++ b/tools/bpf/runqslower/Makefile
+> @@ -5,6 +5,7 @@ LLC :=3D llc
+>  LLVM_STRIP :=3D llvm-strip
+>  DEFAULT_BPFTOOL :=3D $(OUTPUT)/sbin/bpftool
+>  BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
+> +LIBBPF_INCLUDE :=3D -I$(abspath ../../lib) -I$(abspath ../../lib/bpf)
 
+I'd probably put all the -I's into single INCLUDES var and include
+that one instead of mixing -I$(OUTPUT) and $(LIBBPF_INCLUDE), but this
+works too.
 
-OK, that makes sense. I just double-checked with a quick test run, that it
-doesn't have dependencies with the rest of this series, and it came out clean,
-so:
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-Andrew, could you please remove just this one patch from mmotm and linux-next?
+>  LIBBPF_SRC :=3D $(abspath ../../lib/bpf)
+>  CFLAGS :=3D -g -Wall
+>
 
-
-> 
-> Also my vaguely recollection is that we had some idea on how to get rid
-> of the off by one refcounting for the zone device pages, which would be
-> a much better outcome.
-> 
-
-Yes, I recall that Dan Williams mentioned it, but I don't think he provided
-any details yet.
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+[...]
