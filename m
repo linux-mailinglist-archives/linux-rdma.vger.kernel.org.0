@@ -2,37 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4F713E4F8
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 18:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A37E13E6D7
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 18:22:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390341AbgAPRL4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 12:11:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53582 "EHLO mail.kernel.org"
+        id S2390822AbgAPRNq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 12:13:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389018AbgAPRLz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:11:55 -0500
+        id S2390818AbgAPRNp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:13:45 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 940B7246A0;
-        Thu, 16 Jan 2020 17:11:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB3AF246A5;
+        Thu, 16 Jan 2020 17:13:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579194714;
-        bh=VMxSnVGIwtCxxKxJeP4Q7uYMqhofEoA/E2CG4sUyupk=;
+        s=default; t=1579194825;
+        bh=0YFaWcb15ye1CrXZgnwX8z1XFUDrX3MGS2VAo9jXphY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SS3pvIaWr+Qn337e2vDzM/2ty4g/E64EzKklydR6RvACrWTAtwEuS9cVsAj5Y+Ipl
-         8uIOs607aGyzDEVYSpvPQKSZdho6kwbUJR4EG+Rn3DLerDvVDh0+0kkIA/GHrLtDzv
-         yDaLga0PK34QPBFdWhPlCnYkavfcun8F8UvlHUXI=
+        b=u86rZRpTkpCHd66AgrPZwZUw9zqD0dlCkmjJbt47euW5tD+nF08pYxbOSZeq19OEA
+         +8bBBSY1ZwQMpihol0qF8PsUxs3eJYlmH5Sk35bJACjPcB7JZB+7ibYMENP/p9fwnq
+         48MfaJD35OAsTkBzhwpmcEmVEy9qCuzu9Egbat9c=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: [PATCH AUTOSEL 4.19 551/671] net/rds: Fix 'ib_evt_handler_call' element in 'rds_ib_stat_names'
-Date:   Thu, 16 Jan 2020 12:03:09 -0500
-Message-Id: <20200116170509.12787-288-sashal@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 629/671] RDMA/mlx5: Return proper error value
+Date:   Thu, 16 Jan 2020 12:04:27 -0500
+Message-Id: <20200116170509.12787-366-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
 References: <20200116170509.12787-1-sashal@kernel.org>
@@ -45,38 +43,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gerd Rausch <gerd.rausch@oracle.com>
+From: Leon Romanovsky <leonro@mellanox.com>
 
-[ Upstream commit 05a82481a3024b94db00b8c816bb3d526b5209e0 ]
+[ Upstream commit 546d30099ed204792083f043cd7e016de86016a3 ]
 
-All entries in 'rds_ib_stat_names' are stringified versions
-of the corresponding "struct rds_ib_statistics" element
-without the "s_"-prefix.
+Returned value from mlx5_mr_cache_alloc() is checked to be error or real
+pointer. Return proper error code instead of NULL which is not checked
+later.
 
-Fix entry 'ib_evt_handler_call' to do the same.
-
-Fixes: f4f943c958a2 ("RDS: IB: ack more receive completions to improve performance")
-Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 81713d3788d2 ("IB/mlx5: Add implicit MR support")
+Link: https://lore.kernel.org/r/20191029055721.7192-1-leon@kernel.org
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/rds/ib_stats.c | 2 +-
+ drivers/infiniband/hw/mlx5/mr.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/rds/ib_stats.c b/net/rds/ib_stats.c
-index 9252ad126335..ac46d8961b61 100644
---- a/net/rds/ib_stats.c
-+++ b/net/rds/ib_stats.c
-@@ -42,7 +42,7 @@ DEFINE_PER_CPU_SHARED_ALIGNED(struct rds_ib_statistics, rds_ib_stats);
- static const char *const rds_ib_stat_names[] = {
- 	"ib_connect_raced",
- 	"ib_listen_closed_stale",
--	"s_ib_evt_handler_call",
-+	"ib_evt_handler_call",
- 	"ib_tasklet_call",
- 	"ib_tx_cq_event",
- 	"ib_tx_ring_full",
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index bd1fdadf7ba0..18fd9aa6510f 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -457,7 +457,7 @@ struct mlx5_ib_mr *mlx5_mr_cache_alloc(struct mlx5_ib_dev *dev, int entry)
+ 
+ 	if (entry < 0 || entry >= MAX_MR_CACHE_ENTRIES) {
+ 		mlx5_ib_err(dev, "cache entry %d is out of range\n", entry);
+-		return NULL;
++		return ERR_PTR(-EINVAL);
+ 	}
+ 
+ 	ent = &cache->ent[entry];
 -- 
 2.20.1
 
