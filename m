@@ -2,101 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D4F13FC4E
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 23:44:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D0D13FC52
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 23:44:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387910AbgAPWnv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 17:43:51 -0500
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:43554 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729994AbgAPWnv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 17:43:51 -0500
-Received: by mail-pg1-f195.google.com with SMTP id k197so10642129pga.10
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 14:43:50 -0800 (PST)
+        id S2388769AbgAPWnz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 17:43:55 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:40943 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732417AbgAPWny (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 17:43:54 -0500
+Received: by mail-qt1-f194.google.com with SMTP id v25so20322462qto.7;
+        Thu, 16 Jan 2020 14:43:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=StK6mCQeojQYfSNaCJiF94BEEGS98R/vhelyaxbgu6A=;
-        b=iyzctcpZOh/cD8+hWHpgOyJgJ9WaMDWVR76GWjSPpjwICJ3JOcnEwnDu0eOTqsR7e4
-         YfiFzRzZvX6ndf4128+vfXwwJ0AVn5fyTbNg8BtWH95iYbxGEgDUP/nODhSMFB1qdJcA
-         cU5PRjJfDR0XahEozX2qNAdCrNKm0qHIS5ooq4iG88lOa3SA4RpnrsJ10X+ufq5E80LM
-         dkWQl1dimcnEpTVVHCoy7vxBiciZPr+rlfgpD3G4meAgm3g0V0h5h5DAkXumDdxXn0ra
-         8p0MWwFxceE9z7mm/SdI4JTyeKO9X+Hf/V6/Hn1H8DOt8kHhaaSx4/i35PehzLAMMca8
-         pR6g==
+         :cc:content-transfer-encoding;
+        bh=6V4rDJ8GQ9BDhz/SQaLpqohATNzavITKDId73kmv48o=;
+        b=n2OjqhSJc8YoIFY9twmO5Z5tXsxdcAZh5Qi6fB3j43J3mTV128YZjiL0eGIudHd4d6
+         Ki1uHthOo53TfRpXzq+CASThGj17ABxGtQv7g+CIWOTiI2ap6c6wgFpe6GqtRaZDbvjd
+         IwRHkx0wrLFBV7X4cURvaZXykCQb4ajm+OdLusPqa7zhe2aEucczFNw4TGNZl9Ra4+V7
+         o/NwphiUivETpcDOvRLsGjyv9PQg6HKoogNx4vtI/gQxyk2/wIGt4d8wG6uga6urD+EC
+         36C/t+RYhZ7LK+g/0G11g2YfoadULNmV9hIK1d7Kpld7KxhAJbu7Q8WAlEJc07H0i7zB
+         o5WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=StK6mCQeojQYfSNaCJiF94BEEGS98R/vhelyaxbgu6A=;
-        b=pcJnhXZwJqbAgqoOfBFYo0tjofXZPHS9IvsDPbR/h/JJPCYtG8rSMEodYJVIYDmG40
-         wXEaa9Gpkp4dznBxVhqG1UqX9E8Ve7kj/Fmqp6OvbM6DEbrTtDqpM9PlXgMGCLJsb+Ue
-         cLtn2lKe/KTcKWwJoyHBDz6dQDzFT0N1TQtySVY1Ni1TwPpYC7uTtkZj4eYXw/axbV5u
-         upT0Y2pmNf+SSD51+n8dl1x+HizX9w7jgoqaChNEwWOq8FwzQznFMiHcyFeWcI7iAvgY
-         AUsJ2niNlNCV4vI++PGNeqHESchAnNt0gYtCEaCFKnzw5IC8p7LdyD6vRRkbr6LCnRfK
-         akhw==
-X-Gm-Message-State: APjAAAXFXWFR/g/Sj/FmYXswhIXaDZiWU2qE4YCGW5gS77phCdhwrMBQ
-        A0/III/8Y7juZmhPt0yX0DtraqZ6lh+Kc/HxLyIaH8qp
-X-Google-Smtp-Source: APXvYqxJ07At8EtQYJ8dkKsBLN+K3Hk8+6I4E0D4nFyqeQvCfgv7ZHY8Es4Q3Gk+4BZkAmSX3Vdq8t9UjHXT36v1B7A=
-X-Received: by 2002:a62:e215:: with SMTP id a21mr40193966pfi.3.1579214630106;
- Thu, 16 Jan 2020 14:43:50 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6V4rDJ8GQ9BDhz/SQaLpqohATNzavITKDId73kmv48o=;
+        b=DVpbPx6LCq0rTeE1yQzzKRBsvQ1onUexU54SseEk3BdOv5/SMNnT1G6d5VICyXlX2S
+         DU+KOayFumfAZcLxwFKFvNND/Qmu1/3rqvKmQC4GFQW8NFf2ImR11tpHt8OIGOrRqGqa
+         J5BTRq/W57nEQ2pQZYE/Wc+Lnujd26TU/KKLP+UmevOGlxURwYHg8ppw2kTC/QnKg/lR
+         h5eX62mOaOvOeJlX4vaOcPLjE+PLjTuu/44LZoiBR9B4oLZr7B2XGyZdmZJFslLZJRnR
+         no1lc0fwSTghuHufIBHf1gShDihKrixcMV8HxfJZ9t4TV0hAIujqHJmvf/Z0LKZt2GoB
+         JWBA==
+X-Gm-Message-State: APjAAAVcYfmT1mlP77n1Sh9rIMtSUgbJmqiEwSPS/XOSVRsiWwaYimR3
+        G+u+JIaqDtxUooavJNGwsjqgLCgibHSTq0+PBXk=
+X-Google-Smtp-Source: APXvYqyRayvo4tT12kkQjmEE+9/BQV1hXR5rtzKk0t7oWHkLzEunvItYZ+Yg7d7QGOKguy9IFk/alBlDIDWiuD51Vzk=
+X-Received: by 2002:ac8:140c:: with SMTP id k12mr4780186qtj.117.1579214633217;
+ Thu, 16 Jan 2020 14:43:53 -0800 (PST)
 MIME-Version: 1.0
-References: <20200116222658.5285-1-natechancellor@gmail.com>
-In-Reply-To: <20200116222658.5285-1-natechancellor@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 16 Jan 2020 14:43:39 -0800
-Message-ID: <CAKwvOdmFbojiubviQYqwJLLpCLky_bpOH4jYjy4WCbOinPRYuA@mail.gmail.com>
-Subject: Re: [PATCH] IB/hfi1: Fix logical condition in msix_request_irq
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+References: <157918093154.1357254.7616059374996162336.stgit@toke.dk> <157918094400.1357254.5646603555325507261.stgit@toke.dk>
+In-Reply-To: <157918094400.1357254.5646603555325507261.stgit@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 16 Jan 2020 14:43:42 -0800
+Message-ID: <CAEf4BzbckO_J=kYQD0MnxD+k-APYvxth_ARuEenyAx73+LhtKw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 11/11] libbpf: Fix include of bpf_helpers.h
+ when libbpf is installed on system
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 2:27 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
+On Thu, Jan 16, 2020 at 5:23 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> Clang warns:
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> drivers/infiniband/hw/hfi1/msix.c:136:22: warning: overlapping
-> comparisons always evaluate to false [-Wtautological-overlap-compare]
->         if (type < IRQ_SDMA && type >= IRQ_OTHER)
->             ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
-> 1 warning generated.
+> The change to use angled includes for bpf_helper_defs.h breaks compilatio=
+n
+> against libbpf when it is installed in the include path, since the file i=
+s
+> installed in the bpf/ subdirectory of $INCLUDE_PATH. Since we've now fixe=
+d
+> the selftest Makefile to not require this anymore, revert back to
+> double-quoted include so bpf_helpers.h works regardless of include path.
 >
-> It is impossible for something to be less than 0 (IRQ_SDMA) and greater
-> than or equal to 3 (IRQ_OTHER) at the same time. A logical OR should
-> have been used to keep the same logic as before.
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/841
-> Fixes: 13d2a8384bd9 ("IB/hfi1: Decouple IRQ name from type")
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-
-Thanks for the patch. LGTM.
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
+> Fixes: 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are taken f=
+rom selftests dir")
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 > ---
->  drivers/infiniband/hw/hfi1/msix.c | 2 +-
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  tools/lib/bpf/bpf_helpers.h |    2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/infiniband/hw/hfi1/msix.c b/drivers/infiniband/hw/hfi1/msix.c
-> index 4a620cf80588..db82db497b2c 100644
-> --- a/drivers/infiniband/hw/hfi1/msix.c
-> +++ b/drivers/infiniband/hw/hfi1/msix.c
-> @@ -133,7 +133,7 @@ static int msix_request_irq(struct hfi1_devdata *dd, void *arg,
->         if (nr == dd->msix_info.max_requested)
->                 return -ENOSPC;
+> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+> index 050bb7bf5be6..f69cc208778a 100644
+> --- a/tools/lib/bpf/bpf_helpers.h
+> +++ b/tools/lib/bpf/bpf_helpers.h
+> @@ -2,7 +2,7 @@
+>  #ifndef __BPF_HELPERS__
+>  #define __BPF_HELPERS__
 >
-> -       if (type < IRQ_SDMA && type >= IRQ_OTHER)
-> +       if (type < IRQ_SDMA || type >= IRQ_OTHER)
-
--- 
-Thanks,
-~Nick Desaulniers
+> -#include <bpf_helper_defs.h>
+> +#include "bpf_helper_defs.h"
+>
+>  #define __uint(name, val) int (*name)[val]
+>  #define __type(name, val) typeof(val) *name
+>
