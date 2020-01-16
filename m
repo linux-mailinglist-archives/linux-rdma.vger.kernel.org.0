@@ -2,41 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E497313EFF5
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 19:18:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A49BF13EF87
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 19:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395392AbgAPSS2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 13:18:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40108 "EHLO mail.kernel.org"
+        id S2392426AbgAPR3g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 12:29:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392655AbgAPR2r (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:28:47 -0500
+        id S2392762AbgAPR3f (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:29:35 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C502246E8;
-        Thu, 16 Jan 2020 17:28:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D3B1024722;
+        Thu, 16 Jan 2020 17:29:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579195727;
-        bh=N6NL80NyMEmBK1Ck48h21G8o7JDmrLH68BcMhLlv+3k=;
+        s=default; t=1579195774;
+        bh=AJxd5Nq/0m8HyyS0sFd0JNlFDTh7G9lKgm0h3v4rbLA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BJQqak/USWV+Rx5bGj5xy5gur37QstpW+i0wTmG/MXfod+3TURj0D52xj6kIdABvq
-         hzf20qm0Nb0xQWnwregGBrMABx64cqRsRa/Chy3kl4xdFMvRAs9QtWIlqM5nVkkARD
-         3a5+wXkEDJ/98uQnWg7HBzfyrj9RiQ/vZCGBToJY=
+        b=2Ahf2VNztURjX49QOJEMm3iXyhG/Uqmo9QznelnKYFrdhObcRRVG4EjFc658qhHVD
+         Qd5qH5WQFvldc7s95VJppjpXEPfbOGmaEhaWGbmdLVHD8uCeCbYl9nRWF+7ZdgJk1y
+         HfEyyyWG4Ac8Mjr6E8iVlHrU6a1AqjdCvSc3oNDU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: [PATCH AUTOSEL 4.14 268/371] net/rds: Add a few missing rds_stat_names entries
-Date:   Thu, 16 Jan 2020 12:22:20 -0500
-Message-Id: <20200116172403.18149-211-sashal@kernel.org>
+Cc:     =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 300/371] RDMA/cma: Fix false error message
+Date:   Thu, 16 Jan 2020 12:22:52 -0500
+Message-Id: <20200116172403.18149-243-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116172403.18149-1-sashal@kernel.org>
 References: <20200116172403.18149-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,42 +44,39 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gerd Rausch <gerd.rausch@oracle.com>
+From: Håkon Bugge <haakon.bugge@oracle.com>
 
-[ Upstream commit 55c70ca00c982fbc0df4c4d3e31747fb73f4ddb5 ]
+[ Upstream commit a6e4d254c19b541a58caced322111084b27a7788 ]
 
-In a previous commit, fields were added to "struct rds_statistics"
-but array "rds_stat_names" was not updated accordingly.
+In addr_handler(), assuming status == 0 and the device already has been
+acquired (id_priv->cma_dev != NULL), we get the following incorrect
+"error" message:
 
-Please note the inconsistent naming of the string representations
-that is done in the name of compatibility
-with the Oracle internal code-base.
+RDMA CM: ADDR_ERROR: failed to resolve IP. status 0
 
-s_recv_bytes_added_to_socket     -> "recv_bytes_added_to_sock"
-s_recv_bytes_removed_from_socket -> "recv_bytes_freed_fromsock"
-
-Fixes: 192a798f5299 ("RDS: add stat for socket recv memory usage")
-Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 498683c6a7ee ("IB/cma: Add debug messages to error flows")
+Link: https://lore.kernel.org/r/20190902092731.1055757-1-haakon.bugge@oracle.com
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/rds/stats.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/infiniband/core/cma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/rds/stats.c b/net/rds/stats.c
-index 73be187d389e..6bbab4d74c4f 100644
---- a/net/rds/stats.c
-+++ b/net/rds/stats.c
-@@ -76,6 +76,8 @@ static const char *const rds_stat_names[] = {
- 	"cong_update_received",
- 	"cong_send_error",
- 	"cong_send_blocked",
-+	"recv_bytes_added_to_sock",
-+	"recv_bytes_freed_fromsock",
- };
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index fc4630e4acdd..1614f6f3677c 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -2789,7 +2789,7 @@ static void addr_handler(int status, struct sockaddr *src_addr,
+ 		if (status)
+ 			pr_debug_ratelimited("RDMA CM: ADDR_ERROR: failed to acquire device. status %d\n",
+ 					     status);
+-	} else {
++	} else if (status) {
+ 		pr_debug_ratelimited("RDMA CM: ADDR_ERROR: failed to resolve IP. status %d\n", status);
+ 	}
  
- void rds_stats_info_copy(struct rds_info_iterator *iter,
 -- 
 2.20.1
 
