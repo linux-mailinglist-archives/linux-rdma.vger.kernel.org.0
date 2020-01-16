@@ -2,73 +2,168 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0381513D62D
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 09:52:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A12A013D663
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 10:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731500AbgAPIwF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 03:52:05 -0500
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:55343 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731473AbgAPIwE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 03:52:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1579164724; x=1610700724;
-  h=subject:to:references:from:cc:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=kXvgupyXLykpRb58yM1jqfwa0aRmdZUuPG6SD6Fmw7c=;
-  b=kfyWkGFTjSSj2gGF0XRtRqAoosf9LfHSu65lXMjs/lePJejkks+Je50g
-   UBNobnlVoZw3dbbRT/1Mm7cAGAZU9fsPUu1DmvuEB2eb27E7OGLadkfZQ
-   MbvMRsUW1esl6ZNi7EJl+3D8GOyAWC8jxBkSD0JZ4gVR3ywQVUDmNfpup
-   E=;
-IronPort-SDR: sfQm9bd0VTnjVqfla/0EdoaKvmIgUttmk3mqPGXVVEdplqnltlBF71mx6lOxxrxyjiUM7GaFGf
- b4Qo2d/s5MOw==
-X-IronPort-AV: E=Sophos;i="5.70,325,1574121600"; 
-   d="scan'208";a="12620272"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-87a10be6.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 16 Jan 2020 08:52:02 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2c-87a10be6.us-west-2.amazon.com (Postfix) with ESMTPS id 5A0CFA223A;
-        Thu, 16 Jan 2020 08:52:01 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1236.3; Thu, 16 Jan 2020 08:52:00 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.48) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Thu, 16 Jan 2020 08:51:57 +0000
-Subject: Re: [PATCH] RDMA/core: Ensure that rdma_user_mmap_entry_remove() is a
- fence
-To:     Jason Gunthorpe <jgg@mellanox.com>
-References: <20200115202041.GA17199@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Michal Kalderon <michal.kalderon@marvell.com>
-Message-ID: <558b9eac-ce28-a0b7-9830-5416d0a0f7ca@amazon.com>
-Date:   Thu, 16 Jan 2020 10:51:52 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.1
+        id S1730623AbgAPJF2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 04:05:28 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:35002 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730613AbgAPJF1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 04:05:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579165525;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y2sHZjFM/LF4FSRl9k3ji7wAimUlmv4VENghwEoHHns=;
+        b=gLjc4dSSBSChSzyhSVVEEPe0NDlIrnGAntClMr31LNz68cbkHU0Qq13Sbg2sXsTpZ9ohYc
+        bYfgnrdTk9k+rJyagOoX/6NrabMcrmrxQ3ebaVMUCC28D1aQFbKqw1LKrSlWdXI9PufmtC
+        UEbFZHaf4psDN4FHI1P2nwTUMrg8kh0=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-2-M1AzeaXQNmqH1VwHdhH62g-1; Thu, 16 Jan 2020 04:05:24 -0500
+X-MC-Unique: M1AzeaXQNmqH1VwHdhH62g-1
+Received: by mail-lf1-f72.google.com with SMTP id y21so3723356lfl.11
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 01:05:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Y2sHZjFM/LF4FSRl9k3ji7wAimUlmv4VENghwEoHHns=;
+        b=Okj+A5f+Ad6dEjzcTZagnVDZU4jtylRLgPEiD5WqIkmNih54BmWytItv8hXFa1lf84
+         ftgHbMf1AMUiGHhN6yVyv0Ft9SY9gs0m9fS4McTn+Rzv2CnO8fipu8RoS86gewVbVimS
+         iKciJD0rBFy2594nEE3ucdKMfZWy1n+bAa+NW5WgPCniy0df5UozJycrZnvWny1VBUT/
+         Vk3DEgR4uVhixzoPZE6nmveZmQh5v2/hCbHFIOaQYPJDHrdTrzx0QuH6JtK7jmWAMmHz
+         4Uw86iGnWwUQNsShKcJ1Thg6Fz40gF6eMYxa2iLU+kefk2oapwALbXcTjqw9nKyhE5Sf
+         UBWw==
+X-Gm-Message-State: APjAAAXoqT+4c0369gofzG1Luy1yKOuO5ZLFgWJHITICWkytRXeyhTA3
+        K1VH989Ojhnw4nTEBgAY9UWaFSuwkNmn4g+RoDwp0BI4Ky/ssIw/C0jrPNdhhEicojOeUjn/4qN
+        4tb8m3C0TjUKkJqaGnkkSsA==
+X-Received: by 2002:a19:84d:: with SMTP id 74mr1827732lfi.122.1579165522780;
+        Thu, 16 Jan 2020 01:05:22 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxtYKtFhKWeWSmtkAXlwptUVTHXo0/PpHdSJDlJjU/1gqMfUwxDd/orLS0cMSYGbPmKFM/PCA==
+X-Received: by 2002:a19:84d:: with SMTP id 74mr1827704lfi.122.1579165522538;
+        Thu, 16 Jan 2020 01:05:22 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id a14sm9871321lfh.50.2020.01.16.01.05.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jan 2020 01:05:20 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 579641804D6; Thu, 16 Jan 2020 10:05:19 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH bpf-next v2 02/10] tools/bpf/runqslower: Fix override option for VMLINUX_BTF
+In-Reply-To: <CAEf4BzZpGe-1S5_iwS8GBw9iiyFJmDUkOaO+2qaftRn_iy5cNA@mail.gmail.com>
+References: <157909756858.1192265.6657542187065456112.stgit@toke.dk> <157909757089.1192265.9038866294345740126.stgit@toke.dk> <CAEf4BzbqY8zivZy637Xy=iTECzBAYQ7vo=M7TvsLM2Yp12bJpg@mail.gmail.com> <87v9pctlvn.fsf@toke.dk> <CAEf4BzZpGe-1S5_iwS8GBw9iiyFJmDUkOaO+2qaftRn_iy5cNA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 16 Jan 2020 10:05:19 +0100
+Message-ID: <87a76nu5yo.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <20200115202041.GA17199@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.48]
-X-ClientProxiedBy: EX13D04UWB003.ant.amazon.com (10.43.161.231) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 15/01/2020 22:20, Jason Gunthorpe wrote:
-> The set of entry->driver_removed is missing locking, protect it with
-> xa_lock() which is held by the only reader.
-> 
-> Otherwise readers may continue to see driver_removed = false after
-> rdma_user_mmap_entry_remove() returns and may continue to try and
-> establish new mmaps.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-That's kind of an inherent race regardless, isn't it?
+> On Wed, Jan 15, 2020 at 2:06 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Wed, Jan 15, 2020 at 6:13 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+>> >>
+>> >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> >>
+>> >> The runqslower tool refuses to build without a file to read vmlinux B=
+TF
+>> >> from. The build fails with an error message to override the location =
+by
+>> >> setting the VMLINUX_BTF variable if autodetection fails. However, the
+>> >> Makefile doesn't actually work with that override - the error message=
+ is
+>> >> still emitted.
+>> >
+>> > Do you have example command with VMLINUX_BTF override that didn't work
+>> > (and what error message was emitted)?
+>>
+>> Before this patch:
+>>
+>> $ cd ~/build/linux/tools/bpf/runqslower
+>> $ make
+>> Makefile:18: *** "Can't detect kernel BTF, use VMLINUX_BTF to specify it=
+ explicitly".  Stop.
+>>
+>> $ make VMLINUX_BTF=3D~/build/linux/vmlinux
+>> Makefile:18: *** "Can't detect kernel BTF, use VMLINUX_BTF to specify it=
+ explicitly".  Stop.
+>
+> Ok, so this is strange. Try make clean and run with V=3D1, it might help
+> to debug this. This could happen if ~/build/linux/vmlinux doesn't
+> exist, but I assume you double-checked that. It works for me just fine
+> (Makefile won't do VMLINUX_BTF :=3D assignment, if it's defined through
+> make invocation, so your change should be a no-op in that regard):
+>
+> $ make clean
+> $ make VMLINUX_BTF=3D~/linux-build/default/vmlinux V=3D1
+> ...
+> .output/sbin/bpftool btf dump file ~/linux-build/default/vmlinux
+> format c > .output/vmlinux.h
+> ...
+>
+> Wonder what your output looks like?
 
-LGTM,
-Reviewed-by: Gal Pressman <galpress@amazon.com>
+$ make clean
+Makefile:18: *** "Can't detect kernel BTF, use VMLINUX_BTF to specify it ex=
+plicitly".  Stop.
+$ make VMLINUX_BTF=3D~/build/linux/vmlinux V=3D1
+Makefile:18: *** "Can't detect kernel BTF, use VMLINUX_BTF to specify it ex=
+plicitly".  Stop.
+
+Take another look at the relevant part of the makefile:
+
+  ifneq ("$(wildcard /sys/kernel/btf/vmlinux)","")
+  VMLINUX_BTF :=3D /sys/kernel/btf/vmlinux
+  else ifneq ("$(wildcard /boot/vmlinux-$(KERNEL_REL))","")
+  VMLINUX_BTF :=3D /boot/vmlinux-$(KERNEL_REL)
+  else
+  $(error "Can't detect kernel BTF, use VMLINUX_BTF to specify it explicitl=
+y")
+  endif
+
+That if/else doesn't actually consider the value of VMLINUX_BTF; so the
+override only works if one of the files being considered by the
+auto-detection actually exists... :)
+
+-Toke
+
