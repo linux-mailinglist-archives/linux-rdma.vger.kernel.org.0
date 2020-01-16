@@ -2,120 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DFB13E02F
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 17:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C763113E04D
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 17:41:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbgAPQeB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 11:34:01 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:39105 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbgAPQeB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 11:34:01 -0500
-Received: by mail-qk1-f193.google.com with SMTP id c16so19678255qko.6
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 08:34:00 -0800 (PST)
+        id S1726343AbgAPQj6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 11:39:58 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:40375 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbgAPQj6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 11:39:58 -0500
+Received: by mail-qt1-f194.google.com with SMTP id v25so19366318qto.7
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 08:39:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=oa0bZQpkEyjcs7ABeeOu5qKY4d6etbTg8GwEpE2lwx4=;
-        b=GwCUuYmh9QjD1S8e/ph4IFxvhkUCpERtc6AcTu3gWqXtitf5wJ2atb9p813PqJs/kz
-         diK17qtqwxVd+6Ev8mT/WQvE9pNqUr8/YDafR6zPQQ8nZHNwOlplHatjrdHBOrssnqaA
-         UdyH7nKSfKwOODBp9zyV4DWUlLwrPytZ36b9GhguPbKWMLDVFPbzKvbA2OSxCq1B9jUd
-         b47rLzIiS8wVwYKQNj4Lku8sQZ9e349RK028vjMw1oqLEa1A7bj/tPSV65MPLVapHyDO
-         lASrGxoXopzQLV0kKMpI+5L/x+KT/XEFBIWVBpt+kL77+0hsqdU0BOyIufZhhs9CdxCf
-         Vv9w==
+        d=ziepe.ca; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kWYbBeaMjs0GnQZYUjR4f7NNZZLfx+/6BfTHxNRD/ug=;
+        b=jHU+8/LZbbz69x1x7+hY1xxeq08tg0bbO7OnYvZpt0LUU/5LsKurj4JxdEynEtQabm
+         k58CyGef+KJZP7OEqOoGAo+rexwc0EiFjiMaZT1gqCerzyWVX7peuaMx1BpkhMoydjIc
+         chajO6JL/EUqDZCpQRKDceG7baUHU8TcwqIyw8JxvzT7O4ihHtYYgquKgPUbxYcN9E5m
+         ZMop92Iw005iXm90Ww5zHUjSEf/wvKCflpyGqbccVVa5puRd1yiF1f3fRl5gLtEgMlg0
+         sSHf4PSJV7ooXXczfYdSe7XGsfUkRQ8nRn/NZvOsjMs+kfx/8mUmZc94Bhdp26+D9W2R
+         li2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=oa0bZQpkEyjcs7ABeeOu5qKY4d6etbTg8GwEpE2lwx4=;
-        b=SJ/YgQ2YWOq1KFhemNyy0aOS0E0PVf43hAr1HQUCvqbMP8umctC998rgKbd94acp2F
-         vGEcvyu8ymSw4rFmqec8g4+mvA6TLuXFZkJEi7UvVA0rPTw+5Z7Q/tYt521ELXoIqNyD
-         ugknOlH3mCfad2rks5RY37rdaR/w0bwv8QrKhhYgiPc+9sQQ+/IQEeQVatyqoX3nEdv5
-         T4VYJYXuYmSn5R3VImZiLEn+nLzOVbTbTxosjExbJuea9o/q0UPF9yqNX36uBZ8qIw+t
-         3kPk9nLsXrSXd/WJL/2AlW9ifAbA3LzgQAi2ilr9hX+jEvKSCySG0CR0QZQT5q4Jl3Ec
-         lJuQ==
-X-Gm-Message-State: APjAAAWUf4lhExFWAg1mK5CXMG0pkcBO/AzallcTwzuJj0qLt0aGQRz9
-        paqDvu1bY0s0pjoktvXjGEXZsaxp6FtEG3jXP4g=
-X-Google-Smtp-Source: APXvYqyWJN2GFU4wvaZ+ihLcFU/FzcfjEDWutuc+qax7spDb/+9FF/JZ6vGw0E6+JVEk3B/5diW8TqI/ysp4biX+yZM=
-X-Received: by 2002:ae9:e206:: with SMTP id c6mr34715696qkc.105.1579192440085;
- Thu, 16 Jan 2020 08:34:00 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kWYbBeaMjs0GnQZYUjR4f7NNZZLfx+/6BfTHxNRD/ug=;
+        b=XT5FUUoJ4dGznsTV22vv9YT2mbNF4YLWbQQzL92IwS1uAM62KJWjUcZN7CoVrkBuKD
+         RPb1fz0MKsMq5EV5m8qiuOh9ic/Ra+rYVNqTwT/dVHoN2sv4zfu5LEsMWChk3JESh0Ga
+         HD+haj9Qvjr4pzZTkHqywD8jmVMvU1+2wYOCWAcJRlQcSkr1LTmJiHbLcBMPKY4snDG0
+         Rxm809z0lz/kUTLcxG/mwnsRr3kYJqS/0LToLn9b3BYiiKcaxm5mMH6v/8RTRLQORejI
+         CcDcTlgbe0kpONC6vETK4LXr/GRR/mainomC/1hP2wUFWJaLRfpSkF+BlNemgdLvej94
+         6+iA==
+X-Gm-Message-State: APjAAAVAc8jI+ii4GZOn8fzT5E1ioZONUbyU8IY/iNsCDgWyM2+VH4mU
+        uzAyzCVew6xuoI1IYuHCzhtcUw==
+X-Google-Smtp-Source: APXvYqzfns8ljtcO2JFCJbXZPLfVUE3/cIm6iWQjaO8uPfYNRqQtNCFlZrZCPQFtsUY9k/vw/Qrh2A==
+X-Received: by 2002:ac8:ff6:: with SMTP id f51mr3262879qtk.60.1579192796991;
+        Thu, 16 Jan 2020 08:39:56 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id u55sm11877069qtc.28.2020.01.16.08.39.55
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 16 Jan 2020 08:39:55 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1is8BW-00072p-LF; Thu, 16 Jan 2020 12:39:54 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     linux-mm@kvack.org, Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>
+Subject: [PATCH 0/3] Rename variables in mmu_notifier.c
+Date:   Thu, 16 Jan 2020 12:39:42 -0400
+Message-Id: <20200116163945.26956-1-jgg@ziepe.ca>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Received: by 2002:ac8:6c2b:0:0:0:0:0 with HTTP; Thu, 16 Jan 2020 08:33:59
- -0800 (PST)
-Reply-To: janvierlitse2019@gmail.com
-From:   Mr Janvier Litse <mrronanpectual2016@gmail.com>
-Date:   Thu, 16 Jan 2020 08:33:59 -0800
-Message-ID: <CACxeY9h6gZRRa5vNa67FwE05RDxRAM-7UDB4ijf_rcC-qOiAuA@mail.gmail.com>
-Subject: URGENT RESPOND FOR MORE DETAILS!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mr Janvier Litse.
-African Development Bank
-Burkina Faso (ADB)
-Ouagadougou - Burkina Faso.
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-Dear friend, Good Day
+Linus has observed that the variable names here do not make a lot of sense,
+revise them as discussed so the file has better readability.
 
-I am writing to seek your cooperation over this business, Please due
-welcome this letter.
+The new names are:
 
-I am Mr Janvier Litse.the director of the accounts & auditing dept .at
-the African Development Bank Ouagadougou-west Africa (A D B) With due
-respect, I have decided to contact you on a business transaction that
-will be beneficial to both of us.At the bank's lastaccounts/auditing
-evaluations, my staffs came across an old account which was being
-maintained by a foreign client who we learnt was among the deceased
-passengers of motor accident on November.. 2003, the deceased was
-unable to run this account since his death. The account has remained
-dormant without the knowledge of his family since it was put in a safe
-deposit account in the bank for future investment by the client.
+  struct mmu_notifier_mm -> struct mmu_notifier_subscriptions
+  mmu_notifier_mm or mmn_mm -> subscriptions
+   The per mm_struct memory that holds all the notifier subscription list
+   heads and interval tree
 
-Since his demise, even the members of his family haven't applied for
-claims over this fund and it has been in the safe deposit accountuntil
-I discovered that it cannot be claimed since our client is a foreign
-national and we are sure that he has no next of kin here to file
-claims over the money. As the director of the department, this
-discovery was brought to my office so as to decide what is to be done.
-I decided to seek ways through which to transfer this money out of the
-bank and out of the country too.
+  mn -> subscription (of type struct mmu_notifier)
+   A list based subscription to notifications
 
-The total amount in the account is twenty eight  million three hundred
-thousand dollars (USD 28,300,000.00).with my positions as a staffs of
-the bank, I am handicapped because I can not operate foreign accounts
-and cannot lay bonafide claim over this money.The client was a foreign
-national and you will only be asked to act as his next of kin and I
-will supply you with all the necessary information and bank data to
-assist you in being able to transfer this money to any bank of your
-choice where this money could be transferred into.
+  mni -> interval_sub (of type struct mmu_interval_notifier)
+   A VA interval based subscription to notifications
 
-The total sum will be shared as follows: 50% for me, 50% for you and
-expenses incidental occur during the transfer will be  incured by both
-of us. The transfer is risk free on both sides hence you are going to
-follow my instruction till the fund transfer to your account.
+I had originaly thought to also change the struct names, and while they are
+not ideal, it seems that the resulting tree wide churn is probably not
+worthwhile considering the size.
 
-Since I work in this bank that is why you should be confident in the
-success of this transaction because you will be updated with
-information as at when desired I will wish you to keep this
-transaction secret and confidential as I am hoping to retire with my
-share of this money at the end of transaction which will be when this
-money is safety in your account. I will then come over to your country
-for sharing according to the previously agreed percentages. You might
-even have to advise me on possibilities of investment in your country
-or elsewhere of our choice. May God help you to help me to a restive
-retirement, Amen.
+This is intended to have no functional change.
 
+Jason Gunthorpe (3):
+  mm/mmu_notifier: Rename struct mmu_notifier_mm to
+    mmu_notifier_subscriptions
+  mm/mmu_notifiers: Use 'subscription' as the variable name for
+    mmu_notifier
+  mm/mmu_notifiers: Use 'interval_sub' as the variable for
+    mmu_interval_notifier
 
-Please for further information and enquires feel free to contact me
-back immediately for more explanation and better  understanding.please
-contact me through this alternative email address
-(janvierlitse2019@gmail.com)
+ Documentation/vm/hmm.rst     |  20 +-
+ include/linux/mm_types.h     |   2 +-
+ include/linux/mmu_notifier.h |  86 ++---
+ kernel/fork.c                |   4 +-
+ mm/debug.c                   |   4 +-
+ mm/mmu_notifier.c            | 585 +++++++++++++++++++----------------
+ 6 files changed, 375 insertions(+), 326 deletions(-)
 
-I am waiting for your urgent response!!!
-Thanks and remain blessed
- Mr Janvier Litse.
-+226 54459253
+-- 
+2.24.1
+
