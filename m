@@ -2,91 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2411C13FA60
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 21:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B97D13FA67
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 21:16:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387603AbgAPUOm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 15:14:42 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:43722 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729030AbgAPUOl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 15:14:41 -0500
-Received: by mail-qk1-f195.google.com with SMTP id t129so20441696qke.10
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 12:14:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7iEFBthVA3fKjVUxkDoEnHPOEJvk8pQvsaOOdubD4VE=;
-        b=Cc5cGVSCPXkRvmiJp4mHZPS8lFzP5r7d5Ss2RYtQl1usNhJo6sPAw3pGbQCVqY+ywZ
-         h9mzXgPXrXAsM3rku4frXAn2HcFJGxVXCKGDA3Ri+82CkRRl5NpFqHTceMmV0TUOjXaF
-         5cfAnybdjpYy8l2qraC+qaxByI5N6lt1zt12t+5Bvtt1msX5X1azd+Ep/2rvzy8qnpaR
-         TZgUxHbWUqtRGgTbzNoZ4XE0TOwHea5jbIrnwqSjkCORd6JlaCGzB8yY9AQPkiL9P0qZ
-         OS1NcFY6GV1yNJjiKRqDbuIuX5VcGRKllE0+1sCQ9QtETulIek+zyL2GrDW3fX7nCv5U
-         TngQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7iEFBthVA3fKjVUxkDoEnHPOEJvk8pQvsaOOdubD4VE=;
-        b=g41/h9E8m3W0Mt6iwJFOnOMZJEaOIS+RD09LWdIM3/JzpsLSOnsjbzJbPdrXr3co8z
-         7mDFHX77/i/SalgqSoesIVlGdlOjEbELBDSRKhpj/CIYIADU8O/Ge00fU2y8Vxs2BCIN
-         n1LFIWHgMGUxCZEy7/rH4pxnrqTt+SG33CSZOxtP38ejGhJJaXnEWKho3nap1vyINb5w
-         VEZWbXMLz8VgsVCPS5Gt8TusIrLWL5m1HY7+PSLza4I+RN6GdQiL6XTCefjnPLFpxL0B
-         mznQS/m+lQEgaxUfjz5OJizwxh2c+tqVqlkHahWT+TDraXpcm8/6yXE2ha5Kjmh/RMSG
-         x6dg==
-X-Gm-Message-State: APjAAAUtF3i7jtSTSJBLUmTKnzk3nQdbfD1xjms1YlmhPfTfA3IWpkol
-        etRT3o45rfOGL6aVsa7SX3AVqg==
-X-Google-Smtp-Source: APXvYqzVbVcJLT2gMfsveijR3Thc/B0ecRD27kcxkTpUzj7fOmjX7cv9yLeJqdn0G7VkGFCjjjxftQ==
-X-Received: by 2002:a37:6cc1:: with SMTP id h184mr34429154qkc.96.1579205680936;
-        Thu, 16 Jan 2020 12:14:40 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id k22sm10749875qkg.80.2020.01.16.12.14.40
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 Jan 2020 12:14:40 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1isBXL-00018X-Ju; Thu, 16 Jan 2020 16:14:39 -0400
-Date:   Thu, 16 Jan 2020 16:14:39 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Moni Shoua <monis@mellanox.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: Re: [PATCH rdma-rc] IB/mlx4: Fix memory leak in add_gid error flow
-Message-ID: <20200116201439.GA4343@ziepe.ca>
-References: <20200115085050.73746-1-leon@kernel.org>
+        id S1729972AbgAPUQe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 15:16:34 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3152 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729030AbgAPUQe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 15:16:34 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e20c4680000>; Thu, 16 Jan 2020 12:15:36 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 16 Jan 2020 12:16:32 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 16 Jan 2020 12:16:32 -0800
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 16 Jan
+ 2020 20:16:30 +0000
+Subject: Re: [PATCH v6 5/6] nouveau: use new mmu interval notifiers
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>
+References: <20200113224703.5917-1-rcampbell@nvidia.com>
+ <20200113224703.5917-6-rcampbell@nvidia.com>
+ <20200114125957.GO20978@mellanox.com>
+ <5845f50e-8bc0-8068-ee21-4f910beb1255@nvidia.com>
+ <20200116160002.GL20978@mellanox.com>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <01adb7dd-589e-2cde-4fa9-68baa44c0976@nvidia.com>
+Date:   Thu, 16 Jan 2020 12:16:30 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200115085050.73746-1-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200116160002.GL20978@mellanox.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1579205736; bh=WNAQTyauIEAfjkBgPoGgynWZIGkIwE/v5rkCyZbbf6c=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=Z2KHqSS3okrMumhjFyLWRiuvKmf1TDtFkM0S522antY7tHuOerAvISN0dFEzizNoc
+         NFFpSvTa6MweZpNROuIcAI45JgTibZSveKfykxlLK1K80sxVsoEJi5XxgKLbV0jrmT
+         ukTdbA069y6xD3Ibq4zJlCGKWM3B8OjWP5MlmjLw/1Favtvp5kRhIgw5UIWgRygNMC
+         1Qsh80+xdYPwCXnrmpjH3FSt2pThqz5e9HUWHv1y+7iU2tSW+9ufo0MdcFpPK88jZt
+         IOHrIV2z/4RVEmor07EEtw9AZ+RyPWehzlBW8a4e2jqVRqGu95/aCVx3+DnDdfrIMT
+         /ZoBmRATcQn1A==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 10:50:50AM +0200, Leon Romanovsky wrote:
-> From: Jack Morgenstein <jackm@dev.mellanox.co.il>
-> 
-> In procedure mlx4_ib_add_gid(), if the driver is unable to
-> update the FW gid table, there is a memory leak in the driver's
-> copy of the gid table: the gid entry's context buffer is not freed.
-> 
-> If such an error occurs, free the entry's context buffer, and mark the
-> entry as available (by setting its context pointer to NULL).
-> 
-> Fixes: e26be1bfef81 ("IB/mlx4: Implement ib_device callbacks")
-> Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
-> Reviewed-by: Parav Pandit <parav@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/hw/mlx4/main.c | 20 ++++++++++++++++----
->  1 file changed, 16 insertions(+), 4 deletions(-)
 
-Applied to for-next, thanks
+On 1/16/20 8:00 AM, Jason Gunthorpe wrote:
+> On Wed, Jan 15, 2020 at 02:09:47PM -0800, Ralph Campbell wrote:
+> 
+>> I don't understand the lifetime/membership issue. The driver is the only thing
+>> that allocates, inserts, or removes struct mmu_interval_notifier and thus
+>> completely controls the lifetime.
+> 
+> If the returned value is on the defered list it could be freed at any
+> moment. The existing locks do not prevent it.
+> 
+>>>> +		ret = nouveau_svmm_interval_find(svmm, &range);
+>>>> +		if (ret) {
+>>>> +			up_read(&mm->mmap_sem);
+>>>> +			return ret;
+>>>> +		}
+>>>> +		range.notifier_seq = mmu_interval_read_begin(range.notifier);
+>>>>    		ret = hmm_range_fault(&range, 0);
+>>>>    		up_read(&mm->mmap_sem);
+>>>>    		if (ret <= 0) {
+>>>
+>>> I'm still not sure this is a better approach than what ODP does. It
+>>> looks very expensive on the fault path..
+>>>
+>>> Jason
+>>>
+>>
+>> ODP doesn't have this problem because users have to call ib_reg_mr()
+>> before any I/O can happen to the process address space.
+> 
+> ODP supports a single 'full VA' call at process startup, just like
+> these cases.
+> 
+>> That is when mmu_interval_notifier_insert() /
+>> mmu_interval_notifier_remove() can be called and the driver doesn't
+>> have to worry about the interval changing sizes or being removed
+>> while I/O is happening.
+> 
+> No, for the 'ODP full process VA' (aka implicit ODP) mode it
+> dynamically maintains a list of intervals. ODP chooses the align the
+> dynamic intervals to it's HW page table levels, and not to SW VMAs.
+> This is much simpler to manage and faster to fault, at the cost of
+> capturing more VA for invalidations which have to be probed against
+> the HW shadow PTEs.
+> 
+>> It isn't that expensive, there is an extra driver lock/unlock as
+>> part of the lookup and possibly a find_vma() and kmalloc(GFP_ATOMIC)
+>> for new intervals. Also, the deferred interval updates for munmap().
+>> Compared to the cost of updating PTEs in the device and GPU fault
+>> handling, this is minimal overhead.
+> 
+> Well, compared to ODP which does a single xa lookup with no lock to
+> find its interval, this looks very expensive and not parallel.
+> 
+> I think if there is merit in having ranges cover the vmas and track
+> changes then there is probably merit in having the core code provide
+> much of that logic, not the driver.
+> 
+> But it would be interesting to see some kind of analysis on the two
+> methods to decide if the complexity is worthwhile.
+> 
+> Jason
+> 
 
-Jason
+Can you point me to the latest ODP code? Seems like my understanding is
+quite off.
