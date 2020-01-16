@@ -2,120 +2,158 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDFE13DCEC
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 15:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 348FB13DD15
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 15:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgAPOFB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 09:05:01 -0500
-Received: from mail-eopbgr60055.outbound.protection.outlook.com ([40.107.6.55]:40023
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726084AbgAPOFA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Jan 2020 09:05:00 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gs9gEU70Y8k/ot0j4v5OpyAXdhw+XfFodCC+kPFt796PBFRpU+1z2sAJC+AvOewN86KJZYBh0oIWWhSNG4TbuTVH6ScGHab0jFAORNXJn1zNvMdVFjQMJVxoReYmzJGyEUIXX0PavMbOwT/Ls32OHvx6RRahAkWkF8KvG7gV9D9sbXqMju88/qcwu+CtMP2MiePqVLfe9p8+aDqWpesJXy7hy/s6BWMJO20x4WEzjRr2Rip9BffUjG/LdLLMFGs4kh6/POI5+e1nuc9OgKHosmWRV2F4ooNxTCiP0rzk3NTHWxM9xDQk5v3A2CnPA6lYd1DPkyOYbbZitf811Crzuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QFo4Sked+yOeGGn22IGPjnTDVwEEPHTXBoqSgIFkAaQ=;
- b=K4ZIzGDB7vRe3h/73Dl3fe/R5rNn6IbSMRiuCVklGCnWw5vJqA67GIrmq5mnJW4eH5EPciBjqmpdFOffMtgZ/BdiESs9c8eb/tBhQZcTKCVOIusyb88NPf6AHJz0NWT3c0HetDoiYxuUoUtZQDT6UJQxkQxHZ3uA8Mr2mjCXCtImOAQVjAn5RKZMIad9TevcPhGsAnO/p28tTeKWJUkFzsIg7Fg3Q6f4k6HWAGQfwKJChinBVdItAqmCQEW30aUjm2jZdmcnIStsoyqTdnEI/QAqSpeN4lzeWxX5k5J8riFUqj/fv2PtBO0JXWSwYBXQVu0PZMWErxbPOBjW7Sm44g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QFo4Sked+yOeGGn22IGPjnTDVwEEPHTXBoqSgIFkAaQ=;
- b=PEtYgq0HDt1YqtWikD5z2rdePkKwcoyIey2IvyKC6570fzpPB17lnw2Fw6FM7zwZ8ems79/rd2Jg81wHH2KwcM8rpgqokJEdXj1r04xUrkhNSgw1+U7Mgug8l0dHSBjjQZz+3xJxypBXRkRw+mes5Xx9jXMrKPjpHb0qaDnMYmk=
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (20.179.5.215) by
- AM6PR05MB5603.eurprd05.prod.outlook.com (20.177.118.153) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2644.19; Thu, 16 Jan 2020 14:04:56 +0000
-Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::d1:c74b:50e8:adba]) by AM6PR05MB6408.eurprd05.prod.outlook.com
- ([fe80::d1:c74b:50e8:adba%5]) with mapi id 15.20.2623.017; Thu, 16 Jan 2020
- 14:04:56 +0000
-Received: from localhost (2a00:a040:183:2d::810) by FRYP281CA0011.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2644.19 via Frontend Transport; Thu, 16 Jan 2020 14:04:55 +0000
-From:   Leon Romanovsky <leonro@mellanox.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Hans Westgaard Ry <hans.westgaard.ry@oracle.com>,
-        Moni Shoua <monis@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH mlx5-next 00/10] Use ODP MRs for kernel ULPs
-Thread-Topic: [PATCH mlx5-next 00/10] Use ODP MRs for kernel ULPs
-Thread-Index: AQHVzDp/CSjR/DYOQk+aO4L2fYjfAqftUTaAgAACK4A=
-Date:   Thu, 16 Jan 2020 14:04:56 +0000
-Message-ID: <20200116140451.GA12433@unreal>
-References: <20200115124340.79108-1-leon@kernel.org>
- <20200116065926.GD76932@unreal> <20200116135701.GG20978@mellanox.com>
-In-Reply-To: <20200116135701.GG20978@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: FRYP281CA0011.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::21)
- To AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=leonro@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2a00:a040:183:2d::810]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6de1a7d7-3a23-43d8-e7a2-08d79a8d10ae
-x-ms-traffictypediagnostic: AM6PR05MB5603:|AM6PR05MB5603:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR05MB560398D9DC48DEB98C77D23CB0360@AM6PR05MB5603.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 02843AA9E0
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(7916004)(4636009)(376002)(39860400002)(396003)(366004)(346002)(136003)(199004)(189003)(66946007)(9686003)(66476007)(86362001)(33716001)(4744005)(5660300002)(66556008)(6496006)(66446008)(64756008)(71200400001)(54906003)(478600001)(316002)(33656002)(6636002)(6486002)(8936002)(2906002)(16526019)(4326008)(8676002)(186003)(6862004)(81156014)(81166006)(1076003)(52116002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB5603;H:AM6PR05MB6408.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /Xq5+RNC2hI7qhiIkLXzYzWOeIEV+rGPTJqAB5hQXfPJUKPEqthFy3B9L3+JsyzcHvlLSAPRrTHBvJieyR+8K+Pi2rwDfdutS0Y4yhBubEVW5miHHtpx1lR7o2agKuiuexUmz8oGl9IULRu41rESks6k7zO9WD5Bc3DmgdwJ+3NpLPvfzVl60UYMf6Hfq/sjsm1RaAGiOLJCTLZ3uG/cNa1R4p9SGQX1TdJHj6soDabT9yEycGtHsGChoM4zDKJOAcdPeSWPksCDsJGJFDIMRgTiXyeMqnzqpXXGhGBjvjThHhkGJnKquSU15qZegtBPGpSunBH2EYh/yFTt/NdjsVGl1UWtaBCd1nqmVXuIKIPW+WBXyNN1SI1iqH8rHCXUlNtJFJw7sX4rnWFmCZjyUsRiuVTAdsfA2c0TQF47b6nMKOtUNu4EAaJOSApoGZpR
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <899AA8A1FCBB164EBBAC9024C0AB82C3@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726366AbgAPOLn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 09:11:43 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:43666 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbgAPOLm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 09:11:42 -0500
+Received: by mail-qk1-f195.google.com with SMTP id t129so19164468qke.10
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 06:11:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=E4TXCvIZZmY4SQCWQzeLR1MFoYNB31lrG2Qln+AaBO4=;
+        b=JFr3/SZ3UQPbE6tN0WIDrmGEvvrNPfsLSUjntfSPf4H8CaB9Ec8m1JVzlwKdxQI7bR
+         3Wf7o15qkWvfU2BrXgUqDa/P5/s3JU86YwmHmVDJgHJVZpC48Wq+GwpiH70SVGZXzNCW
+         tUB0BZs20iU/qGmkxxbEKTg+rfI7uWyRi6HD7SwwKfn6eeOx5NXa2L4khYzmYqdU/Q73
+         XJzZwnq1+SkVZNFtHtVAhdji1nJv/bWhk/VqEp4wX7VCiTOc5nBu+Cv/vpBioS4yMhnI
+         nFwmiDzAw7e0YnFmBSZ6FJ2C6Eprq+qfGs/8uk/SzOBENKSHugI2ZSccx15T3V2aqTrv
+         rb8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=E4TXCvIZZmY4SQCWQzeLR1MFoYNB31lrG2Qln+AaBO4=;
+        b=tvm0ex5b6/mu+4F79DGtOjDCWynizQImJZTu/diYUlsCLtZk2/2TGXzdNtysHHJyAu
+         KECYjbbU0sqRBWIWcWxogQ9LxpCKhMY3Ri8cu2NXEJsY/pqkmmVctR7VVJts2cAp4fAy
+         XEX3Vrhm3RI4Rtslbz/+Y4G3QLGyNW55Z0R5yu34NcNXNOSqYLIbW9gho2YWfNWpVxzJ
+         8Z8OXBqT6ZvUp0BSeqmy5mE4+QocKuBMpsRADb38cbWZ6J7LJSz68C+j7FdbMtvFODmp
+         y2HfhqACVQs2PVD1IhsCVMm0UfncMBhnCO7nOi2AlAtv+whql+VZnH/gCubre3UBqqHa
+         mfUQ==
+X-Gm-Message-State: APjAAAWjeZwnaP4laPH66CerT8AgXnKM/XxACMNVpG2IYTtB4sSqYxgr
+        XceZ1pWtqyMjY4kUtbS5RIYlng==
+X-Google-Smtp-Source: APXvYqx6uZpu4GcW1N0sXEyw9K5yx2S6JPwxGtld6dzchDnf5W2zeuoRuG/8THysf1WiLlTh8VyUTg==
+X-Received: by 2002:a37:5fc2:: with SMTP id t185mr32372460qkb.271.1579183901908;
+        Thu, 16 Jan 2020 06:11:41 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id g53sm11292147qtk.76.2020.01.16.06.11.40
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 16 Jan 2020 06:11:41 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1is5s4-0003yp-CZ; Thu, 16 Jan 2020 10:11:40 -0400
+Date:   Thu, 16 Jan 2020 10:11:40 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH v6 4/6] mm/mmu_notifier: add mmu_interval_notifier_find()
+Message-ID: <20200116141140.GA10759@ziepe.ca>
+References: <20200113224703.5917-1-rcampbell@nvidia.com>
+ <20200113224703.5917-5-rcampbell@nvidia.com>
+ <20200114124956.GN20978@mellanox.com>
+ <528c1cff-608c-d342-1e72-90d780555204@nvidia.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6de1a7d7-3a23-43d8-e7a2-08d79a8d10ae
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jan 2020 14:04:56.4484
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 65s/fd7Srp6sQvucUjwWI6Rjt783gXvPN1sAuV9T7IzHvNhdQUzhjye+mEnstEMNq2sY+Ie6NdDitM4uWICI6Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB5603
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <528c1cff-608c-d342-1e72-90d780555204@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 01:57:05PM +0000, Jason Gunthorpe wrote:
-> On Thu, Jan 16, 2020 at 06:59:29AM +0000, Leon Romanovsky wrote:
-> > >  45 files changed, 559 insertions(+), 256 deletions(-)
-> >
-> > Thanks Santosh for your review.
-> >
-> > David,
-> > Is it ok to route those patches through RDMA tree given the fact that
-> > we are touching a lot of files in drivers/infiniband/* ?
-> >
-> > There is no conflict between netdev and RDMA versions of RDS, but to be
-> > on safe side, I'll put all this code to mlx5-next tree.
->
-> Er, lets not contaminate the mlx5-next with this..
->
-> It looks like it applies clean to -rc6 so if it has to be in both
-> trees a clean PR against -rc5/6 is the way to do it.
+On Wed, Jan 15, 2020 at 02:05:24PM -0800, Ralph Campbell wrote:
+> 
+> On 1/14/20 4:49 AM, Jason Gunthorpe wrote:
+> > On Mon, Jan 13, 2020 at 02:47:01PM -0800, Ralph Campbell wrote:
+> > > diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
+> > > index 47ad9cc89aab..4efecc0f13cb 100644
+> > > +++ b/mm/mmu_notifier.c
+> > > @@ -1171,6 +1171,39 @@ void mmu_interval_notifier_update(struct mmu_interval_notifier *mni,
+> > >   }
+> > >   EXPORT_SYMBOL_GPL(mmu_interval_notifier_update);
+> > > +struct mmu_interval_notifier *mmu_interval_notifier_find(struct mm_struct *mm,
+> > > +				const struct mmu_interval_notifier_ops *ops,
+> > > +				unsigned long start, unsigned long last)
+> > > +{
+> > > +	struct mmu_notifier_mm *mmn_mm = mm->mmu_notifier_mm;
+> > > +	struct interval_tree_node *node;
+> > > +	struct mmu_interval_notifier *mni;
+> > > +	struct mmu_interval_notifier *res = NULL;
+> > > +
+> > > +	spin_lock(&mmn_mm->lock);
+> > > +	node = interval_tree_iter_first(&mmn_mm->itree, start, last);
+> > > +	if (node) {
+> > > +		mni = container_of(node, struct mmu_interval_notifier,
+> > > +				   interval_tree);
+> > > +		while (true) {
+> > > +			if (mni->ops == ops) {
+> > > +				res = mni;
+> > > +				break;
+> > > +			}
+> > > +			node = interval_tree_iter_next(&mni->interval_tree,
+> > > +						       start, last);
+> > > +			if (!node)
+> > > +				break;
+> > > +			mni = container_of(node, struct mmu_interval_notifier,
+> > > +					   interval_tree);
+> > > +		}
+> > > +	}
+> > > +	spin_unlock(&mmn_mm->lock);
+> > 
+> > This doesn't seem safe at all, here we are returning a pointer to
+> > memory from the interval tree with out any kind of lifetime
+> > protection.
+> 
+> It is memory that the driver has allocated and has full control over
+> the lifetime since the driver does all the insertions and removals.
+> The driver does have to hold the HW page table lock so lookups are
+> synchronized with interval insertions and removals and page table
+> entry insertions and removals.
 
-Yes, it applies cleanly.
+No.. the ->release is async, so having the driver hold a lock around
+all the mmu_interval_ APIS still doesn't make it safe. The element
+could be on the defered list and it could become freed at any moment.
 
->
-> Santos, do you anticipate more RDS patches this cycle?
->
-> Jason
+> > If the interval tree is read it must be left in the read lock state
+> > until the caller is done with the pointer.
+> > 
+> > .. and this poses all sorts of questions about consistency with items
+> > on the deferred list. Should find return an item undergoing deletion?
+> 
+> I don't think so. The deferred operations are all complete when
+> mmu_interval_read_begin() returns, and the sequence number check
+> with mmu_interval_read_retry() guarantees there have been no changes
+> while not holding the driver page table lock and calling hmm_range_fault().
+
+It seems very dangerous to say, on one hand, that the driver is
+serialized because it holds a lock around all mmu_interval_* calls,
+while on the other saying that on rare edge cases find does not return
+a result that matches the serial-program-order sequence.
+
+This seems like a way to create bugs.
+
+For instance, if find is consistent with the defered list then it will
+not return any element that has a pending deletion and the above issue
+with lifetime wouldn't happen.
+
+However, I'm still not sure that providing an API tha requires the
+driver to provide tricky locking is the best idea. This basically says
+that if a driver uses find then every single other call to
+mmu_interval_* must be serialized with a single lock.
+
+Jason
