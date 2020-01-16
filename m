@@ -2,36 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FE213F4BC
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 19:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2227413F450
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 19:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388910AbgAPSvO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 13:51:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43352 "EHLO mail.kernel.org"
+        id S2389781AbgAPSsv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 13:48:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389507AbgAPRIu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:08:50 -0500
+        id S2389720AbgAPRJj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:09:39 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6DA420663;
-        Thu, 16 Jan 2020 17:08:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6C8C24689;
+        Thu, 16 Jan 2020 17:09:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579194529;
-        bh=3kO+qp8JvkBpLkZkOcNexrYO7Q5vC0JuClMqjGEwdvY=;
+        s=default; t=1579194578;
+        bh=Tsv2cFwSXKX5+sUOE41BpHJBx1IMbHjouscXos+JqRc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u5ybyT2oRy8TYww/8ZK07fcr/vHbEB7cTBFItvVFsFLJwL+HH5IkRtH5t55yWJye7
-         tWhrT2cMeOJpkTub+7tbR0n8pb4d19DnoAnO4vMBlzF4XfLuSbJiUPibgla9O0HUEN
-         YISnMsCUPhUowfp8jYqqCl9GI7M+SI8g32DOCNHA=
+        b=ifsG+hEsHT8cL7IP/oKqIkvUvt8fkNq29uMWZCjd7FLKv7GE6DlL5eyGwLHpjIMI3
+         wt/TUtv4zmT8WUZOjBIqvsWInkn36zUIj2YTbU1d6UK/s7jKQ9fi7YN58vpbxWXOqI
+         APa+o61fs0wXrXVy6+OGdeSLzato3TIOlXxIlB7Q=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
+Cc:     Xi Wang <wangxi11@huawei.com>, Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 418/671] IB/hfi1: Handle port down properly in pio
-Date:   Thu, 16 Jan 2020 12:00:56 -0500
-Message-Id: <20200116170509.12787-155-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 453/671] RDMA/hns: Fixs hw access invalid dma memory error
+Date:   Thu, 16 Jan 2020 12:01:31 -0500
+Message-Id: <20200116170509.12787-190-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
 References: <20200116170509.12787-1-sashal@kernel.org>
@@ -44,111 +42,46 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mike Marciniszyn <mike.marciniszyn@intel.com>
+From: Xi Wang <wangxi11@huawei.com>
 
-[ Upstream commit 942a899335707fc9cfc97cb382a60734b2ff4e03 ]
+[ Upstream commit ec5bc2cc69b4fc494e04d10fc5226f6f9cf67c56 ]
 
-The call to sc_buffer_alloc currently returns NULL (no buffer) or
-a buffer descriptor.
+When smmu is enable, if execute the perftest command and then use 'kill
+-9' to exit, follow this operation repeatedly, the kernel will have a high
+probability to print the following smmu event:
 
-There is a third case when the port is down.  Currently that
-returns NULL and this prevents the caller from properly handling the
-sc_buffer_alloc() failure.  A verbs code link test after the call is
-racy so the indication needs to come from the state check inside the allocation
-routine to be valid.
+  arm-smmu-v3 arm-smmu-v3.1.auto: event 0x10 received:
+  arm-smmu-v3 arm-smmu-v3.1.auto:  0x00007d0000000010
+  arm-smmu-v3 arm-smmu-v3.1.auto:  0x0000020900000080
+  arm-smmu-v3 arm-smmu-v3.1.auto:  0x00000000f47cf000
+  arm-smmu-v3 arm-smmu-v3.1.auto:  0x00000000f47cf000
 
-Fix by encoding the ECOMM failure like SDMA.   IS_ERR_OR_NULL() tests
-are added at all call sites.  For verbs send, this needs to treat any
-error by returning a completion without any MMIO copy.
+This is because the hw will periodically refresh the qpc cache until the
+next reset.
 
-Fixes: 7724105686e7 ("IB/hfi1: add driver files")
-Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Signed-off-by: Doug Ledford <dledford@redhat.com>
+This patch fixed it by removing the action that release qpc memory in the
+'hns_roce_qp_free' function.
+
+Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
+Signed-off-by: Xi Wang <wangxi11@huawei.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hfi1/pio.c   | 5 +++--
- drivers/infiniband/hw/hfi1/rc.c    | 2 +-
- drivers/infiniband/hw/hfi1/ud.c    | 4 ++--
- drivers/infiniband/hw/hfi1/verbs.c | 4 ++--
- 4 files changed, 8 insertions(+), 7 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_qp.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/pio.c b/drivers/infiniband/hw/hfi1/pio.c
-index 752057647f09..3fcbf56f8be2 100644
---- a/drivers/infiniband/hw/hfi1/pio.c
-+++ b/drivers/infiniband/hw/hfi1/pio.c
-@@ -1434,7 +1434,8 @@ void sc_stop(struct send_context *sc, int flag)
-  * @cb: optional callback to call when the buffer is finished sending
-  * @arg: argument for cb
-  *
-- * Return a pointer to a PIO buffer if successful, NULL if not enough room.
-+ * Return a pointer to a PIO buffer, NULL if not enough room, -ECOMM
-+ * when link is down.
-  */
- struct pio_buf *sc_buffer_alloc(struct send_context *sc, u32 dw_len,
- 				pio_release_cb cb, void *arg)
-@@ -1450,7 +1451,7 @@ struct pio_buf *sc_buffer_alloc(struct send_context *sc, u32 dw_len,
- 	spin_lock_irqsave(&sc->alloc_lock, flags);
- 	if (!(sc->flags & SCF_ENABLED)) {
- 		spin_unlock_irqrestore(&sc->alloc_lock, flags);
--		goto done;
-+		return ERR_PTR(-ECOMM);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index af24698ff226..3012d7eb4ccb 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -262,7 +262,6 @@ void hns_roce_qp_free(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ 			hns_roce_table_put(hr_dev, &qp_table->trrl_table,
+ 					   hr_qp->qpn);
+ 		hns_roce_table_put(hr_dev, &qp_table->irrl_table, hr_qp->qpn);
+-		hns_roce_table_put(hr_dev, &qp_table->qp_table, hr_qp->qpn);
  	}
- 
- retry:
-diff --git a/drivers/infiniband/hw/hfi1/rc.c b/drivers/infiniband/hw/hfi1/rc.c
-index 980168a56707..7ed6fb407a68 100644
---- a/drivers/infiniband/hw/hfi1/rc.c
-+++ b/drivers/infiniband/hw/hfi1/rc.c
-@@ -914,7 +914,7 @@ void hfi1_send_rc_ack(struct hfi1_packet *packet, bool is_fecn)
- 	pbc = create_pbc(ppd, pbc_flags, qp->srate_mbps,
- 			 sc_to_vlt(ppd->dd, sc5), plen);
- 	pbuf = sc_buffer_alloc(rcd->sc, plen, NULL, NULL);
--	if (!pbuf) {
-+	if (IS_ERR_OR_NULL(pbuf)) {
- 		/*
- 		 * We have no room to send at the moment.  Pass
- 		 * responsibility for sending the ACK to the send engine
-diff --git a/drivers/infiniband/hw/hfi1/ud.c b/drivers/infiniband/hw/hfi1/ud.c
-index ef5b3ffd3888..839593641e3f 100644
---- a/drivers/infiniband/hw/hfi1/ud.c
-+++ b/drivers/infiniband/hw/hfi1/ud.c
-@@ -703,7 +703,7 @@ void return_cnp_16B(struct hfi1_ibport *ibp, struct rvt_qp *qp,
- 	pbc = create_pbc(ppd, pbc_flags, qp->srate_mbps, vl, plen);
- 	if (ctxt) {
- 		pbuf = sc_buffer_alloc(ctxt, plen, NULL, NULL);
--		if (pbuf) {
-+		if (!IS_ERR_OR_NULL(pbuf)) {
- 			trace_pio_output_ibhdr(ppd->dd, &hdr, sc5);
- 			ppd->dd->pio_inline_send(ppd->dd, pbuf, pbc,
- 						 &hdr, hwords);
-@@ -758,7 +758,7 @@ void return_cnp(struct hfi1_ibport *ibp, struct rvt_qp *qp, u32 remote_qpn,
- 	pbc = create_pbc(ppd, pbc_flags, qp->srate_mbps, vl, plen);
- 	if (ctxt) {
- 		pbuf = sc_buffer_alloc(ctxt, plen, NULL, NULL);
--		if (pbuf) {
-+		if (!IS_ERR_OR_NULL(pbuf)) {
- 			trace_pio_output_ibhdr(ppd->dd, &hdr, sc5);
- 			ppd->dd->pio_inline_send(ppd->dd, pbuf, pbc,
- 						 &hdr, hwords);
-diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
-index 4e7b3c027901..90e12f9433a3 100644
---- a/drivers/infiniband/hw/hfi1/verbs.c
-+++ b/drivers/infiniband/hw/hfi1/verbs.c
-@@ -1096,10 +1096,10 @@ int hfi1_verbs_send_pio(struct rvt_qp *qp, struct hfi1_pkt_state *ps,
- 	if (cb)
- 		iowait_pio_inc(&priv->s_iowait);
- 	pbuf = sc_buffer_alloc(sc, plen, cb, qp);
--	if (unlikely(!pbuf)) {
-+	if (unlikely(IS_ERR_OR_NULL(pbuf))) {
- 		if (cb)
- 			verbs_pio_complete(qp, 0);
--		if (ppd->host_link_state != HLS_UP_ACTIVE) {
-+		if (IS_ERR(pbuf)) {
- 			/*
- 			 * If we have filled the PIO buffers to capacity and are
- 			 * not in an active state this request is not going to
+ }
+ EXPORT_SYMBOL_GPL(hns_roce_qp_free);
 -- 
 2.20.1
 
