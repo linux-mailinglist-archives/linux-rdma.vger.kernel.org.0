@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1A513E61A
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 18:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2A213E633
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 18:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391170AbgAPRSc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 12:18:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46136 "EHLO mail.kernel.org"
+        id S2391521AbgAPRSh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 12:18:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391482AbgAPRSa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:18:30 -0500
+        id S2391515AbgAPRSg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:18:36 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D63B246C2;
-        Thu, 16 Jan 2020 17:18:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71418246B1;
+        Thu, 16 Jan 2020 17:18:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579195110;
-        bh=2/v5QHfw3l8zGdaCEudsJ1pkGUVVaiN2NA4Ytun8qr0=;
+        s=default; t=1579195116;
+        bh=KPnjpl96N2d7rCs0uOIvKJYlAl/Kz6G527NiVyU+Zlg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oCce6H37jyJUPVqypYB1M+UWJTORold8e2jmfw8+bgUN3md4hIitJ+hLzMI/oWQjh
-         hBpgHyPvhylJJ17i+l4xaACunn/U480nqDszn5eEb65KGJyRA+b0x8GC6itN1bMN+M
-         1Rs6vYpfOMKkbXkOySogO6A0Ce0SqTbTFH1lPoFU=
+        b=AUVs8Kr5pijvoV+Sz2eqpm7DraNWkDrU7Cj7Dp1fBKV+1/kV+rBhVAQPF7GYhPZR7
+         0UWsSYYDaWmdRI2BI4MuyIe5/JqVn3M7ffnqTAvb32WhHRvl9aeDX0EEO4SV0R26kV
+         CrFYg5Tq42AH2ygLzoZx1lOIn9LSpGMSzfK/PT1E=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gal Pressman <galpress@amazon.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
+Cc:     Raju Rangoju <rajur@chelsio.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 052/371] RDMA/qedr: Fix out of bounds index check in query pkey
-Date:   Thu, 16 Jan 2020 12:12:00 -0500
-Message-Id: <20200116171719.16965-52-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 056/371] RDMA/iw_cxgb4: Fix the unchecked ep dereference
+Date:   Thu, 16 Jan 2020 12:12:04 -0500
+Message-Id: <20200116171719.16965-56-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116171719.16965-1-sashal@kernel.org>
 References: <20200116171719.16965-1-sashal@kernel.org>
@@ -44,35 +44,55 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gal Pressman <galpress@amazon.com>
+From: Raju Rangoju <rajur@chelsio.com>
 
-[ Upstream commit dbe30dae487e1a232158c24b432d45281c2805b7 ]
+[ Upstream commit 3352976c892301fd576a2e9ff0ac7337b2e2ca48 ]
 
-The pkey table size is QEDR_ROCE_PKEY_TABLE_LEN, index should be tested
-for >= QEDR_ROCE_PKEY_TABLE_LEN instead of > QEDR_ROCE_PKEY_TABLE_LEN.
+The patch 944661dd97f4: "RDMA/iw_cxgb4: atomically lookup ep and get a
+reference" from May 6, 2016, leads to the following Smatch complaint:
 
-Fixes: a7efd7773e31 ("qedr: Add support for PD,PKEY and CQ verbs")
-Signed-off-by: Gal Pressman <galpress@amazon.com>
-Acked-by: Michal Kalderon <michal.kalderon@marvell.com>
+    drivers/infiniband/hw/cxgb4/cm.c:2953 terminate()
+    error: we previously assumed 'ep' could be null (see line 2945)
+
+Fixes: 944661dd97f4 ("RDMA/iw_cxgb4: atomically lookup ep and get a reference")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Raju Rangoju <rajur@chelsio.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/qedr/verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/cxgb4/cm.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 656e7c1a4449..8bfe9073da78 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -63,7 +63,7 @@ static inline int qedr_ib_copy_to_udata(struct ib_udata *udata, void *src,
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index bb36cdf82a8d..3668cc71b47e 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -2923,15 +2923,18 @@ static int terminate(struct c4iw_dev *dev, struct sk_buff *skb)
+ 	ep = get_ep_from_tid(dev, tid);
+ 	BUG_ON(!ep);
  
- int qedr_query_pkey(struct ib_device *ibdev, u8 port, u16 index, u16 *pkey)
- {
--	if (index > QEDR_ROCE_PKEY_TABLE_LEN)
-+	if (index >= QEDR_ROCE_PKEY_TABLE_LEN)
- 		return -EINVAL;
+-	if (ep && ep->com.qp) {
+-		pr_warn("TERM received tid %u qpid %u\n",
+-			tid, ep->com.qp->wq.sq.qid);
+-		attrs.next_state = C4IW_QP_STATE_TERMINATE;
+-		c4iw_modify_qp(ep->com.qp->rhp, ep->com.qp,
+-			       C4IW_QP_ATTR_NEXT_STATE, &attrs, 1);
++	if (ep) {
++		if (ep->com.qp) {
++			pr_warn("TERM received tid %u qpid %u\n", tid,
++				ep->com.qp->wq.sq.qid);
++			attrs.next_state = C4IW_QP_STATE_TERMINATE;
++			c4iw_modify_qp(ep->com.qp->rhp, ep->com.qp,
++				       C4IW_QP_ATTR_NEXT_STATE, &attrs, 1);
++		}
++
++		c4iw_put_ep(&ep->com);
+ 	} else
+ 		pr_warn("TERM received tid %u no ep/qp\n", tid);
+-	c4iw_put_ep(&ep->com);
  
- 	*pkey = QEDR_ROCE_PKEY_DEFAULT;
+ 	return 0;
+ }
 -- 
 2.20.1
 
