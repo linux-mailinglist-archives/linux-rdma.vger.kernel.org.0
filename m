@@ -2,37 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 300EF13F28E
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 19:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 523FF13F285
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 19:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391697AbgAPRYO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 12:24:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58350 "EHLO mail.kernel.org"
+        id S2391729AbgAPRYV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 12:24:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391693AbgAPRYO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:24:14 -0500
+        id S2391723AbgAPRYU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:24:20 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8599E2468E;
-        Thu, 16 Jan 2020 17:24:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB2F524684;
+        Thu, 16 Jan 2020 17:24:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579195453;
-        bh=OvR6d+GuurWj3pV1jLo6SNT47v2bz6Kyw8Ptl/ssFBE=;
+        s=default; t=1579195459;
+        bh=bYxSH8GfVHB3PUAM4GpW1DZVUUfAFBPIypwps27JDa4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZlMex3M1vYNkcbd5Y5tA4vIlW6w1K52Ud0pYUr7azPzgjIUjX3npzCg+Xubx/ZMv5
-         F+ZyzuMG59TpFJdYFFtOHUBaYOVT7WoE64a5REZC1GaOJ47CrO0qi5mBgIwNdbCf2P
-         JlyRzg+HR608yxui7JPB7b465w0nL02zJcfCJbN0=
+        b=A48zrwgnKE3rjMCLJm0Rg3k6arXHHPXzDN1ZiIpQCvX1HIF1VxXlVFwdOKL4uTzrI
+         2GFISlth7txKmuh1/1urBpypByHIpeBhO3a4AnU+1wCY6Z+Q/IKdxpt4d+jyjggXpO
+         DZbNkAFZy5MhD2vCTWRQBQ1tVRf/KsUuTvXKmo+8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Israel Rukshin <israelr@mellanox.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 063/371] IB/iser: Pass the correct number of entries for dma mapped SGL
-Date:   Thu, 16 Jan 2020 12:18:55 -0500
-Message-Id: <20200116172403.18149-6-sashal@kernel.org>
+Cc:     Moni Shoua <monis@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 068/371] net/mlx5: Take lock with IRQs disabled to avoid deadlock
+Date:   Thu, 16 Jan 2020 12:19:00 -0500
+Message-Id: <20200116172403.18149-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116172403.18149-1-sashal@kernel.org>
 References: <20200116172403.18149-1-sashal@kernel.org>
@@ -45,59 +45,80 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Israel Rukshin <israelr@mellanox.com>
+From: Moni Shoua <monis@mellanox.com>
 
-[ Upstream commit 57b26497fabe1b9379b59fbc7e35e608e114df16 ]
+[ Upstream commit 33814e5d127e21f53b52e17b0722c1b57d4f4d29 ]
 
-ib_dma_map_sg() augments the SGL into a 'dma mapped SGL'. This process may
-change the number of entries and the lengths of each entry.
+The lock in qp_table might be taken from process context or from
+interrupt context. This may lead to a deadlock unless it is taken with
+IRQs disabled.
 
-Code that touches dma_address is iterating over the 'dma mapped SGL' and
-must use dma_nents which returned from ib_dma_map_sg().
+Discovered by lockdep
 
-ib_sg_to_pages() and ib_map_mr_sg() are using dma_address so they must use
-dma_nents.
+================================
+WARNING: inconsistent lock state
+4.20.0-rc6
+--------------------------------
+inconsistent {HARDIRQ-ON-W} -> {IN-HARDIRQ-W}
 
-Fixes: 39405885005a ("IB/iser: Port to new fast registration API")
-Fixes: bfe066e256d5 ("IB/iser: Reuse ib_sg_to_pages")
-Signed-off-by: Israel Rukshin <israelr@mellanox.com>
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
-Acked-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+python/12572 [HC1[1]:SC0[0]:HE0:SE1] takes:
+00000000052a4df4 (&(&table->lock)->rlock#2){?.+.}, /0x50 [mlx5_core]
+{HARDIRQ-ON-W} state was registered at:
+  _raw_spin_lock+0x33/0x70
+  mlx5_get_rsc+0x1a/0x50 [mlx5_core]
+  mlx5_ib_eqe_pf_action+0x493/0x1be0 [mlx5_ib]
+  process_one_work+0x90c/0x1820
+  worker_thread+0x87/0xbb0
+  kthread+0x320/0x3e0
+  ret_from_fork+0x24/0x30
+irq event stamp: 103928
+hardirqs last  enabled at (103927): [] nk+0x1a/0x1c
+hardirqs last disabled at (103928): [] unk+0x1a/0x1c
+softirqs last  enabled at (103924): [] tcp_sendmsg+0x31/0x40
+softirqs last disabled at (103922): [] 80
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&(&table->lock)->rlock#2);
+
+    lock(&(&table->lock)->rlock#2);
+
+ *** DEADLOCK ***
+
+Fixes: 032080ab43ac ("IB/mlx5: Lock QP during page fault handling")
+Signed-off-by: Moni Shoua <monis@mellanox.com>
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/iser/iser_memory.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/qp.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/iser/iser_memory.c b/drivers/infiniband/ulp/iser/iser_memory.c
-index 322209d5ff58..19883169e7b7 100644
---- a/drivers/infiniband/ulp/iser/iser_memory.c
-+++ b/drivers/infiniband/ulp/iser/iser_memory.c
-@@ -240,8 +240,8 @@ int iser_fast_reg_fmr(struct iscsi_iser_task *iser_task,
- 	page_vec->npages = 0;
- 	page_vec->fake_mr.page_size = SIZE_4K;
- 	plen = ib_sg_to_pages(&page_vec->fake_mr, mem->sg,
--			      mem->size, NULL, iser_set_page);
--	if (unlikely(plen < mem->size)) {
-+			      mem->dma_nents, NULL, iser_set_page);
-+	if (unlikely(plen < mem->dma_nents)) {
- 		iser_err("page vec too short to hold this SG\n");
- 		iser_data_buf_dump(mem, device->ib_device);
- 		iser_dump_page_vec(page_vec);
-@@ -450,10 +450,10 @@ static int iser_fast_reg_mr(struct iscsi_iser_task *iser_task,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/qp.c b/drivers/net/ethernet/mellanox/mlx5/core/qp.c
+index 5f091c6ea049..b92d5690287b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/qp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/qp.c
+@@ -44,14 +44,15 @@ static struct mlx5_core_rsc_common *mlx5_get_rsc(struct mlx5_core_dev *dev,
+ {
+ 	struct mlx5_qp_table *table = &dev->priv.qp_table;
+ 	struct mlx5_core_rsc_common *common;
++	unsigned long flags;
  
- 	ib_update_fast_reg_key(mr, ib_inc_rkey(mr->rkey));
+-	spin_lock(&table->lock);
++	spin_lock_irqsave(&table->lock, flags);
  
--	n = ib_map_mr_sg(mr, mem->sg, mem->size, NULL, SIZE_4K);
--	if (unlikely(n != mem->size)) {
-+	n = ib_map_mr_sg(mr, mem->sg, mem->dma_nents, NULL, SIZE_4K);
-+	if (unlikely(n != mem->dma_nents)) {
- 		iser_err("failed to map sg (%d/%d)\n",
--			 n, mem->size);
-+			 n, mem->dma_nents);
- 		return n < 0 ? n : -EINVAL;
- 	}
+ 	common = radix_tree_lookup(&table->tree, rsn);
+ 	if (common)
+ 		atomic_inc(&common->refcount);
  
+-	spin_unlock(&table->lock);
++	spin_unlock_irqrestore(&table->lock, flags);
+ 
+ 	if (!common) {
+ 		mlx5_core_warn(dev, "Async event for bogus resource 0x%x\n",
 -- 
 2.20.1
 
