@@ -2,127 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7EA13D300
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 05:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AA313D310
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 05:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729431AbgAPEFX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jan 2020 23:05:23 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9628 "EHLO huawei.com"
+        id S1729293AbgAPEOm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jan 2020 23:14:42 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:50780 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729110AbgAPEFX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 15 Jan 2020 23:05:23 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 68372C71EE946BDA8BB8;
-        Thu, 16 Jan 2020 12:05:21 +0800 (CST)
-Received: from [127.0.0.1] (10.40.168.149) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.439.0; Thu, 16 Jan 2020
- 12:05:13 +0800
-Subject: Re: [PATCH for-next] RDMA/hns: Add support for extended atomic in
- userspace
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <dledford@redhat.com>, <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1579052546-11746-1-git-send-email-liweihang@huawei.com>
- <20200115205611.GG25201@ziepe.ca>
+        id S1729285AbgAPEOm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 15 Jan 2020 23:14:42 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 88557689B42A153BECEA;
+        Thu, 16 Jan 2020 12:14:39 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.439.0; Thu, 16 Jan 2020 12:14:33 +0800
 From:   Weihang Li <liweihang@huawei.com>
-Message-ID: <9b7a3629-0564-6643-f6e7-c2f098afd010@huawei.com>
-Date:   Thu, 16 Jan 2020 12:05:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <shiraz.saleem@intel.com>, <aditr@vmware.com>,
+        <mkalderon@marvell.com>, <aelior@marvell.com>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH RFC for-next 0/6] ofed support to send ib port link event
+Date:   Thu, 16 Jan 2020 12:10:41 +0800
+Message-ID: <1579147847-12158-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <20200115205611.GG25201@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.168.149]
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
 X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Some provider's driver has supported to send port link event to ofed, but
+this function is implemented separately by each manufacturer.
 
+This series provides a solution in ib core, and remove the relevant codes
+of some manufacturers, supports reporting port active time during device
+registration and sending port error events when device is deregistered.
 
-On 2020/1/16 4:56, Jason Gunthorpe wrote:
-> On Wed, Jan 15, 2020 at 09:42:26AM +0800, Weihang Li wrote:
->> From: Jiaran Zhang <zhangjiaran@huawei.com>
->>
->> To support extended atomic operations including cmp & swap and fetch & add
->> of 8 bytes, 16 bytes, 32 bytes, 64 bytes in userspace, some field in qpc
->> should be configured.
->>
->> Signed-off-by: Jiaran Zhang <zhangjiaran@huawei.com>
->> Signed-off-by: Weihang Li <liweihang@huawei.com>
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 16 +++++++++++++++-
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h |  3 ++-
->>  2 files changed, 17 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> index f1e0ba6..7edf3d8 100644
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> @@ -1692,7 +1692,7 @@ static int hns_roce_v2_profile(struct hns_roce_dev *hr_dev)
->>  	caps->max_srq_desc_sz	= HNS_ROCE_V2_MAX_SRQ_DESC_SZ;
->>  	caps->qpc_entry_sz	= HNS_ROCE_V2_QPC_ENTRY_SZ;
->>  	caps->irrl_entry_sz	= HNS_ROCE_V2_IRRL_ENTRY_SZ;
->> -	caps->trrl_entry_sz	= HNS_ROCE_V2_TRRL_ENTRY_SZ;
->> +	caps->trrl_entry_sz	= HNS_ROCE_V2_EXT_ATOMIC_TRRL_ENTRY_SZ;
->>  	caps->cqc_entry_sz	= HNS_ROCE_V2_CQC_ENTRY_SZ;
->>  	caps->srqc_entry_sz	= HNS_ROCE_V2_SRQC_ENTRY_SZ;
->>  	caps->mtpt_entry_sz	= HNS_ROCE_V2_MTPT_ENTRY_SZ;
->> @@ -3286,6 +3286,9 @@ static void set_access_flags(struct hns_roce_qp *hr_qp,
->>  	roce_set_bit(context->byte_76_srqn_op_en, V2_QPC_BYTE_76_ATE_S,
->>  		     !!(access_flags & IB_ACCESS_REMOTE_ATOMIC));
->>  	roce_set_bit(qpc_mask->byte_76_srqn_op_en, V2_QPC_BYTE_76_ATE_S, 0);
->> +	roce_set_bit(context->byte_76_srqn_op_en, V2_QPC_BYTE_76_EXT_ATE_S,
->> +		     !!(access_flags & IB_ACCESS_REMOTE_ATOMIC));
->> +	roce_set_bit(qpc_mask->byte_76_srqn_op_en, V2_QPC_BYTE_76_EXT_ATE_S, 0);
->>  }
->>  
->>  static void set_qpc_wqe_cnt(struct hns_roce_qp *hr_qp,
->> @@ -3653,6 +3656,12 @@ static void modify_qp_init_to_init(struct ib_qp *ibqp,
->>  			     IB_ACCESS_REMOTE_ATOMIC));
->>  		roce_set_bit(qpc_mask->byte_76_srqn_op_en, V2_QPC_BYTE_76_ATE_S,
->>  			     0);
->> +		roce_set_bit(context->byte_76_srqn_op_en,
->> +			     V2_QPC_BYTE_76_EXT_ATE_S,
->> +			     !!(attr->qp_access_flags &
->> +				IB_ACCESS_REMOTE_ATOMIC));
->> +		roce_set_bit(qpc_mask->byte_76_srqn_op_en,
->> +			     V2_QPC_BYTE_76_EXT_ATE_S, 0);
->>  	} else {
->>  		roce_set_bit(context->byte_76_srqn_op_en, V2_QPC_BYTE_76_RRE_S,
->>  			     !!(hr_qp->access_flags & IB_ACCESS_REMOTE_READ));
->> @@ -3668,6 +3677,11 @@ static void modify_qp_init_to_init(struct ib_qp *ibqp,
->>  			     !!(hr_qp->access_flags & IB_ACCESS_REMOTE_ATOMIC));
->>  		roce_set_bit(qpc_mask->byte_76_srqn_op_en, V2_QPC_BYTE_76_ATE_S,
->>  			     0);
->> +		roce_set_bit(context->byte_76_srqn_op_en,
->> +			     V2_QPC_BYTE_76_EXT_ATE_S,
->> +			     !!(hr_qp->access_flags & IB_ACCESS_REMOTE_ATOMIC));
->> +		roce_set_bit(qpc_mask->byte_76_srqn_op_en,
->> +			     V2_QPC_BYTE_76_EXT_ATE_S, 0);
->>  	}
-> 
-> What happens to your userspace if it runs on an old kernel and tries
-> to use extended atomic?
-> 
-> Jason
->
+The key point is how to shield the port event of the backup port in the ib
+bonding scenario. Since the active-backup control is judged by the vendor
+driver, so the ops.query_port of vendor would determine the port role. And
+there is no relevant data structure in ib_core, so modify struct
+ib_port_cache to store this information.
 
-Hi Jason,
+Lang Cheng (6):
+  RDMA/core: support deliver net device event
+  RDMA/mlx5: remove deliver net device event
+  RDMA/i40iw: remove deliver net device event
+  RDMA/qedr: remove deliver net device event
+  RDMA/vmw_pvrdma: remove deliver net device event
+  qede: remove invalid notify operation
 
-If the hns userspace runs with old kernel, the hardware will report a asynchronous
-event for the extended atomic operation and modify the qp to error state because
-the enable bit in this qp's context hasn't been set.
+ drivers/infiniband/core/cache.c                |  21 ++++-
+ drivers/infiniband/core/device.c               | 123 +++++++++++++++++++++++++
+ drivers/infiniband/hw/i40iw/i40iw_main.c       |   6 --
+ drivers/infiniband/hw/i40iw/i40iw_utils.c      |  44 ---------
+ drivers/infiniband/hw/mlx5/main.c              |  95 ++-----------------
+ drivers/infiniband/hw/qedr/main.c              |  19 ----
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c |   5 -
+ drivers/net/ethernet/qlogic/qede/qede_rdma.c   |   4 -
+ include/rdma/ib_cache.h                        |  13 +++
+ include/rdma/ib_verbs.h                        |   8 ++
+ 10 files changed, 173 insertions(+), 165 deletions(-)
 
-The driver will print like this:
-
-[ 1252.240921] hns3 0000:7d:00.0: Invalid request local work queue 0x9 error.
-[ 1252.247772] hns3 0000:7d:00.0: no hr_qp can be found!
-
-Thanks
-Weihang
-
-> .
-> 
+-- 
+2.8.1
 
