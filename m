@@ -2,41 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64E2A13E586
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 18:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE1C13E6BA
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 18:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391070AbgAPROm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 12:14:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34274 "EHLO mail.kernel.org"
+        id S2391216AbgAPRRb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 12:17:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391065AbgAPROl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:14:41 -0500
+        id S2391134AbgAPRR3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:17:29 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 802A5246AC;
-        Thu, 16 Jan 2020 17:14:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 842472081E;
+        Thu, 16 Jan 2020 17:17:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579194880;
-        bh=neRMrMZOSpRAzPxFlLtbh0wI0c2ycl3m/dsT9nRIn9Q=;
+        s=default; t=1579195049;
+        bh=N6Y8PkCQnIedDcnf0oyyx/ToavtI/AovlyPF64X9BKo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JhZObM5vuV337AmsGa30ZeZc4LnYLTQGVxth5AlnydRajIuq6EXrYhv5JM5+Whe4y
-         gMaUaM3Fros7vZ0WzojLyvZGF3SUbGtQMOlpw03kPJCWFzcFJ6N9dyYb25SqMjntPE
-         pk0HMHfuV4JZHbnzlT4urOiy8FgAIG5dfY19rl48=
+        b=BlSv6jhYmhw/enHhdU5eawmTD3QAoqx8k9uASJHKN5JgeAqR0UmrR4sp5X1l8Xlgv
+         iVkPVyDk2fhyrbpEf+vlwq0KOSpKqKwlxOVNaR1YAg2IDSxc7Rlp2b+DPIhI/84oQa
+         bTG2OomkqhI2ND2bWW3YnrpPAs925m6HRIXqNSQE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Max Gurtovoy <maxg@mellanox.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Israel Rukshin <israelr@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
+Cc:     Zhu Yanjun <yanjun.zhu@oracle.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 669/671] IB/iser: Fix dma_nents type definition
-Date:   Thu, 16 Jan 2020 12:05:07 -0500
-Message-Id: <20200116170509.12787-406-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 007/371] IB/rxe: replace kvfree with vfree
+Date:   Thu, 16 Jan 2020 12:11:15 -0500
+Message-Id: <20200116171719.16965-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
-References: <20200116170509.12787-1-sashal@kernel.org>
+In-Reply-To: <20200116171719.16965-1-sashal@kernel.org>
+References: <20200116171719.16965-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -46,39 +44,75 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Max Gurtovoy <maxg@mellanox.com>
+From: Zhu Yanjun <yanjun.zhu@oracle.com>
 
-[ Upstream commit c1545f1a200f4adc4ef8dd534bf33e2f1aa22c2f ]
+[ Upstream commit 721ad7e643f7002efa398838693f90284ea216d1 ]
 
-The retured value from ib_dma_map_sg saved in dma_nents variable. To avoid
-future mismatch between types, define dma_nents as an integer instead of
-unsigned.
+The buf is allocated by vmalloc_user in the function rxe_queue_init.
+So it is better to free it by vfree.
 
-Fixes: 57b26497fabe ("IB/iser: Pass the correct number of entries for dma mapped SGL")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Israel Rukshin <israelr@mellanox.com>
-Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
-Acked-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Zhu Yanjun <yanjun.zhu@oracle.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/iser/iscsi_iser.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/sw/rxe/rxe_cq.c | 4 ++--
+ drivers/infiniband/sw/rxe/rxe_qp.c | 5 +++--
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.h b/drivers/infiniband/ulp/iser/iscsi_iser.h
-index 120b40829560..a7aeaa0c6fbc 100644
---- a/drivers/infiniband/ulp/iser/iscsi_iser.h
-+++ b/drivers/infiniband/ulp/iser/iscsi_iser.h
-@@ -197,7 +197,7 @@ struct iser_data_buf {
- 	struct scatterlist *sg;
- 	int                size;
- 	unsigned long      data_len;
--	unsigned int       dma_nents;
-+	int                dma_nents;
- };
+diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
+index c4aabf78dc90..f6e036ded046 100644
+--- a/drivers/infiniband/sw/rxe/rxe_cq.c
++++ b/drivers/infiniband/sw/rxe/rxe_cq.c
+@@ -30,7 +30,7 @@
+  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  * SOFTWARE.
+  */
+-
++#include <linux/vmalloc.h>
+ #include "rxe.h"
+ #include "rxe_loc.h"
+ #include "rxe_queue.h"
+@@ -97,7 +97,7 @@ int rxe_cq_from_init(struct rxe_dev *rxe, struct rxe_cq *cq, int cqe,
+ 	err = do_mmap_info(rxe, udata, false, context, cq->queue->buf,
+ 			   cq->queue->buf_size, &cq->queue->ip);
+ 	if (err) {
+-		kvfree(cq->queue->buf);
++		vfree(cq->queue->buf);
+ 		kfree(cq->queue);
+ 		return err;
+ 	}
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index aeea994b04c4..25055a68a2c0 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -34,6 +34,7 @@
+ #include <linux/skbuff.h>
+ #include <linux/delay.h>
+ #include <linux/sched.h>
++#include <linux/vmalloc.h>
  
- /* fwd declarations */
+ #include "rxe.h"
+ #include "rxe_loc.h"
+@@ -255,7 +256,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 			   qp->sq.queue->buf_size, &qp->sq.queue->ip);
+ 
+ 	if (err) {
+-		kvfree(qp->sq.queue->buf);
++		vfree(qp->sq.queue->buf);
+ 		kfree(qp->sq.queue);
+ 		return err;
+ 	}
+@@ -308,7 +309,7 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 				   qp->rq.queue->buf_size,
+ 				   &qp->rq.queue->ip);
+ 		if (err) {
+-			kvfree(qp->rq.queue->buf);
++			vfree(qp->rq.queue->buf);
+ 			kfree(qp->rq.queue);
+ 			return err;
+ 		}
 -- 
 2.20.1
 
