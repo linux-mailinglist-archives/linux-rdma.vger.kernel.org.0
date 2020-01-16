@@ -2,158 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 348FB13DD15
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 15:11:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 739AB13DD1E
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 15:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbgAPOLn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 09:11:43 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:43666 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbgAPOLm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 09:11:42 -0500
-Received: by mail-qk1-f195.google.com with SMTP id t129so19164468qke.10
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 06:11:42 -0800 (PST)
+        id S1726474AbgAPONO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 09:13:14 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:45669 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgAPONO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 09:13:14 -0500
+Received: by mail-qk1-f196.google.com with SMTP id x1so19144425qkl.12
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 06:13:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=E4TXCvIZZmY4SQCWQzeLR1MFoYNB31lrG2Qln+AaBO4=;
-        b=JFr3/SZ3UQPbE6tN0WIDrmGEvvrNPfsLSUjntfSPf4H8CaB9Ec8m1JVzlwKdxQI7bR
-         3Wf7o15qkWvfU2BrXgUqDa/P5/s3JU86YwmHmVDJgHJVZpC48Wq+GwpiH70SVGZXzNCW
-         tUB0BZs20iU/qGmkxxbEKTg+rfI7uWyRi6HD7SwwKfn6eeOx5NXa2L4khYzmYqdU/Q73
-         XJzZwnq1+SkVZNFtHtVAhdji1nJv/bWhk/VqEp4wX7VCiTOc5nBu+Cv/vpBioS4yMhnI
-         nFwmiDzAw7e0YnFmBSZ6FJ2C6Eprq+qfGs/8uk/SzOBENKSHugI2ZSccx15T3V2aqTrv
-         rb8Q==
+        bh=520l2JLiKzJXg1t/Rg1LJ2QfApYXnB06j0gidqNWK58=;
+        b=ivJGbNrKKevBAu3KtV1zpocVU5wd/m68yl62mnYvyvPVF8IJGvJlZNp6vb/jzePu1Y
+         zf8xk9JI9hC4MEsK7uuZYFsrH+fHx1I+w4azdTlESYba+4xdP+X1qopzcrcWeiORTygz
+         SRQ5jHvSLmjJWuX81TBQvRHo3mty6NG73RXCGWstN81R647lQsi0geld8aR51csMZoYE
+         k26lxx/+qK8hSO8W6/k/oHOHdy19CbgyIzTDlz3U5sgcH+RiBy2c12LOHHlFDQQfKrSy
+         ZGE3h8J8y6BhWBt2lQSPAieLjj/vaB6ptjZE6ZZjn8AuZtLua1uRakzC1Z0wv8sLyT+C
+         d8mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=E4TXCvIZZmY4SQCWQzeLR1MFoYNB31lrG2Qln+AaBO4=;
-        b=tvm0ex5b6/mu+4F79DGtOjDCWynizQImJZTu/diYUlsCLtZk2/2TGXzdNtysHHJyAu
-         KECYjbbU0sqRBWIWcWxogQ9LxpCKhMY3Ri8cu2NXEJsY/pqkmmVctR7VVJts2cAp4fAy
-         XEX3Vrhm3RI4Rtslbz/+Y4G3QLGyNW55Z0R5yu34NcNXNOSqYLIbW9gho2YWfNWpVxzJ
-         8Z8OXBqT6ZvUp0BSeqmy5mE4+QocKuBMpsRADb38cbWZ6J7LJSz68C+j7FdbMtvFODmp
-         y2HfhqACVQs2PVD1IhsCVMm0UfncMBhnCO7nOi2AlAtv+whql+VZnH/gCubre3UBqqHa
-         mfUQ==
-X-Gm-Message-State: APjAAAWjeZwnaP4laPH66CerT8AgXnKM/XxACMNVpG2IYTtB4sSqYxgr
-        XceZ1pWtqyMjY4kUtbS5RIYlng==
-X-Google-Smtp-Source: APXvYqx6uZpu4GcW1N0sXEyw9K5yx2S6JPwxGtld6dzchDnf5W2zeuoRuG/8THysf1WiLlTh8VyUTg==
-X-Received: by 2002:a37:5fc2:: with SMTP id t185mr32372460qkb.271.1579183901908;
-        Thu, 16 Jan 2020 06:11:41 -0800 (PST)
+        bh=520l2JLiKzJXg1t/Rg1LJ2QfApYXnB06j0gidqNWK58=;
+        b=CN+Gmn88xhAjHTnqEzZf6M/0KQNlZ3upuwXKmZc0f1+YBZkraOWyyWVioXSF09qTZs
+         UYqD1mIMo0hjbHCJqGODde5KbU7yGfS/cKv/GOD3ZHutGT50jR9C2/zJSw/bTzO1fbnX
+         kS792WpgzvtVAtSuVTOBXuir9Xy/STFXKnI7XRGgYvqMgdpiQm0IWJlzJkzdwoGKmzWP
+         LXoJ8fDSAzqJmrWqZS2py806eWY2cw9DzS7WOMofNHTBjJMgaP+CbU7hrXjn+Kd29Sld
+         c7Y+PI/lG4F/blD+xzuhiGbMXrCurixE7g6wTWDVyXhUcnnUFk4EbGrS/2nN2Bl1mDF/
+         QPgw==
+X-Gm-Message-State: APjAAAXkezztO/UPFkWhfp4bmSQis9E/0hsnXQPxA3rRdYNulLuxynlR
+        TRIJpeQqUYU/VUW44V363KAAzQ==
+X-Google-Smtp-Source: APXvYqwaAFHzaeePD+ZLa06AK6hw8Q1AGGqMYwQg3zqKNGu2Y61JuM5obBUDEaQ/+e046D9AnzZXAg==
+X-Received: by 2002:a37:b402:: with SMTP id d2mr31920622qkf.195.1579183993212;
+        Thu, 16 Jan 2020 06:13:13 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id g53sm11292147qtk.76.2020.01.16.06.11.40
+        by smtp.gmail.com with ESMTPSA id h34sm11371081qtc.62.2020.01.16.06.13.12
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 Jan 2020 06:11:41 -0800 (PST)
+        Thu, 16 Jan 2020 06:13:12 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1is5s4-0003yp-CZ; Thu, 16 Jan 2020 10:11:40 -0400
-Date:   Thu, 16 Jan 2020 10:11:40 -0400
+        id 1is5tX-00040h-V7; Thu, 16 Jan 2020 10:13:11 -0400
+Date:   Thu, 16 Jan 2020 10:13:11 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Ralph Campbell <rcampbell@nvidia.com>
 Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
         "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
         Jerome Glisse <jglisse@redhat.com>,
         John Hubbard <jhubbard@nvidia.com>,
         Christoph Hellwig <hch@lst.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v6 4/6] mm/mmu_notifier: add mmu_interval_notifier_find()
-Message-ID: <20200116141140.GA10759@ziepe.ca>
-References: <20200113224703.5917-1-rcampbell@nvidia.com>
- <20200113224703.5917-5-rcampbell@nvidia.com>
- <20200114124956.GN20978@mellanox.com>
- <528c1cff-608c-d342-1e72-90d780555204@nvidia.com>
+        Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH v5 1/2] mm/mmu_notifier: make interval notifier updates
+ safe
+Message-ID: <20200116141311.GB10759@ziepe.ca>
+References: <20191216195733.28353-1-rcampbell@nvidia.com>
+ <20191216195733.28353-2-rcampbell@nvidia.com>
+ <20200109194805.GK20978@mellanox.com>
+ <73225ded-c22d-33f2-ebcb-b9e9aa95266b@nvidia.com>
+ <20200109232548.GO20978@mellanox.com>
+ <633a3dda-d4d7-1233-b290-53d36fb8fda1@nvidia.com>
+ <20200114124523.GM20978@mellanox.com>
+ <c9458a81-da38-928f-d8f3-814e06674bec@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <528c1cff-608c-d342-1e72-90d780555204@nvidia.com>
+In-Reply-To: <c9458a81-da38-928f-d8f3-814e06674bec@nvidia.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 02:05:24PM -0800, Ralph Campbell wrote:
-> 
-> On 1/14/20 4:49 AM, Jason Gunthorpe wrote:
-> > On Mon, Jan 13, 2020 at 02:47:01PM -0800, Ralph Campbell wrote:
-> > > diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
-> > > index 47ad9cc89aab..4efecc0f13cb 100644
-> > > +++ b/mm/mmu_notifier.c
-> > > @@ -1171,6 +1171,39 @@ void mmu_interval_notifier_update(struct mmu_interval_notifier *mni,
-> > >   }
-> > >   EXPORT_SYMBOL_GPL(mmu_interval_notifier_update);
-> > > +struct mmu_interval_notifier *mmu_interval_notifier_find(struct mm_struct *mm,
-> > > +				const struct mmu_interval_notifier_ops *ops,
-> > > +				unsigned long start, unsigned long last)
-> > > +{
-> > > +	struct mmu_notifier_mm *mmn_mm = mm->mmu_notifier_mm;
-> > > +	struct interval_tree_node *node;
-> > > +	struct mmu_interval_notifier *mni;
-> > > +	struct mmu_interval_notifier *res = NULL;
-> > > +
-> > > +	spin_lock(&mmn_mm->lock);
-> > > +	node = interval_tree_iter_first(&mmn_mm->itree, start, last);
-> > > +	if (node) {
-> > > +		mni = container_of(node, struct mmu_interval_notifier,
-> > > +				   interval_tree);
-> > > +		while (true) {
-> > > +			if (mni->ops == ops) {
-> > > +				res = mni;
-> > > +				break;
-> > > +			}
-> > > +			node = interval_tree_iter_next(&mni->interval_tree,
-> > > +						       start, last);
-> > > +			if (!node)
-> > > +				break;
-> > > +			mni = container_of(node, struct mmu_interval_notifier,
-> > > +					   interval_tree);
-> > > +		}
-> > > +	}
-> > > +	spin_unlock(&mmn_mm->lock);
-> > 
-> > This doesn't seem safe at all, here we are returning a pointer to
-> > memory from the interval tree with out any kind of lifetime
-> > protection.
-> 
-> It is memory that the driver has allocated and has full control over
-> the lifetime since the driver does all the insertions and removals.
-> The driver does have to hold the HW page table lock so lookups are
-> synchronized with interval insertions and removals and page table
-> entry insertions and removals.
+On Wed, Jan 15, 2020 at 02:04:47PM -0800, Ralph Campbell wrote:
 
-No.. the ->release is async, so having the driver hold a lock around
-all the mmu_interval_ APIS still doesn't make it safe. The element
-could be on the defered list and it could become freed at any moment.
+> But I see your point if this sequence is done outside of the invalidate
+> callback. In that case, if the driver shrank the interval, an invalidate
+> callback for the right hand side could be missed before the insertion of
+> the new interval for the right hand side.
+> I'll explain this in the comments for nouveau_svmm_do_unmap() and
+> dmirror_do_unmap().
 
-> > If the interval tree is read it must be left in the read lock state
-> > until the caller is done with the pointer.
-> > 
-> > .. and this poses all sorts of questions about consistency with items
-> > on the deferred list. Should find return an item undergoing deletion?
-> 
-> I don't think so. The deferred operations are all complete when
-> mmu_interval_read_begin() returns, and the sequence number check
-> with mmu_interval_read_retry() guarantees there have been no changes
-> while not holding the driver page table lock and calling hmm_range_fault().
+Yes, this is why I'm not sure this is a good API for the core to
+expose.
 
-It seems very dangerous to say, on one hand, that the driver is
-serialized because it holds a lock around all mmu_interval_* calls,
-while on the other saying that on rare edge cases find does not return
-a result that matches the serial-program-order sequence.
-
-This seems like a way to create bugs.
-
-For instance, if find is consistent with the defered list then it will
-not return any element that has a pending deletion and the above issue
-with lifetime wouldn't happen.
-
-However, I'm still not sure that providing an API tha requires the
-driver to provide tricky locking is the best idea. This basically says
-that if a driver uses find then every single other call to
-mmu_interval_* must be serialized with a single lock.
+Batch manipulations is a resonable thing, but it should be forced to
+work under safe conditions, ie while holding the required 'inv_begin'
+on the interval tree, and the batching APIs should assert this
+requirement.
 
 Jason
