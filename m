@@ -2,36 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 000BA13E199
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 17:50:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 229D013E149
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 17:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729927AbgAPQr3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 11:47:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57366 "EHLO mail.kernel.org"
+        id S1728988AbgAPQsn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 11:48:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729923AbgAPQr3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Jan 2020 11:47:29 -0500
+        id S1727022AbgAPQsm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jan 2020 11:48:42 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FA7B2176D;
-        Thu, 16 Jan 2020 16:47:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84D0A2073A;
+        Thu, 16 Jan 2020 16:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579193248;
-        bh=Nh1lPVksc84cfRqDmjNinvlnaUTlHFl1OIphF9v5p9U=;
+        s=default; t=1579193321;
+        bh=ldgK0vmdqGkt21vjEpPeGPXwCAigCvSw3+YNv/leJ3I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j6FQj2Lo3fGrfFqXZ2oHMqVUzxIg2Dsu2EzX9dR/6lZuMMmZGtkwqjAgm28sZGUUd
-         TneuxG9iimgjgdco0R2rTdBNxq32HmxoC+WBt4jiR2+jXUKNaP360g3taadFhDxUnJ
-         UjGoEHDLL/FMK13b5MnTvf961jXVCYPmIxiBZanY=
+        b=B9PxOpnAVjs0K3x5xU1KIchh1vSKpKX+ok6VCwBOZC646Z7nZWcW4hrf7Hl1IAUkd
+         /GzOHXLejlwq5J3XbBuB+7SQn0rKe6gY0SeIqTRzwhRQfbeReddlpUJcby1akXGDZU
+         U+sblKF0fA1WmVCRZ1JDwp4MphE/vPEo4qSkg2xU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yangyang Li <liyangyang20@huawei.com>,
-        Weihang Li <liweihang@hisilicon.com>,
-        Doug Ledford <dledford@redhat.com>,
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 054/205] RDMA/hns: Release qp resources when failed to destroy qp
-Date:   Thu, 16 Jan 2020 11:40:29 -0500
-Message-Id: <20200116164300.6705-54-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 074/205] RDMA/hns: Prevent undefined behavior in hns_roce_set_user_sq_size()
+Date:   Thu, 16 Jan 2020 11:40:49 -0500
+Message-Id: <20200116164300.6705-74-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116164300.6705-1-sashal@kernel.org>
 References: <20200116164300.6705-1-sashal@kernel.org>
@@ -44,68 +43,59 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yangyang Li <liyangyang20@huawei.com>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-[ Upstream commit d302c6e3a6895608a5856bc708c47bda1770b24d ]
+[ Upstream commit 515f60004ed985d2b2f03659365752e0b6142986 ]
 
-Even if no response from hardware, we should make sure that qp related
-resources are released to avoid memory leaks.
+The "ucmd->log_sq_bb_count" variable is a user controlled variable in the
+0-255 range.  If we shift more than then number of bits in an int then
+it's undefined behavior (it shift wraps), and potentially the int could
+become negative.
 
-Fixes: 926a01dc000d ("RDMA/hns: Add QP operations support for hip08 SoC")
-Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
-Signed-off-by: Weihang Li <liweihang@hisilicon.com>
-Link: https://lore.kernel.org/r/1570584110-3659-1-git-send-email-liweihang@hisilicon.com
-Signed-off-by: Doug Ledford <dledford@redhat.com>
+Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
+Link: https://lore.kernel.org/r/20190608092514.GC28890@mwanda
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_qp.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index e82567fcdeb7..926cb97483f9 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -4650,16 +4650,14 @@ static int hns_roce_v2_destroy_qp_common(struct hns_roce_dev *hr_dev,
- {
- 	struct hns_roce_cq *send_cq, *recv_cq;
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
--	int ret;
-+	int ret = 0;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index bd78ff90d998..8dd2d666f687 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -332,9 +332,8 @@ static int check_sq_size_with_integrity(struct hns_roce_dev *hr_dev,
+ 	u8 max_sq_stride = ilog2(roundup_sq_stride);
  
- 	if (hr_qp->ibqp.qp_type == IB_QPT_RC && hr_qp->state != IB_QPS_RESET) {
- 		/* Modify qp to reset before destroying qp */
- 		ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, NULL, 0,
- 					    hr_qp->state, IB_QPS_RESET);
--		if (ret) {
-+		if (ret)
- 			ibdev_err(ibdev, "modify QP to Reset failed.\n");
--			return ret;
--		}
+ 	/* Sanity check SQ size before proceeding */
+-	if ((u32)(1 << ucmd->log_sq_bb_count) > hr_dev->caps.max_wqes ||
+-	     ucmd->log_sq_stride > max_sq_stride ||
+-	     ucmd->log_sq_stride < HNS_ROCE_IB_MIN_SQ_STRIDE) {
++	if (ucmd->log_sq_stride > max_sq_stride ||
++	    ucmd->log_sq_stride < HNS_ROCE_IB_MIN_SQ_STRIDE) {
+ 		ibdev_err(&hr_dev->ib_dev, "check SQ size error!\n");
+ 		return -EINVAL;
  	}
- 
- 	send_cq = to_hr_cq(hr_qp->ibqp.send_cq);
-@@ -4715,7 +4713,7 @@ static int hns_roce_v2_destroy_qp_common(struct hns_roce_dev *hr_dev,
- 		kfree(hr_qp->rq_inl_buf.wqe_list);
- 	}
- 
--	return 0;
-+	return ret;
- }
- 
- static int hns_roce_v2_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
-@@ -4725,11 +4723,9 @@ static int hns_roce_v2_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+@@ -358,13 +357,16 @@ static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
+ 	u32 max_cnt;
  	int ret;
  
- 	ret = hns_roce_v2_destroy_qp_common(hr_dev, hr_qp, udata);
--	if (ret) {
-+	if (ret)
- 		ibdev_err(&hr_dev->ib_dev, "Destroy qp 0x%06lx failed(%d)\n",
- 			  hr_qp->qpn, ret);
--		return ret;
--	}
++	if (check_shl_overflow(1, ucmd->log_sq_bb_count, &hr_qp->sq.wqe_cnt) ||
++	    hr_qp->sq.wqe_cnt > hr_dev->caps.max_wqes)
++		return -EINVAL;
++
+ 	ret = check_sq_size_with_integrity(hr_dev, cap, ucmd);
+ 	if (ret) {
+ 		ibdev_err(&hr_dev->ib_dev, "Sanity check sq size failed\n");
+ 		return ret;
+ 	}
  
- 	if (hr_qp->ibqp.qp_type == IB_QPT_GSI)
- 		kfree(hr_to_hr_sqp(hr_qp));
+-	hr_qp->sq.wqe_cnt = 1 << ucmd->log_sq_bb_count;
+ 	hr_qp->sq.wqe_shift = ucmd->log_sq_stride;
+ 
+ 	max_cnt = max(1U, cap->max_send_sge);
 -- 
 2.20.1
 
