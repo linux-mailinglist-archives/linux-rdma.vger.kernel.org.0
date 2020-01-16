@@ -2,119 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF1D13DB85
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 14:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7539313DCAD
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 14:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729035AbgAPNWr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 08:22:47 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33729 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729022AbgAPNWc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 08:22:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579180951;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xYGxxZgSLFtlH8jcI3Nu4qoKg9CPPVXnWephfx6aPc4=;
-        b=A5+wcdgja+B+2fGgSHlowJY9nG9BKOo3PYK8f7SwW2oMwo0oQ66KMgTEjpyC8AKhSjm8bV
-        zzQu5KduGzLIfg8gFYEM1BAfhb9CvPG6T6sqTGMx+P6CqGDktegEprDIlhF0QLl80FSdDl
-        cVFkgR9Fc2zVKcyuoDBmMHj0D96eJHU=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-59-0_fH1OO-NOW5hRz-fnEhIQ-1; Thu, 16 Jan 2020 08:22:28 -0500
-X-MC-Unique: 0_fH1OO-NOW5hRz-fnEhIQ-1
-Received: by mail-lj1-f197.google.com with SMTP id z17so5132179ljz.2
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 05:22:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=xYGxxZgSLFtlH8jcI3Nu4qoKg9CPPVXnWephfx6aPc4=;
-        b=R0Ta0rPD8QxOG67VG6F6EiFgvqwGNCBVEU9j5G76vb2P5+f9agX1EoV/1llvpJGohE
-         NCMpyQFsJXAEmT9NUlttzrJCgrLt3Sna6kpzUx4H1FbyYcl4sbBg1LqClVlYr7M74ZJq
-         ny9GoFI2T9E5/2+JBgqTWHDOiPUTGLgJ/wohmNlPWXOegvumFTqCbAAjTcGS5KtrR3ZE
-         RL31a7QJd/VLJXLDQQSWMJn0FrAU8U04j29h0gHUcdxdVHttpZkxWw+3XkYJ8HSMwHrq
-         tndOGh2oI+vWjy4Lw5MclTsWGZz8wGzUT1r/EHosqQCo4abd23upPeuYGH7TtXtelkpQ
-         45Gg==
-X-Gm-Message-State: APjAAAVu68BKuxp3Pmt8AvligoY2RHBOQXTFNC+YS6azCUv6yuEaf2zE
-        VoW2FNZ17ty6v2AI2gZL7sKHrsjx+h3XYORjVYmkoaoFFaiLqlVdU+wUTVN7osJkGt9J8M27WFe
-        38JmwkhOVSYE8wneXaTYs1g==
-X-Received: by 2002:a2e:b52b:: with SMTP id z11mr2348627ljm.155.1579180947071;
-        Thu, 16 Jan 2020 05:22:27 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxfmdIbBJX76Kqg7+Yyy3+Jb6vlAiz8KLU+B3P9UXhqphkNxoSBonQsyrf+47I652QC3NESmg==
-X-Received: by 2002:a2e:b52b:: with SMTP id z11mr2348613ljm.155.1579180946842;
-        Thu, 16 Jan 2020 05:22:26 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id s22sm10945565ljm.41.2020.01.16.05.22.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jan 2020 05:22:25 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 19EEE1808D8; Thu, 16 Jan 2020 14:22:24 +0100 (CET)
-Subject: [PATCH bpf-next v3 11/11] libbpf: Fix include of bpf_helpers.h when
- libbpf is installed on system
-From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        id S1726084AbgAPN5J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 08:57:09 -0500
+Received: from mail-eopbgr00064.outbound.protection.outlook.com ([40.107.0.64]:4149
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726362AbgAPN5J (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jan 2020 08:57:09 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HrRaiU8QOzCgb9ZzHf70RnhwnScsrNGifl5g7E1kykZfgihLJ//B1zg8Lidzb9uw/L4Epe3m8Apck2lBygv3w/eMdganL0dOL017/DF5sIjJL1KPxpjY+VzpXNGJ1YFDSGfmxqf9tbgj+RuxApurw4v/9b/2BRfdxNlblHbV9EsglGMAgvvcvxnLO5vhlHJixs4mEQdKTY/ev3ru05vbZtnugSbTGg+tx5RDTKgUsUk+3Tuzrf7OnFKb4JP41ZohyCbGOWRUNy1+yvgrSsPPwVFYVjQkNj651nhuM1ShW4X/L9VuK5u4lIE3a2bxg2B2DZ1xVPQdgACxr3dsw67j2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tOwLcVZKc8TbUbZwLicV1NV74FPSo9TATICmKUrjOUw=;
+ b=hBqLKSvvFH7I1MaK6kD6knLdk/cOmp8a63BpwUaUOq7BZCcpz21gdmVn/GtjYPI7jnYpYhb3G0OTzwCM9d4AhGvhNcWhuyro+cTMoSPdPqHYxbwcFdCMPYD73eOQI7cBjxNgh8ighetJYY+Zi5UzAFf6nReQ4we4xqi9Fi+vs7VhtWBt2SMpu2bItmlbByIs5NPJRc2bScf5wrk9Q+34MzLudsioH4WH2H3MU1chJn9CcjlKlxcvCbwDM6lnIR3JvQXL7SgP1U6eAKrgfjV3/LTshICzCXyu2pXMnYIQ2Ax4xziJy6rX39F+fzOsEUsAf1YMUIEURwhQMjKmVaPb6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tOwLcVZKc8TbUbZwLicV1NV74FPSo9TATICmKUrjOUw=;
+ b=b+pUCympriR7KxWXpHNezAmvIP4tlv5djHxkMRfzG8q+RcChhjZWpi9/W1XGLT0ffdFoKnC1Pzf9M5rBHcOSNWewyN5cKTVDUEQpfDwMH3XepNkyfFoJ0VxKzhCUjZ9W0S5OcIWGlSruDa0aTM0zzxEXxI6XafJMzXd8ax3eYgg=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB4669.eurprd05.prod.outlook.com (20.176.3.10) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2623.10; Thu, 16 Jan 2020 13:57:05 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1c00:7925:d5c6:d60d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1c00:7925:d5c6:d60d%7]) with mapi id 15.20.2644.015; Thu, 16 Jan 2020
+ 13:57:05 +0000
+Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR17CA0022.namprd17.prod.outlook.com (2603:10b6:208:15e::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2644.18 via Frontend Transport; Thu, 16 Jan 2020 13:57:05 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1is5dt-0003ix-Sm; Thu, 16 Jan 2020 09:57:01 -0400
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Leon Romanovsky <leonro@mellanox.com>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Date:   Thu, 16 Jan 2020 14:22:24 +0100
-Message-ID: <157918094400.1357254.5646603555325507261.stgit@toke.dk>
-In-Reply-To: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
-References: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
-User-Agent: StGit/0.21
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Hans Westgaard Ry <hans.westgaard.ry@oracle.com>,
+        Moni Shoua <monis@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH mlx5-next 00/10] Use ODP MRs for kernel ULPs
+Thread-Topic: [PATCH mlx5-next 00/10] Use ODP MRs for kernel ULPs
+Thread-Index: AQHVy6FvxnMGsXYFhEqsZB6HjluKCafs3buAgAB0qIA=
+Date:   Thu, 16 Jan 2020 13:57:05 +0000
+Message-ID: <20200116135701.GG20978@mellanox.com>
+References: <20200115124340.79108-1-leon@kernel.org>
+ <20200116065926.GD76932@unreal>
+In-Reply-To: <20200116065926.GD76932@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR17CA0022.namprd17.prod.outlook.com
+ (2603:10b6:208:15e::35) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.68.57.212]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c417e9c6-b2c5-444f-46b0-08d79a8bf87a
+x-ms-traffictypediagnostic: VI1PR05MB4669:|VI1PR05MB4669:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB4669D267A60F9DDEFF522EEECF360@VI1PR05MB4669.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 02843AA9E0
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(136003)(376002)(396003)(366004)(346002)(189003)(199004)(37006003)(186003)(36756003)(4326008)(81166006)(8676002)(81156014)(71200400001)(316002)(26005)(66946007)(66446008)(66556008)(64756008)(1076003)(66476007)(4744005)(478600001)(6862004)(54906003)(2616005)(86362001)(6636002)(5660300002)(8936002)(33656002)(9786002)(2906002)(52116002)(9746002)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4669;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: K9Dnyaq6FiEa5LdZvTmO6KVG42aYQAvgpKf7OFiNlZUk8SDqF1ZUWDMBQKGtbWzT2PSVcoswULY4rNS02xmH2U/WQKEwjlbpQmgWBfk/xC5cfXVFevbzro8j07qOWR7AHWtiXn/D6PzztRbUOHN8ElGtqqnukQzQgvC05gXDD+JeKaTJ4fdTCJzzKEh6ZEvlyI9dYjdFAqAIEznjlurpCBd+s4Mc5OFPK8qudfHz8TndUr9ZmHJQTV+dDPv9SK0zt8jeDJ7IVr6HhWvTZ5aC2OiEnrKzBjhgEJweUrhPo8XneHwEEFGWopmClp/KBy0FRCdnFtqGRdCq7nLA3JQikYGtZ/AwCSNhHfN/pPaTO93bHvtqgTHeSI/cdu2THESB3i6/YC8o4I3TtVMw57Xf9gYxShWzCKLHMH+f4Ll0GjAOjB+Fwi3kSf2HCwDOEvow1RUhDfc4RoAKhv/cOaCnvOrFRixNNzPIVbB2av/eIfCFDJkbY8iei0ezqLa/03B6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <0C06D25BBED1E84C900B1F1185314F17@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c417e9c6-b2c5-444f-46b0-08d79a8bf87a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jan 2020 13:57:05.7748
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: P+gXIiM+5Yk5MmHQe278av0Yc7Ub8RxzxzBr0XPeZpz8mAjllrF8DdaaKH9G9Z7SdtgK9+Gx0n8fTDVRrFB7jQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4669
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+On Thu, Jan 16, 2020 at 06:59:29AM +0000, Leon Romanovsky wrote:
+> >  45 files changed, 559 insertions(+), 256 deletions(-)
+>=20
+> Thanks Santosh for your review.
+>=20
+> David,
+> Is it ok to route those patches through RDMA tree given the fact that
+> we are touching a lot of files in drivers/infiniband/* ?
+>=20
+> There is no conflict between netdev and RDMA versions of RDS, but to be
+> on safe side, I'll put all this code to mlx5-next tree.
 
-The change to use angled includes for bpf_helper_defs.h breaks compilation
-against libbpf when it is installed in the include path, since the file is
-installed in the bpf/ subdirectory of $INCLUDE_PATH. Since we've now fixed
-the selftest Makefile to not require this anymore, revert back to
-double-quoted include so bpf_helpers.h works regardless of include path.
+Er, lets not contaminate the mlx5-next with this..
 
-Fixes: 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are taken from selftests dir")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- tools/lib/bpf/bpf_helpers.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It looks like it applies clean to -rc6 so if it has to be in both
+trees a clean PR against -rc5/6 is the way to do it.
 
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index 050bb7bf5be6..f69cc208778a 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -2,7 +2,7 @@
- #ifndef __BPF_HELPERS__
- #define __BPF_HELPERS__
- 
--#include <bpf_helper_defs.h>
-+#include "bpf_helper_defs.h"
- 
- #define __uint(name, val) int (*name)[val]
- #define __type(name, val) typeof(val) *name
+Santos, do you anticipate more RDS patches this cycle?
 
+Jason
