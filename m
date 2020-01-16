@@ -2,34 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2227413F450
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 19:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8472413F3EE
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 19:46:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389781AbgAPSsv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 13:48:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45976 "EHLO mail.kernel.org"
+        id S2389890AbgAPRKS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 12:10:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389720AbgAPRJj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:09:39 -0500
+        id S2389884AbgAPRKR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:10:17 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6C8C24689;
-        Thu, 16 Jan 2020 17:09:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8174F24683;
+        Thu, 16 Jan 2020 17:10:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579194578;
-        bh=Tsv2cFwSXKX5+sUOE41BpHJBx1IMbHjouscXos+JqRc=;
+        s=default; t=1579194617;
+        bh=3wY1eNIDBl00qk/vjDIBuNUlA3VgGOqLlLdRJU7xOIA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ifsG+hEsHT8cL7IP/oKqIkvUvt8fkNq29uMWZCjd7FLKv7GE6DlL5eyGwLHpjIMI3
-         wt/TUtv4zmT8WUZOjBIqvsWInkn36zUIj2YTbU1d6UK/s7jKQ9fi7YN58vpbxWXOqI
-         APa+o61fs0wXrXVy6+OGdeSLzato3TIOlXxIlB7Q=
+        b=plbH3aQMaEjLLK/blVseJ2hZT9fL59A6jyvkxzHZpayWU77LEs4kFBZb3M7ajp/Dm
+         wIMHxp64kJ5AikJW8Qf526tcKj9BZtqDBY87FCrsD16Pgy/+DCaNau2Fjw9CLRT7XA
+         uwfLY2Kb30W4FZuFH5kjxwQ3Gq8I8+WEKO0pbVLc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xi Wang <wangxi11@huawei.com>, Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 453/671] RDMA/hns: Fixs hw access invalid dma memory error
-Date:   Thu, 16 Jan 2020 12:01:31 -0500
-Message-Id: <20200116170509.12787-190-sashal@kernel.org>
+Cc:     Mark Zhang <markz@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 480/671] net/mlx5: Fix mlx5_ifc_query_lag_out_bits
+Date:   Thu, 16 Jan 2020 12:01:58 -0500
+Message-Id: <20200116170509.12787-217-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
 References: <20200116170509.12787-1-sashal@kernel.org>
@@ -42,46 +45,34 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+From: Mark Zhang <markz@mellanox.com>
 
-[ Upstream commit ec5bc2cc69b4fc494e04d10fc5226f6f9cf67c56 ]
+[ Upstream commit ea77388b02270b0af8dc57f668f311235ea068f0 ]
 
-When smmu is enable, if execute the perftest command and then use 'kill
--9' to exit, follow this operation repeatedly, the kernel will have a high
-probability to print the following smmu event:
+Remove the "reserved_at_40" field to match the device specification.
 
-  arm-smmu-v3 arm-smmu-v3.1.auto: event 0x10 received:
-  arm-smmu-v3 arm-smmu-v3.1.auto:  0x00007d0000000010
-  arm-smmu-v3 arm-smmu-v3.1.auto:  0x0000020900000080
-  arm-smmu-v3 arm-smmu-v3.1.auto:  0x00000000f47cf000
-  arm-smmu-v3 arm-smmu-v3.1.auto:  0x00000000f47cf000
-
-This is because the hw will periodically refresh the qpc cache until the
-next reset.
-
-This patch fixed it by removing the action that release qpc memory in the
-'hns_roce_qp_free' function.
-
-Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Fixes: 84df61ebc69b ("net/mlx5: Add HW interfaces used by LAG")
+Signed-off-by: Mark Zhang <markz@mellanox.com>
+Reviewed-by: Yishai Hadas <yishaih@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_qp.c | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/mlx5/mlx5_ifc.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index af24698ff226..3012d7eb4ccb 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -262,7 +262,6 @@ void hns_roce_qp_free(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- 			hns_roce_table_put(hr_dev, &qp_table->trrl_table,
- 					   hr_qp->qpn);
- 		hns_roce_table_put(hr_dev, &qp_table->irrl_table, hr_qp->qpn);
--		hns_roce_table_put(hr_dev, &qp_table->qp_table, hr_qp->qpn);
- 	}
- }
- EXPORT_SYMBOL_GPL(hns_roce_qp_free);
+diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
+index 177f11c96187..76b76b6aa83d 100644
+--- a/include/linux/mlx5/mlx5_ifc.h
++++ b/include/linux/mlx5/mlx5_ifc.h
+@@ -9053,8 +9053,6 @@ struct mlx5_ifc_query_lag_out_bits {
+ 
+ 	u8         syndrome[0x20];
+ 
+-	u8         reserved_at_40[0x40];
+-
+ 	struct mlx5_ifc_lagc_bits ctx;
+ };
+ 
 -- 
 2.20.1
 
