@@ -2,69 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A062013D687
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 10:14:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E64513D6A5
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 10:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgAPJOf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 04:14:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43050 "EHLO mail.kernel.org"
+        id S1726897AbgAPJUS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 04:20:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726406AbgAPJOf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Jan 2020 04:14:35 -0500
+        id S1726684AbgAPJUR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Jan 2020 04:20:17 -0500
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 069112064C;
-        Thu, 16 Jan 2020 09:14:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A75A520748;
+        Thu, 16 Jan 2020 09:20:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579166074;
-        bh=/ZP5DMFXtvJgpTiq9dMw2rh/k9mrDcKdr98oM2mMCb4=;
+        s=default; t=1579166417;
+        bh=K+yVyVnPlO7hd4U7qSo55sqeMNoALJ9OWNERlyDia4k=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u9oe0bzh8DUh8A3H6Yw+Abbespstue2lzXd2XIwj2e0CZdnCokA37LJgL0XU2rnIZ
-         voXO89Puh/kZlE+glv4YdRBcXLb1k4xOsIEW8F0XAd9gtfp8s8mb9AAe8ie1qC9FXk
-         uCVDww+ZdhAAzwYN/yPlXWIAO50WWGbCQljryvT0=
-Date:   Thu, 16 Jan 2020 11:14:30 +0200
+        b=W1GNQ78CKpj33R/OW4Wvm4DAUFoGxmSHjuJpvMDa5TpdOR+p7gHVWC9sE8WtFx3n1
+         AN9F7hcAu6J6t0A59mgM2OTmHOEMJ1ukYKq/BPfTdUeixFKdsZXK9FcpDbI5HyuQcG
+         SKQBpS+zO3LkRs8d/BmyDAdBuRrBlLK2nIGCIUks=
+Date:   Thu, 16 Jan 2020 11:20:08 +0200
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Avihai Horon <avihaih@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH rdma-next 0/2] RoCE accelerator counters
-Message-ID: <20200116091430.GA6853@unreal>
-References: <20200115145459.83280-1-leon@kernel.org>
- <20200115203929.GA26829@ziepe.ca>
+Cc:     Yishai Hadas <yishaih@mellanox.com>, linux-rdma@vger.kernel.org,
+        dledford@redhat.com, saeedm@mellanox.com, maorg@mellanox.com,
+        michaelgur@mellanox.com, netdev@vger.kernel.org
+Subject: Re: [PATCH rdma-next 00/10] Relaxed ordering memory regions
+Message-ID: <20200116092008.GB6853@unreal>
+References: <1578506740-22188-1-git-send-email-yishaih@mellanox.com>
+ <20200115180848.GA13397@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200115203929.GA26829@ziepe.ca>
+In-Reply-To: <20200115180848.GA13397@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 04:39:29PM -0400, Jason Gunthorpe wrote:
-> On Wed, Jan 15, 2020 at 04:54:57PM +0200, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
+On Wed, Jan 15, 2020 at 02:08:48PM -0400, Jason Gunthorpe wrote:
+> On Wed, Jan 08, 2020 at 08:05:30PM +0200, Yishai Hadas wrote:
+> > This series adds an ioctl command to allocate an async event file followed by a
+> > new ioctl command to get a device context.
 > >
-> > Hi,
+> > The get device context command enables reading some core generic capabilities
+> > such as supporting an optional MR access flags by IB core and its related
+> > drivers.
 > >
-> > Very small change, separated to two patches due to our shared methodology.
+> > Once the above is enabled, a new optional MR access flag named
+> > IB_UVERBS_ACCESS_RELAXED_ORDERING is added and is used by mlx5 driver.
 > >
-> > Thanks
+> > This optional flag allows creation of relaxed ordering memory regions.  Access
+> > through such MRs can improve performance by allowing the system to reorder
+> > certain accesses.
 > >
-> > Avihai Horon (1):
-> >   IB/mlx5: Expose RoCE accelerator counters
+> > As relaxed ordering is an optimization, drivers that do not support it can
+> > simply ignore it.
 > >
-> > Leon Romanovsky (1):
-> >   net/mlx5: Add RoCE accelerator counters
+> > Note: This series relies on the 'Refactoring FD usage' series [1] that was sent
+> > to rdma-next.
+> > [1] https://patchwork.kernel.org/project/linux-rdma/list/?series=225541
+> >
+> > Yishai
+> >
+> > Jason Gunthorpe (3):
+> >   RDMA/core: Add UVERBS_METHOD_ASYNC_EVENT_ALLOC
+> >   RDMA/core: Remove ucontext_lock from the uverbs_destry_ufile_hw() path
+> >   RDMA/uverbs: Add ioctl command to get a device context
+> >
+> > Michael Guralnik (7):
+> >   net/mlx5: Expose relaxed ordering bits
+> >   RDMA/uverbs: Verify MR access flags
+> >   RDMA/core: Add optional access flags range
+> >   RDMA/efa: Allow passing of optional access flags for MR registration
+> >   RDMA/uverbs: Add new relaxed ordering memory region access flag
+> >   RDMA/core: Add the core support field to METHOD_GET_CONTEXT
+> >   RDMA/mlx5: Set relaxed ordering when requested
 >
-> Looks fine to me, can you update the shared branch?
+> This looks OK, can you update the shared branch please
 
 Thanks, applied
-8cbf17c14f9b net/mlx5: Add RoCE accelerator counters
+f4db8e8b0dc3 net/mlx5: Expose relaxed ordering bits
 
 >
 > Thanks,
