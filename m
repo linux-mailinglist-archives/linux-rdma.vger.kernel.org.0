@@ -2,181 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C7613DFFA
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 17:24:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DFB13E02F
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 17:34:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgAPQY2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 11:24:28 -0500
-Received: from mail-io1-f66.google.com ([209.85.166.66]:37024 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgAPQY2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 11:24:28 -0500
-Received: by mail-io1-f66.google.com with SMTP id k24so22453266ioc.4
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 08:24:27 -0800 (PST)
+        id S1726928AbgAPQeB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 11:34:01 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:39105 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbgAPQeB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 11:34:01 -0500
+Received: by mail-qk1-f193.google.com with SMTP id c16so19678255qko.6
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 08:34:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=apIz2+9yoUfuStq5UMu8JP8acA1lx+rNR0oTEq6+/+s=;
-        b=PyLaSZFmKclzKXc2mofAeRISHMo3IWIZvYOyzXjwWgiLonnaYcHRnYY5Svxx66yr7f
-         jLGOtmtEc53zsMlgG6EdXnP4HHgPAhPlGnNFM8X3Y0V+pcglmBH8kHbl+hSAHmN8gUD2
-         H9FpdGXns3IiBm3bbIpeGscEvRwjhxG67Z9nHKF08lQF0ljI6NviuoRo+fmTUOu+ALa1
-         FE6W2xv4JWmwA1MJswmHEBnY3KIAo6mAnSdC0eTvFoFw8ltYmc+0W4percxA0OQUEYg1
-         XLbIO803hHOeZbjtYia3DefqH70LdH5+s3ihhmc0NF0nTdJbwxybtvvXP5/+CljjgUhR
-         O2Bw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=oa0bZQpkEyjcs7ABeeOu5qKY4d6etbTg8GwEpE2lwx4=;
+        b=GwCUuYmh9QjD1S8e/ph4IFxvhkUCpERtc6AcTu3gWqXtitf5wJ2atb9p813PqJs/kz
+         diK17qtqwxVd+6Ev8mT/WQvE9pNqUr8/YDafR6zPQQ8nZHNwOlplHatjrdHBOrssnqaA
+         UdyH7nKSfKwOODBp9zyV4DWUlLwrPytZ36b9GhguPbKWMLDVFPbzKvbA2OSxCq1B9jUd
+         b47rLzIiS8wVwYKQNj4Lku8sQZ9e349RK028vjMw1oqLEa1A7bj/tPSV65MPLVapHyDO
+         lASrGxoXopzQLV0kKMpI+5L/x+KT/XEFBIWVBpt+kL77+0hsqdU0BOyIufZhhs9CdxCf
+         Vv9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=apIz2+9yoUfuStq5UMu8JP8acA1lx+rNR0oTEq6+/+s=;
-        b=pc1S8et3M5XSYLRcESch5gtWBzrYxH6TwWvdGaYournhJJxGbVe0zt186L9dzLuvfC
-         HDIYhkd7w9IIOKCbxnyrVyNMprFNVq41vMcWmfMKb/31oPcGfSQDjjdy3auDQA5et+xP
-         CrgDCD4GIRBelSO63Qpe4UT1Vl11/Fk3/t1Rw/UNNj02GwPRvnYk5zt2OX7JboYYRk6n
-         vLX4gXJsR5gT7btQ8OLfBV9V3iciQY+diiu0Wn3MvX6Dwmp5fVb5VINIF/VwBPpsIg+s
-         bxI6f05dWBNCvnOSn2yigJZ8BDIHnDO7ph32TECsNDzSKkyBA02WOYIRJ9A4idGeTjvU
-         OOLA==
-X-Gm-Message-State: APjAAAVkpQ0rLZNr4a7FHh2s0PrlARAylToEQaqeBQnHBQMrgM1Jr9sE
-        FGWAy03rGYg9QeRNlSIDIv6savm0LtgU1857qmu9cQ==
-X-Google-Smtp-Source: APXvYqwEbz/nPKl0Ju6yl68j4LvWHYZBTDI1g6S3NJ2/g8vGUHJa7Caj1TYzBMwRrxOdVH7Rk3i+WPh3WyrLmfJlF2Y=
-X-Received: by 2002:a02:ca10:: with SMTP id i16mr30169945jak.10.1579191867085;
- Thu, 16 Jan 2020 08:24:27 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=oa0bZQpkEyjcs7ABeeOu5qKY4d6etbTg8GwEpE2lwx4=;
+        b=SJ/YgQ2YWOq1KFhemNyy0aOS0E0PVf43hAr1HQUCvqbMP8umctC998rgKbd94acp2F
+         vGEcvyu8ymSw4rFmqec8g4+mvA6TLuXFZkJEi7UvVA0rPTw+5Z7Q/tYt521ELXoIqNyD
+         ugknOlH3mCfad2rks5RY37rdaR/w0bwv8QrKhhYgiPc+9sQQ+/IQEeQVatyqoX3nEdv5
+         T4VYJYXuYmSn5R3VImZiLEn+nLzOVbTbTxosjExbJuea9o/q0UPF9yqNX36uBZ8qIw+t
+         3kPk9nLsXrSXd/WJL/2AlW9ifAbA3LzgQAi2ilr9hX+jEvKSCySG0CR0QZQT5q4Jl3Ec
+         lJuQ==
+X-Gm-Message-State: APjAAAWUf4lhExFWAg1mK5CXMG0pkcBO/AzallcTwzuJj0qLt0aGQRz9
+        paqDvu1bY0s0pjoktvXjGEXZsaxp6FtEG3jXP4g=
+X-Google-Smtp-Source: APXvYqyWJN2GFU4wvaZ+ihLcFU/FzcfjEDWutuc+qax7spDb/+9FF/JZ6vGw0E6+JVEk3B/5diW8TqI/ysp4biX+yZM=
+X-Received: by 2002:ae9:e206:: with SMTP id c6mr34715696qkc.105.1579192440085;
+ Thu, 16 Jan 2020 08:34:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20200116125915.14815-1-jinpuwang@gmail.com> <20200116125915.14815-7-jinpuwang@gmail.com>
- <20200116145300.GC12433@unreal> <CAMGffE=pym8iz4OVxx7s6i37AU+KPFN3AeVrCTOpLx+N8A9dEQ@mail.gmail.com>
- <20200116155800.GA18467@unreal>
-In-Reply-To: <20200116155800.GA18467@unreal>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Thu, 16 Jan 2020 17:24:16 +0100
-Message-ID: <CAMGffEkLHNPJ3feWhX0vnjr3hasVp3=+Z76wO3-07s9+Te=7Pw@mail.gmail.com>
-Subject: Re: [PATCH v7 06/25] RDMA/rtrs: client: main functionality
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Roman Penyaev <rpenyaev@suse.de>
+Received: by 2002:ac8:6c2b:0:0:0:0:0 with HTTP; Thu, 16 Jan 2020 08:33:59
+ -0800 (PST)
+Reply-To: janvierlitse2019@gmail.com
+From:   Mr Janvier Litse <mrronanpectual2016@gmail.com>
+Date:   Thu, 16 Jan 2020 08:33:59 -0800
+Message-ID: <CACxeY9h6gZRRa5vNa67FwE05RDxRAM-7UDB4ijf_rcC-qOiAuA@mail.gmail.com>
+Subject: URGENT RESPOND FOR MORE DETAILS!
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 4:58 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Thu, Jan 16, 2020 at 04:43:41PM +0100, Jinpu Wang wrote:
-> > On Thu, Jan 16, 2020 at 3:53 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > On Thu, Jan 16, 2020 at 01:58:56PM +0100, Jack Wang wrote:
-> > > > From: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > > >
-> > > > This is main functionality of rtrs-client module, which manages
-> > > > set of RDMA connections for each rtrs session, does multipathing,
-> > > > load balancing and failover of RDMA requests.
-> > > >
-> > > > Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> > > > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > > > ---
-> > > >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 2967 ++++++++++++++++++++++++
-> > > >  1 file changed, 2967 insertions(+)
-> > > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > > >
-> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > > > new file mode 100644
-> > > > index 000000000000..717d19d4d930
-> > > > --- /dev/null
-> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > > > @@ -0,0 +1,2967 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > > > +/*
-> > > > + * RDMA Transport Layer
-> > > > + *
-> > > > + * Copyright (c) 2014 - 2018 ProfitBricks GmbH. All rights reserved.
-> > > > + *
-> > > > + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
-> > > > + *
-> > > > + * Copyright (c) 2019 - 2020 1&1 IONOS SE. All rights reserved.
-> > >
-> > > Please no extra lines between Copyright lines.
-> > I checked in kernel tree, seems most of Copyright indeed contain no
-> > extra line in between
-> >
-> > >
-> > > > + */
-> > > > +
-> > > > +#undef pr_fmt
-> > > > +#define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
-> > >
-> > > I never understood this pr_fmt() thing, do we really need it?
-> > you can custorm the format for print, include modue name and line
-> > number in this case, it's quite useful for debugging.
->
-> The idea that messages are needed to be unique and don't rely on line
-> numbers.
-Then you have to check all other message in order to be unique, that
-is too much :)
->
-> > >
-> > > > +
-> > > > +#include <linux/module.h>
-> > > > +#include <linux/rculist.h>
-> > > > +#include <linux/blkdev.h> /* for BLK_MAX_SEGMENT_SIZE */
-> > > > +
-> > > > +#include "rtrs-clt.h"
-> > > > +#include "rtrs-log.h"
-> > > > +
-> > > > +#define RTRS_CONNECT_TIMEOUT_MS 30000
-> > > > +
-> > > > +MODULE_DESCRIPTION("RDMA Transport Client");
-> > > > +MODULE_LICENSE("GPL");
-> > > > +
-> > > > +static ushort nr_cons_per_session;
-> > > > +module_param(nr_cons_per_session, ushort, 0444);
-> > > > +MODULE_PARM_DESC(nr_cons_per_session,
-> > > > +              "Number of connections per session. (default: nr_cpu_ids)");
-> > > > +
-> > > > +static int retry_cnt = 7;
-> > > > +module_param_named(retry_cnt, retry_cnt, int, 0644);
-> > > > +MODULE_PARM_DESC(retry_cnt,
-> > > > +              "Number of times to send the message if the remote side didn't respond with Ack or Nack (default: 7, min: "
-> > > > +              __stringify(MIN_RTR_CNT) ", max: "
-> > > > +              __stringify(MAX_RTR_CNT) ")");
-> > > > +
-> > > > +static int __read_mostly noreg_cnt;
-> > > > +module_param_named(noreg_cnt, noreg_cnt, int, 0444);
-> > > > +MODULE_PARM_DESC(noreg_cnt,
-> > > > +              "Max number of SG entries when MR registration does not happen (default: 0)");
-> > >
-> > > We don't like modules in new code.
-> > could you elaberate a bit, no module paramters? which one? all?
->
-> All of them.
-Ok
+From: Mr Janvier Litse.
+African Development Bank
+Burkina Faso (ADB)
+Ouagadougou - Burkina Faso.
+
+Dear friend, Good Day
+
+I am writing to seek your cooperation over this business, Please due
+welcome this letter.
+
+I am Mr Janvier Litse.the director of the accounts & auditing dept .at
+the African Development Bank Ouagadougou-west Africa (A D B) With due
+respect, I have decided to contact you on a business transaction that
+will be beneficial to both of us.At the bank's lastaccounts/auditing
+evaluations, my staffs came across an old account which was being
+maintained by a foreign client who we learnt was among the deceased
+passengers of motor accident on November.. 2003, the deceased was
+unable to run this account since his death. The account has remained
+dormant without the knowledge of his family since it was put in a safe
+deposit account in the bank for future investment by the client.
+
+Since his demise, even the members of his family haven't applied for
+claims over this fund and it has been in the safe deposit accountuntil
+I discovered that it cannot be claimed since our client is a foreign
+national and we are sure that he has no next of kin here to file
+claims over the money. As the director of the department, this
+discovery was brought to my office so as to decide what is to be done.
+I decided to seek ways through which to transfer this money out of the
+bank and out of the country too.
+
+The total amount in the account is twenty eight  million three hundred
+thousand dollars (USD 28,300,000.00).with my positions as a staffs of
+the bank, I am handicapped because I can not operate foreign accounts
+and cannot lay bonafide claim over this money.The client was a foreign
+national and you will only be asked to act as his next of kin and I
+will supply you with all the necessary information and bank data to
+assist you in being able to transfer this money to any bank of your
+choice where this money could be transferred into.
+
+The total sum will be shared as follows: 50% for me, 50% for you and
+expenses incidental occur during the transfer will be  incured by both
+of us. The transfer is risk free on both sides hence you are going to
+follow my instruction till the fund transfer to your account.
+
+Since I work in this bank that is why you should be confident in the
+success of this transaction because you will be updated with
+information as at when desired I will wish you to keep this
+transaction secret and confidential as I am hoping to retire with my
+share of this money at the end of transaction which will be when this
+money is safety in your account. I will then come over to your country
+for sharing according to the previously agreed percentages. You might
+even have to advise me on possibilities of investment in your country
+or elsewhere of our choice. May God help you to help me to a restive
+retirement, Amen.
 
 
+Please for further information and enquires feel free to contact me
+back immediately for more explanation and better  understanding.please
+contact me through this alternative email address
+(janvierlitse2019@gmail.com)
 
-snip
-> > > > +static bool __rtrs_clt_change_state(struct rtrs_clt_sess *sess,
-> > > > +                                  enum rtrs_clt_state new_state)
-> > > > +{
-> > > > +     enum rtrs_clt_state old_state;
-> > > > +     bool changed = false;
-> > > > +
-> > > > +     lockdep_assert_held(&sess->state_wq.lock);
-> > > > +
-> > > > +     old_state = sess->state;
-> > > > +     switch (new_state) {
-> > > > +     case RTRS_CLT_CONNECTING:
-> > > > +             switch (old_state) {
-> > >
-> > > Double switch is better to be avoided.
-> > what's the better way to do it?
->
-> Rewrite function to be more readable.
-Frankly I think it's easy to read, depends on old_state change to new state.
-see also scsi_device_set_state
-
-Thanks
+I am waiting for your urgent response!!!
+Thanks and remain blessed
+ Mr Janvier Litse.
++226 54459253
