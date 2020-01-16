@@ -2,14 +2,14 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A5B13DB71
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 14:24:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D3A13DB6F
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jan 2020 14:24:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727002AbgAPNWV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1727011AbgAPNWV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 16 Jan 2020 08:22:21 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34794 "EHLO
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52955 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726983AbgAPNWU (ORCPT
+        with ESMTP id S1726979AbgAPNWU (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 08:22:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1579180939;
@@ -17,43 +17,43 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oVICxkwYE819T09jumS9b6kqZZVW9alGabNhw2Byv4c=;
-        b=VT6w9ZzPdsyWIYjDinxoIw1lpo6pHnP9T4HVqfKC9kxy6rMCp0ekExAPnyEq70JjFJtyRz
-        /4Bx2urewdYCxM2j50p6eeRdKDKXu9cxVUQ+XHUD8ENeQdHw/VkX6ceeydL5/CQTWqnbY2
-        LO7Q+2RGjnWR2KuWxfGapo162QJH+NI=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-110-XEZ_K_z_Orq4s2tDBp6E4w-1; Thu, 16 Jan 2020 08:22:15 -0500
-X-MC-Unique: XEZ_K_z_Orq4s2tDBp6E4w-1
-Received: by mail-lj1-f198.google.com with SMTP id j23so5149156lji.23
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 05:22:15 -0800 (PST)
+        bh=gzqQE7mWfqS9gbpZpl6m88cnGx3MlkQu/XGO40kZXJg=;
+        b=A4Iu02i9m6/kXnqgmEfdct4tleQdRpy6YwHbxWIy675CEQ8KwzTjzyFONyWbf4PujHuQK3
+        9h9sQy2fA9Poj2BGQna7kcVHWeCcioISzwqbMu1MJqNN6ezCTaBxKfno/ejueIVRfOm/xE
+        DrQrLV4sgrpWztfcEye14UOipWZVYwA=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-317-cfINBr3TMP2MLORtXhQpgA-1; Thu, 16 Jan 2020 08:22:17 -0500
+X-MC-Unique: cfINBr3TMP2MLORtXhQpgA-1
+Received: by mail-lj1-f199.google.com with SMTP id b15so5138843ljp.7
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Jan 2020 05:22:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
          :references:user-agent:mime-version:content-transfer-encoding;
-        bh=oVICxkwYE819T09jumS9b6kqZZVW9alGabNhw2Byv4c=;
-        b=ckkE7t26IlmfN/hC79q2NwA2EWr5EbuNCfDfhNQOhOtNhlRtFtxcWzqiLorYlxuJtf
-         3/+VhVyRLacBZkfdMSVkTBW1NXsafgSRIvfVM4f5YbRxY32SBPYVh8V/AJhHeeN7Lz8r
-         GD9N/2PdzTpbt25Dsk4H97vZy+dfDE71fOWCIj6yHX2Ymv1PW3AVAvxHvwU0QE4tDvt7
-         76oCmhqFqkHIbbrCLvH3DVs9YT/DOf7ePVMTO1ElCeJ/eLAUH3KAEaQqt5EB5fNzdHeA
-         QdsmW4YDAoIILcT2Jk+CNRnKyMhbhfHb1jMjQlChpRbCsDACFg55uXhR3xGPo5zofa2A
-         Rg3w==
-X-Gm-Message-State: APjAAAW7fShlZ1b2K3jeIDTcEkQHcybFCWqIxvnQ/dP0UQHbzSHab4Ys
-        +oK+QmDf1gyCvthdI9Fq4N3Ur4QoWPmixMj1qaQkP1UxiLoJIIVcfSn8nWt4b71VTuOYibIv8V2
-        CsP3HujqPmHi2jF4l2P2iKg==
-X-Received: by 2002:a2e:b007:: with SMTP id y7mr2286059ljk.215.1579180934267;
-        Thu, 16 Jan 2020 05:22:14 -0800 (PST)
-X-Google-Smtp-Source: APXvYqwQWrcaU+nW1F4XoH997rZHaa169MNBHkP1drBFjaeoj4ZaAxptcEhRwkbakFT89vmLfrEkOg==
-X-Received: by 2002:a2e:b007:: with SMTP id y7mr2286032ljk.215.1579180934124;
-        Thu, 16 Jan 2020 05:22:14 -0800 (PST)
+        bh=gzqQE7mWfqS9gbpZpl6m88cnGx3MlkQu/XGO40kZXJg=;
+        b=aWNp2VxHxfTjf3RIW81V2stNz9FH6dQ3xz7dtPXqgeWsdpq/IG15V7mwrzzuj0Fnii
+         n21I5+QqIjGQ86svKuDaunUEBrVjG+3ciGqslaKDo0PQ0agGKNSi6Uw3kXDys5Vird2X
+         ehzwpgjRsbwONqyF1bfCUJwvsIkGsbQZ25dik7bDE40o+gWPiOjovz7t3q+KxvidBCep
+         fmr8NrwXdDhU4igZRtJd7UJcO+W4Fe2h+MC+VQIiF5LmFM6PKdg0plcvTdYwib3N5Is6
+         qnRWMmUwYW4nWik+uQcfGVIUt6WZTuWuj8OQ8mCi7LGuJWVQbexYuAuSIoaWKFPN8CFt
+         zaTg==
+X-Gm-Message-State: APjAAAUZNCRhlCWbdNwxlYoyy1RbDUJK68iWzsngyvw+PQ5btqC6D0iI
+        /68/UApdTr5gUy4bOJlaRtnl+vgtAd+dKdLt+hY1Mlttlzr9m62/nGuFd0zXpIlH79K8xB2LmQZ
+        Pn7xpnqQUzAlmS08cgDM94g==
+X-Received: by 2002:a2e:2c16:: with SMTP id s22mr2305767ljs.248.1579180936156;
+        Thu, 16 Jan 2020 05:22:16 -0800 (PST)
+X-Google-Smtp-Source: APXvYqwFm8TdvoRQDWtY2lKrbQQl1O6xAPqlYnDABHlUDuyNgLz95SjjEtdQljJ8ty7d3yotxnb3Rg==
+X-Received: by 2002:a2e:2c16:: with SMTP id s22mr2305732ljs.248.1579180935891;
+        Thu, 16 Jan 2020 05:22:15 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id f16sm10703433ljn.17.2020.01.16.05.22.13
+        by smtp.gmail.com with ESMTPSA id n3sm10612990lfk.61.2020.01.16.05.22.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jan 2020 05:22:13 -0800 (PST)
+        Thu, 16 Jan 2020 05:22:15 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D9E2F1804D7; Thu, 16 Jan 2020 14:22:12 +0100 (CET)
-Subject: [PATCH bpf-next v3 01/11] samples/bpf: Don't try to remove user's
- homedir on clean
+        id 03CC51804D8; Thu, 16 Jan 2020 14:22:14 +0100 (CET)
+Subject: [PATCH bpf-next v3 02/11] tools/bpf/runqslower: Fix override option
+ for VMLINUX_BTF
 From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Alexei Starovoitov <ast@kernel.org>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
@@ -77,8 +77,8 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
         clang-built-linux@googlegroups.com
-Date:   Thu, 16 Jan 2020 14:22:12 +0100
-Message-ID: <157918093278.1357254.3453847369567754938.stgit@toke.dk>
+Date:   Thu, 16 Jan 2020 14:22:13 +0100
+Message-ID: <157918093389.1357254.10041649215380772130.stgit@toke.dk>
 In-Reply-To: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
 References: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
 User-Agent: StGit/0.21
@@ -92,34 +92,57 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-The 'clean' rule in the samples/bpf Makefile tries to remove backup
-files (ending in ~). However, if no such files exist, it will instead try
-to remove the user's home directory. While the attempt is mostly harmless,
-it does lead to a somewhat scary warning like this:
+The runqslower tool refuses to build without a file to read vmlinux BTF
+from. The build fails with an error message to override the location by
+setting the VMLINUX_BTF variable if autodetection fails. However, the
+Makefile doesn't actually work with that override - the error message is
+still emitted.
 
-rm: cannot remove '~': Is a directory
+Fix this by including the value of VMLINUX_BTF in the expansion, and only
+emitting the error message if the *result* is empty. Also permit running
+'make clean' even though no VMLINUX_BTF is set.
 
-Fix this by using find instead of shell expansion to locate any actual
-backup files that need to be removed.
-
-Fixes: b62a796c109c ("samples/bpf: allow make to be run from samples/bpf/ directory")
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Fixes: 9c01546d26d2 ("tools/bpf: Add runqslower tool to tools/bpf")
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- samples/bpf/Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/bpf/runqslower/Makefile |   18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 5b89c0370f33..f86d713a17a5 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -254,7 +254,7 @@ all:
+diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
+index cff2fbcd29a8..89fb7cd30f1a 100644
+--- a/tools/bpf/runqslower/Makefile
++++ b/tools/bpf/runqslower/Makefile
+@@ -10,12 +10,14 @@ CFLAGS := -g -Wall
  
- clean:
- 	$(MAKE) -C ../../ M=$(CURDIR) clean
--	@rm -f *~
-+	@find $(CURDIR) -type f -name '*~' -delete
+ # Try to detect best kernel BTF source
+ KERNEL_REL := $(shell uname -r)
+-ifneq ("$(wildcard /sys/kernel/btf/vmlinux)","")
+-VMLINUX_BTF := /sys/kernel/btf/vmlinux
+-else ifneq ("$(wildcard /boot/vmlinux-$(KERNEL_REL))","")
+-VMLINUX_BTF := /boot/vmlinux-$(KERNEL_REL)
+-else
+-$(error "Can't detect kernel BTF, use VMLINUX_BTF to specify it explicitly")
++VMLINUX_BTF_PATHS := $(VMLINUX_BTF) /sys/kernel/btf/vmlinux /boot/vmlinux-$(KERNEL_REL)
++VMLINUX_BTF_PATH := $(firstword $(wildcard $(VMLINUX_BTF_PATHS)))
++
++ifeq ("$(VMLINUX_BTF_PATH)","")
++ifneq ($(MAKECMDGOALS),clean)
++$(error Could not find kernel BTF file (tried: $(VMLINUX_BTF_PATHS)). \
++	Try setting $$VMLINUX_BTF)
++endif
+ endif
  
- $(LIBBPF): FORCE
- # Fix up variables inherited from Kbuild that tools/ build system won't like
+ abs_out := $(abspath $(OUTPUT))
+@@ -67,9 +69,9 @@ $(OUTPUT):
+ 	$(call msg,MKDIR,$@)
+ 	$(Q)mkdir -p $(OUTPUT)
+ 
+-$(OUTPUT)/vmlinux.h: $(VMLINUX_BTF) | $(OUTPUT) $(BPFTOOL)
++$(OUTPUT)/vmlinux.h: $(VMLINUX_BTF_PATH) | $(OUTPUT) $(BPFTOOL)
+ 	$(call msg,GEN,$@)
+-	$(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $@
++	$(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF_PATH) format c > $@
+ 
+ $(OUTPUT)/libbpf.a: | $(OUTPUT)
+ 	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC)			       \
 
