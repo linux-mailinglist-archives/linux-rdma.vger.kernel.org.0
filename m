@@ -2,58 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5FC140AE4
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 14:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FB1140AFB
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 14:38:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727504AbgAQNgo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Jan 2020 08:36:44 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43665 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727026AbgAQNgn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Jan 2020 08:36:43 -0500
+        id S1728951AbgAQNhG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Jan 2020 08:37:06 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:21472 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728682AbgAQNgv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 17 Jan 2020 08:36:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579268202;
+        s=mimecast20190719; t=1579268210;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oVICxkwYE819T09jumS9b6kqZZVW9alGabNhw2Byv4c=;
-        b=NBgagi4vaVDraEVb5z2UKdz55Ow06HL4VwzW9qJzYRjo+al8258qd5DgxWAka0djOH1o33
-        gBg7BWxeCJNHe9I/wpip7Qt8epB/JM4qsS/P3oBPsHI/DbhRQfLFiUxUbBw9Ts8nR3zxBe
-        Ibl6F4CbmqlBoHVRrH5eGjfL1ZTplOM=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-153-m_XWg5nwOqm5xqzmQSt-FQ-1; Fri, 17 Jan 2020 08:36:41 -0500
-X-MC-Unique: m_XWg5nwOqm5xqzmQSt-FQ-1
-Received: by mail-lf1-f71.google.com with SMTP id d6so4394645lfl.3
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Jan 2020 05:36:41 -0800 (PST)
+        bh=VosVvChz478iuqQd8mY3MBbU9kJ6mOJCPMFLJtpQS9A=;
+        b=Xa98whPmSGvl3BnNn17NSJz3uSnf/J2JO8pC1hN/sC5jgZsdDAYV5zhjFp99cIciNwub3E
+        9vtUc7tTjqDQmd4RXqvV/kf6ZVZPbG+K3qLZ0X8ojG639BRe4P6+tF4yKT7SP5RnhJ9Y4V
+        kT3abVlEdHvOxv5chQM/ySYlSk5p8qU=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-371-O54dYli_NzOidlXTICSbLA-1; Fri, 17 Jan 2020 08:36:43 -0500
+X-MC-Unique: O54dYli_NzOidlXTICSbLA-1
+Received: by mail-lf1-f70.google.com with SMTP id t74so4371472lff.8
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Jan 2020 05:36:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
          :references:user-agent:mime-version:content-transfer-encoding;
-        bh=oVICxkwYE819T09jumS9b6kqZZVW9alGabNhw2Byv4c=;
-        b=j3ZXQCwHJiQpMVX7wP1DF+v1jcRSkOaOoaBihdFezqbjMWrTHV0q7P/LGn3ZSNaXpq
-         GFeMbV2eQNB31tsmL0k6tC+HDb8J5wWqH9KsdrvNub+WOGwiA0f6LiIgVtbu9hT1dguW
-         tiJEfh3hP4VhygzPbeTjdiHMcc9l4bTCSIgA+Z49IBgoP36I/nYZ1/cBjxGSkValIGmv
-         txZhemhVKWqWnUHUhMpeCGhfJ7vTAwsjPQVh8UH21YLP1UpL5OcGLznunfRtf1k8rZdu
-         ynEFiw/DzTfQSSQ/eTTJUiksBXxRqZphfwWmbIEYtT+F/+nZ4sXdV7pr3vbArAnzdIsI
-         aPew==
-X-Gm-Message-State: APjAAAU7qXyptX56I9P0Pg88HL+LUeAA5qXlAoYpGL9VwJbf0nuHtSKt
-        sM5anQgsWSqT0frKCMaJqZ037yFJURkpVAKtoYhz3OXkIKX47oSiPFp2VUE2mOKzNEmbAxzo2iA
-        mQqAH5oZ/la4OUwhLQwKB/A==
-X-Received: by 2002:a2e:3504:: with SMTP id z4mr5730207ljz.273.1579268199902;
-        Fri, 17 Jan 2020 05:36:39 -0800 (PST)
-X-Google-Smtp-Source: APXvYqylN+0GVMNBaohq3jT5bbBFBEpPomA9QCEg65LVnS53cMW7Nhrc9Od5tPVFSrsyp0I8uvYr0A==
-X-Received: by 2002:a2e:3504:: with SMTP id z4mr5730180ljz.273.1579268199696;
-        Fri, 17 Jan 2020 05:36:39 -0800 (PST)
+        bh=VosVvChz478iuqQd8mY3MBbU9kJ6mOJCPMFLJtpQS9A=;
+        b=daZ56tCrjoGQfGwL5OltHTJmZ3j8XamsaAt/Wc/mwJHlWSDnep05zM/C4LXrH5+wxy
+         5t/t2wbBy93DNR8ykgv++zOOlGvBWoJQcAyI9CNNe+PaXdh6OBpwbeRhkhvL22sFyM0Z
+         xtvfPGIpU2uyfNFcFxRgONSUMyF2vtrKV64+93AC0uSasBImwrHbSWwmHjKxqijW6CzY
+         6Sc7T76FX15QRo3DVolrJWplsUh9Xa9W9tGsFs5JjBiYsLx+WSHJNnROmDJ05ZTV+mTf
+         WujqnaaUlLMJtMvswHcAPkDIE7TffVMCuSNqcE1+uBzrixZKtbnYxDa+YEMop8hxExx/
+         2cGw==
+X-Gm-Message-State: APjAAAUuLapNgR5e0tfgprbIkkdwPbqjHl19KusAU4fRj9+rGXXielA/
+        0Qn05whIPg7IYoazMQ1Ho/RoN5xPU5iRVMghki2+Ygqwb+sX7Z2npCiYonDNcCxfAorwpNhe7aK
+        KPWeW1PdeLJSqW6ddGRmZrA==
+X-Received: by 2002:a2e:7a07:: with SMTP id v7mr5832278ljc.271.1579268201645;
+        Fri, 17 Jan 2020 05:36:41 -0800 (PST)
+X-Google-Smtp-Source: APXvYqzDzc22CsFKb/cLaKxHhC/rP5bXs/6Q5mMm+BqErB5PbFxN/F3ojSRACUfTIl5DJKT9rUlTrA==
+X-Received: by 2002:a2e:7a07:: with SMTP id v7mr5832239ljc.271.1579268201264;
+        Fri, 17 Jan 2020 05:36:41 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id w1sm11999480lfe.96.2020.01.17.05.36.38
+        by smtp.gmail.com with ESMTPSA id s1sm12420064ljc.3.2020.01.17.05.36.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 05:36:39 -0800 (PST)
+        Fri, 17 Jan 2020 05:36:40 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 317BF1804D7; Fri, 17 Jan 2020 14:36:38 +0100 (CET)
-Subject: [PATCH bpf-next v4 01/10] samples/bpf: Don't try to remove user's
- homedir on clean
+        id 3EFB41804D8; Fri, 17 Jan 2020 14:36:39 +0100 (CET)
+Subject: [PATCH bpf-next v4 02/10] tools/bpf/runqslower: Fix override option
+ for VMLINUX_BTF
 From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Alexei Starovoitov <ast@kernel.org>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
@@ -77,8 +78,8 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
         clang-built-linux@googlegroups.com
-Date:   Fri, 17 Jan 2020 14:36:38 +0100
-Message-ID: <157926819814.1555735.13181807141455624178.stgit@toke.dk>
+Date:   Fri, 17 Jan 2020 14:36:39 +0100
+Message-ID: <157926819920.1555735.13051810516683828343.stgit@toke.dk>
 In-Reply-To: <157926819690.1555735.10756593211671752826.stgit@toke.dk>
 References: <157926819690.1555735.10756593211671752826.stgit@toke.dk>
 User-Agent: StGit/0.21
@@ -92,34 +93,57 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-The 'clean' rule in the samples/bpf Makefile tries to remove backup
-files (ending in ~). However, if no such files exist, it will instead try
-to remove the user's home directory. While the attempt is mostly harmless,
-it does lead to a somewhat scary warning like this:
+The runqslower tool refuses to build without a file to read vmlinux BTF
+from. The build fails with an error message to override the location by
+setting the VMLINUX_BTF variable if autodetection fails. However, the
+Makefile doesn't actually work with that override - the error message is
+still emitted.
 
-rm: cannot remove '~': Is a directory
+Fix this by including the value of VMLINUX_BTF in the expansion, and only
+emitting the error message if the *result* is empty. Also permit running
+'make clean' even though no VMLINUX_BTF is set.
 
-Fix this by using find instead of shell expansion to locate any actual
-backup files that need to be removed.
-
-Fixes: b62a796c109c ("samples/bpf: allow make to be run from samples/bpf/ directory")
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Fixes: 9c01546d26d2 ("tools/bpf: Add runqslower tool to tools/bpf")
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- samples/bpf/Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/bpf/runqslower/Makefile |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 5b89c0370f33..f86d713a17a5 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -254,7 +254,7 @@ all:
+diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
+index cff2fbcd29a8..b62fc9646c39 100644
+--- a/tools/bpf/runqslower/Makefile
++++ b/tools/bpf/runqslower/Makefile
+@@ -10,13 +10,9 @@ CFLAGS := -g -Wall
  
- clean:
- 	$(MAKE) -C ../../ M=$(CURDIR) clean
--	@rm -f *~
-+	@find $(CURDIR) -type f -name '*~' -delete
+ # Try to detect best kernel BTF source
+ KERNEL_REL := $(shell uname -r)
+-ifneq ("$(wildcard /sys/kernel/btf/vmlinux)","")
+-VMLINUX_BTF := /sys/kernel/btf/vmlinux
+-else ifneq ("$(wildcard /boot/vmlinux-$(KERNEL_REL))","")
+-VMLINUX_BTF := /boot/vmlinux-$(KERNEL_REL)
+-else
+-$(error "Can't detect kernel BTF, use VMLINUX_BTF to specify it explicitly")
+-endif
++VMLINUX_BTF_PATHS := /sys/kernel/btf/vmlinux /boot/vmlinux-$(KERNEL_REL)
++VMLINUX_BTF_PATH := $(abspath $(or $(VMLINUX_BTF),$(firstword \
++	$(wildcard $(VMLINUX_BTF_PATHS)))))
  
- $(LIBBPF): FORCE
- # Fix up variables inherited from Kbuild that tools/ build system won't like
+ abs_out := $(abspath $(OUTPUT))
+ ifeq ($(V),1)
+@@ -67,9 +63,13 @@ $(OUTPUT):
+ 	$(call msg,MKDIR,$@)
+ 	$(Q)mkdir -p $(OUTPUT)
+ 
+-$(OUTPUT)/vmlinux.h: $(VMLINUX_BTF) | $(OUTPUT) $(BPFTOOL)
++$(OUTPUT)/vmlinux.h: $(VMLINUX_BTF_PATH) | $(OUTPUT) $(BPFTOOL)
+ 	$(call msg,GEN,$@)
+-	$(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $@
++	@if [ ! -e "$(VMLINUX_BTF_PATH)" ] ; then \
++		echo "Couldn't find kernel BTF; set VMLINUX_BTF to specify its location."; \
++		exit 1;\
++	fi
++	$(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF_PATH) format c > $@
+ 
+ $(OUTPUT)/libbpf.a: | $(OUTPUT)
+ 	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC)			       \
 
