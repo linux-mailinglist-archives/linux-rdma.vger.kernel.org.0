@@ -2,99 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF351413C2
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 22:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D0C1413B1
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 22:52:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgAQVzv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Jan 2020 16:55:51 -0500
-Received: from mga07.intel.com ([134.134.136.100]:62725 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729340AbgAQVzu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 17 Jan 2020 16:55:50 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Jan 2020 13:48:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,331,1574150400"; 
-   d="scan'208";a="214627116"
-Received: from atorres1-mobl1.gar.corp.intel.com (HELO ssaleem-MOBL.amr.corp.intel.com) ([10.255.88.87])
-  by orsmga007.jf.intel.com with ESMTP; 17 Jan 2020 13:48:49 -0800
-From:   Shiraz Saleem <shiraz.saleem@intel.com>
-To:     dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org,
-        "Shiraz Saleem" <shiraz.saleem@intel.com>
-Subject: [PATCH rdma-nxt] i40iw: Do an RCU lookup in i40iw_add_ipv4_addr
-Date:   Fri, 17 Jan 2020 15:47:20 -0600
-Message-Id: <20200117214720.1960-1-shiraz.saleem@intel.com>
-X-Mailer: git-send-email 2.21.0
+        id S1729031AbgAQVwD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Jan 2020 16:52:03 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:34037 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgAQVwD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Jan 2020 16:52:03 -0500
+Received: by mail-qt1-f196.google.com with SMTP id 5so22974638qtz.1;
+        Fri, 17 Jan 2020 13:52:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LXFr+Oe+DVTEU1iGCR5ab4LZThTsrbbCxkzxMkJjD5c=;
+        b=SCKFYcXAx2pYOkg8sBdmA6UuPGSAN4IeyL1Dz/KSEDe5j/IrkXBa5bXmt6hFX6UhDM
+         2YYiUQFJw+8eXd/z3QSihMEyOYslWrk5vlX3iUsqa28FTs+P7NiNAIdO8+kQMfhKOa5H
+         G7pz4MTfa/UlimYFKtDwhRX73LJsP1FnpKiQhV+JY3QcgfU0G6tLwr57mRjBknDU4y47
+         msMgfAq7oc+VegMblw7Xw8uk64413y5aq2GWD0MMhStKrj5p3zliEbHRu6HeTHyN57wx
+         o2FQQesMgQvTTsSRJew4/ERaY6H8GFbehj5A6j6jBrRm5YSlchBa5enyuQgApmiUP4/y
+         WIcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LXFr+Oe+DVTEU1iGCR5ab4LZThTsrbbCxkzxMkJjD5c=;
+        b=IVE0bbXgttmXNRct/wh81V6UOn9dEQmxsO+4cbkPjdklvcBJOAxXdg0Z2NMoDv/zIi
+         RipZWrXV9uRwr5nszgNLdOab6ICUkEfn6vmDSnBzffkNXlnBtonXCYutw1pQGg7LV57F
+         RV0E9fO5VbEvfvFvtGb4cde1gGPbY05lNdsHxLQAB36ed3rSDhNUVDVuew+qXKPSgmEL
+         PxyfCTtUCjEYLRuFw4EbL1O6btZu89SwlC5Lm968Ep8FER2mIMJUexlB2TyPitUXfw+M
+         Mhd1sUS7DYdk1dEJM5HfVKZfFYvpvCeSDPrhxDAXhF/KHS/0aMdC5Jbhnir8crEEdMc4
+         kx9g==
+X-Gm-Message-State: APjAAAVpP+UumZjTsAKAHfNXmm77q7caJ7L13k4Q5leD3DevjikrY+aF
+        U4t+//4Neecmaxoy9fwxxCaKR1G9DjY07JkYnik=
+X-Google-Smtp-Source: APXvYqzPEH9j5BfkpS6SL5DHwqfsDvCoAE4QyeeHElbCapqNYQ1YI48ORniseUuBtLPs6QBmFuL8F8zVKIchHdd54ls=
+X-Received: by 2002:ac8:7b29:: with SMTP id l9mr9364164qtu.141.1579297921555;
+ Fri, 17 Jan 2020 13:52:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <157926819690.1555735.10756593211671752826.stgit@toke.dk> <157926820131.1555735.1177228853838027248.stgit@toke.dk>
+In-Reply-To: <157926820131.1555735.1177228853838027248.stgit@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 17 Jan 2020 13:51:50 -0800
+Message-ID: <CAEf4BzbAV0TmEUL=62jz+RD6SPmu927z-dhGL9JHepcAOGMSJA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 04/10] tools/runqslower: Use consistent
+ include paths for libbpf
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: "Shiraz Saleem" <shiraz.saleem@intel.com>
+On Fri, Jan 17, 2020 at 5:37 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>
+> Fix the runqslower tool to include libbpf header files with the bpf/
+> prefix, to be consistent with external users of the library. Also ensure
+> that all includes of exported libbpf header files (those that are exporte=
+d
+> on 'make install' of the library) use bracketed includes instead of quote=
+d.
+>
+> To not break the build, keep the old include path until everything has be=
+en
+> changed to the new one; a subsequent patch will remove that.
+>
+> Fixes: 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are taken f=
+rom selftests dir")
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  tools/bpf/runqslower/Makefile         |    5 +++--
+>  tools/bpf/runqslower/runqslower.bpf.c |    2 +-
+>  tools/bpf/runqslower/runqslower.c     |    4 ++--
+>  3 files changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefil=
+e
+> index b62fc9646c39..9f022f7f2593 100644
+> --- a/tools/bpf/runqslower/Makefile
+> +++ b/tools/bpf/runqslower/Makefile
+> @@ -5,6 +5,7 @@ LLC :=3D llc
+>  LLVM_STRIP :=3D llvm-strip
+>  DEFAULT_BPFTOOL :=3D $(OUTPUT)/sbin/bpftool
+>  BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
+> +INCLUDES :=3D -I$(OUTPUT) -I$(abspath ../../lib) -I$(abspath ../../lib/b=
+pf)
+>  LIBBPF_SRC :=3D $(abspath ../../lib/bpf)
 
-The in_dev_for_each_ifa_rtnl iterator in i40iw_add_ipv4_addr
-requires that the rtnl lock be held. But the rtnl_trylock/unlock
-scheme in this function does not guarantee it.
+drop LIBBPF_SRC, it's not used anymore
 
-Replace the rtnl locking with an RCU lookup since there are
-no netdev object updates in this function.
+>  CFLAGS :=3D -g -Wall
+>
+> @@ -51,13 +52,13 @@ $(OUTPUT)/%.skel.h: $(OUTPUT)/%.bpf.o | $(BPFTOOL)
+>
+>  $(OUTPUT)/%.bpf.o: %.bpf.c $(OUTPUT)/libbpf.a | $(OUTPUT)
+>         $(call msg,BPF,$@)
+> -       $(Q)$(CLANG) -g -O2 -target bpf -I$(OUTPUT) -I$(LIBBPF_SRC)      =
+     \
+> +       $(Q)$(CLANG) -g -O2 -target bpf $(INCLUDES)           \
 
-Fixes: 8e06af711bf2 ("i40iw: add main, hdr, status")
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
----
- drivers/infiniband/hw/i40iw/i40iw_main.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+please preserve formatting and alignment conventions of a file
 
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_main.c b/drivers/infiniband/hw/i40iw/i40iw_main.c
-index 2386143..d7a1219 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_main.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_main.c
-@@ -1212,22 +1212,19 @@ static void i40iw_add_ipv4_addr(struct i40iw_device *iwdev)
- {
- 	struct net_device *dev;
- 	struct in_device *idev;
--	bool got_lock = true;
- 	u32 ip_addr;
- 
--	if (!rtnl_trylock())
--		got_lock = false;
--
--	for_each_netdev(&init_net, dev) {
-+	rcu_read_lock();
-+	for_each_netdev_rcu(&init_net, dev) {
- 		if ((((rdma_vlan_dev_vlan_id(dev) < 0xFFFF) &&
- 		      (rdma_vlan_dev_real_dev(dev) == iwdev->netdev)) ||
- 		    (dev == iwdev->netdev)) && (dev->flags & IFF_UP)) {
- 			const struct in_ifaddr *ifa;
- 
--			idev = in_dev_get(dev);
-+			idev = __in_dev_get_rcu(dev);
- 			if (!idev)
- 				continue;
--			in_dev_for_each_ifa_rtnl(ifa, idev) {
-+			in_dev_for_each_ifa_rcu(ifa, idev) {
- 				i40iw_debug(&iwdev->sc_dev, I40IW_DEBUG_CM,
- 					    "IP=%pI4, vlan_id=%d, MAC=%pM\n", &ifa->ifa_address,
- 					     rdma_vlan_dev_vlan_id(dev), dev->dev_addr);
-@@ -1239,12 +1236,9 @@ static void i40iw_add_ipv4_addr(struct i40iw_device *iwdev)
- 						       true,
- 						       I40IW_ARP_ADD);
- 			}
--
--			in_dev_put(idev);
- 		}
- 	}
--	if (got_lock)
--		rtnl_unlock();
-+	rcu_read_unlock();
- }
- 
- /**
--- 
-1.8.3.1
+>                  -c $(filter %.c,$^) -o $@ &&                            =
+     \
+>         $(LLVM_STRIP) -g $@
+>
+>  $(OUTPUT)/%.o: %.c | $(OUTPUT)
+>         $(call msg,CC,$@)
+> -       $(Q)$(CC) $(CFLAGS) -I$(LIBBPF_SRC) -I$(OUTPUT) -c $(filter %.c,$=
+^) -o $@
+> +       $(Q)$(CC) $(CFLAGS) $(INCLUDES) -c $(filter %.c,$^) -o $@
+>
+>  $(OUTPUT):
 
+[...]
