@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3567E1406B0
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 10:46:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF81B1406C6
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 10:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726936AbgAQJpC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Jan 2020 04:45:02 -0500
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:36398 "EHLO
+        id S1726903AbgAQJrD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Jan 2020 04:47:03 -0500
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:21952 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728925AbgAQJpB (ORCPT
+        by vger.kernel.org with ESMTP id S1726778AbgAQJrD (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 17 Jan 2020 04:45:01 -0500
+        Fri, 17 Jan 2020 04:47:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579254299;
+        s=mimecast20190719; t=1579254422;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5e60O70yf6Qomf9+YnDTvYmEipGiMR/O0K5ZenifWPA=;
-        b=CEIrVkWUB0BowT1BjtrWOlSWPR6Gq66xDEGPwWfZKGheC3WGpL+nCOUHb3Wfzebv0qgfrs
-        pl2ZUO2tARUdrvuolsCVGZe0I2JQ6SGJiB0cY6sPfTQPtm0L53SmbF+Cyp/CAzrSjnO7wW
-        AD4Pr1q2OTXxW0yrSeAGt5fT+k0VUgQ=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-262-HekRlILuNj-1spkb5CedQQ-1; Fri, 17 Jan 2020 04:44:55 -0500
-X-MC-Unique: HekRlILuNj-1spkb5CedQQ-1
-Received: by mail-lj1-f197.google.com with SMTP id v1so6011931lja.21
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Jan 2020 01:44:55 -0800 (PST)
+        bh=MRdZZz9P8UIoKzsy8bUaagOkve384w9nZaJDimC4aAA=;
+        b=RIeXKXaoWoahHcca3rf5aBFLFtIykftH+O4yYyp4+xclJ4xiBJ3UgM6UDmWRgLX//CtOiE
+        mL6xb9CrTHkTlHJX+nB06PW+j6zuLL9MTmlpxx+kFkamUlDsdTqgiyI9WjPpOKnKbFzP4M
+        Wu8f3xXPw6CtVZ4aCMyGdXXGFISILmE=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-189-kVpwixLeNdiTGjXNfUVQVg-1; Fri, 17 Jan 2020 04:47:01 -0500
+X-MC-Unique: kVpwixLeNdiTGjXNfUVQVg-1
+Received: by mail-lf1-f70.google.com with SMTP id d6so4268525lfl.3
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Jan 2020 01:47:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=5e60O70yf6Qomf9+YnDTvYmEipGiMR/O0K5ZenifWPA=;
-        b=fTyR+hfT0BQ8be6rsjF8eULoNp0Kn/ghxLoGdhLYXxJpUgg/751c8bOeozFNw+QEcW
-         KOdn2Fnjq3PQmx9FGbVxv3gZOCnCXOKszCuChNgKg7TZE3DJJDVPWMoOzzEW/bT3lhiq
-         O7gdSDTjmF059DaVYVT6/4AONCz6wg38LIS2XujcLlTLPkFHxbcXWFxLH5ZlsoER+jit
-         DtcX7D0rKwb3EtcS2NsdAdy5oW9BcATLXBGzXV8UyBDDTQ/SOpnKL82vnrgH/LMM1NQl
-         5O3WnJn2wDEnA9iXkno7GWFL3UpTE3bxaVVqhUS+7fKd+69pBZZgZijLkNXiPaSoOvjo
-         FoJg==
-X-Gm-Message-State: APjAAAXwCuRjME1mvt+PKuFVv+Ppyc4ny1mFCFfSgZJv1YhJ2rBLfEPw
-        zlNNGRk/s6tl+uAsmfBXKeLszFLJ5n/fghIG52+iPUFhMYPUYcWLc1Cw+nQ1z1Nb5dzrqtb+mYd
-        R2WjdZrO9Qi/1qJQsPrwbbQ==
-X-Received: by 2002:a2e:87ca:: with SMTP id v10mr5158818ljj.253.1579254294382;
-        Fri, 17 Jan 2020 01:44:54 -0800 (PST)
-X-Google-Smtp-Source: APXvYqzvJCbTokiDeykif3nZ+JYIt3dpb4/7pPi4mp5CGEDLhLfyUkqDcuLiiQDfc6OvVTnHL7h8pg==
-X-Received: by 2002:a2e:87ca:: with SMTP id v10mr5158794ljj.253.1579254294206;
-        Fri, 17 Jan 2020 01:44:54 -0800 (PST)
+        bh=MRdZZz9P8UIoKzsy8bUaagOkve384w9nZaJDimC4aAA=;
+        b=pN6TmWQ09tevWo+PI9NcX8fJKqJ4PwK/oEazKNVZtdOfnJyKUD4fXnvfZE9voDARQJ
+         YAh/8nHuqiaLYZDtSgCWsN+MuZccto392S0RahSDswdMsuf8ph2e9P5ygt+matf1FaFZ
+         ku4wHqt9TPweBRSZR86fqdCpWRtcmbYp1C7ek7/p/zNEJDKPCcb9SBi+APhT2vV1bX/5
+         VU8VQCtC54l4njDystwcDRrX5+qP/yH7+y3D9gdQgY5gdNiba9aUF/3C0pAfEaF/oKZS
+         9+G3x7uYUmejhKFMHd85LfP2dSqRqA2XOGxpcyxHzPZRBQecQcJ5zBaZM5XnpRd7cUYq
+         aoFg==
+X-Gm-Message-State: APjAAAXs52KF1Gy/lz71cCJSZhdNQrDc34PsiH6RJsxjjLvBdS4HhvGw
+        qjMVcBp4DNGKO5u8oaD/vq6pOGiQVIwFijfnPd8mr06HH/pVveVta89578oQ7jPsDpWRrbYncnO
+        kUQUAKplg+FcazFpJk87u7A==
+X-Received: by 2002:a19:7015:: with SMTP id h21mr4868733lfc.68.1579254419648;
+        Fri, 17 Jan 2020 01:46:59 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyjvTMUn7InwON8DwCpRgzC4ouRW99OTFzcLs217w1iCLWqujy5RCewHLMusTudpnVGBByZkg==
+X-Received: by 2002:a19:7015:: with SMTP id h21mr4868705lfc.68.1579254419486;
+        Fri, 17 Jan 2020 01:46:59 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id z13sm12089623ljh.21.2020.01.17.01.44.53
+        by smtp.gmail.com with ESMTPSA id r15sm12041957ljh.11.2020.01.17.01.46.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 01:44:53 -0800 (PST)
+        Fri, 17 Jan 2020 01:46:58 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id E29BD1804D6; Fri, 17 Jan 2020 10:44:52 +0100 (CET)
+        id 3553E1804D6; Fri, 17 Jan 2020 10:46:58 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -80,12 +80,12 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         "open list\:KERNEL SELFTEST FRAMEWORK" 
         <linux-kselftest@vger.kernel.org>,
         clang-built-linux@googlegroups.com
-Subject: Re: [PATCH bpf-next v3 02/11] tools/bpf/runqslower: Fix override option for VMLINUX_BTF
-In-Reply-To: <CAEf4Bzbz47nFh4tPBn2PTi3+YiYpMDxymgf36P=ZjbuBPoCrZg@mail.gmail.com>
-References: <157918093154.1357254.7616059374996162336.stgit@toke.dk> <157918093389.1357254.10041649215380772130.stgit@toke.dk> <CAEf4Bzbz47nFh4tPBn2PTi3+YiYpMDxymgf36P=ZjbuBPoCrZg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 04/11] tools/runqslower: Use consistent include paths for libbpf
+In-Reply-To: <CAEf4BzbJZ7JUyr8p3YKX-Rrth_B7OMbih50xxyt_YNBd--107w@mail.gmail.com>
+References: <157918093154.1357254.7616059374996162336.stgit@toke.dk> <157918093613.1357254.10230277763921623892.stgit@toke.dk> <CAEf4BzbJZ7JUyr8p3YKX-Rrth_B7OMbih50xxyt_YNBd--107w@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 17 Jan 2020 10:44:52 +0100
-Message-ID: <87wo9qquwb.fsf@toke.dk>
+Date:   Fri, 17 Jan 2020 10:46:58 +0100
+Message-ID: <87tv4uqust.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -101,55 +101,43 @@ dhat.com> wrote:
 >>
 >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >>
->> The runqslower tool refuses to build without a file to read vmlinux BTF
->> from. The build fails with an error message to override the location by
->> setting the VMLINUX_BTF variable if autodetection fails. However, the
->> Makefile doesn't actually work with that override - the error message is
->> still emitted.
+>> Fix the runqslower tool to include libbpf header files with the bpf/
+>> prefix, to be consistent with external users of the library. Also ensure
+>> that all includes of exported libbpf header files (those that are export=
+ed
+>> on 'make install' of the library) use bracketed includes instead of quot=
+ed.
 >>
->> Fix this by including the value of VMLINUX_BTF in the expansion, and only
->> emitting the error message if the *result* is empty. Also permit running
->> 'make clean' even though no VMLINUX_BTF is set.
+>> To not break the build, keep the old include path until everything has b=
+een
+>> changed to the new one; a subsequent patch will remove that.
 >>
->> Fixes: 9c01546d26d2 ("tools/bpf: Add runqslower tool to tools/bpf")
+>> Fixes: 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are taken =
+from selftests dir")
 >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >> ---
->>  tools/bpf/runqslower/Makefile |   18 ++++++++++--------
->>  1 file changed, 10 insertions(+), 8 deletions(-)
+>>  tools/bpf/runqslower/Makefile         |    5 +++--
+>>  tools/bpf/runqslower/runqslower.bpf.c |    2 +-
+>>  tools/bpf/runqslower/runqslower.c     |    4 ++--
+>>  3 files changed, 6 insertions(+), 5 deletions(-)
 >>
 >> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefi=
 le
->> index cff2fbcd29a8..89fb7cd30f1a 100644
+>> index 89fb7cd30f1a..c0512b830805 100644
 >> --- a/tools/bpf/runqslower/Makefile
 >> +++ b/tools/bpf/runqslower/Makefile
->> @@ -10,12 +10,14 @@ CFLAGS :=3D -g -Wall
->>
->>  # Try to detect best kernel BTF source
->>  KERNEL_REL :=3D $(shell uname -r)
->> -ifneq ("$(wildcard /sys/kernel/btf/vmlinux)","")
->> -VMLINUX_BTF :=3D /sys/kernel/btf/vmlinux
->> -else ifneq ("$(wildcard /boot/vmlinux-$(KERNEL_REL))","")
->> -VMLINUX_BTF :=3D /boot/vmlinux-$(KERNEL_REL)
->> -else
->> -$(error "Can't detect kernel BTF, use VMLINUX_BTF to specify it explici=
-tly")
->> +VMLINUX_BTF_PATHS :=3D $(VMLINUX_BTF) /sys/kernel/btf/vmlinux /boot/vml=
-inux-$(KERNEL_REL)
->> +VMLINUX_BTF_PATH :=3D $(firstword $(wildcard $(VMLINUX_BTF_PATHS)))
+>> @@ -5,6 +5,7 @@ LLC :=3D llc
+>>  LLVM_STRIP :=3D llvm-strip
+>>  DEFAULT_BPFTOOL :=3D $(OUTPUT)/sbin/bpftool
+>>  BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
+>> +LIBBPF_INCLUDE :=3D -I$(abspath ../../lib) -I$(abspath ../../lib/bpf)
 >
-> If user specifies VMLINUX_BTF pointing to non-existing file, but the
-> system has /sys/kernel/btf/vmlinux, the latter will still be used,
-> which is a very surprising behavior.
+> I'd probably put all the -I's into single INCLUDES var and include
+> that one instead of mixing -I$(OUTPUT) and $(LIBBPF_INCLUDE), but this
+> works too.
 
-Hmm, yeah, good point.
-
-> Also MAKECMDGOALS feels like a fragile hack to me. How about we move
-> this VMLINUX_BTF guessing (without $(error)) into vmlinux.h rule
-> itself and use shell if conditional after it to check for file
-> existance and print nice error. That way we'll be checking VMLINUX_BTF
-> only when it's really needed.
-
-OK, sure, can do.
+Hmm, yeah, not a bad idea, actually. Since it seems I'm respinning
+anyway, I'll fix that up as well.
 
 -Toke
 
