@@ -2,54 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBD913FCAE
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 00:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D0B1402D5
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 05:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390269AbgAPXF7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 18:05:59 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:40878 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389860AbgAPXF7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 18:05:59 -0500
-Received: by mail-qv1-f67.google.com with SMTP id dp13so9906484qvb.7;
-        Thu, 16 Jan 2020 15:05:58 -0800 (PST)
+        id S1726908AbgAQEOh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jan 2020 23:14:37 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:43868 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726370AbgAQEOh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 23:14:37 -0500
+Received: by mail-pl1-f193.google.com with SMTP id p27so9294974pli.10;
+        Thu, 16 Jan 2020 20:14:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gMt8+SnETNvSb3er2IKqZvH30KrtlFraAAc0+bmLfy8=;
-        b=aCo9b38KWts8WXzzWZLO6NyHm24NRK5AZ1gyZAy0kzRKfAU758kF2Caxkzd/cNs8UF
-         1Y8csThLqPBq8MV4gMUlPRbQMfTrbVU4ve/TYfafcsMa6ISYnsX/X24pU+0IgDNRgbPU
-         VQzI33opWjFxxHmrVAR7q1TDpN6HGbs7uqOtdAaEiaL0TRv068c3wVlJeW6Y9wZIFvpH
-         dyG1KI7f82lNj618TBmExEyl1E3Qndm82VdXwdhsmwk144mBfOuAD+ooWTZK2pZQzsRq
-         Gk5SzY5PDoEG90on7p6PJKtdQAp2U/B4eZrUiyE4MqfnP9yEK2q4RdGZ5pPcEVTjwGS6
-         gTew==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=twnxve9B2urmxTvx/xi2EnR9KZMdG4EBxb61wIeJtkM=;
+        b=BSzmU+mWlBUNhq6SrtaJyXRUEy6MRHfr053SGujImlwUDkuFYAs9H8E6mcQR290vjD
+         gTkb0juZP5oxrBfoEOd87+w/svGn/A/inFXreV9mjAhl7aEoGj4eRM59wNO/MLVrgjNJ
+         riGtylwTCX/6wfOCQjyKXBIkHP98+yAk0g+vYB0RTWk6vXjOFKbI8eokVzykD1EDPyNZ
+         EQTN+CqC9IdV5zXcC4bORRjk1n09BZPrv1uY0+zBGGjWBq19pxkDfeRElNrY1dMG2Euc
+         7fW85AtGRAD6b5bzcXDpgN093ZheAyhL70iLvaM6EubxQnHdcQfxRKecy2BCPd/a8z9s
+         NJxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gMt8+SnETNvSb3er2IKqZvH30KrtlFraAAc0+bmLfy8=;
-        b=F4dyuqYpKlEUA4rU1Wmu7S3cEGL68j57PQQYJUz6n0SE3fyo+7jPQYNDHHYHtiyrUZ
-         mJetTi9Tz6TkqWnkojEarrNhqtAZ9dlBPdMicbKuBjUJi7GBGxKyIyoFjklf7AA5kuvT
-         Jva9TGU/FnL3120sn4GO/zUyZsxuQRJIKWoocOlVn/VNpVtomNONZb+3tLhzNFSus3Y2
-         zA9108RivJTDSXI9oQ2etoxFwTxMDIa6VEcxykl452Jbh9jHVdWKctiv6JvHEM9Ys9Kl
-         IJVz1EnZ2r+GTH3IzTR0GlCUmVouirSWoS6c4ZUQ0U2PQNvgd4AnrsrHKR4KrssNrcpB
-         ZgWw==
-X-Gm-Message-State: APjAAAUmFRJnaoW2xMFA9bkHQoiOARbWGaZ40Fp6b/LtUdNmIIdz3QKt
-        3YblHM0iN0k5mUiN5BEbhcRG8MYvDrRBdaY7JEc=
-X-Google-Smtp-Source: APXvYqxm0/W2knBcgV6QmcH9v3GrczUEyP9YA3sjHEkH2lQPEIR3SHv0joKQo9NtxDo2DxqWajM/E2SZxnAnRTfXpJ8=
-X-Received: by 2002:ad4:514e:: with SMTP id g14mr5152752qvq.196.1579215958396;
- Thu, 16 Jan 2020 15:05:58 -0800 (PST)
-MIME-Version: 1.0
-References: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
- <157918094179.1357254.14428494370073273452.stgit@toke.dk> <CAEf4Bzba5FHN_iN52qRiGisRcauur1FqDY545EwE+RVR-nFvQA@mail.gmail.com>
-In-Reply-To: <CAEf4Bzba5FHN_iN52qRiGisRcauur1FqDY545EwE+RVR-nFvQA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 16 Jan 2020 15:05:47 -0800
-Message-ID: <CAEf4BzYaLd25P7Uu=aFHW_=nHOCPdCpZCcoJobhRoSGQUA49HQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 09/11] selftests: Remove tools/lib/bpf from
- include path
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=twnxve9B2urmxTvx/xi2EnR9KZMdG4EBxb61wIeJtkM=;
+        b=TnqRDYhbBnIO5r6UxKMGMT1HEK6ODrgPB7F2XjOMOd/KyYJbocUy/Q5KgnH5xhdHEg
+         vTa6gCI3vXuqBf7U4ZdSzAowl52SLjmJ0Ppsc5nmC3KtJiNWx6RhWjCCsuTAV1F40vXB
+         TXgGwiKD5cJF81H6urMwWH5a8/69sjr6CVFkdjLQkAHumwPrzkL3gfBCOFkZaAEXQwwi
+         eYaBS+x4NvOAuBbDbP93coYtM0lwcBVIPuozXC9zqW5JbO0ZOeJ7FPbVsZ2BAyppCi7t
+         DUyRJ0lEAY8ALcqEvjaxyNzOWjruv67o4ZzfLAaIuIYDrcF213FpHKlpTLMsbGfhDZ2z
+         NAdA==
+X-Gm-Message-State: APjAAAX1VqIvH5MuV05FJElwDegZwDaqUQDhYXOhq7cytliW26TOgCdi
+        65ixS/zz96N0LFGx6AFTGiQ=
+X-Google-Smtp-Source: APXvYqwWDzxtWtq69PKr0RljRlYADIezN3T1Qi10F9SS3lxibRUtqAla77kK4XulE5yE4gu+WGbLJQ==
+X-Received: by 2002:a17:90a:2223:: with SMTP id c32mr3474800pje.15.1579234476283;
+        Thu, 16 Jan 2020 20:14:36 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::98ac])
+        by smtp.gmail.com with ESMTPSA id h128sm28232584pfe.172.2020.01.16.20.14.33
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 16 Jan 2020 20:14:35 -0800 (PST)
+Date:   Thu, 16 Jan 2020 20:14:32 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -68,49 +67,50 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-rdma@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
         clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v3 00/11] tools: Use consistent libbpf include
+ paths everywhere
+Message-ID: <20200117041431.h7vvc32fungenyhg@ast-mbp.dhcp.thefacebook.com>
+References: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
+User-Agent: NeoMutt/20180223
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 2:41 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Jan 16, 2020 at 5:28 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
-> >
-> > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> >
-> > To make sure no new files are introduced that doesn't include the bpf/
-> > prefix in its #include, remove tools/lib/bpf from the include path
-> > entirely.
-> >
-> > Instead, we introduce a new header files directory under the scratch to=
-ols/
-> > dir, and add a rule to run the 'install_headers' rule from libbpf to ha=
-ve a
-> > full set of consistent libbpf headers in $(OUTPUT)/tools/include/bpf, a=
-nd
-> > then use $(OUTPUT)/tools/include as the include path for selftests.
-> >
-> > For consistency we also make sure we put all the scratch build files fr=
-om
-> > other bpftool and libbpf into tools/build/, so everything stays within
-> > selftests/.
-> >
-> > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> > ---
+On Thu, Jan 16, 2020 at 02:22:11PM +0100, Toke Høiland-Jørgensen wrote:
+> The recent commit 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are
+> taken from selftests dir") broke compilation against libbpf if it is installed
+> on the system, and $INCLUDEDIR/bpf is not in the include path.
+> 
+> Since having the bpf/ subdir of $INCLUDEDIR in the include path has never been a
+> requirement for building against libbpf before, this needs to be fixed. One
+> option is to just revert the offending commit and figure out a different way to
+> achieve what it aims for. 
 
-BTW, this change also now forces full rebuild regardless if anything
-changed or not :(
+The offending commit has been in the tree for a week. So I applied Andrii's
+revert of that change. It reintroduced the build dependency issue, but we lived
+with it for long time, so we can take time to fix it cleanly.
+I suggest to focus on that build dependency first.
 
-[...]
+> However, this series takes a different approach:
+> Changing all in-tree users of libbpf to consistently use a bpf/ prefix in
+> #include directives for header files from libbpf.
+
+I'm not sure it's a good idea. It feels nice, but think of a message we're
+sending to everyone. We will get spamed with question: does bpf community
+require all libbpf users to use bpf/ prefix ? What should be our answer?
+Require or recommend? If require.. what for? It works as-is. If recommend then
+why suddenly we're changing all files in selftests and samples?
+There is no good answer here. I think we should leave the things as-is.
+And fix build dep differently.
+
+Patches 1-3 are still worth doing.
