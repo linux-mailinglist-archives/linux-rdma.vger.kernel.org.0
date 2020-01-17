@@ -2,59 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FB1140AFB
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 14:38:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0819B140AE7
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 14:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728951AbgAQNhG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Jan 2020 08:37:06 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:21472 "EHLO
+        id S1728733AbgAQNgr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Jan 2020 08:36:47 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:28603 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728682AbgAQNgv (ORCPT
+        by vger.kernel.org with ESMTP id S1728665AbgAQNgq (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 17 Jan 2020 08:36:51 -0500
+        Fri, 17 Jan 2020 08:36:46 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579268210;
+        s=mimecast20190719; t=1579268205;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VosVvChz478iuqQd8mY3MBbU9kJ6mOJCPMFLJtpQS9A=;
-        b=Xa98whPmSGvl3BnNn17NSJz3uSnf/J2JO8pC1hN/sC5jgZsdDAYV5zhjFp99cIciNwub3E
-        9vtUc7tTjqDQmd4RXqvV/kf6ZVZPbG+K3qLZ0X8ojG639BRe4P6+tF4yKT7SP5RnhJ9Y4V
-        kT3abVlEdHvOxv5chQM/ySYlSk5p8qU=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-371-O54dYli_NzOidlXTICSbLA-1; Fri, 17 Jan 2020 08:36:43 -0500
-X-MC-Unique: O54dYli_NzOidlXTICSbLA-1
-Received: by mail-lf1-f70.google.com with SMTP id t74so4371472lff.8
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Jan 2020 05:36:42 -0800 (PST)
+        bh=3uHiB/rHLsVw+zJgXGJkoutNE3orjbRqSapatBIGTrI=;
+        b=DOzKNkb99Y1gLMlH1yPgTTMBOcvE6MhoR4zijvO8gk4nbgVCwvoUkBFSO4B6gnoOJ0nCTr
+        ojFKO1RQii8OVWycHUyNd9LDSm2XSi66+EIRKCXC4kDzd6mNdPkEx79zE7m9f8GLty0Jsp
+        9Ifv/oE+egLR90E9jful0W1+1OR/7TI=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-giF3oYq0OQ2WBRarvDQ_Zg-1; Fri, 17 Jan 2020 08:36:44 -0500
+X-MC-Unique: giF3oYq0OQ2WBRarvDQ_Zg-1
+Received: by mail-lf1-f72.google.com with SMTP id x23so4370599lfc.5
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Jan 2020 05:36:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
          :references:user-agent:mime-version:content-transfer-encoding;
-        bh=VosVvChz478iuqQd8mY3MBbU9kJ6mOJCPMFLJtpQS9A=;
-        b=daZ56tCrjoGQfGwL5OltHTJmZ3j8XamsaAt/Wc/mwJHlWSDnep05zM/C4LXrH5+wxy
-         5t/t2wbBy93DNR8ykgv++zOOlGvBWoJQcAyI9CNNe+PaXdh6OBpwbeRhkhvL22sFyM0Z
-         xtvfPGIpU2uyfNFcFxRgONSUMyF2vtrKV64+93AC0uSasBImwrHbSWwmHjKxqijW6CzY
-         6Sc7T76FX15QRo3DVolrJWplsUh9Xa9W9tGsFs5JjBiYsLx+WSHJNnROmDJ05ZTV+mTf
-         WujqnaaUlLMJtMvswHcAPkDIE7TffVMCuSNqcE1+uBzrixZKtbnYxDa+YEMop8hxExx/
-         2cGw==
-X-Gm-Message-State: APjAAAUuLapNgR5e0tfgprbIkkdwPbqjHl19KusAU4fRj9+rGXXielA/
-        0Qn05whIPg7IYoazMQ1Ho/RoN5xPU5iRVMghki2+Ygqwb+sX7Z2npCiYonDNcCxfAorwpNhe7aK
-        KPWeW1PdeLJSqW6ddGRmZrA==
-X-Received: by 2002:a2e:7a07:: with SMTP id v7mr5832278ljc.271.1579268201645;
-        Fri, 17 Jan 2020 05:36:41 -0800 (PST)
-X-Google-Smtp-Source: APXvYqzDzc22CsFKb/cLaKxHhC/rP5bXs/6Q5mMm+BqErB5PbFxN/F3ojSRACUfTIl5DJKT9rUlTrA==
-X-Received: by 2002:a2e:7a07:: with SMTP id v7mr5832239ljc.271.1579268201264;
-        Fri, 17 Jan 2020 05:36:41 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id s1sm12420064ljc.3.2020.01.17.05.36.39
+        bh=3uHiB/rHLsVw+zJgXGJkoutNE3orjbRqSapatBIGTrI=;
+        b=hOv6KU0eGDQu6oWomqynyd0E8y1q/WzY0lCFxhtha/9+fgP15BHL+M1Iycfw+i3m21
+         Mpg1ulrIEgxmPiUe+QikXvDKdmougQ2gbyjmCRRXJAWQoA5KD8lR46NFgYS5Z0kzPtjn
+         XskdQaPOsTMlwh0tFfFLcJuXaA9hoNlgGWsgYyJl1QAxkAAAP0c9XL6p7P9nifFsBDA+
+         zMZ6K7TZLWUX3dHEM6qs42QixvHxiGvMy/W5WFZoqsPPHmd5eCmDzFRV9PnGMKu8+7po
+         xoAzOLMZ9BRUma/t+aXDULNcuIyA03GuQcqKYyRArbFFl7tgaCE64i7a2+YA+mkORjr6
+         MF9g==
+X-Gm-Message-State: APjAAAUbZsHWL+tYYX7MRve+VYvdtB048+Ek1mu5Awo1ED1EVD1NHcqt
+        tj+AUkKORup6alTOz1g9pa+MEojepZ/QPuE2UhF1lj4bUg0MVvSIk1ANABuMsBbfso/c9NGcco3
+        0TBEZP8ywk2smKR6EpRTaTA==
+X-Received: by 2002:a2e:9cca:: with SMTP id g10mr5571388ljj.258.1579268203337;
+        Fri, 17 Jan 2020 05:36:43 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyFRQDM7RuuJv2SpQFKkm/d5REFszMdDint07qob4Hs3TAj8lfrBlXW/KoVQwFk65vCLxDe7A==
+X-Received: by 2002:a2e:9cca:: with SMTP id g10mr5571378ljj.258.1579268203185;
+        Fri, 17 Jan 2020 05:36:43 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id s9sm14366440ljh.90.2020.01.17.05.36.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 05:36:40 -0800 (PST)
+        Fri, 17 Jan 2020 05:36:41 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3EFB41804D8; Fri, 17 Jan 2020 14:36:39 +0100 (CET)
-Subject: [PATCH bpf-next v4 02/10] tools/bpf/runqslower: Fix override option
- for VMLINUX_BTF
+        id 4D2A91804D7; Fri, 17 Jan 2020 14:36:40 +0100 (CET)
+Subject: [PATCH bpf-next v4 03/10] selftests: Pass VMLINUX_BTF to runqslower
+ Makefile
 From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Alexei Starovoitov <ast@kernel.org>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
@@ -78,8 +78,8 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
         clang-built-linux@googlegroups.com
-Date:   Fri, 17 Jan 2020 14:36:39 +0100
-Message-ID: <157926819920.1555735.13051810516683828343.stgit@toke.dk>
+Date:   Fri, 17 Jan 2020 14:36:40 +0100
+Message-ID: <157926820025.1555735.5663814379544078154.stgit@toke.dk>
 In-Reply-To: <157926819690.1555735.10756593211671752826.stgit@toke.dk>
 References: <157926819690.1555735.10756593211671752826.stgit@toke.dk>
 User-Agent: StGit/0.21
@@ -93,57 +93,41 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-The runqslower tool refuses to build without a file to read vmlinux BTF
-from. The build fails with an error message to override the location by
-setting the VMLINUX_BTF variable if autodetection fails. However, the
-Makefile doesn't actually work with that override - the error message is
-still emitted.
+Add a VMLINUX_BTF variable with the locally-built path when calling the
+runqslower Makefile from selftests. This makes sure a simple 'make'
+invocation in the selftests dir works even when there is no BTF information
+for the running kernel. Do a wildcard expansion and include the same paths
+for BTF for the running kernel as in the runqslower Makefile, to make it
+possible to build selftests without having a vmlinux in the local tree.
 
-Fix this by including the value of VMLINUX_BTF in the expansion, and only
-emitting the error message if the *result* is empty. Also permit running
-'make clean' even though no VMLINUX_BTF is set.
+Also fix the make invocation to use $(OUTPUT)/tools as the destination
+directory instead of $(CURDIR)/tools.
 
-Fixes: 9c01546d26d2 ("tools/bpf: Add runqslower tool to tools/bpf")
+Fixes: 3a0d3092a4ed ("selftests/bpf: Build runqslower from selftests")
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- tools/bpf/runqslower/Makefile |   18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ tools/testing/selftests/bpf/Makefile |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
-index cff2fbcd29a8..b62fc9646c39 100644
---- a/tools/bpf/runqslower/Makefile
-+++ b/tools/bpf/runqslower/Makefile
-@@ -10,13 +10,9 @@ CFLAGS := -g -Wall
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 246d09ffb296..dcc8dbb1510b 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -124,10 +124,14 @@ $(OUTPUT)/test_stub.o: test_stub.c
+ 	$(call msg,CC,,$@)
+ 	$(CC) -c $(CFLAGS) -o $@ $<
  
- # Try to detect best kernel BTF source
- KERNEL_REL := $(shell uname -r)
--ifneq ("$(wildcard /sys/kernel/btf/vmlinux)","")
--VMLINUX_BTF := /sys/kernel/btf/vmlinux
--else ifneq ("$(wildcard /boot/vmlinux-$(KERNEL_REL))","")
--VMLINUX_BTF := /boot/vmlinux-$(KERNEL_REL)
--else
--$(error "Can't detect kernel BTF, use VMLINUX_BTF to specify it explicitly")
--endif
-+VMLINUX_BTF_PATHS := /sys/kernel/btf/vmlinux /boot/vmlinux-$(KERNEL_REL)
-+VMLINUX_BTF_PATH := $(abspath $(or $(VMLINUX_BTF),$(firstword \
-+	$(wildcard $(VMLINUX_BTF_PATHS)))))
++VMLINUX_BTF_PATHS := $(abspath ../../../../vmlinux)			\
++			/sys/kernel/btf/vmlinux			\
++			/boot/vmlinux-$(shell uname -r)
++VMLINUX_BTF:= $(firstword $(wildcard $(VMLINUX_BTF_PATHS)))
+ .PHONY: $(OUTPUT)/runqslower
+ $(OUTPUT)/runqslower: force
+-	$(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower	      \
+-		    OUTPUT=$(CURDIR)/tools/
++	$(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower	\
++		    OUTPUT=$(OUTPUT)/tools/ VMLINUX_BTF=$(VMLINUX_BTF)
  
- abs_out := $(abspath $(OUTPUT))
- ifeq ($(V),1)
-@@ -67,9 +63,13 @@ $(OUTPUT):
- 	$(call msg,MKDIR,$@)
- 	$(Q)mkdir -p $(OUTPUT)
+ BPFOBJ := $(OUTPUT)/libbpf.a
  
--$(OUTPUT)/vmlinux.h: $(VMLINUX_BTF) | $(OUTPUT) $(BPFTOOL)
-+$(OUTPUT)/vmlinux.h: $(VMLINUX_BTF_PATH) | $(OUTPUT) $(BPFTOOL)
- 	$(call msg,GEN,$@)
--	$(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $@
-+	@if [ ! -e "$(VMLINUX_BTF_PATH)" ] ; then \
-+		echo "Couldn't find kernel BTF; set VMLINUX_BTF to specify its location."; \
-+		exit 1;\
-+	fi
-+	$(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF_PATH) format c > $@
- 
- $(OUTPUT)/libbpf.a: | $(OUTPUT)
- 	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC)			       \
 
