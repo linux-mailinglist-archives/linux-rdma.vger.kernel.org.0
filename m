@@ -2,115 +2,207 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D0B1402D5
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 05:14:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 764DC1403A8
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 06:44:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgAQEOh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jan 2020 23:14:37 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:43868 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbgAQEOh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jan 2020 23:14:37 -0500
-Received: by mail-pl1-f193.google.com with SMTP id p27so9294974pli.10;
-        Thu, 16 Jan 2020 20:14:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=twnxve9B2urmxTvx/xi2EnR9KZMdG4EBxb61wIeJtkM=;
-        b=BSzmU+mWlBUNhq6SrtaJyXRUEy6MRHfr053SGujImlwUDkuFYAs9H8E6mcQR290vjD
-         gTkb0juZP5oxrBfoEOd87+w/svGn/A/inFXreV9mjAhl7aEoGj4eRM59wNO/MLVrgjNJ
-         riGtylwTCX/6wfOCQjyKXBIkHP98+yAk0g+vYB0RTWk6vXjOFKbI8eokVzykD1EDPyNZ
-         EQTN+CqC9IdV5zXcC4bORRjk1n09BZPrv1uY0+zBGGjWBq19pxkDfeRElNrY1dMG2Euc
-         7fW85AtGRAD6b5bzcXDpgN093ZheAyhL70iLvaM6EubxQnHdcQfxRKecy2BCPd/a8z9s
-         NJxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=twnxve9B2urmxTvx/xi2EnR9KZMdG4EBxb61wIeJtkM=;
-        b=TnqRDYhbBnIO5r6UxKMGMT1HEK6ODrgPB7F2XjOMOd/KyYJbocUy/Q5KgnH5xhdHEg
-         vTa6gCI3vXuqBf7U4ZdSzAowl52SLjmJ0Ppsc5nmC3KtJiNWx6RhWjCCsuTAV1F40vXB
-         TXgGwiKD5cJF81H6urMwWH5a8/69sjr6CVFkdjLQkAHumwPrzkL3gfBCOFkZaAEXQwwi
-         eYaBS+x4NvOAuBbDbP93coYtM0lwcBVIPuozXC9zqW5JbO0ZOeJ7FPbVsZ2BAyppCi7t
-         DUyRJ0lEAY8ALcqEvjaxyNzOWjruv67o4ZzfLAaIuIYDrcF213FpHKlpTLMsbGfhDZ2z
-         NAdA==
-X-Gm-Message-State: APjAAAX1VqIvH5MuV05FJElwDegZwDaqUQDhYXOhq7cytliW26TOgCdi
-        65ixS/zz96N0LFGx6AFTGiQ=
-X-Google-Smtp-Source: APXvYqwWDzxtWtq69PKr0RljRlYADIezN3T1Qi10F9SS3lxibRUtqAla77kK4XulE5yE4gu+WGbLJQ==
-X-Received: by 2002:a17:90a:2223:: with SMTP id c32mr3474800pje.15.1579234476283;
-        Thu, 16 Jan 2020 20:14:36 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::98ac])
-        by smtp.gmail.com with ESMTPSA id h128sm28232584pfe.172.2020.01.16.20.14.33
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 Jan 2020 20:14:35 -0800 (PST)
-Date:   Thu, 16 Jan 2020 20:14:32 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH bpf-next v3 00/11] tools: Use consistent libbpf include
- paths everywhere
-Message-ID: <20200117041431.h7vvc32fungenyhg@ast-mbp.dhcp.thefacebook.com>
-References: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
+        id S1726151AbgAQFoN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Jan 2020 00:44:13 -0500
+Received: from mga05.intel.com ([192.55.52.43]:12800 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725813AbgAQFoN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 17 Jan 2020 00:44:13 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Jan 2020 21:44:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,328,1574150400"; 
+   d="scan'208";a="274263798"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 16 Jan 2020 21:44:11 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1isKQU-0007bl-T3; Fri, 17 Jan 2020 13:44:10 +0800
+Date:   Fri, 17 Jan 2020 13:42:59 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ d6de0bb1850f6fcefd4f9fed2de69c0915a2c8a9
+Message-ID: <5e214963.Nig8gXREft8a+MIn%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 02:22:11PM +0100, Toke Høiland-Jørgensen wrote:
-> The recent commit 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are
-> taken from selftests dir") broke compilation against libbpf if it is installed
-> on the system, and $INCLUDEDIR/bpf is not in the include path.
-> 
-> Since having the bpf/ subdir of $INCLUDEDIR in the include path has never been a
-> requirement for building against libbpf before, this needs to be fixed. One
-> option is to just revert the offending commit and figure out a different way to
-> achieve what it aims for. 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: d6de0bb1850f6fcefd4f9fed2de69c0915a2c8a9  RDMA/mlx5: Set relaxed ordering when requested
 
-The offending commit has been in the tree for a week. So I applied Andrii's
-revert of that change. It reintroduced the build dependency issue, but we lived
-with it for long time, so we can take time to fix it cleanly.
-I suggest to focus on that build dependency first.
+elapsed time: 472m
 
-> However, this series takes a different approach:
-> Changing all in-tree users of libbpf to consistently use a bpf/ prefix in
-> #include directives for header files from libbpf.
+configs tested: 152
+configs skipped: 0
 
-I'm not sure it's a good idea. It feels nice, but think of a message we're
-sending to everyone. We will get spamed with question: does bpf community
-require all libbpf users to use bpf/ prefix ? What should be our answer?
-Require or recommend? If require.. what for? It works as-is. If recommend then
-why suddenly we're changing all files in selftests and samples?
-There is no good answer here. I think we should leave the things as-is.
-And fix build dep differently.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Patches 1-3 are still worth doing.
+c6x                              allyesconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+alpha                randconfig-a001-20200117
+m68k                 randconfig-a001-20200117
+mips                 randconfig-a001-20200117
+nds32                randconfig-a001-20200117
+parisc               randconfig-a001-20200117
+riscv                randconfig-a001-20200117
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+c6x                  randconfig-a001-20200117
+h8300                randconfig-a001-20200117
+microblaze           randconfig-a001-20200117
+nios2                randconfig-a001-20200117
+sparc64              randconfig-a001-20200117
+alpha                               defconfig
+csky                                defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+parisc                            allnoconfig
+parisc                            allyesonfig
+parisc                         b180_defconfig
+parisc                        c3000_defconfig
+parisc                              defconfig
+ia64                                defconfig
+i386                             alldefconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64               randconfig-e001-20200117
+x86_64               randconfig-e002-20200117
+x86_64               randconfig-e003-20200117
+i386                 randconfig-e001-20200117
+i386                 randconfig-e002-20200117
+i386                 randconfig-e003-20200117
+um                                  defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+x86_64               randconfig-b001-20200117
+x86_64               randconfig-b002-20200117
+x86_64               randconfig-b003-20200117
+i386                 randconfig-b001-20200117
+i386                 randconfig-b002-20200117
+i386                 randconfig-b003-20200117
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+x86_64               randconfig-c001-20200117
+x86_64               randconfig-c002-20200117
+x86_64               randconfig-c003-20200117
+i386                 randconfig-c001-20200117
+i386                 randconfig-c002-20200117
+i386                 randconfig-c003-20200117
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+csky                 randconfig-a001-20200117
+openrisc             randconfig-a001-20200117
+s390                 randconfig-a001-20200117
+sh                   randconfig-a001-20200117
+xtensa               randconfig-a001-20200117
+sh                               allmodconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+x86_64               randconfig-d001-20200117
+x86_64               randconfig-d002-20200117
+x86_64               randconfig-d003-20200117
+i386                 randconfig-d001-20200117
+i386                 randconfig-d002-20200117
+i386                 randconfig-d003-20200117
+x86_64               randconfig-g001-20200117
+x86_64               randconfig-g002-20200117
+x86_64               randconfig-g003-20200117
+i386                 randconfig-g001-20200117
+i386                 randconfig-g002-20200117
+i386                 randconfig-g003-20200117
+arc                  randconfig-a001-20200117
+arm                  randconfig-a001-20200117
+arm64                randconfig-a001-20200117
+ia64                 randconfig-a001-20200117
+powerpc              randconfig-a001-20200117
+sparc                randconfig-a001-20200117
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+x86_64               randconfig-h001-20200117
+x86_64               randconfig-h002-20200117
+x86_64               randconfig-h003-20200117
+i386                 randconfig-h001-20200117
+i386                 randconfig-h002-20200117
+i386                 randconfig-h003-20200117
+
+---
+0-DAY kernel test infrastructure                 Open Source Technology Center
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
