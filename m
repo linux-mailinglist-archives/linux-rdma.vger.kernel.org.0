@@ -2,132 +2,233 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C941140C28
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 15:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6772140C60
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 15:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726956AbgAQOMl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Jan 2020 09:12:41 -0500
-Received: from mail-eopbgr130084.outbound.protection.outlook.com ([40.107.13.84]:3056
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726587AbgAQOMl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 17 Jan 2020 09:12:41 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ICx4vOUtHhz6uHT6wCqn4J0MssNiHfvJKWJ/d2mn8bDene7LQ5CoZMQaUgBtfFEoRAFYw00L8YnC+A4/Wt1AJPEpUlOO+ePg9OcV4QJp/EYGBjGFXT3AU4ReKRCHFNtQ9CCHD17VeeZsbBppZzGpc/79VrR9BwE/UFUxKuMDksCaM9qgpwL9aSy1Lw8I83am5vXF3bRGkEtJraBcA2GUVx4Mn9jXtj1OexV+V/+v5UcWar6ZV5OdKigEBsJCq8GI3qdlup4ng2XhzcQXbj6zhhep0RUvUA93aDp0TMLvmNEsO78SpR2CX+26g2Lf+4/PAFDCv4KTIO4U3a8d9+pi0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ecJpKM6ZOBTomW7zOQOag7Vn747Fuvk4qAGIeDeK+6Q=;
- b=NRskaMuRO6ueagOqjmC/jk51xyeTo4u2pRl8+xVly5u9S/79ETnUlnp3cmKQ99EmbCu7p3h9e3HMVJEZzodpj75OCajNIjL4n7ZpHFqqGsqut5xyDenQm6cbqcWSBPr7LZz3vHeVHp0ehMBwgftGR+uCpgnhk8Zx9zd2WbqBPJjGgZm9ihCcmBai95wNqJHMsp7xqk14oxXKRVu8bcTeyWQfFIbKtdYC5Z3t1usBLTPoDNdy5fAoxBv0LWlKJucMU4iqysCwbkIuVRj03ZA/WFuSNXIS5XTHzvY1V8wzYLJ98LtRo+EuwTF4S90PMb/zYrLSeCTQ93GQ49rx+MFpWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ecJpKM6ZOBTomW7zOQOag7Vn747Fuvk4qAGIeDeK+6Q=;
- b=GhoOZhY6WGB9yBKjhfif6bbz/xNsXCy2uxtJ1YPObwJVPuK9QGrFcY2aW0EFjDtSr91QXneTJVIcci7VCKQVUYTUQWDAkcyRxN8m2VEULZ91AQPx0UWKDS+3turtWtdTMcPI+r4NNrKwtJm5zBXIW21grzh0I1VUCxyrTomJMiE=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB4671.eurprd05.prod.outlook.com (20.176.3.156) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2644.22; Fri, 17 Jan 2020 14:12:35 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::1c00:7925:d5c6:d60d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::1c00:7925:d5c6:d60d%7]) with mapi id 15.20.2644.015; Fri, 17 Jan 2020
- 14:12:35 +0000
-Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR10CA0023.namprd10.prod.outlook.com (2603:10b6:208:120::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2644.20 via Frontend Transport; Fri, 17 Jan 2020 14:12:35 +0000
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1isSMS-0008Nn-5n; Fri, 17 Jan 2020 10:12:32 -0400
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     "santosh.shilimkar@oracle.com" <santosh.shilimkar@oracle.com>,
-        "David S . Miller" <davem@davemloft.net>
-CC:     Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Hans Westgaard Ry <hans.westgaard.ry@oracle.com>,
-        Moni Shoua <monis@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH mlx5-next 00/10] Use ODP MRs for kernel ULPs
-Thread-Topic: [PATCH mlx5-next 00/10] Use ODP MRs for kernel ULPs
-Thread-Index: AQHVy6FvxnMGsXYFhEqsZB6HjluKCafs3buAgAB0qICAAF49AIABOG4A
-Date:   Fri, 17 Jan 2020 14:12:35 +0000
-Message-ID: <20200117141232.GX20978@mellanox.com>
-References: <20200115124340.79108-1-leon@kernel.org>
- <20200116065926.GD76932@unreal> <20200116135701.GG20978@mellanox.com>
- <6ef540ae-233f-50cd-d096-3eeae31410cc@oracle.com>
-In-Reply-To: <6ef540ae-233f-50cd-d096-3eeae31410cc@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MN2PR10CA0023.namprd10.prod.outlook.com
- (2603:10b6:208:120::36) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [142.68.57.212]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 2afb99ab-a28d-4259-bc36-08d79b574d16
-x-ms-traffictypediagnostic: VI1PR05MB4671:|VI1PR05MB4671:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB46710F2DD77E6D31D858C3B5CF310@VI1PR05MB4671.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0285201563
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(136003)(39860400002)(396003)(366004)(346002)(189003)(199004)(8676002)(86362001)(66556008)(64756008)(66446008)(66946007)(508600001)(81156014)(8936002)(2906002)(26005)(81166006)(33656002)(4326008)(53546011)(66476007)(5660300002)(71200400001)(316002)(1076003)(9746002)(9786002)(52116002)(36756003)(2616005)(186003)(54906003)(110136005)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4671;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RMRThBATWlU6fQ8b9sZ12+ans0JW5ewi6gttuPU51nvjOBDGBLgM2us0QP+eHlkd8+klTIQYUFg2rUGFn8YlYW9UJC0KEPoI8Y9WM8tpwnddMMqZ2rpWop4EZjNN6duqL09RIHeAvvxg0cPV46R0YYvdC00cXbgS7mkDdrEDVZWmSHlkDxkTkBCxCf4JyToQ8KVZO/f5xRJItdVU51lwQDfTk83DLsZ3HlIlwzhlGredVqoRBpEcr6bkF8yDB1vRmiJIXupqZfbWJdOLyoplG1VCQpQibr2HLPdF0B5ejs1W2nvDsqd8ClVuYrmp9w3agOR9E+EfztKzIjVnqObOc4fID0nuhquTkskqPROrdRH6lIqYEnmFBx3I4gNzr13IwJBmMbugvGCVQGXklEZsN6wZlA6N004yLEKq1e8lDB7jLnz/zKgIrSk+jzY8ggGcoydIVQByGhdgQgg2c8HSV2oJE7s/DnGnx4JsQ/T5AG+ckHKVvBCH4FPX2ZSN54dX
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <566ED0466275DB4FABE2EA49719274FB@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726890AbgAQOXV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Jan 2020 09:23:21 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:45833 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726574AbgAQOXU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Jan 2020 09:23:20 -0500
+Received: by mail-qk1-f195.google.com with SMTP id x1so22749855qkl.12
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Jan 2020 06:23:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0Ohjp2DRXkr7M3X9dHBMZo0fYON0PiuG7X2OVDjJyk0=;
+        b=eZFzMvRJH9ADC1idI6dpGzzOHSOgl+3SGoIB8Z4ta1LUSOtqAQ2BvSMTMtutp89Sia
+         Ehl7J/QCaID6QPg4evOnAcUJFv5bHpjvhXpFgUsp4zzMTnX4TGFLqWBmDcciQvVCXyo2
+         bVXDUBeDlsLV2xx4pKICkPtc7NRQh+YelVfyuB9k42tmXTAiqA59E/XOsuyA5lR+/1CR
+         DgSzLVi++cgQnCKA6f+Wg/RiDmmw0fVAITn0hjnVu6U7HTTBOAZh+cU66otHMKrLd4z/
+         oDTb1lwdqI9qld4lz7rN90GtBxG9+dh2wsIreC8ILa4A8ZfBZXZMANnyff0yvsqBVN/k
+         kuBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0Ohjp2DRXkr7M3X9dHBMZo0fYON0PiuG7X2OVDjJyk0=;
+        b=hAWNCjxt5piJfEVd/DgFbnzj/IdHUaXXvze8gE599H/Byw5gLp5/QwTPqCXM6sW+uI
+         fSZNUMZM8piqR8dYct8QMGriTB9ByFjF1U/e5iZ0A951/tdDBxgn3+41yV4GbW22xSzn
+         OBCiQgbiTC0oSgo4NGyDqC5cG8D6eDR2gZouj7eDl/LAMlZ8rkWB5Y3Oe63d1gB+e8Ev
+         BtIRDrLcIyoPhAYYY7dBUVk2W6Cb/Pp0lgK/pJ5OSu0hnODHTuZ0LtTIRwtL4DrP/Aij
+         +5HMlikHtOHZrBMybXR2kp/Ve5UbPLFEz3DkELdWZRbQG15XHjxXpDycF/PXUj/y++LY
+         DQbQ==
+X-Gm-Message-State: APjAAAW9W8oj8dr60ogiy/pm2P+V8tE9SNLt9h7fG17Z10b5QKboFcB5
+        Ik1zvlaYmgOiQIkwoNb9StrXNA==
+X-Google-Smtp-Source: APXvYqy2uta2u+/e2gcPJP+s9BaYmEr5ZlX+jccijLQEe08v/lCzcgrZKRHUQL7SaJn7y96YEBMwTA==
+X-Received: by 2002:a05:620a:a0b:: with SMTP id i11mr39324972qka.11.1579270999664;
+        Fri, 17 Jan 2020 06:23:19 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id t15sm11676330qkg.49.2020.01.17.06.23.19
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 17 Jan 2020 06:23:19 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1isSWs-00008T-Cj; Fri, 17 Jan 2020 10:23:18 -0400
+Date:   Fri, 17 Jan 2020 10:23:18 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, shiraz.saleem@intel.com,
+        aditr@vmware.com, mkalderon@marvell.com, aelior@marvell.com,
+        linux-rdma@vger.kernel.org, linuxarm@huawei.com
+Subject: Re: [PATCH RFC for-next 1/6] RDMA/core: support deliver net device
+ event
+Message-ID: <20200117142318.GB29725@ziepe.ca>
+References: <1579147847-12158-1-git-send-email-liweihang@huawei.com>
+ <1579147847-12158-2-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2afb99ab-a28d-4259-bc36-08d79b574d16
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jan 2020 14:12:35.6568
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: iZ6XDP0cqUB4mq3j1BzeUHBCEDG34lZf3/Hz0tOpYxqCvNdkICp7F3cSdW/bfwDqMs/5MRuxlcSNjtoNVgdL7A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4671
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1579147847-12158-2-git-send-email-liweihang@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 11:34:18AM -0800, santosh.shilimkar@oracle.com wrot=
-e:
-> On 1/16/20 5:57 AM, Jason Gunthorpe wrote:
-> > On Thu, Jan 16, 2020 at 06:59:29AM +0000, Leon Romanovsky wrote:
-> > > >   45 files changed, 559 insertions(+), 256 deletions(-)
-> > >=20
-> > > Thanks Santosh for your review.
-> > >=20
-> > > David,
-> > > Is it ok to route those patches through RDMA tree given the fact that
-> > > we are touching a lot of files in drivers/infiniband/* ?
-> > >=20
-> > > There is no conflict between netdev and RDMA versions of RDS, but to =
-be
-> > > on safe side, I'll put all this code to mlx5-next tree.
-> >=20
-> > Er, lets not contaminate the mlx5-next with this..
-> >=20
-> > It looks like it applies clean to -rc6 so if it has to be in both
-> > trees a clean PR against -rc5/6 is the way to do it.
-> >=20
-> > Santos, do you anticipate more RDS patches this cycle?
-> >=20
->=20
-> Not for upcoming merge window afaik.
+On Thu, Jan 16, 2020 at 12:10:42PM +0800, Weihang Li wrote:
+> From: Lang Cheng <chenglang@huawei.com>
+> 
+> For the process of handling the link event of the net device, the driver
+> of each provider is similar, so it can be integrated into the ib_core for
+> unified processing.
+> 
+> Signed-off-by: Lang Cheng <chenglang@huawei.com>
+> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>  drivers/infiniband/core/cache.c  |  21 ++++++-
+>  drivers/infiniband/core/device.c | 123 +++++++++++++++++++++++++++++++++++++++
+>  include/rdma/ib_cache.h          |  13 +++++
+>  include/rdma/ib_verbs.h          |   8 +++
+>  4 files changed, 164 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+> index 17bfedd..791e965 100644
+> +++ b/drivers/infiniband/core/cache.c
+> @@ -1174,6 +1174,23 @@ int ib_get_cached_port_state(struct ib_device   *device,
+>  }
+>  EXPORT_SYMBOL(ib_get_cached_port_state);
+>  
+> +int ib_get_cached_port_event_flags(struct ib_device   *device,
+> +				   u8                  port_num,
+> +				   enum ib_port_flags *event_flags)
+> +{
+> +	unsigned long flags;
+> +
+> +	if (!rdma_is_port_valid(device, port_num))
+> +		return -EINVAL;
+> +
+> +	read_lock_irqsave(&device->cache_lock, flags);
+> +	*event_flags = device->port_data[port_num].cache.port_event_flags;
+> +	read_unlock_irqrestore(&device->cache_lock, flags);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(ib_get_cached_port_event_flags);
+> +
+>  /**
+>   * rdma_get_gid_attr - Returns GID attributes for a port of a device
+>   * at a requested gid_index, if a valid GID entry exists.
+> @@ -1391,7 +1408,7 @@ ib_cache_update(struct ib_device *device, u8 port, bool enforce_security)
+>  	if (!rdma_is_port_valid(device, port))
+>  		return -EINVAL;
+>  
+> -	tprops = kmalloc(sizeof *tprops, GFP_KERNEL);
+> +	tprops = kzalloc(sizeof(*tprops), GFP_KERNEL);
+>  	if (!tprops)
+>  		return -ENOMEM;
+>  
+> @@ -1435,6 +1452,8 @@ ib_cache_update(struct ib_device *device, u8 port, bool enforce_security)
+>  	device->port_data[port].cache.pkey = pkey_cache;
+>  	device->port_data[port].cache.lmc = tprops->lmc;
+>  	device->port_data[port].cache.port_state = tprops->state;
+> +	device->port_data[port].cache.port_event_flags =
+> +						tprops->port_event_flags;
+>  
+>  	device->port_data[port].cache.subnet_prefix = tprops->subnet_prefix;
+>  	write_unlock_irq(&device->cache_lock);
+> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> index f6c2552..f03d6ce 100644
+> +++ b/drivers/infiniband/core/device.c
+> @@ -1325,6 +1325,77 @@ static int enable_device_and_get(struct ib_device *device)
+>  	return ret;
+>  }
+>  
+> +unsigned int ib_query_ndev_port_num(struct ib_device *device,
+> +				    struct net_device *netdev)
+> +{
+> +	unsigned int port_num;
+> +
+> +	rdma_for_each_port(device, port_num)
+> +		if (netdev == device->port_data[port_num].netdev)
+> +			break;
+> +
+> +	return port_num;
+> +}
+> +EXPORT_SYMBOL(ib_query_ndev_port_num);
 
-In this case DaveM, will you ack and we can take it through RDMA?
+This returns garbage if the netdev isn't found
 
-The RDMA pieces look OK to me, like Santos I have reviewed many
-versions of this already..
+> +
+> +static inline enum ib_port_state get_port_state(struct net_device *netdev)
+> +{
+> +	return (netif_running(netdev) && netif_carrier_ok(netdev)) ?
+> +		IB_PORT_ACTIVE : IB_PORT_DOWN;
+> +}
+> +
+> +static int ib_netdev_event(struct notifier_block *this,
+> +			   unsigned long event, void *ptr)
+> +{
+> +	struct ib_device *device = container_of(this, struct ib_device, nb);
+> +	struct net_device *netdev = netdev_notifier_info_to_dev(ptr);
+> +
+> +	switch (event) {
+> +	case NETDEV_CHANGE:
+> +	case NETDEV_UP:
+> +	case NETDEV_DOWN: {
+> +		unsigned int port_num = ib_query_ndev_port_num(device, netdev);
+> +		enum ib_port_state last_state;
+> +		enum ib_port_state curr_state;
+> +		struct ib_event ibev;
+> +		enum ib_port_flags flags;
+> +
+> +		if (ib_get_cached_port_event_flags(device, port_num, &flags))
+> +			return NOTIFY_DONE;
+> +
+> +		if (flags & IB_PORT_BONDING_SLAVE)
+> +			goto done;
+> +
+> +		if (ib_get_cached_port_state(device, port_num, &last_state))
+> +			return NOTIFY_DONE;
+> +
+> +		curr_state = get_port_state(netdev);
+> +
+> +		if (last_state == curr_state)
+> +			goto done;
+> +
+> +		ibev.device = device;
+> +		if (curr_state == IB_PORT_DOWN)
+> +			ibev.event = IB_EVENT_PORT_ERR;
+> +		else if (curr_state == IB_PORT_ACTIVE)
+> +			ibev.event = IB_EVENT_PORT_ACTIVE;
+> +		else
+> +			goto done;
+> +
+> +		ibev.element.port_num = port_num;
+> +		ib_dispatch_event(&ibev);
+> +		dev_dbg(&device->dev,
+> +			"core send %s\n", ib_event_msg(ibev.event));
+> +		break;
+> +	}
+> +
+> +	default:
+> +		break;
+> +	}
+> +done:
+> +	return NOTIFY_DONE;
+> +}
+> +
+>  /**
+>   * ib_register_device - Register an IB device with IB core
+>   * @device: Device to register
+> @@ -1342,6 +1413,7 @@ static int enable_device_and_get(struct ib_device *device)
+>   */
+>  int ib_register_device(struct ib_device *device, const char *name)
+>  {
+> +	unsigned int port;
+>  	int ret;
+>  
+>  	ret = assign_name(device, name);
+> @@ -1406,6 +1478,34 @@ int ib_register_device(struct ib_device *device, const char *name)
+>  	}
+>  	ib_device_put(device);
+>  
+> +	device->nb.notifier_call = ib_netdev_event;
+> +	ret = register_netdevice_notifier(&device->nb);
 
-Thanks,
+Lets not register a notifer for every device please, we already have
+ib_device_get_by_netdev() for this purpose, and we already have global
+notifiers in this module.
+
 Jason
