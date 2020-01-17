@@ -2,58 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9821406E1
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 10:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 410DA140723
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 10:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbgAQJu6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Jan 2020 04:50:58 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29382 "EHLO
+        id S1726752AbgAQJ6s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Jan 2020 04:58:48 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54386 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726085AbgAQJut (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Jan 2020 04:50:49 -0500
+        with ESMTP id S1726755AbgAQJ6r (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Jan 2020 04:58:47 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579254648;
+        s=mimecast20190719; t=1579255126;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oJRJOOtAJx4rABOIyWYmHnWYUrcoGrCqCdDRh2YY52I=;
-        b=YD19WJUYZAJBREAk8ub3j0ctH0SOOPxc3Gn6Yaa9Mrn59JcDAZMvuVtG/R7RI4y738i+Di
-        Pd+Mo+sOjox0XRP1ZZD/t/+WtySQnVUsxrwYCqtJd5YbKR2J+qGdmlYGiUHUPNCBNbpksW
-        U6Yfw5ac+GEBbddZgFWoa3z0WzMQvjM=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-upQ474CTO1WTuWcfZcdR_A-1; Fri, 17 Jan 2020 04:50:47 -0500
-X-MC-Unique: upQ474CTO1WTuWcfZcdR_A-1
-Received: by mail-lf1-f72.google.com with SMTP id w72so4244566lff.20
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Jan 2020 01:50:47 -0800 (PST)
+        bh=Uf1keSD3DOZ8jh4mCSz+0fhQb4Z+vPKdygjWjY+hlbM=;
+        b=f2CGdxgKOyVjWpy69GKk/kAVWGo9xtnyXyFTtCZoXQnmVlG2kQbkeOIa+jLC2Ozk9b8m7t
+        WoWYiRQltOhNSXhKKV1fkpKft2bcDEiMSrvcA00PE1vAnakLQjM5JT0Y72qJB5x62dgCEH
+        +jf+ZHI2lXsNdCN5dfMvFKaAYjSe8Qo=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-222-am9dZOQ2Pb2kLEZHeWWOsg-1; Fri, 17 Jan 2020 04:58:44 -0500
+X-MC-Unique: am9dZOQ2Pb2kLEZHeWWOsg-1
+Received: by mail-lj1-f198.google.com with SMTP id k25so6030529lji.4
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Jan 2020 01:58:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=oJRJOOtAJx4rABOIyWYmHnWYUrcoGrCqCdDRh2YY52I=;
-        b=B5m9+nZ5MgmeNNT2Zu5jYOskQs0DLOCrFPF8hwvR4YoBy5cl2pT8wlI2vWBV7LXc63
-         S+zE+GItTRrHMFB4q0dMSLIaG1HzR5l1cTvQzPbeVEZolzpQOvdmM/sr3xln6QkM02Oz
-         r+MvfAhfZuUcE4V+7rU3vE9pRrCiSp7xYaCOew2mOamU7kOLmYPJ2QGlpHdbd3XfJLka
-         Qp12qvmi/sRl0KCuxA+8oL9p5Wv6goQwGv9gi3eVD4fsS2wwuEUArLW4SZyz2FU6yXHA
-         DwMhFLq/TbYtB2fnyOmJdjj4tE6QOFPbkFC8/IhhCs1zke60bNAm/aoP2sYz3ir6tjQu
-         cthg==
-X-Gm-Message-State: APjAAAUimwr4I0sfNn3E+QEvWnb4pOQSA0ywzjeovpS6nkZGAzDVR4b/
-        XsI5xiNdkvsJaeQmeAUC/JGPUk/nldBpzI97fzNZ5ulAa2wBrSySjpFc9lCrCYv/zC4l1f1aJyk
-        ISWZaPvafeId/o2sD9IZAuA==
-X-Received: by 2002:a2e:3a0c:: with SMTP id h12mr5110075lja.200.1579254646255;
-        Fri, 17 Jan 2020 01:50:46 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxVH1mvGN7jFxhc1CGWH4ht8uwwpUWB8gY29//W0Sp2WPWefYaaYkajI0yi/HmyV1E0o/g6WQ==
-X-Received: by 2002:a2e:3a0c:: with SMTP id h12mr5110047lja.200.1579254646128;
-        Fri, 17 Jan 2020 01:50:46 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id s9sm14012128ljh.90.2020.01.17.01.50.45
+        bh=Uf1keSD3DOZ8jh4mCSz+0fhQb4Z+vPKdygjWjY+hlbM=;
+        b=k3qDcHPN9Hbt2fEZTcnksVvxgBwAaucdmQJKIvjG61httt53XhNiGz7IEeNCotPkvb
+         ndziEkHM3UUYWW3hkOLnYl8PxEr+5n8ZBX0baDxcyCmScsBnaduujZI+k3DFjJv0m4fP
+         uON9HkpURy9vEtyPOttG/e3SKchD3L+6To62fuyhLH+mdMfPsmNn/6Is1C6CkVuS3wez
+         J+iYF9Ogmsx2TvTj4bHpqbOIX2x9BdXl9C4Do/0dJ2eSU592gOVMaA0qMyUpWm0W64M9
+         BFQCYgljTV03cTYZYKVwHZ5KW02O2sEla7RkY15JQizS9ZMipFWmpsSGFNDh6S6qRtfI
+         RvnA==
+X-Gm-Message-State: APjAAAXVLpapfnlyAPOlTjMCdZVRf1MDNE9z/0iimzZ21ouW9XboFWNj
+        Oc75eFZ235lX+9EJrw5HDpB9Uma16VRTqzzjnF0sa+s+wxq0D73gBTEtv1lHRjHTKD/r4roIMDV
+        wqVEVO7a2eFxxEcVEmvIIVw==
+X-Received: by 2002:ac2:4849:: with SMTP id 9mr4975737lfy.11.1579255123129;
+        Fri, 17 Jan 2020 01:58:43 -0800 (PST)
+X-Google-Smtp-Source: APXvYqzx3OTlP+sKcKqC8lWpUkR48Xy7KHR8XB1tnfvUp3Gadttkq8Vpe8cxhtUqaWxJHiUphB7sig==
+X-Received: by 2002:ac2:4849:: with SMTP id 9mr4975702lfy.11.1579255122857;
+        Fri, 17 Jan 2020 01:58:42 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id r21sm12164399ljn.64.2020.01.17.01.58.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 01:50:45 -0800 (PST)
+        Fri, 17 Jan 2020 01:58:42 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D7C9C1804D6; Fri, 17 Jan 2020 10:50:44 +0100 (CET)
+        id 341A91804D6; Fri, 17 Jan 2020 10:58:41 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -63,7 +64,6 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -72,19 +72,16 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-rdma@vger.kernel.org,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH bpf-next v3 09/11] selftests: Remove tools/lib/bpf from include path
-In-Reply-To: <CAEf4BzYaLd25P7Uu=aFHW_=nHOCPdCpZCcoJobhRoSGQUA49HQ@mail.gmail.com>
-References: <157918093154.1357254.7616059374996162336.stgit@toke.dk> <157918094179.1357254.14428494370073273452.stgit@toke.dk> <CAEf4Bzba5FHN_iN52qRiGisRcauur1FqDY545EwE+RVR-nFvQA@mail.gmail.com> <CAEf4BzYaLd25P7Uu=aFHW_=nHOCPdCpZCcoJobhRoSGQUA49HQ@mail.gmail.com>
+        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        clang-built-linux@googlegroups.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next v3 00/11] tools: Use consistent libbpf include paths everywhere
+In-Reply-To: <20200117095721.0030f414@carbon>
+References: <157918093154.1357254.7616059374996162336.stgit@toke.dk> <20200117041431.h7vvc32fungenyhg@ast-mbp.dhcp.thefacebook.com> <20200117095721.0030f414@carbon>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 17 Jan 2020 10:50:44 +0100
-Message-ID: <87o8v2qumj.fsf@toke.dk>
+Date:   Fri, 17 Jan 2020 10:58:41 +0100
+Message-ID: <87lfq6qu9a.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -93,42 +90,79 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+Jesper Dangaard Brouer <brouer@redhat.com> writes:
 
-> On Thu, Jan 16, 2020 at 2:41 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
->>
->> On Thu, Jan 16, 2020 at 5:28 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
->> >
->> > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> >
->> > To make sure no new files are introduced that doesn't include the bpf/
->> > prefix in its #include, remove tools/lib/bpf from the include path
->> > entirely.
->> >
->> > Instead, we introduce a new header files directory under the scratch t=
-ools/
->> > dir, and add a rule to run the 'install_headers' rule from libbpf to h=
-ave a
->> > full set of consistent libbpf headers in $(OUTPUT)/tools/include/bpf, =
-and
->> > then use $(OUTPUT)/tools/include as the include path for selftests.
->> >
->> > For consistency we also make sure we put all the scratch build files f=
-rom
->> > other bpftool and libbpf into tools/build/, so everything stays within
->> > selftests/.
->> >
->> > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> > ---
+> On Thu, 16 Jan 2020 20:14:32 -0800
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 >
-> BTW, this change also now forces full rebuild regardless if anything
-> changed or not :(
+>> On Thu, Jan 16, 2020 at 02:22:11PM +0100, Toke H=C3=B8iland-J=C3=B8rgens=
+en wrote:
+>> > The recent commit 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs=
+.h are
+>> > taken from selftests dir") broke compilation against libbpf if it is i=
+nstalled
+>> > on the system, and $INCLUDEDIR/bpf is not in the include path.
+>> >=20
+>> > Since having the bpf/ subdir of $INCLUDEDIR in the include path has ne=
+ver been a
+>> > requirement for building against libbpf before, this needs to be fixed=
+. One
+>> > option is to just revert the offending commit and figure out a differe=
+nt way to
+>> > achieve what it aims for.=20=20=20
+>>=20
+>> The offending commit has been in the tree for a week. So I applied Andri=
+i's
+>> revert of that change. It reintroduced the build dependency issue, but w=
+e lived
+>> with it for long time, so we can take time to fix it cleanly.
+>> I suggest to focus on that build dependency first.
+>>=20
+>> > However, this series takes a different approach:
+>> > Changing all in-tree users of libbpf to consistently use a bpf/ prefix=
+ in
+>> > #include directives for header files from libbpf.=20=20
+>>=20
+>> I'm not sure it's a good idea. It feels nice, but think of a message we'=
+re
+>> sending to everyone. We will get spamed with question: does bpf community
+>> require all libbpf users to use bpf/ prefix ? What should be our answer?
+>
+> The answer should be: Yes. When libbpf install the header files the are
+> installed under bpf/ prefix.  It is very confusing that samples and
+> selftests can include libbpf.h without this prefix. Even worse
+> including "bpf.h" pickup the libbpf version bpf/bpf.h, which have
+> caused confusion.  The only reason for the direct "libbpf.h" include is
+> historical, as there used-to-be a local file for that.
 
-It does? Hmm, that was not intentional (I was mostly focused on making
-sure a clean make worked, not the opposite). I'll see if I can't fix
-that as well...
+Agreed. Also, we are already telling people what the right include path
+is in at least two ways - and currently they are incompatible:
+
+- The pkg-config file included with libbpf has a notion of include path;
+  which does *not* include the bpf/ subdirectory.
+
+- The skeleton generator puts an '#include <libbpf.h>' line into the
+  generated files.
+
+With this series we'll at least be consistent.
+
+>> Require or recommend? If require.. what for? It works as-is. If recommen=
+d then
+>> why suddenly we're changing all files in selftests and samples?
+>> There is no good answer here. I think we should leave the things as-is.
+>
+> I strongly believe we should correct this.  It doesn't make sense that
+> someone copying out a sample or selftests, into a git-submodule libbpf
+> (or distro installed libbpf-devel) have to understand that they have to
+> update the include path for all the libbpf header files.
+
+Yeah, I think being clear and explicit about what is the recommended way
+to include libbpf is strictly an improvement. And making it possible to
+move example programs seamlessly in and out of the kernel tree will only
+make things easier for people.
+
+I'll rebase and respin this series on top of the revert (and fix
+Andrii's comments).
 
 -Toke
 
