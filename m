@@ -2,58 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 22989140AFE
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 14:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3783140AFD
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 14:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729009AbgAQNhP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1728773AbgAQNhP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Fri, 17 Jan 2020 08:37:15 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:33454 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727123AbgAQNgt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 17 Jan 2020 08:36:49 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:50286 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728767AbgAQNgu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Jan 2020 08:36:50 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579268208;
+        s=mimecast20190719; t=1579268209;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wv79wcIjCv8Dm7OR7RClFHC2xXjynjMMPfQf2Tr2Fo8=;
-        b=er9Pqp70w9+iuggJaTHZ0i5ZT5RJiSCaAy5hU15Fu87mFBs0Fg2ULEWgV+KOTiQsCnJfrq
-        ZUl6Xtf07bUAxpJseHP0ob8CjvFsZJKgRQiJPIV2q0LcdyMJN0lBejlIQ3Xwpn6JsOPQNd
-        d2cadOIizrTLWZwI9LmIkXpQWOH5NEc=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-101-ZkpvE2AzOAaxAH6qQZj1OA-1; Fri, 17 Jan 2020 08:36:47 -0500
-X-MC-Unique: ZkpvE2AzOAaxAH6qQZj1OA-1
-Received: by mail-lf1-f69.google.com with SMTP id z3so4363333lfq.22
+        bh=kZR8zX+ydWBbBu89eT3Dfy7pXd3GWbtA0n7Gp7hmhwM=;
+        b=OEvp8qa17BiG1p8jGUe5VCdM8CFwX5uYS26do52rFG/p2wzEhzvKCOkoXZepTpMA+ajcN9
+        1nOWSG5/FKD8wuUejEV7y8O5uTopXYF7/udjagszBzpXMyV8UIiCVvtq59C7gtGgVihuZh
+        mc42ijyYzlRd90mcnnWDIk4hGvEXW5I=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-12-9cEIDT7aN_WSL9rca5DJmg-1; Fri, 17 Jan 2020 08:36:48 -0500
+X-MC-Unique: 9cEIDT7aN_WSL9rca5DJmg-1
+Received: by mail-lf1-f72.google.com with SMTP id t3so4377286lfp.15
         for <linux-rdma@vger.kernel.org>; Fri, 17 Jan 2020 05:36:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
          :references:user-agent:mime-version:content-transfer-encoding;
-        bh=wv79wcIjCv8Dm7OR7RClFHC2xXjynjMMPfQf2Tr2Fo8=;
-        b=bxhkeNHXeyakKaHexpjb6N7aHz9nsUBTLHCl/JofRClxdFbTQpNEQVnLhZAfIVYwV1
-         Xmeh4eqghL6/Gbcfrv348kL0cDmsov1iHR8Alp2wqvn0WNdmKc3ffO1vOgiQQrZUQRrP
-         9OppKES5quKk+eLx0y1ohAMNDjLDWDgNJ6TpMxmE5WqVu9vs2xJW4ynm4lxpD4cKYGR0
-         FiraFt7fFwD/ndyu0yjJ6qafJH8vvtM7zZEQqcgTLrMe8VJDHOKxTzE1GLcKYeumIm1S
-         utiEo4lX9ws6TwnYks07GQqzLjLGd9rMv8BdnnMhQ1R4jieqxOkzNXKZcsnuq74LH0K6
-         nXWw==
-X-Gm-Message-State: APjAAAVn7T8oXua2vvQPnMA5ALPoNDGs7V91nHJH7vpilvTpEYnYOsyh
-        pwaP2t/B0LdAVZjE9mdpL8tSmhEfFBdcOHKM+uTc1+BGKkdNYTDxryxTvN3GU4P7fStP4O8yA1k
-        tNTqZYyYAhCvzYO75l4+mAQ==
-X-Received: by 2002:a2e:9e19:: with SMTP id e25mr5545330ljk.179.1579268205888;
-        Fri, 17 Jan 2020 05:36:45 -0800 (PST)
-X-Google-Smtp-Source: APXvYqx+BAh1u0UZBozZUEI40l4jdkp/WAtfAU2qRDLXhFZ8kBmh+b4qTR0WSYgozIIIktiUut6ypw==
-X-Received: by 2002:a2e:9e19:: with SMTP id e25mr5545314ljk.179.1579268205612;
-        Fri, 17 Jan 2020 05:36:45 -0800 (PST)
+        bh=kZR8zX+ydWBbBu89eT3Dfy7pXd3GWbtA0n7Gp7hmhwM=;
+        b=Jh/+6nTJK1IU6pAntEjoJuullG7Tlngz13y08dTJyzp5tNl+TpX2x2qKCYUpmto9ps
+         RCZIlmGjZF+Rm8D/7+zEH//RMwFqjZvS960xzIgxPB2v5P/Ws1UIbU52bgL5MblddWuG
+         YAc0l+mXay6AE8OaqlGbOU2AE0zaTKd9C5pYiPeZZpTmrdAW+m+J1eeYqCUju8dLxkn7
+         KE2n5+fgbe4thRyzmAgIufIzyCUMf+Eag1AoG+WrDArmodWWxnoGIp+b21TCqo/v9LJe
+         9VueaxXyPWb3LfDGtFKxA/l6Y3YQhBBvei4a/6HuNIX1xyHj4nxT5EOJpWeFK57QGd5R
+         iLPA==
+X-Gm-Message-State: APjAAAVlWjOKUkAiM4PJySfPh4yDd0nJc3MDN0IcF3L1iBT8F/WQWeT/
+        L6etCAg/ic1vciYpOHLKi2bbXTIYPyBPea/146JkUu/mEeOEsMJU2C0DSp0q4yRNSzg8llrAWp6
+        upQY38yJQ20ZNQAA2IYB2aA==
+X-Received: by 2002:a2e:548:: with SMTP id 69mr5667568ljf.67.1579268206512;
+        Fri, 17 Jan 2020 05:36:46 -0800 (PST)
+X-Google-Smtp-Source: APXvYqzQIWgc5FT4rMwZJg2UojEuLPhGl6YnWnw7UrIB2febpdvE/LkTz0PbsJPg+98VKBuAqWMejw==
+X-Received: by 2002:a2e:548:: with SMTP id 69mr5667551ljf.67.1579268206336;
+        Fri, 17 Jan 2020 05:36:46 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id b14sm12052204lff.68.2020.01.17.05.36.43
+        by smtp.gmail.com with ESMTPSA id h14sm12058134lfc.2.2020.01.17.05.36.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 05:36:44 -0800 (PST)
+        Fri, 17 Jan 2020 05:36:45 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 8547A1804D7; Fri, 17 Jan 2020 14:36:43 +0100 (CET)
-Subject: [PATCH bpf-next v4 06/10] bpftool: Use consistent include paths for
+        id 9A5EF1804D6; Fri, 17 Jan 2020 14:36:44 +0100 (CET)
+Subject: [PATCH bpf-next v4 07/10] perf: Use consistent include paths for
  libbpf
 From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Alexei Starovoitov <ast@kernel.org>
@@ -78,8 +77,8 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
         clang-built-linux@googlegroups.com
-Date:   Fri, 17 Jan 2020 14:36:43 +0100
-Message-ID: <157926820346.1555735.299604543718558729.stgit@toke.dk>
+Date:   Fri, 17 Jan 2020 14:36:44 +0100
+Message-ID: <157926820454.1555735.5332893006269327491.stgit@toke.dk>
 In-Reply-To: <157926819690.1555735.10756593211671752826.stgit@toke.dk>
 References: <157926819690.1555735.10756593211671752826.stgit@toke.dk>
 User-Agent: StGit/0.21
@@ -93,337 +92,90 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-Fix bpftool to include libbpf header files with the bpf/ prefix, to be
-consistent with external users of the library. Also ensure that all
-includes of exported libbpf header files (those that are exported on 'make
-install' of the library) use bracketed includes instead of quoted.
+Fix perf to include libbpf header files with the bpf/ prefix, to
+be consistent with external users of the library.
 
-To make sure no new files are introduced that doesn't include the bpf/
-prefix in its include, remove tools/lib/bpf from the include path entirely,
-and use tools/lib instead.
-
-Fixes: 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are taken from selftests dir")
 Acked-by: Andrii Nakryiko <andriin@fb.com>
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- tools/bpf/bpftool/Documentation/bpftool-gen.rst |    2 +-
- tools/bpf/bpftool/Makefile                      |    2 +-
- tools/bpf/bpftool/btf.c                         |    8 ++++----
- tools/bpf/bpftool/btf_dumper.c                  |    2 +-
- tools/bpf/bpftool/cgroup.c                      |    2 +-
- tools/bpf/bpftool/common.c                      |    4 ++--
- tools/bpf/bpftool/feature.c                     |    4 ++--
- tools/bpf/bpftool/gen.c                         |   10 +++++-----
- tools/bpf/bpftool/jit_disasm.c                  |    2 +-
- tools/bpf/bpftool/main.c                        |    4 ++--
- tools/bpf/bpftool/map.c                         |    4 ++--
- tools/bpf/bpftool/map_perf_ring.c               |    4 ++--
- tools/bpf/bpftool/net.c                         |    8 ++++----
- tools/bpf/bpftool/netlink_dumper.c              |    4 ++--
- tools/bpf/bpftool/perf.c                        |    2 +-
- tools/bpf/bpftool/prog.c                        |    6 +++---
- tools/bpf/bpftool/xlated_dumper.c               |    2 +-
- 17 files changed, 35 insertions(+), 35 deletions(-)
+ tools/perf/examples/bpf/5sec.c             |    2 +-
+ tools/perf/examples/bpf/empty.c            |    2 +-
+ tools/perf/examples/bpf/sys_enter_openat.c |    2 +-
+ tools/perf/include/bpf/pid_filter.h        |    2 +-
+ tools/perf/include/bpf/stdio.h             |    2 +-
+ tools/perf/include/bpf/unistd.h            |    2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-index 86a87da97d0b..94d91322895a 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-@@ -196,7 +196,7 @@ and global variables.
-   #define __EXAMPLE_SKEL_H__
+diff --git a/tools/perf/examples/bpf/5sec.c b/tools/perf/examples/bpf/5sec.c
+index b9c203219691..49f4f84da485 100644
+--- a/tools/perf/examples/bpf/5sec.c
++++ b/tools/perf/examples/bpf/5sec.c
+@@ -39,7 +39,7 @@
+    Copyright (C) 2018 Red Hat, Inc., Arnaldo Carvalho de Melo <acme@redhat.com>
+ */
  
-   #include <stdlib.h>
--  #include <libbpf.h>
-+  #include <bpf/libbpf.h>
- 
-   struct example {
-   	struct bpf_object_skeleton *skeleton;
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 39bc6f0f4f0b..c4e810335810 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -45,7 +45,7 @@ CFLAGS += -DPACKAGE='"bpftool"' -D__EXPORTED_HEADERS__ \
- 	-I$(srctree)/kernel/bpf/ \
- 	-I$(srctree)/tools/include \
- 	-I$(srctree)/tools/include/uapi \
--	-I$(srctree)/tools/lib/bpf \
-+	-I$(srctree)/tools/lib \
- 	-I$(srctree)/tools/perf
- CFLAGS += -DBPFTOOL_VERSION='"$(BPFTOOL_VERSION)"'
- ifneq ($(EXTRA_CFLAGS),)
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 60c75be0666d..4ba90d81b6a1 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -8,15 +8,15 @@
- #include <stdio.h>
- #include <string.h>
- #include <unistd.h>
 -#include <bpf.h>
--#include <libbpf.h>
 +#include <bpf/bpf.h>
-+#include <bpf/btf.h>
-+#include <bpf/libbpf.h>
- #include <linux/btf.h>
- #include <linux/hashtable.h>
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <unistd.h>
  
--#include "btf.h"
- #include "json_writer.h"
- #include "main.h"
+ int probe(hrtimer_nanosleep, rqtp->tv_sec)(void *ctx, int err, long sec)
+ {
+diff --git a/tools/perf/examples/bpf/empty.c b/tools/perf/examples/bpf/empty.c
+index 3776d26db9e7..7d7fb0c9fe76 100644
+--- a/tools/perf/examples/bpf/empty.c
++++ b/tools/perf/examples/bpf/empty.c
+@@ -1,3 +1,3 @@
+-#include <bpf.h>
++#include <bpf/bpf.h>
  
-@@ -532,7 +532,7 @@ static int do_dump(int argc, char **argv)
- 		if (IS_ERR(btf)) {
- 			err = PTR_ERR(btf);
- 			btf = NULL;
--			p_err("failed to load BTF from %s: %s", 
-+			p_err("failed to load BTF from %s: %s",
- 			      *argv, strerror(err));
- 			goto done;
- 		}
-diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
-index d66131f69689..eb4a142016a0 100644
---- a/tools/bpf/bpftool/btf_dumper.c
-+++ b/tools/bpf/bpftool/btf_dumper.c
-@@ -8,8 +8,8 @@
- #include <linux/bitops.h>
- #include <linux/btf.h>
- #include <linux/err.h>
-+#include <bpf/btf.h>
- 
--#include "btf.h"
- #include "json_writer.h"
- #include "main.h"
- 
-diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
-index 2f017caa678d..62c6a1d7cd18 100644
---- a/tools/bpf/bpftool/cgroup.c
-+++ b/tools/bpf/bpftool/cgroup.c
+ license(GPL);
+diff --git a/tools/perf/examples/bpf/sys_enter_openat.c b/tools/perf/examples/bpf/sys_enter_openat.c
+index 9cd124b09392..c4481c390d23 100644
+--- a/tools/perf/examples/bpf/sys_enter_openat.c
++++ b/tools/perf/examples/bpf/sys_enter_openat.c
 @@ -14,7 +14,7 @@
- #include <sys/types.h>
- #include <unistd.h>
- 
--#include <bpf.h>
-+#include <bpf/bpf.h>
- 
- #include "main.h"
- 
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index 88264abaa738..b75b8ec5469c 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -20,8 +20,8 @@
- #include <sys/stat.h>
- #include <sys/vfs.h>
- 
--#include <bpf.h>
--#include <libbpf.h> /* libbpf_num_possible_cpus */
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h> /* libbpf_num_possible_cpus */
- 
- #include "main.h"
- 
-diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-index 94735d968c34..446ba891f1e2 100644
---- a/tools/bpf/bpftool/feature.c
-+++ b/tools/bpf/bpftool/feature.c
-@@ -12,8 +12,8 @@
- #include <linux/filter.h>
- #include <linux/limits.h>
- 
--#include <bpf.h>
--#include <libbpf.h>
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
- #include <zlib.h>
- 
- #include "main.h"
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 7ce09a9a6999..f8113b3646f5 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -12,15 +12,15 @@
- #include <stdio.h>
- #include <string.h>
- #include <unistd.h>
--#include <bpf.h>
--#include <libbpf.h>
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <sys/mman.h>
- #include <unistd.h>
-+#include <bpf/btf.h>
- 
--#include "btf.h"
--#include "libbpf_internal.h"
-+#include "bpf/libbpf_internal.h"
- #include "json_writer.h"
- #include "main.h"
- 
-@@ -333,7 +333,7 @@ static int do_skeleton(int argc, char **argv)
- 		#define %2$s						    \n\
- 									    \n\
- 		#include <stdlib.h>					    \n\
--		#include <libbpf.h>					    \n\
-+		#include <bpf/libbpf.h>					    \n\
- 									    \n\
- 		struct %1$s {						    \n\
- 			struct bpf_object_skeleton *skeleton;		    \n\
-diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
-index bfed711258ce..f7f5885aa3ba 100644
---- a/tools/bpf/bpftool/jit_disasm.c
-+++ b/tools/bpf/bpftool/jit_disasm.c
-@@ -24,7 +24,7 @@
- #include <dis-asm.h>
- #include <sys/stat.h>
- #include <limits.h>
--#include <libbpf.h>
-+#include <bpf/libbpf.h>
- 
- #include "json_writer.h"
- #include "main.h"
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index 1fe91c558508..6d41bbfc6459 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -9,8 +9,8 @@
- #include <stdlib.h>
- #include <string.h>
- 
--#include <bpf.h>
--#include <libbpf.h>
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
- 
- #include "main.h"
- 
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index 86f8ab0b7e63..e6c85680b34d 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -15,9 +15,9 @@
- #include <sys/types.h>
- #include <sys/stat.h>
- 
--#include <bpf.h>
-+#include <bpf/bpf.h>
-+#include <bpf/btf.h>
- 
--#include "btf.h"
- #include "json_writer.h"
- #include "main.h"
- 
-diff --git a/tools/bpf/bpftool/map_perf_ring.c b/tools/bpf/bpftool/map_perf_ring.c
-index 4c5531d1a450..d9b29c17fbb8 100644
---- a/tools/bpf/bpftool/map_perf_ring.c
-+++ b/tools/bpf/bpftool/map_perf_ring.c
-@@ -6,7 +6,7 @@
+  * the return value.
   */
- #include <errno.h>
- #include <fcntl.h>
--#include <libbpf.h>
-+#include <bpf/libbpf.h>
- #include <poll.h>
- #include <signal.h>
- #include <stdbool.h>
-@@ -21,7 +21,7 @@
- #include <sys/mman.h>
- #include <sys/syscall.h>
- 
--#include <bpf.h>
-+#include <bpf/bpf.h>
- #include <perf-sys.h>
- 
- #include "main.h"
-diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
-index d93bee298e54..c5e3895b7c8b 100644
---- a/tools/bpf/bpftool/net.c
-+++ b/tools/bpf/bpftool/net.c
-@@ -7,7 +7,8 @@
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
--#include <libbpf.h>
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
- #include <net/if.h>
- #include <linux/if.h>
- #include <linux/rtnetlink.h>
-@@ -16,9 +17,8 @@
- #include <sys/stat.h>
- #include <sys/types.h>
- 
--#include <bpf.h>
--#include <nlattr.h>
--#include "libbpf_internal.h"
-+#include "bpf/nlattr.h"
-+#include "bpf/libbpf_internal.h"
- #include "main.h"
- #include "netlink_dumper.h"
- 
-diff --git a/tools/bpf/bpftool/netlink_dumper.c b/tools/bpf/bpftool/netlink_dumper.c
-index 550a0f537eed..5f65140b003b 100644
---- a/tools/bpf/bpftool/netlink_dumper.c
-+++ b/tools/bpf/bpftool/netlink_dumper.c
-@@ -3,11 +3,11 @@
- 
- #include <stdlib.h>
- #include <string.h>
--#include <libbpf.h>
-+#include <bpf/libbpf.h>
- #include <linux/rtnetlink.h>
- #include <linux/tc_act/tc_bpf.h>
- 
--#include <nlattr.h>
-+#include "bpf/nlattr.h"
- #include "main.h"
- #include "netlink_dumper.h"
- 
-diff --git a/tools/bpf/bpftool/perf.c b/tools/bpf/bpftool/perf.c
-index b2046f33e23f..3341aa14acda 100644
---- a/tools/bpf/bpftool/perf.c
-+++ b/tools/bpf/bpftool/perf.c
-@@ -13,7 +13,7 @@
- #include <unistd.h>
- #include <ftw.h>
  
 -#include <bpf.h>
 +#include <bpf/bpf.h>
  
- #include "main.h"
- 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 47a61ac42dc0..a3521deca869 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -17,9 +17,9 @@
- #include <linux/err.h>
- #include <linux/sizes.h>
+ struct syscall_enter_openat_args {
+ 	unsigned long long unused;
+diff --git a/tools/perf/include/bpf/pid_filter.h b/tools/perf/include/bpf/pid_filter.h
+index 6e61c4bdf548..607189a315b2 100644
+--- a/tools/perf/include/bpf/pid_filter.h
++++ b/tools/perf/include/bpf/pid_filter.h
+@@ -3,7 +3,7 @@
+ #ifndef _PERF_BPF_PID_FILTER_
+ #define _PERF_BPF_PID_FILTER_
  
 -#include <bpf.h>
--#include <btf.h>
--#include <libbpf.h>
 +#include <bpf/bpf.h>
-+#include <bpf/btf.h>
-+#include <bpf/libbpf.h>
  
- #include "cfg.h"
- #include "main.h"
-diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
-index 5b91ee65a080..8608cd68cdd0 100644
---- a/tools/bpf/bpftool/xlated_dumper.c
-+++ b/tools/bpf/bpftool/xlated_dumper.c
-@@ -7,7 +7,7 @@
- #include <stdlib.h>
- #include <string.h>
- #include <sys/types.h>
--#include <libbpf.h>
-+#include <bpf/libbpf.h>
+ #define pid_filter(name) pid_map(name, bool)
  
- #include "disasm.h"
- #include "json_writer.h"
+diff --git a/tools/perf/include/bpf/stdio.h b/tools/perf/include/bpf/stdio.h
+index 316af5b2ff35..7ca6fa5463ee 100644
+--- a/tools/perf/include/bpf/stdio.h
++++ b/tools/perf/include/bpf/stdio.h
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
+-#include <bpf.h>
++#include <bpf/bpf.h>
+ 
+ struct bpf_map SEC("maps") __bpf_stdout__ = {
+        .type = BPF_MAP_TYPE_PERF_EVENT_ARRAY,
+diff --git a/tools/perf/include/bpf/unistd.h b/tools/perf/include/bpf/unistd.h
+index ca7877f9a976..d1a35b6c649d 100644
+--- a/tools/perf/include/bpf/unistd.h
++++ b/tools/perf/include/bpf/unistd.h
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: LGPL-2.1
+ 
+-#include <bpf.h>
++#include <bpf/bpf.h>
+ 
+ static int (*bpf_get_current_pid_tgid)(void) = (void *)BPF_FUNC_get_current_pid_tgid;
+ 
 
