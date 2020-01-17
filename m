@@ -2,219 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD0E140CF4
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 15:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EAEE140E60
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jan 2020 16:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727007AbgAQOrK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Jan 2020 09:47:10 -0500
-Received: from mga04.intel.com ([192.55.52.120]:6947 "EHLO mga04.intel.com"
+        id S1729021AbgAQPzc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Jan 2020 10:55:32 -0500
+Received: from mga18.intel.com ([134.134.136.126]:43121 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726827AbgAQOrK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 17 Jan 2020 09:47:10 -0500
+        id S1727043AbgAQPzc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 17 Jan 2020 10:55:32 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Jan 2020 06:47:08 -0800
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Jan 2020 07:55:31 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.70,330,1574150400"; 
-   d="scan'208";a="227213121"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 17 Jan 2020 06:47:06 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1isStu-000BuO-CI; Fri, 17 Jan 2020 22:47:06 +0800
-Date:   Fri, 17 Jan 2020 22:46:06 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- eaad647e5cc27f7b46a27f3b85b14c4c8a64bffa
-Message-ID: <5e21c8ae.0+fFSAcWQ+irUhre%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="262689744"
+Received: from orsmsx107.amr.corp.intel.com ([10.22.240.5])
+  by fmsmga001.fm.intel.com with ESMTP; 17 Jan 2020 07:55:30 -0800
+Received: from orsmsx111.amr.corp.intel.com (10.22.240.12) by
+ ORSMSX107.amr.corp.intel.com (10.22.240.5) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 17 Jan 2020 07:55:30 -0800
+Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
+ ORSMSX111.amr.corp.intel.com (10.22.240.12) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 17 Jan 2020 07:55:30 -0800
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.50) by
+ edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS) id
+ 14.3.439.0; Fri, 17 Jan 2020 07:55:28 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Dj/4MiAKk6y6MVmuvZzzx/yW9o3Dsy2LeoZvaEE/VidTbk0vnCBojc91x+rUOeU187OwTzfCt0G40VKqxuJk9OxevGiGBDloHgb+diTWr1OHr3K3NbmUIXhHKabyt1RU4lwUS4FsS25dZcMpsHpFJQsFlhiTTiwi0am61FA5oxLNAScrgcptHIjV5vNXVoTZNbkSEub1JQbt4LEYSafrMyCspBMI6u0zTaHcBLwx5wDqr8LD7C8Zax1lkUuObuTeHh6Q787uwF8PJD8nIT2WJk8rAV4g9swRmz+4Vr3WN0ndjEoF2Ivj30a96iszz9TPEFJnjZHioIrsaLHCPx/hzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Zy1zplB+E5SrINAT+5AwIeT+rHrJGZBJwIL+qGNuyRc=;
+ b=VFbMFxWNX4N6VNZphWxVjlVfqyAKY5PfsSvAbgcL+avUrxyy/+aktqa6kRqGL6+QVwS2hj8sxrfZsw9N/+gH/xNodQgdxsj2e6G/DaCrmwwpX5IkNwzzL5oDmlX3KjZKZqAc8Xn0CFs5oSbZnaH2f9wX9gYjXLAIO8/NE78VtUcUaGRd5PPMJ9S9li9ov0RxLC2fR2np328/00jgQ1J2JSxzKdokLox7ldp+W29ELgI49BjHw6nRCsnoG71SEs4qTFJDv5y76OcBFxMDe2rFZG0/nsD67EEsn1ZS418DNhkGHEFbMKwYwJ+6+n28VIA1K9mqHJJDr56u8KXo/nE51w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Zy1zplB+E5SrINAT+5AwIeT+rHrJGZBJwIL+qGNuyRc=;
+ b=xMeejdXSSfODXoqQiC9qJTcfSSNMLFSf3bZRclHknbeouWqFxDfhqsFwMbV5VtrGSAHm7l3MPdVR7ebSRuPTSFG5k8tRnvIWOM9KTiy6SqYwuGURngDXvCxlHbr5tS+nc7FxI84JUrfD4gI0+EJcuxwiZBbBk1mzQ+9w5rkJAvU=
+Received: from MWHPR1101MB2271.namprd11.prod.outlook.com (10.174.97.23) by
+ MWHPR1101MB2141.namprd11.prod.outlook.com (10.174.96.23) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2644.23; Fri, 17 Jan 2020 15:55:27 +0000
+Received: from MWHPR1101MB2271.namprd11.prod.outlook.com
+ ([fe80::d551:b775:1efb:2ed4]) by MWHPR1101MB2271.namprd11.prod.outlook.com
+ ([fe80::d551:b775:1efb:2ed4%11]) with mapi id 15.20.2644.023; Fri, 17 Jan
+ 2020 15:55:27 +0000
+From:   "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+CC:     "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "'linux-rdma@vger.kernel.org'" <linux-rdma@vger.kernel.org>
+Subject: RE: Recent trace observed in target code during iSer testing
+Thread-Topic: Recent trace observed in target code during iSer testing
+Thread-Index: AdXEvi9yRk7s01oGS3qaCUi6aFPrnAAR+a+AAE5GdrABw8E5AA==
+Date:   Fri, 17 Jan 2020 15:55:27 +0000
+Message-ID: <MWHPR1101MB227156761E41FA7C47DAE5A486310@MWHPR1101MB2271.namprd11.prod.outlook.com>
+References: <MWHPR1101MB2271A83D246FAE4710E47BB2863C0@MWHPR1101MB2271.namprd11.prod.outlook.com>
+ <3b724797-275a-9a14-1503-1778780a5872@acm.org>
+ <MWHPR1101MB227100196B12AF2494BB184F863E0@MWHPR1101MB2271.namprd11.prod.outlook.com>
+In-Reply-To: <MWHPR1101MB227100196B12AF2494BB184F863E0@MWHPR1101MB2271.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=mike.marciniszyn@intel.com; 
+x-originating-ip: [192.55.52.215]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1498be94-131a-4511-4ecc-08d79b65abe2
+x-ms-traffictypediagnostic: MWHPR1101MB2141:
+x-microsoft-antispam-prvs: <MWHPR1101MB2141571875FD533FE28D2B1C86310@MWHPR1101MB2141.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 0285201563
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(39860400002)(396003)(136003)(376002)(346002)(189003)(199004)(26005)(5660300002)(52536014)(8936002)(186003)(966005)(71200400001)(6916009)(9686003)(316002)(66556008)(4744005)(2906002)(66476007)(478600001)(4326008)(76116006)(66946007)(64756008)(54906003)(6506007)(55016002)(66446008)(81166006)(33656002)(81156014)(8676002)(86362001)(7696005);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR1101MB2141;H:MWHPR1101MB2271.namprd11.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: a/2oaFMgoDqwQvNc01IelU6e+mQLJvBEFZc8dtDfn2FraAXRsM8lBluZiWTlTaf1HXHXW0oRMZ00YXQAXFoJn+zDQqd2WTjemNO7DnQahO5Hb4cmmfIn8GQKSfCcxG5yRxUiT7T4Ik1D5pscT9bv2p9CpGC21oWJ/EkA1apm09Fx4+cCizlm5mjqwzlTGvI1fX2wJt8Mj4nIO9xVb0dxJjCCcB+VTo43PVyZqv7jIZG/+O4JsmMMB4AU9G4wRNzE9XVwJ/TcCYUJzeT+M1aWamd8U3mArDAQWUl1Ne9Wr9267oXyp7zh0hUrCD5TPM5BqGT17Ri3RevED6ZahQKv8olMrivq+kWEgnGYA4gpl44jokP4CPKP5VPdWLUjwGnaBgTYzIo1zG8/ohIs2ewoI/OFEAKDBp2UfML1/SPRBvnb10xeQKBS8RvoxXuHvym1ckEujWnFcqG6RHE7j9SafthWdcigmHKei5/r3PE55dk=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1498be94-131a-4511-4ecc-08d79b65abe2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jan 2020 15:55:27.2172
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +D6SNM/G+Pg8vC7e0Lbi4ctcrqJEYAxj1XPICXCrKJMk3pvDzjDziuKC7apNKGlL7hqQvwe/vWg4dMLFA0ui5R9hUzwdnrKNmPUTdQ7nFPE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2141
+X-OriginatorOrg: intel.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
-branch HEAD: eaad647e5cc27f7b46a27f3b85b14c4c8a64bffa  IB/mlx4: Fix memory leak in add_gid error flow
-
-elapsed time: 709m
-
-configs tested: 164
-configs skipped: 0
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-nds32                               defconfig
-alpha                               defconfig
-csky                                defconfig
-nds32                             allnoconfig
-parisc                            allnoconfig
-parisc                            allyesonfig
-parisc                         b180_defconfig
-parisc                        c3000_defconfig
-parisc                              defconfig
-arc                  randconfig-a001-20200117
-arm                  randconfig-a001-20200117
-arm64                randconfig-a001-20200117
-ia64                 randconfig-a001-20200117
-powerpc              randconfig-a001-20200117
-sparc                randconfig-a001-20200117
-x86_64               randconfig-c001-20200117
-x86_64               randconfig-c002-20200117
-x86_64               randconfig-c003-20200117
-i386                 randconfig-c001-20200117
-i386                 randconfig-c002-20200117
-i386                 randconfig-c003-20200117
-um                                  defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-i386                             alldefconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-alpha                randconfig-a001-20200117
-m68k                 randconfig-a001-20200117
-mips                 randconfig-a001-20200117
-nds32                randconfig-a001-20200117
-parisc               randconfig-a001-20200117
-riscv                randconfig-a001-20200117
-csky                 randconfig-a001-20200117
-openrisc             randconfig-a001-20200117
-s390                 randconfig-a001-20200117
-sh                   randconfig-a001-20200117
-xtensa               randconfig-a001-20200117
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-x86_64               randconfig-e001-20200117
-x86_64               randconfig-e002-20200117
-x86_64               randconfig-e003-20200117
-i386                 randconfig-e001-20200117
-i386                 randconfig-e002-20200117
-i386                 randconfig-e003-20200117
-c6x                              allyesconfig
-c6x                        evmc6678_defconfig
-nios2                         10m50_defconfig
-nios2                         3c120_defconfig
-openrisc                    or1ksim_defconfig
-openrisc                 simple_smp_defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                               rhel-7.6
-i386                 randconfig-d002-20200117
-x86_64               randconfig-d002-20200117
-x86_64               randconfig-d003-20200117
-i386                 randconfig-d001-20200117
-i386                 randconfig-d003-20200117
-x86_64               randconfig-d001-20200117
-x86_64               randconfig-h001-20200117
-x86_64               randconfig-h002-20200117
-x86_64               randconfig-h003-20200117
-i386                 randconfig-h001-20200117
-i386                 randconfig-h002-20200117
-i386                 randconfig-h003-20200117
-x86_64               randconfig-g001-20200117
-x86_64               randconfig-g002-20200117
-x86_64               randconfig-g003-20200117
-i386                 randconfig-g001-20200117
-i386                 randconfig-g002-20200117
-i386                 randconfig-g003-20200117
-c6x                  randconfig-a001-20200117
-h8300                randconfig-a001-20200117
-microblaze           randconfig-a001-20200117
-nios2                randconfig-a001-20200117
-sparc64              randconfig-a001-20200117
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-x86_64               randconfig-f001-20200117
-x86_64               randconfig-f002-20200117
-x86_64               randconfig-f003-20200117
-i386                 randconfig-f001-20200117
-i386                 randconfig-f002-20200117
-i386                 randconfig-f003-20200117
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                              allnoconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-m68k                           sun3_defconfig
-s390                             alldefconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-x86_64               randconfig-a001-20200117
-x86_64               randconfig-a002-20200117
-x86_64               randconfig-a003-20200117
-i386                 randconfig-a001-20200117
-i386                 randconfig-a002-20200117
-i386                 randconfig-a003-20200117
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-arm                              allmodconfig
-arm64                            allmodconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                                defconfig
-x86_64               randconfig-b001-20200117
-x86_64               randconfig-b002-20200117
-x86_64               randconfig-b003-20200117
-i386                 randconfig-b001-20200117
-i386                 randconfig-b002-20200117
-i386                 randconfig-b003-20200117
-arm                               allnoconfig
-arm                              allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-
----
-0-DAY kernel test infrastructure                 Open Source Technology Center
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
+PiBTdWJqZWN0OiBSRTogUmVjZW50IHRyYWNlIG9ic2VydmVkIGluIHRhcmdldCBjb2RlIGR1cmlu
+ZyBpU2VyIHRlc3RpbmcNCj4gDQo+ID4NCj4gPiBBIGNhbmRpZGF0ZSBmaXggaGFzIGJlZW4gcG9z
+dGVkIGJ1dCBuZWVkcyByZXZpZXcgYW5kL29yIGEgVGVzdGVkLWJ5LiBTZWUNCj4gPiBhbHNvIGh0
+dHBzOi8vd3d3LnNwaW5pY3MubmV0L2xpc3RzL3RhcmdldC1kZXZlbC9tc2cxNzk4MS5odG1sLg0K
+PiA+DQo+ID4gVGhhbmtzLA0KPiA+DQo+ID4gQmFydC4NCj4gDQo+IEknbSB0ZXN0aW5nIHRoaXMg
+bm93Lg0KPiANCg0KSSBoYXZlIHRlc3RlZCB0aGlzIGNoYW5nZSBhbiBpdCBjZXJ0YWlubHkgZWxp
+bWluYXRlcyB0aGUgcGVyY3B1IG1lc3NhZ2UuDQoNCkhhdmUgeW91IHN1Ym1pdHRlZCBhIHBhdGNo
+PyAgSSBhY3R1YWxseSBleHRyYWN0ZWQgdGhlIHBhdGNoIGZyb20gdGhlIGVtYWlsIHRocmVhZC4N
+Cg0KV2hlbiB5b3UgZG8gZmVlbCBmcmVlIHRvIGFkZDoNClRlc3RlZC1ieTogTWlrZSBNYXJjaW5p
+c3p5biA8bWlrZS5tYXJjaW5pc3p5bkBpbnRlbC5jb20+DQoNCk1pa2UNCg0K
