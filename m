@@ -2,162 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26EF9141E9C
-	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jan 2020 15:48:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDC6141F6C
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jan 2020 19:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgASOsl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 19 Jan 2020 09:48:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726778AbgASOsl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 19 Jan 2020 09:48:41 -0500
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E632620684;
-        Sun, 19 Jan 2020 14:48:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579445320;
-        bh=h0OccMla/A1fPRNcbM4J8EJeEen0km861giS0yVbNuI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rHOkWOtNoq5tbL4H5TExYk084il/0c0utd3VT6ksbXowsGxLmpwKShrGhhoDNMMSZ
-         JfxTPNz2hGgpIk42pjtPEF+bnjKouRC58siY4z8GfF6VSGr+UsvSAef3AlGyEixDMB
-         f73x9BwdkjTbCn/N5qorfPt4RYbFMXhQuJywaZRk=
-Date:   Sun, 19 Jan 2020 16:48:37 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jack Wang <jinpuwang@gmail.com>
-Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
-        bvanassche@acm.org, dledford@redhat.com, jgg@ziepe.ca,
-        danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
-        rpenyaev@suse.de
-Subject: Re: [PATCH v7 04/25] RDMA/rtrs: core: lib functions shared between
- client and server modules
-Message-ID: <20200119144837.GE51881@unreal>
-References: <20200116125915.14815-1-jinpuwang@gmail.com>
- <20200116125915.14815-5-jinpuwang@gmail.com>
+        id S1728596AbgASSoW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 19 Jan 2020 13:44:22 -0500
+Received: from mail-il1-f193.google.com ([209.85.166.193]:42025 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728709AbgASSoU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 19 Jan 2020 13:44:20 -0500
+Received: by mail-il1-f193.google.com with SMTP id t2so25486938ilq.9
+        for <linux-rdma@vger.kernel.org>; Sun, 19 Jan 2020 10:44:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/o+CA7VDRA7UR3HGeT8+/tYzwEnOXwq5B8ZHP2/HeYc=;
+        b=MveYcniUJUB532f0dlOoihdmkjAHV60cDj8LBHI8M4h+3H+egt8ZCsWSnQoG7CEhld
+         h286H+k74rDzfRQOoY/f9M81WRQr88YRuubiH3HanhIDyXki4cyulA7bNdgdh/npcklQ
+         CvJo43u8PBPBkMgEH5HatRsI+u5tlB3wEJ1Th3FBUvpApZQxsvg7pL4HfvgLhjM/SAbt
+         Wln7BJPpvNYZtoiRQX3zkLZKrm4kgBMldFao5RktgQ8gLQFv0TsxI7xopop5Q61lnjsD
+         O+Nqof9tzp5qXVHsDImBQ0OOhN8D0ZvK4JC9Zw+KV08LpajVcASte5dFUKOIeqnCFHwC
+         Gp1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/o+CA7VDRA7UR3HGeT8+/tYzwEnOXwq5B8ZHP2/HeYc=;
+        b=hm0Q5tVB8MbPHEm0UVCAE3D1dy15SpYPbTrVe53OxbbZGqW2TDK8ME2vXL0YwzsVre
+         DYTBZ7jNmVIbp9XWnHVFsP5lc+QqwKwRGwvagANd93DcsqP3lEUwv2EjxIQ+PA7AqO4f
+         zHuySwDjxIOPaeL8O7HzOJFW1R5JMemucw/adUZvVZTly+Q/cESdrOM8v0QfOL8J20UI
+         /p7EhXgAn+AOW+IasaeS3Uk3jRjlBeNXoenqhKQTUqTvSbphy3AFftOfUomB5PHZlv71
+         b5sRf06ER/YATvFzDduYlaPUtdJvvtC8/OnwQwN9rI/ShdpJckQow21pM230v/8FVKoa
+         4vlQ==
+X-Gm-Message-State: APjAAAW2hbHjVSNi3j7uihLVUMWhvZ44MW5IXSp0AE5ymshtzXuwy19A
+        qcFQLNd5O0trE8kZUmU93UmdZpA1jaG5gjYnDd8=
+X-Google-Smtp-Source: APXvYqzrfoOpFYdPx6ke6uIX585SnMDBN6pXKvD7iN8x9MT//+KimK2aFC33ps3ZC6gjq3Pi1pIlacgfKiFCQZrpYZA=
+X-Received: by 2002:a92:d1c1:: with SMTP id u1mr7477573ilg.66.1579459459106;
+ Sun, 19 Jan 2020 10:44:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200116125915.14815-5-jinpuwang@gmail.com>
+Received: by 2002:a02:95c8:0:0:0:0:0 with HTTP; Sun, 19 Jan 2020 10:44:18
+ -0800 (PST)
+Reply-To: favordens@email.com
+From:   Favor Desmond <contecindy5@gmail.com>
+Date:   Sun, 19 Jan 2020 18:44:18 +0000
+Message-ID: <CAOfCPNxgSoAU_ns0j9jYL-ArKfcD=i8NkJvHsR4-OGvFBVDMZg@mail.gmail.com>
+Subject: HELLO
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 01:58:54PM +0100, Jack Wang wrote:
-> From: Jack Wang <jinpu.wang@cloud.ionos.com>
->
-> This is a set of library functions existing as a rtrs-core module,
-> used by client and server modules.
->
-> Mainly these functions wrap IB and RDMA calls and provide a bit higher
-> abstraction for implementing of RTRS protocol on client or server
-> sides.
->
-> Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> ---
->  drivers/infiniband/ulp/rtrs/rtrs.c | 597 +++++++++++++++++++++++++++++
->  1 file changed, 597 insertions(+)
->  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs.c
->
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
-> new file mode 100644
-> index 000000000000..7b84d76e2a67
-> --- /dev/null
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs.c
-> @@ -0,0 +1,597 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * RDMA Transport Layer
-> + *
-> + * Copyright (c) 2014 - 2018 ProfitBricks GmbH. All rights reserved.
-> + *
-> + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
-> + *
-> + * Copyright (c) 2019 - 2020 1&1 IONOS SE. All rights reserved.
-> + */
-> +#undef pr_fmt
-> +#define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
-> +
-> +#include <linux/module.h>
-> +#include <linux/inet.h>
-> +
-> +#include "rtrs-pri.h"
-> +#include "rtrs-log.h"
-> +
-> +MODULE_DESCRIPTION("RDMA Transport Core");
-> +MODULE_LICENSE("GPL");
-> +
-> +struct rtrs_iu *rtrs_iu_alloc(u32 queue_size, size_t size, gfp_t gfp_mask,
-> +			      struct ib_device *dma_dev,
-> +			      enum dma_data_direction dir,
-> +			      void (*done)(struct ib_cq *cq, struct ib_wc *wc))
-> +{
-> +	struct rtrs_iu *ius, *iu;
-> +	int i;
-> +
-> +	WARN_ON(!queue_size);
-> +	ius = kcalloc(queue_size, sizeof(*ius), gfp_mask);
-> +	if (unlikely(!ius))
-> +		return NULL;
-
-Let's do not add useless WARN_ON() and unlikely to every error path.
-
-> +	for (i = 0; i < queue_size; i++) {
-> +		iu = &ius[i];
-> +		iu->buf = kzalloc(size, gfp_mask);
-> +		if (unlikely(!iu->buf))
-> +			goto err;
-> +
-> +		iu->dma_addr = ib_dma_map_single(dma_dev, iu->buf, size, dir);
-> +		if (unlikely(ib_dma_mapping_error(dma_dev, iu->dma_addr)))
-> +			goto err;
-> +
-> +		iu->cqe.done  = done;
-> +		iu->size      = size;
-> +		iu->direction = dir;
-> +	}
-> +	return ius;
-> +err:
-> +	rtrs_iu_free(ius, dir, dma_dev, i);
-> +	return NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(rtrs_iu_alloc);
-> +
-> +void rtrs_iu_free(struct rtrs_iu *ius, enum dma_data_direction dir,
-> +		   struct ib_device *ibdev, u32 queue_size)
-> +{
-> +	struct rtrs_iu *iu;
-> +	int i;
-> +
-> +	if (!ius)
-> +		return;
-> +
-> +	for (i = 0; i < queue_size; i++) {
-> +		iu = &ius[i];
-> +		ib_dma_unmap_single(ibdev, iu->dma_addr, iu->size, dir);
-> +		kfree(iu->buf);
-> +	}
-> +	kfree(ius);
-> +}
-> +EXPORT_SYMBOL_GPL(rtrs_iu_free);
-> +
-> +int rtrs_iu_post_recv(struct rtrs_con *con, struct rtrs_iu *iu)
-> +{
-> +	struct rtrs_sess *sess = con->sess;
-> +	struct ib_recv_wr wr;
-> +	struct ib_sge list;
-> +
-> +	list.addr   = iu->dma_addr;
-> +	list.length = iu->size;
-> +	list.lkey   = sess->dev->ib_pd->local_dma_lkey;
-> +
-> +	if (WARN_ON(list.length == 0)) {
-> +		rtrs_wrn(con->sess,
-> +			  "Posting receive work request failed, sg list is empty\n");
-
-Both WARN_ON and warning message?
-
+Hello Dear
+Greetings to you,I am Favor Desmond from Ivory coast currently living
+in  Togo Republic,I would like to know you more, so that i can tell
+you little amount myself and my photo, email address is
+favordens@email.com
 Thanks
+Favor
