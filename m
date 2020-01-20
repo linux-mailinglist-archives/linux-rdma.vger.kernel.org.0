@@ -2,131 +2,199 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65ACC142F95
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jan 2020 17:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 114951430D6
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jan 2020 18:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgATQ14 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Jan 2020 11:27:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726876AbgATQ14 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 Jan 2020 11:27:56 -0500
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18C512087E;
-        Mon, 20 Jan 2020 16:27:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579537675;
-        bh=AwkSzdUX1bUUMB0pLCeBQjbfZ4On/A3AJphNLMDaB08=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KuQZRhMyS7pQpVXeN/OQg1E9kGVJrj0o/grIpTxYr29OsZoyL27smIx/sCXvyyYKx
-         YHHETxDdxv0doOyAAZsPaDrUQCyHkEHUQtEKFuADkSlwsN4WlMOVVM8Hk0WHAs60BL
-         kkhU+wsnN7im2OFnFo2xa/FDRyXgdgEeQFF/taJ8=
-Date:   Mon, 20 Jan 2020 18:27:51 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     =?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>
-Cc:     Yishai Hadas <yishaih@mellanox.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH for-rc] IB/mlx4: Fix leak in id_map_find_del
-Message-ID: <20200120162751.GJ51881@unreal>
-References: <20200117135622.836563-1-haakon.bugge@oracle.com>
- <20200120150635.GI51881@unreal>
- <71091F31-3206-4654-854B-B751F9A96BBC@oracle.com>
+        id S1726999AbgATRbD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Jan 2020 12:31:03 -0500
+Received: from mail-io1-f65.google.com ([209.85.166.65]:40675 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726642AbgATRbD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Jan 2020 12:31:03 -0500
+Received: by mail-io1-f65.google.com with SMTP id x1so34473375iop.7
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Jan 2020 09:31:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5BJlqX/66I069N73XeW4rXMR5CUG0kXb0Zp80KRIp8s=;
+        b=H5mbDOJRzQ/6FawqIuLtmdHU+itECK8icsEFW0dFD1reax9SYMryb5WeU+QLlGZdVf
+         5O6tdiyxf3J1dMLs94LV1qRw1w9dJTRMwF9NrRXRvB5ytDyqdyegKfLbCTNxWRBWkg0U
+         z3STG/YOghf7rBnW/uB0G8zEgthqwx4fI3fwFx+cshh3x93ViVBiouliRvl/U84iyOLd
+         +cL5TjgX4XMpWpCDxqFYm3SsBbe+wkZw3ignwncO8o/e13VjlUlXpzIpoQExYYIX9b0f
+         NzbtOOrb7uXpbdBYo3x+idibhKBuQ3W4YI/JbQIxXGoQFSTJSKvzyLOYIodbgqnkTj/A
+         iR/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5BJlqX/66I069N73XeW4rXMR5CUG0kXb0Zp80KRIp8s=;
+        b=sEjyMz4CfyMgQF1/WnLRgk7R3DsnErfVtdZ2M8fv7jllp0EnNxEWryQAqOvaFVMwGP
+         u8dvlmkhYp22CpXshsHmSgZUEV2wr6v5rdJ513H5Sn6PBQCvPwW67hXC4oapMjqXTMQS
+         tQEzznPRWmJHq787gu7euiqMMoprQ18y23CmKF/J6pDJdbAXkxbxe1KizWApE8uYdAmY
+         hYo4d2C89GdBom6Au5npk+bN9FtbFHbJiE88RBxtoaOZkUKYFlE6pMxEgcEATkF8U9w2
+         CQRfC2UJ7VCmsOCwZX8EKv5jwClSu7ficFQarS2jTud87kQhyQ6Cs8nG/RXsVDxwUrC3
+         VBCw==
+X-Gm-Message-State: APjAAAUPiJUhIGM3lqmCvKuR43wlyjRxbSfmTJ/PMrcyJOquz40Sky43
+        EmD0lghf8pXvJcWI76rgkhd0rrT/hMLvMtDJx5aijA==
+X-Google-Smtp-Source: APXvYqw4b3gNE0fb6oLmVNOv4q89TLRTdSh1RBhpPKd2v7CfGerBbMkxQHjvAGS+pzFIPDjZzblLxoIlRwZSOVYCWoA=
+X-Received: by 2002:a02:ca10:: with SMTP id i16mr132059jak.10.1579541462411;
+ Mon, 20 Jan 2020 09:31:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <71091F31-3206-4654-854B-B751F9A96BBC@oracle.com>
+References: <20200116125915.14815-1-jinpuwang@gmail.com> <20200116125915.14815-18-jinpuwang@gmail.com>
+ <20200120134815.GH51881@unreal>
+In-Reply-To: <20200120134815.GH51881@unreal>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Mon, 20 Jan 2020 18:30:51 +0100
+Message-ID: <CAMGffE=+wX2h6bSp+ZwTowWq8NOutVnCfXFqxMupZNCGGOh0sg@mail.gmail.com>
+Subject: Re: [PATCH v7 17/25] block/rnbd: client: main functionality
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Roman Penyaev <rpenyaev@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 20, 2020 at 04:49:56PM +0100, Håkon Bugge wrote:
+On Mon, Jan 20, 2020 at 2:48 PM Leon Romanovsky <leon@kernel.org> wrote:
 >
->
-> > On 20 Jan 2020, at 16:06, Leon Romanovsky <leon@kernel.org> wrote:
+> On Thu, Jan 16, 2020 at 01:59:07PM +0100, Jack Wang wrote:
+> > From: Jack Wang <jinpu.wang@cloud.ionos.com>
 > >
-> > On Fri, Jan 17, 2020 at 02:56:22PM +0100, Håkon Bugge wrote:
-> >> Using CX-3 virtual functions, either from a bare-metal machine or
-> >> pass-through from a VM, MAD packets are proxied through the PF driver.
-> >>
-> >> Since the VF drivers have separate name spaces for MAD Transaction Ids
-> >> (TIDs), the PF driver has to re-map the TIDs and keep the book keeping
-> >> in a cache.
-> >>
-> >> Following the RDMA Connection Manager (CM) protocol, it is clear when
-> >> an entry has to evicted from the cache. When a DREP is sent from
-> >> mlx4_ib_multiplex_cm_handler(), id_map_find_del() is called. Similar
-> >> when a REJ is received by the mlx4_ib_demux_cm_handler(),
-> >> id_map_find_del() is called.
-> >>
-> >> This function wipes out the TID in use from the IDR or XArray and
-> >> removes the id_map_entry from the table.
-> >>
-> >> In short, it does everything except the topping of the cake, which is
-> >> to remove the entry from the list and free it. In other words, for the
-> >> DREP and REJ cases enumerated above, both will leak one id_map_entry.
-> >>
-> >> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-> >> ---
-> >> drivers/infiniband/hw/mlx4/cm.c | 7 ++++++-
-> >> 1 file changed, 6 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/infiniband/hw/mlx4/cm.c b/drivers/infiniband/hw/mlx4/cm.c
-> >> index ecd6cadd529a..1df6d3ccfc62 100644
-> >> --- a/drivers/infiniband/hw/mlx4/cm.c
-> >> +++ b/drivers/infiniband/hw/mlx4/cm.c
-> >> @@ -197,8 +197,13 @@ static void id_map_find_del(struct ib_device *ibdev, int pv_cm_id)
-> >> 	if (!ent)
-> >> 		goto out;
-> >> 	found_ent = id_map_find_by_sl_id(ibdev, ent->slave_id, ent->sl_cm_id);
-> >> -	if (found_ent && found_ent == ent)
-> >> +	if (found_ent && found_ent == ent) {
-> >> 		rb_erase(&found_ent->node, sl_id_map);
-> >> +		if (!ent->scheduled_delete) {
+> > This is main functionality of rnbd-client module, which provides
+> > interface to map remote device as local block device /dev/rnbd<N>
+> > and feeds RTRS with IO requests.
 > >
-> > Why do we need to check scheduled_delete?
+> > Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
+> > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+> > ---
+> >  drivers/block/rnbd/rnbd-clt.c | 1730 +++++++++++++++++++++++++++++++++
+> >  1 file changed, 1730 insertions(+)
+> >  create mode 100644 drivers/block/rnbd/rnbd-clt.c
+> >
+> > diff --git a/drivers/block/rnbd/rnbd-clt.c b/drivers/block/rnbd/rnbd-clt.c
+> > new file mode 100644
+> > index 000000000000..7d8cb38d3969
+> > --- /dev/null
+> > +++ b/drivers/block/rnbd/rnbd-clt.c
+> > @@ -0,0 +1,1730 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * RDMA Network Block Driver
+> > + *
+> > + * Copyright (c) 2014 - 2018 ProfitBricks GmbH. All rights reserved.
+> > + *
+> > + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
+> > + *
+> > + * Copyright (c) 2019 - 2020 1&1 IONOS SE. All rights reserved.
+> > + */
+> > +
+> > +#undef pr_fmt
+> > +#define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
+> > +
+> > +#include <linux/module.h>
+> > +#include <linux/blkdev.h>
+> > +#include <linux/hdreg.h>
+> > +#include <linux/scatterlist.h>
+> > +#include <linux/idr.h>
+> > +
+> > +#include "rnbd-clt.h"
+> > +
+> > +MODULE_DESCRIPTION("RDMA Network Block Device Client");
+> > +MODULE_LICENSE("GPL");
+> > +
+> > +static int rnbd_client_major;
+> > +static DEFINE_IDA(index_ida);
+> > +static DEFINE_MUTEX(ida_lock);
+> > +static DEFINE_MUTEX(sess_lock);
+> > +static LIST_HEAD(sess_list);
+> > +
+> > +/*
+> > + * Maximum number of partitions an instance can have.
+> > + * 6 bits = 64 minors = 63 partitions (one minor is used for the device itself)
+> > + */
+> > +#define RNBD_PART_BITS               6
+> > +
+> > +static inline bool rnbd_clt_get_sess(struct rnbd_clt_session *sess)
+> > +{
+> > +     return refcount_inc_not_zero(&sess->refcount);
+> > +}
+> > +
+> > +static void free_sess(struct rnbd_clt_session *sess);
+> > +
+> > +static void rnbd_clt_put_sess(struct rnbd_clt_session *sess)
+> > +{
+> > +     might_sleep();
+> > +
+> > +     if (refcount_dec_and_test(&sess->refcount))
+> > +             free_sess(sess);
+> > +}
 >
-> 1. Node receives a DREQ and mlx4_ib_demux_cm_handler() is called, which again calls schedule_delayed(), which sets scheduled_delete.
->
-> 2. DREQ is proxied over to the VM, which replies with a DREP.
->
-> 3. The DREP is proxied over to the PF driver, mlx4_ib_multiplex_cm_handler() is called, id_map_find_del() is called. If it is freed now (without checking scheduled_delete), it will be a double free when the delayed work kicks in.
+> I see that this code is for drivers/block and maybe it is a way to do it
+> there, but in RDMA, we don't like abstraction of general and well-known
+> kernel APIs. It looks like kref to me.
+I can try to convert to kref interface if other guys also think it's necessary.
 
-It will be the case if we don't cancel delayed work inside
-id_map_find_del(), but it raises other question. Why do we need two
-identical delete functions? Can we convert id_map_find_del() callers
-to use id_map_ent_timeout() instead?
+>
+> > +
+> > +static inline bool rnbd_clt_dev_is_mapped(struct rnbd_clt_dev *dev)
+> > +{
+> > +     return dev->dev_state == DEV_STATE_MAPPED;
+> > +}
+> > +
+> > +static void rnbd_clt_put_dev(struct rnbd_clt_dev *dev)
+> > +{
+> > +     might_sleep();
+> > +
+> > +     if (refcount_dec_and_test(&dev->refcount)) {
+> > +             mutex_lock(&ida_lock);
+> > +             ida_simple_remove(&index_ida, dev->clt_device_id);
+> > +             mutex_unlock(&ida_lock);
+> > +             kfree(dev->hw_queues);
+> > +             rnbd_clt_put_sess(dev->sess);
+> > +             kfree(dev);
+> > +     }
+> > +}
+> > +
+> > +static inline bool rnbd_clt_get_dev(struct rnbd_clt_dev *dev)
+> > +{
+> > +     return refcount_inc_not_zero(&dev->refcount);
+> > +}
+> > +
+> > +static int rnbd_clt_set_dev_attr(struct rnbd_clt_dev *dev,
+> > +                              const struct rnbd_msg_open_rsp *rsp)
+> > +{
+> > +     struct rnbd_clt_session *sess = dev->sess;
+> > +
+> > +     if (unlikely(!rsp->logical_block_size))
+> > +             return -EINVAL;
+>
+> unlikely() again.
+will remove.
+
+snip
+> > +static void rnbd_put_iu(struct rnbd_clt_session *sess, struct rnbd_iu *iu)
+> > +{
+> > +     if (atomic_dec_and_test(&iu->refcount))
+> > +             rnbd_put_permit(sess, iu->permit);
+> > +}
+> > +
+> > +static void rnbd_softirq_done_fn(struct request *rq)
+> > +{
+> > +     struct rnbd_clt_dev *dev        = rq->rq_disk->private_data;
+> > +     struct rnbd_clt_session *sess   = dev->sess;a
+>
+> Please no vertical alignment in new code, it adds a lot of churn if such
+> line is changed later and creates difficulties for the backports.
+It does look nicer when it can be aligned. I don't get why backport is
+an argument here.
 
 Thanks
-
->
-> But this documents that the commit message is not accurate, it is only the REJ case that has a leak.
->
-> > Isn't this to mark call to timeout cleanup (id_map_ent_timeout), which
-> > can't race with id_map_find_del()? They both hold the same spinlock.
->
-> No race, but it can be set as per the above.
->
-> If you agree, I will send a v2 with corrected commit message.
->
->
-> Thxs, Håkon
->
->
-> >
-> > Thanks
-> >
-> >> +			list_del(&ent->list);
-> >> +			kfree(ent);
-> >> +		}
-> >> +	}
-> >> out:
-> >> 	spin_unlock(&sriov->id_map_lock);
-> >> }
-> >> --
-> >> 2.20.1
-> >>
->
