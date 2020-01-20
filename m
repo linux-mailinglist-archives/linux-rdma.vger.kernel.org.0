@@ -2,287 +2,160 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C4E14232E
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jan 2020 07:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F22C142444
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jan 2020 08:31:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726148AbgATGVI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Jan 2020 01:21:08 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:34650 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgATGVI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Jan 2020 01:21:08 -0500
-Received: by mail-qk1-f195.google.com with SMTP id j9so29127135qkk.1;
-        Sun, 19 Jan 2020 22:21:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HzgwQjk23FH9alWYUZE6q0CWsQkjBSTe2jUKbbfrMf8=;
-        b=CvqTeXhX9F6eVJZp+SYzLBQGk1j0R2KFNWPCi2rapCMh4k2e1ccT//93/BPrWl82y1
-         vGarXBJzdbATNWwv/w9OlWb+ZVhBtDiyan/veftuq9TC5NB1wKROhJDgjUBLx/V5dUZc
-         0Q9/RlS3HmjPLQPgJctAqVzZIicj/l8DEDtcVKSn7KnbOdwd+4jWGhZI6KbpxLNBXEmt
-         MQqnbeDlWSshcgQOKRHQ181Hhbj7+ZqVt6uq82LMofX5Nk20WVSmM99TD+NwzwTMgYLj
-         PJP0O6DGp9v8ZdizZZdoFOu7lAfFobH/Je2qQXRCAC2D2J7+d/WnDcDgQsOlve/gUbys
-         JpeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HzgwQjk23FH9alWYUZE6q0CWsQkjBSTe2jUKbbfrMf8=;
-        b=iJZ3V8n3haQHUpA4YYze4a8YBOFdIOHUlKDJKyVxoYJmkdcMtuCoS7X1fdznTK78b3
-         jRvZcasBZT1etMtzara6WS/l00uS+GXvAFyYBxQ502X99a3WQjekUvJqp1mb0nuP1w6A
-         LiDiLBitNS7QnNimpvOtU49BgiETGPuz8fcq4aclG9DJ74gGmdz2PXbNOwrP+4cLjDdk
-         FF3lKmAoCtbXO6iFFHsN6E9n/yUhVRCVjoufy89VNq7SlQnUKJ6DAHXn/tw2/aj45mj1
-         idigrvaFo+JgUxxllVVmgwjMpbl96+nTnSSK1PpfQCIu+mot217iWy8vV5W0xRNDZMZC
-         Lc7g==
-X-Gm-Message-State: APjAAAUTNUXCUQY6d9H4LkkfFZ66QqzD6+ooSQQ2Qa5X5wtikuKJ8vPz
-        Hb2RiJBwhwphHxhsAu5Lc++iSaUWmcmpHp6G/Cg=
-X-Google-Smtp-Source: APXvYqyf+AOg23rg7WeXYxqzp4r3mgJLIWtxn6tckbkEE2rtwGF9JOexPu3kHucfyEKTtHP4YPeGHwAWjvVI+3UbALs=
-X-Received: by 2002:a05:620a:5ae:: with SMTP id q14mr46460647qkq.437.1579501266863;
- Sun, 19 Jan 2020 22:21:06 -0800 (PST)
-MIME-Version: 1.0
-References: <157926819690.1555735.10756593211671752826.stgit@toke.dk> <157926820677.1555735.5437255599683298212.stgit@toke.dk>
-In-Reply-To: <157926820677.1555735.5437255599683298212.stgit@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sun, 19 Jan 2020 22:20:55 -0800
-Message-ID: <CAEf4Bzb9zUmhxTyYahJqySJzgfyB-zMEd+o4ybv=a8-t+iZS4w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 09/10] selftests: Remove tools/lib/bpf from
- include path
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        id S1726586AbgATHa4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Jan 2020 02:30:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726282AbgATHa4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 20 Jan 2020 02:30:56 -0500
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 34F0320684;
+        Mon, 20 Jan 2020 07:30:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579505454;
+        bh=QkXqYataShtv5Re4qL9AbP44cpqVaJtkXXP3hf4o0Zc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=zPidTaHSnvgnqAll1EEAUnFhOB5GW8k12cjrMW07cvev9hXP84vzbxR57rjTmucvn
+         m0XIZQ6D2UK6MTtjqYp8tiHZivCZj5hvwl8UijfOTkfBzBw/vZulT+yFmaqoKKM1rj
+         +mDHbH+Mzf01LF+iLvyVk9bJgji3i2y0nIeRVxoQ=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-rdma@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: [net-next, rdma-next] [pull request] Use ODP MRs for kernel ULPs
+Date:   Mon, 20 Jan 2020 09:30:46 +0200
+Message-Id: <20200120073046.75590-1-leon@kernel.org>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 5:43 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->
-> To make sure no new files are introduced that doesn't include the bpf/
-> prefix in its #include, remove tools/lib/bpf from the include path
-> entirely.
->
-> Instead, we introduce a new header files directory under the scratch tool=
-s/
-> dir, and add a rule to run the 'install_headers' rule from libbpf to have=
- a
-> full set of consistent libbpf headers in $(OUTPUT)/tools/include/bpf, and
-> then use $(OUTPUT)/tools/include as the include path for selftests.
->
-> For consistency we also make sure we put all the scratch build files from
-> other bpftool and libbpf into tools/build/, so everything stays within
-> selftests/.
->
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  tools/testing/selftests/bpf/.gitignore |    2 +
->  tools/testing/selftests/bpf/Makefile   |   49 +++++++++++++++++++++-----=
-------
->  2 files changed, 33 insertions(+), 18 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
-ests/bpf/.gitignore
-> index 1d14e3ab70be..8c9eac626996 100644
-> --- a/tools/testing/selftests/bpf/.gitignore
-> +++ b/tools/testing/selftests/bpf/.gitignore
-> @@ -39,4 +39,4 @@ test_cpp
->  /no_alu32
->  /bpf_gcc
->  /tools
-> -bpf_helper_defs.h
+From: Leon Romanovsky <leonro@mellanox.com>
 
-can you please also drop libbpf.pc and libbpf.so.* rules from .gitignore?
+Hi David, Jakub, Doug and Jason
 
-> +
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index 858d4e3369ad..ac0292a82fdc 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -20,8 +20,8 @@ CLANG         ?=3D clang
->  LLC            ?=3D llc
->  LLVM_OBJCOPY   ?=3D llvm-objcopy
->  BPF_GCC                ?=3D $(shell command -v bpf-gcc;)
-> -CFLAGS +=3D -g -Wall -O2 $(GENFLAGS) -I$(CURDIR) -I$(APIDIR) -I$(LIBDIR)=
-  \
-> -         -I$(BPFDIR) -I$(GENDIR) -I$(TOOLSINCDIR)                      \
-> +CFLAGS +=3D -g -Wall -O2 $(GENFLAGS) -I$(CURDIR) -I$(APIDIR)            =
-  \
+This is pull request to previously posted and reviewed series [1] which touches
+RDMA and netdev subsystems. RDMA part was approved for inclusion by Jason [2]
+and RDS patches were acked by Santosh [3].
 
-extra space here
+For your convenience, the series is based on clean v5.5-rc6 tag and applies
+cleanly to both subsystems.
 
-> +         -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR) -I$(TOOLSINCDIR)     \
->           -Dbpf_prog_load=3Dbpf_prog_test_load                           =
- \
->           -Dbpf_load_program=3Dbpf_test_load_program
->  LDLIBS +=3D -lcap -lelf -lz -lrt -lpthread
-> @@ -97,11 +97,15 @@ OVERRIDE_TARGETS :=3D 1
->  override define CLEAN
->         $(call msg,CLEAN)
->         $(RM) -r $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_=
-FILES) $(EXTRA_CLEAN)
-> -       $(MAKE) -C $(BPFDIR) OUTPUT=3D$(OUTPUT)/ clean
->  endef
->
->  include ../lib.mk
->
-> +SCRATCH_DIR :=3D $(OUTPUT)/tools
-> +BUILD_DIR :=3D $(SCRATCH_DIR)/build
-> +INCLUDE_DIR :=3D $(SCRATCH_DIR)/include
-> +INCLUDE_BPF :=3D $(INCLUDE_DIR)/bpf
-> +
->  # Define simple and short `make test_progs`, `make test_sysctl`, etc tar=
-gets
->  # to build individual tests.
->  # NOTE: Semicolon at the end is critical to override lib.mk's default st=
-atic
-> @@ -120,7 +124,7 @@ $(OUTPUT)/urandom_read: urandom_read.c
->         $(call msg,BINARY,,$@)
->         $(CC) -o $@ $< -Wl,--build-id
->
-> -$(OUTPUT)/test_stub.o: test_stub.c
-> +$(OUTPUT)/test_stub.o: test_stub.c $(INCLUDE_BPF)
->         $(call msg,CC,,$@)
->         $(CC) -c $(CFLAGS) -o $@ $<
->
-> @@ -133,7 +137,7 @@ $(OUTPUT)/runqslower: force
->         $(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower     \
->                     OUTPUT=3D$(OUTPUT)/tools/ VMLINUX_BTF=3D$(VMLINUX_BTF=
-)
->
-> -BPFOBJ :=3D $(OUTPUT)/libbpf.a
-> +BPFOBJ :=3D $(BUILD_DIR)/libbpf/libbpf.a
->
->  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(OUTPUT)/test_stub.o $(BP=
-FOBJ)
->
-> @@ -159,17 +163,28 @@ force:
->  DEFAULT_BPFTOOL :=3D $(OUTPUT)/tools/sbin/bpftool
->  BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
->
-> -$(DEFAULT_BPFTOOL): force
-> -       $(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)                  =
-     \
-> +$(BUILD_DIR)/libbpf $(BUILD_DIR)/bpftool $(INCLUDE_DIR):
-> +       $(call msg,MKDIR,,$@)
-> +       mkdir -p $@
-> +
-> +$(DEFAULT_BPFTOOL): force | $(BUILD_DIR)/bpftool
-> +       $(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)         \
+Please pull and let me know if there's any problem. I'm very rare doing PRs
+and sorry in advance if something is not as expected.
 
-slash alignment
+[1] https://lore.kernel.org/linux-rdma/20200115124340.79108-1-leon@kernel.org
+[2] https://lore.kernel.org/linux-rdma/20200117141232.GX20978@mellanox.com
+[3] https://lore.kernel.org/linux-rdma/3c479d8a-f98a-a4c9-bd85-6332e919bf35@oracle.com
 
+----------------------------------------------------------------
+The following series extends MR creation routines to allow creation of
+user MRs through kernel ULPs as a proxy. The immediate use case is to
+allow RDS to work over FS-DAX, which requires ODP (on-demand-paging)
+MRs to be created and such MRs were not possible to create prior this
+series.
 
-> +                   OUTPUT=3D$(BUILD_DIR)/bpftool/                       =
- \
->                     prefix=3D DESTDIR=3D$(OUTPUT)/tools/ install
->
-> -$(BPFOBJ): force
-> -       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=3D$(OUTPUT)/
-> +$(BPFOBJ): force | $(BUILD_DIR)/libbpf
-> +       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) \
-> +               OUTPUT=3D$(BUILD_DIR)/libbpf/
-> +
-> +$(INCLUDE_BPF): $(BPFOBJ) | $(INCLUDE_DIR)
-> +       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) install_headers \
-> +               OUTPUT=3D$(BUILD_DIR)/libbpf/ DESTDIR=3D$(SCRATCH_DIR) pr=
-efix=3D
-> +
-> +BPF_HELPERS :=3D $(or $(wildcard $(INCLUDE_BPF)/bpf_*.h),$(INCLUDE_BPF))
-> +ifneq ($(BPF_HELPERS),$(INCLUDE_BPF))
-> +$(BPF_HELPERS): $(INCLUDE_BPF)
-> +endif
->
-> -BPF_HELPERS :=3D $(OUTPUT)/bpf_helper_defs.h $(wildcard $(BPFDIR)/bpf_*.=
-h)
-> -$(OUTPUT)/bpf_helper_defs.h: $(BPFOBJ)
-> -       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR)                       =
-     \
-> -                   OUTPUT=3D$(OUTPUT)/ $(OUTPUT)/bpf_helper_defs.h
->
+The first part of this patchset extends RDMA to have special verb
+ib_reg_user_mr(). The common use case that uses this function is a
+userspace application that allocates memory for HCA access but the
+responsibility to register the memory at the HCA is on an kernel ULP.
+This ULP acts as an agent for the userspace application.
 
-I really-really didn't like this alternating dependency on directory
-or a set of file, depending on current state of those temporary
-directories. Then also this ugly check to avoid circular dependency.
-All that seemed wrong. So I played a bit with how to achieve the same
-differently, and here's what I came up with, which I like a bit
-better. What do you think?
+The second part provides advise MR functionality for ULPs. This is
+integral part of ODP flows and used to trigger pagefaults in advance
+to prepare memory before running working set.
 
-$(BPFOBJ): $(wildcard $(BPFDIR)/*.c $(BPFDIR)/*.h $(BPFDIR)/Makefile)      =
-    \
-           ../../../include/uapi/linux/bpf.h                               =
-    \
-           | $(INCLUDE_DIR) $(BUILD_DIR)/libbpf
-        $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=3D$(BUILD_DIR)/li=
-bbpf/ \
-                    DESTDIR=3D$(SCRATCH_DIR) prefix=3D all install_headers
+The third part is actual user of those in-kernel APIs.
 
-So, essentially, just make sure that we install local copies of
-headers whenever libbpf.a needs to be re-built.
-../../../include/uapi/linux/bpf.h ensures we don't miss uapi header
-changes as well. Now anything that uses libbpf headers will need to
-depend on $(BPFOBJ) and will automatically get up-to-date local copies
-of headers.
+Thanks
+----------------------------------------------------------------
+The following changes since commit b3a987b0264d3ddbb24293ebff10eddfc472f653:
 
-This seems much simpler. Please give it a try, thanks!
+  Linux 5.5-rc6 (2020-01-12 16:55:08 -0800)
 
->  # Get Clang's default includes on this system, as opposed to those seen =
-by
->  # '-target bpf'. This fixes "missing" files on some architectures/distro=
-s,
-> @@ -189,8 +204,8 @@ MENDIAN=3D$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-m=
-big-endian)
->
->  CLANG_SYS_INCLUDES =3D $(call get_sys_includes,$(CLANG))
->  BPF_CFLAGS =3D -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)                 =
- \
-> -            -I$(OUTPUT) -I$(CURDIR) -I$(CURDIR)/include/uapi           \
-> -            -I$(APIDIR) -I$(LIBDIR) -I$(BPFDIR) -I$(abspath $(OUTPUT)/..=
-/usr/include)
-> +            -I$(INCLUDE_DIR) -I$(CURDIR) -I$(CURDIR)/include/uapi      \
-> +            -I$(APIDIR) -I$(abspath $(OUTPUT)/../usr/include)
->
->  CLANG_CFLAGS =3D $(CLANG_SYS_INCLUDES) \
->                -Wno-compare-distinct-pointer-types
-> @@ -392,7 +407,7 @@ $(OUTPUT)/test_cpp: test_cpp.cpp $(OUTPUT)/test_core_=
-extern.skel.h $(BPFOBJ)
->         $(call msg,CXX,,$@)
->         $(CXX) $(CFLAGS) $^ $(LDLIBS) -o $@
->
-> -EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS)                                   =
- \
-> +EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR)                    =
- \
->         prog_tests/tests.h map_tests/tests.h verifier/tests.h           \
->         feature                                                         \
-> -       $(addprefix $(OUTPUT)/,*.o *.skel.h no_alu32 bpf_gcc tools)
-> +       $(addprefix $(OUTPUT)/,*.o *.skel.h no_alu32 bpf_gcc)
->
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/leon/linux-rdma.git tags/rds-odp-for-5.5
+
+for you to fetch changes up to b2dfc6765e45a3154800333234e4952b5412d792:
+
+  net/rds: Use prefetch for On-Demand-Paging MR (2020-01-18 11:48:19 +0200)
+
+----------------------------------------------------------------
+Hans Westgaard Ry (3):
+      net/rds: Detect need of On-Demand-Paging memory registration
+      net/rds: Handle ODP mr registration/unregistration
+      net/rds: Use prefetch for On-Demand-Paging MR
+
+Jason Gunthorpe (1):
+      RDMA/mlx5: Fix handling of IOVA != user_va in ODP paths
+
+Leon Romanovsky (1):
+      RDMA/mlx5: Don't fake udata for kernel path
+
+Moni Shoua (5):
+      IB: Allow calls to ib_umem_get from kernel ULPs
+      IB/core: Introduce ib_reg_user_mr
+      IB/core: Add interface to advise_mr for kernel users
+      IB/mlx5: Add ODP WQE handlers for kernel QPs
+      IB/mlx5: Mask out unsupported ODP capabilities for kernel QPs
+
+ drivers/infiniband/core/umem.c                |  27 ++---
+ drivers/infiniband/core/umem_odp.c            |  29 ++---
+ drivers/infiniband/core/verbs.c               |  41 +++++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c      |  12 +-
+ drivers/infiniband/hw/cxgb4/mem.c             |   2 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |   4 +-
+ drivers/infiniband/hw/hns/hns_roce_cq.c       |   2 +-
+ drivers/infiniband/hw/hns/hns_roce_db.c       |   3 +-
+ drivers/infiniband/hw/hns/hns_roce_mr.c       |   4 +-
+ drivers/infiniband/hw/hns/hns_roce_qp.c       |   2 +-
+ drivers/infiniband/hw/hns/hns_roce_srq.c      |   5 +-
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c     |   5 +-
+ drivers/infiniband/hw/mlx4/cq.c               |   2 +-
+ drivers/infiniband/hw/mlx4/doorbell.c         |   3 +-
+ drivers/infiniband/hw/mlx4/mr.c               |   8 +-
+ drivers/infiniband/hw/mlx4/qp.c               |   5 +-
+ drivers/infiniband/hw/mlx4/srq.c              |   3 +-
+ drivers/infiniband/hw/mlx5/cq.c               |   6 +-
+ drivers/infiniband/hw/mlx5/devx.c             |   2 +-
+ drivers/infiniband/hw/mlx5/doorbell.c         |   3 +-
+ drivers/infiniband/hw/mlx5/main.c             |  51 +++++---
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  12 +-
+ drivers/infiniband/hw/mlx5/mr.c               |  20 +--
+ drivers/infiniband/hw/mlx5/odp.c              |  33 +++--
+ drivers/infiniband/hw/mlx5/qp.c               | 167 +++++++++++++++++---------
+ drivers/infiniband/hw/mlx5/srq.c              |   2 +-
+ drivers/infiniband/hw/mthca/mthca_provider.c  |   2 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   |   2 +-
+ drivers/infiniband/hw/qedr/verbs.c            |   9 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_cq.c  |   2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c  |   2 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c  |   7 +-
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_srq.c |   2 +-
+ drivers/infiniband/sw/rdmavt/mr.c             |   2 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c            |   2 +-
+ include/rdma/ib_umem.h                        |   4 +-
+ include/rdma/ib_umem_odp.h                    |   6 +-
+ include/rdma/ib_verbs.h                       |   9 ++
+ net/rds/ib.c                                  |   7 ++
+ net/rds/ib.h                                  |   3 +-
+ net/rds/ib_mr.h                               |   7 +-
+ net/rds/ib_rdma.c                             |  84 ++++++++++++-
+ net/rds/ib_send.c                             |  44 +++++--
+ net/rds/rdma.c                                | 157 ++++++++++++++++++------
+ net/rds/rds.h                                 |  13 +-
+ 45 files changed, 561 insertions(+), 256 deletions(-)
