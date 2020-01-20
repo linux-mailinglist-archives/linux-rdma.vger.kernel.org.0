@@ -2,54 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 074A714292B
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jan 2020 12:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0066142989
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jan 2020 12:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgATLYc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Jan 2020 06:24:32 -0500
-Received: from mail-il1-f194.google.com ([209.85.166.194]:44215 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726761AbgATLYc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Jan 2020 06:24:32 -0500
-Received: by mail-il1-f194.google.com with SMTP id z12so26931609iln.11
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Jan 2020 03:24:32 -0800 (PST)
+        id S1726780AbgATLcM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Jan 2020 06:32:12 -0500
+Received: from mail-io1-f66.google.com ([209.85.166.66]:44728 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726590AbgATLcM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Jan 2020 06:32:12 -0500
+Received: by mail-io1-f66.google.com with SMTP id b10so33274460iof.11
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Jan 2020 03:32:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Vs6pynO+HWeCj8gwa5J0byk24CKYRIcbvcXdDxDoQOU=;
-        b=IzryOyecmOiKS1L17ZlRAtgFcWh+McCMRGG0hKhYWKt6aulCK3I53QYhf7h334gtYp
-         10YxTBBENVPLPQK98XC8gBphHsnPWju4UKbKCORfhFReIvAtEfeK589pbyNtXkw+X1k3
-         a6ZlrkNAYmtsS8ceo0jsmUaDQnoFELi7Dhj9koYikTLHDjTAM3KwWTxUCAtCje40Aaw4
-         f7HIois+d+4KM+iCDAH/e+GpsT9WJlOAQ3MuVZ7rPffIvv+EJQqBB31J8ouJp5ktjhRq
-         /rpUWZ3nycjzDv3QtepjixydGPxhKBdn/Crh0HJ6Ta5g8GXaGbCT/O/jAyGjvFDi08Al
-         yUvg==
+        bh=LvhdpSXRpfe3Tetzh+0PU81W5rIzDVJF+3Q3HmAYESs=;
+        b=UouYXcfEWnBprE0lR++rj9du4ce1toRprvXq1ADbbVZhrgdT8jpYX8VY1tozxhNdzl
+         PkU7UrY/JPzeerqL+BReo9axFdXeh946JeRIWOmrW2/QftRIN0e2N2QUj0gQoZYQ4rO3
+         ZKNz/oYFi3erTpe1agW3bZfCbXyaIMRtQYU154D9PEUlfc7aJWzt4OSzgwGo5opVM20J
+         wI7HP8xkVQ8QAaQ7sUa11wXuXzPILpNpbDGbzJGSecf3sr1GIZvsHHX2TSLMqGF/pfVA
+         9/aJ2pYetajFsMuuvaOfDXV0a/nyonG7TbkIqy/pThCRnFa0NXh347ekwMMxlYhaTJCB
+         K4Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Vs6pynO+HWeCj8gwa5J0byk24CKYRIcbvcXdDxDoQOU=;
-        b=arES3HUqDvHmPyvIZ60Svn+qPbd9L2qIEaedYhKyJHodvlcN4ZJ7vMuyK8Bzxxhg+d
-         OKLYsEh3Zt6FgU5sIRFyXEzklOr2fFhJfkAoWH/31/3fj6dH6NpM+V2iHePsTEbL0fQM
-         en2Dd48AhIJC/2ksAoBuKYNAcwOxDksSD0B5YcRP7b/GK0qfwltZSiJVxDhc73BBqyh+
-         JQBBfI3TG2cdriPfvnQm00EqoALemPZHkqC0/aPhGEHqzt+bnalvshRLsG0hbXEcOqT8
-         KGCbgwjZ9eaqOdZ9JV3ZG9vse4hb5DrzXMQyO4tFtGjsYw2Si88DerzWDiPT8SJaC5YH
-         /9FA==
-X-Gm-Message-State: APjAAAUNSV4oOlTKNKcULFYZiGi6vqecSHdm1BEBC2s0Zv3W/TE5zo4f
-        Hc/OsgPmGZXf0qXwgPi+bBwT5H/2jyXKrkolZ/5fGw==
-X-Google-Smtp-Source: APXvYqy3UjtyjVjRWo2MnXNUkl6Ug2wzh0ecd2Ts/Hc2mMHoTNWBDdJT9qPzJoKuzv9EZnBnJvDf3W/fOumtkV9usC8=
-X-Received: by 2002:a92:8d88:: with SMTP id w8mr10628788ill.71.1579519471918;
- Mon, 20 Jan 2020 03:24:31 -0800 (PST)
+        bh=LvhdpSXRpfe3Tetzh+0PU81W5rIzDVJF+3Q3HmAYESs=;
+        b=S8cE/8OkalNVNkOftu0RHsSpJ84EfHiFWkvEwo5LeMGKIGsnoHsA4nMs5/mwg9XxWI
+         TG5SzoDXF/wUUFbfDStciqmz599tCYcrRE6H8TlAi8tVqbC3aeFT5rhdA4fzzuwTYf2G
+         DV69kzNA4CTu3xsbVHMusSOyG1wYAPN8IPWX/HXLX9gYtq0xdqCUZLYtR1WDw2MoYaSd
+         IyK5grRjJ14IdO608Uj3M4aY0ZkC9j4DMYINmmNsrIWLltZXLcX+ISfFgozbuuxcbYyC
+         N8SlHKKzWVu+ms89zZ5EHFtVCQt4ryeEqbOdtH8cTczbZ8n/edCg2fWDI+t9FOgtoRWP
+         dTmA==
+X-Gm-Message-State: APjAAAUonLByjZ/AVNOOmwlb8GIhBxiuTnhhUVZU98f5gNZjcjRkiiqy
+        c9e/b5Uag92XxTf7ngvxTWkNwAetMJTzV+KarLJeE9RGupA=
+X-Google-Smtp-Source: APXvYqyuJjvG8S6U/YyjaUlduhHUrOekfeqV6sXGo2GygPj8RDxcaw8Bv2EvuVbFnctQGuOvuDMVmOVZw1aAeT6M65Q=
+X-Received: by 2002:a6b:6e02:: with SMTP id d2mr42320440ioh.22.1579519931617;
+ Mon, 20 Jan 2020 03:32:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20200116125915.14815-1-jinpuwang@gmail.com> <20200116125915.14815-7-jinpuwang@gmail.com>
- <20200116145300.GC12433@unreal> <CAMGffE=pym8iz4OVxx7s6i37AU+KPFN3AeVrCTOpLx+N8A9dEQ@mail.gmail.com>
- <20200116155800.GA18467@unreal> <CAMGffEkLHNPJ3feWhX0vnjr3hasVp3=+Z76wO3-07s9+Te=7Pw@mail.gmail.com>
- <20200118101254.GD18467@unreal>
-In-Reply-To: <20200118101254.GD18467@unreal>
+References: <20200116125915.14815-1-jinpuwang@gmail.com> <20200116125915.14815-5-jinpuwang@gmail.com>
+ <20200119144837.GE51881@unreal>
+In-Reply-To: <20200119144837.GE51881@unreal>
 From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Mon, 20 Jan 2020 12:24:21 +0100
-Message-ID: <CAMGffE=22zvvOFJpzyJPOLQFwA+9oMoxZSj=FAZV6RBonwJaEA@mail.gmail.com>
-Subject: Re: [PATCH v7 06/25] RDMA/rtrs: client: main functionality
+Date:   Mon, 20 Jan 2020 12:32:00 +0100
+Message-ID: <CAMGffEn-_hbuXBSp=xV+uZa3ZJ21PNvCuedVLHKUPLf+QxbL7w@mail.gmail.com>
+Subject: Re: [PATCH v7 04/25] RDMA/rtrs: core: lib functions shared between
+ client and server modules
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
@@ -66,38 +65,85 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> > > > > > +static bool __rtrs_clt_change_state(struct rtrs_clt_sess *sess,
-> > > > > > +                                  enum rtrs_clt_state new_state)
-> > > > > > +{
-> > > > > > +     enum rtrs_clt_state old_state;
-> > > > > > +     bool changed = false;
-> > > > > > +
-> > > > > > +     lockdep_assert_held(&sess->state_wq.lock);
-> > > > > > +
-> > > > > > +     old_state = sess->state;
-> > > > > > +     switch (new_state) {
-> > > > > > +     case RTRS_CLT_CONNECTING:
-> > > > > > +             switch (old_state) {
-> > > > >
-> > > > > Double switch is better to be avoided.
-> > > > what's the better way to do it?
-> > >
-> > > Rewrite function to be more readable.
-> > Frankly I think it's easy to read, depends on old_state change to new state.
-> > see also scsi_device_set_state
+On Sun, Jan 19, 2020 at 3:48 PM Leon Romanovsky <leon@kernel.org> wrote:
 >
-> If you so in favor of switch inside switch, at lest do it properly.
+> On Thu, Jan 16, 2020 at 01:58:54PM +0100, Jack Wang wrote:
+> > From: Jack Wang <jinpu.wang@cloud.ionos.com>
+> >
+> > This is a set of library functions existing as a rtrs-core module,
+> > used by client and server modules.
+> >
+> > Mainly these functions wrap IB and RDMA calls and provide a bit higher
+> > abstraction for implementing of RTRS protocol on client or server
+> > sides.
+> >
+> > Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
+> > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+> > ---
+> >  drivers/infiniband/ulp/rtrs/rtrs.c | 597 +++++++++++++++++++++++++++++
+> >  1 file changed, 597 insertions(+)
+> >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs.c
+> >
+> > diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
+> > new file mode 100644
+> > index 000000000000..7b84d76e2a67
+> > --- /dev/null
+> > +++ b/drivers/infiniband/ulp/rtrs/rtrs.c
+> > @@ -0,0 +1,597 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * RDMA Transport Layer
+> > + *
+> > + * Copyright (c) 2014 - 2018 ProfitBricks GmbH. All rights reserved.
+> > + *
+> > + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
+> > + *
+> > + * Copyright (c) 2019 - 2020 1&1 IONOS SE. All rights reserved.
+> > + */
+> > +#undef pr_fmt
+> > +#define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
+> > +
+> > +#include <linux/module.h>
+> > +#include <linux/inet.h>
+> > +
+> > +#include "rtrs-pri.h"
+> > +#include "rtrs-log.h"
+> > +
+> > +MODULE_DESCRIPTION("RDMA Transport Core");
+> > +MODULE_LICENSE("GPL");
+> > +
+> > +struct rtrs_iu *rtrs_iu_alloc(u32 queue_size, size_t size, gfp_t gfp_mask,
+> > +                           struct ib_device *dma_dev,
+> > +                           enum dma_data_direction dir,
+> > +                           void (*done)(struct ib_cq *cq, struct ib_wc *wc))
+> > +{
+> > +     struct rtrs_iu *ius, *iu;
+> > +     int i;
+> > +
+> > +     WARN_ON(!queue_size);
+> > +     ius = kcalloc(queue_size, sizeof(*ius), gfp_mask);
+> > +     if (unlikely(!ius))
+> > +             return NULL;
 >
-> The scsi_device_set_state() function implements success-oriented
-> approach and has very clear state machine without distraction and
-> extra variables like changed/not_changed. You have completely
-> opposite implementation to scsi_device_set_state().
-Thanks for reviewing our code during the weekend, I respect the effort.
+> Let's do not add useless WARN_ON() and unlikely to every error path.
+I can remove the WARN_ON, but the unlikey for error case seems normal to use,
+small size memory allocation is unlikely to fail.
 
-The reason we have "changed" variable is only when the state changed
-as expected,
-the caller will do further action like reconnect or close the session.
+> > +int rtrs_iu_post_recv(struct rtrs_con *con, struct rtrs_iu *iu)
+> > +{
+> > +     struct rtrs_sess *sess = con->sess;
+> > +     struct ib_recv_wr wr;
+> > +     struct ib_sge list;
+> > +
+> > +     list.addr   = iu->dma_addr;
+> > +     list.length = iu->size;
+> > +     list.lkey   = sess->dev->ib_pd->local_dma_lkey;
+> > +
+> > +     if (WARN_ON(list.length == 0)) {
+> > +             rtrs_wrn(con->sess,
+> > +                       "Posting receive work request failed, sg list is empty\n");
+>
+> Both WARN_ON and warning message?
+Will remove the WARN_ON.
 
-I will add kernel-doc around the function to make it more clear.
-
-Thanks Leon
+Thanks Leon.
