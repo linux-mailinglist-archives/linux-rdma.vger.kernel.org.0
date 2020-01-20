@@ -2,119 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A47A142D9A
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jan 2020 15:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC8C142DAB
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jan 2020 15:36:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgATOdF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Jan 2020 09:33:05 -0500
-Received: from mail-eopbgr50054.outbound.protection.outlook.com ([40.107.5.54]:21216
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726626AbgATOdF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 Jan 2020 09:33:05 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ou9kHeTzkkOmpRFitMbWysf+oTaoNXFLrVw9uLO0EgUitZ0mHep9sgOlPW59/tz93u7X3d7q9E6939WmLh2VoxL3dXJVVKSiGa9wrmYMhxruaFHyWjZJE040jpvbObj1J8TJ/TDBGbZnvBnCg4GmlagVflvEW/H4h1oAVJFvrJvFtHE/w3xzm5rNNCDhzEv9cADQ4qVlgpbXjlC8QciWtHVeLOOzOFljQmoSMRSU9J4XwKqmqaeG8Fhoo8pF2AiLV3SOBgBEib5zJVkyWyrR2PC6ER8LVmOYU0u5e5JnylGoK9JgO4Tt1+XMAQ4rcqV/jOe/4ilvN+2KtrQ1ixQdcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HSRMYB264xql+1gygPffMDermrw8b2DCsztzjX+NsoU=;
- b=SFAt540gumtXNPv0xrLP2gFHKhrAru1mvwh5ZGZpNT2kywWL9ANYlx0M2YyNaO0Oa7wWYMSxvfDUch4PrCh2P0FcRoOz/h1U/hp5OlatXwNKC1keBL2YKPCaUXouHZafwkeSXVsWp8Aq5J4b4rliiWqfU4e+YFVJ9u8yPIb1kD+nM16cL9YpLl3kvSHYt3MPACmYPQi6Z6fgAhzuJJLur+XySmdAno/tQM4Lt7nzxIKQBFe0jbRik6tTJyu3rq8JKXJQHC1dOtR4Yyj5Oh4RW/MwhiCYo1cpd7FK/mXnmz7rGlxWFE3dqJsffka/dzi/GiG9lY/uVtdRedsgq6WKpQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HSRMYB264xql+1gygPffMDermrw8b2DCsztzjX+NsoU=;
- b=YZvTG9kds6c0naaKy0YiDU3yw5+3m+j0faHiOa9G23hnKibEgqKvAppBuXzZrTrM6TRrRa15KICiXEfnL8flUUh2VuUgHRtWTsI2axuJ/kjAXJb2FSmINaLQ+i7n5u+ZwcH5H1eoFWPgfAMhtspNXrzEmZOFET06BtiFAosfMWY=
-Received: from AM6PR05MB5096.eurprd05.prod.outlook.com (20.177.36.78) by
- AM6PR05MB6278.eurprd05.prod.outlook.com (20.179.4.147) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2644.19; Mon, 20 Jan 2020 14:33:01 +0000
-Received: from AM6PR05MB5096.eurprd05.prod.outlook.com
- ([fe80::b826:4acc:6d53:6eea]) by AM6PR05MB5096.eurprd05.prod.outlook.com
- ([fe80::b826:4acc:6d53:6eea%6]) with mapi id 15.20.2644.026; Mon, 20 Jan 2020
- 14:33:01 +0000
-Received: from [10.223.6.3] (193.47.165.251) by AM4PR0501CA0044.eurprd05.prod.outlook.com (2603:10a6:200:68::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2644.19 via Frontend Transport; Mon, 20 Jan 2020 14:33:00 +0000
-From:   Paul Blakey <paulb@mellanox.com>
-To:     Chen Wandun <chenwandun@huawei.com>, Oz Shlomo <ozsh@mellanox.com>,
-        Mark Bloch <markb@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH next] net/mlx5: make the symbol 'ESW_POOLS' static
-Thread-Topic: [PATCH next] net/mlx5: make the symbol 'ESW_POOLS' static
-Thread-Index: AQHVz4z4MbwU/ZZ3F0K3BG09U5KYx6fznesA
-Date:   Mon, 20 Jan 2020 14:33:01 +0000
-Message-ID: <846abf8c-8c81-a054-9f89-4ad56b104d99@mellanox.com>
-References: <20200120124153.32354-1-chenwandun@huawei.com>
-In-Reply-To: <20200120124153.32354-1-chenwandun@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM4PR0501CA0044.eurprd05.prod.outlook.com
- (2603:10a6:200:68::12) To AM6PR05MB5096.eurprd05.prod.outlook.com
- (2603:10a6:20b:11::14)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=paulb@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [193.47.165.251]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 27ff6410-d8e5-4736-3582-08d79db5a719
-x-ms-traffictypediagnostic: AM6PR05MB6278:|AM6PR05MB6278:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR05MB6278AB3613C84D6C7D38D519CF320@AM6PR05MB6278.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1107;
-x-forefront-prvs: 0288CD37D9
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(366004)(396003)(346002)(39860400002)(136003)(189003)(199004)(16526019)(478600001)(52116002)(5660300002)(316002)(186003)(16576012)(110136005)(71200400001)(2906002)(36756003)(31686004)(6486002)(26005)(66446008)(956004)(2616005)(53546011)(86362001)(8676002)(81156014)(66556008)(8936002)(64756008)(66946007)(66476007)(81166006)(31696002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB6278;H:AM6PR05MB5096.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: y0LWz+GgaOsGrO1nLw0H5C7WJTvYGa0H1R49gvZKfC+KvwDbo+LrV1M6ahycH8JqAFLoX81kkqANg/h+jV5kxi3c1DgzW/W5aYqBuPvJ56ZziMa/Z5HCGCpbWFeStk/SEwJZmKkOUFy/YZfD8s6+ie8caVcMNEq9buw02N5bttUH4mxypwCw7j5LiA7rdqdLEr64UAnRtdEhqGLrVfEDHQOaMk+GHWGXiKL6kaoBJqfMet3dztqp2NnKJUeWt3VzBqQWiqi5RfEtwXyhkpMrtFpwlRCynBvsrF9tiR9naJevec7t23RZQb8JrNVpNdtjr6+OOZGesGxPddYSmoge1/AWh26ZxmoM03pTnLw/cSFonl/EQqbaDcU/h0dGla9h0XGSK4pmWPRyYThkWJcMi00Xqzs40Dgau2SGXNtobdraMy9WvxOtF/dfXZlwL3it
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <45700E2169234948A2BBC279D349EBAD@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 27ff6410-d8e5-4736-3582-08d79db5a719
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jan 2020 14:33:01.5922
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /c5Q6bWf+k1UHxK/RRT0N7o53g3s3U1HGrzgLw9qeJ6OijbnTNPIZl9cDKvaTSJivJmiaJSXMhaU02xY86eGbg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6278
+        id S1726738AbgATOgP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Jan 2020 09:36:15 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:49438 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726626AbgATOgP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Jan 2020 09:36:15 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00KEYu21097967;
+        Mon, 20 Jan 2020 14:36:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2019-08-05; bh=chQHy13sJAVJpm9Og3eC0nZapv1bim8jex7PkwzlGPY=;
+ b=FK9EfmsU+7XiaqLRSVUcrDoaxbexP8EuO98MM3Yde8UnM1ull8ZAWIfoZUX7YjzhWThq
+ LDW7FUUacY56ih49sOT2wULQCPSZztmF/kDEzL6U5xz2lXXcPc4sw4h6tueRacNZKHFw
+ pmRVJRx/3aaTKvZpuM9ktAo3i5h/FJW0GoZmFZw/AKVqX8/Gtttub+Qa+CvEDk8voTQh
+ cJmpiMHCPEJIqQsLXBi6iEL1vZysNhOyEosodY76Iy/f1SIqRBOJxMVsFESWkpJSsnM8
+ PTf/u85M99FjAzibznlfYtW8z5CPxXHO6FC+CNVJjmqD8ANmKGZEFevCVn/Oj3XLxoip Pw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 2xkseu7xkv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jan 2020 14:36:11 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00KEYrsB001858;
+        Mon, 20 Jan 2020 14:36:10 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 2xmbj273u3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Jan 2020 14:36:09 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 00KEa8Es021597;
+        Mon, 20 Jan 2020 14:36:08 GMT
+Received: from dhcp-10-172-157-155.no.oracle.com (/10.172.157.155)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 20 Jan 2020 06:36:08 -0800
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3608.40.2.2.4\))
+Subject: Re: [PATCH for-rc] IB/mlx4: Fix leak in id_map_find_del
+From:   =?utf-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+In-Reply-To: <20200117135622.836563-1-haakon.bugge@oracle.com>
+Date:   Mon, 20 Jan 2020 15:36:06 +0100
+Cc:     OFED mailing list <linux-rdma@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <471E808E-D97E-4224-A4DE-EDA61463FC28@oracle.com>
+References: <20200117135622.836563-1-haakon.bugge@oracle.com>
+To:     Yishai Hadas <yishaih@mellanox.com>
+X-Mailer: Apple Mail (2.3608.40.2.2.4)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9505 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=11 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001200124
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9505 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=11 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001200124
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQpPbiAxLzIwLzIwMjAgMjo0MSBQTSwgQ2hlbiBXYW5kdW4gd3JvdGU6DQo+IEZpeCB0aGUgZm9s
-bG93aW5nIHNwYXJzZSB3YXJuaW5nOg0KPiBkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9t
-bHg1L2NvcmUvZXN3aXRjaF9vZmZsb2Fkc19jaGFpbnMuYzozNToyMDogd2FybmluZzogc3ltYm9s
-ICdFU1dfUE9PTFMnIHdhcyBub3QgZGVjbGFyZWQuIFNob3VsZCBpdCBiZSBzdGF0aWM/DQo+DQo+
-IEZpeGVzOiAzOWFjMjM3Y2UwMDkgKCJuZXQvbWx4NTogRS1Td2l0Y2gsIFJlZmFjdG9yIGNoYWlu
-cyBhbmQgcHJpb3JpdGllcyIpDQo+IFNpZ25lZC1vZmYtYnk6IENoZW4gV2FuZHVuIDxjaGVud2Fu
-ZHVuQGh1YXdlaS5jb20+DQo+IC0tLQ0KPiAgIC4uLi9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2Nv
-cmUvZXN3aXRjaF9vZmZsb2Fkc19jaGFpbnMuYyB8IDggKysrKy0tLS0NCj4gICAxIGZpbGUgY2hh
-bmdlZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Vzd2l0Y2hfb2ZmbG9hZHNf
-Y2hhaW5zLmMgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZXN3aXRj
-aF9vZmZsb2Fkc19jaGFpbnMuYw0KPiBpbmRleCAzYTYwZWI1MzYwYmQuLmM1YTQ0NmUyOTVhYSAx
-MDA2NDQNCj4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Vz
-d2l0Y2hfb2ZmbG9hZHNfY2hhaW5zLmMNCj4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVs
-bGFub3gvbWx4NS9jb3JlL2Vzd2l0Y2hfb2ZmbG9hZHNfY2hhaW5zLmMNCj4gQEAgLTMyLDEwICsz
-MiwxMCBAQA0KPiAgICAqIHBvb2xzLg0KPiAgICAqLw0KPiAgICNkZWZpbmUgRVNXX1NJWkUgKDE2
-ICogMTAyNCAqIDEwMjQpDQo+IC1jb25zdCB1bnNpZ25lZCBpbnQgRVNXX1BPT0xTW10gPSB7IDQg
-KiAxMDI0ICogMTAyNCwNCj4gLQkJCQkgICAxICogMTAyNCAqIDEwMjQsDQo+IC0JCQkJICAgNjQg
-KiAxMDI0LA0KPiAtCQkJCSAgIDQgKiAxMDI0LCB9Ow0KPiArc3RhdGljIGNvbnN0IHVuc2lnbmVk
-IGludCBFU1dfUE9PTFNbXSA9IHsgNCAqIDEwMjQgKiAxMDI0LA0KPiArCQkJCQkgIDEgKiAxMDI0
-ICogMTAyNCwNCj4gKwkJCQkJICA2NCAqIDEwMjQsDQo+ICsJCQkJCSAgNCAqIDEwMjQsIH07DQo+
-ICAgDQo+ICAgc3RydWN0IG1seDVfZXN3X2NoYWluc19wcml2IHsNCj4gICAJc3RydWN0IHJoYXNo
-dGFibGUgY2hhaW5zX2h0Ow0KDQpBY2tlZC1ieTogUGF1bCBCbGFrZXkgPHBhdWxiQG1lbGxhbm94
-LmNvbT4NCg0K
+
+
+> On 17 Jan 2020, at 14:56, H=C3=A5kon Bugge <haakon.bugge@oracle.com> =
+wrote:
+>=20
+> Using CX-3 virtual functions, either from a bare-metal machine or
+> pass-through from a VM, MAD packets are proxied through the PF driver.
+>=20
+> Since the VF drivers have separate name spaces for MAD Transaction Ids
+> (TIDs), the PF driver has to re-map the TIDs and keep the book keeping
+> in a cache.
+>=20
+> Following the RDMA Connection Manager (CM) protocol, it is clear when
+> an entry has to evicted from the cache. When a DREP is sent from
+> mlx4_ib_multiplex_cm_handler(), id_map_find_del() is called. Similar
+> when a REJ is received by the mlx4_ib_demux_cm_handler(),
+> id_map_find_del() is called.
+>=20
+> This function wipes out the TID in use from the IDR or XArray and
+> removes the id_map_entry from the table.
+>=20
+> In short, it does everything except the topping of the cake, which is
+> to remove the entry from the list and free it. In other words, for the
+> DREP and REJ cases enumerated above, both will leak one id_map_entry.
+>=20
+> Signed-off-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
+
+When/if this gets merged, please add:
+
+Cc: stable@vger.kernel.org
+
+Thxs, H=C3=A5kon
+
+> ---
+> drivers/infiniband/hw/mlx4/cm.c | 7 ++++++-
+> 1 file changed, 6 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/infiniband/hw/mlx4/cm.c =
+b/drivers/infiniband/hw/mlx4/cm.c
+> index ecd6cadd529a..1df6d3ccfc62 100644
+> --- a/drivers/infiniband/hw/mlx4/cm.c
+> +++ b/drivers/infiniband/hw/mlx4/cm.c
+> @@ -197,8 +197,13 @@ static void id_map_find_del(struct ib_device =
+*ibdev, int pv_cm_id)
+> 	if (!ent)
+> 		goto out;
+> 	found_ent =3D id_map_find_by_sl_id(ibdev, ent->slave_id, =
+ent->sl_cm_id);
+> -	if (found_ent && found_ent =3D=3D ent)
+> +	if (found_ent && found_ent =3D=3D ent) {
+> 		rb_erase(&found_ent->node, sl_id_map);
+> +		if (!ent->scheduled_delete) {
+> +			list_del(&ent->list);
+> +			kfree(ent);
+> +		}
+> +	}
+> out:
+> 	spin_unlock(&sriov->id_map_lock);
+> }
+> --=20
+> 2.20.1
+>=20
+
