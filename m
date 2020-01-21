@@ -2,68 +2,196 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 988AD143D3D
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2020 13:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B564E143E99
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2020 14:50:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727350AbgAUMr6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Jan 2020 07:47:58 -0500
-Received: from mga09.intel.com ([134.134.136.24]:43890 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726968AbgAUMr6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 21 Jan 2020 07:47:58 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Jan 2020 04:47:57 -0800
-X-IronPort-AV: E=Sophos;i="5.70,346,1574150400"; 
-   d="scan'208";a="215526871"
-Received: from mdemarse-mobl.amr.corp.intel.com (HELO [10.254.201.205]) ([10.254.201.205])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 21 Jan 2020 04:47:56 -0800
-Subject: Re: [PATCH] IB/opa_vnic: Spelling correction of 'erorr' to 'error'
-To:     Dillon Brock <dab9861@gmail.com>
-Cc:     Niranjana Vishwanathapura <niranjana.vishwanathapura@intel.com>,
+        id S1729052AbgAUNuV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Jan 2020 08:50:21 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58883 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728932AbgAUNuT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Jan 2020 08:50:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579614617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QSA9nedBLY+hJJ/U902gs3UmyLK6X1rNeQVNhq9BcRk=;
+        b=DpBjrrCfpL3ADMet6GmkzlxC3y2FWkxNkrspbkdvVlHQl/kSKsosELnCk/gXcj64Iczrfx
+        8rsqbiGkLjrsLFOcMcEX4l0MXjhBJgzCMmhaHibVEGF+K3Kwb/F7Ywj5yxfTOepQotLMVI
+        eVwEOjNHo280x9GWw9J754ygDx/X/Y8=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-280-xlYhp--OOVSN8lyjECI39w-1; Tue, 21 Jan 2020 08:50:16 -0500
+X-MC-Unique: xlYhp--OOVSN8lyjECI39w-1
+Received: by mail-lf1-f69.google.com with SMTP id j18so905436lfh.3
+        for <linux-rdma@vger.kernel.org>; Tue, 21 Jan 2020 05:50:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=QSA9nedBLY+hJJ/U902gs3UmyLK6X1rNeQVNhq9BcRk=;
+        b=gHXe85mNNT4iBjl9/MwmiMINWQmmogVCcjlQcBIUoe2QF98HtIFb11nWhaueGCFWHy
+         NF+opQr/RXdR7dGc9OOG/Mj74VCX2apJ+6pQiMc6x4gyaNOgjZIuYA2jcqwNKRc9RgAp
+         TaBudb5CDWXPfjKpc/5Ni9hnNoyo58QH9CdPPALCCnUsERBdFLsLOGK10Wj5QkFnzAwJ
+         b1Uy7/RvcnJBT6cBVpaKK/WCETOhdoqZK+0LmB3kFuoZrrSJOKa/nBk1oijDx2m4fN0h
+         dNgsIGZTWOgbqsGcn850MArx8knyEB1f4U+v2qQXFfPK33GocDvIOy70PD/8uOHJePG0
+         fD4A==
+X-Gm-Message-State: APjAAAVORx1tl2qOoY1lLZTn8InPj64g0ArC62ZTXW0Du/SifWb/Jvug
+        2WwQpsbLvYl8v49GoYQvfPx2spdjr6KjyJmDzVruT1gh2VKWYswbueSF3uc7XysYi4msJlzC5g8
+        +VOjNuV+s2DGHDz2IqS686w==
+X-Received: by 2002:a19:48c5:: with SMTP id v188mr2838245lfa.100.1579614614302;
+        Tue, 21 Jan 2020 05:50:14 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyn5xqRhHmPpySMcmkFZmX06i6ruLvGvbAL8D8ASe1wRGX+vhBALjz8OzpwILxiqeG3ZXt2kA==
+X-Received: by 2002:a19:48c5:: with SMTP id v188mr2838216lfa.100.1579614613963;
+        Tue, 21 Jan 2020 05:50:13 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id r2sm18840207lfn.13.2020.01.21.05.50.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jan 2020 05:50:13 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 1B9471804D6; Tue, 21 Jan 2020 14:33:47 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200118162542.15188-1-dab9861@gmail.com>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <961cb826-e173-ff44-ee23-06012138a185@intel.com>
-Date:   Tue, 21 Jan 2020 07:47:54 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH bpf-next v5 00/11] tools: Use consistent libbpf include paths everywhere
+In-Reply-To: <CAEf4BzYNp81_bOFSEZR=AcruC2ms76fCWQGit+=2QZrFAXpGqg@mail.gmail.com>
+References: <157952560001.1683545.16757917515390545122.stgit@toke.dk> <CAEf4BzYNp81_bOFSEZR=AcruC2ms76fCWQGit+=2QZrFAXpGqg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 21 Jan 2020 14:33:46 +0100
+Message-ID: <874kwpndc5.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <20200118162542.15188-1-dab9861@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/18/2020 11:25 AM, Dillon Brock wrote:
-> Correcting a minor spelling mistake in the comments.
-> 
-> Signed-off-by: Dillon Brock <dab9861@gmail.com>
-> ---
->   drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h b/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h
-> index e4c9bf2ef7e2..4480092c68e0 100644
-> --- a/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h
-> +++ b/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h
-> @@ -358,7 +358,7 @@ struct opa_veswport_summary_counters {
->    * @rx_drop_state: received packets in non-forwarding port state
->    * @rx_logic: other receive errors
->    *
-> - * All the above are counters of corresponding erorr conditions.
-> + * All the above are counters of corresponding error conditions.
->    */
->   struct opa_veswport_error_counters {
->   	__be16  vp_instance;
-> 
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Thanks for the touch up.
+> On Mon, Jan 20, 2020 at 5:08 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> We are currently being somewhat inconsistent with the libbpf include pat=
+hs,
+>> which makes it difficult to move files from the kernel into an external
+>> libbpf-using project without adjusting include paths.
+>>
+>> Having the bpf/ subdir of $INCLUDEDIR in the include path has never been=
+ a
+>> requirement for building against libbpf before, and indeed the libbpf pk=
+g-config
+>> file doesn't include it. So let's make all libbpf includes across the ke=
+rnel
+>> tree use the bpf/ prefix in their includes. Since bpftool skeleton gener=
+ation
+>> emits code with a libbpf include, this also ensures that those can be us=
+ed in
+>> existing external projects using the regular pkg-config include path.
+>>
+>> This turns out to be a somewhat invasive change in the number of files t=
+ouched;
+>> however, the actual changes to files are fairly trivial (most of them ar=
+e simply
+>> made with 'sed'). The series is split to make the change for one tool su=
+bdir at
+>> a time, while trying not to break the build along the way. It is structu=
+red like
+>> this:
+>>
+>> - Patch 1-3: Trivial fixes to Makefiles for issues I discovered while ch=
+anging
+>>   the include paths.
+>>
+>> - Patch 4-8: Change the include directives to use the bpf/ prefix, and u=
+pdates
+>>   Makefiles to make sure tools/lib/ is part of the include path, but wit=
+hout
+>>   removing tools/lib/bpf
+>>
+>> - Patch 9-11: Remove tools/lib/bpf from include paths to make sure we do=
+n't
+>>   inadvertently re-introduce includes without the bpf/ prefix.
+>>
+>> Changelog:
+>>
+>> v5:
+>>   - Combine the libbpf build rules in selftests Makefile (using Andrii's
+>>     suggestion for a make rule).
+>>   - Re-use self-tests libbpf build for runqslower (new patch 10)
+>>   - Formatting fixes
+>>
+>> v4:
+>>   - Move runqslower error on missing BTF into make rule
+>>   - Make sure we don't always force a rebuild selftests
+>>   - Rebase on latest bpf-next (dropping patch 11)
+>>
+>> v3:
+>>   - Don't add the kernel build dir to the runqslower Makefile, pass it i=
+n from
+>>     selftests instead.
+>>   - Use libbpf's 'make install_headers' in selftests instead of trying to
+>>     generate bpf_helper_defs.h in-place (to also work on read-only files=
+ystems).
+>>   - Use a scratch builddir for both libbpf and bpftool when building in =
+selftests.
+>>   - Revert bpf_helpers.h to quoted include instead of angled include wit=
+h a bpf/
+>>     prefix.
+>>   - Fix a few style nits from Andrii
+>>
+>> v2:
+>>   - Do a full cleanup of libbpf includes instead of just changing the
+>>     bpf_helper_defs.h include.
+>>
+>> ---
+>>
+>
+> Looks good, it's a clear improvement on what we had before, thanks!
+>
+> It doesn't re-build bpftool when bpftool sources changes, but I think
+> it was like that even before, so no need to block on that. Would be
+> nice to have a follow up fixing that, though. $(wildcard
+> $(BPFTOOL_DIR)/*.[ch] $(BPFTOOL_DIR)/Makefile) should do it, same as
+> for libbpf.
 
-Acked-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Yeah, I did realise there was some potential for improvement for bpftool
+as well, but I got enough of Makefiles for now :)
+
+I'll see if I can't circle back to this at some point...
+
+> So, for the series:
+>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> Tested-by: Andrii Nakryiko <andriin@fb.com>
+
+Thanks!
+
+-Toke
+
