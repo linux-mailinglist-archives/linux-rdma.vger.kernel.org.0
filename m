@@ -2,94 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E7D144257
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2020 17:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 513D6144297
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2020 17:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728852AbgAUQjk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Jan 2020 11:39:40 -0500
-Received: from mga14.intel.com ([192.55.52.115]:38958 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726714AbgAUQjk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 21 Jan 2020 11:39:40 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Jan 2020 08:39:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,346,1574150400"; 
-   d="scan'208";a="220011714"
-Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
-  by orsmga008.jf.intel.com with ESMTP; 21 Jan 2020 08:39:38 -0800
-Received: from fmsmsx113.amr.corp.intel.com (10.18.116.7) by
- FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 21 Jan 2020 08:39:38 -0800
-Received: from fmsmsx124.amr.corp.intel.com ([169.254.8.29]) by
- FMSMSX113.amr.corp.intel.com ([169.254.13.183]) with mapi id 14.03.0439.000;
- Tue, 21 Jan 2020 08:39:37 -0800
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+        id S1728829AbgAUQ5r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Jan 2020 11:57:47 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:37694 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726555AbgAUQ5r (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Jan 2020 11:57:47 -0500
+Received: by mail-wr1-f66.google.com with SMTP id w15so4086047wru.4
+        for <linux-rdma@vger.kernel.org>; Tue, 21 Jan 2020 08:57:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fiRn9DGKJey+BHTDT52ABAY8ODR+BAkXmTGuHK0xeVI=;
+        b=sthT/pQ1MehqIaXdCHqknuRHGIHXTwRZ9wNYJZP8n94qpovVuuDFs6QFIZJ1MFZHLf
+         KcgBqVUdznBmTqJVH1tehqJixO2WNzTYmNNoMYa7a2W6mzvsX2ouJZXyyj+v0Cc6FDDw
+         SvM1WtpiO22A5hZn19bPqZNWC4mVzJlNAI2uTPB0z8rvbHvGbpa4yMalPu6CWxUp7Whs
+         0Ab/sR3e9wFy5o5r31yz8yClbVInwyg/xf+qx4NpTHIRG6BNavyKdb51ZIb0P6EK2Hy2
+         8pZcriSnLHRQQiMHxj1bN52DUgiYzcESEYG7D2ftiOUM+MQeSG1LMg7pa6CO89hFet0K
+         MFbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fiRn9DGKJey+BHTDT52ABAY8ODR+BAkXmTGuHK0xeVI=;
+        b=oduyYZpKolLkY1cWe/ad3MTlj7UVkdEEi3/kfi6zbe3T1MFgFv59YNlMqb21fEVyi+
+         oyWto/q6o6oGRQRo4CSgAmJIB5f8juyPjI24mbFUH2Y5F1NzQX7p4nnIM4Y9prpazjED
+         8W12r+e+7/PKky0F550X69P8IwTt0/Zj+lTI8I3TfBRft1CyP46GRYKYx+yTH2Pm23sq
+         Tvhx2R93tL+9DvNzFIy6k4ACC/l7fo6VKMWWJvdMwMR2F0CpvKbdFTah1K5TF0qtMSmU
+         z3NbIgqRXs+h+iIyPzVs0T31hh/DgtglgmN5bcMQRYCjp2W/TBRBEC2s48Oo5SswthPg
+         vopg==
+X-Gm-Message-State: APjAAAUxFmpIVh1F08HOECP/TbjQNX8ccZlkTZ7rXzL5q3U4GOb9qX8Z
+        RBLVN7rYm5a2e0OvodPBv72tMw==
+X-Google-Smtp-Source: APXvYqxYdNr/nmwIvPcChuc5ERP9a4jxDI+5XJSJ7F6cSUEzxLnirZP0C3k/UG1vkKURQ154V2Bhpg==
+X-Received: by 2002:adf:eb48:: with SMTP id u8mr6081148wrn.283.1579625864813;
+        Tue, 21 Jan 2020 08:57:44 -0800 (PST)
+Received: from [10.80.2.221] ([193.47.165.251])
+        by smtp.googlemail.com with ESMTPSA id p17sm53139462wrx.20.2020.01.21.08.57.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Jan 2020 08:57:44 -0800 (PST)
+Subject: Re: [PATCH rdma-next 07/10] RDMA/efa: Allow passing of optional
+ access flags for MR registration
 To:     Gal Pressman <galpress@amazon.com>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Alexander Matushevsky" <matua@amazon.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Leybovich, Yossi" <sleybo@amazon.com>
-Subject: RE: [PATCH for-rc] Revert "RDMA/efa: Use API to get contiguous
- memory blocks aligned to device supported page size"
-Thread-Topic: [PATCH for-rc] Revert "RDMA/efa: Use API to get contiguous
- memory blocks aligned to device supported page size"
-Thread-Index: AQHVz5toT/HPCKVY4k6ca7L8Mx85A6f1W0WA///1nqA=
-Date:   Tue, 21 Jan 2020 16:39:37 +0000
-Message-ID: <9DD61F30A802C4429A01CA4200E302A7C1E2A8D0@fmsmsx124.amr.corp.intel.com>
-References: <20200120141001.63544-1-galpress@amazon.com>
- <0557a917-b6ad-1be7-e46b-cbe08f2ee4d3@amazon.com>
-In-Reply-To: <0557a917-b6ad-1be7-e46b-cbe08f2ee4d3@amazon.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ctpclassification: CTP_NT
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiOTEwODk1YzItNDZiZi00ZTVkLWIwNWYtZTFjNzRhYTViNDc1IiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiUlk4VEFxZ0xPMDBJS1RXcEwralVxUTR3QzdMclNsNFRSR1ltUGFlZkxjS0M4Vmx0NEoxWitydXNIbnk4QUY3aSJ9
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.108]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Cc:     Yishai Hadas <yishaih@mellanox.com>, linux-rdma@vger.kernel.org,
+        jgg@mellanox.com, dledford@redhat.com, saeedm@mellanox.com,
+        maorg@mellanox.com, michaelgur@mellanox.com, netdev@vger.kernel.org
+References: <1578506740-22188-1-git-send-email-yishaih@mellanox.com>
+ <1578506740-22188-8-git-send-email-yishaih@mellanox.com>
+ <6df1dbee-f35e-a5ad-019b-1bf572608974@amazon.com>
+From:   Yishai Hadas <yishaih@dev.mellanox.co.il>
+Message-ID: <89ddb3c3-a386-1aa4-e3e4-a4b0531b0978@dev.mellanox.co.il>
+Date:   Tue, 21 Jan 2020 18:57:39 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
+In-Reply-To: <6df1dbee-f35e-a5ad-019b-1bf572608974@amazon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-PiBTdWJqZWN0OiBSZTogW1BBVENIIGZvci1yY10gUmV2ZXJ0ICJSRE1BL2VmYTogVXNlIEFQSSB0
-byBnZXQgY29udGlndW91cw0KPiBtZW1vcnkgYmxvY2tzIGFsaWduZWQgdG8gZGV2aWNlIHN1cHBv
-cnRlZCBwYWdlIHNpemUiDQo+IA0KPiBPbiAyMC8wMS8yMDIwIDE2OjEwLCBHYWwgUHJlc3NtYW4g
-d3JvdGU6DQo+ID4gVGhlIGNpdGVkIGNvbW1pdCBsZWFkcyB0byByZWdpc3RlciBNUiBmYWlsdXJl
-cyBhbmQgcmFuZG9tIGhhbmdzIHdoZW4NCj4gPiBydW5uaW5nIGRpZmZlcmVudCBNUEkgYXBwbGlj
-YXRpb25zLiBUaGUgZXhhY3Qgcm9vdCBjYXVzZSBmb3IgdGhlIGlzc3VlDQo+ID4gaXMgc3RpbGwg
-bm90IGNsZWFyLCB0aGlzIHJldmVydCBicmluZ3MgdXMgYmFjayB0byBhIHN0YWJsZSBzdGF0ZS4N
-Cj4gPg0KPiA+IFRoaXMgcmV2ZXJ0cyBjb21taXQgNDBkZGIzZjAyMDgzNGY5YWZiN2FhYjMxMzg1
-OTk0ODExZjRkYjI1OS4NCj4gPg0KPiA+IEZpeGVzOiA0MGRkYjNmMDIwODMgKCJSRE1BL2VmYTog
-VXNlIEFQSSB0byBnZXQgY29udGlndW91cyBtZW1vcnkNCj4gPiBibG9ja3MgYWxpZ25lZCB0byBk
-ZXZpY2Ugc3VwcG9ydGVkIHBhZ2Ugc2l6ZSIpDQo+ID4gQ2M6IFNoaXJheiBTYWxlZW0gPHNoaXJh
-ei5zYWxlZW1AaW50ZWwuY29tPg0KPiA+IENjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnICMgNS4z
-DQo+ID4gU2lnbmVkLW9mZi1ieTogR2FsIFByZXNzbWFuIDxnYWxwcmVzc0BhbWF6b24uY29tPg0K
-PiANCj4gU2hpcmF6LCBJIHRoaW5rIEkgZm91bmQgdGhlIHJvb3QgY2F1c2UgaGVyZS4NCj4gSSdt
-IG5vdGljaW5nIGEgcmVnaXN0ZXIgTVIgb2Ygc2l6ZSAzMmssIHdoaWNoIGlzIGNvbnN0cnVjdGVk
-IGZyb20gdHdvIHNnZXMsIHRoZSBmaXJzdA0KPiBzZ2Ugb2Ygc2l6ZSAxMmsgYW5kIHRoZSBzZWNv
-bmQgb2YgMjBrLg0KPiANCj4gaWJfdW1lbV9maW5kX2Jlc3RfcGdzeiByZXR1cm5zIHBhZ2Ugc2hp
-ZnQgMTMgaW4gdGhlIGZvbGxvd2luZyB3YXk6DQo+IA0KPiAweDEwM2RjYjIwMDAgICAgICAweDEw
-M2RjYjUwMDAgICAgICAgMHgxMDNkZDVkMDAwICAgICAgICAgICAweDEwM2RkNjIwMDANCj4gICAg
-ICAgICAgICstLS0tLS0tLS0tKyAgICAgICAgICAgICAgICAgICAgICArLS0tLS0tLS0tLS0tLS0t
-LS0tKw0KPiAgICAgICAgICAgfCAgICAgICAgICB8ICAgICAgICAgICAgICAgICAgICAgIHwgICAg
-ICAgICAgICAgICAgICB8DQo+ICAgICAgICAgICB8ICAxMmsgICAgIHwgICAgICAgICAgICAgICAg
-ICAgICAgfCAgICAgMjBrICAgICAgICAgIHwNCj4gICAgICAgICAgICstLS0tLS0tLS0tKyAgICAg
-ICAgICAgICAgICAgICAgICArLS0tLS0tLS0tLS0tLS0tLS0tKw0KPiANCj4gICAgICAgICAgICst
-LS0tLS0rLS0tLS0tKyAgICAgICAgICAgICAgICAgKy0tLS0tLSstLS0tLS0rLS0tLS0tKw0KPiAg
-ICAgICAgICAgfCAgICAgIHwgICAgICB8ICAgICAgICAgICAgICAgICB8ICAgICAgfCAgICAgIHwg
-ICAgICB8DQo+ICAgICAgICAgICB8IDhrICAgfCA4ayAgIHwgICAgICAgICAgICAgICAgIHwgOGsg
-ICB8IDhrICAgfCA4ayAgIHwNCj4gICAgICAgICAgICstLS0tLS0rLS0tLS0tKyAgICAgICAgICAg
-ICAgICAgKy0tLS0tLSstLS0tLS0rLS0tLS0tKw0KPiAweDEwM2RjYjIwMDAgICAgICAgMHgxMDNk
-Y2I2MDAwICAgMHgxMDNkZDVjMDAwICAgICAgICAgICAgICAweDEwM2RkNjIwMDANCj4gDQo+IA0K
-DQpHYWwgLSB3b3VsZCBiZSB1c2VmdWwgdG8ga25vdyB0aGUgSU9WQSAodmlydCkgYW5kIHVtZW0t
-PmFkZHIgYWxzbyBmb3IgdGhpcyBNUiBpbiBpYl91bWVtX2ZpbmRfYmVzdF9wZ3N6DQoNCg==
+On 1/21/2020 6:37 PM, Gal Pressman wrote:
+> On 08/01/2020 20:05, Yishai Hadas wrote:
+>> From: Michael Guralnik <michaelgur@mellanox.com>
+>>
+>> As part of adding a range of optional access flags that drivers need to
+>> be able to accept, mask this range inside efa driver.
+>> This will prevent the driver from failing when an access flag from
+>> that range is passed.
+>>
+>> Signed-off-by: Michael Guralnik <michaelgur@mellanox.com>
+>> Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+>> ---
+>>   drivers/infiniband/hw/efa/efa_verbs.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+>> index 50c2257..b6b936c 100644
+>> --- a/drivers/infiniband/hw/efa/efa_verbs.c
+>> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+>> @@ -1370,6 +1370,7 @@ struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
+>>   		IB_ACCESS_LOCAL_WRITE |
+>>   		(is_rdma_read_cap(dev) ? IB_ACCESS_REMOTE_READ : 0);
+>>   
+>> +	access_flags &= ~IB_UVERBS_ACCESS_OPTIONAL_RANGE;
+> 
+> Hi Yishai,
+> access_flags should be masked with IB_ACCESS_OPTIONAL instead of
+> IB_UVERBS_ACCESS_OPTIONAL_RANGE.
+> 
+
+You are talking from namespace point of view, right ? both have same value.
+
+If it's important, can you send some patch to replace ?
+
+> Also, could you please make sure to CC me to future EFA patches?
+> 
+
+Sure, thanks.
