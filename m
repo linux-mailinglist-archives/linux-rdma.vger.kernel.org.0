@@ -2,124 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D567144113
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2020 16:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DFB14421B
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jan 2020 17:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728186AbgAUP6A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Jan 2020 10:58:00 -0500
-Received: from mga04.intel.com ([192.55.52.120]:46584 "EHLO mga04.intel.com"
+        id S1729186AbgAUQYn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Jan 2020 11:24:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726714AbgAUP6A (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 21 Jan 2020 10:58:00 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Jan 2020 07:57:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,346,1574150400"; 
-   d="scan'208";a="215581230"
-Received: from fmsmsx107.amr.corp.intel.com ([10.18.124.205])
-  by orsmga007.jf.intel.com with ESMTP; 21 Jan 2020 07:57:55 -0800
-Received: from fmsmsx124.amr.corp.intel.com (10.18.125.39) by
- fmsmsx107.amr.corp.intel.com (10.18.124.205) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 21 Jan 2020 07:57:54 -0800
-Received: from FMSEDG001.ED.cps.intel.com (10.1.192.133) by
- fmsmsx124.amr.corp.intel.com (10.18.125.39) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 21 Jan 2020 07:57:54 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server (TLS) id
- 14.3.439.0; Tue, 21 Jan 2020 07:57:54 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lewZTmzphLN4st30Q3Cd+mIyw1/C8cNA+s4JMQdTk6EVyNe5NBI+F0ogcGkrpdjirkgeXGfQFUWHP8Bf1BCGuvwRQ5FOaV0XKtabxTF2//8q55NUVORLpAVqreCPAkUoNP9mfIh6JUE3MfLfdd/GoLQGWvE/JzGTkZkGG+KD30LVwPgNUP+QhgkMT4jrdWYejdwd6+Wy1dnPxZtmLB6uVZ+c0EIsKagoUBKR6TJdh4BrLol80RrMh6JsMBOhKifkav+cp66RScrPN0xksU05SwhT9lAwYeFwolbeK2CE/2taToHZI+AqHLAbjUXWOFmdotrYCIXHQmNGGsgegHn9oQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7BMBkcc7n4M2za4hLsFLBwo3yN7xLShpg6ZhFNMNIcU=;
- b=gHow72Igs5rCPoDDckhJ5E43oYVPeXzlSgD4ao9G3Z29xGiZbWzbiRoY3gMxMKBQyyYAQo11MCjUwBukNZSoYNP0Fy64x5fLWXElOvt/tc9vQwp8k+4Z55Je8yr3XYDRzpIs/nrNd4oes1mCjHB+YI8qmzDxs/DoCCNzddGjGidAKYmz3324vGHFLFJcXs9izwrCIZrP+/lhCa57ljYf3tz6SjoMsvBY8Wcc/ViUXcLidFW9vPL+7FuvROiJMKQVvRgk1yCpyiqkaByHFfTxtYZgO1kDJVMKqrPtvoIqnASorgW0quH6CwNqM912jgWKN1U5dNR2Ca08HqraYQscbw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7BMBkcc7n4M2za4hLsFLBwo3yN7xLShpg6ZhFNMNIcU=;
- b=h4P0Iq/qATUxxuopgkX4IIJ23a2uwKrcr5f4NVj0nCXyVmn3DZRdWr9UPwX5WeNL2SGxGKSRqfcw6nePLcaRoSAGCNNuWQh9sFjltRkQYTUrO3mX/e6ZVKxXRjQdKbrp03zvQvFMnZd+YkB7tdQIHugBxNW3KB2pP/LsDMQFo2M=
-Received: from BYAPR11MB3272.namprd11.prod.outlook.com (20.177.186.74) by
- BYAPR11MB2888.namprd11.prod.outlook.com (20.177.226.147) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2644.24; Tue, 21 Jan 2020 15:57:53 +0000
-Received: from BYAPR11MB3272.namprd11.prod.outlook.com
- ([fe80::695c:9bae:99c1:32ca]) by BYAPR11MB3272.namprd11.prod.outlook.com
- ([fe80::695c:9bae:99c1:32ca%5]) with mapi id 15.20.2644.027; Tue, 21 Jan 2020
- 15:57:53 +0000
-From:   "Hefty, Sean" <sean.hefty@intel.com>
-To:     Honggang LI <honli@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: resource leak in librdmacm
-Thread-Topic: resource leak in librdmacm
-Thread-Index: AQHV0FVu1T1pGcLIMkKSo2QDIdq5E6f1RiGQ
-Date:   Tue, 21 Jan 2020 15:57:53 +0000
-Message-ID: <BYAPR11MB3272F4913688AE9B3BFF815C9E0D0@BYAPR11MB3272.namprd11.prod.outlook.com>
-References: <20200121122133.GA105701@dhcp-128-72.nay.redhat.com>
-In-Reply-To: <20200121122133.GA105701@dhcp-128-72.nay.redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiNjBmZjI1NTItNmE1Ni00MzFiLTlkZTQtMGJjNDcyNGUxM2JhIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiblZDVWE4Qm5BbE5mYVFPXC9XVEtvOVRqNzRTUW80Nkp0S01OZW5MVG9VdlJqb0djXC9ldnBaM2pXelRPRGZUbFhMIn0=
-dlp-product: dlpe-windows
-x-ctpclassification: CTP_NT
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=sean.hefty@intel.com; 
-x-originating-ip: [192.55.52.203]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b7394403-66fd-4a76-bdc5-08d79e8aacb9
-x-ms-traffictypediagnostic: BYAPR11MB2888:
-x-microsoft-antispam-prvs: <BYAPR11MB288833834752881357D7B5C69E0D0@BYAPR11MB2888.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:85;
-x-forefront-prvs: 0289B6431E
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(136003)(376002)(39860400002)(396003)(366004)(199004)(189003)(3480700007)(4744005)(71200400001)(76116006)(6506007)(66556008)(66476007)(64756008)(66446008)(66946007)(478600001)(2906002)(86362001)(55016002)(33656002)(9686003)(7696005)(316002)(52536014)(26005)(8676002)(8936002)(186003)(5660300002)(110136005)(81166006)(81156014);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR11MB2888;H:BYAPR11MB3272.namprd11.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PxzGzCFsflei9J6MMV8DUmK9AP67JMUNbqUUycNbmFET/BWhHnD4R9LCXeMMWnsbIW148aD/SOOw/Qhmy1I5PSnpC6QWV2prKYIe0jX/Pvd+kGvZh4dPiyO8wxXq+sr/JVpsFOSmNKttM8JFKKCr1//P1U9+8crNhyOjznTbAaf6HoSOAK1oFKc5lEIwQhRxnpiQdFFZ5qqMPSQdFvDrisQh8y8v72SJTd1yKhA/GzvSruPxOb9+ncSJb7eDx5r4xuQtUqUXU7g8gmmQ/IMRtBdjeVNWCLqBiE4PBwbJsbLfbunjUibQcNdCA+ZLo7zLgbhR3oXHc1RtTDyqE2ENl86lMzMmYuOUyqqDwJDIfT88VNVrAyjbhIB5OEw9O6ppANNetvJiuQMsCsD0u1Nz7HmatdFrGVqcSAxDGJMiv9VIrUjfk2HWRyIVUziL09TR
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+        id S1727817AbgAUQYm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 21 Jan 2020 11:24:42 -0500
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70A9C206A2;
+        Tue, 21 Jan 2020 16:24:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579623881;
+        bh=y5enciPxhhvPHKJ8dGaGr/eY5VsE1LwSzGN3HrEYbeA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E4rZL3Th12ZxLgedIYKFGL83Gzj+tCkU5PHasZj+bQ6WyeAL85gqRt6/i/drapk1J
+         bdBpHgk2N5/lFsyZ3r2Hw5tvqy59vW+ueIV4eFKGSvF8v1T8fSeS84ebikm2whxFSW
+         JDKPUfcZ4/HwuWMKBmloXaCnPoljesPwJaXwMNIk=
+Date:   Tue, 21 Jan 2020 18:24:36 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Alexander Matushevsky <matua@amazon.com>,
+        stable@vger.kernel.org, "Leybovich, Yossi" <sleybo@amazon.com>
+Subject: Re: [PATCH for-rc] Revert "RDMA/efa: Use API to get contiguous
+ memory blocks aligned to device supported page size"
+Message-ID: <20200121162436.GL51881@unreal>
+References: <20200120141001.63544-1-galpress@amazon.com>
+ <0557a917-b6ad-1be7-e46b-cbe08f2ee4d3@amazon.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: b7394403-66fd-4a76-bdc5-08d79e8aacb9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jan 2020 15:57:53.4755
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: L3eBhkfJ+gnJrD/ceERyNACkeZWywKU2Zaoe8NbuwO7gZfdne6aLR6Wx0QneygqwxvnP1tEAFbnrGl+qIGaoiQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2888
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0557a917-b6ad-1be7-e46b-cbe08f2ee4d3@amazon.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> 	ch =3D rdma_create_event_channel();
-> 	if (ch =3D=3D NULL)
-> 		printf("rdma_create_event_channel failed\n");
->=20
-> 	ret =3D rdma_create_id(ch, &id, NULL, RDMA_PS_TCP);
-> 	if (ret !=3D 0)
-> 		printf("rdma_create_id failed\n");
->=20
-> 	ret =3D rdma_bind_addr(id, (struct sockaddr *) &ipoib_addr);
->=20
-> 	if (ret !=3D 0)
-> 		printf("rdma_bind_addr failed\n");
->=20
-> 	rdma_destroy_event_channel(ch);
+On Tue, Jan 21, 2020 at 11:07:21AM +0200, Gal Pressman wrote:
+> On 20/01/2020 16:10, Gal Pressman wrote:
+> > The cited commit leads to register MR failures and random hangs when
+> > running different MPI applications. The exact root cause for the issue
+> > is still not clear, this revert brings us back to a stable state.
+> >
+> > This reverts commit 40ddb3f020834f9afb7aab31385994811f4db259.
+> >
+> > Fixes: 40ddb3f02083 ("RDMA/efa: Use API to get contiguous memory blocks aligned to device supported page size")
+> > Cc: Shiraz Saleem <shiraz.saleem@intel.com>
+> > Cc: stable@vger.kernel.org # 5.3
+> > Signed-off-by: Gal Pressman <galpress@amazon.com>
+>
+> Shiraz, I think I found the root cause here.
+> I'm noticing a register MR of size 32k, which is constructed from two sges, the
+> first sge of size 12k and the second of 20k.
+>
+> ib_umem_find_best_pgsz returns page shift 13 in the following way:
+>
+> 0x103dcb2000      0x103dcb5000       0x103dd5d000           0x103dd62000
+>           +----------+                      +------------------+
+>           |          |                      |                  |
+>           |  12k     |                      |     20k          |
+>           +----------+                      +------------------+
+>
+>           +------+------+                 +------+------+------+
+>           |      |      |                 |      |      |      |
+>           | 8k   | 8k   |                 | 8k   | 8k   | 8k   |
+>           +------+------+                 +------+------+------+
+> 0x103dcb2000       0x103dcb6000   0x103dd5c000              0x103dd62000
+>
+>
+> The top row is the original umem sgl, and the bottom is the sgl constructed by
+> rdma_for_each_block with page size of 8k.
+>
+> Is this the expected output? The 8k pages cover addresses which aren't part of
+> the MR. This breaks some of the assumptions in the driver (for example, the way
+> we calculate the number of pages in the MR) and I'm not sure our device can
+> handle such sgl.
 
-This call should fail, since there's still a valid id open on it.
+Artemy wrote this fix that can help you.
 
-> 	rdma_destroy_id(id);
-> }
+commit 60c9fe2d18b657df950a5f4d5a7955694bd08e63
+Author: Artemy Kovalyov <artemyko@mellanox.com>
+Date:   Sun Dec 15 12:43:13 2019 +0200
 
-- Sean
+    RDMA/umem: Fix ib_umem_find_best_pgsz()
+
+    Except for the last entry, the ending iova alignment sets the maximum
+    possible page size as the low bits of the iova must be zero when
+    starting the next chunk.
+
+    Fixes: 4a35339958f1 ("RDMA/umem: Add API to find best driver supported page size in an MR")
+    Signed-off-by: Artemy Kovalyov <artemyko@mellanox.com>
+    Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index c3769a5f096d..06b6125b5ae1 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -166,10 +166,13 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
+                 * for any address.
+                 */
+                mask |= (sg_dma_address(sg) + pgoff) ^ va;
+-               if (i && i != (umem->nmap - 1))
+-                       /* restrict by length as well for interior SGEs */
+-                       mask |= sg_dma_len(sg);
+                va += sg_dma_len(sg) - pgoff;
++               /* Except for the last entry, the ending iova alignment sets
++                * the maximum possible page size as the low bits of the iova
++                * must be zero when starting the next chunk.
++                */
++               if (i != (umem->nmap - 1))
++                       mask |= va;
+                pgoff = 0;
+        }
+        best_pg_bit = rdma_find_pg_bit(mask, pgsz_bitmap);
+
+
