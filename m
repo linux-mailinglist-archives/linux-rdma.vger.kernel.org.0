@@ -2,157 +2,182 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2F7146B52
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jan 2020 15:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B31D146B5E
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jan 2020 15:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgAWOaM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Jan 2020 09:30:12 -0500
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:39202 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726231AbgAWOaM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Jan 2020 09:30:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1579789812; x=1611325812;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=0qUKYox3EHrN2Mp5mqxTHCZige/bzIP3a1E1n9uI5cc=;
-  b=hRR5gIVTO5O7PhRuj9jKmDFR8yk9RexI8TOlAnl0trE4Ww6xplyc/OWC
-   jEWAKKN7+OkL/punGclOCV4VEMwky4PYYF4Mz4v7UOlh64MVdaH9DBdkK
-   qA80XFvrRu9d2HA7WODx39IalTVkpJiPB2yw5yBbNIhI1yBBg812FgEtS
-   A=;
-IronPort-SDR: 0sWCUyL7hcOYf1XgHKmS+NegDBylUXnxwDYnghSDUb8U09OvhdbzIFXa8SoGomT76TYjdslAkl
- kftUegeHIeAw==
-X-IronPort-AV: E=Sophos;i="5.70,354,1574121600"; 
-   d="scan'208";a="20596650"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-55156cd4.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 23 Jan 2020 14:30:01 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-55156cd4.us-west-2.amazon.com (Postfix) with ESMTPS id 160B2A286D;
-        Thu, 23 Jan 2020 14:30:00 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1236.3; Thu, 23 Jan 2020 14:29:59 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.8) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Thu, 23 Jan 2020 14:29:55 +0000
-Subject: Re: [PATCH for-rc] Revert "RDMA/efa: Use API to get contiguous memory
- blocks aligned to device supported page size"
-To:     Leon Romanovsky <leon@kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        <stable@vger.kernel.org>, "Leybovich, Yossi" <sleybo@amazon.com>
-References: <20200120141001.63544-1-galpress@amazon.com>
- <0557a917-b6ad-1be7-e46b-cbe08f2ee4d3@amazon.com>
- <20200121162436.GL51881@unreal>
- <47c20471-2251-b93b-053d-87880fa0edf5@amazon.com>
- <20200123142443.GN7018@unreal>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <60d8c528-1088-df8d-76f0-4746acfcfc7a@amazon.com>
-Date:   Thu, 23 Jan 2020 16:29:48 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.1
+        id S1728205AbgAWObl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Jan 2020 09:31:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726729AbgAWObl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 Jan 2020 09:31:41 -0500
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 44F7E2087E;
+        Thu, 23 Jan 2020 14:31:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579789899;
+        bh=dqM1b8OkU+N5aTq/2a7Qf0qOwXaCT1tMUu5XFP4rqq8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LDjs9oCY52oacX8y8QpwZ4sL/hgTNp8bw8XpS8MQ7dcvvsthSXaq5gzUd6u/D0QuI
+         MSpv7PfevATg/wXrd1qyszz3wedQE+uWHFsSuEHFC2dCuemVHTxKI14cEWn899vKqe
+         h2v8vEIP7cKfl0RBmMdEMypYlOuzGj2nnWliyWyQ=
+Date:   Thu, 23 Jan 2020 16:31:36 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next 4/7] RDMA/hns: Optimize qp buffer allocation flow
+Message-ID: <20200123143136.GO7018@unreal>
+References: <1579508377-55818-1-git-send-email-liweihang@huawei.com>
+ <1579508377-55818-5-git-send-email-liweihang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20200123142443.GN7018@unreal>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.8]
-X-ClientProxiedBy: EX13D19UWC002.ant.amazon.com (10.43.162.179) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1579508377-55818-5-git-send-email-liweihang@huawei.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 23/01/2020 16:24, Leon Romanovsky wrote:
-> On Wed, Jan 22, 2020 at 09:57:07AM +0200, Gal Pressman wrote:
->> On 21/01/2020 18:24, Leon Romanovsky wrote:
->>> On Tue, Jan 21, 2020 at 11:07:21AM +0200, Gal Pressman wrote:
->>>> On 20/01/2020 16:10, Gal Pressman wrote:
->>>>> The cited commit leads to register MR failures and random hangs when
->>>>> running different MPI applications. The exact root cause for the issue
->>>>> is still not clear, this revert brings us back to a stable state.
->>>>>
->>>>> This reverts commit 40ddb3f020834f9afb7aab31385994811f4db259.
->>>>>
->>>>> Fixes: 40ddb3f02083 ("RDMA/efa: Use API to get contiguous memory blocks aligned to device supported page size")
->>>>> Cc: Shiraz Saleem <shiraz.saleem@intel.com>
->>>>> Cc: stable@vger.kernel.org # 5.3
->>>>> Signed-off-by: Gal Pressman <galpress@amazon.com>
->>>>
->>>> Shiraz, I think I found the root cause here.
->>>> I'm noticing a register MR of size 32k, which is constructed from two sges, the
->>>> first sge of size 12k and the second of 20k.
->>>>
->>>> ib_umem_find_best_pgsz returns page shift 13 in the following way:
->>>>
->>>> 0x103dcb2000      0x103dcb5000       0x103dd5d000           0x103dd62000
->>>>           +----------+                      +------------------+
->>>>           |          |                      |                  |
->>>>           |  12k     |                      |     20k          |
->>>>           +----------+                      +------------------+
->>>>
->>>>           +------+------+                 +------+------+------+
->>>>           |      |      |                 |      |      |      |
->>>>           | 8k   | 8k   |                 | 8k   | 8k   | 8k   |
->>>>           +------+------+                 +------+------+------+
->>>> 0x103dcb2000       0x103dcb6000   0x103dd5c000              0x103dd62000
->>>>
->>>>
->>>> The top row is the original umem sgl, and the bottom is the sgl constructed by
->>>> rdma_for_each_block with page size of 8k.
->>>>
->>>> Is this the expected output? The 8k pages cover addresses which aren't part of
->>>> the MR. This breaks some of the assumptions in the driver (for example, the way
->>>> we calculate the number of pages in the MR) and I'm not sure our device can
->>>> handle such sgl.
->>>
->>> Artemy wrote this fix that can help you.
->>>
->>> commit 60c9fe2d18b657df950a5f4d5a7955694bd08e63
->>> Author: Artemy Kovalyov <artemyko@mellanox.com>
->>> Date:   Sun Dec 15 12:43:13 2019 +0200
->>>
->>>     RDMA/umem: Fix ib_umem_find_best_pgsz()
->>>
->>>     Except for the last entry, the ending iova alignment sets the maximum
->>>     possible page size as the low bits of the iova must be zero when
->>>     starting the next chunk.
->>>
->>>     Fixes: 4a35339958f1 ("RDMA/umem: Add API to find best driver supported page size in an MR")
->>>     Signed-off-by: Artemy Kovalyov <artemyko@mellanox.com>
->>>     Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->>>
->>> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
->>> index c3769a5f096d..06b6125b5ae1 100644
->>> --- a/drivers/infiniband/core/umem.c
->>> +++ b/drivers/infiniband/core/umem.c
->>> @@ -166,10 +166,13 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
->>>                  * for any address.
->>>                  */
->>>                 mask |= (sg_dma_address(sg) + pgoff) ^ va;
->>> -               if (i && i != (umem->nmap - 1))
->>> -                       /* restrict by length as well for interior SGEs */
->>> -                       mask |= sg_dma_len(sg);
->>>                 va += sg_dma_len(sg) - pgoff;
->>> +               /* Except for the last entry, the ending iova alignment sets
->>> +                * the maximum possible page size as the low bits of the iova
->>> +                * must be zero when starting the next chunk.
->>> +                */
->>> +               if (i != (umem->nmap - 1))
->>> +                       mask |= va;
->>>                 pgoff = 0;
->>>         }
->>>         best_pg_bit = rdma_find_pg_bit(mask, pgsz_bitmap);
->>
->> Thanks Leon, I'll test this and let you know if it fixes the issue.
->> When are you planning to submit this?
-> 
-> If it fixes your issues, I will be happy to do it.
+On Mon, Jan 20, 2020 at 04:19:34PM +0800, Weihang Li wrote:
+> From: Xi Wang <wangxi11@huawei.com>
+>
+> Encapsulate qp buffer allocation related code into 3 functions:
+> alloc_qp_buf(), map_qp_buf() and free_qp_buf().
+>
+> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+> Signed-off-by: Weihang Li <liweihang@huawei.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_device.h |   1 -
+>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 268 +++++++++++++++-------------
+>  2 files changed, 147 insertions(+), 122 deletions(-)
+>
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+> index 1f361e6..9ddeb2b 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
+> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+> @@ -660,7 +660,6 @@ struct hns_roce_qp {
+>  	/* this define must less than HNS_ROCE_MAX_BT_REGION */
+>  #define HNS_ROCE_WQE_REGION_MAX	 3
+>  	struct hns_roce_buf_region regions[HNS_ROCE_WQE_REGION_MAX];
+> -	int			region_cnt;
+>  	int                     wqe_bt_pg_shift;
+>
+>  	u32			buff_size;
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+> index 3bd5809..5184cb4 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+> @@ -716,23 +716,150 @@ static void free_rq_inline_buf(struct hns_roce_qp *hr_qp)
+>  	kfree(hr_qp->rq_inl_buf.wqe_list);
+>  }
+>
+> +static int map_qp_buf(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+> +		      u32 page_shift, bool is_user)
+> +{
+> +	dma_addr_t *buf_list[ARRAY_SIZE(hr_qp->regions)] = { NULL };
+> +	struct ib_device *ibdev = &hr_dev->ib_dev;
+> +	struct hns_roce_buf_region *r;
+> +	int region_count;
+> +	int buf_count;
+> +	int ret;
+> +	int i;
+> +
+> +	region_count = split_wqe_buf_region(hr_dev, hr_qp, hr_qp->regions,
+> +					ARRAY_SIZE(hr_qp->regions), page_shift);
+> +
+> +	/* alloc a tmp list for storing wqe buf address */
+> +	ret = hns_roce_alloc_buf_list(hr_qp->regions, buf_list, region_count);
+> +	if (ret) {
+> +		ibdev_err(ibdev, "alloc buf_list error for create qp\n");
+> +		return ret;
+> +	}
+> +
+> +	for (i = 0; i < region_count; i++) {
+> +		r = &hr_qp->regions[i];
+> +		if (is_user)
+> +			buf_count = hns_roce_get_umem_bufs(hr_dev, buf_list[i],
+> +					r->count, r->offset, hr_qp->umem,
+> +					page_shift);
+> +		else
+> +			buf_count = hns_roce_get_kmem_bufs(hr_dev, buf_list[i],
+> +					r->count, r->offset, &hr_qp->hr_buf);
+> +
+> +		if (buf_count != r->count) {
+> +			ibdev_err(ibdev, "get %s qp buf err,expect %d,ret %d.\n",
+> +				  is_user ? "user" : "kernel",
+> +				  r->count, buf_count);
+> +			ret = -ENOBUFS;
+> +			goto done;
+> +		}
+> +	}
+> +
+> +	hr_qp->wqe_bt_pg_shift = calc_wqe_bt_page_shift(hr_dev, hr_qp->regions,
+> +							region_count);
+> +	hns_roce_mtr_init(&hr_qp->mtr, PAGE_SHIFT + hr_qp->wqe_bt_pg_shift,
+> +			  page_shift);
+> +	ret = hns_roce_mtr_attach(hr_dev, &hr_qp->mtr, buf_list, hr_qp->regions,
+> +				  region_count);
+> +	if (ret)
+> +		ibdev_err(ibdev, "mtr attatch error for create qp\n");
+> +
+> +	goto done;
+> +
+> +	hns_roce_mtr_cleanup(hr_dev, &hr_qp->mtr);
+> +done:
+> +	hns_roce_free_buf_list(buf_list, region_count);
+> +
+> +	return ret;
+> +}
+> +
+> +static int alloc_qp_buf(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+> +			struct ib_qp_init_attr *init_attr,
+> +			struct ib_udata *udata, unsigned long addr)
+> +{
+> +	u32 page_shift = PAGE_SHIFT + hr_dev->caps.mtt_buf_pg_sz;
+> +	struct ib_device *ibdev = &hr_dev->ib_dev;
+> +	bool is_rq_buf_inline;
+> +	int ret;
+> +
+> +	is_rq_buf_inline = (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
+> +			   hns_roce_qp_has_rq(init_attr);
+> +	if (is_rq_buf_inline) {
+> +		ret = alloc_rq_inline_buf(hr_qp, init_attr);
+> +		if (ret) {
+> +			ibdev_err(ibdev, "alloc recv inline buffer error\n");
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	if (udata) {
+> +		hr_qp->umem = ib_umem_get(udata, addr, hr_qp->buff_size, 0);
+> +		if (IS_ERR(hr_qp->umem)) {
+> +			ibdev_err(ibdev, "get umem error for qp buf\n");
+> +			ret = PTR_ERR(hr_qp->umem);
+> +			goto err_inline;
+> +		}
+> +	} else {
+> +		ret = hns_roce_buf_alloc(hr_dev, hr_qp->buff_size,
+> +					 (1 << page_shift) * 2,
+> +					 &hr_qp->hr_buf, page_shift);
+> +		if (ret) {
+> +			ibdev_err(ibdev, "alloc roce buf error\n");
+> +			goto err_inline;
+> +		}
+> +	}
+> +
+> +	ret = map_qp_buf(hr_dev, hr_qp, page_shift, udata);
 
-So far it looks good to me, I'll let it run over the weekend to be on the safe side.
 
-Shiraz, does this fix make sense to you?
+I don't remember what was the resolution if it is ok to rely on "udata"
+as an indicator of user/kernel flow.
+
+> +	if (ret) {
+> +		ibdev_err(ibdev, "map roce buf error\n");
+
+You put ibdev_err() on almost every line in map_qp_buf(), please leave
+only one place.
+
+Thanks
