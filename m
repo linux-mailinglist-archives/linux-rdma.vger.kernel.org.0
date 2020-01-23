@@ -2,125 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97CFD147406
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jan 2020 23:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C415B147410
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Jan 2020 23:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728816AbgAWWt0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Jan 2020 17:49:26 -0500
-Received: from mail-eopbgr140054.outbound.protection.outlook.com ([40.107.14.54]:5863
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726232AbgAWWtZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 Jan 2020 17:49:25 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PVYCYhPhVvfQACKH4jxwYG3/eGQMk29vBiBRHPf9If92XsoYH5tiFpnN08te0jhx88CGeIm5R5SXQ+6s5AIEihdzS0hqdHptw70Ln2KIg/hUzqYUgeQJj/muIVQ5d4wTKie3t8lT1m7kYPho2SRWxMlHBfuqc2qFMfmC4cfErGhHUd8Tr7SGAoyoDnaNj9oI149F5cVAKce0wmnplajS9AHbqPTWDmltx2oWAnPoCixsujlSUCOuBCN/9WoyTX1/Aznfe9F/YS7YgZSuccCW+afvpv22qSZQcL3o69w2EFQn2g7LK00E2SdovP+qAUZQqcMxDZBlbgLBQ4pQ/JfaIw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QpaC0S1u8E16W5qGKm8aUCb5Npyybv9EZ2dIzL+Z+KE=;
- b=A7hO/H7MglbX5GeV1q50ujWz345D+34LWg+YxE2/wmpdjgzBxNQx6ojIghAymkkjhR/D8lkFOG8IqsBWkgZVZPy1YYuwYCRUae1NQ3CmjxGjngbFfEp6i0xWEmeL6Ny0CLfpv970vLzqX2Hqt3RcXUVBz0kdd0jO4DbB2YRCJtMlpm2D/pOQl9yL3kho6YxRFJ1LBViLTT7Wt4TI/3pnPl3xbVOZ21UmpQmU3G3FyTGifd34Gc/lQNGDaDwUhFoCAkRUBdEXQWWIcUW4EKfU7WMYlyMNu5BEK8YbUfURXbJ4t4LxDS7sC7IgxHCUvUNXPWX34h7mY5B3ukz4xz3WsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QpaC0S1u8E16W5qGKm8aUCb5Npyybv9EZ2dIzL+Z+KE=;
- b=OUJNymD5ATd172HOsGm9aNr0wB5Li+UaupnDSNlXRXng3DQe/3MDJo/J5bq2DtIyBue6LNc8g6xzQ4Muk0PspLgFSU8ftrTQ8edGJ2DomZe7rXBUO+3ehJaQd5hdcD0FKfOrn84WCZoMbQ6UB7wYXjbWxXkg9njdcrwiSR3uBok=
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB3168.eurprd05.prod.outlook.com (10.170.235.141) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2644.24; Thu, 23 Jan 2020 22:49:22 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::1c00:7925:d5c6:d60d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::1c00:7925:d5c6:d60d%7]) with mapi id 15.20.2644.027; Thu, 23 Jan 2020
- 22:49:22 +0000
-Received: from mlx.ziepe.ca (199.201.64.131) by MWHPR15CA0050.namprd15.prod.outlook.com (2603:10b6:301:4c::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2665.21 via Frontend Transport; Thu, 23 Jan 2020 22:49:22 +0000
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)    (envelope-from <jgg@mellanox.com>)      id 1iulHn-0003wO-V5; Thu, 23 Jan 2020 18:49:15 -0400
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     David Miller <davem@davemloft.net>
-CC:     "leon@kernel.org" <leon@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "santosh.shilimkar@oracle.com" <santosh.shilimkar@oracle.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [net-next, rdma-next] [pull request] Use ODP MRs for kernel ULPs
-Thread-Topic: [net-next, rdma-next] [pull request] Use ODP MRs for kernel ULPs
-Thread-Index: AQHVz2OPYEit//2cFkOd4SlTd9Kfsaf03YkAgAQCXIA=
-Date:   Thu, 23 Jan 2020 22:49:22 +0000
-Message-ID: <20200123224915.GK7947@mellanox.com>
-References: <20200120073046.75590-1-leon@kernel.org>
- <20200121.103546.795107006412728523.davem@davemloft.net>
-In-Reply-To: <20200121.103546.795107006412728523.davem@davemloft.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR15CA0050.namprd15.prod.outlook.com
- (2603:10b6:301:4c::12) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [199.201.64.131]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f40399d4-832e-4839-7ffa-08d7a0567cf6
-x-ms-traffictypediagnostic: VI1PR05MB3168:|VI1PR05MB3168:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB31685734233E79F286FD2A72CF0F0@VI1PR05MB3168.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-forefront-prvs: 029174C036
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(346002)(376002)(396003)(39860400002)(136003)(199004)(189003)(1076003)(52116002)(6666004)(2906002)(316002)(66476007)(66556008)(64756008)(66446008)(71200400001)(26005)(6916009)(66946007)(54906003)(186003)(33656002)(8936002)(4744005)(5660300002)(86362001)(9786002)(9746002)(478600001)(81156014)(36756003)(4326008)(2616005)(8676002)(81166006)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3168;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UbKBxc4rZFag702I33XXy2JwGtckdForfJplO6y8yteYXzCVFFdaASvmdb1+8TP/KeFUH+vOUHFhR+CRma/PqodylWYmv9acFYUnimlWNZefjHzqp+5R7hRR4U1oAipGccOWlWFbh5MokrbcwHEZ1yn2DK7VarPtK/WOxIQyPb1EVSwIoJHq7R+aCZYyQ6FTXuZBrKeHhdOT3FEbMSo1NMx5xr7/Zh9IhDIq/aBsvwLXoHRS1Brfam8X1Hig5FqEx1YO+ClMDlz7ZcqAoUltuyOXJ+RwOPZmPEgn+gj917iumXOEHgsPYXsXBaYAazGeRj0abFLJ8uG+eg1N9pCLhIU8k5mLOY4KhEMRcRL9J3XHm3Y/mkC0aSsdV94FOfEc2xFR1S0NetUsH98BQjjgPRRVti5cAR66OEV9Z53VhU9l8kUv/QixL7vaNOSsA/VIB0ORqwJg70X44oi4ugpJn73At2080mzuMpLO4LYrsVgDxEnZRHf08oyAuZB6hOEM
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3C9B7205D765CF4195B6C6918F0F2789@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1729525AbgAWWyt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Jan 2020 17:54:49 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:50236 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729149AbgAWWyt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Jan 2020 17:54:49 -0500
+Received: by mail-pj1-f66.google.com with SMTP id r67so152356pjb.0
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Jan 2020 14:54:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zCt+pEZF8rtCpQZT079nkBs/OA1g4Pz4/A9DOj6oVKM=;
+        b=EPODQQd/OGO571bXNFZrBYUmthH4IP6QCRf3zcCWjWU+dFUqCrsywLonEyz9db/PG0
+         k7nHh3l4uAdpJkmafZXR9OIrM9XjN0d6ehAaiyrLvEoPLsb3dN9N7b4DTnvCFVe79uPo
+         LK+AIZBWCxoc1JTmyh2zHgdRUyWsb65lt8ddqNbOCWclfBHPCRE3do/YCt8108NJIlJV
+         +e9qhSWgmytfIEeH7cy4tuJI5VwNRPM5bZLFWDba0tr6rqFR+O+ThH2TeGU0L6lnBwzb
+         8+GKvZT3WhXvpx6hFUtiNop0S6v+WLE7ipWKO+RBrD9OVWzeqM9iyNc+Letc40FM8zW9
+         ND5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zCt+pEZF8rtCpQZT079nkBs/OA1g4Pz4/A9DOj6oVKM=;
+        b=KUsFiuHbRraibiyw8QMO4QvU7Nb5tvunEo2VlQpO61CGQV/GDohU0NfPoP3ee//BBH
+         i1bZ8yjsNzT9rgbrkjRPq1lFBslQHmQsZQ7wygAzyzOJshVnmI4si+ahOY2EnjiQutpc
+         N0mZ0G6tLNBgDR9IDpGBIJ58USBHlWAT6N+HBPghgtBHoNZR8vZpWzyV3Bhrp9D1qqN6
+         hEzXu6rH0pFjPBkinDkdM3lK6HpcMC60UAM+mLx364iDb2I2xsGizzIAZQqgvri4sas0
+         myuN9j6hwqem+r5W78DMishNU786pofxQHsUfibPaKy+nlIvQ3lB9MkfXpKF4T5pkHeH
+         tg+w==
+X-Gm-Message-State: APjAAAXO50ERMJdGP0etHsj4zfzBVjCTV+GsMcVqnNsirBaQ6I4S0u9R
+        xkRDP5ajBrH/mSzVU8wRhvDyHvcnhoeKfQ==
+X-Google-Smtp-Source: APXvYqwdLKDI2EBTZM2L25CWTs/hIf7yeCIFNmNXwWAwJs4Nji23pTBIvwqAMUu3PFmNsEh0YlwDrA==
+X-Received: by 2002:a17:902:463:: with SMTP id 90mr444853ple.213.1579820088965;
+        Thu, 23 Jan 2020 14:54:48 -0800 (PST)
+Received: from ziepe.ca ([199.201.64.131])
+        by smtp.gmail.com with ESMTPSA id x65sm3942542pfb.171.2020.01.23.14.54.48
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 23 Jan 2020 14:54:48 -0800 (PST)
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iulN9-0003yh-JT; Thu, 23 Jan 2020 18:54:47 -0400
+Date:   Thu, 23 Jan 2020 18:54:47 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next] RDMA/hns: Add support for extended atomic in
+ userspace
+Message-ID: <20200123225447.GA15167@ziepe.ca>
+References: <1579052546-11746-1-git-send-email-liweihang@huawei.com>
+ <20200115205611.GG25201@ziepe.ca>
+ <9b7a3629-0564-6643-f6e7-c2f098afd010@huawei.com>
+ <20200116195118.GG10759@ziepe.ca>
+ <cebc88dc-09fe-a1dd-a3da-a3de55deb732@huawei.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f40399d4-832e-4839-7ffa-08d7a0567cf6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2020 22:49:22.3193
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 23JBEsKEVUmiqVd/mW0YP657Z0bq3MvmFfwaQ41tL5OpL+wNSqkwzG3viCqLWzkpzlUBmQv+h3DOpQmDHUx4KA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3168
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cebc88dc-09fe-a1dd-a3da-a3de55deb732@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 21, 2020 at 10:35:46AM +0100, David Miller wrote:
-> From: Leon Romanovsky <leon@kernel.org>
-> Date: Mon, 20 Jan 2020 09:30:46 +0200
->=20
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> >=20
-> > Hi David, Jakub, Doug and Jason
-> >=20
-> > This is pull request to previously posted and reviewed series [1] which=
- touches
-> > RDMA and netdev subsystems. RDMA part was approved for inclusion by Jas=
-on [2]
-> > and RDS patches were acked by Santosh [3].
-> >=20
-> > For your convenience, the series is based on clean v5.5-rc6 tag and app=
-lies
-> > cleanly to both subsystems.
-> >=20
-> > Please pull and let me know if there's any problem. I'm very rare doing=
- PRs
-> > and sorry in advance if something is not as expected.
->=20
-> Pulled into net-next, thanks.
+On Wed, Jan 22, 2020 at 04:54:55PM +0800, Weihang Li wrote:
+> 
+> 
+> On 2020/1/17 3:51, Jason Gunthorpe wrote:
+> >>> What happens to your userspace if it runs on an old kernel and tries
+> >>> to use extended atomic?
+> >>>
+> >>> Jason
+> >>>
+> >> Hi Jason,
+> >>
+> >> If the hns userspace runs with old kernel, the hardware will report a asynchronous
+> >> event for the extended atomic operation and modify the qp to error state because
+> >> the enable bit in this qp's context hasn't been set.
+> >>
+> >> The driver will print like this:
+> >>
+> >> [ 1252.240921] hns3 0000:7d:00.0: Invalid request local work queue 0x9 error.
+> >> [ 1252.247772] hns3 0000:7d:00.0: no hr_qp can be found!
+> > Ideally the provider will not set
+> > IBV_PCI_ATOMIC_OPERATION_4_BYTE_SIZE_SUP and related without kernel
+> > support..
+> > 
+> > I've applied this patch, but I feel like you may need a followup to
+> > fix the capability reporting?
+> > 
+> > Jason
+> 
+> Hi Jason,
+> 
+> Thank for your suggestions.
+> 
+> But I'm confuse about the relationship between "PCI ATOMIC" in this macro
+> and atomic operations in RDMA.
+> 
+> I found the related series on patchwork:
+> https://patchwork.kernel.org/cover/10782873/
 
-I've merged it into rdma.get as well, thanks everyone
+I may have got the wrong capability bit here, I'm not sure where the
+capability bits for extended atomics are actually
 
 Jason
