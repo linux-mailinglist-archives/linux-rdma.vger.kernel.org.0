@@ -2,88 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD256147702
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Jan 2020 03:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8B2147850
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Jan 2020 06:52:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730177AbgAXCwY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Jan 2020 21:52:24 -0500
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:34779 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730355AbgAXCwY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Jan 2020 21:52:24 -0500
-Received: by mail-pj1-f67.google.com with SMTP id f2so217137pjq.1
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Jan 2020 18:52:23 -0800 (PST)
+        id S1726382AbgAXFwx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Jan 2020 00:52:53 -0500
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:33345 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725787AbgAXFwx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Jan 2020 00:52:53 -0500
+Received: by mail-pl1-f194.google.com with SMTP id ay11so337394plb.0
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Jan 2020 21:52:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=+Jtje9PzdEFeKTXOcqQTD8adTbqITK8jdsG/R2A7AX8=;
-        b=JFRg77kCHY7BV5hfbYDprPhohNPs2OasesHM0M5Htda7XBUsY4XcUNquAXDlwSzMdd
-         u/uSwCEgyJcbrUnZ2n0jBbtr2qFg0BUlZQh95U/iqPHxqf+RZ27Kh0nn1zsvHbdl/B5t
-         qBmGDZQaCO9O0wVcBWvt34bGvY/O4vZ2rlyMF4t2WmjT5wtUwrLAtF3X4ye0C8NgxpQd
-         ZkNH8Cvu3UjCCBl2h94e2aNiFhBW5jXGeonrXlshNGwRu3WR/Otb8PnMHSnGvN5hqiUk
-         Zxre/fjgiBqEQaaow4koVxgu/zlhlcBk4LwnyOlvlL8dJmCNDR2JHhGeMLq/YLFZuVGF
-         n7XA==
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=ZfdkyF037na11WdCTJGSSaJVYZ0qyQobrI4cOtQzvWg=;
+        b=iATLIDAmmkeRL/lT8JEaxCKTmOhq4ediNn1h1EbXThOkB3ehC5CahqJUNNujFCgpox
+         32A06zJPe8GZMbqHV7Xl8WpKKgfML4kPkkdqeGQvVBMKL5s3hi3niuhkMh0C+WL7vYLJ
+         bKYfvw/bZmB83SKP0QrcvowzM+FiYSk9HJ1qo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+Jtje9PzdEFeKTXOcqQTD8adTbqITK8jdsG/R2A7AX8=;
-        b=YM9CG4UwtQk5OdL8E+3RdM4SkQn7SOjcgNPMb08BrWnWFpFcqgvoIFISoB0Lqz28/I
-         zbzQJH+KTAleaQ6eIzTEkoKosGTda0pd8tTtPbbCNiFnBwyJPU+d1CW12G4Nxlc9ItWf
-         F17+WTXMCaywbEmoX3BHMJkbrtTlQJXCf9u0GOrJewkNV5atGGI5yRXYBs78mJZ/DInD
-         YRJpBVPY2Wql0Yf309cGU6kw4kSTdJr+oxJtCmyksxgMQ2qAB7xpSM0Dnh6oZigv0sOg
-         t/Yoslw9a9SiGNOE2VHwpuA/1dq5PSiJnnOtOIA7yd6jh4e8/FxOfqWiJbWNksrqH8M9
-         Zdog==
-X-Gm-Message-State: APjAAAUYx3SqofsW2qVJzmah2vkzguq+ekDkZ/vBe0W2UQ7K8vXyNsAD
-        9JZwuJTaw/SNvVCbTvyWRKffyg==
-X-Google-Smtp-Source: APXvYqzWQ2DtSK2CwiuWk6fQuD8WmyvfPzVBXvCYBm2swLW8wy6vd/uPMq/EqmZRVV6NZU9oGOuJEQ==
-X-Received: by 2002:a17:90a:c389:: with SMTP id h9mr910062pjt.128.1579834343395;
-        Thu, 23 Jan 2020 18:52:23 -0800 (PST)
-Received: from ziepe.ca ([216.9.110.1])
-        by smtp.gmail.com with ESMTPSA id i127sm4094711pfe.54.2020.01.23.18.52.22
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 Jan 2020 18:52:22 -0800 (PST)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iup53-0004Hr-BB; Thu, 23 Jan 2020 22:52:21 -0400
-Date:   Thu, 23 Jan 2020 22:52:21 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     Gal Pressman <galpress@amazon.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Leybovich, Yossi" <sleybo@amazon.com>
-Subject: Re: [PATCH for-rc] Revert "RDMA/efa: Use API to get contiguous
- memory blocks aligned to device supported page size"
-Message-ID: <20200124025221.GA16405@ziepe.ca>
-References: <20200120141001.63544-1-galpress@amazon.com>
- <0557a917-b6ad-1be7-e46b-cbe08f2ee4d3@amazon.com>
- <20200121162436.GL51881@unreal>
- <47c20471-2251-b93b-053d-87880fa0edf5@amazon.com>
- <20200123142443.GN7018@unreal>
- <60d8c528-1088-df8d-76f0-4746acfcfc7a@amazon.com>
- <9DD61F30A802C4429A01CA4200E302A7C57244BB@fmsmsx123.amr.corp.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7C57244BB@fmsmsx123.amr.corp.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZfdkyF037na11WdCTJGSSaJVYZ0qyQobrI4cOtQzvWg=;
+        b=hDisFxpklgjnIUbGki3DJV2wsEwEJsbq3QZjDYXiXB65GfV9v38wL99177pztV4hHW
+         egmVQ6Pe2x4e7lAFpcI/z4EiLc/aMKXi4FH6w7tLDgyzd5oLLkzpP5YqPdbKf2GYY1F8
+         E2Fogsf9VP0EnNkSYskJpQa2t9NFoOWUzxjXzRcWHUp8mRgA2+POiYshxIltv+qV7Haf
+         HtbGl2EW9ClmWELkamPTGWedLmQzMDMTpxsLKfY5SzGKIduq78Mx+HoEyH/qsirbJyz6
+         el4JLDWJVqBvV7m4ef+uVmMFmWtx3yGtzMtIyPH/+Rz++Wh1G1KdIgBVHmCUR9zqRAhR
+         pcEQ==
+X-Gm-Message-State: APjAAAWPuQXyy7gSb3ahtahpwurFP9oXyu2/nf19hVV50xljs0/E5Qlt
+        zpZolseJJEV0usjmdOMsh2N8UKg0ykLEiJehSMp183MHTUtFvBG9jj0UOgSBNCsU0UK5ZkE0wmJ
+        iekLE//7XWiL3b0KBCeoObTO+lYrki6rjXPgAI+9PW0IPdOAde3BZc06o0eSePOcaw9sNYS7Nep
+        vP25zWVA==
+X-Google-Smtp-Source: APXvYqyQivTNMsl/rlPYJBPQ/WUmmbFgEF5yGUpuXJO3mOy+uIyD7XZVqiKn4igD6IaDA2n5pl52VQ==
+X-Received: by 2002:a17:902:bd87:: with SMTP id q7mr1893613pls.239.1579845172474;
+        Thu, 23 Jan 2020 21:52:52 -0800 (PST)
+Received: from neo00-el73.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id r20sm4781024pgu.89.2020.01.23.21.52.50
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 Jan 2020 21:52:52 -0800 (PST)
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     jgg@mellanox.com, dledford@redhat.com
+Subject: [PATCH for-next 0/7] Refactor control path of bnxt_re driver
+Date:   Fri, 24 Jan 2020 00:52:38 -0500
+Message-Id: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 12:40:18AM +0000, Saleem, Shiraz wrote:
-> It would be good to get the debug data to back this or prove it wrong.
-> But if this is indeed what's happening, then ORing in the sgl->length for the
-> first sge to restrict the page size might cut it. So something like,
+This is the first series out of few more forthcoming series to refactor
+Broadcom's RoCE driver. This series contains patches to refactor control
+path. Since this is first series, there may be few code section which may
+look redundant or overkill but those will be taken care in future patche
+series.
 
-or'ing in the sgl length is a nonsense thing to do, the length has
-nothing to do with the restriction, which is entirely based on IOVA
-bits which can't be passed through.
+These patches apply clean on tip of for-next branch.
+Each patch in this series is tested against user and kernel functionality.
 
-Jason
+Devesh Sharma (7):
+  RDMA/bnxt_re: Refactor queue pair creation code
+  RDMA/bnxt_re: Replace chip context structure with pointer
+  RDMA/bnxt_re: Refactor hardware queue memory allocation
+  RDMA/bnxt_re: Refactor net ring allocation function
+  RDMA/bnxt_re: Refactor command queue management code
+  RDMA/bnxt_re: Refactor notification queue management code
+  RDMA/bnxt_re: Refactor doorbell management functions
+
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h    |  24 +-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c   | 670 +++++++++++++++++++----------
+ drivers/infiniband/hw/bnxt_re/main.c       | 134 +++---
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c   | 423 +++++++++---------
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h   |  94 ++--
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 474 ++++++++++++--------
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.h |  85 ++--
+ drivers/infiniband/hw/bnxt_re/qplib_res.c  | 475 ++++++++++++--------
+ drivers/infiniband/hw/bnxt_re/qplib_res.h  | 145 ++++++-
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c   |  52 ++-
+ 10 files changed, 1579 insertions(+), 997 deletions(-)
+
+-- 
+1.8.3.1
+
