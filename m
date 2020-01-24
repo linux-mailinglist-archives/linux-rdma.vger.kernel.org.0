@@ -2,115 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 70AB5148FD2
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Jan 2020 21:55:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA64A148FF7
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Jan 2020 22:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729045AbgAXUzB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Jan 2020 15:55:01 -0500
-Received: from mail-il1-f196.google.com ([209.85.166.196]:36683 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728831AbgAXUzB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Jan 2020 15:55:01 -0500
-Received: by mail-il1-f196.google.com with SMTP id b15so2687558iln.3
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Jan 2020 12:55:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0n9u51frLq42YXKsunChQaFJhmu3sf5UYr42H8mSzXw=;
-        b=e2WK6xepBBB4EtzGMwqE4iZ6I7TEZG6kivlxfnbRGABVPMUeWRhbk7sJ0AlQ41+rwW
-         vr1XSWWVZdvAF3Rojw/D/uXTMD4I9pCKZyz2nb4FihBVr1vt7Yc0kPqo9S01F0T38ccl
-         aWE+KB8nHY/+RMJmIcnPv01KZmjNozGnfIcZtQPrGNDqEm4i1hIF2rmJEiyqzRVGjwV4
-         zvhgVw4r2a9mpveyXRTc826jwOTNOGzlScBbwPP83droAePq/8fq6Egg4fSECRXFl+/X
-         xTfoRvvzDUTc9Ge8gfR2JEcBx8nhLKZyt3aovXRWuz94FwZ7E6SgvfGuu9/FWs3tn5/1
-         oeSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0n9u51frLq42YXKsunChQaFJhmu3sf5UYr42H8mSzXw=;
-        b=CQ9ihaNSOjHGdxhjyWUA0VLh3DzM/27oJH0dgxxETsHkq/A6AngLpvOH7PFbeQ+Z4x
-         b7J30j8MHbhg2ow4GQsyFRj41M+x+CHWtZHJFGAqmQ5BER5i55yIV6rJe303H+Neg2jr
-         zxnuR5LwtOhMuy4gX0ZSVru4hr4V7towT8+CaoLO25CQmpPP1ayFO2VY1+rUTR4+WkVW
-         Dj6isT2FAbz7ute2pzDNZ3iSL4d72U6FJ6YTo0IBnHT5/MSG7+w65yiYACyFPDpD/Wy9
-         A7hmkGwi8VXzVEbqEiCpaNm/lo4JCVPz8T439tybyZvvhduF+AxyMc9FSbTpxjpNR/LI
-         cncA==
-X-Gm-Message-State: APjAAAV9VPEXvvDm2BjTz2ErDGTEX2TqEJdcg5Mi5pmlnzKE6ePLqDu0
-        oTEGehpcMwGhXnOFXhXfeHv9QAQyuKXOaxTuYM1WYg==
-X-Google-Smtp-Source: APXvYqz0AtvAHedtY5gehru+dAerzBiUAXq+YrmyX+8ObY9I8Jr7SyNAQggbUfCicKDPQDc9yHO3tH/caNLRJkwTvuo=
-X-Received: by 2002:a05:6e02:f0f:: with SMTP id x15mr4685344ilj.298.1579899300670;
- Fri, 24 Jan 2020 12:55:00 -0800 (PST)
+        id S1725767AbgAXVPm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Jan 2020 16:15:42 -0500
+Received: from mail-eopbgr130058.outbound.protection.outlook.com ([40.107.13.58]:11140
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725765AbgAXVPm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 24 Jan 2020 16:15:42 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gRS8IPRQRp8uuBR7HFeRQ638t7jmb6vtFd2kMGE7EEklsfLorItV0pDwtLjh2Ym9FeL0iIJG8h7Q7qduaJXBfHOBu2NZVqZ1GAs/80aqTZzPwUHwrktWIoUbDdddTUBVLIBpeWiU346KOCl/36QYZ57MwHoeam+UtLu0qZswBe6f3QGBwrmvQuQ3z3gEQfTbTxKq8tKOrfG55aQUIR4KCxuJLjknVyRZS0Z9EmMEjaWuYbnaTe1n6+ljp+MbTMCQ0VSUPuoHBnw9iYZZfHOEKRGeXt/7EmAhPPNmPcQOl39uZBfqrQ5Skcwum8LTosjOgfQjgEMyTC15afMAnQEaVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iZgLpvIuesQbbZJZi1ZqwyPT20jg5xqu6tuzQwUA38s=;
+ b=Bwg8HwxhgOP5qKKeGflSj7PyNN3247NSC6Y2xPPPbYOJND8RA7ozeeT+bTiPbFS0e/FFK+t3ULOhR3hhxgTM3Kr7fNb0vMCzRI6tfqhBamPKKoP/dPRurLD/OPqQWkd0DCObc9wtO9k1Dc+5drrUXpgrtad2TeziDq7B+FymAd0RPsCXjpbmgiuuU+5+DXW3VvoE1sv1UBTZtZ7SeMzIYW6QHz/YmQDL/UA7sMm4koV3JqHsJMdLmx6lTjqGoLytxLXfrN/idb6VNqqE1UcJMuLtvkcjfEVBxIRRyYKXNW3PTwHzkqgPqXuDUASe5vsj+TMCqtf5xHkvkOdNj+vuCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iZgLpvIuesQbbZJZi1ZqwyPT20jg5xqu6tuzQwUA38s=;
+ b=CftKR0I8VYnG0uhupkIetb3HKOKgTfeokaa1eFm1QjsyHWF+CdppFQUFn0c/tOHVUzX4i0VfDpPp52r+BWXX27aHLk5VrMohMZyDguL6DywFyMd3VXDeZ8PQE6ImuTDauy1LtXQcV3pXkst1uGrfVdXf9f+FgnzQTFhU/cNrAPE=
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (20.177.51.151) by
+ VI1PR05MB5534.eurprd05.prod.outlook.com (20.177.203.17) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2644.19; Fri, 24 Jan 2020 21:15:38 +0000
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::d830:96fc:e928:c096]) by VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::d830:96fc:e928:c096%6]) with mapi id 15.20.2644.027; Fri, 24 Jan 2020
+ 21:15:38 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     Leon Romanovsky <leonro@mellanox.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Erez Shitrit <erezsh@mellanox.com>
+Subject: Re: [PATCH mlx5-next] net/mlx5: Add bit to indicate support for
+ encap/decap in sw-steering managed tables
+Thread-Topic: [PATCH mlx5-next] net/mlx5: Add bit to indicate support for
+ encap/decap in sw-steering managed tables
+Thread-Index: AQHV0bfildO3/fmBk0KPwytw+zNPB6f6U2cA
+Date:   Fri, 24 Jan 2020 21:15:38 +0000
+Message-ID: <66a3db5c32af1e93cbd066e9146975c65c29651c.camel@mellanox.com>
+References: <20200123063904.685314-1-saeedm@mellanox.com>
+In-Reply-To: <20200123063904.685314-1-saeedm@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.3 (3.34.3-1.fc31) 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-originating-ip: [209.116.155.178]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: e16654e9-05d4-4274-6b80-08d7a1128fc2
+x-ms-traffictypediagnostic: VI1PR05MB5534:|VI1PR05MB5534:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB55346E7E7155703DB6346484BE0E0@VI1PR05MB5534.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2449;
+x-forefront-prvs: 02929ECF07
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(376002)(346002)(366004)(39850400004)(396003)(199004)(189003)(8936002)(6486002)(6636002)(2616005)(6862004)(107886003)(36756003)(316002)(37006003)(66446008)(54906003)(4744005)(66556008)(76116006)(2906002)(81166006)(26005)(64756008)(81156014)(66476007)(66946007)(91956017)(8676002)(86362001)(6512007)(71200400001)(5660300002)(4326008)(478600001)(450100002)(6506007)(186003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5534;H:VI1PR05MB5102.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: NT1yYGd2w6i1lPJUrB/HXAP6VFwheZVwrbmgBpKL1wNh1j7TKMj+4yRqil207aZlf8UQBgt0LM9HGcweX1NXbElAkwOW74cTF2IgrdGsZdZs4BA5dDi1NMgluKf5wq5XxERNLXksxo6Q5xSmcFozTR+71itUZ349PU5+NoCXUACfPz+BJnewHGrOf/8KdPMOiLm2SQ1HlgWhoeBEYpZLUZxw/Bprfhu648JV1WqT/ns191+z6VBZJ4bBtb3ZrFxtKhDPRTcPPGLvIOpn6DXD8UlMoILLpGnYeVqy01UuBfJPHoPu2i4gdaQ+IK6qK8wEpU9o9P2Is8u504wsv3DNyFBJVYewD9jSscM+IVspk+hDBO2BrUi/dk+3VxsxPysdxCOrvbEWPhdjoeO5UNu+jZxBBzcpQ7r0oyLGCAfIcyQyzf1k+M6kVYc15xjc68k+
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C80C5170D4D4B74EAAAD7FEAFBAB7EF0@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200124204753.13154-1-jinpuwang@gmail.com>
-In-Reply-To: <20200124204753.13154-1-jinpuwang@gmail.com>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Fri, 24 Jan 2020 21:54:49 +0100
-Message-ID: <CAMGffEnKMZ1=KeEjTgm2K-JdMkfQnVHCNHCU+HtzzW6SjOUD9Q@mail.gmail.com>
-Subject: Re: [PATCH v8 00/25] RTRS (former IBTRS) RDMA Transport Library and
- RNBD (former IBNBD) RDMA Network Block Device
-To:     Jack Wang <jinpuwang@gmail.com>
-Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Roman Penyaev <rpenyaev@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e16654e9-05d4-4274-6b80-08d7a1128fc2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2020 21:15:38.8361
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cXat6vhnXcMmpmKtpHnrnsfa405OufB8zt9foUsQNrSLCnSOgmiBti/4YytFSeHuqZfyK/LmTdwNk9Hj3zQVuA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5534
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 9:47 PM Jack Wang <jinpuwang@gmail.com> wrote:
->
-> Hi all,
->
-> Here is v8 of  the RTRS (former IBTRS) RDMA Transport Library and the
-> corresponding RNBD (former IBNBD) RDMA Network Block Device, which includes
-> changes to address comments from the community.
->
-> Introduction
-> -------------
->
-> RTRS (RDMA Transport) is a reliable high speed transport library
-> which allows for establishing connection between client and server
-> machines via RDMA. It is based on RDMA-CM, so expect also to support RoCE
-> and iWARP, but we mainly tested in IB environment. It is optimized to
-> transfer (read/write) IO blocks in the sense that it follows the BIO
-> semantics of providing the possibility to either write data from a
-> scatter-gather list to the remote side or to request ("read") data
-> transfer from the remote side into a given set of buffers.
->
-> RTRS is multipath capable and provides I/O fail-over and load-balancing
-> functionality, i.e. in RTRS terminology, an RTRS path is a set of RDMA
-> connections and particular path is selected according to the load-balancing
-> policy. It can be used for other components beside RNBD.
->
-> Module parameter always_invalidate is introduced for the security problem
-> discussed in LPC RDMA MC 2019. When always_invalidate=Y, on the server side we
-> invalidate each rdma buffer before we hand it over to RNBD server and
-> then pass it to the block layer. A new rkey is generated and registered for the
-> buffer after it returns back from the block layer and RNBD server.
-> The new rkey is sent back to the client along with the IO result.
-> The procedure is the default behaviour of the driver. This invalidation and
-> registration on each IO causes performance drop of up to 20%. A user of the
-> driver may choose to load the modules with this mechanism switched off
-> (always_invalidate=N), if he understands and can take the risk of a malicious
-> client being able to corrupt memory of a server it is connected to. This might
-> be a reasonable option in a scenario where all the clients and all the servers
-> are located within a secure datacenter.
->
-> RNBD (RDMA Network Block Device) is a pair of kernel modules
-> (client and server) that allow for remote access of a block device on
-> the server over RTRS protocol. After being mapped, the remote block
-> devices can be accessed on the client side as local block devices.
-> Internally RNBD uses RTRS as an RDMA transport library.
->
-> Commits for kernel can be found here:
->    https://github.com/ionos-enterprise/ibnbd/commits/linux-5.5-rc6-ibnbd-v7
-Sorry, forgot to update the link:
-https://github.com/ionos-enterprise/ibnbd/tree/linux-5.5-rc7-ibnbd-v8
+T24gVGh1LCAyMDIwLTAxLTIzIGF0IDA2OjM5ICswMDAwLCBTYWVlZCBNYWhhbWVlZCB3cm90ZToN
+Cj4gRnJvbTogRXJleiBTaGl0cml0IDxlcmV6c2hAbWVsbGFub3guY29tPg0KPiANCj4gV2hlbmV2
+ZXIgc2V0LCB0aGUgRlcgYWxsb3dzIGRyaXZlciB0byBvcGVuIHN3LXN0ZWVyaW5nIHRhYmxlIHdp
+dGgNCj4gZW5jYXAvZGVjYXAgYWJpbGl0eS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEVyZXogU2hp
+dHJpdCA8ZXJlenNoQG1lbGxhbm94LmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogU2FlZWQgTWFoYW1l
+ZWQgPHNhZWVkbUBtZWxsYW5veC5jb20+DQo+IC0tLQ0KPiAgaW5jbHVkZS9saW51eC9tbHg1L21s
+eDVfaWZjLmggfCA1ICsrKystDQo+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAx
+IGRlbGV0aW9uKC0pDQo+IA0KQXBwbGllZCB0byBtbHg1LW5leHQNCg0KVGhhbmtzLA0KU2FlZWQu
+DQo=
