@@ -2,90 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E200E14974C
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Jan 2020 19:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F12D149753
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Jan 2020 20:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgAYSwU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 25 Jan 2020 13:52:20 -0500
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:44009 "EHLO
+        id S1726565AbgAYTE4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 25 Jan 2020 14:04:56 -0500
+Received: from mail-yb1-f193.google.com ([209.85.219.193]:41698 "EHLO
         mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgAYSwU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 25 Jan 2020 13:52:20 -0500
-Received: by mail-yb1-f193.google.com with SMTP id k15so2790567ybd.10
-        for <linux-rdma@vger.kernel.org>; Sat, 25 Jan 2020 10:52:19 -0800 (PST)
+        with ESMTP id S1726282AbgAYTE4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 25 Jan 2020 14:04:56 -0500
+Received: by mail-yb1-f193.google.com with SMTP id z15so2804221ybm.8
+        for <linux-rdma@vger.kernel.org>; Sat, 25 Jan 2020 11:04:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=UTbeiQ/ySpyi4ZP2zQa5gaStGWMwxNAEJcO3synylw4=;
-        b=DiG6s+qsxNJlhcB+xEHwHoO8Vh816I/psT+tLIBYMzSYKJNNxIO0rOCmY0ofhSVkUL
-         Afad9+62pUKuVgZOjQqddxgynM7ozuwuuc0EU000p6xK4taEdaOwx9toJDW5X3VcMPfU
-         8WKfqc04pNHSH31mF7ZPNnIMtEppI4uMzd12kKq09otEtd1TtQRgpcCp9K3xbLxZzfrX
-         xI9YQEp/5+IfoGoJWy56VMaVKDgdWgtrFAcU8EryH75Pg183DhEMFU/ARtZmVqABTR9D
-         iq6w7INGE94pCcfZZqMbf1rl/M8F23PQDAYR9dm1vK24khFmBSIkekzY9WDLo3VlGUXW
-         nAXw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=Lx6zoF9l+s8fFKaF/OITBTPQQ6pnY4nPkFOxXyCiQfs=;
+        b=U50eu7Suc7wAyLlSOZPzcyaaIb7hfweFWL8mIHWg3XcgM+/2CfddjZjX85B6AgfcdL
+         wlm9hoWmUi4F8079oXizn2SKFlnWbB9E4n1NKiCED/AYQ8I8k9EdF7D0povlbHUc2g6/
+         pWoWblg2z/fmaOqGUOJjiqxbf2tg9OHNjSDiT+WTDvePDIOE2V9We7WFs7UzzZuzLU4u
+         GqfdBRyBsmIEfpVzIwx9AGQvT6haU3adTXVLE0Xu72VVztQJ+kr5bi/Q5x+oFnlCQQ2J
+         BqykTVZRwJ7u5Zne7of8/BDdSs6xftUL6Qvj4U3jB6nlmimUwT70CYpPzw2/BqoMtDAG
+         Dk3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=UTbeiQ/ySpyi4ZP2zQa5gaStGWMwxNAEJcO3synylw4=;
-        b=JrgLdYFUKiGqYrHgG8nsS4+J7WLLV+kbg6lOCCnchVLjBdrSTkvCKv88Umge4mh2uz
-         8oZPQ9oYUWtA5IFzeXDdHikW1rJJCqugDACEBdjdvVtAFyf/ArdD8hBziCAwpWKAFRpH
-         X+gotHFbevXaqPYFTwEin7Ij44weXH3/ugAGUxw3Y0nhBILy3sN/9p/zX43QnXnrl9R+
-         L5AnOLE+enERHTs++IijzqwCUnARu3vEkgjtzVcLMD3VCOwFXEd4/n6MwAVOtCOA/k8k
-         Q8+GXBXHdYNNAiQq+mhAofpBHL48EVrw96Y7251ndsX7mGaHACYgLlzmg26SZ+Zz5U+s
-         qNsQ==
-X-Gm-Message-State: APjAAAXPQDa41QjsLH2+dz7JC2LwNeGbLJbziSg22OPOK+OANSZJYyuo
-        a/IDbgE/M060b+swoVxoyaz+FA==
-X-Google-Smtp-Source: APXvYqxG2mYk1FKXAxH4EqTpywFIoSBIBzbZjIKtHStio+0vojIafihrsvK+8L6g/1K+67uJO0j/kA==
-X-Received: by 2002:a25:442:: with SMTP id 63mr7095492ybe.507.1579978339094;
-        Sat, 25 Jan 2020 10:52:19 -0800 (PST)
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Lx6zoF9l+s8fFKaF/OITBTPQQ6pnY4nPkFOxXyCiQfs=;
+        b=DQla5cNuV+8TJCRNxY5g9xEfgP3/sWv2wHMb/O1wLUDeJOrYZC1jarL2Xc/AdkLnQP
+         DUIGL0VGXnYnctNHfBLLTJ1orhJmgjye0Gyw3LIFWh3uHFimOuINfkobpdQsfnssEyjT
+         /vzKnALN8VFEXiiGDIw7d3MR70Mheo9c504chpGzDWRXk+ibAQ737XO01ASHz7ZzmPsg
+         rO8e/0KeK5j6s+WM8n2qkusfWDpzFk2/RqJMekMpVterW61/dFe2f7SoOqTd5k2gLO6y
+         N9Ekk40IWuD9Q17ZaqEovqYu+5YTQy9A3kMOirIAuskHm0QZGWeePyzAmNrR6VN/QDiS
+         XZAg==
+X-Gm-Message-State: APjAAAWgWBOcbHBSIpkV8TSd3gegzpRraiHXSQXJD7EgxrrT0ZEaK+UB
+        yB/z201qGdXEDCTSIDCCZltYmQ==
+X-Google-Smtp-Source: APXvYqxwXxweGUcUNslBAGMjeZhE+jBgUQybSM4sA4z1hphuYWKnqXtnv4+AStFcEym0r1P+NOCAsw==
+X-Received: by 2002:a25:8486:: with SMTP id v6mr7109125ybk.409.1579979094874;
+        Sat, 25 Jan 2020 11:04:54 -0800 (PST)
 Received: from ziepe.ca ([199.167.24.140])
-        by smtp.gmail.com with ESMTPSA id p126sm4175174ywe.12.2020.01.25.10.52.18
+        by smtp.gmail.com with ESMTPSA id u127sm3754607ywb.68.2020.01.25.11.04.54
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 25 Jan 2020 10:52:18 -0800 (PST)
+        Sat, 25 Jan 2020 11:04:54 -0800 (PST)
 Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1ivQXW-00041p-NC; Sat, 25 Jan 2020 14:52:14 -0400
-Date:   Sat, 25 Jan 2020 14:52:14 -0400
+        id 1ivQjh-0007qt-L1; Sat, 25 Jan 2020 15:04:49 -0400
+Date:   Sat, 25 Jan 2020 15:04:49 -0400
 From:   Jason <jgg@ziepe.ca>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        Gal Pressman <galpress@amazon.com>
-Subject: Re: [PATCH] RDMA/core: Ensure that rdma_user_mmap_entry_remove() is
- a fence
-Message-ID: <20200125185214.GA15456@jggl>
-References: <20200115202041.GA17199@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Danit Goldberg <danitg@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        linux-netdev <netdev@vger.kernel.org>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: Re: [PATCH mlx5-next] IB/mlx5: Return the administrative GUID if
+ exists
+Message-ID: <20200125190449.GA30147@jggl>
+References: <20200116120048.12744-1-leon@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200115202041.GA17199@ziepe.ca>
+In-Reply-To: <20200116120048.12744-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 08:20:44PM +0000, Jason Gunthorpe wrote:
-> The set of entry->driver_removed is missing locking, protect it with
-> xa_lock() which is held by the only reader.
+On Thu, Jan 16, 2020 at 02:00:48PM +0200, Leon Romanovsky wrote:
+> From: Danit Goldberg <danitg@mellanox.com>
 > 
-> Otherwise readers may continue to see driver_removed = false after
-> rdma_user_mmap_entry_remove() returns and may continue to try and
-> establish new mmaps.
+> A user can achieve the operational GUID (a.k.a affective GUID) through
+> link/infiniband. Therefore it is preferred to return the administrative
+> GUID if exists instead of the operational.
+> This way the PF can query which VF GUID will be set in the next bind.
+> In order to align with MAC address, zero is returned if
+> administrative GUID is not set.
 > 
-> Fixes: 3411f9f01b76 ("RDMA/core: Create mmap database and cookie helper functions")
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> Reviewed-by: Gal Pressman <galpress@amazon.com>
-> Acked-by: Michal Kalderon <michal.kalderon@marvell.com>
+> For example:
+> - Before setting administrative GUID:
+> ip link show
+> ib0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 4092 qdisc mq state UP mode DEFAULT group default qlen 256
+> link/infiniband 00:00:00:08:fe:80:00:00:00:00:00:00:52:54:00:c0:fe:12:34:55 brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+> vf 0     link/infiniband 00:00:00:08:fe:80:00:00:00:00:00:00:52:54:00:c0:fe:12:34:55 brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff,
+> spoof checking off, NODE_GUID 00:00:00:00:00:00:00:00, PORT_GUID 00:00:00:00:00:00:00:00, link-state auto, trust off, query_rss off
+> 
+> ip link set ib0 vf 0 node_guid 11:00:af:21:cb:05:11:00
+> ip link set ib0 vf 0 port_guid 22:11:af:21:cb:05:11:00
+> 
+> - After setting administrative GUID:
+> ip link show
+> ib0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 4092 qdisc mq state UP mode DEFAULT group default qlen 256
+> link/infiniband 00:00:00:08:fe:80:00:00:00:00:00:00:52:54:00:c0:fe:12:34:55 brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+> vf 0     link/infiniband 00:00:00:08:fe:80:00:00:00:00:00:00:52:54:00:c0:fe:12:34:55 brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff,
+> spoof checking off, NODE_GUID 11:00:af:21:cb:05:11:00, PORT_GUID 22:11:af:21:cb:05:11:00, link-state auto, trust off, query_rss off
+> 
+> Fixes: 9c0015ef0928 ("IB/mlx5: Implement callbacks for getting VFs GUID attributes")
+> Signed-off-by: Danit Goldberg <danitg@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 > ---
->  drivers/infiniband/core/ib_core_uverbs.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  drivers/infiniband/hw/mlx5/ib_virt.c | 28 ++++++++++++----------------
+>  include/linux/mlx5/driver.h          |  5 +++++
+>  2 files changed, 17 insertions(+), 16 deletions(-)
 
-Applied to for-next
+Applied to for-next, thanks
 
 Jason
