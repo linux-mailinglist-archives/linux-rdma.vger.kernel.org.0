@@ -2,95 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7719214976C
+	by mail.lfdr.de (Postfix) with ESMTP id EAD2514976D
 	for <lists+linux-rdma@lfdr.de>; Sat, 25 Jan 2020 20:24:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgAYTYM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 25 Jan 2020 14:24:12 -0500
-Received: from mail-yb1-f195.google.com ([209.85.219.195]:46418 "EHLO
-        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726454AbgAYTYM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 25 Jan 2020 14:24:12 -0500
-Received: by mail-yb1-f195.google.com with SMTP id p129so2811899ybc.13
-        for <linux-rdma@vger.kernel.org>; Sat, 25 Jan 2020 11:24:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3fE+BdfQJyOrYWATRSpdduqNM1YEkmmIyzs2cOGMrdI=;
-        b=KGt57QuHMprERFdzhfVsJN1dJJARrtbNmLt4UG7dyVIcrOCxij7OZ/lgq1w7+nbfTL
-         RnuwLTxSyMOGZLVqQplCfUlcoq/KkcLM4zo9a9e5GKbEO1e9J9rYzog9JsSQNzC0fZ8Z
-         YUtcJ+SwnwgfGo3TODBwd9RJ7VT4VzPRutoawsWvjUk2MPGVlD32STm97HfZG5yiZnsR
-         RsgK7HqxQjGIjvquXK1CQ8u12ZGpWKGoMKKYvB3HZJbZpgPAsGLkae4TdZIIn6b/TlJ/
-         0IgJUItqCW9h0vx0tXf2GhCXWZk0uR/UufuV4RY3bBYNvLtEAjjrN9p3N8P+JtBUYolK
-         bSbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3fE+BdfQJyOrYWATRSpdduqNM1YEkmmIyzs2cOGMrdI=;
-        b=m8KXVycWWDyTe7Wwgo4JP4MfRMTBIf9kkOO8VN7zaEB9p5jxi8Jne6ezhy7I/BL+UE
-         QufG/Xizlg/DdS3jjUbvbzqGC8DpeuonuQ+ndG0Jx3NK13c0TWh/hEhxmLt8ZNFl0Git
-         grDid5kbyriYD8bsPhwD+9q1eu1m4wB4og0lThpbvSIWVRK9LtLvpv5CCjfXphA/68De
-         jmonbd1rhICjO0RCi5JKp+HKTJ2cdCyPrkqaHAJII7G+/Etnbvod+91KAqd8OAkPHfx0
-         8kQsIeRVgowObm34WQM9NvYHgg2MZiochceh/iWoqT9VMErkvhTrBW9E2IKXS4UlblHz
-         yBjg==
-X-Gm-Message-State: APjAAAVsPL+lAIkK8PkNJSPPswKxjKLcSBA6j25pEfQvVCQ0UsIZm9W6
-        uLEQDx/on0Lfjru4LNuracr2KA==
-X-Google-Smtp-Source: APXvYqxnSvxonT8l4EXGs7FwI8GJJrEaynq8hTbAECSFwLJHUrvWAay12x9ZnvKOACPvjgJ78zTlkQ==
-X-Received: by 2002:a5b:f44:: with SMTP id y4mr7109048ybr.319.1579980251374;
-        Sat, 25 Jan 2020 11:24:11 -0800 (PST)
-Received: from ziepe.ca ([199.167.24.140])
-        by smtp.gmail.com with ESMTPSA id q16sm4081057ywa.110.2020.01.25.11.24.10
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 25 Jan 2020 11:24:10 -0800 (PST)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ivR2M-0004c3-DQ; Sat, 25 Jan 2020 15:24:06 -0400
-Date:   Sat, 25 Jan 2020 15:24:06 -0400
-From:   Jason <jgg@ziepe.ca>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Subject: Re: [PATCH 0/7] RDMA/cm: Remove open coded structure pack/unpack
-Message-ID: <20200125192406.GA17698@jggl>
-References: <20200116170037.30109-1-jgg@ziepe.ca>
+        id S1726703AbgAYTYj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 25 Jan 2020 14:24:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726612AbgAYTYj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 25 Jan 2020 14:24:39 -0500
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC4D320716;
+        Sat, 25 Jan 2020 19:24:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579980278;
+        bh=svuCOIvmzn8AXVk05zxy4YZFVmU7PdfsB/Br9vmpMOQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DjAa+AbazBLc5yQGBAntjjwuT4INjq028LPYhIkLM3hgrAAloop0BYNIYhCOP9thd
+         A247i59+dTlYCRIpTwoasNXAvnr1fd3F+YuKqhcuuy9pPx7gAgkB+Hj5YVifI4o7SZ
+         Ho0pPP9cnqKOsoM3lCweJdhe/MMlFL+wehMgp+LA=
+Date:   Sat, 25 Jan 2020 21:24:35 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        linux-netdev <netdev@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH net-next v1] net/core: Replace driver version to be
+ kernel version
+Message-ID: <20200125192435.GD2993@unreal>
+References: <20200125161401.40683-1-leon@kernel.org>
+ <b0f73391-d7f5-1efe-2927-bed02668f8c5@gmail.com>
+ <20200125184958.GA2993@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200116170037.30109-1-jgg@ziepe.ca>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200125184958.GA2993@unreal>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 01:00:30PM -0400, Jason Gunthorpe wrote:
-> From: Jason Gunthorpe <jgg@mellanox.com>
-> 
-> Instead of using a struct layout with a large number of open coded pack/unpack
-> inlines use a consistent set of macros generating GENMASK's for accessing the
-> members. The definitions follow the MAD layout tables in the IBA and are easier
-> to correlate with the specification.
-> 
-> Further the macros consistently use cpu endian values which will allow later
-> patches to remove alot of the __be stuff sprinkled randomly around.
-> 
-> The is a follow up to the series here:
-> 
-> https://lore.kernel.org/r/20191212093830.316934-1-leon@kernel.org
-> 
-> Jason Gunthorpe (6):
->   RDMA/cm: Add accessors for CM_REQ transport_type
->   RDMA/cm: Use IBA functions for simple get/set acessors
->   RDMA/cm: Use IBA functions for swapping get/set acessors
->   RDMA/cm: Use IBA functions for simple structure members
->   RDMA/cm: Use IBA functions for complex structure members
->   RDMA/cm: Remove CM message structs
-> 
-> Leon Romanovsky (1):
->   RDMA/cm: Add SET/GET implementations to hide IBA wire format
+On Sat, Jan 25, 2020 at 08:49:58PM +0200, Leon Romanovsky wrote:
+> On Sat, Jan 25, 2020 at 08:55:01AM -0800, Florian Fainelli wrote:
+> >
+> >
+> > On 1/25/2020 8:14 AM, Leon Romanovsky wrote:
+> > > From: Leon Romanovsky <leonro@mellanox.com>
+> > >
+> > > In order to stop useless driver version bumps and unify output
+> > > presented by ethtool -i, let's overwrite the version string.
+> > >
+> > > Before this change:
+> > > [leonro@erver ~]$ ethtool -i eth0
+> > > driver: virtio_net
+> > > version: 1.0.0
+> > > After this change:
+> > > [leonro@server ~]$ ethtool -i eth0
+> > > driver: virtio_net
+> > > version: 5.5.0-rc6+
+> > >
+> > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>> ---
+> > >  Changelog:
+> > >  v1: Resend per-Dave's request
+> > >      https://lore.kernel.org/linux-rdma/20200125.101311.1924780619716720495.davem@davemloft.net
+> > >      No changes at all and applied cleanly on top of "3333e50b64fe Merge branch 'mlxsw-Offload-TBF'"
+> > >  v0: https://lore.kernel.org/linux-rdma/20200123130541.30473-1-leon@kernel.org
+> >
+> > There does not appear to be any explanation why we think this is a good
+> > idea for *all* drivers, and not just the ones that are purely virtual?
+>
+> We beat this dead horse too many times already, latest discussion and
+> justification can be found in that thread.
+> https://lore.kernel.org/linux-rdma/20200122152627.14903-1-michal.kalderon@marvell.com/T/#md460ff8f976c532a89d6860411c3c50bb811038b
+>
+> However, it was discussed in ksummit mailing list too and overall
+> agreement that version exposed by in-tree modules are useless and
+> sometimes even worse. They mislead users to expect some features
+> or lack of them based on this arbitrary string.
+>
+> >
+> > Are you not concerned that this is ABI and that specific userland may be
+> > relying on a specific info format and we could now be breaking their
+> > version checks? I do not disagree that the version is not particularly
+> > useful for in-tree kernel, but this is ABI, and breaking user-space is
+> > usually a source of support questions.
+>
+> See this Linus's response:
+> "The unified policy is pretty much that version codes do not matter, do
+> not exist, and do not get updated.
+>
+> Things are supposed to be backwards and forwards compatible, because
+> we don't accept breakage in user space anyway. So versioning is
+> pointless, and only causes problems."
+> https://lore.kernel.org/ksummit-discuss/CA+55aFx9A=5cc0QZ7CySC4F2K7eYaEfzkdYEc9JaNgCcV25=rg@mail.gmail.com/
+>
+> I also don't think that declaring every print in the kernel as ABI is
+> good thing to do. We are not breaking binary ABI and continuing to
+> supply some sort of versioning, but in unified format and not in wild
+> west way like it is now.
+>
+> So bottom line, if some REAL user space application (not test suites) relies
+> on specific version reported from ethtool, it is already broken and can't work
+> sanely for stable@, distros and upstream kernels.
 
-Applied to for-next
+And about support questions,
+I'm already over-asked to update our mlx5 driver version every time some
+of our developers adds new feature (every week or two), which is insane.
+So I prefer to have one stable solution in the kernel.
 
-Jason
+Thanks
+
+>
+> Thanks
