@@ -2,111 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F12D149753
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Jan 2020 20:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7719214976C
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Jan 2020 20:24:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbgAYTE4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 25 Jan 2020 14:04:56 -0500
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:41698 "EHLO
-        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbgAYTE4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 25 Jan 2020 14:04:56 -0500
-Received: by mail-yb1-f193.google.com with SMTP id z15so2804221ybm.8
-        for <linux-rdma@vger.kernel.org>; Sat, 25 Jan 2020 11:04:55 -0800 (PST)
+        id S1726545AbgAYTYM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 25 Jan 2020 14:24:12 -0500
+Received: from mail-yb1-f195.google.com ([209.85.219.195]:46418 "EHLO
+        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726454AbgAYTYM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 25 Jan 2020 14:24:12 -0500
+Received: by mail-yb1-f195.google.com with SMTP id p129so2811899ybc.13
+        for <linux-rdma@vger.kernel.org>; Sat, 25 Jan 2020 11:24:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Lx6zoF9l+s8fFKaF/OITBTPQQ6pnY4nPkFOxXyCiQfs=;
-        b=U50eu7Suc7wAyLlSOZPzcyaaIb7hfweFWL8mIHWg3XcgM+/2CfddjZjX85B6AgfcdL
-         wlm9hoWmUi4F8079oXizn2SKFlnWbB9E4n1NKiCED/AYQ8I8k9EdF7D0povlbHUc2g6/
-         pWoWblg2z/fmaOqGUOJjiqxbf2tg9OHNjSDiT+WTDvePDIOE2V9We7WFs7UzzZuzLU4u
-         GqfdBRyBsmIEfpVzIwx9AGQvT6haU3adTXVLE0Xu72VVztQJ+kr5bi/Q5x+oFnlCQQ2J
-         BqykTVZRwJ7u5Zne7of8/BDdSs6xftUL6Qvj4U3jB6nlmimUwT70CYpPzw2/BqoMtDAG
-         Dk3A==
+        bh=3fE+BdfQJyOrYWATRSpdduqNM1YEkmmIyzs2cOGMrdI=;
+        b=KGt57QuHMprERFdzhfVsJN1dJJARrtbNmLt4UG7dyVIcrOCxij7OZ/lgq1w7+nbfTL
+         RnuwLTxSyMOGZLVqQplCfUlcoq/KkcLM4zo9a9e5GKbEO1e9J9rYzog9JsSQNzC0fZ8Z
+         YUtcJ+SwnwgfGo3TODBwd9RJ7VT4VzPRutoawsWvjUk2MPGVlD32STm97HfZG5yiZnsR
+         RsgK7HqxQjGIjvquXK1CQ8u12ZGpWKGoMKKYvB3HZJbZpgPAsGLkae4TdZIIn6b/TlJ/
+         0IgJUItqCW9h0vx0tXf2GhCXWZk0uR/UufuV4RY3bBYNvLtEAjjrN9p3N8P+JtBUYolK
+         bSbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Lx6zoF9l+s8fFKaF/OITBTPQQ6pnY4nPkFOxXyCiQfs=;
-        b=DQla5cNuV+8TJCRNxY5g9xEfgP3/sWv2wHMb/O1wLUDeJOrYZC1jarL2Xc/AdkLnQP
-         DUIGL0VGXnYnctNHfBLLTJ1orhJmgjye0Gyw3LIFWh3uHFimOuINfkobpdQsfnssEyjT
-         /vzKnALN8VFEXiiGDIw7d3MR70Mheo9c504chpGzDWRXk+ibAQ737XO01ASHz7ZzmPsg
-         rO8e/0KeK5j6s+WM8n2qkusfWDpzFk2/RqJMekMpVterW61/dFe2f7SoOqTd5k2gLO6y
-         N9Ekk40IWuD9Q17ZaqEovqYu+5YTQy9A3kMOirIAuskHm0QZGWeePyzAmNrR6VN/QDiS
-         XZAg==
-X-Gm-Message-State: APjAAAWgWBOcbHBSIpkV8TSd3gegzpRraiHXSQXJD7EgxrrT0ZEaK+UB
-        yB/z201qGdXEDCTSIDCCZltYmQ==
-X-Google-Smtp-Source: APXvYqxwXxweGUcUNslBAGMjeZhE+jBgUQybSM4sA4z1hphuYWKnqXtnv4+AStFcEym0r1P+NOCAsw==
-X-Received: by 2002:a25:8486:: with SMTP id v6mr7109125ybk.409.1579979094874;
-        Sat, 25 Jan 2020 11:04:54 -0800 (PST)
+        bh=3fE+BdfQJyOrYWATRSpdduqNM1YEkmmIyzs2cOGMrdI=;
+        b=m8KXVycWWDyTe7Wwgo4JP4MfRMTBIf9kkOO8VN7zaEB9p5jxi8Jne6ezhy7I/BL+UE
+         QufG/Xizlg/DdS3jjUbvbzqGC8DpeuonuQ+ndG0Jx3NK13c0TWh/hEhxmLt8ZNFl0Git
+         grDid5kbyriYD8bsPhwD+9q1eu1m4wB4og0lThpbvSIWVRK9LtLvpv5CCjfXphA/68De
+         jmonbd1rhICjO0RCi5JKp+HKTJ2cdCyPrkqaHAJII7G+/Etnbvod+91KAqd8OAkPHfx0
+         8kQsIeRVgowObm34WQM9NvYHgg2MZiochceh/iWoqT9VMErkvhTrBW9E2IKXS4UlblHz
+         yBjg==
+X-Gm-Message-State: APjAAAVsPL+lAIkK8PkNJSPPswKxjKLcSBA6j25pEfQvVCQ0UsIZm9W6
+        uLEQDx/on0Lfjru4LNuracr2KA==
+X-Google-Smtp-Source: APXvYqxnSvxonT8l4EXGs7FwI8GJJrEaynq8hTbAECSFwLJHUrvWAay12x9ZnvKOACPvjgJ78zTlkQ==
+X-Received: by 2002:a5b:f44:: with SMTP id y4mr7109048ybr.319.1579980251374;
+        Sat, 25 Jan 2020 11:24:11 -0800 (PST)
 Received: from ziepe.ca ([199.167.24.140])
-        by smtp.gmail.com with ESMTPSA id u127sm3754607ywb.68.2020.01.25.11.04.54
+        by smtp.gmail.com with ESMTPSA id q16sm4081057ywa.110.2020.01.25.11.24.10
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 25 Jan 2020 11:04:54 -0800 (PST)
+        Sat, 25 Jan 2020 11:24:10 -0800 (PST)
 Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1ivQjh-0007qt-L1; Sat, 25 Jan 2020 15:04:49 -0400
-Date:   Sat, 25 Jan 2020 15:04:49 -0400
+        id 1ivR2M-0004c3-DQ; Sat, 25 Jan 2020 15:24:06 -0400
+Date:   Sat, 25 Jan 2020 15:24:06 -0400
 From:   Jason <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Danit Goldberg <danitg@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        linux-netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: Re: [PATCH mlx5-next] IB/mlx5: Return the administrative GUID if
- exists
-Message-ID: <20200125190449.GA30147@jggl>
-References: <20200116120048.12744-1-leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Subject: Re: [PATCH 0/7] RDMA/cm: Remove open coded structure pack/unpack
+Message-ID: <20200125192406.GA17698@jggl>
+References: <20200116170037.30109-1-jgg@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200116120048.12744-1-leon@kernel.org>
+In-Reply-To: <20200116170037.30109-1-jgg@ziepe.ca>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 02:00:48PM +0200, Leon Romanovsky wrote:
-> From: Danit Goldberg <danitg@mellanox.com>
+On Thu, Jan 16, 2020 at 01:00:30PM -0400, Jason Gunthorpe wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
 > 
-> A user can achieve the operational GUID (a.k.a affective GUID) through
-> link/infiniband. Therefore it is preferred to return the administrative
-> GUID if exists instead of the operational.
-> This way the PF can query which VF GUID will be set in the next bind.
-> In order to align with MAC address, zero is returned if
-> administrative GUID is not set.
+> Instead of using a struct layout with a large number of open coded pack/unpack
+> inlines use a consistent set of macros generating GENMASK's for accessing the
+> members. The definitions follow the MAD layout tables in the IBA and are easier
+> to correlate with the specification.
 > 
-> For example:
-> - Before setting administrative GUID:
-> ip link show
-> ib0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 4092 qdisc mq state UP mode DEFAULT group default qlen 256
-> link/infiniband 00:00:00:08:fe:80:00:00:00:00:00:00:52:54:00:c0:fe:12:34:55 brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
-> vf 0     link/infiniband 00:00:00:08:fe:80:00:00:00:00:00:00:52:54:00:c0:fe:12:34:55 brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff,
-> spoof checking off, NODE_GUID 00:00:00:00:00:00:00:00, PORT_GUID 00:00:00:00:00:00:00:00, link-state auto, trust off, query_rss off
+> Further the macros consistently use cpu endian values which will allow later
+> patches to remove alot of the __be stuff sprinkled randomly around.
 > 
-> ip link set ib0 vf 0 node_guid 11:00:af:21:cb:05:11:00
-> ip link set ib0 vf 0 port_guid 22:11:af:21:cb:05:11:00
+> The is a follow up to the series here:
 > 
-> - After setting administrative GUID:
-> ip link show
-> ib0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 4092 qdisc mq state UP mode DEFAULT group default qlen 256
-> link/infiniband 00:00:00:08:fe:80:00:00:00:00:00:00:52:54:00:c0:fe:12:34:55 brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
-> vf 0     link/infiniband 00:00:00:08:fe:80:00:00:00:00:00:00:52:54:00:c0:fe:12:34:55 brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff,
-> spoof checking off, NODE_GUID 11:00:af:21:cb:05:11:00, PORT_GUID 22:11:af:21:cb:05:11:00, link-state auto, trust off, query_rss off
+> https://lore.kernel.org/r/20191212093830.316934-1-leon@kernel.org
 > 
-> Fixes: 9c0015ef0928 ("IB/mlx5: Implement callbacks for getting VFs GUID attributes")
-> Signed-off-by: Danit Goldberg <danitg@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/hw/mlx5/ib_virt.c | 28 ++++++++++++----------------
->  include/linux/mlx5/driver.h          |  5 +++++
->  2 files changed, 17 insertions(+), 16 deletions(-)
+> Jason Gunthorpe (6):
+>   RDMA/cm: Add accessors for CM_REQ transport_type
+>   RDMA/cm: Use IBA functions for simple get/set acessors
+>   RDMA/cm: Use IBA functions for swapping get/set acessors
+>   RDMA/cm: Use IBA functions for simple structure members
+>   RDMA/cm: Use IBA functions for complex structure members
+>   RDMA/cm: Remove CM message structs
+> 
+> Leon Romanovsky (1):
+>   RDMA/cm: Add SET/GET implementations to hide IBA wire format
 
-Applied to for-next, thanks
+Applied to for-next
 
 Jason
