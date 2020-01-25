@@ -2,61 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 057DD149705
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Jan 2020 18:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C16149711
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Jan 2020 19:03:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726436AbgAYRrl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 25 Jan 2020 12:47:41 -0500
-Received: from mail-eopbgr10055.outbound.protection.outlook.com ([40.107.1.55]:7643
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        id S1726294AbgAYSDH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 25 Jan 2020 13:03:07 -0500
+Received: from mail-eopbgr150058.outbound.protection.outlook.com ([40.107.15.58]:47131
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726293AbgAYRrk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 25 Jan 2020 12:47:40 -0500
+        id S1726293AbgAYSDG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 25 Jan 2020 13:03:06 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kcOayp7FC/ZPa1Y7yjW31XO0SySdMrM2+pQ3szkUtEgLUzQPdYxdNRT3KNLkGv9s1fC6YoyT75RqYA3J6lQ+E/WUcBC20rJmi2831RbqAL3q2juZDyGG3//f+Qb5/lnCjOAfZCVNw6BN1M7XE60ne1SZsR4VO0xtFEtQd6+qCe5LoLQOuleSbsZTpEP7quwvFgGQaAzUzlXcEdmXzuwj8HYqgw8nKvrZFNi0Buv1cVDuF6SGElS+dn9SesjL7h2RNcNg46Dhwq4LRg8N5RLtdEytF28WlggoXQBNzmlgm8KYocRb+UMcmH02cKObwbSAAOnMQBnn5VgEG92slUQEww==
+ b=duXEzpZ8g/a7uDyB+KqwKKX+b3IE7KwLxPafdNFHjMrNfVpuDolZyGJ6QZIYpHewCHud/AZFWA/7JdqeIDY4i8dLRebLoNTc3sz6eRkepSi2ipEQ/rNs5ZSe+/cPUp5RA35ipsnAkK9wMkMCU/9zTR48PUGZmuIzeviaAHGYIVBVk2FUKbEdzir997Dn0eeoBjVAMxCnJGnkBKVSyRWsbjWnhBzp6mNnxLka556kCRJ2dV8X4CzXLPn4ytqDxDeQLQMbsAxwQghuIFtjwL5a4HOQ6fXc2pNuuHtejP40+zYe52oYiHs8eL175fA7AXfadLPv5DiDecbQihsjY9Ew5Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gdgw9pNcoHs6aRypynbaJjezu+DGwzJ8T1EOKK1o4TM=;
- b=FDOeqah3pCr+p22Uns2AxiCpDU2slKoE79cv+jex8s/V7/1DfTXsAeRg8kMximOFexkjJOjqbh85glP+45xRbwKThNun+E8quj0mzuhcqO9Y3Ii+gyHCjV7ih9dl6GqyCrXBBQRGGCEbzCGvH28Uc7W6u5c8ds1AW8C7PEgyIt8WlzRE/CaJ2c0LJGmdbuzTFzEHtnRKk6FopRzOXWd/G0p3L+WjSiNUETEN/kBtO4UafSbjSsjAe9vYGxoP81+X30QkVdsTeAsQ0/9i3bqOc+d19GCT2x00Mixm9HNp+22YBO2aq8tDQkg5KeB1jONusZPfLIlTlUsuFFNDaHdz8g==
+ bh=Wc4UAMFMlPM/E5VtwpnV7+Z+eW6YW6ZVwzQUV1je3gc=;
+ b=TmK59+c6fiQvJC8R9aIvvus0S7yH27FjUAmsgdT8IBtlSLm0+tFU0oBp8kl67UnbuNbe2wPMukdNYMz2LxBgEYqx8C8euO2LOwikqB4PT2udm3OL2A/+THFKxZfoAxhEc55Oj7NwlwgieIMO2lTYFLT++peduSeqPiyfKbYlALmqADL30gk+9U2rmXVyITD98sOPwNQD8hy+VbAvRNIsvEFijuVZzWwukFwUhYDp97ajC3xqeKiwa2O0cPIY+oNuNsuL9jzecTtFQE9qG5uG5en6jSQG7Z9GQHOYKhVS72HIPSrqqftPfJ1GXKT8C1oQK8NfHDwG1TOvKlM+uNC0RQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gdgw9pNcoHs6aRypynbaJjezu+DGwzJ8T1EOKK1o4TM=;
- b=sq49AytdxEVs5ofVjXyG5WWLZ64dKu70+EY9zgsaFJYmZNYKi3PKxJwvH/QFHHCdFX7//BtpUKvR2cWtMQrOg9gf7CrjSYPkYa44jmtfFC+QIqiODMnC56909aiRDch5KJhwawpst9arFTWdOlWZJUneZTvw8hJ3WPM/kpJm4Ns=
+ bh=Wc4UAMFMlPM/E5VtwpnV7+Z+eW6YW6ZVwzQUV1je3gc=;
+ b=ZUGO6+gXeNSBNxi27AczefrU7R56oa9EEjhxdmOn5QjkCn7ztZcKL9fpG4NTcIr7PctzrsVsGM/6veKlVsAiw+w2VWvvX40Uhme/YF8IP2sjO6X8LBH8KiBwK45nwMKKN2OY+6+/1zzMLufWX+UCVM5BN+1zIpUXbuzVkwWGm9M=
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB5533.eurprd05.prod.outlook.com (20.177.201.157) with Microsoft SMTP
+ VI1PR05MB6813.eurprd05.prod.outlook.com (10.186.162.214) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2665.23; Sat, 25 Jan 2020 17:46:54 +0000
+ 15.20.2665.24; Sat, 25 Jan 2020 18:03:01 +0000
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::1c00:7925:d5c6:d60d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::1c00:7925:d5c6:d60d%7]) with mapi id 15.20.2665.017; Sat, 25 Jan 2020
- 17:46:54 +0000
-Received: from mlx.ziepe.ca (199.167.24.140) by CH2PR20CA0010.namprd20.prod.outlook.com (2603:10b6:610:58::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2665.22 via Frontend Transport; Sat, 25 Jan 2020 17:46:54 +0000
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)    (envelope-from <jgg@mellanox.com>)      id 1ivPW9-0001Om-2Y; Sat, 25 Jan 2020 13:46:45 -0400
+ 18:03:01 +0000
+Received: from mlx.ziepe.ca (199.167.24.140) by CH2PR20CA0024.namprd20.prod.outlook.com (2603:10b6:610:58::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2665.23 via Frontend Transport; Sat, 25 Jan 2020 18:03:01 +0000
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)    (envelope-from <jgg@mellanox.com>)      id 1ivPlk-0001eU-Jo; Sat, 25 Jan 2020 14:02:52 -0400
 From:   Jason Gunthorpe <jgg@mellanox.com>
 To:     Devesh Sharma <devesh.sharma@broadcom.com>
 CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "dledford@redhat.com" <dledford@redhat.com>
-Subject: Re: [PATCH for-next 1/7] RDMA/bnxt_re: Refactor queue pair creation
- code
-Thread-Topic: [PATCH for-next 1/7] RDMA/bnxt_re: Refactor queue pair creation
- code
-Thread-Index: AQHV0nqI8Sur4+WGwUOpidOClB9ataf7qdyA
-Date:   Sat, 25 Jan 2020 17:46:54 +0000
-Message-ID: <20200125174645.GC4616@mellanox.com>
+Subject: Re: [PATCH for-next 2/7] RDMA/bnxt_re: Replace chip context structure
+ with pointer
+Thread-Topic: [PATCH for-next 2/7] RDMA/bnxt_re: Replace chip context
+ structure with pointer
+Thread-Index: AQHV0nqLx+VkrTQJYk+zGSveksMYG6f7rl0A
+Date:   Sat, 25 Jan 2020 18:03:01 +0000
+Message-ID: <20200125180252.GD4616@mellanox.com>
 References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
- <1579845165-18002-2-git-send-email-devesh.sharma@broadcom.com>
-In-Reply-To: <1579845165-18002-2-git-send-email-devesh.sharma@broadcom.com>
+ <1579845165-18002-3-git-send-email-devesh.sharma@broadcom.com>
+In-Reply-To: <1579845165-18002-3-git-send-email-devesh.sharma@broadcom.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: CH2PR20CA0010.namprd20.prod.outlook.com
- (2603:10b6:610:58::20) To VI1PR05MB4141.eurprd05.prod.outlook.com
+x-clientproxiedby: CH2PR20CA0024.namprd20.prod.outlook.com
+ (2603:10b6:610:58::34) To VI1PR05MB4141.eurprd05.prod.outlook.com
  (2603:10a6:803:44::15)
 authentication-results: spf=none (sender IP is )
  smtp.mailfrom=jgg@mellanox.com; 
@@ -64,110 +64,54 @@ x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [199.167.24.140]
 x-ms-publictraffictype: Email
 x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: e0cde108-3f82-4e21-a91c-08d7a1be90b9
-x-ms-traffictypediagnostic: VI1PR05MB5533:
-x-microsoft-antispam-prvs: <VI1PR05MB5533BF9BDE795BBAD660DFD6CF090@VI1PR05MB5533.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2201;
+x-ms-office365-filtering-correlation-id: 2fb1ed79-a27c-4fda-2fc7-08d7a1c0d14c
+x-ms-traffictypediagnostic: VI1PR05MB6813:
+x-microsoft-antispam-prvs: <VI1PR05MB68130045CEB548C993C47FBDCF090@VI1PR05MB6813.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1060;
 x-forefront-prvs: 0293D40691
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(396003)(346002)(376002)(136003)(366004)(199004)(189003)(8936002)(52116002)(478600001)(316002)(81156014)(81166006)(71200400001)(8676002)(5660300002)(36756003)(54906003)(6666004)(9746002)(9786002)(186003)(1076003)(86362001)(66946007)(6916009)(4326008)(2906002)(33656002)(64756008)(66446008)(26005)(2616005)(66476007)(66556008)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5533;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(366004)(346002)(376002)(39860400002)(396003)(189003)(199004)(66556008)(66476007)(66446008)(64756008)(66946007)(186003)(26005)(5660300002)(478600001)(2906002)(6666004)(6916009)(52116002)(4744005)(1076003)(316002)(86362001)(71200400001)(54906003)(2616005)(9786002)(9746002)(33656002)(8936002)(81166006)(81156014)(8676002)(36756003)(4326008)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6813;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8vJW4pFyniJTQtzKVkqPklHnqC95iaW0rFf7eKYJOik5BUr8EAuKSgDzLH8W7Tj5kHjNJ5TWXuVHPQPES9iGIW3tC+uJvvGgtFxmYXRyAFoIoeoKofdaUpNN0sx6aye37WSxYQqE2zaIKesA8NiiZQ+sSuWFhFcSUrfq/hP0fNCrEWXOU6Amgl94/VbRgvDbVWyoY6kJD8LQzfeMG+ItO0byaT+Rv6O/J7d87HcFjSaqUR0PIC+JW12HcGTSho8x4vxnyaeQywRaofUaLXPJR59qklmx/VUqrh9fV04ZcqxHcqzNjPDB6km8Sfnri8kRO2M0vchG02ytMesOWT3KalBUVnoOTOWSmwEJ9/qZb8ZeLgM9l9s+brmr1P8Kh+FAY3+5YxyPxUhKZ0EYIy/vcstVLI10ap46YPPZF+L4oXHxQ8MH0QGOgY+CkkMd7HgBxvBtZgPLLD39pJb2Yd+MwoQcEZmI5QDVF0pNIcKwpxFKWwq29a2QX4sJKVpWPvgo
-x-ms-exchange-antispam-messagedata: D6PebN9dlR1uAoBgKdBhxsqLrPwem+olFUoQ6VOEwnEcar4rVjFHVFhzRfFjeCIKhuzJZboiy0BE5ZQ4bkzh6Gmcy/n3sZFc+UAQWI3CFV0ThWvPFoHI83pELfTuBPgPjh8xDicwWCNPDC6MGYqrXw==
+x-microsoft-antispam-message-info: uv3ylUBBn5tvAJZRmjt3zgWaO0jz/Xht+vXOIjQBo+t28WxoN582ue3eS6WUpCNYhrqil6Wly1I9UCn1LW79lccYbClH2DUAcrgHjXRKecwZMF5T6AW8+8hV526noBtXszyODNyEK3Uc6tbLwQt4woDqZlOFtF59SICLdpdYI6lrf4Anb8VTQHug86fjDNl8Q9YEiYsLlgh7V5qT8Wfjhi/TXJ3RGPgs/aniJkgn2NktRj4o5XsAdDkjQd723HAcFNtcmptXb6E7NH6d+NH5IrZsyajpq/oobWBkD7NmNjzASp7dLuNkTWeOLVWk9sDCMSuxFi4dLb+gNAGpqlOeh0rwAmUnjCp4enLYL5fy8tn8Mg31ZUOMo091a50IXt2cKq+adPxA2OGHUDg+kHEqOTR9rRnyKKkV40CWVMr8Pw4Y6A9slQp7Hm5H1qgTxAG5i+7r1PHh8iAa5vwzFzs2842VX1higOI6o2DzqXY4BFdBIfaINXuDD5J1m6bN4VOR
+x-ms-exchange-antispam-messagedata: Jg6QKw66yberuc5FOmXKAIKdpTX6yqaEZ3nRMHr3ZaM4PTtBtmj7Mw8TGXsPeCVDkGprnJwKjrAtHX5o0QtKg+dlU8VnqWMo21udIRLhvislheJi/qvVBkQMYGVmkRZSsOQ1JLJVfEUpF9vJhnEO2A==
 x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <ABE614888DED034DA1B4DE409EC8E17A@eurprd05.prod.outlook.com>
+Content-ID: <8290A1B0F5F501499578F3DC6104A923@eurprd05.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0cde108-3f82-4e21-a91c-08d7a1be90b9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2020 17:46:54.2268
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2fb1ed79-a27c-4fda-2fc7-08d7a1c0d14c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2020 18:03:01.5617
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AAIKZ0hQ/yvhZF2+KoxV/KPK8gnN1FmylIGUu330cIPm0YC2G7D9D2bi59Z4oW2F6UH5mFFVqKi0OaH0xJjMMw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5533
+X-MS-Exchange-CrossTenant-userprincipalname: ItM0tUzMGLISynBdn/9WkBLfInkM3Rl6NOTTws3LJxYL6bCurDCO6832DOuf5BVPX2MPywNgnrhIsPoqVMvgbQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6813
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 12:52:39AM -0500, Devesh Sharma wrote:
-> +static int bnxt_re_destroy_gsi_sqp(struct bnxt_re_qp *qp)
-> +{
-> +	struct bnxt_re_qp *gsi_sqp;
-> +	struct bnxt_re_ah *gsi_sah;
-> +	struct bnxt_re_dev *rdev;
-> +	int rc =3D 0;
-> +
-> +	rdev =3D qp->rdev;
-> +	gsi_sqp =3D rdev->gsi_ctx.gsi_sqp;
-> +	gsi_sah =3D rdev->gsi_ctx.gsi_sah;
-> +
-> +	/* remove from active qp list */
-> +	mutex_lock(&rdev->qp_lock);
-> +	list_del(&gsi_sqp->list);
-> +	atomic_dec(&rdev->qp_count);
-> +	mutex_unlock(&rdev->qp_lock);
-> +
-> +	dev_dbg(rdev_to_dev(rdev), "Destroy the shadow AH\n");
-> +	bnxt_qplib_destroy_ah(&rdev->qplib_res,
-> +			      &gsi_sah->qplib_ah,
-> +			      true);
-> +	bnxt_qplib_clean_qp(&qp->qplib_qp);
-> +
-> +	dev_dbg(rdev_to_dev(rdev), "Destroy the shadow QP\n");
-> +	rc =3D bnxt_qplib_destroy_qp(&rdev->qplib_res, &gsi_sqp->qplib_qp);
-> +	if (rc) {
-> +		dev_err(rdev_to_dev(rdev), "Destroy Shadow QP failed");
-> +		goto fail;
-> +	}
-> +	bnxt_qplib_free_qp_res(&rdev->qplib_res, &gsi_sqp->qplib_qp);
-> +
-> +	kfree(rdev->gsi_ctx.sqp_tbl);
-> +	kfree(gsi_sah);
-> +	kfree(gsi_sqp);
-> +	rdev->gsi_ctx.gsi_sqp =3D NULL;
-> +	rdev->gsi_ctx.gsi_sah =3D NULL;
-> +	rdev->gsi_ctx.sqp_tbl =3D NULL;
-> +
-> +	return 0;
-> +fail:
-> +	mutex_lock(&rdev->qp_lock);
-> +	list_add_tail(&gsi_sqp->list, &rdev->qp_list);
-> +	atomic_inc(&rdev->qp_count);
-> +	mutex_unlock(&rdev->qp_lock);
-> +	return rc;
-
-This error unwind approach looks racy. destroy is not allowed to
-fail, so why all this mess?
-
->  /* Queue Pairs */
->  int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
+On Fri, Jan 24, 2020 at 12:52:40AM -0500, Devesh Sharma wrote:
+>  static void bnxt_re_destroy_chip_ctx(struct bnxt_re_dev *rdev)
 >  {
-> @@ -750,10 +797,18 @@ int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct =
-ib_udata *udata)
->  	unsigned int flags;
->  	int rc;
-> =20
-> +	mutex_lock(&rdev->qp_lock);
-> +	list_del(&qp->list);
-> +	atomic_dec(&rdev->qp_count);
-> +	mutex_unlock(&rdev->qp_lock);
->  	bnxt_qplib_flush_cqn_wq(&qp->qplib_qp);
->  	rc =3D bnxt_qplib_destroy_qp(&rdev->qplib_res, &qp->qplib_qp);
->  	if (rc) {
->  		dev_err(rdev_to_dev(rdev), "Failed to destroy HW QP");
-> +		mutex_lock(&rdev->qp_lock);
-> +		list_add_tail(&qp->list, &rdev->qp_list);
-> +		atomic_inc(&rdev->qp_count);
-> +		mutex_unlock(&rdev->qp_lock);
->  		return rc;
->  	}
+> +	struct bnxt_qplib_chip_ctx *chip_ctx;
+> +
+> +	if (!rdev->chip_ctx)
+> +		return;
+> +	chip_ctx =3D rdev->chip_ctx;
+> +	rdev->chip_ctx =3D NULL;
+>  	rdev->rcfw.res =3D NULL;
+>  	rdev->qplib_res.cctx =3D NULL;
+> +	kfree(chip_ctx);
+>  }
 
-More..
+Are you sure this kfree is late enough? I couldn't deduce if it was
+really safe to NULL chip_ctx here.
+
+IMHO you should free it as part of the ib device dealloc.
 
 Jason
