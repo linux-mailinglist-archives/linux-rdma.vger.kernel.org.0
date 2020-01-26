@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0C51499EF
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2020 11:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF8B149A43
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2020 11:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729291AbgAZKBa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 Jan 2020 05:01:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49964 "EHLO mail.kernel.org"
+        id S1729255AbgAZKy1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 Jan 2020 05:54:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728292AbgAZKBa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 26 Jan 2020 05:01:30 -0500
+        id S1726571AbgAZKy1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 26 Jan 2020 05:54:27 -0500
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65B502071E;
-        Sun, 26 Jan 2020 10:01:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 301CC2075D;
+        Sun, 26 Jan 2020 10:54:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580032890;
-        bh=+V+hL8a+9g4gbfkotsr618QGRy9DM+1zuB2YmdPqSZU=;
+        s=default; t=1580036066;
+        bh=DV1e5XI83L9xgMJppGfP3HTCWwFdC/rEXOwVi5kioy8=;
         h=From:To:Cc:Subject:Date:From;
-        b=rK+AI9RKtp1oetdk5Y5k4cylhmeejLZ/rgAfsvkE0NQXXUb+bdjGWnlm16yn//euI
-         puEs2+RQqjzdL5Ck4b6nu35ray35sHoYGPPQK7FH4/oW8zyMZWEt6j95SooOf84Qgx
-         K6dksUg/Aspf3FRXiGGq/VqLiOlbd9mT0bgemPL8=
+        b=hVvimlsWqEoYkQCCFQNyY4fcgnUT9qgra6FgvmjrjGtvUtJtlAFcIhKOqXO/OJhwH
+         5zKhTBrq+ReWA7nV4P5nr0HSxk3ff5f5kGHOtXtfle7C4y/FkQpiSbydG/FpaQzl82
+         w8AmigFKrbmcKkN2r9EjYj4MAbWNIL+aQ8t9GC/E=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -31,9 +31,9 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Michal Kalderon <michal.kalderon@marvell.com>,
         linux-netdev <netdev@vger.kernel.org>,
         RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: [PATCH rdma-next v2] net/core: Replace driver version to be kernel version
-Date:   Sun, 26 Jan 2020 12:01:24 +0200
-Message-Id: <20200126100124.86014-1-leon@kernel.org>
+Subject: [PATCH net-next v3] net/core: Replace driver version to be kernel version
+Date:   Sun, 26 Jan 2020 12:54:22 +0200
+Message-Id: <20200126105422.86969-1-leon@kernel.org>
 X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -80,7 +80,9 @@ Link: https://lore.kernel.org/linux-rdma/20200122152627.14903-1-michal.kalderon@
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
  Changelog:
- v2: Updated commit message.
+ v3: Used wrong target branch, changed from rdma-next to net-next.
+ v2: https://lore.kernel.org/linux-rdma/20200126100124.86014-1-leon@kernel.org
+     Updated commit message.
  v1: https://lore.kernel.org/linux-rdma/20200125161401.40683-1-leon@kernel.org
      Resend per-Dave's request
      https://lore.kernel.org/linux-rdma/20200125.101311.1924780619716720495.davem@davemloft.net
