@@ -2,133 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA37149D11
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2020 22:33:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF972149D46
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2020 23:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbgAZVdz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 Jan 2020 16:33:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgAZVdz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 26 Jan 2020 16:33:55 -0500
-Received: from cakuba (c-73-93-4-247.hsd1.ca.comcast.net [73.93.4.247])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09879206F0;
-        Sun, 26 Jan 2020 21:33:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580074434;
-        bh=aB4dshaGZIOZmEJpTM3f4wdbpn0Fa5nfbiqLJfYQvp8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Nh9887DTP2TULWpD7rJx58h2IrDwnNlEcgd7OPaEGDwsTAXi6f7XdMPaN/LOPkLJ2
-         TcT0FWyTRR6udkuJu9Tzb4gz/QCkADvTGdfYsB+0U9aOZnGMheLWB3q7LDQnDLj1P4
-         CxoYSPy9J9hUcVM+zUvJ0zqPpt4KYSJGDDSPLr0o=
-Date:   Sun, 26 Jan 2020 13:33:53 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
+        id S1727872AbgAZWLo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 Jan 2020 17:11:44 -0500
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:46641 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727235AbgAZWLo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 26 Jan 2020 17:11:44 -0500
+Received: by mail-pl1-f194.google.com with SMTP id y8so3026761pll.13
+        for <linux-rdma@vger.kernel.org>; Sun, 26 Jan 2020 14:11:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pensando.io; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=n5qGcAaShVjdAONHjUZjFQvCWxD3ogfJfCSb9GV3HdM=;
+        b=BkZpBnc8Aqzf7GcMo3K4eM2tl5LMLZhsEwl5daLCswd+QsoxyI5LKM9FtoyroeZptA
+         uwRsGQvLlN0fLEFRVyPaG4T2Lb1eeJ0V4l5AiLSi5zN819wFgOYy7Gv9QVCgoFAScDB+
+         0UtUR8tUxYyG5+jq8+Fwrj5TUo8iWO+SrmPiA7gLwSfyDm4b2Hws+J/1iB0H0yQZK6l3
+         pS7i2WEMFpGSVV0lpzrYD9KzaQM5eg0ZskkZ4LWEtbl9cetkYBKdc3wbwDRiq9DLafXC
+         GsnxnUO7QM+PPva5EXeOoOvwrgS7e4RaT3UPxecrlqzMPYoq6iW9rg4htdqHLu+kuC0r
+         0+/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=n5qGcAaShVjdAONHjUZjFQvCWxD3ogfJfCSb9GV3HdM=;
+        b=MebWI4rL07GnuFWae69j6IGqAYYTfVtUuhaHiUVWpTC82ACVOTe0la31ZhPxiM+gms
+         uqy/EpNKWz7ZiMlFtxBWI3N8ZnbvoEfjmZjKADBipLskFo181RjOYNH92n6IiJ/ZK6Uh
+         JmuWmyOV+fSrvLlN0bnqPJfMHrxMPfoCs+akPrZPKBg2ymS79qfm6/5jU3TYTjjOEFut
+         +a1vf6ias37aodiDFG2jh1VztJpEHa/4VuzA/Ix+8ayYLG36JzPV/gK+hFuIOfRhh2Dh
+         1Qn3nQvwofipeYnTq719MX7FQZlvztRI1bbOmX5v9MBer1Tc7rLC4Yi0LtDp7RoqyfMp
+         l+nw==
+X-Gm-Message-State: APjAAAWbtnKGpE40K5HyD2AcEE/5TSxWZJWTd4WOvDwQtFD0IRfeXQiH
+        c4p66x88jgVdnwUOT5SfvRzncI8fNFSyCA==
+X-Google-Smtp-Source: APXvYqxkKXskt5nS0KLwvMKIvLpFjOfvgnrLWD7xbc/E87saaEXj7lY//x/kiOmsR9MZJqCg7pUjKQ==
+X-Received: by 2002:a17:902:82cc:: with SMTP id u12mr13692479plz.342.1580076703085;
+        Sun, 26 Jan 2020 14:11:43 -0800 (PST)
+Received: from Shannons-MacBook-Pro.local (static-50-53-47-17.bvtn.or.frontiernet.net. [50.53.47.17])
+        by smtp.gmail.com with ESMTPSA id u1sm12884680pfn.133.2020.01.26.14.11.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Jan 2020 14:11:42 -0800 (PST)
+Subject: Re: [PATCH net-next] net/core: Replace driver version to be kernel
+ version
 To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Shannon Nelson <snelson@pensando.io>,
+Cc:     Jakub Kicinski <kuba@kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
         Michal Kalderon <michal.kalderon@marvell.com>,
         linux-netdev <netdev@vger.kernel.org>,
         RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net-next] net/core: Replace driver version to be kernel
- version
-Message-ID: <20200126133353.77f5cb7e@cakuba>
-In-Reply-To: <20200126210850.GB3870@unreal>
 References: <20200123130541.30473-1-leon@kernel.org>
-        <43d43a45-18db-f959-7275-63c9976fdf40@pensando.io>
-        <20200126194110.GA3870@unreal>
-        <20200126124957.78a31463@cakuba>
-        <20200126210850.GB3870@unreal>
+ <43d43a45-18db-f959-7275-63c9976fdf40@pensando.io>
+ <20200126194110.GA3870@unreal> <20200126124957.78a31463@cakuba>
+ <20200126210850.GB3870@unreal>
+ <31c6c46a-63b2-6397-5c75-5671ee8d41c3@pensando.io>
+ <20200126212424.GD3870@unreal>
+From:   Shannon Nelson <snelson@pensando.io>
+Message-ID: <0755f526-73cb-e926-2785-845fec0f51dd@pensando.io>
+Date:   Sun, 26 Jan 2020 14:12:38 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200126212424.GD3870@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, 26 Jan 2020 23:08:50 +0200, Leon Romanovsky wrote:
-> On Sun, Jan 26, 2020 at 12:49:57PM -0800, Jakub Kicinski wrote:
-> > On Sun, 26 Jan 2020 21:41:10 +0200, Leon Romanovsky wrote: =20
-> > > > This will end up affecting out-of-tree drivers as well, where it is=
- useful
-> > > > to know what the version number is, most especially since it is dif=
-ferent
-> > > > from what the kernel provided driver is.=C2=A0 How else are we to g=
-et this
-> > > > information out to the user?=C2=A0 If this feature gets squashed, w=
-e'll end up
-> > > > having to abuse some other mechanism so we can get the live informa=
-tion from
-> > > > the driver, and probably each vendor will find a different way to s=
-neak it
-> > > > out, giving us more chaos than where we started.=C2=A0 At least the=
- ethtool
-> > > > version field is a known and consistent place for the version info.
+On 1/26/20 1:24 PM, Leon Romanovsky wrote:
+> On Sun, Jan 26, 2020 at 01:17:52PM -0800, Shannon Nelson wrote:
+>> On 1/26/20 1:08 PM, Leon Romanovsky wrote:
+>>> The long-standing policy in kernel that we don't really care about
+>>> out-of-tree code.
+>> That doesn't mean we need to be aggressively against out-of-tree code.  One
+>> of the positive points about Linux and loadable modules has always been the
+>> flexibility that allows and encourages innovation, and helps enable more
+>> work and testing before a driver can become a fully-fledged part of the
+>> kernel.  This move actively discourages part of that flexibility and I think
+>> it is breaking part of the usefulness of modules.
+> You are mixing definitions, nothing stops those people to innovate and
+> develop their code inside kernel and as standalone modules too.
+>
+> It just stops them to put useless driver version string inside ethtool.
+> If they feel that their life can't be without something from 90s, they
+> have venerable MODULE_VERSION() macro to print anything they want.
+>
+Part of the pain of supporting our users is getting them to give us 
+useful information about their problem.  The more commands I need them 
+to run to get information about the environment, the less likely I will 
+get anything useful.  We've been training our users over the years to 
+use "ethtool -i" to get a good chunk of that info, with the knowledge 
+that the driver version is only a hint, based upon the distro involved.  
+I don't want to lose that hint.  If anything, I'd prefer that we added a 
+field for UTS_RELEASE in the ethtool output, but I know that's too much 
+to ask.
 
-> > Shannon does have a point that out of tree drivers still make use of
-> > this field. Perhaps it would be a more suitable first step to print the
-> > kernel version as default and add a comment saying upstream modules
-> > shouldn't overwrite it (perhaps one day CI can catch new violators). =20
->=20
-> Shannon proposed to remove this field and it was me who said no :)
+If the driver can put its "useless" version info into the 
+MODULE_VERSION, why is it not acceptable for the ethtool driver version 
+field?
 
-Obviously, we can't remove fields from UAPI structs.
+... and as beauty is in the eye of the beholder, a judgement of 
+"useless" is a personal thing.  Personally, I find it the driver version 
+useful.
 
-> My plan is to overwrite ->version, delete all users and add
-> WARN_ONEC(strcpy(..->version_)...) inside net/ethtool/ to catch
-> abusers.
+sln
 
-What I was thinking just now was: initialize ->version to utsname
-before drivers are called, delete all upstream users, add a coccicheck
-for upstream drivers which try to report the version.
-
-> > The NFP reports the git hash of the driver source plus the string
-> > "(oot)" for out-of-tree:
-> >
-> > https://github.com/Netronome/nfp-drv-kmods/blob/master/src/Kbuild#L297
-> > https://github.com/Netronome/nfp-drv-kmods/blob/master/src/Kbuild#L315 =
-=20
->=20
-> I was inspired by upstream code.
-> https://elixir.bootlin.com/linux/v5.5-rc7/source/drivers/net/ethernet/net=
-ronome/nfp/nfp_net_ethtool.c#L184
-
-Right, upstream nfp reports kernel version (both in modinfo and ethtool)
-GitHub/compat/backport/out-of-tree reports kernel version in which the
-code was expected to appear in modinfo:
-
-https://github.com/Netronome/nfp-drv-kmods/commit/7ec15c47caf5dbdf1f9806410=
-535ad5b7373ec34#diff-492d7fa4004d885a38cfa889ed1adbe7L1284
-
-And git hash of the driver source plus out of tree marker in ethtool.
-
-That means it's out-of-tree driver which has to carry the extra code
-and require extra feeding. As backport should IMHO.
-
-> > > Leaving to deal with driver version to vendors is not an option too,
-> > > because they prove for more than once that they are not capable to
-> > > define user visible interfaces. It comes due to their natural believe
-> > > that their company is alone in the world and user visible interface
-> > > should be suitable for them only.
-> > >
-> > > It is already impossible for users to distinguish properly versions
-> > > of different vendors, because they use arbitrary strings with some
-> > > numbers. =20
-> >
-> > That is true. But reporting the kernel version without even as much as
-> > in-tree/out-of-tree indication makes the field entirely meaningless. =20
->=20
-> The long-standing policy in kernel that we don't really care about
-> out-of-tree code.
-
-Yeah... we all know it's not that simple :)
-
-The in-tree driver versions are meaningless and cause annoying churn
-when people arbitrarily bump them. If we can get people to stop doing
-that we'll be happy, that's all there is to it.=20
-
-Out of tree the field is useful, so we don't have to take it away just
-as a matter of principle. If we can't convince people to stop bringing
-the versions into the tree that'll be another story...
