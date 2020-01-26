@@ -2,225 +2,220 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CCB149B16
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2020 15:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F105C149B32
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2020 15:55:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728935AbgAZO3d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 Jan 2020 09:29:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726323AbgAZO3d (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 26 Jan 2020 09:29:33 -0500
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39F9D20708;
-        Sun, 26 Jan 2020 14:29:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580048971;
-        bh=YkhJV7IhBrCN3tAOfJmAIFU5CJQ/WSM95HjW5Xzk7H8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g/UEQc69wuWnmjcf3iLg5h0do3dV297vOeg2ewGI8Ud+2xSrYTTfO4TndrmHRjX+3
-         VHL3uQ87q/pH/WYAGmN8NjCOQdXjjuybWr4I6AeRXLlRGLuFF0fUy+tA3D0skHL5W8
-         xiVMg8akSepaeksABu4GAoJezVba5grWQ/uwQ674=
-Date:   Sun, 26 Jan 2020 16:29:28 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Devesh Sharma <devesh.sharma@broadcom.com>
-Cc:     linux-rdma@vger.kernel.org, jgg@mellanox.com, dledford@redhat.com
-Subject: Re: [PATCH for-next 4/7] RDMA/bnxt_re: Refactor net ring allocation
- function
-Message-ID: <20200126142928.GG2993@unreal>
-References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
- <1579845165-18002-5-git-send-email-devesh.sharma@broadcom.com>
+        id S1725838AbgAZOz3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 Jan 2020 09:55:29 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9679 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725773AbgAZOz2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 26 Jan 2020 09:55:28 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id C1F3537637DEDCC16484;
+        Sun, 26 Jan 2020 22:55:23 +0800 (CST)
+Received: from SZA160416817.china.huawei.com (10.45.215.46) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.439.0; Sun, 26 Jan 2020 22:55:16 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Cleanups of magic numbers
+Date:   Sun, 26 Jan 2020 22:55:04 +0800
+Message-ID: <20200126145504.9700-1-liweihang@huawei.com>
+X-Mailer: git-send-email 2.10.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1579845165-18002-5-git-send-email-devesh.sharma@broadcom.com>
+Content-Type: text/plain
+X-Originating-IP: [10.45.215.46]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 12:52:42AM -0500, Devesh Sharma wrote:
-> Introducing a new attribute structure to reduce
-> the long list of arguments passed in bnxt_re_net_ring_alloc()
-> function.
->
-> The caller of bnxt_re_net_ring_alloc should fill in
-> the list of attributes in bnxt_re_ring_attr structure
-> and then pass the pointer to the function.
->
-> Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
-> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
-> ---
->  drivers/infiniband/hw/bnxt_re/bnxt_re.h |  9 +++++
->  drivers/infiniband/hw/bnxt_re/main.c    | 65 ++++++++++++++++++---------------
->  2 files changed, 45 insertions(+), 29 deletions(-)
->
-> diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-> index 86274f4..c736e82 100644
-> --- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-> +++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-> @@ -89,6 +89,15 @@
->
->  #define BNXT_RE_DEFAULT_ACK_DELAY	16
->
-> +struct bnxt_re_ring_attr {
-> +	dma_addr_t	*dma_arr;
-> +	int		pages;
-> +	int		type;
-> +	u32		depth;
-> +	u32		lrid; /* Logical ring id */
-> +	u8		mode;
-> +};
-> +
->  struct bnxt_re_work {
->  	struct work_struct	work;
->  	unsigned long		event;
-> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-> index a966c68..648a5ea 100644
-> --- a/drivers/infiniband/hw/bnxt_re/main.c
-> +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> @@ -427,9 +427,9 @@ static int bnxt_re_net_ring_free(struct bnxt_re_dev *rdev,
->  	return rc;
->  }
->
-> -static int bnxt_re_net_ring_alloc(struct bnxt_re_dev *rdev, dma_addr_t *dma_arr,
-> -				  int pages, int type, u32 ring_mask,
-> -				  u32 map_index, u16 *fw_ring_id)
-> +static int bnxt_re_net_ring_alloc(struct bnxt_re_dev *rdev,
-> +				  struct bnxt_re_ring_attr *ring_attr,
-> +				  u16 *fw_ring_id)
->  {
->  	struct bnxt_en_dev *en_dev = rdev->en_dev;
->  	struct hwrm_ring_alloc_input req = {0};
-> @@ -443,18 +443,18 @@ static int bnxt_re_net_ring_alloc(struct bnxt_re_dev *rdev, dma_addr_t *dma_arr,
->  	memset(&fw_msg, 0, sizeof(fw_msg));
->  	bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_RING_ALLOC, -1, -1);
->  	req.enables = 0;
-> -	req.page_tbl_addr =  cpu_to_le64(dma_arr[0]);
-> -	if (pages > 1) {
-> +	req.page_tbl_addr =  cpu_to_le64(ring_attr->dma_arr[0]);
-> +	if (ring_attr->pages > 1) {
->  		/* Page size is in log2 units */
->  		req.page_size = BNXT_PAGE_SHIFT;
->  		req.page_tbl_depth = 1;
->  	}
->  	req.fbo = 0;
->  	/* Association of ring index with doorbell index and MSIX number */
-> -	req.logical_id = cpu_to_le16(map_index);
-> -	req.length = cpu_to_le32(ring_mask + 1);
-> -	req.ring_type = type;
-> -	req.int_mode = RING_ALLOC_REQ_INT_MODE_MSIX;
-> +	req.logical_id = cpu_to_le16(ring_attr->lrid);
-> +	req.length = cpu_to_le32(ring_attr->depth + 1);
-> +	req.ring_type = ring_attr->type;
-> +	req.int_mode = ring_attr->mode;
->  	bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
->  			    sizeof(resp), DFLT_HWRM_CMD_TIMEOUT);
->  	rc = en_dev->en_ops->bnxt_send_fw_msg(en_dev, BNXT_ROCE_ULP, &fw_msg);
-> @@ -1006,12 +1006,13 @@ static void bnxt_re_free_res(struct bnxt_re_dev *rdev)
->
->  static int bnxt_re_alloc_res(struct bnxt_re_dev *rdev)
->  {
-> +	struct bnxt_qplib_ctx *qplib_ctx;
-> +	struct bnxt_re_ring_attr rattr;
->  	int num_vec_created = 0;
-> -	dma_addr_t *pg_map;
->  	int rc = 0, i;
-> -	int pages;
->  	u8 type;
->
-> +	memset(&rattr, 0, sizeof(rattr));
+From: Lang Cheng <chenglang@huawei.com>
 
-Initialize rattr to zero from the beginning and save call to memset.
+Some magic numbers are hard to understand, so replace them with macros
+or add some comments for them.
 
->  	/* Configure and allocate resources for qplib */
->  	rdev->qplib_res.rcfw = &rdev->rcfw;
->  	rc = bnxt_qplib_get_dev_attr(&rdev->rcfw, &rdev->dev_attr,
-> @@ -1030,10 +1031,13 @@ static int bnxt_re_alloc_res(struct bnxt_re_dev *rdev)
->  	if (rc)
->  		goto dealloc_res;
->
-> +	qplib_ctx = &rdev->qplib_ctx;
->  	for (i = 0; i < rdev->num_msix - 1; i++) {
-> -		rdev->nq[i].res = &rdev->qplib_res;
-> -		rdev->nq[i].hwq.max_elements = BNXT_RE_MAX_CQ_COUNT +
-> -			BNXT_RE_MAX_SRQC_COUNT + 2;
-> +		struct bnxt_qplib_nq *nq;
-> +
-> +		nq = &rdev->nq[i];
-> +		nq->hwq.max_elements = (qplib_ctx->cq_count +
-> +					qplib_ctx->srqc_count + 2);
->  		rc = bnxt_qplib_alloc_nq(&rdev->qplib_res, &rdev->nq[i]);
->  		if (rc) {
->  			dev_err(rdev_to_dev(rdev), "Alloc Failed NQ%d rc:%#x",
-> @@ -1041,12 +1045,13 @@ static int bnxt_re_alloc_res(struct bnxt_re_dev *rdev)
->  			goto free_nq;
->  		}
->  		type = bnxt_qplib_get_ring_type(rdev->chip_ctx);
-> -		pg_map = rdev->nq[i].hwq.pbl[PBL_LVL_0].pg_map_arr;
-> -		pages = rdev->nq[i].hwq.pbl[rdev->nq[i].hwq.level].pg_count;
-> -		rc = bnxt_re_net_ring_alloc(rdev, pg_map, pages, type,
-> -					    BNXT_QPLIB_NQE_MAX_CNT - 1,
-> -					    rdev->msix_entries[i + 1].ring_idx,
-> -					    &rdev->nq[i].ring_id);
-> +		rattr.dma_arr = nq->hwq.pbl[PBL_LVL_0].pg_map_arr;
-> +		rattr.pages = nq->hwq.pbl[rdev->nq[i].hwq.level].pg_count;
-> +		rattr.type = type;
-> +		rattr.mode = RING_ALLOC_REQ_INT_MODE_MSIX;
-> +		rattr.depth = BNXT_QPLIB_NQE_MAX_CNT - 1;
-> +		rattr.lrid = rdev->msix_entries[i + 1].ring_idx;
-> +		rc = bnxt_re_net_ring_alloc(rdev, &rattr, &nq->ring_id);
->  		if (rc) {
->  			dev_err(rdev_to_dev(rdev),
->  				"Failed to allocate NQ fw id with rc = 0x%x",
-> @@ -1371,10 +1376,10 @@ static void bnxt_re_worker(struct work_struct *work)
->
->  static int bnxt_re_ib_reg(struct bnxt_re_dev *rdev)
->  {
-> -	dma_addr_t *pg_map;
-> -	u32 db_offt, ridx;
-> -	int pages, vid;
-> +	struct bnxt_re_ring_attr rattr;
-> +	u32 db_offt;
->  	bool locked;
-> +	int vid;
->  	u8 type;
->  	int rc;
->
-> @@ -1383,6 +1388,7 @@ static int bnxt_re_ib_reg(struct bnxt_re_dev *rdev)
->  	locked = true;
->
->  	/* Registered a new RoCE device instance to netdev */
-> +	memset(&rattr, 0, sizeof(rattr));
+Signed-off-by: Lang Cheng <chenglang@huawei.com>
+Signed-off-by: Yixian Liu <liuyixian@huawei.com>
+Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_device.h |  2 +-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 10 +++++-----
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 23 +++++++++++++----------
+ drivers/infiniband/hw/hns/hns_roce_srq.c    |  3 ++-
+ 4 files changed, 21 insertions(+), 17 deletions(-)
 
-ditto
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index a7c4ff9..3b3d6fe 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -881,7 +881,7 @@ struct hns_roce_caps {
+ 	u32		cqc_timer_ba_pg_sz;
+ 	u32		cqc_timer_buf_pg_sz;
+ 	u32		cqc_timer_hop_num;
+-	u32		cqe_ba_pg_sz;
++	u32             cqe_ba_pg_sz;	/* page_size = 4K*(2^cqe_ba_pg_sz) */
+ 	u32		cqe_buf_pg_sz;
+ 	u32		cqe_hop_num;
+ 	u32		srqwqe_ba_pg_sz;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 12c4cd8..b866878 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -1999,7 +1999,7 @@ static int hns_roce_v2_profile(struct hns_roce_dev *hr_dev)
+ 		return ret;
+ 	}
+ 
+-	if (hr_dev->pci_dev->revision == 0x21) {
++	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08_B) {
+ 		ret = hns_roce_query_pf_timer_resource(hr_dev);
+ 		if (ret) {
+ 			dev_err(hr_dev->dev,
+@@ -2016,7 +2016,7 @@ static int hns_roce_v2_profile(struct hns_roce_dev *hr_dev)
+ 		return ret;
+ 	}
+ 
+-	if (hr_dev->pci_dev->revision == 0x21) {
++	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08_B) {
+ 		ret = hns_roce_set_vf_switch_param(hr_dev, 0);
+ 		if (ret) {
+ 			dev_err(hr_dev->dev,
+@@ -2298,7 +2298,7 @@ static void hns_roce_v2_exit(struct hns_roce_dev *hr_dev)
+ {
+ 	struct hns_roce_v2_priv *priv = hr_dev->priv;
+ 
+-	if (hr_dev->pci_dev->revision == 0x21)
++	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08_B)
+ 		hns_roce_function_clear(hr_dev);
+ 
+ 	hns_roce_free_link_table(hr_dev, &priv->tpq);
+@@ -2757,7 +2757,7 @@ static void hns_roce_free_srq_wqe(struct hns_roce_srq *srq, int wqe_index)
+ 
+ static void hns_roce_v2_cq_set_ci(struct hns_roce_cq *hr_cq, u32 cons_index)
+ {
+-	*hr_cq->set_ci_db = cons_index & 0xffffff;
++	*hr_cq->set_ci_db = cons_index & V2_CQ_DB_PARAMETER_CONS_IDX_M;
+ }
+ 
+ static void __hns_roce_v2_cq_clean(struct hns_roce_cq *hr_cq, u32 qpn,
+@@ -4475,7 +4475,7 @@ static int hns_roce_v2_set_path(struct ib_qp *ibqp,
+ 	roce_set_field(qpc_mask->byte_24_mtu_tc, V2_QPC_BYTE_24_HOP_LIMIT_M,
+ 		       V2_QPC_BYTE_24_HOP_LIMIT_S, 0);
+ 
+-	if (hr_dev->pci_dev->revision == 0x21 && is_udp)
++	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08_B && is_udp)
+ 		roce_set_field(context->byte_24_mtu_tc, V2_QPC_BYTE_24_TC_M,
+ 			       V2_QPC_BYTE_24_TC_S, grh->traffic_class >> 2);
+ 	else
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 7c8de1e..d4b0d78 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -309,7 +309,7 @@ static int hns_roce_set_rq_size(struct hns_roce_dev *hr_dev,
+ 
+ 		max_cnt = max(1U, cap->max_recv_sge);
+ 		hr_qp->rq.max_gs = roundup_pow_of_two(max_cnt);
+-		if (hr_dev->caps.max_rq_sg <= 2)
++		if (hr_dev->caps.max_rq_sg <= HNS_ROCE_SGE_IN_WQE)
+ 			hr_qp->rq.wqe_shift =
+ 					ilog2(hr_dev->caps.max_rq_desc_sz);
+ 		else
+@@ -370,16 +370,17 @@ static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
+ 	hr_qp->sq.wqe_shift = ucmd->log_sq_stride;
+ 
+ 	max_cnt = max(1U, cap->max_send_sge);
+-	if (hr_dev->caps.max_sq_sg <= 2)
++	if (hr_dev->hw_rev == HNS_ROCE_HW_VER1)
+ 		hr_qp->sq.max_gs = roundup_pow_of_two(max_cnt);
+ 	else
+ 		hr_qp->sq.max_gs = max_cnt;
+ 
+-	if (hr_qp->sq.max_gs > 2)
++	if (hr_qp->sq.max_gs > HNS_ROCE_SGE_IN_WQE)
+ 		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp->sq.wqe_cnt *
+ 							(hr_qp->sq.max_gs - 2));
+ 
+-	if ((hr_qp->sq.max_gs > 2) && (hr_dev->pci_dev->revision == 0x20)) {
++	if (hr_qp->sq.max_gs > HNS_ROCE_SGE_IN_WQE &&
++	    hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08_A) {
+ 		if (hr_qp->sge.sge_cnt > hr_dev->caps.max_extend_sg) {
+ 			dev_err(hr_dev->dev,
+ 				"The extended sge cnt error! sge_cnt=%d\n",
+@@ -392,7 +393,7 @@ static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
+ 	ex_sge_num = hr_qp->sge.sge_cnt;
+ 
+ 	/* Get buf size, SQ and RQ  are aligned to page_szie */
+-	if (hr_dev->caps.max_sq_sg <= 2) {
++	if (hr_dev->hw_rev == HNS_ROCE_HW_VER1) {
+ 		hr_qp->buff_size = round_up((hr_qp->rq.wqe_cnt <<
+ 					     hr_qp->rq.wqe_shift), PAGE_SIZE) +
+ 				   round_up((hr_qp->sq.wqe_cnt <<
+@@ -528,13 +529,15 @@ static int set_extend_sge_param(struct hns_roce_dev *hr_dev,
+ 	}
+ 
+ 	/* ud sqwqe's sge use extend sge */
+-	if (hr_dev->caps.max_sq_sg > 2 && hr_qp->ibqp.qp_type == IB_QPT_GSI) {
++	if (hr_dev->hw_rev != HNS_ROCE_HW_VER1 &&
++	    hr_qp->ibqp.qp_type == IB_QPT_GSI) {
+ 		hr_qp->sge.sge_cnt = roundup_pow_of_two(hr_qp->sq.wqe_cnt *
+ 				     hr_qp->sq.max_gs);
+ 		hr_qp->sge.sge_shift = 4;
+ 	}
+ 
+-	if ((hr_qp->sq.max_gs > 2) && hr_dev->pci_dev->revision == 0x20) {
++	if (hr_qp->sq.max_gs > 2 &&
++	    hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08_A) {
+ 		if (hr_qp->sge.sge_cnt > hr_dev->caps.max_extend_sg) {
+ 			dev_err(dev, "The extended sge cnt error! sge_cnt=%d\n",
+ 				hr_qp->sge.sge_cnt);
+@@ -577,7 +580,7 @@ static int hns_roce_set_kernel_sq_size(struct hns_roce_dev *hr_dev,
+ 
+ 	/* Get data_seg numbers */
+ 	max_cnt = max(1U, cap->max_send_sge);
+-	if (hr_dev->caps.max_sq_sg <= 2)
++	if (hr_dev->hw_rev == HNS_ROCE_HW_VER1)
+ 		hr_qp->sq.max_gs = roundup_pow_of_two(max_cnt);
+ 	else
+ 		hr_qp->sq.max_gs = max_cnt;
+@@ -593,7 +596,7 @@ static int hns_roce_set_kernel_sq_size(struct hns_roce_dev *hr_dev,
+ 	hr_qp->sq.offset = 0;
+ 	size = round_up(hr_qp->sq.wqe_cnt << hr_qp->sq.wqe_shift, page_size);
+ 
+-	if (hr_dev->caps.max_sq_sg > 2 && hr_qp->sge.sge_cnt) {
++	if (hr_dev->hw_rev != HNS_ROCE_HW_VER1 && hr_qp->sge.sge_cnt) {
+ 		hr_qp->sge.sge_cnt = max(page_size/(1 << hr_qp->sge.sge_shift),
+ 					 (u32)hr_qp->sge.sge_cnt);
+ 		hr_qp->sge.offset = size;
+@@ -1078,7 +1081,7 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
+ 		hr_qp->phy_port = hr_dev->iboe.phy_port[hr_qp->port];
+ 
+ 		/* when hw version is v1, the sqpn is allocated */
+-		if (hr_dev->caps.max_sq_sg <= 2)
++		if (hr_dev->hw_rev == HNS_ROCE_HW_VER1)
+ 			hr_qp->ibqp.qp_num = HNS_ROCE_MAX_PORTS +
+ 					     hr_dev->iboe.phy_port[hr_qp->port];
+ 		else
+diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
+index 7113ebf..b5d7730 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_srq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
+@@ -380,7 +380,8 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 	srq->wqe_cnt = roundup_pow_of_two(init_attr->attr.max_wr + 1);
+ 	srq->max_gs = init_attr->attr.max_sge;
+ 
+-	srq_desc_size = roundup_pow_of_two(max(16, 16 * srq->max_gs));
++	srq_desc_size = roundup_pow_of_two(max(HNS_ROCE_SGE_SIZE,
++					HNS_ROCE_SGE_SIZE * srq->max_gs));
+ 
+ 	srq->wqe_shift = ilog2(srq_desc_size);
+ 
+-- 
+2.8.1
 
->  	rc = bnxt_re_register_netdev(rdev);
->  	if (rc) {
->  		rtnl_unlock();
-> @@ -1422,12 +1428,13 @@ static int bnxt_re_ib_reg(struct bnxt_re_dev *rdev)
->  	}
->
->  	type = bnxt_qplib_get_ring_type(rdev->chip_ctx);
-> -	pg_map = rdev->rcfw.creq.pbl[PBL_LVL_0].pg_map_arr;
-> -	pages = rdev->rcfw.creq.pbl[rdev->rcfw.creq.level].pg_count;
-> -	ridx = rdev->msix_entries[BNXT_RE_AEQ_IDX].ring_idx;
-> -	rc = bnxt_re_net_ring_alloc(rdev, pg_map, pages, type,
-> -				    BNXT_QPLIB_CREQE_MAX_CNT - 1,
-> -				    ridx, &rdev->rcfw.creq_ring_id);
-> +	rattr.dma_arr = rdev->rcfw.creq.pbl[PBL_LVL_0].pg_map_arr;
-> +	rattr.pages = rdev->rcfw.creq.pbl[rdev->rcfw.creq.level].pg_count;
-> +	rattr.type = type;
-> +	rattr.mode = RING_ALLOC_REQ_INT_MODE_MSIX;
-> +	rattr.depth = BNXT_QPLIB_CREQE_MAX_CNT - 1;
-> +	rattr.lrid = rdev->msix_entries[BNXT_RE_AEQ_IDX].ring_idx;
-> +	rc = bnxt_re_net_ring_alloc(rdev, &rattr, &rdev->rcfw.creq_ring_id);
->  	if (rc) {
->  		pr_err("Failed to allocate CREQ: %#x\n", rc);
->  		goto free_rcfw;
-> --
-> 1.8.3.1
->
+
