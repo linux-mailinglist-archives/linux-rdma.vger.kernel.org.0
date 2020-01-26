@@ -2,201 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C96281499A9
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2020 09:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DC71499D5
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2020 10:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgAZIgP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 Jan 2020 03:36:15 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10133 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727773AbgAZIgP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 26 Jan 2020 03:36:15 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id EB396E386D76991A3C04;
-        Sun, 26 Jan 2020 16:36:12 +0800 (CST)
-Received: from [127.0.0.1] (10.45.213.181) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.439.0; Sun, 26 Jan 2020
- 16:36:05 +0800
-Subject: Re: [PATCH for-next 4/7] RDMA/hns: Optimize qp buffer allocation flow
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <dledford@redhat.com>, <jgg@ziepe.ca>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1579508377-55818-1-git-send-email-liweihang@huawei.com>
- <1579508377-55818-5-git-send-email-liweihang@huawei.com>
- <20200123143136.GO7018@unreal>
-From:   Weihang Li <liweihang@huawei.com>
-Message-ID: <61c73aa5-6f64-0dd4-1565-09cbe7264f9f@huawei.com>
-Date:   Sun, 26 Jan 2020 16:35:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726571AbgAZJos (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 Jan 2020 04:44:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726518AbgAZJos (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 26 Jan 2020 04:44:48 -0500
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4EE6F2071A;
+        Sun, 26 Jan 2020 09:44:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1580031887;
+        bh=aZkkJOXaYwJ+AFjo1jRUosCaAC+R6oMBmZcyop6jTPY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=niSF4tzni/xSxWTRQYk7PfqnTYgCs3RMVsmY7vGyWBOiWVFq0X2/z0Gy5nrqAF48E
+         ctzM0+WUwMSoFlSfZpMq5LaEjCDvJRBtCaBvSqfWDpxXicz3DTh6xjqZMV4DC9A0Zl
+         6gRr1pTBoeoTA/jtznsvuxB+8X5hHgiKsBnsxx1g=
+Date:   Sun, 26 Jan 2020 11:44:44 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        linux-netdev <netdev@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH net-next v1] net/core: Replace driver version to be
+ kernel version
+Message-ID: <20200126094444.GE2993@unreal>
+References: <20200125161401.40683-1-leon@kernel.org>
+ <b0f73391-d7f5-1efe-2927-bed02668f8c5@gmail.com>
+ <20200125184958.GA2993@unreal>
+ <20200125192435.GD2993@unreal>
+ <3ef38b44-a584-d6c4-5d3b-ed2fdfb743ee@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200123143136.GO7018@unreal>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.45.213.181]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3ef38b44-a584-d6c4-5d3b-ed2fdfb743ee@gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Sat, Jan 25, 2020 at 07:11:49PM -0800, Florian Fainelli wrote:
+>
+>
+> On 1/25/2020 11:24 AM, Leon Romanovsky wrote:
+> > On Sat, Jan 25, 2020 at 08:49:58PM +0200, Leon Romanovsky wrote:
+> >> On Sat, Jan 25, 2020 at 08:55:01AM -0800, Florian Fainelli wrote:
+> >>>
+> >>>
+> >>> On 1/25/2020 8:14 AM, Leon Romanovsky wrote:
+> >>>> From: Leon Romanovsky <leonro@mellanox.com>
+> >>>>
+> >>>> In order to stop useless driver version bumps and unify output
+> >>>> presented by ethtool -i, let's overwrite the version string.
+> >>>>
+> >>>> Before this change:
+> >>>> [leonro@erver ~]$ ethtool -i eth0
+> >>>> driver: virtio_net
+> >>>> version: 1.0.0
+> >>>> After this change:
+> >>>> [leonro@server ~]$ ethtool -i eth0
+> >>>> driver: virtio_net
+> >>>> version: 5.5.0-rc6+
+> >>>>
+> >>>> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>> ---
+> >>>>  Changelog:
+> >>>>  v1: Resend per-Dave's request
+> >>>>      https://lore.kernel.org/linux-rdma/20200125.101311.1924780619716720495.davem@davemloft.net
+> >>>>      No changes at all and applied cleanly on top of "3333e50b64fe Merge branch 'mlxsw-Offload-TBF'"
+> >>>>  v0: https://lore.kernel.org/linux-rdma/20200123130541.30473-1-leon@kernel.org
+> >>>
+> >>> There does not appear to be any explanation why we think this is a good
+> >>> idea for *all* drivers, and not just the ones that are purely virtual?
+> >>
+> >> We beat this dead horse too many times already, latest discussion and
+> >> justification can be found in that thread.
+> >> https://lore.kernel.org/linux-rdma/20200122152627.14903-1-michal.kalderon@marvell.com/T/#md460ff8f976c532a89d6860411c3c50bb811038b
+> >>
+> >> However, it was discussed in ksummit mailing list too and overall
+> >> agreement that version exposed by in-tree modules are useless and
+> >> sometimes even worse. They mislead users to expect some features
+> >> or lack of them based on this arbitrary string.
+> >>
+> >>>
+> >>> Are you not concerned that this is ABI and that specific userland may be
+> >>> relying on a specific info format and we could now be breaking their
+> >>> version checks? I do not disagree that the version is not particularly
+> >>> useful for in-tree kernel, but this is ABI, and breaking user-space is
+> >>> usually a source of support questions.
+> >>
+> >> See this Linus's response:
+> >> "The unified policy is pretty much that version codes do not matter, do
+> >> not exist, and do not get updated.
+> >>
+> >> Things are supposed to be backwards and forwards compatible, because
+> >> we don't accept breakage in user space anyway. So versioning is
+> >> pointless, and only causes problems."
+> >> https://lore.kernel.org/ksummit-discuss/CA+55aFx9A=5cc0QZ7CySC4F2K7eYaEfzkdYEc9JaNgCcV25=rg@mail.gmail.com/
+> >>
+> >> I also don't think that declaring every print in the kernel as ABI is
+> >> good thing to do. We are not breaking binary ABI and continuing to
+> >> supply some sort of versioning, but in unified format and not in wild
+> >> west way like it is now.
+> >>
+> >> So bottom line, if some REAL user space application (not test suites) relies
+> >> on specific version reported from ethtool, it is already broken and can't work
+> >> sanely for stable@, distros and upstream kernels.
+> >
+> > And about support questions,
+> > I'm already over-asked to update our mlx5 driver version every time some
+> > of our developers adds new feature (every week or two), which is insane.
+> > So I prefer to have one stable solution in the kernel.
+>
+> Fair enough, can you spin a new version which provides this background
+> discussion and links into your commit message?
 
+Thanks for the feedback, I'm doing it now.
 
-On 2020/1/23 22:31, Leon Romanovsky wrote:
-> On Mon, Jan 20, 2020 at 04:19:34PM +0800, Weihang Li wrote:
->> From: Xi Wang <wangxi11@huawei.com>
->>
->> Encapsulate qp buffer allocation related code into 3 functions:
->> alloc_qp_buf(), map_qp_buf() and free_qp_buf().
->>
->> Signed-off-by: Xi Wang <wangxi11@huawei.com>
->> Signed-off-by: Weihang Li <liweihang@huawei.com>
->> ---
->>  drivers/infiniband/hw/hns/hns_roce_device.h |   1 -
->>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 268 +++++++++++++++-------------
->>  2 files changed, 147 insertions(+), 122 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
->> index 1f361e6..9ddeb2b 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
->> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
->> @@ -660,7 +660,6 @@ struct hns_roce_qp {
->>  	/* this define must less than HNS_ROCE_MAX_BT_REGION */
->>  #define HNS_ROCE_WQE_REGION_MAX	 3
->>  	struct hns_roce_buf_region regions[HNS_ROCE_WQE_REGION_MAX];
->> -	int			region_cnt;
->>  	int                     wqe_bt_pg_shift;
->>
->>  	u32			buff_size;
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
->> index 3bd5809..5184cb4 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
->> @@ -716,23 +716,150 @@ static void free_rq_inline_buf(struct hns_roce_qp *hr_qp)
->>  	kfree(hr_qp->rq_inl_buf.wqe_list);
->>  }
->>
->> +static int map_qp_buf(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
->> +		      u32 page_shift, bool is_user)
->> +{
->> +	dma_addr_t *buf_list[ARRAY_SIZE(hr_qp->regions)] = { NULL };
->> +	struct ib_device *ibdev = &hr_dev->ib_dev;
->> +	struct hns_roce_buf_region *r;
->> +	int region_count;
->> +	int buf_count;
->> +	int ret;
->> +	int i;
->> +
->> +	region_count = split_wqe_buf_region(hr_dev, hr_qp, hr_qp->regions,
->> +					ARRAY_SIZE(hr_qp->regions), page_shift);
->> +
->> +	/* alloc a tmp list for storing wqe buf address */
->> +	ret = hns_roce_alloc_buf_list(hr_qp->regions, buf_list, region_count);
->> +	if (ret) {
->> +		ibdev_err(ibdev, "alloc buf_list error for create qp\n");
->> +		return ret;
->> +	}
->> +
->> +	for (i = 0; i < region_count; i++) {
->> +		r = &hr_qp->regions[i];
->> +		if (is_user)
->> +			buf_count = hns_roce_get_umem_bufs(hr_dev, buf_list[i],
->> +					r->count, r->offset, hr_qp->umem,
->> +					page_shift);
->> +		else
->> +			buf_count = hns_roce_get_kmem_bufs(hr_dev, buf_list[i],
->> +					r->count, r->offset, &hr_qp->hr_buf);
->> +
->> +		if (buf_count != r->count) {
->> +			ibdev_err(ibdev, "get %s qp buf err,expect %d,ret %d.\n",
->> +				  is_user ? "user" : "kernel",
->> +				  r->count, buf_count);
->> +			ret = -ENOBUFS;
->> +			goto done;
->> +		}
->> +	}
->> +
->> +	hr_qp->wqe_bt_pg_shift = calc_wqe_bt_page_shift(hr_dev, hr_qp->regions,
->> +							region_count);
->> +	hns_roce_mtr_init(&hr_qp->mtr, PAGE_SHIFT + hr_qp->wqe_bt_pg_shift,
->> +			  page_shift);
->> +	ret = hns_roce_mtr_attach(hr_dev, &hr_qp->mtr, buf_list, hr_qp->regions,
->> +				  region_count);
->> +	if (ret)
->> +		ibdev_err(ibdev, "mtr attatch error for create qp\n");
->> +
->> +	goto done;
->> +
->> +	hns_roce_mtr_cleanup(hr_dev, &hr_qp->mtr);
->> +done:
->> +	hns_roce_free_buf_list(buf_list, region_count);
->> +
->> +	return ret;
->> +}
->> +
->> +static int alloc_qp_buf(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
->> +			struct ib_qp_init_attr *init_attr,
->> +			struct ib_udata *udata, unsigned long addr)
->> +{
->> +	u32 page_shift = PAGE_SHIFT + hr_dev->caps.mtt_buf_pg_sz;
->> +	struct ib_device *ibdev = &hr_dev->ib_dev;
->> +	bool is_rq_buf_inline;
->> +	int ret;
->> +
->> +	is_rq_buf_inline = (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
->> +			   hns_roce_qp_has_rq(init_attr);
->> +	if (is_rq_buf_inline) {
->> +		ret = alloc_rq_inline_buf(hr_qp, init_attr);
->> +		if (ret) {
->> +			ibdev_err(ibdev, "alloc recv inline buffer error\n");
->> +			return ret;
->> +		}
->> +	}
->> +
->> +	if (udata) {
->> +		hr_qp->umem = ib_umem_get(udata, addr, hr_qp->buff_size, 0);
->> +		if (IS_ERR(hr_qp->umem)) {
->> +			ibdev_err(ibdev, "get umem error for qp buf\n");
->> +			ret = PTR_ERR(hr_qp->umem);
->> +			goto err_inline;
->> +		}
->> +	} else {
->> +		ret = hns_roce_buf_alloc(hr_dev, hr_qp->buff_size,
->> +					 (1 << page_shift) * 2,
->> +					 &hr_qp->hr_buf, page_shift);
->> +		if (ret) {
->> +			ibdev_err(ibdev, "alloc roce buf error\n");
->> +			goto err_inline;
->> +		}
->> +	}
->> +
->> +	ret = map_qp_buf(hr_dev, hr_qp, page_shift, udata);
-> 
-> 
-> I don't remember what was the resolution if it is ok to rely on "udata"
-> as an indicator of user/kernel flow.
-
-Hi Leon,
-
-Sorry for that I don't know much about previous discussions, will check for
-that. Thanks for your reminder.
-
-
-> 
->> +	if (ret) {
->> +		ibdev_err(ibdev, "map roce buf error\n");
-> 
-> You put ibdev_err() on almost every line in map_qp_buf(), please leave
-> only one place.
-> 
-> Thanks
-> 
-
-OK, thank you.
-
-Weihang
-
-> .
-> 
-
+> --
+> Florian
