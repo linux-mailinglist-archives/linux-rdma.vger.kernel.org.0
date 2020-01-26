@@ -2,180 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 888CA149AC4
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2020 14:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F29DB149AFF
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jan 2020 15:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387435AbgAZNVo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 Jan 2020 08:21:44 -0500
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:39292 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729248AbgAZNVh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 26 Jan 2020 08:21:37 -0500
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from maorg@mellanox.com)
-        with ESMTPS (AES256-SHA encrypted); 26 Jan 2020 15:21:29 +0200
-Received: from dev-l-vrt-201.mtl.labs.mlnx (dev-l-vrt-201.mtl.labs.mlnx [10.134.201.1])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 00QDLTp7002251;
-        Sun, 26 Jan 2020 15:21:29 +0200
-From:   Maor Gottlieb <maorg@mellanox.com>
-To:     j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
-        jiri@mellanox.com, davem@davemloft.net
-Cc:     Maor Gottlieb <maorg@mellanox.com>, netdev@vger.kernel.org,
-        saeedm@mellanox.com, jgg@mellanox.com, leonro@mellanox.com,
-        alexr@mellanox.com, markz@mellanox.com, parav@mellanox.com,
-        eranbe@mellanox.com, linux-rdma@vger.kernel.org
-Subject: [RFC PATCH 4/4] bonding: Implement ndo_xmit_slave_get
-Date:   Sun, 26 Jan 2020 15:21:26 +0200
-Message-Id: <20200126132126.9981-5-maorg@mellanox.com>
-X-Mailer: git-send-email 2.17.2
-In-Reply-To: <20200126132126.9981-1-maorg@mellanox.com>
-References: <20200126132126.9981-1-maorg@mellanox.com>
+        id S1727322AbgAZOPs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 Jan 2020 09:15:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727228AbgAZOPr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 26 Jan 2020 09:15:47 -0500
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A98B52071E;
+        Sun, 26 Jan 2020 14:15:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1580048147;
+        bh=T2Ex1QdZFT01jD0Q6IZDRpNcgIZtWynLJ9HnvcbdRSI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Vv6yQEzBUCQBi1K2OEUPuhWJJQbIkOt+tq/FxmPj99M0jDOBklIuJU+1EXk6Ojo/4
+         8Cey/t+K4B3fdmXYJc4BOtYWNeRbhTZDO/YR3dew62ylKCLH9418wBhium07QbY7/t
+         j3RTv/Urs49JyTYDDyRIkmDCVFS6tT3GLVRm98ys=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Sean Hefty <sean.hefty@intel.com>
+Subject: [PATCH rdma-next v1] RDMA/ucma: Mask QPN to be 24 bits according to IBTA
+Date:   Sun, 26 Jan 2020 16:15:42 +0200
+Message-Id: <20200126141542.103655-1-leon@kernel.org>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add implementation of ndo_xmit_slave_get.
-When user set the LAG_FLAGS_HASH_ALL_SLAVES bit and the xmit slave
-result is based on the hash, then the slave will be selected from the
-array of all the slaves.
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+IBTA declares QPN as 24bits, mask input to ensure that kernel
+doesn't get higher bits and ensure by adding WANR_ONCE() that
+other CM users do the same.
+
+Fixes: 75216638572f ("RDMA/cma: Export rdma cm interface to userspace")
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/net/bonding/bond_main.c | 63 ++++++++++++++++++++++++++++++---
- include/net/bonding.h           |  1 +
- 2 files changed, 60 insertions(+), 4 deletions(-)
+ Changelog:
+ v0: Rebase
+---
+ drivers/infiniband/core/cm.c   | 3 +++
+ drivers/infiniband/core/ucma.c | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index adab1e3549ff..c8f440d1b624 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -4098,7 +4098,8 @@ static void bond_skip_slave(struct bond_up_slave *slaves,
-  */
- int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
- {
--	struct bond_up_slave *active_slaves, *old_active_slaves;
-+	struct bond_up_slave *active_slaves = NULL, *all_slaves = NULL;
-+	struct bond_up_slave *old_active_slaves, *old_all_slaves;
- 	struct slave *slave;
- 	struct list_head *iter;
- 	int agg_id = 0;
-@@ -4110,7 +4111,9 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
- 
- 	active_slaves = kzalloc(struct_size(active_slaves, arr,
- 					    bond->slave_cnt), GFP_KERNEL);
--	if (!active_slaves) {
-+	all_slaves = kzalloc(struct_size(all_slaves, arr,
-+					 bond->slave_cnt), GFP_KERNEL);
-+	if (!active_slaves || !all_slaves) {
- 		ret = -ENOMEM;
- 		pr_err("Failed to build slave-array.\n");
- 		goto out;
-@@ -4141,14 +4144,17 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
- 			if (!agg || agg->aggregator_identifier != agg_id)
- 				continue;
- 		}
--		if (!bond_slave_can_tx(slave))
-+		if (!bond_slave_can_tx(slave)) {
-+			all_slaves->arr[all_slaves->count++] = slave;
- 			continue;
-+		}
- 		if (skipslave == slave)
- 			continue;
- 
- 		slave_dbg(bond->dev, slave->dev, "Adding slave to tx hash array[%d]\n",
- 			  active_slaves->count);
- 
-+		all_slaves->arr[all_slaves->count++] = slave;
- 		active_slaves->arr[active_slaves->count++] = slave;
- 	}
- 
-@@ -4156,10 +4162,18 @@ int bond_update_slave_arr(struct bonding *bond, struct slave *skipslave)
- 	rcu_assign_pointer(bond->active_slaves, active_slaves);
- 	if (old_active_slaves)
- 		kfree_rcu(old_active_slaves, rcu);
-+
-+	old_all_slaves = rtnl_dereference(bond->all_slaves);
-+	rcu_assign_pointer(bond->all_slaves, all_slaves);
-+	if (old_all_slaves)
-+		kfree_rcu(old_all_slaves, rcu);
- out:
--	if (ret != 0 && skipslave)
-+	if (ret != 0 && skipslave) {
- 		bond_skip_slave(rtnl_dereference(bond->active_slaves),
- 				skipslave);
-+		kfree(all_slaves);
-+		kfree(active_slaves);
-+	}
- 
- 	return ret;
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 68cc1b2d6824..33c0d9e7bb66 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -2188,6 +2188,9 @@ int ib_send_cm_rep(struct ib_cm_id *cm_id,
+ 	cm_id_priv->initiator_depth = param->initiator_depth;
+ 	cm_id_priv->responder_resources = param->responder_resources;
+ 	cm_id_priv->rq_psn = cpu_to_be32(IBA_GET(CM_REP_STARTING_PSN, rep_msg));
++	WARN_ONCE(param->qp_num & 0xFF000000,
++		  "IBTA declares QPN to be 24 bits, but it is 0x%X\n",
++		  param->qp_num);
+ 	cm_id_priv->local_qpn = cpu_to_be32(param->qp_num & 0xFFFFFF);
+
+ out:	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+index 0274e9b704be..57e68491a2fd 100644
+--- a/drivers/infiniband/core/ucma.c
++++ b/drivers/infiniband/core/ucma.c
+@@ -1045,7 +1045,7 @@ static void ucma_copy_conn_param(struct rdma_cm_id *id,
+ 	dst->retry_count = src->retry_count;
+ 	dst->rnr_retry_count = src->rnr_retry_count;
+ 	dst->srq = src->srq;
+-	dst->qp_num = src->qp_num;
++	dst->qp_num = src->qp_num & 0xFFFFFF;
+ 	dst->qkey = (id->route.addr.src_addr.ss_family == AF_IB) ? src->qkey : 0;
  }
-@@ -4265,6 +4279,46 @@ static u16 bond_select_queue(struct net_device *dev, struct sk_buff *skb,
- 	return txq;
- }
- 
-+static struct net_device *bond_xmit_slave_get(struct net_device *master_dev,
-+					      struct sk_buff *skb,
-+					      int flags)
-+{
-+	struct bonding *bond = netdev_priv(master_dev);
-+	struct bond_up_slave *slaves;
-+	struct slave *slave;
-+
-+	switch (BOND_MODE(bond)) {
-+	case BOND_MODE_ROUNDROBIN:
-+		slave = bond_xmit_roundrobin_slave_get(bond, skb);
-+		break;
-+	case BOND_MODE_ACTIVEBACKUP:
-+		slave = bond_xmit_activebackup_slave_get(bond, skb);
-+		break;
-+	case BOND_MODE_8023AD:
-+	case BOND_MODE_XOR:
-+		if (flags & LAG_FLAGS_HASH_ALL_SLAVES)
-+			slaves = rcu_dereference(bond->all_slaves);
-+		else
-+			slaves = rcu_dereference(bond->active_slaves);
-+		slave = bond_xmit_3ad_xor_slave_get(bond, skb, slaves);
-+		break;
-+	case BOND_MODE_BROADCAST:
-+		return ERR_PTR(-EOPNOTSUPP);
-+	case BOND_MODE_ALB:
-+		slave = bond_xmit_alb_slave_get(bond, skb);
-+		break;
-+	case BOND_MODE_TLB:
-+		slave = bond_xmit_tlb_slave_get(bond, skb);
-+		break;
-+	default:
-+		return NULL;
-+	}
-+
-+	if (slave)
-+		return slave->dev;
-+	return NULL;
-+}
-+
- static netdev_tx_t __bond_start_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	struct bonding *bond = netdev_priv(dev);
-@@ -4387,6 +4441,7 @@ static const struct net_device_ops bond_netdev_ops = {
- 	.ndo_del_slave		= bond_release,
- 	.ndo_fix_features	= bond_fix_features,
- 	.ndo_features_check	= passthru_features_check,
-+	.ndo_xmit_slave_get	= bond_xmit_slave_get,
- };
- 
- static const struct device_type bond_type = {
-diff --git a/include/net/bonding.h b/include/net/bonding.h
-index b77daffc1b52..6dd970eb9d3f 100644
---- a/include/net/bonding.h
-+++ b/include/net/bonding.h
-@@ -201,6 +201,7 @@ struct bonding {
- 	struct   slave __rcu *current_arp_slave;
- 	struct   slave __rcu *primary_slave;
- 	struct   bond_up_slave __rcu *active_slaves; /* Array of usable slaves */
-+	struct   bond_up_slave __rcu *all_slaves; /* Array of all slaves */
- 	bool     force_primary;
- 	s32      slave_cnt; /* never change this value outside the attach/detach wrappers */
- 	int     (*recv_probe)(const struct sk_buff *, struct bonding *,
--- 
-2.17.2
+
+--
+2.24.1
 
