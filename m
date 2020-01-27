@@ -2,141 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5573214A0B3
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2020 10:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A8514A2FC
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2020 12:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728575AbgA0J2B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Jan 2020 04:28:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41936 "EHLO mail.kernel.org"
+        id S1726548AbgA0LXu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Jan 2020 06:23:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41032 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726191AbgA0J2B (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 27 Jan 2020 04:28:01 -0500
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B89E12071E;
-        Mon, 27 Jan 2020 09:27:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580117280;
-        bh=Y6b7dIlDJuPnFX3aDH9nm/OaNreSy+VArBY8hxqT7bQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TmXC2cieqs95HncR9Ajyzcva2Q+dqOrIQN6mpYcDzGdQhmyR6nr8gMyZi0mgSKmyI
-         k1PIzkLQqyQrFlMUScxhptErKGxV+8Qn2QxMuobHXGLGRnXYVY29PQdFad9J+n/mI3
-         ajZdFBa6300fl5F8CnWe9M55nRJ9TxedsYLY7nvs=
-Date:   Mon, 27 Jan 2020 11:27:57 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Devesh Sharma <devesh.sharma@broadcom.com>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>
-Subject: Re: [PATCH for-next 1/7] RDMA/bnxt_re: Refactor queue pair creation
- code
-Message-ID: <20200127092757.GN3870@unreal>
-References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
- <1579845165-18002-2-git-send-email-devesh.sharma@broadcom.com>
- <20200125174645.GC4616@mellanox.com>
- <CANjDDBht4vTzkrRH1L9_9CquvsfRwo6VmPb6FFT2HNzkkh0H0w@mail.gmail.com>
- <CANjDDBigH2EvkKVoFrRc0hdMG+1czSg0DChTmkj9M3Kzt2d=gQ@mail.gmail.com>
+        id S1729530AbgA0LXt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 27 Jan 2020 06:23:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 51770AFF0;
+        Mon, 27 Jan 2020 11:06:25 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 356041E0E4E; Mon, 27 Jan 2020 12:06:24 +0100 (CET)
+Date:   Mon, 27 Jan 2020 12:06:24 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH 1/3] mm/gup: track FOLL_PIN pages
+Message-ID: <20200127110624.GD19414@quack2.suse.cz>
+References: <20200125021115.731629-1-jhubbard@nvidia.com>
+ <20200125021115.731629-2-jhubbard@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANjDDBigH2EvkKVoFrRc0hdMG+1czSg0DChTmkj9M3Kzt2d=gQ@mail.gmail.com>
+In-Reply-To: <20200125021115.731629-2-jhubbard@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 27, 2020 at 01:46:13PM +0530, Devesh Sharma wrote:
-> On Mon, Jan 27, 2020 at 1:43 PM Devesh Sharma
-> <devesh.sharma@broadcom.com> wrote:
-> >
-> > On Sat, Jan 25, 2020 at 11:16 PM Jason Gunthorpe <jgg@mellanox.com> wrote:
-> > >
-> > > On Fri, Jan 24, 2020 at 12:52:39AM -0500, Devesh Sharma wrote:
-> > > > +static int bnxt_re_destroy_gsi_sqp(struct bnxt_re_qp *qp)
-> > > > +{
-> > > > +     struct bnxt_re_qp *gsi_sqp;
-> > > > +     struct bnxt_re_ah *gsi_sah;
-> > > > +     struct bnxt_re_dev *rdev;
-> > > > +     int rc = 0;
-> > > > +
-> > > > +     rdev = qp->rdev;
-> > > > +     gsi_sqp = rdev->gsi_ctx.gsi_sqp;
-> > > > +     gsi_sah = rdev->gsi_ctx.gsi_sah;
-> > > > +
-> > > > +     /* remove from active qp list */
-> > > > +     mutex_lock(&rdev->qp_lock);
-> > > > +     list_del(&gsi_sqp->list);
-> > > > +     atomic_dec(&rdev->qp_count);
-> > > > +     mutex_unlock(&rdev->qp_lock);
-> > > > +
-> > > > +     dev_dbg(rdev_to_dev(rdev), "Destroy the shadow AH\n");
-> > > > +     bnxt_qplib_destroy_ah(&rdev->qplib_res,
-> > > > +                           &gsi_sah->qplib_ah,
-> > > > +                           true);
-> > > > +     bnxt_qplib_clean_qp(&qp->qplib_qp);
-> > > > +
-> > > > +     dev_dbg(rdev_to_dev(rdev), "Destroy the shadow QP\n");
-> > > > +     rc = bnxt_qplib_destroy_qp(&rdev->qplib_res, &gsi_sqp->qplib_qp);
-> > > > +     if (rc) {
-> > > > +             dev_err(rdev_to_dev(rdev), "Destroy Shadow QP failed");
-> > > > +             goto fail;
-> > > > +     }
-> > > > +     bnxt_qplib_free_qp_res(&rdev->qplib_res, &gsi_sqp->qplib_qp);
-> > > > +
-> > > > +     kfree(rdev->gsi_ctx.sqp_tbl);
-> > > > +     kfree(gsi_sah);
-> > > > +     kfree(gsi_sqp);
-> > > > +     rdev->gsi_ctx.gsi_sqp = NULL;
-> > > > +     rdev->gsi_ctx.gsi_sah = NULL;
-> > > > +     rdev->gsi_ctx.sqp_tbl = NULL;
-> > > > +
-> > > > +     return 0;
-> > > > +fail:
-> > > > +     mutex_lock(&rdev->qp_lock);
-> > > > +     list_add_tail(&gsi_sqp->list, &rdev->qp_list);
-> > > > +     atomic_inc(&rdev->qp_count);
-> > > > +     mutex_unlock(&rdev->qp_lock);
-> > > > +     return rc;
-> > >
-> > > This error unwind approach looks racy. destroy is not allowed to
-> > > fail, so why all this mess?
-> > True, the unwind is not required, even if the driver wants to keep it
-> > for debugging purpose, the zombie resource would give rise to
-> > confusion.
-> > >
-> > > >  /* Queue Pairs */
-> > > >  int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
-> > > >  {
-> > > > @@ -750,10 +797,18 @@ int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
-> > > >       unsigned int flags;
-> > > >       int rc;
-> > > >
-> > > > +     mutex_lock(&rdev->qp_lock);
-> > > > +     list_del(&qp->list);
-> > > > +     atomic_dec(&rdev->qp_count);
-> > > > +     mutex_unlock(&rdev->qp_lock);
-> > > >       bnxt_qplib_flush_cqn_wq(&qp->qplib_qp);
-> > > >       rc = bnxt_qplib_destroy_qp(&rdev->qplib_res, &qp->qplib_qp);
-> > > >       if (rc) {
-> > > >               dev_err(rdev_to_dev(rdev), "Failed to destroy HW QP");
-> > > > +             mutex_lock(&rdev->qp_lock);
-> > > > +             list_add_tail(&qp->list, &rdev->qp_list);
-> > > > +             atomic_inc(&rdev->qp_count);
-> > > > +             mutex_unlock(&rdev->qp_lock);
-> > > >               return rc;
-> > > >       }
-> > >
-> > > More..
-> > Let me see if I can remove it in this series, else future series would
-> > remove it.
-> > >
-> > > Jason
->
-> At the top level, if provider driver is so keen on returning success
-> in any case, should we change the return type to void of
-> ib_destroy_xx() hooks?
+On Fri 24-01-20 18:11:13, John Hubbard wrote:
+> +static __maybe_unused struct page *try_grab_compound_head(struct page *page,
+> +							  int refs,
+> +							  unsigned int flags)
+> +{
+> +	if (flags & FOLL_GET)
+> +		return try_get_compound_head(page, refs);
+> +	else if (flags & FOLL_PIN) {
+> +		int orig_refs = refs;
+> +
+> +		/*
+> +		 * When pinning a compound page of order > 1 (which is what
+> +		 * hpage_pincount_available() checks for), use an exact count to
+> +		 * track it, via hpage_pincount_inc/_dec().
+> +		 *
+> +		 * However, be sure to *also* increment the normal page refcount
+> +		 * field at least once, so that the page really is pinned.
+> +		 */
+> +		if (!hpage_pincount_available(page))
+> +			refs *= GUP_PIN_COUNTING_BIAS;
+> +
+> +		page = try_get_compound_head(page, refs);
+> +		if (!page)
+> +			return NULL;
+> +
+> +		if (hpage_pincount_available(page))
+> +			hpage_pincount_inc(page);
 
-We are doing it but in extremely slow way. Patches are welcomed.
+Umm, adding just 1 to pincount looks dangerous to me as
+try_grab_compound_head() would not compose - you could not release
+references acquired by try_grab_compound_head() with refs==2 by two calls
+to put_compound_head() with refs==1. So I'd rather have here:
+hpage_pincount_add(page, refs) and similarly in put_compound_head().
+Otherwise the patch looks good to me from a quick look.
 
-Thanks
+								Honza
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
