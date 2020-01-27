@@ -2,161 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F263114A94C
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2020 18:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3E414A9AC
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2020 19:17:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725828AbgA0R43 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Jan 2020 12:56:29 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:34713 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgA0R42 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Jan 2020 12:56:28 -0500
-Received: by mail-pl1-f194.google.com with SMTP id q13so4022174pls.1
-        for <linux-rdma@vger.kernel.org>; Mon, 27 Jan 2020 09:56:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=jy43hP9+Df2cXG91F8i+OvLmTs0Ee2ULfkNV6G23utQ=;
-        b=OuGM7c8XWlVqJY3cAhA5F8sgxpVMGSFQQZmm7Ljjh6XGXq37cl0WtRcxGrDL6XGOS4
-         JTenez/fGM+2mHc9MSaKQTd2wx82oTktPtFdrBTWE4obnhz4UfRrswNzNdjguwm2ffe5
-         e8lJR91rC8tgMraXt05kWgNyTBomE4mr4MOuvMxuq3Yg/u/z08Rd+3iqzcGz+Sv/tfGV
-         rhQ4ntHvjTGvHDSFOaBboOLT+SZeJxayZsOiPUiNcEn6eY77r5VxxJjRgWUrQty8UMhw
-         yH1I1umy6JmkSj4fSVk7aEG8oh2PvDMJOpT2Adfbn4QQPl7b+I742AFdyMyS0V3Ywpvt
-         Abfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=jy43hP9+Df2cXG91F8i+OvLmTs0Ee2ULfkNV6G23utQ=;
-        b=OYWFoYDbpCwLz4xHIpmMYcNFiq7cFfdFbtVNS3cLCBTgZiF80OTEXghf+mGx8DctNK
-         AfJ49zmzSjCGr+ImPb28OBShBOH5T0tR5Ek2nOwlF849sB4CqRKV66thbWT7CMi6F/3P
-         x1vZZ+ora0WVhCW6k5WS8q/YeoO2BbFgHr88Hj0XrDFGbsX7bhiMTQ+UpQkNbpMt7kJy
-         Xb4DSeYQzAeATaEdx76Ev8Fdyo5WHuygAAHihMUjb59C1PFURa5B+EH7j1aqtZbNPT98
-         ge45VMnLITZZ1mnvz1wp0+smd77suy212GE8BUWH+Pj7vaIU8rJlhPbi5AhT9APUmJIW
-         wjgw==
-X-Gm-Message-State: APjAAAW1WusPXECBIZrY1XN/rbuPAYytNGZq1DgnHQ7jDIN/IFuTvRyT
-        ZGP8hxdcc9V3haWT3xDULZVjvzzvxNdTRg==
-X-Google-Smtp-Source: APXvYqzfJ38a2gp3IshboAGe+2sjpLAxA1INBDVfhPryhOKiQE+gMlI090dFVpWrDmHGRsxXzNew5A==
-X-Received: by 2002:a17:90b:1110:: with SMTP id gi16mr226469pjb.110.1580147787088;
-        Mon, 27 Jan 2020 09:56:27 -0800 (PST)
-Received: from Shannons-MacBook-Pro.local (static-50-53-47-17.bvtn.or.frontiernet.net. [50.53.47.17])
-        by smtp.gmail.com with ESMTPSA id 133sm16675317pfy.14.2020.01.27.09.56.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jan 2020 09:56:26 -0800 (PST)
-Subject: Re: [PATCH net-next] net/core: Replace driver version to be kernel
- version
-To:     Leon Romanovsky <leon@kernel.org>, Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        linux-netdev <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-References: <20200123130541.30473-1-leon@kernel.org>
- <43d43a45-18db-f959-7275-63c9976fdf40@pensando.io>
- <20200126194110.GA3870@unreal> <20200126124957.78a31463@cakuba>
- <20200126210850.GB3870@unreal> <20200126133353.77f5cb7e@cakuba>
- <20200127054955.GG3870@unreal>
-From:   Shannon Nelson <snelson@pensando.io>
-Message-ID: <79bc446c-72a0-9209-98bc-e1d85a3a360a@pensando.io>
-Date:   Mon, 27 Jan 2020 09:57:23 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.1
+        id S1725893AbgA0SRz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Jan 2020 13:17:55 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2578 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgA0SRz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Jan 2020 13:17:55 -0500
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e2f291e0001>; Mon, 27 Jan 2020 10:17:03 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 27 Jan 2020 10:17:52 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Mon, 27 Jan 2020 10:17:52 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 27 Jan
+ 2020 18:17:51 +0000
+Subject: Re: [PATCH 1/3] mm/gup: track FOLL_PIN pages
+To:     Jan Kara <jack@suse.cz>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20200125021115.731629-1-jhubbard@nvidia.com>
+ <20200125021115.731629-2-jhubbard@nvidia.com>
+ <20200127110624.GD19414@quack2.suse.cz>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <132c05dc-ee18-029e-4f04-4a7cf532dd9d@nvidia.com>
+Date:   Mon, 27 Jan 2020 10:17:51 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20200127054955.GG3870@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200127110624.GD19414@quack2.suse.cz>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1580149023; bh=+ILbFzTvgHtPE4pnBXrv89ml3yzlDaNRNlBvHEV4G8E=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=Ue5YGSxpthjQIeIHGLLT2HWwsc8wRNTAjufHDuRYSh7VVqcfZCJ3FMadpdE5GJFZJ
+         KiLMgqJSfFD9Yle+/KhQYJ4wvAb+tIeXiiy7HGfGB8sC/fzQ6jKdb2O/AQfY784HqD
+         eRVMs6DOCfl8v4aWj4JoWOhPJCiRTbiFmEM/RNmEbWS5mJHsRkB/3MAMdlYe6U8cik
+         Y96tFaP+I/BRxeiDdTh8WmsoDCpx1P3N434Bg8X1xcVgIbsn4R9HN5py5t6d/tr5AU
+         bsFOIQTl5NN4QnPcfGzmdmlkn0FM6/pgzbVUoi/T45tEgm8tTtHrGnLTrWwn0dEmgS
+         Y9+zWPMs/nWxg==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/26/20 9:49 PM, Leon Romanovsky wrote:
-> On Sun, Jan 26, 2020 at 01:33:53PM -0800, Jakub Kicinski wrote:
->> On Sun, 26 Jan 2020 23:08:50 +0200, Leon Romanovsky wrote:
->>> On Sun, Jan 26, 2020 at 12:49:57PM -0800, Jakub Kicinski wrote:
->>>> On Sun, 26 Jan 2020 21:41:10 +0200, Leon Romanovsky wrote:
->>>>>> This will end up affecting out-of-tree drivers as well, where it is useful
->>>>>> to know what the version number is, most especially since it is different
->>>>>> from what the kernel provided driver is.  How else are we to get this
->>>>>> information out to the user?  If this feature gets squashed, we'll end up
->>>>>> having to abuse some other mechanism so we can get the live information from
->>>>>> the driver, and probably each vendor will find a different way to sneak it
->>>>>> out, giving us more chaos than where we started.  At least the ethtool
->>>>>> version field is a known and consistent place for the version info.
->>>> Shannon does have a point that out of tree drivers still make use of
->>>> this field. Perhaps it would be a more suitable first step to print the
->>>> kernel version as default and add a comment saying upstream modules
->>>> shouldn't overwrite it (perhaps one day CI can catch new violators).
->>> Shannon proposed to remove this field and it was me who said no :)
->> Obviously, we can't remove fields from UAPI structs.
->>
->>> My plan is to overwrite ->version, delete all users and add
->>> WARN_ONEC(strcpy(..->version_)...) inside net/ethtool/ to catch
->>> abusers.
->> What I was thinking just now was: initialize ->version to utsname
->> before drivers are called, delete all upstream users, add a coccicheck
->> for upstream drivers which try to report the version.
->>
->>>> The NFP reports the git hash of the driver source plus the string
->>>> "(oot)" for out-of-tree:
->>>>
->>>> https://github.com/Netronome/nfp-drv-kmods/blob/master/src/Kbuild#L297
->>>> https://github.com/Netronome/nfp-drv-kmods/blob/master/src/Kbuild#L315
->>> I was inspired by upstream code.
->>> https://elixir.bootlin.com/linux/v5.5-rc7/source/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c#L184
->> Right, upstream nfp reports kernel version (both in modinfo and ethtool)
->> GitHub/compat/backport/out-of-tree reports kernel version in which the
->> code was expected to appear in modinfo:
->>
->> https://github.com/Netronome/nfp-drv-kmods/commit/7ec15c47caf5dbdf1f9806410535ad5b7373ec34#diff-492d7fa4004d885a38cfa889ed1adbe7L1284
->>
->> And git hash of the driver source plus out of tree marker in ethtool.
->>
->> That means it's out-of-tree driver which has to carry the extra code
->> and require extra feeding. As backport should IMHO.
->>
->>>>> Leaving to deal with driver version to vendors is not an option too,
->>>>> because they prove for more than once that they are not capable to
->>>>> define user visible interfaces. It comes due to their natural believe
->>>>> that their company is alone in the world and user visible interface
->>>>> should be suitable for them only.
->>>>>
->>>>> It is already impossible for users to distinguish properly versions
->>>>> of different vendors, because they use arbitrary strings with some
->>>>> numbers.
->>>> That is true. But reporting the kernel version without even as much as
->>>> in-tree/out-of-tree indication makes the field entirely meaningless.
->>> The long-standing policy in kernel that we don't really care about
->>> out-of-tree code.
->> Yeah... we all know it's not that simple :)
-> It is simple, unfortunately netdev people like to complicate things
-> by declaring ABI in very vague way which sometimes goes so far that
-> it ends more strict than anyone would imagine.
->
-> We, RDMA and many other subsystems mentioned in that ksummit thread,
-> removed MODULE_VERSION() a long time ago and got zero complains from
-> the real users.
->
->> The in-tree driver versions are meaningless and cause annoying churn
->> when people arbitrarily bump them. If we can get people to stop doing
->> that we'll be happy, that's all there is to it.
->>
->> Out of tree the field is useful, so we don't have to take it away just
->> as a matter of principle. If we can't convince people to stop bringing
->> the versions into the tree that'll be another story...
-> As Shannon pointed, even experienced people will try to sneak those
-> changes. I assume that it is mainly because they are pushed to do it
-> by the people who doesn't understand Linux kernel process.
->
-I don't think that the Intel Networking folks were trying to "sneak" 
-something through, I think they have simply been continuing the process 
-that they've been following for years.  When we have groups such as 
-them, with a long history of contributions to drivers and stack, not 
-following the new rules, perhaps we need to take a look at how we're 
-publicizing these changes.
+On 1/27/20 3:06 AM, Jan Kara wrote:
+> On Fri 24-01-20 18:11:13, John Hubbard wrote:
+>> +static __maybe_unused struct page *try_grab_compound_head(struct page *page,
+>> +							  int refs,
+>> +							  unsigned int flags)
+>> +{
+>> +	if (flags & FOLL_GET)
+>> +		return try_get_compound_head(page, refs);
+>> +	else if (flags & FOLL_PIN) {
+>> +		int orig_refs = refs;
+>> +
+>> +		/*
+>> +		 * When pinning a compound page of order > 1 (which is what
+>> +		 * hpage_pincount_available() checks for), use an exact count to
+>> +		 * track it, via hpage_pincount_inc/_dec().
+>> +		 *
+>> +		 * However, be sure to *also* increment the normal page refcount
+>> +		 * field at least once, so that the page really is pinned.
+>> +		 */
+>> +		if (!hpage_pincount_available(page))
+>> +			refs *= GUP_PIN_COUNTING_BIAS;
+>> +
+>> +		page = try_get_compound_head(page, refs);
+>> +		if (!page)
+>> +			return NULL;
+>> +
+>> +		if (hpage_pincount_available(page))
+>> +			hpage_pincount_inc(page);
+> 
+> Umm, adding just 1 to pincount looks dangerous to me as
+> try_grab_compound_head() would not compose - you could not release
+> references acquired by try_grab_compound_head() with refs==2 by two calls
+> to put_compound_head() with refs==1. So I'd rather have here:
+> hpage_pincount_add(page, refs) and similarly in put_compound_head().
+> Otherwise the patch looks good to me from a quick look.
+> 
+> 								Honza
 
-sln
+Yes, you are right. The hpage_pincount really should track refs. I'll fix it
+up.
 
-
+thanks,
+-- 
+John Hubbard
+NVIDIA
+ 
