@@ -2,244 +2,385 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A566149F49
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2020 08:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A915C149F55
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2020 08:48:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726036AbgA0Hkt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Jan 2020 02:40:49 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:36255 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgA0Hkt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Jan 2020 02:40:49 -0500
-Received: by mail-io1-f68.google.com with SMTP id d15so8898012iog.3
-        for <linux-rdma@vger.kernel.org>; Sun, 26 Jan 2020 23:40:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tGENlprZT8KHeG83KsLSmYk44Pb0wI32BHm2oTDJvMQ=;
-        b=Uqt1Z3YTX1vpafs5OAFNkSorTQ8QtWE6NICf28YhSG/E14DwUcGIkYoHXzYE/T/mos
-         u1+NaJ2CtunBy3OBajVMii2kT9gb8LQ5VAfQJzwNcM2EQWtGuJN0yhBXEEtSTy1YwcrF
-         FYTr8XgBqUJHh75d/rox8Jfr69v3DpnSiYTZg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tGENlprZT8KHeG83KsLSmYk44Pb0wI32BHm2oTDJvMQ=;
-        b=GxAiFzuIxx3JvW0SwASEe2lvipUkRDAjhgu05OUYST1aoM4c3PZkfv6o673XdRJWhU
-         +LsEPlEY70rnwfXQjKIQaspLQg+erMzlaBuMQUwrH6ykkwxD8JnibBXg5ksssLDGwiRc
-         WEFXiHRHyymktzJNabTL8TaYQGv2t1A3OQwJY7ogTBVTignpHD25cyUGvyI6tauP/zEF
-         izb1rLYKPjQAaxH8EHzVPQOjsUyz7pzSlXo8ngJqPqlnPNyM8wnys0/7Ms4vio2w1rnm
-         grc9Y6uJp3hzBjpFj4jC05pIJz+c1DDo8xU2CBZyb+1vBnQ8Tn+BeH7MwHIcZ8vDgYpr
-         E1ag==
-X-Gm-Message-State: APjAAAXyohR/iJSQ20eWsE+HYBtBI5p8rHRpJCSZe3yVcwO+OscAq1Pi
-        cJpnyjnHYSiSpKuRvWsb0XIEA4NC8fCw5rbxjbJzcw==
-X-Google-Smtp-Source: APXvYqz7MsprBXIJDz78PhXw/55aruo+enxoeGNLX4eKkd6XA/PI51T5kUpUtCvKZrsvLzU2Do61aMWkhpHiPbpERAg=
-X-Received: by 2002:a5e:9246:: with SMTP id z6mr12027646iop.232.1580110848297;
- Sun, 26 Jan 2020 23:40:48 -0800 (PST)
-MIME-Version: 1.0
-References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
- <1579845165-18002-5-git-send-email-devesh.sharma@broadcom.com> <20200126142928.GG2993@unreal>
-In-Reply-To: <20200126142928.GG2993@unreal>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Mon, 27 Jan 2020 13:10:10 +0530
-Message-ID: <CANjDDBhxVC0ps8ee5NTW3QrN9bFNVdEcwxS2=Kfn1uOfDR2v_A@mail.gmail.com>
-Subject: Re: [PATCH for-next 4/7] RDMA/bnxt_re: Refactor net ring allocation function
+        id S1725840AbgA0HsG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Jan 2020 02:48:06 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:46580 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725765AbgA0HsG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 27 Jan 2020 02:48:06 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 5B486E612E01AC969ED2;
+        Mon, 27 Jan 2020 15:48:01 +0800 (CST)
+Received: from [127.0.0.1] (10.45.210.74) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.439.0; Mon, 27 Jan 2020
+ 15:47:52 +0800
+Subject: Re: [PATCH for-next] RDMA/hns: Optimize eqe buffer allocation flow
 To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+CC:     <dledford@redhat.com>, <jgg@ziepe.ca>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+References: <20200126145835.11368-1-liweihang@huawei.com>
+ <20200127055205.GH3870@unreal>
+From:   Weihang Li <liweihang@huawei.com>
+Message-ID: <2a4b95d4-4d76-b969-4954-99138e20d181@huawei.com>
+Date:   Mon, 27 Jan 2020 15:47:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200127055205.GH3870@unreal>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.45.210.74]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jan 26, 2020 at 7:59 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Fri, Jan 24, 2020 at 12:52:42AM -0500, Devesh Sharma wrote:
-> > Introducing a new attribute structure to reduce
-> > the long list of arguments passed in bnxt_re_net_ring_alloc()
-> > function.
-> >
-> > The caller of bnxt_re_net_ring_alloc should fill in
-> > the list of attributes in bnxt_re_ring_attr structure
-> > and then pass the pointer to the function.
-> >
-> > Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
-> > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
-> > ---
-> >  drivers/infiniband/hw/bnxt_re/bnxt_re.h |  9 +++++
-> >  drivers/infiniband/hw/bnxt_re/main.c    | 65 ++++++++++++++++++---------------
-> >  2 files changed, 45 insertions(+), 29 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-> > index 86274f4..c736e82 100644
-> > --- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-> > +++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-> > @@ -89,6 +89,15 @@
-> >
-> >  #define BNXT_RE_DEFAULT_ACK_DELAY    16
-> >
-> > +struct bnxt_re_ring_attr {
-> > +     dma_addr_t      *dma_arr;
-> > +     int             pages;
-> > +     int             type;
-> > +     u32             depth;
-> > +     u32             lrid; /* Logical ring id */
-> > +     u8              mode;
-> > +};
-> > +
-> >  struct bnxt_re_work {
-> >       struct work_struct      work;
-> >       unsigned long           event;
-> > diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-> > index a966c68..648a5ea 100644
-> > --- a/drivers/infiniband/hw/bnxt_re/main.c
-> > +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> > @@ -427,9 +427,9 @@ static int bnxt_re_net_ring_free(struct bnxt_re_dev *rdev,
-> >       return rc;
-> >  }
-> >
-> > -static int bnxt_re_net_ring_alloc(struct bnxt_re_dev *rdev, dma_addr_t *dma_arr,
-> > -                               int pages, int type, u32 ring_mask,
-> > -                               u32 map_index, u16 *fw_ring_id)
-> > +static int bnxt_re_net_ring_alloc(struct bnxt_re_dev *rdev,
-> > +                               struct bnxt_re_ring_attr *ring_attr,
-> > +                               u16 *fw_ring_id)
-> >  {
-> >       struct bnxt_en_dev *en_dev = rdev->en_dev;
-> >       struct hwrm_ring_alloc_input req = {0};
-> > @@ -443,18 +443,18 @@ static int bnxt_re_net_ring_alloc(struct bnxt_re_dev *rdev, dma_addr_t *dma_arr,
-> >       memset(&fw_msg, 0, sizeof(fw_msg));
-> >       bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_RING_ALLOC, -1, -1);
-> >       req.enables = 0;
-> > -     req.page_tbl_addr =  cpu_to_le64(dma_arr[0]);
-> > -     if (pages > 1) {
-> > +     req.page_tbl_addr =  cpu_to_le64(ring_attr->dma_arr[0]);
-> > +     if (ring_attr->pages > 1) {
-> >               /* Page size is in log2 units */
-> >               req.page_size = BNXT_PAGE_SHIFT;
-> >               req.page_tbl_depth = 1;
-> >       }
-> >       req.fbo = 0;
-> >       /* Association of ring index with doorbell index and MSIX number */
-> > -     req.logical_id = cpu_to_le16(map_index);
-> > -     req.length = cpu_to_le32(ring_mask + 1);
-> > -     req.ring_type = type;
-> > -     req.int_mode = RING_ALLOC_REQ_INT_MODE_MSIX;
-> > +     req.logical_id = cpu_to_le16(ring_attr->lrid);
-> > +     req.length = cpu_to_le32(ring_attr->depth + 1);
-> > +     req.ring_type = ring_attr->type;
-> > +     req.int_mode = ring_attr->mode;
-> >       bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
-> >                           sizeof(resp), DFLT_HWRM_CMD_TIMEOUT);
-> >       rc = en_dev->en_ops->bnxt_send_fw_msg(en_dev, BNXT_ROCE_ULP, &fw_msg);
-> > @@ -1006,12 +1006,13 @@ static void bnxt_re_free_res(struct bnxt_re_dev *rdev)
-> >
-> >  static int bnxt_re_alloc_res(struct bnxt_re_dev *rdev)
-> >  {
-> > +     struct bnxt_qplib_ctx *qplib_ctx;
-> > +     struct bnxt_re_ring_attr rattr;
-> >       int num_vec_created = 0;
-> > -     dma_addr_t *pg_map;
-> >       int rc = 0, i;
-> > -     int pages;
-> >       u8 type;
-> >
-> > +     memset(&rattr, 0, sizeof(rattr));
->
-> Initialize rattr to zero from the beginning and save call to memset.
-I moved from static initialization to memset due to some sparse/smatch
-warnings, rattr has a "pointer member".
 
->
-> >       /* Configure and allocate resources for qplib */
-> >       rdev->qplib_res.rcfw = &rdev->rcfw;
-> >       rc = bnxt_qplib_get_dev_attr(&rdev->rcfw, &rdev->dev_attr,
-> > @@ -1030,10 +1031,13 @@ static int bnxt_re_alloc_res(struct bnxt_re_dev *rdev)
-> >       if (rc)
-> >               goto dealloc_res;
-> >
-> > +     qplib_ctx = &rdev->qplib_ctx;
-> >       for (i = 0; i < rdev->num_msix - 1; i++) {
-> > -             rdev->nq[i].res = &rdev->qplib_res;
-> > -             rdev->nq[i].hwq.max_elements = BNXT_RE_MAX_CQ_COUNT +
-> > -                     BNXT_RE_MAX_SRQC_COUNT + 2;
-> > +             struct bnxt_qplib_nq *nq;
-> > +
-> > +             nq = &rdev->nq[i];
-> > +             nq->hwq.max_elements = (qplib_ctx->cq_count +
-> > +                                     qplib_ctx->srqc_count + 2);
-> >               rc = bnxt_qplib_alloc_nq(&rdev->qplib_res, &rdev->nq[i]);
-> >               if (rc) {
-> >                       dev_err(rdev_to_dev(rdev), "Alloc Failed NQ%d rc:%#x",
-> > @@ -1041,12 +1045,13 @@ static int bnxt_re_alloc_res(struct bnxt_re_dev *rdev)
-> >                       goto free_nq;
-> >               }
-> >               type = bnxt_qplib_get_ring_type(rdev->chip_ctx);
-> > -             pg_map = rdev->nq[i].hwq.pbl[PBL_LVL_0].pg_map_arr;
-> > -             pages = rdev->nq[i].hwq.pbl[rdev->nq[i].hwq.level].pg_count;
-> > -             rc = bnxt_re_net_ring_alloc(rdev, pg_map, pages, type,
-> > -                                         BNXT_QPLIB_NQE_MAX_CNT - 1,
-> > -                                         rdev->msix_entries[i + 1].ring_idx,
-> > -                                         &rdev->nq[i].ring_id);
-> > +             rattr.dma_arr = nq->hwq.pbl[PBL_LVL_0].pg_map_arr;
-> > +             rattr.pages = nq->hwq.pbl[rdev->nq[i].hwq.level].pg_count;
-> > +             rattr.type = type;
-> > +             rattr.mode = RING_ALLOC_REQ_INT_MODE_MSIX;
-> > +             rattr.depth = BNXT_QPLIB_NQE_MAX_CNT - 1;
-> > +             rattr.lrid = rdev->msix_entries[i + 1].ring_idx;
-> > +             rc = bnxt_re_net_ring_alloc(rdev, &rattr, &nq->ring_id);
-> >               if (rc) {
-> >                       dev_err(rdev_to_dev(rdev),
-> >                               "Failed to allocate NQ fw id with rc = 0x%x",
-> > @@ -1371,10 +1376,10 @@ static void bnxt_re_worker(struct work_struct *work)
-> >
-> >  static int bnxt_re_ib_reg(struct bnxt_re_dev *rdev)
-> >  {
-> > -     dma_addr_t *pg_map;
-> > -     u32 db_offt, ridx;
-> > -     int pages, vid;
-> > +     struct bnxt_re_ring_attr rattr;
-> > +     u32 db_offt;
-> >       bool locked;
-> > +     int vid;
-> >       u8 type;
-> >       int rc;
-> >
-> > @@ -1383,6 +1388,7 @@ static int bnxt_re_ib_reg(struct bnxt_re_dev *rdev)
-> >       locked = true;
-> >
-> >       /* Registered a new RoCE device instance to netdev */
-> > +     memset(&rattr, 0, sizeof(rattr));
->
-> ditto
->
-> >       rc = bnxt_re_register_netdev(rdev);
-> >       if (rc) {
-> >               rtnl_unlock();
-> > @@ -1422,12 +1428,13 @@ static int bnxt_re_ib_reg(struct bnxt_re_dev *rdev)
-> >       }
-> >
-> >       type = bnxt_qplib_get_ring_type(rdev->chip_ctx);
-> > -     pg_map = rdev->rcfw.creq.pbl[PBL_LVL_0].pg_map_arr;
-> > -     pages = rdev->rcfw.creq.pbl[rdev->rcfw.creq.level].pg_count;
-> > -     ridx = rdev->msix_entries[BNXT_RE_AEQ_IDX].ring_idx;
-> > -     rc = bnxt_re_net_ring_alloc(rdev, pg_map, pages, type,
-> > -                                 BNXT_QPLIB_CREQE_MAX_CNT - 1,
-> > -                                 ridx, &rdev->rcfw.creq_ring_id);
-> > +     rattr.dma_arr = rdev->rcfw.creq.pbl[PBL_LVL_0].pg_map_arr;
-> > +     rattr.pages = rdev->rcfw.creq.pbl[rdev->rcfw.creq.level].pg_count;
-> > +     rattr.type = type;
-> > +     rattr.mode = RING_ALLOC_REQ_INT_MODE_MSIX;
-> > +     rattr.depth = BNXT_QPLIB_CREQE_MAX_CNT - 1;
-> > +     rattr.lrid = rdev->msix_entries[BNXT_RE_AEQ_IDX].ring_idx;
-> > +     rc = bnxt_re_net_ring_alloc(rdev, &rattr, &rdev->rcfw.creq_ring_id);
-> >       if (rc) {
-> >               pr_err("Failed to allocate CREQ: %#x\n", rc);
-> >               goto free_rcfw;
-> > --
-> > 1.8.3.1
-> >
+
+On 2020/1/27 13:52, Leon Romanovsky wrote:
+> On Sun, Jan 26, 2020 at 10:58:35PM +0800, Weihang Li wrote:
+>> From: Xi Wang <wangxi11@huawei.com>
+>>
+>> The eqe has a private multi-hop addressing implementation, but there is
+>> already a set of interfaces in the hns driver that can achieve this.
+>>
+>> So, simplify the eqe buffer allocation process by using the mtr interface
+>> and remove large amount of repeated logic.
+>>
+>> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+>> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  10 +-
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 481 ++++++----------------------
+>>  2 files changed, 108 insertions(+), 383 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+>> index a4c45bf..dab3f3c 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+>> @@ -757,14 +757,8 @@ struct hns_roce_eq {
+>>  	int				eqe_ba_pg_sz;
+>>  	int				eqe_buf_pg_sz;
+>>  	int				hop_num;
+>> -	u64				*bt_l0;	/* Base address table for L0 */
+>> -	u64				**bt_l1; /* Base address table for L1 */
+>> -	u64				**buf;
+>> -	dma_addr_t			l0_dma;
+>> -	dma_addr_t			*l1_dma;
+>> -	dma_addr_t			*buf_dma;
+>> -	u32				l0_last_num; /* L0 last chunk num */
+>> -	u32				l1_last_num; /* L1 last chunk num */
+>> +	struct hns_roce_mtr		mtr;
+>> +	struct hns_roce_buf		buf;
+>>  	int				eq_max_cnt;
+>>  	int				eq_period;
+>>  	int				shift;
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> index c462b19..88f2e76 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> @@ -5287,44 +5287,24 @@ static void set_eq_cons_index_v2(struct hns_roce_eq *eq)
+>>  	hns_roce_write64(hr_dev, doorbell, eq->doorbell);
+>>  }
+>>
+>> -static struct hns_roce_aeqe *get_aeqe_v2(struct hns_roce_eq *eq, u32 entry)
+>> +static inline void *get_eqe_buf(struct hns_roce_eq *eq, unsigned long offset)
+>>  {
+>>  	u32 buf_chk_sz;
+>> -	unsigned long off;
+>>
+>>  	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
+>> -	off = (entry & (eq->entries - 1)) * HNS_ROCE_AEQ_ENTRY_SIZE;
+>> -
+>> -	return (struct hns_roce_aeqe *)((char *)(eq->buf_list->buf) +
+>> -		off % buf_chk_sz);
+>> -}
+>> -
+>> -static struct hns_roce_aeqe *mhop_get_aeqe(struct hns_roce_eq *eq, u32 entry)
+>> -{
+>> -	u32 buf_chk_sz;
+>> -	unsigned long off;
+>> -
+>> -	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
+>> -
+>> -	off = (entry & (eq->entries - 1)) * HNS_ROCE_AEQ_ENTRY_SIZE;
+>> -
+>> -	if (eq->hop_num == HNS_ROCE_HOP_NUM_0)
+>> -		return (struct hns_roce_aeqe *)((u8 *)(eq->bt_l0) +
+>> -			off % buf_chk_sz);
+>> +	if (eq->buf.nbufs == 1)
+>> +		return eq->buf.direct.buf + offset % buf_chk_sz;
+>>  	else
+>> -		return (struct hns_roce_aeqe *)((u8 *)
+>> -			(eq->buf[off / buf_chk_sz]) + off % buf_chk_sz);
+>> +		return eq->buf.page_list[offset / buf_chk_sz].buf +
+>> +		       offset % buf_chk_sz;
+>>  }
+>>
+>>  static struct hns_roce_aeqe *next_aeqe_sw_v2(struct hns_roce_eq *eq)
+>>  {
+>>  	struct hns_roce_aeqe *aeqe;
+>>
+>> -	if (!eq->hop_num)
+>> -		aeqe = get_aeqe_v2(eq, eq->cons_index);
+>> -	else
+>> -		aeqe = mhop_get_aeqe(eq, eq->cons_index);
+>> -
+>> +	aeqe = get_eqe_buf(eq, (eq->cons_index & (eq->entries - 1)) *
+>> +			   HNS_ROCE_AEQ_ENTRY_SIZE);
+>>  	return (roce_get_bit(aeqe->asyn, HNS_ROCE_V2_AEQ_AEQE_OWNER_S) ^
+>>  		!!(eq->cons_index & eq->entries)) ? aeqe : NULL;
+>>  }
+>> @@ -5417,44 +5397,12 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
+>>  	return aeqe_found;
+>>  }
+>>
+>> -static struct hns_roce_ceqe *get_ceqe_v2(struct hns_roce_eq *eq, u32 entry)
+>> -{
+>> -	u32 buf_chk_sz;
+>> -	unsigned long off;
+>> -
+>> -	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
+>> -	off = (entry & (eq->entries - 1)) * HNS_ROCE_CEQ_ENTRY_SIZE;
+>> -
+>> -	return (struct hns_roce_ceqe *)((char *)(eq->buf_list->buf) +
+>> -		off % buf_chk_sz);
+>> -}
+>> -
+>> -static struct hns_roce_ceqe *mhop_get_ceqe(struct hns_roce_eq *eq, u32 entry)
+>> -{
+>> -	u32 buf_chk_sz;
+>> -	unsigned long off;
+>> -
+>> -	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
+>> -
+>> -	off = (entry & (eq->entries - 1)) * HNS_ROCE_CEQ_ENTRY_SIZE;
+>> -
+>> -	if (eq->hop_num == HNS_ROCE_HOP_NUM_0)
+>> -		return (struct hns_roce_ceqe *)((u8 *)(eq->bt_l0) +
+>> -			off % buf_chk_sz);
+>> -	else
+>> -		return (struct hns_roce_ceqe *)((u8 *)(eq->buf[off /
+>> -			buf_chk_sz]) + off % buf_chk_sz);
+>> -}
+>> -
+>>  static struct hns_roce_ceqe *next_ceqe_sw_v2(struct hns_roce_eq *eq)
+>>  {
+>>  	struct hns_roce_ceqe *ceqe;
+>>
+>> -	if (!eq->hop_num)
+>> -		ceqe = get_ceqe_v2(eq, eq->cons_index);
+>> -	else
+>> -		ceqe = mhop_get_ceqe(eq, eq->cons_index);
+>> -
+>> +	ceqe = get_eqe_buf(eq, (eq->cons_index & (eq->entries - 1)) *
+>> +			   HNS_ROCE_CEQ_ENTRY_SIZE);
+>>  	return (!!(roce_get_bit(ceqe->comp, HNS_ROCE_V2_CEQ_CEQE_OWNER_S))) ^
+>>  		(!!(eq->cons_index & eq->entries)) ? ceqe : NULL;
+>>  }
+>> @@ -5614,90 +5562,11 @@ static void hns_roce_v2_destroy_eqc(struct hns_roce_dev *hr_dev, int eqn)
+>>  		dev_err(dev, "[mailbox cmd] destroy eqc(%d) failed.\n", eqn);
+>>  }
+>>
+>> -static void hns_roce_mhop_free_eq(struct hns_roce_dev *hr_dev,
+>> -				  struct hns_roce_eq *eq)
+>> +static void free_eq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_eq *eq)
+>>  {
+>> -	struct device *dev = hr_dev->dev;
+>> -	u64 idx;
+>> -	u64 size;
+>> -	u32 buf_chk_sz;
+>> -	u32 bt_chk_sz;
+>> -	u32 mhop_num;
+>> -	int eqe_alloc;
+>> -	int i = 0;
+>> -	int j = 0;
+>> -
+>> -	mhop_num = hr_dev->caps.eqe_hop_num;
+>> -	buf_chk_sz = 1 << (hr_dev->caps.eqe_buf_pg_sz + PAGE_SHIFT);
+>> -	bt_chk_sz = 1 << (hr_dev->caps.eqe_ba_pg_sz + PAGE_SHIFT);
+>> -
+>> -	if (mhop_num == HNS_ROCE_HOP_NUM_0) {
+>> -		dma_free_coherent(dev, (unsigned int)(eq->entries *
+>> -				  eq->eqe_size), eq->bt_l0, eq->l0_dma);
+>> -		return;
+>> -	}
+>> -
+>> -	dma_free_coherent(dev, bt_chk_sz, eq->bt_l0, eq->l0_dma);
+>> -	if (mhop_num == 1) {
+>> -		for (i = 0; i < eq->l0_last_num; i++) {
+>> -			if (i == eq->l0_last_num - 1) {
+>> -				eqe_alloc = i * (buf_chk_sz / eq->eqe_size);
+>> -				size = (eq->entries - eqe_alloc) * eq->eqe_size;
+>> -				dma_free_coherent(dev, size, eq->buf[i],
+>> -						  eq->buf_dma[i]);
+>> -				break;
+>> -			}
+>> -			dma_free_coherent(dev, buf_chk_sz, eq->buf[i],
+>> -					  eq->buf_dma[i]);
+>> -		}
+>> -	} else if (mhop_num == 2) {
+>> -		for (i = 0; i < eq->l0_last_num; i++) {
+>> -			dma_free_coherent(dev, bt_chk_sz, eq->bt_l1[i],
+>> -					  eq->l1_dma[i]);
+>> -
+>> -			for (j = 0; j < bt_chk_sz / BA_BYTE_LEN; j++) {
+>> -				idx = i * (bt_chk_sz / BA_BYTE_LEN) + j;
+>> -				if ((i == eq->l0_last_num - 1)
+>> -				     && j == eq->l1_last_num - 1) {
+>> -					eqe_alloc = (buf_chk_sz / eq->eqe_size)
+>> -						    * idx;
+>> -					size = (eq->entries - eqe_alloc)
+>> -						* eq->eqe_size;
+>> -					dma_free_coherent(dev, size,
+>> -							  eq->buf[idx],
+>> -							  eq->buf_dma[idx]);
+>> -					break;
+>> -				}
+>> -				dma_free_coherent(dev, buf_chk_sz, eq->buf[idx],
+>> -						  eq->buf_dma[idx]);
+>> -			}
+>> -		}
+>> -	}
+>> -	kfree(eq->buf_dma);
+>> -	kfree(eq->buf);
+>> -	kfree(eq->l1_dma);
+>> -	kfree(eq->bt_l1);
+>> -	eq->buf_dma = NULL;
+>> -	eq->buf = NULL;
+>> -	eq->l1_dma = NULL;
+>> -	eq->bt_l1 = NULL;
+>> -}
+>> -
+>> -static void hns_roce_v2_free_eq(struct hns_roce_dev *hr_dev,
+>> -				struct hns_roce_eq *eq)
+>> -{
+>> -	u32 buf_chk_sz;
+>> -
+>> -	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
+>> -
+>> -	if (hr_dev->caps.eqe_hop_num) {
+>> -		hns_roce_mhop_free_eq(hr_dev, eq);
+>> -		return;
+>> -	}
+>> -
+>> -	dma_free_coherent(hr_dev->dev, buf_chk_sz, eq->buf_list->buf,
+>> -			  eq->buf_list->map);
+>> -	kfree(eq->buf_list);
+>> +	if (!eq->hop_num || eq->hop_num == HNS_ROCE_HOP_NUM_0)
+>> +		hns_roce_mtr_cleanup(hr_dev, &eq->mtr);
+>> +	hns_roce_buf_free(hr_dev, eq->buf.size, &eq->buf);
+>>  }
+>>
+>>  static void hns_roce_config_eqc(struct hns_roce_dev *hr_dev,
+>> @@ -5705,6 +5574,8 @@ static void hns_roce_config_eqc(struct hns_roce_dev *hr_dev,
+>>  				void *mb_buf)
+>>  {
+>>  	struct hns_roce_eq_context *eqc;
+>> +	u64 ba[MTT_MIN_COUNT] = { 0 };
+>> +	int count;
+>>
+>>  	eqc = mb_buf;
+>>  	memset(eqc, 0, sizeof(struct hns_roce_eq_context));
+>> @@ -5720,10 +5591,23 @@ static void hns_roce_config_eqc(struct hns_roce_dev *hr_dev,
+>>  	eq->eqe_buf_pg_sz = hr_dev->caps.eqe_buf_pg_sz;
+>>  	eq->shift = ilog2((unsigned int)eq->entries);
+>>
+>> -	if (!eq->hop_num)
+>> -		eq->eqe_ba = eq->buf_list->map;
+>> -	else
+>> -		eq->eqe_ba = eq->l0_dma;
+>> +	/* if not muti-hop, eqe buffer only use one trunk */
+>> +	if (!eq->hop_num || eq->hop_num == HNS_ROCE_HOP_NUM_0) {
+>> +		eq->eqe_ba = eq->buf.direct.map;
+>> +		eq->cur_eqe_ba = eq->eqe_ba;
+>> +		if (eq->buf.npages > 1)
+>> +			eq->nxt_eqe_ba = eq->eqe_ba + (1 << eq->eqe_buf_pg_sz);
+>> +		else
+>> +			eq->nxt_eqe_ba = eq->eqe_ba;
+>> +	} else {
+>> +		count = hns_roce_mtr_find(hr_dev, &eq->mtr, 0, ba,
+>> +					  MTT_MIN_COUNT, &eq->eqe_ba);
+>> +		eq->cur_eqe_ba = ba[0];
+>> +		if (count > 1)
+>> +			eq->nxt_eqe_ba = ba[1];
+>> +		else
+>> +			eq->nxt_eqe_ba = ba[0];
+>> +	}
+>>
+>>  	/* set eqc state */
+>>  	roce_set_field(eqc->byte_4, HNS_ROCE_EQC_EQ_ST_M, HNS_ROCE_EQC_EQ_ST_S,
+>> @@ -5821,220 +5705,97 @@ static void hns_roce_config_eqc(struct hns_roce_dev *hr_dev,
+>>  		       HNS_ROCE_EQC_NXT_EQE_BA_H_S, eq->nxt_eqe_ba >> 44);
+>>  }
+>>
+>> -static int hns_roce_mhop_alloc_eq(struct hns_roce_dev *hr_dev,
+>> -				  struct hns_roce_eq *eq)
+>> +static int map_eq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_eq *eq,
+>> +		      u32 page_shift)
+>>  {
+>> -	struct device *dev = hr_dev->dev;
+>> -	int eq_alloc_done = 0;
+>> -	int eq_buf_cnt = 0;
+>> -	int eqe_alloc;
+>> -	u32 buf_chk_sz;
+>> -	u32 bt_chk_sz;
+>> -	u32 mhop_num;
+>> -	u64 size;
+>> -	u64 idx;
+>> +	struct hns_roce_buf_region region = {};
+>> +	dma_addr_t *buf_list = NULL;
+>>  	int ba_num;
+>> -	int bt_num;
+>> -	int record_i;
+>> -	int record_j;
+>> -	int i = 0;
+>> -	int j = 0;
+>> -
+>> -	mhop_num = hr_dev->caps.eqe_hop_num;
+>> -	buf_chk_sz = 1 << (hr_dev->caps.eqe_buf_pg_sz + PAGE_SHIFT);
+>> -	bt_chk_sz = 1 << (hr_dev->caps.eqe_ba_pg_sz + PAGE_SHIFT);
+>> +	int ret;
+>>
+>>  	ba_num = DIV_ROUND_UP(PAGE_ALIGN(eq->entries * eq->eqe_size),
+>> -			      buf_chk_sz);
+>> -	bt_num = DIV_ROUND_UP(ba_num, bt_chk_sz / BA_BYTE_LEN);
+>> +			      1 << page_shift);
+>> +	hns_roce_init_buf_region(&region, hr_dev->caps.eqe_hop_num, 0, ba_num);
+>>
+>> -	if (mhop_num == HNS_ROCE_HOP_NUM_0) {
+>> -		if (eq->entries > buf_chk_sz / eq->eqe_size) {
+>> -			dev_err(dev, "eq entries %d is larger than buf_pg_sz!",
+>> -				eq->entries);
+>> -			return -EINVAL;
+>> -		}
+>> -		eq->bt_l0 = dma_alloc_coherent(dev, eq->entries * eq->eqe_size,
+>> -					       &(eq->l0_dma), GFP_KERNEL);
+>> -		if (!eq->bt_l0)
+>> -			return -ENOMEM;
+>> -
+>> -		eq->cur_eqe_ba = eq->l0_dma;
+>> -		eq->nxt_eqe_ba = 0;
+>> +	/* alloc a tmp list for storing eq buf address */
+>> +	ret = hns_roce_alloc_buf_list(&region, &buf_list, 1);
+>> +	if (ret) {
+>> +		dev_err(hr_dev->dev, "alloc eq buf_list error\n");
+> 
+> The same comment like we gave for bnxt driver, no dev_* prints inside
+> driver, use ibdev_*.
+> 
+> Thanks
+> 
+> .
+
+OK, thank you.
+
+Weihang
+
+> 
+
