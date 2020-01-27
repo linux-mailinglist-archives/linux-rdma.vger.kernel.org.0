@@ -2,124 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F14C149F2F
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2020 08:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73FD7149F46
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2020 08:40:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725775AbgA0HVQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Jan 2020 02:21:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725765AbgA0HVQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 27 Jan 2020 02:21:16 -0500
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DFF6720702;
-        Mon, 27 Jan 2020 07:21:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580109675;
-        bh=dqlc/qctrnV6ugObfCAanSuzvqAbbXtb8enfOjgNnSM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=yiwROvSlcjXXV7ShcWm8l2sW8oUIOTwSDtPRtotAf2t85ExkFl/bjcxEbysjR1m8p
-         JaFDUwgj59XE9vjgDY/ZHkpkP3Z1NvRVRImihxGAmGdOw+HGi5EcLCyPJELMUV9+yN
-         mRT2/PNf1/zb3mD6KVaTM77tW6LJa6dunoRtGeCc=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Shannon Nelson <snelson@pensando.io>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        linux-netdev <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: [PATCH net-next v4] net/core: Replace driver version to be kernel version
-Date:   Mon, 27 Jan 2020 09:20:28 +0200
-Message-Id: <20200127072028.19123-1-leon@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        id S1725955AbgA0HkM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Jan 2020 02:40:12 -0500
+Received: from mail-io1-f65.google.com ([209.85.166.65]:34119 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbgA0HkM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Jan 2020 02:40:12 -0500
+Received: by mail-io1-f65.google.com with SMTP id z193so8899695iof.1
+        for <linux-rdma@vger.kernel.org>; Sun, 26 Jan 2020 23:40:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iVv+rmDnpWUWrjFcIUQRfKvM0cPVHhEabRBImifFxWI=;
+        b=CfjdH+yM41fvurI79ezvoI9QuEORYmiSL3HIFgMa4z58ksLMy4qujabvs/ZXkEe0Mf
+         qUuWcdla6uzqmmD8iwDvEaXIKYl9anzQC++9A3onwZ84BijDTgFJAGhHaV5dFBlIMrrL
+         9gon+0qYpZ8+S7ZD2K34X/fxG68lAa/bWJQ5w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iVv+rmDnpWUWrjFcIUQRfKvM0cPVHhEabRBImifFxWI=;
+        b=MCSyVyN06TcDHK7NfWysv1JdE3DlnY2BeaP02AKKNmErEjs42Tmub0NH6T5MhKg2TE
+         0pwNMTxngZJoRkaPfj29F7vXJLaG6FPFhqgoMQrnQVSdyqrKOaVsX1pxhLp1GQvjI0cs
+         fTOs1LrQEnxqV1XasezFIHKsJiZebwnhrNHf14FkYXYcFx7OAUMWMgkphoaepfqyOCKx
+         BdjaksKhNLYp8SbdKovxPTfURgtrHyhDt5jAmtmqTJ7cszR+THaBkcdODNovABY9qfM2
+         y5rqVcC3wJ/AtsuOvlIZuCk1ZY+EAU36N+UnC5nDdtkmhkq9JYVpVVV70MslZ2BRKium
+         TWNQ==
+X-Gm-Message-State: APjAAAUBtT3PDuQ6Uo1+tBRK0/5D79xfICrwq35Zp2uVsn7J7bZ9qlxZ
+        AwX6T932Oc7LYZchWyVYlqQ3Ydn2Nh4prhfHKq8l1g==
+X-Google-Smtp-Source: APXvYqzXlYJFq7qktHAJgcMe4eEA1z5aLsjsDpx94HDgtUfmhUlBCCTsWGNH7NCgoxFkvP/3HJxAoANY6ag9mn6JqxU=
+X-Received: by 2002:a5d:93d1:: with SMTP id j17mr12008893ioo.300.1580110811477;
+ Sun, 26 Jan 2020 23:40:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
+ <1579845165-18002-2-git-send-email-devesh.sharma@broadcom.com>
+ <20200124112347.GA35595@unreal> <CANjDDBjJygjcbbwDFtwVS--GF5YtYAiZL78_jiqHf+TMkQ7j+g@mail.gmail.com>
+ <20200125185045.GB2993@unreal>
+In-Reply-To: <20200125185045.GB2993@unreal>
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+Date:   Mon, 27 Jan 2020 13:09:35 +0530
+Message-ID: <CANjDDBh=v2xzx42uX+VkBstBdeBptDrL0wMg2UgL6nUigd3qmA@mail.gmail.com>
+Subject: Re: [PATCH for-next 1/7] RDMA/bnxt_re: Refactor queue pair creation code
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
-
-In order to stop useless driver version bumps and unify output
-presented by ethtool -i, let's set default version string.
-
-As Linus said in [1]: "Things are supposed to be backwards and
-forwards compatible, because we don't accept breakage in user
-space anyway. So versioning is pointless, and only causes
-problems."
-
-They cause problems when users start to see version changes
-and expect specific set of features which will be different
-for stable@, vanilla and distribution kernels.
-
-Distribution kernels are based on some kernel version with extra
-patches on top, for example, in RedHat world this "extra" is a lot
-and for them your driver version say nothing. Users who run vanilla
-kernels won't use driver version information too, because running
-such kernels requires knowledge and understanding.
-
-Another set of problems are related to difference in versioning scheme
-and such doesn't allow to write meaningful automation which will work
-sanely on all ethtool capable devices.
-
-Before this change:
-[leonro@erver ~]$ ethtool -i eth0
-driver: virtio_net
-version: 1.0.0
-After this change and once ->version assignment will be deleted
-from virtio_net:
-[leonro@server ~]$ ethtool -i eth0
-driver: virtio_net
-version: 5.5.0-rc6+
-
-Link: https://lore.kernel.org/ksummit-discuss/CA+55aFx9A=5cc0QZ7CySC4F2K7eYaEfzkdYEc9JaNgCcV25=rg@mail.gmail.com/
-Link: https://lore.kernel.org/linux-rdma/20200122152627.14903-1-michal.kalderon@marvell.com/T/#md460ff8f976c532a89d6860411c3c50bb811038b
-Link: https://lore.kernel.org/linux-rdma/20200127060835.GA570@unicorn.suse.cz
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- Changelog:
- v4: Set default driver version prior to calling ->get_drvinfo(). This will allow
-     us to remove all in-the-tree version assignments, while keeping ability
-     to overwrite it for out-of-tree drivers.
- v3: https://lore.kernel.org/linux-rdma/20200126105422.86969-1-leon@kernel.org
-     Used wrong target branch, changed from rdma-next to net-next.
- v2: https://lore.kernel.org/linux-rdma/20200126100124.86014-1-leon@kernel.org
-     Updated commit message.
- v1: https://lore.kernel.org/linux-rdma/20200125161401.40683-1-leon@kernel.org
-     Resend per-Dave's request
-     https://lore.kernel.org/linux-rdma/20200125.101311.1924780619716720495.davem@davemloft.net
-     No changes at all and applied cleanly on top of "3333e50b64fe Merge branch 'mlxsw-Offload-TBF'"
- v0: https://lore.kernel.org/linux-rdma/20200123130541.30473-1-leon@kernel.org
----
- net/ethtool/ioctl.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
-index 182bffbffa78..0501b615e920 100644
---- a/net/ethtool/ioctl.c
-+++ b/net/ethtool/ioctl.c
-@@ -17,6 +17,7 @@
- #include <linux/phy.h>
- #include <linux/bitops.h>
- #include <linux/uaccess.h>
-+#include <linux/vermagic.h>
- #include <linux/vmalloc.h>
- #include <linux/sfp.h>
- #include <linux/slab.h>
-@@ -655,6 +656,7 @@ static noinline_for_stack int ethtool_get_drvinfo(struct net_device *dev,
-
- 	memset(&info, 0, sizeof(info));
- 	info.cmd = ETHTOOL_GDRVINFO;
-+	strlcpy(info.version, UTS_RELEASE, sizeof(info.version));
- 	if (ops->get_drvinfo) {
- 		ops->get_drvinfo(dev, &info);
- 	} else if (dev->dev.parent && dev->dev.parent->driver) {
---
-2.24.1
-
+On Sun, Jan 26, 2020 at 12:20 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Sat, Jan 25, 2020 at 10:33:41PM +0530, Devesh Sharma wrote:
+> > On Fri, Jan 24, 2020 at 4:53 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > >
+> > > On Fri, Jan 24, 2020 at 12:52:39AM -0500, Devesh Sharma wrote:
+> > > > Restructuring the bnxt_re_create_qp function. Listing below
+> > > > the major changes:
+> > > >  --Monolithic central part of create_qp where attributes are
+> > > >    initialized is now enclosed in one function and this new
+> > > >    function has few more sub-functions.
+> > > >  --Top level qp limit checking code moved to a function.
+> > > >  --GSI QP creation and GSI Shadow qp creation code is handled
+> > > >    in a sub function.
+> > > >
+> > > > Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
+> > > > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> > > > Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+> > > > ---
+> > > >  drivers/infiniband/hw/bnxt_re/bnxt_re.h  |  13 +-
+> > > >  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 635 ++++++++++++++++++++-----------
+> > > >  drivers/infiniband/hw/bnxt_re/main.c     |   3 +-
+> > > >  3 files changed, 434 insertions(+), 217 deletions(-)
+> > > >
+> > >
+> > > Please remove dev_err/dev_dbg/dev_* prints from the driver code.
+> > Sure I can do that, are you suggesting to add one more patch in this series?
+> > I guess it should be okay to follow the hw/efa way to  have debug msgs still on.
+>
+> It is ok to use ibdev_* prints, it is not ok to use dev_* prints.
+Okay, I will add a new patch to this series
+>
+> Thanks
+>
+> > >
+> > >
+> > > Thanks
