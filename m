@@ -2,92 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C826514A2DB
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2020 12:17:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB7114A301
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2020 12:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729501AbgA0LRx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Jan 2020 06:17:53 -0500
-Received: from mail-io1-f66.google.com ([209.85.166.66]:38923 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbgA0LRx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Jan 2020 06:17:53 -0500
-Received: by mail-io1-f66.google.com with SMTP id c16so9515382ioh.6
-        for <linux-rdma@vger.kernel.org>; Mon, 27 Jan 2020 03:17:52 -0800 (PST)
+        id S1726548AbgA0LZp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Jan 2020 06:25:45 -0500
+Received: from mail-io1-f65.google.com ([209.85.166.65]:41677 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbgA0LZp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Jan 2020 06:25:45 -0500
+Received: by mail-io1-f65.google.com with SMTP id m25so9526954ioo.8
+        for <linux-rdma@vger.kernel.org>; Mon, 27 Jan 2020 03:25:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kSnlbipL2vRTTGYLBNKgvgTvdf9FMGOMX4ksFQgHARU=;
-        b=HPAVzDIcTqXucFHc+3+G4zPbzTu+ha7R31Zb95LA5CiMrYMYYNDEOZCzVy6KRjxO+o
-         Ol528pRTvy0yxGHx+NZRUBlM9rBKn7ss1hpznJcqNBguHz8gPG0RPMxe1We2dGtV83wA
-         mU7VTlJKY1nsRdsQjYxOlr0Uq2Ghsr0EHNlu0=
+        bh=JVrciqkeD3YV+mg12gP18iWXb08rDO00qrh61FKX5oU=;
+        b=NU7Ne4SQSBOXmWT50CiCKjsX/n/+KNoAJAZbR1nq2lXcg4MQIQatLiaf0FCfoDES5T
+         nGgoygfKHNCWNyUDSfeLcds+hYQk0lfAZ6YhD9FZ2h6R9gDhfeJiuxs5vmLQLs8lqQFg
+         i6o2amSHuqQJm2ccg4xRYq++UwZPCFg81z4QU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kSnlbipL2vRTTGYLBNKgvgTvdf9FMGOMX4ksFQgHARU=;
-        b=OScKDzZ789+FIQkVH5diAbaFyyYMDLIKm5zTJHbVozKsf3q2Px5cXqOte6SRaEnzVc
-         E2cj4YMw7Aeu6x3cqbZLYzQ4o3qQlWVK8pGLSx4nVbhHlTIGerJTtJD2nYGuT6aLkL1t
-         sHbvUMBw2eGlFz3GzdYW69AIW9eGMF5pTV2LKrvlmbjLNobWHt6YM6XwZQINJYxpvDM5
-         HQqbWwhm9CiMiGuMQwyoc79VdzxQtNb5vZya6OlxSUQ/f3CP4BlNoNu0BiT729+CrmiI
-         hxrNyjvhIJ9PzDAzqkyTSxupLj+JmfizW0n6f1N3W8a07axO06Z4uG4OKUoW3Cu2nWaa
-         Nw4g==
-X-Gm-Message-State: APjAAAXLXx0KpkmfpnPVf6B2DvDvtAREFj7+ZpUauV3JS5XHEPdoogRv
-        +Pu5b+UAiKS43LZsjFzdu0m9sv+KBMaTmOCuxDXUQg==
-X-Google-Smtp-Source: APXvYqybCKPon26hn7gsp8fh/2SoEePfMS8QDadJ0bXyxYYD579koUPggUTrK0UT8FV9gzVVeIESEZIVA9XyR9pviZI=
-X-Received: by 2002:a5d:8908:: with SMTP id b8mr6152088ion.89.1580123872537;
- Mon, 27 Jan 2020 03:17:52 -0800 (PST)
+        bh=JVrciqkeD3YV+mg12gP18iWXb08rDO00qrh61FKX5oU=;
+        b=sLd0Y2IKWpEk1PzMrGlzCgLYv5ND5Z8/nQOwJ98sTMrDJKPMb8ztfqoSiufow2Diro
+         higUTepAzhjx+dp+byIke8BvxrqrskemPB2o4fmwe+wm+Kudxu4e88YMEAbGhvsFCZwk
+         hYskQcny5BwPax4cmVipnckkn+5qz2nfL5+4KIQsBe2Bkxs6V6aQYowXIMUyK8nA3y3M
+         CDo2yCr95fh9jc9i7umDQkO+rJuEQ8vWJOjHNYrNm/Fc+S7I1uY1N+jZC6gw0yJaPs3x
+         +9lulAIhm7hXJNAwmYJWlTZH04MirKRaKybEQ4Ober/NWjgmEnVltu7tJez+u6YC7+UO
+         4bSA==
+X-Gm-Message-State: APjAAAU1uigNeXZCTVE2UP/m5JsU1xeMjd2yT+KRT6Ka5p6hSr3bkgOC
+        EvOPCNoI+13gJPUmyoABNH8PnzLrpU1+6LrLd+U21A==
+X-Google-Smtp-Source: APXvYqxl/CZmzmTuJ9aPgCy5YVflSfOXR4JHj8OmL9j+dGwtu9kEW7cZCHBHXFYBLv5mhrqO4GM29NdbzCK7iNr9Tuw=
+X-Received: by 2002:a6b:7113:: with SMTP id q19mr12223786iog.87.1580124344239;
+ Mon, 27 Jan 2020 03:25:44 -0800 (PST)
 MIME-Version: 1.0
 References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
- <1579845165-18002-3-git-send-email-devesh.sharma@broadcom.com>
- <20200125180252.GD4616@mellanox.com> <CANjDDBiSLY55v=cA+gMC6QFAqxUxiiFCy3y3_Rw9vF+v40LgDQ@mail.gmail.com>
- <20200127080440.GL3870@unreal>
-In-Reply-To: <20200127080440.GL3870@unreal>
+ <1579845165-18002-5-git-send-email-devesh.sharma@broadcom.com>
+ <20200126142928.GG2993@unreal> <CANjDDBhxVC0ps8ee5NTW3QrN9bFNVdEcwxS2=Kfn1uOfDR2v_A@mail.gmail.com>
+ <20200127080216.GK3870@unreal>
+In-Reply-To: <20200127080216.GK3870@unreal>
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Mon, 27 Jan 2020 16:47:16 +0530
-Message-ID: <CANjDDBheoju7MLg+maHzEvVL3Ap70DT3W3ZrcXbSiiz-fVkTGQ@mail.gmail.com>
-Subject: Re: [PATCH for-next 2/7] RDMA/bnxt_re: Replace chip context structure
- with pointer
+Date:   Mon, 27 Jan 2020 16:55:07 +0530
+Message-ID: <CANjDDBj_vieac6bzbNHNa-WhzpRoSJfOG-bQNqK7U8fN7A+WaA@mail.gmail.com>
+Subject: Re: [PATCH for-next 4/7] RDMA/bnxt_re: Refactor net ring allocation function
 To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 27, 2020 at 1:34 PM Leon Romanovsky <leon@kernel.org> wrote:
+On Mon, Jan 27, 2020 at 1:32 PM Leon Romanovsky <leon@kernel.org> wrote:
 >
-> On Mon, Jan 27, 2020 at 01:09:46PM +0530, Devesh Sharma wrote:
-> > On Sat, Jan 25, 2020 at 11:33 PM Jason Gunthorpe <jgg@mellanox.com> wrote:
+> On Mon, Jan 27, 2020 at 01:10:10PM +0530, Devesh Sharma wrote:
+> > On Sun, Jan 26, 2020 at 7:59 PM Leon Romanovsky <leon@kernel.org> wrote:
 > > >
-> > > On Fri, Jan 24, 2020 at 12:52:40AM -0500, Devesh Sharma wrote:
-> > > >  static void bnxt_re_destroy_chip_ctx(struct bnxt_re_dev *rdev)
-> > > >  {
-> > > > +     struct bnxt_qplib_chip_ctx *chip_ctx;
+> > > On Fri, Jan 24, 2020 at 12:52:42AM -0500, Devesh Sharma wrote:
+> > > > Introducing a new attribute structure to reduce
+> > > > the long list of arguments passed in bnxt_re_net_ring_alloc()
+> > > > function.
+> > > >
+> > > > The caller of bnxt_re_net_ring_alloc should fill in
+> > > > the list of attributes in bnxt_re_ring_attr structure
+> > > > and then pass the pointer to the function.
+> > > >
+> > > > Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
+> > > > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> > > > Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+> > > > ---
+> > > >  drivers/infiniband/hw/bnxt_re/bnxt_re.h |  9 +++++
+> > > >  drivers/infiniband/hw/bnxt_re/main.c    | 65 ++++++++++++++++++---------------
+> > > >  2 files changed, 45 insertions(+), 29 deletions(-)
+> > > >
+> > > > diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+> > > > index 86274f4..c736e82 100644
+> > > > --- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+> > > > +++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+> > > > @@ -89,6 +89,15 @@
+> > > >
+> > > >  #define BNXT_RE_DEFAULT_ACK_DELAY    16
+> > > >
+> > > > +struct bnxt_re_ring_attr {
+> > > > +     dma_addr_t      *dma_arr;
+> > > > +     int             pages;
+> > > > +     int             type;
+> > > > +     u32             depth;
+> > > > +     u32             lrid; /* Logical ring id */
+> > > > +     u8              mode;
+> > > > +};
 > > > > +
-> > > > +     if (!rdev->chip_ctx)
-> > > > +             return;
-> > > > +     chip_ctx = rdev->chip_ctx;
-> > > > +     rdev->chip_ctx = NULL;
-> > > >       rdev->rcfw.res = NULL;
-> > > >       rdev->qplib_res.cctx = NULL;
-> > > > +     kfree(chip_ctx);
+> > > >  struct bnxt_re_work {
+> > > >       struct work_struct      work;
+> > > >       unsigned long           event;
+> > > > diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+> > > > index a966c68..648a5ea 100644
+> > > > --- a/drivers/infiniband/hw/bnxt_re/main.c
+> > > > +++ b/drivers/infiniband/hw/bnxt_re/main.c
+> > > > @@ -427,9 +427,9 @@ static int bnxt_re_net_ring_free(struct bnxt_re_dev *rdev,
+> > > >       return rc;
 > > > >  }
+> > > >
+> > > > -static int bnxt_re_net_ring_alloc(struct bnxt_re_dev *rdev, dma_addr_t *dma_arr,
+> > > > -                               int pages, int type, u32 ring_mask,
+> > > > -                               u32 map_index, u16 *fw_ring_id)
+> > > > +static int bnxt_re_net_ring_alloc(struct bnxt_re_dev *rdev,
+> > > > +                               struct bnxt_re_ring_attr *ring_attr,
+> > > > +                               u16 *fw_ring_id)
+> > > >  {
+> > > >       struct bnxt_en_dev *en_dev = rdev->en_dev;
+> > > >       struct hwrm_ring_alloc_input req = {0};
+> > > > @@ -443,18 +443,18 @@ static int bnxt_re_net_ring_alloc(struct bnxt_re_dev *rdev, dma_addr_t *dma_arr,
+> > > >       memset(&fw_msg, 0, sizeof(fw_msg));
+> > > >       bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_RING_ALLOC, -1, -1);
+> > > >       req.enables = 0;
+> > > > -     req.page_tbl_addr =  cpu_to_le64(dma_arr[0]);
+> > > > -     if (pages > 1) {
+> > > > +     req.page_tbl_addr =  cpu_to_le64(ring_attr->dma_arr[0]);
+> > > > +     if (ring_attr->pages > 1) {
+> > > >               /* Page size is in log2 units */
+> > > >               req.page_size = BNXT_PAGE_SHIFT;
+> > > >               req.page_tbl_depth = 1;
+> > > >       }
+> > > >       req.fbo = 0;
+> > > >       /* Association of ring index with doorbell index and MSIX number */
+> > > > -     req.logical_id = cpu_to_le16(map_index);
+> > > > -     req.length = cpu_to_le32(ring_mask + 1);
+> > > > -     req.ring_type = type;
+> > > > -     req.int_mode = RING_ALLOC_REQ_INT_MODE_MSIX;
+> > > > +     req.logical_id = cpu_to_le16(ring_attr->lrid);
+> > > > +     req.length = cpu_to_le32(ring_attr->depth + 1);
+> > > > +     req.ring_type = ring_attr->type;
+> > > > +     req.int_mode = ring_attr->mode;
+> > > >       bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
+> > > >                           sizeof(resp), DFLT_HWRM_CMD_TIMEOUT);
+> > > >       rc = en_dev->en_ops->bnxt_send_fw_msg(en_dev, BNXT_ROCE_ULP, &fw_msg);
+> > > > @@ -1006,12 +1006,13 @@ static void bnxt_re_free_res(struct bnxt_re_dev *rdev)
+> > > >
+> > > >  static int bnxt_re_alloc_res(struct bnxt_re_dev *rdev)
+> > > >  {
+> > > > +     struct bnxt_qplib_ctx *qplib_ctx;
+> > > > +     struct bnxt_re_ring_attr rattr;
+> > > >       int num_vec_created = 0;
+> > > > -     dma_addr_t *pg_map;
+> > > >       int rc = 0, i;
+> > > > -     int pages;
+> > > >       u8 type;
+> > > >
+> > > > +     memset(&rattr, 0, sizeof(rattr));
 > > >
-> > > Are you sure this kfree is late enough? I couldn't deduce if it was
-> > > really safe to NULL chip_ctx here.
-> > With the current design its okay to free this here because
-> > bnxt_re_destroy_chip_ctx is indeed the last deallocation performed
-> > before ib_device_dealloc() in any exit path. Further, the call to
-> > bnxt_re_destroy_chip_ctx is protected by rtnl.
+> > > Initialize rattr to zero from the beginning and save call to memset.
+> > I moved from static initialization to memset due to some sparse/smatch
+> > warnings, rattr has a "pointer member".
 >
-> ??? Why does device destroy path need global lock to already existing
-> protection from ib_core?
-Oh! probably I confused you, What I meant to say was exit path is
-executed under netdev-notifier context which already holds the lock.
-RoCE driver is not taking that lock explicitly.
+> Can you share the error and tool version, because it is pretty common
+> way to initialize variables? Also "= {0}" would solve your checker
+> warning.
+I will have to duplicate it again to report the precise warning but
+based on my memory, sparse or smatch was shouting about "pointer
+converted to integer without cast"
+I guess that was because rattr.dma_arr is a pointer and static
+initialization was assigning value 0 while it should had been NULL. If
+you insist I would send you exact warning msg and tool-version-number
+soon.
 >
 > Thanks
