@@ -2,83 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DEF14A414
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2020 13:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E701E14A45A
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2020 14:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729501AbgA0Mrw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Jan 2020 07:47:52 -0500
-Received: from shards.monkeyblade.net ([23.128.96.9]:38588 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726145AbgA0Mrw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Jan 2020 07:47:52 -0500
-Received: from localhost (unknown [213.175.37.12])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 99D9C153CB64B;
-        Mon, 27 Jan 2020 04:47:49 -0800 (PST)
-Date:   Mon, 27 Jan 2020 13:47:48 +0100 (CET)
-Message-Id: <20200127.134748.1483388411907375372.davem@davemloft.net>
-To:     leon@kernel.org
-Cc:     kuba@kernel.org, f.fainelli@gmail.com, mkubecek@suse.cz,
-        snelson@pensando.io, leonro@mellanox.com,
-        michal.kalderon@marvell.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next v4] net/core: Replace driver version to be
- kernel version
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200127072028.19123-1-leon@kernel.org>
-References: <20200127072028.19123-1-leon@kernel.org>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 27 Jan 2020 04:47:51 -0800 (PST)
+        id S1725944AbgA0NAQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Jan 2020 08:00:16 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:34367 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgA0NAQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Jan 2020 08:00:16 -0500
+Received: by mail-lf1-f68.google.com with SMTP id l18so6138357lfc.1
+        for <linux-rdma@vger.kernel.org>; Mon, 27 Jan 2020 05:00:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZJNzprftu5dcU/szZB/Ubowobleex8rerW+4xWJyt/M=;
+        b=VoO+O8oliDEu27wte/68JQesstuhw1JLi9F499LFmln4kg2fnU80g+Hy939slqwayM
+         6X4kQsHF3iGoWNUylpAMzFOkSDlcyP5/xyc0nU7I/ZTTBqifEIlQVkwwEbO747yLu+pJ
+         1djgkjWksVX3uhDMrT2nQ3tRFxpQRSNk75/8zCqkaGcvS3EmE66VBYCGeeGKoS8z8VJT
+         mKJuWPfApbN4BycDPeyoUqzdZk5e0nyZKMhHLxkO4pkhpTozPbRLOhmheKxVubOO/98R
+         Nq34lzm5O1uV00jxqCWfyoHMsxuubjaSAkl9vEG10D5/2xyp98i8Xb+VDazvAENA75Qi
+         OF9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZJNzprftu5dcU/szZB/Ubowobleex8rerW+4xWJyt/M=;
+        b=SylegLNC+RDyyaE20yXuWFyqpZeHw4eBQYwgc4grYMnkGvdfibgtPFYtmo4EI82S5/
+         zRFuGpzMvi99Luw2b0A3YfQnDMMUicjk/eJCipBkbVcDV3OSDYOfR57Mw8NR4mR7FXP0
+         HiyrkhAIRG0l+LJ5kbW9ADREiRZPz64gwlsBGwMqugHGzgQS1Yjsd/Vv+w6aN+mRbK1j
+         Eco6pV6M8UlQLpdZfl1X/Db0Amgm58cS30E0zGOpf/lBJDMWyYomfUk6ggWAAE9uYIVu
+         mJmoN41sNW+rmHuLkyFvhimh8rTDDjDIlhqOuSpvS7o65DTsqNWiHU4/G0nW6Io6kOzU
+         Xq+w==
+X-Gm-Message-State: APjAAAUckJo/5JBPQV6NOIkJJZ70TWsfT/QsIWTKylI3g08Bm1Zi6fHJ
+        JmyARfCGEWtjm0qPXqiDqISkbA==
+X-Google-Smtp-Source: APXvYqysAoofMf7LQ5awnT1fddVOicFrSd53w1Fmy5Kunrv9ngQonmVjbMl/JL3C6VYXCdPDTAql6w==
+X-Received: by 2002:ac2:59dd:: with SMTP id x29mr7959464lfn.95.1580130014394;
+        Mon, 27 Jan 2020 05:00:14 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id b4sm8138667lfo.48.2020.01.27.05.00.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jan 2020 05:00:13 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 5ED20100AD0; Mon, 27 Jan 2020 16:00:20 +0300 (+03)
+Date:   Mon, 27 Jan 2020 16:00:20 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH 1/3] mm/gup: track FOLL_PIN pages
+Message-ID: <20200127130020.4p56lh32twui5563@box>
+References: <20200125021115.731629-1-jhubbard@nvidia.com>
+ <20200125021115.731629-2-jhubbard@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200125021115.731629-2-jhubbard@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leon@kernel.org>
-Date: Mon, 27 Jan 2020 09:20:28 +0200
+On Fri, Jan 24, 2020 at 06:11:13PM -0800, John Hubbard wrote:
+>  12 files changed, 577 insertions(+), 171 deletions(-)
 
-> From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> In order to stop useless driver version bumps and unify output
-> presented by ethtool -i, let's set default version string.
-> 
-> As Linus said in [1]: "Things are supposed to be backwards and
-> forwards compatible, because we don't accept breakage in user
-> space anyway. So versioning is pointless, and only causes
-> problems."
-> 
-> They cause problems when users start to see version changes
-> and expect specific set of features which will be different
-> for stable@, vanilla and distribution kernels.
-> 
-> Distribution kernels are based on some kernel version with extra
-> patches on top, for example, in RedHat world this "extra" is a lot
-> and for them your driver version say nothing. Users who run vanilla
-> kernels won't use driver version information too, because running
-> such kernels requires knowledge and understanding.
-> 
-> Another set of problems are related to difference in versioning scheme
-> and such doesn't allow to write meaningful automation which will work
-> sanely on all ethtool capable devices.
-> 
-> Before this change:
-> [leonro@erver ~]$ ethtool -i eth0
-> driver: virtio_net
-> version: 1.0.0
-> After this change and once ->version assignment will be deleted
-> from virtio_net:
-> [leonro@server ~]$ ethtool -i eth0
-> driver: virtio_net
-> version: 5.5.0-rc6+
-> 
-> Link: https://lore.kernel.org/ksummit-discuss/CA+55aFx9A=5cc0QZ7CySC4F2K7eYaEfzkdYEc9JaNgCcV25=rg@mail.gmail.com/
-> Link: https://lore.kernel.org/linux-rdma/20200122152627.14903-1-michal.kalderon@marvell.com/T/#md460ff8f976c532a89d6860411c3c50bb811038b
-> Link: https://lore.kernel.org/linux-rdma/20200127060835.GA570@unicorn.suse.cz
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Can we get it split? There's too much going on to give meaningful review.
 
-Applied to net-next, thanks.
+-- 
+ Kirill A. Shutemov
