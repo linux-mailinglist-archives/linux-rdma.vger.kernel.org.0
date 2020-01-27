@@ -2,145 +2,158 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 708D3149FAE
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2020 09:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BC2149FE3
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Jan 2020 09:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728765AbgA0IQu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Jan 2020 03:16:50 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:44542 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728609AbgA0IQu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Jan 2020 03:16:50 -0500
-Received: by mail-io1-f67.google.com with SMTP id e7so8950978iof.11
-        for <linux-rdma@vger.kernel.org>; Mon, 27 Jan 2020 00:16:50 -0800 (PST)
+        id S1725938AbgA0IbI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Jan 2020 03:31:08 -0500
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:45408 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726260AbgA0IbI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Jan 2020 03:31:08 -0500
+Received: by mail-pl1-f194.google.com with SMTP id b22so3475713pls.12
+        for <linux-rdma@vger.kernel.org>; Mon, 27 Jan 2020 00:31:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NIZnt8ZTP3K5I+jQW6mPUBoNWy51dEeOmjSOTS79PF8=;
-        b=dxNfc401lhm3IHtUV28DJU7sUjs4P0cegqKwAGkp+7n/f6KU0bU2U/jeiNlcB14p7/
-         2hxZKOP64kNq8vaLraPyEmh16yw5SEJDznwRv3A8Z9H+51vXG2HDoy3X4yaqVRUSeC2y
-         4/FwAK7HdlsRfG9NMDMNNoLgCTzDZGA44w+aE=
+        d=pensando.io; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=awPROk4SsGjpTvApNjNWcP8+DHFatBpFC1zasBo2Y0U=;
+        b=itclDd248DMvDEFDSHfCW1Z+t96Z86nJn7qJ60CxOVK9yiKKDBxNC0qUvME/65IQ2m
+         sItojReh0hb7YZXysnO2g2uK867Ibm0K+xhSkg8sb/yXkjnunkZFIdObAJzo2nf+LmJH
+         C8c/+gE/awnigMmBJVW60bS2uz2ndx2BPkE9urz6F3PccHr1LkHdVHLw9lLhXrhI/lrh
+         6rZAqIKHg6PfTPr2kY/9HQ+WKasSbETWHuLO0YDxty3hWyBob9OniXNZRt3aHI2Uf6gu
+         zkBObAEJMWczz/VWizvQP3zrzFG9Yalg9YJqWCXYpG5yI/7mI0Dz46Ca0jNDwWC0rpfR
+         eukA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NIZnt8ZTP3K5I+jQW6mPUBoNWy51dEeOmjSOTS79PF8=;
-        b=mGrPl1dMtNHozaVNQxLbuMRWxyeY2MzLiISrylU3JB/e9uasS4jqIIY2BypLt9+PEH
-         a2kqio3XITY1OZjlm4liXBvKdPMA6FCmjtquIfvM/YsN+J2eOARdXDCtTMm9mNHdu/7g
-         P9KUKuSiHgQEbqMUo6cLUdFmapnYNG+3K+s5pnMk3VEqV9Z2np/BRHuhVOZw25ugPcEp
-         Q+G/Xnc3BjOpvXIn9ZY51n7DuryxD2JbS2obuKYEjdI4p+Im8gH+vorBQtFAZJUy1Ll+
-         iXw7w5NPdIH9QwSjuRMLD/SRKzWy3Hhx7W4omRJ6gyduTtX302U40l2/VQRCMfREMFI3
-         esEQ==
-X-Gm-Message-State: APjAAAWVeDQPMwwqUPhxtW8YyuriAZiNjre9IvLfAEqPY17oK7LYVFfg
-        M+m4UuRKXhr8lhi+5L+oqNN0SzyiqIjq35IigUTN4C4F
-X-Google-Smtp-Source: APXvYqwntDmr3PU1glwUVsWVi7AQvbvIV58aT23j0HHBqv3Y2/y+QeInnE68imBpBOPn/3x9lO7De7ttuvpHiMJEmLQ=
-X-Received: by 2002:a5e:9246:: with SMTP id z6mr12117612iop.232.1580113009858;
- Mon, 27 Jan 2020 00:16:49 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=awPROk4SsGjpTvApNjNWcP8+DHFatBpFC1zasBo2Y0U=;
+        b=Sd6TZk9cY3dPHauLgOqb6s9JFvrtukrJOB0S45ThESkCv01d1IcywnxAG7gxjwXaDg
+         ojfcDLNPr9DVZ4jyygviIi1q0Lmvb1TfmkcTh+/9X4nCI/7+ANj3tXkXGLz1Mp/zc/4M
+         KQTiqTHkHrzSn8rEyviJoGGDJLTZdA0zzZb0AiQVGy/us5dkVDuKs7XpeUvQh7QTgBKQ
+         UO2sE9TbbEWP+bhtHg3zSyKRZV4dpLV1Z6z4HSFB3uvWr3vmonw+enZlKYvmAfrFhPZz
+         vxJGnazJugGlTWrg+gheyXxgbYRRIbZA7rBNofH3m0zJM/MZfAg2RDLuk9Ta5adDh9n+
+         K3Zw==
+X-Gm-Message-State: APjAAAWdBZWAbjW3TjggCKfPIguc81FFzeuUya3VjwQwVJvs7rfNpiYC
+        5qZNDn1qOuRzIRzhdZ7llSu+WDynaUyTDQ==
+X-Google-Smtp-Source: APXvYqxy/teUoTvUqEaafc/ZwBdaXb8i05urjXU3BhLm06QZDnFKVYExD7Rw1WCyCc+q+TgUGeVr9w==
+X-Received: by 2002:a17:90a:f0cf:: with SMTP id fa15mr1359484pjb.94.1580113866435;
+        Mon, 27 Jan 2020 00:31:06 -0800 (PST)
+Received: from Shannons-MacBook-Pro.local (static-50-53-47-17.bvtn.or.frontiernet.net. [50.53.47.17])
+        by smtp.gmail.com with ESMTPSA id z30sm14986752pff.131.2020.01.27.00.31.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Jan 2020 00:31:05 -0800 (PST)
+Subject: Re: [PATCH net-next v4] net/core: Replace driver version to be kernel
+ version
+To:     Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Michal Kubecek <mkubecek@suse.cz>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        linux-netdev <netdev@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <20200127072028.19123-1-leon@kernel.org>
+From:   Shannon Nelson <snelson@pensando.io>
+Message-ID: <c6dedfe5-d284-f38e-c5c8-ff82047f650d@pensando.io>
+Date:   Mon, 27 Jan 2020 00:32:01 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.1
 MIME-Version: 1.0
-References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
- <1579845165-18002-2-git-send-email-devesh.sharma@broadcom.com>
- <20200125174645.GC4616@mellanox.com> <CANjDDBht4vTzkrRH1L9_9CquvsfRwo6VmPb6FFT2HNzkkh0H0w@mail.gmail.com>
-In-Reply-To: <CANjDDBht4vTzkrRH1L9_9CquvsfRwo6VmPb6FFT2HNzkkh0H0w@mail.gmail.com>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Mon, 27 Jan 2020 13:46:13 +0530
-Message-ID: <CANjDDBigH2EvkKVoFrRc0hdMG+1czSg0DChTmkj9M3Kzt2d=gQ@mail.gmail.com>
-Subject: Re: [PATCH for-next 1/7] RDMA/bnxt_re: Refactor queue pair creation code
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200127072028.19123-1-leon@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 27, 2020 at 1:43 PM Devesh Sharma
-<devesh.sharma@broadcom.com> wrote:
+On 1/26/20 11:20 PM, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 >
-> On Sat, Jan 25, 2020 at 11:16 PM Jason Gunthorpe <jgg@mellanox.com> wrote:
-> >
-> > On Fri, Jan 24, 2020 at 12:52:39AM -0500, Devesh Sharma wrote:
-> > > +static int bnxt_re_destroy_gsi_sqp(struct bnxt_re_qp *qp)
-> > > +{
-> > > +     struct bnxt_re_qp *gsi_sqp;
-> > > +     struct bnxt_re_ah *gsi_sah;
-> > > +     struct bnxt_re_dev *rdev;
-> > > +     int rc = 0;
-> > > +
-> > > +     rdev = qp->rdev;
-> > > +     gsi_sqp = rdev->gsi_ctx.gsi_sqp;
-> > > +     gsi_sah = rdev->gsi_ctx.gsi_sah;
-> > > +
-> > > +     /* remove from active qp list */
-> > > +     mutex_lock(&rdev->qp_lock);
-> > > +     list_del(&gsi_sqp->list);
-> > > +     atomic_dec(&rdev->qp_count);
-> > > +     mutex_unlock(&rdev->qp_lock);
-> > > +
-> > > +     dev_dbg(rdev_to_dev(rdev), "Destroy the shadow AH\n");
-> > > +     bnxt_qplib_destroy_ah(&rdev->qplib_res,
-> > > +                           &gsi_sah->qplib_ah,
-> > > +                           true);
-> > > +     bnxt_qplib_clean_qp(&qp->qplib_qp);
-> > > +
-> > > +     dev_dbg(rdev_to_dev(rdev), "Destroy the shadow QP\n");
-> > > +     rc = bnxt_qplib_destroy_qp(&rdev->qplib_res, &gsi_sqp->qplib_qp);
-> > > +     if (rc) {
-> > > +             dev_err(rdev_to_dev(rdev), "Destroy Shadow QP failed");
-> > > +             goto fail;
-> > > +     }
-> > > +     bnxt_qplib_free_qp_res(&rdev->qplib_res, &gsi_sqp->qplib_qp);
-> > > +
-> > > +     kfree(rdev->gsi_ctx.sqp_tbl);
-> > > +     kfree(gsi_sah);
-> > > +     kfree(gsi_sqp);
-> > > +     rdev->gsi_ctx.gsi_sqp = NULL;
-> > > +     rdev->gsi_ctx.gsi_sah = NULL;
-> > > +     rdev->gsi_ctx.sqp_tbl = NULL;
-> > > +
-> > > +     return 0;
-> > > +fail:
-> > > +     mutex_lock(&rdev->qp_lock);
-> > > +     list_add_tail(&gsi_sqp->list, &rdev->qp_list);
-> > > +     atomic_inc(&rdev->qp_count);
-> > > +     mutex_unlock(&rdev->qp_lock);
-> > > +     return rc;
-> >
-> > This error unwind approach looks racy. destroy is not allowed to
-> > fail, so why all this mess?
-> True, the unwind is not required, even if the driver wants to keep it
-> for debugging purpose, the zombie resource would give rise to
-> confusion.
-> >
-> > >  /* Queue Pairs */
-> > >  int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
-> > >  {
-> > > @@ -750,10 +797,18 @@ int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
-> > >       unsigned int flags;
-> > >       int rc;
-> > >
-> > > +     mutex_lock(&rdev->qp_lock);
-> > > +     list_del(&qp->list);
-> > > +     atomic_dec(&rdev->qp_count);
-> > > +     mutex_unlock(&rdev->qp_lock);
-> > >       bnxt_qplib_flush_cqn_wq(&qp->qplib_qp);
-> > >       rc = bnxt_qplib_destroy_qp(&rdev->qplib_res, &qp->qplib_qp);
-> > >       if (rc) {
-> > >               dev_err(rdev_to_dev(rdev), "Failed to destroy HW QP");
-> > > +             mutex_lock(&rdev->qp_lock);
-> > > +             list_add_tail(&qp->list, &rdev->qp_list);
-> > > +             atomic_inc(&rdev->qp_count);
-> > > +             mutex_unlock(&rdev->qp_lock);
-> > >               return rc;
-> > >       }
-> >
-> > More..
-> Let me see if I can remove it in this series, else future series would
-> remove it.
-> >
-> > Jason
+> In order to stop useless driver version bumps and unify output
+> presented by ethtool -i, let's set default version string.
+>
+> As Linus said in [1]: "Things are supposed to be backwards and
+> forwards compatible, because we don't accept breakage in user
+> space anyway. So versioning is pointless, and only causes
+> problems."
+>
+> They cause problems when users start to see version changes
+> and expect specific set of features which will be different
+> for stable@, vanilla and distribution kernels.
+>
+> Distribution kernels are based on some kernel version with extra
+> patches on top, for example, in RedHat world this "extra" is a lot
+> and for them your driver version say nothing. Users who run vanilla
+> kernels won't use driver version information too, because running
+> such kernels requires knowledge and understanding.
+>
+> Another set of problems are related to difference in versioning scheme
+> and such doesn't allow to write meaningful automation which will work
+> sanely on all ethtool capable devices.
+>
+> Before this change:
+> [leonro@erver ~]$ ethtool -i eth0
+> driver: virtio_net
+> version: 1.0.0
+> After this change and once ->version assignment will be deleted
+> from virtio_net:
+> [leonro@server ~]$ ethtool -i eth0
+> driver: virtio_net
+> version: 5.5.0-rc6+
+>
+> Link: https://lore.kernel.org/ksummit-discuss/CA+55aFx9A=5cc0QZ7CySC4F2K7eYaEfzkdYEc9JaNgCcV25=rg@mail.gmail.com/
+> Link: https://lore.kernel.org/linux-rdma/20200122152627.14903-1-michal.kalderon@marvell.com/T/#md460ff8f976c532a89d6860411c3c50bb811038b
+> Link: https://lore.kernel.org/linux-rdma/20200127060835.GA570@unicorn.suse.cz
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>   Changelog:
+>   v4: Set default driver version prior to calling ->get_drvinfo(). This will allow
+>       us to remove all in-the-tree version assignments, while keeping ability
+>       to overwrite it for out-of-tree drivers.
+>   v3: https://lore.kernel.org/linux-rdma/20200126105422.86969-1-leon@kernel.org
+>       Used wrong target branch, changed from rdma-next to net-next.
+>   v2: https://lore.kernel.org/linux-rdma/20200126100124.86014-1-leon@kernel.org
+>       Updated commit message.
+>   v1: https://lore.kernel.org/linux-rdma/20200125161401.40683-1-leon@kernel.org
+>       Resend per-Dave's request
+>       https://lore.kernel.org/linux-rdma/20200125.101311.1924780619716720495.davem@davemloft.net
+>       No changes at all and applied cleanly on top of "3333e50b64fe Merge branch 'mlxsw-Offload-TBF'"
+>   v0: https://lore.kernel.org/linux-rdma/20200123130541.30473-1-leon@kernel.org
+> ---
+>   net/ethtool/ioctl.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
+> index 182bffbffa78..0501b615e920 100644
+> --- a/net/ethtool/ioctl.c
+> +++ b/net/ethtool/ioctl.c
+> @@ -17,6 +17,7 @@
+>   #include <linux/phy.h>
+>   #include <linux/bitops.h>
+>   #include <linux/uaccess.h>
+> +#include <linux/vermagic.h>
+>   #include <linux/vmalloc.h>
+>   #include <linux/sfp.h>
+>   #include <linux/slab.h>
+> @@ -655,6 +656,7 @@ static noinline_for_stack int ethtool_get_drvinfo(struct net_device *dev,
+>
+>   	memset(&info, 0, sizeof(info));
+>   	info.cmd = ETHTOOL_GDRVINFO;
+> +	strlcpy(info.version, UTS_RELEASE, sizeof(info.version));
+>   	if (ops->get_drvinfo) {
+>   		ops->get_drvinfo(dev, &info);
+>   	} else if (dev->dev.parent && dev->dev.parent->driver) {
+> --
+> 2.24.1
+>
+I can work with this - thanks.
 
-At the top level, if provider driver is so keen on returning success
-in any case, should we change the return type to void of
-ib_destroy_xx() hooks?
+Acked-by: Shannon Nelson <snelson@pensando.io>
+
+
