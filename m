@@ -2,50 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D25B914B434
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jan 2020 13:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7EC214B551
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jan 2020 14:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725951AbgA1Mco (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jan 2020 07:32:44 -0500
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:61333 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgA1Mco (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jan 2020 07:32:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1580214764; x=1611750764;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=LPk/bOSMWr04QW8BaeqVKDaUQ2yJKgv1LGPcAD4D1g0=;
-  b=Hg4h9xj/mwI8ptXxgqll8O6IwnINauGIHv/RbP9Vz0MbohxI2KtkjcNe
-   6QCB9ZlLztTbSbFnkzYjAgZcL+VJOIjCs4+rxyanTNmncXHAAzoO5GNYx
-   7RIdhxPxdP1YQP/Fni46T0Ra73r3WCil5PR9zBP0Mjy5tjbcq+5Ne5hxW
-   Y=;
-IronPort-SDR: HJoYPAszfAkdoy33i8CKWpo+cuVbHkt9NPFRgmMQQOANlYHJhiYffA9IP/sdejzCzNUaLB2rRl
- u1cgCoAHtArA==
-X-IronPort-AV: E=Sophos;i="5.70,373,1574121600"; 
-   d="scan'208";a="22906732"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-807d4a99.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 28 Jan 2020 12:32:32 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1a-807d4a99.us-east-1.amazon.com (Postfix) with ESMTPS id 56407A2FF4;
-        Tue, 28 Jan 2020 12:32:30 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1236.3; Tue, 28 Jan 2020 12:32:29 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.224) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Tue, 28 Jan 2020 12:32:25 +0000
-Subject: Re: [PATCH for-rc] Revert "RDMA/efa: Use API to get contiguous memory
- blocks aligned to device supported page size"
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        id S1726141AbgA1NrY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jan 2020 08:47:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725852AbgA1NrY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Jan 2020 08:47:24 -0500
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BCDF24683;
+        Tue, 28 Jan 2020 13:47:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1580219244;
+        bh=Nd3bvd7+ISafKgxlCTfToaLEfldXF5HHdK8vm67svx4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t6alKUqQoSfgZQSRcJrTRCFffFrOofbz6JXhT5Mrh4U8vMd13C3/6Z0wT1wo5qYsz
+         YAenHH+058BDaGQOVIQbDREPm19NMMtl/sbdpBJUCTlB2mRtfU8N0avwwvCv9rdfTu
+         HfDW/xFsK4Q0Ta6nEPS4tSB/UC+H1cHjKsy0wZnY=
+Date:   Tue, 28 Jan 2020 15:47:21 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
         "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
+        Doug Ledford <dledford@redhat.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         Alexander Matushevsky <matua@amazon.com>,
         "stable@vger.kernel.org" <stable@vger.kernel.org>,
         "Leybovich, Yossi" <sleybo@amazon.com>
+Subject: Re: [PATCH for-rc] Revert "RDMA/efa: Use API to get contiguous
+ memory blocks aligned to device supported page size"
+Message-ID: <20200128134721.GA3326@unreal>
 References: <20200120141001.63544-1-galpress@amazon.com>
  <0557a917-b6ad-1be7-e46b-cbe08f2ee4d3@amazon.com>
  <20200121162436.GL51881@unreal>
@@ -54,35 +44,33 @@ References: <20200120141001.63544-1-galpress@amazon.com>
  <60d8c528-1088-df8d-76f0-4746acfcfc7a@amazon.com>
  <9DD61F30A802C4429A01CA4200E302A7C57244BB@fmsmsx123.amr.corp.intel.com>
  <20200124025221.GA16405@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <def88bd8-357f-54b4-90f7-ee0ab382aa95@amazon.com>
-Date:   Tue, 28 Jan 2020 14:32:19 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.1
+ <def88bd8-357f-54b4-90f7-ee0ab382aa95@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20200124025221.GA16405@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.224]
-X-ClientProxiedBy: EX13D24UWB004.ant.amazon.com (10.43.161.4) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <def88bd8-357f-54b4-90f7-ee0ab382aa95@amazon.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 24/01/2020 4:52, Jason Gunthorpe wrote:
-> On Fri, Jan 24, 2020 at 12:40:18AM +0000, Saleem, Shiraz wrote:
->> It would be good to get the debug data to back this or prove it wrong.
->> But if this is indeed what's happening, then ORing in the sgl->length for the
->> first sge to restrict the page size might cut it. So something like,
-> 
-> or'ing in the sgl length is a nonsense thing to do, the length has
-> nothing to do with the restriction, which is entirely based on IOVA
-> bits which can't be passed through.
+On Tue, Jan 28, 2020 at 02:32:19PM +0200, Gal Pressman wrote:
+> On 24/01/2020 4:52, Jason Gunthorpe wrote:
+> > On Fri, Jan 24, 2020 at 12:40:18AM +0000, Saleem, Shiraz wrote:
+> >> It would be good to get the debug data to back this or prove it wrong.
+> >> But if this is indeed what's happening, then ORing in the sgl->length for the
+> >> first sge to restrict the page size might cut it. So something like,
+> >
+> > or'ing in the sgl length is a nonsense thing to do, the length has
+> > nothing to do with the restriction, which is entirely based on IOVA
+> > bits which can't be passed through.
+>
+> The weekend runs passed with Leon's proposed patch.
+> Leon, can you please submit it so I can drop this revert?
 
-The weekend runs passed with Leon's proposed patch.
-Leon, can you please submit it so I can drop this revert?
+I'll do it now, feel free to reply with your tags.
 
 Thanks
+
+>
+> Thanks
