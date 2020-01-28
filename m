@@ -2,101 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F8D14C15C
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jan 2020 21:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C63A14C180
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jan 2020 21:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbgA1UFI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jan 2020 15:05:08 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:47040 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgA1UFI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jan 2020 15:05:08 -0500
-Received: by mail-qk1-f196.google.com with SMTP id g195so14636992qke.13
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Jan 2020 12:05:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qHGvnNm431ADLVjT7HmJIlWBbLmY8xDPaZOXmUYqn+c=;
-        b=WJrQj0O6fd4fAtWq13BHUq6zi2S+GhF6R4xCH1wwUVIrGdYDTz8Cpx3lqZVEQiiWa+
-         6QG+lYsQ6Y8/yyLs1aNrdWHE6T3asJum44AnIbXODfv1Ew4bM+443ESco+vvF5af0MVP
-         9UCDrwrpiuke/I2N+b8LcAzoOR3dEaKZyAftIV6IP/yDZl2s+hvSeXN5lRMFG1Djf6IE
-         WJCurw8Cv5qGxQ1lk/uGmx7MbtlAp+WDAtasHU9BQgcQG18lGDwLeZZSz5a5kNu8he/9
-         bluMnAbzsMcQfacL4n8yEP3R5XQmhUTS8UEZaeqUeTygNPCBZmHO/DpAZNvzu6lPdg4x
-         FQbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qHGvnNm431ADLVjT7HmJIlWBbLmY8xDPaZOXmUYqn+c=;
-        b=LbF4isZWeM2FTSbDtk6CdrJIxjWH4GNP1AXEBq74SMSuh14SMHD1SDkYsV75YP1ZSL
-         dRef+BJXKwxQ/RkiDQr/5bPSVWgO8G+nwuDSH7f9F3c69BbjjZr+nIjhVmoJmN5abIOu
-         g0zqrRp0hUJ9KMp+Iyedpl2QT8ug8WFAhdJTzWnS8EEFN7pc7M/6OyJag0m224yCM4MM
-         deA2sgoK5Xc8irBY2Q4eHShB0g/gy4ty1P0D6xb7dSmLm9fgqCMNCzlI6hVQH6jBQflO
-         yueUWugB9mLnxnAeMRncL544LGt1jnasaTrW8/KRjq22Z1cmZ9adHgPP0462hQyhvtc5
-         xqaA==
-X-Gm-Message-State: APjAAAX2E/V2jxon6X7oJSj0pWjMEBZrViCnjcY2pqi4r/YgISTgvnFc
-        oTSO0CcMJ3fuks50pB3Bar+uSg==
-X-Google-Smtp-Source: APXvYqy1ALMlfxMj/kDUI3tJA9ltyhtpQEzfvKmuQsl4GHAkQ+hT9gXd/W2jsVMbU2omHSVVfMaUbQ==
-X-Received: by 2002:a37:4b8b:: with SMTP id y133mr23863962qka.210.1580241907210;
-        Tue, 28 Jan 2020 12:05:07 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id t23sm4205702qtp.82.2020.01.28.12.05.06
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 28 Jan 2020 12:05:06 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iwX6f-000671-SV; Tue, 28 Jan 2020 16:05:05 -0400
-Date:   Tue, 28 Jan 2020 16:05:05 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Yixian Liu <liuyixian@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v7 for-next 2/2] RDMA/hns: Delayed flush cqe process with
- workqueue
-Message-ID: <20200128200505.GB8107@ziepe.ca>
-References: <1579081753-2839-1-git-send-email-liuyixian@huawei.com>
- <1579081753-2839-3-git-send-email-liuyixian@huawei.com>
+        id S1726143AbgA1UP4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jan 2020 15:15:56 -0500
+Received: from mail-db8eur05on2061.outbound.protection.outlook.com ([40.107.20.61]:6034
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726141AbgA1UP4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Jan 2020 15:15:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Vzk6gVUOATiDLUJI4uNLqBvzTGRFp3zf3zkr56Os1ovpZjdDCbddT1gkMLmxvpoqVBm8quLcAONtwZIxjSbo7BgptWHe+dlKXYY/wGRD4PkybOtraW9VGEkf1sdDrwTkCZOcf7xcck8d7RPueTQr7E6e+7wtby6OvMJd0v7EfutJEU1Yw0PdH/M1fPJTb3RVkIcV6Hr59WFKOUiaUsITkHhS+JAj69KHVvHAblbwEYWIwFlFJby6FeA9GUgZgoEJqrIFLSHQrRxmlMlx7H478T1NdSzL6HObxwqGDdAOhpGeudOAkfExlOweVNGC9kGRFNHYHF0D1Dw/Vlw/qNF+uQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=66HevOu6DaMDXmkTuvVmrGCPuycWnTp1VZYGmT47SUc=;
+ b=GxGguxrpd4yp85KaYTIpBcP8AeeHE4Etvzy/MBtRBg5snrtjzmaTQWlfr+FitLa2528iwlbrGpvBnSrSOqZNqGObT12C4DobujecK9wFwLb4CAYvMfTKssgHP/T3p+umknm1q7LkFfOGvVo5yP/nnH56bHCcbK9zQ+igYX+o+lqA1vJMM4rCN4c/1ucFGYITE3t36r9VXwIEvcELPlzR4Rwon7wjsjxGp9PhNuNtFgCf9hVY6USnDQb8Io/x2Ekxr/fEFBR+g4dLXiVBC33EftowABPHKujehUo/J3SsW4fG2rCAfyDs8WiuUyr1ShdIlZH5qCmZ9H8jYbo0O/bT2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=66HevOu6DaMDXmkTuvVmrGCPuycWnTp1VZYGmT47SUc=;
+ b=RzdWQmgFrgkALnTZMCTUuLg6AZt9dIc+mXYbPKjVeUKxoiEgiJMxPTxnqNpkFgqbBvrn5n++h+AygFIuP/78JPi7kmAPSvkJcFj2AOjFNzX+IVZSKURHYOLSv9vX0632ztRzrrV/g2npX+4yx+DGIZk2/fqc9Eyrg9f/aLzztTo=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB5200.eurprd05.prod.outlook.com (20.178.12.85) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2665.22; Tue, 28 Jan 2020 20:15:53 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1c00:7925:d5c6:d60d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1c00:7925:d5c6:d60d%7]) with mapi id 15.20.2665.026; Tue, 28 Jan 2020
+ 20:15:53 +0000
+Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR16CA0056.namprd16.prod.outlook.com (2603:10b6:208:234::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2665.22 via Frontend Transport; Tue, 28 Jan 2020 20:15:53 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1iwXH3-0006Gz-0L; Tue, 28 Jan 2020 16:15:49 -0400
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Devesh Sharma <devesh.sharma@broadcom.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>
+Subject: Re: [PATCH for-next 2/7] RDMA/bnxt_re: Replace chip context structure
+ with pointer
+Thread-Topic: [PATCH for-next 2/7] RDMA/bnxt_re: Replace chip context
+ structure with pointer
+Thread-Index: AQHV0nqLx+VkrTQJYk+zGSveksMYG6f7rl0AgAJ2kgCAAmWRAA==
+Date:   Tue, 28 Jan 2020 20:15:53 +0000
+Message-ID: <20200128201548.GO21192@mellanox.com>
+References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
+ <1579845165-18002-3-git-send-email-devesh.sharma@broadcom.com>
+ <20200125180252.GD4616@mellanox.com>
+ <CANjDDBiSLY55v=cA+gMC6QFAqxUxiiFCy3y3_Rw9vF+v40LgDQ@mail.gmail.com>
+In-Reply-To: <CANjDDBiSLY55v=cA+gMC6QFAqxUxiiFCy3y3_Rw9vF+v40LgDQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR16CA0056.namprd16.prod.outlook.com
+ (2603:10b6:208:234::25) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.68.57.212]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: ca813a99-3031-42ba-a9c5-08d7a42ee005
+x-ms-traffictypediagnostic: VI1PR05MB5200:
+x-microsoft-antispam-prvs: <VI1PR05MB5200735A119730C484148CFDCF0A0@VI1PR05MB5200.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 029651C7A1
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(346002)(366004)(39860400002)(136003)(396003)(189003)(199004)(4326008)(54906003)(5660300002)(2906002)(478600001)(33656002)(86362001)(8676002)(81166006)(52116002)(1076003)(2616005)(71200400001)(8936002)(9786002)(9746002)(81156014)(66556008)(53546011)(66946007)(6666004)(36756003)(186003)(64756008)(6916009)(66476007)(66446008)(316002)(26005)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5200;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: e+b85o3m/exexMP3qtZP/p+R9dN9oGDZBfXy5oiEuQahY8rWSQW6NcY9e5ZF0ldyOEbnUnuqtCWpE1CnQJQQLS3lNOLB1QINGUgBrYQiY+F/bKUafENt6RyLghuUuwXH13MAvRRH1yybGjXizfM4GTqNhVdGgMS9hfnRyI3wuLu/xbEkc63Y7xwrA62hZrWOe/8hz0yHWk9PGaf/8N5rIvIOoJizcv58i7mWGPYX5K5UeB0x5EwRMcj/yp8zpdNeJObatkLUHOfRCFjDpM+WMsgrppEIYY7tWY6tB50sug+B/B7Rghf/wIKr98dVN4l1r7swJamTrAc/MQjYJm8YeVTdLCx7XLH+B15SP7DNc6WvbYh7uiORgU5LHLLEIR79zQjpIv1NnJU4tO8aRdo4+eVAxKOpixP5v0FLHbPiRkkM3CjG/m5jyFsZ+VX7fAi4Sv5UMWaZRK6f2bSaQHhPjpAJ622pACBojKrlMvBJR/ksVFKPfEIw60SOcnRen7nK
+x-ms-exchange-antispam-messagedata: Qs7C46g40hK6GHTwY8TFWBwxySRvzi+oBoEtLlz76bYwYFLP/8ND3V8LseaZssmYmMUDQbHcPK35jtmiAhpefgxOg/09cQglctiZA8pShTwTFbwECwH9RFi2LbLj48Eo/bYzqkUTJBfeANLth2j3EQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3164E0B89EEFDE4F909F17881C71BB49@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1579081753-2839-3-git-send-email-liuyixian@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca813a99-3031-42ba-a9c5-08d7a42ee005
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jan 2020 20:15:53.2401
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7zCUi2tnjeVnSAkPPT8l7kanEn+EMY4YZO3+/dUHa0mS7Qym04R9+ADkdbxWsc/cK21tvTvyGCC+smb2Z7ttwQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5200
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 05:49:13PM +0800, Yixian Liu wrote:
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> index fa38582..ad7ed07 100644
-> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> @@ -56,10 +56,16 @@ static void flush_work_handle(struct work_struct *work)
->  	attr_mask = IB_QP_STATE;
->  	attr.qp_state = IB_QPS_ERR;
->  
-> -	ret = hns_roce_modify_qp(&hr_qp->ibqp, &attr, attr_mask, NULL);
-> -	if (ret)
-> -		dev_err(dev, "Modify QP to error state failed(%d) during CQE flush\n",
-> -			ret);
-> +	while (atomic_read(&hr_qp->flush_cnt)) {
-> +		ret = hns_roce_modify_qp(&hr_qp->ibqp, &attr, attr_mask, NULL);
-> +		if (ret)
-> +			dev_err(dev, "Modify QP to error state failed(%d) during CQE flush\n",
-> +				ret);
-> +
-> +		/* If flush_cnt larger than 1, only need one more time flush */
-> +		if (atomic_dec_and_test(&hr_qp->flush_cnt))
-> +			atomic_set(&hr_qp->flush_cnt, 1);
-> +	}
+On Mon, Jan 27, 2020 at 01:09:46PM +0530, Devesh Sharma wrote:
+> On Sat, Jan 25, 2020 at 11:33 PM Jason Gunthorpe <jgg@mellanox.com> wrote=
+:
+> >
+> > On Fri, Jan 24, 2020 at 12:52:40AM -0500, Devesh Sharma wrote:
+> > >  static void bnxt_re_destroy_chip_ctx(struct bnxt_re_dev *rdev)
+> > >  {
+> > > +     struct bnxt_qplib_chip_ctx *chip_ctx;
+> > > +
+> > > +     if (!rdev->chip_ctx)
+> > > +             return;
+> > > +     chip_ctx =3D rdev->chip_ctx;
+> > > +     rdev->chip_ctx =3D NULL;
+> > >       rdev->rcfw.res =3D NULL;
+> > >       rdev->qplib_res.cctx =3D NULL;
+> > > +     kfree(chip_ctx);
+> > >  }
+> >
+> > Are you sure this kfree is late enough? I couldn't deduce if it was
+> > really safe to NULL chip_ctx here.
+> With the current design its okay to free this here because
+> bnxt_re_destroy_chip_ctx is indeed the last deallocation performed
+> before ib_device_dealloc() in any exit path. Further, the call to
+> bnxt_re_destroy_chip_ctx is protected by rtnl.
+> following is the exit sequence anyewere in the driver control path
+> bnxt_re_ib_unreg(rdev); --->> the last deallocation in this func is
+> destroy_chip_ctx().
+> bnxt_re_remove_one(rdev); -->> this is a single line function just to
+> put pci device reference
+> bnxt_re_dev_unreg(rdev); -->> the first deallocation in this func is
+> ib_device_dealloc().
 
-And this while loop is just 
+It makes more sense to me to put all the memory deallocation together
+in one place, then there is no concern about ordering.
 
-if (atomic_xchg(&hr_qp->flush_cnt, 0)) {
-  [..]
-}
+We now have the dealloc_driver callback for this purpose.
 
-I'm not even sure this needs to be a counter, all you need is set_bit()
-and test_and_clear()
+It is not 'last deallocation' that matters, but what all the other
+stuff is doing between destroy_chip_ctx() and ib_device_dealloc()
 
 Jason
