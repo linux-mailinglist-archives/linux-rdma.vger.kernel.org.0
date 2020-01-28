@@ -2,75 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7EC214B551
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jan 2020 14:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC93814B57E
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jan 2020 14:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbgA1NrY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jan 2020 08:47:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38306 "EHLO mail.kernel.org"
+        id S1726143AbgA1N4U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jan 2020 08:56:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725852AbgA1NrY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Jan 2020 08:47:24 -0500
+        id S1726107AbgA1N4U (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Jan 2020 08:56:20 -0500
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BCDF24683;
-        Tue, 28 Jan 2020 13:47:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEA972173E;
+        Tue, 28 Jan 2020 13:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580219244;
-        bh=Nd3bvd7+ISafKgxlCTfToaLEfldXF5HHdK8vm67svx4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t6alKUqQoSfgZQSRcJrTRCFffFrOofbz6JXhT5Mrh4U8vMd13C3/6Z0wT1wo5qYsz
-         YAenHH+058BDaGQOVIQbDREPm19NMMtl/sbdpBJUCTlB2mRtfU8N0avwwvCv9rdfTu
-         HfDW/xFsK4Q0Ta6nEPS4tSB/UC+H1cHjKsy0wZnY=
-Date:   Tue, 28 Jan 2020 15:47:21 +0200
+        s=default; t=1580219779;
+        bh=tPB30AduGp5no6BUPgfVc+JowWLfls1Pwp9SLp4lz60=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mFVXxHGbt1wV54rOpoA1NvvPI9M+NkfHfWsf2c0DAVRENrMRH+YCZ0anTDWa4lBxc
+         f08bc0lw9WbJpp8NMFUphzx9bImwpNv+fxu8+K9wzcb3mx+eH30sqFP6MWC8bsg5Dg
+         zWSX8EgfZPTUHhCWP4Xa3kgjkABZd7bmymQl9bV8=
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "Leybovich, Yossi" <sleybo@amazon.com>
-Subject: Re: [PATCH for-rc] Revert "RDMA/efa: Use API to get contiguous
- memory blocks aligned to device supported page size"
-Message-ID: <20200128134721.GA3326@unreal>
-References: <20200120141001.63544-1-galpress@amazon.com>
- <0557a917-b6ad-1be7-e46b-cbe08f2ee4d3@amazon.com>
- <20200121162436.GL51881@unreal>
- <47c20471-2251-b93b-053d-87880fa0edf5@amazon.com>
- <20200123142443.GN7018@unreal>
- <60d8c528-1088-df8d-76f0-4746acfcfc7a@amazon.com>
- <9DD61F30A802C4429A01CA4200E302A7C57244BB@fmsmsx123.amr.corp.intel.com>
- <20200124025221.GA16405@ziepe.ca>
- <def88bd8-357f-54b4-90f7-ee0ab382aa95@amazon.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Gal Pressman <galpress@amazon.com>
+Cc:     Artemy Kovalyov <artemyko@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: [PATCH rdma-rc] RDMA/umem: Fix ib_umem_find_best_pgsz()
+Date:   Tue, 28 Jan 2020 15:56:12 +0200
+Message-Id: <20200128135612.174820-1-leon@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <def88bd8-357f-54b4-90f7-ee0ab382aa95@amazon.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 28, 2020 at 02:32:19PM +0200, Gal Pressman wrote:
-> On 24/01/2020 4:52, Jason Gunthorpe wrote:
-> > On Fri, Jan 24, 2020 at 12:40:18AM +0000, Saleem, Shiraz wrote:
-> >> It would be good to get the debug data to back this or prove it wrong.
-> >> But if this is indeed what's happening, then ORing in the sgl->length for the
-> >> first sge to restrict the page size might cut it. So something like,
-> >
-> > or'ing in the sgl length is a nonsense thing to do, the length has
-> > nothing to do with the restriction, which is entirely based on IOVA
-> > bits which can't be passed through.
->
-> The weekend runs passed with Leon's proposed patch.
-> Leon, can you please submit it so I can drop this revert?
+From: Artemy Kovalyov <artemyko@mellanox.com>
 
-I'll do it now, feel free to reply with your tags.
+Except for the last entry, the ending iova alignment sets the maximum
+possible page size as the low bits of the iova must be zero when
+starting the next chunk.
 
-Thanks
+Fixes: 4a35339958f1 ("RDMA/umem: Add API to find best driver supported page size in an MR")
+Signed-off-by: Artemy Kovalyov <artemyko@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ drivers/infiniband/core/umem.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
->
-> Thanks
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index 933dc1aeed5f..82455a1392f1 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -166,10 +166,13 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
+ 		 * for any address.
+ 		 */
+ 		mask |= (sg_dma_address(sg) + pgoff) ^ va;
+-		if (i && i != (umem->nmap - 1))
+-			/* restrict by length as well for interior SGEs */
+-			mask |= sg_dma_len(sg);
+ 		va += sg_dma_len(sg) - pgoff;
++		/* Except for the last entry, the ending iova alignment sets
++		 * the maximum possible page size as the low bits of the iova
++		 * must be zero when starting the next chunk.
++		 */
++		if (i != (umem->nmap - 1))
++			mask |= va;
+ 		pgoff = 0;
+ 	}
+ 	best_pg_bit = rdma_find_pg_bit(mask, pgsz_bitmap);
+--
+2.24.1
+
