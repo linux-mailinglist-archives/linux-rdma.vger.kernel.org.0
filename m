@@ -2,93 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C8014C783
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2020 09:29:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EC114C86D
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2020 10:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726140AbgA2I3n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Jan 2020 03:29:43 -0500
-Received: from mail-il1-f193.google.com ([209.85.166.193]:32775 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgA2I3m (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Jan 2020 03:29:42 -0500
-Received: by mail-il1-f193.google.com with SMTP id s18so12815896iln.0
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2020 00:29:42 -0800 (PST)
+        id S1726140AbgA2J54 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Jan 2020 04:57:56 -0500
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:3295 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726114AbgA2J54 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Jan 2020 04:57:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C6JLgzdoXCSW5HUJ2Gm55NrEIWy1xHAL1605qJJ9+XE=;
-        b=GWIfLJ4hpopQqIq4iqUZHV8f9pdsdkNmbe77kVxKaOgIr1BVCvD1vG5RuhZbUlzLFK
-         H1QZqkQwsAk6Bpr4prsFN4G7/Xhx01Rp24S7SSJ5c6sbFGxLV7NwJnoQTLXyuaqrqDsz
-         E+bjY9iKRHF4l3rmqwMHCzNKEHjLdPbizzgqU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C6JLgzdoXCSW5HUJ2Gm55NrEIWy1xHAL1605qJJ9+XE=;
-        b=iTzIAarbop+UwswaR+ugqURYtpnzX7FgzhBk74ST5mRnBNCWz2go8xuW+Hnyq5tP+V
-         o9nFhnQNXkYiGQepL9T5qN4OzNV5pfpGvOpzwjhk4np/9zbJPglxFQMUdabQYaze8NG3
-         ssW3OJDo5Grhctnj5qr/fsPEseHf4lG2VeIibKEpnItWXvIVyfbFmHY8+0OERkTknxKx
-         5mhAYgxTpUW7/Fnasl94NByzH4RnHttzEs/31yRFQFathUIJYqMPq5bfywVd3k5nWuE5
-         YACvRdu+S4bqCfIb0chr41AtXq9uYoYN4FKBZ9Pd5QhNuTgSaHqzWDH4VdgYpDJgCkVl
-         FvnA==
-X-Gm-Message-State: APjAAAXwWZ1ihPqnsJbsIBvYHaC1lRYZKksqPZon59JpeRyxeINzi4L7
-        okHZr/YxcrsbQ29QR5O0AoXRepLevfyja89ZdMkqqd6f
-X-Google-Smtp-Source: APXvYqxhQ4KMJsxEacmKDjpzg3IKwv+tWMh+lfvpsD9fW5JCzTP/UUSUXF3LH4w/oNJiQSzIth0dhYAWtwNy9utbPqk=
-X-Received: by 2002:a92:9ac5:: with SMTP id c66mr16058601ill.232.1580286582002;
- Wed, 29 Jan 2020 00:29:42 -0800 (PST)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1580291876; x=1611827876;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=Wk33sfqt8xsqO8WUuL3pyKcuwK41HS7mLw4fgImokUE=;
+  b=m5DqfAQPWygGG7DR31voPyc4+Dlr+Kudoc/rg1qPp1aFOqiuRY//x2KH
+   fMHkYTCbqasEj+S7e+CVe4YABVuLY9k5LDtApUJOHidq+octUkJOzcP8S
+   yTUNUf2rYAQhdEpqbiZbMKlkFF9NU5a3Pf4ClGa3BU9/BtLEWOnPzvec0
+   g=;
+IronPort-SDR: 2TcLbyI1CLMSuhx4btQcJCUVxKm0w13PT9aISdeK8c97OGv6hAT6dU79CPRCF/JIy/ryrBwcX8
+ 9OH1VyRx5Ujg==
+X-IronPort-AV: E=Sophos;i="5.70,377,1574121600"; 
+   d="scan'208";a="23125299"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-397e131e.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 29 Jan 2020 09:57:37 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2c-397e131e.us-west-2.amazon.com (Postfix) with ESMTPS id 221DAA2148;
+        Wed, 29 Jan 2020 09:57:35 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1236.3; Wed, 29 Jan 2020 09:57:34 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.29) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 29 Jan 2020 09:57:25 +0000
+Subject: Re: [RFC PATCH 1/4] net/core: Introduce master_xmit_slave_get
+To:     Maor Gottlieb <maorg@mellanox.com>
+CC:     <j.vosburgh@gmail.com>, <vfalico@gmail.com>, <andy@greyhouse.net>,
+        <jiri@mellanox.com>, <davem@davemloft.net>,
+        <netdev@vger.kernel.org>, <saeedm@mellanox.com>,
+        <jgg@mellanox.com>, <leonro@mellanox.com>, <alexr@mellanox.com>,
+        <markz@mellanox.com>, <parav@mellanox.com>, <eranbe@mellanox.com>,
+        <linux-rdma@vger.kernel.org>
+References: <20200126132126.9981-1-maorg@mellanox.com>
+ <20200126132126.9981-2-maorg@mellanox.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <f27d00e8-e6b5-51a2-fd70-5ed3e5f97610@amazon.com>
+Date:   Wed, 29 Jan 2020 11:57:19 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.1
 MIME-Version: 1.0
-References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
- <1579845165-18002-5-git-send-email-devesh.sharma@broadcom.com>
- <20200126142928.GG2993@unreal> <CANjDDBhxVC0ps8ee5NTW3QrN9bFNVdEcwxS2=Kfn1uOfDR2v_A@mail.gmail.com>
- <20200128003537.GD21192@mellanox.com> <CANjDDBiKijeKZHr7uRO0gO9B+MPOwFBx6F+EDBdGF1QEXc+seQ@mail.gmail.com>
- <20200128180927.GM21192@mellanox.com>
-In-Reply-To: <20200128180927.GM21192@mellanox.com>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Wed, 29 Jan 2020 13:59:05 +0530
-Message-ID: <CANjDDBiB30O8tEE8YswL11uyquDozp3hxjvRgsDhXHHE8yTevA@mail.gmail.com>
-Subject: Re: [PATCH for-next 4/7] RDMA/bnxt_re: Refactor net ring allocation function
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200126132126.9981-2-maorg@mellanox.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.29]
+X-ClientProxiedBy: EX13D05UWC002.ant.amazon.com (10.43.162.92) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 28, 2020 at 11:39 PM Jason Gunthorpe <jgg@mellanox.com> wrote:
->
-> On Tue, Jan 28, 2020 at 08:13:31AM +0530, Devesh Sharma wrote:
-> > On Tue, Jan 28, 2020 at 6:05 AM Jason Gunthorpe <jgg@mellanox.com> wrote:
-> > >
-> > > On Mon, Jan 27, 2020 at 01:10:10PM +0530, Devesh Sharma wrote:
-> > > > > >  static int bnxt_re_alloc_res(struct bnxt_re_dev *rdev)
-> > > > > >  {
-> > > > > > +     struct bnxt_qplib_ctx *qplib_ctx;
-> > > > > > +     struct bnxt_re_ring_attr rattr;
-> > > > > >       int num_vec_created = 0;
-> > > > > > -     dma_addr_t *pg_map;
-> > > > > >       int rc = 0, i;
-> > > > > > -     int pages;
-> > > > > >       u8 type;
-> > > > > >
-> > > > > > +     memset(&rattr, 0, sizeof(rattr));
-> > > > >
-> > > > > Initialize rattr to zero from the beginning and save call to memset.
-> > > > I moved from static initialization to memset due to some sparse/smatch
-> > > > warnings, rattr has a "pointer member".
-> > >
-> > > That is why you need to use = {} not the weird '= {0}' version
-> > >
-> > > 0 initializes the first member to zero and default initializes the rest
-> > > which doesn't work properly if the first member is not an integral
-> > > value.
->
-> > So should I remove memset(s) in v2?
->
-> I would
->
-Doing it already :-)
-> Jason
+On 26/01/2020 15:21, Maor Gottlieb wrote:
+> Add new ndo to get the xmit slave of master device.
+> When slave selection method is based on hash, then the user can ask to
+> get the xmit slave assume all the slaves can transmit by setting the
+> LAG_FLAGS_HASH_ALL_SLAVES bit in the flags argument.
+> 
+> Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+> ---
+>  include/linux/netdevice.h |  3 +++
+>  include/net/lag.h         | 19 +++++++++++++++++++
+>  2 files changed, 22 insertions(+)
+> 
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 11bdf6cb30bd..faba4aa094e5 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -1379,6 +1379,9 @@ struct net_device_ops {
+>  						 struct netlink_ext_ack *extack);
+>  	int			(*ndo_del_slave)(struct net_device *dev,
+>  						 struct net_device *slave_dev);
+> +	struct net_device*	(*ndo_xmit_slave_get)(struct net_device *master_dev,
+> +						      struct sk_buff *skb,
+> +						      int lag);
+
+Hey Maor,
+Should lag be named flags?
+Also, better to use unsigned type for it.
