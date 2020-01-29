@@ -2,98 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D391514C98E
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2020 12:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBE714CA31
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Jan 2020 13:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726067AbgA2LZK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Jan 2020 06:25:10 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:46581 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726177AbgA2LZG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Jan 2020 06:25:06 -0500
-Received: by mail-lj1-f196.google.com with SMTP id x14so15653911ljd.13
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2020 03:25:04 -0800 (PST)
+        id S1726140AbgA2MGZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Jan 2020 07:06:25 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:36023 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726067AbgA2MGY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Jan 2020 07:06:24 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yuCTClL/pM7fgvSlPLx1qB/TzQ5SdJMl6/MOShIA1DQ=;
-        b=0W7H46FMjIQyieXPqDTdHmsnT+fVvJJD10f3x0BOMctRvL9MkeTdx4VbdbHlRTBEN3
-         b5/NawDAfyQpEhbLgT0rwOvcpevf1CHvRnfPK+nWNiUWSGyImoO0vgtrGmVKW+uZx29r
-         bBsFaVwVuNzEQGuzTVKaB1lufIwzDYjD7ErDm/9BiL+5qbFTXQ+Ady+yLKCnGSNAgMd3
-         W6mnYQvJTpgMGiYduy+scv4eX7iMsBIwYQPsUNpaNK3OyYiGdeXL9USXqvdYpFTTjSlw
-         AraHVZkw1JBmq3Op+CNUrl6EEty11YBA5pwAZqGuiTKUaRJ47uGYaNwZMdUrsfU+3Fw7
-         +BBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yuCTClL/pM7fgvSlPLx1qB/TzQ5SdJMl6/MOShIA1DQ=;
-        b=EcCyCETA3YOf1TEBax1WzzmgVMbniOBGXRE/w7ePu9YDfS3Dp+VZ9mzKjRuLFwIHFl
-         qZJuRTMilPw0+s+EA2qrphD6Y/dwauep0AOEy+zz3355VWk0Qu/SuPMbicZnBa7/Sgb2
-         72eDdEqQrrBoW8BDSH1bDKjlBpUhHTt8wLjDC9lQJAUE/prIRhIgmSifJvLAU/6aRg9f
-         Wl/dHIPlOwmsfEx059291N7q7JQj16Bgpsiq8a3S6GRfqX+kCgHnF9k3KG26O09AffuE
-         eOU7FI46uWePTxBnLnZnxDtDNEKDnPNHg9tgrnt3GERqb88H8OmyNyX2K1gFhhVIF+cL
-         TGoQ==
-X-Gm-Message-State: APjAAAXhExzL7wtOzT1RCYUBkW5subagztJnbY//GUtzAYJvk1WLWtSD
-        g3Syzy8rjqJ0I/RiCTXYYFVsrCZNGqI=
-X-Google-Smtp-Source: APXvYqwyL72yG90SI0NWAGgcd0insDnp1IMG7ae6YjG0JpIiyNIWobcDnM8YcTAzCUBn1pD6tZdqCQ==
-X-Received: by 2002:a2e:809a:: with SMTP id i26mr16595052ljg.108.1580297103916;
-        Wed, 29 Jan 2020 03:25:03 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id d9sm778410lja.73.2020.01.29.03.25.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jan 2020 03:25:03 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 04319100AFE; Wed, 29 Jan 2020 14:25:11 +0300 (+03)
-Date:   Wed, 29 Jan 2020 14:25:10 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/8] mm: dump_page: print head page's refcount, for
- compound pages
-Message-ID: <20200129112510.ulims6u36ofk2qwa@box>
-References: <20200129032417.3085670-1-jhubbard@nvidia.com>
- <20200129032417.3085670-2-jhubbard@nvidia.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1580299583; x=1611835583;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=I4al3o1EHV7dzIf1KO4Sk0jmpzwk2+01R27r2Zuidi4=;
+  b=Q3lKIysiF7g1XOMtI+PhF1lJ58ve+5NC4SWcZZOgB9jlj9h1YXyoa24L
+   4GNLSl5ydQRWvQLbwzHNuskiVozZR0NrR0f6QgigwgbJDfV6rFRjs6TSY
+   b7fFzs7HAJkHFgFWpoqdqPFxdNPRdZ3RVOepyoqCibWW5w5jWCyVw7KjP
+   E=;
+IronPort-SDR: i90nrtCoq2tfJzkTd5oetBy5G2AMKR2XhiELpR8Qgwkp23Ro5kUa5OG5pBcXxpvgEF9NMS4PIh
+ doY8VmRW/+8Q==
+X-IronPort-AV: E=Sophos;i="5.70,377,1574121600"; 
+   d="scan'208";a="13834622"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 29 Jan 2020 12:06:22 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (Postfix) with ESMTPS id F05E6A268A;
+        Wed, 29 Jan 2020 12:06:19 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1236.3; Wed, 29 Jan 2020 12:06:19 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.29) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 29 Jan 2020 12:06:14 +0000
+Subject: Re: [PATCH rdma-next] RDMA/core: Fix protection fault in
+ get_pkey_idx_qp_list
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Daniel Jurgens <danielj@mellanox.com>,
+        "Leon Romanovsky" <leonro@mellanox.com>
+References: <20200126171553.4916-1-leon@kernel.org>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <fceb1026-0fb1-5e4f-d617-01a0bcfa21f8@amazon.com>
+Date:   Wed, 29 Jan 2020 14:06:08 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200129032417.3085670-2-jhubbard@nvidia.com>
+In-Reply-To: <20200126171553.4916-1-leon@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.29]
+X-ClientProxiedBy: EX13D21UWB004.ant.amazon.com (10.43.161.221) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 28, 2020 at 07:24:10PM -0800, John Hubbard wrote:
-> When debugging a problem that involves compound pages, it is extremely
-> helpful if dump_page() reports not only the page->_refcount, but also
-> the refcount of the head page of the compound page. That's because the
-> head page collects refcounts for the entire compound page.
+On 26/01/2020 19:15, Leon Romanovsky wrote:
+> From: Maor Gottlieb <maorg@mellanox.com>
 > 
-> Therefore, enhance dump_page() so as to print out the refcount of the
-> head page of a compound page.
-> 
-> This approach (printing information about a struct page that is not the
-> struct page that was passed into dump_page()) has a precedent:
-> compound_mapcount is already being printed.
+> We don't need to set pkey as valid in case that user set only one
+> of pkey index or port number, otherwise it will be resulted in NULL
+> pointer dereference while accessing to uninitialized pkey list.
 
-refcount on a tail must always be 0. I think we should only print it when
-it is non-zero, emphasizing this fact with a standalone message.
-
--- 
- Kirill A. Shutemov
+Why would the pkey list be uninitialized? Isn't it initialized as an empty list
+on device registration?
