@@ -2,104 +2,191 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A8314D654
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2020 07:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC2B14D664
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2020 07:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725869AbgA3GGO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Jan 2020 01:06:14 -0500
-Received: from mail-io1-f66.google.com ([209.85.166.66]:43418 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725847AbgA3GGO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jan 2020 01:06:14 -0500
-Received: by mail-io1-f66.google.com with SMTP id n21so2635654ioo.10
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2020 22:06:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nrb5RA3mMbj8GzTd6DqnMJj45qiHJLM7VyJR9YOAPHg=;
-        b=O6LuJg6KTGFue3ONddhXTVxRmRjOBJcPUjWDvsI9ZsPJWvCQuWjDUnqqJm13SSwsBt
-         XhF9soQ2vFSV2Z2lUl8cFF1BNlEMxxhyh/WizNjkBbWafHaQIME3eq8g+DG2bqc/G2fN
-         YoCvntELOtZ53CliFb16/C1x/vnOE+Kdkytu0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nrb5RA3mMbj8GzTd6DqnMJj45qiHJLM7VyJR9YOAPHg=;
-        b=iJnyU7aXjvSMZTAekbmlw/FzCxyPea7P/kHJB+WyiTHGPQ0rS1fY2dVU1S0/7Z1ZYP
-         +yLu5V5j5/JDxZ9FLosMl7CWJwwYQtSZMrecWBwLozIlmd7U2LaSFUsYSoFsx7v+/dnt
-         LbGAAUeiIiUf+o+w+fY4eObCR92T0d0TkRjFFu3IF5Bh64ud7RJAhceKDjsSoD9B17/K
-         jueU+IOFBgUGDFutHs1ntDmo02gglLf18RtpnsaFRVTPdLr6cPjVO1qHO3gVAFuTiMjF
-         dG8Khzy1HRMElN6XVGIoVUwwCDempSCrnsmFNvPK9Q/Gs4J2pNqC+pUaco5FZVg+GbUd
-         eu3A==
-X-Gm-Message-State: APjAAAVPDEYpmsDYVOA9ojvh8hkzFSNBwZlkWbnWaxhT3GvLq43DZ4vA
-        WBk0V7smxg+xxnE7duv7jT4xP0fXE8PzGZCa3MXmTw==
-X-Google-Smtp-Source: APXvYqxEr/6snlI7WyMDQhbOyEpC9uGA5piskfJPwFuIdvAKjrthL4r+e7TAy0S7d2EK41gWmBlF0n+oUlJtzgRWywQ=
-X-Received: by 2002:a6b:6604:: with SMTP id a4mr2890031ioc.300.1580364373425;
- Wed, 29 Jan 2020 22:06:13 -0800 (PST)
+        id S1726314AbgA3G0N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Jan 2020 01:26:13 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17654 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725798AbgA3G0N (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jan 2020 01:26:13 -0500
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e3276cf0000>; Wed, 29 Jan 2020 22:25:19 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 29 Jan 2020 22:26:11 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Wed, 29 Jan 2020 22:26:11 -0800
+Received: from [10.2.165.69] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Jan
+ 2020 06:26:10 +0000
+Subject: Re: [PATCH v2 1/8] mm: dump_page: print head page's refcount, for
+ compound pages
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20200129032417.3085670-1-jhubbard@nvidia.com>
+ <20200129032417.3085670-2-jhubbard@nvidia.com>
+ <20200129112510.ulims6u36ofk2qwa@box>
+ <b74e8aa9-fcfd-0340-594c-61f185a0ae65@nvidia.com>
+ <20200129225957.GH6615@bombadil.infradead.org>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <a0d66400-96a2-f94e-311d-a94f75e72d65@nvidia.com>
+Date:   Wed, 29 Jan 2020 22:23:10 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
- <1579845165-18002-3-git-send-email-devesh.sharma@broadcom.com>
- <20200125180252.GD4616@mellanox.com> <CANjDDBiSLY55v=cA+gMC6QFAqxUxiiFCy3y3_Rw9vF+v40LgDQ@mail.gmail.com>
- <20200128201548.GO21192@mellanox.com>
-In-Reply-To: <20200128201548.GO21192@mellanox.com>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Thu, 30 Jan 2020 11:35:37 +0530
-Message-ID: <CANjDDBh8tb26ECCszf1PkJJemZZPOMGqMSdd8h_Do_ytmxT0=A@mail.gmail.com>
-Subject: Re: [PATCH for-next 2/7] RDMA/bnxt_re: Replace chip context structure
- with pointer
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200129225957.GH6615@bombadil.infradead.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1580365520; bh=JHRJR+nRNJ+fPdKgdhNh0UpV2gT6YF7QTq3XuI/pnwo=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=BQDWkRnLH1j0+3TFcqwPmncBEuhinrmCw80Gb5nfjCWCm7Q+eTszuPPxdRdT/9ncI
+         x3vf//wCgavyZ2zurvNKovAxI/vZkKZclk357DNkl6D/x0aJAzNgqEhRFJp40iDBED
+         blM/4jKRxhuyVU/WLFsXsLkxawG9WIwlVDfIJ1gmdL52WG4s3jP21Q+xONM74akxo2
+         o3rwO1ZZPh/0w73Q2KfxYhHRtPrL4ctXCQQyM51KBuG20kGnsUbBy868Exg0yU1S/h
+         uGFVs4y/C8Uwpoh/bi+N1dF2g3hx5+SVKe+Fwn5Npk5ECCkzzyiD+r1UvShA2fyeI4
+         td4jAMZ7SAJdw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 29, 2020 at 1:45 AM Jason Gunthorpe <jgg@mellanox.com> wrote:
->
-> On Mon, Jan 27, 2020 at 01:09:46PM +0530, Devesh Sharma wrote:
-> > On Sat, Jan 25, 2020 at 11:33 PM Jason Gunthorpe <jgg@mellanox.com> wrote:
-> > >
-> > > On Fri, Jan 24, 2020 at 12:52:40AM -0500, Devesh Sharma wrote:
-> > > >  static void bnxt_re_destroy_chip_ctx(struct bnxt_re_dev *rdev)
-> > > >  {
-> > > > +     struct bnxt_qplib_chip_ctx *chip_ctx;
-> > > > +
-> > > > +     if (!rdev->chip_ctx)
-> > > > +             return;
-> > > > +     chip_ctx = rdev->chip_ctx;
-> > > > +     rdev->chip_ctx = NULL;
-> > > >       rdev->rcfw.res = NULL;
-> > > >       rdev->qplib_res.cctx = NULL;
-> > > > +     kfree(chip_ctx);
-> > > >  }
-> > >
-> > > Are you sure this kfree is late enough? I couldn't deduce if it was
-> > > really safe to NULL chip_ctx here.
-> > With the current design its okay to free this here because
-> > bnxt_re_destroy_chip_ctx is indeed the last deallocation performed
-> > before ib_device_dealloc() in any exit path. Further, the call to
-> > bnxt_re_destroy_chip_ctx is protected by rtnl.
-> > following is the exit sequence anyewere in the driver control path
-> > bnxt_re_ib_unreg(rdev); --->> the last deallocation in this func is
-> > destroy_chip_ctx().
-> > bnxt_re_remove_one(rdev); -->> this is a single line function just to
-> > put pci device reference
-> > bnxt_re_dev_unreg(rdev); -->> the first deallocation in this func is
-> > ib_device_dealloc().
->
-> It makes more sense to me to put all the memory deallocation together
-> in one place, then there is no concern about ordering.
->
-> We now have the dealloc_driver callback for this purpose.
->
-> It is not 'last deallocation' that matters, but what all the other
-> stuff is doing between destroy_chip_ctx() and ib_device_dealloc()
-As far as this series is concerned, driver is saving crashes however
-in a nasty way. I would like to move forward with what I have in this
-patch and submit a new patch series which would implement your
-suggestion.
->
-> Jason
+On 1/29/20 2:59 PM, Matthew Wilcox wrote:
+...
+> I have a hunk in my current tree which looks like this:
+> 
+> @@ -77,6 +77,11 @@ void __dump_page(struct page *page, const char *reason)
+>                  pr_warn("page:%px refcount:%d mapcount:%d mapping:%px index:%#lx
+> \n",
+>                          page, page_ref_count(page), mapcount,
+>                          page->mapping, page_to_pgoff(page));
+> +       if (PageTail(page)) {
+> +               struct page *head = compound_head(page);
+> +               pr_warn("head:%px mapping:%px index:%#lx\n",
+> +                       head, head->mapping, page_to_pgoff(head));
+> +       }
+>          if (PageKsm(page))
+>                  pr_warn("ksm flags: %#lx(%pGp)\n", page->flags, &page->flags);
+>          else if (PageAnon(page))
+> 
+> I wonder if we can combine these two patches in some more useful way?
+> 
+> I also think we probably want a sanity check that 'head' and 'page'
+> are within a sane range of each other (ie head < page and head +
+> MAX_ORDER_NR_PAGES > page) to protect against a struct page that contains
+> complete garbage.
+> 
+
+OK, here's a go at combining those. I like the observation, implicit in your
+diffs, that PageTail rather than PageCompound is the key differentiator in
+deciding what to print. How's this look:
+
+diff --git a/mm/debug.c b/mm/debug.c
+index a90da5337c14..944652843e7b 100644
+--- a/mm/debug.c
++++ b/mm/debug.c
+@@ -75,12 +75,31 @@ void __dump_page(struct page *page, const char *reason)
+  	 */
+  	mapcount = PageSlab(page) ? 0 : page_mapcount(page);
+  
+-	if (PageCompound(page))
+-		pr_warn("page:%px refcount:%d mapcount:%d mapping:%px "
+-			"index:%#lx compound_mapcount: %d\n",
+-			page, page_ref_count(page), mapcount,
+-			page->mapping, page_to_pgoff(page),
+-			compound_mapcount(page));
++	if (PageTail(page)) {
++		struct page *head = compound_head(page);
++
++		if ((page < head) || (page >= head + MAX_ORDER_NR_PAGES)) {
++			/*
++			 * Page is hopelessly corrupted, so limit any reporting
++			 * to information about the page itself. Do not attempt
++			 * to look at the head page.
++			 */
++			pr_warn("page:%px refcount:%d mapcount:%d mapping:%px "
++				"index:%#lx (corrupted tail page case)\n",
++				page, page_ref_count(page), mapcount,
++				page->mapping, page_to_pgoff(page));
++		} else {
++			pr_warn("page:%px compound refcount:%d mapcount:%d "
++				"mapping:%px index:%#lx compound_mapcount:%d\n",
++				page, page_ref_count(head),
++				mapcount, head->mapping, page_to_pgoff(head),
++				compound_mapcount(page));
++
++			if (page_ref_count(page) != 0)
++				pr_warn("page:%px PROBLEM: non-zero refcount (==%d) on "
++					"this tail page\n", page, page_ref_count(page));
++		}
++	}
+  	else
+  		pr_warn("page:%px refcount:%d mapcount:%d mapping:%px index:%#lx\n",
+  			page, page_ref_count(page), mapcount,
+
+?
+
+Here's sample output for a normal page, a tail page, and a tail page with a bad
+(non-zero) refcount:
+
+============
+Normal page:
+============
+[   38.572084] page:ffffea0011465880 refcount:2 mapcount:1 mapping:ffff888454d99001 index:0xb2
+[   38.579256] anon flags: 0x17ffe0000080036(referenced|uptodate|lru|active|swapbacked)
+[   38.585799] raw: 017ffe0000080036 ffffea0011460fc8 ffffea0011466d08 ffff888454d99001
+[   38.592350] raw: 00000000000000b2 0000000000000000 0000000200000000 0000000000000000
+[   38.598885] page dumped because: test dump page
+
+
+==========
+Tail page:
+==========
+[   38.436384] page:ffffea0010aa0280 compound refcount:503 mapcount:1 mapping:ffff888455fb3399 index:0xa8 compound_mapcount:1
+[   38.446350] anon flags: 0x17ffe0000000000()
+[   38.449661] raw: 017ffe0000000000 ffffea0010aa0001 ffffea0010aa0288 dead000000000400
+[   38.456228] raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
+[   38.462794] page dumped because: test dump page
+
+============================
+Tail page with bad refcount:
+============================
+[   38.466088] page:ffffea0010aa0b40 compound refcount:468 mapcount:1 mapping:ffff888455fb3399 index:0xa8 compound_mapcount:1
+[   38.475967] page:ffffea0010aa0b40 PROBLEM: non-zero refcount (==2) on this tail page
+[   38.482490] anon flags: 0x17ffe0000000000()
+[   38.485432] raw: 017ffe0000000000 ffffea0010aa0001 ffffea0010aa0b48 dead000000000400
+[   38.491996] raw: 0000000000000000 0000000000000000 00000002ffffffff 0000000000000000
+[   38.498532] page dumped because: test bad tail page refcount
+
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
