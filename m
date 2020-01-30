@@ -2,50 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF80914D653
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2020 07:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A8314D654
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2020 07:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725798AbgA3GFS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Jan 2020 01:05:18 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:33606 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725847AbgA3GFS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jan 2020 01:05:18 -0500
-Received: by mail-io1-f68.google.com with SMTP id z8so2713267ioh.0
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2020 22:05:16 -0800 (PST)
+        id S1725869AbgA3GGO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Jan 2020 01:06:14 -0500
+Received: from mail-io1-f66.google.com ([209.85.166.66]:43418 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725847AbgA3GGO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jan 2020 01:06:14 -0500
+Received: by mail-io1-f66.google.com with SMTP id n21so2635654ioo.10
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2020 22:06:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WXcNOpKnxQpFC9p0YtSCwY8vkC7znsJwRL+XlmQ08VU=;
-        b=SaAKjPj0F9scUqQeZ3LDM6NPcjp37pJBOmP4+DI0lQLwcEnmI6zsBi+QSH9VB2CXZo
-         fULAu1Y6rOBASW2zUbYvFzH/4JN53jkPCX6HnVZQNeIRRFLTHIkdBBi/vi+jfSb8Wbuo
-         pturiCXoQ7BlMrJmJkc8hY8SHBzgMenhYEV1o=
+        bh=nrb5RA3mMbj8GzTd6DqnMJj45qiHJLM7VyJR9YOAPHg=;
+        b=O6LuJg6KTGFue3ONddhXTVxRmRjOBJcPUjWDvsI9ZsPJWvCQuWjDUnqqJm13SSwsBt
+         XhF9soQ2vFSV2Z2lUl8cFF1BNlEMxxhyh/WizNjkBbWafHaQIME3eq8g+DG2bqc/G2fN
+         YoCvntELOtZ53CliFb16/C1x/vnOE+Kdkytu0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WXcNOpKnxQpFC9p0YtSCwY8vkC7znsJwRL+XlmQ08VU=;
-        b=DFMSHb9Hfw0KDVFDVGzxV8glChUf7DkH+HQfPtKXGMVFd36bf4xuvxNTMAwVEvZOJF
-         d3NWtcrLz73Et+7LawKVlGSYEJm9b9NEzNV3JQ01B0XjkX9Ahh/H4HoIh8iTl3gPmaly
-         fwxWALxmsk1HhKUUxhoiFm4ZxMyG8bJPyCDWWHziUljsb6yAnYqqMHLLcTgzjMVhUS6C
-         VcoHejGc9szEpT/29EEvJSTavD6AVufkJZtqkjTDndkZcnCpX5IrdR2OVNoRCR2woMN7
-         sjCrPLI5Cb7YZYHRTmx69GrGuU8Hlhe4mDkpd5LIpvXERKgLy6PLhmKyG/m9xWjCMJpG
-         OIJQ==
-X-Gm-Message-State: APjAAAWtpjM72FYvlaBk/DPCuA/Ue0egLxknnFMnOMAD78iWga/WRGHa
-        lCSRBvJjizkpxcLDARm+pNtYJohlJtftTpiBYlP/yQ==
-X-Google-Smtp-Source: APXvYqyebzgCO9DNj4cbxood9Rg9DwxjqSjuP0aJjjHXKVl5PsYwaGTkqZpBuxKmQ4WVd4PapCj4cGPtk/Rzj94oDXI=
-X-Received: by 2002:a6b:7113:: with SMTP id q19mr2818850iog.87.1580364316081;
- Wed, 29 Jan 2020 22:05:16 -0800 (PST)
+        bh=nrb5RA3mMbj8GzTd6DqnMJj45qiHJLM7VyJR9YOAPHg=;
+        b=iJnyU7aXjvSMZTAekbmlw/FzCxyPea7P/kHJB+WyiTHGPQ0rS1fY2dVU1S0/7Z1ZYP
+         +yLu5V5j5/JDxZ9FLosMl7CWJwwYQtSZMrecWBwLozIlmd7U2LaSFUsYSoFsx7v+/dnt
+         LbGAAUeiIiUf+o+w+fY4eObCR92T0d0TkRjFFu3IF5Bh64ud7RJAhceKDjsSoD9B17/K
+         jueU+IOFBgUGDFutHs1ntDmo02gglLf18RtpnsaFRVTPdLr6cPjVO1qHO3gVAFuTiMjF
+         dG8Khzy1HRMElN6XVGIoVUwwCDempSCrnsmFNvPK9Q/Gs4J2pNqC+pUaco5FZVg+GbUd
+         eu3A==
+X-Gm-Message-State: APjAAAVPDEYpmsDYVOA9ojvh8hkzFSNBwZlkWbnWaxhT3GvLq43DZ4vA
+        WBk0V7smxg+xxnE7duv7jT4xP0fXE8PzGZCa3MXmTw==
+X-Google-Smtp-Source: APXvYqxEr/6snlI7WyMDQhbOyEpC9uGA5piskfJPwFuIdvAKjrthL4r+e7TAy0S7d2EK41gWmBlF0n+oUlJtzgRWywQ=
+X-Received: by 2002:a6b:6604:: with SMTP id a4mr2890031ioc.300.1580364373425;
+ Wed, 29 Jan 2020 22:06:13 -0800 (PST)
 MIME-Version: 1.0
 References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
- <1579845165-18002-2-git-send-email-devesh.sharma@broadcom.com>
- <20200125174645.GC4616@mellanox.com> <CANjDDBht4vTzkrRH1L9_9CquvsfRwo6VmPb6FFT2HNzkkh0H0w@mail.gmail.com>
-In-Reply-To: <CANjDDBht4vTzkrRH1L9_9CquvsfRwo6VmPb6FFT2HNzkkh0H0w@mail.gmail.com>
+ <1579845165-18002-3-git-send-email-devesh.sharma@broadcom.com>
+ <20200125180252.GD4616@mellanox.com> <CANjDDBiSLY55v=cA+gMC6QFAqxUxiiFCy3y3_Rw9vF+v40LgDQ@mail.gmail.com>
+ <20200128201548.GO21192@mellanox.com>
+In-Reply-To: <20200128201548.GO21192@mellanox.com>
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Thu, 30 Jan 2020 11:34:39 +0530
-Message-ID: <CANjDDBjcrfBvGk=THyqiqhOPS0-xzLrnCUc5=A98j=pfPJbtsA@mail.gmail.com>
-Subject: Re: [PATCH for-next 1/7] RDMA/bnxt_re: Refactor queue pair creation code
+Date:   Thu, 30 Jan 2020 11:35:37 +0530
+Message-ID: <CANjDDBh8tb26ECCszf1PkJJemZZPOMGqMSdd8h_Do_ytmxT0=A@mail.gmail.com>
+Subject: Re: [PATCH for-next 2/7] RDMA/bnxt_re: Replace chip context structure
+ with pointer
 To:     Jason Gunthorpe <jgg@mellanox.com>
 Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "dledford@redhat.com" <dledford@redhat.com>
@@ -55,89 +57,49 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 27, 2020 at 1:43 PM Devesh Sharma
-<devesh.sharma@broadcom.com> wrote:
+On Wed, Jan 29, 2020 at 1:45 AM Jason Gunthorpe <jgg@mellanox.com> wrote:
 >
-> On Sat, Jan 25, 2020 at 11:16 PM Jason Gunthorpe <jgg@mellanox.com> wrote:
-> >
-> > On Fri, Jan 24, 2020 at 12:52:39AM -0500, Devesh Sharma wrote:
-> > > +static int bnxt_re_destroy_gsi_sqp(struct bnxt_re_qp *qp)
-> > > +{
-> > > +     struct bnxt_re_qp *gsi_sqp;
-> > > +     struct bnxt_re_ah *gsi_sah;
-> > > +     struct bnxt_re_dev *rdev;
-> > > +     int rc = 0;
-> > > +
-> > > +     rdev = qp->rdev;
-> > > +     gsi_sqp = rdev->gsi_ctx.gsi_sqp;
-> > > +     gsi_sah = rdev->gsi_ctx.gsi_sah;
-> > > +
-> > > +     /* remove from active qp list */
-> > > +     mutex_lock(&rdev->qp_lock);
-> > > +     list_del(&gsi_sqp->list);
-> > > +     atomic_dec(&rdev->qp_count);
-> > > +     mutex_unlock(&rdev->qp_lock);
-> > > +
-> > > +     dev_dbg(rdev_to_dev(rdev), "Destroy the shadow AH\n");
-> > > +     bnxt_qplib_destroy_ah(&rdev->qplib_res,
-> > > +                           &gsi_sah->qplib_ah,
-> > > +                           true);
-> > > +     bnxt_qplib_clean_qp(&qp->qplib_qp);
-> > > +
-> > > +     dev_dbg(rdev_to_dev(rdev), "Destroy the shadow QP\n");
-> > > +     rc = bnxt_qplib_destroy_qp(&rdev->qplib_res, &gsi_sqp->qplib_qp);
-> > > +     if (rc) {
-> > > +             dev_err(rdev_to_dev(rdev), "Destroy Shadow QP failed");
-> > > +             goto fail;
-> > > +     }
-> > > +     bnxt_qplib_free_qp_res(&rdev->qplib_res, &gsi_sqp->qplib_qp);
-> > > +
-> > > +     kfree(rdev->gsi_ctx.sqp_tbl);
-> > > +     kfree(gsi_sah);
-> > > +     kfree(gsi_sqp);
-> > > +     rdev->gsi_ctx.gsi_sqp = NULL;
-> > > +     rdev->gsi_ctx.gsi_sah = NULL;
-> > > +     rdev->gsi_ctx.sqp_tbl = NULL;
-> > > +
-> > > +     return 0;
-> > > +fail:
-> > > +     mutex_lock(&rdev->qp_lock);
-> > > +     list_add_tail(&gsi_sqp->list, &rdev->qp_list);
-> > > +     atomic_inc(&rdev->qp_count);
-> > > +     mutex_unlock(&rdev->qp_lock);
-> > > +     return rc;
-> >
-> > This error unwind approach looks racy. destroy is not allowed to
-> > fail, so why all this mess?
-> True, the unwind is not required, even if the driver wants to keep it
-> for debugging purpose, the zombie resource would give rise to
-> confusion.
-> >
-> > >  /* Queue Pairs */
-> > >  int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
-> > >  {
-> > > @@ -750,10 +797,18 @@ int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
-> > >       unsigned int flags;
-> > >       int rc;
+> On Mon, Jan 27, 2020 at 01:09:46PM +0530, Devesh Sharma wrote:
+> > On Sat, Jan 25, 2020 at 11:33 PM Jason Gunthorpe <jgg@mellanox.com> wrote:
 > > >
-> > > +     mutex_lock(&rdev->qp_lock);
-> > > +     list_del(&qp->list);
-> > > +     atomic_dec(&rdev->qp_count);
-> > > +     mutex_unlock(&rdev->qp_lock);
-> > >       bnxt_qplib_flush_cqn_wq(&qp->qplib_qp);
-> > >       rc = bnxt_qplib_destroy_qp(&rdev->qplib_res, &qp->qplib_qp);
-> > >       if (rc) {
-> > >               dev_err(rdev_to_dev(rdev), "Failed to destroy HW QP");
-> > > +             mutex_lock(&rdev->qp_lock);
-> > > +             list_add_tail(&qp->list, &rdev->qp_list);
-> > > +             atomic_inc(&rdev->qp_count);
-> > > +             mutex_unlock(&rdev->qp_lock);
-> > >               return rc;
-> > >       }
-> >
-> > More..
-> Let me see if I can remove it in this series, else future series would
-> remove it.
-Done, removing unwind logic in V2.
-> >
-> > Jason
+> > > On Fri, Jan 24, 2020 at 12:52:40AM -0500, Devesh Sharma wrote:
+> > > >  static void bnxt_re_destroy_chip_ctx(struct bnxt_re_dev *rdev)
+> > > >  {
+> > > > +     struct bnxt_qplib_chip_ctx *chip_ctx;
+> > > > +
+> > > > +     if (!rdev->chip_ctx)
+> > > > +             return;
+> > > > +     chip_ctx = rdev->chip_ctx;
+> > > > +     rdev->chip_ctx = NULL;
+> > > >       rdev->rcfw.res = NULL;
+> > > >       rdev->qplib_res.cctx = NULL;
+> > > > +     kfree(chip_ctx);
+> > > >  }
+> > >
+> > > Are you sure this kfree is late enough? I couldn't deduce if it was
+> > > really safe to NULL chip_ctx here.
+> > With the current design its okay to free this here because
+> > bnxt_re_destroy_chip_ctx is indeed the last deallocation performed
+> > before ib_device_dealloc() in any exit path. Further, the call to
+> > bnxt_re_destroy_chip_ctx is protected by rtnl.
+> > following is the exit sequence anyewere in the driver control path
+> > bnxt_re_ib_unreg(rdev); --->> the last deallocation in this func is
+> > destroy_chip_ctx().
+> > bnxt_re_remove_one(rdev); -->> this is a single line function just to
+> > put pci device reference
+> > bnxt_re_dev_unreg(rdev); -->> the first deallocation in this func is
+> > ib_device_dealloc().
+>
+> It makes more sense to me to put all the memory deallocation together
+> in one place, then there is no concern about ordering.
+>
+> We now have the dealloc_driver callback for this purpose.
+>
+> It is not 'last deallocation' that matters, but what all the other
+> stuff is doing between destroy_chip_ctx() and ib_device_dealloc()
+As far as this series is concerned, driver is saving crashes however
+in a nasty way. I would like to move forward with what I have in this
+patch and submit a new patch series which would implement your
+suggestion.
+>
+> Jason
