@@ -2,124 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7F014D9C9
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2020 12:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5DF14D9D2
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2020 12:31:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbgA3LaD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Jan 2020 06:30:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726873AbgA3LaD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 30 Jan 2020 06:30:03 -0500
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EC67206D3;
-        Thu, 30 Jan 2020 11:30:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580383802;
-        bh=qB/A5PCQflQoXV4KMXaE57+er+ad/9I2EKNTZ3EP6OQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YvvbgGz5zFfIUd39MSZNVsegl1WMlcRg8zHWKHKOFUGm5BUS1LRr3DntQq7OGYFJj
-         GlXSPZdIEyAAAKDvV7vhiGpvBHfIfNN2JtfTawsf43rJkrTl5je4PvPTvxoZlM2wTx
-         ygxrKUDqiKMA1jo8jP050k7ifdfwlLcktp2IfKhs=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: [PATCH rdma-rc] RDMA/mlx5: Fix compilation breakage without INFINIBAND_USER_ACCESS
-Date:   Thu, 30 Jan 2020 13:29:57 +0200
-Message-Id: <20200130112957.337869-1-leon@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        id S1726873AbgA3LbV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Jan 2020 06:31:21 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:44131 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727036AbgA3LbV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jan 2020 06:31:21 -0500
+Received: by mail-lj1-f193.google.com with SMTP id q8so2901875ljj.11
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Jan 2020 03:31:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/EN520UCUxsEUBwp+gxS6OoGlcVQKRNBVBF0BZx9y+I=;
+        b=Tsy8nAO0PvaScoyPHxQ8u0Q+uBQzLnebXEkKCAg+P2fPtHalLWm98o3bNIETmJk5Ax
+         GIRK0uSiHJ59wddWXiQye/G8OPgZv2mm0LsDsZ2nZHJirH3IYNo46TkDYqgz5CMTQ1xw
+         3wr3AseYMfQDfaItEw9mxy6wVkEHMXK3pBatYbOrO+QJm5HvMdWQdcvT4UvyPjEjlV2I
+         c7o3jEmW8+sHIEpnAt1EMA8iI5ykE01yWc3XdnCvW/XjyKW71c9UFc0YbgGm38DCjXvU
+         4b7+TJJVVG8NR6O6Z0y2TSvGBoBUJu7xGq45uwGY0olDpcFxUsT1bVJAtVtVMKT7uqdU
+         My4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/EN520UCUxsEUBwp+gxS6OoGlcVQKRNBVBF0BZx9y+I=;
+        b=YpNxncZvH5CFV8fUtOqMsE2igNwF0VwJPLcCTAAdQYN0lOmMYJ2V4g9q3lWPQPl2Wr
+         Y6Q64K+KJAHbvoD8arwxwJJZ/HthIkEylHkGqFJ3dmQN9Cly55soH0Mkd+CKicoIHiRf
+         wywix3XSdD8m5d8055DdUNs+Wnrdd03TOGcIbNfCRovxvyh+IhArEjQYmETbGyIc1CRo
+         sE5SzQNs1LJMCr5FN8H2ffTBOOvncE7M60KmVfRKatEXm1l+INpC4B0xDLgYYC/GYmvM
+         EYDYpvfRx6ylvdXiDQbgjhKLMAnRBK4SolIJAt/1kU41yYZ4/jlWETngqOX1X0+RrgJ2
+         krRA==
+X-Gm-Message-State: APjAAAUY1vIaLCwnO1Sen15SzJ1USjXUONjhixWcRupgZuhRw1G1Quyh
+        pX805Rf+PO3a+aR7iAHqTe2+SA==
+X-Google-Smtp-Source: APXvYqzOfHleShWYEZ7+vculAYaLdAq1R8IjRRLv6oV11NywrAJ0QawfN5bbH06GtSQcqK2Wevv/Xw==
+X-Received: by 2002:a2e:9218:: with SMTP id k24mr2468907ljg.262.1580383878986;
+        Thu, 30 Jan 2020 03:31:18 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id u25sm2683666ljj.70.2020.01.30.03.31.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jan 2020 03:31:18 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id C35F8100B00; Thu, 30 Jan 2020 14:31:26 +0300 (+03)
+Date:   Thu, 30 Jan 2020 14:31:26 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v2 4/8] mm/gup: track FOLL_PIN pages
+Message-ID: <20200130113126.5ftq4gd5k7o7tipj@box>
+References: <20200129032417.3085670-1-jhubbard@nvidia.com>
+ <20200129032417.3085670-5-jhubbard@nvidia.com>
+ <20200129135153.knie7ptvsxcgube6@box>
+ <0be743df-e9af-6da9-c593-9e25ab194acf@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0be743df-e9af-6da9-c593-9e25ab194acf@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+On Wed, Jan 29, 2020 at 10:44:50PM -0800, John Hubbard wrote:
+> On 1/29/20 5:51 AM, Kirill A. Shutemov wrote:
+> > > +/**
+> > > + * page_dma_pinned() - report if a page is pinned for DMA.
+> > > + *
+> > > + * This function checks if a page has been pinned via a call to
+> > > + * pin_user_pages*().
+> > > + *
+> > > + * For non-huge pages, the return value is partially fuzzy: false is not fuzzy,
+> > > + * because it means "definitely not pinned for DMA", but true means "probably
+> > > + * pinned for DMA, but possibly a false positive due to having at least
+> > > + * GUP_PIN_COUNTING_BIAS worth of normal page references".
+> > > + *
+> > > + * False positives are OK, because: a) it's unlikely for a page to get that many
+> > > + * refcounts, and b) all the callers of this routine are expected to be able to
+> > > + * deal gracefully with a false positive.
+> > 
+> > I wounder if we should reverse the logic and name -- page_not_dma_pinned()
+> > or something -- too emphasise that we can only know for sure when the page
+> > is not pinned, but not necessary when it is.
+> > 
+> 
+> This is an interesting point. I agree that it's worth maybe adding information
+> into the function name, but I'd like to keep the bool "positive", because there
+> will be a number of callers that ask "if it is possibly dma-pinned, then ...".
+> So combining that, how about this function name:
+> 
+> 	page_maybe_dma_pinned()
+> 
+> , which I could live with and I think would be acceptable?
 
-Compilation of mlx5 driver without CONFIG_INFINIBAND_USER_ACCESS generates
-the following error.
+I would still prefer the negative version, but up to you.
 
-on x86_64:
+> > I see opportunity to split the patch further.
+> 
+> 
+> ah, OK. I wasn't sure how far to go before I get tagged for "excessive
+> patch splitting"! haha. Anyway, are you suggesting to put the
+> page_ref_sub_return() routine into it's own patch?
+> 
+> Another thing to split out would be adding the flags to the remaining
+> functions, such as undo_dev_pagemap(). That burns quite a few lines of
+> diff. Anything else to split out?
 
-ld: drivers/infiniband/hw/mlx5/main.o: in function `mlx5_ib_handler_MLX5_IB_METHOD_VAR_OBJ_ALLOC':
-main.c:(.text+0x186d): undefined reference to `ib_uverbs_get_ucontext_file'
-ld: drivers/infiniband/hw/mlx5/main.o:(.rodata+0x2480): undefined reference to `uverbs_idr_class'
-ld: drivers/infiniband/hw/mlx5/main.o:(.rodata+0x24d8): undefined reference to `uverbs_destroy_def_handler'
+Nothing I see immediately.
 
-Guard the problematic code, so VAR objects API won't be compiled without CONFIG_INFINIBAND_USER_ACCESS.
+> 
+> > > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > > index 0a55dec68925..b1079aaa6f24 100644
+> > > --- a/mm/huge_memory.c
+> > > +++ b/mm/huge_memory.c
+> > > @@ -958,6 +958,11 @@ struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
+> > >   	 */
+> > >   	WARN_ONCE(flags & FOLL_COW, "mm: In follow_devmap_pmd with FOLL_COW set");
+> > > +	/* FOLL_GET and FOLL_PIN are mutually exclusive. */
+> > > +	if (WARN_ON_ONCE((flags & (FOLL_PIN | FOLL_GET)) ==
+> > > +			 (FOLL_PIN | FOLL_GET)))
+> > 
+> > Too many parentheses.
+> 
+> 
+> OK, I'll remove at least one. :)
 
-Fixes: 7be76bef320b ("IB/mlx5: Introduce VAR object and its alloc/destroy methods")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/mlx5/main.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+I see two.
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 41ccc19d229e..c2afe6929cbb 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -2280,15 +2280,6 @@ static int mlx5_ib_mmap_offset(struct mlx5_ib_dev *dev,
- 	return ret;
- }
-
--static u64 mlx5_entry_to_mmap_offset(struct mlx5_user_mmap_entry *entry)
--{
--	u16 cmd = entry->rdma_entry.start_pgoff >> 16;
--	u16 index = entry->rdma_entry.start_pgoff & 0xFFFF;
--
--	return (((index >> 8) << 16) | (cmd << MLX5_IB_MMAP_CMD_SHIFT) |
--		(index & 0xFF)) << PAGE_SHIFT;
--}
--
- static int mlx5_ib_mmap(struct ib_ucontext *ibcontext, struct vm_area_struct *vma)
- {
- 	struct mlx5_ib_ucontext *context = to_mucontext(ibcontext);
-@@ -6085,6 +6076,16 @@ static void mlx5_ib_cleanup_multiport_master(struct mlx5_ib_dev *dev)
- 	mlx5_nic_vport_disable_roce(dev->mdev);
- }
-
-+#if IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS)
-+static u64 mlx5_entry_to_mmap_offset(struct mlx5_user_mmap_entry *entry)
-+{
-+	u16 cmd = entry->rdma_entry.start_pgoff >> 16;
-+	u16 index = entry->rdma_entry.start_pgoff & 0xFFFF;
-+
-+	return (((index >> 8) << 16) | (cmd << MLX5_IB_MMAP_CMD_SHIFT) |
-+		(index & 0xFF)) << PAGE_SHIFT;
-+}
-+
- static int var_obj_cleanup(struct ib_uobject *uobject,
- 			   enum rdma_remove_reason why,
- 			   struct uverbs_attr_bundle *attrs)
-@@ -6223,6 +6224,7 @@ static bool var_is_supported(struct ib_device *device)
- 	return (MLX5_CAP_GEN_64(dev->mdev, general_obj_types) &
- 			MLX5_GENERAL_OBJ_TYPES_CAP_VIRTIO_NET_Q);
- }
-+#endif
-
- ADD_UVERBS_ATTRIBUTES_SIMPLE(
- 	mlx5_ib_dm,
-@@ -6254,8 +6256,10 @@ static const struct uapi_definition mlx5_ib_defs[] = {
- 	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_FLOW_ACTION,
- 				&mlx5_ib_flow_action),
- 	UAPI_DEF_CHAIN_OBJ_TREE(UVERBS_OBJECT_DM, &mlx5_ib_dm),
-+#if IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS)
- 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(MLX5_IB_OBJECT_VAR,
- 				UAPI_DEF_IS_OBJ_SUPPORTED(var_is_supported)),
-+#endif
- 	{}
- };
-
---
-2.24.1
-
+-- 
+ Kirill A. Shutemov
