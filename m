@@ -2,138 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 329D314D351
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2020 00:00:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8511914D652
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2020 07:05:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgA2XAP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Jan 2020 18:00:15 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:50752 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726401AbgA2XAP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Jan 2020 18:00:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=PK0g+/3O99lm08wVW89CDaU61bRcrU5br3+oiXW0Ri8=; b=NNmcNFI/+NovGu/ALrhlYSdMk
-        iMh/bxDYsf89LTuLM0oYbWjkx8BUoLx9CJ5yP5DmLsua+ZgtQFpZBZw+t46d4ItZbXS07hR4u9c4c
-        fzBY/MSHIT6SGgyRZc45kkRkbMW1kbyCb20Y/ZfoWmJ7X0yFRULFsY0EI/E6cVBx2ZlfXoWxiXKdG
-        Jvcfw2J/lFYJ7R3kySyPktPeHl96BFh9aeR4Orbz6FNEUCmrl22IF4LnWM1KYyXwAkPyUgHD79h41
-        BxHK1Mq+iogUJwdXU4cOT+8uYbU5DwlmanyV6QRL8Wgt7gSmijtdjgeCTOv4DQSIzDd9ZlFCVUF1x
-        Bq/iau1ow==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iwwJR-000199-9a; Wed, 29 Jan 2020 22:59:57 +0000
-Date:   Wed, 29 Jan 2020 14:59:57 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/8] mm: dump_page: print head page's refcount, for
- compound pages
-Message-ID: <20200129225957.GH6615@bombadil.infradead.org>
-References: <20200129032417.3085670-1-jhubbard@nvidia.com>
- <20200129032417.3085670-2-jhubbard@nvidia.com>
- <20200129112510.ulims6u36ofk2qwa@box>
- <b74e8aa9-fcfd-0340-594c-61f185a0ae65@nvidia.com>
+        id S1725865AbgA3GFN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Jan 2020 01:05:13 -0500
+Received: from mail-il1-f193.google.com ([209.85.166.193]:34884 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725847AbgA3GFN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jan 2020 01:05:13 -0500
+Received: by mail-il1-f193.google.com with SMTP id g12so2107439ild.2
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Jan 2020 22:05:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yIo/MVYk7IdBn5Jp+k6hflssVClGHGjOFXzQtXEiXkg=;
+        b=YkuT0xc6uSlbFdjVHqL6EcdDyHORMR83b1/+UFy1CnZ0cfvYxvgPwr36DqEI61B5iR
+         X+1E0v7txRDOXAjTgCMd/V7KW2UyW1Iiakbh2xPjUc4nJd27piGwW7rTGsZ0O4ingNBc
+         w+z+lEplol01wVqVkNkf6WCljnc8/etFRwKcc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yIo/MVYk7IdBn5Jp+k6hflssVClGHGjOFXzQtXEiXkg=;
+        b=eufEPl40HJqomA9oEgtV+soHbAvL73EKTZygbjLEnYyl1cm7KzrSQn58XwUFTAvgQP
+         jO+xeSIIqAHDoVut1YyPc4rqmTFKc8NynAPGc6gZ3QSUs6B7bexR3BUQTTPWjfad/UyZ
+         kviFK0ZIYYyJj+dQ1077kXmMYsrhQDQIG9mUGcxnmLgl5nGlRSHhRHpcAIE86HGA+WLN
+         Rk8H16WMg55iuTgN0rKyjantyf03RIXL3tX5+3gmEg8KpepfRp0TPSk1wLPk5FwQtHQf
+         LXB4+oRBk+0VzzTP/ZZoJdZprmPmpTvefc02kIWRhMCqPfMFkcKN+p00CccaiAkdwKsq
+         cKPQ==
+X-Gm-Message-State: APjAAAXka6pFzPYUVaiYrOzExh4evdIlayk01+qouv6yI5cwUoSbDebK
+        3wfragG74lGu4295OmKEwdhSkw+E5zaEwow8TIUtWUj5zkI=
+X-Google-Smtp-Source: APXvYqzcIX0fz4XVdm0ALjd0Fnc6ccEYTk7VjHwIkofdNRw/rrX0a5jLnW9Z3qcMuXxHETfCW7EsR92PBvHNdm501BQ=
+X-Received: by 2002:a92:c703:: with SMTP id a3mr2786063ilp.89.1580364312470;
+ Wed, 29 Jan 2020 22:05:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b74e8aa9-fcfd-0340-594c-61f185a0ae65@nvidia.com>
+References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
+ <1579845165-18002-2-git-send-email-devesh.sharma@broadcom.com>
+ <20200124112347.GA35595@unreal> <CANjDDBjJygjcbbwDFtwVS--GF5YtYAiZL78_jiqHf+TMkQ7j+g@mail.gmail.com>
+ <20200125185045.GB2993@unreal> <CANjDDBh=v2xzx42uX+VkBstBdeBptDrL0wMg2UgL6nUigd3qmA@mail.gmail.com>
+In-Reply-To: <CANjDDBh=v2xzx42uX+VkBstBdeBptDrL0wMg2UgL6nUigd3qmA@mail.gmail.com>
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+Date:   Thu, 30 Jan 2020 11:34:35 +0530
+Message-ID: <CANjDDBga=DX9kGySOvJbinKXifaCOUahZxETJZp1h++BhzBckw@mail.gmail.com>
+Subject: Re: [PATCH for-next 1/7] RDMA/bnxt_re: Refactor queue pair creation code
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 29, 2020 at 02:26:06PM -0800, John Hubbard wrote:
-> On 1/29/20 3:25 AM, Kirill A. Shutemov wrote:
-> > On Tue, Jan 28, 2020 at 07:24:10PM -0800, John Hubbard wrote:
-> >> When debugging a problem that involves compound pages, it is extremely
-> >> helpful if dump_page() reports not only the page->_refcount, but also
-> >> the refcount of the head page of the compound page. That's because the
-> >> head page collects refcounts for the entire compound page.
-> >>
-> >> Therefore, enhance dump_page() so as to print out the refcount of the
-> >> head page of a compound page.
-> >>
-> >> This approach (printing information about a struct page that is not the
-> >> struct page that was passed into dump_page()) has a precedent:
-> >> compound_mapcount is already being printed.
-> > 
-> > refcount on a tail must always be 0. I think we should only print it when
-> > it is non-zero, emphasizing this fact with a standalone message.
-> > 
-> 
-> Hi Kirill,
-> 
-> Yes, good point, that sounds like just the right balance. And it avoids adding 
-> a new item to print in the common case, which is very nice. Here's what I've
-> changed it to for the next version (I'll also rewrite the commit description 
-> accordingly):
-> 
-> 
-> diff --git a/mm/debug.c b/mm/debug.c
-> index a90da5337c14..3a45e2b77de0 100644
-> --- a/mm/debug.c
-> +++ b/mm/debug.c
-> @@ -75,12 +75,17 @@ void __dump_page(struct page *page, const char *reason)
->  	 */
->  	mapcount = PageSlab(page) ? 0 : page_mapcount(page);
->  
-> -	if (PageCompound(page))
-> -		pr_warn("page:%px refcount:%d mapcount:%d mapping:%px "
-> -			"index:%#lx compound_mapcount: %d\n",
-> -			page, page_ref_count(page), mapcount,
-> +	if (PageCompound(page)) {
-> +		pr_warn("page:%px compound refcount:%d mapcount:%d mapping:%px "
-> +			"index:%#lx compound_mapcount:%d\n",
-> +			page, page_ref_count(compound_head(page)), mapcount,
->  			page->mapping, page_to_pgoff(page),
->  			compound_mapcount(page));
-> +
-> +		if (page != compound_head(page) && page_ref_count(page) != 0)
-> +			pr_warn("page:%px PROBLEM: non-zero refcount (==%d) on "
-> +				"this tail page\n", page, page_ref_count(page));
-> +	}
->  	else
->  		pr_warn("page:%px refcount:%d mapcount:%d mapping:%px index:%#lx\n",
->  			page, page_ref_count(page), mapcount,
-
-I have a hunk in my current tree which looks like this:
-
-@@ -77,6 +77,11 @@ void __dump_page(struct page *page, const char *reason)
-                pr_warn("page:%px refcount:%d mapcount:%d mapping:%px index:%#lx
-\n",
-                        page, page_ref_count(page), mapcount,
-                        page->mapping, page_to_pgoff(page));
-+       if (PageTail(page)) {
-+               struct page *head = compound_head(page);
-+               pr_warn("head:%px mapping:%px index:%#lx\n",
-+                       head, head->mapping, page_to_pgoff(head));
-+       }
-        if (PageKsm(page))
-                pr_warn("ksm flags: %#lx(%pGp)\n", page->flags, &page->flags);
-        else if (PageAnon(page))
-
-I wonder if we can combine these two patches in some more useful way?
-
-I also think we probably want a sanity check that 'head' and 'page'
-are within a sane range of each other (ie head < page and head +
-MAX_ORDER_NR_PAGES > page) to protect against a struct page that contains
-complete garbage.
+On Mon, Jan 27, 2020 at 1:09 PM Devesh Sharma
+<devesh.sharma@broadcom.com> wrote:
+>
+> On Sun, Jan 26, 2020 at 12:20 AM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Sat, Jan 25, 2020 at 10:33:41PM +0530, Devesh Sharma wrote:
+> > > On Fri, Jan 24, 2020 at 4:53 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > On Fri, Jan 24, 2020 at 12:52:39AM -0500, Devesh Sharma wrote:
+> > > > > Restructuring the bnxt_re_create_qp function. Listing below
+> > > > > the major changes:
+> > > > >  --Monolithic central part of create_qp where attributes are
+> > > > >    initialized is now enclosed in one function and this new
+> > > > >    function has few more sub-functions.
+> > > > >  --Top level qp limit checking code moved to a function.
+> > > > >  --GSI QP creation and GSI Shadow qp creation code is handled
+> > > > >    in a sub function.
+> > > > >
+> > > > > Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
+> > > > > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> > > > > Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+> > > > > ---
+> > > > >  drivers/infiniband/hw/bnxt_re/bnxt_re.h  |  13 +-
+> > > > >  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 635 ++++++++++++++++++++-----------
+> > > > >  drivers/infiniband/hw/bnxt_re/main.c     |   3 +-
+> > > > >  3 files changed, 434 insertions(+), 217 deletions(-)
+> > > > >
+> > > >
+> > > > Please remove dev_err/dev_dbg/dev_* prints from the driver code.
+> > > Sure I can do that, are you suggesting to add one more patch in this series?
+> > > I guess it should be okay to follow the hw/efa way to  have debug msgs still on.
+> >
+> > It is ok to use ibdev_* prints, it is not ok to use dev_* prints.
+> Okay, I will add a new patch to this series
+> >
+> > Thanks
+> >
+Done added a new patch in V2 of this series.
+> > > >
+> > > >
+> > > > Thanks
