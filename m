@@ -2,149 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5DF14D9D2
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2020 12:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8162114DC16
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2020 14:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgA3LbV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Jan 2020 06:31:21 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:44131 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727036AbgA3LbV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jan 2020 06:31:21 -0500
-Received: by mail-lj1-f193.google.com with SMTP id q8so2901875ljj.11
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Jan 2020 03:31:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/EN520UCUxsEUBwp+gxS6OoGlcVQKRNBVBF0BZx9y+I=;
-        b=Tsy8nAO0PvaScoyPHxQ8u0Q+uBQzLnebXEkKCAg+P2fPtHalLWm98o3bNIETmJk5Ax
-         GIRK0uSiHJ59wddWXiQye/G8OPgZv2mm0LsDsZ2nZHJirH3IYNo46TkDYqgz5CMTQ1xw
-         3wr3AseYMfQDfaItEw9mxy6wVkEHMXK3pBatYbOrO+QJm5HvMdWQdcvT4UvyPjEjlV2I
-         c7o3jEmW8+sHIEpnAt1EMA8iI5ykE01yWc3XdnCvW/XjyKW71c9UFc0YbgGm38DCjXvU
-         4b7+TJJVVG8NR6O6Z0y2TSvGBoBUJu7xGq45uwGY0olDpcFxUsT1bVJAtVtVMKT7uqdU
-         My4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/EN520UCUxsEUBwp+gxS6OoGlcVQKRNBVBF0BZx9y+I=;
-        b=YpNxncZvH5CFV8fUtOqMsE2igNwF0VwJPLcCTAAdQYN0lOmMYJ2V4g9q3lWPQPl2Wr
-         Y6Q64K+KJAHbvoD8arwxwJJZ/HthIkEylHkGqFJ3dmQN9Cly55soH0Mkd+CKicoIHiRf
-         wywix3XSdD8m5d8055DdUNs+Wnrdd03TOGcIbNfCRovxvyh+IhArEjQYmETbGyIc1CRo
-         sE5SzQNs1LJMCr5FN8H2ffTBOOvncE7M60KmVfRKatEXm1l+INpC4B0xDLgYYC/GYmvM
-         EYDYpvfRx6ylvdXiDQbgjhKLMAnRBK4SolIJAt/1kU41yYZ4/jlWETngqOX1X0+RrgJ2
-         krRA==
-X-Gm-Message-State: APjAAAUY1vIaLCwnO1Sen15SzJ1USjXUONjhixWcRupgZuhRw1G1Quyh
-        pX805Rf+PO3a+aR7iAHqTe2+SA==
-X-Google-Smtp-Source: APXvYqzOfHleShWYEZ7+vculAYaLdAq1R8IjRRLv6oV11NywrAJ0QawfN5bbH06GtSQcqK2Wevv/Xw==
-X-Received: by 2002:a2e:9218:: with SMTP id k24mr2468907ljg.262.1580383878986;
-        Thu, 30 Jan 2020 03:31:18 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id u25sm2683666ljj.70.2020.01.30.03.31.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jan 2020 03:31:18 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id C35F8100B00; Thu, 30 Jan 2020 14:31:26 +0300 (+03)
-Date:   Thu, 30 Jan 2020 14:31:26 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v2 4/8] mm/gup: track FOLL_PIN pages
-Message-ID: <20200130113126.5ftq4gd5k7o7tipj@box>
-References: <20200129032417.3085670-1-jhubbard@nvidia.com>
- <20200129032417.3085670-5-jhubbard@nvidia.com>
- <20200129135153.knie7ptvsxcgube6@box>
- <0be743df-e9af-6da9-c593-9e25ab194acf@nvidia.com>
+        id S1727241AbgA3NiC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Jan 2020 08:38:02 -0500
+Received: from mail-eopbgr80070.outbound.protection.outlook.com ([40.107.8.70]:17730
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727228AbgA3NiC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 Jan 2020 08:38:02 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cceoRywM5vYYTePqbDBaeyt6jehAN1cFVEOBFYcaiV6GlofKmPDkQkXitXxNWBO5ooXLAtMG9Z8mETndrlF1ozXWq7BNYcb+JHH3WkRh3UA7POsLXqixC0qqiwZthsFDuve18ExGqc6ATefojUvQZljZC+ihV4Yy7JX0slNbJcltwbtWJ/1OuYgJGm3QrtiAsh+4gTESw9spU8TyRRAKpbt3KsvtFQQhBWuVdSTQ5Wp0fpzk4hoaf+XZI9T03NrFnlbMXhFg1vL+0n6rjb+Sde5q4EDi5FTqWatTPtu97HNlkPyF7z9szdNVsl402TUe4Qpal03n8tgJZPaXmqP6KA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zv5WI/j7tahiWToZTf1jvqizSscXaYxo8ZLilxsj0yA=;
+ b=nNU3+AR8BNlWjm0N51S+ac/uz059NMhroXX+l94yw+9KeQxJ327pW5tfyrr7dmwzBbNlDzIXf1vYT/q+unnEto/eQOQNKXiJn7L93m9xrMIdQiAs9TozTGydtr/keUWHZw8kIyVMU7PbjxE9JB9ceuIWl3MqPbiHwT+z3aDszr6ykE3m91hC+KSRzUQO100gwAHVDq/j6Mt5QB7w2Fqrcrg1PjVREhXZcb/NM+2cToG0icSwqAgec1x0wXIV+STG/owdd9o4uB1OAl3ei7ZICyiJgGFB1deu4CS9pGy9saz9KGF6wwTz5D9ats8E5wpgfQ4ecMhBsJtVo/g439v+Zg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zv5WI/j7tahiWToZTf1jvqizSscXaYxo8ZLilxsj0yA=;
+ b=YkN88P4WedNNLdYJ6hzXXhDcBttLb9gN0G91xo6195kCDh6lbNbO0mN7VwXAQGwqj9dz0Ar4dVFsm4I/Km6bILAZt+vlmXY6BVGMLLSUfRRZ1S4aTw8g7BTpuutk3BPeK+mxIcwWrdlL75pWdJsK+fegiR81cMgZ9Qd92OSFdbw=
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
+ AM0SPR01MB0085.eurprd05.prod.outlook.com (10.186.191.216) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2686.26; Thu, 30 Jan 2020 13:37:58 +0000
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::445c:4a14:1020:2346]) by AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::445c:4a14:1020:2346%7]) with mapi id 15.20.2665.027; Thu, 30 Jan 2020
+ 13:37:58 +0000
+From:   Parav Pandit <parav@mellanox.com>
+To:     Devesh Sharma <devesh.sharma@broadcom.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     Jason Gunthorpe <jgg@mellanox.com>,
+        "dledford@redhat.com" <dledford@redhat.com>
+Subject: RE: [PATCH for-next 1/7] RDMA/bnxt_re: Refactor queue pair creation
+ code
+Thread-Topic: [PATCH for-next 1/7] RDMA/bnxt_re: Refactor queue pair creation
+ code
+Thread-Index: AQHV0nqJgloWrcIIhEyENi/xgAmxcqgDP4+A
+Date:   Thu, 30 Jan 2020 13:37:58 +0000
+Message-ID: <AM0PR05MB48669BE3D4E5939ABFCADA1FD1040@AM0PR05MB4866.eurprd05.prod.outlook.com>
+References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
+ <1579845165-18002-2-git-send-email-devesh.sharma@broadcom.com>
+In-Reply-To: <1579845165-18002-2-git-send-email-devesh.sharma@broadcom.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=parav@mellanox.com; 
+x-originating-ip: [106.51.31.117]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c81c1fe5-9413-48bb-6729-08d7a5899eae
+x-ms-traffictypediagnostic: AM0SPR01MB0085:|AM0SPR01MB0085:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0SPR01MB0085138F3F6032A06752D39CD1040@AM0SPR01MB0085.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 02981BE340
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(366004)(136003)(346002)(376002)(396003)(199004)(189003)(4744005)(186003)(26005)(6506007)(55236004)(54906003)(316002)(110136005)(33656002)(7696005)(76116006)(64756008)(66556008)(66476007)(66946007)(66446008)(71200400001)(55016002)(9686003)(478600001)(4326008)(86362001)(8676002)(52536014)(81166006)(8936002)(81156014)(2906002)(5660300002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0SPR01MB0085;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pZVSzwnK1OcPBKkFtiZ2VeO7cpHHLax8yi46ufacal/4VXJ6+Pk2sL9WPksjuX2nFFj24+GtHBFJ1ir082vQGhH3tMGW6NfEr5Zr1+SW2Kxv/0JGbYHH5i7CEyLvq9WLYWLiQTO2SzC6M+Fh+f2pbcw7GtkqvdOajviOwQ1+LrlIQdArIkbBNS21VsKvT/ikEfWkW7l9I2iTdvUl+ovEBezyn6XJtRLlnGwh+2Fjt/Z3VezUMxlGjWJKeA4pr5TQECKsVPlk8B8Ed2Xjkuhyb76g1rm2WcGK548OM685RPfxOPBaRCyoPEixlBsC1SKyYld5xqP4gsFaSnnX+cXRSEcbkgcvktPP+zC0MBIqqD1gqSXbTVzSdPq8T4kHRKnYYlBmBcNyzuraUt2Lk9h+x4uh8UbjMiCHslE1pcltTFuOtkh3OrSZvWiksj95xst0
+x-ms-exchange-antispam-messagedata: TmWX8yurzFRKpgnG8Yz5Mu96kqFipyOzN/gZ84OnFMshCa+DDsfTD7rZpaFAk8j3hxCX1QqtVQacoLFnsmBB8GRuzwbCPCvF8pVn3JQzl2BAyx+DygvO1vVBsgTKgfcfKUqtpNKVaAS0nX09xVSbYA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0be743df-e9af-6da9-c593-9e25ab194acf@nvidia.com>
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c81c1fe5-9413-48bb-6729-08d7a5899eae
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2020 13:37:58.6327
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QvKaVf35nMysGGpeP5PlJ5Vgx2N/7+00LjoYe0K74kiDvC7MHWZPB8OZ9WhH22XJUVgjvgNm19edl7h/7Z9RZQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0SPR01MB0085
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 29, 2020 at 10:44:50PM -0800, John Hubbard wrote:
-> On 1/29/20 5:51 AM, Kirill A. Shutemov wrote:
-> > > +/**
-> > > + * page_dma_pinned() - report if a page is pinned for DMA.
-> > > + *
-> > > + * This function checks if a page has been pinned via a call to
-> > > + * pin_user_pages*().
-> > > + *
-> > > + * For non-huge pages, the return value is partially fuzzy: false is not fuzzy,
-> > > + * because it means "definitely not pinned for DMA", but true means "probably
-> > > + * pinned for DMA, but possibly a false positive due to having at least
-> > > + * GUP_PIN_COUNTING_BIAS worth of normal page references".
-> > > + *
-> > > + * False positives are OK, because: a) it's unlikely for a page to get that many
-> > > + * refcounts, and b) all the callers of this routine are expected to be able to
-> > > + * deal gracefully with a false positive.
-> > 
-> > I wounder if we should reverse the logic and name -- page_not_dma_pinned()
-> > or something -- too emphasise that we can only know for sure when the page
-> > is not pinned, but not necessary when it is.
-> > 
-> 
-> This is an interesting point. I agree that it's worth maybe adding information
-> into the function name, but I'd like to keep the bool "positive", because there
-> will be a number of callers that ask "if it is possibly dma-pinned, then ...".
-> So combining that, how about this function name:
-> 
-> 	page_maybe_dma_pinned()
-> 
-> , which I could live with and I think would be acceptable?
 
-I would still prefer the negative version, but up to you.
 
-> > I see opportunity to split the patch further.
-> 
-> 
-> ah, OK. I wasn't sure how far to go before I get tagged for "excessive
-> patch splitting"! haha. Anyway, are you suggesting to put the
-> page_ref_sub_return() routine into it's own patch?
-> 
-> Another thing to split out would be adding the flags to the remaining
-> functions, such as undo_dev_pagemap(). That burns quite a few lines of
-> diff. Anything else to split out?
+> From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> owner@vger.kernel.org> On Behalf Of Devesh Sharma
 
-Nothing I see immediately.
 
-> 
-> > > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > > index 0a55dec68925..b1079aaa6f24 100644
-> > > --- a/mm/huge_memory.c
-> > > +++ b/mm/huge_memory.c
-> > > @@ -958,6 +958,11 @@ struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
-> > >   	 */
-> > >   	WARN_ONCE(flags & FOLL_COW, "mm: In follow_devmap_pmd with FOLL_COW set");
-> > > +	/* FOLL_GET and FOLL_PIN are mutually exclusive. */
-> > > +	if (WARN_ON_ONCE((flags & (FOLL_PIN | FOLL_GET)) ==
-> > > +			 (FOLL_PIN | FOLL_GET)))
-> > 
-> > Too many parentheses.
-> 
-> 
-> OK, I'll remove at least one. :)
+>  drivers/infiniband/hw/bnxt_re/bnxt_re.h  |  13 +-
+> drivers/infiniband/hw/bnxt_re/ib_verbs.c | 635 ++++++++++++++++++++------=
+---
 
-I see two.
+[..]
+> +
+> +	/* remove from active qp list */
+> +	mutex_lock(&rdev->qp_lock);
+> +	list_del(&gsi_sqp->list);
+> +	atomic_dec(&rdev->qp_count);
 
--- 
- Kirill A. Shutemov
+Atomic inc/dec/read should not be protected using qp_lock mutex.
+Please take it outside the critical section in new refactor code and in old=
+ one.
+
+> +	mutex_unlock(&rdev->qp_lock);
