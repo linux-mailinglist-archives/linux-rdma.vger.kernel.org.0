@@ -2,81 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5593514DE52
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2020 17:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B30914DE63
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2020 17:07:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727193AbgA3QEC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Jan 2020 11:04:02 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:41884 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727186AbgA3QEC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jan 2020 11:04:02 -0500
-Received: by mail-io1-f67.google.com with SMTP id m25so4574455ioo.8
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Jan 2020 08:04:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6+jCj7nQiNRZWztjUxZxioqPtRk479WFgapuSteClcY=;
-        b=HpDbLssJx4ugJtEvD4I2QmvpjfDDN2Ck2vF1KcG66XxpR14Nfc51zSWqFpQhjGPtkd
-         psZ+AXZdkUaiVkRZx8l3NZ6e7pC2edi05DoCdhvLlNR5MIOpO7xvRYWexZ9axOokYOK1
-         vqXTmMsHfZn+wEGlwRQ1dnu8Gd6oDrntOI//o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6+jCj7nQiNRZWztjUxZxioqPtRk479WFgapuSteClcY=;
-        b=i+78Gn06aEPeHU3Tq7xB2CY5IY2b3BHjWjIoQroAxJ4BZGf5iBS5VNErHOS4HW+5zJ
-         EVqvW/xAxXn4B0EzzZZpqLBO3ixWFsO1xPT3oy5UwVvu4CGMQ9oIDBLFu5r1Al8trRmd
-         PDb9k45BlkKeiGn9GCtFZk3r5uhYUB0D/d1qJDcCkzAr8XxdDdB952gelNapnIz5cCAn
-         XEUym092sNZ7pQB57GlVc8bLyJ3YgprGjv+I35CHpBsUHewQGxYgOfOHGh7qx9U0yEEk
-         cbkJnejL9P8fg2HMQso3pXUljtd/85PrKwUYV13aVFwxUoj8kYdz6zahu19WnwVp8mP6
-         hygw==
-X-Gm-Message-State: APjAAAX8xY/+d76mZg5lj60cC6jwJhwZkoNJ7FxpbMsGLDLw3+jm6l0W
-        JRz6Vqfnv5C0ll6ACExkU12iBOx2kgF/3X+6Fh7Ryg==
-X-Google-Smtp-Source: APXvYqyW0eXSpb/E57lvAYwyHa0OeX4oTmwVMmK9m+v/UnsNZ+ipjTccTPLQz3nPraKG49tbIq7RmIkRIRb2VUyS7JI=
-X-Received: by 2002:a6b:7113:: with SMTP id q19mr4767064iog.87.1580400241691;
- Thu, 30 Jan 2020 08:04:01 -0800 (PST)
+        id S1727158AbgA3QHW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Jan 2020 11:07:22 -0500
+Received: from mga03.intel.com ([134.134.136.65]:37360 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727107AbgA3QHW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 Jan 2020 11:07:22 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 30 Jan 2020 08:07:21 -0800
+X-IronPort-AV: E=Sophos;i="5.70,382,1574150400"; 
+   d="scan'208";a="222833427"
+Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.205.187]) ([10.254.205.187])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 30 Jan 2020 08:07:19 -0800
+Subject: Re: [PATCH for-next] RDMA/providers: Fix return value when QP type
+ isn't supported
+To:     Leon Romanovsky <leon@kernel.org>,
+        Kamal Heib <kamalheib1@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+References: <20200130082049.463-1-kamalheib1@gmail.com>
+ <20200130083904.GF3326@unreal>
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+Message-ID: <1f508bbc-d858-13b6-d81e-db95fa172e9a@intel.com>
+Date:   Thu, 30 Jan 2020 11:07:17 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
- <1579845165-18002-2-git-send-email-devesh.sharma@broadcom.com> <AM0PR05MB48669BE3D4E5939ABFCADA1FD1040@AM0PR05MB4866.eurprd05.prod.outlook.com>
-In-Reply-To: <AM0PR05MB48669BE3D4E5939ABFCADA1FD1040@AM0PR05MB4866.eurprd05.prod.outlook.com>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Thu, 30 Jan 2020 21:33:25 +0530
-Message-ID: <CANjDDBhO_VmZrXu_U8svXD75zvC5hHE=mcg3mr+0SAXFC14f7g@mail.gmail.com>
-Subject: Re: [PATCH for-next 1/7] RDMA/bnxt_re: Refactor queue pair creation code
-To:     Parav Pandit <parav@mellanox.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "dledford@redhat.com" <dledford@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200130083904.GF3326@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 30, 2020 at 7:08 PM Parav Pandit <parav@mellanox.com> wrote:
->
->
->
-> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> > owner@vger.kernel.org> On Behalf Of Devesh Sharma
->
->
-> >  drivers/infiniband/hw/bnxt_re/bnxt_re.h  |  13 +-
-> > drivers/infiniband/hw/bnxt_re/ib_verbs.c | 635 ++++++++++++++++++++---------
->
-> [..]
-> > +
-> > +     /* remove from active qp list */
-> > +     mutex_lock(&rdev->qp_lock);
-> > +     list_del(&gsi_sqp->list);
-> > +     atomic_dec(&rdev->qp_count);
->
-> Atomic inc/dec/read should not be protected using qp_lock mutex.
-> Please take it outside the critical section in new refactor code and in old one.
+On 1/30/2020 3:39 AM, Leon Romanovsky wrote:
+> On Thu, Jan 30, 2020 at 10:20:49AM +0200, Kamal Heib wrote:
+>> The proper return code is "-EOPNOTSUPP" when the requested QP type is
+>> not supported by the provider.
+>>
+>> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+>> ---
+>>   drivers/infiniband/hw/bnxt_re/ib_verbs.c     | 2 +-
+>>   drivers/infiniband/hw/cxgb4/qp.c             | 2 +-
+>>   drivers/infiniband/hw/hns/hns_roce_qp.c      | 2 +-
+>>   drivers/infiniband/hw/i40iw/i40iw_verbs.c    | 2 +-
+>>   drivers/infiniband/hw/mlx4/qp.c              | 2 +-
+>>   drivers/infiniband/hw/mlx5/qp.c              | 2 +-
+>>   drivers/infiniband/hw/mthca/mthca_provider.c | 2 +-
+>>   drivers/infiniband/hw/ocrdma/ocrdma_verbs.c  | 2 +-
+>>   drivers/infiniband/hw/qedr/verbs.c           | 2 +-
+>>   drivers/infiniband/hw/usnic/usnic_ib_verbs.c | 2 +-
+>>   drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c | 2 +-
+>>   drivers/infiniband/sw/rdmavt/qp.c            | 2 +-
+>>   drivers/infiniband/sw/siw/siw_verbs.c        | 2 +-
+>>   13 files changed, 13 insertions(+), 13 deletions(-)
+> 
+> *_err() prints definitely should go too. Simple user space
+> application will create DDOS on dmesg with those prints.
+> 
+> I would say that other prints should be removed too or at least
+> put in general way inside the caller of ->create_qp() callback.
 
-True, will change.
-thnx
->
-> > +     mutex_unlock(&rdev->qp_lock);
+I'd agree but I don't think that has to be done in this patch. This 
+looks fine to me.
+
+-Denny
+
+
