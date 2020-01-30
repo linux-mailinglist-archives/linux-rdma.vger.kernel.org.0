@@ -2,84 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 767D114DE2B
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2020 16:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5593514DE52
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jan 2020 17:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727107AbgA3Prb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Jan 2020 10:47:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726948AbgA3Prb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 30 Jan 2020 10:47:31 -0500
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C006120674;
-        Thu, 30 Jan 2020 15:47:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580399250;
-        bh=9fqxxY0C0DNhTOtHUtTsAKC2HNf3sdP9t1HWLeh6fkI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B5SZlKMdo661WpfGX/rkD1jRBmP+y/NuJDaawn4O92XJgsgSeOaUzn7WwbvOvTZ4z
-         n1YptYOnIVuYgNZ2nBxm/yTUGZxuAajeoDa1N3hVvOVlTHg7l0dZzR5gYEWNCxZ144
-         7zUWpK2ANT1K8D+KW6LnY76rWyQoliyYacnZGDP4=
-Date:   Thu, 30 Jan 2020 17:47:26 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Fix compilation breakage without
- INFINIBAND_USER_ACCESS
-Message-ID: <20200130154726.GH3326@unreal>
-References: <20200130112957.337869-1-leon@kernel.org>
- <20200130153426.GF21192@mellanox.com>
+        id S1727193AbgA3QEC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Jan 2020 11:04:02 -0500
+Received: from mail-io1-f67.google.com ([209.85.166.67]:41884 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727186AbgA3QEC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jan 2020 11:04:02 -0500
+Received: by mail-io1-f67.google.com with SMTP id m25so4574455ioo.8
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Jan 2020 08:04:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6+jCj7nQiNRZWztjUxZxioqPtRk479WFgapuSteClcY=;
+        b=HpDbLssJx4ugJtEvD4I2QmvpjfDDN2Ck2vF1KcG66XxpR14Nfc51zSWqFpQhjGPtkd
+         psZ+AXZdkUaiVkRZx8l3NZ6e7pC2edi05DoCdhvLlNR5MIOpO7xvRYWexZ9axOokYOK1
+         vqXTmMsHfZn+wEGlwRQ1dnu8Gd6oDrntOI//o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6+jCj7nQiNRZWztjUxZxioqPtRk479WFgapuSteClcY=;
+        b=i+78Gn06aEPeHU3Tq7xB2CY5IY2b3BHjWjIoQroAxJ4BZGf5iBS5VNErHOS4HW+5zJ
+         EVqvW/xAxXn4B0EzzZZpqLBO3ixWFsO1xPT3oy5UwVvu4CGMQ9oIDBLFu5r1Al8trRmd
+         PDb9k45BlkKeiGn9GCtFZk3r5uhYUB0D/d1qJDcCkzAr8XxdDdB952gelNapnIz5cCAn
+         XEUym092sNZ7pQB57GlVc8bLyJ3YgprGjv+I35CHpBsUHewQGxYgOfOHGh7qx9U0yEEk
+         cbkJnejL9P8fg2HMQso3pXUljtd/85PrKwUYV13aVFwxUoj8kYdz6zahu19WnwVp8mP6
+         hygw==
+X-Gm-Message-State: APjAAAX8xY/+d76mZg5lj60cC6jwJhwZkoNJ7FxpbMsGLDLw3+jm6l0W
+        JRz6Vqfnv5C0ll6ACExkU12iBOx2kgF/3X+6Fh7Ryg==
+X-Google-Smtp-Source: APXvYqyW0eXSpb/E57lvAYwyHa0OeX4oTmwVMmK9m+v/UnsNZ+ipjTccTPLQz3nPraKG49tbIq7RmIkRIRb2VUyS7JI=
+X-Received: by 2002:a6b:7113:: with SMTP id q19mr4767064iog.87.1580400241691;
+ Thu, 30 Jan 2020 08:04:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200130153426.GF21192@mellanox.com>
+References: <1579845165-18002-1-git-send-email-devesh.sharma@broadcom.com>
+ <1579845165-18002-2-git-send-email-devesh.sharma@broadcom.com> <AM0PR05MB48669BE3D4E5939ABFCADA1FD1040@AM0PR05MB4866.eurprd05.prod.outlook.com>
+In-Reply-To: <AM0PR05MB48669BE3D4E5939ABFCADA1FD1040@AM0PR05MB4866.eurprd05.prod.outlook.com>
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+Date:   Thu, 30 Jan 2020 21:33:25 +0530
+Message-ID: <CANjDDBhO_VmZrXu_U8svXD75zvC5hHE=mcg3mr+0SAXFC14f7g@mail.gmail.com>
+Subject: Re: [PATCH for-next 1/7] RDMA/bnxt_re: Refactor queue pair creation code
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        "dledford@redhat.com" <dledford@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 30, 2020 at 11:34:26AM -0400, Jason Gunthorpe wrote:
-> On Thu, Jan 30, 2020 at 01:29:57PM +0200, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@mellanox.com>
-> >
-> > Compilation of mlx5 driver without CONFIG_INFINIBAND_USER_ACCESS generates
-> > the following error.
-> >
-> > on x86_64:
-> >
-> > ld: drivers/infiniband/hw/mlx5/main.o: in function `mlx5_ib_handler_MLX5_IB_METHOD_VAR_OBJ_ALLOC':
-> > main.c:(.text+0x186d): undefined reference to `ib_uverbs_get_ucontext_file'
-> > ld: drivers/infiniband/hw/mlx5/main.o:(.rodata+0x2480): undefined reference to `uverbs_idr_class'
-> > ld: drivers/infiniband/hw/mlx5/main.o:(.rodata+0x24d8): undefined reference to `uverbs_destroy_def_handler'
-> >
-> > Guard the problematic code, so VAR objects API won't be compiled without CONFIG_INFINIBAND_USER_ACCESS.
-> >
-> > Fixes: 7be76bef320b ("IB/mlx5: Introduce VAR object and its alloc/destroy methods")
-> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> >  drivers/infiniband/hw/mlx5/main.c | 22 +++++++++++++---------
-> >  1 file changed, 13 insertions(+), 9 deletions(-)
+On Thu, Jan 30, 2020 at 7:08 PM Parav Pandit <parav@mellanox.com> wrote:
 >
-> Hurm. This is actually a side effect of some other code that needs to
-> be deleted.. We can now make all the generated structs static and rely
-> on compiler pruning to sort this out.
 >
-> So this:
 >
->         if (IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS))
->                 dev->ib_dev.driver_def = mlx5_ib_defs;
+> > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> > owner@vger.kernel.org> On Behalf Of Devesh Sharma
 >
-> Will cause the compiler to drop the entire tree of stuff, above
-> references inclded.
+>
+> >  drivers/infiniband/hw/bnxt_re/bnxt_re.h  |  13 +-
+> > drivers/infiniband/hw/bnxt_re/ib_verbs.c | 635 ++++++++++++++++++++---------
+>
+> [..]
+> > +
+> > +     /* remove from active qp list */
+> > +     mutex_lock(&rdev->qp_lock);
+> > +     list_del(&gsi_sqp->list);
+> > +     atomic_dec(&rdev->qp_count);
+>
+> Atomic inc/dec/read should not be protected using qp_lock mutex.
+> Please take it outside the critical section in new refactor code and in old one.
 
-It is viable solution too, more cryptic than previous one, but cleaner for sure.
-
-Thanks
+True, will change.
+thnx
+>
+> > +     mutex_unlock(&rdev->qp_lock);
