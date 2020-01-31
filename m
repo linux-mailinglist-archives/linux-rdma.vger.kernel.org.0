@@ -2,120 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F89A14F1BF
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jan 2020 19:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC59F14F342
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jan 2020 21:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727190AbgAaSAc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 Jan 2020 13:00:32 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:36325 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726712AbgAaSAc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Jan 2020 13:00:32 -0500
-Received: by mail-pg1-f196.google.com with SMTP id k3so3866134pgc.3
-        for <linux-rdma@vger.kernel.org>; Fri, 31 Jan 2020 10:00:30 -0800 (PST)
+        id S1726900AbgAaUln (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 Jan 2020 15:41:43 -0500
+Received: from mail-yw1-f68.google.com ([209.85.161.68]:44245 "EHLO
+        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726319AbgAaUln (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Jan 2020 15:41:43 -0500
+Received: by mail-yw1-f68.google.com with SMTP id t141so6048914ywc.11;
+        Fri, 31 Jan 2020 12:41:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=fneNemG3ESnYMTqrLkg8cJV4G3CYCJHRbcxOlqMQLhs=;
-        b=d0ovGnUq23kFhkzVhhrvud7pArZ+baVphE4OyWZgB6YtOxSx4ZNf074gcJlywJA/UV
-         CZJEYUgVBQRUB//RZ8kHSgHd3o2eBIfzUedXBvZVQT6wDg2dXoQBrridYOofjUxude07
-         TheOiALRL/9H+m5Iugo60kwMoXy4FvcvZ7MnQ=
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=rg+onKFknsLvLX9JqukVFDouz4qGqvSfOybfNJoTEnA=;
+        b=oIaeoBRndoeufPqxZtJHTOvh4EvynFLT2xliExksn3XcGLJ2cmcawaVn5c5Udv0nW3
+         laGAgujY0BoGA2Pzfe6A5JrxhnoebOpds39NlLqzVRpo5dh4sfhHUIIblgrMggKTL8kC
+         tb5JXbgzvB7dCzPjW/QzVvDs6GkK4oNoH6qQLV3ZgSIKro+hr/4GOcqHPopdKsSSr48s
+         SztoJDH9iYEnNVUkdy0nwGTzfTOrB0g6SZ8gLCus7kAuhnx4uTpkD97FhROZOJ/6kMMV
+         JkTrk7UUXHjbUX1JhcVQGjt0uXU0dICe6A3/xsufC7IcW8PHjL5fly1z8zo6pWwqBq28
+         +00A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=fneNemG3ESnYMTqrLkg8cJV4G3CYCJHRbcxOlqMQLhs=;
-        b=UX8RqMhJCycm0DPaWwsMer01MWJl80F1+ogNq+EEvNTyt1m38wY2OkZoLIlMcWbARY
-         ZjBOMel4uHf+tjtwMDi8j/ZoV6y0xUPFheuQ8IDHnS13iRMJsd6ESHEpYzeKM+XVuiQE
-         +ddn091sMncB3o+sx9uXTLxK8fQ0hEQowGBMt9VII+1u7rTFhlBSUWHglsBIV8ASa7/p
-         lVFk7XCPUidkBglNmA2DDCNdMxNIL5jeldk3FYlpjUbk568DP3hc3EyYKx+H8R/qseMX
-         vMVnfRgwDN22q065iDrOkqdP2v/FgsYCF+FmGajiylvU470YMC9nDkNllsWWNAbIzdWx
-         s0mQ==
-X-Gm-Message-State: APjAAAWSycrdZy7oSsvzVI0AmvTWBtdCTo9X09Ku4DNpT2FTtv3aST6h
-        sAbeZr2yxNHyeyjaYrODT+OmzzMgegZc5nHApvtSjhIVD4OriYOg/QNE/v8Vz15IOeJ87Eb4rp7
-        +uOqpwvxA7ziKECJ/sLPSTu0ve6ZMmfKMQ2H619csjngf/3KXOKKL51sOk/VoiNklnijPZSWj3Q
-        Iq7pM=
-X-Google-Smtp-Source: APXvYqyxQnr7Kv0joIh24pX3EXPnL1YySHPdKf2+7+ahHaueo8NWHiSQXvSsXm/B9/1jtgKa4YVgVg==
-X-Received: by 2002:a65:5ccc:: with SMTP id b12mr11430765pgt.124.1580493630050;
-        Fri, 31 Jan 2020 10:00:30 -0800 (PST)
-Received: from neo00-el73.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id w26sm11023735pfj.119.2020.01.31.10.00.28
+        h=x-gm-message-state:sender:subject:from:to:cc:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=rg+onKFknsLvLX9JqukVFDouz4qGqvSfOybfNJoTEnA=;
+        b=dUOTWwiTIldrfYdlUVsqfAuMfya64NmsdtL+YhXzcPRgBD8lU9dJmtO7moT8Qi0h8g
+         EnZ/qvHCi/5oCxZJXsZSn4k2l7EKGNibCmUzh/bUeZHW61MffVz7rrlx0UcKrmeZxr+O
+         72allJ9ceBiZPl8ZMuof0uH4T0lEZFWQAlgz2cFpBMVaY0guIjSpb0JM12QX0QYNC6KK
+         yzmwctBqgEU4ngZw40CJN6be7ZZIRKydibK5qPdOiq9R+ma5FwVGIj8hDMm1LSo68FRS
+         c7+OWJV9pYO+26Fn/+3XgxHPVkIu+VwGrrsq/AE4hKkgqvenp7XeHYdqXs179fbFUYQO
+         qxaw==
+X-Gm-Message-State: APjAAAUmoolqigLXvOBcwDBnV4BL7GwZu4deEp4Io3SuQ0qfsiBPvupc
+        mlltycndvrTC+Kaz3WjgQngXToSO
+X-Google-Smtp-Source: APXvYqxKokVJRLL6F/Cu1xgwGRc6KzKdl+YHnHe2aN7AS54DPXW+/Cgq98GddK8u6Wr15MAIJViFEg==
+X-Received: by 2002:a25:8484:: with SMTP id v4mr586086ybk.13.1580503301030;
+        Fri, 31 Jan 2020 12:41:41 -0800 (PST)
+Received: from bazille.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id x131sm4938278ywd.54.2020.01.31.12.41.40
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 31 Jan 2020 10:00:29 -0800 (PST)
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     jgg@mellanox.com, leon@kernel.org
-Subject: [PATCH v2] rdma-core/libibverbs: display gid type in ibv_devinfo
-Date:   Fri, 31 Jan 2020 13:00:21 -0500
-Message-Id: <1580493621-31006-1-git-send-email-devesh.sharma@broadcom.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 31 Jan 2020 12:41:40 -0800 (PST)
+Subject: [PATCH RFC2 0/3] Follow-up discussion of bug 198053
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     bfields@fieldses.org
+Cc:     linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org
+Date:   Fri, 31 Jan 2020 15:41:39 -0500
+Message-ID: <20200131203727.31409.63652.stgit@bazille.1015granger.net>
+User-Agent: StGit/0.17.1-dirty
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-It becomes difficult to make out from the output of ibv_devinfo
-if a particular gid index is RoCE v2 or not.
+Hi Bruce-
 
-Adding a string to the output of ibv_devinfo -v to display the
-gid type at the end of gid.
+These are a proof-of-concept, not for merge.
 
-Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+This set of patches addresses the NFS/RDMA bug reported here:
+
+https://bugzilla.kernel.org/show_bug.cgi?id=198053
+
+This approach does not cause any regression of support for NFSv4
+COMPOUNDs with multiple READ operations over TCP. It is also far
+less invasive than my first try.
+
+Thoughts, opinions?
+
+
 ---
- libibverbs/examples/devinfo.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/libibverbs/examples/devinfo.c b/libibverbs/examples/devinfo.c
-index bf53eac..4094ea0 100644
---- a/libibverbs/examples/devinfo.c
-+++ b/libibverbs/examples/devinfo.c
-@@ -162,8 +162,18 @@ static const char *vl_str(uint8_t vl_num)
- 	}
- }
- 
-+static const char *gid_type_str(enum ibv_gid_type type)
-+{
-+	switch (type) {
-+	case 0: return "IB/RoCE v1";
-+	case 1: return "RoCE v2";
-+	default: return "invalid value";
-+	}
-+}
-+
- static int print_all_port_gids(struct ibv_context *ctx, uint8_t port_num, int tbl_len)
- {
-+	enum ibv_gid_type type;
- 	union ibv_gid gid;
- 	int rc = 0;
- 	int i;
-@@ -175,8 +185,17 @@ static int print_all_port_gids(struct ibv_context *ctx, uint8_t port_num, int tb
- 			       port_num, i);
- 			return rc;
- 		}
-+
-+		rc = ibv_query_gid_type(ctx, port_num, i, &type);
-+		if (rc) {
-+			rc = 0;
-+			type = 0x2;
-+			fprintf(stderr, "Failed to query gid type to port %d, index %d\n",
-+				port_num, i);
-+		}
-+
- 		if (!null_gid(&gid))
--			printf("\t\t\tGID[%3d]:\t\t%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
-+			printf("\t\t\tGID[%3d]:\t\t%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x, %s\n",
- 			       i,
- 			       gid.raw[ 0], gid.raw[ 1],
- 			       gid.raw[ 2], gid.raw[ 3],
-@@ -185,7 +204,8 @@ static int print_all_port_gids(struct ibv_context *ctx, uint8_t port_num, int tb
- 			       gid.raw[ 8], gid.raw[ 9],
- 			       gid.raw[10], gid.raw[11],
- 			       gid.raw[12], gid.raw[13],
--			       gid.raw[14], gid.raw[15]);
-+			       gid.raw[14], gid.raw[15],
-+			       gid_type_str(type));
- 	}
- 	return rc;
- }
--- 
-1.8.3.1
+Chuck Lever (3):
+      nfsd: Fix NFSv4 READ on RDMA when using readv
+      SUNRPC: Track current encode position in struct xdr_stream
+      NFSD: Enable nfsd4_encode_readv() for NFS/RDMA
 
+
+ fs/nfsd/nfs4proc.c                       |    1 +
+ fs/nfsd/nfs4xdr.c                        |   16 +++++++---------
+ include/linux/sunrpc/svc.h               |    3 +++
+ include/linux/sunrpc/svc_rdma.h          |    6 +++++-
+ include/linux/sunrpc/svc_xprt.h          |    2 ++
+ include/linux/sunrpc/xdr.h               |    1 +
+ net/sunrpc/svc.c                         |   14 ++++++++++++++
+ net/sunrpc/svcsock.c                     |    7 +++++++
+ net/sunrpc/xdr.c                         |    2 ++
+ net/sunrpc/xprtrdma/svc_rdma_recvfrom.c  |    1 +
+ net/sunrpc/xprtrdma/svc_rdma_rw.c        |   29 +++++++++++++++++++----------
+ net/sunrpc/xprtrdma/svc_rdma_sendto.c    |   26 +++++++++++++++++++++++++-
+ net/sunrpc/xprtrdma/svc_rdma_transport.c |    1 +
+ 13 files changed, 88 insertions(+), 21 deletions(-)
+
+--
+Chuck Lever
