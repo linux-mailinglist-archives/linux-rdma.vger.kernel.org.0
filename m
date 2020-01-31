@@ -2,103 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC52114F19A
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jan 2020 18:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F89A14F1BF
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jan 2020 19:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbgAaRvl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 Jan 2020 12:51:41 -0500
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:53567 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727148AbgAaRvl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Jan 2020 12:51:41 -0500
-Received: by mail-pj1-f66.google.com with SMTP id n96so3157530pjc.3
-        for <linux-rdma@vger.kernel.org>; Fri, 31 Jan 2020 09:51:40 -0800 (PST)
+        id S1727190AbgAaSAc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 31 Jan 2020 13:00:32 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:36325 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726712AbgAaSAc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Jan 2020 13:00:32 -0500
+Received: by mail-pg1-f196.google.com with SMTP id k3so3866134pgc.3
+        for <linux-rdma@vger.kernel.org>; Fri, 31 Jan 2020 10:00:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9morG74SiE1BEVstgLWMuyFKqCRGMEdjkzxvFXmpcD0=;
-        b=CIaZGdfglzOsX7b59cSP0qGFhRUdIjMzNt8xFFTtRHEjpE66NgZR4yoPd6nOyiRntC
-         aa6RzuKKdX8/CpB38SYgQC2hNHqn2ntahTMjUY1DTCBctWPDM1i+bGth5HQWpI6fnicJ
-         WsJrFcLADie7fMSN9fzsbw2UCKVfMQFeUTqKEJ9xaxJQGaeiV2MICvCuN41eRMatTULM
-         AxZbhyxA+OiW+SXdiDl40CukkG9NAGbrF+oPafg8kddyPg16+HyXWZGcGAI6eAW950ou
-         yPUZvy+Vh9zDABP+jceamzeAn7EZqd3xGvpQLwr6x8iM3nm4LHfQOW9ehd6bOLin+NiS
-         ICjQ==
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=fneNemG3ESnYMTqrLkg8cJV4G3CYCJHRbcxOlqMQLhs=;
+        b=d0ovGnUq23kFhkzVhhrvud7pArZ+baVphE4OyWZgB6YtOxSx4ZNf074gcJlywJA/UV
+         CZJEYUgVBQRUB//RZ8kHSgHd3o2eBIfzUedXBvZVQT6wDg2dXoQBrridYOofjUxude07
+         TheOiALRL/9H+m5Iugo60kwMoXy4FvcvZ7MnQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9morG74SiE1BEVstgLWMuyFKqCRGMEdjkzxvFXmpcD0=;
-        b=GwJQiEB+F4AAQpSYbsT9tj400Wtz8Si/Cgj5t55WXv2my2IG7b+hF1H9pw1S2ESYFr
-         tP9fnUZEbgnTu3hpN3r2Ef5TY8kvg/1pOWXtH1VBHlN1Y2T2DzOwTT/vJzkhcWeLdA9d
-         g19KerYkU3Xdmk5+9PGOiTLtCsdJKdJWYt51ykqqki/7yE69tLSmbzbSOSvz8pdRftVb
-         HY8DObba4CWZhPJM8GEEL0Y3ZTnkm1CvgN7IuOhwTMa9ECwI4eZhrsM7ZMixjvK7dGds
-         5cQpbyYJGsZq9/NCjivQbyEfDe+vFZVRPQvKD3vzNdJZl7n7ypl7PNyxqE54Ptx7spek
-         JoGQ==
-X-Gm-Message-State: APjAAAWW4hRl8MH0vaI56d3B05KjnPjXUD8ugZuPFXxCiHMtwxJhJkr5
-        5FOrkPqnwqUE5r/gJY8HySCZaQ==
-X-Google-Smtp-Source: APXvYqxx4oQy4hNaBbUqKMxo5sIJyOZhEPpwqT7h8wyObgjpS1vOjvOe7nxOemR5e3zHm7fywVyxJw==
-X-Received: by 2002:a17:90a:23a3:: with SMTP id g32mr13801072pje.134.1580493100068;
-        Fri, 31 Jan 2020 09:51:40 -0800 (PST)
-Received: from ?IPv6:2620:10d:c081:1131::1371? ([2620:10d:c090:180::d1ba])
-        by smtp.gmail.com with ESMTPSA id n2sm11795831pfq.50.2020.01.31.09.51.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 31 Jan 2020 09:51:39 -0800 (PST)
-Subject: Re: [PATCH v8 00/25] RTRS (former IBTRS) RDMA Transport Library and
- RNBD (former IBNBD) RDMA Network Block Device
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>, rpenyaev@suse.de
-References: <20200124204753.13154-1-jinpuwang@gmail.com>
- <CAHg0HuzLLHqp_76ThLhUdHGG_986Oxvvr15h_13T12eEWjyAxA@mail.gmail.com>
- <20200131165421.GB29820@ziepe.ca>
- <f657d371-3b23-e4b2-50b3-db47cd521e1f@kernel.dk>
- <20200131174926.GC29820@ziepe.ca>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <0ebf3ca0-2539-5c39-09ce-c1b31fd6c3b7@kernel.dk>
-Date:   Fri, 31 Jan 2020 10:51:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200131174926.GC29820@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fneNemG3ESnYMTqrLkg8cJV4G3CYCJHRbcxOlqMQLhs=;
+        b=UX8RqMhJCycm0DPaWwsMer01MWJl80F1+ogNq+EEvNTyt1m38wY2OkZoLIlMcWbARY
+         ZjBOMel4uHf+tjtwMDi8j/ZoV6y0xUPFheuQ8IDHnS13iRMJsd6ESHEpYzeKM+XVuiQE
+         +ddn091sMncB3o+sx9uXTLxK8fQ0hEQowGBMt9VII+1u7rTFhlBSUWHglsBIV8ASa7/p
+         lVFk7XCPUidkBglNmA2DDCNdMxNIL5jeldk3FYlpjUbk568DP3hc3EyYKx+H8R/qseMX
+         vMVnfRgwDN22q065iDrOkqdP2v/FgsYCF+FmGajiylvU470YMC9nDkNllsWWNAbIzdWx
+         s0mQ==
+X-Gm-Message-State: APjAAAWSycrdZy7oSsvzVI0AmvTWBtdCTo9X09Ku4DNpT2FTtv3aST6h
+        sAbeZr2yxNHyeyjaYrODT+OmzzMgegZc5nHApvtSjhIVD4OriYOg/QNE/v8Vz15IOeJ87Eb4rp7
+        +uOqpwvxA7ziKECJ/sLPSTu0ve6ZMmfKMQ2H619csjngf/3KXOKKL51sOk/VoiNklnijPZSWj3Q
+        Iq7pM=
+X-Google-Smtp-Source: APXvYqyxQnr7Kv0joIh24pX3EXPnL1YySHPdKf2+7+ahHaueo8NWHiSQXvSsXm/B9/1jtgKa4YVgVg==
+X-Received: by 2002:a65:5ccc:: with SMTP id b12mr11430765pgt.124.1580493630050;
+        Fri, 31 Jan 2020 10:00:30 -0800 (PST)
+Received: from neo00-el73.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id w26sm11023735pfj.119.2020.01.31.10.00.28
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 31 Jan 2020 10:00:29 -0800 (PST)
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     jgg@mellanox.com, leon@kernel.org
+Subject: [PATCH v2] rdma-core/libibverbs: display gid type in ibv_devinfo
+Date:   Fri, 31 Jan 2020 13:00:21 -0500
+Message-Id: <1580493621-31006-1-git-send-email-devesh.sharma@broadcom.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/31/20 10:49 AM, Jason Gunthorpe wrote:
-> On Fri, Jan 31, 2020 at 10:04:10AM -0700, Jens Axboe wrote:
->> On 1/31/20 9:54 AM, Jason Gunthorpe wrote:
->>> On Fri, Jan 31, 2020 at 05:50:44PM +0100, Danil Kipnis wrote:
->>>> Hi Doug, Hi Jason, Hi Jens, Hi All,
->>>>
->>>> since we didn't get any new comments for the V8 prepared by Jack a
->>>> week ago do you think rnbd/rtrs could be merged in the current merge
->>>> window?
->>>
->>> No, the cut off for something large like this would be rc4ish
->>
->> Since it's been around for a while, I would have taken it in a bit
->> later than that. But not now, definitely too late. If folks are
->> happy with it, we can get it queued for 5.7.
-> 
-> I'm still sore from taking the last big driver too late and getting
-> about 2 weeks of little bug fixes from all the cross-arch compilation
-> and what not :)
+It becomes difficult to make out from the output of ibv_devinfo
+if a particular gid index is RoCE v2 or not.
 
-Definitely, it's one of those things that I'd want in for-next for at
-least 2 weeks. Too risky to take now.
+Adding a string to the output of ibv_devinfo -v to display the
+gid type at the end of gid.
 
+Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+---
+ libibverbs/examples/devinfo.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
+
+diff --git a/libibverbs/examples/devinfo.c b/libibverbs/examples/devinfo.c
+index bf53eac..4094ea0 100644
+--- a/libibverbs/examples/devinfo.c
++++ b/libibverbs/examples/devinfo.c
+@@ -162,8 +162,18 @@ static const char *vl_str(uint8_t vl_num)
+ 	}
+ }
+ 
++static const char *gid_type_str(enum ibv_gid_type type)
++{
++	switch (type) {
++	case 0: return "IB/RoCE v1";
++	case 1: return "RoCE v2";
++	default: return "invalid value";
++	}
++}
++
+ static int print_all_port_gids(struct ibv_context *ctx, uint8_t port_num, int tbl_len)
+ {
++	enum ibv_gid_type type;
+ 	union ibv_gid gid;
+ 	int rc = 0;
+ 	int i;
+@@ -175,8 +185,17 @@ static int print_all_port_gids(struct ibv_context *ctx, uint8_t port_num, int tb
+ 			       port_num, i);
+ 			return rc;
+ 		}
++
++		rc = ibv_query_gid_type(ctx, port_num, i, &type);
++		if (rc) {
++			rc = 0;
++			type = 0x2;
++			fprintf(stderr, "Failed to query gid type to port %d, index %d\n",
++				port_num, i);
++		}
++
+ 		if (!null_gid(&gid))
+-			printf("\t\t\tGID[%3d]:\t\t%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
++			printf("\t\t\tGID[%3d]:\t\t%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x, %s\n",
+ 			       i,
+ 			       gid.raw[ 0], gid.raw[ 1],
+ 			       gid.raw[ 2], gid.raw[ 3],
+@@ -185,7 +204,8 @@ static int print_all_port_gids(struct ibv_context *ctx, uint8_t port_num, int tb
+ 			       gid.raw[ 8], gid.raw[ 9],
+ 			       gid.raw[10], gid.raw[11],
+ 			       gid.raw[12], gid.raw[13],
+-			       gid.raw[14], gid.raw[15]);
++			       gid.raw[14], gid.raw[15],
++			       gid_type_str(type));
+ 	}
+ 	return rc;
+ }
 -- 
-Jens Axboe
+1.8.3.1
 
