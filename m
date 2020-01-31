@@ -2,91 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B4214E755
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jan 2020 04:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B021214E77D
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Jan 2020 04:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727749AbgAaDEn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Jan 2020 22:04:43 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:24946 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727739AbgAaDEn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jan 2020 22:04:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1580439882;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dSJxv3xcJ5JP5Fb5zacyAEC1KTHhk6oABLjFOY/Cda4=;
-        b=N3VC1VYy3wfqBxBLrAy5KhaBP6WGCEjLcW/TUaMJRnf7oxPiI4YPTep3TcECg21cKcQkT6
-        XJi80Qvc+tLVxbdmPJKa5VHaJbdvEEBQI3s6Lyisx0s3Rw8oftkqmRKAA/JCG0iwR03LNp
-        ZVTX1CifdcFp4m5D1XWRPcewtReMhJI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-381-f75v9Zt3PCGp7oJVOkzvPg-1; Thu, 30 Jan 2020 22:04:38 -0500
-X-MC-Unique: f75v9Zt3PCGp7oJVOkzvPg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 921D2800E21;
-        Fri, 31 Jan 2020 03:04:37 +0000 (UTC)
-Received: from localhost (unknown [10.66.128.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F27075D9E5;
-        Fri, 31 Jan 2020 03:04:36 +0000 (UTC)
-Date:   Fri, 31 Jan 2020 11:04:34 +0800
-From:   Honggang LI <honli@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     "Hefty, Sean" <sean.hefty@intel.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: resource leak in librdmacm
-Message-ID: <20200131030434.GB359069@dhcp-128-72.nay.redhat.com>
-References: <20200121122133.GA105701@dhcp-128-72.nay.redhat.com>
- <BYAPR11MB3272F4913688AE9B3BFF815C9E0D0@BYAPR11MB3272.namprd11.prod.outlook.com>
- <20200122085655.GA126224@dhcp-128-72.nay.redhat.com>
- <20200122152258.GA142196@dhcp-128-72.nay.redhat.com>
- <20200123142135.GA171304@dhcp-128-72.nay.redhat.com>
- <20200129010449.GA29820@ziepe.ca>
+        id S1727927AbgAaDTe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Jan 2020 22:19:34 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6618 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727831AbgAaDTd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jan 2020 22:19:33 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e339c8e0000>; Thu, 30 Jan 2020 19:18:38 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 30 Jan 2020 19:19:31 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 30 Jan 2020 19:19:31 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 31 Jan
+ 2020 03:19:31 +0000
+Subject: Re: [PATCH v2 4/8] mm/gup: track FOLL_PIN pages
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20200129032417.3085670-1-jhubbard@nvidia.com>
+ <20200129032417.3085670-5-jhubbard@nvidia.com>
+ <20200129135153.knie7ptvsxcgube6@box>
+ <0be743df-e9af-6da9-c593-9e25ab194acf@nvidia.com>
+ <20200130113126.5ftq4gd5k7o7tipj@box>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <1037b514-30e7-c128-38c1-9c98488be337@nvidia.com>
+Date:   Thu, 30 Jan 2020 19:19:30 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200129010449.GA29820@ziepe.ca>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20200130113126.5ftq4gd5k7o7tipj@box>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1580440719; bh=9n3GVRH7rJT8PUMEqe1BMiXjCWR5u2839yBFWtobbC8=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=DyboAuvvbnzLHMEIag1fx4ad2eQQcY8Jsk0DPogA1Xd5f6sbkghXewV7YQM2/iusj
+         B4T31MmPGDxl8HYQEgTzwTjtC7aXYSsBqhReBchu4rQ3x2Tg9oKG30YhyaXyxX1zNJ
+         mQXxsLzBUV1RQ6IAEVYKzDedk9H7zC8YcXryZqWQmOBJN6TCbJzzlnCBXNPqKb3tHz
+         gb7xzJ5ZNfj8tLSN3LebvHbUjchA/wB6wHtGy1YqbyoHTg/Hy4dFqQ3WNC6LGHaugE
+         phaII7jurRZGdzUGIVeJaTPP7ZEu9NHyZD6tjX5kAaACjvJbQ8wCOySgAH5vXtg5+O
+         50R/K9o+IjDKA==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 28, 2020 at 09:04:49PM -0400, Jason Gunthorpe wrote:
-> On Thu, Jan 23, 2020 at 10:21:35PM +0800, Honggang LI wrote:
-> > On Wed, Jan 22, 2020 at 11:23:02PM +0800, Honggang LI wrote:
-> > 
-> > > void test_fini(void)
-> > > {
-> > 
-> > 
-> > > 	if (handle)
-> > > 		dlclose(handle);
-> >                 ^^^^^^^
-> > > 	handle = NULL;
-> > 
-> > In case we did not call dlclose, there will be only one file descriptor
-> > leak. It will reduce the file descriptor leak.
-> > 
-> > Does that imply librdamcm was designed to load once and only unload when
-> > process exit?
+On 1/30/20 3:31 AM, Kirill A. Shutemov wrote:
+...
+>>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>>> index 0a55dec68925..b1079aaa6f24 100644
+>>>> --- a/mm/huge_memory.c
+>>>> +++ b/mm/huge_memory.c
+>>>> @@ -958,6 +958,11 @@ struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
+>>>>   	 */
+>>>>   	WARN_ONCE(flags & FOLL_COW, "mm: In follow_devmap_pmd with FOLL_COW set");
+>>>> +	/* FOLL_GET and FOLL_PIN are mutually exclusive. */
+>>>> +	if (WARN_ON_ONCE((flags & (FOLL_PIN | FOLL_GET)) ==
+>>>> +			 (FOLL_PIN | FOLL_GET)))
+>>>
+>>> Too many parentheses.
+>>
+>>
+>> OK, I'll remove at least one. :)
 > 
-> Yes.
-> 
-> We had some old code that attempted to clean up on dlclose/process
-> exit, but it turns out that whole concept is racey and broken when
-> threads are used.
-> 
-> To run valgrind testing like this the library needs to provide some
-> kind of 'cleanup internal data' call, which our libries don't have. 
-> 
-> I think it would be useful addition to both libraries.
-> 
-> You should also see memleaks from valgrind on exit, IIRC. Lots of
-> static lists don't get cleaned.
+> I see two.
 
-Thanks for the explanation!
+ah, correction: actually, the original statement has exactly the right number of parentheses.
+The relevant C precedence order is:
+	==
+	&
+	|
 
+...which means that both "&" and "|" operations need parentheses protection from the higher
+precedence "==" operation.
+
+(There are other places in the kernel that have this exact pattern, too, with the same
+pattern of parentheses that I'm using, of course.)
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+ 
