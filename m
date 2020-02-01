@@ -2,136 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD95414F62B
-	for <lists+linux-rdma@lfdr.de>; Sat,  1 Feb 2020 04:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2769F14F680
+	for <lists+linux-rdma@lfdr.de>; Sat,  1 Feb 2020 06:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727230AbgBADkl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 Jan 2020 22:40:41 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11996 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727152AbgBADkl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Jan 2020 22:40:41 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e34f3220003>; Fri, 31 Jan 2020 19:40:18 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 31 Jan 2020 19:40:39 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Fri, 31 Jan 2020 19:40:39 -0800
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 1 Feb
- 2020 03:40:39 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Sat, 1 Feb 2020 03:40:38 +0000
-Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5e34f3360001>; Fri, 31 Jan 2020 19:40:38 -0800
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v3 12/12] selftests/vm: run_vmtests: invoke gup_benchmark with basic FOLL_PIN coverage
-Date:   Fri, 31 Jan 2020 19:40:29 -0800
-Message-ID: <20200201034029.4063170-13-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200201034029.4063170-1-jhubbard@nvidia.com>
-References: <20200201034029.4063170-1-jhubbard@nvidia.com>
+        id S1725819AbgBAFAh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 1 Feb 2020 00:00:37 -0500
+Received: from mail-ed1-f50.google.com ([209.85.208.50]:42263 "EHLO
+        mail-ed1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgBAFAh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 1 Feb 2020 00:00:37 -0500
+Received: by mail-ed1-f50.google.com with SMTP id e10so10032547edv.9
+        for <linux-rdma@vger.kernel.org>; Fri, 31 Jan 2020 21:00:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=imatrex-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=cCSDQTKZ7QjU/qnqm6YQj5eK0t//+T9cOaSzD2vYJtw=;
+        b=O3ljpJ+05Uu0A1u0xA53378VhZaC3yQK4I1n+LczVM2pTxGblwKe4/9rLP/WPGNnFV
+         WggIfShTeB4iiKR2Sb4IqH8KKoU+SwORmnGzttFwMGHyP1g98ebzNICHbh73ExNlUHYm
+         Pkm5B9B5JBhlCHmnEDjH2olljOgCU/vhFQsts1++d5kOPTbAeaZeQ7syUryRZhNrCKgA
+         YTKHR3IBO0lZ6P/FrPbixyQDHVZBcjzm68LziWHGwKIZmMO+weeUH80SzrdPBfs9z65T
+         AHMSbv5SOZSuuV/35tq6MmjxuIAGfCPMrXgqFSl6hdpReHoESgKMugfjXvkoKYZqornn
+         VABA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=cCSDQTKZ7QjU/qnqm6YQj5eK0t//+T9cOaSzD2vYJtw=;
+        b=RIY/vFp8SJ9QCP94FOOnln+eRk/xiLdp8QWWqy02uROZ2ZIcj0sekrT+0fTV5eNNGg
+         Al3s19whwS7WVNc/lgvGKY1akSm9pfv30TPsceOmDr7k+XRqYXVT58N/I5ei3tFB+dnL
+         WEfxjQbMEhMPRapppAf3Xcou6eRZND6mmFA/+oz00Q4ozNyR9Xxx7HS3jIJgMRpWxAKm
+         yEw/bl+1+K0OhRylgUaKZIofQ88meM9B0wqu1Z9GL2kHLES4RRsYh5cAR0hT3PCtRXU2
+         uKU9pqwlMPuQQMH2kqKkW0t3+5Y5N3yNiiG/Ac67rPAi/e0uzwf89ENGwvaE3w/58q9e
+         2+fQ==
+X-Gm-Message-State: APjAAAUrW9JIY7xo7tD7NRMjBHakD4OKXWN4ARmKwriUk6dEJFceElD7
+        Zu+wevCEy8Jh84S2g+DbndrdmNV8Gx8ruNTIwqy4Kl8xdlg=
+X-Google-Smtp-Source: APXvYqwjiL2RC/XnuXLHOwfMrc0PSgRvFromXxjYwqomUJa1GsXAr/4LzdLNMrjbsqtiq/yUZ5aJuhCFrqxlsI0uEdY=
+X-Received: by 2002:a05:6402:298:: with SMTP id l24mr3497310edv.70.1580533234115;
+ Fri, 31 Jan 2020 21:00:34 -0800 (PST)
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1580528418; bh=Q/jtf1QAQWUBdGa6x5cGwrQgIxtlzXz53YFDTgazJkU=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=rPWspbRZ9wTXN6wzyKrT58WKFB8KhDBv5porhVCyZPlXhI8858oFjOKd9++Oz+P/R
-         T7WkXG/QPJrDbYbVVQPCebUWxMniLzpLek2L9lcTOgPYa0H3PMpkVERIB5uudRfxVP
-         OoC8eQLTQkQ+7f5DDq+u1/Jj8kzpYl+HvVZp0CFfici3rDYQBu1Lu/77EZcYF4F4ud
-         33Qsym32HTOs/YQR8/LUnFKgD17+VAiWdvuvqQSfyyW6wj63u3A+9bV1nxdbBvmoGz
-         uFqEbNg7eJpqijIdwc4bR2sf7KFsbbxpXvk+w1hNIC7F46x3+YS8A0c3iTrjknG3AL
-         VzbSdMNidSCJg==
+From:   Dimitrios Dimitropoulos <d.dimitropoulos@imatrex.com>
+Date:   Fri, 31 Jan 2020 21:00:24 -0800
+Message-ID: <CAOc41xEmgiw_xekLuhi6uYZ+rKdMrv=5wOJWKisbpYPpBJsdkA@mail.gmail.com>
+Subject: RDMA without rdma_create_event_channel()
+To:     linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-It's good to have basic unit test coverage of the new FOLL_PIN
-behavior. Fortunately, the gup_benchmark unit test is extremely
-fast (a few milliseconds), so adding it the the run_vmtests suite
-is going to cause no noticeable change in running time.
+Hi,
 
-So, add two new invocations to run_vmtests:
+I'm looking to connect an RDMA hardware accelerator to a Centos 8.0
+server with RoCE_V2 capability.
 
-1) Run gup_benchmark with normal get_user_pages().
+Is there a way to implement RDMA RC functionality without invoking the
+Connection Manager (skipping the rdma_create_event_channel()) ?
+Perhaps with a simple exchange of the necessary information through an
+external protocol, say UDP packets ? And then initialize the QPs with
+the received parameters.
 
-2) Run gup_benchmark with pin_user_pages(). This is much like
-the first call, except that it sets FOLL_PIN.
+A bit unsure if this is the appropriate forum for it, let me know if
+it's off topic.
 
-Running these two in quick succession also provide a visual
-comparison of the running times, which is convenient.
-
-The new invocations are fairly early in the run_vmtests script,
-because with test suites, it's usually preferable to put the
-shorter, faster tests first, all other things being equal.
-
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- tools/testing/selftests/vm/run_vmtests | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/tools/testing/selftests/vm/run_vmtests b/tools/testing/selftes=
-ts/vm/run_vmtests
-index a692ea828317..df6a6bf3f238 100755
---- a/tools/testing/selftests/vm/run_vmtests
-+++ b/tools/testing/selftests/vm/run_vmtests
-@@ -112,6 +112,28 @@ echo "NOTE: The above hugetlb tests provide minimal co=
-verage.  Use"
- echo "      https://github.com/libhugetlbfs/libhugetlbfs.git for"
- echo "      hugetlb regression testing."
-=20
-+echo "--------------------------------------------"
-+echo "running 'gup_benchmark -U' (normal/slow gup)"
-+echo "--------------------------------------------"
-+./gup_benchmark -U
-+if [ $? -ne 0 ]; then
-+	echo "[FAIL]"
-+	exitcode=3D1
-+else
-+	echo "[PASS]"
-+fi
-+
-+echo "------------------------------------------"
-+echo "running gup_benchmark -b (pin_user_pages)"
-+echo "------------------------------------------"
-+./gup_benchmark -b
-+if [ $? -ne 0 ]; then
-+	echo "[FAIL]"
-+	exitcode=3D1
-+else
-+	echo "[PASS]"
-+fi
-+
- echo "-------------------"
- echo "running userfaultfd"
- echo "-------------------"
---=20
-2.25.0
-
+Regards,
+Dimitris
