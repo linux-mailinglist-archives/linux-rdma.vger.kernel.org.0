@@ -2,60 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2491508EE
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2020 16:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CA71508F3
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2020 16:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727644AbgBCPAa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Feb 2020 10:00:30 -0500
-Received: from mail-il1-f196.google.com ([209.85.166.196]:35698 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727201AbgBCPA3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Feb 2020 10:00:29 -0500
-Received: by mail-il1-f196.google.com with SMTP id g12so12894917ild.2
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Feb 2020 07:00:29 -0800 (PST)
+        id S1727798AbgBCPBB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Feb 2020 10:01:01 -0500
+Received: from mail-il1-f195.google.com ([209.85.166.195]:38028 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726287AbgBCPBB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Feb 2020 10:01:01 -0500
+Received: by mail-il1-f195.google.com with SMTP id f5so12871451ilq.5
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Feb 2020 07:01:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zXolVJ6sWAKeCRQmigrieHew0qKARrfqzoQa9PVG1FQ=;
-        b=bYw99RTirGD39xO2I9X7mx6e0L91Gglw2LWCH8QDGfh6EG1uDZ1TyPlXWhusMmxbl4
-         /qT4mMhhdahNCA8xKBMy6JFYZqEviVu1/lXJJ463TFD2V9ric2wGUUdQTdXH2DM5Njux
-         L13/z9Wnn9jUVRF+JOLt+wmeMN/XEUUwI260c=
+        bh=VjtdGuJ68ZZWGhduxwgKWErxiz/0ie0xdiGkLM375wQ=;
+        b=N4LKAfL6IC4InG8qiZk+Ol4o/sD3hWVYRPbGSoN6Cvh88gdzUcvXF37kPU94/MOmX7
+         NZGWAEWiCplNiBDv21tOIJBVBm9Lr+IC4MvrybEAvAGHToXqkGn7nKfFDOUS2SFPX2VD
+         VT0xCUllQ0pMmOlla0qS1aYve5VxlZ7IiTARY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zXolVJ6sWAKeCRQmigrieHew0qKARrfqzoQa9PVG1FQ=;
-        b=LgXUw0Eul77QYI5NYk0N5gtQziLcQeyq9wOuYZ4+HVOPKnEbiM3rz8LJBcH2+UytkG
-         /kwTlV8n9SnL0qUY8yuIqN7bD9GRwbeN4GNW1pPmB38ZJapUnDmVgzs6NgFhbRNJvmZ8
-         YP8ySPi6h3SPx360/PImiSrj5EMAyc+mqkUUbkOFcsl1kIDUwg/ZnLZtNeawV3gzSdL6
-         We18lfQvDFtfk2SZjuiB7doUCH1tMKJ0XxFkfNd8AryeKc071TfOZome3PJeWh6KA7PK
-         urmW04LshGfH591bu6Fxw0ckh6eJIYO1jMpkcFoxwFOkIQGqQG55X8yMR+GT9PRd/5jU
-         bJjg==
-X-Gm-Message-State: APjAAAWC5Yho3gXCRpCJFXDqnX0Cm+mD760tWcGHnaARXSfrA+L2kv8f
-        r2aR1fnF2Pl8CbirwaC7EGZtA4PiRDyEccArIRYgqfiv
-X-Google-Smtp-Source: APXvYqzhNZ61tMwSkPd9Btfs2CNSOOwwWqmGZGHnryo2JSmQC+G7n6AmOVf88/j1zaEFmspJpOjI1ARC78JKuo75cFc=
-X-Received: by 2002:a92:bf10:: with SMTP id z16mr15654290ilh.87.1580742028719;
- Mon, 03 Feb 2020 07:00:28 -0800 (PST)
+        bh=VjtdGuJ68ZZWGhduxwgKWErxiz/0ie0xdiGkLM375wQ=;
+        b=PEWhpcGTtk9xhcKG5CvaRcNMRtbO4uu7pKcoYzmB+efQI6LUsOC36B8GU7AqgJZCBy
+         +PMGOYTohyEHErnz+rzQoG5+Vo4xoIakUgEYqZh+PqnWseIntDcz2pJegHmQ8eLcJecK
+         MSnqIyHMJx1ef6KKYb7RAL7kXFQpAFR4Jmo8MSZ9odT8/thnL3Pq6n7q5QDd0ykSl3UM
+         LDGrMSyuXt8hoIgjI2cwJOsAZXywnSI5bu/dKKwzPVoCYRyZUxk+M7GoQNS33/UNsNPD
+         0DbmI7Qrdl6sqytRRruiQmtxeqRJJWQMheYg5QZQXXUitLUql/BPvhriXYBMvaxXNSNG
+         am9w==
+X-Gm-Message-State: APjAAAUgOJLlmc6WtOklg6ASO9g4EXFqixXvXiwlWs3heNNQVc7TOI5N
+        M/OXK2qFKu1LXBXJ7S14/OGZhNkhbrLAWSjJKUhMPA==
+X-Google-Smtp-Source: APXvYqyfUtevTKX6b94u2mFyjB35riqC6bj2TQqjuaSahUJQx+TRabdXR9RzGEtmXa6O5SziKixvaMJrb09JuFd/ShA=
+X-Received: by 2002:a92:5d8d:: with SMTP id e13mr15108710ilg.285.1580742060747;
+ Mon, 03 Feb 2020 07:01:00 -0800 (PST)
 MIME-Version: 1.0
-References: <1580708846-10851-1-git-send-email-devesh.sharma@broadcom.com> <20200203084958.GN414821@unreal>
-In-Reply-To: <20200203084958.GN414821@unreal>
+References: <1580708846-10851-1-git-send-email-devesh.sharma@broadcom.com> <65ab8a55-2155-cf1e-fcd8-b87fc7360a36@amazon.com>
+In-Reply-To: <65ab8a55-2155-cf1e-fcd8-b87fc7360a36@amazon.com>
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Mon, 3 Feb 2020 20:29:51 +0530
-Message-ID: <CANjDDBhPczh2mNxm6xbQSyf7wL-PvaU-+ovet9p72YyAPrMoGg@mail.gmail.com>
+Date:   Mon, 3 Feb 2020 20:30:23 +0530
+Message-ID: <CANjDDBi=2GXy6VNrHmT_4f1-8MeihGsA5EQXrxn2kkqkwGrMiA@mail.gmail.com>
 Subject: Re: [PATCH v3] rdma-core/libibverbs: display gid type in ibv_devinfo
-To:     Leon Romanovsky <leon@kernel.org>
+To:     Gal Pressman <galpress@amazon.com>
 Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@mellanox.com>
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 3, 2020 at 2:20 PM Leon Romanovsky <leon@kernel.org> wrote:
+On Mon, Feb 3, 2020 at 2:43 PM Gal Pressman <galpress@amazon.com> wrote:
 >
-> On Mon, Feb 03, 2020 at 12:47:26AM -0500, Devesh Sharma wrote:
+> On 03/02/2020 7:47, Devesh Sharma wrote:
 > > It becomes difficult to make out from the output of ibv_devinfo
 > > if a particular gid index is RoCE v2 or not.
 > >
@@ -67,9 +68,22 @@ On Mon, Feb 3, 2020 at 2:20 PM Leon Romanovsky <leon@kernel.org> wrote:
 > >  libibverbs/examples/devinfo.c | 22 ++++++++++++++++++++--
 > >  1 file changed, 20 insertions(+), 2 deletions(-)
 > >
+> > diff --git a/libibverbs/examples/devinfo.c b/libibverbs/examples/devinfo.c
+> > index bf53eac..bbaed8c 100644
+> > --- a/libibverbs/examples/devinfo.c
+> > +++ b/libibverbs/examples/devinfo.c
+> > @@ -162,8 +162,18 @@ static const char *vl_str(uint8_t vl_num)
+> >       }
+> >  }
+> >
+> > +static const char *gid_type_str(enum ibv_gid_type type)
+> > +{
+> > +     switch (type) {
+> > +     case 0: return "IB/RoCE v1";
+> > +     case 1: return "RoCE v2";
+> > +     default: return "invalid value";
+> > +     }
+> > +}
 >
-> It will be very helpful to add example of "ibv_devinfo -v"
-> to the commit message.
-Sure, adding it.
->
-> Thanks
+> Why hard code the enum values? Use IBV_GID_TYPE_IB_ROCE_V1 and IBV_GID_TYPE_ROCE_V2.
+Agree, changing it.
