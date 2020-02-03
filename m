@@ -2,27 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC6F151235
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2020 23:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F401512D2
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2020 00:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgBCWHg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Feb 2020 17:07:36 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16172 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgBCWHg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Feb 2020 17:07:36 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e38998e0000>; Mon, 03 Feb 2020 14:07:11 -0800
+        id S1727159AbgBCXQz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Feb 2020 18:16:55 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5715 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726331AbgBCXQy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Feb 2020 18:16:54 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e38a9ac0002>; Mon, 03 Feb 2020 15:15:56 -0800
 Received: from hqmail.nvidia.com ([172.20.161.6])
   by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 03 Feb 2020 14:07:34 -0800
+  Mon, 03 Feb 2020 15:16:52 -0800
 X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 03 Feb 2020 14:07:34 -0800
+        by hqpgpgate101.nvidia.com on Mon, 03 Feb 2020 15:16:52 -0800
 Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 3 Feb
- 2020 22:07:33 +0000
-Subject: Re: [PATCH v3 11/12] mm/gup_benchmark: support pin_user_pages() and
- related calls
+ 2020 23:16:52 +0000
+Subject: Re: [PATCH v3 10/12] mm/gup: /proc/vmstat: pin_user_pages (FOLL_PIN)
+ reporting
+From:   John Hubbard <jhubbard@nvidia.com>
 To:     "Kirill A. Shutemov" <kirill@shutemov.name>
 CC:     Andrew Morton <akpm@linux-foundation.org>,
         Al Viro <viro@zeniv.linux.org.uk>,
@@ -42,18 +43,18 @@ CC:     Andrew Morton <akpm@linux-foundation.org>,
         <linux-kselftest@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
         <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
 References: <20200201034029.4063170-1-jhubbard@nvidia.com>
- <20200201034029.4063170-12-jhubbard@nvidia.com>
- <20200203135845.ymfbghs7rf67awex@box>
- <b554db44-7315-b99f-1151-ba2a1b2445ce@nvidia.com>
- <20200203215553.q7zx6diprbby6ns5@box.shutemov.name>
-From:   John Hubbard <jhubbard@nvidia.com>
+ <20200201034029.4063170-11-jhubbard@nvidia.com>
+ <20200203135320.edujsfjwt5nvtiit@box>
+ <0425e1e6-f172-91df-2251-7583fcfed3e6@nvidia.com>
+ <20200203213022.rltjlohvaswk32ln@box.shutemov.name>
+ <0a81878a-1f7f-daec-0833-d5b91d197ddf@nvidia.com>
 X-Nvconfidentiality: public
-Message-ID: <1d89f126-91b8-bab9-0d6c-0a789581dbff@nvidia.com>
-Date:   Mon, 3 Feb 2020 14:07:33 -0800
+Message-ID: <aa33fc2c-956b-4197-e418-220198827ce6@nvidia.com>
+Date:   Mon, 3 Feb 2020 15:16:51 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20200203215553.q7zx6diprbby6ns5@box.shutemov.name>
+In-Reply-To: <0a81878a-1f7f-daec-0833-d5b91d197ddf@nvidia.com>
 X-Originating-IP: [10.124.1.5]
 X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
  HQMAIL107.nvidia.com (172.20.187.13)
@@ -61,57 +62,67 @@ Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1580767631; bh=3g2jpP7PATIRShMbNa46mzIFlzlSWwEuhifQjWIA0qA=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+        t=1580771756; bh=gvY+g+j4Cj7DxqzAg/mvEPWkOwg/CtLtNejZlwoZKR0=;
+        h=X-PGP-Universal:Subject:From:To:CC:References:X-Nvconfidentiality:
          Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
          X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
          Content-Transfer-Encoding;
-        b=U8QvK34EGwtcRxqHonJOikQVH8V81FSRLWwtw4MkUI7C9VjLfhrlxTzvE+w9oTS/W
-         F7AjIKlrxbA1U7WdKDvnEvXvcA9Owttra/Fa+MULA7zHQI1QiAha21jaJEOyySC98d
-         GCxJRpBcK5guEW+dpfpJriF80N83GetmAwP0rQEgK00+PAhzBSRnHMcTVhEjeQl0xH
-         c6wWwTN28IokxkfYyzrX93PaQUwEcVKotdnO8uAXY3mp2UsqKU6D5l5lXbZ1aojfEI
-         GP9AynFsKx9PKu+mi2bDIv1QFLzjxT8sgD7GSdTisaCXA3NaDhNIQoR+cmCerg3D/q
-         y2gHb76zk0kGQ==
+        b=bvGYZeEZhdzmUm7/dYb8FIKdGpgeZzC3J0CrzLhhHGHjYXMti9hHN9MSqVzHFcNo0
+         oNMt21uHiUzvprhIl/oMCokx6Bbcmizhamb59Yb6eSD8v4BqKb/x0DEXedh45mcmhN
+         hGr850FTLsQiwe3uEaxwRtsJ1WVB3xWH1EEgMpDLQuZheUBgU/jZxNtRAM1oTcHFV6
+         om2FUKOUPW2PMVRq9cYZUwhHTtlezrfRAzh+rXyVycb+FA00v6cYHjU2y9iFdSSWOb
+         VgzH+jvJzuWzEmJfzcVK8YTKu5LLf4ZhsaIwz8fQvZgCZ8G0ftJVPMd+dd8BCjyMz8
+         CBGwBZbi5Qp0g==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/3/20 1:55 PM, Kirill A. Shutemov wrote:
-> On Mon, Feb 03, 2020 at 01:17:40PM -0800, John Hubbard wrote:
->> On 2/3/20 5:58 AM, Kirill A. Shutemov wrote:
->> ...
->>>> @@ -19,6 +21,48 @@ struct gup_benchmark {
->>>>  	__u64 expansion[10];	/* For future use */
->>>>  };
->>>>  
->>>> +static void put_back_pages(unsigned int cmd, struct page **pages,
->>>> +			   unsigned long nr_pages)
->>>> +{
->>>> +	int i;
->>>> +
->>>> +	switch (cmd) {
->>>> +	case GUP_FAST_BENCHMARK:
->>>> +	case GUP_LONGTERM_BENCHMARK:
->>>> +	case GUP_BENCHMARK:
->>>> +		for (i = 0; i < nr_pages; i++)
+On 2/3/20 1:34 PM, John Hubbard wrote:
+> On 2/3/20 1:30 PM, Kirill A. Shutemov wrote:
+>> On Mon, Feb 03, 2020 at 01:04:04PM -0800, John Hubbard wrote:
+>>> On 2/3/20 5:53 AM, Kirill A. Shutemov wrote:
+>>>> On Fri, Jan 31, 2020 at 07:40:27PM -0800, John Hubbard wrote:
+>>>>> diff --git a/mm/gup.c b/mm/gup.c
+>>>>> index c10d0d051c5b..9fe61d15fc0e 100644
+>>>>> --- a/mm/gup.c
+>>>>> +++ b/mm/gup.c
+>>>>> @@ -29,6 +29,19 @@ struct follow_page_context {
+>>>>>  	unsigned int page_mask;
+>>>>>  };
+>>>>>  
+>>>>> +#ifdef CONFIG_DEBUG_VM
+>>>>
+>>>> Why under CONFIG_DEBUG_VM? There's nothing about this in the cover letter.
+>>>>
 >>>
->>> 'i' is 'int' and 'nr_pages' is 'unsigned long'.
->>> There's space for trouble :P
+>>> Early on, gup_benchmark showed a really significant slowdown from using these 
+>>> counters. And I don't doubt that it's still the case.
 >>>
+>>> I'll re-measure and add a short summary and a few numbers to the patch commit
+>>> description, and to the v4 cover letter.
 >>
->> Yes, I've changed it to "unsigned int", thanks.
+>> Looks like you'll show zeros for these counters if debug is off. It can be
+>> confusing to the user. I think these counters should go away if you don't
+>> count them.
+>>
 > 
-> I'm confused. If nr_pages is more than UINT_MAX, this is endless loop.
-> Hm?
+> OK, that's a good point. (And in fact, the counters==0 situation already led me
+> astray briefly while debugging with Leon R, even. heh.) I'll remove them entirely for
+> the !CONFIG_DEBUG_VM case.
 > 
 
-Oh, I've been afflicted with 64-bit tunnel vision. OK, make that 
-"unsigned long" and "%ul". yikes. :)
+On second thought, let me do some more careful performance testing. I don't recall
+now if I was just removing every possible perf slowdown item, when I made this decision.
+It could be that the perf is not affected, and I could just leave this feature enabled
+at all times, which would be nicer.
 
+And after all, these counters were designed for pretty hot-path items. I'll report back
+with results...
 
 
 thanks,
 -- 
 John Hubbard
 NVIDIA
+
