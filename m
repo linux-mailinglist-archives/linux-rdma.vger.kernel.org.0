@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6331507CC
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2020 14:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 330CD1507D6
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2020 14:58:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbgBCNxO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Feb 2020 08:53:14 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:44357 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728251AbgBCNxL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Feb 2020 08:53:11 -0500
-Received: by mail-lf1-f68.google.com with SMTP id v201so9728146lfa.11
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Feb 2020 05:53:09 -0800 (PST)
+        id S1728200AbgBCN6i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Feb 2020 08:58:38 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:42407 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728229AbgBCN6h (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Feb 2020 08:58:37 -0500
+Received: by mail-lf1-f65.google.com with SMTP id y19so9757120lfl.9
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Feb 2020 05:58:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=shutemov-name.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=BzZMF6PZ0CInPvS+JZXdg2mkWs0iWkEH6sfExWwcsOM=;
-        b=SfWu8ptXcrqdLvVIL+9GNYbYTZM0c3Z4oRhn+03/fTLd35Qc+pNcEyJxhwF7lafzH0
-         d4srVxbs7KN6s0DICeR+xID9QEiL5Ej66kNXiGFzrPIy+dgRsWNigr9yFPOqIyzZR8Yb
-         ezgjxg7hzzAmGX6kvhZCjj1aEVb4gOrxjTbd3o1JoGMpP1dhE/N79lBbK3054K5SB+fF
-         sutl1znM5FUFndqKtQ2KHkt653qpODXWXb5b8k4kzpzBzqKQnCE7UTp+MxesWWLH9esw
-         gf66cdzuHedRhs58dFM9lmhZn7vMWU0idxfbqcAx5q1dYQlC2UcJeninpwCmf5bqLBhQ
-         tQpQ==
+        bh=Q7EhG/mHxujJqjIax+tX/L6XnMUCZchWEgmsqcRY8O4=;
+        b=qKCSEPA3x8kojnT0VGPWx1REhr2EhqE6i1LsFUAGRHw89eQpMMqBQ9S9OSvrvMREnc
+         Kqf2KRHdvRc9eNFj0Fbr8amLlQZMLRlz6zKBMg1WL7/HIA+tXPcqjLVjTQ2R7KakPHd8
+         jwLdRMJfSReB3MhMaxEKhmAyNYGue1eXm2uMQreQl/L3J3E4gO+Q1+0WudsQbAd9bkPn
+         tpo6FUUIsaQOfmxjgM5AMcQ+fxVRdOxwlQKq6LqAAqxfW9Lb9cGiXiPNFT0E2TvHmN+Z
+         vo1cDgpRnH/G5otSfVV8D6MokorSsYfD5tcRiWSrkfw8urfjsB3lWjxMQIv0hsoauceU
+         fDLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=BzZMF6PZ0CInPvS+JZXdg2mkWs0iWkEH6sfExWwcsOM=;
-        b=qJBxwCLrjstpU/kJbmzp1bHtE0sF18j4ycOJefzj/AG2wJ1c7cwnmFWUvC5ykaKaXm
-         QWJXFrcqsIPFuBhFSDna9hbcdpP/pdA9XSCte9b0i9rp+etEp70/1IHRSZ/44rUT2zRw
-         2c0N3MgkwGZshI2HtIzyTP1FpDgIsmfwn/+j7AFnbGO2Baur6DKbk298NoI09siSDKKT
-         iyNbDccZJYTSeXS2CJSOeVWwnY7UF1526wRBzCQ2zOkNVdhUNvqf+IqtZK3W6aAfIp9i
-         jcpn/oC8qtwKp7jl2R0W8iLtknA8SFuA4v8ml+5Nx5RkSxVJRWTZmmtf3pyJNRu5OE4y
-         CI1g==
-X-Gm-Message-State: APjAAAWxlUHwmYk5JyJboPMDwNQ+NcSN6CD/gynURnM6+SpXimIsfRtY
-        gyi73RRqNHd0YJtiK/JqVTkp0w==
-X-Google-Smtp-Source: APXvYqysggXpYEJxCI/09xpMW4ELlsRRYlF7cYLpGOA4E8c4YYLRqJg9/VEkldqlzmdwIjBILEU4cQ==
-X-Received: by 2002:ac2:4246:: with SMTP id m6mr12217244lfl.165.1580737988577;
-        Mon, 03 Feb 2020 05:53:08 -0800 (PST)
+        bh=Q7EhG/mHxujJqjIax+tX/L6XnMUCZchWEgmsqcRY8O4=;
+        b=Nm9i7MdYc5TFhke8IUjLO48pHezbDkSvjNZwgz6um4tzotZ0+xfsSoLKTMhkAc6Ngt
+         1OtEFDKToQUEeEhsCoNSI45vq2PSB6VFAL3xch52qko4XaCzHUfxE2aTrgA5YfI+8LDA
+         Ml+FFiAFhzaAiexzhxIfxAm0lt5YvKrHTcOKfWWBCQZ14XW8grewGCS+kjb59bRtSGyN
+         YzqCErxcwrSslhd8+jOh1rGn3AD5+v0tvmw4F71f3Pa6gMAkWwWDdetZYVaTDPUL2tzP
+         B1ooIAiAtDjEDvJKii1HFX2zKQjUcH2GpAgnL5DlZWNV39L3tZ83vWWSS2LKCwW0bZRb
+         HpgQ==
+X-Gm-Message-State: APjAAAUDCG3rW0UwxssywcQlMLAuHr7szgFbWaT+zF95v+i7c8Jy184S
+        nflnRRj/gDD/sbPPjibMa/nEAg==
+X-Google-Smtp-Source: APXvYqwy/AMeACpJx+sRC2T4Q93xcTj2QVF/axvUST/Peo/4AOgO4Rx5SZuMTvzfMfCoqFdSX1vYAA==
+X-Received: by 2002:ac2:4246:: with SMTP id m6mr12228504lfl.165.1580738313898;
+        Mon, 03 Feb 2020 05:58:33 -0800 (PST)
 Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id a12sm9743048ljk.48.2020.02.03.05.53.07
+        by smtp.gmail.com with ESMTPSA id n2sm9868111ljj.1.2020.02.03.05.58.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Feb 2020 05:53:07 -0800 (PST)
+        Mon, 03 Feb 2020 05:58:33 -0800 (PST)
 Received: by box.localdomain (Postfix, from userid 1000)
-        id AD6E1100DC8; Mon,  3 Feb 2020 16:53:20 +0300 (+03)
-Date:   Mon, 3 Feb 2020 16:53:20 +0300
+        id C5259100DC8; Mon,  3 Feb 2020 16:58:45 +0300 (+03)
+Date:   Mon, 3 Feb 2020 16:58:45 +0300
 From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 To:     John Hubbard <jhubbard@nvidia.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -66,47 +66,126 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
         linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 10/12] mm/gup: /proc/vmstat: pin_user_pages (FOLL_PIN)
- reporting
-Message-ID: <20200203135320.edujsfjwt5nvtiit@box>
+Subject: Re: [PATCH v3 11/12] mm/gup_benchmark: support pin_user_pages() and
+ related calls
+Message-ID: <20200203135845.ymfbghs7rf67awex@box>
 References: <20200201034029.4063170-1-jhubbard@nvidia.com>
- <20200201034029.4063170-11-jhubbard@nvidia.com>
+ <20200201034029.4063170-12-jhubbard@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200201034029.4063170-11-jhubbard@nvidia.com>
+In-Reply-To: <20200201034029.4063170-12-jhubbard@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 31, 2020 at 07:40:27PM -0800, John Hubbard wrote:
-> diff --git a/mm/gup.c b/mm/gup.c
-> index c10d0d051c5b..9fe61d15fc0e 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -29,6 +29,19 @@ struct follow_page_context {
->  	unsigned int page_mask;
+On Fri, Jan 31, 2020 at 07:40:28PM -0800, John Hubbard wrote:
+> Up until now, gup_benchmark supported testing of the
+> following kernel functions:
+> 
+> * get_user_pages(): via the '-U' command line option
+> * get_user_pages_longterm(): via the '-L' command line option
+> * get_user_pages_fast(): as the default (no options required)
+> 
+> Add test coverage for the new corresponding pin_*() functions:
+> 
+> * pin_user_pages_fast(): via the '-a' command line option
+> * pin_user_pages():      via the '-b' command line option
+> 
+> Also, add an option for clarity: '-u' for what is now (still) the
+> default choice: get_user_pages_fast().
+> 
+> Also, for the commands that set FOLL_PIN, verify that the pages
+> really are dma-pinned, via the new is_dma_pinned() routine.
+> Those commands are:
+> 
+>     PIN_FAST_BENCHMARK     : calls pin_user_pages_fast()
+>     PIN_BENCHMARK          : calls pin_user_pages()
+> 
+> In between the calls to pin_*() and unpin_user_pages(),
+> check each page: if page_maybe_dma_pinned() returns false, then
+> WARN and return.
+> 
+> Do this outside of the benchmark timestamps, so that it doesn't
+> affect reported times.
+> 
+> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+>  mm/gup_benchmark.c                         | 71 ++++++++++++++++++++--
+>  tools/testing/selftests/vm/gup_benchmark.c | 15 ++++-
+>  2 files changed, 80 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/gup_benchmark.c b/mm/gup_benchmark.c
+> index 8dba38e79a9f..447628d0131f 100644
+> --- a/mm/gup_benchmark.c
+> +++ b/mm/gup_benchmark.c
+> @@ -8,6 +8,8 @@
+>  #define GUP_FAST_BENCHMARK	_IOWR('g', 1, struct gup_benchmark)
+>  #define GUP_LONGTERM_BENCHMARK	_IOWR('g', 2, struct gup_benchmark)
+>  #define GUP_BENCHMARK		_IOWR('g', 3, struct gup_benchmark)
+> +#define PIN_FAST_BENCHMARK	_IOWR('g', 4, struct gup_benchmark)
+> +#define PIN_BENCHMARK		_IOWR('g', 5, struct gup_benchmark)
+>  
+>  struct gup_benchmark {
+>  	__u64 get_delta_usec;
+> @@ -19,6 +21,48 @@ struct gup_benchmark {
+>  	__u64 expansion[10];	/* For future use */
 >  };
 >  
-> +#ifdef CONFIG_DEBUG_VM
-
-Why under CONFIG_DEBUG_VM? There's nothing about this in the cover letter.
-
-> +static inline void __update_proc_vmstat(struct page *page,
-> +					enum node_stat_item item, int count)
+> +static void put_back_pages(unsigned int cmd, struct page **pages,
+> +			   unsigned long nr_pages)
 > +{
-> +	mod_node_page_state(page_pgdat(page), item, count);
-> +}
-> +#else
-> +static inline void __update_proc_vmstat(struct page *page,
-> +					enum node_stat_item item, int count)
-> +{
-> +}
-> +#endif
+> +	int i;
 > +
->  static void hpage_pincount_add(struct page *page, int refs)
+> +	switch (cmd) {
+> +	case GUP_FAST_BENCHMARK:
+> +	case GUP_LONGTERM_BENCHMARK:
+> +	case GUP_BENCHMARK:
+> +		for (i = 0; i < nr_pages; i++)
+
+'i' is 'int' and 'nr_pages' is 'unsigned long'.
+There's space for trouble :P
+
+> +			put_page(pages[i]);
+> +		break;
+> +
+> +	case PIN_FAST_BENCHMARK:
+> +	case PIN_BENCHMARK:
+> +		unpin_user_pages(pages, nr_pages);
+> +		break;
+> +	}
+> +}
+> +
+> +static void verify_dma_pinned(unsigned int cmd, struct page **pages,
+> +			      unsigned long nr_pages)
+> +{
+> +	int i;
+> +	struct page *page;
+> +
+> +	switch (cmd) {
+> +	case PIN_FAST_BENCHMARK:
+> +	case PIN_BENCHMARK:
+> +		for (i = 0; i < nr_pages; i++) {
+
+Ditto.
+
+> +			page = pages[i];
+> +			if (WARN(!page_maybe_dma_pinned(page),
+> +				 "pages[%d] is NOT dma-pinned\n", i)) {
+> +
+> +				dump_page(page, "gup_benchmark failure");
+> +				break;
+> +			}
+> +		}
+> +		break;
+> +	}
+> +}
+> +
+>  static int __gup_benchmark_ioctl(unsigned int cmd,
+>  		struct gup_benchmark *gup)
 >  {
->  	VM_BUG_ON_PAGE(!hpage_pincount_available(page), page);
+
 -- 
  Kirill A. Shutemov
