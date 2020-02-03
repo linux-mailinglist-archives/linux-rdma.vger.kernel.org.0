@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B9D1507AB
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2020 14:46:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6331507CC
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2020 14:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbgBCNq2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Feb 2020 08:46:28 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:46506 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726561AbgBCNqV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Feb 2020 08:46:21 -0500
-Received: by mail-lj1-f194.google.com with SMTP id x14so14637597ljd.13
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Feb 2020 05:46:19 -0800 (PST)
+        id S1728273AbgBCNxO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Feb 2020 08:53:14 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:44357 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728251AbgBCNxL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Feb 2020 08:53:11 -0500
+Received: by mail-lf1-f68.google.com with SMTP id v201so9728146lfa.11
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Feb 2020 05:53:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=shutemov-name.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=tU9tK10SJbC8EDc1nwVApy1mZDrqz45FwFA9axqWA50=;
-        b=XDZxoHhCcK/pGBTHQTPXfmvtfOmM8Qx8aZuUUNp8bBh+ABwsHj6XiY+mvVsbwnG+WK
-         J+h9pC9u5JxzLXhuxudUIFZCRY7iVP8GEtrBuMhhajKY2VbUmsOAJOiCHqHSLIAFMP+h
-         BAR615hNSp5oNHhpaCb492STJsM7SDPqgTMXh/tEeok0wkcP1Ylg+iooZ4gFg8q/Y7Ce
-         HNnXYnWiHsb9v+nFvr/4j0fP3Q9jM4aQgAgHSRau7HUOJrbvHT/VgtzDJn+TmhgIQoP9
-         uWYcKYY23Qm56Gdf0De+1ri647PIXY1Br8V0GjmteuTNK7fWj+kV0lWWF0XQYzAPYtEh
-         nPVg==
+        bh=BzZMF6PZ0CInPvS+JZXdg2mkWs0iWkEH6sfExWwcsOM=;
+        b=SfWu8ptXcrqdLvVIL+9GNYbYTZM0c3Z4oRhn+03/fTLd35Qc+pNcEyJxhwF7lafzH0
+         d4srVxbs7KN6s0DICeR+xID9QEiL5Ej66kNXiGFzrPIy+dgRsWNigr9yFPOqIyzZR8Yb
+         ezgjxg7hzzAmGX6kvhZCjj1aEVb4gOrxjTbd3o1JoGMpP1dhE/N79lBbK3054K5SB+fF
+         sutl1znM5FUFndqKtQ2KHkt653qpODXWXb5b8k4kzpzBzqKQnCE7UTp+MxesWWLH9esw
+         gf66cdzuHedRhs58dFM9lmhZn7vMWU0idxfbqcAx5q1dYQlC2UcJeninpwCmf5bqLBhQ
+         tQpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=tU9tK10SJbC8EDc1nwVApy1mZDrqz45FwFA9axqWA50=;
-        b=NBrhBclnX+8HUVmTGzkSTcSWEisIh7L0N7lklP2Rc0U44812WL0DDvC+84/fKbEsvJ
-         7T9uOtFxIZxN6yNSL9fQh4F4ltOFHJ+mYbCLgSya6w4l0by2gqH3zy4PKyjhecKbAYbd
-         hVhWCsK1dyiRKSRLT9SvAwqPKpMBKnXT8PaflkfeN2qK0nUaRXc6DALQvQmKNa+2tfjZ
-         bSjhWz9+fkUiibSjqPfl48ZOn43B0uVL+YyaalRt1iMDE/TTIRV1E9WLQuWunLjD4Yyo
-         PZhYzfZ9X+RcTA8l3VuzWsM8+wxqUwew72CqRmcpXRxtQ0swOMfL90RF7l9lKLa1DwbT
-         z13A==
-X-Gm-Message-State: APjAAAVI6mCv9lPxu+gaAFhZob7BUX20Pnl8iAPkKSCDe7BLAKliHl0o
-        1FewWnzz2co0RKMkMT9CEXv3JQ==
-X-Google-Smtp-Source: APXvYqyy6A/WwKqfelaaFFwhQh2rUZje06Y/Uu8QUR0CaG7TohoxG9uxfSDbuo3RreSYZYQDJJrQ4Q==
-X-Received: by 2002:a2e:8758:: with SMTP id q24mr14214187ljj.157.1580737579039;
-        Mon, 03 Feb 2020 05:46:19 -0800 (PST)
+        bh=BzZMF6PZ0CInPvS+JZXdg2mkWs0iWkEH6sfExWwcsOM=;
+        b=qJBxwCLrjstpU/kJbmzp1bHtE0sF18j4ycOJefzj/AG2wJ1c7cwnmFWUvC5ykaKaXm
+         QWJXFrcqsIPFuBhFSDna9hbcdpP/pdA9XSCte9b0i9rp+etEp70/1IHRSZ/44rUT2zRw
+         2c0N3MgkwGZshI2HtIzyTP1FpDgIsmfwn/+j7AFnbGO2Baur6DKbk298NoI09siSDKKT
+         iyNbDccZJYTSeXS2CJSOeVWwnY7UF1526wRBzCQ2zOkNVdhUNvqf+IqtZK3W6aAfIp9i
+         jcpn/oC8qtwKp7jl2R0W8iLtknA8SFuA4v8ml+5Nx5RkSxVJRWTZmmtf3pyJNRu5OE4y
+         CI1g==
+X-Gm-Message-State: APjAAAWxlUHwmYk5JyJboPMDwNQ+NcSN6CD/gynURnM6+SpXimIsfRtY
+        gyi73RRqNHd0YJtiK/JqVTkp0w==
+X-Google-Smtp-Source: APXvYqysggXpYEJxCI/09xpMW4ELlsRRYlF7cYLpGOA4E8c4YYLRqJg9/VEkldqlzmdwIjBILEU4cQ==
+X-Received: by 2002:ac2:4246:: with SMTP id m6mr12217244lfl.165.1580737988577;
+        Mon, 03 Feb 2020 05:53:08 -0800 (PST)
 Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id q16sm8810732lfa.12.2020.02.03.05.46.18
+        by smtp.gmail.com with ESMTPSA id a12sm9743048ljk.48.2020.02.03.05.53.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Feb 2020 05:46:18 -0800 (PST)
+        Mon, 03 Feb 2020 05:53:07 -0800 (PST)
 Received: by box.localdomain (Postfix, from userid 1000)
-        id D207B100DC8; Mon,  3 Feb 2020 16:46:29 +0300 (+03)
-Date:   Mon, 3 Feb 2020 16:46:29 +0300
+        id AD6E1100DC8; Mon,  3 Feb 2020 16:53:20 +0300 (+03)
+Date:   Mon, 3 Feb 2020 16:53:20 +0300
 From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 To:     John Hubbard <jhubbard@nvidia.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -66,33 +66,47 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
         linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 09/12] mm: dump_page(): better diagnostics for huge
- pinned pages
-Message-ID: <20200203134629.qxkgsso5kksb3ljj@box>
+Subject: Re: [PATCH v3 10/12] mm/gup: /proc/vmstat: pin_user_pages (FOLL_PIN)
+ reporting
+Message-ID: <20200203135320.edujsfjwt5nvtiit@box>
 References: <20200201034029.4063170-1-jhubbard@nvidia.com>
- <20200201034029.4063170-10-jhubbard@nvidia.com>
+ <20200201034029.4063170-11-jhubbard@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200201034029.4063170-10-jhubbard@nvidia.com>
+In-Reply-To: <20200201034029.4063170-11-jhubbard@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 31, 2020 at 07:40:26PM -0800, John Hubbard wrote:
-> As part of pin_user_pages() and related API calls, pages are
-> "dma-pinned". For the case of compound pages of order > 1, the per-page
-> accounting of dma pins is accomplished via the 3rd struct page in the
-> compound page. In order to support debugging of any pin_user_pages()-
-> related problems, enhance dump_page() so as to report the pin count
-> in that case.
-> 
-> Documentation/core-api/pin_user_pages.rst is also updated accordingly.
-> 
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+On Fri, Jan 31, 2020 at 07:40:27PM -0800, John Hubbard wrote:
+> diff --git a/mm/gup.c b/mm/gup.c
+> index c10d0d051c5b..9fe61d15fc0e 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -29,6 +29,19 @@ struct follow_page_context {
+>  	unsigned int page_mask;
+>  };
+>  
+> +#ifdef CONFIG_DEBUG_VM
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Why under CONFIG_DEBUG_VM? There's nothing about this in the cover letter.
 
+> +static inline void __update_proc_vmstat(struct page *page,
+> +					enum node_stat_item item, int count)
+> +{
+> +	mod_node_page_state(page_pgdat(page), item, count);
+> +}
+> +#else
+> +static inline void __update_proc_vmstat(struct page *page,
+> +					enum node_stat_item item, int count)
+> +{
+> +}
+> +#endif
+> +
+>  static void hpage_pincount_add(struct page *page, int refs)
+>  {
+>  	VM_BUG_ON_PAGE(!hpage_pincount_available(page), page);
 -- 
  Kirill A. Shutemov
