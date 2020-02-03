@@ -2,319 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2815A14FEFE
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 Feb 2020 20:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3823E150176
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2020 06:35:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgBBTvy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 2 Feb 2020 14:51:54 -0500
-Received: from mga09.intel.com ([134.134.136.24]:65457 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726290AbgBBTvy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 2 Feb 2020 14:51:54 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 02 Feb 2020 11:51:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,395,1574150400"; 
-   d="scan'208";a="403215908"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 02 Feb 2020 11:51:51 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1iyLHa-000A8R-Vl; Mon, 03 Feb 2020 03:51:50 +0800
-Date:   Mon, 03 Feb 2020 03:51:43 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-next] BUILD SUCCESS
- 8889f6fa35884d09f24734e10fea0c9ddcbc6429
-Message-ID: <5e37284f./++cpC+2VEIklOBe%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727210AbgBCFf3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Feb 2020 00:35:29 -0500
+Received: from mail-il1-f193.google.com ([209.85.166.193]:33483 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727368AbgBCFf2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Feb 2020 00:35:28 -0500
+Received: by mail-il1-f193.google.com with SMTP id s18so11561341iln.0
+        for <linux-rdma@vger.kernel.org>; Sun, 02 Feb 2020 21:35:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0SHVnZMjrX3Jw9PKxItgQ/VRvGaJfmaxIMFbc3BTqm8=;
+        b=NYjKcGPJ2fx7ndiVntNjBXOCtwLP9qH06gHtOGeTVJ46k6a5T1lWOFMkVKiMAuYIyZ
+         xfQuibpcJkkEwwignFrWTdX6MhqgO8f5nw6Ef1+sC4RfTyZ98dwPBX1mtjAz9m/CF/ud
+         lspgW6mSMFHWOov9/V75MyIrHAG/b87S1zV+c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0SHVnZMjrX3Jw9PKxItgQ/VRvGaJfmaxIMFbc3BTqm8=;
+        b=T27KKdwAuVz5VW+l4n5tC8nbAb9Yz8YN+1AqgylvquzJmvlN3QLcqfDLV01sPA3DoI
+         8gOLzz2jGz7uUyP5U0F/gwcraLv3oNEf2EaclcNuF+Bmilp9FoPG1nFJ7QWSKhrfmN0r
+         bHRmIZl4sUKI+uU/1r28kZiYQgRtJiaecDISJL4aXxfrkLvNNG5T4vhskr5fCOWgf3Sk
+         rXRI8Mlna3EC0bNqTpj4Frk2ypjU7bwG59/hsJdyalCxJ18tc2fJBT5/Pun1Tvn5Yo2m
+         s8S3vwQg1LyZ8K/G0iIQIELQ/9gYTD7m4Wf3eC2ugX/xZo+Med+WNIztLHy8tIn0wkJH
+         hRAw==
+X-Gm-Message-State: APjAAAWNwjIOqzuKwrxDxowVmPdQG5kEZZOwXcFXj7GjaMrvVYuKgmOA
+        9T0MGuHQlefRweAaw1Yl5+vd+NwJ+qtLuHZlHIAi7zcH
+X-Google-Smtp-Source: APXvYqzANtcXXoyCKSW85ErhMsmzCscxM8gckDsoVLJD0DWPjq5A4EzTaLO3Vcmgm34+YWuiNiqiFFtYv2QmPKlxVG8=
+X-Received: by 2002:a92:9ac5:: with SMTP id c66mr21560752ill.232.1580708127988;
+ Sun, 02 Feb 2020 21:35:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <1580493621-31006-1-git-send-email-devesh.sharma@broadcom.com>
+In-Reply-To: <1580493621-31006-1-git-send-email-devesh.sharma@broadcom.com>
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+Date:   Mon, 3 Feb 2020 11:04:51 +0530
+Message-ID: <CANjDDBi=V2+DcK2u+YPiFfyYV+O4qxUbxUWvLpgWEH6JCDm6Vg@mail.gmail.com>
+Subject: Re: [PATCH v2] rdma-core/libibverbs: display gid type in ibv_devinfo
+To:     linux-rdma <linux-rdma@vger.kernel.org>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-next
-branch HEAD: 8889f6fa35884d09f24734e10fea0c9ddcbc6429  RDMA/core: Make the entire API tree static
-
-elapsed time: 4085m
-
-configs tested: 264
-configs skipped: 1
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-sparc                            allyesconfig
-arc                                 defconfig
-um                           x86_64_defconfig
-sparc64                          allyesconfig
-m68k                           sun3_defconfig
-s390                                defconfig
-microblaze                      mmu_defconfig
-um                             i386_defconfig
-ia64                                defconfig
-powerpc                             defconfig
-powerpc                           allnoconfig
-i386                              allnoconfig
-i386                                defconfig
-i386                             alldefconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-xtensa                       common_defconfig
-openrisc                    or1ksim_defconfig
-nios2                         3c120_defconfig
-xtensa                          iss_defconfig
-c6x                        evmc6678_defconfig
-c6x                              allyesconfig
-nios2                         10m50_defconfig
-openrisc                 simple_smp_defconfig
-nds32                               defconfig
-alpha                               defconfig
-csky                                defconfig
-nds32                             allnoconfig
-m68k                       m5475evb_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                     edosk2674_defconfig
-h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
-m68k                          multi_defconfig
-arc                              allyesconfig
-microblaze                    nommu_defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                      malta_kvm_defconfig
-mips                      fuloong2e_defconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                              allnoconfig
-mips                             allyesconfig
-parisc                            allnoconfig
-parisc                            allyesonfig
-parisc                         b180_defconfig
-parisc                        c3000_defconfig
-parisc                              defconfig
-i386                 randconfig-a003-20200202
-i386                 randconfig-a002-20200202
-x86_64               randconfig-a003-20200202
-i386                 randconfig-a001-20200202
-x86_64               randconfig-a002-20200202
-x86_64               randconfig-a001-20200202
-x86_64               randconfig-a001-20200129
-i386                 randconfig-a001-20200129
-x86_64               randconfig-a002-20200129
-i386                 randconfig-a002-20200129
-i386                 randconfig-a003-20200129
-x86_64               randconfig-a003-20200129
-i386                 randconfig-a002-20200130
-i386                 randconfig-a001-20200130
-x86_64               randconfig-a002-20200130
-x86_64               randconfig-a003-20200130
-i386                 randconfig-a003-20200130
-x86_64               randconfig-a001-20200130
-nds32                randconfig-a001-20200131
-parisc               randconfig-a001-20200131
-alpha                randconfig-a001-20200131
-riscv                randconfig-a001-20200131
-m68k                 randconfig-a001-20200131
-alpha                randconfig-a001-20200202
-parisc               randconfig-a001-20200202
-m68k                 randconfig-a001-20200202
-nds32                randconfig-a001-20200202
-mips                 randconfig-a001-20200202
-riscv                randconfig-a001-20200202
-nds32                randconfig-a001-20200130
-parisc               randconfig-a001-20200130
-alpha                randconfig-a001-20200130
-mips                 randconfig-a001-20200130
-m68k                 randconfig-a001-20200130
-riscv                randconfig-a001-20200130
-h8300                randconfig-a001-20200202
-nios2                randconfig-a001-20200202
-microblaze           randconfig-a001-20200202
-c6x                  randconfig-a001-20200202
-h8300                randconfig-a001-20200130
-nios2                randconfig-a001-20200130
-c6x                  randconfig-a001-20200130
-sparc64              randconfig-a001-20200130
-sparc64              randconfig-a001-20200202
-sh                   randconfig-a001-20200202
-s390                 randconfig-a001-20200202
-csky                 randconfig-a001-20200202
-xtensa               randconfig-a001-20200202
-openrisc             randconfig-a001-20200202
-x86_64               randconfig-b002-20200129
-i386                 randconfig-b001-20200129
-i386                 randconfig-b002-20200129
-x86_64               randconfig-b001-20200129
-x86_64               randconfig-b003-20200129
-i386                 randconfig-b001-20200202
-x86_64               randconfig-b002-20200202
-i386                 randconfig-b002-20200202
-x86_64               randconfig-b001-20200202
-i386                 randconfig-b003-20200202
-x86_64               randconfig-b003-20200202
-i386                 randconfig-b003-20200129
-i386                 randconfig-c003-20200202
-i386                 randconfig-c003-20200129
-x86_64               randconfig-c003-20200129
-x86_64               randconfig-c002-20200129
-x86_64               randconfig-c001-20200129
-i386                 randconfig-c001-20200129
-i386                 randconfig-c002-20200129
-i386                 randconfig-c001-20200131
-x86_64               randconfig-c003-20200131
-i386                 randconfig-c003-20200131
-x86_64               randconfig-c001-20200131
-x86_64               randconfig-c002-20200131
-i386                 randconfig-c002-20200131
-x86_64               randconfig-c003-20200202
-x86_64               randconfig-c002-20200202
-i386                 randconfig-c002-20200202
-i386                 randconfig-c001-20200202
-x86_64               randconfig-c001-20200202
-i386                 randconfig-d003-20200202
-i386                 randconfig-d003-20200130
-x86_64               randconfig-d002-20200130
-i386                 randconfig-d001-20200130
-i386                 randconfig-d002-20200130
-x86_64               randconfig-d003-20200130
-x86_64               randconfig-d001-20200130
-i386                 randconfig-d003-20200129
-i386                 randconfig-d002-20200129
-x86_64               randconfig-d003-20200129
-x86_64               randconfig-d001-20200129
-x86_64               randconfig-d002-20200129
-i386                 randconfig-d001-20200129
-x86_64               randconfig-d003-20200202
-i386                 randconfig-d001-20200202
-x86_64               randconfig-d002-20200202
-x86_64               randconfig-d001-20200202
-i386                 randconfig-d002-20200202
-i386                 randconfig-e003-20200202
-i386                 randconfig-e002-20200202
-x86_64               randconfig-e001-20200202
-x86_64               randconfig-e003-20200202
-i386                 randconfig-e001-20200202
-x86_64               randconfig-e002-20200202
-i386                 randconfig-e002-20200129
-x86_64               randconfig-e002-20200129
-i386                 randconfig-e001-20200129
-i386                 randconfig-e003-20200129
-x86_64               randconfig-e003-20200129
-x86_64               randconfig-e001-20200129
-i386                 randconfig-e001-20200130
-x86_64               randconfig-e002-20200130
-x86_64               randconfig-e003-20200130
-i386                 randconfig-e003-20200130
-x86_64               randconfig-e001-20200130
-i386                 randconfig-e002-20200130
-x86_64               randconfig-f001-20200202
-x86_64               randconfig-f002-20200202
-x86_64               randconfig-f003-20200202
-i386                 randconfig-f001-20200202
-i386                 randconfig-f002-20200202
-i386                 randconfig-f003-20200202
-x86_64               randconfig-f001-20200129
-x86_64               randconfig-f003-20200129
-x86_64               randconfig-f002-20200129
-i386                 randconfig-f001-20200129
-i386                 randconfig-f003-20200129
-i386                 randconfig-f002-20200129
-i386                 randconfig-g003-20200129
-x86_64               randconfig-g003-20200129
-x86_64               randconfig-g001-20200129
-i386                 randconfig-g001-20200129
-x86_64               randconfig-g002-20200129
-i386                 randconfig-g002-20200129
-x86_64               randconfig-g003-20200202
-x86_64               randconfig-g001-20200202
-i386                 randconfig-g001-20200202
-x86_64               randconfig-g002-20200202
-i386                 randconfig-g002-20200202
-i386                 randconfig-g003-20200202
-x86_64               randconfig-h001-20200202
-x86_64               randconfig-h002-20200202
-x86_64               randconfig-h003-20200202
-i386                 randconfig-h001-20200202
-i386                 randconfig-h002-20200202
-i386                 randconfig-h003-20200202
-i386                 randconfig-h003-20200129
-x86_64               randconfig-h003-20200131
-i386                 randconfig-h001-20200131
-x86_64               randconfig-h002-20200131
-i386                 randconfig-h003-20200131
-i386                 randconfig-h002-20200131
-x86_64               randconfig-h001-20200131
-arm64                randconfig-a001-20200131
-ia64                 randconfig-a001-20200131
-sparc                randconfig-a001-20200131
-arm                  randconfig-a001-20200131
-arc                  randconfig-a001-20200131
-arc                  randconfig-a001-20200203
-arm                  randconfig-a001-20200203
-arm64                randconfig-a001-20200203
-ia64                 randconfig-a001-20200203
-powerpc              randconfig-a001-20200203
-sparc                randconfig-a001-20200203
-arm64                randconfig-a001-20200130
-ia64                 randconfig-a001-20200130
-sparc                randconfig-a001-20200130
-arm                  randconfig-a001-20200130
-arc                  randconfig-a001-20200130
-sparc                randconfig-a001-20200202
-riscv                          rv32_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-s390                          debug_defconfig
-s390                       zfcpdump_defconfig
-s390                              allnoconfig
-s390                             alldefconfig
-s390                             allmodconfig
-s390                             allyesconfig
-sh                               allmodconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                                allnoconfig
-sh                            titan_defconfig
-i386                             allyesconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                             defconfig
-um                                  defconfig
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
-
----
-0-DAY kernel test infrastructure                 Open Source Technology Center
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
+On Fri, Jan 31, 2020 at 11:30 PM Devesh Sharma
+<devesh.sharma@broadcom.com> wrote:
+>
+> It becomes difficult to make out from the output of ibv_devinfo
+> if a particular gid index is RoCE v2 or not.
+>
+> Adding a string to the output of ibv_devinfo -v to display the
+> gid type at the end of gid.
+>
+> Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+> ---
+>  libibverbs/examples/devinfo.c | 24 ++++++++++++++++++++++--
+>  1 file changed, 22 insertions(+), 2 deletions(-)
+>
+> diff --git a/libibverbs/examples/devinfo.c b/libibverbs/examples/devinfo.c
+> index bf53eac..4094ea0 100644
+> --- a/libibverbs/examples/devinfo.c
+> +++ b/libibverbs/examples/devinfo.c
+> @@ -162,8 +162,18 @@ static const char *vl_str(uint8_t vl_num)
+>         }
+>  }
+>
+> +static const char *gid_type_str(enum ibv_gid_type type)
+> +{
+> +       switch (type) {
+> +       case 0: return "IB/RoCE v1";
+> +       case 1: return "RoCE v2";
+> +       default: return "invalid value";
+> +       }
+> +}
+> +
+>  static int print_all_port_gids(struct ibv_context *ctx, uint8_t port_num, int tbl_len)
+>  {
+> +       enum ibv_gid_type type;
+>         union ibv_gid gid;
+>         int rc = 0;
+>         int i;
+> @@ -175,8 +185,17 @@ static int print_all_port_gids(struct ibv_context *ctx, uint8_t port_num, int tb
+>                                port_num, i);
+>                         return rc;
+>                 }
+> +
+> +               rc = ibv_query_gid_type(ctx, port_num, i, &type);
+> +               if (rc) {
+> +                       rc = 0;
+> +                       type = 0x2;
+> +                       fprintf(stderr, "Failed to query gid type to port %d, index %d\n",
+> +                               port_num, i);
+> +               }
+> +
+>                 if (!null_gid(&gid))
+> -                       printf("\t\t\tGID[%3d]:\t\t%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
+> +                       printf("\t\t\tGID[%3d]:\t\t%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x, %s\n",
+>                                i,
+>                                gid.raw[ 0], gid.raw[ 1],
+>                                gid.raw[ 2], gid.raw[ 3],
+> @@ -185,7 +204,8 @@ static int print_all_port_gids(struct ibv_context *ctx, uint8_t port_num, int tb
+>                                gid.raw[ 8], gid.raw[ 9],
+>                                gid.raw[10], gid.raw[11],
+>                                gid.raw[12], gid.raw[13],
+> -                              gid.raw[14], gid.raw[15]);
+> +                              gid.raw[14], gid.raw[15],
+> +                              gid_type_str(type));
+>         }
+>         return rc;
+>  }
+> --
+> 1.8.3.1
+I will send out v3 as one more change is requested by Parav.
+>
