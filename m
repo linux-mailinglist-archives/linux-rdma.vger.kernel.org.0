@@ -2,58 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E9B150741
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2020 14:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC5415078B
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2020 14:40:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727948AbgBCNa4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Feb 2020 08:30:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727859AbgBCNa4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 3 Feb 2020 08:30:56 -0500
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 10CF220721;
-        Mon,  3 Feb 2020 13:30:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580736655;
-        bh=l1hGlV6EJjRK63ezMZBBQm4f35pY9nw/Z8Cb5oARWPE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q4jCHWiwsbjZHlzi4PhbG1m+bDCMmIRw3r+aoul+y4HySUO/EbRFDvA1WSbPCj90h
-         TQjbXIwXFQvgQpbTYV27WDTiyl6semGMEkgCeDR4r6ozkvHQ9irPq4zwkeuN3GgXhT
-         nynTwBoMXHo7xy5Gz/WRGW5rDYHeZh4SqG9fF2wg=
-Date:   Mon, 3 Feb 2020 15:30:50 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Frank Huang <tigerinxm@gmail.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: a strange lock
-Message-ID: <20200203133050.GP414821@unreal>
-References: <CAKC_zSu1SQgNT5Yyg49qe+r+hux-3oCqzZPvH0b7pjaPz2x2Rw@mail.gmail.com>
+        id S1727450AbgBCNkP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Feb 2020 08:40:15 -0500
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:41515 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727275AbgBCNkO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Feb 2020 08:40:14 -0500
+Received: by mail-lf1-f66.google.com with SMTP id m30so9704260lfp.8
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Feb 2020 05:40:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IepX5s8KFLsk6M2RacMY6MKMLoWf8Qm8TUZ7wknCHKI=;
+        b=V+4u5+sRDRa4EXjyU6EXahB5/qcJ4orECk73ouG9low9d6PwUnRJjR9NJhHEjTQYSc
+         Kui3JUb7FZskaS0to2XNB5M99d9ceo1Gi5bFsK18GYn0BH9bFlJUjtvPnfiIKpv3JjPG
+         GN2O+dt4wtxSRQgVtfXBVB8anFatg0XNmKR3XbgBZDKcI4KWyRsggZdCxKAEP7fLCJnJ
+         w+lL+mLBi8v46+BSbg8YNQm0rtBn8AvvKMx26WBH8gGzdgfGQpnmd9SEeyJL4Y7qD2NP
+         UHIX453KVTaaxcLGS1d/BQFylt143bcU6bmZEiglXvs0oQ2BwBpYMi+F3sDDFSv4qlp9
+         ++ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IepX5s8KFLsk6M2RacMY6MKMLoWf8Qm8TUZ7wknCHKI=;
+        b=Zz8eKeAeZMwCzMv4h6Tvo89ogqiD/5NxMKGrn1bqwrJbUjy2j/fTFjS088VrqFz4SZ
+         Teg0O89OyxfdgpkZaCZGbqbjzEh3RWBS2/WTFV1/QP4tktxI1YHljYIXeA0KZ6cMrSRa
+         Vkt57VEhrPTrFKCRZoVp9aNLdABnaxatFKlOm2Rv+Q+I2aiD71PbEqFRcRrKk2Mz3Kme
+         j63EphTUYb9WoH74PWpXz5N/Y5uMa/jP+Nzoz9soUA+64k/VJKG78YaYk3bZZ327z3bX
+         yc2Dnf+6bJj6QkbaKV6F4dV2fYOpXAvn6X/rjSV+zhOPiwYShFkd612WNP4ZJAfHp9V4
+         HqnQ==
+X-Gm-Message-State: APjAAAVAU8uyhgQCImYSX7+BxTqWUbJ39ex4/LdLpt1uDpzhkMuZlpm2
+        w1pNmrKmTEag9JbaAK1p+cXdLw==
+X-Google-Smtp-Source: APXvYqy1bsDNFhPqOt4MsuS/yl5Hsf7q101c7952EIchzIfLZ702j/lDwPX7Jz7ekEA66zEPoq/Ulg==
+X-Received: by 2002:ac2:58cf:: with SMTP id u15mr12097728lfo.62.1580737212908;
+        Mon, 03 Feb 2020 05:40:12 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id m13sm9054940lfo.40.2020.02.03.05.40.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Feb 2020 05:40:11 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id A03D9100DC8; Mon,  3 Feb 2020 16:40:24 +0300 (+03)
+Date:   Mon, 3 Feb 2020 16:40:24 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v3 07/12] mm/gup: track FOLL_PIN pages
+Message-ID: <20200203134024.htczuqghduajb3yx@box>
+References: <20200201034029.4063170-1-jhubbard@nvidia.com>
+ <20200201034029.4063170-8-jhubbard@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKC_zSu1SQgNT5Yyg49qe+r+hux-3oCqzZPvH0b7pjaPz2x2Rw@mail.gmail.com>
+In-Reply-To: <20200201034029.4063170-8-jhubbard@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 03, 2020 at 08:31:10PM +0800, Frank Huang wrote:
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/infiniband/core/cma.c#n1832
->
-> /*
-> * Wait for any active callback to finish.  New callbacks will find
-> * the id_priv state set to destroying and abort.
-> */
-> mutex_lock(&id_priv->handler_mutex);
-> mutex_unlock(&id_priv->handler_mutex);
->
-> It does nothing between the lock, what 's the meaning of it?
+On Fri, Jan 31, 2020 at 07:40:24PM -0800, John Hubbard wrote:
+> @@ -4405,7 +4392,13 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
+>  same_page:
+>  		if (pages) {
+>  			pages[i] = mem_map_offset(page, pfn_offset);
+> -			get_page(pages[i]);
+> +			if (!try_grab_page(pages[i], flags)) {
+> +				spin_unlock(ptl);
+> +				remainder = 0;
+> +				err = -ENOMEM;
+> +				WARN_ON_ONCE(1);
 
-It is a way to implement wait_for_completion paradigm, by ensuring
-that all cm_id works or will see RDMA_CM_DESTROYING state (they need
-to take handler_mutex, before every call to cma_exch), or will
-complete their execution and release handler_mutex.
+The WARN_ON_ONCE deserve a comment. And I guess you can put it into 'if'
+condition.
 
-Thanks
+> +				break;
+> +			}
+>  		}
+>  
+>  		if (vmas)
+> @@ -4965,6 +4958,12 @@ follow_huge_pmd(struct mm_struct *mm, unsigned long address,
+>  	struct page *page = NULL;
+>  	spinlock_t *ptl;
+>  	pte_t pte;
+> +
+> +	/* FOLL_GET and FOLL_PIN are mutually exclusive. */
+> +	if (WARN_ON_ONCE((flags & (FOLL_PIN | FOLL_GET)) ==
+> +			 (FOLL_PIN | FOLL_GET)))
+> +		return NULL;
+> +
+>  retry:
+>  	ptl = pmd_lockptr(mm, pmd);
+>  	spin_lock(ptl);
+> @@ -4977,8 +4976,11 @@ follow_huge_pmd(struct mm_struct *mm, unsigned long address,
+>  	pte = huge_ptep_get((pte_t *)pmd);
+>  	if (pte_present(pte)) {
+>  		page = pmd_page(*pmd) + ((address & ~PMD_MASK) >> PAGE_SHIFT);
+> -		if (flags & FOLL_GET)
+> -			get_page(page);
+> +		if (unlikely(!try_grab_page(page, flags))) {
+> +			WARN_ON_ONCE(1);
+
+Ditto.
+
+> +			page = NULL;
+> +			goto out;
+> +		}
+>  	} else {
+>  		if (is_hugetlb_entry_migration(pte)) {
+>  			spin_unlock(ptl);
+
+-- 
+ Kirill A. Shutemov
