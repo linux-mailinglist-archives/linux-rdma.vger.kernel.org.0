@@ -2,79 +2,180 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A81CF1510FA
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2020 21:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 828D7151181
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Feb 2020 22:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726224AbgBCU0s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Feb 2020 15:26:48 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:35321 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgBCU0s (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Feb 2020 15:26:48 -0500
-Received: by mail-qt1-f195.google.com with SMTP id n17so11384283qtv.2
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Feb 2020 12:26:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mVebTVoG0uWjjgGpSieazY2tiuchgTUEKvCRKCWsDd8=;
-        b=hK5x0A1XO/Klun2AlPoq/6xa1ZG1WJZZfj18aMXWEmxzXnOZ4JQrIugxlR8rj93Srs
-         AONw3Bh2O0oR2PhWTyT+yzQQuuqNVrY8cHJB6gkiXbQS/VLDfDVzSjAc5tLPN3OLfsHJ
-         hlxKN4+7L3uVsqdJJAZ1bWqkT37ahkzgliIaVVhuUBlYoOvQpJ/DOVeoI9sIzgUvwFK8
-         W5PRep5yLjXhQdpdGQQq3JszXDf0eNOvas3LI2vZzcF/vmg0gf5RqUlH7tReRywK88Yq
-         Qy7Rf97OMRs1C1O2CdnB5dVhuMVn2xEQVhoyebV5pOvyG4KFWqK/zqf9U3wUevlD66+f
-         di+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mVebTVoG0uWjjgGpSieazY2tiuchgTUEKvCRKCWsDd8=;
-        b=OHKFnJlhQ9S+Ye6OdSn8Y157069X1MnsBL7TDTtobeOWJNT5qaaXSOLYoYwOuj/rYU
-         jyMHDOtmev/aUMa/R0lSLPn8+U/5X12fyNiqTZZzSWToJV7rqXcV+L9SP6uY/VFT4tNS
-         UpyD+uXZz+GeHVSEzp3dlJBfEoEtlc25roLYgQbd9Y6vAsoqdCmup4KYpgu+9VjMP4vw
-         lu1mVyP/+8zDbNoVBJnfR6u/EstGaV0e6MywXRN40U30gQ2oZ94ZRpFhANn92fCnsUg/
-         Iat35NcYv+LdegSF4omYZKY/ZaSyIdDeb+68AVG02CgTwTEhlXRCBcM2I8JK13/dgPUG
-         IYxw==
-X-Gm-Message-State: APjAAAWPud+wTv8R/qdXU4shkULl8NhAca7sEL4YzYGVkY/+5wAmi5VE
-        ojhO6SE3JDD9fUbfJ2l554+p/g==
-X-Google-Smtp-Source: APXvYqwQRkl1po9AfnjBbBhmfRAJdlH/qAZiVI/XThwIko+Kx7usYtXvcTUofRmPfD1W8zIeqPfNfQ==
-X-Received: by 2002:ac8:104:: with SMTP id e4mr25014646qtg.37.1580761607504;
-        Mon, 03 Feb 2020 12:26:47 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id w21sm11028411qth.17.2020.02.03.12.26.46
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 03 Feb 2020 12:26:46 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iyiIw-0005DI-Du; Mon, 03 Feb 2020 16:26:46 -0400
-Date:   Mon, 3 Feb 2020 16:26:46 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     YuvalShaiayuval.shaia.ml@gmail.com
-Cc:     aditr@vmware.com, pv-drivers@vmware.com, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, Yuval Shaia <yuval.shaia.ml@gmail.com>
-Subject: Re: [PATCH] RDMA/vmw_pvrdma: Disable PCI device on error
-Message-ID: <20200203202646.GC14732@ziepe.ca>
-References: <20200203183736.10932-1-yuval.shaia.ml@gmail.com>
+        id S1726474AbgBCVBR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Feb 2020 16:01:17 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11345 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726278AbgBCVBR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Feb 2020 16:01:17 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e388a030000>; Mon, 03 Feb 2020 13:00:51 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 03 Feb 2020 13:01:14 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 03 Feb 2020 13:01:14 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 3 Feb
+ 2020 21:01:14 +0000
+Subject: Re: [PATCH v3 07/12] mm/gup: track FOLL_PIN pages
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20200201034029.4063170-1-jhubbard@nvidia.com>
+ <20200201034029.4063170-8-jhubbard@nvidia.com>
+ <20200203134024.htczuqghduajb3yx@box>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <44f9e71f-dc65-fb37-dd6d-228270170aad@nvidia.com>
+Date:   Mon, 3 Feb 2020 13:01:14 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200203183736.10932-1-yuval.shaia.ml@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200203134024.htczuqghduajb3yx@box>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1580763651; bh=xdyrRhrFRwm8PgNsPaTnG7fESTt9E/IE4SCifoyTh/g=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=ZlOdaNKeCwGQCefKwQkyzz5HO3exK9puspru1qNqq8OeTYhh79QWmjMtrfnso5+/i
+         okdRSSlKjbVj6W3rH8UK/+NXzDNQQSIFzmO/yAxm2o28hb6D9mOZq7R3erjxiHtkJg
+         Pq9boyDlD9aiomyCHOcEdWTjh1LL6mxNXdSseAKDijaCu8YQP9ylcUSgfrO+BG3Ktk
+         5dNjBCi3KJfawkDCi9Laqgj825rrHLwsKcNDBOAjF5PR8AbP2BDizrMjAO0QnCE6LA
+         BNJqk2jhW8zGG9ac3sM5E6VfkmA1W1V1JqBYxqnsaL6hHsS+lzpNh3QdGs6DPM5mbC
+         6hWoULMfVb8tg==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 03, 2020 at 08:37:36PM +0200, YuvalShaiayuval.shaia.ml@gmail.com wrote:
-> From: Yuval Shaia <yuval.shaia.ml@gmail.com>
+On 2/3/20 5:40 AM, Kirill A. Shutemov wrote:
+> On Fri, Jan 31, 2020 at 07:40:24PM -0800, John Hubbard wrote:
+>> @@ -4405,7 +4392,13 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
+>>  same_page:
+>>  		if (pages) {
+>>  			pages[i] = mem_map_offset(page, pfn_offset);
+>> -			get_page(pages[i]);
+>> +			if (!try_grab_page(pages[i], flags)) {
+>> +				spin_unlock(ptl);
+>> +				remainder = 0;
+>> +				err = -ENOMEM;
+>> +				WARN_ON_ONCE(1);
 > 
-> We need to disable the PCI device on any error happen after we enable
-> the device.
+> The WARN_ON_ONCE deserve a comment. And I guess you can put it into 'if'
+> condition.
+
+OK, I've changed it to the following, which I *think* is an accurate comment, but
+I'm still a bit new to huge pages:
+
+		if (pages) {
+			pages[i] = mem_map_offset(page, pfn_offset);
+			/*
+			 * try_grab_page() should always succeed here, because:
+			 * a) we hold the ptl lock, and b) we've just checked
+			 * that the huge page is present in the page tables. If
+			 * the huge page is present, then the tail pages must
+			 * also be present. The ptl prevents the head page and
+			 * tail pages from being rearranged in any way. So this
+			 * page must be available at this point, unless the page
+			 * refcount overflowed:
+			 */
+			if (WARN_ON_ONCE(!try_grab_page(pages[i], flags))) {
+				spin_unlock(ptl);
+				remainder = 0;
+				err = -ENOMEM;
+				break;
+			}
+		}
+
+
 > 
-> Signed-off-by: Yuval Shaia <yuval.shaia.ml@gmail.com>
->  drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>> +				break;
+>> +			}
+>>  		}
+>>  
+>>  		if (vmas)
+>> @@ -4965,6 +4958,12 @@ follow_huge_pmd(struct mm_struct *mm, unsigned long address,
+>>  	struct page *page = NULL;
+>>  	spinlock_t *ptl;
+>>  	pte_t pte;
+>> +
+>> +	/* FOLL_GET and FOLL_PIN are mutually exclusive. */
+>> +	if (WARN_ON_ONCE((flags & (FOLL_PIN | FOLL_GET)) ==
+>> +			 (FOLL_PIN | FOLL_GET)))
+>> +		return NULL;
+>> +
+>>  retry:
+>>  	ptl = pmd_lockptr(mm, pmd);
+>>  	spin_lock(ptl);
+>> @@ -4977,8 +4976,11 @@ follow_huge_pmd(struct mm_struct *mm, unsigned long address,
+>>  	pte = huge_ptep_get((pte_t *)pmd);
+>>  	if (pte_present(pte)) {
+>>  		page = pmd_page(*pmd) + ((address & ~PMD_MASK) >> PAGE_SHIFT);
+>> -		if (flags & FOLL_GET)
+>> -			get_page(page);
+>> +		if (unlikely(!try_grab_page(page, flags))) {
+>> +			WARN_ON_ONCE(1);
+> 
+> Ditto.
 
-Lets have fixes lines for this and the other patch please
 
-Jason
+OK, I've added a similar comment as the one above. Now it looks like this:
+
+	if (pte_present(pte)) {
+		page = pmd_page(*pmd) + ((address & ~PMD_MASK) >> PAGE_SHIFT);
+		/*
+		 * try_grab_page() should always succeed here, because: a) we
+		 * hold the pmd (ptl) lock, and b) we've just checked that the
+		 * huge pmd (head) page is present in the page tables. The ptl
+		 * prevents the head page and tail pages from being rearranged
+		 * in any way. So this page must be available at this point,
+		 * unless the page refcount overflowed:
+		 */
+		if (WARN_ON_ONCE(!try_grab_page(page, flags))) {
+			page = NULL;
+			goto out;
+		}
+
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
+
+> 
+>> +			page = NULL;
+>> +			goto out;
+>> +		}
+>>  	} else {
+>>  		if (is_hugetlb_entry_migration(pte)) {
+>>  			spin_unlock(ptl);
+> 
