@@ -2,62 +2,50 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A7015153F
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2020 06:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0A915165C
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2020 08:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725813AbgBDFJd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Feb 2020 00:09:33 -0500
-Received: from mail-il1-f195.google.com ([209.85.166.195]:43028 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgBDFJc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Feb 2020 00:09:32 -0500
-Received: by mail-il1-f195.google.com with SMTP id o13so14754071ilg.10
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Feb 2020 21:09:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+YnUW0cfWuymPPICwh9J45f4XHrvuRw3JgEK9PQankM=;
-        b=LgjwdDCiHjaM4MrpNpTOUDmppWfVsYv0gXxZ74c1O7U+Tq8PIDMe96r//ZDwqvIA5Q
-         wegsHr3St4R9gXCt4RjLAJjNWYhhEBf4F5AS3ZeHpckmQmA+UimdW9p4TWKBNx0uFZ7h
-         hSMe+pk+O/X0eAaibOzt1PWK/hK6NfoTklqII=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+YnUW0cfWuymPPICwh9J45f4XHrvuRw3JgEK9PQankM=;
-        b=m1//Zp1blL9dGFZQAQ1/6ivqcUl4DbcViXZJFv0Lt+FHAiRuflOXdAUrt/NyTRkJeC
-         THEj2W5DdlbZ4jYJq6oEuUtBUZRqg2YXKWsH3KdP2XmY+VQaaYwB8DYDVGgfmJ8T8FoX
-         Tm+zMknpA0aUYtg6Bh/bUG6Z4Go66UllqDiJ0elXSLLeX6iIJjgK8osj1XqbVbq2mQ3L
-         HGaP6Ys6wd607V6NoDihEllcdlswaUKMsilJ4qVzsvuYSJhnCJ9Ws7nbBi0gMLoevsFs
-         ZKabEYDf9ovHem10aDC+sMSN50okpvW16kda0z/hS44GEdBZJbM7Tnc4hXRVotOsKZs/
-         A+nA==
-X-Gm-Message-State: APjAAAWA31S0qjbqDzKMZ9l456KSegakJZVvyA2mEHPZOxsMYHbRqOQo
-        Z7e0bM1GJCg2Ib1ZPW9m3HJjQTc5TBPJYBq8pxOp3g==
-X-Google-Smtp-Source: APXvYqy4mI3OW11GWmMiYRuilozs8gifoO0bCqONbhoEgA6+ZaCe8sYCziRMrYmYXKl5xnynpsCzkBBvslWNe0CpPbQ=
-X-Received: by 2002:a92:c703:: with SMTP id a3mr17916985ilp.89.1580792972255;
- Mon, 03 Feb 2020 21:09:32 -0800 (PST)
-MIME-Version: 1.0
-References: <1580752324-24742-1-git-send-email-devesh.sharma@broadcom.com>
- <20200203175317.GQ23346@mellanox.com> <CANjDDBh_Xv0BNhTYZ1xaaOCQ8-ijHUMqDE68_J4aqRF-EnT2Zg@mail.gmail.com>
- <20200203180405.GR23346@mellanox.com> <AM0PR05MB486694589EA1CBC66F598066D1030@AM0PR05MB4866.eurprd05.prod.outlook.com>
-In-Reply-To: <AM0PR05MB486694589EA1CBC66F598066D1030@AM0PR05MB4866.eurprd05.prod.outlook.com>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Tue, 4 Feb 2020 10:38:55 +0530
-Message-ID: <CANjDDBjPuQBD6woxMT9K=jVD5DiTYu0ODBd24BOzOMQw3VoO9w@mail.gmail.com>
-Subject: Re: [PATCH v5] libibverbs: display gid type in ibv_devinfo
+        id S1725834AbgBDHRn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Feb 2020 02:17:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726329AbgBDHRn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 4 Feb 2020 02:17:43 -0500
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD7A921582;
+        Tue,  4 Feb 2020 07:17:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1580800662;
+        bh=NHpe00tocpgpDFOjW1dvsb+cFxImQoC9dj2jGu7gdJs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q+FB0Iaue+Y3ZB79r/cAxCVhNE2GOZQGLD/e6fxht7FXQ2X/kMUCawGj0kQNwLHSy
+         WALD2Fuz3rzpYva74lFUDgYtAsvWhn7tzv+dB+C9foDL0FT7g0nm6VcjA5O/604Wh9
+         E1ZJpSs92TXL/SFweh9xPBdmk37TM3IczBSlVRns=
+Date:   Tue, 4 Feb 2020 09:17:39 +0200
+From:   Leon Romanovsky <leon@kernel.org>
 To:     Parav Pandit <parav@mellanox.com>
 Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leon@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH v5] libibverbs: display gid type in ibv_devinfo
+Message-ID: <20200204071739.GV414821@unreal>
+References: <1580752324-24742-1-git-send-email-devesh.sharma@broadcom.com>
+ <20200203175317.GQ23346@mellanox.com>
+ <CANjDDBh_Xv0BNhTYZ1xaaOCQ8-ijHUMqDE68_J4aqRF-EnT2Zg@mail.gmail.com>
+ <20200203180405.GR23346@mellanox.com>
+ <AM0PR05MB486694589EA1CBC66F598066D1030@AM0PR05MB4866.eurprd05.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM0PR05MB486694589EA1CBC66F598066D1030@AM0PR05MB4866.eurprd05.prod.outlook.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 4, 2020 at 9:57 AM Parav Pandit <parav@mellanox.com> wrote:
->
+On Tue, Feb 04, 2020 at 04:27:45AM +0000, Parav Pandit wrote:
 >
 >
 > > From: Jason Gunthorpe <jgg@mellanox.com>
@@ -106,9 +94,16 @@ On Tue, Feb 4, 2020 at 9:57 AM Parav Pandit <parav@mellanox.com> wrote:
 > So changing format here shouldn't break the existing users scripts.
 > There may be some scripts that may find this format different.
 > So I think printing both is likely a more safer option.
+
+I don't understand this argument. Output from example tool (ibv_devinfo)
+inside libibverbs can't be considered API and we can't live in constant
+fear that some user script will break. Of course, we will try to keep it
+stable, but there is no such promise.
+
+Thanks
+
 >
 > > Lets also supress the 'IB/RoCE v1' string on !roce device. IB only has one GID
 > > type, there is no reason to print anything
 > >
-Okay, so two changes and one from Gal's comment. Will change.
 > > Jason
