@@ -2,108 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD7F15153C
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2020 06:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A7015153F
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2020 06:09:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgBDFIG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Feb 2020 00:08:06 -0500
-Received: from mail-il1-f196.google.com ([209.85.166.196]:45477 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbgBDFIG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Feb 2020 00:08:06 -0500
-Received: by mail-il1-f196.google.com with SMTP id p8so14732837iln.12
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Feb 2020 21:08:05 -0800 (PST)
+        id S1725813AbgBDFJd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Feb 2020 00:09:33 -0500
+Received: from mail-il1-f195.google.com ([209.85.166.195]:43028 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725379AbgBDFJc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Feb 2020 00:09:32 -0500
+Received: by mail-il1-f195.google.com with SMTP id o13so14754071ilg.10
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Feb 2020 21:09:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6Re0iNdHFFrs0larlR9CaRMQKPLbEvWFifkBfefqofM=;
-        b=MoHgdqGsrPzEFz9DqVwxDqGHqRcVS/+4lFNlIhXbk4upHkrzwsdMOAOzoG5C/5t+e6
-         XRBgIRUwBVtQqOKI4h/UYsBnz1nKwCaRm4DSn3FAhKfyHdOueBz0KVoXvQeIyf1ww8LS
-         47+WJB0ChtA7fSqRH6csTOHVk+EOuHw0e3Pg0=
+        bh=+YnUW0cfWuymPPICwh9J45f4XHrvuRw3JgEK9PQankM=;
+        b=LgjwdDCiHjaM4MrpNpTOUDmppWfVsYv0gXxZ74c1O7U+Tq8PIDMe96r//ZDwqvIA5Q
+         wegsHr3St4R9gXCt4RjLAJjNWYhhEBf4F5AS3ZeHpckmQmA+UimdW9p4TWKBNx0uFZ7h
+         hSMe+pk+O/X0eAaibOzt1PWK/hK6NfoTklqII=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6Re0iNdHFFrs0larlR9CaRMQKPLbEvWFifkBfefqofM=;
-        b=COsxlPc4zZ+gN0kTZNIwiX2Nl24OUxYxoMnPuIn37LwY8fEi60fW7czHDKOTueNu/+
-         1AbqGxOFxgO4wGhzg6WoY+k4jRAT6jzuP73ogDx/cH/C80oHoOk4/9UZDgq76lCeiuRX
-         XB7wmtQRe5z5mhzivT/k0VSQDbW9JsUS/ZILEDpnjZhx1phY3AbDWiFVzhL66bslOb16
-         6W9p6GQZNB5qycxy85bDl+oHqQMIpc02BFlwzHHPGdwen1+wJcv7NoSXg/9B8aDngb4A
-         okQ6bLfQta5YyBC3fskTTHlxg7LtLOqHG91zd3IyUTf+x4ZdLi/l5sYAlRKCWeZ0MbMf
-         Msvg==
-X-Gm-Message-State: APjAAAUmnXy3m1OqEj6ikRrY09Iys0rRp0itO7xUUY4aTPYyEk6q/h1K
-        33tZcIr/8vqRBkntsABHNQXrkJmTeF3aJm5p1ku9og==
-X-Google-Smtp-Source: APXvYqyUjNNBnGp4BTJJOHlJVBWuvsxYdsPUr5tEu90lwA6ZjJfO1Y8D7uE0N/jr9bMzTrnlyFlQnOWQDgztZLf00uk=
-X-Received: by 2002:a92:d7cd:: with SMTP id g13mr19362935ilq.300.1580792885418;
- Mon, 03 Feb 2020 21:08:05 -0800 (PST)
+        bh=+YnUW0cfWuymPPICwh9J45f4XHrvuRw3JgEK9PQankM=;
+        b=m1//Zp1blL9dGFZQAQ1/6ivqcUl4DbcViXZJFv0Lt+FHAiRuflOXdAUrt/NyTRkJeC
+         THEj2W5DdlbZ4jYJq6oEuUtBUZRqg2YXKWsH3KdP2XmY+VQaaYwB8DYDVGgfmJ8T8FoX
+         Tm+zMknpA0aUYtg6Bh/bUG6Z4Go66UllqDiJ0elXSLLeX6iIJjgK8osj1XqbVbq2mQ3L
+         HGaP6Ys6wd607V6NoDihEllcdlswaUKMsilJ4qVzsvuYSJhnCJ9Ws7nbBi0gMLoevsFs
+         ZKabEYDf9ovHem10aDC+sMSN50okpvW16kda0z/hS44GEdBZJbM7Tnc4hXRVotOsKZs/
+         A+nA==
+X-Gm-Message-State: APjAAAWA31S0qjbqDzKMZ9l456KSegakJZVvyA2mEHPZOxsMYHbRqOQo
+        Z7e0bM1GJCg2Ib1ZPW9m3HJjQTc5TBPJYBq8pxOp3g==
+X-Google-Smtp-Source: APXvYqy4mI3OW11GWmMiYRuilozs8gifoO0bCqONbhoEgA6+ZaCe8sYCziRMrYmYXKl5xnynpsCzkBBvslWNe0CpPbQ=
+X-Received: by 2002:a92:c703:: with SMTP id a3mr17916985ilp.89.1580792972255;
+ Mon, 03 Feb 2020 21:09:32 -0800 (PST)
 MIME-Version: 1.0
-References: <1580752324-24742-1-git-send-email-devesh.sharma@broadcom.com> <20200203194614.GT414821@unreal>
-In-Reply-To: <20200203194614.GT414821@unreal>
+References: <1580752324-24742-1-git-send-email-devesh.sharma@broadcom.com>
+ <20200203175317.GQ23346@mellanox.com> <CANjDDBh_Xv0BNhTYZ1xaaOCQ8-ijHUMqDE68_J4aqRF-EnT2Zg@mail.gmail.com>
+ <20200203180405.GR23346@mellanox.com> <AM0PR05MB486694589EA1CBC66F598066D1030@AM0PR05MB4866.eurprd05.prod.outlook.com>
+In-Reply-To: <AM0PR05MB486694589EA1CBC66F598066D1030@AM0PR05MB4866.eurprd05.prod.outlook.com>
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Tue, 4 Feb 2020 10:37:28 +0530
-Message-ID: <CANjDDBi6zq_V3wfxhAEcZ3qTcAaD6iF6=5eXNBoGQn6qG3k3rA@mail.gmail.com>
+Date:   Tue, 4 Feb 2020 10:38:55 +0530
+Message-ID: <CANjDDBjPuQBD6woxMT9K=jVD5DiTYu0ODBd24BOzOMQw3VoO9w@mail.gmail.com>
 Subject: Re: [PATCH v5] libibverbs: display gid type in ibv_devinfo
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@mellanox.com>
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Leon Romanovsky <leon@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 4, 2020 at 1:16 AM Leon Romanovsky <leon@kernel.org> wrote:
+On Tue, Feb 4, 2020 at 9:57 AM Parav Pandit <parav@mellanox.com> wrote:
 >
-> On Mon, Feb 03, 2020 at 12:52:04PM -0500, Devesh Sharma wrote:
-> > It becomes difficult to make out from the output of ibv_devinfo
-> > if a particular gid index is RoCE v2 or not.
-> >
-> > Adding a string to the output of ibv_devinfo -v to display the
-> > gid type at the end of gid.
-> >
-> > The output would look something like below:
-> > $ ibv_devinfo -v -d bnxt_re2
-> > hca_id: bnxt_re2
-> >  transport:             InfiniBand (0)
-> >  fw_ver:                216.0.220.0
-> >  node_guid:             b226:28ff:fed3:b0f0
-> >  sys_image_guid:        b226:28ff:fed3:b0f0
-> >   .
-> >   .
-> >   .
-> >   .
-> >        phys_state:      LINK_UP (5)
-> >        GID[  0]:               fe80::b226:28ff:fed3:b0f0, IB/RoCE v1
-> >        GID[  1]:               fe80::b226:28ff:fed3:b0f0, RoCE v2
-> >        GID[  2]:               ::ffff:192.170.1.101, IB/RoCE v1
-> >        GID[  3]:               ::ffff:192.170.1.101, RoCE v2
-> > $
-> > $
-> >
-> > Reviewed-by: Jason Gunthrope <jgg@ziepe.ca>
-> > Reviewed-by: Leon Romanovsky <leon@kernel.org>
-> > Reviewed-by: Gal Pressman <galpress@amazon.com>
-> > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
-> > ---
-> >  libibverbs/driver.h           |  1 +
-> >  libibverbs/examples/devinfo.c | 35 ++++++++++++++++++++++++-----------
-> >  2 files changed, 25 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/libibverbs/driver.h b/libibverbs/driver.h
-> > index a0e6f89..fc0699d 100644
-> > --- a/libibverbs/driver.h
-> > +++ b/libibverbs/driver.h
-> > @@ -84,6 +84,7 @@ enum verbs_qp_mask {
-> >  enum ibv_gid_type {
-> >       IBV_GID_TYPE_IB_ROCE_V1,
-> >       IBV_GID_TYPE_ROCE_V2,
-> > +     IBV_GID_TYPE_INVALID
-> >  };
-> >
 >
-> Agree with Gal, this hunk shouldn't be in the patch at all.
-Okay, will change.
 >
-> Thanks
+> > From: Jason Gunthorpe <jgg@mellanox.com>
+> > Sent: Monday, February 3, 2020 11:34 PM
+> >
+> > On Mon, Feb 03, 2020 at 11:31:06PM +0530, Devesh Sharma wrote:
+> > > On Mon, Feb 3, 2020 at 11:23 PM Jason Gunthorpe <jgg@mellanox.com>
+> > wrote:
+> > > >
+> > > > On Mon, Feb 03, 2020 at 12:52:04PM -0500, Devesh Sharma wrote:
+> > > > > It becomes difficult to make out from the output of ibv_devinfo if
+> > > > > a particular gid index is RoCE v2 or not.
+> > > > >
+> > > > > Adding a string to the output of ibv_devinfo -v to display the gid
+> > > > > type at the end of gid.
+> > > > >
+> > > > > The output would look something like below:
+> > > > > $ ibv_devinfo -v -d bnxt_re2
+> > > > > hca_id: bnxt_re2
+> > > > >  transport:             InfiniBand (0)
+> > > > >  fw_ver:                216.0.220.0
+> > > > >  node_guid:             b226:28ff:fed3:b0f0
+> > > > >  sys_image_guid:        b226:28ff:fed3:b0f0
+> > > > >   .
+> > > > >   .
+> > > > >   .
+> > > > >   .
+> > > > >        phys_state:      LINK_UP (5)
+> > > > >        GID[  0]:               fe80::b226:28ff:fed3:b0f0, IB/RoCE v1
+> > > > >        GID[  1]:               fe80::b226:28ff:fed3:b0f0, RoCE v2
+> > > > >        GID[  2]:               ::ffff:192.170.1.101, IB/RoCE v1
+> > > > >        GID[  3]:               ::ffff:192.170.1.101, RoCE v2
+> > > >
+> > > > v1 GIDs are GIDs and should never be formed as IPv6 addreses..
+> > > So, V1 gids would fall back to old style of display and there will be
+> > > one more check for gid-type inside the loop...
+> >
+> > Yes
+> >
+> > Parav should we show both the v6 and classic format for a v2 GID? ie
+> >
+> >         GID[  3]:               0000:0000:0000:ffff:xxxx:xxxx:xxxx, RoCE v2
+> >                                 ::ffff:192.170.1.101
+> >
+> Due to lack of support of GID's netdev, v1/v2 type info in ibv_devinfo output, most users that I know of are using non upstream show_gids script.
+> So changing format here shouldn't break the existing users scripts.
+> There may be some scripts that may find this format different.
+> So I think printing both is likely a more safer option.
+>
+> > Lets also supress the 'IB/RoCE v1' string on !roce device. IB only has one GID
+> > type, there is no reason to print anything
+> >
+Okay, so two changes and one from Gal's comment. Will change.
+> > Jason
