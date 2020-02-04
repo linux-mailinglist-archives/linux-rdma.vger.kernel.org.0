@@ -2,58 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C11151CAB
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2020 15:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FF8151CC4
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2020 16:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727258AbgBDO5B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Feb 2020 09:57:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727250AbgBDO5A (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 4 Feb 2020 09:57:00 -0500
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B72920674;
-        Tue,  4 Feb 2020 14:56:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580828220;
-        bh=KGDfwPI/gDGhMR+2XqXi5Iy/L567pXfnfHETU5IZIOE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QYbf5iwyng7/Q0zSNKYRLjg5bqw8P49JU6l5HdmugWnQjOcQygBSdLCm77JmXlB9Z
-         DEWMy2UIGNXUpUJgiEkfY1owavYPl6SMR6752GQNq90RGQK3QXgacUyZF4nzOky8Mz
-         jbMlw9rsGijRzVaYXfLXjz0C/rv8G9kF/X+HKxlw=
-Date:   Tue, 4 Feb 2020 16:56:57 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Goldman, Adam" <adam.goldman@intel.com>
-Cc:     linux-rdma@vger.kernel.org, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com
+        id S1727319AbgBDPAJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Feb 2020 10:00:09 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:20576 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727258AbgBDPAJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Feb 2020 10:00:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1580828408; x=1612364408;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=KA4yBFgPijpjl8iHouSz2wSOQveu4r3M6VwWaHth7Ts=;
+  b=FgwUWXoAgAGkcsriUhF8bXxlersTURtoSseuIImRtL298/lzVlfIwT1n
+   M/ICR2/OUq5Cx88Tjhy82hkxVzmx1/Z/eIsO5FoaPbYqOCc/u3lW7yu6q
+   U/cpLu2jsxqGzijEI+fADIwgHANNYRynLU21oqF/VoASajR6b7PQtGxH4
+   g=;
+IronPort-SDR: IhW4ca7rHd7qBjw913yXQd1K/eeoSupE5TJzYWKoYaFlu2Gq/Xd+5XUDPZ2wk2CwGsluYlpQk8
+ 2QrqmXyHbdzQ==
+X-IronPort-AV: E=Sophos;i="5.70,402,1574121600"; 
+   d="scan'208";a="14563684"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 04 Feb 2020 14:59:57 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com (Postfix) with ESMTPS id BA193A06CC;
+        Tue,  4 Feb 2020 14:59:56 +0000 (UTC)
+Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1236.3; Tue, 4 Feb 2020 14:59:56 +0000
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.45) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Tue, 4 Feb 2020 14:59:52 +0000
 Subject: Re: [PATCH] kernel-boot: Do not perform device rename on OPA devices
-Message-ID: <20200204145657.GY414821@unreal>
+To:     Honggang LI <honli@redhat.com>,
+        "Goldman, Adam" <adam.goldman@intel.com>
+CC:     <linux-rdma@vger.kernel.org>, <mike.marciniszyn@intel.com>,
+        <dennis.dalessandro@intel.com>
 References: <1580824520-38122-1-git-send-email-adam.goldman@intel.com>
+ <20200204141440.GA1062279@dhcp-128-72.nay.redhat.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <984452af-7c41-cad0-be9c-ed74d269b89d@amazon.com>
+Date:   Tue, 4 Feb 2020 16:59:47 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1580824520-38122-1-git-send-email-adam.goldman@intel.com>
+In-Reply-To: <20200204141440.GA1062279@dhcp-128-72.nay.redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.45]
+X-ClientProxiedBy: EX13D32UWB003.ant.amazon.com (10.43.161.220) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 04, 2020 at 08:55:20AM -0500, Goldman, Adam wrote:
-> From: "Goldman, Adam" <adam.goldman@intel.com>
->
-> PSM2 will not run with recent rdma-core releases. Several tools and
-> libraries like PSM2, require the hfi1 name to be present.
->
-> Recent rdma-core releases added a new feature to rename kernel devices,
-> but the default configuration will not work with hfi1 fabrics.
->
-> Related opa-psm2 github issue:
->   https://github.com/intel/opa-psm2/issues/43
+On 04/02/2020 16:14, Honggang LI wrote:
+>> +ACTION=="add", SUBSYSTEM=="infiniband", KERNEL!="hfi1*", PROGRAM="rdma_rename %k NAME_FALLBACK"
+> 
+> Maybe, we should not enable device rename as default for all RDMA
+> hardware. Leave it to system admin to apply rename or not.
+> 
+> We are observing issues with RDMA device renaming too.
 
-Why don't you fix opa-psm2 and add required rdma-core version
-checks inside packaging spec files, like we have inside
-redhat/rdma-core.spec?
-
-Thanks
++1, we're experiencing similar issues as well.
+If not disabling by default, we need an easy way to disable the feature.
