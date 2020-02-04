@@ -2,65 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0631520EC
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2020 20:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6371615226C
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Feb 2020 23:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727451AbgBDTR0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Feb 2020 14:17:26 -0500
-Received: from fieldses.org ([173.255.197.46]:37788 "EHLO fieldses.org"
+        id S1727500AbgBDWjk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Feb 2020 17:39:40 -0500
+Received: from mga04.intel.com ([192.55.52.120]:60114 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727442AbgBDTR0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 4 Feb 2020 14:17:26 -0500
-Received: by fieldses.org (Postfix, from userid 2815)
-        id F1EF9ABE; Tue,  4 Feb 2020 14:17:25 -0500 (EST)
-Date:   Tue, 4 Feb 2020 14:17:25 -0500
-From:   Bruce Fields <bfields@fieldses.org>
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     linux-rdma@vger.kernel.org,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH v3] nfsd: Fix NFSv4 READ on RDMA when using readv
-Message-ID: <20200204191725.GA10811@fieldses.org>
-References: <20200201195914.12238.15729.stgit@bazille.1015granger.net>
- <20200204172154.GB8763@fieldses.org>
- <B95D88FC-C76D-42A2-9366-CA226757BA42@oracle.com>
+        id S1727468AbgBDWjk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 4 Feb 2020 17:39:40 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Feb 2020 14:39:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,403,1574150400"; 
+   d="scan'208";a="219904035"
+Received: from ssaleem-mobl.amr.corp.intel.com ([10.254.10.239])
+  by orsmga007.jf.intel.com with ESMTP; 04 Feb 2020 14:39:39 -0800
+From:   Shiraz Saleem <shiraz.saleem@intel.com>
+To:     dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: [PATCH v1 rdma-next] i40iw: Do an RCU lookup in i40iw_add_ipv4_addr
+Date:   Tue,  4 Feb 2020 16:38:40 -0600
+Message-Id: <20200204223840.2151-1-shiraz.saleem@intel.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <B95D88FC-C76D-42A2-9366-CA226757BA42@oracle.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 04, 2020 at 01:43:56PM -0500, Chuck Lever wrote:
-> 
-> 
-> > On Feb 4, 2020, at 12:21 PM, J. Bruce Fields <bfields@fieldses.org> wrote:
-> > 
-> > On Sat, Feb 01, 2020 at 03:05:19PM -0500, Chuck Lever wrote:
-> >> Changes since RFC2:
-> >> - Take Trond's suggestion to use xdr->buf->len
-> >> - Squash fix down to a single patch
-> > 
-> > I liked them better split out.
-> > 
-> > This seems fine to me, though.
-> > 
-> > Could you ping me again in another week, after the merge window?
-> > 
-> >> @@ -3521,17 +3521,14 @@ static __be32 nfsd4_encode_readv(struct nfsd4_compoundres *resp,
-> >> 	u32 zzz = 0;
-> >> 	int pad;
-> >> 
-> >> +	/* Ensure xdr_reserve_space skips past xdr->buf->head */
-> > 
-> > Could the comment explain why we're doing this?  (Maybe take some
-> > language from the changelog.)
-> 
-> The new comment will also explain why the patches are combined.
-> I'll send a v4 after the merge window closes.
+The in_dev_for_each_ifa_rtnl iterator in i40iw_add_ipv4_addr
+requires that the rtnl lock be held. But the rtnl_trylock/unlock
+scheme in this function does not guarantee it.
 
-Hah, OK, thanks!
+Replace the rtnl locking with an RCU lookup.
 
---b.
+Fixes: 8e06af711bf2 ("i40iw: add main, hdr, status")
+Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+---
+v0-->v1:
+Annotate dev->flags with READ_ONCE
+
+ drivers/infiniband/hw/i40iw/i40iw_main.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_main.c b/drivers/infiniband/hw/i40iw/i40iw_main.c
+index 2386143..84e1b52 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_main.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_main.c
+@@ -1212,22 +1212,19 @@ static void i40iw_add_ipv4_addr(struct i40iw_device *iwdev)
+ {
+ 	struct net_device *dev;
+ 	struct in_device *idev;
+-	bool got_lock = true;
+ 	u32 ip_addr;
+ 
+-	if (!rtnl_trylock())
+-		got_lock = false;
+-
+-	for_each_netdev(&init_net, dev) {
++	rcu_read_lock();
++	for_each_netdev_rcu(&init_net, dev) {
+ 		if ((((rdma_vlan_dev_vlan_id(dev) < 0xFFFF) &&
+ 		      (rdma_vlan_dev_real_dev(dev) == iwdev->netdev)) ||
+-		    (dev == iwdev->netdev)) && (dev->flags & IFF_UP)) {
++		    (dev == iwdev->netdev)) && (READ_ONCE(dev->flags) & IFF_UP)) {
+ 			const struct in_ifaddr *ifa;
+ 
+-			idev = in_dev_get(dev);
++			idev = __in_dev_get_rcu(dev);
+ 			if (!idev)
+ 				continue;
+-			in_dev_for_each_ifa_rtnl(ifa, idev) {
++			in_dev_for_each_ifa_rcu(ifa, idev) {
+ 				i40iw_debug(&iwdev->sc_dev, I40IW_DEBUG_CM,
+ 					    "IP=%pI4, vlan_id=%d, MAC=%pM\n", &ifa->ifa_address,
+ 					     rdma_vlan_dev_vlan_id(dev), dev->dev_addr);
+@@ -1239,12 +1236,9 @@ static void i40iw_add_ipv4_addr(struct i40iw_device *iwdev)
+ 						       true,
+ 						       I40IW_ARP_ADD);
+ 			}
+-
+-			in_dev_put(idev);
+ 		}
+ 	}
+-	if (got_lock)
+-		rtnl_unlock();
++	rcu_read_unlock();
+ }
+ 
+ /**
+-- 
+1.8.3.1
+
