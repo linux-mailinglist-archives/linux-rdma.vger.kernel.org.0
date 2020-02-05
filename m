@@ -2,103 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9851515287F
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2020 10:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9EBD15295A
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2020 11:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728142AbgBEJhn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Feb 2020 04:37:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60316 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728030AbgBEJhm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 5 Feb 2020 04:37:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id F2830AE2C;
-        Wed,  5 Feb 2020 09:37:39 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id ED8431E0A51; Wed,  5 Feb 2020 10:37:33 +0100 (CET)
-Date:   Wed, 5 Feb 2020 10:37:33 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 10/12] mm/gup: /proc/vmstat: pin_user_pages (FOLL_PIN)
- reporting
-Message-ID: <20200205093733.GB28058@quack2.suse.cz>
-References: <20200204234117.2974687-1-jhubbard@nvidia.com>
- <20200204234117.2974687-11-jhubbard@nvidia.com>
+        id S1727234AbgBEKlx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Feb 2020 05:41:53 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:33554 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727843AbgBEKlx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Feb 2020 05:41:53 -0500
+Received: by mail-lj1-f194.google.com with SMTP id y6so1824565lji.0
+        for <linux-rdma@vger.kernel.org>; Wed, 05 Feb 2020 02:41:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=0VqevwSe05wXTlhfhyBqBCFkOrlKwOhh2LRQOj/E4Vw=;
+        b=UYILga5V7UxU11O65rMZzPwXR+FnULPBUpo1ixVPlQLwhz6zQY3tJx3MrhHtwuF+mc
+         c8WhDluwZfgp/fkWWexwl1y1fsA4eeZlGUZtqkok7h257hLmxCRwicH/37zvguFvwyK3
+         Z1FT3yGUAomxJseB5/BurWfK26zyXxAzT3REdKl8acZ52pFbukFeT3J0BsJ/83QYygIB
+         6j+kvBY+5sY/GuOVyeMptkpFm6GK4iO/t2UXRmL+tT+nnHgYGcopMI2bbSMIEpGnDWDi
+         B+hukTLcDmQrSBCvSLzEnoJ4E4zAOTuLR0ZUYRGIBpxkKPPiKv3Q20i7t7ZmOV8N72cd
+         VP/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=0VqevwSe05wXTlhfhyBqBCFkOrlKwOhh2LRQOj/E4Vw=;
+        b=Fc2G86929CzJtVHpah6/L3FU0dNkI3chBBu4LqA7PfT9b34eTMlCEaknrmj0ca/uFh
+         cTgmT1tQ7JjZAMbZyMGJzMfQmvvhKZ/G0ednaEpXfu28t9gzphKPQSlCN6pJyeS5sqj9
+         pT0oUwh1IFHipjQ8mt5MAB4J46Xpc0LYww/CEtAPKejLZHVW0CRLBjvKQF2JrHnpSvMn
+         DW2txg5VH9nUGU/IkciJwYkFxvJQ2gG2hh5dxtLJZzplBT79EQr7lwEr7UKheOBdSaCz
+         FxC4U257j6Xw6REfRKGG3Zo3Gl4sboQAANc4pwK4WT8+aFFaoA+sJlzuyShyqSzyZhL5
+         78og==
+X-Gm-Message-State: APjAAAUdIOKtfX94214Ve4DJ2bKL05GQjCVY88OoyaSo9s4x9+2jTVIn
+        6IsGxh03vNT3I9bPgywCmrn5z1d+UNUMoshcbe8MLk4sybk=
+X-Google-Smtp-Source: APXvYqwfOcIGv16QV+SrGlGXKNBaNVfCkNVdpXu94Nq59VJ+fmBbxgZNdF0dLjzXqo0AtnJF6htz62jSVuLtJSZOlaU=
+X-Received: by 2002:a2e:88c5:: with SMTP id a5mr20312912ljk.201.1580899311570;
+ Wed, 05 Feb 2020 02:41:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200204234117.2974687-11-jhubbard@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Frank Huang <tigerinxm@gmail.com>
+Date:   Wed, 5 Feb 2020 18:41:39 +0800
+Message-ID: <CAKC_zSv3TRgrqg_EX+ZqxQ5FecWk_pEFmDr2C3W=xLhijUOXWQ@mail.gmail.com>
+Subject: why use _ucma_find_context in ucma_destroy_id?
+To:     linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue 04-02-20 15:41:15, John Hubbard wrote:
-> Now that pages are "DMA-pinned" via pin_user_page*(), and unpinned via
-> unpin_user_pages*(), we need some visibility into whether all of this is
-> working correctly.
-> 
-> Add two new fields to /proc/vmstat:
-> 
->     nr_foll_pin_acquired
->     nr_foll_pin_released
-> 
-> These are documented in Documentation/core-api/pin_user_pages.rst.
-> They represent the number of pages (since boot time) that have been
-> pinned ("nr_foll_pin_acquired") and unpinned ("nr_foll_pin_released"),
-> via pin_user_pages*() and unpin_user_pages*().
-> 
-> In the absence of long-running DMA or RDMA operations that hold pages
-> pinned, the above two fields will normally be equal to each other.
-> 
-> Also: update Documentation/core-api/pin_user_pages.rst, to remove an
-> earlier (now confirmed untrue) claim about a performance problem with
-> /proc/vmstat.
-> 
-> Also: updated Documentation/core-api/pin_user_pages.rst to rename the
-> new /proc/vmstat entries, to the names listed here.
-> 
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+hi, all
 
-...
+I found that in ucma_destroy_id when using struct ucma_context not use in pair.
 
-> @@ -104,6 +106,9 @@ static __maybe_unused struct page *try_grab_compound_head(struct page *page,
->  		if (hpage_pincount_available(page))
->  			hpage_pincount_add(page, refs);
->  
-> +		mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_ACQUIRED,
-> +				    orig_refs);
-> +
->  		return page;
->  	}
->  
+1,
+https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/tree/drivers/infiniband/core/ucma.c#n611
 
-It seems to me you miss mod_node_page_state() in put_compound_head(), don't
-you?
+in line 611 ,use _ucma_find_context, do not call ucma_get_ctx
 
-Otherwise I like the new stat names better :).
+2,
+https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/tree/drivers/infiniband/core/ucma.c#n629
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+in line 629, use ucma_put_ctx
+
+will this cause an unexpect wait?
