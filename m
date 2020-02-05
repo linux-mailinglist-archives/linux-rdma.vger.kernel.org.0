@@ -2,136 +2,391 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE17152323
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2020 00:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6CA15262D
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2020 07:04:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727746AbgBDXlY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Feb 2020 18:41:24 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8804 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727726AbgBDXlX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Feb 2020 18:41:23 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e3a010a0000>; Tue, 04 Feb 2020 15:40:58 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 04 Feb 2020 15:41:22 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 04 Feb 2020 15:41:22 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 4 Feb
- 2020 23:41:22 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Tue, 4 Feb 2020 23:41:21 +0000
-Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5e3a01210001>; Tue, 04 Feb 2020 15:41:21 -0800
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v4 12/12] selftests/vm: run_vmtests: invoke gup_benchmark with basic FOLL_PIN coverage
-Date:   Tue, 4 Feb 2020 15:41:17 -0800
-Message-ID: <20200204234117.2974687-13-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200204234117.2974687-1-jhubbard@nvidia.com>
-References: <20200204234117.2974687-1-jhubbard@nvidia.com>
+        id S1725793AbgBEGET (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Feb 2020 01:04:19 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10153 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725385AbgBEGET (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 5 Feb 2020 01:04:19 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B78389B9F3BDD491C935;
+        Wed,  5 Feb 2020 14:04:15 +0800 (CST)
+Received: from [127.0.0.1] (10.40.168.149) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.439.0; Wed, 5 Feb 2020
+ 14:04:09 +0800
+Subject: Re: [PATCH for-next] RDMA/hns: Optimize eqe buffer allocation flow
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     <dledford@redhat.com>, <jgg@ziepe.ca>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+References: <20200126145835.11368-1-liweihang@huawei.com>
+ <20200127055205.GH3870@unreal>
+From:   Weihang Li <liweihang@huawei.com>
+Message-ID: <10b7a08c-e069-0751-8bde-e5d19521c0b2@huawei.com>
+Date:   Wed, 5 Feb 2020 14:04:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1580859658; bh=Q/jtf1QAQWUBdGa6x5cGwrQgIxtlzXz53YFDTgazJkU=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=MaI5Vl3Fzbukc040Wy4hfFeTvV/ZSQs+GINa0gRZM2oyXoPWvrVCtdKPWzJgFheWM
-         k8zVc1VS3l1ASNx27NzSnlWEg+z8tphgIRuR+s47MUgsJyMhi3YnSOMzu7GD/WpzEf
-         RgOhqtzTSKimJbHkdV7wCARPP2t8Bi0M1/kYbf3jmNVxLGvOIXAhUmQ78msLwcjOGq
-         Z2Vj1Ejt+iAyslO5817U4cQ4mddSTmTcarILDmH6F24NLymQURJi+cxsOfVgSkNCoK
-         kzLQPS+J5W2+MhW9AVCHUd78p0jiOfdLV6dog+bGnyzX0wlnzVshUGL4yBICtgbQ4f
-         UvBecg8vaPXVg==
+In-Reply-To: <20200127055205.GH3870@unreal>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.168.149]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-It's good to have basic unit test coverage of the new FOLL_PIN
-behavior. Fortunately, the gup_benchmark unit test is extremely
-fast (a few milliseconds), so adding it the the run_vmtests suite
-is going to cause no noticeable change in running time.
 
-So, add two new invocations to run_vmtests:
 
-1) Run gup_benchmark with normal get_user_pages().
+On 2020/1/27 13:52, Leon Romanovsky wrote:
+> On Sun, Jan 26, 2020 at 10:58:35PM +0800, Weihang Li wrote:
+>> From: Xi Wang <wangxi11@huawei.com>
+>>
+>> The eqe has a private multi-hop addressing implementation, but there is
+>> already a set of interfaces in the hns driver that can achieve this.
+>>
+>> So, simplify the eqe buffer allocation process by using the mtr interface
+>> and remove large amount of repeated logic.
+>>
+>> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+>> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  10 +-
+>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 481 ++++++----------------------
+>>  2 files changed, 108 insertions(+), 383 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+>> index a4c45bf..dab3f3c 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+>> @@ -757,14 +757,8 @@ struct hns_roce_eq {
+>>  	int				eqe_ba_pg_sz;
+>>  	int				eqe_buf_pg_sz;
+>>  	int				hop_num;
+>> -	u64				*bt_l0;	/* Base address table for L0 */
+>> -	u64				**bt_l1; /* Base address table for L1 */
+>> -	u64				**buf;
+>> -	dma_addr_t			l0_dma;
+>> -	dma_addr_t			*l1_dma;
+>> -	dma_addr_t			*buf_dma;
+>> -	u32				l0_last_num; /* L0 last chunk num */
+>> -	u32				l1_last_num; /* L1 last chunk num */
+>> +	struct hns_roce_mtr		mtr;
+>> +	struct hns_roce_buf		buf;
+>>  	int				eq_max_cnt;
+>>  	int				eq_period;
+>>  	int				shift;
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> index c462b19..88f2e76 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>> @@ -5287,44 +5287,24 @@ static void set_eq_cons_index_v2(struct hns_roce_eq *eq)
+>>  	hns_roce_write64(hr_dev, doorbell, eq->doorbell);
+>>  }
+>>
+>> -static struct hns_roce_aeqe *get_aeqe_v2(struct hns_roce_eq *eq, u32 entry)
+>> +static inline void *get_eqe_buf(struct hns_roce_eq *eq, unsigned long offset)
+>>  {
+>>  	u32 buf_chk_sz;
+>> -	unsigned long off;
+>>
+>>  	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
+>> -	off = (entry & (eq->entries - 1)) * HNS_ROCE_AEQ_ENTRY_SIZE;
+>> -
+>> -	return (struct hns_roce_aeqe *)((char *)(eq->buf_list->buf) +
+>> -		off % buf_chk_sz);
+>> -}
+>> -
+>> -static struct hns_roce_aeqe *mhop_get_aeqe(struct hns_roce_eq *eq, u32 entry)
+>> -{
+>> -	u32 buf_chk_sz;
+>> -	unsigned long off;
+>> -
+>> -	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
+>> -
+>> -	off = (entry & (eq->entries - 1)) * HNS_ROCE_AEQ_ENTRY_SIZE;
+>> -
+>> -	if (eq->hop_num == HNS_ROCE_HOP_NUM_0)
+>> -		return (struct hns_roce_aeqe *)((u8 *)(eq->bt_l0) +
+>> -			off % buf_chk_sz);
+>> +	if (eq->buf.nbufs == 1)
+>> +		return eq->buf.direct.buf + offset % buf_chk_sz;
+>>  	else
+>> -		return (struct hns_roce_aeqe *)((u8 *)
+>> -			(eq->buf[off / buf_chk_sz]) + off % buf_chk_sz);
+>> +		return eq->buf.page_list[offset / buf_chk_sz].buf +
+>> +		       offset % buf_chk_sz;
+>>  }
+>>
+>>  static struct hns_roce_aeqe *next_aeqe_sw_v2(struct hns_roce_eq *eq)
+>>  {
+>>  	struct hns_roce_aeqe *aeqe;
+>>
+>> -	if (!eq->hop_num)
+>> -		aeqe = get_aeqe_v2(eq, eq->cons_index);
+>> -	else
+>> -		aeqe = mhop_get_aeqe(eq, eq->cons_index);
+>> -
+>> +	aeqe = get_eqe_buf(eq, (eq->cons_index & (eq->entries - 1)) *
+>> +			   HNS_ROCE_AEQ_ENTRY_SIZE);
+>>  	return (roce_get_bit(aeqe->asyn, HNS_ROCE_V2_AEQ_AEQE_OWNER_S) ^
+>>  		!!(eq->cons_index & eq->entries)) ? aeqe : NULL;
+>>  }
+>> @@ -5417,44 +5397,12 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
+>>  	return aeqe_found;
+>>  }
+>>
+>> -static struct hns_roce_ceqe *get_ceqe_v2(struct hns_roce_eq *eq, u32 entry)
+>> -{
+>> -	u32 buf_chk_sz;
+>> -	unsigned long off;
+>> -
+>> -	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
+>> -	off = (entry & (eq->entries - 1)) * HNS_ROCE_CEQ_ENTRY_SIZE;
+>> -
+>> -	return (struct hns_roce_ceqe *)((char *)(eq->buf_list->buf) +
+>> -		off % buf_chk_sz);
+>> -}
+>> -
+>> -static struct hns_roce_ceqe *mhop_get_ceqe(struct hns_roce_eq *eq, u32 entry)
+>> -{
+>> -	u32 buf_chk_sz;
+>> -	unsigned long off;
+>> -
+>> -	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
+>> -
+>> -	off = (entry & (eq->entries - 1)) * HNS_ROCE_CEQ_ENTRY_SIZE;
+>> -
+>> -	if (eq->hop_num == HNS_ROCE_HOP_NUM_0)
+>> -		return (struct hns_roce_ceqe *)((u8 *)(eq->bt_l0) +
+>> -			off % buf_chk_sz);
+>> -	else
+>> -		return (struct hns_roce_ceqe *)((u8 *)(eq->buf[off /
+>> -			buf_chk_sz]) + off % buf_chk_sz);
+>> -}
+>> -
+>>  static struct hns_roce_ceqe *next_ceqe_sw_v2(struct hns_roce_eq *eq)
+>>  {
+>>  	struct hns_roce_ceqe *ceqe;
+>>
+>> -	if (!eq->hop_num)
+>> -		ceqe = get_ceqe_v2(eq, eq->cons_index);
+>> -	else
+>> -		ceqe = mhop_get_ceqe(eq, eq->cons_index);
+>> -
+>> +	ceqe = get_eqe_buf(eq, (eq->cons_index & (eq->entries - 1)) *
+>> +			   HNS_ROCE_CEQ_ENTRY_SIZE);
+>>  	return (!!(roce_get_bit(ceqe->comp, HNS_ROCE_V2_CEQ_CEQE_OWNER_S))) ^
+>>  		(!!(eq->cons_index & eq->entries)) ? ceqe : NULL;
+>>  }
+>> @@ -5614,90 +5562,11 @@ static void hns_roce_v2_destroy_eqc(struct hns_roce_dev *hr_dev, int eqn)
+>>  		dev_err(dev, "[mailbox cmd] destroy eqc(%d) failed.\n", eqn);
+>>  }
+>>
+>> -static void hns_roce_mhop_free_eq(struct hns_roce_dev *hr_dev,
+>> -				  struct hns_roce_eq *eq)
+>> +static void free_eq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_eq *eq)
+>>  {
+>> -	struct device *dev = hr_dev->dev;
+>> -	u64 idx;
+>> -	u64 size;
+>> -	u32 buf_chk_sz;
+>> -	u32 bt_chk_sz;
+>> -	u32 mhop_num;
+>> -	int eqe_alloc;
+>> -	int i = 0;
+>> -	int j = 0;
+>> -
+>> -	mhop_num = hr_dev->caps.eqe_hop_num;
+>> -	buf_chk_sz = 1 << (hr_dev->caps.eqe_buf_pg_sz + PAGE_SHIFT);
+>> -	bt_chk_sz = 1 << (hr_dev->caps.eqe_ba_pg_sz + PAGE_SHIFT);
+>> -
+>> -	if (mhop_num == HNS_ROCE_HOP_NUM_0) {
+>> -		dma_free_coherent(dev, (unsigned int)(eq->entries *
+>> -				  eq->eqe_size), eq->bt_l0, eq->l0_dma);
+>> -		return;
+>> -	}
+>> -
+>> -	dma_free_coherent(dev, bt_chk_sz, eq->bt_l0, eq->l0_dma);
+>> -	if (mhop_num == 1) {
+>> -		for (i = 0; i < eq->l0_last_num; i++) {
+>> -			if (i == eq->l0_last_num - 1) {
+>> -				eqe_alloc = i * (buf_chk_sz / eq->eqe_size);
+>> -				size = (eq->entries - eqe_alloc) * eq->eqe_size;
+>> -				dma_free_coherent(dev, size, eq->buf[i],
+>> -						  eq->buf_dma[i]);
+>> -				break;
+>> -			}
+>> -			dma_free_coherent(dev, buf_chk_sz, eq->buf[i],
+>> -					  eq->buf_dma[i]);
+>> -		}
+>> -	} else if (mhop_num == 2) {
+>> -		for (i = 0; i < eq->l0_last_num; i++) {
+>> -			dma_free_coherent(dev, bt_chk_sz, eq->bt_l1[i],
+>> -					  eq->l1_dma[i]);
+>> -
+>> -			for (j = 0; j < bt_chk_sz / BA_BYTE_LEN; j++) {
+>> -				idx = i * (bt_chk_sz / BA_BYTE_LEN) + j;
+>> -				if ((i == eq->l0_last_num - 1)
+>> -				     && j == eq->l1_last_num - 1) {
+>> -					eqe_alloc = (buf_chk_sz / eq->eqe_size)
+>> -						    * idx;
+>> -					size = (eq->entries - eqe_alloc)
+>> -						* eq->eqe_size;
+>> -					dma_free_coherent(dev, size,
+>> -							  eq->buf[idx],
+>> -							  eq->buf_dma[idx]);
+>> -					break;
+>> -				}
+>> -				dma_free_coherent(dev, buf_chk_sz, eq->buf[idx],
+>> -						  eq->buf_dma[idx]);
+>> -			}
+>> -		}
+>> -	}
+>> -	kfree(eq->buf_dma);
+>> -	kfree(eq->buf);
+>> -	kfree(eq->l1_dma);
+>> -	kfree(eq->bt_l1);
+>> -	eq->buf_dma = NULL;
+>> -	eq->buf = NULL;
+>> -	eq->l1_dma = NULL;
+>> -	eq->bt_l1 = NULL;
+>> -}
+>> -
+>> -static void hns_roce_v2_free_eq(struct hns_roce_dev *hr_dev,
+>> -				struct hns_roce_eq *eq)
+>> -{
+>> -	u32 buf_chk_sz;
+>> -
+>> -	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
+>> -
+>> -	if (hr_dev->caps.eqe_hop_num) {
+>> -		hns_roce_mhop_free_eq(hr_dev, eq);
+>> -		return;
+>> -	}
+>> -
+>> -	dma_free_coherent(hr_dev->dev, buf_chk_sz, eq->buf_list->buf,
+>> -			  eq->buf_list->map);
+>> -	kfree(eq->buf_list);
+>> +	if (!eq->hop_num || eq->hop_num == HNS_ROCE_HOP_NUM_0)
+>> +		hns_roce_mtr_cleanup(hr_dev, &eq->mtr);
+>> +	hns_roce_buf_free(hr_dev, eq->buf.size, &eq->buf);
+>>  }
+>>
+>>  static void hns_roce_config_eqc(struct hns_roce_dev *hr_dev,
+>> @@ -5705,6 +5574,8 @@ static void hns_roce_config_eqc(struct hns_roce_dev *hr_dev,
+>>  				void *mb_buf)
+>>  {
+>>  	struct hns_roce_eq_context *eqc;
+>> +	u64 ba[MTT_MIN_COUNT] = { 0 };
+>> +	int count;
+>>
+>>  	eqc = mb_buf;
+>>  	memset(eqc, 0, sizeof(struct hns_roce_eq_context));
+>> @@ -5720,10 +5591,23 @@ static void hns_roce_config_eqc(struct hns_roce_dev *hr_dev,
+>>  	eq->eqe_buf_pg_sz = hr_dev->caps.eqe_buf_pg_sz;
+>>  	eq->shift = ilog2((unsigned int)eq->entries);
+>>
+>> -	if (!eq->hop_num)
+>> -		eq->eqe_ba = eq->buf_list->map;
+>> -	else
+>> -		eq->eqe_ba = eq->l0_dma;
+>> +	/* if not muti-hop, eqe buffer only use one trunk */
+>> +	if (!eq->hop_num || eq->hop_num == HNS_ROCE_HOP_NUM_0) {
+>> +		eq->eqe_ba = eq->buf.direct.map;
+>> +		eq->cur_eqe_ba = eq->eqe_ba;
+>> +		if (eq->buf.npages > 1)
+>> +			eq->nxt_eqe_ba = eq->eqe_ba + (1 << eq->eqe_buf_pg_sz);
+>> +		else
+>> +			eq->nxt_eqe_ba = eq->eqe_ba;
+>> +	} else {
+>> +		count = hns_roce_mtr_find(hr_dev, &eq->mtr, 0, ba,
+>> +					  MTT_MIN_COUNT, &eq->eqe_ba);
+>> +		eq->cur_eqe_ba = ba[0];
+>> +		if (count > 1)
+>> +			eq->nxt_eqe_ba = ba[1];
+>> +		else
+>> +			eq->nxt_eqe_ba = ba[0];
+>> +	}
+>>
+>>  	/* set eqc state */
+>>  	roce_set_field(eqc->byte_4, HNS_ROCE_EQC_EQ_ST_M, HNS_ROCE_EQC_EQ_ST_S,
+>> @@ -5821,220 +5705,97 @@ static void hns_roce_config_eqc(struct hns_roce_dev *hr_dev,
+>>  		       HNS_ROCE_EQC_NXT_EQE_BA_H_S, eq->nxt_eqe_ba >> 44);
+>>  }
+>>
+>> -static int hns_roce_mhop_alloc_eq(struct hns_roce_dev *hr_dev,
+>> -				  struct hns_roce_eq *eq)
+>> +static int map_eq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_eq *eq,
+>> +		      u32 page_shift)
+>>  {
+>> -	struct device *dev = hr_dev->dev;
+>> -	int eq_alloc_done = 0;
+>> -	int eq_buf_cnt = 0;
+>> -	int eqe_alloc;
+>> -	u32 buf_chk_sz;
+>> -	u32 bt_chk_sz;
+>> -	u32 mhop_num;
+>> -	u64 size;
+>> -	u64 idx;
+>> +	struct hns_roce_buf_region region = {};
+>> +	dma_addr_t *buf_list = NULL;
+>>  	int ba_num;
+>> -	int bt_num;
+>> -	int record_i;
+>> -	int record_j;
+>> -	int i = 0;
+>> -	int j = 0;
+>> -
+>> -	mhop_num = hr_dev->caps.eqe_hop_num;
+>> -	buf_chk_sz = 1 << (hr_dev->caps.eqe_buf_pg_sz + PAGE_SHIFT);
+>> -	bt_chk_sz = 1 << (hr_dev->caps.eqe_ba_pg_sz + PAGE_SHIFT);
+>> +	int ret;
+>>
+>>  	ba_num = DIV_ROUND_UP(PAGE_ALIGN(eq->entries * eq->eqe_size),
+>> -			      buf_chk_sz);
+>> -	bt_num = DIV_ROUND_UP(ba_num, bt_chk_sz / BA_BYTE_LEN);
+>> +			      1 << page_shift);
+>> +	hns_roce_init_buf_region(&region, hr_dev->caps.eqe_hop_num, 0, ba_num);
+>>
+>> -	if (mhop_num == HNS_ROCE_HOP_NUM_0) {
+>> -		if (eq->entries > buf_chk_sz / eq->eqe_size) {
+>> -			dev_err(dev, "eq entries %d is larger than buf_pg_sz!",
+>> -				eq->entries);
+>> -			return -EINVAL;
+>> -		}
+>> -		eq->bt_l0 = dma_alloc_coherent(dev, eq->entries * eq->eqe_size,
+>> -					       &(eq->l0_dma), GFP_KERNEL);
+>> -		if (!eq->bt_l0)
+>> -			return -ENOMEM;
+>> -
+>> -		eq->cur_eqe_ba = eq->l0_dma;
+>> -		eq->nxt_eqe_ba = 0;
+>> +	/* alloc a tmp list for storing eq buf address */
+>> +	ret = hns_roce_alloc_buf_list(&region, &buf_list, 1);
+>> +	if (ret) {
+>> +		dev_err(hr_dev->dev, "alloc eq buf_list error\n");
+> 
+> The same comment like we gave for bnxt driver, no dev_* prints inside
+> driver, use ibdev_*.
+> 
+> Thanks
+> 
 
-2) Run gup_benchmark with pin_user_pages(). This is much like
-the first call, except that it sets FOLL_PIN.
+Hi Leon,
 
-Running these two in quick succession also provide a visual
-comparison of the running times, which is convenient.
+map_eq_buf() is called before ib_register_device(), so we can't use
+ibdev_* here.
 
-The new invocations are fairly early in the run_vmtests script,
-because with test suites, it's usually preferable to put the
-shorter, faster tests first, all other things being equal.
+Thanks for your reminder, another patch that replace other dev_* in
+hns driver with ibdev_* is on preparing.
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- tools/testing/selftests/vm/run_vmtests | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+Weihang
 
-diff --git a/tools/testing/selftests/vm/run_vmtests b/tools/testing/selftes=
-ts/vm/run_vmtests
-index a692ea828317..df6a6bf3f238 100755
---- a/tools/testing/selftests/vm/run_vmtests
-+++ b/tools/testing/selftests/vm/run_vmtests
-@@ -112,6 +112,28 @@ echo "NOTE: The above hugetlb tests provide minimal co=
-verage.  Use"
- echo "      https://github.com/libhugetlbfs/libhugetlbfs.git for"
- echo "      hugetlb regression testing."
-=20
-+echo "--------------------------------------------"
-+echo "running 'gup_benchmark -U' (normal/slow gup)"
-+echo "--------------------------------------------"
-+./gup_benchmark -U
-+if [ $? -ne 0 ]; then
-+	echo "[FAIL]"
-+	exitcode=3D1
-+else
-+	echo "[PASS]"
-+fi
-+
-+echo "------------------------------------------"
-+echo "running gup_benchmark -b (pin_user_pages)"
-+echo "------------------------------------------"
-+./gup_benchmark -b
-+if [ $? -ne 0 ]; then
-+	echo "[FAIL]"
-+	exitcode=3D1
-+else
-+	echo "[PASS]"
-+fi
-+
- echo "-------------------"
- echo "running userfaultfd"
- echo "-------------------"
---=20
-2.25.0
+> .
+> 
 
