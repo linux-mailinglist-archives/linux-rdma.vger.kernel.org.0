@@ -2,51 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BEB31529D5
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2020 12:23:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAD71529FD
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2020 12:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727170AbgBELXc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Feb 2020 06:23:32 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:34985 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727231AbgBELXc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Feb 2020 06:23:32 -0500
-Received: by mail-lj1-f193.google.com with SMTP id q8so1936914ljb.2
-        for <linux-rdma@vger.kernel.org>; Wed, 05 Feb 2020 03:23:31 -0800 (PST)
+        id S1727170AbgBELfa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Feb 2020 06:35:30 -0500
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:40897 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727970AbgBELfa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Feb 2020 06:35:30 -0500
+Received: by mail-lf1-f66.google.com with SMTP id c23so1238995lfi.7
+        for <linux-rdma@vger.kernel.org>; Wed, 05 Feb 2020 03:35:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=shutemov-name.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dh5KVm5NVZR7B6kV3CkfPxftpb+A9muCzSxY5f+by0k=;
-        b=tFQv4blGi1NukrKVKLKM9a5yWogak2ERntocChs0vWrya9lUNK3FSyatnKS1MLPDrt
-         p+3KZiUybS59AUws2x8n3rybFtHSU3qsaP38wMgFaDNTG/usGncV2+gIcDPWZaTihn2x
-         IT0s2ZIQkgy6nZw6cmza+jvP3jviAy+EvvnJ4AOSPcmWvi3H07xyPGK9XfmmYHOdOfBr
-         i64GsDmqMsxzDMDTMf2POxCYF3RjYkxUsa1AEq/CUhlFdErzLlXMxmx6vvsrYmjq/W1E
-         0uNIM8buRrHTOj7xD45gFWXrseGaMzB/dqpGKw77ntg+wPel+osm/zIX+A2PVoNrN2AX
-         dPxw==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=9dzJMqCXyJ0/sQ9WqS79itnSpMjlI4okwKhRKzVm4NM=;
+        b=Cw/B6gNv6WrKuynnb0hGrn8XHxmwFGHBK6Kx3ISr6g8541JII8R/dNAUM8FBm3EG/z
+         7mldHZr7bI2tp5pBfvfOfywWE8+h25kWovFkuNAA2Cj1Nuq4GHdG+S1n6nGJL+Qkvl7u
+         DHVez+FLWMPQTo18ui7XxFbIAVT2/XZW7rBMXmKANw7Z3vjhI+/AgNja35tcKI2QrmWC
+         iB0aW7cfR8lhqyI5gnu4EX1AdRGts8kF7neLmR0wRRiDXDyyZo4cXG1dDMjDe7evtrBV
+         2VevE1g/382CgqcWrvzbCGiEIdnuWbHFIW8EwV4GVppGEzPCncLDF7f4SZMsf2BMC46d
+         Gxmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dh5KVm5NVZR7B6kV3CkfPxftpb+A9muCzSxY5f+by0k=;
-        b=ejWCuIQwOzY3T18cHHICfM/YMzYwB3+LwaNEYAGp2xrupn/fHhqiqhyM1nPfSgFKEW
-         5PHv4R+V7TyvLf8EWgmAzRnYIiigz/J+cbKKSwvRCFdJ249xRiSVrXC+ui8l6q1ThhpH
-         Hg00wHNCmbT/iwYzcSHb4ozqzNeJmHsWR9m/aqDBlmddqusyOkrJ22Way8RMiWazv1GV
-         bcRX1xGKej3+a5iluPbSlHkgyhuIAJa1nSBdYAGj80lxOHqqAqoQfbnj6Zx1us4HpxYQ
-         4tphLqqjsjgThbYKY0ND1UHobJDDzKTyROoe5b5+xsXjLiqu/gIUSo+7dE6q5IUUrgS8
-         MWnQ==
-X-Gm-Message-State: APjAAAXDUQd4oXwP7WcEZaTuJGJ/wP3drjcJsY7lKJvwvxc6Y6JBnlI8
-        3e5SlUHz00u3HaN0pCO/t8WcDg==
-X-Google-Smtp-Source: APXvYqzGnroRbFkq73Du+mrJTZV4pY9s8Imx6qAPmcft4bWsOSpmZpl02xqYNxfUrCA0UHefdOERHw==
-X-Received: by 2002:a2e:918c:: with SMTP id f12mr18604844ljg.66.1580901810333;
-        Wed, 05 Feb 2020 03:23:30 -0800 (PST)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=9dzJMqCXyJ0/sQ9WqS79itnSpMjlI4okwKhRKzVm4NM=;
+        b=mbLapPoYO5D/xtq31K73RLdm6nmuO+GcMxxJJW0fyesSd1H5z31tnFhMsWN/MQCtt7
+         eqW0hW3h9NWNmmW21YyxYp27/l8kUPQ6EU+53GaDhJSqv7rxoDZGTpFCNMe7klHd5CdO
+         3IIOcqwgEk3ygCFrJiTQpbZM1QcL6lYxu9bQi/BZMf2PaHShUw68WzbzOGUPHZ47Uur9
+         UBZ5/VoSJX2TjTkNK3s+WZFsLL/nkO5r4Gk3pMq/Dqp5Ro50/4ufDBVEjf8z1Zjku6PX
+         LI+3cB+ULEONR4nBEJHy53HmkWUuxpGwDnB/etyr83XufI6gVAz32rkvVZ12Nh2k1R8/
+         QpQA==
+X-Gm-Message-State: APjAAAUUpfyw1Tu5Qf3OZRaQPeY5Mkwdi86vnJ/Fuj5It+iw8Vz/H1u9
+        vXkF9w1X2H/lub74/xYRswmgPQ==
+X-Google-Smtp-Source: APXvYqy9hnTW8jGEcTDyskMINKlFV9FjmuWaaZRQe2WXLP2287ba30lwKa4xY42Duoj0vvlh1UVC8g==
+X-Received: by 2002:a19:6b11:: with SMTP id d17mr17471991lfa.168.1580902528148;
+        Wed, 05 Feb 2020 03:35:28 -0800 (PST)
 Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id y18sm12786085ljm.93.2020.02.05.03.23.29
+        by smtp.gmail.com with ESMTPSA id f11sm14259401lfa.9.2020.02.05.03.35.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Feb 2020 03:23:29 -0800 (PST)
+        Wed, 05 Feb 2020 03:35:27 -0800 (PST)
 Received: by box.localdomain (Postfix, from userid 1000)
-        id AE293100AF6; Wed,  5 Feb 2020 14:23:43 +0300 (+03)
-Date:   Wed, 5 Feb 2020 14:23:43 +0300
+        id 96D43100AF6; Wed,  5 Feb 2020 14:35:41 +0300 (+03)
+Date:   Wed, 5 Feb 2020 14:35:41 +0300
 From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 To:     John Hubbard <jhubbard@nvidia.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -65,62 +66,67 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
         linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 04/12] mm: introduce page_ref_sub_return()
-Message-ID: <20200205112343.e2vpcylgrobfcxlo@box>
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v4 07/12] mm/gup: track FOLL_PIN pages
+Message-ID: <20200205113541.mi4kys5erldwxiog@box>
 References: <20200204234117.2974687-1-jhubbard@nvidia.com>
- <20200204234117.2974687-5-jhubbard@nvidia.com>
+ <20200204234117.2974687-8-jhubbard@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200204234117.2974687-5-jhubbard@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200204234117.2974687-8-jhubbard@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 04, 2020 at 03:41:09PM -0800, John Hubbard wrote:
-> An upcoming patch requires subtracting a large chunk of refcounts from
-> a page, and checking what the resulting refcount is. This is a little
-> different than the usual "check for zero refcount" that many of the
-> page ref functions already do. However, it is similar to a few other
-> routines that (like this one) are generally useful for things such as
-> 1-based refcounting.
+On Tue, Feb 04, 2020 at 03:41:12PM -0800, John Hubbard wrote:
+> Add tracking of pages that were pinned via FOLL_PIN. This tracking is
+> implemented via overloading of page->_refcount: pins are added by
+> adding GUP_PIN_COUNTING_BIAS (1024) to the refcount. This provides a
+> fuzzy indication of pinning, and it can have false positives (and that's
+> OK). Please see the pre-existing
+> Documentation/core-api/pin_user_pages.rst for details.
 > 
-> Add page_ref_sub_return(), that subtracts a chunk of refcounts
-> atomically, and returns an atomic snapshot of the result.
+> As mentioned in pin_user_pages.rst, callers who effectively set FOLL_PIN
+> (typically via pin_user_pages*()) are required to ultimately free such
+> pages via unpin_user_page().
 > 
+> Please also note the limitation, discussed in pin_user_pages.rst under
+> the "TODO: for 1GB and larger huge pages" section. (That limitation will
+> be removed in a following patch.)
+> 
+> The effect of a FOLL_PIN flag is similar to that of FOLL_GET, and may be
+> thought of as "FOLL_GET for DIO and/or RDMA use".
+> 
+> Pages that have been pinned via FOLL_PIN are identifiable via a
+> new function call:
+> 
+>    bool page_maybe_dma_pinned(struct page *page);
+> 
+> What to do in response to encountering such a page, is left to later
+> patchsets. There is discussion about this in [1], [2], [3], and [4].
+> 
+> This also changes a BUG_ON(), to a WARN_ON(), in follow_page_mask().
+> 
+> [1] Some slow progress on get_user_pages() (Apr 2, 2019):
+>     https://lwn.net/Articles/784574/
+> [2] DMA and get_user_pages() (LPC: Dec 12, 2018):
+>     https://lwn.net/Articles/774411/
+> [3] The trouble with get_user_pages() (Apr 30, 2018):
+>     https://lwn.net/Articles/753027/
+> [4] LWN kernel index: get_user_pages():
+>     https://lwn.net/Kernel/Index/#Memory_management-get_user_pages
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Suggested-by: Jérôme Glisse <jglisse@redhat.com>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 > Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  include/linux/page_ref.h | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/include/linux/page_ref.h b/include/linux/page_ref.h
-> index 14d14beb1f7f..a0e171265b79 100644
-> --- a/include/linux/page_ref.h
-> +++ b/include/linux/page_ref.h
-> @@ -102,6 +102,15 @@ static inline void page_ref_sub(struct page *page, int nr)
->  		__page_ref_mod(page, -nr);
->  }
->  
-> +static inline int page_ref_sub_return(struct page *page, int nr)
-> +{
-> +	int ret = atomic_sub_return(nr, &page->_refcount);
-> +
-> +	if (page_ref_tracepoint_active(__tracepoint_page_ref_mod))
 
-s/__tracepoint_page_ref_mod/__tracepoint_page_ref_mod_and_return/
-
-> +		__page_ref_mod_and_return(page, -nr, ret);
-> +	return ret;
-> +}
-> +
->  static inline void page_ref_inc(struct page *page)
->  {
->  	atomic_inc(&page->_refcount);
-> -- 
-> 2.25.0
-> 
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
 -- 
  Kirill A. Shutemov
