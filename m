@@ -2,136 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A51153989
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2020 21:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C01153993
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2020 21:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgBEUan (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Feb 2020 15:30:43 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:43522 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbgBEUam (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Feb 2020 15:30:42 -0500
-Received: by mail-qk1-f196.google.com with SMTP id j20so3243027qka.10
-        for <linux-rdma@vger.kernel.org>; Wed, 05 Feb 2020 12:30:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Ab6gK2EvR8F4yT17ZLxM8mArNW0sif3F4cu8wMTyywc=;
-        b=H++S+5BOVLzvWf68YMbkqRW4PuwJ/CJ1UcvFKZjLjOJeiTS5cf8KstQ5aTzWd0NF8/
-         mPe5plStCJXtt2jRQj7001k0wAZ3GETe4BG7iNbY3QbS5xo6te8rFlbdbYEtCMsEQ9Xo
-         7y8BTl83hu6WnbAZgSIjpPRM7NAVS34FM6ex1PB1R7475VgdiRIibqgwmyq6gMdZz5kF
-         y0bHn2Csz9t4xe2zgBfdHI6I9KczeO4ZSCbYJE8NoVuf3ctNEn6DKu7XfBVvkCr2pd4E
-         WASl+Kpo6qjKRQGf/igmXF7/hrmpvMR4hIFaoCmWeeC+0nOHRHKGg1zQOOBgnu3yRkwW
-         G1Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ab6gK2EvR8F4yT17ZLxM8mArNW0sif3F4cu8wMTyywc=;
-        b=Znov1tBP055wsZg58du0SywmqCFjQ3qka07t6yuMsckPHMf7sO0R7lUPUjfa4iksuq
-         96w9MFR3zdkj4/+jjqoxSXJa8Ovi9CV6ckWI3xujTuJLprmdLAV2ss8ipq9vfRBDVEt2
-         NVRU5tc0Bxf7xpcADEunlclrqTxoT2P8dfTyjhDbWEjjnNdPwcnMVNbKsDkheaPi6Rg5
-         u0/qk5vdAU5RVP45TZ8NomBDs9obnYPQIFiudu/O7AGIUuCTuvlmMc8cyJiSY1ksn0Ur
-         vLElxWPaSN5yGZabVxAvTIYUaLuDoHxcrS+wjr6uHss4apLBBeSGHs5YVQMXxpTkA1eV
-         NDOg==
-X-Gm-Message-State: APjAAAXOn+ZQ4su4tabTj7d8RszvxNumtYXdDq0DYT274XoDZBdEDlnJ
-        qKsB0BcfPINQA0lflPaxdoGKxMS82SM=
-X-Google-Smtp-Source: APXvYqw9KUURw+znCaSyGns6tfJS/+1nfYtIQqpWJbIEgNgIxGmtwn3KFIR7p3YnICAbmrE4UgDtqg==
-X-Received: by 2002:a05:620a:a97:: with SMTP id v23mr34773342qkg.251.1580934641790;
-        Wed, 05 Feb 2020 12:30:41 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id t37sm524569qth.0.2020.02.05.12.30.40
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 05 Feb 2020 12:30:41 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1izRJo-0007Ve-7C; Wed, 05 Feb 2020 16:30:40 -0400
-Date:   Wed, 5 Feb 2020 16:30:40 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Liuyixian (Eason)" <liuyixian@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v7 for-next 2/2] RDMA/hns: Delayed flush cqe process with
- workqueue
-Message-ID: <20200205203040.GA25297@ziepe.ca>
-References: <1579081753-2839-1-git-send-email-liuyixian@huawei.com>
- <1579081753-2839-3-git-send-email-liuyixian@huawei.com>
- <20200128200505.GB8107@ziepe.ca>
- <f4794cf0-e9db-540b-9752-761734edef5a@huawei.com>
+        id S1727079AbgBEUfR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Feb 2020 15:35:17 -0500
+Received: from mga18.intel.com ([134.134.136.126]:42519 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726806AbgBEUfR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 5 Feb 2020 15:35:17 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 05 Feb 2020 12:35:16 -0800
+X-IronPort-AV: E=Sophos;i="5.70,407,1574150400"; 
+   d="scan'208";a="235714865"
+Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.205.112]) ([10.254.205.112])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 05 Feb 2020 12:35:15 -0800
+Subject: Re: [PATCH] kernel-boot: Do not perform device rename on OPA devices
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "Goldman, Adam" <adam.goldman@intel.com>
+Cc:     linux-rdma@vger.kernel.org, mike.marciniszyn@intel.com
+References: <1580824520-38122-1-git-send-email-adam.goldman@intel.com>
+ <20200205191227.GE28298@ziepe.ca>
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+Message-ID: <daa60df0-04e1-d33c-fdc9-5a3fea2688cb@intel.com>
+Date:   Wed, 5 Feb 2020 15:35:13 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f4794cf0-e9db-540b-9752-761734edef5a@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200205191227.GE28298@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 04, 2020 at 04:47:38PM +0800, Liuyixian (Eason) wrote:
+On 2/5/2020 2:12 PM, Jason Gunthorpe wrote:
+> On Tue, Feb 04, 2020 at 08:55:20AM -0500, Goldman, Adam wrote:
+>> From: "Goldman, Adam" <adam.goldman@intel.com>
+>>
+>> PSM2 will not run with recent rdma-core releases. Several tools and
+>> libraries like PSM2, require the hfi1 name to be present.
+>>
+>> Recent rdma-core releases added a new feature to rename kernel devices,
+>> but the default configuration will not work with hfi1 fabrics.
+>>
+>> Related opa-psm2 github issue:
+>>    https://github.com/intel/opa-psm2/issues/43
+>>
+>> Fixes: 5b4099d47be3 ("kernel-boot: Perform device rename to make stable names")
+>> Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+>> Signed-off-by: Goldman, Adam <adam.goldman@intel.com>
+>>   kernel-boot/rdma-persistent-naming.rules | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel-boot/rdma-persistent-naming.rules b/kernel-boot/rdma-persistent-naming.rules
+>> index 9b61e16..95d6851 100644
+>> +++ b/kernel-boot/rdma-persistent-naming.rules
+>> @@ -25,4 +25,4 @@
+>>   #   Device type = RoCE
+>>   #   mlx5_0 -> rocex525400c0fe123455
+>>   #
+>> -ACTION=="add", SUBSYSTEM=="infiniband", PROGRAM="rdma_rename %k NAME_FALLBACK"
+>> +ACTION=="add", SUBSYSTEM=="infiniband", KERNEL!="hfi1*", PROGRAM="rdma_rename %k NAME_FALLBACK"
 > 
+> We are moving to the new names by default slowly, when wrong
+> assumptions are found in other packages they need to be updated and
+> their fixes pushed out.
 > 
-> On 2020/1/29 4:05, Jason Gunthorpe wrote:
-> > On Wed, Jan 15, 2020 at 05:49:13PM +0800, Yixian Liu wrote:
-> >> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> >> index fa38582..ad7ed07 100644
-> >> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> >> @@ -56,10 +56,16 @@ static void flush_work_handle(struct work_struct *work)
-> >>  	attr_mask = IB_QP_STATE;
-> >>  	attr.qp_state = IB_QPS_ERR;
-> >>  
-> >> -	ret = hns_roce_modify_qp(&hr_qp->ibqp, &attr, attr_mask, NULL);
-> >> -	if (ret)
-> >> -		dev_err(dev, "Modify QP to error state failed(%d) during CQE flush\n",
-> >> -			ret);
-> >> +	while (atomic_read(&hr_qp->flush_cnt)) {
-> >> +		ret = hns_roce_modify_qp(&hr_qp->ibqp, &attr, attr_mask, NULL);
-> >> +		if (ret)
-> >> +			dev_err(dev, "Modify QP to error state failed(%d) during CQE flush\n",
-> >> +				ret);
-> >> +
-> >> +		/* If flush_cnt larger than 1, only need one more time flush */
-> >> +		if (atomic_dec_and_test(&hr_qp->flush_cnt))
-> >> +			atomic_set(&hr_qp->flush_cnt, 1);
-> >> +	}
-> > 
-> > And this while loop is just 
+> At some point the major distros will default this to On. People using
+> leading edge distros can turn it off with the global switch Leon
+> mentioned.
 > 
-> There is a bug here, the code should be:
-> if (!atomic_dec_and_test(&hr_qp->flush_cnt))
-> 	atomic_set(&hr_qp->flush_cnt, 1);
+> This is the same process netdev went through when they introduced
+> persistent names.
 > 
-> It merges all further flush operation requirements into only one more time flush,
-> that is, do the loop once again if flush_cnt larger than 1.
-> 
-> > 
-> > if (atomic_xchg(&hr_qp->flush_cnt, 0)) {
-> >   [..]
-> > }
-> 
-> I think we can't use if instead of while loop.
+> If I recall, hfi was one of the reason this work was done. HFI has
+> problems generating consistent names for its multi-function devices in
+> various cases and I NAK'd the kernel hack to try and 'fix' that.
 
-Well, you can't do two operations and still have an atomic, so you
-have to fix it somehow. Possibly this needs a spinlock approach
-instead.
+So are you saying you won't take this patch then?
 
-> With your solution, when user posts a new wr during the
-> implementation of [...] in if condition, it will re-queue a new
-> init_flush_work, which will lead to a multiple call problem as we
-> discussed in v2.
+I guess we can work with distros to get the right rules in place outside 
+of rdma-core so that things continue to work. It would be better though 
+in my opinion to just have that be in rdma-core so no one has to worry 
+about it and nothing needs to be globally disabled.
 
-queue_work can be called while a work is still running, it just makes
-sure it will run again.
+You are correct someone tried to put forth a hack for the flip-flop name 
+thing [1]. However even if this was used as a solution for that issue we 
+would still have the same library looking for hfi1_0 problem.
 
-> > I'm not even sure this needs to be a counter, all you need is set_bit()
-> > and test_and_clear()
-> 
-> We need the value of flush_cnt large than 1 to record further flush
-> requirements, that's why flush_cnt can be defined as a flag or bit
-> value.
+[1] https://patchwork.kernel.org/patch/9508879/
 
-This explanation doesn't make sense, the counter isn't being used to
-count anything, it is just a flag.
+-Denny
 
-Jason
+
+
+
+
