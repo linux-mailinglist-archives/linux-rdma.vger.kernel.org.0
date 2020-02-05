@@ -2,98 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA98152994
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2020 12:01:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 271E315299E
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2020 12:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727170AbgBELBh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Feb 2020 06:01:37 -0500
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:26963 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727231AbgBELBg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Feb 2020 06:01:36 -0500
+        id S1727231AbgBELFw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Feb 2020 06:05:52 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:40192 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727522AbgBELFw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Feb 2020 06:05:52 -0500
+Received: by mail-wr1-f65.google.com with SMTP id t3so2155353wru.7
+        for <linux-rdma@vger.kernel.org>; Wed, 05 Feb 2020 03:05:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1580900496; x=1612436496;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=0nR57jj7ZxzEJ6vmfDYzwy37BPnHTuGk6TzvkW4aDa4=;
-  b=Z/DgT2OJ97YSh3pyyYlfhro0xD3R+AVwedgBWYAreaSGaePRxQ+7JmX4
-   7OzEQPVoy/KAcpb7SnRZn3EiCLAtdJnw80zJoHr140vgxeEPqwpMy0lui
-   KCaD2u8vsYCNDC2iGmBZast9gFugxqB+Sjc3Ue82sOkttnXtHMc3tvqFD
-   o=;
-IronPort-SDR: VoDBFdMi/NNsULERajaX+G7MEyukLoCfyBbix7+X1gvQV8B8/D+DOXpXlpiTMJCNC/5mavqXrw
- OONwWdNmGywA==
-X-IronPort-AV: E=Sophos;i="5.70,405,1574121600"; 
-   d="scan'208";a="23179937"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-c5104f52.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 05 Feb 2020 11:01:19 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2a-c5104f52.us-west-2.amazon.com (Postfix) with ESMTPS id 2FEF5A1CF6;
-        Wed,  5 Feb 2020 11:01:19 +0000 (UTC)
-Received: from EX13D19EUB003.ant.amazon.com (10.43.166.69) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1236.3; Wed, 5 Feb 2020 11:01:18 +0000
-Received: from 8c85908914bf.ant.amazon.com (10.43.161.203) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 5 Feb 2020 11:01:15 +0000
-Subject: Re: [PATCH for-rc] RDMA/siw: Fix setting active_mtu attribute
-To:     Kamal Heib <kamalheib1@gmail.com>
-CC:     <linux-rdma@vger.kernel.org>, Doug Ledford <dledford@redhat.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        Bernard Metzler <bmt@zurich.ibm.com>
-References: <20200205081354.30438-1-kamalheib1@gmail.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <68c6b5f3-05e9-2662-5247-6bc23d3a93df@amazon.com>
-Date:   Wed, 5 Feb 2020 13:01:10 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.1
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XJBqmObf6zZRMdPPBMUV9CdmAX+PaRNyXqxY71pV8LM=;
+        b=InlLNHQ4hSE6m5p6dhafsjkl0GQfuPks5JSZU0lcxZkD3Lh19JOP9aOKcBRx4tT5t4
+         hBFjSQGEITXPin8031luHdYR+1YGLylCLngGJ3MHTZp7m2wFiziicJkgB53+Z5/lhQX8
+         6QKOohDfcaCIuHslKFPL/H82gldjlfeyYehwbdceGREZreFx+YeaYXLVL9FxJfi5fc6c
+         7A5s/pJAafhhyWDIBRbd8DfPHNmfmkO/bM0L4y9cmA0uPrpDWUTQKLxGqzXEHD5pqt2o
+         JVnmgSNJOeaZFk7a0UzSdMuMQhphdjbAqGas99vOJq9OXWofxRuLQFPUiUmiP3FbxrV6
+         EH4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XJBqmObf6zZRMdPPBMUV9CdmAX+PaRNyXqxY71pV8LM=;
+        b=S6VaimxecDrMz6xUXcMbbWXHuh/vhHcOwVGb2YkpJKhfsOC1NGutnzoDuLS3nnqCBU
+         ub4jTOIClyNvwf9OKWUhR3s+qLyT2h2ifyOh1FdqOYNjyuyMo25jfsX6B93BNfbWrSEK
+         mzNrAlkVFHMGQNRHel5Az6aqxWKhe/NhIw/edyk+oNlRa+kjyoLNRQiIJ9L4xfuS0UST
+         SD0aw43i23XE4e2ePT3/jsJmiVHurcPndzpbED38+orCPeyR6T4itONlXYZMv+Glb4kU
+         6I6jfP6tEnVbhibbh/K8hD9B9yWRsXWVxkq/KSBjz+w13rBG6MyIA6aPEeN8RcUx1PVi
+         wxvQ==
+X-Gm-Message-State: APjAAAVIsEfRV3/uF1H9WJ69tJukBfIYRhAm+aTBd6BjeGgA7P2zvy7Y
+        bNDIt+i9Q9B7O9pMx7swwBA8Mo01xxM=
+X-Google-Smtp-Source: APXvYqwxMDNqnpxNwLNKQKVJwW4xzrRL2APu71v5RP67MD9pmAIC4L6BBOFuUR58cjlSnlOieY63rw==
+X-Received: by 2002:adf:fc4b:: with SMTP id e11mr29331400wrs.326.1580900750312;
+        Wed, 05 Feb 2020 03:05:50 -0800 (PST)
+Received: from kheib-workstation.redhat.com (bzq-79-178-7-104.red.bezeqint.net. [79.178.7.104])
+        by smtp.gmail.com with ESMTPSA id o4sm34491707wrx.25.2020.02.05.03.05.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Feb 2020 03:05:49 -0800 (PST)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH for-rc] RDMA/hfi1: Fix memory leak in _dev_comp_vect_mappings_create
+Date:   Wed,  5 Feb 2020 13:05:30 +0200
+Message-Id: <20200205110530.12129-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-In-Reply-To: <20200205081354.30438-1-kamalheib1@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.161.203]
-X-ClientProxiedBy: EX13D33UWB003.ant.amazon.com (10.43.161.92) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 05/02/2020 10:13, Kamal Heib wrote:
-> Make sure to set the active_mtu attribute to avoid report the following
-> invalid value:
-> 
-> $ ibv_devinfo -d siw0 | grep active_mtu
-> 			active_mtu:		invalid MTU (0)
-> 
-> Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
-> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-> ---
->  drivers/infiniband/sw/siw/siw_verbs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-> index 07e30138aaa1..73485d0da907 100644
-> --- a/drivers/infiniband/sw/siw/siw_verbs.c
-> +++ b/drivers/infiniband/sw/siw/siw_verbs.c
-> @@ -168,12 +168,12 @@ int siw_query_port(struct ib_device *base_dev, u8 port,
->  
->  	memset(attr, 0, sizeof(*attr));
->  
-> -	attr->active_mtu = attr->max_mtu;
->  	attr->active_speed = 2;
->  	attr->active_width = 2;
+Make sure to free the allocated cpumask_var_t's to avoid the following
+reported memory leak by kmemleak:
 
-Off topic: these should use ib_port_speed and ib_port_width enum.
+$ cat /sys/kernel/debug/kmemleak
+unreferenced object 0xffff8897f812d6a8 (size 8):
+  comm "kworker/1:1", pid 347, jiffies 4294751400 (age 101.703s)
+  hex dump (first 8 bytes):
+    00 00 00 00 00 00 00 00                          ........
+  backtrace:
+    [<00000000bff49664>] alloc_cpumask_var_node+0x4c/0xb0
+    [<0000000075d3ca81>] hfi1_comp_vectors_set_up+0x20f/0x800 [hfi1]
+    [<0000000098d420df>] hfi1_init_dd+0x3311/0x4960 [hfi1]
+    [<0000000071be7e52>] init_one+0x25e/0xf10 [hfi1]
+    [<000000005483d4c2>] local_pci_probe+0xd4/0x180
+    [<000000007c3cbc6e>] work_for_cpu_fn+0x51/0xa0
+    [<000000001d626905>] process_one_work+0x8f0/0x17b0
+    [<000000007e569e7e>] worker_thread+0x536/0xb50
+    [<00000000fd39a4a5>] kthread+0x30c/0x3d0
+    [<0000000056f2edb3>] ret_from_fork+0x3a/0x50
 
->  	attr->gid_tbl_len = 1;
->  	attr->max_msg_sz = -1;
->  	attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
-> +	attr->active_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
->  	attr->phys_state = sdev->state == IB_PORT_ACTIVE ?
->  		IB_PORT_PHYS_STATE_LINK_UP : IB_PORT_PHYS_STATE_DISABLED;
->  	attr->pkey_tbl_len = 1;
-> 
+Fixes: 5d18ee67d4c1 ("IB/{hfi1, rdmavt, qib}: Implement CQ completion vector support")
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+---
+ drivers/infiniband/hw/hfi1/affinity.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Reviewed-by: Gal Pressman <galpress@amazon.com>
+diff --git a/drivers/infiniband/hw/hfi1/affinity.c b/drivers/infiniband/hw/hfi1/affinity.c
+index c142b23bb401..1aeea5d65c01 100644
+--- a/drivers/infiniband/hw/hfi1/affinity.c
++++ b/drivers/infiniband/hw/hfi1/affinity.c
+@@ -479,6 +479,8 @@ static int _dev_comp_vect_mappings_create(struct hfi1_devdata *dd,
+ 			  rvt_get_ibdev_name(&(dd)->verbs_dev.rdi), i, cpu);
+ 	}
+ 
++	free_cpumask_var(available_cpus);
++	free_cpumask_var(non_intr_cpus);
+ 	return 0;
+ 
+ fail:
+-- 
+2.21.1
+
