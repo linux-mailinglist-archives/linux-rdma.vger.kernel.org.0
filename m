@@ -2,391 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6CA15262D
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2020 07:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F95F15276C
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2020 09:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725793AbgBEGET (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Feb 2020 01:04:19 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10153 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725385AbgBEGET (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 5 Feb 2020 01:04:19 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id B78389B9F3BDD491C935;
-        Wed,  5 Feb 2020 14:04:15 +0800 (CST)
-Received: from [127.0.0.1] (10.40.168.149) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.439.0; Wed, 5 Feb 2020
- 14:04:09 +0800
-Subject: Re: [PATCH for-next] RDMA/hns: Optimize eqe buffer allocation flow
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <dledford@redhat.com>, <jgg@ziepe.ca>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-References: <20200126145835.11368-1-liweihang@huawei.com>
- <20200127055205.GH3870@unreal>
-From:   Weihang Li <liweihang@huawei.com>
-Message-ID: <10b7a08c-e069-0751-8bde-e5d19521c0b2@huawei.com>
-Date:   Wed, 5 Feb 2020 14:04:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728030AbgBEION (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Feb 2020 03:14:13 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:38237 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbgBEION (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Feb 2020 03:14:13 -0500
+Received: by mail-wm1-f68.google.com with SMTP id a9so1484779wmj.3
+        for <linux-rdma@vger.kernel.org>; Wed, 05 Feb 2020 00:14:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pcPwyfk35fD++vlKfgqfNulVF1tCAMwLLjtblBnrtbg=;
+        b=e5rnzyj/GyXFye6zE/3/7RRCA999BycbaQQdXdz9mVp1mBucC1+MMCy6uXYwOoASxP
+         42I8xeeLLPXC2ftXhjios0Vni/UBochZZ5nLX+L/gXwofUQR6kMHg0BtUtIRf3MQo3xA
+         D0J73OKBL/PEvYxrQS0teu2+n7gQWuDHrkJdJ+jsU2aVFZ7kb7xezEHqB7X+s0s9eH6A
+         fOOHeSoIyJSxV1adE8psDFOFYLJBpiMasFVW8HIZX0DtQ0TQJcK4HMwEQYT5rXotPt6L
+         QRyt5sxygikqM4h9ROMAtVm7FdiKA59Cfpw0pVkEOFmr7WKDYS1rieu1mh67adEAquMK
+         lETQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pcPwyfk35fD++vlKfgqfNulVF1tCAMwLLjtblBnrtbg=;
+        b=kETIkUgHjQICf2uW9Rll1Lv6sK9/Oy6as+qjYj3KnoOUKdLwaPYkT7pmhOjcvgj5hE
+         qniG0AV0TirVWYOaKjYMfpkh31CftJBENo0Z+KI6VIZq4Siee9qd9pyCv36jRAop1M1D
+         qIk1yIDUDo3DDublTyiz9ML8K06ygwQrzmbH//s2Lcbl257FWAHB1sNMMi2K0R6T4pOh
+         C8muzNRu81j80LYhpc5JLyvPp6c7m233H7+uilqwbynyaryXN5vTG2JX6el9ZIy3rjq4
+         SfOcrqlwHWwBwFYBO2E/+NaYHKofBj1GybGdT9T8BDDMVe70QBIEVQML7NZd/nRadKw7
+         QKpQ==
+X-Gm-Message-State: APjAAAVAF6LDbrIGKS4cDXXxrg2XnDGxgypW/setV6sl8WCj/lYVhyZ+
+        Fih7RIQn0RVfYkgFkSSVytZqioXBYa8=
+X-Google-Smtp-Source: APXvYqyVzX6SvJKpV06/iUuu9xNm1JyMbGMu4/T6FcKFOtYor+BKxnq6+eutSOqnm2/a2brd/d9Odw==
+X-Received: by 2002:a05:600c:2c53:: with SMTP id r19mr4192019wmg.39.1580890451241;
+        Wed, 05 Feb 2020 00:14:11 -0800 (PST)
+Received: from kheib-workstation.redhat.com (bzq-79-178-7-104.red.bezeqint.net. [79.178.7.104])
+        by smtp.gmail.com with ESMTPSA id b13sm19506281wrq.48.2020.02.05.00.14.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Feb 2020 00:14:10 -0800 (PST)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH for-rc] RDMA/siw: Fix setting active_mtu attribute
+Date:   Wed,  5 Feb 2020 10:13:54 +0200
+Message-Id: <20200205081354.30438-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-In-Reply-To: <20200127055205.GH3870@unreal>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.168.149]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Make sure to set the active_mtu attribute to avoid report the following
+invalid value:
 
+$ ibv_devinfo -d siw0 | grep active_mtu
+			active_mtu:		invalid MTU (0)
 
-On 2020/1/27 13:52, Leon Romanovsky wrote:
-> On Sun, Jan 26, 2020 at 10:58:35PM +0800, Weihang Li wrote:
->> From: Xi Wang <wangxi11@huawei.com>
->>
->> The eqe has a private multi-hop addressing implementation, but there is
->> already a set of interfaces in the hns driver that can achieve this.
->>
->> So, simplify the eqe buffer allocation process by using the mtr interface
->> and remove large amount of repeated logic.
->>
->> Signed-off-by: Xi Wang <wangxi11@huawei.com>
->> Signed-off-by: Weihang Li <liweihang@huawei.com>
->> ---
->>  drivers/infiniband/hw/hns/hns_roce_device.h |  10 +-
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 481 ++++++----------------------
->>  2 files changed, 108 insertions(+), 383 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
->> index a4c45bf..dab3f3c 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
->> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
->> @@ -757,14 +757,8 @@ struct hns_roce_eq {
->>  	int				eqe_ba_pg_sz;
->>  	int				eqe_buf_pg_sz;
->>  	int				hop_num;
->> -	u64				*bt_l0;	/* Base address table for L0 */
->> -	u64				**bt_l1; /* Base address table for L1 */
->> -	u64				**buf;
->> -	dma_addr_t			l0_dma;
->> -	dma_addr_t			*l1_dma;
->> -	dma_addr_t			*buf_dma;
->> -	u32				l0_last_num; /* L0 last chunk num */
->> -	u32				l1_last_num; /* L1 last chunk num */
->> +	struct hns_roce_mtr		mtr;
->> +	struct hns_roce_buf		buf;
->>  	int				eq_max_cnt;
->>  	int				eq_period;
->>  	int				shift;
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> index c462b19..88f2e76 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> @@ -5287,44 +5287,24 @@ static void set_eq_cons_index_v2(struct hns_roce_eq *eq)
->>  	hns_roce_write64(hr_dev, doorbell, eq->doorbell);
->>  }
->>
->> -static struct hns_roce_aeqe *get_aeqe_v2(struct hns_roce_eq *eq, u32 entry)
->> +static inline void *get_eqe_buf(struct hns_roce_eq *eq, unsigned long offset)
->>  {
->>  	u32 buf_chk_sz;
->> -	unsigned long off;
->>
->>  	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
->> -	off = (entry & (eq->entries - 1)) * HNS_ROCE_AEQ_ENTRY_SIZE;
->> -
->> -	return (struct hns_roce_aeqe *)((char *)(eq->buf_list->buf) +
->> -		off % buf_chk_sz);
->> -}
->> -
->> -static struct hns_roce_aeqe *mhop_get_aeqe(struct hns_roce_eq *eq, u32 entry)
->> -{
->> -	u32 buf_chk_sz;
->> -	unsigned long off;
->> -
->> -	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
->> -
->> -	off = (entry & (eq->entries - 1)) * HNS_ROCE_AEQ_ENTRY_SIZE;
->> -
->> -	if (eq->hop_num == HNS_ROCE_HOP_NUM_0)
->> -		return (struct hns_roce_aeqe *)((u8 *)(eq->bt_l0) +
->> -			off % buf_chk_sz);
->> +	if (eq->buf.nbufs == 1)
->> +		return eq->buf.direct.buf + offset % buf_chk_sz;
->>  	else
->> -		return (struct hns_roce_aeqe *)((u8 *)
->> -			(eq->buf[off / buf_chk_sz]) + off % buf_chk_sz);
->> +		return eq->buf.page_list[offset / buf_chk_sz].buf +
->> +		       offset % buf_chk_sz;
->>  }
->>
->>  static struct hns_roce_aeqe *next_aeqe_sw_v2(struct hns_roce_eq *eq)
->>  {
->>  	struct hns_roce_aeqe *aeqe;
->>
->> -	if (!eq->hop_num)
->> -		aeqe = get_aeqe_v2(eq, eq->cons_index);
->> -	else
->> -		aeqe = mhop_get_aeqe(eq, eq->cons_index);
->> -
->> +	aeqe = get_eqe_buf(eq, (eq->cons_index & (eq->entries - 1)) *
->> +			   HNS_ROCE_AEQ_ENTRY_SIZE);
->>  	return (roce_get_bit(aeqe->asyn, HNS_ROCE_V2_AEQ_AEQE_OWNER_S) ^
->>  		!!(eq->cons_index & eq->entries)) ? aeqe : NULL;
->>  }
->> @@ -5417,44 +5397,12 @@ static int hns_roce_v2_aeq_int(struct hns_roce_dev *hr_dev,
->>  	return aeqe_found;
->>  }
->>
->> -static struct hns_roce_ceqe *get_ceqe_v2(struct hns_roce_eq *eq, u32 entry)
->> -{
->> -	u32 buf_chk_sz;
->> -	unsigned long off;
->> -
->> -	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
->> -	off = (entry & (eq->entries - 1)) * HNS_ROCE_CEQ_ENTRY_SIZE;
->> -
->> -	return (struct hns_roce_ceqe *)((char *)(eq->buf_list->buf) +
->> -		off % buf_chk_sz);
->> -}
->> -
->> -static struct hns_roce_ceqe *mhop_get_ceqe(struct hns_roce_eq *eq, u32 entry)
->> -{
->> -	u32 buf_chk_sz;
->> -	unsigned long off;
->> -
->> -	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
->> -
->> -	off = (entry & (eq->entries - 1)) * HNS_ROCE_CEQ_ENTRY_SIZE;
->> -
->> -	if (eq->hop_num == HNS_ROCE_HOP_NUM_0)
->> -		return (struct hns_roce_ceqe *)((u8 *)(eq->bt_l0) +
->> -			off % buf_chk_sz);
->> -	else
->> -		return (struct hns_roce_ceqe *)((u8 *)(eq->buf[off /
->> -			buf_chk_sz]) + off % buf_chk_sz);
->> -}
->> -
->>  static struct hns_roce_ceqe *next_ceqe_sw_v2(struct hns_roce_eq *eq)
->>  {
->>  	struct hns_roce_ceqe *ceqe;
->>
->> -	if (!eq->hop_num)
->> -		ceqe = get_ceqe_v2(eq, eq->cons_index);
->> -	else
->> -		ceqe = mhop_get_ceqe(eq, eq->cons_index);
->> -
->> +	ceqe = get_eqe_buf(eq, (eq->cons_index & (eq->entries - 1)) *
->> +			   HNS_ROCE_CEQ_ENTRY_SIZE);
->>  	return (!!(roce_get_bit(ceqe->comp, HNS_ROCE_V2_CEQ_CEQE_OWNER_S))) ^
->>  		(!!(eq->cons_index & eq->entries)) ? ceqe : NULL;
->>  }
->> @@ -5614,90 +5562,11 @@ static void hns_roce_v2_destroy_eqc(struct hns_roce_dev *hr_dev, int eqn)
->>  		dev_err(dev, "[mailbox cmd] destroy eqc(%d) failed.\n", eqn);
->>  }
->>
->> -static void hns_roce_mhop_free_eq(struct hns_roce_dev *hr_dev,
->> -				  struct hns_roce_eq *eq)
->> +static void free_eq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_eq *eq)
->>  {
->> -	struct device *dev = hr_dev->dev;
->> -	u64 idx;
->> -	u64 size;
->> -	u32 buf_chk_sz;
->> -	u32 bt_chk_sz;
->> -	u32 mhop_num;
->> -	int eqe_alloc;
->> -	int i = 0;
->> -	int j = 0;
->> -
->> -	mhop_num = hr_dev->caps.eqe_hop_num;
->> -	buf_chk_sz = 1 << (hr_dev->caps.eqe_buf_pg_sz + PAGE_SHIFT);
->> -	bt_chk_sz = 1 << (hr_dev->caps.eqe_ba_pg_sz + PAGE_SHIFT);
->> -
->> -	if (mhop_num == HNS_ROCE_HOP_NUM_0) {
->> -		dma_free_coherent(dev, (unsigned int)(eq->entries *
->> -				  eq->eqe_size), eq->bt_l0, eq->l0_dma);
->> -		return;
->> -	}
->> -
->> -	dma_free_coherent(dev, bt_chk_sz, eq->bt_l0, eq->l0_dma);
->> -	if (mhop_num == 1) {
->> -		for (i = 0; i < eq->l0_last_num; i++) {
->> -			if (i == eq->l0_last_num - 1) {
->> -				eqe_alloc = i * (buf_chk_sz / eq->eqe_size);
->> -				size = (eq->entries - eqe_alloc) * eq->eqe_size;
->> -				dma_free_coherent(dev, size, eq->buf[i],
->> -						  eq->buf_dma[i]);
->> -				break;
->> -			}
->> -			dma_free_coherent(dev, buf_chk_sz, eq->buf[i],
->> -					  eq->buf_dma[i]);
->> -		}
->> -	} else if (mhop_num == 2) {
->> -		for (i = 0; i < eq->l0_last_num; i++) {
->> -			dma_free_coherent(dev, bt_chk_sz, eq->bt_l1[i],
->> -					  eq->l1_dma[i]);
->> -
->> -			for (j = 0; j < bt_chk_sz / BA_BYTE_LEN; j++) {
->> -				idx = i * (bt_chk_sz / BA_BYTE_LEN) + j;
->> -				if ((i == eq->l0_last_num - 1)
->> -				     && j == eq->l1_last_num - 1) {
->> -					eqe_alloc = (buf_chk_sz / eq->eqe_size)
->> -						    * idx;
->> -					size = (eq->entries - eqe_alloc)
->> -						* eq->eqe_size;
->> -					dma_free_coherent(dev, size,
->> -							  eq->buf[idx],
->> -							  eq->buf_dma[idx]);
->> -					break;
->> -				}
->> -				dma_free_coherent(dev, buf_chk_sz, eq->buf[idx],
->> -						  eq->buf_dma[idx]);
->> -			}
->> -		}
->> -	}
->> -	kfree(eq->buf_dma);
->> -	kfree(eq->buf);
->> -	kfree(eq->l1_dma);
->> -	kfree(eq->bt_l1);
->> -	eq->buf_dma = NULL;
->> -	eq->buf = NULL;
->> -	eq->l1_dma = NULL;
->> -	eq->bt_l1 = NULL;
->> -}
->> -
->> -static void hns_roce_v2_free_eq(struct hns_roce_dev *hr_dev,
->> -				struct hns_roce_eq *eq)
->> -{
->> -	u32 buf_chk_sz;
->> -
->> -	buf_chk_sz = 1 << (eq->eqe_buf_pg_sz + PAGE_SHIFT);
->> -
->> -	if (hr_dev->caps.eqe_hop_num) {
->> -		hns_roce_mhop_free_eq(hr_dev, eq);
->> -		return;
->> -	}
->> -
->> -	dma_free_coherent(hr_dev->dev, buf_chk_sz, eq->buf_list->buf,
->> -			  eq->buf_list->map);
->> -	kfree(eq->buf_list);
->> +	if (!eq->hop_num || eq->hop_num == HNS_ROCE_HOP_NUM_0)
->> +		hns_roce_mtr_cleanup(hr_dev, &eq->mtr);
->> +	hns_roce_buf_free(hr_dev, eq->buf.size, &eq->buf);
->>  }
->>
->>  static void hns_roce_config_eqc(struct hns_roce_dev *hr_dev,
->> @@ -5705,6 +5574,8 @@ static void hns_roce_config_eqc(struct hns_roce_dev *hr_dev,
->>  				void *mb_buf)
->>  {
->>  	struct hns_roce_eq_context *eqc;
->> +	u64 ba[MTT_MIN_COUNT] = { 0 };
->> +	int count;
->>
->>  	eqc = mb_buf;
->>  	memset(eqc, 0, sizeof(struct hns_roce_eq_context));
->> @@ -5720,10 +5591,23 @@ static void hns_roce_config_eqc(struct hns_roce_dev *hr_dev,
->>  	eq->eqe_buf_pg_sz = hr_dev->caps.eqe_buf_pg_sz;
->>  	eq->shift = ilog2((unsigned int)eq->entries);
->>
->> -	if (!eq->hop_num)
->> -		eq->eqe_ba = eq->buf_list->map;
->> -	else
->> -		eq->eqe_ba = eq->l0_dma;
->> +	/* if not muti-hop, eqe buffer only use one trunk */
->> +	if (!eq->hop_num || eq->hop_num == HNS_ROCE_HOP_NUM_0) {
->> +		eq->eqe_ba = eq->buf.direct.map;
->> +		eq->cur_eqe_ba = eq->eqe_ba;
->> +		if (eq->buf.npages > 1)
->> +			eq->nxt_eqe_ba = eq->eqe_ba + (1 << eq->eqe_buf_pg_sz);
->> +		else
->> +			eq->nxt_eqe_ba = eq->eqe_ba;
->> +	} else {
->> +		count = hns_roce_mtr_find(hr_dev, &eq->mtr, 0, ba,
->> +					  MTT_MIN_COUNT, &eq->eqe_ba);
->> +		eq->cur_eqe_ba = ba[0];
->> +		if (count > 1)
->> +			eq->nxt_eqe_ba = ba[1];
->> +		else
->> +			eq->nxt_eqe_ba = ba[0];
->> +	}
->>
->>  	/* set eqc state */
->>  	roce_set_field(eqc->byte_4, HNS_ROCE_EQC_EQ_ST_M, HNS_ROCE_EQC_EQ_ST_S,
->> @@ -5821,220 +5705,97 @@ static void hns_roce_config_eqc(struct hns_roce_dev *hr_dev,
->>  		       HNS_ROCE_EQC_NXT_EQE_BA_H_S, eq->nxt_eqe_ba >> 44);
->>  }
->>
->> -static int hns_roce_mhop_alloc_eq(struct hns_roce_dev *hr_dev,
->> -				  struct hns_roce_eq *eq)
->> +static int map_eq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_eq *eq,
->> +		      u32 page_shift)
->>  {
->> -	struct device *dev = hr_dev->dev;
->> -	int eq_alloc_done = 0;
->> -	int eq_buf_cnt = 0;
->> -	int eqe_alloc;
->> -	u32 buf_chk_sz;
->> -	u32 bt_chk_sz;
->> -	u32 mhop_num;
->> -	u64 size;
->> -	u64 idx;
->> +	struct hns_roce_buf_region region = {};
->> +	dma_addr_t *buf_list = NULL;
->>  	int ba_num;
->> -	int bt_num;
->> -	int record_i;
->> -	int record_j;
->> -	int i = 0;
->> -	int j = 0;
->> -
->> -	mhop_num = hr_dev->caps.eqe_hop_num;
->> -	buf_chk_sz = 1 << (hr_dev->caps.eqe_buf_pg_sz + PAGE_SHIFT);
->> -	bt_chk_sz = 1 << (hr_dev->caps.eqe_ba_pg_sz + PAGE_SHIFT);
->> +	int ret;
->>
->>  	ba_num = DIV_ROUND_UP(PAGE_ALIGN(eq->entries * eq->eqe_size),
->> -			      buf_chk_sz);
->> -	bt_num = DIV_ROUND_UP(ba_num, bt_chk_sz / BA_BYTE_LEN);
->> +			      1 << page_shift);
->> +	hns_roce_init_buf_region(&region, hr_dev->caps.eqe_hop_num, 0, ba_num);
->>
->> -	if (mhop_num == HNS_ROCE_HOP_NUM_0) {
->> -		if (eq->entries > buf_chk_sz / eq->eqe_size) {
->> -			dev_err(dev, "eq entries %d is larger than buf_pg_sz!",
->> -				eq->entries);
->> -			return -EINVAL;
->> -		}
->> -		eq->bt_l0 = dma_alloc_coherent(dev, eq->entries * eq->eqe_size,
->> -					       &(eq->l0_dma), GFP_KERNEL);
->> -		if (!eq->bt_l0)
->> -			return -ENOMEM;
->> -
->> -		eq->cur_eqe_ba = eq->l0_dma;
->> -		eq->nxt_eqe_ba = 0;
->> +	/* alloc a tmp list for storing eq buf address */
->> +	ret = hns_roce_alloc_buf_list(&region, &buf_list, 1);
->> +	if (ret) {
->> +		dev_err(hr_dev->dev, "alloc eq buf_list error\n");
-> 
-> The same comment like we gave for bnxt driver, no dev_* prints inside
-> driver, use ibdev_*.
-> 
-> Thanks
-> 
+Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+---
+ drivers/infiniband/sw/siw/siw_verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi Leon,
-
-map_eq_buf() is called before ib_register_device(), so we can't use
-ibdev_* here.
-
-Thanks for your reminder, another patch that replace other dev_* in
-hns driver with ibdev_* is on preparing.
-
-Weihang
-
-> .
-> 
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index 07e30138aaa1..73485d0da907 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -168,12 +168,12 @@ int siw_query_port(struct ib_device *base_dev, u8 port,
+ 
+ 	memset(attr, 0, sizeof(*attr));
+ 
+-	attr->active_mtu = attr->max_mtu;
+ 	attr->active_speed = 2;
+ 	attr->active_width = 2;
+ 	attr->gid_tbl_len = 1;
+ 	attr->max_msg_sz = -1;
+ 	attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
++	attr->active_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
+ 	attr->phys_state = sdev->state == IB_PORT_ACTIVE ?
+ 		IB_PORT_PHYS_STATE_LINK_UP : IB_PORT_PHYS_STATE_DISABLED;
+ 	attr->pkey_tbl_len = 1;
+-- 
+2.21.1
 
