@@ -2,135 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC04153A95
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Feb 2020 22:59:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDA1153BB6
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2020 00:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727178AbgBEV7P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Feb 2020 16:59:15 -0500
-Received: from mga18.intel.com ([134.134.136.126]:48241 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727033AbgBEV7P (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 5 Feb 2020 16:59:15 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 05 Feb 2020 13:59:14 -0800
-X-IronPort-AV: E=Sophos;i="5.70,407,1574150400"; 
-   d="scan'208";a="235737491"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.205.112]) ([10.254.205.112])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 05 Feb 2020 13:59:13 -0800
-Subject: Re: [PATCH] kernel-boot: Do not perform device rename on OPA devices
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     "Goldman, Adam" <adam.goldman@intel.com>,
-        linux-rdma@vger.kernel.org, mike.marciniszyn@intel.com
-References: <1580824520-38122-1-git-send-email-adam.goldman@intel.com>
- <20200205191227.GE28298@ziepe.ca>
- <daa60df0-04e1-d33c-fdc9-5a3fea2688cb@intel.com>
- <20200205205402.GC25297@ziepe.ca>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <0f9fd27d-4bb8-b51d-1fdc-20a5b0d5d9e2@intel.com>
-Date:   Wed, 5 Feb 2020 16:59:11 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        id S1727307AbgBEXNc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Feb 2020 18:13:32 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1635 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727149AbgBEXNc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Feb 2020 18:13:32 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e3b4c000000>; Wed, 05 Feb 2020 15:13:04 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 05 Feb 2020 15:13:28 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 05 Feb 2020 15:13:28 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 5 Feb
+ 2020 23:13:28 +0000
+Subject: Re: [PATCH v4 10/12] mm/gup: /proc/vmstat: pin_user_pages (FOLL_PIN)
+ reporting
+To:     Jan Kara <jack@suse.cz>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20200204234117.2974687-1-jhubbard@nvidia.com>
+ <20200204234117.2974687-11-jhubbard@nvidia.com>
+ <20200205093733.GB28058@quack2.suse.cz>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <09b49b0d-85cc-87b8-9176-0963f6c8c735@nvidia.com>
+Date:   Wed, 5 Feb 2020 15:13:27 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.2
 MIME-Version: 1.0
-In-Reply-To: <20200205205402.GC25297@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200205093733.GB28058@quack2.suse.cz>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1580944384; bh=QZo2rYgRggJLhdhuOglfdT26CygAzcQcsm1mvo4G27A=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=rET6ClPJ1i9ucTvvRWF/1/c462K2mCH6nZx8WiCBRBOHIYQjg+sBdCGrPEtzpJsKC
+         oKyCPZwjz3pxDIMTZQ64WUhXMxGUcmo2sbbCBiqNCUtVm8IDqmSKyYGkw81oZa918B
+         N0ScNcSKXjJywqnA2ZRAnUbR9x/eLSSwDq662e/d+ttmimG7GT1j+2mJRKDHI6zZbH
+         86HZzVIKep/0LUPMJQsvDeV54HT0Y46r7c6qo8I9SUAiapmADqg+pUsaOz9YoF0uW1
+         Jn2PUL4F9EQ2HxmAkHcoSFDySLMhNHZs2ZqJAAvZxFMlEtNxpUbGKwxFOdO35tSUdu
+         Cvzd7Xz67EEww==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/5/2020 3:54 PM, Jason Gunthorpe wrote:
-> On Wed, Feb 05, 2020 at 03:35:13PM -0500, Dennis Dalessandro wrote:
->> On 2/5/2020 2:12 PM, Jason Gunthorpe wrote:
->>> On Tue, Feb 04, 2020 at 08:55:20AM -0500, Goldman, Adam wrote:
->>>> From: "Goldman, Adam" <adam.goldman@intel.com>
->>>>
->>>> PSM2 will not run with recent rdma-core releases. Several tools and
->>>> libraries like PSM2, require the hfi1 name to be present.
->>>>
->>>> Recent rdma-core releases added a new feature to rename kernel devices,
->>>> but the default configuration will not work with hfi1 fabrics.
->>>>
->>>> Related opa-psm2 github issue:
->>>>     https://github.com/intel/opa-psm2/issues/43
->>>>
->>>> Fixes: 5b4099d47be3 ("kernel-boot: Perform device rename to make stable names")
->>>> Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
->>>> Signed-off-by: Goldman, Adam <adam.goldman@intel.com>
->>>>    kernel-boot/rdma-persistent-naming.rules | 2 +-
->>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/kernel-boot/rdma-persistent-naming.rules b/kernel-boot/rdma-persistent-naming.rules
->>>> index 9b61e16..95d6851 100644
->>>> +++ b/kernel-boot/rdma-persistent-naming.rules
->>>> @@ -25,4 +25,4 @@
->>>>    #   Device type = RoCE
->>>>    #   mlx5_0 -> rocex525400c0fe123455
->>>>    #
->>>> -ACTION=="add", SUBSYSTEM=="infiniband", PROGRAM="rdma_rename %k NAME_FALLBACK"
->>>> +ACTION=="add", SUBSYSTEM=="infiniband", KERNEL!="hfi1*", PROGRAM="rdma_rename %k NAME_FALLBACK"
->>>
->>> We are moving to the new names by default slowly, when wrong
->>> assumptions are found in other packages they need to be updated and
->>> their fixes pushed out.
->>>
->>> At some point the major distros will default this to On. People using
->>> leading edge distros can turn it off with the global switch Leon
->>> mentioned.
->>>
->>> This is the same process netdev went through when they introduced
->>> persistent names.
->>>
->>> If I recall, hfi was one of the reason this work was done. HFI has
->>> problems generating consistent names for its multi-function devices in
->>> various cases and I NAK'd the kernel hack to try and 'fix' that.
->>
->> So are you saying you won't take this patch then?
+On 2/5/20 1:37 AM, Jan Kara wrote:
+> ...
 > 
-> No, this is not a longterm solution. The point of upstream here is to
-> highlight what needs to be fixed so leading edge distro can fix their
-> stuff.
+>> @@ -104,6 +106,9 @@ static __maybe_unused struct page *try_grab_compound_head(struct page *page,
+>>  		if (hpage_pincount_available(page))
+>>  			hpage_pincount_add(page, refs);
+>>  
+>> +		mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_ACQUIRED,
+>> +				    orig_refs);
+>> +
+>>  		return page;
+>>  	}
+>>  
 > 
->> I guess we can work with distros to get the right rules in place outside of
->> rdma-core so that things continue to work.
+> It seems to me you miss mod_node_page_state() in put_compound_head(), don't
+> you?
+
+
+Yes, that was definitely missing. I've added this for the next version:
+
+
+diff --git a/mm/gup.c b/mm/gup.c
+index 7c543849181b..ae503c51bc7f 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -2268,6 +2268,8 @@ static int record_subpages(struct page *page, unsigned long addr,
+ 
+ static void put_compound_head(struct page *page, int refs, unsigned int flags)
+ {
++       int orig_refs = refs;
++
+        if (flags & FOLL_PIN) {
+                if (hpage_pincount_available(page))
+                        hpage_pincount_sub(page, refs);
+@@ -2283,6 +2285,8 @@ static void put_compound_head(struct page *page, int refs, unsigned int flags)
+        if (refs > 1)
+                page_ref_sub(page, refs - 1);
+        put_page(page);
++
++       mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_RELEASED, orig_refs);
+ }
+ 
+ #ifdef CONFIG_ARCH_HAS_HUGEPD
+
+
+
 > 
-> I would actively block an attempt to try and do an end-run around
-> upstream like this. rdma-core is supposed to be the defacto
-> configuration, not be modified randomly by distros as before.
-
-No but users should be free to name their devices how they want should 
-they not?
-
-> You can request distros delay enabling renaming until psm/etc are
-> fixed.
-
-Not an end-run around upstream at all. I didn't mean to imply anything 
-about how it's done, delaying the enabling, or whatever is fine for now. 
-I just meant something that does *not* change/impact rdma-core.
-
-> The distros know the users/cases where renaming is needed and can
-> decide if they are more or less important than psm for default
-> enablement.
-
-Exactly. We are on the same page here.
-
->> You are correct someone tried to put forth a hack for the flip-flop name
->> thing [1]. However even if this was used as a solution for that issue we
->> would still have the same library looking for hfi1_0 problem.
+> Otherwise I like the new stat names better :).
 > 
-> It was always a bad design to hardwire strings like this, that library
-> needs to be fixed up.
+> 								Honza
 > 
-> Do you remember when I was so annoyed that HFI1 created it's own char
-> dev, and told you not to do it? This is yet another reason why...
 
-> Why isn't psm keying off it's own chardev anyhow? There should be back
-> links to the RDMA device in sysfs from there.
+Glad to hear that! :)
 
-No arguments here. No sense in going down this road though at this point 
-in the game.
-
--Denny
+thanks,
+-- 
+John Hubbard
+NVIDIA
