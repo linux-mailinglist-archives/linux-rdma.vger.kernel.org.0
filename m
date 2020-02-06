@@ -2,322 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC19154173
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2020 10:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 520C3154345
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2020 12:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727543AbgBFJ5W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Feb 2020 04:57:22 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10160 "EHLO huawei.com"
+        id S1727589AbgBFLkk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Feb 2020 06:40:40 -0500
+Received: from mail-am6eur05on2059.outbound.protection.outlook.com ([40.107.22.59]:6154
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728304AbgBFJ5W (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 6 Feb 2020 04:57:22 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 977C6889CB5C54BF63A5;
-        Thu,  6 Feb 2020 17:57:06 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.439.0; Thu, 6 Feb 2020 17:56:57 +0800
-From:   Yixian Liu <liuyixian@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v8 for-next 2/2] RDMA/hns: Delayed flush cqe process with workqueue
-Date:   Thu, 6 Feb 2020 17:56:45 +0800
-Message-ID: <1580983005-13899-3-git-send-email-liuyixian@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1580983005-13899-1-git-send-email-liuyixian@huawei.com>
-References: <1580983005-13899-1-git-send-email-liuyixian@huawei.com>
+        id S1727415AbgBFLkj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 6 Feb 2020 06:40:39 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mKpkgeddFzZV49oCssyoywaEGkFT7WwFthhFXstIxHRVcKCpqgBlzJcyMpWeU/ltYU1VeKaJtkQ+wcFnKUawANdOSOl/A46jGhZgTRpMLWp8l7Rk3OHZfi2URLgHiBWWkWDd1o74oe3zqXDuV1aVHItD5avWZOFyuDtmmloGwiGLcDA0mKoiaY2BHQy1QuejJZ7VmtzC8TUmqHHhc1bB3h9NOl+XrG3EjfjHfKbOhaNAR5zdIFcoN7lDrJXVutiErTMk+kelyG114xDtgqQ1xBwYF8Rd0clhOqCK9AMR1GfztnKta9JR5vqDnZQPqxvXs0+Cp0vWGKeylpSyRPAiiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EBuDUHkSrmGHDsgMyNAHYx5JK9nya8hmZTvi+YhuoT8=;
+ b=nff14A8d0CJJ51k0VI6cW/aAeBHAvCoDCGd9NjQh2obw7Sa0siPqoYX8atASWVQKZnJHrOcwJ1SX9EeGpanYW4QKPMm/QcRqEwPTelAX8d3NAn0a27eF2M68szmALpoI85kiAGnc/1UN2EJDfI6O9fr9+0KdPDOKktYMvWti7QzDeI3PQg214iAdndp0wDyoSb8dCNXmrMEibs1mF/Q+k6/eg1L+W0sj1zz2R3KjStL1svZVUXXHMnXo7zdQx0sBWqS6BTinOt+tCBg9vejVxyPIxjkQckz3afEpmniNmoSg7QTeRwi1ln603VlWrhGQZqEMzOMOXa0RRV4Rc32zfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EBuDUHkSrmGHDsgMyNAHYx5JK9nya8hmZTvi+YhuoT8=;
+ b=X7rbaEohF5AxDLrkYe0czafA3wBKlqNzZhxcdzclqOtEsRIWn8l0vH2SFtP04k242DbmbusvZ+gaHWWvrid4hFr78n3E14DRcSDL0ePogAuIdpGCj7gWWCxkUkKHa0QQ2mL0NRTO8tn7FXiEnD0C49BaQNGYQEVcLJxsFvWJ9mE=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=leonro@mellanox.com; 
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (20.179.5.215) by
+ AM6PR05MB4488.eurprd05.prod.outlook.com (52.135.168.29) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2686.32; Thu, 6 Feb 2020 11:40:36 +0000
+Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::c99f:9130:561f:dea0]) by AM6PR05MB6408.eurprd05.prod.outlook.com
+ ([fe80::c99f:9130:561f:dea0%3]) with mapi id 15.20.2707.024; Thu, 6 Feb 2020
+ 11:40:35 +0000
+Date:   Thu, 6 Feb 2020 13:40:33 +0200
+From:   Leon Romanovsky <leonro@mellanox.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: linux-next: Tree for Jan 30 + 20200206
+ (drivers/infiniband/hw/mlx5/)
+Message-ID: <20200206114033.GF414821@unreal>
+References: <20200130152852.6056b5d8@canb.auug.org.au>
+ <df42492f-a57e-bf71-e7e2-ce4dd7864462@infradead.org>
+ <ee5f17b6-3282-2137-7e9d-fa0008f9eeb0@infradead.org>
+ <20200206073019.GC414821@unreal>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200206073019.GC414821@unreal>
+X-ClientProxiedBy: AM3PR04CA0136.eurprd04.prod.outlook.com (2603:10a6:207::20)
+ To AM6PR05MB6408.eurprd05.prod.outlook.com (2603:10a6:20b:b8::23)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Received: from localhost (193.47.165.251) by AM3PR04CA0136.eurprd04.prod.outlook.com (2603:10a6:207::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2707.21 via Frontend Transport; Thu, 6 Feb 2020 11:40:35 +0000
+X-Originating-IP: [193.47.165.251]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: a375df30-b181-4bc7-eab8-08d7aaf9619c
+X-MS-TrafficTypeDiagnostic: AM6PR05MB4488:
+X-Microsoft-Antispam-PRVS: <AM6PR05MB4488CA302360198CF585B050B01D0@AM6PR05MB4488.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-Forefront-PRVS: 0305463112
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10001)(10009020)(7916004)(4636009)(346002)(39860400002)(136003)(366004)(396003)(376002)(199004)(189003)(478600001)(81166006)(81156014)(33656002)(8936002)(1076003)(86362001)(8676002)(966005)(66946007)(6916009)(4326008)(52116002)(6496006)(33716001)(53546011)(5660300002)(956004)(66556008)(66476007)(54906003)(6486002)(9686003)(316002)(186003)(16526019)(26005)(2906002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB4488;H:AM6PR05MB6408.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yrJGcjHHKzbZGarWf2eK5/cQAV9/DI9QQrWaeKC/SnrReMpr4tBP5hYLY7qVO8L/knvBBWi6XcdLT1LTKvpv2xqPVoAaN751xM5ee+6aWA9d7sZh1NAqA3tBRiY4/gkjgDPHhUMGEN5q9BU0GOE57NcqNOJOd3yZFeEQKansbyRyGGgwB7Ijfq42zuBIbx+T5xkAmB5cgn1+IiTfI8o/E8lXFW8IMQ0quslZ3NXqYegLm+LVUvIwuK4L9roaDaI/vmU+pjqmJa/s7Z9OFEeP0lstgPplmKJus4KjW/4r8LVFMv6GIKfoUZ7OtbioxGi9EALoSoXQ8h0INd127J4dp6HH40v2RVfVGlMVeuQNWRdH9xC9seGxlyQQiJGPkINKVIrGnQDcYxbFLRCvrdPEXiMW3TH0phjAGU3zvqzupavSpRd8/mrD/8Q9bIsNzHMo9+qsEbm3VPXo1wf0YL73LXuCzmQJ7xRN3d2pzW/w/xHL0Utz+DjHaVTyHWbQVVmeFXzuwzmKDcLkcCRFWZjVsdOZxSefZXW3hYnjYr5K950Dyg2XO2N8ZVz3RR99wHOkEK3fZvhGAsd/HUGalyiNE7CKkgxJMNCLo/i/gvaobaONyIYOa+/Fq2fO1ouxHCpT2sbEAwiBZWvfG4Y+YsgMHU0uL76lGd0tFj4O2hPCs0D7VrIaSbjjYOecNBfzvjGAvse8rmvCIwinDqs5GmrZkkyhMu5sMWOj8q/h2k3FF5g=
+X-MS-Exchange-AntiSpam-MessageData: eq0dCmv2FQEOehOm1PBB0DdtFLkrbpkx4AElFkzqj0Ei/K6mMOG7ddWXdImw5ia/CQ4KUQ+392Ods/oCp9XeAgIq05BDXI4t1TuzSIBDNGW7DXA5dxTxsrpiERjJgwK08XPeMSwF5ao6mdcy8/UA0Q==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a375df30-b181-4bc7-eab8-08d7aaf9619c
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Feb 2020 11:40:35.9065
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nlxz2dzuT6M2Zhcf5jsCWdX15A2MqceDFJWo1SuiVNrS3gTDUQs8SepwwLuEoOaNgz79CSv3zVKQxcUBf9Phpw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB4488
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-HiP08 RoCE hardware lacks ability(a known hardware problem) to flush
-outstanding WQEs if QP state gets into errored mode for some reason.
-To overcome this hardware problem and as a workaround, when QP is
-detected to be in errored state during various legs like post send,
-post receive etc[1], flush needs to be performed from the driver.
+On Thu, Feb 06, 2020 at 09:30:19AM +0200, Leon Romanovsky wrote:
+> On Wed, Feb 05, 2020 at 09:31:15PM -0800, Randy Dunlap wrote:
+> > On 1/30/20 5:47 AM, Randy Dunlap wrote:
+> > > On 1/29/20 8:28 PM, Stephen Rothwell wrote:
+> > >> Hi all,
+> > >>
+> > >> Please do not add any v5.7 material to your linux-next included
+> > >> branches until after v5.6-rc1 has been released.
+> > >>
+> > >> Changes since 20200129:
+> > >>
+> > >
+> > > on i386:
+> > >
+> > > ERROR: "__udivdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+> > > ERROR: "__divdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+> > >
+> > >
+> > > Full randconfig file is attached.
+> > >
+> > >
+> >
+> > I am still seeing this on linux-next of 20200206.
+>
+> Sorry, I was under wrong impression that this failure is connected to
+> other issue reported by you.
+>
+> I'm looking on it right now.
 
-The earlier patch[1] sent to solve the hardware limitation explained
-in the cover-letter had a bug in the software flushing leg. It
-acquired mutex while modifying QP state to errored state and while
-conveying it to the hardware using the mailbox. This caused leg to
-sleep while holding spin-lock and caused crash.
+Randy,
 
-Suggested Solution:
-we have proposed to defer the flushing of the QP in the Errored state
-using the workqueue to get around with the limitation of our hardware.
+I'm having hard time to reproduce the failure.
+➜  kernel git:(a0c61bf1c773) ✗ git fixes
+Fixes: a0c61bf1c773 ("Add linux-next specific files for 20200206")
+➜  kernel git:(a0c61bf1c773) ✗ wget https://lore.kernel.org/lkml/df42492f-a57e-bf71-e7e2-ce4dd7864462@infradead.org/2-config-r9621
+from https://lore.kernel.org/lkml/df42492f-a57e-bf71-e7e2-ce4dd7864462@infradead.org/
+➜  kernel git:(a0c61bf1c773) ✗ mv 2-config-r9621 .config
+➜  kernel git:(a0c61bf1c773) ✗ make ARCH=i386 -j64 -s M=drivers/infiniband/hw/mlx5
+➜  kernel git:(a0c61bf1c773) ✗ file drivers/infiniband/hw/mlx5/mlx5_ib.ko
+drivers/infiniband/hw/mlx5/mlx5_ib.ko: ELF 32-bit LSB relocatable, Intel 80386, version 1 (SYSV), BuildID[sha1]=49f81f5d56f7caf95d4a6cc9097391622c34f4ba, not stripped
 
-This patch specifically adds the calls to the flush handler from
-where parts of the code like post_send/post_recv etc. when the QP
-state gets into the errored mode.
+on my 64bit system:
+➜  kernel git:(rdma-next) file drivers/infiniband/hw/mlx5/mlx5_ib.ko
+drivers/infiniband/hw/mlx5/mlx5_ib.ko: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), BuildID[sha1]=2dcb1e30d0bba9885d5a824f6f57488a98f0c95d, with debug_info, not stripped
 
-[1] https://patchwork.kernel.org/patch/10534271/
+Thanks
 
-Signed-off-by: Yixian Liu <liuyixian@huawei.com>
-Reviewed-by: Salil Mehta <salil.mehta@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  6 ++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 99 +++++++++++++++--------------
- drivers/infiniband/hw/hns/hns_roce_qp.c     | 11 ++--
- 3 files changed, 66 insertions(+), 50 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index a089d47..96d7bfa 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -641,6 +641,10 @@ struct hns_roce_rinl_buf {
- 	u32			 wqe_cnt;
- };
- 
-+enum {
-+	HNS_ROCE_FLUSH_FLAG = 0,
-+};
-+
- struct hns_roce_work {
- 	struct hns_roce_dev *hr_dev;
- 	struct work_struct work;
-@@ -693,6 +697,8 @@ struct hns_roce_qp {
- 	struct hns_roce_sge	sge;
- 	u32			next_sge;
- 
-+	/* 0: flush needed, 1: unneeded */
-+	unsigned long		flush_flag;
- 	struct hns_roce_work	flush_work;
- 	struct hns_roce_rinl_buf rq_inl_buf;
- 	struct list_head	node;		/* all qps are on a list */
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 950c604..d33d9eb 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -220,11 +220,6 @@ static int set_rwqe_data_seg(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 	return 0;
- }
- 
--static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
--				 const struct ib_qp_attr *attr,
--				 int attr_mask, enum ib_qp_state cur_state,
--				 enum ib_qp_state new_state);
--
- static int check_send_valid(struct hns_roce_dev *hr_dev,
- 			    struct hns_roce_qp *hr_qp)
- {
-@@ -261,7 +256,6 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 	struct hns_roce_wqe_frmr_seg *fseg;
- 	struct device *dev = hr_dev->dev;
- 	struct hns_roce_v2_db sq_db;
--	struct ib_qp_attr attr;
- 	unsigned int owner_bit;
- 	unsigned int sge_idx;
- 	unsigned int wqe_idx;
-@@ -269,7 +263,6 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 	int valid_num_sge;
- 	void *wqe = NULL;
- 	bool loopback;
--	int attr_mask;
- 	u32 tmp_len;
- 	u32 hr_op;
- 	u8 *smac;
-@@ -607,18 +600,19 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 
- 		qp->next_sge = sge_idx;
- 
--		if (qp->state == IB_QPS_ERR) {
--			attr_mask = IB_QP_STATE;
--			attr.qp_state = IB_QPS_ERR;
--
--			ret = hns_roce_v2_modify_qp(&qp->ibqp, &attr, attr_mask,
--						    qp->state, IB_QPS_ERR);
--			if (ret) {
--				spin_unlock_irqrestore(&qp->sq.lock, flags);
--				*bad_wr = wr;
--				return ret;
--			}
--		}
-+		/*
-+		 * Hip08 hardware cannot flush the WQEs in SQ if the QP state
-+		 * gets into errored mode. Hence, as a workaround to this
-+		 * hardware limitation, driver needs to assist in flushing. But
-+		 * the flushing operation uses mailbox to convey the QP state to
-+		 * the hardware and which can sleep due to the mutex protection
-+		 * around the mailbox calls. Hence, use the deferred flush for
-+		 * now.
-+		 */
-+		if (qp->state == IB_QPS_ERR)
-+			if (!test_and_set_bit(HNS_ROCE_FLUSH_FLAG,
-+					      &qp->flush_flag))
-+				init_flush_work(hr_dev, qp);
- 	}
- 
- 	spin_unlock_irqrestore(&qp->sq.lock, flags);
-@@ -646,10 +640,8 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
- 	struct hns_roce_v2_wqe_data_seg *dseg;
- 	struct hns_roce_rinl_sge *sge_list;
- 	struct device *dev = hr_dev->dev;
--	struct ib_qp_attr attr;
- 	unsigned long flags;
- 	void *wqe = NULL;
--	int attr_mask;
- 	u32 wqe_idx;
- 	int nreq;
- 	int ret;
-@@ -719,19 +711,19 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
- 
- 		*hr_qp->rdb.db_record = hr_qp->rq.head & 0xffff;
- 
--		if (hr_qp->state == IB_QPS_ERR) {
--			attr_mask = IB_QP_STATE;
--			attr.qp_state = IB_QPS_ERR;
--
--			ret = hns_roce_v2_modify_qp(&hr_qp->ibqp, &attr,
--						    attr_mask, hr_qp->state,
--						    IB_QPS_ERR);
--			if (ret) {
--				spin_unlock_irqrestore(&hr_qp->rq.lock, flags);
--				*bad_wr = wr;
--				return ret;
--			}
--		}
-+		/*
-+		 * Hip08 hardware cannot flush the WQEs in RQ if the QP state
-+		 * gets into errored mode. Hence, as a workaround to this
-+		 * hardware limitation, driver needs to assist in flushing. But
-+		 * the flushing operation uses mailbox to convey the QP state to
-+		 * the hardware and which can sleep due to the mutex protection
-+		 * around the mailbox calls. Hence, use the deferred flush for
-+		 * now.
-+		 */
-+		if (hr_qp->state == IB_QPS_ERR)
-+			if (!test_and_set_bit(HNS_ROCE_FLUSH_FLAG,
-+					      &hr_qp->flush_flag))
-+				init_flush_work(hr_dev, hr_qp);
- 	}
- 	spin_unlock_irqrestore(&hr_qp->rq.lock, flags);
- 
-@@ -3013,13 +3005,11 @@ static int hns_roce_v2_sw_poll_cq(struct hns_roce_cq *hr_cq, int num_entries,
- static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 				struct hns_roce_qp **cur_qp, struct ib_wc *wc)
- {
-+	struct hns_roce_dev *hr_dev = to_hr_dev(hr_cq->ib_cq.device);
- 	struct hns_roce_srq *srq = NULL;
--	struct hns_roce_dev *hr_dev;
- 	struct hns_roce_v2_cqe *cqe;
- 	struct hns_roce_qp *hr_qp;
- 	struct hns_roce_wq *wq;
--	struct ib_qp_attr attr;
--	int attr_mask;
- 	int is_send;
- 	u16 wqe_ctr;
- 	u32 opcode;
-@@ -3043,7 +3033,6 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 				V2_CQE_BYTE_16_LCL_QPN_S);
- 
- 	if (!*cur_qp || (qpn & HNS_ROCE_V2_CQE_QPN_MASK) != (*cur_qp)->qpn) {
--		hr_dev = to_hr_dev(hr_cq->ib_cq.device);
- 		hr_qp = __hns_roce_qp_lookup(hr_dev, qpn);
- 		if (unlikely(!hr_qp)) {
- 			dev_err(hr_dev->dev, "CQ %06lx with entry for unknown QPN %06x\n",
-@@ -3053,6 +3042,7 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 		*cur_qp = hr_qp;
- 	}
- 
-+	hr_qp = *cur_qp;
- 	wc->qp = &(*cur_qp)->ibqp;
- 	wc->vendor_err = 0;
- 
-@@ -3137,14 +3127,24 @@ static int hns_roce_v2_poll_one(struct hns_roce_cq *hr_cq,
- 		break;
- 	}
- 
--	/* flush cqe if wc status is error, excluding flush error */
--	if ((wc->status != IB_WC_SUCCESS) &&
--	    (wc->status != IB_WC_WR_FLUSH_ERR)) {
--		attr_mask = IB_QP_STATE;
--		attr.qp_state = IB_QPS_ERR;
--		return hns_roce_v2_modify_qp(&(*cur_qp)->ibqp,
--					     &attr, attr_mask,
--					     (*cur_qp)->state, IB_QPS_ERR);
-+	/*
-+	 * Hip08 hardware cannot flush the WQEs in SQ/RQ if the QP state gets
-+	 * into errored mode. Hence, as a workaround to this hardware
-+	 * limitation, driver needs to assist in flushing. But the flushing
-+	 * operation uses mailbox to convey the QP state to the hardware and
-+	 * which can sleep due to the mutex protection around the mailbox calls.
-+	 * Hence, use the deferred flush for now. Once wc error detected, the
-+	 * flushing operation is needed.
-+	 */
-+	if (wc->status != IB_WC_SUCCESS &&
-+	    wc->status != IB_WC_WR_FLUSH_ERR) {
-+		dev_err(hr_dev->dev, "error cqe status is: 0x%x\n",
-+			status & HNS_ROCE_V2_CQE_STATUS_MASK);
-+
-+		if (!test_and_set_bit(HNS_ROCE_FLUSH_FLAG, &hr_qp->flush_flag))
-+			init_flush_work(hr_dev, hr_qp);
-+
-+		return 0;
- 	}
- 
- 	if (wc->status == IB_WC_WR_FLUSH_ERR)
-@@ -4735,6 +4735,8 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 	struct hns_roce_v2_qp_context *context = ctx;
- 	struct hns_roce_v2_qp_context *qpc_mask = ctx + 1;
- 	struct device *dev = hr_dev->dev;
-+	unsigned long sq_flag = 0;
-+	unsigned long rq_flag = 0;
- 	int ret;
- 
- 	/*
-@@ -4752,6 +4754,9 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 
- 	/* When QP state is err, SQ and RQ WQE should be flushed */
- 	if (new_state == IB_QPS_ERR) {
-+		spin_lock_irqsave(&hr_qp->sq.lock, sq_flag);
-+		spin_lock_irqsave(&hr_qp->rq.lock, rq_flag);
-+		hr_qp->state = IB_QPS_ERR;
- 		roce_set_field(context->byte_160_sq_ci_pi,
- 			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_M,
- 			       V2_QPC_BYTE_160_SQ_PRODUCER_IDX_S,
-@@ -4769,6 +4774,8 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_M,
- 			       V2_QPC_BYTE_84_RQ_PRODUCER_IDX_S, 0);
- 		}
-+		spin_unlock_irqrestore(&hr_qp->rq.lock, rq_flag);
-+		spin_unlock_irqrestore(&hr_qp->sq.lock, sq_flag);
- 	}
- 
- 	/* Configure the optional fields */
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index dab7314..f885b22 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -57,10 +57,12 @@ static void flush_work_handle(struct work_struct *work)
- 	attr_mask = IB_QP_STATE;
- 	attr.qp_state = IB_QPS_ERR;
- 
--	ret = hns_roce_modify_qp(&hr_qp->ibqp, &attr, attr_mask, NULL);
--	if (ret)
--		dev_err(dev, "Modify QP to error state failed(%d) during CQE flush\n",
--			ret);
-+	if (test_and_clear_bit(HNS_ROCE_FLUSH_FLAG, &hr_qp->flush_flag)) {
-+		ret = hns_roce_modify_qp(&hr_qp->ibqp, &attr, attr_mask, NULL);
-+		if (ret)
-+			dev_err(dev, "Modify QP to error state failed(%d) during CQE flush\n",
-+				ret);
-+	}
- 
- 	/*
- 	 * make sure we signal QP destroy leg that flush QP was completed
-@@ -761,6 +763,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 	spin_lock_init(&hr_qp->rq.lock);
- 
- 	hr_qp->state = IB_QPS_RESET;
-+	hr_qp->flush_flag = 0;
- 
- 	hr_qp->ibqp.qp_type = init_attr->qp_type;
- 
--- 
-2.7.4
-
+>
+> Thanks
+>
+> >
+> > --
+> > ~Randy
+> >
