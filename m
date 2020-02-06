@@ -2,82 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB712153E44
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2020 06:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7EBB153E46
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2020 06:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbgBFFaL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Feb 2020 00:30:11 -0500
-Received: from mail-io1-f65.google.com ([209.85.166.65]:46491 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726538AbgBFFaK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Feb 2020 00:30:10 -0500
-Received: by mail-io1-f65.google.com with SMTP id t26so4901159ioi.13
-        for <linux-rdma@vger.kernel.org>; Wed, 05 Feb 2020 21:30:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NSfuOloWYjvnfxXLD0Vw9hSIUL+t25CsRPCYenvSaBg=;
-        b=ME3pDgvHDjtI+qbE0zmjepPncwdgVO/pEoFeEKtl0XDbXMsobpkxgIsrJqV63oXFe3
-         qD9sCAereDdTbItenWUr5wlVfkueNqdYipRHGjIKn/oiTdKMEMvaYnKEoKl1qbpcgUpe
-         dScwp2gTS6cy9ZNCHwGF4J6WJyN0sqJ08ti5Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NSfuOloWYjvnfxXLD0Vw9hSIUL+t25CsRPCYenvSaBg=;
-        b=enIFbIFYNvRFbGQe69qu3rta0P0yRNAQqczSwxFypLXTwqtxnLtW33Q5iD0VSx/sy5
-         EOq8tVgPhnXSPpdGRzkq4333mqYhNTHYetiTP2DJFq9Tt3+X2VFN4kCWDhZAXg8LLIdf
-         18ghyeJFdX6QW+123buzUOF0IF00rUTnxULVuk7Rlsnx4vXj1nNuE/Qrel4UPVMxm1KD
-         Bgtznt7qstBppiu6BWcHaSVKKPDxoIdRcE9IMQAW9EbiKDu1nJ4ULN8Ninw4uLvIzgD5
-         BxE8xv7zvHb9ljGLQgoVKNUnIqlU4pSWoRvJkx6MFEJGc/FjZVqLlfems7Qx20zoSm6y
-         y1fw==
-X-Gm-Message-State: APjAAAXjb947kMzzIqR3s9GxhndWsM2HU5Gy0SDyXASv1hP/zRx0yoK4
-        jOAXlFCrqaLus09rqtIiiMp3HGAtanjXqJ14sSxbMQ==
-X-Google-Smtp-Source: APXvYqxqQW16Deu68JmtnQ1sWH2Y1YkF0dkPZm/BJ/z2mCN9SxCDj0TEiU4HjqgInPc0g3h9N/UloG/Sjw50tkGhG6o=
-X-Received: by 2002:a5e:9246:: with SMTP id z6mr32878018iop.232.1580967008805;
- Wed, 05 Feb 2020 21:30:08 -0800 (PST)
+        id S1726452AbgBFFbQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Feb 2020 00:31:16 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:60442 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725792AbgBFFbQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Feb 2020 00:31:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=RBQoDLMywo6ZPEAl8CBlh/tMYQhZMecgrZIYhakr09k=; b=ZmFkwf9v5Lil9IiLhcNMS8LPhs
+        fFR75unRVppEH9r2WxfP68jhAF8yuAqNmJh1AtwM2i+9fXFILXj0sYFp0heKvAVty7wCi66r2ER2w
+        los3t8x6oU4cvc4cxRkGwpPER07F1xFYoYGyNDnYtrb7cqrIOpi9hmbZhnFxchK62BBa55ROtmdVJ
+        3Z0JtaN5nFrOvcT0v40cfCrAVIEDeDIUtsMyxCtbsdEs6Nq3bW+75z8avjhUG05Nk4LZ7lufEkF2F
+        +aXZYosfq9+2xjF4K+A1eAD+ONgQeHsOvmUttwwXVGEIFJSyM+vw3itmpo859JyQI1OoGgTJGc1qi
+        tQS0QpKg==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1izZkx-0002L5-Qf; Thu, 06 Feb 2020 05:31:15 +0000
+Subject: Re: linux-next: Tree for Jan 30 + 20200206
+ (drivers/infiniband/hw/mlx5/)
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20200130152852.6056b5d8@canb.auug.org.au>
+ <df42492f-a57e-bf71-e7e2-ce4dd7864462@infradead.org>
+Message-ID: <ee5f17b6-3282-2137-7e9d-fa0008f9eeb0@infradead.org>
+Date:   Wed, 5 Feb 2020 21:31:15 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <1580809644-5979-1-git-send-email-devesh.sharma@broadcom.com>
- <AM0PR05MB4866F91551DAE20160D39235D1030@AM0PR05MB4866.eurprd05.prod.outlook.com>
- <CANjDDBhY5EkJpk-_yv1gM76ZidLk92WHokq2nZFAUqOUH_Q-CA@mail.gmail.com> <20200205190701.GD28298@ziepe.ca>
-In-Reply-To: <20200205190701.GD28298@ziepe.ca>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Thu, 6 Feb 2020 10:59:32 +0530
-Message-ID: <CANjDDBgoA5vh3tc=gNoOAdhD0HOT9Uu-bOiv8euBDPMRYd+vDw@mail.gmail.com>
-Subject: Re: [PATCH v6] libibverbs: display gid type in ibv_devinfo
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Parav Pandit <parav@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <df42492f-a57e-bf71-e7e2-ce4dd7864462@infradead.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 6, 2020 at 12:37 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Tue, Feb 04, 2020 at 08:56:54PM +0530, Devesh Sharma wrote:
-> > On Tue, Feb 4, 2020 at 8:01 PM Parav Pandit <parav@mellanox.com> wrote:
-> > >
-> > > Hi Devesh,
-> > >
-> > > > From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> > > > owner@vger.kernel.org> On Behalf Of Devesh Sharma
-> > > >       phys_state:     LINK_UP (5)
-> > > >       GID[  0]:       fe80:0000:0000:0000:b226:28ff:fed3:b0f0, IB/RoCE v1
-> > > >       GID[  1]:       fe80:0000:0000:0000:b226:28ff:fed3:b0f0, RoCE v2
-> > > >       GID[  1]:       fe80::b226:28ff:fed3:b0f0
-> > > Showing two entries as individual raw like this is surely confusing to user.
-> > > Either all content should be in single raw or as Leon said just single different format for RoCEv2 is fine.
-> > Yes, I liked the single display in new format, I would wait for Jason
-> > to agree/disagree and then send a rev.
->
-> Well, I wasn't thinking to display the GID[xx] prefix for the 2nd
-> entry
->
-> It seems like other people want to just show one, that seems OK too
-Thanks for confirming, sending down V7 shortly please review.
->
-> Jason
+On 1/30/20 5:47 AM, Randy Dunlap wrote:
+> On 1/29/20 8:28 PM, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> Please do not add any v5.7 material to your linux-next included
+>> branches until after v5.6-rc1 has been released.
+>>
+>> Changes since 20200129:
+>>
+> 
+> on i386:
+> 
+> ERROR: "__udivdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+> ERROR: "__divdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+> 
+> 
+> Full randconfig file is attached.
+> 
+> 
+
+I am still seeing this on linux-next of 20200206.
+
+-- 
+~Randy
+
