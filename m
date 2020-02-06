@@ -2,107 +2,192 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C7415474E
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2020 16:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A70154806
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2020 16:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727522AbgBFPMe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Feb 2020 10:12:34 -0500
-Received: from mail-io1-f66.google.com ([209.85.166.66]:38087 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727518AbgBFPMd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Feb 2020 10:12:33 -0500
-Received: by mail-io1-f66.google.com with SMTP id s24so6669588iog.5
-        for <linux-rdma@vger.kernel.org>; Thu, 06 Feb 2020 07:12:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NFX9PHYeo0qPeSWsJtZXokl7Vof3F1YQpHRtpPWtkpY=;
-        b=UlbpSUBFBxx8El/quG4ajBq5NwipqivNaQaPrksvqHPfRT0yBPSFwjtdUfyeyF/BD/
-         iCe7874+rcdMMwBaUq27P9UPDD1G6cuxtmTkXhBheAM8IN1VOLfprVwGl24cKtpdssnN
-         jcYT+/1bENGMg3XOrp6eEFX1BdM9eVrFLrbrMS7U6yWaK0tJE6Q9Rc3/k8wSWvDZL+HW
-         LMnO9lAi9/FLKOgJ3gSy4rV/5kVlDDxkmmE/6QUn575Z009KOGmHCL+H2XfqtWfQjXiE
-         pkZBDfJEhwoS0l1nrKOtb70z3KEuhZV8Aj+6re0lBh/8TAAOAd0iMNqG4XlammpKqTD3
-         cHHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NFX9PHYeo0qPeSWsJtZXokl7Vof3F1YQpHRtpPWtkpY=;
-        b=BkfYPXEacLfVC7K+hOqjXy58R8vNvMUdMYsKYnSCYETxMJV5xBUtbxLA8n6h4b4OwP
-         LZNIzDSn0+qQzhyaNh/HaucXuBWaIQEjNdMKklM+6Q5VTVnnWtp3t4IXUHamB1Rkq28q
-         fBGBMsbkOK4LZK166Fo2yg63kZtshMzH+XAZIPtU1xEPHn78ljPKJDgCnI+/Vw+LR5LV
-         16YAV6YbcJowFtGXewUHYlXvJqN//ExHZcM+sebeF8WgbwgyqFtFCVEiPhHfWjBkVO3C
-         uWCwkMR9NWeacAGs7WU449Y+m0f8sghxaGqoZs+fZwMV/4R8O70zhI0AUh4szdTvtROK
-         sjfg==
-X-Gm-Message-State: APjAAAW7rxxeRhwRFeGq9UjjCgUXMSjXP0MiFBbEoWSvA/Bt7SkIlgRd
-        JSDD0MSOCU4wIzl+TS1e14GP3L9oxgDjUMDKLBZohg==
-X-Google-Smtp-Source: APXvYqz34nz5LOo4cPevM5VjCan65rNEmC8gpMnYrVmkWcWrLsj1pagcMHSfVnCNE6Yk+4D6E8kC2dFyTPt0auIIe/Q=
-X-Received: by 2002:a6b:5902:: with SMTP id n2mr23788156iob.298.1581001953120;
- Thu, 06 Feb 2020 07:12:33 -0800 (PST)
+        id S1727358AbgBFP00 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Feb 2020 10:26:26 -0500
+Received: from p3plsmtpa11-10.prod.phx3.secureserver.net ([68.178.252.111]:37714
+        "EHLO p3plsmtpa11-10.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727440AbgBFP00 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Feb 2020 10:26:26 -0500
+X-Greylist: delayed 438 seconds by postgrey-1.27 at vger.kernel.org; Thu, 06 Feb 2020 10:26:25 EST
+Received: from [192.168.0.78] ([24.218.182.144])
+        by :SMTPAUTH: with ESMTPSA
+        id zivpiDtXRJIhwzivpirvQz; Thu, 06 Feb 2020 08:19:06 -0700
+Subject: Re: [RFC v2] RoCE v2.0 Entropy - IPv6 Flow Label and UDP Source Port
+To:     Alex Rosenbaum <rosenbaumalex@gmail.com>
+Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        "Alex @ Mellanox" <alexr@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Mark Zhang <markz@mellanox.com>
+References: <CAFgAxU8ArpoL9fMpJY5v-UZS5AMXom+TJ8HS57XeEOsCFFov8Q@mail.gmail.com>
+ <63a56c06-57bf-6e31-6ca8-043f9d3b72f3@talpey.com>
+ <CAFgAxU80+feEEtaRYFYTHwTMSE6Edjq0t0siJ0W06WSyD+Cy3A@mail.gmail.com>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <b0414c43-c035-aa90-9f89-7ec6bba9e119@talpey.com>
+Date:   Thu, 6 Feb 2020 10:19:05 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-References: <20200124204753.13154-1-jinpuwang@gmail.com> <CAHg0HuzLLHqp_76ThLhUdHGG_986Oxvvr15h_13T12eEWjyAxA@mail.gmail.com>
- <20200131165421.GB29820@ziepe.ca> <f657d371-3b23-e4b2-50b3-db47cd521e1f@kernel.dk>
- <CAD9gYJLVMVPjQcCj0aqbAW3CD86JQoFNvzJwGziRXT8B2UT0VQ@mail.gmail.com> <a1aaa047-3a44-11a7-19a1-e150a9df4616@kernel.dk>
-In-Reply-To: <a1aaa047-3a44-11a7-19a1-e150a9df4616@kernel.dk>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Thu, 6 Feb 2020 16:12:22 +0100
-Message-ID: <CAMGffEkLkwkd73Q+m46VeOw0UnzZ0EkZQF-QcSZjyqNcqigZPw@mail.gmail.com>
-Subject: Re: [PATCH v8 00/25] RTRS (former IBTRS) RDMA Transport Library and
- RNBD (former IBNBD) RDMA Network Block Device
-To:     Jens Axboe <axboe@kernel.dk>, Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     Jinpu Wang <jinpuwang@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Doug Ledford <dledford@redhat.com>,
-        Roman Penyaev <rpenyaev@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAFgAxU80+feEEtaRYFYTHwTMSE6Edjq0t0siJ0W06WSyD+Cy3A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfABbhxhr6I5znBN3ic52qDupTbopMBcfJg62rzEXEkzIg7474KqFzdOEcbFTv7tOu7f0qWaD918iZgOwe/Bii0N2ITupY5/c4QSg/A41M/J3++7mxx1Q
+ lurdcXAkQA38l//4s/PMe0rE2Spad48qlJe3UUDthZwlxETNsTVH0pLlbWva3uWDbPlWuz3UAmEVQzc0Gva7JUqV+PaOKqI/V9u1gM1bOpTStCy3WWYTWR1d
+ mXPz5KQv465SMgaGJ5OQ2GB9Jfo7LY5qaG6u75L0P0I/+ln3ToogY8WmWtWgJEDZxtOoBHmtoFfrKLkmRSy3pBOJ0UXY51u6IgHvmndvwV4z+Uymsgbx4996
+ ZOlXDCn5FewrmqP+t31Nwhl41u9aypR0oAlHU/Q4TrXzIM7ChfkC9ykHMLRZSsywUD6gNRWq
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 31, 2020 at 6:49 PM Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 1/31/20 10:28 AM, Jinpu Wang wrote:
-> > Jens Axboe <axboe@kernel.dk> =E4=BA=8E2020=E5=B9=B41=E6=9C=8831=E6=97=
-=A5=E5=91=A8=E4=BA=94 =E4=B8=8B=E5=8D=886:04=E5=86=99=E9=81=93=EF=BC=9A
-> >>
-> >> On 1/31/20 9:54 AM, Jason Gunthorpe wrote:
-> >>> On Fri, Jan 31, 2020 at 05:50:44PM +0100, Danil Kipnis wrote:
-> >>>> Hi Doug, Hi Jason, Hi Jens, Hi All,
-> >>>>
-> >>>> since we didn't get any new comments for the V8 prepared by Jack a
-> >>>> week ago do you think rnbd/rtrs could be merged in the current merge
-> >>>> window?
-> >>>
-> >>> No, the cut off for something large like this would be rc4ish
-> >>
-> >> Since it's been around for a while, I would have taken it in a bit
-> >> later than that. But not now, definitely too late. If folks are
-> >> happy with it, we can get it queued for 5.7.
-> >>
-> >> --
-> >> Jens Axboe
-> >
-> > Thanks Jason, thanks Jens, then we will prepare later another round for=
- 5.7
->
-> It would also be really nice to see official sign-offs (reviews) from non
-> ionos people...
+On 2/6/2020 9:39 AM, Alex Rosenbaum wrote:
+> On Thu, Feb 6, 2020 at 4:18 PM Tom Talpey <tom@talpey.com> wrote:
+>>
+>> On 1/8/2020 9:26 AM, Alex Rosenbaum wrote:
+>>> A combination of the flow_label field in the IPv6 header and UDP source port
+>>> field in RoCE v2.0 are used to identify a group of packets that must be
+>>> delivered in order by the network, end-to-end.
+>>> These fields are used to create entropy for network routers (ECMP), load
+>>> balancers and 802.3ad link aggregation switching that are not aware of RoCE IB
+>>> headers.
+>>>
+>>> The flow_label field is defined by a 20 bit hash value. CM based connections
+>>> will use a hash function definition based on the service type (QP Type) and
+>>> Service ID (SID). Where CM services are not used, the 20 bit hash will be
+>>> according to the source and destination QPN values.
+>>> Drivers will derive the RoCE v2.0 UDP src_port from the flow_label result.
+>>>
+>>> UDP source port selection must adhere IANA port allocation ranges. Thus we will
+>>> be using IANA recommendation for Ephemeral port range of: 49152-65535, or in
+>>> hex: 0xC000-0xFFFF.
+>>>
+>>> The below calculations take into account the importance of producing a symmetric
+>>> hash result so we can support symmetric hash calculation of network elements.
+>>>
+>>> Hash Calculation for RDMA IP CM Service
+>>> =======================================
+>>> For RDMA IP CM Services, based on QP1 iMAD usage and connected RC QPs using the
+>>> RDMA IP CM Service ID, the flow label will be calculated according to IBTA CM
+>>> REQ private data info and Service ID.
+>>>
+>>> Flow label hash function calculations definition will be defined as:
+>>> Extract the following fields from the CM IP REQ:
+>>>     CM_REQ.ServiceID.DstPort [2 Bytes]
+>>>     CM_REQ.PrivateData.SrcPort [2 Bytes]
+>>>     u32 hash = DstPort * SrcPort;
+>>>     hash ^= (hash >> 16);
+>>>     hash ^= (hash >> 8);
+>>>     AH_ATTR.GRH.flow_label = hash AND IB_GRH_FLOWLABEL_MASK;
+>>>
+>>>     #define IB_GRH_FLOWLABEL_MASK  0x000FFFFF
+>>
+>> Sorry it took me a while to respond to this, and thanks for looking
+>> into it since my comments on the previous proposal. I have a concern
+>> with an aspect of this one.
+>>
+>> The RoCEv2 destination port is a fixed value, 4791. Therefore the
+>> term
+>>
+>>          u32 hash = DstPort * SrcPort;
+>>
+>> adds no entropy beyond the value of SrcPort.
+>>
+> 
+> we're talking about the CM service ports, taken from the
+> rdma_resolve_route(mca_id, <ip:SrcPort>, <ip:DstPort>, to_msec);
+> these are the CM level port-space and not the RoCE UDP L4 ports.
+> we want to use both as these will allow different client instance and
+> server instance on same nodes will use differen CM ports and hopefully
+> generate different hash results for multi-flows between these two
+> servers.
 
-Totally agree.
-Hi Bart, hi Leon,
+Aha, ok I guess I missed that, and ok.
 
-Both of you spent quite some time to review the code, could you give a
-Reviewed-by for some of the patches you've reviewed?
+>> In turn, the subsequent
+>>
+>>          hash ^= (hash >> 16);
+>>          hash ^= (hash >> 8);
+>>
+>> are re-mashing the bits with one another, again, adding no entropy.
 
-Thanks,
-Jack Wang
+I still wonder about this one. It's attempting to reduce the 32-bit
+product to 20 bits, but a second xor with the "middle" 16 bits seems
+really strange. Mathematically, wouldn't it be better to just take
+the modulus of 2^20? If not, are you expecting some behavior in the
+hash values that makes the double-xor approach better (in which case
+it should be called out)?
 
-PS: sorry for the slow reply, I'm on parental leave currently, can
-only find short time checking emails.
+Tom.
+
+>> Can you describe how, mathematically, this is not different from simply
+>> using the SrcPort field, and if so, how it contributes to the entropy
+>> differentiation of the incoming streams?
+>>
+>> Tom.
+>>
+>>> Result of the above hash will be kept in the CM's route path record connection
+>>> context and will be used all across its vitality for all preceding CM messages
+>>> on both ends of the connection (including REP, REJ, DREQ, DREP, ..).
+>>> Once connection is established, the corresponding Connected RC QPs, on both
+>>> ends of the connection, will update their context with the calculated RDMA IP
+>>> CM Service based flow_label and UDP src_port values at the Connect phase of
+>>> the active side and Accept phase of the passive side of the connection.
+>>>
+>>> CM will provide to the calculated value of the flow_label hash (20 bit) result
+>>> in the 'uint32_t flow_label' field of 'struct ibv_global_route' in 'struct
+>>> ibv_ah_attr'.
+>>> The 'struct ibv_ah_attr' is passed by the CM to the provider library when
+>>> modifying a connected QP's (e.g.: RC) state by calling 'ibv_modify_qp(qp,
+>>> ah_attr, attr_mask |= IBV_QP_AV)' or when create a AH for working with
+>>> datagram QP's (e.g.: UD) by calling ibv_create_ah(ah_attr).
+>>>
+>>> Hash Calculation for non-RDMA CM Service ID
+>>> ===========================================
+>>> For non CM QP's, the application can define the flow_label value in the
+>>> 'struct ibv_ah_attr' when modifying the connected QP's (e.g.: RC) or creating
+>>> a AH for the datagram QP's (e.g.: UD).
+>>>
+>>> If the provided flow_label value is zero, not set by the application (e.g.:
+>>> legacy cases), then verbs providers should use the src.QP[24bit] and
+>>> dst.QP[24bit] as input arguments for flow_label calculation.
+>>> As QPN's are an array of 3 bytes, the multiplication will result in 6 bytes
+>>> value. We'll define a flow_label value as:
+>>>     DstQPn [3 Bytes]
+>>>     SrcQPn [3 Bytes]
+>>>     u64 hash = DstQPn * SrcQPn;
+>>>     hash ^= (hash >> 20);
+>>>     hash ^= (hash >> 40);
+>>>     AH_ATTR.GRH.flow_label = hash AND IB_GRH_FLOWLABEL_MASK;
+>>>
+>>> Hash Calculation for UDP src_port
+>>> =================================
+>>> Providers supporting RoCEv2 will use the 'flow_label' value as input to
+>>> calculate the RoCEv2 UDP src_port, which will be used in the QP context or the
+>>> AH context.
+>>>
+>>> UDP src_port calculations from flow label:
+>>> [while considering the 14 bits UDP port range according to IANA recommendation]
+>>>     AH_ATTR.GRH.flow_label [20 bits]
+>>>     u32 fl_low  = fl & 0x03FFF;
+>>>     u32 fl_high = fl & 0xFC000;
+>>>     u16 udp_sport = fl_low XOR (fl_high >> 14);
+>>>     RoCE.UDP.src_port = udp_sport OR IB_ROCE_UDP_ENCAP_VALID_PORT
+>>>
+>>>     #define IB_ROCE_UDP_ENCAP_VALID_PORT 0xC000
+>>>
+>>> This is a v2 follow-up on "[RFC] RoCE v2.0 UDP Source Port Entropy" [1]
+>>>
+>>> [1] https://www.spinics.net/lists/linux-rdma/msg73735.html
+>>>
+>>> Signed-off-by: Alex Rosenbaum <alexr@mellanox.com>
+>>>
+>>>
+> 
+> 
