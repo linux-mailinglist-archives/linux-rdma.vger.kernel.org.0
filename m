@@ -2,165 +2,158 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7223154611
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2020 15:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC6915463C
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Feb 2020 15:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgBFOZ5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Feb 2020 09:25:57 -0500
-Received: from p3plsmtpa09-08.prod.phx3.secureserver.net ([173.201.193.237]:60661
-        "EHLO p3plsmtpa09-08.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727511AbgBFOZ5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Feb 2020 09:25:57 -0500
-X-Greylist: delayed 438 seconds by postgrey-1.27 at vger.kernel.org; Thu, 06 Feb 2020 09:25:57 EST
-Received: from [192.168.0.78] ([24.218.182.144])
-        by :SMTPAUTH: with ESMTPSA
-        id zhzKiiFlj56i1zhzKikepk; Thu, 06 Feb 2020 07:18:39 -0700
-Subject: Re: [RFC v2] RoCE v2.0 Entropy - IPv6 Flow Label and UDP Source Port
-To:     Alex Rosenbaum <rosenbaumalex@gmail.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        "Alex @ Mellanox" <alexr@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Mark Zhang <markz@mellanox.com>
-References: <CAFgAxU8ArpoL9fMpJY5v-UZS5AMXom+TJ8HS57XeEOsCFFov8Q@mail.gmail.com>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <63a56c06-57bf-6e31-6ca8-043f9d3b72f3@talpey.com>
-Date:   Thu, 6 Feb 2020 09:18:38 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        id S1728068AbgBFOcE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Feb 2020 09:32:04 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:42452 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727980AbgBFOcE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Feb 2020 09:32:04 -0500
+Received: by mail-qt1-f196.google.com with SMTP id j5so4594038qtq.9
+        for <linux-rdma@vger.kernel.org>; Thu, 06 Feb 2020 06:32:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=pyov8FWczadKme8MmKIuLoy6Cco1Gr8F1ki//7JnOus=;
+        b=WtfTXcpxEKjugOdoQ3xRt6ZtM85WSP/qurSvrIDFedMQ2O9pvih8+hrmBuSGbGmtGa
+         N1n3Fw8knLnnvb4ofVFPGUTG8T0U0PeyP8xMS3/9Phf4gnK3Xkuo5liOPa6zSihQt050
+         bHZ6g4WV7jzYWWvSMRUIjVeclvvWj1QN/pRkO/wlWK/FS9lTji60yAGE2RAh4DvLbG3A
+         AJscWPn+Yr6fwftqrnGtCXO/BsrB/LhpM8M7B90l4AynGy1W+ewNGKa5Hg98AllDlDfW
+         F8d0+S5Wal6FlyjvAqBXml5yz3NfepnpIaBxYYKBSvjyeI6ovASl9pm85dJE0IsAYwq1
+         2pPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=pyov8FWczadKme8MmKIuLoy6Cco1Gr8F1ki//7JnOus=;
+        b=W+8oNuYqr8/GpbdtepPk5ZR1yOWvZQG9XiPZoZHNePRUYqqFQBCDUKb6vGG26wzcWY
+         IybpVFvh/fB9ELeMqThhn82yieg8xi/ZVE+bU5ZED31e0ccRFSjmrIVXdVXYQq+g9XyX
+         bji1/SfEgDxQYBwON/qG0Zh34Q7lOCIfJ8zUqhCmscbrMVYduIP+K82omVmVfBwsLgc+
+         tpuHGMDwCnRCgrLd4bJJDQCpPLqswC2ZFMFjxmsCgnUIX4bzyYGRGs7B/qEEWeEzJdaH
+         wiuXIqgrCBWBjV0PYnTJSdcdq8NcStia5OLa6MQCKdLBr7d9gBCNkU+9l5jhUCjCQABw
+         zugQ==
+X-Gm-Message-State: APjAAAWD5IYEhwxMgusQ5WEtfx4VbelgqR4eYtaVWWK4m79zUEUQ7yQ6
+        tsgYclzqwfn78Eqw/puMOxWOXA==
+X-Google-Smtp-Source: APXvYqxaFmlEZVaYCGxniyRdpgnZCuo+d+DFXAYGbH+kt4gdysoKdLuey3EiRMl+NGSIfVqKZgszig==
+X-Received: by 2002:ac8:7695:: with SMTP id g21mr2570013qtr.99.1580999522855;
+        Thu, 06 Feb 2020 06:32:02 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id 69sm1464198qkk.106.2020.02.06.06.32.02
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 06 Feb 2020 06:32:02 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iziCH-0005pg-Sr; Thu, 06 Feb 2020 10:32:01 -0400
+Date:   Thu, 6 Feb 2020 10:32:01 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leonro@mellanox.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: linux-next: Tree for Jan 30 + 20200206
+ (drivers/infiniband/hw/mlx5/)
+Message-ID: <20200206143201.GF25297@ziepe.ca>
+References: <20200130152852.6056b5d8@canb.auug.org.au>
+ <df42492f-a57e-bf71-e7e2-ce4dd7864462@infradead.org>
+ <ee5f17b6-3282-2137-7e9d-fa0008f9eeb0@infradead.org>
+ <20200206073019.GC414821@unreal>
+ <20200206114033.GF414821@unreal>
 MIME-Version: 1.0
-In-Reply-To: <CAFgAxU8ArpoL9fMpJY5v-UZS5AMXom+TJ8HS57XeEOsCFFov8Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfJ3l1tx8vMUtXPXGxjpiDRXTt64zrv1tEeXCG5KXbc4UG/yjEXvJNrPzQsdBgs5r/JKQQSUbD52fJitcP998iqLjNQrFy/n6yTW10jVUTxaShts+29Oq
- zHzS8Xd1JS0xx0NxF7+udEOJ86I+VahtkMO+Xlp5WsuKo01opJXwAXL5jxPYkqlwKhxi8xsuPejrK+JZWSPQ0WyblfVIEBdwP9gr0bP26G2W1CpfAa2DpJYf
- PgGv994HSYsVn4DucICYFGSyFlBvypSTgm01sXRCouNWzUJcg8Kqzu/D8ljE0fdX+QVIOXKSnn+IO1RmQ9e+U7EGTTYAkImy3q7fgYX7UDfDPs1JJKt0avbw
- XkXBPhisw2f6N7jB4l7cF4X8RBUzOherYEjm4KjTaCTo0me9Nkoax1CHV5T+Fa6PRbT3iZMu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200206114033.GF414821@unreal>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/8/2020 9:26 AM, Alex Rosenbaum wrote:
-> A combination of the flow_label field in the IPv6 header and UDP source port
-> field in RoCE v2.0 are used to identify a group of packets that must be
-> delivered in order by the network, end-to-end.
-> These fields are used to create entropy for network routers (ECMP), load
-> balancers and 802.3ad link aggregation switching that are not aware of RoCE IB
-> headers.
+On Thu, Feb 06, 2020 at 01:40:33PM +0200, Leon Romanovsky wrote:
+> On Thu, Feb 06, 2020 at 09:30:19AM +0200, Leon Romanovsky wrote:
+> > On Wed, Feb 05, 2020 at 09:31:15PM -0800, Randy Dunlap wrote:
+> > > On 1/30/20 5:47 AM, Randy Dunlap wrote:
+> > > > On 1/29/20 8:28 PM, Stephen Rothwell wrote:
+> > > >> Hi all,
+> > > >>
+> > > >> Please do not add any v5.7 material to your linux-next included
+> > > >> branches until after v5.6-rc1 has been released.
+> > > >>
+> > > >> Changes since 20200129:
+> > > >>
+> > > >
+> > > > on i386:
+> > > >
+> > > > ERROR: "__udivdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+> > > > ERROR: "__divdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+> > > >
+> > > >
+> > > > Full randconfig file is attached.
+> > > >
+> > > >
+> > >
+> > > I am still seeing this on linux-next of 20200206.
+> >
+> > Sorry, I was under wrong impression that this failure is connected to
+> > other issue reported by you.
+> >
+> > I'm looking on it right now.
 > 
-> The flow_label field is defined by a 20 bit hash value. CM based connections
-> will use a hash function definition based on the service type (QP Type) and
-> Service ID (SID). Where CM services are not used, the 20 bit hash will be
-> according to the source and destination QPN values.
-> Drivers will derive the RoCE v2.0 UDP src_port from the flow_label result.
+> Randy,
 > 
-> UDP source port selection must adhere IANA port allocation ranges. Thus we will
-> be using IANA recommendation for Ephemeral port range of: 49152-65535, or in
-> hex: 0xC000-0xFFFF.
+> I'm having hard time to reproduce the failure.
+> ➜  kernel git:(a0c61bf1c773) ✗ git fixes
+> Fixes: a0c61bf1c773 ("Add linux-next specific files for 20200206")
+> ➜  kernel git:(a0c61bf1c773) ✗ wget https://lore.kernel.org/lkml/df42492f-a57e-bf71-e7e2-ce4dd7864462@infradead.org/2-config-r9621
+> from https://lore.kernel.org/lkml/df42492f-a57e-bf71-e7e2-ce4dd7864462@infradead.org/
+> ➜  kernel git:(a0c61bf1c773) ✗ mv 2-config-r9621 .config
+> ➜  kernel git:(a0c61bf1c773) ✗ make ARCH=i386 -j64 -s M=drivers/infiniband/hw/mlx5
+> ➜  kernel git:(a0c61bf1c773) ✗ file drivers/infiniband/hw/mlx5/mlx5_ib.ko
+> drivers/infiniband/hw/mlx5/mlx5_ib.ko: ELF 32-bit LSB relocatable, Intel 80386, version 1 (SYSV), BuildID[sha1]=49f81f5d56f7caf95d4a6cc9097391622c34f4ba, not stripped
 > 
-> The below calculations take into account the importance of producing a symmetric
-> hash result so we can support symmetric hash calculation of network elements.
-> 
-> Hash Calculation for RDMA IP CM Service
-> =======================================
-> For RDMA IP CM Services, based on QP1 iMAD usage and connected RC QPs using the
-> RDMA IP CM Service ID, the flow label will be calculated according to IBTA CM
-> REQ private data info and Service ID.
-> 
-> Flow label hash function calculations definition will be defined as:
-> Extract the following fields from the CM IP REQ:
->    CM_REQ.ServiceID.DstPort [2 Bytes]
->    CM_REQ.PrivateData.SrcPort [2 Bytes]
->    u32 hash = DstPort * SrcPort;
->    hash ^= (hash >> 16);
->    hash ^= (hash >> 8);
->    AH_ATTR.GRH.flow_label = hash AND IB_GRH_FLOWLABEL_MASK;
-> 
->    #define IB_GRH_FLOWLABEL_MASK  0x000FFFFF
+> on my 64bit system:
+> ➜  kernel git:(rdma-next) file drivers/infiniband/hw/mlx5/mlx5_ib.ko
+> drivers/infiniband/hw/mlx5/mlx5_ib.ko: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), BuildID[sha1]=2dcb1e30d0bba9885d5a824f6f57488a98f0c95d, with debug_info, not stripped
 
-Sorry it took me a while to respond to this, and thanks for looking
-into it since my comments on the previous proposal. I have a concern
-with an aspect of this one.
+You need to link to see it..
 
-The RoCEv2 destination port is a fixed value, 4791. Therefore the
-term
+From bee7b242c2c6a3bfb696cd5fa37d83a731f3ab15 Mon Sep 17 00:00:00 2001
+From: Jason Gunthorpe <jgg@mellanox.com>
+Date: Thu, 6 Feb 2020 10:27:54 -0400
+Subject: [PATCH] IB/mlx5: Use div64_u64 for num_var_hw_entries calculation
 
-	u32 hash = DstPort * SrcPort;
+On i386:
 
-adds no entropy beyond the value of SrcPort.
+ERROR: "__udivdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+ERROR: "__divdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
 
-In turn, the subsequent
+Fixes: f164be8c0366 ("IB/mlx5: Extend caps stage to handle VAR capabilities")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+ drivers/infiniband/hw/mlx5/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	hash ^= (hash >> 16);
-	hash ^= (hash >> 8);
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 0ca9581432808c..9b88935f805ba2 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -6543,7 +6543,7 @@ static int mlx5_ib_init_var_table(struct mlx5_ib_dev *dev)
+ 					doorbell_bar_offset);
+ 	bar_size = (1ULL << log_doorbell_bar_size) * 4096;
+ 	var_table->stride_size = 1ULL << log_doorbell_stride;
+-	var_table->num_var_hw_entries = bar_size / var_table->stride_size;
++	var_table->num_var_hw_entries = div64_u64(bar_size, var_table->stride_size);
+ 	mutex_init(&var_table->bitmap_lock);
+ 	var_table->bitmap = bitmap_zalloc(var_table->num_var_hw_entries,
+ 					  GFP_KERNEL);
+-- 
+2.25.0
 
-are re-mashing the bits with one another, again, adding no entropy.
-
-Can you describe how, mathematically, this is not different from simply
-using the SrcPort field, and if so, how it contributes to the entropy
-differentiation of the incoming streams?
-
-Tom.
-
-> Result of the above hash will be kept in the CM's route path record connection
-> context and will be used all across its vitality for all preceding CM messages
-> on both ends of the connection (including REP, REJ, DREQ, DREP, ..).
-> Once connection is established, the corresponding Connected RC QPs, on both
-> ends of the connection, will update their context with the calculated RDMA IP
-> CM Service based flow_label and UDP src_port values at the Connect phase of
-> the active side and Accept phase of the passive side of the connection.
-> 
-> CM will provide to the calculated value of the flow_label hash (20 bit) result
-> in the 'uint32_t flow_label' field of 'struct ibv_global_route' in 'struct
-> ibv_ah_attr'.
-> The 'struct ibv_ah_attr' is passed by the CM to the provider library when
-> modifying a connected QP's (e.g.: RC) state by calling 'ibv_modify_qp(qp,
-> ah_attr, attr_mask |= IBV_QP_AV)' or when create a AH for working with
-> datagram QP's (e.g.: UD) by calling ibv_create_ah(ah_attr).
-> 
-> Hash Calculation for non-RDMA CM Service ID
-> ===========================================
-> For non CM QP's, the application can define the flow_label value in the
-> 'struct ibv_ah_attr' when modifying the connected QP's (e.g.: RC) or creating
-> a AH for the datagram QP's (e.g.: UD).
-> 
-> If the provided flow_label value is zero, not set by the application (e.g.:
-> legacy cases), then verbs providers should use the src.QP[24bit] and
-> dst.QP[24bit] as input arguments for flow_label calculation.
-> As QPN's are an array of 3 bytes, the multiplication will result in 6 bytes
-> value. We'll define a flow_label value as:
->    DstQPn [3 Bytes]
->    SrcQPn [3 Bytes]
->    u64 hash = DstQPn * SrcQPn;
->    hash ^= (hash >> 20);
->    hash ^= (hash >> 40);
->    AH_ATTR.GRH.flow_label = hash AND IB_GRH_FLOWLABEL_MASK;
-> 
-> Hash Calculation for UDP src_port
-> =================================
-> Providers supporting RoCEv2 will use the 'flow_label' value as input to
-> calculate the RoCEv2 UDP src_port, which will be used in the QP context or the
-> AH context.
-> 
-> UDP src_port calculations from flow label:
-> [while considering the 14 bits UDP port range according to IANA recommendation]
->    AH_ATTR.GRH.flow_label [20 bits]
->    u32 fl_low  = fl & 0x03FFF;
->    u32 fl_high = fl & 0xFC000;
->    u16 udp_sport = fl_low XOR (fl_high >> 14);
->    RoCE.UDP.src_port = udp_sport OR IB_ROCE_UDP_ENCAP_VALID_PORT
-> 
->    #define IB_ROCE_UDP_ENCAP_VALID_PORT 0xC000
-> 
-> This is a v2 follow-up on "[RFC] RoCE v2.0 UDP Source Port Entropy" [1]
-> 
-> [1] https://www.spinics.net/lists/linux-rdma/msg73735.html
-> 
-> Signed-off-by: Alex Rosenbaum <alexr@mellanox.com>
-> 
-> 
