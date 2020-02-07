@@ -2,85 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC11155914
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2020 15:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A5A155920
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2020 15:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbgBGOPw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Feb 2020 09:15:52 -0500
-Received: from stargate.chelsio.com ([12.32.117.8]:14139 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726874AbgBGOPw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Feb 2020 09:15:52 -0500
-Received: from localhost (pvp1.blr.asicdesigners.com [10.193.80.26])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 017EFlD7008143;
-        Fri, 7 Feb 2020 06:15:48 -0800
-From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
-To:     jgg@ziepe.ca, dledford@redhat.com, bmt@zurich.ibm.com
-Cc:     linux-rdma@vger.kernel.org, bharat@chelsio.com,
-        nirranjan@chelsio.com, krishna2@chelsio.com
-Subject: [PATCH for-rc] RDMA/siw: Remove unwanted WARN_ON in siw_cm_llp_data_ready()
-Date:   Fri,  7 Feb 2020 19:44:29 +0530
-Message-Id: <20200207141429.27927-1-krishna2@chelsio.com>
-X-Mailer: git-send-email 2.23.0.rc0
+        id S1726867AbgBGOS2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Feb 2020 09:18:28 -0500
+Received: from mail-eopbgr50072.outbound.protection.outlook.com ([40.107.5.72]:29357
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726798AbgBGOS2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 7 Feb 2020 09:18:28 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BQOCRI08QCL+7zajIeUsnyV5vWfQbQHNObq74xj6fADzXVrkvWnYBR3sEB2JXX2B6TeDArCzabwyrekD4yQM3RSf0wRqT5UUxNTRAvwYy+8WgXnxs+r2xIbOsirlqOOMQiaAFrEBzmDi3J4zzQO65anI3lahJb93Cv/Zpf60YvPsV8plKtgE5CTeUNuT/K1fB5mj/G72dX/XIbNc6NXbhGcyC/ER005CthqXEUYNTHv5YGcMlnP25QPBc4PWVU8wregk+6AIRreIRRJc8fh1THrAY9KhwJtENfB/HaoG6GJBkBxkr2BDiPIDVnD/dRKF5vM+7agYcCzv3VIhu/BQjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gNXJlDUUbEKIFkJb75omj7bVGXJ172X1O4FdmuIdzxg=;
+ b=E21CeAl+Iud4crIIJwtGEBN9g0PrIZN+sWzBPdXh39gEpKpAyZy4pSAX8v7WnYv0qfgL03W4LaNHtDDtfcyv2Z+u8fenbUCYlVCEFeRtuyn1NpA/xaiH3oq9OSGeHcFD2rm+3CTq/kVywzXw7RISVgVLm7qOlRN0W9CN07P9QJqkFolcLR7FRlUDcPzjKDzvNtDpzdT9BYHLxz4G7+2Ev8UX+6y2HcO3GQFj6SN7lKCkuGksP7k+8XrfaMXW/h3yiwgnXYaIVCNHZh/KAfgGaYmTvFKbi4k2g3JcDeqE8ZxjIk9wozRGH1ld75SjAR5bNuP0GYI5MdMK32MMqDwWyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gNXJlDUUbEKIFkJb75omj7bVGXJ172X1O4FdmuIdzxg=;
+ b=KAyRJbHQH3XRZUTLARruzDCnIXARa+/ONw2bFvCpludR06P9KnsP9Amm1YosT9RMIMuYgjf4RL2JRCtBjr7D6+sE/8L3fnHKxmPK3nDVSu2uochLGrFIXCvFdq/9Oq28eoXSZYbeRIM/6ttsj+rjHHsJfCeiz6DsosL2HXjIpjA=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB5598.eurprd05.prod.outlook.com (20.177.201.77) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2686.29; Fri, 7 Feb 2020 14:18:24 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1c00:7925:d5c6:d60d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1c00:7925:d5c6:d60d%7]) with mapi id 15.20.2707.024; Fri, 7 Feb 2020
+ 14:18:24 +0000
+Date:   Fri, 7 Feb 2020 10:18:20 -0400
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Krishnamraju Eraparaju <krishna2@chelsio.com>
+Cc:     dledford@redhat.com, bmt@zurich.ibm.com,
+        linux-rdma@vger.kernel.org, bharat@chelsio.com,
+        nirranjan@chelsio.com
+Subject: Re: [PATCH for-review/for-rc/for-rc] RDMA/siw: Remove unwanted
+ WARN_ON in siw_cm_llp_data_ready()
+Message-ID: <20200207141820.GF4509@mellanox.com>
+References: <20200207115209.25933-1-krishna2@chelsio.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200207115209.25933-1-krishna2@chelsio.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: MN2PR13CA0022.namprd13.prod.outlook.com
+ (2603:10b6:208:160::35) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR13CA0022.namprd13.prod.outlook.com (2603:10b6:208:160::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2707.14 via Frontend Transport; Fri, 7 Feb 2020 14:18:23 +0000
+Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)    (envelope-from <jgg@mellanox.com>)      id 1j04Sa-0001Fz-TJ; Fri, 07 Feb 2020 10:18:20 -0400
+X-Originating-IP: [142.68.57.212]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e43c8d1b-462a-49b5-c888-08d7abd8976a
+X-MS-TrafficTypeDiagnostic: VI1PR05MB5598:
+X-Microsoft-Antispam-PRVS: <VI1PR05MB559870B42BC12098C959550CCF1C0@VI1PR05MB5598.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Forefront-PRVS: 0306EE2ED4
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(396003)(366004)(39860400002)(136003)(346002)(189003)(199004)(36756003)(66476007)(66556008)(8936002)(4326008)(5660300002)(8676002)(66946007)(81156014)(81166006)(2616005)(52116002)(9746002)(86362001)(26005)(2906002)(186003)(1076003)(4744005)(478600001)(316002)(33656002)(9786002)(6916009)(26123001)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5598;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5DWpuJsIRJRDBO/DBvUwUeXodIkDz37mzSVYGXMwllzPsZMYw2vCtv5QHanhGNhlydJWcI6Q8lk+9Z3IhhPD+QzuPeP17zdFbF3FPtHHrZkppJKwHBjQX1b8aJo1xAuHAAp+F2Y/tR+0/owoVPsjGtvuJt6V3nmdF5xDYcWRAhuumKZsyTXnTJeKavIqXPkeF4ONv0ev6OuZDsLYIyNmDUQruep6VidLwLx/LUq/LN54D+/OFHL18HtEdQzc1tJmmpzzUSSOndnyXtWLi1ibyi4DbOhNbN7rhvJRddao7iNZkpDYTV9Qa3U/lN9qX5MqgUQEZzh0htVYG5tWdVHgKWj3Mg/yBecXbecuZUnqGAGS5GFZXoUEInGnrYj4SObdockKl3/iMwcWNuCbvxykY0mUjHiRGhpN8FqA1HH2HPVVORgCFAHnPDgVwp84VvGSUJfjstlCSp7IzzsLYpajuEC1P74ceF9CWs+v+vFVa8w0YhGWB70heFNpXcQmi+sGJpqw27O+RHF5BfmJo9YMxA==
+X-MS-Exchange-AntiSpam-MessageData: ZdEb0mOK1o+4WTu8Jv9soIUAdz4ljUrvLcKfJe3h7Q6RMafLs4unwvsli7m2IudPAWGrsmloQglVu92gGUbst6/nI5AeLlsMz7iaLwHv4z1knGjsAG9CUtLZJ0n8tWmzRhavcL9k3JpM1UgxNbrayA==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e43c8d1b-462a-49b5-c888-08d7abd8976a
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2020 14:18:24.0386
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uyOFHuHDbCL2PCC5zXuM/IO3M8VFFKP6vAP0mdNz53JUhnga3cbzozCxmzoa7XRSKlbGDJ83NuSqLLs/ht0UQA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5598
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Warnings like below can fill up the dmesg while disconnecting RDMA
-connections.
-Hence, removing the unwanted WARN_ON.
+On Fri, Feb 07, 2020 at 05:22:09PM +0530, Krishnamraju Eraparaju wrote:
+> Warnings like below can fill up the dmesg while disconnecting RDMA
+> connections.
+> Hence, removing the unwanted WARN_ON.
 
-[72103.557612] WARNING: CPU: 6 PID: 0 at
-drivers/infiniband/sw/siw/siw_cm.c:1229 siw_cm_llp_data_ready+0xc1/0xd0
-[siw]
-[72103.557677] RIP: 0010:siw_cm_llp_data_ready+0xc1/0xd0 [siw]
-[72103.557693] Call Trace:
-[72103.557699]  <IRQ>
-[72103.557711]  tcp_data_queue+0x226/0xb40
-[72103.557714]  tcp_rcv_established+0x220/0x620
-[72103.557720]  tcp_v4_do_rcv+0x12a/0x1e0
-[72103.557722]  tcp_v4_rcv+0xb05/0xc00
-[72103.557728]  ip_local_deliver_finish+0x69/0x210
-[72103.557730]  ip_local_deliver+0x6b/0xe0
-[72103.557735]  ip_rcv+0x273/0x362
-[72103.557740]  __netif_receive_skb_core+0xb35/0xc30
-[72103.557752]  netif_receive_skb_internal+0x3d/0xb0
-[72103.557754]  napi_gro_frags+0x13b/0x200
-[72103.557788]  t4_ethrx_handler+0x433/0x7d0 [cxgb4]
-[72103.557800]  process_responses+0x318/0x580 [cxgb4]
-[72103.557820]  napi_rx_handler+0x14/0x100 [cxgb4]
-[72103.557822]  net_rx_action+0x149/0x3b0
-[72103.557826]  __do_softirq+0xe3/0x30a
-[72103.557831]  irq_exit+0x100/0x110
-[72103.557834]  do_IRQ+0x7f/0xe0
-[72103.557837]  common_interrupt+0xf/0xf
-[72103.557838]  </IRQ>
+Please explain why it the code is correct to take this error
+path. Bernard clearly thought this shouldn't be happening
 
-Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
----
- drivers/infiniband/sw/siw/siw_cm.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
-index 3bccfef40e7e..ac86363ce1a2 100644
---- a/drivers/infiniband/sw/siw/siw_cm.c
-+++ b/drivers/infiniband/sw/siw/siw_cm.c
-@@ -1225,10 +1225,9 @@ static void siw_cm_llp_data_ready(struct sock *sk)
- 	read_lock(&sk->sk_callback_lock);
- 
- 	cep = sk_to_cep(sk);
--	if (!cep) {
--		WARN_ON(1);
-+	if (!cep)
- 		goto out;
--	}
-+
- 	siw_dbg_cep(cep, "state: %d\n", cep->state);
- 
- 	switch (cep->state) {
--- 
-2.23.0.rc0
-
+Jason
