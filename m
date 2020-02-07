@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9554515583F
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2020 14:17:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87067155847
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2020 14:18:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbgBGNRz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Feb 2020 08:17:55 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:35651 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727129AbgBGNRy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Feb 2020 08:17:54 -0500
-Received: by mail-lj1-f196.google.com with SMTP id q8so2120154ljb.2
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Feb 2020 05:17:51 -0800 (PST)
+        id S1726874AbgBGNSz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Feb 2020 08:18:55 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:34961 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727003AbgBGNSy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Feb 2020 08:18:54 -0500
+Received: by mail-lf1-f65.google.com with SMTP id z18so1511639lfe.2
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Feb 2020 05:18:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=shutemov-name.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ormWsvlEB3xaoLQJ32yqI2+YJjynCIo+Gkrsb90CUoc=;
-        b=zXiaaJaV/6vtSOmP9ODS2FF3enQ9DrLr2xaXqFISXdgWNN7JEZGqqteYAJg8ilecHC
-         ugo7pUkEj4BeIf0kvvpCo+9nvJTidcqrfgAKlXwcZrT/G25Hc0OKXxZ/73AFix6/STWU
-         kzL1F0LE/LTZEKILuppx9YGI01N+5ZbDcEQGL0HvU+uZcMgWGZCPrEAiaZ+BllPyAS7f
-         imqyuyZC2NI4FLBEhH4BIw6rEMsgDbGkg9nOxXihh8ryQwuUgPpw2KkNvbQrfWBn7wd+
-         mDYhZSynO7JxUG39HhOZIVunHOvL6zWKn3v9WqBVZysmR4JglhGrT7lyZay33uwkGfhZ
-         Lp9g==
+        bh=uTjOaImg+ksV7BdfhHPQ/FTPKTcFmsjOHyFGzGRJy2I=;
+        b=px3p3e5+GsuY8I3lV6XSDycZ8agIVbKmPPwgLu3Lh8i8iQeajhpVMp4YENKqYEfWvR
+         l7szyDwa/fIPpLw33kK69S5Pf6ihs+yEsGacbdzkz4PviNn2h37DeQCHeB+f9y/P9dlX
+         9SdncWbfYLBcpEzPV9AYMAXIr1i7rBt3+hltAJJR9dLGiuI7doNoTQ90XAKteTE1YZaP
+         a387s5QH+qimgQKymmW0q31yZKfC7F/xrtJemao9N0ck6ye7buDsUfpVivFekLFmvpU1
+         jE51d1bi32F/J79szF6TeskC/TaCYG1Bq+VncIzgSLIpksUBxV5+49GAruiGknYNG36G
+         Yd0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ormWsvlEB3xaoLQJ32yqI2+YJjynCIo+Gkrsb90CUoc=;
-        b=QUUN+1JDQfQcNDVv7y95KNqeIsJvapyfXKAj4jVsT+2ysc2lk5N993PhjjFDoYnLED
-         UF/dufdwUjzZqn9AjWzFpeznwkrZqffYJ2MkSrcfljWfiULB7RajldaFq9RetsnKM0WH
-         JmKHYQvHdq5CPJKJudONPcznU/jrtB8Po3VPuZxDULzYylYoiAW8AJ+CJoEbtb64+N6T
-         dC6brm1lmYDNwBjDC4RqBS5TDOhhaC0W739fzWXqlfMVCpOpV7eNW4Kjl3A8o3nk6HNL
-         v2aOR8GMg6CorjCRVqv1RO1aqpmpcqEG+bo9k2SGTyzH8nmEFzy2AkgHQsXH67E4jfEb
-         Keww==
-X-Gm-Message-State: APjAAAXe4r884i8R6W8onZdCCDnl6J6TjehvgGtOjJzxWf47n7QNNR61
-        dSytrbIrYmPSS+BqBCGgXx5rLg==
-X-Google-Smtp-Source: APXvYqxpnU/YqzHLLTtDrHtrmgEZwjR2XCzlQQy/QlYwTJZA8pqDeflD/7gMq3smNNvvvq1H14aHzw==
-X-Received: by 2002:a2e:7818:: with SMTP id t24mr5296927ljc.195.1581081470799;
-        Fri, 07 Feb 2020 05:17:50 -0800 (PST)
+        bh=uTjOaImg+ksV7BdfhHPQ/FTPKTcFmsjOHyFGzGRJy2I=;
+        b=mBPaIJoh3BnHxw0ESK5NR8gdayIoVUPC83NTgxPm8lEyAno73hHJW293UfkO6rZM45
+         WCl+uMon7r6LFveBRU2SQkBYolmPiY0pI+gB9tqoZ7ynKut9rnuHyr7JLpC0eD0DgZOz
+         X72MmN18TZgr+Ho5+9AI/AVeT1tLyzGzxrk4rPX2nfHDPcQz1TMsjIpbG6vK+7gsud8A
+         TBG4sG1czQhETvpXc8sJHDDx66LTarK00bpe4Z8EotGlOpnJ1bms1dz9yplujUTbn80N
+         Ye4bB6A6KRMrHfTzXh9yXTreLJl0WYwop4umpy0s9vmeTMg3/U4np4Ukp6VjQkKuW2eu
+         VaCw==
+X-Gm-Message-State: APjAAAWFfyBxkJzX99vMDy02iW5XX9qj2KLRPywkQUaHpOPy1Eu2sWn7
+        qkX00k8FGtZkU621q3S+PZtLFg==
+X-Google-Smtp-Source: APXvYqxjvYht2BAnt/sn52oyart+TOO9Z4BGc1YhTQrInCsed0Qr9BHzni7Ywm8GZcbncIGhJ4MD0g==
+X-Received: by 2002:ac2:47ec:: with SMTP id b12mr4552216lfp.162.1581081532420;
+        Fri, 07 Feb 2020 05:18:52 -0800 (PST)
 Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id 3sm1236687lja.65.2020.02.07.05.17.49
+        by smtp.gmail.com with ESMTPSA id 4sm1056760lfj.75.2020.02.07.05.18.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Feb 2020 05:17:49 -0800 (PST)
+        Fri, 07 Feb 2020 05:18:51 -0800 (PST)
 Received: by box.localdomain (Postfix, from userid 1000)
-        id 623C7100B12; Fri,  7 Feb 2020 16:18:06 +0300 (+03)
-Date:   Fri, 7 Feb 2020 16:18:06 +0300
+        id 5174D100B12; Fri,  7 Feb 2020 16:19:08 +0300 (+03)
+Date:   Fri, 7 Feb 2020 16:19:08 +0300
 From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 To:     John Hubbard <jhubbard@nvidia.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -66,34 +66,47 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
         linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 04/12] mm: introduce page_ref_sub_return()
-Message-ID: <20200207131806.xwnhxomxgt3hoqcc@box>
+Subject: Re: [PATCH v5 10/12] mm/gup: /proc/vmstat: pin_user_pages (FOLL_PIN)
+ reporting
+Message-ID: <20200207131908.hplpt3gvvek56zm7@box>
 References: <20200207033735.308000-1-jhubbard@nvidia.com>
- <20200207033735.308000-5-jhubbard@nvidia.com>
+ <20200207033735.308000-11-jhubbard@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200207033735.308000-5-jhubbard@nvidia.com>
+In-Reply-To: <20200207033735.308000-11-jhubbard@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 06, 2020 at 07:37:27PM -0800, John Hubbard wrote:
-> An upcoming patch requires subtracting a large chunk of refcounts from
-> a page, and checking what the resulting refcount is. This is a little
-> different than the usual "check for zero refcount" that many of the
-> page ref functions already do. However, it is similar to a few other
-> routines that (like this one) are generally useful for things such as
-> 1-based refcounting.
+On Thu, Feb 06, 2020 at 07:37:33PM -0800, John Hubbard wrote:
+> Now that pages are "DMA-pinned" via pin_user_page*(), and unpinned via
+> unpin_user_pages*(), we need some visibility into whether all of this is
+> working correctly.
 > 
-> Add page_ref_sub_return(), that subtracts a chunk of refcounts
-> atomically, and returns an atomic snapshot of the result.
+> Add two new fields to /proc/vmstat:
 > 
-> Reviewed-by: Jan Kara <jack@suse.cz>
+>     nr_foll_pin_acquired
+>     nr_foll_pin_released
+> 
+> These are documented in Documentation/core-api/pin_user_pages.rst.
+> They represent the number of pages (since boot time) that have been
+> pinned ("nr_foll_pin_acquired") and unpinned ("nr_foll_pin_released"),
+> via pin_user_pages*() and unpin_user_pages*().
+> 
+> In the absence of long-running DMA or RDMA operations that hold pages
+> pinned, the above two fields will normally be equal to each other.
+> 
+> Also: update Documentation/core-api/pin_user_pages.rst, to remove an
+> earlier (now confirmed untrue) claim about a performance problem with
+> /proc/vmstat.
+> 
+> Also: updated Documentation/core-api/pin_user_pages.rst to rename the
+> new /proc/vmstat entries, to the names listed here.
+> 
 > Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 
 Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-
 -- 
  Kirill A. Shutemov
