@@ -2,220 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CCFD155CD2
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2020 18:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B607155DE6
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2020 19:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727303AbgBGR2K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Feb 2020 12:28:10 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:51326 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726901AbgBGR2K (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Feb 2020 12:28:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=myivX2M64tawJU//p7NCr6Swfjc7dU+qI4Gkm/F5Jqc=; b=jsmA99uv7NiFtEqo3DAeR4gvwh
-        Th9hLO16uiY9OHU7Kw9vz7yMFE3bMq3xH4ymZ/62PDWYug/SoCdc2K3/MjcOnzliNVh5LgxBjGLGT
-        gUbjWlYInXfl9ym+ZF4osdy3erkprlCYHCRkHCl8msISCezgHexDSjHIiIN24r0IfifglrRemmjox
-        As9m6xHUi4b9H+uJrKGhH2TYdkeEqnStsyN/TF9uayWe+LwUcdwOODkVcp1pgCnJuhJgZWd1KYlvZ
-        ZP62GgD0gtCZNSB+iJw8XabBeKdEiYlL299zlcgk2HiGmYZv/d6I2SWNhRVBBxnGNyhm6Dl6mR8dv
-        S8I7TzAg==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j07Pu-0001vf-4e; Fri, 07 Feb 2020 17:27:46 +0000
-Date:   Fri, 7 Feb 2020 09:27:46 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
+        id S1727028AbgBGSZH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Feb 2020 13:25:07 -0500
+Received: from mail-eopbgr20063.outbound.protection.outlook.com ([40.107.2.63]:17126
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726974AbgBGSZH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 7 Feb 2020 13:25:07 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jBIMnmRtfo9dvvPwmDC/L4/RSsl1DqgOZliu2Tvf/b63ATZ7LYpzPfFYi878hJEkm78ewsqpn9sYypUWKG0rgQmW9mHhwb8p1dKl8ukNdqBl7Jo6wqOmEMVnCVtowvgKjw5Jjgw936DURNBS8Xq46vTf1M5BcLY/f0Qws9bhR4OVsAqrdEOWzaN8uWEA++ADvEa6XAIe2ULgNJHUdHybX+iKNUzrhQAyRjAd3IQ16QAWqzSlhbxDU71Ecca6FBaNVi9bHr6u1VZaKbaZEk/AoC6sFEyDsOm3houq2Kulohxrjvc9q1Z+DrvthyXs4Ak+8Ge9n7AoQV+uiT1K0I8GFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XXJHiPXntZeGvxypT/6it9obKqo+X9LQvkMZEj/wafg=;
+ b=NKA8f2qmLBmWu3vv7Ov7h2z3s7KC3oZWoLOsvfLkrq3Smr5+QYzuQq8ibU2WAI3OiXuP1Xe+uSldYGAiTp6CCx1+V22H1OjEXXFwMhcAojscGSObwXb8T4wgn1xa50kbiQN2xNajm8fc5NDf8n1GvVRl5sRBo06/czUIDOxf9WUvKeJiGQkQxTIwBvdDdMwivZXxR9APl+JE7/pyxs/si8BgrUV/tSe6uh1oQvdXrIzUyc+V6iaWhXhALQNz7b6tsRafVWUPBY7ePzJIeGM3X+NXkuQwWYdKsuF1nYMQSw/U1e5HgQLmcJlGa8jQ/4x8ZQ8kNrR2QRuqmu0wpemPcQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XXJHiPXntZeGvxypT/6it9obKqo+X9LQvkMZEj/wafg=;
+ b=sUfMe2GYv/mXqdsDIwQlaGDUv5XcoBBSRnC3jMJzbiJHZEHDIFvZUT64Zx0Iw3Ui/J8EmgRglMMIrucAy+Gtu9LUCAu+eTrhmSu4wwDfx1AodMYWuPzEWwNReXKWfc3zMxzuMey9gfDiD9H+yshTRu7ZKdDsp9b9tqCV7+cf6Lc=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB5136.eurprd05.prod.outlook.com (20.178.11.15) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2686.33; Fri, 7 Feb 2020 18:25:01 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1c00:7925:d5c6:d60d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1c00:7925:d5c6:d60d%7]) with mapi id 15.20.2707.024; Fri, 7 Feb 2020
+ 18:25:01 +0000
+Date:   Fri, 7 Feb 2020 14:24:57 -0400
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     lsf-pc@lists.linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Ira Weiny <iweiny@intel.com>, Christoph Hellwig <hch@lst.de>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
         Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v5 01/12] mm: dump_page(): better diagnostics for
- compound pages
-Message-ID: <20200207172746.GE8731@bombadil.infradead.org>
-References: <20200207033735.308000-1-jhubbard@nvidia.com>
- <20200207033735.308000-2-jhubbard@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Don Dutile <ddutile@redhat.com>
+Subject: [LSF/MM TOPIC] get_user_pages() for PCI BAR Memory
+Message-ID: <20200207182457.GM23346@mellanox.com>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200207033735.308000-2-jhubbard@nvidia.com>
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: BL0PR0102CA0030.prod.exchangelabs.com
+ (2603:10b6:207:18::43) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (142.68.57.212) by BL0PR0102CA0030.prod.exchangelabs.com (2603:10b6:207:18::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2707.24 via Frontend Transport; Fri, 7 Feb 2020 18:25:01 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1j08JF-0007rb-Vh; Fri, 07 Feb 2020 14:24:57 -0400
+X-Originating-IP: [142.68.57.212]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 14297010-1081-456e-992f-08d7abfb0b66
+X-MS-TrafficTypeDiagnostic: VI1PR05MB5136:
+X-Microsoft-Antispam-PRVS: <VI1PR05MB51365235D84D456966371F19CF1C0@VI1PR05MB5136.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 0306EE2ED4
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10001)(10009020)(4636009)(136003)(376002)(346002)(39860400002)(366004)(396003)(189003)(199004)(52116002)(1076003)(8936002)(8676002)(86362001)(2906002)(81156014)(5660300002)(36756003)(7416002)(81166006)(186003)(4326008)(26005)(2616005)(66556008)(6916009)(66476007)(9746002)(316002)(966005)(33656002)(478600001)(54906003)(9786002)(66946007)(66574012)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5136;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VLTkj76RyKDZhRZg2vpc0xKdsQycv2bMGK8nq5Q61ssd/BamsGHkIPFYY0YiShGIYNrWZswpjB0jF3TTtpg6cNpU3EdCM2X+X+RD9criEJqqCEqUSpGYP/fJawvntMu+2Yn607GqOTKfxxsCkFa+zF/bNQvFe04QvzfcK4dVl8flC6535d/TB9qZgY2LibqvrOTlXTk8q0v0I8LxBuPu4GQQ8CTMg9E8LxBiiojc8vaw4vEB1dm4bOjZJYHhIlr3Kf7rZRBvy39Mu1hmLgiegwbdz7KGJYrvpHnXkc09N5zVvNZWUcPvUP5hV/PCpLZoj9wOFWzGfEEOiJ77R0V1scOeSzQv9MHkx2N0yeTfPnvXTNC0uvazKc0E990wRWL2sil5oKsCh/jFqWSjA5t4cAYgNs5XlJJX3K7hOgla4nMsiE9wjNyj98Ux6cOaQdHiVcd2n7Grc7PsnOvwFp6RRI3WgUDV16oYeSe0FZPbvQ4etrtAX3ZEwSe0u3Cle3UfQ9LCq94BeafL3NocYKR/5Q0/FLUDhJaM2fbFID7f1N9T9ztAcIvJaFN+eEKV3V7ujv6jwsVuvPQd3lZ7IM4+OYnLUj/uwY9QtEMGakPtcGARU1wE/oRIqrj46tpOi9ZdSg5oIHaSm6/zpDmwYgI5kg==
+X-MS-Exchange-AntiSpam-MessageData: xYXbzTBBgoQT+FmSTxNflbXwLRm+WQ/DC02ouDtJd8DIfzkC3UfJo+cSCGQDjEiX17OwSeoeoSN6zSip6Q/SDX/PJVnsGBu+wizCB+tZhCYoln1a3O908n5OVUptvsoaO98F5QjWT/4UOWCDvgwaOA==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 14297010-1081-456e-992f-08d7abfb0b66
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2020 18:25:01.4917
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: P6lI31VDTP9bargXjmvkiS1mfDQlwG+IAqv9PMS2E+9rzAL/EDo8mqEDOa3aj1hMhYkUVE+Lk+Pz/zjcDLRUPQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5136
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 06, 2020 at 07:37:24PM -0800, John Hubbard wrote:
-> A compound page collects the refcount in the head page, while leaving
-> the refcount of each tail page at zero. Therefore, when debugging a
-> problem that involves compound pages, it's best to have diagnostics that
-> reflect that situation. However, dump_page() is oblivious to these
-> points.
-> 
-> Change dump_page() as follows:
-> 
-> 1) For tail pages, print relevant head page information: refcount, in
->    particular. But only do this if the page is not corrupted so badly
->    that the pointer to the head page is all wrong.
-> 
-> 2) Do a separate check to catch any (rare) cases of the tail page's
->    refcount being non-zero, and issue a separate, clear pr_warn() if
->    that ever happens.
-> 
-> Suggested-by: Matthew Wilcox <willy@infradead.org>
-> Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  mm/debug.c | 35 +++++++++++++++++++++++++++++------
->  1 file changed, 29 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/debug.c b/mm/debug.c
-> index ecccd9f17801..f074077eee11 100644
-> --- a/mm/debug.c
-> +++ b/mm/debug.c
-> @@ -42,6 +42,33 @@ const struct trace_print_flags vmaflag_names[] = {
->  	{0, NULL}
->  };
->  
-> +static void __dump_tail_page(struct page *page, int mapcount)
-> +{
-> +	struct page *head = compound_head(page);
-> +
-> +	if ((page < head) || (page >= head + MAX_ORDER_NR_PAGES)) {
-> +		/*
-> +		 * Page is hopelessly corrupted, so limit any reporting to
-> +		 * information about the page itself. Do not attempt to look at
-> +		 * the head page.
-> +		 */
-> +		pr_warn("page:%px refcount:%d mapcount:%d mapping:%px "
-> +			"index:%#lx (corrupted tail page case)\n",
-> +			page, page_ref_count(page), mapcount, page->mapping,
-> +			page_to_pgoff(page));
-> +	} else {
-> +		pr_warn("page:%px compound refcount:%d mapcount:%d mapping:%px "
-> +			"index:%#lx compound_mapcount:%d\n",
-> +			page, page_ref_count(head), mapcount, head->mapping,
-> +			page_to_pgoff(head), compound_mapcount(page));
-> +	}
-> +
-> +	if (page_ref_count(page) != 0) {
-> +		pr_warn("page:%px PROBLEM: non-zero refcount (==%d) on this "
-> +			"tail page\n", page, page_ref_count(page));
-> +	}
-> +}
-> +
->  void __dump_page(struct page *page, const char *reason)
->  {
->  	struct address_space *mapping;
-> @@ -75,12 +102,8 @@ void __dump_page(struct page *page, const char *reason)
->  	 */
->  	mapcount = PageSlab(page) ? 0 : page_mapcount(page);
->  
-> -	if (PageCompound(page))
-> -		pr_warn("page:%px refcount:%d mapcount:%d mapping:%px "
-> -			"index:%#lx compound_mapcount: %d\n",
-> -			page, page_ref_count(page), mapcount,
-> -			page->mapping, page_to_pgoff(page),
-> -			compound_mapcount(page));
-> +	if (PageTail(page))
-> +		__dump_tail_page(page, mapcount);
->  	else
->  		pr_warn("page:%px refcount:%d mapcount:%d mapping:%px index:%#lx\n",
->  			page, page_ref_count(page), mapcount,
+Many systems can now support direct DMA between two PCI devices, for
+instance between a RDMA NIC and a NVMe CMB, or a RDMA NIC and GPU
+graphics memory. In many system architectures this peer-to-peer PCI-E
+DMA transfer is critical to achieving performance as there is simply
+not enough system memory/PCI-E bandwidth for data traffic to go
+through the CPU socket.
 
-A definite improvement, but I think we could do better.  For example,
-you've changed PageCompound to PageTail here, whereas we really do want
-to dump some more information for PageHead pages than the plain vanilla
-order-0 page has.  Another thing is that page_mapping() calls compound_head(),
-so if the page is corrupted, we're going to get a funky pointer dereference.
+For many years various out of tree solutions have existed to serve
+this need. Recently some components have been accpeted into mainline,
+such as the p2pdma system, which allows co-operating drivers to setup
+P2P DMA transfers at the PCI level. This has allowed some kernel P2P
+DMA transfers related to NVMe CMB and RDMA to become supported.
 
-I spent a bit of time on this reimplementation ... what do you think?
+A major next step is to enable P2P transfers under userspace
+control. This is a very broad topic, but for this session I propose to
+focus on initial cases of supporting drivers can setup a P2P transfer
+from a PCI BAR page mmap'd to userspace. This is the basic starting
+point for future discussions on how to adapt get_user_pages() IO paths
+(ie O_DIRECT, net zero copy TX, RDMA, etc) to support PCI BAR memory.
 
- - Print the mapping pointer using %p insted of %px.  The actual value of
-   the pointer can be read out of the raw page dump and using %p gives a
-   chance to correlate it to earlier printk of the mapping pointer.
- - Add the order of the page for compound pages
- - Dump the raw head page as well as the raw page being dumped
+As all current drivers doing DMA from user space must go through
+get_user_pages() (or its new sibling hmm_range_fault()), some
+extension of the get_user_pages() API is needed to allow drivers
+supporting P2P to see the pages.
 
-diff --git a/mm/debug.c b/mm/debug.c
-index ecccd9f17801..0564d4cb8233 100644
---- a/mm/debug.c
-+++ b/mm/debug.c
-@@ -44,8 +44,10 @@ const struct trace_print_flags vmaflag_names[] = {
- 
- void __dump_page(struct page *page, const char *reason)
- {
-+	struct page *head = compound_head(page);
- 	struct address_space *mapping;
- 	bool page_poisoned = PagePoisoned(page);
-+	bool compound = PageCompound(page);
- 	/*
- 	 * Accessing the pageblock without the zone lock. It could change to
- 	 * "isolate" again in the meantime, but since we are just dumping the
-@@ -66,25 +68,32 @@ void __dump_page(struct page *page, const char *reason)
- 		goto hex_only;
- 	}
- 
--	mapping = page_mapping(page);
-+	if (page < head || (page >= head + MAX_ORDER_NR_PAGES)) {
-+		/* Corrupt page, cannot call page_mapping */
-+		mapping = page->mapping;
-+		head = page;
-+		compound = false;
-+	} else {
-+		mapping = page_mapping(page);
-+	}
- 
- 	/*
- 	 * Avoid VM_BUG_ON() in page_mapcount().
- 	 * page->_mapcount space in struct page is used by sl[aou]b pages to
- 	 * encode own info.
- 	 */
--	mapcount = PageSlab(page) ? 0 : page_mapcount(page);
-+	mapcount = PageSlab(head) ? 0 : page_mapcount(head);
- 
--	if (PageCompound(page))
--		pr_warn("page:%px refcount:%d mapcount:%d mapping:%px "
--			"index:%#lx compound_mapcount: %d\n",
--			page, page_ref_count(page), mapcount,
-+	if (compound)
-+		pr_warn("page:%px head:%px refcount:%d mapcount:%d mapping:%p "
-+			"index:%#lx order:%u compound_mapcount: %d\n",
-+			page, head, page_ref_count(page), mapcount,
- 			page->mapping, page_to_pgoff(page),
--			compound_mapcount(page));
-+			compound_order(head), compound_mapcount(page));
- 	else
--		pr_warn("page:%px refcount:%d mapcount:%d mapping:%px index:%#lx\n",
-+		pr_warn("page:%px refcount:%d mapcount:%d mapping:%p index:%#lx\n",
- 			page, page_ref_count(page), mapcount,
--			page->mapping, page_to_pgoff(page));
-+			mapping, page_to_pgoff(page));
- 	if (PageKsm(page))
- 		type = "ksm ";
- 	else if (PageAnon(page))
-@@ -106,6 +115,10 @@ void __dump_page(struct page *page, const char *reason)
- 	print_hex_dump(KERN_WARNING, "raw: ", DUMP_PREFIX_NONE, 32,
- 			sizeof(unsigned long), page,
- 			sizeof(struct page), false);
-+	if (!page_poisoned && compound)
-+		print_hex_dump(KERN_WARNING, "head: ", DUMP_PREFIX_NONE, 32,
-+			sizeof(unsigned long), head,
-+			sizeof(struct page), false);
- 
- 	if (reason)
- 		pr_warn("page dumped because: %s\n", reason);
+get_user_pages() will require some 'struct page' and 'struct
+vm_area_struct' representation of the BAR memory beyond what today's
+io_remap_pfn_range()/etc produces.
+
+This topic has been discussed in small groups in various conferences
+over the last year, (plumbers, ALPSS, LSF/MM 2019, etc). Having a
+larger group together would be productive, especially as the direction
+has a notable impact on the general mm.
+
+For patch sets, we've seen a number of attempts so far, but little has
+been merged yet. Common elements of past discussions have been:
+ - Building struct page for BAR memory
+ - Stuffing BAR memory into scatter/gather lists, bios and skbs
+ - DMA mapping BAR memory
+ - Referencing BAR memory without a struct page
+ - Managing lifetime of BAR memory across multiple drivers
+
+Based on past work, the people in the CC list would be recommended
+participants:
+
+ Christian König <christian.koenig@amd.com>
+ Daniel Vetter <daniel.vetter@ffwll.ch>
+ Logan Gunthorpe <logang@deltatee.com>
+ Stephen Bates <sbates@raithlin.com>
+ Jérôme Glisse <jglisse@redhat.com>
+ Ira Weiny <iweiny@intel.com>
+ Christoph Hellwig <hch@lst.de>
+ John Hubbard <jhubbard@nvidia.com>
+ Ralph Campbell <rcampbell@nvidia.com>
+ Dan Williams <dan.j.williams@intel.com>
+ Don Dutile <ddutile@redhat.com>
+
+Regards,
+Jason
+
+Description of the p2pdma work:
+ https://lwn.net/Articles/767281/
+
+Discussion slot at Plumbers:
+ https://linuxplumbersconf.org/event/4/contributions/369/
+
+DRM work on DMABUF as a user facing object for P2P:
+ https://www.spinics.net/lists/amd-gfx/msg32469.html
