@@ -2,111 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87067155847
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2020 14:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BD8155852
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2020 14:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726874AbgBGNSz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Feb 2020 08:18:55 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:34961 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727003AbgBGNSy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Feb 2020 08:18:54 -0500
-Received: by mail-lf1-f65.google.com with SMTP id z18so1511639lfe.2
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Feb 2020 05:18:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uTjOaImg+ksV7BdfhHPQ/FTPKTcFmsjOHyFGzGRJy2I=;
-        b=px3p3e5+GsuY8I3lV6XSDycZ8agIVbKmPPwgLu3Lh8i8iQeajhpVMp4YENKqYEfWvR
-         l7szyDwa/fIPpLw33kK69S5Pf6ihs+yEsGacbdzkz4PviNn2h37DeQCHeB+f9y/P9dlX
-         9SdncWbfYLBcpEzPV9AYMAXIr1i7rBt3+hltAJJR9dLGiuI7doNoTQ90XAKteTE1YZaP
-         a387s5QH+qimgQKymmW0q31yZKfC7F/xrtJemao9N0ck6ye7buDsUfpVivFekLFmvpU1
-         jE51d1bi32F/J79szF6TeskC/TaCYG1Bq+VncIzgSLIpksUBxV5+49GAruiGknYNG36G
-         Yd0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uTjOaImg+ksV7BdfhHPQ/FTPKTcFmsjOHyFGzGRJy2I=;
-        b=mBPaIJoh3BnHxw0ESK5NR8gdayIoVUPC83NTgxPm8lEyAno73hHJW293UfkO6rZM45
-         WCl+uMon7r6LFveBRU2SQkBYolmPiY0pI+gB9tqoZ7ynKut9rnuHyr7JLpC0eD0DgZOz
-         X72MmN18TZgr+Ho5+9AI/AVeT1tLyzGzxrk4rPX2nfHDPcQz1TMsjIpbG6vK+7gsud8A
-         TBG4sG1czQhETvpXc8sJHDDx66LTarK00bpe4Z8EotGlOpnJ1bms1dz9yplujUTbn80N
-         Ye4bB6A6KRMrHfTzXh9yXTreLJl0WYwop4umpy0s9vmeTMg3/U4np4Ukp6VjQkKuW2eu
-         VaCw==
-X-Gm-Message-State: APjAAAWFfyBxkJzX99vMDy02iW5XX9qj2KLRPywkQUaHpOPy1Eu2sWn7
-        qkX00k8FGtZkU621q3S+PZtLFg==
-X-Google-Smtp-Source: APXvYqxjvYht2BAnt/sn52oyart+TOO9Z4BGc1YhTQrInCsed0Qr9BHzni7Ywm8GZcbncIGhJ4MD0g==
-X-Received: by 2002:ac2:47ec:: with SMTP id b12mr4552216lfp.162.1581081532420;
-        Fri, 07 Feb 2020 05:18:52 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id 4sm1056760lfj.75.2020.02.07.05.18.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Feb 2020 05:18:51 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 5174D100B12; Fri,  7 Feb 2020 16:19:08 +0300 (+03)
-Date:   Fri, 7 Feb 2020 16:19:08 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 10/12] mm/gup: /proc/vmstat: pin_user_pages (FOLL_PIN)
- reporting
-Message-ID: <20200207131908.hplpt3gvvek56zm7@box>
-References: <20200207033735.308000-1-jhubbard@nvidia.com>
- <20200207033735.308000-11-jhubbard@nvidia.com>
+        id S1727028AbgBGNXB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Feb 2020 08:23:01 -0500
+Received: from stargate.chelsio.com ([12.32.117.8]:24235 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726674AbgBGNXA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Feb 2020 08:23:00 -0500
+Received: from localhost (pvp1.blr.asicdesigners.com [10.193.80.26])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 017DMs66007816;
+        Fri, 7 Feb 2020 05:22:55 -0800
+Date:   Fri, 7 Feb 2020 18:52:54 +0530
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     jgg@ziepe.ca, dledford@redhat.com, bmt@zurich.ibm.com
+Cc:     linux-rdma@vger.kernel.org, bharat@chelsio.com,
+        nirranjan@chelsio.com
+Subject: Re: [PATCH for-review/for-rc/for-rc] RDMA/siw: Remove unwanted
+ WARN_ON in siw_cm_llp_data_ready()
+Message-ID: <20200207132253.GB26369@chelsio.com>
+References: <20200207115209.25933-1-krishna2@chelsio.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200207033735.308000-11-jhubbard@nvidia.com>
+In-Reply-To: <20200207115209.25933-1-krishna2@chelsio.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 06, 2020 at 07:37:33PM -0800, John Hubbard wrote:
-> Now that pages are "DMA-pinned" via pin_user_page*(), and unpinned via
-> unpin_user_pages*(), we need some visibility into whether all of this is
-> working correctly.
+On Friday, February 02/07/20, 2020 at 17:22:09 +0530, Krishnamraju Eraparaju wrote:
+> Warnings like below can fill up the dmesg while disconnecting RDMA
+> connections.
+> Hence, removing the unwanted WARN_ON.
 > 
-> Add two new fields to /proc/vmstat:
+> [72103.557612] WARNING: CPU: 6 PID: 0 at
+> drivers/infiniband/sw/siw/siw_cm.c:1229 siw_cm_llp_data_ready+0xc1/0xd0
+> [siw]
+> [72103.557677] RIP: 0010:siw_cm_llp_data_ready+0xc1/0xd0 [siw]
+> [72103.557693] Call Trace:
+> [72103.557711]  tcp_data_queue+0x226/0xb40
+> [72103.557714]  tcp_rcv_established+0x220/0x620
+> [72103.557720]  tcp_v4_do_rcv+0x12a/0x1e0
+> [72103.557722]  tcp_v4_rcv+0xb05/0xc00
+> [72103.557728]  ip_local_deliver_finish+0x69/0x210
+> [72103.557730]  ip_local_deliver+0x6b/0xe0
+> [72103.557735]  ip_rcv+0x273/0x362
+> [72103.557740]  __netif_receive_skb_core+0xb35/0xc30
+> [72103.557752]  netif_receive_skb_internal+0x3d/0xb0
+> [72103.557754]  napi_gro_frags+0x13b/0x200
+> [72103.557788]  t4_ethrx_handler+0x433/0x7d0 [cxgb4]
+> [72103.557800]  process_responses+0x318/0x580 [cxgb4]
+> [72103.557820]  napi_rx_handler+0x14/0x100 [cxgb4]
+> [72103.557822]  net_rx_action+0x149/0x3b0
+> [72103.557826]  __do_softirq+0xe3/0x30a
+> [72103.557831]  irq_exit+0x100/0x110
+> [72103.557834]  do_IRQ+0x7f/0xe0
+> [72103.557837]  common_interrupt+0xf/0xf
 > 
->     nr_foll_pin_acquired
->     nr_foll_pin_released
+> Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+> ---
+>  drivers/infiniband/sw/siw/siw_cm.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> These are documented in Documentation/core-api/pin_user_pages.rst.
-> They represent the number of pages (since boot time) that have been
-> pinned ("nr_foll_pin_acquired") and unpinned ("nr_foll_pin_released"),
-> via pin_user_pages*() and unpin_user_pages*().
+> diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+> index 3bccfef40e7e..bcbc54998ace 100644
+> --- a/drivers/infiniband/sw/siw/siw_cm.c
+> +++ b/drivers/infiniband/sw/siw/siw_cm.c
+> @@ -1226,7 +1226,6 @@ static void siw_cm_llp_data_ready(struct sock *sk)
+>  
+>  	cep = sk_to_cep(sk);
+>  	if (!cep) {
+> -		WARN_ON(1);
+>  		goto out;
+>  	}
+>  	siw_dbg_cep(cep, "state: %d\n", cep->state);
+> -- 
+> 2.23.0.rc0
 > 
-> In the absence of long-running DMA or RDMA operations that hold pages
-> pinned, the above two fields will normally be equal to each other.
-> 
-> Also: update Documentation/core-api/pin_user_pages.rst, to remove an
-> earlier (now confirmed untrue) claim about a performance problem with
-> /proc/vmstat.
-> 
-> Also: updated Documentation/core-api/pin_user_pages.rst to rename the
-> new /proc/vmstat entries, to the names listed here.
-> 
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
--- 
- Kirill A. Shutemov
+Please ignore this patch as I mistakenly put "for-review/for-rc/for-rc"
+in the subject line instead of "for-rc".
