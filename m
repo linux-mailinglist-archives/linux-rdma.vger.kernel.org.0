@@ -2,71 +2,198 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07667156012
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2020 21:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFAC156073
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2020 22:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727579AbgBGUoQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Feb 2020 15:44:16 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:34741 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727561AbgBGUoK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Feb 2020 15:44:10 -0500
-Received: by mail-ot1-f68.google.com with SMTP id a15so627047otf.1
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Feb 2020 12:44:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=8cDRXBFOpE9J1p6S5H+HXSQg9q3m7pUJ3iUuQ5MPcDc=;
-        b=WJgFJ9PR0yBQ+ciD08Pby60OVZzn3dTgtieZ17slfRQssKmPnwQmAwZPgDIpR6heck
-         dDY9m0nAiR73dL1CtCDLlqWI9lV6barO9i6phYUUcmMyI9lhyUunotwwGjtLNjZZXHps
-         B+ZJy7kS8IDHqb+LatDXLkBcGkPTiMku+kX9Fb92ZmFsnK1n3liOHkc4TmrSz2VBzqpm
-         gOXxQUuwBna/l8aq9nu864h1RGE/T5vMQdJwoV4IagKfmqrsTX7n4WpDLnLJobosvK0X
-         9Z7fBUirFx02ZREq+PBFhuGxFcksAi/eOnsjoHpvtfcuXe3k+tw0qtyYWnKvHtkX+Drl
-         CMWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=8cDRXBFOpE9J1p6S5H+HXSQg9q3m7pUJ3iUuQ5MPcDc=;
-        b=Lw5i/lH6TtGZ4HkZ5qu9qmp664qvY7Dewes67JR9RU5ApdX7zkpgd3jZ1PovxlW5fX
-         REDDFXMZUgAtG0Km+2uOn6x2Ts78mPEye6RfC9zy3O1JYupXghEiDe0xAJmD9CteyAq0
-         PMLrVj2i/kXVt6aZG8MkQDWZBdpduWphuzOZ9WSxkOKFTDjXzcUpCllIA3b2ihyNxZ/T
-         OlYjYH+pJiEUAauTxFv9+sXuZ+8A6qzdTOfRVFfSl60nXx7bRTLHsX9FoipiFIu+eD60
-         xYkR4l5mbG+GuCgAizFA0Z6H2fFTr+GEqQ1EGjzBFlPpgnOeq3IB1ZDH6Ja56C4BSEto
-         4M5A==
-X-Gm-Message-State: APjAAAVTCbhkREi74ZtlbLgxCJNj/Z1LbaVM9N6QYAH9IGAa3buRI6Nq
-        Of/aOtIxyqRhPMz+CSu0P109PwX8OagSAlTl7PE=
-X-Google-Smtp-Source: APXvYqxZ0BHxezvYatUCwR5ujJY2IO6fZCUlpHww8WEnDHAAAY+0VvtiMdEe6JnWZWwDRH8AP8uVvx3q0Y+IviYPdhQ=
-X-Received: by 2002:a9d:7305:: with SMTP id e5mr948882otk.64.1581108248790;
- Fri, 07 Feb 2020 12:44:08 -0800 (PST)
+        id S1727065AbgBGVFy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Feb 2020 16:05:54 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14260 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726987AbgBGVFy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Feb 2020 16:05:54 -0500
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e3dd1220000>; Fri, 07 Feb 2020 13:05:38 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 07 Feb 2020 13:05:52 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Fri, 07 Feb 2020 13:05:52 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 7 Feb
+ 2020 21:05:52 +0000
+Subject: Re: [PATCH v5 01/12] mm: dump_page(): better diagnostics for compound
+ pages
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20200207033735.308000-1-jhubbard@nvidia.com>
+ <20200207033735.308000-2-jhubbard@nvidia.com>
+ <20200207172746.GE8731@bombadil.infradead.org>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <3477bf65-64dc-7854-6720-589f7fcdac07@nvidia.com>
+Date:   Fri, 7 Feb 2020 13:05:52 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Received: by 2002:a4a:d508:0:0:0:0:0 with HTTP; Fri, 7 Feb 2020 12:44:08 -0800 (PST)
-Reply-To: auch197722@gmail.com
-From:   "Mr. Theophilus Odadudu" <cristinamedina0010@gmail.com>
-Date:   Fri, 7 Feb 2020 15:44:08 -0500
-Message-ID: <CAPNvSTj-8q7w5QPmnH26+_3xCKjEWyE+9xcb8QyQs9Xie+iYgg@mail.gmail.com>
-Subject: LETTER OF INQUIRY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200207172746.GE8731@bombadil.infradead.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1581109538; bh=7ut/wdkDS0FpA4HZltu5HfFGDc856CHfoKcOQZwZpKY=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=qz9fEfJsgWpbE4ES0N4b0U2KdwU7WUZEPZkyZm1lWT+ssrEe4QmCYIAwcG3u59fsO
+         95bqQChY9FUbxQMy5LQyXcscufnj54mi7NnbUyVO1c9YXqIGoXNGYVv7DfIdlzn4Tj
+         6eWA4Vw0ML9zfUsTRNEdC/sts2heSOLYkbUKAXS7fxbr6Uq8tSFyBtoxinnLFhqb6n
+         aySRLrY5vdGSNUXd4haLTwimnVQ9jcXQ0irFEl9ctRbxH1z9GqDwtOj3hAHBktAXL6
+         8uczRol4+YH/ds6EseuIL253d1QTCTZ+4mXBq7e7xq9kpwVILZjJfMVmcYDSZAZOkm
+         0rCBfeUgW//tg==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Good Day,
+On 2/7/20 9:27 AM, Matthew Wilcox wrote:
+...
+> 
+> A definite improvement, but I think we could do better.  For example,
+> you've changed PageCompound to PageTail here, whereas we really do want
+> to dump some more information for PageHead pages than the plain vanilla
+> order-0 page has.  Another thing is that page_mapping() calls compound_head(),
+> so if the page is corrupted, we're going to get a funky pointer dereference.
+> 
+> I spent a bit of time on this reimplementation ... what do you think?
+> 
 
-I work as a clerk in a Bank here in Nigeria, I have a very
-confidential Business Proposition for you. There is a said amount of
-money floating in the bank unclaimed, belonging to the bank Foreign
-customer who die with his family in the Ethiopian Airline crash of
-March 11, 2019.
+It looks fine to me. I gave it a quick spin, here's the output for a normal
+and a huge page, and it has everything we want to see:
 
-I seek your good collaboration to move the fund for our benefit. we
-have agreed that 40% be yours once you help claim.
+page:ffffea0010f0d640 refcount:1025 mapcount:1 mapping:0000000021857089 index:0xed
+anon flags: 0x17ffe0000080036(referenced|uptodate|lru|active|swapbacked)
+raw: 017ffe0000080036 ffffea0011731f08 ffffea0011730008 ffff8884777272c1
+raw: 00000000000000ed 0000000000000000 0000040100000000 0000000000000000
+page dumped because: testing dump_page()
 
-Do get back to with 1) Your Full Name: (2) Residential Address: (3)
-Phone, Mobile  (4) Scan Copy of Your ID. to apply for claims of the
-funds.
+page:ffffea0010ef1b80 head:ffffea0010ef0000 refcount:0 mapcount:1 mapping:00000000a8e1c7fa index:0xed order:9 compound_mapcount: 1
+anon flags: 0x17ffe0000000000()
+raw: 017ffe0000000000 ffffea0010ef0001 ffffea0010ef1b88 dead000000000400
+raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
+head: 017ffe0000090036 ffffea0011734548 ffffea0010ef8008 ffff8884777271b9
+head: 000000000000007f 0000000000000000 00000201ffffffff 0000000000000000
+page dumped because: testing dump_page()
 
-Regards
-Theophilus Odadudu
+
+>  - Print the mapping pointer using %p insted of %px.  The actual value of
+>    the pointer can be read out of the raw page dump and using %p gives a
+>    chance to correlate it to earlier printk of the mapping pointer.
+>  - Add the order of the page for compound pages
+>  - Dump the raw head page as well as the raw page being dumped
+> 
+> diff --git a/mm/debug.c b/mm/debug.c
+> index ecccd9f17801..0564d4cb8233 100644
+> --- a/mm/debug.c
+> +++ b/mm/debug.c
+> @@ -44,8 +44,10 @@ const struct trace_print_flags vmaflag_names[] = {
+>  
+>  void __dump_page(struct page *page, const char *reason)
+>  {
+> +	struct page *head = compound_head(page);
+>  	struct address_space *mapping;
+>  	bool page_poisoned = PagePoisoned(page);
+> +	bool compound = PageCompound(page);
+>  	/*
+>  	 * Accessing the pageblock without the zone lock. It could change to
+>  	 * "isolate" again in the meantime, but since we are just dumping the
+> @@ -66,25 +68,32 @@ void __dump_page(struct page *page, const char *reason)
+>  		goto hex_only;
+>  	}
+>  
+> -	mapping = page_mapping(page);
+> +	if (page < head || (page >= head + MAX_ORDER_NR_PAGES)) {
+> +		/* Corrupt page, cannot call page_mapping */
+> +		mapping = page->mapping;
+> +		head = page;
+> +		compound = false;
+> +	} else {
+> +		mapping = page_mapping(page);
+> +	}
+>  
+>  	/*
+>  	 * Avoid VM_BUG_ON() in page_mapcount().
+>  	 * page->_mapcount space in struct page is used by sl[aou]b pages to
+>  	 * encode own info.
+>  	 */
+> -	mapcount = PageSlab(page) ? 0 : page_mapcount(page);
+> +	mapcount = PageSlab(head) ? 0 : page_mapcount(head);
+>  
+> -	if (PageCompound(page))
+> -		pr_warn("page:%px refcount:%d mapcount:%d mapping:%px "
+> -			"index:%#lx compound_mapcount: %d\n",
+> -			page, page_ref_count(page), mapcount,
+> +	if (compound)
+> +		pr_warn("page:%px head:%px refcount:%d mapcount:%d mapping:%p "
+> +			"index:%#lx order:%u compound_mapcount: %d\n",
+> +			page, head, page_ref_count(page), mapcount,
+>  			page->mapping, page_to_pgoff(page),
+> -			compound_mapcount(page));
+> +			compound_order(head), compound_mapcount(page));
+>  	else
+> -		pr_warn("page:%px refcount:%d mapcount:%d mapping:%px index:%#lx\n",
+> +		pr_warn("page:%px refcount:%d mapcount:%d mapping:%p index:%#lx\n",
+>  			page, page_ref_count(page), mapcount,
+> -			page->mapping, page_to_pgoff(page));
+> +			mapping, page_to_pgoff(page));
+>  	if (PageKsm(page))
+>  		type = "ksm ";
+>  	else if (PageAnon(page))
+> @@ -106,6 +115,10 @@ void __dump_page(struct page *page, const char *reason)
+>  	print_hex_dump(KERN_WARNING, "raw: ", DUMP_PREFIX_NONE, 32,
+>  			sizeof(unsigned long), page,
+>  			sizeof(struct page), false);
+> +	if (!page_poisoned && compound)
+> +		print_hex_dump(KERN_WARNING, "head: ", DUMP_PREFIX_NONE, 32,
+> +			sizeof(unsigned long), head,
+> +			sizeof(struct page), false);
+
+
+Good thought to get the hex dump of the head page in this case, yes.
+
+
+>  
+>  	if (reason)
+>  		pr_warn("page dumped because: %s\n", reason);
+> 
+
+
+Seeing as how I want to further enhance dump_page() slightly for this series (to 
+include the 3rd struct page's hpage_pincount), would you care to send this as a 
+formal patch that I could insert into this series, to replace patch 5?
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
