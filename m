@@ -2,110 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4F1155910
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2020 15:13:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC11155914
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Feb 2020 15:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727003AbgBGONp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Feb 2020 09:13:45 -0500
-Received: from mail-eopbgr60087.outbound.protection.outlook.com ([40.107.6.87]:28886
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726798AbgBGONp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 7 Feb 2020 09:13:45 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jr/OzeIM9QlGmTHr1REk75MFiLAWcP0cJKmhs+5xLpk5efkDLzbA0C0/OcLss6Bk28QrXQHgmT1boNLTAVMzIT1NBFZtOMViBAty8lv6DPJE/bXKF4dvv4yCpfIgwXt/2b34+jIF3NVetWs0sTDfh5hfnDXAI8ZCCiSMTVRW90LOigb/ophgHIDsDBsLT+P33T/4sGbrg0s5mCmPtyRdLhx+YPSAZRTpCJS1wY4iE+wXauZ3i3v7PZHA1T/c5fWv/zoQSLc+/1sZAykD+DHRxwy84qCgCxUqinkrJ1PdZgTNZamaqfDxHn9ujLHTHUsMWfWOthVoaS/vk5ppQ1XxgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kIUv+PTzbAIBNuXH13b0XAHJ9BvUTdsVNhvrFDfWMO8=;
- b=jkPRcDQmrNgowB2SVBQRwC3liCv7nm7qacZyvX/1yhDH10Bc21xKmmlT9IcLZ5Nuyn2XlNNYgJsbkCeibfQxNsYSjO3WlH5DvJDfhDdw0MudYct66t2/ijugx176E5Na8/ezyQ2YzDgIhBlefrgmzu+rzr8CUo5+1GXwrcLr/TifnYHoPF0C/+Pej0kOENF8j0VWe3crURC2h3mLgnub7CmEU5o55PZNXNl8vxUZMcGASKwalaOeILVtbyKJcMnpzki3FEq2eyIGtdEFjKnyXH15lEYjdxHpvrJb8KdJ8kUySWxosKIp3AUOwoAKWKdr5eJoaP9YN5fNMXiXbLGnjg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kIUv+PTzbAIBNuXH13b0XAHJ9BvUTdsVNhvrFDfWMO8=;
- b=V2kChZZKqwWAYoWia6YgRpyZAfYMMQK7FJNz6tdLDJZa5px0U7UO8b8pevN+8b+EqxSbG80ApvKhchvclRNgEtSHAxwpPjIUeCYGXoXFvcisPP9Xsw93RuAH5Nrdz4UZwB/NM8UwRs0g+NQfx4Jh/DMi4iZLdfsRppFtI5qnGjc=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1PR05MB6640.eurprd05.prod.outlook.com (10.186.160.75) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2707.23; Fri, 7 Feb 2020 14:13:42 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::1c00:7925:d5c6:d60d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::1c00:7925:d5c6:d60d%7]) with mapi id 15.20.2707.024; Fri, 7 Feb 2020
- 14:13:42 +0000
-Date:   Fri, 7 Feb 2020 10:13:39 -0400
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Devesh Sharma <devesh.sharma@broadcom.com>
-Cc:     Mark Bloch <markb@mellanox.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leon@kernel.org>
-Subject: Re: [PATCH v7] libibverbs: display gid type in ibv_devinfo
-Message-ID: <20200207141339.GD4509@mellanox.com>
-References: <1580967842-11220-1-git-send-email-devesh.sharma@broadcom.com>
- <88498668-9723-9695-b4e7-3384dde76c36@mellanox.com>
- <CANjDDBgdX1REcRRKKdqaWNR2Y+Om-Kwb0vm_JuP703m0VLe_6g@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANjDDBgdX1REcRRKKdqaWNR2Y+Om-Kwb0vm_JuP703m0VLe_6g@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: BL0PR0102CA0065.prod.exchangelabs.com
- (2603:10b6:208:25::42) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
+        id S1726819AbgBGOPw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Feb 2020 09:15:52 -0500
+Received: from stargate.chelsio.com ([12.32.117.8]:14139 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726874AbgBGOPw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Feb 2020 09:15:52 -0500
+Received: from localhost (pvp1.blr.asicdesigners.com [10.193.80.26])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 017EFlD7008143;
+        Fri, 7 Feb 2020 06:15:48 -0800
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     jgg@ziepe.ca, dledford@redhat.com, bmt@zurich.ibm.com
+Cc:     linux-rdma@vger.kernel.org, bharat@chelsio.com,
+        nirranjan@chelsio.com, krishna2@chelsio.com
+Subject: [PATCH for-rc] RDMA/siw: Remove unwanted WARN_ON in siw_cm_llp_data_ready()
+Date:   Fri,  7 Feb 2020 19:44:29 +0530
+Message-Id: <20200207141429.27927-1-krishna2@chelsio.com>
+X-Mailer: git-send-email 2.23.0.rc0
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.68.57.212) by BL0PR0102CA0065.prod.exchangelabs.com (2603:10b6:208:25::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2707.21 via Frontend Transport; Fri, 7 Feb 2020 14:13:42 +0000
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)    (envelope-from <jgg@mellanox.com>)      id 1j04O3-0001Eu-VS; Fri, 07 Feb 2020 10:13:39 -0400
-X-Originating-IP: [142.68.57.212]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 3da231cb-745a-4c94-a585-08d7abd7efde
-X-MS-TrafficTypeDiagnostic: VI1PR05MB6640:|VI1PR05MB6640:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR05MB66401D468FE72A2B8F0CC918CF1C0@VI1PR05MB6640.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-Forefront-PRVS: 0306EE2ED4
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(39850400004)(366004)(396003)(136003)(346002)(376002)(199004)(189003)(4326008)(9746002)(86362001)(186003)(52116002)(2906002)(26005)(9786002)(6916009)(33656002)(36756003)(2616005)(8676002)(4744005)(316002)(54906003)(81166006)(81156014)(8936002)(66476007)(66556008)(66946007)(5660300002)(1076003)(478600001)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6640;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-Received-SPF: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xqzOiEQ6cVePWBPGc0oxSeoVkpA3APC4lenK9Q2ButkvDpmBjQvB+pMBEal6+Ewk8NSX+CBGXjsVYinFgbcFGWqIjqaMTFcP7CO1+utRrPbt60Is008VtVG6fyoqgQcVV29eQ1N/bBEILKbEe+bj2IZf72dZ2WhHiDxgtW7S76IjnQVTX374itp7vwawU607kmNH1u41Ht09Z/Kcvr4+azKQdeZuAIauVqeNQdyk2rAKgaoh9L0i3HxyOGQ4fNbfrnQcOlAOuk9SX0kUKYAxqxUgfWY/dXaCzIQVZKHn3SnEM9+sjCrJqvsy9eJ6zCZDtvE1KB/WrrKeNv316+G8o/9t+SEP1skymRU2NQFGb9Jz1zWk7AIv28D9/jwesepLR1+S8yC1yk9+vxBkkH7hicmJ0k4VrSuO7M3gAgeoxaJwGz6rJoRUTq50/ibwWArbL64MGmZrUUJHdarIcDCTvBQIcYnty/bEwF3M2OwnL82il81Ez8h7575PJEAMMeM6
-X-MS-Exchange-AntiSpam-MessageData: 14PYFZFdxFmgmOONV+FmqXDo72bpH8kNozjPv74jrRUIpcD+LKbtOeGJVkUAkMkvtYSHKql8Jplp5uP1zHqAGvApvRndvUe7CMaEPazxQiRuOhi1fZQAZZrzetbusBU01uj+11h3kzECs4eCT+ZBNQ==
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3da231cb-745a-4c94-a585-08d7abd7efde
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2020 14:13:42.8507
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XA6Wx/6heTWZbqOGlNzQVSxUjqmjLsM5LHO4t2vTn16iTkDd2Mk2Q867t1rOvl0AJvnRJj2X3iVnTUsEzMtHlg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6640
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 07, 2020 at 06:07:34PM +0530, Devesh Sharma wrote:
-> > > -static int print_all_port_gids(struct ibv_context *ctx, uint8_t port_num, int tbl_len)
-> > > +#define DEVINFO_INVALID_GID_TYPE     2
-> > > +static const char *gid_type_str(enum ibv_gid_type type)
-> > >  {
-> > > +     switch (type) {
-> > > +     case IBV_GID_TYPE_IB_ROCE_V1: return "IB/RoCE v1";
-> >
-> > You call this function only if link layer is ethernet, why do you need the "IB/" part?
-> Jason do you have any suggestion here, "IB/ROCE v1" is the standard
-> string rdma-cm and
-> /sys/class/infiniband/bnxt_re0/ports/1/gid_attrs/types/* use to
-> distinguish v2 gid from v1/IB gids.
+Warnings like below can fill up the dmesg while disconnecting RDMA
+connections.
+Hence, removing the unwanted WARN_ON.
 
-I would ignore the sysfs
+[72103.557612] WARNING: CPU: 6 PID: 0 at
+drivers/infiniband/sw/siw/siw_cm.c:1229 siw_cm_llp_data_ready+0xc1/0xd0
+[siw]
+[72103.557677] RIP: 0010:siw_cm_llp_data_ready+0xc1/0xd0 [siw]
+[72103.557693] Call Trace:
+[72103.557699]  <IRQ>
+[72103.557711]  tcp_data_queue+0x226/0xb40
+[72103.557714]  tcp_rcv_established+0x220/0x620
+[72103.557720]  tcp_v4_do_rcv+0x12a/0x1e0
+[72103.557722]  tcp_v4_rcv+0xb05/0xc00
+[72103.557728]  ip_local_deliver_finish+0x69/0x210
+[72103.557730]  ip_local_deliver+0x6b/0xe0
+[72103.557735]  ip_rcv+0x273/0x362
+[72103.557740]  __netif_receive_skb_core+0xb35/0xc30
+[72103.557752]  netif_receive_skb_internal+0x3d/0xb0
+[72103.557754]  napi_gro_frags+0x13b/0x200
+[72103.557788]  t4_ethrx_handler+0x433/0x7d0 [cxgb4]
+[72103.557800]  process_responses+0x318/0x580 [cxgb4]
+[72103.557820]  napi_rx_handler+0x14/0x100 [cxgb4]
+[72103.557822]  net_rx_action+0x149/0x3b0
+[72103.557826]  __do_softirq+0xe3/0x30a
+[72103.557831]  irq_exit+0x100/0x110
+[72103.557834]  do_IRQ+0x7f/0xe0
+[72103.557837]  common_interrupt+0xf/0xf
+[72103.557838]  </IRQ>
 
-If you know for sure it is RoCE v1 then say so
+Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+---
+ drivers/infiniband/sw/siw/siw_cm.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-IB doesn't have types so it shouldn't show anything
+diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+index 3bccfef40e7e..ac86363ce1a2 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.c
++++ b/drivers/infiniband/sw/siw/siw_cm.c
+@@ -1225,10 +1225,9 @@ static void siw_cm_llp_data_ready(struct sock *sk)
+ 	read_lock(&sk->sk_callback_lock);
+ 
+ 	cep = sk_to_cep(sk);
+-	if (!cep) {
+-		WARN_ON(1);
++	if (!cep)
+ 		goto out;
+-	}
++
+ 	siw_dbg_cep(cep, "state: %d\n", cep->state);
+ 
+ 	switch (cep->state) {
+-- 
+2.23.0.rc0
 
-Jason
