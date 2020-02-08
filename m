@@ -2,227 +2,188 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93FCA1563B6
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2020 10:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B51315647C
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Feb 2020 14:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgBHJ6y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 8 Feb 2020 04:58:54 -0500
-Received: from mail-wm1-f42.google.com ([209.85.128.42]:37446 "EHLO
-        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbgBHJ6y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 8 Feb 2020 04:58:54 -0500
-Received: by mail-wm1-f42.google.com with SMTP id f129so5336398wmf.2
-        for <linux-rdma@vger.kernel.org>; Sat, 08 Feb 2020 01:58:52 -0800 (PST)
+        id S1727144AbgBHNLP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 8 Feb 2020 08:11:15 -0500
+Received: from mail-bn8nam12on2053.outbound.protection.outlook.com ([40.107.237.53]:6191
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727118AbgBHNLP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 8 Feb 2020 08:11:15 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FbdqEKBqelBKx8uYTV5w1fWA2l4Of+J0xqTmczjh4CzXKPiiWnC3Vd0Eic0ivQ9X1RGH4B+LPhtgrOTFa5m/M0IhbKewS1EPwyFqsek8m2illAHFcfd5t9iVtA+eqZi44dhnUKdQOH46/fPVWlVxvguUEiZzqS5BwcT6YG/HXrfFFoRpg2kZWGKzTzfw9Nq3TCvtKVrFpgz9B8nR0RcaYzChBvBWvSnAQl7Qw2DtQcbiI+OUYoiP3mhnHztP8c+BYZbR0hXrerUsbCU/asF8us3/SMsZsM2/gUTVnFVU1pxnGvm/tfTxYsBBotN0gmznd2rkRzcYXqsJ78SC6eiwKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=URA3bN9q/RTVirzvibU6Z/szJv1VZ99Xt62gKsiYGwA=;
+ b=Cqu/DX8qWTLJudDIK4Ux4InZTjuLb+TgHOx77yyCieIHlbc95bHf+TQcLzzZdVGrZ4GObwtwUUe2z5aCyAD0X0+RY4fjOYohy+0X72dbM0unoLuFEzuotzEVT7TOHsDgs7d5124L+k60wShQ9NJXSLZf3ZG9Zu9h+ShM3ADFsibWt/Q6cefqWzk09Ct6XwNjMUcGJisa/LZ5gdI2AjRuw/kAJ9GTz7Bh/S0kmrXr2rRZ1C3y3g4AFPuj6B/jRg+iq+ejtlYiUltqADqVPMB0BrqVmtkSUx1N4jGegn3Vc0Ebypc6khhrldVA/O5XCbsTX+q3md4WX0xdtR55PbqJQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0SNz3xOFOw70jH0YqsiRt3NYGtppX0XjI4mIazVeGbQ=;
-        b=oc9UeVuQCulOhWwpT2JJwJDSm/lcgejy6LSnYBpxsHu7WCKjznB/B2jcUsUvxW1oqx
-         Yj6qwO4whzsudt7C11K6Y+1EgJrx6RnaBeOSfcCi031dVqFHdfNmTqnQyVfoqwEunrMD
-         FmqdiisFu7VPYwVFGlJVSKSrXUU3RIti6VHJ7e/+eO8jQ31i9nu45GcSe/+sCo5hF6U5
-         sXJyoLhFpEac6lDhgwb3BcJTroq/GmPVWHtBY7v/UjbPsGLaWFE71rg6dXh/fqCkM12N
-         jSNYqPfJ+5ZBHfrvLIoPrDjMRf29y/pKXSo0vMeW2EMzbE2oHn4na6Gqo+fBqKD+N7VN
-         Ra4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0SNz3xOFOw70jH0YqsiRt3NYGtppX0XjI4mIazVeGbQ=;
-        b=D0alfiQ4kyu4tVQzGDP+LQx6uPArGVXp35ub3bUEVIQi5CZ7d2s/P4xk+fI5DBJgP6
-         c6Oz/7ueuHT0Q8eWpXVdwtngJCgKRxzaFgVi5BifNRWfEs0NzHp4SfbtSJYWsX7I7Gpp
-         iOiVsQKSBbGiogTFsdW1l1z4iJcx/cLGlWc/eKzraYxkuxXZmfv40gPUAGV7Yjo1oiiW
-         eJHBD1YwHdymf59LJspSzq1ZKMeW4fipon5bN/9iKFjgkIzqB3TLCQeozTT9MMySJO6J
-         v+JD4TlGQMpH572WWfdsAsiz//c64ePboVeabbsxCLqO1ON2WGEKQSUEzt6S94myYl8c
-         VgvA==
-X-Gm-Message-State: APjAAAVZVAWNPyJYt4lBTzUGolHxqxegnvPyvOBXaOrFIPNPhUJe5H5v
-        cA91NyPW5kj4jd83nOfaf6rjY5qtHaEuB5fdb4krN0yShMw=
-X-Google-Smtp-Source: APXvYqwZF0RF/ckzQ/nBHIfKSRtcHivlzkVYY8hCI+ZFTp3JjeW9HX5ODcJXblm2IUtOJtg/8kp52GjFMccfuijob6k=
-X-Received: by 2002:a1c:610a:: with SMTP id v10mr3738749wmb.44.1581155931512;
- Sat, 08 Feb 2020 01:58:51 -0800 (PST)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=URA3bN9q/RTVirzvibU6Z/szJv1VZ99Xt62gKsiYGwA=;
+ b=NYlrtpoMyyD7qFaI31JxA/K2neAd0DCGe4iejy76oyV9HDf+z2nX89bVFnl0NKlwd7MaMl1iQYETNl0dFXXHnfpwnEkYCkZzdWBI/m46rH8SLChMHEHPxDexILje4wwpauFOtP9J8KLoqH7z2tP1ey/itNBJdHbhmu6cx5lKaMk=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Christian.Koenig@amd.com; 
+Received: from DM5PR12MB1705.namprd12.prod.outlook.com (10.175.88.22) by
+ DM5PR12MB2343.namprd12.prod.outlook.com (52.132.140.166) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2707.27; Sat, 8 Feb 2020 13:11:06 +0000
+Received: from DM5PR12MB1705.namprd12.prod.outlook.com
+ ([fe80::d40e:7339:8605:bc92]) by DM5PR12MB1705.namprd12.prod.outlook.com
+ ([fe80::d40e:7339:8605:bc92%11]) with mapi id 15.20.2707.027; Sat, 8 Feb 2020
+ 13:11:06 +0000
+Subject: Re: [LSF/MM TOPIC] get_user_pages() for PCI BAR Memory
+To:     Jason Gunthorpe <jgg@mellanox.com>,
+        lsf-pc@lists.linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Ira Weiny <iweiny@intel.com>, Christoph Hellwig <hch@lst.de>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Don Dutile <ddutile@redhat.com>
+References: <20200207182457.GM23346@mellanox.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <20e3149e-4240-13e7-d16e-3975cfbe4d38@amd.com>
+Date:   Sat, 8 Feb 2020 14:10:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+In-Reply-To: <20200207182457.GM23346@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: FRYP281CA0007.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::17)
+ To DM5PR12MB1705.namprd12.prod.outlook.com (2603:10b6:3:10c::22)
 MIME-Version: 1.0
-References: <CAFgAxU8ArpoL9fMpJY5v-UZS5AMXom+TJ8HS57XeEOsCFFov8Q@mail.gmail.com>
- <63a56c06-57bf-6e31-6ca8-043f9d3b72f3@talpey.com> <CAFgAxU80+feEEtaRYFYTHwTMSE6Edjq0t0siJ0W06WSyD+Cy3A@mail.gmail.com>
- <b0414c43-c035-aa90-9f89-7ec6bba9e119@talpey.com>
-In-Reply-To: <b0414c43-c035-aa90-9f89-7ec6bba9e119@talpey.com>
-From:   Alex Rosenbaum <rosenbaumalex@gmail.com>
-Date:   Sat, 8 Feb 2020 11:58:38 +0200
-Message-ID: <CAFgAxU-LW+t17frRnNOYgoaqJEwffRPfFDasOPjbyVmuxj8AXA@mail.gmail.com>
-Subject: Re: [RFC v2] RoCE v2.0 Entropy - IPv6 Flow Label and UDP Source Port
-To:     Tom Talpey <tom@talpey.com>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        "Alex @ Mellanox" <alexr@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Mark Zhang <markz@mellanox.com>
-Content-Type: text/plain; charset="UTF-8"
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by FRYP281CA0007.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2707.21 via Frontend Transport; Sat, 8 Feb 2020 13:11:03 +0000
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 9046224d-7e34-4315-7f4f-08d7ac985b79
+X-MS-TrafficTypeDiagnostic: DM5PR12MB2343:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB2343003CF1A9FA9DF30BA5F5831F0@DM5PR12MB2343.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 03077579FF
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10001)(10009020)(4636009)(396003)(346002)(376002)(39860400002)(136003)(366004)(199004)(189003)(6666004)(4326008)(16526019)(966005)(186003)(316002)(2616005)(5660300002)(54906003)(7416002)(36756003)(66946007)(66476007)(66556008)(478600001)(66574012)(45080400002)(31686004)(81166006)(81156014)(8676002)(8936002)(2906002)(86362001)(52116002)(6486002)(31696002);DIR:OUT;SFP:1101;SCL:1;SRVR:DM5PR12MB2343;H:DM5PR12MB1705.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+Received-SPF: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EiJHhH7vbe78GtDcgK2UYP0z6SoEbxCIm/yz81L7H6l5wsraHDvWlmCIQeDg7jzTeL+vHAVTHNkOUSb3jKFGQ+JHsOgJL/mMvU4wVfPrYOTVQaX2FsF1fLwPSOlSTQaPOZdbsae8fv/AxekC47c1vmiD9KdBZxEG9fCx5f8v58zsvRK50rWCJHWS+bYcIh/eWIeJdYTumohvVSgK7Fkv40APk8F+otvG/+49L902/vzXUXVAFvXosVVU8se7+KMaLX6wARoCD70cBONhHcUn4/w0HvMKVluA4u/0/kLDPgZVRa+zUDqxWgl/CIpCexK8FtjaSt7ub0My003ZWZ0stSyOHx6yAXTUdhPE+kDjVZhBDAc9LmhifAfn2ASmapV3VQBIl6SialO2x719cHN0pD+OCXoRPeE2wXTPzczrO/EUkA5uXAR6ZGZPdhgogH50IKYHbCfCyNkDeEpvBb3JiYqO9v52qPZGoxGoVj6nazyKm1yCVUZ24/SamCatWzorOaOE7cCcGUis3wxOxjcVzEchdlb6MtmiRAHNSNFJeJgcsHgUl3dr9M+C+D8ep89EbGhOedPnkjTjnPQdlvfZZQ==
+X-MS-Exchange-AntiSpam-MessageData: 2iSPJMaOzHOVEWMGBhVsn2F1I7Ur/+Nyubaeot+cHT61a9CIaR1x7kKYEfCfZiyYuo2QqrQvNFLAKZCYxj2edx1nVfYk1fZ2Zq9d1/3lFAtzR5/HjeWgRAb0TK85vPFXrTs24LHjGqVm4bOT442en3uaMyiTO4etvizgGIRP5JFmOyNqbLyDUk7ShB6MlrtufrqihEkyY2hKwflDVXzCAA==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9046224d-7e34-4315-7f4f-08d7ac985b79
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2020 13:11:06.7239
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vZu4thHHnFVuDg0u0ECJ3GGbrz2Zs+gke96T2ZR8sKwISNfyQvKdOG8hqNWS3sF/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2343
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 6, 2020 at 5:19 PM Tom Talpey <tom@talpey.com> wrote:
+Am 07.02.20 um 19:24 schrieb Jason Gunthorpe:
+> Many systems can now support direct DMA between two PCI devices, for
+> instance between a RDMA NIC and a NVMe CMB, or a RDMA NIC and GPU
+> graphics memory. In many system architectures this peer-to-peer PCI-E
+> DMA transfer is critical to achieving performance as there is simply
+> not enough system memory/PCI-E bandwidth for data traffic to go
+> through the CPU socket.
 >
-> On 2/6/2020 9:39 AM, Alex Rosenbaum wrote:
-> > On Thu, Feb 6, 2020 at 4:18 PM Tom Talpey <tom@talpey.com> wrote:
-> >>
-> >> On 1/8/2020 9:26 AM, Alex Rosenbaum wrote:
-> >>> A combination of the flow_label field in the IPv6 header and UDP source port
-> >>> field in RoCE v2.0 are used to identify a group of packets that must be
-> >>> delivered in order by the network, end-to-end.
-> >>> These fields are used to create entropy for network routers (ECMP), load
-> >>> balancers and 802.3ad link aggregation switching that are not aware of RoCE IB
-> >>> headers.
-> >>>
-> >>> The flow_label field is defined by a 20 bit hash value. CM based connections
-> >>> will use a hash function definition based on the service type (QP Type) and
-> >>> Service ID (SID). Where CM services are not used, the 20 bit hash will be
-> >>> according to the source and destination QPN values.
-> >>> Drivers will derive the RoCE v2.0 UDP src_port from the flow_label result.
-> >>>
-> >>> UDP source port selection must adhere IANA port allocation ranges. Thus we will
-> >>> be using IANA recommendation for Ephemeral port range of: 49152-65535, or in
-> >>> hex: 0xC000-0xFFFF.
-> >>>
-> >>> The below calculations take into account the importance of producing a symmetric
-> >>> hash result so we can support symmetric hash calculation of network elements.
-> >>>
-> >>> Hash Calculation for RDMA IP CM Service
-> >>> =======================================
-> >>> For RDMA IP CM Services, based on QP1 iMAD usage and connected RC QPs using the
-> >>> RDMA IP CM Service ID, the flow label will be calculated according to IBTA CM
-> >>> REQ private data info and Service ID.
-> >>>
-> >>> Flow label hash function calculations definition will be defined as:
-> >>> Extract the following fields from the CM IP REQ:
-> >>>     CM_REQ.ServiceID.DstPort [2 Bytes]
-> >>>     CM_REQ.PrivateData.SrcPort [2 Bytes]
-> >>>     u32 hash = DstPort * SrcPort;
-> >>>     hash ^= (hash >> 16);
-> >>>     hash ^= (hash >> 8);
-> >>>     AH_ATTR.GRH.flow_label = hash AND IB_GRH_FLOWLABEL_MASK;
-> >>>
-> >>>     #define IB_GRH_FLOWLABEL_MASK  0x000FFFFF
-> >>
-> >> Sorry it took me a while to respond to this, and thanks for looking
-> >> into it since my comments on the previous proposal. I have a concern
-> >> with an aspect of this one.
-> >>
-> >> The RoCEv2 destination port is a fixed value, 4791. Therefore the
-> >> term
-> >>
-> >>          u32 hash = DstPort * SrcPort;
-> >>
-> >> adds no entropy beyond the value of SrcPort.
-> >>
-> >
-> > we're talking about the CM service ports, taken from the
-> > rdma_resolve_route(mca_id, <ip:SrcPort>, <ip:DstPort>, to_msec);
-> > these are the CM level port-space and not the RoCE UDP L4 ports.
-> > we want to use both as these will allow different client instance and
-> > server instance on same nodes will use differen CM ports and hopefully
-> > generate different hash results for multi-flows between these two
-> > servers.
+> For many years various out of tree solutions have existed to serve
+> this need. Recently some components have been accpeted into mainline,
+> such as the p2pdma system, which allows co-operating drivers to setup
+> P2P DMA transfers at the PCI level. This has allowed some kernel P2P
+> DMA transfers related to NVMe CMB and RDMA to become supported.
 >
-> Aha, ok I guess I missed that, and ok.
+> A major next step is to enable P2P transfers under userspace
+> control. This is a very broad topic, but for this session I propose to
+> focus on initial cases of supporting drivers can setup a P2P transfer
+> from a PCI BAR page mmap'd to userspace. This is the basic starting
+> point for future discussions on how to adapt get_user_pages() IO paths
+> (ie O_DIRECT, net zero copy TX, RDMA, etc) to support PCI BAR memory.
 >
-> >> In turn, the subsequent
-> >>
-> >>          hash ^= (hash >> 16);
-> >>          hash ^= (hash >> 8);
-> >>
-> >> are re-mashing the bits with one another, again, adding no entropy.
+> As all current drivers doing DMA from user space must go through
+> get_user_pages() (or its new sibling hmm_range_fault()), some
+> extension of the get_user_pages() API is needed to allow drivers
+> supporting P2P to see the pages.
 >
-> I still wonder about this one. It's attempting to reduce the 32-bit
-> product to 20 bits, but a second xor with the "middle" 16 bits seems
-> really strange. Mathematically, wouldn't it be better to just take
-> the modulus of 2^20? If not, are you expecting some behavior in the
-> hash values that makes the double-xor approach better (in which case
-> it should be called out)?
+> get_user_pages() will require some 'struct page' and 'struct
+> vm_area_struct' representation of the BAR memory beyond what today's
+> io_remap_pfn_range()/etc produces.
 >
-> Tom.
+> This topic has been discussed in small groups in various conferences
+> over the last year, (plumbers, ALPSS, LSF/MM 2019, etc). Having a
+> larger group together would be productive, especially as the direction
+> has a notable impact on the general mm.
+>
+> For patch sets, we've seen a number of attempts so far, but little has
+> been merged yet. Common elements of past discussions have been:
+>   - Building struct page for BAR memory
+>   - Stuffing BAR memory into scatter/gather lists, bios and skbs
+>   - DMA mapping BAR memory
+>   - Referencing BAR memory without a struct page
+>   - Managing lifetime of BAR memory across multiple drivers
 
-The function takes into account creating a symmetric hash, so both
-active and passive can reconstruct the same flow label results. That's
-why we multiply the two CM Port values (16 bit * 16 bit). The results
-is a 32 bit value, and we don't want to lose any of of the MSB bit's
-by modulus or masking. So we need some folding function from 32 bit to
-the 20 bit flow label.
+I can only repeat Jérôme that this most likely will never work correctly 
+with get_user_pages().
 
-The specific bit shift is something I took from the bond driver:
-https://elixir.bootlin.com/linux/latest/source/drivers/net/bonding/bond_main.c#L3407
-This proved very good in spreading the flow label in our internal
-testing. Other alternative can be suggested, as long as it considers
-all bits in the conversion 32->20 bits.
+One of the main issues is that if you want to cover all use cases you 
+also need to take into account P2P operations which are hidden from the CPU.
 
-Alex
+E.g. you have memory which is not even CPU addressable, but can be 
+shared between GPUs using XGMI, NVLink, SLI etc....
+
+Since you can't get a struct page for something the CPU can't even have 
+an address for the whole idea of using get_user_pages() fails from the 
+very beginning.
+
+That's also the reason why for GPUs we opted to use DMA-buf based 
+sharing of buffers between drivers instead.
+
+So we need to figure out how express DMA addresses outside of the CPU 
+address space first before we can even think about something like 
+extending get_user_pages() for P2P in an HMM scenario.
+
+Regards,
+Christian.
 
 >
-> >> Can you describe how, mathematically, this is not different from simply
-> >> using the SrcPort field, and if so, how it contributes to the entropy
-> >> differentiation of the incoming streams?
-> >>
-> >> Tom.
-> >>
-> >>> Result of the above hash will be kept in the CM's route path record connection
-> >>> context and will be used all across its vitality for all preceding CM messages
-> >>> on both ends of the connection (including REP, REJ, DREQ, DREP, ..).
-> >>> Once connection is established, the corresponding Connected RC QPs, on both
-> >>> ends of the connection, will update their context with the calculated RDMA IP
-> >>> CM Service based flow_label and UDP src_port values at the Connect phase of
-> >>> the active side and Accept phase of the passive side of the connection.
-> >>>
-> >>> CM will provide to the calculated value of the flow_label hash (20 bit) result
-> >>> in the 'uint32_t flow_label' field of 'struct ibv_global_route' in 'struct
-> >>> ibv_ah_attr'.
-> >>> The 'struct ibv_ah_attr' is passed by the CM to the provider library when
-> >>> modifying a connected QP's (e.g.: RC) state by calling 'ibv_modify_qp(qp,
-> >>> ah_attr, attr_mask |= IBV_QP_AV)' or when create a AH for working with
-> >>> datagram QP's (e.g.: UD) by calling ibv_create_ah(ah_attr).
-> >>>
-> >>> Hash Calculation for non-RDMA CM Service ID
-> >>> ===========================================
-> >>> For non CM QP's, the application can define the flow_label value in the
-> >>> 'struct ibv_ah_attr' when modifying the connected QP's (e.g.: RC) or creating
-> >>> a AH for the datagram QP's (e.g.: UD).
-> >>>
-> >>> If the provided flow_label value is zero, not set by the application (e.g.:
-> >>> legacy cases), then verbs providers should use the src.QP[24bit] and
-> >>> dst.QP[24bit] as input arguments for flow_label calculation.
-> >>> As QPN's are an array of 3 bytes, the multiplication will result in 6 bytes
-> >>> value. We'll define a flow_label value as:
-> >>>     DstQPn [3 Bytes]
-> >>>     SrcQPn [3 Bytes]
-> >>>     u64 hash = DstQPn * SrcQPn;
-> >>>     hash ^= (hash >> 20);
-> >>>     hash ^= (hash >> 40);
-> >>>     AH_ATTR.GRH.flow_label = hash AND IB_GRH_FLOWLABEL_MASK;
-> >>>
-> >>> Hash Calculation for UDP src_port
-> >>> =================================
-> >>> Providers supporting RoCEv2 will use the 'flow_label' value as input to
-> >>> calculate the RoCEv2 UDP src_port, which will be used in the QP context or the
-> >>> AH context.
-> >>>
-> >>> UDP src_port calculations from flow label:
-> >>> [while considering the 14 bits UDP port range according to IANA recommendation]
-> >>>     AH_ATTR.GRH.flow_label [20 bits]
-> >>>     u32 fl_low  = fl & 0x03FFF;
-> >>>     u32 fl_high = fl & 0xFC000;
-> >>>     u16 udp_sport = fl_low XOR (fl_high >> 14);
-> >>>     RoCE.UDP.src_port = udp_sport OR IB_ROCE_UDP_ENCAP_VALID_PORT
-> >>>
-> >>>     #define IB_ROCE_UDP_ENCAP_VALID_PORT 0xC000
-> >>>
-> >>> This is a v2 follow-up on "[RFC] RoCE v2.0 UDP Source Port Entropy" [1]
-> >>>
-> >>> [1] https://www.spinics.net/lists/linux-rdma/msg73735.html
-> >>>
-> >>> Signed-off-by: Alex Rosenbaum <alexr@mellanox.com>
-> >>>
-> >>>
-> >
-> >
+> Based on past work, the people in the CC list would be recommended
+> participants:
+>
+>   Christian König <christian.koenig@amd.com>
+>   Daniel Vetter <daniel.vetter@ffwll.ch>
+>   Logan Gunthorpe <logang@deltatee.com>
+>   Stephen Bates <sbates@raithlin.com>
+>   Jérôme Glisse <jglisse@redhat.com>
+>   Ira Weiny <iweiny@intel.com>
+>   Christoph Hellwig <hch@lst.de>
+>   John Hubbard <jhubbard@nvidia.com>
+>   Ralph Campbell <rcampbell@nvidia.com>
+>   Dan Williams <dan.j.williams@intel.com>
+>   Don Dutile <ddutile@redhat.com>
+>
+> Regards,
+> Jason
+>
+> Description of the p2pdma work:
+>   https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flwn.net%2FArticles%2F767281%2F&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C942df05e20d14566df3708d7abfb0dbb%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637166967083315894&amp;sdata=j5YBrBF2zIjn0oZwbBn5%2BYabv8uWaawwtkVIWnO2GPs%3D&amp;reserved=0
+>
+> Discussion slot at Plumbers:
+>   https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flinuxplumbersconf.org%2Fevent%2F4%2Fcontributions%2F369%2F&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C942df05e20d14566df3708d7abfb0dbb%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637166967083325894&amp;sdata=TbXLNXBDExHiViEE%2FYRpavsJ%2Fd68KOfg8xp%2BKk1ZJJU%3D&amp;reserved=0
+>
+> DRM work on DMABUF as a user facing object for P2P:
+>   https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.spinics.net%2Flists%2Famd-gfx%2Fmsg32469.html&amp;data=02%7C01%7Cchristian.koenig%40amd.com%7C942df05e20d14566df3708d7abfb0dbb%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637166967083325894&amp;sdata=LBVbNR5bsknqL4MQf9RUyh7TDD9nD6yR5KJvKx5STds%3D&amp;reserved=0
+
