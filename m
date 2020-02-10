@@ -2,97 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 310E515817D
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2020 18:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E75E158186
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2020 18:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgBJRgG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Feb 2020 12:36:06 -0500
-Received: from mga06.intel.com ([134.134.136.31]:40669 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727121AbgBJRgG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Feb 2020 12:36:06 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Feb 2020 09:36:05 -0800
-X-IronPort-AV: E=Sophos;i="5.70,425,1574150400"; 
-   d="scan'208";a="226217506"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.206.58]) ([10.254.206.58])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 10 Feb 2020 09:36:04 -0800
-Subject: Re: [PATCH for-next 00/16] New hfi1 feature: Accelerated IP
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
-References: <20200210131223.87776.21339.stgit@awfm-01.aw.intel.com>
- <20200210133134.GN25297@ziepe.ca>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <84596806-a9ff-1c2a-7116-abd9fa9d2213@intel.com>
-Date:   Mon, 10 Feb 2020 12:36:02 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        id S1727980AbgBJRib (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Feb 2020 12:38:31 -0500
+Received: from mail-ed1-f48.google.com ([209.85.208.48]:43644 "EHLO
+        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727697AbgBJRib (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Feb 2020 12:38:31 -0500
+Received: by mail-ed1-f48.google.com with SMTP id dc19so1279774edb.10
+        for <linux-rdma@vger.kernel.org>; Mon, 10 Feb 2020 09:38:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=imatrex-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cPw7biNM9ylFX2K0uo7nJPFukNe3lp+4qWC2kQZ5BeQ=;
+        b=q/PfBLVqINr5a00qYE2xgTXZ7G13QmM1E7okdgDBCLNZuvzV57FQAnwHpTXVOrDdCs
+         pV3xyiq0cgc+kCCQDT12NsJRW2N5lT6V93FTTmIIZXc0m7mZiPEP4dDLIKBaMOpRevWV
+         tWngyahdXGfUz7rfJ/2eXi8BAEmzPfAIU5E7tBkmfqjW9t4X+dXo0511UNJ2zJpFolRk
+         WaFws+SfPMkgl9A9fEyOK1xeZFSy1xklsW3xCCHWhwwqxL/qEJ69LPEb1jqwALlFIqTY
+         Ontxg5wsdxqPf6IRmOVKkYzcUmu2kF5XKf6K72mc4jzojC212vnTwzf1hAnyJ58yFQJo
+         RHhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cPw7biNM9ylFX2K0uo7nJPFukNe3lp+4qWC2kQZ5BeQ=;
+        b=MXTq3LuY88Wsbj/7vvgIqyLalcbW2dHBADysyEiOsk5WOPXVWcHCud9UiON7zkaaFs
+         mQaQCvFkcePd8M0032Gm9iuOZJTSu8LwGhWoqbCJRwGDbPUq/lOfMzRj5Z8QEhHADBDy
+         QmeuWN6gyQxRdoK79hgPKytw4H/x3/NLZ8Xeg+1QIn1ya5uHmLHUlR5H2eunUFQY4a5X
+         coBjodSGFxuHIK/6AOfg2V2ktyUe74eypeQs6guGg+HAAlraTflZZ4VETYPeBXhRaS1g
+         ldf9RywwY7fItpMXPwBdcVoqAWaW1xHl6v1NVm2Iq9JNh/8mxTFyt0qnvKCacIB0Z+de
+         CSbQ==
+X-Gm-Message-State: APjAAAXojlZ2t1BP7HyfOIPk9TgyBccK2BqboJQlAnndohQsesa+7CmV
+        7aYNFHJDXCE9QHdabaer8ZshS6FNZGukbh7X1/NHFg==
+X-Google-Smtp-Source: APXvYqwzv+txfNkBWDPSgwk8ru9B5Iwlfm0C6rkXhD1aa2C1x9vKMyzQiFTuGpWKfxyiZE1Phi/jh5mGavVtyaKdPIo=
+X-Received: by 2002:a17:906:4a03:: with SMTP id w3mr2212814eju.263.1581356305878;
+ Mon, 10 Feb 2020 09:38:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20200210133134.GN25297@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAOc41xHpF5VXK_-L_BeaU9v842BuRd2QTXkZunDKDgiEhixFtg@mail.gmail.com>
+ <20200209145736.GG13557@unreal>
+In-Reply-To: <20200209145736.GG13557@unreal>
+From:   Dimitris Dimitropoulos <d.dimitropoulos@imatrex.com>
+Date:   Mon, 10 Feb 2020 09:38:13 -0800
+Message-ID: <CAOc41xFkdgwt38e6TAh=E2wWXsdTHBKaOphSx3OG5DwK8xErxA@mail.gmail.com>
+Subject: Re: maximum QP size
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/10/2020 8:31 AM, Jason Gunthorpe wrote:
-> On Mon, Feb 10, 2020 at 08:18:05AM -0500, Dennis Dalessandro wrote:
->> This patch series is an accelerated ipoib using the rdma netdev mechanism
->> already present in ipoib. A new device capability bit,
->> IB_DEVICE_RDMA_NETDEV_OPA, triggers ipoib to create a datagram QP using the
->> IB_QP_CREATE_NETDEV_USE.
->>
->> The highlights include:
->> - Sharing send and receive resources with VNIC
->> - Allows for switching between connected mode and datagram mode
-> 
-> There is still value in connected mode?
+Thank you, there is a wealth of information with the "-v" switch. For
+the Mellanox Connect-5 that I'm using I see:
 
-It's really a compatibility thing. If someone wants to change modes that 
-will work. There won't be any benefit to connected mode though. The goal 
-is just to not break.
+max_cq:                         16777216
+max_cqe:                        4194303
 
-> >> - Increases the maximum datagram MTU for opa devices to 10k
->>
->> The same spreading capability exploited by VNIC is used here to vary
->> the receive context that receives the packet.
->>
->> The patches are fully bisectable and stepwise implement the capability.
-> 
-> This is alot of code to send without a performance
-> justification.. What is it? Is it worth while?
+I'm encountering a smaller limit on the maximum entries, so I presume
+this is the max total number of cqe for all queues in the system.
 
-It avoids the scalability problem of connected mode, the number of QPs. 
-Incoming packets are spread into multiple receive contexts increasing 
-parallelism. The MTU is increased to allows 10K. It also reduces/removes 
-the verbs TX overhead by allowing packets to be sent through the SDMA 
-engines directly.
+Regards
+Dimitris
 
->> Gary Leshner (6):
->>        IB/hfi1: Add functions to transmit datagram ipoib packets
->>        IB/hfi1: Add the transmit side of a datagram ipoib RDMA netdev
->>        IB/hfi1: Remove module parameter for KDETH qpns
->>        IB/{rdmavt,hfi1}: Implement creation of accelerated UD QPs
->>        IB/{hfi1,ipoib,rdma}: Broadcast ping sent packets which exceeded mtu size
->>        IB/ipoib: Add capability to switch between datagram and connected mode
->>
->> Grzegorz Andrejczuk (7):
->>        IB/hfi1: RSM rules for AIP
->>        IB/hfi1: Rename num_vnic_contexts as num_netdev_contexts
->>        IB/hfi1: Add functions to receive accelerated ipoib packets
->>        IB/hfi1: Add interrupt handler functions for accelerated ipoib
->>        IB/hfi1: Add rx functions for dummy netdev
-> 
-> This dummy netdev thing seemed very strange
-
-One of the existing uses of dummy netdev seems to be to tie multiple 
-hardware interfaces together. We are using a similar concept for two 
-software interfaces. Those being VNIC and AIP. The dummy netdev here 
-will own the receiving resources which are shared.
-
-
--Denny
+> > Hi,
+> >
+> > I'm running the ibv_rc_pingpong example and I notice as as rx-depth
+> > increases the QP create fails, eg at 50k. My understanding is this
+> > variable controls the number of RECV WR that will be posted in advance
+> > before SEND WRs are posted.
+> >
+> > Is there a limitation on the queue size (the size is unit32_t) and if
+> > so why ? Also is there a way around it ?
+>
+> The rx-depth is translated to the size of completion queue buffer.
+> That buffer used by hardware to post completions - writing completion
+> queue elements (CQEs) and it is allocated when creating the CQ.
+>
+> Maximum number of CQEs can be retrieved by the ibv_devinfo -v, see max_cqe field.
