@@ -2,99 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EEDAB157A16
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2020 14:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 717BA157BA7
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2020 14:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728868AbgBJNUJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Feb 2020 08:20:09 -0500
-Received: from mga07.intel.com ([134.134.136.100]:55880 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730988AbgBJNUF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Feb 2020 08:20:05 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Feb 2020 05:20:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,425,1574150400"; 
-   d="scan'208";a="221552763"
-Received: from sedona.ch.intel.com ([10.2.136.157])
-  by orsmga007.jf.intel.com with ESMTP; 10 Feb 2020 05:20:04 -0800
-Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 01ADK337008425;
-        Mon, 10 Feb 2020 06:20:04 -0700
-Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 01ADK2wO088495;
-        Mon, 10 Feb 2020 08:20:02 -0500
-Subject: [PATCH for-next 16/16] IB/hfi1: Enable the transmit side of the
- datagram ipoib netdev
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.alessandro@intel.com>,
-        Piotr Stankiewicz <piotr.stankiewicz@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>
-Date:   Mon, 10 Feb 2020 08:20:02 -0500
-Message-ID: <20200210132002.87776.74958.stgit@awfm-01.aw.intel.com>
-In-Reply-To: <20200210131223.87776.21339.stgit@awfm-01.aw.intel.com>
+        id S1728421AbgBJNbh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Feb 2020 08:31:37 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:44693 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728213AbgBJNbg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Feb 2020 08:31:36 -0500
+Received: by mail-qk1-f194.google.com with SMTP id v195so6404623qkb.11
+        for <linux-rdma@vger.kernel.org>; Mon, 10 Feb 2020 05:31:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=nsS1kLOP47bw8c1IOS+Sjk2eWilnFU5kAsufjhOMvMQ=;
+        b=fxwFdJhsK7pVOMqfA6dJK0xOI0L5chlYtu0/lZTXydjwDeFtLiW3hHuCHf5J4X4KWp
+         UNld1ER4ctCQVkmyfqhLda3hhbkALC9MJSzevAAPmMAixgMo7hHeJ5FYMxo96TG2vkRp
+         yGOGDE5tPKmeqlztj+qcPMc/VfUzi62zCu4LfKq5NdK33o7zinJJmcPHBQTlzcHDGk33
+         E6a5TX2gcPOPSe1i900gPKQ6l5KJF/EphyoP4hXE/Da4qESvBysCHYvD34PELmOLtp3j
+         rUV/pbJJ2eT9bXi3QxL5hssu8vYQHfwnOjrwmp1xncZo69cAudrWpHrxSaGt179vlvHP
+         mSLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=nsS1kLOP47bw8c1IOS+Sjk2eWilnFU5kAsufjhOMvMQ=;
+        b=MyvKfAvOuCAQDT4U93dG59li7ZOiN1MOq5S5Zjj5tj0ZzgsGVtWtdDLcob2rWhwbx6
+         cNU2itnSFzHcOdIZhx/rUSqhvmVV/FKzT6h79I9/kfpyqP5bSAPWcNahxCu95Eaf9Aip
+         rRaQz2onNBotTWWeAvKUEsCFAEkIDu1MvtOUZgkbptqAiVqFLXYtLRUwS76oOuT90ehm
+         28cnBZ1j6Mx2UmMbDHmHTdq2/X2Wi0sGXbqRH25XpxzGvR/4zBZa3joIzgKYgywF+ycd
+         58N3BCVdowk8UOnQBm3CFeEeko3mwtaPs0qapnLt7zDx6C2UzuoKNBpOv6MpC84ni/Ry
+         hhoA==
+X-Gm-Message-State: APjAAAWndJtKiNkr9z0+Wbie/o2VJ04RI1uo7LNl/JsRKVWL2GY8DSOh
+        tDi2uw6DiyztuDDSM67KwrTIBw==
+X-Google-Smtp-Source: APXvYqy3ZlYn21F+P7/Idq5F4eNF79k9MEollu2t6X+qDOdqq4jVFgazH6HreF5X7HY0ch6s+KIv5g==
+X-Received: by 2002:a05:620a:713:: with SMTP id 19mr1333630qkc.450.1581341495383;
+        Mon, 10 Feb 2020 05:31:35 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id i13sm133379qkk.78.2020.02.10.05.31.34
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 10 Feb 2020 05:31:34 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1j199y-0007aA-CA; Mon, 10 Feb 2020 09:31:34 -0400
+Date:   Mon, 10 Feb 2020 09:31:34 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next 00/16] New hfi1 feature: Accelerated IP
+Message-ID: <20200210133134.GN25297@ziepe.ca>
 References: <20200210131223.87776.21339.stgit@awfm-01.aw.intel.com>
-User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200210131223.87776.21339.stgit@awfm-01.aw.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Piotr Stankiewicz <piotr.stankiewicz@intel.com>
+On Mon, Feb 10, 2020 at 08:18:05AM -0500, Dennis Dalessandro wrote:
+> This patch series is an accelerated ipoib using the rdma netdev mechanism
+> already present in ipoib. A new device capability bit,
+> IB_DEVICE_RDMA_NETDEV_OPA, triggers ipoib to create a datagram QP using the
+> IB_QP_CREATE_NETDEV_USE.
+> 
+> The highlights include:
+> - Sharing send and receive resources with VNIC
+> - Allows for switching between connected mode and datagram mode
 
-This patch hooks the transmit side of the datagram netdev with
-ipoib by setting the rdma_netdev_get_params function for the
-hfi1 ib_device_ops structue. It also enables the receiving side
-by adding the AIP capability into the default capabilities.
+There is still value in connected mode?
 
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Reviewed-by: Dennis Dalessandro <dennis.alessandro@intel.com>
-Signed-off-by: Piotr Stankiewicz <piotr.stankiewicz@intel.com>
-Signed-off-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
----
- drivers/infiniband/hw/hfi1/common.h |    1 +
- drivers/infiniband/hw/hfi1/verbs.c  |    2 ++
- 2 files changed, 3 insertions(+)
+> - Increases the maximum datagram MTU for opa devices to 10k
+> 
+> The same spreading capability exploited by VNIC is used here to vary
+> the receive context that receives the packet.
+> 
+> The patches are fully bisectable and stepwise implement the capability.
 
-diff --git a/drivers/infiniband/hw/hfi1/common.h b/drivers/infiniband/hw/hfi1/common.h
-index 6062545..ff423e54 100644
---- a/drivers/infiniband/hw/hfi1/common.h
-+++ b/drivers/infiniband/hw/hfi1/common.h
-@@ -160,6 +160,7 @@
- 				 HFI1_CAP_PKEY_CHECK |			\
- 				 HFI1_CAP_MULTI_PKT_EGR |		\
- 				 HFI1_CAP_EXTENDED_PSN |		\
-+				 HFI1_CAP_AIP |				\
- 				 ((HFI1_CAP_HDRSUPP |			\
- 				   HFI1_CAP_MULTI_PKT_EGR |		\
- 				   HFI1_CAP_STATIC_RATE_CTRL |		\
-diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
-index 04f0206..d7621c2 100644
---- a/drivers/infiniband/hw/hfi1/verbs.c
-+++ b/drivers/infiniband/hw/hfi1/verbs.c
-@@ -66,6 +66,7 @@
- #include "vnic.h"
- #include "fault.h"
- #include "affinity.h"
-+#include "ipoib.h"
- 
- static unsigned int hfi1_lkey_table_size = 16;
- module_param_named(lkey_table_size, hfi1_lkey_table_size, uint,
-@@ -1793,6 +1794,7 @@ static int get_hw_stats(struct ib_device *ibdev, struct rdma_hw_stats *stats,
- 	.modify_device = modify_device,
- 	/* keep process mad in the driver */
- 	.process_mad = hfi1_process_mad,
-+	.rdma_netdev_get_params = hfi1_ipoib_rn_get_params,
- };
- 
- /**
+This is alot of code to send without a performance
+justification.. What is it? Is it worth while?
 
+> Gary Leshner (6):
+>       IB/hfi1: Add functions to transmit datagram ipoib packets
+>       IB/hfi1: Add the transmit side of a datagram ipoib RDMA netdev
+>       IB/hfi1: Remove module parameter for KDETH qpns
+>       IB/{rdmavt,hfi1}: Implement creation of accelerated UD QPs
+>       IB/{hfi1,ipoib,rdma}: Broadcast ping sent packets which exceeded mtu size
+>       IB/ipoib: Add capability to switch between datagram and connected mode
+> 
+> Grzegorz Andrejczuk (7):
+>       IB/hfi1: RSM rules for AIP
+>       IB/hfi1: Rename num_vnic_contexts as num_netdev_contexts
+>       IB/hfi1: Add functions to receive accelerated ipoib packets
+>       IB/hfi1: Add interrupt handler functions for accelerated ipoib
+>       IB/hfi1: Add rx functions for dummy netdev
+
+This dummy netdev thing seemed very strange
+
+Jason
