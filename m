@@ -2,80 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E651572AD
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2020 11:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CD71572C0
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2020 11:21:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgBJKQe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Feb 2020 05:16:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43448 "EHLO mx2.suse.de"
+        id S1726451AbgBJKVZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Feb 2020 05:21:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726451AbgBJKQe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Feb 2020 05:16:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 570C7B17A;
-        Mon, 10 Feb 2020 10:16:31 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DE6281E0E2C; Mon, 10 Feb 2020 11:16:29 +0100 (CET)
-Date:   Mon, 10 Feb 2020 11:16:29 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 10/12] mm/gup: /proc/vmstat: pin_user_pages (FOLL_PIN)
- reporting
-Message-ID: <20200210101629.GC12923@quack2.suse.cz>
-References: <20200207033735.308000-1-jhubbard@nvidia.com>
- <20200207033735.308000-11-jhubbard@nvidia.com>
+        id S1726796AbgBJKVZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 Feb 2020 05:21:25 -0500
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B75C2082F;
+        Mon, 10 Feb 2020 10:21:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1581330084;
+        bh=wa9nBa4P49n2wiYl67q1uEbcw0bMSUoAEssaIQ6+IIg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Xc5GNQjqDTDxMMp1Rnm03QbvDpfvCl5hoOVIxyzElK2ji2iOHENlQ7iWKrvDjQNCO
+         V1K93z6oWs7k8hdrhP0NaFgxnwBGx0fHfjaRFp2jfrxO596L3vA0n4/7Rwnznpz6xX
+         iSSMNIyMtUssCVrshRO7v5ZKFL1Ziqv8XyXPpNRs=
+Date:   Mon, 10 Feb 2020 12:21:20 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next] RDMA/hns: Optimize eqe buffer allocation flow
+Message-ID: <20200210102120.GC495280@unreal>
+References: <20200126145835.11368-1-liweihang@huawei.com>
+ <20200127055205.GH3870@unreal>
+ <10b7a08c-e069-0751-8bde-e5d19521c0b2@huawei.com>
+ <20200210092508.GB495280@unreal>
+ <512fa0f9-2bef-b3d8-fb3d-144984ee468c@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200207033735.308000-11-jhubbard@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <512fa0f9-2bef-b3d8-fb3d-144984ee468c@huawei.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu 06-02-20 19:37:33, John Hubbard wrote:
-> @@ -2258,6 +2268,8 @@ static int record_subpages(struct page *page, unsigned long addr,
->  
->  static void put_compound_head(struct page *page, int refs, unsigned int flags)
->  {
-> +	int orig_refs = refs;
-> +
->  	if (flags & FOLL_PIN) {
->  		if (hpage_pincount_available(page))
->  			hpage_pincount_sub(page, refs);
-> @@ -2273,6 +2285,8 @@ static void put_compound_head(struct page *page, int refs, unsigned int flags)
->  	if (refs > 1)
->  		page_ref_sub(page, refs - 1);
->  	put_page(page);
-> +
-> +	mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_RELEASED, orig_refs);
->  }
+On Mon, Feb 10, 2020 at 05:48:05PM +0800, Weihang Li wrote:
+>
+>
+> On 2020/2/10 17:25, Leon Romanovsky wrote:
+> >>>> -		if (!eq->bt_l0)
+> >>>> -			return -ENOMEM;
+> >>>> -
+> >>>> -		eq->cur_eqe_ba = eq->l0_dma;
+> >>>> -		eq->nxt_eqe_ba = 0;
+> >>>> +	/* alloc a tmp list for storing eq buf address */
+> >>>> +	ret = hns_roce_alloc_buf_list(&region, &buf_list, 1);
+> >>>> +	if (ret) {
+> >>>> +		dev_err(hr_dev->dev, "alloc eq buf_list error\n");
+> >>> The same comment like we gave for bnxt driver, no dev_* prints inside
+> >>> driver, use ibdev_*.
+> >>>
+> >>> Thanks
+> >>>
+> >> Hi Leon,
+> >>
+> >> map_eq_buf() is called before ib_register_device(), so we can't use
+> >> ibdev_* here.
+> > As long as map_eq_buf() is called after ib_alloc_device(), you will be fine.
+> >
+> > Thanks
+>
+> Hi Leon,
+>
+> eq is used to queue hardware event, it should be ready before hardware is initialized.
+> So we can't call map_eq_buf() after ib_alloc_device().
 
-Still not quite happy about this :) Now you update NR_FOLL_PIN_RELEASED
-even if 'flags' don't have FOLL_PIN set. You need to have the
-mod_node_page_state() inside the "if (flags & FOLL_PIN)" branch above...
+How can it be that your newly added function has hns_roce_dev in the
+signature and you didn't call to ib_alloc_device()?
 
-									Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+ +static int map_eq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_eq *eq,
+ +                u32 page_shift)
+
+Thanks
+
+>
+> Thanks
+> Weihang
+>
+> >
+> >> Thanks for your reminder, another patch that replace other dev_* in
+> >> hns driver with ibdev_* is on preparing.
+> >>
+> >> Weihang
+> >>
+> >>> .
+> >>>
+> > .
+> >
+>
