@@ -2,32 +2,31 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 350E01579F5
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2020 14:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F84C1579FF
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2020 14:19:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728945AbgBJNTZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Feb 2020 08:19:25 -0500
-Received: from mga06.intel.com ([134.134.136.31]:22612 "EHLO mga06.intel.com"
+        id S1728946AbgBJNTg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Feb 2020 08:19:36 -0500
+Received: from mga11.intel.com ([192.55.52.93]:5417 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728948AbgBJNTY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Feb 2020 08:19:24 -0500
+        id S1729838AbgBJNTf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 Feb 2020 08:19:35 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Feb 2020 05:19:23 -0800
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Feb 2020 05:19:34 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.70,425,1574150400"; 
-   d="scan'208";a="233101197"
+   d="scan'208";a="312746761"
 Received: from sedona.ch.intel.com ([10.2.136.157])
-  by orsmga003.jf.intel.com with ESMTP; 10 Feb 2020 05:19:23 -0800
+  by orsmga001.jf.intel.com with ESMTP; 10 Feb 2020 05:19:34 -0800
 Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 01ADJMU8008077;
-        Mon, 10 Feb 2020 06:19:22 -0700
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 01ADJXHZ008100;
+        Mon, 10 Feb 2020 06:19:33 -0700
 Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 01ADJ92S088384;
-        Mon, 10 Feb 2020 08:19:14 -0500
-Subject: [PATCH for-next 10/16] IB/hfi1: Add interrupt handler functions for
- accelerated ipoib
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 01ADJQRe088408;
+        Mon, 10 Feb 2020 08:19:26 -0500
+Subject: [PATCH for-next 11/16] IB/hfi1: Add rx functions for dummy netdev
 From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
 To:     jgg@ziepe.ca, dledford@redhat.com
 Cc:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
@@ -35,8 +34,8 @@ Cc:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
         Dennis Dalessandro <dennis.alessandro@intel.com>,
         linux-rdma@vger.kernel.org, Kaike Wan <kaike.wan@intel.com>,
         Sadanand Warrier <sadanand.warrier@intel.com>
-Date:   Mon, 10 Feb 2020 08:19:09 -0500
-Message-ID: <20200210131909.87776.95106.stgit@awfm-01.aw.intel.com>
+Date:   Mon, 10 Feb 2020 08:19:26 -0500
+Message-ID: <20200210131925.87776.58068.stgit@awfm-01.aw.intel.com>
 In-Reply-To: <20200210131223.87776.21339.stgit@awfm-01.aw.intel.com>
 References: <20200210131223.87776.21339.stgit@awfm-01.aw.intel.com>
 User-Agent: StGit/0.17.1-dirty
@@ -50,10 +49,11 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>
 
-This patch adds the interrupt handler function, the NAPI poll
-function, and its associated helper functions for receiving
-accelerated ipoib packets. While we are here, fix the formats
-of two error printouts.
+This patch adds the rx functions for the dummy netdev:
+- Functions to allocate/free the dummy netdev.
+- Functions to allocate/free receiving contexts for the netdev.
+- Functions to initialize/de-initialize the receive queue.
+- Functions to enable/disable the receive queue.
 
 Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
 Reviewed-by: Dennis Dalessandro <dennis.alessandro@intel.com>
@@ -62,420 +62,530 @@ Signed-off-by: Grzegorz Andrejczuk <grzegorz.andrejczuk@intel.com>
 Signed-off-by: Kaike Wan <kaike.wan@intel.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
 ---
- drivers/infiniband/hw/hfi1/affinity.c |   12 +++
- drivers/infiniband/hw/hfi1/affinity.h |    3 +
- drivers/infiniband/hw/hfi1/chip.c     |   44 ++++++++++++
- drivers/infiniband/hw/hfi1/chip.h     |    1 
- drivers/infiniband/hw/hfi1/driver.c   |  120 +++++++++++++++++++++++++++++++++
- drivers/infiniband/hw/hfi1/hfi.h      |    4 +
- drivers/infiniband/hw/hfi1/init.c     |    1 
- drivers/infiniband/hw/hfi1/msix.c     |   20 +++++-
- drivers/infiniband/hw/hfi1/msix.h     |    5 +
- drivers/infiniband/hw/hfi1/netdev.h   |    3 +
- 10 files changed, 206 insertions(+), 7 deletions(-)
+ drivers/infiniband/hw/hfi1/ipoib.h      |    3 
+ drivers/infiniband/hw/hfi1/ipoib_main.c |   30 ++-
+ drivers/infiniband/hw/hfi1/ipoib_rx.c   |   16 +
+ drivers/infiniband/hw/hfi1/netdev.h     |    6 +
+ drivers/infiniband/hw/hfi1/netdev_rx.c  |  361 +++++++++++++++++++++++++++++++
+ 5 files changed, 414 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/affinity.c b/drivers/infiniband/hw/hfi1/affinity.c
-index c142b23..d24b084 100644
---- a/drivers/infiniband/hw/hfi1/affinity.c
-+++ b/drivers/infiniband/hw/hfi1/affinity.c
-@@ -1,5 +1,5 @@
- /*
-- * Copyright(c) 2015 - 2018 Intel Corporation.
-+ * Copyright(c) 2015 - 2020 Intel Corporation.
-  *
-  * This file is provided under a dual BSD/GPLv2 license.  When using or
-  * redistributing this file, you may do so under either license.
-@@ -64,6 +64,7 @@ struct hfi1_affinity_node_list node_affinity = {
- static const char * const irq_type_names[] = {
- 	"SDMA",
- 	"RCVCTXT",
-+	"NETDEVCTXT",
- 	"GENERAL",
- 	"OTHER",
- };
-@@ -913,6 +914,11 @@ static int get_irq_affinity(struct hfi1_devdata *dd,
- 			set = &entry->rcv_intr;
- 		scnprintf(extra, 64, "ctxt %u", rcd->ctxt);
- 		break;
-+	case IRQ_NETDEVCTXT:
-+		rcd = (struct hfi1_ctxtdata *)msix->arg;
-+		set = &entry->def_intr;
-+		scnprintf(extra, 64, "ctxt %u", rcd->ctxt);
-+		break;
- 	default:
- 		dd_dev_err(dd, "Invalid IRQ type %d\n", msix->type);
- 		return -EINVAL;
-@@ -985,6 +991,10 @@ void hfi1_put_irq_affinity(struct hfi1_devdata *dd,
- 		if (rcd->ctxt != HFI1_CTRL_CTXT)
- 			set = &entry->rcv_intr;
- 		break;
-+	case IRQ_NETDEVCTXT:
-+		rcd = (struct hfi1_ctxtdata *)msix->arg;
-+		set = &entry->def_intr;
-+		break;
- 	default:
- 		mutex_unlock(&node_affinity.lock);
- 		return;
-diff --git a/drivers/infiniband/hw/hfi1/affinity.h b/drivers/infiniband/hw/hfi1/affinity.h
-index 6a7e6ea..f94ed5d 100644
---- a/drivers/infiniband/hw/hfi1/affinity.h
-+++ b/drivers/infiniband/hw/hfi1/affinity.h
-@@ -1,5 +1,5 @@
- /*
-- * Copyright(c) 2015 - 2018 Intel Corporation.
-+ * Copyright(c) 2015 - 2020 Intel Corporation.
-  *
-  * This file is provided under a dual BSD/GPLv2 license.  When using or
-  * redistributing this file, you may do so under either license.
-@@ -52,6 +52,7 @@
- enum irq_type {
- 	IRQ_SDMA,
- 	IRQ_RCVCTXT,
-+	IRQ_NETDEVCTXT,
- 	IRQ_GENERAL,
- 	IRQ_OTHER
- };
-diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
-index 07eec35..2117612 100644
---- a/drivers/infiniband/hw/hfi1/chip.c
-+++ b/drivers/infiniband/hw/hfi1/chip.c
-@@ -66,6 +66,7 @@
- #include "affinity.h"
- #include "debugfs.h"
- #include "fault.h"
-+#include "netdev.h"
+diff --git a/drivers/infiniband/hw/hfi1/ipoib.h b/drivers/infiniband/hw/hfi1/ipoib.h
+index ca00f6c..185c9b0 100644
+--- a/drivers/infiniband/hw/hfi1/ipoib.h
++++ b/drivers/infiniband/hw/hfi1/ipoib.h
+@@ -154,6 +154,9 @@ int hfi1_ipoib_send_dma(struct net_device *dev,
+ int hfi1_ipoib_txreq_init(struct hfi1_ipoib_dev_priv *priv);
+ void hfi1_ipoib_txreq_deinit(struct hfi1_ipoib_dev_priv *priv);
  
- uint num_vls = HFI1_MAX_VLS_SUPPORTED;
- module_param(num_vls, uint, S_IRUGO);
-@@ -8480,6 +8481,49 @@ static void hfi1_rcd_eoi_intr(struct hfi1_ctxtdata *rcd)
- 	local_irq_restore(flags);
- }
++int hfi1_ipoib_rxq_init(struct net_device *dev);
++void hfi1_ipoib_rxq_deinit(struct net_device *dev);
++
+ void hfi1_ipoib_napi_tx_enable(struct net_device *dev);
+ void hfi1_ipoib_napi_tx_disable(struct net_device *dev);
  
-+/**
-+ * hfi1_netdev_rx_napi - napi poll function to move eoi inline
-+ * @napi - pointer to napi object
-+ * @budget - netdev budget
-+ */
-+int hfi1_netdev_rx_napi(struct napi_struct *napi, int budget)
-+{
-+	struct hfi1_netdev_rxq *rxq = container_of(napi,
-+			struct hfi1_netdev_rxq, napi);
-+	struct hfi1_ctxtdata *rcd = rxq->rcd;
-+	int work_done = 0;
-+
-+	work_done = rcd->do_interrupt(rcd, budget);
-+
-+	if (work_done < budget) {
-+		napi_complete_done(napi, work_done);
-+		hfi1_rcd_eoi_intr(rcd);
-+	}
-+
-+	return work_done;
-+}
-+
-+/* Receive packet napi handler for netdevs VNIC and AIP  */
-+irqreturn_t receive_context_interrupt_napi(int irq, void *data)
-+{
-+	struct hfi1_ctxtdata *rcd = data;
-+
-+	receive_interrupt_common(rcd);
-+
-+	if (likely(rcd->napi)) {
-+		if (likely(napi_schedule_prep(rcd->napi)))
-+			__napi_schedule_irqoff(rcd->napi);
-+		else
-+			__hfi1_rcd_eoi_intr(rcd);
-+	} else {
-+		WARN_ONCE(1, "Napi IRQ handler without napi set up ctxt=%d\n",
-+			  rcd->ctxt);
-+		__hfi1_rcd_eoi_intr(rcd);
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
- /*
-  * Receive packet IRQ handler.  This routine expects to be on its own IRQ.
-  * This routine will try to handle packets immediately (latency), but if
-diff --git a/drivers/infiniband/hw/hfi1/chip.h b/drivers/infiniband/hw/hfi1/chip.h
-index b10e0bf..2c6f2de 100644
---- a/drivers/infiniband/hw/hfi1/chip.h
-+++ b/drivers/infiniband/hw/hfi1/chip.h
-@@ -1447,6 +1447,7 @@ int hfi1_set_ctxt_pkey(struct hfi1_devdata *dd, struct hfi1_ctxtdata *ctxt,
- irqreturn_t sdma_interrupt(int irq, void *data);
- irqreturn_t receive_context_interrupt(int irq, void *data);
- irqreturn_t receive_context_thread(int irq, void *data);
-+irqreturn_t receive_context_interrupt_napi(int irq, void *data);
- 
- int set_intr_bits(struct hfi1_devdata *dd, u16 first, u16 last, bool set);
- void init_qsfp_int(struct hfi1_devdata *dd);
-diff --git a/drivers/infiniband/hw/hfi1/driver.c b/drivers/infiniband/hw/hfi1/driver.c
-index c5ed6ed..d89fc8f 100644
---- a/drivers/infiniband/hw/hfi1/driver.c
-+++ b/drivers/infiniband/hw/hfi1/driver.c
-@@ -752,6 +752,39 @@ static noinline int skip_rcv_packet(struct hfi1_packet *packet, int thread)
- 	return ret;
- }
- 
-+static void process_rcv_packet_napi(struct hfi1_packet *packet)
-+{
-+	packet->etype = rhf_rcv_type(packet->rhf);
-+
-+	/* total length */
-+	packet->tlen = rhf_pkt_len(packet->rhf); /* in bytes */
-+	/* retrieve eager buffer details */
-+	packet->etail = rhf_egr_index(packet->rhf);
-+	packet->ebuf = get_egrbuf(packet->rcd, packet->rhf,
-+				  &packet->updegr);
-+	/*
-+	 * Prefetch the contents of the eager buffer.  It is
-+	 * OK to send a negative length to prefetch_range().
-+	 * The +2 is the size of the RHF.
-+	 */
-+	prefetch_range(packet->ebuf,
-+		       packet->tlen - ((packet->rcd->rcvhdrqentsize -
-+				       (rhf_hdrq_offset(packet->rhf)
-+					+ 2)) * 4));
-+
-+	packet->rcd->rhf_rcv_function_map[packet->etype](packet);
-+	packet->numpkt++;
-+
-+	/* Set up for the next packet */
-+	packet->rhqoff += packet->rsize;
-+	if (packet->rhqoff >= packet->maxcnt)
-+		packet->rhqoff = 0;
-+
-+	packet->rhf_addr = (__le32 *)packet->rcd->rcvhdrq + packet->rhqoff +
-+				      packet->rcd->rhf_offset;
-+	packet->rhf = rhf_to_cpu(packet->rhf_addr);
-+}
-+
- static inline int process_rcv_packet(struct hfi1_packet *packet, int thread)
+diff --git a/drivers/infiniband/hw/hfi1/ipoib_main.c b/drivers/infiniband/hw/hfi1/ipoib_main.c
+index 304a5ac..014351e 100644
+--- a/drivers/infiniband/hw/hfi1/ipoib_main.c
++++ b/drivers/infiniband/hw/hfi1/ipoib_main.c
+@@ -19,16 +19,31 @@ static u32 qpn_from_mac(u8 *mac_arr)
+ static int hfi1_ipoib_dev_init(struct net_device *dev)
  {
- 	int ret;
-@@ -831,6 +864,36 @@ static inline void finish_packet(struct hfi1_packet *packet)
- }
+ 	struct hfi1_ipoib_dev_priv *priv = hfi1_ipoib_priv(dev);
++	int ret;
  
- /*
-+ * handle_receive_interrupt_napi_fp - receive a packet
-+ * @rcd: the context
-+ * @budget: polling budget
-+ *
-+ * Called from interrupt handler for receive interrupt.
-+ * This is the fast path interrupt handler
-+ * when executing napi soft irq environment.
-+ */
-+int handle_receive_interrupt_napi_fp(struct hfi1_ctxtdata *rcd, int budget)
-+{
-+	struct hfi1_packet packet;
-+
-+	init_packet(rcd, &packet);
-+	if (last_rcv_seq(rcd, rhf_rcv_seq(packet.rhf)))
-+		goto bail;
-+
-+	while (packet.numpkt < budget) {
-+		process_rcv_packet_napi(&packet);
-+		if (hfi1_seq_incr(rcd, rhf_rcv_seq(packet.rhf)))
-+			break;
-+
-+		process_rcv_update(0, &packet);
-+	}
-+	hfi1_set_rcd_head(rcd, packet.rhqoff);
-+bail:
-+	finish_packet(&packet);
-+	return packet.numpkt;
-+}
-+
-+/*
-  * Handle receive interrupts when using the no dma rtail option.
-  */
- int handle_receive_interrupt_nodma_rtail(struct hfi1_ctxtdata *rcd, int thread)
-@@ -1078,6 +1141,63 @@ int handle_receive_interrupt(struct hfi1_ctxtdata *rcd, int thread)
- }
+ 	priv->netstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
  
- /*
-+ * handle_receive_interrupt_napi_sp - receive a packet
-+ * @rcd: the context
-+ * @budget: polling budget
-+ *
-+ * Called from interrupt handler for errors or receive interrupt.
-+ * This is the slow path interrupt handler
-+ * when executing napi soft irq environment.
-+ */
-+int handle_receive_interrupt_napi_sp(struct hfi1_ctxtdata *rcd, int budget)
-+{
-+	struct hfi1_devdata *dd = rcd->dd;
-+	int last = RCV_PKT_OK;
-+	bool needset = true;
-+	struct hfi1_packet packet;
+-	return priv->netdev_ops->ndo_init(dev);
++	ret = priv->netdev_ops->ndo_init(dev);
++	if (ret)
++		return ret;
 +
-+	init_packet(rcd, &packet);
-+	if (last_rcv_seq(rcd, rhf_rcv_seq(packet.rhf)))
-+		goto bail;
-+
-+	while (last != RCV_PKT_DONE && packet.numpkt < budget) {
-+		if (hfi1_need_drop(dd)) {
-+			/* On to the next packet */
-+			packet.rhqoff += packet.rsize;
-+			packet.rhf_addr = (__le32 *)rcd->rcvhdrq +
-+					  packet.rhqoff +
-+					  rcd->rhf_offset;
-+			packet.rhf = rhf_to_cpu(packet.rhf_addr);
-+
-+		} else {
-+			if (set_armed_to_active(&packet))
-+				goto bail;
-+			process_rcv_packet_napi(&packet);
-+		}
-+
-+		if (hfi1_seq_incr(rcd, rhf_rcv_seq(packet.rhf)))
-+			last = RCV_PKT_DONE;
-+
-+		if (needset) {
-+			needset = false;
-+			set_all_fastpath(dd, rcd);
-+		}
-+
-+		process_rcv_update(last, &packet);
++	ret = hfi1_netdev_add_data(priv->dd,
++				   qpn_from_mac(priv->netdev->dev_addr),
++				   dev);
++	if (ret < 0) {
++		priv->netdev_ops->ndo_uninit(dev);
++		return ret;
 +	}
 +
-+	hfi1_set_rcd_head(rcd, packet.rhqoff);
-+
-+bail:
-+	/*
-+	 * Always write head at end, and setup rcv interrupt, even
-+	 * if no packets were processed.
-+	 */
-+	finish_packet(&packet);
-+	return packet.numpkt;
-+}
-+
-+/*
-  * We may discover in the interrupt that the hardware link state has
-  * changed from ARMED to ACTIVE (due to the arrival of a non-SC15 packet),
-  * and we need to update the driver's notion of the link state.  We cannot
-diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
-index 5798688..b45e4b9 100644
---- a/drivers/infiniband/hw/hfi1/hfi.h
-+++ b/drivers/infiniband/hw/hfi1/hfi.h
-@@ -385,11 +385,11 @@ struct hfi1_packet {
- 	u32 rhqoff;
- 	u32 dlid;
- 	u32 slid;
-+	int numpkt;
- 	u16 tlen;
- 	s16 etail;
- 	u16 pkey;
- 	u8 hlen;
--	u8 numpkt;
- 	u8 rsize;
- 	u8 updegr;
- 	u8 etype;
-@@ -1503,6 +1503,8 @@ struct hfi1_ctxtdata *hfi1_rcd_get_by_index_safe(struct hfi1_devdata *dd,
- int handle_receive_interrupt(struct hfi1_ctxtdata *rcd, int thread);
- int handle_receive_interrupt_nodma_rtail(struct hfi1_ctxtdata *rcd, int thread);
- int handle_receive_interrupt_dma_rtail(struct hfi1_ctxtdata *rcd, int thread);
-+int handle_receive_interrupt_napi_fp(struct hfi1_ctxtdata *rcd, int budget);
-+int handle_receive_interrupt_napi_sp(struct hfi1_ctxtdata *rcd, int budget);
- void set_all_slowpath(struct hfi1_devdata *dd);
- 
- extern const struct pci_device_id hfi1_pci_tbl[];
-diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
-index a4a1b3a..95bff7d 100644
---- a/drivers/infiniband/hw/hfi1/init.c
-+++ b/drivers/infiniband/hw/hfi1/init.c
-@@ -374,6 +374,7 @@ int hfi1_create_ctxtdata(struct hfi1_pportdata *ppd, int numa,
- 		rcd->numa_id = numa;
- 		rcd->rcv_array_groups = dd->rcv_entries.ngroups;
- 		rcd->rhf_rcv_function_map = normal_rhf_rcv_functions;
-+		rcd->msix_intr = CCE_NUM_MSIX_VECTORS;
- 
- 		mutex_init(&rcd->exp_mutex);
- 		spin_lock_init(&rcd->exp_lock);
-diff --git a/drivers/infiniband/hw/hfi1/msix.c b/drivers/infiniband/hw/hfi1/msix.c
-index 7574f2b..7559875e 100644
---- a/drivers/infiniband/hw/hfi1/msix.c
-+++ b/drivers/infiniband/hw/hfi1/msix.c
-@@ -49,6 +49,7 @@
- #include "hfi.h"
- #include "affinity.h"
- #include "sdma.h"
-+#include "netdev.h"
- 
- /**
-  * msix_initialize() - Calculate, request and configure MSIx IRQs
-@@ -140,7 +141,7 @@ static int msix_request_irq(struct hfi1_devdata *dd, void *arg,
- 	ret = pci_request_irq(dd->pcidev, nr, handler, thread, arg, name);
- 	if (ret) {
- 		dd_dev_err(dd,
--			   "%s: request for IRQ %d failed, MSIx %lu, err %d\n",
-+			   "%s: request for IRQ %d failed, MSIx %lx, err %d\n",
- 			   name, irq, nr, ret);
- 		spin_lock(&dd->msix_info.msix_lock);
- 		__clear_bit(nr, dd->msix_info.in_use_msix);
-@@ -160,7 +161,7 @@ static int msix_request_irq(struct hfi1_devdata *dd, void *arg,
- 	/* This is a request, so a failure is not fatal */
- 	ret = hfi1_get_irq_affinity(dd, me);
- 	if (ret)
--		dd_dev_err(dd, "unable to pin IRQ %d\n", ret);
-+		dd_dev_err(dd, "%s: unable to pin IRQ %d\n", name, ret);
- 
- 	return nr;
- }
-@@ -204,6 +205,21 @@ int msix_request_rcd_irq(struct hfi1_ctxtdata *rcd)
++	return 0;
  }
  
- /**
-+ * msix_request_rcd_irq() - Helper function for RCVAVAIL IRQs
-+ * for netdev context
-+ * @rcd: valid netdev contexti
-+ */
-+int msix_netdev_request_rcd_irq(struct hfi1_ctxtdata *rcd)
+ static void hfi1_ipoib_dev_uninit(struct net_device *dev)
+ {
+ 	struct hfi1_ipoib_dev_priv *priv = hfi1_ipoib_priv(dev);
+ 
++	hfi1_netdev_remove_data(priv->dd, qpn_from_mac(priv->netdev->dev_addr));
++
+ 	priv->netdev_ops->ndo_uninit(dev);
+ }
+ 
+@@ -55,6 +70,7 @@ static int hfi1_ipoib_dev_open(struct net_device *dev)
+ 		priv->qp = qp;
+ 		rcu_read_unlock();
+ 
++		hfi1_netdev_enable_queues(priv->dd);
+ 		hfi1_ipoib_napi_tx_enable(dev);
+ 	}
+ 
+@@ -69,6 +85,7 @@ static int hfi1_ipoib_dev_stop(struct net_device *dev)
+ 		return 0;
+ 
+ 	hfi1_ipoib_napi_tx_disable(dev);
++	hfi1_netdev_disable_queues(priv->dd);
+ 
+ 	rvt_put_qp(priv->qp);
+ 	priv->qp = NULL;
+@@ -195,6 +212,7 @@ static void hfi1_ipoib_netdev_dtor(struct net_device *dev)
+ 	struct hfi1_ipoib_dev_priv *priv = hfi1_ipoib_priv(dev);
+ 
+ 	hfi1_ipoib_txreq_deinit(priv);
++	hfi1_ipoib_rxq_deinit(priv->netdev);
+ 
+ 	free_percpu(priv->netstats);
+ }
+@@ -252,6 +270,13 @@ static int hfi1_ipoib_setup_rn(struct ib_device *device,
+ 		return rc;
+ 	}
+ 
++	rc = hfi1_ipoib_rxq_init(netdev);
++	if (rc) {
++		dd_dev_err(dd, "IPoIB netdev RX init - failed(%d)\n", rc);
++		hfi1_ipoib_free_rdma_netdev(netdev);
++		return rc;
++	}
++
+ 	netdev->priv_destructor = hfi1_ipoib_netdev_dtor;
+ 	netdev->needs_free_netdev = true;
+ 
+@@ -268,7 +293,7 @@ int hfi1_ipoib_rn_get_params(struct ib_device *device,
+ 	if (type != RDMA_NETDEV_IPOIB)
+ 		return -EOPNOTSUPP;
+ 
+-	if (!HFI1_CAP_IS_KSET(AIP))
++	if (!HFI1_CAP_IS_KSET(AIP) || !dd->num_netdev_contexts)
+ 		return -EOPNOTSUPP;
+ 
+ 	if (!port_num || port_num > dd->num_pports)
+@@ -276,6 +301,7 @@ int hfi1_ipoib_rn_get_params(struct ib_device *device,
+ 
+ 	params->sizeof_priv = sizeof(struct hfi1_ipoib_rdma_netdev);
+ 	params->txqs = dd->num_sdma;
++	params->rxqs = dd->num_netdev_contexts;
+ 	params->param = NULL;
+ 	params->initialize_rdma_netdev = hfi1_ipoib_setup_rn;
+ 
+diff --git a/drivers/infiniband/hw/hfi1/ipoib_rx.c b/drivers/infiniband/hw/hfi1/ipoib_rx.c
+index 2485663..606ac69 100644
+--- a/drivers/infiniband/hw/hfi1/ipoib_rx.c
++++ b/drivers/infiniband/hw/hfi1/ipoib_rx.c
+@@ -69,3 +69,19 @@ struct sk_buff *hfi1_ipoib_prepare_skb(struct hfi1_netdev_rxq *rxq,
+ 
+ 	return skb;
+ }
++
++int hfi1_ipoib_rxq_init(struct net_device *netdev)
 +{
-+	char name[MAX_NAME_SIZE];
++	struct hfi1_ipoib_dev_priv *ipoib_priv = hfi1_ipoib_priv(netdev);
++	struct hfi1_devdata *dd = ipoib_priv->dd;
 +
-+	snprintf(name, sizeof(name), DRIVER_NAME "_%d nd kctxt%d",
-+		 rcd->dd->unit, rcd->ctxt);
-+	return msix_request_rcd_irq_common(rcd, receive_context_interrupt_napi,
-+					   NULL, name);
++	return hfi1_netdev_rx_init(dd);
 +}
 +
-+/**
-  * msix_request_smda_ira() - Helper for getting SDMA IRQ resources
-  * @sde: valid sdma engine
-  *
-diff --git a/drivers/infiniband/hw/hfi1/msix.h b/drivers/infiniband/hw/hfi1/msix.h
-index 1a02ab7..42fab94 100644
---- a/drivers/infiniband/hw/hfi1/msix.h
-+++ b/drivers/infiniband/hw/hfi1/msix.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
- /*
-- * Copyright(c) 2018 Intel Corporation.
-+ * Copyright(c) 2018 - 2020 Intel Corporation.
-  *
-  * This file is provided under a dual BSD/GPLv2 license.  When using or
-  * redistributing this file, you may do so under either license.
-@@ -59,7 +59,8 @@
- int msix_request_sdma_irq(struct sdma_engine *sde);
- void msix_free_irq(struct hfi1_devdata *dd, u8 msix_intr);
- 
--/* VNIC interface */
-+/* Netdev interface */
- void msix_vnic_synchronize_irq(struct hfi1_devdata *dd);
-+int msix_netdev_request_rcd_irq(struct hfi1_ctxtdata *rcd);
- 
- #endif
++void hfi1_ipoib_rxq_deinit(struct net_device *netdev)
++{
++	struct hfi1_ipoib_dev_priv *ipoib_priv = hfi1_ipoib_priv(netdev);
++	struct hfi1_devdata *dd = ipoib_priv->dd;
++
++	hfi1_netdev_rx_destroy(dd);
++}
 diff --git a/drivers/infiniband/hw/hfi1/netdev.h b/drivers/infiniband/hw/hfi1/netdev.h
-index 8992dfe..6740ec3 100644
+index 6740ec3..edb936f 100644
 --- a/drivers/infiniband/hw/hfi1/netdev.h
 +++ b/drivers/infiniband/hw/hfi1/netdev.h
-@@ -87,4 +87,7 @@ struct hfi1_ctxtdata *hfi1_netdev_get_ctxt(struct hfi1_devdata *dd, int ctxt)
- void *hfi1_netdev_get_data(struct hfi1_devdata *dd, int id);
- void *hfi1_netdev_get_first_data(struct hfi1_devdata *dd, int *start_id);
+@@ -82,6 +82,12 @@ struct hfi1_ctxtdata *hfi1_netdev_get_ctxt(struct hfi1_devdata *dd, int ctxt)
+ 	return priv->rxq[ctxt].rcd;
+ }
  
-+/* chip.c  */
-+int hfi1_netdev_rx_napi(struct napi_struct *napi, int budget);
++void hfi1_netdev_enable_queues(struct hfi1_devdata *dd);
++void hfi1_netdev_disable_queues(struct hfi1_devdata *dd);
++int hfi1_netdev_rx_init(struct hfi1_devdata *dd);
++int hfi1_netdev_rx_destroy(struct hfi1_devdata *dd);
++int hfi1_netdev_alloc(struct hfi1_devdata *dd);
++void hfi1_netdev_free(struct hfi1_devdata *dd);
+ int hfi1_netdev_add_data(struct hfi1_devdata *dd, int id, void *data);
+ void *hfi1_netdev_remove_data(struct hfi1_devdata *dd, int id);
+ void *hfi1_netdev_get_data(struct hfi1_devdata *dd, int id);
+diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
+index 19597e0..95e8c98 100644
+--- a/drivers/infiniband/hw/hfi1/netdev_rx.c
++++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
+@@ -17,6 +17,367 @@
+ #include <linux/etherdevice.h>
+ #include <rdma/ib_verbs.h>
+ 
++static int hfi1_netdev_setup_ctxt(struct hfi1_netdev_priv *priv,
++				  struct hfi1_ctxtdata *uctxt)
++{
++	unsigned int rcvctrl_ops;
++	struct hfi1_devdata *dd = priv->dd;
++	int ret;
 +
- #endif /* HFI1_NETDEV_H */
++	uctxt->rhf_rcv_function_map = netdev_rhf_rcv_functions;
++	uctxt->do_interrupt = &handle_receive_interrupt_napi_sp;
++
++	/* Now allocate the RcvHdr queue and eager buffers. */
++	ret = hfi1_create_rcvhdrq(dd, uctxt);
++	if (ret)
++		goto done;
++
++	ret = hfi1_setup_eagerbufs(uctxt);
++	if (ret)
++		goto done;
++
++	clear_rcvhdrtail(uctxt);
++
++	rcvctrl_ops = HFI1_RCVCTRL_CTXT_DIS;
++	rcvctrl_ops |= HFI1_RCVCTRL_INTRAVAIL_DIS;
++
++	if (!HFI1_CAP_KGET_MASK(uctxt->flags, MULTI_PKT_EGR))
++		rcvctrl_ops |= HFI1_RCVCTRL_ONE_PKT_EGR_ENB;
++	if (HFI1_CAP_KGET_MASK(uctxt->flags, NODROP_EGR_FULL))
++		rcvctrl_ops |= HFI1_RCVCTRL_NO_EGR_DROP_ENB;
++	if (HFI1_CAP_KGET_MASK(uctxt->flags, NODROP_RHQ_FULL))
++		rcvctrl_ops |= HFI1_RCVCTRL_NO_RHQ_DROP_ENB;
++	if (HFI1_CAP_KGET_MASK(uctxt->flags, DMA_RTAIL))
++		rcvctrl_ops |= HFI1_RCVCTRL_TAILUPD_ENB;
++
++	hfi1_rcvctrl(uctxt->dd, rcvctrl_ops, uctxt);
++done:
++	return ret;
++}
++
++static int hfi1_netdev_allocate_ctxt(struct hfi1_devdata *dd,
++				     struct hfi1_ctxtdata **ctxt)
++{
++	struct hfi1_ctxtdata *uctxt;
++	int ret;
++
++	if (dd->flags & HFI1_FROZEN)
++		return -EIO;
++
++	ret = hfi1_create_ctxtdata(dd->pport, dd->node, &uctxt);
++	if (ret < 0) {
++		dd_dev_err(dd, "Unable to create ctxtdata, failing open\n");
++		return -ENOMEM;
++	}
++
++	uctxt->flags = HFI1_CAP_KGET(MULTI_PKT_EGR) |
++		HFI1_CAP_KGET(NODROP_RHQ_FULL) |
++		HFI1_CAP_KGET(NODROP_EGR_FULL) |
++		HFI1_CAP_KGET(DMA_RTAIL);
++	/* Netdev contexts are always NO_RDMA_RTAIL */
++	uctxt->fast_handler = handle_receive_interrupt_napi_fp;
++	uctxt->slow_handler = handle_receive_interrupt_napi_sp;
++	hfi1_set_seq_cnt(uctxt, 1);
++	uctxt->is_vnic = true;
++
++	hfi1_stats.sps_ctxts++;
++
++	dd_dev_info(dd, "created netdev context %d\n", uctxt->ctxt);
++	*ctxt = uctxt;
++
++	return 0;
++}
++
++static void hfi1_netdev_deallocate_ctxt(struct hfi1_devdata *dd,
++					struct hfi1_ctxtdata *uctxt)
++{
++	flush_wc();
++
++	/*
++	 * Disable receive context and interrupt available, reset all
++	 * RcvCtxtCtrl bits to default values.
++	 */
++	hfi1_rcvctrl(dd, HFI1_RCVCTRL_CTXT_DIS |
++		     HFI1_RCVCTRL_TIDFLOW_DIS |
++		     HFI1_RCVCTRL_INTRAVAIL_DIS |
++		     HFI1_RCVCTRL_ONE_PKT_EGR_DIS |
++		     HFI1_RCVCTRL_NO_RHQ_DROP_DIS |
++		     HFI1_RCVCTRL_NO_EGR_DROP_DIS, uctxt);
++
++	if (uctxt->msix_intr != CCE_NUM_MSIX_VECTORS)
++		msix_free_irq(dd, uctxt->msix_intr);
++
++	uctxt->msix_intr = CCE_NUM_MSIX_VECTORS;
++	uctxt->event_flags = 0;
++
++	hfi1_clear_tids(uctxt);
++	hfi1_clear_ctxt_pkey(dd, uctxt);
++
++	hfi1_stats.sps_ctxts--;
++
++	hfi1_free_ctxt(uctxt);
++}
++
++static int hfi1_netdev_allot_ctxt(struct hfi1_netdev_priv *priv,
++				  struct hfi1_ctxtdata **ctxt)
++{
++	int rc;
++	struct hfi1_devdata *dd = priv->dd;
++
++	rc = hfi1_netdev_allocate_ctxt(dd, ctxt);
++	if (rc) {
++		dd_dev_err(dd, "netdev ctxt alloc failed %d\n", rc);
++		return rc;
++	}
++
++	rc = hfi1_netdev_setup_ctxt(priv, *ctxt);
++	if (rc) {
++		dd_dev_err(dd, "netdev ctxt setup failed %d\n", rc);
++		hfi1_netdev_deallocate_ctxt(dd, *ctxt);
++		*ctxt = NULL;
++	}
++
++	return rc;
++}
++
++static int hfi1_netdev_rxq_init(struct net_device *dev)
++{
++	int i;
++	int rc;
++	struct hfi1_netdev_priv *priv = hfi1_netdev_priv(dev);
++	struct hfi1_devdata *dd = priv->dd;
++
++	priv->num_rx_q = dd->num_netdev_contexts;
++	priv->rxq = kcalloc_node(priv->num_rx_q, sizeof(struct hfi1_netdev_rxq),
++				 GFP_KERNEL, dd->node);
++
++	if (!priv->rxq) {
++		dd_dev_err(dd, "Unable to allocate netdev queue data\n");
++		return (-ENOMEM);
++	}
++
++	for (i = 0; i < priv->num_rx_q; i++) {
++		struct hfi1_netdev_rxq *rxq = &priv->rxq[i];
++
++		rc = hfi1_netdev_allot_ctxt(priv, &rxq->rcd);
++		if (rc)
++			goto bail_context_irq_failure;
++
++		hfi1_rcd_get(rxq->rcd);
++		rxq->priv = priv;
++		rxq->rcd->napi = &rxq->napi;
++		dd_dev_info(dd, "Setting rcv queue %d napi to context %d\n",
++			    i, rxq->rcd->ctxt);
++		/*
++		 * Disable BUSY_POLL on this NAPI as this is not supported
++		 * right now.
++		 */
++		set_bit(NAPI_STATE_NO_BUSY_POLL, &rxq->napi.state);
++		netif_napi_add(dev, &rxq->napi, hfi1_netdev_rx_napi, 64);
++		rc = msix_netdev_request_rcd_irq(rxq->rcd);
++		if (rc)
++			goto bail_context_irq_failure;
++	}
++
++	return 0;
++
++bail_context_irq_failure:
++	dd_dev_err(dd, "Unable to allot receive context\n");
++	for (; i >= 0; i--) {
++		struct hfi1_netdev_rxq *rxq = &priv->rxq[i];
++
++		if (rxq->rcd) {
++			hfi1_netdev_deallocate_ctxt(dd, rxq->rcd);
++			hfi1_rcd_put(rxq->rcd);
++			rxq->rcd = NULL;
++		}
++	}
++	kfree(priv->rxq);
++	priv->rxq = NULL;
++
++	return rc;
++}
++
++static void hfi1_netdev_rxq_deinit(struct net_device *dev)
++{
++	int i;
++	struct hfi1_netdev_priv *priv = hfi1_netdev_priv(dev);
++	struct hfi1_devdata *dd = priv->dd;
++
++	for (i = 0; i < priv->num_rx_q; i++) {
++		struct hfi1_netdev_rxq *rxq = &priv->rxq[i];
++
++		netif_napi_del(&rxq->napi);
++		hfi1_netdev_deallocate_ctxt(dd, rxq->rcd);
++		hfi1_rcd_put(rxq->rcd);
++		rxq->rcd = NULL;
++	}
++
++	kfree(priv->rxq);
++	priv->rxq = NULL;
++	priv->num_rx_q = 0;
++}
++
++static void enable_queues(struct hfi1_netdev_priv *priv)
++{
++	int i;
++
++	for (i = 0; i < priv->num_rx_q; i++) {
++		struct hfi1_netdev_rxq *rxq = &priv->rxq[i];
++
++		dd_dev_info(priv->dd, "enabling queue %d on context %d\n", i,
++			    rxq->rcd->ctxt);
++		napi_enable(&rxq->napi);
++		hfi1_rcvctrl(priv->dd,
++			     HFI1_RCVCTRL_CTXT_ENB | HFI1_RCVCTRL_INTRAVAIL_ENB,
++			     rxq->rcd);
++	}
++}
++
++static void disable_queues(struct hfi1_netdev_priv *priv)
++{
++	int i;
++
++	msix_vnic_synchronize_irq(priv->dd);
++
++	for (i = 0; i < priv->num_rx_q; i++) {
++		struct hfi1_netdev_rxq *rxq = &priv->rxq[i];
++
++		dd_dev_info(priv->dd, "disabling queue %d on context %d\n", i,
++			    rxq->rcd->ctxt);
++
++		/* wait for napi if it was scheduled */
++		hfi1_rcvctrl(priv->dd,
++			     HFI1_RCVCTRL_CTXT_DIS | HFI1_RCVCTRL_INTRAVAIL_DIS,
++			     rxq->rcd);
++		napi_synchronize(&rxq->napi);
++		napi_disable(&rxq->napi);
++	}
++}
++
++/**
++ * hfi1_netdev_rx_init - Incrememnts netdevs counter. When called first time,
++ * it allocates receive queue data and calls netif_napi_add
++ * for each queue.
++ *
++ * @dd: hfi1 dev data
++ */
++int hfi1_netdev_rx_init(struct hfi1_devdata *dd)
++{
++	struct hfi1_netdev_priv *priv = hfi1_netdev_priv(dd->dummy_netdev);
++	int res;
++
++	if (atomic_fetch_inc(&priv->netdevs))
++		return 0;
++
++	mutex_lock(&hfi1_mutex);
++	init_dummy_netdev(dd->dummy_netdev);
++	res = hfi1_netdev_rxq_init(dd->dummy_netdev);
++	mutex_unlock(&hfi1_mutex);
++	return res;
++}
++
++/**
++ * hfi1_netdev_rx_destroy - Decrements netdevs counter, when it reaches 0
++ * napi is deleted and receive queses memory is freed.
++ *
++ * @dd: hfi1 dev data
++ */
++int hfi1_netdev_rx_destroy(struct hfi1_devdata *dd)
++{
++	struct hfi1_netdev_priv *priv = hfi1_netdev_priv(dd->dummy_netdev);
++
++	/* destroy the RX queues only if it is the last netdev going away */
++	if (atomic_fetch_add_unless(&priv->netdevs, -1, 0) == 1) {
++		mutex_lock(&hfi1_mutex);
++		hfi1_netdev_rxq_deinit(dd->dummy_netdev);
++		mutex_unlock(&hfi1_mutex);
++	}
++
++	return 0;
++}
++
++/**
++ * hfi1_netdev_alloc - Allocates netdev and private data. It is required
++ * because RMT index and MSI-X interrupt can be set only
++ * during driver initialization.
++ *
++ * @dd: hfi1 dev data
++ */
++int hfi1_netdev_alloc(struct hfi1_devdata *dd)
++{
++	struct hfi1_netdev_priv *priv;
++	const int netdev_size = sizeof(*dd->dummy_netdev) +
++		sizeof(struct hfi1_netdev_priv);
++
++	dd_dev_info(dd, "allocating netdev size %d\n", netdev_size);
++	dd->dummy_netdev = kcalloc_node(1, netdev_size, GFP_KERNEL, dd->node);
++
++	if (!dd->dummy_netdev)
++		return -ENOMEM;
++
++	priv = hfi1_netdev_priv(dd->dummy_netdev);
++	priv->dd = dd;
++	xa_init(&priv->dev_tbl);
++	atomic_set(&priv->enabled, 0);
++	atomic_set(&priv->netdevs, 0);
++
++	return 0;
++}
++
++void hfi1_netdev_free(struct hfi1_devdata *dd)
++{
++	struct hfi1_netdev_priv *priv;
++
++	if (dd->dummy_netdev) {
++		priv = hfi1_netdev_priv(dd->dummy_netdev);
++		dd_dev_info(dd, "hfi1 netdev freed\n");
++		kfree(dd->dummy_netdev);
++		dd->dummy_netdev = NULL;
++	}
++}
++
++/**
++ * hfi1_netdev_enable_queues - This is napi enable function.
++ * It enables napi objects associated with queues.
++ * When at least one device has called it it increments atomic counter.
++ * Disable function decrements counter and when it is 0,
++ * calls napi_disable for every queue.
++ *
++ * @dd: hfi1 dev data
++ */
++void hfi1_netdev_enable_queues(struct hfi1_devdata *dd)
++{
++	struct hfi1_netdev_priv *priv;
++
++	if (!dd->dummy_netdev)
++		return;
++
++	priv = hfi1_netdev_priv(dd->dummy_netdev);
++	if (atomic_fetch_inc(&priv->enabled))
++		return;
++
++	mutex_lock(&hfi1_mutex);
++	enable_queues(priv);
++	mutex_unlock(&hfi1_mutex);
++}
++
++void hfi1_netdev_disable_queues(struct hfi1_devdata *dd)
++{
++	struct hfi1_netdev_priv *priv;
++
++	if (!dd->dummy_netdev)
++		return;
++
++	priv = hfi1_netdev_priv(dd->dummy_netdev);
++	if (atomic_dec_if_positive(&priv->enabled))
++		return;
++
++	mutex_lock(&hfi1_mutex);
++	disable_queues(priv);
++	mutex_unlock(&hfi1_mutex);
++}
++
+ /**
+  * hfi1_netdev_add_data - Registers data with unique identifier
+  * to be requested later this is needed for VNIC and IPoIB VLANs
 
