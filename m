@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A95415717A
+	by mail.lfdr.de (Postfix) with ESMTP id 3C29315717B
 	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2020 10:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgBJJMv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Feb 2020 04:12:51 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:40092 "EHLO huawei.com"
+        id S1726950AbgBJJMw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Feb 2020 04:12:52 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:40076 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726950AbgBJJMv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Feb 2020 04:12:51 -0500
+        id S1726961AbgBJJMw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 Feb 2020 04:12:52 -0500
 Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id AA88D2D617E181792E4E;
+        by Forcepoint Email with ESMTP id A5431FE6F20105552BEC;
         Mon, 10 Feb 2020 17:12:48 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.439.0; Mon, 10 Feb 2020 17:12:37 +0800
+ 14.3.439.0; Mon, 10 Feb 2020 17:12:38 +0800
 From:   Weihang Li <liweihang@huawei.com>
 To:     <dledford@redhat.com>, <jgg@ziepe.ca>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next 4/7] RDMA/hns: Optimize qp buffer allocation flow
-Date:   Mon, 10 Feb 2020 17:08:37 +0800
-Message-ID: <1581325720-12975-5-git-send-email-liweihang@huawei.com>
+Subject: [PATCH v2 for-next 5/7] RDMA/hns: Optimize qp param setup flow
+Date:   Mon, 10 Feb 2020 17:08:38 +0800
+Message-ID: <1581325720-12975-6-git-send-email-liweihang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1581325720-12975-1-git-send-email-liweihang@huawei.com>
 References: <1581325720-12975-1-git-send-email-liweihang@huawei.com>
@@ -38,433 +38,247 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Xi Wang <wangxi11@huawei.com>
 
-Encapsulate qp buffer allocation related code into 3 functions:
-alloc_qp_buf(), map_wqe_buf() and free_qp_buf().
+Encapsulate the qp param setup related code into set_qp_param().
 
 Signed-off-by: Xi Wang <wangxi11@huawei.com>
 Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_device.h |   1 -
- drivers/infiniband/hw/hns/hns_roce_qp.c     | 266 +++++++++++++++-------------
- 2 files changed, 144 insertions(+), 123 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_qp.c | 136 +++++++++++++++++---------------
+ 1 file changed, 72 insertions(+), 64 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 1f361e6..9ddeb2b 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -660,7 +660,6 @@ struct hns_roce_qp {
- 	/* this define must less than HNS_ROCE_MAX_BT_REGION */
- #define HNS_ROCE_WQE_REGION_MAX	 3
- 	struct hns_roce_buf_region regions[HNS_ROCE_WQE_REGION_MAX];
--	int			region_cnt;
- 	int                     wqe_bt_pg_shift;
- 
- 	u32			buff_size;
 diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 91d2f56..e6f121b 100644
+index e6f121b..8f194d6 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -716,23 +716,147 @@ static void free_rq_inline_buf(struct hns_roce_qp *hr_qp)
- 	kfree(hr_qp->rq_inl_buf.wqe_list);
+@@ -307,18 +307,18 @@ static void free_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ 	hns_roce_bitmap_free_range(&qp_table->bitmap, hr_qp->qpn, 1, BITMAP_RR);
  }
  
-+static int map_wqe_buf(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
-+		       u32 page_shift, bool is_user)
-+{
-+	dma_addr_t *buf_list[ARRAY_SIZE(hr_qp->regions)] = { NULL };
+-static int hns_roce_set_rq_size(struct hns_roce_dev *hr_dev,
++static int set_rq_size(struct hns_roce_dev *hr_dev,
+ 				struct ib_qp_cap *cap, bool is_user, int has_rq,
+ 				struct hns_roce_qp *hr_qp)
+ {
+-	struct device *dev = hr_dev->dev;
 +	struct ib_device *ibdev = &hr_dev->ib_dev;
-+	struct hns_roce_buf_region *r;
-+	int region_count;
-+	int buf_count;
+ 	u32 max_cnt;
+ 
+ 	/* Check the validity of QP support capacity */
+ 	if (cap->max_recv_wr > hr_dev->caps.max_wqes ||
+ 	    cap->max_recv_sge > hr_dev->caps.max_rq_sg) {
+-		dev_err(dev, "RQ WR or sge error!max_recv_wr=%d max_recv_sge=%d\n",
+-			cap->max_recv_wr, cap->max_recv_sge);
++		ibdev_err(ibdev, "Failed to check max recv WR %d and SGE %d\n",
++			  cap->max_recv_wr, cap->max_recv_sge);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -330,7 +330,7 @@ static int hns_roce_set_rq_size(struct hns_roce_dev *hr_dev,
+ 		cap->max_recv_sge = 0;
+ 	} else {
+ 		if (is_user && (!cap->max_recv_wr || !cap->max_recv_sge)) {
+-			dev_err(dev, "user space no need config max_recv_wr max_recv_sge\n");
++			ibdev_err(ibdev, "Failed to check user max recv WR and SGE\n");
+ 			return -EINVAL;
+ 		}
+ 
+@@ -342,7 +342,7 @@ static int hns_roce_set_rq_size(struct hns_roce_dev *hr_dev,
+ 		hr_qp->rq.wqe_cnt = roundup_pow_of_two(max_cnt);
+ 
+ 		if ((u32)hr_qp->rq.wqe_cnt > hr_dev->caps.max_wqes) {
+-			dev_err(dev, "while setting rq size, rq.wqe_cnt too large\n");
++			ibdev_err(ibdev, "Failed to check RQ WQE count limit\n");
+ 			return -EINVAL;
+ 		}
+ 
+@@ -373,12 +373,12 @@ static int check_sq_size_with_integrity(struct hns_roce_dev *hr_dev,
+ 	/* Sanity check SQ size before proceeding */
+ 	if (ucmd->log_sq_stride > max_sq_stride ||
+ 	    ucmd->log_sq_stride < HNS_ROCE_IB_MIN_SQ_STRIDE) {
+-		ibdev_err(&hr_dev->ib_dev, "check SQ size error!\n");
++		ibdev_err(&hr_dev->ib_dev, "Failed to check SQ stride size\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (cap->max_send_sge > hr_dev->caps.max_sq_sg) {
+-		ibdev_err(&hr_dev->ib_dev, "SQ sge error! max_send_sge=%d\n",
++		ibdev_err(&hr_dev->ib_dev, "Failed to check SQ SGE size %d\n",
+ 			  cap->max_send_sge);
+ 		return -EINVAL;
+ 	}
+@@ -386,10 +386,9 @@ static int check_sq_size_with_integrity(struct hns_roce_dev *hr_dev,
+ 	return 0;
+ }
+ 
+-static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
+-				     struct ib_qp_cap *cap,
+-				     struct hns_roce_qp *hr_qp,
+-				     struct hns_roce_ib_create_qp *ucmd)
++static int set_user_sq_size(struct hns_roce_dev *hr_dev,
++			    struct ib_qp_cap *cap, struct hns_roce_qp *hr_qp,
++			    struct hns_roce_ib_create_qp *ucmd)
+ {
+ 	u32 ex_sge_num;
+ 	u32 page_size;
+@@ -402,7 +401,7 @@ static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
+ 
+ 	ret = check_sq_size_with_integrity(hr_dev, cap, ucmd);
+ 	if (ret) {
+-		ibdev_err(&hr_dev->ib_dev, "Sanity check sq size failed\n");
++		ibdev_err(&hr_dev->ib_dev, "Failed to check user SQ size limit\n");
+ 		return ret;
+ 	}
+ 
+@@ -420,9 +419,9 @@ static int hns_roce_set_user_sq_size(struct hns_roce_dev *hr_dev,
+ 
+ 	if ((hr_qp->sq.max_gs > 2) && (hr_dev->pci_dev->revision == 0x20)) {
+ 		if (hr_qp->sge.sge_cnt > hr_dev->caps.max_extend_sg) {
+-			dev_err(hr_dev->dev,
+-				"The extended sge cnt error! sge_cnt=%d\n",
+-				hr_qp->sge.sge_cnt);
++			ibdev_err(&hr_dev->ib_dev,
++				  "Failed to check extended SGE size limit %d\n",
++				  hr_qp->sge.sge_cnt);
+ 			return -EINVAL;
+ 		}
+ 	}
+@@ -584,9 +583,8 @@ static int set_extend_sge_param(struct hns_roce_dev *hr_dev,
+ 	return 0;
+ }
+ 
+-static int hns_roce_set_kernel_sq_size(struct hns_roce_dev *hr_dev,
+-				       struct ib_qp_cap *cap,
+-				       struct hns_roce_qp *hr_qp)
++static int set_kernel_sq_size(struct hns_roce_dev *hr_dev,
++			      struct ib_qp_cap *cap, struct hns_roce_qp *hr_qp)
+ {
+ 	struct device *dev = hr_dev->dev;
+ 	u32 page_size;
+@@ -845,6 +843,58 @@ static void free_qp_buf(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ 	     hr_qp->rq.wqe_cnt)
+ 		free_rq_inline_buf(hr_qp);
+ }
++
++static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
++			struct ib_qp_init_attr *init_attr,
++			struct ib_udata *udata,
++			struct hns_roce_ib_create_qp *ucmd)
++{
++	struct ib_device *ibdev = &hr_dev->ib_dev;
 +	int ret;
-+	int i;
 +
-+	region_count = split_wqe_buf_region(hr_dev, hr_qp, hr_qp->regions,
-+					ARRAY_SIZE(hr_qp->regions), page_shift);
++	hr_qp->ibqp.qp_type = init_attr->qp_type;
 +
-+	/* alloc a tmp list to store WQE buffers address */
-+	ret = hns_roce_alloc_buf_list(hr_qp->regions, buf_list, region_count);
++	if (init_attr->sq_sig_type == IB_SIGNAL_ALL_WR)
++		hr_qp->sq_signal_bits = IB_SIGNAL_ALL_WR;
++	else
++		hr_qp->sq_signal_bits = IB_SIGNAL_REQ_WR;
++
++	ret = set_rq_size(hr_dev, &init_attr->cap, udata,
++			  hns_roce_qp_has_rq(init_attr), hr_qp);
 +	if (ret) {
-+		ibdev_err(ibdev, "Failed to alloc WQE buffer list\n");
++		ibdev_err(ibdev, "Failed to set user RQ size\n");
 +		return ret;
 +	}
 +
-+	for (i = 0; i < region_count; i++) {
-+		r = &hr_qp->regions[i];
-+		if (is_user)
-+			buf_count = hns_roce_get_umem_bufs(hr_dev, buf_list[i],
-+					r->count, r->offset, hr_qp->umem,
-+					page_shift);
-+		else
-+			buf_count = hns_roce_get_kmem_bufs(hr_dev, buf_list[i],
-+					r->count, r->offset, &hr_qp->hr_buf);
-+
-+		if (buf_count != r->count) {
-+			ibdev_err(ibdev, "Failed to get %s WQE buf, expect %d = %d.\n",
-+				  is_user ? "user" : "kernel",
-+				  r->count, buf_count);
-+			ret = -ENOBUFS;
-+			goto done;
-+		}
-+	}
-+
-+	hr_qp->wqe_bt_pg_shift = calc_wqe_bt_page_shift(hr_dev, hr_qp->regions,
-+							region_count);
-+	hns_roce_mtr_init(&hr_qp->mtr, PAGE_SHIFT + hr_qp->wqe_bt_pg_shift,
-+			  page_shift);
-+	ret = hns_roce_mtr_attach(hr_dev, &hr_qp->mtr, buf_list, hr_qp->regions,
-+				  region_count);
-+	if (ret)
-+		ibdev_err(ibdev, "Failed to attatch WQE's mtr\n");
-+
-+	goto done;
-+
-+	hns_roce_mtr_cleanup(hr_dev, &hr_qp->mtr);
-+done:
-+	hns_roce_free_buf_list(buf_list, region_count);
-+
-+	return ret;
-+}
-+
-+static int alloc_qp_buf(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
-+			struct ib_qp_init_attr *init_attr,
-+			struct ib_udata *udata, unsigned long addr)
-+{
-+	u32 page_shift = PAGE_SHIFT + hr_dev->caps.mtt_buf_pg_sz;
-+	struct ib_device *ibdev = &hr_dev->ib_dev;
-+	bool is_rq_buf_inline;
-+	int ret;
-+
-+	is_rq_buf_inline = (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
-+			   hns_roce_qp_has_rq(init_attr);
-+	if (is_rq_buf_inline) {
-+		ret = alloc_rq_inline_buf(hr_qp, init_attr);
-+		if (ret) {
-+			ibdev_err(ibdev, "Failed to alloc inline RQ buffer\n");
-+			return ret;
-+		}
-+	}
-+
 +	if (udata) {
-+		hr_qp->umem = ib_umem_get(udata, addr, hr_qp->buff_size, 0);
-+		if (IS_ERR(hr_qp->umem)) {
-+			ret = PTR_ERR(hr_qp->umem);
-+			goto err_inline;
++		if (ib_copy_from_udata(ucmd, udata, sizeof(*ucmd))) {
++			ibdev_err(ibdev, "Failed to copy QP ucmd\n");
++			return -EFAULT;
 +		}
-+	} else {
-+		ret = hns_roce_buf_alloc(hr_dev, hr_qp->buff_size,
-+					 (1 << page_shift) * 2,
-+					 &hr_qp->hr_buf, page_shift);
++
++		ret = set_user_sq_size(hr_dev, &init_attr->cap, hr_qp, ucmd);
 +		if (ret)
-+			goto err_inline;
-+	}
-+
-+	ret = map_wqe_buf(hr_dev, hr_qp, page_shift, udata);
-+	if (ret)
-+		goto err_alloc;
-+
-+	return 0;
-+
-+err_inline:
-+	if (is_rq_buf_inline)
-+		free_rq_inline_buf(hr_qp);
-+
-+err_alloc:
-+	if (udata) {
-+		ib_umem_release(hr_qp->umem);
-+		hr_qp->umem = NULL;
++			ibdev_err(ibdev, "Failed to set user SQ size\n");
 +	} else {
-+		hns_roce_buf_free(hr_dev, hr_qp->buff_size, &hr_qp->hr_buf);
-+	}
++		if (init_attr->create_flags &
++		    IB_QP_CREATE_BLOCK_MULTICAST_LOOPBACK) {
++			ibdev_err(ibdev, "Failed to check multicast loopback\n");
++			return -EINVAL;
++		}
 +
-+	ibdev_err(ibdev, "Failed to alloc WQE buffer, ret %d.\n", ret);
++		if (init_attr->create_flags & IB_QP_CREATE_IPOIB_UD_LSO) {
++			ibdev_err(ibdev, "Failed to check ipoib ud lso\n");
++			return -EINVAL;
++		}
++
++		ret = set_kernel_sq_size(hr_dev, &init_attr->cap, hr_qp);
++		if (ret)
++			ibdev_err(ibdev, "Failed to set kernel SQ size\n");
++	}
 +
 +	return ret;
 +}
 +
-+static void free_qp_buf(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
-+{
-+	hns_roce_mtr_cleanup(hr_dev, &hr_qp->mtr);
-+	if (hr_qp->umem) {
-+		ib_umem_release(hr_qp->umem);
-+		hr_qp->umem = NULL;
-+	}
-+
-+	if (hr_qp->hr_buf.nbufs > 0)
-+		hns_roce_buf_free(hr_dev, hr_qp->buff_size, &hr_qp->hr_buf);
-+
-+	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
-+	     hr_qp->rq.wqe_cnt)
-+		free_rq_inline_buf(hr_qp);
-+}
  static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
  				     struct ib_pd *ib_pd,
  				     struct ib_qp_init_attr *init_attr,
- 				     struct ib_udata *udata,
- 				     struct hns_roce_qp *hr_qp)
- {
--	dma_addr_t *buf_list[ARRAY_SIZE(hr_qp->regions)] = { NULL };
- 	struct device *dev = hr_dev->dev;
- 	struct hns_roce_ib_create_qp ucmd;
- 	struct hns_roce_ib_create_qp_resp resp = {};
- 	struct hns_roce_ucontext *uctx = rdma_udata_to_drv_context(
- 		udata, struct hns_roce_ucontext, ibucontext);
--	struct hns_roce_buf_region *r;
--	u32 page_shift;
--	int buf_count;
- 	int ret;
--	int i;
+@@ -864,34 +914,13 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
  
- 	mutex_init(&hr_qp->mutex);
- 	spin_lock_init(&hr_qp->sq.lock);
-@@ -754,59 +878,18 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 		goto err_out;
+ 	hr_qp->state = IB_QPS_RESET;
+ 
+-	hr_qp->ibqp.qp_type = init_attr->qp_type;
+-
+-	if (init_attr->sq_sig_type == IB_SIGNAL_ALL_WR)
+-		hr_qp->sq_signal_bits = IB_SIGNAL_ALL_WR;
+-	else
+-		hr_qp->sq_signal_bits = IB_SIGNAL_REQ_WR;
+-
+-	ret = hns_roce_set_rq_size(hr_dev, &init_attr->cap, udata,
+-				   hns_roce_qp_has_rq(init_attr), hr_qp);
++	ret = set_qp_param(hr_dev, hr_qp, init_attr, udata, &ucmd);
+ 	if (ret) {
+-		dev_err(dev, "hns_roce_set_rq_size failed\n");
+-		goto err_out;
++		ibdev_err(&hr_dev->ib_dev, "Failed to set QP param\n");
++		return ret;
  	}
  
--	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
--	    hns_roce_qp_has_rq(init_attr)) {
--		ret = alloc_rq_inline_buf(hr_qp, init_attr);
--		if (ret) {
--			dev_err(dev, "allocate receive inline buffer failed\n");
+ 	if (udata) {
+-		if (ib_copy_from_udata(&ucmd, udata, sizeof(ucmd))) {
+-			dev_err(dev, "ib_copy_from_udata error for create qp\n");
+-			ret = -EFAULT;
 -			goto err_out;
 -		}
--	}
 -
--	page_shift = PAGE_SHIFT + hr_dev->caps.mtt_buf_pg_sz;
- 	if (udata) {
- 		if (ib_copy_from_udata(&ucmd, udata, sizeof(ucmd))) {
- 			dev_err(dev, "ib_copy_from_udata error for create qp\n");
- 			ret = -EFAULT;
--			goto err_alloc_rq_inline_buf;
-+			goto err_out;
- 		}
- 
- 		ret = hns_roce_set_user_sq_size(hr_dev, &init_attr->cap, hr_qp,
- 						&ucmd);
- 		if (ret) {
- 			dev_err(dev, "hns_roce_set_user_sq_size error for create qp\n");
--			goto err_alloc_rq_inline_buf;
--		}
--
--		hr_qp->umem = ib_umem_get(udata, ucmd.buf_addr,
--					  hr_qp->buff_size, 0);
--		if (IS_ERR(hr_qp->umem)) {
--			dev_err(dev, "ib_umem_get error for create qp\n");
--			ret = PTR_ERR(hr_qp->umem);
--			goto err_alloc_rq_inline_buf;
--		}
--		hr_qp->region_cnt = split_wqe_buf_region(hr_dev, hr_qp,
--				hr_qp->regions, ARRAY_SIZE(hr_qp->regions),
--				page_shift);
--		ret = hns_roce_alloc_buf_list(hr_qp->regions, buf_list,
--					      hr_qp->region_cnt);
+-		ret = hns_roce_set_user_sq_size(hr_dev, &init_attr->cap, hr_qp,
+-						&ucmd);
 -		if (ret) {
--			dev_err(dev, "alloc buf_list error for create qp\n");
--			goto err_alloc_list;
+-			dev_err(dev, "hns_roce_set_user_sq_size error for create qp\n");
+-			goto err_out;
 -		}
 -
--		for (i = 0; i < hr_qp->region_cnt; i++) {
--			r = &hr_qp->regions[i];
--			buf_count = hns_roce_get_umem_bufs(hr_dev,
--					buf_list[i], r->count, r->offset,
--					hr_qp->umem, page_shift);
--			if (buf_count != r->count) {
--				dev_err(dev,
--					"get umem buf err, expect %d,ret %d.\n",
--					r->count, buf_count);
--				ret = -ENOBUFS;
--				goto err_get_bufs;
--			}
-+			goto err_out;
- 		}
- 
  		if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SQ_RECORD_DB) &&
-@@ -817,7 +900,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 						   &hr_qp->sdb);
- 			if (ret) {
- 				dev_err(dev, "sq record doorbell map failed!\n");
--				goto err_get_bufs;
-+				goto err_out;
- 			}
- 
- 			/* indicate kernel supports sq record db */
-@@ -844,13 +927,13 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 		    IB_QP_CREATE_BLOCK_MULTICAST_LOOPBACK) {
- 			dev_err(dev, "init_attr->create_flags error!\n");
- 			ret = -EINVAL;
--			goto err_alloc_rq_inline_buf;
-+			goto err_out;
- 		}
- 
- 		if (init_attr->create_flags & IB_QP_CREATE_IPOIB_UD_LSO) {
- 			dev_err(dev, "init_attr->create_flags error!\n");
- 			ret = -EINVAL;
--			goto err_alloc_rq_inline_buf;
-+			goto err_out;
- 		}
- 
- 		/* Set SQ size */
-@@ -858,7 +941,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 						  hr_qp);
- 		if (ret) {
- 			dev_err(dev, "hns_roce_set_kernel_sq_size error!\n");
--			goto err_alloc_rq_inline_buf;
-+			goto err_out;
- 		}
- 
- 		/* QP doorbell register address */
-@@ -872,49 +955,17 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 			ret = hns_roce_alloc_db(hr_dev, &hr_qp->rdb, 0);
- 			if (ret) {
- 				dev_err(dev, "rq record doorbell alloc failed!\n");
--				goto err_alloc_rq_inline_buf;
-+				goto err_out;
- 			}
- 			*hr_qp->rdb.db_record = 0;
+ 		    (udata->inlen >= sizeof(ucmd)) &&
+ 		    (udata->outlen >= sizeof(resp)) &&
+@@ -923,27 +952,6 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
  			hr_qp->rdb_en = 1;
  		}
- 
--		/* Allocate QP buf */
--		if (hns_roce_buf_alloc(hr_dev, hr_qp->buff_size,
--				       (1 << page_shift) * 2,
--				       &hr_qp->hr_buf, page_shift)) {
--			dev_err(dev, "hns_roce_buf_alloc error!\n");
--			ret = -ENOMEM;
--			goto err_db;
--		}
--		hr_qp->region_cnt = split_wqe_buf_region(hr_dev, hr_qp,
--				hr_qp->regions, ARRAY_SIZE(hr_qp->regions),
--				page_shift);
--		ret = hns_roce_alloc_buf_list(hr_qp->regions, buf_list,
--					      hr_qp->region_cnt);
--		if (ret) {
--			dev_err(dev, "alloc buf_list error for create qp!\n");
--			goto err_alloc_list;
--		}
--
--		for (i = 0; i < hr_qp->region_cnt; i++) {
--			r = &hr_qp->regions[i];
--			buf_count = hns_roce_get_kmem_bufs(hr_dev,
--					buf_list[i], r->count, r->offset,
--					&hr_qp->hr_buf);
--			if (buf_count != r->count) {
--				dev_err(dev,
--					"get kmem buf err, expect %d,ret %d.\n",
--					r->count, buf_count);
--				ret = -ENOBUFS;
--				goto err_get_bufs;
--			}
--		}
--
- 		hr_qp->sq.wrid = kcalloc(hr_qp->sq.wqe_cnt, sizeof(u64),
- 					 GFP_KERNEL);
- 		if (ZERO_OR_NULL_PTR(hr_qp->sq.wrid)) {
- 			ret = -ENOMEM;
--			goto err_get_bufs;
-+			goto err_db;
- 		}
- 
- 		if (hr_qp->rq.wqe_cnt) {
-@@ -927,21 +978,16 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 		}
- 	}
- 
--	hr_qp->wqe_bt_pg_shift = calc_wqe_bt_page_shift(hr_dev, hr_qp->regions,
--							hr_qp->region_cnt);
--	hns_roce_mtr_init(&hr_qp->mtr, PAGE_SHIFT + hr_qp->wqe_bt_pg_shift,
--			  page_shift);
--	ret = hns_roce_mtr_attach(hr_dev, &hr_qp->mtr, buf_list,
--				  hr_qp->regions, hr_qp->region_cnt);
-+	ret = alloc_qp_buf(hr_dev, hr_qp, init_attr, udata, ucmd.buf_addr);
- 	if (ret) {
--		dev_err(dev, "mtr attach error for create qp\n");
--		goto err_wrid;
-+		ibdev_err(&hr_dev->ib_dev, "Failed to alloc QP buffer\n");
-+		goto err_db;
- 	}
- 
- 	ret = alloc_qpn(hr_dev, hr_qp);
- 	if (ret) {
- 		ibdev_err(&hr_dev->ib_dev, "Failed to alloc QPN\n");
--		goto err_mtr;
-+		goto err_buf;
- 	}
- 
- 	ret = alloc_qpc(hr_dev, hr_qp);
-@@ -974,8 +1020,6 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 	atomic_set(&hr_qp->refcount, 1);
- 	init_completion(&hr_qp->free);
- 
--	hns_roce_free_buf_list(buf_list, hr_qp->region_cnt);
--
- 	return 0;
- 
- err_store:
-@@ -987,10 +1031,9 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- err_qpn:
- 	free_qpn(hr_dev, hr_qp);
- 
--err_mtr:
--	hns_roce_mtr_cleanup(hr_dev, &hr_qp->mtr);
-+err_buf:
-+	free_qp_buf(hr_dev, hr_qp);
- 
--err_wrid:
- 	if (udata) {
- 		if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) &&
- 		    (udata->outlen >= sizeof(resp)) &&
-@@ -1013,24 +1056,11 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 	if (!udata)
- 		kfree(hr_qp->sq.wrid);
- 
--err_get_bufs:
--	hns_roce_free_buf_list(buf_list, hr_qp->region_cnt);
--
--err_alloc_list:
--	if (!hr_qp->umem)
--		hns_roce_buf_free(hr_dev, hr_qp->buff_size, &hr_qp->hr_buf);
--	ib_umem_release(hr_qp->umem);
--
- err_db:
- 	if (!udata && hns_roce_qp_has_rq(init_attr) &&
- 	    (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB))
- 		hns_roce_free_db(hr_dev, &hr_qp->rdb);
- 
--err_alloc_rq_inline_buf:
--	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
--	     hns_roce_qp_has_rq(init_attr))
--		free_rq_inline_buf(hr_qp);
--
- err_out:
- 	return ret;
- }
-@@ -1046,7 +1076,7 @@ void hns_roce_qp_destroy(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 
- 	free_qpn(hr_dev, hr_qp);
- 
--	hns_roce_mtr_cleanup(hr_dev, &hr_qp->mtr);
-+	free_qp_buf(hr_dev, hr_qp);
- 
- 	if (udata) {
- 		struct hns_roce_ucontext *context =
-@@ -1063,17 +1093,9 @@ void hns_roce_qp_destroy(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
  	} else {
- 		kfree(hr_qp->sq.wrid);
- 		kfree(hr_qp->rq.wrid);
--		hns_roce_buf_free(hr_dev, hr_qp->buff_size, &hr_qp->hr_buf);
- 		if (hr_qp->rq.wqe_cnt)
- 			hns_roce_free_db(hr_dev, &hr_qp->rdb);
- 	}
--	ib_umem_release(hr_qp->umem);
+-		if (init_attr->create_flags &
+-		    IB_QP_CREATE_BLOCK_MULTICAST_LOOPBACK) {
+-			dev_err(dev, "init_attr->create_flags error!\n");
+-			ret = -EINVAL;
+-			goto err_out;
+-		}
 -
--	if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RQ_INLINE) &&
--	     hr_qp->rq.wqe_cnt) {
--		kfree(hr_qp->rq_inl_buf.wqe_list[0].sg_list);
--		kfree(hr_qp->rq_inl_buf.wqe_list);
--	}
- 
- 	kfree(hr_qp);
- }
+-		if (init_attr->create_flags & IB_QP_CREATE_IPOIB_UD_LSO) {
+-			dev_err(dev, "init_attr->create_flags error!\n");
+-			ret = -EINVAL;
+-			goto err_out;
+-		}
+-
+-		/* Set SQ size */
+-		ret = hns_roce_set_kernel_sq_size(hr_dev, &init_attr->cap,
+-						  hr_qp);
+-		if (ret) {
+-			dev_err(dev, "hns_roce_set_kernel_sq_size error!\n");
+-			goto err_out;
+-		}
+-
+ 		/* QP doorbell register address */
+ 		hr_qp->sq.db_reg_l = hr_dev->reg_base + hr_dev->sdb_offset +
+ 				     DB_REG_OFFSET * hr_dev->priv_uar.index;
 -- 
 2.8.1
 
