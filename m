@@ -2,41 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 218561578D9
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2020 14:10:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CC91579D1
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2020 14:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729495AbgBJNKp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Feb 2020 08:10:45 -0500
-Received: from mga03.intel.com ([134.134.136.65]:12280 "EHLO mga03.intel.com"
+        id S1728666AbgBJNSS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Feb 2020 08:18:18 -0500
+Received: from mga04.intel.com ([192.55.52.120]:43714 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729347AbgBJNKo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Feb 2020 08:10:44 -0500
+        id S1728961AbgBJNSK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 Feb 2020 08:18:10 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Feb 2020 05:10:43 -0800
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Feb 2020 05:18:09 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.70,425,1574150400"; 
-   d="scan'208";a="226144313"
+   d="scan'208";a="312746404"
 Received: from sedona.ch.intel.com ([10.2.136.157])
-  by orsmga008.jf.intel.com with ESMTP; 10 Feb 2020 05:10:42 -0800
+  by orsmga001.jf.intel.com with ESMTP; 10 Feb 2020 05:18:09 -0800
 Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 01ADAfNh007530;
-        Mon, 10 Feb 2020 06:10:42 -0700
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 01ADI7OM008007;
+        Mon, 10 Feb 2020 06:18:07 -0700
 Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 01ADAevu087674;
-        Mon, 10 Feb 2020 08:10:40 -0500
-Subject: [PATCH for-rc 3/3] IB/rdmavt: Reset all QPs when the device is shut
- down
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 01ADI5se088234;
+        Mon, 10 Feb 2020 08:18:05 -0500
+Subject: [PATCH for-next 00/16] New hfi1 feature: Accelerated IP
 From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
 To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>
-Date:   Mon, 10 Feb 2020 08:10:40 -0500
-Message-ID: <20200210131040.87408.38161.stgit@awfm-01.aw.intel.com>
-In-Reply-To: <20200210130712.87408.34564.stgit@awfm-01.aw.intel.com>
-References: <20200210130712.87408.34564.stgit@awfm-01.aw.intel.com>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Mon, 10 Feb 2020 08:18:05 -0500
+Message-ID: <20200210131223.87776.21339.stgit@awfm-01.aw.intel.com>
 User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -46,225 +41,92 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Kaike Wan <kaike.wan@intel.com>
+This patch series is an accelerated ipoib using the rdma netdev mechanism
+already present in ipoib. A new device capability bit,
+IB_DEVICE_RDMA_NETDEV_OPA, triggers ipoib to create a datagram QP using the
+IB_QP_CREATE_NETDEV_USE.
 
-When the hfi1 device is shut down during a system reboot, it is
-possible that some QPs might have not not freed by ULPs. More requests
-could be post sent and a lingering timer could be triggered to schedule
-more packet sends, leading to a crash:
+The highlights include:
+- Sharing send and receive resources with VNIC
+- Allows for switching between connected mode and datagram mode
+- Increases the maximum datagram MTU for opa devices to 10k
 
-[ 188.570075] BUG: unable to handle kernel NULL pointer dereference at 0000000000000102
-[ 188.570114] IP: [ffffffff810a65f2] __queue_work+0x32/0x3c0
-[ 188.570142] PGD 0
-[ 188.570154] Oops: 0000 1 SMP
-[ 188.570171] Modules linked in: nvmet_rdma(OE) nvmet(OE) nvme(OE) dm_round_robin nvme_rdma(OE) nvme_fabrics(OE) nvme_core(OE) pal_raw(POE) pal_pmt(POE) pal_cache(POE) pal_pile(POE) pal(POE) pal_compatible(OE) rpcrdma sunrpc ib_isert iscsi_target_mod target_core_mod ib_iser libiscsi scsi_transport_iscsi ib_ipoib rdma_ucm ib_ucm ib_uverbs ib_umad rdma_cm ib_cm iw_cm mlx4_ib sb_edac edac_core intel_powerclamp coretemp intel_rapl iosf_mbi kvm irqbypass crc32_pclmul ghash_clmulni_intel aesni_intel lrw gf128mul glue_helper ablk_helper cryptd iTCO_wdt iTCO_vendor_support mxm_wmi ipmi_ssif pcspkr ses enclosure joydev scsi_transport_sas i2c_i801 sg mei_me lpc_ich mei ioatdma shpchp ipmi_si ipmi_devintf ipmi_msghandler wmi acpi_power_meter acpi_pad dm_multipath hangcheck_timer ip_tables ext4 mbcache jbd2 mlx4_en
-[ 188.570501] sd_mod crc_t10dif crct10dif_generic mgag200 drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops ttm drm mlx4_core crct10dif_pclmul crct10dif_common hfi1(OE) igb crc32c_intel rdmavt(OE) ahci ib_core libahci libata ptp megaraid_sas pps_core dca i2c_algo_bit i2c_core devlink dm_mirror dm_region_hash dm_log dm_mod
-[ 188.570641] CPU: 23 PID: 0 Comm: swapper/23 Tainted: P OE ------------ 3.10.0-693.el7.x86_64 #1
-[ 188.570674] Hardware name: Intel Corporation S2600CWR/S2600CWR, BIOS SE5C610.86B.01.01.0028.121720182203 12/17/2018
-[ 188.570708] task: ffff8808f4ec4f10 ti: ffff8808f4ed8000 task.ti: ffff8808f4ed8000
-[ 188.570733] RIP: 0010:[ffffffff810a65f2] [ffffffff810a65f2] __queue_work+0x32/0x3c0
-[ 188.570763] RSP: 0018:ffff88105df43d48 EFLAGS: 00010046
-[ 188.570782] RAX: 0000000000000086 RBX: 0000000000000086 RCX: 0000000000000000
-[ 188.570806] RDX: ffff880f74e758b0 RSI: 0000000000000000 RDI: 000000000000001f
-[ 188.570830] RBP: ffff88105df43d80 R08: ffff8808f3c583c8 R09: ffff8808f3c58000
-[ 188.570854] R10: 0000000000000002 R11: ffff88105df43da8 R12: ffff880f74e758b0
-[ 188.570877] R13: 000000000000001f R14: 0000000000000000 R15: ffff88105a300000
-[ 188.570901] FS: 0000000000000000(0000) GS:ffff88105df40000(0000) knlGS:0000000000000000
-[ 188.570929] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 188.570948] CR2: 0000000000000102 CR3: 00000000019f2000 CR4: 00000000001407e0
-[ 188.570972] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 188.570996] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-[ 188.571020] Stack:
-[ 188.571029] ffff88105b6dd708 0000001f00000286 0000000000000086 ffff88105a300000
-[ 188.571060] ffff880f74e75800 0000000000000000 ffff88105a300000 ffff88105df43d98
-[ 188.571090] ffffffff810a6b85 ffff88105a301e80 ffff88105df43dc8 ffffffffc0224cde
-[ 188.571119] Call Trace:
-[ 188.571130] IRQ
-[ 188.571138]
-[ 188.571148] [ffffffff810a6b85] queue_work_on+0x45/0x50
-[ 188.571186] [ffffffffc0224cde] _hfi1_schedule_send+0x6e/0xc0 [hfi1]
-[ 188.571215] [ffffffffc0170570] ? get_map_page+0x60/0x60 [rdmavt]
-[ 188.571248] [ffffffffc0224d62] hfi1_schedule_send+0x32/0x70 [hfi1]
-[ 188.571275] [ffffffffc0170644] rvt_rc_timeout+0xd4/0x120 [rdmavt]
-[ 188.571301] [ffffffffc0170570] ? get_map_page+0x60/0x60 [rdmavt]
-[ 188.571324] [ffffffff81097316] call_timer_fn+0x36/0x110
-[ 188.571348] [ffffffffc0170570] ? get_map_page+0x60/0x60 [rdmavt]
-[ 188.571370] [ffffffff8109982d] run_timer_softirq+0x22d/0x310
-[ 188.571393] [ffffffff81090b3f] __do_softirq+0xef/0x280
-[ 188.571415] [ffffffff816b6a5c] call_softirq+0x1c/0x30
-[ 188.571435] [ffffffff8102d3c5] do_softirq+0x65/0xa0
-[ 188.571454] [ffffffff81090ec5] irq_exit+0x105/0x110
-[ 188.572263] [ffffffff816b76c2] smp_apic_timer_interrupt+0x42/0x50
-[ 188.573060] [ffffffff816b5c1d] apic_timer_interrupt+0x6d/0x80
-[ 188.573846] EOI
-[ 188.573854]
-[ 188.574631] [ffffffff81527a02] ? cpuidle_enter_state+0x52/0xc0
-[ 188.575425] [ffffffff81527b48] cpuidle_idle_call+0xd8/0x210
-[ 188.576203] [ffffffff81034fee] arch_cpu_idle+0xe/0x30
-[ 188.576959] [ffffffff810e7bca] cpu_startup_entry+0x14a/0x1c0
-[ 188.577697] [ffffffff81051af6] start_secondary+0x1b6/0x230
-[ 188.578412] Code: 89 e5 41 57 41 56 49 89 f6 41 55 41 89 fd 41 54 49 89 d4 53 48 83 ec 10 89 7d d4 9c 58 0f 1f 44 00 00 f6 c4 02 0f 85 be 02 00 00 41 f6 86 02 01 00 00 01 0f 85 58 02 00 00 49 c7 c7 28 19 01 00
-[ 188.579926] RIP [ffffffff810a65f2] __queue_work+0x32/0x3c0
-[ 188.580623] RSP ffff88105df43d48
-[ 188.581293] CR2: 0000000000000102
+The same spreading capability exploited by VNIC is used here to vary
+the receive context that receives the packet.
 
-The solution is to reset the QPs before the device resources are freed.
-This reset will change the QP state to prevent post sends and delete
-timers to prevent callbacks.
+The patches are fully bisectable and stepwise implement the capability.
 
-Fixes: 0acb0cc7ecc1 ("IB/rdmavt: Initialize and teardown of qpn table")
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
 ---
- drivers/infiniband/sw/rdmavt/qp.c |   84 ++++++++++++++++++++++---------------
- 1 file changed, 51 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
-index 3cdf75d..7858d49 100644
---- a/drivers/infiniband/sw/rdmavt/qp.c
-+++ b/drivers/infiniband/sw/rdmavt/qp.c
-@@ -61,6 +61,8 @@
- #define RVT_RWQ_COUNT_THRESHOLD 16
- 
- static void rvt_rc_timeout(struct timer_list *t);
-+static void rvt_reset_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp,
-+			 enum ib_qp_type type);
- 
- /*
-  * Convert the AETH RNR timeout code into the number of microseconds.
-@@ -452,40 +454,41 @@ int rvt_driver_qp_init(struct rvt_dev_info *rdi)
- }
- 
- /**
-- * free_all_qps - check for QPs still in use
-+ * rvt_free_qp_cb - callback function to reset a qp
-+ * @qp: the qp to reset
-+ * @v: a 64-bit value
-+ *
-+ * This function resets the qp and removes it from the
-+ * qp hash table.
-+ */
-+static void rvt_free_qp_cb(struct rvt_qp *qp, u64 v)
-+{
-+	unsigned int *qp_inuse = (unsigned int *)v;
-+	struct rvt_dev_info *rdi = ib_to_rvt(qp->ibqp.device);
-+
-+	/* Reset the qp and remove it from the qp hash list */
-+	rvt_reset_qp(rdi, qp, qp->ibqp.qp_type);
-+
-+	/* Increment the qp_inuse count */
-+	(*qp_inuse)++;
-+}
-+
-+/**
-+ * rvt_free_all_qps - check for QPs still in use
-  * @rdi: rvt device info structure
-  *
-  * There should not be any QPs still in use.
-  * Free memory for table.
-+ * Return the number of QPs still in use.
-  */
- static unsigned rvt_free_all_qps(struct rvt_dev_info *rdi)
- {
--	unsigned long flags;
--	struct rvt_qp *qp;
--	unsigned n, qp_inuse = 0;
--	spinlock_t *ql; /* work around too long line below */
--
--	if (rdi->driver_f.free_all_qps)
--		qp_inuse = rdi->driver_f.free_all_qps(rdi);
-+	unsigned int qp_inuse = 0;
- 
- 	qp_inuse += rvt_mcast_tree_empty(rdi);
- 
--	if (!rdi->qp_dev)
--		return qp_inuse;
--
--	ql = &rdi->qp_dev->qpt_lock;
--	spin_lock_irqsave(ql, flags);
--	for (n = 0; n < rdi->qp_dev->qp_table_size; n++) {
--		qp = rcu_dereference_protected(rdi->qp_dev->qp_table[n],
--					       lockdep_is_held(ql));
--		RCU_INIT_POINTER(rdi->qp_dev->qp_table[n], NULL);
-+	rvt_qp_iter(rdi, (u64)&qp_inuse, rvt_free_qp_cb);
- 
--		for (; qp; qp = rcu_dereference_protected(qp->next,
--							  lockdep_is_held(ql)))
--			qp_inuse++;
--	}
--	spin_unlock_irqrestore(ql, flags);
--	synchronize_rcu();
- 	return qp_inuse;
- }
- 
-@@ -902,14 +905,14 @@ static void rvt_init_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp,
- }
- 
- /**
-- * rvt_reset_qp - initialize the QP state to the reset state
-+ * _rvt_reset_qp - initialize the QP state to the reset state
-  * @qp: the QP to reset
-  * @type: the QP type
-  *
-  * r_lock, s_hlock, and s_lock are required to be held by the caller
-  */
--static void rvt_reset_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp,
--			 enum ib_qp_type type)
-+static void _rvt_reset_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp,
-+			  enum ib_qp_type type)
- 	__must_hold(&qp->s_lock)
- 	__must_hold(&qp->s_hlock)
- 	__must_hold(&qp->r_lock)
-@@ -955,6 +958,27 @@ static void rvt_reset_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp,
- 	lockdep_assert_held(&qp->s_lock);
- }
- 
-+/**
-+ * rvt_reset_qp - initialize the QP state to the reset state
-+ * @rdi: the device info
-+ * @qp: the QP to reset
-+ * @type: the QP type
-+ *
-+ * This is the wrapper function to acquire the r_lock, s_hlock, and s_lock
-+ * before calling _rvt_reset_qp().
-+ */
-+static void rvt_reset_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp,
-+			 enum ib_qp_type type)
-+{
-+	spin_lock_irq(&qp->r_lock);
-+	spin_lock(&qp->s_hlock);
-+	spin_lock(&qp->s_lock);
-+	_rvt_reset_qp(rdi, qp, type);
-+	spin_unlock(&qp->s_lock);
-+	spin_unlock(&qp->s_hlock);
-+	spin_unlock_irq(&qp->r_lock);
-+}
-+
- /** rvt_free_qpn - Free a qpn from the bit map
-  * @qpt: QP table
-  * @qpn: queue pair number to free
-@@ -1546,7 +1570,7 @@ int rvt_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 	switch (new_state) {
- 	case IB_QPS_RESET:
- 		if (qp->state != IB_QPS_RESET)
--			rvt_reset_qp(rdi, qp, ibqp->qp_type);
-+			_rvt_reset_qp(rdi, qp, ibqp->qp_type);
- 		break;
- 
- 	case IB_QPS_RTR:
-@@ -1695,13 +1719,7 @@ int rvt_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- 	struct rvt_qp *qp = ibqp_to_rvtqp(ibqp);
- 	struct rvt_dev_info *rdi = ib_to_rvt(ibqp->device);
- 
--	spin_lock_irq(&qp->r_lock);
--	spin_lock(&qp->s_hlock);
--	spin_lock(&qp->s_lock);
- 	rvt_reset_qp(rdi, qp, ibqp->qp_type);
--	spin_unlock(&qp->s_lock);
--	spin_unlock(&qp->s_hlock);
--	spin_unlock_irq(&qp->r_lock);
- 
- 	wait_event(qp->wait, !atomic_read(&qp->refcount));
- 	/* qpn is now available for use again */
+Gary Leshner (6):
+      IB/hfi1: Add functions to transmit datagram ipoib packets
+      IB/hfi1: Add the transmit side of a datagram ipoib RDMA netdev
+      IB/hfi1: Remove module parameter for KDETH qpns
+      IB/{rdmavt,hfi1}: Implement creation of accelerated UD QPs
+      IB/{hfi1,ipoib,rdma}: Broadcast ping sent packets which exceeded mtu size
+      IB/ipoib: Add capability to switch between datagram and connected mode
 
+Grzegorz Andrejczuk (7):
+      IB/hfi1: RSM rules for AIP
+      IB/hfi1: Rename num_vnic_contexts as num_netdev_contexts
+      IB/hfi1: Add functions to receive accelerated ipoib packets
+      IB/hfi1: Add interrupt handler functions for accelerated ipoib
+      IB/hfi1: Add rx functions for dummy netdev
+      IB/hfi1: Activate the dummy netdev
+      IB/hfi1: Add packet histogram trace event
+
+Kaike Wan (1):
+      IB/hfi1: Add accelerated IP capability bit
+
+Piotr Stankiewicz (1):
+      IB/hfi1: Enable the transmit side of the datagram ipoib netdev
+
+Sadanand Warrier (1):
+      IB/ipoib: Increase ipoib Datagram mode MTU's upper limit
+
+
+ drivers/infiniband/hw/hfi1/Makefile            |    4 
+ drivers/infiniband/hw/hfi1/affinity.c          |   12 
+ drivers/infiniband/hw/hfi1/affinity.h          |    3 
+ drivers/infiniband/hw/hfi1/chip.c              |  303 ++++++---
+ drivers/infiniband/hw/hfi1/chip.h              |    5 
+ drivers/infiniband/hw/hfi1/common.h            |   13 
+ drivers/infiniband/hw/hfi1/driver.c            |  231 ++++++-
+ drivers/infiniband/hw/hfi1/file_ops.c          |    4 
+ drivers/infiniband/hw/hfi1/hfi.h               |   38 -
+ drivers/infiniband/hw/hfi1/init.c              |   14 
+ drivers/infiniband/hw/hfi1/ipoib.h             |  171 +++++
+ drivers/infiniband/hw/hfi1/ipoib_main.c        |  309 +++++++++
+ drivers/infiniband/hw/hfi1/ipoib_rx.c          |   95 +++
+ drivers/infiniband/hw/hfi1/ipoib_tx.c          |  828 ++++++++++++++++++++++++
+ drivers/infiniband/hw/hfi1/msix.c              |   36 +
+ drivers/infiniband/hw/hfi1/msix.h              |    7 
+ drivers/infiniband/hw/hfi1/netdev.h            |  118 +++
+ drivers/infiniband/hw/hfi1/netdev_rx.c         |  481 ++++++++++++++
+ drivers/infiniband/hw/hfi1/qp.c                |   18 -
+ drivers/infiniband/hw/hfi1/tid_rdma.c          |    4 
+ drivers/infiniband/hw/hfi1/trace.c             |   42 +
+ drivers/infiniband/hw/hfi1/trace_ctxts.h       |   11 
+ drivers/infiniband/hw/hfi1/verbs.c             |   13 
+ drivers/infiniband/hw/hfi1/vnic.h              |    5 
+ drivers/infiniband/hw/hfi1/vnic_main.c         |  318 ++-------
+ drivers/infiniband/sw/rdmavt/qp.c              |   24 +
+ drivers/infiniband/ulp/ipoib/ipoib_main.c      |   25 -
+ drivers/infiniband/ulp/ipoib/ipoib_multicast.c |   12 
+ drivers/infiniband/ulp/ipoib/ipoib_verbs.c     |    3 
+ drivers/infiniband/ulp/ipoib/ipoib_vlan.c      |    3 
+ include/rdma/ib_verbs.h                        |   65 ++
+ include/rdma/opa_port_info.h                   |   10 
+ include/rdma/opa_vnic.h                        |    4 
+ include/rdma/rdmavt_qp.h                       |   29 +
+ include/uapi/rdma/hfi/hfi1_user.h              |    3 
+ 35 files changed, 2768 insertions(+), 493 deletions(-)
+ create mode 100644 drivers/infiniband/hw/hfi1/ipoib.h
+ create mode 100644 drivers/infiniband/hw/hfi1/ipoib_main.c
+ create mode 100644 drivers/infiniband/hw/hfi1/ipoib_rx.c
+ create mode 100644 drivers/infiniband/hw/hfi1/ipoib_tx.c
+ create mode 100644 drivers/infiniband/hw/hfi1/netdev.h
+ create mode 100644 drivers/infiniband/hw/hfi1/netdev_rx.c
+
+--
+-Denny
