@@ -2,102 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 721A7159792
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 19:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A461597E7
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 19:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729930AbgBKSBz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Feb 2020 13:01:55 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:40522 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728712AbgBKSBz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Feb 2020 13:01:55 -0500
-Received: by mail-qk1-f196.google.com with SMTP id b7so10974850qkl.7
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 10:01:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KcBMCv8c87BU+PkaUG9zQKTyYZCyxHbTLsEhYi4ZpfE=;
-        b=OEEkPwmirCUP5AFsKcy3t2l+OwJjUv04Y090o6PEw9V7rBz6Gu3toYe461BvTha0cH
-         oeUduFCtTrcnacX9Hwm/wYEpRq+1nwpWeokgyWc2TK3JXnoicr5ferkezL8UU6qEO1xy
-         vP0boeIzLpERkYrz8PYbeYOswZxGXFnaNRcTkCwjjP/q3TlbFV0lWMr0wyqQ0Z1tt/SF
-         wlAjs4eBHXv+XZ2NtUUb+j/BQg/sI3oOkJQy1dwGXYmMDRY6kbZJ+xFSqp9Yk6lsn+lc
-         h7m9VVuInvXURzouF9rOZQTfd4mdAPmcQLxwNL93Aik+/BIrha3ELisuzvkHf565bA9F
-         K7/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KcBMCv8c87BU+PkaUG9zQKTyYZCyxHbTLsEhYi4ZpfE=;
-        b=LiHRh4I7Awxggio7llwpahzYd9jbA/NUskhYgb7/WaookL+7WvI3C/JknOhINpQu5R
-         5DX+Z2MQ6vdRmbBa4yYIABVI3Dw7RUQxyJhzTZzUf+1ltHI2qVP/Y9PqQV8rcLx0keKL
-         GVHJ4qTbGbNNL6tMDI9pGphykMZLXRqKhWI5gyFdyFztzc/8gf2WDdffmojsEe3pJWUB
-         1uu0k6AdHavScXqooZYfzk8Ivtp3ir8ODd3he/68sTIOJ9Ty1Qp/J7kWdMcrWgU9Sdoc
-         8WTUQE2uAtyZcEUBOOhZFFPtwWYexr9wIhZgPY5Q5OwcZF61nOhRFaXizuMV+p6l/k38
-         fYTQ==
-X-Gm-Message-State: APjAAAWY1mZaKtQ0O3wNUR4sLG63Rpq345oYJlGBdQ8lYEC2nddlU81w
-        I8a92IJs4Rnexujtb8Y5BXA4H+M6NnblXA==
-X-Google-Smtp-Source: APXvYqzOc4QVWDjDux6r7hr4qPcMd1v3/KxdQzPDfiJsszt4Oz9rXvQQHErPV+V/5jW9QMAMVJNZ0w==
-X-Received: by 2002:a05:620a:6d4:: with SMTP id 20mr7227055qky.81.1581444112899;
-        Tue, 11 Feb 2020 10:01:52 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id h8sm2495031qtm.51.2020.02.11.10.01.52
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 11 Feb 2020 10:01:52 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j1Zr5-0007V8-Li; Tue, 11 Feb 2020 14:01:51 -0400
-Date:   Tue, 11 Feb 2020 14:01:51 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>
-Subject: Re: [PATCH rdma-next 0/7] CMA fix and small improvements
-Message-ID: <20200211180151.GA28599@ziepe.ca>
-References: <20200126142652.104803-1-leon@kernel.org>
+        id S1728664AbgBKSPA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 11 Feb 2020 13:15:00 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44146 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729139AbgBKSO7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 Feb 2020 13:14:59 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01BICfPX071710
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 13:14:58 -0500
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.104])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2y1u9qhbsb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 13:14:58 -0500
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 11 Feb 2020 18:14:57 -0000
+Received: from us1b3-smtp08.a3dr.sjc01.isc4sb.com (10.122.203.190)
+        by smtp.notes.na.collabserv.com (10.122.47.44) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 11 Feb 2020 18:14:50 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp08.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2020021118144890-671135 ;
+          Tue, 11 Feb 2020 18:14:48 +0000 
+In-Reply-To: <20200210180022.GA23283@chelsio.com>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+Cc:     "Jason Gunthorpe" <jgg@mellanox.com>, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, bharat@chelsio.com,
+        nirranjan@chelsio.com
+Date:   Tue, 11 Feb 2020 18:14:48 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200126142652.104803-1-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20200210180022.GA23283@chelsio.com>,<20200207115209.25933-1-krishna2@chelsio.com>
+ <20200207141820.GF4509@mellanox.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP62 November 04, 2019 at 09:47
+X-KeepSent: 08CE1199:B6C33AB6-0025850B:0063AEBB;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 16823
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 20021118-5525-0000-0000-000001ECAE3D
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.001919
+X-IBM-SpamModules-Versions: BY=3.00012557; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000292; SDB=6.01332458; UDB=6.00709614; IPR=6.01114810;
+ MB=3.00030755; MTD=3.00000008; XFM=3.00000015; UTC=2020-02-11 18:14:54
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2020-02-11 07:29:36 - 6.00010994
+x-cbparentid: 20021118-5526-0000-0000-0000CC3CC235
+Message-Id: <OF08CE1199.B6C33AB6-ON0025850B.0063AEBB-0025850B.00643BAC@notes.na.collabserv.com>
+Subject: RE: [PATCH for-review/for-rc/for-rc] RDMA/siw: Remove unwanted WARN_ON in
+ siw_cm_llp_data_ready()
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-11_05:2020-02-10,2020-02-11 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jan 26, 2020 at 04:26:45PM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> >From Parav,
-> 
-> This series covers a fix for a reference count leak and few small
-> code improvements to the RDMA CM code as below.
-> 
-> Patch-1: Fixes a reference count leak where reference count
-> increment was missing.
-> Patch-2: Uses helper function to hold refcount and to enqueue
-> work to avoid errors.
-> Patch-3: Uses RDMA port iterator API and avoids open coding.
-> Patch-4: Renames cma device's cma_ref/deref_dev() to cma_dev_get/put()
-> to align it to rest of kernel for similar use.
-> Patch-5: Uses refcount APIs to get/put reference to CMA device.
-> Patch-6: Renames cma cm_id's ref helpers to cma_id_get/put() to align
-> to rest of the kernel for similar use.
-> Patch-7: Uses refcount APIs to get/put reference to CM id.
-> 
-> Thanks
-> 
-> Parav Pandit (7):
->   RDMA/cma: Use helper function to enqueue resolve work item
->   RDMA/cma: Use RDMA device port iterator
->   RDMA/cma: Rename cma_device ref/deref helpers to to get/put
->   RDMA/cma: Use refcount API to reflect refcount
->   RDMA/cma: Rename cma_device ref/deref helpers to to get/put
->   RDMA/cma: Use refcount API to reflect refcount
+-----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
 
-Applied to for-next
+>To: "Jason Gunthorpe" <jgg@mellanox.com>
+>From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+>Date: 02/10/2020 07:00PM
+>Cc: dledford@redhat.com, bmt@zurich.ibm.com,
+>linux-rdma@vger.kernel.org, bharat@chelsio.com, nirranjan@chelsio.com
+>Subject: [EXTERNAL] Re: [PATCH for-review/for-rc/for-rc] RDMA/siw:
+>Remove unwanted WARN_ON in siw_cm_llp_data_ready()
+>
+>On Friday, February 02/07/20, 2020 at 10:18:20 -0400, Jason Gunthorpe
+>wrote:
+>> On Fri, Feb 07, 2020 at 05:22:09PM +0530, Krishnamraju Eraparaju
+>wrote:
+>> > Warnings like below can fill up the dmesg while disconnecting
+>RDMA
+>> > connections.
+>> > Hence, removing the unwanted WARN_ON.
+>> 
+>> Please explain why it the code is correct to take this error
+>> path. Bernard clearly thought this shouldn't be happening
+>> 
+>> Jason
+>As part of iSER multipath testcase, target(iw_cxgb4) responds with
+>MPA reject
+>to initiator(SIW) when iw_cxgb4 resources gets exhaused(expected as
+>per
+>testcase), then SIW performs the connection teardown and dissociates
+>'cep' from tcp socket 'sk'. And if any "data_ready" notifications
+>from
+>TCP stack after this connection teardown will hit WARN_ON() in
+>siw_cm_llp_data_ready().
+>
+>Bernard, is this WARN_ON() useful to identify any error conditions?
+>
+So, this WARN_ON() is wrong. It can very well happen that the socket
+already got disassociated from siw, but a sockets data_ready() upcall
+races with the disassociation procedure. Since we hold the
+sk_callback_lock while setting or testing sk->sk_user_data,
+a NULL pointer tells us this socket just got disassociated
+from siw and we can bail out.
+Thanks Krishna for finding that out. Your patch is correct.
 
-Thanks,
-Jason 
+Bernard.
+
