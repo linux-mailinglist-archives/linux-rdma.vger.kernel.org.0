@@ -2,112 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF71A15930A
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 16:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0601596E4
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 18:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730059AbgBKPVq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 11 Feb 2020 10:21:46 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19360 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730210AbgBKPVp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 11 Feb 2020 10:21:45 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01BFIgab126161
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 10:21:44 -0500
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.74])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2y3wxd2gmx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 10:21:44 -0500
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Tue, 11 Feb 2020 15:19:43 -0000
-Received: from us1a3-smtp02.a3.dal06.isc4sb.com (10.106.154.159)
-        by smtp.notes.na.collabserv.com (10.106.227.92) with smtp.notes.na.collabserv.com ESMTP;
-        Tue, 11 Feb 2020 15:18:45 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp02.a3.dal06.isc4sb.com
-          with ESMTP id 2020021115184419-597477 ;
-          Tue, 11 Feb 2020 15:18:44 +0000 
-In-Reply-To: <20200210180022.GA23283@chelsio.com>
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Krishnamraju Eraparaju" <krishna2@chelsio.com>
-Cc:     "Jason Gunthorpe" <jgg@mellanox.com>, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, bharat@chelsio.com,
-        nirranjan@chelsio.com
-Date:   Tue, 11 Feb 2020 15:18:44 +0000
+        id S1730468AbgBKRwJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Feb 2020 12:52:09 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:40145 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727966AbgBKRwJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Feb 2020 12:52:09 -0500
+Received: by mail-qk1-f194.google.com with SMTP id b7so10940232qkl.7
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 09:52:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=T/OvsVdpWzJEOJUPC/Fj4kYk8Ohg9S0pGXn9l4F9KXY=;
+        b=PvXG/CS65NGWkKXkbYjUul++DHDv0giPdc1sV0qhiXFlagSPepkovI/BbYyGyazrid
+         X5aABg+57qSKCVUozRfZQ5qdgfSecAR1r5i9x41ME1mEfj236Ww8QVbL+ohp35Igazkz
+         aOtx6VNJE06c848KEOnd+2/t9xR0OP2nt8PAKqvprjsSKaVSD/cNwk5BIcA6YE4CzY5a
+         lca4AfYoEWafvFd5okEjefQd3kMQM5HUeQZslXI+m09tzUVKNf8cQf81lgR7iweMWkvn
+         jSdCdspf0eZh0IeJUFzvXM43ha0tOgAQiME8UIr2xzRuo6gViZSY8hstf0nGopo5iJlW
+         qfOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=T/OvsVdpWzJEOJUPC/Fj4kYk8Ohg9S0pGXn9l4F9KXY=;
+        b=rAkRO96h1LEW56AUkAIcPMogo+kgaUhN7+oa6Pf33sNkRdd2ngU9+FllCCfLagOgs1
+         GhVoCvktblXldno0ssl3aK0DzFI1brDPOrugHRm3ze/ZJJrLt4l8AQAo2jOjGIa0l9KM
+         4q7kDI8MvpfVQKxVVl/ClnBZ0TcXw0+lugjGJnSXdVDMzGAnTGckqGwX1SyQQT6raGz3
+         yjYnW7vET4bq0duvvg6RyIATHRzbXCJQwJTTUCvo7YVYl4PjWb04cVpG3mIHKlGrnMo2
+         7YRP2aYD+pX+hm+7buwD2cANUnGtuqj/WUMTmrwvlIUxpxg+7oEs1sAuGNmgmTSSy0tX
+         Q4Rg==
+X-Gm-Message-State: APjAAAUWNpE9W35Oc7YHyRt+p10+0qDRI1LPHRbG70Wz+J+mQJI4mTgy
+        XwwnuANp4vGtRV8gY0cx8+dp1w==
+X-Google-Smtp-Source: APXvYqwkddxWqwn8BYLfrNciVO9Kvj+BfcJMAJT86ShF00rV9CaEl1NtMV3q+Dk2EXZ5fHElJiGvjQ==
+X-Received: by 2002:ae9:f818:: with SMTP id x24mr7240277qkh.182.1581443528643;
+        Tue, 11 Feb 2020 09:52:08 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id s20sm2300800qkg.131.2020.02.11.09.52.08
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 11 Feb 2020 09:52:08 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1j1Zhf-0004Qk-OY; Tue, 11 Feb 2020 13:52:07 -0400
+Date:   Tue, 11 Feb 2020 13:52:07 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-rc 0/3] Series short description
+Message-ID: <20200211175207.GA17005@ziepe.ca>
+References: <20200210130712.87408.34564.stgit@awfm-01.aw.intel.com>
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20200210180022.GA23283@chelsio.com>,<20200207115209.25933-1-krishna2@chelsio.com>
- <20200207141820.GF4509@mellanox.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP62 November 04, 2019 at 09:47
-X-LLNOutbound: False
-X-Disclaimed: 50615
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 20021115-3165-0000-0000-0000029DAC65
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.001882
-X-IBM-SpamModules-Versions: BY=3.00012556; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000292; SDB=6.01332400; UDB=6.00709579; IPR=6.01114757;
- MB=3.00030752; MTD=3.00000008; XFM=3.00000015; UTC=2020-02-11 15:19:40
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2020-02-11 07:32:29 - 6.00010994
-x-cbparentid: 20021115-3166-0000-0000-00001719BF16
-Message-Id: <OF49A62E0A.E0661D9C-ON0025850B.00541D26-0025850B.00541D30@notes.na.collabserv.com>
-Subject: RE: [PATCH for-review/for-rc/for-rc] RDMA/siw: Remove unwanted WARN_ON in
- siw_cm_llp_data_ready()
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-11_04:2020-02-10,2020-02-11 signatures=0
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200210130712.87408.34564.stgit@awfm-01.aw.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
+On Mon, Feb 10, 2020 at 08:10:20AM -0500, Dennis Dalessandro wrote:
+> Here are some fixes for the current rc cycle. The first fixes a potential data
+> corruption and involves adding a mutex lock around a missed criitcal section.
+> The other two patches are a bit more involved but they fix panics.
+> 
+> 
+> Kaike Wan (2):
+>       IB/hfi1: Acquire lock to release TID entries when user file is closed
+>       IB/rdmavt: Reset all QPs when the device is shut down
+> 
+> Mike Marciniszyn (1):
+>       IB/hfi1: Close window for pq and request coliding
 
->To: "Jason Gunthorpe" <jgg@mellanox.com>
->From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
->Date: 02/10/2020 07:00PM
->Cc: dledford@redhat.com, bmt@zurich.ibm.com,
->linux-rdma@vger.kernel.org, bharat@chelsio.com, nirranjan@chelsio.com
->Subject: [EXTERNAL] Re: [PATCH for-review/for-rc/for-rc] RDMA/siw:
->Remove unwanted WARN_ON in siw_cm_llp_data_ready()
->
->On Friday, February 02/07/20, 2020 at 10:18:20 -0400, Jason Gunthorpe
->wrote:
->> On Fri, Feb 07, 2020 at 05:22:09PM +0530, Krishnamraju Eraparaju
->wrote:
->> > Warnings like below can fill up the dmesg while disconnecting
->RDMA
->> > connections.
->> > Hence, removing the unwanted WARN_ON.
->> 
->> Please explain why it the code is correct to take this error
->> path. Bernard clearly thought this shouldn't be happening
->> 
->> Jason
->As part of iSER multipath testcase, target(iw_cxgb4) responds with
->MPA reject
->to initiator(SIW) when iw_cxgb4 resources gets exhaused(expected as
->per
->testcase), then SIW performs the connection teardown and dissociates
->'cep' from tcp socket 'sk'. And if any "data_ready" notifications
->from
->TCP stack after this connection teardown will hit WARN_ON() in
->siw_cm_llp_data_ready().
->
->Bernard, is this WARN_ON() useful to identify any error conditions?
->
+Applied to for-rc
 
-Let me try recreating the issue. I'll come back asap.
-
-Thanks
-Bernard.
-
+Thanks,
+Jason
