@@ -2,171 +2,319 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4B61582CC
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Feb 2020 19:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C971586B0
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 01:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727721AbgBJSjq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Feb 2020 13:39:46 -0500
-Received: from ale.deltatee.com ([207.54.116.67]:43758 "EHLO ale.deltatee.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726816AbgBJSjq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Feb 2020 13:39:46 -0500
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1j1Dxz-0007VY-PE; Mon, 10 Feb 2020 11:39:33 -0700
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Cc:     lsf-pc@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Stephen Bates <sbates@raithlin.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Ira Weiny <iweiny@intel.com>, Christoph Hellwig <hch@lst.de>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
+        id S1727604AbgBKAPk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Feb 2020 19:15:40 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:4084 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727455AbgBKAPj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Feb 2020 19:15:39 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e41f21c0000>; Mon, 10 Feb 2020 16:15:24 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 10 Feb 2020 16:15:38 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 10 Feb 2020 16:15:38 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 11 Feb
+ 2020 00:15:37 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Tue, 11 Feb 2020 00:15:37 +0000
+Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5e41f2290003>; Mon, 10 Feb 2020 16:15:37 -0800
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
         Dan Williams <dan.j.williams@intel.com>,
-        Don Dutile <ddutile@redhat.com>
-References: <20200207182457.GM23346@mellanox.com>
- <20e3149e-4240-13e7-d16e-3975cfbe4d38@amd.com>
- <20200208135405.GO23346@mellanox.com>
- <7a2792b1-3d9f-c921-28ac-8c2475684869@amd.com>
- <20200208174335.GL25297@ziepe.ca>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <d43fb3e9-0cda-4a73-849d-813b62169a4c@deltatee.com>
-Date:   Mon, 10 Feb 2020 11:39:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH v6 00/12] mm/gup: track FOLL_PIN pages
+Date:   Mon, 10 Feb 2020 16:15:24 -0800
+Message-ID: <20200211001536.1027652-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <20200208174335.GL25297@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: ddutile@redhat.com, dan.j.williams@intel.com, rcampbell@nvidia.com, jhubbard@nvidia.com, hch@lst.de, iweiny@intel.com, jglisse@redhat.com, sbates@raithlin.com, daniel.vetter@ffwll.ch, linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org, linux-mm@kvack.org, lsf-pc@lists.linux-foundation.org, christian.koenig@amd.com, jgg@ziepe.ca
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [LSF/MM TOPIC] get_user_pages() for PCI BAR Memory
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1581380124; bh=fE97Xn2xxKSqQsPdBSSUaXOYVTqIn+ii/hEQLxsKvjA=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Type:
+         Content-Transfer-Encoding;
+        b=UemJy1oQM42wM9h1KOJ0YRtqLqLTwjltPvxvNuV6xFEN/alKCH4FVBqq/iZpjYjOU
+         DoS3ThqgOHgvxjBLPgpcfd5Gw95juRNdiT9RiMz2V0pRmmNbVGJ+JAYMWkvyUNcdIW
+         YwUERwve3lMcN1Q3ab0QWuE5CENvnSHZjqysU2LBc9TpuCBl1H0ZRmbmwFAfnB3bkW
+         R3qEPd1D1PJaoava8LuKVeTAbeHNmHkcTFijxnBWMXZ5HRQ/OnLRrEQSv/QIIkEr3Y
+         kvdP0ZiZQIRi2l1DADG2AJUt/0SPIufyM0Wswi20jqfd5wrfFI31F/4y1D0STfgkUP
+         OGo4RbAE0HUdw==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hi,
+
+Jan and Kirill: I've tentatively removed your review and ACK,
+respectively, for patch 12 (the last dump_page patch), because even
+though they are logically the same as what you reviewed in v5, the
+base is Matthew's new patch instead of my earlier patch. (Trying to err
+on the side of caution with these tags.)
+
+There is a git repo and branch, for convenience in reviewing:
+
+    git@github.com:johnhubbard/linux.git  track_user_pages_v6
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Changes since v5:
+
+* Rebased onto Linux 5.6.0-rc1.
+
+* Swapped in Matthew Wilcox's more comprehensive dump_page() patch, and
+  moved it later in this series so that it immediately precedes my
+  subsequent dump_page() patch, for slightly easier reviews and commit
+  log history.
+
+* Fixed "the last bug!" in the /proc/vmstat patch, by moving the
+  mod_node_page_state() call in put_compound_page() so that it only
+  happens in the FOLL_PIN case.
+
+* Added a couple more ACKs from Kirill.
+
+* Tweaked the "Future steps" in this cover letter to add a little
+  detail about what comes next.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Changes since v4:
+
+* Added documentation about the huge page behavior of the new
+  /proc/vmstat items.
+
+* Added a missing mode_node_page_state() call to put_compound_head().
+
+* Fixed a tracepoint call in page_ref_sub_return().
+
+* Added a trailing underscore to a URL in pin_user_pages.rst, to fix
+  a broken generated link.
+
+* Added ACKs and reviewed-by's from Jan Kara and Kirill Shutemov.
+
+* Rebased onto today's linux.git, and
+
+* I am experimenting here with "git format-patch --base=3D<commit>".
+  This generated the "base-commit:" tag you'll see at the end of this
+  cover letter.  I was inspired to do so after trying out a new
+  get-lore-mbox.py tool (it's very nice), mentioned in a recent LWN
+  article (https://lwn.net/Articles/811528/ ). That tool relies on the
+  base-commit tag for some things.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Changes since v3:
+
+* Rebased onto latest linux.git
+
+* Added ACKs and reviewed-by's from Kirill Shutemov and Jan Kara.
+
+* /proc/vmstat:
+    * Renamed items, after realizing that I hate the previous names:
+         nr_foll_pin_requested --> nr_foll_pin_acquired
+         nr_foll_pin_returned  --> nr_foll_pin_released
+
+    * Removed the CONFIG_DEBUG_VM guard, and collapsed away a wrapper
+      routine: now just calls mod_node_page_state() directly.
+
+* Tweaked the WARN_ON_ONCE() statements in mm/hugetlb.c to be more
+  informative, and added comments above them as well.
+
+* Fixed gup_benchmark: signed int --> unsigned long.
+
+* One or two minor formatting changes.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Changes since v2:
+
+* Rebased onto linux.git, because the akpm tree for 5.6 has been merged.
+
+* Split the tracking patch into even more patches, as requested.
+
+* Merged Matthew Wilcox's dump_page() changes into mine, as part of the
+  first patch.
+
+* Renamed: page_dma_pinned() --> page_maybe_dma_pinned(), in response to
+  Kirill Shutemov's review.
+
+* Moved a WARN to the top of a routine, and fixed a typo in the commit
+  description of patch #7, also as suggested by Kirill.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Changes since v1:
+
+* Split the tracking patch into 6 smaller patches
+
+* Rebased onto today's linux-next/akpm (there weren't any conflicts).
+
+* Fixed an "unsigned int" vs. "int" problem in gup_benchmark, reported
+  by Nathan Chancellor. (I don't see it in my local builds, probably
+  because they use gcc, but an LLVM test found the mismatch.)
+
+* Fixed a huge page pincount problem (add/subtract vs.
+  increment/decrement), spotted by Jan Kara.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+There is a reasonable case to be made for merging two of the patches
+(patches 7 and 8), given that patch 7 provides tracking that has upper
+limits on the number of pins that can be done with huge pages. Let me
+know if anyone wants those merged, but unless there is some weird chance
+of someone grabbing patch 7 and not patch 8, I don't really see the
+need. Meanwhile, it's easier to review in this form.
+
+Also, patch 3 has been revived. Earlier reviewers asked for it to be
+merged into the tracking patch (one cannot please everyone, heh), but
+now it's back out on it's own.
+
+This activates tracking of FOLL_PIN pages. This is in support of fixing
+the get_user_pages()+DMA problem described in [1]-[4].
+
+FOLL_PIN support is now in the main linux tree. However, the
+patch to use FOLL_PIN to track pages was *not* submitted, because Leon
+saw an RDMA test suite failure that involved (I think) page refcount
+overflows when huge pages were used.
+
+This patch definitively solves that kind of overflow problem, by adding
+an exact pincount, for compound pages (of order > 1), in the 3rd struct
+page of a compound page. If available, that form of pincounting is used,
+instead of the GUP_PIN_COUNTING_BIAS approach. Thanks again to Jan Kara
+for that idea.
+
+Other interesting changes:
+
+* dump_page(): added one, or two new things to report for compound
+  pages: head refcount (for all compound pages), and map_pincount (for
+  compound pages of order > 1).
+
+* Documentation/core-api/pin_user_pages.rst: removed the "TODO" for the
+  huge page refcount upper limit problems, and added notes about how it
+  works now. Also added a note about the dump_page() enhancements.
+
+* Added some comments in gup.c and mm.h, to explain that there are two
+  ways to count pinned pages: exact (for compound pages of order > 1)
+  and fuzzy (GUP_PIN_COUNTING_BIAS: for all other pages).
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+General notes about the tracking patch:
+
+This is a prerequisite to solving the problem of proper interactions
+between file-backed pages, and [R]DMA activities, as discussed in [1],
+[2], [3], [4] and in a remarkable number of email threads since about
+2017. :)
+
+In contrast to earlier approaches, the page tracking can be
+incrementally applied to the kernel call sites that, until now, have
+been simply calling get_user_pages() ("gup"). In other words, opt-in by
+changing from this:
+
+    get_user_pages() (sets FOLL_GET)
+    put_page()
+
+to this:
+    pin_user_pages() (sets FOLL_PIN)
+    unpin_user_page()
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Future steps:
+
+* Convert more subsystems from get_user_pages() to pin_user_pages().
+  The first probably needs to be bio/biovecs, because any filesystem
+  testing is too difficult without those in place.
+
+* Change VFS and filesystems to respond appropriately when encountering
+  dma-pinned pages.
+
+* Work with Ira and others to connect this all up with file system
+  leases.
+
+[1] Some slow progress on get_user_pages() (Apr 2, 2019):
+    https://lwn.net/Articles/784574/
+
+[2] DMA and get_user_pages() (LPC: Dec 12, 2018):
+    https://lwn.net/Articles/774411/
+
+[3] The trouble with get_user_pages() (Apr 30, 2018):
+    https://lwn.net/Articles/753027/
+
+[4] LWN kernel index: get_user_pages()
+    https://lwn.net/Kernel/Index/#Memory_management-get_user_pages
 
 
-On 2020-02-08 10:43 a.m., Jason Gunthorpe wrote:
-> On Sat, Feb 08, 2020 at 05:38:51PM +0100, Christian König wrote:
->> Am 08.02.20 um 14:54 schrieb Jason Gunthorpe:
->>> On Sat, Feb 08, 2020 at 02:10:59PM +0100, Christian König wrote:
->>>>> For patch sets, we've seen a number of attempts so far, but little has
->>>>> been merged yet. Common elements of past discussions have been:
->>>>>    - Building struct page for BAR memory
->>>>>    - Stuffing BAR memory into scatter/gather lists, bios and skbs
->>>>>    - DMA mapping BAR memory
->>>>>    - Referencing BAR memory without a struct page
->>>>>    - Managing lifetime of BAR memory across multiple drivers
->>>> I can only repeat Jérôme that this most likely will never work correctly
->>>> with get_user_pages().
->>> I suppose I'm using 'get_user_pages()' as something of a placeholder
->>> here to refer to the existing family of kernel DMA consumers that call
->>> get_user_pages to work on VMA backed process visible memory.
->>>
->>> We have to have something like get_user_pages() because the kernel
->>> call-sites are fundamentally only dealing with userspace VA. That is
->>> how their uAPIs are designed, and we want to keep them working.
->>>
->>> So, if something doesn't fit into get_user_pages(), ie because it
->>> doesn't have a VMA in the first place, then that is some other
->>> discussion. DMA buf seems like a pretty good answer.
->>
->> Well we do have a VMA, but I strongly think that get_user_pages() is the
->> wrong approach for the job.
->>
->> What we should do instead is to grab the VMA for the addresses and then say
->> through the vm_operations_struct: "Hello I'm driver X and want to do P2P
->> with you. Who are you? What are your capabilities? Should we use PCIe or
->> shortcut through some other interconnect? etc etc ect...".
-> 
-> This is a very topical discussion. So far all the non-struct page
-> approaches have fallen down in some way or another.
-> 
-> The big problem with a VMA centric scheme is that the VMA is ephemeral
-> relative to the DMA mapping, so when it comes time to unmap it is not
-> so clear what to do to 'put' the reference. There has also been
-> resistance to adding new ops to a VMA.
-> 
-> For instance a 'get dma buf' VMA op would solve the lifetime problems,
-> but significantly complicates most of the existing get_user_pages()
-> users as they now have to track lists of dma buf pointers so they can
-> de-ref the dma bufs that covered the user VA range during 'get'
-> 
-> FWIW, if the outcome of the discussion was to have some 'get dma buf'
-> VMA op that would probably be reasonable. I've talked about this
-> before with various people, it isn't quite as good as struct pages,
-> but some subsystems like RDMA can probably make it work.
-> 
->>>> E.g. you have memory which is not even CPU addressable, but can be shared
->>>> between GPUs using XGMI, NVLink, SLI etc....
->>> For this kind of memory if it is mapped into a VMA with
->>> DEVICE_PRIVATE, as Jerome has imagined, then it would be part of this
->>> discussion.
->>
->> I think what Jerome had in mind with its P2P ideas around HMM was that we
->> could do this with anonymous memory which was migrated to a GPU device. That
->> turned out to be rather complicated because you would need to be able to
->> figure out to which driver you need to talk to for the migrated address,
->> which in turn wasn't related to the VMA in any way.
-> 
-> Jerome's VMA proposal tied explicitly the lifetime of the VMA to the
-> lifetime of the DMA map by forcing the use of 'shared virtual memory'
-> (ie mmu notifiers, etc) techniques which have a very narrow usability
-> with HW. This is how the lifetime problem was solved in those patches.
-> 
-> This path has huge drawbacks for everything that is not a GPU use
-> case. Ie we can't fit it into virtio to solve it's current P2P DMA
-> problem.
-> 
->>>> So we need to figure out how express DMA addresses outside of the CPU
->>>> address space first before we can even think about something like extending
->>>> get_user_pages() for P2P in an HMM scenario.
->>> Why?
->>
->> Because that's how get_user_pages() works. IIRC you call it with userspace
->> address+length and get a filled struct pages and VMAs array in return.
->>
->> When you don't have CPU addresses for you memory the whole idea of that
->> interface falls apart. So I think we need to get away from get_user_pages()
->> and work more high level here.
-> 
-> get_user_pages() is struct page focused, and there is some general
-> expectation that GPUs will have to create DEVICE_PRIVATE struct pages
-> for their entire hidden memory so that they can do all the HMM tricks
-> with anonymous memory. They also have to recongize the DEVICE_PIVATE
-> pages during hmm driven page faults.
-> 
-> Removing the DEVICE_PRIVATE from the anonymous page setup seems
-> impossible at the current moment - thus it seems like we are stuck
-> with struct pages, may as well use them?
-> 
-> Literally nobody like this, but all the non-struct-page proposals have
-> failed to get traction so far.
+John Hubbard (11):
+  mm/gup: split get_user_pages_remote() into two routines
+  mm/gup: pass a flags arg to __gup_device_* functions
+  mm: introduce page_ref_sub_return()
+  mm/gup: pass gup flags to two more routines
+  mm/gup: require FOLL_GET for get_user_pages_fast()
+  mm/gup: track FOLL_PIN pages
+  mm/gup: page->hpage_pinned_refcount: exact pin counts for huge pages
+  mm/gup: /proc/vmstat: pin_user_pages (FOLL_PIN) reporting
+  mm/gup_benchmark: support pin_user_pages() and related calls
+  selftests/vm: run_vmtests: invoke gup_benchmark with basic FOLL_PIN
+    coverage
+  mm: dump_page(): additional diagnostics for huge pinned pages
 
-Yes, I agree with Jason. We need to be able to make incremental progress
-on things that we can do today. We can't be stuck making no progress
-because every time something is proposed someone pops up and says it
-won't work for some significantly more complicated use case. Supporting
-existing P2P DMA functionality in userspace is a use case that people
-care about and we shouldn't be that far away from supporting with the
-existing struct page infrastructure we have today.
+Matthew Wilcox (Oracle) (1):
+  mm: Improve dump_page() for compound pages
 
-Supporting buses the CPU has no visibility into is a separate discussion
-for after we've made more progress on the easier cases. Or, until more
-cleanup has gone into making struct page more replaceable with something
-else.
+ Documentation/core-api/pin_user_pages.rst  |  86 ++--
+ include/linux/mm.h                         | 108 ++++-
+ include/linux/mm_types.h                   |   7 +-
+ include/linux/mmzone.h                     |   2 +
+ include/linux/page_ref.h                   |   9 +
+ mm/debug.c                                 |  44 +-
+ mm/gup.c                                   | 451 ++++++++++++++++-----
+ mm/gup_benchmark.c                         |  71 +++-
+ mm/huge_memory.c                           |  29 +-
+ mm/hugetlb.c                               |  60 ++-
+ mm/page_alloc.c                            |   2 +
+ mm/rmap.c                                  |   6 +
+ mm/vmstat.c                                |   2 +
+ tools/testing/selftests/vm/gup_benchmark.c |  15 +-
+ tools/testing/selftests/vm/run_vmtests     |  22 +
+ 15 files changed, 734 insertions(+), 180 deletions(-)
 
-Logan
+
+base-commit: bb6d3fb354c5ee8d6bde2d576eb7220ea09862b9
+--=20
+2.25.0
+
