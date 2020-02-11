@@ -2,164 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C7E158FB7
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 14:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF71A15930A
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 16:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729028AbgBKNVo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Feb 2020 08:21:44 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:42190 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728460AbgBKNVo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Feb 2020 08:21:44 -0500
-Received: by mail-lf1-f66.google.com with SMTP id y19so6978853lfl.9
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 05:21:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Hr4RM1uoMUp4PqitGEd8DPH0BhvKXrOmDlEYhlDDK/I=;
-        b=bFc+jsaX1bV6Bl3CuP+Cavm+epSok3Y8YuARU6618UpGWA+riHbOEsKSpMLVF0ZXnU
-         bY7fqdQ0bEnWWZfLd6Oqd9qX1D757FrAYb+O8BaQ+LQhdXMTPs51Hy2WUXzJ4Ad24uj4
-         cvUYk6SVn5+//nUOhXYL42dvCGwEwZFRn+X4g8zbG1FE0jal/OsaVU08xzOzzjWLIm0D
-         8MwIcgxr3JmYIH/VoOmj8XDIQ6QhVzIhQMilukMtaXwupCH3WebHq6ULuGRH9rDVgw9o
-         yY56NRlMCQ15lfK+PifbXajl/TM4KUteetaHmFwDIJm5VG8+ct0cSww9niJRGFLxEBTQ
-         oHNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hr4RM1uoMUp4PqitGEd8DPH0BhvKXrOmDlEYhlDDK/I=;
-        b=Oxmnt8rOOEMqMfYEn5tfZAQdrdoBTMfnVW1THR/12CfRbERd2CWXunrOukg/GUQkzA
-         bqoslFyVr0nr3Sa7VoARWyMhVoXCzQxO/DdvOsI5QqR+K8xkQ1hvNgOqZLNFFZm1OnDD
-         0RgEEwYqPL/icXTCuFwUz9iLxnspsj2WKgK2qUCdpv1LcXS52wgnZ0xF9d9AvbxrUMjj
-         46Ky1qU60LgcH+8kfP8KxU0jIpbmHPTsy4hBpa8Dw3/D3HxRlbT3mw1SUI5HZDTMTrPw
-         ucQmfTyHxu++9YYzO0yMK4PoP7QlP9d07rQBs23H3DrNavZbUog2E5+l7PCv3jYMRiag
-         ejuQ==
-X-Gm-Message-State: APjAAAULlZwXg2GS0rv+vhONtLD9zNOmNiQtPbnx689Em7zSlL3bv/AJ
-        UGYWL0CzPGS2QR1IvsQlG2OKlA==
-X-Google-Smtp-Source: APXvYqxV3rctot+0vYRe7IkamEeOz1L1i7WPyibLsi5dvBCjvN0112ivhIa5RgpfbLebu0hWGg8rAw==
-X-Received: by 2002:a19:8c4d:: with SMTP id i13mr3655524lfj.42.1581427301828;
-        Tue, 11 Feb 2020 05:21:41 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id a8sm2166091ljn.74.2020.02.11.05.21.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Feb 2020 05:21:41 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id D76B5100AFB; Tue, 11 Feb 2020 16:21:59 +0300 (+03)
-Date:   Tue, 11 Feb 2020 16:21:59 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v6 12/12] mm: dump_page(): additional diagnostics for
- huge pinned pages
-Message-ID: <20200211132159.pii2x5pssifemgaz@box>
-References: <20200211001536.1027652-1-jhubbard@nvidia.com>
- <20200211001536.1027652-13-jhubbard@nvidia.com>
+        id S1730059AbgBKPVq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 11 Feb 2020 10:21:46 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19360 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730210AbgBKPVp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 Feb 2020 10:21:45 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01BFIgab126161
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 10:21:44 -0500
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.74])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2y3wxd2gmx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 10:21:44 -0500
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 11 Feb 2020 15:19:43 -0000
+Received: from us1a3-smtp02.a3.dal06.isc4sb.com (10.106.154.159)
+        by smtp.notes.na.collabserv.com (10.106.227.92) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 11 Feb 2020 15:18:45 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp02.a3.dal06.isc4sb.com
+          with ESMTP id 2020021115184419-597477 ;
+          Tue, 11 Feb 2020 15:18:44 +0000 
+In-Reply-To: <20200210180022.GA23283@chelsio.com>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+Cc:     "Jason Gunthorpe" <jgg@mellanox.com>, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, bharat@chelsio.com,
+        nirranjan@chelsio.com
+Date:   Tue, 11 Feb 2020 15:18:44 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200211001536.1027652-13-jhubbard@nvidia.com>
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20200210180022.GA23283@chelsio.com>,<20200207115209.25933-1-krishna2@chelsio.com>
+ <20200207141820.GF4509@mellanox.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP62 November 04, 2019 at 09:47
+X-LLNOutbound: False
+X-Disclaimed: 50615
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 20021115-3165-0000-0000-0000029DAC65
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.001882
+X-IBM-SpamModules-Versions: BY=3.00012556; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000292; SDB=6.01332400; UDB=6.00709579; IPR=6.01114757;
+ MB=3.00030752; MTD=3.00000008; XFM=3.00000015; UTC=2020-02-11 15:19:40
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2020-02-11 07:32:29 - 6.00010994
+x-cbparentid: 20021115-3166-0000-0000-00001719BF16
+Message-Id: <OF49A62E0A.E0661D9C-ON0025850B.00541D26-0025850B.00541D30@notes.na.collabserv.com>
+Subject: RE: [PATCH for-review/for-rc/for-rc] RDMA/siw: Remove unwanted WARN_ON in
+ siw_cm_llp_data_ready()
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-11_04:2020-02-10,2020-02-11 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 10, 2020 at 04:15:36PM -0800, John Hubbard wrote:
-> As part of pin_user_pages() and related API calls, pages are
-> "dma-pinned". For the case of compound pages of order > 1, the per-page
-> accounting of dma pins is accomplished via the 3rd struct page in the
-> compound page. In order to support debugging of any pin_user_pages()-
-> related problems, enhance dump_page() so as to report the pin count
-> in that case.
-> 
-> Documentation/core-api/pin_user_pages.rst is also updated accordingly.
-> 
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  Documentation/core-api/pin_user_pages.rst |  7 +++++++
->  mm/debug.c                                | 21 ++++++++++++++++-----
->  2 files changed, 23 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/core-api/pin_user_pages.rst b/Documentation/core-api/pin_user_pages.rst
-> index 5c8a5f89756b..2e939ff10b86 100644
-> --- a/Documentation/core-api/pin_user_pages.rst
-> +++ b/Documentation/core-api/pin_user_pages.rst
-> @@ -238,6 +238,13 @@ long-term [R]DMA pins in place, or during pin/unpin transitions.
->  (...unless it was already out of balance due to a long-term RDMA pin being in
->  place.)
->  
-> +Other diagnostics
-> +=================
-> +
-> +dump_page() has been enhanced slightly, to handle these new counting fields, and
-> +to better report on compound pages in general. Specifically, for compound pages
-> +with order > 1, the exact (hpage_pinned_refcount) pincount is reported.
-> +
->  References
->  ==========
->  
-> diff --git a/mm/debug.c b/mm/debug.c
-> index f5ffb0784559..2189357f0987 100644
-> --- a/mm/debug.c
-> +++ b/mm/debug.c
-> @@ -85,11 +85,22 @@ void __dump_page(struct page *page, const char *reason)
->  	mapcount = PageSlab(head) ? 0 : page_mapcount(page);
->  
->  	if (compound)
-> -		pr_warn("page:%px refcount:%d mapcount:%d mapping:%p "
-> -			"index:%#lx head:%px order:%u compound_mapcount:%d\n",
-> -			page, page_ref_count(head), mapcount,
-> -			mapping, page_to_pgoff(page), head,
-> -			compound_order(head), compound_mapcount(page));
-> +		if (hpage_pincount_available(page)) {
-> +			pr_warn("page:%px refcount:%d mapcount:%d mapping:%p "
-> +				"index:%#lx head:%px order:%u "
-> +				"compound_mapcount:%d compound_pincount:%d\n",
-> +				page, page_ref_count(head), mapcount,
-> +				mapping, page_to_pgoff(page), head,
-> +				compound_order(head), compound_mapcount(page),
-> +				compound_pincount(page));
-> +		} else {
-> +			pr_warn("page:%px refcount:%d mapcount:%d mapping:%p "
-> +				"index:%#lx head:%px order:%u "
-> +				"compound_mapcount:%d\n",
-> +				page, page_ref_count(head), mapcount,
-> +				mapping, page_to_pgoff(page), head,
-> +				compound_order(head), compound_mapcount(page));
-> +		}
+-----"Krishnamraju Eraparaju" <krishna2@chelsio.com> wrote: -----
 
-Have you considered using pr_cont() here. I guess it would be easier to
-read.
+>To: "Jason Gunthorpe" <jgg@mellanox.com>
+>From: "Krishnamraju Eraparaju" <krishna2@chelsio.com>
+>Date: 02/10/2020 07:00PM
+>Cc: dledford@redhat.com, bmt@zurich.ibm.com,
+>linux-rdma@vger.kernel.org, bharat@chelsio.com, nirranjan@chelsio.com
+>Subject: [EXTERNAL] Re: [PATCH for-review/for-rc/for-rc] RDMA/siw:
+>Remove unwanted WARN_ON in siw_cm_llp_data_ready()
+>
+>On Friday, February 02/07/20, 2020 at 10:18:20 -0400, Jason Gunthorpe
+>wrote:
+>> On Fri, Feb 07, 2020 at 05:22:09PM +0530, Krishnamraju Eraparaju
+>wrote:
+>> > Warnings like below can fill up the dmesg while disconnecting
+>RDMA
+>> > connections.
+>> > Hence, removing the unwanted WARN_ON.
+>> 
+>> Please explain why it the code is correct to take this error
+>> path. Bernard clearly thought this shouldn't be happening
+>> 
+>> Jason
+>As part of iSER multipath testcase, target(iw_cxgb4) responds with
+>MPA reject
+>to initiator(SIW) when iw_cxgb4 resources gets exhaused(expected as
+>per
+>testcase), then SIW performs the connection teardown and dissociates
+>'cep' from tcp socket 'sk'. And if any "data_ready" notifications
+>from
+>TCP stack after this connection teardown will hit WARN_ON() in
+>siw_cm_llp_data_ready().
+>
+>Bernard, is this WARN_ON() useful to identify any error conditions?
+>
 
-You can use my Ack anyway.
+Let me try recreating the issue. I'll come back asap.
 
+Thanks
+Bernard.
 
->  	else
->  		pr_warn("page:%px refcount:%d mapcount:%d mapping:%p index:%#lx\n",
->  			page, page_ref_count(page), mapcount,
-> -- 
-> 2.25.0
-> 
-
--- 
- Kirill A. Shutemov
