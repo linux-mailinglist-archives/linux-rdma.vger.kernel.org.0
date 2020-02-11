@@ -2,98 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2135D1596F7
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 18:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 721A7159792
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 19:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730533AbgBKRwY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Feb 2020 12:52:24 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:45394 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730518AbgBKRwY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Feb 2020 12:52:24 -0500
-Received: by mail-qk1-f195.google.com with SMTP id a2so10444149qko.12
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 09:52:23 -0800 (PST)
+        id S1729930AbgBKSBz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Feb 2020 13:01:55 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:40522 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728712AbgBKSBz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Feb 2020 13:01:55 -0500
+Received: by mail-qk1-f196.google.com with SMTP id b7so10974850qkl.7
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 10:01:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=9Zt3htpuMrbctYY+SoxkZbwlXTt3IwbV75s2CcycSs4=;
-        b=cK/vFCa46jcLOihJ0aLGSf/sN1OGwROPm7+fxgq1PjUMjzNhbgK3+pruOVRujjA6Wc
-         b6ur1D+nlTJeHWRJDrBmUj6QFI2me/yYllvVUmFOBWEu93TyPG7xIqfeKD/pc5BioXm6
-         pGjl/T2XjOgHsQ4EJiH1HtgPXSUoMrN5RJ8cukKbJTDR7KkF8fZO+7lZ5b7AODUpnJZw
-         q7ZyN3MxeMw2MDSi+fJRNIaGyyzn9xcFe0Ijd7YE1GIBpBc1nkoU2lM5+ZQ8hygcsRR3
-         Kvi8otdlE4nu169edn8sdhiCVZIyeVQTJz4pABEPU2+NyPK+JKHjy+5fKIeeug4ePc0N
-         z9IA==
+        bh=KcBMCv8c87BU+PkaUG9zQKTyYZCyxHbTLsEhYi4ZpfE=;
+        b=OEEkPwmirCUP5AFsKcy3t2l+OwJjUv04Y090o6PEw9V7rBz6Gu3toYe461BvTha0cH
+         oeUduFCtTrcnacX9Hwm/wYEpRq+1nwpWeokgyWc2TK3JXnoicr5ferkezL8UU6qEO1xy
+         vP0boeIzLpERkYrz8PYbeYOswZxGXFnaNRcTkCwjjP/q3TlbFV0lWMr0wyqQ0Z1tt/SF
+         wlAjs4eBHXv+XZ2NtUUb+j/BQg/sI3oOkJQy1dwGXYmMDRY6kbZJ+xFSqp9Yk6lsn+lc
+         h7m9VVuInvXURzouF9rOZQTfd4mdAPmcQLxwNL93Aik+/BIrha3ELisuzvkHf565bA9F
+         K7/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9Zt3htpuMrbctYY+SoxkZbwlXTt3IwbV75s2CcycSs4=;
-        b=kTaoNBKkd3lP17M9nzsQYQJ6nMcRSc6SiPICo4i8CQsNL9HJtUOb717Ncih+WyiRI+
-         DCnGt5uBPMaMxEhGxrQFWeyY8nsV6VeuJM/9gg869xVgLppwSU39BFL31+VE33XMdlKr
-         vcHN6b5/hFdGH9dt1J7M1rYr4BjAaosBIuhHMetgSwmtoDGQX1x0AEQlLJnT7fnl/q0C
-         jyhBk8rZRCEtFMi4jbKVCV+S2xzYTHvyfEdHSFGBhpW5TeA9kr16jkbjvroHMerfuaWI
-         onz3E0HOAQplgXoEQfX/13xVaSq/mA3aCeObSZNnmrU7k11qSxRx7zMxqAlnn8aat5Hn
-         oZUQ==
-X-Gm-Message-State: APjAAAXj9A26RysdYrJHcwcbodxQN/LKXyotiaCLiUV+42GcWk0OyoIY
-        Fb9Crx/ed0dbswBv/fD8Lpos94MlhiOz9A==
-X-Google-Smtp-Source: APXvYqyPyhFt9HtRsCHeStWD2dPmWPqN+8MXWTcBkniSmwqL271u5m5lkbhbmsvpqGbhjT5oDzxrGQ==
-X-Received: by 2002:a05:620a:20d4:: with SMTP id f20mr6723918qka.343.1581443542917;
-        Tue, 11 Feb 2020 09:52:22 -0800 (PST)
+        bh=KcBMCv8c87BU+PkaUG9zQKTyYZCyxHbTLsEhYi4ZpfE=;
+        b=LiHRh4I7Awxggio7llwpahzYd9jbA/NUskhYgb7/WaookL+7WvI3C/JknOhINpQu5R
+         5DX+Z2MQ6vdRmbBa4yYIABVI3Dw7RUQxyJhzTZzUf+1ltHI2qVP/Y9PqQV8rcLx0keKL
+         GVHJ4qTbGbNNL6tMDI9pGphykMZLXRqKhWI5gyFdyFztzc/8gf2WDdffmojsEe3pJWUB
+         1uu0k6AdHavScXqooZYfzk8Ivtp3ir8ODd3he/68sTIOJ9Ty1Qp/J7kWdMcrWgU9Sdoc
+         8WTUQE2uAtyZcEUBOOhZFFPtwWYexr9wIhZgPY5Q5OwcZF61nOhRFaXizuMV+p6l/k38
+         fYTQ==
+X-Gm-Message-State: APjAAAWY1mZaKtQ0O3wNUR4sLG63Rpq345oYJlGBdQ8lYEC2nddlU81w
+        I8a92IJs4Rnexujtb8Y5BXA4H+M6NnblXA==
+X-Google-Smtp-Source: APXvYqzOc4QVWDjDux6r7hr4qPcMd1v3/KxdQzPDfiJsszt4Oz9rXvQQHErPV+V/5jW9QMAMVJNZ0w==
+X-Received: by 2002:a05:620a:6d4:: with SMTP id 20mr7227055qky.81.1581444112899;
+        Tue, 11 Feb 2020 10:01:52 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id w41sm2598631qtj.49.2020.02.11.09.52.22
+        by smtp.gmail.com with ESMTPSA id h8sm2495031qtm.51.2020.02.11.10.01.52
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 11 Feb 2020 09:52:22 -0800 (PST)
+        Tue, 11 Feb 2020 10:01:52 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1j1Zht-0004RS-Vn; Tue, 11 Feb 2020 13:52:21 -0400
-Date:   Tue, 11 Feb 2020 13:52:21 -0400
+        id 1j1Zr5-0007V8-Li; Tue, 11 Feb 2020 14:01:51 -0400
+Date:   Tue, 11 Feb 2020 14:01:51 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Kamal Heib <kamalheib1@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>
-Subject: Re: [PATCH for-rc] RDMA/hfi1: Fix memory leak in
- _dev_comp_vect_mappings_create
-Message-ID: <20200211175221.GB17005@ziepe.ca>
-References: <20200205110530.12129-1-kamalheib1@gmail.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Parav Pandit <parav@mellanox.com>
+Subject: Re: [PATCH rdma-next 0/7] CMA fix and small improvements
+Message-ID: <20200211180151.GA28599@ziepe.ca>
+References: <20200126142652.104803-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200205110530.12129-1-kamalheib1@gmail.com>
+In-Reply-To: <20200126142652.104803-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 05, 2020 at 01:05:30PM +0200, Kamal Heib wrote:
-> Make sure to free the allocated cpumask_var_t's to avoid the following
-> reported memory leak by kmemleak:
+On Sun, Jan 26, 2020 at 04:26:45PM +0200, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@mellanox.com>
 > 
-> $ cat /sys/kernel/debug/kmemleak
-> unreferenced object 0xffff8897f812d6a8 (size 8):
->   comm "kworker/1:1", pid 347, jiffies 4294751400 (age 101.703s)
->   hex dump (first 8 bytes):
->     00 00 00 00 00 00 00 00                          ........
->   backtrace:
->     [<00000000bff49664>] alloc_cpumask_var_node+0x4c/0xb0
->     [<0000000075d3ca81>] hfi1_comp_vectors_set_up+0x20f/0x800 [hfi1]
->     [<0000000098d420df>] hfi1_init_dd+0x3311/0x4960 [hfi1]
->     [<0000000071be7e52>] init_one+0x25e/0xf10 [hfi1]
->     [<000000005483d4c2>] local_pci_probe+0xd4/0x180
->     [<000000007c3cbc6e>] work_for_cpu_fn+0x51/0xa0
->     [<000000001d626905>] process_one_work+0x8f0/0x17b0
->     [<000000007e569e7e>] worker_thread+0x536/0xb50
->     [<00000000fd39a4a5>] kthread+0x30c/0x3d0
->     [<0000000056f2edb3>] ret_from_fork+0x3a/0x50
+> >From Parav,
 > 
-> Fixes: 5d18ee67d4c1 ("IB/{hfi1, rdmavt, qib}: Implement CQ completion vector support")
-> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-> Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-> ---
->  drivers/infiniband/hw/hfi1/affinity.c | 2 ++
->  1 file changed, 2 insertions(+)
+> This series covers a fix for a reference count leak and few small
+> code improvements to the RDMA CM code as below.
+> 
+> Patch-1: Fixes a reference count leak where reference count
+> increment was missing.
+> Patch-2: Uses helper function to hold refcount and to enqueue
+> work to avoid errors.
+> Patch-3: Uses RDMA port iterator API and avoids open coding.
+> Patch-4: Renames cma device's cma_ref/deref_dev() to cma_dev_get/put()
+> to align it to rest of kernel for similar use.
+> Patch-5: Uses refcount APIs to get/put reference to CMA device.
+> Patch-6: Renames cma cm_id's ref helpers to cma_id_get/put() to align
+> to rest of the kernel for similar use.
+> Patch-7: Uses refcount APIs to get/put reference to CM id.
+> 
+> Thanks
+> 
+> Parav Pandit (7):
+>   RDMA/cma: Use helper function to enqueue resolve work item
+>   RDMA/cma: Use RDMA device port iterator
+>   RDMA/cma: Rename cma_device ref/deref helpers to to get/put
+>   RDMA/cma: Use refcount API to reflect refcount
+>   RDMA/cma: Rename cma_device ref/deref helpers to to get/put
+>   RDMA/cma: Use refcount API to reflect refcount
 
-Applied to for-rc, thanks
+Applied to for-next
 
-Jason
+Thanks,
+Jason 
