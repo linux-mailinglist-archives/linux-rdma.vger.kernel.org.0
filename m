@@ -2,254 +2,164 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E87158B44
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 09:33:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C7E158FB7
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 14:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727913AbgBKIdT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Feb 2020 03:33:19 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:46729 "EHLO
+        id S1729028AbgBKNVo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Feb 2020 08:21:44 -0500
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:42190 "EHLO
         mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727761AbgBKIdT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Feb 2020 03:33:19 -0500
-Received: by mail-lf1-f66.google.com with SMTP id z26so6316267lfg.13
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 00:33:15 -0800 (PST)
+        with ESMTP id S1728460AbgBKNVo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Feb 2020 08:21:44 -0500
+Received: by mail-lf1-f66.google.com with SMTP id y19so6978853lfl.9
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 05:21:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZoY3Hsdgrv3CmxwLhGMdakKrkjLfqAG6LQwKXCGH2As=;
-        b=m9JU4UkFkuD4pnHDaauVmJ9fI6OT40DrNwfgzJCZ4d+eg+JmvW/G4qTlNJ417JVgga
-         GWPTJc+cIsZ4QFF4ITl8k77VII5E6LBD6n9Qc158yU6vILonNeQUrlIUHsW/4x2ovp3U
-         0HEUH4QnhT0qlm4XM+LHzoFBMIGJxYmKjPx5e+31eWzxhSipORcOjPkl4d/H4Il7jZCS
-         /2yErFu9kyNHoh3KOrZVQwnzVNr1lual5/79axw+yErENGlEOJfVQb+9qeA0lNv6eP0S
-         7Cts2CH3FrPvVj5dwybdlvJ/EgufSRntTL9w1rH34Gkz10mhFKRf9XOk3hLmJm0OwG4w
-         D2SA==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Hr4RM1uoMUp4PqitGEd8DPH0BhvKXrOmDlEYhlDDK/I=;
+        b=bFc+jsaX1bV6Bl3CuP+Cavm+epSok3Y8YuARU6618UpGWA+riHbOEsKSpMLVF0ZXnU
+         bY7fqdQ0bEnWWZfLd6Oqd9qX1D757FrAYb+O8BaQ+LQhdXMTPs51Hy2WUXzJ4Ad24uj4
+         cvUYk6SVn5+//nUOhXYL42dvCGwEwZFRn+X4g8zbG1FE0jal/OsaVU08xzOzzjWLIm0D
+         8MwIcgxr3JmYIH/VoOmj8XDIQ6QhVzIhQMilukMtaXwupCH3WebHq6ULuGRH9rDVgw9o
+         yY56NRlMCQ15lfK+PifbXajl/TM4KUteetaHmFwDIJm5VG8+ct0cSww9niJRGFLxEBTQ
+         oHNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZoY3Hsdgrv3CmxwLhGMdakKrkjLfqAG6LQwKXCGH2As=;
-        b=EBJjoPD25OZxgxzt5mr+3+qgRQBfcRAV+Tk9IwROcGySOkDHHZg64vI5Yno7ge5ZFV
-         xajKnzwkkTKUqRCp/wDc2+VuJ2JFlEIn4y2gWjJvMpoajURcLhYzXmMqP8xsG3u7VMex
-         Bt+6cBquxseUYIwJ8Y9hAVSrdvvBY3mMiUriksdd5VnhLU5dZbGzvmUlUqMFUamEImZF
-         bYpzpVc16eG9/XM5eTYBFrSPAkSU23/fiR+rOOkG5VKFew2BIHby0OryN7X2CYZBGbzq
-         u0HlCr13GRaNGWiABmJQnBxb5nq/haUlue/IX5IFsHxhc2Okl7EwL6h6shwwawM+RtTD
-         XA3g==
-X-Gm-Message-State: APjAAAUzfmW4nykZIwem7ZQl1CdsSi7twvc7FN1Bi7pL2+9iC+VpWmYn
-        g7q0PAtAM/SyRvbUhLipGxwapOEalOdmnMENgoahDw9OOeo=
-X-Google-Smtp-Source: APXvYqxZMTUzPj/Lfmtl+NcwpocRECuPIxguwQA6UeO2abJJ5359qgfKt8RSdQAremoJOPOi4Mip8qm8xl0U7biOPEc=
-X-Received: by 2002:a19:7515:: with SMTP id y21mr2971523lfe.45.1581409994744;
- Tue, 11 Feb 2020 00:33:14 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Hr4RM1uoMUp4PqitGEd8DPH0BhvKXrOmDlEYhlDDK/I=;
+        b=Oxmnt8rOOEMqMfYEn5tfZAQdrdoBTMfnVW1THR/12CfRbERd2CWXunrOukg/GUQkzA
+         bqoslFyVr0nr3Sa7VoARWyMhVoXCzQxO/DdvOsI5QqR+K8xkQ1hvNgOqZLNFFZm1OnDD
+         0RgEEwYqPL/icXTCuFwUz9iLxnspsj2WKgK2qUCdpv1LcXS52wgnZ0xF9d9AvbxrUMjj
+         46Ky1qU60LgcH+8kfP8KxU0jIpbmHPTsy4hBpa8Dw3/D3HxRlbT3mw1SUI5HZDTMTrPw
+         ucQmfTyHxu++9YYzO0yMK4PoP7QlP9d07rQBs23H3DrNavZbUog2E5+l7PCv3jYMRiag
+         ejuQ==
+X-Gm-Message-State: APjAAAULlZwXg2GS0rv+vhONtLD9zNOmNiQtPbnx689Em7zSlL3bv/AJ
+        UGYWL0CzPGS2QR1IvsQlG2OKlA==
+X-Google-Smtp-Source: APXvYqxV3rctot+0vYRe7IkamEeOz1L1i7WPyibLsi5dvBCjvN0112ivhIa5RgpfbLebu0hWGg8rAw==
+X-Received: by 2002:a19:8c4d:: with SMTP id i13mr3655524lfj.42.1581427301828;
+        Tue, 11 Feb 2020 05:21:41 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id a8sm2166091ljn.74.2020.02.11.05.21.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Feb 2020 05:21:41 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id D76B5100AFB; Tue, 11 Feb 2020 16:21:59 +0300 (+03)
+Date:   Tue, 11 Feb 2020 16:21:59 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v6 12/12] mm: dump_page(): additional diagnostics for
+ huge pinned pages
+Message-ID: <20200211132159.pii2x5pssifemgaz@box>
+References: <20200211001536.1027652-1-jhubbard@nvidia.com>
+ <20200211001536.1027652-13-jhubbard@nvidia.com>
 MIME-Version: 1.0
-References: <CAKC_zStdDH4my0gzfGhFc3zuWwGG1bW93Q+Bc-UF4csFacT5Hw@mail.gmail.com>
- <CAKC_zSvKE+tOYiODVmW=0=qd+HGGTEhREi3e4SOmK_Et_iVn8A@mail.gmail.com> <CAD=hENf3RaNDaxi3qRCH499Q9WK6ZDoPBSCrh0ffES6f5UU=5Q@mail.gmail.com>
-In-Reply-To: <CAD=hENf3RaNDaxi3qRCH499Q9WK6ZDoPBSCrh0ffES6f5UU=5Q@mail.gmail.com>
-From:   Frank Huang <tigerinxm@gmail.com>
-Date:   Tue, 11 Feb 2020 16:33:03 +0800
-Message-ID: <CAKC_zSuwGKEc1za4gvUze41nyKzemwHSV-m_um3MkxwKQw=w1g@mail.gmail.com>
-Subject: Re: slab leak on rxe
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200211001536.1027652-13-jhubbard@nvidia.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This is the first time I meet this bug, haven't found the bug trigger yet.
+On Mon, Feb 10, 2020 at 04:15:36PM -0800, John Hubbard wrote:
+> As part of pin_user_pages() and related API calls, pages are
+> "dma-pinned". For the case of compound pages of order > 1, the per-page
+> accounting of dma pins is accomplished via the 3rd struct page in the
+> compound page. In order to support debugging of any pin_user_pages()-
+> related problems, enhance dump_page() so as to report the pin count
+> in that case.
+> 
+> Documentation/core-api/pin_user_pages.rst is also updated accordingly.
+> 
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+>  Documentation/core-api/pin_user_pages.rst |  7 +++++++
+>  mm/debug.c                                | 21 ++++++++++++++++-----
+>  2 files changed, 23 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/core-api/pin_user_pages.rst b/Documentation/core-api/pin_user_pages.rst
+> index 5c8a5f89756b..2e939ff10b86 100644
+> --- a/Documentation/core-api/pin_user_pages.rst
+> +++ b/Documentation/core-api/pin_user_pages.rst
+> @@ -238,6 +238,13 @@ long-term [R]DMA pins in place, or during pin/unpin transitions.
+>  (...unless it was already out of balance due to a long-term RDMA pin being in
+>  place.)
+>  
+> +Other diagnostics
+> +=================
+> +
+> +dump_page() has been enhanced slightly, to handle these new counting fields, and
+> +to better report on compound pages in general. Specifically, for compound pages
+> +with order > 1, the exact (hpage_pinned_refcount) pincount is reported.
+> +
+>  References
+>  ==========
+>  
+> diff --git a/mm/debug.c b/mm/debug.c
+> index f5ffb0784559..2189357f0987 100644
+> --- a/mm/debug.c
+> +++ b/mm/debug.c
+> @@ -85,11 +85,22 @@ void __dump_page(struct page *page, const char *reason)
+>  	mapcount = PageSlab(head) ? 0 : page_mapcount(page);
+>  
+>  	if (compound)
+> -		pr_warn("page:%px refcount:%d mapcount:%d mapping:%p "
+> -			"index:%#lx head:%px order:%u compound_mapcount:%d\n",
+> -			page, page_ref_count(head), mapcount,
+> -			mapping, page_to_pgoff(page), head,
+> -			compound_order(head), compound_mapcount(page));
+> +		if (hpage_pincount_available(page)) {
+> +			pr_warn("page:%px refcount:%d mapcount:%d mapping:%p "
+> +				"index:%#lx head:%px order:%u "
+> +				"compound_mapcount:%d compound_pincount:%d\n",
+> +				page, page_ref_count(head), mapcount,
+> +				mapping, page_to_pgoff(page), head,
+> +				compound_order(head), compound_mapcount(page),
+> +				compound_pincount(page));
+> +		} else {
+> +			pr_warn("page:%px refcount:%d mapcount:%d mapping:%p "
+> +				"index:%#lx head:%px order:%u "
+> +				"compound_mapcount:%d\n",
+> +				page, page_ref_count(head), mapcount,
+> +				mapping, page_to_pgoff(page), head,
+> +				compound_order(head), compound_mapcount(page));
+> +		}
 
-We will kill the process in some situation using kill -9. Would it cause that?
+Have you considered using pr_cont() here. I guess it would be easier to
+read.
 
-Before this happens, there are some error report:
+You can use my Ack anyway.
 
-Feb 11 04:24:55  kernel: rdma_rxe: no qp matches qpn 0x31f5
-Feb 11 04:24:55  kernel: rdma_rxe: no qp matches qpn 0x31f5
-Feb 11 04:24:55  kernel: rdma_rxe: no qp matches qpn 0x31f5
-Feb 11 04:24:55  kernel: rdma_rxe: no qp matches qpn 0x31f5
-Feb 11 04:24:55  kernel: rdma_rxe: no qp matches qpn 0x31f5
-Feb 11 04:24:55  kernel: rdma_rxe: no qp matches qpn 0x31f5
-Feb 11 04:24:55  kernel: rdma_rxe: no qp matches qpn 0x31f5
-Feb 11 04:24:55  kernel: rdma_rxe: no qp matches qpn 0x31f5
-Feb 11 04:24:55  kernel: rdma_rxe: no qp matches qpn 0x31f5
-Feb 11 04:24:55  kernel: rdma_rxe: no qp matches qpn 0x31f5
 
-On Tue, Feb 11, 2020 at 3:42 PM Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
->
-> Can this bug be reproduced?
->
-> Zhu Yanjun
->
-> On Tue, Feb 11, 2020 at 3:32 PM Frank Huang <tigerinxm@gmail.com> wrote:
-> >
-> > Re-post the log , sorry for the format.
-> >
-> > Feb 11 14:17:31  kernel:
-> > =============================================================================
-> > Feb 11 14:17:31  kernel: BUG rxe-qp (Tainted: G           OE  ):
-> > Objects remaining in rxe-qp on __kmem_cache_shutdown()
-> > Feb 11 14:17:31  kernel:
-> > -----------------------------------------------------------------------------
-> > Feb 11 14:17:31  kernel: Disabling lock debugging due to kernel taint
-> > Feb 11 14:17:31  kernel: INFO: Slab 0xfffff4c4b027a000 objects=16
-> > used=1 fp=0xffff96f3c9e83f00 flags=0x17ffffc0008100
-> > Feb 11 14:17:31  kernel: CPU: 27 PID: 25588 Comm: rmmod Tainted: G
-> > B      OE   4.14.97-.el7.centos.x86_64 #1
-> > Feb 11 14:17:31  kernel: Hardware name: /80010056, BIOS 4.1.15 03/28/2017
-> > Feb 11 14:17:31  kernel: Call Trace:
-> > Feb 11 14:17:31  kernel:  dump_stack+0x5a/0x7b
-> > Feb 11 14:17:31  kernel:  slab_err+0xb4/0xe0
-> > Feb 11 14:17:31  kernel:  ? calibrate_delay+0x138/0x5f0
-> > Feb 11 14:17:31  kernel:  ? on_each_cpu_mask+0x27/0x60
-> > Feb 11 14:17:31  kernel:  ? on_each_cpu_cond+0xaf/0x140
-> > Feb 11 14:17:31  kernel:  ? __kmalloc+0x179/0x200
-> > Feb 11 14:17:31  kernel:  ? __kmem_cache_shutdown+0x194/0x3d0
-> > Feb 11 14:17:31  kernel:  __kmem_cache_shutdown+0x1b4/0x3d0
-> > Feb 11 14:17:31  kernel:  shutdown_cache+0x13/0x1b0
-> > Feb 11 14:17:31  kernel:  kmem_cache_destroy+0x1e4/0x220
-> > Feb 11 14:17:31  kernel:  rxe_cache_clean+0x41/0x60 [rdma_rxe]
-> > Feb 11 14:17:31  kernel:  rxe_module_exit+0xf/0x68 [rdma_rxe]
-> > Feb 11 14:17:31  kernel:  SyS_delete_module+0x175/0x270
-> > Feb 11 14:17:31  kernel:  do_syscall_64+0x74/0x190
-> > Feb 11 14:17:31  kernel:  entry_SYSCALL_64_after_hwframe+0x3d/0xa2
-> > Feb 11 14:17:31  kernel: RIP: 0033:0x7ff146d3f517
-> > Feb 11 14:17:31  kernel: RSP: 002b:00007ffd4b5c1598 EFLAGS: 00000202
-> > ORIG_RAX: 00000000000000b0
-> > Feb 11 14:17:31  kernel: RAX: ffffffffffffffda RBX: 0000000000d78280
-> > RCX: 00007ff146d3f517
-> > Feb 11 14:17:31  kernel: RDX: 00007ff146db3ca0 RSI: 0000000000000800
-> > RDI: 0000000000d782e8
-> > Feb 11 14:17:31  kernel: RBP: 0000000000000000 R08: 00007ff147008060
-> > R09: 00007ff146db3ca0
-> > Feb 11 14:17:31  kernel: R10: 00007ffd4b5c1020 R11: 0000000000000202
-> > R12: 00007ffd4b5c36ca
-> > Feb 11 14:17:31  kernel: R13: 0000000000000000 R14: 0000000000d78280
-> > R15: 0000000000d78010
-> > Feb 11 14:17:31  kernel: INFO: Object 0xffff96f3c9e84ec0 @offset=20160
-> > Feb 11 14:17:31  kernel: kmem_cache_destroy rxe-qp: Slab cache still has objects
-> > Feb 11 14:17:31  kernel: CPU: 27 PID: 25588 Comm: rmmod Tainted: G
-> > B      OE   4.14.97-.el7.centos.x86_64 #1
-> > Feb 11 14:17:31  kernel: Hardware name: /80010056, BIOS 4.1.15 03/28/2017
-> > Feb 11 14:17:31  kernel: Call Trace:
-> > Feb 11 14:17:31  kernel:  dump_stack+0x5a/0x7b
-> > Feb 11 14:17:31  kernel:  kmem_cache_destroy+0x203/0x220
-> > Feb 11 14:17:31  kernel:  rxe_cache_clean+0x41/0x60 [rdma_rxe]
-> > Feb 11 14:17:31  kernel:  rxe_module_exit+0xf/0x68 [rdma_rxe]
-> > Feb 11 14:17:31  kernel:  SyS_delete_module+0x175/0x270
-> > Feb 11 14:17:31  kernel:  do_syscall_64+0x74/0x190
-> > Feb 11 14:17:31  kernel:  entry_SYSCALL_64_after_hwframe+0x3d/0xa2
-> > Feb 11 14:17:31  kernel: RIP: 0033:0x7ff146d3f517
-> > Feb 11 14:17:31  kernel: RSP: 002b:00007ffd4b5c1598 EFLAGS: 00000202
-> > ORIG_RAX: 00000000000000b0
-> > Feb 11 14:17:31  kernel: RAX: ffffffffffffffda RBX: 0000000000d78280
-> > RCX: 00007ff146d3f517
-> > Feb 11 14:17:31  kernel: RDX: 00007ff146db3ca0 RSI: 0000000000000800
-> > RDI: 0000000000d782e8
-> >
-> > On Tue, Feb 11, 2020 at 3:09 PM Frank Huang <tigerinxm@gmail.com> wrote:
-> > >
-> > > Hi, All
-> > >
-> > > When I use the old version of rdma_rxe (kernel 4.14.97), There is a
-> > > slab leak of qp, is it fixed in newest version? I found the commit
-> > > history on kernel.org, have not found same issue with it?
-> > >
-> > >
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > =============================================================================
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: BUG
-> > > rxe-qp (Tainted: G           OE  ): Objects remaining in rxe-qp on
-> > > __kmem_cache_shutdown()
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > -----------------------------------------------------------------------------
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: Disabling
-> > > lock debugging due to kernel taint
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: INFO:
-> > > Slab 0xfffff4c4b027a000 objects=16 used=1 fp=0xffff96f3c9e83f00
-> > > flags=0x17ffffc0008100
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: CPU: 27
-> > > PID: 25588 Comm: rmmod Tainted: G    B      OE
-> > > 4.14.97-.el7.centos.x86_64 #1
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: Hardware
-> > > name: 80010056, BIOS 4.1.15 03/28/2017
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: Call Trace:
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > dump_stack+0x5a/0x7b
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:  slab_err+0xb4/0xe0
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:  ?
-> > > calibrate_delay+0x138/0x5f0
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:  ?
-> > > on_each_cpu_mask+0x27/0x60
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:  ?
-> > > on_each_cpu_cond+0xaf/0x140
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:  ?
-> > > __kmalloc+0x179/0x200
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:  ?
-> > > __kmem_cache_shutdown+0x194/0x3d0
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > __kmem_cache_shutdown+0x1b4/0x3d0
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > shutdown_cache+0x13/0x1b0
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > kmem_cache_destroy+0x1e4/0x220
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > rxe_cache_clean+0x41/0x60 [rdma_rxe]
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > rxe_module_exit+0xf/0x68 [rdma_rxe]
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > SyS_delete_module+0x175/0x270
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > do_syscall_64+0x74/0x190
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > entry_SYSCALL_64_after_hwframe+0x3d/0xa2
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RIP:
-> > > 0033:0x7ff146d3f517
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RSP:
-> > > 002b:00007ffd4b5c1598 EFLAGS: 00000202 ORIG_RAX: 00000000000000b0
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RAX:
-> > > ffffffffffffffda RBX: 0000000000d78280 RCX: 00007ff146d3f517
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RDX:
-> > > 00007ff146db3ca0 RSI: 0000000000000800 RDI: 0000000000d782e8
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RBP:
-> > > 0000000000000000 R08: 00007ff147008060 R09: 00007ff146db3ca0
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: R10:
-> > > 00007ffd4b5c1020 R11: 0000000000000202 R12: 00007ffd4b5c36ca
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: R13:
-> > > 0000000000000000 R14: 0000000000d78280 R15: 0000000000d78010
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: INFO:
-> > > Object 0xffff96f3c9e84ec0 @offset=20160
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > kmem_cache_destroy rxe-qp: Slab cache still has objects
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: CPU: 27
-> > > PID: 25588 Comm: rmmod Tainted: G    B      OE
-> > > 4.14.97-.el7.centos.x86_64 #1
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: Hardware
-> > > name: 80010056, BIOS 4.1.15 03/28/2017
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: Call Trace:
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > dump_stack+0x5a/0x7b
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > kmem_cache_destroy+0x203/0x220
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > rxe_cache_clean+0x41/0x60 [rdma_rxe]
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > rxe_module_exit+0xf/0x68 [rdma_rxe]
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > SyS_delete_module+0x175/0x270
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > do_syscall_64+0x74/0x190
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
-> > > entry_SYSCALL_64_after_hwframe+0x3d/0xa2
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RIP:
-> > > 0033:0x7ff146d3f517
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RSP:
-> > > 002b:00007ffd4b5c1598 EFLAGS: 00000202 ORIG_RAX: 00000000000000b0
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RAX:
-> > > ffffffffffffffda RBX: 0000000000d78280 RCX: 00007ff146d3f517
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RDX:
-> > > 00007ff146db3ca0 RSI: 0000000000000800 RDI: 0000000000d782e8
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RBP:
-> > > 0000000000000000 R08: 00007ff147008060 R09: 00007ff146db3ca0
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: R10:
-> > > 00007ffd4b5c1020 R11: 0000000000000202 R12: 00007ffd4b5c36ca
-> > > Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: R13:
-> > > 0000000000000000 R14: 0000000000d78280 R15: 0000000000d78010
+>  	else
+>  		pr_warn("page:%px refcount:%d mapcount:%d mapping:%p index:%#lx\n",
+>  			page, page_ref_count(page), mapcount,
+> -- 
+> 2.25.0
+> 
+
+-- 
+ Kirill A. Shutemov
