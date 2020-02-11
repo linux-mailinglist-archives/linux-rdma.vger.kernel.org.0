@@ -2,150 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E72F215868C
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 01:16:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D66B9158A37
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 08:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727802AbgBKAQB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Feb 2020 19:16:01 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:4306 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727723AbgBKAPn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Feb 2020 19:15:43 -0500
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e41f1ec0003>; Mon, 10 Feb 2020 16:14:36 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 10 Feb 2020 16:15:39 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Mon, 10 Feb 2020 16:15:39 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 11 Feb
- 2020 00:15:38 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Tue, 11 Feb 2020 00:15:39 +0000
-Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5e41f22a000b>; Mon, 10 Feb 2020 16:15:38 -0800
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH v6 12/12] mm: dump_page(): additional diagnostics for huge pinned pages
-Date:   Mon, 10 Feb 2020 16:15:36 -0800
-Message-ID: <20200211001536.1027652-13-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200211001536.1027652-1-jhubbard@nvidia.com>
-References: <20200211001536.1027652-1-jhubbard@nvidia.com>
+        id S1727600AbgBKHJt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Feb 2020 02:09:49 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:42390 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727467AbgBKHJt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Feb 2020 02:09:49 -0500
+Received: by mail-lj1-f195.google.com with SMTP id d10so10290519ljl.9
+        for <linux-rdma@vger.kernel.org>; Mon, 10 Feb 2020 23:09:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=aDl2jIZrlfmIMc8ELHUrWCpUIzvcBaftWl90I6Vd5uA=;
+        b=NdM2kdJ9siQ+wmZAzHWDjihLX3uQPzdwfH8op7arPAggzc2CO0Jd8n9ddzqsAjgvhV
+         bS5Wmd68vX6p4ybLdvW72WuKX4gKAketG0sqednAuPDK0w+wEjwXN2oMozR6hXrjnGuQ
+         ztp92xbMDLsUQZF6QGqCvnbnkQ0j2TVhCeRVwDYzloqlGhpT+mNg3yf+XF4egTieVjRQ
+         CrN8DgUruSmM7yy178dE8iqJWzfj6J5dOH8sOVe6i9wNdfuYDtNr7goLHI5pOvPLG64Y
+         Rb2x9DEVLLb61B6M3dCDOPNTX6RyNtdSqLQx42pG+eQeI4Se5NXAlKtIa78d1a1yH8RC
+         MUOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=aDl2jIZrlfmIMc8ELHUrWCpUIzvcBaftWl90I6Vd5uA=;
+        b=W3qvyS65d3HCJmqH/MA8FgLcbrRzOvY88FHePYII3FIAfkEl3YK6N0MW8WniXRa9Tl
+         29cwH4zlWiSkpHoEk8kKC6gTmBWbqmIXeHN51in3TwB6EGgOZW3vA1tqJQLe23BMYIut
+         6Bu/QOyM87cK/wVlHntSY3xH96HS9YPwfe+CP4ydRql7GzxWcsTJdUTBxebBUsvbt9VN
+         YPlG76BLPZQwdiAuBGqBltZzTu57p9WqufKNMAraqnndFEDvaZmlhoDBMQahbBsL32xK
+         1KTXuAjed0HcoDS9Yo4NxwfoazFXRlTRdQY6avg5xd1URfMChjEOS1X57Jtjj61+FJu4
+         iKRA==
+X-Gm-Message-State: APjAAAVvgltGZd0PIwOAF2qepiN+5v7Lk1jK1oegWIdOSQ6FruvcaHhj
+        zxaA8sCJfrl3Qu/USf7zo7nsabaCEmE7+4XbL54nrkKvsXY=
+X-Google-Smtp-Source: APXvYqylDoqKllg6VVB9rVGn7aEwb2Rr+tqwEUY4LfvoWNapt7XPbCm0C+myfthi9cOCKAmErMw3G3xeTQ3bp3h342M=
+X-Received: by 2002:a2e:b536:: with SMTP id z22mr3214387ljm.259.1581404986182;
+ Mon, 10 Feb 2020 23:09:46 -0800 (PST)
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1581380076; bh=G6zg3dRvhO6eAf8mbf4UXoagNxuHvI4R2GOif2CoQS4=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=Cd1yfw1/9CzPbKF6OSrgzdmEliYQ3R0HZd3+GQjeV4c0D3J3OusAurjqoXn7uEWpl
-         +LmNHWyGx0F8fXhtaLdXTzZvppVpddmCFnj+rmtLp5kgyxnI/MRZG5guKgEpyIlCqa
-         mmaobcG/RqaV4u3zFUiQKpqT8crsGJWtsPE3i/YQoXDv+emdSSOIa9yEjzPQKVbB1e
-         ZAtnLutXaqXjnpGVwBAbX7eo+vSKYDKCiDBJFT7/rRfE3V8StQpOM+cz/B00Y7d5vV
-         XHlNCGaY8lwO5FkrbQBa+LBxF1OvpglLDXXeV58ipgmai6fx3Q6Poed18DHTkyzAv9
-         5Q0c80gnKiDgA==
+From:   Frank Huang <tigerinxm@gmail.com>
+Date:   Tue, 11 Feb 2020 15:09:34 +0800
+Message-ID: <CAKC_zStdDH4my0gzfGhFc3zuWwGG1bW93Q+Bc-UF4csFacT5Hw@mail.gmail.com>
+Subject: slab leak on rxe
+To:     linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-As part of pin_user_pages() and related API calls, pages are
-"dma-pinned". For the case of compound pages of order > 1, the per-page
-accounting of dma pins is accomplished via the 3rd struct page in the
-compound page. In order to support debugging of any pin_user_pages()-
-related problems, enhance dump_page() so as to report the pin count
-in that case.
+Hi, All
 
-Documentation/core-api/pin_user_pages.rst is also updated accordingly.
+When I use the old version of rdma_rxe (kernel 4.14.97), There is a
+slab leak of qp, is it fixed in newest version? I found the commit
+history on kernel.org, have not found same issue with it?
 
-Cc: Jan Kara <jack@suse.cz>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- Documentation/core-api/pin_user_pages.rst |  7 +++++++
- mm/debug.c                                | 21 ++++++++++++++++-----
- 2 files changed, 23 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/core-api/pin_user_pages.rst b/Documentation/core=
--api/pin_user_pages.rst
-index 5c8a5f89756b..2e939ff10b86 100644
---- a/Documentation/core-api/pin_user_pages.rst
-+++ b/Documentation/core-api/pin_user_pages.rst
-@@ -238,6 +238,13 @@ long-term [R]DMA pins in place, or during pin/unpin tr=
-ansitions.
- (...unless it was already out of balance due to a long-term RDMA pin being=
- in
- place.)
-=20
-+Other diagnostics
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+dump_page() has been enhanced slightly, to handle these new counting field=
-s, and
-+to better report on compound pages in general. Specifically, for compound =
-pages
-+with order > 1, the exact (hpage_pinned_refcount) pincount is reported.
-+
- References
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=20
-diff --git a/mm/debug.c b/mm/debug.c
-index f5ffb0784559..2189357f0987 100644
---- a/mm/debug.c
-+++ b/mm/debug.c
-@@ -85,11 +85,22 @@ void __dump_page(struct page *page, const char *reason)
- 	mapcount =3D PageSlab(head) ? 0 : page_mapcount(page);
-=20
- 	if (compound)
--		pr_warn("page:%px refcount:%d mapcount:%d mapping:%p "
--			"index:%#lx head:%px order:%u compound_mapcount:%d\n",
--			page, page_ref_count(head), mapcount,
--			mapping, page_to_pgoff(page), head,
--			compound_order(head), compound_mapcount(page));
-+		if (hpage_pincount_available(page)) {
-+			pr_warn("page:%px refcount:%d mapcount:%d mapping:%p "
-+				"index:%#lx head:%px order:%u "
-+				"compound_mapcount:%d compound_pincount:%d\n",
-+				page, page_ref_count(head), mapcount,
-+				mapping, page_to_pgoff(page), head,
-+				compound_order(head), compound_mapcount(page),
-+				compound_pincount(page));
-+		} else {
-+			pr_warn("page:%px refcount:%d mapcount:%d mapping:%p "
-+				"index:%#lx head:%px order:%u "
-+				"compound_mapcount:%d\n",
-+				page, page_ref_count(head), mapcount,
-+				mapping, page_to_pgoff(page), head,
-+				compound_order(head), compound_mapcount(page));
-+		}
- 	else
- 		pr_warn("page:%px refcount:%d mapcount:%d mapping:%p index:%#lx\n",
- 			page, page_ref_count(page), mapcount,
---=20
-2.25.0
-
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+=============================================================================
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: BUG
+rxe-qp (Tainted: G           OE  ): Objects remaining in rxe-qp on
+__kmem_cache_shutdown()
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+-----------------------------------------------------------------------------
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: Disabling
+lock debugging due to kernel taint
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: INFO:
+Slab 0xfffff4c4b027a000 objects=16 used=1 fp=0xffff96f3c9e83f00
+flags=0x17ffffc0008100
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: CPU: 27
+PID: 25588 Comm: rmmod Tainted: G    B      OE
+4.14.97-.el7.centos.x86_64 #1
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: Hardware
+name: 80010056, BIOS 4.1.15 03/28/2017
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: Call Trace:
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+dump_stack+0x5a/0x7b
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:  slab_err+0xb4/0xe0
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:  ?
+calibrate_delay+0x138/0x5f0
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:  ?
+on_each_cpu_mask+0x27/0x60
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:  ?
+on_each_cpu_cond+0xaf/0x140
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:  ?
+__kmalloc+0x179/0x200
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:  ?
+__kmem_cache_shutdown+0x194/0x3d0
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+__kmem_cache_shutdown+0x1b4/0x3d0
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+shutdown_cache+0x13/0x1b0
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+kmem_cache_destroy+0x1e4/0x220
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+rxe_cache_clean+0x41/0x60 [rdma_rxe]
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+rxe_module_exit+0xf/0x68 [rdma_rxe]
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+SyS_delete_module+0x175/0x270
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+do_syscall_64+0x74/0x190
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+entry_SYSCALL_64_after_hwframe+0x3d/0xa2
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RIP:
+0033:0x7ff146d3f517
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RSP:
+002b:00007ffd4b5c1598 EFLAGS: 00000202 ORIG_RAX: 00000000000000b0
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RAX:
+ffffffffffffffda RBX: 0000000000d78280 RCX: 00007ff146d3f517
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RDX:
+00007ff146db3ca0 RSI: 0000000000000800 RDI: 0000000000d782e8
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RBP:
+0000000000000000 R08: 00007ff147008060 R09: 00007ff146db3ca0
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: R10:
+00007ffd4b5c1020 R11: 0000000000000202 R12: 00007ffd4b5c36ca
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: R13:
+0000000000000000 R14: 0000000000d78280 R15: 0000000000d78010
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: INFO:
+Object 0xffff96f3c9e84ec0 @offset=20160
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+kmem_cache_destroy rxe-qp: Slab cache still has objects
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: CPU: 27
+PID: 25588 Comm: rmmod Tainted: G    B      OE
+4.14.97-.el7.centos.x86_64 #1
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: Hardware
+name: 80010056, BIOS 4.1.15 03/28/2017
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: Call Trace:
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+dump_stack+0x5a/0x7b
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+kmem_cache_destroy+0x203/0x220
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+rxe_cache_clean+0x41/0x60 [rdma_rxe]
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+rxe_module_exit+0xf/0x68 [rdma_rxe]
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+SyS_delete_module+0x175/0x270
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+do_syscall_64+0x74/0x190
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel:
+entry_SYSCALL_64_after_hwframe+0x3d/0xa2
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RIP:
+0033:0x7ff146d3f517
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RSP:
+002b:00007ffd4b5c1598 EFLAGS: 00000202 ORIG_RAX: 00000000000000b0
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RAX:
+ffffffffffffffda RBX: 0000000000d78280 RCX: 00007ff146d3f517
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RDX:
+00007ff146db3ca0 RSI: 0000000000000800 RDI: 0000000000d782e8
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: RBP:
+0000000000000000 R08: 00007ff147008060 R09: 00007ff146db3ca0
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: R10:
+00007ffd4b5c1020 R11: 0000000000000202 R12: 00007ffd4b5c36ca
+Feb 11 14:17:31 57c4c63f-e817-4e22-aec9-72bc376b757c kernel: R13:
+0000000000000000 R14: 0000000000d78280 R15: 0000000000d78010
