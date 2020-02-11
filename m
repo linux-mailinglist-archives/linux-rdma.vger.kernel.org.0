@@ -2,81 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B35771598A9
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 19:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C54EA1598B2
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Feb 2020 19:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730325AbgBKScJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Feb 2020 13:32:09 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:42859 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730274AbgBKScI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Feb 2020 13:32:08 -0500
-Received: by mail-qt1-f193.google.com with SMTP id r5so7369325qtt.9
-        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 10:32:07 -0800 (PST)
+        id S1728516AbgBKSdY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Feb 2020 13:33:24 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:43541 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727361AbgBKSdX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Feb 2020 13:33:23 -0500
+Received: by mail-qk1-f194.google.com with SMTP id p7so6120800qkh.10
+        for <linux-rdma@vger.kernel.org>; Tue, 11 Feb 2020 10:33:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=vjMbRNBZQ+LJ6aGOCjti2nKdY0gqRjyi9v8bF1h8khE=;
-        b=TlM5685VMRj2bGgvbGkIs1qm9zriEFir7wOtPwANxzfjeNQAYq7Lcv04YycA0yXBVb
-         S/Bq/PXhrrD2WJarSwG8wUS2Njtjaf4xZ4jtGr8MbvD5Vv/I/Tu+Czdpz6XUhXHLz4rA
-         ZXNzEyUtpbP7eVi3Lrnx9mdFYO6z0ReauuxepC7uU5A9/2i2phz0/8FXv2QC5k5Su+oo
-         t9Ut3vLHCH9ePb69SzGa73fLM7B8yL5xh3Uz5EnXZjgRkdVx5MCrevhluAkGJR1XTuIr
-         4uMAo0bC/nflM3LmLfToVXarYDakLRK1FsGcEohlSnMv1RsRnFq5qQvAQV/aUcnqYL+s
-         /HQA==
+        bh=yIiBZZRP3GFtb/gGB6eUs7NkWc9A+FfQqnw3+mQCK+M=;
+        b=c2ZUh8wug1t5bpsmCWWUMMJBe65jCK/kF7K4dAjt8vLpIKyd8k1ZM8abSUgCLKhdDV
+         cgnyKRMqYA6QJ4KLx8mzRQwVTwRZ1mcgV9i4xvyLqoRrTHqEYA3M5pPQJMs62dC/LmAN
+         s0uv1x/RkflZ27YovYNlCltrIbeUm8k6B04D3nDhXCDqukPGGj9rNdKLIu+R7/Gl9E57
+         5PDjKDvQymaxX9EBEaxR47avwr+8x7/o6sS8hdCDqrzhpqwaYs3XXfeV7PKfEYoKTTI9
+         cvzivuk9BimmFyNfni6IbEoFKOBRj5S/A0kC1Pu0cmZfpFHjmfou2BxMZOjhzX6iFdEx
+         gwsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vjMbRNBZQ+LJ6aGOCjti2nKdY0gqRjyi9v8bF1h8khE=;
-        b=PUgDKpYltfYQKE4xuXo9AAHiTMvYTfWau1Z+S64xIU1LbAQM/4oSB6BNI6w3TAdPJU
-         pm7mNOAdrA9p6aK8J9uwZbOgg1MJZUNtX5cI38roJoNKp8MNDfLItVFkSJw5CVI2Oar8
-         wpRSNXhajx2mOGLcjJnEbNKRZe3My9GEG+TS11DT3PdNcJ7TUBxcJ76sUqRuK4OowyP6
-         4vJRC8UVBuE02tXpE3+PZcQBJPcN5FBf02ZnS4RZNkQxpkA3rDQgNZlGBomsHjNyXxkR
-         x7eGd1kWqHDZzqG3gSt7dIPL42a/eRuNmBGSJJMNIosPOVZoxlEJviD0I2ANNd4EmXDq
-         Pl3g==
-X-Gm-Message-State: APjAAAUHvsHhmYQ0NHMdtPo3a/5K+9XEnPQZd/GrW333l9PvglFfC/uV
-        7TZQK7Rx+RMMkBnWQrfJGm7XWZ8dBpR+8A==
-X-Google-Smtp-Source: APXvYqx1Stt7sCaH1A9LJpCAScBxqMQ2EvlssxXtDjmK+6ahKYPi5V/gd9BEYI1gE7ykgdj6w2J7dA==
-X-Received: by 2002:aed:2e03:: with SMTP id j3mr3688692qtd.365.1581445927381;
-        Tue, 11 Feb 2020 10:32:07 -0800 (PST)
+        bh=yIiBZZRP3GFtb/gGB6eUs7NkWc9A+FfQqnw3+mQCK+M=;
+        b=YOwFYywBP+Y9BXpF2arSkzivnSFoO38vToZeBL4LTVwsDKKYAr3r8hlsZNZ0Tk0qo9
+         8Zw1H853C3ju9Qx9iIg8sL/OZIQx5xtr7gMluKJID5vPXBIIxPxu1WyhLjQ70rIG93GA
+         iwc+I2a8I1znTGTXAX0sgQWNPh9KTmJx3bwafrjg7On+oMhH2JP5hc2IJDjeVpAG+eUK
+         7PcSwayzFF6hWS8SZGcOcT5EQCTphS9ZDcfouJoWAxnpuBpeSoBGxxAhUGuo9gyzMObM
+         Yz1lnfxkdj/5QGo29NJ6+sluYUQSxwhV88y+TzVJJyp0knbBahYq1/U+P+tg/cFBorR0
+         Tt3A==
+X-Gm-Message-State: APjAAAU6SZk529V3qeqgL5zSX98FSMeI2+DOZ0RwzkH8AXbl7qodbrwL
+        IYFLjkoEsX3FfT0bThzC3hQrTQ==
+X-Google-Smtp-Source: APXvYqxm9uo7u4na9qntBirCV7mkCCszW/KcNApvqQsHTGm1LOvfPOHKGS6A1pHq0hZ0XXUYF3Wk5g==
+X-Received: by 2002:a05:620a:b19:: with SMTP id t25mr7681403qkg.82.1581446002978;
+        Tue, 11 Feb 2020 10:33:22 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id t29sm2371318qkt.36.2020.02.11.10.32.07
+        by smtp.gmail.com with ESMTPSA id m54sm2627512qtf.67.2020.02.11.10.33.22
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 11 Feb 2020 10:32:07 -0800 (PST)
+        Tue, 11 Feb 2020 10:33:22 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1j1aKM-0003hh-Kj; Tue, 11 Feb 2020 14:32:06 -0400
-Date:   Tue, 11 Feb 2020 14:32:06 -0400
+        id 1j1aLa-0003mI-5u; Tue, 11 Feb 2020 14:33:22 -0400
+Date:   Tue, 11 Feb 2020 14:33:22 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Shiraz Saleem <shiraz.saleem@intel.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v1 rdma-next] i40iw: Do an RCU lookup in
- i40iw_add_ipv4_addr
-Message-ID: <20200211183206.GA14213@ziepe.ca>
-References: <20200204223840.2151-1-shiraz.saleem@intel.com>
+To:     Kamal Heib <kamalheib1@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>
+Subject: Re: [PATCH for-rc] RDMA/siw: Fix setting active_mtu attribute
+Message-ID: <20200211183322.GA14491@ziepe.ca>
+References: <20200205081354.30438-1-kamalheib1@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200204223840.2151-1-shiraz.saleem@intel.com>
+In-Reply-To: <20200205081354.30438-1-kamalheib1@gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 04, 2020 at 04:38:40PM -0600, Shiraz Saleem wrote:
-> The in_dev_for_each_ifa_rtnl iterator in i40iw_add_ipv4_addr
-> requires that the rtnl lock be held. But the rtnl_trylock/unlock
-> scheme in this function does not guarantee it.
+On Wed, Feb 05, 2020 at 10:13:54AM +0200, Kamal Heib wrote:
+> Make sure to set the active_mtu attribute to avoid report the following
+> invalid value:
 > 
-> Replace the rtnl locking with an RCU lookup.
+> $ ibv_devinfo -d siw0 | grep active_mtu
+> 			active_mtu:		invalid MTU (0)
 > 
-> Fixes: 8e06af711bf2 ("i40iw: add main, hdr, status")
-> Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
+> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> Reviewed-by: Gal Pressman <galpress@amazon.com>
+> Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
 > ---
-> v0-->v1:
-> Annotate dev->flags with READ_ONCE
+>  drivers/infiniband/sw/siw/siw_verbs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+This isn't really rc worthy as it has always been broken
 
 Applied to for-next, thanks
 
