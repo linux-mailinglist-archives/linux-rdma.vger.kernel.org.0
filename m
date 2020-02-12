@@ -2,232 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBAC15A472
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2020 10:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6138D15A498
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2020 10:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728803AbgBLJRt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Feb 2020 04:17:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47802 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728150AbgBLJRs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 12 Feb 2020 04:17:48 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 5A7EDAC16;
-        Wed, 12 Feb 2020 09:17:44 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 132C61E0E01; Wed, 12 Feb 2020 10:17:43 +0100 (CET)
-Date:   Wed, 12 Feb 2020 10:17:43 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v6 08/12] mm/gup: /proc/vmstat: pin_user_pages (FOLL_PIN)
- reporting
-Message-ID: <20200212091743.GC25573@quack2.suse.cz>
-References: <20200211001536.1027652-1-jhubbard@nvidia.com>
- <20200211001536.1027652-9-jhubbard@nvidia.com>
+        id S1728681AbgBLJZV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Feb 2020 04:25:21 -0500
+Received: from sonic310-13.consmr.mail.bf2.yahoo.com ([74.6.135.123]:33806
+        "EHLO sonic310-13.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728595AbgBLJZV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 12 Feb 2020 04:25:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1581499520; bh=6u3qDl6yXWBH9oVBF6VmNFaXPPfmaUEmS0LDo6+oXlw=; h=Date:From:Reply-To:Subject:References:From:Subject; b=J5dKLDfDi56lQeQxTLu6EvFzlMGYE77+iQr5xLKxUL/xh0c0Vh57iP0res/9SMqSpHDBwGGwfVmZZRDB9rLOiv9G8uJN+aqyoiJYD1LFBbZ9L01vHXxK2EttWjJ0EDnsmrrBmBsULki8il9+D9k7FONEh9KbQP+Tt+zDlFcLdZOnA8NQyHDJbEJpO9q9gCEpM3hWgD6kw8BlQzDZvXLSzGtraPJBe/F9EBu6XWWS/cuP57RBrB0P/5HPCoUrI7UTDPvydriuPlcleiA0cjoyGaaJEk/mr6z56WN3Ds5bqSk8WfXK2ALcwxiiyVfzxKTljnRgwqDesG2H7WKwwG6Wfg==
+X-YMail-OSG: mdu5LJwVM1kTJTJtU.QodtkUw68C5A_MPMG.I15g11QEKAnaLtUdiivTTW8QKsb
+ foLwfXzbqtbDPZKPLj7AKJ4mYMTli0OEOjauViGoOLmhmAvwtiakjuYnJPiVfqWgdMrNj5Eacx3L
+ YnDA7bQ7pP7BDaTUZAVs_DNRMFnRuPZ__yjd0CBf3RpoZMlpVf1pYwU1Qj_MWIyqMD7.ttT0zvAb
+ Nxew.Kb_hShpWiqEl0KCcfT5kmJbHj1H_I.1PZTgAiqs.nlNHcwZWY2AjvEq39qe6fa0z79OIdxd
+ edqXvHjcIrWzjDHYrv.aEavwjDrdpT1N4.tGAKUBRGZ7_m323B1B8YAiRAp3JGrSM7mjjcES.eE2
+ PQOumQJyTeTWHfeNCQMbsHUGGYfFqiwrm7gCtxaW_psafHwkVT_RHEsBNY9obtSs1IdV8tu0zCcZ
+ SyjZEVSDccEkPZ6pG35vuZXq0QqS7KnKZRqqLvVOgnfIp9nW813FZiV6mISoFeFbkW62Uo.Hle3E
+ .uBTzj6cyt_hMX4uWnl4NHqGeLgxXSiL3ehlsznHULri3YpxdpctktyB93lRv4XtjUb9EonESP8n
+ UxgKhNAf0PUgnSf7882waQqpPx.HYr4adTn1TX_ei._dGg3yBNdc8v0z9E7LmmEjLIMxUrb2ZaPU
+ fb3B039.Dsz4Hl15ip4i730Y94jcqkbQMaOZY2UzZ_9DpN225nGS24O1vjOflXPpX4dsLUrII.t.
+ Hv8lhFY7dTJj3vOu65tzIRU3IC_TlMcW2yfWdC1csDT2MrPyMXKz.MZzQu1r1BIEbR_KLJbXsnFr
+ n0dB61_tkrK_fykqu3opUIvHgU4UvHoaXfnRm6JOKW_8.uuy2QenfZkUVZMglk2fQ7I3A1Y2S5s_
+ SNYRumc8tL6wt6cFYST.9Vb_Vw8HUFA3VWRisM4._rSBMBXo6dkdDm5oLPqKtOv2qf2kBug2Eyi6
+ nRCT5oJcgHGYU61pu3npE.ncjkzeycCSR.Cl22GCJ4BJoiCLjHh9T_WDI6mhMJXT8gMoUMh2Aku5
+ q4hcrRYvOqHNrC5fpR9h6deFMVYeqqwzRuVIaVlyAcBS.dnF0S8H8fk8UWmJhcqaYaIjUmNGi4HJ
+ y7pL7s_j4TKKJUzRBj2JWuzaWH6Sip69NpGxN_Y_PkYXtDEpmZ08vDnRD3e.6pLLBGDoihL7kp.d
+ seEEe0dWtL81YVeIblChqJ1P8NosWiqu3fetD.s.zcze6..3f2PtyeEmf1mIytxSZg124oSom3_h
+ gbBN6f6gVa6M4f0lgUovnuG.m.1zJkBCVvZ5y0VuXUmbNTfXmhsNmuHqMkTEde8ouuspkKGjF3Mo
+ ikYo-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.bf2.yahoo.com with HTTP; Wed, 12 Feb 2020 09:25:20 +0000
+Date:   Wed, 12 Feb 2020 09:25:17 +0000 (UTC)
+From:   Ms Lisa Hugh <lisa.hugh222@gmail.com>
+Reply-To: ms.lisahugh000@gmail.com
+Message-ID: <1853831241.1328184.1581499517784@mail.yahoo.com>
+Subject: BUSINESS TRANSFER CO-OPERATION.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200211001536.1027652-9-jhubbard@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1853831241.1328184.1581499517784.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15199 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:72.0) Gecko/20100101 Firefox/72.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon 10-02-20 16:15:32, John Hubbard wrote:
-> Now that pages are "DMA-pinned" via pin_user_page*(), and unpinned via
-> unpin_user_pages*(), we need some visibility into whether all of this is
-> working correctly.
-> 
-> Add two new fields to /proc/vmstat:
-> 
->     nr_foll_pin_acquired
->     nr_foll_pin_released
-> 
-> These are documented in Documentation/core-api/pin_user_pages.rst.
-> They represent the number of pages (since boot time) that have been
-> pinned ("nr_foll_pin_acquired") and unpinned ("nr_foll_pin_released"),
-> via pin_user_pages*() and unpin_user_pages*().
-> 
-> In the absence of long-running DMA or RDMA operations that hold pages
-> pinned, the above two fields will normally be equal to each other.
-> 
-> Also: update Documentation/core-api/pin_user_pages.rst, to remove an
-> earlier (now confirmed untrue) claim about a performance problem with
-> /proc/vmstat.
-> 
-> Also: updated Documentation/core-api/pin_user_pages.rst to rename the
-> new /proc/vmstat entries, to the names listed here.
-> 
-> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 
-The patch looks good to me now. You can add:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Dear Friend,
 
-								Honza
+I am Ms Lisa Hugh work with the department of Audit and accounting manager here in the Bank(B.O.A).
 
-> ---
->  Documentation/core-api/pin_user_pages.rst | 33 +++++++++++++++++++----
->  include/linux/mmzone.h                    |  2 ++
->  mm/gup.c                                  | 13 +++++++++
->  mm/vmstat.c                               |  2 ++
->  4 files changed, 45 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/core-api/pin_user_pages.rst b/Documentation/core-api/pin_user_pages.rst
-> index 7e5dd8b1b3f2..5c8a5f89756b 100644
-> --- a/Documentation/core-api/pin_user_pages.rst
-> +++ b/Documentation/core-api/pin_user_pages.rst
-> @@ -208,12 +208,35 @@ has the following new calls to exercise the new pin*() wrapper functions:
->  You can monitor how many total dma-pinned pages have been acquired and released
->  since the system was booted, via two new /proc/vmstat entries: ::
->  
-> -    /proc/vmstat/nr_foll_pin_requested
-> -    /proc/vmstat/nr_foll_pin_requested
-> +    /proc/vmstat/nr_foll_pin_acquired
-> +    /proc/vmstat/nr_foll_pin_released
->  
-> -Those are both going to show zero, unless CONFIG_DEBUG_VM is set. This is
-> -because there is a noticeable performance drop in unpin_user_page(), when they
-> -are activated.
-> +Under normal conditions, these two values will be equal unless there are any
-> +long-term [R]DMA pins in place, or during pin/unpin transitions.
-> +
-> +* nr_foll_pin_acquired: This is the number of logical pins that have been
-> +  acquired since the system was powered on. For huge pages, the head page is
-> +  pinned once for each page (head page and each tail page) within the huge page.
-> +  This follows the same sort of behavior that get_user_pages() uses for huge
-> +  pages: the head page is refcounted once for each tail or head page in the huge
-> +  page, when get_user_pages() is applied to a huge page.
-> +
-> +* nr_foll_pin_released: The number of logical pins that have been released since
-> +  the system was powered on. Note that pages are released (unpinned) on a
-> +  PAGE_SIZE granularity, even if the original pin was applied to a huge page.
-> +  Becaused of the pin count behavior described above in "nr_foll_pin_acquired",
-> +  the accounting balances out, so that after doing this::
-> +
-> +    pin_user_pages(huge_page);
-> +    for (each page in huge_page)
-> +        unpin_user_page(page);
-> +
-> +...the following is expected::
-> +
-> +    nr_foll_pin_released == nr_foll_pin_acquired
-> +
-> +(...unless it was already out of balance due to a long-term RDMA pin being in
-> +place.)
->  
->  References
->  ==========
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 462f6873905a..4bca42eeb439 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -243,6 +243,8 @@ enum node_stat_item {
->  	NR_DIRTIED,		/* page dirtyings since bootup */
->  	NR_WRITTEN,		/* page writings since bootup */
->  	NR_KERNEL_MISC_RECLAIMABLE,	/* reclaimable non-slab kernel pages */
-> +	NR_FOLL_PIN_ACQUIRED,	/* via: pin_user_page(), gup flag: FOLL_PIN */
-> +	NR_FOLL_PIN_RELEASED,	/* pages returned via unpin_user_page() */
->  	NR_VM_NODE_STAT_ITEMS
->  };
->  
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 4d0d94405639..441f7a48f370 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -86,6 +86,8 @@ static __maybe_unused struct page *try_grab_compound_head(struct page *page,
->  	if (flags & FOLL_GET)
->  		return try_get_compound_head(page, refs);
->  	else if (flags & FOLL_PIN) {
-> +		int orig_refs = refs;
-> +
->  		/*
->  		 * When pinning a compound page of order > 1 (which is what
->  		 * hpage_pincount_available() checks for), use an exact count to
-> @@ -104,6 +106,9 @@ static __maybe_unused struct page *try_grab_compound_head(struct page *page,
->  		if (hpage_pincount_available(page))
->  			hpage_pincount_add(page, refs);
->  
-> +		mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_ACQUIRED,
-> +				    orig_refs);
-> +
->  		return page;
->  	}
->  
-> @@ -158,6 +163,8 @@ bool __must_check try_grab_page(struct page *page, unsigned int flags)
->  		 * once, so that the page really is pinned.
->  		 */
->  		page_ref_add(page, refs);
-> +
-> +		mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_ACQUIRED, 1);
->  	}
->  
->  	return true;
-> @@ -178,6 +185,7 @@ static bool __unpin_devmap_managed_user_page(struct page *page)
->  
->  	count = page_ref_sub_return(page, refs);
->  
-> +	mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_RELEASED, 1);
->  	/*
->  	 * devmap page refcounts are 1-based, rather than 0-based: if
->  	 * refcount is 1, then the page is free and the refcount is
-> @@ -228,6 +236,8 @@ void unpin_user_page(struct page *page)
->  
->  	if (page_ref_sub_and_test(page, refs))
->  		__put_page(page);
-> +
-> +	mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_RELEASED, 1);
->  }
->  EXPORT_SYMBOL(unpin_user_page);
->  
-> @@ -2259,6 +2269,9 @@ static int record_subpages(struct page *page, unsigned long addr,
->  static void put_compound_head(struct page *page, int refs, unsigned int flags)
->  {
->  	if (flags & FOLL_PIN) {
-> +		mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_RELEASED,
-> +				    refs);
-> +
->  		if (hpage_pincount_available(page))
->  			hpage_pincount_sub(page, refs);
->  		else
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 78d53378db99..c9c0d71f917f 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1168,6 +1168,8 @@ const char * const vmstat_text[] = {
->  	"nr_dirtied",
->  	"nr_written",
->  	"nr_kernel_misc_reclaimable",
-> +	"nr_foll_pin_acquired",
-> +	"nr_foll_pin_released",
->  
->  	/* enum writeback_stat_item counters */
->  	"nr_dirty_threshold",
-> -- 
-> 2.25.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Please i need your assistance for the transferring of thIs fund to your bank account for both of us benefit for life time investment and the amount is (US$4.5M DOLLARS).
+
+I have every inquiry details to make the bank believe you and release the fund in within 5 banking working days with your full co-operation with me after success.
+
+Note/ 50% for you why 50% for me after success of the transfer to your bank account.
+
+Below information is what i need from you so will can be reaching each other .
+
+1)Full name ...
+2)Private telephone number...
+3)Age...
+4)Nationality...
+5)Occupation ...
+
+
+Thanks.
+
+Ms Lisa Hugh
