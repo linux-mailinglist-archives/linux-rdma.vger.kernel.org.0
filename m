@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EFB15A1EA
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2020 08:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB0815A1E8
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2020 08:26:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728323AbgBLH0p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Feb 2020 02:26:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59406 "EHLO mail.kernel.org"
+        id S1728306AbgBLH0m (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Feb 2020 02:26:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728294AbgBLH0p (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 12 Feb 2020 02:26:45 -0500
+        id S1728294AbgBLH0m (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 12 Feb 2020 02:26:42 -0500
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B21F02073C;
-        Wed, 12 Feb 2020 07:26:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1EE232073C;
+        Wed, 12 Feb 2020 07:26:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581492405;
-        bh=EDc8/ccu0dVjOUUmWXmB2qfPz0QR7pmifOZfvGhxq88=;
-        h=From:To:Cc:Subject:Date:From;
-        b=kswiPS3ZrRq818IsuYP75T23KCSn7PRXiIzx9KMrUSk8lPXy9MPjeeGjtALuN/bgb
-         fslJaeyptgf5PzSt7UPSmMBKt4yhHMzey6Gq5DxYFIgu2SlD7YpWj/rHbbBhKqf2Jo
-         t4/lMAmunggBDNimi4BDsKlL6d0nj960hB+r/MN8=
+        s=default; t=1581492401;
+        bh=A6CMXkyTiYBWDvrr39PC0VNnQlRiJEbGyuoI0rSomVA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZJROHx5x2tX7EVC1uCEzDbJ+2m39lUxb/dMhGesm0VNNdGaq+YKqf6Iw262nOvRlY
+         pMFd52H5rX1W5lVAfv64RS+Pgp3j+gsZm/vuohikyBWecFTvT3oKsnjl6EgUcWSB67
+         mcmrK8bi1VX5MerShSPzwacTkvWD9/GT8f/CVBjE=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
@@ -40,10 +40,12 @@ Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Yishai Hadas <yishaih@mellanox.com>,
         Yonatan Cohen <yonatanc@mellanox.com>,
         Zhu Yanjun <yanjunz@mellanox.com>
-Subject: [PATCH rdma-rc 0/9] Fixes for v5.6
-Date:   Wed, 12 Feb 2020 09:26:26 +0200
-Message-Id: <20200212072635.682689-1-leon@kernel.org>
+Subject: [PATCH rdma-rc 1/9] RDMA/ucma: Mask QPN to be 24 bits according to IBTA
+Date:   Wed, 12 Feb 2020 09:26:27 +0200
+Message-Id: <20200212072635.682689-2-leon@kernel.org>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200212072635.682689-1-leon@kernel.org>
+References: <20200212072635.682689-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -53,60 +55,44 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-Hi,
+IBTA declares QPN as 24bits, mask input to ensure that kernel
+doesn't get higher bits and ensure by adding WANR_ONCE() that
+other CM users do the same.
 
-This pack of small fixes is sent as a patchset simply to simplify their
-tracking. Some of them, like first and second patches were already
-sent to the mailing list. The ucma patch was in our regression for whole
-cycle and we didn't notice any failures related to that change.
+Fixes: 75216638572f ("RDMA/cma: Export rdma cm interface to userspace")
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ drivers/infiniband/core/cm.c   | 3 +++
+ drivers/infiniband/core/ucma.c | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-Changelog of second patch:
-1. Maor added IB_QP_PKEY_INDEX and IB_QP_PORT checks and I rewrote the
-code logic to be less hairy.
-
-Thanks
-
-Leon Romanovsky (2):
-  RDMA/ucma: Mask QPN to be 24 bits according to IBTA
-  RDMA/mlx5: Prevent overflow in mmap offset calculations
-
-Maor Gottlieb (1):
-  RDMA/core: Fix protection fault in get_pkey_idx_qp_list
-
-Michael Guralnik (1):
-  RDMA/core: Add missing list deletion on freeing event queue
-
-Parav Pandit (1):
-  Revert "RDMA/cma: Simplify rdma_resolve_addr() error flow"
-
-Valentine Fatiev (1):
-  IB/ipoib: Fix double free of skb in case of multicast traffic in CM
-    mode
-
-Yishai Hadas (1):
-  IB/mlx5: Fix async events cleanup flows
-
-Yonatan Cohen (1):
-  IB/umad: Fix kernel crash while unloading ib_umad
-
-Zhu Yanjun (1):
-  RDMA/rxe: Fix soft lockup problem due to using tasklets in softirq
-
- drivers/infiniband/core/cm.c               |  3 ++
- drivers/infiniband/core/cma.c              | 15 +++++--
- drivers/infiniband/core/security.c         | 24 ++++------
- drivers/infiniband/core/ucma.c             |  2 +-
- drivers/infiniband/core/user_mad.c         |  5 ++-
- drivers/infiniband/core/uverbs_std_types.c |  1 +
- drivers/infiniband/hw/mlx5/devx.c          | 51 ++++++++++++----------
- drivers/infiniband/hw/mlx5/main.c          |  4 +-
- drivers/infiniband/sw/rxe/rxe_comp.c       |  8 ++--
- drivers/infiniband/ulp/ipoib/ipoib.h       |  1 +
- drivers/infiniband/ulp/ipoib/ipoib_cm.c    | 15 ++++---
- drivers/infiniband/ulp/ipoib/ipoib_ib.c    |  8 +++-
- drivers/infiniband/ulp/ipoib/ipoib_main.c  |  1 +
- 13 files changed, 78 insertions(+), 60 deletions(-)
-
---
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 68cc1b2d6824..33c0d9e7bb66 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -2188,6 +2188,9 @@ int ib_send_cm_rep(struct ib_cm_id *cm_id,
+ 	cm_id_priv->initiator_depth = param->initiator_depth;
+ 	cm_id_priv->responder_resources = param->responder_resources;
+ 	cm_id_priv->rq_psn = cpu_to_be32(IBA_GET(CM_REP_STARTING_PSN, rep_msg));
++	WARN_ONCE(param->qp_num & 0xFF000000,
++		  "IBTA declares QPN to be 24 bits, but it is 0x%X\n",
++		  param->qp_num);
+ 	cm_id_priv->local_qpn = cpu_to_be32(param->qp_num & 0xFFFFFF);
+ 
+ out:	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
+diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+index 0274e9b704be..57e68491a2fd 100644
+--- a/drivers/infiniband/core/ucma.c
++++ b/drivers/infiniband/core/ucma.c
+@@ -1045,7 +1045,7 @@ static void ucma_copy_conn_param(struct rdma_cm_id *id,
+ 	dst->retry_count = src->retry_count;
+ 	dst->rnr_retry_count = src->rnr_retry_count;
+ 	dst->srq = src->srq;
+-	dst->qp_num = src->qp_num;
++	dst->qp_num = src->qp_num & 0xFFFFFF;
+ 	dst->qkey = (id->route.addr.src_addr.ss_family == AF_IB) ? src->qkey : 0;
+ }
+ 
+-- 
 2.24.1
 
