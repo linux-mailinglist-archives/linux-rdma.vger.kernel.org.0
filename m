@@ -2,132 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D59C915A2D3
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2020 09:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE2315A317
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2020 09:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728537AbgBLIFv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Feb 2020 03:05:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57740 "EHLO mail.kernel.org"
+        id S1728486AbgBLIRM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Feb 2020 03:17:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728353AbgBLIFv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 12 Feb 2020 03:05:51 -0500
+        id S1728287AbgBLIRM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 12 Feb 2020 03:17:12 -0500
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8FF5020661;
-        Wed, 12 Feb 2020 08:05:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95A5A20714;
+        Wed, 12 Feb 2020 08:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581494750;
-        bh=o1HCkRXKH5HXw3Y9v32TUGvK841iFaD3DHMlwkO4fkI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=0SYE6IyVymf3JKCrOd06k5f3573oZODPshL1nU2KrYYSO5UMaSCdOJw0F06pZ8tQn
-         bru26D4/p6xeHYbxwtTSdWEV4aunGISDpJ7PlSDdsLNgAnqVqFVfZVyxLahR58QJ3B
-         MgnQRMsaDjgkR6vsUtM7bernBcuhM2SYp+vcHS00=
+        s=default; t=1581495432;
+        bh=PlcHAKHV7r/b/j0fyf2W+3874NRzHwUUpFtT12gbszk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ONdqC3zWpF1OZc5qH9LUCakKuxlc9vDcIHUcTU3/7c5+r0rBtBltpnu2DgcZQJqG9
+         gKdADCt4qtF9Iqlo6TcwcncH7F0kD/YkwMS7AxKh2JWElZLdDOjTxEW+C0AcX6DvNa
+         T++tU0Ywt8Bhy7VS2x7PPeICxWws2xGR1lGPAUK4=
+Date:   Wed, 12 Feb 2020 10:18:12 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Maor Gottlieb <maorg@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: [PATCH rdma-rc] RDMA/core: Fix protection fault in ib_mr_pool_destroy
-Date:   Wed, 12 Feb 2020 10:07:44 +0200
-Message-Id: <20200212080744.686787-1-leon@kernel.org>
-X-Mailer: git-send-email 2.24.1
+To:     Weihang Li <liweihang@huawei.com>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH for-next] RDMA/hns: Optimize eqe buffer allocation flow
+Message-ID: <20200212081812.GC679970@unreal>
+References: <20200126145835.11368-1-liweihang@huawei.com>
+ <20200127055205.GH3870@unreal>
+ <10b7a08c-e069-0751-8bde-e5d19521c0b2@huawei.com>
+ <20200210092508.GB495280@unreal>
+ <512fa0f9-2bef-b3d8-fb3d-144984ee468c@huawei.com>
+ <20200210102120.GC495280@unreal>
+ <d8ccdc94-917e-19be-dcd7-e15afd9c005a@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d8ccdc94-917e-19be-dcd7-e15afd9c005a@huawei.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maor Gottlieb <maorg@mellanox.com>
+On Mon, Feb 10, 2020 at 07:26:59PM +0800, Weihang Li wrote:
+>
+>
+> On 2020/2/10 18:21, Leon Romanovsky wrote:
+> > On Mon, Feb 10, 2020 at 05:48:05PM +0800, Weihang Li wrote:
+> >>
+> >>
+> >> On 2020/2/10 17:25, Leon Romanovsky wrote:
+> >>>>>> -		if (!eq->bt_l0)
+> >>>>>> -			return -ENOMEM;
+> >>>>>> -
+> >>>>>> -		eq->cur_eqe_ba = eq->l0_dma;
+> >>>>>> -		eq->nxt_eqe_ba = 0;
+> >>>>>> +	/* alloc a tmp list for storing eq buf address */
+> >>>>>> +	ret = hns_roce_alloc_buf_list(&region, &buf_list, 1);
+> >>>>>> +	if (ret) {
+> >>>>>> +		dev_err(hr_dev->dev, "alloc eq buf_list error\n");
+> >>>>> The same comment like we gave for bnxt driver, no dev_* prints inside
+> >>>>> driver, use ibdev_*.
+> >>>>>
+> >>>>> Thanks
+> >>>>>
+> >>>> Hi Leon,
+> >>>>
+> >>>> map_eq_buf() is called before ib_register_device(), so we can't use
+> >>>> ibdev_* here.
+> >>> As long as map_eq_buf() is called after ib_alloc_device(), you will be fine.
+> >>>
+> >>> Thanks
+> >>
+> >> Hi Leon,
+> >>
+> >> eq is used to queue hardware event, it should be ready before hardware is initialized.
+> >> So we can't call map_eq_buf() after ib_alloc_device().
+> >
+> > How can it be that your newly added function has hns_roce_dev in the
+> > signature and you didn't call to ib_alloc_device()?
+> >
+> >  +static int map_eq_buf(struct hns_roce_dev *hr_dev, struct hns_roce_eq *eq,
+> >  +                u32 page_shift)
+> >
+> > Thanks
+> >
+>
+> Sorry, I confused ib_alloc_device() and ib_register_device(). What I was about to say is
+> ib_register_device().
+>
+> Order of these functions in hns driver is:
+>
+> 1. ib_alloc_device()
+> 2. map_eq_buf()
+> 3. ib_register_device()
+>
+> Refer to code in __ibdev_printk():
+>
+> 	else if (ibdev)
+> 		printk("%s%s: %pV",
+> 		       level, dev_name(&ibdev->dev), vaf);
+>
+>
+> If we called ibdev_*() before ib_register_device(), it will print "null" for the device
+> name. And I make a simple test, it will print like this:
+>
+> [   41.400347] (null): -------------- This is a test!----------
+>
+> Because map_eq_buf() should be finished before ib_register_device(), so I think we have
+> to use dev_*() in it.
 
-Fix NULL pointer dereference in the error flow of ib_create_qp_user
-when accessing to uninitialized list pointers - rdma_mrs and sig_mrs.
-The following crash from syzkaller revealed it.
+Interesting, I wonder why "ibdev->dev" is set so late. I afraid that it
+is a bug in hns.
 
-kasan: GPF could be caused by NULL-ptr deref or user memory access
-general protection fault: 0000 [#1] SMP KASAN PTI
-CPU: 1 PID: 23167 Comm: syz-executor.1 Not tainted 5.5.0-rc5 #2
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
-RIP: 0010:ib_mr_pool_destroy+0x81/0x1f0
-Code: 00 00 fc ff df 49 c1 ec 03 4d 01 fc e8 a8 ea 72 fe 41 80 3c 24 00
-0f 85 62 01 00 00 48 8b 13 48 89 d6 4c 8d 6a c8 48 c1 ee 03 <42> 80 3c
-3e 00 0f 85 34 01 00 00 48 8d 7a 08 4c 8b 02 48 89 fe 48
-RSP: 0018:ffffc9000951f8b0 EFLAGS: 00010046
-RAX: 0000000000040000 RBX: ffff88810f268038 RCX: ffffffff82c41628
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffc9000951f850
-RBP: ffff88810f268020 R08: 0000000000000004 R09: fffff520012a3f0a
-R10: 0000000000000001 R11: fffff520012a3f0a R12: ffffed1021e4d007
-R13: ffffffffffffffc8 R14: 0000000000000246 R15: dffffc0000000000
-FS:  00007f54bc788700(0000) GS:ffff88811b100000(0000)
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 0000000116920002 CR4: 0000000000360ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- rdma_rw_cleanup_mrs+0x15/0x30
- ib_destroy_qp_user+0x674/0x7d0
- ib_create_qp_user+0xb01/0x11c0
- create_qp+0x1517/0x2130
- ib_uverbs_create_qp+0x13e/0x190
- ib_uverbs_write+0xaa5/0xdf0
- __vfs_write+0x7c/0x100
- vfs_write+0x168/0x4a0
- ksys_write+0xc8/0x200
- do_syscall_64+0x9c/0x390
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x465b49
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48 89
-f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01
-f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f54bc787c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000073bf00 RCX: 0000000000465b49
-RDX: 0000000000000040 RSI: 0000000020000540 RDI: 0000000000000003
-RBP: 00007f54bc787c70 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f54bc7886bc
-R13: 00000000004ca2ec R14: 000000000070ded0 R15: 0000000000000005
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
----[ end trace 54a28a9b6f83c561 ]---
+Thanks
 
-Fixes: a060b5629ab06 ("IB/core: generic RDMA READ/WRITE API")
-Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/core/verbs.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 3ebae3b65c28..90c72f0e7388 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1181,10 +1181,6 @@ struct ib_qp *ib_create_qp_user(struct ib_pd *pd,
- 	if (IS_ERR(qp))
- 		return qp;
-
--	ret = ib_create_qp_security(qp, device);
--	if (ret)
--		goto err;
--
- 	qp->qp_type    = qp_init_attr->qp_type;
- 	qp->rwq_ind_tbl = qp_init_attr->rwq_ind_tbl;
-
-@@ -1195,6 +1191,10 @@ struct ib_qp *ib_create_qp_user(struct ib_pd *pd,
- 	INIT_LIST_HEAD(&qp->sig_mrs);
- 	qp->port = 0;
-
-+	ret = ib_create_qp_security(qp, device);
-+	if (ret)
-+		goto err;
-+
- 	if (qp_init_attr->qp_type == IB_QPT_XRC_TGT) {
- 		struct ib_qp *xrc_qp =
- 			create_xrc_qp_user(qp, qp_init_attr, udata);
---
-2.24.1
-
+>
+> >>
+> >> Thanks
+> >> Weihang
+> >>
+> >>>
+> >>>> Thanks for your reminder, another patch that replace other dev_* in
+> >>>> hns driver with ibdev_* is on preparing.
+> >>>>
+> >>>> Weihang
+> >>>>
+> >>>>> .
+> >>>>>
+> >>> .
+> >>>
+> >>
+> >
+> > .
+> >
+>
