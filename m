@@ -2,119 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B188315AF2A
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2020 18:55:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5439F15AFB3
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2020 19:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728575AbgBLRzS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Feb 2020 12:55:18 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:44474 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727054AbgBLRzR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Feb 2020 12:55:17 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01CHhWLh190088;
-        Wed, 12 Feb 2020 17:55:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Y+1Njwk15wXKV3Mssus0sPgtfffmph3i+pYY6U43ZAs=;
- b=Pg1+RZ7QzoBMtC4+0gvZ+2TM/uNiNTSbr4agsKdrxwmWsszElNa3xwONwu1E386Z5ALi
- WR99QVhSq9H0MHOj2io3WWG3Ih4SpxQtau01QFypH9T8wMuTIwfOlsebfZnSnlsQrBZn
- DRSMJiwLAqyIrdMnTHXJK3ABzVVdV2fbo63ZU9Qnob2jAU2h2L0CVzpY1bcFDgwx9WlI
- p3Z433JEkjKui0syY2aRR0LZbSmTsnFGWeus2Ezy1J28UoOyxmo3iOq8WAJsntXhhRgp
- wBmMhBtz6/6IJfPFyOT6KlFnXJ8gtyO2Pv3nvJ1CY4COeoMjqHIIqh/m6cLeSuBvleEZ aQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 2y2p3sme6s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 12 Feb 2020 17:55:05 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01CHfcOZ093948;
-        Wed, 12 Feb 2020 17:55:04 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 2y4k7x3xw5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 12 Feb 2020 17:55:04 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 01CHt4Kw045592;
-        Wed, 12 Feb 2020 17:55:04 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 2y4k7x3xvh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 12 Feb 2020 17:55:04 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01CHt4EK028539;
-        Wed, 12 Feb 2020 17:55:04 GMT
-Received: from [10.209.227.41] (/10.209.227.41)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 12 Feb 2020 09:55:03 -0800
-Subject: Re: [PATCH 1/1] net/rds: Track user mapped pages through special API
-To:     Leon Romanovsky <leonro@mellanox.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hans Westgaard Ry <hans.westgaard.ry@oracle.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-References: <20200212030355.1600749-1-jhubbard@nvidia.com>
- <20200212030355.1600749-2-jhubbard@nvidia.com>
- <c0d8d04e-08d1-60ff-ea4c-e6c71f3e118a@oracle.com>
- <20200212175159.GD679970@unreal>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <b0e45342-4415-67e4-8c5b-37a6fc8d310e@oracle.com>
-Date:   Wed, 12 Feb 2020 09:55:02 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.2
+        id S1727264AbgBLS0k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Feb 2020 13:26:40 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:43999 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727054AbgBLS0k (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Feb 2020 13:26:40 -0500
+Received: by mail-qk1-f196.google.com with SMTP id p7so2998326qkh.10
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Feb 2020 10:26:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wD7ca8ui9JD8LMdNREOPeIgqUH0cHkM1dV/OrQ6yngo=;
+        b=RGjvq2xWzc79Xm/Nld1dr0HZB/tikBbbAeBjjArZL38LZsGdtv+OORoQficoyvFxfY
+         DtmAolxkHh5QF5U4LQzyDWvrVYIPZdRiqwbnF+7Sb3GCSMfsoDPYVm/xcIeR+BkTyrz3
+         rhbBJpsbScmjJuQn4Votvs69+/D1YHBMrkS2ouCnLYMUZIEyUc7ZsB+w2ffQs+Gg6tVg
+         Qno90t1NWI0xPRxGICzGS2GwwVNbtTBbaNPEMbt12IEMk0DUzZVyvFOg3JtXk0uge9JV
+         xEPW2ttrpZ77AvySwIYeiMZmpfMD9o5/iGQiy4G1nmq8OLgfxvJj9QMaevLMTfsJc87u
+         MoCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wD7ca8ui9JD8LMdNREOPeIgqUH0cHkM1dV/OrQ6yngo=;
+        b=huFXg6nhmaiRMZLcJl4HWLuwOxLN8d05ypCIewYhkUPZqzYAW38HyOQRBbA7XT414r
+         ka6F7AIfj+6+NeXJlgIiSNXBy47SqSHhZjo2JjWyquIlGa7pJ9xxQWS7fJODjac1WzRT
+         GCjEBfN2eL38LTh2S1TyvV3KIAHiT9OO/FIixxcf4Kpdevq7+fUb+HKJKoUYHPyv2fjC
+         YqIGUTRRQJAQH7e0YNnl57a/lJ2sqzPhCPiLMXlOS6sAQTCo6avjGFYxECWa63sJCju0
+         PLmk6LcbBgzhrelKMc+DLKjvA50Vjr7hB7X9V6xYWxWCQ88QYsHsmaoaJgKq3ggyKfgZ
+         /Fog==
+X-Gm-Message-State: APjAAAVcObwvgkXguGZA9gubLHM8hjZgGRj8qAI8VXmMGbiGajgV5SWq
+        dcm5sxYIHnppLx9xkftk52JAsg==
+X-Google-Smtp-Source: APXvYqzIhCM7PJ9kO6iGCS8YvOUMzdb3pLAxLWQH7rCiIoiwCeqmXT3mDIR2uOcEeWiMbbfpTVOiag==
+X-Received: by 2002:a37:5347:: with SMTP id h68mr8499986qkb.393.1581531999443;
+        Wed, 12 Feb 2020 10:26:39 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id 63sm630487qki.57.2020.02.12.10.26.38
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 12 Feb 2020 10:26:38 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1j1wic-0007oE-AC; Wed, 12 Feb 2020 14:26:38 -0400
+Date:   Wed, 12 Feb 2020 14:26:38 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     anna.schumaker@netapp.com, linux-nfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] xprtrdma: Fix DMA scatter-gather list mapping
+ imbalance
+Message-ID: <20200212182638.GA31668@ziepe.ca>
+References: <158152363458.433502.7428050218198466755.stgit@morisot.1015granger.net>
+ <158152394998.433502.5623790463334839091.stgit@morisot.1015granger.net>
 MIME-Version: 1.0
-In-Reply-To: <20200212175159.GD679970@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9529 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 malwarescore=0
- suspectscore=0 mlxlogscore=999 priorityscore=1501 clxscore=1015
- impostorscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002120131
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <158152394998.433502.5623790463334839091.stgit@morisot.1015granger.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/12/20 9:51 AM, Leon Romanovsky wrote:
-> On Wed, Feb 12, 2020 at 09:31:51AM -0800, santosh.shilimkar@oracle.com wrote:
->> On 2/11/20 7:03 PM, John Hubbard wrote:
->>> From: Leon Romanovsky <leonro@mellanox.com>
->>>
->>> Convert net/rds to use the newly introduces pin_user_pages() API,
->>> which properly sets FOLL_PIN. Setting FOLL_PIN is now required for
->>> code that requires tracking of pinned pages.
->>>
->>> Note that this effectively changes the code's behavior: it now
->>> ultimately calls set_page_dirty_lock(), instead of set_page_dirty().
->>> This is probably more accurate.
->>>
->>> As Christoph Hellwig put it, "set_page_dirty() is only safe if we are
->>> dealing with a file backed page where we have reference on the inode it
->>> hangs off." [1]
->>>
->>> [1] https://urldefense.com/v3/__https://lore.kernel.org/r/20190723153640.GB720@lst.de__;!!GqivPVa7Brio!OJHuecs9Iup5ig3kQBi_423uMMuskWhBQAdOICrY3UQ_ZfEaxt9ySY7E8y32Q7pk5tByyA$
->>>
->>> Cc: Hans Westgaard Ry <hans.westgaard.ry@oracle.com>
->>> Cc: Santosh Shilimkar <santosh.shilimkar@oracle.com>
->>> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->>> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
->>> ---
->> Change looks fine to me. Just on safer side, we will try
->> to test this change with regression suite to make sure it
->> works as expected.
+On Wed, Feb 12, 2020 at 11:12:30AM -0500, Chuck Lever wrote:
+> The @nents value that was passed to ib_dma_map_sg() has to be passed
+> to the matching ib_dma_unmap_sg() call. If ib_dma_map_sg() choses to
+> concatenate sg entries, it will return a different nents value than
+> it was passed.
 > 
-> Thanks Santosh,
-> I wrote this patch before John's series was merged into the tree,
-> but back then, Hans tested it and it worked, hope that it still works. :)
+> The bug was exposed by recent changes to the AMD IOMMU driver, which
+> enabled sg entry concatenation.
 > 
-I see. Wasn't aware of it. In that case, its should be fine.
+> Looking all the way back to commit 4143f34e01e9 ("xprtrdma: Port to
+> new memory registration API") and reviewing other kernel ULPs, it's
+> not clear that the frwr_map() logic was ever correct for this case.
+> 
+> Reported-by: Andre Tomt <andre@tomt.net>
+> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> Cc: stable@vger.kernel.org # v5.5
+> ---
+>  net/sunrpc/xprtrdma/frwr_ops.c |   13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
 
-Regards,
-Santosh
+Yep
+
+Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+
+Jason
