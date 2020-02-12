@@ -2,74 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5AA615B099
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2020 20:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1509215B120
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Feb 2020 20:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728911AbgBLTOj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Feb 2020 14:14:39 -0500
-Received: from mga06.intel.com ([134.134.136.31]:41406 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729030AbgBLTOi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 12 Feb 2020 14:14:38 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Feb 2020 11:14:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,433,1574150400"; 
-   d="scan'208";a="237807065"
-Received: from jtkirshe-desk1.jf.intel.com ([134.134.177.74])
-  by orsmga006.jf.intel.com with ESMTP; 12 Feb 2020 11:14:29 -0800
-From:   Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-To:     davem@davemloft.net, gregkh@linuxfoundation.org
-Cc:     Shiraz Saleem <shiraz.saleem@intel.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, jgg@ziepe.ca,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Subject: [RFC PATCH v4 25/25] RDMA/irdma: Update MAINTAINERS file
-Date:   Wed, 12 Feb 2020 11:14:24 -0800
-Message-Id: <20200212191424.1715577-26-jeffrey.t.kirsher@intel.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200212191424.1715577-1-jeffrey.t.kirsher@intel.com>
-References: <20200212191424.1715577-1-jeffrey.t.kirsher@intel.com>
+        id S1728226AbgBLTai (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Feb 2020 14:30:38 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:41626 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728098AbgBLTai (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Feb 2020 14:30:38 -0500
+Received: by mail-qv1-f67.google.com with SMTP id s7so1463980qvn.8
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Feb 2020 11:30:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Xzu/ncQf5WgeFanPyQvlJFLgPf3gQ5F42l5EqqERH18=;
+        b=TYHob6p1qJ+qgEi1KwVr+EzVRJkwR7gyLXp7gDPvbhp8KqpdOrg43H1P8ye95n26qB
+         0ROE34cQZJw6JxzSbe9yiF1lrn/xWZZBy7YPNYWW8V3YUAVLMOEtkH1KgFttS4y+jns9
+         j9sqhJbTKMWhjAq6//yBde23WMOfJ2KBmyGuYxgVb+sPSPr/+ApNI58osiTIx3DhjX3M
+         ULeM/wSC7WHtMMHi+2Ys8V0b/Q9yRv9FPR66dwms33uqBGsxlLDJyMISypZXujZ+2cEf
+         kA2HM6iWnqAiAS5PuJWZxgRbDPwPG7o4rwCgmn9mtzE7tlPtqc2oy8oPO6mUGdHB8PII
+         ywig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Xzu/ncQf5WgeFanPyQvlJFLgPf3gQ5F42l5EqqERH18=;
+        b=oQ6I1bkP/zg1Q4bfLH8OGciP3qJd77h+QRYLCrdr+D4CHGsYY7unNpHegAyvsPhRjm
+         fYM46VmmDKPUup0NVXWTu04DfKYhLCJu+rHbkfMIRMGn/HAlp1Cc+MQTPy+SGTUmGQ3Q
+         7sUMWvqoZlvu6OHfftqaSv3KajMf2j+zbdGwtiE0T8H5aW5086wQCPJweqawQNOWHILj
+         oZHsZ43RPusM6us/G1BBHPUEHllEv6SXySQlTF9sGtbUeAsaNLztajlr39KTQQp9OOJH
+         PKnu8tPBsQC5ADN4KriWlA8JqrmWusE19ZtvbfPG9UZz4sXaM+2VvTFQS+gxFuzD7lEH
+         Iwow==
+X-Gm-Message-State: APjAAAXNn8qxFOKet2ltbn55oQgELGzcUdbN0VcaYVter92vK2aKizFe
+        42X096B9umHngMd1Suxg3ASqZw==
+X-Google-Smtp-Source: APXvYqx7O9HD3FQsEFGPtWX3i+DxnJGUyOvuCu2eAxegjnGyaaJnZVAyQ/8NWuTHnvmn9I1obW8kPw==
+X-Received: by 2002:a05:6214:13a8:: with SMTP id h8mr20260768qvz.41.1581535837701;
+        Wed, 12 Feb 2020 11:30:37 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id n3sm766262qkn.105.2020.02.12.11.30.37
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 12 Feb 2020 11:30:37 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1j1xiW-00028G-Sz; Wed, 12 Feb 2020 15:30:36 -0400
+Date:   Wed, 12 Feb 2020 15:30:36 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     Anna Schumaker <anna.schumaker@netapp.com>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] xprtrdma: Fix DMA scatter-gather list mapping
+ imbalance
+Message-ID: <20200212193036.GD31668@ziepe.ca>
+References: <158152363458.433502.7428050218198466755.stgit@morisot.1015granger.net>
+ <158152394998.433502.5623790463334839091.stgit@morisot.1015granger.net>
+ <20200212182638.GA31668@ziepe.ca>
+ <F7B6A553-0355-41BF-A209-E8D73D15A6A9@oracle.com>
+ <20200212190545.GB31668@ziepe.ca>
+ <B9D0EE52-469B-4CC4-A944-C3421DBB68B6@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <B9D0EE52-469B-4CC4-A944-C3421DBB68B6@oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Shiraz Saleem <shiraz.saleem@intel.com>
+On Wed, Feb 12, 2020 at 02:09:03PM -0500, Chuck Lever wrote:
+> 
+> 
+> > On Feb 12, 2020, at 2:05 PM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > 
+> > On Wed, Feb 12, 2020 at 01:38:59PM -0500, Chuck Lever wrote:
+> >> 
+> >>> On Feb 12, 2020, at 1:26 PM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >>> 
+> >>> On Wed, Feb 12, 2020 at 11:12:30AM -0500, Chuck Lever wrote:
+> >>>> The @nents value that was passed to ib_dma_map_sg() has to be passed
+> >>>> to the matching ib_dma_unmap_sg() call. If ib_dma_map_sg() choses to
+> >>>> concatenate sg entries, it will return a different nents value than
+> >>>> it was passed.
+> >>>> 
+> >>>> The bug was exposed by recent changes to the AMD IOMMU driver, which
+> >>>> enabled sg entry concatenation.
+> >>>> 
+> >>>> Looking all the way back to commit 4143f34e01e9 ("xprtrdma: Port to
+> >>>> new memory registration API") and reviewing other kernel ULPs, it's
+> >>>> not clear that the frwr_map() logic was ever correct for this case.
+> >>>> 
+> >>>> Reported-by: Andre Tomt <andre@tomt.net>
+> >>>> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+> >>>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> >>>> Cc: stable@vger.kernel.org # v5.5
+> >>>> net/sunrpc/xprtrdma/frwr_ops.c |   13 +++++++------
+> >>>> 1 file changed, 7 insertions(+), 6 deletions(-)
+> >>> 
+> >>> Yep
+> >>> 
+> >>> Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+> >> 
+> >> Thanks.
+> >> 
+> >> Wondering if it makes sense to add a Fixes tag for the AMD IOMMU commit
+> >> where NFS/RDMA stopped working, rather than the "Cc: stable # v5.5".
+> >> 
+> >> Fixes: be62dbf554c5 ("iommu/amd: Convert AMD iommu driver to the dma-iommu api")
+> > 
+> > Not really, this was broken for other configurations besides AMD
+> 
+> Agreed, but the bug seems to have been inconsequential until now?
 
-Add maintainer entry for irdma driver.
+I imagine it would get you on ARM or other archs, IIRC.
 
-Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4fe855bfa017..72b748eb7c1c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8626,6 +8626,14 @@ L:	linux-pm@vger.kernel.org
- S:	Supported
- F:	drivers/cpufreq/intel_pstate.c
- 
-+INTEL ETHERNET PROTOCL DRIVER FOR RDMA
-+M:	Mustafa Ismail <mustafa.ismail@intel.com>
-+M:	Shiraz Saleem <shiraz.saleem@intel.com>
-+L:	linux-rdma@vger.kernel.org
-+S:	Supported
-+F:	drivers/infiniband/hw/irdma/
-+F:	include/uapi/rdma/irdma-abi.h
-+
- INTEL SPEED SELECT TECHNOLOGY
- M:	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
- L:	platform-driver-x86@vger.kernel.org
--- 
-2.24.1
-
+Jason
