@@ -2,190 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1508715C4E6
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 16:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A795B15C2DE
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 16:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729281AbgBMPvm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Feb 2020 10:51:42 -0500
-Received: from p3plsmtpa11-04.prod.phx3.secureserver.net ([68.178.252.105]:47989
-        "EHLO p3plsmtpa11-04.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728469AbgBMP0L (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Feb 2020 10:26:11 -0500
-Received: from [192.168.0.78] ([24.218.182.144])
-        by :SMTPAUTH: with ESMTPSA
-        id 2GNWjRzNfilGc2GNWjbJF7; Thu, 13 Feb 2020 08:26:11 -0700
-X-CMAE-Analysis: v=2.3 cv=CubBjUwD c=1 sm=1 tr=0
- a=ugQcCzLIhEHbLaAUV45L0A==:117 a=ugQcCzLIhEHbLaAUV45L0A==:17
- a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=SEc3moZ4AAAA:8
- a=P-IC7800AAAA:8 a=lKubuHx3MQE-PGVhoo8A:9 a=7Zwj6sZBwVKJAoWSPKxL6X1jA+E=:19
- a=QEXdDO2ut3YA:10 a=5oRCH6oROnRZc2VpWJZ3:22 a=d3PnA9EDa4IxuAV0gXij:22
-X-SECURESERVER-ACCT: tom@talpey.com
-Subject: Re: [RFC v2] RoCE v2.0 Entropy - IPv6 Flow Label and UDP Source Port
-To:     Alex Rosenbaum <rosenbaumalex@gmail.com>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        "Alex @ Mellanox" <alexr@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
+        id S1729224AbgBMPhr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Feb 2020 10:37:47 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:43817 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727963AbgBMPhq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Feb 2020 10:37:46 -0500
+Received: by mail-qk1-f196.google.com with SMTP id p7so6049869qkh.10
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2020 07:37:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ifKC7fSoU+fi6otQVLrkXu6Jr4u9UZJbccDmjG6O/Uo=;
+        b=IM5HiIeGr7bEkBTgtPy0FRoUL74ace8PxLHG0TclGGdNw5/qifvCyjthOlSA6mVLwO
+         gibM9/kFGhldPtf+Jn2zvCXSxTdF/VBo0aHdr4AS/lXtwWHSVRE7x9h0pRGb+JtXL0bg
+         Gk2+Ng2T7bDheXnwolj6JSermKvNLKJ5p/3BO5jduJEBaR3y3CL9KWNbJq8TLSxFROLx
+         DU3XxNbbYaYHXkg8fOBJbULGs0b+7MsGVVrgGI1wdbQsF/8XQgaW74d54U/QMoezmZ5R
+         YbCg0WWHGeCAOq90/mppcKOxNW/jcMz1Y+s59XCHOlSe3rYxJ9nfNsBxNYuAAuOiHmoy
+         Fb/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ifKC7fSoU+fi6otQVLrkXu6Jr4u9UZJbccDmjG6O/Uo=;
+        b=RQ2srT7vnlGW1rnFG1NL865phkbqLmq+SkExIBAnL+Uk0Qr838/f6u7zjjBUiDC5zE
+         V2Cx+2p3jtlCuN+D+o7DAHTPgVzEePuGfWMb/qL3mF8L76DcJavHdrAlL4mSXo+tjois
+         CKwGLYfMgJZDQYkSg2+E5BHI9x0+FP6Pd6/IcUyZlxiX6qCxJS4Ok686O0E8LQa6wfU6
+         3zdcu1nSseg1uc3jIMOol2Nv0krXjNUIUvL0V2rXCzOCayfI/Qd4RTrSbxmutFgACiYI
+         0nkrnXRYVC4YXOR7HmPFhzGfloxgn9ql+kYolyaoDn9fsdyBZN1z6ncDLNz/N6IQzZU2
+         z2Aw==
+X-Gm-Message-State: APjAAAW54NHK1bvKJhkTLvwj4zsLLiA68CG6pBMZE/KL0rzxSVq9ZlBp
+        +K4i9Yb8gtmqsF03X3A3sIXm4A==
+X-Google-Smtp-Source: APXvYqxUxG0o2NWPxHMKA2WbnhZF5DmFoHYouHXzYXdZ+wlgNEo3u3PJ5k3F7AG/dUZcCXE68Le7sg==
+X-Received: by 2002:a37:664f:: with SMTP id a76mr13044734qkc.470.1581608264129;
+        Thu, 13 Feb 2020 07:37:44 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id 64sm1492127qkh.98.2020.02.13.07.37.43
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 13 Feb 2020 07:37:43 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1j2GYh-0005ST-6q; Thu, 13 Feb 2020 11:37:43 -0400
+Date:   Thu, 13 Feb 2020 11:37:43 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
         Leon Romanovsky <leonro@mellanox.com>,
-        Mark Zhang <markz@mellanox.com>
-References: <CAFgAxU8ArpoL9fMpJY5v-UZS5AMXom+TJ8HS57XeEOsCFFov8Q@mail.gmail.com>
- <63a56c06-57bf-6e31-6ca8-043f9d3b72f3@talpey.com>
- <CAFgAxU80+feEEtaRYFYTHwTMSE6Edjq0t0siJ0W06WSyD+Cy3A@mail.gmail.com>
- <b0414c43-c035-aa90-9f89-7ec6bba9e119@talpey.com>
- <CAFgAxU-LW+t17frRnNOYgoaqJEwffRPfFDasOPjbyVmuxj8AXA@mail.gmail.com>
- <09478db9-28ca-65fe-1424-b0229a514bbb@talpey.com>
- <CAFgAxU8XmoOheJ29s7r7J23V1x0QcagDgUDVGSyfKyaWSEzRzg@mail.gmail.com>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <62f4df50-b50d-29e2-a0f4-eccaf81bd8d9@talpey.com>
-Date:   Thu, 13 Feb 2020 10:26:09 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Daniel Jurgens <danielj@mellanox.com>,
+        Erez Shitrit <erezsh@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Parav Pandit <parav@mellanox.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Valentine Fatiev <valentinef@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Yonatan Cohen <yonatanc@mellanox.com>,
+        Zhu Yanjun <yanjunz@mellanox.com>
+Subject: Re: [PATCH rdma-rc 4/9] IB/ipoib: Fix double free of skb in case of
+ multicast traffic in CM mode
+Message-ID: <20200213153743.GA19802@ziepe.ca>
+References: <20200212072635.682689-1-leon@kernel.org>
+ <20200212072635.682689-5-leon@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAFgAxU8XmoOheJ29s7r7J23V1x0QcagDgUDVGSyfKyaWSEzRzg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfFTOtIgjv+LXBgVu2B3uVF5wJI3JtFyzctMzY9Vm4jrwQ9jmgXU7S4RomuzM9PpmhP1T3JKcRQ7RB9smnIlfxvw7BqCr8fbcZdNRtoHcc38xAuinuKHr
- VYgPkJ5H7NuA/uukFR5zFZK04jes8DIfT5p3eNrqE9aERggkkxSUJFkbiBVDCqemtRjls2HPRvRpLz47DGliuBoiKqseDbNDYCwsCYqDs6ch0ffOmd8OZn5y
- /YpyMTcvE2sOVlXgGKAAPHHssp5/eEzObEP/7xwQu64LTCsv2ahq/+gEsiUenpnuLoF8tSYSDo5psHz9JQU7qRWesmj51yUasakbOdRDHClJI4B1FjY8enUP
- 6ai4FkbVBmCCkspdZQ3BJ2AsDBcjAoVoXpP8QZwKPIdTse8NuMy7HRW16eSTjedV3BVqgORN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200212072635.682689-5-leon@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/13/2020 6:03 AM, Alex Rosenbaum wrote:
-> On Wed, Feb 12, 2020 at 5:47 PM Tom Talpey <tom@talpey.com> wrote:
->>
->> On 2/8/2020 4:58 AM, Alex Rosenbaum wrote:
->>> On Thu, Feb 6, 2020 at 5:19 PM Tom Talpey <tom@talpey.com> wrote:
->>>>
->>>> On 2/6/2020 9:39 AM, Alex Rosenbaum wrote:
->>>>> On Thu, Feb 6, 2020 at 4:18 PM Tom Talpey <tom@talpey.com> wrote:
->>>>>>
->>>>>> On 1/8/2020 9:26 AM, Alex Rosenbaum wrote:
->>>>>>> A combination of the flow_label field in the IPv6 header and UDP source port
->>>>>>> field in RoCE v2.0 are used to identify a group of packets that must be
->>>>>>> delivered in order by the network, end-to-end.
->>>>>>> These fields are used to create entropy for network routers (ECMP), load
->>>>>>> balancers and 802.3ad link aggregation switching that are not aware of RoCE IB
->>>>>>> headers.
->>>>>>>
->>>>>>> The flow_label field is defined by a 20 bit hash value. CM based connections
->>>>>>> will use a hash function definition based on the service type (QP Type) and
->>>>>>> Service ID (SID). Where CM services are not used, the 20 bit hash will be
->>>>>>> according to the source and destination QPN values.
->>>>>>> Drivers will derive the RoCE v2.0 UDP src_port from the flow_label result.
->>>>>>>
->>>>>>> UDP source port selection must adhere IANA port allocation ranges. Thus we will
->>>>>>> be using IANA recommendation for Ephemeral port range of: 49152-65535, or in
->>>>>>> hex: 0xC000-0xFFFF.
->>>>>>>
->>>>>>> The below calculations take into account the importance of producing a symmetric
->>>>>>> hash result so we can support symmetric hash calculation of network elements.
->>>>>>>
->>>>>>> Hash Calculation for RDMA IP CM Service
->>>>>>> =======================================
->>>>>>> For RDMA IP CM Services, based on QP1 iMAD usage and connected RC QPs using the
->>>>>>> RDMA IP CM Service ID, the flow label will be calculated according to IBTA CM
->>>>>>> REQ private data info and Service ID.
->>>>>>>
->>>>>>> Flow label hash function calculations definition will be defined as:
->>>>>>> Extract the following fields from the CM IP REQ:
->>>>>>>       CM_REQ.ServiceID.DstPort [2 Bytes]
->>>>>>>       CM_REQ.PrivateData.SrcPort [2 Bytes]
->>>>>>>       u32 hash = DstPort * SrcPort;
->>>>>>>       hash ^= (hash >> 16);
->>>>>>>       hash ^= (hash >> 8);
->>>>>>>       AH_ATTR.GRH.flow_label = hash AND IB_GRH_FLOWLABEL_MASK;
->>>>>>>
->>>>>>>       #define IB_GRH_FLOWLABEL_MASK  0x000FFFFF
->>>>>>
->>>>>> Sorry it took me a while to respond to this, and thanks for looking
->>>>>> into it since my comments on the previous proposal. I have a concern
->>>>>> with an aspect of this one.
->>>>>>
->>>>>> The RoCEv2 destination port is a fixed value, 4791. Therefore the
->>>>>> term
->>>>>>
->>>>>>            u32 hash = DstPort * SrcPort;
->>>>>>
->>>>>> adds no entropy beyond the value of SrcPort.
->>>>>>
->>>>>
->>>>> we're talking about the CM service ports, taken from the
->>>>> rdma_resolve_route(mca_id, <ip:SrcPort>, <ip:DstPort>, to_msec);
->>>>> these are the CM level port-space and not the RoCE UDP L4 ports.
->>>>> we want to use both as these will allow different client instance and
->>>>> server instance on same nodes will use differen CM ports and hopefully
->>>>> generate different hash results for multi-flows between these two
->>>>> servers.
->>>>
->>>> Aha, ok I guess I missed that, and ok.
->>>>
->>>>>> In turn, the subsequent
->>>>>>
->>>>>>            hash ^= (hash >> 16);
->>>>>>            hash ^= (hash >> 8);
->>>>>>
->>>>>> are re-mashing the bits with one another, again, adding no entropy.
->>>>
->>>> I still wonder about this one. It's attempting to reduce the 32-bit
->>>> product to 20 bits, but a second xor with the "middle" 16 bits seems
->>>> really strange. Mathematically, wouldn't it be better to just take
->>>> the modulus of 2^20? If not, are you expecting some behavior in the
->>>> hash values that makes the double-xor approach better (in which case
->>>> it should be called out)?
->>>>
->>>> Tom.
->>>
->>> The function takes into account creating a symmetric hash, so both
->>> active and passive can reconstruct the same flow label results. That's
->>> why we multiply the two CM Port values (16 bit * 16 bit). The results
->>> is a 32 bit value, and we don't want to lose any of of the MSB bit's
->>> by modulus or masking. So we need some folding function from 32 bit to
->>> the 20 bit flow label.
->>>
->>> The specific bit shift is something I took from the bond driver:
->>> https://elixir.bootlin.com/linux/latest/source/drivers/net/bonding/bond_main.c#L3407
->>> This proved very good in spreading the flow label in our internal
->>> testing. Other alternative can be suggested, as long as it considers
->>> all bits in the conversion 32->20 bits.
->>
->> I'm ok with it, but I still don't fully understand why the folding
->> is necessary. The multiplication is the important part, and it is
->> the operation that combines the two entropic inputs. The folding just
->> flips bits from what's basically the same entropy source.
->>
->> IOW, I think that
->>
->>          u32 hash = (DstPort * SrcPort) & IB_GRH_FLOWLABEL_MASK;
->>
->> would produce a completely equal benefit, mathematically.
->> Tom.
->>
-> 
-> If both src & dst ports are in the high value range you loss those
-> hash bits in the masking.
-> If src & dst port are both 0xE000, your masked hash equals 0. You'll
-> get the same hash if both ports are equal 0xF000.
+On Wed, Feb 12, 2020 at 09:26:30AM +0200, Leon Romanovsky wrote:
 
-Sure, but this is because it's a 20-bit hash of a 32-bit object. There
-will always be collisions, this is just one example. My concern is the
-statistical spread of the results. I argue it's not changed by the
-proposed bit-folding, possibly even damaged.
+> diff --git a/drivers/infiniband/ulp/ipoib/ipoib.h b/drivers/infiniband/ulp/ipoib/ipoib.h
+> index 2aa3457a30ce..c614cb87d09b 100644
+> --- a/drivers/infiniband/ulp/ipoib/ipoib.h
+> +++ b/drivers/infiniband/ulp/ipoib/ipoib.h
+> @@ -379,6 +379,7 @@ struct ipoib_dev_priv {
+>  	struct ipoib_tx_buf *tx_ring;
+>  	unsigned int	     tx_head;
+>  	unsigned int	     tx_tail;
+> +	atomic_t             tx_outstanding;
+>  	struct ib_sge	     tx_sge[MAX_SKB_FRAGS + 1];
+>  	struct ib_ud_wr      tx_wr;
+>  	struct ib_wc	     send_wc[MAX_SEND_CQE];
+> diff --git a/drivers/infiniband/ulp/ipoib/ipoib_cm.c b/drivers/infiniband/ulp/ipoib/ipoib_cm.c
+> index c59e00a0881f..db6aace83fe5 100644
+> --- a/drivers/infiniband/ulp/ipoib/ipoib_cm.c
+> +++ b/drivers/infiniband/ulp/ipoib/ipoib_cm.c
+> @@ -756,7 +756,7 @@ void ipoib_cm_send(struct net_device *dev, struct sk_buff *skb, struct ipoib_cm_
+>  		return;
+>  	}
+>  
+> -	if ((priv->tx_head - priv->tx_tail) == ipoib_sendq_size - 1) {
+> +	if (atomic_read(&priv->tx_outstanding) == ipoib_sendq_size - 1) {
+>  		ipoib_dbg(priv, "TX ring 0x%x full, stopping kernel net queue\n",
+>  			  tx->qp->qp_num);
+>  		netif_stop_queue(dev);
+> @@ -786,7 +786,7 @@ void ipoib_cm_send(struct net_device *dev, struct sk_buff *skb, struct ipoib_cm_
+>  	} else {
+>  		netif_trans_update(dev);
+>  		++tx->tx_head;
+> -		++priv->tx_head;
+> +		atomic_inc(&priv->tx_outstanding);
+>  	}
 
-> The idea with the bit shift is to take the MSB hash bits (left from
-> the 0XFFFFF mask) and fold them with the LSB in some way.
+This use of an atomic is very weird, probably wrong.
 
-I get that, but it's only folding the "one" bits, and it's doing so in
-a rather primitive way. For example, the ">> 8" term is folding the
-high 4 of 20 bits twice - once in the >> 16 and again in the >> 8.
+Why is it an atomic?  priv->tx_head wasn't an atomic, and every place
+touching tx_outstanding was also touching tx_head.
 
-This value is only computed once, at QP creation, correct? Why not
-compute a CRC-20, for example?
+I assume there is some hidden locking here? Or much more stuff is
+busted up.
 
-Tom.
+In that case, drop the atomic.
+
+However, if the atomic is needed (where/why?) then something has to
+be dealing with the races, and if the write side is fully locked then
+an atomic is the wrong choice, use READ_ONCE/WRITE_ONCE instead
+
+Jason
