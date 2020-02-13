@@ -2,128 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 263CA15CA7E
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 19:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE43215CA70
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 19:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727998AbgBMSg1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Feb 2020 13:36:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727996AbgBMSg0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Feb 2020 13:36:26 -0500
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 722C820656;
-        Thu, 13 Feb 2020 18:36:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581618986;
-        bh=svUnOJK3oUj1gXpDzr9KUBMiZI4JCZN54zs8vPUWTgo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GpeEo6LOPO2rrt6Ym6ieMFcbseuQWgsg92T7FxUiux28128HRThLIV+qvNWMuVyq/
-         HktyrFSN0k6s1Gro8H3qPSGgGU4bkBxnyqvRBJU3ssKvYplfLiqyTNTrOx4Bjn+uFy
-         xaKe8CGmmGBvq7nmxhNrhkHPzRsjdF+Y0ef79obk=
-Date:   Thu, 13 Feb 2020 20:36:22 +0200
-From:   Leon Romanovsky <leon@kernel.org>
+        id S1727789AbgBMSeI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Feb 2020 13:34:08 -0500
+Received: from gateway30.websitewelcome.com ([50.116.127.1]:34354 "EHLO
+        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725781AbgBMSeI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 13 Feb 2020 13:34:08 -0500
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway30.websitewelcome.com (Postfix) with ESMTP id 884A736CEA
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2020 12:34:06 -0600 (CST)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id 2JJNjv3DnEfyq2JJOj4V3r; Thu, 13 Feb 2020 12:34:06 -0600
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=rxyyxkj9FGLzWax5CelCuptGO2+TnafpdOfoIU5hlJk=; b=tca9Q3qbGMxwIuVUJLZYJiddjd
+        MXtxmYEu1ecjaS/LwgUbUb5YmZa/QTF5gM7N3IKirCvSj27xA5P4XZCPJXt9ToemMCO7olSi2/f2Q
+        YZRddevZ2SaX9XqFozKWyDfqlnF7Ea944TM7CtwXLeKdEOZUfd9h3f6TDYNPfrck4J/teDptVsGkw
+        GP1TnS0pme60qnQhlxqogVzT0HOUyaZ7u01+4aXcP022CYsEujCu10WR0etG9oCEriHXco8S1whjc
+        PRgb0CUV9ebgdcvaHse3CzJW1UdbWMN74Noqro988FAxJJkLRmbSaLMbn/JTs8+yUMyOq+ud7epC3
+        X3rX0FxQ==;
+Received: from [200.68.140.15] (port=13071 helo=[192.168.43.131])
+        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1j2JJN-000WZG-57; Thu, 13 Feb 2020 12:34:05 -0600
+Subject: Re: [PATCH] IB/core, cache: Replace zero-length array with
+ flexible-array member
 To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        Erez Shitrit <erezsh@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Sean Hefty <sean.hefty@intel.com>,
-        Valentine Fatiev <valentinef@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Yonatan Cohen <yonatanc@mellanox.com>,
-        Zhu Yanjun <yanjunz@mellanox.com>
-Subject: Re: [PATCH rdma-rc 4/9] IB/ipoib: Fix double free of skb in case of
- multicast traffic in CM mode
-Message-ID: <20200213183622.GH679970@unreal>
-References: <20200212072635.682689-1-leon@kernel.org>
- <20200212072635.682689-5-leon@kernel.org>
- <20200213153743.GA19802@ziepe.ca>
- <20200213181012.GG679970@unreal>
- <20200213182655.GK31668@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200213010425.GA13068@embeddedor.com>
+ <20200213010827.GG31668@ziepe.ca>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ xsFNBFssHAwBEADIy3ZoPq3z5UpsUknd2v+IQud4TMJnJLTeXgTf4biSDSrXn73JQgsISBwG
+ 2Pm4wnOyEgYUyJd5tRWcIbsURAgei918mck3tugT7AQiTUN3/5aAzqe/4ApDUC+uWNkpNnSV
+ tjOx1hBpla0ifywy4bvFobwSh5/I3qohxDx+c1obd8Bp/B/iaOtnq0inli/8rlvKO9hp6Z4e
+ DXL3PlD0QsLSc27AkwzLEc/D3ZaqBq7ItvT9Pyg0z3Q+2dtLF00f9+663HVC2EUgP25J3xDd
+ 496SIeYDTkEgbJ7WYR0HYm9uirSET3lDqOVh1xPqoy+U9zTtuA9NQHVGk+hPcoazSqEtLGBk
+ YE2mm2wzX5q2uoyptseSNceJ+HE9L+z1KlWW63HhddgtRGhbP8pj42bKaUSrrfDUsicfeJf6
+ m1iJRu0SXYVlMruGUB1PvZQ3O7TsVfAGCv85pFipdgk8KQnlRFkYhUjLft0u7CL1rDGZWDDr
+ NaNj54q2CX9zuSxBn9XDXvGKyzKEZ4NY1Jfw+TAMPCp4buawuOsjONi2X0DfivFY+ZsjAIcx
+ qQMglPtKk/wBs7q2lvJ+pHpgvLhLZyGqzAvKM1sVtRJ5j+ARKA0w4pYs5a5ufqcfT7dN6TBk
+ LXZeD9xlVic93Ju08JSUx2ozlcfxq+BVNyA+dtv7elXUZ2DrYwARAQABzSxHdXN0YXZvIEEu
+ IFIuIFNpbHZhIDxndXN0YXZvQGVtYmVkZGVkb3IuY29tPsLBfQQTAQgAJwUCWywcDAIbIwUJ
+ CWYBgAULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAAKCRBHBbTLRwbbMZ6tEACk0hmmZ2FWL1Xi
+ l/bPqDGFhzzexrdkXSfTTZjBV3a+4hIOe+jl6Rci/CvRicNW4H9yJHKBrqwwWm9fvKqOBAg9
+ obq753jydVmLwlXO7xjcfyfcMWyx9QdYLERTeQfDAfRqxir3xMeOiZwgQ6dzX3JjOXs6jHBP
+ cgry90aWbaMpQRRhaAKeAS14EEe9TSIly5JepaHoVdASuxklvOC0VB0OwNblVSR2S5i5hSsh
+ ewbOJtwSlonsYEj4EW1noQNSxnN/vKuvUNegMe+LTtnbbocFQ7dGMsT3kbYNIyIsp42B5eCu
+ JXnyKLih7rSGBtPgJ540CjoPBkw2mCfhj2p5fElRJn1tcX2McsjzLFY5jK9RYFDavez5w3lx
+ JFgFkla6sQHcrxH62gTkb9sUtNfXKucAfjjCMJ0iuQIHRbMYCa9v2YEymc0k0RvYr43GkA3N
+ PJYd/vf9vU7VtZXaY4a/dz1d9dwIpyQARFQpSyvt++R74S78eY/+lX8wEznQdmRQ27kq7BJS
+ R20KI/8knhUNUJR3epJu2YFT/JwHbRYC4BoIqWl+uNvDf+lUlI/D1wP+lCBSGr2LTkQRoU8U
+ 64iK28BmjJh2K3WHmInC1hbUucWT7Swz/+6+FCuHzap/cjuzRN04Z3Fdj084oeUNpP6+b9yW
+ e5YnLxF8ctRAp7K4yVlvA87BTQRbLBwMARAAsHCE31Ffrm6uig1BQplxMV8WnRBiZqbbsVJB
+ H1AAh8tq2ULl7udfQo1bsPLGGQboJSVN9rckQQNahvHAIK8ZGfU4Qj8+CER+fYPp/MDZj+t0
+ DbnWSOrG7z9HIZo6PR9z4JZza3Hn/35jFggaqBtuydHwwBANZ7A6DVY+W0COEU4of7CAahQo
+ 5NwYiwS0lGisLTqks5R0Vh+QpvDVfuaF6I8LUgQR/cSgLkR//V1uCEQYzhsoiJ3zc1HSRyOP
+ otJTApqGBq80X0aCVj1LOiOF4rrdvQnj6iIlXQssdb+WhSYHeuJj1wD0ZlC7ds5zovXh+FfF
+ l5qH5RFY/qVn3mNIVxeO987WSF0jh+T5ZlvUNdhedGndRmwFTxq2Li6GNMaolgnpO/CPcFpD
+ jKxY/HBUSmaE9rNdAa1fCd4RsKLlhXda+IWpJZMHlmIKY8dlUybP+2qDzP2lY7kdFgPZRU+e
+ zS/pzC/YTzAvCWM3tDgwoSl17vnZCr8wn2/1rKkcLvTDgiJLPCevqpTb6KFtZosQ02EGMuHQ
+ I6Zk91jbx96nrdsSdBLGH3hbvLvjZm3C+fNlVb9uvWbdznObqcJxSH3SGOZ7kCHuVmXUcqoz
+ ol6ioMHMb+InrHPP16aVDTBTPEGwgxXI38f7SUEn+NpbizWdLNz2hc907DvoPm6HEGCanpcA
+ EQEAAcLBZQQYAQgADwUCWywcDAIbDAUJCWYBgAAKCRBHBbTLRwbbMdsZEACUjmsJx2CAY+QS
+ UMebQRFjKavwXB/xE7fTt2ahuhHT8qQ/lWuRQedg4baInw9nhoPE+VenOzhGeGlsJ0Ys52sd
+ XvUjUocKgUQq6ekOHbcw919nO5L9J2ejMf/VC/quN3r3xijgRtmuuwZjmmi8ct24TpGeoBK4
+ WrZGh/1hAYw4ieARvKvgjXRstcEqM5thUNkOOIheud/VpY+48QcccPKbngy//zNJWKbRbeVn
+ imua0OpqRXhCrEVm/xomeOvl1WK1BVO7z8DjSdEBGzbV76sPDJb/fw+y+VWrkEiddD/9CSfg
+ fBNOb1p1jVnT2mFgGneIWbU0zdDGhleI9UoQTr0e0b/7TU+Jo6TqwosP9nbk5hXw6uR5k5PF
+ 8ieyHVq3qatJ9K1jPkBr8YWtI5uNwJJjTKIA1jHlj8McROroxMdI6qZ/wZ1ImuylpJuJwCDC
+ ORYf5kW61fcrHEDlIvGc371OOvw6ejF8ksX5+L2zwh43l/pKkSVGFpxtMV6d6J3eqwTafL86
+ YJWH93PN+ZUh6i6Rd2U/i8jH5WvzR57UeWxE4P8bQc0hNGrUsHQH6bpHV2lbuhDdqo+cM9eh
+ GZEO3+gCDFmKrjspZjkJbB5Gadzvts5fcWGOXEvuT8uQSvl+vEL0g6vczsyPBtqoBLa9SNrS
+ VtSixD1uOgytAP7RWS474w==
+Message-ID: <1e6d952f-7d43-db2b-67f3-001ab8421bc8@embeddedor.com>
+Date:   Thu, 13 Feb 2020 12:36:39 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200213182655.GK31668@ziepe.ca>
+In-Reply-To: <20200213010827.GG31668@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 200.68.140.15
+X-Source-L: No
+X-Exim-ID: 1j2JJN-000WZG-57
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.43.131]) [200.68.140.15]:13071
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 13, 2020 at 02:26:55PM -0400, Jason Gunthorpe wrote:
-> On Thu, Feb 13, 2020 at 08:10:12PM +0200, Leon Romanovsky wrote:
-> > On Thu, Feb 13, 2020 at 11:37:43AM -0400, Jason Gunthorpe wrote:
-> > > On Wed, Feb 12, 2020 at 09:26:30AM +0200, Leon Romanovsky wrote:
-> > >
-> > > > diff --git a/drivers/infiniband/ulp/ipoib/ipoib.h b/drivers/infiniband/ulp/ipoib/ipoib.h
-> > > > index 2aa3457a30ce..c614cb87d09b 100644
-> > > > +++ b/drivers/infiniband/ulp/ipoib/ipoib.h
-> > > > @@ -379,6 +379,7 @@ struct ipoib_dev_priv {
-> > > >  	struct ipoib_tx_buf *tx_ring;
-> > > >  	unsigned int	     tx_head;
-> > > >  	unsigned int	     tx_tail;
-> > > > +	atomic_t             tx_outstanding;
-> > > >  	struct ib_sge	     tx_sge[MAX_SKB_FRAGS + 1];
-> > > >  	struct ib_ud_wr      tx_wr;
-> > > >  	struct ib_wc	     send_wc[MAX_SEND_CQE];
-> > > > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_cm.c b/drivers/infiniband/ulp/ipoib/ipoib_cm.c
-> > > > index c59e00a0881f..db6aace83fe5 100644
-> > > > +++ b/drivers/infiniband/ulp/ipoib/ipoib_cm.c
-> > > > @@ -756,7 +756,7 @@ void ipoib_cm_send(struct net_device *dev, struct sk_buff *skb, struct ipoib_cm_
-> > > >  		return;
-> > > >  	}
-> > > >
-> > > > -	if ((priv->tx_head - priv->tx_tail) == ipoib_sendq_size - 1) {
-> > > > +	if (atomic_read(&priv->tx_outstanding) == ipoib_sendq_size - 1) {
-> > > >  		ipoib_dbg(priv, "TX ring 0x%x full, stopping kernel net queue\n",
-> > > >  			  tx->qp->qp_num);
-> > > >  		netif_stop_queue(dev);
-> > > > @@ -786,7 +786,7 @@ void ipoib_cm_send(struct net_device *dev, struct sk_buff *skb, struct ipoib_cm_
-> > > >  	} else {
-> > > >  		netif_trans_update(dev);
-> > > >  		++tx->tx_head;
-> > > > -		++priv->tx_head;
-> > > > +		atomic_inc(&priv->tx_outstanding);
-> > > >  	}
-> > >
-> > > This use of an atomic is very weird, probably wrong.
-> > >
-> > > Why is it an atomic?  priv->tx_head wasn't an atomic, and every place
-> > > touching tx_outstanding was also touching tx_head.
-> > >
-> > > I assume there is some hidden locking here? Or much more stuff is
-> > > busted up.
-> > >
-> > > In that case, drop the atomic.
-> > >
-> > > However, if the atomic is needed (where/why?) then something has to
-> > > be dealing with the races, and if the write side is fully locked then
-> > > an atomic is the wrong choice, use READ_ONCE/WRITE_ONCE instead
-> >
-> > I thought that atomic_t is appropriate here. Valentin wanted to
-> > implement "window" and he needed to ensure that this window is counted
-> > correctly while it doesn't need to be 100% accurate.
->
-> It does need to be 100% accurate because the stop_queue condition is:
->
->  +	if (atomic_read(&priv->tx_outstanding) == ipoib_sendq_size - 1) {
 
-So better to write ">=" instead of "=".
 
->
-> And presumably the whole problem here is overflowing some sized q
-> opbject.
->
-> That atomic is only needed if there is concurrency, and where is the
-> concurrency?
+On 2/12/20 19:08, Jason Gunthorpe wrote:
+> 
+> There are many more of these under core/* care to fix them all in one
+> patch?
+> 
 
-Depends on if you believe to description in commit message :)
+Sure thing. I can do that.
 
->
-> Jason
+Thanks
+--
+Gustavo
