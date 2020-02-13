@@ -2,149 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A8A15C04D
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 15:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBE615C066
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 15:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgBMO2V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Feb 2020 09:28:21 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:42971 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgBMO2V (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Feb 2020 09:28:21 -0500
-Received: by mail-qt1-f193.google.com with SMTP id r5so4463396qtt.9
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2020 06:28:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=r0RlfLcqIUwkSA7VxqzqkyT+4hV7hsl+i/zcvS6bOrk=;
-        b=ns4FinbbHS7kVBjbRv+7/rpzQVjth+eC5QN+F3psQIWBqwfEHxcO9dtmdMhV18Wo0t
-         ziz9LTlcAOiBaVtghKnHOII/gZ5Y3L+TOGwpxfsvGJI/yxg5B5fZ2uwOuQhLKCcXI7/a
-         gFg4zd58Kh4oHj/Jeve+LQiUriE5NKYq2VD6tR+3shRhf3UVkhAWCPL4VTdqtoG2ho+E
-         yc2vcfmANZtlQxsnJTOEsB6JFC15iC4uFgBLL/uCZsi85up20MnCdVSn6zrr+ojdAzlz
-         K6ijARP8MMYs9+CwdWPI4PomujYwdKXcce1hYC8Bz3I3VM8RCNr418nUmh/yGZ5yxl25
-         IvsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=r0RlfLcqIUwkSA7VxqzqkyT+4hV7hsl+i/zcvS6bOrk=;
-        b=jBYYoy3zh5gv87jJCr9OcABuegps7OayqpVkm2cYcR3sIaDPKw4gqfMFv7eyXf6Loo
-         2+JaJpDiAkSXaGsFOpdfOQcjDwrbpM4kTApj2VchqLNEIOldy8AAV9KihDgZ+Tl4qYXR
-         u1GTTjG4FOjgBoUHc1yyYZmvQqhDVl4mS0BXMUjrMOCPeRF8MJ3DpNX3pkEHI+G7/RW4
-         HhMo7LBY7hwOkBXLRlPRi3fp7QhGtnsrI0wCSaQWpN4ICP7sJ2G3fCsNgljwq6R4G9Re
-         mBgt8kVP+U3VV0AQkCYeh5J2gUYs8RIP7qS5+M8Z1hfwDLYn6XKqj+EnGXorFWRNSan6
-         AHUw==
-X-Gm-Message-State: APjAAAWxgcirqURI7+H0EPFR2bSjbFbrZCNkL24O8rBiQFsEFSuyjxLW
-        l1WBrGDghXCPpaMbargBqXfjtFRQeDb15Q==
-X-Google-Smtp-Source: APXvYqxd8JFLsOs7rQumzXI41ANdLU044qaAKu4RnItr9XIO40YSIvh6lRkTOvD5iIPpkseKLFIe3A==
-X-Received: by 2002:ac8:a83:: with SMTP id d3mr12029129qti.228.1581604099673;
-        Thu, 13 Feb 2020 06:28:19 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id v2sm1516968qto.73.2020.02.13.06.28.19
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 13 Feb 2020 06:28:19 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j2FTW-0004MB-MO; Thu, 13 Feb 2020 10:28:18 -0400
-Date:   Thu, 13 Feb 2020 10:28:18 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        Erez Shitrit <erezsh@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Michael Guralnik <michaelgur@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
-        Parav Pandit <parav@mellanox.com>,
-        Sean Hefty <sean.hefty@intel.com>,
-        Valentine Fatiev <valentinef@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Yonatan Cohen <yonatanc@mellanox.com>,
-        Zhu Yanjun <yanjunz@mellanox.com>
-Subject: Re: [PATCH rdma-rc 8/9] IB/umad: Fix kernel crash while unloading
- ib_umad
-Message-ID: <20200213142818.GA16120@ziepe.ca>
-References: <20200212072635.682689-1-leon@kernel.org>
- <20200212072635.682689-9-leon@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200212072635.682689-9-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1727511AbgBMOdb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Feb 2020 09:33:31 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:38316 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727569AbgBMOdb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Feb 2020 09:33:31 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01DEUlRR186046;
+        Thu, 13 Feb 2020 14:33:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=nuyPBpjAVYT7HQZeVv//RC7Ou3xrZdtOJkagIPP9KQA=;
+ b=b8Qw0L1tO5gHd1dkyDnrk5JDzT9YDjAvK1zbffQbeNqbofcWmZ9GOjYpGvTXWYSDsuS9
+ FVvfMBprSsds/0/cYOW50wVtboulaHPIhIX19e9v6mRBdj7i5SbXxy0LrijtPb1GnY+n
+ UR8ex1Tw3x7WnyffGfI0bN0CCMXXt/YJ4FPR5gjc9S0iHbTJbiwNna8kOGWCXKX1j0j6
+ eVH0smzL02+c/+/hJRdX5Q0seApmDs3voHnhLTedSzB3H45R5TbIDCq/sG8ShSLeRV3+
+ r77oLR1fTabxnwxA6oj2T7RpnYDZqX6qJRLxQKCIxLZo1BooDH0Lrz47U9t0138SpS/V yg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 2y2jx6jgt9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 13 Feb 2020 14:33:27 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01DERWA8116377;
+        Thu, 13 Feb 2020 14:33:26 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2y4k36k72a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 13 Feb 2020 14:33:26 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01DEXOlR021115;
+        Thu, 13 Feb 2020 14:33:24 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 13 Feb 2020 06:33:24 -0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v3 1/2] xprtrdma: Fix DMA scatter-gather list mapping
+ imbalance
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <20200212193036.GD31668@ziepe.ca>
+Date:   Thu, 13 Feb 2020 09:33:23 -0500
+Cc:     Anna Schumaker <anna.schumaker@netapp.com>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-rdma@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <595DB50E-F65A-4F52-BFDB-79161151ECDD@oracle.com>
+References: <158152363458.433502.7428050218198466755.stgit@morisot.1015granger.net>
+ <158152394998.433502.5623790463334839091.stgit@morisot.1015granger.net>
+ <20200212182638.GA31668@ziepe.ca>
+ <F7B6A553-0355-41BF-A209-E8D73D15A6A9@oracle.com>
+ <20200212190545.GB31668@ziepe.ca>
+ <B9D0EE52-469B-4CC4-A944-C3421DBB68B6@oracle.com>
+ <20200212193036.GD31668@ziepe.ca>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+X-Mailer: Apple Mail (2.3445.104.11)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9529 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 malwarescore=0 phishscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2002130115
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9529 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ priorityscore=1501 adultscore=0 phishscore=0 impostorscore=0 spamscore=0
+ bulkscore=0 lowpriorityscore=0 mlxscore=0 suspectscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2002130115
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 12, 2020 at 09:26:34AM +0200, Leon Romanovsky wrote:
-> From: Yonatan Cohen <yonatanc@mellanox.com>
-> 
-> When unloading ib_umad, remove ibdev sys file 1st before
-> port removal to prevent kernel oops.
-> 
-> ib_mad's method ibdev_show() might access a umad port
-> whoes ibdev field has already been NULLed when rmmod ib_umad
-> was issued from another shell.
-> 
-> Consider this scenario
-> 	         shell-1            	shell-2
-> 	        rmmod ib_mod    	cat /sys/devices/../ibdev
-> 	            |           		|
-> 	        ib_umad_kill_port()        ibdev_show()
-> 	     port->ib_dev = NULL	dev_name(port->ib_dev)
-> 
-> kernel stack
-> PF: error_code(0x0000) - not-present page
-> Oops: 0000 [#1] SMP DEBUG_PAGEALLOC PTI
-> RIP: 0010:ibdev_show+0x18/0x50 [ib_umad]
-> RSP: 0018:ffffc9000097fe40 EFLAGS: 00010282
-> RAX: 0000000000000000 RBX: ffffffffa0441120 RCX: ffff8881df514000
-> RDX: ffff8881df514000 RSI: ffffffffa0441120 RDI: ffff8881df1e8870
-> RBP: ffffffff81caf000 R08: ffff8881df1e8870 R09: 0000000000000000
-> R10: 0000000000001000 R11: 0000000000000003 R12: ffff88822f550b40
-> R13: 0000000000000001 R14: ffffc9000097ff08 R15: ffff8882238bad58
-> FS:  00007f1437ff3740(0000) GS:ffff888236940000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000000004e8 CR3: 00000001e0dfc001 CR4: 00000000001606e0
-> Call Trace:
->  dev_attr_show+0x15/0x50
->  sysfs_kf_seq_show+0xb8/0x1a0
->  seq_read+0x12d/0x350
->  vfs_read+0x89/0x140
->  ksys_read+0x55/0xd0
->  do_syscall_64+0x55/0x1b0
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9:
-> 
-> Fixes: e9dd5daf884c ("IB/umad: Refactor code to use cdev_device_add()")
 
-This is the wrong fixes line, this ordering change was actually
-deliberately done:
 
-commit cf7ad3030271c55a7119a8c2162563e3f6e93879
-Author: Parav Pandit <parav@mellanox.com>
-Date:   Fri Dec 21 16:19:24 2018 +0200
+> On Feb 12, 2020, at 2:30 PM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>=20
+> On Wed, Feb 12, 2020 at 02:09:03PM -0500, Chuck Lever wrote:
+>>=20
+>>=20
+>>> On Feb 12, 2020, at 2:05 PM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>>>=20
+>>> On Wed, Feb 12, 2020 at 01:38:59PM -0500, Chuck Lever wrote:
+>>>>=20
+>>>>> On Feb 12, 2020, at 1:26 PM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>>>>>=20
+>>>>> On Wed, Feb 12, 2020 at 11:12:30AM -0500, Chuck Lever wrote:
+>>>>>> The @nents value that was passed to ib_dma_map_sg() has to be =
+passed
+>>>>>> to the matching ib_dma_unmap_sg() call. If ib_dma_map_sg() choses =
+to
+>>>>>> concatenate sg entries, it will return a different nents value =
+than
+>>>>>> it was passed.
+>>>>>>=20
+>>>>>> The bug was exposed by recent changes to the AMD IOMMU driver, =
+which
+>>>>>> enabled sg entry concatenation.
+>>>>>>=20
+>>>>>> Looking all the way back to commit 4143f34e01e9 ("xprtrdma: Port =
+to
+>>>>>> new memory registration API") and reviewing other kernel ULPs, =
+it's
+>>>>>> not clear that the frwr_map() logic was ever correct for this =
+case.
+>>>>>>=20
+>>>>>> Reported-by: Andre Tomt <andre@tomt.net>
+>>>>>> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+>>>>>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+>>>>>> Cc: stable@vger.kernel.org # v5.5
+>>>>>> net/sunrpc/xprtrdma/frwr_ops.c |   13 +++++++------
+>>>>>> 1 file changed, 7 insertions(+), 6 deletions(-)
+>>>>>=20
+>>>>> Yep
+>>>>>=20
+>>>>> Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+>>>>=20
+>>>> Thanks.
+>>>>=20
+>>>> Wondering if it makes sense to add a Fixes tag for the AMD IOMMU =
+commit
+>>>> where NFS/RDMA stopped working, rather than the "Cc: stable # =
+v5.5".
+>>>>=20
+>>>> Fixes: be62dbf554c5 ("iommu/amd: Convert AMD iommu driver to the =
+dma-iommu api")
+>>>=20
+>>> Not really, this was broken for other configurations besides AMD
+>>=20
+>> Agreed, but the bug seems to have been inconsequential until now?
+>=20
+> I imagine it would get you on ARM or other archs, IIRC.
 
-    IB/umad: Avoid destroying device while it is accessed
-    
-    ib_umad_reg_agent2() and ib_umad_reg_agent() access the device name in
-    dev_notice(), while concurrently, ib_umad_kill_port() can destroy the
-    device using device_destroy().
-    
-            cpu-0                               cpu-1
-            -----                               -----
-        ib_umad_ioctl()
-            [...]                            ib_umad_kill_port()
-                                                  device_destroy(dev)
-    
-            ib_umad_reg_agent()
-                dev_notice(dev)
+That's certainly plausible, but I haven't received explicit bug reports
+in this area. (I'm not at all saying that such bugs categorically do
+not exist).
 
-The mistake in the above was to move the device_dstroy() down, not
-split it into device_del() above and put_device() below.
+In any event, practical matters: the posted patch applies back to v5.4,
+but fails to apply starting with v5.3.
 
-Now that is already split we are OK.
+I think we can leave the "Cc: stable # v5.5"; and I'm open to requests
+to backport this simple fix onto earlier stable kernels (back to v4.4),
+which can be handled case-by-case. 'Salright?
 
-Jason
+--
+Chuck Lever
+
+
+
