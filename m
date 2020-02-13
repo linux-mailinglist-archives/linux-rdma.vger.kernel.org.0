@@ -2,119 +2,295 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4C815B6BF
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 02:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F2715B6E9
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 02:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729348AbgBMBeV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Feb 2020 20:34:21 -0500
-Received: from gateway30.websitewelcome.com ([50.116.127.1]:18797 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729289AbgBMBeV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 12 Feb 2020 20:34:21 -0500
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 57B4EFE74
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Feb 2020 19:13:02 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id 233ujCeXHAGTX233ujOn70; Wed, 12 Feb 2020 19:13:02 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
-        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=UeniUbGWJBBT0KfdU4Phj7oirIhMUxWtMEICDs+UUbc=; b=luWkpuZOAHOBeP3hzt9+2sVjY9
-        Oh99k4/astn8cTmIvl9lR+TsyG2zn9Pc4E0iBcaSHkL4s/PYbz+h/DJX5gxngBuKrY+TOb5N3q0JI
-        z1TBwOvGnDASVVuqgwySR/FaQpUUaT+MmLlmxyN5ceIr2zQOMz14XD2ud9w+5K/dGahj8SERJdYyU
-        w3muOr+obfgZsuq4lU6bKZoxc8nukhue4zzo0nH4ng+pBTGNqsIOj5qqIYyr29CBsGDhvyHzVL5qn
-        kFmEgokbxNymlJtV38eQShXh9gppnz79twb12YIsaEYl5/zX8zt4WO1vjJQHDBRKyroCU5fp7PdNB
-        F1/tOpGQ==;
-Received: from [200.68.141.42] (port=27417 helo=embeddedor)
-        by gator4166.hostgator.com with esmtpa (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1j233s-003yhS-91; Wed, 12 Feb 2020 19:13:00 -0600
-Date:   Wed, 12 Feb 2020 19:12:58 -0600
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] IB/multicast: Replace zero-length array with flexible-array
- member
-Message-ID: <20200213011258.GA14874@embeddedor.com>
+        id S1729366AbgBMByN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Feb 2020 20:54:13 -0500
+Received: from mga14.intel.com ([192.55.52.115]:41971 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729348AbgBMByN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 12 Feb 2020 20:54:13 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Feb 2020 17:54:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,434,1574150400"; 
+   d="scan'208";a="252120579"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 12 Feb 2020 17:54:10 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1j23hi-000Hre-4O; Thu, 13 Feb 2020 09:54:10 +0800
+Date:   Thu, 13 Feb 2020 09:53:34 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ beb205dd67aaa4315dedf5c40b47c6e9dee5a469
+Message-ID: <5e44ac1e.Ou1NPTjt0ma60KO0%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 200.68.141.42
-X-Source-L: No
-X-Exim-ID: 1j233s-003yhS-91
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (embeddedor) [200.68.141.42]:27417
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 11
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: beb205dd67aaa4315dedf5c40b47c6e9dee5a469  RDMA/siw: Fix setting active_mtu attribute
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+elapsed time: 1620m
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+configs tested: 240
+configs skipped: 0
 
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+sparc                            allyesconfig
+riscv                          rv32_defconfig
+s390                                defconfig
+um                                  defconfig
+sh                            titan_defconfig
+riscv                               defconfig
+nds32                               defconfig
+sh                                allnoconfig
+xtensa                       common_defconfig
+c6x                              allyesconfig
+microblaze                      mmu_defconfig
+alpha                               defconfig
+microblaze                    nommu_defconfig
+parisc                              defconfig
+m68k                       m5475evb_defconfig
+ia64                                defconfig
+sparc64                          allmodconfig
+csky                                defconfig
+i386                              allnoconfig
+powerpc                       ppc64_defconfig
+sh                          rsk7269_defconfig
+openrisc                 simple_smp_defconfig
+nios2                         3c120_defconfig
+parisc                           allyesconfig
+i386                             alldefconfig
+i386                             allyesconfig
+i386                                defconfig
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+openrisc                    or1ksim_defconfig
+xtensa                          iss_defconfig
+nds32                             allnoconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                             allmodconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+arc                              allyesconfig
+arc                                 defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+parisc                            allnoconfig
+parisc                         b180_defconfig
+parisc                        c3000_defconfig
+x86_64               randconfig-a001-20200213
+x86_64               randconfig-a002-20200213
+x86_64               randconfig-a003-20200213
+i386                 randconfig-a001-20200213
+i386                 randconfig-a002-20200213
+i386                 randconfig-a003-20200213
+x86_64               randconfig-a001-20200212
+x86_64               randconfig-a002-20200212
+x86_64               randconfig-a003-20200212
+i386                 randconfig-a001-20200212
+i386                 randconfig-a002-20200212
+i386                 randconfig-a003-20200212
+alpha                randconfig-a001-20200213
+m68k                 randconfig-a001-20200213
+mips                 randconfig-a001-20200213
+nds32                randconfig-a001-20200213
+parisc               randconfig-a001-20200213
+riscv                randconfig-a001-20200213
+alpha                randconfig-a001-20200212
+m68k                 randconfig-a001-20200212
+nds32                randconfig-a001-20200212
+parisc               randconfig-a001-20200212
+riscv                randconfig-a001-20200212
+c6x                  randconfig-a001-20200212
+h8300                randconfig-a001-20200212
+microblaze           randconfig-a001-20200212
+nios2                randconfig-a001-20200212
+sparc64              randconfig-a001-20200212
+c6x                  randconfig-a001-20200213
+h8300                randconfig-a001-20200213
+microblaze           randconfig-a001-20200213
+nios2                randconfig-a001-20200213
+sparc64              randconfig-a001-20200213
+csky                 randconfig-a001-20200213
+openrisc             randconfig-a001-20200213
+s390                 randconfig-a001-20200213
+sh                   randconfig-a001-20200213
+xtensa               randconfig-a001-20200213
+csky                 randconfig-a001-20200212
+openrisc             randconfig-a001-20200212
+s390                 randconfig-a001-20200212
+sh                   randconfig-a001-20200212
+xtensa               randconfig-a001-20200212
+x86_64               randconfig-b001-20200212
+x86_64               randconfig-b002-20200212
+x86_64               randconfig-b003-20200212
+i386                 randconfig-b001-20200212
+i386                 randconfig-b002-20200212
+i386                 randconfig-b003-20200212
+x86_64               randconfig-b001-20200213
+x86_64               randconfig-b002-20200213
+x86_64               randconfig-b003-20200213
+i386                 randconfig-b001-20200213
+i386                 randconfig-b002-20200213
+i386                 randconfig-b003-20200213
+x86_64               randconfig-c001-20200212
+x86_64               randconfig-c002-20200212
+x86_64               randconfig-c003-20200212
+i386                 randconfig-c001-20200212
+i386                 randconfig-c002-20200212
+i386                 randconfig-c003-20200212
+x86_64               randconfig-c001-20200213
+x86_64               randconfig-c002-20200213
+x86_64               randconfig-c003-20200213
+i386                 randconfig-c001-20200213
+i386                 randconfig-c002-20200213
+i386                 randconfig-c003-20200213
+x86_64               randconfig-c001-20200211
+x86_64               randconfig-c002-20200211
+x86_64               randconfig-c003-20200211
+i386                 randconfig-c001-20200211
+i386                 randconfig-c002-20200211
+i386                 randconfig-c003-20200211
+x86_64               randconfig-d001-20200212
+x86_64               randconfig-d002-20200212
+x86_64               randconfig-d003-20200212
+i386                 randconfig-d001-20200212
+i386                 randconfig-d002-20200212
+i386                 randconfig-d003-20200212
+x86_64               randconfig-d001-20200211
+x86_64               randconfig-d002-20200211
+x86_64               randconfig-d003-20200211
+i386                 randconfig-d001-20200211
+i386                 randconfig-d002-20200211
+i386                 randconfig-d003-20200211
+x86_64               randconfig-d001-20200213
+x86_64               randconfig-d002-20200213
+x86_64               randconfig-d003-20200213
+i386                 randconfig-d001-20200213
+i386                 randconfig-d002-20200213
+i386                 randconfig-d003-20200213
+x86_64               randconfig-e001-20200212
+x86_64               randconfig-e002-20200212
+x86_64               randconfig-e003-20200212
+i386                 randconfig-e001-20200212
+i386                 randconfig-e002-20200212
+i386                 randconfig-e003-20200212
+x86_64               randconfig-e001-20200213
+x86_64               randconfig-e002-20200213
+x86_64               randconfig-e003-20200213
+i386                 randconfig-e001-20200213
+i386                 randconfig-e002-20200213
+i386                 randconfig-e003-20200213
+x86_64               randconfig-f001-20200213
+x86_64               randconfig-f002-20200213
+x86_64               randconfig-f003-20200213
+i386                 randconfig-f001-20200213
+i386                 randconfig-f002-20200213
+i386                 randconfig-f003-20200213
+x86_64               randconfig-f001-20200212
+x86_64               randconfig-f002-20200212
+x86_64               randconfig-f003-20200212
+i386                 randconfig-f001-20200212
+i386                 randconfig-f002-20200212
+i386                 randconfig-f003-20200212
+x86_64               randconfig-g001-20200213
+x86_64               randconfig-g002-20200213
+x86_64               randconfig-g003-20200213
+i386                 randconfig-g001-20200213
+i386                 randconfig-g002-20200213
+i386                 randconfig-g003-20200213
+x86_64               randconfig-h001-20200212
+x86_64               randconfig-h002-20200212
+x86_64               randconfig-h003-20200212
+i386                 randconfig-h001-20200212
+i386                 randconfig-h002-20200212
+i386                 randconfig-h003-20200212
+x86_64               randconfig-h001-20200213
+x86_64               randconfig-h002-20200213
+x86_64               randconfig-h003-20200213
+i386                 randconfig-h001-20200213
+i386                 randconfig-h002-20200213
+i386                 randconfig-h003-20200213
+arc                  randconfig-a001-20200212
+arm                  randconfig-a001-20200212
+arm64                randconfig-a001-20200212
+ia64                 randconfig-a001-20200212
+powerpc              randconfig-a001-20200212
+sparc                randconfig-a001-20200212
+arc                  randconfig-a001-20200213
+arm                  randconfig-a001-20200213
+arm64                randconfig-a001-20200213
+ia64                 randconfig-a001-20200213
+powerpc              randconfig-a001-20200213
+sparc                randconfig-a001-20200213
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                       zfcpdump_defconfig
+sh                               allmodconfig
+sh                  sh7785lcr_32bit_defconfig
+sparc                               defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
 
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 ---
- drivers/infiniband/core/multicast.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/core/multicast.c b/drivers/infiniband/core/multicast.c
-index cd338ddc4a39..9c2d8b7f1af9 100644
---- a/drivers/infiniband/core/multicast.c
-+++ b/drivers/infiniband/core/multicast.c
-@@ -71,7 +71,7 @@ struct mcast_device {
- 	struct ib_event_handler	event_handler;
- 	int			start_port;
- 	int			end_port;
--	struct mcast_port	port[0];
-+	struct mcast_port	port[];
- };
- 
- enum mcast_state {
--- 
-2.23.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
