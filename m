@@ -2,23 +2,23 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC58015CAE7
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 20:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5F715CAFF
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 20:13:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727761AbgBMTGT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Feb 2020 14:06:19 -0500
-Received: from gateway31.websitewelcome.com ([192.185.143.46]:18343 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726282AbgBMTGT (ORCPT
+        id S1728484AbgBMTNK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Feb 2020 14:13:10 -0500
+Received: from gateway33.websitewelcome.com ([192.185.147.108]:23900 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727652AbgBMTNK (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Feb 2020 14:06:19 -0500
-X-Greylist: delayed 1359 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 Feb 2020 14:06:18 EST
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id C7E055973E1
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2020 12:43:38 -0600 (CST)
+        Thu, 13 Feb 2020 14:13:10 -0500
+X-Greylist: delayed 1328 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 Feb 2020 14:13:09 EST
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id 52A556F4F93
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2020 12:51:00 -0600 (CST)
 Received: from gator4166.hostgator.com ([108.167.133.22])
         by cmsmtp with SMTP
-        id 2JScj6W8ZXVkQ2JScjUS6y; Thu, 13 Feb 2020 12:43:38 -0600
+        id 2JZkjPoezRP4z2JZkjrG2Y; Thu, 13 Feb 2020 12:51:00 -0600
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
@@ -26,26 +26,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=RP9MNo1YdDU9fDbbP5ClVHP/dNN6EGRpfzts4Ja36zg=; b=pV2j0L0SxNe1B8wo31b2C9lxEl
-        P+kUKKwpA7otAaU8T1gVQ0+M9tLO1CX9IeKgzvi+jQBbrW/NrU4UlBWewjxTcV5dDrsdVqwW2yFQ+
-        ekIDVwZlZmT+wwPgrz9toSolLqwXbuPe+aXXi9MB7IA+V77J8PCE/L7ioS2cFPkP84P+II+5vEDvI
-        XTrQo1Rt9eZ7E4YrTyQa5gXcNO882QoI5msF2HI+G73wES4nXUpiNqv63oR83GUDBJP1+lJ19MUc7
-        BFhbTcR5pKLHCIxUAvwBBQoNL+JnbDJ/CerIHFVHJagsaWAUQFtesbH03xd1dCTyYepN8J2mHqZ0q
-        eAD12LGQ==;
-Received: from [200.68.140.15] (port=4209 helo=[192.168.43.131])
+        bh=T7nae/cQQpsPFTp+fQB1X1mfe56DykBNtXR9BGxwUJE=; b=IAjHsCPXdMZt+5WNJcqD+P7TIP
+        7+R15R+sJUQkw9qT8j7G+LFiVAxHM9fzq8n5chUMuZO/1zeCSL9OAFMVT97WQG0Xo54MMJ/hbst0K
+        eh9SwkUJUe8WNfyXlbfvzCjqdvCTACrKHHfcDIXYorm5KjplB6NZzYLHLe/K1W54SuIGiOfEQvkmc
+        vtnQg/f1K/tvS2jinwVDPYcFaUYvyrG5eJNnNGpTUbS6yBc/SryF8Blaqy5kea3mcSNJ/EUgztXs8
+        Gq4Exh4jgTzVHLR1jpwahpQajQrwoTt649HZykaNeAI4HairJsnsIx+YsHcqWivaUnXEbZuZTJ7YG
+        3FVpMlxQ==;
+Received: from [200.68.140.15] (port=10057 helo=[192.168.43.131])
         by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
         (Exim 4.92)
         (envelope-from <gustavo@embeddedor.com>)
-        id 1j2JSc-000bf4-BO; Thu, 13 Feb 2020 12:43:38 -0600
-Subject: Re: [PATCH] IB/core, cache: Replace zero-length array with
- flexible-array member
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200213010425.GA13068@embeddedor.com>
- <20200213010827.GG31668@ziepe.ca>
- <1e6d952f-7d43-db2b-67f3-001ab8421bc8@embeddedor.com>
- <20200213183756.GI679970@unreal>
+        id 1j2JZj-000fEB-VN; Thu, 13 Feb 2020 12:51:00 -0600
+Subject: Re: [PATCH] IB/core: Replace zero-length array with flexible-array
+ member
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200213183715.GA19636@embeddedor>
+ <20200213183850.GM31668@ziepe.ca>
 From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 Autocrypt: addr=gustavo@embeddedor.com; keydata=
  xsFNBFssHAwBEADIy3ZoPq3z5UpsUknd2v+IQud4TMJnJLTeXgTf4biSDSrXn73JQgsISBwG
@@ -90,12 +88,12 @@ Autocrypt: addr=gustavo@embeddedor.com; keydata=
  YJWH93PN+ZUh6i6Rd2U/i8jH5WvzR57UeWxE4P8bQc0hNGrUsHQH6bpHV2lbuhDdqo+cM9eh
  GZEO3+gCDFmKrjspZjkJbB5Gadzvts5fcWGOXEvuT8uQSvl+vEL0g6vczsyPBtqoBLa9SNrS
  VtSixD1uOgytAP7RWS474w==
-Message-ID: <d92ce07f-7a9c-2b67-4d88-51b3c04a7e77@embeddedor.com>
-Date:   Thu, 13 Feb 2020 12:46:14 -0600
+Message-ID: <ad526791-a9d2-fa69-e989-5c74c3cfc704@embeddedor.com>
+Date:   Thu, 13 Feb 2020 12:53:36 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200213183756.GI679970@unreal>
+In-Reply-To: <20200213183850.GM31668@ziepe.ca>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -107,13 +105,13 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 200.68.140.15
 X-Source-L: No
-X-Exim-ID: 1j2JSc-000bf4-BO
+X-Exim-ID: 1j2JZj-000fEB-VN
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: ([192.168.43.131]) [200.68.140.15]:4209
+X-Source-Sender: ([192.168.43.131]) [200.68.140.15]:10057
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 12
+X-Email-Count: 16
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
 Sender: linux-rdma-owner@vger.kernel.org
@@ -123,25 +121,34 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 
 
-On 2/13/20 12:37, Leon Romanovsky wrote:
-> On Thu, Feb 13, 2020 at 12:36:39PM -0600, Gustavo A. R. Silva wrote:
->>
->>
->> On 2/12/20 19:08, Jason Gunthorpe wrote:
->>>
->>> There are many more of these under core/* care to fix them all in one
->>> patch?
->>>
->>
->> Sure thing. I can do that.
-> 
-> Gustavo,
-> 
-> Was checkpatch extended to catch such mistakes?
-> 
+On 2/13/20 12:38, Jason Gunthorpe wrote:
 
-Not yet. But that's on my list for the short future.
+> 
+> Any reason to skip these two?
+> 
+> drivers/infiniband/core/mad_priv.h:     u8 mad[0];
+> drivers/infiniband/core/mad_priv.h:     u8 data[0];
+> 
+> And may as well touch these in the subsystem headers too:
+> 
+> include/rdma/ib_fmr_pool.h:     u64                 page_list[0];
+> include/rdma/ib_verbs.h:        u8      real_sz[0];
+> include/rdma/ib_verbs.h:        u8      real_sz[0];
+> include/rdma/ib_verbs.h:        u8      real_sz[0];
+> include/rdma/ib_verbs.h:        u8      real_sz[0];
+> include/rdma/ib_verbs.h:        u8      real_sz[0];
+> include/rdma/ib_verbs.h:        u8      real_sz[0];
+> include/rdma/ib_verbs.h:        u8      real_sz[0];
+> include/rdma/ib_verbs.h:        u8      real_sz[0];
+> include/rdma/ib_verbs.h:        u8      real_sz[0];
+> include/rdma/opa_vnic.h:        char *dev_priv[0];
+> include/rdma/rdmavt_mr.h:       struct rvt_segarray *map[0];    /* the segments */
+> include/rdma/rdmavt_qp.h:       struct rvt_sge sg_list[0];
+> 
+> ?
 
-Thanks
+OK. Let me tweak my script a bit to catch all of those.
+
+Thanks for the feedback.
 --
 Gustavo
