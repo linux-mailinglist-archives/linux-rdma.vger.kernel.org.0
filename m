@@ -2,128 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EC515CA8E
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 19:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC58015CAE7
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 20:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727951AbgBMSiw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Feb 2020 13:38:52 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:36071 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgBMSiw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 13 Feb 2020 13:38:52 -0500
-Received: by mail-qk1-f196.google.com with SMTP id w25so6693865qki.3
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2020 10:38:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=a17QWj1zniloH0REZJQUIegjN8HppvvQ+Ig6IzvF8do=;
-        b=HS53ME2sfLQ5VWlmQANMJdrBmx0YnJNiUMA7+sYbLWdM67TxCv9cA5TwNEhoOEzy2N
-         Xdhvd2tHSOTJgXuzlGMrSDjTEv5NMD9FID/8cLUU5H51lti55aEctLL4ZS4g4jLzuYVD
-         G/pNRSioNCUxQyijxi3JTvu1W55/ZMVUChV0vU0ukefKNwYJU67rE7bN7zDYx1zdIpYk
-         3wH+UITUQcYaCznD5H9e/aeqyRwH5ft2N3B353eOVZh6m2e9S+bcnlcthB5Xxfl6SkyN
-         BIRJ0OLhITI6SevmBiyjqq4WZ/Ut7Ptph47R/7zGXnJ4NAlBZ+qS6d2mhRR84pE/SOO9
-         c+Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=a17QWj1zniloH0REZJQUIegjN8HppvvQ+Ig6IzvF8do=;
-        b=T1wkh0gtG5hnr9C0yjPEaQxnF+7W3jVd6vO1X8AuRvZBZs6ERQCm/bzrzuUT+ArK9f
-         qoXPZZ9fQUM4qRa/A87mmVGpmbF00kxQYhjeu4Ahm5Xj9gflSFq243xWuPE1QteKTEiQ
-         LiXhgiy45WIg9F2h/Cia9WN1fwQtMDcGlTUACwiblEfr1QcMdkOWpZxLGEdHPYi2oO6F
-         udh85JGHQ9h87pqo4fD+TejfsgvQ9XIInqMUEToOr8cPhB2mKPjIVaYHktAyWf+yqODr
-         WmPgZJlSl41iek8R0TKCooJ+rzqJDTzdcGxAVCqPqZ8sQ8Hi9Wfw150Tzgq3ta75LQxG
-         BV+g==
-X-Gm-Message-State: APjAAAVhrimb2OjPAhvb98k+HJhzy+KS0y5ypWTo+y25yKsInAZnxv0Y
-        jmDz/MU0vuZ2hoa8z7CXiiQsaKD1eL85eA==
-X-Google-Smtp-Source: APXvYqxICfpcsXGiYMyltui3Hcrstw2xAu4flS/uLpnLoszxAn48DbC69Blmv74LyCm9/sceySctrg==
-X-Received: by 2002:a05:620a:b89:: with SMTP id k9mr16825057qkh.185.1581619131625;
-        Thu, 13 Feb 2020 10:38:51 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id k15sm1665277qkk.103.2020.02.13.10.38.51
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 13 Feb 2020 10:38:51 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j2JNy-00029Y-KR; Thu, 13 Feb 2020 14:38:50 -0400
-Date:   Thu, 13 Feb 2020 14:38:50 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] IB/core: Replace zero-length array with flexible-array
- member
-Message-ID: <20200213183850.GM31668@ziepe.ca>
-References: <20200213183715.GA19636@embeddedor>
+        id S1727761AbgBMTGT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Feb 2020 14:06:19 -0500
+Received: from gateway31.websitewelcome.com ([192.185.143.46]:18343 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726282AbgBMTGT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 13 Feb 2020 14:06:19 -0500
+X-Greylist: delayed 1359 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 Feb 2020 14:06:18 EST
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id C7E055973E1
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2020 12:43:38 -0600 (CST)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id 2JScj6W8ZXVkQ2JScjUS6y; Thu, 13 Feb 2020 12:43:38 -0600
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=RP9MNo1YdDU9fDbbP5ClVHP/dNN6EGRpfzts4Ja36zg=; b=pV2j0L0SxNe1B8wo31b2C9lxEl
+        P+kUKKwpA7otAaU8T1gVQ0+M9tLO1CX9IeKgzvi+jQBbrW/NrU4UlBWewjxTcV5dDrsdVqwW2yFQ+
+        ekIDVwZlZmT+wwPgrz9toSolLqwXbuPe+aXXi9MB7IA+V77J8PCE/L7ioS2cFPkP84P+II+5vEDvI
+        XTrQo1Rt9eZ7E4YrTyQa5gXcNO882QoI5msF2HI+G73wES4nXUpiNqv63oR83GUDBJP1+lJ19MUc7
+        BFhbTcR5pKLHCIxUAvwBBQoNL+JnbDJ/CerIHFVHJagsaWAUQFtesbH03xd1dCTyYepN8J2mHqZ0q
+        eAD12LGQ==;
+Received: from [200.68.140.15] (port=4209 helo=[192.168.43.131])
+        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1j2JSc-000bf4-BO; Thu, 13 Feb 2020 12:43:38 -0600
+Subject: Re: [PATCH] IB/core, cache: Replace zero-length array with
+ flexible-array member
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200213010425.GA13068@embeddedor.com>
+ <20200213010827.GG31668@ziepe.ca>
+ <1e6d952f-7d43-db2b-67f3-001ab8421bc8@embeddedor.com>
+ <20200213183756.GI679970@unreal>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ VtSixD1uOgytAP7RWS474w==
+Message-ID: <d92ce07f-7a9c-2b67-4d88-51b3c04a7e77@embeddedor.com>
+Date:   Thu, 13 Feb 2020 12:46:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200213183715.GA19636@embeddedor>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200213183756.GI679970@unreal>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 200.68.140.15
+X-Source-L: No
+X-Exim-ID: 1j2JSc-000bf4-BO
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.43.131]) [200.68.140.15]:4209
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 12
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 13, 2020 at 12:37:15PM -0600, Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> ---
->  drivers/infiniband/core/cache.c     | 2 +-
->  drivers/infiniband/core/cm.c        | 4 ++--
->  drivers/infiniband/core/multicast.c | 2 +-
->  drivers/infiniband/core/sa_query.c  | 2 +-
->  4 files changed, 5 insertions(+), 5 deletions(-)
 
-Any reason to skip these two?
 
-drivers/infiniband/core/mad_priv.h:     u8 mad[0];
-drivers/infiniband/core/mad_priv.h:     u8 data[0];
+On 2/13/20 12:37, Leon Romanovsky wrote:
+> On Thu, Feb 13, 2020 at 12:36:39PM -0600, Gustavo A. R. Silva wrote:
+>>
+>>
+>> On 2/12/20 19:08, Jason Gunthorpe wrote:
+>>>
+>>> There are many more of these under core/* care to fix them all in one
+>>> patch?
+>>>
+>>
+>> Sure thing. I can do that.
+> 
+> Gustavo,
+> 
+> Was checkpatch extended to catch such mistakes?
+> 
 
-And may as well touch these in the subsystem headers too:
+Not yet. But that's on my list for the short future.
 
-include/rdma/ib_fmr_pool.h:     u64                 page_list[0];
-include/rdma/ib_verbs.h:        u8      real_sz[0];
-include/rdma/ib_verbs.h:        u8      real_sz[0];
-include/rdma/ib_verbs.h:        u8      real_sz[0];
-include/rdma/ib_verbs.h:        u8      real_sz[0];
-include/rdma/ib_verbs.h:        u8      real_sz[0];
-include/rdma/ib_verbs.h:        u8      real_sz[0];
-include/rdma/ib_verbs.h:        u8      real_sz[0];
-include/rdma/ib_verbs.h:        u8      real_sz[0];
-include/rdma/ib_verbs.h:        u8      real_sz[0];
-include/rdma/opa_vnic.h:        char *dev_priv[0];
-include/rdma/rdmavt_mr.h:       struct rvt_segarray *map[0];    /* the segments */
-include/rdma/rdmavt_qp.h:       struct rvt_sge sg_list[0];
-
-?
-
-Jason
+Thanks
+--
+Gustavo
