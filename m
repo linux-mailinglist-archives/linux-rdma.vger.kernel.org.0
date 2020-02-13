@@ -2,100 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE43215CA70
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 19:34:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0CA15CAD3
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 19:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbgBMSeI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Feb 2020 13:34:08 -0500
-Received: from gateway30.websitewelcome.com ([50.116.127.1]:34354 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725781AbgBMSeI (ORCPT
+        id S1726968AbgBMS7L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Feb 2020 13:59:11 -0500
+Received: from gateway24.websitewelcome.com ([192.185.51.202]:36908 "EHLO
+        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726780AbgBMS7L (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Feb 2020 13:34:08 -0500
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 884A736CEA
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2020 12:34:06 -0600 (CST)
+        Thu, 13 Feb 2020 13:59:11 -0500
+X-Greylist: delayed 1465 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 Feb 2020 13:59:10 EST
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway24.websitewelcome.com (Postfix) with ESMTP id 60E2312C2B7
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Feb 2020 12:34:45 -0600 (CST)
 Received: from gator4166.hostgator.com ([108.167.133.22])
         by cmsmtp with SMTP
-        id 2JJNjv3DnEfyq2JJOj4V3r; Thu, 13 Feb 2020 12:34:06 -0600
+        id 2JK0j1NvQSl8q2JK1jjpCr; Thu, 13 Feb 2020 12:34:45 -0600
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=rxyyxkj9FGLzWax5CelCuptGO2+TnafpdOfoIU5hlJk=; b=tca9Q3qbGMxwIuVUJLZYJiddjd
-        MXtxmYEu1ecjaS/LwgUbUb5YmZa/QTF5gM7N3IKirCvSj27xA5P4XZCPJXt9ToemMCO7olSi2/f2Q
-        YZRddevZ2SaX9XqFozKWyDfqlnF7Ea944TM7CtwXLeKdEOZUfd9h3f6TDYNPfrck4J/teDptVsGkw
-        GP1TnS0pme60qnQhlxqogVzT0HOUyaZ7u01+4aXcP022CYsEujCu10WR0etG9oCEriHXco8S1whjc
-        PRgb0CUV9ebgdcvaHse3CzJW1UdbWMN74Noqro988FAxJJkLRmbSaLMbn/JTs8+yUMyOq+ud7epC3
-        X3rX0FxQ==;
-Received: from [200.68.140.15] (port=13071 helo=[192.168.43.131])
-        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
+        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
+        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=+18p4uN9DK6dRKJWk5cR9EvFxREWiKNZQXUu8xY4YP0=; b=gtG1qJTtH1YieKQThWW4u0Ri6p
+        YtfZtnun87pbLIu1YGRozG6O2Ubk4vVKRNAgnex4QoyFI974320vwKGYZ+NuQzPxpBgrOnqwUqDOE
+        ZihyrJ9j1tQlatdhd3LdpoAYahtOuHlCqzR5Tocg+Ylgxo0FbSK1Ev/PPUA73bMX8OZzUX6i8/Fgz
+        NKJG1CCMMyIfEjYGT7SG8FPVWZlSvutvMhNLI2X/rWvauQhXQl6kJTUBTwNAllBT43cR3rbUXDrqc
+        Krc9c0qhe8ImxnjOgqL1kdTNUpMVQM1KqQEcis4UmssbPg1LI7g3FSFKlXvzJ3kSY9u9kvCVGsYC6
+        Xc5Rk97A==;
+Received: from [200.68.140.15] (port=6289 helo=embeddedor)
+        by gator4166.hostgator.com with esmtpa (Exim 4.92)
         (envelope-from <gustavo@embeddedor.com>)
-        id 1j2JJN-000WZG-57; Thu, 13 Feb 2020 12:34:05 -0600
-Subject: Re: [PATCH] IB/core, cache: Replace zero-length array with
- flexible-array member
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200213010425.GA13068@embeddedor.com>
- <20200213010827.GG31668@ziepe.ca>
+        id 1j2JJv-000X97-0B; Thu, 13 Feb 2020 12:34:39 -0600
+Date:   Thu, 13 Feb 2020 12:37:15 -0600
 From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- xsFNBFssHAwBEADIy3ZoPq3z5UpsUknd2v+IQud4TMJnJLTeXgTf4biSDSrXn73JQgsISBwG
- 2Pm4wnOyEgYUyJd5tRWcIbsURAgei918mck3tugT7AQiTUN3/5aAzqe/4ApDUC+uWNkpNnSV
- tjOx1hBpla0ifywy4bvFobwSh5/I3qohxDx+c1obd8Bp/B/iaOtnq0inli/8rlvKO9hp6Z4e
- DXL3PlD0QsLSc27AkwzLEc/D3ZaqBq7ItvT9Pyg0z3Q+2dtLF00f9+663HVC2EUgP25J3xDd
- 496SIeYDTkEgbJ7WYR0HYm9uirSET3lDqOVh1xPqoy+U9zTtuA9NQHVGk+hPcoazSqEtLGBk
- YE2mm2wzX5q2uoyptseSNceJ+HE9L+z1KlWW63HhddgtRGhbP8pj42bKaUSrrfDUsicfeJf6
- m1iJRu0SXYVlMruGUB1PvZQ3O7TsVfAGCv85pFipdgk8KQnlRFkYhUjLft0u7CL1rDGZWDDr
- NaNj54q2CX9zuSxBn9XDXvGKyzKEZ4NY1Jfw+TAMPCp4buawuOsjONi2X0DfivFY+ZsjAIcx
- qQMglPtKk/wBs7q2lvJ+pHpgvLhLZyGqzAvKM1sVtRJ5j+ARKA0w4pYs5a5ufqcfT7dN6TBk
- LXZeD9xlVic93Ju08JSUx2ozlcfxq+BVNyA+dtv7elXUZ2DrYwARAQABzSxHdXN0YXZvIEEu
- IFIuIFNpbHZhIDxndXN0YXZvQGVtYmVkZGVkb3IuY29tPsLBfQQTAQgAJwUCWywcDAIbIwUJ
- CWYBgAULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAAKCRBHBbTLRwbbMZ6tEACk0hmmZ2FWL1Xi
- l/bPqDGFhzzexrdkXSfTTZjBV3a+4hIOe+jl6Rci/CvRicNW4H9yJHKBrqwwWm9fvKqOBAg9
- obq753jydVmLwlXO7xjcfyfcMWyx9QdYLERTeQfDAfRqxir3xMeOiZwgQ6dzX3JjOXs6jHBP
- cgry90aWbaMpQRRhaAKeAS14EEe9TSIly5JepaHoVdASuxklvOC0VB0OwNblVSR2S5i5hSsh
- ewbOJtwSlonsYEj4EW1noQNSxnN/vKuvUNegMe+LTtnbbocFQ7dGMsT3kbYNIyIsp42B5eCu
- JXnyKLih7rSGBtPgJ540CjoPBkw2mCfhj2p5fElRJn1tcX2McsjzLFY5jK9RYFDavez5w3lx
- JFgFkla6sQHcrxH62gTkb9sUtNfXKucAfjjCMJ0iuQIHRbMYCa9v2YEymc0k0RvYr43GkA3N
- PJYd/vf9vU7VtZXaY4a/dz1d9dwIpyQARFQpSyvt++R74S78eY/+lX8wEznQdmRQ27kq7BJS
- R20KI/8knhUNUJR3epJu2YFT/JwHbRYC4BoIqWl+uNvDf+lUlI/D1wP+lCBSGr2LTkQRoU8U
- 64iK28BmjJh2K3WHmInC1hbUucWT7Swz/+6+FCuHzap/cjuzRN04Z3Fdj084oeUNpP6+b9yW
- e5YnLxF8ctRAp7K4yVlvA87BTQRbLBwMARAAsHCE31Ffrm6uig1BQplxMV8WnRBiZqbbsVJB
- H1AAh8tq2ULl7udfQo1bsPLGGQboJSVN9rckQQNahvHAIK8ZGfU4Qj8+CER+fYPp/MDZj+t0
- DbnWSOrG7z9HIZo6PR9z4JZza3Hn/35jFggaqBtuydHwwBANZ7A6DVY+W0COEU4of7CAahQo
- 5NwYiwS0lGisLTqks5R0Vh+QpvDVfuaF6I8LUgQR/cSgLkR//V1uCEQYzhsoiJ3zc1HSRyOP
- otJTApqGBq80X0aCVj1LOiOF4rrdvQnj6iIlXQssdb+WhSYHeuJj1wD0ZlC7ds5zovXh+FfF
- l5qH5RFY/qVn3mNIVxeO987WSF0jh+T5ZlvUNdhedGndRmwFTxq2Li6GNMaolgnpO/CPcFpD
- jKxY/HBUSmaE9rNdAa1fCd4RsKLlhXda+IWpJZMHlmIKY8dlUybP+2qDzP2lY7kdFgPZRU+e
- zS/pzC/YTzAvCWM3tDgwoSl17vnZCr8wn2/1rKkcLvTDgiJLPCevqpTb6KFtZosQ02EGMuHQ
- I6Zk91jbx96nrdsSdBLGH3hbvLvjZm3C+fNlVb9uvWbdznObqcJxSH3SGOZ7kCHuVmXUcqoz
- ol6ioMHMb+InrHPP16aVDTBTPEGwgxXI38f7SUEn+NpbizWdLNz2hc907DvoPm6HEGCanpcA
- EQEAAcLBZQQYAQgADwUCWywcDAIbDAUJCWYBgAAKCRBHBbTLRwbbMdsZEACUjmsJx2CAY+QS
- UMebQRFjKavwXB/xE7fTt2ahuhHT8qQ/lWuRQedg4baInw9nhoPE+VenOzhGeGlsJ0Ys52sd
- XvUjUocKgUQq6ekOHbcw919nO5L9J2ejMf/VC/quN3r3xijgRtmuuwZjmmi8ct24TpGeoBK4
- WrZGh/1hAYw4ieARvKvgjXRstcEqM5thUNkOOIheud/VpY+48QcccPKbngy//zNJWKbRbeVn
- imua0OpqRXhCrEVm/xomeOvl1WK1BVO7z8DjSdEBGzbV76sPDJb/fw+y+VWrkEiddD/9CSfg
- fBNOb1p1jVnT2mFgGneIWbU0zdDGhleI9UoQTr0e0b/7TU+Jo6TqwosP9nbk5hXw6uR5k5PF
- 8ieyHVq3qatJ9K1jPkBr8YWtI5uNwJJjTKIA1jHlj8McROroxMdI6qZ/wZ1ImuylpJuJwCDC
- ORYf5kW61fcrHEDlIvGc371OOvw6ejF8ksX5+L2zwh43l/pKkSVGFpxtMV6d6J3eqwTafL86
- YJWH93PN+ZUh6i6Rd2U/i8jH5WvzR57UeWxE4P8bQc0hNGrUsHQH6bpHV2lbuhDdqo+cM9eh
- GZEO3+gCDFmKrjspZjkJbB5Gadzvts5fcWGOXEvuT8uQSvl+vEL0g6vczsyPBtqoBLa9SNrS
- VtSixD1uOgytAP7RWS474w==
-Message-ID: <1e6d952f-7d43-db2b-67f3-001ab8421bc8@embeddedor.com>
-Date:   Thu, 13 Feb 2020 12:36:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] IB/core: Replace zero-length array with flexible-array member
+Message-ID: <20200213183715.GA19636@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20200213010827.GG31668@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
 X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
 X-AntiAbuse: Original Domain - vger.kernel.org
@@ -104,13 +55,13 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 200.68.140.15
 X-Source-L: No
-X-Exim-ID: 1j2JJN-000WZG-57
+X-Exim-ID: 1j2JJv-000X97-0B
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: ([192.168.43.131]) [200.68.140.15]:13071
+X-Source-Sender: (embeddedor) [200.68.140.15]:6289
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
+X-Email-Count: 7
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
 Sender: linux-rdma-owner@vger.kernel.org
@@ -118,16 +69,103 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+The current codebase makes use of the zero-length array language
+extension to the C90 standard, but the preferred mechanism to declare
+variable-length types such as these ones is a flexible array member[1][2],
+introduced in C99:
 
+struct foo {
+        int stuff;
+        struct boo array[];
+};
 
-On 2/12/20 19:08, Jason Gunthorpe wrote:
-> 
-> There are many more of these under core/* care to fix them all in one
-> patch?
-> 
+By making use of the mechanism above, we will get a compiler warning
+in case the flexible array does not occur last in the structure, which
+will help us prevent some kind of undefined behavior bugs from being
+inadvertently introduced[3] to the codebase from now on.
 
-Sure thing. I can do that.
+Also, notice that, dynamic memory allocations won't be affected by
+this change:
 
-Thanks
---
-Gustavo
+"Flexible array members have incomplete type, and so the sizeof operator
+may not be applied. As a quirk of the original implementation of
+zero-length arrays, sizeof evaluates to zero."[1]
+
+This issue was found with the help of Coccinelle.
+
+[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+[2] https://github.com/KSPP/linux/issues/21
+[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/infiniband/core/cache.c     | 2 +-
+ drivers/infiniband/core/cm.c        | 4 ++--
+ drivers/infiniband/core/multicast.c | 2 +-
+ drivers/infiniband/core/sa_query.c  | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+index 17bfedd24cc3..dedfbe27916f 100644
+--- a/drivers/infiniband/core/cache.c
++++ b/drivers/infiniband/core/cache.c
+@@ -46,7 +46,7 @@
+ 
+ struct ib_pkey_cache {
+ 	int             table_len;
+-	u16             table[0];
++	u16             table[];
+ };
+ 
+ struct ib_update_work {
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 68cc1b2d6824..8424abe83607 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -197,7 +197,7 @@ struct cm_device {
+ 	struct ib_device *ib_device;
+ 	u8 ack_delay;
+ 	int going_down;
+-	struct cm_port *port[0];
++	struct cm_port *port[];
+ };
+ 
+ struct cm_av {
+@@ -216,7 +216,7 @@ struct cm_work {
+ 	__be32 local_id;			/* Established / timewait */
+ 	__be32 remote_id;
+ 	struct ib_cm_event cm_event;
+-	struct sa_path_rec path[0];
++	struct sa_path_rec path[];
+ };
+ 
+ struct cm_timewait_info {
+diff --git a/drivers/infiniband/core/multicast.c b/drivers/infiniband/core/multicast.c
+index cd338ddc4a39..9c2d8b7f1af9 100644
+--- a/drivers/infiniband/core/multicast.c
++++ b/drivers/infiniband/core/multicast.c
+@@ -71,7 +71,7 @@ struct mcast_device {
+ 	struct ib_event_handler	event_handler;
+ 	int			start_port;
+ 	int			end_port;
+-	struct mcast_port	port[0];
++	struct mcast_port	port[];
+ };
+ 
+ enum mcast_state {
+diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+index 30d4c126a2db..74e0058fcf9e 100644
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -101,7 +101,7 @@ struct ib_sa_port {
+ struct ib_sa_device {
+ 	int                     start_port, end_port;
+ 	struct ib_event_handler event_handler;
+-	struct ib_sa_port port[0];
++	struct ib_sa_port port[];
+ };
+ 
+ struct ib_sa_query {
+-- 
+2.25.0
+
