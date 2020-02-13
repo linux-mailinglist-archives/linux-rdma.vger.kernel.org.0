@@ -2,23 +2,23 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE6E15B6B3
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 02:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B91915B6DC
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Feb 2020 02:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729313AbgBMB3V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Feb 2020 20:29:21 -0500
-Received: from gateway30.websitewelcome.com ([50.116.127.1]:49161 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729302AbgBMB3V (ORCPT
+        id S1729366AbgBMBtn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Feb 2020 20:49:43 -0500
+Received: from gateway36.websitewelcome.com ([192.185.200.11]:40360 "EHLO
+        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729333AbgBMBtn (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 12 Feb 2020 20:29:21 -0500
-X-Greylist: delayed 1223 seconds by postgrey-1.27 at vger.kernel.org; Wed, 12 Feb 2020 20:29:20 EST
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 9391B16E9
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Feb 2020 19:08:56 -0600 (CST)
+        Wed, 12 Feb 2020 20:49:43 -0500
+X-Greylist: delayed 1501 seconds by postgrey-1.27 at vger.kernel.org; Wed, 12 Feb 2020 20:49:42 EST
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway36.websitewelcome.com (Postfix) with ESMTP id 2EAD8406C7CF1
+        for <linux-rdma@vger.kernel.org>; Wed, 12 Feb 2020 18:18:34 -0600 (CST)
 Received: from gator4166.hostgator.com ([108.167.133.22])
         by cmsmtp with SMTP
-        id 22zwjnqnxXVkQ22zwjBveb; Wed, 12 Feb 2020 19:08:56 -0600
+        id 22vejj15rSl8q22vejRhdr; Wed, 12 Feb 2020 19:04:30 -0600
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
@@ -26,24 +26,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
         List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=PMxecW0O4tdkPXbZnFnlCU+Xv/vOEnBfFdnNrRCVmMY=; b=eOm+ryRMFshQWqZPIC5nzWTTT5
-        NYoy8rPeuv9a+ALZXbLX093SJAZ7PHUep51y+OiKUbRHVffzTUEuFCEghnYGxhLmg5RY2OFFnaOmL
-        Q5M+ciExfhUxzrfxCHyWREyePfOVRow6KUMW3jf++JiOA6NPmaRt54E1+iCGi//eN+CoR99x5nVzZ
-        NwxHdNjayqX2GaQowodt1xZC18NLo83cMYTiwZRn4w1ao0CSxkv6Rcceop08O20iUwXmekl8Kw3jA
-        wnYPisO9q7kfqNUNw8iRWy9pzzpUQqWBAOWecchmWn9zHHAwFbhsKGTinfTHQZd3j7NaK5Vek30zU
-        0ZHq9YcQ==;
-Received: from [200.68.141.42] (port=11053 helo=embeddedor)
+        bh=X7WylZBkBTQybAsfKQELLh8OusJwNVnNJjq/8R6vA0w=; b=aT/3iMtenf4x2jr8f+I4mCY8Gx
+        13AbKBGk/YTG2nN4BgUkFFFPRD8dqSwfLktlFOZKqocD7EgvZT+auwCWDpipsDzMB2Nci2qHLgLAe
+        n234VBlMlcKBKyKfQ6AfAs1/Tf7oXegGtqsTKQlqwpbInfuPOUQhdYaXNeZVYVMeSneGJvMG0gM4w
+        vzwBk9Q4rJ+F2YkVEQFxFH8bsQixd7om10815zfRH+d0BGboAVyZjmAd3YcCp+OzVDjgcGFlQMkBd
+        Iv5u8LoaTIU8JBtPj9cwVwtXcBV2pEkVYiFPsTdTy/hBBSZLavO8pkipa/aaMfyBmqBMz/xmU4Xsm
+        jb7kk9eQ==;
+Received: from [200.68.141.42] (port=2871 helo=embeddedor)
         by gator4166.hostgator.com with esmtpa (Exim 4.92)
         (envelope-from <gustavo@embeddedor.com>)
-        id 1j22zu-003wxD-Mk; Wed, 12 Feb 2020 19:08:55 -0600
-Date:   Wed, 12 Feb 2020 19:08:51 -0600
+        id 1j22vc-003uuH-E1; Wed, 12 Feb 2020 19:04:28 -0600
+Date:   Wed, 12 Feb 2020 19:04:25 -0600
 From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] IB/mthca: Replace zero-length array with flexible-array
- member
-Message-ID: <20200213010851.GA13977@embeddedor.com>
+Subject: [PATCH] IB/core, cache: Replace zero-length array with
+ flexible-array member
+Message-ID: <20200213010425.GA13068@embeddedor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -56,13 +56,13 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 200.68.141.42
 X-Source-L: No
-X-Exim-ID: 1j22zu-003wxD-Mk
+X-Exim-ID: 1j22vc-003uuH-E1
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: (embeddedor) [200.68.141.42]:11053
+X-Source-Sender: (embeddedor) [200.68.141.42]:2871
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 7
+X-Email-Count: 3
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
 Sender: linux-rdma-owner@vger.kernel.org
@@ -100,22 +100,22 @@ This issue was found with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 ---
- drivers/infiniband/hw/mthca/mthca_memfree.c | 2 +-
+ drivers/infiniband/core/cache.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mthca/mthca_memfree.c b/drivers/infiniband/hw/mthca/mthca_memfree.c
-index 78a48aea3faf..dc10376f09cb 100644
---- a/drivers/infiniband/hw/mthca/mthca_memfree.c
-+++ b/drivers/infiniband/hw/mthca/mthca_memfree.c
-@@ -58,7 +58,7 @@ struct mthca_user_db_table {
- 		u64                uvirt;
- 		struct scatterlist mem;
- 		int                refcount;
--	}                page[0];
-+	} page[];
+diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+index 17bfedd24cc3..dedfbe27916f 100644
+--- a/drivers/infiniband/core/cache.c
++++ b/drivers/infiniband/core/cache.c
+@@ -46,7 +46,7 @@
+ 
+ struct ib_pkey_cache {
+ 	int             table_len;
+-	u16             table[0];
++	u16             table[];
  };
  
- static void mthca_free_icm_pages(struct mthca_dev *dev, struct mthca_icm_chunk *chunk)
+ struct ib_update_work {
 -- 
 2.23.0
 
