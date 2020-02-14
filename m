@@ -2,156 +2,227 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5B915F7C5
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 21:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3239415F7D6
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 21:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730118AbgBNUe5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 15:34:57 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:44453 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730034AbgBNUe5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Feb 2020 15:34:57 -0500
-Received: by mail-qk1-f196.google.com with SMTP id v195so10465154qkb.11
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Feb 2020 12:34:57 -0800 (PST)
+        id S1730187AbgBNUjf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 15:39:35 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:44098 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730043AbgBNUje (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Feb 2020 15:39:34 -0500
+Received: by mail-qk1-f193.google.com with SMTP id v195so10478071qkb.11
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Feb 2020 12:39:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=o6O3tnYqlMJmxPn0Sscur6Hb7BY7qd7JqevA5cfwrFs=;
-        b=LMS4umkHQRBnj7llRCGiPvdHMrWWCEI2CXFORne0gSAcUBm9uiVufbp+AIHaXGzyfb
-         JGJvPH/sGxW0j8MacvVl0uyKufX16HxAhghW4mzhe2i/kAQw9y6lzeIsyPHI/Q2v5eQA
-         llJQJnmWOMcDMutM3L8dFrg3sD2ZmlufeHXiPxa1GXBhwJ7FBXkGkxl2TSvC4gcnu039
-         QI0Qm6LPK5MyhzlNMFeSe8vCkb40PdKwo/2VPvuhR7bdmrZUXISnGofznyJNvcAKeoYH
-         sSs81WIjOySS6AbUicnywyb7T+5VVmXd7XtC+nITFOEpai94a53arzh1DTdioarMmN3j
-         Esvg==
+        bh=Oo2pkt9CWUlNP26Aj7JvVAs5/HfWe+DbVSstrn3Z6gc=;
+        b=k8B2BMcBuBEpjJJsaYiFY9ohOkUn5y3CX8Sd1VA71RY3hItJXp0r+ILL1z88yJ2/5X
+         vX3bxjRipFItXTIB/YKj//obdqSmpbBQpHq1bfFcpwlOt0jnnYJ2f/m0VMxAABbnVEke
+         aStTmViZ4cQ1HM78CeVhIoNrUyb9KdtvcC/URJXFL/QTyEaA9uoUhG7F1M/Nk5O+mYYh
+         zCXZmV06MmNf/jywmpjQ94TqlWqf79AL8A0OJ7LEB6iAD+eMgT6ISUdfHzWMOP04Lden
+         fapQ3C3eS7z+Skk5MNY94HX7YdLagwwZrVVFBrLJZ+B+rJQQQJvk4+wwETguUn+xq8Yl
+         G2jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=o6O3tnYqlMJmxPn0Sscur6Hb7BY7qd7JqevA5cfwrFs=;
-        b=qNWp7Y8aPOYsRtvSh8SrvE5qa3oZvP83z09lyPazUGuxK2X0t/kqu+c88y8qTwpjCx
-         YM0FRihEThq/ijvcntl5gxT+gMu2JfFJIAI/UYT67o9UVQU/6S8YRh8FgNHu4CaQk1MU
-         sREcqc7cOi7uwWV83wR3OWm3jL6W7bHYO8aGfbobl3e+7qShhRwoweObvJg8TXb5eRaX
-         Vpb2PcjA/jMKM611ppLf2yOYr32V+NXJh3kFKs6c89ZegmPVMrBZyqWsfiP1G5PDiicG
-         b0zBD7GXMFerCx4Tgkl1QMR1odHs5R6KAjakmPjnAiz9AvBHhT2Y4oJcXVp8/DSot5Et
-         eOfw==
-X-Gm-Message-State: APjAAAV4Rc+/NQXAOamukGrblw59imygaWmzuEvArXQBOMtwwHEJL4S4
-        nu3R7V07ejMCdNmQTH84ViWyQA==
-X-Google-Smtp-Source: APXvYqxxXXiXj+lNYVanDfJMu6MImip4ngT7l0QsnRFqn4+O+jsCtSq4iy64PFVvPmC+7brmPm/J7g==
-X-Received: by 2002:a37:f60b:: with SMTP id y11mr4424390qkj.183.1581712496498;
-        Fri, 14 Feb 2020 12:34:56 -0800 (PST)
+        bh=Oo2pkt9CWUlNP26Aj7JvVAs5/HfWe+DbVSstrn3Z6gc=;
+        b=Xonn+yQkMZq+h4vVysrjefdRn4QSPJPpGVBedYI/dMpNEpmiuV51LAAQDibFSsHfXV
+         ycBBGazrU2xgood15o+laji9YeMWZIkAHwx2L46LK2OLZW0OsvRmx6SJfQ0eb1ZzQJUI
+         zOvfNxFDUbM8kO9LTdvyR+2nSZKBCGDm3mD7FvmsZUntrgUz9pycTATMvWFsWzFaNUHd
+         4DMeuWylU++mHTZfRL7hxmswSIsCLKU63jkIziNM653OY4MqusWpWRGxHLz3aN7PYJ00
+         XfYBAEpjdR4ij6WdaBWzhP4hTwklN3tuuZxCXcz/De5ynyAmX6fV3JgV3q5ISCnM2Tet
+         X2CQ==
+X-Gm-Message-State: APjAAAVOn1qHijzJj2X7HnsEwpytKByRL/DUygpOl3QiuV2myBEoryCC
+        5S3eAJDiuWuCqZ9PNvrrfequpA==
+X-Google-Smtp-Source: APXvYqzwO6JQOeYA+Za+/OfE7SOU/V7tggwhq/PHZc6nlA1nx/UeepixWmCET6bSM8qdVH/CC4M07Q==
+X-Received: by 2002:a05:620a:146a:: with SMTP id j10mr4158323qkl.19.1581712773573;
+        Fri, 14 Feb 2020 12:39:33 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id d69sm3999798qkg.63.2020.02.14.12.34.55
+        by smtp.gmail.com with ESMTPSA id z6sm3752017qkz.101.2020.02.14.12.39.32
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 14 Feb 2020 12:34:56 -0800 (PST)
+        Fri, 14 Feb 2020 12:39:33 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1j2hfr-0007GE-HZ; Fri, 14 Feb 2020 16:34:55 -0400
-Date:   Fri, 14 Feb 2020 16:34:55 -0400
+        id 1j2hkK-0007Jp-IQ; Fri, 14 Feb 2020 16:39:32 -0400
+Date:   Fri, 14 Feb 2020 16:39:32 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>, davem@davemloft.net,
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc:     davem@davemloft.net, gregkh@linuxfoundation.org,
         Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, nhorman@redhat.com,
-        sassmann@redhat.com, parav@mellanox.com, galpress@amazon.com,
-        selvin.xavier@broadcom.com, sriharsha.basavapatna@broadcom.com,
-        benve@cisco.com, bharat@chelsio.com, xavier.huwei@huawei.com,
-        yishaih@mellanox.com, leonro@mellanox.com, mkalderon@marvell.com,
-        aditr@vmware.com, Kiran Patil <kiran.patil@intel.com>,
+        sassmann@redhat.com, Tony Nguyen <anthony.l.nguyen@intel.com>,
         Andrew Bowers <andrewx.bowers@intel.com>
-Subject: Re: [RFC PATCH v4 01/25] virtual-bus: Implementation of Virtual Bus
-Message-ID: <20200214203455.GX31668@ziepe.ca>
+Subject: Re: [RFC PATCH v4 02/25] ice: Create and register virtual bus for
+ RDMA
+Message-ID: <20200214203932.GY31668@ziepe.ca>
 References: <20200212191424.1715577-1-jeffrey.t.kirsher@intel.com>
- <20200212191424.1715577-2-jeffrey.t.kirsher@intel.com>
- <20200214170240.GA4034785@kroah.com>
+ <20200212191424.1715577-3-jeffrey.t.kirsher@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200214170240.GA4034785@kroah.com>
+In-Reply-To: <20200212191424.1715577-3-jeffrey.t.kirsher@intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 09:02:40AM -0800, Greg KH wrote:
-> > +/**
-> > + * virtbus_dev_register - add a virtual bus device
-> > + * @vdev: virtual bus device to add
-> > + */
-> > +int virtbus_dev_register(struct virtbus_device *vdev)
-> > +{
-> > +	int ret;
-> > +
-> > +	if (!vdev->release) {
-> > +		dev_err(&vdev->dev, "virtbus_device .release callback NULL\n");
-> 
-> "virtbus_device MUST have a .release callback that does something!\n" 
-> 
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	device_initialize(&vdev->dev);
-> > +
-> > +	vdev->dev.bus = &virtual_bus_type;
-> > +	vdev->dev.release = virtbus_dev_release;
-> > +	/* All device IDs are automatically allocated */
-> > +	ret = ida_simple_get(&virtbus_dev_ida, 0, 0, GFP_KERNEL);
-> > +	if (ret < 0) {
-> > +		dev_err(&vdev->dev, "get IDA idx for virtbus device failed!\n");
-> > +		put_device(&vdev->dev);
-> 
-> If you allocate the number before device_initialize(), no need to call
-> put_device().  Just a minor thing, no big deal.
+On Wed, Feb 12, 2020 at 11:14:01AM -0800, Jeff Kirsher wrote:
+> +/**
+> + * ice_init_peer_devices - initializes peer devices
+> + * @pf: ptr to ice_pf
+> + *
+> + * This function initializes peer devices on the virtual bus.
+> + */
+> +int ice_init_peer_devices(struct ice_pf *pf)
+> +{
+> +	struct ice_vsi *vsi = pf->vsi[0];
+> +	struct pci_dev *pdev = pf->pdev;
+> +	struct device *dev = &pdev->dev;
+> +	int status = 0;
+> +	int i;
+> +
+> +	/* Reserve vector resources */
+> +	status = ice_reserve_peer_qvector(pf);
+> +	if (status < 0) {
+> +		dev_err(dev, "failed to reserve vectors for peer drivers\n");
+> +		return status;
+> +	}
+> +	for (i = 0; i < ARRAY_SIZE(ice_peers); i++) {
+> +		struct ice_peer_dev_int *peer_dev_int;
+> +		struct ice_peer_drv_int *peer_drv_int;
+> +		struct iidc_qos_params *qos_info;
+> +		struct iidc_virtbus_object *vbo;
+> +		struct msix_entry *entry = NULL;
+> +		struct iidc_peer_dev *peer_dev;
+> +		struct virtbus_device *vdev;
+> +		int j;
+> +
+> +		/* structure layout needed for container_of's looks like:
+> +		 * ice_peer_dev_int (internal only ice peer superstruct)
+> +		 * |--> iidc_peer_dev
+> +		 * |--> *ice_peer_drv_int
+> +		 *
+> +		 * iidc_virtbus_object (container_of parent for vdev)
+> +		 * |--> virtbus_device
+> +		 * |--> *iidc_peer_dev (pointer from internal struct)
+> +		 *
+> +		 * ice_peer_drv_int (internal only peer_drv struct)
+> +		 */
+> +		peer_dev_int = devm_kzalloc(dev, sizeof(*peer_dev_int),
+> +					    GFP_KERNEL);
+> +		if (!peer_dev_int)
+> +			return -ENOMEM;
+> +
+> +		vbo = kzalloc(sizeof(*vbo), GFP_KERNEL);
+> +		if (!vbo) {
+> +			devm_kfree(dev, peer_dev_int);
+> +			return -ENOMEM;
+> +		}
+> +
+> +		peer_drv_int = devm_kzalloc(dev, sizeof(*peer_drv_int),
+> +					    GFP_KERNEL);
 
-If *_regster does put_device on error then it must always do
-put_device on any error, for instance the above return -EINVAL with
-no put_device leaks memory.
+To me, this looks like a lifetime mess. All these devm allocations
+against the parent object are being referenced through the vbo with a
+different kref lifetime. The whole thing has very unclear semantics
+who should be cleaning up on error
 
-Generally I find the design and audit of drivers simpler if the
-register doesn't do device_initialize or put_device - have them
-distinct and require the caller to manage this.
+> +		if (!peer_drv_int) {
+> +			devm_kfree(dev, peer_dev_int);
+> +			kfree(vbo);
 
-For instance look at ice_init_peer_devices() and ask who frees
-the alloc_ordered_workqueue() if virtbus_dev_register() fails..
+ie here we free two things
 
-It is not all easy to tell if this is right or not..
+> +			return -ENOMEM;
+> +		}
+> +
+> +		pf->peers[i] = peer_dev_int;
+> +		vbo->peer_dev = &peer_dev_int->peer_dev;
+> +		peer_dev_int->peer_drv_int = peer_drv_int;
+> +		peer_dev_int->peer_dev.vdev = &vbo->vdev;
+> +
+> +		/* Initialize driver values */
+> +		for (j = 0; j < IIDC_EVENT_NBITS; j++)
+> +			bitmap_zero(peer_drv_int->current_events[j].type,
+> +				    IIDC_EVENT_NBITS);
+> +
+> +		mutex_init(&peer_dev_int->peer_dev_state_mutex);
+> +
+> +		peer_dev = &peer_dev_int->peer_dev;
+> +		peer_dev->peer_ops = NULL;
+> +		peer_dev->hw_addr = (u8 __iomem *)pf->hw.hw_addr;
+> +		peer_dev->peer_dev_id = ice_peers[i].id;
+> +		peer_dev->pf_vsi_num = vsi->vsi_num;
+> +		peer_dev->netdev = vsi->netdev;
+> +
+> +		peer_dev_int->ice_peer_wq =
+> +			alloc_ordered_workqueue("ice_peer_wq_%d", WQ_UNBOUND,
+> +						i);
+> +		if (!peer_dev_int->ice_peer_wq)
+> +			return -ENOMEM;
 
-> > +	put_device(&vdev->dev);
-> > +	ida_simple_remove(&virtbus_dev_ida, vdev->id);
-> 
-> You need to do this before put_device().
+Here we free nothing
 
-Shouldn't it be in the release function? The ida index should not be
-re-used until the kref goes to zero..
+> +
+> +		peer_dev->pdev = pdev;
+> +		qos_info = &peer_dev->initial_qos_info;
+> +
+> +		/* setup qos_info fields with defaults */
+> +		qos_info->num_apps = 0;
+> +		qos_info->num_tc = 1;
+> +
+> +		for (j = 0; j < IIDC_MAX_USER_PRIORITY; j++)
+> +			qos_info->up2tc[j] = 0;
+> +
+> +		qos_info->tc_info[0].rel_bw = 100;
+> +		for (j = 1; j < IEEE_8021QAZ_MAX_TCS; j++)
+> +			qos_info->tc_info[j].rel_bw = 0;
+> +
+> +		/* for DCB, override the qos_info defaults. */
+> +		ice_setup_dcb_qos_info(pf, qos_info);
+> +
+> +		/* make sure peer specific resources such as msix_count and
+> +		 * msix_entries are initialized
+> +		 */
+> +		switch (ice_peers[i].id) {
+> +		case IIDC_PEER_RDMA_ID:
+> +			if (test_bit(ICE_FLAG_IWARP_ENA, pf->flags)) {
+> +				peer_dev->msix_count = pf->num_rdma_msix;
+> +				entry = &pf->msix_entries[pf->rdma_base_vector];
+> +			}
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +
+> +		peer_dev->msix_entries = entry;
+> +		ice_peer_state_change(peer_dev_int, ICE_PEER_DEV_STATE_INIT,
+> +				      false);
+> +
+> +		vdev = &vbo->vdev;
+> +		vdev->name = ice_peers[i].name;
+> +		vdev->release = ice_peer_vdev_release;
+> +		vdev->dev.parent = &pdev->dev;
+> +
+> +		status = virtbus_dev_register(vdev);
+> +		if (status) {
+> +			virtbus_dev_unregister(vdev);
+> +			vdev = NULL;
 
-> > +struct virtbus_device {
-> > +	struct device dev;
-> > +	const char *name;
-> > +	void (*release)(struct virtbus_device *);
-> > +	int id;
-> > +	const struct virtbus_dev_id *matched_element;
-> > +};
-> 
-> Any reason you need to make "struct virtbus_device" a public structure
-> at all? 
+Here we double unregister and free nothing.
 
-The general point of this scheme is to do this in a public header:
+You need to go through all of this really carefully and make some kind
+of sane lifetime model and fix all the error unwinding :(
 
-+struct iidc_virtbus_object {
-+	struct virtbus_device vdev;
-+	struct iidc_peer_dev *peer_dev;
-+};
+Why doesn't the release() function of vbo trigger the free of all this
+peer related stuff?
 
-And then this when the driver binds:
-
-+int irdma_probe(struct virtbus_device *vdev)
-+{
-+       struct iidc_virtbus_object *vo =
-+                       container_of(vdev, struct iidc_virtbus_object, vdev);
-+       struct iidc_peer_dev *ldev = vo->peer_dev;
-
-So the virtbus_device is in a public header to enable the container_of
-construction.
+Use a sane design model of splitting into functions to allocate single
+peices of memory, goto error unwind each function, and build things up
+properly.
 
 Jason
