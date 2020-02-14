@@ -2,37 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CD115F3ED
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 19:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C946815F213
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 19:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390155AbgBNSQh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 13:16:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56478 "EHLO mail.kernel.org"
+        id S2391918AbgBNSGY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 13:06:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730776AbgBNPv3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:51:29 -0500
+        id S1731231AbgBNPyy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 10:54:54 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C885B24676;
-        Fri, 14 Feb 2020 15:51:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0700222C4;
+        Fri, 14 Feb 2020 15:54:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581695488;
-        bh=9/bnzQ+ER74MOe91Hzqc8GaIE8a7Ubr1rTd8soxdpJY=;
+        s=default; t=1581695694;
+        bh=qj+b2RpW9TJz60O6E8Om1vFFC0f3M1Zglp4/l4ocLbg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UFrAZbTVwp+7GoYz4Q/QqMoWRSNcrZp1N6+ugxMakJ6J26pmnbcOUggeXnzmqX6mo
-         5f6+kQ8eXSXOyIZegKfbBgpeKOvXMGkOmeson7AFA6Z1gLaA1h6eGVynATTK1jtUF+
-         Tz4WuRcqxPHTzAak6l/a3XowXqnzdjIfjMmYublQ=
+        b=xMFWI48WVlJrb5mmIDBQXChl+BElITRLXGkoRDwMEn0h45QCG/+VPfTyP+I38yCjW
+         gx7CZfndXEzJpwT0M4ukQDWfkhE3ctZT4bmHNMUqqmy/BNcg1VCBn93q7z6WcoSrFl
+         2f95LE/ppDA1l1Y0iC8IN8CFdq1goDkX0484naNU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Artemy Kovalyov <artemyko@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Gal Pressman <galpress@amazon.com>,
+Cc:     Jiewei Ke <kejiewei.cn@gmail.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 118/542] RDMA/umem: Fix ib_umem_find_best_pgsz()
-Date:   Fri, 14 Feb 2020 10:41:50 -0500
-Message-Id: <20200214154854.6746-118-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 277/542] RDMA/rxe: Fix error type of mmap_offset
+Date:   Fri, 14 Feb 2020 10:44:29 -0500
+Message-Id: <20200214154854.6746-277-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
 References: <20200214154854.6746-1-sashal@kernel.org>
@@ -45,47 +43,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Artemy Kovalyov <artemyko@mellanox.com>
+From: Jiewei Ke <kejiewei.cn@gmail.com>
 
-[ Upstream commit 36798d5ae1af62e830c5e045b2e41ce038690c61 ]
+[ Upstream commit 6ca18d8927d468c763571f78c9a7387a69ffa020 ]
 
-Except for the last entry, the ending iova alignment sets the maximum
-possible page size as the low bits of the iova must be zero when starting
-the next chunk.
+The type of mmap_offset should be u64 instead of int to match the type of
+mminfo.offset. If otherwise, after we create several thousands of CQs, it
+will run into overflow issues.
 
-Fixes: 4a35339958f1 ("RDMA/umem: Add API to find best driver supported page size in an MR")
-Link: https://lore.kernel.org/r/20200128135612.174820-1-leon@kernel.org
-Signed-off-by: Artemy Kovalyov <artemyko@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Tested-by: Gal Pressman <galpress@amazon.com>
+Link: https://lore.kernel.org/r/20191227113613.5020-1-kejiewei.cn@gmail.com
+Signed-off-by: Jiewei Ke <kejiewei.cn@gmail.com>
 Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/umem.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_verbs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index 7a3b99597eada..40cadb889114f 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -166,10 +166,13 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
- 		 * for any address.
- 		 */
- 		mask |= (sg_dma_address(sg) + pgoff) ^ va;
--		if (i && i != (umem->nmap - 1))
--			/* restrict by length as well for interior SGEs */
--			mask |= sg_dma_len(sg);
- 		va += sg_dma_len(sg) - pgoff;
-+		/* Except for the last entry, the ending iova alignment sets
-+		 * the maximum possible page size as the low bits of the iova
-+		 * must be zero when starting the next chunk.
-+		 */
-+		if (i != (umem->nmap - 1))
-+			mask |= va;
- 		pgoff = 0;
- 	}
- 	best_pg_bit = rdma_find_pg_bit(mask, pgsz_bitmap);
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index 95834206c80c3..92de39c4a7c1e 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -408,7 +408,7 @@ struct rxe_dev {
+ 	struct list_head	pending_mmaps;
+ 
+ 	spinlock_t		mmap_offset_lock; /* guard mmap_offset */
+-	int			mmap_offset;
++	u64			mmap_offset;
+ 
+ 	atomic64_t		stats_counters[RXE_NUM_OF_COUNTERS];
+ 
 -- 
 2.20.1
 
