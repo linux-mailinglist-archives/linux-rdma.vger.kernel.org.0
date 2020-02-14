@@ -2,188 +2,156 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D7715F760
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 21:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5B915F7C5
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 21:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389588AbgBNUCr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 15:02:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389578AbgBNUCq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Feb 2020 15:02:46 -0500
-Received: from localhost (unknown [12.246.51.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 32545206D7;
-        Fri, 14 Feb 2020 20:02:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581710565;
-        bh=qiSX8QFKcSeTp4mmGvE+BSPkGtpXSQaCqLDWDWB7McM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NYwDAVoKZ3IC2YQpshcazJxfIRzOcoWPWj3Va9jRpnKaj2hOJDOTRDEPHhCqd7Vga
-         n0PQSnc33F7ocY7P5oLV3ZE1+SAnxqpXlJT/YRon34mhklmOptIVr/JE11B0de1u2c
-         xSKH1II96Hckq4lMYc0yONdG6j9mdYawzoiCvTpo=
-Date:   Fri, 14 Feb 2020 09:02:40 -0800
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc:     davem@davemloft.net, Dave Ertman <david.m.ertman@intel.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        nhorman@redhat.com, sassmann@redhat.com, jgg@ziepe.ca,
-        parav@mellanox.com, galpress@amazon.com,
+        id S1730118AbgBNUe5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 15:34:57 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:44453 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730034AbgBNUe5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Feb 2020 15:34:57 -0500
+Received: by mail-qk1-f196.google.com with SMTP id v195so10465154qkb.11
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Feb 2020 12:34:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=o6O3tnYqlMJmxPn0Sscur6Hb7BY7qd7JqevA5cfwrFs=;
+        b=LMS4umkHQRBnj7llRCGiPvdHMrWWCEI2CXFORne0gSAcUBm9uiVufbp+AIHaXGzyfb
+         JGJvPH/sGxW0j8MacvVl0uyKufX16HxAhghW4mzhe2i/kAQw9y6lzeIsyPHI/Q2v5eQA
+         llJQJnmWOMcDMutM3L8dFrg3sD2ZmlufeHXiPxa1GXBhwJ7FBXkGkxl2TSvC4gcnu039
+         QI0Qm6LPK5MyhzlNMFeSe8vCkb40PdKwo/2VPvuhR7bdmrZUXISnGofznyJNvcAKeoYH
+         sSs81WIjOySS6AbUicnywyb7T+5VVmXd7XtC+nITFOEpai94a53arzh1DTdioarMmN3j
+         Esvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=o6O3tnYqlMJmxPn0Sscur6Hb7BY7qd7JqevA5cfwrFs=;
+        b=qNWp7Y8aPOYsRtvSh8SrvE5qa3oZvP83z09lyPazUGuxK2X0t/kqu+c88y8qTwpjCx
+         YM0FRihEThq/ijvcntl5gxT+gMu2JfFJIAI/UYT67o9UVQU/6S8YRh8FgNHu4CaQk1MU
+         sREcqc7cOi7uwWV83wR3OWm3jL6W7bHYO8aGfbobl3e+7qShhRwoweObvJg8TXb5eRaX
+         Vpb2PcjA/jMKM611ppLf2yOYr32V+NXJh3kFKs6c89ZegmPVMrBZyqWsfiP1G5PDiicG
+         b0zBD7GXMFerCx4Tgkl1QMR1odHs5R6KAjakmPjnAiz9AvBHhT2Y4oJcXVp8/DSot5Et
+         eOfw==
+X-Gm-Message-State: APjAAAV4Rc+/NQXAOamukGrblw59imygaWmzuEvArXQBOMtwwHEJL4S4
+        nu3R7V07ejMCdNmQTH84ViWyQA==
+X-Google-Smtp-Source: APXvYqxxXXiXj+lNYVanDfJMu6MImip4ngT7l0QsnRFqn4+O+jsCtSq4iy64PFVvPmC+7brmPm/J7g==
+X-Received: by 2002:a37:f60b:: with SMTP id y11mr4424390qkj.183.1581712496498;
+        Fri, 14 Feb 2020 12:34:56 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id d69sm3999798qkg.63.2020.02.14.12.34.55
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 14 Feb 2020 12:34:56 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1j2hfr-0007GE-HZ; Fri, 14 Feb 2020 16:34:55 -0400
+Date:   Fri, 14 Feb 2020 16:34:55 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>, davem@davemloft.net,
+        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, parav@mellanox.com, galpress@amazon.com,
         selvin.xavier@broadcom.com, sriharsha.basavapatna@broadcom.com,
         benve@cisco.com, bharat@chelsio.com, xavier.huwei@huawei.com,
         yishaih@mellanox.com, leonro@mellanox.com, mkalderon@marvell.com,
         aditr@vmware.com, Kiran Patil <kiran.patil@intel.com>,
         Andrew Bowers <andrewx.bowers@intel.com>
 Subject: Re: [RFC PATCH v4 01/25] virtual-bus: Implementation of Virtual Bus
-Message-ID: <20200214170240.GA4034785@kroah.com>
+Message-ID: <20200214203455.GX31668@ziepe.ca>
 References: <20200212191424.1715577-1-jeffrey.t.kirsher@intel.com>
  <20200212191424.1715577-2-jeffrey.t.kirsher@intel.com>
+ <20200214170240.GA4034785@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200212191424.1715577-2-jeffrey.t.kirsher@intel.com>
+In-Reply-To: <20200214170240.GA4034785@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 12, 2020 at 11:14:00AM -0800, Jeff Kirsher wrote:
-> From: Dave Ertman <david.m.ertman@intel.com>
+On Fri, Feb 14, 2020 at 09:02:40AM -0800, Greg KH wrote:
+> > +/**
+> > + * virtbus_dev_register - add a virtual bus device
+> > + * @vdev: virtual bus device to add
+> > + */
+> > +int virtbus_dev_register(struct virtbus_device *vdev)
+> > +{
+> > +	int ret;
+> > +
+> > +	if (!vdev->release) {
+> > +		dev_err(&vdev->dev, "virtbus_device .release callback NULL\n");
 > 
-> This is the initial implementation of the Virtual Bus,
-> virtbus_device and virtbus_driver.  The virtual bus is
-> a software based bus intended to support registering
-> virtbus_devices and virtbus_drivers and provide matching
-> between them and probing of the registered drivers.
+> "virtbus_device MUST have a .release callback that does something!\n" 
 > 
-> The bus will support probe/remove shutdown and
-> suspend/resume callbacks.
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	device_initialize(&vdev->dev);
+> > +
+> > +	vdev->dev.bus = &virtual_bus_type;
+> > +	vdev->dev.release = virtbus_dev_release;
+> > +	/* All device IDs are automatically allocated */
+> > +	ret = ida_simple_get(&virtbus_dev_ida, 0, 0, GFP_KERNEL);
+> > +	if (ret < 0) {
+> > +		dev_err(&vdev->dev, "get IDA idx for virtbus device failed!\n");
+> > +		put_device(&vdev->dev);
 > 
-> Kconfig and Makefile alterations are included
+> If you allocate the number before device_initialize(), no need to call
+> put_device().  Just a minor thing, no big deal.
+
+If *_regster does put_device on error then it must always do
+put_device on any error, for instance the above return -EINVAL with
+no put_device leaks memory.
+
+Generally I find the design and audit of drivers simpler if the
+register doesn't do device_initialize or put_device - have them
+distinct and require the caller to manage this.
+
+For instance look at ice_init_peer_devices() and ask who frees
+the alloc_ordered_workqueue() if virtbus_dev_register() fails..
+
+It is not all easy to tell if this is right or not..
+
+> > +	put_device(&vdev->dev);
+> > +	ida_simple_remove(&virtbus_dev_ida, vdev->id);
 > 
-> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
-> Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+> You need to do this before put_device().
 
-This looks a lot better, and is more of what I was thinking.  Some minor
-comments below:
+Shouldn't it be in the release function? The ida index should not be
+re-used until the kref goes to zero..
 
-> +/**
-> + * virtbus_dev_register - add a virtual bus device
-> + * @vdev: virtual bus device to add
-> + */
-> +int virtbus_dev_register(struct virtbus_device *vdev)
-> +{
-> +	int ret;
-> +
-> +	if (!vdev->release) {
-> +		dev_err(&vdev->dev, "virtbus_device .release callback NULL\n");
+> > +struct virtbus_device {
+> > +	struct device dev;
+> > +	const char *name;
+> > +	void (*release)(struct virtbus_device *);
+> > +	int id;
+> > +	const struct virtbus_dev_id *matched_element;
+> > +};
+> 
+> Any reason you need to make "struct virtbus_device" a public structure
+> at all? 
 
-"virtbus_device MUST have a .release callback that does something!\n" 
+The general point of this scheme is to do this in a public header:
 
-> +		return -EINVAL;
-> +	}
-> +
-> +	device_initialize(&vdev->dev);
-> +
-> +	vdev->dev.bus = &virtual_bus_type;
-> +	vdev->dev.release = virtbus_dev_release;
-> +	/* All device IDs are automatically allocated */
-> +	ret = ida_simple_get(&virtbus_dev_ida, 0, 0, GFP_KERNEL);
-> +	if (ret < 0) {
-> +		dev_err(&vdev->dev, "get IDA idx for virtbus device failed!\n");
-> +		put_device(&vdev->dev);
++struct iidc_virtbus_object {
++	struct virtbus_device vdev;
++	struct iidc_peer_dev *peer_dev;
++};
 
-If you allocate the number before device_initialize(), no need to call
-put_device().  Just a minor thing, no big deal.
+And then this when the driver binds:
 
-> +		return ret;
-> +	}
-> +
-> +	vdev->id = ret;
-> +	dev_set_name(&vdev->dev, "%s.%d", vdev->name, vdev->id);
-> +
-> +	dev_dbg(&vdev->dev, "Registering virtbus device '%s'\n",
-> +		dev_name(&vdev->dev));
-> +
-> +	ret = device_add(&vdev->dev);
-> +	if (ret)
-> +		goto device_add_err;
-> +
-> +	return 0;
-> +
-> +device_add_err:
-> +	dev_err(&vdev->dev, "Add device to virtbus failed!\n");
++int irdma_probe(struct virtbus_device *vdev)
++{
++       struct iidc_virtbus_object *vo =
++                       container_of(vdev, struct iidc_virtbus_object, vdev);
++       struct iidc_peer_dev *ldev = vo->peer_dev;
 
-Print the return error here too?
+So the virtbus_device is in a public header to enable the container_of
+construction.
 
-> +	put_device(&vdev->dev);
-> +	ida_simple_remove(&virtbus_dev_ida, vdev->id);
-
-You need to do this before put_device().
-
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(virtbus_dev_register);
-> +
-
-
-> --- /dev/null
-> +++ b/include/linux/virtual_bus.h
-> @@ -0,0 +1,57 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * virtual_bus.h - lightweight software bus
-> + *
-> + * Copyright (c) 2019-20 Intel Corporation
-> + *
-> + * Please see Documentation/driver-api/virtual_bus.rst for more information
-> + */
-> +
-> +#ifndef _VIRTUAL_BUS_H_
-> +#define _VIRTUAL_BUS_H_
-> +
-> +#include <linux/device.h>
-> +
-> +struct virtbus_device {
-> +	struct device dev;
-> +	const char *name;
-> +	void (*release)(struct virtbus_device *);
-> +	int id;
-> +	const struct virtbus_dev_id *matched_element;
-> +};
-
-Any reason you need to make "struct virtbus_device" a public structure
-at all?  Why not just make it private and have the release function
-pointer be passed as part of the register function?  That will keep
-people from poking around in here.
-
-> +
-> +/* The memory for the table is expected to remain allocated for the duration
-> + * of the pairing between driver and device.  The pointer for the matching
-> + * element will be copied to the matched_element field of the virtbus_device.
-
-I don't understand this last sentance, what are you trying to say?  We
-save off a pointer to the element, so it better not go away, is that
-what you mean?  Why would this happen?
-
-> + */
-> +struct virtbus_driver {
-> +	int (*probe)(struct virtbus_device *);
-> +	int (*remove)(struct virtbus_device *);
-> +	void (*shutdown)(struct virtbus_device *);
-> +	int (*suspend)(struct virtbus_device *, pm_message_t);
-> +	int (*resume)(struct virtbus_device *);
-
-Can all of these be const pointers such that we will not change them?
-
-> +	struct device_driver driver;
-> +	const struct virtbus_dev_id *id_table;
-> +};
-
-thanks,
-
-greg k-h
+Jason
