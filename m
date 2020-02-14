@@ -2,41 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2C415E71C
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 17:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A424115E5DD
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 17:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389336AbgBNQvw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 11:51:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52780 "EHLO mail.kernel.org"
+        id S2393046AbgBNQVi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 11:21:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405020AbgBNQTh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:19:37 -0500
+        id S2393031AbgBNQVi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:21:38 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E69D32470C;
-        Fri, 14 Feb 2020 16:19:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A31B246BB;
+        Fri, 14 Feb 2020 16:21:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581697176;
-        bh=rbYXY9x2U94T3ywVds9Mzo2LH017Iuuc5FYAlCQQUHU=;
+        s=default; t=1581697297;
+        bh=dSvF0y23x2RhFBIaj9BU/lA5dSQx65QZcnmoG1PWSJ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jflTV+Y8Sa+YQSX+fukvRH9T+vmIN2pclijbikuWX7/y/Ex1MZkY6chTnRRXLBz+w
-         L+IdKST2EkjSZbGiI9O9M8PsOQkIbCIJRL4lbx81Jev4A9rt6jrAfoIUv4YtcmVE7R
-         /VRLNsqe+ZuzxkVxkV8Fb/x8XmhFLsbQ5R64lUns=
+        b=aqPsiDnEv+BNcIRU9b4UXLWUeoufLzpcFjElWycCIfnhz3esJntxiQIFFtOiud2YI
+         S1MSEehHTTDphsy0bXwUPvljeXoG6RQvaIQmAGHNR+w0EW7FBcdgXWvExCJkR3j/64
+         H1E4ukYvN5f/doTxXMcbRz6l9YkNHxtwIRUshYpU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+Cc:     =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        Mark Haywood <mark.haywood@oracle.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 109/186] IB/hfi1: Add software counter for ctxt0 seq drop
-Date:   Fri, 14 Feb 2020 11:15:58 -0500
-Message-Id: <20200214161715.18113-109-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 011/141] RDMA/netlink: Do not always generate an ACK for some netlink operations
+Date:   Fri, 14 Feb 2020 11:19:11 -0500
+Message-Id: <20200214162122.19794-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214161715.18113-1-sashal@kernel.org>
-References: <20200214161715.18113-1-sashal@kernel.org>
+In-Reply-To: <20200214162122.19794-1-sashal@kernel.org>
+References: <20200214162122.19794-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,93 +46,81 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mike Marciniszyn <mike.marciniszyn@intel.com>
+From: Håkon Bugge <haakon.bugge@oracle.com>
 
-[ Upstream commit 5ffd048698ea5139743acd45e8ab388a683642b8 ]
+[ Upstream commit a242c36951ecd24bc16086940dbe6b522205c461 ]
 
-All other code paths increment some form of drop counter.
+In rdma_nl_rcv_skb(), the local variable err is assigned the return value
+of the supplied callback function, which could be one of
+ib_nl_handle_resolve_resp(), ib_nl_handle_set_timeout(), or
+ib_nl_handle_ip_res_resp(). These three functions all return skb->len on
+success.
 
-This was missed in the original implementation.
+rdma_nl_rcv_skb() is merely a copy of netlink_rcv_skb(). The callback
+functions used by the latter have the convention: "Returns 0 on success or
+a negative error code".
 
-Fixes: 82c2611daaf0 ("staging/rdma/hfi1: Handle packets with invalid RHF on context 0")
-Link: https://lore.kernel.org/r/20200106134228.119356.96828.stgit@awfm-01.aw.intel.com
-Reviewed-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+In particular, the statement (equal for both functions):
+
+   if (nlh->nlmsg_flags & NLM_F_ACK || err)
+
+implies that rdma_nl_rcv_skb() always will ack a message, independent of
+the NLM_F_ACK being set in nlmsg_flags or not.
+
+The fix could be to change the above statement, but it is better to keep
+the two *_rcv_skb() functions equal in this respect and instead change the
+three callback functions in the rdma subsystem to the correct convention.
+
+Fixes: 2ca546b92a02 ("IB/sa: Route SA pathrecord query through netlink")
+Fixes: ae43f8286730 ("IB/core: Add IP to GID netlink offload")
+Link: https://lore.kernel.org/r/20191216120436.3204814-1-haakon.bugge@oracle.com
+Suggested-by: Mark Haywood <mark.haywood@oracle.com>
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+Tested-by: Mark Haywood <mark.haywood@oracle.com>
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hfi1/chip.c   | 10 ++++++++++
- drivers/infiniband/hw/hfi1/chip.h   |  1 +
- drivers/infiniband/hw/hfi1/driver.c |  1 +
- drivers/infiniband/hw/hfi1/hfi.h    |  2 ++
- 4 files changed, 14 insertions(+)
+ drivers/infiniband/core/addr.c     | 2 +-
+ drivers/infiniband/core/sa_query.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
-index 4a0b7c0034771..cb5785dda524e 100644
---- a/drivers/infiniband/hw/hfi1/chip.c
-+++ b/drivers/infiniband/hw/hfi1/chip.c
-@@ -1686,6 +1686,14 @@ static u64 access_sw_pio_drain(const struct cntr_entry *entry,
- 	return dd->verbs_dev.n_piodrain;
+diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+index 1baa25e82bdd9..f7d23c1081dc4 100644
+--- a/drivers/infiniband/core/addr.c
++++ b/drivers/infiniband/core/addr.c
+@@ -141,7 +141,7 @@ int ib_nl_handle_ip_res_resp(struct sk_buff *skb,
+ 	if (ib_nl_is_good_ip_resp(nlh))
+ 		ib_nl_process_good_ip_rsep(nlh);
+ 
+-	return skb->len;
++	return 0;
  }
  
-+static u64 access_sw_ctx0_seq_drop(const struct cntr_entry *entry,
-+				   void *context, int vl, int mode, u64 data)
-+{
-+	struct hfi1_devdata *dd = context;
-+
-+	return dd->ctx0_seq_drop;
-+}
-+
- static u64 access_sw_vtx_wait(const struct cntr_entry *entry,
- 			      void *context, int vl, int mode, u64 data)
- {
-@@ -4246,6 +4254,8 @@ static struct cntr_entry dev_cntrs[DEV_CNTR_LAST] = {
- 			    access_sw_cpu_intr),
- [C_SW_CPU_RCV_LIM] = CNTR_ELEM("RcvLimit", 0, 0, CNTR_NORMAL,
- 			    access_sw_cpu_rcv_limit),
-+[C_SW_CTX0_SEQ_DROP] = CNTR_ELEM("SeqDrop0", 0, 0, CNTR_NORMAL,
-+			    access_sw_ctx0_seq_drop),
- [C_SW_VTX_WAIT] = CNTR_ELEM("vTxWait", 0, 0, CNTR_NORMAL,
- 			    access_sw_vtx_wait),
- [C_SW_PIO_WAIT] = CNTR_ELEM("PioWait", 0, 0, CNTR_NORMAL,
-diff --git a/drivers/infiniband/hw/hfi1/chip.h b/drivers/infiniband/hw/hfi1/chip.h
-index 50b8645d0b876..a88ef2433cea2 100644
---- a/drivers/infiniband/hw/hfi1/chip.h
-+++ b/drivers/infiniband/hw/hfi1/chip.h
-@@ -864,6 +864,7 @@ enum {
- 	C_DC_PG_STS_TX_MBE_CNT,
- 	C_SW_CPU_INTR,
- 	C_SW_CPU_RCV_LIM,
-+	C_SW_CTX0_SEQ_DROP,
- 	C_SW_VTX_WAIT,
- 	C_SW_PIO_WAIT,
- 	C_SW_PIO_DRAIN,
-diff --git a/drivers/infiniband/hw/hfi1/driver.c b/drivers/infiniband/hw/hfi1/driver.c
-index 72c836b826ca8..7aa1aabb7a43c 100644
---- a/drivers/infiniband/hw/hfi1/driver.c
-+++ b/drivers/infiniband/hw/hfi1/driver.c
-@@ -710,6 +710,7 @@ static noinline int skip_rcv_packet(struct hfi1_packet *packet, int thread)
- {
- 	int ret;
+ static int ib_nl_ip_send_msg(struct rdma_dev_addr *dev_addr,
+diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+index 5879a06ada938..1c459725d64e7 100644
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -848,7 +848,7 @@ int ib_nl_handle_set_timeout(struct sk_buff *skb,
+ 	}
  
-+	packet->rcd->dd->ctx0_seq_drop++;
- 	/* Set up for the next packet */
- 	packet->rhqoff += packet->rsize;
- 	if (packet->rhqoff >= packet->maxcnt)
-diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
-index af550c1767e31..c9a93f468f14a 100644
---- a/drivers/infiniband/hw/hfi1/hfi.h
-+++ b/drivers/infiniband/hw/hfi1/hfi.h
-@@ -1043,6 +1043,8 @@ struct hfi1_devdata {
+ settimeout_out:
+-	return skb->len;
++	return 0;
+ }
  
- 	char *boardname; /* human readable board info */
+ static inline int ib_nl_is_good_resolve_resp(const struct nlmsghdr *nlh)
+@@ -920,7 +920,7 @@ int ib_nl_handle_resolve_resp(struct sk_buff *skb,
+ 	}
  
-+	u64 ctx0_seq_drop;
-+
- 	/* reset value */
- 	u64 z_int_counter;
- 	u64 z_rcv_limit;
+ resp_out:
+-	return skb->len;
++	return 0;
+ }
+ 
+ static void free_sm_ah(struct kref *kref)
 -- 
 2.20.1
 
