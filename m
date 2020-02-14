@@ -2,86 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B98415F660
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 20:07:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A2515F698
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 20:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387821AbgBNTHj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 14:07:39 -0500
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:37168 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387603AbgBNTHj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Feb 2020 14:07:39 -0500
-Received: by mail-pf1-f194.google.com with SMTP id p14so5326193pfn.4;
-        Fri, 14 Feb 2020 11:07:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NQp08l/9y4q2CuFdBsix/UwClWZG5r6Lh3AJ34P3zu0=;
-        b=ShMfSVSt9roFvKixsW44UBB9EEHSujQwYQHkMsR31pmZ1oUpEJTxy21jSH1+2nus+o
-         zZiHGhXiw+bDEjexf7eT7QZpD9bMW9ZuwkFpMSx/1MLKzTENXnyKl401Qi6SxaaR1Q52
-         BnEWTDdvgF4BSTigy9bliWKWdOVDwSil1w6y1SafCyFkaP1JhDOqKFE8d3W72GXa9bxU
-         k62Pi3uWktYg+CAmveGDotRrEQe4k1kG4Zrk7iZFiNLigiGqMo08v44u5ET1rFEcn5W+
-         WDSpXshbrevpb9fMfsLRunm8O5VAW0VyZWKSiHaoVRTpBpOUpJb6q018I26SIENRmROm
-         E9vw==
-X-Gm-Message-State: APjAAAWvpdmjHCF8vxL6enUpVXSKAzbDlrc6MLSt8D5giFhCrc/Tyj9v
-        WQiCa+7ZPKw4VG265XArcQxtUyYp
-X-Google-Smtp-Source: APXvYqzdzzyBaxbse1m3XluIsctdwKQDuZWQdNP+7dlR0LZeUiA9jlHRMzLddIbjyrAb7kcHhrKr/A==
-X-Received: by 2002:a62:ab0d:: with SMTP id p13mr4880894pff.135.1581707257693;
-        Fri, 14 Feb 2020 11:07:37 -0800 (PST)
-Received: from ?IPv6:2620:15c:2c1:200:fb9c:664d:d2ad:c9b5? ([2620:15c:2c1:200:fb9c:664d:d2ad:c9b5])
-        by smtp.gmail.com with ESMTPSA id e4sm7768416pgg.94.2020.02.14.11.07.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Feb 2020 11:07:36 -0800 (PST)
-Subject: Re: [PATCH 1/2] Revert "RDMA/isert: Fix a recently introduced
- regression related to logout"
-To:     "Marciniszyn, Mike" <mike.marciniszyn@intel.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        Dakshaja Uppalapati <dakshaja@chelsio.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Rahul Kundu <rahul.kundu@chelsio.com>,
-        "'linux-rdma@vger.kernel.org'" <linux-rdma@vger.kernel.org>
-References: <20200213050900.19094-1-bvanassche@acm.org>
- <fcc55797-40d0-a04f-e2de-6a20a02e6fb6@acm.org>
- <MWHPR1101MB227101D7C2DFEB8ABACD0FCB86150@MWHPR1101MB2271.namprd11.prod.outlook.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <0763a928-27f4-d6cf-fc54-128ddaf2f47f@acm.org>
-Date:   Fri, 14 Feb 2020 11:07:33 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S2388174AbgBNTN2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 14:13:28 -0500
+Received: from mail.dlink.ru ([178.170.168.18]:39436 "EHLO fd.dlink.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387950AbgBNTN2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 14:13:28 -0500
+Received: by fd.dlink.ru (Postfix, from userid 5000)
+        id 3A6A41B20805; Fri, 14 Feb 2020 22:13:24 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru 3A6A41B20805
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dlink.ru; s=mail;
+        t=1581707604; bh=nhwdDqOJlQOl87aKKC1lm6aCScw7AzhefyZ1wDtS7gM=;
+        h=From:To:Cc:Subject:Date;
+        b=DY4dBz5AoMAcKmdPUcOGmsbVictVqh8ydt+C2b60OuKVD2Yl8EuvU2I6VXU8uYyBn
+         ZCF/rIdXanWiCZigjzm9IVcJ87yF9r7H8GR36ZylmCfQ1l0rwPoS/lGlnvFukv4hy9
+         4diizy5KiiVJJAPqU13qsLWwWDDqAWISiPxU6LP0=
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dlink.ru
+X-Spam-Level: 
+X-Spam-Status: No, score=-99.2 required=7.5 tests=BAYES_50,URIBL_BLOCKED,
+        USER_IN_WHITELIST autolearn=disabled version=3.4.2
+Received: from mail.rzn.dlink.ru (mail.rzn.dlink.ru [178.170.168.13])
+        by fd.dlink.ru (Postfix) with ESMTP id 748631B201C3;
+        Fri, 14 Feb 2020 22:13:17 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru 748631B201C3
+Received: from mail.rzn.dlink.ru (localhost [127.0.0.1])
+        by mail.rzn.dlink.ru (Postfix) with ESMTP id 41F041B2267C;
+        Fri, 14 Feb 2020 22:13:16 +0300 (MSK)
+Received: from localhost.localdomain (unknown [196.196.203.118])
+        by mail.rzn.dlink.ru (Postfix) with ESMTPA;
+        Fri, 14 Feb 2020 22:13:16 +0300 (MSK)
+From:   Alexander Lobakin <alobakin@dlink.ru>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Lobakin <alobakin@dlink.ru>
+Subject: [PATCH rdma] IB/mlx5: Fix linkage failure on 32-bit arches
+Date:   Fri, 14 Feb 2020 22:13:09 +0300
+Message-Id: <20200214191309.155654-1-alobakin@dlink.ru>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <MWHPR1101MB227101D7C2DFEB8ABACD0FCB86150@MWHPR1101MB2271.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/14/20 6:28 AM, Marciniszyn, Mike wrote:
->>
->> [PATCH 0/2] Revert two recent iSCSI / iSER patches
->>
-> 
-> Bart,
-> 
-> This will mean we will again see failures in our internal iSer testing.
-> 
-> What is the status of a final fix?
-> 
-> If you have something to try, I would be glad to test...
+Commit f164be8c0366 ("IB/mlx5: Extend caps stage to handle VAR
+capabilities") introduced a straight "/" division of the u64
+variable "bar_size", which emits an __udivdi3() libgcc call on
+32-bit arches and certain GCC versions:
 
-Hi Mike,
+error: "__udivdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined! [1]
 
-Please take another look at this patch series. No new regressions should 
-be introduced except if someone runs a bisect that lands in the middle 
-of this patch series. Patch 1/2 reintroduces a regression but patches 
-1/2 and 2/2 combined should restore iSER to the state of that driver in 
-kernel v5.4.
+Replace it with the corresponding div_u64() call.
+Compile-tested on ARCH=mips 32r2el_defconfig BOARDS=ocelot.
 
-Thanks,
+[1] https://lore.kernel.org/linux-mips/CAMuHMdXM9S1VkFMZ8eDAyZR6EE4WkJY215Lcn2qdOaPeadF+EQ@mail.gmail.com/
 
-Bart.
+Fixes: f164be8c0366 ("IB/mlx5: Extend caps stage to handle VAR
+capabilities")
+Signed-off-by: Alexander Lobakin <alobakin@dlink.ru>
+---
+ drivers/infiniband/hw/mlx5/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index e874d688d040..c47530e4d202 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -6545,7 +6545,8 @@ static int mlx5_ib_init_var_table(struct mlx5_ib_dev *dev)
+ 					doorbell_bar_offset);
+ 	bar_size = (1ULL << log_doorbell_bar_size) * 4096;
+ 	var_table->stride_size = 1ULL << log_doorbell_stride;
+-	var_table->num_var_hw_entries = bar_size / var_table->stride_size;
++	var_table->num_var_hw_entries = div_u64(bar_size,
++						var_table->stride_size);
+ 	mutex_init(&var_table->bitmap_lock);
+ 	var_table->bitmap = bitmap_zalloc(var_table->num_var_hw_entries,
+ 					  GFP_KERNEL);
+-- 
+2.25.0
+
