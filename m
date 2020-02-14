@@ -2,37 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3707515F1FC
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 19:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F77515F1BF
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 19:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391581AbgBNSFX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 13:05:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36198 "EHLO mail.kernel.org"
+        id S1731736AbgBNPzS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 10:55:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731720AbgBNPzQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:55:16 -0500
+        id S1731731AbgBNPzS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 10:55:18 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A64B222C4;
-        Fri, 14 Feb 2020 15:55:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6EBA24684;
+        Fri, 14 Feb 2020 15:55:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581695716;
-        bh=wIqsMrdKLb+D/TuHlWfbWthZCsYzOhhbmcyKf/OfsBY=;
+        s=default; t=1581695717;
+        bh=mHCqROaKJ7SzNg5MXZjS44KD2tpZdsshpaEXfJi5wlA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KygIdG9kFZ0vZfhvyaZiDwJwlEzpyl8OnB7EpMO57MC1Kb/eWldOKrHe4uqF8s1pB
-         ISgd88ddrMXW67z+s5RDeV3MV7WsHkqjUECKrf1XHVN9FJ+I6y/yyolabdq4cFLnRv
-         FlSljK8MVNIQIxn7fadh5awIkVrN00abpwl909lE=
+        b=mAslCNFzmbg7v/jqHu+YLQQpsFYLj4NJffFj1w+sZwYDNT6esyXbwV4fzfkl+yquJ
+         h8igydmTQqH8L9mGTo34AaAsT1f7GWzEjBVBQDtydPE5hSlyXR+KDJKCv8SkqVWWyy
+         IbvnxRV8mxySrTg7hV2/RtbCtypAXGPUmAmuCvDE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 294/542] mlx5: work around high stack usage with gcc
-Date:   Fri, 14 Feb 2020 10:44:46 -0500
-Message-Id: <20200214154854.6746-294-sashal@kernel.org>
+Cc:     Wenpeng Liang <liangwenpeng@huawei.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.5 295/542] RDMA/hns: Avoid printing address of mtt page
+Date:   Fri, 14 Feb 2020 10:44:47 -0500
+Message-Id: <20200214154854.6746-295-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
 References: <20200214154854.6746-1-sashal@kernel.org>
@@ -45,44 +44,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Wenpeng Liang <liangwenpeng@huawei.com>
 
-[ Upstream commit 42ae1a5c76691928ed217c7e40269db27f5225e9 ]
+[ Upstream commit eca44507c3e908b7362696a4d6a11d90371334c6 ]
 
-In some configurations, gcc tries too hard to optimize this code:
+Address of a page shouldn't be printed in case of security issues.
 
-drivers/net/ethernet/mellanox/mlx5/core/en_stats.c: In function 'mlx5e_grp_sw_update_stats':
-drivers/net/ethernet/mellanox/mlx5/core/en_stats.c:302:1: error: the frame size of 1336 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
-
-As was stated in the bug report, the reason is that gcc runs into a corner
-case in the register allocator that is rather hard to fix in a good way.
-
-As there is an easy way to work around it, just add a comment and the
-barrier that stops gcc from trying to overoptimize the function.
-
-Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92657
-Cc: Adhemerval Zanella <adhemerval.zanella@linaro.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Link: https://lore.kernel.org/r/1578313276-29080-2-git-send-email-liweihang@huawei.com
+Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_stats.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/hw/hns/hns_roce_mr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-index 9f09253f9f466..a05158472ed11 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
-@@ -297,6 +297,9 @@ static void mlx5e_grp_sw_update_stats(struct mlx5e_priv *priv)
- 			s->tx_tls_drop_bypass_req   += sq_stats->tls_drop_bypass_req;
- #endif
- 			s->tx_cqes		+= sq_stats->cqes;
-+
-+			/* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92657 */
-+			barrier();
- 		}
- 	}
- }
+diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+index 9ad19170c3f97..95765560c1cfb 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_mr.c
++++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+@@ -1064,8 +1064,8 @@ int hns_roce_ib_umem_write_mtt(struct hns_roce_dev *hr_dev,
+ 		if (!(npage % (1 << (mtt->page_shift - PAGE_SHIFT)))) {
+ 			if (page_addr & ((1 << mtt->page_shift) - 1)) {
+ 				dev_err(dev,
+-					"page_addr 0x%llx is not page_shift %d alignment!\n",
+-					page_addr, mtt->page_shift);
++					"page_addr is not page_shift %d alignment!\n",
++					mtt->page_shift);
+ 				ret = -EINVAL;
+ 				goto out;
+ 			}
 -- 
 2.20.1
 
