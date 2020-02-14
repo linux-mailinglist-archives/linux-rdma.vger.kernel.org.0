@@ -2,123 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC4215E8E0
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 18:04:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0160615EC1C
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 18:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392495AbgBNQPn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 11:15:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46126 "EHLO mail.kernel.org"
+        id S2391317AbgBNRY7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 12:24:59 -0500
+Received: from mga17.intel.com ([192.55.52.151]:43172 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392490AbgBNQPm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:15:42 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC8A9246E2;
-        Fri, 14 Feb 2020 16:15:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696941;
-        bh=wG5DzfXhNUiTrDFakN9BOTPux0RYW2bVFY9tNLm2jJ8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LGw8x/GhpCxuBHR7n61Bvq6lxK/kGGZM7dkxvwu9VZcP8sORRJYkbGYONgXO8MKX3
-         yxOHiv5WR7qH8HtFalmH0s4mdHCc8mPj4ySqG4R+7pkYeWTLxHpHoTPQaJSME/5AJL
-         tK/5Pkb7ow9hbGLTW03mYdbL4HD3KK7lsWrjIINo=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        Parav Pandit <parav@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 184/252] IB/mlx4: Fix memory leak in add_gid error flow
-Date:   Fri, 14 Feb 2020 11:10:39 -0500
-Message-Id: <20200214161147.15842-184-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214161147.15842-1-sashal@kernel.org>
-References: <20200214161147.15842-1-sashal@kernel.org>
+        id S2390928AbgBNRY7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 12:24:59 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Feb 2020 09:24:56 -0800
+X-IronPort-AV: E=Sophos;i="5.70,441,1574150400"; 
+   d="scan'208";a="223081205"
+Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.204.146]) ([10.254.204.146])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 14 Feb 2020 09:24:54 -0800
+Subject: Re: [PATCH 1/3] infiniband: hw: hfi1: verbs.c: Use built-in RCU list
+ checking
+To:     Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     mike.marciniszyn@intel.com,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Amol Grover <frextrite@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        rcu@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200114162345.19995-1-madhuparnabhowmik04@gmail.com>
+ <20200114165740.GB22037@ziepe.ca>
+ <74adec84-ec5b-ea1b-7adf-3f8608838259@intel.com>
+ <25133367-6544-d0af-ae30-5178909748b1@intel.com>
+ <CAF65HP0RsW5FMRRf5Lia2=MTKex-KwO7-_NsCUef94YKBg+pfA@mail.gmail.com>
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+Message-ID: <c773894a-b011-2419-683a-3b851583fc73@intel.com>
+Date:   Fri, 14 Feb 2020 12:24:52 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+In-Reply-To: <CAF65HP0RsW5FMRRf5Lia2=MTKex-KwO7-_NsCUef94YKBg+pfA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jack Morgenstein <jackm@dev.mellanox.co.il>
+On 2/14/2020 10:43 AM, Madhuparna Bhowmik wrote:
+> 
+> 
+> On Wed, Jan 15, 2020 at 12:05 AM <madhuparnabhowmik04@gmail.com 
+> <mailto:madhuparnabhowmik04@gmail.com>> wrote:
+> 
+>     From: Dennis Dalessandro <dennis.dalessandro@intel.com
+>     <mailto:dennis.dalessandro@intel.com>>
+> 
+>     On 1/14/2020 12:00 PM, Dennis Dalessandro wrote:
+>      > On 1/14/2020 11:57 AM, Jason Gunthorpe wrote:
+>      >> On Tue, Jan 14, 2020 at 09:53:45PM +0530,
+>      >> madhuparnabhowmik04@gmail.com
+>     <mailto:madhuparnabhowmik04@gmail.com> wrote:
+>      >>> From: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com
+>     <mailto:madhuparnabhowmik04@gmail.com>>
+>      >>>
+>      >>> list_for_each_entry_rcu has built-in RCU and lock checking.
+>      >>> Pass cond argument to list_for_each_entry_rcu.
+>      >>>
+>      >>> Signed-off-by: Madhuparna Bhowmik
+>     <madhuparnabhowmik04@gmail.com <mailto:madhuparnabhowmik04@gmail.com>>
+>      >>>   drivers/infiniband/hw/hfi1/verbs.c | 2 +-
+>      >>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>      >>>
+>      >>> diff --git a/drivers/infiniband/hw/hfi1/verbs.c
+>      >>> b/drivers/infiniband/hw/hfi1/verbs.c
+>      >>> index 089e201d7550..22f2d4fd2577 100644
+>      >>> +++ b/drivers/infiniband/hw/hfi1/verbs.c
+>      >>> @@ -515,7 +515,7 @@ static inline void hfi1_handle_packet(struct
+>      >>> hfi1_packet *packet,
+>      >>>                          opa_get_lid(packet->dlid, 9B));
+>      >>>           if (!mcast)
+>      >>>               goto drop;
+>      >>> -        list_for_each_entry_rcu(p, &mcast->qp_list, list) {
+>      >>> +        list_for_each_entry_rcu(p, &mcast->qp_list, list,
+>      >>> lockdep_is_held(&(ibp->rvp.lock))) {
+>      >>
+>      >> Okay, this looks reasonable
+>      >>
+>      >> Mike, Dennis, is this the right lock to test?
+>      >>
+>      >
+>      > I'm looking at that right now actually, I don't think this is
+>     correct.
+>      > Wanted to talk to Mike before I send a response though.
+>      >
+>      > -Denny
+> 
+>     That's definitely going to throw a ton of lock dep messages. It's not
+>     really the right lock either. Instead what we probably need to do is
+>     what we do in the non-multicast part of the code and take the
+>     rcu_read_lock().
+> 
+>     I'd say hold off on this and we'll fix it right. Same goes for the
+>     qib one.
+> 
+>     Alright, thank you for reviewing.
+> 
+>     The rdmavt one though looks to be OK. I'll give it a test.
+> 
+> Hi,
+> I just wanted to follow up on this.
+> Any updates?
+> Also, is the bug fixed now?
+> 
+> Thank you,
+> Madhuparna
+> 
+>     Thank you,
+>     Madhuparna
+> 
+>     -Denny
+> 
 
-[ Upstream commit eaad647e5cc27f7b46a27f3b85b14c4c8a64bffa ]
+I've got a patch going through internal discussion and testing for 
+adding rcu read locking.
 
-In procedure mlx4_ib_add_gid(), if the driver is unable to update the FW
-gid table, there is a memory leak in the driver's copy of the gid table:
-the gid entry's context buffer is not freed.
+The RDMAVT patch, I was OK with going in, I guess I just mentioned that 
+in a reply rather than adding an RB tag. Let me go ahead and do that.
 
-If such an error occurs, free the entry's context buffer, and mark the
-entry as available (by setting its context pointer to NULL).
-
-Fixes: e26be1bfef81 ("IB/mlx4: Implement ib_device callbacks")
-Link: https://lore.kernel.org/r/20200115085050.73746-1-leon@kernel.org
-Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
-Reviewed-by: Parav Pandit <parav@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/hw/mlx4/main.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index 9386bb57b3d71..a19d3ad14dc37 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -246,6 +246,13 @@ static int mlx4_ib_update_gids(struct gid_entry *gids,
- 	return mlx4_ib_update_gids_v1(gids, ibdev, port_num);
- }
- 
-+static void free_gid_entry(struct gid_entry *entry)
-+{
-+	memset(&entry->gid, 0, sizeof(entry->gid));
-+	kfree(entry->ctx);
-+	entry->ctx = NULL;
-+}
-+
- static int mlx4_ib_add_gid(const struct ib_gid_attr *attr, void **context)
- {
- 	struct mlx4_ib_dev *ibdev = to_mdev(attr->device);
-@@ -306,6 +313,8 @@ static int mlx4_ib_add_gid(const struct ib_gid_attr *attr, void **context)
- 				     GFP_ATOMIC);
- 		if (!gids) {
- 			ret = -ENOMEM;
-+			*context = NULL;
-+			free_gid_entry(&port_gid_table->gids[free]);
- 		} else {
- 			for (i = 0; i < MLX4_MAX_PORT_GIDS; i++) {
- 				memcpy(&gids[i].gid, &port_gid_table->gids[i].gid, sizeof(union ib_gid));
-@@ -317,6 +326,12 @@ static int mlx4_ib_add_gid(const struct ib_gid_attr *attr, void **context)
- 
- 	if (!ret && hw_update) {
- 		ret = mlx4_ib_update_gids(gids, ibdev, attr->port_num);
-+		if (ret) {
-+			spin_lock_bh(&iboe->lock);
-+			*context = NULL;
-+			free_gid_entry(&port_gid_table->gids[free]);
-+			spin_unlock_bh(&iboe->lock);
-+		}
- 		kfree(gids);
- 	}
- 
-@@ -346,10 +361,7 @@ static int mlx4_ib_del_gid(const struct ib_gid_attr *attr, void **context)
- 		if (!ctx->refcount) {
- 			unsigned int real_index = ctx->real_index;
- 
--			memset(&port_gid_table->gids[real_index].gid, 0,
--			       sizeof(port_gid_table->gids[real_index].gid));
--			kfree(port_gid_table->gids[real_index].ctx);
--			port_gid_table->gids[real_index].ctx = NULL;
-+			free_gid_entry(&port_gid_table->gids[real_index]);
- 			hw_update = 1;
- 		}
- 	}
--- 
-2.20.1
-
+-Denny
