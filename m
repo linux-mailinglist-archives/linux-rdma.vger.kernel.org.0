@@ -2,99 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8EA915DBEE
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 16:51:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEE215DBB1
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 16:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730787AbgBNPva (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 10:51:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730780AbgBNPva (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:51:30 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2416F2467E;
-        Fri, 14 Feb 2020 15:51:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581695489;
-        bh=PujbNvqkvyrzZobB4pxyCIUog3O22ilzl8UACEUWRV4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d2yVdn8h2na2gMl4u4i4KnAPTBYK5n9gIfL4e4X3c0LJIdzM3F4lNUTputBqfb5vo
-         og9v0Z06HRJ5Ez+p+Fyz+hnAm2nWWjp2GEIZdhIJ6fKuxBVhw4AlJ997wXunA2G9+2
-         O3CQcfHnBU0CKC2XDc/A6VvjwVKW1tos2HifMqwE=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Parav Pandit <parav@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 119/542] RDMA/cma: Fix unbalanced cm_id reference count during address resolve
-Date:   Fri, 14 Feb 2020 10:41:51 -0500
-Message-Id: <20200214154854.6746-119-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
-References: <20200214154854.6746-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1730161AbgBNPto (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 10:49:44 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:41313 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730153AbgBNPtn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Feb 2020 10:49:43 -0500
+Received: by mail-pf1-f193.google.com with SMTP id j9so5066219pfa.8
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Feb 2020 07:49:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pensando.io; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=p9FeIm4rpsTmwD29DWrrG41+mpG32pb6yqgUygjNEWQ=;
+        b=B0Xg3jtIrNSru02e/vY1KtDPkuH4UxegX8g5TRSRMNV6VRuYvHYV/ecq2oas1w1OD6
+         Z7BwiHlgW/eQXzZexWVyDQpEovi9GHFIUrF2R4W+EOfhwlRLkZRCn7ea+M/RJiVYT5FD
+         eBFYkQUsOYg7NkLeeqnE0qrcEuV/8D4QstBKXcST0T5XrBypi7/vXqmRdkUWDkRzb8/G
+         EmmKOmTsqvclBhadLdnNAUTceNLO9VjgVBFRkN6JVUOd5hkN3FuTZbSkIYsCeXGP5WNF
+         P2w1GekhLuP5Za3h3hYgxIXkDH0m4/8MQTKs2JfbSgearm9AvFg25l00K9ZWhtUmN9XO
+         LJUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=p9FeIm4rpsTmwD29DWrrG41+mpG32pb6yqgUygjNEWQ=;
+        b=FahQCYfWgDnL1v0nAj8+GURparbzi5kw1opa9X14M4csCVxY2MqIh5+LeWqycA/mG7
+         7toUGpuB4/NkW3bMyi5GimllLHbSNVyp7bttx5zNNSYxKEn9wgCdbbFrFQkk0rWugUbl
+         hMqqkdPueyuLgnLpL8Qjt6CMWo9GLylggKWSTTWcKPEMWWOxnUPJM1VlBa6pkVgkXNmh
+         m5yks8nwzq/rpD6+xjiThlEBYkOG/KtkJ/T1sLDyhTSAvT6B293m4ONdRsJIAulLofBa
+         s7/UZifaVd7H/lfHqM/qGMkVkpOZN9QbImO5rDKkwtKEfKY5eXVRrRrus2f6BLiQFgmS
+         CQqQ==
+X-Gm-Message-State: APjAAAU5Kaxvsb+n/hY6ESNzg19FZEkpTWMkOHIGVpFxj/sqSgTELyh0
+        XJMzIxANOgS6igAY0mzJicJnnA==
+X-Google-Smtp-Source: APXvYqwuv9lTVPd0VibPK3oC1NpGvEAA9AH5kdTzT673M8UN18i0sZKbEp/ESIHcYPqq7v3kwjuuyw==
+X-Received: by 2002:a05:6a00:2c1:: with SMTP id b1mr4215205pft.80.1581695383303;
+        Fri, 14 Feb 2020 07:49:43 -0800 (PST)
+Received: from [192.168.4.6] ([107.13.143.123])
+        by smtp.gmail.com with ESMTPSA id ep2sm6805972pjb.31.2020.02.14.07.49.40
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 14 Feb 2020 07:49:42 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [RFC PATCH v4 18/25] RDMA/irdma: Implement device supported verb
+ APIs
+From:   Andrew Boyer <aboyer@pensando.io>
+In-Reply-To: <20200214145443.GU31668@ziepe.ca>
+Date:   Fri, 14 Feb 2020 10:49:38 -0500
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>, davem@davemloft.net,
+        gregkh@linuxfoundation.org,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        nhorman@redhat.com, sassmann@redhat.com,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E686D00B-5B27-4463-ADB1-D01588621138@pensando.io>
+References: <20200212191424.1715577-1-jeffrey.t.kirsher@intel.com>
+ <20200212191424.1715577-19-jeffrey.t.kirsher@intel.com>
+ <20200214145443.GU31668@ziepe.ca>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+X-Mailer: Apple Mail (2.3445.104.11)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Parav Pandit <parav@mellanox.com>
 
-[ Upstream commit b4fb4cc5ba83b20dae13cef116c33648e81d2f44 ]
+> On Feb 14, 2020, at 9:54 AM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>=20
+> On Wed, Feb 12, 2020 at 11:14:17AM -0800, Jeff Kirsher wrote:
+> ...
+> New drivers are forbidden from calling this:
+>=20
+> /**
+> * rdma_set_device_sysfs_group - Set device attributes group to have
+> *				 driver specific sysfs entries at
+> *				 for infiniband class.
+> *
+> * @device:	device pointer for which attributes to be created
+> * @group:	Pointer to group which should be added when device
+> *		is registered with sysfs.
+> * rdma_set_device_sysfs_group() allows existing drivers to expose one
+> * group per device to have sysfs attributes.
+> *
+> * NOTE: New drivers should not make use of this API; instead new =
+device
+> * parameter should be exposed via netlink command. This API and =
+mechanism
+> * exist only for existing drivers.
+> */
+>=20
+> Jason
 
-Below commit missed the AF_IB and loopback code flow in
-rdma_resolve_addr().  This leads to an unbalanced cm_id refcount in
-cma_work_handler() which puts the refcount which was not incremented prior
-to queuing the work.
+Is there an existing field in RDMA_NLDEV_ATTR_* that allows us to =
+display a string to use as a replacement for the board_id in sysfs?
 
-A call trace is observed with such code flow:
+Like =E2=80=9CMellanox ConnectX-3=E2=80=9D or similar.
 
- BUG: unable to handle kernel NULL pointer dereference at (null)
- [<ffffffff96b67e16>] __mutex_lock_slowpath+0x166/0x1d0
- [<ffffffff96b6715f>] mutex_lock+0x1f/0x2f
- [<ffffffffc0beabb5>] cma_work_handler+0x25/0xa0
- [<ffffffff964b9ebf>] process_one_work+0x17f/0x440
- [<ffffffff964baf56>] worker_thread+0x126/0x3c0
+The other two sysfs fields (hca_type and hw_rev) seem to have been =
+unused.
 
-Hence, hold the cm_id reference when scheduling the resolve work item.
-
-Fixes: 722c7b2bfead ("RDMA/{cma, core}: Avoid callback on rdma_addr_cancel()")
-Link: https://lore.kernel.org/r/20200126142652.104803-2-leon@kernel.org
-Signed-off-by: Parav Pandit <parav@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/core/cma.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 43a6f07e0afe2..af1afc17b8bdf 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -3118,6 +3118,7 @@ static int cma_resolve_loopback(struct rdma_id_private *id_priv)
- 	rdma_addr_get_sgid(&id_priv->id.route.addr.dev_addr, &gid);
- 	rdma_addr_set_dgid(&id_priv->id.route.addr.dev_addr, &gid);
- 
-+	atomic_inc(&id_priv->refcount);
- 	cma_init_resolve_addr_work(work, id_priv);
- 	queue_work(cma_wq, &work->work);
- 	return 0;
-@@ -3144,6 +3145,7 @@ static int cma_resolve_ib_addr(struct rdma_id_private *id_priv)
- 	rdma_addr_set_dgid(&id_priv->id.route.addr.dev_addr, (union ib_gid *)
- 		&(((struct sockaddr_ib *) &id_priv->id.route.addr.dst_addr)->sib_addr));
- 
-+	atomic_inc(&id_priv->refcount);
- 	cma_init_resolve_addr_work(work, id_priv);
- 	queue_work(cma_wq, &work->work);
- 	return 0;
--- 
-2.20.1
+-Andrew
 
