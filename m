@@ -2,121 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9717015E61D
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 17:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8EC15ECC7
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 18:29:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392972AbgBNQp4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 11:45:56 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:47084 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393872AbgBNQpz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Feb 2020 11:45:55 -0500
-Received: by mail-qv1-f68.google.com with SMTP id y2so4535349qvu.13
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Feb 2020 08:45:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=6zMAV6opT8F4IR1EmzI6ROBaFFltfgM895kUaotRIlk=;
-        b=oNniTQAWE+1pH7ooqR0szPphGeNMfhxh0K7p07S3hqK3YV8+Aes8Eb32kL0g+XbGCQ
-         tZTSWIurEjn2VjNJGS4dkuitS7jaRUJlDOsRFMYf+yZvusk2yC2vRxp6+SUha9lbwLPj
-         K/aiKYG445wnrz7BD+AJh6emWHCrnd2TqN4I8bFP5Pu4jARATLSwVNU0n9it+fGx/+Wo
-         i4H2rDyDIV3e2v9AybQXyYP5BJ6EXFhmupT8MQ+b1Vn4geVLh9xESJEVmDd3DnBR9xMr
-         pY7nAEPWnZ3hinT0yhPJa5O9MlrNoTqAwJYANNJsqpQzuYYawT26BlUjYviy8Rxzpegj
-         KVuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=6zMAV6opT8F4IR1EmzI6ROBaFFltfgM895kUaotRIlk=;
-        b=sNKeRqX9wQyeDlo6KrA4/ptanSWBb9pgwYKt3Zf1zcr/cER9U2MRtUIzAf84DEqE28
-         US2gcGNxTuvRhw7PdM/Ocpu3jixbHidZTG6JqCRReorAMupgY06LUjmZLQVzI18Cwpd7
-         EGzXgl/qfEQ/HgWPkGiKyiX1wCUkuKMoteYGBks9GY9VtR6xwA1H4AbYKyX+HhwRoAgS
-         1KOvReSxlG04O9GWQiJgGzqgfA/7F7aBlNinM6JlgnrImE+hMbSMndqAyP4VdHX7Sa2q
-         YHDuQHqotwedq4j1eeZ8pTt6tqlAvlpp9CL52+btpoxLV8o/ddqSzOpMMOU4jsu1vNCQ
-         S7cQ==
-X-Gm-Message-State: APjAAAV+j242fiiH8COu1BPpzisWuGfOR8JTqjy/8FCKtG2j1xhtKIH8
-        SPI3ovrIPkn5qAnW0FnWpjWowA==
-X-Google-Smtp-Source: APXvYqwyqbVW2l3NU+TGVwqM1Q2R64Pbxb1BEV1d5U3mEZkqfT6cMit9OEAbxJF0vAUFwm5AzEvPfQ==
-X-Received: by 2002:a0c:fe8d:: with SMTP id d13mr2983695qvs.217.1581698754942;
-        Fri, 14 Feb 2020 08:45:54 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id d20sm1734570qkg.8.2020.02.14.08.45.54
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 14 Feb 2020 08:45:54 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j2e6D-0001DP-RH; Fri, 14 Feb 2020 12:45:53 -0400
-Date:   Fri, 14 Feb 2020 12:45:53 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Andrew Boyer <aboyer@pensando.io>
-Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>, davem@davemloft.net,
-        gregkh@linuxfoundation.org,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        nhorman@redhat.com, sassmann@redhat.com,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: Re: [RFC PATCH v4 18/25] RDMA/irdma: Implement device supported verb
- APIs
-Message-ID: <20200214164553.GV31668@ziepe.ca>
-References: <20200212191424.1715577-1-jeffrey.t.kirsher@intel.com>
- <20200212191424.1715577-19-jeffrey.t.kirsher@intel.com>
- <20200214145443.GU31668@ziepe.ca>
- <E686D00B-5B27-4463-ADB1-D01588621138@pensando.io>
+        id S2390753AbgBNQHo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 11:07:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390741AbgBNQHo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:07:44 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97B952467D;
+        Fri, 14 Feb 2020 16:07:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1581696462;
+        bh=kYdwZ1asdV48HndTNXByNl7+R0TWji93m0htGZnCCiM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=a9ByUf177BJK5wkFOm8fSNQc9xNT0pWq0VVjsLstHaF6zkZmXah/EvrGutD/vQ//3
+         cGyavnBo5GZN9vMSdCRkzBDkkEjN42VcM5/9Zjh+gK4D8vO4bapKc/xKErnSasduse
+         6A3pRvq3OagjZkR9ww3Q5gGG/hxE9De/VbPBoKRk=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 273/459] RDMA/core: Fix locking in ib_uverbs_event_read
+Date:   Fri, 14 Feb 2020 10:58:43 -0500
+Message-Id: <20200214160149.11681-273-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
+References: <20200214160149.11681-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <E686D00B-5B27-4463-ADB1-D01588621138@pensando.io>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 10:49:38AM -0500, Andrew Boyer wrote:
-> 
-> > On Feb 14, 2020, at 9:54 AM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > 
-> > On Wed, Feb 12, 2020 at 11:14:17AM -0800, Jeff Kirsher wrote:
-> > ...
-> > New drivers are forbidden from calling this:
-> > 
-> > /**
-> > * rdma_set_device_sysfs_group - Set device attributes group to have
-> > *				 driver specific sysfs entries at
-> > *				 for infiniband class.
-> > *
-> > * @device:	device pointer for which attributes to be created
-> > * @group:	Pointer to group which should be added when device
-> > *		is registered with sysfs.
-> > * rdma_set_device_sysfs_group() allows existing drivers to expose one
-> > * group per device to have sysfs attributes.
-> > *
-> > * NOTE: New drivers should not make use of this API; instead new device
-> > * parameter should be exposed via netlink command. This API and mechanism
-> > * exist only for existing drivers.
-> > */
-> > 
-> > Jason
-> 
-> Is there an existing field in RDMA_NLDEV_ATTR_* that allows us to
-> display a string to use as a replacement for the board_id in sysfs?
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-I don't think so, this is highly vendor specific stuff.
+[ Upstream commit 14e23bd6d22123f6f3b2747701fa6cd4c6d05873 ]
 
-> Like “Mellanox ConnectX-3” or similar.
+This should not be using ib_dev to test for disassociation, during
+disassociation is_closed is set under lock and the waitq is triggered.
 
-General names like that can come from the pci database that udev and
-lspci keeps. Ie if you do 'systemctl -a' on a modern system with
-rdma-core you will see the PCI device description show up next to the
-verbs char device.
+Instead check is_closed and be sure to re-obtain the lock to test the
+value after the wait_event returns.
 
-> The other two sysfs fields (hca_type and hw_rev) seem to have been unused.
+Fixes: 036b10635739 ("IB/uverbs: Enable device removal when there are active user space applications")
+Link: https://lore.kernel.org/r/1578504126-9400-12-git-send-email-yishaih@mellanox.com
+Signed-off-by: Yishai Hadas <yishaih@mellanox.com>
+Reviewed-by: Håkon Bugge <haakon.bugge@oracle.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/core/uverbs_main.c | 32 ++++++++++++---------------
+ 1 file changed, 14 insertions(+), 18 deletions(-)
 
-I wonder if hw_rev was supposed to be the same as hw_ver (see
-ib_uverbs_query_device_resp).
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index db98111b47f42..f2a2d1246c198 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -220,7 +220,6 @@ void ib_uverbs_release_file(struct kref *ref)
+ }
+ 
+ static ssize_t ib_uverbs_event_read(struct ib_uverbs_event_queue *ev_queue,
+-				    struct ib_uverbs_file *uverbs_file,
+ 				    struct file *filp, char __user *buf,
+ 				    size_t count, loff_t *pos,
+ 				    size_t eventsz)
+@@ -238,19 +237,16 @@ static ssize_t ib_uverbs_event_read(struct ib_uverbs_event_queue *ev_queue,
+ 
+ 		if (wait_event_interruptible(ev_queue->poll_wait,
+ 					     (!list_empty(&ev_queue->event_list) ||
+-			/* The barriers built into wait_event_interruptible()
+-			 * and wake_up() guarentee this will see the null set
+-			 * without using RCU
+-			 */
+-					     !uverbs_file->device->ib_dev)))
++					      ev_queue->is_closed)))
+ 			return -ERESTARTSYS;
+ 
++		spin_lock_irq(&ev_queue->lock);
++
+ 		/* If device was disassociated and no event exists set an error */
+-		if (list_empty(&ev_queue->event_list) &&
+-		    !uverbs_file->device->ib_dev)
++		if (list_empty(&ev_queue->event_list) && ev_queue->is_closed) {
++			spin_unlock_irq(&ev_queue->lock);
+ 			return -EIO;
+-
+-		spin_lock_irq(&ev_queue->lock);
++		}
+ 	}
+ 
+ 	event = list_entry(ev_queue->event_list.next, struct ib_uverbs_event, list);
+@@ -285,8 +281,7 @@ static ssize_t ib_uverbs_async_event_read(struct file *filp, char __user *buf,
+ {
+ 	struct ib_uverbs_async_event_file *file = filp->private_data;
+ 
+-	return ib_uverbs_event_read(&file->ev_queue, file->uverbs_file, filp,
+-				    buf, count, pos,
++	return ib_uverbs_event_read(&file->ev_queue, filp, buf, count, pos,
+ 				    sizeof(struct ib_uverbs_async_event_desc));
+ }
+ 
+@@ -296,9 +291,8 @@ static ssize_t ib_uverbs_comp_event_read(struct file *filp, char __user *buf,
+ 	struct ib_uverbs_completion_event_file *comp_ev_file =
+ 		filp->private_data;
+ 
+-	return ib_uverbs_event_read(&comp_ev_file->ev_queue,
+-				    comp_ev_file->uobj.ufile, filp,
+-				    buf, count, pos,
++	return ib_uverbs_event_read(&comp_ev_file->ev_queue, filp, buf, count,
++				    pos,
+ 				    sizeof(struct ib_uverbs_comp_event_desc));
+ }
+ 
+@@ -321,7 +315,9 @@ static __poll_t ib_uverbs_event_poll(struct ib_uverbs_event_queue *ev_queue,
+ static __poll_t ib_uverbs_async_event_poll(struct file *filp,
+ 					       struct poll_table_struct *wait)
+ {
+-	return ib_uverbs_event_poll(filp->private_data, filp, wait);
++	struct ib_uverbs_async_event_file *file = filp->private_data;
++
++	return ib_uverbs_event_poll(&file->ev_queue, filp, wait);
+ }
+ 
+ static __poll_t ib_uverbs_comp_event_poll(struct file *filp,
+@@ -335,9 +331,9 @@ static __poll_t ib_uverbs_comp_event_poll(struct file *filp,
+ 
+ static int ib_uverbs_async_event_fasync(int fd, struct file *filp, int on)
+ {
+-	struct ib_uverbs_event_queue *ev_queue = filp->private_data;
++	struct ib_uverbs_async_event_file *file = filp->private_data;
+ 
+-	return fasync_helper(fd, filp, on, &ev_queue->async_queue);
++	return fasync_helper(fd, filp, on, &file->ev_queue.async_queue);
+ }
+ 
+ static int ib_uverbs_comp_event_fasync(int fd, struct file *filp, int on)
+-- 
+2.20.1
 
-Jason
