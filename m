@@ -2,99 +2,188 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D705615F70D
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 20:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D7715F760
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 21:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729576AbgBNTob (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 14:44:31 -0500
-Received: from mail.dlink.ru ([178.170.168.18]:42598 "EHLO fd.dlink.ru"
+        id S2389588AbgBNUCr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 15:02:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729015AbgBNTob (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Feb 2020 14:44:31 -0500
-Received: by fd.dlink.ru (Postfix, from userid 5000)
-        id AD9CA1B20178; Fri, 14 Feb 2020 22:44:26 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru AD9CA1B20178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dlink.ru; s=mail;
-        t=1581709467; bh=ItqstqYtNHX+QVklGkmfTzbUQC2jTgbpnXa1roamK1k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=g2ZcmNHmYFpNVQ/ONcvDt4Qfib6JAbg3MfRZqfRWes7TUvI94q7lnBFPTPaT9hsSn
-         yshMR9Kq/0yop0S7n99zZvDd+OWpyFzB7xWDIldt9lwhXJGEJjUb4f3WLqQcl1V1la
-         HKBb0RFMHLT0spt4Uub1SJSVr6s1SYaCvknZqEHM=
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dlink.ru
-X-Spam-Level: 
-X-Spam-Status: No, score=-99.2 required=7.5 tests=BAYES_50,URIBL_BLOCKED,
-        USER_IN_WHITELIST autolearn=disabled version=3.4.2
-Received: from mail.rzn.dlink.ru (mail.rzn.dlink.ru [178.170.168.13])
-        by fd.dlink.ru (Postfix) with ESMTP id EA5671B201FA;
-        Fri, 14 Feb 2020 22:44:17 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru EA5671B201FA
-Received: from mail.rzn.dlink.ru (localhost [127.0.0.1])
-        by mail.rzn.dlink.ru (Postfix) with ESMTP id C5F261B2267C;
-        Fri, 14 Feb 2020 22:44:17 +0300 (MSK)
-Received: from mail.rzn.dlink.ru (localhost [127.0.0.1])
-        by mail.rzn.dlink.ru (Postfix) with ESMTPA;
-        Fri, 14 Feb 2020 22:44:17 +0300 (MSK)
+        id S2389578AbgBNUCq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 15:02:46 -0500
+Received: from localhost (unknown [12.246.51.142])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32545206D7;
+        Fri, 14 Feb 2020 20:02:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1581710565;
+        bh=qiSX8QFKcSeTp4mmGvE+BSPkGtpXSQaCqLDWDWB7McM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NYwDAVoKZ3IC2YQpshcazJxfIRzOcoWPWj3Va9jRpnKaj2hOJDOTRDEPHhCqd7Vga
+         n0PQSnc33F7ocY7P5oLV3ZE1+SAnxqpXlJT/YRon34mhklmOptIVr/JE11B0de1u2c
+         xSKH1II96Hckq4lMYc0yONdG6j9mdYawzoiCvTpo=
+Date:   Fri, 14 Feb 2020 09:02:40 -0800
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc:     davem@davemloft.net, Dave Ertman <david.m.ertman@intel.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        nhorman@redhat.com, sassmann@redhat.com, jgg@ziepe.ca,
+        parav@mellanox.com, galpress@amazon.com,
+        selvin.xavier@broadcom.com, sriharsha.basavapatna@broadcom.com,
+        benve@cisco.com, bharat@chelsio.com, xavier.huwei@huawei.com,
+        yishaih@mellanox.com, leonro@mellanox.com, mkalderon@marvell.com,
+        aditr@vmware.com, Kiran Patil <kiran.patil@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>
+Subject: Re: [RFC PATCH v4 01/25] virtual-bus: Implementation of Virtual Bus
+Message-ID: <20200214170240.GA4034785@kroah.com>
+References: <20200212191424.1715577-1-jeffrey.t.kirsher@intel.com>
+ <20200212191424.1715577-2-jeffrey.t.kirsher@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Fri, 14 Feb 2020 22:44:17 +0300
-From:   Alexander Lobakin <alobakin@dlink.ru>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rdma] IB/mlx5: Fix linkage failure on 32-bit arches
-In-Reply-To: <20200214192410.GW31668@ziepe.ca>
-References: <20200214191309.155654-1-alobakin@dlink.ru>
- <20200214192410.GW31668@ziepe.ca>
-User-Agent: Roundcube Webmail/1.4.0
-Message-ID: <6f7c270fef9ec5bae2dcb780dee3f49f@dlink.ru>
-X-Sender: alobakin@dlink.ru
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200212191424.1715577-2-jeffrey.t.kirsher@intel.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Jason Gunthorpe wrote 14.02.2020 22:24:
-> On Fri, Feb 14, 2020 at 10:13:09PM +0300, Alexander Lobakin wrote:
->> Commit f164be8c0366 ("IB/mlx5: Extend caps stage to handle VAR
->> capabilities") introduced a straight "/" division of the u64
->> variable "bar_size", which emits an __udivdi3() libgcc call on
->> 32-bit arches and certain GCC versions:
->> 
->> error: "__udivdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined! 
->> [1]
->> 
->> Replace it with the corresponding div_u64() call.
->> Compile-tested on ARCH=mips 32r2el_defconfig BOARDS=ocelot.
->> 
->> [1] 
->> https://lore.kernel.org/linux-mips/CAMuHMdXM9S1VkFMZ8eDAyZR6EE4WkJY215Lcn2qdOaPeadF+EQ@mail.gmail.com/
->> 
->> Fixes: f164be8c0366 ("IB/mlx5: Extend caps stage to handle VAR
->> capabilities")
->> Signed-off-by: Alexander Lobakin <alobakin@dlink.ru>
->> ---
->>  drivers/infiniband/hw/mlx5/main.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
+On Wed, Feb 12, 2020 at 11:14:00AM -0800, Jeff Kirsher wrote:
+> From: Dave Ertman <david.m.ertman@intel.com>
 > 
-> Randy beat you too it..
+> This is the initial implementation of the Virtual Bus,
+> virtbus_device and virtbus_driver.  The virtual bus is
+> a software based bus intended to support registering
+> virtbus_devices and virtbus_drivers and provide matching
+> between them and probing of the registered drivers.
 > 
-> https://lore.kernel.org/linux-rdma/20200206143201.GF25297@ziepe.ca/
-
-Ah, OK. Sorry for missing this one. I didn't see any fix over
-git.kernel.org and thought it doesn't exist yet.
-
-> But it seems patchwork missed this somehow.
+> The bus will support probe/remove shutdown and
+> suspend/resume callbacks.
 > 
-> Applied now at least
+> Kconfig and Makefile alterations are included
+> 
+> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
+> Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
 
-Thanks!
+This looks a lot better, and is more of what I was thinking.  Some minor
+comments below:
 
-> Jason
+> +/**
+> + * virtbus_dev_register - add a virtual bus device
+> + * @vdev: virtual bus device to add
+> + */
+> +int virtbus_dev_register(struct virtbus_device *vdev)
+> +{
+> +	int ret;
+> +
+> +	if (!vdev->release) {
+> +		dev_err(&vdev->dev, "virtbus_device .release callback NULL\n");
 
-Regards,
-ᚷ ᛖ ᚢ ᚦ ᚠ ᚱ
+"virtbus_device MUST have a .release callback that does something!\n" 
+
+> +		return -EINVAL;
+> +	}
+> +
+> +	device_initialize(&vdev->dev);
+> +
+> +	vdev->dev.bus = &virtual_bus_type;
+> +	vdev->dev.release = virtbus_dev_release;
+> +	/* All device IDs are automatically allocated */
+> +	ret = ida_simple_get(&virtbus_dev_ida, 0, 0, GFP_KERNEL);
+> +	if (ret < 0) {
+> +		dev_err(&vdev->dev, "get IDA idx for virtbus device failed!\n");
+> +		put_device(&vdev->dev);
+
+If you allocate the number before device_initialize(), no need to call
+put_device().  Just a minor thing, no big deal.
+
+> +		return ret;
+> +	}
+> +
+> +	vdev->id = ret;
+> +	dev_set_name(&vdev->dev, "%s.%d", vdev->name, vdev->id);
+> +
+> +	dev_dbg(&vdev->dev, "Registering virtbus device '%s'\n",
+> +		dev_name(&vdev->dev));
+> +
+> +	ret = device_add(&vdev->dev);
+> +	if (ret)
+> +		goto device_add_err;
+> +
+> +	return 0;
+> +
+> +device_add_err:
+> +	dev_err(&vdev->dev, "Add device to virtbus failed!\n");
+
+Print the return error here too?
+
+> +	put_device(&vdev->dev);
+> +	ida_simple_remove(&virtbus_dev_ida, vdev->id);
+
+You need to do this before put_device().
+
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(virtbus_dev_register);
+> +
+
+
+> --- /dev/null
+> +++ b/include/linux/virtual_bus.h
+> @@ -0,0 +1,57 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * virtual_bus.h - lightweight software bus
+> + *
+> + * Copyright (c) 2019-20 Intel Corporation
+> + *
+> + * Please see Documentation/driver-api/virtual_bus.rst for more information
+> + */
+> +
+> +#ifndef _VIRTUAL_BUS_H_
+> +#define _VIRTUAL_BUS_H_
+> +
+> +#include <linux/device.h>
+> +
+> +struct virtbus_device {
+> +	struct device dev;
+> +	const char *name;
+> +	void (*release)(struct virtbus_device *);
+> +	int id;
+> +	const struct virtbus_dev_id *matched_element;
+> +};
+
+Any reason you need to make "struct virtbus_device" a public structure
+at all?  Why not just make it private and have the release function
+pointer be passed as part of the register function?  That will keep
+people from poking around in here.
+
+> +
+> +/* The memory for the table is expected to remain allocated for the duration
+> + * of the pairing between driver and device.  The pointer for the matching
+> + * element will be copied to the matched_element field of the virtbus_device.
+
+I don't understand this last sentance, what are you trying to say?  We
+save off a pointer to the element, so it better not go away, is that
+what you mean?  Why would this happen?
+
+> + */
+> +struct virtbus_driver {
+> +	int (*probe)(struct virtbus_device *);
+> +	int (*remove)(struct virtbus_device *);
+> +	void (*shutdown)(struct virtbus_device *);
+> +	int (*suspend)(struct virtbus_device *, pm_message_t);
+> +	int (*resume)(struct virtbus_device *);
+
+Can all of these be const pointers such that we will not change them?
+
+> +	struct device_driver driver;
+> +	const struct virtbus_dev_id *id_table;
+> +};
+
+thanks,
+
+greg k-h
