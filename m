@@ -2,37 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 071C815F0B9
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 18:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D33D15F041
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 18:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730887AbgBNR4U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 12:56:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40198 "EHLO mail.kernel.org"
+        id S2389849AbgBNRxP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 12:53:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388205AbgBNP5X (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:57:23 -0500
+        id S2388564AbgBNP6W (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 10:58:22 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27CFD24676;
-        Fri, 14 Feb 2020 15:57:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C50F24654;
+        Fri, 14 Feb 2020 15:58:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581695843;
-        bh=E+NY1IUfRyjLg3KC35UISknubnYvdfXwNTG13ScXiD8=;
+        s=default; t=1581695902;
+        bh=A3r53Ti4W7H0MZfUrZJ9EtnHYp8kTdo1d+21a3Ib3lc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=otqB9oy1EUg46c4SNmUg7NVxf5mMcvsXhSpvPrKlk8xfDap83KwnVAn7Oy3GrkoVz
-         8U+NEZyC0ihd/K67lfxhYOyxMsicGvpcfdxC6C2Yjvs+RJePkg9fAQlEGdZKDjIjGC
-         Am7fPnXkUcfsKiV6wXTJ8fVnMDAp80RVkUwqJlKE=
+        b=HNFIVg4Q5AogweM0gaVK/J+nhd8P3hdMIcF44FZXXyVzJryFMz+7uxd1ibC9SUIF0
+         BaezzsPvxqAmK4YbrRnWbc+Lgq+CmiRNk/6/O5RJVYC+JokCYTIxcq0vX/JfU2C6L9
+         z6gl6Bz4mmzhMGw4ahnSLegIyZN+gM+O5ZdoXDOo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        Parav Pandit <parav@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 393/542] IB/mlx4: Fix memory leak in add_gid error flow
-Date:   Fri, 14 Feb 2020 10:46:25 -0500
-Message-Id: <20200214154854.6746-393-sashal@kernel.org>
+Cc:     Olof Johansson <olof@lixom.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.5 443/542] net/mlx5e: Fix printk format warning
+Date:   Fri, 14 Feb 2020 10:47:15 -0500
+Message-Id: <20200214154854.6746-443-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
 References: <20200214154854.6746-1-sashal@kernel.org>
@@ -45,80 +44,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jack Morgenstein <jackm@dev.mellanox.co.il>
+From: Olof Johansson <olof@lixom.net>
 
-[ Upstream commit eaad647e5cc27f7b46a27f3b85b14c4c8a64bffa ]
+[ Upstream commit ca9c74ae9be5e78541c2058db9a754947a7d4a9b ]
 
-In procedure mlx4_ib_add_gid(), if the driver is unable to update the FW
-gid table, there is a memory leak in the driver's copy of the gid table:
-the gid entry's context buffer is not freed.
+Use "%zu" for size_t. Seen on ARM allmodconfig:
 
-If such an error occurs, free the entry's context buffer, and mark the
-entry as available (by setting its context pointer to NULL).
+drivers/net/ethernet/mellanox/mlx5/core/wq.c: In function 'mlx5_wq_cyc_wqe_dump':
+include/linux/kern_levels.h:5:18: warning: format '%ld' expects argument of type 'long int', but argument 5 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
 
-Fixes: e26be1bfef81 ("IB/mlx4: Implement ib_device callbacks")
-Link: https://lore.kernel.org/r/20200115085050.73746-1-leon@kernel.org
-Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
-Reviewed-by: Parav Pandit <parav@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Fixes: 130c7b46c93d ("net/mlx5e: TX, Dump WQs wqe descriptors on CQE with error events")
+Signed-off-by: Olof Johansson <olof@lixom.net>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx4/main.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/wq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index 34055cbab38cf..2f5d9b181848b 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -246,6 +246,13 @@ static int mlx4_ib_update_gids(struct gid_entry *gids,
- 	return mlx4_ib_update_gids_v1(gids, ibdev, port_num);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/wq.c b/drivers/net/ethernet/mellanox/mlx5/core/wq.c
+index f2a0e72285bac..02f7e4a39578a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/wq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/wq.c
+@@ -89,7 +89,7 @@ void mlx5_wq_cyc_wqe_dump(struct mlx5_wq_cyc *wq, u16 ix, u8 nstrides)
+ 	len = nstrides << wq->fbc.log_stride;
+ 	wqe = mlx5_wq_cyc_get_wqe(wq, ix);
+ 
+-	pr_info("WQE DUMP: WQ size %d WQ cur size %d, WQE index 0x%x, len: %ld\n",
++	pr_info("WQE DUMP: WQ size %d WQ cur size %d, WQE index 0x%x, len: %zu\n",
+ 		mlx5_wq_cyc_get_size(wq), wq->cur_sz, ix, len);
+ 	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1, wqe, len, false);
  }
- 
-+static void free_gid_entry(struct gid_entry *entry)
-+{
-+	memset(&entry->gid, 0, sizeof(entry->gid));
-+	kfree(entry->ctx);
-+	entry->ctx = NULL;
-+}
-+
- static int mlx4_ib_add_gid(const struct ib_gid_attr *attr, void **context)
- {
- 	struct mlx4_ib_dev *ibdev = to_mdev(attr->device);
-@@ -313,6 +320,8 @@ static int mlx4_ib_add_gid(const struct ib_gid_attr *attr, void **context)
- 				     GFP_ATOMIC);
- 		if (!gids) {
- 			ret = -ENOMEM;
-+			*context = NULL;
-+			free_gid_entry(&port_gid_table->gids[free]);
- 		} else {
- 			for (i = 0; i < MLX4_MAX_PORT_GIDS; i++) {
- 				memcpy(&gids[i].gid, &port_gid_table->gids[i].gid, sizeof(union ib_gid));
-@@ -324,6 +333,12 @@ static int mlx4_ib_add_gid(const struct ib_gid_attr *attr, void **context)
- 
- 	if (!ret && hw_update) {
- 		ret = mlx4_ib_update_gids(gids, ibdev, attr->port_num);
-+		if (ret) {
-+			spin_lock_bh(&iboe->lock);
-+			*context = NULL;
-+			free_gid_entry(&port_gid_table->gids[free]);
-+			spin_unlock_bh(&iboe->lock);
-+		}
- 		kfree(gids);
- 	}
- 
-@@ -353,10 +368,7 @@ static int mlx4_ib_del_gid(const struct ib_gid_attr *attr, void **context)
- 		if (!ctx->refcount) {
- 			unsigned int real_index = ctx->real_index;
- 
--			memset(&port_gid_table->gids[real_index].gid, 0,
--			       sizeof(port_gid_table->gids[real_index].gid));
--			kfree(port_gid_table->gids[real_index].ctx);
--			port_gid_table->gids[real_index].ctx = NULL;
-+			free_gid_entry(&port_gid_table->gids[real_index]);
- 			hw_update = 1;
- 		}
- 	}
 -- 
 2.20.1
 
