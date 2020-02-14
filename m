@@ -2,42 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2697315EAAC
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 18:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDD815E977
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 18:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404084AbgBNRPf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 12:15:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39406 "EHLO mail.kernel.org"
+        id S2392320AbgBNQO2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 11:14:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403771AbgBNQMK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:12:10 -0500
+        id S2392317AbgBNQO2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:14:28 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF7C92469F;
-        Fri, 14 Feb 2020 16:12:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43529246C7;
+        Fri, 14 Feb 2020 16:14:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696729;
-        bh=KjOzF3FMtMvdLVAp6rIHxIoUE99j9sZ92JVoc7FPo0Q=;
+        s=default; t=1581696867;
+        bh=xQM0uPjZsooTMpC1WG3wcbR5D1vL5bOUNcfjkmPiN3k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dxLmgx3CTwwX2eqG9tXDsXPE0yhQUVGEcd/79Wy4s9OQpQXKsM5hWpneEEeSIsHhI
-         Gtstlq9QJYHxatzQbp2Qivu2Kwqo+YNYYgX4KAGmLX4WJ/YTSxC4k8hSTLigun6LEP
-         DWziT9MJHFBlt203JsQZzqII/X74jqscUU4ksQSI=
+        b=LvCA5AYkLZ57y9iL7WDAaZ1BT8rfbr3Ly7vmf4GNBBfByMN+DqR2IKvSuGGwWGWYT
+         viAa3vEoNd0rHlkHDH65O1E6Yi+yyvK70SEjx411nRS3VzR3wzCRJNt1dQBhRF/s0G
+         pfrpPzLylZ7bzJijG0zy+bw8VEGyxKQhVI3aE10E=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
-        Mark Haywood <mark.haywood@oracle.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
+Cc:     Jiewei Ke <kejiewei.cn@gmail.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 016/252] RDMA/netlink: Do not always generate an ACK for some netlink operations
-Date:   Fri, 14 Feb 2020 11:07:51 -0500
-Message-Id: <20200214161147.15842-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 126/252] RDMA/rxe: Fix error type of mmap_offset
+Date:   Fri, 14 Feb 2020 11:09:41 -0500
+Message-Id: <20200214161147.15842-126-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214161147.15842-1-sashal@kernel.org>
 References: <20200214161147.15842-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -46,81 +43,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Håkon Bugge <haakon.bugge@oracle.com>
+From: Jiewei Ke <kejiewei.cn@gmail.com>
 
-[ Upstream commit a242c36951ecd24bc16086940dbe6b522205c461 ]
+[ Upstream commit 6ca18d8927d468c763571f78c9a7387a69ffa020 ]
 
-In rdma_nl_rcv_skb(), the local variable err is assigned the return value
-of the supplied callback function, which could be one of
-ib_nl_handle_resolve_resp(), ib_nl_handle_set_timeout(), or
-ib_nl_handle_ip_res_resp(). These three functions all return skb->len on
-success.
+The type of mmap_offset should be u64 instead of int to match the type of
+mminfo.offset. If otherwise, after we create several thousands of CQs, it
+will run into overflow issues.
 
-rdma_nl_rcv_skb() is merely a copy of netlink_rcv_skb(). The callback
-functions used by the latter have the convention: "Returns 0 on success or
-a negative error code".
-
-In particular, the statement (equal for both functions):
-
-   if (nlh->nlmsg_flags & NLM_F_ACK || err)
-
-implies that rdma_nl_rcv_skb() always will ack a message, independent of
-the NLM_F_ACK being set in nlmsg_flags or not.
-
-The fix could be to change the above statement, but it is better to keep
-the two *_rcv_skb() functions equal in this respect and instead change the
-three callback functions in the rdma subsystem to the correct convention.
-
-Fixes: 2ca546b92a02 ("IB/sa: Route SA pathrecord query through netlink")
-Fixes: ae43f8286730 ("IB/core: Add IP to GID netlink offload")
-Link: https://lore.kernel.org/r/20191216120436.3204814-1-haakon.bugge@oracle.com
-Suggested-by: Mark Haywood <mark.haywood@oracle.com>
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-Tested-by: Mark Haywood <mark.haywood@oracle.com>
-Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+Link: https://lore.kernel.org/r/20191227113613.5020-1-kejiewei.cn@gmail.com
+Signed-off-by: Jiewei Ke <kejiewei.cn@gmail.com>
 Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/addr.c     | 2 +-
- drivers/infiniband/core/sa_query.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_verbs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
-index 9e5f70e7122a0..6e96a2fb97dc4 100644
---- a/drivers/infiniband/core/addr.c
-+++ b/drivers/infiniband/core/addr.c
-@@ -136,7 +136,7 @@ int ib_nl_handle_ip_res_resp(struct sk_buff *skb,
- 	if (ib_nl_is_good_ip_resp(nlh))
- 		ib_nl_process_good_ip_rsep(nlh);
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index 6a75f96b90962..b4e24362edbb0 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -407,7 +407,7 @@ struct rxe_dev {
+ 	struct list_head	pending_mmaps;
  
--	return skb->len;
-+	return 0;
- }
+ 	spinlock_t		mmap_offset_lock; /* guard mmap_offset */
+-	int			mmap_offset;
++	u64			mmap_offset;
  
- static int ib_nl_ip_send_msg(struct rdma_dev_addr *dev_addr,
-diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index 8be082edf986f..9881e6fa9fe4d 100644
---- a/drivers/infiniband/core/sa_query.c
-+++ b/drivers/infiniband/core/sa_query.c
-@@ -1078,7 +1078,7 @@ int ib_nl_handle_set_timeout(struct sk_buff *skb,
- 	}
+ 	atomic64_t		stats_counters[RXE_NUM_OF_COUNTERS];
  
- settimeout_out:
--	return skb->len;
-+	return 0;
- }
- 
- static inline int ib_nl_is_good_resolve_resp(const struct nlmsghdr *nlh)
-@@ -1149,7 +1149,7 @@ int ib_nl_handle_resolve_resp(struct sk_buff *skb,
- 	}
- 
- resp_out:
--	return skb->len;
-+	return 0;
- }
- 
- static void free_sm_ah(struct kref *kref)
 -- 
 2.20.1
 
