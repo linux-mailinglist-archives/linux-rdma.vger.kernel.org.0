@@ -2,36 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D33D15F041
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 18:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C557715EFD5
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 18:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389849AbgBNRxP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 12:53:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42156 "EHLO mail.kernel.org"
+        id S2388736AbgBNP6z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 10:58:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388564AbgBNP6W (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:58:22 -0500
+        id S2388400AbgBNP6y (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 10:58:54 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C50F24654;
-        Fri, 14 Feb 2020 15:58:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FF04222C4;
+        Fri, 14 Feb 2020 15:58:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581695902;
-        bh=A3r53Ti4W7H0MZfUrZJ9EtnHYp8kTdo1d+21a3Ib3lc=;
+        s=default; t=1581695934;
+        bh=PLNrytnzgF1eAeTHEjvYL517Oe7v9++dJm1YPKnNc2U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HNFIVg4Q5AogweM0gaVK/J+nhd8P3hdMIcF44FZXXyVzJryFMz+7uxd1ibC9SUIF0
-         BaezzsPvxqAmK4YbrRnWbc+Lgq+CmiRNk/6/O5RJVYC+JokCYTIxcq0vX/JfU2C6L9
-         z6gl6Bz4mmzhMGw4ahnSLegIyZN+gM+O5ZdoXDOo=
+        b=S5lqIXlvgeFHkmc3ms1vvR9ZrOlliLaSHMZt8hbDRq5o8Su/Pi0Cdn4lWnBQkG6+y
+         6CtaL4hC4eQCuHTIbvlRi8zqerUp/CsRZPuOY3eQ3d9XvVumnUw1TTliU7600UaHab
+         8Eb03El6glPRq30+Ig9+gJoii2/YFwTW73hCL+yg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Olof Johansson <olof@lixom.net>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 443/542] net/mlx5e: Fix printk format warning
-Date:   Fri, 14 Feb 2020 10:47:15 -0500
-Message-Id: <20200214154854.6746-443-sashal@kernel.org>
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.5 469/542] RDMA/core: Ensure that rdma_user_mmap_entry_remove() is a fence
+Date:   Fri, 14 Feb 2020 10:47:41 -0500
+Message-Id: <20200214154854.6746-469-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
 References: <20200214154854.6746-1-sashal@kernel.org>
@@ -44,36 +44,41 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Olof Johansson <olof@lixom.net>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-[ Upstream commit ca9c74ae9be5e78541c2058db9a754947a7d4a9b ]
+[ Upstream commit 6b3712c0246ca7b2b8fa05eab2362cf267410f7e ]
 
-Use "%zu" for size_t. Seen on ARM allmodconfig:
+The set of entry->driver_removed is missing locking, protect it with
+xa_lock() which is held by the only reader.
 
-drivers/net/ethernet/mellanox/mlx5/core/wq.c: In function 'mlx5_wq_cyc_wqe_dump':
-include/linux/kern_levels.h:5:18: warning: format '%ld' expects argument of type 'long int', but argument 5 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+Otherwise readers may continue to see driver_removed = false after
+rdma_user_mmap_entry_remove() returns and may continue to try and
+establish new mmaps.
 
-Fixes: 130c7b46c93d ("net/mlx5e: TX, Dump WQs wqe descriptors on CQE with error events")
-Signed-off-by: Olof Johansson <olof@lixom.net>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Fixes: 3411f9f01b76 ("RDMA/core: Create mmap database and cookie helper functions")
+Link: https://lore.kernel.org/r/20200115202041.GA17199@ziepe.ca
+Reviewed-by: Gal Pressman <galpress@amazon.com>
+Acked-by: Michal Kalderon <michal.kalderon@marvell.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/wq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/core/ib_core_uverbs.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/wq.c b/drivers/net/ethernet/mellanox/mlx5/core/wq.c
-index f2a0e72285bac..02f7e4a39578a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/wq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/wq.c
-@@ -89,7 +89,7 @@ void mlx5_wq_cyc_wqe_dump(struct mlx5_wq_cyc *wq, u16 ix, u8 nstrides)
- 	len = nstrides << wq->fbc.log_stride;
- 	wqe = mlx5_wq_cyc_get_wqe(wq, ix);
+diff --git a/drivers/infiniband/core/ib_core_uverbs.c b/drivers/infiniband/core/ib_core_uverbs.c
+index b7cb59844ece4..b51bd7087a881 100644
+--- a/drivers/infiniband/core/ib_core_uverbs.c
++++ b/drivers/infiniband/core/ib_core_uverbs.c
+@@ -232,7 +232,9 @@ void rdma_user_mmap_entry_remove(struct rdma_user_mmap_entry *entry)
+ 	if (!entry)
+ 		return;
  
--	pr_info("WQE DUMP: WQ size %d WQ cur size %d, WQE index 0x%x, len: %ld\n",
-+	pr_info("WQE DUMP: WQ size %d WQ cur size %d, WQE index 0x%x, len: %zu\n",
- 		mlx5_wq_cyc_get_size(wq), wq->cur_sz, ix, len);
- 	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1, wqe, len, false);
++	xa_lock(&entry->ucontext->mmap_xa);
+ 	entry->driver_removed = true;
++	xa_unlock(&entry->ucontext->mmap_xa);
+ 	kref_put(&entry->ref, rdma_user_mmap_entry_free);
  }
+ EXPORT_SYMBOL(rdma_user_mmap_entry_remove);
 -- 
 2.20.1
 
