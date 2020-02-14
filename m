@@ -2,36 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B01815F42A
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 19:23:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FF515F2DD
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 19:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404838AbgBNSTB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 13:19:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54894 "EHLO mail.kernel.org"
+        id S1730714AbgBNPvQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 10:51:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730538AbgBNPui (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:50:38 -0500
+        id S1730231AbgBNPvP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 10:51:15 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B016B2086A;
-        Fri, 14 Feb 2020 15:50:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E454424650;
+        Fri, 14 Feb 2020 15:51:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581695437;
-        bh=sCO2mfmq57t7Vcdbn2D61ddsref8LHV6RcKdnIeoenw=;
+        s=default; t=1581695474;
+        bh=ZAZQ4pdAnry+OBx1ralUNrdcqcjYjEJG1WhPRjFjRNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cfzHwjMWkGP9+vQBvNED64fJBq6Bpl0TJaPuX4ztPR9rUrCgtkUCKRX9bBaCSkthH
-         UOF5p2AmkS8VbsRfNIN0WmaEYJHz4OOngJgW6cyOxQSIYAuJvdcumhIRa6gibAHjMZ
-         iXwDcB/TkoJroi5KyDF6R2C46Y1i4Qofq2FWw5n0=
+        b=IXSK7n/8iCwGj+bov0T2iLiAXvUr8TjUpAtl699it57Hax1t3U6apBgB16rceiWw9
+         06fxShkte0/m9v8wbPdsh65mzXLI2ccjumxC9RhGdhStjGiYr60qncTpeW9FFdSyuA
+         JHO126BHNJrgAg9Fo7ZXRn5XJ30PFbc4mB0M48JE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        Moni Shoua <monis@mellanox.com>,
+Cc:     Danit Goldberg <danitg@mellanox.com>,
         Leon Romanovsky <leonro@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 079/542] RDMA/mlx5: Fix handling of IOVA != user_va in ODP paths
-Date:   Fri, 14 Feb 2020 10:41:11 -0500
-Message-Id: <20200214154854.6746-79-sashal@kernel.org>
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.5 108/542] IB/mlx5: Return the administrative GUID if exists
+Date:   Fri, 14 Feb 2020 10:41:40 -0500
+Message-Id: <20200214154854.6746-108-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
 References: <20200214154854.6746-1-sashal@kernel.org>
@@ -44,97 +45,119 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Danit Goldberg <danitg@mellanox.com>
 
-[ Upstream commit 8ffc32485158528f870b62707077ab494ba31deb ]
+[ Upstream commit 4bbd4923d1f5627b0c47a9d7dfb5cc91224cfe0c ]
 
-Till recently it was not possible for userspace to specify a different
-IOVA, but with the new ibv_reg_mr_iova() library call this can be done.
+A user can change the operational GUID (a.k.a affective GUID) through
+link/infiniband. Therefore it is preferred to return the currently set
+GUID if it exists instead of the operational.
 
-To compute the user_va we must compute:
-  user_va = (iova - iova_start) + user_va_start
+This way the PF can query which VF GUID will be set in the next bind.  In
+order to align with MAC address, zero is returned if administrative GUID
+is not set.
 
-while being cautious of overflow and other math problems.
+For example, before setting administrative GUID:
+ $ ip link show
+ ib0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 4092 qdisc mq state UP mode DEFAULT group default qlen 256
+ link/infiniband 00:00:00:08:fe:80:00:00:00:00:00:00:52:54:00:c0:fe:12:34:55 brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+ vf 0     link/infiniband 00:00:00:08:fe:80:00:00:00:00:00:00:52:54:00:c0:fe:12:34:55 brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff,
+ spoof checking off, NODE_GUID 00:00:00:00:00:00:00:00, PORT_GUID 00:00:00:00:00:00:00:00, link-state auto, trust off, query_rss off
 
-The iova is not reliably stored in the mmkey when the MR is created. Only
-the cached creation path (the common one) set it, so it must also be set
-when creating uncached MRs.
+Then:
 
-Fix the weird use of iova when computing the starting page index in the
-MR. In the normal case, when iova == umem.address:
-  iova & (~(BIT(page_shift) - 1)) ==
-  ALIGN_DOWN(umem.address, odp->page_size) ==
-  ib_umem_start(odp)
+ $ ip link set ib0 vf 0 node_guid 11:00:af:21:cb:05:11:00
+ $ ip link set ib0 vf 0 port_guid 22:11:af:21:cb:05:11:00
 
-And when iova is different using it in math with a user_va is wrong.
+After setting administrative GUID:
+ $ ip link show
+ ib0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 4092 qdisc mq state UP mode DEFAULT group default qlen 256
+ link/infiniband 00:00:00:08:fe:80:00:00:00:00:00:00:52:54:00:c0:fe:12:34:55 brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff
+ vf 0     link/infiniband 00:00:00:08:fe:80:00:00:00:00:00:00:52:54:00:c0:fe:12:34:55 brd 00:ff:ff:ff:ff:12:40:1b:ff:ff:00:00:00:00:00:00:ff:ff:ff:ff,
+ spoof checking off, NODE_GUID 11:00:af:21:cb:05:11:00, PORT_GUID 22:11:af:21:cb:05:11:00, link-state auto, trust off, query_rss off
 
-Finally, do not allow an implicit ODP to be created with a non-zero IOVA
-as we have no support for that.
-
-Fixes: 7bdf65d411c1 ("IB/mlx5: Handle page faults")
-Signed-off-by: Moni Shoua <monis@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Fixes: 9c0015ef0928 ("IB/mlx5: Implement callbacks for getting VFs GUID attributes")
+Link: https://lore.kernel.org/r/20200116120048.12744-1-leon@kernel.org
+Signed-off-by: Danit Goldberg <danitg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/mr.c  |  2 ++
- drivers/infiniband/hw/mlx5/odp.c | 19 +++++++++++++------
- 2 files changed, 15 insertions(+), 6 deletions(-)
+ drivers/infiniband/hw/mlx5/ib_virt.c | 28 ++++++++++++----------------
+ include/linux/mlx5/driver.h          |  5 +++++
+ 2 files changed, 17 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index ea8bfc3e2d8d4..23c4529edf540 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1247,6 +1247,8 @@ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 
- 	if (IS_ENABLED(CONFIG_INFINIBAND_ON_DEMAND_PAGING) && !start &&
- 	    length == U64_MAX) {
-+		if (virt_addr != start)
-+			return ERR_PTR(-EINVAL);
- 		if (!(access_flags & IB_ACCESS_ON_DEMAND) ||
- 		    !(dev->odp_caps.general_caps & IB_ODP_SUPPORT_IMPLICIT))
- 			return ERR_PTR(-EINVAL);
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index f924250f80c2e..8247c26a1ce92 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -624,11 +624,10 @@ static int pagefault_real_mr(struct mlx5_ib_mr *mr, struct ib_umem_odp *odp,
- 	bool downgrade = flags & MLX5_PF_FLAGS_DOWNGRADE;
- 	unsigned long current_seq;
- 	u64 access_mask;
--	u64 start_idx, page_mask;
-+	u64 start_idx;
- 
- 	page_shift = odp->page_shift;
--	page_mask = ~(BIT(page_shift) - 1);
--	start_idx = (user_va - (mr->mmkey.iova & page_mask)) >> page_shift;
-+	start_idx = (user_va - ib_umem_start(odp)) >> page_shift;
- 	access_mask = ODP_READ_ALLOWED_BIT;
- 
- 	if (odp->umem.writable && !downgrade)
-@@ -767,11 +766,19 @@ static int pagefault_mr(struct mlx5_ib_mr *mr, u64 io_virt, size_t bcnt,
+diff --git a/drivers/infiniband/hw/mlx5/ib_virt.c b/drivers/infiniband/hw/mlx5/ib_virt.c
+index 4f0edd4832bdf..b61165359954e 100644
+--- a/drivers/infiniband/hw/mlx5/ib_virt.c
++++ b/drivers/infiniband/hw/mlx5/ib_virt.c
+@@ -164,8 +164,10 @@ static int set_vf_node_guid(struct ib_device *device, int vf, u8 port, u64 guid)
+ 	in->field_select = MLX5_HCA_VPORT_SEL_NODE_GUID;
+ 	in->node_guid = guid;
+ 	err = mlx5_core_modify_hca_vport_context(mdev, 1, 1, vf + 1, in);
+-	if (!err)
++	if (!err) {
+ 		vfs_ctx[vf].node_guid = guid;
++		vfs_ctx[vf].node_guid_valid = 1;
++	}
+ 	kfree(in);
+ 	return err;
+ }
+@@ -185,8 +187,10 @@ static int set_vf_port_guid(struct ib_device *device, int vf, u8 port, u64 guid)
+ 	in->field_select = MLX5_HCA_VPORT_SEL_PORT_GUID;
+ 	in->port_guid = guid;
+ 	err = mlx5_core_modify_hca_vport_context(mdev, 1, 1, vf + 1, in);
+-	if (!err)
++	if (!err) {
+ 		vfs_ctx[vf].port_guid = guid;
++		vfs_ctx[vf].port_guid_valid = 1;
++	}
+ 	kfree(in);
+ 	return err;
+ }
+@@ -208,20 +212,12 @@ int mlx5_ib_get_vf_guid(struct ib_device *device, int vf, u8 port,
  {
- 	struct ib_umem_odp *odp = to_ib_umem_odp(mr->umem);
+ 	struct mlx5_ib_dev *dev = to_mdev(device);
+ 	struct mlx5_core_dev *mdev = dev->mdev;
+-	struct mlx5_hca_vport_context *rep;
+-	int err;
+-
+-	rep = kzalloc(sizeof(*rep), GFP_KERNEL);
+-	if (!rep)
+-		return -ENOMEM;
++	struct mlx5_vf_context *vfs_ctx = mdev->priv.sriov.vfs_ctx;
  
-+	if (unlikely(io_virt < mr->mmkey.iova))
-+		return -EFAULT;
-+
- 	if (!odp->is_implicit_odp) {
--		if (unlikely(io_virt < ib_umem_start(odp) ||
--			     ib_umem_end(odp) - io_virt < bcnt))
-+		u64 user_va;
-+
-+		if (check_add_overflow(io_virt - mr->mmkey.iova,
-+				       (u64)odp->umem.address, &user_va))
-+			return -EFAULT;
-+		if (unlikely(user_va >= ib_umem_end(odp) ||
-+			     ib_umem_end(odp) - user_va < bcnt))
- 			return -EFAULT;
--		return pagefault_real_mr(mr, odp, io_virt, bcnt, bytes_mapped,
-+		return pagefault_real_mr(mr, odp, user_va, bcnt, bytes_mapped,
- 					 flags);
- 	}
- 	return pagefault_implicit_mr(mr, odp, io_virt, bcnt, bytes_mapped,
+-	err = mlx5_query_hca_vport_context(mdev, 1, 1, vf+1, rep);
+-	if (err)
+-		goto ex;
++	node_guid->guid =
++		vfs_ctx[vf].node_guid_valid ? vfs_ctx[vf].node_guid : 0;
++	port_guid->guid =
++		vfs_ctx[vf].port_guid_valid ? vfs_ctx[vf].port_guid : 0;
+ 
+-	port_guid->guid = rep->port_guid;
+-	node_guid->guid = rep->node_guid;
+-ex:
+-	kfree(rep);
+-	return err;
++	return 0;
+ }
+diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
+index 27200dea02977..a24937fc56b91 100644
+--- a/include/linux/mlx5/driver.h
++++ b/include/linux/mlx5/driver.h
+@@ -461,6 +461,11 @@ struct mlx5_vf_context {
+ 	int	enabled;
+ 	u64	port_guid;
+ 	u64	node_guid;
++	/* Valid bits are used to validate administrative guid only.
++	 * Enabled after ndo_set_vf_guid
++	 */
++	u8	port_guid_valid:1;
++	u8	node_guid_valid:1;
+ 	enum port_state_policy	policy;
+ };
+ 
 -- 
 2.20.1
 
