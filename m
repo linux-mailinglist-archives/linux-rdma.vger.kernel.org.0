@@ -2,36 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC6815F0F7
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 18:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EB115F0D9
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 18:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388256AbgBNR6z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 12:58:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39152 "EHLO mail.kernel.org"
+        id S1730690AbgBNP5O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 10:57:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388019AbgBNP4z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:56:55 -0500
+        id S1729885AbgBNP5N (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 10:57:13 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFB092086A;
-        Fri, 14 Feb 2020 15:56:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3F4124676;
+        Fri, 14 Feb 2020 15:57:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581695814;
-        bh=hJczrfq4NJKGpubcEvXSXTXvYRR3QAEZ6ENaMdbMA0s=;
+        s=default; t=1581695832;
+        bh=KsMoq13yFF3jKXmzWDfs5ZlxQI1DDIftiFOworhaawU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PJ+vawhykcraPPXM7k2ZPZx6L4M7KXaSu0feD+U44T209NyqofjS6Uju4RH5ZBXw6
-         DMY6uZD+aQgzlX/bup91h7RikRzyLMCLqeDsR3IenAO/acYeqpPlG4TnyMXF7ckbL/
-         VzbtC5WAzcwOYBfLaJS91SYWNuElKck3BFQDpSqk=
+        b=iGmu833+D9tV5stmO/f3a4LQtxCxnpcH7fckKAEkqInIRYVFm19EQ/zVmRxXN/abX
+         b8MurFpj6EZok/cq4C9gQL4LGZX1jusMR3B2Am+Jdbn+sVsgPxt2O21+EbejkA73jo
+         vo47K3eltiVUMRHumoZcDrC8zxmtdy6eRIMQkGKQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sergey Gorenko <sergeygo@mellanox.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 372/542] IB/srp: Never use immediate data if it is disabled by a user
-Date:   Fri, 14 Feb 2020 10:46:04 -0500
-Message-Id: <20200214154854.6746-372-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 385/542] RDMA/mlx5: Don't fake udata for kernel path
+Date:   Fri, 14 Feb 2020 10:46:17 -0500
+Message-Id: <20200214154854.6746-385-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
 References: <20200214154854.6746-1-sashal@kernel.org>
@@ -44,50 +42,167 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Sergey Gorenko <sergeygo@mellanox.com>
+From: Leon Romanovsky <leonro@mellanox.com>
 
-[ Upstream commit 0fbb37dd82998b5c83355997b3bdba2806968ac7 ]
+[ Upstream commit 4835709176e8ccf6561abc9f5c405293e008095f ]
 
-Some SRP targets that do not support specification SRP-2, put the garbage
-to the reserved bits of the SRP login response.  The problem was not
-detected for a long time because the SRP initiator ignored those bits. But
-now one of them is used as SRP_LOGIN_RSP_IMMED_SUPP. And it causes a
-critical error on the target when the initiator sends immediate data.
+Kernel paths must not set udata and provide NULL pointer,
+instead of faking zeroed udata struct.
 
-The ib_srp module has a use_imm_date parameter to enable or disable
-immediate data manually. But it does not help in the above case, because
-use_imm_date is ignored at handling the SRP login response. The problem is
-definitely caused by a bug on the target side, but the initiator's
-behavior also does not look correct.  The initiator should not use
-immediate data if use_imm_date is disabled by a user.
-
-This commit adds an additional checking of use_imm_date at the handling of
-SRP login response to avoid unexpected use of immediate data.
-
-Fixes: 882981f4a411 ("RDMA/srp: Add support for immediate data")
-Link: https://lore.kernel.org/r/20200115133055.30232-1-sergeygo@mellanox.com
-Signed-off-by: Sergey Gorenko <sergeygo@mellanox.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/srp/ib_srp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx5/main.c | 34 +++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index b7f7a5f7bd986..cd1181c39ed29 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -2546,7 +2546,8 @@ static void srp_cm_rep_handler(struct ib_cm_id *cm_id,
- 	if (lrsp->opcode == SRP_LOGIN_RSP) {
- 		ch->max_ti_iu_len = be32_to_cpu(lrsp->max_ti_iu_len);
- 		ch->req_lim       = be32_to_cpu(lrsp->req_lim_delta);
--		ch->use_imm_data  = lrsp->rsp_flags & SRP_LOGIN_RSP_IMMED_SUPP;
-+		ch->use_imm_data  = srp_use_imm_data &&
-+			(lrsp->rsp_flags & SRP_LOGIN_RSP_IMMED_SUPP);
- 		ch->max_it_iu_len = srp_max_it_iu_len(target->cmd_sg_cnt,
- 						      ch->use_imm_data,
- 						      target->max_it_iu_size);
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 997cbfe4b90ce..760630c7aae71 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -815,6 +815,7 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
+ 				struct ib_device_attr *props,
+ 				struct ib_udata *uhw)
+ {
++	size_t uhw_outlen = (uhw) ? uhw->outlen : 0;
+ 	struct mlx5_ib_dev *dev = to_mdev(ibdev);
+ 	struct mlx5_core_dev *mdev = dev->mdev;
+ 	int err = -ENOMEM;
+@@ -828,12 +829,12 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
+ 	u64 max_tso;
+ 
+ 	resp_len = sizeof(resp.comp_mask) + sizeof(resp.response_length);
+-	if (uhw->outlen && uhw->outlen < resp_len)
++	if (uhw_outlen && uhw_outlen < resp_len)
+ 		return -EINVAL;
+ 
+ 	resp.response_length = resp_len;
+ 
+-	if (uhw->inlen && !ib_is_udata_cleared(uhw, 0, uhw->inlen))
++	if (uhw && uhw->inlen && !ib_is_udata_cleared(uhw, 0, uhw->inlen))
+ 		return -EINVAL;
+ 
+ 	memset(props, 0, sizeof(*props));
+@@ -897,7 +898,7 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
+ 			props->raw_packet_caps |=
+ 				IB_RAW_PACKET_CAP_CVLAN_STRIPPING;
+ 
+-		if (field_avail(typeof(resp), tso_caps, uhw->outlen)) {
++		if (field_avail(typeof(resp), tso_caps, uhw_outlen)) {
+ 			max_tso = MLX5_CAP_ETH(mdev, max_lso_cap);
+ 			if (max_tso) {
+ 				resp.tso_caps.max_tso = 1 << max_tso;
+@@ -907,7 +908,7 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
+ 			}
+ 		}
+ 
+-		if (field_avail(typeof(resp), rss_caps, uhw->outlen)) {
++		if (field_avail(typeof(resp), rss_caps, uhw_outlen)) {
+ 			resp.rss_caps.rx_hash_function =
+ 						MLX5_RX_HASH_FUNC_TOEPLITZ;
+ 			resp.rss_caps.rx_hash_fields_mask =
+@@ -927,9 +928,9 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
+ 			resp.response_length += sizeof(resp.rss_caps);
+ 		}
+ 	} else {
+-		if (field_avail(typeof(resp), tso_caps, uhw->outlen))
++		if (field_avail(typeof(resp), tso_caps, uhw_outlen))
+ 			resp.response_length += sizeof(resp.tso_caps);
+-		if (field_avail(typeof(resp), rss_caps, uhw->outlen))
++		if (field_avail(typeof(resp), rss_caps, uhw_outlen))
+ 			resp.response_length += sizeof(resp.rss_caps);
+ 	}
+ 
+@@ -1054,7 +1055,7 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
+ 						MLX5_MAX_CQ_PERIOD;
+ 	}
+ 
+-	if (field_avail(typeof(resp), cqe_comp_caps, uhw->outlen)) {
++	if (field_avail(typeof(resp), cqe_comp_caps, uhw_outlen)) {
+ 		resp.response_length += sizeof(resp.cqe_comp_caps);
+ 
+ 		if (MLX5_CAP_GEN(dev->mdev, cqe_compression)) {
+@@ -1072,7 +1073,7 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
+ 		}
+ 	}
+ 
+-	if (field_avail(typeof(resp), packet_pacing_caps, uhw->outlen) &&
++	if (field_avail(typeof(resp), packet_pacing_caps, uhw_outlen) &&
+ 	    raw_support) {
+ 		if (MLX5_CAP_QOS(mdev, packet_pacing) &&
+ 		    MLX5_CAP_GEN(mdev, qos)) {
+@@ -1091,7 +1092,7 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
+ 	}
+ 
+ 	if (field_avail(typeof(resp), mlx5_ib_support_multi_pkt_send_wqes,
+-			uhw->outlen)) {
++			uhw_outlen)) {
+ 		if (MLX5_CAP_ETH(mdev, multi_pkt_send_wqe))
+ 			resp.mlx5_ib_support_multi_pkt_send_wqes =
+ 				MLX5_IB_ALLOW_MPW;
+@@ -1104,7 +1105,7 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
+ 			sizeof(resp.mlx5_ib_support_multi_pkt_send_wqes);
+ 	}
+ 
+-	if (field_avail(typeof(resp), flags, uhw->outlen)) {
++	if (field_avail(typeof(resp), flags, uhw_outlen)) {
+ 		resp.response_length += sizeof(resp.flags);
+ 
+ 		if (MLX5_CAP_GEN(mdev, cqe_compression_128))
+@@ -1120,8 +1121,7 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
+ 		resp.flags |= MLX5_IB_QUERY_DEV_RESP_FLAGS_SCAT2CQE_DCT;
+ 	}
+ 
+-	if (field_avail(typeof(resp), sw_parsing_caps,
+-			uhw->outlen)) {
++	if (field_avail(typeof(resp), sw_parsing_caps, uhw_outlen)) {
+ 		resp.response_length += sizeof(resp.sw_parsing_caps);
+ 		if (MLX5_CAP_ETH(mdev, swp)) {
+ 			resp.sw_parsing_caps.sw_parsing_offloads |=
+@@ -1141,7 +1141,7 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
+ 		}
+ 	}
+ 
+-	if (field_avail(typeof(resp), striding_rq_caps, uhw->outlen) &&
++	if (field_avail(typeof(resp), striding_rq_caps, uhw_outlen) &&
+ 	    raw_support) {
+ 		resp.response_length += sizeof(resp.striding_rq_caps);
+ 		if (MLX5_CAP_GEN(mdev, striding_rq)) {
+@@ -1164,8 +1164,7 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
+ 		}
+ 	}
+ 
+-	if (field_avail(typeof(resp), tunnel_offloads_caps,
+-			uhw->outlen)) {
++	if (field_avail(typeof(resp), tunnel_offloads_caps, uhw_outlen)) {
+ 		resp.response_length += sizeof(resp.tunnel_offloads_caps);
+ 		if (MLX5_CAP_ETH(mdev, tunnel_stateless_vxlan))
+ 			resp.tunnel_offloads_caps |=
+@@ -1186,7 +1185,7 @@ static int mlx5_ib_query_device(struct ib_device *ibdev,
+ 				MLX5_IB_TUNNELED_OFFLOADS_MPLS_UDP;
+ 	}
+ 
+-	if (uhw->outlen) {
++	if (uhw_outlen) {
+ 		err = ib_copy_to_udata(uhw, &resp, resp.response_length);
+ 
+ 		if (err)
+@@ -4771,7 +4770,6 @@ static int __get_port_caps(struct mlx5_ib_dev *dev, u8 port)
+ 	struct ib_device_attr *dprops = NULL;
+ 	struct ib_port_attr *pprops = NULL;
+ 	int err = -ENOMEM;
+-	struct ib_udata uhw = {.inlen = 0, .outlen = 0};
+ 
+ 	pprops = kzalloc(sizeof(*pprops), GFP_KERNEL);
+ 	if (!pprops)
+@@ -4781,7 +4779,7 @@ static int __get_port_caps(struct mlx5_ib_dev *dev, u8 port)
+ 	if (!dprops)
+ 		goto out;
+ 
+-	err = mlx5_ib_query_device(&dev->ib_dev, dprops, &uhw);
++	err = mlx5_ib_query_device(&dev->ib_dev, dprops, NULL);
+ 	if (err) {
+ 		mlx5_ib_warn(dev, "query_device failed %d\n", err);
+ 		goto out;
 -- 
 2.20.1
 
