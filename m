@@ -2,37 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3309D15ECCB
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 18:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A95815EC7C
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 18:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390578AbgBNR3t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 12:29:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59338 "EHLO mail.kernel.org"
+        id S2391214AbgBNR2D (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 12:28:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390750AbgBNQHo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:07:44 -0500
+        id S2390539AbgBNQIK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:08:10 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 014B72067D;
-        Fri, 14 Feb 2020 16:07:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3953B2187F;
+        Fri, 14 Feb 2020 16:08:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696463;
-        bh=kC/YYFKluYBheWLxs0mdbIuFVYQcxSFBZYFn3KsNVY4=;
+        s=default; t=1581696489;
+        bh=EfqTLV/Ja2CAc990v9LG2sf9f+XqMnZ58KAWfhoHIno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0UZig3I4sfhtHX2apbdH9SNqr4AS5rpBoqDBFR49mW1C6/z1+ZqyrRpSDsJqKT9ux
-         vylcLeyCfh8NGL4JyFgGY7d1uBHoWrZxzc3unSaOZMU4QfWiSX0fO9ZYbQD1/1c117
-         LETsze3afqABuWXHwEKcUgdM9TFD/NRkgSnfJwFE=
+        b=MB+nutMk7c4E/ws3m9Uj9brCfHhB44Gd8dRMz3QAF1lTNsy8GmewO5qYeY/yikcCT
+         dfAC6o6h9OoGuJcPm3ymzTs9E+rgfqLmYmGUfdhiBloVFbjPOSdlQ5W0sf3P2qPAcG
+         dluY0jA8zg+12lAj6uvu1/tpZQ0C9AuOv36RjhPQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+Cc:     Jason Gunthorpe <jgg@mellanox.com>,
+        Michael Guralnik <michaelgur@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 274/459] IB/hfi1: Add software counter for ctxt0 seq drop
-Date:   Fri, 14 Feb 2020 10:58:44 -0500
-Message-Id: <20200214160149.11681-274-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 295/459] RDMA/uverbs: Remove needs_kfree_rcu from uverbs_obj_type_class
+Date:   Fri, 14 Feb 2020 10:59:05 -0500
+Message-Id: <20200214160149.11681-295-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
 References: <20200214160149.11681-1-sashal@kernel.org>
@@ -45,93 +43,88 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mike Marciniszyn <mike.marciniszyn@intel.com>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-[ Upstream commit 5ffd048698ea5139743acd45e8ab388a683642b8 ]
+[ Upstream commit 8bdf9dd984c18375d1090ddeb1792511f619c5c1 ]
 
-All other code paths increment some form of drop counter.
+After device disassociation the uapi_objects are destroyed and freed,
+however it is still possible that core code can be holding a kref on the
+uobject. When it finally goes to uverbs_uobject_free() via the kref_put()
+it can trigger a use-after-free on the uapi_object.
 
-This was missed in the original implementation.
+Since needs_kfree_rcu is a micro optimization that only benefits file
+uobjects, just get rid of it. There is no harm in using kfree_rcu even if
+it isn't required, and the number of involved objects is small.
 
-Fixes: 82c2611daaf0 ("staging/rdma/hfi1: Handle packets with invalid RHF on context 0")
-Link: https://lore.kernel.org/r/20200106134228.119356.96828.stgit@awfm-01.aw.intel.com
-Reviewed-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Link: https://lore.kernel.org/r/20200113143306.GA28717@ziepe.ca
+Signed-off-by: Michael Guralnik <michaelgur@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hfi1/chip.c   | 10 ++++++++++
- drivers/infiniband/hw/hfi1/chip.h   |  1 +
- drivers/infiniband/hw/hfi1/driver.c |  1 +
- drivers/infiniband/hw/hfi1/hfi.h    |  2 ++
- 4 files changed, 14 insertions(+)
+ drivers/infiniband/core/rdma_core.c | 23 +----------------------
+ include/rdma/uverbs_types.h         |  1 -
+ 2 files changed, 1 insertion(+), 23 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
-index 9b1fb84a3d45b..d5961918fe157 100644
---- a/drivers/infiniband/hw/hfi1/chip.c
-+++ b/drivers/infiniband/hw/hfi1/chip.c
-@@ -1685,6 +1685,14 @@ static u64 access_sw_pio_drain(const struct cntr_entry *entry,
- 	return dd->verbs_dev.n_piodrain;
+diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
+index ccf4d069c25c9..7dd9bd1e4d118 100644
+--- a/drivers/infiniband/core/rdma_core.c
++++ b/drivers/infiniband/core/rdma_core.c
+@@ -49,13 +49,7 @@ void uverbs_uobject_get(struct ib_uobject *uobject)
+ 
+ static void uverbs_uobject_free(struct kref *ref)
+ {
+-	struct ib_uobject *uobj =
+-		container_of(ref, struct ib_uobject, ref);
+-
+-	if (uobj->uapi_object->type_class->needs_kfree_rcu)
+-		kfree_rcu(uobj, rcu);
+-	else
+-		kfree(uobj);
++	kfree_rcu(container_of(ref, struct ib_uobject, ref), rcu);
  }
  
-+static u64 access_sw_ctx0_seq_drop(const struct cntr_entry *entry,
-+				   void *context, int vl, int mode, u64 data)
-+{
-+	struct hfi1_devdata *dd = context;
-+
-+	return dd->ctx0_seq_drop;
-+}
-+
- static u64 access_sw_vtx_wait(const struct cntr_entry *entry,
- 			      void *context, int vl, int mode, u64 data)
- {
-@@ -4249,6 +4257,8 @@ static struct cntr_entry dev_cntrs[DEV_CNTR_LAST] = {
- 			    access_sw_cpu_intr),
- [C_SW_CPU_RCV_LIM] = CNTR_ELEM("RcvLimit", 0, 0, CNTR_NORMAL,
- 			    access_sw_cpu_rcv_limit),
-+[C_SW_CTX0_SEQ_DROP] = CNTR_ELEM("SeqDrop0", 0, 0, CNTR_NORMAL,
-+			    access_sw_ctx0_seq_drop),
- [C_SW_VTX_WAIT] = CNTR_ELEM("vTxWait", 0, 0, CNTR_NORMAL,
- 			    access_sw_vtx_wait),
- [C_SW_PIO_WAIT] = CNTR_ELEM("PioWait", 0, 0, CNTR_NORMAL,
-diff --git a/drivers/infiniband/hw/hfi1/chip.h b/drivers/infiniband/hw/hfi1/chip.h
-index 4ca5ac8d7e9e4..bfccd4ae07a72 100644
---- a/drivers/infiniband/hw/hfi1/chip.h
-+++ b/drivers/infiniband/hw/hfi1/chip.h
-@@ -926,6 +926,7 @@ enum {
- 	C_DC_PG_STS_TX_MBE_CNT,
- 	C_SW_CPU_INTR,
- 	C_SW_CPU_RCV_LIM,
-+	C_SW_CTX0_SEQ_DROP,
- 	C_SW_VTX_WAIT,
- 	C_SW_PIO_WAIT,
- 	C_SW_PIO_DRAIN,
-diff --git a/drivers/infiniband/hw/hfi1/driver.c b/drivers/infiniband/hw/hfi1/driver.c
-index 01aa1f132f55e..941b465244abe 100644
---- a/drivers/infiniband/hw/hfi1/driver.c
-+++ b/drivers/infiniband/hw/hfi1/driver.c
-@@ -734,6 +734,7 @@ static noinline int skip_rcv_packet(struct hfi1_packet *packet, int thread)
- {
- 	int ret;
+ void uverbs_uobject_put(struct ib_uobject *uobject)
+@@ -744,20 +738,6 @@ const struct uverbs_obj_type_class uverbs_idr_class = {
+ 	.lookup_put = lookup_put_idr_uobject,
+ 	.destroy_hw = destroy_hw_idr_uobject,
+ 	.remove_handle = remove_handle_idr_uobject,
+-	/*
+-	 * When we destroy an object, we first just lock it for WRITE and
+-	 * actually DESTROY it in the finalize stage. So, the problematic
+-	 * scenario is when we just started the finalize stage of the
+-	 * destruction (nothing was executed yet). Now, the other thread
+-	 * fetched the object for READ access, but it didn't lock it yet.
+-	 * The DESTROY thread continues and starts destroying the object.
+-	 * When the other thread continue - without the RCU, it would
+-	 * access freed memory. However, the rcu_read_lock delays the free
+-	 * until the rcu_read_lock of the READ operation quits. Since the
+-	 * exclusive lock of the object is still taken by the DESTROY flow, the
+-	 * READ operation will get -EBUSY and it'll just bail out.
+-	 */
+-	.needs_kfree_rcu = true,
+ };
+ EXPORT_SYMBOL(uverbs_idr_class);
  
-+	packet->rcd->dd->ctx0_seq_drop++;
- 	/* Set up for the next packet */
- 	packet->rhqoff += packet->rsize;
- 	if (packet->rhqoff >= packet->maxcnt)
-diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
-index fa45350a9a1d3..6590f56bb295f 100644
---- a/drivers/infiniband/hw/hfi1/hfi.h
-+++ b/drivers/infiniband/hw/hfi1/hfi.h
-@@ -1153,6 +1153,8 @@ struct hfi1_devdata {
+@@ -919,7 +899,6 @@ const struct uverbs_obj_type_class uverbs_fd_class = {
+ 	.lookup_put = lookup_put_fd_uobject,
+ 	.destroy_hw = destroy_hw_fd_uobject,
+ 	.remove_handle = remove_handle_fd_uobject,
+-	.needs_kfree_rcu = false,
+ };
+ EXPORT_SYMBOL(uverbs_fd_class);
  
- 	char *boardname; /* human readable board info */
+diff --git a/include/rdma/uverbs_types.h b/include/rdma/uverbs_types.h
+index d57a5ba00c743..0b0f5a5f392de 100644
+--- a/include/rdma/uverbs_types.h
++++ b/include/rdma/uverbs_types.h
+@@ -98,7 +98,6 @@ struct uverbs_obj_type_class {
+ 				       enum rdma_remove_reason why,
+ 				       struct uverbs_attr_bundle *attrs);
+ 	void (*remove_handle)(struct ib_uobject *uobj);
+-	u8    needs_kfree_rcu;
+ };
  
-+	u64 ctx0_seq_drop;
-+
- 	/* reset value */
- 	u64 z_int_counter;
- 	u64 z_rcv_limit;
+ struct uverbs_obj_type {
 -- 
 2.20.1
 
