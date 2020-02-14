@@ -2,37 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5A615DE2D
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 17:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 660AB15DF35
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 17:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389409AbgBNQCh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 11:02:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49008 "EHLO mail.kernel.org"
+        id S2390647AbgBNQHW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 11:07:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389402AbgBNQCg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:02:36 -0500
+        id S2389971AbgBNQHV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:07:21 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD0332168B;
-        Fri, 14 Feb 2020 16:02:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A3AAA24654;
+        Fri, 14 Feb 2020 16:07:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696155;
-        bh=GY003Kf7o5vi7BB4jlvFQ9Zp0hgkYbEd9tJw0MG2Pn8=;
+        s=default; t=1581696440;
+        bh=wIqsMrdKLb+D/TuHlWfbWthZCsYzOhhbmcyKf/OfsBY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ToM9CMEeMWDNpPSCXK28Tnv3LqjHwyREYSiF104RfMpVJXkDmtP8TyYbRnIilldWt
-         VSgIBKsiZHW/X8Pqo/8Vxu1Xa6Mk6LHCMwq9G6Nvt4ovml79Hk5MJgosg8J1fCqzhp
-         M7F+QUEfx5EpjA8WNgT46im/M/vlTbCkU8iH79Y0=
+        b=NcgjxY8EN++8sjuERuRtDqQfm7usJWZcBUdhLzsJw5utGNtNnS5KLOrwxdqgbAWSW
+         FPHGQe2UMlcMMcoRNgIlNz0wBri0sYK/3F1wXNwzK6RoXF8KnjoPdDmibHvBK+gd9f
+         eZWFKLVNwdd6MRpqhaOUJpULfHA2MaxUV+n8zjzk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 034/459] RDMA/i40iw: fix a potential NULL pointer dereference
-Date:   Fri, 14 Feb 2020 10:54:44 -0500
-Message-Id: <20200214160149.11681-34-sashal@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 256/459] mlx5: work around high stack usage with gcc
+Date:   Fri, 14 Feb 2020 10:58:26 -0500
+Message-Id: <20200214160149.11681-256-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
 References: <20200214160149.11681-1-sashal@kernel.org>
@@ -45,38 +45,44 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 04db1580b5e48a79e24aa51ecae0cd4b2296ec23 ]
+[ Upstream commit 42ae1a5c76691928ed217c7e40269db27f5225e9 ]
 
-A NULL pointer can be returned by in_dev_get(). Thus add a corresponding
-check so that a NULL pointer dereference will be avoided at this place.
+In some configurations, gcc tries too hard to optimize this code:
 
-Fixes: 8e06af711bf2 ("i40iw: add main, hdr, status")
-Link: https://lore.kernel.org/r/1577672668-46499-1-git-send-email-xiyuyang19@fudan.edu.cn
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+drivers/net/ethernet/mellanox/mlx5/core/en_stats.c: In function 'mlx5e_grp_sw_update_stats':
+drivers/net/ethernet/mellanox/mlx5/core/en_stats.c:302:1: error: the frame size of 1336 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+
+As was stated in the bug report, the reason is that gcc runs into a corner
+case in the register allocator that is rather hard to fix in a good way.
+
+As there is an easy way to work around it, just add a comment and the
+barrier that stops gcc from trying to overoptimize the function.
+
+Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92657
+Cc: Adhemerval Zanella <adhemerval.zanella@linaro.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/i40iw/i40iw_main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/en_stats.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/infiniband/hw/i40iw/i40iw_main.c b/drivers/infiniband/hw/i40iw/i40iw_main.c
-index d44cf33df81ae..238614370927a 100644
---- a/drivers/infiniband/hw/i40iw/i40iw_main.c
-+++ b/drivers/infiniband/hw/i40iw/i40iw_main.c
-@@ -1225,6 +1225,8 @@ static void i40iw_add_ipv4_addr(struct i40iw_device *iwdev)
- 			const struct in_ifaddr *ifa;
- 
- 			idev = in_dev_get(dev);
-+			if (!idev)
-+				continue;
- 			in_dev_for_each_ifa_rtnl(ifa, idev) {
- 				i40iw_debug(&iwdev->sc_dev, I40IW_DEBUG_CM,
- 					    "IP=%pI4, vlan_id=%d, MAC=%pM\n", &ifa->ifa_address,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
+index 9f09253f9f466..a05158472ed11 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
+@@ -297,6 +297,9 @@ static void mlx5e_grp_sw_update_stats(struct mlx5e_priv *priv)
+ 			s->tx_tls_drop_bypass_req   += sq_stats->tls_drop_bypass_req;
+ #endif
+ 			s->tx_cqes		+= sq_stats->cqes;
++
++			/* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92657 */
++			barrier();
+ 		}
+ 	}
+ }
 -- 
 2.20.1
 
