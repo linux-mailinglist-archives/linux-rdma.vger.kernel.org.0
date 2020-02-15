@@ -2,78 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2315A15F95A
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Feb 2020 23:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1519C15FB46
+	for <lists+linux-rdma@lfdr.de>; Sat, 15 Feb 2020 01:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727566AbgBNWXe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 17:23:34 -0500
-Received: from mail-pl1-f176.google.com ([209.85.214.176]:40098 "EHLO
-        mail-pl1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725991AbgBNWXe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Feb 2020 17:23:34 -0500
-Received: by mail-pl1-f176.google.com with SMTP id y1so4225748plp.7
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Feb 2020 14:23:33 -0800 (PST)
+        id S1726164AbgBOAB6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 19:01:58 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:39558 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727649AbgBOAB5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Feb 2020 19:01:57 -0500
+Received: by mail-qk1-f196.google.com with SMTP id a141so1065878qkg.6
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Feb 2020 16:01:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=from:content-transfer-encoding:mime-version:subject:message-id:date
-         :cc:to;
-        bh=T9pgMlJG/LZE1ldA70Gnf5zlFsbvDsmcwT6WuHYtAio=;
-        b=Seva58tLFPHOJoBJlz0x0/TYr8LS4OPJme97BQFGj9+Uud8WgXrNU3oyO8CcHZwtrz
-         xO5SvBBkMRBxKkkiQFF6n8NmNQKuv1zp6KC2ipK7fhs2J86A/vH2MYWGYpuVX+QryfIZ
-         pXc67NielBVGqpyexHGjueD1FoRrV4mGljYU1aXa2baQnZCXK62zdBVXA44ojMqlx5jC
-         1wKlgwDvOkcpd/pGYXAHGNn5i7MfSofj6w9HS0GEm8Qm+ZCP/Eifj8mqMgQn85jXFDEC
-         fUYZxiePq9ev/Wyai9uDDuJHpinXSg6LZw11/tgQcZ5g1WI6IsF1m/fFE4M105jlYuwO
-         dXDA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XEi2FMlL3FDRXNEQ686FOrWVAjWSu9XOGJ0ePD5RXao=;
+        b=Qyd0Jph2hjeTWbf+E6jk4Fwpvy43HacB4yZl2C8TQVUQsfW1fy4/RczMd5TGOu08ax
+         mFFSu2+9BtPO5CLtfeQEXuSCQ1qC3SiGQ5HzkwEl1nRSB0MVIQDOqGuPsfN+yJSaDwoj
+         dYsztu3iheEnDXIBUaOEo5h21lYirUNIq98645veb2fHhcW5IQoaA2kpICmdrjHbzgYf
+         0Qo9f+ZFRObAIqf0mYX9WyrT9poQp0OTCgkCRhE/0YedW2E4yL3/ptw5WH9BUAr9kZyM
+         Qs+N2WP6lP9zJA65b9sqJmyKU66PyoF/ewVfOF5DYB6cI7MUxdab18rQ2v0WN8AIl8dv
+         EiOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:message-id:date:cc:to;
-        bh=T9pgMlJG/LZE1ldA70Gnf5zlFsbvDsmcwT6WuHYtAio=;
-        b=hHniLbo+yiaxmcGkFiineqUX+7425/FREBCbChR1m+HnwEmjKQqAnM4CLrhFaVD7xK
-         mtX+y8PGw1CkvS4inAGymfZnIDizt9/IXeCnL4vf5RaQTTtfrQfPfzDT7z4v9lOnjIKU
-         kmHgRJdJLJXfEt4Rp1ufhyikCASyXnNSpg3UPi/Q7NLKTE122My/mGTQrV4SwRrNDMgE
-         5u9UtmOmnZuCrWTjqdn8X7IJ83GMhU2RezM868UC/P1pQL8BIM6+979sNWTqcRrecRpt
-         z2N8bK/lXWJVy4qCBvzUW8HVJz+3gJmlB0QYNpOzXr0m0oBhhRhLx4dvW52yQnNWRUAA
-         XqEA==
-X-Gm-Message-State: APjAAAXODftyj3N9f+3ivd0LZPRHoVRpNqYFlMP3gR4GtRtPYodPfjNP
-        HVgRQAm1Echxaapw+jeEEgX5O0c7xfA=
-X-Google-Smtp-Source: APXvYqxhLC6NZtSFisGbPwzGPCHGHrvvWMqrdj7t9sQOD7z0vXPzUSJrlfT7Z+flwe1fmETohBKT6w==
-X-Received: by 2002:a17:902:aa04:: with SMTP id be4mr5623103plb.41.1581719012943;
-        Fri, 14 Feb 2020 14:23:32 -0800 (PST)
-Received: from [192.168.4.6] ([107.13.143.123])
-        by smtp.gmail.com with ESMTPSA id e18sm4876466pfm.24.2020.02.14.14.23.31
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 14 Feb 2020 14:23:32 -0800 (PST)
-From:   Andrew Boyer <aboyer@pensando.io>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Which print functions to use during early device create?
-Message-Id: <7A6D8934-9D25-4BDF-BCBA-B37CAA064677@pensando.io>
-Date:   Fri, 14 Feb 2020 17:23:29 -0500
-Cc:     Allen Hubbe <allenbh@pensando.io>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-To:     linux-rdma@vger.kernel.org
-X-Mailer: Apple Mail (2.3445.104.11)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XEi2FMlL3FDRXNEQ686FOrWVAjWSu9XOGJ0ePD5RXao=;
+        b=LaR3q7vBU7K/0FA61MV80FyGEHBrg12/Evtde6zXWBwEXCCK5bQzucR+F8Wgc1P7Gb
+         uKyHd96jSjUAg00oihmxzORRmrh1oJW14FVlJwVpk5FbA0H0OB8oU8ibdtD8bFVZ9ZQs
+         jpSmAkB05hHvAzDJzX4I4AC5k140sKdOuOcGD2NGQsPJAFuyd/tdIDNiEn+10CTH/UhG
+         J2a+ypBj2uC+n/29rhEc71RqRMSt5y/iBdaFjOj+aX5PD7Q+5fxRFfX1pbzn/EVI4Qnt
+         8NZn2vzpwFI16GOaqJeJ5wMzKm9tZ+zzeoF9B+gzBA+OMrS4A6VyN+O/bzM8ildt7Mco
+         I7Ng==
+X-Gm-Message-State: APjAAAV+y28l48rwqOcREnB5jTc+GEN8FujCx708cjYg7iZ/5lPKat7r
+        ujyEdMum3/Rz/AY9s/PaqNy16A==
+X-Google-Smtp-Source: APXvYqxvnAT5vgxkxlp1ZQSyjDd9tZKgFJYS+wzd6guOmUylL/cNgKlPVlkr1TkqiQ9Bxp+wYwuq8Q==
+X-Received: by 2002:a37:498b:: with SMTP id w133mr4930991qka.52.1581724916142;
+        Fri, 14 Feb 2020 16:01:56 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id w60sm4138663qte.39.2020.02.14.16.01.55
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 14 Feb 2020 16:01:55 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1j2kuA-0003gi-Rs; Fri, 14 Feb 2020 20:01:54 -0400
+Date:   Fri, 14 Feb 2020 20:01:54 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>, davem@davemloft.net,
+        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, parav@mellanox.com, galpress@amazon.com,
+        selvin.xavier@broadcom.com, sriharsha.basavapatna@broadcom.com,
+        benve@cisco.com, bharat@chelsio.com, xavier.huwei@huawei.com,
+        yishaih@mellanox.com, leonro@mellanox.com, mkalderon@marvell.com,
+        aditr@vmware.com, Kiran Patil <kiran.patil@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>
+Subject: Re: [RFC PATCH v4 01/25] virtual-bus: Implementation of Virtual Bus
+Message-ID: <20200215000154.GZ31668@ziepe.ca>
+References: <20200212191424.1715577-1-jeffrey.t.kirsher@intel.com>
+ <20200212191424.1715577-2-jeffrey.t.kirsher@intel.com>
+ <20200214170240.GA4034785@kroah.com>
+ <20200214203455.GX31668@ziepe.ca>
+ <20200214204341.GB4086224@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200214204341.GB4086224@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When we get a NETDEV_REGISTER event, we get a pointer to the existing =
-struct netdev. If all goes well, we end up creating an associated struct =
-ib_device.
+On Fri, Feb 14, 2020 at 03:43:41PM -0500, Greg KH wrote:
+> On Fri, Feb 14, 2020 at 04:34:55PM -0400, Jason Gunthorpe wrote:
+> > On Fri, Feb 14, 2020 at 09:02:40AM -0800, Greg KH wrote:
+> > > > +/**
+> > > > + * virtbus_dev_register - add a virtual bus device
+> > > > + * @vdev: virtual bus device to add
+> > > > + */
+> > > > +int virtbus_dev_register(struct virtbus_device *vdev)
+> > > > +{
+> > > > +	int ret;
+> > > > +
+> > > > +	if (!vdev->release) {
+> > > > +		dev_err(&vdev->dev, "virtbus_device .release callback NULL\n");
+> > > 
+> > > "virtbus_device MUST have a .release callback that does something!\n" 
+> > > 
+> > > > +		return -EINVAL;
+> > > > +	}
+> > > > +
+> > > > +	device_initialize(&vdev->dev);
+> > > > +
+> > > > +	vdev->dev.bus = &virtual_bus_type;
+> > > > +	vdev->dev.release = virtbus_dev_release;
+> > > > +	/* All device IDs are automatically allocated */
+> > > > +	ret = ida_simple_get(&virtbus_dev_ida, 0, 0, GFP_KERNEL);
+> > > > +	if (ret < 0) {
+> > > > +		dev_err(&vdev->dev, "get IDA idx for virtbus device failed!\n");
+> > > > +		put_device(&vdev->dev);
+> > > 
+> > > If you allocate the number before device_initialize(), no need to call
+> > > put_device().  Just a minor thing, no big deal.
+> > 
+> > If *_regster does put_device on error then it must always do
+> > put_device on any error, for instance the above return -EINVAL with
+> > no put_device leaks memory.
+> 
+> That's why I said to move the ida_simple_get() call to before
+> device_initialize() is called.  Once device_initialize() is called, you
+> HAVE to call put_device().
 
-How should we log an error that happens in-between, preventing us from =
-creating the ib_device?
+Yes put_device() becomes mandatory, but if the ida is moved up then
+the caller doesn't know how to handle an error:
 
-netdev_err() on the ndev?
-dev_err() on the underlying struct device?
-pr_err()?
+   if (ida_simple_get() < 0)
+       return -EINVAL; // caller must do kfree
+   device_initialize();
+   if (device_register())
+       return -EINVAL // caller must do put_device
 
-Thanks,
-Andrew
+If the device_initialize is bundled in the function the best answer is
+to always do device_initialize() and never do put_device(). The caller
+must realize the unwind switches from kfree to put_device (tricky and
+uglyifies the goto unwind!).
 
+This is the pattern something like platform_device_register() uses,
+and with a random survey I found only __ipmi_bmc_register() getting it
+right. Even then it seems to have a bug related to bmc_reg_mutex due
+to the ugly split goto unwind..
+
+I prefer to see device_initialize done shortly after allocation, that
+seems to be the most likely to end up correct..
+
+Jason
