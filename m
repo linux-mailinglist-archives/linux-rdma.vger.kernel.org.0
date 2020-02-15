@@ -2,86 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A44115FB56
-	for <lists+linux-rdma@lfdr.de>; Sat, 15 Feb 2020 01:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C562015FBD7
+	for <lists+linux-rdma@lfdr.de>; Sat, 15 Feb 2020 01:58:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727455AbgBOALd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Feb 2020 19:11:33 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:40523 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726079AbgBOALd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Feb 2020 19:11:33 -0500
-Received: by mail-qv1-f67.google.com with SMTP id q9so4189445qvu.7
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Feb 2020 16:11:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bt/mFk39YLL/Vo9iabNazIa7ov2bWUx1GTRZaUr59YQ=;
-        b=dA9SZEW/x6czRT6eGm0jeZJgSuqKfSgKWi2sVzBvViqChBE/cxHo/kg3lRAw86h/gL
-         rl6+37lH9Qw9tRmVGDfhqpTPXe+veU9yU+On8Rlb0Ttwl2hnAnT1LsueEexr1r3YRp+2
-         0ltymhaIiadDBhBFuT95bj+Wc+vCI17BD2pGnL4kMVjuJ2jzdGdKCCCwpj8G077cghPY
-         1ZF29Ve0x3UXqVDA2pN1WNkR3mW7VPuKlAh39XL3jDQ8OkIpy+73SGx57X1kRyEb8Bqa
-         3Vvag0RQQl7EeJSSqiBZPOf4FIZvmuwoRwrllA4yQjiWed3tfzQkKXpa/pGozggRhm6U
-         iuWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bt/mFk39YLL/Vo9iabNazIa7ov2bWUx1GTRZaUr59YQ=;
-        b=juXBsUn12KDLOPF00oFMtJPgwk9Lfo1MMK9Ni4GeMTSTQnVJUrv5jZUXK4DLQ3QR9Z
-         C/WzcKr0kbdHT8JwL8xHIZepIaMDMQWSot3MmDyCWyggewUu4nm2RRf2FhDAwn4+mzio
-         bfYzhBz/13ROdF7q9NfdWGqRMIvk5xBgtlnCRMX4I5t/8Bi0mJiRN3I1bSAnN2p6cNkG
-         S9wSqZU08dpTe8WiSupUo/tj6MNU8e2TMctSDHhOf79PQMHVkWI2MCKKzVPk98khKLLp
-         s1ofhn+wpKlzY5zl4Yg10SN+tzCQ6+eThw++niwZZQ1rvi/C97TmJDiCRP04pYtWkdw2
-         +8iQ==
-X-Gm-Message-State: APjAAAVpdqTk85tcfchhwYeXZObAzQ/N8WVmaaH8/bSwxBvkjEqHQmtv
-        HWltINLNkrdWr9fDaJJcvsaNjQ==
-X-Google-Smtp-Source: APXvYqysZTKxAOte76h8YkXGLdIa8IvWGOli+8wQ5M7i/cLevuL2sjc0CSwQjvKUNMtmqEb69Tfpzg==
-X-Received: by 2002:a05:6214:1090:: with SMTP id o16mr4441588qvr.105.1581725491011;
-        Fri, 14 Feb 2020 16:11:31 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id h12sm4206198qtn.56.2020.02.14.16.11.30
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 14 Feb 2020 16:11:30 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j2l3S-0003qN-4p; Fri, 14 Feb 2020 20:11:30 -0400
-Date:   Fri, 14 Feb 2020 20:11:30 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Andrew Boyer <aboyer@pensando.io>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc:     linux-rdma@vger.kernel.org, Allen Hubbe <allenbh@pensando.io>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: Which print functions to use during early device create?
-Message-ID: <20200215001130.GB31668@ziepe.ca>
-References: <7A6D8934-9D25-4BDF-BCBA-B37CAA064677@pensando.io>
+        id S1727943AbgBOA6s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Feb 2020 19:58:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727567AbgBOA6s (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Feb 2020 19:58:48 -0500
+Received: from localhost (unknown [38.98.37.142])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25A1E20726;
+        Sat, 15 Feb 2020 00:58:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1581728327;
+        bh=qQdMWI/hShIHuWjswHk7grezUTy23KqZTNQg7GC+6Nw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gz+TIv6+Wc3ztCvMPoX1T/9kLzkclmcKq9t//snBno53dQ8MmkJQc3wjOEM84nHjm
+         aDSAvRY96j0v1a4+5FgVzS4m2PjEvXojrA1xg7KQdDxNjHmJHyRWULYzKTB38CRvfG
+         BgwE8TeZcGZwwLwmC7wmgy9zQOJI0b1zlF9yP5S0=
+Date:   Fri, 14 Feb 2020 19:53:46 -0500
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>, davem@davemloft.net,
+        Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nhorman@redhat.com,
+        sassmann@redhat.com, parav@mellanox.com, galpress@amazon.com,
+        selvin.xavier@broadcom.com, sriharsha.basavapatna@broadcom.com,
+        benve@cisco.com, bharat@chelsio.com, xavier.huwei@huawei.com,
+        yishaih@mellanox.com, leonro@mellanox.com, mkalderon@marvell.com,
+        aditr@vmware.com, Kiran Patil <kiran.patil@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>
+Subject: Re: [RFC PATCH v4 01/25] virtual-bus: Implementation of Virtual Bus
+Message-ID: <20200215005346.GB32359@kroah.com>
+References: <20200212191424.1715577-1-jeffrey.t.kirsher@intel.com>
+ <20200212191424.1715577-2-jeffrey.t.kirsher@intel.com>
+ <20200214170240.GA4034785@kroah.com>
+ <20200214203455.GX31668@ziepe.ca>
+ <20200214204341.GB4086224@kroah.com>
+ <20200215000154.GZ31668@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7A6D8934-9D25-4BDF-BCBA-B37CAA064677@pensando.io>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200215000154.GZ31668@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 05:23:29PM -0500, Andrew Boyer wrote:
+On Fri, Feb 14, 2020 at 08:01:54PM -0400, Jason Gunthorpe wrote:
+> On Fri, Feb 14, 2020 at 03:43:41PM -0500, Greg KH wrote:
+> > On Fri, Feb 14, 2020 at 04:34:55PM -0400, Jason Gunthorpe wrote:
+> > > On Fri, Feb 14, 2020 at 09:02:40AM -0800, Greg KH wrote:
+> > > > > +/**
+> > > > > + * virtbus_dev_register - add a virtual bus device
+> > > > > + * @vdev: virtual bus device to add
+> > > > > + */
+> > > > > +int virtbus_dev_register(struct virtbus_device *vdev)
+> > > > > +{
+> > > > > +	int ret;
+> > > > > +
+> > > > > +	if (!vdev->release) {
+> > > > > +		dev_err(&vdev->dev, "virtbus_device .release callback NULL\n");
+> > > > 
+> > > > "virtbus_device MUST have a .release callback that does something!\n" 
+> > > > 
+> > > > > +		return -EINVAL;
+> > > > > +	}
+> > > > > +
+> > > > > +	device_initialize(&vdev->dev);
+> > > > > +
+> > > > > +	vdev->dev.bus = &virtual_bus_type;
+> > > > > +	vdev->dev.release = virtbus_dev_release;
+> > > > > +	/* All device IDs are automatically allocated */
+> > > > > +	ret = ida_simple_get(&virtbus_dev_ida, 0, 0, GFP_KERNEL);
+> > > > > +	if (ret < 0) {
+> > > > > +		dev_err(&vdev->dev, "get IDA idx for virtbus device failed!\n");
+> > > > > +		put_device(&vdev->dev);
+> > > > 
+> > > > If you allocate the number before device_initialize(), no need to call
+> > > > put_device().  Just a minor thing, no big deal.
+> > > 
+> > > If *_regster does put_device on error then it must always do
+> > > put_device on any error, for instance the above return -EINVAL with
+> > > no put_device leaks memory.
+> > 
+> > That's why I said to move the ida_simple_get() call to before
+> > device_initialize() is called.  Once device_initialize() is called, you
+> > HAVE to call put_device().
+> 
+> Yes put_device() becomes mandatory, but if the ida is moved up then
+> the caller doesn't know how to handle an error:
+> 
+>    if (ida_simple_get() < 0)
+>        return -EINVAL; // caller must do kfree
+>    device_initialize();
+>    if (device_register())
+>        return -EINVAL // caller must do put_device
 
-> When we get a NETDEV_REGISTER event, we get a pointer to the
-> existing struct netdev. If all goes well, we end up creating an
-> associated struct ib_device.
+No, call put_device() before returning.
 
-New rdma drivers cannot use the hacky NETDEV_REGISTER to bind to
-netdevs.
+Ugh, anyway, this is all trivial stuff, the code is correct as-is,
+nevermind.  If it bugs me enough, I'll send a patch that ends up
+removing one more line of code than adding :)
 
-Jeff & co are working on 'virtual bus' to provide the right kind of
-binding for multi-function PCI devices:
-
-https://patchwork.kernel.org/project/linux-rdma/list/?series=240585
-
-You should probably strike a deal to review their driver if they
-review yours :)
-
-Jason
+greg k-h
