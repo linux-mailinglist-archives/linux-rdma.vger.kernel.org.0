@@ -2,137 +2,169 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD5E1603E1
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Feb 2020 12:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA57D16042F
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Feb 2020 14:42:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgBPLyA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 16 Feb 2020 06:54:00 -0500
-Received: from mail-eopbgr20064.outbound.protection.outlook.com ([40.107.2.64]:6976
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728009AbgBPLyA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 16 Feb 2020 06:54:00 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QKzYLXHrlwGrXwGU4QxPfAH7GF9FkoFBXww4QPP1JNgu+4dz6+/KEkBAw0xvK/UeQ5dGM89J5rXXh4GDuEwLulD6NBnslOvpPy2Gu5BMkgd30GFQ1zzUJZltBYFA5ZJ31AsKAUcJ2viJe5odcQuoaoOIRTUk+QkZWMszyC+FSHZ6Hazn1KLKdQU2Vd139V2umBmjYVR3ekuCT9hb378tv/WNN3InM+qnaYlE59xAhddYiTCzAeCVQ0HxPsI9trw9h2wVeW1A0H21qAAUbOa1xVbBPr3FgTnt4o1eLdAVThJTrarc3/c9BfhJzGXG+nXgh5WPU96WJhu+RR/GUGe/Gg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9I0u6T1Zd3Gh8VTWC6X9qkMo9FjVz7MZo+J/5rgQlrk=;
- b=E5N7ImMNPZG+CglUeFk5eFdT1Tf7qW9BAr95s5ZEflq5yuNfwX6Qy2r2YcpPfZY1KK0liKaTPjCgC52uYTYNkKi9lNxXUC0xHcM4e6eleJzxS9uFnZXcb3lp4ESUAsCy/wTXNz4kW3Fwpgcv9PNt5lLKLX1AZjChCR4K8yVvjPRQaHY74PjPa96MdZH/V+xocu+JkxTF6cKTMueirGKW6FsJckqkiicLtRV1cpkXZmKzNAJRN7E5eVhkRMb+hBLjgGLGwVEYy/HsXy130+cQNWgwE3PROOCy+l+OTSlrmhtQiVP/iZNgpeHDpvAb/S/qCAXQ7ZufLUFOd57KWjIzAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9I0u6T1Zd3Gh8VTWC6X9qkMo9FjVz7MZo+J/5rgQlrk=;
- b=nF1YRiqrj0j7RYJN7nXWuL/SQYuUDVbbznmHzPFqFvL7PZzgg/4MJu0LRSf7NzBAB15ij4vcyULxHP82wbAgJExSmguYMGBYm8wry0X+KVfO1jiHBInOVIjnBUJM02mYhszgb9D4QnZe/2wZ9W1A0s8UdzeNr05SXvxGWrUj2x0=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=maximmi@mellanox.com; 
-Received: from HE1PR0501MB2570.eurprd05.prod.outlook.com (10.168.126.17) by
- HE1SPR00MB85.eurprd05.prod.outlook.com (10.172.127.23) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2729.27; Sun, 16 Feb 2020 11:53:53 +0000
-Received: from HE1PR0501MB2570.eurprd05.prod.outlook.com
- ([fe80::60c4:f0b4:dc7b:c7fc]) by HE1PR0501MB2570.eurprd05.prod.outlook.com
- ([fe80::60c4:f0b4:dc7b:c7fc%10]) with mapi id 15.20.2729.031; Sun, 16 Feb
- 2020 11:53:53 +0000
-Subject: Re: [PATCH rdma] IB/mlx5: Fix linkage failure on 32-bit arches
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Alexander Lobakin <alobakin@dlink.ru>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200214191309.155654-1-alobakin@dlink.ru>
- <20200214192410.GW31668@ziepe.ca> <6f7c270fef9ec5bae2dcb780dee3f49f@dlink.ru>
-From:   Maxim Mikityanskiy <maximmi@mellanox.com>
-Message-ID: <3c70c7da-60aa-10ec-767f-5e519357b8e6@mellanox.com>
-Date:   Sun, 16 Feb 2020 13:53:50 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-In-Reply-To: <6f7c270fef9ec5bae2dcb780dee3f49f@dlink.ru>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FRYP281CA0011.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::21)
- To HE1PR0501MB2570.eurprd05.prod.outlook.com (2603:10a6:3:6c::17)
+        id S1726245AbgBPNm4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 16 Feb 2020 08:42:56 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:53911 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbgBPNmz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 16 Feb 2020 08:42:55 -0500
+Received: by mail-wm1-f66.google.com with SMTP id s10so14555107wmh.3
+        for <linux-rdma@vger.kernel.org>; Sun, 16 Feb 2020 05:42:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=48n9jO4UaNqIvxx3QiffDGx3j4Sbkc7fJI5IamHifzQ=;
+        b=WyXsUyAix84n4B+OeVFNG89yt6kbCDC99+uliNCnyuGOqsY9/BfWtfbG8UlGdWe6pH
+         7hEzBjCXkkjc8If1cdv3gSu9EVuLErIfX8yaSm1m/aL1BVZPjV7uKtFxQSnOxt8L4PlZ
+         BOppxhfCdCrp8rsoToDg4xb2ei+TwVjQJ8FtbZn8TKuzkaCREySa2+mIdpqLjAJP6y8V
+         Rsn/kzjjfjh7pVRlX95Hjba22MaSOn+zZANE4GA/3IT/7Av9rIo1Pa+GZGQOj+4U6TQU
+         7mb6ztgy/5ho6O4e6R7Db/0oLZRlkL850KIc4tlbV9faUZvlsWHSVDcArbb4GwiiR+nn
+         ugVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=48n9jO4UaNqIvxx3QiffDGx3j4Sbkc7fJI5IamHifzQ=;
+        b=pMxMjyHMuBjtWea4bQW23D+drTrzfESe46tYStsNgOVC0xC/FGtWY+wSATG+YyArUG
+         3cwl1OGc8Mxcfh2UVRkAyQ2hKkJcjPyZg3n7oLaHKWCWi+NhhXJjZU5VIU0S9EyEv/xR
+         tBrMXCIh9NbFrBE4AdZkjaCl13SNSeokis37kUxAFY0trbN9t/BVIpqlnVb2UYb12b98
+         c8fUGxNkfxzKtNyj05NZq1gPjjShyAPjRDInG2lheU2kDt0xZd6A43QB3QPJfLdlqoQw
+         fiz7+c/2TXJXM2DUH1G4Q+elBCAuVyKu4XSh5872SSw3FT9dYE4F5huAGIAHnI0qPsg3
+         8B8g==
+X-Gm-Message-State: APjAAAXMD5osf54t4zjsGu8wWEix0teTBAFWWZkM/pkSbGy3+U5b0DVi
+        xiX55oyY1d0nV9VsjW3MCfM=
+X-Google-Smtp-Source: APXvYqwsfowIqvYfX1Ds8kdRLyCqjNV7w9ov+1+TJOgOBRO7F4ljOMR0LY4vqBVUKvbE+vAfs6q+og==
+X-Received: by 2002:a1c:6a15:: with SMTP id f21mr16027550wmc.126.1581860573238;
+        Sun, 16 Feb 2020 05:42:53 -0800 (PST)
+Received: from kheib-workstation (bzq-109-65-128-51.red.bezeqint.net. [109.65.128.51])
+        by smtp.gmail.com with ESMTPSA id j5sm15936951wrb.33.2020.02.16.05.42.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Feb 2020 05:42:52 -0800 (PST)
+Date:   Sun, 16 Feb 2020 15:42:49 +0200
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: Re: [PATH for-next] RDMA/siw: Fix setting active_{speed, width}
+ attributes
+Message-ID: <20200216134249.GA7456@kheib-workstation>
+References: <20200213130701.11589-1-kamalheib1@gmail.com>
+ <OF9565E197.68A7B59D-ON0025850D.0049D122-0025850D.004CDC1C@notes.na.collabserv.com>
 MIME-Version: 1.0
-Received: from [10.80.3.13] (193.47.165.251) by FRYP281CA0011.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2729.25 via Frontend Transport; Sun, 16 Feb 2020 11:53:52 +0000
-X-Originating-IP: [193.47.165.251]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 72f4e32f-3822-45e7-1a1e-08d7b2d6e53a
-X-MS-TrafficTypeDiagnostic: HE1SPR00MB85:|HE1SPR00MB85:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1SPR00MB858E51EBCB03CF16C9AE58D1170@HE1SPR00MB85.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-Forefront-PRVS: 03152A99FF
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(136003)(39860400002)(396003)(376002)(366004)(199004)(189003)(4326008)(5660300002)(956004)(16576012)(478600001)(2616005)(54906003)(26005)(86362001)(316002)(8676002)(52116002)(53546011)(31686004)(966005)(2906002)(81166006)(81156014)(6486002)(6916009)(186003)(66946007)(66556008)(66476007)(16526019)(31696002)(8936002)(36756003);DIR:OUT;SFP:1101;SCL:1;SRVR:HE1SPR00MB85;H:HE1PR0501MB2570.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-Received-SPF: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cq1gP2QdQHo8MpqV8DcXQXeJp7dvROx8ezcqy8LOdP5yiiBTy2yYTS7SEBfE6vtK7OZcdWdxgm/cg3Krff9GTMTKz3ok189q1E7YDvZOTSncf10opfMMWAp6gVVjSUIzbpFs0jS+TGYQasyktVyCRwRlVjSr6+x9PpYBMCvL4G35zx0yjwJzsfDurFHPFFQiXB+wAkFclZYoVndnkqt4l+mW4q/guVh/y4WYhnKxclzajqM8t7ILjUlMFSP1h754EPGimRbwcfFbZtARoH7GZKCscvQUBKgDuroCtzq1nsLVapCrGM3qmsyxNyCMTiHaNKGnbep65kupUYbBXLibwiYhQXiwuiCCg81ZHuFwn6MIwonfJC7CiG8I2vtYWU86f3omcqQn8mkr5Lqe/66p8ld7n6XeapE+i9Lcy2USt4d4U2BUWyniu7OUurxfGD/hmY/Y3l+p2loDfHOSnfO02h1mUJ4HQ7sHGnTq94nmfIJpKTywGn7O6jW01NFhpgXrVMrsEHguKsHA2wZf3s6GQg==
-X-MS-Exchange-AntiSpam-MessageData: j0THxgZ0gSDbpFQaY9Rg71S4xFp7tBSSy3RUVI9FHA71NJuC6p6SAExDbG9hknzYAnu0oksIrOc6Wj8rI9m5lgIcOFM2l40ZXnM/gGvoDv2wjQcCGlwT3PgbrB4X0w+QPoORDYsFemc5TECbS+BLVg==
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72f4e32f-3822-45e7-1a1e-08d7b2d6e53a
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2020 11:53:53.6649
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dzWPa/ZjbuZco1oEdYQ5n9rv+SnDIDeDdi07EVCDQYg+vQx7QBpbStERRth+u1Z5jDcf90iZCAMUyKlnX5VuIA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1SPR00MB85
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OF9565E197.68A7B59D-ON0025850D.0049D122-0025850D.004CDC1C@notes.na.collabserv.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-02-14 21:44, Alexander Lobakin wrote:
-> Jason Gunthorpe wrote 14.02.2020 22:24:
->> On Fri, Feb 14, 2020 at 10:13:09PM +0300, Alexander Lobakin wrote:
->>> Commit f164be8c0366 ("IB/mlx5: Extend caps stage to handle VAR
->>> capabilities") introduced a straight "/" division of the u64
->>> variable "bar_size", which emits an __udivdi3() libgcc call on
->>> 32-bit arches and certain GCC versions:
->>>
->>> error: "__udivdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined! 
->>> [1]
->>>
->>> Replace it with the corresponding div_u64() call.
->>> Compile-tested on ARCH=mips 32r2el_defconfig BOARDS=ocelot.
->>>
->>> [1] 
->>> https://lore.kernel.org/linux-mips/CAMuHMdXM9S1VkFMZ8eDAyZR6EE4WkJY215Lcn2qdOaPeadF+EQ@mail.gmail.com/ 
->>>
->>>
->>> Fixes: f164be8c0366 ("IB/mlx5: Extend caps stage to handle VAR
->>> capabilities")
->>> Signed-off-by: Alexander Lobakin <alobakin@dlink.ru>
->>> ---
->>>  drivers/infiniband/hw/mlx5/main.c | 3 ++-
->>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> Randy beat you too it..
->>
->> https://lore.kernel.org/linux-rdma/20200206143201.GF25297@ziepe.ca/
+On Thu, Feb 13, 2020 at 01:59:30PM +0000, Bernard Metzler wrote:
+> -----"Kamal Heib" <kamalheib1@gmail.com> wrote: -----
 > 
-> Ah, OK. Sorry for missing this one. I didn't see any fix over
-> git.kernel.org and thought it doesn't exist yet.
-> 
->> But it seems patchwork missed this somehow.
->>
->> Applied now at least
+> >To: linux-rdma@vger.kernel.org
+> >From: "Kamal Heib" <kamalheib1@gmail.com>
+> >Date: 02/13/2020 02:07PM
+> >Cc: "Jason Gunthorpe" <jgg@ziepe.ca>, "Doug Ledford"
+> ><dledford@redhat.com>, "Bernard Metzler" <bmt@zurich.ibm.com>, "Kamal
+> >Heib" <kamalheib1@gmail.com>
+> >Subject: [EXTERNAL] [PATH for-next] RDMA/siw: Fix setting
+> >active_{speed, width} attributes
+> >
+> >Make sure to set the active_{speed, width} attributes to avoid
+> >reporting
+> >the same values regardless of the underlying device.
+> >
+> >Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
+> >Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> >---
+> > drivers/infiniband/sw/siw/siw_verbs.c | 7 ++++---
+> > 1 file changed, 4 insertions(+), 3 deletions(-)
+> >
+> >diff --git a/drivers/infiniband/sw/siw/siw_verbs.c
+> >b/drivers/infiniband/sw/siw/siw_verbs.c
+> >index 73485d0da907..b1aaec912edb 100644
+> >--- a/drivers/infiniband/sw/siw/siw_verbs.c
+> >+++ b/drivers/infiniband/sw/siw/siw_verbs.c
+> >@@ -165,11 +165,12 @@ int siw_query_port(struct ib_device *base_dev,
+> >u8 port,
+> > 		   struct ib_port_attr *attr)
+> > {
+> > 	struct siw_device *sdev = to_siw_dev(base_dev);
+> >+	int rc;
+> > 
+> > 	memset(attr, 0, sizeof(*attr));
+> > 
+> >-	attr->active_speed = 2;
+> >-	attr->active_width = 2;
+> >+	rc = ib_get_eth_speed(base_dev, port, &attr->active_speed,
+> >+			 &attr->active_width);
+> > 	attr->gid_tbl_len = 1;
+> > 	attr->max_msg_sz = -1;
+> > 	attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
+> >@@ -192,7 +193,7 @@ int siw_query_port(struct ib_device *base_dev, u8
+> >port,
+> > 	 * attr->subnet_timeout = 0;
+> > 	 * attr->init_type_repy = 0;
+> > 	 */
+> >-	return 0;
+> >+	return rc;
+> > }
+> > 
+> > int siw_get_port_immutable(struct ib_device *base_dev, u8 port,
+> >-- 
+> >2.21.1
+> >
+> >
+> Hi Kamal, 
 
-Jason, I think Alexander's patch is more correct. It uses div_u64, while 
-yours uses div64_u64. The divider is 32-bit, so div_u64 would be more 
-optimized on most 32-bit architectures.
+Hi Bernard,
 
-> Thanks!
+> Many thanks for looking after this! So there definitely seem to 
+> be applications which are taking care of those values. So, good
+> to get my obvious laziness fixed.
 > 
->> Jason
-> 
-> Regards,
-> ᚷ ᛖ ᚢ ᚦ ᚠ ᚱ
 
+Sure :)
+
+> I tried your patch on a 40Gbs Ethernet link (Chelsio cxgb4 driver).
+> Works in principle, but reported numbers are off. I am not saying
+> I would get right numbers when using Chelsio HW iWarp (iw_cxgb4),
+> but it's closer to reality (using ibv_devinfo <ibname> -vv)
+> 
+> iw_cxgb4 driver:
+> ...
+>    active_width:           4X (2)
+>    active_speed:           25.0 Gbps (32)
+> 
+> siw driver with your patch:
+> ...
+>    active_width:           4X (2)
+>    active_speed:           10.0 Gbps (8)
+> 
+> Any idea how we can improve that, maybe coming even
+> close to reality (40Gbs)?
+
+Could you please share the output of ethtool <if_name> for the underlying
+net device that used for both iw_cxgb4 and siw?
+
+> 
+> Another remark: It has been siw folklore to name
+> integer return values 'rv', and not 'rc'. I never
+> liked 'return code'. It's a value in principle,
+> sometimes it's interpreted as a code though, as in
+> your case.
+
+Sure, I'll fix it in v2.
+
+> 
+> Many thanks!
+> Bernard.
+>
+
+Thanks,
+Kamal
