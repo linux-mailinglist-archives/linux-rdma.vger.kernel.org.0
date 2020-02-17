@@ -2,169 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA57D16042F
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Feb 2020 14:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 938D6160786
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Feb 2020 01:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbgBPNm4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 16 Feb 2020 08:42:56 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:53911 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgBPNmz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 16 Feb 2020 08:42:55 -0500
-Received: by mail-wm1-f66.google.com with SMTP id s10so14555107wmh.3
-        for <linux-rdma@vger.kernel.org>; Sun, 16 Feb 2020 05:42:54 -0800 (PST)
+        id S1726605AbgBQAgN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 16 Feb 2020 19:36:13 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:45219 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbgBQAgN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 16 Feb 2020 19:36:13 -0500
+Received: by mail-qk1-f193.google.com with SMTP id a2so14634309qko.12
+        for <linux-rdma@vger.kernel.org>; Sun, 16 Feb 2020 16:36:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=48n9jO4UaNqIvxx3QiffDGx3j4Sbkc7fJI5IamHifzQ=;
-        b=WyXsUyAix84n4B+OeVFNG89yt6kbCDC99+uliNCnyuGOqsY9/BfWtfbG8UlGdWe6pH
-         7hEzBjCXkkjc8If1cdv3gSu9EVuLErIfX8yaSm1m/aL1BVZPjV7uKtFxQSnOxt8L4PlZ
-         BOppxhfCdCrp8rsoToDg4xb2ei+TwVjQJ8FtbZn8TKuzkaCREySa2+mIdpqLjAJP6y8V
-         Rsn/kzjjfjh7pVRlX95Hjba22MaSOn+zZANE4GA/3IT/7Av9rIo1Pa+GZGQOj+4U6TQU
-         7mb6ztgy/5ho6O4e6R7Db/0oLZRlkL850KIc4tlbV9faUZvlsWHSVDcArbb4GwiiR+nn
-         ugVQ==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=PAiDoNcDSsPnNj5W4mWsQjtsAOyOXebI5Rn/LeRO4A0=;
+        b=jtpOapbHFVjp/wJYElpr+0+UN+bnlIm8e5HSRL2u+Y9QkgTx8DY8UMOMNuycHEMJca
+         Y4FkUIHdZPwmPx1cJYizjiP458SAypboQ6RKWnROZb8xEEagkFUFAmmJ4gDJzZ5qmwf1
+         dM039k0juLOOeE1Bg699rDYhNyGIoPHBHYIGZgiQ9RVTXp6TFbiirga3jYjVWEN0FuUf
+         HzrS/XUtO3uRp67ScZMRUVlbcNDCoUIag9WreZ+KXOIaQ7gO/vb1dMcLVf8EOc6mq67D
+         DnnGURL6m+33HicB+cg1TApImTExGruhDQE3mqo3kwVwc0Q/pgFUZW1adIWKhpNeRX4U
+         fWMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=48n9jO4UaNqIvxx3QiffDGx3j4Sbkc7fJI5IamHifzQ=;
-        b=pMxMjyHMuBjtWea4bQW23D+drTrzfESe46tYStsNgOVC0xC/FGtWY+wSATG+YyArUG
-         3cwl1OGc8Mxcfh2UVRkAyQ2hKkJcjPyZg3n7oLaHKWCWi+NhhXJjZU5VIU0S9EyEv/xR
-         tBrMXCIh9NbFrBE4AdZkjaCl13SNSeokis37kUxAFY0trbN9t/BVIpqlnVb2UYb12b98
-         c8fUGxNkfxzKtNyj05NZq1gPjjShyAPjRDInG2lheU2kDt0xZd6A43QB3QPJfLdlqoQw
-         fiz7+c/2TXJXM2DUH1G4Q+elBCAuVyKu4XSh5872SSw3FT9dYE4F5huAGIAHnI0qPsg3
-         8B8g==
-X-Gm-Message-State: APjAAAXMD5osf54t4zjsGu8wWEix0teTBAFWWZkM/pkSbGy3+U5b0DVi
-        xiX55oyY1d0nV9VsjW3MCfM=
-X-Google-Smtp-Source: APXvYqwsfowIqvYfX1Ds8kdRLyCqjNV7w9ov+1+TJOgOBRO7F4ljOMR0LY4vqBVUKvbE+vAfs6q+og==
-X-Received: by 2002:a1c:6a15:: with SMTP id f21mr16027550wmc.126.1581860573238;
-        Sun, 16 Feb 2020 05:42:53 -0800 (PST)
-Received: from kheib-workstation (bzq-109-65-128-51.red.bezeqint.net. [109.65.128.51])
-        by smtp.gmail.com with ESMTPSA id j5sm15936951wrb.33.2020.02.16.05.42.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Feb 2020 05:42:52 -0800 (PST)
-Date:   Sun, 16 Feb 2020 15:42:49 +0200
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATH for-next] RDMA/siw: Fix setting active_{speed, width}
- attributes
-Message-ID: <20200216134249.GA7456@kheib-workstation>
-References: <20200213130701.11589-1-kamalheib1@gmail.com>
- <OF9565E197.68A7B59D-ON0025850D.0049D122-0025850D.004CDC1C@notes.na.collabserv.com>
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=PAiDoNcDSsPnNj5W4mWsQjtsAOyOXebI5Rn/LeRO4A0=;
+        b=JnXiuuRk9GO1vJ6oM3O6jqaWhtJEr2vjAikck+Rgng9mzhhmGcJuVJnkatThEsUf5C
+         GK/+z0u0NC4Pb920MiJLxsXxKwxayIGKhKZkUEIb61zRBM5ISRyY1Du+XEEz0U6dcRoW
+         jD/GkIkkO5+TDBWRz3w7b3WapNvrcL8M3OEO9krWYBv9qbvpbicc+qAF4IdFUGWKZ3a2
+         srwAivnZgvF63ylUydl4G3ksX+UYcUWwGmRMv3d9KNCTMwpe9miTbebq/N8AuLGqLiuk
+         4fHuK4bsiwfGxaopaRioxiSIS+eEcQmoMzUcl6w5AA+pqfZfmLPQ9Ew5bJvAZPUc69vU
+         QhRw==
+X-Gm-Message-State: APjAAAVsYQRYHNcfXWG4qYo7hEqiIP2BuWucvbJTw61roTZaYeef4mH/
+        +fv+jwMZ01aKve/ZaHzLlr0j2g==
+X-Google-Smtp-Source: APXvYqxeQ1g+jpqlNityj8TgopMrjNmz4CclX96hSYDzY9HRLgVtbwu71aVJTN32smWAWDoy73fOQw==
+X-Received: by 2002:a37:6690:: with SMTP id a138mr9654539qkc.475.1581899772343;
+        Sun, 16 Feb 2020 16:36:12 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id h13sm7852610qtu.23.2020.02.16.16.36.11
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 16 Feb 2020 16:36:11 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1j3UOQ-0003Nj-Fg; Sun, 16 Feb 2020 20:36:10 -0400
+Date:   Sun, 16 Feb 2020 20:36:10 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Maxim Mikityanskiy <maximmi@mellanox.com>
+Cc:     Alexander Lobakin <alobakin@dlink.ru>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rdma] IB/mlx5: Fix linkage failure on 32-bit arches
+Message-ID: <20200217003610.GC31668@ziepe.ca>
+References: <20200214191309.155654-1-alobakin@dlink.ru>
+ <20200214192410.GW31668@ziepe.ca>
+ <6f7c270fef9ec5bae2dcb780dee3f49f@dlink.ru>
+ <3c70c7da-60aa-10ec-767f-5e519357b8e6@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <OF9565E197.68A7B59D-ON0025850D.0049D122-0025850D.004CDC1C@notes.na.collabserv.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3c70c7da-60aa-10ec-767f-5e519357b8e6@mellanox.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 13, 2020 at 01:59:30PM +0000, Bernard Metzler wrote:
-> -----"Kamal Heib" <kamalheib1@gmail.com> wrote: -----
-> 
-> >To: linux-rdma@vger.kernel.org
-> >From: "Kamal Heib" <kamalheib1@gmail.com>
-> >Date: 02/13/2020 02:07PM
-> >Cc: "Jason Gunthorpe" <jgg@ziepe.ca>, "Doug Ledford"
-> ><dledford@redhat.com>, "Bernard Metzler" <bmt@zurich.ibm.com>, "Kamal
-> >Heib" <kamalheib1@gmail.com>
-> >Subject: [EXTERNAL] [PATH for-next] RDMA/siw: Fix setting
-> >active_{speed, width} attributes
-> >
-> >Make sure to set the active_{speed, width} attributes to avoid
-> >reporting
-> >the same values regardless of the underlying device.
-> >
-> >Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
-> >Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-> >---
-> > drivers/infiniband/sw/siw/siw_verbs.c | 7 ++++---
-> > 1 file changed, 4 insertions(+), 3 deletions(-)
-> >
-> >diff --git a/drivers/infiniband/sw/siw/siw_verbs.c
-> >b/drivers/infiniband/sw/siw/siw_verbs.c
-> >index 73485d0da907..b1aaec912edb 100644
-> >--- a/drivers/infiniband/sw/siw/siw_verbs.c
-> >+++ b/drivers/infiniband/sw/siw/siw_verbs.c
-> >@@ -165,11 +165,12 @@ int siw_query_port(struct ib_device *base_dev,
-> >u8 port,
-> > 		   struct ib_port_attr *attr)
-> > {
-> > 	struct siw_device *sdev = to_siw_dev(base_dev);
-> >+	int rc;
+On Sun, Feb 16, 2020 at 01:53:50PM +0200, Maxim Mikityanskiy wrote:
+> On 2020-02-14 21:44, Alexander Lobakin wrote:
+> > Jason Gunthorpe wrote 14.02.2020 22:24:
+> > > On Fri, Feb 14, 2020 at 10:13:09PM +0300, Alexander Lobakin wrote:
+> > > > Commit f164be8c0366 ("IB/mlx5: Extend caps stage to handle VAR
+> > > > capabilities") introduced a straight "/" division of the u64
+> > > > variable "bar_size", which emits an __udivdi3() libgcc call on
+> > > > 32-bit arches and certain GCC versions:
+> > > > 
+> > > > error: "__udivdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko]
+> > > > undefined! [1]
+> > > > 
+> > > > Replace it with the corresponding div_u64() call.
+> > > > Compile-tested on ARCH=mips 32r2el_defconfig BOARDS=ocelot.
+> > > > 
+> > > > [1] https://lore.kernel.org/linux-mips/CAMuHMdXM9S1VkFMZ8eDAyZR6EE4WkJY215Lcn2qdOaPeadF+EQ@mail.gmail.com/
+> > > > 
+> > > > 
+> > > > Fixes: f164be8c0366 ("IB/mlx5: Extend caps stage to handle VAR
+> > > > capabilities")
+> > > > Signed-off-by: Alexander Lobakin <alobakin@dlink.ru>
+> > > >  drivers/infiniband/hw/mlx5/main.c | 3 ++-
+> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > 
+> > > Randy beat you too it..
+> > > 
+> > > https://lore.kernel.org/linux-rdma/20200206143201.GF25297@ziepe.ca/
 > > 
-> > 	memset(attr, 0, sizeof(*attr));
+> > Ah, OK. Sorry for missing this one. I didn't see any fix over
+> > git.kernel.org and thought it doesn't exist yet.
 > > 
-> >-	attr->active_speed = 2;
-> >-	attr->active_width = 2;
-> >+	rc = ib_get_eth_speed(base_dev, port, &attr->active_speed,
-> >+			 &attr->active_width);
-> > 	attr->gid_tbl_len = 1;
-> > 	attr->max_msg_sz = -1;
-> > 	attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
-> >@@ -192,7 +193,7 @@ int siw_query_port(struct ib_device *base_dev, u8
-> >port,
-> > 	 * attr->subnet_timeout = 0;
-> > 	 * attr->init_type_repy = 0;
-> > 	 */
-> >-	return 0;
-> >+	return rc;
-> > }
-> > 
-> > int siw_get_port_immutable(struct ib_device *base_dev, u8 port,
-> >-- 
-> >2.21.1
-> >
-> >
-> Hi Kamal, 
-
-Hi Bernard,
-
-> Many thanks for looking after this! So there definitely seem to 
-> be applications which are taking care of those values. So, good
-> to get my obvious laziness fixed.
+> > > But it seems patchwork missed this somehow.
+> > > 
+> > > Applied now at least
 > 
+> Jason, I think Alexander's patch is more correct. It uses div_u64, while
+> yours uses div64_u64. The divider is 32-bit, so div_u64 would be more
+> optimized on most 32-bit architectures.
 
-Sure :)
+Seems so, but it is already done. You can send a followup to fix it
 
-> I tried your patch on a 40Gbs Ethernet link (Chelsio cxgb4 driver).
-> Works in principle, but reported numbers are off. I am not saying
-> I would get right numbers when using Chelsio HW iWarp (iw_cxgb4),
-> but it's closer to reality (using ibv_devinfo <ibname> -vv)
-> 
-> iw_cxgb4 driver:
-> ...
->    active_width:           4X (2)
->    active_speed:           25.0 Gbps (32)
-> 
-> siw driver with your patch:
-> ...
->    active_width:           4X (2)
->    active_speed:           10.0 Gbps (8)
-> 
-> Any idea how we can improve that, maybe coming even
-> close to reality (40Gbs)?
-
-Could you please share the output of ethtool <if_name> for the underlying
-net device that used for both iw_cxgb4 and siw?
-
-> 
-> Another remark: It has been siw folklore to name
-> integer return values 'rv', and not 'rc'. I never
-> liked 'return code'. It's a value in principle,
-> sometimes it's interpreted as a code though, as in
-> your case.
-
-Sure, I'll fix it in v2.
-
-> 
-> Many thanks!
-> Bernard.
->
-
-Thanks,
-Kamal
+Jason
