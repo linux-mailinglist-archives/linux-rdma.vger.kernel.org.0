@@ -2,67 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D716D16083B
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Feb 2020 03:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F377160BAA
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Feb 2020 08:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbgBQChc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 16 Feb 2020 21:37:32 -0500
-Received: from shards.monkeyblade.net ([23.128.96.9]:47850 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726656AbgBQChc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 16 Feb 2020 21:37:32 -0500
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id A80BE15383A6E;
-        Sun, 16 Feb 2020 18:37:31 -0800 (PST)
-Date:   Sun, 16 Feb 2020 18:37:31 -0800 (PST)
-Message-Id: <20200216.183731.2157450869886971370.davem@davemloft.net>
-To:     jhubbard@nvidia.com
-Cc:     akpm@linux-foundation.org, santosh.shilimkar@oracle.com,
-        hans.westgaard.ry@oracle.com, leonro@mellanox.com, kuba@kernel.org,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] net/rds: Track user mapped pages through special
- API
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200212030355.1600749-2-jhubbard@nvidia.com>
-References: <20200212030355.1600749-1-jhubbard@nvidia.com>
-        <20200212030355.1600749-2-jhubbard@nvidia.com>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sun, 16 Feb 2020 18:37:32 -0800 (PST)
+        id S1726294AbgBQHhF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Feb 2020 02:37:05 -0500
+Received: from mail.dlink.ru ([178.170.168.18]:59094 "EHLO fd.dlink.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726267AbgBQHhF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 17 Feb 2020 02:37:05 -0500
+Received: by fd.dlink.ru (Postfix, from userid 5000)
+        id C55C51B20178; Mon, 17 Feb 2020 10:36:59 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru C55C51B20178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dlink.ru; s=mail;
+        t=1581925019; bh=eMq5r5AI5OZpxp2xPSJgmnoHlWLUKUDdtJ1FhSVqTnU=;
+        h=From:To:Cc:Subject:Date;
+        b=Qu7oPA1XQlVxL8otZibt8yXwEa3ObLpHjX/fQbG6SMpYsy545pSeupm49AWZ4GJnS
+         GsGbpgQCj0GId/Ceo22WPkNJgO2RbCZa2vb2Kd8C9MugiyfqW9FELRm+9ySRRwtBEp
+         bVK/XMxeUh3BMrH+UgmTmzZzg8OaDnU1oR9x55rk=
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dlink.ru
+X-Spam-Level: 
+X-Spam-Status: No, score=-99.2 required=7.5 tests=BAYES_50,URIBL_BLOCKED,
+        USER_IN_WHITELIST autolearn=disabled version=3.4.2
+Received: from mail.rzn.dlink.ru (mail.rzn.dlink.ru [178.170.168.13])
+        by fd.dlink.ru (Postfix) with ESMTP id B9E4A1B20178;
+        Mon, 17 Feb 2020 10:36:53 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru B9E4A1B20178
+Received: from mail.rzn.dlink.ru (localhost [127.0.0.1])
+        by mail.rzn.dlink.ru (Postfix) with ESMTP id F38A51B21819;
+        Mon, 17 Feb 2020 10:36:52 +0300 (MSK)
+Received: from localhost.localdomain (unknown [196.196.203.126])
+        by mail.rzn.dlink.ru (Postfix) with ESMTPA;
+        Mon, 17 Feb 2020 10:36:52 +0300 (MSK)
+From:   Alexander Lobakin <alobakin@dlink.ru>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Alexander Lobakin <alobakin@dlink.ru>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH rdma] IB/mlx5: Optimize u64 division on 32-bit arches
+Date:   Mon, 17 Feb 2020 10:36:29 +0300
+Message-Id: <20200217073629.8051-1-alobakin@dlink.ru>
+X-Mailer: git-send-email 2.25.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: John Hubbard <jhubbard@nvidia.com>
-Date: Tue, 11 Feb 2020 19:03:55 -0800
+Commit f164be8c0366 ("IB/mlx5: Extend caps stage to handle VAR
+capabilities") introduced a straight "/" division of the u64
+variable "bar_size".
+This was fixed with commit 685eff513183 ("IB/mlx5: Use div64_u64
+for num_var_hw_entries calculation"). However, div64_u64() is
+redundant here as mlx5_var_table::stride_size is of type u32.
+Make the actual code way more optimized on 32-bit kernels using
+div_u64() and fix 80 chars break-through by the way.
 
-> From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> Convert net/rds to use the newly introduces pin_user_pages() API,
-> which properly sets FOLL_PIN. Setting FOLL_PIN is now required for
-> code that requires tracking of pinned pages.
-> 
-> Note that this effectively changes the code's behavior: it now
-> ultimately calls set_page_dirty_lock(), instead of set_page_dirty().
-> This is probably more accurate.
-> 
-> As Christoph Hellwig put it, "set_page_dirty() is only safe if we are
-> dealing with a file backed page where we have reference on the inode it
-> hangs off." [1]
-> 
-> [1] https://lore.kernel.org/r/20190723153640.GB720@lst.de
-> 
-> Cc: Hans Westgaard Ry <hans.westgaard.ry@oracle.com>
-> Cc: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+Fixes: 685eff513183 ("IB/mlx5: Use div64_u64 for num_var_hw_entries
+calculation")
+Signed-off-by: Alexander Lobakin <alobakin@dlink.ru>
+---
+ drivers/infiniband/hw/mlx5/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Applied, thank you.
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index e4bcfa81b70a..026391e4ceb4 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -6545,7 +6545,8 @@ static int mlx5_ib_init_var_table(struct mlx5_ib_dev *dev)
+ 					doorbell_bar_offset);
+ 	bar_size = (1ULL << log_doorbell_bar_size) * 4096;
+ 	var_table->stride_size = 1ULL << log_doorbell_stride;
+-	var_table->num_var_hw_entries = div64_u64(bar_size, var_table->stride_size);
++	var_table->num_var_hw_entries = div_u64(bar_size,
++						var_table->stride_size);
+ 	mutex_init(&var_table->bitmap_lock);
+ 	var_table->bitmap = bitmap_zalloc(var_table->num_var_hw_entries,
+ 					  GFP_KERNEL);
+-- 
+2.25.0
+
