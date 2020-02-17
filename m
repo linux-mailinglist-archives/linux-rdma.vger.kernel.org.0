@@ -2,87 +2,203 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F377160BAA
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Feb 2020 08:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3092D160FAE
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Feb 2020 11:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbgBQHhF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Feb 2020 02:37:05 -0500
-Received: from mail.dlink.ru ([178.170.168.18]:59094 "EHLO fd.dlink.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726267AbgBQHhF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 17 Feb 2020 02:37:05 -0500
-Received: by fd.dlink.ru (Postfix, from userid 5000)
-        id C55C51B20178; Mon, 17 Feb 2020 10:36:59 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru C55C51B20178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dlink.ru; s=mail;
-        t=1581925019; bh=eMq5r5AI5OZpxp2xPSJgmnoHlWLUKUDdtJ1FhSVqTnU=;
-        h=From:To:Cc:Subject:Date;
-        b=Qu7oPA1XQlVxL8otZibt8yXwEa3ObLpHjX/fQbG6SMpYsy545pSeupm49AWZ4GJnS
-         GsGbpgQCj0GId/Ceo22WPkNJgO2RbCZa2vb2Kd8C9MugiyfqW9FELRm+9ySRRwtBEp
-         bVK/XMxeUh3BMrH+UgmTmzZzg8OaDnU1oR9x55rk=
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dlink.ru
-X-Spam-Level: 
-X-Spam-Status: No, score=-99.2 required=7.5 tests=BAYES_50,URIBL_BLOCKED,
-        USER_IN_WHITELIST autolearn=disabled version=3.4.2
-Received: from mail.rzn.dlink.ru (mail.rzn.dlink.ru [178.170.168.13])
-        by fd.dlink.ru (Postfix) with ESMTP id B9E4A1B20178;
-        Mon, 17 Feb 2020 10:36:53 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru B9E4A1B20178
-Received: from mail.rzn.dlink.ru (localhost [127.0.0.1])
-        by mail.rzn.dlink.ru (Postfix) with ESMTP id F38A51B21819;
-        Mon, 17 Feb 2020 10:36:52 +0300 (MSK)
-Received: from localhost.localdomain (unknown [196.196.203.126])
-        by mail.rzn.dlink.ru (Postfix) with ESMTPA;
-        Mon, 17 Feb 2020 10:36:52 +0300 (MSK)
-From:   Alexander Lobakin <alobakin@dlink.ru>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Alexander Lobakin <alobakin@dlink.ru>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH rdma] IB/mlx5: Optimize u64 division on 32-bit arches
-Date:   Mon, 17 Feb 2020 10:36:29 +0300
-Message-Id: <20200217073629.8051-1-alobakin@dlink.ru>
-X-Mailer: git-send-email 2.25.0
+        id S1729077AbgBQKN2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 17 Feb 2020 05:13:28 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13536 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729070AbgBQKN2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 17 Feb 2020 05:13:28 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01HA4vn7016349
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Feb 2020 05:13:27 -0500
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.73])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2y6adqkh21-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Feb 2020 05:13:26 -0500
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Mon, 17 Feb 2020 10:13:26 -0000
+Received: from us1a3-smtp06.a3.dal06.isc4sb.com (10.146.103.243)
+        by smtp.notes.na.collabserv.com (10.106.227.90) with smtp.notes.na.collabserv.com ESMTP;
+        Mon, 17 Feb 2020 10:13:22 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp06.a3.dal06.isc4sb.com
+          with ESMTP id 2020021710132197-264851 ;
+          Mon, 17 Feb 2020 10:13:21 +0000 
+In-Reply-To: <20200216134249.GA7456@kheib-workstation>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Kamal Heib" <kamalheib1@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Doug Ledford" <dledford@redhat.com>
+Date:   Mon, 17 Feb 2020 10:13:21 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20200216134249.GA7456@kheib-workstation>,<20200213130701.11589-1-kamalheib1@gmail.com>
+ <OF9565E197.68A7B59D-ON0025850D.0049D122-0025850D.004CDC1C@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP62 November 04, 2019 at 09:47
+X-LLNOutbound: False
+X-Disclaimed: 63131
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 20021710-8877-0000-0000-000002B8EBD8
+X-IBM-SpamModules-Scores: BY=0.020394; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.113847
+X-IBM-SpamModules-Versions: BY=3.00012591; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000292; SDB=6.01335163; UDB=6.00711226; IPR=6.01117521;
+ MB=3.00030838; MTD=3.00000008; XFM=3.00000015; UTC=2020-02-17 10:13:25
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2020-02-17 09:26:05 - 6.00011015
+x-cbparentid: 20021710-8878-0000-0000-00009DF6FFA2
+Message-Id: <OF10DED8FF.9794F86F-ON00258511.003822AA-00258511.003827A8@notes.na.collabserv.com>
+Subject: RE: [PATH for-next] RDMA/siw: Fix setting active_{speed, width} attributes
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-17_05:2020-02-14,2020-02-17 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Commit f164be8c0366 ("IB/mlx5: Extend caps stage to handle VAR
-capabilities") introduced a straight "/" division of the u64
-variable "bar_size".
-This was fixed with commit 685eff513183 ("IB/mlx5: Use div64_u64
-for num_var_hw_entries calculation"). However, div64_u64() is
-redundant here as mlx5_var_table::stride_size is of type u32.
-Make the actual code way more optimized on 32-bit kernels using
-div_u64() and fix 80 chars break-through by the way.
+-----"Kamal Heib" <kamalheib1@gmail.com> wrote: -----
 
-Fixes: 685eff513183 ("IB/mlx5: Use div64_u64 for num_var_hw_entries
-calculation")
-Signed-off-by: Alexander Lobakin <alobakin@dlink.ru>
----
- drivers/infiniband/hw/mlx5/main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Kamal Heib" <kamalheib1@gmail.com>
+>Date: 02/16/2020 02:43PM
+>Cc: linux-rdma@vger.kernel.org, "Jason Gunthorpe" <jgg@ziepe.ca>,
+>"Doug Ledford" <dledford@redhat.com>
+>Subject: [EXTERNAL] Re: [PATH for-next] RDMA/siw: Fix setting
+>active_{speed, width} attributes
+>
+>On Thu, Feb 13, 2020 at 01:59:30PM +0000, Bernard Metzler wrote:
+>> -----"Kamal Heib" <kamalheib1@gmail.com> wrote: -----
+>> 
+>> >To: linux-rdma@vger.kernel.org
+>> >From: "Kamal Heib" <kamalheib1@gmail.com>
+>> >Date: 02/13/2020 02:07PM
+>> >Cc: "Jason Gunthorpe" <jgg@ziepe.ca>, "Doug Ledford"
+>> ><dledford@redhat.com>, "Bernard Metzler" <bmt@zurich.ibm.com>,
+>"Kamal
+>> >Heib" <kamalheib1@gmail.com>
+>> >Subject: [EXTERNAL] [PATH for-next] RDMA/siw: Fix setting
+>> >active_{speed, width} attributes
+>> >
+>> >Make sure to set the active_{speed, width} attributes to avoid
+>> >reporting
+>> >the same values regardless of the underlying device.
+>> >
+>> >Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
+>> >Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+>> >---
+>> > drivers/infiniband/sw/siw/siw_verbs.c | 7 ++++---
+>> > 1 file changed, 4 insertions(+), 3 deletions(-)
+>> >
+>> >diff --git a/drivers/infiniband/sw/siw/siw_verbs.c
+>> >b/drivers/infiniband/sw/siw/siw_verbs.c
+>> >index 73485d0da907..b1aaec912edb 100644
+>> >--- a/drivers/infiniband/sw/siw/siw_verbs.c
+>> >+++ b/drivers/infiniband/sw/siw/siw_verbs.c
+>> >@@ -165,11 +165,12 @@ int siw_query_port(struct ib_device
+>*base_dev,
+>> >u8 port,
+>> > 		   struct ib_port_attr *attr)
+>> > {
+>> > 	struct siw_device *sdev = to_siw_dev(base_dev);
+>> >+	int rc;
+>> > 
+>> > 	memset(attr, 0, sizeof(*attr));
+>> > 
+>> >-	attr->active_speed = 2;
+>> >-	attr->active_width = 2;
+>> >+	rc = ib_get_eth_speed(base_dev, port, &attr->active_speed,
+>> >+			 &attr->active_width);
+>> > 	attr->gid_tbl_len = 1;
+>> > 	attr->max_msg_sz = -1;
+>> > 	attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
+>> >@@ -192,7 +193,7 @@ int siw_query_port(struct ib_device *base_dev,
+>u8
+>> >port,
+>> > 	 * attr->subnet_timeout = 0;
+>> > 	 * attr->init_type_repy = 0;
+>> > 	 */
+>> >-	return 0;
+>> >+	return rc;
+>> > }
+>> > 
+>> > int siw_get_port_immutable(struct ib_device *base_dev, u8 port,
+>> >-- 
+>> >2.21.1
+>> >
+>> >
+>> Hi Kamal, 
+>
+>Hi Bernard,
+>
+>> Many thanks for looking after this! So there definitely seem to 
+>> be applications which are taking care of those values. So, good
+>> to get my obvious laziness fixed.
+>> 
+>
+>Sure :)
+>
+>> I tried your patch on a 40Gbs Ethernet link (Chelsio cxgb4 driver).
+>> Works in principle, but reported numbers are off. I am not saying
+>> I would get right numbers when using Chelsio HW iWarp (iw_cxgb4),
+>> but it's closer to reality (using ibv_devinfo <ibname> -vv)
+>> 
+>> iw_cxgb4 driver:
+>> ...
+>>    active_width:           4X (2)
+>>    active_speed:           25.0 Gbps (32)
+>> 
+>> siw driver with your patch:
+>> ...
+>>    active_width:           4X (2)
+>>    active_speed:           10.0 Gbps (8)
+>> 
+>> Any idea how we can improve that, maybe coming even
+>> close to reality (40Gbs)?
+>
+>Could you please share the output of ethtool <if_name> for the
+>underlying
+>net device that used for both iw_cxgb4 and siw?
+>
+H Kamal,
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index e4bcfa81b70a..026391e4ceb4 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -6545,7 +6545,8 @@ static int mlx5_ib_init_var_table(struct mlx5_ib_dev *dev)
- 					doorbell_bar_offset);
- 	bar_size = (1ULL << log_doorbell_bar_size) * 4096;
- 	var_table->stride_size = 1ULL << log_doorbell_stride;
--	var_table->num_var_hw_entries = div64_u64(bar_size, var_table->stride_size);
-+	var_table->num_var_hw_entries = div_u64(bar_size,
-+						var_table->stride_size);
- 	mutex_init(&var_table->bitmap_lock);
- 	var_table->bitmap = bitmap_zalloc(var_table->num_var_hw_entries,
- 					  GFP_KERNEL);
--- 
-2.25.0
+Sure! Speed looks correct, and its also what I get
+at maximum:
+
+[bmt@spoke ~]$ ethtool enp1s0f4 
+Settings for enp1s0f4:
+        Supported ports: [ FIBRE ]
+        Supported link modes:   40000baseSR4/Full 
+        Supported pause frame use: Symmetric
+        Supports auto-negotiation: Yes
+        Supported FEC modes: None
+        Advertised link modes:  40000baseSR4/Full 
+        Advertised pause frame use: Symmetric
+        Advertised auto-negotiation: Yes
+        Advertised FEC modes: None
+        Link partner advertised link modes:  40000baseSR4/Full 
+        Link partner advertised pause frame use: Symmetric
+        Link partner advertised auto-negotiation: Yes
+        Link partner advertised FEC modes: None
+        Speed: 40000Mb/s
+        Duplex: Full
+        Port: Direct Attach Copper
+        PHYAD: 255
+        Transceiver: internal
+        Auto-negotiation: on
+Cannot get wake-on-lan settings: Operation not permitted
+        Current message level: 0x000000ff (255)
+                               drv probe link timer ifdown ifup rx_err tx_err
+        Link detected: yes
 
