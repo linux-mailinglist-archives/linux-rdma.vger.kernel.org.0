@@ -2,124 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B12161C2C
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Feb 2020 21:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B37161C66
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Feb 2020 21:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729529AbgBQUMn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Feb 2020 15:12:43 -0500
-Received: from gateway23.websitewelcome.com ([192.185.47.80]:48521 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728991AbgBQUMm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 17 Feb 2020 15:12:42 -0500
-X-Greylist: delayed 1247 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 Feb 2020 15:12:42 EST
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id BAD257D62
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Feb 2020 13:51:54 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id 3mQsjtpdiAGTX3mQsj4zY4; Mon, 17 Feb 2020 13:51:54 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Type:MIME-Version:Message-ID:Subject:
-        Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=fs6PYRX24xfRohVEXUr8oWq2yWMbC09iZHVjQRC+Gwo=; b=PLnsB5f6nrXVqy94cZgjLGOLoQ
-        EN3T8hGVFqNQU0nxwTRyHD+UOqojMqN9wzdy2kN++YxRJ6os4xaXXarsN/IHVuWlY6zZaaWOpK15S
-        J4EE5Wz8Fzsxa6xdO1p0P8n3e2kho+UMnYH8DBSBQZMHRPLchAYvbSOPJFZk6SgSYs5chnR6PUBBu
-        UQ3bypf8pVK05RPJAtjlmAa5jk2+ZZWvqFFaUGLuwvsljc8Q2SfFb0EMFVqiAnQQNrRnkf1Qi8VU2
-        bCkdG4Vv7IEbQ6cFkFE+kpNIbO3jIkSLaCpRkmUeHGY8ruS79w9f/umSizvq1wqQv/vfLOJyQT13C
-        O4f4+e3g==;
-Received: from [200.68.140.26] (port=27288 helo=embeddedor)
-        by gator4166.hostgator.com with esmtpa (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1j3mQr-000JUr-20; Mon, 17 Feb 2020 13:51:53 -0600
-Date:   Mon, 17 Feb 2020 13:54:34 -0600
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     Boris Pismenny <borisp@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] net/mlx5: IPsec, Replace zero-length array with
- flexible-array member
-Message-ID: <20200217195434.GA1166@embeddedor>
+        id S1728676AbgBQUnj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Feb 2020 15:43:39 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:42426 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727300AbgBQUni (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Feb 2020 15:43:38 -0500
+Received: by mail-oi1-f194.google.com with SMTP id j132so17938514oih.9;
+        Mon, 17 Feb 2020 12:43:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mt8KEiHVFXt+VI7oyaRToYaExGUPicwbfI4j6wwtPQE=;
+        b=NSM1P5SbjhpDBQ9V9I+7JKKNZZ8Xsi/Ao/gOUbQ1xd+3FCSvZBiK2f28jPw8GLxAEi
+         aPZehpxvudMkidUrcGsB2Bew1M4jb7qwd7CU6KSuteWVELybmQqqn+sWdTuiGjRa2g10
+         +XPrCy7IfzxuiYXxJGNn7Ms7wtLppo/NuXOOLQgDXLpcxFU4SBFDoIcJJzIs6MrZpt5v
+         OK9Wpq4viCjxUrxAqvRh/W2VHdxlS/M8ZahbKDXH/U2gJQ5iTtyzaTqqisYboEJxjtVl
+         hNHbFyIaNBkGy8Y7gWacVVo0+X77h06DaEi0HIZrwH3mG260jhh4PYTM8+cJZWgXikmi
+         bYAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mt8KEiHVFXt+VI7oyaRToYaExGUPicwbfI4j6wwtPQE=;
+        b=nHxJb/N0aEXI1NLuEX6v7goMRKLqSy2/f6Oe/ur4GDnQuJUWv1J3+8Y9hjmvmTffGd
+         hDULZoeMDf0ZI8lNjXGj5mGcQjgm4DPCfCU5lHtSGCztmG9J67UAI2blGUPRa99n8X8h
+         hAK6FSREY/mooA0V2D2ww1ry/6800CZI5OBBLhE3xSp8nd38YT9Sco6bBKmkqD8RqF1X
+         TQ3JmRGtHeBALgLm5Cwlr1KtB6i35NHyMlHNhdwPSKDvZGvjTqw4YFRHiSIX16K5a9Ag
+         Axrw5TOTyicoVx7j0AmPBQI1veCKvoVSC7tCjY2QEEN1K4RjKyAVhZ154iDOanXAwne4
+         RiEA==
+X-Gm-Message-State: APjAAAWx8xNsmDH5SniaSlaS6gKI0cMNDnb6qfbkgcsQom4cDI5RRHIH
+        XioNkIq8Dk7YsiSnNin+azk=
+X-Google-Smtp-Source: APXvYqwScEu4D7KeCYqO8/1v9KdWk5GSYNtypdkxNUfqBHecf0KjewwAPXsmUl0Uj1AZUoq+J4MAcA==
+X-Received: by 2002:aca:530e:: with SMTP id h14mr505712oib.105.1581972218092;
+        Mon, 17 Feb 2020 12:43:38 -0800 (PST)
+Received: from localhost.localdomain ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id w20sm545592otj.21.2020.02.17.12.43.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Feb 2020 12:43:37 -0800 (PST)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] RDMA/core: Fix use of logical OR in get_new_pps
+Date:   Mon, 17 Feb 2020 13:43:18 -0700
+Message-Id: <20200217204318.13609-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 200.68.140.26
-X-Source-L: No
-X-Exim-ID: 1j3mQr-000JUr-20
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (embeddedor) [200.68.140.26]:27288
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 7
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The current codebase makes use of the zero-length array language
-extension to the C90 standard, but the preferred mechanism to declare
-variable-length types such as these ones is a flexible array member[1][2],
-introduced in C99:
+Clang warns:
 
-struct foo {
-        int stuff;
-        struct boo array[];
-};
+../drivers/infiniband/core/security.c:351:41: warning: converting the
+enum constant to a boolean [-Wint-in-bool-context]
+        if (!(qp_attr_mask & (IB_QP_PKEY_INDEX || IB_QP_PORT)) && qp_pps) {
+                                               ^
+1 warning generated.
 
-By making use of the mechanism above, we will get a compiler warning
-in case the flexible array does not occur last in the structure, which
-will help us prevent some kind of undefined behavior bugs from being
-inadvertently introduced[3] to the codebase from now on.
+A bitwise OR should have been used instead.
 
-Also, notice that, dynamic memory allocations won't be affected by
-this change:
-
-"Flexible array members have incomplete type, and so the sizeof operator
-may not be applied. As a quirk of the original implementation of
-zero-length arrays, sizeof evaluates to zero."[1]
-
-This issue was found with the help of Coccinelle.
-
-[1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-[2] https://github.com/KSPP/linux/issues/21
-[3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Fixes: 1dd017882e01 ("RDMA/core: Fix protection fault in get_pkey_idx_qp_list")
+Link: https://github.com/ClangBuiltLinux/linux/issues/889
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c | 2 +-
+ drivers/infiniband/core/security.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-index 4c61d25d2e88..b794888fa3ba 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-@@ -57,7 +57,7 @@ struct mlx5_fpga_ipsec_cmd_context {
- 	struct completion complete;
- 	struct mlx5_fpga_device *dev;
- 	struct list_head list; /* Item in pending_cmds */
--	u8 command[0];
-+	u8 command[];
- };
+diff --git a/drivers/infiniband/core/security.c b/drivers/infiniband/core/security.c
+index 2b4d80393bd0..b9a36ea244d4 100644
+--- a/drivers/infiniband/core/security.c
++++ b/drivers/infiniband/core/security.c
+@@ -348,7 +348,7 @@ static struct ib_ports_pkeys *get_new_pps(const struct ib_qp *qp,
+ 	if ((qp_attr_mask & IB_QP_PKEY_INDEX) && (qp_attr_mask & IB_QP_PORT))
+ 		new_pps->main.state = IB_PORT_PKEY_VALID;
  
- struct mlx5_fpga_esp_xfrm;
+-	if (!(qp_attr_mask & (IB_QP_PKEY_INDEX || IB_QP_PORT)) && qp_pps) {
++	if (!(qp_attr_mask & (IB_QP_PKEY_INDEX | IB_QP_PORT)) && qp_pps) {
+ 		new_pps->main.port_num = qp_pps->main.port_num;
+ 		new_pps->main.pkey_index = qp_pps->main.pkey_index;
+ 		if (qp_pps->main.state != IB_PORT_PKEY_NOT_VALID)
 -- 
-2.25.0
+2.25.1
 
