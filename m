@@ -2,95 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A050B16209D
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 06:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A20F01620BB
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 07:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgBRF6U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Feb 2020 00:58:20 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:51118 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725954AbgBRF6U (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Feb 2020 00:58:20 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01I5qltY105132;
-        Tue, 18 Feb 2020 05:58:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=5ieENpEvs/1sXyVr2XodpsXB4V9kVxkivQF8v1qz2ng=;
- b=MSetE2KJNmOlYcUTwJ/NVf8WomIQcJuHbf2LMCXp2yh9U5MWGOvz2qO61sDgfx4WFMSb
- NQ2mndR5GJDiCNCHLvyar+fAfdq56rsFuOOqim4CA2lfcXickx4Enp/192GHhwX6jNWh
- JzCpZR0sz2wFOzMLsgMlh59sUhBYbNA4kRrXKn+tqcwdE/gDh05nmEIrtKKZQAiGmpYE
- foTnf4P2+XOJBJsFVriCwDANubHNO/7RW/rTSov//u4PC+6yIRT/a08iecsjZk0etxk3
- 1pPqCbFggaPzpDgvGtu54Yqr7vYURqQFZn0DUtC6IE7SlgnoLQSZLPOgpe4MKWnhbqN+ 2Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2y7aq5peva-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Feb 2020 05:58:13 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01I5wCSb117434;
-        Tue, 18 Feb 2020 05:58:12 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2y6tep00q3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Feb 2020 05:58:12 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 01I5wBHp023576;
-        Tue, 18 Feb 2020 05:58:11 GMT
-Received: from kili.mountain (/129.205.23.165)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 17 Feb 2020 21:58:10 -0800
-Date:   Tue, 18 Feb 2020 08:58:01 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Erez Alfasi <ereza@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Mohamad Heib <mohamadh@mellanox.com>,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] IB/core: Fix a bitwise vs logical OR typo
-Message-ID: <20200218055801.cosg4fylgfxhk67s@kili.mountain>
+        id S1726065AbgBRGQh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Feb 2020 01:16:37 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:39429 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgBRGQh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Feb 2020 01:16:37 -0500
+Received: by mail-ot1-f66.google.com with SMTP id 77so18452509oty.6
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Feb 2020 22:16:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NbfPddXeE0QPMjXyN0a3kXmjNViDiRwh9bgnEAmH2K8=;
+        b=d0+A2ztxlNEsFBCrZ//aWYKpmZj1McPOeRXp7hrPI2UtGXM93siOHfR8Rx8b+8I6z+
+         /vMfeMLLvVM8b/vI9xhWJPCqz7Vztwinqs6mq2+x5CWsllg6Ax3nx9/Jq2FTBVAM5lbC
+         EHXEyQlUJZzQbGd7fGQQt7kNqg1gD0ZbvPVHU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NbfPddXeE0QPMjXyN0a3kXmjNViDiRwh9bgnEAmH2K8=;
+        b=Xe8fWa+Q6nKsOE2BvnS/915vByLpUYWxYpKHFBzAsSc3yp4dm/3VN+wBRqMGUi0jg6
+         TMxd3nfS1S2wKF1MyAl+si+SZIdZWG1PClNSjZ1OYMsWCAlg9aWof5USKMGk1XTYgOBN
+         FcC31LvN9rnf7NX2YLekHne3mrgKQvBuo/lokJ5lGBY9Te00HotOIA22FNVEQ+MklXwo
+         j50wHEPFZsXLprtnP9WkjwhWu5p7yU8p8jN8Wh/HmQggtx6R8BpN8GJcubh0RtIldxNx
+         ZLULJh5uLMSmngg6jGU8Kt4wDA6EHAfigksN0X2yns89i9NBlN51kFynNOm1Vsd1a3qb
+         iyOg==
+X-Gm-Message-State: APjAAAUauYGAIcAt8VEGSf2UFsrSKCV/JAfugCZ5ll5jSi0xjS4mi1ee
+        rzBmpoA8GEbuvFPgJMNePLmDePVpXZdwQF2HDTR2cQ==
+X-Google-Smtp-Source: APXvYqymEcy813pHpNEXy0+i8V4xvrQhhrlvbkcO0857nIFcANJFZYGu01jsfsWI5gnUxR9XSRBuTJuK3MjJ5pY1ZHo=
+X-Received: by 2002:a9d:4d99:: with SMTP id u25mr1199517otk.216.1582006596511;
+ Mon, 17 Feb 2020 22:16:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9534 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 bulkscore=0
- suspectscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002180048
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9534 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0 adultscore=0
- spamscore=0 priorityscore=1501 suspectscore=0 clxscore=1011 bulkscore=0
- phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002180047
+References: <1576477201-2842-1-git-send-email-selvin.xavier@broadcom.com>
+ <1576477201-2842-2-git-send-email-selvin.xavier@broadcom.com>
+ <20191218140835.GG17227@ziepe.ca> <903a4154-8237-0178-dc5f-34c58fa06aaa@mellanox.com>
+ <CA+sbYW2nvT09ty8FsbG=GC_3MWJLJU8Mh_Lq+96ffvdxnfFr_Q@mail.gmail.com> <20191219141810.GA24224@ziepe.ca>
+In-Reply-To: <20191219141810.GA24224@ziepe.ca>
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+Date:   Tue, 18 Feb 2020 11:46:25 +0530
+Message-ID: <CA+sbYW2qnO908KvduGNE9uWu0jvXd83cQp3pLc+Mk7PoRb-Tkw@mail.gmail.com>
+Subject: Re: [PATCH for-next v2 1/2] IB/core: Add option to retrieve driver
+ gid context from ib_gid_attr
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Parav Pandit <parav@mellanox.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Devesh Sharma <devesh.sharma@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This was supposed to be a bitwise | instead of a logical ||.
+On Thu, Dec 19, 2019 at 7:48 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Thu, Dec 19, 2019 at 10:36:45AM +0530, Selvin Xavier wrote:
+> > > Instead I guess a new symbol as rdma_get_gid_attr_context() can be added
+> > > too.
+> > I am okay with both adding context to gid_attr struct or adding a symbol.
+> > Let me know your preference.
+> > Or shall i handle this inside bnxt_re itself. Not sure whether any
+> > other drivers intend to use this.
+>
+> Having a function to return the same void * that is passed to the
+> driver ops functions seems reasonable and small to me.
+Posting a patch with a symbol that returns void *
 
-Fixes: 1dd017882e01 ("RDMA/core: Fix protection fault in get_pkey_idx_qp_list")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/infiniband/core/security.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks
 
-diff --git a/drivers/infiniband/core/security.c b/drivers/infiniband/core/security.c
-index 2b4d80393bd0..b9a36ea244d4 100644
---- a/drivers/infiniband/core/security.c
-+++ b/drivers/infiniband/core/security.c
-@@ -348,7 +348,7 @@ static struct ib_ports_pkeys *get_new_pps(const struct ib_qp *qp,
- 	if ((qp_attr_mask & IB_QP_PKEY_INDEX) && (qp_attr_mask & IB_QP_PORT))
- 		new_pps->main.state = IB_PORT_PKEY_VALID;
- 
--	if (!(qp_attr_mask & (IB_QP_PKEY_INDEX || IB_QP_PORT)) && qp_pps) {
-+	if (!(qp_attr_mask & (IB_QP_PKEY_INDEX | IB_QP_PORT)) && qp_pps) {
- 		new_pps->main.port_num = qp_pps->main.port_num;
- 		new_pps->main.pkey_index = qp_pps->main.pkey_index;
- 		if (qp_pps->main.state != IB_PORT_PKEY_NOT_VALID)
--- 
-2.11.0
-
+>
+> But you could also spruce this up a bit and have it work more like a
+> true 'priv' and get rid of that void *..
+>
+> The container_of thing is really odd
+>
+> Jason
