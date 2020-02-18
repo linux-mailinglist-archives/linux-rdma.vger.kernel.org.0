@@ -2,126 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E295162AE1
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 17:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A474162AEE
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 17:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgBRQma (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Feb 2020 11:42:30 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:34737 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbgBRQm3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Feb 2020 11:42:29 -0500
-Received: by mail-oi1-f196.google.com with SMTP id l136so20744635oig.1
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Feb 2020 08:42:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A7A6iDXmfs2xZ9SnKZnyK6vKkCLvqLQ/7Y4o70dQrIQ=;
-        b=HEnnp3kEYpam/D3Fz4reD6nms4QiJgh7gLUMiNqgbYkzG9aNzaf1H7S35ogYCXk7im
-         RTwEZA9j5CvowL9xnRkOcHXCvT+iQ+Thr81iUCCWUlb/8wAmDhOFWaUdotkDBux03Jrd
-         bqA9IgEitt5Yb8mSPBQ5fJh86BN+FHilCoEZk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A7A6iDXmfs2xZ9SnKZnyK6vKkCLvqLQ/7Y4o70dQrIQ=;
-        b=paz9FpTZyDSPued5M7P0uAliXhpu4dkl3i98PwtDoU8BcrCbV0w90e5j056B5I4OBJ
-         8ynS8RvL9jnFfk00Tl3aHA2r5Tl5Hvf3aeGrLhIct+NOsRIv+J0GgLhjLhKbK2Vhhx0o
-         3pQsIPodmGODQpWkImO4n6JoufVg6JUHlzHyo5Asdu4oDup+deiOOQLzXz6zo3SQ4Ufl
-         mTMhb7tTtKFKG5H5kdY1yj+UxLZiazScxmPKozTj8PyJ1bQLf9XOislx7tyZ8tpU6NRJ
-         AMdge/nBLjhBcebnrhFwxSWNR99QOZmUFADUk611mWUmcwzWRyABlRZNGJyuCSzV1yOc
-         qqeg==
-X-Gm-Message-State: APjAAAWqzZBnXo0rJrOdSbgOE4s8bIEy9G63W/6S0WDogdvCCpNBDiei
-        gF6z56+iPJg4pRnCAgQau1Aay1AZDKLbghn8gkMx8A==
-X-Google-Smtp-Source: APXvYqyvaauWnjBy2H2h1uPGRr13DVqsPqYjRQMZnnukrXNH9tQvcKUJuA8IJ5QeFIyi9Qjs3Ve6ha/af1MHbWWu5Hk=
-X-Received: by 2002:a05:6808:a11:: with SMTP id n17mr1735405oij.94.1582044148819;
- Tue, 18 Feb 2020 08:42:28 -0800 (PST)
+        id S1726612AbgBRQp2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Feb 2020 11:45:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726399AbgBRQp2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 18 Feb 2020 11:45:28 -0500
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8696122B48;
+        Tue, 18 Feb 2020 16:45:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582044328;
+        bh=epo58b2WikVc0ZabAMvhNTTtacIM1ukyIR+QpKYIqnk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qVnQJtJxoWIVpHmd+Hvj0LSs97fKL4udCu0tL4g4QybZ40DIp2PvJ/PhJOeq5WraM
+         mz/5km4igKNb6CH1dsZUC8rXRFWQeooXczc2WIo7yCLBE1Z1ilZhvbuQGzbDeOQruS
+         MFsEtkmEw8qOKCvSUD1ZiVFsqkVm5gtdLZ3a8tjU=
+Date:   Tue, 18 Feb 2020 18:45:23 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Kamal Heib <kamalheib1@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH for-next] RDMA/srpt: Avoid print error when modify_port
+ is not supported
+Message-ID: <20200218164523.GB14557@unreal>
+References: <20200218101740.27762-1-kamalheib1@gmail.com>
 MIME-Version: 1.0
-References: <1582006810-32174-1-git-send-email-selvin.xavier@broadcom.com>
- <1582006810-32174-2-git-send-email-selvin.xavier@broadcom.com> <20200218154237.GE31668@ziepe.ca>
-In-Reply-To: <20200218154237.GE31668@ziepe.ca>
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Tue, 18 Feb 2020 22:12:17 +0530
-Message-ID: <CA+sbYW1uO+LT=6a_J-9=yaot8qULbHehY9AummLD2h-kW04nBQ@mail.gmail.com>
-Subject: Re: [PATCH for-next v3 1/2] RDMA/core: Add helper function to
- retrieve driver gid context from gid attr
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200218101740.27762-1-kamalheib1@gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 9:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Tue, Feb 18, 2020 at 12:17:40PM +0200, Kamal Heib wrote:
+> Avoid printing the following error when modify_port isn't supported.
 >
-> On Mon, Feb 17, 2020 at 10:20:09PM -0800, Selvin Xavier wrote:
-> > Adding a helper function to retrieve the driver gid context
-> > from the gid attr.
-> >
-> > Suggested-by: Jason Gunthorpe <jgg@mellanox.com>
-> > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> >  drivers/infiniband/core/cache.c | 41 +++++++++++++++++++++++++++++++++++++++++
-> >  include/rdma/ib_cache.h         |  1 +
-> >  2 files changed, 42 insertions(+)
-> >
-> > diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-> > index 17bfedd..1b73a71 100644
-> > +++ b/drivers/infiniband/core/cache.c
-> > @@ -973,6 +973,47 @@ int rdma_query_gid(struct ib_device *device, u8 port_num,
-> >  EXPORT_SYMBOL(rdma_query_gid);
-> >
-> >  /**
-> > + * rdma_read_gid_hw_context - Read the HW GID context from GID attribute
-> > + * @attr:            Potinter to the GID attribute
-> > + *
-> > + * rdma_read_gid_hw_context() reads the vendor drivers GID HW
-> > + * context corresponding to SGID attr. It takes reference to the GID
-> > + * attribute and this need to be released by the caller using
-> > + * rdma_put_gid_attr
-> > + *
-> > + * Returns HW context on success or NULL on error
-> > + *
-> > + */
-> > +void *rdma_read_gid_hw_context(const struct ib_gid_attr *attr)
-> > +{
-> > +     struct ib_gid_table_entry *entry =
-> > +             container_of(attr, struct ib_gid_table_entry, attr);
-> > +     struct ib_device *device = entry->attr.device;
-> > +     u8 port_num = entry->attr.port_num;
-> > +     struct ib_gid_table *table;
-> > +     unsigned long flags;
-> > +     void *context = NULL;
-> > +
-> > +     if (!rdma_is_port_valid(device, port_num))
-> > +             return NULL;
-> > +
-> > +     table = rdma_gid_table(device, port_num);
-> > +     read_lock_irqsave(&table->rwlock, flags);
-> > +
-> > +     if (attr->index < 0 || attr->index >= table->sz ||
-> > +         !is_gid_entry_valid(table->data_vec[attr->index]))
-> > +             goto done;
+> [47541.541145] ib_srpt disabling MAD processing failed.
 >
-> Why all this validation and locking? ib_gid_attrs are only created by
-> the core code..
-Locking and validation was added to avoid any scenario where the  gid
-entry is deleted while we are
-executing this API. I saw similar implementation for
-rdma_read_gid_attr_ndev_rcu symbol.
+> Fixes: a42d985bd5b2 ("ib_srpt: Initial SRP Target merge for v3.3-rc1")
+> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> ---
+>  drivers/infiniband/ulp/srpt/ib_srpt.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 >
-> > +     get_gid_entry(entry);
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 98552749d71c..eba2b156616d 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -628,12 +628,14 @@ static void srpt_unregister_mad_agent(struct srpt_device *sdev)
+>  		.clr_port_cap_mask = IB_PORT_DEVICE_MGMT_SUP,
+>  	};
+>  	struct srpt_port *sport;
+> +	int ret;
+>  	int i;
 >
-> And why a get? Surely it is invalid to call this function without a
-> get already held?
-Getting the reference to the entry only if the entry is valid after
-all the checks. This is the
-reason for invoking this inside the function, rather than in the
-caller. Added a note in the symbol description
-that the caller needs to release reference using rdma_put_gid_attr,
-once the caller finished using
-the void * pointer returned.
+>  	for (i = 1; i <= sdev->device->phys_port_cnt; i++) {
+>  		sport = &sdev->port[i - 1];
+>  		WARN_ON(sport->port != i);
+> -		if (ib_modify_port(sdev->device, i, 0, &port_modify) < 0)
+> +		ret = ib_modify_port(sdev->device, i, 0, &port_modify);
+> +		if (ret < 0 && ret != -EOPNOTSUPP)
+>  			pr_err("disabling MAD processing failed.\n");
 
+This print doesn't make any sense, we are unregistering MAD agent anyway.
+
+>  		if (sport->mad_agent) {
+>  			ib_unregister_mad_agent(sport->mad_agent);
+> --
+> 2.21.1
 >
-> Jason
