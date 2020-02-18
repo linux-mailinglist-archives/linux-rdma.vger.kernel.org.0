@@ -2,171 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 745CD161DE8
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 00:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A52161F96
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 04:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726070AbgBQXdO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Feb 2020 18:33:14 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:35105 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgBQXdO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 17 Feb 2020 18:33:14 -0500
-Received: by mail-il1-f197.google.com with SMTP id h18so15572941ilc.2
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Feb 2020 15:33:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=QFDVh6DndK/OU8fD9C6Hc41l36lCVHDEzQ6kAXyNM18=;
-        b=twscWMzL5cjoBqXaaYr2kryG+8Mrlv/o8QC8GeioCEzADENCfLeqbPIWtSoq2VVCQO
-         AgGIT/WWGGLf0PSsOkIZ/rlUsGtGBx9yRGSjiZvzXp8oq1K+p7yLkB9mfzEsK7BwNFlt
-         DuOYItxlZ3ebvHEtALMCvPI+9dTvP46zlBjJnzB8IIUTp+et+vSP86oKmxemDqt+IKYO
-         nSUr1jtmwJW7slBA8teCt4D45gKMELgwmLXegW5uu03pbgOMuZ2E6gG1vZHSLikvdlTj
-         9qIB9v6AyFGv4AL2DnN5zhTUROYn9TESO1zE/N+4fOdmlY17Vdu77EkH9RYAnwPx1vTo
-         pSqA==
-X-Gm-Message-State: APjAAAVaOI6vSIdKbwazkyvnpzoyY/ChtgMGGF+3amKLd34bS2+EGhDL
-        bu4sJuKzlxEYzAzyfv8Rq6bemQZecWAKlLOX0guTgiTB8UYa
-X-Google-Smtp-Source: APXvYqx9gUoQBk+NjbUzdZgqnAou4Wq3+phXqHQHy17mB7TB+1AL7v/L9CI1vGvukztrHFSTMCXdA7sjj+Y6VZo4NQQJitytwHaC
+        id S1726257AbgBRDjo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Feb 2020 22:39:44 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:60374 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726166AbgBRDjo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 17 Feb 2020 22:39:44 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 74EEF8FC6ED6BCEAAC74;
+        Tue, 18 Feb 2020 11:39:41 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.439.0; Tue, 18 Feb 2020 11:39:35 +0800
+From:   Lang Cheng <chenglang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>,
+        <davem@davemloft.net>, <salil.mehta@huawei.com>,
+        <yisen.zhuang@huawei.com>
+CC:     <linuxarm@huawei.com>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>
+Subject: [RFC rdma-next] RDMA/core: Add attribute WQ_MEM_RECLAIM to workqueue "infiniband"
+Date:   Tue, 18 Feb 2020 11:35:35 +0800
+Message-ID: <1581996935-46507-1-git-send-email-chenglang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e705:: with SMTP id b5mr14605943ioh.139.1581982393876;
- Mon, 17 Feb 2020 15:33:13 -0800 (PST)
-Date:   Mon, 17 Feb 2020 15:33:13 -0800
-In-Reply-To: <00000000000012a4cd05854a1d0a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a0c73b059ecdfafa@google.com>
-Subject: Re: KASAN: use-after-free Read in rdma_listen (2)
-From:   syzbot <syzbot+adb15cf8c2798e4e0db4@syzkaller.appspotmail.com>
-To:     chuck.lever@oracle.com, danielj@mellanox.com, danitg@mellanox.com,
-        dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        parav@mellanox.com, swise@opengridcomputing.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-syzbot has found a reproducer for the following crash on:
+The hns3 driver sets "hclge_service_task" workqueue with
+WQ_MEM_RECLAIM flag in order to guarantee forward progress
+under memory pressure. When hns3 ethernet driver perfrom a
+reset bacause of tx timeout or ras error, hclge_service_task
+will unregister ib_device before telling the fw to perfrom the
+hardware reset in oder to disable accessing to the ib_device.
+And ib_unregister_device() will call ib_cache_cleanup_one() to
+flush workqueue "infiniband", which is without WQ_MEM_RECLAIM set,
+then a WARNNING is triggered as below:
 
-HEAD commit:    c25a951c Add linux-next specific files for 20200217
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10df082de00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c727d8fc485ff049
-dashboard link: https://syzkaller.appspot.com/bug?extid=adb15cf8c2798e4e0db4
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112b9d6ee00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=147abb11e00000
+[11246.200168] hns3 0000:bd:00.1: Reset done, hclge driver initialization finished.
+[11246.209979] hns3 0000:bd:00.1 eth7: net open
+[11246.227608] ------------[ cut here ]------------
+[11246.237370] workqueue: WQ_MEM_RECLAIM hclge:hclge_service_task [hclge] is flushing !WQ_MEM_RECLAIM infiniband:0x0
+[11246.237391] WARNING: CPU: 50 PID: 2279 at ./kernel/workqueue.c:2605 check_flush_dependency+0xcc/0x140
+[11246.260412] Modules linked in: hclgevf hns_roce_hw_v2 rdma_test(O) hns3 xt_CHECKSUM iptable_mangle xt_conntrack ipt_REJECT nf_reject_ipv4 ebtable_filter ebtables ip6table_filter ip6_tables iptable_filter bpfilter vfio_iommu_type1 vfio_pci vfio_virqfd vfio ib_isert iscsi_target_mod ib_ipoib ib_umad rpcrdma ib_iser libiscsi scsi_transport_iscsi aes_ce_blk crypto_simd cryptd aes_ce_cipher sunrpc nls_iso8859_1 crct10dif_ce ghash_ce sha2_ce sha256_arm64 sha1_ce joydev input_leds hid_generic usbkbd usbmouse sbsa_gwdt usbhid usb_storage hid ses hclge hisi_zip hisi_hpre hisi_sec2 hnae3 hisi_qm ahci hisi_trng_v2 evbug uacce rng_core gpio_dwapb autofs4 hisi_sas_v3_hw megaraid_sas hisi_sas_main libsas scsi_transport_sas [last unloaded: hns_roce_hw_v2]
+[11246.325742] CPU: 50 PID: 2279 Comm: kworker/50:0 Kdump: loaded Tainted: G           O      5.4.0-rc4+ #1
+[11246.335181] Hardware name: Huawei TaiShan 200 (Model 2280)/BC82AMDD, BIOS 2280-V2 CS V3.B140.01 12/18/2019
+[11246.344802] Workqueue: hclge hclge_service_task [hclge]
+[11246.350007] pstate: 60c00009 (nZCv daif +PAN +UAO)
+[11246.354779] pc : check_flush_dependency+0xcc/0x140
+[11246.359549] lr : check_flush_dependency+0xcc/0x140
+[11246.364317] sp : ffff800268a73990
+[11246.367618] x29: ffff800268a73990 x28: 0000000000000001 
+[11246.372907] x27: ffffcbe4f5868000 x26: ffffcbe4f5541000 
+[11246.378196] x25: 00000000000000b8 x24: ffff002fdd0ff868 
+[11246.383483] x23: ffff002fdd0ff800 x22: ffff2027401ba600 
+[11246.388770] x21: 0000000000000000 x20: ffff002fdd0ff800 
+[11246.394059] x19: ffff202719293b00 x18: ffffcbe4f5541948 
+[11246.399347] x17: 000000006f8ad8dd x16: 0000000000000002 
+[11246.404634] x15: ffff8002e8a734f7 x14: 6c66207369205d65 
+[11246.409922] x13: 676c63685b206b73 x12: 61745f6563697672 
+[11246.415208] x11: 65735f65676c6368 x10: 3a65676c6368204d 
+[11246.420494] x9 : 49414c4345525f4d x8 : 6e6162696e69666e 
+[11246.425782] x7 : 69204d49414c4345 x6 : ffffcbe4f5765145 
+[11246.431068] x5 : 0000000000000000 x4 : 0000000000000000 
+[11246.436355] x3 : 0000000000000030 x2 : 00000000ffffffff 
+[11246.441642] x1 : 3349eb1ac5310100 x0 : 0000000000000000 
+[11246.446928] Call trace:
+[11246.449363]  check_flush_dependency+0xcc/0x140
+[11246.453785]  flush_workqueue+0x110/0x410
+[11246.457691]  ib_cache_cleanup_one+0x54/0x468
+[11246.461943]  __ib_unregister_device+0x70/0xa8
+[11246.466279]  ib_unregister_device+0x2c/0x40
+[11246.470455]  hns_roce_exit+0x34/0x198 [hns_roce_hw_v2]
+[11246.475571]  __hns_roce_hw_v2_uninit_instance.isra.56+0x3c/0x58 [hns_roce_hw_v2]
+[11246.482934]  hns_roce_hw_v2_reset_notify+0xd8/0x210 [hns_roce_hw_v2]
+[11246.489261]  hclge_notify_roce_client+0x84/0xe0 [hclge]
+[11246.494464]  hclge_reset_rebuild+0x60/0x730 [hclge]
+[11246.499320]  hclge_reset_service_task+0x400/0x5a0 [hclge]
+[11246.504695]  hclge_service_task+0x54/0x698 [hclge]
+[11246.509464]  process_one_work+0x15c/0x458
+[11246.513454]  worker_thread+0x144/0x520
+[11246.517186]  kthread+0xfc/0x128
+[11246.520314]  ret_from_fork+0x10/0x18
+[11246.523873] ---[ end trace eb980723699c2585 ]---
+[11246.528710] hns3 0000:bd:00.2: Func clear success after reset.
+[11246.528747] hns3 0000:bd:00.0: Func clear success after reset.
+[11246.907710] hns3 0000:bd:00.1 eth7: link up
 
-Bisection is inconclusive: the bug happens on the oldest tested release.
+There may be three ways to avoid the above warnning:
+1. Allocate the "hclge_service_task" workqueue without
+WQ_MEM_RECLAIM flag, which may cause deadlock problem
+when hns3 driver is used as the low level transport of
+a network file system
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14b80c3f200000
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=16b80c3f200000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12b80c3f200000
+2. Do not unregister ib_device during reset process, maybe
+only disable accessing to the ib_device using disable_device()
+as rdma_dev_change_netns() does.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+adb15cf8c2798e4e0db4@syzkaller.appspotmail.com
+3. Allocate the "infiniband" workqueue with WQ_MEM_RECLAIM flag.
 
-==================================================================
-BUG: KASAN: use-after-free in __list_add_valid+0x9a/0xa0 lib/list_debug.c:26
-Read of size 8 at addr ffff888093bbb1e0 by task syz-executor570/10159
+This patch allocates the "infiniband" workqueue with WQ_MEM_RECLAIM
+flag to avoid the warnning.
 
-CPU: 1 PID: 10159 Comm: syz-executor570 Not tainted 5.6.0-rc2-next-20200217-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x197/0x210 lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
- __kasan_report.cold+0x1b/0x32 mm/kasan/report.c:506
- kasan_report+0x12/0x20 mm/kasan/common.c:641
- __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:135
- __list_add_valid+0x9a/0xa0 lib/list_debug.c:26
- __list_add include/linux/list.h:67 [inline]
- list_add_tail include/linux/list.h:100 [inline]
- cma_listen_on_all drivers/infiniband/core/cma.c:2517 [inline]
- rdma_listen+0x6b7/0x970 drivers/infiniband/core/cma.c:3628
- ucma_listen+0x14d/0x1c0 drivers/infiniband/core/ucma.c:1092
- ucma_write+0x2d7/0x3c0 drivers/infiniband/core/ucma.c:1684
- __vfs_write+0x8a/0x110 fs/read_write.c:494
- vfs_write+0x268/0x5d0 fs/read_write.c:558
- ksys_write+0x220/0x290 fs/read_write.c:611
- __do_sys_write fs/read_write.c:623 [inline]
- __se_sys_write fs/read_write.c:620 [inline]
- __x64_sys_write+0x73/0xb0 fs/read_write.c:620
- do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x446a69
-Code: e8 5c b3 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b 08 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fdd8433eda8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446a69
-RDX: 0000000000000010 RSI: 00000000200001c0 RDI: 0000000000000004
-RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
-R13: 0000000000000000 R14: 0000000000000000 R15: 20c49ba5e353f7cf
+Fixes: 0ea68902256e ("net: hns3: allocate WQ with WQ_MEM_RECLAIM flag")
+Signed-off-by: Lang Cheng <chenglang@huawei.com>
+---
+ drivers/infiniband/core/device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Allocated by task 10155:
- save_stack+0x23/0x90 mm/kasan/common.c:72
- set_track mm/kasan/common.c:80 [inline]
- __kasan_kmalloc mm/kasan/common.c:515 [inline]
- __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:488
- kasan_kmalloc+0x9/0x10 mm/kasan/common.c:529
- kmem_cache_alloc_trace+0x158/0x790 mm/slab.c:3551
- kmalloc include/linux/slab.h:555 [inline]
- kzalloc include/linux/slab.h:669 [inline]
- __rdma_create_id+0x5e/0x870 drivers/infiniband/core/cma.c:861
- ucma_create_id+0x1de/0x620 drivers/infiniband/core/ucma.c:501
- ucma_write+0x2d7/0x3c0 drivers/infiniband/core/ucma.c:1684
- __vfs_write+0x8a/0x110 fs/read_write.c:494
- vfs_write+0x268/0x5d0 fs/read_write.c:558
- ksys_write+0x220/0x290 fs/read_write.c:611
- __do_sys_write fs/read_write.c:623 [inline]
- __se_sys_write fs/read_write.c:620 [inline]
- __x64_sys_write+0x73/0xb0 fs/read_write.c:620
- do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Freed by task 10157:
- save_stack+0x23/0x90 mm/kasan/common.c:72
- set_track mm/kasan/common.c:80 [inline]
- kasan_set_free_info mm/kasan/common.c:337 [inline]
- __kasan_slab_free+0x102/0x150 mm/kasan/common.c:476
- kasan_slab_free+0xe/0x10 mm/kasan/common.c:485
- __cache_free mm/slab.c:3426 [inline]
- kfree+0x10a/0x2c0 mm/slab.c:3757
- rdma_destroy_id+0x7c6/0xdd0 drivers/infiniband/core/cma.c:1866
- ucma_close+0x115/0x310 drivers/infiniband/core/ucma.c:1762
- __fput+0x2ff/0x890 fs/file_table.c:280
- ____fput+0x16/0x20 fs/file_table.c:313
- task_work_run+0x145/0x1c0 kernel/task_work.c:113
- exit_task_work include/linux/task_work.h:22 [inline]
- do_exit+0xbcb/0x3030 kernel/exit.c:802
- do_group_exit+0x135/0x360 kernel/exit.c:900
- get_signal+0x47c/0x24f0 kernel/signal.c:2734
- do_signal+0x87/0x1700 arch/x86/kernel/signal.c:813
- exit_to_usermode_loop+0x286/0x380 arch/x86/entry/common.c:160
- prepare_exit_to_usermode arch/x86/entry/common.c:195 [inline]
- syscall_return_slowpath arch/x86/entry/common.c:278 [inline]
- do_syscall_64+0x676/0x790 arch/x86/entry/common.c:304
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-The buggy address belongs to the object at ffff888093bbb000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 480 bytes inside of
- 2048-byte region [ffff888093bbb000, ffff888093bbb800)
-The buggy address belongs to the page:
-page:ffffea00024eeec0 refcount:1 mapcount:0 mapping:00000000f8d67f88 index:0x0
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea00026b2908 ffffea00024eee88 ffff8880aa400e00
-raw: 0000000000000000 ffff888093bbb000 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888093bbb080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888093bbb100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888093bbb180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                       ^
- ffff888093bbb200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888093bbb280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 84dd74f..595548a 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -2707,7 +2707,7 @@ static int __init ib_core_init(void)
+ {
+ 	int ret;
+ 
+-	ib_wq = alloc_workqueue("infiniband", 0, 0);
++	ib_wq = alloc_workqueue("infiniband", WQ_MEM_RECLAIM, 0);
+ 	if (!ib_wq)
+ 		return -ENOMEM;
+ 
+-- 
+2.8.1
 
