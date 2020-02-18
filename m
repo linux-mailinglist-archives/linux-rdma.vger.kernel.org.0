@@ -2,132 +2,273 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7B11625C5
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 12:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F21B016263B
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 13:36:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726206AbgBRLtj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Feb 2020 06:49:39 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:36793 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgBRLtj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Feb 2020 06:49:39 -0500
-Received: by mail-ot1-f65.google.com with SMTP id j20so19238681otq.3
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Feb 2020 03:49:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o9YscxvkKgM7/wdxUrZW+bVmRTKSxISh6UCjyVmwJXE=;
-        b=WyDeyZZXR/1+Qe+kcRNkmOROXT65COAjRNV7dZisV+u4crGyMolxkQ0JZEfoY2o19Z
-         ojyy3o2jFjXvrXkmkD86JSfqPmMmjhjjvRYN2KrvtlS0Ik3ynN7mFXYWAfpUUSkGW9iA
-         c3QbiqdyYD1GLQScuXoDTvzkD0x6EZ2mXSfRU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o9YscxvkKgM7/wdxUrZW+bVmRTKSxISh6UCjyVmwJXE=;
-        b=ZxXttRL0Vs7YaRlBiOkSSjJu0QsKxARoMg032biyu47M8xgN/bWrzxgz0hL0xnviQ8
-         1JRutBYmRvWRmA/8pSVBh4nSCCGmwHCdjLOBMLHFFx8JZJ2nkDOq4mTXo+4PKwFTCLcS
-         Z0SWCdNpq1D119f7r0dtdBv/DjTsPvFzw6x/Ybv9GdPw7xBO+uWJx6cLB4CUWJdQhYkb
-         NF1CPKMThnvSESiaFh8YFpnTKwpZ/46sYEm75rTCi7Y0jNbjQtbwDHL8WkMkL10OowMr
-         54VHZhw2F48hqyna6CEsGeXhq772aohhJ7cwARsk0xj+TqO16DtxyTv0nsjRKE9yMPqc
-         Ub7w==
-X-Gm-Message-State: APjAAAUanW34ENDUFs+Vj2y34Clklih+3NGuktqWwlojEYiTwZ3V+/TZ
-        /Q9ZqMRWK++0fkeXXUIdS+ps7fCNdihyDC4g7JVbEw==
-X-Google-Smtp-Source: APXvYqyZQmlxgkbCLTeDs8ba17llUYTx4OdETH1GCPLuUiwiP/Kr8NkyR/SP8w4tZnbjTgPaiP5Kf0amb3V3OdCdx5I=
-X-Received: by 2002:a9d:a68:: with SMTP id 95mr15065775otg.87.1582026578348;
- Tue, 18 Feb 2020 03:49:38 -0800 (PST)
+        id S1726571AbgBRMgg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Feb 2020 07:36:36 -0500
+Received: from mga02.intel.com ([134.134.136.20]:13486 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726363AbgBRMgg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 18 Feb 2020 07:36:36 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Feb 2020 04:36:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,456,1574150400"; 
+   d="scan'208";a="253703706"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 18 Feb 2020 04:36:33 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1j4276-0003ZG-EC; Tue, 18 Feb 2020 20:36:32 +0800
+Date:   Tue, 18 Feb 2020 20:35:47 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-rc] BUILD SUCCESS
+ 685eff513183d6d64a5f413531e683d23b8b198b
+Message-ID: <5e4bda23.LuXas+70pPgI4aez%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <1574671174-5064-1-git-send-email-selvin.xavier@broadcom.com>
- <1574671174-5064-6-git-send-email-selvin.xavier@broadcom.com> <20200103194458.GA16980@ziepe.ca>
-In-Reply-To: <20200103194458.GA16980@ziepe.ca>
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Tue, 18 Feb 2020 17:19:27 +0530
-Message-ID: <CA+sbYW0_o62UXae1h_U7+F9uH=qTOh0ou3w47jNdfHDdB0Ebtw@mail.gmail.com>
-Subject: Re: [PATCH for-next 5/6] RDMA/bnxt_re: Use driver_unregister and
- unregistration API
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Jan 4, 2020 at 1:15 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Mon, Nov 25, 2019 at 12:39:33AM -0800, Selvin Xavier wrote:
->
-> >  static void __exit bnxt_re_mod_exit(void)
-> >  {
-> > -     struct bnxt_re_dev *rdev, *next;
-> > -     LIST_HEAD(to_be_deleted);
-> > +     struct bnxt_re_dev *rdev;
-> >
-> > +     flush_workqueue(bnxt_re_wq);
-> >       mutex_lock(&bnxt_re_dev_lock);
-> > -     /* Free all adapter allocated resources */
-> > -     if (!list_empty(&bnxt_re_dev_list))
-> > -             list_splice_init(&bnxt_re_dev_list, &to_be_deleted);
-> > -     mutex_unlock(&bnxt_re_dev_lock);
-> > -       /*
-> > -     * Cleanup the devices in reverse order so that the VF device
-> > -     * cleanup is done before PF cleanup
-> > -     */
-> > -     list_for_each_entry_safe_reverse(rdev, next, &to_be_deleted, list) {
-> > -             dev_info(rdev_to_dev(rdev), "Unregistering Device");
-> > +     list_for_each_entry(rdev, &bnxt_re_dev_list, list) {
-> >               /*
-> > -              * Flush out any scheduled tasks before destroying the
-> > -              * resources
-> > +              * Set unreg flag to avoid VF resource cleanup
-> > +              * in module unload path. This is required because
-> > +              * dealloc_driver for VF can come after PF cleaning
-> > +              * the VF resources.
-> >                */
-> > -             flush_workqueue(bnxt_re_wq);
-> > -             bnxt_re_dev_stop(rdev);
-> > -             bnxt_re_ib_uninit(rdev);
-> > -             /* Acquire the rtnl_lock as the L2 resources are freed here */
-> > -             rtnl_lock();
-> > -             bnxt_re_remove_device(rdev);
-> > -             rtnl_unlock();
-> > +             if (rdev->is_virtfn)
-> > +                     rdev->rcfw.res_deinit = true;
-> >       }
-> > +     mutex_unlock(&bnxt_re_dev_lock);
->
-> This is super ugly. This driver already has bugs if it has a
-> dependency on driver unbinding order as drivers can become unbound
-> from userspace using sysfs or hot un-plug in any ordering.
->
-The dependency is from the HW side and not from the driver side.
-In some of the HW versions, RoCE PF driver is allowed to allocate the
-host memory
-for VFs and this dependency is due to this.
-> If the VF driver somehow depends on the PF driver then destruction of
-> the PF must synchronize and fence the VFs during it's own shutdown.
->
-Do you suggest that synchronization should be done in the stack before
-invoking the
-dealloc_driver for VF?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-rc
+branch HEAD: 685eff513183d6d64a5f413531e683d23b8b198b  IB/mlx5: Use div64_u64 for num_var_hw_entries calculation
 
-> But this seems very strange, how can it work if the VF is in a VM
-> or something and the PF driver is unplugged?
-This code is not handling the case where the VF is attached to a VM.
- First command to HW after the removal of PF will fail with timeout.
-Driver will stop sending commands to HW once it sees this timeout. VF
-driver removal
-will proceed with cleaning up of host resources without sending any
-commands to FW
-and exit the removal process.
+elapsed time: 5096m
 
-On hypervisor, if we don't set rdev->rcfw.res_deinit as done in this
-patch, when VF removal is initiated,
-the first command will timeout and driver will stop sending any more commands
-to FW and proceed with removal. All VFs will exit in the same way.
-Just that each
-function will wait for one command to timeout. Setting
-rdev->rcfw.res_deinit was added
-as a hack to avoid this  waiting time.
-> Jason
+configs tested: 218
+configs skipped: 0
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+sparc                            allyesconfig
+riscv                             allnoconfig
+powerpc                       ppc64_defconfig
+sh                                allnoconfig
+h8300                       h8s-sim_defconfig
+s390                              allnoconfig
+s390                                defconfig
+parisc                generic-32bit_defconfig
+riscv                    nommu_virt_defconfig
+um                           x86_64_defconfig
+mips                             allmodconfig
+openrisc                    or1ksim_defconfig
+um                                  defconfig
+mips                             allyesconfig
+nds32                               defconfig
+arc                                 defconfig
+riscv                               defconfig
+c6x                        evmc6678_defconfig
+csky                                defconfig
+m68k                           sun3_defconfig
+sparc64                             defconfig
+i386                                defconfig
+s390                             allmodconfig
+alpha                               defconfig
+i386                              allnoconfig
+ia64                             allmodconfig
+mips                      malta_kvm_defconfig
+i386                             alldefconfig
+i386                             allyesconfig
+ia64                             alldefconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                                defconfig
+c6x                              allyesconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+nds32                             allnoconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+arc                              allyesconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                              allnoconfig
+mips                      fuloong2e_defconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+parisc                generic-64bit_defconfig
+x86_64               randconfig-a001-20200215
+x86_64               randconfig-a002-20200215
+x86_64               randconfig-a003-20200215
+i386                 randconfig-a001-20200215
+i386                 randconfig-a002-20200215
+i386                 randconfig-a003-20200215
+x86_64               randconfig-a001-20200218
+x86_64               randconfig-a002-20200218
+x86_64               randconfig-a003-20200218
+i386                 randconfig-a001-20200218
+i386                 randconfig-a002-20200218
+i386                 randconfig-a003-20200218
+alpha                randconfig-a001-20200214
+m68k                 randconfig-a001-20200214
+mips                 randconfig-a001-20200214
+nds32                randconfig-a001-20200214
+parisc               randconfig-a001-20200214
+alpha                randconfig-a001-20200218
+m68k                 randconfig-a001-20200218
+mips                 randconfig-a001-20200218
+nds32                randconfig-a001-20200218
+parisc               randconfig-a001-20200218
+riscv                randconfig-a001-20200218
+csky                 randconfig-a001-20200214
+openrisc             randconfig-a001-20200214
+s390                 randconfig-a001-20200214
+sh                   randconfig-a001-20200214
+xtensa               randconfig-a001-20200214
+x86_64               randconfig-b002-20200214
+i386                 randconfig-b002-20200214
+x86_64               randconfig-b001-20200214
+i386                 randconfig-b001-20200214
+i386                 randconfig-b003-20200214
+x86_64               randconfig-b003-20200214
+x86_64               randconfig-b001-20200218
+x86_64               randconfig-b002-20200218
+x86_64               randconfig-b003-20200218
+i386                 randconfig-b001-20200218
+i386                 randconfig-b002-20200218
+i386                 randconfig-b003-20200218
+x86_64               randconfig-c001-20200214
+x86_64               randconfig-c002-20200214
+x86_64               randconfig-c003-20200214
+i386                 randconfig-c001-20200214
+i386                 randconfig-c002-20200214
+i386                 randconfig-c003-20200214
+x86_64               randconfig-c001-20200218
+x86_64               randconfig-c002-20200218
+x86_64               randconfig-c003-20200218
+i386                 randconfig-c001-20200218
+i386                 randconfig-c002-20200218
+i386                 randconfig-c003-20200218
+x86_64               randconfig-d001-20200218
+x86_64               randconfig-d002-20200218
+x86_64               randconfig-d003-20200218
+i386                 randconfig-d001-20200218
+i386                 randconfig-d002-20200218
+i386                 randconfig-d003-20200218
+x86_64               randconfig-d001-20200214
+x86_64               randconfig-d002-20200214
+x86_64               randconfig-d003-20200214
+i386                 randconfig-d001-20200214
+i386                 randconfig-d002-20200214
+i386                 randconfig-d003-20200214
+x86_64               randconfig-d001-20200215
+x86_64               randconfig-d002-20200215
+x86_64               randconfig-d003-20200215
+i386                 randconfig-d001-20200215
+i386                 randconfig-d002-20200215
+i386                 randconfig-d003-20200215
+x86_64               randconfig-e001-20200214
+x86_64               randconfig-e002-20200214
+x86_64               randconfig-e003-20200214
+i386                 randconfig-e001-20200214
+i386                 randconfig-e002-20200214
+i386                 randconfig-e003-20200214
+x86_64               randconfig-e001-20200218
+x86_64               randconfig-e002-20200218
+x86_64               randconfig-e003-20200218
+i386                 randconfig-e001-20200218
+i386                 randconfig-e002-20200218
+i386                 randconfig-e003-20200218
+x86_64               randconfig-f001-20200214
+x86_64               randconfig-f002-20200214
+x86_64               randconfig-f003-20200214
+i386                 randconfig-f001-20200214
+i386                 randconfig-f002-20200214
+i386                 randconfig-f003-20200214
+x86_64               randconfig-f001-20200218
+x86_64               randconfig-f002-20200218
+x86_64               randconfig-f003-20200218
+i386                 randconfig-f001-20200218
+i386                 randconfig-f002-20200218
+i386                 randconfig-f003-20200218
+x86_64               randconfig-g001-20200214
+x86_64               randconfig-g002-20200214
+x86_64               randconfig-g003-20200214
+i386                 randconfig-g001-20200214
+i386                 randconfig-g002-20200214
+i386                 randconfig-g003-20200214
+x86_64               randconfig-g001-20200218
+x86_64               randconfig-g002-20200218
+x86_64               randconfig-g003-20200218
+i386                 randconfig-g001-20200218
+i386                 randconfig-g002-20200218
+i386                 randconfig-g003-20200218
+x86_64               randconfig-h001-20200214
+x86_64               randconfig-h002-20200214
+x86_64               randconfig-h003-20200214
+i386                 randconfig-h001-20200214
+i386                 randconfig-h002-20200214
+i386                 randconfig-h003-20200214
+x86_64               randconfig-h001-20200218
+x86_64               randconfig-h002-20200218
+x86_64               randconfig-h003-20200218
+i386                 randconfig-h001-20200218
+i386                 randconfig-h002-20200218
+i386                 randconfig-h003-20200218
+arc                  randconfig-a001-20200214
+arm                  randconfig-a001-20200214
+arm64                randconfig-a001-20200214
+ia64                 randconfig-a001-20200214
+powerpc              randconfig-a001-20200214
+sparc                randconfig-a001-20200214
+riscv                            allmodconfig
+riscv                            allyesconfig
+riscv                          rv32_defconfig
+s390                             alldefconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                       zfcpdump_defconfig
+sh                               allmodconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+um                             i386_defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
