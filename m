@@ -2,82 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D36B162AC2
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 17:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CE0162ADA
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 17:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgBRQf1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Feb 2020 11:35:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58224 "EHLO mail.kernel.org"
+        id S1726528AbgBRQl2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Feb 2020 11:41:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726403AbgBRQf1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 18 Feb 2020 11:35:27 -0500
+        id S1726360AbgBRQl2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 18 Feb 2020 11:41:28 -0500
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D53B42067D;
-        Tue, 18 Feb 2020 16:35:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F23021D56;
+        Tue, 18 Feb 2020 16:41:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582043726;
-        bh=OpTededsgD6bYLVvlW4VOYwh0qzYKHyB7ZByWjL9SBc=;
+        s=default; t=1582044088;
+        bh=dD5KRg2uLdDE3+hMdalgNdDA0xhlDBXqzKR2/8ImprI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZaYoDUC0DPiltq1WOO3/zYuwe9RFjRfGPMlEYMOhFowVVKDRJ6Hn6KqZTIfyQVx2n
-         V1/jPHm6kbX0Rixonv3GRG9IaUbMddsf2HZuTF6Bz3pxNZSjeWvWulPSPHeGKDHyvE
-         98yEjcTC/qpOoKnQlwtKA98uOAl4+10m3sWVRfaY=
-Date:   Tue, 18 Feb 2020 18:35:22 +0200
+        b=rz55yuz9WDKOFO181jLC9yfs45zXzmH2ii41PAz04D4upVxBWTT4gFlyzJKp1LGrF
+         VMmX81iAzPCQJ0ILqdgNULZD9qbUqEFY8qJ/LKq6WMpAiLqUTPDGgSSLRz2n7hdbpC
+         2DnLSMAM28+UhcOFd7hYzsoEDEXUw15/DXr7IFVg=
+Date:   Tue, 18 Feb 2020 18:41:24 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Boris Pismenny <borisp@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] net/mlx5: IPsec, Replace zero-length array with
- flexible-array member
-Message-ID: <20200218163522.GB11536@unreal>
-References: <20200217195434.GA1166@embeddedor>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Erez Alfasi <ereza@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Mohamad Heib <mohamadh@mellanox.com>,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] IB/core: Fix a bitwise vs logical OR typo
+Message-ID: <20200218164124.GA14557@unreal>
+References: <20200218055801.cosg4fylgfxhk67s@kili.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200217195434.GA1166@embeddedor>
+In-Reply-To: <20200218055801.cosg4fylgfxhk67s@kili.mountain>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 17, 2020 at 01:54:34PM -0600, Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
+On Tue, Feb 18, 2020 at 08:58:01AM +0300, Dan Carpenter wrote:
+> This was supposed to be a bitwise | instead of a logical ||.
 >
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
->
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
->
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
->
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
->
-> This issue was found with the help of Coccinelle.
->
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
->
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> Fixes: 1dd017882e01 ("RDMA/core: Fix protection fault in get_pkey_idx_qp_list")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > ---
->  drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c | 2 +-
+>  drivers/infiniband/core/security.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
+>
 
-Can you please do one patch for whole mlx5,
-instead of many identical patches?
+Thanks,
 
-Thanks
+There is an extra patch for that.
+https://lore.kernel.org/lkml/20200217204318.13609-1-natechancellor@gmail.com
+
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
