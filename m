@@ -2,91 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 616FA162B30
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 17:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC79162BC7
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 18:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgBRQ6w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Feb 2020 11:58:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35130 "EHLO mail.kernel.org"
+        id S1726549AbgBRRLv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Feb 2020 12:11:51 -0500
+Received: from mga03.intel.com ([134.134.136.65]:23360 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726360AbgBRQ6w (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 18 Feb 2020 11:58:52 -0500
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CE22208C4;
-        Tue, 18 Feb 2020 16:58:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582045131;
-        bh=Rkny3PmhsT5aQ5jrN8oXM1aKl8VNJqAcWpOJBypp2Vc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zZGqQcileriCYrc/o7hPsQL2fCl7GmjbSmOjO7rTJiKjXck5FToBWkxdRESD1W7R/
-         LpkQAq8Ya/K1+E6iUiZVSa+UVlPRuVAsxzTdk06qoIbKsqW+a5N0BTx3Yk3vuEZCuU
-         AK0GUlzTJRF+PApNESsj4NXLsE3+v6GGhgR9UanQ=
-Date:   Tue, 18 Feb 2020 18:58:47 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Kamal Heib <kamalheib1@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>
-Subject: Re: [PATCH for-next v2] RDMA/siw: Fix setting active_{speed, width}
- attributes
-Message-ID: <20200218165847.GA15239@unreal>
-References: <20200218095911.26614-1-kamalheib1@gmail.com>
+        id S1726539AbgBRRLu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 18 Feb 2020 12:11:50 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Feb 2020 09:11:50 -0800
+X-IronPort-AV: E=Sophos;i="5.70,456,1574150400"; 
+   d="scan'208";a="228798693"
+Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.204.151]) ([10.254.204.151])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 18 Feb 2020 09:11:48 -0800
+Subject: Re: RDMA device renames and node description
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Honggang LI <honli@redhat.com>,
+        Gal Pressman <galpress@amazon.com>
+References: <5ae69feb-5543-b203-2f1b-df5fe3bdab2b@intel.com>
+ <20200218140444.GB8816@unreal>
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+Message-ID: <1fcc873b-3f67-2325-99cc-21d90edd2058@intel.com>
+Date:   Tue, 18 Feb 2020 12:11:47 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200218095911.26614-1-kamalheib1@gmail.com>
+In-Reply-To: <20200218140444.GB8816@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 11:59:11AM +0200, Kamal Heib wrote:
-> Make sure to set the active_{speed, width} attributes to avoid reporting
-> the same values regardless of the underlying device.
->
-> Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
-> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-> ---
-> V2: Change rc to rv.
-> ---
->  drivers/infiniband/sw/siw/siw_verbs.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-> index 73485d0da907..d5390d498c61 100644
-> --- a/drivers/infiniband/sw/siw/siw_verbs.c
-> +++ b/drivers/infiniband/sw/siw/siw_verbs.c
-> @@ -165,11 +165,12 @@ int siw_query_port(struct ib_device *base_dev, u8 port,
->  		   struct ib_port_attr *attr)
->  {
->  	struct siw_device *sdev = to_siw_dev(base_dev);
-> +	int rv;
->
->  	memset(attr, 0, sizeof(*attr));
+On 2/18/2020 9:04 AM, Leon Romanovsky wrote:
+> On Fri, Feb 14, 2020 at 01:13:53PM -0500, Dennis Dalessandro wrote:
+>> Was there any discussion on the upgrade scenario for existing deployments as
+>> far as device-rename changing node descriptions?
+>>
+>> If someone is running an older version of rdma-core they are going to have a
+>> certain set of node descriptions for each node. This could be in logs, or
+>> configuration databases, who knows what. Now if they upgrade to a new
+>> version of rdma-core their node descriptions all automatically change out
+>> from under them by default.
+>>
+>> Of course the admin could disable the rename prior to upgrade and as Leon
+>> pointed out previously the upgrade won't remove the disablement file. The
+>> problem is they would have to know to do that ahead of time.
+> 
+> Dennis,
+> 
+> It was discussed and the conclusion was that most if not all users are
+> using one of two upgrade and strategy.
 
-This line should go too. IB/core clears attr prior to call driver.
+Do you have a pointer to a thread I can read, I apparently missed it?
 
-Thanks
+> First option is to rely on distro and every distro behaves differently
+> in such cases, some of them won't change anything till their last user
+> dies :) and others more dynamic with more up-to-date packages already
+> adopted our default.
 
->
-> -	attr->active_speed = 2;
-> -	attr->active_width = 2;
-> +	rv = ib_get_eth_speed(base_dev, port, &attr->active_speed,
-> +			 &attr->active_width);
->  	attr->gid_tbl_len = 1;
->  	attr->max_msg_sz = -1;
->  	attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
-> @@ -192,7 +193,7 @@ int siw_query_port(struct ib_device *base_dev, u8 port,
->  	 * attr->subnet_timeout = 0;
->  	 * attr->init_type_repy = 0;
->  	 */
-> -	return 0;
-> +	return rv;
->  }
->
->  int siw_get_port_immutable(struct ib_device *base_dev, u8 port,
-> --
-> 2.21.1
->
+This is the issue I see. The problem is when the distro doesn't know any 
+better and pulls in a new rdma-core and breaks things unintentionally. 
+Up to date is good, but up to date that brings with it what is 
+essentially an ABI breakage is not.
+
+> Second option is to use numerous OFED stacks, which are expected to
+> provide full upgrade to all components which will work smoothly.
+
+Yeah I'm sure OFED will handle things for themselves.
+
+> 
+> Users who upgrade their system from live upstream repo are expected to
+> be proficient enough to be deal with change of defaults.
+
+Yeah this I completely agree with.
+
+-Denny
