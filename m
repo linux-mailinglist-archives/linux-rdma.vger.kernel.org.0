@@ -2,83 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A20F01620BB
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 07:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF4A1620C2
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 07:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbgBRGQh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Feb 2020 01:16:37 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:39429 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgBRGQh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Feb 2020 01:16:37 -0500
-Received: by mail-ot1-f66.google.com with SMTP id 77so18452509oty.6
-        for <linux-rdma@vger.kernel.org>; Mon, 17 Feb 2020 22:16:36 -0800 (PST)
+        id S1726072AbgBRGUc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Feb 2020 01:20:32 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:46755 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726065AbgBRGUc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Feb 2020 01:20:32 -0500
+Received: by mail-pg1-f196.google.com with SMTP id b35so10278643pgm.13
+        for <linux-rdma@vger.kernel.org>; Mon, 17 Feb 2020 22:20:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NbfPddXeE0QPMjXyN0a3kXmjNViDiRwh9bgnEAmH2K8=;
-        b=d0+A2ztxlNEsFBCrZ//aWYKpmZj1McPOeRXp7hrPI2UtGXM93siOHfR8Rx8b+8I6z+
-         /vMfeMLLvVM8b/vI9xhWJPCqz7Vztwinqs6mq2+x5CWsllg6Ax3nx9/Jq2FTBVAM5lbC
-         EHXEyQlUJZzQbGd7fGQQt7kNqg1gD0ZbvPVHU=
+        h=from:to:cc:subject:date:message-id;
+        bh=5UE4AxOFzaoIoR8VYnOCfbRZ399eioexG6iH32o3YWo=;
+        b=drHHEZ/EoQ4CHytGsZWW1BeZbprjfORyr17gXdvW7PUtu5RwyQ+6/iyoXt+9fZY0uN
+         5lhgum2k30aFDagH/bvR+RUoiYzfmOQWvS8Td9sZywA5ROMzExOD7ZMruaWqCcTpbUO7
+         Bc/cxvcoOyFVtxAQeiZtUjsavI1p/GE3wSHQg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NbfPddXeE0QPMjXyN0a3kXmjNViDiRwh9bgnEAmH2K8=;
-        b=Xe8fWa+Q6nKsOE2BvnS/915vByLpUYWxYpKHFBzAsSc3yp4dm/3VN+wBRqMGUi0jg6
-         TMxd3nfS1S2wKF1MyAl+si+SZIdZWG1PClNSjZ1OYMsWCAlg9aWof5USKMGk1XTYgOBN
-         FcC31LvN9rnf7NX2YLekHne3mrgKQvBuo/lokJ5lGBY9Te00HotOIA22FNVEQ+MklXwo
-         j50wHEPFZsXLprtnP9WkjwhWu5p7yU8p8jN8Wh/HmQggtx6R8BpN8GJcubh0RtIldxNx
-         ZLULJh5uLMSmngg6jGU8Kt4wDA6EHAfigksN0X2yns89i9NBlN51kFynNOm1Vsd1a3qb
-         iyOg==
-X-Gm-Message-State: APjAAAUauYGAIcAt8VEGSf2UFsrSKCV/JAfugCZ5ll5jSi0xjS4mi1ee
-        rzBmpoA8GEbuvFPgJMNePLmDePVpXZdwQF2HDTR2cQ==
-X-Google-Smtp-Source: APXvYqymEcy813pHpNEXy0+i8V4xvrQhhrlvbkcO0857nIFcANJFZYGu01jsfsWI5gnUxR9XSRBuTJuK3MjJ5pY1ZHo=
-X-Received: by 2002:a9d:4d99:: with SMTP id u25mr1199517otk.216.1582006596511;
- Mon, 17 Feb 2020 22:16:36 -0800 (PST)
-MIME-Version: 1.0
-References: <1576477201-2842-1-git-send-email-selvin.xavier@broadcom.com>
- <1576477201-2842-2-git-send-email-selvin.xavier@broadcom.com>
- <20191218140835.GG17227@ziepe.ca> <903a4154-8237-0178-dc5f-34c58fa06aaa@mellanox.com>
- <CA+sbYW2nvT09ty8FsbG=GC_3MWJLJU8Mh_Lq+96ffvdxnfFr_Q@mail.gmail.com> <20191219141810.GA24224@ziepe.ca>
-In-Reply-To: <20191219141810.GA24224@ziepe.ca>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=5UE4AxOFzaoIoR8VYnOCfbRZ399eioexG6iH32o3YWo=;
+        b=g0QNn1db2oUllV5mUff+rOH5ECX+UQZpEfKwkSr+mz+omMfoC7zoMBHpafDea5sZJy
+         DYlYzTjB/jM9kJ5jaSMXCW5CVSrztT6nkWwWgpJ+gYR2t9GVIRAH1WIJ+9+++1HYrvWk
+         ILIRaEx1AkYfrxsfgWJQYz3yPIHLvramdHzOHOcce9kqqZVnYE7QeYdFjmpAmcs9QDQ+
+         fOJeTt9HPnhk4Z3UFxM38VsA7YOkjQif56+L5OuJMgaSjv/e5TLui1OuE+KB3/NAf9HR
+         aQa0T/RWtJwSsh9byY5kD1VErEwVi57N71DxIllijFH20Wg1eiAg79uu+nxA8/3qRpAB
+         /cPA==
+X-Gm-Message-State: APjAAAV9ZzDA2s/CroqADJn5GkuYq/yOEPYt7rBYwoQ5USwKkBZAblb3
+        eWpvikkUgZ6Ly1h0G6ZxvPhNGQ==
+X-Google-Smtp-Source: APXvYqwtifHKE40mp6LEEWN8JW5zX+GZVeuKIayxNqLFZbE0+hq6ps1axOJMMNr8AwSGXSZuGn32+g==
+X-Received: by 2002:a63:9251:: with SMTP id s17mr21039092pgn.127.1582006831687;
+        Mon, 17 Feb 2020 22:20:31 -0800 (PST)
+Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id 72sm2606753pfw.7.2020.02.17.22.20.29
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 17 Feb 2020 22:20:31 -0800 (PST)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Tue, 18 Feb 2020 11:46:25 +0530
-Message-ID: <CA+sbYW2qnO908KvduGNE9uWu0jvXd83cQp3pLc+Mk7PoRb-Tkw@mail.gmail.com>
-Subject: Re: [PATCH for-next v2 1/2] IB/core: Add option to retrieve driver
- gid context from ib_gid_attr
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Parav Pandit <parav@mellanox.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Devesh Sharma <devesh.sharma@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     dledford@redhat.com, jgg@mellanox.com
+Cc:     linux-rdma@vger.kernel.org,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v3 0/2] Retrieve HW GID context from ib_gid_attr
+Date:   Mon, 17 Feb 2020 22:20:08 -0800
+Message-Id: <1582006810-32174-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 19, 2019 at 7:48 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Thu, Dec 19, 2019 at 10:36:45AM +0530, Selvin Xavier wrote:
-> > > Instead I guess a new symbol as rdma_get_gid_attr_context() can be added
-> > > too.
-> > I am okay with both adding context to gid_attr struct or adding a symbol.
-> > Let me know your preference.
-> > Or shall i handle this inside bnxt_re itself. Not sure whether any
-> > other drivers intend to use this.
->
-> Having a function to return the same void * that is passed to the
-> driver ops functions seems reasonable and small to me.
-Posting a patch with a symbol that returns void *
+Provide an option for vendor drivers to get the HW GID context
+from the ib_gid_attr during modify_qp and create_ah. Required
+for drivers/HW that maintains HW gid index different than the
+host sgid_index.
 
-Thanks
+Please review and merge
 
->
-> But you could also spruce this up a bit and have it work more like a
-> true 'priv' and get rid of that void *..
->
-> The container_of thing is really odd
->
-> Jason
+Thanks,
+Selvin Xavier
+
+v2 -> v3:
+ Added a new symbol to retrieve the hw context.
+
+v1 -> v2:
+ Addressed review comments from Parav
+
+Selvin Xavier (2):
+  RDMA/core: Add helper function to retrieve driver gid context from gid
+    attr
+  RDMA/bnxt_re: Use rdma_read_gid_hw_context to retrieve HW gid index
+
+ drivers/infiniband/core/cache.c          | 41 ++++++++++++++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 27 +++++++++++----------
+ include/rdma/ib_cache.h                  |  1 +
+ 3 files changed, 56 insertions(+), 13 deletions(-)
+
+-- 
+2.5.5
+
