@@ -2,89 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C02971638BF
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 01:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0661163920
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 02:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727285AbgBSAwq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Feb 2020 19:52:46 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:37852 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgBSAwq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Feb 2020 19:52:46 -0500
-Received: by mail-qv1-f68.google.com with SMTP id s6so1027839qvq.4
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Feb 2020 16:52:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KIbsJalc/dC7VRudsS5+r5VYX3krW+vjU/t6wrHSDfE=;
-        b=R+cZ/0nvZkyMsdEGX0gFJesMwd4njo27fAdnqf0xURXNVBq3k5INpWU3TavNDZFxsm
-         6emS0TmQJKXJfW9ZLdHLdh1ZDQfpkz+mgXclWnFdTl8k/dNW1e5jP2s2iB1Gn8ULcaBW
-         J6gzjpRs8un8M3OzqTobXTMd4yJEEEXaBwjqUEDXrqvpc0rxgYEUkk5Lgw/CFMWQk7WC
-         uAdL4ihu91+npNHxnXU1EwYlOQsWYExbWNHu2oUMLxj6wlXw2/sUuLoSjQ6RYK6dBFWV
-         w2E5SIx0a3amM4Z3HtXTvg2RHcITL9acMLJ/RkvMo9QXyfegErup/xXDbQR6TIHIJC7K
-         nj+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KIbsJalc/dC7VRudsS5+r5VYX3krW+vjU/t6wrHSDfE=;
-        b=R3Rw7xDTJRc7D6Dp1PHDWizmd/CrpqwHY9A8cH67cDqHYfYV5LHg/2Ch42Db3GhXSf
-         hoOZ1iLr39t4OzvBsWl0lnpUMhsGZiFcYobzQ0Jrj3wwA4JXJGMsHhMZpR/fX59b1CNI
-         9Y83Q/zeH6GrFA0Jv6KNO+f7EUWizCXHgVendtMxu60tz6oRB6KakUL1VnupnDBrOLLe
-         qQBMj47SjfKINzV+LygAHO3YbqWiPVeRMJIi6C8/VHAy1e4LLsbdJhek57BqfU4UdNNk
-         5DeV14rmDfl0by0poNGnK9Gkg+nXtgGfKPtZWlghTuEfdU/pi4Ds3QFWIL5u5cMqd3tK
-         aLIg==
-X-Gm-Message-State: APjAAAVUhSX00WcEW8cdQREVN6ZFsO8AAprP5teJCSNflBhVPmBQMbuS
-        f8NSndmkKRb+Ufa5hMwoEGAe4w==
-X-Google-Smtp-Source: APXvYqxwEh9soMRrYkCxsKW1GfBiNqH6eyzJGIKeEPBUz331WtJ+4q+i4PspGABZ8klTvfH0/R1g9w==
-X-Received: by 2002:a0c:e408:: with SMTP id o8mr19302183qvl.236.1582073564612;
-        Tue, 18 Feb 2020 16:52:44 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id y26sm101416qtc.94.2020.02.18.16.52.44
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 18 Feb 2020 16:52:44 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j4DbX-0006fp-Ss; Tue, 18 Feb 2020 20:52:43 -0400
-Date:   Tue, 18 Feb 2020 20:52:43 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v2 for-next 0/7] RDMA/hns: Refactor qp related code
-Message-ID: <20200219005243.GB25540@ziepe.ca>
-References: <1581325720-12975-1-git-send-email-liweihang@huawei.com>
+        id S1726863AbgBSBNe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Feb 2020 20:13:34 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:45342 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726757AbgBSBNe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 18 Feb 2020 20:13:34 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 41652542FF67A9A28705;
+        Wed, 19 Feb 2020 09:13:32 +0800 (CST)
+Received: from [127.0.0.1] (10.74.191.121) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.439.0; Wed, 19 Feb 2020
+ 09:13:24 +0800
+Subject: Re: [RFC rdma-next] RDMA/core: Add attribute WQ_MEM_RECLAIM to
+ workqueue "infiniband"
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Lang Cheng <chenglang@huawei.com>
+CC:     <dledford@redhat.com>, <leon@kernel.org>, <davem@davemloft.net>,
+        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
+        <linuxarm@huawei.com>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>
+References: <1581996935-46507-1-git-send-email-chenglang@huawei.com>
+ <20200218153156.GD31668@ziepe.ca>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <212eda31-cc86-5487-051b-cb51c368b6fe@huawei.com>
+Date:   Wed, 19 Feb 2020 09:13:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1581325720-12975-1-git-send-email-liweihang@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200218153156.GD31668@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.191.121]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 10, 2020 at 05:08:33PM +0800, Weihang Li wrote:
-> This series refactor qp related code, including creating, destroying qp and
-> so on to make the processs easier to understand and maintain.
+On 2020/2/18 23:31, Jason Gunthorpe wrote:
+> On Tue, Feb 18, 2020 at 11:35:35AM +0800, Lang Cheng wrote:
+>> The hns3 driver sets "hclge_service_task" workqueue with
+>> WQ_MEM_RECLAIM flag in order to guarantee forward progress
+>> under memory pressure.
 > 
-> Previous disscussion can be found at:
-> https://patchwork.kernel.org/cover/11341265/
+> Don't do that. WQ_MEM_RECLAIM is only to be used by things interlinked
+> with reclaimed processing.
 > 
-> Changes since v1:
-> - Reduce the number of prints as Leon suggested.
-> - Fix a wrong function name in description of patch 4/7.
->
-> Xi Wang (7):
->   RDMA/hns: Optimize qp destroy flow
->   RDMA/hns: Optimize qp context create and destroy flow
->   RDMA/hns: Optimize qp number assign flow
->   RDMA/hns: Optimize qp buffer allocation flow
->   RDMA/hns: Optimize qp param setup flow
->   RDMA/hns: Optimize kernel qp wrid allocation flow
->   RDMA/hns: Optimize qp doorbell allocation flow
+> Work on queues marked with WQ_MEM_RECLAIM can't use GFP_KERNEL
+> allocations, can't do certain kinds of sleeps, can't hold certain
+> kinds of locks, etc.
 
-These don't apply, please resend.
+From mlx5 driver, it seems that there is GFP_KERNEL allocations
+on wq marked with WQ_MEM_RECLAIM too:
 
-Jason
+mlx5e_tx_timeout_work() -> mlx5e_safe_reopen_channels() ->
+mlx5e_safe_switch_channels() -> mlx5e_open_channels()
+
+kcalloc() is called with GFP_KERNEL in mlx5e_open_channels(),
+and mlx5e_tx_timeout_work() is queued with priv->wq, which is
+allocated with WQ_MEM_RECLAIM flags. see:
+
+mlx5e_netdev_init() -> create_singlethread_workqueue()
+
+
+From the comment in kernel/workqueue.c, the work queued with
+wq with WQ_MEM_RECLAIM flag set seems to be executed without
+blocking under some rare case. I still not quite understand
+the comment, and I can not find any doc that point out the
+GFP_KERNEL allocations can not be done in wq with WQ_MEM_RECLAIM
+yet. Is there any doc that mentions that GFP_KERNEL allocations
+can not be done in wq with WQ_MEM_RECLAIM?
+
+
+/**
+ * rescuer_thread - the rescuer thread function
+ * @__rescuer: self
+ *
+ * Workqueue rescuer thread function.  There's one rescuer for each
+ * workqueue which has WQ_MEM_RECLAIM set.
+ *
+ * Regular work processing on a pool may block trying to create a new
+ * worker which uses GFP_KERNEL allocation which has slight chance of
+ * developing into deadlock if some works currently on the same queue
+ * need to be processed to satisfy the GFP_KERNEL allocation.  This is
+ * the problem rescuer solves.
+ *
+ * When such condition is possible, the pool summons rescuers of all
+ * workqueues which have works queued on the pool and let them process
+ * those works so that forward progress can be guaranteed.
+ *
+ * This should happen rarely.
+ *
+ * Return: 0
+ */
+
+
+The below is the reason we add the sets "hclge_service_task" workqueue
+with WQ_MEM_RECLAIM through analysing why other ethernet drivers has
+allocated wq with WQ_MEM_RECLAIM flag, I may be wrong about that:
+
+hns3 ethernet driver may be used as the low level transport of a
+network file system, memory reclaim data path may depend on the
+worker in hns3 driver to bring back the ethernet link so that it flush
+the some cache to network based disk.
+
+> 
+> Jason
+> 
+> 
+
