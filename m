@@ -2,77 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59416164BBC
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 18:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D95164C45
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 18:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgBSRTr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Feb 2020 12:19:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726514AbgBSRTr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 19 Feb 2020 12:19:47 -0500
-Received: from cam-smtp0.cambridge.arm.com (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDF1524676;
-        Wed, 19 Feb 2020 17:19:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582132786;
-        bh=uEL0il3OWfIvRlo9gJQEYnsNyJNOYJQAy652WFH3og8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L12WpsohZFdSZGCow7zI1+nm3paf1fTSMkNBxiCE5nqj7n+QUajl/pUfXvkFkfaEh
-         H5pZ/QdArs6X6CHZ9iuyIK+WKHAmA7eXWJkvx4eOJK6/DajncbYB3KRA1l+H3xIhix
-         L1lMlhVM/3FS7VojBGWLMrs5RantglPIiUlHbpMI=
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-efi@vger.kernel.org
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Leif Lindholm <leif@nuviainc.com>,
-        Peter Jones <pjones@redhat.com>,
-        Alexander Graf <agraf@csgraf.de>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Jeff Brasen <jbrasen@nvidia.com>,
-        Atish Patra <Atish.Patra@wdc.com>, x86@kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 5/9] infiniband: hfi1: use EFI GetVariable only when available
-Date:   Wed, 19 Feb 2020 18:19:03 +0100
-Message-Id: <20200219171907.11894-6-ardb@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200219171907.11894-1-ardb@kernel.org>
-References: <20200219171907.11894-1-ardb@kernel.org>
+        id S1726582AbgBSRlz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Feb 2020 12:41:55 -0500
+Received: from p3plsmtpa06-08.prod.phx3.secureserver.net ([173.201.192.109]:32778
+        "EHLO p3plsmtpa06-08.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726518AbgBSRlz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 Feb 2020 12:41:55 -0500
+Received: from [192.168.0.78] ([24.218.182.144])
+        by :SMTPAUTH: with ESMTPSA
+        id 4TM9j6pqadKMb4TM9jf8Kv; Wed, 19 Feb 2020 10:41:54 -0700
+X-CMAE-Analysis: v=2.3 cv=VfKJw2h9 c=1 sm=1 tr=0
+ a=ugQcCzLIhEHbLaAUV45L0A==:117 a=ugQcCzLIhEHbLaAUV45L0A==:17
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=e4k_Uep51z5miWk8QScA:9
+ a=QEXdDO2ut3YA:10
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: [RFC v2] RoCE v2.0 Entropy - IPv6 Flow Label and UDP Source Port
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Mark Zhang <markz@mellanox.com>
+Cc:     Alex Rosenbaum <rosenbaumalex@gmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Alex Rosenbaum <alexr@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+References: <CAFgAxU8XmoOheJ29s7r7J23V1x0QcagDgUDVGSyfKyaWSEzRzg@mail.gmail.com>
+ <62f4df50-b50d-29e2-a0f4-eccaf81bd8d9@talpey.com>
+ <20200213154110.GJ31668@ziepe.ca>
+ <3be3b3ff-a901-b716-827a-6b1019fa1924@mellanox.com>
+ <de3aeeb7-41ef-fadc-7865-e3e9fc005476@mellanox.com>
+ <55e8c9cf-cd64-27b2-1333-ac4849f5e3ff@talpey.com>
+ <e758da0d-94a3-a22f-c2aa-3d13714c4ed3@talpey.com>
+ <4fc5590f-727c-2395-7de0-afb1d83f546b@mellanox.com>
+ <91155305-10f0-22b5-b93b-2953c53dfc46@talpey.com>
+ <cb5ab63b-57cd-46ac-0d51-8bffaf537590@mellanox.com>
+ <20200219130613.GM31668@ziepe.ca>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <a0067ba5-c15b-4194-0de2-3964393e9993@talpey.com>
+Date:   Wed, 19 Feb 2020 12:41:53 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <20200219130613.GM31668@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfNdKGI+1+gafTmxopzH3FTwVnPNcca3jCiQhtwgu1hieTPEgQMnQXn8Lps5P3WYTrY1vLoE0dbDKK0vM2Mt897OdSuMZbnYRSy61Qi9y05aQvmSY7eCi
+ 6kSHN1Ty5HdyMqRQem9AuvsiIPYHmZpbpKG8PRviAjBCYAlgS0Zb18i4T9a2/4KcbtayC51nb/ZNcAr/IVbFRc0uDf/lQdOGdOLwoK62DYMq4BrYvGMgpK1B
+ 2sie/k75OGw/c/y4zwLJ13kjTQLKbM4NoOE4K+09beaaXdNG3vVePkbGtX++h4T/+I/6dcndRCSXotrbUMG1qZirr1p0En99hqvwqEEYs+Lbhql+85nOGD5a
+ 7Q30+sqzRQ6x1to9dGgzCRIaA4w29SPnbjheaIsdeHEUiQ5EpRSjnYKrqbsfibX7T2KTgb35
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Replace the EFI runtime services check with one that tells us whether
-EFI GetVariable() is implemented by the firmware.
+On 2/19/2020 8:06 AM, Jason Gunthorpe wrote:
+> On Wed, Feb 19, 2020 at 02:06:28AM +0000, Mark Zhang wrote:
+>   
+>> The symmetry is important when calculate flow_label with DstQPn/SrcQPn
+>> for non-RDMA CM Service ID (check the first mail), so that the server
+>> and client will have same flow_label and udp_sport. But looks like it is
+>> not important in this case.
+> 
+> If the application needs a certain flow label it should not rely on
+> auto-generation, IMHO.
+> 
+> I expect most networks will not be reversible anyhow, even with the
+> same flow label?
 
-Cc: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Cc: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-rdma@vger.kernel.org
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/infiniband/hw/hfi1/efivar.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+These are network flow labels, not under application control. If they
+are under application control, that's a security issue.
 
-diff --git a/drivers/infiniband/hw/hfi1/efivar.c b/drivers/infiniband/hw/hfi1/efivar.c
-index d106d23016ba..c22ab7b5163b 100644
---- a/drivers/infiniband/hw/hfi1/efivar.c
-+++ b/drivers/infiniband/hw/hfi1/efivar.c
-@@ -78,7 +78,7 @@ static int read_efi_var(const char *name, unsigned long *size,
- 	*size = 0;
- 	*return_data = NULL;
- 
--	if (!efi_enabled(EFI_RUNTIME_SERVICES))
-+	if (!efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE))
- 		return -EOPNOTSUPP;
- 
- 	uni_name = kcalloc(strlen(name) + 1, sizeof(efi_char16_t), GFP_KERNEL);
--- 
-2.17.1
+But I agree, if the symmetric behavior is not needed, it should be
+ignored and a better (more uniformly distributed) hash should be chosen.
 
+I definitely like the simplicity and perfect flatness of the newly
+proposed (src * 31) + dst. But that "31" causes overflow into bit 21,
+doesn't it? (31 * 0xffff == 0x1f0000)
+
+Tom.
