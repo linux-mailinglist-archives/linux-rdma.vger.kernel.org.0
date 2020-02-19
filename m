@@ -2,132 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 446151644F6
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 14:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D49D1644F9
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 14:06:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727636AbgBSNE5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Feb 2020 08:04:57 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:33844 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgBSNE5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Feb 2020 08:04:57 -0500
-Received: by mail-qk1-f193.google.com with SMTP id c20so26700qkm.1
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Feb 2020 05:04:57 -0800 (PST)
+        id S1726551AbgBSNGQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Feb 2020 08:06:16 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:39465 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726530AbgBSNGP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Feb 2020 08:06:15 -0500
+Received: by mail-qt1-f195.google.com with SMTP id c5so95985qtj.6
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Feb 2020 05:06:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=goLUugo2OcTd80Umui3tF9d4Pkr7paqnVUo9dLDeBaU=;
-        b=OsI3n81/VYVZ0WkakBm6Md8OmeNeMhEdktr7wEgXim8YZe7N/5zJjaf2xod5Whd6Bb
-         QaJJrAMOiy1aBVHnA/CLprv0EB89Ymjj9MUl8PqBbiqq67EN1KbuqMOlDYwQKbjgOQaW
-         zf/FroPxNtqkuqkaVNCZiu/msV290IQ29Zaq7nJEKR8Kwxg+5Vm/1MKn8nRSP5iFqO92
-         knT357KPMvhNeBIUdGytFqc/cTstbOODiVH/5BaQWBb3SY+2z2D6CxcuLBRt1sVyE+Ef
-         FLZHgOhL1l1eAmBl7iZhozVW9ayxUL1sF5aQYp09VXEUbDppncp0WZv4KL72FqUGnE+z
-         aqPw==
+        bh=LOhYAjtwm0RnntQotOSjXWQh/9MlZzmVQ8pbNJ6XBfg=;
+        b=oL+rRgkRbiftmfnji6CO6r3otO3zmhMMCMVIE7sjP4bdAIKN321dV9XpMkdLY2BPGj
+         lDEL9EiZQajE3K9JXXy/9leWFuKdHIN2jCJ9UPPQx0tnL3TmOm6kVsrytCH3U9b2hAh0
+         UCHORrPB3LiCHGvZ0SEpzkojmEnn5bnOSpEZ+nM2tQ6pt7m5CWJJ4ebGDksVjMbbQd1M
+         +dhGMV93EJ7353ZufsufV4lO53MLiL1IZEnyBFNFJ2yvNMNprHKeLSvMNqg4yDE0vSD3
+         TTs23aL4v3v0Kkoi4k2eb7HrXaSEiE28nbUlOZzkUIDuhIP1c/vy0NeX/OUkHhds/0aw
+         fr7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=goLUugo2OcTd80Umui3tF9d4Pkr7paqnVUo9dLDeBaU=;
-        b=opFpC5ZF6O3O48Ko5oTNHq+a4xVXSuvjJ1wRuRsw3qfwnv+BK/ElCpPVGjJqyILfq9
-         43b9p1usDtWPSSAPTeCX15vHZzkOJHX9s9O+NK0NDXE2EaXMaOLTTQ4FPMiJJ0u5+KaH
-         5aNymVR9bsTxJylnNxTFiDJ3h2MMRnqkDxGrCJxlyHeMiqvKPbBD+bybN0NDAUXdQiIn
-         jSwoZbyvNtSj416ltX/vqkEwx3CcaymhDSDLvOQQ/OCNnIqfDJAOrjho/xYJeFMhLENG
-         TQFo1J1fGgdATxZFtC3ccCZbtcRx/VGcQhbZiJWEi/t7IvYQADqOXFtpIFAYzDSaiF9z
-         AZhQ==
-X-Gm-Message-State: APjAAAUnGiOjYVFBUKsTFqm3fT5HaIbigJRJpUap6gLeGrek81wMXP0v
-        F2bOe4hcYbb70wR8b9LmI8evsQ==
-X-Google-Smtp-Source: APXvYqxJLsvAqlYphCh5e9GMvszpHDnG9qhhwA485l0jlHZRwK3O7Gt57g8U47CpqY7u+6v/lf4oxw==
-X-Received: by 2002:a05:620a:41b:: with SMTP id 27mr23823411qkp.349.1582117496531;
-        Wed, 19 Feb 2020 05:04:56 -0800 (PST)
+        bh=LOhYAjtwm0RnntQotOSjXWQh/9MlZzmVQ8pbNJ6XBfg=;
+        b=WE3Uay5Zi1ESQXTwBbfyUqrh+dE1ZaPmaXLoSw2aZbXsbZXo5MOXJzz3AP5/p2FCPk
+         fyg7G4y6hW611eyXjb1ppfUy75WZyDJci5GdxRyKOqgp2/9scJagLaI1qSrxF+FD5RdT
+         70pDJEODuFRb6JgYvEUC3UpySonGm2LDMuyVV33p2rXxvb0klgEny4/57CE3aplwh5oh
+         s1DZ3rIgh4NQtrS0M0MVZF7AyGyh6yB7K4emIB3BnSTDlQcrC1T/PLUUXJQZa1L0i30F
+         57obXWh7X6yvaPLt110O2XCS7NO7lCMyo0La+HJrHntHwtzQUxfN67oafrNdWNIkMwqF
+         RNyg==
+X-Gm-Message-State: APjAAAVdIaz5jKoSO39ahuwzzF2wqHXxnfVNXYWN78/qKqrQnu6lRXBR
+        2zDhky96I6r3tahSQK+payfSBQ==
+X-Google-Smtp-Source: APXvYqxBOpvAopDbW95KrBwYxrVlXxdpnw9ZYSLiUGN/aYcsnH3aC5H7eeS+r8UOSe+09V+izWo7Dw==
+X-Received: by 2002:ac8:4616:: with SMTP id p22mr22142237qtn.368.1582117574890;
+        Wed, 19 Feb 2020 05:06:14 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id x197sm960409qkb.28.2020.02.19.05.04.55
+        by smtp.gmail.com with ESMTPSA id v50sm961847qtb.20.2020.02.19.05.06.14
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 19 Feb 2020 05:04:56 -0800 (PST)
+        Wed, 19 Feb 2020 05:06:14 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1j4P27-0000tR-Bf; Wed, 19 Feb 2020 09:04:55 -0400
-Date:   Wed, 19 Feb 2020 09:04:55 -0400
+        id 1j4P3N-0000uA-Rb; Wed, 19 Feb 2020 09:06:13 -0400
+Date:   Wed, 19 Feb 2020 09:06:13 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Lang Cheng <chenglang@huawei.com>, dledford@redhat.com,
-        davem@davemloft.net, salil.mehta@huawei.com,
-        yisen.zhuang@huawei.com, linuxarm@huawei.com,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Saeed Mahameed <saeedm@mellanox.com>, bhaktipriya96@gmail.com,
-        tj@kernel.org, Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Subject: Re: [RFC rdma-next] RDMA/core: Add attribute WQ_MEM_RECLAIM to
- workqueue "infiniband"
-Message-ID: <20200219130455.GL31668@ziepe.ca>
-References: <1581996935-46507-1-git-send-email-chenglang@huawei.com>
- <20200218153156.GD31668@ziepe.ca>
- <212eda31-cc86-5487-051b-cb51c368b6fe@huawei.com>
- <20200219064507.GC15239@unreal>
- <1155d15f-4188-e5cd-3e4a-6e0c52e9b1eb@huawei.com>
+To:     Mark Zhang <markz@mellanox.com>
+Cc:     Tom Talpey <tom@talpey.com>,
+        Alex Rosenbaum <rosenbaumalex@gmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Alex Rosenbaum <alexr@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+Subject: Re: [RFC v2] RoCE v2.0 Entropy - IPv6 Flow Label and UDP Source Port
+Message-ID: <20200219130613.GM31668@ziepe.ca>
+References: <CAFgAxU8XmoOheJ29s7r7J23V1x0QcagDgUDVGSyfKyaWSEzRzg@mail.gmail.com>
+ <62f4df50-b50d-29e2-a0f4-eccaf81bd8d9@talpey.com>
+ <20200213154110.GJ31668@ziepe.ca>
+ <3be3b3ff-a901-b716-827a-6b1019fa1924@mellanox.com>
+ <de3aeeb7-41ef-fadc-7865-e3e9fc005476@mellanox.com>
+ <55e8c9cf-cd64-27b2-1333-ac4849f5e3ff@talpey.com>
+ <e758da0d-94a3-a22f-c2aa-3d13714c4ed3@talpey.com>
+ <4fc5590f-727c-2395-7de0-afb1d83f546b@mellanox.com>
+ <91155305-10f0-22b5-b93b-2953c53dfc46@talpey.com>
+ <cb5ab63b-57cd-46ac-0d51-8bffaf537590@mellanox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1155d15f-4188-e5cd-3e4a-6e0c52e9b1eb@huawei.com>
+In-Reply-To: <cb5ab63b-57cd-46ac-0d51-8bffaf537590@mellanox.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 03:40:59PM +0800, Yunsheng Lin wrote:
-> +cc Bhaktipriya, Tejun and Jeff
-> 
-> On 2020/2/19 14:45, Leon Romanovsky wrote:
-> > On Wed, Feb 19, 2020 at 09:13:23AM +0800, Yunsheng Lin wrote:
-> >> On 2020/2/18 23:31, Jason Gunthorpe wrote:
-> >>> On Tue, Feb 18, 2020 at 11:35:35AM +0800, Lang Cheng wrote:
-> >>>> The hns3 driver sets "hclge_service_task" workqueue with
-> >>>> WQ_MEM_RECLAIM flag in order to guarantee forward progress
-> >>>> under memory pressure.
-> >>>
-> >>> Don't do that. WQ_MEM_RECLAIM is only to be used by things interlinked
-> >>> with reclaimed processing.
-> >>>
-> >>> Work on queues marked with WQ_MEM_RECLAIM can't use GFP_KERNEL
-> >>> allocations, can't do certain kinds of sleeps, can't hold certain
-> >>> kinds of locks, etc.
-> 
-> By the way, what kind of sleeps and locks can not be done in the work
-> queued to wq marked with WQ_MEM_RECLAIM?
+On Wed, Feb 19, 2020 at 02:06:28AM +0000, Mark Zhang wrote:
+ 
+> The symmetry is important when calculate flow_label with DstQPn/SrcQPn 
+> for non-RDMA CM Service ID (check the first mail), so that the server 
+> and client will have same flow_label and udp_sport. But looks like it is 
+> not important in this case.
 
-Anything that recurses back into a blocking allocation function.
+If the application needs a certain flow label it should not rely on
+auto-generation, IMHO.
 
-If we are freeing memory because an allocation failed (eg GFP_KERNEL)
-then we cannot go back into a blockable allocation while trying to
-progress the first failing allocation. That is a deadlock.
-
-So a WQ cannot hold any locks that enclose GFP_KERNEL in any other
-threads.
-
-Unfortunately we don't have a lockdep test for this by default.
-
-> >> hns3 ethernet driver may be used as the low level transport of a
-> >> network file system, memory reclaim data path may depend on the
-> >> worker in hns3 driver to bring back the ethernet link so that it flush
-> >> the some cache to network based disk.
-> > 
-> > Unlikely that this "network file system" dependency on ethernet link is correct.
-> 
-> Ok, I may be wrong about the above usecase.  but the below commit
-> explicitly state that network devices may be used in memory reclaim
-> path.
-
-I don't really know how this works when the networking stacks
-intersect with the block stack.
-
-Forward progress on something like a NVMeOF requires a lot of stuff to
-be working, and presumably under reclaim.
-
-But, we can't make everything WQ_MEM_RECLAIM safe, because we could
-never do a GFP_KERNEL allocation..
-
-I have never seen specific guidance what to do here, I assume it is
-broken.
+I expect most networks will not be reversible anyhow, even with the
+same flow label?
 
 Jason
