@@ -2,102 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A268716504D
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 21:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2995B16506E
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 21:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727291AbgBSUyH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Feb 2020 15:54:07 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:39281 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726703AbgBSUyH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Feb 2020 15:54:07 -0500
-Received: by mail-qt1-f193.google.com with SMTP id c5so1293882qtj.6
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Feb 2020 12:54:06 -0800 (PST)
+        id S1727720AbgBSU6I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Feb 2020 15:58:08 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:44675 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726739AbgBSU6I (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Feb 2020 15:58:08 -0500
+Received: by mail-qk1-f193.google.com with SMTP id j8so1495013qka.11
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Feb 2020 12:58:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=YLaIAW0Lkknrx7pEhMD4u2gukgtf4c3eSrw1zC53+uM=;
-        b=dl7RHlWFHf6J5KKRNoP969BUk8w4nDMrtJ+aGdOUjYW3QHprh5gsqZq7QncqrqqZr4
-         m6xHh6c564ahAVkep43+wkQ3fgYwkM9YhVtI8bKgRnMO1oY2+WxxHXD35c5yDG6luu2v
-         3Zi+nX/FchZBVp9K50ol1q6HNC4IfwkJpH65jzk0BpYn1MsHmi6BdJgi/uy2mAIzULY6
-         OUGff6e7hKDgBwdhTQ7bXcqMRGD1OQMXD/Q8q+Vkh7enZFpvJDKOqY1s83i19hYagwG0
-         e8KK/pGgsBEvYSI2qH5gPpfdZtwlxuj7vERqBmO1RIadQsgaTdReUsE/4pUFSJY99yuM
-         XAGQ==
+        bh=9xXSiLUa2Hb363dyZQ+4wp+jSc9evSSCZAofUlXVWrU=;
+        b=iN5G3rCxrlqcksUj6CgB5Wbp19iADPp2B80b870iWpxg0U56qlRlMa3wq8R7/sER14
+         iYwsGOO5OKa+O7G6S9ItCTjL660zlgK/MVH6dOP0EX6aFERnus3BGOm81gkYo360+EDW
+         bhzhZOzIVM/LiQcdVczlqcwCamNYZxXmux7z3f1Ef8FyXWIK/1lES18tVTL+kOzGhmZi
+         9tVNQ15gI5vJ7Ilb8KnkGqVANETe3dTS449AnFhccT+k+mauErgQwdE0GRQAI6B7yIvu
+         JuvQav3xjZfOoDWNtWU9ttEUs6aOXE29JyNqIDDSYES4DMB3lBOO/b1DkZNsmiee0/Un
+         8uuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YLaIAW0Lkknrx7pEhMD4u2gukgtf4c3eSrw1zC53+uM=;
-        b=ltDaTul9qRsvS/vusYrt5c1nSecAXQHV3an1I9TbrrNBMLw71OhqsD3Eo7hT3+oPbg
-         wR6+CufmD05XENJFKdyKfqMm5pYNIT+XhSAWjPRfNnb1BwUGm4mDk+9/UfOSQ29XQaTm
-         qGs0AcWI4kUSvfwWx/4BOQaIIpg9YFuAt+tx6B3hLLY1aBNkk9Dpd918HOQ3sh6WVC31
-         eXtOyb55C4XHQkrgIFc+LslUfOtMwbXpvqUdSBlFJNWxPEttlBc/qX8MvshQwCaPQ/pP
-         XRIFAqEUpHqR2IJY3NrVm0HNTONuS17AZ1cJPyE+fdk6JifI/2jU7cBxmlkfJknaoBtO
-         ZQiw==
-X-Gm-Message-State: APjAAAU8EY4oiupmGXin1CyEvZUugqOxaALSgsXDIG5QHcjlJcc3CrdJ
-        sTsAU9yEtK/ktbWhzDZrFzbvOg==
-X-Google-Smtp-Source: APXvYqyvdHHF5nHRsZfIaz28uyycqjYc6epPoIy4SsohMfvnnCgJwRmR5vxio4lrHBjarf5BLVSe3A==
-X-Received: by 2002:ac8:5513:: with SMTP id j19mr23959953qtq.143.1582145646469;
-        Wed, 19 Feb 2020 12:54:06 -0800 (PST)
+        bh=9xXSiLUa2Hb363dyZQ+4wp+jSc9evSSCZAofUlXVWrU=;
+        b=uBIzuaM4OZmGQylNfFRalTLB8mKeoWm3WIUGNW7gvImCJ+fS7HWal41MNJbB6pvGIp
+         sv4qwjE1vOxlI5ZSmUD20j+Luy7pGJ5hWSCZqcXwt4rfdR2lsIKBZq3KVDa0VGHtZY3A
+         rqNSMQ8H+tg1MGJzpjI12RIl0YhjT+27H7TEud3NF7pYzPO7HPQvZHK/yRsYVzOW4Rmx
+         SMPod2Au7fYTyfk+/n51V286YpyBUQggldn/jHTunXHaTx2904jbLSkm9fjOgV7gGXpu
+         kLnxQoFVvX1KawojXi4dVj+M3K0uhPJdVzLctlyQz4R51DhYY9d/aWc+CTsruh8SyO1F
+         znUg==
+X-Gm-Message-State: APjAAAXTLJH5UiypUJHzrg77fOnyr7qSs7/gmh64FiDTdyApw2miAN4j
+        KQgr8LajFsAnZqJwHFtdn9k03A==
+X-Google-Smtp-Source: APXvYqy0CMq3V5fvx9+t9PRuLtF6ix/5RxnOKtMOcljRaB2bUqR7Uezf+aSacYg499eH/SEsymR8Bw==
+X-Received: by 2002:a37:40c:: with SMTP id 12mr25416692qke.212.1582145887255;
+        Wed, 19 Feb 2020 12:58:07 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id 123sm458739qkj.113.2020.02.19.12.54.06
+        by smtp.gmail.com with ESMTPSA id t23sm615308qto.88.2020.02.19.12.58.06
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 19 Feb 2020 12:54:06 -0800 (PST)
+        Wed, 19 Feb 2020 12:58:06 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1j4WM9-0003ir-JE; Wed, 19 Feb 2020 16:54:05 -0400
-Date:   Wed, 19 Feb 2020 16:54:05 -0400
+        id 1j4WQ2-0006sB-AK; Wed, 19 Feb 2020 16:58:06 -0400
+Date:   Wed, 19 Feb 2020 16:58:06 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] RDMA/core: Fix use of logical OR in get_new_pps
-Message-ID: <20200219205405.GX31668@ziepe.ca>
-References: <20200217204318.13609-1-natechancellor@gmail.com>
- <20200219204625.GA12915@ziepe.ca>
- <20200219205010.GA44941@ubuntu-m2-xlarge-x86>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        Moni Shoua <monis@mellanox.com>
+Subject: Re: [PATCH] RDMA/rxe: Fix configuration of atomic queue pair
+ attributes
+Message-ID: <20200219205806.GA26379@ziepe.ca>
+References: <20200217205714.26937-1-bvanassche@acm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200219205010.GA44941@ubuntu-m2-xlarge-x86>
+In-Reply-To: <20200217205714.26937-1-bvanassche@acm.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 01:50:10PM -0700, Nathan Chancellor wrote:
-> On Wed, Feb 19, 2020 at 04:46:25PM -0400, Jason Gunthorpe wrote:
-> > On Mon, Feb 17, 2020 at 01:43:18PM -0700, Nathan Chancellor wrote:
-> > > Clang warns:
-> > > 
-> > > ../drivers/infiniband/core/security.c:351:41: warning: converting the
-> > > enum constant to a boolean [-Wint-in-bool-context]
-> > >         if (!(qp_attr_mask & (IB_QP_PKEY_INDEX || IB_QP_PORT)) && qp_pps) {
-> > >                                                ^
-> > > 1 warning generated.
-> > > 
-> > > A bitwise OR should have been used instead.
-> > > 
-> > > Fixes: 1dd017882e01 ("RDMA/core: Fix protection fault in get_pkey_idx_qp_list")
-> > > Link: https://github.com/ClangBuiltLinux/linux/issues/889
-> > > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > > Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
-> > >  drivers/infiniband/core/security.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > Applied to for-next, thanks
-> > 
-> > Jason
+On Mon, Feb 17, 2020 at 12:57:14PM -0800, Bart Van Assche wrote:
+> >From the comment above the definition of the roundup_pow_of_two() macro:
 > 
-> Shouldn't this go into for-rc since the commit that introduced this was
-> merged in 5.6-rc2? I guess I should have added that after the PATCH in
-> the subject line, I always forget.
+>      The result is undefined when n == 0.
+> 
+> Hence only pass positive values to roundup_pow_of_two(). This patch fixes
+> the following UBSAN complaint:
+> 
+> UBSAN: Undefined behaviour in ./include/linux/log2.h:57:13
+> shift exponent 64 is too large for 64-bit type 'long unsigned int'
+> Call Trace:
+>  dump_stack+0xa5/0xe6
+>  ubsan_epilogue+0x9/0x26
+>  __ubsan_handle_shift_out_of_bounds.cold+0x4c/0xf9
+>  rxe_qp_from_attr.cold+0x37/0x5d [rdma_rxe]
+>  rxe_modify_qp+0x59/0x70 [rdma_rxe]
+>  _ib_modify_qp+0x5aa/0x7c0 [ib_core]
+>  ib_modify_qp+0x3b/0x50 [ib_core]
+>  cma_modify_qp_rtr+0x234/0x260 [rdma_cm]
+>  __rdma_accept+0x1a7/0x650 [rdma_cm]
+>  nvmet_rdma_cm_handler+0x1286/0x14cd [nvmet_rdma]
+>  cma_cm_event_handler+0x6b/0x330 [rdma_cm]
+>  cma_ib_req_handler+0xe60/0x22d0 [rdma_cm]
+>  cm_process_work+0x30/0x140 [ib_cm]
+>  cm_req_handler+0x11f4/0x1cd0 [ib_cm]
+>  cm_work_handler+0xb8/0x344e [ib_cm]
+>  process_one_work+0x569/0xb60
+>  worker_thread+0x7a/0x5d0
+>  kthread+0x1e6/0x210
+>  ret_from_fork+0x24/0x30
+> 
+> Cc: Moni Shoua <monis@mellanox.com>
+> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+> Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_qp.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 
-Oops, that was a typo, it did go to -rc
-
-[each artisanal 'applied' message is uniquely hand crafted]
+Applied to for-next, thanks
 
 Jason
