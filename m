@@ -2,164 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AE6165160
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 22:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9680D1652FD
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2020 00:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727421AbgBSVHe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Feb 2020 16:07:34 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:37650 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgBSVHe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Feb 2020 16:07:34 -0500
-Received: by mail-qv1-f67.google.com with SMTP id s6so876645qvq.4
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Feb 2020 13:07:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OThLpFpXxsdg3wzWj6hUYtQkZOYwvVvM9gRR17m4oro=;
-        b=GHQc1EiMrW8ev8e/6rpwSp1PQjJKFdcbqAaNzGws8oCBuakKCGUPTBI9M+EisHUD3g
-         zpmyTf8O7w/XlEuKnP3ermtBJbYHs/LRr66Co127ukc0+/q8y7rh8d+iLediaF7bhKEq
-         sUXGP9YxfSkx80TlafUJXQV8UIM+p+XaSDWWuV+cS9i26IuON7UffEgnyqw0i9Fy7jGZ
-         YoF7QfwEMt8NAnpyaQeyhCJtgbocoypWaE8xRemUCvqU9IUHdxve0Vdcr481w2L456+Z
-         J8LgS9kmgU3Gh5/JqsQ4noYyetVhIeOsREgcBgD47pWDE+oJeIbZyIxGVVwveTJt/R0A
-         rkZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OThLpFpXxsdg3wzWj6hUYtQkZOYwvVvM9gRR17m4oro=;
-        b=ADSKIzd9mV0E8bifTAzbTspQ283BLtXFT4ViSkow27OUVkB1GjrbW99ut2lCknGYbv
-         j/qlem+LVQrMC4OFJ41odb/621h5PF/bTIefmLxr4twdIeYTZv/a483S9steA9+42Mog
-         a+Snx1nWY/KgSGkr5Z+EmoDcH7scGVbq8dRbIymHXH4PnBuEVznaihaTaE1LDF7PIwHZ
-         R1zyVG58wmVDOnLXsfuoxaoIQqryZhyBiudf/+qWpOCFou/JKTHTt9fwXZbdTaR5YYmu
-         Qws+AvL6HrWcEJNeJftPEyYwDCzc8nvX+RxT26NPM8VsDR9Zw2XYDi/l+hEmyIloGc1r
-         6WOg==
-X-Gm-Message-State: APjAAAUNkipFfhWPjvxkO9EhF/fpoIcToYdwosfdLGf/flJNLcgjlf3O
-        U86vwXIb3S4AXePJ/zoRPC7C2Q==
-X-Google-Smtp-Source: APXvYqxp0/tDwcoO9eGUOJYNAIdZZWf59m0qizgEJWukQT6dwsyaOaW/CEzlOYG9hyWHYb7HxFAYiQ==
-X-Received: by 2002:a0c:ffc4:: with SMTP id h4mr22659092qvv.233.1582146453712;
-        Wed, 19 Feb 2020 13:07:33 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id v10sm656507qtp.22.2020.02.19.13.07.33
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 19 Feb 2020 13:07:33 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j4WZA-00075O-Sd; Wed, 19 Feb 2020 17:07:32 -0400
-Date:   Wed, 19 Feb 2020 17:07:32 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH RFC v2 for-next 6/7] RDMA/core: support send port event
-Message-ID: <20200219210732.GB31668@ziepe.ca>
-References: <20200204082408.18728-1-liweihang@huawei.com>
- <20200204082408.18728-7-liweihang@huawei.com>
+        id S1726680AbgBSXS2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Feb 2020 18:18:28 -0500
+Received: from mga14.intel.com ([192.55.52.115]:21759 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726613AbgBSXS2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 Feb 2020 18:18:28 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Feb 2020 15:18:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,462,1574150400"; 
+   d="scan'208";a="382952322"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by orsmga004.jf.intel.com with ESMTP; 19 Feb 2020 15:18:27 -0800
+Date:   Wed, 19 Feb 2020 15:18:27 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Honggang LI <honli@redhat.com>,
+        Gal Pressman <galpress@amazon.com>
+Subject: Re: RDMA device renames and node description
+Message-ID: <20200219231826.GD31320@iweiny-DESK2.sc.intel.com>
+References: <5ae69feb-5543-b203-2f1b-df5fe3bdab2b@intel.com>
+ <20200218140444.GB8816@unreal>
+ <1fcc873b-3f67-2325-99cc-21d90edd2058@intel.com>
+ <20200219071129.GD15239@unreal>
+ <bea50739-918b-ae6f-5fac-f5642c56f1da@intel.com>
+ <20200219165800.GS31668@ziepe.ca>
+ <03a8dd71-4031-4800-349f-525a013c2101@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200204082408.18728-7-liweihang@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <03a8dd71-4031-4800-349f-525a013c2101@intel.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 04, 2020 at 04:24:07PM +0800, Weihang Li wrote:
-> From: Lang Cheng <chenglang@huawei.com>
+On Wed, Feb 19, 2020 at 02:35:09PM -0500, Dennis Dalessandro wrote:
+> On 2/19/2020 11:58 AM, Jason Gunthorpe wrote:
+> > On Wed, Feb 19, 2020 at 09:14:06AM -0500, Dennis Dalessandro wrote:
+> > 
+> > > > ABI breakage is a strong word, luckily enough it is not defined at all.
+> > > > We never considered dmesg prints, device names, device ordering as an
+> > > > ABI. You can't rely on debug features too, they can disappear too.
+> > > 
+> > > Agree, it is a strong word and we can call it what you want. The point is
+> > > you should be able to rely on the node description not being changed out
+> > > from under you unnecessarily though. We aren't talking about a debug feature
+> > > here but a core feature to real world deployments.
+> > 
+> > People really use the node description as some stable name? And then
+> > they put the HCA name in it? Why?
 > 
-> For the process of handling the link event of the net device, the driver
-> of each provider is similar, so it can be integrated into the ib_core for
-> unified processing.
+> I've seen it in multiple places. Including storage configuration files.
+> Suffice to say, yes people use it.
 > 
-> Signed-off-by: Lang Cheng <chenglang@huawei.com>
->  drivers/infiniband/core/device.c        |  1 +
->  drivers/infiniband/core/roce_gid_mgmt.c | 45 +++++++++++++++++++++++++++++++++
->  2 files changed, 46 insertions(+)
+> > Is that some thing unique to the OPA subnet manager?
 > 
-> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> index 84dd74f..0427a4d 100644
-> +++ b/drivers/infiniband/core/device.c
-> @@ -2225,6 +2225,7 @@ struct net_device *ib_device_get_netdev(struct ib_device *ib_dev,
->  
->  	return res;
->  }
-> +EXPORT_SYMBOL(ib_device_get_netdev);
->  
->  /**
->   * ib_device_get_by_netdev - Find an IB device associated with a netdev
-> diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
-> index 2860def..4170ba3 100644
-> +++ b/drivers/infiniband/core/roce_gid_mgmt.c
-> @@ -751,6 +751,12 @@ static int netdevice_event(struct notifier_block *this, unsigned long event,
->  	struct net_device *ndev = netdev_notifier_info_to_dev(ptr);
->  	struct netdev_event_work_cmd cmds[ROCE_NETDEV_CALLBACK_SZ] = { {NULL} };
->  
-> +	enum ib_port_state last_state;
-> +	enum ib_port_state curr_state;
-> +	struct ib_device *device;
-> +	struct ib_event ibev;
-> +	unsigned int port;
-> +
->  	if (ndev->type != ARPHRD_ETHER)
->  		return NOTIFY_DONE;
->  
-> @@ -762,6 +768,45 @@ static int netdevice_event(struct notifier_block *this, unsigned long event,
->  		cmds[2] = add_cmd;
->  		break;
->  
-> +	case NETDEV_CHANGE:
-> +	case NETDEV_DOWN:
-> +		device = ib_device_get_by_netdev(ndev, RDMA_DRIVER_UNKNOWN);
-> +		if (!device)
-> +			break;
-> +
-> +		rdma_for_each_port (device, port) {
-> +			if (ib_device_get_netdev(device, port) != ndev)
-> +				continue;
+> I don't think so.
+> 
+> > I don't recall people complaining about this when we introduced
+> > rdma-ndd by default and changed all the node descriptions away from
+> > the kernel default.
+> 
+> Sure but the reason rdma-ndd exists is because people care about the node
+> descriptions.
 
-This feels strange, maybe we need to fix ib_device_get_by_netdev to
-return the port too?
+Yes people do.  Give a sys-admin 
 
-> +
-> +			if (ib_get_cached_port_inactive_status(device, port))
-> +				break;
-> +
-> +			ib_get_cached_port_state(device, port, &last_state);
-> +			curr_state =
-> +				netif_running(ndev) && netif_carrier_ok(ndev) ?
-> +					IB_PORT_ACTIVE :
-> +					IB_PORT_DOWN;
-> +
-> +			if (last_state == curr_state)
-> +				break;
-> +
-> +			if (curr_state == IB_PORT_DOWN)
-> +				ibev.event = IB_EVENT_PORT_ERR;
-> +			else if (curr_state == IB_PORT_ACTIVE)
-> +				ibev.event = IB_EVENT_PORT_ACTIVE;
-> +			else
-> +				break;
+0x00117501017af5cc
+vs
+node0170 hca-0
 
-Other states are ignored?
+And see which one they get frustrated with.
 
-> +
-> +			ibev.device = device;
-> +			ibev.element.port_num = port;
-> +			ib_dispatch_event(&ibev);
-> +			ibdev_dbg(ibev.device, "core send %s\n",
-> +				  ib_event_msg(ibev.event));
-> +		}
-> +
-> +		ib_device_put(device);
-> +		break;
+>
+> I can't really speak to the historical adoption of rdma-ndd
 
-Ah the series is backwards. 
+I originally wrote it...  So I have some history.
 
-You need to organize your series so that every patch works
-properly. This has to be before any drivers are removed, and you'll
-need some temporary capability to disable it for drivers that have not
-been migrated yet.
+> but I believe it was a stand alone package/feature and was a conscious
+> decision to use or not as opposed to the one package to rule them all
+> rdma-core like we have now.
 
-Jason
+rdma-ndd was built to solve the race between potential host name changes and
+ports coming on line.
+
+The background is that many people use hostnames to describe their nodes and if
+they wanted to configure rdma-ndd it would react to new ports and/or the
+hostname updates and turn around and update the node descriptor according to a
+configuration specified...  If the user wanted to use hostnames they could...
+Or it could be configured with some static name if that is what admins wanted.
+Hostname was just the "most likely choice".
+
+> 
+> > Also don't forget the whole thing about the node description is
+> > inherently racey, so relying on it is Rather A Bad Idea.
+> 
+> I think that point is well taken and I don't think anyone is against the
+> idea of fixing the "hacky" things as you like to say. This one just caught
+> people by surprise is all.
+> 
+> > Should we change the default format string of rdma-ndd to something
+> > else?
+> 
+> I'm not sure. I can envision situations where a user has updated libraries
+> that are happy with the new persistent names but still want the node
+> description to not change. If rdma-ndd could do something to keep the node
+> desc the same, then in situations like this the device rename would not have
+> to be disabled.
+> 
+> Given that we have seen problems with MVAPICH (even with mlx5), libfabric,
+> psm2, and I believe open mpi has a similar issue, and that Intel, Amazon,
+> RedHat, and Suse are experiencing issues from this I think we should make
+> things as flexible as possible to protect users from breakages.
+> 
+> We do want to move in a forward direction though so we don't want to go back
+> to the old way unilaterally. I think distros can handle their upgrade
+> situations and if we build in protection to rdma-ndd something like a
+> specific udev rule for keeping the node desc the same. That gives us the
+> flexibility until all the software and use cases catch up.
+
+The use of node descriptor was intended to be entirely up to the installation
+in a manner to debug/locate nodes.  Not be used in libraries.  I'm surprised
+that libraries are broken.
+
+Regardless does the old rdma-ndd config exist?  Could it be configured and/or
+modified to give the old names?  When it was written we designed the default
+config to give the old names for backwards compatibility.  Apparently this is
+no longer true?
+
+Ira
+
+> 
+> -Denny
