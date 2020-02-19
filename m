@@ -2,119 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D786163881
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 01:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5842E163897
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 01:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgBSAYv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Feb 2020 19:24:51 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:33039 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbgBSAYv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Feb 2020 19:24:51 -0500
-Received: by mail-qt1-f194.google.com with SMTP id d5so15997779qto.0
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Feb 2020 16:24:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=FhF0ZDyYKNk5Yq7ZCEqXSDJQMEKVIumdy/wollI5R68=;
-        b=cfgAwvjvb/VB7SWmcerqu/ZyUwshT0CVr5ZIulzf4plfCSpJdpPpyg07bgx30E6yhB
-         z1K0LyKRH7WtzU4F35eW72koqyztJDHsZN8bJ9rMZ9lbB7zGBTSt1oPUMHpIBVDrq0dt
-         7N572uEP/glYaRFIsRtr9BHWGeSLADfP65Pl6F10aYeOJHLfCDVLCLa4ekee3ry2JJGK
-         pDLuURBxTR78Pgr14za88DzQzMZU7tt70XODF8tpIfy/vPDiddCBn9YyXQGGl72HTlex
-         EWbGQ3lX7j/HtdS8cOJJ3fF6jdN2UFQYFMrMXXZydVyLn3A6gwFToRXzH1lRnOgem/YT
-         dVKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=FhF0ZDyYKNk5Yq7ZCEqXSDJQMEKVIumdy/wollI5R68=;
-        b=VzTes6dviRgGeiBno/r3uG6aOlDa/lb8jOBv79eBn2nbHbksf3U8aV3mx4QXoX8m07
-         reYs6/NTsd8hjwEqiMJG3+PtQAfQbU6OiiqMYmhIigRt9rS5sk+BUoUJv5gKZTDqHpZm
-         wcsHTdBG9q1WJ0NnlzuUYa8jriEE+Xztx0SJ+4bmHYGYGzEMJp44+hBw8CQ+K0Yjp8UR
-         ADM4kipeYguaIut95OQF/iAqWBZjYbTbQKelOh0YIx5c/kyn4hevAdQyGvJswAfQv+ne
-         MT0O9EUdryb+q2CL9CAjgSMIqsfR6ikltEyq1+OuYS7X7cwPy66FUdqVRS0gMY9dc1uX
-         1TbA==
-X-Gm-Message-State: APjAAAVRJ5uvH11C0KMo437KXPrWK/EZUxcSAjyNlsMZNG62hw/N38Y0
-        mddHmPCb+L1v5DJht6SUMxrfYA==
-X-Google-Smtp-Source: APXvYqyi9lhP3wSZE+ti5Vo+9JmVlEjKnucnVmZUWRpTNqkLz64F+yn/m4F4y1SBatd06kYNJN4+DA==
-X-Received: by 2002:ac8:4419:: with SMTP id j25mr19800017qtn.378.1582071890465;
-        Tue, 18 Feb 2020 16:24:50 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id 132sm156980qkn.109.2020.02.18.16.24.49
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 18 Feb 2020 16:24:49 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j4DAX-00037W-5U; Tue, 18 Feb 2020 20:24:49 -0400
-Date:   Tue, 18 Feb 2020 20:24:49 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jinpu Wang <jinpuwang@gmail.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Doug Ledford <dledford@redhat.com>,
-        Roman Penyaev <rpenyaev@suse.de>
-Subject: Re: [PATCH v8 00/25] RTRS (former IBTRS) RDMA Transport Library and
- RNBD (former IBNBD) RDMA Network Block Device
-Message-ID: <20200219002449.GA11943@ziepe.ca>
-References: <20200124204753.13154-1-jinpuwang@gmail.com>
- <CAHg0HuzLLHqp_76ThLhUdHGG_986Oxvvr15h_13T12eEWjyAxA@mail.gmail.com>
- <20200131165421.GB29820@ziepe.ca>
- <f657d371-3b23-e4b2-50b3-db47cd521e1f@kernel.dk>
- <CAD9gYJLVMVPjQcCj0aqbAW3CD86JQoFNvzJwGziRXT8B2UT0VQ@mail.gmail.com>
- <a1aaa047-3a44-11a7-19a1-e150a9df4616@kernel.dk>
- <CAMGffEkLkwkd73Q+m46VeOw0UnzZ0EkZQF-QcSZjyqNcqigZPw@mail.gmail.com>
+        id S1726749AbgBSAfm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Feb 2020 19:35:42 -0500
+Received: from mail-eopbgr10085.outbound.protection.outlook.com ([40.107.1.85]:22624
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726488AbgBSAfm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 18 Feb 2020 19:35:42 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KU7bwpAQybgXPzalhCfMwHXZGPOSyb3PU+ol8coMpey8n/ql0Mzbl7ZyZar+n0lkEenYi2AQvqLfP7Q4b4maKRS04YUP89xRF7VImnlY1MdmX79wVHI/5nQU7hsPZpkcJt/HacOZjjN5Q4rmalEav+KFwsTcGsRJgRg48Q60QMh4eOKKXLn9r/xrtuF6P71D1LEBBp9IEI5IFocDoJpyXgwetquLFpnCWUZogeSYMT7baJqh1yXbjl+e8FaAQ2rupyFPYpexYtz8os3hahA6WoTEVmxjFhorwntxnCfyAuZVwd4VfxJJpGtEK9LgZ/4cFvXJ7vpPt3DnyQju0Ps8jQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oKVnonazkHc3NljoeQGq9sIpf7yJKAFyXHWbKZAPVYI=;
+ b=LdaSmmQR034XiCQLo8j/e8BukDe6H1WkaKA/kfja7tVIIU4APUj2Yh3q22UT5mXmdTgVseDXXFHtTI1CDz6OleAl1o4MFtNCIoTt44/S7m2Dy6jVOw1n6gKerctvtdI5mzXm62Z9iLdkdUADaFMddWFqZaEWGSGBiDQAfVneQ0VmAYFFX5IzES9HrG9trOnUiRT3IQWrb9BxZ//RNFLmasIILi3P2AmpjqNjkzcVdzkGcPHQwivAvRYTqs7CX+GvUJjxThS4syOibqPowV8ZomHFhGVYubXD1D0qM5Dl9XYEAqpQmy7XR147D/mL0eQNQ6vSCYtszFX9U/QM2fgxEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oKVnonazkHc3NljoeQGq9sIpf7yJKAFyXHWbKZAPVYI=;
+ b=JoB/WV9H3Wl5l79QkEVtxjrb9qjN7vcm68TqqZSCpqLj6XOlHnqVfENqAPdB7rUvHQjte7TRJ5LIB6WYb+8lpgyM9jD0nGJVyTBxYp/4fEGECMbLMIuxYIqQ4mIolMS6ZGoGjJ5K/WFoWbga0HUsOABQrKxya6ToAEOmj9hcayM=
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB5726.eurprd05.prod.outlook.com (20.178.120.78) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2729.24; Wed, 19 Feb 2020 00:35:38 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1c00:7925:d5c6:d60d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1c00:7925:d5c6:d60d%7]) with mapi id 15.20.2729.032; Wed, 19 Feb 2020
+ 00:35:38 +0000
+Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR01CA0049.prod.exchangelabs.com (2603:10b6:208:23f::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2729.22 via Frontend Transport; Wed, 19 Feb 2020 00:35:38 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1j4DKw-0003Vk-NX; Tue, 18 Feb 2020 20:35:34 -0400
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Max Gurtovoy <maxg@mellanox.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] RDMA/core: Get rid of ib_create_qp_user
+Thread-Topic: [PATCH] RDMA/core: Get rid of ib_create_qp_user
+Thread-Index: AQHV4qJ6a1W+lZNe+0mmb8tDCVTkEKgdt6wAgAP8DQA=
+Date:   Wed, 19 Feb 2020 00:35:38 +0000
+Message-ID: <20200219003534.GE23930@mellanox.com>
+References: <20200213191911.GA9898@ziepe.ca>
+ <acbaf760-a3fe-f3c6-4b0b-e3e9a48cc876@mellanox.com>
+In-Reply-To: <acbaf760-a3fe-f3c6-4b0b-e3e9a48cc876@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MN2PR01CA0049.prod.exchangelabs.com (2603:10b6:208:23f::18)
+ To VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [142.68.57.212]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: ce0b2ed2-5f10-44e6-e3e2-08d7b4d3a44b
+x-ms-traffictypediagnostic: VI1PR05MB5726:|VI1PR05MB5726:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB57260BC6A4CD45C7A3D915B3CF100@VI1PR05MB5726.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0318501FAE
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(136003)(39860400002)(346002)(396003)(366004)(199004)(189003)(66946007)(64756008)(66556008)(66446008)(66476007)(6636002)(5660300002)(6862004)(86362001)(316002)(4744005)(36756003)(37006003)(4326008)(52116002)(8936002)(8676002)(9746002)(9786002)(2616005)(186003)(53546011)(81166006)(33656002)(81156014)(2906002)(478600001)(1076003)(26005)(71200400001)(26583001)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5726;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vzfuL7gn4P5rU62B6UcUsofUE5Ri0jxyU1PkWIhwWYSKZHbN1A77DM3edI4Z0NO1JA1h4gX38Rmkmt05d4G0l+x3nVznEBpPZgK55wH2wdDiHQBlR7Sw9TmDNcRyvDc//oyfqM1etsjbL/sXta6NioIb7HcFX8cm7W1cZGLYClaQVI+1Gtbg1jhvlZDyBl9b+awDxJI1TQvQ/241D56kVkijPt6jPGgNSPA4k5/Epb9uGR92DTHWVpLFJI6KJ7+KB7hWZDO4W/HVrFgBmwMzxM2jFEgOSB92JdAG24hD/GVTGtk5ySyd9hBYBFkAzEvDPJqRjRtok0rRUQOBBUR3K9h0g2q3VKQ9P8rz1/RMsyV98wTYx/anOeYf97kLKXLIdcwgxzqdw3vmS8cMsi00m9sFUShn/CUM9Y+LYTaeZZaDKumWJ1fRmCtg0iCONSaHvtzQxmwGuoOQgiX9NRSlNHrHMNpWqlyhxjoOKOMznhyKHhh3Z/OMLTkXCHDqHOFaX23rsjsMYskXtf09QDhzNg==
+x-ms-exchange-antispam-messagedata: p9CoutK0lrffUz3K25hxG7FK40ha4U7/jwiDiwbaKtdavH9lbd+Q6oDj9iiDySjK6BF+8vMDHepCkdz71uKvitD2qNboBEDS+U4/wUaPzs+jbpIyEA6+mRBvm9gzr8TVbd4Q9ilLCquaQGtoDRZT4A==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2BF5CFED87C513498232037474C3AB33@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMGffEkLkwkd73Q+m46VeOw0UnzZ0EkZQF-QcSZjyqNcqigZPw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce0b2ed2-5f10-44e6-e3e2-08d7b4d3a44b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2020 00:35:38.4650
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bCG6jkb/huBlHTwC5zfAJgkat47m0Jle2xLfr4UDXO0fZDm3elwPF8/2rKWltiKSW9mRLr9bjI/d8tzdukyRSQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5726
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 06, 2020 at 04:12:22PM +0100, Jinpu Wang wrote:
-> On Fri, Jan 31, 2020 at 6:49 PM Jens Axboe <axboe@kernel.dk> wrote:
-> >
-> > On 1/31/20 10:28 AM, Jinpu Wang wrote:
-> > > Jens Axboe <axboe@kernel.dk> 于2020年1月31日周五 下午6:04写道：
-> > >>
-> > >> On 1/31/20 9:54 AM, Jason Gunthorpe wrote:
-> > >>> On Fri, Jan 31, 2020 at 05:50:44PM +0100, Danil Kipnis wrote:
-> > >>>> Hi Doug, Hi Jason, Hi Jens, Hi All,
-> > >>>>
-> > >>>> since we didn't get any new comments for the V8 prepared by Jack a
-> > >>>> week ago do you think rnbd/rtrs could be merged in the current merge
-> > >>>> window?
-> > >>>
-> > >>> No, the cut off for something large like this would be rc4ish
-> > >>
-> > >> Since it's been around for a while, I would have taken it in a bit
-> > >> later than that. But not now, definitely too late. If folks are
-> > >> happy with it, we can get it queued for 5.7.
-> > >>
-> > >
-> > > Thanks Jason, thanks Jens, then we will prepare later another round for 5.7
-> >
-> > It would also be really nice to see official sign-offs (reviews) from non
-> > ionos people...
-> 
-> Totally agree.
-> Hi Bart, hi Leon,
-> 
-> Both of you spent quite some time to review the code, could you give a
-> Reviewed-by for some of the patches you've reviewed?
+On Sun, Feb 16, 2020 at 01:44:40PM +0200, Max Gurtovoy wrote:
+>=20
+> On 2/13/2020 9:19 PM, Jason Gunthorpe wrote:
+> > This function accepts a udata but does nothing with it, and is never
+> > passed a !NULL udata. Rename it to ib_create_qp which was the only
+> > caller and remove the udata.
+> >=20
+> > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+>=20
+> Looks good,
+>=20
+> Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
 
-Anyone? I don't want to move ahead with a block driver without someone
-from the block community saying it is OK
+Thanks, and applied to for-next
+
+> BTW,
+>=20
+> shouldn't ib_alloc_mr_user need also to be updated ?
+
+How so? It passes the udata to the driver
 
 Jason
