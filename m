@@ -2,149 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 309E3163CF1
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 07:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D2E163CF7
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 07:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726106AbgBSGOC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Feb 2020 01:14:02 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:33173 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgBSGOC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Feb 2020 01:14:02 -0500
-Received: by mail-oi1-f193.google.com with SMTP id q81so22773993oig.0
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Feb 2020 22:14:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3w+NpCy4/ndZuEEfIoZcUX1T70vwpMcA7JCQTLTOQf0=;
-        b=eAI6wKQkx/n4HuW58SRBAQPbu6XeyTFRyN9nU3JfFgIcE5X2zFQ7Dl4hLTVld0ereF
-         axpHO4x8dFFZTj2bhc96kHyoVZM/YwzS5IZgxtkJUJgWF0rNHYTMAHEw5pudFU85zwq4
-         2itw4nk/lZmzzWYUj3NfEu40YC76jcOHeAsk0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3w+NpCy4/ndZuEEfIoZcUX1T70vwpMcA7JCQTLTOQf0=;
-        b=BzlejlVt6DN4sR70fvegZTRDey0L7OrqiBnqGdaI+OWQFA+aJ8TrkQUw/DiD5PYiNJ
-         7N0e3OtVVNPJVZ9mSlzRzel8qABeqfsNbkFf30GHmr50oXZDQPXQsGi4XMzqkUtVkO0g
-         UO7mCwvT3EJxhYjDYIiYpxGgwYVINY2tZMn0JnlZcz/1Bml15rIbwLKQWExcx6MJ2o+A
-         bIwzDrEMKPWE4DpKtPh5eF9UnN3uLxnxAN1YINGj5aX9z7MCFQ7egO38Awps0jO3LXYu
-         OWRb8Opzvr1w+9BrBfGENJhc9XviOHHWuR73Y6BV+9aw/3DJpwGPILWv8M40C6uVGt6r
-         CyDg==
-X-Gm-Message-State: APjAAAX/RQdXSiPHGb+HM/w4ekw/tByfLDk1Xo9/koRNVH9ALW8zI/Iz
-        /tGoNvXaUn1O7SoUxpFutw6GBWDsHXdAfnG3kPSUow==
-X-Google-Smtp-Source: APXvYqzyun6AStZspo3GqolDGfsWrTwb1dlpp10vLpd3tpVc6nvcu43mdILD1LKs5RhjZMuS7UrOW9dQTva+jaijMiw=
-X-Received: by 2002:aca:f0b:: with SMTP id 11mr3817592oip.34.1582092841640;
- Tue, 18 Feb 2020 22:14:01 -0800 (PST)
-MIME-Version: 1.0
-References: <1582006810-32174-1-git-send-email-selvin.xavier@broadcom.com>
- <1582006810-32174-2-git-send-email-selvin.xavier@broadcom.com>
- <20200218154237.GE31668@ziepe.ca> <CA+sbYW1uO+LT=6a_J-9=yaot8qULbHehY9AummLD2h-kW04nBQ@mail.gmail.com>
- <20200218200320.GG31668@ziepe.ca>
-In-Reply-To: <20200218200320.GG31668@ziepe.ca>
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Wed, 19 Feb 2020 11:43:50 +0530
-Message-ID: <CA+sbYW3J7OWY=RWQ8JR+NqRpRtJmcPE8RvsQ5PFf9dCOwjx-QA@mail.gmail.com>
-Subject: Re: [PATCH for-next v3 1/2] RDMA/core: Add helper function to
- retrieve driver gid context from gid attr
+        id S1726106AbgBSGTz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Feb 2020 01:19:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726096AbgBSGTy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 Feb 2020 01:19:54 -0500
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55753208E4;
+        Wed, 19 Feb 2020 06:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582093194;
+        bh=Tgni9eYzm21ACiqSs0VgFNoTEdm7KmNqvw7TBLe51MA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EFSBdDyHy0nO5ZETJuVYVohdSXiDO1A47cuf/R9Z/chm9x704DP+tudUVijqJVCPv
+         mOh7peWu0fnE31SMqNRczjFBH49TKYxHqkBhzMZuLhqJwB7pX+pEgAstS+zIl6KnGb
+         Ieey+LMkuIRcZZ/QRaTZMx70m7FoxWRG17b17miE=
+Date:   Wed, 19 Feb 2020 08:19:49 +0200
+From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Jinpu Wang <jinpu.wang@cloud.ionos.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Jinpu Wang <jinpuwang@gmail.com>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Doug Ledford <dledford@redhat.com>,
+        Roman Penyaev <rpenyaev@suse.de>
+Subject: Re: [PATCH v8 00/25] RTRS (former IBTRS) RDMA Transport Library and
+ RNBD (former IBNBD) RDMA Network Block Device
+Message-ID: <20200219061949.GB15239@unreal>
+References: <20200124204753.13154-1-jinpuwang@gmail.com>
+ <CAHg0HuzLLHqp_76ThLhUdHGG_986Oxvvr15h_13T12eEWjyAxA@mail.gmail.com>
+ <20200131165421.GB29820@ziepe.ca>
+ <f657d371-3b23-e4b2-50b3-db47cd521e1f@kernel.dk>
+ <CAD9gYJLVMVPjQcCj0aqbAW3CD86JQoFNvzJwGziRXT8B2UT0VQ@mail.gmail.com>
+ <a1aaa047-3a44-11a7-19a1-e150a9df4616@kernel.dk>
+ <CAMGffEkLkwkd73Q+m46VeOw0UnzZ0EkZQF-QcSZjyqNcqigZPw@mail.gmail.com>
+ <20200219002449.GA11943@ziepe.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200219002449.GA11943@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 1:33 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Tue, Feb 18, 2020 at 10:12:17PM +0530, Selvin Xavier wrote:
-> > On Tue, Feb 18, 2020 at 9:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Tue, Feb 18, 2020 at 08:24:49PM -0400, Jason Gunthorpe wrote:
+> On Thu, Feb 06, 2020 at 04:12:22PM +0100, Jinpu Wang wrote:
+> > On Fri, Jan 31, 2020 at 6:49 PM Jens Axboe <axboe@kernel.dk> wrote:
 > > >
-> > > On Mon, Feb 17, 2020 at 10:20:09PM -0800, Selvin Xavier wrote:
-> > > > Adding a helper function to retrieve the driver gid context
-> > > > from the gid attr.
+> > > On 1/31/20 10:28 AM, Jinpu Wang wrote:
+> > > > Jens Axboe <axboe@kernel.dk> 于2020年1月31日周五 下午6:04写道：
+> > > >>
+> > > >> On 1/31/20 9:54 AM, Jason Gunthorpe wrote:
+> > > >>> On Fri, Jan 31, 2020 at 05:50:44PM +0100, Danil Kipnis wrote:
+> > > >>>> Hi Doug, Hi Jason, Hi Jens, Hi All,
+> > > >>>>
+> > > >>>> since we didn't get any new comments for the V8 prepared by Jack a
+> > > >>>> week ago do you think rnbd/rtrs could be merged in the current merge
+> > > >>>> window?
+> > > >>>
+> > > >>> No, the cut off for something large like this would be rc4ish
+> > > >>
+> > > >> Since it's been around for a while, I would have taken it in a bit
+> > > >> later than that. But not now, definitely too late. If folks are
+> > > >> happy with it, we can get it queued for 5.7.
+> > > >>
 > > > >
-> > > > Suggested-by: Jason Gunthorpe <jgg@mellanox.com>
-> > > > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > > >  drivers/infiniband/core/cache.c | 41 +++++++++++++++++++++++++++++++++++++++++
-> > > >  include/rdma/ib_cache.h         |  1 +
-> > > >  2 files changed, 42 insertions(+)
-> > > >
-> > > > diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-> > > > index 17bfedd..1b73a71 100644
-> > > > +++ b/drivers/infiniband/core/cache.c
-> > > > @@ -973,6 +973,47 @@ int rdma_query_gid(struct ib_device *device, u8 port_num,
-> > > >  EXPORT_SYMBOL(rdma_query_gid);
-> > > >
-> > > >  /**
-> > > > + * rdma_read_gid_hw_context - Read the HW GID context from GID attribute
-> > > > + * @attr:            Potinter to the GID attribute
-> > > > + *
-> > > > + * rdma_read_gid_hw_context() reads the vendor drivers GID HW
-> > > > + * context corresponding to SGID attr. It takes reference to the GID
-> > > > + * attribute and this need to be released by the caller using
-> > > > + * rdma_put_gid_attr
-> > > > + *
-> > > > + * Returns HW context on success or NULL on error
-> > > > + *
-> > > > + */
-> > > > +void *rdma_read_gid_hw_context(const struct ib_gid_attr *attr)
-> > > > +{
-> > > > +     struct ib_gid_table_entry *entry =
-> > > > +             container_of(attr, struct ib_gid_table_entry, attr);
-> > > > +     struct ib_device *device = entry->attr.device;
-> > > > +     u8 port_num = entry->attr.port_num;
-> > > > +     struct ib_gid_table *table;
-> > > > +     unsigned long flags;
-> > > > +     void *context = NULL;
-> > > > +
-> > > > +     if (!rdma_is_port_valid(device, port_num))
-> > > > +             return NULL;
-> > > > +
-> > > > +     table = rdma_gid_table(device, port_num);
-> > > > +     read_lock_irqsave(&table->rwlock, flags);
-> > > > +
-> > > > +     if (attr->index < 0 || attr->index >= table->sz ||
-> > > > +         !is_gid_entry_valid(table->data_vec[attr->index]))
-> > > > +             goto done;
+> > > > Thanks Jason, thanks Jens, then we will prepare later another round for 5.7
 > > >
-> > > Why all this validation and locking? ib_gid_attrs are only created by
-> > > the core code..
-> > Locking and validation was added to avoid any scenario where the  gid
-> > entry is deleted while we are
-> > executing this API. I saw similar implementation for
-> > rdma_read_gid_attr_ndev_rcu symbol.
+> > > It would also be really nice to see official sign-offs (reviews) from non
+> > > ionos people...
+> >
+> > Totally agree.
+> > Hi Bart, hi Leon,
+> >
+> > Both of you spent quite some time to review the code, could you give a
+> > Reviewed-by for some of the patches you've reviewed?
 >
-> This is required to deref the ndev as GID_TABLE_ENTRY_PENDING_DEL no
-> longer has the ndev memory.
->
-> However here things are not derefing the ndev, there is no reason to
-> check this. The driver state attached to a gid entry should always be
-> valid so long as the pointer is valid. This is the entire point of the
-> refcounting scheme.
->
-> > > > +     get_gid_entry(entry);
-> > >
-> > > And why a get? Surely it is invalid to call this function without a
-> > > get already held?
-> > Getting the reference to the entry only if the entry is valid after
-> > all the checks. This is the
-> > reason for invoking this inside the function, rather than in the
-> > caller. Added a note in the symbol description
-> > that the caller needs to release reference using rdma_put_gid_attr,
-> > once the caller finished using
-> > the void * pointer returned.
->
-> That makes no sense, we already *must* have a get at this point or the
-> whole thing is really buggy
->
-Got it now. I missed the fact that the ref is taken in
-rdma_fill_sgid_attr for both
-create_ah and modify_qp contexts. Thanks for your explanation.
+> Anyone? I don't want to move ahead with a block driver without someone
+> from the block community saying it is OK
 
-I will respin the patch.
+I wanted to ask for a resend based on latest -rc2, if it is possible.
 
-Thanks,
-Selvin
+Thanks
+
+>
 > Jason
