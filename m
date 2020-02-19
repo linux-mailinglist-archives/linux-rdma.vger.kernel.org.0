@@ -2,64 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFC61648B2
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 16:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F9B1648E4
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 16:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbgBSPeH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Feb 2020 10:34:07 -0500
-Received: from mga05.intel.com ([192.55.52.43]:53448 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726558AbgBSPeH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 19 Feb 2020 10:34:07 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Feb 2020 07:34:06 -0800
-X-IronPort-AV: E=Sophos;i="5.70,459,1574150400"; 
-   d="scan'208";a="229142853"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.204.151]) ([10.254.204.151])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 19 Feb 2020 07:34:05 -0800
-Subject: Re: RDMA device renames and node description
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Honggang LI <honli@redhat.com>,
-        Gal Pressman <galpress@amazon.com>
-References: <5ae69feb-5543-b203-2f1b-df5fe3bdab2b@intel.com>
- <20200218140444.GB8816@unreal>
- <1fcc873b-3f67-2325-99cc-21d90edd2058@intel.com>
- <20200219071129.GD15239@unreal>
- <bea50739-918b-ae6f-5fac-f5642c56f1da@intel.com>
- <20200219144816.GM15239@unreal>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <4ebd9adb-7915-f699-4188-217c45c09e56@intel.com>
-Date:   Wed, 19 Feb 2020 10:34:03 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726613AbgBSPlo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Feb 2020 10:41:44 -0500
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:59897 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726604AbgBSPlo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Feb 2020 10:41:44 -0500
+Received: from Internal Mail-Server by MTLPINE2 (envelope-from maxg@mellanox.com)
+        with ESMTPS (AES256-SHA encrypted); 19 Feb 2020 17:41:42 +0200
+Received: from mtr-vdi-031.wap.labs.mlnx. (mtr-vdi-031.wap.labs.mlnx [10.209.102.136])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 01JFfgkt030371;
+        Wed, 19 Feb 2020 17:41:42 +0200
+From:   Max Gurtovoy <maxg@mellanox.com>
+To:     jgg@mellanox.com, leon@kernel.org, linux-rdma@vger.kernel.org
+Cc:     Max Gurtovoy <maxg@mellanox.com>
+Subject: [PATCH 1/1] RDMA/rw: map P2P memory correctly for signature operations
+Date:   Wed, 19 Feb 2020 17:41:42 +0200
+Message-Id: <20200219154142.9894-1-maxg@mellanox.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20200219144816.GM15239@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/19/2020 9:48 AM, Leon Romanovsky wrote:
->>> At the end, OFED stacks behave like "mini-distros", so if they manage to
->>> handle it, distro should do the same.
->>   The difference there is to the distro the RDMA sub system is but one small
->> part. To OFED it is the sole focus. So I expect OFED stacks to be more agile
->> at handling this sort of thing.
-> 
-> I disagree about first part of this paragraph. All major distributions
-> follow closely rdma-core and this ML.
-> 
+Since RDMA rw API support operations with P2P memory sg list, make sure
+to map/unmap the scatter list for signature operation correctly. while
+we're here, fix an error flow that doesn't unmap the sg list according
+to the memory type.
 
-The distros do certainly have people that follow the list. What I'm 
-saying is we shouldn't have relied on them to ensure there were no 
-implications brought on by the default behavior change. Instead we as 
-developers should have brought the node description impact to light more 
-proactively vs being reactive.
+Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+Signed-off-by: Israel Rukshin <israelr@mellanox.com>
+---
+ drivers/infiniband/core/rw.c | 44 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 27 insertions(+), 17 deletions(-)
 
--Denny
+diff --git a/drivers/infiniband/core/rw.c b/drivers/infiniband/core/rw.c
+index 4fad732..6eba845 100644
+--- a/drivers/infiniband/core/rw.c
++++ b/drivers/infiniband/core/rw.c
+@@ -273,6 +273,24 @@ static int rdma_rw_init_single_wr(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
+ 	return 1;
+ }
+ 
++static void rdma_rw_unmap_sg(struct ib_device *dev, struct scatterlist *sg,
++		u32 sg_cnt, enum dma_data_direction dir)
++{
++	if (is_pci_p2pdma_page(sg_page(sg)))
++		pci_p2pdma_unmap_sg(dev->dma_device, sg, sg_cnt, dir);
++	else
++		ib_dma_unmap_sg(dev, sg, sg_cnt, dir);
++}
++
++static int rdma_rw_map_sg(struct ib_device *dev, struct scatterlist *sg,
++		u32 sg_cnt, enum dma_data_direction dir)
++{
++	if (is_pci_p2pdma_page(sg_page(sg)))
++		return pci_p2pdma_map_sg(dev->dma_device, sg, sg_cnt, dir);
++	else
++		return ib_dma_map_sg(dev, sg, sg_cnt, dir);
++}
++
+ /**
+  * rdma_rw_ctx_init - initialize a RDMA READ/WRITE context
+  * @ctx:	context to initialize
+@@ -295,11 +313,7 @@ int rdma_rw_ctx_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp, u8 port_num,
+ 	struct ib_device *dev = qp->pd->device;
+ 	int ret;
+ 
+-	if (is_pci_p2pdma_page(sg_page(sg)))
+-		ret = pci_p2pdma_map_sg(dev->dma_device, sg, sg_cnt, dir);
+-	else
+-		ret = ib_dma_map_sg(dev, sg, sg_cnt, dir);
+-
++	ret = rdma_rw_map_sg(dev, sg, sg_cnt, dir);
+ 	if (!ret)
+ 		return -ENOMEM;
+ 	sg_cnt = ret;
+@@ -338,7 +352,7 @@ int rdma_rw_ctx_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp, u8 port_num,
+ 	return ret;
+ 
+ out_unmap_sg:
+-	ib_dma_unmap_sg(dev, sg, sg_cnt, dir);
++	rdma_rw_unmap_sg(dev, sg, sg_cnt, dir);
+ 	return ret;
+ }
+ EXPORT_SYMBOL(rdma_rw_ctx_init);
+@@ -378,13 +392,13 @@ int rdma_rw_ctx_signature_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
+ 		return -EINVAL;
+ 	}
+ 
+-	ret = ib_dma_map_sg(dev, sg, sg_cnt, dir);
++	ret = rdma_rw_map_sg(dev, sg, sg_cnt, dir);
+ 	if (!ret)
+ 		return -ENOMEM;
+ 	sg_cnt = ret;
+ 
+ 	if (prot_sg_cnt) {
+-		ret = ib_dma_map_sg(dev, prot_sg, prot_sg_cnt, dir);
++		ret = rdma_rw_map_sg(dev, prot_sg, prot_sg_cnt, dir);
+ 		if (!ret) {
+ 			ret = -ENOMEM;
+ 			goto out_unmap_sg;
+@@ -453,9 +467,9 @@ int rdma_rw_ctx_signature_init(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
+ 	kfree(ctx->reg);
+ out_unmap_prot_sg:
+ 	if (prot_sg_cnt)
+-		ib_dma_unmap_sg(dev, prot_sg, prot_sg_cnt, dir);
++		rdma_rw_unmap_sg(dev, prot_sg, prot_sg_cnt, dir);
+ out_unmap_sg:
+-	ib_dma_unmap_sg(dev, sg, sg_cnt, dir);
++	rdma_rw_unmap_sg(dev, sg, sg_cnt, dir);
+ 	return ret;
+ }
+ EXPORT_SYMBOL(rdma_rw_ctx_signature_init);
+@@ -588,11 +602,7 @@ void rdma_rw_ctx_destroy(struct rdma_rw_ctx *ctx, struct ib_qp *qp, u8 port_num,
+ 		break;
+ 	}
+ 
+-	if (is_pci_p2pdma_page(sg_page(sg)))
+-		pci_p2pdma_unmap_sg(qp->pd->device->dma_device, sg,
+-				    sg_cnt, dir);
+-	else
+-		ib_dma_unmap_sg(qp->pd->device, sg, sg_cnt, dir);
++	rdma_rw_unmap_sg(qp->pd->device, sg, sg_cnt, dir);
+ }
+ EXPORT_SYMBOL(rdma_rw_ctx_destroy);
+ 
+@@ -619,9 +629,9 @@ void rdma_rw_ctx_destroy_signature(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
+ 	ib_mr_pool_put(qp, &qp->sig_mrs, ctx->reg->mr);
+ 	kfree(ctx->reg);
+ 
+-	ib_dma_unmap_sg(qp->pd->device, sg, sg_cnt, dir);
+ 	if (prot_sg_cnt)
+-		ib_dma_unmap_sg(qp->pd->device, prot_sg, prot_sg_cnt, dir);
++		rdma_rw_unmap_sg(qp->pd->device, prot_sg, prot_sg_cnt, dir);
++	rdma_rw_unmap_sg(qp->pd->device, sg, sg_cnt, dir);
+ }
+ EXPORT_SYMBOL(rdma_rw_ctx_destroy_signature);
+ 
+-- 
+1.8.3.1
+
