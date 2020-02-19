@@ -2,138 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27188163D26
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 07:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E90163D6A
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 08:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726169AbgBSGpN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Feb 2020 01:45:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45496 "EHLO mail.kernel.org"
+        id S1726297AbgBSHLe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Feb 2020 02:11:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726156AbgBSGpN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 19 Feb 2020 01:45:13 -0500
+        id S1726163AbgBSHLe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 Feb 2020 02:11:34 -0500
 Received: from localhost (unknown [213.57.247.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 798D92176D;
-        Wed, 19 Feb 2020 06:45:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9250A208C4;
+        Wed, 19 Feb 2020 07:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582094712;
-        bh=og5blEf5Nwq9xuntnoX3HYDUPTi+Squ4Y93kWDMAi0U=;
+        s=default; t=1582096294;
+        bh=oDjE/RBeAB2w4AAck4+ZQfqyryDBYOG5f7XbNx05Hm0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dg2qWhlhWw8eoaftgP7Gfp+TnR9ca0hjjV4wvK7B/lxtaH0/PuOiSAJnrlT7sMwWX
-         FTvaZZ7UJFcMGEdZ5PQFPKsROnR76rx8UydEb8qrlICys+w+xlLlIxJO9+zRiurqF3
-         e/ayO/P+hTHMjkIBaYrw95UIZL2yp3thwGROi4Ko=
-Date:   Wed, 19 Feb 2020 08:45:07 +0200
+        b=Np0Dz+34A0rtTMJUs6yUZi0wRoEGRPbmqqyhOIN/CC9wcjBQ8lay6lBAhY4GUg2ms
+         7Be42kDo3LX9kHnIDN0AzvdFexYfYG3JXJuGVEuCYSf8mpWQ+uoTOtD36kr4SVwS4S
+         4IXpnzi6lPYWDCoImdKk6f0mjw4/DCxKu8NQYr5Q=
+Date:   Wed, 19 Feb 2020 09:11:29 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Lang Cheng <chenglang@huawei.com>,
-        dledford@redhat.com, davem@davemloft.net, salil.mehta@huawei.com,
-        yisen.zhuang@huawei.com, linuxarm@huawei.com,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: Re: [RFC rdma-next] RDMA/core: Add attribute WQ_MEM_RECLAIM to
- workqueue "infiniband"
-Message-ID: <20200219064507.GC15239@unreal>
-References: <1581996935-46507-1-git-send-email-chenglang@huawei.com>
- <20200218153156.GD31668@ziepe.ca>
- <212eda31-cc86-5487-051b-cb51c368b6fe@huawei.com>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Honggang LI <honli@redhat.com>,
+        Gal Pressman <galpress@amazon.com>
+Subject: Re: RDMA device renames and node description
+Message-ID: <20200219071129.GD15239@unreal>
+References: <5ae69feb-5543-b203-2f1b-df5fe3bdab2b@intel.com>
+ <20200218140444.GB8816@unreal>
+ <1fcc873b-3f67-2325-99cc-21d90edd2058@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <212eda31-cc86-5487-051b-cb51c368b6fe@huawei.com>
+In-Reply-To: <1fcc873b-3f67-2325-99cc-21d90edd2058@intel.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 09:13:23AM +0800, Yunsheng Lin wrote:
-> On 2020/2/18 23:31, Jason Gunthorpe wrote:
-> > On Tue, Feb 18, 2020 at 11:35:35AM +0800, Lang Cheng wrote:
-> >> The hns3 driver sets "hclge_service_task" workqueue with
-> >> WQ_MEM_RECLAIM flag in order to guarantee forward progress
-> >> under memory pressure.
+On Tue, Feb 18, 2020 at 12:11:47PM -0500, Dennis Dalessandro wrote:
+> On 2/18/2020 9:04 AM, Leon Romanovsky wrote:
+> > On Fri, Feb 14, 2020 at 01:13:53PM -0500, Dennis Dalessandro wrote:
+> > > Was there any discussion on the upgrade scenario for existing deployments as
+> > > far as device-rename changing node descriptions?
+> > >
+> > > If someone is running an older version of rdma-core they are going to have a
+> > > certain set of node descriptions for each node. This could be in logs, or
+> > > configuration databases, who knows what. Now if they upgrade to a new
+> > > version of rdma-core their node descriptions all automatically change out
+> > > from under them by default.
+> > >
+> > > Of course the admin could disable the rename prior to upgrade and as Leon
+> > > pointed out previously the upgrade won't remove the disablement file. The
+> > > problem is they would have to know to do that ahead of time.
 > >
-> > Don't do that. WQ_MEM_RECLAIM is only to be used by things interlinked
-> > with reclaimed processing.
+> > Dennis,
 > >
-> > Work on queues marked with WQ_MEM_RECLAIM can't use GFP_KERNEL
-> > allocations, can't do certain kinds of sleeps, can't hold certain
-> > kinds of locks, etc.
+> > It was discussed and the conclusion was that most if not all users are
+> > using one of two upgrade and strategy.
 >
-> From mlx5 driver, it seems that there is GFP_KERNEL allocations
-> on wq marked with WQ_MEM_RECLAIM too:
->
-> mlx5e_tx_timeout_work() -> mlx5e_safe_reopen_channels() ->
-> mlx5e_safe_switch_channels() -> mlx5e_open_channels()
->
-> kcalloc() is called with GFP_KERNEL in mlx5e_open_channels(),
-> and mlx5e_tx_timeout_work() is queued with priv->wq, which is
-> allocated with WQ_MEM_RECLAIM flags. see:
->
-> mlx5e_netdev_init() -> create_singlethread_workqueue()
+> Do you have a pointer to a thread I can read, I apparently missed it?
 
-There are two reasons for that, first mlx5 driver was written far before
-WQ_MEM_RECLAIM usage was clarified, second mlx5 has bugs.
+First, we started to talk about it even before patches were sent.
+See this summary from LPC 2017:
+ * the sysadmin will be able to disable this for "backward support"
+https://lore.kernel.org/linux-rdma/20170917125603.GA5788@mtr-leonro.local/
+Second, during the submission too, just need to continue to google it :)
 
 >
+> > First option is to rely on distro and every distro behaves differently
+> > in such cases, some of them won't change anything till their last user
+> > dies :) and others more dynamic with more up-to-date packages already
+> > adopted our default.
 >
-> From the comment in kernel/workqueue.c, the work queued with
-> wq with WQ_MEM_RECLAIM flag set seems to be executed without
-> blocking under some rare case. I still not quite understand
-> the comment, and I can not find any doc that point out the
-> GFP_KERNEL allocations can not be done in wq with WQ_MEM_RECLAIM
-> yet. Is there any doc that mentions that GFP_KERNEL allocations
-> can not be done in wq with WQ_MEM_RECLAIM?
+> This is the issue I see. The problem is when the distro doesn't know any
+> better and pulls in a new rdma-core and breaks things unintentionally. Up to
+> date is good, but up to date that brings with it what is essentially an ABI
+> breakage is not.
 
-It is whole purpose of WQ_MEM_RECLAIM flag - allow progress in case of
-memory pressure. Allocation memory while we are under memory pressure
-is an invitation for a disaster.
+ABI breakage is a strong word, luckily enough it is not defined at all.
+We never considered dmesg prints, device names, device ordering as an
+ABI. You can't rely on debug features too, they can disappear too.
 
->
->
-> /**
->  * rescuer_thread - the rescuer thread function
->  * @__rescuer: self
->  *
->  * Workqueue rescuer thread function.  There's one rescuer for each
->  * workqueue which has WQ_MEM_RECLAIM set.
->  *
->  * Regular work processing on a pool may block trying to create a new
->  * worker which uses GFP_KERNEL allocation which has slight chance of
->  * developing into deadlock if some works currently on the same queue
->  * need to be processed to satisfy the GFP_KERNEL allocation.  This is
->  * the problem rescuer solves.
->  *
->  * When such condition is possible, the pool summons rescuers of all
->  * workqueues which have works queued on the pool and let them process
->  * those works so that forward progress can be guaranteed.
->  *
->  * This should happen rarely.
->  *
->  * Return: 0
->  */
->
->
-> The below is the reason we add the sets "hclge_service_task" workqueue
-> with WQ_MEM_RECLAIM through analysing why other ethernet drivers has
-> allocated wq with WQ_MEM_RECLAIM flag, I may be wrong about that:
-
-Many drivers are developed using copy/paste technique, so it is wrong
-to assume that "other ethernet drivers" did the right thing.
+So the bottom line, the expectation that distro should fix all broken
+software before enabling device renaming and their bugs are not excuse
+to declare ABI breakage.
 
 >
-> hns3 ethernet driver may be used as the low level transport of a
-> network file system, memory reclaim data path may depend on the
-> worker in hns3 driver to bring back the ethernet link so that it flush
-> the some cache to network based disk.
+> > Second option is to use numerous OFED stacks, which are expected to
+> > provide full upgrade to all components which will work smoothly.
+>
+> Yeah I'm sure OFED will handle things for themselves.
 
-Unlikely that this "network file system" dependency on ethernet link is correct.
+At the end, OFED stacks behave like "mini-distros", so if they manage to
+handle it, distro should do the same.
 
 Thanks
-
->
-> >
-> > Jason
-> >
-> >
->
