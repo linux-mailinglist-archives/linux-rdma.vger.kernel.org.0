@@ -2,108 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EB3164EF4
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 20:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23993164FB8
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 21:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgBSTfO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Feb 2020 14:35:14 -0500
-Received: from mga17.intel.com ([192.55.52.151]:32739 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726648AbgBSTfN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 19 Feb 2020 14:35:13 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Feb 2020 11:35:13 -0800
-X-IronPort-AV: E=Sophos;i="5.70,461,1574150400"; 
-   d="scan'208";a="229218433"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.204.151]) ([10.254.204.151])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 19 Feb 2020 11:35:12 -0800
-Subject: Re: RDMA device renames and node description
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Honggang LI <honli@redhat.com>,
-        Gal Pressman <galpress@amazon.com>
-References: <5ae69feb-5543-b203-2f1b-df5fe3bdab2b@intel.com>
- <20200218140444.GB8816@unreal>
- <1fcc873b-3f67-2325-99cc-21d90edd2058@intel.com>
- <20200219071129.GD15239@unreal>
- <bea50739-918b-ae6f-5fac-f5642c56f1da@intel.com>
- <20200219165800.GS31668@ziepe.ca>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <03a8dd71-4031-4800-349f-525a013c2101@intel.com>
-Date:   Wed, 19 Feb 2020 14:35:09 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726851AbgBSUUn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Feb 2020 15:20:43 -0500
+Received: from gateway34.websitewelcome.com ([192.185.148.194]:49435 "EHLO
+        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726645AbgBSUUn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 Feb 2020 15:20:43 -0500
+X-Greylist: delayed 1350 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 Feb 2020 15:20:41 EST
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway34.websitewelcome.com (Postfix) with ESMTP id 2850F43EB5
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Feb 2020 13:58:11 -0600 (CST)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id 4VU3jeiG0vBMd4VU3jbwja; Wed, 19 Feb 2020 13:58:11 -0600
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=UYAsQma8WMMEgfFGTxq8KR7cZgkcLup2CpQWS1oHj6o=; b=dS806upTQpFVtK0Uu4+ezniKEV
+        4++S0aMc0sSjVOgj9q4xVUuLKFQhDLAwLZ9OOVvVuafxEs27N5t0jB4HwEbJnKLfOhABHclYOSq/s
+        dwf3GTY8Da5ltm1OCHR4n9e9PkF9QaxDxx0mA0cLrIwmuj19C8UXacpqwMtG8N8nlciSD9J00o5Gt
+        7+oARQ/X+m0j0DcuAEJeCCFiec+kusya7V/81cQfcGoP6rGZeV2rwgccM4h1ReZwzVC5CBcrqRWQF
+        9I0NuMMvCwTEsb1EF4qPvZO1i4dqNshRLjkLvsCdwRbEL4v6aqHjnseehoxmsQ58XmLOhxSWNa3u+
+        nlN0c19Q==;
+Received: from [200.68.141.28] (port=7911 helo=[192.168.43.131])
+        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1j4VU2-003UKX-MV; Wed, 19 Feb 2020 13:58:10 -0600
+Subject: Re: [PATCH][next] net/mlx5e: Replace zero-length array with
+ flexible-array member
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Saeed Mahameed <saeedm@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Boris Pismenny <borisp@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200218203114.GA27096@embeddedor>
+ <20200219071435.GE15239@unreal>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ VtSixD1uOgytAP7RWS474w==
+Message-ID: <a077354c-8bbc-fd1f-6799-09778df4ec40@embeddedor.com>
+Date:   Wed, 19 Feb 2020 14:00:52 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200219165800.GS31668@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200219071435.GE15239@unreal>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 200.68.141.28
+X-Source-L: No
+X-Exim-ID: 1j4VU2-003UKX-MV
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.43.131]) [200.68.141.28]:7911
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 11
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/19/2020 11:58 AM, Jason Gunthorpe wrote:
-> On Wed, Feb 19, 2020 at 09:14:06AM -0500, Dennis Dalessandro wrote:
-> 
->>> ABI breakage is a strong word, luckily enough it is not defined at all.
->>> We never considered dmesg prints, device names, device ordering as an
->>> ABI. You can't rely on debug features too, they can disappear too.
+
+
+On 2/19/20 01:14, Leon Romanovsky wrote:
+
 >>
->> Agree, it is a strong word and we can call it what you want. The point is
->> you should be able to rely on the node description not being changed out
->> from under you unnecessarily though. We aren't talking about a debug feature
->> here but a core feature to real world deployments.
+>> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+>> ---
+>>  drivers/net/ethernet/mellanox/mlx5/core/en.h          | 2 +-
+>>  drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c  | 2 +-
+>>  drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c | 2 +-
+>>  drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.h | 4 ++--
+>>  4 files changed, 5 insertions(+), 5 deletions(-)
+>>
 > 
-> People really use the node description as some stable name? And then
-> they put the HCA name in it? Why?
+> Thanks, applied to mlx5-next.
+> 
 
-I've seen it in multiple places. Including storage configuration files. 
-Suffice to say, yes people use it.
+Thank you.
 
-> Is that some thing unique to the OPA subnet manager?
-
-I don't think so.
-
-> I don't recall people complaining about this when we introduced
-> rdma-ndd by default and changed all the node descriptions away from
-> the kernel default.
-
-Sure but the reason rdma-ndd exists is because people care about the 
-node descriptions. I can't really speak to the historical adoption of 
-rdma-ndd but I believe it was a stand alone package/feature and was a 
-conscious decision to use or not as opposed to the one package to rule 
-them all rdma-core like we have now.
-
-> Also don't forget the whole thing about the node description is
-> inherently racey, so relying on it is Rather A Bad Idea.
-
-I think that point is well taken and I don't think anyone is against the 
-idea of fixing the "hacky" things as you like to say. This one just 
-caught people by surprise is all.
-
-> Should we change the default format string of rdma-ndd to something
-> else?
-
-I'm not sure. I can envision situations where a user has updated 
-libraries that are happy with the new persistent names but still want 
-the node description to not change. If rdma-ndd could do something to 
-keep the node desc the same, then in situations like this the device 
-rename would not have to be disabled.
-
-Given that we have seen problems with MVAPICH (even with mlx5), 
-libfabric, psm2, and I believe open mpi has a similar issue, and that 
-Intel, Amazon, RedHat, and Suse are experiencing issues from this I 
-think we should make things as flexible as possible to protect users 
-from breakages.
-
-We do want to move in a forward direction though so we don't want to go 
-back to the old way unilaterally. I think distros can handle their 
-upgrade situations and if we build in protection to rdma-ndd something 
-like a specific udev rule for keeping the node desc the same. That gives 
-us the flexibility until all the software and use cases catch up.
-
--Denny
+--
+Gustavo
