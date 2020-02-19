@@ -2,98 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E703163648
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Feb 2020 23:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 546871637F3
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 01:04:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgBRWkP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Feb 2020 17:40:15 -0500
-Received: from mail-pg1-f180.google.com ([209.85.215.180]:38595 "EHLO
-        mail-pg1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbgBRWkP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Feb 2020 17:40:15 -0500
-Received: by mail-pg1-f180.google.com with SMTP id d6so11654936pgn.5
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Feb 2020 14:40:13 -0800 (PST)
+        id S1726716AbgBSAEO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Feb 2020 19:04:14 -0500
+Received: from mail-qv1-f50.google.com ([209.85.219.50]:46671 "EHLO
+        mail-qv1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726641AbgBSAEO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Feb 2020 19:04:14 -0500
+Received: by mail-qv1-f50.google.com with SMTP id y2so9996305qvu.13
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Feb 2020 16:04:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=QxxgKlOI18XFx4RsiwmtX0xz3YL/rs7skcoYUa+GEwg=;
-        b=zTUXwIQaULx8QdyzmW/nFca/kfT/qenV8nuYvTAQr4KRG5XS8VljPEI0woADTHsNCf
-         1S9nXE42adZv/VSV4tnPbMDDLGtj9dM7p1YvLh5mzHq4THAAp7rD4RIRwKHHZEx/tEYo
-         sDmmXvkKyiUZzs4rxy743z2YwVIAvy43Qs3hAH3DfTD1bMtOCb7Cy5xYZ7+19VnwLaUv
-         J1QGD1I6DiwRrR2fesbTPeFFLkdKtaijBZD8UhT/P1DEcFQ5vTUAaphiA00rk95Um3TT
-         gV+fd1mTz93msI4gJX6rM5RyUPv6tSQhZ+mnyWxAO2Lx2VxDTylCXyG+usGDG/RIny1b
-         WNtQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XoIOioa/hRbwO8qDwC+h5ZuuDKQ3QdCo5q3X6KMRuHk=;
+        b=GN2GB/ByRcZiHGXeHtYtJ2WPgBu1GG/tHvn36oPd6DuotE0HIRqa3pn5I/gmBTO72Y
+         fioSKfwcEW8E3PHutwj3S1rUnEFmazVRtZ4LvA+ZHlWZXsQl7cmQSz0AQEczI//nozJP
+         eLfZC38IjEQTRpeN1p0bhuOWo0ja9pC37A9Y9eH1yy1QD0QRIABcCSVkTHdGDP/R0jHJ
+         Mi5OlcM6PW1Ownr79OxsqhX0fKV8wlQB6fnQsr5pIq1fYwYdH+WTY55BKv3fnBsyQ+hn
+         9RqVa2Hh67rLh62Qb5+p3vLuIW7W+RXhCMrGpX9aLHKl5WF/VyClz4m6iSjrHPQ+CHa4
+         +XYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=QxxgKlOI18XFx4RsiwmtX0xz3YL/rs7skcoYUa+GEwg=;
-        b=NeTu3FXVw6/YFwPQ2jji17W8m5xmyaz+dmfitP8AhRORPjd8qASQjPzET/lHXKLVvD
-         JBlmt2MmqXoPnwS/6z7lmnvpsl/vKe03GicwJfJinS8PiCdHO6AU8PdNi5mbRFHNAFRs
-         wMCnM3OiOBzaF51Mm6LZyrYEREuwTRiKgEqeszEWN505826KAHdlng1rSkM7u2EXqxI0
-         gUkc1C2CEnnrQL9BiHrR6okBLniUA7TIOqCaoa/hlT0FPZ1MYTN73IHQAsoHLIoei1ZP
-         gNsLmMwRSYSfBiAhUoJqhRb+s4i6iKG2HCD01CBJeqOZ95QPServa7Aw4RiY8MFMXKae
-         owZA==
-X-Gm-Message-State: APjAAAVD5p5QY413rGyFMPwkFq5+FTTTRwXR77Dz2WCabZOqHGZRqd40
-        36J4sNpKP2oETszoR1xGbXGg4A==
-X-Google-Smtp-Source: APXvYqwt9yUGg/9Jf9qNxZmZbGx0r6W9R3aQ1gEk1Wt/2+BXhffp2dqxnrNaTIjJ6DG+nwwMVjK/Vg==
-X-Received: by 2002:aa7:84c4:: with SMTP id x4mr23527207pfn.144.1582065613248;
-        Tue, 18 Feb 2020 14:40:13 -0800 (PST)
-Received: from [192.168.4.6] ([107.13.143.123])
-        by smtp.gmail.com with ESMTPSA id g19sm22576pfh.134.2020.02.18.14.40.11
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 18 Feb 2020 14:40:12 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: May we create roce_ud_header_unpack()?
-From:   Andrew Boyer <aboyer@pensando.io>
-In-Reply-To: <20200218205817.GI31668@ziepe.ca>
-Date:   Tue, 18 Feb 2020 17:40:09 -0500
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XoIOioa/hRbwO8qDwC+h5ZuuDKQ3QdCo5q3X6KMRuHk=;
+        b=jUGbsteyp/aSMk4O48ErNfG1KFNl4kmmvgbXGQPDvNkOA2cOVfOZICZfe9tEOJr79+
+         v1GMZhPVFSnJitI+2TXtyimO0hEw3lN8cY/gPZdoSKAYtN3nvmPQ9hX5Wf4MPv+RzaS1
+         gQrwJd4HEQM59j9VrQvmuKu4D3yXRWRiZ4RHAC5oEM4VRam0PUvPNbGcz/5tz1keJKae
+         gVH9G7xHQDNmOkSX6pkT7QiBG9S2gC0aqonxws/6JYF+/epTIlKO1X3yrXbzcHNVEaht
+         hyBeo+WSETRZevdFUOQ2as1dMx78OZHPvp3KokbLNL6Vd9/4jGJ+m/cK1gyFQz5iS5pz
+         3smw==
+X-Gm-Message-State: APjAAAUWdGRio8Cuw0sL4zcU6a6Xx4LUfVbEmZOTAz6VI5LXHyphTZb7
+        kolId5Bk9cG+biXQVMKC21JNMQ==
+X-Google-Smtp-Source: APXvYqzCSWCHI8Ivob1wyDpLjcwM8T+AQ98UoH7rO/Sj2DWuXoRI57a+pq6g6TJMouRI5/aUTp313g==
+X-Received: by 2002:a0c:f98e:: with SMTP id t14mr18666998qvn.74.1582070652790;
+        Tue, 18 Feb 2020 16:04:12 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id w60sm56793qte.39.2020.02.18.16.04.12
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 18 Feb 2020 16:04:12 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1j4CqZ-0002gm-QB; Tue, 18 Feb 2020 20:04:11 -0400
+Date:   Tue, 18 Feb 2020 20:04:11 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Andrew Boyer <aboyer@pensando.io>
 Cc:     linux-rdma@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <86758DBC-E3E6-4E96-B2E0-10ACE4F5228C@pensando.io>
+Subject: Re: May we create roce_ud_header_unpack()?
+Message-ID: <20200219000411.GJ31668@ziepe.ca>
 References: <ABA12A9D-D4F4-405C-BEAA-BDBF33D50488@pensando.io>
  <20200218205817.GI31668@ziepe.ca>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-X-Mailer: Apple Mail (2.3445.104.11)
+ <86758DBC-E3E6-4E96-B2E0-10ACE4F5228C@pensando.io>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86758DBC-E3E6-4E96-B2E0-10ACE4F5228C@pensando.io>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Feb 18, 2020 at 05:40:09PM -0500, Andrew Boyer wrote:
+> 
+> 
+> > On Feb 18, 2020, at 3:58 PM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > 
+> > On Tue, Feb 18, 2020 at 03:53:45PM -0500, Andrew Boyer wrote:
+> >> There is an ib_ud_header_unpack() in core/ud_header.c, but it has no consumers.
+> >> 
+> >> Would I be allowed to add a roce version alongside it?
+> > 
+> > Why? Personally I loath these accessors
+> > 
+> > I have been thinking of dropping all of them in favour of the stuff in
+> > include/rdma/iba.h, which has really been a good improvement to the cm
+> > 
+> >> May I do that now or must it wait until a consumer is ready to be checked in?
+> > 
+> > New stuff always needs in-tree users.
+> > 
+> > You can send a patch to delete ib_ud_header_unpack() though
+> > 
+> > Jason
+> 
+> OK.
+> 
+> It was being used for query_ah and query_qp, but I can design that out, no problem.
+> 
+> Are we still permitted to use ib_ud_header_pack() or should we avoid that too?
 
+You'd be better to just use the IBA macro stuff and add defines for
+the new structs you need. The codegen is a lot better than this
+pack/unpack
 
-> On Feb 18, 2020, at 3:58 PM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
->=20
-> On Tue, Feb 18, 2020 at 03:53:45PM -0500, Andrew Boyer wrote:
->> There is an ib_ud_header_unpack() in core/ud_header.c, but it has no =
-consumers.
->>=20
->> Would I be allowed to add a roce version alongside it?
->=20
-> Why? Personally I loath these accessors
->=20
-> I have been thinking of dropping all of them in favour of the stuff in
-> include/rdma/iba.h, which has really been a good improvement to the cm
->=20
->> May I do that now or must it wait until a consumer is ready to be =
-checked in?
->=20
-> New stuff always needs in-tree users.
->=20
-> You can send a patch to delete ib_ud_header_unpack() though
->=20
-> Jason
-
-OK.
-
-It was being used for query_ah and query_qp, but I can design that out, =
-no problem.
-
-Are we still permitted to use ib_ud_header_pack() or should we avoid =
-that too?
-
--Andrew
-
+Jason
