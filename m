@@ -2,126 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D24164529
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 14:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB04E1645D5
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 14:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgBSNTE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Feb 2020 08:19:04 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:34427 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726671AbgBSNTD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Feb 2020 08:19:03 -0500
-Received: by mail-qt1-f195.google.com with SMTP id l16so144990qtq.1
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Feb 2020 05:19:03 -0800 (PST)
+        id S1726551AbgBSNl1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Feb 2020 08:41:27 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:33614 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbgBSNl1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Feb 2020 08:41:27 -0500
+Received: by mail-qt1-f196.google.com with SMTP id d5so203146qto.0
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Feb 2020 05:41:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vC29mJCiaIyy7pQ6dfJE5xAfGesFoKSnva0UI2ciKD8=;
-        b=TXXz28dwFrrt3BoT3YqdwNg2RavD13Po3mHQb+Blck1wV2Ujfq1DH/Lnrxzp0bEf5k
-         lQ7VXrLppegr+b4dj9ZLzjcebQmmt09h2VxfDU2NGykiTMjKDxoaMl7BUOa+HYhEjaqA
-         7ApNfgidrOZs6V5abWq6VctcatakKzgb0DdnaWwUpBPHWHkoQtU0sn95x1Dc9xrRK8Uw
-         P4QR0pTTv8luRSg20D3AhXnm8oCbDS2v5JWbRzLJ+/fWurVC4FNHmbFmqpmaGFX/Kv+L
-         cehofxiQJ9NoAcNkGeNCh9uh/B5FDceFxxPgyj28beOwZCEIBSKYy9Bc2Vqs2klK2F67
-         xA5A==
+        d=dev-mellanox-co-il.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TrR0V3dqwCqbXVPPSssLCUWAQ/Kgx56wm361iNxogrg=;
+        b=j/5dWNtmq6dz2M1ZA/UmLoDF+Mht/++oeWPxTtbiOjZpNIdNPDoZxklpaGRksK14vG
+         qPeFRZTLPuYwlE79MoNR77qQliY0R1tIKG48uMXJXbBB+PzgKIAhv2Du44Mnq1YDwmbs
+         uVB1A9ea/x13vpsxWnjLiJRLa3tYxqeUSeF6kXMdFoHs+IOwywJK9cfADOwNSaZEkd1D
+         WvWM5xhpQ4XRRa6pHlRwGa/SUjNHJq2C4lXLOm1gakn13RmbPO1lx7C+vLrZDi5h3YF0
+         yeAjZKech/TuQWCJyE76Ppat333NtIm4hNj3Py9NFkNLWO+/5riIgL5FF8IEAS0Xrh2/
+         xVGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vC29mJCiaIyy7pQ6dfJE5xAfGesFoKSnva0UI2ciKD8=;
-        b=TjBepQOoZ6ExzxvflXZ7Wc/yGtNEvoCaPn/NdJIkRdqQeROGysV9R+q3KBrMSCYP4L
-         lrOUIu/3RV0FaNQ/9GznceHg57qmvso638nXcWI7BCdsGzEH0RDqCpUQPrBD+ooYNilr
-         BljSQUfNU1t9A9K2MhcFO64y52SRM+QxZaNy+fG6o+Ckrte4JK5hmiBQrIgtaRlZmt0Z
-         F83QIZoUZWwrF/DAC72XhxkNSZ9iB9XubRpsjzj2WXq+dzv3fwTEXZPxBQ+JjdOj1lN3
-         3D9FnIf/j1vGavEfwlPjWugSrNbOfQzyaYjqKjJTCjVwvktOn92uXlXNF4wP5yfqXvSE
-         EZ9Q==
-X-Gm-Message-State: APjAAAVcmOSfM5VWyAK0oGLT7SwECiG4oY4GBI/jKsQmYDUSQkJ9h2Ac
-        qeOEU4On93vfY+ytQuveQz5K5A==
-X-Google-Smtp-Source: APXvYqyoMwVxL20mrcY+4ulesgqE+krTmjULJD1/uzc6NczwvMWBXMZ58K9bsGlO30tp2PwpMvW8Gw==
-X-Received: by 2002:ac8:6bc1:: with SMTP id b1mr21160249qtt.313.1582118342862;
-        Wed, 19 Feb 2020 05:19:02 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id o7sm971377qkd.119.2020.02.19.05.19.02
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 19 Feb 2020 05:19:02 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j4PFl-0001Bs-T5; Wed, 19 Feb 2020 09:19:01 -0400
-Date:   Wed, 19 Feb 2020 09:19:01 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v2 for-next 7/7] RDMA/hns: Optimize qp doorbell
- allocation flow
-Message-ID: <20200219131901.GP31668@ziepe.ca>
-References: <1581325720-12975-1-git-send-email-liweihang@huawei.com>
- <1581325720-12975-8-git-send-email-liweihang@huawei.com>
- <20200219005225.GA25540@ziepe.ca>
- <04b1c2e6-a3e1-9e29-708d-4ae29c1e1602@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TrR0V3dqwCqbXVPPSssLCUWAQ/Kgx56wm361iNxogrg=;
+        b=bHTwLiswe+rFDcmsHeqfRwfk2zs+tp3V16wL1wxPokVOHr+EQ4W7KWabbw0/kbGqQE
+         kYJx8/taEr7MCl/aKlAHWU4q6mYMk6nJjNf1DzPt36knfw255HnI6R5k3JbUSLHM8+Jp
+         LV5t0x+vxL3aiYfka+qwpSzm0EOjyCa202pmBGSq4eISkYJmUvfU/QnRkgG5T0FGMYb4
+         4YoKpUDJb9SATHsJRNWuPzrUJm+0VLkh3USBeUt61FAkmYJh+f+I37oaN34rlFyoZCH7
+         Yr5vDer8BPcoo1l3DdswIZxzlilItUTN0ogoPpuVRafwlLyticIugJdDUz6iP4UuRPIs
+         oy7A==
+X-Gm-Message-State: APjAAAV8Ol2CAGm5tcGFL3ThK2YXPP4rzSWdtPnYmpMZAfv8z2fbGo2Z
+        tMSUkrOfRE+JCkarps2PYEh20SbRjfaB5SoiX03etw==
+X-Google-Smtp-Source: APXvYqzOEFFaLFNFvWMcHT5nnjH/CJVeNR9mVHmDGs4WRQ3kYjmMU+V+6JbBEypmVfvcTCr5nGoAmL0IGuJx63Cf5ZE=
+X-Received: by 2002:ac8:3fa9:: with SMTP id d38mr20773970qtk.333.1582119686392;
+ Wed, 19 Feb 2020 05:41:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <04b1c2e6-a3e1-9e29-708d-4ae29c1e1602@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200210131223.87776.21339.stgit@awfm-01.aw.intel.com> <20200210131944.87776.64386.stgit@awfm-01.aw.intel.com>
+In-Reply-To: <20200210131944.87776.64386.stgit@awfm-01.aw.intel.com>
+From:   Erez Shitrit <erezsh@dev.mellanox.co.il>
+Date:   Wed, 19 Feb 2020 15:41:15 +0200
+Message-ID: <CAAk-MO91iV9GDZChWCKjMAmv553EDGfSdr9B8aFw1f4yncx-Wg@mail.gmail.com>
+Subject: Re: [PATCH for-next 13/16] IB/{hfi1, ipoib, rdma}: Broadcast ping
+ sent packets which exceeded mtu size
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.alessandro@intel.com>,
+        Gary Leshner <Gary.S.Leshner@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 04:14:36PM +0800, Weihang Li wrote:
-> 
-> 
-> On 2020/2/19 8:52, Jason Gunthorpe wrote:
-> > On Mon, Feb 10, 2020 at 05:08:40PM +0800, Weihang Li wrote:
-> >> From: Xi Wang <wangxi11@huawei.com>
-> >>
-> >> Encapsulate the kernel qp doorbell allocation related code into 2
-> >> functions: alloc_qp_db() and free_qp_db().
-> >>
-> >> Signed-off-by: Xi Wang <wangxi11@huawei.com>
-> >> Signed-off-by: Weihang Li <liweihang@huawei.com>
-> >>  drivers/infiniband/hw/hns/hns_roce_qp.c | 214 +++++++++++++++++---------------
-> >>  1 file changed, 113 insertions(+), 101 deletions(-)
-> >>
-> >> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> >> index ad34187..46785f1 100644
-> >> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> >> @@ -844,6 +844,96 @@ static void free_qp_buf(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
-> >>  		free_rq_inline_buf(hr_qp);
-> >>  }
-> >>  
-> >> +#define user_qp_has_sdb(hr_dev, init_attr, udata, resp, ucmd) \
-> >> +		((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SQ_RECORD_DB) && \
-> >> +		udata->outlen >= sizeof(*resp) && \
-> >> +		hns_roce_qp_has_sq(init_attr) && udata->inlen >= sizeof(*ucmd))
-> >> +
-> >> +#define user_qp_has_rdb(hr_dev, init_attr, udata, resp) \
-> >> +		((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) && \
-> >> +		udata->outlen >= sizeof(*resp) && \
-> >> +		hns_roce_qp_has_rq(init_attr))
-> >> +
-> >> +#define kernel_qp_has_rdb(hr_dev, init_attr) \
-> >> +		((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) && \
-> >> +		hns_roce_qp_has_rq(init_attr))
-> > 
-> > static inline functions not defines please
-> > 
-> 
-> OK, I will change them into inline functions.
-> 
-> > Also, these tests against inline and outlen look very strange. What
-> > are they doing?
-> > 
-> > Jason
-> >
-> 
-> These judgement about inlen and outlen is for compatibility reasons,
-> previous discussions can be found at:
-> 
-> https://patchwork.kernel.org/patch/10172233/
+On Mon, Feb 10, 2020 at 3:19 PM Dennis Dalessandro
+<dennis.dalessandro@intel.com> wrote:
+>
+> From: Gary Leshner <Gary.S.Leshner@intel.com>
+>
+> When in connected mode ipoib sent broadcast pings which exceeded the mtu
+> size for broadcast addresses.
 
-Something is wrong, it should be testing the legnth using a
-field_offset_off kind of scheme, not sizeof(*resp)
+But this broadcast done via the UD QP and not via the connected mode,
+please explain
 
-Jason
+>
+> Add an mtu attribute to the rdma_netdev structure which ipoib sets to its
+> mcast mtu size.
+>
+> The RDMA netdev uses this value to determine if the skb length is too long
+> for the mtu specified and if it is, drops the packet and logs an error
+> about the errant packet.
+>
+> Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+> Reviewed-by: Dennis Dalessandro <dennis.alessandro@intel.com>
+> Signed-off-by: Gary Leshner <Gary.S.Leshner@intel.com>
+> Signed-off-by: Kaike Wan <kaike.wan@intel.com>
+> Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+> ---
+>  drivers/infiniband/ulp/ipoib/ipoib_main.c      |    2 ++
+>  drivers/infiniband/ulp/ipoib/ipoib_multicast.c |    1 +
+>  drivers/infiniband/ulp/ipoib/ipoib_vlan.c      |    3 +++
+>  3 files changed, 6 insertions(+)
+>
+> diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+> index 5c1cf68..ddb896f 100644
+> --- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
+> +++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+> @@ -1906,6 +1906,7 @@ static int ipoib_ndo_init(struct net_device *ndev)
+>  {
+>         struct ipoib_dev_priv *priv = ipoib_priv(ndev);
+>         int rc;
+> +       struct rdma_netdev *rn = netdev_priv(ndev);
+>
+>         if (priv->parent) {
+>                 ipoib_child_init(ndev);
+> @@ -1918,6 +1919,7 @@ static int ipoib_ndo_init(struct net_device *ndev)
+>         /* MTU will be reset when mcast join happens */
+>         ndev->mtu = IPOIB_UD_MTU(priv->max_ib_mtu);
+>         priv->mcast_mtu = priv->admin_mtu = ndev->mtu;
+> +       rn->mtu = priv->mcast_mtu;
+
+If this is something specific for your lower driver (opa_vnic etc.)
+you don't need to do that here, you can use the rn->clnt_priv member
+in order to get the mcast_mtu
+
+>         ndev->max_mtu = IPOIB_CM_MTU;
+>
+>         ndev->neigh_priv_len = sizeof(struct ipoib_neigh);
+> diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> index 7166ee9b..3d5f6b8 100644
+> --- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> +++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> @@ -246,6 +246,7 @@ static int ipoib_mcast_join_finish(struct ipoib_mcast *mcast,
+>                 if (priv->mcast_mtu == priv->admin_mtu)
+>                         priv->admin_mtu = IPOIB_UD_MTU(mtu);
+>                 priv->mcast_mtu = IPOIB_UD_MTU(mtu);
+> +               rn->mtu = priv->mcast_mtu;
+>
+>                 priv->qkey = be32_to_cpu(priv->broadcast->mcmember.qkey);
+>                 spin_unlock_irq(&priv->lock);
+> diff --git a/drivers/infiniband/ulp/ipoib/ipoib_vlan.c b/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
+> index 8ac8e18..3086560 100644
+> --- a/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
+> +++ b/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
+> @@ -97,6 +97,7 @@ int __ipoib_vlan_add(struct ipoib_dev_priv *ppriv, struct ipoib_dev_priv *priv,
+>  {
+>         struct net_device *ndev = priv->dev;
+>         int result;
+> +       struct rdma_netdev *rn = netdev_priv(ndev);
+>
+>         ASSERT_RTNL();
+>
+> @@ -117,6 +118,8 @@ int __ipoib_vlan_add(struct ipoib_dev_priv *ppriv, struct ipoib_dev_priv *priv,
+>                 goto out_early;
+>         }
+>
+> +       rn->mtu = priv->mcast_mtu;
+> +
+>         priv->parent = ppriv->dev;
+>         priv->pkey = pkey;
+>         priv->child_type = type;
+>
