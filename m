@@ -2,54 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEE116399E
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 02:51:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 758811639C1
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 03:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727592AbgBSBve (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Feb 2020 20:51:34 -0500
-Received: from mail-eopbgr00066.outbound.protection.outlook.com ([40.107.0.66]:9102
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726698AbgBSBve (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 18 Feb 2020 20:51:34 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ntg1EzskhcD6aio/TjZZQxRIk4t6AzkrhrEc7VoA+CqHXAl6Gs4siqI57wkCwJVn9in3Etgw8Xn3nRKYXop5C/x4+kHghvWTgXiZp/xvopK1dTyMDQvUZnjTEb8UL5AwiHfi4z52rctXyWiUa4jtuqhAZxABHBz3qOqkD5tLFUuH9PjH1l9BY4Yg1O0OC6aFjuVs+4unw367kWq9FLXcfsqeCbCVOGJNn3J+6Ns7P5PImwkHpbSOMbhOq+sK7Ujom7bjF548Ahk4vEnuO4lpOfXieVtHBfL8aNeUr+b0k6ka51AaEuv0lfpFPSNuETCa9LOwGp25tNBnvE8xkoRLEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NhM3BLOaU6o6+tQP2AM9/mmliNWgHe6TqxRSZlRbgXI=;
- b=Fdi8qxHp6W4nhil2ShLCVHq5Mg+B6c4nrIvFDbBImdeXnfUqdFJZyke1FU3edFoepKtnkU1v8Jbw3toX8fAeB0DP0v3MIJmP8KnnoLcjglk1lBGrIp9IDmGYrYl955Yk+h9w8kM+EJA11jganb2xjAfL8wk0277QXNiOMWaA/juJWzsn97zmEfX1/fz27V+rq0Mz3w59nq3uLW7cogP0310Z3sshV/OhC9zIqQfPb189yxtXcaMwEfTdwE5j5XED6Ur7OTQqcGxU+ZPY50PsqD2YquevihOTHn0421kg176djNgN9k8LyLdWTdRu8YrxxTKRL4puiAL5K3xUhJ7iLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NhM3BLOaU6o6+tQP2AM9/mmliNWgHe6TqxRSZlRbgXI=;
- b=RiUatVVFd0h6SUQsuyOqIJNQnkOB4DMHn6JNixqGsUgWy9QkckldcSdFp9PlGCN7/0v1P4/NkkG8LMrymt/41jf+/8+AN8P/g2chtwJnjOak5OAUaoESoVPpO/OKyMvXOe0Eu8IHIPSLb2/TKvNMbM+P7R/HvPD8Muq4z9XOWRI=
-Received: from AM6PR05MB4472.eurprd05.prod.outlook.com (52.135.162.157) by
- AM6PR05MB5508.eurprd05.prod.outlook.com (20.177.119.82) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2729.24; Wed, 19 Feb 2020 01:51:24 +0000
-Received: from AM6PR05MB4472.eurprd05.prod.outlook.com
- ([fe80::11fc:7536:f265:7920]) by AM6PR05MB4472.eurprd05.prod.outlook.com
- ([fe80::11fc:7536:f265:7920%3]) with mapi id 15.20.2729.032; Wed, 19 Feb 2020
- 01:51:24 +0000
-Received: from [192.168.0.144] (115.205.76.11) by SG2PR04CA0168.apcprd04.prod.outlook.com (2603:1096:4::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2729.23 via Frontend Transport; Wed, 19 Feb 2020 01:51:20 +0000
-From:   Mark Zhang <markz@mellanox.com>
-To:     Tom Talpey <tom@talpey.com>, Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Alex Rosenbaum <rosenbaumalex@gmail.com>,
+        id S1727992AbgBSCBx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Feb 2020 21:01:53 -0500
+Received: from p3plsmtpa11-04.prod.phx3.secureserver.net ([68.178.252.105]:41135
+        "EHLO p3plsmtpa11-04.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727811AbgBSCBx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 18 Feb 2020 21:01:53 -0500
+Received: from [192.168.0.78] ([24.218.182.144])
+        by :SMTPAUTH: with ESMTPSA
+        id 4EgRjpZOZilGc4EgRjfQb2; Tue, 18 Feb 2020 19:01:52 -0700
+X-CMAE-Analysis: v=2.3 cv=CubBjUwD c=1 sm=1 tr=0
+ a=ugQcCzLIhEHbLaAUV45L0A==:117 a=ugQcCzLIhEHbLaAUV45L0A==:17
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=uPZiAMpXAAAA:8
+ a=US7-Rng0AAAA:8 a=hm3lfIpQmTSrtjT96BEA:9 a=7Zwj6sZBwVKJAoWSPKxL6X1jA+E=:19
+ a=QEXdDO2ut3YA:10 a=RCpFSEPCRiHwXyn-TuLs:22
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: [RFC v2] RoCE v2.0 Entropy - IPv6 Flow Label and UDP Source Port
+To:     Mark Zhang <markz@mellanox.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Alex Rosenbaum <rosenbaumalex@gmail.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         Eran Ben Elisha <eranbe@mellanox.com>,
         Yishai Hadas <yishaih@mellanox.com>,
         Alex Rosenbaum <alexr@mellanox.com>,
         Maor Gottlieb <maorg@mellanox.com>,
         Leon Romanovsky <leonro@mellanox.com>
-Subject: Re: [RFC v2] RoCE v2.0 Entropy - IPv6 Flow Label and UDP Source Port
-Thread-Topic: [RFC v2] RoCE v2.0 Entropy - IPv6 Flow Label and UDP Source Port
-Thread-Index: AQHVxi+sI3U58iyGGkK67hYzlpOeV6gOZEYAgAAF34CAAAsFgIACyyEAgAaq6ICAAULnAIAASVuAgAAEMgCAAXyxgIABDUSAgAU6DYCAADlJgIAAiNCA
-Date:   Wed, 19 Feb 2020 01:51:24 +0000
-Message-ID: <4fc5590f-727c-2395-7de0-afb1d83f546b@mellanox.com>
 References: <CAFgAxU8ArpoL9fMpJY5v-UZS5AMXom+TJ8HS57XeEOsCFFov8Q@mail.gmail.com>
  <63a56c06-57bf-6e31-6ca8-043f9d3b72f3@talpey.com>
  <CAFgAxU80+feEEtaRYFYTHwTMSE6Edjq0t0siJ0W06WSyD+Cy3A@mail.gmail.com>
@@ -63,259 +43,308 @@ References: <CAFgAxU8ArpoL9fMpJY5v-UZS5AMXom+TJ8HS57XeEOsCFFov8Q@mail.gmail.com>
  <de3aeeb7-41ef-fadc-7865-e3e9fc005476@mellanox.com>
  <55e8c9cf-cd64-27b2-1333-ac4849f5e3ff@talpey.com>
  <e758da0d-94a3-a22f-c2aa-3d13714c4ed3@talpey.com>
-In-Reply-To: <e758da0d-94a3-a22f-c2aa-3d13714c4ed3@talpey.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: SG2PR04CA0168.apcprd04.prod.outlook.com (2603:1096:4::30)
- To AM6PR05MB4472.eurprd05.prod.outlook.com (2603:10a6:209:43::29)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=markz@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [115.205.76.11]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 83640360-988a-44cf-77b3-08d7b4de3998
-x-ms-traffictypediagnostic: AM6PR05MB5508:|AM6PR05MB5508:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR05MB5508A2F7C2D45D8E5F4861EACA100@AM6PR05MB5508.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0318501FAE
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(366004)(396003)(346002)(376002)(136003)(189003)(199004)(966005)(31686004)(81166006)(8676002)(81156014)(8936002)(16526019)(478600001)(956004)(71200400001)(2906002)(2616005)(53546011)(26005)(186003)(16576012)(6486002)(31696002)(64756008)(107886003)(66476007)(30864003)(66946007)(66556008)(66446008)(5660300002)(4326008)(36756003)(52116002)(110136005)(316002)(86362001)(54906003);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB5508;H:AM6PR05MB4472.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: SVOyNEUkhcc3wvtn//fPk/Exz7NpGFznm7xwuJweuhuHS6kDdiXB5IGbV0TkKtgEgnDLzHtpVIj5bKT5qRcMkeGeLxpV8BEuY1PX7V1Cz2BcuBlGj5LuxlRsudXDlEyS9yOrRfsL1vjHH2TzzzqFIYE2+Qvyu6eM32xZgxYliAcqTHFeptGfU37hyezf4Bq3PKY/kvHlyw0hsdv2eJrRdymV6GautmpnAtqxWXpd3xmDWdyLmRabxEqFXpnB+pEwkghDvvdqA3HghoCK7NfNh1fPHCQGv7q4s3e7cWJPfhUxbKHkgeTYzEViIcsbokTTH4bE/Xiw76AZYt4+8cqF0YY4JkU2oyKhUPHIcOo0d/Jhb2P+Cmmt4kMRI0Bi811MUC+tmek2B2nihdJjNymuxTpIWHydmCHa4/FHsjgpXZSlsjCPZrGegOlusiqhENlrLXbxsmMdAcLU+3ZbdVpc4E1ins+nqmenJJjVZ10F0guSVPxx5WUTJR6wTCfUnHpK7jFz78DmS+6DvA5YfIXz+Q==
-x-ms-exchange-antispam-messagedata: xguHRcOe2vQ3GzCHmcEFT6u5MR9qLsoKZQSTqTzatyNgPO0kD0kZPhwHmprhxduPAjmSyzbDfjqnuCpyLJVho5IWlVjXmQtv9px51UVZOvcC6tcQ0suBDhu9cRWqL9NSwxSe2/wj7SSGIpLbad1Row==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6F2B2FAF0B5DE9409F630A0F5DA69718@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <4fc5590f-727c-2395-7de0-afb1d83f546b@mellanox.com>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <91155305-10f0-22b5-b93b-2953c53dfc46@talpey.com>
+Date:   Tue, 18 Feb 2020 21:01:51 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 83640360-988a-44cf-77b3-08d7b4de3998
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2020 01:51:24.6932
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MkWJH28YgFfHFPukYg2NV5wgcvjBD7ta4OX3k3xBxZz4xjSjL4nVd8lOnf7QY3pBzXBb4/6sfRWsaVz+7TRHYw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB5508
+In-Reply-To: <4fc5590f-727c-2395-7de0-afb1d83f546b@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfPT4qlsFW2nDO+F+HDSFlVa11oeWKUXzxr7s8kjphGLrCs4oNY7zfs6W1Bwc8jWn+QkQwwcRG6J7CmynPDeaFHyGeXS31dZbKtkvIFRLsxdVU3OUQIL/
+ +NlSvIfoDZgXT73+MlRTioClpUjJZ0w71FHbrQVt/ynxl1D97Mn9LqSZ01G/MbBUe/p7jl5JhrYKJNBgmAfsLGz8WN5VvEjGbNASuOqkwBFUFzWhhoyfq9/V
+ jkB9VLvvjeMezm8T7RZ1DyWBQjqXulgi7Y+EiAJr6IN/izoMNsLLeLAaJMPMln/LqP7ZyEMsYelQipylTswnV/5jT6jSCYY9F4WodWyGs61SEBntVX44yvfK
+ eCFeHOCrBhNagjiYIrQL/X9lvGXR8dNLXU8fvu2EG598FtBT96tWck4Qix85ZZzmQz8k08no
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gMi8xOS8yMDIwIDE6NDEgQU0sIFRvbSBUYWxwZXkgd3JvdGU6DQo+IE9uIDIvMTgvMjAyMCA5
-OjE2IEFNLCBUb20gVGFscGV5IHdyb3RlOg0KPj4gT24gMi8xNS8yMDIwIDE6MjcgQU0sIE1hcmsg
-Wmhhbmcgd3JvdGU6DQo+Pj4gT24gMi8xNC8yMDIwIDEwOjIzIFBNLCBNYXJrIFpoYW5nIHdyb3Rl
-Og0KPj4+PiBPbiAyLzEzLzIwMjAgMTE6NDEgUE0sIEphc29uIEd1bnRob3JwZSB3cm90ZToNCj4+
-Pj4+IE9uIFRodSwgRmViIDEzLCAyMDIwIGF0IDEwOjI2OjA5QU0gLTA1MDAsIFRvbSBUYWxwZXkg
-d3JvdGU6DQo+Pj4+Pg0KPj4+Pj4+PiBJZiBib3RoIHNyYyAmIGRzdCBwb3J0cyBhcmUgaW4gdGhl
-IGhpZ2ggdmFsdWUgcmFuZ2UgeW91IGxvc3MgdGhvc2UNCj4+Pj4+Pj4gaGFzaCBiaXRzIGluIHRo
-ZSBtYXNraW5nLg0KPj4+Pj4+PiBJZiBzcmMgJiBkc3QgcG9ydCBhcmUgYm90aCAweEUwMDAsIHlv
-dXIgbWFza2VkIGhhc2ggZXF1YWxzIDAuIFlvdSdsbA0KPj4+Pj4+PiBnZXQgdGhlIHNhbWUgaGFz
-aCBpZiBib3RoIHBvcnRzIGFyZSBlcXVhbCAweEYwMDAuDQo+Pj4+Pj4NCj4+Pj4+PiBTdXJlLCBi
-dXQgdGhpcyBpcyBiZWNhdXNlIGl0J3MgYSAyMC1iaXQgaGFzaCBvZiBhIDMyLWJpdCBvYmplY3Qu
-IA0KPj4+Pj4+IFRoZXJlDQo+Pj4+Pj4gd2lsbCBhbHdheXMgYmUgY29sbGlzaW9ucywgdGhpcyBp
-cyBqdXN0IG9uZSBleGFtcGxlLiBNeSBjb25jZXJuIGlzIA0KPj4+Pj4+IHRoZQ0KPj4+Pj4+IHN0
-YXRpc3RpY2FsIHNwcmVhZCBvZiB0aGUgcmVzdWx0cy4gSSBhcmd1ZSBpdCdzIG5vdCBjaGFuZ2Vk
-IGJ5IHRoZQ0KPj4+Pj4+IHByb3Bvc2VkIGJpdC1mb2xkaW5nLCBwb3NzaWJseSBldmVuIGRhbWFn
-ZWQuDQo+Pj4+Pg0KPj4+Pj4gSSd2ZSBhbHdheXMgdGhvdWdodCB0aGF0ICdmb2xkaW5nJyBieSBt
-b2R1bG8gcmVzdWx0cyBpbiBhbiBhYm5vcm1hbA0KPj4+Pj4gc3RhdGlzdGljYWwgZGlzdHJpYnV0
-aW9uDQo+Pj4+Pg0KPj4+Pj4gVGhlIHBvaW50IGhlcmUgaXMgbm90IGNvbGxpc2lvbnMgYnV0IHRv
-IGhhdmUgYSBoYXNoIGRpc3RyaWJ1dGlvbiB3aGljaA0KPj4+Pj4gaXMgZ2VuZXJhbGx5IHVuaWZv
-cm0gZm9yIHRoZSBpbnB1dCBzcGFjZS4NCj4+Pj4+DQo+Pj4+PiBBbGV4LCBpdCB3b3VsZCBiZSBn
-b29kIHRvIG1ha2UgYSBxdWljayBwcm9ncmFtIHRvIG1lYXN1cmUgdGhlDQo+Pj4+PiB1bmlmb3Jt
-aXR5IG9mIHRoZSBkaXN0cmlidXRpb24uLg0KPj4+Pj4NCj4+Pj4NCj4+Pj4gSGksDQo+Pj4+DQo+
-Pj4+IEkgZGlkIHNvbWUgdGVzdHMgd2l0aCBhIHF1aWNrIHByb2dyYW0gKGhvcGUgaXQncyBub3Qg
-YnVnZ3kuLi4pLCANCj4+Pj4gc2VlbXMgdGhlIGhhc2ggd2l0aG91dCAiZm9sZGluZyIgaGFzIGEg
-YmV0dGVyIGRpc3RyaWJ1dGlvbiB0aGFuIGhhc2ggDQo+Pj4+IHdpdGggZm9sZC4gVGhlICJoYXNo
-IHF1YWxpdHkiIGlzIHJlZmxlY3RlZCBieSB0aGUgInRvdGFsX2FjY2VzcyJbMV0gDQo+Pj4+IGJl
-bG93Lg0KPj4+Pg0KPj4+PiBJIHRlc3RlZCBvbmx5IHdpdGggY21hX2Rwb3J0IGZyb20gMTg1MTUg
-KGliX3dyaXRlX2J3IGRlZmF1bHQpIHRvIA0KPj4+PiAxODUyNC4gSSBjYW4gZG8gbW9yZSB0ZXN0
-cyBpZiByZXF1aXJlZCwgZm9yIGV4YW1wbGUgdXNlIG11bHRpcGxlIA0KPj4+PiBjbWFfZHBvcnQg
-aW4gb25lIHN0YXRpc3RpYy4NCj4+Pj4NCj4+Pj4NCj4+Pj4gWzFdIA0KPj4+PiBodHRwczovL3N0
-YWNrb3ZlcmZsb3cuY29tL3F1ZXN0aW9ucy8yNDcyOTczMC9tZWFzdXJpbmctYS1oYXNoLWZ1bmN0
-aW9ucy1xdWFsaXR5LWZvci11c2Utd2l0aC1tYXBzLWFzc29zaWF0aXZlLWFycmF5cyANCj4+Pj4N
-Cj4+Pj4NCj4+Pj4gJCAuL2ENCj4+Pj4NCj4+Pj4gbWF4OiBTYXkgZm9yIHNsb3QgeCB0aGVyZSBh
-cmUgdGJbeF0gaXRlbXMsIHRoZW4gJ21heCA9IG1heCh0Ylt4XSknOyANCj4+Pj4gTG93ZXIgaXMg
-YmV0dGVyOw0KPj4+PiBtaW46IFNheSBmb3Igc2xvdCB4IHRoZXJlIGFyZSB0Ylt4XSBpdGVtcywg
-dGhlbiAnbWluID0gbWluKHRiW3hdKSc7IA0KPj4+PiBMaWtlbHkgbWluIGlzIGFsd2F5cyAwDQo+
-Pj4+IHRvdGFsX2FjY2VzczogVGhlIHN1bSBvZiBhbGwgJ2FjY2Vzc2VzJyAoZm9yIGVhY2ggc2xv
-dDogDQo+Pj4+IGFjY2Vzc2VzPW4qKG4rMSkvMik7IExvd2VyIGlzIGJldHRlcg0KPj4+PiBuW1hd
-OiBIb3cgbWFueSBzbG90cyB0aGF0IGhhcyBYIGl0ZW1zDQo+Pj4+DQo+Pj4+IGNtIHNvdXJjZSBw
-b3J0IHJhbmdlIFszMjc2OCwgNjU1MzRdLCBkZXN0IHBvcnQgMTg1MTU6DQo+Pj4+IEhhc2ggd2l0
-aCBmb2xkaW5nOg0KPj4+PiDCoMKgwqDCoCBmbG93X2xhYmVsOiBtYXggMiBtaW4gMCB0b3RhbF9h
-Y2Nlc3MgMzI3NjbCoCBuWzFdID0gMzI1MTQgblsyXSA9IA0KPj4+PiAxMjYNCj4+Pj4gwqDCoMKg
-wqAgdWRwX3Nwb3J0OiBtYXggMTAgbWluIDAgdG90YWxfYWNjZXNzIDUxNzQwwqAgblsxXSA9IDQ0
-MjDCoCBuWzJdID0gDQo+Pj4+IDQ2NzDCoCBuWzNdID0gMzExMsKgIG5bNF0gPSAxNDMzwqAgbls1
-XSA9IDUzNcKgwqAgbls2XSA9IDE2M8KgwqAgbls3XSA9IDMxIA0KPj4+PiBuWzhdID0gNcKgwqDC
-oMKgIG5bOV0gPSAywqDCoMKgwqAgblsxMF0gPSAxDQo+Pj4+IEhhc2ggd2l0aG91dCBmb2xkaW5n
-Og0KPj4+PiDCoMKgwqDCoCBmbG93X2xhYmVsOiBtYXggMSBtaW4gMCB0b3RhbF9hY2Nlc3MgMzI3
-NjbCoCBuWzFdID0gMzI3NjYNCj4+Pj4gwqDCoMKgwqAgdWRwX3Nwb3J0OiBtYXggNCBtaW4gMCB0
-b3RhbF9hY2Nlc3MgNDg2MTjCoMKgIG5bMV0gPSA1MzLCoMKgIG5bMl0gPSANCj4+Pj4gNzkyNsKg
-IG5bM10gPSA1MzDCoMKgIG5bNF0gPSAzNjk4DQo+Pj4+DQo+Pj4+DQo+Pj4+IGNtIHNvdXJjZSBw
-b3J0IHJhbmdlIFszMjc2OCwgNjU1MzRdLCBkZXN0IHBvcnQgMTg1MTY6DQo+Pj4+IEhhc2ggd2l0
-aCBmb2xkaW5nOg0KPj4+PiDCoMKgwqDCoCBmbG93X2xhYmVsOiBtYXggMyBtaW4gMCB0b3RhbF9h
-Y2Nlc3MgMzI3NzTCoCBuWzFdID0gMzEyMTQgblsyXSA9IA0KPj4+PiA3NzAgwqDCoCBuWzNdID0g
-NA0KPj4+PiDCoMKgwqDCoCB1ZHBfc3BvcnQ6IG1heCA4IG1pbiAwIHRvdGFsX2FjY2VzcyA1MDgw
-OMKgwqAgblsxXSA9IDQ0MDbCoCBuWzJdID0gDQo+Pj4+IDQ4NzPCoCBuWzNdID0gMzE1N8KgIG5b
-NF0gPSAxNDEzwqAgbls1XSA9IDUwOcKgwqAgbls2XSA9IDEyOcKgwqAgbls3XSA9IDIwIA0KPj4+
-PiBuWzhdID0gNA0KPj4+PiBIYXNoIHdpdGhvdXQgZm9sZGluZzoNCj4+Pj4gwqDCoMKgwqAgZmxv
-d19sYWJlbDogbWF4IDEgbWluIDAgdG90YWxfYWNjZXNzIDMyNzY2wqAgblsxXSA9IDMyNzY2DQo+
-Pj4+IMKgwqDCoMKgIHVkcF9zcG9ydDogbWF4IDIgbWluIDEgdG90YWxfYWNjZXNzIDMyNzY2wqDC
-oCBuWzFdID0gMsKgwqDCoMKgIG5bMl0gPSANCj4+Pj4gMTYzODINCj4+Pj4NCj4+Pj4NCj4+Pj4g
-Y20gc291cmNlIHBvcnQgcmFuZ2UgWzMyNzY4LCA2NTUzNF0sIGRlc3QgcG9ydCAxODUxNzoNCj4+
-Pj4gSGFzaCB3aXRoIGZvbGRpbmc6DQo+Pj4+IMKgwqDCoMKgIGZsb3dfbGFiZWw6IG1heCAyIG1p
-biAwIHRvdGFsX2FjY2VzcyAzMjc2NsKgIG5bMV0gPSAzMjI1MCBuWzJdID0gDQo+Pj4+IDI1OA0K
-Pj4+PiDCoMKgwqDCoCB1ZHBfc3BvcnQ6IG1heCAxMCBtaW4gMCB0b3RhbF9hY2Nlc3MgNTQ5MTbC
-oCBuWzFdID0gNDUzNsKgIG5bMl0gPSANCj4+Pj4gNDE3MMKgIG5bM10gPSAyODE3wqAgbls0XSA9
-IDE0NDXCoCBuWzVdID0gNjIywqDCoCBuWzZdID0gMjc1wqDCoCBuWzddID0gOTQgDQo+Pj4+IG5b
-OF0gPSAyMsKgwqDCoCBuWzldID0gNcKgwqDCoMKgIG5bMTBdID0gMg0KPj4+PiBIYXNoIHdpdGhv
-dXQgZm9sZGluZzoNCj4+Pj4gwqDCoMKgwqAgZmxvd19sYWJlbDogbWF4IDEgbWluIDAgdG90YWxf
-YWNjZXNzIDMyNzY2wqAgblsxXSA9IDMyNzY2DQo+Pj4+IMKgwqDCoMKgIHVkcF9zcG9ydDogbWF4
-IDMgbWluIDEgdG90YWxfYWNjZXNzIDM4NDAywqDCoCBuWzFdID0gMjgyMMKgIG5bMl0gPSANCj4+
-Pj4gMTA3NDYgblszXSA9IDI4MTgNCj4+Pj4NCj4+Pj4NCj4+Pj4gY20gc291cmNlIHBvcnQgcmFu
-Z2UgWzMyNzY4LCA2NTUzNF0sIGRlc3QgcG9ydCAxODUxODoNCj4+Pj4gSGFzaCB3aXRoIGZvbGRp
-bmc6DQo+Pj4+IMKgwqDCoMKgIGZsb3dfbGFiZWw6IG1heCAyIG1pbiAwIHRvdGFsX2FjY2VzcyAz
-Mjc2NsKgIG5bMV0gPSAzMjA2NiBuWzJdID0gDQo+Pj4+IDM1MA0KPj4+PiDCoMKgwqDCoCB1ZHBf
-c3BvcnQ6IG1heCA4IG1pbiAwIHRvdGFsX2FjY2VzcyA1MDAxOMKgwqAgblsxXSA9IDQ0MzXCoCBu
-WzJdID0gDQo+Pj4+IDQ5NzDCoCBuWzNdID0gMzI5NMKgIG5bNF0gPSAxMzc2wqAgbls1XSA9IDQ2
-NcKgwqAgbls2XSA9IDkywqDCoMKgIG5bN10gPSAxNiANCj4+Pj4gbls4XSA9IDINCj4+Pj4gSGFz
-aCB3aXRob3V0IGZvbGRpbmc6DQo+Pj4+IMKgwqDCoMKgIGZsb3dfbGFiZWw6IG1heCAxIG1pbiAw
-IHRvdGFsX2FjY2VzcyAzMjc2NsKgIG5bMV0gPSAzMjc2Ng0KPj4+PiDCoMKgwqDCoCB1ZHBfc3Bv
-cnQ6IG1heCAyIG1pbiAxIHRvdGFsX2FjY2VzcyAzMjc2NsKgwqAgblsxXSA9IDLCoMKgwqDCoCBu
-WzJdID0gDQo+Pj4+IDE2MzgyDQo+Pj4+DQo+Pj4+DQo+Pj4+IGNtIHNvdXJjZSBwb3J0IHJhbmdl
-IFszMjc2OCwgNjU1MzRdLCBkZXN0IHBvcnQgMTg1MTk6DQo+Pj4+IEhhc2ggd2l0aCBmb2xkaW5n
-Og0KPj4+PiDCoMKgwqDCoCBmbG93X2xhYmVsOiBtYXggMyBtaW4gMCB0b3RhbF9hY2Nlc3MgMzI3
-NzTCoCBuWzFdID0gMzE4MTYgblsyXSA9IA0KPj4+PiA0NjkgwqDCoCBuWzNdID0gNA0KPj4+PiDC
-oMKgwqDCoCB1ZHBfc3BvcnQ6IG1heCA4IG1pbiAwIHRvdGFsX2FjY2VzcyA1MTQ2MsKgwqAgblsx
-XSA9IDQ0MTTCoCBuWzJdID0gDQo+Pj4+IDQ3MzTCoCBuWzNdID0gMzA4OMKgIG5bNF0gPSAxNDY2
-wqAgbls1XSA9IDUwOMKgwqAgbls2XSA9IDE2MMKgwqAgbls3XSA9IDMyIA0KPj4+PiBuWzhdID0g
-NA0KPj4+PiBIYXNoIHdpdGhvdXQgZm9sZGluZzoNCj4+Pj4gwqDCoMKgwqAgZmxvd19sYWJlbDog
-bWF4IDEgbWluIDAgdG90YWxfYWNjZXNzIDMyNzY2wqAgblsxXSA9IDMyNzY2DQo+Pj4+IMKgwqDC
-oMKgIHVkcF9zcG9ydDogbWF4IDQgbWluIDAgdG90YWxfYWNjZXNzIDQ1NDkwwqDCoCBuWzFdID0g
-MzY2MsKgIG5bMl0gPSANCj4+Pj4gNjM2MMKgIG5bM10gPSAzNjYwwqAgbls0XSA9IDEzNTENCj4+
-Pj4NCj4+Pj4NCj4+Pj4gY20gc291cmNlIHBvcnQgcmFuZ2UgWzMyNzY4LCA2NTUzNF0sIGRlc3Qg
-cG9ydCAxODUyMDoNCj4+Pj4gSGFzaCB3aXRoIGZvbGRpbmc6DQo+Pj4+IMKgwqDCoMKgIGZsb3df
-bGFiZWw6IG1heCA2IG1pbiAwIHRvdGFsX2FjY2VzcyAzNDYxOMKgIG5bMV0gPSAyMDM0OSBuWzJd
-ID0gDQo+Pj4+IDUwMjfCoCBuWzNdID0gNTUwwqDCoCBuWzRdID0gMTY0wqDCoCBuWzVdID0gOcKg
-wqDCoMKgIG5bNl0gPSAyDQo+Pj4+IMKgwqDCoMKgIHVkcF9zcG9ydDogbWF4IDEzIG1pbiAwIHRv
-dGFsX2FjY2VzcyA4MjU0MsKgIG5bMV0gPSA1NDnCoMKgIG5bMl0gPSANCj4+Pj4gMTE2N8KgIG5b
-M10gPSAxNjM1wqAgbls0XSA9IDE3MDbCoCBuWzVdID0gMTM0McKgIG5bNl0gPSA4MzbCoMKgIG5b
-N10gPSA0ODMgDQo+Pj4+IG5bOF0gPSAyMjPCoMKgIG5bOV0gPSA4N8KgwqDCoCBuWzEwXSA9IDI3
-DQo+Pj4+IEhhc2ggd2l0aG91dCBmb2xkaW5nOg0KPj4+PiDCoMKgwqDCoCBmbG93X2xhYmVsOiBt
-YXggMSBtaW4gMCB0b3RhbF9hY2Nlc3MgMzI3NjbCoCBuWzFdID0gMzI3NjYNCj4+Pj4gwqDCoMKg
-wqAgdWRwX3Nwb3J0OiBtYXggNCBtaW4gMCB0b3RhbF9hY2Nlc3MgNjU1MzAgblszXSA9IDLCoMKg
-wqDCoCBuWzRdID0gODE5MA0KPj4+Pg0KPj4+Pg0KPj4+PiBjbSBzb3VyY2UgcG9ydCByYW5nZSBb
-MzI3NjgsIDY1NTM0XSwgZGVzdCBwb3J0IDE4NTIxOg0KPj4+PiBIYXNoIHdpdGggZm9sZGluZzoN
-Cj4+Pj4gwqDCoMKgwqAgZmxvd19sYWJlbDogbWF4IDIgbWluIDAgdG90YWxfYWNjZXNzIDMyNzY2
-wqAgblsxXSA9IDMxOTI0IG5bMl0gPSANCj4+Pj4gNDIxDQo+Pj4+IMKgwqDCoMKgIHVkcF9zcG9y
-dDogbWF4IDkgbWluIDAgdG90YWxfYWNjZXNzIDUxODY0wqDCoCBuWzFdID0gNDUwNcKgIG5bMl0g
-PSANCj4+Pj4gNDY0NcKgIG5bM10gPSAzMDM4wqAgbls0XSA9IDE0NjTCoCBuWzVdID0gNTQywqDC
-oCBuWzZdID0gMTU0wqDCoCBuWzddID0gNDMgDQo+Pj4+IG5bOF0gPSA2wqDCoMKgwqAgbls5XSA9
-IDINCj4+Pj4gSGFzaCB3aXRob3V0IGZvbGRpbmc6DQo+Pj4+IMKgwqDCoMKgIGZsb3dfbGFiZWw6
-IG1heCAxIG1pbiAwIHRvdGFsX2FjY2VzcyAzMjc2NsKgIG5bMV0gPSAzMjc2Ng0KPj4+PiDCoMKg
-wqDCoCB1ZHBfc3BvcnQ6IG1heCAzIG1pbiAxIHRvdGFsX2FjY2VzcyAzMjgxMMKgwqAgblsxXSA9
-IDI0wqDCoMKgIG5bMl0gPSANCj4+Pj4gMTYzMzggblszXSA9IDIyDQo+Pj4+DQo+Pj4+DQo+Pj4+
-IGNtIHNvdXJjZSBwb3J0IHJhbmdlIFszMjc2OCwgNjU1MzRdLCBkZXN0IHBvcnQgMTg1MjI6DQo+
-Pj4+IEhhc2ggd2l0aCBmb2xkaW5nOg0KPj4+PiDCoMKgwqDCoCBmbG93X2xhYmVsOiBtYXggMyBt
-aW4gMCB0b3RhbF9hY2Nlc3MgMzI3NjjCoCBuWzFdID0gMzIxOTcgblsyXSA9IA0KPj4+PiAyODMg
-wqDCoCBuWzNdID0gMQ0KPj4+PiDCoMKgwqDCoCB1ZHBfc3BvcnQ6IG1heCA5IG1pbiAwIHRvdGFs
-X2FjY2VzcyA1MDg1MMKgwqAgblsxXSA9IDQ1NjHCoCBuWzJdID0gDQo+Pj4+IDQ3NTbCoCBuWzNd
-ID0gMzE4N8KgIG5bNF0gPSAxNDUywqAgbls1XSA9IDQ1M8KgwqAgbls2XSA9IDEzN8KgwqAgbls3
-XSA9IDI5IA0KPj4+PiBuWzhdID0gMsKgwqDCoMKgIG5bOV0gPSAyDQo+Pj4+IEhhc2ggd2l0aG91
-dCBmb2xkaW5nOg0KPj4+PiDCoMKgwqDCoCBmbG93X2xhYmVsOiBtYXggMSBtaW4gMCB0b3RhbF9h
-Y2Nlc3MgMzI3NjbCoCBuWzFdID0gMzI3NjYNCj4+Pj4gwqDCoMKgwqAgdWRwX3Nwb3J0OiBtYXgg
-MiBtaW4gMSB0b3RhbF9hY2Nlc3MgMzI3NjbCoMKgIG5bMV0gPSAywqDCoMKgwqAgblsyXSA9IA0K
-Pj4+PiAxNjM4Mg0KPj4+Pg0KPj4+Pg0KPj4+PiBjbSBzb3VyY2UgcG9ydCByYW5nZSBbMzI3Njgs
-IDY1NTM0XSwgZGVzdCBwb3J0IDE4NTIzOg0KPj4+PiBIYXNoIHdpdGggZm9sZGluZzoNCj4+Pj4g
-wqDCoMKgwqAgZmxvd19sYWJlbDogbWF4IDIgbWluIDAgdG90YWxfYWNjZXNzIDMyNzY2wqAgblsx
-XSA9IDMyNTE0IG5bMl0gPSANCj4+Pj4gMTI2DQo+Pj4+IMKgwqDCoMKgIHVkcF9zcG9ydDogbWF4
-IDggbWluIDAgdG90YWxfYWNjZXNzIDUyMjA4wqDCoCBuWzFdID0gNDQyNsKgIG5bMl0gPSANCj4+
-Pj4gNDYwOcKgIG5bM10gPSAzMDY5wqAgbls0XSA9IDE0MzXCoCBuWzVdID0gNTMzwqDCoCBuWzZd
-ID0gMTgwwqDCoCBuWzddID0gNTAgDQo+Pj4+IG5bOF0gPSAxMA0KPj4+PiBIYXNoIHdpdGhvdXQg
-Zm9sZGluZzoNCj4+Pj4gwqDCoMKgwqAgZmxvd19sYWJlbDogbWF4IDEgbWluIDAgdG90YWxfYWNj
-ZXNzIDMyNzY2wqAgblsxXSA9IDMyNzY2DQo+Pj4+IMKgwqDCoMKgIHVkcF9zcG9ydDogbWF4IDQg
-bWluIDAgdG90YWxfYWNjZXNzIDQ2MDYywqDCoCBuWzFdID0gMzA5NsKgIG5bMl0gPSANCj4+Pj4g
-NjY0MMKgIG5bM10gPSAzMDk0wqAgbls0XSA9IDE3NzcNCj4+Pj4NCj4+Pj4NCj4+Pj4gY20gc291
-cmNlIHBvcnQgcmFuZ2UgWzMyNzY4LCA2NTUzNF0sIGRlc3QgcG9ydCAxODUyNDoNCj4+Pj4gSGFz
-aCB3aXRoIGZvbGRpbmc6DQo+Pj4+IMKgwqDCoMKgIGZsb3dfbGFiZWw6IG1heCAzIG1pbiAwIHRv
-dGFsX2FjY2VzcyAzMjc3NMKgIG5bMV0gPSAzMTM2MiBuWzJdID0gDQo+Pj4+IDY5NiDCoMKgIG5b
-M10gPSA0DQo+Pj4+IMKgwqDCoMKgIHVkcF9zcG9ydDogbWF4IDggbWluIDAgdG90YWxfYWNjZXNz
-IDQ5NDkwwqDCoCBuWzFdID0gNDQ0MMKgIG5bMl0gPSANCj4+Pj4gNTE0OMKgIG5bM10gPSAzMjQw
-wqAgbls0XSA9IDE0MTPCoCBuWzVdID0gMzk0wqDCoCBuWzZdID0gOTfCoMKgwqAgbls3XSA9IDE0
-IA0KPj4+PiBuWzhdID0gMQ0KPj4+PiBIYXNoIHdpdGhvdXQgZm9sZGluZzoNCj4+Pj4gwqDCoMKg
-wqAgZmxvd19sYWJlbDogbWF4IDEgbWluIDAgdG90YWxfYWNjZXNzIDMyNzY2wqAgblsxXSA9IDMy
-NzY2DQo+Pj4+IMKgwqDCoMKgIHVkcF9zcG9ydDogbWF4IDIgbWluIDEgdG90YWxfYWNjZXNzIDMy
-NzY2wqDCoCBuWzFdID0gMsKgwqDCoMKgIG5bMl0gPSANCj4+Pj4gMTYzODINCj4+Pj4NCj4+Pj4N
-Cj4+Pg0KPj4+IEFub3RoZXIgZmluZGluZyBpcywgd2hlbiBjbWFfZHBvcnQgaXMgbXVsdGlwbGUg
-b2YgMHgyMDAgKGkuZS4sIDB4NjAwLCANCj4+PiAweDgwMCwgLi4uIDB4RkUwMCksIHRoZSBoYXNo
-IGRpc3RyaWJ1dGlvbiBpcyB0ZW5zIG9mIHRpbWVzIHdvcnNlIHRoZW4gDQo+Pj4gb3RoZXJzLiBG
-b3IgZXhhbXBsZXMgd2hlbiBkcG9ydCBpcyAxODQzMSBhbmQgMTg0MzI6DQo+Pj4NCj4+PiBjbSBz
-b3VyY2UgcG9ydCByYW5nZSBbMzI3NjgsIDY1NTM0XSwgZGVzdCBwb3J0IDE4NDMxOg0KPj4+IEhh
-c2ggd2l0aCBmb2xkaW5nOg0KPj4+IMKgwqDCoMKgIGZsb3dfbGFiZWw6IG1heCAyIG1pbiAwIHRv
-dGFsX2FjY2VzcyAzMjc2Ng0KPj4+IMKgwqDCoMKgIHVkcF9zcG9ydDrCoCBtYXggOCBtaW4gMCB0
-b3RhbF9hY2Nlc3MgNTA0MTANCj4+PiBIYXNoIHdpdGhvdXQgZm9sZGluZzoNCj4+PiDCoMKgwqDC
-oCBmbG93X2xhYmVsOiBtYXggMSBtaW4gMCB0b3RhbF9hY2Nlc3MgMzI3NjYNCj4+PiDCoMKgwqDC
-oCB1ZHBfc3BvcnQ6wqAgbWF4IDQgbWluIDAgdG90YWxfYWNjZXNzIDQ4MTI2DQo+Pj4NCj4+PiBj
-bSBzb3VyY2UgcG9ydCByYW5nZSBbMzI3NjgsIDY1NTM0XSwgZGVzdCBwb3J0IDE4NDMyKDB4NDgw
-MCk6DQo+Pj4gSGFzaCB3aXRoIGZvbGRpbmc6DQo+Pj4gwqDCoMKgwqAgZmxvd19sYWJlbDogbWF4
-IDEzMyBtaW4gMCB0b3RhbF9hY2Nlc3MgMTA3MjkzOA0KPj4+DQo+Pj4gwqDCoMKgwqAgdWRwX3Nw
-b3J0OsKgIG1heCAyMDMgbWluIDAgdG90YWxfYWNjZXNzIDIxMjY2NDQNCj4+Pg0KPj4+IEhhc2gg
-d2l0aG91dCBmb2xkaW5nOg0KPj4+IMKgwqDCoMKgIGZsb3dfbGFiZWw6IG1heCA2NCBtaW4gMMKg
-wqAgdG90YWxfYWNjZXNzIDEwNDg0NTANCj4+Pg0KPj4+IMKgwqDCoMKgIHVkcF9zcG9ydDrCoCBt
-YXggMTAyNCBtaW4gMCB0b3RhbF9hY2Nlc3MgMTY3NzUxNzANCj4+DQo+PiBHb29kIGRhdGEhIEl0
-IGNlcnRhaW5seSBpbmRpY2F0ZXMgYW4gaXNzdWUgd2l0aCB0aGUgc2ltcGxlDQo+PiBiaW5hcnkg
-bW9kdWx1cyBmb3IgdHJldW5jYXRpbmcgMzItPjIwIGJpdHMuIEJ1dCB0aGUgZXh0cmVtZWx5DQo+
-PiBuYXJyb3cgdGVzdGluZyByYW5nZSBsaW1pdHMgdGhlIGNvbmNsdXNpb25zIGNvbnNpZGVyYWJs
-eToNCj4+DQo+PiDCoD4+IEkgdGVzdGVkIG9ubHkgd2l0aCBjbWFfZHBvcnQgZnJvbSAxODUxNSAo
-aWJfd3JpdGVfYncgZGVmYXVsdCkgdG8NCj4+IMKgPj4gMTg1MjQuIEkgY2FuIGRvIG1vcmUgdGVz
-dHMgaWYgcmVxdWlyZWQsIGZvciBleGFtcGxlIHVzZSBtdWx0aXBsZQ0KPj4gwqA+PiBjbWFfZHBv
-cnQgaW4gb25lIHN0YXRpc3RpYy4NCj4+DQo+PiBUaGlzIGhhc2ggaXMgaW50ZW5kZWQgdG8gcHJv
-dmlkZSBlbnRyb3B5IGFjcm9zcyB0aGUgZW50aXJlIHBvcnQNCj4+IHJhbmdlIGFuZCB3ZSBzaG91
-bGQgZXZhbHVhdGUgaXQgYXMgc3VjaC4gQXQgYSBtaW5pbXVtLCB0aGUgc291cmNlDQo+PiBwb3J0
-IGNhbiB2YXJ5IG11Y2ggbW9yZSB3aWRlbHksIGZyb20gQWxleCdzIG9yaWdpbmFsIG1lc3NhZ2Ug
-aXQncw0KPj4gMHhDMDAwIC0gMHhGRkZGLg0KPj4NCj4+PiBVRFAgc291cmNlIHBvcnQgc2VsZWN0
-aW9uIG11c3QgYWRoZXJlIElBTkEgcG9ydCBhbGxvY2F0aW9uIHJhbmdlcy4gDQo+Pj4gVGh1cyB3
-ZSB3aWxsDQo+Pj4gYmUgdXNpbmcgSUFOQSByZWNvbW1lbmRhdGlvbiBmb3IgRXBoZW1lcmFsIHBv
-cnQgcmFuZ2Ugb2Y6IA0KPj4+IDQ5MTUyLTY1NTM1LCBvciBpbg0KPj4+IGhleDogMHhDMDAwLTB4
-RkZGRi4NCj4+DQo+PiBJJ20gbm90IGNlcnRhaW4gd2hhdCB0aGUgcmFuZ2Ugb2YgdGhlIGRlc3Rp
-bmF0aW9uIHBvcnQgbWlnaHQgYmUsIGJ1dA0KPj4gYXMgYSBTZXJ2aWNlIElELCBhIGdvb2QgYXNz
-dW1wdGlvbiBpcyB0aGUgZnVsbCByYW5nZSBvZiAweDEgLSAweEJGRkYuDQo+Pg0KPj4gQW55IGNo
-YW5jZSB5b3UgY291bGQgc2NhbGUgdXAgeW91ciB0ZXN0LCB0byBtZWFzdXJlIHRoZSBvcmlnaW5h
-bA0KPj4gcHJvcG9zZWQgaGFzaCBhY3Jvc3MgdGhlc2UgYnJvYWRlciByYW5nZXM/DQo+Pg0KPj4+
-IMKgIHUzMiBoYXNoID0gRHN0UG9ydCAqIFNyY1BvcnQ7DQo+Pj4gwqAgaGFzaCBePSAoaGFzaCA+
-PiAxNik7DQo+Pj4gwqAgaGFzaCBePSAoaGFzaCA+PiA4KTsNCj4+PiDCoCBBSF9BVFRSLkdSSC5m
-bG93X2xhYmVsID0gaGFzaCBBTkQgSUJfR1JIX0ZMT1dMQUJFTF9NQVNLOw0KPiANCj4gSSBkaWQg
-YW4gZXZlbiBxdWlja2VyLWFuZC1kaXJ0aWVyIHRlc3QsIHdpdGggdGhlIGF0dGFjaGVkLiBCb3Ro
-DQo+IHRoZSBmb2xkaW5nIGFuZCBub24tZm9sZGluZyBtZXRob2RzIGRpc3BsYXksIHRvIG1lLCBw
-cmV0dHkgbXVjaA0KPiB0aGUgc2FtZSBiZWhhdmlvci4gQW5kIHRoZXJlJ3MgYSBmYWlybHkgc2ln
-bmlmaWNhbnQgcGVyaW9kaWNpdHkNCj4gd2l0aCBhIGRvdWJsaW5nIG9mIHRoZSBoYXNoIGNvbGxp
-c2lvbiByYXRlLCBldmVyeSA4IG9yIHNvIGJ1Y2tldHMuDQo+IA0KPiBUaGUgImZvbGRpbmciIHZl
-cnNpb24gaGFzIGhpZ2hlciBzcGlrZXMgYXQgdGhlc2UgcG9pbnRzIHRoYW4gdGhlDQo+IG5vbi1m
-b2xkaW5nLCBpbiBmYWN0LiBBcyB5b3UgbWVudGlvbmVkLCB0aGVyZSBhcmUgYSBmZXcgbW9yZSAi
-emVybyINCj4gaGFzaGVzLCBidXQgdGhhdCdzIGV4cGVjdGVkLCBhbmQgbm90IHRoYXQgZGlmZmVy
-ZW50IGZvciBib3RoLg0KPiANCj4gQXNzdW1pbmcgeW91IGFncmVlIHdpdGggbXkgQzAwMC1GRkZG
-IGFuZCAxLUJGRkYgcG9ydCByYW5nZXMsIHRoZXJlDQo+IGFyZSA4MDBNIHBvc3NpYmxlIHBlcm11
-dGF0aW9ucywgYW5kIG9mIGNvdXJzZSAxTSBoYXNoIGJ1Y2tldHMuIFNvLA0KPiBhbiA4MDA6MSBj
-b2xsaXNpb24gcmF0ZSBpcyBleHBlY3RlZC4gQnV0IHRoZSBudW1iZXJzIHJhbmdlIGZyb20NCj4g
-dGhlIG1pZC0zMDAncyB0byBzZXZlcmFsLTEwMDAncy4gVGhhdCB2YXJpYW5jZSBzZWVtcyBoaWdo
-IHRvIG1lLg0KPiANCj4gSSByZWFsbHkgdGhpbmsgdGhlcmUgbmVlZHMgdG8gYmUgYSBmbGF0dGVy
-IHNwZWN0cnVtLCBoZXJlLiBUaGVzZQ0KPiBjb2xsaXNpb25zIGNhbiBjYXVzZSBzaWduaWZpY2Fu
-dCBjb25nZXN0aW9uIGVmZmVjdHMgYXQgc2NhbGUuIEkNCj4gc3VnZ2VzdGVkIHRyeWluZyBhIENS
-Qy0yMCBvZiB0aGUgMzItYml0IHNyYzw8MTZ8ZHN0LCBidXQgaXQncyBnb2luZw0KPiB0byB0YWtl
-IG1lIGEgbGl0dGxlIHRpbWUgdG8gZmluZCB0aGF0Lg0KPiANCg0KSSBkaWQgdGVzdHMgd2l0aCBy
-YW5nZSBjbWFfc3BvcnQgWzB4QzAwMCwgMHhGRkZGXSBhbmQgY21hX2Rwb3J0IFsxMDI1LCANCjB4
-RkZGRl0gKGJ1dCBlYWNoIHRlc3Qgd2l0aCBvbmUgZHBvcnQpLCBhbmQgZm91bmQ6DQoNCjEuIFRo
-ZSBmb2xkaW5nIGFuZCBub24tZm9sZGluZyByZXN1bHRzIGFyZSBzaW1pbGFyOw0KMi4gV2hlbiBk
-cG9ydCBpcyBtdWx0aXBsZSBvZiAweDIwMCB0aGUgcmVzdWx0IGlzIHZlcnkgYmFkLiBJIGFsc28g
-dGVzdGVkDQogICAgd2l0aCB5b3VyIGhhc2h0ZXN0LmMsIHRoZXJlIGFyZSBtdWNoIG1vcmUgInpl
-cm8iIGhhc2hlcyB3aGVuIHNwb3J0IG9yDQogICAgZHBvcnQgaXMgbXVsdGlwbGUgb2YgMHgyMDAu
-DQoNCkZvciB0aGUgaGFzaCBvbmUgb2YgdGhlIG9yaWdpbmFsIGdvYWwgaXMgc3ltbWV0cnksIGku
-ZS46DQogICAgIGYoc3BvcnQsIGRwb3J0KSA9IGYoZHBvcnQsIHNwb3J0KQ0KDQpJZiB0aGF0J3Mg
-bm90IGltcG9ydGFudCBJIGZlZWwgInNwb3J0ICogMzEgKyBkcG9ydCIgWzFdIGhhcyBhIGJldHRl
-ciByZXN1bHQuDQoNClsxXSBodHRwczovL3d3dy5zdHJjaHIuY29tL2hhc2hfZnVuY3Rpb25zDQoN
-Cj4gDQo+IFRvbS4NCg0K
+On 2/18/2020 8:51 PM, Mark Zhang wrote:
+> On 2/19/2020 1:41 AM, Tom Talpey wrote:
+>> On 2/18/2020 9:16 AM, Tom Talpey wrote:
+>>> On 2/15/2020 1:27 AM, Mark Zhang wrote:
+>>>> On 2/14/2020 10:23 PM, Mark Zhang wrote:
+>>>>> On 2/13/2020 11:41 PM, Jason Gunthorpe wrote:
+>>>>>> On Thu, Feb 13, 2020 at 10:26:09AM -0500, Tom Talpey wrote:
+>>>>>>
+>>>>>>>> If both src & dst ports are in the high value range you loss those
+>>>>>>>> hash bits in the masking.
+>>>>>>>> If src & dst port are both 0xE000, your masked hash equals 0. You'll
+>>>>>>>> get the same hash if both ports are equal 0xF000.
+>>>>>>>
+>>>>>>> Sure, but this is because it's a 20-bit hash of a 32-bit object.
+>>>>>>> There
+>>>>>>> will always be collisions, this is just one example. My concern is
+>>>>>>> the
+>>>>>>> statistical spread of the results. I argue it's not changed by the
+>>>>>>> proposed bit-folding, possibly even damaged.
+>>>>>>
+>>>>>> I've always thought that 'folding' by modulo results in an abnormal
+>>>>>> statistical distribution
+>>>>>>
+>>>>>> The point here is not collisions but to have a hash distribution which
+>>>>>> is generally uniform for the input space.
+>>>>>>
+>>>>>> Alex, it would be good to make a quick program to measure the
+>>>>>> uniformity of the distribution..
+>>>>>>
+>>>>>
+>>>>> Hi,
+>>>>>
+>>>>> I did some tests with a quick program (hope it's not buggy...),
+>>>>> seems the hash without "folding" has a better distribution than hash
+>>>>> with fold. The "hash quality" is reflected by the "total_access"[1]
+>>>>> below.
+>>>>>
+>>>>> I tested only with cma_dport from 18515 (ib_write_bw default) to
+>>>>> 18524. I can do more tests if required, for example use multiple
+>>>>> cma_dport in one statistic.
+>>>>>
+>>>>>
+>>>>> [1]
+>>>>> https://stackoverflow.com/questions/24729730/measuring-a-hash-functions-quality-for-use-with-maps-assosiative-arrays
+>>>>>
+>>>>>
+>>>>> $ ./a
+>>>>>
+>>>>> max: Say for slot x there are tb[x] items, then 'max = max(tb[x])';
+>>>>> Lower is better;
+>>>>> min: Say for slot x there are tb[x] items, then 'min = min(tb[x])';
+>>>>> Likely min is always 0
+>>>>> total_access: The sum of all 'accesses' (for each slot:
+>>>>> accesses=n*(n+1)/2); Lower is better
+>>>>> n[X]: How many slots that has X items
+>>>>>
+>>>>> cm source port range [32768, 65534], dest port 18515:
+>>>>> Hash with folding:
+>>>>>       flow_label: max 2 min 0 total_access 32766  n[1] = 32514 n[2] =
+>>>>> 126
+>>>>>       udp_sport: max 10 min 0 total_access 51740  n[1] = 4420  n[2] =
+>>>>> 4670  n[3] = 3112  n[4] = 1433  n[5] = 535   n[6] = 163   n[7] = 31
+>>>>> n[8] = 5     n[9] = 2     n[10] = 1
+>>>>> Hash without folding:
+>>>>>       flow_label: max 1 min 0 total_access 32766  n[1] = 32766
+>>>>>       udp_sport: max 4 min 0 total_access 48618   n[1] = 532   n[2] =
+>>>>> 7926  n[3] = 530   n[4] = 3698
+>>>>>
+>>>>>
+>>>>> cm source port range [32768, 65534], dest port 18516:
+>>>>> Hash with folding:
+>>>>>       flow_label: max 3 min 0 total_access 32774  n[1] = 31214 n[2] =
+>>>>> 770    n[3] = 4
+>>>>>       udp_sport: max 8 min 0 total_access 50808   n[1] = 4406  n[2] =
+>>>>> 4873  n[3] = 3157  n[4] = 1413  n[5] = 509   n[6] = 129   n[7] = 20
+>>>>> n[8] = 4
+>>>>> Hash without folding:
+>>>>>       flow_label: max 1 min 0 total_access 32766  n[1] = 32766
+>>>>>       udp_sport: max 2 min 1 total_access 32766   n[1] = 2     n[2] =
+>>>>> 16382
+>>>>>
+>>>>>
+>>>>> cm source port range [32768, 65534], dest port 18517:
+>>>>> Hash with folding:
+>>>>>       flow_label: max 2 min 0 total_access 32766  n[1] = 32250 n[2] =
+>>>>> 258
+>>>>>       udp_sport: max 10 min 0 total_access 54916  n[1] = 4536  n[2] =
+>>>>> 4170  n[3] = 2817  n[4] = 1445  n[5] = 622   n[6] = 275   n[7] = 94
+>>>>> n[8] = 22    n[9] = 5     n[10] = 2
+>>>>> Hash without folding:
+>>>>>       flow_label: max 1 min 0 total_access 32766  n[1] = 32766
+>>>>>       udp_sport: max 3 min 1 total_access 38402   n[1] = 2820  n[2] =
+>>>>> 10746 n[3] = 2818
+>>>>>
+>>>>>
+>>>>> cm source port range [32768, 65534], dest port 18518:
+>>>>> Hash with folding:
+>>>>>       flow_label: max 2 min 0 total_access 32766  n[1] = 32066 n[2] =
+>>>>> 350
+>>>>>       udp_sport: max 8 min 0 total_access 50018   n[1] = 4435  n[2] =
+>>>>> 4970  n[3] = 3294  n[4] = 1376  n[5] = 465   n[6] = 92    n[7] = 16
+>>>>> n[8] = 2
+>>>>> Hash without folding:
+>>>>>       flow_label: max 1 min 0 total_access 32766  n[1] = 32766
+>>>>>       udp_sport: max 2 min 1 total_access 32766   n[1] = 2     n[2] =
+>>>>> 16382
+>>>>>
+>>>>>
+>>>>> cm source port range [32768, 65534], dest port 18519:
+>>>>> Hash with folding:
+>>>>>       flow_label: max 3 min 0 total_access 32774  n[1] = 31816 n[2] =
+>>>>> 469    n[3] = 4
+>>>>>       udp_sport: max 8 min 0 total_access 51462   n[1] = 4414  n[2] =
+>>>>> 4734  n[3] = 3088  n[4] = 1466  n[5] = 508   n[6] = 160   n[7] = 32
+>>>>> n[8] = 4
+>>>>> Hash without folding:
+>>>>>       flow_label: max 1 min 0 total_access 32766  n[1] = 32766
+>>>>>       udp_sport: max 4 min 0 total_access 45490   n[1] = 3662  n[2] =
+>>>>> 6360  n[3] = 3660  n[4] = 1351
+>>>>>
+>>>>>
+>>>>> cm source port range [32768, 65534], dest port 18520:
+>>>>> Hash with folding:
+>>>>>       flow_label: max 6 min 0 total_access 34618  n[1] = 20349 n[2] =
+>>>>> 5027  n[3] = 550   n[4] = 164   n[5] = 9     n[6] = 2
+>>>>>       udp_sport: max 13 min 0 total_access 82542  n[1] = 549   n[2] =
+>>>>> 1167  n[3] = 1635  n[4] = 1706  n[5] = 1341  n[6] = 836   n[7] = 483
+>>>>> n[8] = 223   n[9] = 87    n[10] = 27
+>>>>> Hash without folding:
+>>>>>       flow_label: max 1 min 0 total_access 32766  n[1] = 32766
+>>>>>       udp_sport: max 4 min 0 total_access 65530 n[3] = 2     n[4] = 8190
+>>>>>
+>>>>>
+>>>>> cm source port range [32768, 65534], dest port 18521:
+>>>>> Hash with folding:
+>>>>>       flow_label: max 2 min 0 total_access 32766  n[1] = 31924 n[2] =
+>>>>> 421
+>>>>>       udp_sport: max 9 min 0 total_access 51864   n[1] = 4505  n[2] =
+>>>>> 4645  n[3] = 3038  n[4] = 1464  n[5] = 542   n[6] = 154   n[7] = 43
+>>>>> n[8] = 6     n[9] = 2
+>>>>> Hash without folding:
+>>>>>       flow_label: max 1 min 0 total_access 32766  n[1] = 32766
+>>>>>       udp_sport: max 3 min 1 total_access 32810   n[1] = 24    n[2] =
+>>>>> 16338 n[3] = 22
+>>>>>
+>>>>>
+>>>>> cm source port range [32768, 65534], dest port 18522:
+>>>>> Hash with folding:
+>>>>>       flow_label: max 3 min 0 total_access 32768  n[1] = 32197 n[2] =
+>>>>> 283    n[3] = 1
+>>>>>       udp_sport: max 9 min 0 total_access 50850   n[1] = 4561  n[2] =
+>>>>> 4756  n[3] = 3187  n[4] = 1452  n[5] = 453   n[6] = 137   n[7] = 29
+>>>>> n[8] = 2     n[9] = 2
+>>>>> Hash without folding:
+>>>>>       flow_label: max 1 min 0 total_access 32766  n[1] = 32766
+>>>>>       udp_sport: max 2 min 1 total_access 32766   n[1] = 2     n[2] =
+>>>>> 16382
+>>>>>
+>>>>>
+>>>>> cm source port range [32768, 65534], dest port 18523:
+>>>>> Hash with folding:
+>>>>>       flow_label: max 2 min 0 total_access 32766  n[1] = 32514 n[2] =
+>>>>> 126
+>>>>>       udp_sport: max 8 min 0 total_access 52208   n[1] = 4426  n[2] =
+>>>>> 4609  n[3] = 3069  n[4] = 1435  n[5] = 533   n[6] = 180   n[7] = 50
+>>>>> n[8] = 10
+>>>>> Hash without folding:
+>>>>>       flow_label: max 1 min 0 total_access 32766  n[1] = 32766
+>>>>>       udp_sport: max 4 min 0 total_access 46062   n[1] = 3096  n[2] =
+>>>>> 6640  n[3] = 3094  n[4] = 1777
+>>>>>
+>>>>>
+>>>>> cm source port range [32768, 65534], dest port 18524:
+>>>>> Hash with folding:
+>>>>>       flow_label: max 3 min 0 total_access 32774  n[1] = 31362 n[2] =
+>>>>> 696    n[3] = 4
+>>>>>       udp_sport: max 8 min 0 total_access 49490   n[1] = 4440  n[2] =
+>>>>> 5148  n[3] = 3240  n[4] = 1413  n[5] = 394   n[6] = 97    n[7] = 14
+>>>>> n[8] = 1
+>>>>> Hash without folding:
+>>>>>       flow_label: max 1 min 0 total_access 32766  n[1] = 32766
+>>>>>       udp_sport: max 2 min 1 total_access 32766   n[1] = 2     n[2] =
+>>>>> 16382
+>>>>>
+>>>>>
+>>>>
+>>>> Another finding is, when cma_dport is multiple of 0x200 (i.e., 0x600,
+>>>> 0x800, ... 0xFE00), the hash distribution is tens of times worse then
+>>>> others. For examples when dport is 18431 and 18432:
+>>>>
+>>>> cm source port range [32768, 65534], dest port 18431:
+>>>> Hash with folding:
+>>>>       flow_label: max 2 min 0 total_access 32766
+>>>>       udp_sport:  max 8 min 0 total_access 50410
+>>>> Hash without folding:
+>>>>       flow_label: max 1 min 0 total_access 32766
+>>>>       udp_sport:  max 4 min 0 total_access 48126
+>>>>
+>>>> cm source port range [32768, 65534], dest port 18432(0x4800):
+>>>> Hash with folding:
+>>>>       flow_label: max 133 min 0 total_access 1072938
+>>>>
+>>>>       udp_sport:  max 203 min 0 total_access 2126644
+>>>>
+>>>> Hash without folding:
+>>>>       flow_label: max 64 min 0   total_access 1048450
+>>>>
+>>>>       udp_sport:  max 1024 min 0 total_access 16775170
+>>>
+>>> Good data! It certainly indicates an issue with the simple
+>>> binary modulus for treuncating 32->20 bits. But the extremely
+>>> narrow testing range limits the conclusions considerably:
+>>>
+>>>   >> I tested only with cma_dport from 18515 (ib_write_bw default) to
+>>>   >> 18524. I can do more tests if required, for example use multiple
+>>>   >> cma_dport in one statistic.
+>>>
+>>> This hash is intended to provide entropy across the entire port
+>>> range and we should evaluate it as such. At a minimum, the source
+>>> port can vary much more widely, from Alex's original message it's
+>>> 0xC000 - 0xFFFF.
+>>>
+>>>> UDP source port selection must adhere IANA port allocation ranges.
+>>>> Thus we will
+>>>> be using IANA recommendation for Ephemeral port range of:
+>>>> 49152-65535, or in
+>>>> hex: 0xC000-0xFFFF.
+>>>
+>>> I'm not certain what the range of the destination port might be, but
+>>> as a Service ID, a good assumption is the full range of 0x1 - 0xBFFF.
+>>>
+>>> Any chance you could scale up your test, to measure the original
+>>> proposed hash across these broader ranges?
+>>>
+>>>>    u32 hash = DstPort * SrcPort;
+>>>>    hash ^= (hash >> 16);
+>>>>    hash ^= (hash >> 8);
+>>>>    AH_ATTR.GRH.flow_label = hash AND IB_GRH_FLOWLABEL_MASK;
+>>
+>> I did an even quicker-and-dirtier test, with the attached. Both
+>> the folding and non-folding methods display, to me, pretty much
+>> the same behavior. And there's a fairly significant periodicity
+>> with a doubling of the hash collision rate, every 8 or so buckets.
+>>
+>> The "folding" version has higher spikes at these points than the
+>> non-folding, in fact. As you mentioned, there are a few more "zero"
+>> hashes, but that's expected, and not that different for both.
+>>
+>> Assuming you agree with my C000-FFFF and 1-BFFF port ranges, there
+>> are 800M possible permutations, and of course 1M hash buckets. So,
+>> an 800:1 collision rate is expected. But the numbers range from
+>> the mid-300's to several-1000's. That variance seems high to me.
+>>
+>> I really think there needs to be a flatter spectrum, here. These
+>> collisions can cause significant congestion effects at scale. I
+>> suggested trying a CRC-20 of the 32-bit src<<16|dst, but it's going
+>> to take me a little time to find that.
+>>
+> 
+> I did tests with range cma_sport [0xC000, 0xFFFF] and cma_dport [1025,
+> 0xFFFF] (but each test with one dport), and found:
+> 
+> 1. The folding and non-folding results are similar;
+> 2. When dport is multiple of 0x200 the result is very bad. I also tested
+>      with your hashtest.c, there are much more "zero" hashes when sport or
+>      dport is multiple of 0x200.
+> 
+> For the hash one of the original goal is symmetry, i.e.:
+>       f(sport, dport) = f(dport, sport)
+
+I'm very curious why this is a requirement. The hash is used to map
+to a packet queue, which enforces ordering as well as providing a
+congestion throttle point. These queues are one-way, and therefore
+the same value has no effect when used symmetrically - it only works
+one-way, the reverse flow is completely independent.
+
+Am I missing something?
+
+> If that's not important I feel "sport * 31 + dport" [1] has a better result.
+> 
+> [1] https://www.strchr.com/hash_functions
+
+Well, that'd be simple!
+
+Tom.
