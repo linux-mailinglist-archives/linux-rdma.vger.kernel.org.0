@@ -2,196 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 90580163E02
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 08:41:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF4C163EAC
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 09:14:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726700AbgBSHlN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Feb 2020 02:41:13 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10641 "EHLO huawei.com"
+        id S1726518AbgBSIOs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Feb 2020 03:14:48 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10217 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726604AbgBSHlM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 19 Feb 2020 02:41:12 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 948E290C984EFA84C4DC;
-        Wed, 19 Feb 2020 15:41:09 +0800 (CST)
-Received: from [127.0.0.1] (10.74.191.121) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.439.0; Wed, 19 Feb 2020
- 15:41:01 +0800
-Subject: Re: [RFC rdma-next] RDMA/core: Add attribute WQ_MEM_RECLAIM to
- workqueue "infiniband"
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, Lang Cheng <chenglang@huawei.com>,
-        <dledford@redhat.com>, <davem@davemloft.net>,
-        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
-        <linuxarm@huawei.com>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, Saeed Mahameed <saeedm@mellanox.com>,
-        <bhaktipriya96@gmail.com>, <tj@kernel.org>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-References: <1581996935-46507-1-git-send-email-chenglang@huawei.com>
- <20200218153156.GD31668@ziepe.ca>
- <212eda31-cc86-5487-051b-cb51c368b6fe@huawei.com>
- <20200219064507.GC15239@unreal>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <1155d15f-4188-e5cd-3e4a-6e0c52e9b1eb@huawei.com>
-Date:   Wed, 19 Feb 2020 15:40:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S1726156AbgBSIOs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 Feb 2020 03:14:48 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id E99AE7E4A56FAA8364EA;
+        Wed, 19 Feb 2020 16:14:45 +0800 (CST)
+Received: from [127.0.0.1] (10.40.168.149) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.439.0; Wed, 19 Feb 2020
+ 16:14:36 +0800
+Subject: Re: [PATCH v2 for-next 7/7] RDMA/hns: Optimize qp doorbell allocation
+ flow
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <dledford@redhat.com>, <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
+References: <1581325720-12975-1-git-send-email-liweihang@huawei.com>
+ <1581325720-12975-8-git-send-email-liweihang@huawei.com>
+ <20200219005225.GA25540@ziepe.ca>
+From:   Weihang Li <liweihang@huawei.com>
+Message-ID: <04b1c2e6-a3e1-9e29-708d-4ae29c1e1602@huawei.com>
+Date:   Wed, 19 Feb 2020 16:14:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200219064507.GC15239@unreal>
+In-Reply-To: <20200219005225.GA25540@ziepe.ca>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.191.121]
+X-Originating-IP: [10.40.168.149]
 X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-+cc Bhaktipriya, Tejun and Jeff
 
-On 2020/2/19 14:45, Leon Romanovsky wrote:
-> On Wed, Feb 19, 2020 at 09:13:23AM +0800, Yunsheng Lin wrote:
->> On 2020/2/18 23:31, Jason Gunthorpe wrote:
->>> On Tue, Feb 18, 2020 at 11:35:35AM +0800, Lang Cheng wrote:
->>>> The hns3 driver sets "hclge_service_task" workqueue with
->>>> WQ_MEM_RECLAIM flag in order to guarantee forward progress
->>>> under memory pressure.
->>>
->>> Don't do that. WQ_MEM_RECLAIM is only to be used by things interlinked
->>> with reclaimed processing.
->>>
->>> Work on queues marked with WQ_MEM_RECLAIM can't use GFP_KERNEL
->>> allocations, can't do certain kinds of sleeps, can't hold certain
->>> kinds of locks, etc.
 
-By the way, what kind of sleeps and locks can not be done in the work
-queued to wq marked with WQ_MEM_RECLAIM?
-
+On 2020/2/19 8:52, Jason Gunthorpe wrote:
+> On Mon, Feb 10, 2020 at 05:08:40PM +0800, Weihang Li wrote:
+>> From: Xi Wang <wangxi11@huawei.com>
 >>
->> From mlx5 driver, it seems that there is GFP_KERNEL allocations
->> on wq marked with WQ_MEM_RECLAIM too:
+>> Encapsulate the kernel qp doorbell allocation related code into 2
+>> functions: alloc_qp_db() and free_qp_db().
 >>
->> mlx5e_tx_timeout_work() -> mlx5e_safe_reopen_channels() ->
->> mlx5e_safe_switch_channels() -> mlx5e_open_channels()
+>> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+>> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>>  drivers/infiniband/hw/hns/hns_roce_qp.c | 214 +++++++++++++++++---------------
+>>  1 file changed, 113 insertions(+), 101 deletions(-)
 >>
->> kcalloc() is called with GFP_KERNEL in mlx5e_open_channels(),
->> and mlx5e_tx_timeout_work() is queued with priv->wq, which is
->> allocated with WQ_MEM_RECLAIM flags. see:
->>
->> mlx5e_netdev_init() -> create_singlethread_workqueue()
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+>> index ad34187..46785f1 100644
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+>> @@ -844,6 +844,96 @@ static void free_qp_buf(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+>>  		free_rq_inline_buf(hr_qp);
+>>  }
+>>  
+>> +#define user_qp_has_sdb(hr_dev, init_attr, udata, resp, ucmd) \
+>> +		((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SQ_RECORD_DB) && \
+>> +		udata->outlen >= sizeof(*resp) && \
+>> +		hns_roce_qp_has_sq(init_attr) && udata->inlen >= sizeof(*ucmd))
+>> +
+>> +#define user_qp_has_rdb(hr_dev, init_attr, udata, resp) \
+>> +		((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) && \
+>> +		udata->outlen >= sizeof(*resp) && \
+>> +		hns_roce_qp_has_rq(init_attr))
+>> +
+>> +#define kernel_qp_has_rdb(hr_dev, init_attr) \
+>> +		((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) && \
+>> +		hns_roce_qp_has_rq(init_attr))
 > 
-> There are two reasons for that, first mlx5 driver was written far before
-> WQ_MEM_RECLAIM usage was clarified, second mlx5 has bugs.
+> static inline functions not defines please
 > 
->>
->>
->> From the comment in kernel/workqueue.c, the work queued with
->> wq with WQ_MEM_RECLAIM flag set seems to be executed without
->> blocking under some rare case. I still not quite understand
->> the comment, and I can not find any doc that point out the
->> GFP_KERNEL allocations can not be done in wq with WQ_MEM_RECLAIM
->> yet. Is there any doc that mentions that GFP_KERNEL allocations
->> can not be done in wq with WQ_MEM_RECLAIM?
+
+OK, I will change them into inline functions.
+
+> Also, these tests against inline and outlen look very strange. What
+> are they doing?
 > 
-> It is whole purpose of WQ_MEM_RECLAIM flag - allow progress in case of
-> memory pressure. Allocation memory while we are under memory pressure
-> is an invitation for a disaster.
+> Jason
+>
 
-Ok, make sense.
+These judgement about inlen and outlen is for compatibility reasons,
+previous discussions can be found at:
 
-> 
->>
->>
->> /**
->>  * rescuer_thread - the rescuer thread function
->>  * @__rescuer: self
->>  *
->>  * Workqueue rescuer thread function.  There's one rescuer for each
->>  * workqueue which has WQ_MEM_RECLAIM set.
->>  *
->>  * Regular work processing on a pool may block trying to create a new
->>  * worker which uses GFP_KERNEL allocation which has slight chance of
->>  * developing into deadlock if some works currently on the same queue
->>  * need to be processed to satisfy the GFP_KERNEL allocation.  This is
->>  * the problem rescuer solves.
->>  *
->>  * When such condition is possible, the pool summons rescuers of all
->>  * workqueues which have works queued on the pool and let them process
->>  * those works so that forward progress can be guaranteed.
->>  *
->>  * This should happen rarely.
->>  *
->>  * Return: 0
->>  */
->>
->>
->> The below is the reason we add the sets "hclge_service_task" workqueue
->> with WQ_MEM_RECLAIM through analysing why other ethernet drivers has
->> allocated wq with WQ_MEM_RECLAIM flag, I may be wrong about that:
-> 
-> Many drivers are developed using copy/paste technique, so it is wrong
-> to assume that "other ethernet drivers" did the right thing.
-> 
->>
->> hns3 ethernet driver may be used as the low level transport of a
->> network file system, memory reclaim data path may depend on the
->> worker in hns3 driver to bring back the ethernet link so that it flush
->> the some cache to network based disk.
-> 
-> Unlikely that this "network file system" dependency on ethernet link is correct.
+https://patchwork.kernel.org/patch/10172233/
 
-Ok, I may be wrong about the above usecase.
-but the below commit explicitly state that network devices may be used in
-memory reclaim path.
+Thanks,
+Weihang
 
-0a38c17a21a0 ("fm10k: Remove create_workqueue"):
-
-fm10k: Remove create_workqueue
-
-alloc_workqueue replaces deprecated create_workqueue().
-
-A dedicated workqueue has been used since the workitem (viz
-fm10k_service_task, which manages and runs other subtasks) is involved in
-normal device operation and requires forward progress under memory
-pressure.
-
-create_workqueue has been replaced with alloc_workqueue with max_active
-as 0 since there is no need for throttling the number of active work
-items.
-
-Since network devices may be used in memory reclaim path,
-WQ_MEM_RECLAIM has been set to guarantee forward progress.
-
-flush_workqueue is unnecessary since destroy_workqueue() itself calls
-drain_workqueue() which flushes repeatedly till the workqueue
-becomes empty. Hence the call to flush_workqueue() has been dropped.
-
-Signed-off-by: Bhaktipriya Shridhar <bhaktipriya96@gmail.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-
-So:
-1. Maybe the above commit log is misleading, and network device driver's
-   wq does not need the WQ_MEM_RECLAIM flag, then maybe document what can
-   not be done in the work queued to wq marked with WQ_MEM_RECLAIM, and
-   remove the WQ_MEM_RECLAIM flag for the wq of network device driver.
-
-
-2. If the network device driver's wq does need the WQ_MEM_RECLAIM flag, then
-   hns3 may have tow problems here: WQ_MEM_RECLAIM wq flushing !WQ_MEM_RECLAIM
-   wq problem and GFP_KERNEL allocations in the work queued to WQ_MEM_RECLAIM wq.
-
-> 
-> Thanks
-> 
->>
->>>
->>> Jason
->>>
->>>
->>
-> 
-> .
 > 
 
