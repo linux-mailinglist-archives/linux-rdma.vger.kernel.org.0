@@ -2,111 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0707A164078
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 10:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49814164159
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 11:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726297AbgBSJdw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Feb 2020 04:33:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726270AbgBSJdw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 19 Feb 2020 04:33:52 -0500
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A115207FD;
-        Wed, 19 Feb 2020 09:33:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582104831;
-        bh=smWYeO6ACuMNi1MtbWEfiPLPNo188PfYYAAQ8cCCNeY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Asv/MFfMu5TNFKEck+4H3NUWiktcuKO5exMGvm85FXyFMtKheMQnOJCN1NeZSqb/+
-         yiMs+eza9DEgixoomAK7QKauQt8yaibFMq2DLxtBQkd7xyuNtKhWKr5cpxXGIBDaaU
-         seFL4IUNGH+jHBewopwViAUdY74qmj5PX7VTJ9Ic=
-Date:   Wed, 19 Feb 2020 11:33:21 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Kamal Heib <kamalheib1@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>
-Subject: Re: [PATCH for-next v2] RDMA/siw: Fix setting active_{speed, width}
- attributes
-Message-ID: <20200219093321.GI15239@unreal>
-References: <20200218095911.26614-1-kamalheib1@gmail.com>
- <20200218165847.GA15239@unreal>
- <20200219084359.GA12296@kheib-workstation>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200219084359.GA12296@kheib-workstation>
+        id S1726496AbgBSKUP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Feb 2020 05:20:15 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:37306 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726491AbgBSKUP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Feb 2020 05:20:15 -0500
+Received: by mail-wm1-f68.google.com with SMTP id a6so6136099wme.2
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Feb 2020 02:20:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=Nk2ICGQwTNYvudQ5oQVgnZh4sWA6pqXWSRj6B9yT7xQ=;
+        b=ECGaHKTIK1cF9Ss0pMoMObBf3xUe3kGRAWjLw5OeWhDTrYbtkyHFNa7OlaiP/MFKhT
+         4NH7U6cN1ZE1jXLPTTTWyW5m1b4+WWRq72VcgNx56NELq3jVF73FZvRlRsgr4LdB0bhs
+         YFIAl37P5ZGaa8aUk8kwXpLMUtp//CZ6e6uXU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Nk2ICGQwTNYvudQ5oQVgnZh4sWA6pqXWSRj6B9yT7xQ=;
+        b=YaSJ3wxyF8rwYspmogYxqqyxtQ4sQ0gFYJ2tyOyOAACr2pb5/YI1alvRUUDvulOSCH
+         lhD7FdY7XUKubHULZhQG1J96SCyDxfWRYXrAaY4vAK3EAl8RwF7mzTEYFGfheKpPjLpC
+         k4SYLdpfW0LWSvjEeZc0mjhBddQjlkaoCR/rF76mt2UiQzak56meoXt73sAsjt6d45ga
+         Jve97XQRU6Q4ebsh3hXOpNbTdOCOG9+q6ljsX+Xej7v2KbyBUkXQ5+3Mu4RCirzwquTS
+         tX/BEOtOXPogbIziygDSjNMJxXf80A5Qmf2Jh52rWVlRuq5hjmx1xTUoUf9KClm41RiJ
+         /5nw==
+X-Gm-Message-State: APjAAAX2BMO24vL0bp4RTYNkSEL68rgG9orqrppCETqWNP9HQPdTcXOF
+        9NImic+ZBEuDjiiTfV45BLr3Tg==
+X-Google-Smtp-Source: APXvYqwIPmxKBqVvuKuhUGKbAWI7efZgKXSo21aqOPGCjDORGoVTutywl7D0BEVsTSclmBiQMCMWjw==
+X-Received: by 2002:a1c:4905:: with SMTP id w5mr4786435wma.129.1582107613421;
+        Wed, 19 Feb 2020 02:20:13 -0800 (PST)
+Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id k16sm2408260wru.0.2020.02.19.02.20.10
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 19 Feb 2020 02:20:12 -0800 (PST)
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+To:     dledford@redhat.com, jgg@mellanox.com
+Cc:     linux-rdma@vger.kernel.org,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v4 0/2]  Retrieve HW GID context from ib_gid_attr
+Date:   Wed, 19 Feb 2020 02:19:52 -0800
+Message-Id: <1582107594-5180-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 10:43:59AM +0200, Kamal Heib wrote:
-> On Tue, Feb 18, 2020 at 06:58:47PM +0200, Leon Romanovsky wrote:
-> > On Tue, Feb 18, 2020 at 11:59:11AM +0200, Kamal Heib wrote:
-> > > Make sure to set the active_{speed, width} attributes to avoid reporting
-> > > the same values regardless of the underlying device.
-> > >
-> > > Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
-> > > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-> > > ---
-> > > V2: Change rc to rv.
-> > > ---
-> > >  drivers/infiniband/sw/siw/siw_verbs.c | 7 ++++---
-> > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-> > > index 73485d0da907..d5390d498c61 100644
-> > > --- a/drivers/infiniband/sw/siw/siw_verbs.c
-> > > +++ b/drivers/infiniband/sw/siw/siw_verbs.c
-> > > @@ -165,11 +165,12 @@ int siw_query_port(struct ib_device *base_dev, u8 port,
-> > >  		   struct ib_port_attr *attr)
-> > >  {
-> > >  	struct siw_device *sdev = to_siw_dev(base_dev);
-> > > +	int rv;
-> > >
-> > >  	memset(attr, 0, sizeof(*attr));
-> >
-> > This line should go too. IB/core clears attr prior to call driver.
-> >
-> > Thanks
-> >
->
-> This can be done in a separate patch as this patch fixes a specific issue.
+Provide an option for vendor drivers to get the HW GID context
+from the ib_gid_attr during modify_qp and create_ah. Required
+for drivers/HW that maintains HW gid index different than the
+host sgid_index.
 
-Whatever works for you, if you don't value your own time, go for it,
-do separate patch for every line you are changing. It just looks crazy
-to see changes like this:
- * changed line
- * line to be changed, but not changed
- * another changed line
+Please review and merge
 
-Thanks
+Thanks,
+Selvin Xavier
 
->
-> Thanks,
-> Kamal
->
-> > >
-> > > -	attr->active_speed = 2;
-> > > -	attr->active_width = 2;
-> > > +	rv = ib_get_eth_speed(base_dev, port, &attr->active_speed,
-> > > +			 &attr->active_width);
-> > >  	attr->gid_tbl_len = 1;
-> > >  	attr->max_msg_sz = -1;
-> > >  	attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
-> > > @@ -192,7 +193,7 @@ int siw_query_port(struct ib_device *base_dev, u8 port,
-> > >  	 * attr->subnet_timeout = 0;
-> > >  	 * attr->init_type_repy = 0;
-> > >  	 */
-> > > -	return 0;
-> > > +	return rv;
-> > >  }
-> > >
-> > >  int siw_get_port_immutable(struct ib_device *base_dev, u8 port,
-> > > --
-> > > 2.21.1
-> > >
+v3 -> v4:
+ Addressed Jason's comments. Removed unnecessary validation and locking
+ as the reference to the GID table entry should be taken before invoking
+ the new symbol.
+
+v2 -> v3:
+ Added a new symbol to retrieve the hw context.
+
+v1 -> v2:
+ Addressed review comments from Parav
+
+
+Selvin Xavier (2):
+  RDMA/core: Add helper function to retrieve driver gid context from gid
+    attr
+  RDMA/bnxt_re: Use rdma_read_gid_hw_context to retrieve HW gid index
+
+ drivers/infiniband/core/cache.c          | 20 ++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 23 ++++++++++++-----------
+ include/rdma/ib_cache.h                  |  1 +
+ 3 files changed, 33 insertions(+), 11 deletions(-)
+
+-- 
+2.5.5
+
