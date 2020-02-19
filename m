@@ -2,120 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F0C163F88
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 09:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B86E164059
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Feb 2020 10:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbgBSIoF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Feb 2020 03:44:05 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:54086 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726297AbgBSIoF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Feb 2020 03:44:05 -0500
-Received: by mail-wm1-f68.google.com with SMTP id s10so5492002wmh.3
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Feb 2020 00:44:04 -0800 (PST)
+        id S1726496AbgBSJ16 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Feb 2020 04:27:58 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:40482 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726195AbgBSJ15 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 19 Feb 2020 04:27:57 -0500
+Received: by mail-oi1-f194.google.com with SMTP id a142so23137114oii.7
+        for <linux-rdma@vger.kernel.org>; Wed, 19 Feb 2020 01:27:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ex8FiiQ+z8KcC7oDMM+ujxp30ewa0W0AOLWrFhzyxc4=;
-        b=ixgEOJe+7w85nYlppBSzIjWpn7awZN9pd9ITynG2BR6+MlnzQfhpy2NoOTabg6ojAz
-         +Zy/rNeyu3l0IzXRKqIvzqGBDWs2DK8noeR+HKcBZHXh6HU0otEbNIyXdnmMVuWU8VrV
-         0ewSIhPDWzX8nNCa8kMOfqSGkOCWIYUhYvcK7gFKzALhAtqvKuY/q5Yry31AdEtPY1qP
-         ibGBiMjNk+KW2uRcNbLZUR2kAEulslEKCIbRWcS9ASwIDT9duYPwOKUkUYybc+xwSPh8
-         zPZ8KB2lI8M0Coa9ToOPUYnVdwcT7ruHuzL9suGmwK0eD/oSnp1w3gXHwGEE5N92Af9w
-         w1Yg==
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tKQTfCajagr4J1OSDU17sA1kYXaEuT7aHw/dFjtanFA=;
+        b=YJHvcfnaEtqIV9PKgwpEwTObjxIAwBWyLS+yE7DeJQUiX73MOSMkWr+jY+x8uEsJn2
+         EPJLqVqilfrxOm7b1sB6S5FmwRSGshQ2c/TgidqVM8vzBQ4efb4d1k9uq6nc9VFfql8P
+         sUHOhoABCAAqtSw0XP9TtKZNiwcw+xf5v0dwQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ex8FiiQ+z8KcC7oDMM+ujxp30ewa0W0AOLWrFhzyxc4=;
-        b=GBv6pxstVL/1uANgYcx5ksOB4Wq1H7yjji89Zlt/zr2fJNNcdKD0v53u0OnMSpyI7F
-         I7RI4FnzVI06i3Bfdx3Ni5q0sVV1GP6JCST2fiJMXp5iwuonCRV5OKkdCzBEEjSOas2z
-         TGICuxtureQ5TMQjQDJjFfl7WAtE/uqYCxGu1/TtRXxDT4/9ggXpD4wW9wgSWXgtK3t6
-         LbULx+BnRJceSHI9oKpuz+q9Zsn+7LBgICuuP+TyNaCpOJtb+qPx63IaEFXAa6Buhqil
-         CjObewXJ6yZJzqXvnqnWIfKbNu5pEsdkfm7KY84KXzJJunIZOPTIE9ju4Kr02Hdp+wRC
-         kxzw==
-X-Gm-Message-State: APjAAAWb17mJ/FzuoSOC5fJq53+Nua/8KLVL8tMwrwi9eqE4yzjLMDp6
-        PIS+mhwYJmUS4/jNdTc81cM=
-X-Google-Smtp-Source: APXvYqzAIO/1vK5ZHUW5/OIT6SWASVuoYVyIqrrcyXO2YM3g8oNET+tFzYY255tFuILsDpEWmWFmDw==
-X-Received: by 2002:a1c:113:: with SMTP id 19mr8819107wmb.95.1582101843525;
-        Wed, 19 Feb 2020 00:44:03 -0800 (PST)
-Received: from kheib-workstation ([2.53.143.129])
-        by smtp.gmail.com with ESMTPSA id 59sm2158521wre.29.2020.02.19.00.44.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2020 00:44:03 -0800 (PST)
-Date:   Wed, 19 Feb 2020 10:43:59 +0200
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>
-Subject: Re: [PATCH for-next v2] RDMA/siw: Fix setting active_{speed, width}
- attributes
-Message-ID: <20200219084359.GA12296@kheib-workstation>
-References: <20200218095911.26614-1-kamalheib1@gmail.com>
- <20200218165847.GA15239@unreal>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tKQTfCajagr4J1OSDU17sA1kYXaEuT7aHw/dFjtanFA=;
+        b=Lp2GhZk2YaC71PX0zVO+UX3rKBd+2DnXKAgyzQXVJXbRkvbOCVJq+N8qGu2AMUvEGe
+         VIvmVXhHWD2ZDBcrms1AOrB7Tz1ZLDmpBxIl0ppV+YnIlv21m5zmW9D/f7QC7YSFagI3
+         +lHCBHQFxLMAdTgSyLjk2Gb/jn/RzxadKTOI6xPbEWXgOw96uN45aHOzQ6onsG9cLAVO
+         EnlYkBzOBTAUPPwBhzj8HRprV3oAOtJLwdBO6mTUTWea7tThIj/HAQiDFqnA2z6Y9c3Y
+         HUHsXtUmJW2aVjdR6+Kud3J/v9Ut4AgIkw8LfOtD/vNbCIHaygB9Ws5E/+/kdKulQ6wO
+         0plQ==
+X-Gm-Message-State: APjAAAWglMPJZ4En0HJ2iMS0OUru4Djc5tj5VIp8KU7F8nyuiBPiL/UC
+        qYAVbDVjurk8NbkkWw+4RfJN+eI2jGsmQtwMphySjgVy5eI=
+X-Google-Smtp-Source: APXvYqwzdPho1dIK1KeT7a9bQ56CBmGNl34qQS7/Qgk/YbMDLeT8MZ50Md+3nmWUqSYP/SG9AkusEXZN2Qhv5tkoyIc=
+X-Received: by 2002:aca:f0b:: with SMTP id 11mr4169877oip.34.1582104476415;
+ Wed, 19 Feb 2020 01:27:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200218165847.GA15239@unreal>
+References: <1574671174-5064-1-git-send-email-selvin.xavier@broadcom.com>
+ <1574671174-5064-6-git-send-email-selvin.xavier@broadcom.com>
+ <20200103194458.GA16980@ziepe.ca> <CA+sbYW0_o62UXae1h_U7+F9uH=qTOh0ou3w47jNdfHDdB0Ebtw@mail.gmail.com>
+ <20200219001550.GK31668@ziepe.ca>
+In-Reply-To: <20200219001550.GK31668@ziepe.ca>
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+Date:   Wed, 19 Feb 2020 14:57:45 +0530
+Message-ID: <CA+sbYW0-wrDQPCNKSBqAJvqmv9Hs7VxqLA9mbA3PJhviqXg_Rw@mail.gmail.com>
+Subject: Re: [PATCH for-next 5/6] RDMA/bnxt_re: Use driver_unregister and
+ unregistration API
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 06:58:47PM +0200, Leon Romanovsky wrote:
-> On Tue, Feb 18, 2020 at 11:59:11AM +0200, Kamal Heib wrote:
-> > Make sure to set the active_{speed, width} attributes to avoid reporting
-> > the same values regardless of the underlying device.
-> >
-> > Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
-> > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-> > ---
-> > V2: Change rc to rv.
-> > ---
-> >  drivers/infiniband/sw/siw/siw_verbs.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-> > index 73485d0da907..d5390d498c61 100644
-> > --- a/drivers/infiniband/sw/siw/siw_verbs.c
-> > +++ b/drivers/infiniband/sw/siw/siw_verbs.c
-> > @@ -165,11 +165,12 @@ int siw_query_port(struct ib_device *base_dev, u8 port,
-> >  		   struct ib_port_attr *attr)
-> >  {
-> >  	struct siw_device *sdev = to_siw_dev(base_dev);
-> > +	int rv;
-> >
-> >  	memset(attr, 0, sizeof(*attr));
-> 
-> This line should go too. IB/core clears attr prior to call driver.
-> 
-> Thanks
+On Wed, Feb 19, 2020 at 5:45 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 >
-
-This can be done in a separate patch as this patch fixes a specific issue.
-
-Thanks,
-Kamal
-
+> On Tue, Feb 18, 2020 at 05:19:27PM +0530, Selvin Xavier wrote:
+> > On Sat, Jan 4, 2020 at 1:15 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Mon, Nov 25, 2019 at 12:39:33AM -0800, Selvin Xavier wrote:
+> > >
+> > > >  static void __exit bnxt_re_mod_exit(void)
+> > > >  {
+> > > > -     struct bnxt_re_dev *rdev, *next;
+> > > > -     LIST_HEAD(to_be_deleted);
+> > > > +     struct bnxt_re_dev *rdev;
+> > > >
+> > > > +     flush_workqueue(bnxt_re_wq);
+> > > >       mutex_lock(&bnxt_re_dev_lock);
+> > > > -     /* Free all adapter allocated resources */
+> > > > -     if (!list_empty(&bnxt_re_dev_list))
+> > > > -             list_splice_init(&bnxt_re_dev_list, &to_be_deleted);
+> > > > -     mutex_unlock(&bnxt_re_dev_lock);
+> > > > -       /*
+> > > > -     * Cleanup the devices in reverse order so that the VF device
+> > > > -     * cleanup is done before PF cleanup
+> > > > -     */
+> > > > -     list_for_each_entry_safe_reverse(rdev, next, &to_be_deleted, list) {
+> > > > -             dev_info(rdev_to_dev(rdev), "Unregistering Device");
+> > > > +     list_for_each_entry(rdev, &bnxt_re_dev_list, list) {
+> > > >               /*
+> > > > -              * Flush out any scheduled tasks before destroying the
+> > > > -              * resources
+> > > > +              * Set unreg flag to avoid VF resource cleanup
+> > > > +              * in module unload path. This is required because
+> > > > +              * dealloc_driver for VF can come after PF cleaning
+> > > > +              * the VF resources.
+> > > >                */
+> > > > -             flush_workqueue(bnxt_re_wq);
+> > > > -             bnxt_re_dev_stop(rdev);
+> > > > -             bnxt_re_ib_uninit(rdev);
+> > > > -             /* Acquire the rtnl_lock as the L2 resources are freed here */
+> > > > -             rtnl_lock();
+> > > > -             bnxt_re_remove_device(rdev);
+> > > > -             rtnl_unlock();
+> > > > +             if (rdev->is_virtfn)
+> > > > +                     rdev->rcfw.res_deinit = true;
+> > > >       }
+> > > > +     mutex_unlock(&bnxt_re_dev_lock);
+> > >
+> > > This is super ugly. This driver already has bugs if it has a
+> > > dependency on driver unbinding order as drivers can become unbound
+> > > from userspace using sysfs or hot un-plug in any ordering.
+> > >
+> > The dependency is from the HW side and not from the driver side.
+> > In some of the HW versions, RoCE PF driver is allowed to allocate the
+> > host memory
+> > for VFs and this dependency is due to this.
+> > > If the VF driver somehow depends on the PF driver then destruction of
+> > > the PF must synchronize and fence the VFs during it's own shutdown.
 > >
-> > -	attr->active_speed = 2;
-> > -	attr->active_width = 2;
-> > +	rv = ib_get_eth_speed(base_dev, port, &attr->active_speed,
-> > +			 &attr->active_width);
-> >  	attr->gid_tbl_len = 1;
-> >  	attr->max_msg_sz = -1;
-> >  	attr->max_mtu = ib_mtu_int_to_enum(sdev->netdev->mtu);
-> > @@ -192,7 +193,7 @@ int siw_query_port(struct ib_device *base_dev, u8 port,
-> >  	 * attr->subnet_timeout = 0;
-> >  	 * attr->init_type_repy = 0;
-> >  	 */
-> > -	return 0;
-> > +	return rv;
-> >  }
-> >
-> >  int siw_get_port_immutable(struct ib_device *base_dev, u8 port,
-> > --
-> > 2.21.1
-> >
+> > Do you suggest that synchronization should be done in the stack before
+> > invoking the
+> > dealloc_driver for VF?
+>
+> 'in the stack'? This is a driver problem.. You can't assume ordering
+> of driver detaches in Linux, and drivers should really not be
+> co-ordinating across their instances.
+>
+> > > But this seems very strange, how can it work if the VF is in a VM
+> > > or something and the PF driver is unplugged?
+>
+> > This code is not handling the case where the VF is attached to a VM.
+> > First command to HW after the removal of PF will fail with timeout.
+> > Driver will stop sending commands to HW once it sees this timeout. VF
+> > driver removal
+> > will proceed with cleaning up of host resources without sending any
+> > commands to FW
+> > and exit the removal process.
+>
+> So why not use this for the host case as well? The timeout is too
+> long?
+Yeah. Timeout for the first command is 20sec now. May be, I can use
+a smaller timeout in the unreg path.
+>
+> > On hypervisor, if we don't set rdev->rcfw.res_deinit as done in this
+> > patch, when VF removal is initiated,
+> > the first command will timeout and driver will stop sending any more commands
+> > to FW and proceed with removal. All VFs will exit in the same way.
+> > Just that each
+> > function will wait for one command to timeout. Setting
+> > rdev->rcfw.res_deinit was added
+> > as a hack to avoid this  waiting time.
+>
+> The issue is that pci_driver_unregister undoes the driver binds in
+> FIFO not LIFO order?
+>
+> What happens when the VF binds after the PF?
+
+This is not dependent on PCI driver unregister. This particular issue
+is happening when bnxt_re
+driver only  is unloaded and the new  ib_unregister_driver is invoked
+by bnxt_re driver in the mod_exit hook.
+dealloc_driver for each IB device  is called mostly in FIFO
+order(using xa_for_each).  So since PF ib device was added first, it
+gets removed and then VF is removed.
+
+After this discussion, now I feel, it's better to remove the hack and
+allow the commands to fail with timeout and exit.
+The issue is seen only when users try to unload bnxt_re alone, without
+destroying the VFs.The chances of this type of usage is slim.
+Anyway, it's not a Fatal error if any of the users try this sequence.
+Just that the rmmod will take some time to exit.
+
+Shall i repost by removing this hack?
+>
+> Jason
