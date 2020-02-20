@@ -2,179 +2,145 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB249166965
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2020 21:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EE1166A4C
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2020 23:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729141AbgBTU6r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Feb 2020 15:58:47 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:37336 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729094AbgBTU6q (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Feb 2020 15:58:46 -0500
-Received: by mail-qk1-f193.google.com with SMTP id c188so4961258qkg.4
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2020 12:58:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4CyAgS/0c7CIK/c3o2s+ouwgiJs8lhJ7U/JY1LhUPq8=;
-        b=SfgEOJcz9S4c1DmySLkmUpkmGRxj9Fo77E1rINIc/HVaOoBPUEnci93WjMofj9M6uT
-         RuQR3BfQDrSYcbisfz/LMlCIA4/SDa3ct5UoPx2GdfREInHQdLkaSK/Pnv+h1WLLl4Xx
-         68D19U34SHi8hV3lT5faAPSSRXwtWFtKcwfP8w7vyoihec7eG/QyTSe69L9DulY7NtAT
-         dTyDH8mky2Wtt0IyrNc1YqEtWzu1MuHibDvstW/s9MNBS/YyzxwEbS4D67Qz0LnXf8ci
-         Oi6DVS2xHFSzvLEe9CeCCjuSmIB5vNN7zmvGDbBFemWbbq55+Y4HEwsbgTGkClYczd6q
-         mBdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4CyAgS/0c7CIK/c3o2s+ouwgiJs8lhJ7U/JY1LhUPq8=;
-        b=gtL0VmWlElehItG88I3ne9gs8DCwt2o58N1ibVUfumX7h+5wK12EYqB/g29W+fPa20
-         yyEO3ruyT4Q0tuYIvwGepQnaPBjOjLJmvD1bGNdEnIz/3M3wDMcHBiptNg4cmX5kDX0i
-         q4qirZyJe5JxjWhu5NVuy0+VAFz4zmRDwPgwLFN22h3FCNxrlwT9qztyrgFqeXXTecJF
-         FegqDRkdD/Zs2n1y5+xynhAKPD1NCe5bR7qhCttk5PiD9D/u1gKtH/4Uk7f4on+Yufrs
-         PbTnjG4+7tS5fHKZC0y0+/sD3JLiPbRsDJIY7xGz5kSRbvJmZNppfjMTUIQqrxsV8+TB
-         wf+A==
-X-Gm-Message-State: APjAAAVm/m/DN1g0m1mK96qWspj1RMOcvP1IW2HL8VVvFX5K1jmpw5VM
-        FIOtnGwUAXRq0IVNgoUDxLE4FA==
-X-Google-Smtp-Source: APXvYqz3fWCWGMmBu9dHarCF+QoS8bdclU30PNEN8Lf7uQKmDFmWWyQOr59qgzC+7sztvoPfWxwcXQ==
-X-Received: by 2002:a37:4856:: with SMTP id v83mr30399147qka.350.1582232325504;
-        Thu, 20 Feb 2020 12:58:45 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id t23sm384067qto.88.2020.02.20.12.58.44
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 20 Feb 2020 12:58:45 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j4suC-00010k-Hm; Thu, 20 Feb 2020 16:58:44 -0400
-Date:   Thu, 20 Feb 2020 16:58:44 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Ertman, David M" <david.m.ertman@intel.com>
-Cc:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        id S1727845AbgBTWYJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Feb 2020 17:24:09 -0500
+Received: from mail-eopbgr40057.outbound.protection.outlook.com ([40.107.4.57]:16261
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727656AbgBTWYJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 Feb 2020 17:24:09 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i33dm7fGBDZvtDDhXtMTZ//HQMJxYd0GUOVmR5hJ5RXluHk9IzruygN0e9BE9vBl12JAtNmd4W9GmsvYvRXqZQt+ux9F2nF5FR8WqAqqkAd6Eo2oy+jy4zYyQjkmTh+BEpqjPkPX4d/C8pgOqRbXBmWEOp93x5Dlf7eWoaxGToughHpU5GBNSj3R+bNmCL+gAa22En+pwWOkw2I+YlxXpne47Z8loZXWrTTRq2/EED0GkZabdUT7Z7OPw5egyYqIbbNuk1GdtlE4AVdozC+++dbXriQsZqqQERCdnR2cfJ7uEXVyZfSHixdNBWyw4fPOH5WN5P8gHXNw5xXtVnPVng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bszykc3sSTaQpaXQ0+AJaLhvsDHLdTePUP16w8i1wdw=;
+ b=DhtWmstRF4alZjr6EMe9WytH9uojE5KOqVg2bSZ+vfmsqfiNsHywkZ63gpuG49YnAkmlbB9OgTi2P6Vjhq78W3vvyMdEEsNfo4IoABiPUA0szKwe4swW38wEPHqg2K7Y4CfGqJtF/iZ3TNXS3kSpAJXylsOz0SM5YwJlHDlVk66K3xgCGAiDET7CoBk2papFtQi9Tv8qWYma4mecLKlYHipYWiES43ZdjS+/17MK3h5uF7x/BrB4MjMbTuEp2gfOu4/Z3lE3pqNvAeCz9GVe1gcP38PCU5yWnPUExpPRB7bGBhDo/12YpeHa/2O2EGPvL2OkmWJgGfoJC+qY3dS1Yg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bszykc3sSTaQpaXQ0+AJaLhvsDHLdTePUP16w8i1wdw=;
+ b=o1lLw28EKcYYPuYxZH7DTP5ucFJlzacks9gcFbf6elDtTLjLKnKll6YuDVq44ywyUg+R3zUzZDwHBFd37Yi/HDJ+kv8TNT+h9mArsrZLW85YDFOzjU31khBcWAH4wNOnkNn6g1JlDS4GM4QUdfZ5sLssF63CwCceyaBVODJF8hI=
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
+ AM0PR05MB5281.eurprd05.prod.outlook.com (20.178.16.207) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2729.24; Thu, 20 Feb 2020 22:24:06 +0000
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::8c4:e45b:ecdc:e02b]) by AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::8c4:e45b:ecdc:e02b%7]) with mapi id 15.20.2750.016; Thu, 20 Feb 2020
+ 22:24:06 +0000
+From:   Parav Pandit <parav@mellanox.com>
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
         "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "Ismail, Mustafa" <mustafa.ismail@intel.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "nhorman@redhat.com" <nhorman@redhat.com>,
         "sassmann@redhat.com" <sassmann@redhat.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "Bowers, AndrewX" <andrewx.bowers@intel.com>
-Subject: Re: [RFC PATCH v4 02/25] ice: Create and register virtual bus for
- RDMA
-Message-ID: <20200220205844.GE31668@ziepe.ca>
+        "jgg@ziepe.ca" <jgg@ziepe.ca>
+Subject: RE: [RFC PATCH v4 10/25] RDMA/irdma: Add driver framework definitions
+Thread-Topic: [RFC PATCH v4 10/25] RDMA/irdma: Add driver framework
+ definitions
+Thread-Index: AQHV4di3RHBiR8SSKUiBqR+gfJba6qgbREEAgAYwCYCAA0AoAA==
+Date:   Thu, 20 Feb 2020 22:24:05 +0000
+Message-ID: <AM0PR05MB4866395BD477FAD269BCAE07D1130@AM0PR05MB4866.eurprd05.prod.outlook.com>
 References: <20200212191424.1715577-1-jeffrey.t.kirsher@intel.com>
- <20200212191424.1715577-3-jeffrey.t.kirsher@intel.com>
- <20200214203932.GY31668@ziepe.ca>
- <DM6PR11MB2841C1643C0414031941D191DD130@DM6PR11MB2841.namprd11.prod.outlook.com>
+ <20200212191424.1715577-11-jeffrey.t.kirsher@intel.com>
+ <6f01d517-3196-1183-112e-8151b821bd72@mellanox.com>
+ <9DD61F30A802C4429A01CA4200E302A7C60C94AF@fmsmsx124.amr.corp.intel.com>
+In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7C60C94AF@fmsmsx124.amr.corp.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=parav@mellanox.com; 
+x-originating-ip: [68.203.16.89]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: ea309899-a35f-49c3-2db2-08d7b65398ea
+x-ms-traffictypediagnostic: AM0PR05MB5281:
+x-microsoft-antispam-prvs: <AM0PR05MB5281BF5CBFF8DEF2CB8584DCD1130@AM0PR05MB5281.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 031996B7EF
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(39860400002)(396003)(136003)(366004)(346002)(189003)(199004)(66476007)(66556008)(71200400001)(6506007)(53546011)(64756008)(7416002)(52536014)(26005)(8676002)(66446008)(55016002)(110136005)(5660300002)(7696005)(86362001)(76116006)(81166006)(478600001)(54906003)(186003)(66946007)(316002)(2906002)(9686003)(4326008)(33656002)(81156014)(8936002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB5281;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TVTWAcjwuNoh7Wb41Cq+430hONdNHuyex/QPCCYv2fioMqgVqahy1W033QEAvjqJlmE1VFVVJWAE+CRYVkbFVQaHQT+ukMbm5QjKLbcN+2aSZsGQzhzKNMfCzo6jjzAFII/rBNlr5mU0CVrTgGL+8gzR054zInohS1kTaBBfcnF/Ld/foqc26xMuaQ8sYUrlNAzaG3YmOIsV8X9F1hPev7fYHrmfihX+kHy8iaBAvTBYrYgiQMsNZq4KsA1epcW9sKjz/0gK3SZZEKGhrOraZYoI7srll30r9nygwHVPHYpWoLzVXBgrW96xVb5D5mo7Ps3L838OaFb+tFWdiaBzVN2ANdA3uohF+y+F/tYGzAmsatQj6evkHLwohPqlMOmwpj3lWcvaHlDHqZgM5kcqUgN9daGsf83IgQEkKRQPIvG09WDRedQXaxxNHNlf2a0X
+x-ms-exchange-antispam-messagedata: QSamZFulr7ZTuZZScgsI4McxapPHK2aQ/bcO9AmNckeD6g1hjGd/PkW7QQDRGf795JQdLBtuT5I5vXTqNqRqSz/svB75PLm6dxm+j7yhm7UK+MhcGJJlDzJid1j16sf9KUXTwfQ5DBXzzcPjgTE2dQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB2841C1643C0414031941D191DD130@DM6PR11MB2841.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea309899-a35f-49c3-2db2-08d7b65398ea
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Feb 2020 22:24:05.9369
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: k0HGWN78YLmGPxcPY6paeDzY0ip4MEKdK4Dx4TlxEDkW8ZdZJLcbOWMc39rNqVfGEjZwQFD+FUxsYAUX7x/ZEQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5281
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 20, 2020 at 06:48:04PM +0000, Ertman, David M wrote:
-> > You need to go through all of this really carefully and make some kind
-> > of sane lifetime model and fix all the error unwinding :(
-> 
-> Thanks for catching this.  A failure in virtbus_register_device()  does
-> *not* require a call virtbus_unregister_device.  The failure path for the
-> register function handles this.  Also, we need to remain consistent with freeing
-> on unwind.
 
-Be careful it is all correct on v5 :)
- 
-> > Why doesn't the release() function of vbo trigger the free of all this
-> > peer related stuff?
-> > 
-> > Use a sane design model of splitting into functions to allocate single
-> > peices of memory, goto error unwind each function, and build things up
-> > properly.
-> > 
-> > Jason
-> 
-> I am going to add this to the documentation to record the following information.
 
-Well, there is nothing special here. All the driver core users
-basically work this way. You shouldn't need to document anything
-uniquely for virtbus.
-
-The trouble I see in this patch is mixing three different lifetime
-models together (devm, release, and 'until unregister'). It is just
-unnecessary and is bound to create errors.
-
-Follow the normal, proven flow of four functions, each handling one of
-the lifetimes
-
-1) 'alloc and initialize' function
-   Allocates memory, and ends with device initialize().
-   This gets things ready to the point that put_device() and 
-   release() will work.
-   Everything allocated here is valid until release.
-
-2) Initialize stuff with a lifetime of 'until unregister'
-   function
-
-   This function starts with alloc'd memory from #1 and typically ends
-   with some register()
-
-   Every allocation is either:
-     - undone by release()
-       In this case the goto unwind is simply put_device()
-       [discouraged, but sometimes unavoidable]
-     - undone by #3, after calling unregister()
-       In this case the goto unwind is a mirror of the deallocs
-       in #3
-
-   If register() fails, it does the full goto unwind ending in
-   put_device().
-
-   devm is not used.
-
-3) unregister the device function
-   call uregister and then do everything from the goto unwind
-   of #2 in reverse order.
-
-4) Release the device function
-   Free all the allocations of #1 and all !NULL allocations of #2
-   (mostly mirrors the goto unwind of #1)
-
-It is easy to audit, has highly symmetric goto unwind error handling,
-and is fairly easy to 'do right' once you get the idea.
-
-There are many examples of this in the kernel, look at alloc_netdev,
-ib_alloc_device, tpm_chip_alloc, register_netdevice,
-ib_register_device, tpm_chip_regsiter, etc.
-
-The schema is nestable, so if the virtbus core has these four
-functions (virtbus_alloc, virtbus_register, virtbus_unregister,
-release), then the driver using it can have four functions too,
-'driver alloc', probe, remove, release (called by core release).
-
-Look at the recent VDPA patches for some idea how it can look:
-
-https://lore.kernel.org/kvm/20200220061141.29390-4-jasowang@redhat.com/
-
-(though, IMHO, the pattern works better if the alloc also encompasses
- the caller's needed struct, ie by passing in a size_t)
-
-Notice:
-- vdpa_alloc_device() returns a memory block that is freed using put_device.
-  At this point dev_info/etc work and the kref works. Having
-  dev_err/etc early on is really nice
-  Caller *never* does kfree()
-  * Notice to get dev_info() working with the right name we have to
-    call dev_set_name() and the error unwind for dev_set_name must be
-    put_device()!
-- vdpa_register_device() doesn't destroy the memory on failure.
-  This means goto error unwind at the caller works symmetrically
-- release drops the IDA because vdpa_alloc_device() created it.
-  This means so long as the kref is valid the name is unique.
-- Unregister does not destroy the memory. This allows the caller
-  to continue on to free any other memory (#3 above) in their
-  private part of the structure
-
-Jason
+> From: Saleem, Shiraz <shiraz.saleem@intel.com>
+> Sent: Tuesday, February 18, 2020 2:43 PM
+> To: Parav Pandit <parav@mellanox.com>; Kirsher, Jeffrey T
+> <jeffrey.t.kirsher@intel.com>; davem@davemloft.net;
+> gregkh@linuxfoundation.org
+> Cc: Ismail, Mustafa <mustafa.ismail@intel.com>; netdev@vger.kernel.org;
+> linux-rdma@vger.kernel.org; nhorman@redhat.com; sassmann@redhat.com;
+> jgg@ziepe.ca
+> Subject: RE: [RFC PATCH v4 10/25] RDMA/irdma: Add driver framework
+> definitions
+>=20
+> [..]
+>=20
+> > > +static int irdma_devlink_reload_up(struct devlink *devlink,
+> > > +				   struct netlink_ext_ack *extack) {
+> > > +	struct irdma_dl_priv *priv =3D devlink_priv(devlink);
+> > > +	union devlink_param_value saved_value;
+> > > +	const struct virtbus_dev_id *id =3D priv->vdev->matched_element;
+> >
+> > Like irdma_probe(), struct iidc_virtbus_object *vo is accesible for the=
+ given
+> priv.
+> > Please use struct iidc_virtbus_object for any sharing between two drive=
+rs.
+> > matched_element modification inside the virtbus match() function and
+> > accessing pointer to some driver data between two driver through this
+> > matched_element is not appropriate.
+>=20
+> We can possibly avoid matched_element and driver data look up here.
+> But fundamentally, at probe time (see irdma_gen_probe) the irdma driver
+> needs to know which generation type of vdev we bound to. i.e. i40e or ice=
+ ?
+> since we support both.
+> And based on it, extract the driver specific virtbus device object, i.e
+> i40e_virtbus_device vs iidc_virtbus_object and init that device.
+>=20
+> Accessing driver_data off the vdev matched entry in irdma_virtbus_id_tabl=
+e
+> is how we know this generation info and make the decision.
+>=20
+If there is single irdma driver for two different virtbus device types, it =
+is better to have two instances of virtbus_register_driver() with different=
+ matching string/id.
+So based on the probe(), it will be clear with virtbus device of interest g=
+ot added.
+This way, code will have clear separation between two device types.
