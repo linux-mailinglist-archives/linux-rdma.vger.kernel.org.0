@@ -2,117 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D57165460
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2020 02:38:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C5B165506
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2020 03:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727646AbgBTBim (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 19 Feb 2020 20:38:42 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:52976 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726784AbgBTBim (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 19 Feb 2020 20:38:42 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 0FBEEEC012D53AD15F11;
-        Thu, 20 Feb 2020 09:38:40 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.439.0; Thu, 20 Feb 2020 09:38:32 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH v2 for-next] RDMA/hns: Initialize all fields of doorbells to zero
-Date:   Thu, 20 Feb 2020 09:34:31 +0800
-Message-ID: <1582162471-50361-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1727576AbgBTC0o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 19 Feb 2020 21:26:44 -0500
+Received: from mga03.intel.com ([134.134.136.65]:13781 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727211AbgBTC0o (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 19 Feb 2020 21:26:44 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Feb 2020 18:26:43 -0800
+X-IronPort-AV: E=Sophos;i="5.70,462,1574150400"; 
+   d="scan'208";a="229323554"
+Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.204.151]) ([10.254.204.151])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 19 Feb 2020 18:26:42 -0800
+Subject: Re: RDMA device renames and node description
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Honggang LI <honli@redhat.com>,
+        Gal Pressman <galpress@amazon.com>
+References: <5ae69feb-5543-b203-2f1b-df5fe3bdab2b@intel.com>
+ <20200218140444.GB8816@unreal>
+ <1fcc873b-3f67-2325-99cc-21d90edd2058@intel.com>
+ <20200219071129.GD15239@unreal>
+ <bea50739-918b-ae6f-5fac-f5642c56f1da@intel.com>
+ <20200219165800.GS31668@ziepe.ca>
+ <03a8dd71-4031-4800-349f-525a013c2101@intel.com>
+ <20200219231826.GD31320@iweiny-DESK2.sc.intel.com>
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+Message-ID: <eed7f39c-f993-0c29-9f14-7f6ec9ca1e8c@intel.com>
+Date:   Wed, 19 Feb 2020 21:26:40 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200219231826.GD31320@iweiny-DESK2.sc.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lang Cheng <chenglang@huawei.com>
+On 2/19/2020 6:18 PM, Ira Weiny wrote:
+> The use of node descriptor was intended to be entirely up to the installation
+> in a manner to debug/locate nodes.  Not be used in libraries.  I'm surprised
+> that libraries are broken.
 
-Prevent uninitialized fields when new fields are added, and make code
-look simpler.
+Libraries are broken due to the rename of the device. The changing of 
+the node descriptor is another consequence of the device rename. 
+Libraries can be patched. Node descriptors changing out from under a sys 
+admin is another problem altogether.
 
-Signed-off-by: Lang Cheng <chenglang@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
-Changes since v1:
-- Just rebase against the for-next branch.
+  > Regardless does the old rdma-ndd config exist?  Could it be 
+configured and/or
+> modified to give the old names?  When it was written we designed the default
+> config to give the old names for backwards compatibility.  Apparently this is
+> no longer true?
 
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 9 ++-------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 5 +----
- 2 files changed, 3 insertions(+), 11 deletions(-)
+I'm sure there are ways to get back to the old name. The problem is what 
+happens by default when users upgrade.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-index c6e6658..89dac44 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
-@@ -69,7 +69,7 @@ static int hns_roce_v1_post_send(struct ib_qp *ibqp,
- 	struct hns_roce_wqe_data_seg *dseg = NULL;
- 	struct hns_roce_qp *qp = to_hr_qp(ibqp);
- 	struct device *dev = &hr_dev->pdev->dev;
--	struct hns_roce_sq_db sq_db;
-+	struct hns_roce_sq_db sq_db = {};
- 	int ps_opcode = 0, i = 0;
- 	unsigned long flags = 0;
- 	void *wqe = NULL;
-@@ -318,8 +318,6 @@ static int hns_roce_v1_post_send(struct ib_qp *ibqp,
- 		/* Memory barrier */
- 		wmb();
- 
--		sq_db.u32_4 = 0;
--		sq_db.u32_8 = 0;
- 		roce_set_field(sq_db.u32_4, SQ_DOORBELL_U32_4_SQ_HEAD_M,
- 			       SQ_DOORBELL_U32_4_SQ_HEAD_S,
- 			      (qp->sq.head & ((qp->sq.wqe_cnt << 1) - 1)));
-@@ -351,7 +349,7 @@ static int hns_roce_v1_post_recv(struct ib_qp *ibqp,
- 	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
- 	struct device *dev = &hr_dev->pdev->dev;
--	struct hns_roce_rq_db rq_db;
-+	struct hns_roce_rq_db rq_db = {};
- 	__le32 doorbell[2] = {0};
- 	unsigned long flags = 0;
- 	unsigned int wqe_idx;
-@@ -418,9 +416,6 @@ static int hns_roce_v1_post_recv(struct ib_qp *ibqp,
- 				   ROCEE_QP1C_CFG3_0_REG +
- 				   QP1C_CFGN_OFFSET * hr_qp->phy_port, reg_val);
- 		} else {
--			rq_db.u32_4 = 0;
--			rq_db.u32_8 = 0;
--
- 			roce_set_field(rq_db.u32_4, RQ_DOORBELL_U32_4_RQ_HEAD_M,
- 				       RQ_DOORBELL_U32_4_RQ_HEAD_S,
- 				       hr_qp->rq.head);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index aa9d179..55cb411 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -255,7 +255,7 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 	struct hns_roce_qp *qp = to_hr_qp(ibqp);
- 	struct hns_roce_wqe_frmr_seg *fseg;
- 	struct device *dev = hr_dev->dev;
--	struct hns_roce_v2_db sq_db;
-+	struct hns_roce_v2_db sq_db = {};
- 	unsigned int owner_bit;
- 	unsigned int sge_idx;
- 	unsigned int wqe_idx;
-@@ -583,9 +583,6 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 		/* Memory barrier */
- 		wmb();
- 
--		sq_db.byte_4 = 0;
--		sq_db.parameter = 0;
--
- 		roce_set_field(sq_db.byte_4, V2_DB_BYTE_4_TAG_M,
- 			       V2_DB_BYTE_4_TAG_S, qp->doorbell_qpn);
- 		roce_set_field(sq_db.byte_4, V2_DB_BYTE_4_CMD_M,
--- 
-2.8.1
-
+-Denny
