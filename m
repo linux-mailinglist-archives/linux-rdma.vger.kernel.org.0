@@ -2,145 +2,258 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97EE1166A4C
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Feb 2020 23:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DDC7166AA9
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2020 00:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727845AbgBTWYJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Feb 2020 17:24:09 -0500
-Received: from mail-eopbgr40057.outbound.protection.outlook.com ([40.107.4.57]:16261
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727656AbgBTWYJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 20 Feb 2020 17:24:09 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i33dm7fGBDZvtDDhXtMTZ//HQMJxYd0GUOVmR5hJ5RXluHk9IzruygN0e9BE9vBl12JAtNmd4W9GmsvYvRXqZQt+ux9F2nF5FR8WqAqqkAd6Eo2oy+jy4zYyQjkmTh+BEpqjPkPX4d/C8pgOqRbXBmWEOp93x5Dlf7eWoaxGToughHpU5GBNSj3R+bNmCL+gAa22En+pwWOkw2I+YlxXpne47Z8loZXWrTTRq2/EED0GkZabdUT7Z7OPw5egyYqIbbNuk1GdtlE4AVdozC+++dbXriQsZqqQERCdnR2cfJ7uEXVyZfSHixdNBWyw4fPOH5WN5P8gHXNw5xXtVnPVng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bszykc3sSTaQpaXQ0+AJaLhvsDHLdTePUP16w8i1wdw=;
- b=DhtWmstRF4alZjr6EMe9WytH9uojE5KOqVg2bSZ+vfmsqfiNsHywkZ63gpuG49YnAkmlbB9OgTi2P6Vjhq78W3vvyMdEEsNfo4IoABiPUA0szKwe4swW38wEPHqg2K7Y4CfGqJtF/iZ3TNXS3kSpAJXylsOz0SM5YwJlHDlVk66K3xgCGAiDET7CoBk2papFtQi9Tv8qWYma4mecLKlYHipYWiES43ZdjS+/17MK3h5uF7x/BrB4MjMbTuEp2gfOu4/Z3lE3pqNvAeCz9GVe1gcP38PCU5yWnPUExpPRB7bGBhDo/12YpeHa/2O2EGPvL2OkmWJgGfoJC+qY3dS1Yg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bszykc3sSTaQpaXQ0+AJaLhvsDHLdTePUP16w8i1wdw=;
- b=o1lLw28EKcYYPuYxZH7DTP5ucFJlzacks9gcFbf6elDtTLjLKnKll6YuDVq44ywyUg+R3zUzZDwHBFd37Yi/HDJ+kv8TNT+h9mArsrZLW85YDFOzjU31khBcWAH4wNOnkNn6g1JlDS4GM4QUdfZ5sLssF63CwCceyaBVODJF8hI=
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
- AM0PR05MB5281.eurprd05.prod.outlook.com (20.178.16.207) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2729.24; Thu, 20 Feb 2020 22:24:06 +0000
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::8c4:e45b:ecdc:e02b]) by AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::8c4:e45b:ecdc:e02b%7]) with mapi id 15.20.2750.016; Thu, 20 Feb 2020
- 22:24:06 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>
-Subject: RE: [RFC PATCH v4 10/25] RDMA/irdma: Add driver framework definitions
-Thread-Topic: [RFC PATCH v4 10/25] RDMA/irdma: Add driver framework
- definitions
-Thread-Index: AQHV4di3RHBiR8SSKUiBqR+gfJba6qgbREEAgAYwCYCAA0AoAA==
-Date:   Thu, 20 Feb 2020 22:24:05 +0000
-Message-ID: <AM0PR05MB4866395BD477FAD269BCAE07D1130@AM0PR05MB4866.eurprd05.prod.outlook.com>
-References: <20200212191424.1715577-1-jeffrey.t.kirsher@intel.com>
- <20200212191424.1715577-11-jeffrey.t.kirsher@intel.com>
- <6f01d517-3196-1183-112e-8151b821bd72@mellanox.com>
- <9DD61F30A802C4429A01CA4200E302A7C60C94AF@fmsmsx124.amr.corp.intel.com>
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7C60C94AF@fmsmsx124.amr.corp.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [68.203.16.89]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: ea309899-a35f-49c3-2db2-08d7b65398ea
-x-ms-traffictypediagnostic: AM0PR05MB5281:
-x-microsoft-antispam-prvs: <AM0PR05MB5281BF5CBFF8DEF2CB8584DCD1130@AM0PR05MB5281.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 031996B7EF
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(39860400002)(396003)(136003)(366004)(346002)(189003)(199004)(66476007)(66556008)(71200400001)(6506007)(53546011)(64756008)(7416002)(52536014)(26005)(8676002)(66446008)(55016002)(110136005)(5660300002)(7696005)(86362001)(76116006)(81166006)(478600001)(54906003)(186003)(66946007)(316002)(2906002)(9686003)(4326008)(33656002)(81156014)(8936002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB5281;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TVTWAcjwuNoh7Wb41Cq+430hONdNHuyex/QPCCYv2fioMqgVqahy1W033QEAvjqJlmE1VFVVJWAE+CRYVkbFVQaHQT+ukMbm5QjKLbcN+2aSZsGQzhzKNMfCzo6jjzAFII/rBNlr5mU0CVrTgGL+8gzR054zInohS1kTaBBfcnF/Ld/foqc26xMuaQ8sYUrlNAzaG3YmOIsV8X9F1hPev7fYHrmfihX+kHy8iaBAvTBYrYgiQMsNZq4KsA1epcW9sKjz/0gK3SZZEKGhrOraZYoI7srll30r9nygwHVPHYpWoLzVXBgrW96xVb5D5mo7Ps3L838OaFb+tFWdiaBzVN2ANdA3uohF+y+F/tYGzAmsatQj6evkHLwohPqlMOmwpj3lWcvaHlDHqZgM5kcqUgN9daGsf83IgQEkKRQPIvG09WDRedQXaxxNHNlf2a0X
-x-ms-exchange-antispam-messagedata: QSamZFulr7ZTuZZScgsI4McxapPHK2aQ/bcO9AmNckeD6g1hjGd/PkW7QQDRGf795JQdLBtuT5I5vXTqNqRqSz/svB75PLm6dxm+j7yhm7UK+MhcGJJlDzJid1j16sf9KUXTwfQ5DBXzzcPjgTE2dQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727862AbgBTXBp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Feb 2020 18:01:45 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:45685 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727135AbgBTXBo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Feb 2020 18:01:44 -0500
+Received: by mail-wr1-f67.google.com with SMTP id g3so6416366wrs.12
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2020 15:01:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZdaSwOI+hJBogB/vTzJe43Q5pXDCtWIqPCWoh+xI05o=;
+        b=OZBw5h0DJjoJpdGxicclC0aP/Rg7BgdeebFOvbYqg+y5p6P/YSJKf4RY3hnNdlMmlQ
+         752nkZ1N/+QlMv2Q0Ot1SpTBeacRk6qyLAwfUSbvSzlZMtsCh/2B/mQWBEvBDejfn7b4
+         0pSpezKYBmYIRAZk2Zkf4zRLr+Re9s1vjSid2O2spmZclD653WW0BUNrjs8uh49w+V3w
+         N2QBe5OYyAR4ow1TQUebEnii2CorsDnC76/9xWbPgzBY02CRvKUik8Dq2zSJF7NMWkAh
+         hN/rxaD06J2IbxHSfE/oJRrFhqOtSy8fVDqvpygt1Gdrf54s47tsFNmwVGu63+7NSNKQ
+         /YhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZdaSwOI+hJBogB/vTzJe43Q5pXDCtWIqPCWoh+xI05o=;
+        b=S/tizdJZgQ3IjU+LcX1gU9BrHFkUd54CNVikThMcO9diFY+FOvTHDkzCjHWW2I4Chj
+         uOKeyCmx186VhBREi8mG7zNPZaq3P4PSUmSYNVNTeXNtfjrPuqjrz6kGJNR8brYMVeGa
+         7+jBjtdwyK8cHz/RnjjcGw28hCqdz2pZdUHB9lXVtqU6elV+xNi3O5E/sKl1SzsLG7kl
+         Yf4vfHcNU6YIa9w+LkdQUDuhIah3FNhn4o1RqUfAwY00Sx+XBbIQeaah6JYn90HMPGvU
+         cDFHmnbBTdPVammcYzH35R7Mr3F7XYLiJlZKQ6cWTllQi3poY7tFYm6f+Ilrkf1Fa1Uu
+         zoxA==
+X-Gm-Message-State: APjAAAXhtibgLdpuLbO5ogx24CvgoER+tVZWpiU8gKmNbZAAcu3yIxE4
+        bNyyrDP0ZFmN3znfY3MQOGFNWiPSwkQ=
+X-Google-Smtp-Source: APXvYqyWy4fvAZSx1CqrLiTPmHYOG2iqoqSKxnLgWmWxkmq0TNbfEtMPnZT3eN6h+H+zLfP6OzRcxg==
+X-Received: by 2002:a5d:65c5:: with SMTP id e5mr43778380wrw.311.1582239701201;
+        Thu, 20 Feb 2020 15:01:41 -0800 (PST)
+Received: from kheib-workstation (bzq-79-183-1-162.red.bezeqint.net. [79.183.1.162])
+        by smtp.gmail.com with ESMTPSA id p26sm1035985wmc.24.2020.02.20.15.01.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Feb 2020 15:01:40 -0800 (PST)
+Date:   Fri, 21 Feb 2020 01:01:38 +0200
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH for-next] RDMA/providers: Fix return value when QP type
+ isn't supported
+Message-ID: <20200220230138.GA3489@kheib-workstation>
+References: <20200130082049.463-1-kamalheib1@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea309899-a35f-49c3-2db2-08d7b65398ea
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Feb 2020 22:24:05.9369
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: k0HGWN78YLmGPxcPY6paeDzY0ip4MEKdK4Dx4TlxEDkW8ZdZJLcbOWMc39rNqVfGEjZwQFD+FUxsYAUX7x/ZEQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5281
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200130082049.463-1-kamalheib1@gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Jan 30, 2020 at 10:20:49AM +0200, Kamal Heib wrote:
+> The proper return code is "-EOPNOTSUPP" when the requested QP type is
+> not supported by the provider.
+> 
+> Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
 
+Anything blocking this patch from getting merged?
 
-> From: Saleem, Shiraz <shiraz.saleem@intel.com>
-> Sent: Tuesday, February 18, 2020 2:43 PM
-> To: Parav Pandit <parav@mellanox.com>; Kirsher, Jeffrey T
-> <jeffrey.t.kirsher@intel.com>; davem@davemloft.net;
-> gregkh@linuxfoundation.org
-> Cc: Ismail, Mustafa <mustafa.ismail@intel.com>; netdev@vger.kernel.org;
-> linux-rdma@vger.kernel.org; nhorman@redhat.com; sassmann@redhat.com;
-> jgg@ziepe.ca
-> Subject: RE: [RFC PATCH v4 10/25] RDMA/irdma: Add driver framework
-> definitions
->=20
-> [..]
->=20
-> > > +static int irdma_devlink_reload_up(struct devlink *devlink,
-> > > +				   struct netlink_ext_ack *extack) {
-> > > +	struct irdma_dl_priv *priv =3D devlink_priv(devlink);
-> > > +	union devlink_param_value saved_value;
-> > > +	const struct virtbus_dev_id *id =3D priv->vdev->matched_element;
-> >
-> > Like irdma_probe(), struct iidc_virtbus_object *vo is accesible for the=
- given
-> priv.
-> > Please use struct iidc_virtbus_object for any sharing between two drive=
-rs.
-> > matched_element modification inside the virtbus match() function and
-> > accessing pointer to some driver data between two driver through this
-> > matched_element is not appropriate.
->=20
-> We can possibly avoid matched_element and driver data look up here.
-> But fundamentally, at probe time (see irdma_gen_probe) the irdma driver
-> needs to know which generation type of vdev we bound to. i.e. i40e or ice=
- ?
-> since we support both.
-> And based on it, extract the driver specific virtbus device object, i.e
-> i40e_virtbus_device vs iidc_virtbus_object and init that device.
->=20
-> Accessing driver_data off the vdev matched entry in irdma_virtbus_id_tabl=
-e
-> is how we know this generation info and make the decision.
->=20
-If there is single irdma driver for two different virtbus device types, it =
-is better to have two instances of virtbus_register_driver() with different=
- matching string/id.
-So based on the probe(), it will be clear with virtbus device of interest g=
-ot added.
-This way, code will have clear separation between two device types.
+> ---
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c     | 2 +-
+>  drivers/infiniband/hw/cxgb4/qp.c             | 2 +-
+>  drivers/infiniband/hw/hns/hns_roce_qp.c      | 2 +-
+>  drivers/infiniband/hw/i40iw/i40iw_verbs.c    | 2 +-
+>  drivers/infiniband/hw/mlx4/qp.c              | 2 +-
+>  drivers/infiniband/hw/mlx5/qp.c              | 2 +-
+>  drivers/infiniband/hw/mthca/mthca_provider.c | 2 +-
+>  drivers/infiniband/hw/ocrdma/ocrdma_verbs.c  | 2 +-
+>  drivers/infiniband/hw/qedr/verbs.c           | 2 +-
+>  drivers/infiniband/hw/usnic/usnic_ib_verbs.c | 2 +-
+>  drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c | 2 +-
+>  drivers/infiniband/sw/rdmavt/qp.c            | 2 +-
+>  drivers/infiniband/sw/siw/siw_verbs.c        | 2 +-
+>  13 files changed, 13 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> index 52b6a4d85460..f1a75ff44d5a 100644
+> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> @@ -1016,7 +1016,7 @@ struct ib_qp *bnxt_re_create_qp(struct ib_pd *ib_pd,
+>  	if (qp->qplib_qp.type == IB_QPT_MAX) {
+>  		dev_err(rdev_to_dev(rdev), "QP type 0x%x not supported",
+>  			qp->qplib_qp.type);
+> -		rc = -EINVAL;
+> +		rc = -EOPNOTSUPP;
+>  		goto fail;
+>  	}
+>  
+> diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
+> index bbcac539777a..708216d82852 100644
+> --- a/drivers/infiniband/hw/cxgb4/qp.c
+> +++ b/drivers/infiniband/hw/cxgb4/qp.c
+> @@ -2127,7 +2127,7 @@ struct ib_qp *c4iw_create_qp(struct ib_pd *pd, struct ib_qp_init_attr *attrs,
+>  	pr_debug("ib_pd %p\n", pd);
+>  
+>  	if (attrs->qp_type != IB_QPT_RC)
+> -		return ERR_PTR(-EINVAL);
+> +		return ERR_PTR(-EOPNOTSUPP);
+>  
+>  	php = to_c4iw_pd(pd);
+>  	rhp = php->rhp;
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+> index 3257ad11be48..3df48bda4185 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+> @@ -1097,7 +1097,7 @@ struct ib_qp *hns_roce_create_qp(struct ib_pd *pd,
+>  	default:{
+>  		ibdev_err(ibdev, "not support QP type %d\n",
+>  			  init_attr->qp_type);
+> -		return ERR_PTR(-EINVAL);
+> +		return ERR_PTR(-EOPNOTSUPP);
+>  	}
+>  	}
+>  
+> diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> index c335de91508f..fa1292932b88 100644
+> --- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> +++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+> @@ -617,7 +617,7 @@ static struct ib_qp *i40iw_create_qp(struct ib_pd *ibpd,
+>  	iwqp->ctx_info.qp_compl_ctx = (uintptr_t)qp;
+>  
+>  	if (init_attr->qp_type != IB_QPT_RC) {
+> -		err_code = -EINVAL;
+> +		err_code = -EOPNOTSUPP;
+>  		goto error;
+>  	}
+>  	if (iwdev->push_mode)
+> diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+> index 26425dd2d960..2f9f78912267 100644
+> --- a/drivers/infiniband/hw/mlx4/qp.c
+> +++ b/drivers/infiniband/hw/mlx4/qp.c
+> @@ -1636,7 +1636,7 @@ static struct ib_qp *_mlx4_ib_create_qp(struct ib_pd *pd,
+>  	}
+>  	default:
+>  		/* Don't support raw QPs */
+> -		return ERR_PTR(-EINVAL);
+> +		return ERR_PTR(-EOPNOTSUPP);
+>  	}
+>  
+>  	return &qp->ibqp;
+> diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+> index a4f8e7030787..a597c9043b1d 100644
+> --- a/drivers/infiniband/hw/mlx5/qp.c
+> +++ b/drivers/infiniband/hw/mlx5/qp.c
+> @@ -2789,7 +2789,7 @@ struct ib_qp *mlx5_ib_create_qp(struct ib_pd *pd,
+>  		mlx5_ib_dbg(dev, "unsupported qp type %d\n",
+>  			    init_attr->qp_type);
+>  		/* Don't support raw QPs */
+> -		return ERR_PTR(-EINVAL);
+> +		return ERR_PTR(-EOPNOTSUPP);
+>  	}
+>  
+>  	if (verbs_init_attr->qp_type == IB_QPT_DRIVER)
+> diff --git a/drivers/infiniband/hw/mthca/mthca_provider.c b/drivers/infiniband/hw/mthca/mthca_provider.c
+> index ac19d57803b5..69a3e4f62fb1 100644
+> --- a/drivers/infiniband/hw/mthca/mthca_provider.c
+> +++ b/drivers/infiniband/hw/mthca/mthca_provider.c
+> @@ -561,7 +561,7 @@ static struct ib_qp *mthca_create_qp(struct ib_pd *pd,
+>  	}
+>  	default:
+>  		/* Don't support raw QPs */
+> -		return ERR_PTR(-ENOSYS);
+> +		return ERR_PTR(-EOPNOTSUPP);
+>  	}
+>  
+>  	if (err) {
+> diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+> index d47ea675734b..10e343894595 100644
+> --- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+> +++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+> @@ -1111,7 +1111,7 @@ static int ocrdma_check_qp_params(struct ib_pd *ibpd, struct ocrdma_dev *dev,
+>  	    (attrs->qp_type != IB_QPT_UD)) {
+>  		pr_err("%s(%d) unsupported qp type=0x%x requested\n",
+>  		       __func__, dev->id, attrs->qp_type);
+> -		return -EINVAL;
+> +		return -EOPNOTSUPP;
+>  	}
+>  	/* Skip the check for QP1 to support CM size of 128 */
+>  	if ((attrs->qp_type != IB_QPT_GSI) &&
+> diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+> index 484b555150e0..a5bd3adaf90a 100644
+> --- a/drivers/infiniband/hw/qedr/verbs.c
+> +++ b/drivers/infiniband/hw/qedr/verbs.c
+> @@ -1186,7 +1186,7 @@ static int qedr_check_qp_attrs(struct ib_pd *ibpd, struct qedr_dev *dev,
+>  		DP_DEBUG(dev, QEDR_MSG_QP,
+>  			 "create qp: unsupported qp type=0x%x requested\n",
+>  			 attrs->qp_type);
+> -		return -EINVAL;
+> +		return -EOPNOTSUPP;
+>  	}
+>  
+>  	if (attrs->cap.max_send_wr > qattr->max_sqe) {
+> diff --git a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+> index 556b8e44a51c..71f82339446c 100644
+> --- a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+> +++ b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+> @@ -504,7 +504,7 @@ struct ib_qp *usnic_ib_create_qp(struct ib_pd *pd,
+>  	if (init_attr->qp_type != IB_QPT_UD) {
+>  		usnic_err("%s asked to make a non-UD QP: %d\n",
+>  			  dev_name(&us_ibdev->ib_dev.dev), init_attr->qp_type);
+> -		return ERR_PTR(-EINVAL);
+> +		return ERR_PTR(-EOPNOTSUPP);
+>  	}
+>  
+>  	trans_spec = cmd.spec;
+> diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
+> index 9de1281f9a3b..afcc2abcf55c 100644
+> --- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
+> +++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c
+> @@ -217,7 +217,7 @@ struct ib_qp *pvrdma_create_qp(struct ib_pd *pd,
+>  	    init_attr->qp_type != IB_QPT_GSI) {
+>  		dev_warn(&dev->pdev->dev, "queuepair type %d not supported\n",
+>  			 init_attr->qp_type);
+> -		return ERR_PTR(-EINVAL);
+> +		return ERR_PTR(-EOPNOTSUPP);
+>  	}
+>  
+>  	if (is_srq && !dev->dsr->caps.max_srq) {
+> diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+> index 3cdf75d0c7a4..762d4dc11c41 100644
+> --- a/drivers/infiniband/sw/rdmavt/qp.c
+> +++ b/drivers/infiniband/sw/rdmavt/qp.c
+> @@ -1196,7 +1196,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+>  
+>  	default:
+>  		/* Don't support raw QPs */
+> -		return ERR_PTR(-EINVAL);
+> +		return ERR_PTR(-EOPNOTSUPP);
+>  	}
+>  
+>  	init_attr->cap.max_inline_data = 0;
+> diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+> index 07e30138aaa1..fab934bdb2a0 100644
+> --- a/drivers/infiniband/sw/siw/siw_verbs.c
+> +++ b/drivers/infiniband/sw/siw/siw_verbs.c
+> @@ -322,7 +322,7 @@ struct ib_qp *siw_create_qp(struct ib_pd *pd,
+>  	}
+>  	if (attrs->qp_type != IB_QPT_RC) {
+>  		siw_dbg(base_dev, "only RC QP's supported\n");
+> -		rv = -EINVAL;
+> +		rv = -EOPNOTSUPP;
+>  		goto err_out;
+>  	}
+>  	if ((attrs->cap.max_send_wr > SIW_MAX_QP_WR) ||
+> -- 
+> 2.21.1
+> 
