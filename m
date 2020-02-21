@@ -2,126 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D02AD166ABC
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2020 00:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D223166C78
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2020 02:45:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729330AbgBTXGQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Feb 2020 18:06:16 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:42461 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729306AbgBTXGQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Feb 2020 18:06:16 -0500
-Received: by mail-qk1-f194.google.com with SMTP id o28so164758qkj.9
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Feb 2020 15:06:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=XkOTAOMcNc1IVEFTEsYF74ee6aJfy0dk3qnKTOfIb+o=;
-        b=k0B6QsU55aXc/tAkmdquBVptl49yQdaKZ842RKzr52WaHd7dULw3IdWH/3cD4DX2Ct
-         vzgkZvQQy1Uq+0syRXXzE72WJgnVuY88aFThQrEaG4B/UWwhEIbp5Vie+oejLeImU6bB
-         ePQcuOiX6cLkW9ioPjlECqEpDzd9cX7zHiIUmiXrKGaPXhcq9LcUsopdBx9NMlRPM0Vb
-         BS+KnuoGiC9z0iYbX4qUK/zb/tVNIO5oLQLRRaBuXdYjQA1N6X9mPUrnwxAfxmD9hdh+
-         jU9Y/CLVckBWfm2hwFxcZdrb9NCExxBFXTIEQyLrEP1KkPx1CWCta5ycN78qhn1JTcfx
-         aiIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=XkOTAOMcNc1IVEFTEsYF74ee6aJfy0dk3qnKTOfIb+o=;
-        b=nZ90lDEO0yLBmR12+zd/id+Yhby5aC+fUzXRehgj6sEdjwjaRtNJhR4Tim4FpxEHVb
-         Obm+X81nFJsfsLdZoiTIQ4jcTfNO1wmN2HfXw0ZEC2m8IBMUPbF7a0kR8bKekpp4GQJd
-         CAzmEJPqQDEWIwiuppn6Bwdf3TafLvQTOutSPWfJUC2EwYIiC4JvCxwXYhpdfG03Wd3u
-         JV8bNLY80FxKIdnhSkdKMmif260wGnXxS4jrvbHXy8sYx4DDIrwO8gJY2FAkMAjP3lX4
-         G/5irVCwWAzB1BjcXPrP+1SQpSeVjtUUr0OWs8YE6cdm/EhiOQxC0Rit7HO8DVqGiuc9
-         nGpw==
-X-Gm-Message-State: APjAAAV1qv71EIYsP9Xwb5N/yW/MskPu1+IxJKHFCTwxYzgW7aOaSNKu
-        EHypoYjcwee9oq4xMocjbs5uHQ==
-X-Google-Smtp-Source: APXvYqyWOy7fG5gEgq1f8u7XI/wrD9auB5FL3ePxqOteIFSD2ZS6mfTCkbk/jTsqRKHx4mECWkaJYQ==
-X-Received: by 2002:a37:4a16:: with SMTP id x22mr30918089qka.88.1582239975412;
-        Thu, 20 Feb 2020 15:06:15 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id 65sm542770qtf.95.2020.02.20.15.06.14
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 20 Feb 2020 15:06:14 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j4uta-0002gS-9M; Thu, 20 Feb 2020 19:06:14 -0400
-Date:   Thu, 20 Feb 2020 19:06:14 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Parav Pandit <parav@mellanox.com>
-Cc:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>
-Subject: Re: [RFC PATCH v4 10/25] RDMA/irdma: Add driver framework definitions
-Message-ID: <20200220230614.GF31668@ziepe.ca>
-References: <20200212191424.1715577-1-jeffrey.t.kirsher@intel.com>
- <20200212191424.1715577-11-jeffrey.t.kirsher@intel.com>
- <6f01d517-3196-1183-112e-8151b821bd72@mellanox.com>
- <9DD61F30A802C4429A01CA4200E302A7C60C94AF@fmsmsx124.amr.corp.intel.com>
- <AM0PR05MB4866395BD477FAD269BCAE07D1130@AM0PR05MB4866.eurprd05.prod.outlook.com>
+        id S1727790AbgBUBpE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Feb 2020 20:45:04 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10229 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727809AbgBUBpE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 20 Feb 2020 20:45:04 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id CE0714904AB3FFC41A50;
+        Fri, 21 Feb 2020 09:45:00 +0800 (CST)
+Received: from [127.0.0.1] (10.74.191.121) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.439.0; Fri, 21 Feb 2020
+ 09:44:51 +0800
+Subject: Re: [RFC rdma-next] RDMA/core: Add attribute WQ_MEM_RECLAIM to
+ workqueue "infiniband"
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+CC:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Lang Cheng" <chenglang@huawei.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "David Miller" <davem@davemloft.net>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        <yisen.zhuang@huawei.com>, LinuxArm <linuxarm@huawei.com>,
+        Netdev <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        <bhaktipriya96@gmail.com>, Tejun Heo <tj@kernel.org>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+References: <1581996935-46507-1-git-send-email-chenglang@huawei.com>
+ <20200218153156.GD31668@ziepe.ca>
+ <212eda31-cc86-5487-051b-cb51c368b6fe@huawei.com>
+ <20200219064507.GC15239@unreal>
+ <1155d15f-4188-e5cd-3e4a-6e0c52e9b1eb@huawei.com>
+ <CAKgT0Uems7Y0hhFmXYcE0Pf2-ZNih=rm6DDALXdwib7de5wqhA@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <a1d8d68e-ef2b-5d0e-bd9b-c50eddb73f1b@huawei.com>
+Date:   Fri, 21 Feb 2020 09:44:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM0PR05MB4866395BD477FAD269BCAE07D1130@AM0PR05MB4866.eurprd05.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAKgT0Uems7Y0hhFmXYcE0Pf2-ZNih=rm6DDALXdwib7de5wqhA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.191.121]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 20, 2020 at 10:24:05PM +0000, Parav Pandit wrote:
+On 2020/2/21 1:46, Alexander Duyck wrote:
+> On Tue, Feb 18, 2020 at 11:42 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
 > 
+>> Ok, I may be wrong about the above usecase.
+>> but the below commit explicitly state that network devices may be used in
+>> memory reclaim path.
+>>
+>> 0a38c17a21a0 ("fm10k: Remove create_workqueue"):
+>>
+>> fm10k: Remove create_workqueue
+>>
+>> alloc_workqueue replaces deprecated create_workqueue().
+>>
+>> A dedicated workqueue has been used since the workitem (viz
+>> fm10k_service_task, which manages and runs other subtasks) is involved in
+>> normal device operation and requires forward progress under memory
+>> pressure.
+>>
+>> create_workqueue has been replaced with alloc_workqueue with max_active
+>> as 0 since there is no need for throttling the number of active work
+>> items.
+>>
+>> Since network devices may be used in memory reclaim path,
+>> WQ_MEM_RECLAIM has been set to guarantee forward progress.
+>>
+>> flush_workqueue is unnecessary since destroy_workqueue() itself calls
+>> drain_workqueue() which flushes repeatedly till the workqueue
+>> becomes empty. Hence the call to flush_workqueue() has been dropped.
+>>
+>> Signed-off-by: Bhaktipriya Shridhar <bhaktipriya96@gmail.com>
+>> Acked-by: Tejun Heo <tj@kernel.org>
+>> Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+>>
+>> So:
+>> 1. Maybe the above commit log is misleading, and network device driver's
+>>    wq does not need the WQ_MEM_RECLAIM flag, then maybe document what can
+>>    not be done in the work queued to wq marked with WQ_MEM_RECLAIM, and
+>>    remove the WQ_MEM_RECLAIM flag for the wq of network device driver.
 > 
-> > From: Saleem, Shiraz <shiraz.saleem@intel.com>
-> > Sent: Tuesday, February 18, 2020 2:43 PM
-> > To: Parav Pandit <parav@mellanox.com>; Kirsher, Jeffrey T
-> > <jeffrey.t.kirsher@intel.com>; davem@davemloft.net;
-> > gregkh@linuxfoundation.org
-> > Cc: Ismail, Mustafa <mustafa.ismail@intel.com>; netdev@vger.kernel.org;
-> > linux-rdma@vger.kernel.org; nhorman@redhat.com; sassmann@redhat.com;
-> > jgg@ziepe.ca
-> > Subject: RE: [RFC PATCH v4 10/25] RDMA/irdma: Add driver framework
-> > definitions
-> > 
-> > [..]
-> > 
-> > > > +static int irdma_devlink_reload_up(struct devlink *devlink,
-> > > > +				   struct netlink_ext_ack *extack) {
-> > > > +	struct irdma_dl_priv *priv = devlink_priv(devlink);
-> > > > +	union devlink_param_value saved_value;
-> > > > +	const struct virtbus_dev_id *id = priv->vdev->matched_element;
-> > >
-> > > Like irdma_probe(), struct iidc_virtbus_object *vo is accesible for the given
-> > priv.
-> > > Please use struct iidc_virtbus_object for any sharing between two drivers.
-> > > matched_element modification inside the virtbus match() function and
-> > > accessing pointer to some driver data between two driver through this
-> > > matched_element is not appropriate.
-> > 
-> > We can possibly avoid matched_element and driver data look up here.
-> > But fundamentally, at probe time (see irdma_gen_probe) the irdma driver
-> > needs to know which generation type of vdev we bound to. i.e. i40e or ice ?
-> > since we support both.
-> > And based on it, extract the driver specific virtbus device object, i.e
-> > i40e_virtbus_device vs iidc_virtbus_object and init that device.
-> > 
-> > Accessing driver_data off the vdev matched entry in irdma_virtbus_id_table
-> > is how we know this generation info and make the decision.
-> > 
-> If there is single irdma driver for two different virtbus device
-> types, it is better to have two instances of
-> virtbus_register_driver() with different matching string/id.
+> I am not sure why they added WQ_MEM_RECLAIM to the fm10k service task
+> thread. It has nothing to do with memory reclaim. If a memory
+> allocation fails then it will just run to the end and bring the
+> interface down. The service task is related to dealing with various
+> one-off events like link up and link down, sorting out hangs, and
+> updating statistics. The only memory allocation it is involved with is
+> if it has to reset the interface in which case I believe there may
+> even be a few GFP_KERNEL calls in there since it is freeing and
+> reallocating several port related structures.
 
-Yes, I think this also makes sense
+Yes, the hns3 driver does a few GFP_KERNEL calls too when resetting the
+interface in hclge_reset_service_task(), which will run in the hns3 driver'
+wq.
 
-The probe mechanism should include the entry pointer like PCI does for
-probe so that the driver knows what to do.
+> 
+>> 2. If the network device driver's wq does need the WQ_MEM_RECLAIM flag, then
+>>    hns3 may have tow problems here: WQ_MEM_RECLAIM wq flushing !WQ_MEM_RECLAIM
+>>    wq problem and GFP_KERNEL allocations in the work queued to WQ_MEM_RECLAIM wq.
+> 
+> It seems like you could solve this by going the other way and dropping
+> the WQ_MEM_RECLAIM from the original patch you mentioned in your fixes
+> tag. I'm not seeing anything in hclge_periodic_service_task that
+> justifies the use of the WQ_MEM_RECLAIM flag. It claims to be involved
+> with memory reclaim but I don't see where that could be the case.
 
-Jason
+Ok, Will remove the WQ_MEM_RECLAIM first.
+
+Thanks.
+
+> 
+> - Alex
+> 
+> .
+> 
+
