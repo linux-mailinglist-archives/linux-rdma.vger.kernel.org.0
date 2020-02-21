@@ -2,102 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FE2167F64
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2020 14:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5896D1680AA
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2020 15:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728453AbgBUN51 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Feb 2020 08:57:27 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:38101 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728679AbgBUN5X (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Feb 2020 08:57:23 -0500
-Received: by mail-qk1-f193.google.com with SMTP id z19so1854223qkj.5
-        for <linux-rdma@vger.kernel.org>; Fri, 21 Feb 2020 05:57:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1dHCKhpjWcC6yrvQ8dvgZTfnaHP/2iubCvXzY1WdDa8=;
-        b=CajgZpY7D5ouXsMMkG6nMuVcOUZP8f2Lr3xPY04yzvepWaZ6dFRePegzqcsbqWs6GU
-         X5a91lpeojrZnkyDUgDtGXjFQCZm2bKt1JVyIxgYe3iqVZI8n95m6CiowcIyCPI2Cxuh
-         wvjknm0lx54PkI0t/tQ1/cjoMMMrrwel28xRmAVx9c1kTUzk4oAl6XwoqHk4jbwfUnke
-         CmZnbsjlt9NyBcqcvY7YBg7aX0JxDlCB2UDtqD8IJcW/d0LEK0jV41OyjVn2p3ioT+Qg
-         KHVOyNeb9T1lH4P2GCfdyc8R7FA2rAc4Tve9BCHFuR91e0sbM6eDt6NWXLsaTRaWBZ7o
-         zneQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1dHCKhpjWcC6yrvQ8dvgZTfnaHP/2iubCvXzY1WdDa8=;
-        b=sbwqcOnivOBXRFnafpjUnwPLqoXxn/aMxV694BqbN7J0aPRvP1XUNbJb9vAGkB/PEd
-         MmHKKguMF+eeB4N20DwFLIKvq/8ou6lCRIw2++CL7clsazTLUdQL5PR8CKKI70jW5cvf
-         fQgyUami5PNonp87dpCy9XzJX9NTCnG51cVNhOEZh+yiS2L2+/lh4AbdGVENaSkdmjyC
-         ce3rNCPVBwG9TTOrqeQCNWX0a8Bpj3pDcoya6et6B5TsTR3KPfvq3sqrxB67eMGwJERT
-         S4yGVQOP1TALVCnQlZPGXF9qB7+gRo8p1ZT34THIccG2E8gEdgrV+qQV37HdOcyeWGmN
-         WYnQ==
-X-Gm-Message-State: APjAAAWGA1Rq1h9JFDJHgzSdPacpxootTYzp41iDOmCiGdE/nvSAUfVB
-        JJ9wfxY+iTcZrd6CrmA/Ncjmkw==
-X-Google-Smtp-Source: APXvYqx88Mq4w0EqcZ7rke98GLpS+jxPX9uLG89xoFtJ2Z1/b7CbweKlw/GnLZeU2ybB4tNG/acf/g==
-X-Received: by 2002:a05:620a:542:: with SMTP id o2mr33618465qko.318.1582293441677;
-        Fri, 21 Feb 2020 05:57:21 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id a198sm1542777qkg.41.2020.02.21.05.57.20
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 21 Feb 2020 05:57:20 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j58nw-0000Uc-HN; Fri, 21 Feb 2020 09:57:20 -0400
-Date:   Fri, 21 Feb 2020 09:57:20 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: linux-next: Tree for Jan 30 + 20200206
- (drivers/infiniband/hw/mlx5/)
-Message-ID: <20200221135720.GI31668@ziepe.ca>
-References: <20200130152852.6056b5d8@canb.auug.org.au>
- <df42492f-a57e-bf71-e7e2-ce4dd7864462@infradead.org>
- <ee5f17b6-3282-2137-7e9d-fa0008f9eeb0@infradead.org>
+        id S1728611AbgBUOrO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Feb 2020 09:47:14 -0500
+Received: from p3plsmtpa09-01.prod.phx3.secureserver.net ([173.201.193.230]:47661
+        "EHLO p3plsmtpa09-01.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728068AbgBUOrO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 21 Feb 2020 09:47:14 -0500
+Received: from [192.168.0.78] ([24.218.182.144])
+        by :SMTPAUTH: with ESMTPSA
+        id 59aCjaREz1pNk59aCjghlR; Fri, 21 Feb 2020 07:47:13 -0700
+X-CMAE-Analysis: v=2.3 cv=Tt+Yewfh c=1 sm=1 tr=0
+ a=ugQcCzLIhEHbLaAUV45L0A==:117 a=ugQcCzLIhEHbLaAUV45L0A==:17
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=pyZ-OPpqu5Nz-L8I6UIA:9
+ a=QEXdDO2ut3YA:10
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: [RFC v2] RoCE v2.0 Entropy - IPv6 Flow Label and UDP Source Port
+To:     Mark Zhang <markz@mellanox.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Alex Rosenbaum <rosenbaumalex@gmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>,
+        Alex Rosenbaum <alexr@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>
+References: <CAFgAxU8XmoOheJ29s7r7J23V1x0QcagDgUDVGSyfKyaWSEzRzg@mail.gmail.com>
+ <62f4df50-b50d-29e2-a0f4-eccaf81bd8d9@talpey.com>
+ <20200213154110.GJ31668@ziepe.ca>
+ <3be3b3ff-a901-b716-827a-6b1019fa1924@mellanox.com>
+ <de3aeeb7-41ef-fadc-7865-e3e9fc005476@mellanox.com>
+ <55e8c9cf-cd64-27b2-1333-ac4849f5e3ff@talpey.com>
+ <e758da0d-94a3-a22f-c2aa-3d13714c4ed3@talpey.com>
+ <4fc5590f-727c-2395-7de0-afb1d83f546b@mellanox.com>
+ <91155305-10f0-22b5-b93b-2953c53dfc46@talpey.com>
+ <cb5ab63b-57cd-46ac-0d51-8bffaf537590@mellanox.com>
+ <20200219130613.GM31668@ziepe.ca>
+ <a0067ba5-c15b-4194-0de2-3964393e9993@talpey.com>
+ <c4fc4449-94ed-805e-76d1-6ce856a4fc05@mellanox.com>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <33f075e2-b5c0-53cd-6954-7ac57eeb008f@talpey.com>
+Date:   Fri, 21 Feb 2020 09:47:12 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ee5f17b6-3282-2137-7e9d-fa0008f9eeb0@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <c4fc4449-94ed-805e-76d1-6ce856a4fc05@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfEE6fzdZCFecNIKqV34qAZ1k5Kaoe0cvCSVEB9BUgxOTodDpDupAwcTNf/GWFQ6l34vt+orFqPlaAG4goXnmpV29dvq2yVY2KD5OIjEjIIYM/7COcaXT
+ 2eZq5bzm/vyKHmiHpkxZ+exOWR9zA9a8sem3ECV393bRbYnQm65ITMMUMAM9UBOVoPPqbgNBiMNfd63GH0V74qQ4kjs9p8hJas3lLwg3e31RZ3W5VWSnAKZe
+ UaYDl4GGhr7iuO07Fm9/lvKJgcnMn7W9BaiBsrvFkC/8iseFUHB7mYpVsKqwxV0m7f9YfcDXgfC4lL/HJwZ3HxbgdebdszC9yY4Y4kAYpSOuAWle7KPEyxNp
+ Q+hV+0RNhGi08Qg2z7WIczXOEfISivV6e71ASu9HIRNRX6gjoR/ws6DXGSrULAZBhYPDObe4
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 05, 2020 at 09:31:15PM -0800, Randy Dunlap wrote:
-> On 1/30/20 5:47 AM, Randy Dunlap wrote:
-> > On 1/29/20 8:28 PM, Stephen Rothwell wrote:
-> >> Hi all,
-> >>
-> >> Please do not add any v5.7 material to your linux-next included
-> >> branches until after v5.6-rc1 has been released.
-> >>
-> >> Changes since 20200129:
-> >>
-> > 
-> > on i386:
-> > 
-> > ERROR: "__udivdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
-> > ERROR: "__divdi3" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
-> > 
-> > 
-> > Full randconfig file is attached.
-> > 
-> > 
+On 2/19/2020 8:04 PM, Mark Zhang wrote:
+> On 2/20/2020 1:41 AM, Tom Talpey wrote:
+>> On 2/19/2020 8:06 AM, Jason Gunthorpe wrote:
+>>> On Wed, Feb 19, 2020 at 02:06:28AM +0000, Mark Zhang wrote:
+>>>> The symmetry is important when calculate flow_label with DstQPn/SrcQPn
+>>>> for non-RDMA CM Service ID (check the first mail), so that the server
+>>>> and client will have same flow_label and udp_sport. But looks like it is
+>>>> not important in this case.
+>>>
+>>> If the application needs a certain flow label it should not rely on
+>>> auto-generation, IMHO.
+>>>
+>>> I expect most networks will not be reversible anyhow, even with the
+>>> same flow label?
+>>
+>> These are network flow labels, not under application control. If they
+>> are under application control, that's a security issue.
+>>
 > 
-> I am still seeing this on linux-next of 20200206.
+> As Jason said application is able to control it in ipv6. Besides
+> application is also able to control it for non-RDMA CM Service ID in ipv4.
 
-FWIW, I am seeing a lot of messages from infradead users in the gmail
-spam filter, and didn't see this email. It looks like DKIM is broken
-on ifradead. :(
+Ok, well I guess that's a separate issue, let's not rathole on
+it here then.
 
-The udiv issue is fixed up now, thanks
+> Hi Jason, same flow label get same UDP source port, with same UDP source
+> port (along with same sIP/dIP/sPort), are networks reversible?
+> 
+>> But I agree, if the symmetric behavior is not needed, it should be
+>> ignored and a better (more uniformly distributed) hash should be chosen.
+>>
+>> I definitely like the simplicity and perfect flatness of the newly
+>> proposed (src * 31) + dst. But that "31" causes overflow into bit 21,
+>> doesn't it? (31 * 0xffff == 0x1f0000) >
+> 
+> I think overflow doesn't matter? We have overflow anyway if
+> multiplicative is used.
 
-Jason
+Hmm, it does seem to matter because dropping bits tilts the
+distribution curve. Plugging ((src * 31) + dst) & 0xFFFFF into
+my little test shows some odd behaviors. It starts out flat,
+then the collisions start to rise around 49000, leveling out
+at 65000 to a value roughly double the initial one (528 -> 1056).
+It sits there until 525700, where it falls back to the start
+value (528). I don't think this is optimal :-)
+
+Tom.
