@@ -2,64 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE2216878E
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2020 20:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9591689A9
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2020 23:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbgBUTkz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Feb 2020 14:40:55 -0500
-Received: from mga09.intel.com ([134.134.136.24]:43155 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726160AbgBUTkz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 21 Feb 2020 14:40:55 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Feb 2020 11:40:55 -0800
-X-IronPort-AV: E=Sophos;i="5.70,469,1574150400"; 
-   d="scan'208";a="229948170"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.204.151]) ([10.254.204.151])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 21 Feb 2020 11:40:53 -0800
-Subject: Re: [PATCH for-next 07/16] IB/ipoib: Increase ipoib Datagram mode
- MTU's upper limit
-To:     Erez Shitrit <erezsh@dev.mellanox.co.il>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Doug Ledford <dledford@redhat.com>,
-        Mike Marciniszyn <mike.marcinisyzn@intel.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Sadanand Warrier <sadanand.warrier@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>
-References: <20200210131223.87776.21339.stgit@awfm-01.aw.intel.com>
- <20200210131850.87776.40842.stgit@awfm-01.aw.intel.com>
- <CAAk-MO-NZbL8WjUB+eupK_0uYAJXEyvKjEVX8Bo5DzkExNnweg@mail.gmail.com>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <4fcc4401-8255-87a3-6b64-056579855fcb@intel.com>
-Date:   Fri, 21 Feb 2020 14:40:52 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726731AbgBUWAN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Feb 2020 17:00:13 -0500
+Received: from mail-yw1-f65.google.com ([209.85.161.65]:43387 "EHLO
+        mail-yw1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726683AbgBUWAN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Feb 2020 17:00:13 -0500
+Received: by mail-yw1-f65.google.com with SMTP id f204so1779436ywc.10;
+        Fri, 21 Feb 2020 14:00:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=Qi2N2DE4kidOB1UvL1ljaWshUxorlbyFmUwWFR+Pkbk=;
+        b=aSDNxbQ6S/fWZFbOmAGJAWLgMDxXIe/6+ZliB6DRYVTf1fiV0rR2pbNJZPn0dqsztx
+         HgpRiEtHYxTr9ftN4cv2smtS2RWKTqj1VdHH4uK6R8fizQmBucmPwqN5KtyHs/f/RH+Y
+         4lcXaYlh8B06Z6CkENILXiE+fgWvQpmomyGPAR72zEak9PUanfEHLdrCzOcmwaDpbpuU
+         N2vwpyLppC8hiWHDT7oy0bCvE8T+Kh7cbdEpV/DJuIx++/HJ653/z0zXxd3LlANBrP2b
+         8G7cnxpKgqnOZU9/f4bcGf7WxD19/UraOfZTFarCzdz27FpU4M8IRX9em9zu8JG7t0g/
+         RprA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:from:to:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Qi2N2DE4kidOB1UvL1ljaWshUxorlbyFmUwWFR+Pkbk=;
+        b=cMJjbshLIQDRr385Ig6DTiYqWyGjlDuY8AF/ORhiB9V/jIJh78k116RvZcABsjWyY4
+         MIXiurE91L+Qfy74TFbXj+gdpXKHLs2UnlHrDdbqyKhwpL3VBxdBxasebyK9oAvqin7W
+         gPKD4DiGeLYj1AF71M2DYYIoipfGg9BEm/2qMShs1O8QVN+BeXlr7pOq2MMQN5NsoIUO
+         N3L055QeBPAKVVKjC/8mBZA5OwxysfIi1wQ2XcrWi6SVbhjIET7QDDQuz6Bri9emoIkR
+         GCzCSCtfQUorqKIrKGTxQeIAAVs7TfxQd2NYFKlJFVvoxKsgBllOVZFfey9AJ7KTCVdN
+         GumQ==
+X-Gm-Message-State: APjAAAXXbdTJE2H6n8twHgkx42zh/Mb5p45NGrISFeAKoYibN7IuirZi
+        Cw2PY8udXHOYMWgXVEQzrak3x8ze
+X-Google-Smtp-Source: APXvYqy3e0wGM1c/yEoFCpXyT7R91pCXvEwag6phpjAsfMiZ6XxpaXwV787rTYth9YeIDVVNK6KH+Q==
+X-Received: by 2002:a81:2313:: with SMTP id j19mr33469521ywj.201.1582322408625;
+        Fri, 21 Feb 2020 14:00:08 -0800 (PST)
+Received: from gateway.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id m137sm1860991ywd.108.2020.02.21.14.00.07
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 Feb 2020 14:00:08 -0800 (PST)
+Received: from manet.1015granger.net (manet.1015granger.net [192.168.1.51])
+        by gateway.1015granger.net (8.14.7/8.14.7) with ESMTP id 01LM063k018975;
+        Fri, 21 Feb 2020 22:00:07 GMT
+Subject: [PATCH v1 00/11] NFS/RDMA client side connection overhaul
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org
+Date:   Fri, 21 Feb 2020 17:00:06 -0500
+Message-ID: <20200221214906.2072.32572.stgit@manet.1015granger.net>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-In-Reply-To: <CAAk-MO-NZbL8WjUB+eupK_0uYAJXEyvKjEVX8Bo5DzkExNnweg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/19/2020 6:01 AM, Erez Shitrit wrote:
->> diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
->> index e5f438a..5c1cf68 100644
->> --- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
->> +++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
->> @@ -1862,7 +1862,10 @@ static int ipoib_parent_init(struct net_device *ndev)
->>                          priv->port);
->>                  return result;
->>          }
->> -       priv->max_ib_mtu = ib_mtu_enum_to_int(attr.max_mtu);
->> +       if (rdma_core_cap_opa_port(priv->ca, priv->port))
-> 
-> Why not to use something like you did in rdma_mtu_enum_to_int, in
-> order to hide all the "_opa_" stuff from IPoIB ?
+Howdy.
 
-Sounds reasonable, we can do that in the v2.
+I've had reports (and personal experience) where the Linux NFS/RDMA
+client waits for a very long time after a disruption of the network
+or NFS server.
 
--Denny
+There is a disconnect time wait in the Connection Manager which
+blocks the RPC/RDMA transport from tearing down a connection for a
+few minutes when the remote cannot respond to DREQ messages.
+
+An RPC/RDMA transport has only one slot for connection state, so the
+transport is prevented from establishing a fresh connection until
+the time wait completes.
+
+This patch series refactors the connection end point data structures
+to enable one active and multiple zombie connections. Now, while a
+defunct connection is waiting to die, it is separated from the
+transport, clearing the way for the immediate creation of a new
+connection. Clean-up of the old connection's data structures and
+resources then completes in the background.
+
+Well, that's the idea, anyway. Review and comments welcome. Hoping
+this can be merged in v5.7.
+
+---
+
+Chuck Lever (11):
+      xprtrdma: Invoke rpcrdma_ep_create() in the connect worker
+      xprtrdma: Refactor frwr_init_mr()
+      xprtrdma: Clean up the post_send path
+      xprtrdma: Refactor rpcrdma_ep_connect() and rpcrdma_ep_disconnect()
+      xprtrdma: Allocate Protection Domain in rpcrdma_ep_create()
+      xprtrdma: Invoke rpcrdma_ia_open in the connect worker
+      xprtrdma: Remove rpcrdma_ia::ri_flags
+      xprtrdma: Disconnect on flushed completion
+      xprtrdma: Merge struct rpcrdma_ia into struct rpcrdma_ep
+      xprtrdma: Extract sockaddr from struct rdma_cm_id
+      xprtrdma: kmalloc rpcrdma_ep separate from rpcrdma_xprt
+
+
+ include/trace/events/rpcrdma.h    |   97 ++---
+ net/sunrpc/xprtrdma/backchannel.c |    8 
+ net/sunrpc/xprtrdma/frwr_ops.c    |  152 ++++----
+ net/sunrpc/xprtrdma/rpc_rdma.c    |   32 +-
+ net/sunrpc/xprtrdma/transport.c   |   72 +---
+ net/sunrpc/xprtrdma/verbs.c       |  681 ++++++++++++++-----------------------
+ net/sunrpc/xprtrdma/xprt_rdma.h   |   89 ++---
+ 7 files changed, 445 insertions(+), 686 deletions(-)
+
+--
+Chuck Lever
