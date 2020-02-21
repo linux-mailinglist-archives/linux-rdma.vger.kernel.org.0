@@ -2,125 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4AD167B58
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2020 11:50:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9DC167B6D
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2020 12:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726410AbgBUKuf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Feb 2020 05:50:35 -0500
-Received: from mail-il1-f194.google.com ([209.85.166.194]:34932 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726100AbgBUKuf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Feb 2020 05:50:35 -0500
-Received: by mail-il1-f194.google.com with SMTP id g12so1295171ild.2
-        for <linux-rdma@vger.kernel.org>; Fri, 21 Feb 2020 02:50:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OPS6z2b9xpPF3wQKIuekk4fC9RzWMOEqMORb//JIJpo=;
-        b=I//oOyFh8ZfE9orwZucAjqt0Xsc5RS48pWVW07HFUdNIV6/4JmHCZJk+gpiBuxguin
-         fo7DvsXOXoJu9hQHA8yJYpAuXPrAi/eUtoYOA1Y8X7Xq2Gtl1gmY27dFq0COSgWY3w/V
-         2nN0hI81lI4wtTntPmvOJk4UdD94yQRN81sXFnWGJYLoSqiKuk3zM6jjuRxMZcZdwXHK
-         9UfwG76RPGKYXub7zjT5vSFbDlQUUK4O/mkknKarLFxtdMSVOmwZSiLo44a9ivhDwUbJ
-         KoTk9lpvzO+e/FvsMnbivhukh3vYXAR/8Ugn9iscw92uW401rtNHOs7eUPGgqefWD7qV
-         XiDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OPS6z2b9xpPF3wQKIuekk4fC9RzWMOEqMORb//JIJpo=;
-        b=B5Qk+PsSzq/0f8BhIW2rjmzo0ECqu1miz2H5YHiemcMvOWWv4arNgiNUi3rcBN4P1w
-         QLnHga/doub3GbOjNIp4cceGS6ivSmImD835P0yQmMTJgL6NqrHmlL8ugCNEHrLDv3CX
-         Vou1QwwcbzGnazbOSIVacXwB5R8T1Pn2B1c+qkUS9jesZzVlCpRauzEF5CcJWqCTTd65
-         K0X/sJH87A1GA0aV4hRb5yFS3yXVydAjlskmqVnT9LFN+Tw26VPDtPyJ7zCZlgTT75b8
-         /JPqlNYFRPteZl9UXEkO82IzEdVVJD54BeQaR23nUBoxSYJhLw5dS9fuMh3hfhDGYfgw
-         sYFA==
-X-Gm-Message-State: APjAAAWcLPjBXXLRB6T6OHXUS9VQ7d8ayeGtvrk1uopEyi44v9ppuqyl
-        COjMNsUnlaB5LlLjQEvg2Z4X5uc2ajhb2RNfc3iyTQ==
-X-Google-Smtp-Source: APXvYqzMSH2AYlu+wEv2Y0IUsXD22f9VImOhSPAYzmjr3fXLgz7dusvmqw4OEdsMwL529YhwVccDqy4UrBeOcJe68TQ=
-X-Received: by 2002:a05:6e02:4d2:: with SMTP id f18mr33874619ils.54.1582282234244;
- Fri, 21 Feb 2020 02:50:34 -0800 (PST)
+        id S1726325AbgBULAC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Feb 2020 06:00:02 -0500
+Received: from sonic302-2.consmr.mail.bf2.yahoo.com ([74.6.135.41]:42311 "EHLO
+        sonic302-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726100AbgBULAC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 21 Feb 2020 06:00:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1582282800; bh=vdONypa+pmkSCxMpJ481zxWsfmYXdIIKq3bhYsM38cE=; h=Date:From:Reply-To:Subject:References:From:Subject; b=Cp8rs79z9w/+pYI9Dd8526obR+EBt9S+ugCQZL/fJu/vVuPEOCHK8KrwkJoyT8kJkPENhc8PYUXEKdVAoO9yzqBYCBVZcetBX7GSnqskTVN99ckj5QUTLNw6gWpAShKRdX8gGTqexOKvIHb9C0QM1uS0qnuNwII1oTgfC0V6fEsQO2+keeazSxk4CGtu+KaBIvlgTK+87EmKKeTzTUolsnHANzipLyKK30vcKSIwpzkHBa0A20cZGfruAEBKgheoflfnNiL7MssHwQ2rMfDH4Wn29Odc0XLpGw3Vls5bv+YRSVumusCOuBu5nq4RWCFWc993j9zcN8OCV96TpVkTnw==
+X-YMail-OSG: 7.qQ_.oVM1mO3OR_WseWHYFqxRGr0I1ikivAZSNILVs9i64fXmPR3wK9V9.3NsK
+ w3Rix7LUCLB0tL0J1RcMSyJYlVxQV_RTLqjHyssJFcXqVTHaUx65enTYrqhmWX2IYLoVIZIF3dpJ
+ mzswpfOPlJmSwiStjr41gTv54RaXMnvpP1oZB6mX4tJwSiUK34_fdSMcJ3O8LD5YLp1oDpz3XQXs
+ lPodnth4o.uh_EFiDzr7gh4embQ0wfi8m7OHQl0osvOqHuHDt8VgR8EySdQeNELy3FQKSSWrROHk
+ ynw2cPrEfnIT9YGfXzAa0B9cJ3Xm75kIV7okXDe0j5WguREykLo.hQvCyTJuuKhBV1kCCeklAl7s
+ 85HLSwN6Dt8Kzp0SXDiTlhpZ__PDq.DNLMsPlghzRvs_.tODQBSknPuTmqOsLu0KNfkq.ePViKNw
+ IpKnMiki7Gh05NXj7GB.7KAkUsDT2Xo6SDfEXlAazrGrHugOcZM_Qg2u8qcTU2qw_JAU2IV_cAnQ
+ EweQBIIu.gdEGncUVVUPLyl6oPUgKGYK1_ysj_zTXBdEqvqCc9bf3naZMpl5p3k4rgOjbh12rvad
+ SpG3KV1GcBefQM1jMKDwrxJp0oJ982EI3yNUZt5Vq64JVKoNak4qzFhOMN8TuksizSwj5XVEy9o5
+ 3.GSUFZ43Of_OwNvXBJiyWmha1ImLarG5r_c2fEPBpa6HfVIE2syYPMbTU5JIv2o0XUAIvkpEVwV
+ z7IAqHwTWkAtfj7C9QcBsim12rRXiKA.9uIComgMHZJ5mduLdjh5SB7f_i_pkISdbuEqj2d7gmFQ
+ 3W2desJywURjhB1T.cWgl_34hLATT9Z0dWjIiZgyXXYFxLjPIRaOrZO2wilSafwvhM0Q6jxRrbWr
+ dGv5tsb9.hR_gKefBGUSGvwl_ewleTYIGNHCO5u29W3yfx_sVJHCEUnU2j2dBC8LtP8cHG_HeAr8
+ F8Ar11KC41xn.kf6aAsy6u1vAsD1gL5VWMI1Y5BwDUEmdjZbSuE_Z5QCHa71Hg91VxAHhlPBABbz
+ TiZtXABmiwS9mtsKRAbdU4rJ08ZiN1rJxpS_OoftunI0vA5rHBkAPinRx1TQsim4Nfib6SmUXb4K
+ 3ahvp9OlNC2DzCFH1nZ4PT.s8SNrHm2DVADWIqbw_dqtSF34pHwm44fmlottcoh65QGWALWNc1mN
+ w7zIiB.12E6Eu_utdS9TDJ1CcdJYW2DuFRJ0UpLVVGQOMeXE4HfhP89Kd5bVEoflZVn49z5X468x
+ rTcUOLxquIij.mpF0eK.AQ1ykoyvR.1cMlhMtiBfLzfnY__ac8yax54thw3h5h.SmZtyWoUpiZP0
+ aJCcf
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.bf2.yahoo.com with HTTP; Fri, 21 Feb 2020 11:00:00 +0000
+Date:   Fri, 21 Feb 2020 10:59:55 +0000 (UTC)
+From:   Mrs Elodie Antoine <mrselodieantoine@gmail.com>
+Reply-To: antoinm93@yahoo.com
+Message-ID: <1980516529.4491446.1582282795681@mail.yahoo.com>
+Subject: Greetings From Mrs Elodie,
 MIME-Version: 1.0
-References: <20200124204753.13154-1-jinpuwang@gmail.com> <CAHg0HuzLLHqp_76ThLhUdHGG_986Oxvvr15h_13T12eEWjyAxA@mail.gmail.com>
- <20200131165421.GB29820@ziepe.ca> <f657d371-3b23-e4b2-50b3-db47cd521e1f@kernel.dk>
- <CAD9gYJLVMVPjQcCj0aqbAW3CD86JQoFNvzJwGziRXT8B2UT0VQ@mail.gmail.com>
- <a1aaa047-3a44-11a7-19a1-e150a9df4616@kernel.dk> <CAMGffEkLkwkd73Q+m46VeOw0UnzZ0EkZQF-QcSZjyqNcqigZPw@mail.gmail.com>
- <20200219002449.GA11943@ziepe.ca> <20200219061949.GB15239@unreal>
-In-Reply-To: <20200219061949.GB15239@unreal>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Fri, 21 Feb 2020 11:50:23 +0100
-Message-ID: <CAMGffE=N6EAuudLgh-jYt26bMVwoF8iy9mYkpuM1OEKQamcbUQ@mail.gmail.com>
-Subject: Re: [PATCH v8 00/25] RTRS (former IBTRS) RDMA Transport Library and
- RNBD (former IBNBD) RDMA Network Block Device
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Jinpu Wang <jinpuwang@gmail.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Doug Ledford <dledford@redhat.com>,
-        Roman Penyaev <rpenyaev@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1980516529.4491446.1582282795681.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15199 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:73.0) Gecko/20100101 Firefox/73.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 7:19 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Tue, Feb 18, 2020 at 08:24:49PM -0400, Jason Gunthorpe wrote:
-> > On Thu, Feb 06, 2020 at 04:12:22PM +0100, Jinpu Wang wrote:
-> > > On Fri, Jan 31, 2020 at 6:49 PM Jens Axboe <axboe@kernel.dk> wrote:
-> > > >
-> > > > On 1/31/20 10:28 AM, Jinpu Wang wrote:
-> > > > > Jens Axboe <axboe@kernel.dk> =E4=BA=8E2020=E5=B9=B41=E6=9C=8831=
-=E6=97=A5=E5=91=A8=E4=BA=94 =E4=B8=8B=E5=8D=886:04=E5=86=99=E9=81=93=EF=BC=
-=9A
-> > > > >>
-> > > > >> On 1/31/20 9:54 AM, Jason Gunthorpe wrote:
-> > > > >>> On Fri, Jan 31, 2020 at 05:50:44PM +0100, Danil Kipnis wrote:
-> > > > >>>> Hi Doug, Hi Jason, Hi Jens, Hi All,
-> > > > >>>>
-> > > > >>>> since we didn't get any new comments for the V8 prepared by Ja=
-ck a
-> > > > >>>> week ago do you think rnbd/rtrs could be merged in the current=
- merge
-> > > > >>>> window?
-> > > > >>>
-> > > > >>> No, the cut off for something large like this would be rc4ish
-> > > > >>
-> > > > >> Since it's been around for a while, I would have taken it in a b=
-it
-> > > > >> later than that. But not now, definitely too late. If folks are
-> > > > >> happy with it, we can get it queued for 5.7.
-> > > > >>
-> > > > >
-> > > > > Thanks Jason, thanks Jens, then we will prepare later another rou=
-nd for 5.7
-> > > >
-> > > > It would also be really nice to see official sign-offs (reviews) fr=
-om non
-> > > > ionos people...
-> > >
-> > > Totally agree.
-> > > Hi Bart, hi Leon,
-> > >
-> > > Both of you spent quite some time to review the code, could you give =
-a
-> > > Reviewed-by for some of the patches you've reviewed?
-> >
-> > Anyone? I don't want to move ahead with a block driver without someone
-> > from the block community saying it is OK
->
-> I wanted to ask for a resend based on latest -rc2, if it is possible.
->
-> Thanks
->
-Hi, all
 
-I just send v9 out based on latest 5.6-rc2.
 
-Thanks!
+Greetings From Mrs Elodie,
+
+Calvary Greetings in the name of the LORD Almighty and Our LORD JESUS CHRIST the giver of every good thing. Good day,i know this letter will definitely come to you as a huge surprise, but I implore you to take the time to go through it carefully as the decision you make will go off a long way to determine my future and continued existence. I am Mrs Elodie Antoine
+aging widow of 59 years old suffering from long time illness. I have some funds I inherited from my late husband,
+
+The sum of (US$4.5 Million Dollars) and I needed a very honest and God fearing who can withdraw this money then use the funds for Charity works. I WISH TO GIVE THIS FUNDS TO YOU FOR CHARITY WORKS. I found your email address from the internet after honest prayers to the LORD to bring me a helper and i decided to contact you if you may be willing and interested to handle these trust funds in good faith before anything happens to me.
+I accept this decision because I do not have any child who will inherit this money after I die. I want your urgent reply to me so that I will give you the deposit receipt which the COMPANY issued to me as next of kin for immediate transfer of the money to your account in your country, to start the good work of God, I want you to use the 15/percent of the total amount to help yourself in doing the project.
+
+
+I am desperately in keen need of assistance and I have summoned up courage to contact you for this task, you must not fail me and the millions of the poor people in our todays WORLD. This is no stolen money and there are no dangers involved,100% RISK FREE with full legal proof. Please if you would be able to use the funds for the Charity works kindly let me know immediately.I will appreciate your utmost confidentiality and trust in this matter to accomplish my heart desire, as I don't want anything that will jeopardize my last wish. I want you to take 15 percent of the total money for your personal use while 85% of the money will go to charity.I will appreciate your utmost confidentiality and trust in this matter to accomplish my heart desire, as I don't want anything that will jeopardize my last wish.
+
+
+kindly respond for further details.
+
+Thanks and God bless you,
+
+Mrs Elodie Antoine
