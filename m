@@ -2,151 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E20521684D5
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2020 18:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8EC16860D
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Feb 2020 19:04:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727709AbgBURXi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Feb 2020 12:23:38 -0500
-Received: from mail-eopbgr70058.outbound.protection.outlook.com ([40.107.7.58]:42227
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726408AbgBURXh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 21 Feb 2020 12:23:37 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sb769dG77zyx18e5F15aDeElnDc8ytf3zOd8kSJJlUpmQZjte2eecV0MfNyrTkgt1jUKcqLiCZ5RXsuY7D2u7k9coJ1q9iF4u07Fr33a0NNvbKyFJj3yvPwV0cNxzxeOMAW1I7ynnEgZW1ofNiFyvQnyQno/g9gXQLEgUPHnuJFkJlRFU/FhLprlcrT+ClgJX2FmWsifWUC2FxnmIWefmDzqZtv8ixGs2CDDrxm0NUvv6LqxCKVYpVYy4LKARhCfAJZzwFnGUlgJDzoO1AcqFBUNpdZU7hfiZ/hqs9hkObO6TNXAsiA2C46i1oHZQLeRuib8ue1TjbB1MSDNcf9/yg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=49csXU6o7GNwYAIFj0qFGbfMOaQ02RIj+OkL+6G1Vzw=;
- b=AyZXB+1F+6VXdTW6rEbxID5Bw8hV4pfoeWjMb+VI5EgD9JbmM4zFTrBcRxCCtd2Np7WukmHHSjdb1gaIHO+OJ1nx8JcxkJbr4fxWNmSNmE4+nGXdyCzXgjrhAkto+lZuBkhPFWK/k2dQyo8MAmiePMcVzvFw1KNsqBikP38H+R3z30KqF38//eLC5GIw9lwwvm4lfmQiX89w08ep/4yuO39CJKuEJt86JLyfR+gsU1sUEloO9vduQpg/1vFAIL/OY2zNonffOUpKegYIcyCpM/6RQ6jd7sAel+YkwO4oMWqDBtQ90vvcD7tvsyQ56DQnc8d+fu5yzFy+Wopylsm8nA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=49csXU6o7GNwYAIFj0qFGbfMOaQ02RIj+OkL+6G1Vzw=;
- b=gqYU0WX8SVrCxmnuthQ/K9O2xIdpsLu2Q+6DmBd3Z9N2hpSe+H5+twyYpKtkLwWpYAMYYDxckj92OKJ5SpLc9Uf/OB5R21a+1Hl5xqBtX4KRIngbw/dgoaLpFNUlH3MgZh/fTIWNlDgpqpTZ0xl0DCxd/iKRzRjWft7S1PYP2Qg=
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
- AM0PR05MB4115.eurprd05.prod.outlook.com (52.134.90.140) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2729.25; Fri, 21 Feb 2020 17:23:32 +0000
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::8c4:e45b:ecdc:e02b]) by AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::8c4:e45b:ecdc:e02b%7]) with mapi id 15.20.2750.016; Fri, 21 Feb 2020
- 17:23:32 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        id S1729714AbgBUSEa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Feb 2020 13:04:30 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:33907 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727699AbgBUSE3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Feb 2020 13:04:29 -0500
+Received: by mail-qk1-f193.google.com with SMTP id c20so2663013qkm.1
+        for <linux-rdma@vger.kernel.org>; Fri, 21 Feb 2020 10:04:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IvOXCotP7OctVlF/hDyZgg9xC6oqeT5r/ULL0/51mBY=;
+        b=gkQ70iBhG6Oa8bGD95caNxR4SeDTfeFj4wZYcntAOnjiNg4Lc5j4DF4KE0WK8k1lm3
+         Z4Cqu+vE3SEmQCc252K46C2U2HryVK+qyKeu2VNin6StqWTyz4CsKtssEfYGzNQYwdvd
+         wQ5BJEfCajuaxSGrfEqLteL21RIa8kg2HaKf2yMMcTNAFFAwCHMbinqmiyW43peXT1cd
+         LBniG/Yie8mx6P8Yw5+02CJthTc6MEwEJGdr7wMk1si8Y5rqxKNzTfRLFQjXjKkV6Xnt
+         Q5+fbJLtSVubEnylDSJ/MczAMKXY8GYXo+ZzY8s9V/zqQ7OhjQB0lMRisGJBI5qsuWY8
+         mvpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IvOXCotP7OctVlF/hDyZgg9xC6oqeT5r/ULL0/51mBY=;
+        b=PURRUEra3mfTH75byqgDXXMwQlyunhwTmpSxrvOt3OqDlII8r0zPUeszIIye8sC2to
+         Mn4XwVLIpVaV3u1lrfd+N6n5h7yaesss1x+FAxpyqUw+QFLbn6rFaKtZKWY1fsAKvFdV
+         jB/Cm6j9DLIfBrw66SFpliKCL3oN6iACItss6rfQ16yxik4Jn7jWNk5jF6U+vZ+ozs45
+         mGLLLXzIpUcgJ3oQcDBdpt7ESG3rJEk6H80eD7nYHpW3j9sMFG4I9onO9E7zGwinzgHe
+         /dsf5hRrmuWTq4TrLAWd7Q6rmGUf0F+uZXiA+2ilu1UGoZ+z294na9SQNrhGATLfFEcG
+         y2ig==
+X-Gm-Message-State: APjAAAV4H3CAVJJbPHMguvwJ6UROcr48TqpoZTVr24hU6hHYhvo3Dfno
+        gWTVEAufpLb+QiJGMNZBXOVrOQ==
+X-Google-Smtp-Source: APXvYqxoVJVfaiFqNyqZBDuiDMYGihKMwDTgkPjYWAjdWMdjSTjoYUjJ7DGFxe+gb1/Z8lwL8TV9FQ==
+X-Received: by 2002:ae9:e841:: with SMTP id a62mr31589186qkg.384.1582308268719;
+        Fri, 21 Feb 2020 10:04:28 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id t2sm1884307qkc.31.2020.02.21.10.04.28
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 21 Feb 2020 10:04:28 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1j5Cf5-0004Yy-NR; Fri, 21 Feb 2020 14:04:27 -0400
+Date:   Fri, 21 Feb 2020 14:04:27 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Parav Pandit <parav@mellanox.com>
+Cc:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
         "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
         "davem@davemloft.net" <davem@davemloft.net>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "nhorman@redhat.com" <nhorman@redhat.com>,
-        "sassmann@redhat.com" <sassmann@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>
+        "sassmann@redhat.com" <sassmann@redhat.com>
 Subject: Re: [RFC PATCH v4 10/25] RDMA/irdma: Add driver framework definitions
-Thread-Topic: [RFC PATCH v4 10/25] RDMA/irdma: Add driver framework
- definitions
-Thread-Index: AQHV4di3RHBiR8SSKUiBqR+gfJba6qgbREEAgAYwCYCAA0AoAIABOPaAgAAGLIA=
-Date:   Fri, 21 Feb 2020 17:23:31 +0000
-Message-ID: <b8263bea-fd0f-345e-b497-d5531dc63554@mellanox.com>
+Message-ID: <20200221180427.GL31668@ziepe.ca>
 References: <20200212191424.1715577-1-jeffrey.t.kirsher@intel.com>
  <20200212191424.1715577-11-jeffrey.t.kirsher@intel.com>
  <6f01d517-3196-1183-112e-8151b821bd72@mellanox.com>
  <9DD61F30A802C4429A01CA4200E302A7C60C94AF@fmsmsx124.amr.corp.intel.com>
  <AM0PR05MB4866395BD477FAD269BCAE07D1130@AM0PR05MB4866.eurprd05.prod.outlook.com>
  <9DD61F30A802C4429A01CA4200E302A7C60CE4C4@fmsmsx124.amr.corp.intel.com>
-In-Reply-To: <9DD61F30A802C4429A01CA4200E302A7C60CE4C4@fmsmsx124.amr.corp.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [208.176.44.194]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 819e9ef8-19f1-4e8b-4f53-08d7b6f2c63b
-x-ms-traffictypediagnostic: AM0PR05MB4115:
-x-microsoft-antispam-prvs: <AM0PR05MB411588E2BA1DB705749B6FF6D1120@AM0PR05MB4115.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0320B28BE1
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(136003)(376002)(39850400004)(346002)(366004)(189003)(199004)(6506007)(2906002)(186003)(26005)(66946007)(7416002)(478600001)(71200400001)(2616005)(8936002)(53546011)(6486002)(54906003)(110136005)(86362001)(5660300002)(8676002)(31686004)(316002)(4326008)(66446008)(91956017)(81156014)(31696002)(66556008)(66476007)(81166006)(36756003)(76116006)(64756008)(6512007);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB4115;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +gm7Pi/XjcB+8LjHnokRfIbVTjUjB0b4Cg5w0+5VT9rUAc2l+O/etWlcMONxIaSJCOBw/nVM8P+O7UG5eMw4ERAWu86ZRdPleAxDNsKEPvy6H3378rHinaoow6HCLLC9aBaJzDjF8nX6z1yCbAqajExEw+/kAaGUHgcxUq6qXiAuHUq2GUxVXrPzDlmerUnHmMjJpk9WZ9cu1Z9FElOjsx0MJ0yGdvfZzkEiN6hTraQGKiFzAcwoBl1yuW9L/rQU3fID5pTilG1XgZpecA/6LScHAjOZN5AnFuWPlKI33MW30lnB6klFQXwAo9YWmqQkxv1NI8/8L3duh+P+XK3skftpERW/4AJTNjhCXhey5KuxEyWblYnKqUOS0jND50lMnCr1o5lnQecC1biM8CYgpysvXt1aO8aHtOVBeH9WyN2YpGscArROKF+cEXFzUOX5
-x-ms-exchange-antispam-messagedata: y52//yZbI0UIyOT7TGmKZ1iIzViTDCAXGv0J8maFgtiVmoqT02NXPrSgimJcygWAuedj9GFD8Swem067f+5TUBYN9KKtOibFtaQQw8HnAFlE9dvLfpCkh7VWql15Ie+85LBTiOImN5+4Q2RHK+nYbg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <380F8A42F351E64882FEEB6ECAD6A56D@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <b8263bea-fd0f-345e-b497-d5531dc63554@mellanox.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 819e9ef8-19f1-4e8b-4f53-08d7b6f2c63b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Feb 2020 17:23:31.9151
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TxEe+BHSpFSSGMdd3tUksqJqHaRocdyFGhH/2ZiIwQtye6RiXjJ523vjFMw+kDMWAS6KrcGz1gNUOuNRsCa14A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB4115
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b8263bea-fd0f-345e-b497-d5531dc63554@mellanox.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gMi8yMS8yMDIwIDExOjAxIEFNLCBTYWxlZW0sIFNoaXJheiB3cm90ZToNCj4+IFN1YmplY3Q6
-IFJFOiBbUkZDIFBBVENIIHY0IDEwLzI1XSBSRE1BL2lyZG1hOiBBZGQgZHJpdmVyIGZyYW1ld29y
-aw0KPj4gZGVmaW5pdGlvbnMNCj4+DQo+IA0KPiBbLi4uLl0NCj4gDQo+Pj4+PiArc3RhdGljIGlu
-dCBpcmRtYV9kZXZsaW5rX3JlbG9hZF91cChzdHJ1Y3QgZGV2bGluayAqZGV2bGluaywNCj4+Pj4+
-ICsJCQkJICAgc3RydWN0IG5ldGxpbmtfZXh0X2FjayAqZXh0YWNrKSB7DQo+Pj4+PiArCXN0cnVj
-dCBpcmRtYV9kbF9wcml2ICpwcml2ID0gZGV2bGlua19wcml2KGRldmxpbmspOw0KPj4+Pj4gKwl1
-bmlvbiBkZXZsaW5rX3BhcmFtX3ZhbHVlIHNhdmVkX3ZhbHVlOw0KPj4+Pj4gKwljb25zdCBzdHJ1
-Y3QgdmlydGJ1c19kZXZfaWQgKmlkID0gcHJpdi0+dmRldi0+bWF0Y2hlZF9lbGVtZW50Ow0KPj4+
-Pg0KPj4+PiBMaWtlIGlyZG1hX3Byb2JlKCksIHN0cnVjdCBpaWRjX3ZpcnRidXNfb2JqZWN0ICp2
-byBpcyBhY2Nlc2libGUgZm9yDQo+Pj4+IHRoZSBnaXZlbg0KPj4+IHByaXYuDQo+Pj4+IFBsZWFz
-ZSB1c2Ugc3RydWN0IGlpZGNfdmlydGJ1c19vYmplY3QgZm9yIGFueSBzaGFyaW5nIGJldHdlZW4g
-dHdvIGRyaXZlcnMuDQo+Pj4+IG1hdGNoZWRfZWxlbWVudCBtb2RpZmljYXRpb24gaW5zaWRlIHRo
-ZSB2aXJ0YnVzIG1hdGNoKCkgZnVuY3Rpb24gYW5kDQo+Pj4+IGFjY2Vzc2luZyBwb2ludGVyIHRv
-IHNvbWUgZHJpdmVyIGRhdGEgYmV0d2VlbiB0d28gZHJpdmVyIHRocm91Z2gNCj4+Pj4gdGhpcyBt
-YXRjaGVkX2VsZW1lbnQgaXMgbm90IGFwcHJvcHJpYXRlLg0KPj4+DQo+Pj4gV2UgY2FuIHBvc3Np
-Ymx5IGF2b2lkIG1hdGNoZWRfZWxlbWVudCBhbmQgZHJpdmVyIGRhdGEgbG9vayB1cCBoZXJlLg0K
-Pj4+IEJ1dCBmdW5kYW1lbnRhbGx5LCBhdCBwcm9iZSB0aW1lIChzZWUgaXJkbWFfZ2VuX3Byb2Jl
-KSB0aGUgaXJkbWENCj4+PiBkcml2ZXIgbmVlZHMgdG8ga25vdyB3aGljaCBnZW5lcmF0aW9uIHR5
-cGUgb2YgdmRldiB3ZSBib3VuZCB0by4gaS5lLiBpNDBlIG9yIGljZQ0KPj4gPw0KPj4+IHNpbmNl
-IHdlIHN1cHBvcnQgYm90aC4NCj4+PiBBbmQgYmFzZWQgb24gaXQsIGV4dHJhY3QgdGhlIGRyaXZl
-ciBzcGVjaWZpYyB2aXJ0YnVzIGRldmljZSBvYmplY3QsDQo+Pj4gaS5lIGk0MGVfdmlydGJ1c19k
-ZXZpY2UgdnMgaWlkY192aXJ0YnVzX29iamVjdCBhbmQgaW5pdCB0aGF0IGRldmljZS4NCj4+Pg0K
-Pj4+IEFjY2Vzc2luZyBkcml2ZXJfZGF0YSBvZmYgdGhlIHZkZXYgbWF0Y2hlZCBlbnRyeSBpbg0K
-Pj4+IGlyZG1hX3ZpcnRidXNfaWRfdGFibGUgaXMgaG93IHdlIGtub3cgdGhpcyBnZW5lcmF0aW9u
-IGluZm8gYW5kIG1ha2UgdGhlDQo+PiBkZWNpc2lvbi4NCj4+Pg0KPj4gSWYgdGhlcmUgaXMgc2lu
-Z2xlIGlyZG1hIGRyaXZlciBmb3IgdHdvIGRpZmZlcmVudCB2aXJ0YnVzIGRldmljZSB0eXBlcywg
-aXQgaXMgYmV0dGVyIHRvDQo+PiBoYXZlIHR3byBpbnN0YW5jZXMgb2YgdmlydGJ1c19yZWdpc3Rl
-cl9kcml2ZXIoKSB3aXRoIGRpZmZlcmVudCBtYXRjaGluZyBzdHJpbmcvaWQuDQo+PiBTbyBiYXNl
-ZCBvbiB0aGUgcHJvYmUoKSwgaXQgd2lsbCBiZSBjbGVhciB3aXRoIHZpcnRidXMgZGV2aWNlIG9m
-IGludGVyZXN0IGdvdCBhZGRlZC4NCj4+IFRoaXMgd2F5LCBjb2RlIHdpbGwgaGF2ZSBjbGVhciBz
-ZXBhcmF0aW9uIGJldHdlZW4gdHdvIGRldmljZSB0eXBlcy4NCj4gDQo+IFRoYW5rcyBmb3IgdGhl
-IGZlZWRiYWNrIQ0KPiBJcyBpdCBjb21tb24gcGxhY2UgdG8gaGF2ZSBtdWx0aXBsZSBkcml2ZXJf
-cmVnaXN0ZXIgaW5zdGFuY2VzIG9mIHNhbWUgYnVzIHR5cGUNCj4gaW4gYSBkcml2ZXIgdG8gc3Vw
-cG9ydCBkaWZmZXJlbnQgZGV2aWNlcz8gU2VlbXMgb2RkLg0KPiBUeXBpY2FsbHkgYSBzaW5nbGUg
-ZHJpdmVyIHRoYXQgc3VwcG9ydHMgbXVsdGlwbGUgZGV2aWNlIHR5cGVzIGZvciBhIHNwZWNpZmlj
-IGJ1cy10eXBlDQo+IHdvdWxkIGRvIGEgc2luZ2xlIGJ1cy1zcGVjaWZpYyBkcml2ZXJfcmVnaXN0
-ZXIgYW5kIHBhc3MgaW4gYW4gYXJyYXkgb2YgYnVzLXNwZWNpZmljDQo+IGRldmljZSBJRHMgYW5k
-IGxldCB0aGUgYnVzIGRvIHRoZSBtYXRjaCB1cCBmb3IgeW91IHJpZ2h0PyBBbmQgaW4gdGhlIHBy
-b2JlKCksIGEgZHJpdmVyIGNvdWxkIGRvIGRldmljZQ0KPiBzcGVjaWZpYyBxdWlya3MgZm9yIHRo
-ZSBkZXZpY2UgdHlwZXMuIElzbnQgdGhhdCBwdXJwb3NlIG9mIGRldmljZSBJRCB0YWJsZXMgZm9y
-IHBjaSwgcGxhdGZvcm0sIHVzYiBldGM/DQo+IFdoeSBhcmUgd2UgdHJ5aW5nIHRvIGhhbmRsZSBt
-dWx0aXBsZSB2aXJ0YnVzIGRldmljZSB0eXBlcyBmcm9tIGEgZHJpdmVyIGFueSBkaWZmZXJlbnRs
-eT8NCj4gDQoNCklmIGRpZmZlcmVuY2VzIGluIHRyZWF0aW5nIHRoZSB0d28gZGV2aWNlcyBpcyBu
-b3QgYSBsb3QsIGlmIHlvdSBoYXZlIGxvdA0Kb2YgY29tbW9uIGNvZGUsIGl0IG1ha2Ugc2Vuc2Ug
-dG8gZG8gc2luZ2xlIHZpcnRidXNfcmVnaXN0ZXJfZHJpdmVyKCkNCndpdGggdHdvIGRpZmZlcmVu
-dCBpZHMuDQpJbiB0aGF0IGNhc2UsIHN0cnVjdCB2aXJ0YnVzX2RldmljZV9pZCBzaG91bGQgaGF2
-ZSBzb21lIGRldmljZSBzcGVjaWZpYw0KZmllbGQgbGlrZSBob3cgcGNpIGhhcyBkcml2ZXJfZGF0
-YS4NCg0KSXQgc2hvdWxkIG5vdCBiZSBzZXQgYnkgdGhlIG1hdGNoKCkgZnVuY3Rpb24gYnkgdmly
-dGJ1cyBjb3JlLg0KVGhpcyBmaWVsZCBzaG91bGQgYmUgc2V0dXAgaW4gdGhlIGlkIHRhYmxlIGJ5
-IHRoZSBodyBkcml2ZXIgd2hpY2gNCmludm9rZXMgdmlydGJ1c19yZWdpc3Rlcl9kZXZpY2UoKS4N
-Cg==
+On Fri, Feb 21, 2020 at 05:23:31PM +0000, Parav Pandit wrote:
+> On 2/21/2020 11:01 AM, Saleem, Shiraz wrote:
+> >> Subject: RE: [RFC PATCH v4 10/25] RDMA/irdma: Add driver framework
+> >> definitions
+> >>
+> > 
+> > [....]
+> > 
+> >>>>> +static int irdma_devlink_reload_up(struct devlink *devlink,
+> >>>>> +				   struct netlink_ext_ack *extack) {
+> >>>>> +	struct irdma_dl_priv *priv = devlink_priv(devlink);
+> >>>>> +	union devlink_param_value saved_value;
+> >>>>> +	const struct virtbus_dev_id *id = priv->vdev->matched_element;
+> >>>>
+> >>>> Like irdma_probe(), struct iidc_virtbus_object *vo is accesible for
+> >>>> the given
+> >>> priv.
+> >>>> Please use struct iidc_virtbus_object for any sharing between two drivers.
+> >>>> matched_element modification inside the virtbus match() function and
+> >>>> accessing pointer to some driver data between two driver through
+> >>>> this matched_element is not appropriate.
+> >>>
+> >>> We can possibly avoid matched_element and driver data look up here.
+> >>> But fundamentally, at probe time (see irdma_gen_probe) the irdma
+> >>> driver needs to know which generation type of vdev we bound to. i.e. i40e or ice
+> >> ?
+> >>> since we support both.
+> >>> And based on it, extract the driver specific virtbus device object,
+> >>> i.e i40e_virtbus_device vs iidc_virtbus_object and init that device.
+> >>>
+> >>> Accessing driver_data off the vdev matched entry in
+> >>> irdma_virtbus_id_table is how we know this generation info and make the
+> >> decision.
+> >>>
+> >> If there is single irdma driver for two different virtbus device types, it is better to
+> >> have two instances of virtbus_register_driver() with different matching string/id.
+> >> So based on the probe(), it will be clear with virtbus device of interest got added.
+> >> This way, code will have clear separation between two device types.
+> > 
+> > Thanks for the feedback!
+> > Is it common place to have multiple driver_register instances of same bus type
+> > in a driver to support different devices? Seems odd.
+> > Typically a single driver that supports multiple device types for a specific bus-type
+> > would do a single bus-specific driver_register and pass in an array of bus-specific
+> > device IDs and let the bus do the match up for you right? And in the probe(), a driver could do device
+> > specific quirks for the device types. Isnt that purpose of device ID tables for pci, platform, usb etc?
+> > Why are we trying to handle multiple virtbus device types from a driver any differently?
+> > 
+> 
+> If differences in treating the two devices is not a lot, if you have lot
+> of common code, it make sense to do single virtbus_register_driver()
+> with two different ids.
+> In that case, struct virtbus_device_id should have some device specific
+> field like how pci has driver_data.
+> 
+> It should not be set by the match() function by virtbus core.
+> This field should be setup in the id table by the hw driver which
+> invokes virtbus_register_device().
+
+Yes
+
+I think the basic point here is that the 'id' should specify what
+container_of() is valid on the virtbus_device
+
+And for things like this where we want to make a many to one
+connection then it makes sense to permute the id for each 'connection
+point'
+
+ie, if the id was a string like OF uses maybe you'd have
+
+ intel,i40e,rdma
+ intel,i40e,ethernet
+ intel,ice,rdma
+
+etc
+
+A string for match id is often a good idea..
+
+And I'd suggest introducing a matching alloc so it is all clear and
+type safe:
+
+   struct mydev_struct mydev;
+
+   mydev = virtbus_alloc(parent, "intel,i40e,rdma", struct mydev_struct,
+                         vbus_dev);
+
+
+   [..]
+   virtbus_register(&mydev->vbus_dev);
+
+Jason
