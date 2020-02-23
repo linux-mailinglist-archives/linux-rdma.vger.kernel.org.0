@@ -2,38 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16959169526
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Feb 2020 03:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3440E1694C4
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Feb 2020 03:34:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727743AbgBWCVs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 22 Feb 2020 21:21:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50352 "EHLO mail.kernel.org"
+        id S1728455AbgBWCXH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 22 Feb 2020 21:23:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727740AbgBWCVs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 22 Feb 2020 21:21:48 -0500
+        id S1728435AbgBWCXD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 22 Feb 2020 21:23:03 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 291D6208C3;
-        Sun, 23 Feb 2020 02:21:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C5B520702;
+        Sun, 23 Feb 2020 02:23:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582424507;
-        bh=debaHDpQh9zHC+jRrxSqoxKPc5OHTt1KzMpfkCF+MGE=;
+        s=default; t=1582424582;
+        bh=GWuUrhosaMkp3+xGKPMnYKEDkAsJtfQyw4gsf0saGCk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=smExGh200j7UKkhUlDzNE/0GmED2Fsc0sDm8Q1Mj1QDOmP2m5B83s5Bueby49Ifbn
-         9UTh0UMuUIyjwADxiVNgBKSilFgcPYqeVKXp8bKyGA8WlHpyP99HQLTjskcUVwy2oN
-         0XcDLT55AfZW1jCkuS/v4Egc20cAYfi6sdn4bBTw=
+        b=cQJKdhO57evVypPQ7tJ7nZnQErEjt3y89TsJpmxUA7JP/zutbXjGq+ZpZY8ipd9LN
+         +kpQbTNLKY4S26AegVc94HBKANYVKp1BfT6skUUdux4sO1mZtES+Qo437iXGzYlAN/
+         JSf6LSCLu/rhY99wWJ6fw+Ksnop/O75Y2HACEfak=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Krishnamraju Eraparaju <krishna2@chelsio.com>,
         Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 23/58] RDMA/siw: Remove unwanted WARN_ON in siw_cm_llp_data_ready()
-Date:   Sat, 22 Feb 2020 21:20:44 -0500
-Message-Id: <20200223022119.707-23-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 22/50] RDMA/siw: Remove unwanted WARN_ON in siw_cm_llp_data_ready()
+Date:   Sat, 22 Feb 2020 21:22:07 -0500
+Message-Id: <20200223022235.1404-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200223022119.707-1-sashal@kernel.org>
-References: <20200223022119.707-1-sashal@kernel.org>
+In-Reply-To: <20200223022235.1404-1-sashal@kernel.org>
+References: <20200223022235.1404-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -84,7 +84,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
-index 3bccfef40e7e1..ac86363ce1a24 100644
+index 0454561718d95..31aa41d85ccff 100644
 --- a/drivers/infiniband/sw/siw/siw_cm.c
 +++ b/drivers/infiniband/sw/siw/siw_cm.c
 @@ -1225,10 +1225,9 @@ static void siw_cm_llp_data_ready(struct sock *sk)
