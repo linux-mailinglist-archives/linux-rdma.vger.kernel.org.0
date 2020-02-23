@@ -2,171 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF0F169281
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Feb 2020 01:44:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16959169526
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Feb 2020 03:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgBWAoS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 22 Feb 2020 19:44:18 -0500
-Received: from mail-vi1eur05on2049.outbound.protection.outlook.com ([40.107.21.49]:5440
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726884AbgBWAoS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 22 Feb 2020 19:44:18 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mclff3GUa0VaEsRQVoS9DORKso34y6Ay76ichAKQohvwe6buYk8NidQbiCjrcRZPeSjeXAb1SgC34r9mQvqaJ/YkP/nKwX/LsqiygartNLIaoRrM2iI8qAg+UZ9rSH8pwnfsD5uCgB/el53hlT4x4AhdwbT+odJHvaGsyFdod/17dQDSTUmBrrayEMPlr6LNbWlh6mWrFv01B58uFpZe2vWbn37ffX/odfI7jsKjaisY9DRsXIVSOPGLsihEU8EkIikoIFf/KyS2/iprVbV66syiqs0CV4f+CanPDyv0uQvT8r2/ntpMCfYropzl/N04nULR3+QmMPbk9jfMDNyGrw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Atqw30KUkceML31NPv4wfL+rHjxCWoVrH85//VcB1sw=;
- b=gmtg+8am1/jp+PIQo6CV/gQfTZCcz8OwQIi8nQLX8zG62H53/Ce9wuNB5AZ7GgE7FRg7746EzsuZiLiT5egCjQ/b/FiRY9ROXBlMLuOscy7Ls7lhbZRPf3zDlJiW0woiDjnCyvvGeHmPHkeBZAnVNt5FYNecJ66GE0adOntesIVqy6pw1PZa2knhU1HIGU/q4HUDWfUNKv8SYCxrW3BWoQ76Ho9XfWOOB2THE4hWMjyhs9E8AGPuHyfREz3br0xfRq9zxG9BsscG4Bk8nNytL4rtheXXcpVTH5BbBLliqJvS71cyI5E5xxEuf0Wq0GLbDhqIRz+giPAC7aa/V13/EQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Atqw30KUkceML31NPv4wfL+rHjxCWoVrH85//VcB1sw=;
- b=kmy/uoyOGP0em7slhtaWPsJdAXOk9IFQOqqkCvnTy4FMYbA1PtjIanErbiBCJD26z8kj5QqKtecrxlldz8zW2uJLDgdEo+40OlLPFC+xw0rB1IsRnGkRT4/n7JhnedwbtHUm25ijDvdgqyR+/btH6OU/n6Hji932GWcNW5zYMSI=
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
- AM0PR05MB6372.eurprd05.prod.outlook.com (20.179.33.138) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2750.21; Sun, 23 Feb 2020 00:44:13 +0000
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::8c4:e45b:ecdc:e02b]) by AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::8c4:e45b:ecdc:e02b%7]) with mapi id 15.20.2750.021; Sun, 23 Feb 2020
- 00:44:13 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Weihang Li <liweihang@huawei.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linuxarm@huawei.com" <linuxarm@huawei.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: Re: Is anyone working on implementing LAG in ib core?
-Thread-Topic: Is anyone working on implementing LAG in ib core?
-Thread-Index: AQHV6TLqRqVlI00f7kyTjr5i8r/fvKgn4IQAgAARzwA=
-Date:   Sun, 23 Feb 2020 00:44:12 +0000
-Message-ID: <98482e8a-f2eb-5406-b679-0ceb946ac618@mellanox.com>
-References: <280d87d0-fbc0-0566-794b-f66cb4fadb63@huawei.com>
- <20200222234026.GO31668@ziepe.ca>
-In-Reply-To: <20200222234026.GO31668@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [68.203.16.89]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 97c91fa3-2f23-4f86-8695-08d7b7f980be
-x-ms-traffictypediagnostic: AM0PR05MB6372:
-x-microsoft-antispam-prvs: <AM0PR05MB6372743C18059B58289E6732D1EF0@AM0PR05MB6372.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0322B4EDE1
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(39850400004)(396003)(376002)(136003)(366004)(199004)(189003)(478600001)(5660300002)(186003)(31686004)(26005)(53546011)(6506007)(2616005)(71200400001)(86362001)(6512007)(4326008)(31696002)(6486002)(64756008)(91956017)(8676002)(8936002)(66476007)(54906003)(66556008)(66446008)(110136005)(66946007)(81156014)(81166006)(316002)(36756003)(76116006)(2906002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB6372;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dUz2OfQrkBMRngNy9QfkdjyvTqpTOYQKhYB1Vw0u5HTmq4+DYqxjBqJD7EYsj1SkK9JQKDLi0JM3/ITMJbtInnIvta0daN7qR+X+AEpLVhl8Ntn/1EGBotIh9gQViIv7Np9ODGyGQUk03b/FbZoQCPFQIG/heCnq2tFQT1FHLI5zdFhWurGY3g22jeflD6tdbNBowUJWDDZzDzTXA1eirga7LM9p+VKOF/DO+ktNtu+N+BKYFr6EAyIhdv5MP7Dy69Bk6CS86upcpV0U2mZ3TQdwZaIbgLx2MmanLsAKk+AOIOnpLHLPdrlPgzOwgdQeTrDUhLoECKQY8rIvrT9NiegPhYegvT2pfXwgobrF6HHAYXhemeh2NIUue3eja/nwHQJgkfdLTvvCtKwFvs+Q4En4iQV/+AuEoqGP3uMqR19y76Zcw4IA3mSPd3VBQsjo
-x-ms-exchange-antispam-messagedata: 4wam7g9NEc7U32uqcf7QNX8Rx7cRltxq50qpB3U1nqtIodaQtjdkg2mdJXFOJWFm73+N5QH9Wx5U2wkOHQfUOE9YQC3rlj0zGm0rxjT+alzZI4YTJ2KbsKZuSwnfamjJGPjzCwSI2/rkIYYz1OORug==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9FBA41C9CC68A04A8EA9F41A4928C9C2@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727743AbgBWCVs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 22 Feb 2020 21:21:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727740AbgBWCVs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 22 Feb 2020 21:21:48 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 291D6208C3;
+        Sun, 23 Feb 2020 02:21:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582424507;
+        bh=debaHDpQh9zHC+jRrxSqoxKPc5OHTt1KzMpfkCF+MGE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=smExGh200j7UKkhUlDzNE/0GmED2Fsc0sDm8Q1Mj1QDOmP2m5B83s5Bueby49Ifbn
+         9UTh0UMuUIyjwADxiVNgBKSilFgcPYqeVKXp8bKyGA8WlHpyP99HQLTjskcUVwy2oN
+         0XcDLT55AfZW1jCkuS/v4Egc20cAYfi6sdn4bBTw=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Krishnamraju Eraparaju <krishna2@chelsio.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.5 23/58] RDMA/siw: Remove unwanted WARN_ON in siw_cm_llp_data_ready()
+Date:   Sat, 22 Feb 2020 21:20:44 -0500
+Message-Id: <20200223022119.707-23-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200223022119.707-1-sashal@kernel.org>
+References: <20200223022119.707-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97c91fa3-2f23-4f86-8695-08d7b7f980be
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Feb 2020 00:44:12.0869
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yAP/3QUT/Nv0vch59V6YdHUtZEwmL8BNWnbGhN296fj+a/Qd7jL1UgnVwPbfNbOAk09vdSvP6KQB7pkizYdI8Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6372
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-SGkgSmFzb24sIFdlaWhhbmcsDQoNCk9uIDIvMjIvMjAyMCA1OjQwIFBNLCBKYXNvbiBHdW50aG9y
-cGUgd3JvdGU6DQo+IE9uIFNhdCwgRmViIDIyLCAyMDIwIGF0IDExOjQ4OjA0QU0gKzA4MDAsIFdl
-aWhhbmcgTGkgd3JvdGU6DQo+PiBIaSBhbGwsDQo+Pg0KPj4gV2UgcGxhbiB0byBpbXBsZW1lbnQg
-TEFHIGluIGhucyBkcml2ZXJzIHJlY2VudGx5LCBhbmQgYXMgd2Uga25vdywgdGhlcmUgaXMNCj4+
-IGFscmVhZHkgYSBtYXR1cmUgYW5kIHN0YWJsZSBzb2x1dGlvbiBpbiB0aGUgbWx4NSBkcml2ZXIu
-IENvbnNpZGVyaW5nIHRoYXQNCj4+IHRoZSBuZXQgc3Vic3lzdGVtIGluIGtlcm5lbCBhZG9wdCB0
-aGUgc3RyYXRlZ3kgdGhhdCB0aGUgZnJhbWV3b3JrIGltcGxlbWVudA0KPj4gYm9uZGluZywgd2Ug
-dGhpbmsgaXQncyByZWFzb25hYmxlIHRvIGFkZCBMQUcgZmVhdHVyZSB0byB0aGUgaWIgY29yZSBi
-YXNlZA0KPj4gb24gbWx4NSdzIGltcGxlbWVudGF0aW9uLiBTbyB0aGF0IGFsbCBkcml2ZXJzIGlu
-Y2x1ZGluZyBobnMgYW5kIG1seDUgY2FuDQo+PiBiZW5lZml0IGZyb20gaXQuDQo+Pg0KPj4gSW4g
-cHJldmlvdXMgZGlzY3Vzc2lvbnMgd2l0aCBMZW9uIGFib3V0IGFjaGlldmluZyByZXBvcnRpbmcg
-b2YgaWIgcG9ydCBsaW5rDQo+PiBldmVudCBpbiBpYiBjb3JlLCBMZW9uIG1lbnRpb25lZCB0aGF0
-IHRoZXJlIG1pZ2h0IGJlIHNvbWVvbmUgdHJ5aW5nIHRvIGRvDQo+PiB0aGlzLg0KPj4NCj4+IFNv
-IG1heSBJIGFzayBpZiB0aGVyZSBpcyBhbnlvbmUgd29ya2luZyBvbiBMQUcgaW4gaWIgY29yZSBv
-ciBwbGFubmluZyB0bw0KPj4gaW1wbGVtZW50IGl0IGluIG5lYXIgZnV0dXJlPyBJIHdpbGwgYXBw
-cmVjaWF0ZSBpdCBpZiB5b3UgY2FuIHNoYXJlIHlvdXINCj4+IHByb2dyZXNzIHdpdGggbWUgYW5k
-IG1heWJlIHdlIGNhbiBmaW5pc2ggaXQgdG9nZXRoZXIuDQo+Pg0KPj4gSWYgbm9ib2R5IGlzIHdv
-cmtpbmcgb24gdGhpcywgb3VyIHRlYW0gbWF5IHRha2UgYSB0cnkgdG8gaW1wbGVtZW50IExBRyBp
-bg0KPj4gdGhlIGNvcmUuIEFueSBjb21tZW50cyBhbmQgc3VnZ2VzdGlvbiBhcmUgd2VsY29tZS4N
-Cj4gDQo+IFRoaXMgaXMgc29tZXRoaW5nIHRoYXQgbmVlZHMgdG8gYmUgZG9uZSwgSSB1bmRlcnN0
-YW5kIHNldmVyYWwgb2YgdGhlDQo+IG90aGVyIGRyaXZlcnMgYXJlIGdvaW5nIHRvIHdhbnQgdG8g
-dXNlIExBRyBhbmQgd2UgY2VydGFpbmx5IGNhbid0IGhhdmUNCj4gZXZlcnl0aGluZyBjb3BpZWQg
-aW50byBlYWNoIGRyaXZlci4NCj4gDQo+IEphc29uDQo+IA0KSSBhbSBub3Qgc3VyZSBtbHg1IGlz
-IHJpZ2h0IG1vZGVsIGZvciBuZXcgcmRtYSBib25kIGRldmljZSBzdXBwb3J0IHdoaWNoDQpJIHRy
-aWVkIHRvIGhpZ2hsaWdodCBpbiBRJkEtMSBiZWxvdy4NCg0KSSBoYXZlIGJlbG93IG5vdC1zby1y
-ZWZpbmVkIHByb3Bvc2FsIGZvciByZG1hIGJvbmQgZGV2aWNlLg0KDQotIENyZWF0ZSBhIHJkbWEg
-Ym9uZCBkZXZpY2UgbmFtZWQgcmJvbmQwIHVzaW5nIHR3byBzbGF2ZSByZG1hIGRldmljZXMNCm1s
-eDVfMCBtbHg1XzEgd2hpY2ggaXMgY29ubmVjdGVkIHRvIG5ldGRldmljZSBib25kMSBhbmQgdW5k
-ZXJseWluZyBkbWENCmRldmljZSBvZiBtbHg1XzAgcmRtYSBkZXZpY2UuDQoNCiQgcmRtYSBkZXYg
-YWRkIHR5cGUgYm9uZCBuYW1lIHJib25kMCBuZXRkZXYgYm9uZDEgc2xhdmUgbWx4NV8wIHNsYXZl
-DQptbHg1XzEgZG1hZGV2aWNlIG1seDVfMA0KDQokIHJkbWEgZGV2IHNob3cNCjA6IG1seDVfMDog
-bm9kZV90eXBlIGNhIGZ3IDEyLjI1LjEwMjAgbm9kZV9ndWlkIDI0OGE6MDcwMzowMDU1OjQ2NjAN
-CnN5c19pbWFnZV9ndWlkIDI0OGE6MDcwMzowMDU1OjQ2NjANCjE6IG1seDVfMTogbm9kZV90eXBl
-IGNhIGZ3IDEyLjI1LjEwMjAgbm9kZV9ndWlkIDI0OGE6MDcwMzowMDU1OjQ2NjENCnN5c19pbWFn
-ZV9ndWlkIDI0OGE6MDcwMzowMDU1OjQ2NjANCjI6IHJib25kMDogbm9kZV90eXBlIGNhIG5vZGVf
-Z3VpZCAyNDhhOjA3MDM6MDA1NTo0NjYwIHN5c19pbWFnZV9ndWlkDQoyNDhhOjA3MDM6MDA1NTo0
-NjYwDQoNCi0gVGhpcyBzaG91bGQgYmUgZG9uZSB2aWEgcmRtYSBib25kIGRyaXZlciBpbg0KZHJp
-dmVycy9pbmZpbmliYW5kL3VscC9yZG1hX2JvbmQNCg0KRmV3IG9idmlvdXMgcXVlc3Rpb25zIGFy
-aXNlIGZyb20gYWJvdmUgcHJvcG9zYWw6DQoxLiBCdXQgd2h5IGNhbid0IEkgZG8gdGhlIHRyaWNr
-IHRvIHJlbW92ZSB0d28gb3IgbW9yZSByZG1hIGRldmljZShzKSBhbmQNCmNyZWF0ZSBvbmUgZGV2
-aWNlIHdoZW4gYm9uZDAgbmV0ZGV2aWNlIGlzIGNyZWF0ZWQ/DQpBbnM6DQooYSkgQmVjYXVzZSBp
-dCBsZWFkcyB0byBjb21wbGV4IGRyaXZlciBjb2RlIGluIHZlbmRvciBkcml2ZXIgdG8gaGFuZGxl
-DQpuZXRkZXYgZXZlbnRzIHVuZGVyIHJ0bmwgbG9jay4NCkdpdmVuIEdJRCB0YWJsZSBuZWVkcyB0
-byBob2xkIHJ0bmwgbG9jayBmb3Igc2hvcnQgZHVyYXRpb24gaW4NCmliX3JlZ2lzdGVyX2Rldmlj
-ZSgpLCB0aGluZ3MgbmVlZCB0byBkaWZmZXIgdG8gd29yayBxdWV1ZSBhbmQgcGVyZm9ybQ0Kc3lu
-Y2hyb25pemF0aW9uLg0KKGIpIFVzZXIgY2Fubm90IHByZWRpY3Qgd2hlbiB0aGlzIG5ldyByZG1h
-IGJvbmQgZGV2aWNlIHdpbGwgYmUgY3JlYXRlZA0KYXV0b21hdGljYWxseSwgYWZ0ZXIgaG93IGxv
-bmc/DQooYykgV2hhdCBpZiBzb21lIGZhaWx1cmUgb2NjdXJyZWQsIHNob3VsZCBJIHBhcnNlIC92
-YXIvbG9nL21lc3NhZ2VzIHRvDQpmaWd1cmUgb3V0IHRoZSBlcnJvcj8gV2hhdCBzdGVwcyB0byBy
-b2xsIGJhY2sgYW5kIHJldHJ5Pw0KKGQpIFdoYXQgaWYgZHJpdmVyIGludGVybmFsbHkgYXR0ZW1w
-dCByZXRyeT8uLg0KYW5kIHNvbWUgbW9yZS4uDQoNCjIuIFdoeSBkbyB3ZSBuZWVkIHRvIGdpdmUg
-bmV0ZGV2aWNlIGluIGFib3ZlIHByb3Bvc2FsPw0KQW5zOg0KQmVjYXVzZSBmb3IgUm9DRSBkZXZp
-Y2UgeW91IHdhbnQgdG8gYnVpbGQgcmlnaHQgR0lEIHRhYmxlIGZvciBpdHMNCm1hdGNoaW5nIG5l
-dGRldmljZS4gTm8gZ3Vlc3Mgd29yay4NCg0KMy4gQnV0IHdpdGggdGhhdCB0aGVyZSB3aWxsIGJl
-IG11bHRpcGxlIGRldmljZXMgcmJvbmQwLCBtbHg1XzAgd2l0aCBzYW1lDQpHSUQgdGFibGUgZW50
-cmllcy4NCkFuZCB0aGF0IHdpbGwgY29uZnVzZSB0aGUgdXNlci4NCldoYXQgZG8gd2UgZG8gYWJv
-dXQgaXQ/DQpBbnM6DQpOby4gVGhhdCB3b24ndCBoYXBwZW4sIGJlY2F1c2UgdGhpcyBib25kIGRy
-aXZlciBhY2NlcHQgc2xhdmUgcmRtYSBkZXZpY2VzLg0KYm9uZCBkcml2ZXIgd2lsbCByZXF1ZXN0
-IElCIGNvcmUgdG8gZGlzYWJsZSBHSUQgdGFibGUgb2Ygc2xhdmUgcmRtYSBkZXZpY2VzLg0KT3Ig
-d2UgY2FuIGhhdmUgY29tbWFuZHMgdG8gZGlzYWJsZS9lbmFibGUgc3BlY2lmaWMgR0lEIHR5cGVz
-IG9mIHNsYXZlDQpyZG1hIGRldmljZXMsIHdoaWNoIHVzZXIgY2FuIGludm9rZSBiZWZvcmUgY3Jl
-YXRpbmcgcmRtYSBib25kIGRldmljZS4NCg0KU3VjaCBhcw0KJCByZG1hIGxpbmsgbWx4NV8wIGRp
-c2FibGUgcm9jZXYxDQokIHJkbWEgbGluayBtbHg1XzAgZW5hYmxlIHJvY2V2Mg0KDQpUaGlzIHdh
-eSBpdHMgZWFzeSB0byBjb21wb3NlIGFuZCBhZGRyZXNzZWQgd2lkZXIgdXNlIGNhc2Ugd2hlcmUg
-Um9DRXYxDQpHSUQgdGFibGUgZW50cmllcyBjYW4gYmUgZGlzYWJsZWQgYW5kIG1ha2UgZWZmaWNp
-ZW50IHVzZSBvZiBHSUQgdGFibGUuDQoNCjQuIEJ1dCBpZiB3ZSBhcmUgZ29pbmcgdG8gZGlzYWJs
-ZSB0aGUgR0lEIHRhYmxlLCB3aHkgZG8gd2UgZXZlbiBuZWVkDQp0aG9zZSBSRE1BIGRldmljZXM/
-DQpBbnM6DQpCZWNhdXNlIHdoZW4geW91IGRlbGV0ZSB0aGUgYm9uZCByZG1hIGRldmljZSwgeW91
-IGNhbiByZXZlcnQgYmFjayB0bw0KdGhvc2UgbWx4NV8wLzEgZGV2aWNlcy4NCkZvbGx3byBtaXJy
-b3Igb2YgYWRkIGluIGRlbGV0ZS4NCg0KNS4gV2h5IGRvIHdlIG5lZWQgdG8gZ2l2ZSBETUEgZGV2
-aWNlPw0KQW5zOg0KQmVjYXVzZSB3ZSB3YW50IHRvIGF2b2lkIGRvaW5nIGd1ZXNzIHdvcmsgaW4g
-cmRtYV9ib25kIGRyaXZlciBvbiB3aGljaA0KRE1BIGRldmljZSB0byB1c2UuDQpVc2VyIGtub3dz
-IHRoZSBjb25maWd1cmF0aW9uIG9mIGhvdyBoZSB3YW50cyB0byB1c2UgaXQgYmFzZWQgb24gdGhl
-DQpzeXN0ZW0uIChpcnFzIGV0YykuDQoNCjYuIFdoYXQgaGFwcGVucyBpZiBzbGF2ZSBwY2kgZGV2
-aWNlcyBhcmUgaG90IHJlbW92ZWQ/DQpBbnM6DQpJZiBzbGF2ZSBkbWEgZGV2aWNlIGlzIHJlbW92
-ZWQsIGl0IGRpc2Fzc29jaWF0ZXMgdGhlIHVjb250ZXh0IGFuZCByYm9uZDANCmJlY29tZXMgdW51
-c2FibGUgZm9yIGFwcGxpY2F0aW9ucy4NCg0KNy4gSG93IGlzIHRoZSBmYWlsb3ZlciBkb25lPw0K
-QW5zOiBTaW5jZSBmYWlsb3ZlciBuZXRkZXZpY2UgaXMgcHJvdmlkZWQsIGl0cyBmYWlsb3ZlciBz
-ZXR0aW5ncyBhcmUNCmluaGVyaXRlZCBieSByYm9uZDAgcmRtYSBkZXZpY2UgYW5kIHBhc3NlZCBv
-biB0byBpdHMgc2xhdmUgZGV2aWNlLg0K
+From: Krishnamraju Eraparaju <krishna2@chelsio.com>
+
+[ Upstream commit 663218a3e715fd9339d143a3e10088316b180f4f ]
+
+Warnings like below can fill up the dmesg while disconnecting RDMA
+connections.
+Hence, remove the unwanted WARN_ON.
+
+  WARNING: CPU: 6 PID: 0 at drivers/infiniband/sw/siw/siw_cm.c:1229 siw_cm_llp_data_ready+0xc1/0xd0 [siw]
+  RIP: 0010:siw_cm_llp_data_ready+0xc1/0xd0 [siw]
+  Call Trace:
+   <IRQ>
+   tcp_data_queue+0x226/0xb40
+   tcp_rcv_established+0x220/0x620
+   tcp_v4_do_rcv+0x12a/0x1e0
+   tcp_v4_rcv+0xb05/0xc00
+   ip_local_deliver_finish+0x69/0x210
+   ip_local_deliver+0x6b/0xe0
+   ip_rcv+0x273/0x362
+   __netif_receive_skb_core+0xb35/0xc30
+   netif_receive_skb_internal+0x3d/0xb0
+   napi_gro_frags+0x13b/0x200
+   t4_ethrx_handler+0x433/0x7d0 [cxgb4]
+   process_responses+0x318/0x580 [cxgb4]
+   napi_rx_handler+0x14/0x100 [cxgb4]
+   net_rx_action+0x149/0x3b0
+   __do_softirq+0xe3/0x30a
+   irq_exit+0x100/0x110
+   do_IRQ+0x7f/0xe0
+   common_interrupt+0xf/0xf
+   </IRQ>
+
+Link: https://lore.kernel.org/r/20200207141429.27927-1-krishna2@chelsio.com
+Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/sw/siw/siw_cm.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+index 3bccfef40e7e1..ac86363ce1a24 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.c
++++ b/drivers/infiniband/sw/siw/siw_cm.c
+@@ -1225,10 +1225,9 @@ static void siw_cm_llp_data_ready(struct sock *sk)
+ 	read_lock(&sk->sk_callback_lock);
+ 
+ 	cep = sk_to_cep(sk);
+-	if (!cep) {
+-		WARN_ON(1);
++	if (!cep)
+ 		goto out;
+-	}
++
+ 	siw_dbg_cep(cep, "state: %d\n", cep->state);
+ 
+ 	switch (cep->state) {
+-- 
+2.20.1
+
