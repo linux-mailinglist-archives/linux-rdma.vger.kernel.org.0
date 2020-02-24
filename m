@@ -2,219 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 177FE16A02F
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2020 09:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F5E16A231
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2020 10:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727281AbgBXIi0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Feb 2020 03:38:26 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:51315 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727219AbgBXIiO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Feb 2020 03:38:14 -0500
-Received: by mail-io1-f70.google.com with SMTP id c7so14247987ioq.18
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Feb 2020 00:38:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=3WkGp776rjNoea1vK9yfhMXoCBX1yurWcAfuIjmGFOk=;
-        b=k1tAB9f3Bifv4Wxl8p6Zo1oiWrWilPPMlOTHS9tRGctltdGZdUBoLHYRNjQyRcRUDH
-         +E53Uqfr7RcmEXq/VJxDVapyvISeRtULOp9BbBHFySfXXB3oWaCbinAp7EyMzjF14g//
-         S2QmeriUt+/w+N3OKKph77cTVVZ/IrLngjvI8aRoSHa6zis7/U55dBQlcN6Sc5C61e4n
-         i7qTLQqnQ1RTHR55yt7YhG/FdT7xutAZyG6xCtuljaHxsPjpFWl8OyST4t2ieo7trFaZ
-         AeJJx6SuYirPbQ8XbR9erRte5NsEO9nI2cf9JzombKx2MmIshMEYapKY/T059efir0By
-         5aTQ==
-X-Gm-Message-State: APjAAAXH08QUaizSyy/uH07yHv04F/EtVPhaCV6uLJbQDUuiSSJfLLP+
-        N8wS9ciEqJEgBOi2m3GwCWRDIB6VCWok3V2lJX8PDeA4VatT
-X-Google-Smtp-Source: APXvYqyaStUMB+rYBCxbRCOneJhwVYiXFUGqwOrOtAbLfzdoyzK4EssBfdxqQV2ZAlL4ncJzam/8XdcTCdGoW8l19i/qOX7yx5WE
+        id S1727348AbgBXJ0r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Feb 2020 04:26:47 -0500
+Received: from mail-vi1eur05on2073.outbound.protection.outlook.com ([40.107.21.73]:16580
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727240AbgBXJ0r (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 Feb 2020 04:26:47 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eLhB7iH5YDJQd/UPqkLrfmxKIxhuOEeRo6o8Gcea5ND0iEi6k7xi2hbTiBGcZD6y9L8ZIeZ7GxgbKqzuCARa7/dxorkh2FV0tXrKJ8Ra3ueH2QOrhQR2BVB9ND61nTS6hiqe52Hw857jN0gmuASJvbtl52mlJGUcpB2VhpnKZ3Dqw7UEFFnx46aiueqYaDFc9MbpOdSY7X8GibnhUFK14SWvLTiaNrgW0TRlPxoyU6EH2PvLqam6QUHSR+kw1fqJbcKG+OWGwxp35cemaWPZDxuu4U7JyGfSybZXsBGdp7BbXCLhaHHQ+/HKYILfLsUnsj5/tYpZ96zDQo9S5zqmXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tmGwAKElI2u+A0z/EETBIou5ic5kIe13D9NL0wb7U2M=;
+ b=CGZrT9/zeWLslICwnV47CvnyCi4tEwQUvjqq4frvluTbtOh5IsXbUWZuRHjfuSArjnFQ7V8qGqVtI2g+xSErDkkqpOSMvLUpueUfM/Y9a9cvMUxhhRbsXuIIRghZMWr0aoiTyBh0F+ZkCM8+Y3hBx6wkGKIKjlk/4z7TKSRnyf7C+/w9hY+f31izRZKM57PBovCQDJhle01mAgeJWMacphqeZc477gRYs6vLNoJsWtMM5xovPP/PM0OZc9LqnyZrXo8PTjlcKfMmfh2jHrdSdSA+MTMjrhYqLuJajloIZjDMLL7d3s9hytgzdiyLTjnyRxL1AizGgpggJZlBlsKWag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 188.184.36.50) smtp.rcpttodomain=kernel.org smtp.mailfrom=cern.ch;
+ dmarc=bestguesspass action=none header.from=cern.ch; dkim=none (message not
+ signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cern.onmicrosoft.com;
+ s=selector2-cern-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tmGwAKElI2u+A0z/EETBIou5ic5kIe13D9NL0wb7U2M=;
+ b=treHLM/wuTE3F8KbK3ygj/ORGGmbE9HBEQqYgWyAmRwvSPW5jnP+JZ60wkplYx3/8FOYO8MRW3svCyvPlLsPYQKPlKNIaLUHO55uV6xCD9MQs9BFPL7WD+jRjhSKWoD25d/Kj3n/1EbzSGqtTHjsNsdj0qDL4wKrkQGEOj305CA=
+Received: from AM0PR06CA0026.eurprd06.prod.outlook.com (2603:10a6:208:ab::39)
+ by HE1PR0601MB2617.eurprd06.prod.outlook.com (2603:10a6:3:4c::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2750.22; Mon, 24 Feb
+ 2020 09:26:42 +0000
+Received: from VE1EUR02FT030.eop-EUR02.prod.protection.outlook.com
+ (2a01:111:f400:7e06::205) by AM0PR06CA0026.outlook.office365.com
+ (2603:10a6:208:ab::39) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2750.18 via Frontend
+ Transport; Mon, 24 Feb 2020 09:26:42 +0000
+Authentication-Results: spf=pass (sender IP is 188.184.36.50)
+ smtp.mailfrom=cern.ch; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=bestguesspass action=none
+ header.from=cern.ch;
+Received-SPF: Pass (protection.outlook.com: domain of cern.ch designates
+ 188.184.36.50 as permitted sender) receiver=protection.outlook.com;
+ client-ip=188.184.36.50; helo=cernmxgwlb4.cern.ch;
+Received: from cernmxgwlb4.cern.ch (188.184.36.50) by
+ VE1EUR02FT030.mail.protection.outlook.com (10.152.12.127) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.2750.18 via Frontend Transport; Mon, 24 Feb 2020 09:26:41 +0000
+Received: from cernfe04.cern.ch (188.184.36.41) by cernmxgwlb4.cern.ch
+ (188.184.36.50) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 24 Feb
+ 2020 10:26:40 +0100
+Received: from pcbe13614.localnet (2001:1458:202:121::100:40) by smtp.cern.ch
+ (2001:1458:201:66::100:14) with Microsoft SMTP Server (TLS) id 14.3.487.0;
+ Mon, 24 Feb 2020 10:26:38 +0100
+From:   Federico Vaga <federico.vaga@cern.ch>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reply-To: <federico.vaga@cern.ch>
+CC:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, <linux-arch@vger.kernel.org>,
+        <kvm@vger.kernel.org>, <kvm-ppc@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
+        <linux-unionfs@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>
+Subject: Re: [PATCH 3/7] docs: fix broken references to text files
+Date:   Mon, 24 Feb 2020 10:26:39 +0100
+Message-ID: <3929512.qvrp2sLpzG@pcbe13614>
+In-Reply-To: <5cfeed6df208b74913312a1c97235ee615180f91.1582361737.git.mchehab+huawei@kernel.org>
+References: <cover.1582361737.git.mchehab+huawei@kernel.org> <5cfeed6df208b74913312a1c97235ee615180f91.1582361737.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:dac3:: with SMTP id o3mr59526952ilq.237.1582533493502;
- Mon, 24 Feb 2020 00:38:13 -0800 (PST)
-Date:   Mon, 24 Feb 2020 00:38:13 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b9b7d4059f4e4ac7@google.com>
-Subject: general protection fault in rds_ib_add_one
-From:   syzbot <syzbot+274094e62023782eeb17@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        rds-devel@oss.oracle.com, santosh.shilimkar@oracle.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Originating-IP: [2001:1458:202:121::100:40]
+X-EOPAttributedMessage: 0
+X-Forefront-Antispam-Report: CIP:188.184.36.50;IPV:;CTRY:CH;EFV:NLI;SFV:NSPM;SFS:(10009020)(376002)(39860400002)(136003)(346002)(396003)(199004)(189003)(186003)(9686003)(16526019)(33716001)(26005)(2906002)(478600001)(9576002)(426003)(8676002)(44832011)(3450700001)(336012)(246002)(53546011)(8936002)(7416002)(4326008)(86362001)(7636002)(356004)(70206006)(316002)(54906003)(70586007)(5660300002)(39026012);DIR:OUT;SFP:1101;SCL:1;SRVR:HE1PR0601MB2617;H:cernmxgwlb4.cern.ch;FPR:;SPF:Pass;LANG:en;PTR:cernmx11.cern.ch;A:1;MX:1;
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 07a24c03-738e-4624-7506-08d7b90ba88c
+X-MS-TrafficTypeDiagnostic: HE1PR0601MB2617:
+X-Microsoft-Antispam-PRVS: <HE1PR0601MB2617DD6A6BADE420AB7F4408EFEC0@HE1PR0601MB2617.eurprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
+X-Forefront-PRVS: 032334F434
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0qIX6XFVupoujn6tnMIXACZrhD5q3UXodzvYwqyh0hsK1Lsu+/pJ+LkIjl/NeexA/acueRAQl6tWpe3CFd900UWE/3Dp2zl9mkWVMfYl1qYpVkPmqLAGWnMEDEKi64JQPs3cOzEfTL3WjHbAxZ5gqNC3mLax0dvKusUdgcmqXKLya466pUHPmvk05PkmAw4VpLa35W1pVnc1avg4zQD+W+XccjzAi6cB/jeg95xVwyZEdY7wigcHbjHbZjeUw5bGbym667i307aOvjm5Vli7k+a11ZX1tZ2pjiiBWvLEYzJaJJQ2pSEH9ApQf6ZUYQ5f7TlyJmnEtMyipzP+fXgRIINxHtYghfwKLsQ7Fb2NPkqtE2mY/QN0LGNAE519BJMKJ2V6htEDDIZVXfSjSq9NkQg4un3jbv63EjF6kc6RkQ3fn2TRPhmkbiqtoHaEDIQdUEz7oStS5w1dmTB8Bw7vHuPaRBQq1lv0uJabtpvDjKCWQdNtDjiBIr3Z5wRpVLzv
+X-OriginatorOrg: cern.ch
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2020 09:26:41.7248
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07a24c03-738e-4624-7506-08d7b90ba88c
+X-MS-Exchange-CrossTenant-Id: c80d3499-4a40-4a8c-986e-abce017d6b19
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=c80d3499-4a40-4a8c-986e-abce017d6b19;Ip=[188.184.36.50];Helo=[cernmxgwlb4.cern.ch]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0601MB2617
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    b0dd1eb2 Merge branch 'akpm' (patches from Andrew)
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13db9de9e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a6001be4097ab13c
-dashboard link: https://syzkaller.appspot.com/bug?extid=274094e62023782eeb17
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10ad6a7ee00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13da7a29e00000
-
-Bisection is inconclusive: the first bad commit could be any of:
-
-20cf4e02 rdma: Enable ib_alloc_cq to spread work over a device's comp_vectors
-31d0e6c1 mlx5: Fix formats with line continuation whitespace
-7a63b31e RDMA/hns: Remove not used UAR assignment
-05bb411a RDMA/core: Introduce ratelimited ibdev printk functions
-b2567ebb RDMA/hns: remove set but not used variable 'irq_num'
-cfa1f5f2 RDMA/efa: Rate limit admin queue error prints
-d129e3f4 RDMA/mlx5: Remove DEBUG ODP code
-1dc55892 RDMA/core: fix spelling mistake "Nelink" -> "Netlink"
-72a7720f RDMA: Introduce ib_port_phys_state enum
-691f380d RDMA/cxgb3: Use ib_device_set_netdev()
-cb560f5f infiniband: Remove dev_err() usage after platform_get_irq()
-16e9111e RDMA/efa: Expose device statistics
-4929116b RDMA/core: Add common iWARP query port
-bda9045a IB/bnxt_re: Do not notifify GID change event
-d8d5cfac RDMA/{cxgb3, cxgb4, i40iw}: Remove common code
-525a2c65 Merge branch 'wip/dl-for-rc' into wip/dl-for-next
-a3e2d4c7 RDMA/hns: remove obsolete Kconfig comment
-3e1f000f IB/mlx5: Support per device q counters in switchdev mode
-cc95b23c RDMA/hns: Encapsulate some lines for setting sq size in user mode
-5dcecbc9 IB/mlx5: Refactor code for counters allocation
-8ea417ff RDMA/hns: Optimize hns_roce_modify_qp function
-0058eb58 qed*: Change dpi_addr to be denoted with __iomem
-ece9c205 RDMA/hns: Update the prompt message for creating and destroy qp
-2288b3b3 RDMA/hns: Remove unnessary init for cmq reg
-8b38c538 IB/mlx5: Add CREATE_PSV/DESTROY_PSV for devx interface
-1d2fedd8 RDMA/core: Support netlink commands in non init_net net namespaces
-b5c229dc RDMA/hns: Clean up unnecessary initial assignment
-6def7de6 RDMA/hns: Update some comments style
-913df8c3 RDMA/mlx4: Annotate boolean arguments as bool and not int
-089b645d RDMA/mlx4: Separate creation of RWQ and QP
-0e20ebf8 RDMA/hns: Handling the error return value of hem function
-4f96061b IB/usnic: Use dev_get_drvdata
-e7f40440 RDMA/hns: Split bool statement and assign statement
-39289bfc RDMA: Make most headers compile stand alone
-bebdb83f RDMA/hns: Refactor irq request code
-4b42d05d RDMA/hns: Remove unnecessary kzalloc
-cf167e5e RDMA/qedr: Remove Unneeded variable rc
-260c3b34 RDMA/hns: Refactor hns_roce_v2_set_hem for hip08
-4cc315c5 RDMA/qib: Unneeded variable ret
-249f2f92 RDMA/hns: Remove redundant print in hns_roce_v2_ceq_int()
-33db6f94 RDMA/hns: Refactor eq table init for hip08
-d7019c0f RDMA/hns: Refactor hem table mhop check and calculation
-d967e262 RDMA/hns: Disable alw_lcl_lpbk of SSU
-3ee0e170 RDMA/hns: Package for hns_roce_rereg_user_mr function
-db50077b RDMA/hns: Use the new APIs for printing log
-749b9eef Merge remote-tracking branch 'mlx5-next/mlx5-next' into wip/dl-for-next
-89b4b70b RDMA/hns: Optimize hns_roce_mhop_alloc function.
-972d7560 IB/mlx5: Add legacy events to DEVX list
-99441ab5 RDMA/hns: optimize the duplicated code for qpc setting flow
-8293a598 IB/mlx5: Expose XRQ legacy commands over the DEVX interface
-947441ea RDMA/hns: Use a separated function for setting extend sge paramters
-606bf89e RDMA/hns: Refactor for hns_roce_v2_modify_qp function
-9dc4cfff RDMA/mlx5: Annotate lock dependency in bind/unbind slave port
-0e1aa6f0 RDMA/hns: Logic optimization of wc_flags
-2a2f1887 RDMA/hns: Refactor the code of creating srq
-4f8f0d5e RDMA/hns: Package the flow of creating cq
-76827087 RDMA/hns: Bugfix for creating qp attached to srq
-a5c9c299 IB/mlx5: Avoid unnecessary typecast
-d7e5ca88 RDMA/hns: Modify pi vlaue when cq overflows
-56594ae1 RDMA/core: Annotate destroy of mutex to ensure that it is released as unlocked
-9bba3f0c RDMA/hns: Bugfix for slab-out-of-bounds when unloading hip08 driver
-a511f822 RDMA/hns: Fix comparison of unsigned long variable 'end' with less than zero
-bf8c02f9 RDMA/hns: bugfix for slab-out-of-bounds when loading hip08 driver
-77905379 RDMA/hns: Remove unuseful member
-ecc53f8a RDMA/mlx4: Untag user pointers in mlx4_get_umem_mr
-795130b3 IB/hfi1: Remove unused define
-a7325af7 RDMA/hns: Fix some white space check_mtu_validate()
-b2299e83 RDMA: Delete DEBUG code
-b2590bdd IB/hfi1: Do not update hcrc for a KDETH packet during fault injection
-868df536 Merge branch 'odp_fixes' into rdma.git for-next
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1542127ee00000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+274094e62023782eeb17@syzkaller.appspotmail.com
-
-batman_adv: batadv0: Interface activated: batadv_slave_1
-infiniband syz1: set active
-infiniband syz1: added vlan0
-general protection fault, probably for non-canonical address 0xdffffc0000000086: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000430-0x0000000000000437]
-CPU: 0 PID: 8852 Comm: syz-executor043 Not tainted 5.6.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:dev_to_node include/linux/device.h:663 [inline]
-RIP: 0010:rds_ib_add_one+0x81/0xe50 net/rds/ib.c:140
-Code: b7 a8 06 00 00 4c 89 f0 48 c1 e8 03 42 80 3c 28 00 74 08 4c 89 f7 e8 0e e4 1d fa bb 30 04 00 00 49 03 1e 48 89 d8 48 c1 e8 03 <42> 8a 04 28 84 c0 0f 85 f0 0a 00 00 8b 1b 48 c7 c0 28 0c 09 89 48
-RSP: 0018:ffffc90003087298 EFLAGS: 00010202
-RAX: 0000000000000086 RBX: 0000000000000430 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
-RBP: ffffc900030872f0 R08: ffffffff87964c3c R09: ffffed1014fd109c
-R10: ffffed1014fd109c R11: 0000000000000000 R12: 0000000000000000
-R13: dffffc0000000000 R14: ffff8880a7e886a8 R15: ffff8880a7e88000
-FS:  0000000000c3d880(0000) GS:ffff8880aea00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0318ed0000 CR3: 00000000a3167000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- add_client_context+0x482/0x660 drivers/infiniband/core/device.c:681
- enable_device_and_get+0x15b/0x370 drivers/infiniband/core/device.c:1316
- ib_register_device+0x124d/0x15b0 drivers/infiniband/core/device.c:1382
- rxe_register_device+0x3f6/0x530 drivers/infiniband/sw/rxe/rxe_verbs.c:1231
- rxe_add+0x1373/0x14f0 drivers/infiniband/sw/rxe/rxe.c:302
- rxe_net_add+0x79/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:539
- rxe_newlink+0x31/0x90 drivers/infiniband/sw/rxe/rxe.c:318
- nldev_newlink+0x403/0x4a0 drivers/infiniband/core/nldev.c:1538
- rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:195 [inline]
- rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
- rdma_nl_rcv+0x701/0xa20 drivers/infiniband/core/netlink.c:259
- netlink_unicast_kernel net/netlink/af_netlink.c:1302 [inline]
- netlink_unicast+0x766/0x920 net/netlink/af_netlink.c:1328
- netlink_sendmsg+0xa2b/0xd40 net/netlink/af_netlink.c:1917
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0x4f7/0x7f0 net/socket.c:2343
- ___sys_sendmsg net/socket.c:2397 [inline]
- __sys_sendmsg+0x1ed/0x290 net/socket.c:2430
- __do_sys_sendmsg net/socket.c:2439 [inline]
- __se_sys_sendmsg net/socket.c:2437 [inline]
- __x64_sys_sendmsg+0x7f/0x90 net/socket.c:2437
- do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x443499
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 10 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffdacfaf488 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000443499
-RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000003
-RBP: 00007ffdacfaf4a0 R08: 0000000001bbbbbb R09: 0000000001bbbbbb
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000404a30 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 542f2d063f2edc54 ]---
-RIP: 0010:dev_to_node include/linux/device.h:663 [inline]
-RIP: 0010:rds_ib_add_one+0x81/0xe50 net/rds/ib.c:140
-Code: b7 a8 06 00 00 4c 89 f0 48 c1 e8 03 42 80 3c 28 00 74 08 4c 89 f7 e8 0e e4 1d fa bb 30 04 00 00 49 03 1e 48 89 d8 48 c1 e8 03 <42> 8a 04 28 84 c0 0f 85 f0 0a 00 00 8b 1b 48 c7 c0 28 0c 09 89 48
-RSP: 0018:ffffc90003087298 EFLAGS: 00010202
-RAX: 0000000000000086 RBX: 0000000000000430 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
-RBP: ffffc900030872f0 R08: ffffffff87964c3c R09: ffffed1014fd109c
-R10: ffffed1014fd109c R11: 0000000000000000 R12: 0000000000000000
-R13: dffffc0000000000 R14: ffff8880a7e886a8 R15: ffff8880a7e88000
-FS:  0000000000c3d880(0000) GS:ffff8880aea00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0318ed0000 CR3: 00000000a3167000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+On Saturday, February 22, 2020 10:00:03 AM CET Mauro Carvalho Chehab wrote:
+> Several references got broken due to txt to ReST conversion.
+>=20
+> Several of them can be automatically fixed with:
+>=20
+> 	scripts/documentation-file-ref-check --fix
+>=20
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+>  26) If any ioctl's are added by the patch, then also update
+> -    ``Documentation/ioctl/ioctl-number.rst``.
+> +    ``Documentation/userspace-api/ioctl/ioctl-number.rst``.
+>=20
+>  27) If your modified source code depends on or uses any of the kernel
+>      APIs or features that are related to the following ``Kconfig`` symbo=
+ls,
+> diff --git a/Documentation/translations/it_IT/process/submit-checklist.rst
+> b/Documentation/translations/it_IT/process/submit-checklist.rst index
+> 995ee69fab11..3e575502690f 100644
+> --- a/Documentation/translations/it_IT/process/submit-checklist.rst
+> +++ b/Documentation/translations/it_IT/process/submit-checklist.rst
+> @@ -117,7 +117,7 @@ sottomissione delle patch, in particolare
+>      sorgenti che ne spieghi la logica: cosa fanno e perch=E9.
+>=20
+>  25) Se la patch aggiunge nuove chiamate ioctl, allora aggiornate
+> -    ``Documentation/ioctl/ioctl-number.rst``.
+> +    ``Documentation/userspace-api/ioctl/ioctl-number.rst``.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+
+Acked-By: Federico Vaga <federico.vaga@vaga.pv.it>
+
+
+
