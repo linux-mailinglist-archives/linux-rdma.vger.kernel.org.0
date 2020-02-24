@@ -2,136 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F5E16A231
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2020 10:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E44216A3F2
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2020 11:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727348AbgBXJ0r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Feb 2020 04:26:47 -0500
-Received: from mail-vi1eur05on2073.outbound.protection.outlook.com ([40.107.21.73]:16580
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727240AbgBXJ0r (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 24 Feb 2020 04:26:47 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eLhB7iH5YDJQd/UPqkLrfmxKIxhuOEeRo6o8Gcea5ND0iEi6k7xi2hbTiBGcZD6y9L8ZIeZ7GxgbKqzuCARa7/dxorkh2FV0tXrKJ8Ra3ueH2QOrhQR2BVB9ND61nTS6hiqe52Hw857jN0gmuASJvbtl52mlJGUcpB2VhpnKZ3Dqw7UEFFnx46aiueqYaDFc9MbpOdSY7X8GibnhUFK14SWvLTiaNrgW0TRlPxoyU6EH2PvLqam6QUHSR+kw1fqJbcKG+OWGwxp35cemaWPZDxuu4U7JyGfSybZXsBGdp7BbXCLhaHHQ+/HKYILfLsUnsj5/tYpZ96zDQo9S5zqmXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tmGwAKElI2u+A0z/EETBIou5ic5kIe13D9NL0wb7U2M=;
- b=CGZrT9/zeWLslICwnV47CvnyCi4tEwQUvjqq4frvluTbtOh5IsXbUWZuRHjfuSArjnFQ7V8qGqVtI2g+xSErDkkqpOSMvLUpueUfM/Y9a9cvMUxhhRbsXuIIRghZMWr0aoiTyBh0F+ZkCM8+Y3hBx6wkGKIKjlk/4z7TKSRnyf7C+/w9hY+f31izRZKM57PBovCQDJhle01mAgeJWMacphqeZc477gRYs6vLNoJsWtMM5xovPP/PM0OZc9LqnyZrXo8PTjlcKfMmfh2jHrdSdSA+MTMjrhYqLuJajloIZjDMLL7d3s9hytgzdiyLTjnyRxL1AizGgpggJZlBlsKWag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 188.184.36.50) smtp.rcpttodomain=kernel.org smtp.mailfrom=cern.ch;
- dmarc=bestguesspass action=none header.from=cern.ch; dkim=none (message not
- signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cern.onmicrosoft.com;
- s=selector2-cern-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tmGwAKElI2u+A0z/EETBIou5ic5kIe13D9NL0wb7U2M=;
- b=treHLM/wuTE3F8KbK3ygj/ORGGmbE9HBEQqYgWyAmRwvSPW5jnP+JZ60wkplYx3/8FOYO8MRW3svCyvPlLsPYQKPlKNIaLUHO55uV6xCD9MQs9BFPL7WD+jRjhSKWoD25d/Kj3n/1EbzSGqtTHjsNsdj0qDL4wKrkQGEOj305CA=
-Received: from AM0PR06CA0026.eurprd06.prod.outlook.com (2603:10a6:208:ab::39)
- by HE1PR0601MB2617.eurprd06.prod.outlook.com (2603:10a6:3:4c::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2750.22; Mon, 24 Feb
- 2020 09:26:42 +0000
-Received: from VE1EUR02FT030.eop-EUR02.prod.protection.outlook.com
- (2a01:111:f400:7e06::205) by AM0PR06CA0026.outlook.office365.com
- (2603:10a6:208:ab::39) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2750.18 via Frontend
- Transport; Mon, 24 Feb 2020 09:26:42 +0000
-Authentication-Results: spf=pass (sender IP is 188.184.36.50)
- smtp.mailfrom=cern.ch; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=bestguesspass action=none
- header.from=cern.ch;
-Received-SPF: Pass (protection.outlook.com: domain of cern.ch designates
- 188.184.36.50 as permitted sender) receiver=protection.outlook.com;
- client-ip=188.184.36.50; helo=cernmxgwlb4.cern.ch;
-Received: from cernmxgwlb4.cern.ch (188.184.36.50) by
- VE1EUR02FT030.mail.protection.outlook.com (10.152.12.127) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.2750.18 via Frontend Transport; Mon, 24 Feb 2020 09:26:41 +0000
-Received: from cernfe04.cern.ch (188.184.36.41) by cernmxgwlb4.cern.ch
- (188.184.36.50) with Microsoft SMTP Server (TLS) id 14.3.487.0; Mon, 24 Feb
- 2020 10:26:40 +0100
-Received: from pcbe13614.localnet (2001:1458:202:121::100:40) by smtp.cern.ch
- (2001:1458:201:66::100:14) with Microsoft SMTP Server (TLS) id 14.3.487.0;
- Mon, 24 Feb 2020 10:26:38 +0100
-From:   Federico Vaga <federico.vaga@cern.ch>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Reply-To: <federico.vaga@cern.ch>
-CC:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, <linux-arch@vger.kernel.org>,
-        <kvm@vger.kernel.org>, <kvm-ppc@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
-        <linux-unionfs@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>
-Subject: Re: [PATCH 3/7] docs: fix broken references to text files
-Date:   Mon, 24 Feb 2020 10:26:39 +0100
-Message-ID: <3929512.qvrp2sLpzG@pcbe13614>
-In-Reply-To: <5cfeed6df208b74913312a1c97235ee615180f91.1582361737.git.mchehab+huawei@kernel.org>
-References: <cover.1582361737.git.mchehab+huawei@kernel.org> <5cfeed6df208b74913312a1c97235ee615180f91.1582361737.git.mchehab+huawei@kernel.org>
+        id S1727168AbgBXKc3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Feb 2020 05:32:29 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:48382 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726778AbgBXKc3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Feb 2020 05:32:29 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01OASVtJ169490;
+        Mon, 24 Feb 2020 10:32:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=cOngrNXmwHyG3MgkxmY2eZm2qcfLv8K7aRQ5kjlNfzw=;
+ b=yylI7/naky65SIRW0/TnwkVpGeE9WShWWFIPK4EbsVbo94+s8pFpJqDtCDJFEGeiP4UL
+ 6L3o5gcenpfjYj1ocZmmecc/+aS2Zg84/Q9NgLtcC5xm18otWH/cI9LGeZsb432tGSf3
+ CRih74SYgaPaJTz4mGhOgq6gH4alWDuxhN7meMXa6vnDOBkQjP6x/R3Q6WI3HC90//u1
+ CJkVs1sdvIDPSYF5U50JBtsm5H39TxL3xzNjgjJwRKitGhiGE8oM6ylskTP3bg+/35tX
+ ErLQkA3NQrlkhBNMvyxjzN82MX0H7tIobi35iMX/wKnxJiz7y9fadhnn/HRwGeEdKCCm Kw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 2yavxredw8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Feb 2020 10:32:27 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01OAWRHe163000;
+        Mon, 24 Feb 2020 10:32:27 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 2ybdsgbw6a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 24 Feb 2020 10:32:27 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 01OAWQ1D162987;
+        Mon, 24 Feb 2020 10:32:26 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 2ybdsgbw5j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Feb 2020 10:32:26 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01OAWPHE032559;
+        Mon, 24 Feb 2020 10:32:25 GMT
+Received: from kili.mountain (/129.205.23.165)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 24 Feb 2020 02:32:24 -0800
+Date:   Mon, 24 Feb 2020 13:32:15 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Hans Westgaard Ry <hans.westgaard.ry@oracle.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, kernel-janitors@vger.kernel.org
+Subject: [PATCH] net/rds: Fix a debug message
+Message-ID: <20200224103215.utw3zaa6nmcb5vrz@kili.mountain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Originating-IP: [2001:1458:202:121::100:40]
-X-EOPAttributedMessage: 0
-X-Forefront-Antispam-Report: CIP:188.184.36.50;IPV:;CTRY:CH;EFV:NLI;SFV:NSPM;SFS:(10009020)(376002)(39860400002)(136003)(346002)(396003)(199004)(189003)(186003)(9686003)(16526019)(33716001)(26005)(2906002)(478600001)(9576002)(426003)(8676002)(44832011)(3450700001)(336012)(246002)(53546011)(8936002)(7416002)(4326008)(86362001)(7636002)(356004)(70206006)(316002)(54906003)(70586007)(5660300002)(39026012);DIR:OUT;SFP:1101;SCL:1;SRVR:HE1PR0601MB2617;H:cernmxgwlb4.cern.ch;FPR:;SPF:Pass;LANG:en;PTR:cernmx11.cern.ch;A:1;MX:1;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 07a24c03-738e-4624-7506-08d7b90ba88c
-X-MS-TrafficTypeDiagnostic: HE1PR0601MB2617:
-X-Microsoft-Antispam-PRVS: <HE1PR0601MB2617DD6A6BADE420AB7F4408EFEC0@HE1PR0601MB2617.eurprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
-X-Forefront-PRVS: 032334F434
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0qIX6XFVupoujn6tnMIXACZrhD5q3UXodzvYwqyh0hsK1Lsu+/pJ+LkIjl/NeexA/acueRAQl6tWpe3CFd900UWE/3Dp2zl9mkWVMfYl1qYpVkPmqLAGWnMEDEKi64JQPs3cOzEfTL3WjHbAxZ5gqNC3mLax0dvKusUdgcmqXKLya466pUHPmvk05PkmAw4VpLa35W1pVnc1avg4zQD+W+XccjzAi6cB/jeg95xVwyZEdY7wigcHbjHbZjeUw5bGbym667i307aOvjm5Vli7k+a11ZX1tZ2pjiiBWvLEYzJaJJQ2pSEH9ApQf6ZUYQ5f7TlyJmnEtMyipzP+fXgRIINxHtYghfwKLsQ7Fb2NPkqtE2mY/QN0LGNAE519BJMKJ2V6htEDDIZVXfSjSq9NkQg4un3jbv63EjF6kc6RkQ3fn2TRPhmkbiqtoHaEDIQdUEz7oStS5w1dmTB8Bw7vHuPaRBQq1lv0uJabtpvDjKCWQdNtDjiBIr3Z5wRpVLzv
-X-OriginatorOrg: cern.ch
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2020 09:26:41.7248
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07a24c03-738e-4624-7506-08d7b90ba88c
-X-MS-Exchange-CrossTenant-Id: c80d3499-4a40-4a8c-986e-abce017d6b19
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=c80d3499-4a40-4a8c-986e-abce017d6b19;Ip=[188.184.36.50];Helo=[cernmxgwlb4.cern.ch]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0601MB2617
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9540 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
+ spamscore=0 clxscore=1015 suspectscore=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 phishscore=0 adultscore=0 priorityscore=1501 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2002240090
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Saturday, February 22, 2020 10:00:03 AM CET Mauro Carvalho Chehab wrote:
-> Several references got broken due to txt to ReST conversion.
->=20
-> Several of them can be automatically fixed with:
->=20
-> 	scripts/documentation-file-ref-check --fix
->=20
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
+This should display the error code but instead it just prints "1".
 
+Fixes: 2eafa1746f17 ("net/rds: Handle ODP mr registration/unregistration")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ net/rds/ib_rdma.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->  26) If any ioctl's are added by the patch, then also update
-> -    ``Documentation/ioctl/ioctl-number.rst``.
-> +    ``Documentation/userspace-api/ioctl/ioctl-number.rst``.
->=20
->  27) If your modified source code depends on or uses any of the kernel
->      APIs or features that are related to the following ``Kconfig`` symbo=
-ls,
-> diff --git a/Documentation/translations/it_IT/process/submit-checklist.rst
-> b/Documentation/translations/it_IT/process/submit-checklist.rst index
-> 995ee69fab11..3e575502690f 100644
-> --- a/Documentation/translations/it_IT/process/submit-checklist.rst
-> +++ b/Documentation/translations/it_IT/process/submit-checklist.rst
-> @@ -117,7 +117,7 @@ sottomissione delle patch, in particolare
->      sorgenti che ne spieghi la logica: cosa fanno e perch=E9.
->=20
->  25) Se la patch aggiunge nuove chiamate ioctl, allora aggiornate
-> -    ``Documentation/ioctl/ioctl-number.rst``.
-> +    ``Documentation/userspace-api/ioctl/ioctl-number.rst``.
-
-
-Acked-By: Federico Vaga <federico.vaga@vaga.pv.it>
-
-
+diff --git a/net/rds/ib_rdma.c b/net/rds/ib_rdma.c
+index b34b24e237f8..82a25bf280e3 100644
+--- a/net/rds/ib_rdma.c
++++ b/net/rds/ib_rdma.c
+@@ -587,8 +587,8 @@ void *rds_ib_get_mr(struct scatterlist *sg, unsigned long nents,
+ 				       access_flags);
+ 
+ 		if (IS_ERR(ib_mr)) {
+-			rdsdebug("rds_ib_get_user_mr returned %d\n",
+-				 IS_ERR(ib_mr));
++			rdsdebug("rds_ib_get_user_mr returned %ld\n",
++				 PTR_ERR(ib_mr));
+ 			ret = PTR_ERR(ib_mr);
+ 			goto out;
+ 		}
+-- 
+2.11.0
 
