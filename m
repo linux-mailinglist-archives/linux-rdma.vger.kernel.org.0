@@ -2,134 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C8616B033
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2020 20:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A6716B061
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2020 20:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgBXTX4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Feb 2020 14:23:56 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:45854 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgBXTX4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Feb 2020 14:23:56 -0500
-Received: by mail-qk1-f195.google.com with SMTP id a2so9684725qko.12
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Feb 2020 11:23:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bSYURdilK+N6Xg2iZYnkaMczk6vdToiJ3RBUsuldfrs=;
-        b=UkxbFFxxxwalBqrS2ubquqRNCV9lRdg6qHS1Le+Mkk5W4N9H5jKWMdkCyZ4icfCOu5
-         whbIpzvOeqkBCQMAA38vMDJcHUWbG4o9ZgA52F1aR4GSyLsXiw4tRTgFfbyE8AKThSSS
-         VELdkA2UoGaO7Gn60jzIsii9NCkPQ413qY7TDgBxiLF9dJE0uD5x1g4PGMWFrmjJBUad
-         UAWzDMgtE2zdhwkRIoetA8exfHf6LGzHxUWRaVFTWv1/Dmdn3lWHoHESGXiM/LgcIyMb
-         6xVX6uXroO8GSooNxDW/VwxdITQiZTWh9g5/q0O8vCNCUip6XjTkH5avTmCRorfXQPTR
-         HG+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bSYURdilK+N6Xg2iZYnkaMczk6vdToiJ3RBUsuldfrs=;
-        b=dYMAlDpRXiNLGlyi1/r1AhtLtk1uJc4yujOdwS5AYKZlflE2Gj30B6GLzvS1qHdfZl
-         YNxt7w9pe7DnsrQse6158lB6D9nY4OZceHx87CVObDNbZEPCZj1ivDcbm8fmdjiaz+27
-         06zdyG1UK1TExa4Ou644Y4tGyvjhGqZss+E+by65k6Wngajpal2r8wTJEXYX5oVkWQTE
-         Ux/IGo4NzDIfObseveY7eI/phl7DnMjC/+UpXy6Siz6bfCjweCKEAXoM5C0jULIBE/St
-         cysFlDeQW2SPYH2fql+wR61Th/pbZQOmcf/U2Bhgp3eYLgTiQq9DRVnSBruu5XHRGRM9
-         VL/A==
-X-Gm-Message-State: APjAAAU+r8Jt0K2b7+t4bQFohwhqqS28JUhcRZPqa1xZyUuyDvCzXrLx
-        R4tnODDRBEzi6emNLb2YjpTPzA==
-X-Google-Smtp-Source: APXvYqzysz2cjGvotVYUTo+ZmG0bCz4LZvwWoNuXO/dtk+aCGb8OM82oHlF8vNuXogK/RIVgOmjXgw==
-X-Received: by 2002:a37:de0b:: with SMTP id h11mr50645780qkj.274.1582572234868;
-        Mon, 24 Feb 2020 11:23:54 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id w134sm6178910qka.127.2020.02.24.11.23.54
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 24 Feb 2020 11:23:54 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j6JKb-0005Si-N4; Mon, 24 Feb 2020 15:23:53 -0400
-Date:   Mon, 24 Feb 2020 15:23:53 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Parav Pandit <parav@mellanox.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
+        id S1726628AbgBXTlL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Feb 2020 14:41:11 -0500
+Received: from mail-eopbgr80043.outbound.protection.outlook.com ([40.107.8.43]:12372
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726452AbgBXTlL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 Feb 2020 14:41:11 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AmPOKPfw8ViUD55DMArBGd8rZq4x7AzmRAs8wiqD8tXiPp/2bKJYP+fE8y42uv3dJoEppu1TXS+zlZsDeH1qZyVbZ8R7sk8Z3PMI7p6BtX1P2y5NGR3a3jdQ2ViierOokrLg8UeaJ+92q12fmwl9gEv8Ej0vJFblSGUmBujhs0+8Tl74tidTaSSFlmTd+QMsVnKm5fmzYd9HNKTHl2/SO9iAFOW3Lp5ePQcVDBYKds5D/RvDqHkMpkALB1QsKDtGp4YyDLGo2rbWbI43VHgciJ4C0jyuV/CPxW/4AXpahRY8NVo7AC4IRZayta/mzHlqtKcrU7EQhK0assSuBYeF/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zHSXRazhTbxwixs7Jwuqvk2I2UHG79tNZz4COn6IxnQ=;
+ b=HdDt3U2ciXe45fQw58Z73v0ZDXd32C4SNPIWyB1dsasV30fRhsUHW5D4NgK4o21QcUCDHyMx4q0JDnFnsPxevfMul3BCnHykbi1nFCpC/ZidmOBbyugTDxBA5v42fOVzEYB8vLicy6p3yRNfLHhCA2kknmAqHhQVl0JfpeZ5zuC/gE4uQnoN3YKJjHAFzqk5eCPJoMYQHMZwW/lnacw1vBYRSo1JvZz/1ojngDwV2V+o5j4SFT6GUjo7VPOSiOSzwjothXjQe3UfWagEmFX7yUGNlodQ2FE8Xc5QXa4t4FeXXGjwz4K0CyBXC6tdBh46Qn44m/AbPO7w79vmbgKaww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zHSXRazhTbxwixs7Jwuqvk2I2UHG79tNZz4COn6IxnQ=;
+ b=lHGhQpdkK1oPrWYEVQOqz87f/FTtNCC7GCujUZflETzjkvSlnnRwnTOFmJLLEwEFcO0otIK1sKA8VyiwdzDIjtr99I8ZQ8mJip61o7hr5LjF6W30dAjp7RbhseWGLA1vLjMAr3YncWxU9EOZhwmOV4/h8ra7kz9LCt8rdJI6CFo=
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
+ AM0PR05MB6642.eurprd05.prod.outlook.com (10.141.190.86) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2750.21; Mon, 24 Feb 2020 19:41:07 +0000
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::8c4:e45b:ecdc:e02b]) by AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::8c4:e45b:ecdc:e02b%7]) with mapi id 15.20.2750.021; Mon, 24 Feb 2020
+ 19:41:06 +0000
+From:   Parav Pandit <parav@mellanox.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Leon Romanovsky <leon@kernel.org>,
         Weihang Li <liweihang@huawei.com>,
         "dledford@redhat.com" <dledford@redhat.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         "linuxarm@huawei.com" <linuxarm@huawei.com>,
         Shiraz Saleem <shiraz.saleem@intel.com>
 Subject: Re: Is anyone working on implementing LAG in ib core?
-Message-ID: <20200224192353.GU31668@ziepe.ca>
+Thread-Topic: Is anyone working on implementing LAG in ib core?
+Thread-Index: AQHV6TLqRqVlI00f7kyTjr5i8r/fvKgn4IQAgAARzwCAAJhaAIABZdYAgAA9/wCAAH+rAIAACSAAgAAGM4CAAATNAA==
+Date:   Mon, 24 Feb 2020 19:41:05 +0000
+Message-ID: <b3e3600a-84ad-8ac4-b52d-efce4f95556b@mellanox.com>
 References: <280d87d0-fbc0-0566-794b-f66cb4fadb63@huawei.com>
  <20200222234026.GO31668@ziepe.ca>
  <98482e8a-f2eb-5406-b679-0ceb946ac618@mellanox.com>
  <20200223094928.GB422704@unreal>
  <5db0d4f8-1893-33c2-fb25-e6012e0fc6d6@mellanox.com>
- <20200224105206.GA468372@unreal>
- <20200224182902.GS31668@ziepe.ca>
+ <20200224105206.GA468372@unreal> <20200224182902.GS31668@ziepe.ca>
  <8c2df0c3-db07-4f18-1b7f-f648539d52d1@mellanox.com>
+ <20200224192353.GU31668@ziepe.ca>
+In-Reply-To: <20200224192353.GU31668@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=parav@mellanox.com; 
+x-originating-ip: [208.176.44.194]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8c78f979-1232-4284-e4f5-08d7b9617db1
+x-ms-traffictypediagnostic: AM0PR05MB6642:
+x-microsoft-antispam-prvs: <AM0PR05MB66425437AB94CB45796CFC83D1EC0@AM0PR05MB6642.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 032334F434
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(366004)(136003)(376002)(396003)(39860400002)(199004)(189003)(316002)(26005)(71200400001)(8676002)(2616005)(81156014)(54906003)(478600001)(31686004)(81166006)(53546011)(6506007)(6486002)(2906002)(66556008)(64756008)(6512007)(8936002)(91956017)(186003)(6916009)(76116006)(4326008)(36756003)(5660300002)(66946007)(86362001)(66476007)(66446008)(31696002);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB6642;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Ue/JfSnVDIECAlD3LmSyXe5gpasjgkP0sqXxQJm0m8P1LJqzJPOVZDPPnImOCz6cQgXMLi82GpEC/Oz6K5u6scitCKZZB+LD9sN/jW2BwqdpC8QRxYxLQzPDHsQN1QktoH6zNgB6Xi6DkHPchCOZAbUbP7p0RAPN680aEsh1LBKw6rPi4ThwT1c12k8AVH4rIaazz5IimsUmXri4kVhVPUPR5hs0OnuJDSIr+ydVQZvdBEWuHL/c7b5Ywq4YlgQWN+ez7zNTKUEGur5sByYvCBt5xyNWoDGK2pwagGRn+M2/uCTFIhNYPTXljLfioDaFisRZ27rLL3zjDR8oIZ2JXqkyupdA4+P1Xo2/7ChAHIaPnpPbfOtnWwAgZZS0QM4XZieuHRanzlY5yaJXaXZhiEYQjW7fe8GoeA3eHB55XxRQiRcDvJ4q2RmhcnUNhsMk
+x-ms-exchange-antispam-messagedata: 1/e2ZCrg9Yi66ku046K+ZY8Yx6VmrlQD1/bf1/RXQLZMShlK/UoceHhhLMKrgEGBruq7VSrIe0EviwApou4wGuEPzsATVhj3zhLLNxuCuTmk4n8c2xf43vCTHx5ZO02LKiHKwo+r+TP6i18n/xbnNg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B77C0E1FD1DCD841B6B57FF6E05D7482@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c2df0c3-db07-4f18-1b7f-f648539d52d1@mellanox.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8c78f979-1232-4284-e4f5-08d7b9617db1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Feb 2020 19:41:06.1944
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: X4Kny1a5au+pBNGERcSvGM08D/l5GdZrIjDYihhQBjUyygB1cfa7mt2srVmrxKJE5yFNFlHT+1x7sOKCkvor0g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6642
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 24, 2020 at 07:01:43PM +0000, Parav Pandit wrote:
-> On 2/24/2020 12:29 PM, Jason Gunthorpe wrote:
-> > On Mon, Feb 24, 2020 at 12:52:06PM +0200, Leon Romanovsky wrote:
-> >>> Are you asking why bonding should be implemented as dedicated
-> >>> ulp/driver, and not as an extension by the vendor driver?
-> >>
-> >> No, I meant something different. You are proposing to combine IB
-> >> devices, while keeping netdev devices separated. I'm asking if it is
-> >> possible to combine netdev devices with already existing bond driver
-> >> and simply create new ib device with bond netdev as an underlying
-> >> provider.
-> > 
-> > Isn't that basically what we do now in mlx5?
-> > 
-> And its broken for few aspects that I described in Q&A question-1 in
-> this thread previously.
-> 
-> On top of that user has no ability to disable rdma bonding.
-
-And what does that mean? The real netdevs have no IP addreses so what
-exactly does a non-bonded RoCEv2 RDMA device do?
-
-> User exactly asked us that they want to disable in some cases.
-> (not on mailing list). So there are non-upstream hacks exists that is
-> not applicable for this discussion.
-
-Bah, I'm aware of that - that request is hack solution to something
-else as well.
-
-> > Logically the ib_device is attached to the bond, it uses the bond for
-> > IP addressing, etc.
-> > 
-> > I'm not sure trying to have 3 ib_devices like netdev does is sane,
-> > that is very, very complicated to get everything to work. The ib stuff
-> > just isn't designed to be stacked like that.
-> > 
-> I am not sure I understand all the complications you have thought through.
-> I thought of few and put forward in the Q&A in the thread and we can
-> improve the design as we go forward.
-> 
-> Stacking rdma device on top of existing rdma device as an ib_client so
-> that rdma bond device exactly aware of what is going on with slaves and
-> bond netdev.
-
-How do you safely proxy every single op from the bond to slaves?
-
-How do you force the slaves to allow PDs to be shared across them?
-
-What provider lives in user space for the bond driver? What happens to
-the udata/etc?
-
-And it doesn't solve the main problem you raised, creating a IB device
-while holding RTNL simply should not ever be done. Moving this code
-into the core layer fixed it up significantly for the similar rxe/siw
-cases, I expect the same is possible for the LAG situation too.
-
-Jason
+T24gMi8yNC8yMDIwIDE6MjMgUE0sIEphc29uIEd1bnRob3JwZSB3cm90ZToNCj4gT24gTW9uLCBG
+ZWIgMjQsIDIwMjAgYXQgMDc6MDE6NDNQTSArMDAwMCwgUGFyYXYgUGFuZGl0IHdyb3RlOg0KPj4g
+T24gMi8yNC8yMDIwIDEyOjI5IFBNLCBKYXNvbiBHdW50aG9ycGUgd3JvdGU6DQo+Pj4gT24gTW9u
+LCBGZWIgMjQsIDIwMjAgYXQgMTI6NTI6MDZQTSArMDIwMCwgTGVvbiBSb21hbm92c2t5IHdyb3Rl
+Og0KPj4+Pj4gQXJlIHlvdSBhc2tpbmcgd2h5IGJvbmRpbmcgc2hvdWxkIGJlIGltcGxlbWVudGVk
+IGFzIGRlZGljYXRlZA0KPj4+Pj4gdWxwL2RyaXZlciwgYW5kIG5vdCBhcyBhbiBleHRlbnNpb24g
+YnkgdGhlIHZlbmRvciBkcml2ZXI/DQo+Pj4+DQo+Pj4+IE5vLCBJIG1lYW50IHNvbWV0aGluZyBk
+aWZmZXJlbnQuIFlvdSBhcmUgcHJvcG9zaW5nIHRvIGNvbWJpbmUgSUINCj4+Pj4gZGV2aWNlcywg
+d2hpbGUga2VlcGluZyBuZXRkZXYgZGV2aWNlcyBzZXBhcmF0ZWQuIEknbSBhc2tpbmcgaWYgaXQg
+aXMNCj4+Pj4gcG9zc2libGUgdG8gY29tYmluZSBuZXRkZXYgZGV2aWNlcyB3aXRoIGFscmVhZHkg
+ZXhpc3RpbmcgYm9uZCBkcml2ZXINCj4+Pj4gYW5kIHNpbXBseSBjcmVhdGUgbmV3IGliIGRldmlj
+ZSB3aXRoIGJvbmQgbmV0ZGV2IGFzIGFuIHVuZGVybHlpbmcNCj4+Pj4gcHJvdmlkZXIuDQo+Pj4N
+Cj4+PiBJc24ndCB0aGF0IGJhc2ljYWxseSB3aGF0IHdlIGRvIG5vdyBpbiBtbHg1Pw0KPj4+DQo+
+PiBBbmQgaXRzIGJyb2tlbiBmb3IgZmV3IGFzcGVjdHMgdGhhdCBJIGRlc2NyaWJlZCBpbiBRJkEg
+cXVlc3Rpb24tMSBpbg0KPj4gdGhpcyB0aHJlYWQgcHJldmlvdXNseS4NCj4+DQo+PiBPbiB0b3Ag
+b2YgdGhhdCB1c2VyIGhhcyBubyBhYmlsaXR5IHRvIGRpc2FibGUgcmRtYSBib25kaW5nLg0KPiAN
+Cj4gQW5kIHdoYXQgZG9lcyB0aGF0IG1lYW4/IFRoZSByZWFsIG5ldGRldnMgaGF2ZSBubyBJUCBh
+ZGRyZXNlcyBzbyB3aGF0DQo+IGV4YWN0bHkgZG9lcyBhIG5vbi1ib25kZWQgUm9DRXYyIFJETUEg
+ZGV2aWNlIGRvPw0KPiANCk5vdCBzdXJlLiBUaGVyZSBpcyBzb21lIGRlZmF1bHQgR0lEIG9uIGl0
+Lg0KDQo+PiBVc2VyIGV4YWN0bHkgYXNrZWQgdXMgdGhhdCB0aGV5IHdhbnQgdG8gZGlzYWJsZSBp
+biBzb21lIGNhc2VzLg0KPj4gKG5vdCBvbiBtYWlsaW5nIGxpc3QpLiBTbyB0aGVyZSBhcmUgbm9u
+LXVwc3RyZWFtIGhhY2tzIGV4aXN0cyB0aGF0IGlzDQo+PiBub3QgYXBwbGljYWJsZSBmb3IgdGhp
+cyBkaXNjdXNzaW9uLg0KPiANCj4gQmFoLCBJJ20gYXdhcmUgb2YgdGhhdCAtIHRoYXQgcmVxdWVz
+dCBpcyBoYWNrIHNvbHV0aW9uIHRvIHNvbWV0aGluZw0KPiBlbHNlIGFzIHdlbGwuDQo+IA0KPj4+
+IExvZ2ljYWxseSB0aGUgaWJfZGV2aWNlIGlzIGF0dGFjaGVkIHRvIHRoZSBib25kLCBpdCB1c2Vz
+IHRoZSBib25kIGZvcg0KPj4+IElQIGFkZHJlc3NpbmcsIGV0Yy4NCj4+Pg0KPj4+IEknbSBub3Qg
+c3VyZSB0cnlpbmcgdG8gaGF2ZSAzIGliX2RldmljZXMgbGlrZSBuZXRkZXYgZG9lcyBpcyBzYW5l
+LA0KPj4+IHRoYXQgaXMgdmVyeSwgdmVyeSBjb21wbGljYXRlZCB0byBnZXQgZXZlcnl0aGluZyB0
+byB3b3JrLiBUaGUgaWIgc3R1ZmYNCj4+PiBqdXN0IGlzbid0IGRlc2lnbmVkIHRvIGJlIHN0YWNr
+ZWQgbGlrZSB0aGF0Lg0KPj4+DQo+PiBJIGFtIG5vdCBzdXJlIEkgdW5kZXJzdGFuZCBhbGwgdGhl
+IGNvbXBsaWNhdGlvbnMgeW91IGhhdmUgdGhvdWdodCB0aHJvdWdoLg0KPj4gSSB0aG91Z2h0IG9m
+IGZldyBhbmQgcHV0IGZvcndhcmQgaW4gdGhlIFEmQSBpbiB0aGUgdGhyZWFkIGFuZCB3ZSBjYW4N
+Cj4+IGltcHJvdmUgdGhlIGRlc2lnbiBhcyB3ZSBnbyBmb3J3YXJkLg0KPj4NCj4+IFN0YWNraW5n
+IHJkbWEgZGV2aWNlIG9uIHRvcCBvZiBleGlzdGluZyByZG1hIGRldmljZSBhcyBhbiBpYl9jbGll
+bnQgc28NCj4+IHRoYXQgcmRtYSBib25kIGRldmljZSBleGFjdGx5IGF3YXJlIG9mIHdoYXQgaXMg
+Z29pbmcgb24gd2l0aCBzbGF2ZXMgYW5kDQo+PiBib25kIG5ldGRldi4NCj4gDQo+IEhvdyBkbyB5
+b3Ugc2FmZWx5IHByb3h5IGV2ZXJ5IHNpbmdsZSBvcCBmcm9tIHRoZSBib25kIHRvIHNsYXZlcz8N
+CkJvbmQgY29uZmlnIHNob3VsZCB0ZWxsIHdoaWNoIHNsYXZlIHRvIHVzZSwgaW5zdGVhZCBvZiBj
+dXJyZW50IGltcGxpY2l0IG9uZS4NCg0KPiANCj4gSG93IGRvIHlvdSBmb3JjZSB0aGUgc2xhdmVz
+IHRvIGFsbG93IFBEcyB0byBiZSBzaGFyZWQgYWNyb3NzIHRoZW0/DQo+IA0KRm9yIHNsYXZlIGl0
+IGRvZXNuJ3QgbWF0dGVyIGlmIGNhbGxlciBpcyBib25kIG9yIGRpcmVjdC4NCg0KPiBXaGF0IHBy
+b3ZpZGVyIGxpdmVzIGluIHVzZXIgc3BhY2UgZm9yIHRoZSBib25kIGRyaXZlcj8gV2hhdCBoYXBw
+ZW5zIHRvDQo+IHRoZSB1ZGF0YS9ldGM/DQpTYW1lIGFzIHRoYXQgb2YgcHJpbWFyeSBzbGF2ZSB1
+c2VkIGZvciBwY2ksIGlycSBhY2Nlc3Mgd2hvc2UgaW5mbyBpcw0KcHJvdmlkZWQgdGhyb3VnaCBu
+ZXcgbmV0bGluayBkaXNjb3ZlcnkgcGF0aC4NCg0KPiANCj4gQW5kIGl0IGRvZXNuJ3Qgc29sdmUg
+dGhlIG1haW4gcHJvYmxlbSB5b3UgcmFpc2VkLCBjcmVhdGluZyBhIElCIGRldmljZQ0KPiB3aGls
+ZSBob2xkaW5nIFJUTkwgc2ltcGx5IHNob3VsZCBub3QgZXZlciBiZSBkb25lLiBNb3ZpbmcgdGhp
+cyBjb2RlDQo+IGludG8gdGhlIGNvcmUgbGF5ZXIgZml4ZWQgaXQgdXAgc2lnbmlmaWNhbnRseSBm
+b3IgdGhlIHNpbWlsYXIgcnhlL3Npdw0KPiBjYXNlcywgSSBleHBlY3QgdGhlIHNhbWUgaXMgcG9z
+c2libGUgZm9yIHRoZSBMQUcgc2l0dWF0aW9uIHRvby4NCj4gDQokIHJkbWEgYWRkIGRldiBjb21t
+YW5kIHdvbid0IGhvbGQgcnRubCBsb2NrLCB3aGVuIG5ldyByZG1hIGJvbmQgZGV2aWNlDQppcyBh
+ZGRlZCB0aHJvdWdoIHJkbWEgbmV0bGluayBzb2NrZXQuDQo=
