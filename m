@@ -2,365 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F687169E97
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2020 07:41:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8251169EDB
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2020 07:56:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727183AbgBXGlw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Feb 2020 01:41:52 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:37900 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726925AbgBXGlw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 24 Feb 2020 01:41:52 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 34435A5E06EF94E5D28A;
-        Mon, 24 Feb 2020 14:41:50 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.439.0; Mon, 24 Feb 2020 14:41:43 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH v4 for-next 7/7] RDMA/hns: Optimize qp doorbell allocation flow
-Date:   Mon, 24 Feb 2020 14:37:38 +0800
-Message-ID: <1582526258-13825-8-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1582526258-13825-1-git-send-email-liweihang@huawei.com>
-References: <1582526258-13825-1-git-send-email-liweihang@huawei.com>
+        id S1726628AbgBXG4Z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Feb 2020 01:56:25 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:52420 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726536AbgBXG4Z (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Feb 2020 01:56:25 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01O6mSe3155842;
+        Mon, 24 Feb 2020 06:56:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=QWSqwcIztpQts4IfNeoCEMDWvigo5Raa0tAsMwAZU2I=;
+ b=goAgTDHk3dBlgxcN0WuI+knSIkjjK0sMNTkh8kpipA9dTQRrShE24/TUATz5V0+5uMoM
+ DMPFp0fzZMb2uh5FgKZ05eCNfFLT4ZFLhtjw/E75hKA35U3O4rZCh717p6U99PC6dikA
+ 5jvmOg3rwOVOXQ5UStMCFYAZkaCJMkKPWuLUTTkbywHoIFeaXARCu6yCe97OdUjlAhVk
+ qYxBjUu8QcAdqiWo1hQ5MA8NZ8NH0OH7nmE9zn/7ODxkZ9LdUgem4dfXWo16cF5S+n8K
+ pO3jxugzpRxSisNLCa7E0hDjSUWX7ZzXF8fexz10PpouQ9kf1PTqCDd6uTCKidaFZUeo lw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 2yavxrd886-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Feb 2020 06:56:19 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01O6m3ts186167;
+        Mon, 24 Feb 2020 06:56:19 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 2ybdsfxf4s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Feb 2020 06:56:19 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01O6uIlV018109;
+        Mon, 24 Feb 2020 06:56:18 GMT
+Received: from kili.mountain (/129.205.23.165)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 23 Feb 2020 22:56:17 -0800
+Date:   Mon, 24 Feb 2020 09:55:57 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Saeed Mahameed <saeedm@mellanox.com>, Aya Levin <ayal@mellanox.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] net/mlx5e: Fix error code in mlx5e_fec_in_caps()
+Message-ID: <20200224065557.d23b4yd46kjnzfya@kili.mountain>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9540 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2002240059
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9540 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
+ spamscore=0 clxscore=1011 suspectscore=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 phishscore=0 adultscore=0 priorityscore=1501 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2002240059
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+The mlx5e_fec_in_caps() function is type bool so these negative returns
+become "return true;" when they should be "return false;"
 
-Encapsulate the kernel qp doorbell allocation related code into 2
-functions: alloc_qp_db() and free_qp_db().
-
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
+Fixes: 2132b71f78d2 ("net/mlx5e: Advertise globaly supported FEC modes")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_qp.c | 234 ++++++++++++++++++--------------
- 1 file changed, 132 insertions(+), 102 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en/port.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index a27c3da..2a75355 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -843,7 +843,7 @@ static int alloc_qp_buf(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/port.c b/drivers/net/ethernet/mellanox/mlx5/core/en/port.c
+index 2c4a670c8ffd..b5ddf9bf2681 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/port.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/port.c
+@@ -471,10 +471,10 @@ bool mlx5e_fec_in_caps(struct mlx5_core_dev *dev, int fec_policy)
+ 	int i;
  
- 	if (udata) {
--		hr_qp->umem = ib_umem_get(udata, addr, hr_qp->buff_size, 0);
-+		hr_qp->umem = ib_umem_get(ibdev, addr, hr_qp->buff_size, 0);
- 		if (IS_ERR(hr_qp->umem)) {
- 			ret = PTR_ERR(hr_qp->umem);
- 			goto err_inline;
-@@ -895,6 +895,114 @@ static void free_qp_buf(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- 		free_rq_inline_buf(hr_qp);
- }
+ 	if (!MLX5_CAP_GEN(dev, pcam_reg))
+-		return -EOPNOTSUPP;
++		return false;
  
-+static inline bool user_qp_has_sdb(struct hns_roce_dev *hr_dev,
-+				   struct ib_qp_init_attr *init_attr,
-+				   struct ib_udata *udata,
-+				   struct hns_roce_ib_create_qp_resp *resp,
-+				   struct hns_roce_ib_create_qp *ucmd)
-+{
-+	return ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SQ_RECORD_DB) &&
-+		udata->outlen >= offsetofend(typeof(*resp), cap_flags) &&
-+		hns_roce_qp_has_sq(init_attr) &&
-+		udata->inlen >= offsetofend(typeof(*ucmd), sdb_addr));
-+}
-+
-+static inline bool user_qp_has_rdb(struct hns_roce_dev *hr_dev,
-+				   struct ib_qp_init_attr *init_attr,
-+				   struct ib_udata *udata,
-+				   struct hns_roce_ib_create_qp_resp *resp)
-+{
-+	return ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) &&
-+		udata->outlen >= offsetofend(typeof(*resp), cap_flags) &&
-+		hns_roce_qp_has_rq(init_attr));
-+}
-+
-+static inline bool kernel_qp_has_rdb(struct hns_roce_dev *hr_dev,
-+				     struct ib_qp_init_attr *init_attr)
-+{
-+	return ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) &&
-+		hns_roce_qp_has_rq(init_attr));
-+}
-+
-+static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
-+		       struct ib_qp_init_attr *init_attr,
-+		       struct ib_udata *udata,
-+		       struct hns_roce_ib_create_qp *ucmd,
-+		       struct hns_roce_ib_create_qp_resp *resp)
-+{
-+	struct hns_roce_ucontext *uctx = rdma_udata_to_drv_context(
-+		udata, struct hns_roce_ucontext, ibucontext);
-+	struct ib_device *ibdev = &hr_dev->ib_dev;
-+	int ret;
-+
-+	if (udata) {
-+		if (user_qp_has_sdb(hr_dev, init_attr, udata, resp, ucmd)) {
-+			ret = hns_roce_db_map_user(uctx, udata, ucmd->sdb_addr,
-+						   &hr_qp->sdb);
-+			if (ret) {
-+				ibdev_err(ibdev,
-+					  "Failed to map user SQ doorbell\n");
-+				goto err_out;
-+			}
-+			hr_qp->sdb_en = 1;
-+			resp->cap_flags |= HNS_ROCE_SUPPORT_SQ_RECORD_DB;
-+		}
-+
-+		if (user_qp_has_rdb(hr_dev, init_attr, udata, resp)) {
-+			ret = hns_roce_db_map_user(uctx, udata, ucmd->db_addr,
-+						   &hr_qp->rdb);
-+			if (ret) {
-+				ibdev_err(ibdev,
-+					  "Failed to map user RQ doorbell\n");
-+				goto err_sdb;
-+			}
-+			hr_qp->rdb_en = 1;
-+			resp->cap_flags |= HNS_ROCE_SUPPORT_RQ_RECORD_DB;
-+		}
-+	} else {
-+		/* QP doorbell register address */
-+		hr_qp->sq.db_reg_l = hr_dev->reg_base + hr_dev->sdb_offset +
-+				     DB_REG_OFFSET * hr_dev->priv_uar.index;
-+		hr_qp->rq.db_reg_l = hr_dev->reg_base + hr_dev->odb_offset +
-+				     DB_REG_OFFSET * hr_dev->priv_uar.index;
-+
-+		if (kernel_qp_has_rdb(hr_dev, init_attr)) {
-+			ret = hns_roce_alloc_db(hr_dev, &hr_qp->rdb, 0);
-+			if (ret) {
-+				ibdev_err(ibdev,
-+					  "Failed to alloc kernel RQ doorbell\n");
-+				goto err_out;
-+			}
-+			*hr_qp->rdb.db_record = 0;
-+			hr_qp->rdb_en = 1;
-+		}
-+	}
-+
-+	return 0;
-+err_sdb:
-+	if (udata && hr_qp->sdb_en)
-+		hns_roce_db_unmap_user(uctx, &hr_qp->sdb);
-+err_out:
-+	return ret;
-+}
-+
-+static void free_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
-+		       struct ib_udata *udata)
-+{
-+	struct hns_roce_ucontext *uctx = rdma_udata_to_drv_context(
-+		udata, struct hns_roce_ucontext, ibucontext);
-+
-+	if (udata) {
-+		if (hr_qp->rdb_en)
-+			hns_roce_db_unmap_user(uctx, &hr_qp->rdb);
-+		if (hr_qp->sdb_en)
-+			hns_roce_db_unmap_user(uctx, &hr_qp->sdb);
-+	} else {
-+		if (hr_qp->rdb_en)
-+			hns_roce_free_db(hr_dev, &hr_qp->rdb);
-+	}
-+}
-+
- static int alloc_kernel_wrid(struct hns_roce_dev *hr_dev,
- 			     struct hns_roce_qp *hr_qp)
- {
-@@ -991,11 +1099,9 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 				     struct ib_udata *udata,
- 				     struct hns_roce_qp *hr_qp)
- {
--	struct device *dev = hr_dev->dev;
--	struct hns_roce_ib_create_qp ucmd;
- 	struct hns_roce_ib_create_qp_resp resp = {};
--	struct hns_roce_ucontext *uctx = rdma_udata_to_drv_context(
--		udata, struct hns_roce_ucontext, ibucontext);
-+	struct ib_device *ibdev = &hr_dev->ib_dev;
-+	struct hns_roce_ib_create_qp ucmd;
- 	int ret;
+ 	if (!MLX5_CAP_PCAM_REG(dev, pplm))
+-		return -EOPNOTSUPP;
++		return false;
  
- 	mutex_init(&hr_qp->mutex);
-@@ -1007,95 +1113,55 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 
- 	ret = set_qp_param(hr_dev, hr_qp, init_attr, udata, &ucmd);
- 	if (ret) {
--		ibdev_err(&hr_dev->ib_dev, "Failed to set QP param\n");
-+		ibdev_err(ibdev, "Failed to set QP param\n");
- 		return ret;
- 	}
- 
--	if (udata) {
--		if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SQ_RECORD_DB) &&
--		    (udata->inlen >= sizeof(ucmd)) &&
--		    (udata->outlen >= sizeof(resp)) &&
--		    hns_roce_qp_has_sq(init_attr)) {
--			ret = hns_roce_db_map_user(uctx, udata, ucmd.sdb_addr,
--						   &hr_qp->sdb);
--			if (ret) {
--				dev_err(dev, "sq record doorbell map failed!\n");
--				goto err_out;
--			}
--
--			/* indicate kernel supports sq record db */
--			resp.cap_flags |= HNS_ROCE_SUPPORT_SQ_RECORD_DB;
--			hr_qp->sdb_en = 1;
--		}
--
--		if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) &&
--		    (udata->outlen >= sizeof(resp)) &&
--		    hns_roce_qp_has_rq(init_attr)) {
--			ret = hns_roce_db_map_user(uctx, udata, ucmd.db_addr,
--						   &hr_qp->rdb);
--			if (ret) {
--				dev_err(dev, "rq record doorbell map failed!\n");
--				goto err_sq_dbmap;
--			}
--
--			/* indicate kernel supports rq record db */
--			resp.cap_flags |= HNS_ROCE_SUPPORT_RQ_RECORD_DB;
--			hr_qp->rdb_en = 1;
--		}
--	} else {
--		/* QP doorbell register address */
--		hr_qp->sq.db_reg_l = hr_dev->reg_base + hr_dev->sdb_offset +
--				     DB_REG_OFFSET * hr_dev->priv_uar.index;
--		hr_qp->rq.db_reg_l = hr_dev->reg_base + hr_dev->odb_offset +
--				     DB_REG_OFFSET * hr_dev->priv_uar.index;
--
--		if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) &&
--		    hns_roce_qp_has_rq(init_attr)) {
--			ret = hns_roce_alloc_db(hr_dev, &hr_qp->rdb, 0);
--			if (ret) {
--				dev_err(dev, "rq record doorbell alloc failed!\n");
--				goto err_out;
--			}
--			*hr_qp->rdb.db_record = 0;
--			hr_qp->rdb_en = 1;
--		}
--
-+	if (!udata) {
- 		ret = alloc_kernel_wrid(hr_dev, hr_qp);
- 		if (ret) {
--			ibdev_err(&hr_dev->ib_dev, "Failed to alloc wrid\n");
--			goto err_db;
-+			ibdev_err(ibdev, "Failed to alloc wrid\n");
-+			return ret;
- 		}
- 	}
- 
-+	ret = alloc_qp_db(hr_dev, hr_qp, init_attr, udata, &ucmd, &resp);
-+	if (ret) {
-+		ibdev_err(ibdev, "Failed to alloc QP doorbell\n");
-+		goto err_wrid;
-+	}
-+
- 	ret = alloc_qp_buf(hr_dev, hr_qp, init_attr, udata, ucmd.buf_addr);
- 	if (ret) {
--		ibdev_err(&hr_dev->ib_dev, "Failed to alloc QP buffer\n");
-+		ibdev_err(ibdev, "Failed to alloc QP buffer\n");
- 		goto err_db;
- 	}
- 
- 	ret = alloc_qpn(hr_dev, hr_qp);
- 	if (ret) {
--		ibdev_err(&hr_dev->ib_dev, "Failed to alloc QPN\n");
-+		ibdev_err(ibdev, "Failed to alloc QPN\n");
- 		goto err_buf;
- 	}
- 
- 	ret = alloc_qpc(hr_dev, hr_qp);
- 	if (ret) {
--		ibdev_err(&hr_dev->ib_dev, "Failed to alloc QP context\n");
-+		ibdev_err(ibdev, "Failed to alloc QP context\n");
- 		goto err_qpn;
- 	}
- 
- 	ret = hns_roce_qp_store(hr_dev, hr_qp, init_attr);
- 	if (ret) {
--		ibdev_err(&hr_dev->ib_dev, "Failed to store QP\n");
-+		ibdev_err(ibdev, "Failed to store QP\n");
- 		goto err_qpc;
- 	}
- 
- 	if (udata) {
- 		ret = ib_copy_to_udata(udata, &resp,
- 				       min(udata->outlen, sizeof(resp)));
--		if (ret)
-+		if (ret) {
-+			ibdev_err(ibdev, "copy qp resp failed!\n");
- 			goto err_store;
-+		}
- 	}
- 
- 	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL) {
-@@ -1119,30 +1185,10 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 	free_qpn(hr_dev, hr_qp);
- err_buf:
- 	free_qp_buf(hr_dev, hr_qp);
--
--	free_kernel_wrid(hr_dev, hr_qp);
--
--	if (udata) {
--		if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB) &&
--		    (udata->outlen >= sizeof(resp)) &&
--		    hns_roce_qp_has_rq(init_attr))
--			hns_roce_db_unmap_user(uctx, &hr_qp->rdb);
--	}
--
--err_sq_dbmap:
--	if (udata)
--		if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SQ_RECORD_DB) &&
--		    (udata->inlen >= sizeof(ucmd)) &&
--		    (udata->outlen >= sizeof(resp)) &&
--		    hns_roce_qp_has_sq(init_attr))
--			hns_roce_db_unmap_user(uctx, &hr_qp->sdb);
--
- err_db:
--	if (!udata && hns_roce_qp_has_rq(init_attr) &&
--	    (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_RECORD_DB))
--		hns_roce_free_db(hr_dev, &hr_qp->rdb);
--
--err_out:
-+	free_qp_db(hr_dev, hr_qp, udata);
-+err_wrid:
-+	free_kernel_wrid(hr_dev, hr_qp);
- 	return ret;
- }
- 
-@@ -1157,23 +1203,7 @@ void hns_roce_qp_destroy(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 	free_qpn(hr_dev, hr_qp);
- 	free_qp_buf(hr_dev, hr_qp);
- 	free_kernel_wrid(hr_dev, hr_qp);
--
--	if (udata) {
--		struct hns_roce_ucontext *context =
--			rdma_udata_to_drv_context(
--				udata,
--				struct hns_roce_ucontext,
--				ibucontext);
--
--		if (hr_qp->sq.wqe_cnt && (hr_qp->sdb_en == 1))
--			hns_roce_db_unmap_user(context, &hr_qp->sdb);
--
--		if (hr_qp->rq.wqe_cnt && (hr_qp->rdb_en == 1))
--			hns_roce_db_unmap_user(context, &hr_qp->rdb);
--	} else {
--		if (hr_qp->rq.wqe_cnt)
--			hns_roce_free_db(hr_dev, &hr_qp->rdb);
--	}
-+	free_qp_db(hr_dev, hr_qp, udata);
- 
- 	kfree(hr_qp);
- }
+ 	MLX5_SET(pplm_reg, in, local_port, 1);
+ 	err =  mlx5_core_access_reg(dev, in, sz, out, sz, MLX5_REG_PPLM, 0, 0);
 -- 
-2.8.1
+2.11.0
 
