@@ -2,29 +2,29 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 650D216ABE5
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2020 17:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8672316ABEE
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Feb 2020 17:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgBXQpv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Feb 2020 11:45:51 -0500
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:46506 "EHLO
+        id S1727895AbgBXQpy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Feb 2020 11:45:54 -0500
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:59462 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727426AbgBXQpv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Feb 2020 11:45:51 -0500
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from maxg@mellanox.com)
+        with ESMTP id S1727869AbgBXQpx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Feb 2020 11:45:53 -0500
+Received: from Internal Mail-Server by MTLPINE2 (envelope-from maxg@mellanox.com)
         with ESMTPS (AES256-SHA encrypted); 24 Feb 2020 18:45:45 +0200
 Received: from mtr-vdi-031.wap.labs.mlnx. (mtr-vdi-031.wap.labs.mlnx [10.209.102.136])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 01OGji9M013647;
-        Mon, 24 Feb 2020 18:45:44 +0200
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 01OGji9N013647;
+        Mon, 24 Feb 2020 18:45:45 +0200
 From:   Max Gurtovoy <maxg@mellanox.com>
 To:     linux-nvme@lists.infradead.org, sagi@grimberg.me,
         linux-rdma@vger.kernel.org, kbusch@kernel.org, hch@lst.de,
         martin.petersen@oracle.com
 Cc:     vladimirk@mellanox.com, idanb@mellanox.com, maxg@mellanox.com,
         israelr@mellanox.com, axboe@kernel.dk, shlomin@mellanox.com
-Subject: [PATCH] nvme-cli/fabrics: Add pi_enable param to connect cmd
-Date:   Mon, 24 Feb 2020 18:45:25 +0200
-Message-Id: <20200224164544.219438-2-maxg@mellanox.com>
+Subject: [PATCH 01/19] nvme: Introduce namespace features flag
+Date:   Mon, 24 Feb 2020 18:45:26 +0200
+Message-Id: <20200224164544.219438-3-maxg@mellanox.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200224164544.219438-1-maxg@mellanox.com>
 References: <20200224164544.219438-1-maxg@mellanox.com>
@@ -37,71 +37,116 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Israel Rukshin <israelr@mellanox.com>
 
-Added 'pi_enable' to 'connect' command so users can enable metadata support.
+Centralize all the integrity checks to one place and make the code more
+readable.
 
-usage examples:
-nvme connect --pi_enable --transport=rdma --traddr=10.0.1.1 --nqn=test-nvme
-nvme connect -p -t rdma -a 10.0.1.1 -n test_nvme
-
-Signed-off-by: Israel Rukshin <israelr@mellanox.com>
+Suggested-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
+Signed-off-by: Israel Rukshin <israelr@mellanox.com>
 ---
- fabrics.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/nvme/host/core.c | 39 ++++++++++++++++++++++++++-------------
+ drivers/nvme/host/nvme.h |  5 ++++-
+ 2 files changed, 30 insertions(+), 14 deletions(-)
 
-diff --git a/fabrics.c b/fabrics.c
-index 8982ae4..b22ea14 100644
---- a/fabrics.c
-+++ b/fabrics.c
-@@ -72,6 +72,7 @@ static struct config {
- 	int  disable_sqflow;
- 	int  hdr_digest;
- 	int  data_digest;
-+	int  pi_enable;
- 	bool persistent;
- 	bool quiet;
- } cfg = { NULL };
-@@ -756,7 +757,9 @@ static int build_options(char *argstr, int max_len, bool discover)
- 	    add_bool_argument(&argstr, &max_len, "disable_sqflow",
- 				cfg.disable_sqflow) ||
- 	    add_bool_argument(&argstr, &max_len, "hdr_digest", cfg.hdr_digest) ||
--	    add_bool_argument(&argstr, &max_len, "data_digest", cfg.data_digest))
-+	    add_bool_argument(&argstr, &max_len, "data_digest",
-+				cfg.data_digest) ||
-+	    add_bool_argument(&argstr, &max_len, "pi_enable", cfg.pi_enable))
- 		return -EINVAL;
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 8491422..3a754e0 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -209,11 +209,6 @@ static int nvme_delete_ctrl_sync(struct nvme_ctrl *ctrl)
+ 	return ret;
+ }
  
- 	return 0;
-@@ -885,6 +888,13 @@ retry:
- 		p += len;
- 	}
+-static inline bool nvme_ns_has_pi(struct nvme_ns *ns)
+-{
+-	return ns->pi_type && ns->ms == sizeof(struct t10_pi_tuple);
+-}
+-
+ static blk_status_t nvme_error_status(u16 status)
+ {
+ 	switch (status & 0x7ff) {
+@@ -715,7 +710,8 @@ static inline blk_status_t nvme_setup_rw(struct nvme_ns *ns,
+ 		 * namespace capacity to zero to prevent any I/O.
+ 		 */
+ 		if (!blk_integrity_rq(req)) {
+-			if (WARN_ON_ONCE(!nvme_ns_has_pi(ns)))
++			if (WARN_ON_ONCE(!(ns->features &
++					   NVME_NS_MD_CTRL_SUPPORTED)))
+ 				return BLK_STS_NOTSUPP;
+ 			control |= NVME_RW_PRINFO_PRACT;
+ 		}
+@@ -1277,7 +1273,7 @@ static int nvme_submit_io(struct nvme_ns *ns, struct nvme_user_io __user *uio)
+ 	meta_len = (io.nblocks + 1) * ns->ms;
+ 	metadata = (void __user *)(uintptr_t)io.metadata;
  
-+	if (cfg.pi_enable) {
-+		len = sprintf(p, ",pi_enable");
-+		if (len < 0)
-+			return -EINVAL;
-+		p += len;
+-	if (ns->ext) {
++	if (ns->features & NVME_NS_EXT_LBAS) {
+ 		length += meta_len;
+ 		meta_len = 0;
+ 	} else if (meta_len) {
+@@ -1807,10 +1803,10 @@ static void nvme_update_disk_info(struct gendisk *disk,
+ 	blk_queue_io_min(disk->queue, phys_bs);
+ 	blk_queue_io_opt(disk->queue, io_opt);
+ 
+-	if (ns->ms && !ns->ext &&
+-	    (ns->ctrl->ops->flags & NVME_F_METADATA_SUPPORTED))
++	if (ns->features & NVME_NS_MD_HOST_SUPPORTED)
+ 		nvme_init_integrity(disk, ns->ms, ns->pi_type);
+-	if ((ns->ms && !nvme_ns_has_pi(ns) && !blk_get_integrity(disk)) ||
++	if ((ns->ms && !(ns->features & NVME_NS_MD_CTRL_SUPPORTED) &&
++	     !blk_get_integrity(disk)) ||
+ 	    ns->lba_shift > PAGE_SHIFT)
+ 		capacity = 0;
+ 
+@@ -1840,12 +1836,29 @@ static void __nvme_revalidate_disk(struct gendisk *disk, struct nvme_id_ns *id)
+ 		ns->lba_shift = 9;
+ 	ns->noiob = le16_to_cpu(id->noiob);
+ 	ns->ms = le16_to_cpu(id->lbaf[id->flbas & NVME_NS_FLBAS_LBA_MASK].ms);
+-	ns->ext = ns->ms && (id->flbas & NVME_NS_FLBAS_META_EXT);
++	ns->features = 0;
+ 	/* the PI implementation requires metadata equal t10 pi tuple size */
+-	if (ns->ms == sizeof(struct t10_pi_tuple))
++	if (ns->ms == sizeof(struct t10_pi_tuple)) {
+ 		ns->pi_type = id->dps & NVME_NS_DPS_PI_MASK;
+-	else
++		if (ns->pi_type)
++			ns->features |= NVME_NS_MD_CTRL_SUPPORTED;
++	} else {
+ 		ns->pi_type = 0;
 +	}
 +
- 	switch (e->trtype) {
- 	case NVMF_TRTYPE_RDMA:
- 	case NVMF_TRTYPE_TCP:
-@@ -1171,6 +1181,7 @@ int discover(const char *desc, int argc, char **argv, bool connect)
- 		OPT_INT("tos",             'T', &cfg.tos,             "type of service"),
- 		OPT_FLAG("hdr_digest",     'g', &cfg.hdr_digest,      "enable transport protocol header digest (TCP transport)"),
- 		OPT_FLAG("data_digest",    'G', &cfg.data_digest,     "enable transport protocol data digest (TCP transport)"),
-+		OPT_FLAG("pi_enable",      'p', &cfg.pi_enable,       "enable metadata (T10-PI) support (default false)"),
- 		OPT_INT("nr-io-queues",    'i', &cfg.nr_io_queues,    "number of io queues to use (default is core count)"),
- 		OPT_INT("nr-write-queues", 'W', &cfg.nr_write_queues, "number of write queues to use (default 0)"),
- 		OPT_INT("nr-poll-queues",  'P', &cfg.nr_poll_queues,  "number of poll queues to use (default 0)"),
-@@ -1231,6 +1242,7 @@ int connect(const char *desc, int argc, char **argv)
- 		OPT_FLAG("disable-sqflow",    'd', &cfg.disable_sqflow,    "disable controller sq flow control (default false)"),
- 		OPT_FLAG("hdr-digest",        'g', &cfg.hdr_digest,        "enable transport protocol header digest (TCP transport)"),
- 		OPT_FLAG("data-digest",       'G', &cfg.data_digest,       "enable transport protocol data digest (TCP transport)"),
-+		OPT_FLAG("pi_enable",         'p', &cfg.pi_enable,         "enable metadata (T10-PI) support (default false)"),
- 		OPT_END()
- 	};
++	if (ns->ms) {
++		if (id->flbas & NVME_NS_FLBAS_META_EXT)
++			ns->features |= NVME_NS_EXT_LBAS;
++
++		/*
++		 * For PCI, Extended logical block will be generated by the
++		 * controller.
++		 */
++		if (ns->ctrl->ops->flags & NVME_F_METADATA_SUPPORTED) {
++			if (!(ns->features & NVME_NS_EXT_LBAS))
++				ns->features |= NVME_NS_MD_HOST_SUPPORTED;
++		}
++	}
  
+ 	if (ns->noiob)
+ 		nvme_set_chunk_size(ns);
+diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
+index 1024fec..fea20f1 100644
+--- a/drivers/nvme/host/nvme.h
++++ b/drivers/nvme/host/nvme.h
+@@ -381,8 +381,11 @@ struct nvme_ns {
+ 	u16 ms;
+ 	u16 sgs;
+ 	u32 sws;
+-	bool ext;
+ 	u8 pi_type;
++	unsigned long features;
++#define NVME_NS_EXT_LBAS		(1 << 0)
++#define NVME_NS_MD_HOST_SUPPORTED	(1 << 1)
++#define NVME_NS_MD_CTRL_SUPPORTED	(1 << 2)
+ 	unsigned long flags;
+ #define NVME_NS_REMOVING	0
+ #define NVME_NS_DEAD     	1
 -- 
 1.8.3.1
 
