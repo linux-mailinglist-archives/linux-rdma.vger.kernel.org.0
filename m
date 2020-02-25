@@ -2,167 +2,370 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B4D16B5A6
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Feb 2020 00:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8E816B6DE
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Feb 2020 01:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgBXXdG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Feb 2020 18:33:06 -0500
-Received: from mail-vi1eur05on2069.outbound.protection.outlook.com ([40.107.21.69]:27980
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726651AbgBXXdF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 24 Feb 2020 18:33:05 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fugnVVRf+hA70+f+xQa/eb0mvvDsIx/rEZGq95JoIsAXIV79iM6H1p4i+aBQSPS8Pqp8bCXbP+EdHXkosT+GLSf3l61LAdASmmD6EBzC6ZMF4uKBrueXOapffGHsNdPwEaFLu2x6ptoKThnKALVImKY4X4ptDd1LOqXOSkhfMpxhk4SC+D+6d7Z8TgCVBMXLvXRhKhrRAEizkU1k4rhLuuXbPdLPQ6NIJi/J7DC5B3fSuEBo0Y5pNjU4d9l5Y5dwGz+p6fXV4zsFSYisokZ3xMJQYCbSR9G9HdXkYiPtdbIg2pWXI0CWAeBqHvHKQOJ9Jd7g4o055XWho6rpiF+How==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hJZzkpriBSZitEhJSb1pxW7f5nY0ByDJzDPV+5EIMDk=;
- b=S9Y40PiCb2/fv3L0Uh8Y4QtpSiTyzLEV2B2IUwILhnvgnBkqDHUGMNA+Zgtfcjba1QR0OPJoBdFSl10wnbKLUBF1IKBdFh+PdMdVuEdEhEUtoulrscanOrfTgL8eeNikQImiNL+akJSQK2vAz7QuFdoV7FktKjRF0JxLFog6yAAyu6kyYhBS3CuedU/VI9qSkgWCpQlUwLQRcj93jy3IDMy7DR0WY57I54Gynrqn1lCr8eJgp6uK8OS42BzQ+F70bLnSmG7K9YUzMFhgw+F+tcRa0QI/HfMXM6w3ej6Tc1oECoqspbtqHZ933cBKYJ1kjbHIJBHuMJl3dBNLN3YfXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hJZzkpriBSZitEhJSb1pxW7f5nY0ByDJzDPV+5EIMDk=;
- b=mY2CEG00v4QWMg2o+vhmSKAtbc668qU4wlcUf3JTsk40FEHzScur5fDipPW0c0xakHU/IG2oGfceByYPbb1UbLTaKLSRYxYetLiFmOTnzCrVtJ0rAIgM4P9iURON7Uj5ePvh/RjkFMTL0l3nyMLpZggJIJpV1LHLD+/UYM4ilR0=
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (20.177.51.151) by
- VI1PR05MB6304.eurprd05.prod.outlook.com (20.179.25.10) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2750.21; Mon, 24 Feb 2020 23:32:58 +0000
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::8cea:6c66:19fe:fbc2]) by VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::8cea:6c66:19fe:fbc2%7]) with mapi id 15.20.2750.021; Mon, 24 Feb 2020
- 23:32:58 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     "yishaih@dev.mellanox.co.il" <yishaih@dev.mellanox.co.il>
-CC:     Jason Gunthorpe <jgg@mellanox.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "rosenbaumalex@gmail.com" <rosenbaumalex@gmail.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>
-Subject: Re: [PATCH mlx5-next 1/2] net/mlx5: Expose raw packet pacing APIs
-Thread-Topic: [PATCH mlx5-next 1/2] net/mlx5: Expose raw packet pacing APIs
-Thread-Index: AQHV51eOx5+84+K2R0K/zzS76Ar13agmBOeAgAJ5y4CAAofKgA==
-Date:   Mon, 24 Feb 2020 23:32:58 +0000
-Message-ID: <df68bb933da1c20bbd1c131653895f9233249c9e.camel@mellanox.com>
-References: <20200219190518.200912-1-leon@kernel.org>
-         <20200219190518.200912-2-leon@kernel.org>
-         <ea7589ad4d3f847f49e4b4f230cdc130ed4b83a8.camel@mellanox.com>
-         <449186ce-c66f-a762-24c3-139c4ced3b1c@dev.mellanox.co.il>
-In-Reply-To: <449186ce-c66f-a762-24c3-139c4ced3b1c@dev.mellanox.co.il>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-originating-ip: [73.15.39.150]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: e544a114-9144-417e-d69d-08d7b981e199
-x-ms-traffictypediagnostic: VI1PR05MB6304:|VI1PR05MB6304:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB6304207046F65968B5EB8642BEEC0@VI1PR05MB6304.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 032334F434
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(346002)(39860400002)(376002)(136003)(366004)(189003)(199004)(8676002)(6512007)(6862004)(316002)(54906003)(186003)(6506007)(26005)(5660300002)(53546011)(4326008)(2616005)(81166006)(71200400001)(81156014)(66446008)(2906002)(66946007)(76116006)(91956017)(64756008)(36756003)(8936002)(86362001)(66476007)(478600001)(6486002)(66556008);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6304;H:VI1PR05MB5102.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ir7NwBt+vAd0BDXzJ3ycPaRgG/utSWA36zYBLh7zrnrQTR3GVZ46ObXujIOirYGrx8Jdykr6cvSU7rcUQsmR+xQ8IrTpW8aRM/twTk4vOBZfI9Vsgz4noV16ZWz8oGEOFiOPmL5WUefSBiHkNTe2F93ba/5jf3Cp9dHTBOGL/lmJ99WKORYW1QSuIg7G1600xRNl5j7q8eBjMghdJGSTDbe2/ich5ccaZdP+3B/zD4FK5fKI7ISm1T6hHt4yj3oXjitW5oeVbAdzz9lV4n4nWe2FSe2j1UIAp7Zov4r/h3r9JC0Galcd3ZVh4rb0BJj/7VYqd01ZQ1UEI6c/c+fFiNRB5zJloWxbHMzMOiodVWZ/Pu8enKIS9PRLcMNIehkF6RQQiATvS9aO1AlioFyuqQYGLvMOvjdzccl5vQfiWPZ6X3YLiAKH6PmcAoXC0T7A
-x-ms-exchange-antispam-messagedata: woFBPDoW+als8cMgBge4PcXdA2rNXFizTA6xa5Wwe6z5tcPx4Ez8fYWR5uFzKJxjUZAX8+kVPJ+YDCxV6ogSa6Uru+LwshyQbfK0WP31vMdPkviISi8u0OPseodCnHbkAyKPmzxulRnvwqwShuteOg==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5A8C0B4E5F601242A469EC3BEE60E1E0@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1728135AbgBYAth (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 24 Feb 2020 19:49:37 -0500
+Received: from mga05.intel.com ([192.55.52.43]:33483 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727976AbgBYAtg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 Feb 2020 19:49:36 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 Feb 2020 16:49:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,482,1574150400"; 
+   d="scan'208";a="410059117"
+Received: from ssaleem-mobl.amr.corp.intel.com ([10.252.205.170])
+  by orsmga005.jf.intel.com with ESMTP; 24 Feb 2020 16:49:33 -0800
+From:   Shiraz Saleem <shiraz.saleem@intel.com>
+To:     dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org,
+        "Sindhu, Devale" <sindhu.devale@intel.com>,
+        Jarod Wilson <jarod@redhat.com>
+Subject: [PATCH rdma-next] i40iw: Report correct firmware version
+Date:   Mon, 24 Feb 2020 18:49:18 -0600
+Message-Id: <20200225004918.890-1-shiraz.saleem@intel.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e544a114-9144-417e-d69d-08d7b981e199
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Feb 2020 23:32:58.1860
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rw1bqhtWSyQp7TLZi5/sHUbTJuy89AkjIpXdEaGC6qStwucgQa3+CQg+zX7Z8WOsyXtfg7lnuJ/zAJHjW88B4A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6304
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gU3VuLCAyMDIwLTAyLTIzIGF0IDEwOjUzICswMjAwLCBZaXNoYWkgSGFkYXMgd3JvdGU6DQo+
-IE9uIDIvMjEvMjAyMCA5OjA0IFBNLCBTYWVlZCBNYWhhbWVlZCB3cm90ZToNCj4gPiBPbiBXZWQs
-IDIwMjAtMDItMTkgYXQgMjE6MDUgKzAyMDAsIExlb24gUm9tYW5vdnNreSB3cm90ZToNCj4gPiA+
-IEZyb206IFlpc2hhaSBIYWRhcyA8eWlzaGFpaEBtZWxsYW5veC5jb20+DQo+ID4gPiANCj4gPiA+
-IEV4cG9zZSByYXcgcGFja2V0IHBhY2luZyBBUElzIHRvIGJlIHVzZWQgYnkgREVWWCBiYXNlZA0K
-PiA+ID4gYXBwbGljYXRpb25zLg0KPiA+ID4gVGhlIGV4aXN0aW5nIGNvZGUgd2FzIHJlZmFjdG9y
-ZWQgdG8gaGF2ZSBhIHNpbmdsZSBmbG93IHdpdGggdGhlDQo+ID4gPiBuZXcNCj4gPiA+IHJhdw0K
-PiA+ID4gQVBJcy4NCj4gPiA+IA0KPiA+ID4gVGhlIG5ldyByYXcgQVBJcyBjb25zaWRlcmVkIHRo
-ZSBpbnB1dCBvZiAncHBfcmF0ZV9saW1pdF9jb250ZXh0JywNCj4gPiA+IHVpZCwNCj4gPiA+ICdk
-ZWRpY2F0ZWQnLCB1cG9uIGxvb2tpbmcgZm9yIGFuIGV4aXN0aW5nIGVudHJ5Lg0KPiA+ID4gDQo+
-ID4gPiBUaGlzIHJhdyBtb2RlIGVuYWJsZXMgZnV0dXJlIGRldmljZSBzcGVjaWZpY2F0aW9uIGRh
-dGEgaW4gdGhlIHJhdw0KPiA+ID4gY29udGV4dCB3aXRob3V0IGNoYW5naW5nIHRoZSBleGlzdGlu
-ZyBsb2dpYyBhbmQgY29kZS4NCj4gPiA+IA0KPiA+ID4gVGhlIGFiaWxpdHkgdG8gYXNrIGZvciBh
-IGRlZGljYXRlZCBlbnRyeSBnaXZlcyBjb250cm9sIGZvcg0KPiA+ID4gYXBwbGljYXRpb24NCj4g
-PiA+IHRvIGFsbG9jYXRlIGVudHJpZXMgYWNjb3JkaW5nIHRvIGl0cyBuZWVkcy4NCj4gPiA+IA0K
-PiA+ID4gQSBkZWRpY2F0ZWQgZW50cnkgbWF5IG5vdCBiZSB1c2VkIGJ5IHNvbWUgb3RoZXIgcHJv
-Y2VzcyBhbmQgaXQNCj4gPiA+IGFsc28NCj4gPiA+IGVuYWJsZXMgdGhlIHByb2Nlc3Mgc3ByZWFk
-aW5nIGl0cyByZXNvdXJjZXMgdG8gc29tZSBkaWZmZXJlbnQNCj4gPiA+IGVudHJpZXMNCj4gPiA+
-IGZvciB1c2UgZGlmZmVyZW50IGhhcmR3YXJlIHJlc291cmNlcyBhcyBwYXJ0IG9mIGVuZm9yY2lu
-ZyB0aGUNCj4gPiA+IHJhdGUuDQo+ID4gPiANCj4gPiANCj4gPiBJdCBzb3VuZHMgbGlrZSB0aGUg
-ZGVkaWNhdGVkIG1lYW5zICJubyBzaGFyaW5nIiB3aGljaCBtZWFucyB5b3UNCj4gPiBkb24ndA0K
-PiA+IG5lZWQgdG8gdXNlIHRoZSBtbHg1X2NvcmUgQVBJIGFuZCB5b3UgY2FuIGdvIGRpcmVjdGx5
-IHRvIEZXLi4gVGhlDQo+ID4gcHJvYmxlbSBpcyB0aGF0IHRoZSBlbnRyeSBpbmRpY2VzIGFyZSBt
-YW5hZ2VkIGJ5IGRyaXZlciwgYW5kIGkNCj4gPiBndWVzcw0KPiA+IHRoaXMgaXMgdGhlIHJlYXNv
-biB3aHkgeW91IGhhZCB0byBleHBhbmQgdGhlIG1seDVfY29yZSBBUEkuLg0KPiA+IA0KPiANCj4g
-VGhlIG1haW4gcmVhc29uIGZvciBpbnRyb2R1Y2luZyB0aGUgbmV3IG1seDVfY29yZSBBUElzIHdh
-cyB0aGUgbmVlZA0KPiB0byANCj4gc3VwcG9ydCB0aGUgInNoYXJlZCBtb2RlIiBpbiBhICJyYXcg
-ZGF0YSIgZm9ybWF0IHRvIHByZXZlbnQgZnV0dXJlIA0KPiB0b3VjaGluZyB0aGUga2VybmVsIG9u
-Y2UgUFJNIHdpbGwgc3VwcG9ydCBleHRyYSBmaWVsZHMuDQo+IEFzIHRoZSBSTCBpbmRpY2VzIGFy
-ZSBtYW5hZ2VkIGJ5IHRoZSBkcml2ZXIgKG1seDVfY29yZSkgaW5jbHVkaW5nDQo+IHRoZSANCj4g
-c2hhcmluZywgd2UgY291bGRu4oCZdCBnbyBkaXJlY3RseSB0byBGVywgdGhlIGxlZ2FjeSBBUEkg
-d2FzDQo+IHJlZmFjdG9yZWQgDQo+IGluc2lkZSB0aGUgY29yZSB0byBoYXZlIG9uZSBmbG93IHdp
-dGggdGhlIG5ldyByYXcgQVBJcy4NCj4gU28gd2UgbWF5IG5lZWQgdGhvc2UgQVBJcyByZWdhcmRs
-ZXNzIHRoZSBkZWRpY2F0ZWQgbW9kZS4NCj4gDQoNCkkgbm90IGEgZmFuIG9mIGxlZ2FjeSBBUElz
-LCBhbGwgb2YgdGhlIEFQSXMgYXJlIG1seDUgaW50ZXJuYWxzIGFuZCBpDQp3b3VsZCBsaWtlIHRv
-IGtlZXAgb25lIEFQSSB3aGljaCBpcyBvbmx5IFBSTSBkZXBlbmRlbnQgYXMgbXVjaCBhcw0KcG9z
-c2libGUuDQoNCkFueXdheSB0aGFua3MgZm9yIHRoZSBjbGFyaWZpY2F0aW9uLCBpIHRoaW5rIHRo
-ZSBwYXRjaCBpcyBnb29kIGFzIGlzLA0Kd2UgY2FuIGltcHJvdmUgYW5kIHJlbW92ZSB0aGUgbGVn
-YWN5IEFQSSBpbiB0aGUgZnV0dXJlIGFuZCBrZWVwIHRoZSByYXcNCkFQSS4NCg0KPiANCj4gPiBJ
-IHdvdWxkIGxpa2UgdG8gc3VnZ2VzdCBzb21lIGFsdGVybmF0aXZlcyB0byBzaW1wbGlmeSB0aGUg
-YXBwcm9hY2gNCj4gPiBhbmQNCj4gPiBhbGxvdyB1c2luZyBSQVcgUFJNIGZvciBERVZYIHByb3Bl
-cmx5Lg0KPiA+IA0KPiA+IDEuIHByZXNlcnZlIFJMIGVudHJpZXMgZm9yIERFVlggYW5kIGxldCBE
-RVZYIGFjY2VzcyBGVyBkaXJlY3RseQ0KPiA+IHdpdGgNCj4gPiBQUk0gY29tbWFuZHMuDQo+ID4g
-Mi4ga2VlcCBtbHg1X2NvcmUgQVBJIHNpbXBsZSBhbmQgaW5zdGVhZCBvZiBhZGRpbmcgdGhpcyBy
-YXcvbm9uIHJhdw0KPiA+IGFwaQ0KPiA+IGFuZCBjb21wbGljYXRpbmcgdGhlIFJMIEFQSSB3aXRo
-IHRoaXMgZGVkaWNhdGVkIGJpdDoNCj4gPiANCj4gPiBqdXN0IGFkZCBtbHg1X3JsX3thbGxvYy9m
-cmVlfV9pbmRleCgpLCB0aGlzIHdpbGwgZGVkaWNhdGUgZm9yIHlvdQ0KPiA+IHRoZQ0KPiA+IFJM
-IGluZGV4IGZvcm0gdGhlIGVuZCBvZiB0aGUgUkwgaW5kaWNlcyBkYXRhYmFzZSBhbmQgeW91IGFy
-ZSBmcmVlDQo+ID4gdG8NCj4gPiBhY2Nlc3MgdGhlIEZXIHdpdGggdGhpcyBpbmRleCB0aGUgd2F5
-IHlvdSBsaWtlIHZpYSBkaXJlY3QgUFJNDQo+ID4gY29tbWFuZHMuDQo+ID4gDQo+IEFzIG1lbnRp
-b25lZCBhYm92ZSwgd2UgbWF5IHN0aWxsIG5lZWQgdGhlIG5ldyBtbHg1X2NvcmUgcmF3IEFQSXMg
-Zm9yDQo+IHRoZSANCj4gc2hhcmVkIG1vZGUgd2hpY2ggaXMgdGhlIG1haW4gdXNhZ2Ugb2YgdGhl
-IEFQSSwgd2UgZm91bmQgaXQNCj4gcmVhc29uYWJsZSANCj4gdG8gaGF2ZSB0aGUgZGVkaWNhdGUg
-ZmxhZyBpbiB0aGUgbmV3IHJhdyBhbGxvYyBBUEkgaW5zdGVhZCBvZg0KPiBleHBvc2luZyANCj4g
-bW9yZSB0d28gbmV3IEFQSXMgb25seSBmb3IgdGhhdC4NCj4gDQo+IFBsZWFzZSBub3RlIHRoYXQg
-ZXZlbiBpZiB3ZSdsbCBnbyB3aXRoIHRob3NlIDIgZXh0cmEgQVBJcyBmb3IgdGhlIA0KPiBkZWRp
-Y2F0ZWQgbW9kZSwgd2UgbWF5IHN0aWxsIG5lZWQgdG8gbWFpbnRhaW4gaW4gdGhlIGNvcmUgdGhp
-cyANCj4gaW5mb3JtYXRpb24gdG8gcHJldmVudCByZXR1cm5pbmcgdGhpcyBlbnRyeSBmb3Igb3Ro
-ZXIgY2FzZXMuDQo+IA0KPiBBbHNvIHRoZSBpZGVhIHRvIHByZXNlcnZlIHNvbWUgZW50cmllcyBh
-dCB0aGUgZW5kIG1pZ2h0IGJlIHdhc3RlZnVsDQo+IGFzIA0KPiB0aGVyZSBpcyBubyBndWFyYW50
-ZWUgdGhhdCBERVZYIHdpbGwgcmVhbGx5IGJlIHVzZWQsIGFuZCBldmVuIHNvIGl0DQo+IG1heSAN
-Cj4gbm90IGFzayBmb3IgZW50cmllcyBpbiBhIGRlZGljYXRlZCBtb2RlLg0KPiANCj4gUHJlc2Vy
-aW5nIHRoZW0gZm9yIHRoaXMgb3B0aW9uYWwgdXNlIGNhc2UgbWlnaHQgcHJldmVudCB1c2luZyB0
-aGVtDQo+IGZvciANCj4gYWxsIG90aGVyIGNhc2VzLg0KPiANCj4gDQo+ID4gPiBUaGUgY291bnRl
-ciBwZXIgZW50cnkgbWFzIGNoYW5nZWQgdG8gYmUgdTY0IHRvIHByZXZlbnQgYW55IG9wdGlvbg0K
-PiA+ID4gdG8NCj4gPiAgICAgICAgICAgICAgICAgICAgIHR5cG8gXl5eIHdhcw0KPiANCj4gU3Vy
-ZSwgdGhhbmtzLg0KPiANCg0KTGVvbiwgT3RoZXIgdGhhbiB0aGUgdHlwbyBpIGFtIGdvb2Qgd2l0
-aCB0aGlzIHBhdGNoLg0KeW91IGNhbiBmaXggdXAgdGhlIHBhdGNoIHByaW9yIHRvIHB1bGxpbmcg
-aW50byBtbHg1LW5leHQsIG5vIG5lZWQgZm9yDQp2Mi4NCg0KQWNrZWQtYnk6IFNhZWVkIE1haGFt
-ZWVkIDxzYWVlZG1AbWVsbGFub3guY29tPiANCg0KDQp0aGFua3MsDQpTYWVlZC4NCg0K
+From: "Sindhu, Devale" <sindhu.devale@intel.com>
+
+The driver uses a hard-coded value for FW version and
+reports an inconsistent FW version between ibv_devinfo
+and /sys/class/infiniband/i40iw/fw_ver.
+Retrieve the FW version via a Control QP (CQP) operation
+and report it consistently across sysfs and query device.
+
+Fixes: d37498417947 ("i40iw: add files for iwarp interface")
+Reported-by: Jarod Wilson <jarod@redhat.com>
+Signed-off-by: Sindhu, Devale <sindhu.devale@intel.com>
+Signed-off-by: Shiraz, Saleem <shiraz.saleem@intel.com>
+---
+ drivers/infiniband/hw/i40iw/i40iw.h        |  2 +-
+ drivers/infiniband/hw/i40iw/i40iw_ctrl.c   | 98 ++++++++++++++++++++++++++++++
+ drivers/infiniband/hw/i40iw/i40iw_d.h      | 33 +++++++++-
+ drivers/infiniband/hw/i40iw/i40iw_main.c   |  5 ++
+ drivers/infiniband/hw/i40iw/i40iw_p.h      |  1 +
+ drivers/infiniband/hw/i40iw/i40iw_status.h |  3 +-
+ drivers/infiniband/hw/i40iw/i40iw_type.h   | 12 ++++
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c  |  9 +--
+ 8 files changed, 154 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/infiniband/hw/i40iw/i40iw.h b/drivers/infiniband/hw/i40iw/i40iw.h
+index 8feec35..81f94c1 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw.h
++++ b/drivers/infiniband/hw/i40iw/i40iw.h
+@@ -67,7 +67,7 @@
+ #include "i40iw_user.h"
+ #include "i40iw_puda.h"
+ 
+-#define I40IW_FW_VERSION  2
++#define I40IW_FW_VER_DEFAULT  2
+ #define I40IW_HW_VERSION  2
+ 
+ #define I40IW_ARP_ADD     1
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_ctrl.c b/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
+index 4d841a3..6defffb 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_ctrl.c
+@@ -1022,6 +1022,97 @@ static enum i40iw_status_code i40iw_sc_commit_fpm_values(
+ }
+ 
+ /**
++ * i40iw_sc_query_rdma_features_done - poll cqp for query features done
++ * @cqp: struct for cqp hw
++ */
++static enum i40iw_status_code i40iw_sc_query_rdma_features_done(struct i40iw_sc_cqp *cqp)
++{
++	return i40iw_sc_poll_for_cqp_op_done(cqp,
++					     I40IW_CQP_OP_QUERY_RDMA_FEATURES,
++					     NULL);
++}
++
++/**
++ * i40iw_sc_query_rdma_features - query rdma features
++ * @cqp: struct for cqp hw
++ * @feat_mem: holds PA for HW to use
++ * @scratch: u64 saved to be used during cqp completion
++ */
++static enum i40iw_status_code i40iw_sc_query_rdma_features(struct i40iw_sc_cqp *cqp,
++							   struct i40iw_dma_mem *feat_mem,
++							   u64 scratch)
++{
++	u64 *wqe;
++	u64 header;
++
++	wqe = i40iw_sc_cqp_get_next_send_wqe(cqp, scratch);
++	if (wqe)
++		return I40IW_ERR_RING_FULL;
++
++	set_64bit_val(wqe, 32, feat_mem->pa);
++
++	header = LS_64(I40IW_CQP_OP_QUERY_RDMA_FEATURES, I40IW_CQPSQ_OPCODE) |
++		 LS_64(cqp->polarity, I40IW_CQPSQ_WQEVALID) |
++		 feat_mem->size;
++
++	i40iw_insert_wqe_hdr(wqe, header);
++
++	i40iw_debug_buf(cqp->dev, I40IW_DEBUG_WQE, "QUERY RDMA FEATURES WQE",
++			wqe, I40IW_CQP_WQE_SIZE * 8);
++
++	i40iw_sc_cqp_post_sq(cqp);
++
++	return 0;
++}
++
++/**
++ * i40iw_get_rdma_features - get RDMA features
++ * @dev - sc device struct
++ */
++enum i40iw_status_code i40iw_get_rdma_features(struct i40iw_sc_dev *dev)
++{
++	enum i40iw_status_code ret_code;
++	struct i40iw_dma_mem feat_buf;
++	u64 temp;
++	u16 byte_idx, feat_type, feat_cnt;
++
++	ret_code = i40iw_allocate_dma_mem(dev->hw,
++					  &feat_buf,
++					  I40IW_FEATURE_BUF_SIZE,
++					  I40IW_FEATURE_BUF_ALIGNMENT);
++
++	if (ret_code)
++		return I40IW_ERR_NO_MEMORY;
++
++	ret_code = i40iw_sc_query_rdma_features(dev->cqp, &feat_buf, 0);
++	if (!ret_code)
++		ret_code = i40iw_sc_query_rdma_features_done(dev->cqp);
++
++	if (ret_code)
++		goto exit;
++
++	get_64bit_val(feat_buf.va, 0, &temp);
++	feat_cnt = (u16)RS_64(temp, I40IW_FEATURE_CNT);
++	if (feat_cnt < I40IW_MAX_FEATURES) {
++		ret_code = I40IW_ERR_INVALID_FEAT_CNT;
++		goto exit;
++	} else if (feat_cnt > I40IW_MAX_FEATURES) {
++		i40iw_debug(dev, I40IW_DEBUG_CQP,
++			    "features buf size insufficient\n");
++	}
++
++	for (byte_idx = 0, feat_type = 0; feat_type < I40IW_MAX_FEATURES;
++	     feat_type++, byte_idx += 8) {
++		get_64bit_val((u64 *)feat_buf.va, byte_idx, &temp);
++		dev->feature_info[feat_type] = RS_64(temp, I40IW_FEATURE_INFO);
++	}
++exit:
++	i40iw_free_dma_mem(dev->hw, &feat_buf);
++
++	return ret_code;
++}
++
++/**
+  * i40iw_sc_query_fpm_values_done - poll for cqp wqe completion for query fpm
+  * @cqp: struct for cqp hw
+  */
+@@ -4265,6 +4356,13 @@ static enum i40iw_status_code i40iw_exec_cqp_cmd(struct i40iw_sc_dev *dev,
+ 				true,
+ 				I40IW_CQP_WAIT_EVENT);
+ 		break;
++	case OP_QUERY_RDMA_FEATURES:
++		values_mem.pa = pcmdinfo->in.u.query_rdma_features.cap_pa;
++		values_mem.va = pcmdinfo->in.u.query_rdma_features.cap_va;
++		status = i40iw_sc_query_rdma_features(pcmdinfo->in.u.query_rdma_features.cqp,
++						      &values_mem,
++						      pcmdinfo->in.u.query_rdma_features.scratch);
++		break;
+ 	default:
+ 		status = I40IW_NOT_SUPPORTED;
+ 		break;
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_d.h b/drivers/infiniband/hw/i40iw/i40iw_d.h
+index 6ddaeec..3e23a3d 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_d.h
++++ b/drivers/infiniband/hw/i40iw/i40iw_d.h
+@@ -370,6 +370,13 @@
+ #define I40IW_AEQE_VALID_SHIFT 63
+ #define I40IW_AEQE_VALID_MASK (1ULL << I40IW_AEQE_VALID_SHIFT)
+ 
++#define FW_MAJOR_VER(dev) \
++	((u16)RS_64((dev)->feature_info[I40IW_FEATURE_FW_INFO], \
++		    I40IW_FW_VER_MAJOR))
++#define FW_MINOR_VER(dev) \
++	((u16)RS_64((dev)->feature_info[I40IW_FEATURE_FW_INFO], \
++		    I40IW_FW_VER_MINOR))
++
+ /* CQP SQ WQES */
+ #define I40IW_QP_TYPE_IWARP     1
+ #define I40IW_QP_TYPE_UDA       2
+@@ -403,7 +410,7 @@
+ #define I40IW_CQP_OP_MANAGE_ARP                 0x0f
+ #define I40IW_CQP_OP_MANAGE_VF_PBLE_BP          0x10
+ #define I40IW_CQP_OP_MANAGE_PUSH_PAGES          0x11
+-#define I40IW_CQP_OP_MANAGE_PE_TEAM             0x12
++#define I40IW_CQP_OP_QUERY_RDMA_FEATURES	0x12
+ #define I40IW_CQP_OP_UPLOAD_CONTEXT             0x13
+ #define I40IW_CQP_OP_ALLOCATE_LOC_MAC_IP_TABLE_ENTRY 0x14
+ #define I40IW_CQP_OP_MANAGE_HMC_PM_FUNC_TABLE   0x15
+@@ -431,6 +438,24 @@
+ #define I40IW_CQP_OP_SHMC_PAGES_ALLOCATED       0x2b
+ #define I40IW_CQP_OP_SET_HMC_RESOURCE_PROFILE   0x2d
+ 
++#define I40IW_FEATURE_BUF_SIZE                  (8 * I40IW_MAX_FEATURES)
++
++#define I40IW_FW_VER_MINOR_SHIFT        0
++#define I40IW_FW_VER_MINOR_MASK         \
++	(0xffffULL << I40IW_FW_VER_MINOR_SHIFT)
++
++#define I40IW_FW_VER_MAJOR_SHIFT        16
++#define I40IW_FW_VER_MAJOR_MASK	        \
++	(0xffffULL << I40IW_FW_VER_MAJOR_SHIFT)
++
++#define I40IW_FEATURE_INFO_SHIFT        0
++#define I40IW_FEATURE_INFO_MASK         \
++	(0xffffULL << I40IW_FEATURE_INFO_SHIFT)
++
++#define I40IW_FEATURE_CNT_SHIFT         32
++#define I40IW_FEATURE_CNT_MASK          \
++	(0xffffULL << I40IW_FEATURE_CNT_SHIFT)
++
+ #define I40IW_UDA_QPSQ_NEXT_HEADER_SHIFT 16
+ #define I40IW_UDA_QPSQ_NEXT_HEADER_MASK ((u64)0xff << I40IW_UDA_QPSQ_NEXT_HEADER_SHIFT)
+ 
+@@ -1529,7 +1554,8 @@ enum i40iw_alignment {
+ 	I40IW_AEQ_ALIGNMENT =		0x100,
+ 	I40IW_CEQ_ALIGNMENT =		0x100,
+ 	I40IW_CQ0_ALIGNMENT =		0x100,
+-	I40IW_SD_BUF_ALIGNMENT =	0x80
++	I40IW_SD_BUF_ALIGNMENT =	0x80,
++	I40IW_FEATURE_BUF_ALIGNMENT =	0x8
+ };
+ 
+ #define I40IW_WQE_SIZE_64	64
+@@ -1732,6 +1758,7 @@ enum i40iw_alignment {
+ #define OP_REQUESTED_COMMANDS                   31
+ #define OP_COMPLETED_COMMANDS                   32
+ #define OP_GEN_AE                               33
+-#define OP_SIZE_CQP_STAT_ARRAY                  34
++#define OP_QUERY_RDMA_FEATURES                  34
++#define OP_SIZE_CQP_STAT_ARRAY			35
+ 
+ #endif
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_main.c b/drivers/infiniband/hw/i40iw/i40iw_main.c
+index 84e1b52..194e58d 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_main.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_main.c
+@@ -1683,6 +1683,11 @@ static int i40iw_open(struct i40e_info *ldev, struct i40e_client *client)
+ 		status = i40iw_setup_ceqs(iwdev, ldev);
+ 		if (status)
+ 			break;
++
++		status = i40iw_get_rdma_features(dev);
++		if (status)
++			dev->feature_info[I40IW_FEATURE_FW_INFO] = I40IW_FW_VER_DEFAULT;
++
+ 		iwdev->init_state = CEQ_CREATED;
+ 		status = i40iw_initialize_hw_resources(iwdev);
+ 		if (status)
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_p.h b/drivers/infiniband/hw/i40iw/i40iw_p.h
+index 11d3a2a..4c42956 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_p.h
++++ b/drivers/infiniband/hw/i40iw/i40iw_p.h
+@@ -105,6 +105,7 @@ enum i40iw_status_code i40iw_sc_static_hmc_pages_allocated(struct i40iw_sc_cqp *
+ 							   bool poll_registers);
+ 
+ enum i40iw_status_code i40iw_config_fpm_values(struct i40iw_sc_dev *dev, u32 qp_count);
++enum i40iw_status_code i40iw_get_rdma_features(struct i40iw_sc_dev *dev);
+ 
+ void free_sd_mem(struct i40iw_sc_dev *dev);
+ 
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_status.h b/drivers/infiniband/hw/i40iw/i40iw_status.h
+index f7013f1..d1c5855 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_status.h
++++ b/drivers/infiniband/hw/i40iw/i40iw_status.h
+@@ -95,7 +95,8 @@ enum i40iw_status_code {
+ 	I40IW_ERR_INVALID_MAC_ADDR = -65,
+ 	I40IW_ERR_BAD_STAG      = -66,
+ 	I40IW_ERR_CQ_COMPL_ERROR = -67,
+-	I40IW_ERR_QUEUE_DESTROYED = -68
++	I40IW_ERR_QUEUE_DESTROYED = -68,
++	I40IW_ERR_INVALID_FEAT_CNT = -69
+ 
+ };
+ #endif
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_type.h b/drivers/infiniband/hw/i40iw/i40iw_type.h
+index adc8d2e..54c323c 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_type.h
++++ b/drivers/infiniband/hw/i40iw/i40iw_type.h
+@@ -234,6 +234,11 @@ enum i40iw_hw_stats_index_64b {
+ 	I40IW_HW_STAT_INDEX_MAX_64
+ };
+ 
++enum i40iw_feature_type {
++	I40IW_FEATURE_FW_INFO = 0,
++	I40IW_MAX_FEATURES
++};
++
+ struct i40iw_dev_hw_stats_offsets {
+ 	u32 stats_offset_32[I40IW_HW_STAT_INDEX_MAX_32];
+ 	u32 stats_offset_64[I40IW_HW_STAT_INDEX_MAX_64];
+@@ -501,6 +506,7 @@ struct i40iw_sc_dev {
+ 	const struct i40iw_vf_cqp_ops *iw_vf_cqp_ops;
+ 
+ 	struct i40iw_hmc_fpm_misc hmc_fpm_misc;
++	u64 feature_info[I40IW_MAX_FEATURES];
+ 	u32 debug_mask;
+ 	u8 hmc_fn_id;
+ 	bool is_pf;
+@@ -1340,6 +1346,12 @@ struct cqp_info {
+ 			struct i40iw_sc_qp *qp;
+ 			u64 scratch;
+ 		} suspend_resume;
++		struct {
++			struct i40iw_sc_cqp *cqp;
++			void *cap_va;
++			u64 cap_pa;
++			u64 scratch;
++		} query_rdma_features;
+ 	} u;
+ };
+ 
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_verbs.c b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+index c335de9..4a53fcd 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_verbs.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_verbs.c
+@@ -64,7 +64,8 @@ static int i40iw_query_device(struct ib_device *ibdev,
+ 		return -EINVAL;
+ 	memset(props, 0, sizeof(*props));
+ 	ether_addr_copy((u8 *)&props->sys_image_guid, iwdev->netdev->dev_addr);
+-	props->fw_ver = I40IW_FW_VERSION;
++	props->fw_ver = (u64)FW_MAJOR_VER(&iwdev->sc_dev) << 32 |
++			FW_MINOR_VER(&iwdev->sc_dev);
+ 	props->device_cap_flags = iwdev->device_cap_flags;
+ 	props->vendor_id = iwdev->ldev->pcidev->vendor;
+ 	props->vendor_part_id = iwdev->ldev->pcidev->device;
+@@ -2534,10 +2535,10 @@ static int i40iw_port_immutable(struct ib_device *ibdev, u8 port_num,
+ 
+ static void i40iw_get_dev_fw_str(struct ib_device *dev, char *str)
+ {
+-	u32 firmware_version = I40IW_FW_VERSION;
++	struct i40iw_device *iwdev = to_iwdev(dev);
+ 
+-	snprintf(str, IB_FW_VERSION_NAME_MAX, "%u.%u", firmware_version,
+-		 (firmware_version & 0x000000ff));
++	snprintf(str, IB_FW_VERSION_NAME_MAX, "%u.%u",
++		 FW_MAJOR_VER(&iwdev->sc_dev), FW_MINOR_VER(&iwdev->sc_dev));
+ }
+ 
+ /**
+-- 
+1.8.3.1
+
