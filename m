@@ -2,134 +2,154 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3159B16C200
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Feb 2020 14:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E45816C260
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Feb 2020 14:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729065AbgBYNVG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Feb 2020 08:21:06 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:34337 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728065AbgBYNVG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Feb 2020 08:21:06 -0500
-Received: by mail-wr1-f68.google.com with SMTP id z15so6374562wrl.1
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Feb 2020 05:21:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3w/WveyJr9ieMPqc3UFcQ78+Zmq6uecEjBrJZU6o2Xg=;
-        b=buHJlA822KuwPH1YE8jv5VyRy5Em45WHvEghSlFb0WrZgqInSZQqGBW8vNkFDygplZ
-         axdL/aKRejAnIoG2pXaSpTTk0L5mJHdDCbWI42vPRJQPLYfjHnwql0cKjJtCwkopEsvX
-         qLsGMPubIhhdsmwwVVfyR9H++D8957RbiR0kifNbt+v1Ufq5GLtTSsjU7TSgd6hviwDZ
-         +i6N6n7oaixfyJWrNdA+wJ68/FfxCBnS0GA3YU735k7kmm8BZXaUGYdFhR9rU79z7r7S
-         fG8ameLxpmxCT8m7/FEwRwGlq2VepJ0+wuKupKgtLu3EY77rV49hCctn7geWdi2bUsYk
-         iTUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3w/WveyJr9ieMPqc3UFcQ78+Zmq6uecEjBrJZU6o2Xg=;
-        b=Sw+BM44aIwlshAfcsSLNkPGCHgApkipL+IqXaVfm1MWs+j9KeQZGp4QN1tU5F4wGmc
-         +Fbt4QtwYb5EfNHscMEk0Sro6dp3s/AIz5CZPo8tM3xynktr5JEMmh3DT17jWrQiAYNb
-         USzl95/jYFDMWeFKBkoIkKoiLdg1QtPwmJUS0BDVqZj1/keuJabMB2sKTG7LO1kyO1b9
-         2/AsUDsTWOX753UAnH33O02QCymY0FX3+cntS1UlEjlQtODPs5WRj+jrOdli90xgThpx
-         kO6LwuhcuIhL2Id++sDhRPriYEs9OswyOok5Vqzg5NA09PKfVn+QlUK9NAXdwZeutv8/
-         To4A==
-X-Gm-Message-State: APjAAAUTSUG8fTm3URk5QOCvvnbtrUBBUzKEd9vH6oQ1tkvguokpHutF
-        d6QGY6aVxA+JY2nYO5FF2cRX6m0LsLvCj8Ese1Y=
-X-Google-Smtp-Source: APXvYqwRjc7D8OVuIsKUIIiAPEIW1G2WGLQCvrMA+bcmF7dEMsLOZC5fidKbGr4dmOje/al/XI6U4R0t60nBLuA66d0=
-X-Received: by 2002:adf:f0c8:: with SMTP id x8mr74011168wro.359.1582636864686;
- Tue, 25 Feb 2020 05:21:04 -0800 (PST)
+        id S1729616AbgBYNb4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Feb 2020 08:31:56 -0500
+Received: from mga07.intel.com ([134.134.136.100]:64887 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729553AbgBYNb4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 25 Feb 2020 08:31:56 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Feb 2020 05:31:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,484,1574150400"; 
+   d="scan'208";a="271310017"
+Received: from sedona.ch.intel.com ([10.2.136.157])
+  by fmsmga002.fm.intel.com with ESMTP; 25 Feb 2020 05:31:55 -0800
+Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 01PDVrJM014280;
+        Tue, 25 Feb 2020 06:31:54 -0700
+Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 01PDVpYI122387;
+        Tue, 25 Feb 2020 08:31:51 -0500
+Subject: [PATCH for-rc] RDMA/core: Fix additional panic in
+ get_pkey_idx_qp_list()
+To:     jgg@ziepe.ca, dledford@redhat.com
+From:   Mike Marciniszyn <mike.marciniszyn@intel.com>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Tue, 25 Feb 2020 08:31:51 -0500
+Message-ID: <20200225133150.122365.97027.stgit@awfm-01.aw.intel.com>
+User-Agent: StGit/0.16
 MIME-Version: 1.0
-References: <CAFgAxU8XmoOheJ29s7r7J23V1x0QcagDgUDVGSyfKyaWSEzRzg@mail.gmail.com>
- <62f4df50-b50d-29e2-a0f4-eccaf81bd8d9@talpey.com> <20200213154110.GJ31668@ziepe.ca>
- <3be3b3ff-a901-b716-827a-6b1019fa1924@mellanox.com> <de3aeeb7-41ef-fadc-7865-e3e9fc005476@mellanox.com>
- <55e8c9cf-cd64-27b2-1333-ac4849f5e3ff@talpey.com> <e758da0d-94a3-a22f-c2aa-3d13714c4ed3@talpey.com>
- <4fc5590f-727c-2395-7de0-afb1d83f546b@mellanox.com> <91155305-10f0-22b5-b93b-2953c53dfc46@talpey.com>
- <cb5ab63b-57cd-46ac-0d51-8bffaf537590@mellanox.com> <20200219130613.GM31668@ziepe.ca>
- <a0067ba5-c15b-4194-0de2-3964393e9993@talpey.com> <c4fc4449-94ed-805e-76d1-6ce856a4fc05@mellanox.com>
- <33f075e2-b5c0-53cd-6954-7ac57eeb008f@talpey.com>
-In-Reply-To: <33f075e2-b5c0-53cd-6954-7ac57eeb008f@talpey.com>
-From:   Alex Rosenbaum <rosenbaumalex@gmail.com>
-Date:   Tue, 25 Feb 2020 15:20:53 +0200
-Message-ID: <CAFgAxU_fZUEYrMVpoStQJGD5S5dqrkXOuzWrk0MLHF8niW7ikw@mail.gmail.com>
-Subject: Re: [RFC v2] RoCE v2.0 Entropy - IPv6 Flow Label and UDP Source Port
-To:     Tom Talpey <tom@talpey.com>
-Cc:     Mark Zhang <markz@mellanox.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>,
-        Alex Rosenbaum <alexr@mellanox.com>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Mark and I where playing with your test, and plotting the results
-I'm sharing the png's on a temp github here:
-https://github.com/rosenbaumalex/hashtest/
-[I wasn't sure of a better place to share them]
+When an hfi1 card is booted and the part is brought active
+a panic will result when the following commands
+are entered after ipoib has come up:
 
-The README.md explains the port range we used, the 3 hash's used, and
-a line about the results.
-In general, the higher the 'noise' the worse the distribution is.
-It seems like Mark's hash suggestion (src*31 + dst) works best. then
-the folding one, and last the non-folding one.
+ifdown ib0 && ifup ib0
 
-I am trying to cache a few switch related hash experts to get
-additional feedback.
+Here is the panic:
 
-Alex
+[  208.521731] RIP: 0010:get_pkey_idx_qp_list+0x50/0x80 [ib_core]
+[  208.528249] Code: c7 18 e8 13 04 30 ef 0f b6 43 06 48 69 c0 b8 00 00 00 48 03 85 a0 04 00 00 48 8b 50 20 48 8d 48 20 48 39 ca 74 1a 0f b7 73 04 <66> 39 72 10 75 08 eb 10 66 39 72 10 74 0a 48 8b 12 48 39 ca 75 f2
+[  208.549257] RSP: 0018:ffffafb3480932f0 EFLAGS: 00010203
+[  208.555114] RAX: ffff98059ababa10 RBX: ffff980d926e8cc0 RCX: ffff98059ababa30
+[  208.563108] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff98059ababa28
+[  208.571112] RBP: ffff98059b940000 R08: 00000000000310c0 R09: ffff97fe47c07480
+[  208.579117] R10: 0000000000000036 R11: 0000000000000200 R12: 0000000000000071
+[  208.587115] R13: ffff98059b940000 R14: ffff980d87f948a0 R15: 0000000000000000
+[  208.595100] FS:  00007f88deb31740(0000) GS:ffff98059f600000(0000) knlGS:0000000000000000
+[  208.604151] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  208.610575] CR2: 0000000000000010 CR3: 0000000853e26001 CR4: 00000000001606e0
+[  208.618554] Call Trace:
+[  208.621301]  port_pkey_list_insert+0x3d/0x1b0 [ib_core]
+[  208.627142]  ? kmem_cache_alloc_trace+0x215/0x220
+[  208.632994]  ib_security_modify_qp+0x226/0x3a0 [ib_core]
+[  208.639606]  _ib_modify_qp+0xcf/0x390 [ib_core]
+[  208.645250]  ipoib_init_qp+0x7f/0x200 [ib_ipoib]
+[  208.650931]  ? rvt_modify_port+0xd0/0xd0 [rdmavt]
+[  208.656755]  ? ib_find_pkey+0x99/0xf0 [ib_core]
+[  208.662403]  ipoib_ib_dev_open_default+0x1a/0x200 [ib_ipoib]
+[  208.669279]  ipoib_ib_dev_open+0x96/0x130 [ib_ipoib]
+[  208.675429]  ipoib_open+0x44/0x130 [ib_ipoib]
+[  208.680833]  __dev_open+0xd1/0x160
+[  208.685163]  __dev_change_flags+0x1ab/0x1f0
+[  208.690435]  dev_change_flags+0x23/0x60
+[  208.695281]  do_setlink+0x328/0xe30
+[  208.699733]  ? __nla_validate_parse+0x54/0x900
+[  208.705269]  __rtnl_newlink+0x54e/0x810
+[  208.710117]  ? __alloc_pages_nodemask+0x17d/0x320
+[  208.715899]  ? page_fault+0x30/0x50
+[  208.720392]  ? _cond_resched+0x15/0x30
+[  208.725158]  ? kmem_cache_alloc_trace+0x1c8/0x220
+[  208.730931]  rtnl_newlink+0x43/0x60
+[  208.735444]  rtnetlink_rcv_msg+0x28f/0x350
+[  208.740599]  ? kmem_cache_alloc+0x1fb/0x200
+[  208.745810]  ? _cond_resched+0x15/0x30
+[  208.750605]  ? __kmalloc_node_track_caller+0x24d/0x2d0
+[  208.756854]  ? rtnl_calcit.isra.31+0x120/0x120
+[  208.762425]  netlink_rcv_skb+0xcb/0x100
+[  208.767307]  netlink_unicast+0x1e0/0x340
+[  208.772242]  netlink_sendmsg+0x317/0x480
+[  208.777121]  ? __check_object_size+0x48/0x1d0
+[  208.782545]  sock_sendmsg+0x65/0x80
+[  208.786915]  ____sys_sendmsg+0x223/0x260
+[  208.791776]  ? copy_msghdr_from_user+0xdc/0x140
+[  208.797378]  ___sys_sendmsg+0x7c/0xc0
+[  208.801921]  ? skb_dequeue+0x57/0x70
+[  208.806430]  ? __inode_wait_for_writeback+0x75/0xe0
+[  208.812383]  ? fsnotify_grab_connector+0x45/0x80
+[  208.817950]  ? __dentry_kill+0x12c/0x180
+[  208.822734]  __sys_sendmsg+0x58/0xa0
+[  208.827180]  do_syscall_64+0x5b/0x200
+[  208.831671]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  208.837707] RIP: 0033:0x7f88de467f10
 
-On Fri, Feb 21, 2020 at 4:47 PM Tom Talpey <tom@talpey.com> wrote:
->
-> On 2/19/2020 8:04 PM, Mark Zhang wrote:
-> > On 2/20/2020 1:41 AM, Tom Talpey wrote:
-> >> On 2/19/2020 8:06 AM, Jason Gunthorpe wrote:
-> >>> On Wed, Feb 19, 2020 at 02:06:28AM +0000, Mark Zhang wrote:
-> >>>> The symmetry is important when calculate flow_label with DstQPn/SrcQPn
-> >>>> for non-RDMA CM Service ID (check the first mail), so that the server
-> >>>> and client will have same flow_label and udp_sport. But looks like it is
-> >>>> not important in this case.
-> >>>
-> >>> If the application needs a certain flow label it should not rely on
-> >>> auto-generation, IMHO.
-> >>>
-> >>> I expect most networks will not be reversible anyhow, even with the
-> >>> same flow label?
-> >>
-> >> These are network flow labels, not under application control. If they
-> >> are under application control, that's a security issue.
-> >>
-> >
-> > As Jason said application is able to control it in ipv6. Besides
-> > application is also able to control it for non-RDMA CM Service ID in ipv4.
->
-> Ok, well I guess that's a separate issue, let's not rathole on
-> it here then.
->
-> > Hi Jason, same flow label get same UDP source port, with same UDP source
-> > port (along with same sIP/dIP/sPort), are networks reversible?
-> >
-> >> But I agree, if the symmetric behavior is not needed, it should be
-> >> ignored and a better (more uniformly distributed) hash should be chosen.
-> >>
-> >> I definitely like the simplicity and perfect flatness of the newly
-> >> proposed (src * 31) + dst. But that "31" causes overflow into bit 21,
-> >> doesn't it? (31 * 0xffff == 0x1f0000) >
-> >
-> > I think overflow doesn't matter? We have overflow anyway if
-> > multiplicative is used.
->
-> Hmm, it does seem to matter because dropping bits tilts the
-> distribution curve. Plugging ((src * 31) + dst) & 0xFFFFF into
-> my little test shows some odd behaviors. It starts out flat,
-> then the collisions start to rise around 49000, leveling out
-> at 65000 to a value roughly double the initial one (528 -> 1056).
-> It sits there until 525700, where it falls back to the start
-> value (528). I don't think this is optimal :-)
->
-> Tom.
+A bisect points to the commit noted below.
+
+Some prints show that when ib0 first comes up and qp_attr_mask of 0x51
+results in a new pp with a 0 port_num:
+
+[ 149.207404] qp_attr_mask 51 qp_attr->port_num 1 qp->attr->pkey_index 0
+[ 149.215522] qp_pps ffff8d745be33180 qp_pps->main.state 2 qp_pps->main.port_num 1
+[ 149.224616] new pp ffff8d745be33120 state 0 port_num 0 pkey_index 0
+
+For an qp_attr_mask of 0x51, the code never copies the port from
+qp_pps, leaving the port at 0, which eventually leads to the panic.
+The state is also also left at 0 or IB_PORT_PKEY_NOT_VALID.
+
+Later when the ibdown/ifup is executed the port_num 0 shows up in qp_pps
+at ffff8d745be33120 leading to the panic.
+
+[  198.223296] qp_attr_mask 71 qp_attr->port_num 1 qp->attr->pkey_index 0
+[  198.230608] qp_pps ffff8d745be33120 qp_pps->main.state 0 qp_pps->main.port_num 0
+[  198.238887] new pp ffff8d6c5f412d80 state 1 port_num 0 pkey_index 0
+[  198.245900] pp ffff8d6c5f412d80 pp->port_num 0 pp->pkey_index 0
+[  198.254005] BUG: kernel NULL pointer dereference, address: 0000000000000010
+
+Fix by adjusting the else clause to insure that the port_num and state
+are copied when there is a qp_pps.
+
+Reviewed-by: Kaike Wan <kaike.wan@intel.com>
+Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Fixes: 1dd017882e01 ("RDMA/core: Fix protection fault in get_pkey_idx_qp_list")
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+---
+ drivers/infiniband/core/security.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/core/security.c b/drivers/infiniband/core/security.c
+index 2b4d803..f2c7fbd 100644
+--- a/drivers/infiniband/core/security.c
++++ b/drivers/infiniband/core/security.c
+@@ -347,8 +347,7 @@ static struct ib_ports_pkeys *get_new_pps(const struct ib_qp *qp,
+ 						      qp_attr->pkey_index;
+ 	if ((qp_attr_mask & IB_QP_PKEY_INDEX) && (qp_attr_mask & IB_QP_PORT))
+ 		new_pps->main.state = IB_PORT_PKEY_VALID;
+-
+-	if (!(qp_attr_mask & (IB_QP_PKEY_INDEX || IB_QP_PORT)) && qp_pps) {
++	else if (qp_pps) {
+ 		new_pps->main.port_num = qp_pps->main.port_num;
+ 		new_pps->main.pkey_index = qp_pps->main.pkey_index;
+ 		if (qp_pps->main.state != IB_PORT_PKEY_NOT_VALID)
+
