@@ -2,92 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 847BE170581
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2020 18:07:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BED1705A2
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2020 18:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727196AbgBZRHX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Feb 2020 12:07:23 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:44194 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgBZRHW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Feb 2020 12:07:22 -0500
-Received: by mail-qk1-f194.google.com with SMTP id f140so68989qke.11
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2020 09:07:22 -0800 (PST)
+        id S1727936AbgBZRJt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Feb 2020 12:09:49 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:41174 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727240AbgBZRJt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Feb 2020 12:09:49 -0500
+Received: by mail-qk1-f196.google.com with SMTP id b5so97170qkh.8
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2020 09:09:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=zJXj8DxHphvulR2gCvno0W04q2u7Wkypz7ZH4wJylqE=;
-        b=Wv1AqPjuwXkOB/njGtF2BF/1NOZTU2+kuUSK17wpcvBT98hrLIfYadg+8GDY2himwB
-         12GqbinMI++gHctZP4iPizpRKzjVxrSKdVIA/7H9r6hAMKIQmMG76cPBumAo4gzGayF+
-         KTpbKOQ14UKSWIozBn4AtkjkP3pV6550mxaMtyigt45+YZiUCje4k6Ejk+KiCeKsmbe6
-         R1JZm56jk7NZPPyqH0Xr3HI6+OPwsBD13IZ9vJSD2rtvNfySee1lmrox/8m/efFFtUjC
-         p+FSnONhaxJ3T2MtLHPpcVGJo+jxvklm8pgDuVU7RwAe0dRVPLZqBAe2WGzOHV/KgEFu
-         Iejg==
+        bh=ziSDGSLWDgcIEb0rOcA6gyMUFaQKB2SngFXxZv1iHlM=;
+        b=HbdB99CYoL21m/WJct9uFJ+4se606l/CxlUVghYJ1ePPax9Gs9H5kS1I7+NAtt0j63
+         m1LvkWACeKU7kRvcppZvSFBCbyfE9i7s7G9Apa1yZ7MzNfM6p0t7GQ6KJB61LoNwVSku
+         oR7Cu4YbSaKgpb2mhKxomNMVrFK6t7Qw97BmOnvWHgac9cRQeOC+D18wZXyWYD/WfmhQ
+         dYkaRnLsnUY2SC0OY0AKhV3vll2Wj3N8lLcYZ/EnR+FNK2y6FtHcvUHqM1oMJ31N5CHu
+         3XueW6ml0V/Agngv2BngnujB2zLBXN3ZS5DbGsu+QhRr+mzNC2fBIC11x/PjJMl5OhM4
+         rntA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zJXj8DxHphvulR2gCvno0W04q2u7Wkypz7ZH4wJylqE=;
-        b=cQq9jMbq9ADyT+1aWwdzNv/XLKXynbDa3GBW54RRHa/OHJUSIEi6CBRGVeUPLNjg4W
-         w/3CEgQF97hsS9ugOPmvpe9hmiC0ENM6wpTNEwDfm46EqagkdYEOChwrQ/tdNyH1do1W
-         wMyJYQC5EdfRtxVug/ycunDnR1dQy0QS9PUmfztnzxn0ua10o1pfg/9T2rGJVgQp29o4
-         GL9rjc8GQnVfLiBipFtHOvwv1KwZuHFmfCX1n1XxUJpjMEe3BKrp7flLhHSQY9hi9OpV
-         pfQN6GegmNrxu3EA+zIGIV5ktGHvuX8FZytoTlzZ5xHcqzu+qMRU50VQ6OMRBwI3w0uj
-         TIrg==
-X-Gm-Message-State: APjAAAVi/iBlrih8h7u9kBVmYWMTJRnwRdf2fxk3aEjPhbiOTtJ7CLXh
-        p0u0bgeiF280cFjyDc++5fEF/IxAA7OtIQ==
-X-Google-Smtp-Source: APXvYqx5TusC9XJvNC9+oUb0CSQkpV/9oThwnh3Js3FWKR4q9T3c3XgV0HvkjWeSxLFn9Ko5CUVkIA==
-X-Received: by 2002:a37:ae85:: with SMTP id x127mr113672qke.190.1582736841857;
-        Wed, 26 Feb 2020 09:07:21 -0800 (PST)
+        bh=ziSDGSLWDgcIEb0rOcA6gyMUFaQKB2SngFXxZv1iHlM=;
+        b=svQ+bNCnr80D8eTbww0is/yrIf2IgdT45xk7WGQknO931qOM+IhjENzexL3c+IsEa4
+         BdDu4uGfuQk/uVnDVb92ozBgy3PPUbwpKE4ZZ+9A0h0NktSOK7kzp2JFYnxlHzHOtfTB
+         zJ8W+zWhIGE94aNGej1Akyh97Sx9rKPz7wCzX1ey1C1hIyvBO9dlw6IULh1JvwFGlZHj
+         X1GwoROI9S+bCmWqrxTloaWOmkj99xgRgRxdW3Uofi+uOBXopSn6LdTkgmlY1r7vTrxi
+         vx5acFOstdw28Si2FzH97p3tIMk5KdOudLKynzdfJk5xeSMBXbJBeUsUakpJBU/3J0uY
+         +BXg==
+X-Gm-Message-State: APjAAAUxp7B2q7ZOmYPVjAyqJAPnxunesc1HqAITF8MVDYXv5Nl+U1Ho
+        +He8iyAfH6GIo1zBlJHMQhOtnw==
+X-Google-Smtp-Source: APXvYqzNeaCATb+rsZ0yigu34G1wLaS+Dyzo+InY0Et9SBCVsJA7LWqWHgqUSv7QmAT2XFQqwQrswQ==
+X-Received: by 2002:a37:5285:: with SMTP id g127mr52792qkb.315.1582736987306;
+        Wed, 26 Feb 2020 09:09:47 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id r10sm1405268qkm.23.2020.02.26.09.07.21
+        by smtp.gmail.com with ESMTPSA id 65sm1410073qtf.95.2020.02.26.09.09.46
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 26 Feb 2020 09:07:21 -0800 (PST)
+        Wed, 26 Feb 2020 09:09:46 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1j709Y-0004Gj-OF; Wed, 26 Feb 2020 13:07:20 -0400
-Date:   Wed, 26 Feb 2020 13:07:20 -0400
+        id 1j70Bu-0004L4-G1; Wed, 26 Feb 2020 13:09:46 -0400
+Date:   Wed, 26 Feb 2020 13:09:46 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Krishnamraju Eraparaju <krishna2@chelsio.com>
-Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
-        linux-rdma@vger.kernel.org, nirranjan@chelsio.com,
-        bharat@chelsio.com
-Subject: Re: [PATCH for-rc] nvme-rdma/nvmet-rdma: Allocate sufficient RW ctxs
- to match hosts pgs len
-Message-ID: <20200226170720.GY31668@ziepe.ca>
-References: <20200226141318.28519-1-krishna2@chelsio.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Haim Boozaglo <haimbo@mellanox.com>, linux-rdma@vger.kernel.org
+Subject: Re: "ibstat -l" displays CA device list in an unsorted order
+Message-ID: <20200226170946.GA31668@ziepe.ca>
+References: <2b43584f-f56a-6466-a2da-43d02fad6b64@mellanox.com>
+ <20200224194131.GV31668@ziepe.ca>
+ <d3b6297e-3251-ec14-ebef-541eb3a98eae@mellanox.com>
+ <20200226134310.GX31668@ziepe.ca>
+ <20200226135749.GE12414@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200226141318.28519-1-krishna2@chelsio.com>
+In-Reply-To: <20200226135749.GE12414@unreal>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 07:43:18PM +0530, Krishnamraju Eraparaju wrote:
-> diff --git a/include/linux/nvme-rdma.h b/include/linux/nvme-rdma.h
-> index 3ec8e50efa16..2d6f2cf1e319 100644
-> +++ b/include/linux/nvme-rdma.h
-> @@ -52,13 +52,15 @@ static inline const char *nvme_rdma_cm_msg(enum nvme_rdma_cm_status status)
->   * @qid:           queue Identifier for the Admin or I/O Queue
->   * @hrqsize:       host receive queue size to be created
->   * @hsqsize:       host send queue size to be created
-> + * @hmax_fr_pages: host maximum pages per fast reg
->   */
->  struct nvme_rdma_cm_req {
->  	__le16		recfmt;
->  	__le16		qid;
->  	__le16		hrqsize;
->  	__le16		hsqsize;
-> -	u8		rsvd[24];
-> +	__le32		hmax_fr_pages;
-> +	u8		rsvd[20];
->  };
+On Wed, Feb 26, 2020 at 03:57:49PM +0200, Leon Romanovsky wrote:
+> On Wed, Feb 26, 2020 at 09:43:10AM -0400, Jason Gunthorpe wrote:
+> > On Tue, Feb 25, 2020 at 10:25:49AM +0200, Haim Boozaglo wrote:
+> > >
+> > >
+> > > On 2/24/2020 9:41 PM, Jason Gunthorpe wrote:
+> > > > On Mon, Feb 24, 2020 at 08:06:56PM +0200, Haim Boozaglo wrote:
+> > > > > Hi all,
+> > > > >
+> > > > > When running "ibstat" or "ibstat -l", the output of CA device list
+> > > > > is displayed in an unsorted order.
+> > > > >
+> > > > > Before pull request #561, ibstat displayed the CA device list sorted in
+> > > > > alphabetical order.
+> > > > >
+> > > > > The problem is that users expect to have the output sorted in alphabetical
+> > > > > order and now they get it not as expected (in an unsorted order).
+> > > >
+> > > > Really? Why? That doesn't look like it should happen, the list is
+> > > > constructed out of readdir() which should be sorted?
+> > > >
+> > > > Do you know where this comes from?
+> > > >
+> > > > Jason
+> > > >
+> > >
+> > > readdir() gives us struct by struct and doesn't keep on alphabetical order.
+> > > Before pull request #561 ibstat have used this API of libibumad:
+> > > int umad_get_cas_names(char cas[][UMAD_CA_NAME_LEN], int max)
+> > >
+> > > This API used this function:
+> > > n = scandir(SYS_INFINIBAND, &namelist, NULL, alphasort);
+> > >
+> > > scandir() can return a sorted CA device list in alphabetical order.
+> >
+> > Oh what a weird unintended side effect.
+> >
+> > Resolving it would require adding a sorting pass on a linked
+> > list.. Will you try?
+> 
+> Please be aware that once ibstat will be converted to netlink, the order
+> will change again.
 
-This is an on the wire change - do you need to get approval from some
-standards body?
+This is why I suggest a function to sort the linked list that tools
+needing sorted order can call. Then it doesn't matter how we got the list
 
 Jason
