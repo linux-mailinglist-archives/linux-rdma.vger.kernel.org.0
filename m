@@ -2,157 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B72A1700E0
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2020 15:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E20C1700DF
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2020 15:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgBZOOX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Feb 2020 09:14:23 -0500
-Received: from stargate.chelsio.com ([12.32.117.8]:62697 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726555AbgBZOOX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Feb 2020 09:14:23 -0500
-Received: from localhost (pvp1.blr.asicdesigners.com [10.193.80.26])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 01QEDYOm024545;
-        Wed, 26 Feb 2020 06:13:35 -0800
-From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
-To:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de
-Cc:     linux-rdma@vger.kernel.org, nirranjan@chelsio.com,
-        bharat@chelsio.com, krishna2@chelsio.com
-Subject: [PATCH for-rc] nvme-rdma/nvmet-rdma: Allocate sufficient RW ctxs to match hosts pgs len
-Date:   Wed, 26 Feb 2020 19:43:18 +0530
-Message-Id: <20200226141318.28519-1-krishna2@chelsio.com>
-X-Mailer: git-send-email 2.23.0.rc0
+        id S1727118AbgBZONn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Feb 2020 09:13:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726579AbgBZONn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 26 Feb 2020 09:13:43 -0500
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 34D1E2467B;
+        Wed, 26 Feb 2020 14:13:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582726422;
+        bh=Z/SU7bAJrTqmM8UQr594lbwv9bhSMpLNabJVIeUlnBw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=enu3roc3bTzCShfSnnqCGAjhH+gV5NHsL3WcLCERXm38yk5iyMcu54j5lCrycoWxU
+         0wg18bB+wYt1iBFcAHXV5hd+Q9OxhiAmqPFdQsSoMRA162xIfGE8b5rx4XHe2xiTWV
+         gqQOnn7KiJldhCDkfylDtnvmEzC5DX5opLalhhLI=
+Date:   Wed, 26 Feb 2020 16:13:40 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
+Cc:     "Dalessandro, Dennis" <dennis.dalessandro@intel.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH for-rc] RDMA/core: Fix additional panic in
+ get_pkey_idx_qp_list()
+Message-ID: <20200226141340.GF12414@unreal>
+References: <20200225133150.122365.97027.stgit@awfm-01.aw.intel.com>
+ <20200226130432.GB12414@unreal>
+ <a6c9d82e-59ca-eb27-fe53-ca6edd55fb5b@intel.com>
+ <20200226134802.GC12414@unreal>
+ <MWHPR1101MB22717251968B09F6D695214486EA0@MWHPR1101MB2271.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR1101MB22717251968B09F6D695214486EA0@MWHPR1101MB2271.namprd11.prod.outlook.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Current nvmet-rdma code allocates MR pool budget based on host's SQ
-size, assuming both host and target use the same "max_pages_per_mr"
-count. But if host's max_pages_per_mr is greater than target's, then
-target can run out of MRs while processing larger IO WRITEs.
+On Wed, Feb 26, 2020 at 02:08:52PM +0000, Marciniszyn, Mike wrote:
+> > > You mean this one? https://marc.info/?l=linux-
+> > rdma&m=158263596831342&w=2
+> >
+>
+> Ok.  I will test the patch.
+>
+> > Yes, this is what I wanted to achieve by "if (!(qp_attr_mask &
+> > (IB_QP_PKEY_INDEX || IB_QP_PORT)) && qp_pps) {" line.
+>
+> Was a non-bitwise || what was intended in this statememt?
 
-That is, say host's SQ size is 100, then the MR pool budget allocated
-currently at target will also be 100 MRs. But 100 IO WRITE Requests
-with 256 sg_count(IO size above 1MB) require 200 MRs when target's
-"max_pages_per_mr" is 128.
+No, another mistake, see commit
+commit 4ca501d6aaf21de31541deac35128bbea8427aa6
+Author: Nathan Chancellor <natechancellor@gmail.com>
+Date:   Mon Feb 17 13:43:18 2020 -0700
 
-The proposed patch enables host to advertise the max_fr_pages(via
-nvme_rdma_cm_req) such that target can allocate that many number of
-RW ctxs(if host's max_fr_pages is higher than target's).
+    RDMA/core: Fix use of logical OR in get_new_pps
 
-Signed-off-by: Krishnamraju Eraparaju <krishna2@chelsio.com>
----
- drivers/nvme/host/rdma.c   |  2 ++
- drivers/nvme/target/rdma.c | 23 ++++++++++++++++++++---
- include/linux/nvme-rdma.h  |  4 +++-
- 3 files changed, 25 insertions(+), 4 deletions(-)
+It is still mystery but we didn't see failures with "broken" code.
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index 2a47c6c5007e..5970f0eedbd6 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -1614,6 +1614,8 @@ static int nvme_rdma_route_resolved(struct nvme_rdma_queue *queue)
- 		priv.hsqsize = cpu_to_le16(queue->ctrl->ctrl.sqsize);
- 	}
- 
-+	priv.hmax_fr_pages = cpu_to_le32(ctrl->max_fr_pages);
-+
- 	ret = rdma_connect(queue->cm_id, &param);
- 	if (ret) {
- 		dev_err(ctrl->ctrl.device,
-diff --git a/drivers/nvme/target/rdma.c b/drivers/nvme/target/rdma.c
-index 37d262a65877..2a3893e3c4e7 100644
---- a/drivers/nvme/target/rdma.c
-+++ b/drivers/nvme/target/rdma.c
-@@ -98,6 +98,7 @@ struct nvmet_rdma_queue {
- 	int			host_qid;
- 	int			recv_queue_size;
- 	int			send_queue_size;
-+	int			rdma_rw_ctxs_factor;
- 
- 	struct list_head	queue_list;
- };
-@@ -1008,7 +1009,8 @@ static int nvmet_rdma_create_queue_ib(struct nvmet_rdma_queue *queue)
- 	qp_attr.qp_type = IB_QPT_RC;
- 	/* +1 for drain */
- 	qp_attr.cap.max_send_wr = queue->send_queue_size + 1;
--	qp_attr.cap.max_rdma_ctxs = queue->send_queue_size;
-+	qp_attr.cap.max_rdma_ctxs = queue->send_queue_size *
-+					queue->rdma_rw_ctxs_factor;
- 	qp_attr.cap.max_send_sge = max(ndev->device->attrs.max_sge_rd,
- 					ndev->device->attrs.max_send_sge);
- 
-@@ -1094,6 +1096,7 @@ nvmet_rdma_parse_cm_connect_req(struct rdma_conn_param *conn,
- 				struct nvmet_rdma_queue *queue)
- {
- 	struct nvme_rdma_cm_req *req;
-+	u32 host_fr_pages_len, tgt_fr_pages_len;
- 
- 	req = (struct nvme_rdma_cm_req *)conn->private_data;
- 	if (!req || conn->private_data_len == 0)
-@@ -1111,6 +1114,19 @@ nvmet_rdma_parse_cm_connect_req(struct rdma_conn_param *conn,
- 	queue->recv_queue_size = le16_to_cpu(req->hsqsize) + 1;
- 	queue->send_queue_size = le16_to_cpu(req->hrqsize);
- 
-+	host_fr_pages_len = le32_to_cpu(req->hmax_fr_pages),
-+	tgt_fr_pages_len = queue->dev->device->attrs.max_fast_reg_page_list_len;
-+
-+	if (host_fr_pages_len > tgt_fr_pages_len)
-+		/*
-+		 * Allocate more RW contexts as more MRs are required when
-+		 * host_fr_pages_len is higher than target's.
-+		 */
-+		queue->rdma_rw_ctxs_factor =
-+			DIV_ROUND_UP(host_fr_pages_len, tgt_fr_pages_len);
-+	else
-+		queue->rdma_rw_ctxs_factor = 1;
-+
- 	if (!queue->host_qid && queue->recv_queue_size > NVME_AQ_DEPTH)
- 		return NVME_RDMA_CM_INVALID_HSQSIZE;
- 
-@@ -1147,6 +1163,9 @@ nvmet_rdma_alloc_queue(struct nvmet_rdma_device *ndev,
- 		goto out_reject;
- 	}
- 
-+	queue->dev = ndev;
-+	queue->cm_id = cm_id;
-+
- 	ret = nvmet_sq_init(&queue->nvme_sq);
- 	if (ret) {
- 		ret = NVME_RDMA_CM_NO_RSC;
-@@ -1162,8 +1181,6 @@ nvmet_rdma_alloc_queue(struct nvmet_rdma_device *ndev,
- 	 * inside a CM callback would trigger a deadlock. (great API design..)
- 	 */
- 	INIT_WORK(&queue->release_work, nvmet_rdma_release_queue_work);
--	queue->dev = ndev;
--	queue->cm_id = cm_id;
- 
- 	spin_lock_init(&queue->state_lock);
- 	queue->state = NVMET_RDMA_Q_CONNECTING;
-diff --git a/include/linux/nvme-rdma.h b/include/linux/nvme-rdma.h
-index 3ec8e50efa16..2d6f2cf1e319 100644
---- a/include/linux/nvme-rdma.h
-+++ b/include/linux/nvme-rdma.h
-@@ -52,13 +52,15 @@ static inline const char *nvme_rdma_cm_msg(enum nvme_rdma_cm_status status)
-  * @qid:           queue Identifier for the Admin or I/O Queue
-  * @hrqsize:       host receive queue size to be created
-  * @hsqsize:       host send queue size to be created
-+ * @hmax_fr_pages: host maximum pages per fast reg
-  */
- struct nvme_rdma_cm_req {
- 	__le16		recfmt;
- 	__le16		qid;
- 	__le16		hrqsize;
- 	__le16		hsqsize;
--	u8		rsvd[24];
-+	__le32		hmax_fr_pages;
-+	u8		rsvd[20];
- };
- 
- /**
--- 
-2.23.0.rc0
+Thanks
 
+> >
+>
+> Mike
