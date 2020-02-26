@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93CAD1702FA
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2020 16:45:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B91171702FB
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2020 16:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728287AbgBZPpq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Feb 2020 10:45:46 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:35586 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728482AbgBZPpp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Feb 2020 10:45:45 -0500
-Received: by mail-pf1-f195.google.com with SMTP id i19so1657159pfa.2
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2020 07:45:45 -0800 (PST)
+        id S1728359AbgBZPps (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Feb 2020 10:45:48 -0500
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:40291 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728266AbgBZPpr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Feb 2020 10:45:47 -0500
+Received: by mail-pj1-f68.google.com with SMTP id 12so1411625pjb.5
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2020 07:45:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=DWZPRVFNWjprGh+RXaeW0rZxltLJKRsKKrF/853Uiz4=;
-        b=CMJcl6bY7osiBWqPBTbRCmxWoYwuw+q+ixtVdpbbiMX0iL0CxLWlMTM+j0vYSbWfos
-         7K3hYi/nggQFCdegr/Q8mGalx1eXWwjXlFt+D9I0xBo47EDSm/hW69oxGfoxUDQQsy/q
-         nPEbd1Wrkl1IvvW6W9n/qsZINL8jrSMgd7OUo=
+        bh=ylBopCYZuniJq3/KvvB5QKegElO8gzzoSgxZwkSI3rs=;
+        b=KkIjPDZD6e2wqSCLLCOGdp9DKrBbnc7Xa7g8VVCAVqGA9K6xNbAAqPKBlsSp0QRAdM
+         owViTJWYkpsfiMPC4Hh33UwS/q//xfEqkE2SizWVGYgpAcpjzRslPFmGGtOJpabtW0dc
+         qQjZT/GixnzuesYS8QhMUUC2MDXojc/mmYHzg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=DWZPRVFNWjprGh+RXaeW0rZxltLJKRsKKrF/853Uiz4=;
-        b=EqB+YxOpm7/Y1f/qVhBKfbz0HpHIA1LaKn++FHOS3uvBbW00ZPNhQUiD2Yun9xS/+F
-         lozLUTFvjwRiTKE0gop9yzz2EvKwx2F+QShXrUyzSzmM0POczTMbTfGqYBRj1L0ALNMZ
-         8fRww2hzuDR+D/lszuPkNAQybwoHaZC8u6tJqWQBbdfTRBEwqp3RdhA6QM9WfaQq+pEB
-         GMjYUdk4XTov+zVWo/muBfhHN6MWms5iQ3QuyTu0CoNN6KEV5iyYyO75ice5sEshdBiX
-         wWzER/6+ufGIgC5mVoiZ8gE2065H3bvPbqXDXkmOAHbGMNTTVuN8vymWdJpXkUDz1dhb
-         zbAw==
-X-Gm-Message-State: APjAAAUpJVCr+qtnGcUXs94hmiB5EKsphasP8aWiQUyepGAyqOkpOYxf
-        iPMRAHxfxwJ/Wa32SkyANIpyQw==
-X-Google-Smtp-Source: APXvYqzzfz5y2kmjr9fIxJT/2KBN9yXV2Xo+wrpTf2FD9AHj20FsZBRLbzspQdDut16h2ih6q066Fw==
-X-Received: by 2002:a62:e91a:: with SMTP id j26mr5096237pfh.189.1582731944318;
-        Wed, 26 Feb 2020 07:45:44 -0800 (PST)
+        bh=ylBopCYZuniJq3/KvvB5QKegElO8gzzoSgxZwkSI3rs=;
+        b=Lu35ICh2lnmlBQUMEaP/3HIQHQhhqyv3m3ZHx2N5VFlHv5bn+HARUBb6S/Vn/rHtQC
+         HTb+AGEQLC/Ux2K2YbqSCPzR9FXDsHYfW3jJhDwr9Anl4ZNLmtcsaXGPnzBEU1jpAoDj
+         CZIsjN/Cdkwm9QWDqwRz0s3sNGOO5OJH+Dj22aEgTrGipkvFzNOB/Zqb8LLycPRw+XH+
+         OuHnnVVIcHiY4xo6IBOCJESBwhfx3Dg94Rc5KGCz7gC2zJQ28tJfmj/aK8AHKp0Jo+Qw
+         Rd8LajHHnT34ra5AblMiGC7zz1s9q2013JHl75peDmp5FfgZwHCSzsKXDeVKTCK3FnQu
+         OiSQ==
+X-Gm-Message-State: APjAAAVyaeMzvOVvliKgiFgUlWHcPI6HVEIhpGoGtU2xtANvmZRY6lM5
+        jWITHOF93mggJyWunhQS+mnQsA==
+X-Google-Smtp-Source: APXvYqxINHP2IeMnqpqm1m2HwhTjpJ5j39A/l3ZZm4VGcC8wk2yyFuocHY7yoSvWsdqyueN6YYXImA==
+X-Received: by 2002:a17:90a:3aaf:: with SMTP id b44mr6049135pjc.9.1582731946536;
+        Wed, 26 Feb 2020 07:45:46 -0800 (PST)
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id h3sm3502785pfo.102.2020.02.26.07.45.42
+        by smtp.gmail.com with ESMTPSA id h3sm3502785pfo.102.2020.02.26.07.45.44
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Feb 2020 07:45:43 -0800 (PST)
+        Wed, 26 Feb 2020 07:45:45 -0800 (PST)
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     dledford@redhat.com, jgg@mellanox.com
 Cc:     linux-rdma@vger.kernel.org,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next v4 1/2] RDMA/bnxt_re: Refactor device add/remove functionalities
-Date:   Wed, 26 Feb 2020 07:45:31 -0800
-Message-Id: <1582731932-26574-2-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v4 2/2] RDMA/bnxt_re: Use driver_unregister and unregistration API
+Date:   Wed, 26 Feb 2020 07:45:32 -0800
+Message-Id: <1582731932-26574-3-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1582731932-26574-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1582731932-26574-1-git-send-email-selvin.xavier@broadcom.com>
@@ -55,273 +55,247 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
- - bnxt_re_ib_reg() handles two main functionalities - initializing
-   the device and registering with the IB stack.  Split it into 2
-   functions i.e. bnxt_re_dev_init() and bnxt_re_ib_init()  to account
-   for the same thereby improve modularity. Do the same for
-   bnxt_re_ib_unreg()i.e. split into two functions - bnxt_re_dev_uninit()
-   and  bnxt_re_ib_uninit().
- - Simplify the code by combining the different steps to add and
-   remove the device into two functions.
- - Report correct netdev link state during device register
+Using the new unregister APIs provided by the core.
+Provide the dealloc_driver hook for the core to callback at the time
+of device un-registration.
+
+bnxt_re VF resources are created by the corresponding PF driver.
+During ib_unregister_driver, PF might get removed before VF
+and this could cause failure when VFs are removed. Driver
+is explicitly queuing the removal of VF devices before
+calling ib_unregister_driver.
 
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c | 139 +++++++++++++++++++++--------------
- 1 file changed, 82 insertions(+), 57 deletions(-)
+ drivers/infiniband/hw/bnxt_re/main.c | 106 ++++++++++++++---------------------
+ 1 file changed, 42 insertions(+), 64 deletions(-)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index b5128cc..5f8fd74 100644
+index 5f8fd74..415693f 100644
 --- a/drivers/infiniband/hw/bnxt_re/main.c
 +++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -78,7 +78,8 @@ static struct list_head bnxt_re_dev_list = LIST_HEAD_INIT(bnxt_re_dev_list);
- /* Mutex to protect the list of bnxt_re devices added */
+@@ -79,7 +79,8 @@ static struct list_head bnxt_re_dev_list = LIST_HEAD_INIT(bnxt_re_dev_list);
  static DEFINE_MUTEX(bnxt_re_dev_lock);
  static struct workqueue_struct *bnxt_re_wq;
--static void bnxt_re_ib_unreg(struct bnxt_re_dev *rdev);
-+static void bnxt_re_remove_device(struct bnxt_re_dev *rdev);
-+static void bnxt_re_ib_uninit(struct bnxt_re_dev *rdev);
+ static void bnxt_re_remove_device(struct bnxt_re_dev *rdev);
+-static void bnxt_re_ib_uninit(struct bnxt_re_dev *rdev);
++static void bnxt_re_dealloc_driver(struct ib_device *ib_dev);
++static void bnxt_re_stop_irq(void *handle);
  
  static void bnxt_re_destroy_chip_ctx(struct bnxt_re_dev *rdev)
  {
-@@ -237,7 +238,9 @@ static void bnxt_re_shutdown(void *p)
+@@ -237,10 +238,10 @@ static void bnxt_re_shutdown(void *p)
+ 
  	if (!rdev)
  		return;
- 
--	bnxt_re_ib_unreg(rdev);
-+	bnxt_re_ib_uninit(rdev);
-+	ASSERT_RTNL();
-+	bnxt_re_remove_device(rdev);
+-
+-	bnxt_re_ib_uninit(rdev);
+ 	ASSERT_RTNL();
+-	bnxt_re_remove_device(rdev);
++	/* Release the MSIx vectors before queuing unregister */
++	bnxt_re_stop_irq(rdev);
++	ib_unregister_device_queued(&rdev->ibdev);
  }
  
  static void bnxt_re_stop_irq(void *handle)
-@@ -1317,7 +1320,41 @@ static void bnxt_re_query_hwrm_intf_version(struct bnxt_re_dev *rdev)
+@@ -542,17 +543,12 @@ static bool is_bnxt_re_dev(struct net_device *netdev)
+ 
+ static struct bnxt_re_dev *bnxt_re_from_netdev(struct net_device *netdev)
+ {
+-	struct bnxt_re_dev *rdev;
++	struct ib_device *ibdev =
++		ib_device_get_by_netdev(netdev, RDMA_DRIVER_BNXT_RE);
++	if (!ibdev)
++		return NULL;
+ 
+-	rcu_read_lock();
+-	list_for_each_entry_rcu(rdev, &bnxt_re_dev_list, list) {
+-		if (rdev->netdev == netdev) {
+-			rcu_read_unlock();
+-			return rdev;
+-		}
+-	}
+-	rcu_read_unlock();
+-	return NULL;
++	return container_of(ibdev, struct bnxt_re_dev, ibdev);
+ }
+ 
+ static void bnxt_re_dev_unprobe(struct net_device *netdev,
+@@ -626,11 +622,6 @@ static const struct attribute_group bnxt_re_dev_attr_group = {
+ 	.attrs = bnxt_re_attributes,
+ };
+ 
+-static void bnxt_re_unregister_ib(struct bnxt_re_dev *rdev)
+-{
+-	ib_unregister_device(&rdev->ibdev);
+-}
+-
+ static const struct ib_device_ops bnxt_re_dev_ops = {
+ 	.owner = THIS_MODULE,
+ 	.driver_id = RDMA_DRIVER_BNXT_RE,
+@@ -645,6 +636,7 @@ static const struct ib_device_ops bnxt_re_dev_ops = {
+ 	.create_cq = bnxt_re_create_cq,
+ 	.create_qp = bnxt_re_create_qp,
+ 	.create_srq = bnxt_re_create_srq,
++	.dealloc_driver = bnxt_re_dealloc_driver,
+ 	.dealloc_pd = bnxt_re_dealloc_pd,
+ 	.dealloc_ucontext = bnxt_re_dealloc_ucontext,
+ 	.del_gid = bnxt_re_del_gid,
+@@ -741,15 +733,11 @@ static void bnxt_re_dev_remove(struct bnxt_re_dev *rdev)
+ {
+ 	dev_put(rdev->netdev);
+ 	rdev->netdev = NULL;
+-
+ 	mutex_lock(&bnxt_re_dev_lock);
+ 	list_del_rcu(&rdev->list);
+ 	mutex_unlock(&bnxt_re_dev_lock);
+ 
+ 	synchronize_rcu();
+-
+-	ib_dealloc_device(&rdev->ibdev);
+-	/* rdev is gone */
+ }
+ 
+ static struct bnxt_re_dev *bnxt_re_dev_add(struct net_device *netdev,
+@@ -1320,15 +1308,6 @@ static void bnxt_re_query_hwrm_intf_version(struct bnxt_re_dev *rdev)
  		le16_to_cpu(resp.hwrm_intf_patch);
  }
  
--static void bnxt_re_ib_unreg(struct bnxt_re_dev *rdev)
-+static void bnxt_re_ib_uninit(struct bnxt_re_dev *rdev)
-+{
-+	/* Cleanup ib dev */
-+	if (test_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags)) {
-+		ib_unregister_device(&rdev->ibdev);
-+		clear_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags);
-+	}
-+}
-+
-+int bnxt_re_ib_init(struct bnxt_re_dev *rdev)
-+{
-+	int rc = 0;
-+	u32 event;
-+
-+	/* Register ib dev */
-+	rc = bnxt_re_register_ib(rdev);
-+	if (rc) {
-+		pr_err("Failed to register with IB: %#x\n", rc);
-+		return rc;
-+	}
-+	set_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags);
-+	dev_info(rdev_to_dev(rdev), "Device registered successfully");
-+	ib_get_eth_speed(&rdev->ibdev, 1, &rdev->active_speed,
-+			 &rdev->active_width);
-+	set_bit(BNXT_RE_FLAG_ISSUE_ROCE_STATS, &rdev->flags);
-+
-+	event = netif_running(rdev->netdev) && netif_carrier_ok(rdev->netdev) ?
-+		IB_EVENT_PORT_ACTIVE : IB_EVENT_PORT_ERR;
-+
-+	bnxt_re_dispatch_event(&rdev->ibdev, NULL, 1, event);
-+
-+	return rc;
-+}
-+
-+static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev)
- {
- 	u8 type;
- 	int rc;
-@@ -1373,20 +1410,15 @@ static void bnxt_re_worker(struct work_struct *work)
- 	schedule_delayed_work(&rdev->worker, msecs_to_jiffies(30000));
- }
- 
--static int bnxt_re_ib_reg(struct bnxt_re_dev *rdev)
-+static int bnxt_re_dev_init(struct bnxt_re_dev *rdev)
- {
- 	struct bnxt_qplib_creq_ctx *creq;
- 	struct bnxt_re_ring_attr rattr;
- 	u32 db_offt;
--	bool locked;
- 	int vid;
- 	u8 type;
- 	int rc;
- 
--	/* Acquire rtnl lock through out this function */
--	rtnl_lock();
--	locked = true;
--
- 	/* Registered a new RoCE device instance to netdev */
- 	memset(&rattr, 0, sizeof(rattr));
- 	rc = bnxt_re_register_netdev(rdev);
-@@ -1514,23 +1546,6 @@ static int bnxt_re_ib_reg(struct bnxt_re_dev *rdev)
- 		schedule_delayed_work(&rdev->worker, msecs_to_jiffies(30000));
- 	}
- 
--	rtnl_unlock();
--	locked = false;
--
--	/* Register ib dev */
--	rc = bnxt_re_register_ib(rdev);
--	if (rc) {
--		ibdev_err(&rdev->ibdev,
--			  "Failed to register with IB: %#x\n", rc);
--		goto fail;
--	}
--	set_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags);
--	ibdev_info(&rdev->ibdev, "Device registered successfully");
--	ib_get_eth_speed(&rdev->ibdev, 1, &rdev->active_speed,
--			 &rdev->active_width);
--	set_bit(BNXT_RE_FLAG_ISSUE_ROCE_STATS, &rdev->flags);
--	bnxt_re_dispatch_event(&rdev->ibdev, NULL, 1, IB_EVENT_PORT_ACTIVE);
--
- 	return 0;
- free_sctx:
- 	bnxt_re_net_stats_ctx_free(rdev, rdev->qplib_ctx.stats.fw_id);
-@@ -1544,10 +1559,7 @@ static int bnxt_re_ib_reg(struct bnxt_re_dev *rdev)
- free_rcfw:
- 	bnxt_qplib_free_rcfw_channel(&rdev->rcfw);
- fail:
--	if (!locked)
--		rtnl_lock();
--	bnxt_re_ib_unreg(rdev);
--	rtnl_unlock();
-+	bnxt_re_dev_uninit(rdev);
- 
- 	return rc;
- }
-@@ -1589,9 +1601,35 @@ static int bnxt_re_dev_reg(struct bnxt_re_dev **rdev, struct net_device *netdev)
- 	return rc;
- }
- 
--static void bnxt_re_remove_one(struct bnxt_re_dev *rdev)
-+static void bnxt_re_remove_device(struct bnxt_re_dev *rdev)
- {
-+	bnxt_re_dev_uninit(rdev);
- 	pci_dev_put(rdev->en_dev->pdev);
-+	bnxt_re_dev_unreg(rdev);
-+}
-+
-+static int bnxt_re_add_device(struct bnxt_re_dev **rdev,
-+			      struct net_device *netdev)
-+{
-+	int rc;
-+
-+	rc = bnxt_re_dev_reg(rdev, netdev);
-+	if (rc == -ENODEV)
-+		return rc;
-+	if (rc) {
-+		pr_err("Failed to register with the device %s: %#x\n",
-+		       netdev->name, rc);
-+		return rc;
-+	}
-+
-+	pci_dev_get((*rdev)->en_dev->pdev);
-+	rc = bnxt_re_dev_init(*rdev);
-+	if (rc) {
-+		pci_dev_put((*rdev)->en_dev->pdev);
-+		bnxt_re_dev_unreg(*rdev);
-+	}
-+
-+	return rc;
- }
- 
- /* Handle all deferred netevents tasks */
-@@ -1606,16 +1644,17 @@ static void bnxt_re_task(struct work_struct *work)
- 
- 	if (re_work->event != NETDEV_REGISTER &&
- 	    !test_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags))
--		return;
-+		goto done;
- 
- 	switch (re_work->event) {
- 	case NETDEV_REGISTER:
--		rc = bnxt_re_ib_reg(rdev);
-+		rc = bnxt_re_ib_init(rdev);
- 		if (rc) {
- 			ibdev_err(&rdev->ibdev,
- 				  "Failed to register with IB: %#x", rc);
--			bnxt_re_remove_one(rdev);
--			bnxt_re_dev_unreg(rdev);
-+			rtnl_lock();
-+			bnxt_re_remove_device(rdev);
-+			rtnl_unlock();
- 			goto exit;
- 		}
- 		break;
-@@ -1638,17 +1677,13 @@ static void bnxt_re_task(struct work_struct *work)
- 	default:
- 		break;
- 	}
-+done:
- 	smp_mb__before_atomic();
- 	atomic_dec(&rdev->sched_count);
- exit:
- 	kfree(re_work);
- }
- 
--static void bnxt_re_init_one(struct bnxt_re_dev *rdev)
+-static void bnxt_re_ib_uninit(struct bnxt_re_dev *rdev)
 -{
--	pci_dev_get(rdev->en_dev->pdev);
+-	/* Cleanup ib dev */
+-	if (test_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags)) {
+-		ib_unregister_device(&rdev->ibdev);
+-		clear_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags);
+-	}
 -}
 -
- /*
-  * "Notifier chain callback can be invoked for the same chain from
-  * different CPUs at the same time".
-@@ -1686,17 +1721,9 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
- 	case NETDEV_REGISTER:
- 		if (rdev)
- 			break;
--		rc = bnxt_re_dev_reg(&rdev, real_dev);
--		if (rc == -ENODEV)
--			break;
--		if (rc) {
--			ibdev_err(&rdev->ibdev,
--				  "Failed to register with the device %s: %#x\n",
--				  real_dev->name, rc);
--			break;
--		}
--		bnxt_re_init_one(rdev);
--		sch_work = true;
-+		rc = bnxt_re_add_device(&rdev, real_dev);
-+		if (!rc)
-+			sch_work = true;
+ int bnxt_re_ib_init(struct bnxt_re_dev *rdev)
+ {
+ 	int rc = 0;
+@@ -1359,10 +1338,6 @@ static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev)
+ 	u8 type;
+ 	int rc;
+ 
+-	if (test_and_clear_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags)) {
+-		/* Cleanup ib dev */
+-		bnxt_re_unregister_ib(rdev);
+-	}
+ 	if (test_and_clear_bit(BNXT_RE_FLAG_QOS_WORK_REG, &rdev->flags))
+ 		cancel_delayed_work_sync(&rdev->worker);
+ 
+@@ -1632,6 +1607,19 @@ static int bnxt_re_add_device(struct bnxt_re_dev **rdev,
+ 	return rc;
+ }
+ 
++static void bnxt_re_dealloc_driver(struct ib_device *ib_dev)
++{
++	struct bnxt_re_dev *rdev =
++		container_of(ib_dev, struct bnxt_re_dev, ibdev);
++
++	clear_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags);
++	dev_info(rdev_to_dev(rdev), "Unregistering Device");
++
++	rtnl_lock();
++	bnxt_re_remove_device(rdev);
++	rtnl_unlock();
++}
++
+ /* Handle all deferred netevents tasks */
+ static void bnxt_re_task(struct work_struct *work)
+ {
+@@ -1706,6 +1694,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
+ 	struct bnxt_re_dev *rdev;
+ 	int rc = 0;
+ 	bool sch_work = false;
++	bool release = true;
+ 
+ 	real_dev = rdma_vlan_dev_real_dev(netdev);
+ 	if (!real_dev)
+@@ -1713,7 +1702,8 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
+ 
+ 	rdev = bnxt_re_from_netdev(real_dev);
+ 	if (!rdev && event != NETDEV_REGISTER)
+-		goto exit;
++		return NOTIFY_OK;
++
+ 	if (real_dev != netdev)
+ 		goto exit;
+ 
+@@ -1724,6 +1714,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
+ 		rc = bnxt_re_add_device(&rdev, real_dev);
+ 		if (!rc)
+ 			sch_work = true;
++		release = false;
  		break;
  
  	case NETDEV_UNREGISTER:
-@@ -1705,9 +1732,8 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
+@@ -1732,8 +1723,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
  		 */
  		if (atomic_read(&rdev->sched_count) > 0)
  			goto exit;
--		bnxt_re_ib_unreg(rdev);
--		bnxt_re_remove_one(rdev);
--		bnxt_re_dev_unreg(rdev);
-+		bnxt_re_ib_uninit(rdev);
-+		bnxt_re_remove_device(rdev);
+-		bnxt_re_ib_uninit(rdev);
+-		bnxt_re_remove_device(rdev);
++		ib_unregister_device_queued(&rdev->ibdev);
  		break;
  
  	default:
-@@ -1784,12 +1810,11 @@ static void __exit bnxt_re_mod_exit(void)
- 		 */
- 		flush_workqueue(bnxt_re_wq);
- 		bnxt_re_dev_stop(rdev);
-+		bnxt_re_ib_uninit(rdev);
- 		/* Acquire the rtnl_lock as the L2 resources are freed here */
- 		rtnl_lock();
--		bnxt_re_ib_unreg(rdev);
-+		bnxt_re_remove_device(rdev);
- 		rtnl_unlock();
--		bnxt_re_remove_one(rdev);
--		bnxt_re_dev_unreg(rdev);
+@@ -1755,6 +1745,8 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
  	}
+ 
+ exit:
++	if (rdev && release)
++		ib_device_put(&rdev->ibdev);
+ 	return NOTIFY_DONE;
+ }
+ 
+@@ -1790,35 +1782,21 @@ static int __init bnxt_re_mod_init(void)
+ 
+ static void __exit bnxt_re_mod_exit(void)
+ {
+-	struct bnxt_re_dev *rdev, *next;
+-	LIST_HEAD(to_be_deleted);
++	struct bnxt_re_dev *rdev;
+ 
+-	mutex_lock(&bnxt_re_dev_lock);
+-	/* Free all adapter allocated resources */
+-	if (!list_empty(&bnxt_re_dev_list))
+-		list_splice_init(&bnxt_re_dev_list, &to_be_deleted);
+-	mutex_unlock(&bnxt_re_dev_lock);
+-       /*
+-	* Cleanup the devices in reverse order so that the VF device
+-	* cleanup is done before PF cleanup
+-	*/
+-	list_for_each_entry_safe_reverse(rdev, next, &to_be_deleted, list) {
+-		ibdev_info(&rdev->ibdev, "Unregistering Device");
+-		/*
+-		 * Flush out any scheduled tasks before destroying the
+-		 * resources
+-		 */
+-		flush_workqueue(bnxt_re_wq);
+-		bnxt_re_dev_stop(rdev);
+-		bnxt_re_ib_uninit(rdev);
+-		/* Acquire the rtnl_lock as the L2 resources are freed here */
+-		rtnl_lock();
+-		bnxt_re_remove_device(rdev);
+-		rtnl_unlock();
+-	}
  	unregister_netdevice_notifier(&bnxt_re_netdev_notifier);
  	if (bnxt_re_wq)
+ 		destroy_workqueue(bnxt_re_wq);
++	list_for_each_entry(rdev, &bnxt_re_dev_list, list) {
++		/* VF device removal should be called before the removal
++		 * of PF device. Queue VFs unregister first, so that VFs
++		 * shall be removed before the PF during the call of
++		 * ib_unregister_driver.
++		 */
++		if (rdev->is_virtfn)
++			ib_unregister_device(&rdev->ibdev);
++	}
++	ib_unregister_driver(RDMA_DRIVER_BNXT_RE);
+ }
+ 
+ module_init(bnxt_re_mod_init);
 -- 
 2.5.5
 
