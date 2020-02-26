@@ -2,123 +2,244 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D3916F745
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2020 06:28:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CF116F76F
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2020 06:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgBZF2r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Feb 2020 00:28:47 -0500
-Received: from mail-eopbgr80083.outbound.protection.outlook.com ([40.107.8.83]:39232
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725890AbgBZF2r (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 26 Feb 2020 00:28:47 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W14QOmiBEUAc9Bm3F7E1O6PK5N19CIs+EDwYDmWB4UrA2Qo5uKtaIYY3BGyoS9tz5/uxyg3qgQgyR1YuVxUR86cI4EFSbjUSWj2i05EU8MoX1t40R/WA2+rBnZcUirAaXuCbVdV3U3C/dn2MYvOPNsNjbnnEio+cZavsFYgSR8A+Lg/f8bV4WAUI9Zv9buKN7Ws9lJLfT9Ozc0zleI2ndOQX20KkjJlLp6xSeuzJIwmV9J+RuJqr6f75gRdN0aMtjP5bCDne4k9Ih/vLbvAqE9WkhFkI8K/tc60bPLHF1zybBSRO42uE7fwvhiLVfKSH66jrmuqIqir2wptd+Qab6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=neZpeDQunM9ER9d96aZwphhlU67MCa5PrYs9WvhFhGk=;
- b=f26zPrWoe5rV3Hzy5+OfEoG5z54xlveGoxinZu01ax5BRDDyTrdnQy70DCSuzX6NWeTavIXHoiWkPG6J+nBWqNn1VHPGIrZEvt5CSdzaxvONsmLPfDmAeOnPLb4JeROwpCFG3YxVHVDXkOqGYwsy/sPLpma8KE4X79g18YeGbu8dGPZVva0aQvI6Jge6QByLa5yQsRBak++iqAxC9PbL51gM8upUrkWlt2l8mMw6pxuqZ7gKXqXPo3VL9iouiIJesMTfB9Dx+u6y3nv3xhxdM0BCdc1Z3TzGtzOMRI3S4YXU/jLS5HE3wCuXS3zn4fHac0BJvLlQXvhoYXfeinMrnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=neZpeDQunM9ER9d96aZwphhlU67MCa5PrYs9WvhFhGk=;
- b=OFHpdmsWz4Fe6IvihdZ0Ul+RI6dwDKZTv/buqYo9EcxhhzLd3RBjdwb2JAYtBhB4Ngf9G4wFxHKzIGhF7giKVhUAiHff9ktyPSTxcQjDiVjxp5r1WDm4q+ByouFV3/uNv0wDNoyZoI0x/fyNNjFGWPxFAWkTxaH1tt9jbRRS+v0=
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
- AM0PR05MB5953.eurprd05.prod.outlook.com (20.178.202.14) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2750.18; Wed, 26 Feb 2020 05:28:44 +0000
-Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::8c4:e45b:ecdc:e02b]) by AM0PR05MB4866.eurprd05.prod.outlook.com
- ([fe80::8c4:e45b:ecdc:e02b%7]) with mapi id 15.20.2750.021; Wed, 26 Feb 2020
- 05:28:44 +0000
-From:   Parav Pandit <parav@mellanox.com>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [PATCH for-next v3 1/2] RDMA/bnxt_re: Refactor device add/remove
- functionalities
-Thread-Topic: [PATCH for-next v3 1/2] RDMA/bnxt_re: Refactor device add/remove
- functionalities
-Thread-Index: AQHV7GMFrAzYEk2Fz0ynIoK1bQ4fwKgs8Zrw
-Date:   Wed, 26 Feb 2020 05:28:43 +0000
-Message-ID: <AM0PR05MB4866C0C2C9CB59C386C6FD17D1EA0@AM0PR05MB4866.eurprd05.prod.outlook.com>
-References: <1582693794-23373-1-git-send-email-selvin.xavier@broadcom.com>
- <1582693794-23373-2-git-send-email-selvin.xavier@broadcom.com>
-In-Reply-To: <1582693794-23373-2-git-send-email-selvin.xavier@broadcom.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=parav@mellanox.com; 
-x-originating-ip: [2605:6000:ec82:1c00:1566:5450:92d0:45ef]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: cbf34a01-9137-4ce7-26bf-08d7ba7cbf11
-x-ms-traffictypediagnostic: AM0PR05MB5953:|AM0PR05MB5953:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM0PR05MB5953E144A2A085008A273A85D1EA0@AM0PR05MB5953.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0325F6C77B
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(199004)(189003)(71200400001)(81156014)(5660300002)(33656002)(52536014)(498600001)(8676002)(81166006)(4326008)(86362001)(8936002)(110136005)(7696005)(66946007)(2906002)(66446008)(186003)(66556008)(76116006)(64756008)(6636002)(66476007)(9686003)(55016002)(6506007);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB5953;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xbquCK0d11pjACM6lu5gsdTIsi4MBXLc6c8TfO+sG453phvLKXztcRKkCWnGt30fTjTmb5vvZKgM+mFxYNJmPZARSuJB2TT/7AwQpJbJ/em4NM15rMcInIjVOYN63PMLZHVO5v9Hw66FK7xz0faqYlr0Kyq47QuvWk4BT6KCO9Ig3nX7b4O+0FkMjtUrYw2ptPvrmV7YFYAEQwNc6iu29G3r99zii8UxAFV1WArHb1bGq02e5sK26CWRC9SS5rb6vH6rObsBY7njqkro/3QR9HXjlSE0KPBj/BHGZUCeCQES+Pz+l1FlUel60oX7rJ8Yox+pnkqjuahidF/nTx1zRMUiOkRvmGI01FKuuW/06MmwqLWq8TddyU8LDVu5YqHoGSlJIhxPF5+lqN8zkqAmpDSDbafZ9rJ3UfsDX6xty/WkzBBV0sd2U79lxfgX9RTu
-x-ms-exchange-antispam-messagedata: Q4Pj/Ow+rNJW0MvSg2wq/cD3BP4JVWA3khQmnacVdU5TbEpDrOkQOJR+18jYctAQk1WG7j6I1TnKJ5YxPNcKmgLxsyIn3mmHZmZQYQiOyF8i/XOQo1kqrGWUjsda53xdyeH65f5AHZh8v3koe3GYtSudtJwFKZegnb2MZkakjfgwgESydBOQAWmNxbuUcVyasAUlnmrlkqIJjB4HURSmWg==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1725876AbgBZFjL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Feb 2020 00:39:11 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:34829 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725789AbgBZFjL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Feb 2020 00:39:11 -0500
+Received: by mail-io1-f72.google.com with SMTP id w16so1942673iot.2
+        for <linux-rdma@vger.kernel.org>; Tue, 25 Feb 2020 21:39:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=uGxEoBZdEJyr2cCmVlxRKNDAv9nNidTX1NIELXjoNOc=;
+        b=iXvz6+PZhLeoG3nEqZ/m8jD349c9lABioS6WR3dp7GlnMdZoTYV3+uUNEH1rTUkK3u
+         3YWf8V4sz2GCDHcxOS3ILC5ZoVf6xDIVSWbXnn+Q6/y7nmIFdglQz8VrDvOjM6NHNKeN
+         83+d9+v0Vs4+lUN8VPT2GrpzaQbcYnJr8Y028toTF6NJGIEl4JK2bIpYC6KF8wqhq6Hc
+         e4pPMrNO80+RYSK2SL1OfjolBeQYwAv6a4QXv/oalBtqannr40M7MWOh6CSye4+l5CHW
+         HtvQqF0Mlq4y5h42hhQRGtCu1kdwYOyPNnQY4rfYRf1gKI/8To+nvr0vnlPkmPMN0bPG
+         N8zg==
+X-Gm-Message-State: APjAAAWwOZqc6OgmV6G126ftwsI0DQi1d2T80AT+hjmTZPdl2kwpKfmi
+        8QohJp3+GdKhMsGHCx6kyduwmbwUnv3GXq3qSS5/yvxs0aVY
+X-Google-Smtp-Source: APXvYqy4gnuW9DglMt9Nv5AKwlkZy11b+ks+bWryygfXZGvB358RnZVYhqmqQCuE1vMEAOYnZraT5Nq1r5j5+kRXmaxEwauzjbBP
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbf34a01-9137-4ce7-26bf-08d7ba7cbf11
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Feb 2020 05:28:44.0218
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MLRY+5RgWtjo1w3rGcuopzPZn9tgpcoBgjPJqncNycVhPwV6frDEP4bK3A5w4rlc8siXV6yb2Fa7q/dsWoO6jA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5953
+X-Received: by 2002:a02:cd82:: with SMTP id l2mr2059450jap.103.1582695550630;
+ Tue, 25 Feb 2020 21:39:10 -0800 (PST)
+Date:   Tue, 25 Feb 2020 21:39:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000153fac059f740693@google.com>
+Subject: possible deadlock in cma_netdev_callback
+From:   syzbot <syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com>
+To:     chuck.lever@oracle.com, dledford@redhat.com, jgg@ziepe.ca,
+        leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        parav@mellanox.com, syzkaller-bugs@googlegroups.com,
+        willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Selvin,
+Hello,
 
-> From: linux-rdma-owner@vger.kernel.org <linux-rdma-
-> owner@vger.kernel.org> On Behalf Of Selvin Xavier
->
- [..]
-> +int bnxt_re_ib_init(struct bnxt_re_dev *rdev) {
-> +	int rc =3D 0;
-> +
-> +	/* Register ib dev */
-> +	rc =3D bnxt_re_register_ib(rdev);
-> +	if (rc) {
-> +		pr_err("Failed to register with IB: %#x\n", rc);
-> +		return rc;
-> +	}
-> +	set_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags);
-> +	dev_info(rdev_to_dev(rdev), "Device registered successfully");
-> +	ib_get_eth_speed(&rdev->ibdev, 1, &rdev->active_speed,
-> +			 &rdev->active_width);
-> +	set_bit(BNXT_RE_FLAG_ISSUE_ROCE_STATS, &rdev->flags);
-> +	bnxt_re_dispatch_event(&rdev->ibdev, NULL, 1,
-> IB_EVENT_PORT_ACTIVE);
-What if the link is down at this point?
-I see that it was done this way before, but since you are refactoring, may =
-be you want to relook?
-Do you still want to report it as active?
+syzbot found the following crash on:
 
-> +	bnxt_re_dispatch_event(&rdev->ibdev, NULL, 1,
-> IB_EVENT_GID_CHANGE);
-> +
-GID addition, deletion decisions for RoCE ports are taken care by the IB co=
-re.
-So hw driver shouldn't report this event. Please remove this call.
+HEAD commit:    6132c1d9 net: core: devlink.c: Hold devlink->lock from the..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=16978909e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3b8906eb6a7d6028
+dashboard link: https://syzkaller.appspot.com/bug?extid=55de90ab5f44172b0c90
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12808281e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134ca6fde00000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com
+
+iwpm_register_pid: Unable to send a nlmsg (client = 2)
+infiniband syz1: RDMA CMA: cma_listen_on_dev, error -98
+netlink: 'syz-executor639': attribute type 1 has an invalid length.
+8021q: adding VLAN 0 to HW filter on device bond1
+bond1: (slave gretap1): making interface the new active one
+======================================================
+WARNING: possible circular locking dependency detected
+5.6.0-rc2-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor639/9689 is trying to acquire lock:
+ffffffff8a5d2a60 (lock#3){+.+.}, at: cma_netdev_callback+0xc6/0x380 drivers/infiniband/core/cma.c:4605
+
+but task is already holding lock:
+ffffffff8a74da00 (rtnl_mutex){+.+.}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
+ffffffff8a74da00 (rtnl_mutex){+.+.}, at: rtnetlink_rcv_msg+0x405/0xaf0 net/core/rtnetlink.c:5433
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (rtnl_mutex){+.+.}:
+       __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+       __mutex_lock+0x156/0x13c0 kernel/locking/mutex.c:1103
+       mutex_lock_nested+0x16/0x20 kernel/locking/mutex.c:1118
+       rtnl_lock+0x17/0x20 net/core/rtnetlink.c:72
+       siw_create_listen+0x329/0xed0 drivers/infiniband/sw/siw/siw_cm.c:1951
+       iw_cm_listen+0x16e/0x1f0 drivers/infiniband/core/iwcm.c:582
+       cma_iw_listen drivers/infiniband/core/cma.c:2450 [inline]
+       rdma_listen+0x613/0x970 drivers/infiniband/core/cma.c:3614
+       cma_listen_on_dev+0x530/0x6a0 drivers/infiniband/core/cma.c:2501
+       cma_add_one+0x6fe/0xbf0 drivers/infiniband/core/cma.c:4666
+       add_client_context+0x3dd/0x550 drivers/infiniband/core/device.c:681
+       enable_device_and_get+0x1df/0x3c0 drivers/infiniband/core/device.c:1316
+       ib_register_device drivers/infiniband/core/device.c:1382 [inline]
+       ib_register_device+0xa89/0xe40 drivers/infiniband/core/device.c:1343
+       siw_device_register drivers/infiniband/sw/siw/siw_main.c:70 [inline]
+       siw_newlink drivers/infiniband/sw/siw/siw_main.c:565 [inline]
+       siw_newlink+0xdef/0x1310 drivers/infiniband/sw/siw/siw_main.c:542
+       nldev_newlink+0x28a/0x430 drivers/infiniband/core/nldev.c:1538
+       rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:195 [inline]
+       rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+       rdma_nl_rcv+0x5d9/0x980 drivers/infiniband/core/netlink.c:259
+       netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+       netlink_unicast+0x59e/0x7e0 net/netlink/af_netlink.c:1329
+       netlink_sendmsg+0x91c/0xea0 net/netlink/af_netlink.c:1918
+       sock_sendmsg_nosec net/socket.c:652 [inline]
+       sock_sendmsg+0xd7/0x130 net/socket.c:672
+       ____sys_sendmsg+0x753/0x880 net/socket.c:2343
+       ___sys_sendmsg+0x100/0x170 net/socket.c:2397
+       __sys_sendmsg+0x105/0x1d0 net/socket.c:2430
+       __do_sys_sendmsg net/socket.c:2439 [inline]
+       __se_sys_sendmsg net/socket.c:2437 [inline]
+       __x64_sys_sendmsg+0x78/0xb0 net/socket.c:2437
+       do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+       entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+-> #0 (lock#3){+.+.}:
+       check_prev_add kernel/locking/lockdep.c:2475 [inline]
+       check_prevs_add kernel/locking/lockdep.c:2580 [inline]
+       validate_chain kernel/locking/lockdep.c:2970 [inline]
+       __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3954
+       lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4484
+       __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+       __mutex_lock+0x156/0x13c0 kernel/locking/mutex.c:1103
+       mutex_lock_nested+0x16/0x20 kernel/locking/mutex.c:1118
+       cma_netdev_callback+0xc6/0x380 drivers/infiniband/core/cma.c:4605
+       notifier_call_chain+0xc2/0x230 kernel/notifier.c:83
+       __raw_notifier_call_chain kernel/notifier.c:361 [inline]
+       raw_notifier_call_chain+0x2e/0x40 kernel/notifier.c:368
+       call_netdevice_notifiers_info net/core/dev.c:1948 [inline]
+       call_netdevice_notifiers_info+0xba/0x130 net/core/dev.c:1933
+       call_netdevice_notifiers_extack net/core/dev.c:1960 [inline]
+       call_netdevice_notifiers+0x79/0xa0 net/core/dev.c:1974
+       bond_change_active_slave+0x185b/0x2050 drivers/net/bonding/bond_main.c:944
+       bond_select_active_slave+0x276/0xae0 drivers/net/bonding/bond_main.c:986
+       bond_enslave+0x44ef/0x4af0 drivers/net/bonding/bond_main.c:1823
+       do_set_master net/core/rtnetlink.c:2468 [inline]
+       do_set_master+0x1dd/0x240 net/core/rtnetlink.c:2441
+       __rtnl_newlink+0x13a3/0x1790 net/core/rtnetlink.c:3346
+       rtnl_newlink+0x69/0xa0 net/core/rtnetlink.c:3377
+       rtnetlink_rcv_msg+0x45e/0xaf0 net/core/rtnetlink.c:5436
+       netlink_rcv_skb+0x177/0x450 net/netlink/af_netlink.c:2478
+       rtnetlink_rcv+0x1d/0x30 net/core/rtnetlink.c:5454
+       netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+       netlink_unicast+0x59e/0x7e0 net/netlink/af_netlink.c:1329
+       netlink_sendmsg+0x91c/0xea0 net/netlink/af_netlink.c:1918
+       sock_sendmsg_nosec net/socket.c:652 [inline]
+       sock_sendmsg+0xd7/0x130 net/socket.c:672
+       ____sys_sendmsg+0x753/0x880 net/socket.c:2343
+       ___sys_sendmsg+0x100/0x170 net/socket.c:2397
+       __sys_sendmsg+0x105/0x1d0 net/socket.c:2430
+       __do_sys_sendmsg net/socket.c:2439 [inline]
+       __se_sys_sendmsg net/socket.c:2437 [inline]
+       __x64_sys_sendmsg+0x78/0xb0 net/socket.c:2437
+       do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+       entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(rtnl_mutex);
+                               lock(lock#3);
+                               lock(rtnl_mutex);
+  lock(lock#3);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor639/9689:
+ #0: ffffffff8a74da00 (rtnl_mutex){+.+.}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
+ #0: ffffffff8a74da00 (rtnl_mutex){+.+.}, at: rtnetlink_rcv_msg+0x405/0xaf0 net/core/rtnetlink.c:5433
+
+stack backtrace:
+CPU: 0 PID: 9689 Comm: syz-executor639 Not tainted 5.6.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x197/0x210 lib/dump_stack.c:118
+ print_circular_bug.isra.0.cold+0x163/0x172 kernel/locking/lockdep.c:1684
+ check_noncircular+0x32e/0x3e0 kernel/locking/lockdep.c:1808
+ check_prev_add kernel/locking/lockdep.c:2475 [inline]
+ check_prevs_add kernel/locking/lockdep.c:2580 [inline]
+ validate_chain kernel/locking/lockdep.c:2970 [inline]
+ __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3954
+ lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4484
+ __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+ __mutex_lock+0x156/0x13c0 kernel/locking/mutex.c:1103
+ mutex_lock_nested+0x16/0x20 kernel/locking/mutex.c:1118
+ cma_netdev_callback+0xc6/0x380 drivers/infiniband/core/cma.c:4605
+ notifier_call_chain+0xc2/0x230 kernel/notifier.c:83
+ __raw_notifier_call_chain kernel/notifier.c:361 [inline]
+ raw_notifier_call_chain+0x2e/0x40 kernel/notifier.c:368
+ call_netdevice_notifiers_info net/core/dev.c:1948 [inline]
+ call_netdevice_notifiers_info+0xba/0x130 net/core/dev.c:1933
+ call_netdevice_notifiers_extack net/core/dev.c:1960 [inline]
+ call_netdevice_notifiers+0x79/0xa0 net/core/dev.c:1974
+ bond_change_active_slave+0x185b/0x2050 drivers/net/bonding/bond_main.c:944
+ bond_select_active_slave+0x276/0xae0 drivers/net/bonding/bond_main.c:986
+ bond_enslave+0x44ef/0x4af0 drivers/net/bonding/bond_main.c:1823
+ do_set_master net/core/rtnetlink.c:2468 [inline]
+ do_set_master+0x1dd/0x240 net/core/rtnetlink.c:2441
+ __rtnl_newlink+0x13a3/0x1790 net/core/rtnetlink.c:3346
+ rtnl_newlink+0x69/0xa0 net/core/rtnetlink.c:3377
+ rtnetlink_rcv_msg+0x45e/0xaf0 net/core/rtnetlink.c:5436
+ netlink_rcv_skb+0x177/0x450 net/netlink/af_netlink.c:2478
+ rtnetlink_rcv+0x1d/0x30 net/core/rtnetlink.c:5454
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0x59e/0x7e0 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x91c/0xea0 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xd7/0x130 net/socket.c:672
+ ____sys_sendmsg+0x753/0x880 net/socket.c:2343
+ ___sys_sendmsg+0x100/0x170 net/socket.c:2397
+ __sys_sendmsg+0x105/0x1d0 net/socket.c:2430
+ __do_sys_sendmsg net/socket.c:2439 [inline]
+ __se_sys_sendmsg net/socket.c:2437 [inline]
+ __x64_sys_sendmsg+0x78/0xb0 net/socket.c:2437
+ do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x440509
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff80af47a8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440509
+RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000004
+RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
+R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000401d90
+R13: 0000000000401e20 R14: 0000000000000000 R15: 0000000000000000
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
