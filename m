@@ -2,300 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7928916F6D2
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2020 06:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D3916F745
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2020 06:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbgBZFKN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Feb 2020 00:10:13 -0500
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:45222 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgBZFKM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Feb 2020 00:10:12 -0500
-Received: by mail-pg1-f193.google.com with SMTP id r77so688464pgr.12
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Feb 2020 21:10:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ldTzKn3oUGCLA1h+1yhCorE/mKDLJ3OTbxvySgSJ6rw=;
-        b=Y/bnHpmkEa24arfGplatCjKy82bLsDMtHbndK+oFp8mQJhOJEHHXSmiUdRtBYyBSRY
-         +GXrtE1ybsjotSjKO51xUOXWE+6MnOeGrtgyJr/Uujc6nX+XLfdSnMcid3+2SUxNl4gr
-         E5iBGp4DYCHKVoIWkn505OU9t6FIlnhd96f4Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ldTzKn3oUGCLA1h+1yhCorE/mKDLJ3OTbxvySgSJ6rw=;
-        b=eN55a9sWliG/eka7yp80p+XFygtjTScFJfXDoZaPDL68XaHxG9mYTMmptgzGQX6dt+
-         r9FbPFvmKJqLOUDJ/e4IlKJafC53IcA5Kxq4RUS2vzSv/v+A1mAfCR1MG5zAqfJjMmmr
-         63rgURYh5CqKi8kntcTq/isddfl6XnNV1iUjv9H4V6gM2z/3vRigp6iTKF3uvCfg8WZB
-         xRxQCIlDdaBODWqEIc3NIOyk9NLiHmITnlaUntZCIqNwnkw7bIwk6U0Qi7Cegi2AcsSk
-         k2sX3FdIA5RUZQ6Q6zzM4DD8RVf6Z5IItv3h8m5VihMRh18NFFqyWvRNJAQ+Emgtc7MF
-         2SCg==
-X-Gm-Message-State: APjAAAX+Pq8twPCN3yPpL8CELFCvg6zA4+N2QQ2OMG6gRVIITsX6KVl5
-        jTT2mtthlGyiNsAwYaPXQ9IX6UqHqUw=
-X-Google-Smtp-Source: APXvYqwT6s8jsLT3OjSC9zuYhBzi5DrJP3h0+Wzqybi0CHE0JgVs+jNHmoIP8OjcpBs2H3JIZR/u2A==
-X-Received: by 2002:a63:3349:: with SMTP id z70mr2018912pgz.408.1582693810878;
-        Tue, 25 Feb 2020 21:10:10 -0800 (PST)
-Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id o73sm817962pje.7.2020.02.25.21.10.08
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 25 Feb 2020 21:10:09 -0800 (PST)
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-To:     dledford@redhat.com, jgg@mellanox.com
-Cc:     linux-rdma@vger.kernel.org,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next v3 2/2] RDMA/bnxt_re: Use driver_unregister and unregistration API
-Date:   Tue, 25 Feb 2020 21:09:54 -0800
-Message-Id: <1582693794-23373-3-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1582693794-23373-1-git-send-email-selvin.xavier@broadcom.com>
+        id S1726587AbgBZF2r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Feb 2020 00:28:47 -0500
+Received: from mail-eopbgr80083.outbound.protection.outlook.com ([40.107.8.83]:39232
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725890AbgBZF2r (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 26 Feb 2020 00:28:47 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W14QOmiBEUAc9Bm3F7E1O6PK5N19CIs+EDwYDmWB4UrA2Qo5uKtaIYY3BGyoS9tz5/uxyg3qgQgyR1YuVxUR86cI4EFSbjUSWj2i05EU8MoX1t40R/WA2+rBnZcUirAaXuCbVdV3U3C/dn2MYvOPNsNjbnnEio+cZavsFYgSR8A+Lg/f8bV4WAUI9Zv9buKN7Ws9lJLfT9Ozc0zleI2ndOQX20KkjJlLp6xSeuzJIwmV9J+RuJqr6f75gRdN0aMtjP5bCDne4k9Ih/vLbvAqE9WkhFkI8K/tc60bPLHF1zybBSRO42uE7fwvhiLVfKSH66jrmuqIqir2wptd+Qab6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=neZpeDQunM9ER9d96aZwphhlU67MCa5PrYs9WvhFhGk=;
+ b=f26zPrWoe5rV3Hzy5+OfEoG5z54xlveGoxinZu01ax5BRDDyTrdnQy70DCSuzX6NWeTavIXHoiWkPG6J+nBWqNn1VHPGIrZEvt5CSdzaxvONsmLPfDmAeOnPLb4JeROwpCFG3YxVHVDXkOqGYwsy/sPLpma8KE4X79g18YeGbu8dGPZVva0aQvI6Jge6QByLa5yQsRBak++iqAxC9PbL51gM8upUrkWlt2l8mMw6pxuqZ7gKXqXPo3VL9iouiIJesMTfB9Dx+u6y3nv3xhxdM0BCdc1Z3TzGtzOMRI3S4YXU/jLS5HE3wCuXS3zn4fHac0BJvLlQXvhoYXfeinMrnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=neZpeDQunM9ER9d96aZwphhlU67MCa5PrYs9WvhFhGk=;
+ b=OFHpdmsWz4Fe6IvihdZ0Ul+RI6dwDKZTv/buqYo9EcxhhzLd3RBjdwb2JAYtBhB4Ngf9G4wFxHKzIGhF7giKVhUAiHff9ktyPSTxcQjDiVjxp5r1WDm4q+ByouFV3/uNv0wDNoyZoI0x/fyNNjFGWPxFAWkTxaH1tt9jbRRS+v0=
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com (20.176.214.160) by
+ AM0PR05MB5953.eurprd05.prod.outlook.com (20.178.202.14) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2750.18; Wed, 26 Feb 2020 05:28:44 +0000
+Received: from AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::8c4:e45b:ecdc:e02b]) by AM0PR05MB4866.eurprd05.prod.outlook.com
+ ([fe80::8c4:e45b:ecdc:e02b%7]) with mapi id 15.20.2750.021; Wed, 26 Feb 2020
+ 05:28:44 +0000
+From:   Parav Pandit <parav@mellanox.com>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH for-next v3 1/2] RDMA/bnxt_re: Refactor device add/remove
+ functionalities
+Thread-Topic: [PATCH for-next v3 1/2] RDMA/bnxt_re: Refactor device add/remove
+ functionalities
+Thread-Index: AQHV7GMFrAzYEk2Fz0ynIoK1bQ4fwKgs8Zrw
+Date:   Wed, 26 Feb 2020 05:28:43 +0000
+Message-ID: <AM0PR05MB4866C0C2C9CB59C386C6FD17D1EA0@AM0PR05MB4866.eurprd05.prod.outlook.com>
 References: <1582693794-23373-1-git-send-email-selvin.xavier@broadcom.com>
+ <1582693794-23373-2-git-send-email-selvin.xavier@broadcom.com>
+In-Reply-To: <1582693794-23373-2-git-send-email-selvin.xavier@broadcom.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=parav@mellanox.com; 
+x-originating-ip: [2605:6000:ec82:1c00:1566:5450:92d0:45ef]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: cbf34a01-9137-4ce7-26bf-08d7ba7cbf11
+x-ms-traffictypediagnostic: AM0PR05MB5953:|AM0PR05MB5953:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR05MB5953E144A2A085008A273A85D1EA0@AM0PR05MB5953.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0325F6C77B
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(199004)(189003)(71200400001)(81156014)(5660300002)(33656002)(52536014)(498600001)(8676002)(81166006)(4326008)(86362001)(8936002)(110136005)(7696005)(66946007)(2906002)(66446008)(186003)(66556008)(76116006)(64756008)(6636002)(66476007)(9686003)(55016002)(6506007);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB5953;H:AM0PR05MB4866.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xbquCK0d11pjACM6lu5gsdTIsi4MBXLc6c8TfO+sG453phvLKXztcRKkCWnGt30fTjTmb5vvZKgM+mFxYNJmPZARSuJB2TT/7AwQpJbJ/em4NM15rMcInIjVOYN63PMLZHVO5v9Hw66FK7xz0faqYlr0Kyq47QuvWk4BT6KCO9Ig3nX7b4O+0FkMjtUrYw2ptPvrmV7YFYAEQwNc6iu29G3r99zii8UxAFV1WArHb1bGq02e5sK26CWRC9SS5rb6vH6rObsBY7njqkro/3QR9HXjlSE0KPBj/BHGZUCeCQES+Pz+l1FlUel60oX7rJ8Yox+pnkqjuahidF/nTx1zRMUiOkRvmGI01FKuuW/06MmwqLWq8TddyU8LDVu5YqHoGSlJIhxPF5+lqN8zkqAmpDSDbafZ9rJ3UfsDX6xty/WkzBBV0sd2U79lxfgX9RTu
+x-ms-exchange-antispam-messagedata: Q4Pj/Ow+rNJW0MvSg2wq/cD3BP4JVWA3khQmnacVdU5TbEpDrOkQOJR+18jYctAQk1WG7j6I1TnKJ5YxPNcKmgLxsyIn3mmHZmZQYQiOyF8i/XOQo1kqrGWUjsda53xdyeH65f5AHZh8v3koe3GYtSudtJwFKZegnb2MZkakjfgwgESydBOQAWmNxbuUcVyasAUlnmrlkqIJjB4HURSmWg==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cbf34a01-9137-4ce7-26bf-08d7ba7cbf11
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Feb 2020 05:28:44.0218
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MLRY+5RgWtjo1w3rGcuopzPZn9tgpcoBgjPJqncNycVhPwV6frDEP4bK3A5w4rlc8siXV6yb2Fa7q/dsWoO6jA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5953
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Using the new unregister APIs provided by the core.
-Provide the dealloc_driver hook for the core to callback at the time
-of device un-registration.
+Hi Selvin,
 
-bnxt_re VF resources are created by the corresponding PF driver.
-During ib_unregister_driver, PF might get removed before VF
-and this could cause failure when VFs are removed. Driver
-is explicitly queuing the removal of VF devices before
-calling ib_unregister_driver.
+> From: linux-rdma-owner@vger.kernel.org <linux-rdma-
+> owner@vger.kernel.org> On Behalf Of Selvin Xavier
+>
+ [..]
+> +int bnxt_re_ib_init(struct bnxt_re_dev *rdev) {
+> +	int rc =3D 0;
+> +
+> +	/* Register ib dev */
+> +	rc =3D bnxt_re_register_ib(rdev);
+> +	if (rc) {
+> +		pr_err("Failed to register with IB: %#x\n", rc);
+> +		return rc;
+> +	}
+> +	set_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags);
+> +	dev_info(rdev_to_dev(rdev), "Device registered successfully");
+> +	ib_get_eth_speed(&rdev->ibdev, 1, &rdev->active_speed,
+> +			 &rdev->active_width);
+> +	set_bit(BNXT_RE_FLAG_ISSUE_ROCE_STATS, &rdev->flags);
+> +	bnxt_re_dispatch_event(&rdev->ibdev, NULL, 1,
+> IB_EVENT_PORT_ACTIVE);
+What if the link is down at this point?
+I see that it was done this way before, but since you are refactoring, may =
+be you want to relook?
+Do you still want to report it as active?
 
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/main.c | 106 ++++++++++++++---------------------
- 1 file changed, 42 insertions(+), 64 deletions(-)
-
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index f44dee2..28bdb01 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -79,7 +79,8 @@ static struct list_head bnxt_re_dev_list = LIST_HEAD_INIT(bnxt_re_dev_list);
- static DEFINE_MUTEX(bnxt_re_dev_lock);
- static struct workqueue_struct *bnxt_re_wq;
- static void bnxt_re_remove_device(struct bnxt_re_dev *rdev);
--static void bnxt_re_ib_uninit(struct bnxt_re_dev *rdev);
-+static void bnxt_re_dealloc_driver(struct ib_device *ib_dev);
-+static void bnxt_re_stop_irq(void *handle);
- 
- static void bnxt_re_destroy_chip_ctx(struct bnxt_re_dev *rdev)
- {
-@@ -237,10 +238,10 @@ static void bnxt_re_shutdown(void *p)
- 
- 	if (!rdev)
- 		return;
--
--	bnxt_re_ib_uninit(rdev);
- 	ASSERT_RTNL();
--	bnxt_re_remove_device(rdev);
-+	/* Release the MSIx vectors before queuing unregister */
-+	bnxt_re_stop_irq(rdev);
-+	ib_unregister_device_queued(&rdev->ibdev);
- }
- 
- static void bnxt_re_stop_irq(void *handle)
-@@ -542,17 +543,12 @@ static bool is_bnxt_re_dev(struct net_device *netdev)
- 
- static struct bnxt_re_dev *bnxt_re_from_netdev(struct net_device *netdev)
- {
--	struct bnxt_re_dev *rdev;
-+	struct ib_device *ibdev =
-+		ib_device_get_by_netdev(netdev, RDMA_DRIVER_BNXT_RE);
-+	if (!ibdev)
-+		return NULL;
- 
--	rcu_read_lock();
--	list_for_each_entry_rcu(rdev, &bnxt_re_dev_list, list) {
--		if (rdev->netdev == netdev) {
--			rcu_read_unlock();
--			return rdev;
--		}
--	}
--	rcu_read_unlock();
--	return NULL;
-+	return container_of(ibdev, struct bnxt_re_dev, ibdev);
- }
- 
- static void bnxt_re_dev_unprobe(struct net_device *netdev,
-@@ -626,11 +622,6 @@ static const struct attribute_group bnxt_re_dev_attr_group = {
- 	.attrs = bnxt_re_attributes,
- };
- 
--static void bnxt_re_unregister_ib(struct bnxt_re_dev *rdev)
--{
--	ib_unregister_device(&rdev->ibdev);
--}
--
- static const struct ib_device_ops bnxt_re_dev_ops = {
- 	.owner = THIS_MODULE,
- 	.driver_id = RDMA_DRIVER_BNXT_RE,
-@@ -645,6 +636,7 @@ static const struct ib_device_ops bnxt_re_dev_ops = {
- 	.create_cq = bnxt_re_create_cq,
- 	.create_qp = bnxt_re_create_qp,
- 	.create_srq = bnxt_re_create_srq,
-+	.dealloc_driver = bnxt_re_dealloc_driver,
- 	.dealloc_pd = bnxt_re_dealloc_pd,
- 	.dealloc_ucontext = bnxt_re_dealloc_ucontext,
- 	.del_gid = bnxt_re_del_gid,
-@@ -741,15 +733,11 @@ static void bnxt_re_dev_remove(struct bnxt_re_dev *rdev)
- {
- 	dev_put(rdev->netdev);
- 	rdev->netdev = NULL;
--
- 	mutex_lock(&bnxt_re_dev_lock);
- 	list_del_rcu(&rdev->list);
- 	mutex_unlock(&bnxt_re_dev_lock);
- 
- 	synchronize_rcu();
--
--	ib_dealloc_device(&rdev->ibdev);
--	/* rdev is gone */
- }
- 
- static struct bnxt_re_dev *bnxt_re_dev_add(struct net_device *netdev,
-@@ -1320,15 +1308,6 @@ static void bnxt_re_query_hwrm_intf_version(struct bnxt_re_dev *rdev)
- 		le16_to_cpu(resp.hwrm_intf_patch);
- }
- 
--static void bnxt_re_ib_uninit(struct bnxt_re_dev *rdev)
--{
--	/* Cleanup ib dev */
--	if (test_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags)) {
--		ib_unregister_device(&rdev->ibdev);
--		clear_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags);
--	}
--}
--
- int bnxt_re_ib_init(struct bnxt_re_dev *rdev)
- {
- 	int rc = 0;
-@@ -1355,10 +1334,6 @@ static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev)
- 	u8 type;
- 	int rc;
- 
--	if (test_and_clear_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags)) {
--		/* Cleanup ib dev */
--		bnxt_re_unregister_ib(rdev);
--	}
- 	if (test_and_clear_bit(BNXT_RE_FLAG_QOS_WORK_REG, &rdev->flags))
- 		cancel_delayed_work_sync(&rdev->worker);
- 
-@@ -1628,6 +1603,19 @@ static int bnxt_re_add_device(struct bnxt_re_dev **rdev,
- 	return rc;
- }
- 
-+static void bnxt_re_dealloc_driver(struct ib_device *ib_dev)
-+{
-+	struct bnxt_re_dev *rdev =
-+		container_of(ib_dev, struct bnxt_re_dev, ibdev);
-+
-+	clear_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags);
-+	dev_info(rdev_to_dev(rdev), "Unregistering Device");
-+
-+	rtnl_lock();
-+	bnxt_re_remove_device(rdev);
-+	rtnl_unlock();
-+}
-+
- /* Handle all deferred netevents tasks */
- static void bnxt_re_task(struct work_struct *work)
- {
-@@ -1702,6 +1690,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
- 	struct bnxt_re_dev *rdev;
- 	int rc = 0;
- 	bool sch_work = false;
-+	bool release = true;
- 
- 	real_dev = rdma_vlan_dev_real_dev(netdev);
- 	if (!real_dev)
-@@ -1709,7 +1698,8 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
- 
- 	rdev = bnxt_re_from_netdev(real_dev);
- 	if (!rdev && event != NETDEV_REGISTER)
--		goto exit;
-+		return NOTIFY_OK;
-+
- 	if (real_dev != netdev)
- 		goto exit;
- 
-@@ -1720,6 +1710,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
- 		rc = bnxt_re_add_device(&rdev, real_dev);
- 		if (!rc)
- 			sch_work = true;
-+		release = false;
- 		break;
- 
- 	case NETDEV_UNREGISTER:
-@@ -1728,8 +1719,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
- 		 */
- 		if (atomic_read(&rdev->sched_count) > 0)
- 			goto exit;
--		bnxt_re_ib_uninit(rdev);
--		bnxt_re_remove_device(rdev);
-+		ib_unregister_device_queued(&rdev->ibdev);
- 		break;
- 
- 	default:
-@@ -1751,6 +1741,8 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
- 	}
- 
- exit:
-+	if (rdev && release)
-+		ib_device_put(&rdev->ibdev);
- 	return NOTIFY_DONE;
- }
- 
-@@ -1786,35 +1778,21 @@ static int __init bnxt_re_mod_init(void)
- 
- static void __exit bnxt_re_mod_exit(void)
- {
--	struct bnxt_re_dev *rdev, *next;
--	LIST_HEAD(to_be_deleted);
-+	struct bnxt_re_dev *rdev;
- 
--	mutex_lock(&bnxt_re_dev_lock);
--	/* Free all adapter allocated resources */
--	if (!list_empty(&bnxt_re_dev_list))
--		list_splice_init(&bnxt_re_dev_list, &to_be_deleted);
--	mutex_unlock(&bnxt_re_dev_lock);
--       /*
--	* Cleanup the devices in reverse order so that the VF device
--	* cleanup is done before PF cleanup
--	*/
--	list_for_each_entry_safe_reverse(rdev, next, &to_be_deleted, list) {
--		ibdev_info(&rdev->ibdev, "Unregistering Device");
--		/*
--		 * Flush out any scheduled tasks before destroying the
--		 * resources
--		 */
--		flush_workqueue(bnxt_re_wq);
--		bnxt_re_dev_stop(rdev);
--		bnxt_re_ib_uninit(rdev);
--		/* Acquire the rtnl_lock as the L2 resources are freed here */
--		rtnl_lock();
--		bnxt_re_remove_device(rdev);
--		rtnl_unlock();
--	}
- 	unregister_netdevice_notifier(&bnxt_re_netdev_notifier);
- 	if (bnxt_re_wq)
- 		destroy_workqueue(bnxt_re_wq);
-+	list_for_each_entry(rdev, &bnxt_re_dev_list, list) {
-+		/* VF device removal should be called before the removal
-+		 * of PF device. Queue VFs unregister first, so that VFs
-+		 * shall be removed before the PF during the call of
-+		 * ib_unregister_driver.
-+		 */
-+		if (rdev->is_virtfn)
-+			ib_unregister_device(&rdev->ibdev);
-+	}
-+	ib_unregister_driver(RDMA_DRIVER_BNXT_RE);
- }
- 
- module_init(bnxt_re_mod_init);
--- 
-2.5.5
-
+> +	bnxt_re_dispatch_event(&rdev->ibdev, NULL, 1,
+> IB_EVENT_GID_CHANGE);
+> +
+GID addition, deletion decisions for RoCE ports are taken care by the IB co=
+re.
+So hw driver shouldn't report this event. Please remove this call.
