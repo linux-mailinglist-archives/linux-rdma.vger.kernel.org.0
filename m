@@ -2,110 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FD31709F2
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2020 21:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE77170C3F
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 00:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727483AbgBZUmk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Feb 2020 15:42:40 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:42082 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727460AbgBZUmk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Feb 2020 15:42:40 -0500
-Received: by mail-qt1-f194.google.com with SMTP id r5so562594qtt.9
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2020 12:42:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=i88oqqwGwa149ArRLuVW7H77TVeoVzHvwQKN4q66IIM=;
-        b=MEr0ISDHqnCdVLRtSfviOXm6RbiP7/A1qgWyYq0gIb/y4VyyvBE5gVdLxHAHoo0wca
-         HH+WDRnHo7qnzjeTQDBW9rUyUmlwd/5UsPmOjzCYeBGg21bXmnWMCg+1D+enEY74ZnB0
-         5tssh0vpdDn/hhryTYlqVHUtoGnGvKAy9I42SNw0Y/cJChLwdIsxFXLU5TTec7NUcHg4
-         vZVmiF+SIWdAUBntw4jskQj49pP72/EumL5+hQuyBIev/ESdfXaTYCSlRmekzjuAJIrj
-         hyI3D79b7CAqZtO0RjjYL638NAXYE1qvUQMv9JZzXeCvGb1/Wm625j6+VLFYkESI+vRn
-         elsA==
+        id S1727691AbgBZXGD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Feb 2020 18:06:03 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:42135 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727181AbgBZXGC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Feb 2020 18:06:02 -0500
+Received: by mail-ot1-f66.google.com with SMTP id 66so1106307otd.9
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2020 15:06:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=i88oqqwGwa149ArRLuVW7H77TVeoVzHvwQKN4q66IIM=;
-        b=CDlN02cJdu3D4FNHavsZS15kcTMMD6yiURWVIQN23PBRvFaogEwPEBqGfwYs0i1jQ7
-         A6uIzEKsQyNVkg3tti0lKO2cp+l059UZeZCLtZ7Jz4USfMxMHgCGUKE4Hv5bqGjxqoZs
-         IAqZ++DcSyK6vY6pxHjUvjr4ZmJvUELV0a3Iz8ho3CvhqAlTZMF3VunFPBOs4Ksj47Sq
-         Nhagwls3tsqZ8r9cFatcIe37J78cRsUJoYJI4b03jVUgB1qMo9Eneaw8e41C5bV7aOXY
-         kytXxUGhYBNO8WAN+ZXLEHhIDYKhSXGVfkEEBDSnT80BAzSGeFJZHn0lIWJwCdN6uXbp
-         yHWA==
-X-Gm-Message-State: APjAAAU/Zl5sbAkKNeGatwaJUVFEr5+xaUTEuvcHrA1wkGmhYqS4lvH2
-        FPA5ejWXPY8QNq6MTuzITwfzQw==
-X-Google-Smtp-Source: APXvYqx53Kv6dlkpnWhxarlrn/AR/8PRwFcE3tS1Fxn5FfuavCYSzPwTtNfx7Ycj+DTtHjqHDi/dcQ==
-X-Received: by 2002:ac8:377a:: with SMTP id p55mr785701qtb.87.1582749759314;
-        Wed, 26 Feb 2020 12:42:39 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id t13sm1726812qkm.60.2020.02.26.12.42.38
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 26 Feb 2020 12:42:38 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j73Vu-0007FH-8G; Wed, 26 Feb 2020 16:42:38 -0400
-Date:   Wed, 26 Feb 2020 16:42:38 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     syzbot <syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com>
-Cc:     chuck.lever@oracle.com, dledford@redhat.com, leon@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, parav@mellanox.com,
-        syzkaller-bugs@googlegroups.com, willy@infradead.org,
-        Bernard Metzler <bmt@zurich.ibm.com>
-Subject: Re: possible deadlock in cma_netdev_callback
-Message-ID: <20200226204238.GC31668@ziepe.ca>
-References: <000000000000153fac059f740693@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rz8owZz048vr1Nb1eXiJd5TZUtHPUckitGOYNGK22uE=;
+        b=ZglgLIS2XH93GhjAlrZtubmMxngtPvbE2ShHL+DJJXQPIxSccTkaTN/31KG+d/iWI9
+         2bPeglpoE8EpkovZWUeH8sH5U5b9eVnnZagGbCXufeChAloCF2yKTLGiky+UbPktikAt
+         hZl8VXxZsEUygcSsJ5VSqIoeyFPC7qtqDz3lnbpawbyWJLFD84SvCs8/4Fi0qsz9KzQ1
+         Ea2meQLz3f0Ly37yI7QXpT9/n8H2wl9cwnnruHoh2PZp58eETTIX7QZSR/QG1f5cOG/w
+         yRvK+EuFH9jxss/BXQB6YKYq4g9v/hK5eNkEpbgifYdc6SIcsJgIqnYK437Ld/Z0W6FB
+         AAbw==
+X-Gm-Message-State: APjAAAV4Y4G06f3r39y84Foe4XzMaLI1e6ghwBUQXxomSiUtHEIvoMQe
+        +3JfK/G/9lJsDFkMI1Z4fPT1xQ5J
+X-Google-Smtp-Source: APXvYqwTl7SOLrFBI6vzf2RPwJP474QUd6yAAHJIHaciF3OeoD/yWAYlxR4HJV/lHgqjIC4XHy9FjA==
+X-Received: by 2002:a05:6830:95:: with SMTP id a21mr939317oto.171.1582758362095;
+        Wed, 26 Feb 2020 15:06:02 -0800 (PST)
+Received: from ?IPv6:2600:1700:65a0:78e0:514:7862:1503:8e4d? ([2600:1700:65a0:78e0:514:7862:1503:8e4d])
+        by smtp.gmail.com with ESMTPSA id 5sm1298377otr.13.2020.02.26.15.06.00
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 26 Feb 2020 15:06:01 -0800 (PST)
+Subject: Re: [PATCH for-rc] nvme-rdma/nvmet-rdma: Allocate sufficient RW ctxs
+ to match hosts pgs len
+To:     Krishnamraju Eraparaju <krishna2@chelsio.com>,
+        linux-nvme@lists.infradead.org, hch@lst.de
+Cc:     linux-rdma@vger.kernel.org, nirranjan@chelsio.com,
+        bharat@chelsio.com
+References: <20200226141318.28519-1-krishna2@chelsio.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <b7a7abdc-574a-4ce9-ccf0-a51532f1ac58@grimberg.me>
+Date:   Wed, 26 Feb 2020 15:05:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000153fac059f740693@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200226141318.28519-1-krishna2@chelsio.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 25, 2020 at 09:39:10PM -0800, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following crash on:
-> 
-> HEAD commit:    6132c1d9 net: core: devlink.c: Hold devlink->lock from the..
-> git tree:       net
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16978909e00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3b8906eb6a7d6028
-> dashboard link: https://syzkaller.appspot.com/bug?extid=55de90ab5f44172b0c90
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12808281e00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134ca6fde00000
-> 
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com
-> 
-> iwpm_register_pid: Unable to send a nlmsg (client = 2)
-> infiniband syz1: RDMA CMA: cma_listen_on_dev, error -98
-> netlink: 'syz-executor639': attribute type 1 has an invalid length.
-> 8021q: adding VLAN 0 to HW filter on device bond1
-> bond1: (slave gretap1): making interface the new active one
-> ======================================================
-> WARNING: possible circular locking dependency detected
-> 5.6.0-rc2-syzkaller #0 Not tainted
-> syz-executor639/9689 is trying to acquire lock:
-> ffffffff8a5d2a60 (lock#3){+.+.}, at: cma_netdev_callback+0xc6/0x380 drivers/infiniband/core/cma.c:4605
-> 
-> but task is already holding lock:
-> ffffffff8a74da00 (rtnl_mutex){+.+.}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
-> ffffffff8a74da00 (rtnl_mutex){+.+.}, at: rtnetlink_rcv_msg+0x405/0xaf0 net/core/rtnetlink.c:5433
->
 
-Bernard, this is a siw bug too, it is not allowed to get RTNL in
-siw_create_listen() (though this is probably for silly reasons and
-could be fixed)
+> Current nvmet-rdma code allocates MR pool budget based on host's SQ
+> size, assuming both host and target use the same "max_pages_per_mr"
+> count. But if host's max_pages_per_mr is greater than target's, then
+> target can run out of MRs while processing larger IO WRITEs.
+> 
+> That is, say host's SQ size is 100, then the MR pool budget allocated
+> currently at target will also be 100 MRs. But 100 IO WRITE Requests
+> with 256 sg_count(IO size above 1MB) require 200 MRs when target's
+> "max_pages_per_mr" is 128.
 
-It is not easy to get this into the lockdep, I'll send a different
-patch too
+The patch doesn't say if this is an actual bug you are seeing or
+theoretical.
 
-Jason
+> The proposed patch enables host to advertise the max_fr_pages(via
+> nvme_rdma_cm_req) such that target can allocate that many number of
+> RW ctxs(if host's max_fr_pages is higher than target's).
+
+As mentioned by Jason, this s a non-compatible change, if you want to
+introduce this you need to go through the standard and update the
+cm private_data layout (would mean that the fmt needs to increment as
+well to be backward compatible).
+
+
+As a stop-gap, nvmet needs to limit the controller mdts to how much
+it can allocate based on the HCA capabilities
+(max_fast_reg_page_list_len).
