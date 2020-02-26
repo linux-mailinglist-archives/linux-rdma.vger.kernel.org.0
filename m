@@ -2,181 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53BC7170127
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2020 15:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 329D61702F9
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Feb 2020 16:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727471AbgBZO33 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Feb 2020 09:29:29 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27170 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727093AbgBZO33 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 26 Feb 2020 09:29:29 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01QEOUeq096113
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2020 09:29:28 -0500
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2ydq6h02hn-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2020 09:29:28 -0500
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
-        Wed, 26 Feb 2020 14:29:26 -0000
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 26 Feb 2020 14:29:24 -0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 01QETNCV47906952
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Feb 2020 14:29:23 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 281A8A4055;
-        Wed, 26 Feb 2020 14:29:23 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D4928A4053;
-        Wed, 26 Feb 2020 14:29:22 +0000 (GMT)
-Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 26 Feb 2020 14:29:22 +0000 (GMT)
-From:   Bernard Metzler <bmt@zurich.ibm.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Cc:     Bernard Metzler <bmt@zurich.ibm.com>
-Subject: [PATCH for-rc] RDMA/siw: Fix failure handling during device creation
-Date:   Wed, 26 Feb 2020 15:29:20 +0100
-X-Mailer: git-send-email 2.17.2
-X-TM-AS-GCONF: 00
-x-cbid: 20022614-0016-0000-0000-000002EA7B26
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20022614-0017-0000-0000-0000334DAAFD
-Message-Id: <20200226142920.11074-1-bmt@zurich.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-26_05:2020-02-26,2020-02-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- spamscore=0 impostorscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
- clxscore=1015 priorityscore=1501 malwarescore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002260107
+        id S1726148AbgBZPpn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Feb 2020 10:45:43 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:34028 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728482AbgBZPpn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Feb 2020 10:45:43 -0500
+Received: by mail-pj1-f66.google.com with SMTP id f2so2299895pjq.1
+        for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2020 07:45:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=kJ+Vz0h46gXPemsAeApEgoMpx5RtDCVTaUkCZ0b4+Kk=;
+        b=SrmIYxnPd4NL3kzaBDwSO2GdKpFQ1uaNp3Je6LPe+860tStkTBXuA0RTZhLf4EO+WK
+         b/2RWTcNE4WRlq64Ym4OPz0l1KYLWn1XRHdnPpdkDr1xmdR/p4g8JYo0cj4j1OMT96g8
+         7vP2Z5YFeXhLz/R8evOZbUiZtJALRHA5n8NmI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=kJ+Vz0h46gXPemsAeApEgoMpx5RtDCVTaUkCZ0b4+Kk=;
+        b=mmzvmb3BI4J22jRYdFdeFdfP99+3FYBeCUcEYaPPtQSXYIAmsr1SzIADWd7/iZ5etS
+         AUe4Th1A86I1oFwxqkPJ/hRdOiaG0QR6gQ9oVXXDMJI2FpVjKMBk1DkM56zjpCekGTfF
+         EhBjVfTYgsaDH7468I24FyItxHonWHFC5BKmXmNDREy50+WFOfDdK4tjb7+Mz6ga2qq+
+         FDp094sp5Vz1JljBSF7RSg8XYMSLAcFS/P2z9CEOepdetjQJa5P0+ZO6j22Du4Gv/Qxa
+         J8m4SdXrE63zLoi5NheAR/41k0EEAD1r/D36XuXliwrUdT/nG++n1HPWzknj0eS1NXcc
+         Ymeg==
+X-Gm-Message-State: APjAAAUk3z4l5+JaoyORhS6M31zxAPuuLZf/qBMQrXeBEQg3tRy6m86t
+        T4i8wryXjQv7A2gZqThQQfluCbGz37U=
+X-Google-Smtp-Source: APXvYqw6k22GeZ1OpSGfqbL4WdBjPcidQSIOUMVWaaiTYxTCBu0CWkIFkuxViuVFA65dicDJTd5T6g==
+X-Received: by 2002:a17:90a:7784:: with SMTP id v4mr5961800pjk.134.1582731942178;
+        Wed, 26 Feb 2020 07:45:42 -0800 (PST)
+Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id h3sm3502785pfo.102.2020.02.26.07.45.40
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 26 Feb 2020 07:45:41 -0800 (PST)
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+To:     dledford@redhat.com, jgg@mellanox.com
+Cc:     linux-rdma@vger.kernel.org,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH for-next v4 0/2] RDMA/bnxt_re driver update
+Date:   Wed, 26 Feb 2020 07:45:30 -0800
+Message-Id: <1582731932-26574-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-A failing call to ib_device_set_netdev() during device creation
-caused system crash due to xa_destroy of uninitialized xarray
-hit by device deallocation. Fixed by moving xarray initialization
-before potential device deallocation.
-Fixes also correct propagation of ib_device_set_netdev() failure
-to caller.
+Includes code refactoring in the device init/deinit path and
+use the new driver unregistration APIs.
 
-Reported-by: syzbot+2e80962bedd9559fe0b3@syzkaller.appspotmail.com
-Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
----
- drivers/infiniband/sw/siw/siw_main.c | 39 ++++++++++++++--------------
- 1 file changed, 20 insertions(+), 19 deletions(-)
+Please apply to for-next.
 
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index 96ed349c0939..839decfd9032 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -303,7 +303,7 @@ static const struct ib_device_ops siw_device_ops = {
- 
- static struct siw_device *siw_device_create(struct net_device *netdev)
- {
--	struct siw_device *sdev = NULL;
-+	struct siw_device *sdev;
- 	struct ib_device *base_dev;
- 	struct device *parent = netdev->dev.parent;
- 	int rv;
-@@ -319,13 +319,13 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
- 		if (netdev->type != ARPHRD_LOOPBACK) {
- 			pr_warn("siw: device %s error: no parent device\n",
- 				netdev->name);
--			return NULL;
-+			return ERR_PTR(-EINVAL);
- 		}
- 		parent = &netdev->dev;
- 	}
- 	sdev = ib_alloc_device(siw_device, base_dev);
- 	if (!sdev)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
- 
- 	base_dev = &sdev->base_dev;
- 
-@@ -388,6 +388,9 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
- 		{ .max_segment_size = SZ_2G };
- 	base_dev->num_comp_vectors = num_possible_cpus();
- 
-+	xa_init_flags(&sdev->qp_xa, XA_FLAGS_ALLOC1);
-+	xa_init_flags(&sdev->mem_xa, XA_FLAGS_ALLOC1);
-+
- 	ib_set_device_ops(base_dev, &siw_device_ops);
- 	rv = ib_device_set_netdev(base_dev, netdev, 1);
- 	if (rv)
-@@ -415,9 +418,6 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
- 	sdev->attrs.max_srq_wr = SIW_MAX_SRQ_WR;
- 	sdev->attrs.max_srq_sge = SIW_MAX_SGE;
- 
--	xa_init_flags(&sdev->qp_xa, XA_FLAGS_ALLOC1);
--	xa_init_flags(&sdev->mem_xa, XA_FLAGS_ALLOC1);
--
- 	INIT_LIST_HEAD(&sdev->cep_list);
- 	INIT_LIST_HEAD(&sdev->qp_list);
- 
-@@ -435,7 +435,7 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
- error:
- 	ib_dealloc_device(base_dev);
- 
--	return NULL;
-+	return ERR_PTR(rv);
- }
- 
- /*
-@@ -542,8 +542,8 @@ static struct notifier_block siw_netdev_nb = {
- static int siw_newlink(const char *basedev_name, struct net_device *netdev)
- {
- 	struct ib_device *base_dev;
--	struct siw_device *sdev = NULL;
--	int rv = -ENOMEM;
-+	struct siw_device *sdev;
-+	int rv;
- 
- 	if (!siw_dev_qualified(netdev))
- 		return -EINVAL;
-@@ -554,18 +554,19 @@ static int siw_newlink(const char *basedev_name, struct net_device *netdev)
- 		return -EEXIST;
- 	}
- 	sdev = siw_device_create(netdev);
--	if (sdev) {
--		dev_dbg(&netdev->dev, "siw: new device\n");
-+	if (IS_ERR(sdev))
-+		return PTR_ERR(sdev);
- 
--		if (netif_running(netdev) && netif_carrier_ok(netdev))
--			sdev->state = IB_PORT_ACTIVE;
--		else
--			sdev->state = IB_PORT_DOWN;
-+	dev_dbg(&netdev->dev, "siw: new device\n");
- 
--		rv = siw_device_register(sdev, basedev_name);
--		if (rv)
--			ib_dealloc_device(&sdev->base_dev);
--	}
-+	if (netif_running(netdev) && netif_carrier_ok(netdev))
-+		sdev->state = IB_PORT_ACTIVE;
-+	else
-+		sdev->state = IB_PORT_DOWN;
-+
-+	rv = siw_device_register(sdev, basedev_name);
-+	if (rv)
-+		ib_dealloc_device(&sdev->base_dev);
- 	return rv;
- }
- 
+Thanks,
+Selvin
+
+v3-> v4:
+ - Added netdev state query  and report the correct link state
+   during device registration
+ - Removed GID event during device registration
+v2 -> v3:
+ - Droped the patch which was adding more state macros
+ - To prevent addition of any device during driver removal,
+   unregister netdev notifier and delete the driver's workqueu
+   before calling ib_unregister_driver
+v1-> v2:
+ - Remove the patches 1,2 and 6 from the v1 series.
+   They are already merged.
+ - Added ASSERT_RTNL instead of comment in Patch 2
+ - For Patch 3, explicitly queue the removal of the VF devices
+   before calling ib_unregister_driver. This can avoid command
+   timeouts seen, if the PFs gets removed before the VFs.
+   Previous discussion - https://patchwork.kernel.org/patch/11260013/
+
+Selvin Xavier (2):
+  RDMA/bnxt_re: Refactor device add/remove functionalities
+  RDMA/bnxt_re: Use driver_unregister and unregistration API
+
+ drivers/infiniband/hw/bnxt_re/main.c | 213 ++++++++++++++++++-----------------
+ 1 file changed, 108 insertions(+), 105 deletions(-)
+
 -- 
-2.17.2
+2.5.5
 
