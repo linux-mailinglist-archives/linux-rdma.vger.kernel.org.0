@@ -2,83 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B51170C7C
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 00:19:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1E617111C
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 07:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727920AbgBZXTp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Feb 2020 18:19:45 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:44525 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726413AbgBZXTo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Feb 2020 18:19:44 -0500
-Received: by mail-oi1-f196.google.com with SMTP id d62so1333354oia.11
-        for <linux-rdma@vger.kernel.org>; Wed, 26 Feb 2020 15:19:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I9MypL6BAsKfZ4rRFkaqekxBpNaZPIdxOAKCi7jlEQ8=;
-        b=HFS5a2ecFlDt4koVRYVGtqj/MK09xrUsuIXSga6z65vQp37k+e4qdlLBtVWlDZYBJA
-         9NMSCUfRDdaNazfQmGgwSTNoeLQ4vGtaMYIyEiYDrD69Yaz962FowRwpaPDJxuhVuetZ
-         beczZurzNs0nVtG7BMPz93tEZDTnQ1YwAu8dEtVWBYLAW0WZSBLdG8QAxiaE7vxIRW1N
-         of1wolan7iVEZTxyEMDTOGdsap+QzkL11oCzZVulKqUjP4ynG9dJs5ljhUmlo0uxWhDu
-         TGab2jw3g0MO/lVhakenS+zVN0cR+hr+OodH8X/one/OAv148+id6gamzTIAj/dTJKgE
-         MYIg==
-X-Gm-Message-State: APjAAAVAGf7ntbTncFF3hZnI0DL75llt25934wsKFwILPY02P9hK/6Yn
-        ciKUKHdkq/iDUsJFC1H0k0G1SYrI
-X-Google-Smtp-Source: APXvYqxuGp5dlmVYcBGCJ8WQnQO59GX2wbuy1BC9+t9iduG0vuM2R2IO77+f/Kvr9LuSuz6480GUqg==
-X-Received: by 2002:aca:2315:: with SMTP id e21mr1126185oie.147.1582759184090;
-        Wed, 26 Feb 2020 15:19:44 -0800 (PST)
-Received: from ?IPv6:2600:1700:65a0:78e0:514:7862:1503:8e4d? ([2600:1700:65a0:78e0:514:7862:1503:8e4d])
-        by smtp.gmail.com with ESMTPSA id e206sm1324231oia.24.2020.02.26.15.19.42
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Feb 2020 15:19:43 -0800 (PST)
-Subject: Re: [PATCH for-rc] nvme-rdma/nvmet-rdma: Allocate sufficient RW ctxs
- to match hosts pgs len
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Krishnamraju Eraparaju <krishna2@chelsio.com>
-Cc:     linux-nvme@lists.infradead.org, hch@lst.de,
-        linux-rdma@vger.kernel.org, nirranjan@chelsio.com,
-        bharat@chelsio.com
-References: <20200226141318.28519-1-krishna2@chelsio.com>
- <20200226170720.GY31668@ziepe.ca>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <5d883018-0c27-fe1d-3dfb-2ec9de76325b@grimberg.me>
-Date:   Wed, 26 Feb 2020 15:19:41 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726999AbgB0GtF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Feb 2020 01:49:05 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:50762 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726575AbgB0GtE (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 27 Feb 2020 01:49:04 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 98224C915E07E5706AD8;
+        Thu, 27 Feb 2020 14:48:59 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.439.0; Thu, 27 Feb 2020 14:48:51 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     YueHaibing <yuehaibing@huawei.com>, <linux-rdma@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] RDMA/bnxt_re: Remove set but not used variable 'pg_size'
+Date:   Thu, 27 Feb 2020 06:42:09 +0000
+Message-ID: <20200227064209.87893-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200226170720.GY31668@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Fixes gcc '-Wunused-but-set-variable' warning:
 
->> diff --git a/include/linux/nvme-rdma.h b/include/linux/nvme-rdma.h
->> index 3ec8e50efa16..2d6f2cf1e319 100644
->> +++ b/include/linux/nvme-rdma.h
->> @@ -52,13 +52,15 @@ static inline const char *nvme_rdma_cm_msg(enum nvme_rdma_cm_status status)
->>    * @qid:           queue Identifier for the Admin or I/O Queue
->>    * @hrqsize:       host receive queue size to be created
->>    * @hsqsize:       host send queue size to be created
->> + * @hmax_fr_pages: host maximum pages per fast reg
->>    */
->>   struct nvme_rdma_cm_req {
->>   	__le16		recfmt;
->>   	__le16		qid;
->>   	__le16		hrqsize;
->>   	__le16		hsqsize;
->> -	u8		rsvd[24];
->> +	__le32		hmax_fr_pages;
->> +	u8		rsvd[20];
->>   };
-> 
-> This is an on the wire change - do you need to get approval from some
-> standards body?
+drivers/infiniband/hw/bnxt_re/qplib_res.c: In function '__alloc_pbl':
+drivers/infiniband/hw/bnxt_re/qplib_res.c:109:13: warning:
+ variable 'pg_size' set but not used [-Wunused-but-set-variable]
 
-Yes, this needs to go though the NVMe TWG for sure.
+commit 0c4dcd602817 ("RDMA/bnxt_re: Refactor hardware queue memory allocation")
+involved this, but not used, so remove it.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/infiniband/hw/bnxt_re/qplib_res.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+index fc5909c7f2e0..cab1adf1fed9 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+@@ -106,13 +106,12 @@ static int __alloc_pbl(struct bnxt_qplib_res *res,
+ 	struct pci_dev *pdev = res->pdev;
+ 	struct scatterlist *sghead;
+ 	bool is_umem = false;
+-	u32 pages, pg_size;
++	u32 pages;
+ 	int i;
+ 
+ 	if (sginfo->nopte)
+ 		return 0;
+ 	pages = sginfo->npages;
+-	pg_size = sginfo->pgsize;
+ 	sghead = sginfo->sghead;
+ 	/* page ptr arrays */
+ 	pbl->pg_arr = vmalloc(pages * sizeof(void *));
+
+
+
