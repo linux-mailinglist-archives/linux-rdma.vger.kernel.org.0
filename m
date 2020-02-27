@@ -2,92 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D83017227B
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 16:46:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3E0172299
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 16:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgB0Pqq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Feb 2020 10:46:46 -0500
-Received: from stargate.chelsio.com ([12.32.117.8]:53289 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729110AbgB0Pqq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Feb 2020 10:46:46 -0500
-Received: from localhost (pvp1.blr.asicdesigners.com [10.193.80.26])
-        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 01RFkMbE028085;
-        Thu, 27 Feb 2020 07:46:22 -0800
-Date:   Thu, 27 Feb 2020 21:16:21 +0530
-From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
-To:     Sagi Grimberg <sagi@grimberg.me>, jgg@ziepe.ca
-Cc:     linux-nvme@lists.infradead.org, hch@lst.de,
-        linux-rdma@vger.kernel.org, nirranjan@chelsio.com,
-        bharat@chelsio.com
-Subject: Re: [PATCH for-rc] nvme-rdma/nvmet-rdma: Allocate sufficient RW ctxs
- to match hosts pgs len
-Message-ID: <20200227154220.GA3153@chelsio.com>
-References: <20200226141318.28519-1-krishna2@chelsio.com>
- <b7a7abdc-574a-4ce9-ccf0-a51532f1ac58@grimberg.me>
+        id S1729860AbgB0Pxi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Feb 2020 10:53:38 -0500
+Received: from mail-qk1-f172.google.com ([209.85.222.172]:42312 "EHLO
+        mail-qk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729368AbgB0Pxh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Feb 2020 10:53:37 -0500
+Received: by mail-qk1-f172.google.com with SMTP id o28so3559779qkj.9
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Feb 2020 07:53:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=EH0SNO5Rcc4XYOUSFVK7bK7rNzgEXpv0OLPCvUs1MKM=;
+        b=PMtqoD+Qorl+adIp7K03I0mEvU1rioCUSaRdmWReGiwltATTH6RJtRscNq5iIqT9cY
+         JSA9CN5t7cEAsNpiP/S+TdjCZcTKeZJ7h8ZLu9IL9vsnjmxAe95o1Ckuho0hdEY+xmNL
+         CEMDj98AiR3AVKxOVA67huauMos3yZqp1HaKRkhsgTyCF1cBspSyrV/tJ29QVVd5jreq
+         w1KuhoOK/p1h2CGmmtI3EtJOoNYVhOHIwcABWJUfIsCW9XUbZe25fZvxtRdPN6d4SWIp
+         wAezUlU0JJj25Yv2HvrdtSeIUrtAoCBHpz/VsuoRmrD7sJUQdQ9hHwbfqYD5c3XQp6ND
+         1fCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EH0SNO5Rcc4XYOUSFVK7bK7rNzgEXpv0OLPCvUs1MKM=;
+        b=BJy67aMmgMxwI0szuCfSoX3IERtN69w6R/VP/JR0ruaxGllAxSyjLipBu/sgqyR82C
+         wqBQb4sY6swTjqZKcqNZmRHnmGj+VbowueYHAYZzBlr96ADttn8+ahMfrWFh+eoU1KuB
+         UeHamAeVUtfSrU3rpRDiD4NzNzcSJSSC3DlTITrH7AFGiwpY9be0xcI8R8JJM0SkIDk2
+         jhXsGenVNvoeq1giw5DrcHyhu/nwTx77dvmiT031FZ2fYYLbd3Mn6RWDeUWzk8A3FI9b
+         JKfyYAbEooHfNYA9JrSJ81+7meBLYmiBMpM2GLJh2k3jCBNHIvVtiawhPxfgekcZkXv2
+         q2nw==
+X-Gm-Message-State: APjAAAUZUwNHekNwHZn18JjaS07gEgH79C/oW1AvheZz/4jiZPt6YM13
+        zp800AxIQLtWJZebGxNmKCtwpg==
+X-Google-Smtp-Source: APXvYqwdqVD1HKLQD9Dk+yGMQZm/xAmaIFr/8snWfVHM3u7MryqrGdgt6o3CYFD+XYsHevMncfcZeg==
+X-Received: by 2002:ae9:ed06:: with SMTP id c6mr6871655qkg.7.1582818816659;
+        Thu, 27 Feb 2020 07:53:36 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id h12sm3241397qtn.56.2020.02.27.07.53.36
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 27 Feb 2020 07:53:36 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1j7LTj-0005VV-D2; Thu, 27 Feb 2020 11:53:35 -0400
+Date:   Thu, 27 Feb 2020 11:53:35 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     syzbot <syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com>,
+        chuck.lever@oracle.com, dledford@redhat.com, leon@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, parav@mellanox.com,
+        syzkaller-bugs@googlegroups.com, willy@infradead.org
+Subject: Re: possible deadlock in cma_netdev_callback
+Message-ID: <20200227155335.GI31668@ziepe.ca>
+References: <20200226204238.GC31668@ziepe.ca>
+ <000000000000153fac059f740693@google.com>
+ <OF0B62EDE7.E13D40E8-ON0025851B.0037F560-0025851B.0037F56C@notes.na.collabserv.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b7a7abdc-574a-4ce9-ccf0-a51532f1ac58@grimberg.me>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <OF0B62EDE7.E13D40E8-ON0025851B.0037F560-0025851B.0037F56C@notes.na.collabserv.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Sagi & Jason,
-	
-Thanks for the comments, please see inline.
+On Thu, Feb 27, 2020 at 10:11:13AM +0000, Bernard Metzler wrote:
 
-On Wednesday, February 02/26/20, 2020 at 15:05:59 -0800, Sagi Grimberg wrote:
-> 
-> >Current nvmet-rdma code allocates MR pool budget based on host's SQ
-> >size, assuming both host and target use the same "max_pages_per_mr"
-> >count. But if host's max_pages_per_mr is greater than target's, then
-> >target can run out of MRs while processing larger IO WRITEs.
-> >
-> >That is, say host's SQ size is 100, then the MR pool budget allocated
-> >currently at target will also be 100 MRs. But 100 IO WRITE Requests
-> >with 256 sg_count(IO size above 1MB) require 200 MRs when target's
-> >"max_pages_per_mr" is 128.
-> 
-> The patch doesn't say if this is an actual bug you are seeing or
-> theoretical.
-	
-I've noticed this issue while running the below fio command:
-fio --rw=randwrite --name=random --norandommap --ioengine=libaio
---size=16m --group_reporting --exitall --fsync_on_close=1 --invalidate=1
---direct=1 --filename=/dev/nvme2n1 --iodepth=32 --numjobs=16
---unit_base=1 --bs=4m --kb_base=1000
+> Thanks for letting me know! Hmm, we cannot use RCU locks since
+> we potentially sleep. One solution would be to create a list
+> of matching interfaces while under lock, unlock and use that
+> list for calling siw_listen_address() (which may sleep),
+> right...?
 
-Note: here NVMe Host is on SIW & Target is on iw_cxgb4 and the
-max_pages_per_mr supported by SIW and iw_cxgb4 are 255 and 128
-respectively.
-	
-Traces on Target:
+Why do you need to iterate over addresses anyhow? Shouldn't the listen
+just be done with the address the user gave and a BIND DEVICE to the
+device siw is connected to?
 
-#cat /sys/kernel/debug/tracing/trace_pipe|grep -v "status=0x0"
-kworker/8:1H-2461  [008] .... 25476.995437: nvmet_req_complete: nvmet1:
-disk=/dev/ram0, qid=1, cmdid=3, res=0xffff8b7f2ae534d0, status=0x6
-kworker/8:1H-2461  [008] .... 25476.995467: nvmet_req_complete: nvmet1:
-disk=/dev/ram0, qid=1, cmdid=4, res=0xffff8b7f2ae53700, status=0x6
-kworker/8:1H-2461  [008] .... 25476.995511: nvmet_req_complete: nvmet1:
-disk=/dev/ram0, qid=1, cmdid=1, res=0xffff8b7f2ae53980, status=0x6
+Also that loop in siw_create looks wrong to me
 
-> 
-> >The proposed patch enables host to advertise the max_fr_pages(via
-> >nvme_rdma_cm_req) such that target can allocate that many number of
-> >RW ctxs(if host's max_fr_pages is higher than target's).
-> 
-> As mentioned by Jason, this s a non-compatible change, if you want to
-> introduce this you need to go through the standard and update the
-> cm private_data layout (would mean that the fmt needs to increment as
-> well to be backward compatible).
-
-Sure, will initiate a discussion at NVMe TWG about CM private_data format.
-Will update the response soon.
-> 
-> 
-> As a stop-gap, nvmet needs to limit the controller mdts to how much
-> it can allocate based on the HCA capabilities
-> (max_fast_reg_page_list_len).
+Jason
