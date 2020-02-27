@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6740A171628
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 12:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DD217162F
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 12:41:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728856AbgB0Ljd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Feb 2020 06:39:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48946 "EHLO mail.kernel.org"
+        id S1728882AbgB0Lla (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Feb 2020 06:41:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728874AbgB0Ljd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 27 Feb 2020 06:39:33 -0500
+        id S1728874AbgB0Lla (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 27 Feb 2020 06:41:30 -0500
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F33024690;
-        Thu, 27 Feb 2020 11:39:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BC8624690;
+        Thu, 27 Feb 2020 11:41:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582803572;
-        bh=dsjaN6IEpMcr29Kc5SO3t+9YLNz9Fq1loVXo9eO4oi8=;
+        s=default; t=1582803689;
+        bh=2vXL9vWvSuYntYV5/1CcHf3NXDnSdRfG48RpJ9xHzB4=;
         h=From:To:Cc:Subject:Date:From;
-        b=L9jvqObYiJxSCOeGUw8598LiU58UuaKaa+0T5ONN7zk93fW1I2G/YDuIG6KKyWNBK
-         027MP8laSeIdBPpA16zbdbEhvN0SYsPVqpgjCiUvesXHgksqUtAhQCx1FOtyq+ZL+S
-         1RPn0T62mCc0XU/C10x80V/yNnJBplBa/wE2BWn4=
+        b=KUY95CZ59cA0pBqbTa/BMtegTo/h5pt5lHcqI2KXB/5nb4O4WQ1yBMWZnfVsxkuao
+         tMXQxsJde/qNen45hB+xPPE2mPlTQdkJKEKyIzefnX1eptVVoyhA58JlVXDT3OolCV
+         0XSY69kjnbsOSEHLj+6xdr4e9skg+UZaPB6qzXKM=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Artemy Kovalyov <artemyko@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-rc] IB/mlx5: Fix implicit ODP race
-Date:   Thu, 27 Feb 2020 13:39:18 +0200
-Message-Id: <20200227113918.94432-1-leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-rc] RDMA/odp: Ensure the mm is still alive before creating an implicit child
+Date:   Thu, 27 Feb 2020 13:41:18 +0200
+Message-Id: <20200227114118.94736-1-leon@kernel.org>
 X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,120 +38,66 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Artemy Kovalyov <artemyko@mellanox.com>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-Following race may occur because of the call_srcu and the placement of
-the synchronize_srcu vs the xa_erase.
+Registration of a mmu_notifier requires the caller to hold a mmget() on
+the mm as registration is not permitted to race with exit_mmap(). There is
+a BUG_ON inside the mmu_notifier to guard against this.
 
-CPU0				   CPU1
+Normally creating a umem is done against current which implicitly holds
+the mmget(), however an implicit ODP child is created from a pagefault
+work queue and is not guaranteed to have a mmget().
 
-mlx5_ib_free_implicit_mr:	   destroy_unused_implicit_child_mr:
- xa_erase(odp_mkeys)
- synchronize_srcu()
-				    xa_lock(implicit_children)
-				    if (still in xarray)
-				       atomic_inc()
-				       call_srcu()
-				    xa_unlock(implicit_children)
- xa_erase(implicit_children):
-   xa_lock(implicit_children)
-   __xa_erase()
-   xa_unlock(implicit_children)
+Call mmget() around this registration and abort faulting if the MM has
+gone to exit_mmap().
 
- flush_workqueue()
-				   [..]
-				    free_implicit_child_mr_rcu:
-				     (via call_srcu)
-				      queue_work()
+Before the patch below the notifier was registered when the implicit ODP
+parent was created, so there was no chance to register a notifier outside
+of current.
 
- WARN_ON(atomic_read())
-				   [..]
-				    free_implicit_child_mr_work:
-				     (via wq)
-				      free_implicit_child_mr()
- mlx5_mr_cache_invalidate()
-				     mlx5_ib_update_xlt() <-- UMR QP fail
-				     atomic_dec()
-
-The wait_event() solves the race because it blocks until
-free_implicit_child_mr_work() completes.
-
-Fixes: 5256edcb98a1 ("RDMA/mlx5: Rework implicit ODP destroy")
-Signed-off-by: Artemy Kovalyov <artemyko@mellanox.com>
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+Fixes: c571feca2dc9 ("RDMA/odp: use mmu_notifier_get/put for 'struct ib_ucontext_per_mm'")
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  1 +
- drivers/infiniband/hw/mlx5/odp.c     | 17 +++++++----------
- 2 files changed, 8 insertions(+), 10 deletions(-)
+ drivers/infiniband/core/umem_odp.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index f21d446249b8..688dd4e28192 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -636,6 +636,7 @@ struct mlx5_ib_mr {
+diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
+index b8c657b28380..168f4f260c23 100644
+--- a/drivers/infiniband/core/umem_odp.c
++++ b/drivers/infiniband/core/umem_odp.c
+@@ -181,14 +181,27 @@ ib_umem_odp_alloc_child(struct ib_umem_odp *root, unsigned long addr,
+ 	odp_data->page_shift = PAGE_SHIFT;
+ 	odp_data->notifier.ops = ops;
  
- 	/* For ODP and implicit */
- 	atomic_t		num_deferred_work;
-+	wait_queue_head_t       q_deferred_work;
- 	struct xarray		implicit_children;
- 	union {
- 		struct rcu_head rcu;
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 4216814ba871..bf50cd91f472 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -235,7 +235,8 @@ static void free_implicit_child_mr(struct mlx5_ib_mr *mr, bool need_imr_xlt)
- 	mr->parent = NULL;
- 	mlx5_mr_cache_free(mr->dev, mr);
- 	ib_umem_odp_release(odp);
--	atomic_dec(&imr->num_deferred_work);
-+	if (atomic_dec_and_test(&imr->num_deferred_work))
-+		wake_up(&imr->q_deferred_work);
- }
- 
- static void free_implicit_child_mr_work(struct work_struct *work)
-@@ -554,6 +555,7 @@ struct mlx5_ib_mr *mlx5_ib_alloc_implicit_mr(struct mlx5_ib_pd *pd,
- 	imr->umem = &umem_odp->umem;
- 	imr->is_odp_implicit = true;
- 	atomic_set(&imr->num_deferred_work, 0);
-+	init_waitqueue_head(&imr->q_deferred_work);
- 	xa_init(&imr->implicit_children);
- 
- 	err = mlx5_ib_update_xlt(imr, 0,
-@@ -611,10 +613,7 @@ void mlx5_ib_free_implicit_mr(struct mlx5_ib_mr *imr)
- 	 * under xa_lock while the child is in the xarray. Thus at this point
- 	 * it is only decreasing, and all work holding it is now on the wq.
- 	 */
--	if (atomic_read(&imr->num_deferred_work)) {
--		flush_workqueue(system_unbound_wq);
--		WARN_ON(atomic_read(&imr->num_deferred_work));
++	/*
++	 * A mmget must be held when registering a notifier, the owming_mm only
++	 * has a mm_grab at this point.
++	 */
++	if (!mmget_not_zero(umem->owning_mm)) {
++		ret = -EFAULT;
++		goto out_free;
++	}
++
+ 	odp_data->tgid = get_pid(root->tgid);
+ 	ret = ib_init_umem_odp(odp_data, ops);
+-	if (ret) {
+-		put_pid(odp_data->tgid);
+-		kfree(odp_data);
+-		return ERR_PTR(ret);
 -	}
-+	wait_event(imr->q_deferred_work, !atomic_read(&imr->num_deferred_work));
- 
- 	/*
- 	 * Fence the imr before we destroy the children. This allows us to
-@@ -645,10 +644,7 @@ void mlx5_ib_fence_odp_mr(struct mlx5_ib_mr *mr)
- 	/* Wait for all running page-fault handlers to finish. */
- 	synchronize_srcu(&mr->dev->odp_srcu);
- 
--	if (atomic_read(&mr->num_deferred_work)) {
--		flush_workqueue(system_unbound_wq);
--		WARN_ON(atomic_read(&mr->num_deferred_work));
--	}
-+	wait_event(mr->q_deferred_work, !atomic_read(&mr->num_deferred_work));
- 
- 	dma_fence_odp_mr(mr);
++	if (ret)
++		goto out_mm;
++	mmput(umem->owning_mm);
+ 	return odp_data;
++
++out_mm:
++	mmput(umem->owning_mm);
++out_free:
++	kfree(odp_data);
++	return ERR_PTR(ret);
  }
-@@ -1720,7 +1716,8 @@ static void destroy_prefetch_work(struct prefetch_mr_work *work)
- 	u32 i;
- 
- 	for (i = 0; i < work->num_sge; ++i)
--		atomic_dec(&work->frags[i].mr->num_deferred_work);
-+		if (atomic_dec_and_test(&work->frags[i].mr->num_deferred_work))
-+			wake_up(&work->frags[i].mr->q_deferred_work);
- 	kvfree(work);
- }
+ EXPORT_SYMBOL(ib_umem_odp_alloc_child);
  
 -- 
 2.24.1
