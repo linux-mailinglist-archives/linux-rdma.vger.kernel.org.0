@@ -2,109 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D33BA172630
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 19:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7C7172843
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 20:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729314AbgB0SK6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Feb 2020 13:10:58 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:41956 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729281AbgB0SK6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Feb 2020 13:10:58 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01RHrhVM154358;
-        Thu, 27 Feb 2020 18:10:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=0FrS3v3k8vbIeLvn+8otv9P7Ef3vUqdbxGkRnElK4ao=;
- b=eqRBD6Od/VbG8UXwq1qRGzwKnhuBBOh6kmZZi0WB9HY/WrPxD2IH015f9fVlrx0SVwiX
- Djr2NHa2we1SAPr35ecWN976QTGZR4wYLMWTVzJ02M/Ks/YboKN7Wd0SCI9IoW5zleLs
- yP/zby5auhBa6g6uWlLikLBn7h/3bCxOlOaUkvw0HB/OKTjaumiMQv5rqN9hh7Pl3hsy
- dgGNGi7C+MmRUJ22uLBj1eTvwfwqFgUH6CHOC/rVSOxP1ecxAjjjV/1Utm9RibmRk0IO
- 5QydNneHoK5mzJOAnZJmb2ZcILz+PYP48jiJVZc4DGs4VCoSnJn5AGcB6EqiBnUGJ9Cf 8A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2ydcsnmtgd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Feb 2020 18:10:55 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01RHupRE132146;
-        Thu, 27 Feb 2020 18:10:55 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 2ydcsd1p70-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Feb 2020 18:10:54 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01RIAsdW011618;
-        Thu, 27 Feb 2020 18:10:54 GMT
-Received: from [10.159.143.63] (/10.159.143.63)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 27 Feb 2020 10:10:54 -0800
-Subject: Re: Maybe a race condition in net/rds/rdma.c?
-To:     zerons <sironhide0null@gmail.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-References: <afd9225d-5c43-8cc7-0eed-455837b53e10@gmail.com>
- <D8EB4A77-77D7-41EB-9021-EA7BB8C3FA5B@oracle.com>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <94b20d30-1d7d-7a66-b943-d75a05bcb46e@oracle.com>
-Date:   Thu, 27 Feb 2020 10:10:53 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.2
+        id S1729317AbgB0TBd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Feb 2020 14:01:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729170AbgB0TBd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 27 Feb 2020 14:01:33 -0500
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D5A72467B;
+        Thu, 27 Feb 2020 19:01:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582830092;
+        bh=jB6PxrsYAh6O2oHTdDruFl7xaP2WE5fpKkdA7wnBSxQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Dweqwxe9B/LIH1xt5nH3oTH8yslhc+7dAqb+BO0xfhWy9mBFLuEIv2kuH+SVm78Sp
+         26DW2PhiVtYrt5bMd7PmDZh4VNjfpUqPUuNhoybtJ5LOxC5psrqYjZM3f606TgEiQs
+         JYEGB77HDmRgI71hwZFqam35Iaym+PE9B8bizkwY=
+Date:   Thu, 27 Feb 2020 21:01:26 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Marciniszyn, Mike" <mike.marciniszyn@intel.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-rc] RDMA/core: Fix pkey and port assignment in
+ get_new_pps
+Message-ID: <20200227190126.GO12414@unreal>
+References: <20200227125728.100551-1-leon@kernel.org>
+ <CY4PR1101MB2262DAEFBC6C06EDF69B0F1286EB0@CY4PR1101MB2262.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <D8EB4A77-77D7-41EB-9021-EA7BB8C3FA5B@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9543 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 bulkscore=0
- spamscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002270129
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9543 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 bulkscore=0
- lowpriorityscore=0 mlxlogscore=999 phishscore=0 spamscore=0 adultscore=0
- suspectscore=0 impostorscore=0 clxscore=1011 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002270129
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CY4PR1101MB2262DAEFBC6C06EDF69B0F1286EB0@CY4PR1101MB2262.namprd11.prod.outlook.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Feb 27, 2020 at 02:07:10PM +0000, Marciniszyn, Mike wrote:
+> >
+> > From: Maor Gottlieb <maorg@mellanox.com>
+> >
+> > When port is part of the modify mask, then we should take
+> > it from the qp_attr and not from the old pps. Same for PKEY.
+> >
+> > Cc: <stable@vger.kernel.org>
+> > Fixes: 1dd017882e01 ("RDMA/core: Fix protection fault in
+> > get_pkey_idx_qp_list")
+> > Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > ---
+> >  drivers/infiniband/core/security.c | 12 ++++++++----
+> >  1 file changed, 8 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/core/security.c
+> > b/drivers/infiniband/core/security.c
+> > index b9a36ea244d4..2d5608315dc8 100644
+> > --- a/drivers/infiniband/core/security.c
+> > +++ b/drivers/infiniband/core/security.c
+> > @@ -340,11 +340,15 @@ static struct ib_ports_pkeys *get_new_pps(const
+> > struct ib_qp *qp,
+> >  		return NULL;
+> >
+> >  	if (qp_attr_mask & IB_QP_PORT)
+> > -		new_pps->main.port_num =
+> > -			(qp_pps) ? qp_pps->main.port_num : qp_attr-
+> > >port_num;
+> > +		new_pps->main.port_num = qp_attr->port_num;
+> > +	else if (qp_pps)
+> > +		new_pps->main.port_num = qp_pps->main.port_num;
+> > +
+> >  	if (qp_attr_mask & IB_QP_PKEY_INDEX)
+> > -		new_pps->main.pkey_index = (qp_pps) ? qp_pps-
+> > >main.pkey_index :
+> > -						      qp_attr->pkey_index;
+> > +		new_pps->main.pkey_index = qp_attr->pkey_index;
+> > +	else if (qp_pps)
+> > +		new_pps->main.pkey_index = qp_pps->main.pkey_index;
+> > +
+> >  	if ((qp_attr_mask & IB_QP_PKEY_INDEX) && (qp_attr_mask &
+> > IB_QP_PORT))
+> >  		new_pps->main.state = IB_PORT_PKEY_VALID;
+> >
+>
+> I agree with this aspect of the patch and it does fix the panic, because the correct unit
+> is gotten from qp_pps.
+>
+> My issue is that the new_pps->main.state will come back as 0, and the insert routine will drop any new pkey index update.
+>
+> The sequence I'm concerned about is:
+>
+> 0x71 attr mask with both pkey index and port.
+>
+> A ulp decides to change the pkey index and does an 0x51 modify without setting the unit.
+>
+> I see new_pps->main.state being returned as 0 and port_pkey_list_insert() will early out.
 
->> On 18 Feb 2020, at 14:13, zerons <sironhide0null@gmail.com> wrote:
->>
->> Hi, all
->>
->> In net/rds/rdma.c
->> (https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/net/rds/rdma.c?h=v5.5.3*n419__;Iw!!GqivPVa7Brio!OwwQCLtjDsKmhaIz0sfaOVSuC4ai5t5_FgB7yqNExGOCBtACtIGLF61NNJyqSDtIAcGoPg$ ),
->> there may be a race condition between rds_rdma_unuse() and rds_free_mr().
->>
-Hmmm.. I didn't see email before in my inbox. Please post 
-questions/patches on netdev in future which is the correct mailing list.
+I see, maybe we can store the main.state in qps and restore it from there?
 
->> It seems that this one need some specific devices to run test,
->> unfortunately, I don't have any of these.
->> I've already sent two emails to the maintainer for help, no response yet,
->> (the email address may not be in use).
->>
->> 0) in rds_recv_incoming_exthdrs(), it calls rds_rdma_unuse() when receive an
->> extension header with force=0, if the victim mr does not have RDS_RDMA_USE_ONCE
->> flag set, then the mr would stay in the rbtree. Without any lock, it tries to
->> call mr->r_trans->sync_mr().
->>
->> 1) in rds_free_mr(), the same mr is found, and then freed. The mr->r_refcount
->> doesn't change while rds_mr_tree_walk().
->>
->> 0) back in rds_rdma_unuse(), the victim mr get used again, call
->> mr->r_trans->sync_mr().
->>
->> Could this race condition actually happen?
->>
-force=0 is an interesting scenario. Let me think about it and get back.
-Thanks for report.
-
-Regards,
-Santosh
+>
+> I asked this exact question in https://marc.info/?l=linux-rdma&m=158278763015030&w=2.
+>
+> I also asked about the logical or, and you answered that pointing to an additional patch.
+>
+> You but didn't address the main.state being 0 and losing the pkey_index update in the 0x51 modify.
+>
+> Mike
+>
+>
+>
+>
+>
+>
