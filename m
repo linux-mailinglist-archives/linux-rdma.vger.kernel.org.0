@@ -2,86 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3E0172299
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 16:53:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD438172323
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 17:22:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729860AbgB0Pxi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Feb 2020 10:53:38 -0500
-Received: from mail-qk1-f172.google.com ([209.85.222.172]:42312 "EHLO
-        mail-qk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729368AbgB0Pxh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Feb 2020 10:53:37 -0500
-Received: by mail-qk1-f172.google.com with SMTP id o28so3559779qkj.9
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Feb 2020 07:53:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=EH0SNO5Rcc4XYOUSFVK7bK7rNzgEXpv0OLPCvUs1MKM=;
-        b=PMtqoD+Qorl+adIp7K03I0mEvU1rioCUSaRdmWReGiwltATTH6RJtRscNq5iIqT9cY
-         JSA9CN5t7cEAsNpiP/S+TdjCZcTKeZJ7h8ZLu9IL9vsnjmxAe95o1Ckuho0hdEY+xmNL
-         CEMDj98AiR3AVKxOVA67huauMos3yZqp1HaKRkhsgTyCF1cBspSyrV/tJ29QVVd5jreq
-         w1KuhoOK/p1h2CGmmtI3EtJOoNYVhOHIwcABWJUfIsCW9XUbZe25fZvxtRdPN6d4SWIp
-         wAezUlU0JJj25Yv2HvrdtSeIUrtAoCBHpz/VsuoRmrD7sJUQdQ9hHwbfqYD5c3XQp6ND
-         1fCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=EH0SNO5Rcc4XYOUSFVK7bK7rNzgEXpv0OLPCvUs1MKM=;
-        b=BJy67aMmgMxwI0szuCfSoX3IERtN69w6R/VP/JR0ruaxGllAxSyjLipBu/sgqyR82C
-         wqBQb4sY6swTjqZKcqNZmRHnmGj+VbowueYHAYZzBlr96ADttn8+ahMfrWFh+eoU1KuB
-         UeHamAeVUtfSrU3rpRDiD4NzNzcSJSSC3DlTITrH7AFGiwpY9be0xcI8R8JJM0SkIDk2
-         jhXsGenVNvoeq1giw5DrcHyhu/nwTx77dvmiT031FZ2fYYLbd3Mn6RWDeUWzk8A3FI9b
-         JKfyYAbEooHfNYA9JrSJ81+7meBLYmiBMpM2GLJh2k3jCBNHIvVtiawhPxfgekcZkXv2
-         q2nw==
-X-Gm-Message-State: APjAAAUZUwNHekNwHZn18JjaS07gEgH79C/oW1AvheZz/4jiZPt6YM13
-        zp800AxIQLtWJZebGxNmKCtwpg==
-X-Google-Smtp-Source: APXvYqwdqVD1HKLQD9Dk+yGMQZm/xAmaIFr/8snWfVHM3u7MryqrGdgt6o3CYFD+XYsHevMncfcZeg==
-X-Received: by 2002:ae9:ed06:: with SMTP id c6mr6871655qkg.7.1582818816659;
-        Thu, 27 Feb 2020 07:53:36 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id h12sm3241397qtn.56.2020.02.27.07.53.36
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 27 Feb 2020 07:53:36 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j7LTj-0005VV-D2; Thu, 27 Feb 2020 11:53:35 -0400
-Date:   Thu, 27 Feb 2020 11:53:35 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     syzbot <syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com>,
+        id S1730129AbgB0QVg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 27 Feb 2020 11:21:36 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7450 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728963AbgB0QVg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 27 Feb 2020 11:21:36 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01RGLGXu064201
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Feb 2020 11:21:34 -0500
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.111])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ydxre5npk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Feb 2020 11:21:33 -0500
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Thu, 27 Feb 2020 16:21:30 -0000
+Received: from us1b3-smtp06.a3dr.sjc01.isc4sb.com (10.122.203.184)
+        by smtp.notes.na.collabserv.com (10.122.47.52) with smtp.notes.na.collabserv.com ESMTP;
+        Thu, 27 Feb 2020 16:21:22 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp06.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2020022716212224-572447 ;
+          Thu, 27 Feb 2020 16:21:22 +0000 
+In-Reply-To: <20200227155335.GI31668@ziepe.ca>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     "syzbot" <syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com>,
         chuck.lever@oracle.com, dledford@redhat.com, leon@kernel.org,
         linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
         netdev@vger.kernel.org, parav@mellanox.com,
         syzkaller-bugs@googlegroups.com, willy@infradead.org
-Subject: Re: possible deadlock in cma_netdev_callback
-Message-ID: <20200227155335.GI31668@ziepe.ca>
-References: <20200226204238.GC31668@ziepe.ca>
+Date:   Thu, 27 Feb 2020 16:21:21 +0000
+MIME-Version: 1.0
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20200227155335.GI31668@ziepe.ca>,<20200226204238.GC31668@ziepe.ca>
  <000000000000153fac059f740693@google.com>
  <OF0B62EDE7.E13D40E8-ON0025851B.0037F560-0025851B.0037F56C@notes.na.collabserv.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OF0B62EDE7.E13D40E8-ON0025851B.0037F560-0025851B.0037F56C@notes.na.collabserv.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP62 November 04, 2019 at 09:47
+X-KeepSent: 0C6D63D8:F1817050-0025851B:0059D878;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 18363
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 20022716-3633-0000-0000-000001C8796B
+X-IBM-SpamModules-Scores: BY=0.021699; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.399202; ST=0; TS=0; UL=0; ISC=; MB=0.012841
+X-IBM-SpamModules-Versions: BY=3.00012651; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000293; SDB=6.01340059; UDB=6.00714142; IPR=6.01122420;
+ MB=3.00030996; MTD=3.00000008; XFM=3.00000015; UTC=2020-02-27 16:21:29
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2020-02-27 12:31:36 - 6.00011055
+x-cbparentid: 20022716-3634-0000-0000-0000AD5397FE
+Message-Id: <OF0C6D63D8.F1817050-ON0025851B.0059D878-0025851B.0059D887@notes.na.collabserv.com>
+Subject: RE: possible deadlock in cma_netdev_callback
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-27_05:2020-02-26,2020-02-27 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 27, 2020 at 10:11:13AM +0000, Bernard Metzler wrote:
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
-> Thanks for letting me know! Hmm, we cannot use RCU locks since
-> we potentially sleep. One solution would be to create a list
-> of matching interfaces while under lock, unlock and use that
-> list for calling siw_listen_address() (which may sleep),
-> right...?
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 02/27/2020 04:53PM
+>Cc: "syzbot" <syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com>,
+>chuck.lever@oracle.com, dledford@redhat.com, leon@kernel.org,
+>linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+>netdev@vger.kernel.org, parav@mellanox.com,
+>syzkaller-bugs@googlegroups.com, willy@infradead.org
+>Subject: [EXTERNAL] Re: possible deadlock in cma_netdev_callback
+>
+>On Thu, Feb 27, 2020 at 10:11:13AM +0000, Bernard Metzler wrote:
+>
+>> Thanks for letting me know! Hmm, we cannot use RCU locks since
+>> we potentially sleep. One solution would be to create a list
+>> of matching interfaces while under lock, unlock and use that
+>> list for calling siw_listen_address() (which may sleep),
+>> right...?
+>
+>Why do you need to iterate over addresses anyhow? Shouldn't the
+>listen
+>just be done with the address the user gave and a BIND DEVICE to the
+>device siw is connected to?
 
-Why do you need to iterate over addresses anyhow? Shouldn't the listen
-just be done with the address the user gave and a BIND DEVICE to the
-device siw is connected to?
+The user may give a wildcard local address, so we'd have
+to bind to all addresses of that device...
 
-Also that loop in siw_create looks wrong to me
+Best,
+Bernard.
 
-Jason
+>
+>Also that loop in siw_create looks wrong to me
+>
+>Jason
+>
+>
+
