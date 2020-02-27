@@ -2,263 +2,176 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7B3171581
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 11:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB151715E6
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 12:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728852AbgB0K5g convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 27 Feb 2020 05:57:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38508 "EHLO mail.kernel.org"
+        id S1728865AbgB0L1T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Feb 2020 06:27:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728762AbgB0K5g (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 27 Feb 2020 05:57:36 -0500
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-rdma@vger.kernel.org
-Subject: [Bug 206687] New: If IB link comes up, oops in port_pkey_list_insert
- triggered with "NULL pointer derefence"
-Date:   Thu, 27 Feb 2020 10:57:34 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: new
-X-Bugzilla-Watch-Reason: AssignedTo
- drivers_infiniband-rdma@kernel-bugs.osdl.org
-X-Bugzilla-Product: Drivers
-X-Bugzilla-Component: Infiniband/RDMA
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: high
-X-Bugzilla-Who: hjl@simulated-universe.de
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: drivers_infiniband-rdma@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_id short_desc product version
- cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
- priority component assigned_to reporter cf_regression
-Message-ID: <bug-206687-11804@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1726813AbgB0L1T (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 27 Feb 2020 06:27:19 -0500
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3F3924691;
+        Thu, 27 Feb 2020 11:27:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582802838;
+        bh=5NbpI+lWurekQLOQqxjIfd5s7qM1Ty5KMbVs+z3dpUU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ezE+4/cwRU8OU2eb+OL7EfX10bLk4z71l8529fqbQFX/za7UiKOYav0I/iR9hs5pU
+         7YfknDirMTsuyHkx39JVtDEKP5irbQX7aA5ddadVrsGLUIm84zYhrOGEEbHZfGfaq/
+         BiaDGUA9oNa8t8GS00X9mM3uKY7fQAsDQyItJNzI=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Maor Gottlieb <maorg@mellanox.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-rc v1] RDMA/core: Fix protection fault in ib_mr_pool_destroy
+Date:   Thu, 27 Feb 2020 13:27:08 +0200
+Message-Id: <20200227112708.93023-1-leon@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=206687
+From: Maor Gottlieb <maorg@mellanox.com>
 
-            Bug ID: 206687
-           Summary: If IB link comes up, oops in port_pkey_list_insert
-                    triggered with "NULL pointer derefence"
-           Product: Drivers
-           Version: 2.5
-    Kernel Version: v5.4.21 ongoing
-          Hardware: x86-64
-                OS: Linux
-              Tree: Mainline
-            Status: NEW
-          Severity: high
-          Priority: P1
-         Component: Infiniband/RDMA
-          Assignee: drivers_infiniband-rdma@kernel-bugs.osdl.org
-          Reporter: hjl@simulated-universe.de
-        Regression: No
+Fix NULL pointer dereference in the error flow of ib_create_qp_user
+when accessing to uninitialized list pointers - rdma_mrs and sig_mrs.
+The following crash from syzkaller revealed it.
 
-I am running a Fedora home server for testing purpose and using QLA7322
-Infinband adapters to connect my workstation.
+kasan: GPF could be caused by NULL-ptr deref or user memory access
+general protection fault: 0000 [#1] SMP KASAN PTI
+CPU: 1 PID: 23167 Comm: syz-executor.1 Not tainted 5.5.0-rc5 #2
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
+RIP: 0010:ib_mr_pool_destroy+0x81/0x1f0
+Code: 00 00 fc ff df 49 c1 ec 03 4d 01 fc e8 a8 ea 72 fe 41 80 3c 24 00
+0f 85 62 01 00 00 48 8b 13 48 89 d6 4c 8d 6a c8 48 c1 ee 03 <42> 80 3c
+3e 00 0f 85 34 01 00 00 48 8d 7a 08 4c 8b 02 48 89 fe 48
+RSP: 0018:ffffc9000951f8b0 EFLAGS: 00010046
+RAX: 0000000000040000 RBX: ffff88810f268038 RCX: ffffffff82c41628
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffc9000951f850
+RBP: ffff88810f268020 R08: 0000000000000004 R09: fffff520012a3f0a
+R10: 0000000000000001 R11: fffff520012a3f0a R12: ffffed1021e4d007
+R13: ffffffffffffffc8 R14: 0000000000000246 R15: dffffc0000000000
+FS:  00007f54bc788700(0000) GS:ffff88811b100000(0000)
+knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000116920002 CR4: 0000000000360ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ rdma_rw_cleanup_mrs+0x15/0x30
+ ib_destroy_qp_user+0x674/0x7d0
+ ib_create_qp_user+0xb01/0x11c0
+ create_qp+0x1517/0x2130
+ ib_uverbs_create_qp+0x13e/0x190
+ ib_uverbs_write+0xaa5/0xdf0
+ __vfs_write+0x7c/0x100
+ vfs_write+0x168/0x4a0
+ ksys_write+0xc8/0x200
+ do_syscall_64+0x9c/0x390
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x465b49
+Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48 89
+f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01
+f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f54bc787c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 000000000073bf00 RCX: 0000000000465b49
+RDX: 0000000000000040 RSI: 0000000020000540 RDI: 0000000000000003
+RBP: 00007f54bc787c70 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f54bc7886bc
+R13: 00000000004ca2ec R14: 000000000070ded0 R15: 0000000000000005
+Modules linked in:
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+---[ end trace 54a28a9b6f83c561 ]---
 
-Since the upgrade to Fedora 31, that comes with a v5.5.5 kernel, the system
-crashes as the network manager tries to configure the IPoIB interface.
+Fixes: a060b5629ab06 ("IB/core: generic RDMA READ/WRITE API")
+Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+--
+ Changelog:
+ v1: Rewrote as Jason requested in v0
+ v0: https://patchwork.kernel.org/patch/11377845/
+---
+ drivers/infiniband/core/core_priv.h  | 14 ++++++++++++++
+ drivers/infiniband/core/uverbs_cmd.c |  9 ---------
+ drivers/infiniband/core/verbs.c      | 10 ----------
+ 3 files changed, 14 insertions(+), 19 deletions(-)
 
-I checked the last installed fedora 30 kernel and all went fine. 
-Next I used the vanilla-kernels v5.4.19, v5.4.20 and v5.4.21 and tracked the
-problem down to the v5.4.21
+diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
+index b1457b3464d3..cf42acca4a3a 100644
+--- a/drivers/infiniband/core/core_priv.h
++++ b/drivers/infiniband/core/core_priv.h
+@@ -338,6 +338,20 @@ static inline struct ib_qp *_ib_create_qp(struct ib_device *dev,
+ 	qp->pd = pd;
+ 	qp->uobject = uobj;
+ 	qp->real_qp = qp;
++
++	qp->qp_type = attr->qp_type;
++	qp->rwq_ind_tbl = attr->rwq_ind_tbl;
++	qp->send_cq = attr->send_cq;
++	qp->recv_cq = attr->recv_cq;
++	qp->srq = attr->srq;
++	qp->rwq_ind_tbl = attr->rwq_ind_tbl;
++	qp->event_handler = attr->event_handler;
++
++	atomic_set(&qp->usecnt, 0);
++	spin_lock_init(&qp->mr_lock);
++	INIT_LIST_HEAD(&qp->rdma_mrs);
++	INIT_LIST_HEAD(&qp->sig_mrs);
++
+ 	/*
+ 	 * We don't track XRC QPs for now, because they don't have PD
+ 	 * and more importantly they are created internaly by driver,
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 025933752e1d..060b4ebbd2ba 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -1445,16 +1445,7 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
+ 		if (ret)
+ 			goto err_cb;
 
-The problem still exists with the v5.5.6-rc3 kernel.
+-		qp->pd		  = pd;
+-		qp->send_cq	  = attr.send_cq;
+-		qp->recv_cq	  = attr.recv_cq;
+-		qp->srq		  = attr.srq;
+-		qp->rwq_ind_tbl	  = ind_tbl;
+-		qp->event_handler = attr.event_handler;
+-		qp->qp_type	  = attr.qp_type;
+-		atomic_set(&qp->usecnt, 0);
+ 		atomic_inc(&pd->usecnt);
+-		qp->port = 0;
+ 		if (attr.send_cq)
+ 			atomic_inc(&attr.send_cq->usecnt);
+ 		if (attr.recv_cq)
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 3ebae3b65c28..e62c9dfc7837 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -1185,16 +1185,6 @@ struct ib_qp *ib_create_qp_user(struct ib_pd *pd,
+ 	if (ret)
+ 		goto err;
 
--------------------
+-	qp->qp_type    = qp_init_attr->qp_type;
+-	qp->rwq_ind_tbl = qp_init_attr->rwq_ind_tbl;
+-
+-	atomic_set(&qp->usecnt, 0);
+-	qp->mrs_used = 0;
+-	spin_lock_init(&qp->mr_lock);
+-	INIT_LIST_HEAD(&qp->rdma_mrs);
+-	INIT_LIST_HEAD(&qp->sig_mrs);
+-	qp->port = 0;
+-
+ 	if (qp_init_attr->qp_type == IB_QPT_XRC_TGT) {
+ 		struct ib_qp *xrc_qp =
+ 			create_xrc_qp_user(qp, qp_init_attr, udata);
+--
+2.24.1
 
-Feb 27 09:58:27 odin.langes-netz.home kernel: IPv6: ADDRCONF(NETDEV_CHANGE):
-ibp9s0: link becomes ready
-Feb 27 09:58:27 odin.langes-netz.home NetworkManager[1046]: <info> 
-[1582797507.0677] device (ibp9s0): carrier: link connected
-Feb 27 09:58:27 odin.langes-netz.home NetworkManager[1046]: <info> 
-[1582797507.0679] device (ibp9s0): state change: unavailable -> disconnected
-(reason 'carrier-changed', sys-iface-state: 'managed')
-Feb 27 09:58:27 odin.langes-netz.home NetworkManager[1046]: <info> 
-[1582797507.0693] policy: auto-activating connection 'fastlane'
-(e55b03b4-79d4-4cf7-89af-ea866965c8ba)
-Feb 27 09:58:27 odin.langes-netz.home NetworkManager[1046]: <info> 
-[1582797507.0700] device (ibp9s0): Activation: starting connection 'fastlane'
-(e55b03b4-79d4-4cf7-89af-ea866965c8ba)
-Feb 27 09:58:27 odin.langes-netz.home NetworkManager[1046]: <info> 
-[1582797507.0702] device (ibp9s0): state change: disconnected -> prepare
-(reason 'none', sys-iface-state: 'managed')
-Feb 27 09:58:27 odin.langes-netz.home NetworkManager[1046]: <info> 
-[1582797507.0708] manager: NetworkManager state is now CONNECTING
-Feb 27 09:58:27 odin.langes-netz.home kernel: BUG: kernel NULL pointer
-dereference, address: 0000000000000010
-Feb 27 09:58:27 odin.langes-netz.home kernel: #PF: supervisor read access in
-kernel mode
-Feb 27 09:58:27 odin.langes-netz.home kernel: #PF: error_code(0x0000) -
-not-present page
-Feb 27 09:58:27 odin.langes-netz.home kernel: PGD 0 P4D 0 
-Feb 27 09:58:27 odin.langes-netz.home kernel: Oops: 0000 [#1] SMP NOPTI
-Feb 27 09:58:27 odin.langes-netz.home kernel: CPU: 0 PID: 1046 Comm:
-NetworkManager Not tainted 5.4.21 #8
-Feb 27 09:58:27 odin.langes-netz.home kernel: Hardware name: System
-manufacturer System Product Name/PRIME X470-PRO, BIOS 5220 09/11/2019
-Feb 27 09:58:27 odin.langes-netz.home kernel: RIP:
-0010:get_pkey_idx_qp_list+0x5a/0x80 [ib_core]
-Feb 27 09:58:27 odin.langes-netz.home kernel: Code: 06 48 69 ff b8 00 00 00 48
-03 bd 88 04 00 00 4c 8b 47 20 48 8d 47 20 49 39 c0 74 26 0f b7 53 04 eb 08 4d
-8b 00 49 39 c0 74 18 <66> 41 39 50 10 75 f1 48 83 c7 18 c6 07 00 0f 1f 40 00 4c
->
-Feb 27 09:58:27 odin.langes-netz.home kernel: RSP: 0018:ffffb430c0b9f318
-EFLAGS: 00010203
-Feb 27 09:58:27 odin.langes-netz.home kernel: RAX: ffff895f3b41e030 RBX:
-ffff895f3667bd80 RCX: 0000000000000000
-Feb 27 09:58:27 odin.langes-netz.home kernel: RDX: 0000000000000000 RSI:
-0000000000000000 RDI: ffff895f3b41e010
-Feb 27 09:58:27 odin.langes-netz.home kernel: RBP: ffff895f498d8000 R08:
-0000000000000000 R09: ffff895f3667bd80
-Feb 27 09:58:27 odin.langes-netz.home kernel: R10: ffffb430c0b9f548 R11:
-0000000000000000 R12: 0000000000000071
-Feb 27 09:58:27 odin.langes-netz.home kernel: R13: 0000000000000000 R14:
-ffff895f498d8000 R15: ffffb430c0b9f430
-Feb 27 09:58:27 odin.langes-netz.home kernel: FS:  00007f6a13521bc0(0000)
-GS:ffff895f4e800000(0000) knlGS:0000000000000000
-Feb 27 09:58:27 odin.langes-netz.home kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
-0000000080050033
-Feb 27 09:58:27 odin.langes-netz.home kernel: CR2: 0000000000000010 CR3:
-00000003fc056000 CR4: 00000000003406f0
-Feb 27 09:58:27 odin.langes-netz.home kernel: Call Trace:
-Feb 27 09:58:27 odin.langes-netz.home kernel:  port_pkey_list_insert+0x30/0x1a0
-[ib_core]
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ?
-kmem_cache_alloc_trace+0x162/0x220
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ?
-ib_security_modify_qp+0xae/0x3a0 [ib_core]
-Feb 27 09:58:27 odin.langes-netz.home kernel: 
-ib_security_modify_qp+0x23f/0x3a0 [ib_core]
-Feb 27 09:58:27 odin.langes-netz.home kernel:  _ib_modify_qp+0x272/0x3e0
-[ib_core]
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? __dev_mc_del+0x53/0x70
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? rt6_age_exceptions+0x61/0x70
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ipoib_init_qp+0x78/0x1a0
-[ib_ipoib]
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? fib6_clean_tree+0x58/0x80
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? fib6_del+0x250/0x250
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? nf_conntrack_lock+0x17/0x50
-[nf_conntrack]
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? node_free_rcu+0x20/0x20
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? ib_find_pkey+0x98/0xe0
-[ib_core]
-Feb 27 09:58:27 odin.langes-netz.home kernel: 
-ipoib_ib_dev_open_default+0x1a/0x180 [ib_ipoib]
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ipoib_ib_dev_open+0x66/0xa0
-[ib_ipoib]
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ipoib_open+0x44/0x110 [ib_ipoib]
-Feb 27 09:58:27 odin.langes-netz.home kernel:  __dev_open+0xcf/0x160
-Feb 27 09:58:27 odin.langes-netz.home kernel:  __dev_change_flags+0x1a7/0x200
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? __dev_notify_flags+0x96/0xf0
-Feb 27 09:58:27 odin.langes-netz.home kernel:  dev_change_flags+0x21/0x60
-Feb 27 09:58:27 odin.langes-netz.home kernel:  do_setlink+0x667/0xd70
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ?
-__nla_validate_parse+0x51/0x830
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? cpumask_next+0x17/0x20
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ?
-__nla_validate_parse+0x51/0x830
-Feb 27 09:58:27 odin.langes-netz.home kernel:  __rtnl_newlink+0x553/0x8c0
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? __nla_reserve+0x38/0x50
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? prep_new_page+0xc4/0xf0
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? __nla_reserve+0x38/0x50
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? __nla_put+0xc/0x20
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? prep_new_page+0xc4/0xf0
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ?
-get_page_from_freelist+0x772/0x17a0
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? nla_put+0x28/0x40
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ?
-get_page_from_freelist+0x772/0x17a0
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? new_slab+0x25e/0x4e0
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? _cond_resched+0x15/0x30
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ?
-kmem_cache_alloc_trace+0x162/0x220
-Feb 27 09:58:27 odin.langes-netz.home kernel:  rtnl_newlink+0x44/0x70
-Feb 27 09:58:27 odin.langes-netz.home kernel:  rtnetlink_rcv_msg+0x2b0/0x360
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? _cond_resched+0x15/0x30
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? kmem_cache_alloc+0x165/0x220
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? ktime_get_real_ts64+0x46/0xe0
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? _cond_resched+0x15/0x30
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? rtnl_calcit.isra.0+0x110/0x110
-Feb 27 09:58:27 odin.langes-netz.home kernel:  netlink_rcv_skb+0x49/0x110
-Feb 27 09:58:27 odin.langes-netz.home kernel:  netlink_unicast+0x171/0x200
-Feb 27 09:58:27 odin.langes-netz.home kernel:  netlink_sendmsg+0x21e/0x3e0
-Feb 27 09:58:27 odin.langes-netz.home kernel:  sock_sendmsg+0x5e/0x60
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ____sys_sendmsg+0x1ef/0x260
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ?
-copy_msghdr_from_user+0xd6/0x150
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ___sys_sendmsg+0x88/0xd0
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? do_filp_open+0xa5/0x100
-Feb 27 09:58:27 odin.langes-netz.home kernel:  ? list_lru_add+0xb5/0x1d0
-Feb 27 09:58:27 odin.langes-netz.home kernel:  __sys_sendmsg+0x59/0xa0
-Feb 27 09:58:27 odin.langes-netz.home kernel:  do_syscall_64+0x5b/0x1a0
-Feb 27 09:58:27 odin.langes-netz.home kernel: 
-entry_SYSCALL_64_after_hwframe+0x44/0xa9
-Feb 27 09:58:27 odin.langes-netz.home kernel: RIP: 0033:0x7f6a144ff80d
-Feb 27 09:58:27 odin.langes-netz.home kernel: Code: 28 89 54 24 1c 48 89 74 24
-10 89 7c 24 08 e8 ea ec ff ff 8b 54 24 1c 48 8b 74 24 10 41 89 c0 8b 7c 24 08
-b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 2f 44 89 c7 48 89 44 24 08 e8 1e ed
->
-Feb 27 09:58:27 odin.langes-netz.home kernel: RSP: 002b:00007fff7308a310
-EFLAGS: 00000293 ORIG_RAX: 000000000000002e
-Feb 27 09:58:27 odin.langes-netz.home kernel: RAX: ffffffffffffffda RBX:
-000055fa8bfdb540 RCX: 00007f6a144ff80d
-Feb 27 09:58:27 odin.langes-netz.home kernel: RDX: 0000000000000000 RSI:
-00007fff7308a360 RDI: 000000000000000c
-Feb 27 09:58:27 odin.langes-netz.home kernel: RBP: 00007fff7308a360 R08:
-0000000000000000 R09: 0000000000000000
-Feb 27 09:58:27 odin.langes-netz.home kernel: R10: 0000000000000000 R11:
-0000000000000293 R12: 000055fa8bfdb540
-Feb 27 09:58:27 odin.langes-netz.home kernel: R13: 00007fff7308a518 R14:
-00007fff7308a50c R15: 0000000000000000
-Feb 27 09:58:27 odin.langes-netz.home kernel: Modules linked in: xt_CHECKSUM
-xt_MASQUERADE nf_nat_tftp nf_conntrack_tftp tun bridge stp llc
-nf_conntrack_netbios_ns nf_conntrack_broadcast xt_CT ip6t_REJECT nf_reject_ipv6
-ip6t_rpfilter ipt>
-Feb 27 09:58:27 odin.langes-netz.home kernel:  crct10dif_pclmul eeepc_wmi
-ib_core crc32_pclmul snd_timer asus_wmi sp5100_tco ghash_clmulni_intel k10temp
-i2c_piix4 wmi_bmof snd sparse_keymap rfkill soundcore pcspkr ccp gpio_amdpt
-gpio_gen>
-Feb 27 09:58:27 odin.langes-netz.home kernel: CR2: 0000000000000010
-Feb 27 09:58:27 odin.langes-netz.home kernel: ---[ end trace 8fdfe3a62f9689a5
-]---
-Feb 27 09:58:27 odin.langes-netz.home kernel: RIP:
-0010:get_pkey_idx_qp_list+0x5a/0x80 [ib_core]
-Feb 27 09:58:27 odin.langes-netz.home kernel: Code: 06 48 69 ff b8 00 00 00 48
-03 bd 88 04 00 00 4c 8b 47 20 48 8d 47 20 49 39 c0 74 26 0f b7 53 04 eb 08 4d
-8b 00 49 39 c0 74 18 <66> 41 39 50 10 75 f1 48 83 c7 18 c6 07 00 0f 1f 40 00 4c
->
-Feb 27 09:58:27 odin.langes-netz.home kernel: RSP: 0018:ffffb430c0b9f318
-EFLAGS: 00010203
-Feb 27 09:58:27 odin.langes-netz.home kernel: RAX: ffff895f3b41e030 RBX:
-ffff895f3667bd80 RCX: 0000000000000000
-Feb 27 09:58:27 odin.langes-netz.home kernel: RDX: 0000000000000000 RSI:
-0000000000000000 RDI: ffff895f3b41e010
-Feb 27 09:58:27 odin.langes-netz.home kernel: RBP: ffff895f498d8000 R08:
-0000000000000000 R09: ffff895f3667bd80
-Feb 27 09:58:27 odin.langes-netz.home kernel: R10: ffffb430c0b9f548 R11:
-0000000000000000 R12: 0000000000000071
-Feb 27 09:58:27 odin.langes-netz.home kernel: R13: 0000000000000000 R14:
-ffff895f498d8000 R15: ffffb430c0b9f430
-Feb 27 09:58:27 odin.langes-netz.home kernel: FS:  00007f6a13521bc0(0000)
-GS:ffff895f4e800000(0000) knlGS:0000000000000000
-Feb 27 09:58:27 odin.langes-netz.home kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
-0000000080050033
-Feb 27 09:58:27 odin.langes-netz.home kernel: CR2: 0000000000000010 CR3:
-00000003fc056000 CR4: 00000000003406f0
-
--- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
