@@ -2,108 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E06172235
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 16:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D83017227B
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Feb 2020 16:46:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730548AbgB0P0c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Feb 2020 10:26:32 -0500
-Received: from mail-qt1-f171.google.com ([209.85.160.171]:45784 "EHLO
-        mail-qt1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729451AbgB0P0c (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Feb 2020 10:26:32 -0500
-Received: by mail-qt1-f171.google.com with SMTP id d9so2504695qte.12
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Feb 2020 07:26:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LRaPmV1PsjuQrgHe/F7yYZVrSSfw36PC7SBGYz6cUBA=;
-        b=Af6Qzui+1Dj1/i7X04H0Vlve3W3bSdJBPVZU/QgXDJ5ApzqZeHLXh2nZM+9DvYuAu9
-         L59W9NHe52YVpzTbKY5RCr20ve0QLyBFZN/95nkONeGw5rh5hONCc6AowchG1ZAF2PfA
-         RAL8rjRBYIF4Nfv47+xrq7YBUA6Jht0qhKVhHDhyi16sQyS3brtWCx9T37lYxGiHmIMW
-         +fH5ZJMNJUPguiaWpcEMLvhD3pn52k5qHl3jZ7uh+WeoBKedRUQR7TVwcfNZfUyOpYT6
-         8eLw5NqRGD2L5b+iBH04XaFCJ79KPb/aAqYgB+OCBtopS2yhzAyAh7iFxk4k5hwarY3f
-         jboA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LRaPmV1PsjuQrgHe/F7yYZVrSSfw36PC7SBGYz6cUBA=;
-        b=A1/ehrAeW9QGIj9dHgEioAspkxKN/WgBZg4Lu8FQCesrxRhRxYKZ24/OIrDz83BUSG
-         BIb/MFxC+11w6f8cBksg+tMcOpmSnsIt+OSECc43hX4L8AaO5YRMFoBU8+XYZkuFAgbA
-         32iPp+dbY0iRae8lqqms54vH4EJ+NoUy8k5lnIRQ5+jK0s0KTC1KO2H366EV+tTlt/d0
-         nMyGNCxxnyWGNDJMiSlPRZ0OfXFzlR6ni7WtpAxp5QzRATcK6rk8miNoF34Yn+muso5s
-         WsdGcX/o9sXK/5iYJmuNijQdEjmB1bokeVD2tncvmR/MZ2avmfEHbLIah06L5W2K6x1N
-         SWHg==
-X-Gm-Message-State: APjAAAWTmNjTuzBhVCNLjw0UuKpPGfJtouVXtgx1hM55gScSqBKzq6y8
-        mTtmLa0f1VhKSENSf/sl83hK1Q==
-X-Google-Smtp-Source: APXvYqyGJoeh+/bPLZoLrAQAqAI85cRQJB70yUWbg0Bh3eW3GiH8s6XZ5HnaW2DIiA5M2N6xtIPFWw==
-X-Received: by 2002:ac8:7776:: with SMTP id h22mr5068111qtu.126.1582817189828;
-        Thu, 27 Feb 2020 07:26:29 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id o2sm3282653qkd.93.2020.02.27.07.26.29
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 27 Feb 2020 07:26:29 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j7L3U-00058P-L0; Thu, 27 Feb 2020 11:26:28 -0400
-Date:   Thu, 27 Feb 2020 11:26:28 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     Haim Boozaglo <haimbo@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
-Subject: Re: "ibstat -l" displays CA device list in an unsorted order
-Message-ID: <20200227152628.GH31668@ziepe.ca>
-References: <2b43584f-f56a-6466-a2da-43d02fad6b64@mellanox.com>
- <20200224194131.GV31668@ziepe.ca>
- <d3b6297e-3251-ec14-ebef-541eb3a98eae@mellanox.com>
- <20200226134310.GX31668@ziepe.ca>
- <20200226135749.GE12414@unreal>
- <20200226170946.GA31668@ziepe.ca>
- <1da164dc-9aff-038f-914a-c14d353c9e08@mellanox.com>
- <20200227133341.GG31668@ziepe.ca>
- <b5a619bc-582d-908a-6c6e-5df5bbe4b4b2@intel.com>
+        id S1729158AbgB0Pqq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Feb 2020 10:46:46 -0500
+Received: from stargate.chelsio.com ([12.32.117.8]:53289 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729110AbgB0Pqq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Feb 2020 10:46:46 -0500
+Received: from localhost (pvp1.blr.asicdesigners.com [10.193.80.26])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 01RFkMbE028085;
+        Thu, 27 Feb 2020 07:46:22 -0800
+Date:   Thu, 27 Feb 2020 21:16:21 +0530
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     Sagi Grimberg <sagi@grimberg.me>, jgg@ziepe.ca
+Cc:     linux-nvme@lists.infradead.org, hch@lst.de,
+        linux-rdma@vger.kernel.org, nirranjan@chelsio.com,
+        bharat@chelsio.com
+Subject: Re: [PATCH for-rc] nvme-rdma/nvmet-rdma: Allocate sufficient RW ctxs
+ to match hosts pgs len
+Message-ID: <20200227154220.GA3153@chelsio.com>
+References: <20200226141318.28519-1-krishna2@chelsio.com>
+ <b7a7abdc-574a-4ce9-ccf0-a51532f1ac58@grimberg.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b5a619bc-582d-908a-6c6e-5df5bbe4b4b2@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <b7a7abdc-574a-4ce9-ccf0-a51532f1ac58@grimberg.me>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 27, 2020 at 09:55:23AM -0500, Dennis Dalessandro wrote:
-> > > I can just sort the list at the time of insertion of each node.
-> > 
-> > I'd rather not have to pay the sorting penalty for all users, it seems
-> > only a few command line tools need the sort
+Hi Sagi & Jason,
+	
+Thanks for the comments, please see inline.
+
+On Wednesday, February 02/26/20, 2020 at 15:05:59 -0800, Sagi Grimberg wrote:
 > 
-> Should we really go out on limb here and assume it's just a few CLI tools?
-> What about all the sysadmin type scripts out there? We aren't having a good
-> track record not breaking user space lately.
+> >Current nvmet-rdma code allocates MR pool budget based on host's SQ
+> >size, assuming both host and target use the same "max_pages_per_mr"
+> >count. But if host's max_pages_per_mr is greater than target's, then
+> >target can run out of MRs while processing larger IO WRITEs.
+> >
+> >That is, say host's SQ size is 100, then the MR pool budget allocated
+> >currently at target will also be 100 MRs. But 100 IO WRITE Requests
+> >with 256 sg_count(IO size above 1MB) require 200 MRs when target's
+> >"max_pages_per_mr" is 128.
+> 
+> The patch doesn't say if this is an actual bug you are seeing or
+> theoretical.
+	
+I've noticed this issue while running the below fio command:
+fio --rw=randwrite --name=random --norandommap --ioengine=libaio
+--size=16m --group_reporting --exitall --fsync_on_close=1 --invalidate=1
+--direct=1 --filename=/dev/nvme2n1 --iodepth=32 --numjobs=16
+--unit_base=1 --bs=4m --kb_base=1000
 
-'sysadmin scripts' can't view the umad list without going through a
-cli tool - so sorting the cli tools that show lists of device things
-will take care of it.
+Note: here NVMe Host is on SIW & Target is on iw_cxgb4 and the
+max_pages_per_mr supported by SIW and iw_cxgb4 are 255 and 128
+respectively.
+	
+Traces on Target:
 
-verbs is has always been unsorted, so things like ibv_devinfo 
-return in creation order. (which I think is a different random
-ordering than it used to be)
+#cat /sys/kernel/debug/tracing/trace_pipe|grep -v "status=0x0"
+kworker/8:1H-2461  [008] .... 25476.995437: nvmet_req_complete: nvmet1:
+disk=/dev/ram0, qid=1, cmdid=3, res=0xffff8b7f2ae534d0, status=0x6
+kworker/8:1H-2461  [008] .... 25476.995467: nvmet_req_complete: nvmet1:
+disk=/dev/ram0, qid=1, cmdid=4, res=0xffff8b7f2ae53700, status=0x6
+kworker/8:1H-2461  [008] .... 25476.995511: nvmet_req_complete: nvmet1:
+disk=/dev/ram0, qid=1, cmdid=1, res=0xffff8b7f2ae53980, status=0x6
 
-This isn't the first time someone has complated about sorting, I
-recall there was a complaint about ibv_get_device_list() too, but it
-was never sorted. It just happened that sometimes it would be sorted
-by some luck.
+> 
+> >The proposed patch enables host to advertise the max_fr_pages(via
+> >nvme_rdma_cm_req) such that target can allocate that many number of
+> >RW ctxs(if host's max_fr_pages is higher than target's).
+> 
+> As mentioned by Jason, this s a non-compatible change, if you want to
+> introduce this you need to go through the standard and update the
+> cm private_data layout (would mean that the fmt needs to increment as
+> well to be backward compatible).
 
-At least in the umad case it was actually always sorted before.
-
-I think we should also sort ibv_devinfo too while we are here.
-
-> Is the sorting penalty really going to be that bad? It's not like we will
-> have a large number of devices that sorting should really be an issue I
-> wouldn't think.
-
-There are configurations where we have a large number of devices.
-
-Jason
+Sure, will initiate a discussion at NVMe TWG about CM private_data format.
+Will update the response soon.
+> 
+> 
+> As a stop-gap, nvmet needs to limit the controller mdts to how much
+> it can allocate based on the HCA capabilities
+> (max_fast_reg_page_list_len).
