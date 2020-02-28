@@ -2,101 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C924173D31
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2020 17:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4D2173D3C
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2020 17:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725906AbgB1Qkr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Feb 2020 11:40:47 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:34800 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbgB1Qkr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Feb 2020 11:40:47 -0500
-Received: by mail-qt1-f193.google.com with SMTP id l16so2488121qtq.1
-        for <linux-rdma@vger.kernel.org>; Fri, 28 Feb 2020 08:40:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pTEiWHbkJUOSubaEn1WKzoYhCWUGVb2OKNUIfAIv7vg=;
-        b=WXUbXFrjz1iBT9UYE89Fpob6aE23TpUOtmopFmOuOzK2RbBaqb6IXz7wmVYyrIL60Q
-         f1Lgg+5jykiTW74KZgSseVwHcgq9NQrSx9Hl8SpcPSdnymcCyibAR8m5eVp7YGbF0jsl
-         0ZDqk8lhzIOKnD6I4Ha0KcyXfl3wc/rbFG1pZSvnFf+3JXwCabejTi6TLLq52TercGgv
-         PUn11UyNg5KaNecngKTsUsQj+kduLyFNpUQM1kNBXWLNY6yMg+IRIez0qgu2dqXVe9Vb
-         x8nyE7h9aJVBP5rcmQvxRPPkQZqH0E7Lwf75lAsz4zvSgitwM4ao6MXbSn2UOTDzbu3C
-         BM+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pTEiWHbkJUOSubaEn1WKzoYhCWUGVb2OKNUIfAIv7vg=;
-        b=N/3hFc5Tn70K98F9c35x6crjP3Q9oy7izPKGFJpExZnbs48ktkykszhi2Dam1IJYfa
-         jyuzHakp2lWigVla+aCrCi0mBH/qxEgjfOQTY0dmD/MnwvaR3fUMRhhspCpb+5tB6Y+M
-         oTfKUQrdiC/p/fKIVO6v7+EatpnTNbUviCqvPBFtvdPhkxgkXdied7P2Zajkv6JaEsgI
-         FYhJn0Mj3E6h9YSzpmL8sdnMCe2l5bX0pPuI4ZO2PzwsYkZ08uKwY6g49mhS2p8g3Kiq
-         4G6Yq5sQHXsAIx0gsrWWoxYmnIkiLLvWakFa3b+3dljlXECE7KkgdkY3e3HhD2dTDqlh
-         cBkQ==
-X-Gm-Message-State: APjAAAUiMhfDlBLKxLEetnciLT7m9UOKkT61jdc4P7ZZqwpIHFAMPUSJ
-        8Mp5Pxvy/OzENRwv+GNzza0Qjw==
-X-Google-Smtp-Source: APXvYqzCxDG1+DE50mUqUPDQZshX7ltSm+C96PunZxUmBNuPnwstWsZSNT/dKtrtNe1amxXvHET5kg==
-X-Received: by 2002:ac8:4302:: with SMTP id z2mr5245063qtm.188.1582908045579;
-        Fri, 28 Feb 2020 08:40:45 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id b25sm5341698qkh.6.2020.02.28.08.40.45
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 28 Feb 2020 08:40:45 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j7igu-0000Fq-Is; Fri, 28 Feb 2020 12:40:44 -0400
-Date:   Fri, 28 Feb 2020 12:40:44 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next v4 0/2] RDMA/bnxt_re driver update
-Message-ID: <20200228164044.GB27288@ziepe.ca>
-References: <1582731932-26574-1-git-send-email-selvin.xavier@broadcom.com>
+        id S1726094AbgB1QmN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 28 Feb 2020 11:42:13 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5012 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725886AbgB1QmN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 28 Feb 2020 11:42:13 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01SGf0qY085262
+        for <linux-rdma@vger.kernel.org>; Fri, 28 Feb 2020 11:42:12 -0500
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.112])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2yepxfw9w8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Fri, 28 Feb 2020 11:42:12 -0500
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Fri, 28 Feb 2020 16:42:12 -0000
+Received: from us1b3-smtp08.a3dr.sjc01.isc4sb.com (10.122.203.190)
+        by smtp.notes.na.collabserv.com (10.122.47.54) with smtp.notes.na.collabserv.com ESMTP;
+        Fri, 28 Feb 2020 16:42:03 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp08.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2020022816420346-560799 ;
+          Fri, 28 Feb 2020 16:42:03 +0000 
+In-Reply-To: <20200228133500.GN31668@ziepe.ca>
+Subject: Re: Re: Re: possible deadlock in cma_netdev_callback
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Jason Gunthorpe" <jgg@ziepe.ca>
+Cc:     "syzbot" <syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com>,
+        chuck.lever@oracle.com, dledford@redhat.com, leon@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, parav@mellanox.com,
+        syzkaller-bugs@googlegroups.com, willy@infradead.org
+Date:   Fri, 28 Feb 2020 16:42:02 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1582731932-26574-1-git-send-email-selvin.xavier@broadcom.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20200228133500.GN31668@ziepe.ca>,<20200227164622.GJ31668@ziepe.ca>
+ <20200227155335.GI31668@ziepe.ca> <20200226204238.GC31668@ziepe.ca>
+ <000000000000153fac059f740693@google.com>
+ <OF0B62EDE7.E13D40E8-ON0025851B.0037F560-0025851B.0037F56C@notes.na.collabserv.com>
+ <OF0C6D63D8.F1817050-ON0025851B.0059D878-0025851B.0059D887@notes.na.collabserv.com>
+ <OFF9E6CFC6.7E79459D-ON0025851C.00472582-0025851C.0047F357@notes.na.collabserv.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP62 November 04, 2019 at 09:47
+X-KeepSent: E6F5FD43:5CAFDF8A-0025851C:005AC3E0;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 48399
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 20022816-4615-0000-0000-0000019A70F7
+X-IBM-SpamModules-Scores: BY=0.020206; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.411265; ST=0; TS=0; UL=0; ISC=; MB=0.005295
+X-IBM-SpamModules-Versions: BY=3.00012657; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000293; SDB=6.01340539; UDB=6.00714412; IPR=6.01122900;
+ MB=3.00031011; MTD=3.00000008; XFM=3.00000015; UTC=2020-02-28 16:42:10
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2020-02-28 12:22:27 - 6.00011059
+x-cbparentid: 20022816-4616-0000-0000-0000B8BA7A08
+Message-Id: <OFE6F5FD43.5CAFDF8A-ON0025851C.005AC3E0-0025851C.005BBD83@notes.na.collabserv.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-28_05:2020-02-28,2020-02-28 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 07:45:30AM -0800, Selvin Xavier wrote:
-> Includes code refactoring in the device init/deinit path and
-> use the new driver unregistration APIs.
-> 
-> Please apply to for-next.
-> 
-> Thanks,
-> Selvin
-> 
-> v3-> v4:
->  - Added netdev state query  and report the correct link state
->    during device registration
->  - Removed GID event during device registration
-> v2 -> v3:
->  - Droped the patch which was adding more state macros
->  - To prevent addition of any device during driver removal,
->    unregister netdev notifier and delete the driver's workqueu
->    before calling ib_unregister_driver
-> v1-> v2:
->  - Remove the patches 1,2 and 6 from the v1 series.
->    They are already merged.
->  - Added ASSERT_RTNL instead of comment in Patch 2
->  - For Patch 3, explicitly queue the removal of the VF devices
->    before calling ib_unregister_driver. This can avoid command
->    timeouts seen, if the PFs gets removed before the VFs.
->    Previous discussion - https://patchwork.kernel.org/patch/11260013/
-> 
-> Selvin Xavier (2):
->   RDMA/bnxt_re: Refactor device add/remove functionalities
->   RDMA/bnxt_re: Use driver_unregister and unregistration API
+-----"Jason Gunthorpe" <jgg@ziepe.ca> wrote: -----
 
-Aside from the ugly sched_count this is an improvement, so applied to
-for-next
+>To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>Date: 02/28/2020 02:35PM
+>Cc: "syzbot" <syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com>,
+>chuck.lever@oracle.com, dledford@redhat.com, leon@kernel.org,
+>linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+>netdev@vger.kernel.org, parav@mellanox.com,
+>syzkaller-bugs@googlegroups.com, willy@infradead.org
+>Subject: [EXTERNAL] Re: Re: possible deadlock in cma_netdev_callback
+>
+>On Fri, Feb 28, 2020 at 01:05:53PM +0000, Bernard Metzler wrote:
+>> 
+>> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>> >Date: 02/27/2020 05:46PM
+>> >Cc: "syzbot"
+><syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com>,
+>> >chuck.lever@oracle.com, dledford@redhat.com, leon@kernel.org,
+>> >linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+>> >netdev@vger.kernel.org, parav@mellanox.com,
+>> >syzkaller-bugs@googlegroups.com, willy@infradead.org
+>> >Subject: [EXTERNAL] Re: possible deadlock in cma_netdev_callback
+>> >
+>> >On Thu, Feb 27, 2020 at 04:21:21PM +0000, Bernard Metzler wrote:
+>> >> 
+>> >> >To: "Bernard Metzler" <BMT@zurich.ibm.com>
+>> >> >From: "Jason Gunthorpe" <jgg@ziepe.ca>
+>> >> >Date: 02/27/2020 04:53PM
+>> >> >Cc: "syzbot"
+>> ><syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com>,
+>> >> >chuck.lever@oracle.com, dledford@redhat.com, leon@kernel.org,
+>> >> >linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+>> >> >netdev@vger.kernel.org, parav@mellanox.com,
+>> >> >syzkaller-bugs@googlegroups.com, willy@infradead.org
+>> >> >Subject: [EXTERNAL] Re: possible deadlock in
+>cma_netdev_callback
+>> >> >
+>> >> >On Thu, Feb 27, 2020 at 10:11:13AM +0000, Bernard Metzler
+>wrote:
+>> >> >
+>> >> >> Thanks for letting me know! Hmm, we cannot use RCU locks
+>since
+>> >> >> we potentially sleep. One solution would be to create a list
+>> >> >> of matching interfaces while under lock, unlock and use that
+>> >> >> list for calling siw_listen_address() (which may sleep),
+>> >> >> right...?
+>> >> >
+>> >> >Why do you need to iterate over addresses anyhow? Shouldn't the
+>> >> >listen
+>> >> >just be done with the address the user gave and a BIND DEVICE
+>to
+>> >the
+>> >> >device siw is connected to?
+>> >> 
+>> >> The user may give a wildcard local address, so we'd have
+>> >> to bind to all addresses of that device...
+>> >
+>> >AFAIK a wild card bind using BIND DEVICE works just fine?
+>> >
+>> >Jason
+>> >
+>> Thanks Jason, absolutely! And it makes things so easy...
+>
+>Probably check to confirm, it just my memory..
+>
+>Jason
+>
+Well, right, marking a socket via setsockopt SO_BINDTODEVICE
+does not work - I get -EPERM. Maybe works only from user land
+since the ifname gets copied in from there.
 
-Thanks,
-Jason
+What I tested as working is nailing the scope of wildcard
+listen via:
+s->sk->sk_bound_dev_if = netdev->ifindex;
+
+Without doing it, wildcard listen would end up covering all
+interfaces, even if siw is not attached to some. Also, if siw is
+attached to more than one interface, only the first bind call
+works of course (for wildcard, the rdma_cm calls me for all
+interfaces siw is attached to). So without binding to a
+device it is not working.
+
+I am not sure what is the right way of limiting the scope
+of a socket to one interface in kernel mode. Is above line
+the way to go, or do I miss an interface to do such things?
+Anybody could help?
+
+Thanks very much!
+Bernard.
+
