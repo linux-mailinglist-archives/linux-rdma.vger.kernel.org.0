@@ -2,98 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC51173D7B
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2020 17:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60626173DBA
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2020 17:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbgB1Qty (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Feb 2020 11:49:54 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:45876 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726077AbgB1Qty (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Feb 2020 11:49:54 -0500
-Received: by mail-qk1-f194.google.com with SMTP id z12so3519914qkg.12
-        for <linux-rdma@vger.kernel.org>; Fri, 28 Feb 2020 08:49:53 -0800 (PST)
+        id S1725886AbgB1Q4s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Feb 2020 11:56:48 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:45256 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725876AbgB1Q4s (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Feb 2020 11:56:48 -0500
+Received: by mail-qv1-f65.google.com with SMTP id l14so1626555qvu.12
+        for <linux-rdma@vger.kernel.org>; Fri, 28 Feb 2020 08:56:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=hgWgrZvCEmu6uRu0ctlC2UMyMXZuVubNemvY+msKWUs=;
-        b=T0253mjwOlZLR6gL/ZmNlcSwlPXiIpvXHAT/pU9Wem5isQGcGMYN0TVWxpDnDgzKwo
-         Sn8KgAnX3Dqr2DHvQq7giIwC7f3lhi+kcRoL/8LehEI/rffUn3WrBJZ7PUzr+K0fk+LF
-         3sgy2ohuaE4/5OXLE3ypBhTI791f8U2Yxi2cNcpkYjLJ+jMGpbnsZAXbtuyL9H8KRcfT
-         BfxnGK6fVn/MukkAjQWVbvxmHBPv6KoT4qc0ZfOHIgCmyE6ku5nUPwwVwsgSAkbnx1be
-         mvULDO+PA8uoEmjtRBlYiJAhSW4J27kO1AW0UWMQe7a4B/5qoElH2N2hDnuEjD1gutqO
-         8rYg==
+        bh=MnnyeN+aqLspiam8SqK6rrpg5t0J6LSdhd2Rs2BI6FM=;
+        b=aYq15DRIVkBXAdhasU2vbcTpN5PyvwYjvVVvra8BBVbxNwzNRk/8Xw4jhajUo20qCh
+         tWfgbx/HU4O26bCNycBovypR5ZRDR4iyTP6tK6YDFPxijlYDWi18FBwYhLpp19y8BgXy
+         BKlbUUEoIu4MMPXWBUkKtlsKPFvpXSB0Xaf25A7FfQkb+qZAQF3WrLMHUxkh+MfIY6RP
+         ppzs+SLOuxXiiNFJc8mtApUUjIzbXOoGr8smNcopUlRWijDMUB9QBGwlNBismIozf3WZ
+         d+Od1VBNuK9PVruUqIE4D6ezD/yBCDGhJEl2aED9D5KzTus6P09ZJRFPQjqFIO7FXu3f
+         I8IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hgWgrZvCEmu6uRu0ctlC2UMyMXZuVubNemvY+msKWUs=;
-        b=EBVVyA3EI3dFVk/56b8bO284zHW6XDsd0n6A3t89ErZ0TYa9fHQw8emD7jHzuCP+sS
-         5LVkNX/g0z6HsyvlsHC9tmlEm0BNzkYaW0iOBwjiB+PEDJc/uDFG5J2vBch6tHJKdDw0
-         vngIkD29Ygh/Zb9Azu324tdoaZ6bwVnrIOXkDsp4t+TUcbFYBd6u3tJ9Ocj7SV8zCBrJ
-         oWZ7xkgFlaFxA7IseNLQ70WzwIdC62tiLpjg37TLGljtYrivS5nrpjyE83EwCPe3j9oU
-         AU6Fq4BQj3NtRLfVA3usRBQc4b/hG6T3yfUPWGGzHVdSqAZKX5dykdFEO0i2HZW+IVPd
-         veLA==
-X-Gm-Message-State: APjAAAWndHVC1unA2dJbEJDgjD7kDJf9++tVCGpCAORVa5+xRd4pSlix
-        bWLgiJJLA0K3Epq/LIYmB490fw==
-X-Google-Smtp-Source: APXvYqzGZgnxMtHXNFEV+xiae1mjPrVibLyz3T4sadssLs+sePG/fQ6rtalBuu5BNt6s/9y1NMGKOg==
-X-Received: by 2002:a37:6e42:: with SMTP id j63mr5250429qkc.400.1582908593217;
-        Fri, 28 Feb 2020 08:49:53 -0800 (PST)
+        bh=MnnyeN+aqLspiam8SqK6rrpg5t0J6LSdhd2Rs2BI6FM=;
+        b=T+BZvr7dKDg2vKP9tTNR4dv7F02LU/80vbcPn5xDc5XaCqiTqSmEXjYRvdJOmcnb8m
+         xFk/AnL2vKriHRSYg+dry2MIvIVkcl8RlleAe4YQoko/s3Vwj3fkFdw1sdAeBawYfw4i
+         nAZo1Uw1KgQddRkO8bfGCtpflb3bxmQ6tW+PR6zyMAhHhcapZaZeEfE1oYrCJfAtEzFz
+         AT8Nz0Qfv4oj+Fr7a0mc7O2kRJk3RrmwW2FRtJRVX+K8yZgpPFGiNryueMQmgefkP99V
+         y/H5KJfVzjkeiJ2gYcPHrpan9xC7CiK9j3UGAWPJR9NHWaa5wv3xewZe6Yr/w55Oeqsm
+         R7jw==
+X-Gm-Message-State: APjAAAVR+pikdyI1hm2LAubbLuHSvQWX82fFeKttAUPJswkLJgsMWeis
+        3f6z0RJvfsO/r3yGxAEulvTqL712D8fZcg==
+X-Google-Smtp-Source: APXvYqxZuqEcSahNzLeN6v3bvrqtte+U9QJQ19G7ZLwzLCMamUh1xRJXcxdGPrhVEJlr4DUSq/OMjg==
+X-Received: by 2002:ad4:5304:: with SMTP id y4mr4595504qvr.56.1582909006571;
+        Fri, 28 Feb 2020 08:56:46 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id l184sm5323474qkc.107.2020.02.28.08.49.52
+        by smtp.gmail.com with ESMTPSA id z21sm5211117qka.122.2020.02.28.08.56.45
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 28 Feb 2020 08:49:52 -0800 (PST)
+        Fri, 28 Feb 2020 08:56:46 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1j7ipk-0003JN-Bl; Fri, 28 Feb 2020 12:49:52 -0400
-Date:   Fri, 28 Feb 2020 12:49:52 -0400
+        id 1j7iwP-0003Ud-JW; Fri, 28 Feb 2020 12:56:45 -0400
+Date:   Fri, 28 Feb 2020 12:56:45 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     syzbot <syzbot+55de90ab5f44172b0c90@syzkaller.appspotmail.com>,
-        chuck.lever@oracle.com, dledford@redhat.com, leon@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, parav@mellanox.com,
-        syzkaller-bugs@googlegroups.com, willy@infradead.org
-Subject: Re: Re: Re: possible deadlock in cma_netdev_callback
-Message-ID: <20200228164952.GV31668@ziepe.ca>
-References: <20200228133500.GN31668@ziepe.ca>
- <20200227164622.GJ31668@ziepe.ca>
- <20200227155335.GI31668@ziepe.ca>
- <20200226204238.GC31668@ziepe.ca>
- <000000000000153fac059f740693@google.com>
- <OF0B62EDE7.E13D40E8-ON0025851B.0037F560-0025851B.0037F56C@notes.na.collabserv.com>
- <OF0C6D63D8.F1817050-ON0025851B.0059D878-0025851B.0059D887@notes.na.collabserv.com>
- <OFF9E6CFC6.7E79459D-ON0025851C.00472582-0025851C.0047F357@notes.na.collabserv.com>
- <OFE6F5FD43.5CAFDF8A-ON0025851C.005AC3E0-0025851C.005BBD83@notes.na.collabserv.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Prevent UMR usage with RO only when
+ we have RO caps
+Message-ID: <20200228165645.GA13387@ziepe.ca>
+References: <20200227113834.94233-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <OFE6F5FD43.5CAFDF8A-ON0025851C.005AC3E0-0025851C.005BBD83@notes.na.collabserv.com>
+In-Reply-To: <20200227113834.94233-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 28, 2020 at 04:42:02PM +0000, Bernard Metzler wrote:
-
-> Well, right, marking a socket via setsockopt SO_BINDTODEVICE
-> does not work - I get -EPERM. Maybe works only from user land
-> since the ifname gets copied in from there.
+On Thu, Feb 27, 2020 at 01:38:34PM +0200, Leon Romanovsky wrote:
+> From: Michael Guralnik <michaelgur@mellanox.com>
 > 
-> What I tested as working is nailing the scope of wildcard
-> listen via:
-> s->sk->sk_bound_dev_if = netdev->ifindex;
+> Relaxed ordering is not supported in UMR so we are disabling UMR usage
+> when user passes relaxed ordering access flag.
+> 
+> Enable using UMR when user requested relaxed ordering but there are no
+> relaxed ordering capabilities.
+> This will prevent user from unnecessarily registering a new mkey.
+> 
+> Fixes: d6de0bb1850f ("RDMA/mlx5: Set relaxed ordering when requested")
+> Signed-off-by: Michael Guralnik <michaelgur@mellanox.com>
+> Reviewed-by: Maor Gottlieb <maorg@mellanox.com>
+> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> ---
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-That sounds potentially right
- 
-> I am not sure what is the right way of limiting the scope
-> of a socket to one interface in kernel mode. Is above line
-> the way to go, or do I miss an interface to do such things?
-> Anybody could help?
+This doesn't seem very rc-ish, applied to for-next
 
-I didn't find an alternative, but not a lot of places touching this
-outside the implementators of a socket type.
- 
+Thanks,
 Jason
