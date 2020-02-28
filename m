@@ -2,93 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4E9172C1D
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2020 00:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 933A4172D3D
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2020 01:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729802AbgB0XOx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Feb 2020 18:14:53 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:42621 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729656AbgB0XOx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Feb 2020 18:14:53 -0500
-Received: by mail-ot1-f66.google.com with SMTP id 66so858120otd.9
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Feb 2020 15:14:51 -0800 (PST)
+        id S1730118AbgB1Aa1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Feb 2020 19:30:27 -0500
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:39499 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730117AbgB1Aa1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Feb 2020 19:30:27 -0500
+Received: by mail-pj1-f50.google.com with SMTP id e9so508883pjr.4;
+        Thu, 27 Feb 2020 16:30:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=uDIiFc6YXTy9enlRlRGL86FpscWVeWg0qsaV6z1IdOE=;
+        b=L7Rzg807Gn1tFoaGrBPo0/24iC9gvz5QtRxPsdFAQ7A69YYqTneRpr1Hvf6zc6bSWU
+         AFfJoTZBXH+QEFy6IRZRfdZ5N3h50ONIYT9tezumqFvyqDvTm+Yxh97d+TcQNd34D+yE
+         UrRkc2tKdSj/gKJvOQ1dJNmTiBo7VXn6bKrcLHzVNwPZcIR8oiKUNXsn1C9i3QF0x/J+
+         oeRwXTvC7dWlBErGqXU/K9PWhacZr6iiQy9rLAUL5oj4tqDPprtw69N/Mbm62D6bIRDv
+         Xc1NmjXr2m6Q75F+8pGYxBIKMX3P7lwLg/9V+T7GJUVjS5aBdPwIPZGCahj4VTXLNvup
+         xIcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rp0PxYea93t1WRQ8q7wpuJfUZE+nI/QnHvJZCfZFKCI=;
-        b=mWRvzpEyr9Bz/iiGIufAU1oPhAYuocP5TS8ZWcmYQStEtT7fAzCumLNbvxLnUkuYsp
-         2lTRLzvogwWHEnRRfyXWxxzJ/ikg1N8//AGm6yaYR7yBvg1t0yL+CFIC7uuOCRh8bHOU
-         CG0f55MI+S5hcVcVpP8TvX9PYwBosZ2L/wdlCPZghEJ4qZhUKF/95f1sMMTAskMhvg/L
-         trqgUPG4QAQprma8KqOvBUQF6pE7eb6zgIGoq58zBs9gPYyY3/qiZqWIH4tojCimsFvS
-         VEoXNuSN+mA1n8LWNDV5maLBLcNl18MyKIobPB31G4dj93Gq+8zLkDqBBH2Mmm9SMjnh
-         PpYw==
-X-Gm-Message-State: APjAAAWqMVtcY4xu4l2Lj6KGgwB8w8gCYNcB6oYh9vaQL9nziT0tSk4R
-        WOKOHGuuNgSKuZkVqhn0Mxw=
-X-Google-Smtp-Source: APXvYqwKPFeb84SSFr76aajZgm95CA/DS9tP0Aq1G9m3lwkC7XsJkxEC93UopooFtd3nzHIErQTamQ==
-X-Received: by 2002:a05:6830:612:: with SMTP id w18mr1080149oti.160.1582845291362;
-        Thu, 27 Feb 2020 15:14:51 -0800 (PST)
-Received: from ?IPv6:2600:1700:65a0:78e0:514:7862:1503:8e4d? ([2600:1700:65a0:78e0:514:7862:1503:8e4d])
-        by smtp.gmail.com with ESMTPSA id o15sm67404ote.2.2020.02.27.15.14.49
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Feb 2020 15:14:50 -0800 (PST)
-Subject: Re: [PATCH for-rc] nvme-rdma/nvmet-rdma: Allocate sufficient RW ctxs
- to match hosts pgs len
-To:     Krishnamraju Eraparaju <krishna2@chelsio.com>, jgg@ziepe.ca
-Cc:     linux-nvme@lists.infradead.org, hch@lst.de,
-        linux-rdma@vger.kernel.org, nirranjan@chelsio.com,
-        bharat@chelsio.com
-References: <20200226141318.28519-1-krishna2@chelsio.com>
- <b7a7abdc-574a-4ce9-ccf0-a51532f1ac58@grimberg.me>
- <20200227154220.GA3153@chelsio.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <aeff528c-13ed-2d6a-d843-697035e75d6c@grimberg.me>
-Date:   Thu, 27 Feb 2020 15:14:48 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        h=x-gm-message-state:sender:subject:from:to:cc:date:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=uDIiFc6YXTy9enlRlRGL86FpscWVeWg0qsaV6z1IdOE=;
+        b=t80UDpO8KCzYV+NIeIESAvgzNQQos349apdMk6/aPlMVaWL4/2+eOjqQ9NWFkpkArz
+         sMfuAtF3QOe47sqpD8A5J4YqefYkENPen5EfibhCDd1RteVgQ7y4D791nAioTFkeDYrA
+         4Zz2U1KrnR/2hAtXKKa+dMQ0vnbDG1IUn+wnBjhi11NE6Ijlnv7BcAF9ZDvH8zzcv0hn
+         kzv47nGF6obloRlPM4NnDenUNoyR05Krzzon/pYzegz4yy5aLm9P5ZgDNPSYZAb8jlzy
+         ChDyyXUwjYDxz6HoZ71DiXxy3Pftqqg50Eo2UqvxSP+L2kg55lK9k86xUYBKGNxClWPh
+         mxWw==
+X-Gm-Message-State: APjAAAVA+0lICUuRqNRS5G26ndgT31nwwEvly1yoRjENojwEgs36/i3n
+        N9fres9GRNw3wpu3qNIqxbszhBV9
+X-Google-Smtp-Source: APXvYqxazYLEldxCWMyANNmJ7mYGoVkY9OA2+dW2DBw223T5iAo450P5zVIVxfZVFAodmfIcb+cg9Q==
+X-Received: by 2002:a17:902:694b:: with SMTP id k11mr1399384plt.334.1582849826533;
+        Thu, 27 Feb 2020 16:30:26 -0800 (PST)
+Received: from seurat29.1015granger.net (ip-184-250-247-225.sanjca.spcsdns.net. [184.250.247.225])
+        by smtp.gmail.com with ESMTPSA id q187sm8315616pfq.185.2020.02.27.16.30.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Feb 2020 16:30:25 -0800 (PST)
+Subject: [PATCH v1 00/16] NFS/RDMA server patches maybe for v5.7
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     bfields@fieldses.org
+Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
+Date:   Thu, 27 Feb 2020 19:30:24 -0500
+Message-ID: <158284930886.38468.17045380766660946827.stgit@seurat29.1015granger.net>
+User-Agent: StGit/unknown-version
 MIME-Version: 1.0
-In-Reply-To: <20200227154220.GA3153@chelsio.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hey Bruce-
 
->> The patch doesn't say if this is an actual bug you are seeing or
->> theoretical.
-> 	
-> I've noticed this issue while running the below fio command:
-> fio --rw=randwrite --name=random --norandommap --ioengine=libaio
-> --size=16m --group_reporting --exitall --fsync_on_close=1 --invalidate=1
-> --direct=1 --filename=/dev/nvme2n1 --iodepth=32 --numjobs=16
-> --unit_base=1 --bs=4m --kb_base=1000
-> 
-> Note: here NVMe Host is on SIW & Target is on iw_cxgb4 and the
-> max_pages_per_mr supported by SIW and iw_cxgb4 are 255 and 128
-> respectively.
+Here's the part of the RFC patch series I recently sent out that is
+likely to be ready for the v5.7 merge window. These need a little
+more soak-time. Please review them and let me know if there's
+something terribly objectionable.
 
-This needs to be documented in the change log.
+Again, the direction of the larger series is eventual support for
+the server's RPC/RDMA transport to deal correctly with multiple
+Write chunks in an RPC. Today the server transport supports only
+one Write chunk per RPC. That's somewhat less than compliant with
+RFC 8166, though good enough for any operation the Linux NFS/RDMA
+client uses, and most every operation Solaris can send.
 
->>> The proposed patch enables host to advertise the max_fr_pages(via
->>> nvme_rdma_cm_req) such that target can allocate that many number of
->>> RW ctxs(if host's max_fr_pages is higher than target's).
->>
->> As mentioned by Jason, this s a non-compatible change, if you want to
->> introduce this you need to go through the standard and update the
->> cm private_data layout (would mean that the fmt needs to increment as
->> well to be backward compatible).
-> 
-> Sure, will initiate a discussion at NVMe TWG about CM private_data format.
-> Will update the response soon.
->>
->>
->> As a stop-gap, nvmet needs to limit the controller mdts to how much
->> it can allocate based on the HCA capabilities
->> (max_fast_reg_page_list_len).
+The patches below are clean-ups and optimizations that prepare the
+way for multi-Write chunk support.
 
-Sounds good, please look at capping mdts in the mean time.
+---
+
+Chuck Lever (16):
+      nfsd: Fix NFSv4 READ on RDMA when using readv
+      NFSD: Clean up nfsd4_encode_readv
+      svcrdma: Fix double svc_rdma_send_ctxt_put() in an error path
+      SUNRPC: Add xdr_pad_size() helper
+      svcrdma: Create a generic tracing class for displaying xdr_buf layout
+      svcrdma: Remove svcrdma_cm_event() trace point
+      svcrdma: Use struct xdr_stream to decode ingress transport headers
+      svcrdma: De-duplicate code that locates Write and Reply chunks
+      svcrdma: Update synopsis of svc_rdma_send_reply_chunk()
+      svcrdma: Update synopsis of svc_rdma_map_reply_msg()
+      svcrdma: Update synopsis of svc_rdma_send_reply_msg()
+      svcrdma: Rename svcrdma_encode trace points in send routines
+      SUNRPC: Add encoders for list item discriminators
+      svcrdma: Refactor chunk list encoders
+      svcrdma: Fix double sync of transport header buffer
+      svcrdma: Avoid DMA mapping small RPC Replies
+
+
+ fs/nfsd/nfs4xdr.c                          |   29 +-
+ include/linux/sunrpc/rpc_rdma.h            |    3 
+ include/linux/sunrpc/svc.h                 |    3 
+ include/linux/sunrpc/svc_rdma.h            |   23 +
+ include/linux/sunrpc/svc_xprt.h            |    2 
+ include/linux/sunrpc/xdr.h                 |   54 +++
+ include/trace/events/rpcrdma.h             |   67 ++--
+ include/trace/events/sunrpc.h              |   43 ++
+ net/sunrpc/auth_gss/auth_gss.c             |    4 
+ net/sunrpc/auth_gss/svcauth_gss.c          |    4 
+ net/sunrpc/svc.c                           |   16 +
+ net/sunrpc/svc_xprt.c                      |    6 
+ net/sunrpc/svcsock.c                       |    8 
+ net/sunrpc/xprt.c                          |    4 
+ net/sunrpc/xprtrdma/rpc_rdma.c             |   39 --
+ net/sunrpc/xprtrdma/svc_rdma_backchannel.c |   16 +
+ net/sunrpc/xprtrdma/svc_rdma_recvfrom.c    |  248 +++++++++-----
+ net/sunrpc/xprtrdma/svc_rdma_rw.c          |   55 ++-
+ net/sunrpc/xprtrdma/svc_rdma_sendto.c      |  504 ++++++++++++++++------------
+ net/sunrpc/xprtrdma/svc_rdma_transport.c   |    8 
+ 20 files changed, 693 insertions(+), 443 deletions(-)
+
+--
+Chuck Lever
