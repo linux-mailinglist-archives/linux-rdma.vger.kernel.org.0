@@ -2,163 +2,318 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2CD172D65
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2020 01:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0EC1732F1
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2020 09:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730378AbgB1AcT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Feb 2020 19:32:19 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:43502 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730253AbgB1AcT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Feb 2020 19:32:19 -0500
-Received: by mail-pl1-f194.google.com with SMTP id p11so490220plq.10;
-        Thu, 27 Feb 2020 16:32:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Rh0J7J+tmI9ibvdcsm+0y9mwMYxxyAhrYZdwv/dpsVs=;
-        b=JgGJRtpmRQYq4WDLgxCITaAj2ShvrCED1EkjwcpTiEr/6r5/0OPWOZ9k9lc31K0sBN
-         d96QEG2Ed9x3bLuz7YP6t0ZYhWj7PPdGOL6ZU/4BWgsxTjYymn5NmXbt5eH600h0xcvo
-         ekN8P90C7/XW//n2WG7eyjacCSCF7OIB/y9/KF4wR29ebax1TIOL7ptTFx4q51Qgk+xp
-         TSsHPFxzBFt6mqq8b0uc11Fpy2wJq46WKBcDw5Nw16PYSlyCty+6s55vjNWDaXMnpMP0
-         ICCUcbKGsHWgvh1lWFxCXVtDOCR3UsFGG6FELqphsWVZ2eJUpJjFTsDIFCbci+R8wqHq
-         o10A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:cc:date:message-id
-         :in-reply-to:references:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=Rh0J7J+tmI9ibvdcsm+0y9mwMYxxyAhrYZdwv/dpsVs=;
-        b=IxaLRZHifIxwHjgx3PFZxmfLfWy/3JYcXErt1HpIpkCK9Vcsqdevb97yV28yqJsxKc
-         pS6IqnMnF9y1rfKdeJR/dEv2FODCmlANfJzwhL6AlVhgV8xTOXYuux1rq+husbb8mlwB
-         /JqxUYEuV1uVN4OropNVrqykHEAn3op586PlyeIQLSrGyRRmHzQeHKhuTasL3bdjjUaH
-         G/c+kmWqdr+PCADb6YDE85rMuJSyj6H1lfmhoVsUQ+VWGMRUXkzURY2UL3pKrjfWr7Br
-         NLDxx4NCgsFdF+4R+oCcyzrwrd0hVJAdlwulZs4FFmZeSxYzf943AMz/yKQDXO73pxLx
-         niSQ==
-X-Gm-Message-State: APjAAAVSyVJSCqFDmmqVIF17pMj8yI3cB+2QIhS0jI7w1nJyYQ2q7Cu5
-        V2cqRd89HCv2tDmBwW/w7gLx2FqW7hA=
-X-Google-Smtp-Source: APXvYqzEK+YIRCXyESRiVTv9OYqSRB+MClMUSy6tM2tGMvj6K/bEJMqF8h7CEJ/2t785gOnMdIQ42w==
-X-Received: by 2002:a17:90a:da04:: with SMTP id e4mr1631372pjv.26.1582849937969;
-        Thu, 27 Feb 2020 16:32:17 -0800 (PST)
-Received: from seurat29.1015granger.net (ip-184-250-247-225.sanjca.spcsdns.net. [184.250.247.225])
-        by smtp.gmail.com with ESMTPSA id z13sm7995590pge.29.2020.02.27.16.32.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Feb 2020 16:32:17 -0800 (PST)
-Subject: [PATCH v1 16/16] svcrdma: Avoid DMA mapping small RPC Replies
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     bfields@fieldses.org
-Cc:     linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Date:   Thu, 27 Feb 2020 19:32:16 -0500
-Message-ID: <158284993622.38468.2163113637049774961.stgit@seurat29.1015granger.net>
-In-Reply-To: <158284930886.38468.17045380766660946827.stgit@seurat29.1015granger.net>
-References: <158284930886.38468.17045380766660946827.stgit@seurat29.1015granger.net>
-User-Agent: StGit/unknown-version
+        id S1726400AbgB1IdD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Feb 2020 03:33:03 -0500
+Received: from mga12.intel.com ([192.55.52.136]:1084 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725877AbgB1IdD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 28 Feb 2020 03:33:03 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 28 Feb 2020 00:33:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,495,1574150400"; 
+   d="scan'208";a="350879316"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Feb 2020 00:33:00 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1j7b4t-0001qR-VG; Fri, 28 Feb 2020 16:32:59 +0800
+Date:   Fri, 28 Feb 2020 16:32:13 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ 65a166201552113f9e1e8d1bb4a55a1eb70cb19c
+Message-ID: <5e58d00d.O8gMRqEU0GcUlUbz%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On some platforms, DMA mapping part of a page is more costly than
-copying bytes. Indeed, not involving the I/O MMU can help the
-RPC/RDMA transport scale better for tiny I/Os across more RDMA
-devices. This is because interaction with the I/O MMU is eliminated
-for each of these small I/Os. Without the explicit unmapping, the
-NIC no longer needs to do a costly internal TLB shoot down for
-buffers that are just a handful of bytes.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  for-next
+branch HEAD: 65a166201552113f9e1e8d1bb4a55a1eb70cb19c  RDMA/bnxt_re: Using vmalloc requires including vmalloc.h
 
-Since pull-up is now a more a frequent operation, I've introduced a
-trace point in the pull-up path. It can be used for debugging or
-user-space tools that count pull-up frequency.
+elapsed time: 2134m
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+configs tested: 263
+configs skipped: 0
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
+sparc                            allyesconfig
+h8300                     edosk2674_defconfig
+arc                                 defconfig
+riscv                    nommu_virt_defconfig
+s390                       zfcpdump_defconfig
+riscv                          rv32_defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+sparc64                          allmodconfig
+nios2                         3c120_defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+h8300                    h8300h-sim_defconfig
+ia64                              allnoconfig
+nds32                               defconfig
+csky                                defconfig
+nios2                         10m50_defconfig
+sh                          rsk7269_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+powerpc                             defconfig
+um                                  defconfig
+xtensa                          iss_defconfig
+mips                      malta_kvm_defconfig
+nds32                             allnoconfig
+powerpc                       ppc64_defconfig
+riscv                            allyesconfig
+mips                      fuloong2e_defconfig
+sh                            titan_defconfig
+s390                          debug_defconfig
+microblaze                      mmu_defconfig
+m68k                           sun3_defconfig
+xtensa                       common_defconfig
+sparc64                          allyesconfig
+parisc                generic-32bit_defconfig
+s390                              allnoconfig
+powerpc                           allnoconfig
+parisc                generic-64bit_defconfig
+sh                                allnoconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                             allyesconfig
+i386                                defconfig
+ia64                             alldefconfig
+ia64                             allyesconfig
+c6x                              allyesconfig
+c6x                        evmc6678_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+arc                              allyesconfig
+microblaze                    nommu_defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+x86_64               randconfig-a001-20200227
+x86_64               randconfig-a002-20200227
+x86_64               randconfig-a003-20200227
+i386                 randconfig-a001-20200227
+i386                 randconfig-a002-20200227
+i386                 randconfig-a003-20200227
+x86_64               randconfig-a001-20200226
+x86_64               randconfig-a002-20200226
+x86_64               randconfig-a003-20200226
+i386                 randconfig-a001-20200226
+i386                 randconfig-a002-20200226
+i386                 randconfig-a003-20200226
+x86_64               randconfig-a001-20200228
+x86_64               randconfig-a002-20200228
+x86_64               randconfig-a003-20200228
+i386                 randconfig-a001-20200228
+i386                 randconfig-a002-20200228
+i386                 randconfig-a003-20200228
+alpha                randconfig-a001-20200227
+m68k                 randconfig-a001-20200227
+mips                 randconfig-a001-20200227
+nds32                randconfig-a001-20200227
+parisc               randconfig-a001-20200227
+riscv                randconfig-a001-20200227
+alpha                randconfig-a001-20200228
+m68k                 randconfig-a001-20200228
+mips                 randconfig-a001-20200228
+nds32                randconfig-a001-20200228
+parisc               randconfig-a001-20200228
+riscv                randconfig-a001-20200228
+c6x                  randconfig-a001-20200227
+h8300                randconfig-a001-20200227
+microblaze           randconfig-a001-20200227
+nios2                randconfig-a001-20200227
+sparc64              randconfig-a001-20200227
+c6x                  randconfig-a001-20200228
+h8300                randconfig-a001-20200228
+microblaze           randconfig-a001-20200228
+nios2                randconfig-a001-20200228
+sparc64              randconfig-a001-20200228
+c6x                  randconfig-a001-20200226
+h8300                randconfig-a001-20200226
+microblaze           randconfig-a001-20200226
+nios2                randconfig-a001-20200226
+sparc64              randconfig-a001-20200226
+csky                 randconfig-a001-20200227
+openrisc             randconfig-a001-20200227
+s390                 randconfig-a001-20200227
+sh                   randconfig-a001-20200227
+xtensa               randconfig-a001-20200227
+csky                 randconfig-a001-20200228
+openrisc             randconfig-a001-20200228
+s390                 randconfig-a001-20200228
+sh                   randconfig-a001-20200228
+xtensa               randconfig-a001-20200228
+x86_64               randconfig-b001-20200227
+x86_64               randconfig-b002-20200227
+x86_64               randconfig-b003-20200227
+i386                 randconfig-b001-20200227
+i386                 randconfig-b002-20200227
+i386                 randconfig-b003-20200227
+x86_64               randconfig-b001-20200228
+x86_64               randconfig-b002-20200228
+x86_64               randconfig-b003-20200228
+i386                 randconfig-b001-20200228
+i386                 randconfig-b002-20200228
+i386                 randconfig-b003-20200228
+x86_64               randconfig-c001-20200227
+x86_64               randconfig-c002-20200227
+x86_64               randconfig-c003-20200227
+i386                 randconfig-c001-20200227
+i386                 randconfig-c002-20200227
+i386                 randconfig-c003-20200227
+x86_64               randconfig-c001-20200226
+x86_64               randconfig-c002-20200226
+x86_64               randconfig-c003-20200226
+i386                 randconfig-c001-20200226
+i386                 randconfig-c002-20200226
+i386                 randconfig-c003-20200226
+x86_64               randconfig-d001-20200227
+x86_64               randconfig-d002-20200227
+x86_64               randconfig-d003-20200227
+i386                 randconfig-d001-20200227
+i386                 randconfig-d002-20200227
+i386                 randconfig-d003-20200227
+x86_64               randconfig-d001-20200226
+x86_64               randconfig-d002-20200226
+x86_64               randconfig-d003-20200226
+i386                 randconfig-d001-20200226
+i386                 randconfig-d002-20200226
+i386                 randconfig-d003-20200226
+x86_64               randconfig-d001-20200228
+x86_64               randconfig-d002-20200228
+x86_64               randconfig-d003-20200228
+i386                 randconfig-d001-20200228
+i386                 randconfig-d002-20200228
+i386                 randconfig-d003-20200228
+x86_64               randconfig-e001-20200227
+x86_64               randconfig-e002-20200227
+x86_64               randconfig-e003-20200227
+i386                 randconfig-e001-20200227
+i386                 randconfig-e002-20200227
+i386                 randconfig-e003-20200227
+x86_64               randconfig-e001-20200226
+x86_64               randconfig-e002-20200226
+x86_64               randconfig-e003-20200226
+i386                 randconfig-e001-20200226
+i386                 randconfig-e002-20200226
+i386                 randconfig-e003-20200226
+x86_64               randconfig-e001-20200228
+x86_64               randconfig-e002-20200228
+x86_64               randconfig-e003-20200228
+i386                 randconfig-e001-20200228
+i386                 randconfig-e002-20200228
+i386                 randconfig-e003-20200228
+x86_64               randconfig-f001-20200227
+x86_64               randconfig-f002-20200227
+x86_64               randconfig-f003-20200227
+i386                 randconfig-f001-20200227
+i386                 randconfig-f002-20200227
+i386                 randconfig-f003-20200227
+x86_64               randconfig-f001-20200226
+x86_64               randconfig-f002-20200226
+x86_64               randconfig-f003-20200226
+i386                 randconfig-f001-20200226
+i386                 randconfig-f002-20200226
+i386                 randconfig-f003-20200226
+x86_64               randconfig-g001-20200228
+x86_64               randconfig-g002-20200228
+x86_64               randconfig-g003-20200228
+i386                 randconfig-g001-20200228
+i386                 randconfig-g002-20200228
+i386                 randconfig-g003-20200228
+x86_64               randconfig-g001-20200227
+x86_64               randconfig-g002-20200227
+x86_64               randconfig-g003-20200227
+i386                 randconfig-g001-20200227
+i386                 randconfig-g002-20200227
+i386                 randconfig-g003-20200227
+x86_64               randconfig-h001-20200227
+x86_64               randconfig-h002-20200227
+x86_64               randconfig-h003-20200227
+i386                 randconfig-h001-20200227
+i386                 randconfig-h002-20200227
+i386                 randconfig-h003-20200227
+x86_64               randconfig-h001-20200228
+x86_64               randconfig-h002-20200228
+x86_64               randconfig-h003-20200228
+i386                 randconfig-h001-20200228
+i386                 randconfig-h002-20200228
+i386                 randconfig-h003-20200228
+x86_64               randconfig-h001-20200226
+x86_64               randconfig-h002-20200226
+x86_64               randconfig-h003-20200226
+i386                 randconfig-h001-20200226
+i386                 randconfig-h002-20200226
+i386                 randconfig-h003-20200226
+arm                  randconfig-a001-20200227
+arm64                randconfig-a001-20200227
+ia64                 randconfig-a001-20200227
+powerpc              randconfig-a001-20200227
+arc                  randconfig-a001-20200228
+arm                  randconfig-a001-20200228
+arm64                randconfig-a001-20200228
+ia64                 randconfig-a001-20200228
+powerpc              randconfig-a001-20200228
+sparc                randconfig-a001-20200228
+arc                  randconfig-a001-20200227
+sparc                randconfig-a001-20200227
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                               defconfig
+s390                             alldefconfig
+s390                             allmodconfig
+s390                             allyesconfig
+s390                                defconfig
+sh                               allmodconfig
+sh                  sh7785lcr_32bit_defconfig
+sparc                               defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
+
 ---
- include/trace/events/rpcrdma.h        |   18 ++++++++++++++++++
- net/sunrpc/xprtrdma/svc_rdma_sendto.c |   15 ++++++++++++++-
- 2 files changed, 32 insertions(+), 1 deletion(-)
-
-diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdma.h
-index 74b68547eefb..9238d233f8cf 100644
---- a/include/trace/events/rpcrdma.h
-+++ b/include/trace/events/rpcrdma.h
-@@ -1639,6 +1639,24 @@ TRACE_EVENT(svcrdma_dma_map_rwctx,
- 	)
- );
- 
-+TRACE_EVENT(svcrdma_send_pullup,
-+	TP_PROTO(
-+		unsigned int len
-+	),
-+
-+	TP_ARGS(len),
-+
-+	TP_STRUCT__entry(
-+		__field(unsigned int, len)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->len = len;
-+	),
-+
-+	TP_printk("len=%u", __entry->len)
-+);
-+
- TRACE_EVENT(svcrdma_send_failed,
- 	TP_PROTO(
- 		const struct svc_rqst *rqst,
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_sendto.c b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-index 9a7317bc54c9..3669a41bf8b6 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-@@ -539,6 +539,7 @@ static int svc_rdma_dma_map_buf(struct svcxprt_rdma *rdma,
- /**
-  * svc_rdma_pull_up_needed - Determine whether to use pull-up
-  * @rdma: controlling transport
-+ * @sctxt: send_ctxt for the Send WR
-  * @rctxt: Write and Reply chunks provided by client
-  * @xdr: xdr_buf containing RPC message to transmit
-  *
-@@ -547,11 +548,22 @@ static int svc_rdma_dma_map_buf(struct svcxprt_rdma *rdma,
-  *	%false otherwise
-  */
- static bool svc_rdma_pull_up_needed(struct svcxprt_rdma *rdma,
-+				    struct svc_rdma_send_ctxt *sctxt,
- 				    const struct svc_rdma_recv_ctxt *rctxt,
- 				    struct xdr_buf *xdr)
- {
- 	int elements;
- 
-+	/* For small messages, copying bytes is cheaper than DMA
-+	 * mapping.
-+	 */
-+	if (sctxt->sc_hdrbuf.len + xdr->len <
-+	    RPCRDMA_V1_DEF_INLINE_SIZE >> 1)
-+		return true;
-+
-+	/* Check whether the xdr_buf has more elements than can
-+	 * fit in a single RDMA Send.
-+	 */
- 	/* xdr->head */
- 	elements = 1;
- 
-@@ -634,6 +646,7 @@ static int svc_rdma_pull_up_reply_msg(struct svcxprt_rdma *rdma,
- 		memcpy(dst, tailbase, taillen);
- 
- 	sctxt->sc_sges[0].length += xdr->len;
-+	trace_svcrdma_send_pullup(sctxt->sc_sges[0].length);
- 	return 0;
- }
- 
-@@ -667,7 +680,7 @@ int svc_rdma_map_reply_msg(struct svcxprt_rdma *rdma,
- 	if (rctxt && rctxt->rc_reply_chunk)
- 		return 0;
- 
--	if (svc_rdma_pull_up_needed(rdma, rctxt, xdr))
-+	if (svc_rdma_pull_up_needed(rdma, sctxt, rctxt, xdr))
- 		return svc_rdma_pull_up_reply_msg(rdma, sctxt, rctxt, xdr);
- 
- 	++sctxt->sc_cur_sge_no;
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
