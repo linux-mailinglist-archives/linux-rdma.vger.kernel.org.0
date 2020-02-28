@@ -2,92 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AF175173C9C
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2020 17:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D01B173CA3
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Feb 2020 17:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725886AbgB1QNV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Feb 2020 11:13:21 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:44304 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725769AbgB1QNU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Feb 2020 11:13:20 -0500
-Received: by mail-qt1-f193.google.com with SMTP id j23so2356565qtr.11
-        for <linux-rdma@vger.kernel.org>; Fri, 28 Feb 2020 08:13:20 -0800 (PST)
+        id S1725796AbgB1QPS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Feb 2020 11:15:18 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:45966 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725769AbgB1QPR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Feb 2020 11:15:17 -0500
+Received: by mail-qk1-f194.google.com with SMTP id z12so3403119qkg.12
+        for <linux-rdma@vger.kernel.org>; Fri, 28 Feb 2020 08:15:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=R1Xp5z4IUf6G1vHLZoG1hWUevGGwXKZ9fUZ9OSwOtLM=;
-        b=BgvVr+DVgB8/kFOoMR+wsj7MFWCeJMA14VgM9c4OO3APY2uziFR0rR6HQ3leYijal9
-         PWB0lNnLyCW7dSUkpKjcTEdEQeHvwbceHobYQLyWLCpIjJM8TCYo6y1d46eMJQuGZt2y
-         qbG2gbQqzYhULLqpu9CPDCZuSdwvx2pkp6caGbJuFeiI1aUqrX2CQu/J7LqBcvyNdwjl
-         NxqT7bthYIwTmjc4V0jkAv3bVl2Y3G0mNBoswD5llB6KCCx3MM6EVnlEmWi4xG9vu0D8
-         /FmdVGgUTl9ASyIGFiRkYfTz8j2WvhVO82Um2L4FPU4XQ0Fdv9f6oxyZrzNmRxbV/GmB
-         qEkg==
+        bh=nJBUftED9YY3y1F7NV3WE2EwRb6J3cG9/jaIXIBEHuE=;
+        b=AXsaBIPEhGrFLGfrcrmoxBsnPE9R9xmWGKCgl1YoEVvQlsbuR5OdupU/nrKVTmCdKH
+         FUU3LtZqbc+QSlXAzE/KV2Cf90M/IabADFaBD9s2BfzFefwtd6cEosZT+iDqlXn5Ro9v
+         +l5ju0Lo+Ky290jiZaMfv7KVITcRrwFpqCdUr0PM9rsk/SK6fJrQGA07Nrr2c1o6ccT9
+         5J6FkUF8VfFWCGN7OxOY1lulJ6noVLYz/tNrxJVerEDuAtJBTZB05kAXq6Gn4clgCu12
+         3Yi3VE7Nwkpy1pYFpgxWZHgV9/jVYf3tB1s1SKrCeb4pLsIMKQ17Fz9d8lBxVKZKd6GM
+         ZmXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=R1Xp5z4IUf6G1vHLZoG1hWUevGGwXKZ9fUZ9OSwOtLM=;
-        b=tuU1ipER6i8NjgZ2AzQLqpskvs4BJpAEcg2MEU5wLaBB7EAraHr2if26goY1i0Cn9S
-         1kctQhU7ro4XZBJuHu38iSs3Um+PScpCPT2fM3i+W2Bt2x9IUlWikft+JnwT1u7xAJAg
-         59KcKuKraQfJdPWAoZavtHtxUNpZ3G5P7UWQJdP2S7siKEKTKMaf2TktjmjsxtAIL4BP
-         tjORHm/XxQewIgPa+ygKxzHDpDakBGbMPBOoIlwhQTXxCEeDL7T3rmh76dhUCFOLrRgJ
-         a3z+jEL0MRbbTFWt7NiDrfLo3l727WFtC6dJEZzavxUXVnvZEWFra0mjhpTCUNJQY9B6
-         6xzA==
-X-Gm-Message-State: APjAAAXr2EKN9wMf3ijR669SCvZrCfhbEtqdRpjJeqRrRsJEPYF5BsOL
-        paf0XHzZ7xhCnY9qb71CIdrMFw==
-X-Google-Smtp-Source: APXvYqzTX/9gopc4Es/bA3EHhFbXR5rPIDwNPQCQkv5818UovexOMCtnZclaMPaa/EAAwjeUaqXwIQ==
-X-Received: by 2002:ac8:554b:: with SMTP id o11mr4880298qtr.36.1582906399462;
-        Fri, 28 Feb 2020 08:13:19 -0800 (PST)
+        bh=nJBUftED9YY3y1F7NV3WE2EwRb6J3cG9/jaIXIBEHuE=;
+        b=YPU/2adrDBjMh3COY0bemAa/EnSmBeRgEVMaGIR5FYZprxSUD4lllWx74jOomGoXPf
+         a0gMBGH6klNWtOdOVYuA6dP/knvM0MKfijUyR6EPoWjd5rvSXHW6E9Qk3/xBMOyBBSiO
+         395wnnlUua04X3vWTm0GSl47qgqG5PQfubUv16aiQiQfseeIs/LGKO/tOe6Xc3R7TZrR
+         aImKTh104FNYmRaCvdzZ76qXnVr+NunguXO1wBif7FHKg1PjG6Sy3GnU+A6kNOwlJ2hH
+         eQ6iKl1koPj4vbRZcYOwKoiir8NXSFqHOfBDF4s1NTXBJfr831AufVPE5SWT6dbzEToS
+         j9Uw==
+X-Gm-Message-State: APjAAAWKZAKMiGgexwZD71DY2RWpoMga5U3Hx8RVhe+no06Ifi1kecp/
+        6b/QHvkvpmGHKEvAWTNUz2XWtDZaFIIYTg==
+X-Google-Smtp-Source: APXvYqzGmdgF12pxqW6IVwoMI8B4dzLU0oIs6F6rpdoec5Ub0C29jw31jw97HDYwEeHGud3zyQI5jQ==
+X-Received: by 2002:a05:620a:4e1:: with SMTP id b1mr5182531qkh.222.1582906516928;
+        Fri, 28 Feb 2020 08:15:16 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id x23sm5153672qki.124.2020.02.28.08.13.18
+        by smtp.gmail.com with ESMTPSA id v10sm5132433qtp.22.2020.02.28.08.15.16
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 28 Feb 2020 08:13:18 -0800 (PST)
+        Fri, 28 Feb 2020 08:15:16 -0800 (PST)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1j7iGM-0005T3-Ee; Fri, 28 Feb 2020 12:13:18 -0400
-Date:   Fri, 28 Feb 2020 12:13:18 -0400
+        id 1j7iIG-0006uc-2c; Fri, 28 Feb 2020 12:15:16 -0400
+Date:   Fri, 28 Feb 2020 12:15:16 -0400
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Alexander Matushevsky <matua@amazon.com>
-Subject: Re: [PATCH for-next v2 0/3] EFA updates 2020-02-25
-Message-ID: <20200228161318.GA20969@ziepe.ca>
-References: <20200225114010.21790-1-galpress@amazon.com>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+Subject: Re: [PATCH for-rc] IB/hfi1, qib: Ensure RCU is locked when accessing
+ list
+Message-ID: <20200228161516.GA26535@ziepe.ca>
+References: <20200225195445.140896.41873.stgit@awfm-01.aw.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200225114010.21790-1-galpress@amazon.com>
+In-Reply-To: <20200225195445.140896.41873.stgit@awfm-01.aw.intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 25, 2020 at 01:40:07PM +0200, Gal Pressman wrote:
-> This series contains various updates to the device definitions handling
-> and documentation.
+On Tue, Feb 25, 2020 at 02:54:45PM -0500, Dennis Dalessandro wrote:
+> The packet handling function, specifically the iteration of the qp list
+> for mad packet processing misses locking RCU before running through the
+> list. Not only is this incorrect, but the list_for_each_entry_rcu() call
+> can not be called with a conditional check for lock dependency. Remedy
+> this by invoking the rcu lock and unlock around the critical section.
 > 
-> The last patch is based on a discussion that came up during the recent
-> mmap machanism review on list:
-> https://lore.kernel.org/linux-rdma/20190920133817.GB7095@ziepe.ca/
+> This brings MAD packet processing in line with what is done for non-MAD
+> packets.
 > 
-> We no longer delay the free_pages_exact call of mmaped DMA pages, as the
-> pages won't be freed in case they are still referenced by the vma.
-> 
-> Changelog -
-> v1->v2: https://lore.kernel.org/linux-rdma/20200114085706.82229-1-galpress@amazon.com/
-> * Use FIELD_GET and FIELD_PREP for EFA_GET/SET
-> * Make sure to mask (clear) the field before ORing it with a new value
-> * Clarify the commit message of the last patch
-> * Reorder the cleanup in the last commit, entry removal now happens
->   first
-> 
-> Gal Pressman (3):
->   RDMA/efa: Unified getters/setters for device structs bitmask access
->   RDMA/efa: Properly document the interrupt mask register
->   RDMA/efa: Do not delay freeing of DMA pages
+> Cc: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+> Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+> Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+> ---
+>  drivers/infiniband/hw/hfi1/verbs.c    |    4 +++-
+>  drivers/infiniband/hw/qib/qib_verbs.c |    2 ++
+>  2 files changed, 5 insertions(+), 1 deletion(-)
 
 Applied to for-next, thanks
 
