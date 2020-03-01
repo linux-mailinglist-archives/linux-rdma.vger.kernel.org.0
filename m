@@ -2,39 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E03174ACF
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Mar 2020 03:46:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481D3174AD2
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Mar 2020 03:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727299AbgCACqt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 29 Feb 2020 21:46:49 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:33787 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726786AbgCACqs (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 29 Feb 2020 21:46:48 -0500
-Received: by mail-pg1-f194.google.com with SMTP id 6so3605041pgk.0;
-        Sat, 29 Feb 2020 18:46:48 -0800 (PST)
+        id S1727305AbgCACry (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 29 Feb 2020 21:47:54 -0500
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:37718 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726786AbgCACry (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 29 Feb 2020 21:47:54 -0500
+Received: by mail-pf1-f195.google.com with SMTP id p14so3775441pfn.4;
+        Sat, 29 Feb 2020 18:47:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=QFrhEImAvQZ8UlbfrVqXpyaxNG8CrIP7kf+hHo3p18Y=;
-        b=M+ZklhydisDUxGa+22u+DH5LQfy+R+gy0NadsCi2aB7wIfwB7+He5sWxgO6tJXelVR
-         D3X2xLK7SdH5ooQw8XVmEXYPfA84znccGpzavIcA/tHpt/G2tQ3eYm0AvWINl66/JjMI
-         WwjPaVqMMH5ni+A7E7edlLd8KrKdPeFawhdWJ3zbeg2VCk6VB4Gh6++P32oN96js5HWn
-         8TqDHbVBX7MZY23owSKkv3s+ZACui7uTXrNZy7QnVruoFQEZOl+96bCTu1ilrh67kr0b
-         vCgb3EVYK3f0Rcwk/BvoeWiPncnavR3sIZf6Rs7la1T7cap0jZA+5RiRBZlinVQNd3Cn
-         EtKA==
-X-Gm-Message-State: APjAAAXhQjCATOMtbSlOy2XC3RKXMANht2pz1PwZ+ExmCJ8dKFa4LSg9
-        N9ILD2rS7w6eN9MjZFI+EiQ=
-X-Google-Smtp-Source: APXvYqyKKyEUwn4yKN2nUyycCjxvJxShJ0zaVWKh21db7+gYYGJKCtiK8KOmByHrQJtvP8kg5Lavkw==
-X-Received: by 2002:a63:4e4a:: with SMTP id o10mr12705018pgl.212.1583030807650;
-        Sat, 29 Feb 2020 18:46:47 -0800 (PST)
+        bh=Gw0IFR/EUVDvXUV1xeXzzcWx/laBmQxFf4M2NtXCOlw=;
+        b=Pc0LEan4nR0GK7LOKw7jNwDnTjxFRdIYgUfglGGffPKvK468FCIE6Mldx3bc5IXVe8
+         xDHeW6AMi0dzV6Qdoc0uYLkDHAu2KZmNx34q6RXrt9TOAYqMLbfFtrVEdfsoGc3yhfMp
+         Ygc/YddQ1F0GfkZR7u3zq0lVg8gyqICJ4bfKA8TRtafCJ4YxZfdtu5qOp4+kuJlNDGVu
+         m93pgyQFdXnGiO9kqqHyX99V70YPd7/le11xsTKwXBzDxRhbn65MIxzEA4kHQPupaQF9
+         iW85w2M62UfJpl5viyUgg2FYxhYWdagjYShd3CQ8SIJu0c9Igc3QNZwAUpqi3Uu+rGcR
+         KxcA==
+X-Gm-Message-State: ANhLgQ2zgkPJCQ67YiUE8YmQSBsmBaO+G4jgAILn3Mxre+HryajdAtLO
+        2pT1D7aHR+e4tq5QW5zItfM=
+X-Google-Smtp-Source: ADFU+vuw3ydrZK53gC3kBrUb9DecjBZQsh7sKIUxKfrT4n7HdfoPw5AUhJu6cxHpGG/AT3Dd3EHk+Q==
+X-Received: by 2002:a63:5465:: with SMTP id e37mr8803521pgm.411.1583030873476;
+        Sat, 29 Feb 2020 18:47:53 -0800 (PST)
 Received: from ?IPv6:2601:647:4000:d7:bd83:6f94:8c5:942d? ([2601:647:4000:d7:bd83:6f94:8c5:942d])
-        by smtp.gmail.com with ESMTPSA id p17sm15783101pfn.31.2020.02.29.18.46.46
+        by smtp.gmail.com with ESMTPSA id s23sm6999907pjq.17.2020.02.29.18.47.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 29 Feb 2020 18:46:46 -0800 (PST)
-Subject: Re: [PATCH v9 17/25] block/rnbd: client: main functionality
+        Sat, 29 Feb 2020 18:47:52 -0800 (PST)
+Subject: Re: [PATCH v9 19/25] block/rnbd: server: private header with server
+ structs and functions
 To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
@@ -42,7 +43,7 @@ Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
         rpenyaev@suse.de, pankaj.gupta@cloud.ionos.com
 References: <20200221104721.350-1-jinpuwang@gmail.com>
- <20200221104721.350-18-jinpuwang@gmail.com>
+ <20200221104721.350-20-jinpuwang@gmail.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -67,12 +68,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <16e946dd-b244-594b-937e-689f2f23614e@acm.org>
-Date:   Sat, 29 Feb 2020 18:46:45 -0800
+Message-ID: <c32d59b7-6cd5-2e9b-0faa-3dee29a26a91@acm.org>
+Date:   Sat, 29 Feb 2020 18:47:51 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200221104721.350-18-jinpuwang@gmail.com>
+In-Reply-To: <20200221104721.350-20-jinpuwang@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -82,56 +83,24 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 2020-02-21 02:47, Jack Wang wrote:
-> +/**
-> + * rnbd_get_cpu_qlist() - finds a list with HW queues to be rerun
-> + * @sess:	Session to find a queue for
-> + * @cpu:	Cpu to start the search from
-> + *
-> + * Description:
-> + *     Each CPU has a list of HW queues, which needs to be rerun.  If a list
-> + *     is not empty - it is marked with a bit.  This function finds first
-> + *     set bit in a bitmap and returns corresponding CPU list.
-> + */
-> +static struct rnbd_cpu_qlist *
-> +rnbd_get_cpu_qlist(struct rnbd_clt_session *sess, int cpu)
-> +{
-> +	int bit;
-> +
-> +	/* First half */
-> +	bit = find_next_bit(sess->cpu_queues_bm, nr_cpu_ids, cpu);
-> +	if (bit < nr_cpu_ids) {
-> +		return per_cpu_ptr(sess->cpu_queues, bit);
-> +	} else if (cpu != 0) {
-> +		/* Second half */
-> +		bit = find_next_bit(sess->cpu_queues_bm, cpu, 0);
-> +		if (bit < cpu)
-> +			return per_cpu_ptr(sess->cpu_queues, bit);
-> +	}
-> +
-> +	return NULL;
-> +}
+> +/* Structure which binds N devices and N sessions */
+> +struct rnbd_srv_sess_dev {
+> +	/* Entry inside rnbd_srv_dev struct */
+> +	struct list_head		dev_list;
+> +	/* Entry inside rnbd_srv_session struct */
+> +	struct list_head		sess_list;
+> +	struct rnbd_dev		*rnbd_dev;
+> +	struct rnbd_srv_session        *sess;
+> +	struct rnbd_srv_dev		*dev;
+> +	struct kobject                  kobj;
+> +	struct completion		*sysfs_release_compl;
+> +	u32                             device_id;
+> +	fmode_t                         open_flags;
+> +	struct kref			kref;
+> +	struct completion               *destroy_comp;
+> +	char				pathname[NAME_MAX];
+> +	enum rnbd_access_mode		access_mode;
+> +};
+Please indent structure members consistently. Anyway:
 
-Please make the "first half" and "second half" comments unambiguous. To
-me it seems like the code under "first half" searches through the second
-half of the bitmap and that the code under "second half" searches
-through the first half of the bitmap.
-
-> +	/**
-> +	 * That is simple percpu variable which stores cpu indeces, which are
-> +	 * incremented on each access.  We need that for the sake of fairness
-> +	 * to wake up queues in a round-robin manner.
-> +	 */
-
-Please start block comments with "/*".
-
-> +static void wait_for_rtrs_disconnection(struct rnbd_clt_session *sess)
-> +	__releases(&sess_lock)
-> +	__acquires(&sess_lock)
-> +{
-> +	DEFINE_WAIT_FUNC(wait, autoremove_wake_function);
-
-Please use DEFINE_WAIT() instead of open-coding it.
-
-Thanks,
-
-Bart.
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
