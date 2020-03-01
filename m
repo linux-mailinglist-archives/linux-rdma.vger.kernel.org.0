@@ -2,49 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAF4174A69
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Mar 2020 01:24:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9544174A7A
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Mar 2020 01:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727170AbgCAAYk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 29 Feb 2020 19:24:40 -0500
-Received: from mail-pj1-f45.google.com ([209.85.216.45]:53333 "EHLO
-        mail-pj1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727120AbgCAAYj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 29 Feb 2020 19:24:39 -0500
-Received: by mail-pj1-f45.google.com with SMTP id i11so2778939pju.3;
-        Sat, 29 Feb 2020 16:24:39 -0800 (PST)
+        id S1727205AbgCAAbi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 29 Feb 2020 19:31:38 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:45108 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726786AbgCAAbh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 29 Feb 2020 19:31:37 -0500
+Received: by mail-pg1-f194.google.com with SMTP id m15so3488289pgv.12;
+        Sat, 29 Feb 2020 16:31:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=Uq8wttYcQrTDTYvU5w0gohV1k9WlJ5G1ZTxgqMBM7TQ=;
-        b=Yu8sB9gaxYjgZ56VoUAsrJqCXxxpExPpyr/FTOnlrn6SgqylVpg9/UrimlVknFZaOK
-         NTN0xop2BSqQaQWbBvPM6dtndCLiHcqLaGbFFgvTi+jJLR//zutEy5JnJV8T1+uWOW5D
-         t93fmEuy0I0E4ADcZGYGPX1yBwG8OL+3sMWFhkeRKoJN7R5FJ/X5E2DDqov2WbZyzqRM
-         IPMPT+OzDpi9h2HOGQ6uU3LoUCN7IX+CrIvtPYntL9ukbEcOEr3acpbGOTUtRCIO/NWI
-         nwkkTvxk3DtDhNXjpv0dwxQ9auI7QZDAcQrQvxXD94R1ehPNPmUFFDHehlddhJsrLjeI
-         70sQ==
-X-Gm-Message-State: ANhLgQ1DDx+u0oJjD/QmsdvvXKRiKy/HYNwXl/0L08Q8bHyFAwUbn+3P
-        W95PnbXYTkr6dZBly2DEXF7RFKYK1oo=
-X-Google-Smtp-Source: ADFU+vsM32hYmDXHInO3Vi2N7CEymWlXyWlmE0eu5CRI28Sh8PMY9duGMepTkklUukdri+JG3n8pPA==
-X-Received: by 2002:a17:90a:210c:: with SMTP id a12mr5822209pje.16.1583022278088;
-        Sat, 29 Feb 2020 16:24:38 -0800 (PST)
+        bh=3yNBLDFfZPTa4D82QJPVgnnqZX/d7OMJSCq77QBfI4Y=;
+        b=oItiz2fLlvQFfwBUsN2sbOl+Xd6HXWrpwD8atKpKE4XqyH8yQN8u9WaMBzk0YKqfIF
+         UPeSR2ivsVRXcVk0+oggdromhilxlAGZCyGldlLCnErQT2+PZ0W3nNn5Z+xzVJoK9kd9
+         03cVg/oja0xgRk0rCztlqgbIOTyVEbbVJ2ZK6XEnTehKhEfqe1rZL5Iy5Ei8sgYjoEHV
+         HjblRVCFyu8FPkAOt4oaBkZB+RNUIWInAQxQITyUYf2FhpXN0cluvvxBDioS0rH7xcAv
+         UEZ0mQIZpCZQ4AjCKgGV4vx5UZfCTpMqnyEP3kJBqph6P16Vc4pxae25c11yD5Vd/8X3
+         t+6A==
+X-Gm-Message-State: APjAAAUWCbHsNaCLSRlrDmwoLwliKgpGNsvymwHEyRhLrD2Pbskg/rg4
+        Q3IEn/oeZxZeJYXLRk2pgS4=
+X-Google-Smtp-Source: APXvYqz+kK2oV+KmzALJoSdxA2gTeJdPNwqTZvM+LbueGUuSdNCaBAYfaAzAOAR6+wdYWqiO6nBGOw==
+X-Received: by 2002:a63:f714:: with SMTP id x20mr11914441pgh.114.1583022696638;
+        Sat, 29 Feb 2020 16:31:36 -0800 (PST)
 Received: from ?IPv6:2601:647:4000:d7:bd83:6f94:8c5:942d? ([2601:647:4000:d7:bd83:6f94:8c5:942d])
-        by smtp.gmail.com with ESMTPSA id 191sm8142236pfa.142.2020.02.29.16.24.36
+        by smtp.gmail.com with ESMTPSA id e2sm11261283pfh.151.2020.02.29.16.31.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 29 Feb 2020 16:24:37 -0800 (PST)
-Subject: Re: [PATCH v9 01/25] sysfs: export sysfs_remove_file_self()
+        Sat, 29 Feb 2020 16:31:35 -0800 (PST)
+Subject: Re: [PATCH v9 02/25] RDMA/rtrs: public interface header to establish
+ RDMA connections
 To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         leon@kernel.org, dledford@redhat.com, jgg@ziepe.ca,
         danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
-        rpenyaev@suse.de, pankaj.gupta@cloud.ionos.com,
-        Roman Pen <roman.penyaev@profitbricks.com>,
-        linux-kernel@vger.kernel.org
+        rpenyaev@suse.de, pankaj.gupta@cloud.ionos.com
 References: <20200221104721.350-1-jinpuwang@gmail.com>
- <20200221104721.350-2-jinpuwang@gmail.com>
+ <20200221104721.350-3-jinpuwang@gmail.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -69,12 +68,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <8131773d-cf6e-9c1d-faad-a250f7135432@acm.org>
-Date:   Sat, 29 Feb 2020 16:24:35 -0800
+Message-ID: <e1d8d2ca-78cf-f3ee-2286-1c96e5cfefc7@acm.org>
+Date:   Sat, 29 Feb 2020 16:31:34 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200221104721.350-2-jinpuwang@gmail.com>
+In-Reply-To: <20200221104721.350-3-jinpuwang@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -84,7 +83,30 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 2020-02-21 02:46, Jack Wang wrote:
-> Function is going to be used in transport over RDMA module
-> in subsequent patches, so export it to GPL modules.
+> +/**
+> + * enum rtrs_clt_con_type() type of ib connection to use with a given
+> + * rtrs_permit
+> + * @USR_CON - use connection reserved vor "service" messages
+> + * @IO_CON - use a connection reserved for IO
+> + */
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+vor -> for?
+
+> +enum rtrs_clt_con_type {
+> +	RTRS_USR_CON,
+> +	RTRS_IO_CON
+> +};
+
+The name "USR" is confusing. How about changing this into "ADMIN"?
+
+> +/*
+> + * Here goes RTRS server API
+> + */
+
+How about splitting this header file into one header file for the client
+API and another header file for the server API? I expect that most users
+will only include one of these header files but not both.
+
+Thanks,
+
+Bart.
