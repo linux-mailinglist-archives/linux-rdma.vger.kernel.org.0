@@ -2,40 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 08AD8174AC6
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Mar 2020 03:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E03174ACF
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Mar 2020 03:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727316AbgCAC05 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 29 Feb 2020 21:26:57 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:41761 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727240AbgCAC04 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 29 Feb 2020 21:26:56 -0500
-Received: by mail-pg1-f196.google.com with SMTP id b1so3574982pgm.8;
-        Sat, 29 Feb 2020 18:26:56 -0800 (PST)
+        id S1727299AbgCACqt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 29 Feb 2020 21:46:49 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:33787 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726786AbgCACqs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 29 Feb 2020 21:46:48 -0500
+Received: by mail-pg1-f194.google.com with SMTP id 6so3605041pgk.0;
+        Sat, 29 Feb 2020 18:46:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=4EyJYdSHCL+aWn0kXyIO3Wf11tUNxPvXes0li6sDuEw=;
-        b=QKtbPaNSTqARK1O4go6h7LNtMmYynuIxegd441c2wQxrSsBi3bu3BOMRJe+htqpg4t
-         wK6yxHR05pfKBA2jUg+fWuk5an6vC40SZkEaiuoICEM/pChNMDf0p92pZoCZtZafBvvR
-         hpV3UA+vJ23Vdo3p/ZQxkU6StM2wVET9TX4z9uJffkL7co3oAKQrFqRliYkFZHG3AqpX
-         Cd/9y/0I/0/Tl+1ERjhSjvUTHGrT0j7DoXgWr/9D4LZSNT0gm1DGcBG3uKwyzfYc74Va
-         Qi1RmXSlF22WT5v/8wIRrScJ0OoAtENYRzMjhb4n2GBdUSv3DJbxLd+XOHz5YCRaUp8s
-         0oBg==
-X-Gm-Message-State: APjAAAW07Z3+49sYais9X7OPKQp6E4eOxN3UCcjN/i9DywyvHoaYGrAM
-        +HLC/6uAAP53oBpNQv3IEOw=
-X-Google-Smtp-Source: APXvYqyPmwZ/sUEKaVYELJP+Io1tTkZbhcrhs0pm7JuWcvRt4XgDBcYiEnRqHfcwOva0b3S/TwGDOw==
-X-Received: by 2002:aa7:8687:: with SMTP id d7mr11633755pfo.164.1583029615495;
-        Sat, 29 Feb 2020 18:26:55 -0800 (PST)
+        bh=QFrhEImAvQZ8UlbfrVqXpyaxNG8CrIP7kf+hHo3p18Y=;
+        b=M+ZklhydisDUxGa+22u+DH5LQfy+R+gy0NadsCi2aB7wIfwB7+He5sWxgO6tJXelVR
+         D3X2xLK7SdH5ooQw8XVmEXYPfA84znccGpzavIcA/tHpt/G2tQ3eYm0AvWINl66/JjMI
+         WwjPaVqMMH5ni+A7E7edlLd8KrKdPeFawhdWJ3zbeg2VCk6VB4Gh6++P32oN96js5HWn
+         8TqDHbVBX7MZY23owSKkv3s+ZACui7uTXrNZy7QnVruoFQEZOl+96bCTu1ilrh67kr0b
+         vCgb3EVYK3f0Rcwk/BvoeWiPncnavR3sIZf6Rs7la1T7cap0jZA+5RiRBZlinVQNd3Cn
+         EtKA==
+X-Gm-Message-State: APjAAAXhQjCATOMtbSlOy2XC3RKXMANht2pz1PwZ+ExmCJ8dKFa4LSg9
+        N9ILD2rS7w6eN9MjZFI+EiQ=
+X-Google-Smtp-Source: APXvYqyKKyEUwn4yKN2nUyycCjxvJxShJ0zaVWKh21db7+gYYGJKCtiK8KOmByHrQJtvP8kg5Lavkw==
+X-Received: by 2002:a63:4e4a:: with SMTP id o10mr12705018pgl.212.1583030807650;
+        Sat, 29 Feb 2020 18:46:47 -0800 (PST)
 Received: from ?IPv6:2601:647:4000:d7:bd83:6f94:8c5:942d? ([2601:647:4000:d7:bd83:6f94:8c5:942d])
-        by smtp.gmail.com with ESMTPSA id v22sm11866952pfe.49.2020.02.29.18.26.53
+        by smtp.gmail.com with ESMTPSA id p17sm15783101pfn.31.2020.02.29.18.46.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 29 Feb 2020 18:26:54 -0800 (PST)
-Subject: Re: [PATCH v9 16/25] block/rnbd: client: private header with client
- structs and functions
+        Sat, 29 Feb 2020 18:46:46 -0800 (PST)
+Subject: Re: [PATCH v9 17/25] block/rnbd: client: main functionality
 To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org
 Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
@@ -43,7 +42,7 @@ Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
         danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
         rpenyaev@suse.de, pankaj.gupta@cloud.ionos.com
 References: <20200221104721.350-1-jinpuwang@gmail.com>
- <20200221104721.350-17-jinpuwang@gmail.com>
+ <20200221104721.350-18-jinpuwang@gmail.com>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -68,12 +67,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <6aa73b1c-b47a-c239-f8bb-33a44a3c4d97@acm.org>
-Date:   Sat, 29 Feb 2020 18:26:53 -0800
+Message-ID: <16e946dd-b244-594b-937e-689f2f23614e@acm.org>
+Date:   Sat, 29 Feb 2020 18:46:45 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200221104721.350-17-jinpuwang@gmail.com>
+In-Reply-To: <20200221104721.350-18-jinpuwang@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -83,8 +82,56 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 2020-02-21 02:47, Jack Wang wrote:
-> This header describes main structs and functions used by rnbd-client
-> module, mainly for managing RNBD sessions and mapped block devices,
-> creating and destroying sysfs entries.
+> +/**
+> + * rnbd_get_cpu_qlist() - finds a list with HW queues to be rerun
+> + * @sess:	Session to find a queue for
+> + * @cpu:	Cpu to start the search from
+> + *
+> + * Description:
+> + *     Each CPU has a list of HW queues, which needs to be rerun.  If a list
+> + *     is not empty - it is marked with a bit.  This function finds first
+> + *     set bit in a bitmap and returns corresponding CPU list.
+> + */
+> +static struct rnbd_cpu_qlist *
+> +rnbd_get_cpu_qlist(struct rnbd_clt_session *sess, int cpu)
+> +{
+> +	int bit;
+> +
+> +	/* First half */
+> +	bit = find_next_bit(sess->cpu_queues_bm, nr_cpu_ids, cpu);
+> +	if (bit < nr_cpu_ids) {
+> +		return per_cpu_ptr(sess->cpu_queues, bit);
+> +	} else if (cpu != 0) {
+> +		/* Second half */
+> +		bit = find_next_bit(sess->cpu_queues_bm, cpu, 0);
+> +		if (bit < cpu)
+> +			return per_cpu_ptr(sess->cpu_queues, bit);
+> +	}
+> +
+> +	return NULL;
+> +}
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Please make the "first half" and "second half" comments unambiguous. To
+me it seems like the code under "first half" searches through the second
+half of the bitmap and that the code under "second half" searches
+through the first half of the bitmap.
+
+> +	/**
+> +	 * That is simple percpu variable which stores cpu indeces, which are
+> +	 * incremented on each access.  We need that for the sake of fairness
+> +	 * to wake up queues in a round-robin manner.
+> +	 */
+
+Please start block comments with "/*".
+
+> +static void wait_for_rtrs_disconnection(struct rnbd_clt_session *sess)
+> +	__releases(&sess_lock)
+> +	__acquires(&sess_lock)
+> +{
+> +	DEFINE_WAIT_FUNC(wait, autoremove_wake_function);
+
+Please use DEFINE_WAIT() instead of open-coding it.
+
+Thanks,
+
+Bart.
