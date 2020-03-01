@@ -2,48 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CF2174ADB
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Mar 2020 04:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7D4174ADD
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Mar 2020 04:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727268AbgCADJg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 29 Feb 2020 22:09:36 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:51335 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726786AbgCADJg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 29 Feb 2020 22:09:36 -0500
-Received: by mail-pj1-f68.google.com with SMTP id fa20so2938522pjb.1;
-        Sat, 29 Feb 2020 19:09:35 -0800 (PST)
+        id S1727242AbgCADMd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 29 Feb 2020 22:12:33 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:44439 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726786AbgCADMd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 29 Feb 2020 22:12:33 -0500
+Received: by mail-pl1-f193.google.com with SMTP id d9so2795526plo.11;
+        Sat, 29 Feb 2020 19:12:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=y3cQT6znesewh2nAGzsIExbrBqeiHXqHjTuBacCGXTc=;
-        b=Jxo5bEJBP7aYbufH66AN9nAmOEAAmxDwxphF77wwvY91Rr4l8BbJrAkNZz1pQ+O3He
-         qj1msctR2lehXM0yQ+ScO4IrDY2HvoOgrQBQqtrTp4pmWu7xmIRcbF+gDJroqrLxRj7g
-         hFyhW9xVJgb8h40nFNVhvDh2ca09FEVUgObziSvvHGci5cjHTpuPxfCqMCCbqbfz91it
-         NklEVTeoH/oAV+wnyyHAlhhQH3Izdt2SZEpjdp3R21lNon7XuppgSvX71ivPqaJFizW/
-         0GqWdr0GaoF9U+DgXmfKph/A39lmjHa1ezKeQxp6cd3qR7v6wwvOHFod4IXKb15cGBIS
-         vuzQ==
-X-Gm-Message-State: APjAAAVaGJU6zK7ai4eIyzTz3vAOFJDYN3qbRFgyiqzgq4582C+M+VbQ
-        j8WPI0f5Nz+uTDKB26Ln18vEAYzwYH0=
-X-Google-Smtp-Source: APXvYqz9pGL8+yVn29CTxlfiNjuVcW8rVeiN1uqjsi4BHCYPOtdii1Map9N1o8q763RaTq2+E9oadA==
-X-Received: by 2002:a17:90a:7345:: with SMTP id j5mr12649861pjs.69.1583032174759;
-        Sat, 29 Feb 2020 19:09:34 -0800 (PST)
+        bh=YXYeoiNrQig1vuIJooovC64UNdFb4A3XOWGQ7qf6Y2g=;
+        b=ccpRjcHp4SXegULkKRhx5bHn8JX389OFjeWkDaQbaT8fa6wKul8cLX00oU2302Sr96
+         FUKvwmsq3hHGSoxqLKP4Zzr+wW/rD/O8WZAzjUVlYA/IO7fRXNXV+pvC5puClOWzUxz3
+         UV0cyw9Lc9WhR6LVTus2Q2ucU3XbhVP2XN6vwtZXPE5ACz8zL4UN7sTRL5/aIRzKPfxK
+         jaCOVLwkqkuEkpKczOd93VhPn+7xJ0/YqmDRR7AM9IUHr0RX7MV3VJPGrEXCAIJ1dTzJ
+         uSiOSsN8JxNnHFNi542M3kNszqGJ9sV9aD1VxLsoBtBSQZi4CixTjlyVj9Gd/CHGJCOC
+         oQYA==
+X-Gm-Message-State: APjAAAUfySKWlK9Z3XRcbDF6+wuFFM5NpLDn7MIJ+akiWU//sP6m8kAI
+        5Ma4/8MFsRDtt+4xGqbUIc4=
+X-Google-Smtp-Source: APXvYqy7EfWCceAcdcE/NIrJMrx7tZ0iCsESP1bC2Q4EZaMaez7794naDqpsXnr4w0ORtmzFldOO5Q==
+X-Received: by 2002:a17:902:ab8f:: with SMTP id f15mr11500822plr.280.1583032352475;
+        Sat, 29 Feb 2020 19:12:32 -0800 (PST)
 Received: from ?IPv6:2601:647:4000:d7:bd83:6f94:8c5:942d? ([2601:647:4000:d7:bd83:6f94:8c5:942d])
-        by smtp.gmail.com with ESMTPSA id h2sm15320712pgv.40.2020.02.29.19.09.33
+        by smtp.gmail.com with ESMTPSA id d3sm15688027pfn.113.2020.02.29.19.12.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 29 Feb 2020 19:09:34 -0800 (PST)
-Subject: Re: [PATCH v9 21/25] block/rnbd: server: functionality for IO
- submission to file or block dev
-To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
-        leon@kernel.org, dledford@redhat.com, jgg@ziepe.ca,
-        danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
-        rpenyaev@suse.de, pankaj.gupta@cloud.ionos.com
-References: <20200221104721.350-1-jinpuwang@gmail.com>
- <20200221104721.350-22-jinpuwang@gmail.com>
+        Sat, 29 Feb 2020 19:12:31 -0800 (PST)
+Subject: Re: [PATCH v8 00/25] RTRS (former IBTRS) RDMA Transport Library and
+ RNBD (former IBNBD) RDMA Network Block Device
+To:     Jens Axboe <axboe@kernel.dk>, Jinpu Wang <jinpuwang@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>, rpenyaev@suse.de
+References: <20200124204753.13154-1-jinpuwang@gmail.com>
+ <CAHg0HuzLLHqp_76ThLhUdHGG_986Oxvvr15h_13T12eEWjyAxA@mail.gmail.com>
+ <20200131165421.GB29820@ziepe.ca>
+ <f657d371-3b23-e4b2-50b3-db47cd521e1f@kernel.dk>
+ <CAD9gYJLVMVPjQcCj0aqbAW3CD86JQoFNvzJwGziRXT8B2UT0VQ@mail.gmail.com>
+ <a1aaa047-3a44-11a7-19a1-e150a9df4616@kernel.dk>
 From:   Bart Van Assche <bvanassche@acm.org>
 Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
@@ -68,12 +75,12 @@ Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
  //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
  mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
  goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <92721a50-158f-3018-39d4-40fce7b0f4d8@acm.org>
-Date:   Sat, 29 Feb 2020 19:09:32 -0800
+Message-ID: <b2a45137-cda8-4a61-dbbe-d1c6de3917bc@acm.org>
+Date:   Sat, 29 Feb 2020 19:12:30 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200221104721.350-22-jinpuwang@gmail.com>
+In-Reply-To: <a1aaa047-3a44-11a7-19a1-e150a9df4616@kernel.dk>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -82,71 +89,13 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2020-02-21 02:47, Jack Wang wrote:
-> +static struct bio *rnbd_bio_map_kern(struct request_queue *q, void *data,
-> +				      struct bio_set *bs,
-> +				      unsigned int len, gfp_t gfp_mask)
-> +{
-> +	unsigned long kaddr = (unsigned long)data;
-> +	unsigned long end = (kaddr + len + PAGE_SIZE - 1) >> PAGE_SHIFT;
-> +	unsigned long start = kaddr >> PAGE_SHIFT;
-> +	const int nr_pages = end - start;
-> +	int offset, i;
-> +	struct bio *bio;
-> +
-> +	bio = bio_alloc_bioset(gfp_mask, nr_pages, bs);
-> +	if (!bio)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	offset = offset_in_page(kaddr);
-> +	for (i = 0; i < nr_pages; i++) {
-> +		unsigned int bytes = PAGE_SIZE - offset;
-> +
-> +		if (len <= 0)
-> +			break;
-> +
-> +		if (bytes > len)
-> +			bytes = len;
-> +
-> +		if (bio_add_pc_page(q, bio, virt_to_page(data), bytes,
-> +				    offset) < bytes) {
-> +			/* we don't support partial mappings */
-> +			bio_put(bio);
-> +			return ERR_PTR(-EINVAL);
-> +		}
-> +
-> +		data += bytes;
-> +		len -= bytes;
-> +		offset = 0;
-> +	}
-> +
-> +	bio->bi_end_io = bio_put;
-> +	return bio;
-> +}
+On 2020-01-31 09:49, Jens Axboe wrote:
+> It would also be really nice to see official sign-offs (reviews) from non
+> ionos people...
 
-The above function is almost identical to bio_map_kern(). Please find a
-way to prevent such code duplication.
-
-> +static inline int rnbd_dev_get_logical_bsize(const struct rnbd_dev *dev)
-> +{
-> +	return bdev_logical_block_size(dev->bdev);
-> +}
-> +
-> +static inline int rnbd_dev_get_phys_bsize(const struct rnbd_dev *dev)
-> +{
-> +	return bdev_physical_block_size(dev->bdev);
-> +}
-> +
-> +static inline int
-> +rnbd_dev_get_max_write_same_sects(const struct rnbd_dev *dev)
-> +{
-> +	return bdev_write_same(dev->bdev);
-> +}
-
-Are you sure that the above functions are useful? Please do not
-introduce inline functions for well known functions, especially if their
-function name is longer than their implementation.
-
-Thanks,
+The block driver patches seem to be getting close to where these should
+be for upstream acceptance but I think the RDMA part needs more work.
 
 Bart.
+
+
