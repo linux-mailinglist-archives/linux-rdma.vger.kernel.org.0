@@ -2,132 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B37E174F21
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Mar 2020 20:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC62B174F4B
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Mar 2020 20:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgCATNQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 1 Mar 2020 14:13:16 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:39102 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726188AbgCATNQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 1 Mar 2020 14:13:16 -0500
-Received: by mail-il1-f198.google.com with SMTP id x2so3936288ila.6
-        for <linux-rdma@vger.kernel.org>; Sun, 01 Mar 2020 11:13:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0Dcjl1wj+PD0Lgt+OXmYkTb151pyTMwnRKiof57JFPA=;
-        b=HcqO9xG0rPh7/Rlb2CLc4gXWaT+o08cubBGtJ1atzowzw2xmLJDE2/WBAhsBdkaP4A
-         6dkQcIy51FD1c71gAGow7uRAmdyRgQWMrj2HWqE/RyELe+X9JMU/Hi5awtgZAk3Gm/H/
-         j50K0c0aaUxN7VdUfZTWyzXujwRS7YvK3bByjdmY9J9gEvXH/E2AMyUaf3+BftzhoNL4
-         RUDzNQad6KAhBlghkuEGu21vHNSnv8B4Sz7mnAEWv+6Nio/Rvlu9k+8PdmJ7y05wO4PU
-         4lNXq5TKinIAKtW55BGhWSH/Xb1qoGu19jC9HvaXBM9JV7ldWZMXHwmMDdm6b9ZAMOYq
-         y4Dg==
-X-Gm-Message-State: APjAAAWZc6pyjxf/l0qPvtTc/JUGc1GftrB7rO6hNkyqyTX1tBlA6Bqs
-        Zz7+J2Her8SteKCE3g/3U4HHvCODlyD4K7mKzM/LodziMmHb
-X-Google-Smtp-Source: APXvYqwIfvSV79V1rpkNS6OvT+OANMpVQMBxs83UpQuVgpV3f5+v1w6F6FaGchmLG2IcammC7uSBfWBZ2rTBDn39leb0HPsUGxN3
+        id S1726525AbgCATzs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 1 Mar 2020 14:55:48 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:58862 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725895AbgCATzs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 1 Mar 2020 14:55:48 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 021JsiXA191883;
+        Sun, 1 Mar 2020 19:55:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=gptipmtQiztgMocuC7kl9HcYPDLpmxEg8SraJxSTp5s=;
+ b=amgrnIHJJaP38d3KmzG5YwVOyIhw0a11+I7+XYIhfzToZ6zOsablanq2+g7WyVA8ztLn
+ 4LQ217Dpx7KqbVXPZpvd9rEr3qGVrGP48XttxMfoTDIU7lNZk8/rG9vEfpoV7ruSWXdN
+ y78saON9kJjVATV3UrXRbFHWxZJzumWsz1k+DYjBSV8KwHs61zhus1spa2m2RvAKIwRR
+ hDJs04AQTnZCBiGGfhffYTZs/HZYTL92L+vMrO2xL2ZKH/f4cb8hAZSQS4nIM/NXQVaC
+ UF1CpijrSrvHyJnZRzaiyWFe9DoiMGRZ5pS1hb6PhamekytxZgKg3q+Dce/TFewQ5MD7 AQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2yffwqca5n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 01 Mar 2020 19:55:30 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 021Jh0RV091005;
+        Sun, 1 Mar 2020 19:55:30 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 2yg1gthgyu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 01 Mar 2020 19:55:30 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 021JtTND012567;
+        Sun, 1 Mar 2020 19:55:29 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 2yg1gthgyf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 01 Mar 2020 19:55:29 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 021JtReW024791;
+        Sun, 1 Mar 2020 19:55:27 GMT
+Received: from [10.159.150.254] (/10.159.150.254)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 01 Mar 2020 11:55:27 -0800
+Subject: Re: general protection fault in rds_ib_add_one
+To:     =?UTF-8?Q?H=c3=a5kon_Bugge?= <haakon.bugge@oracle.com>,
+        Hillf Danton <hdanton@sina.com>
+Cc:     syzbot <syzbot+274094e62023782eeb17@syzkaller.appspotmail.com>,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        syzkaller-bugs@googlegroups.com,
+        Andy Grover <andy.grover@oracle.com>
+References: <20200224103913.2776-1-hdanton@sina.com>
+ <20200225044734.14680-1-hdanton@sina.com>
+ <b35981ca-f565-0169-5f99-35d67828d0b7@oracle.com>
+ <E8CFF16A-4C5C-46B8-9F6E-8406765591A7@oracle.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <8f857cf7-6e02-ac80-e873-f9c40b743566@oracle.com>
+Date:   Sun, 1 Mar 2020 11:55:25 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-X-Received: by 2002:a02:908a:: with SMTP id x10mr11405673jaf.16.1583089995211;
- Sun, 01 Mar 2020 11:13:15 -0800 (PST)
-Date:   Sun, 01 Mar 2020 11:13:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cfed90059fcfdccb@google.com>
-Subject: BUG: corrupted list in _cma_attach_to_dev
-From:   syzbot <syzbot+06b50ee4a9bd73e8b89f@syzkaller.appspotmail.com>
-To:     chuck.lever@oracle.com, dledford@redhat.com, jgg@ziepe.ca,
-        leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, parav@mellanox.com,
-        syzkaller-bugs@googlegroups.com, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <E8CFF16A-4C5C-46B8-9F6E-8406765591A7@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9547 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
+ phishscore=0 clxscore=1015 bulkscore=0 adultscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003010155
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    63623fd4 Merge tag 'for-linus' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16a8fa81e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9833e26bab355358
-dashboard link: https://syzkaller.appspot.com/bug?extid=06b50ee4a9bd73e8b89f
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e804f9e00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15d6fd29e00000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+06b50ee4a9bd73e8b89f@syzkaller.appspotmail.com
-
-list_add corruption. prev->next should be next (ffff888092dbd570), but was ffffffff8a5d2f20. (prev=ffff8880965fb1e0).
-------------[ cut here ]------------
-kernel BUG at lib/list_debug.c:26!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 10633 Comm: syz-executor222 Not tainted 5.6.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__list_add_valid.cold+0x3a/0x3c lib/list_debug.c:26
-Code: 0b 48 89 f2 4c 89 e1 4c 89 ee 48 c7 c7 80 da 91 88 e8 29 3a b8 fd 0f 0b 48 89 f1 48 c7 c7 00 da 91 88 4c 89 e6 e8 15 3a b8 fd <0f> 0b 4c 89 f6 48 c7 c7 a0 db 91 88 e8 04 3a b8 fd 0f 0b 4c 89 ea
-RSP: 0018:ffffc90002197b70 EFLAGS: 00010286
-RAX: 0000000000000075 RBX: ffff88809db2b000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff815ebe46 RDI: fffff52000432f60
-RBP: ffffc90002197b88 R08: 0000000000000075 R09: ffffed1015d26659
-R10: ffffed1015d26658 R11: ffff8880ae9332c7 R12: ffff888092dbd570
-R13: ffff88809db2b1e0 R14: ffff8880965fb1e0 R15: ffff88809db2b1e0
-FS:  00007f32e8400700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffff600400 CR3: 00000000a71ef000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __list_add include/linux/list.h:67 [inline]
- list_add_tail include/linux/list.h:100 [inline]
- _cma_attach_to_dev+0x150/0x2f0 drivers/infiniband/core/cma.c:471
- cma_listen_on_dev+0x252/0x6a0 drivers/infiniband/core/cma.c:2493
- cma_listen_on_all drivers/infiniband/core/cma.c:2514 [inline]
- rdma_listen+0x772/0x970 drivers/infiniband/core/cma.c:3622
- ucma_listen+0x14d/0x1c0 drivers/infiniband/core/ucma.c:1092
- ucma_write+0x2d7/0x3c0 drivers/infiniband/core/ucma.c:1684
- __vfs_write+0x8a/0x110 fs/read_write.c:494
- vfs_write+0x268/0x5d0 fs/read_write.c:558
- ksys_write+0x220/0x290 fs/read_write.c:611
- __do_sys_write fs/read_write.c:623 [inline]
- __se_sys_write fs/read_write.c:620 [inline]
- __x64_sys_write+0x73/0xb0 fs/read_write.c:620
- do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x4495e9
-Code: e8 8c e7 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f32e83ffda8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00000000006dec68 RCX: 00000000004495e9
-RDX: 0000000000000010 RSI: 0000000020000100 RDI: 0000000000000004
-RBP: 00000000006dec60 R08: 00007f32e8400700 R09: 0000000000000000
-R10: 00007f32e8400700 R11: 0000000000000246 R12: 00000000006dec6c
-R13: 0000000000000000 R14: 0000000000006f6c R15: 00000000006dec6c
-Modules linked in:
----[ end trace 55770a30f050c228 ]---
-RIP: 0010:__list_add_valid.cold+0x3a/0x3c lib/list_debug.c:26
-Code: 0b 48 89 f2 4c 89 e1 4c 89 ee 48 c7 c7 80 da 91 88 e8 29 3a b8 fd 0f 0b 48 89 f1 48 c7 c7 00 da 91 88 4c 89 e6 e8 15 3a b8 fd <0f> 0b 4c 89 f6 48 c7 c7 a0 db 91 88 e8 04 3a b8 fd 0f 0b 4c 89 ea
-RSP: 0018:ffffc90002197b70 EFLAGS: 00010286
-RAX: 0000000000000075 RBX: ffff88809db2b000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff815ebe46 RDI: fffff52000432f60
-RBP: ffffc90002197b88 R08: 0000000000000075 R09: ffffed1015d26659
-R10: ffffed1015d26658 R11: ffff8880ae9332c7 R12: ffff888092dbd570
-R13: ffff88809db2b1e0 R14: ffff8880965fb1e0 R15: ffff88809db2b1e0
-FS:  00007f32e8400700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffff600400 CR3: 00000000a71ef000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 3/1/20 9:46 AM, Håkon Bugge wrote:
+> 
+> 
+>> On 25 Feb 2020, at 19:05, santosh.shilimkar@oracle.com wrote:
+>>
+>>
+>>
+>> On 2/24/20 8:47 PM, Hillf Danton wrote:
+>>> On Mon, 24 Feb 2020 09:51:01 -0800 Santosh Shilimkar wrote:
+>>>> On 2/24/20 2:39 AM, Hillf Danton wrote:
+>>>>>
+>>>>> Fall back to NUMA_NO_NODE if needed.
+>>> [...]
+>>>>>
+>>>> This seems good. Can you please post it as properly formatted patch ?
+>> Thanks !!
+>>
+>>> ---8<---
+>>> Subject: [PATCH] net/rds: fix gpf in rds_ib_add_one
+>>> From: Hillf Danton <hdanton@sina.com>
+>>> The devoted syzbot posted a gpf report.
+>>> general protection fault, probably for non-canonical address 0xdffffc0000000086: 0000 [#1] PREEMPT SMP KASAN
+>>> KASAN: null-ptr-deref in range [0x0000000000000430-0x0000000000000437]
+>>> CPU: 0 PID: 8852 Comm: syz-executor043 Not tainted 5.6.0-rc2-syzkaller #0
+>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>>> RIP: 0010:dev_to_node include/linux/device.h:663 [inline]
+>>> RIP: 0010:rds_ib_add_one+0x81/0xe50 net/rds/ib.c:140
+>>> Code: b7 a8 06 00 00 4c 89 f0 48 c1 e8 03 42 80 3c 28 00 74 08 4c 89 f7 e8 0e e4 1d fa bb 30 04 00 00 49 03 1e 48 89 d8 48 c1 e8 03 <42> 8a 04 28 84 c0 0f 85 f0 0a 00 00 8b 1b 48 c7 c0 28 0c 09 89 48
+>>> RSP: 0018:ffffc90003087298 EFLAGS: 00010202
+>>> RAX: 0000000000000086 RBX: 0000000000000430 RCX: 0000000000000000
+>>> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
+>>> RBP: ffffc900030872f0 R08: ffffffff87964c3c R09: ffffed1014fd109c
+>>> R10: ffffed1014fd109c R11: 0000000000000000 R12: 0000000000000000
+>>> R13: dffffc0000000000 R14: ffff8880a7e886a8 R15: ffff8880a7e88000
+>>> FS:  0000000000c3d880(0000) GS:ffff8880aea00000(0000) knlGS:0000000000000000
+>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> CR2: 00007f0318ed0000 CR3: 00000000a3167000 CR4: 00000000001406f0
+>>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>> Call Trace:
+>>>   add_client_context+0x482/0x660 drivers/infiniband/core/device.c:681
+>>>   enable_device_and_get+0x15b/0x370 drivers/infiniband/core/device.c:1316
+>>>   ib_register_device+0x124d/0x15b0 drivers/infiniband/core/device.c:1382
+>>>   rxe_register_device+0x3f6/0x530 drivers/infiniband/sw/rxe/rxe_verbs.c:1231
+>>>   rxe_add+0x1373/0x14f0 drivers/infiniband/sw/rxe/rxe.c:302
+>>>   rxe_net_add+0x79/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:539
+>>>   rxe_newlink+0x31/0x90 drivers/infiniband/sw/rxe/rxe.c:318
+>>>   nldev_newlink+0x403/0x4a0 drivers/infiniband/core/nldev.c:1538
+>>>   rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:195 [inline]
+>>>   rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+>>>   rdma_nl_rcv+0x701/0xa20 drivers/infiniband/core/netlink.c:259
+>>>   netlink_unicast_kernel net/netlink/af_netlink.c:1302 [inline]
+>>>   netlink_unicast+0x766/0x920 net/netlink/af_netlink.c:1328
+>>>   netlink_sendmsg+0xa2b/0xd40 net/netlink/af_netlink.c:1917
+>>>   sock_sendmsg_nosec net/socket.c:652 [inline]
+>>>   sock_sendmsg net/socket.c:672 [inline]
+>>>   ____sys_sendmsg+0x4f7/0x7f0 net/socket.c:2343
+>>>   ___sys_sendmsg net/socket.c:2397 [inline]
+>>>   __sys_sendmsg+0x1ed/0x290 net/socket.c:2430
+>>>   __do_sys_sendmsg net/socket.c:2439 [inline]
+>>>   __se_sys_sendmsg net/socket.c:2437 [inline]
+>>>   __x64_sys_sendmsg+0x7f/0x90 net/socket.c:2437
+>>>   do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:294
+>>>   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>>> It's fixed by falling back to NUMA_NO_NODE if needed while allocating
+>>> memory slices for send/recv rings at some cost of dip in performance.
+>>> Reported-by: syzbot <syzbot+274094e62023782eeb17@syzkaller.appspotmail.com>
+>>> Fixes: e4c52c98e049 ("RDS/IB: add _to_node() macros for numa and use {k,v}malloc_node()")
+>>> Cc: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+>>> Cc: Andy Grover <andy.grover@oracle.com>
+>>> Signed-off-by: Hillf Danton <hdanton@sina.com>
+>>> ---
+>> Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+>>
+>>> --- a/net/rds/ib.c
+>>> +++ b/net/rds/ib.c
+>>> @@ -137,7 +137,8 @@ static void rds_ib_add_one(struct ib_dev
+>>>   		return;
+>>>     	rds_ibdev = kzalloc_node(sizeof(struct rds_ib_device), GFP_KERNEL,
+>>> -				 ibdev_to_node(device));
+>>> +				 device->dev.parent ?
+>>> +				 ibdev_to_node(device) : NUMA_NO_NODE);
+> 
+> I would strongly advice this fix to be applied to the define itself, so the fix will be made for all 4 calls as well. Aka:
+> 
+> #define ibdev_to_node(ibdev) (ibdev)->dev.parent ? dev_to_node((ibdev)->dev.parent) : NUMA_NO_NODE
+> 
+Indeed.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Hillf, Can you please spin V2 with it ?
