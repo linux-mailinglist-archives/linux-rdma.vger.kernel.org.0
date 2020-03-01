@@ -2,98 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9998A1744EC
-	for <lists+linux-rdma@lfdr.de>; Sat, 29 Feb 2020 05:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BAF4174A69
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Mar 2020 01:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbgB2Ety (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Feb 2020 23:49:54 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:53282 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgB2Ety (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 28 Feb 2020 23:49:54 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01T4nSa0034340;
-        Sat, 29 Feb 2020 04:49:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : references : date : in-reply-to : message-id : mime-version :
- content-type; s=corp-2020-01-29;
- bh=kzR9CGwA8QkKF16UH73eDglqPnsxYFUS7yPTFc3wG+Q=;
- b=sQsrTyp0UNryUPYAH0iLRkB3zVXKd7jPvMwzMVe36OFfS3fsDIZ+xOBrl+WYdVYp51Wh
- y1QEFQsQKduAvIvwJMr98eRx669obe6EB/hTtBE0ohnZMMYASxaVYzI0PAh16VbjV0P7
- csbeDl3dD7+ZcEKi+ZhCo3v3h8aKVeqmdvi0JXipoqK6HX2WYrEcHP9mW72Hps9osHfR
- foVgPY99mteM6Ewzcm25KOoc0fJh+1NCrWcDGc6eJ+smX55mxgRiDrFMxEr4d2984wA5
- OjcpgBysDn/TA5dLsa2zlFIF99b7saDyvFQHX+qrOALUZv7+mjYHlWx/clW0C5oHq+V3 Fw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2yffwq8404-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 29 Feb 2020 04:49:28 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01T4lhd2010921;
-        Sat, 29 Feb 2020 04:49:27 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 2yfe0d9c8n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 29 Feb 2020 04:49:27 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01T4nPYo013441;
-        Sat, 29 Feb 2020 04:49:25 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 28 Feb 2020 20:49:24 -0800
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Satish Kharat <satishkh@cisco.com>,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Brian King <brking@us.ibm.com>,
-        Intel SCU Linux support <intel-linux-scu@intel.com>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Chaitra P B <chaitra.basappa@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        MPT-FusionLinux.pdl@broadcom.com, open-iscsi@googlegroups.com,
+        id S1727170AbgCAAYk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 29 Feb 2020 19:24:40 -0500
+Received: from mail-pj1-f45.google.com ([209.85.216.45]:53333 "EHLO
+        mail-pj1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727120AbgCAAYj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 29 Feb 2020 19:24:39 -0500
+Received: by mail-pj1-f45.google.com with SMTP id i11so2778939pju.3;
+        Sat, 29 Feb 2020 16:24:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Uq8wttYcQrTDTYvU5w0gohV1k9WlJ5G1ZTxgqMBM7TQ=;
+        b=Yu8sB9gaxYjgZ56VoUAsrJqCXxxpExPpyr/FTOnlrn6SgqylVpg9/UrimlVknFZaOK
+         NTN0xop2BSqQaQWbBvPM6dtndCLiHcqLaGbFFgvTi+jJLR//zutEy5JnJV8T1+uWOW5D
+         t93fmEuy0I0E4ADcZGYGPX1yBwG8OL+3sMWFhkeRKoJN7R5FJ/X5E2DDqov2WbZyzqRM
+         IPMPT+OzDpi9h2HOGQ6uU3LoUCN7IX+CrIvtPYntL9ukbEcOEr3acpbGOTUtRCIO/NWI
+         nwkkTvxk3DtDhNXjpv0dwxQ9auI7QZDAcQrQvxXD94R1ehPNPmUFFDHehlddhJsrLjeI
+         70sQ==
+X-Gm-Message-State: ANhLgQ1DDx+u0oJjD/QmsdvvXKRiKy/HYNwXl/0L08Q8bHyFAwUbn+3P
+        W95PnbXYTkr6dZBly2DEXF7RFKYK1oo=
+X-Google-Smtp-Source: ADFU+vsM32hYmDXHInO3Vi2N7CEymWlXyWlmE0eu5CRI28Sh8PMY9duGMepTkklUukdri+JG3n8pPA==
+X-Received: by 2002:a17:90a:210c:: with SMTP id a12mr5822209pje.16.1583022278088;
+        Sat, 29 Feb 2020 16:24:38 -0800 (PST)
+Received: from ?IPv6:2601:647:4000:d7:bd83:6f94:8c5:942d? ([2601:647:4000:d7:bd83:6f94:8c5:942d])
+        by smtp.gmail.com with ESMTPSA id 191sm8142236pfa.142.2020.02.29.16.24.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 29 Feb 2020 16:24:37 -0800 (PST)
+Subject: Re: [PATCH v9 01/25] sysfs: export sysfs_remove_file_self()
+To:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] scsi: Replace zero-length array with flexible-array member
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-References: <20200224161406.GA21454@embeddedor>
-Date:   Fri, 28 Feb 2020 23:49:21 -0500
-In-Reply-To: <20200224161406.GA21454@embeddedor> (Gustavo A. R. Silva's
-        message of "Mon, 24 Feb 2020 10:14:06 -0600")
-Message-ID: <yq1eeue5772.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
+Cc:     axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
+        leon@kernel.org, dledford@redhat.com, jgg@ziepe.ca,
+        danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
+        rpenyaev@suse.de, pankaj.gupta@cloud.ionos.com,
+        Roman Pen <roman.penyaev@profitbricks.com>,
+        linux-kernel@vger.kernel.org
+References: <20200221104721.350-1-jinpuwang@gmail.com>
+ <20200221104721.350-2-jinpuwang@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <8131773d-cf6e-9c1d-faad-a250f7135432@acm.org>
+Date:   Sat, 29 Feb 2020 16:24:35 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9545 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 spamscore=0 mlxlogscore=619 adultscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002290033
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9545 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
- impostorscore=0 malwarescore=0 mlxlogscore=685 mlxscore=0 suspectscore=0
- phishscore=0 clxscore=1011 bulkscore=0 adultscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002290033
+In-Reply-To: <20200221104721.350-2-jinpuwang@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 2020-02-21 02:46, Jack Wang wrote:
+> Function is going to be used in transport over RDMA module
+> in subsequent patches, so export it to GPL modules.
 
-Gustavo,
-
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array
-> member[1][2], introduced in C99:
-
-Applied to 5.7/scsi-queue, thanks.
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
