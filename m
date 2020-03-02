@@ -2,88 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3F01756D6
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 10:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBE71756FB
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 10:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727316AbgCBJVo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Mar 2020 04:21:44 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:46108 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726390AbgCBJVo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Mar 2020 04:21:44 -0500
-Received: by mail-io1-f67.google.com with SMTP id x21so6167968iox.13
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2020 01:21:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OEFkAcOGrFGZ9vC9gz7pgwP4iGIBCbBAbgqfhx1gxTw=;
-        b=bjgepMjfTFKXiH1y1++pYmtaMgK1a0pm8g+Ft3bErJmRX5ndF/6c1HPBfqB7wtFxjY
-         DHMWCTs/SdahAbFmr+r4WGKUqRK2cyniIbH2M63ygpdtoCxbQ2BsrkT/n6SSs7C6yidl
-         glVje2Z6MqVA4pYo7ozPfH6s6Wab5g8Sk8iTFMQ+06NdrJ4ODeG/JpTN2/PbNEhl04zB
-         2ufG1v660T3sJwb1KFARccsdBu6L5s6QKGya6JjWjFOCDCGejKBQCBacT+CW6xZRYhrM
-         uNyNc09KXk+RfMP5vC9Y9ohoYS4QcNmOe0ihBiYvjXAiRFiDPORbEB772+kDOpE2wrMw
-         LVZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OEFkAcOGrFGZ9vC9gz7pgwP4iGIBCbBAbgqfhx1gxTw=;
-        b=o5N5acJjAqwT2QQJIDaTwhTL9JWsuQr9giHZy6lcYScHCW4yEGvjZz6Kx9zpJYCRWO
-         cD5Bd4Hd8jlYPP4O+Pi40oNOjRVKzwIinOxjWdPFYFzDx01Mg/izYkCN4FqTVE0neGtT
-         e3ToSQsNGdiQ04ykGNWfar2VDppWJPrvj6qb0N0lho1cU7RyaeR/N9EFr8HjqagQQcXc
-         Qgd37Ep/h89NlCs1lAmnaZxyJb/g7cpgfw3rMV9OlCEDUhxVXbQbCVlFm/NyaUpVPeGp
-         JtQAHKZP5b1SBMCsAq26ozHAeDAgPNpOkNn3kZc9QXepQaFyRjHRCqd5Bi2A1VacLtDf
-         KoKw==
-X-Gm-Message-State: APjAAAXOaJusmOdHhYmwHL90eLdtE31SBfgg+N6B3K5Ha0WHjfWdjatl
-        5cYbparVIYDv7bRpKMJNdwSatIj51s1mSxCftLVwJA==
-X-Google-Smtp-Source: APXvYqw3sGCat8h4DoLmpdadvgGUNsDTGZi83wNh/OG/n1D9udk1A3xJIq3u1cRwZ/fnRXsnHyS9RofYxs6lCYqbjeM=
-X-Received: by 2002:a02:3b24:: with SMTP id c36mr13317752jaa.23.1583140904123;
- Mon, 02 Mar 2020 01:21:44 -0800 (PST)
+        id S1726674AbgCBJ0Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Mar 2020 04:26:16 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11130 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726382AbgCBJ0P (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 2 Mar 2020 04:26:15 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 4DBD3858E8D5798F4FF9;
+        Mon,  2 Mar 2020 17:25:57 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.439.0; Mon, 2 Mar 2020 17:25:50 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Support to set mininum depth of qp to 0
+Date:   Mon, 2 Mar 2020 17:22:17 +0800
+Message-ID: <1583140937-2223-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-References: <20200221104721.350-1-jinpuwang@gmail.com> <20200221104721.350-4-jinpuwang@gmail.com>
- <60d1b3e1-2da6-90ae-1e0b-1c313ffbd9b0@acm.org>
-In-Reply-To: <60d1b3e1-2da6-90ae-1e0b-1c313ffbd9b0@acm.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Mon, 2 Mar 2020 10:21:33 +0100
-Message-ID: <CAMGffEm5vueNV7jW8hTWT3SR2qgPTNuRZg7k3kDGu-KGAcLqKw@mail.gmail.com>
-Subject: Re: [PATCH v9 03/25] RDMA/rtrs: private headers with rtrs protocol
- structs and helpers
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Roman Penyaev <rpenyaev@suse.de>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Mar 1, 2020 at 1:37 AM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 2020-02-21 02:46, Jack Wang wrote:
-> > +enum rtrs_imm_type {
-> > +     RTRS_IO_REQ_IMM       = 0, /* client to server */
-> > +     RTRS_IO_RSP_IMM       = 1, /* server to client */
-> > +     RTRS_IO_RSP_W_INV_IMM = 2, /* server to client */
-> > +
-> > +     RTRS_HB_MSG_IMM = 8, /* HB: HeartBeat */
-> > +     RTRS_HB_ACK_IMM = 9,
-> > +
-> > +     RTRS_LAST_IMM,
-> > +};
->
-> This is the first time in this header file that the abbreviation "hb" is
-> used. Please add a comment that explains what this abbreviation stands for.
->
-> Thanks,
->
-> Bart.
-Will do, thank you
+From: Lang Cheng <chenglang@huawei.com>
+
+Minimum depth of qp should be allowed to be set to 0 according to the
+firmware configuration. And when qp is changed from reset to reset, the
+capability of minimum qp depth was used to identify hardware of hip06,
+it should be changed into a more readable form.
+
+Signed-off-by: Lang Cheng <chenglang@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_qp.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 2a75355..10c4354 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -382,10 +382,10 @@ static int set_rq_size(struct hns_roce_dev *hr_dev,
+ 			return -EINVAL;
+ 		}
+ 
+-		if (hr_dev->caps.min_wqes)
++		if (cap->max_recv_wr)
+ 			max_cnt = max(cap->max_recv_wr, hr_dev->caps.min_wqes);
+ 		else
+-			max_cnt = cap->max_recv_wr;
++			max_cnt = 0;
+ 
+ 		hr_qp->rq.wqe_cnt = roundup_pow_of_two(max_cnt);
+ 
+@@ -652,10 +652,10 @@ static int set_kernel_sq_size(struct hns_roce_dev *hr_dev,
+ 
+ 	hr_qp->sq.wqe_shift = ilog2(hr_dev->caps.max_sq_desc_sz);
+ 
+-	if (hr_dev->caps.min_wqes)
++	if (cap->max_send_wr)
+ 		max_cnt = max(cap->max_send_wr, hr_dev->caps.min_wqes);
+ 	else
+-		max_cnt = cap->max_send_wr;
++		max_cnt = 0;
+ 
+ 	hr_qp->sq.wqe_cnt = roundup_pow_of_two(max_cnt);
+ 	if ((u32)hr_qp->sq.wqe_cnt > hr_dev->caps.max_wqes) {
+@@ -1394,11 +1394,10 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 		goto out;
+ 
+ 	if (cur_state == new_state && cur_state == IB_QPS_RESET) {
+-		if (hr_dev->caps.min_wqes) {
++		if (hr_dev->hw_rev == HNS_ROCE_HW_VER1) {
+ 			ret = -EPERM;
+ 			ibdev_err(&hr_dev->ib_dev,
+-				"cur_state=%d new_state=%d\n", cur_state,
+-				new_state);
++				  "Unsupport to modify qp from reset to reset\n");
+ 		} else {
+ 			ret = 0;
+ 		}
+-- 
+2.8.1
+
