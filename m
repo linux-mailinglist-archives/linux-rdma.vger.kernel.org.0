@@ -2,292 +2,182 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A411752C6
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 05:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C84A175465
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 08:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgCBEnD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 1 Mar 2020 23:43:03 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:45704 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726775AbgCBEnD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 1 Mar 2020 23:43:03 -0500
-Received: by mail-oi1-f195.google.com with SMTP id v19so9011325oic.12
-        for <linux-rdma@vger.kernel.org>; Sun, 01 Mar 2020 20:43:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WVjZZXlxxONovY0ODyekptAXEkEhd6rnDXIXkGoZRRg=;
-        b=Iide8lxNKBDjHUzJkogPJo6GTM08yYKSsLVJziAKptXj6kZULOaWjbWOWTK328rvuD
-         suCrWMfgjz0IQzzzJYinAT80frlwfkndcBQ5OEhNoJhshFKfWVsdq8Q7e8KE9/a7GHJT
-         S1GVfF8K4wEVZV7j8El3e7Q0GBvnuNwttsnHY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WVjZZXlxxONovY0ODyekptAXEkEhd6rnDXIXkGoZRRg=;
-        b=BFw2PPnpZvFf/Rm9Pst3LS4IwaWkeWhiXJNMqz+nU+PlrEb8JU24LR0g6wMukzEEQo
-         3c2VG3Mukw3mv9WlwB1KWW1MlvbxNJysm+lFQmQGIr+giHjkg28UkJPqqcEmRf/hP2/a
-         BLnVW8hDIK+l59eOlCIf7QtqWrWgRGUoRm/zLSk0py2tSSdch9eqCorXjd4Gp/AX7/uG
-         zcIJKQKIy0oQnmbubohIw7dowLjwZVLTFvQMHn2K6xPJ9gLl0Li/Pirg0S5DFpaBhUzw
-         rmX61L/4bKa5zEQkTGo6hv9WcGAn7pJX4rL7zp9ECD5LNkv3l0kSBdQbbRgAVa72Kixf
-         0wGg==
-X-Gm-Message-State: APjAAAW9AwYILORyKGggcxsp6BcuG87o3ON972PbdEZe8atZov/ewWRO
-        /nVOCk5QAzJgUr5I25NjlexchuQgiAAvQ1ik7Uf8ma50
-X-Google-Smtp-Source: APXvYqzSPSTEYeatCMpLEDopRzctu56QeXrU4RfyMrVVEKI+LfE5Ks2hcpJ5I12GuShOwH64DtODXL0+kHU/EZqP/gc=
-X-Received: by 2002:aca:ba55:: with SMTP id k82mr10180167oif.94.1583124180202;
- Sun, 01 Mar 2020 20:43:00 -0800 (PST)
+        id S1726382AbgCBHWr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 2 Mar 2020 02:22:47 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:44150 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726426AbgCBHWr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 2 Mar 2020 02:22:47 -0500
+Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id 63FB6BB59A0FB5263F49;
+        Mon,  2 Mar 2020 15:22:37 +0800 (CST)
+Received: from DGGEML422-HUB.china.huawei.com (10.1.199.39) by
+ DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Mon, 2 Mar 2020 15:22:36 +0800
+Received: from DGGEML522-MBX.china.huawei.com ([169.254.7.20]) by
+ dggeml422-hub.china.huawei.com ([10.1.199.39]) with mapi id 14.03.0439.000;
+ Mon, 2 Mar 2020 15:22:29 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Parav Pandit <parav@mellanox.com>, Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: Re: Is anyone working on implementing LAG in ib core?
+Thread-Topic: Is anyone working on implementing LAG in ib core?
+Thread-Index: AQHV6TLv6f19Y5Y7HEi39Ag/HyzLYg==
+Date:   Mon, 2 Mar 2020 07:22:28 +0000
+Message-ID: <B82435381E3B2943AA4D2826ADEF0B3A0226F346@DGGEML522-MBX.china.huawei.com>
+References: <280d87d0-fbc0-0566-794b-f66cb4fadb63@huawei.com>
+ <20200222234026.GO31668@ziepe.ca>
+ <98482e8a-f2eb-5406-b679-0ceb946ac618@mellanox.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.40.168.149]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <1582731932-26574-1-git-send-email-selvin.xavier@broadcom.com>
- <1582731932-26574-3-git-send-email-selvin.xavier@broadcom.com> <20200228163522.GA27288@ziepe.ca>
-In-Reply-To: <20200228163522.GA27288@ziepe.ca>
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Mon, 2 Mar 2020 10:12:49 +0530
-Message-ID: <CA+sbYW0vgu5nSz8wyLdGH-OVikoO4yy-tfi_URpM9E3rHrs98A@mail.gmail.com>
-Subject: Re: [PATCH for-next v4 2/2] RDMA/bnxt_re: Use driver_unregister and
- unregistration API
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 28, 2020 at 10:05 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Wed, Feb 26, 2020 at 07:45:32AM -0800, Selvin Xavier wrote:
-> > @@ -1724,6 +1714,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
-> >               rc = bnxt_re_add_device(&rdev, real_dev);
-> >               if (!rc)
-> >                       sch_work = true;
-> > +             release = false;
-> >               break;
-> >
-> >       case NETDEV_UNREGISTER:
-> > @@ -1732,8 +1723,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
-> >                */
-> >               if (atomic_read(&rdev->sched_count) > 0)
-> >                       goto exit;
->
-> This sched_count stuff needs cleaning too.
->
-> krefs should be used properly, carry the kref on the ib_device into
-> the work and use the registration lock on the ib device to serialize
-> instead of this sched_count stuff.
->
-> This all sounds so familiar.. Oh I tried to fix this once - maybe the
-> below will help you:
->
-Thanks Jason for the patches. Changes in first patch is already
-taken care in my series. Will test  your other two patches and will
-get back.
+On 2020/2/23 8:44, Parav Pandit wrote:
+> Hi Jason, Weihang,
+> 
+> On 2/22/2020 5:40 PM, Jason Gunthorpe wrote:
+>> On Sat, Feb 22, 2020 at 11:48:04AM +0800, Weihang Li wrote:
+>>> Hi all,
+>>>
+>>> We plan to implement LAG in hns drivers recently, and as we know, there is
+>>> already a mature and stable solution in the mlx5 driver. Considering that
+>>> the net subsystem in kernel adopt the strategy that the framework implement
+>>> bonding, we think it's reasonable to add LAG feature to the ib core based
+>>> on mlx5's implementation. So that all drivers including hns and mlx5 can
+>>> benefit from it.
+>>>
+>>> In previous discussions with Leon about achieving reporting of ib port link
+>>> event in ib core, Leon mentioned that there might be someone trying to do
+>>> this.
+>>>
+>>> So may I ask if there is anyone working on LAG in ib core or planning to
+>>> implement it in near future? I will appreciate it if you can share your
+>>> progress with me and maybe we can finish it together.
+>>>
+>>> If nobody is working on this, our team may take a try to implement LAG in
+>>> the core. Any comments and suggestion are welcome.
+>>
+>> This is something that needs to be done, I understand several of the
+>> other drivers are going to want to use LAG and we certainly can't have
+>> everything copied into each driver.
+>>
+>> Jason
+>>
+> I am not sure mlx5 is right model for new rdma bond device support which
+> I tried to highlight in Q&A-1 below.
+> 
+> I have below not-so-refined proposal for rdma bond device.
+> 
+> - Create a rdma bond device named rbond0 using two slave rdma devices
+> mlx5_0 mlx5_1 which is connected to netdevice bond1 and underlying dma
+> device of mlx5_0 rdma device.
+> 
+> $ rdma dev add type bond name rbond0 netdev bond1 slave mlx5_0 slave
+> mlx5_1 dmadevice mlx5_0
+> 
+> $ rdma dev show
+> 0: mlx5_0: node_type ca fw 12.25.1020 node_guid 248a:0703:0055:4660
+> sys_image_guid 248a:0703:0055:4660
+> 1: mlx5_1: node_type ca fw 12.25.1020 node_guid 248a:0703:0055:4661
+> sys_image_guid 248a:0703:0055:4660
+> 2: rbond0: node_type ca node_guid 248a:0703:0055:4660 sys_image_guid
+> 248a:0703:0055:4660
+> 
+> - This should be done via rdma bond driver in
+> drivers/infiniband/ulp/rdma_bond
+> 
+> Few obvious questions arise from above proposal:
+> 1. But why can't I do the trick to remove two or more rdma device(s) and
+> create one device when bond0 netdevice is created?
+> Ans:
+> (a) Because it leads to complex driver code in vendor driver to handle
+> netdev events under rtnl lock.
+> Given GID table needs to hold rtnl lock for short duration in
+> ib_register_device(), things need to differ to work queue and perform
+> synchronization.
+> (b) User cannot predict when this new rdma bond device will be created
+> automatically, after how long?
+> (c) What if some failure occurred, should I parse /var/log/messages to
+> figure out the error? What steps to roll back and retry?
+> (d) What if driver internally attempt retry?..
+> and some more..
+> 
+> 2. Why do we need to give netdevice in above proposal?
+> Ans:
+> Because for RoCE device you want to build right GID table for its
+> matching netdevice. No guess work.
+> 
+> 3. But with that there will be multiple devices rbond0, mlx5_0 with same
+> GID table entries.
+> And that will confuse the user.
+> What do we do about it?
+> Ans:
+> No. That won't happen, because this bond driver accept slave rdma devices.
+> bond driver will request IB core to disable GID table of slave rdma devices.
+> Or we can have commands to disable/enable specific GID types of slave
+> rdma devices, which user can invoke before creating rdma bond device.
+> 
+> Such as
+> $ rdma link mlx5_0 disable rocev1
+> $ rdma link mlx5_0 enable rocev2
+> 
+> This way its easy to compose and addressed wider use case where RoCEv1
+> GID table entries can be disabled and make efficient use of GID table.
+> 
+> 4. But if we are going to disable the GID table, why do we even need
+> those RDMA devices?
+> Ans:
+> Because when you delete the bond rdma device, you can revert back to
+> those mlx5_0/1 devices.
+> Follwo mirror of add in delete.
+> 
+> 5. Why do we need to give DMA device?
+> Ans:
+> Because we want to avoid doing guess work in rdma_bond driver on which
+> DMA device to use.
+> User knows the configuration of how he wants to use it based on the
+> system. (irqs etc).
+> 
+> 6. What happens if slave pci devices are hot removed?
+> Ans:
+> If slave dma device is removed, it disassociates the ucontext and rbond0
+> becomes unusable for applications.
+> 
+> 7. How is the failover done?
+> Ans: Since failover netdevice is provided, its failover settings are
+> inherited by rbond0 rdma device and passed on to its slave device.
+> 
 
-Thanks,
-Selvin
-> commit 33d88c818d155ffb2ef4b12e72107f628c70404c
-> Author: Jason Gunthorpe <jgg@ziepe.ca>
-> Date:   Thu Jan 10 12:05:19 2019 -0700
->
->     RDMA/bnxt_re: Use ib_device_get_by_netdev() instead of open coding
->
->     The core API handles the locking correctly and is faster if there
->     are multiple devices.
->
->     Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
->
-> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-> index fa539608ffbbe0..bd67a31937ec65 100644
-> --- a/drivers/infiniband/hw/bnxt_re/main.c
-> +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> @@ -504,21 +504,6 @@ static bool is_bnxt_re_dev(struct net_device *netdev)
->         return false;
->  }
->
-> -static struct bnxt_re_dev *bnxt_re_from_netdev(struct net_device *netdev)
-> -{
-> -       struct bnxt_re_dev *rdev;
-> -
-> -       rcu_read_lock();
-> -       list_for_each_entry_rcu(rdev, &bnxt_re_dev_list, list) {
-> -               if (rdev->netdev == netdev) {
-> -                       rcu_read_unlock();
-> -                       return rdev;
-> -               }
-> -       }
-> -       rcu_read_unlock();
-> -       return NULL;
-> -}
-> -
->  static void bnxt_re_dev_unprobe(struct net_device *netdev,
->                                 struct bnxt_en_dev *en_dev)
->  {
-> @@ -1616,23 +1601,26 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
->  {
->         struct net_device *real_dev, *netdev = netdev_notifier_info_to_dev(ptr);
->         struct bnxt_re_work *re_work;
-> -       struct bnxt_re_dev *rdev;
-> +       struct bnxt_re_dev *rdev = NULL;
-> +       struct ib_device *ibdev;
->         int rc = 0;
->         bool sch_work = false;
->
->         real_dev = rdma_vlan_dev_real_dev(netdev);
->         if (!real_dev)
->                 real_dev = netdev;
-> -
-> -       rdev = bnxt_re_from_netdev(real_dev);
-> -       if (!rdev && event != NETDEV_REGISTER)
-> -               goto exit;
->         if (real_dev != netdev)
->                 goto exit;
->
-> +       ibdev = ib_device_get_by_netdev(real_dev, RDMA_DRIVER_BNXT_RE);
-> +       if (!ibdev && event != NETDEV_REGISTER)
-> +               goto exit;
-> +       if (ibdev)
-> +               rdev = container_of(ibdev, struct bnxt_re_dev, ibdev);
-> +
->         switch (event) {
->         case NETDEV_REGISTER:
-> -               if (rdev)
-> +               if (ibdev)
->                         break;
->                 rc = bnxt_re_dev_reg(&rdev, real_dev);
->                 if (rc == -ENODEV)
-> @@ -1676,6 +1664,9 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
->                 }
->         }
->
-> +       if (ibdev)
-> +               ib_device_put(ibdev);
-> +
->  exit:
->         return NOTIFY_DONE;
->  }
->
-> commit 6c617f08e749ee0f6c7be6763ea92e49ae484712
-> Author: Jason Gunthorpe <jgg@ziepe.ca>
-> Date:   Thu Jan 10 14:40:16 2019 -0700
->
->     RDMA/bnxt_re: Use ib_device_try_get()
->
->     There are a couple places in this driver running from a work queue that
->     need the ib_device to be registered. Instead of using a broken internal
->     bit rely on the new core code to guarantee device registration.
->
->     Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
->
-> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-> index 666897596218d3..fa539608ffbbe0 100644
-> --- a/drivers/infiniband/hw/bnxt_re/main.c
-> +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> @@ -1137,12 +1137,13 @@ static int bnxt_re_update_gid(struct bnxt_re_dev *rdev)
->         u16 gid_idx, index;
->         int rc = 0;
->
-> -       if (!test_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags))
-> +       if (!ib_device_try_get(&rdev->ibdev))
->                 return 0;
->
->         if (!sgid_tbl) {
->                 dev_err(rdev_to_dev(rdev), "QPLIB: SGID table not allocated");
-> -               return -EINVAL;
-> +               rc = -EINVAL;
-> +               goto out;
->         }
->
->         for (index = 0; index < sgid_tbl->active; index++) {
-> @@ -1163,6 +1164,8 @@ static int bnxt_re_update_gid(struct bnxt_re_dev *rdev)
->                                             rdev->qplib_res.netdev->dev_addr);
->         }
->
-> +out:
-> +       ib_device_put(&rdev->ibdev);
->         return rc;
->  }
->
-> @@ -1545,12 +1548,7 @@ static void bnxt_re_task(struct work_struct *work)
->         re_work = container_of(work, struct bnxt_re_work, work);
->         rdev = re_work->rdev;
->
-> -       if (re_work->event != NETDEV_REGISTER &&
-> -           !test_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags))
-> -               goto exit;
-> -
-> -       switch (re_work->event) {
-> -       case NETDEV_REGISTER:
-> +       if (re_work->event == NETDEV_REGISTER) {
->                 rc = bnxt_re_ib_reg(rdev);
->                 if (rc) {
->                         dev_err(rdev_to_dev(rdev),
-> @@ -1559,7 +1557,13 @@ static void bnxt_re_task(struct work_struct *work)
->                         bnxt_re_dev_unreg(rdev);
->                         goto exit;
->                 }
-> -               break;
-> +               goto exit;
-> +       }
-> +
-> +       if (!ib_device_try_get(&rdev->ibdev))
-> +               goto exit;
-> +
-> +       switch (re_work->event) {
->         case NETDEV_UP:
->                 bnxt_re_dispatch_event(&rdev->ibdev, NULL, 1,
->                                        IB_EVENT_PORT_ACTIVE);
-> @@ -1579,6 +1583,8 @@ static void bnxt_re_task(struct work_struct *work)
->         default:
->                 break;
->         }
-> +
-> +       ib_device_put(&rdev->ibdev);
->         smp_mb__before_atomic();
->         atomic_dec(&rdev->sched_count);
->  exit:
->
-> commit e64da98a182a2cae3338f28f6e581f189b5f8674
-> Author: Jason Gunthorpe <jgg@ziepe.ca>
-> Date:   Thu Jan 10 12:02:11 2019 -0700
->
->     RDMA/bnxt_re: Fix lifetimes in bnxt_re_task
->
->     A work queue cannot just rely on the ib_device not being freed, it must
->     hold a kref on the memory so that the BNXT_RE_FLAG_IBDEV_REGISTERED check
->     works.
->
->     Also, every single work queue call has an allocated memory, and the kfree
->     of this memory was missed sometimes.
->
->     Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
->     Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
->
-> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-> index 814f959c7db965..666897596218d3 100644
-> --- a/drivers/infiniband/hw/bnxt_re/main.c
-> +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> @@ -1547,7 +1547,7 @@ static void bnxt_re_task(struct work_struct *work)
->
->         if (re_work->event != NETDEV_REGISTER &&
->             !test_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags))
-> -               return;
-> +               goto exit;
->
->         switch (re_work->event) {
->         case NETDEV_REGISTER:
-> @@ -1582,6 +1582,7 @@ static void bnxt_re_task(struct work_struct *work)
->         smp_mb__before_atomic();
->         atomic_dec(&rdev->sched_count);
->  exit:
-> +       put_device(&rdev->ibdev.dev);
->         kfree(re_work);
->  }
->
-> @@ -1658,6 +1659,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
->                 /* Allocate for the deferred task */
->                 re_work = kzalloc(sizeof(*re_work), GFP_ATOMIC);
->                 if (re_work) {
-> +                       get_device(&rdev->ibdev.dev);
->                         re_work->rdev = rdev;
->                         re_work->event = event;
->                         re_work->vlan_dev = (real_dev == netdev ?
+Hi Parav,
+
+Thanks for your discussion with Jason and Leon, there are a lot of
+things that I have never considered. And sorry for the late response, it
+took me some time to understand current LAG driver of mlx5. Seems a
+mlx5_lag structure combines all slave net devices and ib devices, and it
+has no directly combination with the bonding net device.
+
+It seems you have been thinking a lot about how LAG can be achieved
+in core. Do you have plans to implement it? Or have you already finished
+some part of it? I'm curious about that because we want to use LAG in
+HIPXX as I said, and we can help to test and improve the existing design
+if some work is already done.
+
+Thank you
+Weihang
