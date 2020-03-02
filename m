@@ -2,69 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FBB175D74
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 15:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2FA175D8E
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 15:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbgCBOnH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Mar 2020 09:43:07 -0500
-Received: from mail-pl1-f173.google.com ([209.85.214.173]:35279 "EHLO
-        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727030AbgCBOnH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Mar 2020 09:43:07 -0500
-Received: by mail-pl1-f173.google.com with SMTP id g6so4284247plt.2
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2020 06:43:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=from:content-transfer-encoding:mime-version:subject:message-id:date
-         :to;
-        bh=+RqTSQ+NT74k/oC1T8Nb5e8kb0y4gxE44JjVwpeMXDc=;
-        b=bK2rQ96ch97GQ4JNHpPvYgiH0KKWRigpa+RSflt4gQYS2zgd7FFJOCINQf4WYcOJa2
-         fq/cLjaYL3DNG4Zat9IRpAd0ep4aGChggrMHIAR2njV6PNaOJnX6vIx/Mhq9Pc5a/s34
-         2rhFPSRi8PYL7V0K0fWugIKHpr8W3sdVHvjlD2tMNPsjtOVCqqI+aUPqpGZyEzwJ7ba/
-         DlTltXL3401RrmWKIVEbrBy5zrehAt/alIteswt2vs2uLOLfXWk5IearqDpneuvCx6jU
-         5hdrXWjSut8K/TQ4PIOSjClEIWDFbiMsn8Ni+hd8y3I3UkPOY44h1i9ZirU9SDk5M1n1
-         CIug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:message-id:date:to;
-        bh=+RqTSQ+NT74k/oC1T8Nb5e8kb0y4gxE44JjVwpeMXDc=;
-        b=Wr8fTjYYOSl+onusl4TvKSFJ+C3lyeACApE1o0TpgVXU3gVOUeiesGqDVzI2WHit9O
-         tXvhg4frtcgMLEHF8+xr+UqrTgLbZ4X63E/tAUVDZzC2CDV6kHMxynVoqmSYAO8N6bbK
-         6e/Ln15h/JCHOO+dDm8kArV+hBb7NQiybjhgnHgWnTtFMlbxLRK6tz0JveDXcIlJr1F5
-         gBYcG3ATkt32kVadqMYc3qknB6YlBBuZ1bS9V7GyBZ852WXYkID5JodCPl0NNTuIlmcy
-         JJD+pyrZ2JbTMgvzRO0gZC3H55FEauwjcrIzz8T6cuDL9IJGs/CzYyRfzUJtfBk7Nxqg
-         IlxA==
-X-Gm-Message-State: ANhLgQ1oKLqn0cDohHpOufLjOeyv9jHuS6N+EH/2fpkUgZjLXLkUdWs6
-        cLGV7ECTZGl7qETL/CnZbifK2+xFNgg=
-X-Google-Smtp-Source: ADFU+vufVkP9L5tZqrfEnE5pdzHjcG46t5chRQ9DdzUntpl2y+KQqyRTWMe8xifqkCJRSY9O5D2Bdg==
-X-Received: by 2002:a17:90a:fa93:: with SMTP id cu19mr70831pjb.166.1583160186255;
-        Mon, 02 Mar 2020 06:43:06 -0800 (PST)
-Received: from [192.168.4.4] ([107.13.143.123])
-        by smtp.gmail.com with ESMTPSA id t142sm13102474pgb.31.2020.03.02.06.43.05
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Mar 2020 06:43:05 -0800 (PST)
-From:   Andrew Boyer <aboyer@pensando.io>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Positive or negative error return codes in rdma-core?
-Message-Id: <7CF6DD61-B611-4C24-98CA-5ADCCBA75553@pensando.io>
-Date:   Mon, 2 Mar 2020 09:43:03 -0500
-To:     linux-rdma@vger.kernel.org
-X-Mailer: Apple Mail (2.3445.104.11)
+        id S1727113AbgCBOwH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Mar 2020 09:52:07 -0500
+Received: from mga01.intel.com ([192.55.52.88]:57182 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727112AbgCBOwG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 2 Mar 2020 09:52:06 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 02 Mar 2020 06:52:06 -0800
+X-IronPort-AV: E=Sophos;i="5.70,507,1574150400"; 
+   d="scan'208";a="262791876"
+Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.201.53]) ([10.254.201.53])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 02 Mar 2020 06:52:04 -0800
+Subject: Re: [PATCH for-rc] IB/hfi1, qib: Ensure RCU is locked when accessing
+ list
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+References: <20200225195445.140896.41873.stgit@awfm-01.aw.intel.com>
+ <20200228161516.GA26535@ziepe.ca>
+ <8c036704-cd70-fd86-4fb7-20621543d1d2@intel.com>
+ <20200302132921.GX31668@ziepe.ca>
+From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
+Message-ID: <bb4cdcd5-46c9-339a-54a1-5560e14ed9fe@intel.com>
+Date:   Mon, 2 Mar 2020 09:52:03 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <20200302132921.GX31668@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Should rdma-core providers return positive or negative errors?
+On 3/2/2020 8:29 AM, Jason Gunthorpe wrote:
+> On Mon, Mar 02, 2020 at 08:14:52AM -0500, Dennis Dalessandro wrote:
+>> On 2/28/2020 11:15 AM, Jason Gunthorpe wrote:
+>>> On Tue, Feb 25, 2020 at 02:54:45PM -0500, Dennis Dalessandro wrote:
+>>>> The packet handling function, specifically the iteration of the qp list
+>>>> for mad packet processing misses locking RCU before running through the
+>>>> list. Not only is this incorrect, but the list_for_each_entry_rcu() call
+>>>> can not be called with a conditional check for lock dependency. Remedy
+>>>> this by invoking the rcu lock and unlock around the critical section.
+>>>>
+>>>> This brings MAD packet processing in line with what is done for non-MAD
+>>>> packets.
+>>>>
+>>>> Cc: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+>>>> Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+>>>> Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+>>>>    drivers/infiniband/hw/hfi1/verbs.c    |    4 +++-
+>>>>    drivers/infiniband/hw/qib/qib_verbs.c |    2 ++
+>>>>    2 files changed, 5 insertions(+), 1 deletion(-)
+>>>
+>>> Applied to for-next, thanks
+>>>
+>>
+>> Maybe it should have went to -rc?
+> 
+> It doesn't even have a fixes line. If you want patches in -rc send
+> better commit message. I keep repeating this again and again..
+> 
+> Jason
+> 
 
-The siw version of resize_cq returns -EOPNOTSUPP, but the dummy routine =
-returns +EOPNOTSUPP.
+Crap, yeah my bad on that. However there really isn't a good fixes line 
+for this. It's pretty much just the initial commit of the driver, does 
+that really help? It's still just in your WIP branch so is it too late 
+to add:
 
-Thanks,
-Andrew
+Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+
+Other than a fixes line what else do you need for the commit message? 
+Messed up locking is pretty self explanatory I would think.
+
+-Denny
+
 
