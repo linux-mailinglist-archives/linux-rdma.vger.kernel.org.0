@@ -2,181 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2AB176378
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 20:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECCB1763FE
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 20:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgCBTJQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Mar 2020 14:09:16 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:43476 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727372AbgCBTJQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Mar 2020 14:09:16 -0500
-Received: by mail-il1-f198.google.com with SMTP id o13so445935ilf.10
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2020 11:09:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=7npg9knZWi2ugFm6fusxk5+E+5/cR+9pt+PLR8BrWY8=;
-        b=hsqMFNZlQVkvyttpLBdD0T3+HPfTNzVEM1W1FG7x+brwIDCftTAIG7ht+JeHLRLxVj
-         9oaEBbX6xM9ffv0TBZtsV81JCH+qvq9q5Y9brpT3a6ie3kU2C6/sd+m8lZL5Azv6vFHg
-         4yM2PkTylkQfezzDOsPzGGQZokPmvJlpmij3GDAQ/NtFr2mFI1XkiinVaWRJoWlOMCeP
-         gZLclXC8ZM8GiacwkStc17nbocFsxwARIxDiIFa5G9BKCEjdXYKmLSbccAIare0Xvdsb
-         RfMaZwqrFqa0Ai9t/hPubzjcR1K0hQZCn/ZiWwqbX8lQaFgYfh/Ao7JkF0aTW39Oi1tN
-         h5uA==
-X-Gm-Message-State: ANhLgQ0bBkON9KAWcy66+jGU2zhSJCuQmuJkHZWNDjtUVfXfggt54dpk
-        wsN6Xa2XE2SJEH2KYWcC+fUrkTDPkG2OvQkUUEg/wj6p+wCq
-X-Google-Smtp-Source: ADFU+vtqfJorUl9RSyFXcBA9L34wwi7PU6/k7E3cw5PwiysS/ospyxs+EuwJrBrwvF+B5jkzYEtYcQfYUfBKFdm1aijSRvyk8w5D
+        id S1727372AbgCBTcN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Mar 2020 14:32:13 -0500
+Received: from mga07.intel.com ([134.134.136.100]:8572 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727234AbgCBTcN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 2 Mar 2020 14:32:13 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 02 Mar 2020 11:32:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,508,1574150400"; 
+   d="scan'208";a="286714801"
+Received: from orsmsx108.amr.corp.intel.com ([10.22.240.6])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Mar 2020 11:32:11 -0800
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX108.amr.corp.intel.com (10.22.240.6) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Mon, 2 Mar 2020 11:32:11 -0800
+Received: from orsmsx604.amr.corp.intel.com (10.22.229.17) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 2 Mar 2020 11:32:10 -0800
+Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
+ orsmsx604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 2 Mar 2020 11:32:10 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.172)
+ by edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Mon, 2 Mar 2020 11:32:10 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HxAbqzChMfGsDHMO6fZTlCBudOMCcrXYoGubIo+f7UiDDyHojh16DC9j7VkaVXuWqbz/deep+nSYRBNOkzSC+sRSV6E8QuoxbMm3Hh29pOvieCZATPaSD3zK5g6WtF0rwP241U2l7Qvz0VGbhxzpUM3nQAZYmoKYogFzz2kVLpgB3ErMPRje9AeGdJPcWxo78RDLtXral815DUIZpDsQr5CcWAWRoRXZegYXg7dEHSxlgYY/1cdpzZfo5HIapvFRkLW08RAatN6BLvd33IjVRKsx3s5ejgcUACAeHn/3SrHUH34hmAeo9x6CskE8gva+KJUn+TeGQ/kDpHBtXYq0Bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PAL2sxWfrysZYn3oRXSoSqJRdSSFKR+SssgFW7TisO4=;
+ b=cUcWZh8aEUa58a+QZZ/N/fFuSRbK/oVCgD0bjlqTI54wYqWO+XfYoNFNLgeRSru0rNoaTj6iDB9NDp7kLvuEpzLyBTGfNEEw1x7CuRrELWKh7sP6EfywL873o0J2OiXJmcoi7nj1FIp7L9mdrRrrctryLzYKlt15OM6vGMOwR6xfkD7p+WL2WEP99xcFJeFzNmVMmLqMhn/Zw9O/OjH4Ll9OrvrvqpB8m+YrS2A1klyKpPeZmykP2wowCbqCH4ppFFGc7RVl09lton41DtpWj1TkpDy4c1M8XJ2cAuR9v3bakr98uZ0EFroVD02gjrul4sckBToyU2/15bSifuqmvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PAL2sxWfrysZYn3oRXSoSqJRdSSFKR+SssgFW7TisO4=;
+ b=DERrqHoiroYHHjKPbufkrKIdd+6AxkP1o+MlgJn+hryLEWGeB4qqDzlNHVW3NzUAcuII//IrIwph8A6NPxnTd5H6VPzCwMeYmAxQDL0YfMHXalM72/LngFcnsyI0EmG5JJOyS7o13EnC3GsqWJ4CsZ8Vq1D11qGWTpJDInoOoFk=
+Received: from MW3PR11MB4651.namprd11.prod.outlook.com (2603:10b6:303:2c::21)
+ by MW3PR11MB4715.namprd11.prod.outlook.com (2603:10b6:303:57::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.15; Mon, 2 Mar
+ 2020 19:32:09 +0000
+Received: from MW3PR11MB4651.namprd11.prod.outlook.com
+ ([fe80::95bf:d9e5:2965:e266]) by MW3PR11MB4651.namprd11.prod.outlook.com
+ ([fe80::95bf:d9e5:2965:e266%6]) with mapi id 15.20.2772.019; Mon, 2 Mar 2020
+ 19:32:09 +0000
+From:   "Hefty, Sean" <sean.hefty@intel.com>
+To:     Andrew Boyer <aboyer@pensando.io>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: Positive or negative error return codes in rdma-core?
+Thread-Topic: Positive or negative error return codes in rdma-core?
+Thread-Index: AQHV8KD47VfZ4Jumh02Yvjr5wwGAMqg1r4MQ
+Date:   Mon, 2 Mar 2020 19:32:09 +0000
+Message-ID: <MW3PR11MB465166095F56EC67C3265EB49EE70@MW3PR11MB4651.namprd11.prod.outlook.com>
+References: <7CF6DD61-B611-4C24-98CA-5ADCCBA75553@pensando.io>
+In-Reply-To: <7CF6DD61-B611-4C24-98CA-5ADCCBA75553@pensando.io>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=sean.hefty@intel.com; 
+x-originating-ip: [134.134.136.205]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a17266eb-82cc-4b63-d379-08d7bee06675
+x-ms-traffictypediagnostic: MW3PR11MB4715:
+x-microsoft-antispam-prvs: <MW3PR11MB47150B89DD123E672B220AC19EE70@MW3PR11MB4715.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1227;
+x-forefront-prvs: 033054F29A
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(136003)(376002)(346002)(366004)(396003)(189003)(199004)(478600001)(52536014)(86362001)(5660300002)(110136005)(316002)(8936002)(81166006)(81156014)(8676002)(2906002)(64756008)(66446008)(66556008)(76116006)(9686003)(66476007)(4744005)(6506007)(7696005)(33656002)(71200400001)(66946007)(55016002)(186003)(26005);DIR:OUT;SFP:1102;SCL:1;SRVR:MW3PR11MB4715;H:MW3PR11MB4651.namprd11.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bbEomyRRLYu73Boa84Go8tJ3hx/afexA1H/pchh8g6lcZ/hlTHLUpWCSwoMGywjFDS8xV+O6I1vguo96HZyCifYo4xqUyCkXKquMfgcdEeJ/TwJ1xkTdhANilqcIhLNXrg6eqk0jSqCp8Up1/faikqr5wkaBK5s3TptE6YzOH65rBzWUftWkevbiJdFxmR7xVOmJQi2vja+O7JsqJ9pvqQ1WYheYb6k0gtX9ZBGlLKtWRIY1w/H1FJvoo1PeZ+IF+/v6tOBp3r/GjRSSNniJ7RytTf766F8lmOmBRiw/9dOBm0BsppSJ1QaEHDZxjdKhTBPaM81xHD8p8Fotu5zZpD1UNC7X2IQnEhM4Nd5dajDThO4dU+xF3/x1qaFXAJF/1GLij6wIEwHZwLqEidNZRBiNGJAVw5yOCIgQ42Z+4lstqdUhmkIUdGWAvsgd7N9h
+x-ms-exchange-antispam-messagedata: oQczHGksFkp/UYBAbWJTjIZF5klPj88Nb+VLXolO4PZv+waME4QXl/j7+zd/eiQOtFbgAylNCQIsg/OR4zjKHawkTPWTMyhDiUDlLEQsVqlY2SkPdnbecn8R30Tn3MvyyVQsgry5nFAW+VT62c4KnQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2cce:: with SMTP id j14mr843248iow.23.1583176155259;
- Mon, 02 Mar 2020 11:09:15 -0800 (PST)
-Date:   Mon, 02 Mar 2020 11:09:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000059e701059fe3ec2f@google.com>
-Subject: INFO: task hung in rdma_destroy_id
-From:   syzbot <syzbot+0abbad99bee187cf63d4@syzkaller.appspotmail.com>
-To:     chuck.lever@oracle.com, dledford@redhat.com, jgg@ziepe.ca,
-        leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, parav@mellanox.com,
-        syzkaller-bugs@googlegroups.com, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-Network-Message-Id: a17266eb-82cc-4b63-d379-08d7bee06675
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2020 19:32:09.6487
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: C9rfaeG2Pm1I5XgA2Nr4zGtmQBQzNqKCBRnZDU5Eo1znyNictG45uwi7j+FfZDQy6S/fDUXtHcpIleRRAYGuGw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4715
+X-OriginatorOrg: intel.com
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+> Should rdma-core providers return positive or negative errors?
 
-syzbot found the following crash on:
+Yes
 
-HEAD commit:    63623fd4 Merge tag 'for-linus' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=160452c3e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9833e26bab355358
-dashboard link: https://syzkaller.appspot.com/bug?extid=0abbad99bee187cf63d4
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+Seriously, this varies by provider and call.  Libfabric handles return valu=
+es from verbs by passing them through a call that does something like this:
 
-Unfortunately, I don't have any reproducer for this crash yet.
+if (!ret)
+	return 0;
+else if (ret =3D=3D -1)
+	return -errno;
+else
+	return -abs(ret);
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+0abbad99bee187cf63d4@syzkaller.appspotmail.com
+The exception is poll_cq.
 
-INFO: task syz-executor.5:27890 blocked for more than 143 seconds.
-      Not tainted 5.6.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-syz-executor.5  D28072 27890  11077 0x00000004
-Call Trace:
- context_switch kernel/sched/core.c:3380 [inline]
- __schedule+0x934/0x1f90 kernel/sched/core.c:4080
- schedule+0xdc/0x2b0 kernel/sched/core.c:4154
- schedule_timeout+0x717/0xc50 kernel/time/timer.c:1871
- do_wait_for_common kernel/sched/completion.c:83 [inline]
- __wait_for_common kernel/sched/completion.c:104 [inline]
- wait_for_common kernel/sched/completion.c:115 [inline]
- wait_for_completion+0x29c/0x440 kernel/sched/completion.c:136
- rdma_destroy_id+0x680/0xdd0 drivers/infiniband/core/cma.c:1850
- ucma_close+0x115/0x310 drivers/infiniband/core/ucma.c:1762
- __fput+0x2ff/0x890 fs/file_table.c:280
- ____fput+0x16/0x20 fs/file_table.c:313
- task_work_run+0x145/0x1c0 kernel/task_work.c:113
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_usermode_loop+0x316/0x380 arch/x86/entry/common.c:164
- prepare_exit_to_usermode arch/x86/entry/common.c:195 [inline]
- syscall_return_slowpath arch/x86/entry/common.c:278 [inline]
- do_syscall_64+0x676/0x790 arch/x86/entry/common.c:304
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x416011
-Code: 49 89 fc 48 83 e7 0f 48 81 cf f0 00 00 00 49 8d 43 04 4c 39 d0 0f 83 ec 00 00 00 41 88 38 90 49 c1 ec 04 48 39 d6 74 5d 49 83 <f9> 08 73 48 0f b6 02 48 89 cf 4c 89 c9 48 d3 e0 49 09 c4 90 48 8d
-RSP: 002b:00007ffe941054c0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000416011
-RDX: 0000001b2fe20000 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 0000000000000001 R08: 00000000b9fbf2f5 R09: 00000000b9fbf2f9
-R10: 00007ffe941055a0 R11: 0000000000000293 R12: 000000000076c920
-R13: 000000000076c920 R14: 0000000000264fc6 R15: 000000000076bfcc
-
-Showing all locks held in the system:
-2 locks held by kworker/u4:2/99:
- #0: ffff8880ae937558 (&rq->lock){-.-.}, at: newidle_balance+0xa28/0xe80 kernel/sched/fair.c:10219
- #1: ffffc90001217dc0 ((work_completion)(&(&bat_priv->nc.work)->work)){+.+.}, at: process_one_work+0x917/0x17a0 kernel/workqueue.c:2239
-1 lock held by khungtaskd/1135:
- #0: ffffffff89bac340 (rcu_read_lock){....}, at: debug_show_all_locks+0x5f/0x279 kernel/locking/lockdep.c:5333
-2 locks held by rsyslogd/10884:
- #0: ffff88809b6e6ba0 (&f->f_pos_lock){+.+.}, at: __fdget_pos+0xee/0x110 fs/file.c:821
- #1: ffffffff89ba13f8 (logbuf_lock){-.-.}, at: is_bpf_image_address+0x0/0x290 kernel/bpf/trampoline.c:86
-2 locks held by getty/11006:
- #0: ffff888094516090 (&tty->ldisc_sem){++++}, at: ldsem_down_read+0x33/0x40 drivers/tty/tty_ldsem.c:340
- #1: ffffc9000184b2e0 (&ldata->atomic_read_lock){+.+.}, at: n_tty_read+0x220/0x1bf0 drivers/tty/n_tty.c:2156
-2 locks held by getty/11007:
- #0: ffff888094714090 (&tty->ldisc_sem){++++}, at: ldsem_down_read+0x33/0x40 drivers/tty/tty_ldsem.c:340
- #1: ffffc9000185b2e0 (&ldata->atomic_read_lock){+.+.}, at: n_tty_read+0x220/0x1bf0 drivers/tty/n_tty.c:2156
-2 locks held by getty/11008:
- #0: ffff8880906b4090 (&tty->ldisc_sem){++++}, at: ldsem_down_read+0x33/0x40 drivers/tty/tty_ldsem.c:340
- #1: ffffc9000186b2e0 (&ldata->atomic_read_lock){+.+.}, at: n_tty_read+0x220/0x1bf0 drivers/tty/n_tty.c:2156
-2 locks held by getty/11009:
- #0: ffff888092b2c090 (&tty->ldisc_sem){++++}, at: ldsem_down_read+0x33/0x40 drivers/tty/tty_ldsem.c:340
- #1: ffffc9000187b2e0 (&ldata->atomic_read_lock){+.+.}, at: n_tty_read+0x220/0x1bf0 drivers/tty/n_tty.c:2156
-2 locks held by getty/11010:
- #0: ffff88807bf93090 (&tty->ldisc_sem){++++}, at: ldsem_down_read+0x33/0x40 drivers/tty/tty_ldsem.c:340
- #1: ffffc900017e72e0 (&ldata->atomic_read_lock){+.+.}, at: n_tty_read+0x220/0x1bf0 drivers/tty/n_tty.c:2156
-2 locks held by getty/11011:
- #0: ffff88808599f090 (&tty->ldisc_sem){++++}, at: ldsem_down_read+0x33/0x40 drivers/tty/tty_ldsem.c:340
- #1: ffffc9000188b2e0 (&ldata->atomic_read_lock){+.+.}, at: n_tty_read+0x220/0x1bf0 drivers/tty/n_tty.c:2156
-2 locks held by getty/11012:
- #0: ffff8880a2abd090 (&tty->ldisc_sem){++++}, at: ldsem_down_read+0x33/0x40 drivers/tty/tty_ldsem.c:340
- #1: ffffc900017db2e0 (&ldata->atomic_read_lock){+.+.}, at: n_tty_read+0x220/0x1bf0 drivers/tty/n_tty.c:2156
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 1135 Comm: khungtaskd Not tainted 5.6.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x197/0x210 lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x70/0xb2 lib/nmi_backtrace.c:101
- nmi_trigger_cpumask_backtrace+0x23b/0x28b lib/nmi_backtrace.c:62
- arch_trigger_cpumask_backtrace+0x14/0x20 arch/x86/kernel/apic/hw_nmi.c:38
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:205 [inline]
- watchdog+0xb11/0x10c0 kernel/hung_task.c:289
- kthread+0x361/0x430 kernel/kthread.c:255
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 99 Comm: kworker/u4:2 Not tainted 5.6.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: bat_events batadv_nc_worker
-RIP: 0010:__read_once_size include/linux/compiler.h:199 [inline]
-RIP: 0010:arch_atomic_read arch/x86/include/asm/atomic.h:31 [inline]
-RIP: 0010:atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
-RIP: 0010:rcu_dynticks_curr_cpu_in_eqs+0x7a/0xb0 kernel/rcu/tree.c:301
-Code: ec e8 51 00 4c 89 e2 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 0f b6 14 02 4c 89 e0 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 17 <8b> 83 d8 00 00 00 48 83 c4 08 5b 41 5c 5d d1 e8 83 f0 01 83 e0 01
-RSP: 0018:ffffc90001217c98 EFLAGS: 00000246
-RAX: 0000000000000003 RBX: ffff8880ae938300 RCX: ffffffff816226d4
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff8880ae9383d8
-RBP: ffffc90001217cb0 R08: 1ffff11015d2707b R09: ffffed1015d2707c
-R10: ffffed1015d2707b R11: ffff8880ae9383db R12: ffff8880ae9383d8
-R13: 0000000000000363 R14: 0000000000000000 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffff600400 CR3: 000000009b725000 CR4: 00000000001426e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- rcu_is_watching+0x10/0x30 kernel/rcu/tree.c:919
- rcu_read_unlock include/linux/rcupdate.h:651 [inline]
- batadv_nc_purge_orig_hash net/batman-adv/network-coding.c:411 [inline]
- batadv_nc_worker+0x480/0x760 net/batman-adv/network-coding.c:718
- process_one_work+0xa05/0x17a0 kernel/workqueue.c:2264
- worker_thread+0x98/0xe40 kernel/workqueue.c:2410
- kthread+0x361/0x430 kernel/kthread.c:255
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+- Sean
