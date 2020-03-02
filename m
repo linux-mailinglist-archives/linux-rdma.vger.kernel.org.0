@@ -2,119 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADEC175DE8
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 16:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BDC175EF5
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 16:58:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgCBPKA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Mar 2020 10:10:00 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:44175 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726982AbgCBPKA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Mar 2020 10:10:00 -0500
-Received: by mail-qk1-f193.google.com with SMTP id f198so2598668qke.11
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2020 07:09:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=N8SNyCjNb2Ol0mPt/h9lHEFs/F/R+FkJiirkQ6gDuNU=;
-        b=expCroaEPAmx9FqTfAAtIAK+/Aa+SgOh98dgUCcYDNsOzBgsL3mO8iqyOruX7mw/Pn
-         LeMMxUtYmbpadFQE5+/5r2O4Vma4/C9QpuOw+wtIEX7IrhmPSwl53+5xNnIHfybB8Ddu
-         RBp8bmR1AmBwCqYp3pf/uDLE7DJyvGZ0tVUyDsA+W0ckSucKB8o1pmt8cX27Rh0FuuD9
-         l5DnDKLYd/jMSJqjWwQR0+2bs+1iHDRsQjdN6SlCx37B0OSVlkHARfYanJONj23yIZUt
-         /wmkNiFdohsldkY/S2PcvxMF5HtIScRjZR+se6UqWhUmTOZ92pL7zSK1jR8OAJFIJdtr
-         clTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=N8SNyCjNb2Ol0mPt/h9lHEFs/F/R+FkJiirkQ6gDuNU=;
-        b=Gtgt5lOnmT3ntnXNhWaHukx1iQlUtqEwH//kD/yWZPiPFji9KNZzMhGR0mTHCOFUHk
-         KdxwTW+W9ZaW8pL8v3zBlZxSbHl4o37FOk0rH2whKtSX/l9pS06fNDfQpHZ2gauqJUW8
-         Txq56XgQyKs1EKKVFjZYp0aQIQj86myLtgcPQ+fSyMFi0gLV3GLsBHALd5mVdM+wzZs7
-         LmQN1HySjwa+3MGg10LCKBIKQ/Rs93BjKtZCnmwQB/Gp510SRS5k6v1NDUwUxU4t14mp
-         axusX5c1JXmF/9RyrxMf3nJ90hf2nW2UHgwOaP3o+TY5C3JK3laVSFBydrTOsx98BBlg
-         R+Gg==
-X-Gm-Message-State: ANhLgQ3xFw7MHLaX75VTnXyCrOTw2DY4h2ObpDZbfrPwxBAuUvEg+y0F
-        b3asb5XO/KvKYblxH60KreSLFQ==
-X-Google-Smtp-Source: ADFU+vtWANPvnugGG5PQ1urgmYeDSbIElel8g3TMCap1tKFJ/oAf+Whgm5ODO/DBHoVyCmD2ax1sQA==
-X-Received: by 2002:a05:620a:13e3:: with SMTP id h3mr1893223qkl.44.1583161799254;
-        Mon, 02 Mar 2020 07:09:59 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id w60sm10304739qte.39.2020.03.02.07.09.58
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 02 Mar 2020 07:09:58 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j8mhh-0003qt-QK; Mon, 02 Mar 2020 11:09:57 -0400
-Date:   Mon, 2 Mar 2020 11:09:57 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-Subject: Re: [PATCH for-rc] IB/hfi1, qib: Ensure RCU is locked when accessing
- list
-Message-ID: <20200302150957.GZ31668@ziepe.ca>
-References: <20200225195445.140896.41873.stgit@awfm-01.aw.intel.com>
- <20200228161516.GA26535@ziepe.ca>
- <8c036704-cd70-fd86-4fb7-20621543d1d2@intel.com>
- <20200302132921.GX31668@ziepe.ca>
- <bb4cdcd5-46c9-339a-54a1-5560e14ed9fe@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bb4cdcd5-46c9-339a-54a1-5560e14ed9fe@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1727308AbgCBP6Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Mar 2020 10:58:24 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44422 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727121AbgCBP6Y (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Mar 2020 10:58:24 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 022FtBKg134234
+        for <linux-rdma@vger.kernel.org>; Mon, 2 Mar 2020 10:58:22 -0500
+Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2yfn166s2c-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2020 10:58:22 -0500
+Received: from localhost
+        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
+        Mon, 2 Mar 2020 15:58:20 -0000
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 2 Mar 2020 15:58:17 -0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 022FwGrd51118282
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 2 Mar 2020 15:58:16 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D24CFA4062;
+        Mon,  2 Mar 2020 15:58:16 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8AD0AA405B;
+        Mon,  2 Mar 2020 15:58:16 +0000 (GMT)
+Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  2 Mar 2020 15:58:16 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>
+Subject: [Patch for-rc v2] RDMA/siw: Fix failure handling during device creation
+Date:   Mon,  2 Mar 2020 16:58:14 +0100
+X-Mailer: git-send-email 2.17.2
+X-TM-AS-GCONF: 00
+x-cbid: 20030215-0008-0000-0000-000003587D7C
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20030215-0009-0000-0000-00004A79A9BE
+Message-Id: <20200302155814.9896-1-bmt@zurich.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-02_05:2020-03-02,2020-03-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ phishscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0 bulkscore=0
+ mlxlogscore=999 suspectscore=0 mlxscore=0 malwarescore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003020112
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 02, 2020 at 09:52:03AM -0500, Dennis Dalessandro wrote:
-> On 3/2/2020 8:29 AM, Jason Gunthorpe wrote:
-> > On Mon, Mar 02, 2020 at 08:14:52AM -0500, Dennis Dalessandro wrote:
-> > > On 2/28/2020 11:15 AM, Jason Gunthorpe wrote:
-> > > > On Tue, Feb 25, 2020 at 02:54:45PM -0500, Dennis Dalessandro wrote:
-> > > > > The packet handling function, specifically the iteration of the qp list
-> > > > > for mad packet processing misses locking RCU before running through the
-> > > > > list. Not only is this incorrect, but the list_for_each_entry_rcu() call
-> > > > > can not be called with a conditional check for lock dependency. Remedy
-> > > > > this by invoking the rcu lock and unlock around the critical section.
-> > > > > 
-> > > > > This brings MAD packet processing in line with what is done for non-MAD
-> > > > > packets.
-> > > > > 
-> > > > > Cc: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
-> > > > > Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-> > > > > Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-> > > > >    drivers/infiniband/hw/hfi1/verbs.c    |    4 +++-
-> > > > >    drivers/infiniband/hw/qib/qib_verbs.c |    2 ++
-> > > > >    2 files changed, 5 insertions(+), 1 deletion(-)
-> > > > 
-> > > > Applied to for-next, thanks
-> > > > 
-> > > 
-> > > Maybe it should have went to -rc?
-> > 
-> > It doesn't even have a fixes line. If you want patches in -rc send
-> > better commit message. I keep repeating this again and again..
-> > 
-> > Jason
-> > 
-> 
-> Crap, yeah my bad on that. However there really isn't a good fixes line for
-> this. It's pretty much just the initial commit of the driver, does that
-> really help? It's still just in your WIP branch so is it too late to add:
-> 
-> Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+A failing call to ib_device_set_netdev() during device creation
+caused system crash due to xa_destroy of uninitialized xarray
+hit by device deallocation. Fixed by moving xarray initialization
+before potential device deallocation.
 
-Yes, it really does help, ok I updated it.
+Fixes: bdcf26bf9b3a (rdma/siw: network and RDMA core interface)
+Reported-by: syzbot+2e80962bedd9559fe0b3@syzkaller.appspotmail.com
+Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+---
+v1 -> v2:
+- Fix here only potential system crash during failing device
+  creation, but not missing correct error propagation.
 
-> Other than a fixes line what else do you need for the commit message? Messed
-> up locking is pretty self explanatory I would think.
+ drivers/infiniband/sw/siw/siw_main.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Well, missing rcu_lock only causes problems for realtime kernels, but
-sure it can be moved to -rc
+diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
+index 96ed349c0939..5cd40fb9e20c 100644
+--- a/drivers/infiniband/sw/siw/siw_main.c
++++ b/drivers/infiniband/sw/siw/siw_main.c
+@@ -388,6 +388,9 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
+ 		{ .max_segment_size = SZ_2G };
+ 	base_dev->num_comp_vectors = num_possible_cpus();
+ 
++	xa_init_flags(&sdev->qp_xa, XA_FLAGS_ALLOC1);
++	xa_init_flags(&sdev->mem_xa, XA_FLAGS_ALLOC1);
++
+ 	ib_set_device_ops(base_dev, &siw_device_ops);
+ 	rv = ib_device_set_netdev(base_dev, netdev, 1);
+ 	if (rv)
+@@ -415,9 +418,6 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
+ 	sdev->attrs.max_srq_wr = SIW_MAX_SRQ_WR;
+ 	sdev->attrs.max_srq_sge = SIW_MAX_SGE;
+ 
+-	xa_init_flags(&sdev->qp_xa, XA_FLAGS_ALLOC1);
+-	xa_init_flags(&sdev->mem_xa, XA_FLAGS_ALLOC1);
+-
+ 	INIT_LIST_HEAD(&sdev->cep_list);
+ 	INIT_LIST_HEAD(&sdev->qp_list);
+ 
+-- 
+2.17.2
 
-Jason
