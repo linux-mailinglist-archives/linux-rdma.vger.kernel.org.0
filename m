@@ -2,95 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBE71756FB
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 10:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A431757CB
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 10:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgCBJ0Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Mar 2020 04:26:16 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11130 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726382AbgCBJ0P (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 2 Mar 2020 04:26:15 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 4DBD3858E8D5798F4FF9;
-        Mon,  2 Mar 2020 17:25:57 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.439.0; Mon, 2 Mar 2020 17:25:50 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH for-next] RDMA/hns: Support to set mininum depth of qp to 0
-Date:   Mon, 2 Mar 2020 17:22:17 +0800
-Message-ID: <1583140937-2223-1-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1726956AbgCBJ6x (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Mar 2020 04:58:53 -0500
+Received: from mail-io1-f68.google.com ([209.85.166.68]:36178 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727060AbgCBJ6w (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Mar 2020 04:58:52 -0500
+Received: by mail-io1-f68.google.com with SMTP id d15so10837807iog.3
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2020 01:58:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CgZRkqKTlqTPulCP/Z/qQC513Xv4FPfpHxLuqBbnjAk=;
+        b=g15Sio73VOBgipZ8AqV6rXMyYIH/FjaISdLiWSdC0XmkFQK+jkP4oZSNp6y/GdqjvG
+         Vk69oGdMYQnk1lUJZ5SlEM1Mg+lKO1i+ZTC9DtuG4tW8F+uQ3BYFah4NT+Qj+gASTqoO
+         ABFI0wguzqgwePZGt9Pz36/0A9sc+SgdBXMOCNw+PSIlEI+maRoa/Gw7pVf4+vyxciIv
+         OL7f6Lln0QoTsRidgU1ktWoemibzEbYsgjvUspDQP3o6V1ME5QJ0AVvGRQQjwW5UOWGi
+         3b5sFXoEGc4prtPB9Rj3ZcN5YUMNwqnvJyJ/9qnffZCK2a7h3uCuWzYo3NYy9sR7a3I1
+         2jUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CgZRkqKTlqTPulCP/Z/qQC513Xv4FPfpHxLuqBbnjAk=;
+        b=Ikhd8Xa8Zrgxvn9qyYSDhMuqWq1PL7pXYzhE+KQxMQ9FTg/eSp9D+R+uq6WSDGMWzQ
+         x8i127FOO6X4BdYrDtAVvHGUW81qBJwVgfqNkc4bVHLd9l0Y1xnLbRMnpTIe/KKWrcnp
+         MkVT1WLAAtc0TZ7zVUqSIw1ogkP7zTjs/B353x3Joxp91b3cQIuGuz0G9wZmUpfFRf2F
+         LACyKT9llokSK4hb8XARS+82Gi/9CUaQwo1+5xEAhydUPCeKEORnxmZ4b4YW+Xet+wUl
+         487R48V+SJ9Qf6TMaaOofp9wAniAgP/5Az3B+zPx0JsG3G/gbH2se7esRLVFjL8gAf+d
+         htdQ==
+X-Gm-Message-State: APjAAAU2iXqO1S+6O1oKydB27u+BYQLVL4Uar4SnfEovOXyTjRhtSDwg
+        83EH/hf4aNUZNiMqJ5zoeUTK9sjsq8fFv/ZjgxMv
+X-Google-Smtp-Source: APXvYqyIpuywT4gaQSZZrGI4CtG5X618MR1wirAOy2xoXfW/vaZpNm0TtwxRfClkClwj0az1I5CQ1qO0+duuQ8nfLG8=
+X-Received: by 2002:a02:caa8:: with SMTP id e8mr6403877jap.126.1583143131655;
+ Mon, 02 Mar 2020 01:58:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+References: <20200221104721.350-1-jinpuwang@gmail.com> <20200221104721.350-21-jinpuwang@gmail.com>
+ <33864f54-62af-cb5f-45fa-55a283dcd434@acm.org>
+In-Reply-To: <33864f54-62af-cb5f-45fa-55a283dcd434@acm.org>
+From:   Danil Kipnis <danil.kipnis@cloud.ionos.com>
+Date:   Mon, 2 Mar 2020 10:58:40 +0100
+Message-ID: <CAHg0HuwvdYNB=C4yi4_tXeOWkj9rjTsV0B59Ea+_axLAuZ98Zg@mail.gmail.com>
+Subject: Re: [PATCH v9 20/25] block/rnbd: server: main functionality
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>, rpenyaev@suse.de,
+        pankaj.gupta@cloud.ionos.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lang Cheng <chenglang@huawei.com>
+On Sun, Mar 1, 2020 at 3:58 AM Bart Van Assche <bvanassche@acm.org> wrote:
+>
+> On 2020-02-21 02:47, Jack Wang wrote:
+> > +static int dev_search_path_set(const char *val, const struct kernel_param *kp)
+> > +{
+> > +     char *dup;
+> > +
+> > +     if (strlen(val) >= sizeof(dev_search_path))
+> > +             return -EINVAL;
+> > +
+> > +     dup = kstrdup(val, GFP_KERNEL);
+> > +
+> > +     if (dup[strlen(dup) - 1] == '\n')
+> > +             dup[strlen(dup) - 1] = '\0';
+> > +
+> > +     strlcpy(dev_search_path, dup, sizeof(dev_search_path));
+> > +
+> > +     kfree(dup);
+> > +     pr_info("dev_search_path changed to '%s'\n", dev_search_path);
+> > +
+> > +     return 0;
+> > +}
+>
+> It is not necessary in this function to do memory allocation. Something
+> like the following (untested) code should be sufficient:
+>
+>         const char *p = strrchr(val, '\n') ? : val + strlen(val);
+>
+>         snprintf(dev_search_path, sizeof(dev_search_path), "%.*s",
+>                 (int)(p - val), val);
+>
+> How are concurrent attempts to change dev_search_path serialized?
+>
+Hi Bart,
 
-Minimum depth of qp should be allowed to be set to 0 according to the
-firmware configuration. And when qp is changed from reset to reset, the
-capability of minimum qp depth was used to identify hardware of hip06,
-it should be changed into a more readable form.
+thanks a lot for your comments. Will try to avoid the allocation. The
+module parameter is readonly. It's only set during module init - I
+guess we don't need to handle concurrent access?
 
-Signed-off-by: Lang Cheng <chenglang@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_qp.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+Best,
+Danil.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 2a75355..10c4354 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -382,10 +382,10 @@ static int set_rq_size(struct hns_roce_dev *hr_dev,
- 			return -EINVAL;
- 		}
- 
--		if (hr_dev->caps.min_wqes)
-+		if (cap->max_recv_wr)
- 			max_cnt = max(cap->max_recv_wr, hr_dev->caps.min_wqes);
- 		else
--			max_cnt = cap->max_recv_wr;
-+			max_cnt = 0;
- 
- 		hr_qp->rq.wqe_cnt = roundup_pow_of_two(max_cnt);
- 
-@@ -652,10 +652,10 @@ static int set_kernel_sq_size(struct hns_roce_dev *hr_dev,
- 
- 	hr_qp->sq.wqe_shift = ilog2(hr_dev->caps.max_sq_desc_sz);
- 
--	if (hr_dev->caps.min_wqes)
-+	if (cap->max_send_wr)
- 		max_cnt = max(cap->max_send_wr, hr_dev->caps.min_wqes);
- 	else
--		max_cnt = cap->max_send_wr;
-+		max_cnt = 0;
- 
- 	hr_qp->sq.wqe_cnt = roundup_pow_of_two(max_cnt);
- 	if ((u32)hr_qp->sq.wqe_cnt > hr_dev->caps.max_wqes) {
-@@ -1394,11 +1394,10 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 		goto out;
- 
- 	if (cur_state == new_state && cur_state == IB_QPS_RESET) {
--		if (hr_dev->caps.min_wqes) {
-+		if (hr_dev->hw_rev == HNS_ROCE_HW_VER1) {
- 			ret = -EPERM;
- 			ibdev_err(&hr_dev->ib_dev,
--				"cur_state=%d new_state=%d\n", cur_state,
--				new_state);
-+				  "Unsupport to modify qp from reset to reset\n");
- 		} else {
- 			ret = 0;
- 		}
--- 
-2.8.1
 
+> Thanks,
+>
+> Bart.
