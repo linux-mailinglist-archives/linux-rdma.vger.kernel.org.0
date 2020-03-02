@@ -2,331 +2,292 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA29175271
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 05:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A411752C6
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 05:43:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgCBEDB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 1 Mar 2020 23:03:01 -0500
-Received: from mga09.intel.com ([134.134.136.24]:25103 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726758AbgCBEDB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 1 Mar 2020 23:03:01 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 01 Mar 2020 20:02:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,506,1574150400"; 
-   d="scan'208";a="243056209"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 01 Mar 2020 20:02:55 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1j8cIA-0000EN-Dr; Mon, 02 Mar 2020 12:02:54 +0800
-Date:   Mon, 02 Mar 2020 12:02:42 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- 801b67f3eaafd3f2ec8b65d93142d4ffedba85df
-Message-ID: <5e5c8562.p/Cqmtwjhz9Bv5Xc%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726805AbgCBEnD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 1 Mar 2020 23:43:03 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:45704 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726775AbgCBEnD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 1 Mar 2020 23:43:03 -0500
+Received: by mail-oi1-f195.google.com with SMTP id v19so9011325oic.12
+        for <linux-rdma@vger.kernel.org>; Sun, 01 Mar 2020 20:43:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WVjZZXlxxONovY0ODyekptAXEkEhd6rnDXIXkGoZRRg=;
+        b=Iide8lxNKBDjHUzJkogPJo6GTM08yYKSsLVJziAKptXj6kZULOaWjbWOWTK328rvuD
+         suCrWMfgjz0IQzzzJYinAT80frlwfkndcBQ5OEhNoJhshFKfWVsdq8Q7e8KE9/a7GHJT
+         S1GVfF8K4wEVZV7j8El3e7Q0GBvnuNwttsnHY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WVjZZXlxxONovY0ODyekptAXEkEhd6rnDXIXkGoZRRg=;
+        b=BFw2PPnpZvFf/Rm9Pst3LS4IwaWkeWhiXJNMqz+nU+PlrEb8JU24LR0g6wMukzEEQo
+         3c2VG3Mukw3mv9WlwB1KWW1MlvbxNJysm+lFQmQGIr+giHjkg28UkJPqqcEmRf/hP2/a
+         BLnVW8hDIK+l59eOlCIf7QtqWrWgRGUoRm/zLSk0py2tSSdch9eqCorXjd4Gp/AX7/uG
+         zcIJKQKIy0oQnmbubohIw7dowLjwZVLTFvQMHn2K6xPJ9gLl0Li/Pirg0S5DFpaBhUzw
+         rmX61L/4bKa5zEQkTGo6hv9WcGAn7pJX4rL7zp9ECD5LNkv3l0kSBdQbbRgAVa72Kixf
+         0wGg==
+X-Gm-Message-State: APjAAAW9AwYILORyKGggcxsp6BcuG87o3ON972PbdEZe8atZov/ewWRO
+        /nVOCk5QAzJgUr5I25NjlexchuQgiAAvQ1ik7Uf8ma50
+X-Google-Smtp-Source: APXvYqzSPSTEYeatCMpLEDopRzctu56QeXrU4RfyMrVVEKI+LfE5Ks2hcpJ5I12GuShOwH64DtODXL0+kHU/EZqP/gc=
+X-Received: by 2002:aca:ba55:: with SMTP id k82mr10180167oif.94.1583124180202;
+ Sun, 01 Mar 2020 20:43:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <1582731932-26574-1-git-send-email-selvin.xavier@broadcom.com>
+ <1582731932-26574-3-git-send-email-selvin.xavier@broadcom.com> <20200228163522.GA27288@ziepe.ca>
+In-Reply-To: <20200228163522.GA27288@ziepe.ca>
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+Date:   Mon, 2 Mar 2020 10:12:49 +0530
+Message-ID: <CA+sbYW0vgu5nSz8wyLdGH-OVikoO4yy-tfi_URpM9E3rHrs98A@mail.gmail.com>
+Subject: Re: [PATCH for-next v4 2/2] RDMA/bnxt_re: Use driver_unregister and
+ unregistration API
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-rc
-branch HEAD: 801b67f3eaafd3f2ec8b65d93142d4ffedba85df  RDMA/core: Fix pkey and port assignment in get_new_pps
+On Fri, Feb 28, 2020 at 10:05 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Wed, Feb 26, 2020 at 07:45:32AM -0800, Selvin Xavier wrote:
+> > @@ -1724,6 +1714,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
+> >               rc = bnxt_re_add_device(&rdev, real_dev);
+> >               if (!rc)
+> >                       sch_work = true;
+> > +             release = false;
+> >               break;
+> >
+> >       case NETDEV_UNREGISTER:
+> > @@ -1732,8 +1723,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
+> >                */
+> >               if (atomic_read(&rdev->sched_count) > 0)
+> >                       goto exit;
+>
+> This sched_count stuff needs cleaning too.
+>
+> krefs should be used properly, carry the kref on the ib_device into
+> the work and use the registration lock on the ib device to serialize
+> instead of this sched_count stuff.
+>
+> This all sounds so familiar.. Oh I tried to fix this once - maybe the
+> below will help you:
+>
+Thanks Jason for the patches. Changes in first patch is already
+taken care in my series. Will test  your other two patches and will
+get back.
 
-elapsed time: 3622m
-
-configs tested: 276
-configs skipped: 0
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                               defconfig
-sparc                            allyesconfig
-i386                             allyesconfig
-h8300                     edosk2674_defconfig
-parisc                generic-32bit_defconfig
-xtensa                       common_defconfig
-ia64                             alldefconfig
-ia64                                defconfig
-powerpc                             defconfig
-openrisc                    or1ksim_defconfig
-microblaze                    nommu_defconfig
-i386                              allnoconfig
-s390                              allnoconfig
-mips                              allnoconfig
-nds32                             allnoconfig
-mips                             allmodconfig
-arc                                 defconfig
-parisc                generic-64bit_defconfig
-mips                      malta_kvm_defconfig
-xtensa                          iss_defconfig
-h8300                       h8s-sim_defconfig
-sh                            titan_defconfig
-arc                              allyesconfig
-m68k                       m5475evb_defconfig
-nios2                         3c120_defconfig
-sparc64                           allnoconfig
-openrisc                 simple_smp_defconfig
-sh                                allnoconfig
-s390                                defconfig
-alpha                               defconfig
-s390                             allmodconfig
-sparc64                          allyesconfig
-sparc                               defconfig
-um                           x86_64_defconfig
-i386                             alldefconfig
-i386                                defconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-c6x                              allyesconfig
-c6x                        evmc6678_defconfig
-nios2                         10m50_defconfig
-csky                                defconfig
-nds32                               defconfig
-h8300                    h8300h-sim_defconfig
-m68k                             allmodconfig
-m68k                          multi_defconfig
-m68k                           sun3_defconfig
-microblaze                      mmu_defconfig
-powerpc                           allnoconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-x86_64               randconfig-a001-20200228
-x86_64               randconfig-a002-20200228
-x86_64               randconfig-a003-20200228
-i386                 randconfig-a001-20200228
-i386                 randconfig-a002-20200228
-i386                 randconfig-a003-20200228
-x86_64               randconfig-a001-20200301
-x86_64               randconfig-a002-20200301
-x86_64               randconfig-a003-20200301
-i386                 randconfig-a001-20200301
-i386                 randconfig-a002-20200301
-i386                 randconfig-a003-20200301
-x86_64               randconfig-a001-20200229
-x86_64               randconfig-a002-20200229
-x86_64               randconfig-a003-20200229
-i386                 randconfig-a001-20200229
-i386                 randconfig-a002-20200229
-i386                 randconfig-a003-20200229
-alpha                randconfig-a001-20200228
-m68k                 randconfig-a001-20200228
-mips                 randconfig-a001-20200228
-nds32                randconfig-a001-20200228
-parisc               randconfig-a001-20200228
-riscv                randconfig-a001-20200228
-alpha                randconfig-a001-20200229
-m68k                 randconfig-a001-20200229
-nds32                randconfig-a001-20200229
-parisc               randconfig-a001-20200229
-riscv                randconfig-a001-20200229
-c6x                  randconfig-a001-20200229
-h8300                randconfig-a001-20200229
-microblaze           randconfig-a001-20200229
-nios2                randconfig-a001-20200229
-sparc64              randconfig-a001-20200229
-c6x                  randconfig-a001-20200228
-h8300                randconfig-a001-20200228
-microblaze           randconfig-a001-20200228
-nios2                randconfig-a001-20200228
-sparc64              randconfig-a001-20200228
-csky                 randconfig-a001-20200228
-openrisc             randconfig-a001-20200228
-s390                 randconfig-a001-20200228
-sh                   randconfig-a001-20200228
-xtensa               randconfig-a001-20200228
-x86_64               randconfig-b001-20200228
-x86_64               randconfig-b002-20200228
-x86_64               randconfig-b003-20200228
-i386                 randconfig-b001-20200228
-i386                 randconfig-b002-20200228
-i386                 randconfig-b003-20200228
-x86_64               randconfig-b001-20200301
-x86_64               randconfig-b002-20200301
-x86_64               randconfig-b003-20200301
-i386                 randconfig-b001-20200301
-i386                 randconfig-b002-20200301
-i386                 randconfig-b003-20200301
-x86_64               randconfig-b001-20200229
-x86_64               randconfig-b002-20200229
-x86_64               randconfig-b003-20200229
-i386                 randconfig-b001-20200229
-i386                 randconfig-b002-20200229
-i386                 randconfig-b003-20200229
-x86_64               randconfig-c001-20200228
-x86_64               randconfig-c002-20200228
-x86_64               randconfig-c003-20200228
-i386                 randconfig-c001-20200228
-i386                 randconfig-c002-20200228
-i386                 randconfig-c003-20200228
-x86_64               randconfig-c001-20200301
-x86_64               randconfig-c002-20200301
-x86_64               randconfig-c003-20200301
-i386                 randconfig-c001-20200301
-i386                 randconfig-c002-20200301
-i386                 randconfig-c003-20200301
-x86_64               randconfig-c001-20200229
-x86_64               randconfig-c002-20200229
-x86_64               randconfig-c003-20200229
-i386                 randconfig-c001-20200229
-i386                 randconfig-c002-20200229
-i386                 randconfig-c003-20200229
-x86_64               randconfig-d001-20200228
-x86_64               randconfig-d002-20200228
-x86_64               randconfig-d003-20200228
-i386                 randconfig-d001-20200228
-i386                 randconfig-d002-20200228
-i386                 randconfig-d003-20200228
-x86_64               randconfig-d001-20200301
-x86_64               randconfig-d002-20200301
-x86_64               randconfig-d003-20200301
-i386                 randconfig-d001-20200301
-i386                 randconfig-d002-20200301
-i386                 randconfig-d003-20200301
-x86_64               randconfig-d001-20200229
-x86_64               randconfig-d002-20200229
-x86_64               randconfig-d003-20200229
-i386                 randconfig-d001-20200229
-i386                 randconfig-d002-20200229
-i386                 randconfig-d003-20200229
-x86_64               randconfig-e001-20200301
-x86_64               randconfig-e002-20200301
-x86_64               randconfig-e003-20200301
-i386                 randconfig-e001-20200301
-i386                 randconfig-e002-20200301
-i386                 randconfig-e003-20200301
-x86_64               randconfig-e001-20200228
-x86_64               randconfig-e002-20200228
-x86_64               randconfig-e003-20200228
-i386                 randconfig-e001-20200228
-i386                 randconfig-e002-20200228
-i386                 randconfig-e003-20200228
-x86_64               randconfig-e001-20200229
-x86_64               randconfig-e002-20200229
-x86_64               randconfig-e003-20200229
-i386                 randconfig-e001-20200229
-i386                 randconfig-e002-20200229
-i386                 randconfig-e003-20200229
-x86_64               randconfig-f001-20200228
-x86_64               randconfig-f002-20200228
-x86_64               randconfig-f003-20200228
-i386                 randconfig-f001-20200228
-i386                 randconfig-f002-20200228
-i386                 randconfig-f003-20200228
-x86_64               randconfig-f001-20200229
-x86_64               randconfig-f002-20200229
-x86_64               randconfig-f003-20200229
-i386                 randconfig-f001-20200229
-i386                 randconfig-f002-20200229
-i386                 randconfig-f003-20200229
-x86_64               randconfig-f001-20200301
-x86_64               randconfig-f002-20200301
-x86_64               randconfig-f003-20200301
-i386                 randconfig-f001-20200301
-i386                 randconfig-f002-20200301
-i386                 randconfig-f003-20200301
-x86_64               randconfig-g001-20200228
-x86_64               randconfig-g002-20200228
-x86_64               randconfig-g003-20200228
-i386                 randconfig-g001-20200228
-i386                 randconfig-g002-20200228
-i386                 randconfig-g003-20200228
-x86_64               randconfig-g001-20200229
-x86_64               randconfig-g002-20200229
-x86_64               randconfig-g003-20200229
-i386                 randconfig-g001-20200229
-i386                 randconfig-g002-20200229
-i386                 randconfig-g003-20200229
-x86_64               randconfig-g001-20200301
-x86_64               randconfig-g002-20200301
-x86_64               randconfig-g003-20200301
-i386                 randconfig-g001-20200301
-i386                 randconfig-g002-20200301
-i386                 randconfig-g003-20200301
-x86_64               randconfig-h001-20200228
-x86_64               randconfig-h002-20200228
-x86_64               randconfig-h003-20200228
-i386                 randconfig-h001-20200228
-i386                 randconfig-h002-20200228
-i386                 randconfig-h003-20200228
-x86_64               randconfig-h001-20200301
-x86_64               randconfig-h002-20200301
-x86_64               randconfig-h003-20200301
-i386                 randconfig-h001-20200301
-i386                 randconfig-h002-20200301
-i386                 randconfig-h003-20200301
-x86_64               randconfig-h001-20200229
-x86_64               randconfig-h002-20200229
-x86_64               randconfig-h003-20200229
-i386                 randconfig-h001-20200229
-i386                 randconfig-h002-20200229
-i386                 randconfig-h003-20200229
-arc                  randconfig-a001-20200229
-arm                  randconfig-a001-20200229
-arm64                randconfig-a001-20200229
-ia64                 randconfig-a001-20200229
-powerpc              randconfig-a001-20200229
-sparc                randconfig-a001-20200229
-arc                  randconfig-a001-20200228
-arm                  randconfig-a001-20200228
-arm64                randconfig-a001-20200228
-ia64                 randconfig-a001-20200228
-powerpc              randconfig-a001-20200228
-sparc                randconfig-a001-20200228
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-s390                             alldefconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                       zfcpdump_defconfig
-sh                               allmodconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sparc64                          allmodconfig
-sparc64                             defconfig
-um                                  defconfig
-um                             i386_defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks,
+Selvin
+> commit 33d88c818d155ffb2ef4b12e72107f628c70404c
+> Author: Jason Gunthorpe <jgg@ziepe.ca>
+> Date:   Thu Jan 10 12:05:19 2019 -0700
+>
+>     RDMA/bnxt_re: Use ib_device_get_by_netdev() instead of open coding
+>
+>     The core API handles the locking correctly and is faster if there
+>     are multiple devices.
+>
+>     Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+>
+> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+> index fa539608ffbbe0..bd67a31937ec65 100644
+> --- a/drivers/infiniband/hw/bnxt_re/main.c
+> +++ b/drivers/infiniband/hw/bnxt_re/main.c
+> @@ -504,21 +504,6 @@ static bool is_bnxt_re_dev(struct net_device *netdev)
+>         return false;
+>  }
+>
+> -static struct bnxt_re_dev *bnxt_re_from_netdev(struct net_device *netdev)
+> -{
+> -       struct bnxt_re_dev *rdev;
+> -
+> -       rcu_read_lock();
+> -       list_for_each_entry_rcu(rdev, &bnxt_re_dev_list, list) {
+> -               if (rdev->netdev == netdev) {
+> -                       rcu_read_unlock();
+> -                       return rdev;
+> -               }
+> -       }
+> -       rcu_read_unlock();
+> -       return NULL;
+> -}
+> -
+>  static void bnxt_re_dev_unprobe(struct net_device *netdev,
+>                                 struct bnxt_en_dev *en_dev)
+>  {
+> @@ -1616,23 +1601,26 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
+>  {
+>         struct net_device *real_dev, *netdev = netdev_notifier_info_to_dev(ptr);
+>         struct bnxt_re_work *re_work;
+> -       struct bnxt_re_dev *rdev;
+> +       struct bnxt_re_dev *rdev = NULL;
+> +       struct ib_device *ibdev;
+>         int rc = 0;
+>         bool sch_work = false;
+>
+>         real_dev = rdma_vlan_dev_real_dev(netdev);
+>         if (!real_dev)
+>                 real_dev = netdev;
+> -
+> -       rdev = bnxt_re_from_netdev(real_dev);
+> -       if (!rdev && event != NETDEV_REGISTER)
+> -               goto exit;
+>         if (real_dev != netdev)
+>                 goto exit;
+>
+> +       ibdev = ib_device_get_by_netdev(real_dev, RDMA_DRIVER_BNXT_RE);
+> +       if (!ibdev && event != NETDEV_REGISTER)
+> +               goto exit;
+> +       if (ibdev)
+> +               rdev = container_of(ibdev, struct bnxt_re_dev, ibdev);
+> +
+>         switch (event) {
+>         case NETDEV_REGISTER:
+> -               if (rdev)
+> +               if (ibdev)
+>                         break;
+>                 rc = bnxt_re_dev_reg(&rdev, real_dev);
+>                 if (rc == -ENODEV)
+> @@ -1676,6 +1664,9 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
+>                 }
+>         }
+>
+> +       if (ibdev)
+> +               ib_device_put(ibdev);
+> +
+>  exit:
+>         return NOTIFY_DONE;
+>  }
+>
+> commit 6c617f08e749ee0f6c7be6763ea92e49ae484712
+> Author: Jason Gunthorpe <jgg@ziepe.ca>
+> Date:   Thu Jan 10 14:40:16 2019 -0700
+>
+>     RDMA/bnxt_re: Use ib_device_try_get()
+>
+>     There are a couple places in this driver running from a work queue that
+>     need the ib_device to be registered. Instead of using a broken internal
+>     bit rely on the new core code to guarantee device registration.
+>
+>     Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+>
+> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+> index 666897596218d3..fa539608ffbbe0 100644
+> --- a/drivers/infiniband/hw/bnxt_re/main.c
+> +++ b/drivers/infiniband/hw/bnxt_re/main.c
+> @@ -1137,12 +1137,13 @@ static int bnxt_re_update_gid(struct bnxt_re_dev *rdev)
+>         u16 gid_idx, index;
+>         int rc = 0;
+>
+> -       if (!test_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags))
+> +       if (!ib_device_try_get(&rdev->ibdev))
+>                 return 0;
+>
+>         if (!sgid_tbl) {
+>                 dev_err(rdev_to_dev(rdev), "QPLIB: SGID table not allocated");
+> -               return -EINVAL;
+> +               rc = -EINVAL;
+> +               goto out;
+>         }
+>
+>         for (index = 0; index < sgid_tbl->active; index++) {
+> @@ -1163,6 +1164,8 @@ static int bnxt_re_update_gid(struct bnxt_re_dev *rdev)
+>                                             rdev->qplib_res.netdev->dev_addr);
+>         }
+>
+> +out:
+> +       ib_device_put(&rdev->ibdev);
+>         return rc;
+>  }
+>
+> @@ -1545,12 +1548,7 @@ static void bnxt_re_task(struct work_struct *work)
+>         re_work = container_of(work, struct bnxt_re_work, work);
+>         rdev = re_work->rdev;
+>
+> -       if (re_work->event != NETDEV_REGISTER &&
+> -           !test_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags))
+> -               goto exit;
+> -
+> -       switch (re_work->event) {
+> -       case NETDEV_REGISTER:
+> +       if (re_work->event == NETDEV_REGISTER) {
+>                 rc = bnxt_re_ib_reg(rdev);
+>                 if (rc) {
+>                         dev_err(rdev_to_dev(rdev),
+> @@ -1559,7 +1557,13 @@ static void bnxt_re_task(struct work_struct *work)
+>                         bnxt_re_dev_unreg(rdev);
+>                         goto exit;
+>                 }
+> -               break;
+> +               goto exit;
+> +       }
+> +
+> +       if (!ib_device_try_get(&rdev->ibdev))
+> +               goto exit;
+> +
+> +       switch (re_work->event) {
+>         case NETDEV_UP:
+>                 bnxt_re_dispatch_event(&rdev->ibdev, NULL, 1,
+>                                        IB_EVENT_PORT_ACTIVE);
+> @@ -1579,6 +1583,8 @@ static void bnxt_re_task(struct work_struct *work)
+>         default:
+>                 break;
+>         }
+> +
+> +       ib_device_put(&rdev->ibdev);
+>         smp_mb__before_atomic();
+>         atomic_dec(&rdev->sched_count);
+>  exit:
+>
+> commit e64da98a182a2cae3338f28f6e581f189b5f8674
+> Author: Jason Gunthorpe <jgg@ziepe.ca>
+> Date:   Thu Jan 10 12:02:11 2019 -0700
+>
+>     RDMA/bnxt_re: Fix lifetimes in bnxt_re_task
+>
+>     A work queue cannot just rely on the ib_device not being freed, it must
+>     hold a kref on the memory so that the BNXT_RE_FLAG_IBDEV_REGISTERED check
+>     works.
+>
+>     Also, every single work queue call has an allocated memory, and the kfree
+>     of this memory was missed sometimes.
+>
+>     Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
+>     Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+>
+> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+> index 814f959c7db965..666897596218d3 100644
+> --- a/drivers/infiniband/hw/bnxt_re/main.c
+> +++ b/drivers/infiniband/hw/bnxt_re/main.c
+> @@ -1547,7 +1547,7 @@ static void bnxt_re_task(struct work_struct *work)
+>
+>         if (re_work->event != NETDEV_REGISTER &&
+>             !test_bit(BNXT_RE_FLAG_IBDEV_REGISTERED, &rdev->flags))
+> -               return;
+> +               goto exit;
+>
+>         switch (re_work->event) {
+>         case NETDEV_REGISTER:
+> @@ -1582,6 +1582,7 @@ static void bnxt_re_task(struct work_struct *work)
+>         smp_mb__before_atomic();
+>         atomic_dec(&rdev->sched_count);
+>  exit:
+> +       put_device(&rdev->ibdev.dev);
+>         kfree(re_work);
+>  }
+>
+> @@ -1658,6 +1659,7 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
+>                 /* Allocate for the deferred task */
+>                 re_work = kzalloc(sizeof(*re_work), GFP_ATOMIC);
+>                 if (re_work) {
+> +                       get_device(&rdev->ibdev.dev);
+>                         re_work->rdev = rdev;
+>                         re_work->event = event;
+>                         re_work->vlan_dev = (real_dev == netdev ?
