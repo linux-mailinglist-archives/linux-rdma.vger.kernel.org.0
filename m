@@ -2,108 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BDC175EF5
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 16:58:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10825175F46
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 17:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727308AbgCBP6Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Mar 2020 10:58:24 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44422 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727121AbgCBP6Y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Mar 2020 10:58:24 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 022FtBKg134234
-        for <linux-rdma@vger.kernel.org>; Mon, 2 Mar 2020 10:58:22 -0500
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2yfn166s2c-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2020 10:58:22 -0500
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-rdma@vger.kernel.org> from <bmt@zurich.ibm.com>;
-        Mon, 2 Mar 2020 15:58:20 -0000
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 2 Mar 2020 15:58:17 -0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 022FwGrd51118282
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 2 Mar 2020 15:58:16 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D24CFA4062;
-        Mon,  2 Mar 2020 15:58:16 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8AD0AA405B;
-        Mon,  2 Mar 2020 15:58:16 +0000 (GMT)
-Received: from spoke.zurich.ibm.com (unknown [9.4.69.152])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  2 Mar 2020 15:58:16 +0000 (GMT)
-From:   Bernard Metzler <bmt@zurich.ibm.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Cc:     Bernard Metzler <bmt@zurich.ibm.com>
-Subject: [Patch for-rc v2] RDMA/siw: Fix failure handling during device creation
-Date:   Mon,  2 Mar 2020 16:58:14 +0100
-X-Mailer: git-send-email 2.17.2
-X-TM-AS-GCONF: 00
-x-cbid: 20030215-0008-0000-0000-000003587D7C
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20030215-0009-0000-0000-00004A79A9BE
-Message-Id: <20200302155814.9896-1-bmt@zurich.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-03-02_05:2020-03-02,2020-03-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- phishscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0 bulkscore=0
- mlxlogscore=999 suspectscore=0 mlxscore=0 malwarescore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2003020112
+        id S1727140AbgCBQNM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Mar 2020 11:13:12 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:41775 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726661AbgCBQNM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Mar 2020 11:13:12 -0500
+Received: by mail-pf1-f193.google.com with SMTP id j9so5775464pfa.8;
+        Mon, 02 Mar 2020 08:13:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3+dIBAApkK6uKRLL0kbVD638hNHlpBx3vySmZQs4F6E=;
+        b=bLlRMKsko172PR9wf4YG9vMod2HI8T1CrQ8O8jmJyEyMvbIB4d0Zsx4eiQ9JUprAe1
+         WrD4nNCnA48vNNQ9yNROzlgloeOxbxwQk/M6KM8sfivc6OoSkbpqbiW2iA2FszqpfGmL
+         vboCj9U89DEiOG7n9vrOxo2louyWkN0+glqd6wZVTzds7CLVgR8GuMpiDVCxoBW5zYbV
+         x4rhHT4D9I3iCukqLD5OjXUaq2yLtcYOVaUJ9K9694ozi2nFEu5+LEVl2q2l2qjeWDFE
+         XuD5aaY75J//l/n6id7nLrpTZsUAYCurfbLV6bJMR/oX1Utc5QIgreNyfJLYiwE7cwQv
+         vR+w==
+X-Gm-Message-State: APjAAAU77EPY9jb1zdpEL2wdrhXHGrPA9Lj4992HjN5a2psdX4mJ0dRV
+        4Rxf4pBKuqboRAsfUVKrdRk=
+X-Google-Smtp-Source: APXvYqwf/oN0E2PCDuYpDsOXptxDOZ4CtnMUFC8N/KNI5toReQSMOm0ZWsXcRj0zIbuyKmRnMybQqw==
+X-Received: by 2002:a63:8148:: with SMTP id t69mr20017889pgd.187.1583165591682;
+        Mon, 02 Mar 2020 08:13:11 -0800 (PST)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id w1sm21963031pgr.4.2020.03.02.08.13.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Mar 2020 08:13:10 -0800 (PST)
+Subject: Re: [PATCH v9 05/25] RDMA/rtrs: client: private header with client
+ structs and functions
+To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Roman Penyaev <rpenyaev@suse.de>,
+        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+References: <20200221104721.350-1-jinpuwang@gmail.com>
+ <20200221104721.350-6-jinpuwang@gmail.com>
+ <eb1759a7-c51b-eaeb-f353-4b948b1d64e3@acm.org>
+ <CAMGffEmM8dtcO=uYg5drafaz5FjGV4ynQBpyGZFZwVMptgxcBw@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <fc0c1962-d5d6-96c0-cd5b-3e51a1aeb98e@acm.org>
+Date:   Mon, 2 Mar 2020 08:13:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <CAMGffEmM8dtcO=uYg5drafaz5FjGV4ynQBpyGZFZwVMptgxcBw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-A failing call to ib_device_set_netdev() during device creation
-caused system crash due to xa_destroy of uninitialized xarray
-hit by device deallocation. Fixed by moving xarray initialization
-before potential device deallocation.
+On 3/2/20 5:49 AM, Jinpu Wang wrote:
+> On Sun, Mar 1, 2020 at 1:51 AM Bart Van Assche <bvanassche@acm.org> wrote:
+>>
+>> On 2020-02-21 02:47, Jack Wang wrote:
+>>> +struct rtrs_clt {
+>>> +     struct list_head   /* __rcu */ paths_list;
+>>
+>> The commented out __rcu is confusing. Please remove it and add an
+>> elaborate comment if paths_list is a list head with nonstandard behavior.
+> Will change to a normal comment, we want to use rculist, but no such
+> annotation usage for normal list_head, only hlist_head in kernel tree,
+> Do you know why?
 
-Fixes: bdcf26bf9b3a (rdma/siw: network and RDMA core interface)
-Reported-by: syzbot+2e80962bedd9559fe0b3@syzkaller.appspotmail.com
-Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
----
-v1 -> v2:
-- Fix here only potential system crash during failing device
-  creation, but not missing correct error propagation.
+Hi Jack,
 
- drivers/infiniband/sw/siw/siw_main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+I'm not aware of any annotation for RCU lists nor for RCU list elements 
+that is recognized by sparse. What I do myself is to add a comment to 
+each list_head that explains whether it represents a list head or a list 
+element and also what the strategy is for ensuring thread-safety.
 
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index 96ed349c0939..5cd40fb9e20c 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -388,6 +388,9 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
- 		{ .max_segment_size = SZ_2G };
- 	base_dev->num_comp_vectors = num_possible_cpus();
- 
-+	xa_init_flags(&sdev->qp_xa, XA_FLAGS_ALLOC1);
-+	xa_init_flags(&sdev->mem_xa, XA_FLAGS_ALLOC1);
-+
- 	ib_set_device_ops(base_dev, &siw_device_ops);
- 	rv = ib_device_set_netdev(base_dev, netdev, 1);
- 	if (rv)
-@@ -415,9 +418,6 @@ static struct siw_device *siw_device_create(struct net_device *netdev)
- 	sdev->attrs.max_srq_wr = SIW_MAX_SRQ_WR;
- 	sdev->attrs.max_srq_sge = SIW_MAX_SGE;
- 
--	xa_init_flags(&sdev->qp_xa, XA_FLAGS_ALLOC1);
--	xa_init_flags(&sdev->mem_xa, XA_FLAGS_ALLOC1);
--
- 	INIT_LIST_HEAD(&sdev->cep_list);
- 	INIT_LIST_HEAD(&sdev->qp_list);
- 
--- 
-2.17.2
+Thanks,
+
+Bart.
 
