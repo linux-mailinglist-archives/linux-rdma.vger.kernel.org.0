@@ -2,76 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C37175DBD
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 15:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADEC175DE8
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 16:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727189AbgCBO7S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Mar 2020 09:59:18 -0500
-Received: from mail-il1-f196.google.com ([209.85.166.196]:38183 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727413AbgCBO7R (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Mar 2020 09:59:17 -0500
-Received: by mail-il1-f196.google.com with SMTP id f5so9562282ilq.5
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2020 06:59:17 -0800 (PST)
+        id S1727070AbgCBPKA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Mar 2020 10:10:00 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:44175 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726982AbgCBPKA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Mar 2020 10:10:00 -0500
+Received: by mail-qk1-f193.google.com with SMTP id f198so2598668qke.11
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2020 07:09:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sYkZC+H0cclejhwnu9ybKgEGURqGTDULgNJyOMe/aZs=;
-        b=HdCEra2IzdfQAQEBA7Agqn/vJJa/CGaerdl9UrJGEi6izanHXQsrt/RuKJIkiac1Fv
-         HHd8gPxzkzeXH35TOn9AZmvG/5Wm7jriHCBv0UW1Pdtf/MfhPRUoUvsK5h98tL1HH+JG
-         lIV5MmCsnF4XFf37ufrpmKTXUH+sMeFx7a8/4EVc4Ly7vciXfDu0t/ijOk19sEWCrb3N
-         gbmC6WcQ1zDdA7t7aeYbuqG20B+IEjmXmGQF9h4rF6e0vG9UfWudYWRxR5AMLWa/D2LT
-         k45gtvTeizB7XsVpx03CAs9rrqV7AT9Tqcame9BMBcW4ApIp77OSIF/4jsmBWJylnu9p
-         csaw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=N8SNyCjNb2Ol0mPt/h9lHEFs/F/R+FkJiirkQ6gDuNU=;
+        b=expCroaEPAmx9FqTfAAtIAK+/Aa+SgOh98dgUCcYDNsOzBgsL3mO8iqyOruX7mw/Pn
+         LeMMxUtYmbpadFQE5+/5r2O4Vma4/C9QpuOw+wtIEX7IrhmPSwl53+5xNnIHfybB8Ddu
+         RBp8bmR1AmBwCqYp3pf/uDLE7DJyvGZ0tVUyDsA+W0ckSucKB8o1pmt8cX27Rh0FuuD9
+         l5DnDKLYd/jMSJqjWwQR0+2bs+1iHDRsQjdN6SlCx37B0OSVlkHARfYanJONj23yIZUt
+         /wmkNiFdohsldkY/S2PcvxMF5HtIScRjZR+se6UqWhUmTOZ92pL7zSK1jR8OAJFIJdtr
+         clTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sYkZC+H0cclejhwnu9ybKgEGURqGTDULgNJyOMe/aZs=;
-        b=Nuzcdj3EnqbHgZ6CjcM10/X4geo4BIVEOI/lxZuG3pNsQR1Y+7BASEv4fjpz1/oq3a
-         7StX+uRZSA6XEdLuQZzhoeNItgYHbeZLkwqfqz/y7lnCpg8Zt33C2aOIWRfy/5sclBNk
-         qFry1GLKTY/lltfs9nTDOyIgj2J1+j4tQGCeDr40xGO6kc+Z3DZ/JViaT/vdnVsMbTvj
-         rBvAg7pcUDsKfqSabwkhMaZz7aR6Cqltmf1oH/9IcAch3MEsnRSItXFFG3XKz0E9AKfh
-         dmWKNolcwPvaP7PLO2cha1Sg2xbstMNjN/tmrZs+3ppG/iCzlJcNkiCKpVMg41g5wGcA
-         17sA==
-X-Gm-Message-State: ANhLgQ274rSq/QtiMC6UwvyoASUf11wNbymRvpcSTwECkCCDKP6QYbMb
-        /TQ9QjU1l9fT/QXZNP098cwrb+nFN6QnSfYG7V2iKw==
-X-Google-Smtp-Source: ADFU+vumyIWWKcoN+ffBvEV/Func4aa1zUSwHnUK9EmvZwaPhmcivVqZOJ/95Vk7oLaIEuf0IM/h35yvLCdVyAU5ywM=
-X-Received: by 2002:a92:811c:: with SMTP id e28mr69574ild.22.1583161156724;
- Mon, 02 Mar 2020 06:59:16 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=N8SNyCjNb2Ol0mPt/h9lHEFs/F/R+FkJiirkQ6gDuNU=;
+        b=Gtgt5lOnmT3ntnXNhWaHukx1iQlUtqEwH//kD/yWZPiPFji9KNZzMhGR0mTHCOFUHk
+         KdxwTW+W9ZaW8pL8v3zBlZxSbHl4o37FOk0rH2whKtSX/l9pS06fNDfQpHZ2gauqJUW8
+         Txq56XgQyKs1EKKVFjZYp0aQIQj86myLtgcPQ+fSyMFi0gLV3GLsBHALd5mVdM+wzZs7
+         LmQN1HySjwa+3MGg10LCKBIKQ/Rs93BjKtZCnmwQB/Gp510SRS5k6v1NDUwUxU4t14mp
+         axusX5c1JXmF/9RyrxMf3nJ90hf2nW2UHgwOaP3o+TY5C3JK3laVSFBydrTOsx98BBlg
+         R+Gg==
+X-Gm-Message-State: ANhLgQ3xFw7MHLaX75VTnXyCrOTw2DY4h2ObpDZbfrPwxBAuUvEg+y0F
+        b3asb5XO/KvKYblxH60KreSLFQ==
+X-Google-Smtp-Source: ADFU+vtWANPvnugGG5PQ1urgmYeDSbIElel8g3TMCap1tKFJ/oAf+Whgm5ODO/DBHoVyCmD2ax1sQA==
+X-Received: by 2002:a05:620a:13e3:: with SMTP id h3mr1893223qkl.44.1583161799254;
+        Mon, 02 Mar 2020 07:09:59 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id w60sm10304739qte.39.2020.03.02.07.09.58
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 02 Mar 2020 07:09:58 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1j8mhh-0003qt-QK; Mon, 02 Mar 2020 11:09:57 -0400
+Date:   Mon, 2 Mar 2020 11:09:57 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+Subject: Re: [PATCH for-rc] IB/hfi1, qib: Ensure RCU is locked when accessing
+ list
+Message-ID: <20200302150957.GZ31668@ziepe.ca>
+References: <20200225195445.140896.41873.stgit@awfm-01.aw.intel.com>
+ <20200228161516.GA26535@ziepe.ca>
+ <8c036704-cd70-fd86-4fb7-20621543d1d2@intel.com>
+ <20200302132921.GX31668@ziepe.ca>
+ <bb4cdcd5-46c9-339a-54a1-5560e14ed9fe@intel.com>
 MIME-Version: 1.0
-References: <20200221104721.350-1-jinpuwang@gmail.com> <20200221104721.350-17-jinpuwang@gmail.com>
- <6aa73b1c-b47a-c239-f8bb-33a44a3c4d97@acm.org>
-In-Reply-To: <6aa73b1c-b47a-c239-f8bb-33a44a3c4d97@acm.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Mon, 2 Mar 2020 15:59:06 +0100
-Message-ID: <CAMGffEmSg_hdWjHSYREo4b_aESbwby_dTEMRVs6YBTbXSOEK5Q@mail.gmail.com>
-Subject: Re: [PATCH v9 16/25] block/rnbd: client: private header with client
- structs and functions
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Roman Penyaev <rpenyaev@suse.de>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bb4cdcd5-46c9-339a-54a1-5560e14ed9fe@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Mar 1, 2020 at 3:26 AM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 2020-02-21 02:47, Jack Wang wrote:
-> > This header describes main structs and functions used by rnbd-client
-> > module, mainly for managing RNBD sessions and mapped block devices,
-> > creating and destroying sysfs entries.
->
-> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Thanks Bart!
+On Mon, Mar 02, 2020 at 09:52:03AM -0500, Dennis Dalessandro wrote:
+> On 3/2/2020 8:29 AM, Jason Gunthorpe wrote:
+> > On Mon, Mar 02, 2020 at 08:14:52AM -0500, Dennis Dalessandro wrote:
+> > > On 2/28/2020 11:15 AM, Jason Gunthorpe wrote:
+> > > > On Tue, Feb 25, 2020 at 02:54:45PM -0500, Dennis Dalessandro wrote:
+> > > > > The packet handling function, specifically the iteration of the qp list
+> > > > > for mad packet processing misses locking RCU before running through the
+> > > > > list. Not only is this incorrect, but the list_for_each_entry_rcu() call
+> > > > > can not be called with a conditional check for lock dependency. Remedy
+> > > > > this by invoking the rcu lock and unlock around the critical section.
+> > > > > 
+> > > > > This brings MAD packet processing in line with what is done for non-MAD
+> > > > > packets.
+> > > > > 
+> > > > > Cc: Madhuparna Bhowmik <madhuparnabhowmik04@gmail.com>
+> > > > > Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+> > > > > Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+> > > > >    drivers/infiniband/hw/hfi1/verbs.c    |    4 +++-
+> > > > >    drivers/infiniband/hw/qib/qib_verbs.c |    2 ++
+> > > > >    2 files changed, 5 insertions(+), 1 deletion(-)
+> > > > 
+> > > > Applied to for-next, thanks
+> > > > 
+> > > 
+> > > Maybe it should have went to -rc?
+> > 
+> > It doesn't even have a fixes line. If you want patches in -rc send
+> > better commit message. I keep repeating this again and again..
+> > 
+> > Jason
+> > 
+> 
+> Crap, yeah my bad on that. However there really isn't a good fixes line for
+> this. It's pretty much just the initial commit of the driver, does that
+> really help? It's still just in your WIP branch so is it too late to add:
+> 
+> Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+
+Yes, it really does help, ok I updated it.
+
+> Other than a fixes line what else do you need for the commit message? Messed
+> up locking is pretty self explanatory I would think.
+
+Well, missing rcu_lock only causes problems for realtime kernels, but
+sure it can be moved to -rc
+
+Jason
