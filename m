@@ -2,52 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF98175DBA
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 15:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C37175DBD
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Mar 2020 15:59:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727408AbgCBO6x (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Mar 2020 09:58:53 -0500
-Received: from mail-il1-f194.google.com ([209.85.166.194]:46486 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727405AbgCBO6x (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Mar 2020 09:58:53 -0500
-Received: by mail-il1-f194.google.com with SMTP id e8so4882913ilc.13
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2020 06:58:53 -0800 (PST)
+        id S1727189AbgCBO7S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Mar 2020 09:59:18 -0500
+Received: from mail-il1-f196.google.com ([209.85.166.196]:38183 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727413AbgCBO7R (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Mar 2020 09:59:17 -0500
+Received: by mail-il1-f196.google.com with SMTP id f5so9562282ilq.5
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Mar 2020 06:59:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cG4KsHZknk99RFAGLY2oUd12iQAqEbe0ngzbaTgxBLs=;
-        b=d+DRBDf95wOhIma41cTAJGdPgDW+Dp7ZGUVmhK86PIS6GGy+8+4wxd6vVd8cMFTxRN
-         TrB6Di0ODdvMFlE6L3MiH90+4JSMzRuBCHECqG/UFx/E5CNXTQXL0dnBOthwKX6QT2dA
-         zPM7nR18XM7G5tG5W+b5E3U6WUSHbjBFQR4FczIfwfu/I5ehmRdfNeAqQPsvTh12RCzl
-         9E5b8lfBOs4di9iXeCD1TEPGFUyyqXyguVaJkP40q0JtP5HUl9yENvlLHTO3wrsL1LLF
-         1lHhK1AuiG5BTqMZrgkfdLaj7VBGClnd2EN6pTanzL9cNP0+3BWbu9InSwX4/3kMy3jG
-         ox1A==
+        bh=sYkZC+H0cclejhwnu9ybKgEGURqGTDULgNJyOMe/aZs=;
+        b=HdCEra2IzdfQAQEBA7Agqn/vJJa/CGaerdl9UrJGEi6izanHXQsrt/RuKJIkiac1Fv
+         HHd8gPxzkzeXH35TOn9AZmvG/5Wm7jriHCBv0UW1Pdtf/MfhPRUoUvsK5h98tL1HH+JG
+         lIV5MmCsnF4XFf37ufrpmKTXUH+sMeFx7a8/4EVc4Ly7vciXfDu0t/ijOk19sEWCrb3N
+         gbmC6WcQ1zDdA7t7aeYbuqG20B+IEjmXmGQF9h4rF6e0vG9UfWudYWRxR5AMLWa/D2LT
+         k45gtvTeizB7XsVpx03CAs9rrqV7AT9Tqcame9BMBcW4ApIp77OSIF/4jsmBWJylnu9p
+         csaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cG4KsHZknk99RFAGLY2oUd12iQAqEbe0ngzbaTgxBLs=;
-        b=X3VYHjiMH2QxWfGG9BPV/+tJ3gPmb8FXE/QAZIP5cwIS/vO4XHR+ayht8J8a+BP536
-         L3WINmrf9QaGMt6Qx78L4Kw0f0Yyvx1BuVBCw3rGiqU5ayobKWo8m4Zu8w8kNW5P0SRu
-         y4vvXm8rCKKEWbfb8PVBEF6l6niLt9KY8dSd1QI7bblZZLjJV8W6dn3nmZiCAljVvut3
-         j6L3cMyI8eYN5CueFgnaVe633VWwAxc07iQjuWein83Cv4+jYv1lk3VrPHVEx+M5vco/
-         zQt5Ia+HsEc7XYQGX0x/YNmveRTt9mmxxachxIZEM9c9DBFIcwVnslHsfAbgHQokNVtX
-         YmnQ==
-X-Gm-Message-State: APjAAAULzmVZqSoEFbwyj85QgBsSzMdIR8K3Qiekmr90v+yurFHHIK5z
-        bO0VD59HhldV7jzzzL7Ug8C7rj603BPv7q6n8X92hA==
-X-Google-Smtp-Source: APXvYqzrdXEjLFBQzui9YPT8H0wMTdTYQjUtGiULMNldXhahY4Q5ydkZR7S7q2efjkrij8R52Foz1s0IrydUfWKsakc=
-X-Received: by 2002:a92:af08:: with SMTP id n8mr16230470ili.217.1583161132897;
- Mon, 02 Mar 2020 06:58:52 -0800 (PST)
+        bh=sYkZC+H0cclejhwnu9ybKgEGURqGTDULgNJyOMe/aZs=;
+        b=Nuzcdj3EnqbHgZ6CjcM10/X4geo4BIVEOI/lxZuG3pNsQR1Y+7BASEv4fjpz1/oq3a
+         7StX+uRZSA6XEdLuQZzhoeNItgYHbeZLkwqfqz/y7lnCpg8Zt33C2aOIWRfy/5sclBNk
+         qFry1GLKTY/lltfs9nTDOyIgj2J1+j4tQGCeDr40xGO6kc+Z3DZ/JViaT/vdnVsMbTvj
+         rBvAg7pcUDsKfqSabwkhMaZz7aR6Cqltmf1oH/9IcAch3MEsnRSItXFFG3XKz0E9AKfh
+         dmWKNolcwPvaP7PLO2cha1Sg2xbstMNjN/tmrZs+3ppG/iCzlJcNkiCKpVMg41g5wGcA
+         17sA==
+X-Gm-Message-State: ANhLgQ274rSq/QtiMC6UwvyoASUf11wNbymRvpcSTwECkCCDKP6QYbMb
+        /TQ9QjU1l9fT/QXZNP098cwrb+nFN6QnSfYG7V2iKw==
+X-Google-Smtp-Source: ADFU+vumyIWWKcoN+ffBvEV/Func4aa1zUSwHnUK9EmvZwaPhmcivVqZOJ/95Vk7oLaIEuf0IM/h35yvLCdVyAU5ywM=
+X-Received: by 2002:a92:811c:: with SMTP id e28mr69574ild.22.1583161156724;
+ Mon, 02 Mar 2020 06:59:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20200221104721.350-1-jinpuwang@gmail.com> <20200221104721.350-18-jinpuwang@gmail.com>
- <16e946dd-b244-594b-937e-689f2f23614e@acm.org>
-In-Reply-To: <16e946dd-b244-594b-937e-689f2f23614e@acm.org>
+References: <20200221104721.350-1-jinpuwang@gmail.com> <20200221104721.350-17-jinpuwang@gmail.com>
+ <6aa73b1c-b47a-c239-f8bb-33a44a3c4d97@acm.org>
+In-Reply-To: <6aa73b1c-b47a-c239-f8bb-33a44a3c4d97@acm.org>
 From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Mon, 2 Mar 2020 15:58:42 +0100
-Message-ID: <CAMGffEnrX0+ktLPOocEt6kOYJ93F1yOYYCwrvnZQuWVCQG3qRQ@mail.gmail.com>
-Subject: Re: [PATCH v9 17/25] block/rnbd: client: main functionality
+Date:   Mon, 2 Mar 2020 15:59:06 +0100
+Message-ID: <CAMGffEmSg_hdWjHSYREo4b_aESbwby_dTEMRVs6YBTbXSOEK5Q@mail.gmail.com>
+Subject: Re: [PATCH v9 16/25] block/rnbd: client: private header with client
+ structs and functions
 To:     Bart Van Assche <bvanassche@acm.org>
 Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
@@ -65,64 +66,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Mar 1, 2020 at 3:46 AM Bart Van Assche <bvanassche@acm.org> wrote:
+On Sun, Mar 1, 2020 at 3:26 AM Bart Van Assche <bvanassche@acm.org> wrote:
 >
 > On 2020-02-21 02:47, Jack Wang wrote:
-> > +/**
-> > + * rnbd_get_cpu_qlist() - finds a list with HW queues to be rerun
-> > + * @sess:    Session to find a queue for
-> > + * @cpu:     Cpu to start the search from
-> > + *
-> > + * Description:
-> > + *     Each CPU has a list of HW queues, which needs to be rerun.  If a list
-> > + *     is not empty - it is marked with a bit.  This function finds first
-> > + *     set bit in a bitmap and returns corresponding CPU list.
-> > + */
-> > +static struct rnbd_cpu_qlist *
-> > +rnbd_get_cpu_qlist(struct rnbd_clt_session *sess, int cpu)
-> > +{
-> > +     int bit;
-> > +
-> > +     /* First half */
-> > +     bit = find_next_bit(sess->cpu_queues_bm, nr_cpu_ids, cpu);
-> > +     if (bit < nr_cpu_ids) {
-> > +             return per_cpu_ptr(sess->cpu_queues, bit);
-> > +     } else if (cpu != 0) {
-> > +             /* Second half */
-> > +             bit = find_next_bit(sess->cpu_queues_bm, cpu, 0);
-> > +             if (bit < cpu)
-> > +                     return per_cpu_ptr(sess->cpu_queues, bit);
-> > +     }
-> > +
-> > +     return NULL;
-> > +}
+> > This header describes main structs and functions used by rnbd-client
+> > module, mainly for managing RNBD sessions and mapped block devices,
+> > creating and destroying sysfs entries.
 >
-> Please make the "first half" and "second half" comments unambiguous. To
-> me it seems like the code under "first half" searches through the second
-> half of the bitmap and that the code under "second half" searches
-> through the first half of the bitmap.
-Ok, will improve the comments, say searching  "cpu to nr_cpu_ids" and "0 to cpu"
->
-> > +     /**
-> > +      * That is simple percpu variable which stores cpu indeces, which are
-> > +      * incremented on each access.  We need that for the sake of fairness
-> > +      * to wake up queues in a round-robin manner.
-> > +      */
->
-> Please start block comments with "/*".
-ok
->
-> > +static void wait_for_rtrs_disconnection(struct rnbd_clt_session *sess)
-> > +     __releases(&sess_lock)
-> > +     __acquires(&sess_lock)
-> > +{
-> > +     DEFINE_WAIT_FUNC(wait, autoremove_wake_function);
->
-> Please use DEFINE_WAIT() instead of open-coding it.
-ok
->
-> Thanks,
->
-> Bart.
-
-Thanks!
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Thanks Bart!
