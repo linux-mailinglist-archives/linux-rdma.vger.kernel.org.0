@@ -2,154 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B649D178405
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 21:30:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9951784B7
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 22:15:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731498AbgCCUar (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Mar 2020 15:30:47 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:45512 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730517AbgCCUaq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Mar 2020 15:30:46 -0500
-Received: by mail-qk1-f194.google.com with SMTP id z12so4777456qkg.12
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Mar 2020 12:30:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=123P9xQGjDkfvy5FsfzCO+UHa3rPS90oX4YiNtrqhWw=;
-        b=oMnlxAfaYeplW2vLS+DWelhhqH2WlAWDjWhlmOpKI/Duis+KxRNZz0/D21oxnIgULq
-         zgeFL7J09p5zRhZuEiKU0A44Iu5zo8t+DAT7bnK0R6jWCKxZu9EiFF2RPSzmDmGj4VrH
-         tf7m31BweTtKuVIIt2STCEMTZ0cceLF+cd7HOfySR6MP55Rp/mbHm7fZqGKtobukvEcU
-         ljoVaZjkKpl/W7a8I7QTI0PglgMnhhQyWFvFFnxXtVcWM7zeIZhJC8+X3vYRqswNkfOY
-         cu3Mfw6hiICbp67BUYQ7hRzo6QPjj/cdCqCUkIxbss5FMfZP/R8F0zE6KUY4z567HMKm
-         HPcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=123P9xQGjDkfvy5FsfzCO+UHa3rPS90oX4YiNtrqhWw=;
-        b=SaW2F9ZZSb8tBAGrOhx4lgT4IzLU04PhKsqtb+iqx0PNjRHimb5nHPTp1ywu0MiraO
-         T0RNoLYDEo3zxwmTkGsL3jZw2eg+82e+rS655HW1cU1Qp6o+2qHOzqIr6TtPU7hQEPln
-         /KQx0VYKt9zm1zdAvf1nCSj9PGFcJZEKH3kUisCduzPDBawu9hk99woOZbm7XZJ4Iw5L
-         cFfRC7JyyUu8LQbSvGwcnXOA2nIkZNqgooAbVDmQ8ehATLRI6rfMBRMlcBB9RtCOx9ab
-         MI0Vl+EOGPisfIu/+eOFd31w7H4Whh3U409RYDEACAQDHDr1Uy8F7oRz2u9677tE3qDR
-         0SfA==
-X-Gm-Message-State: ANhLgQ0nJ8kizEoVShRPDHivCSvjX6CMXo1dLnu8ss/KTvLnHbBvGdHU
-        e6eIcmI7jWH36byBFytDJV1bjQ==
-X-Google-Smtp-Source: ADFU+vvHp3YJ4Y5ualAljJKts6XGmz1AJG7ZhH+LdzPqAcNANHKw/6O07c7kM42eTFtS7Agx619UJA==
-X-Received: by 2002:a37:67d3:: with SMTP id b202mr5746959qkc.496.1583267445778;
-        Tue, 03 Mar 2020 12:30:45 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id t29sm13453204qtt.20.2020.03.03.12.30.45
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 03 Mar 2020 12:30:45 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j9EBg-0001xh-AJ; Tue, 03 Mar 2020 16:30:44 -0400
-Date:   Tue, 3 Mar 2020 16:30:44 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     syzbot <syzbot+46fe08363dbba223dec5@syzkaller.appspotmail.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, rafael@kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: general protection fault in kobject_get
-Message-ID: <20200303203044.GD31668@ziepe.ca>
-References: <000000000000c4b371059fd83a92@google.com>
- <20200303072558.GF121803@unreal>
+        id S1732275AbgCCVPY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Mar 2020 16:15:24 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2192 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732075AbgCCVPX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Mar 2020 16:15:23 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e5ec8c20000>; Tue, 03 Mar 2020 13:14:42 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 03 Mar 2020 13:15:23 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 03 Mar 2020 13:15:23 -0800
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Mar
+ 2020 21:15:21 +0000
+Subject: Re: [PATCH v2] nouveau/hmm: map pages after migration
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <nouveau@lists.freedesktop.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+References: <20200303010023.2983-1-rcampbell@nvidia.com>
+ <20200303124229.GH26318@mellanox.com>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <1f27ac9e-7ddf-6e4f-25ea-063ef6c78761@nvidia.com>
+Date:   Tue, 3 Mar 2020 13:15:21 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200303072558.GF121803@unreal>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200303124229.GH26318@mellanox.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1583270082; bh=22wphWyEQ9kA/NT134DIsydKvoJeEto8s37Q83fcwtM=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=I3g3W9bniGHs2rCu0yfLWPfwG56cNXGXLhCicraDzGKkb8e8gDWo+Z8OzaNStF2hu
+         y3pYgrOQBhye2JydvTdoCV80OZvDgk5j81+ak7Zq2hHmG07zCQUH2Df5BLAaJajL0C
+         Xjb7yXcjyaBSRn+6ANiN9Cocmi4gH/WT0MKD7iDsS9f5EEQMqToUxA3wTmt8msDvmf
+         7qHk5rrgkRKLNqpsboRa/an6DDqsJ7qWGmLT8mf5YdHQB93cIuMlydQHqkNU3rvTY6
+         rhVXu0wQdLr/wATCoZe0XCmCGMZN2smS+n55V57w4wiyJiOnxXbX34fiMJ6MTiG68I
+         ocqAAhJ0YEmjQ==
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 03, 2020 at 09:25:58AM +0200, Leon Romanovsky wrote:
-> +RDMA
-> 
-> On Sun, Mar 01, 2020 at 09:12:11PM -0800, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following crash on:
-> >
-> > HEAD commit:    3b3e808c Merge tag 'mac80211-next-for-net-next-2020-02-24'..
-> > git tree:       net-next
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=15e20a2de00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6ec9623400ee72
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=46fe08363dbba223dec5
-> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> >
-> > Unfortunately, I don't have any reproducer for this crash yet.
-> >
-> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > Reported-by: syzbot+46fe08363dbba223dec5@syzkaller.appspotmail.com
 
-Hum, most probably something like this.. Will send a proper
-patch. If it is this I am very surprised that it didn't get a
-reproducer, as the fault should be pretty easy to hit, no race required..
+On 3/3/20 4:42 AM, Jason Gunthorpe wrote:
+> On Mon, Mar 02, 2020 at 05:00:23PM -0800, Ralph Campbell wrote:
+>> When memory is migrated to the GPU, it is likely to be accessed by GPU
+>> code soon afterwards. Instead of waiting for a GPU fault, map the
+>> migrated memory into the GPU page tables with the same access permission=
+s
+>> as the source CPU page table entries. This preserves copy on write
+>> semantics.
+>>
+>> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+>> Cc: Christoph Hellwig <hch@lst.de>
+>> Cc: Jason Gunthorpe <jgg@mellanox.com>
+>> Cc: "J=C3=A9r=C3=B4me Glisse" <jglisse@redhat.com>
+>> Cc: Ben Skeggs <bskeggs@redhat.com>
+>> ---
+>>
+>> Originally this patch was targeted for Jason's rdma tree since other HMM
+>> related changes were queued there. Now that those have been merged, this
+>> patch just contains changes to nouveau so it could go through any tree.
+>> I guess Ben Skeggs' tree would be appropriate.
+>=20
+> Yep
+>=20
+>> +static inline struct nouveau_pfnmap_args *
+>> +nouveau_pfns_to_args(void *pfns)
+>=20
+> don't use static inline inside C files
 
-diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
-index d1407fa378e832..e43ec710092a94 100644
---- a/drivers/infiniband/core/user_mad.c
-+++ b/drivers/infiniband/core/user_mad.c
-@@ -1129,17 +1129,30 @@ static const struct file_operations umad_sm_fops = {
- 	.llseek	 = no_llseek,
- };
- 
-+static struct ib_umad_port *get_port(struct ib_device *ibdev,
-+				     struct ib_umad_device *umad_dev,
-+				     unsigned int port)
-+{
-+	if (!umad_dev)
-+		return ERR_PTR(-EOPNOTSUPP);
-+	if (!rdma_is_port_valid(ibdev, port))
-+		return ERR_PTR(-EINVAL);
-+	if (!rdma_cap_ib_mad(ibdev, port))
-+		return ERR_PTR(-EOPNOTSUPP);
-+
-+	return &umad_dev->ports[port - rdma_start_port(ibdev)];
-+}
-+
- static int ib_umad_get_nl_info(struct ib_device *ibdev, void *client_data,
- 			       struct ib_client_nl_info *res)
- {
--	struct ib_umad_device *umad_dev = client_data;
-+	struct ib_umad_port *port = get_port(ibdev, client_data, res->port);
- 
--	if (!rdma_is_port_valid(ibdev, res->port))
--		return -EINVAL;
-+	if (IS_ERR(port))
-+		return PTR_ERR(port);
- 
- 	res->abi = IB_USER_MAD_ABI_VERSION;
--	res->cdev = &umad_dev->ports[res->port - rdma_start_port(ibdev)].dev;
--
-+	res->cdev = &port->dev;
- 	return 0;
- }
- 
-@@ -1154,15 +1167,13 @@ MODULE_ALIAS_RDMA_CLIENT("umad");
- static int ib_issm_get_nl_info(struct ib_device *ibdev, void *client_data,
- 			       struct ib_client_nl_info *res)
- {
--	struct ib_umad_device *umad_dev =
--		ib_get_client_data(ibdev, &umad_client);
-+	struct ib_umad_port *port = get_port(ibdev, client_data, res->port);
- 
--	if (!rdma_is_port_valid(ibdev, res->port))
--		return -EINVAL;
-+	if (IS_ERR(port))
-+		return PTR_ERR(port);
- 
- 	res->abi = IB_USER_MAD_ABI_VERSION;
--	res->cdev = &umad_dev->ports[res->port - rdma_start_port(ibdev)].sm_dev;
--
-+	res->cdev = &port->sm_dev;
- 	return 0;
- }
- 
+OK.
+
+>> +{
+>> +	struct nvif_vmm_pfnmap_v0 *p =3D
+>> +		container_of(pfns, struct nvif_vmm_pfnmap_v0, phys);
+>> +
+>> +	return container_of(p, struct nouveau_pfnmap_args, p);
+>=20
+> And this should just be
+>=20
+>     return container_of(pfns, struct nouveau_pfnmap_args, p.phys);
+
+Much simpler, thanks.
+
+>> +static struct nouveau_svmm *
+>> +nouveau_find_svmm(struct nouveau_svm *svm, struct mm_struct *mm)
+>> +{
+>> +	struct nouveau_ivmm *ivmm;
+>> +
+>> +	list_for_each_entry(ivmm, &svm->inst, head) {
+>> +		if (ivmm->svmm->notifier.mm =3D=3D mm)
+>> +			return ivmm->svmm;
+>> +	}
+>> +	return NULL;
+>> +}
+>=20
+> Is this re-implementing mmu_notifier_get() ?
+>=20
+> Jason
+
+Not quite. This is being called from an ioctl() call on the GPU device
+file which calls nouveau_svmm_bind() which locks mmap_sem for reading,
+walks the vmas for the address range given in the ioctl() data, and migrate=
+s
+the pages to the GPU memory.
+mmu_notifier_get() would try to lock mmap_sem for writing so that would dea=
+dlock.
+But it is similar in that the GPU specific process context (nouveau_svmm) n=
+eeds
+to be found for the given ioctl caller.
+If find_get_mmu_notifier() was exported, I think that could work.
+Now that I look at this again, there is an easier way to find the svmm and =
+I see
+some other bugs that need fixing. I'll post a v3 as soon as I get those wri=
+tten
+and tested.
+
+Thanks for the review.
