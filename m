@@ -2,89 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0556177B57
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 17:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AB1177B86
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 17:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729995AbgCCQAn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Mar 2020 11:00:43 -0500
-Received: from mail-yw1-f46.google.com ([209.85.161.46]:43955 "EHLO
-        mail-yw1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729449AbgCCQAn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Mar 2020 11:00:43 -0500
-Received: by mail-yw1-f46.google.com with SMTP id p69so3750086ywh.10
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Mar 2020 08:00:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=M3arb8b7eWz3OCgnwLZGoXkXKp8M1C6IfbQvbKfl/ys=;
-        b=a4LVxSeUS42z57oTGOhqaBTzoXL23+9PbvA7mkxIBtRKG9gEYPTAfZakOkXqF2qtmt
-         ulRV1zj0r4fgzysNWjXcNyoItWlvouDWkQH0yMBd3HsZ/wZgPBO38ZaSOFiEOff/6kks
-         sX6QGaGmFFaa1+zC1/P/QlNZt1vlyeFIqGDkpOMirmbe8Y6q2MlklXI379NcQntM/3QE
-         O2WrrAic6W1RnhbfNSlh/dUJBDsKKf95lS9S46NPxXOKgKArsY3o9hCrUucdZZ79GSYD
-         fvLhd4AqCxiXLZEH0nj8jH2pefmqc4/sFdaZobzVLXZWdQqMT7t78/R2E/Gq+7J6yz3V
-         cxpA==
+        id S1730097AbgCCQEN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Mar 2020 11:04:13 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:36364 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729898AbgCCQEN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Mar 2020 11:04:13 -0500
+Received: by mail-pg1-f195.google.com with SMTP id d9so1743172pgu.3;
+        Tue, 03 Mar 2020 08:04:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=M3arb8b7eWz3OCgnwLZGoXkXKp8M1C6IfbQvbKfl/ys=;
-        b=k8Ty+AoI96mJt6UqaYzE7r3Flc41wM/PF7h292vohjJOtBzfK/US3posafah3XNZ5r
-         leRcCotMCMqf81sSGBievsk91RzinyHzgErlj9wVzfVQlDzwu5c3MwrWSdZe9i2T4MZc
-         vxnpIF1G1mq7NgXSKXVccH3hqVwWLw7+kV8p7J3z/kHY1h9v9UoojWIFzUGTExL4JtsY
-         6gBs88suSNabqSXLWg6wsnMYdsIKKcBppl7PHCA5ESGJVsQefdqrktGI00CGrz0r9ry9
-         0FBOYYLrY8zHiZ+d/bXGYG0xzZA9cu2MqhLAVp/+VlKzIAs1pwaAJtBhjyGR5QgdunRQ
-         fTUw==
-X-Gm-Message-State: ANhLgQ2X2so3y0iwSF1+s/yZBeouJx712d3FNtzG8P89DaXXF40StvSv
-        JXJPh49MPSOiuHIT8Z0/xLRDhpv48XrkdjqzjlgW1v9aBKc=
-X-Google-Smtp-Source: ADFU+vswFTMTqIgM2gGJ0s/ONJZJ/VVFRWK3HG/YuueUjJ/q0YuYengmPGgVnHJeg28FFi3rNkJ5bNOS2ETVwuzG3Kw=
-X-Received: by 2002:a25:af87:: with SMTP id g7mr4267974ybh.3.1583251241940;
- Tue, 03 Mar 2020 08:00:41 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=euo4YPxmByto1gTLSe2jceYFkERa+IMhPO4TSr6zMf0=;
+        b=Fx+SfjlhIG3XSy0gQC1k/+n2C02H+o65Pgd2b2h0auafJm2+uNjpucPmB6NHNQEePn
+         4YI2KMC4AcDcSVGCrwIZMnNDFWwFAdEzOoa5t8prPO2cqqP4mXNqITvERXqyDnubrPnE
+         9A06Vt7hCtFJBtH913HmtZJ/N41Y7UDfjgOy2y1zaXlNDXOQc5wdeIriS/qo7d/kjJ9U
+         18bZ/qu2HvVfSrHG7zQt0TOO4X0HV+XaggHJBY4WUhY7z6qF62aHnNdaV6IrvmfYeC55
+         /rv0fB+UJfgXIX92cMYUSZyDDxmdArW10v0VRfCCRFTqMhUdHZMkLtwFpALbhbANOvd4
+         KHxg==
+X-Gm-Message-State: ANhLgQ1UWIeHg5yYYS3lZzELZhtXPMEdGkPy/oHuOTEqpPaO6jDcL7Rb
+        luIBFORvW+B2B+xIXPao8wUR5/zK
+X-Google-Smtp-Source: ADFU+vugYbAlUlHPJ53/WNaszsOX40G6x58wUWQfs8wwQQTmhis4kfLCRsxRDgyATM3ef/oAdljKRg==
+X-Received: by 2002:a05:6a00:2b7:: with SMTP id q23mr4711260pfs.43.1583251451713;
+        Tue, 03 Mar 2020 08:04:11 -0800 (PST)
+Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
+        by smtp.gmail.com with ESMTPSA id u41sm25595487pgn.8.2020.03.03.08.04.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Mar 2020 08:04:10 -0800 (PST)
+Subject: Re: [PATCH v9 06/25] RDMA/rtrs: client: main functionality
+To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>, rpenyaev@suse.de,
+        pankaj.gupta@cloud.ionos.com
+References: <20200221104721.350-1-jinpuwang@gmail.com>
+ <20200221104721.350-7-jinpuwang@gmail.com>
+ <c3c8fbcc-0028-9b23-8eff-3b5f1f60e652@acm.org>
+ <CAHg0HuxJgjQca3Vy7nbcVKs0bUoj=-Uqoa5DOzYoqRHQ6Vph7A@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <597777e7-ac5a-5fc4-c1f7-3ffa5876a6f2@acm.org>
+Date:   Tue, 3 Mar 2020 08:04:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-From:   Frank Huang <tigerinxm@gmail.com>
-Date:   Wed, 4 Mar 2020 00:00:29 +0800
-Message-ID: <CAKC_zSsbA2wWnkTK3E0vf+AP3CjZyVJ=aOgDiY57SX73BtrPNg@mail.gmail.com>
-Subject: hang on rdma_destroy_id
-To:     linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHg0HuxJgjQca3Vy7nbcVKs0bUoj=-Uqoa5DOzYoqRHQ6Vph7A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi, ALL
+On 3/2/20 5:20 AM, Danil Kipnis wrote:
+> On Sun, Mar 1, 2020 at 2:33 AM Bart Van Assche <bvanassche@acm.org> wrote:
+>> On 2020-02-21 02:47, Jack Wang wrote:
+>>> +static struct rtrs_permit *
+>>> +__rtrs_get_permit(struct rtrs_clt *clt, enum rtrs_clt_con_type con_type)
+>>> +{
+>>> +     size_t max_depth = clt->queue_depth;
+>>> +     struct rtrs_permit *permit;
+>>> +     int cpu, bit;
+>>> +
+>>> +     /* Combined with cq_vector, we pin the IO to the the cpu it comes */
+>>
+>> This comment is confusing. Please clarify this comment. All I see below
+>> is that preemption is disabled. I don't see pinning of I/O to the CPU of
+>> the caller.
+> The comment is addressing a use-case of the driver: The user can
+> assign (under /proc/irq/) the irqs of the HCA cq_vectors "one-to-one"
+> to each cpu. This will "force" the driver to process io response on
+> the same cpu the io has been submitted on.
+> In the code below only preemption is disabled. This can lead to the
+> situation that callers from different cpus will grab the same bit,
+> since find_first_zero_bit is not atomic. But then the
+> test_and_set_bit_lock will fail for all the callers but one, so that
+> they will loop again. This way an explicit spinlock is not required.
+> Will extend the comment.
 
-I am testing on nvmf, but I meet a bug with spdk, the spdk community
-say it is a bug about *soft-roce*.
+If the purpose of get_cpu() and put_cpu() calls is to serialize code 
+against other threads, please use locking instead of disabling 
+preemption. This will help tools that verify locking like lockdep and 
+the kernel thread sanitizer (https://github.com/google/ktsan/wiki).
 
-Here is the link I talk with SPDK community.
+>>> +static int rtrs_post_send_rdma(struct rtrs_clt_con *con,
+>>> +                             struct rtrs_clt_io_req *req,
+>>> +                             struct rtrs_rbuf *rbuf, u32 off,
+>>> +                             u32 imm, struct ib_send_wr *wr)
+>>> +{
+>>> +     struct rtrs_clt_sess *sess = to_clt_sess(con->c.sess);
+>>> +     enum ib_send_flags flags;
+>>> +     struct ib_sge sge;
+>>> +
+>>> +     if (unlikely(!req->sg_size)) {
+>>> +             rtrs_wrn(con->c.sess,
+>>> +                      "Doing RDMA Write failed, no data supplied\n");
+>>> +             return -EINVAL;
+>>> +     }
+>>> +
+>>> +     /* user data and user message in the first list element */
+>>> +     sge.addr   = req->iu->dma_addr;
+>>> +     sge.length = req->sg_size;
+>>> +     sge.lkey   = sess->s.dev->ib_pd->local_dma_lkey;
+>>> +
+>>> +     /*
+>>> +      * From time to time we have to post signalled sends,
+>>> +      * or send queue will fill up and only QP reset can help.
+>>> +      */
+>>> +     flags = atomic_inc_return(&con->io_cnt) % sess->queue_depth ?
+>>> +                     0 : IB_SEND_SIGNALED;
+>>> +
+>>> +     ib_dma_sync_single_for_device(sess->s.dev->ib_dev, req->iu->dma_addr,
+>>> +                                   req->sg_size, DMA_TO_DEVICE);
+>>> +
+>>> +     return rtrs_iu_post_rdma_write_imm(&con->c, req->iu, &sge, 1,
+>>> +                                         rbuf->rkey, rbuf->addr + off,
+>>> +                                         imm, flags, wr);
+>>> +}
+>>
+>> I don't think that posting a signalled send from time to time is
+>> sufficient to prevent send queue overflow. Please address Jason's
+>> comment from January 7th: "Not quite. If the SQ depth is 16 and you post
+>> 16 things and then signal the last one, you *cannot* post new work until
+>> you see the completion. More SQ space *ONLY* becomes available upon
+>> receipt of a completion. This is why you can't have an unsignaled SQ."
+> 
+>> See also https://lore.kernel.org/linux-rdma/20200107182528.GB26174@ziepe.ca/
+> In our case we set the send queue of each QP belonging to one
+> "session" to the one supported by the hardware (max_qp_wr) which is
+> around 5K on our hardware. The queue depth of our "session" is 512.
+> Those 512 are "shared" by all the QPs (number of CPUs on client side)
+> belonging to that session. So we have at most 512 and 512/num_cpus on
+> average inflights on each QP. We never experienced send queue full
+> event in any of our performance tests or production usage. The
+> alternative would be to count submitted requests and completed
+> requests, check the difference before submission and wait if the
+> difference multiplied by the queue depth of "session" exceeds the max
+> supported by the hardware. The check will require quite some code and
+> will most probably affect performance. I do not think it is worth it
+> to introduce a code path which is triggered only on a condition which
+> is known to never become true.
+> Jason, do you think it's necessary to implement such tracking?
 
-https://github.com/spdk/spdk/issues/1184#issuecomment-582795537
+Please either make sure that send queues do not overflow by providing 
+enough space for 512 in-flight requests fit or implement tracking for 
+the number of in-flight requests.
 
-And there is the stack of hang process.The bug come every time when I
-restart the network.service.
+Thanks,
 
-PID: 44459  TASK: ffff9ff048322600  CPU: 0   COMMAND: "reactor_0"
- #0 [ffffc324ecae7bb0] __schedule at ffffffffbc89d270
- #1 [ffffc324ecae7c38] schedule at ffffffffbc89d882
- #2 [ffffc324ecae7c48] schedule_timeout at ffffffffbc8a1622
- #3 [ffffc324ecae7cd8] wait_for_completion at ffffffffbc89eecf
- #4 [ffffc324ecae7d38] flush_workqueue at ffffffffbc0c2d65
- #5 [ffffc324ecae7dc8] ucma_destroy_id at ffffffffc04bb7e2 [rdma_ucm]
- #6 [ffffc324ecae7e08] ucma_write at ffffffffc04b929b [rdma_ucm]
- #7 [ffffc324ecae7e38] __vfs_write at ffffffffbc27cc56
- #8 [ffffc324ecae7eb8] vfs_write at ffffffffbc27cf3d
- #9 [ffffc324ecae7ef0] sys_write at ffffffffbc27d182
-#10 [ffffc324ecae7f30] do_syscall_64 at ffffffffbc003774
-#11 [ffffc324ecae7f50] entry_SYSCALL_64_after_hwframe at ffffffffbca00081
-    RIP: 00007fec5bf0169d  RSP: 00007ffc251449d0  RFLAGS: 00000293
-    RAX: ffffffffffffffda  RBX: 00000000024ef240  RCX: 00007fec5bf0169d
-    RDX: 0000000000000018  RSI: 00007ffc251449f0  RDI: 000000000000000e
-    RBP: 0000000000000000   R8: 0000000000000000   R9: 0000000000000010
-    R10: 0000000000000060  R11: 0000000000000293  R12: 00007ffc25144a40
-    R13: 00000000024efc30  R14: 00000000024efca0  R15: 0000000000000001
-    ORIG_RAX: 0000000000000001  CS: 0033  SS: 002b
+Bart.
 
-
-Is any one meet this before?  What's the right way to handle the
-RDMA_CM_EVENT_DEVICE_REMOVAL event?
-
-The driver what I used is come from MLNX_OFED 4.7-3.2.9.0
