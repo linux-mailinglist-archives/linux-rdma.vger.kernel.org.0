@@ -2,66 +2,154 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C75C1781D0
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 20:02:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B649D178405
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 21:30:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732883AbgCCSGv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Mar 2020 13:06:51 -0500
-Received: from mail-il1-f194.google.com ([209.85.166.194]:35302 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732228AbgCCSGv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Mar 2020 13:06:51 -0500
-Received: by mail-il1-f194.google.com with SMTP id g126so3605769ilh.2
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Mar 2020 10:06:50 -0800 (PST)
+        id S1731498AbgCCUar (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Mar 2020 15:30:47 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:45512 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730517AbgCCUaq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Mar 2020 15:30:46 -0500
+Received: by mail-qk1-f194.google.com with SMTP id z12so4777456qkg.12
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Mar 2020 12:30:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=42VRx4KA+cD1ZZnhz/34yl/kjJSKnU+ahvHX6e7S6BM=;
-        b=s5F7HbUzu8PML3bbwUb0UiWMLxdDV1JMTrGB1diF7j50Pe2i5JusS4dTXC0p3rExzp
-         cY/x7luWCmVb66f62SzrgdJvxs7/j3NJru6nHfIKzRtQAHP/QiUX+9Fxv+m1wN4gQzzY
-         +jjuig6xR7RAqw+MIiBX3i2uHmdSDp6lgW7BUEE4J0nx4ic16VVvifUjTqzWluXIO6SB
-         gFPHYOShXu+oflMZeXqfzV8qEViULYcSVf7VZhRL7y4I3L9jOLC3/ScDsHEDAOdf0Fe6
-         QdnRPBEgeUc2awJzoN0nmU5gJTV30lWVFbdeLw3Tofxea+Esu7kobg1kYpUATT/2ux5Y
-         OB+w==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=123P9xQGjDkfvy5FsfzCO+UHa3rPS90oX4YiNtrqhWw=;
+        b=oMnlxAfaYeplW2vLS+DWelhhqH2WlAWDjWhlmOpKI/Duis+KxRNZz0/D21oxnIgULq
+         zgeFL7J09p5zRhZuEiKU0A44Iu5zo8t+DAT7bnK0R6jWCKxZu9EiFF2RPSzmDmGj4VrH
+         tf7m31BweTtKuVIIt2STCEMTZ0cceLF+cd7HOfySR6MP55Rp/mbHm7fZqGKtobukvEcU
+         ljoVaZjkKpl/W7a8I7QTI0PglgMnhhQyWFvFFnxXtVcWM7zeIZhJC8+X3vYRqswNkfOY
+         cu3Mfw6hiICbp67BUYQ7hRzo6QPjj/cdCqCUkIxbss5FMfZP/R8F0zE6KUY4z567HMKm
+         HPcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=42VRx4KA+cD1ZZnhz/34yl/kjJSKnU+ahvHX6e7S6BM=;
-        b=Y1v0SIFppcDMC3/aMhKej3uWTgSm1j9XXBX718/s0ZfC9CdX0pWDdYdEKo/EV7Boch
-         bSi3GNjgFZqyh8LApMaqWfLW/HghvUzBQ/L9epFfCWZ7VWiAVEJwIWk+obuE0YH568CJ
-         rjpGtXArFrhqRtuM4pLJBaHvZa7gnAQ8MOwsGmBGn+9X1NMqFMpiacM23TDic0PQwIY2
-         52FbF5OrImvNenn+lJ11VK4qrZJFHEtxLPaj9fHt+CfnxJsbhQJPlWQFmm40edc+o5L6
-         xESN88H+uO0qA+0NK+hOrxtHiD4RREK7LNezlUX7caTQyBx6PMtsjrsjrtoNcCFE/HDY
-         BWXA==
-X-Gm-Message-State: ANhLgQ2eTa4+1RlOvxxnGoG64zy4dsN0c4ZQtSAZHxdtR0BGlaklREdK
-        OWDDATvl7MQoFG+IhGjsUPOGn8N5efvsvKDbL+E=
-X-Google-Smtp-Source: ADFU+vsVQVdjikFcraXDO/5V5Yhfad6CZUwvCLoUcdzG0PIo538vbAX5IzyZAELLyuwZfYgkmlgSjyYyK00O03z4A1Y=
-X-Received: by 2002:a92:b506:: with SMTP id f6mr6045351ile.103.1583258810372;
- Tue, 03 Mar 2020 10:06:50 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=123P9xQGjDkfvy5FsfzCO+UHa3rPS90oX4YiNtrqhWw=;
+        b=SaW2F9ZZSb8tBAGrOhx4lgT4IzLU04PhKsqtb+iqx0PNjRHimb5nHPTp1ywu0MiraO
+         T0RNoLYDEo3zxwmTkGsL3jZw2eg+82e+rS655HW1cU1Qp6o+2qHOzqIr6TtPU7hQEPln
+         /KQx0VYKt9zm1zdAvf1nCSj9PGFcJZEKH3kUisCduzPDBawu9hk99woOZbm7XZJ4Iw5L
+         cFfRC7JyyUu8LQbSvGwcnXOA2nIkZNqgooAbVDmQ8ehATLRI6rfMBRMlcBB9RtCOx9ab
+         MI0Vl+EOGPisfIu/+eOFd31w7H4Whh3U409RYDEACAQDHDr1Uy8F7oRz2u9677tE3qDR
+         0SfA==
+X-Gm-Message-State: ANhLgQ0nJ8kizEoVShRPDHivCSvjX6CMXo1dLnu8ss/KTvLnHbBvGdHU
+        e6eIcmI7jWH36byBFytDJV1bjQ==
+X-Google-Smtp-Source: ADFU+vvHp3YJ4Y5ualAljJKts6XGmz1AJG7ZhH+LdzPqAcNANHKw/6O07c7kM42eTFtS7Agx619UJA==
+X-Received: by 2002:a37:67d3:: with SMTP id b202mr5746959qkc.496.1583267445778;
+        Tue, 03 Mar 2020 12:30:45 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id t29sm13453204qtt.20.2020.03.03.12.30.45
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 03 Mar 2020 12:30:45 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1j9EBg-0001xh-AJ; Tue, 03 Mar 2020 16:30:44 -0400
+Date:   Tue, 3 Mar 2020 16:30:44 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     syzbot <syzbot+46fe08363dbba223dec5@syzkaller.appspotmail.com>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, rafael@kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: general protection fault in kobject_get
+Message-ID: <20200303203044.GD31668@ziepe.ca>
+References: <000000000000c4b371059fd83a92@google.com>
+ <20200303072558.GF121803@unreal>
 MIME-Version: 1.0
-Received: by 2002:a02:9f04:0:0:0:0:0 with HTTP; Tue, 3 Mar 2020 10:06:49 -0800 (PST)
-Reply-To: dr.challynoah@gmail.com
-From:   DR CHALLY NOAH <mayorabrahamedge404@gmail.com>
-Date:   Tue, 3 Mar 2020 19:06:49 +0100
-Message-ID: <CALqVJWeC6HBrRgr4uBSZq1w12dBC_RHwpd8_CGoFdL1uY-mThg@mail.gmail.com>
-Subject: Hello Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200303072558.GF121803@unreal>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Dear,
-What Have Kept You Waiting To Claim Your $600,000.00 USD Compensation Award?
-This said fund was issued out by the UNITED NATIONS To compensate
-you.Please If You Have Not Claim Your Fund (Award),Kindly contact me
-at   DR.CHALLYNOAH@GMAIL.COM   for further details on how to proceed your
-fund (award)release to you or better still reply back Immediately You
-Receive This Information For An Urgent Confirmation And Release Of Your
-Fund To You Without Delays, as your email was listed among those to be
-compensated this year.Congratulations..
-Best Regards,
-Dr Chally Noah.
-Minister Of Finance On Foreign Remittance:
+On Tue, Mar 03, 2020 at 09:25:58AM +0200, Leon Romanovsky wrote:
+> +RDMA
+> 
+> On Sun, Mar 01, 2020 at 09:12:11PM -0800, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following crash on:
+> >
+> > HEAD commit:    3b3e808c Merge tag 'mac80211-next-for-net-next-2020-02-24'..
+> > git tree:       net-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=15e20a2de00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6ec9623400ee72
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=46fe08363dbba223dec5
+> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> >
+> > Unfortunately, I don't have any reproducer for this crash yet.
+> >
+> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > Reported-by: syzbot+46fe08363dbba223dec5@syzkaller.appspotmail.com
+
+Hum, most probably something like this.. Will send a proper
+patch. If it is this I am very surprised that it didn't get a
+reproducer, as the fault should be pretty easy to hit, no race required..
+
+diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
+index d1407fa378e832..e43ec710092a94 100644
+--- a/drivers/infiniband/core/user_mad.c
++++ b/drivers/infiniband/core/user_mad.c
+@@ -1129,17 +1129,30 @@ static const struct file_operations umad_sm_fops = {
+ 	.llseek	 = no_llseek,
+ };
+ 
++static struct ib_umad_port *get_port(struct ib_device *ibdev,
++				     struct ib_umad_device *umad_dev,
++				     unsigned int port)
++{
++	if (!umad_dev)
++		return ERR_PTR(-EOPNOTSUPP);
++	if (!rdma_is_port_valid(ibdev, port))
++		return ERR_PTR(-EINVAL);
++	if (!rdma_cap_ib_mad(ibdev, port))
++		return ERR_PTR(-EOPNOTSUPP);
++
++	return &umad_dev->ports[port - rdma_start_port(ibdev)];
++}
++
+ static int ib_umad_get_nl_info(struct ib_device *ibdev, void *client_data,
+ 			       struct ib_client_nl_info *res)
+ {
+-	struct ib_umad_device *umad_dev = client_data;
++	struct ib_umad_port *port = get_port(ibdev, client_data, res->port);
+ 
+-	if (!rdma_is_port_valid(ibdev, res->port))
+-		return -EINVAL;
++	if (IS_ERR(port))
++		return PTR_ERR(port);
+ 
+ 	res->abi = IB_USER_MAD_ABI_VERSION;
+-	res->cdev = &umad_dev->ports[res->port - rdma_start_port(ibdev)].dev;
+-
++	res->cdev = &port->dev;
+ 	return 0;
+ }
+ 
+@@ -1154,15 +1167,13 @@ MODULE_ALIAS_RDMA_CLIENT("umad");
+ static int ib_issm_get_nl_info(struct ib_device *ibdev, void *client_data,
+ 			       struct ib_client_nl_info *res)
+ {
+-	struct ib_umad_device *umad_dev =
+-		ib_get_client_data(ibdev, &umad_client);
++	struct ib_umad_port *port = get_port(ibdev, client_data, res->port);
+ 
+-	if (!rdma_is_port_valid(ibdev, res->port))
+-		return -EINVAL;
++	if (IS_ERR(port))
++		return PTR_ERR(port);
+ 
+ 	res->abi = IB_USER_MAD_ABI_VERSION;
+-	res->cdev = &umad_dev->ports[res->port - rdma_start_port(ibdev)].sm_dev;
+-
++	res->cdev = &port->sm_dev;
+ 	return 0;
+ }
+ 
