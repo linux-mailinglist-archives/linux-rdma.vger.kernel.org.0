@@ -2,163 +2,172 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3AB1177B86
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 17:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3972E177BA8
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 17:13:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730097AbgCCQEN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Mar 2020 11:04:13 -0500
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:36364 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729898AbgCCQEN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Mar 2020 11:04:13 -0500
-Received: by mail-pg1-f195.google.com with SMTP id d9so1743172pgu.3;
-        Tue, 03 Mar 2020 08:04:12 -0800 (PST)
+        id S1730164AbgCCQNo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Mar 2020 11:13:44 -0500
+Received: from mail-io1-f68.google.com ([209.85.166.68]:37992 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729995AbgCCQNn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Mar 2020 11:13:43 -0500
+Received: by mail-io1-f68.google.com with SMTP id s24so4186158iog.5
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Mar 2020 08:13:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aeRpQ6jFz28A02Hu1WZ+mFWINs3Ftsi4z7RA95+XxW4=;
+        b=OyL1hjmfbl4yBa1iOiCXw/1t45UESSed0w6tUSSEJ7jaVK6nxDeyFEz35I0JIEiWZz
+         uyXS8o8yMpCP0qYqn6H7vup49HZqWUzjShewWS4E11QFEE7IUoRCAl9ufRC7JRS9ldEI
+         +svzo2lkXZ5mg9tPXedB6ww6qz/tzWt6USt9RGQxorAVSvim+8daF+ibbNBod05OdDeI
+         5/ITAuaszctsIUMQUfy1F27qu2K02dbzvSEwImwiaq7keoOQrR05pnzcwbrcMsz/9XXO
+         kMTxyb7ILF7LlgwgCStgWO58s4aMtNHDjAhkTawa18lPPpKcmngO+CYgXMKoN2AbQogf
+         4j+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=euo4YPxmByto1gTLSe2jceYFkERa+IMhPO4TSr6zMf0=;
-        b=Fx+SfjlhIG3XSy0gQC1k/+n2C02H+o65Pgd2b2h0auafJm2+uNjpucPmB6NHNQEePn
-         4YI2KMC4AcDcSVGCrwIZMnNDFWwFAdEzOoa5t8prPO2cqqP4mXNqITvERXqyDnubrPnE
-         9A06Vt7hCtFJBtH913HmtZJ/N41Y7UDfjgOy2y1zaXlNDXOQc5wdeIriS/qo7d/kjJ9U
-         18bZ/qu2HvVfSrHG7zQt0TOO4X0HV+XaggHJBY4WUhY7z6qF62aHnNdaV6IrvmfYeC55
-         /rv0fB+UJfgXIX92cMYUSZyDDxmdArW10v0VRfCCRFTqMhUdHZMkLtwFpALbhbANOvd4
-         KHxg==
-X-Gm-Message-State: ANhLgQ1UWIeHg5yYYS3lZzELZhtXPMEdGkPy/oHuOTEqpPaO6jDcL7Rb
-        luIBFORvW+B2B+xIXPao8wUR5/zK
-X-Google-Smtp-Source: ADFU+vugYbAlUlHPJ53/WNaszsOX40G6x58wUWQfs8wwQQTmhis4kfLCRsxRDgyATM3ef/oAdljKRg==
-X-Received: by 2002:a05:6a00:2b7:: with SMTP id q23mr4711260pfs.43.1583251451713;
-        Tue, 03 Mar 2020 08:04:11 -0800 (PST)
-Received: from desktop-bart.svl.corp.google.com ([2620:15c:2cd:202:4308:52a3:24b6:2c60])
-        by smtp.gmail.com with ESMTPSA id u41sm25595487pgn.8.2020.03.03.08.04.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Mar 2020 08:04:10 -0800 (PST)
-Subject: Re: [PATCH v9 06/25] RDMA/rtrs: client: main functionality
-To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aeRpQ6jFz28A02Hu1WZ+mFWINs3Ftsi4z7RA95+XxW4=;
+        b=lNLjBnigPNW3CvG3gLrpXRE9epiQ5vrbDpngVr9EmJRzrtgPp9DQ3ckFCCkK1brrk5
+         2e+Eb4igg24EUXPBseBHz8K9eHtpB//wsSOpfvtpTRpZqtgTjys/YlSJWjSwOuJgCvMJ
+         4tNefHc1prSCTDKt9/XpmtlMF/6syq0wY/1RWbyEnGrklyJ/EcO6xyUIZH6SNTydTEYV
+         9n1CqBRFT/xzyURr3xE3da501lAw3cvvIfHWJQHvtFCNubDokJO52nSSpvmlOitKqU0k
+         5/Uw5NJswq3Qou4eBTVUgi9otlncVVDAkyYix13nSVrwGZe+SvLr33erc6W3lsGTpYg7
+         KK8w==
+X-Gm-Message-State: ANhLgQ2TsCQV7TynY/DFwn1O3VAQSytcnEpvKsWvWy2dAuHFK2nMiDmq
+        a3LWWD2XQGWK4Mnmg9/uNpobXCj6hrK5WsghI+y4tQ==
+X-Google-Smtp-Source: ADFU+vvv//GJjpWx3Y2wfaa53Z05LsP6S85z8Q/auOLq004jXlUBLLlFO7BahZGZkg6XfGGY33D8Fshin2VVNCtr7fE=
+X-Received: by 2002:a02:cd83:: with SMTP id l3mr4762915jap.10.1583252023065;
+ Tue, 03 Mar 2020 08:13:43 -0800 (PST)
+MIME-Version: 1.0
+References: <20200221104721.350-1-jinpuwang@gmail.com> <20200221104721.350-4-jinpuwang@gmail.com>
+ <20200303094516.GJ121803@unreal> <CAMGffEmHB2z=JHG=92Ki_TaBZ8JXv6r0iZr7QF-pKyuRo=C9cA@mail.gmail.com>
+ <20200303140553.GC31668@ziepe.ca>
+In-Reply-To: <20200303140553.GC31668@ziepe.ca>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Tue, 3 Mar 2020 17:13:32 +0100
+Message-ID: <CAMGffEnhdnP4sq9fAfAZhwnNhVLcT+rackgCm0tpdaTJ35zLdg@mail.gmail.com>
+Subject: Re: [PATCH v9 03/25] RDMA/rtrs: private headers with rtrs protocol
+ structs and helpers
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>, Jack Wang <jinpuwang@gmail.com>,
+        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
         Sagi Grimberg <sagi@grimberg.me>,
-        Leon Romanovsky <leon@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
         Doug Ledford <dledford@redhat.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>, rpenyaev@suse.de,
-        pankaj.gupta@cloud.ionos.com
-References: <20200221104721.350-1-jinpuwang@gmail.com>
- <20200221104721.350-7-jinpuwang@gmail.com>
- <c3c8fbcc-0028-9b23-8eff-3b5f1f60e652@acm.org>
- <CAHg0HuxJgjQca3Vy7nbcVKs0bUoj=-Uqoa5DOzYoqRHQ6Vph7A@mail.gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <597777e7-ac5a-5fc4-c1f7-3ffa5876a6f2@acm.org>
-Date:   Tue, 3 Mar 2020 08:04:09 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <CAHg0HuxJgjQca3Vy7nbcVKs0bUoj=-Uqoa5DOzYoqRHQ6Vph7A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Roman Penyaev <rpenyaev@suse.de>,
+        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/2/20 5:20 AM, Danil Kipnis wrote:
-> On Sun, Mar 1, 2020 at 2:33 AM Bart Van Assche <bvanassche@acm.org> wrote:
->> On 2020-02-21 02:47, Jack Wang wrote:
->>> +static struct rtrs_permit *
->>> +__rtrs_get_permit(struct rtrs_clt *clt, enum rtrs_clt_con_type con_type)
->>> +{
->>> +     size_t max_depth = clt->queue_depth;
->>> +     struct rtrs_permit *permit;
->>> +     int cpu, bit;
->>> +
->>> +     /* Combined with cq_vector, we pin the IO to the the cpu it comes */
->>
->> This comment is confusing. Please clarify this comment. All I see below
->> is that preemption is disabled. I don't see pinning of I/O to the CPU of
->> the caller.
-> The comment is addressing a use-case of the driver: The user can
-> assign (under /proc/irq/) the irqs of the HCA cq_vectors "one-to-one"
-> to each cpu. This will "force" the driver to process io response on
-> the same cpu the io has been submitted on.
-> In the code below only preemption is disabled. This can lead to the
-> situation that callers from different cpus will grab the same bit,
-> since find_first_zero_bit is not atomic. But then the
-> test_and_set_bit_lock will fail for all the callers but one, so that
-> they will loop again. This way an explicit spinlock is not required.
-> Will extend the comment.
+On Tue, Mar 3, 2020 at 3:05 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Tue, Mar 03, 2020 at 02:52:19PM +0100, Jinpu Wang wrote:
+> > On Tue, Mar 3, 2020 at 10:45 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > >
+> > > On Fri, Feb 21, 2020 at 11:46:59AM +0100, Jack Wang wrote:
+> > > > From: Jack Wang <jinpu.wang@cloud.ionos.com>
+> > > >
+> > > > These are common private headers with rtrs protocol structures,
+> > > > logging, sysfs and other helper functions, which are used on
+> > > > both client and server sides.
+> > > >
+> > > > Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
+> > > > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+> > > >  drivers/infiniband/ulp/rtrs/rtrs-log.h |  28 ++
+> > > >  drivers/infiniband/ulp/rtrs/rtrs-pri.h | 401 +++++++++++++++++++++++++
+> > > >  2 files changed, 429 insertions(+)
+> > > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-log.h
+> > > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-pri.h
+> > > >
+> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-log.h b/drivers/infiniband/ulp/rtrs/rtrs-log.h
+> > > > new file mode 100644
+> > > > index 000000000000..53c785b992f2
+> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-log.h
+> > > > @@ -0,0 +1,28 @@
+> > > > +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> > > > +/*
+> > > > + * RDMA Transport Layer
+> > > > + *
+> > > > + * Copyright (c) 2014 - 2018 ProfitBricks GmbH. All rights reserved.
+> > > > + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
+> > > > + * Copyright (c) 2019 - 2020 1&1 IONOS SE. All rights reserved.
+> > > > + */
+> > > > +#ifndef RTRS_LOG_H
+> > > > +#define RTRS_LOG_H
+> > > > +
+> > > > +#define rtrs_log(fn, obj, fmt, ...)                          \
+> > > > +     fn("<%s>: " fmt, obj->sessname, ##__VA_ARGS__)
+> > > > +
+> > > > +#define rtrs_err(obj, fmt, ...)      \
+> > > > +     rtrs_log(pr_err, obj, fmt, ##__VA_ARGS__)
+> > > > +#define rtrs_err_rl(obj, fmt, ...)   \
+> > > > +     rtrs_log(pr_err_ratelimited, obj, fmt, ##__VA_ARGS__)
+> > > > +#define rtrs_wrn(obj, fmt, ...)      \
+> > > > +     rtrs_log(pr_warn, obj, fmt, ##__VA_ARGS__)
+> > > > +#define rtrs_wrn_rl(obj, fmt, ...) \
+> > > > +     rtrs_log(pr_warn_ratelimited, obj, fmt, ##__VA_ARGS__)
+> > > > +#define rtrs_info(obj, fmt, ...) \
+> > > > +     rtrs_log(pr_info, obj, fmt, ##__VA_ARGS__)
+> > > > +#define rtrs_info_rl(obj, fmt, ...) \
+> > > > +     rtrs_log(pr_info_ratelimited, obj, fmt, ##__VA_ARGS__)
+> > > > +
+> > > > +#endif /* RTRS_LOG_H */
+> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+> > > > new file mode 100644
+> > > > index 000000000000..aecf01a7d8dc
+> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+> > > > @@ -0,0 +1,401 @@
+> > > > +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> > > > +/*
+> > > > + * RDMA Transport Layer
+> > > > + *
+> > > > + * Copyright (c) 2014 - 2018 ProfitBricks GmbH. All rights reserved.
+> > > > + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
+> > > > + * Copyright (c) 2019 - 2020 1&1 IONOS SE. All rights reserved.
+> > > > + */
+> > > > +
+> > > > +#ifndef RTRS_PRI_H
+> > > > +#define RTRS_PRI_H
+> > > > +
+> > > > +#include <linux/uuid.h>
+> > > > +#include <rdma/rdma_cm.h>
+> > > > +#include <rdma/ib_verbs.h>
+> > > > +#include <rdma/ib.h>
+> > > > +
+> > > > +#include "rtrs.h"
+> > > > +
+> > > > +#define RTRS_PROTO_VER_MAJOR 2
+> > > > +#define RTRS_PROTO_VER_MINOR 0
+> > >
+> > > I think that Jason once said that new submission starts from "1".
+> > > There is no RTRS_PROTO_VER_MAJOR == 1 in the wild.
+> > sorry, v2 protocol is already in our production, we can simple change back to v1
+>
+Hi Jason,
 
-If the purpose of get_cpu() and put_cpu() calls is to serialize code 
-against other threads, please use locking instead of disabling 
-preemption. This will help tools that verify locking like lockdep and 
-the kernel thread sanitizer (https://github.com/google/ktsan/wiki).
+> You should arrange this so you can use it in your production, if you
+> use something else then we are we upstreaming it?
+We do have the plan to use upstream once we are in upstream, and
+that's the reason why we spend the effort to push it upstream,
+and we sure would like to see it been used outside of our company, so
+more users could benefit.
+>
+> As a community we have had bad experience with companies upstreaming
+> something that they ultimately do not use.
 
->>> +static int rtrs_post_send_rdma(struct rtrs_clt_con *con,
->>> +                             struct rtrs_clt_io_req *req,
->>> +                             struct rtrs_rbuf *rbuf, u32 off,
->>> +                             u32 imm, struct ib_send_wr *wr)
->>> +{
->>> +     struct rtrs_clt_sess *sess = to_clt_sess(con->c.sess);
->>> +     enum ib_send_flags flags;
->>> +     struct ib_sge sge;
->>> +
->>> +     if (unlikely(!req->sg_size)) {
->>> +             rtrs_wrn(con->c.sess,
->>> +                      "Doing RDMA Write failed, no data supplied\n");
->>> +             return -EINVAL;
->>> +     }
->>> +
->>> +     /* user data and user message in the first list element */
->>> +     sge.addr   = req->iu->dma_addr;
->>> +     sge.length = req->sg_size;
->>> +     sge.lkey   = sess->s.dev->ib_pd->local_dma_lkey;
->>> +
->>> +     /*
->>> +      * From time to time we have to post signalled sends,
->>> +      * or send queue will fill up and only QP reset can help.
->>> +      */
->>> +     flags = atomic_inc_return(&con->io_cnt) % sess->queue_depth ?
->>> +                     0 : IB_SEND_SIGNALED;
->>> +
->>> +     ib_dma_sync_single_for_device(sess->s.dev->ib_dev, req->iu->dma_addr,
->>> +                                   req->sg_size, DMA_TO_DEVICE);
->>> +
->>> +     return rtrs_iu_post_rdma_write_imm(&con->c, req->iu, &sge, 1,
->>> +                                         rbuf->rkey, rbuf->addr + off,
->>> +                                         imm, flags, wr);
->>> +}
->>
->> I don't think that posting a signalled send from time to time is
->> sufficient to prevent send queue overflow. Please address Jason's
->> comment from January 7th: "Not quite. If the SQ depth is 16 and you post
->> 16 things and then signal the last one, you *cannot* post new work until
->> you see the completion. More SQ space *ONLY* becomes available upon
->> receipt of a completion. This is why you can't have an unsignaled SQ."
-> 
->> See also https://lore.kernel.org/linux-rdma/20200107182528.GB26174@ziepe.ca/
-> In our case we set the send queue of each QP belonging to one
-> "session" to the one supported by the hardware (max_qp_wr) which is
-> around 5K on our hardware. The queue depth of our "session" is 512.
-> Those 512 are "shared" by all the QPs (number of CPUs on client side)
-> belonging to that session. So we have at most 512 and 512/num_cpus on
-> average inflights on each QP. We never experienced send queue full
-> event in any of our performance tests or production usage. The
-> alternative would be to count submitted requests and completed
-> requests, check the difference before submission and wait if the
-> difference multiplied by the queue depth of "session" exceeds the max
-> supported by the hardware. The check will require quite some code and
-> will most probably affect performance. I do not think it is worth it
-> to introduce a code path which is triggered only on a condition which
-> is known to never become true.
-> Jason, do you think it's necessary to implement such tracking?
+That's the part we are doing now, we want to discuss with the
+community to get to a win-win situation.
+For myself I joined the community for more than 10 years now, started
+from upstream a SAS adapter driver called pm8001, I'm still
+maintaining it,
+reviewing patches and so on. For RNBD/RTRS, I sure will do the same.
 
-Please either make sure that send queues do not overflow by providing 
-enough space for 512 in-flight requests fit or implement tracking for 
-the number of in-flight requests.
-
-Thanks,
-
-Bart.
-
+Thanks!
