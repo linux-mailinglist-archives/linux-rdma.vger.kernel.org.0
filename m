@@ -2,92 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7EF177C2B
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 17:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18136177C95
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 18:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729438AbgCCQnT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Mar 2020 11:43:19 -0500
-Received: from mail-io1-f66.google.com ([209.85.166.66]:42250 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729335AbgCCQnT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Mar 2020 11:43:19 -0500
-Received: by mail-io1-f66.google.com with SMTP id q128so4266656iof.9
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Mar 2020 08:43:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=10ej2Uh6kgWoftfggTlH7aAmB/MoY2a8fEdsUAY3Q4Q=;
-        b=MfsgOPVAFeWYH55ITnz+BWPXJsN5J+QV/i4THP3hnwC0FDhgwlt0jZkThGIawk89Iw
-         gYkOISdC/Ny+kfZx7dY7YrW/Ql8vYcl6Tt40dILag29bgnJC3YD6SkK8kev8L633V40W
-         WRBGvCnA4BuKyDjtvejJjVr+Q18pXQA7Qq80hJVBjgrqN4ULTkmEuEZ/CVOYAmqqCEMJ
-         H2OScDls0RUMeOLq4jor4iyhV5shoKhaoGXANdP30hO2Rko3Flpomy6DBVGVQ2z9d/GO
-         CvD3V2+XMlw16joOMHj6JnxJ17c/k3VzOsY3MqeIXUu3a2gNm0/OXkusq5n4vaIe7Ylo
-         PBCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=10ej2Uh6kgWoftfggTlH7aAmB/MoY2a8fEdsUAY3Q4Q=;
-        b=RTQItKf0vIV+6zu2QZhn207/kk02EQMx8aB86ChpI6AmNCj7n3rre/MbAKqKHiqcI8
-         +3PYW4L0hF32p7lRG2vjbH41+rJ+oy/RBuaIZl6SlKLxM2gWhr1HnNMKTld91CKelD6W
-         8NYTaTu309qU0DeAaChuhiouoeBdtPMD5LfNmUYs7uurvE1yv0w45C8dwXoh6HWoWVws
-         i2DAIDs+Z5ELCKozKAU5kPRJsaVA0K95P+v5NbBoYEjCiscRFTGEqFqnLZzqfZENxzEg
-         /U+GqkjHWEgA5y8FpQndF0FuXfkA+tqJIQAp7DE2CPuOCHp+nkTAZoRTKcyC0adWoAVx
-         CQSg==
-X-Gm-Message-State: ANhLgQ1L8OsIS1Um0gIzcp3tU9d7MGGJURoNMz6AedL5le+fTEXcNZ9h
-        zf8qepCS37dw66ugXWlI8lhS0U/9ZvoWJ7as9M1WeA==
-X-Google-Smtp-Source: ADFU+vuc7eI5hgfY/RYI0iFnO6PjeenqayrwfrfDtH3uI9dJN6nWhA6GGuXjDYHC5UaS8zqgze+PjaXpDT9pmOnx1R8=
-X-Received: by 2002:a02:3301:: with SMTP id c1mr4615401jae.136.1583253797558;
- Tue, 03 Mar 2020 08:43:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20200221104721.350-1-jinpuwang@gmail.com> <20200221104721.350-22-jinpuwang@gmail.com>
- <92721a50-158f-3018-39d4-40fce7b0f4d8@acm.org> <CAHg0Huy_8hzxxA6R8_EzPNfYd3QN-meUckFStUrjiGeVaGj_Qg@mail.gmail.com>
- <CAMGffEmtJJE8eoMQ4X3MYEJez35M20DaWwTt_3-+hk7i=R-r=w@mail.gmail.com> <4de21393-a65a-f208-a37a-1889f8db5588@acm.org>
-In-Reply-To: <4de21393-a65a-f208-a37a-1889f8db5588@acm.org>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Tue, 3 Mar 2020 17:43:06 +0100
-Message-ID: <CAMGffEnOHxZLBJZyWGUaTY6eyg2BCz5Jidf6+4tU=ddV45WhzA@mail.gmail.com>
-Subject: Re: [PATCH v9 21/25] block/rnbd: server: functionality for IO
- submission to file or block dev
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        id S1727909AbgCCQ7M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Mar 2020 11:59:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56538 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727077AbgCCQ7M (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 3 Mar 2020 11:59:12 -0500
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4CCF220838;
+        Tue,  3 Mar 2020 16:59:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1583254751;
+        bh=Mgy9cs++agZ+xTJ9o9y0uZ2iSXEwPaWUSSBnB1WigXk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TiPW+mtKVjpy3KV2KLRtpTI+WjwrXQZ7WSAtG0v/r6buEXIcqZ5DVt4yEhTrzxti9
+         bQ3tE7mLSpwH2bdnVKmhMxPUF+JkdSCfqJGng78M7TrIM8GyNvpDw0QtN0zeH0JA/L
+         h3XEwFGCJ31saODQcrMdTvFPgg+ucdbNxHwuaOXY=
+Date:   Tue, 3 Mar 2020 18:59:06 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
         linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
         Sagi Grimberg <sagi@grimberg.me>,
-        Leon Romanovsky <leon@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
+        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
         Roman Penyaev <rpenyaev@suse.de>,
         Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v9 10/25] RDMA/rtrs: server: main functionality
+Message-ID: <20200303165906.GO121803@unreal>
+References: <20200221104721.350-1-jinpuwang@gmail.com>
+ <20200221104721.350-11-jinpuwang@gmail.com>
+ <20200303113740.GM121803@unreal>
+ <CAMGffEmEeK37QCr8uiABjOrC-48nETTv0fxHWE0S0s=j6bPbGQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMGffEmEeK37QCr8uiABjOrC-48nETTv0fxHWE0S0s=j6bPbGQ@mail.gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 3, 2020 at 5:28 PM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 3/3/20 8:20 AM, Jinpu Wang wrote:
-> > We tried the above approach and just noticed the bio_map_kern was no
-> > longer exported since 5.4 kernel.
-> > We checked target_core_iblock.c and nvme io-cmd-bdev.c, they are open
-> > coding similar function.
+On Tue, Mar 03, 2020 at 05:41:27PM +0100, Jinpu Wang wrote:
+> On Tue, Mar 3, 2020 at 12:37 PM Leon Romanovsky <leon@kernel.org> wrote:
 > >
-> > I guess re-export bio_map_kern will not be accepted?
-> > Do you have suggestion how should we handle it?
+> > On Fri, Feb 21, 2020 at 11:47:06AM +0100, Jack Wang wrote:
+> > > From: Jack Wang <jinpu.wang@cloud.ionos.com>
+> > >
+> > > This is main functionality of rtrs-server module, which accepts
+> > > set of RDMA connections (so called rtrs session), creates/destroys
+> > > sysfs entries associated with rtrs session and notifies upper layer
+> > > (user of RTRS API) about RDMA requests or link events.
+> > >
+> > > Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
+> > > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+> > > ---
+> > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2164 ++++++++++++++++++++++++
+> > >  1 file changed, 2164 insertions(+)
+> > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > >
+> > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > > new file mode 100644
+> > > index 000000000000..e60ee6dd675d
+> > > --- /dev/null
+> > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > > @@ -0,0 +1,2164 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > > +/*
+> > > + * RDMA Transport Layer
+> > > + *
+> > > + * Copyright (c) 2014 - 2018 ProfitBricks GmbH. All rights reserved.
+> > > + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
+> > > + * Copyright (c) 2019 - 2020 1&1 IONOS SE. All rights reserved.
+> > > + */
+> > > +
+> > > +#undef pr_fmt
+> > > +#define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
+> > > +
+> > > +#include <linux/module.h>
+> > > +#include <linux/mempool.h>
+> > > +
+> > > +#include "rtrs-srv.h"
+> > > +#include "rtrs-log.h"
+> > > +
+> > > +MODULE_DESCRIPTION("RDMA Transport Server");
+> > > +MODULE_LICENSE("GPL");
+> > > +
+> > > +/* Must be power of 2, see mask from mr->page_size in ib_sg_to_pages() */
+> > > +#define DEFAULT_MAX_CHUNK_SIZE (128 << 10)
+> > > +#define DEFAULT_SESS_QUEUE_DEPTH 512
+> > > +#define MAX_HDR_SIZE PAGE_SIZE
+> > > +#define MAX_SG_COUNT ((MAX_HDR_SIZE - sizeof(struct rtrs_msg_rdma_read)) \
+> > > +                   / sizeof(struct rtrs_sg_desc))
+> > > +
+> > > +/* We guarantee to serve 10 paths at least */
+> > > +#define CHUNK_POOL_SZ 10
+> > > +
+> > > +static struct rtrs_rdma_dev_pd dev_pd;
+> > > +static mempool_t *chunk_pool;
+> > > +struct class *rtrs_dev_class;
+> > > +
+> > > +static int __read_mostly max_chunk_size = DEFAULT_MAX_CHUNK_SIZE;
+> > > +static int __read_mostly sess_queue_depth = DEFAULT_SESS_QUEUE_DEPTH;
+> > > +
+> > > +static bool always_invalidate = true;
+> > > +module_param(always_invalidate, bool, 0444);
+> > > +MODULE_PARM_DESC(always_invalidate,
+> > > +              "Invalidate memory registration for contiguous memory regions before accessing.");
+> > > +
+> > > +module_param_named(max_chunk_size, max_chunk_size, int, 0444);
+> > > +MODULE_PARM_DESC(max_chunk_size,
+> > > +              "Max size for each IO request, when change the unit is in byte (default: "
+> > > +              __stringify(DEFAULT_MAX_CHUNK_SIZE) "KB)");
+> > > +
+> > > +module_param_named(sess_queue_depth, sess_queue_depth, int, 0444);
+> > > +MODULE_PARM_DESC(sess_queue_depth,
+> > > +              "Number of buffers for pending I/O requests to allocate per session. Maximum: "
+> > > +              __stringify(MAX_SESS_QUEUE_DEPTH) " (default: "
+> > > +              __stringify(DEFAULT_SESS_QUEUE_DEPTH) ")");
+> >
+> > We don't like module parameters in the RDMA.
+> Hi Leon,
 >
-> Duplicating code is bad.
->
-> The code in drivers/nvme/target/io-cmd-bdev.c and target_core_iblock.c
-> is different: it calls bio_add_page() instead of bio_add_pc_page().
->
-> Please include a patch in this series that reexports bio_map_kern().
-Got it, will do it.
->
-> Thanks,
->
-> Bart.
->
-Thanks!
+> These paramters are affecting resouce usage/performance, I think would
+> be good to have them as module parameters,
+> so admin could choose based their needs.
+
+It is premature optimization before second user comes, also it is
+based on the assumption that everyone uses modules, which is not true.
+
+Thanks
