@@ -2,142 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9951784B7
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 22:15:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 172B8178623
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Mar 2020 00:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732275AbgCCVPY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Mar 2020 16:15:24 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:2192 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732075AbgCCVPX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Mar 2020 16:15:23 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e5ec8c20000>; Tue, 03 Mar 2020 13:14:42 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 03 Mar 2020 13:15:23 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 03 Mar 2020 13:15:23 -0800
-Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 3 Mar
- 2020 21:15:21 +0000
-Subject: Re: [PATCH v2] nouveau/hmm: map pages after migration
-To:     Jason Gunthorpe <jgg@mellanox.com>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-rdma@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <nouveau@lists.freedesktop.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "John Hubbard" <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ben Skeggs <bskeggs@redhat.com>
-References: <20200303010023.2983-1-rcampbell@nvidia.com>
- <20200303124229.GH26318@mellanox.com>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <1f27ac9e-7ddf-6e4f-25ea-063ef6c78761@nvidia.com>
-Date:   Tue, 3 Mar 2020 13:15:21 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1727429AbgCCXLs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Mar 2020 18:11:48 -0500
+Received: from mail-eopbgr70045.outbound.protection.outlook.com ([40.107.7.45]:36292
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726766AbgCCXLr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 3 Mar 2020 18:11:47 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AR8DsD2soKcPJHWIpnYmQ15iWCVZtwr2Qv6eBE2+oNf7hJO/NQp6+0Ah5kjBnK7JY+AN2OanEe41tIafDZnIsCGThee1S4jRarhl2lyWrV0RTC9J4zuRVilCQ3ANes7/Ns5wWKc29HzT2q+YOwxlaL+b18EqlTqGliXlXp1MpmzOWCEHUlrTolWtwkP1Xeq12zV2Kxe/jCB57FSLePms1+28qM78UGpQ+gvNnQ7maROvsHazvQRahSLG0PssAIRjzbjBOl2cXZOQWPMS+yhULWS5ak9Dan9URec4gBogAP832IlRPNu2wwH56Yzyd5VD2jPHaQ5APb2r6imOgHImvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UwPFvhWipusmiKmzIw+qeIjdg5ywJ+394BZ4ZJw4pGY=;
+ b=eHfM0G0SvmfhDwfKduFTnqFFtGBK9FcDJO6AnKjo6FeFofk6JsRVvJlIS/9pZzZJKsRq02Zev+BDbMB216wNjRRh5av5UV4sjUUqtbgD0U/0K1sD+dpiBAW82LtDbcCsOl6JhtgARUZsxLdHkly5vCXUiJlUkUffcMpP6yrmtX8Z6FkQ8sumxYg50sqygRG6N0fkaOgi3XEYRWbiT+sOtQta2vljADqzSU5bBcMbqgxHyanm4eeN9kknuN8jQoaz4veZCQfOtLrb3BeGCYN8sJ2ynUCKaXxqSwaHvph7Zhr+EmGrhfMFv/50+vXElan/oDXkahMCyaNKK4Kx2xdBsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 193.47.165.251) smtp.rcpttodomain=chelsio.com smtp.mailfrom=mellanox.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=mellanox.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UwPFvhWipusmiKmzIw+qeIjdg5ywJ+394BZ4ZJw4pGY=;
+ b=hU1fb7xWPhzJFepIkEB3BETGwJ9MYo6ZcFvd8G+ooh23nHxq5K8Abao0dggCWnmLock1eqc2fuk0PVoUtH35vICi7DXKNcCd7w8rI++w8AydGYYJT/AryGZlE/GEOFWbSOjdLbWzMKjd7XyNJbTgkyPAtGFrmeg7CXcmRgSABwY=
+Received: from AM6PR05CA0020.eurprd05.prod.outlook.com (2603:10a6:20b:2e::33)
+ by DB7PR05MB4890.eurprd05.prod.outlook.com (2603:10a6:10:24::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.18; Tue, 3 Mar
+ 2020 23:11:42 +0000
+Received: from VE1EUR03FT060.eop-EUR03.prod.protection.outlook.com
+ (2a01:111:f400:7e09::207) by AM6PR05CA0020.outlook.office365.com
+ (2603:10a6:20b:2e::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.15 via Frontend
+ Transport; Tue, 3 Mar 2020 23:11:42 +0000
+Authentication-Results: spf=pass (sender IP is 193.47.165.251)
+ smtp.mailfrom=mellanox.com; chelsio.com; dkim=none (message not signed)
+ header.d=none;chelsio.com; dmarc=pass action=none header.from=mellanox.com;
+Received-SPF: Pass (protection.outlook.com: domain of mellanox.com designates
+ 193.47.165.251 as permitted sender) receiver=protection.outlook.com;
+ client-ip=193.47.165.251; helo=mtlcas13.mtl.com;
+Received: from mtlcas13.mtl.com (193.47.165.251) by
+ VE1EUR03FT060.mail.protection.outlook.com (10.152.19.187) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.2772.14 via Frontend Transport; Tue, 3 Mar 2020 23:11:41 +0000
+Received: from MTLCAS13.mtl.com (10.0.8.78) by mtlcas13.mtl.com (10.0.8.78)
+ with Microsoft SMTP Server (TLS) id 15.0.1178.4; Wed, 4 Mar 2020 01:11:40
+ +0200
+Received: from MTLCAS01.mtl.com (10.0.8.71) by MTLCAS13.mtl.com (10.0.8.78)
+ with Microsoft SMTP Server (TLS) id 15.0.1178.4 via Frontend Transport; Wed,
+ 4 Mar 2020 01:11:40 +0200
+Received: from [172.27.0.12] (172.27.0.12) by MTLCAS01.mtl.com (10.0.8.71)
+ with Microsoft SMTP Server (TLS) id 14.3.468.0; Wed, 4 Mar 2020 01:11:39
+ +0200
+Subject: Re: [PATCH for-rc] nvme-rdma/nvmet-rdma: Allocate sufficient RW ctxs
+ to match hosts pgs len
+To:     Sagi Grimberg <sagi@grimberg.me>,
+        Krishnamraju Eraparaju <krishna2@chelsio.com>
+CC:     <jgg@ziepe.ca>, <linux-nvme@lists.infradead.org>, <hch@lst.de>,
+        <linux-rdma@vger.kernel.org>, <nirranjan@chelsio.com>,
+        <bharat@chelsio.com>
+References: <20200226141318.28519-1-krishna2@chelsio.com>
+ <b7a7abdc-574a-4ce9-ccf0-a51532f1ac58@grimberg.me>
+ <20200227154220.GA3153@chelsio.com>
+ <aeff528c-13ed-2d6a-d843-697035e75d6c@grimberg.me>
+ <7a8670c0-64bc-7d7b-1c7a-feb807ed926a@mellanox.com>
+ <20200302073240.GA14097@chelsio.com>
+ <c8e3f76b-a255-ba03-dcb5-32d8042fc8a0@grimberg.me>
+From:   Max Gurtovoy <maxg@mellanox.com>
+Message-ID: <ba0bb0df-ea36-2035-3364-647c3f5775be@mellanox.com>
+Date:   Wed, 4 Mar 2020 01:11:33 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200303124229.GH26318@mellanox.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
+In-Reply-To: <c8e3f76b-a255-ba03-dcb5-32d8042fc8a0@grimberg.me>
 Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1583270082; bh=22wphWyEQ9kA/NT134DIsydKvoJeEto8s37Q83fcwtM=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=I3g3W9bniGHs2rCu0yfLWPfwG56cNXGXLhCicraDzGKkb8e8gDWo+Z8OzaNStF2hu
-         y3pYgrOQBhye2JydvTdoCV80OZvDgk5j81+ak7Zq2hHmG07zCQUH2Df5BLAaJajL0C
-         Xjb7yXcjyaBSRn+6ANiN9Cocmi4gH/WT0MKD7iDsS9f5EEQMqToUxA3wTmt8msDvmf
-         7qHk5rrgkRKLNqpsboRa/an6DDqsJ7qWGmLT8mf5YdHQB93cIuMlydQHqkNU3rvTY6
-         rhVXu0wQdLr/wATCoZe0XCmCGMZN2smS+n55V57w4wiyJiOnxXbX34fiMJ6MTiG68I
-         ocqAAhJ0YEmjQ==
+X-Originating-IP: [172.27.0.12]
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:193.47.165.251;IPV:;CTRY:IL;EFV:NLI;SFV:NSPM;SFS:(10009020)(4636009)(396003)(346002)(376002)(39860400002)(136003)(189003)(199004)(2906002)(6666004)(316002)(81166006)(8676002)(81156014)(31696002)(356004)(31686004)(53546011)(8936002)(16576012)(36756003)(110136005)(54906003)(5660300002)(4744005)(70586007)(186003)(86362001)(16526019)(26005)(478600001)(70206006)(4326008)(2616005)(336012)(36906005)(3940600001);DIR:OUT;SFP:1101;SCL:1;SRVR:DB7PR05MB4890;H:mtlcas13.mtl.com;FPR:;SPF:Pass;LANG:en;PTR:InfoDomainNonexistent;MX:1;A:1;
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2abc95d2-fd3e-4353-9e78-08d7bfc83c29
+X-MS-TrafficTypeDiagnostic: DB7PR05MB4890:
+X-Microsoft-Antispam-PRVS: <DB7PR05MB4890E258E95521AAB5EE6983B6E40@DB7PR05MB4890.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-Forefront-PRVS: 03319F6FEF
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5hqypvxTqA2FF2rMnfvdX+S2yXOrYTexct37L4bvHK0BMr0eU1Z1Lf7i7Q03GCQIf+1UVeMzIGqILiF3oxsw260RXihGRyy+/nsk/I1Z3kgaGOhuGD8mFj5n1CqPAbd48pqs07ddQgOn09jAW8EPUYmAq7e6KFrqoVCw4WJ/b9n7bt/FEJOh5bJqsAD379Yo2LUHRqVSRt107mCcVBgnObToukglZ5HT5t/VvjB88QT0z5gCqVxQQA3u4R/pw1NwxRx84P32xO09sGF7vgeiukek3mEMXQ+HKu+xFEmx5lBg0H4obp7TPOU6zIX/JxSlIHVzeVPwHAT4n/toKyQ/EOV1AYpRdNsHPK3OvFkECP5lG6u3HpWPB+0anAl9BiJ0e1rav1QT+XPjskmibssPfOrUtXnHlAclcnQGrespiHsNmMbkADvTPfSGegSaZLBPPSJ1O3bZVndESviv0Iqkw9dS4iSdwh8pK+xaP1SW6T6Vb9R0mSdbZQfP8MWfMozq
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2020 23:11:41.8127
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2abc95d2-fd3e-4353-9e78-08d7bfc83c29
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a652971c-7d2e-4d9b-a6a4-d149256f461b;Ip=[193.47.165.251];Helo=[mtlcas13.mtl.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR05MB4890
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-On 3/3/20 4:42 AM, Jason Gunthorpe wrote:
-> On Mon, Mar 02, 2020 at 05:00:23PM -0800, Ralph Campbell wrote:
->> When memory is migrated to the GPU, it is likely to be accessed by GPU
->> code soon afterwards. Instead of waiting for a GPU fault, map the
->> migrated memory into the GPU page tables with the same access permission=
-s
->> as the source CPU page table entries. This preserves copy on write
->> semantics.
+On 3/2/2020 7:43 PM, Sagi Grimberg wrote:
+>
+>> Hi Sagi & Max Gurtovoy,
 >>
->> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
->> Cc: Christoph Hellwig <hch@lst.de>
->> Cc: Jason Gunthorpe <jgg@mellanox.com>
->> Cc: "J=C3=A9r=C3=B4me Glisse" <jglisse@redhat.com>
->> Cc: Ben Skeggs <bskeggs@redhat.com>
->> ---
+>> Thanks for your pointers regarding mdts.
 >>
->> Originally this patch was targeted for Jason's rdma tree since other HMM
->> related changes were queued there. Now that those have been merged, this
->> patch just contains changes to nouveau so it could go through any tree.
->> I guess Ben Skeggs' tree would be appropriate.
->=20
-> Yep
->=20
->> +static inline struct nouveau_pfnmap_args *
->> +nouveau_pfns_to_args(void *pfns)
->=20
-> don't use static inline inside C files
+>> Looks like fixing this issue through mdts is more natural than fixing
+>> through RDMA private data.
+>>
+>> Issue is not occuring after appling the below patch(inspired by Max's
+>> patch "nvmet-rdma: Implement set_mdts controller op").
+>>
+>> So any consensus about merging the fix upstream, to fix this specific
+>> issue?
+>
+> I think we can do this asap.
+>
+> Max, please send a patch for this.
 
-OK.
 
->> +{
->> +	struct nvif_vmm_pfnmap_v0 *p =3D
->> +		container_of(pfns, struct nvif_vmm_pfnmap_v0, phys);
->> +
->> +	return container_of(p, struct nouveau_pfnmap_args, p);
->=20
-> And this should just be
->=20
->     return container_of(pfns, struct nouveau_pfnmap_args, p.phys);
+sure, I'll do that.
 
-Much simpler, thanks.
+But since nvmet/rdma uses RW API that may use multiple MR's per IO 
+request we need to implement the set_mdts differently.
 
->> +static struct nouveau_svmm *
->> +nouveau_find_svmm(struct nouveau_svm *svm, struct mm_struct *mm)
->> +{
->> +	struct nouveau_ivmm *ivmm;
->> +
->> +	list_for_each_entry(ivmm, &svm->inst, head) {
->> +		if (ivmm->svmm->notifier.mm =3D=3D mm)
->> +			return ivmm->svmm;
->> +	}
->> +	return NULL;
->> +}
->=20
-> Is this re-implementing mmu_notifier_get() ?
->=20
-> Jason
+We need to update the value of max_rdma_ctxs that set the MR pool size. 
+We can limit the RDMA transport to support upto 1 or 2 MB and get the 
+factor we need for setting the max_rdma_ctxs.
 
-Not quite. This is being called from an ioctl() call on the GPU device
-file which calls nouveau_svmm_bind() which locks mmap_sem for reading,
-walks the vmas for the address range given in the ioctl() data, and migrate=
-s
-the pages to the GPU memory.
-mmu_notifier_get() would try to lock mmap_sem for writing so that would dea=
-dlock.
-But it is similar in that the GPU specific process context (nouveau_svmm) n=
-eeds
-to be found for the given ioctl caller.
-If find_get_mmu_notifier() was exported, I think that could work.
-Now that I look at this again, there is an easier way to find the svmm and =
-I see
-some other bugs that need fixing. I'll post a v3 as soon as I get those wri=
-tten
-and tested.
+I'll send a fix soon.
 
-Thanks for the review.
+
+>
+> Thanks,
