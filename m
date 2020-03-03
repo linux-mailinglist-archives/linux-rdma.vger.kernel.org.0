@@ -2,63 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3972E177BA8
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 17:13:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CAF8177BC3
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 17:21:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730164AbgCCQNo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Mar 2020 11:13:44 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:37992 "EHLO
+        id S1730274AbgCCQUy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Mar 2020 11:20:54 -0500
+Received: from mail-io1-f68.google.com ([209.85.166.68]:41289 "EHLO
         mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729995AbgCCQNn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Mar 2020 11:13:43 -0500
-Received: by mail-io1-f68.google.com with SMTP id s24so4186158iog.5
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Mar 2020 08:13:43 -0800 (PST)
+        with ESMTP id S1730263AbgCCQUy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Mar 2020 11:20:54 -0500
+Received: by mail-io1-f68.google.com with SMTP id m25so4185669ioo.8
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Mar 2020 08:20:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aeRpQ6jFz28A02Hu1WZ+mFWINs3Ftsi4z7RA95+XxW4=;
-        b=OyL1hjmfbl4yBa1iOiCXw/1t45UESSed0w6tUSSEJ7jaVK6nxDeyFEz35I0JIEiWZz
-         uyXS8o8yMpCP0qYqn6H7vup49HZqWUzjShewWS4E11QFEE7IUoRCAl9ufRC7JRS9ldEI
-         +svzo2lkXZ5mg9tPXedB6ww6qz/tzWt6USt9RGQxorAVSvim+8daF+ibbNBod05OdDeI
-         5/ITAuaszctsIUMQUfy1F27qu2K02dbzvSEwImwiaq7keoOQrR05pnzcwbrcMsz/9XXO
-         kMTxyb7ILF7LlgwgCStgWO58s4aMtNHDjAhkTawa18lPPpKcmngO+CYgXMKoN2AbQogf
-         4j+w==
+        bh=ZAaJpXYNbdE39jeCEup28isyGTBokuMuM2Ns8CeYXpk=;
+        b=HD0T88U4IkciFmBKWyjieLSLkNW3mJ/jo47mvAmUmHM6QC3x2rDf/J2E3pIX2w8lAW
+         5cChn1rhH1SZP/4pg9PFwAcqeoPu7B4kuvMEFhM95FQP7S0T/K66P558/RLJto5aFaQR
+         GMscF8sTTKNYzWy2t4t8wkx9yqZAInEqLqpP+TGMmYqtbvaqbOWk3eSxMI29zWzJga5V
+         6pOrg+AFLECIpvEfNeUeW9RijMq0aJ5CGE/NAvztt3O9r3srrg4XOe8FeHo8prsqQSRO
+         zmvuGHVHgOnrlnI+4SCNRM38tCgZ/NuHkhnlHB8kdnJxHHtoy/WQeKR76FLW0zcMmsSC
+         mZmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aeRpQ6jFz28A02Hu1WZ+mFWINs3Ftsi4z7RA95+XxW4=;
-        b=lNLjBnigPNW3CvG3gLrpXRE9epiQ5vrbDpngVr9EmJRzrtgPp9DQ3ckFCCkK1brrk5
-         2e+Eb4igg24EUXPBseBHz8K9eHtpB//wsSOpfvtpTRpZqtgTjys/YlSJWjSwOuJgCvMJ
-         4tNefHc1prSCTDKt9/XpmtlMF/6syq0wY/1RWbyEnGrklyJ/EcO6xyUIZH6SNTydTEYV
-         9n1CqBRFT/xzyURr3xE3da501lAw3cvvIfHWJQHvtFCNubDokJO52nSSpvmlOitKqU0k
-         5/Uw5NJswq3Qou4eBTVUgi9otlncVVDAkyYix13nSVrwGZe+SvLr33erc6W3lsGTpYg7
-         KK8w==
-X-Gm-Message-State: ANhLgQ2TsCQV7TynY/DFwn1O3VAQSytcnEpvKsWvWy2dAuHFK2nMiDmq
-        a3LWWD2XQGWK4Mnmg9/uNpobXCj6hrK5WsghI+y4tQ==
-X-Google-Smtp-Source: ADFU+vvv//GJjpWx3Y2wfaa53Z05LsP6S85z8Q/auOLq004jXlUBLLlFO7BahZGZkg6XfGGY33D8Fshin2VVNCtr7fE=
-X-Received: by 2002:a02:cd83:: with SMTP id l3mr4762915jap.10.1583252023065;
- Tue, 03 Mar 2020 08:13:43 -0800 (PST)
+        bh=ZAaJpXYNbdE39jeCEup28isyGTBokuMuM2Ns8CeYXpk=;
+        b=lG40cTfIMLRbIROhR5MtQr1wxja9saMp4iOcHtnpe8VVrXsQHuI5PiFOtVvHAqAhI8
+         PTHY3fEQibtO/Tu1iQIwgQVuJAoXX6nG5wVQpejoYAg5cgB1HjaZbT366sQRaEX2OaW/
+         49W/2ULgaUoxkVKfyNAm4I2f+6f6XjqoiSfFd+riMKyY0xRqr1/cxAEBbWziwOHz7ufe
+         PSHVTgfj71OVrv7/6jyBkhzaXTW/utr2Oi/YjByEXG1JU9G/dhjI4eQU3jyey39mi4p6
+         AMYjchTJ+nvnmTqFIhmHmdZko9e+CLy6cCYzdfztpUrZfGmrDo7QuCkOfw5KMzu+SmZF
+         jAgA==
+X-Gm-Message-State: ANhLgQ3/oqeyeoO8CLvJsV/H63LYiCp5cgLun/1XQ5QESBuk1gUqfZ9K
+        zuj5s+1o1K00FFYTNp8pnmaICtHbX+OCOTtBweik3w==
+X-Google-Smtp-Source: ADFU+vtHmu7s11pv6vuoIx5myn8AoL3UJnCv3Sy9IzzZ1EBiom/NdmFIyFbd6DkSKNl/HLwSFGtJ+Tcgr3JKWphP/cA=
+X-Received: by 2002:a05:6602:1508:: with SMTP id g8mr1734085iow.22.1583252453918;
+ Tue, 03 Mar 2020 08:20:53 -0800 (PST)
 MIME-Version: 1.0
-References: <20200221104721.350-1-jinpuwang@gmail.com> <20200221104721.350-4-jinpuwang@gmail.com>
- <20200303094516.GJ121803@unreal> <CAMGffEmHB2z=JHG=92Ki_TaBZ8JXv6r0iZr7QF-pKyuRo=C9cA@mail.gmail.com>
- <20200303140553.GC31668@ziepe.ca>
-In-Reply-To: <20200303140553.GC31668@ziepe.ca>
+References: <20200221104721.350-1-jinpuwang@gmail.com> <20200221104721.350-22-jinpuwang@gmail.com>
+ <92721a50-158f-3018-39d4-40fce7b0f4d8@acm.org> <CAHg0Huy_8hzxxA6R8_EzPNfYd3QN-meUckFStUrjiGeVaGj_Qg@mail.gmail.com>
+In-Reply-To: <CAHg0Huy_8hzxxA6R8_EzPNfYd3QN-meUckFStUrjiGeVaGj_Qg@mail.gmail.com>
 From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Tue, 3 Mar 2020 17:13:32 +0100
-Message-ID: <CAMGffEnhdnP4sq9fAfAZhwnNhVLcT+rackgCm0tpdaTJ35zLdg@mail.gmail.com>
-Subject: Re: [PATCH v9 03/25] RDMA/rtrs: private headers with rtrs protocol
- structs and helpers
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>, Jack Wang <jinpuwang@gmail.com>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
+Date:   Tue, 3 Mar 2020 17:20:41 +0100
+Message-ID: <CAMGffEmtJJE8eoMQ4X3MYEJez35M20DaWwTt_3-+hk7i=R-r=w@mail.gmail.com>
+Subject: Re: [PATCH v9 21/25] block/rnbd: server: functionality for IO
+ submission to file or block dev
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
         Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
+        Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         Roman Penyaev <rpenyaev@suse.de>,
         Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
 Content-Type: text/plain; charset="UTF-8"
@@ -67,107 +66,71 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 3, 2020 at 3:05 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Mon, Mar 2, 2020 at 11:06 AM Danil Kipnis
+<danil.kipnis@cloud.ionos.com> wrote:
 >
-> On Tue, Mar 03, 2020 at 02:52:19PM +0100, Jinpu Wang wrote:
-> > On Tue, Mar 3, 2020 at 10:45 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > On Fri, Feb 21, 2020 at 11:46:59AM +0100, Jack Wang wrote:
-> > > > From: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > > >
-> > > > These are common private headers with rtrs protocol structures,
-> > > > logging, sysfs and other helper functions, which are used on
-> > > > both client and server sides.
-> > > >
-> > > > Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> > > > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > > >  drivers/infiniband/ulp/rtrs/rtrs-log.h |  28 ++
-> > > >  drivers/infiniband/ulp/rtrs/rtrs-pri.h | 401 +++++++++++++++++++++++++
-> > > >  2 files changed, 429 insertions(+)
-> > > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-log.h
-> > > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-pri.h
-> > > >
-> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-log.h b/drivers/infiniband/ulp/rtrs/rtrs-log.h
-> > > > new file mode 100644
-> > > > index 000000000000..53c785b992f2
-> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-log.h
-> > > > @@ -0,0 +1,28 @@
-> > > > +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> > > > +/*
-> > > > + * RDMA Transport Layer
-> > > > + *
-> > > > + * Copyright (c) 2014 - 2018 ProfitBricks GmbH. All rights reserved.
-> > > > + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
-> > > > + * Copyright (c) 2019 - 2020 1&1 IONOS SE. All rights reserved.
-> > > > + */
-> > > > +#ifndef RTRS_LOG_H
-> > > > +#define RTRS_LOG_H
-> > > > +
-> > > > +#define rtrs_log(fn, obj, fmt, ...)                          \
-> > > > +     fn("<%s>: " fmt, obj->sessname, ##__VA_ARGS__)
-> > > > +
-> > > > +#define rtrs_err(obj, fmt, ...)      \
-> > > > +     rtrs_log(pr_err, obj, fmt, ##__VA_ARGS__)
-> > > > +#define rtrs_err_rl(obj, fmt, ...)   \
-> > > > +     rtrs_log(pr_err_ratelimited, obj, fmt, ##__VA_ARGS__)
-> > > > +#define rtrs_wrn(obj, fmt, ...)      \
-> > > > +     rtrs_log(pr_warn, obj, fmt, ##__VA_ARGS__)
-> > > > +#define rtrs_wrn_rl(obj, fmt, ...) \
-> > > > +     rtrs_log(pr_warn_ratelimited, obj, fmt, ##__VA_ARGS__)
-> > > > +#define rtrs_info(obj, fmt, ...) \
-> > > > +     rtrs_log(pr_info, obj, fmt, ##__VA_ARGS__)
-> > > > +#define rtrs_info_rl(obj, fmt, ...) \
-> > > > +     rtrs_log(pr_info_ratelimited, obj, fmt, ##__VA_ARGS__)
-> > > > +
-> > > > +#endif /* RTRS_LOG_H */
-> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-> > > > new file mode 100644
-> > > > index 000000000000..aecf01a7d8dc
-> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-> > > > @@ -0,0 +1,401 @@
-> > > > +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> > > > +/*
-> > > > + * RDMA Transport Layer
-> > > > + *
-> > > > + * Copyright (c) 2014 - 2018 ProfitBricks GmbH. All rights reserved.
-> > > > + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
-> > > > + * Copyright (c) 2019 - 2020 1&1 IONOS SE. All rights reserved.
-> > > > + */
-> > > > +
-> > > > +#ifndef RTRS_PRI_H
-> > > > +#define RTRS_PRI_H
-> > > > +
-> > > > +#include <linux/uuid.h>
-> > > > +#include <rdma/rdma_cm.h>
-> > > > +#include <rdma/ib_verbs.h>
-> > > > +#include <rdma/ib.h>
-> > > > +
-> > > > +#include "rtrs.h"
-> > > > +
-> > > > +#define RTRS_PROTO_VER_MAJOR 2
-> > > > +#define RTRS_PROTO_VER_MINOR 0
-> > >
-> > > I think that Jason once said that new submission starts from "1".
-> > > There is no RTRS_PROTO_VER_MAJOR == 1 in the wild.
-> > sorry, v2 protocol is already in our production, we can simple change back to v1
+> On Sun, Mar 1, 2020 at 4:09 AM Bart Van Assche <bvanassche@acm.org> wrote:
+> >
+> > On 2020-02-21 02:47, Jack Wang wrote:
+> > > +static struct bio *rnbd_bio_map_kern(struct request_queue *q, void *data,
+> > > +                                   struct bio_set *bs,
+> > > +                                   unsigned int len, gfp_t gfp_mask)
+> > > +{
+> > > +     unsigned long kaddr = (unsigned long)data;
+> > > +     unsigned long end = (kaddr + len + PAGE_SIZE - 1) >> PAGE_SHIFT;
+> > > +     unsigned long start = kaddr >> PAGE_SHIFT;
+> > > +     const int nr_pages = end - start;
+> > > +     int offset, i;
+> > > +     struct bio *bio;
+> > > +
+> > > +     bio = bio_alloc_bioset(gfp_mask, nr_pages, bs);
+> > > +     if (!bio)
+> > > +             return ERR_PTR(-ENOMEM);
+> > > +
+> > > +     offset = offset_in_page(kaddr);
+> > > +     for (i = 0; i < nr_pages; i++) {
+> > > +             unsigned int bytes = PAGE_SIZE - offset;
+> > > +
+> > > +             if (len <= 0)
+> > > +                     break;
+> > > +
+> > > +             if (bytes > len)
+> > > +                     bytes = len;
+> > > +
+> > > +             if (bio_add_pc_page(q, bio, virt_to_page(data), bytes,
+> > > +                                 offset) < bytes) {
+> > > +                     /* we don't support partial mappings */
+> > > +                     bio_put(bio);
+> > > +                     return ERR_PTR(-EINVAL);
+> > > +             }
+> > > +
+> > > +             data += bytes;
+> > > +             len -= bytes;
+> > > +             offset = 0;
+> > > +     }
+> > > +
+> > > +     bio->bi_end_io = bio_put;
+> > > +     return bio;
+> > > +}
+> >
+> > The above function is almost identical to bio_map_kern(). Please find a
+> > way to prevent such code duplication.
 >
-Hi Jason,
+> Hi Bart,
+>
+> We prealloc bio_set in order to avoid allocation in io path done by
+> bio_map_kern() (call to bio_kmalloc). Instead we use
+> bio_alloc_bioset() with a preallocated bio_set. Will test whether
+> performance advantage is measurable and if not will switch to
+> bio_map_kern.
+Hi Bart,
 
-> You should arrange this so you can use it in your production, if you
-> use something else then we are we upstreaming it?
-We do have the plan to use upstream once we are in upstream, and
-that's the reason why we spend the effort to push it upstream,
-and we sure would like to see it been used outside of our company, so
-more users could benefit.
->
-> As a community we have had bad experience with companies upstreaming
-> something that they ultimately do not use.
+We tried the above approach and just noticed the bio_map_kern was no
+longer exported since 5.4 kernel.
+We checked target_core_iblock.c and nvme io-cmd-bdev.c, they are open
+coding similar function.
 
-That's the part we are doing now, we want to discuss with the
-community to get to a win-win situation.
-For myself I joined the community for more than 10 years now, started
-from upstream a SAS adapter driver called pm8001, I'm still
-maintaining it,
-reviewing patches and so on. For RNBD/RTRS, I sure will do the same.
+I guess re-export bio_map_kern will not be accepted?
+Do you have suggestion how should we handle it?
 
 Thanks!
