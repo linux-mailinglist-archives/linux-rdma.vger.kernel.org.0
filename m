@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E5617725B
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 10:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B151772BE
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 10:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728167AbgCCJ2y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Mar 2020 04:28:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44878 "EHLO mail.kernel.org"
+        id S1726785AbgCCJkk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Mar 2020 04:40:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728045AbgCCJ2y (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 3 Mar 2020 04:28:54 -0500
+        id S1726694AbgCCJkk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 3 Mar 2020 04:40:40 -0500
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF02C20863;
-        Tue,  3 Mar 2020 09:28:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BAFA205ED;
+        Tue,  3 Mar 2020 09:40:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583227733;
-        bh=42ilCpJmNf0lspNFwjCwznAtRpHcdqkHSJytsTNwzrY=;
+        s=default; t=1583228438;
+        bh=DD+LHDJAnrBF01a5LZ/ZyQujB8O3l94a4zQXSbXWGuw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TBWJ1YjsJX7kgfjSVTsp4Jc/3tZQIOV5z/uBMWYJThd6C40O3HiSjJPgt3iQDlaBm
-         e5K9DrWjO4gY3/7Z1acuwA6Vtq2WdSHs0DFojCZdNcsqlJpFX8SYeNMVpFi9+DPE2G
-         6L8lAPK+XI8t86tgGLfQWnEMeVS/ooXKKCl4W48U=
-Date:   Tue, 3 Mar 2020 11:28:49 +0200
+        b=EMuXGbidnbM47e8ExSBHpDNOLyQA2kGARyXlO+7Fors2lcToVtF5ipUA3hFcXWZxj
+         id4kq69YTmsLMoKgld5XHN1w8X1JZ5yehBiJZgneKFoxoM+x1KcoLTlotYtZ6r+QFm
+         m1P6LnnhbywTCkan/tnFOdigGmN+edYmvnvSgzzE=
+Date:   Tue, 3 Mar 2020 11:40:35 +0200
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jack Wang <jinpuwang@gmail.com>
 Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
@@ -31,155 +31,291 @@ Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
         bvanassche@acm.org, dledford@redhat.com, jgg@ziepe.ca,
         danil.kipnis@cloud.ionos.com, jinpu.wang@cloud.ionos.com,
         rpenyaev@suse.de, pankaj.gupta@cloud.ionos.com
-Subject: Re: [PATCH v9 00/25] RTRS (former IBTRS) RDMA Transport Library and
- RNBD (former IBNBD) RDMA Network Block Device
-Message-ID: <20200303092849.GH121803@unreal>
+Subject: Re: [PATCH v9 02/25] RDMA/rtrs: public interface header to establish
+ RDMA connections
+Message-ID: <20200303094035.GI121803@unreal>
 References: <20200221104721.350-1-jinpuwang@gmail.com>
+ <20200221104721.350-3-jinpuwang@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200221104721.350-1-jinpuwang@gmail.com>
+In-Reply-To: <20200221104721.350-3-jinpuwang@gmail.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 21, 2020 at 11:46:56AM +0100, Jack Wang wrote:
-> Hi all,
+On Fri, Feb 21, 2020 at 11:46:58AM +0100, Jack Wang wrote:
+> From: Jack Wang <jinpu.wang@cloud.ionos.com>
 >
-> Here is v9 of  the RTRS (former IBTRS) RDMA Transport Library and the
-> corresponding RNBD (former IBNBD) RDMA Network Block Device, which includes
-> changes to address comments from the community.
+> Introduce public header which provides set of API functions to
+> establish RDMA connections from client to server machine using
+> RTRS protocol, which manages RDMA connections for each session,
+> does multipathing and load balancing.
 >
-> Introduction
-> -------------
+> Main functions for client (active) side:
 >
-> RTRS (RDMA Transport) is a reliable high speed transport library
-> which allows for establishing connection between client and server
-> machines via RDMA. It is based on RDMA-CM, so expect also to support RoCE
-> and iWARP, but we mainly tested in IB environment. It is optimized to
-> transfer (read/write) IO blocks in the sense that it follows the BIO
-> semantics of providing the possibility to either write data from a
-> scatter-gather list to the remote side or to request ("read") data
-> transfer from the remote side into a given set of buffers.
+>  rtrs_clt_open() - Creates set of RDMA connections incapsulated
+>                     in IBTRS session and returns pointer on RTRS
+> 		    session object.
+>  rtrs_clt_close() - Closes RDMA connections associated with RTRS
+>                      session.
+>  rtrs_clt_request() - Requests zero-copy RDMA transfer to/from
+>                        server.
 >
-> RTRS is multipath capable and provides I/O fail-over and load-balancing
-> functionality, i.e. in RTRS terminology, an RTRS path is a set of RDMA
-> connections and particular path is selected according to the load-balancing
-> policy. It can be used for other components beside RNBD.
+> Main functions for server (passive) side:
 >
-> Module parameter always_invalidate is introduced for the security problem
-> discussed in LPC RDMA MC 2019. When always_invalidate=Y, on the server side we
-> invalidate each rdma buffer before we hand it over to RNBD server and
-> then pass it to the block layer. A new rkey is generated and registered for the
-> buffer after it returns back from the block layer and RNBD server.
-> The new rkey is sent back to the client along with the IO result.
-> The procedure is the default behaviour of the driver. This invalidation and
-> registration on each IO causes performance drop of up to 20%. A user of the
-> driver may choose to load the modules with this mechanism switched off
-> (always_invalidate=N), if he understands and can take the risk of a malicious
-> client being able to corrupt memory of a server it is connected to. This might
-> be a reasonable option in a scenario where all the clients and all the servers
-> are located within a secure datacenter.
+>  rtrs_srv_open() - Starts listening for RTRS clients on specified
+>                     port and invokes RTRS callbacks for incoming
+> 		    RDMA requests or link events.
+>  rtrs_srv_close() - Closes RTRS server context.
 >
-> RNBD (RDMA Network Block Device) is a pair of kernel modules
-> (client and server) that allow for remote access of a block device on
-> the server over RTRS protocol. After being mapped, the remote block
-> devices can be accessed on the client side as local block devices.
-> Internally RNBD uses RTRS as an RDMA transport library.
+> Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
+> Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+> ---
+>  drivers/infiniband/ulp/rtrs/rtrs.h | 310 +++++++++++++++++++++++++++++
+>  1 file changed, 310 insertions(+)
+>  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs.h
 >
-> Commits for kernel can be found here:
->    https://github.com/ionos-enterprise/ibnbd/commits/linux-5.6-rc2-ibnbd-v9
->
-> Testing
-> -------
->
-> All the changes have been tested with our regression testsuite in our staging environment
-> in IONOS data center. it's around 200 testcases, for both always_invalidate=N and
-> always_invalidate=Y configurations.
->
-> Changelog
-> ---------
-> v9:
->  o Rebased to linux-5.6-rc2
->  o Update Date/Kernel version in Documentation
->  o Update description in Kconfig for RNBD
->  o rtrs-clt: inline rtrs_clt_decrease_inflight
->  o rtrs-clt: only track inflight for Min_inflight policy
-> v8:
->  o Rebased to linux-5.5-rc7
->  o Reviewed likey/unlikely usage, only keep the one in IO path suggested by Leon Romanovsky
->  o Reviewed inline usage, remove inline for functions longer than 5 lines of code suggested by Leon
->  o Removed 2 WARN_ON suggested by Leon
->  o Removed 2 empty lines between copyright suggested by Leon
->  o Makefile: remove compat include for upstream suggested by Leon
->  o rtrs-clt: remove module parameters suggested by Leon
->  o drop rnbd_clt_dev_is_mapped
->  o rnbd-clt: clean up rnbd_rerun_if_needed
->  o rtrs-srv: remove reset_all sysfs
->  o rtrs stats: remove wc_completion stats
->  o rtrs-clt: enhance doc for rtrs_clt_change_state
->  o rtrs-clt: remove unused rtrs_permit_from_pdu
->  * https://lore.kernel.org/linux-block/20200124204753.13154-1-jinpuwang@gmail.com/
-> v7:
->  o Rebased to linux-5.5-rc6
->  o Implement code-style/readability/API/Documentation etc suggestions by Bart van Assche
->  o Make W=1 clean
->  o New benchmark results for Mellanox ConnectX-5
->  o second try adding MAINTAINERS entries in alphabetical order as Gal Pressman suggested
->  * https://lore.kernel.org/linux-block/20200116125915.14815-1-jinpuwang@gmail.com/
-> v6:
->   o Rebased to linux-5.5-rc4
->   o Fix typo in my email address in first patch
->   o Cleanup copyright as suggested by Leon Romanovsky
->   o Remove 2 redudant kobject_del in error path as suggested by Leon Romanovsky
->   o Add MAINTAINERS entries in alphabetical order as Gal Pressman suggested
->   * https://lore.kernel.org/linux-block/20191230102942.18395-1-jinpuwang@gmail.com/
-> v5:
->   o Fix the security problem pointed out by Jason
->   o Implement code-style/readability/API/etc suggestions by Bart van Assche
->   o Rename IBTRS and IBNBD to RTRS and RNBD accordingly
->   o Fileio mode support in rnbd-srv has been removed.
->   * https://lore.kernel.org/linux-block/20191220155109.8959-1-jinpuwang@gmail.com/
-> v4:
->   o Protocol extended to transport IO priorities
->   o Support for Mellanox ConnectX-4/X-5
->   o Minor sysfs extentions (display access mode on server side)
->   o Bug fixes: cleaning up sysfs folders, race on deallocation of resources
->   o Style fixes
->   * https://lore.kernel.org/linux-block/20190620150337.7847-1-jinpuwang@gmail.com/
-> v3:
->   o Sparse fixes:
->      - le32 -> le16 conversion
->      - pcpu and RCU wrong declaration
->      - sysfs: dynamically alloc array of sockaddr structures to reduce
-> 	   size of a stack frame
->   o Rename sysfs folder on client and server sides to show source and
->     destination addresses of the connection, i.e.:
-> 	   .../<session-name>/paths/<src@dst>/
->   o Remove external inclusions from Makefiles.
->   * https://lore.kernel.org/linux-block/20180606152515.25807-1-roman.penyaev@profitbricks.com/
-> v2:
->   o IBNBD:
->      - No legacy request IO mode, only MQ is left.
->   o IBTRS:
->      - No FMR registration, only FR is left.
->   * https://lore.kernel.org/linux-block/20180518130413.16997-1-roman.penyaev@profitbricks.com/
-> v1:
->   o IBTRS: load-balancing and IO fail-over using multipath features were added.
->   o Major parts of the code were rewritten, simplified and overall code
->     size was reduced by a quarter.
->   * https://lore.kernel.org/linux-block/20180202140904.2017-1-roman.penyaev@profitbricks.com/
-> v0:
->   o Initial submission
->   * https://lore.kernel.org/linux-block/1490352343-20075-1-git-send-email-jinpu.wangl@profitbricks.com/
->
-> As always, please review and share your comments, and consider to merge to
-> upstream.
->
-> Thanks.
->
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs.h b/drivers/infiniband/ulp/rtrs/rtrs.h
+> new file mode 100644
+> index 000000000000..5e1c8a654e92
+> --- /dev/null
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs.h
+> @@ -0,0 +1,310 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +/*
+> + * RDMA Transport Layer
+> + *
+> + * Copyright (c) 2014 - 2018 ProfitBricks GmbH. All rights reserved.
+> + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
+> + * Copyright (c) 2019 - 2020 1&1 IONOS SE. All rights reserved.
+> + */
+> +#ifndef RTRS_H
+> +#define RTRS_H
+> +
+> +#include <linux/socket.h>
+> +#include <linux/scatterlist.h>
+> +
+> +struct rtrs_permit;
+> +struct rtrs_clt;
+> +struct rtrs_srv_ctx;
+> +struct rtrs_srv;
+> +struct rtrs_srv_op;
+> +
+> +/*
+> + * RDMA transport (RTRS) client API
+> + */
+> +
+> +/**
+> + * enum rtrs_clt_link_ev - Events about connectivity state of a client
+> + * @RTRS_CLT_LINK_EV_RECONNECTED	Client was reconnected.
+> + * @RTRS_CLT_LINK_EV_DISCONNECTED	Client was disconnected.
+> + */
+> +enum rtrs_clt_link_ev {
+> +	RTRS_CLT_LINK_EV_RECONNECTED,
+> +	RTRS_CLT_LINK_EV_DISCONNECTED,
+> +};
+> +
+> +/**
+> + * Source and destination address of a path to be established
+> + */
+> +struct rtrs_addr {
+> +	struct sockaddr_storage *src;
+> +	struct sockaddr_storage *dst;
+> +};
+> +
+> +typedef void (link_clt_ev_fn)(void *priv, enum rtrs_clt_link_ev ev);
+> +/**
+> + * rtrs_clt_open() - Open a session to an RTRS server
+> + * @priv: User supplied private data.
+> + * @link_ev: Event notification callback function for connection state changes
+> + *	@priv: User supplied data that was passed to rtrs_clt_open()
+> + *	@ev: Occurred event
+> + * @sessname: name of the session
+> + * @paths: Paths to be established defined by their src and dst addresses
+> + * @path_cnt: Number of elements in the @paths array
+> + * @port: port to be used by the RTRS session
+> + * @pdu_sz: Size of extra payload which can be accessed after permit allocation.
+> + * @max_inflight_msg: Max. number of parallel inflight messages for the session
+> + * @max_segments: Max. number of segments per IO request
+> + * @reconnect_delay_sec: time between reconnect tries
+> + * @max_reconnect_attempts: Number of times to reconnect on error before giving
+> + *			    up, 0 for * disabled, -1 for forever
+> + *
+> + * Starts session establishment with the rtrs_server. The function can block
+> + * up to ~2000ms before it returns.
+> + *
+> + * Return a valid pointer on success otherwise PTR_ERR.
+> + */
+> +struct rtrs_clt *rtrs_clt_open(void *priv, link_clt_ev_fn *link_ev,
+> +				 const char *sessname,
+> +				 const struct rtrs_addr *paths,
+> +				 size_t path_cnt, u16 port,
+> +				 size_t pdu_sz, u8 reconnect_delay_sec,
+> +				 u16 max_segments,
+> +				 s16 max_reconnect_attempts);
+> +
+> +/**
+> + * rtrs_clt_close() - Close a session
+> + * @sess: Session handle. Session is freed upon return.
+> + */
+> +void rtrs_clt_close(struct rtrs_clt *sess);
+> +
+> +/**
+> + * rtrs_permit_to_pdu() - converts rtrs_permit to opaque pdu pointer
+> + * @permit: RTRS permit pointer, it associates the memory allocation for future
+> + *          RDMA operation.
+> + */
+> +void *rtrs_permit_to_pdu(struct rtrs_permit *permit);
+> +
+> +enum {
+> +	RTRS_PERMIT_NOWAIT = 0,
+> +	RTRS_PERMIT_WAIT   = 1,
+> +};
+> +
+> +/**
+> + * enum rtrs_clt_con_type() type of ib connection to use with a given
+> + * rtrs_permit
+> + * @USR_CON - use connection reserved vor "service" messages
+> + * @IO_CON - use a connection reserved for IO
+> + */
+> +enum rtrs_clt_con_type {
+> +	RTRS_USR_CON,
+> +	RTRS_IO_CON
+> +};
+> +
+> +/**
+> + * rtrs_clt_get_permit() - allocates permit for future RDMA operation
+> + * @sess:	Current session
+> + * @con_type:	Type of connection to use with the permit
+> + * @wait:	Wait type
+> + *
+> + * Description:
+> + *    Allocates permit for the following RDMA operation.  Permit is used
+> + *    to preallocate all resources and to propagate memory pressure
+> + *    up earlier.
+> + *
+> + * Context:
+> + *    Can sleep if @wait == RTRS_TAG_WAIT
+> + */
+> +struct rtrs_permit *rtrs_clt_get_permit(struct rtrs_clt *sess,
+> +				    enum rtrs_clt_con_type con_type,
+> +				    int wait);
+> +
+> +/**
+> + * rtrs_clt_put_permit() - puts allocated permit
+> + * @sess:	Current session
+> + * @permit:	Permit to be freed
+> + *
+> + * Context:
+> + *    Does not matter
+> + */
+> +void rtrs_clt_put_permit(struct rtrs_clt *sess, struct rtrs_permit *permit);
+> +
+> +typedef void (rtrs_conf_fn)(void *priv, int errno);
+> +/**
+> + * rtrs_clt_request() - Request data transfer to/from server via RDMA.
+> + *
+> + * @dir:	READ/WRITE
+> + * @conf:	callback function to be called as confirmation
+> + * @sess:	Session
+> + * @permit:	Preallocated permit
+> + * @priv:	User provided data, passed back with corresponding
+> + *		@(conf) confirmation.
+> + * @vec:	Message that is sent to server together with the request.
+> + *		Sum of len of all @vec elements limited to <= IO_MSG_SIZE.
+> + *		Since the msg is copied internally it can be allocated on stack.
+> + * @nr:		Number of elements in @vec.
+> + * @len:	length of data sent to/from server
+> + * @sg:		Pages to be sent/received to/from server.
+> + * @sg_cnt:	Number of elements in the @sg
+> + *
+> + * Return:
+> + * 0:		Success
+> + * <0:		Error
+> + *
+> + * On dir=READ rtrs client will request a data transfer from Server to client.
+> + * The data that the server will respond with will be stored in @sg when
+> + * the user receives an %RTRS_CLT_RDMA_EV_RDMA_REQUEST_WRITE_COMPL event.
+> + * On dir=WRITE rtrs client will rdma write data in sg to server side.
+> + */
+> +int rtrs_clt_request(int dir, rtrs_conf_fn *conf, struct rtrs_clt *sess,
+> +		      struct rtrs_permit *permit, void *priv,
+> +		      const struct kvec *vec, size_t nr, size_t len,
+> +		      struct scatterlist *sg, unsigned int sg_cnt);
+> +
+> +/**
+> + * rtrs_attrs - RTRS session attributes
+> + */
+> +struct rtrs_attrs {
+> +	u32	queue_depth;
+> +	u32	max_io_size;
+> +	u8	sessname[NAME_MAX];
+> +	struct kobject *sess_kobj;
+> +};
+> +
+> +/**
+> + * rtrs_clt_query() - queries RTRS session attributes
+> + *
+> + * Returns:
+> + *    0 on success
+> + *    -ECOMM		no connection to the server
+> + */
+> +int rtrs_clt_query(struct rtrs_clt *sess, struct rtrs_attrs *attr);
+> +
+> +/*
+> + * Here goes RTRS server API
+> + */
+> +
+> +/**
+> + * enum rtrs_srv_link_ev - Server link events
+> + * @RTRS_SRV_LINK_EV_CONNECTED:	Connection from client established
+> + * @RTRS_SRV_LINK_EV_DISCONNECTED:	Connection was disconnected, all
+> + *					connection RTRS resources were freed.
+> + */
+> +enum rtrs_srv_link_ev {
+> +	RTRS_SRV_LINK_EV_CONNECTED,
+> +	RTRS_SRV_LINK_EV_DISCONNECTED,
+> +};
+> +
+> +/**
+> + * rdma_ev_fn():	Event notification for RDMA operations
+> + *			If the callback returns a value != 0, an error message
+> + *			for the data transfer will be sent to the client.
+> +
+> + *	@sess:		Session
+> + *	@priv:		Private data set by rtrs_srv_set_sess_priv()
+> + *	@id:		internal RTRS operation id
+> + *	@dir:		READ/WRITE
+> + *	@data:		Pointer to (bidirectional) rdma memory area:
+> + *			- in case of %RTRS_SRV_RDMA_EV_RECV contains
+> + *			data sent by the client
+> + *			- in case of %RTRS_SRV_RDMA_EV_WRITE_REQ points to the
+> + *			memory area where the response is to be written to
+> + *	@datalen:	Size of the memory area in @data
+> + *	@usr:		The extra user message sent by the client (%vec)
+> + *	@usrlen:	Size of the user message
+> + */
+> +typedef int (rdma_ev_fn)(struct rtrs_srv *sess, void *priv,
+> +			 struct rtrs_srv_op *id, int dir,
+> +			 void *data, size_t datalen, const void *usr,
+> +			 size_t usrlen);
+> +
+> +/**
+> + * link_ev_fn():	Events about connectivity state changes
+> + *			If the callback returns != 0 and the event
+> + *			%RTRS_SRV_LINK_EV_CONNECTED the corresponding session
+> + *			will be destroyed.
+> + *	@sess:		Session
+> + *	@ev:		event
+> + *	@priv:		Private data from user if previously set with
+> + *			rtrs_srv_set_sess_priv()
+> + */
+> +typedef int (link_ev_fn)(struct rtrs_srv *sess, enum rtrs_srv_link_ev ev,
+> +			 void *priv);
 
-I still see module parameters and prints after allocation failures.
+I don't think that it is good idea to add typedefs to hide function
+callbacks definitions.
 
 Thanks
