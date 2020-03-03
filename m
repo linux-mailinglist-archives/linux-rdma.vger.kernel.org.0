@@ -2,362 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B652D1778BB
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 15:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BC417795C
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Mar 2020 15:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727369AbgCCOXX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Mar 2020 09:23:23 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:41607 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725796AbgCCOXX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Mar 2020 09:23:23 -0500
-Received: by mail-io1-f68.google.com with SMTP id m25so3716414ioo.8
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Mar 2020 06:23:22 -0800 (PST)
+        id S1729208AbgCCOm2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Mar 2020 09:42:28 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:36516 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727576AbgCCOm2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Mar 2020 09:42:28 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 023EKVAo013472;
+        Tue, 3 Mar 2020 06:42:20 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pfpt0818;
+ bh=hgMqVgxeQgZXhH5dHM2+tSw7Ia85yeTv+6xpACiI47w=;
+ b=a7Tuw65wg6yO6ihkyJClho++cEpRUweWxxYq7DxePwIVBYl5uPJKhO7wlpgOW/okrgLG
+ JUmWK5M2p0QdRCrowe5H4vroMIthuL3LbAnrpjKY+moY1hJJxzczJkVXGO0Xz+1Jq5xT
+ bmw5PZk0xmq8uMS3Suk3+rDgq19Qjqd4mDy9kBlL/dKYHxNt9clqX0L6Mx1yk/Ptdh6B
+ G9vX/nUxFWObWS535hZ6sozPwO728I6a1gjiW+5LkauXgIonX5Mzbv9WZE/QvrPiAhp9
+ YQooZsthlpTFm0SiLaOqi/VHUWymStpWf3vW0wo6MtSR5RkRM94/FD0vplhRuZSxCit0 Pw== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0b-0016f401.pphosted.com with ESMTP id 2yhn0xs68f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 03 Mar 2020 06:42:20 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 3 Mar
+ 2020 06:42:17 -0800
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 3 Mar
+ 2020 06:42:16 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.44) by
+ SC-EXCH04.marvell.com (10.93.176.84) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Tue, 3 Mar 2020 06:42:16 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XQeuUJ2gqCqCUSqjyLRox+fRqOnFfittvI11FxISIKGsnR81BwyS36Itk2gHmCIMWBFrldjWWPwNpL/ZZybpfJ0nmB9V0tvHNNFvsgLMPZ4XR+DN90j2yLWESMeGCcutky/EjDG1TfjZL21KB2+7YWXNaro3aoiHVARJ+9phzWAP//QUspH5b5bjnYsk3yPyzaeiQFp2z5TSWouLefkD70jnRLkbz/m/cQ2IfSZr6d7ZO0N/jda5d+wCnVpsi5kgUmR63jyy11XjVcggUFHlf0+UOz/dn1j6s2vHuO8Qgh1c3ufVMSxKMHBWs+OiY+3ILy1u3aQPITJHHsDltrvgtg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hgMqVgxeQgZXhH5dHM2+tSw7Ia85yeTv+6xpACiI47w=;
+ b=DvyXI0tSMVbz+SZhboVLQOZJf7Fn3hDjuCoobLotBajuaHBxJ+WJh1HX9cq/OI0TxM46sSuX6tsjjj1y0BzkiU6alIcJulwmN+inDJtCbsuCvHqqHME4XLuXO7JUQft+IYhstXIXyGOJILZlcuqyckxRS7BrIeTeqF+6vsWbJm4tVyl517UzErnt9nBrir0LYn01YBa4fNKVq15XAhJlo7tKy5XZy/YnjrkGtmnAoDrfDbCRdxJBYCaYcQnrUCARV39wK/k7pXSEj2Gff2Fj1n+5mARE1TA1HfsmOkcpiprSdtyLfnKRd1wodgdy6nsgTxOjns0hx93RDSq4zixmag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nCyi1bcEnA5zu+yS/CK+Owd8rgEMQ0O/8e6r91u5QM8=;
-        b=IQk0jR/LeYA/L7JXaDVts2HSLuqa3n0V8L3UdAd/NhuXD7GY/UdJzNGvbcss9RflRK
-         K5iMQfpR3crpqH+9Pi+8NRELrJC/MXJCD7UOh7X9cuyNh5yTkEIpdtLN9b4wkkMfgxvv
-         TTBYbfEIcmKRtite1aoy2K+u1m3QZ6iupMqxqPbBy56YYx0ujn50CnxGd9NaktO2s8Wc
-         3CRGAXkv8T1LVzu49utFT6jtQfk03pAZ6+vudeKYAYS/QjIcUPzZqEl6aLSYhrIzK1cv
-         0IUQXllOhS/0mcdU1x3jU+Pzjfm3PxLSSiiPIYYx9jeHG7stMFqK6wb9CPovxJuglyHG
-         9YhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nCyi1bcEnA5zu+yS/CK+Owd8rgEMQ0O/8e6r91u5QM8=;
-        b=UUnfnvWsSK+QZ0Vp8OVhObIZIg1th/DZk4x6xb69IRuGIaQFcruF0tq6VnhS2Z6Mwp
-         KX7NvheCNfAXd7edJ6aFtYRpWWyxYBmltT6PswhUNRIY9nMzImDS/1cpH6EGlPVTUdq6
-         M2o0YjPc7PuZ4h1mspoOXn3EpM62NevIR+nGKzdRKjVB7SVSvpsoTqWueWi6/D5hrqLn
-         VDIbXNngE9wBAJFM3ytdIVr8fqODYJ7ieHCBUoylfQA3Oe1CkDdH95aEN8veGoJU/Vw9
-         7TNcg7E9kvhnW0uKoa1uQtfSEWSrUmRPdg8lbWRjxFf85jfDd5L2iCWScAjxWr+KRiy8
-         RYzQ==
-X-Gm-Message-State: ANhLgQ0wVl4SgsUGuKJgvv6QBLx8eZsCZX5B0594ypTkQKlquBazQOye
-        dXv/Zmxglp2dvPDLkPlvLXPOwfvG1TaPCf5wYR7qDg==
-X-Google-Smtp-Source: ADFU+vtLzXDhReiIdBiMZLdbNuQ3hlzjYSud6zI+W6FgHH8Uyn6opOMHQPRjdXZKiM8KbRpaXFjDLzu++2wyu8ZEZDA=
-X-Received: by 2002:a6b:5a06:: with SMTP id o6mr3968932iob.54.1583245401817;
- Tue, 03 Mar 2020 06:23:21 -0800 (PST)
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hgMqVgxeQgZXhH5dHM2+tSw7Ia85yeTv+6xpACiI47w=;
+ b=HUUvAFxJhIT2Q7bO4WgP21rVZj1K9Loqyhnrlo4Cpc4lDP4O8VffFoQ7JyEV7Yz4SivkC5wFUhxKaRth0FDv1zUgo5ayqfPXL57uF458a5/vdW8f6y/igKGDvqnTUjjH5Y9pcc9H2emXvSSonPZ6TgkySpPydHgp6jYDqW97cnk=
+Received: from MN2PR18MB3182.namprd18.prod.outlook.com (2603:10b6:208:163::15)
+ by MN2PR18MB2927.namprd18.prod.outlook.com (2603:10b6:208:a2::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.15; Tue, 3 Mar
+ 2020 14:42:15 +0000
+Received: from MN2PR18MB3182.namprd18.prod.outlook.com
+ ([fe80::ed5e:f764:4726:6599]) by MN2PR18MB3182.namprd18.prod.outlook.com
+ ([fe80::ed5e:f764:4726:6599%7]) with mapi id 15.20.2772.019; Tue, 3 Mar 2020
+ 14:42:15 +0000
+From:   Michal Kalderon <mkalderon@marvell.com>
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: RE: [EXT] Re: rdma-core new/old compatability
+Thread-Topic: [EXT] Re: rdma-core new/old compatability
+Thread-Index: AdXtbVWfLJHDmaJ9RpWO761kWPyf5wACDwqAAPyjk3A=
+Date:   Tue, 3 Mar 2020 14:42:15 +0000
+Message-ID: <MN2PR18MB318285FCB1291FAEF1C406B6A1E40@MN2PR18MB3182.namprd18.prod.outlook.com>
+References: <MN2PR18MB3182F6910B11467374900AD9A1EB0@MN2PR18MB3182.namprd18.prod.outlook.com>
+ <20200227135529.GH26318@mellanox.com>
+In-Reply-To: <20200227135529.GH26318@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [212.199.69.1]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f1ef2ca3-8b81-4b81-8aeb-08d7bf8110df
+x-ms-traffictypediagnostic: MN2PR18MB2927:
+x-microsoft-antispam-prvs: <MN2PR18MB2927A1CC46E54002DBB5407CA1E40@MN2PR18MB2927.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 03319F6FEF
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(396003)(346002)(366004)(376002)(136003)(199004)(189003)(9686003)(55016002)(478600001)(76116006)(7696005)(186003)(8676002)(81156014)(8936002)(66946007)(6916009)(81166006)(86362001)(6506007)(66476007)(66556008)(64756008)(66446008)(54906003)(2906002)(316002)(19627235002)(71200400001)(4326008)(52536014)(5660300002)(33656002)(966005)(26005);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR18MB2927;H:MN2PR18MB3182.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: marvell.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WPy7UfZSUkqeDSPCKq39LfbNjSfLUqXRBVJTH+JvtHRG2F9GBa7rqz3SuvNiGUPoq6Yodg9GhR7oPMnS02FIjuXdD3U/nTfZ42jz3IDKBL+4EUi1wN+lUpoQp1T6IecKOMJw3VHH1VBpAXMubSFtEt9PLTRs6g6m+ORim6J0znj+Slh25rQX94a91KBennQBBOhsD89V85ioMFRhi5lD7v0uDUpuFV3SWRTfOkV/vPqYt6p3C+WD7SJwF/LJn4xvbz8e1/WigRRbwxQ2hcrKFXUqpY+XxDQKfgchO4VZ5j1ckAcJiy9XK3xUt/63n5Je40pyG0nS8MTz6oG4YqpjPH1QtOY9wcWqUZzj4y/Qe5R9l8tNKSD5sE3EOggNb/ZXhHsZAoPzRQmpW3Wfcaeex+LWIFkxDSPc3YylU8VkcEO7wONHEL9IYvQrD7d7nAcTOCBSYY8lexNaNVxxo40cVMiE7n/veMRJqqcDZwXUQdnyOz8zTr/VRobgnaZ4MvP3SFO+IYoYoeZuO3n0UiaCPw==
+x-ms-exchange-antispam-messagedata: PufeT7PGB8vBdCoTJHajjSMZlLNXQSkY93V1BfrasoNRakwv746yyCL4nyMLV3xMlzGnLhh1Yyzy2SqY2o3oulEIj5uD7bFVXNWlrRoZgu2lRAAK34iA0Es/F2sfIRKGeyjepmXEB5Dq6WtVXOQOgw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200221104721.350-1-jinpuwang@gmail.com> <20200221104721.350-3-jinpuwang@gmail.com>
- <20200303094035.GI121803@unreal> <CAMGffEkezAHp6xkOPDHB-zXpTVhz6JNGQadvwO3KhZP8fJeLTg@mail.gmail.com>
- <20200303141638.GN121803@unreal>
-In-Reply-To: <20200303141638.GN121803@unreal>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Tue, 3 Mar 2020 15:23:09 +0100
-Message-ID: <CAMGffEkBy4uB-GL_5zqqG3uOnJgbP0X5TwfqmcKNJ0Lx8_B5Fw@mail.gmail.com>
-Subject: Re: [PATCH v9 02/25] RDMA/rtrs: public interface header to establish
- RDMA connections
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Roman Penyaev <rpenyaev@suse.de>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1ef2ca3-8b81-4b81-8aeb-08d7bf8110df
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Mar 2020 14:42:15.0566
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YylGodBtHxmIqVugZh4zONvwNo2gV31qCsuyR97RN6oHcbyQCQCXVAwGyehTm5DWiagfK+mEabMQp10C75y+bw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR18MB2927
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-03_05:2020-03-03,2020-03-03 signatures=0
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 3, 2020 at 3:16 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Tue, Mar 03, 2020 at 03:05:27PM +0100, Jinpu Wang wrote:
-> > On Tue, Mar 3, 2020 at 10:40 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > On Fri, Feb 21, 2020 at 11:46:58AM +0100, Jack Wang wrote:
-> > > > From: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > > >
-> > > > Introduce public header which provides set of API functions to
-> > > > establish RDMA connections from client to server machine using
-> > > > RTRS protocol, which manages RDMA connections for each session,
-> > > > does multipathing and load balancing.
-> > > >
-> > > > Main functions for client (active) side:
-> > > >
-> > > >  rtrs_clt_open() - Creates set of RDMA connections incapsulated
-> > > >                     in IBTRS session and returns pointer on RTRS
-> > > >                   session object.
-> > > >  rtrs_clt_close() - Closes RDMA connections associated with RTRS
-> > > >                      session.
-> > > >  rtrs_clt_request() - Requests zero-copy RDMA transfer to/from
-> > > >                        server.
-> > > >
-> > > > Main functions for server (passive) side:
-> > > >
-> > > >  rtrs_srv_open() - Starts listening for RTRS clients on specified
-> > > >                     port and invokes RTRS callbacks for incoming
-> > > >                   RDMA requests or link events.
-> > > >  rtrs_srv_close() - Closes RTRS server context.
-> > > >
-> > > > Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> > > > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > > > ---
-> > > >  drivers/infiniband/ulp/rtrs/rtrs.h | 310 +++++++++++++++++++++++++++++
-> > > >  1 file changed, 310 insertions(+)
-> > > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs.h
-> > > >
-> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs.h b/drivers/infiniband/ulp/rtrs/rtrs.h
-> > > > new file mode 100644
-> > > > index 000000000000..5e1c8a654e92
-> > > > --- /dev/null
-> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs.h
-> > > > @@ -0,0 +1,310 @@
-> > > > +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> > > > +/*
-> > > > + * RDMA Transport Layer
-> > > > + *
-> > > > + * Copyright (c) 2014 - 2018 ProfitBricks GmbH. All rights reserved.
-> > > > + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
-> > > > + * Copyright (c) 2019 - 2020 1&1 IONOS SE. All rights reserved.
-> > > > + */
-> > > > +#ifndef RTRS_H
-> > > > +#define RTRS_H
-> > > > +
-> > > > +#include <linux/socket.h>
-> > > > +#include <linux/scatterlist.h>
-> > > > +
-> > > > +struct rtrs_permit;
-> > > > +struct rtrs_clt;
-> > > > +struct rtrs_srv_ctx;
-> > > > +struct rtrs_srv;
-> > > > +struct rtrs_srv_op;
-> > > > +
-> > > > +/*
-> > > > + * RDMA transport (RTRS) client API
-> > > > + */
-> > > > +
-> > > > +/**
-> > > > + * enum rtrs_clt_link_ev - Events about connectivity state of a client
-> > > > + * @RTRS_CLT_LINK_EV_RECONNECTED     Client was reconnected.
-> > > > + * @RTRS_CLT_LINK_EV_DISCONNECTED    Client was disconnected.
-> > > > + */
-> > > > +enum rtrs_clt_link_ev {
-> > > > +     RTRS_CLT_LINK_EV_RECONNECTED,
-> > > > +     RTRS_CLT_LINK_EV_DISCONNECTED,
-> > > > +};
-> > > > +
-> > > > +/**
-> > > > + * Source and destination address of a path to be established
-> > > > + */
-> > > > +struct rtrs_addr {
-> > > > +     struct sockaddr_storage *src;
-> > > > +     struct sockaddr_storage *dst;
-> > > > +};
-> > > > +
-> > > > +typedef void (link_clt_ev_fn)(void *priv, enum rtrs_clt_link_ev ev);
-> > > > +/**
-> > > > + * rtrs_clt_open() - Open a session to an RTRS server
-> > > > + * @priv: User supplied private data.
-> > > > + * @link_ev: Event notification callback function for connection state changes
-> > > > + *   @priv: User supplied data that was passed to rtrs_clt_open()
-> > > > + *   @ev: Occurred event
-> > > > + * @sessname: name of the session
-> > > > + * @paths: Paths to be established defined by their src and dst addresses
-> > > > + * @path_cnt: Number of elements in the @paths array
-> > > > + * @port: port to be used by the RTRS session
-> > > > + * @pdu_sz: Size of extra payload which can be accessed after permit allocation.
-> > > > + * @max_inflight_msg: Max. number of parallel inflight messages for the session
-> > > > + * @max_segments: Max. number of segments per IO request
-> > > > + * @reconnect_delay_sec: time between reconnect tries
-> > > > + * @max_reconnect_attempts: Number of times to reconnect on error before giving
-> > > > + *                       up, 0 for * disabled, -1 for forever
-> > > > + *
-> > > > + * Starts session establishment with the rtrs_server. The function can block
-> > > > + * up to ~2000ms before it returns.
-> > > > + *
-> > > > + * Return a valid pointer on success otherwise PTR_ERR.
-> > > > + */
-> > > > +struct rtrs_clt *rtrs_clt_open(void *priv, link_clt_ev_fn *link_ev,
-> > > > +                              const char *sessname,
-> > > > +                              const struct rtrs_addr *paths,
-> > > > +                              size_t path_cnt, u16 port,
-> > > > +                              size_t pdu_sz, u8 reconnect_delay_sec,
-> > > > +                              u16 max_segments,
-> > > > +                              s16 max_reconnect_attempts);
-> > > > +
-> > > > +/**
-> > > > + * rtrs_clt_close() - Close a session
-> > > > + * @sess: Session handle. Session is freed upon return.
-> > > > + */
-> > > > +void rtrs_clt_close(struct rtrs_clt *sess);
-> > > > +
-> > > > +/**
-> > > > + * rtrs_permit_to_pdu() - converts rtrs_permit to opaque pdu pointer
-> > > > + * @permit: RTRS permit pointer, it associates the memory allocation for future
-> > > > + *          RDMA operation.
-> > > > + */
-> > > > +void *rtrs_permit_to_pdu(struct rtrs_permit *permit);
-> > > > +
-> > > > +enum {
-> > > > +     RTRS_PERMIT_NOWAIT = 0,
-> > > > +     RTRS_PERMIT_WAIT   = 1,
-> > > > +};
-> > > > +
-> > > > +/**
-> > > > + * enum rtrs_clt_con_type() type of ib connection to use with a given
-> > > > + * rtrs_permit
-> > > > + * @USR_CON - use connection reserved vor "service" messages
-> > > > + * @IO_CON - use a connection reserved for IO
-> > > > + */
-> > > > +enum rtrs_clt_con_type {
-> > > > +     RTRS_USR_CON,
-> > > > +     RTRS_IO_CON
-> > > > +};
-> > > > +
-> > > > +/**
-> > > > + * rtrs_clt_get_permit() - allocates permit for future RDMA operation
-> > > > + * @sess:    Current session
-> > > > + * @con_type:        Type of connection to use with the permit
-> > > > + * @wait:    Wait type
-> > > > + *
-> > > > + * Description:
-> > > > + *    Allocates permit for the following RDMA operation.  Permit is used
-> > > > + *    to preallocate all resources and to propagate memory pressure
-> > > > + *    up earlier.
-> > > > + *
-> > > > + * Context:
-> > > > + *    Can sleep if @wait == RTRS_TAG_WAIT
-> > > > + */
-> > > > +struct rtrs_permit *rtrs_clt_get_permit(struct rtrs_clt *sess,
-> > > > +                                 enum rtrs_clt_con_type con_type,
-> > > > +                                 int wait);
-> > > > +
-> > > > +/**
-> > > > + * rtrs_clt_put_permit() - puts allocated permit
-> > > > + * @sess:    Current session
-> > > > + * @permit:  Permit to be freed
-> > > > + *
-> > > > + * Context:
-> > > > + *    Does not matter
-> > > > + */
-> > > > +void rtrs_clt_put_permit(struct rtrs_clt *sess, struct rtrs_permit *permit);
-> > > > +
-> > > > +typedef void (rtrs_conf_fn)(void *priv, int errno);
-> > > > +/**
-> > > > + * rtrs_clt_request() - Request data transfer to/from server via RDMA.
-> > > > + *
-> > > > + * @dir:     READ/WRITE
-> > > > + * @conf:    callback function to be called as confirmation
-> > > > + * @sess:    Session
-> > > > + * @permit:  Preallocated permit
-> > > > + * @priv:    User provided data, passed back with corresponding
-> > > > + *           @(conf) confirmation.
-> > > > + * @vec:     Message that is sent to server together with the request.
-> > > > + *           Sum of len of all @vec elements limited to <= IO_MSG_SIZE.
-> > > > + *           Since the msg is copied internally it can be allocated on stack.
-> > > > + * @nr:              Number of elements in @vec.
-> > > > + * @len:     length of data sent to/from server
-> > > > + * @sg:              Pages to be sent/received to/from server.
-> > > > + * @sg_cnt:  Number of elements in the @sg
-> > > > + *
-> > > > + * Return:
-> > > > + * 0:                Success
-> > > > + * <0:               Error
-> > > > + *
-> > > > + * On dir=READ rtrs client will request a data transfer from Server to client.
-> > > > + * The data that the server will respond with will be stored in @sg when
-> > > > + * the user receives an %RTRS_CLT_RDMA_EV_RDMA_REQUEST_WRITE_COMPL event.
-> > > > + * On dir=WRITE rtrs client will rdma write data in sg to server side.
-> > > > + */
-> > > > +int rtrs_clt_request(int dir, rtrs_conf_fn *conf, struct rtrs_clt *sess,
-> > > > +                   struct rtrs_permit *permit, void *priv,
-> > > > +                   const struct kvec *vec, size_t nr, size_t len,
-> > > > +                   struct scatterlist *sg, unsigned int sg_cnt);
-> > > > +
-> > > > +/**
-> > > > + * rtrs_attrs - RTRS session attributes
-> > > > + */
-> > > > +struct rtrs_attrs {
-> > > > +     u32     queue_depth;
-> > > > +     u32     max_io_size;
-> > > > +     u8      sessname[NAME_MAX];
-> > > > +     struct kobject *sess_kobj;
-> > > > +};
-> > > > +
-> > > > +/**
-> > > > + * rtrs_clt_query() - queries RTRS session attributes
-> > > > + *
-> > > > + * Returns:
-> > > > + *    0 on success
-> > > > + *    -ECOMM         no connection to the server
-> > > > + */
-> > > > +int rtrs_clt_query(struct rtrs_clt *sess, struct rtrs_attrs *attr);
-> > > > +
-> > > > +/*
-> > > > + * Here goes RTRS server API
-> > > > + */
-> > > > +
-> > > > +/**
-> > > > + * enum rtrs_srv_link_ev - Server link events
-> > > > + * @RTRS_SRV_LINK_EV_CONNECTED:      Connection from client established
-> > > > + * @RTRS_SRV_LINK_EV_DISCONNECTED:   Connection was disconnected, all
-> > > > + *                                   connection RTRS resources were freed.
-> > > > + */
-> > > > +enum rtrs_srv_link_ev {
-> > > > +     RTRS_SRV_LINK_EV_CONNECTED,
-> > > > +     RTRS_SRV_LINK_EV_DISCONNECTED,
-> > > > +};
-> > > > +
-> > > > +/**
-> > > > + * rdma_ev_fn():     Event notification for RDMA operations
-> > > > + *                   If the callback returns a value != 0, an error message
-> > > > + *                   for the data transfer will be sent to the client.
-> > > > +
-> > > > + *   @sess:          Session
-> > > > + *   @priv:          Private data set by rtrs_srv_set_sess_priv()
-> > > > + *   @id:            internal RTRS operation id
-> > > > + *   @dir:           READ/WRITE
-> > > > + *   @data:          Pointer to (bidirectional) rdma memory area:
-> > > > + *                   - in case of %RTRS_SRV_RDMA_EV_RECV contains
-> > > > + *                   data sent by the client
-> > > > + *                   - in case of %RTRS_SRV_RDMA_EV_WRITE_REQ points to the
-> > > > + *                   memory area where the response is to be written to
-> > > > + *   @datalen:       Size of the memory area in @data
-> > > > + *   @usr:           The extra user message sent by the client (%vec)
-> > > > + *   @usrlen:        Size of the user message
-> > > > + */
-> > > > +typedef int (rdma_ev_fn)(struct rtrs_srv *sess, void *priv,
-> > > > +                      struct rtrs_srv_op *id, int dir,
-> > > > +                      void *data, size_t datalen, const void *usr,
-> > > > +                      size_t usrlen);
-> > > > +
-> > > > +/**
-> > > > + * link_ev_fn():     Events about connectivity state changes
-> > > > + *                   If the callback returns != 0 and the event
-> > > > + *                   %RTRS_SRV_LINK_EV_CONNECTED the corresponding session
-> > > > + *                   will be destroyed.
-> > > > + *   @sess:          Session
-> > > > + *   @ev:            event
-> > > > + *   @priv:          Private data from user if previously set with
-> > > > + *                   rtrs_srv_set_sess_priv()
-> > > > + */
-> > > > +typedef int (link_ev_fn)(struct rtrs_srv *sess, enum rtrs_srv_link_ev ev,
-> > > > +                      void *priv);
-> > >
-> > > I don't think that it is good idea to add typedefs to hide function
-> > > callbacks definitions.
-> > >
-> > > Thanks
-> > Hi Leon,
+> From: Jason Gunthorpe <jgg@mellanox.com>
+> Sent: Thursday, February 27, 2020 3:55 PM
+>=20
+> ----------------------------------------------------------------------
+> On Thu, Feb 27, 2020 at 01:11:13PM +0000, Michal Kalderon wrote:
+> > Hi Kamal, Jason,
 > >
-> > What's the preferred way to do it, could you point me an example?
->
-> Create struct that holds all needed parameters, pass it directly and
-> don't hide the function signature.
-
-We will do it this way!
-
-Thanks
->
-> Thanks
->
+> > Running a version of ibv_devinfo compiled against an old rdma-core
+> > (ibv_devinfo from libibverbs-utils-16.2-3-fc28.x86_64 ) failed to run w=
+ith
+> rdma-core release 28.0 for qedr.
 > >
-> > Thanks!
+> > The patch that caused this is commit c2841076
+> > https://urldefense.proofpoint.com/v2/url?u=3Dhttps-
+> 3A__github.com_linux-
+> > 2Drdma_rdma-
+> 2Dcore_commit_c28410765bdfe5cbed3cb2cdb1584eac3941469c-23d
+> > iff-
+> 2D8da8bc8b2790169de557d5dee83a278e&d=3DDwIBAg&c=3DnKjWec2b6R0mOyP
+> az7xt
+> > fQ&r=3D5_8rRZTDuAS-6X-cGRU9Fo4yjCnkS1t7T3-
+> gjL4FQng&m=3D8roKblaWiyWNhzEkhi8
+> > gJYJs1ZHqJ0lqf_0OMh3fHBM&s=3Dx5-
+> fhg21NUEcxJ2zxM135ujpopHtey138zz9waiflS8
+> > &e=3D
+> > c28410765bdf
+> >
+> > libibverbs: Fix incorrect return code ...
+> >
+> > The proper return code is EOPNOTSUPP when an operation is not
+> supported.
+> >
+> > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> >
+> > The reason it failed is because qedr doesn't have a query_device_ex
+> > callback, so vctx->query_device_ex returns EOPNOTSUPP, and old
+> > libibverbs Compares the return code to ENOSYS
+>=20
+> This is surprising and unfortunate
+>=20
+> > I think applications compiled against old rdma-core should continue to
+> > run on new ones as well.  Can this commit be reverted?
+>=20
+> I would prefer to only revert the little bit that might be needed for
+> compatability.
+>=20
+> Perhaps we should change the dummy function to implement
+> query_device_ex for all providers? Zeroing the extended data should be
+> sufficient I think.
+I've submitted pull-request #713 that implements the dummy function.
+
+Thanks,
+Michal
+
+>=20
+> Unfortunately we are changing return codes inadvertantly quite often, and
+> the providers tend to use different codes.
+>=20
+> Jason
