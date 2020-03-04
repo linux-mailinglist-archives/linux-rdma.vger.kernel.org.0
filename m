@@ -2,153 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE93B17977A
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Mar 2020 19:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A5A1797A7
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Mar 2020 19:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727528AbgCDSEh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Mar 2020 13:04:37 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:42736 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726561AbgCDSEh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Mar 2020 13:04:37 -0500
-Received: by mail-qt1-f193.google.com with SMTP id r6so2048007qtt.9
-        for <linux-rdma@vger.kernel.org>; Wed, 04 Mar 2020 10:04:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yI/NPhVc9lrsTXtg6F6h1UJGzXm/NwvSl7ufzxc0DCY=;
-        b=K3JppSiCJJ7+N8Clyo1I88o4AmcdQzXrjZzyXiFIY621IhLsa/wcc0XGDCPxk/CKZ0
-         RN4o85cWKKR5AgCuJL2VJ6qW5u25bwDx0E0xRLldJ40jOpXdzsyNQjv/fSdjY/uuF0VP
-         tOuWRHcAKZ8AGwj2O7hKZLMxZzY3rH6IagANQ4wDqxehpNuSQXzTZ+eW9Ejpd1SF06mv
-         SQdzXn9EWkv1HL2fvPZwGzHR2PcY+1dND0OtKeb/x+CX3N6SjbwZnbXbnNV/z2wHCCaP
-         mvjwL8evtlRzpkYbOx9QbW40hrTti8oD6Hduj0nHdxh+1EP+HziG2C+eblQZBm/AxLg9
-         Puzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yI/NPhVc9lrsTXtg6F6h1UJGzXm/NwvSl7ufzxc0DCY=;
-        b=uU3C3iyIINdkKTyove01hhKV3xYuF/0q2Xqmy9EsVXi60Jpf/wSLS5fyiAAK6gvv4x
-         28vSDaiHAXHLmUVrABCL3o+WZnqdPZ2wki6gMbLp+4tvIJAYU+9q8TDchHK5M7l1YoWn
-         ApcNy+OBCjJJxKJBmHTXpQnJZMQQa70r9qpH25Go6SyTm1wKJKwH2K/PKUqk1KXar2m5
-         KDpDVpnOjaqE6q2692FY6oJlfhHPZEdWPcgERqdehJBFyXOTNgD1Vg3qDL1eC2QoVDuQ
-         KJ1dneU8ZIb6pKsCM4c8QGghViwCBCzKK5ALP2Mp4HWcgqphsMIiZ7CsvU97C/Ih0ZSZ
-         JF9A==
-X-Gm-Message-State: ANhLgQ3eOu+l5mYK/I2ac5VBxHtVfhQQ0F2lQAbqqXpNyndHXEHkx0wB
-        H9thnGg9Mwuy/ooqxtXV0oFK6Q==
-X-Google-Smtp-Source: ADFU+vtWZr/LX7B1Xc3pDAe6OAlz+48V4PLQieyZR7LP89Zq4HZ45TSg8VE18DL/4BO+ll8IdwpnIA==
-X-Received: by 2002:aed:25aa:: with SMTP id x39mr2167523qtc.20.1583345076505;
-        Wed, 04 Mar 2020 10:04:36 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id o17sm14759386qtj.80.2020.03.04.10.04.35
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 04 Mar 2020 10:04:35 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1j9YNn-0005aP-BX; Wed, 04 Mar 2020 14:04:35 -0400
-Date:   Wed, 4 Mar 2020 14:04:35 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-rc] RDMA/odp: Ensure the mm is still alive before
- creating an implicit child
-Message-ID: <20200304180435.GA16338@ziepe.ca>
-References: <20200227114118.94736-1-leon@kernel.org>
-MIME-Version: 1.0
+        id S1726748AbgCDSQO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Mar 2020 13:16:14 -0500
+Received: from mail-am6eur05on2048.outbound.protection.outlook.com ([40.107.22.48]:6221
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725795AbgCDSQN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 4 Mar 2020 13:16:13 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RTvc0EIasN/t3ypzQrHr310egnpcPPyW5yLEsprZDukd04zZPQweb6CYTIgigM+BGbiOODl8wxdMkJ/BSohMwrQec/tqdskLoEgTezjuzqZHTyjWuwn/CL2PwcfqCuNjyi9eAtMS7+I7NMHixV6gObUGR9mExnJ6JiX5qQE7lXGGMD68jJs/VZy4pcdqK9idHlVYnq9C6JZzQN9jvgR1VQDk46UxHwZjaAeUdyDPB3wL0Rpmjmg7mcBvSjV3vCdFbNh/IQV4ZetsSUPPjbEKXRAGD1B816b7XUOYFkJCTfRiWgoyZZnzzrFpjbVMvUiRJjAOphh0BRutyIK99CDRIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g1BmzMwGpg6+IgzCMWR0ONJ22NMaVkLeY0LQQfoquSM=;
+ b=TbTdUh2ggzasUq1IlECeu0HUDVuTce/EsqiR9To7aKPeO8C5m0m9oVqhU4iRUNnRN7qIIpN7SiP+vP67Jwx3N2v9ZK/kgZiFY9swY9eObbLAAEXxLLEDOlfliL5SjnwXf2SCwf8t/Pk0NRaOpPo3jPZrOSiVp2Twm46PX8HMgNmJ6MH90TteAqObU37GfLi0YMSl4g8szPEz+VNlODk+zdIHkCTOhgjLNLI67j0p2GYKyF34921fQI3ct7RCDaj6suijB2STApS0RqgnNuZNbzdWvaG3Q7XQc/Lju8i/7KyOuDFjB/Q/gR6B5OocPt47k1JenCn3qTeP+5Np47GYvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g1BmzMwGpg6+IgzCMWR0ONJ22NMaVkLeY0LQQfoquSM=;
+ b=nXz/NZuO2NBzRWIWrEBuJIQkfNOVkKKcH8Vxb7T9ErIpF9Yjh4+j0w0ekdxE40Boydz8mPCDEGM73AzljNCwraUoyj9fDHAsGVjMlzmmmsouiMW4Z7wZsFs+YrMX/xee0MBuNTR3V4LbOfUQjNw8hKLND53kRk54YAPXrsk7v/k=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1PR05MB6415.eurprd05.prod.outlook.com (20.179.27.139) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2772.14; Wed, 4 Mar 2020 18:16:11 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1c00:7925:d5c6:d60d]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::1c00:7925:d5c6:d60d%7]) with mapi id 15.20.2772.019; Wed, 4 Mar 2020
+ 18:16:10 +0000
+Date:   Wed, 4 Mar 2020 14:16:07 -0400
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     linux-rdma@vger.kernel.org
+Subject: [PATCH for-rc] RDMA/odp: Fix leaking the tgid for implicit ODP
+Message-ID: <20200304181607.GA22412@ziepe.ca>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200227114118.94736-1-leon@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: BL0PR03CA0036.namprd03.prod.outlook.com
+ (2603:10b6:208:2d::49) To VI1PR05MB4141.eurprd05.prod.outlook.com
+ (2603:10a6:803:44::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.68.57.212) by BL0PR03CA0036.namprd03.prod.outlook.com (2603:10b6:208:2d::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2772.15 via Frontend Transport; Wed, 4 Mar 2020 18:16:10 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1j9YYx-0005qF-9p     for linux-rdma@vger.kernel.org; Wed, 04 Mar 2020 14:16:07 -0400
+X-Originating-IP: [142.68.57.212]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 5a770152-f99f-4001-5031-08d7c0681dd5
+X-MS-TrafficTypeDiagnostic: VI1PR05MB6415:
+X-Microsoft-Antispam-PRVS: <VI1PR05MB64151DB4E82F94CF63B766F8CFE50@VI1PR05MB6415.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-Forefront-PRVS: 0332AACBC3
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(136003)(396003)(346002)(376002)(366004)(199004)(189003)(1076003)(8676002)(478600001)(33656002)(86362001)(81156014)(9786002)(8936002)(2906002)(316002)(81166006)(9746002)(4744005)(36756003)(6916009)(9686003)(186003)(66476007)(66946007)(52116002)(26005)(66556008)(5660300002)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB6415;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DG2Ep9+KENIrdgWXQ8qHrlD5bnxxRcZNxNtUIq8BJj/q3OOCSUpdtZb0iYtedECyyHIdRiEvjc6GJQfybQhbNLAlb6C7RWU6Zs2G9UIbz5ln9nhMlqoK0eUA4DxyASMA76wnr3zrulNKuo6M60r7Ksk1BXhCB7b81M5LwQ4He0FoeesaJYvpnqIY4S3VVGeZr0CbTNnPJYPuRkZJEMD+2aOlmzBvs2EHNZfyT0wKjj01ZFhWRoLRbzm6rUP6pzd3IyETFg1+H+fOTQ7gxkMOSutPkKY6W+wfn416DU+LVfi9tk9gq3v3nMvfoyVM4OP6kifXToIPpDwjV3QOaOAwvPQ32hYx4QiuTEbXj+6xsNwPEoK12XbBSudc1PU9BsMAve9jznGNzGR5GPfSTai5QLCjkumkKzEYoOPTIaxPz99AMXpB4srhbKosXrobjVDL7VqdPsRMEM8TSFTwT3aA5SUFgKi5XAWkCx3Km/enGrOzQT9Ra+EoMoJs4+poK23z
+X-MS-Exchange-AntiSpam-MessageData: KTGKREwVIk0XyPCVqcvi/s1OQPBlFLzeT/7RjdxGNJ2J4dlBtpM8SuFAlMeOLyaM62kF/FPkEtPxfIyY6BEs4nAvdzYr43wDhUSQNTr5B1SYPruvh5REboPK+c/8AGQ/8GYxffrBUeH4sJqZjXv5yA==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a770152-f99f-4001-5031-08d7c0681dd5
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2020 18:16:10.7364
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NYgvsWHF8DQ8afDKlRvZvk4DCOQt2I0elB2gYu69RMqLIAgD6SIbo7woOwMDrOBlqAOLrSPoZGLBOeugvFBwdA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB6415
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 27, 2020 at 01:41:18PM +0200, Leon Romanovsky wrote:
-> From: Jason Gunthorpe <jgg@mellanox.com>
-> 
-> Registration of a mmu_notifier requires the caller to hold a mmget() on
-> the mm as registration is not permitted to race with exit_mmap(). There is
-> a BUG_ON inside the mmu_notifier to guard against this.
-> 
-> Normally creating a umem is done against current which implicitly holds
-> the mmget(), however an implicit ODP child is created from a pagefault
-> work queue and is not guaranteed to have a mmget().
-> 
-> Call mmget() around this registration and abort faulting if the MM has
-> gone to exit_mmap().
-> 
-> Before the patch below the notifier was registered when the implicit ODP
-> parent was created, so there was no chance to register a notifier outside
-> of current.
-> 
-> Fixes: c571feca2dc9 ("RDMA/odp: use mmu_notifier_get/put for 'struct ib_ucontext_per_mm'")
-> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/core/umem_odp.c | 23 ++++++++++++++++++-----
->  1 file changed, 18 insertions(+), 5 deletions(-)
- 
-> diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
-> index b8c657b28380..168f4f260c23 100644
-> --- a/drivers/infiniband/core/umem_odp.c
-> +++ b/drivers/infiniband/core/umem_odp.c
-> @@ -181,14 +181,27 @@ ib_umem_odp_alloc_child(struct ib_umem_odp *root, unsigned long addr,
->  	odp_data->page_shift = PAGE_SHIFT;
->  	odp_data->notifier.ops = ops;
->  
-> +	/*
-> +	 * A mmget must be held when registering a notifier, the owming_mm only
-> +	 * has a mm_grab at this point.
-> +	 */
-> +	if (!mmget_not_zero(umem->owning_mm)) {
-> +		ret = -EFAULT;
-> +		goto out_free;
-> +	}
-> +
->  	odp_data->tgid = get_pid(root->tgid);
->  	ret = ib_init_umem_odp(odp_data, ops);
-> -	if (ret) {
-> -		put_pid(odp_data->tgid);
+The tgid used to be part of ib_umem_free_notifier(), when it was reworked
+it got moved to release, but it should have been unconditional as all umem
+alloc paths get the tgid.
 
-This put_pid got lost, I put it back before applying to for-rc:
+As is, creating an implicit ODP will leak the tgid reference.
+
+Cc: stable@kernel.org
+Fixes: f25a546e6529 ("RDMA/odp: Use mmu_interval_notifier_insert()")
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+ drivers/infiniband/core/umem_odp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
-index b8c657b2838048..cd656ad4953bfc 100644
+index cd656ad4953bfc..3b1e627d9a8dd5 100644
 --- a/drivers/infiniband/core/umem_odp.c
 +++ b/drivers/infiniband/core/umem_odp.c
-@@ -181,14 +181,28 @@ ib_umem_odp_alloc_child(struct ib_umem_odp *root, unsigned long addr,
- 	odp_data->page_shift = PAGE_SHIFT;
- 	odp_data->notifier.ops = ops;
- 
-+	/*
-+	 * A mmget must be held when registering a notifier, the owming_mm only
-+	 * has a mm_grab at this point.
-+	 */
-+	if (!mmget_not_zero(umem->owning_mm)) {
-+		ret = -EFAULT;
-+		goto out_free;
-+	}
-+
- 	odp_data->tgid = get_pid(root->tgid);
- 	ret = ib_init_umem_odp(odp_data, ops);
--	if (ret) {
--		put_pid(odp_data->tgid);
--		kfree(odp_data);
--		return ERR_PTR(ret);
--	}
-+	if (ret)
-+		goto out_tgid;
-+	mmput(umem->owning_mm);
- 	return odp_data;
-+
-+out_tgid:
-+	put_pid(odp_data->tgid);
-+	mmput(umem->owning_mm);
-+out_free:
-+	kfree(odp_data);
-+	return ERR_PTR(ret);
+@@ -275,8 +275,8 @@ void ib_umem_odp_release(struct ib_umem_odp *umem_odp)
+ 		mmu_interval_notifier_remove(&umem_odp->notifier);
+ 		kvfree(umem_odp->dma_list);
+ 		kvfree(umem_odp->page_list);
+-		put_pid(umem_odp->tgid);
+ 	}
++	put_pid(umem_odp->tgid);
+ 	kfree(umem_odp);
  }
- EXPORT_SYMBOL(ib_umem_odp_alloc_child);
- 
+ EXPORT_SYMBOL(ib_umem_odp_release);
+-- 
+2.25.1
+
