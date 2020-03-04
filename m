@@ -2,137 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D1254178F7C
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Mar 2020 12:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDEE1791CD
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Mar 2020 14:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728969AbgCDLWG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Mar 2020 06:22:06 -0500
-Received: from mail-io1-f65.google.com ([209.85.166.65]:42293 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726137AbgCDLWG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Mar 2020 06:22:06 -0500
-Received: by mail-io1-f65.google.com with SMTP id q128so1943955iof.9
-        for <linux-rdma@vger.kernel.org>; Wed, 04 Mar 2020 03:22:06 -0800 (PST)
+        id S1729273AbgCDN4x (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Mar 2020 08:56:53 -0500
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:37265 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729334AbgCDN4x (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Mar 2020 08:56:53 -0500
+Received: by mail-qv1-f66.google.com with SMTP id c19so801165qvv.4
+        for <linux-rdma@vger.kernel.org>; Wed, 04 Mar 2020 05:56:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zd6EHh+Xv9ufD5cmWFroJXikeJWoDYrEYf9+1i38fSg=;
-        b=iejCa/9cMUZhtr0AIkZB5yhas1R9TkZWtZeYbEL0vk5oZQxNNxr9wQIVT+0Q6OrVpy
-         Eff/hB8i6MzX0y2a3kd5t46LI9PsNTUEYFg4ah9dw0mgfh4IuPIiVTKpRXgtgTA2NCP3
-         jxKtKCY/CWBBBekZ+qzWHDQl57pRJEAPi/EPKCNcL/tUg9HFDQc0zjknVBxpc6MzXbos
-         C0pj3Q6R/maREnO8weLahhVdKVVO3OxP/h9omsVHUNwE55XhCQhc49jFOBB6m+O0a0s6
-         Ej5/xHb7N2ZHDdFx5dpkFSeTU5hMdB/uSskWLRCIfpstCS2E64MbFmT0fmphzoSy5RbT
-         E2eg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Rhip11nFmECovpT8lVmLzpPD3W/d2rlBg3mYVPTEngc=;
+        b=AkyYdyS8nPkSQXKZ597tNqH6yb1SpRkXmJHVHxqVbM5fXqWPTLgiXZJ3zXtK4pSVAZ
+         UPFlP20GJMn3HxihX5oIqnYZ6IaPCfYm950jychfRYSv+PwRaJxWif7QD3xgm7qWa2Uy
+         uFJAxC4d73bNdcNwBOEOZl3RARtwcJAZEoUOcoh4DAzF/4yzM3GXSs18t08pn79cVE8M
+         QsAeQmvhfW4jVZqcn5YI3kB41XAlQdDW6cF7b5WZCOqrAI0r+aHMrqZfuimI6zrmPqg8
+         E5KtDlY1q+Y+kBRM42S2u73yhX0o+fyzcqOcnnghBDoQIN60UyIvb7Rn6O+dlg2yr0dn
+         g3TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zd6EHh+Xv9ufD5cmWFroJXikeJWoDYrEYf9+1i38fSg=;
-        b=YhuTBSenOmKGfBiI9NJ2MJyglxZCjiei11RS/+aCOl/+wCsZuTlAa1jFcyRVZsaUFM
-         IgYpH/0wlzvuzx/FmIoTYjMHlhYZu1poKCx/Mt27adDx6rohd1J+IepJfCzmiflXHBli
-         aNedLSfotRW6RarK+PX/rPHovXqC2SdamMNmtFQ0guWphNS5BA40rJ/WW6a1pfnqTcDt
-         uQUBNDBbbTCkxcsV3710xiE6wIPX7QorMmSNrwaSoqvS1c/BCeX2wu4Oe17k+GOjLp/X
-         +Jy0Cd+824++YaQfY+x1vWRUOb17Hi80HLK3BsZ9mSa5sfdR+mke5pEMoxo0RquUJkQX
-         Uqxg==
-X-Gm-Message-State: ANhLgQ3oOCjNPzi5/gg8bicKfENlcdUvy7if1ytQ6gsqGac6FEvAc2w6
-        LjHk6OvG4hK8p2pB+u3WzmPqpfrB5pJ2zhREbQzOzs0T6jM=
-X-Google-Smtp-Source: ADFU+vs6pyVQKZY2alGuHv76hcwShmYLnruT8s3fRJrGGedN1GLZ++agFzo20ZUPfC/YHoa9O6Ub4hNqaZQyBAWJOq8=
-X-Received: by 2002:a02:3b24:: with SMTP id c36mr2228568jaa.23.1583320924768;
- Wed, 04 Mar 2020 03:22:04 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Rhip11nFmECovpT8lVmLzpPD3W/d2rlBg3mYVPTEngc=;
+        b=LNWjtwCBnn5+O6DzQjYTPtZhC0wN0mMo1FNCYH+TLCAGGVeiuvmIHjCSAKGLlQb/wL
+         pHHmx6O2IJuA272gM01h++jcUfI0TCs2Im/i15H0lqkKNV7oel1FouLg+IcAUHb5F48l
+         UpFBopVSV7ujiV+pNoSr4mt62K6wIkiXS8Eqqw6REaZAgUHesM0m/3yiioolPRBSJM8B
+         cf8fwzebAluJh+paSDBLZAlz/E4xu6xfq4H2bpOuA7OkuAPyVSyHhlkOi10vkjCJ2vFY
+         eOS0vH5TJp0EYM1Q1AZ91miliF+fMfjWsegx1ppfoHfN13RQPqv/cnp9mfF9w7BQsB3V
+         x+ug==
+X-Gm-Message-State: ANhLgQ3B8Jh7TBdrRrEJdEOF3jKQL8/UOrw7uRVbTXILmdZxEzkC2Qqu
+        vSg38VpPuEbY+nyhHslddbEK7whEO2i69A==
+X-Google-Smtp-Source: ADFU+vtecS5RrQ+sxl8h3ySuGL8wlLaGGPNxYxgbTg1P8ayAf6WqAVpCIwyGNMIOM2Za30TvZrOI1w==
+X-Received: by 2002:ad4:58b3:: with SMTP id ea19mr2220940qvb.80.1583330210441;
+        Wed, 04 Mar 2020 05:56:50 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id a6sm12453365qkn.104.2020.03.04.05.56.49
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 04 Mar 2020 05:56:49 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1j9UW1-0008CZ-3g; Wed, 04 Mar 2020 09:56:49 -0400
+Date:   Wed, 4 Mar 2020 09:56:49 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     syzbot <syzbot+2b10b240fbbed30f10fb@syzkaller.appspotmail.com>
+Cc:     chuck.lever@oracle.com, dledford@redhat.com, leon@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        parav@mellanox.com, syzkaller-bugs@googlegroups.com,
+        willy@infradead.org
+Subject: Re: BUG: corrupted list in cma_listen_on_dev
+Message-ID: <20200304135649.GE31668@ziepe.ca>
+References: <00000000000020c5d205a001c308@google.com>
 MIME-Version: 1.0
-References: <20200221104721.350-1-jinpuwang@gmail.com> <20200221104721.350-5-jinpuwang@gmail.com>
- <20200303095713.GK121803@unreal>
-In-Reply-To: <20200303095713.GK121803@unreal>
-From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Date:   Wed, 4 Mar 2020 12:21:52 +0100
-Message-ID: <CAMGffEkf2i2cLxNCOep7P=R69dn=gSD=HEkDR4atXaQ=kmLBqw@mail.gmail.com>
-Subject: Re: [PATCH v9 04/25] RDMA/rtrs: core: lib functions shared between
- client and server modules
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Roman Penyaev <rpenyaev@suse.de>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000020c5d205a001c308@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 3, 2020 at 10:57 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Fri, Feb 21, 2020 at 11:47:00AM +0100, Jack Wang wrote:
-> > From: Jack Wang <jinpu.wang@cloud.ionos.com>
-> >
-> > This is a set of library functions existing as a rtrs-core module,
-> > used by client and server modules.
-> >
-> > Mainly these functions wrap IB and RDMA calls and provide a bit higher
-> > abstraction for implementing of RTRS protocol on client or server
-> > sides.
-> >
-> > Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > ---
-> >  drivers/infiniband/ulp/rtrs/rtrs.c | 594 +++++++++++++++++++++++++++++
-> >  1 file changed, 594 insertions(+)
-> >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs.c
->
-> <...>
->
-> > +
-> > +static void dev_free(struct kref *ref)
-> > +{
-> > +     struct rtrs_rdma_dev_pd *pool;
-> > +     struct rtrs_ib_dev *dev;
-> > +
-> > +     dev = container_of(ref, typeof(*dev), ref);
-> > +     pool = dev->pool;
-> > +
-> > +     mutex_lock(&pool->mutex);
-> > +     list_del(&dev->entry);
-> > +     mutex_unlock(&pool->mutex);
-> > +
-> > +     if (pool->ops && pool->ops->deinit)
-> > +             pool->ops->deinit(dev);
-> > +
-> > +     ib_dealloc_pd(dev->ib_pd);
-> > +
-> > +     if (pool->ops && pool->ops->free)
-> > +             pool->ops->free(dev);
-> > +     else
-> > +             kfree(dev);
-> > +}
-> > +
-> > +int rtrs_ib_dev_put(struct rtrs_ib_dev *dev)
-> > +{
-> > +     return kref_put(&dev->ref, dev_free);
-> > +}
-> > +EXPORT_SYMBOL(rtrs_ib_dev_put);
-> > +
-> > +static int rtrs_ib_dev_get(struct rtrs_ib_dev *dev)
-> > +{
-> > +     return kref_get_unless_zero(&dev->ref);
-> > +}
-> > +
-> > +struct rtrs_ib_dev *
-> > +rtrs_ib_dev_find_or_add(struct ib_device *ib_dev,
-> > +                      struct rtrs_rdma_dev_pd *pool)
-> > +{
-> > +     struct rtrs_ib_dev *dev;
-> > +
-> > +     mutex_lock(&pool->mutex);
->
-> The scope of this mutex is unclear, you protected everything here with
-> this mutex, but in dev_free() you guarded list_del() only.
+On Tue, Mar 03, 2020 at 10:45:12PM -0800, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following crash on:
+> 
+> HEAD commit:    63623fd4 Merge tag 'for-linus' of git://git.kernel.org/pub..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11123e65e00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=5d2e033af114153f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=2b10b240fbbed30f10fb
+> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d3b329e00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16291291e00000
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+2b10b240fbbed30f10fb@syzkaller.appspotmail.com
 
-Looks the mutex only need to guard poll->list, I will run some tests to verify.
-
-Thanks!
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
