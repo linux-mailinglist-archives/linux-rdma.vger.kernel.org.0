@@ -2,38 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C988A17A86A
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2020 16:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B03617A871
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2020 16:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726954AbgCEPBh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Mar 2020 10:01:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46886 "EHLO mail.kernel.org"
+        id S1726282AbgCEPEJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Mar 2020 10:04:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726128AbgCEPBh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Mar 2020 10:01:37 -0500
+        id S1725963AbgCEPEJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 5 Mar 2020 10:04:09 -0500
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8FAE20801;
-        Thu,  5 Mar 2020 15:01:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CEFC20801;
+        Thu,  5 Mar 2020 15:04:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583420496;
-        bh=jY00GYGJcow2hOEZSpZyW/IhqHsGuuCSVkwXU4RYp+4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uCH21xq5YdKxu7YL90+qWv/FYRMDojwpxlLpRqP6eBZ8pC/YX3vH/NwA3qEZrbx3m
-         mw2zZckUo8LOKfcrLVZJuaUqYB2Wkytk5IlHJYYgSuVUekzQdgB3cSs+DqSiFssrG8
-         8t0gNJRKn3oCeWhqsIhAjz4oglxleErrx+WkL+Qc=
+        s=default; t=1583420648;
+        bh=hIKb3y0aYDuRFwJO66rBKzMjmipFBrtfAtYEVrKCNpg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NLXKaGS29oimeBmw0hjBcdBpvv+G9v0aCUVkBJU2YFmBRZf2Pt4mMWU71YCMCVAk2
+         rn89L1qpVOkFyNZRpBR/iWeNjLEiigFxcDahWAJ5tVFT8/bFnUDClYz9fj8Pl+USTd
+         UtFX1+f87jqEtkIWFy6HrY0RbGH22gmebKEgyW54=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
-        Mark Zhang <markz@mellanox.com>
-Subject: [PATCH rdma-next 9/9] RDMA/cma: Provide ECE reject reason
-Date:   Thu,  5 Mar 2020 17:01:05 +0200
-Message-Id: <20200305150105.207959-10-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
+Subject: [RFC PATCH rdma-core 00/11] Add Enhanced Connection Established (ECE) APIs
+Date:   Thu,  5 Mar 2020 17:03:45 +0200
+Message-Id: <20200305150356.208843-1-leon@kernel.org>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200305150105.207959-1-leon@kernel.org>
-References: <20200305150105.207959-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -43,149 +40,102 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-IBTA declares "vendor option not supported" reject reason in REJ
-messages if passive side doesn't want to accept proposed ECE options.
+Hi,
 
-Due to the fact that ECE is managed by userspace, there is a need to let
-users to provide such rejected reason.
+This is user space part of previously sent kernel part. It is marked as RFC because
+libmlx5 patch is not final and will be rewritten, however the concept is pretty solid.
+I'm posting the series to the ML in attempt to gather feedback, and I already aware
+of need to extend man pages to include definitions of struct ibv_ece.
 
-Reviewed-by: Mark Zhang <markz@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/core/cma.c    | 14 ++++++++------
- drivers/infiniband/core/ucma.c   |  7 ++++++-
- include/rdma/ib_cm.h             |  3 ++-
- include/rdma/rdma_cm.h           | 13 ++++++++++---
- include/uapi/rdma/rdma_user_cm.h |  7 ++++++-
- 5 files changed, 32 insertions(+), 12 deletions(-)
+Thanks
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index f1f0d51667b7..0b57c15139cf 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -4191,8 +4191,8 @@ int rdma_notify(struct rdma_cm_id *id, enum ib_event_type event)
- }
- EXPORT_SYMBOL(rdma_notify);
+-------------------------------------------------------------------------------------
+Enhanced Connection Established or ECE is new negotiation scheme
+introduced in IBTA v1.4 to exchange extra information about nodes
+capabilities and later negotiate them at the connection establishment
+phase.
 
--int rdma_reject(struct rdma_cm_id *id, const void *private_data,
--		u8 private_data_len)
-+int rdma_reject_ece(struct rdma_cm_id *id, const void *private_data,
-+		    u8 private_data_len, enum rdma_ucm_reject_reason reason)
- {
- 	struct rdma_id_private *id_priv;
- 	int ret;
-@@ -4206,10 +4206,12 @@ int rdma_reject(struct rdma_cm_id *id, const void *private_data,
- 			ret = cma_send_sidr_rep(id_priv, IB_SIDR_REJECT, 0,
- 						private_data, private_data_len);
- 		} else {
-+			enum ib_cm_rej_reason r =
-+				(reason) ?: IB_CM_REJ_CONSUMER_DEFINED;
-+
- 			trace_cm_send_rej(id_priv);
--			ret = ib_send_cm_rej(id_priv->cm_id.ib,
--					     IB_CM_REJ_CONSUMER_DEFINED, NULL,
--					     0, private_data, private_data_len);
-+			ret = ib_send_cm_rej(id_priv->cm_id.ib, r, NULL, 0,
-+					     private_data, private_data_len);
- 		}
- 	} else if (rdma_cap_iw_cm(id->device, id->port_num)) {
- 		ret = iw_cm_reject(id_priv->cm_id.iw,
-@@ -4219,7 +4221,7 @@ int rdma_reject(struct rdma_cm_id *id, const void *private_data,
+The RDMA-CM messages (REQ, REP, SIDR_REQ and SIDR_REP) were extended
+to carry two fields, one new and another gained new functionality:
+ * VendorID is a new field that indicates that common subset of vendor
+   option bits are supported as indicated by that VendorID.
+ * AttributeModifier already exists, but overloaded to indicate which
+   vendor options are supported by this VendorID.
 
- 	return ret;
- }
--EXPORT_SYMBOL(rdma_reject);
-+EXPORT_SYMBOL(rdma_reject_ece);
+The general (success) communication flow can be described by the following table:
 
- int rdma_disconnect(struct rdma_cm_id *id)
- {
-diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-index 135453f75733..1b5fd3020bcb 100644
---- a/drivers/infiniband/core/ucma.c
-+++ b/drivers/infiniband/core/ucma.c
-@@ -1178,12 +1178,17 @@ static ssize_t ucma_reject(struct ucma_file *file, const char __user *inbuf,
- 	if (copy_from_user(&cmd, inbuf, sizeof(cmd)))
- 		return -EFAULT;
+------------------------------------------------------------------------------
+Requester (client)                        | Responder (server)
+-----------------------------------------------------------------------------
+1. Create data QP.                        |
+2. Get ECE information about this QP.     |
+3. Update REQ message with local ECE data.|
+4. Send REQ message with rdma_connect().  |
+                                          | 5. Get REQ message with rdma_get_events.
+                                          | 6. Read remote ECE data from the REQ message.
+                                          | 7. Create data QP.
+                                          | 8. Set in QP the desired ECE options by giving remote ECE data.
+                                          | 9. Read accepted local ECE options.
+                                          |10. Modify QP based on those options.
+                                          |11. Fill local ECE options in REP message.
+                                          |12. Send REP message with rdma_accept().
+13. Receive REP message.                  |
+14. Read remote ECE data from REP message.|
+15. Set in QP remote ECE data             |
+16. Modify QP based on remote ECE data    |
+------------------------------------------------------------------------------
 
-+	if (cmd.reason &&
-+	    cmd.reason != RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED)
-+		return -EINVAL;
-+
- 	ctx = ucma_get_ctx_dev(file, cmd.id);
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
+In case the server decides to reject connection, the items #9-10 will be
+replaced with rdma_reject_ece() call that will send REJ message together
+with "ECE options not supported" reason as described in the IBTA.
 
- 	mutex_lock(&ctx->mutex);
--	ret = rdma_reject(ctx->cm_id, cmd.private_data, cmd.private_data_len);
-+	ret = rdma_reject_ece(ctx->cm_id, cmd.private_data,
-+			      cmd.private_data_len, cmd.reason);
- 	mutex_unlock(&ctx->mutex);
- 	ucma_put_ctx(ctx);
- 	return ret;
-diff --git a/include/rdma/ib_cm.h b/include/rdma/ib_cm.h
-index 0f1ea5f2d01c..ed328a99ed0a 100644
---- a/include/rdma/ib_cm.h
-+++ b/include/rdma/ib_cm.h
-@@ -168,7 +168,8 @@ enum ib_cm_rej_reason {
- 	IB_CM_REJ_INVALID_CLASS_VERSION		= 31,
- 	IB_CM_REJ_INVALID_FLOW_LABEL		= 32,
- 	IB_CM_REJ_INVALID_ALT_FLOW_LABEL	= 33,
--	IB_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED	= 35,
-+	IB_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED	=
-+		RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED,
- };
+Thanks
 
- struct ib_cm_rej_event_param {
-diff --git a/include/rdma/rdma_cm.h b/include/rdma/rdma_cm.h
-index 8d961d8b7cdb..56d85d30e55d 100644
---- a/include/rdma/rdma_cm.h
-+++ b/include/rdma/rdma_cm.h
-@@ -324,11 +324,18 @@ int __rdma_accept_ece(struct rdma_cm_id *id, struct rdma_conn_param *conn_param,
-  */
- int rdma_notify(struct rdma_cm_id *id, enum ib_event_type event);
+Leon Romanovsky (11):
+  Update kernel headers
+  libibverbs: Add interfaces to configure and use ECE
+  mlx5: Implement ECE callbacks
+  libibverbs: Document ECE API
+  debian: Install all available librdmacm man pages
+  librdmacm: Provide interface to use ECE for external QPs
+  librdmacm: Connect rdma_connect to the ECE
+  librdmacm: Return ECE results through rdma_accept
+  librdmacm: Add an option to reject ECE request
+  librdmacm: Implement ECE handshake logic
+  librdmacm: Document ECE API
 
-+
- /**
-- * rdma_reject - Called to reject a connection request or response.
-+ * rdma_reject_ece - Called to reject a connection request or response.
-  */
--int rdma_reject(struct rdma_cm_id *id, const void *private_data,
--		u8 private_data_len);
-+int rdma_reject_ece(struct rdma_cm_id *id, const void *private_data,
-+		    u8 private_data_len, enum rdma_ucm_reject_reason reason);
-+
-+static inline int rdma_reject(struct rdma_cm_id *id, const void *private_data,
-+			      u8 private_data_len)
-+{
-+	return rdma_reject_ece(id, private_data, private_data_len, 0);
-+}
-
- /**
-  * rdma_disconnect - This function disconnects the associated QP and
-diff --git a/include/uapi/rdma/rdma_user_cm.h b/include/uapi/rdma/rdma_user_cm.h
-index c4ca1412bcf9..e545f2de1e13 100644
---- a/include/uapi/rdma/rdma_user_cm.h
-+++ b/include/uapi/rdma/rdma_user_cm.h
-@@ -78,6 +78,10 @@ enum rdma_ucm_port_space {
- 	RDMA_PS_UDP   = 0x0111,
- };
-
-+enum rdma_ucm_reject_reason {
-+	RDMA_USER_CM_REJ_VENDOR_OPTION_NOT_SUPPORTED = 35
-+};
-+
- /*
-  * command ABI structures.
-  */
-@@ -234,7 +238,8 @@ struct rdma_ucm_accept {
- struct rdma_ucm_reject {
- 	__u32 id;
- 	__u8  private_data_len;
--	__u8  reserved[3];
-+	__u8  reason; /* enum rdma_ucm_reject_reason */
-+	__u8  reserved[2];
- 	__u8  private_data[RDMA_MAX_PRIVATE_DATA];
- };
+ CMakeLists.txt                         |   2 +-
+ debian/libibverbs1.symbols             |   5 +-
+ debian/librdmacm-dev.install           |  53 +---------
+ debian/librdmacm1.symbols              |   4 +
+ kernel-headers/rdma/rdma_user_cm.h     |  15 ++-
+ libibverbs/CMakeLists.txt              |   2 +-
+ libibverbs/driver.h                    |   2 +
+ libibverbs/dummy_ops.c                 |  14 +++
+ libibverbs/libibverbs.map.in           |   6 ++
+ libibverbs/man/CMakeLists.txt          |   2 +
+ libibverbs/man/ibv_query_ece.3.md      |  56 +++++++++++
+ libibverbs/man/ibv_set_ece.3.md        |  61 ++++++++++++
+ libibverbs/verbs.c                     |  15 +++
+ libibverbs/verbs.h                     |  18 ++++
+ librdmacm/CMakeLists.txt               |   2 +-
+ librdmacm/cma.c                        | 130 +++++++++++++++++++++++--
+ librdmacm/librdmacm.map                |   7 ++
+ librdmacm/man/CMakeLists.txt           |   2 +
+ librdmacm/man/rdma_cm.7                |  14 ++-
+ librdmacm/man/rdma_get_remote_ece.3.md |  61 ++++++++++++
+ librdmacm/man/rdma_set_local_ece.3.md  |  62 ++++++++++++
+ librdmacm/rdma_cma.h                   |  24 +++++
+ librdmacm/rdma_cma_abi.h               |  15 ++-
+ providers/mlx5/mlx5.c                  |   6 +-
+ providers/mlx5/mlx5.h                  |  10 ++
+ providers/mlx5/qp.c                    |  33 +++++++
+ providers/mlx5/verbs.c                 |   9 ++
+ 27 files changed, 560 insertions(+), 70 deletions(-)
+ create mode 100644 libibverbs/man/ibv_query_ece.3.md
+ create mode 100644 libibverbs/man/ibv_set_ece.3.md
+ create mode 100644 librdmacm/man/rdma_get_remote_ece.3.md
+ create mode 100644 librdmacm/man/rdma_set_local_ece.3.md
 
 --
 2.24.1
