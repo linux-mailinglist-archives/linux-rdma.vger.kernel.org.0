@@ -2,158 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB3717A0C2
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2020 09:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2155717A0C4
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2020 09:00:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725944AbgCEIAX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Mar 2020 03:00:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725897AbgCEIAX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Mar 2020 03:00:23 -0500
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BAFFE207FD;
-        Thu,  5 Mar 2020 08:00:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583395222;
-        bh=e1IUyGvpLIoTI3gWT+VqzXmVPDjXDKbeYcEZYxpnjkU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jhzRkq2zvQT9i4HHGSXT3kmEwB6avpgkQTmBfTAyhqfHjLLQNv4FvOm5B5VS+rjDi
-         TxkmZgX4oygVRaG92No5YVh3e3o+cd/xAn12XfPJSscftQIOY9LiTB2QTiHUO9lksc
-         VcozQ3NbpHiHwmRX0BS3lkooK5B4FVwOM0ib8hpI=
-Date:   Thu, 5 Mar 2020 10:00:19 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Jack Wang <jinpuwang@gmail.com>, linux-block@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Roman Penyaev <rpenyaev@suse.de>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Subject: Re: [PATCH v9 10/25] RDMA/rtrs: server: main functionality
-Message-ID: <20200305080019.GB184088@unreal>
-References: <20200221104721.350-1-jinpuwang@gmail.com>
- <20200221104721.350-11-jinpuwang@gmail.com>
- <20200303113740.GM121803@unreal>
- <CAMGffEmEeK37QCr8uiABjOrC-48nETTv0fxHWE0S0s=j6bPbGQ@mail.gmail.com>
- <20200303165906.GO121803@unreal>
- <CAMGffEk9LSgVQtzmBHiFYdnqgcQPXk_TV5W8pKyU5fy=ap0dTg@mail.gmail.com>
+        id S1725990AbgCEIA3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Mar 2020 03:00:29 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:43290 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725897AbgCEIA3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Mar 2020 03:00:29 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0257w7Li123308;
+        Thu, 5 Mar 2020 08:00:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=tGxrfxnsYHWmjW6L+VGIvzPWMrDbApWGxS/7d/RBRbg=;
+ b=IJfOiyXmVGsbERPj4dCy+ZqeA6zC4posUFIz8gxZb1qdNKJkKd42YSfE8DcM3hAjiRGB
+ +yiXfzBArDIy5HnvqUYlKgxEI19xX3smlY7dVq0XXbjZ9RW/7u5xy4dwTyA4ekG2hKQ/
+ IMgCdEvTu14u0MgO88OBS8AErs49iZY8rmbHajo70c+wjmY1GFxp+H/yx115y0/IQuoC
+ jSddqA8sCaweyTSA4B0me719CamDJCHXz/Bg0i4T/dKkIgHwpZRkSrcuR8zHK6NXw3ao
+ 2Cd0sw0M73Oha4RviLxcYfA/GJ/R+MQgB5yrtTiChntJoI4W18vjM+ubljS7Mxhz7ZD3 1g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2yffwr3e9w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 05 Mar 2020 08:00:17 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0257uZJp194450;
+        Thu, 5 Mar 2020 08:00:16 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2yg1p9ungw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 05 Mar 2020 08:00:16 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 02580F9D016770;
+        Thu, 5 Mar 2020 08:00:15 GMT
+Received: from kadam (/41.210.146.162)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 05 Mar 2020 00:00:14 -0800
+Date:   Thu, 5 Mar 2020 11:00:04 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Saeed Mahameed <saeedm@mellanox.com>
+Cc:     Eli Cohen <eli@mellanox.com>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        Mark Bloch <markb@mellanox.com>,
+        Paul Blakey <paulb@mellanox.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>
+Subject: Re: [PATCH] net/mlx5e: Fix an IS_ERR() vs NULL check
+Message-ID: <20200305080004.GA19839@kadam>
+References: <20200304142151.qivcobp6ngrynb2p@kili.mountain>
+ <10527910074442142431505e9d424af9128e8c5c.camel@mellanox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMGffEk9LSgVQtzmBHiFYdnqgcQPXk_TV5W8pKyU5fy=ap0dTg@mail.gmail.com>
+In-Reply-To: <10527910074442142431505e9d424af9128e8c5c.camel@mellanox.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9550 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 spamscore=0 adultscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003050050
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9550 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
+ phishscore=0 clxscore=1015 bulkscore=0 adultscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003050050
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 04, 2020 at 12:03:32PM +0100, Jinpu Wang wrote:
-> On Tue, Mar 3, 2020 at 5:59 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Tue, Mar 03, 2020 at 05:41:27PM +0100, Jinpu Wang wrote:
-> > > On Tue, Mar 3, 2020 at 12:37 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > >
-> > > > On Fri, Feb 21, 2020 at 11:47:06AM +0100, Jack Wang wrote:
-> > > > > From: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > > > >
-> > > > > This is main functionality of rtrs-server module, which accepts
-> > > > > set of RDMA connections (so called rtrs session), creates/destroys
-> > > > > sysfs entries associated with rtrs session and notifies upper layer
-> > > > > (user of RTRS API) about RDMA requests or link events.
-> > > > >
-> > > > > Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> > > > > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > > > > ---
-> > > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2164 ++++++++++++++++++++++++
-> > > > >  1 file changed, 2164 insertions(+)
-> > > > >  create mode 100644 drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > > >
-> > > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > > > new file mode 100644
-> > > > > index 000000000000..e60ee6dd675d
-> > > > > --- /dev/null
-> > > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > > > @@ -0,0 +1,2164 @@
-> > > > > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > > > > +/*
-> > > > > + * RDMA Transport Layer
-> > > > > + *
-> > > > > + * Copyright (c) 2014 - 2018 ProfitBricks GmbH. All rights reserved.
-> > > > > + * Copyright (c) 2018 - 2019 1&1 IONOS Cloud GmbH. All rights reserved.
-> > > > > + * Copyright (c) 2019 - 2020 1&1 IONOS SE. All rights reserved.
-> > > > > + */
-> > > > > +
-> > > > > +#undef pr_fmt
-> > > > > +#define pr_fmt(fmt) KBUILD_MODNAME " L" __stringify(__LINE__) ": " fmt
-> > > > > +
-> > > > > +#include <linux/module.h>
-> > > > > +#include <linux/mempool.h>
-> > > > > +
-> > > > > +#include "rtrs-srv.h"
-> > > > > +#include "rtrs-log.h"
-> > > > > +
-> > > > > +MODULE_DESCRIPTION("RDMA Transport Server");
-> > > > > +MODULE_LICENSE("GPL");
-> > > > > +
-> > > > > +/* Must be power of 2, see mask from mr->page_size in ib_sg_to_pages() */
-> > > > > +#define DEFAULT_MAX_CHUNK_SIZE (128 << 10)
-> > > > > +#define DEFAULT_SESS_QUEUE_DEPTH 512
-> > > > > +#define MAX_HDR_SIZE PAGE_SIZE
-> > > > > +#define MAX_SG_COUNT ((MAX_HDR_SIZE - sizeof(struct rtrs_msg_rdma_read)) \
-> > > > > +                   / sizeof(struct rtrs_sg_desc))
-> > > > > +
-> > > > > +/* We guarantee to serve 10 paths at least */
-> > > > > +#define CHUNK_POOL_SZ 10
-> > > > > +
-> > > > > +static struct rtrs_rdma_dev_pd dev_pd;
-> > > > > +static mempool_t *chunk_pool;
-> > > > > +struct class *rtrs_dev_class;
-> > > > > +
-> > > > > +static int __read_mostly max_chunk_size = DEFAULT_MAX_CHUNK_SIZE;
-> > > > > +static int __read_mostly sess_queue_depth = DEFAULT_SESS_QUEUE_DEPTH;
-> > > > > +
-> > > > > +static bool always_invalidate = true;
-> > > > > +module_param(always_invalidate, bool, 0444);
-> > > > > +MODULE_PARM_DESC(always_invalidate,
-> > > > > +              "Invalidate memory registration for contiguous memory regions before accessing.");
-> > > > > +
-> > > > > +module_param_named(max_chunk_size, max_chunk_size, int, 0444);
-> > > > > +MODULE_PARM_DESC(max_chunk_size,
-> > > > > +              "Max size for each IO request, when change the unit is in byte (default: "
-> > > > > +              __stringify(DEFAULT_MAX_CHUNK_SIZE) "KB)");
-> > > > > +
-> > > > > +module_param_named(sess_queue_depth, sess_queue_depth, int, 0444);
-> > > > > +MODULE_PARM_DESC(sess_queue_depth,
-> > > > > +              "Number of buffers for pending I/O requests to allocate per session. Maximum: "
-> > > > > +              __stringify(MAX_SESS_QUEUE_DEPTH) " (default: "
-> > > > > +              __stringify(DEFAULT_SESS_QUEUE_DEPTH) ")");
-> > > >
-> > > > We don't like module parameters in the RDMA.
-> > > Hi Leon,
-> > >
-> > > These paramters are affecting resouce usage/performance, I think would
-> > > be good to have them as module parameters,
-> > > so admin could choose based their needs.
-> >
-> > It is premature optimization before second user comes, also it is
-> > based on the assumption that everyone uses modules, which is not true.
-> The idea to have module parameters is to cover more use cases, IMHO.
->
-> Even you builtin the module to the kernel, you can still change the
-> module parameters
-> by passing the "moduls_name.paramters" in kernel command line, eg:
-> kvm.nx_huge_pages=true
+On Wed, Mar 04, 2020 at 08:31:13PM +0000, Saeed Mahameed wrote:
+> On Wed, 2020-03-04 at 17:22 +0300, Dan Carpenter wrote:
+> > The esw_vport_tbl_get() function returns error pointers on error.
+> > 
+> > Fixes: 96e326878fa5 ("net/mlx5e: Eswitch, Use per vport tables for
+> > mirroring")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> Hi Dan the patch looks fine, but you didn't cc netdev mailing list
+> Two options:
+> 
+> 1) I can pick this patch up and repost it myself in a future pull
+> request
 
-I know about that, but it doesn't make them helpful.
+I assumed we would do this, because the original patch didn't have
+Dave's signed-off-by.
 
-Thanks
+> 2) you can re-post it and cc netdev also mark it for net [PATCH net]
 
-> >
-> > Thanks
-> Thanks
+If we were going to go that route then it would have to [PATCH net-next]
+because it doesn't apply to the net tree.
+
+regards,
+dan carpenter
+
+
