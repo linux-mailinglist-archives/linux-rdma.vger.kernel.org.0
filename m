@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0915017A862
+	by mail.lfdr.de (Postfix) with ESMTP id 731B817A864
 	for <lists+linux-rdma@lfdr.de>; Thu,  5 Mar 2020 16:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgCEPBR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Mar 2020 10:01:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46642 "EHLO mail.kernel.org"
+        id S1726928AbgCEPBX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Mar 2020 10:01:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726273AbgCEPBR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Mar 2020 10:01:17 -0500
+        id S1726178AbgCEPBV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 5 Mar 2020 10:01:21 -0500
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D55020801;
-        Thu,  5 Mar 2020 15:01:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD608208C3;
+        Thu,  5 Mar 2020 15:01:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583420477;
-        bh=ovaT+dLcGxxNJABwhRzk5ocRrwMMQ2xldqz/L1WdPcs=;
+        s=default; t=1583420480;
+        bh=N3jc9DmgF/SjQ/a5WtH6zbFWTS0A8rDYY1NzXJqs+b0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cK3PvB8nWhFYdy92lLAYfSY6ZxYqhxd0dkddtlBxcIC+hnwAwsTAi/fbMkGGtVkIj
-         RIUFJCRou5b02wXgShKfZkhrTS1t094A3O9/zaKcct5cKHYc7J5d3Um2bpYMuzWbmZ
-         TR4d1C7htDus8nJ+hlqBmNqXFG/CsfldfizUC8Jg=
+        b=lCxsHJ26QmQFTxXWlKBM4plTavlJQWAnXopkwhOyR7HYLNSRpgsP4KkkYoImDDIDX
+         u+BHiA05s5N8hr26XTibaW2pnjvImD88NQ9LWz3Uu7bwvGS8ZbuYPHYGfuLQX0PwGD
+         nGLEU7yJDe2pud774pe1xEtNDBM9LUncA9buuq1c=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
 Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
         Mark Zhang <markz@mellanox.com>
-Subject: [PATCH rdma-next 3/9] RDMA/cm: Delete not implemented CM peer to peer communication
-Date:   Thu,  5 Mar 2020 17:00:59 +0200
-Message-Id: <20200305150105.207959-4-leon@kernel.org>
+Subject: [PATCH rdma-next 4/9] RDMA/uapi: Add ECE definitions to UCMA
+Date:   Thu,  5 Mar 2020 17:01:00 +0200
+Message-Id: <20200305150105.207959-5-leon@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200305150105.207959-1-leon@kernel.org>
 References: <20200305150105.207959-1-leon@kernel.org>
@@ -43,60 +43,46 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-Peer to peer support was never implemented, so delete it to make
-code less clutter.
+ECE parameters are used to perform handshake between different
+CMID nodes in order to allow extra connection setup supported
+by those two nodes. The data is provided by rdma_connect()
+for the client and rdma_get_events() for the server.
 
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Reviewed-by: Mark Zhang <markz@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/core/cm.c | 7 -------
- include/rdma/ib_cm.h         | 1 -
- 2 files changed, 8 deletions(-)
+ include/uapi/rdma/rdma_user_cm.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index aec6867f0ed2..77190704e81b 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -261,7 +261,6 @@ struct cm_id_private {
- 	__be16 pkey;
- 	u8 private_data_len;
- 	u8 max_cm_retries;
--	u8 peer_to_peer;
- 	u8 responder_resources;
- 	u8 initiator_depth;
- 	u8 retry_count;
-@@ -1380,10 +1379,6 @@ static void cm_format_req(struct cm_req_msg *req_msg,
+diff --git a/include/uapi/rdma/rdma_user_cm.h b/include/uapi/rdma/rdma_user_cm.h
+index e42940a215a3..150b3f075f99 100644
+--- a/include/uapi/rdma/rdma_user_cm.h
++++ b/include/uapi/rdma/rdma_user_cm.h
+@@ -206,10 +206,16 @@ struct rdma_ucm_ud_param {
+ 	__u8  reserved[7];
+ };
 
- static int cm_validate_req_param(struct ib_cm_req_param *param)
- {
--	/* peer-to-peer not supported */
--	if (param->peer_to_peer)
--		return -EINVAL;
--
- 	if (!param->primary_path)
- 		return -EINVAL;
++struct rdma_ucm_ece {
++	__u32 vendor_id;
++	__u32 attr_mod;
++};
++
+ struct rdma_ucm_connect {
+ 	struct rdma_ucm_conn_param conn_param;
+ 	__u32 id;
+ 	__u32 reserved;
++	struct rdma_ucm_ece ece;
+ };
 
-@@ -2436,8 +2431,6 @@ static int cm_rep_handler(struct cm_work *work)
- 			cm_ack_timeout(cm_id_priv->target_ack_delay,
- 				       cm_id_priv->alt_av.timeout - 1);
+ struct rdma_ucm_listen {
+@@ -287,6 +293,7 @@ struct rdma_ucm_event_resp {
+ 		struct rdma_ucm_ud_param   ud;
+ 	} param;
+ 	__u32 reserved;
++	struct rdma_ucm_ece ece;
+ };
 
--	/* todo: handle peer_to_peer */
--
- 	ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
- 	ret = atomic_inc_and_test(&cm_id_priv->work_count);
- 	if (!ret)
-diff --git a/include/rdma/ib_cm.h b/include/rdma/ib_cm.h
-index 8ec482e391aa..058cfbc2b37f 100644
---- a/include/rdma/ib_cm.h
-+++ b/include/rdma/ib_cm.h
-@@ -360,7 +360,6 @@ struct ib_cm_req_param {
- 	u32			starting_psn;
- 	const void		*private_data;
- 	u8			private_data_len;
--	u8			peer_to_peer;
- 	u8			responder_resources;
- 	u8			initiator_depth;
- 	u8			remote_cm_response_timeout;
+ /* Option levels */
 --
 2.24.1
 
