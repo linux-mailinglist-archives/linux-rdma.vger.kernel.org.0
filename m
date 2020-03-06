@@ -2,52 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AC717C125
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2020 16:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E76217C892
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2020 23:55:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgCFPDs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 6 Mar 2020 10:03:48 -0500
-Received: from mga05.intel.com ([192.55.52.43]:47985 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726171AbgCFPDr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 6 Mar 2020 10:03:47 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 Mar 2020 07:03:47 -0800
-X-IronPort-AV: E=Sophos;i="5.70,522,1574150400"; 
-   d="scan'208";a="287991101"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.203.47]) ([10.254.203.47])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA; 06 Mar 2020 07:03:46 -0800
-Subject: Re: [bug report] NVMe RDMA OPA: kmemleak observed with
- connect/reset_controller/disconnect
-To:     Sagi Grimberg <sagi@grimberg.me>, Yi Zhang <yi.zhang@redhat.com>,
-        linux-nvme@lists.infradead.org
-Cc:     kbusch@kernel.org,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <215235485.15264050.1583334487658.JavaMail.zimbra@redhat.com>
- <ef49292b-c39d-2f0b-99ca-2835b6afff97@grimberg.me>
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-Message-ID: <708eb993-2f8b-06b5-2084-23048c24ef4b@intel.com>
-Date:   Fri, 6 Mar 2020 10:03:44 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726368AbgCFWzD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 Mar 2020 17:55:03 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:56353 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbgCFWzD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Mar 2020 17:55:03 -0500
+Received: by mail-il1-f197.google.com with SMTP id b17so2659580iln.23
+        for <linux-rdma@vger.kernel.org>; Fri, 06 Mar 2020 14:55:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=m8ypvxz+cK1JIvyLt/BMDjKohGZTA1dUlqmR0UXYtMg=;
+        b=KpRRmcYnSHVjVZj8UECWGBx6IF+icnP/sjImdAhfJvt6AbaxfQdKMO3BQrtmrAg9oD
+         jlb6XLDHMbhIbuJ0HTQNZjTmlgwSl00T+yRtORixgJRP+/Wpnh+6B8i5O7hg/KBlbPOp
+         Ns22Mq16rd7rKiPBn4MUERDQOEEPSGAIgOju6AubJNnzt3KiXQszAdvs7Jqc7O/YAWfk
+         7vaK2cR5gqDXYkr6UvZ2Orl8M4Tot+uGazG5BkFKVfBZgbAE+V4QyW8NhclmhKoJ0Ig0
+         tsX8h1NMrXEcpyssSUTwOIFebKZ+TG/upvPEvBwqA2cbtRzGxRCQcE6bREey0jkykFUH
+         HumA==
+X-Gm-Message-State: ANhLgQ26+Sgrx6VGwIG2tsxrTqJ9gS4FW8cNeakYpxOonwzRZB4OWIxs
+        V1vIdfypqlZeTMvHVgW8Rz3CFM0Y26R12qkcmg6WqPbVK2AV
+X-Google-Smtp-Source: ADFU+vvl/Pw/zrYZi3hTs86i/nHL37mFWPQxthR6YKLbvs4Bfi5y+N2n+47G78N/xSSVGDM+PUK1aVBGtLcC1MK5QKPC+D5KtvQh
 MIME-Version: 1.0
-In-Reply-To: <ef49292b-c39d-2f0b-99ca-2835b6afff97@grimberg.me>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a6b:17c4:: with SMTP id 187mr4941793iox.143.1583535302639;
+ Fri, 06 Mar 2020 14:55:02 -0800 (PST)
+Date:   Fri, 06 Mar 2020 14:55:02 -0800
+In-Reply-To: <20200304135649.GE31668@ziepe.ca>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003406b805a0378b77@google.com>
+Subject: Re: BUG: corrupted list in cma_listen_on_dev
+From:   syzbot <syzbot+2b10b240fbbed30f10fb@syzkaller.appspotmail.com>
+To:     chuck.lever@oracle.com, dledford@redhat.com, jgg@ziepe.ca,
+        leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, parav@mellanox.com,
+        syzkaller-bugs@googlegroups.com, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/5/2020 3:57 PM, Sagi Grimberg wrote:
-> CCing Linux-rdma as I don't think anyone in nvme will
-> have a clue to whats going on here...
-> 
+Hello,
 
-We will take a look at it. Thanks for forwarding!
+syzbot has tested the proposed patch and the reproducer did not trigger crash:
 
--Denny
+Reported-and-tested-by: syzbot+2b10b240fbbed30f10fb@syzkaller.appspotmail.com
 
+Tested on:
+
+commit:         5e29d144 RDMA/mlx5: Prevent UMR usage with RO only when we..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6d613b606deeaad7
+dashboard link: https://syzkaller.appspot.com/bug?extid=2b10b240fbbed30f10fb
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+
+Note: testing is done by a robot and is best-effort only.
