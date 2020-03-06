@@ -2,84 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8409317B71B
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2020 07:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3596617B955
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Mar 2020 10:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725927AbgCFG60 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 6 Mar 2020 01:58:26 -0500
-Received: from ivanoab7.miniserver.com ([37.128.132.42]:50624 "EHLO
-        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725905AbgCFG60 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Mar 2020 01:58:26 -0500
-Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
-        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1jA6vx-00052L-Va; Fri, 06 Mar 2020 06:58:10 +0000
-Received: from sleer.kot-begemot.co.uk ([192.168.3.72])
-        by jain.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1jA6vv-0004hT-MA; Fri, 06 Mar 2020 06:58:09 +0000
-Subject: Re: [PATCH net-next 1/7] um: reject unsupported coalescing params
+        id S1726212AbgCFJdg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 Mar 2020 04:33:36 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:50542 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbgCFJdg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Mar 2020 04:33:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1583487214;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5twIfR2LvQIEiEzP80/5MmktjTFqoWR3J055Yx+mRa8=;
+        b=h4bX50Kul3e6GEvn64ImD2/kbiSECJ2VUz1bjAYdR5xc/qbaAWxRlTQ3+g//fU75VLCd1d
+        Pj3+DXeaTUlXXFUTHRcnTUgoFSIz3qGO1YqH/1MheZKC/Q6tnGEQbjljbr+Wh7NV7uHcA9
+        Y0dmpb6eaSSYL3LXyN5MNutxCCDDS+E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-OGC8puxlNeSTcYwNhDEwGQ-1; Fri, 06 Mar 2020 04:33:31 -0500
+X-MC-Unique: OGC8puxlNeSTcYwNhDEwGQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7895A13FF;
+        Fri,  6 Mar 2020 09:33:27 +0000 (UTC)
+Received: from [10.72.13.58] (ovpn-13-58.pek2.redhat.com [10.72.13.58])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6D0B510016EB;
+        Fri,  6 Mar 2020 09:33:18 +0000 (UTC)
+Subject: Re: [PATCH net-next 3/7] tun: reject unsupported coalescing params
 To:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net
-Cc:     jdike@addtoit.com, richard@nod.at, linux-um@lists.infradead.org,
-        dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-rdma@vger.kernel.org, edumazet@google.com,
-        jasowang@redhat.com, mkubecek@suse.cz, hayeswang@realtek.com,
-        doshir@vmware.com, pv-drivers@vmware.com, manishc@marvell.com,
+Cc:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
+        linux-um@lists.infradead.org, dledford@redhat.com, jgg@ziepe.ca,
+        leon@kernel.org, linux-rdma@vger.kernel.org, edumazet@google.com,
+        mkubecek@suse.cz, hayeswang@realtek.com, doshir@vmware.com,
+        pv-drivers@vmware.com, manishc@marvell.com,
         GR-Linux-NIC-Dev@marvell.com, gregkh@linuxfoundation.org,
         merez@codeaurora.org, kvalo@codeaurora.org,
         linux-wireless@vger.kernel.org, netdev@vger.kernel.org
 References: <20200306010602.1620354-1-kuba@kernel.org>
- <20200306010602.1620354-2-kuba@kernel.org>
-From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Organization: Cambridge Greys
-Message-ID: <fd59e667-38cb-6b16-8a27-311c7da523d0@cambridgegreys.com>
-Date:   Fri, 6 Mar 2020 06:58:07 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ <20200306010602.1620354-4-kuba@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <36c409f7-a8b4-50f6-4933-1c8105755d11@redhat.com>
+Date:   Fri, 6 Mar 2020 17:33:16 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200306010602.1620354-2-kuba@kernel.org>
+In-Reply-To: <20200306010602.1620354-4-kuba@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 06/03/2020 01:05, Jakub Kicinski wrote:
+
+On 2020/3/6 =E4=B8=8A=E5=8D=889:05, Jakub Kicinski wrote:
 > Set ethtool_ops->supported_coalesce_params to let
 > the core reject unsupported coalescing parameters.
-> 
+>
 > This driver did not previously reject unsupported parameters.
-> 
+>
 > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 > ---
->   arch/um/drivers/vector_kern.c | 1 +
+>   drivers/net/tun.c | 1 +
 >   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-> index 0ff86391f77d..e98304d0219e 100644
-> --- a/arch/um/drivers/vector_kern.c
-> +++ b/arch/um/drivers/vector_kern.c
-> @@ -1508,6 +1508,7 @@ static int vector_set_coalesce(struct net_device *netdev,
+>
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index 79f248cb282d..9e8f23519e82 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -3597,6 +3597,7 @@ static int tun_set_coalesce(struct net_device *de=
+v,
 >   }
->   
->   static const struct ethtool_ops vector_net_ethtool_ops = {
-> +	.supported_coalesce_params = ETHTOOL_COALESCE_TX_USECS,
->   	.get_drvinfo	= vector_net_get_drvinfo,
->   	.get_link	= ethtool_op_get_link,
->   	.get_ts_info	= ethtool_op_get_ts_info,
-> 
+>  =20
+>   static const struct ethtool_ops tun_ethtool_ops =3D {
+> +	.supported_coalesce_params =3D ETHTOOL_COALESCE_RX_MAX_FRAMES,
+>   	.get_drvinfo	=3D tun_get_drvinfo,
+>   	.get_msglevel	=3D tun_get_msglevel,
+>   	.set_msglevel	=3D tun_set_msglevel,
 
-Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+
