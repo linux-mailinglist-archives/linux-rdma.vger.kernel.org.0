@@ -2,301 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7367517D00C
-	for <lists+linux-rdma@lfdr.de>; Sat,  7 Mar 2020 21:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 343B217D03E
+	for <lists+linux-rdma@lfdr.de>; Sat,  7 Mar 2020 22:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbgCGUl4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 7 Mar 2020 15:41:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726098AbgCGUl4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 7 Mar 2020 15:41:56 -0500
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25BB72070A;
-        Sat,  7 Mar 2020 20:41:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583613715;
-        bh=UtyteW5UqJZdSOyVmmN6dDA1ZlYIvZ14lmTl5hl2t+Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rB7yOP4IyRfdEujDweGo0Y2dJv0cO4LIIDNa6UdsT+9ZuEd3hA1RmYD4Wn4caICg4
-         kEp570idpYZJ13iJQ8cuawkzlHIHCqXKBxkEm/VEZc1wqfhhpvVw5zr0j9j6ac0Nit
-         j3rDfF9F9NC5QLA8Na6aJbPjqkUC4C1FEcUikTo4=
-Date:   Sat, 7 Mar 2020 12:41:53 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH] RDMA/ucma: Put a lock around every call to the rdma_cm
- layer
-Message-ID: <20200307204153.GJ15444@sol.localdomain>
-References: <20200218210432.GA31966@ziepe.ca>
- <20200219060701.GG1075@sol.localdomain>
- <20200219202221.GN23930@mellanox.com>
+        id S1726225AbgCGVVa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 7 Mar 2020 16:21:30 -0500
+Received: from mail-eopbgr30061.outbound.protection.outlook.com ([40.107.3.61]:10400
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726180AbgCGVV3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 7 Mar 2020 16:21:29 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H+GV+95H7XyXQ0Pk51laXHOlrwEA6c4MhSOsy9VoHKhgB0njBphSa6gXtuMlt6596ZtBjE+6p9zS5pBaP4nXL325hwYYrI2IKTCKecRKw7IYvp+1ZDbSp5HO3YzQrUUfSJi7BIZ20Aub66FlK1tbePeIPA+ZPdtbKLU1M/f1g2g6Ukd+lhfeBRm2PLmUWiTgw9vG4Y58t7Qnx9Qef3EiuSGOvpbrpLAIboZ9803ypJlo+AT27MkeGNfdX2SnOrqqR14FKsk6sxwVXfWfLn4hDFoqu6dRcnCt16MVVXcd4RINnVKv55Rs8TDmdIrBb2WXTy2YZ3cvIIedAO5RF+mGIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Je/WasDkYyQXVOdk926lcllr0f7/oR83br8p7eUgdoc=;
+ b=TeksVRA1IQeRhsfgvitmo9of0pxHmIb7SZGRV5xrM8TabNdCtd2bUbZEkGxskBrMY5J4qwSeSy+cDIlwa7+lvi3AyzplIJlYkOvNN3yDXOluTR01KIALJjMIQUz691XKnYrepPXVRClG0Yt8+9vhXd4SNlaun1M6qoDy8fjUmz7wE1D1KVdB9HkfOjs+OGWxTGG6nFSD/AqAp/EVlfG2WcaLG/+5q9p3BmOPZ76/E6E69ectzPJE4DEFjMcvBoUcTMHQGPfZEUlpnwLYvOYeHgoEdyYrlhqi82gtFLW8tRlZmmiVRIvhBQlfilithaaIs6YOEJBr2gbN8ixAKXnjbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Je/WasDkYyQXVOdk926lcllr0f7/oR83br8p7eUgdoc=;
+ b=AFbshuxRXoae1izNTRUC1HlGRPNNsbRMidZprRHoLZQi5R65S2HVwc2REudvOdzUdxehSihix0I1+EmB/QG1lFQ+PwNNowCSvT/b7ikXZJSbA0HlqU2gNOI2c8U4DOnW9IE9JepdQG3xD9yIGdU/n+6rtdynl4NJa0GIIrhrfSY=
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (20.177.51.151) by
+ VI1PR05MB3407.eurprd05.prod.outlook.com (10.170.238.160) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2793.16; Sat, 7 Mar 2020 21:21:27 +0000
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::8cea:6c66:19fe:fbc2]) by VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::8cea:6c66:19fe:fbc2%7]) with mapi id 15.20.2772.019; Sat, 7 Mar 2020
+ 21:21:26 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     Leon Romanovsky <leonro@mellanox.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH mlx5-next 0/4] Mellanox, mlx5 next updates 2020-03-02
+Thread-Topic: [PATCH mlx5-next 0/4] Mellanox, mlx5 next updates 2020-03-02
+Thread-Index: AQHV8PDgKu7ZlYRuZUOtB8wbWM79Uag9qtMA
+Date:   Sat, 7 Mar 2020 21:21:26 +0000
+Message-ID: <8ea865ad4c19e3013a2b67980d113ae0e8db07be.camel@mellanox.com>
+References: <20200303001522.54067-1-saeedm@mellanox.com>
+In-Reply-To: <20200303001522.54067-1-saeedm@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-originating-ip: [73.15.39.150]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 4b27e4b7-60db-4bc2-10b5-08d7c2dd7ef4
+x-ms-traffictypediagnostic: VI1PR05MB3407:|VI1PR05MB3407:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB3407554F0B0AE4F2186E401EBEE00@VI1PR05MB3407.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 03355EE97E
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(39850400004)(396003)(366004)(136003)(376002)(199004)(189003)(6506007)(4326008)(450100002)(36756003)(54906003)(4744005)(26005)(8676002)(81166006)(6862004)(81156014)(186003)(8936002)(6636002)(6486002)(478600001)(2616005)(71200400001)(2906002)(66556008)(66446008)(64756008)(86362001)(66476007)(76116006)(5660300002)(316002)(91956017)(37006003)(15650500001)(66946007)(6512007);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB3407;H:VI1PR05MB5102.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2sa/FVcR7TTOjtq1Nyiyvy74S5pQt8Mck1royvt8Uz5U6RgHq8+cLfH4+lFonm5uTt0zSJggHqdyZ6XKJdeyd5XH/EZTag/wvMPb3PE00WA53uVvnZEqdduirZVn/K2qc7x8nUY1ybJaWh5gUpRfOMfp3FdYOf5DGES5CTK/YRuyBIC+fBwRHKBLza3rxbUEDrqFc5+FhNmXQlsI4xqEW/P7xxpwB0N6ln+Mvnfvtw/3whaCGmmymnlYvgeT6wgusK+YFLAOBWw1M9PMVRtCLCciSvfqsYe6wue/75IKR6Kj0oKK/05srjetIuvJ7JFX5WYIxttCYLO22rxCQXzT0SkpvlbTWDlhxWhhXh2a01UUcso7lVny9MTwBSUKRT5XRTgDZCEuCkZFfZMBKGrGlcLGTmT7nvzwRBpvS+5Uk9kKjTVwnxIJv9FDcZw4UPgd
+x-ms-exchange-antispam-messagedata: c8DX2lv5EQRNoXdADKZIB3hh8Gf39f81LyBBNq0E8Zo26g/mYRHcuBfNyO27wxa2Bo6afckfCBegX4M/tHl0dXcn8mWuYWbCkE6m5kJxBmJVtTnfUm2oauy8KV0eAThAzCnC6zXSGXT4U7sdwWSQtg==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8FBAEC794CA2C0449458E049AAF1BDE2@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200219202221.GN23930@mellanox.com>
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b27e4b7-60db-4bc2-10b5-08d7c2dd7ef4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2020 21:21:26.6251
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bEraeIJOw7NRNXzXd/x416E420r4uWaPDP6xdBeBeOUOQoWwXaoYxUcp+4op0H2JcKwMfohSausgVlTE18wLLw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3407
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 08:22:25PM +0000, Jason Gunthorpe wrote:
-> On Tue, Feb 18, 2020 at 10:07:01PM -0800, Eric Biggers wrote:
-> > > these 11 lets include them as  well. I wasn't able to find a way to
-> > > search for things, this list is from your past email, thanks.
-> > > 
-> > 
-> > Unfortunately I haven't had time to work on syzkaller bugs lately, so I can't
-> > provide an updated list until I go through the long backlog of bugs.
-> 
-> Ok
-
-Here's an updated list:
-
---------------------------------------------------------------------------------
-Title:              general protection fault in rds_ib_add_one
-Last occurred:      0 days ago
-Reported:           12 days ago
-Branches:           Mainline and others
-Dashboard link:     https://syzkaller.appspot.com/bug?id=15f96d171c64999196ac7db3de107f24b9182a8e
-Original thread:    https://lore.kernel.org/lkml/000000000000b9b7d4059f4e4ac7@google.com/T/#u
-
-This bug has a C reproducer.
-
-The original thread for this bug has received 5 replies; the last was 5 days
-ago.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+274094e62023782eeb17@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please reply to the original
-thread, which had activity only 5 days ago.  For the git send-email command to
-use, or tips on how to reply if the thread isn't in your mailbox, see the "Reply
-instructions" at https://lore.kernel.org/r/000000000000b9b7d4059f4e4ac7@google.com
-
---------------------------------------------------------------------------------
-Title:              INFO: trying to register non-static key in xa_destroy
-Last occurred:      0 days ago
-Reported:           11 days ago
-Branches:           Mainline and others
-Dashboard link:     https://syzkaller.appspot.com/bug?id=c0a75a31c5fa84e6e5d3131fd98a5b56e2141b9a
-Original thread:    https://lore.kernel.org/lkml/00000000000046895c059f5cae37@google.com/T/#u
-
-This bug has a C reproducer.
-
-No one has replied to the original thread for this bug yet.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+2e80962bedd9559fe0b3@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please reply to the original
-thread.  For the git send-email command to use, or tips on how to reply if the
-thread isn't in your mailbox, see the "Reply instructions" at
-https://lore.kernel.org/r/00000000000046895c059f5cae37@google.com
-
---------------------------------------------------------------------------------
-Title:              general protection fault in nldev_stat_set_doit
-Last occurred:      4 days ago
-Reported:           11 days ago
-Branches:           Mainline and others
-Dashboard link:     https://syzkaller.appspot.com/bug?id=1fbcb607cf49d8b5a3c8e056971f045f9bfa34f3
-Original thread:    https://lore.kernel.org/lkml/0000000000004aa34d059f5caedc@google.com/T/#u
-
-This bug has a C reproducer.
-
-The original thread for this bug has received 1 reply, 11 days ago.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+bd4af81bc51ee0283445@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please reply to the original
-thread, which had activity only 11 days ago.  For the git send-email command to
-use, or tips on how to reply if the thread isn't in your mailbox, see the "Reply
-instructions" at https://lore.kernel.org/r/0000000000004aa34d059f5caedc@google.com
-
---------------------------------------------------------------------------------
-Title:              BUG: corrupted list in _cma_attach_to_dev
-Last occurred:      2 days ago
-Reported:           6 days ago
-Branches:           Mainline
-Dashboard link:     https://syzkaller.appspot.com/bug?id=067b1e60bab1b617c1208f078cd76c9087f070e0
-Original thread:    https://lore.kernel.org/lkml/000000000000cfed90059fcfdccb@google.com/T/#u
-
-This bug has a C reproducer.
-
-No one has replied to the original thread for this bug yet.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+06b50ee4a9bd73e8b89f@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please reply to the original
-thread.  For the git send-email command to use, or tips on how to reply if the
-thread isn't in your mailbox, see the "Reply instructions" at
-https://lore.kernel.org/r/000000000000cfed90059fcfdccb@google.com
-
---------------------------------------------------------------------------------
-Title:              WARNING: kobject bug in ib_register_device
-Last occurred:      1 day ago
-Reported:           12 days ago
-Branches:           Mainline and others
-Dashboard link:     https://syzkaller.appspot.com/bug?id=805ad726feb6910e35088ae7bbe61f4125e573b7
-Original thread:    https://lore.kernel.org/lkml/000000000000026ac5059f4e27f3@google.com/T/#u
-
-This bug has a C reproducer.
-
-No one has replied to the original thread for this bug yet.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+da615ac67d4dbea32cbc@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please reply to the original
-thread.  For the git send-email command to use, or tips on how to reply if the
-thread isn't in your mailbox, see the "Reply instructions" at
-https://lore.kernel.org/r/000000000000026ac5059f4e27f3@google.com
-
---------------------------------------------------------------------------------
-Title:              BUG: corrupted list in cma_listen_on_dev
-Last occurred:      4 days ago
-Reported:           4 days ago
-Branches:           Mainline
-Dashboard link:     https://syzkaller.appspot.com/bug?id=e8fcdea4e5a443c597c94fb6eda7d6646eafe6a2
-Original thread:    https://lore.kernel.org/lkml/00000000000020c5d205a001c308@google.com/T/#u
-
-This bug has a C reproducer.
-
-The original thread for this bug has received 1 reply, 3 days ago.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+2b10b240fbbed30f10fb@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please reply to the original
-thread, which had activity only 3 days ago.  For the git send-email command to
-use, or tips on how to reply if the thread isn't in your mailbox, see the "Reply
-instructions" at https://lore.kernel.org/r/00000000000020c5d205a001c308@google.com
-
---------------------------------------------------------------------------------
-Title:              KASAN: use-after-free Read in rxe_query_port
-Last occurred:      0 days ago
-Reported:           6 days ago
-Branches:           Mainline and others
-Dashboard link:     https://syzkaller.appspot.com/bug?id=f00443e97b44c466dc75edc31601110bf62a6f69
-Original thread:    https://lore.kernel.org/lkml/0000000000000c9e12059fc941ff@google.com/T/#u
-
-Unfortunately, this bug does not have a reproducer.
-
-No one has replied to the original thread for this bug yet.
-
-I'm not confident this bug is really in the net/rdma subsystem.  I also think it
-might be in the net/smc subsystem.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+e11efb687f5ab7f01f3d@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please reply to the original
-thread.  For the git send-email command to use, or tips on how to reply if the
-thread isn't in your mailbox, see the "Reply instructions" at
-https://lore.kernel.org/r/0000000000000c9e12059fc941ff@google.com
-
---------------------------------------------------------------------------------
-Title:              WARNING in ib_free_port_attrs
-Last occurred:      1 day ago
-Reported:           6 days ago
-Branches:           net and net-next
-Dashboard link:     https://syzkaller.appspot.com/bug?id=4ec089798f282f2d2c3219151e420ed1ba10120d
-Original thread:    https://lore.kernel.org/lkml/000000000000460717059fd83734@google.com/T/#u
-
-Unfortunately, this bug does not have a reproducer.
-
-The original thread for this bug has received 1 reply, 4 days ago.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+e909641b84b5bc17ad8b@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please reply to the original
-thread, which had activity only 4 days ago.  For the git send-email command to
-use, or tips on how to reply if the thread isn't in your mailbox, see the "Reply
-instructions" at https://lore.kernel.org/r/000000000000460717059fd83734@google.com
-
---------------------------------------------------------------------------------
-Title:              INFO: task hung in rdma_destroy_id
-Last occurred:      3 days ago
-Reported:           5 days ago
-Branches:           Mainline and others
-Dashboard link:     https://syzkaller.appspot.com/bug?id=e89b86960c3636f57dbb16bb25a829377ebdf43d
-Original thread:    https://lore.kernel.org/lkml/00000000000059e701059fe3ec2f@google.com/T/#u
-
-Unfortunately, this bug does not have a reproducer.
-
-No one has replied to the original thread for this bug yet.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+0abbad99bee187cf63d4@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please reply to the original
-thread.  For the git send-email command to use, or tips on how to reply if the
-thread isn't in your mailbox, see the "Reply instructions" at
-https://lore.kernel.org/r/00000000000059e701059fe3ec2f@google.com
-
---------------------------------------------------------------------------------
-Title:              general protection fault in kobject_get
-Last occurred:      6 days ago
-Reported:           6 days ago
-Branches:           net-next
-Dashboard link:     https://syzkaller.appspot.com/bug?id=f8e0f99b310558dd489cc7427711a640c10b93e5
-Original thread:    https://lore.kernel.org/lkml/000000000000c4b371059fd83a92@google.com/T/#u
-
-Unfortunately, this bug does not have a reproducer.
-
-The original thread for this bug has received 2 replies; the last was 4 days
-ago.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+46fe08363dbba223dec5@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please reply to the original
-thread, which had activity only 4 days ago.  For the git send-email command to
-use, or tips on how to reply if the thread isn't in your mailbox, see the "Reply
-instructions" at https://lore.kernel.org/r/000000000000c4b371059fd83a92@google.com
-
---------------------------------------------------------------------------------
-Title:              WARNING: kobject bug in add_one_compat_dev
-Last occurred:      8 days ago
-Reported:           10 days ago
-Branches:           linux-next and net-next
-Dashboard link:     https://syzkaller.appspot.com/bug?id=f8880fdc3cd0ba268421672360cf79bfa7fa4272
-Original thread:    https://lore.kernel.org/lkml/0000000000005f77d6059f888f2e@google.com/T/#u
-
-Unfortunately, this bug does not have a reproducer.
-
-No one has replied to the original thread for this bug yet.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+ab4dae63f7d310641ded@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please reply to the original
-thread.  For the git send-email command to use, or tips on how to reply if the
-thread isn't in your mailbox, see the "Reply instructions" at
-https://lore.kernel.org/r/0000000000005f77d6059f888f2e@google.com
-
---------------------------------------------------------------------------------
-Title:              WARNING in srp_remove_one
-Last occurred:      9 days ago
-Reported:           6 days ago
-Branches:           Mainline
-Dashboard link:     https://syzkaller.appspot.com/bug?id=16a5827f8f6f6ef0967e6492ffb2e2ca54c8c0fb
-Original thread:    https://lore.kernel.org/lkml/000000000000144d79059fc9415d@google.com/T/#u
-
-Unfortunately, this bug does not have a reproducer.
-
-No one has replied to the original thread for this bug yet.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+687bc62a84a6a2a3555a@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please reply to the original
-thread.  For the git send-email command to use, or tips on how to reply if the
-thread isn't in your mailbox, see the "Reply instructions" at
-https://lore.kernel.org/r/000000000000144d79059fc9415d@google.com
-
+T24gTW9uLCAyMDIwLTAzLTAyIGF0IDE2OjE1IC0wODAwLCBTYWVlZCBNYWhhbWVlZCB3cm90ZToN
+Cj4gQWRkaW5nIHNvbWUgSFcgYml0cyBhbmQgZGVmaW5pdGlvbnMgdG8gbWx4NS1uZXh0IHNoYXJl
+ZCBicmFuY2ggZm9yDQo+IHVwY29taW5nIG1seDUgZmVhdHVyZXMuIA0KPiBOb3RoaW5nIG1ham9y
+LCBmb3IgbW9yZSBpbmZvIHBsZWFzZSBzZWUgaW5kaXZpZHVhbCBjb21taXQgbWVzc2FnZXMuDQo+
+IA0KPiBJbiBjYXNlIG9mIG5vIG9iamVjdGlvbiwgdGhlIHBhdGNoZXMgd2lsbCBiZSBhcHBsaWVk
+IHRvIG1seDUtbmV4dCBhbmQNCj4gc2VudCBpbiBhIGZ1dHVyZSBwdWxsIHJlcXVlc3QgdG8gbmV0
+LW5leHQgYW5kL29yIHJkbWEtbmV4dCB3aXRoIHRoZQ0KPiByZXNwZWN0aXZlIHVwY29taW5nIGZl
+YXR1cmVzLg0KDQoNCkFwcGxpZWQgdG8gbWx4NS1uZXh0DQoNCnRoYW5rcyENCg0K
