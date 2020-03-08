@@ -2,81 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BD917D230
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Mar 2020 08:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 803EF17D527
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 Mar 2020 18:10:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbgCHHTC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 8 Mar 2020 03:19:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725904AbgCHHTC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 8 Mar 2020 03:19:02 -0400
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B6AD20663;
-        Sun,  8 Mar 2020 07:19:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583651941;
-        bh=6+XCWxlY5sjTK2a1K2zLcBwlHeTbz89s8X3whvgV6c4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FbjoYJeBS5u+rMTuoX1JaXg/tYfTEHrvVbVPwNY8nV2zIycIEVXEagCG50BEzwW0o
-         b0ZA0U8wTdHf1vTB4VmfXwVe0LTklnEdUI2chXMv7qFAIe5oDT52smtf8PyYt47tsG
-         +befL0xPdG26W00rLwtggM+jKfi83gNDEUavzKmk=
-Date:   Sun, 8 Mar 2020 09:18:58 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Gal Pressman <galpress@amazon.com>, linux-rdma@vger.kernel.org,
-        Mark Zhang <markz@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: Re: [PATCH rdma-next 2/9] RDMA: Promote field_avail() macro to be
- general code
-Message-ID: <20200308071858.GR184088@unreal>
-References: <20200305150105.207959-1-leon@kernel.org>
- <20200305150105.207959-3-leon@kernel.org>
- <20200305151850.GZ26318@mellanox.com>
+        id S1726368AbgCHRKJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 8 Mar 2020 13:10:09 -0400
+Received: from www752.sakura.ne.jp ([59.106.19.202]:57156 "EHLO
+        www752.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726297AbgCHRKJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 8 Mar 2020 13:10:09 -0400
+X-Greylist: delayed 4106 seconds by postgrey-1.27 at vger.kernel.org; Sun, 08 Mar 2020 13:10:07 EDT
+Received: from fsav101.sakura.ne.jp (fsav101.sakura.ne.jp [27.133.134.228])
+        by www752.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 028FpPAT061629;
+        Mon, 9 Mar 2020 00:51:25 +0900 (JST)
+        (envelope-from postmaster@hokusetubad.sakura.ne.jp)
+Received: from www752.sakura.ne.jp (59.106.19.202)
+ by fsav101.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav101.sakura.ne.jp);
+ Mon, 09 Mar 2020 00:51:25 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav101.sakura.ne.jp)
+Received: from www752.sakura.ne.jp (localhost [127.0.0.1])
+        by www752.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 028FpOhJ061610;
+        Mon, 9 Mar 2020 00:51:25 +0900 (JST)
+        (envelope-from postmaster@hokusetubad.sakura.ne.jp)
+Received: (from hokusetubad@localhost)
+        by www752.sakura.ne.jp (8.15.2/8.15.2/Submit) id 028FpOOQ061609;
+        Mon, 9 Mar 2020 00:51:24 +0900 (JST)
+        (envelope-from postmaster@hokusetubad.sakura.ne.jp)
+Message-Id: <202003081551.028FpOOQ061609@www752.sakura.ne.jp>
+X-Authentication-Warning: www752.sakura.ne.jp: hokusetubad set sender to postmaster@hokusetubad.sakura.ne.jp using -f
+Subject: BUSINESS PROPOSAL
+From:   postmaster@hokusetubad.sakura.ne.jp
+Reply-To: abulkareem461@gmail.com
+To:     nJreyes@midway.edu
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200305151850.GZ26318@mellanox.com>
+Date:   Mon, 09 Mar 2020 00:51:24 +0900
+Content-Type: text/plain; charset="ISO-2022-JP"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Mar 05, 2020 at 11:18:50AM -0400, Jason Gunthorpe wrote:
-> On Thu, Mar 05, 2020 at 05:00:58PM +0200, Leon Romanovsky wrote:
-> >
-> > +/**
-> > + * FIELD_SIZEOF - get the size of a struct's field
-> > + * @t: the target struct
-> > + * @f: the target struct's field
-> > + * Return: the size of @f in the struct definition without having a
-> > + * declared instance of @t.
-> > + */
-> > +#define FIELD_SIZEOF(t, f) (sizeof(((t*)0)->f))
->
-> This is already sizeof_field
+Dearest Friend
 
-Ohh, thanks
-
->
-> > +/**
-> > + * field_avail - check if specific field exists in provided data
-> > + * @x: the source data, usually struct received from the user
-> > + * @fld: field name
-> > + * @sz: size of the data
-> > + */
-> > +#define field_avail(x, fld, sz) \
-> > +	(offsetof(typeof(x), fld) + FIELD_SIZEOF(typeof(x), fld) <= (sz))
->
-> This is just offsetofend, I'm not sure there is such a reason to even
-> have this field_avail macro really..
-
-Even better.
-
-Thanks
-
->
-> Jason
+I am Mr Abdul Kareem working with Emirate NBD Bank Dubai,United Arab Emirate as Finance Manager.
+I have a very profitable Business that concerns you and will benefit both of us after completion.
+Kindly get back to me for more details.
+Awaiting your response.
+Regards
+Abdul Kareem
