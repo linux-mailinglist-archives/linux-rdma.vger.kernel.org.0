@@ -2,255 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC3217E871
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2020 20:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FC717E87F
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Mar 2020 20:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726134AbgCITaX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Mar 2020 15:30:23 -0400
-Received: from mail-eopbgr40053.outbound.protection.outlook.com ([40.107.4.53]:48165
+        id S1726269AbgCITcH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Mar 2020 15:32:07 -0400
+Received: from mail-eopbgr40078.outbound.protection.outlook.com ([40.107.4.78]:41381
         "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726121AbgCITaW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 9 Mar 2020 15:30:22 -0400
+        id S1726121AbgCITcH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 9 Mar 2020 15:32:07 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dcdEIATRC7Ff8rGHSFCpEmjhv/vFBNkJQGpGTv1YX4jKrD2iHHClaZbI5/k9+ggIXnH3/0mDrTdsUSaRrnJn7n4q+puUrMiOit+JgtfhDGScAFXGy8xohgmyxNWgeW8hTvM8+Cn8WgDWdCT5BBJKX9PRT4XCvy7Ur6j4UsDpbgT4KA4aLlSau1due5ocaBe4bdP+rCLNHqyREr3zvytgiyZ42BMWJgEkpeppWVay7rdVJrF50j19JzjqnFYF1Y11/1h1odYWnTUd3Anwv6LzA1zn2j7yv144GGCOD+6Al9RO12121GktT//W4ToeGmeOmz4VmKQ/LXxTFeokdhKzqQ==
+ b=n+wgGjY9kFZ8e4OvunNdKdgRvoG+OfLiBCIxNw8CimPoVWRKZNfQie/gd3b0ZYZuwtrvxNP0brxNN3LV7ZWvqGKHvuw6/92a1lsj7ocM7+01TMCdvrYOa329Ulopv/iuNHfd7mBFnxQEyP+WEHg8Xdos2lHB30IKw9AjJfAXX2fht6qljH0wGhSAMeQWGBS7k5u2Wg0lI8iI/ONi+tJTWyIpgKV0sdvs3He04H2mWw3568QCSO6pq31VTJN5+jpRlgppLykV732ksz1Gsq1PPAa4W2dYpQDAmXLcdjarHYnoEafUQM6eF0pTP2ERU/LFCv8eLcmkqVzL3jPPdl4L2A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=crJ1U728oqf3n4tdfK4wYkyt9FSSaB9S4ao/pnH+qKg=;
- b=G75iH+yh6JOCq5xQlFsU0kTiCq8iMpjfm0SoGGcl9rFpvYXyuSTnAXkLKFAgsH/k7V1WXRKFdoLZ+vS29AnvFU9FqiW6rd16lPzF43z6QiLYVarP8t/YTXrFUmwqIHSFQQvDA7mB/eb/KW6gfcEk0TAuIgz5BRLH8/lDLtFFLDvI/xtZ9anNymUIeoChAcC+HnbkviCLzIlOGYwCTRkdN60jWN66LatJimlcz2VBIBqj7A5WQvxjNiRSC1+WK4WpEEvp+mLV54xOKoSGkQBWo+AXXIZ/QUuuM7bay13vcEWkbJQOv0+WRlvWhulooGEQTFm5i2eVs9sFZwRT5hkPIQ==
+ bh=oy3CBpJF9NzfElNsQhnEnxozM58XzgSKERLiW84wYhg=;
+ b=oaP8otAwRsPawA4Vdm20ZdbAv7YOLXqjDo1MDGLKUY/ll16vq4M5QaaMiw07AukQjaNgETFE49iYCyjqTSs40JeTUCmR8Hb/V++jj2agUrCg2giyTum9MfVlaxw2162FRK45G4cxDPv8uRSWTXVkh8w3oE2BOZQaEEL+Xw6+x/XIDM1tarSKOSnRkHXj6KCjEI9zvSOJyXOPe2J4SP1CDAuUSxxelpdV3z/ASzLN6gfe4/yADwSzT3djbt5z9kiPYMsLc7z+W6hpvP2HFwG8S+4xUwD4p66/+C2XKq1bmWtAakpKwYvw8X8dNRb5EASIhN1Dnrw1kFlDLXQyKyAhpw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=crJ1U728oqf3n4tdfK4wYkyt9FSSaB9S4ao/pnH+qKg=;
- b=oMs1eLUcpKhvnF/tsIc5pJyC3u2FW4GNqfSIzlOgj5ow1DmQYoDdrhwFgp22kwksU0LiACe+Ie/RNPA/WMfm5Hkjwf6FOmaRz9N5YhE00SRQBKQysdgK6z12ZR0eeU+ajopcx7SMCTU4TdNKUZF6YqcC8IlMfaK8BfZmgVTDZ4s=
+ bh=oy3CBpJF9NzfElNsQhnEnxozM58XzgSKERLiW84wYhg=;
+ b=Neh8PMwqOIvXkU94LvKk6oKYArJvUMpgGTvzuJovMOOP9nnFFLcjn+uympbORXWSK5t8le6yAgl+oQ9IS721NGvNTHsUXFf/abHKCz9S8VjZ94wo/lBxB0pGyUr0ZTKbR55qsTXCUM9H0+QVL6lJ6WCq+a3CuHwLHV0UPOvbh8k=
 Authentication-Results: spf=none (sender IP is )
  smtp.mailfrom=jgg@mellanox.com; 
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
  VI1PR05MB5118.eurprd05.prod.outlook.com (20.178.11.90) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2793.17; Mon, 9 Mar 2020 19:30:16 +0000
+ 15.20.2793.17; Mon, 9 Mar 2020 19:32:04 +0000
 Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::ed46:4337:c1cd:1887]) by VI1PR05MB4141.eurprd05.prod.outlook.com
  ([fe80::ed46:4337:c1cd:1887%7]) with mapi id 15.20.2793.013; Mon, 9 Mar 2020
- 19:30:16 +0000
-Date:   Mon, 9 Mar 2020 16:30:12 -0300
+ 19:32:04 +0000
+Date:   Mon, 9 Mar 2020 16:32:00 -0300
 From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH] RDMA/ucma: Put a lock around every call to the rdma_cm
- layer
-Message-ID: <20200309193012.GA13183@mellanox.com>
-References: <20200218210432.GA31966@ziepe.ca>
- <20200219060701.GG1075@sol.localdomain>
- <20200219202221.GN23930@mellanox.com>
- <20200307204153.GJ15444@sol.localdomain>
+To:     linux-rdma@vger.kernel.org, Parav Pandit <parav@mellanox.com>
+Cc:     syzbot+ab4dae63f7d310641ded@syzkaller.appspotmail.com
+Subject: [PATCH rc] RDMA/core: Fix missing error check on dev_set_name()
+Message-ID: <20200309193200.GA10633@ziepe.ca>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200307204153.GJ15444@sol.localdomain>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: MN2PR19CA0036.namprd19.prod.outlook.com
- (2603:10b6:208:178::49) To VI1PR05MB4141.eurprd05.prod.outlook.com
+X-ClientProxiedBy: MN2PR15CA0029.namprd15.prod.outlook.com
+ (2603:10b6:208:1b4::42) To VI1PR05MB4141.eurprd05.prod.outlook.com
  (2603:10a6:803:44::15)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR19CA0036.namprd19.prod.outlook.com (2603:10b6:208:178::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.11 via Frontend Transport; Mon, 9 Mar 2020 19:30:15 +0000
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jBO6O-0002hp-86; Mon, 09 Mar 2020 16:30:12 -0300
+Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR15CA0029.namprd15.prod.outlook.com (2603:10b6:208:1b4::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.17 via Frontend Transport; Mon, 9 Mar 2020 19:32:03 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jBO88-0002nC-HD; Mon, 09 Mar 2020 16:32:00 -0300
 X-Originating-IP: [142.68.57.212]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 7d72de7a-df73-4ad7-c5f6-08d7c4604b81
-X-MS-TrafficTypeDiagnostic: VI1PR05MB5118:
-X-Microsoft-Antispam-PRVS: <VI1PR05MB5118456CBD1F51518100D2D2CFFE0@VI1PR05MB5118.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: e0d3e921-2cbb-4bed-87fb-08d7c4608bdb
+X-MS-TrafficTypeDiagnostic: VI1PR05MB5118:|VI1PR05MB5118:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR05MB51180C3165F403042D4F60B4CFFE0@VI1PR05MB5118.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:923;
 X-Forefront-PRVS: 0337AFFE9A
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10001)(10009020)(4636009)(396003)(366004)(346002)(39860400002)(136003)(376002)(199004)(189003)(66946007)(26005)(33656002)(36756003)(1076003)(4326008)(81166006)(81156014)(66476007)(8676002)(66556008)(6916009)(2616005)(9746002)(316002)(2906002)(9786002)(966005)(8936002)(5660300002)(186003)(52116002)(478600001)(86362001)(99710200001)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5118;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(366004)(346002)(39860400002)(136003)(376002)(199004)(189003)(66946007)(26005)(33656002)(36756003)(1076003)(4326008)(81166006)(81156014)(66476007)(6636002)(9686003)(8676002)(66556008)(9746002)(316002)(2906002)(9786002)(6862004)(8936002)(5660300002)(186003)(52116002)(478600001)(86362001)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5118;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 Received-SPF: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FkjgTkN9JtnfCgWAHCIRdzyv4JIulmbFJa4GScYLQKqK+n0wu+N3geUhNdGLB0cCpf6+c1sMhiFSwBYaZe+I5IDyTRsecOKRmtf5ydjbo5ZEKOfY0JSXyzIbYAaRZEB61tuZzY3Ai5rSCXjA9ol9xg0YE3HK19NPJM3z/GAV/HIgRsgUhHRZdhDS2lr3gukrF11iviqDl6VpaLZ5QFyOnzQSPZEiu+BxY7opq5RM3Yn5nVS9jrC4W5i3Q9sMyfxskRDY3nlTbcFG0ohicnpoY6aPuet8NOIMNWoltDVJP+ASejVlxRDIJadH2MSSOrFLcBij649o9HeQD+1ltP7TGNrm6PmgUPX3C6SU1owNXpBbfZqo2X4o0ELHacOTdGXsDQzN0G9gicXvY64waH0yITy4jJPHvE/d3WLnQm9sD8chKLvNWcTIttvB89wZDsc9Fudk1iSSo4HIe5SuTmHh+qU0Cv1sU0c0hYqTgOJomJ1tW3cc2zf++WRm6Qyi3ZIYCyVcfDERyUVWQJ9bxT9QJUnipZlKWb0nBGUBcOQ1I507eRe3t0Qkk33/2aAiDEeWAMe67JlqX6FdE4jHj1etgaRG/pqu8ZezFDeDAfIt/Wns5FEN8IqaX6hXmv296/8SyhdlpITyn/DTCISQySatGHC4AlolGZ0xa/Y/hxaMJPp+Y87Z4ZXAu2i0RzGfEYw5
-X-MS-Exchange-AntiSpam-MessageData: DlLZBc/V1qAqAhOvDZFaSxOr4aDBsRfzwIzUpq8ZfArf5sJG6QyYPxeddnKZpfTXMSuk9jaFuMk38jOz+zZucSO5qsb4ye18DT84kepXdPaODbeGxMRwQn/mq1rM+7oYGUUrWYzzOqs7jadaQOtFEQ==
+X-Microsoft-Antispam-Message-Info: Sn6aqel9QstA9jWy8k2hf3uMjFbZg2hKzmvyyN3oEMIJra+B02NirMxtJYWVJ3u3V0SQRW42Ifz7+B6iTtENl/bD6lcv3V4V9SjY8jL58r4mNueSEoD/wZraX0si2uDRP2V1KpeQK7KwRTxd/xSctHFzHNV43PCH21I/ypRL8Mo9XECiF02nnqFUr71pRYHqjpy7Vx9EAKVO32+NR4vBs3SXI3aaXag4sMknan1l9p1JKpgMdr88CPX7rp44T9fb2ZSysElIypmOch5r30EBMwzMzEoKNm9gOIChlEhmcmK1XATsKTqqxxUdg7IPl79Po5XIoKvxSG3WSVyqaBeMA/rwvsf9RbRbbL05d0OjT9RE6ccnfT70/EfNWpNlZzKNLj29ALavyCxkej/DhLGE2FwWQZUQYuGZ8fmdajVvyg5akc/dGpnU3iOPbEDHmqXoDJ/DMJ8k86pkfNhoxUgPv0kvjN8NfWtkqkbdzLE2c4Jy9MzIJUNfZKorIeu1ZsU3
+X-MS-Exchange-AntiSpam-MessageData: GJZTEQuWI6uFhw0K6qVaIZWxUpOZCKe8dK2kgJiSkisBtFig2TIqaBVLkI+ByIdxlwZ3xJmZgns3wcS+91xeR2NCwQ4dOp+JewZnLHneCL5ARPW9UD6tzjRZ6o+mu5B5xRmghbxQEBbM1vKNgHFOrQ==
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d72de7a-df73-4ad7-c5f6-08d7c4604b81
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2020 19:30:16.2602
+X-MS-Exchange-CrossTenant-Network-Message-Id: e0d3e921-2cbb-4bed-87fb-08d7c4608bdb
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2020 19:32:04.1747
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TMGcJfWR1XF80ymmWKMQtZVRLjAu9agjcEUg9CmgmHBAM482DZHOBEz0NTBoLajEvBYgNnlOMZOnhuOT8fUWgg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: t2XP+NW5pFOMeUSoIyQIt1hLxBENbnC59VN4N6xId09P6oOY4DR2eehh1UKiecL6h9Lt9cyigNiWLzRv7R7kaQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5118
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Mar 07, 2020 at 12:41:53PM -0800, Eric Biggers wrote:
-> On Wed, Feb 19, 2020 at 08:22:25PM +0000, Jason Gunthorpe wrote:
-> > On Tue, Feb 18, 2020 at 10:07:01PM -0800, Eric Biggers wrote:
-> > > > these 11 lets include them as  well. I wasn't able to find a way to
-> > > > search for things, this list is from your past email, thanks.
-> > > > 
-> > > 
-> > > Unfortunately I haven't had time to work on syzkaller bugs lately, so I can't
-> > > provide an updated list until I go through the long backlog of bugs.
-> > 
-> > Ok
-> 
-> Here's an updated list:
-> 
-> --------------------------------------------------------------------------------
-> Title:              general protection fault in rds_ib_add_one
-> Last occurred:      0 days ago
-> Reported:           12 days ago
-> Branches:           Mainline and others
-> Dashboard link:     https://syzkaller.appspot.com/bug?id=15f96d171c64999196ac7db3de107f24b9182a8e
-> Original thread:    https://lore.kernel.org/lkml/000000000000b9b7d4059f4e4ac7@google.com/T/#u
-> 
-> This bug has a C reproducer.
+If name memory allocation fails the name will be left empty and
+device_add_one() will crash:
 
-Looks like this is fixed by Hillf
+  kobject: (0000000004952746): attempted to be registered with empty name!
+  WARNING: CPU: 0 PID: 329 at lib/kobject.c:234 kobject_add_internal+0x7ac/0x9a0 lib/kobject.c:234
+  Kernel panic - not syncing: panic_on_warn set ...
+  CPU: 0 PID: 329 Comm: syz-executor.5 Not tainted 5.6.0-rc2-syzkaller #0
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+  Call Trace:
+   __dump_stack lib/dump_stack.c:77 [inline]
+   dump_stack+0x197/0x210 lib/dump_stack.c:118
+   panic+0x2e3/0x75c kernel/panic.c:221
+   __warn.cold+0x2f/0x3e kernel/panic.c:582
+   report_bug+0x289/0x300 lib/bug.c:195
+   fixup_bug arch/x86/kernel/traps.c:174 [inline]
+   fixup_bug arch/x86/kernel/traps.c:169 [inline]
+   do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:267
+   do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:286
+   invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+  RIP: 0010:kobject_add_internal+0x7ac/0x9a0 lib/kobject.c:234
+  Code: 1a 98 ca f9 e9 f0 f8 ff ff 4c 89 f7 e8 6d 98 ca f9 e9 95 f9 ff ff e8 c3 f0 8b f9 4c 89 e6 48 c7 c7 a0 0e 1a 89 e8 e3 41 5c f9 <0f> 0b 41 bd ea ff ff ff e9 52 ff ff ff e8 a2 f0 8b f9 0f 0b e8 9b
+  RSP: 0018:ffffc90005b27908 EFLAGS: 00010286
+  RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+  RDX: 0000000000040000 RSI: ffffffff815eae46 RDI: fffff52000b64f13
+  RBP: ffffc90005b27960 R08: ffff88805aeba480 R09: ffffed1015d06659
+  R10: ffffed1015d06658 R11: ffff8880ae8332c7 R12: ffff8880a37fd000
+  R13: 0000000000000000 R14: ffff888096691780 R15: 0000000000000001
+   kobject_add_varg lib/kobject.c:390 [inline]
+   kobject_add+0x150/0x1c0 lib/kobject.c:442
+   device_add+0x3be/0x1d00 drivers/base/core.c:2412
+   add_one_compat_dev drivers/infiniband/core/device.c:901 [inline]
+   add_one_compat_dev+0x46a/0x7e0 drivers/infiniband/core/device.c:857
+   rdma_dev_init_net+0x2eb/0x490 drivers/infiniband/core/device.c:1120
+   ops_init+0xb3/0x420 net/core/net_namespace.c:137
+   setup_net+0x2d5/0x8b0 net/core/net_namespace.c:327
+   copy_net_ns+0x29e/0x5a0 net/core/net_namespace.c:468
+   create_new_namespaces+0x403/0xb50 kernel/nsproxy.c:108
+   unshare_nsproxy_namespaces+0xc2/0x200 kernel/nsproxy.c:229
+   ksys_unshare+0x444/0x980 kernel/fork.c:2955
+   __do_sys_unshare kernel/fork.c:3023 [inline]
+   __se_sys_unshare kernel/fork.c:3021 [inline]
+   __x64_sys_unshare+0x31/0x40 kernel/fork.c:3021
+   do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+   entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-> --------------------------------------------------------------------------------
-> Title:              INFO: trying to register non-static key in xa_destroy
-> Last occurred:      0 days ago
-> Reported:           11 days ago
-> Branches:           Mainline and others
-> Dashboard link:     https://syzkaller.appspot.com/bug?id=c0a75a31c5fa84e6e5d3131fd98a5b56e2141b9a
-> Original thread:    https://lore.kernel.org/lkml/00000000000046895c059f5cae37@google.com/T/#u
-> 
-> This bug has a C reproducer.
+Cc: stable@kernel.org
+Fixes: 4e0f7b907072 ("RDMA/core: Implement compat device/sysfs tree in net namespace")
+Reported-by: syzbot+ab4dae63f7d310641ded@syzkaller.appspotmail.com
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+---
+ drivers/infiniband/core/device.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Fixed in v5.6-rc5
-
-> --------------------------------------------------------------------------------
-> Title:              general protection fault in nldev_stat_set_doit
-> Last occurred:      4 days ago
-> Reported:           11 days ago
-> Branches:           Mainline and others
-> Dashboard link:     https://syzkaller.appspot.com/bug?id=1fbcb607cf49d8b5a3c8e056971f045f9bfa34f3
-> Original thread:    https://lore.kernel.org/lkml/0000000000004aa34d059f5caedc@google.com/T/#u
-> 
-> This bug has a C reproducer.
-
-Fixed in v5.6-rc5
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index f6c255202d7fd4..d0b3d35ad3e435 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -896,7 +896,9 @@ static int add_one_compat_dev(struct ib_device *device,
+ 	cdev->dev.parent = device->dev.parent;
+ 	rdma_init_coredev(cdev, device, read_pnet(&rnet->net));
+ 	cdev->dev.release = compatdev_release;
+-	dev_set_name(&cdev->dev, "%s", dev_name(&device->dev));
++	ret = dev_set_name(&cdev->dev, "%s", dev_name(&device->dev));
++	if (ret)
++		goto add_err;
  
-> --------------------------------------------------------------------------------
-> Title:              BUG: corrupted list in _cma_attach_to_dev
-> Last occurred:      2 days ago
-> Reported:           6 days ago
-> Branches:           Mainline
-> Dashboard link:     https://syzkaller.appspot.com/bug?id=067b1e60bab1b617c1208f078cd76c9087f070e0
-> Original thread:    https://lore.kernel.org/lkml/000000000000cfed90059fcfdccb@google.com/T/#u
-> 
-> This bug has a C reproducer.
+ 	ret = device_add(&cdev->dev);
+ 	if (ret)
+-- 
+2.25.1
 
-Most likely fixed by this patch, syzkaller is re-testing
-
-> --------------------------------------------------------------------------------
-> Title:              WARNING: kobject bug in ib_register_device
-> Last occurred:      1 day ago
-> Reported:           12 days ago
-> Branches:           Mainline and others
-> Dashboard link:     https://syzkaller.appspot.com/bug?id=805ad726feb6910e35088ae7bbe61f4125e573b7
-> Original thread:    https://lore.kernel.org/lkml/000000000000026ac5059f4e27f3@google.com/T/#u
-> 
-> This bug has a C reproducer.
-
-Oh, this wasn't sent to rdma, yes, obvious rdma bug, made a patch
-
-> --------------------------------------------------------------------------------
-> Title:              BUG: corrupted list in cma_listen_on_dev
-> Last occurred:      4 days ago
-> Reported:           4 days ago
-> Branches:           Mainline
-> Dashboard link:     https://syzkaller.appspot.com/bug?id=e8fcdea4e5a443c597c94fb6eda7d6646eafe6a2
-> Original thread:    https://lore.kernel.org/lkml/00000000000020c5d205a001c308@google.com/T/#u
-> 
-> This bug has a C reproducer.
-
-Fixed by this patch, syzkaller confirmed, now duped to another bug
-
-> --------------------------------------------------------------------------------
-> Title:              KASAN: use-after-free Read in rxe_query_port
-> Last occurred:      0 days ago
-> Reported:           6 days ago
-> Branches:           Mainline and others
-> Dashboard link:     https://syzkaller.appspot.com/bug?id=f00443e97b44c466dc75edc31601110bf62a6f69
-> Original thread:    https://lore.kernel.org/lkml/0000000000000c9e12059fc941ff@google.com/T/#u
-> 
-> Unfortunately, this bug does not have a reproducer.
-
-Perhaps Yanjun Zhu will look at this
-
-> --------------------------------------------------------------------------------
-> Title:              WARNING in ib_free_port_attrs
-> Last occurred:      1 day ago
-> Reported:           6 days ago
-> Branches:           net and net-next
-> Dashboard link:     https://syzkaller.appspot.com/bug?id=4ec089798f282f2d2c3219151e420ed1ba10120d
-> Original thread:    https://lore.kernel.org/lkml/000000000000460717059fd83734@google.com/T/#u
-> 
-> Unfortunately, this bug does not have a reproducer.
-
-Parav and I looked at this for a while and couldn't figure how how it
-is possible. Hoping for a reproducer
-
-> --------------------------------------------------------------------------------
-> Title:              INFO: task hung in rdma_destroy_id
-> Last occurred:      3 days ago
-> Reported:           5 days ago
-> Branches:           Mainline and others
-> Dashboard link:     https://syzkaller.appspot.com/bug?id=e89b86960c3636f57dbb16bb25a829377ebdf43d
-> Original thread:    https://lore.kernel.org/lkml/00000000000059e701059fe3ec2f@google.com/T/#u
-> 
-> Unfortunately, this bug does not have a reproducer.
-
-Most likely fixed by this patch
-
-> --------------------------------------------------------------------------------
-> Title:              general protection fault in kobject_get
-> Last occurred:      6 days ago
-> Reported:           6 days ago
-> Branches:           net-next
-> Dashboard link:     https://syzkaller.appspot.com/bug?id=f8e0f99b310558dd489cc7427711a640c10b93e5
-> Original thread:    https://lore.kernel.org/lkml/000000000000c4b371059fd83a92@google.com/T/#u
-> 
-> Unfortunately, this bug does not have a reproducer.
-
-Really surprised no reproducer, this is not a race bug. I wrote a fix,
-it is being tested now.
-
-> --------------------------------------------------------------------------------
-> Title:              WARNING: kobject bug in add_one_compat_dev
-> Last occurred:      8 days ago
-> Reported:           10 days ago
-> Branches:           linux-next and net-next
-> Dashboard link:     https://syzkaller.appspot.com/bug?id=f8880fdc3cd0ba268421672360cf79bfa7fa4272
-> Original thread:    https://lore.kernel.org/lkml/0000000000005f77d6059f888f2e@google.com/T/#u
-> 
-> Unfortunately, this bug does not have a reproducer.
-
-Hmm. I wonder if this is because 'dev_set_name' failed and we ignored
-it? Is that possible with this log? Lets fix that at least - I have no
-other idea how we could get an empty name.
-
-> --------------------------------------------------------------------------------
-> Title:              WARNING in srp_remove_one
-> Last occurred:      9 days ago
-> Reported:           6 days ago
-> Branches:           Mainline
-> Dashboard link:     https://syzkaller.appspot.com/bug?id=16a5827f8f6f6ef0967e6492ffb2e2ca54c8c0fb
-> Original thread:    https://lore.kernel.org/lkml/000000000000144d79059fc9415d@google.com/T/#u
-> 
-> Unfortunately, this bug does not have a reproducer.
-
-This looks a lot like 'WARNING in ib_free_port_attrs' - I don't have a
-clear idea how these sysfs errors are possible. I wonder if there is
-something strange going on in sysfs land during net ns actions?
-
-Thanks,
-Jason
