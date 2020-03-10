@@ -2,126 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F38817F216
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2020 09:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D043717F32B
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2020 10:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726389AbgCJIlT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Mar 2020 04:41:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55138 "EHLO mail.kernel.org"
+        id S1726244AbgCJJOn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Mar 2020 05:14:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726220AbgCJIlT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Mar 2020 04:41:19 -0400
+        id S1726195AbgCJJOn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Mar 2020 05:14:43 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93B53208E4;
-        Tue, 10 Mar 2020 08:41:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F64C20674;
+        Tue, 10 Mar 2020 09:14:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583829678;
-        bh=BiMJEpMfh1Tx92bdI8JmSifYzqdu39C/bCNM7vQZeAY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lZGmVB06eBgUI923NR/mmloT75tx2ZjUyBAb1T9R3UvBhnslzyauj918ceaynRwNo
-         V9K7Q1zfcj1LSHLcl7iDKsbAWBay402z+V4Lc82iHRx227RezOGt6P7GbrGrSzdwyb
-         RzUihZekc3tBn1pGaTCnaerRuh5u8ndYwD6qz3+Y=
-Date:   Tue, 10 Mar 2020 10:41:15 +0200
+        s=default; t=1583831682;
+        bh=Wi6CL6iB7RwT0hh+gpEgbzB/O/wFTDNg36YiiDVjK5M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=vSB/ejyXc+jE1iES8JJPvEKTB+3tk3Yi3JlMQbNr1iARpr5TCrxpIJE6bkCSM2Y3M
+         QcHeqxVRrAx4K+pPjZYYGqIbOf10YoJ9tnuBY/U0zmMisXTTSC5K4bmWmTzls6b3df
+         /Gt6l3s53xwKtF+vW4Wxh0p4r2URxaGS5HjR0OIg=
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Yanjun Zhu <yanjunz@mellanox.com>
-Cc:     Jason Gunthorpe <jgg@mellanox.com>,
-        syzbot <syzbot+e11efb687f5ab7f01f3d@syzkaller.appspotmail.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Moni Shoua <monis@mellanox.com>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
-Subject: Re: KASAN: use-after-free Read in rxe_query_port
-Message-ID: <20200310084115.GB242734@unreal>
-References: <0000000000000c9e12059fc941ff@google.com>
- <20200309173451.GA15143@mellanox.com>
- <20200310073936.GF172334@unreal>
- <AM6PR05MB50143279152CCAB54786D930D8FF0@AM6PR05MB5014.eurprd05.prod.outlook.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Gal Pressman <galpress@amazon.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Mark Zhang <markz@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: [PATCH rdma-next v1 00/11] Add Enhanced Connection Established (ECE)
+Date:   Tue, 10 Mar 2020 11:14:27 +0200
+Message-Id: <20200310091438.248429-1-leon@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM6PR05MB50143279152CCAB54786D930D8FF0@AM6PR05MB5014.eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 10, 2020 at 08:21:29AM +0000, Yanjun Zhu wrote:
-> Hi, Leon
->
-> Thanks. From the patch https://lore.kernel.org/netdev/20200306134518.84416-1-kgraul@linux.ibm.com,
->
-> @@ -240,6 +240,9 @@ static void smc_ib_port_event_work(struct work_struct *work)
->  		work, struct smc_ib_device, port_event_work);
->  	u8 port_idx;
->
-> +	if (list_empty(&smcibdev->list))
-> +		return;
-> +
->  	for_each_set_bit(port_idx, &smcibdev->port_event_mask, SMC_MAX_PORTS) {
->  		smc_ib_remember_port_attr(smcibdev, port_idx + 1);
->  		clear_bit(port_idx, &smcibdev->port_event_mask);
->
-> This block is try to check smcibdev->list to avoid ib_query_port after the NIC is down.
-> But smcibdev->list is used by spinlock when add and del.
-> "
-> ...
-> 549         spin_lock(&smc_ib_devices.lock);
-> 550         list_add_tail(&smcibdev->list, &smc_ib_devices.list);
-> 551         spin_unlock(&smc_ib_devices.lock);
-> ...
->
-> 579         spin_lock(&smc_ib_devices.lock);
-> 580         list_del_init(&smcibdev->list); /* remove from smc_ib_devices */
-> 581         spin_unlock(&smc_ib_devices.lock);
-> ...
-> "
-> So in the above block, is it necessary to protect  smcibdev->list when it is accessed?
-> Please comment on it.
+From: Leon Romanovsky <leonro@mellanox.com>
 
-It is worth to read whole thread and not first email only.
-https://lore.kernel.org/netdev/20200308150107.GC11496@unreal/
+Changelog:
+ v1: Dropped field_avail patch in favor of mass conversion to use function
+     which already exists in the kernel code.
+ v0: https://lore.kernel.org/lkml/20200305150105.207959-1-leon@kernel.org
+
+Enhanced Connection Established or ECE is new negotiation scheme
+introduced in IBTA v1.4 to exchange extra information about nodes
+capabilities and later negotiate them at the connection establishment
+phase.
+
+The RDMA-CM messages (REQ, REP, SIDR_REQ and SIDR_REP) were extended
+to carry two fields, one new and another gained new functionality:
+ * VendorID is a new field that indicates that common subset of vendor
+   option bits are supported as indicated by that VendorID.
+ * AttributeModifier already exists, but overloaded to indicate which
+   vendor options are supported by this VendorID.
+
+This is kernel part of such functionality which is responsible to get data
+from librdmacm and properly create and handle RDMA-CM messages.
 
 Thanks
 
->
-> Thanks a lot.
-> Zhu Yanjun
->
-> -----Original Message-----
-> From: Leon Romanovsky <leon@kernel.org>
-> Sent: Tuesday, March 10, 2020 3:40 PM
-> To: Jason Gunthorpe <jgg@mellanox.com>
-> Cc: syzbot <syzbot+e11efb687f5ab7f01f3d@syzkaller.appspotmail.com>; dledford@redhat.com; linux-kernel@vger.kernel.org; linux-rdma@vger.kernel.org; Moni Shoua <monis@mellanox.com>; syzkaller-bugs@googlegroups.com; Yanjun Zhu <yanjunz@mellanox.com>
-> Subject: Re: KASAN: use-after-free Read in rxe_query_port
->
-> On Mon, Mar 09, 2020 at 02:34:51PM -0300, Jason Gunthorpe wrote:
-> > On Sun, Mar 01, 2020 at 03:20:12AM -0800, syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following crash on:
-> > >
-> > > HEAD commit:    f8788d86 Linux 5.6-rc3
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=132d3645e00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=9833e26bab355358
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=e11efb687f5ab7f01f3d
-> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > >
-> > > Unfortunately, I don't have any reproducer for this crash yet.
-> > >
-> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > Reported-by: syzbot+e11efb687f5ab7f01f3d@syzkaller.appspotmail.com
-> >
-> > Yanjun, do you have some idea what this could be?
->
-> See this fix in the net mailing list.
-> https://lore.kernel.org/netdev/20200306134518.84416-1-kgraul@linux.ibm.com
->
-> Thanks
->
-> >
-> > Thanks,
-> > Jason
+Leon Romanovsky (11):
+  RDMA/cm: Add Enhanced Connection Establishment (ECE) bits
+  RDMA/mlx4: Delete duplicated offsetofend implementation
+  RDMA/efa: Use in-kernel offsetofend() to check field availability
+  RDMA/mlx5: Use offsetofend() instead of duplicated variant
+  RDMA/cm: Delete not implemented CM peer to peer communication
+  RDMA/uapi: Add ECE definitions to UCMA
+  RDMA/ucma: Extend ucma_connect to receive ECE parameters
+  RDMA/ucma: Deliver ECE parameters through UCMA events
+  RDMA/cm: Send and receive ECE parameter over the wire
+  RDMA/cma: Connect ECE to rdma_accept
+  RDMA/cma: Provide ECE reject reason
+
+ drivers/infiniband/core/cm.c          | 48 ++++++++++++++++++------
+ drivers/infiniband/core/cma.c         | 54 ++++++++++++++++++++++++---
+ drivers/infiniband/core/cma_priv.h    |  1 +
+ drivers/infiniband/core/ucma.c        | 40 ++++++++++++++++----
+ drivers/infiniband/hw/efa/efa_verbs.c |  7 +---
+ drivers/infiniband/hw/mlx4/main.c     |  9 ++---
+ drivers/infiniband/hw/mlx5/main.c     | 42 ++++++++++-----------
+ drivers/infiniband/hw/mlx5/mlx5_ib.h  | 16 +++-----
+ include/rdma/ib_cm.h                  | 11 +++++-
+ include/rdma/ibta_vol1_c12.h          |  6 +++
+ include/rdma/rdma_cm.h                | 28 ++++++++++++--
+ include/uapi/rdma/rdma_user_cm.h      | 15 +++++++-
+ 12 files changed, 203 insertions(+), 74 deletions(-)
+
+--
+2.24.1
+
