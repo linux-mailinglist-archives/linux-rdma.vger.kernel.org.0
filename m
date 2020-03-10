@@ -2,39 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8F617F36C
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2020 10:25:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C6917F372
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2020 10:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgCJJZv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Mar 2020 05:25:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56908 "EHLO mail.kernel.org"
+        id S1726325AbgCJJZy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Mar 2020 05:25:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726202AbgCJJZu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Mar 2020 05:25:50 -0400
+        id S1726353AbgCJJZx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Mar 2020 05:25:53 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 80C612051A;
-        Tue, 10 Mar 2020 09:25:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC20024681;
+        Tue, 10 Mar 2020 09:25:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583832350;
-        bh=PSPfwum5/x4dNcsftF0CHx3K9wHY9pRGc4cv27myCYc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=1TSF8fsOWygZ83JJvs6lWxRcq2lcTdrNNpU3RwnzrXuXF0l0SHHWY0eLpwIhSvuLe
-         9avHWLhDV7S9XZ1AHPoX4bCAIDiacRh7TKu67cR49sU6LTImXm/QJGy5AJ4yzbJm9c
-         dun0j/dQIVGbcU9ueaI9DN6egBODRv4gYe8GaJU0=
+        s=default; t=1583832353;
+        bh=jbe9gQWS+pR8frnf2g+TsUntqed43HTOxvl4JNm6eQI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=DW+asawUc+DphcgKC47kjKvUeEOHEx7HQZiGiV4VA2M+XuAQR61ZSxBcJI9l9Cwkn
+         cMnWN4Y6uR9HBeAMhBoTy4w5aZ5o5k/MJ7rhFO1nePbzXL41LpW7Vx5c8YwD8NeYny
+         iBmph/gAXqywQzqwFZEbhT7gzoH1l7R69fInY+NM=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        Haggai Eran <haggaie@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Sean Hefty <sean.hefty@intel.com>
-Subject: [PATCH rdma-next 00/15] Fix locking around cm_id.state in the ib_cm
-Date:   Tue, 10 Mar 2020 11:25:30 +0200
-Message-Id: <20200310092545.251365-1-leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, Sean Hefty <sean.hefty@intel.com>
+Subject: [PATCH rdma-next 01/15] RDMA/cm: Fix ordering of xa_alloc_cyclic() in ib_create_cm_id()
+Date:   Tue, 10 Mar 2020 11:25:31 +0200
+Message-Id: <20200310092545.251365-2-leon@kernel.org>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200310092545.251365-1-leon@kernel.org>
+References: <20200310092545.251365-1-leon@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
@@ -42,69 +40,89 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-From Jason:
+xa_alloc_cyclic() is a SMP release to be paired with some later acquire
+during xa_load() as part of cm_acquire_id().
 
-cm_id.state is a non-atomic value that must always be read and written
-under lock, or while the thread has the only pointer to the cm_id.
+As such, xa_alloc_cyclic() must be done after the cm_id is fully
+initialized, in particular, it absolutely must be after the
+refcount_set(), otherwise the refcount_inc() in cm_acquire_id() may not
+see the set.
 
-Critically, during MAD handling the cm_id.state is used to control when
-MAD handlers can run, and in turn what data they can touch. Without
-locking, an assignment to state can immediately allow concurrent MAD
-handlers to execute, potentially creating a mess.
+As there are several cases where a reader will be able to use the
+id.local_id after cm_acquire_id in the IB_CM_IDLE state there needs to be
+an unfortunate split into a NULL allocate and a finalizing xa_store.
 
-Several of these cases only risk load/store tearing, but create very
-confusing code. For instance changing the state from IB_CM_IDLE to
-IB_CM_LISTEN doesn't allow any MAD handlers to run in either state, but a
-superficial audit would suggest that it is not locked properly.
+Fixes: a977049dacde ("[PATCH] IB: Add the kernel CM implementation")
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+---
+ drivers/infiniband/core/cm.c | 27 +++++++++++----------------
+ 1 file changed, 11 insertions(+), 16 deletions(-)
 
-This loose methodology has allowed two bugs to creep in. After creating an
-ID the code did not lock the state transition, apparently mistakenly
-assuming that the new ID could not be used concurrently. However, the ID
-is immediately placed in the xarray and so a carefully crafted network
-sequence could trigger races with the unlocked stores.
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index c9bd9589bd5a..b1fccbf6ebd8 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -575,18 +575,6 @@ static int cm_init_av_by_path(struct sa_path_rec *path,
+ 	return 0;
+ }
 
-The main solution to many of these problems is to use the xarray to create
-a two stage add - the first reserves the ID and the second publishes the
-pointer. The second stage is either omitted entirely or moved after the
-newly created ID is setup.
+-static int cm_alloc_id(struct cm_id_private *cm_id_priv)
+-{
+-	int err;
+-	u32 id;
+-
+-	err = xa_alloc_cyclic_irq(&cm.local_id_table, &id, cm_id_priv,
+-			xa_limit_32b, &cm.local_id_next, GFP_KERNEL);
+-
+-	cm_id_priv->id.local_id = (__force __be32)id ^ cm.random_id_operand;
+-	return err;
+-}
+-
+ static u32 cm_local_id(__be32 local_id)
+ {
+ 	return (__force u32) (local_id ^ cm.random_id_operand);
+@@ -828,6 +816,7 @@ struct ib_cm_id *ib_create_cm_id(struct ib_device *device,
+ 				 void *context)
+ {
+ 	struct cm_id_private *cm_id_priv;
++	u32 id;
+ 	int ret;
 
-Where it is trivial to do so other places directly put the state
-manipulation under lock, or add an assertion that it is, in fact, under
-lock.
+ 	cm_id_priv = kzalloc(sizeof *cm_id_priv, GFP_KERNEL);
+@@ -839,9 +828,6 @@ struct ib_cm_id *ib_create_cm_id(struct ib_device *device,
+ 	cm_id_priv->id.cm_handler = cm_handler;
+ 	cm_id_priv->id.context = context;
+ 	cm_id_priv->id.remote_cm_qpn = 1;
+-	ret = cm_alloc_id(cm_id_priv);
+-	if (ret)
+-		goto error;
 
-This also removes a number of places where the state is being read under
-lock, then the lock dropped, reacquired and state tested again.
+ 	spin_lock_init(&cm_id_priv->lock);
+ 	init_completion(&cm_id_priv->comp);
+@@ -850,11 +836,20 @@ struct ib_cm_id *ib_create_cm_id(struct ib_device *device,
+ 	INIT_LIST_HEAD(&cm_id_priv->altr_list);
+ 	atomic_set(&cm_id_priv->work_count, -1);
+ 	refcount_set(&cm_id_priv->refcount, 1);
++
++	ret = xa_alloc_cyclic_irq(&cm.local_id_table, &id, NULL, xa_limit_32b,
++				  &cm.local_id_next, GFP_KERNEL);
++	if (ret)
++		goto error;
++	cm_id_priv->id.local_id = (__force __be32)id ^ cm.random_id_operand;
++	xa_store_irq(&cm.local_id_table, cm_local_id(cm_id_priv->id.local_id),
++		     cm_id_priv, GFP_KERNEL);
++
+ 	return &cm_id_priv->id;
 
-There remain other issues related to missing locking on cm_id data.
-
-Thanks
-
-------------------------------------------------------------------------
-It is based on rdma-next + rdma-rc patch c14dfddbd869
-("RMDA/cm: Fix missing ib_cm_destroy_id() in ib_cm_insert_listen()")
-
-Jason Gunthorpe (15):
-  RDMA/cm: Fix ordering of xa_alloc_cyclic() in ib_create_cm_id()
-  RDMA/cm: Fix checking for allowed duplicate listens
-  RDMA/cm: Remove a race freeing timewait_info
-  RDMA/cm: Make the destroy_id flow more robust
-  RDMA/cm: Simplify establishing a listen cm_id
-  RDMA/cm: Read id.state under lock when doing pr_debug()
-  RDMA/cm: Make it clear that there is no concurrency in
-    cm_sidr_req_handler()
-  RDMA/cm: Make it clearer how concurrency works in cm_req_handler()
-  RDMA/cm: Add missing locking around id.state in cm_dup_req_handler
-  RDMA/cm: Add some lockdep assertions for cm_id_priv->lock
-  RDMA/cm: Allow ib_send_cm_dreq() to be done under lock
-  RDMA/cm: Allow ib_send_cm_drep() to be done under lock
-  RDMA/cm: Allow ib_send_cm_rej() to be done under lock
-  RDMA/cm: Allow ib_send_cm_sidr_rep() to be done under lock
-  RDMA/cm: Make sure the cm_id is in the IB_CM_IDLE state in destroy
-
- drivers/infiniband/core/cm.c | 732 ++++++++++++++++++++---------------
- 1 file changed, 420 insertions(+), 312 deletions(-)
+ error:
+ 	kfree(cm_id_priv);
+-	return ERR_PTR(-ENOMEM);
++	return ERR_PTR(ret);
+ }
+ EXPORT_SYMBOL(ib_create_cm_id);
 
 --
 2.24.1
