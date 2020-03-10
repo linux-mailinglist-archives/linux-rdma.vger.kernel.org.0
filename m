@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF36C17F1DB
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2020 09:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFEB17F1DC
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2020 09:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbgCJIXS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Mar 2020 04:23:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44892 "EHLO mail.kernel.org"
+        id S1726420AbgCJIXV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Mar 2020 04:23:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725919AbgCJIXS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Mar 2020 04:23:18 -0400
+        id S1725919AbgCJIXV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Mar 2020 04:23:21 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8298A2467D;
-        Tue, 10 Mar 2020 08:23:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 921C624677;
+        Tue, 10 Mar 2020 08:23:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583828597;
-        bh=Jnb97byeJITOmW06xcELb2I6usiUHYVwx7b8vuBlZec=;
+        s=default; t=1583828600;
+        bh=efQUZgIxixWfdX4FEOTHwy1x0BrLC2a4TF0W9n7dgn0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WVKD4xMgDOfl05z74a+IgRqvEZiW9SYoPBrwKsQwQMxXbPTlbpKDo974EnHKyNKoG
-         J6oOqHua7WaN1b0+Vx9GALs4cRxgDLuulY19ve3FN1UGZ1lGXm9NHkWSPI6SV/Dwhc
-         SCDG9Vpkf01UHOGB4rseioKXZeKRMNqeWucoNJAU=
+        b=ozPo/wosLwniwPynj3+ZLw84ku8JzoRVCC2WAPEdg3tPvyTIzm+cjXcY4ejP3hvCw
+         ZXYmWs8WsETXbilRK5MbhdH7/7n40+6Csumh24upYOw9V5q9uIGgpWSPzVissJULgy
+         X+Lg3RTfHSxtbwxZUVSSOWPMj/3ABf0scnSi/XKY=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
 Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v1 11/12] RDMA/mlx5: Revise how the hysteresis scheme works for cache filling
-Date:   Tue, 10 Mar 2020 10:22:37 +0200
-Message-Id: <20200310082238.239865-12-leon@kernel.org>
+Subject: [PATCH rdma-next v1 12/12] RDMA/mlx5: Allow MRs to be created in the cache synchronously
+Date:   Tue, 10 Mar 2020 10:22:38 +0200
+Message-Id: <20200310082238.239865-13-leon@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200310082238.239865-1-leon@kernel.org>
 References: <20200310082238.239865-1-leon@kernel.org>
@@ -42,125 +42,260 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Jason Gunthorpe <jgg@mellanox.com>
 
-Currently if the work queue is running then it is in 'hysteresis' mode and
-will fill until the cache reaches the high water mark. This implicit state
-is very tricky and doesn't interact with pending very well.
+If the cache is completely out of MRs, and we are running in cache mode,
+then directly, and synchronously, create an MR that is compatible with the
+cache bucket using a sleeping mailbox command. This ensures that the
+thread that is waiting for the MR absolutely will get one.
 
-Instead of self re-scheduling the work queue after the add_keys() has
-started to create the new MR, have the queue scheduled from
-reg_mr_callback() only after the requested MR has been added.
+When a MR allocated in this way becomes freed then it is compatible with
+the cache bucket and will be recycled back into it.
 
-This avoids the bad design of an in-rush of queue'd work doing back to
-back add_keys() until EAGAIN then sleeping. The add_keys() will be paced
-one at a time as they complete, slowly filling up the cache.
-
-Also, fix pending to be only manipulated under lock.
+Deletes the very buggy ent->compl scheme to create a synchronous MR
+allocation.
 
 Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  1 +
- drivers/infiniband/hw/mlx5/mr.c      | 41 ++++++++++++++++++----------
- 2 files changed, 27 insertions(+), 15 deletions(-)
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |   1 -
+ drivers/infiniband/hw/mlx5/mr.c      | 147 ++++++++++++++++-----------
+ 2 files changed, 87 insertions(+), 61 deletions(-)
 
 diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 21345d7bafcb..20f2bfeabee4 100644
+index 20f2bfeabee4..aae88311e714 100644
 --- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
 +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -705,6 +705,7 @@ struct mlx5_cache_ent {
- 	u32			page;
+@@ -727,7 +727,6 @@ struct mlx5_cache_ent {
+ 	struct mlx5_ib_dev     *dev;
+ 	struct work_struct	work;
+ 	struct delayed_work	dwork;
+-	struct completion	compl;
+ };
  
- 	u8 disabled:1;
-+	u8 fill_to_high_water:1;
- 
- 	/*
- 	 * - available_mrs is the length of list head, ie the number of MRs
+ struct mlx5_mr_cache {
 diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 424ce3de3865..afacaf8981fa 100644
+index afacaf8981fa..a401931189b7 100644
 --- a/drivers/infiniband/hw/mlx5/mr.c
 +++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -86,6 +86,7 @@ mlx5_ib_create_mkey_cb(struct mlx5_ib_dev *dev,
- static void clean_mr(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr);
- static void dereg_mr(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr);
- static int mr_cache_max_order(struct mlx5_ib_dev *dev);
-+static void queue_adjust_cache_locked(struct mlx5_cache_ent *ent);
- 
- static bool umr_can_use_indirect_mkey(struct mlx5_ib_dev *dev)
- {
-@@ -134,11 +135,9 @@ static void create_mkey_callback(int status, struct mlx5_async_work *context)
- 	list_add_tail(&mr->list, &ent->head);
- 	ent->available_mrs++;
- 	ent->total_mrs++;
-+	/* If we are doing fill_to_high_water then keep going. */
-+	queue_adjust_cache_locked(ent);
+@@ -139,14 +139,34 @@ static void create_mkey_callback(int status, struct mlx5_async_work *context)
+ 	queue_adjust_cache_locked(ent);
  	ent->pending--;
--	/*
--	 * Creating is always done in response to some demand, so do not call
--	 * queue_adjust_cache_locked().
--	 */
  	spin_unlock_irqrestore(&ent->lock, flags);
++}
++
++static struct mlx5_ib_mr *alloc_cache_mr(struct mlx5_cache_ent *ent, void *mkc)
++{
++	struct mlx5_ib_mr *mr;
++
++	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
++	if (!mr)
++		return NULL;
++	mr->order = ent->order;
++	mr->cache_ent = ent;
++	mr->dev = ent->dev;
++
++	MLX5_SET(mkc, mkc, free, 1);
++	MLX5_SET(mkc, mkc, umr_en, 1);
++	MLX5_SET(mkc, mkc, access_mode_1_0, ent->access_mode & 0x3);
++	MLX5_SET(mkc, mkc, access_mode_4_2, (ent->access_mode >> 2) & 0x7);
  
- 	if (!completion_done(&ent->compl))
-@@ -384,11 +383,29 @@ static void queue_adjust_cache_locked(struct mlx5_cache_ent *ent)
- {
- 	lockdep_assert_held(&ent->lock);
- 
--	if (ent->disabled)
-+	if (ent->disabled || READ_ONCE(ent->dev->fill_delay))
- 		return;
--	if (ent->available_mrs < ent->limit ||
--	    ent->available_mrs > 2 * ent->limit)
-+	if (ent->available_mrs < ent->limit) {
-+		ent->fill_to_high_water = true;
-+		queue_work(ent->dev->cache.wq, &ent->work);
-+	} else if (ent->fill_to_high_water &&
-+		   ent->available_mrs + ent->pending < 2 * ent->limit) {
-+		/*
-+		 * Once we start populating due to hitting a low water mark
-+		 * continue until we pass the high water mark.
-+		 */
- 		queue_work(ent->dev->cache.wq, &ent->work);
-+	} else if (ent->available_mrs == 2 * ent->limit) {
-+		ent->fill_to_high_water = false;
-+	} else if (ent->available_mrs > 2 * ent->limit) {
-+		/* Queue deletion of excess entries */
-+		ent->fill_to_high_water = false;
-+		if (ent->pending)
-+			queue_delayed_work(ent->dev->cache.wq, &ent->dwork,
-+					   msecs_to_jiffies(1000));
-+		else
-+			queue_work(ent->dev->cache.wq, &ent->work);
-+	}
+-	if (!completion_done(&ent->compl))
+-		complete(&ent->compl);
++	MLX5_SET(mkc, mkc, qpn, 0xffffff);
++	MLX5_SET(mkc, mkc, translations_octword_size, ent->xlt);
++	MLX5_SET(mkc, mkc, log_page_size, ent->page);
++	return mr;
  }
  
- static void __cache_work_func(struct mlx5_cache_ent *ent)
-@@ -401,11 +418,11 @@ static void __cache_work_func(struct mlx5_cache_ent *ent)
- 	if (ent->disabled)
- 		goto out;
++/* Asynchronously schedule new MRs to be populated in the cache. */
+ static int add_keys(struct mlx5_cache_ent *ent, unsigned int num)
+ {
+-	int inlen = MLX5_ST_SZ_BYTES(create_mkey_in);
++	size_t inlen = MLX5_ST_SZ_BYTES(create_mkey_in);
+ 	struct mlx5_ib_mr *mr;
+ 	void *mkc;
+ 	u32 *in;
+@@ -159,25 +179,11 @@ static int add_keys(struct mlx5_cache_ent *ent, unsigned int num)
  
--	if (ent->available_mrs + ent->pending < 2 * ent->limit &&
-+	if (ent->fill_to_high_water &&
-+	    ent->available_mrs + ent->pending < 2 * ent->limit &&
- 	    !READ_ONCE(dev->fill_delay)) {
- 		spin_unlock_irq(&ent->lock);
- 		err = add_keys(ent, 1);
+ 	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
+ 	for (i = 0; i < num; i++) {
+-		mr = kzalloc(sizeof(*mr), GFP_KERNEL);
++		mr = alloc_cache_mr(ent, mkc);
+ 		if (!mr) {
+ 			err = -ENOMEM;
+ 			break;
+ 		}
+-		mr->order = ent->order;
+-		mr->cache_ent = ent;
+-		mr->dev = ent->dev;
+-
+-		MLX5_SET(mkc, mkc, free, 1);
+-		MLX5_SET(mkc, mkc, umr_en, 1);
+-		MLX5_SET(mkc, mkc, access_mode_1_0, ent->access_mode & 0x3);
+-		MLX5_SET(mkc, mkc, access_mode_4_2,
+-			 (ent->access_mode >> 2) & 0x7);
+-
+-		MLX5_SET(mkc, mkc, qpn, 0xffffff);
+-		MLX5_SET(mkc, mkc, translations_octword_size, ent->xlt);
+-		MLX5_SET(mkc, mkc, log_page_size, ent->page);
 -
  		spin_lock_irq(&ent->lock);
+ 		if (ent->pending >= MAX_PENDING_REG_MR) {
+ 			err = -EAGAIN;
+@@ -205,6 +211,44 @@ static int add_keys(struct mlx5_cache_ent *ent, unsigned int num)
+ 	return err;
+ }
+ 
++/* Synchronously create a MR in the cache */
++static struct mlx5_ib_mr *create_cache_mr(struct mlx5_cache_ent *ent)
++{
++	size_t inlen = MLX5_ST_SZ_BYTES(create_mkey_in);
++	struct mlx5_ib_mr *mr;
++	void *mkc;
++	u32 *in;
++	int err;
++
++	in = kzalloc(inlen, GFP_KERNEL);
++	if (!in)
++		return ERR_PTR(-ENOMEM);
++	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
++
++	mr = alloc_cache_mr(ent, mkc);
++	if (!mr) {
++		err = -ENOMEM;
++		goto free_in;
++	}
++
++	err = mlx5_core_create_mkey(ent->dev->mdev, &mr->mmkey, in, inlen);
++	if (err)
++		goto free_mr;
++
++	mr->mmkey.type = MLX5_MKEY_MR;
++	WRITE_ONCE(ent->dev->cache.last_add, jiffies);
++	spin_lock_irq(&ent->lock);
++	ent->total_mrs++;
++	spin_unlock_irq(&ent->lock);
++	kfree(in);
++	return mr;
++free_mr:
++	kfree(mr);
++free_in:
++	kfree(in);
++	return ERR_PTR(err);
++}
++
+ static void remove_cache_mr_locked(struct mlx5_cache_ent *ent)
+ {
+ 	struct mlx5_ib_mr *mr;
+@@ -427,12 +471,12 @@ static void __cache_work_func(struct mlx5_cache_ent *ent)
  		if (ent->disabled)
  			goto out;
-@@ -424,12 +441,6 @@ static void __cache_work_func(struct mlx5_cache_ent *ent)
- 						   msecs_to_jiffies(1000));
- 			}
- 		}
--		/*
--		 * Once we start populating due to hitting a low water mark
--		 * continue until we pass the high water mark.
--		 */
--		if (ent->available_mrs + ent->pending < 2 * ent->limit)
--			queue_work(cache->wq, &ent->work);
- 	} else if (ent->available_mrs > 2 * ent->limit) {
- 		bool need_delay;
+ 		if (err) {
+-			if (err == -EAGAIN) {
+-				mlx5_ib_dbg(dev, "returned eagain, order %d\n",
+-					    ent->order);
+-				queue_delayed_work(cache->wq, &ent->dwork,
+-						   msecs_to_jiffies(3));
+-			} else {
++			/*
++			 * EAGAIN only happens if pending is positive, so we
++			 * will be rescheduled from reg_mr_callback(). The only
++			 * failure path here is ENOMEM.
++			 */
++			if (err != -EAGAIN) {
+ 				mlx5_ib_warn(
+ 					dev,
+ 					"command failed order %d, err %d\n",
+@@ -495,36 +539,30 @@ struct mlx5_ib_mr *mlx5_mr_cache_alloc(struct mlx5_ib_dev *dev,
+ 	struct mlx5_mr_cache *cache = &dev->cache;
+ 	struct mlx5_cache_ent *ent;
+ 	struct mlx5_ib_mr *mr;
+-	int err;
  
+ 	if (WARN_ON(entry <= MR_CACHE_LAST_STD_ENTRY ||
+ 		    entry >= ARRAY_SIZE(cache->ent)))
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	ent = &cache->ent[entry];
+-	while (1) {
+-		spin_lock_irq(&ent->lock);
+-		if (list_empty(&ent->head)) {
+-			spin_unlock_irq(&ent->lock);
+-
+-			err = add_keys(ent, 1);
+-			if (err && err != -EAGAIN)
+-				return ERR_PTR(err);
+-
+-			wait_for_completion(&ent->compl);
+-		} else {
+-			mr = list_first_entry(&ent->head, struct mlx5_ib_mr,
+-					      list);
+-			list_del(&mr->list);
+-			ent->available_mrs--;
+-			queue_adjust_cache_locked(ent);
+-			spin_unlock_irq(&ent->lock);
++	spin_lock_irq(&ent->lock);
++	if (list_empty(&ent->head)) {
++		spin_unlock_irq(&ent->lock);
++		mr = create_cache_mr(ent);
++		if (IS_ERR(mr))
+ 			return mr;
+-		}
++	} else {
++		mr = list_first_entry(&ent->head, struct mlx5_ib_mr, list);
++		list_del(&mr->list);
++		ent->available_mrs--;
++		queue_adjust_cache_locked(ent);
++		spin_unlock_irq(&ent->lock);
+ 	}
++	return mr;
+ }
+ 
+-static struct mlx5_ib_mr *alloc_cached_mr(struct mlx5_cache_ent *req_ent)
++/* Return a MR already available in the cache */
++static struct mlx5_ib_mr *get_cache_mr(struct mlx5_cache_ent *req_ent)
+ {
+ 	struct mlx5_ib_dev *dev = req_ent->dev;
+ 	struct mlx5_ib_mr *mr = NULL;
+@@ -676,7 +714,6 @@ int mlx5_mr_cache_init(struct mlx5_ib_dev *dev)
+ 		ent->dev = dev;
+ 		ent->limit = 0;
+ 
+-		init_completion(&ent->compl);
+ 		INIT_WORK(&ent->work, cache_work_func);
+ 		INIT_DELAYED_WORK(&ent->dwork, delayed_cache_work_func);
+ 
+@@ -939,26 +976,16 @@ alloc_mr_from_cache(struct ib_pd *pd, struct ib_umem *umem, u64 virt_addr,
+ 	struct mlx5_ib_dev *dev = to_mdev(pd->device);
+ 	struct mlx5_cache_ent *ent = mr_cache_ent_from_order(dev, order);
+ 	struct mlx5_ib_mr *mr;
+-	int err = 0;
+-	int i;
+ 
+ 	if (!ent)
+ 		return ERR_PTR(-E2BIG);
+-	for (i = 0; i < 1; i++) {
+-		mr = alloc_cached_mr(ent);
+-		if (mr)
+-			break;
+-
+-		err = add_keys(ent, 1);
+-		if (err && err != -EAGAIN) {
+-			mlx5_ib_warn(dev, "add_keys failed, err %d\n", err);
+-			break;
+-		}
++	mr = get_cache_mr(ent);
++	if (!mr) {
++		mr = create_cache_mr(ent);
++		if (IS_ERR(mr))
++			return mr;
+ 	}
+ 
+-	if (!mr)
+-		return ERR_PTR(-EAGAIN);
+-
+ 	mr->ibmr.pd = pd;
+ 	mr->umem = umem;
+ 	mr->access_flags = access_flags;
 -- 
 2.24.1
 
