@@ -2,569 +2,165 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DB217F627
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2020 12:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E072617F792
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2020 13:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgCJLV6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Mar 2020 07:21:58 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:53476 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726295AbgCJLV5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Mar 2020 07:21:57 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id EACB117ABC61B5B83125;
-        Tue, 10 Mar 2020 19:21:52 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 10 Mar 2020 19:21:44 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: [PATCH v3 for-next 5/5] RDMA/hns: Optimize wqe buffer set flow for post send
-Date:   Tue, 10 Mar 2020 19:18:04 +0800
-Message-ID: <1583839084-31579-6-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1583839084-31579-1-git-send-email-liweihang@huawei.com>
-References: <1583839084-31579-1-git-send-email-liweihang@huawei.com>
+        id S1726316AbgCJMjw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Mar 2020 08:39:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726271AbgCJMjw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Mar 2020 08:39:52 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B767E24686;
+        Tue, 10 Mar 2020 12:39:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1583843991;
+        bh=wyyYdbegtNhwiZjvoBALShWf+OcRCMuN26qiRp00os0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1rx6S2DHDPQdiSm4GAjxP4D0Bdzsicp8O8XRRqKrhGtN0avTgTJxDhMuhv3EtSKKu
+         x7PSgcaeUOt4gtbGDRh81Lu8Ao3V+/FbLC97eYyYaSPyTzoInZmL8jBvQJIfQtysaQ
+         dqq6GS+qnK74WneW6vkwS5coz23vuxrU8RWHJjMo=
+Date:   Tue, 10 Mar 2020 14:39:48 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Lang Cheng <chenglang@huawei.com>
+Cc:     Weihang Li <liweihang@huawei.com>, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com
+Subject: Re: [PATCH for-next] RDMA/hns: Support to set mininum depth of qp to
+ 0
+Message-ID: <20200310123948.GJ242734@unreal>
+References: <1583140937-2223-1-git-send-email-liweihang@huawei.com>
+ <20200309151813.GE172334@unreal>
+ <13c7ec71-f79f-8599-b368-fae6893da0e6@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <13c7ec71-f79f-8599-b368-fae6893da0e6@huawei.com>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+On Tue, Mar 10, 2020 at 06:34:47PM +0800, Lang Cheng wrote:
+>
+>
+> On 2020/3/9 23:18, Leon Romanovsky wrote:
+> > On Mon, Mar 02, 2020 at 05:22:17PM +0800, Weihang Li wrote:
+> > > From: Lang Cheng <chenglang@huawei.com>
+> > >
+> > > Minimum depth of qp should be allowed to be set to 0 according to the
+> > > firmware configuration. And when qp is changed from reset to reset, the
+> > > capability of minimum qp depth was used to identify hardware of hip06,
+> > > it should be changed into a more readable form.
+> >
+> >
+> > And what does it mean "qp depth == 0"?
+>
+>
+> Here are 2 related test cases can be executed successfully:
+> 1,Just create qp with 0-depth sq and 0-depth rq, but do not perform sending
+> and receiving.
+> 2. Create a qp with 0-depth rq, the send operation can be completed.
+>
+> Perhaps supporting 0-depth qp would provide some flexibility for some
+> features.
+>
+> Or should we return error when ULP try to create a 0-depth queue?
 
-Splits hns_roce_v2_post_send() into three sub-functions: set_rc_wqe(),
-set_ud_wqe() and update_sq_db() to simplify the code.
+"0" looks like not valid value and you can't explain what will be expected
+behavior if user sets such value, so returning an error sounds like a
+good solution.
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
-Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 472 ++++++++++++++---------------
- 1 file changed, 224 insertions(+), 248 deletions(-)
+>
+>
+> >
+> > >
+> > > Signed-off-by: Lang Cheng <chenglang@huawei.com>
+> > > Signed-off-by: Weihang Li <liweihang@huawei.com>
+> > > ---
+> > >   drivers/infiniband/hw/hns/hns_roce_qp.c | 13 ++++++-------
+> > >   1 file changed, 6 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+> > > index 2a75355..10c4354 100644
+> > > --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
+> > > +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+> > > @@ -382,10 +382,10 @@ static int set_rq_size(struct hns_roce_dev *hr_dev,
+> > >   			return -EINVAL;
+> > >   		}
+> > >
+> > > -		if (hr_dev->caps.min_wqes)
+> > > +		if (cap->max_recv_wr)
+> > >   			max_cnt = max(cap->max_recv_wr, hr_dev->caps.min_wqes);
+> > >   		else
+> > > -			max_cnt = cap->max_recv_wr;
+> > > +			max_cnt = 0;
+> >
+> > It is basically the same thing: cap->max_recv_wr == 0.
+>
+> The current firmware has not specified the minimum depth of qp, resulting in
+> hr_dev-> caps.min_wqes always being 0, the process will always go into the
+> else branch, so there is no minimum depth check for qp.
+>
+> The firmware will support configuring the minimum depth of qp, so this patch
+> checks all the use of this caps.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index c813c74..9bd8fbf 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -287,6 +287,214 @@ static int check_send_valid(struct hns_roce_dev *hr_dev,
- 	return 0;
- }
- 
-+static inline int calc_wr_sge_num(const struct ib_send_wr *wr, u32 *sge_len)
-+{
-+	int valid_num = 0;
-+	u32 len = 0;
-+	int i;
-+
-+	for (i = 0; i < wr->num_sge; i++) {
-+		if (likely(wr->sg_list[i].length)) {
-+			len += wr->sg_list[i].length;
-+			valid_num++;
-+		}
-+	}
-+
-+	*sge_len = len;
-+	return valid_num;
-+}
-+
-+static inline int set_ud_wqe(struct hns_roce_qp *qp,
-+			     const struct ib_send_wr *wr,
-+			     void *wqe, unsigned int *sge_idx,
-+			     unsigned int owner_bit)
-+{
-+	struct hns_roce_dev *hr_dev = to_hr_dev(qp->ibqp.device);
-+	struct hns_roce_ah *ah = to_hr_ah(ud_wr(wr)->ah);
-+	struct hns_roce_v2_ud_send_wqe *ud_sq_wqe = wqe;
-+	unsigned int curr_idx = *sge_idx;
-+	int valid_num_sge;
-+	u32 msg_len = 0;
-+	bool loopback;
-+	u8 *smac;
-+
-+	valid_num_sge = calc_wr_sge_num(wr, &msg_len);
-+	memset(ud_sq_wqe, 0, sizeof(*ud_sq_wqe));
-+
-+	roce_set_field(ud_sq_wqe->dmac, V2_UD_SEND_WQE_DMAC_0_M,
-+		       V2_UD_SEND_WQE_DMAC_0_S, ah->av.mac[0]);
-+	roce_set_field(ud_sq_wqe->dmac, V2_UD_SEND_WQE_DMAC_1_M,
-+		       V2_UD_SEND_WQE_DMAC_1_S, ah->av.mac[1]);
-+	roce_set_field(ud_sq_wqe->dmac, V2_UD_SEND_WQE_DMAC_2_M,
-+		       V2_UD_SEND_WQE_DMAC_2_S, ah->av.mac[2]);
-+	roce_set_field(ud_sq_wqe->dmac, V2_UD_SEND_WQE_DMAC_3_M,
-+		       V2_UD_SEND_WQE_DMAC_3_S, ah->av.mac[3]);
-+	roce_set_field(ud_sq_wqe->byte_48, V2_UD_SEND_WQE_BYTE_48_DMAC_4_M,
-+		       V2_UD_SEND_WQE_BYTE_48_DMAC_4_S, ah->av.mac[4]);
-+	roce_set_field(ud_sq_wqe->byte_48, V2_UD_SEND_WQE_BYTE_48_DMAC_5_M,
-+		       V2_UD_SEND_WQE_BYTE_48_DMAC_5_S, ah->av.mac[5]);
-+
-+	/* MAC loopback */
-+	smac = (u8 *)hr_dev->dev_addr[qp->port];
-+	loopback = ether_addr_equal_unaligned(ah->av.mac, smac) ? 1 : 0;
-+
-+	roce_set_bit(ud_sq_wqe->byte_40,
-+		     V2_UD_SEND_WQE_BYTE_40_LBI_S, loopback);
-+
-+	roce_set_field(ud_sq_wqe->byte_4,
-+		       V2_UD_SEND_WQE_BYTE_4_OPCODE_M,
-+		       V2_UD_SEND_WQE_BYTE_4_OPCODE_S,
-+		       HNS_ROCE_V2_WQE_OP_SEND);
-+
-+	ud_sq_wqe->msg_len = cpu_to_le32(msg_len);
-+
-+	switch (wr->opcode) {
-+	case IB_WR_SEND_WITH_IMM:
-+	case IB_WR_RDMA_WRITE_WITH_IMM:
-+		ud_sq_wqe->immtdata = cpu_to_le32(be32_to_cpu(wr->ex.imm_data));
-+		break;
-+	default:
-+		ud_sq_wqe->immtdata = 0;
-+		break;
-+	}
-+
-+	/* Set sig attr */
-+	roce_set_bit(ud_sq_wqe->byte_4, V2_UD_SEND_WQE_BYTE_4_CQE_S,
-+		     (wr->send_flags & IB_SEND_SIGNALED) ? 1 : 0);
-+
-+	/* Set se attr */
-+	roce_set_bit(ud_sq_wqe->byte_4, V2_UD_SEND_WQE_BYTE_4_SE_S,
-+		     (wr->send_flags & IB_SEND_SOLICITED) ? 1 : 0);
-+
-+	roce_set_bit(ud_sq_wqe->byte_4, V2_UD_SEND_WQE_BYTE_4_OWNER_S,
-+		     owner_bit);
-+
-+	roce_set_field(ud_sq_wqe->byte_16, V2_UD_SEND_WQE_BYTE_16_PD_M,
-+		       V2_UD_SEND_WQE_BYTE_16_PD_S, to_hr_pd(qp->ibqp.pd)->pdn);
-+
-+	roce_set_field(ud_sq_wqe->byte_16, V2_UD_SEND_WQE_BYTE_16_SGE_NUM_M,
-+		       V2_UD_SEND_WQE_BYTE_16_SGE_NUM_S, valid_num_sge);
-+
-+	roce_set_field(ud_sq_wqe->byte_20,
-+		       V2_UD_SEND_WQE_BYTE_20_MSG_START_SGE_IDX_M,
-+		       V2_UD_SEND_WQE_BYTE_20_MSG_START_SGE_IDX_S,
-+		       curr_idx & (qp->sge.sge_cnt - 1));
-+
-+	roce_set_field(ud_sq_wqe->byte_24, V2_UD_SEND_WQE_BYTE_24_UDPSPN_M,
-+		       V2_UD_SEND_WQE_BYTE_24_UDPSPN_S, 0);
-+	ud_sq_wqe->qkey = cpu_to_le32(ud_wr(wr)->remote_qkey & 0x80000000 ?
-+			  qp->qkey : ud_wr(wr)->remote_qkey);
-+	roce_set_field(ud_sq_wqe->byte_32, V2_UD_SEND_WQE_BYTE_32_DQPN_M,
-+		       V2_UD_SEND_WQE_BYTE_32_DQPN_S, ud_wr(wr)->remote_qpn);
-+
-+	roce_set_field(ud_sq_wqe->byte_36, V2_UD_SEND_WQE_BYTE_36_VLAN_M,
-+		       V2_UD_SEND_WQE_BYTE_36_VLAN_S, ah->av.vlan_id);
-+	roce_set_field(ud_sq_wqe->byte_36, V2_UD_SEND_WQE_BYTE_36_HOPLIMIT_M,
-+		       V2_UD_SEND_WQE_BYTE_36_HOPLIMIT_S, ah->av.hop_limit);
-+	roce_set_field(ud_sq_wqe->byte_36, V2_UD_SEND_WQE_BYTE_36_TCLASS_M,
-+		       V2_UD_SEND_WQE_BYTE_36_TCLASS_S, ah->av.tclass);
-+	roce_set_field(ud_sq_wqe->byte_40, V2_UD_SEND_WQE_BYTE_40_FLOW_LABEL_M,
-+		       V2_UD_SEND_WQE_BYTE_40_FLOW_LABEL_S, ah->av.flowlabel);
-+	roce_set_field(ud_sq_wqe->byte_40, V2_UD_SEND_WQE_BYTE_40_SL_M,
-+		       V2_UD_SEND_WQE_BYTE_40_SL_S, ah->av.sl);
-+	roce_set_field(ud_sq_wqe->byte_40, V2_UD_SEND_WQE_BYTE_40_PORTN_M,
-+		       V2_UD_SEND_WQE_BYTE_40_PORTN_S, qp->port);
-+
-+	roce_set_bit(ud_sq_wqe->byte_40, V2_UD_SEND_WQE_BYTE_40_UD_VLAN_EN_S,
-+		     ah->av.vlan_en ? 1 : 0);
-+	roce_set_field(ud_sq_wqe->byte_48, V2_UD_SEND_WQE_BYTE_48_SGID_INDX_M,
-+		       V2_UD_SEND_WQE_BYTE_48_SGID_INDX_S, ah->av.gid_index);
-+
-+	memcpy(&ud_sq_wqe->dgid[0], &ah->av.dgid[0], GID_LEN_V2);
-+
-+	set_extend_sge(qp, wr, &curr_idx, valid_num_sge);
-+
-+	*sge_idx = curr_idx;
-+
-+	return 0;
-+}
-+
-+static inline int set_rc_wqe(struct hns_roce_qp *qp,
-+			     const struct ib_send_wr *wr,
-+			     void *wqe, unsigned int *sge_idx,
-+			     unsigned int owner_bit)
-+{
-+	struct hns_roce_v2_rc_send_wqe *rc_sq_wqe = wqe;
-+	unsigned int curr_idx = *sge_idx;
-+	int valid_num_sge;
-+	u32 msg_len = 0;
-+	int ret = 0;
-+
-+	valid_num_sge = calc_wr_sge_num(wr, &msg_len);
-+	memset(rc_sq_wqe, 0, sizeof(*rc_sq_wqe));
-+
-+	rc_sq_wqe->msg_len = cpu_to_le32(msg_len);
-+
-+	switch (wr->opcode) {
-+	case IB_WR_SEND_WITH_IMM:
-+	case IB_WR_RDMA_WRITE_WITH_IMM:
-+		rc_sq_wqe->immtdata = cpu_to_le32(be32_to_cpu(wr->ex.imm_data));
-+		break;
-+	case IB_WR_SEND_WITH_INV:
-+		rc_sq_wqe->inv_key = cpu_to_le32(wr->ex.invalidate_rkey);
-+		break;
-+	default:
-+		rc_sq_wqe->immtdata = 0;
-+		break;
-+	}
-+
-+	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_FENCE_S,
-+		     (wr->send_flags & IB_SEND_FENCE) ? 1 : 0);
-+
-+	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_SE_S,
-+		     (wr->send_flags & IB_SEND_SOLICITED) ? 1 : 0);
-+
-+	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_CQE_S,
-+		     (wr->send_flags & IB_SEND_SIGNALED) ? 1 : 0);
-+
-+	roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_OWNER_S,
-+		     owner_bit);
-+
-+	wqe += sizeof(struct hns_roce_v2_rc_send_wqe);
-+	switch (wr->opcode) {
-+	case IB_WR_RDMA_READ:
-+	case IB_WR_RDMA_WRITE:
-+	case IB_WR_RDMA_WRITE_WITH_IMM:
-+		rc_sq_wqe->rkey = cpu_to_le32(rdma_wr(wr)->rkey);
-+		rc_sq_wqe->va = cpu_to_le64(rdma_wr(wr)->remote_addr);
-+		break;
-+	case IB_WR_LOCAL_INV:
-+		roce_set_bit(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_SO_S, 1);
-+		rc_sq_wqe->inv_key = cpu_to_le32(wr->ex.invalidate_rkey);
-+		break;
-+	case IB_WR_REG_MR:
-+		set_frmr_seg(rc_sq_wqe, wqe, reg_wr(wr));
-+		break;
-+	case IB_WR_ATOMIC_CMP_AND_SWP:
-+	case IB_WR_ATOMIC_FETCH_AND_ADD:
-+		rc_sq_wqe->rkey = cpu_to_le32(atomic_wr(wr)->rkey);
-+		rc_sq_wqe->va = cpu_to_le64(atomic_wr(wr)->remote_addr);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	roce_set_field(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_OPCODE_M,
-+		       V2_RC_SEND_WQE_BYTE_4_OPCODE_S,
-+		       to_hr_opcode(wr->opcode));
-+
-+	if (wr->opcode == IB_WR_ATOMIC_CMP_AND_SWP ||
-+	    wr->opcode == IB_WR_ATOMIC_FETCH_AND_ADD)
-+		set_atomic_seg(wr, wqe, rc_sq_wqe, valid_num_sge);
-+	else if (wr->opcode != IB_WR_REG_MR)
-+		ret = set_rwqe_data_seg(&qp->ibqp, wr, rc_sq_wqe,
-+					wqe, &curr_idx, valid_num_sge);
-+
-+	*sge_idx = curr_idx;
-+
-+	return ret;
-+}
-+
- static inline void update_sq_db(struct hns_roce_dev *hr_dev,
- 				struct hns_roce_qp *qp)
- {
-@@ -324,23 +532,15 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 				 const struct ib_send_wr **bad_wr)
- {
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
--	struct hns_roce_ah *ah = to_hr_ah(ud_wr(wr)->ah);
--	struct hns_roce_v2_ud_send_wqe *ud_sq_wqe;
--	struct hns_roce_v2_rc_send_wqe *rc_sq_wqe;
-+	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	struct hns_roce_qp *qp = to_hr_qp(ibqp);
--	struct device *dev = hr_dev->dev;
-+	unsigned long flags = 0;
- 	unsigned int owner_bit;
- 	unsigned int sge_idx;
- 	unsigned int wqe_idx;
--	unsigned long flags;
--	int valid_num_sge;
- 	void *wqe = NULL;
--	bool loopback;
--	u32 tmp_len;
--	u8 *smac;
- 	int nreq;
- 	int ret;
--	int i;
- 
- 	spin_lock_irqsave(&qp->sq.lock, flags);
- 
-@@ -363,8 +563,8 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 		wqe_idx = (qp->sq.head + nreq) & (qp->sq.wqe_cnt - 1);
- 
- 		if (unlikely(wr->num_sge > qp->sq.max_gs)) {
--			dev_err(dev, "num_sge=%d > qp->sq.max_gs=%d\n",
--				wr->num_sge, qp->sq.max_gs);
-+			ibdev_err(ibdev, "num_sge=%d > qp->sq.max_gs=%d\n",
-+				  wr->num_sge, qp->sq.max_gs);
- 			ret = -EINVAL;
- 			*bad_wr = wr;
- 			goto out;
-@@ -374,248 +574,24 @@ static int hns_roce_v2_post_send(struct ib_qp *ibqp,
- 		qp->sq.wrid[wqe_idx] = wr->wr_id;
- 		owner_bit =
- 		       ~(((qp->sq.head + nreq) >> ilog2(qp->sq.wqe_cnt)) & 0x1);
--		valid_num_sge = 0;
--		tmp_len = 0;
--
--		for (i = 0; i < wr->num_sge; i++) {
--			if (likely(wr->sg_list[i].length)) {
--				tmp_len += wr->sg_list[i].length;
--				valid_num_sge++;
--			}
--		}
- 
- 		/* Corresponding to the QP type, wqe process separately */
--		if (ibqp->qp_type == IB_QPT_GSI) {
--			ud_sq_wqe = wqe;
--			memset(ud_sq_wqe, 0, sizeof(*ud_sq_wqe));
--
--			roce_set_field(ud_sq_wqe->dmac, V2_UD_SEND_WQE_DMAC_0_M,
--				       V2_UD_SEND_WQE_DMAC_0_S, ah->av.mac[0]);
--			roce_set_field(ud_sq_wqe->dmac, V2_UD_SEND_WQE_DMAC_1_M,
--				       V2_UD_SEND_WQE_DMAC_1_S, ah->av.mac[1]);
--			roce_set_field(ud_sq_wqe->dmac, V2_UD_SEND_WQE_DMAC_2_M,
--				       V2_UD_SEND_WQE_DMAC_2_S, ah->av.mac[2]);
--			roce_set_field(ud_sq_wqe->dmac, V2_UD_SEND_WQE_DMAC_3_M,
--				       V2_UD_SEND_WQE_DMAC_3_S, ah->av.mac[3]);
--			roce_set_field(ud_sq_wqe->byte_48,
--				       V2_UD_SEND_WQE_BYTE_48_DMAC_4_M,
--				       V2_UD_SEND_WQE_BYTE_48_DMAC_4_S,
--				       ah->av.mac[4]);
--			roce_set_field(ud_sq_wqe->byte_48,
--				       V2_UD_SEND_WQE_BYTE_48_DMAC_5_M,
--				       V2_UD_SEND_WQE_BYTE_48_DMAC_5_S,
--				       ah->av.mac[5]);
--
--			/* MAC loopback */
--			smac = (u8 *)hr_dev->dev_addr[qp->port];
--			loopback = ether_addr_equal_unaligned(ah->av.mac,
--							      smac) ? 1 : 0;
--
--			roce_set_bit(ud_sq_wqe->byte_40,
--				     V2_UD_SEND_WQE_BYTE_40_LBI_S, loopback);
--
--			roce_set_field(ud_sq_wqe->byte_4,
--				       V2_UD_SEND_WQE_BYTE_4_OPCODE_M,
--				       V2_UD_SEND_WQE_BYTE_4_OPCODE_S,
--				       HNS_ROCE_V2_WQE_OP_SEND);
--
--			ud_sq_wqe->msg_len =
--			 cpu_to_le32(le32_to_cpu(ud_sq_wqe->msg_len) + tmp_len);
--
--			switch (wr->opcode) {
--			case IB_WR_SEND_WITH_IMM:
--			case IB_WR_RDMA_WRITE_WITH_IMM:
--				ud_sq_wqe->immtdata =
--				      cpu_to_le32(be32_to_cpu(wr->ex.imm_data));
--				break;
--			default:
--				ud_sq_wqe->immtdata = 0;
--				break;
--			}
--
--			/* Set sig attr */
--			roce_set_bit(ud_sq_wqe->byte_4,
--				   V2_UD_SEND_WQE_BYTE_4_CQE_S,
--				   (wr->send_flags & IB_SEND_SIGNALED) ? 1 : 0);
--
--			/* Set se attr */
--			roce_set_bit(ud_sq_wqe->byte_4,
--				  V2_UD_SEND_WQE_BYTE_4_SE_S,
--				  (wr->send_flags & IB_SEND_SOLICITED) ? 1 : 0);
--
--			roce_set_bit(ud_sq_wqe->byte_4,
--				     V2_UD_SEND_WQE_BYTE_4_OWNER_S, owner_bit);
--
--			roce_set_field(ud_sq_wqe->byte_16,
--				       V2_UD_SEND_WQE_BYTE_16_PD_M,
--				       V2_UD_SEND_WQE_BYTE_16_PD_S,
--				       to_hr_pd(ibqp->pd)->pdn);
--
--			roce_set_field(ud_sq_wqe->byte_16,
--				       V2_UD_SEND_WQE_BYTE_16_SGE_NUM_M,
--				       V2_UD_SEND_WQE_BYTE_16_SGE_NUM_S,
--				       valid_num_sge);
--
--			roce_set_field(ud_sq_wqe->byte_20,
--				     V2_UD_SEND_WQE_BYTE_20_MSG_START_SGE_IDX_M,
--				     V2_UD_SEND_WQE_BYTE_20_MSG_START_SGE_IDX_S,
--				     sge_idx & (qp->sge.sge_cnt - 1));
--
--			roce_set_field(ud_sq_wqe->byte_24,
--				       V2_UD_SEND_WQE_BYTE_24_UDPSPN_M,
--				       V2_UD_SEND_WQE_BYTE_24_UDPSPN_S, 0);
--			ud_sq_wqe->qkey =
--			     cpu_to_le32(ud_wr(wr)->remote_qkey & 0x80000000 ?
--			     qp->qkey : ud_wr(wr)->remote_qkey);
--			roce_set_field(ud_sq_wqe->byte_32,
--				       V2_UD_SEND_WQE_BYTE_32_DQPN_M,
--				       V2_UD_SEND_WQE_BYTE_32_DQPN_S,
--				       ud_wr(wr)->remote_qpn);
--
--			roce_set_field(ud_sq_wqe->byte_36,
--				       V2_UD_SEND_WQE_BYTE_36_VLAN_M,
--				       V2_UD_SEND_WQE_BYTE_36_VLAN_S,
--				       ah->av.vlan_id);
--			roce_set_field(ud_sq_wqe->byte_36,
--				       V2_UD_SEND_WQE_BYTE_36_HOPLIMIT_M,
--				       V2_UD_SEND_WQE_BYTE_36_HOPLIMIT_S,
--				       ah->av.hop_limit);
--			roce_set_field(ud_sq_wqe->byte_36,
--				       V2_UD_SEND_WQE_BYTE_36_TCLASS_M,
--				       V2_UD_SEND_WQE_BYTE_36_TCLASS_S,
--				       ah->av.tclass);
--			roce_set_field(ud_sq_wqe->byte_40,
--				       V2_UD_SEND_WQE_BYTE_40_FLOW_LABEL_M,
--				       V2_UD_SEND_WQE_BYTE_40_FLOW_LABEL_S,
--				       ah->av.flowlabel);
--			roce_set_field(ud_sq_wqe->byte_40,
--				       V2_UD_SEND_WQE_BYTE_40_SL_M,
--				       V2_UD_SEND_WQE_BYTE_40_SL_S,
--				       ah->av.sl);
--			roce_set_field(ud_sq_wqe->byte_40,
--				       V2_UD_SEND_WQE_BYTE_40_PORTN_M,
--				       V2_UD_SEND_WQE_BYTE_40_PORTN_S,
--				       qp->port);
--
--			roce_set_bit(ud_sq_wqe->byte_40,
--				     V2_UD_SEND_WQE_BYTE_40_UD_VLAN_EN_S,
--				     ah->av.vlan_en ? 1 : 0);
--			roce_set_field(ud_sq_wqe->byte_48,
--				       V2_UD_SEND_WQE_BYTE_48_SGID_INDX_M,
--				       V2_UD_SEND_WQE_BYTE_48_SGID_INDX_S,
--				       hns_get_gid_index(hr_dev, qp->phy_port,
--							 ah->av.gid_index));
--
--			memcpy(&ud_sq_wqe->dgid[0], &ah->av.dgid[0],
--			       GID_LEN_V2);
--
--			set_extend_sge(qp, wr, &sge_idx, valid_num_sge);
--		} else if (ibqp->qp_type == IB_QPT_RC) {
--			rc_sq_wqe = wqe;
--			memset(rc_sq_wqe, 0, sizeof(*rc_sq_wqe));
--
--			rc_sq_wqe->msg_len =
--			 cpu_to_le32(le32_to_cpu(rc_sq_wqe->msg_len) + tmp_len);
--
--			switch (wr->opcode) {
--			case IB_WR_SEND_WITH_IMM:
--			case IB_WR_RDMA_WRITE_WITH_IMM:
--				rc_sq_wqe->immtdata =
--				      cpu_to_le32(be32_to_cpu(wr->ex.imm_data));
--				break;
--			case IB_WR_SEND_WITH_INV:
--				rc_sq_wqe->inv_key =
--					cpu_to_le32(wr->ex.invalidate_rkey);
--				break;
--			default:
--				rc_sq_wqe->immtdata = 0;
--				break;
--			}
--
--			roce_set_bit(rc_sq_wqe->byte_4,
--				     V2_RC_SEND_WQE_BYTE_4_FENCE_S,
--				     (wr->send_flags & IB_SEND_FENCE) ? 1 : 0);
--
--			roce_set_bit(rc_sq_wqe->byte_4,
--				  V2_RC_SEND_WQE_BYTE_4_SE_S,
--				  (wr->send_flags & IB_SEND_SOLICITED) ? 1 : 0);
--
--			roce_set_bit(rc_sq_wqe->byte_4,
--				   V2_RC_SEND_WQE_BYTE_4_CQE_S,
--				   (wr->send_flags & IB_SEND_SIGNALED) ? 1 : 0);
--
--			roce_set_bit(rc_sq_wqe->byte_4,
--				     V2_RC_SEND_WQE_BYTE_4_OWNER_S, owner_bit);
--
--			wqe += sizeof(struct hns_roce_v2_rc_send_wqe);
--			switch (wr->opcode) {
--			case IB_WR_RDMA_READ:
--				rc_sq_wqe->rkey =
--					cpu_to_le32(rdma_wr(wr)->rkey);
--				rc_sq_wqe->va =
--					cpu_to_le64(rdma_wr(wr)->remote_addr);
--				break;
--			case IB_WR_RDMA_WRITE:
--				rc_sq_wqe->rkey =
--					cpu_to_le32(rdma_wr(wr)->rkey);
--				rc_sq_wqe->va =
--					cpu_to_le64(rdma_wr(wr)->remote_addr);
--				break;
--			case IB_WR_RDMA_WRITE_WITH_IMM:
--				rc_sq_wqe->rkey =
--					cpu_to_le32(rdma_wr(wr)->rkey);
--				rc_sq_wqe->va =
--					cpu_to_le64(rdma_wr(wr)->remote_addr);
--				break;
--			case IB_WR_LOCAL_INV:
--				roce_set_bit(rc_sq_wqe->byte_4,
--					       V2_RC_SEND_WQE_BYTE_4_SO_S, 1);
--				rc_sq_wqe->inv_key =
--					    cpu_to_le32(wr->ex.invalidate_rkey);
--				break;
--			case IB_WR_REG_MR:
--				set_frmr_seg(rc_sq_wqe, wqe, reg_wr(wr));
--				break;
--			case IB_WR_ATOMIC_CMP_AND_SWP:
--				rc_sq_wqe->rkey =
--					cpu_to_le32(atomic_wr(wr)->rkey);
--				rc_sq_wqe->va =
--					cpu_to_le64(atomic_wr(wr)->remote_addr);
--				break;
--			case IB_WR_ATOMIC_FETCH_AND_ADD:
--				rc_sq_wqe->rkey =
--					cpu_to_le32(atomic_wr(wr)->rkey);
--				rc_sq_wqe->va =
--					cpu_to_le64(atomic_wr(wr)->remote_addr);
--				break;
--			default:
--				break;
--			}
--
--			roce_set_field(rc_sq_wqe->byte_4,
--				       V2_RC_SEND_WQE_BYTE_4_OPCODE_M,
--				       V2_RC_SEND_WQE_BYTE_4_OPCODE_S,
--				       to_hr_opcode(wr->opcode));
--
--			if (wr->opcode == IB_WR_ATOMIC_CMP_AND_SWP ||
--			    wr->opcode == IB_WR_ATOMIC_FETCH_AND_ADD)
--				set_atomic_seg(wr, wqe, rc_sq_wqe,
--					       valid_num_sge);
--			else if (wr->opcode != IB_WR_REG_MR) {
--				ret = set_rwqe_data_seg(ibqp, wr, rc_sq_wqe,
--							wqe, &sge_idx,
--							valid_num_sge);
--				if (ret) {
--					*bad_wr = wr;
--					goto out;
--				}
--			}
--		} else {
--			dev_err(dev, "Illegal qp_type(0x%x)\n", ibqp->qp_type);
-+		if (ibqp->qp_type == IB_QPT_GSI)
-+			ret = set_ud_wqe(qp, wr, wqe, &sge_idx, owner_bit);
-+		else if (ibqp->qp_type == IB_QPT_RC)
-+			ret = set_rc_wqe(qp, wr, wqe, &sge_idx, owner_bit);
-+		else {
-+			ibdev_err(ibdev, "Illegal qp_type(0x%x)\n",
-+				  ibqp->qp_type);
- 			spin_unlock_irqrestore(&qp->sq.lock, flags);
- 			*bad_wr = wr;
- 			return -EOPNOTSUPP;
- 		}
-+
-+		if (ret) {
-+			*bad_wr = wr;
-+			goto out;
-+		}
- 	}
- 
- out:
--- 
-2.8.1
+if (cap->max_recv_wr)
+  cap->max_recv_wr != 0
+else
+ cap->max_recv_wr == 0
+ => max_cnt = 0 and max_cnt = cap->max_recv_wr are the same
 
+Thanks
+
+>
+> >
+> > >
+> > >   		hr_qp->rq.wqe_cnt = roundup_pow_of_two(max_cnt);
+> > >
+> > > @@ -652,10 +652,10 @@ static int set_kernel_sq_size(struct hns_roce_dev *hr_dev,
+> > >
+> > >   	hr_qp->sq.wqe_shift = ilog2(hr_dev->caps.max_sq_desc_sz);
+> > >
+> > > -	if (hr_dev->caps.min_wqes)
+> > > +	if (cap->max_send_wr)
+> > >   		max_cnt = max(cap->max_send_wr, hr_dev->caps.min_wqes);
+> > >   	else
+> > > -		max_cnt = cap->max_send_wr;
+> > > +		max_cnt = 0;
+> >
+> > Ditto
+> >
+> > >
+> > >   	hr_qp->sq.wqe_cnt = roundup_pow_of_two(max_cnt);
+> > >   	if ((u32)hr_qp->sq.wqe_cnt > hr_dev->caps.max_wqes) {
+> > > @@ -1394,11 +1394,10 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+> > >   		goto out;
+> > >
+> > >   	if (cur_state == new_state && cur_state == IB_QPS_RESET) {
+> > > -		if (hr_dev->caps.min_wqes) {
+> > > +		if (hr_dev->hw_rev == HNS_ROCE_HW_VER1) {
+> > >   			ret = -EPERM;
+> > >   			ibdev_err(&hr_dev->ib_dev,
+> > > -				"cur_state=%d new_state=%d\n", cur_state,
+> > > -				new_state);
+> > > +				  "Unsupport to modify qp from reset to reset\n");
+> >
+> > "RST2RST state is not supported\n"
+>
+> Will be modified in next, thanks.
+>
+>
+> >
+> > >   		} else {
+> > >   			ret = 0;
+> > >   		}
+> > > --
+> > > 2.8.1
+> > >
+> >
+> > .
+> >
+>
