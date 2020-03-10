@@ -2,95 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF211805E0
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2020 19:10:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B6418063F
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2020 19:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbgCJSKD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Mar 2020 14:10:03 -0400
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:45783 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgCJSKD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Mar 2020 14:10:03 -0400
-Received: by mail-qv1-f67.google.com with SMTP id du17so5942071qvb.12
-        for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2020 11:10:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=XB3JmSWgoBFZrd2LuQSCBQTp1UW7odwacKL0wQvjGjQ=;
-        b=AyWsvBH0MZh2Qwyeu6lAMROUHI1059iIdVdbxEaaQcLHCcwQZJKSuymCAtf3fbVqx/
-         B1vm25vVIkNBVcGNFc4MiiYREDdvd6vqSQV3C1TVJ0ajFFh6mJ9COY6LqJPYPShB4U2s
-         T8z+dV0lmWamiqSk74vKhkkZg/NAUhqOAZIT9mOoTiCc+eA+ZbcdETWnTwtdIZGvPCPG
-         k+UQ50gk0CAGmBs4wEaJzP2l9/MhXO8jD+E6mlNGYTea30BRMhvgjxOBfUQkVrozt+GQ
-         cfO/zLPs5olQyB8ipeJqg4HPoETryeAS41WPA5TIwS/1eesG2jADtSOYOkHnjaSKwrCy
-         1AdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=XB3JmSWgoBFZrd2LuQSCBQTp1UW7odwacKL0wQvjGjQ=;
-        b=aXFEZQYvoKIj3zhUWuvg/umgvEd4ZLQ07KC10bIV2g1sIFfn82qnZRj+AEq0qB0Ayt
-         Q/0zFlNKSHVKOuH0gQDKYh4dq8stBQbXT5gc6Aydr77Cstoo097b/T9O4rebQB3Zw0r1
-         MOL3C/ljdH4OOqVs8IEXBjQzh+4DfkjSCWsUkHUzV6RpidfoBb0kBAfTBmorDm+uJGeF
-         hvDElfFk3WijSSvLJruh2/QzUCAps3K1DmXGuXxP1mcszDTxQNW4fJQKalIsZlRcLCKG
-         9l1g8uQjt3SfNI4AC27erHZf+tDfVDQtgf89t/ytWvZBC1FPvg5fmCm07b8hJfmwPfR9
-         +i6w==
-X-Gm-Message-State: ANhLgQ2BD8b+LRk3DkozPDxpJa2solRz3aDE96piu4hgfG/Ni81NH7AQ
-        JehDw/GthNlXjisYaZZTLslUa27AbB0=
-X-Google-Smtp-Source: ADFU+vufB++3xQG2vw1OGFQecZRBxO7tuTl8C0f5wZM/yAuJm+3CMPp1PFD/wBdct5rDvOXBf0v2Zw==
-X-Received: by 2002:a0c:fa03:: with SMTP id q3mr3420204qvn.228.1583863801932;
-        Tue, 10 Mar 2020 11:10:01 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id g9sm11191298qkl.39.2020.03.10.11.10.01
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 10 Mar 2020 11:10:01 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jBjKL-00023H-37; Tue, 10 Mar 2020 15:10:01 -0300
-Date:   Tue, 10 Mar 2020 15:10:01 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
+        id S1726315AbgCJS23 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Mar 2020 14:28:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726283AbgCJS23 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Mar 2020 14:28:29 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1281720727;
+        Tue, 10 Mar 2020 18:28:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1583864908;
+        bh=VZIr2aWG/6QvTXwaHFpApeV/h8KZCWELjQ9ZDi27IRs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hLNCFpb2KF/n8X4kAZieRRiQbCQuHUY5gBgP05u/Adda8M+qIRqquiElPxGeqwrzU
+         pjSMHWjP11O8jsuCoSc/iDm86pE/ZtDn4Jm/rmKc1mfgWbsch8bgkvEJAm8GpmPxIB
+         rNbdkiMErRDFfbGZkrn12YOtl70gDus6YZKYz0Mk=
+Date:   Tue, 10 Mar 2020 20:28:23 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Doug Ledford <dledford@redhat.com>,
+        Erez Shitrit <erezsh@mellanox.com>,
         Alex Vesker <valex@mellanox.com>,
         Ariel Levkovich <lariel@mellanox.com>,
-        linux-rdma@vger.kernel.org, Mark Bloch <markb@mellanox.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@mellanox.com>
-Subject: Re: [PATCH rdma-rc] IB/mlx5: Replace tunnel mpls capability bits for
- tunnel_offloads
-Message-ID: <20200310181001.GA7735@ziepe.ca>
-References: <20200305123841.196086-1-leon@kernel.org>
+        linux-rdma@vger.kernel.org,
+        Yevgeny Kliteynik <kliteyn@mellanox.com>
+Subject: Re: [PATCH rdma-next] RDMA/mlx5: Remove duplicate definitions of
+ SW_ICM macros
+Message-ID: <20200310182823.GL242734@unreal>
+References: <20200310075706.238592-1-leon@kernel.org>
+ <20200310174101.GA28121@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200305123841.196086-1-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200310174101.GA28121@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Mar 05, 2020 at 02:38:41PM +0200, Leon Romanovsky wrote:
-> From: Alex Vesker <valex@mellanox.com>
-> 
-> Until now flex parser was used in ib_query_device to indicate
-> tunnel_offloads_caps support for mpls_over_gre/mpls_over_udp.
-> These inaccurate capability bits will not work on newer devices.
-> 
-> This should not brake backward compatibility since tunnel_stateless
-> caps and flex_parser_protocols caps were added together.
-> 
-> Cc: <stable@vger.kernel.org> # 4.17
-> Fixes: e818e255a58d ("IB/mlx5: Expose MPLS related tunneling offloads")
-> Signed-off-by: Alex Vesker <valex@mellanox.com>
-> Reviewed-by: Ariel Levkovich <lariel@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/hw/mlx5/main.c | 6 ++----
->  include/linux/mlx5/mlx5_ifc.h     | 6 +++++-
->  2 files changed, 7 insertions(+), 5 deletions(-)
+On Tue, Mar 10, 2020 at 02:41:01PM -0300, Jason Gunthorpe wrote:
+> On Tue, Mar 10, 2020 at 09:57:06AM +0200, Leon Romanovsky wrote:
+> > From: Erez Shitrit <erezsh@mellanox.com>
+> >
+> > Those macros are already defined in include/linux/mlx5/driver.h,
+> > so delete their duplicate variants.
+> >
+> > Signed-off-by: Ariel Levkovich <lariel@mellanox.com>
+> > Signed-off-by: Yevgeny Kliteynik <kliteyn@mellanox.com>
+> > Signed-off-by: Erez Shitrit <erezsh@mellanox.com>
+> > Reviewed-by: Alex Vesker <valex@mellanox.com>
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > ---
+> >  drivers/infiniband/hw/mlx5/mlx5_ib.h | 4 ----
+> >  1 file changed, 4 deletions(-)
+>
+> That is a long list of signed off by's for a two line patch..
 
-Compatability with future devices is not really a -rc thing
+Team work.
 
-Applied to for-next, thanks
-
-Jason
+>
+> Applied to for-next
+>
+> Jason
