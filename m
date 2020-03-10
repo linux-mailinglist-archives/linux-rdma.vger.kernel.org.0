@@ -2,91 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0399518050D
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2020 18:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A06180587
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2020 18:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgCJRlD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Mar 2020 13:41:03 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:35550 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgCJRlD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Mar 2020 13:41:03 -0400
-Received: by mail-qt1-f194.google.com with SMTP id v15so10309274qto.2
-        for <linux-rdma@vger.kernel.org>; Tue, 10 Mar 2020 10:41:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=fBVgShqzb2YX8cy69HShX10QDBUI3pZ10dJJEFww0w0=;
-        b=UvZrBWUsxRNVYrJ9G6R46esBqiHnlUBudWqwAJNlqhMr2LXMDVEjuE/qjhRz3yiyab
-         xJ4fRIAxAF5ImD5CiIghO6QliSfpM6Ny6tRNFEPWSQoCI86KXkAqgBthyPTuS/sXAQdw
-         VT4NiwDAVvVUT/i2n4N7SoxxzOIQeAuRKRFnLPQl2eW/AoO9etESwZcE7uHOAKF7dFW5
-         NnfZjs0GjIfGjYbK50Qw/y0PEzYmFrz1s5OidQN3Uf4V1/wGCqewlh/V2ifOCn9JpL0u
-         frebV1IUO1HoSjN0un8cKH8BCQ5/jXyxIK5303EaxIpfRzobwS8b6MQuLwigmlsbuIHb
-         Dl0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fBVgShqzb2YX8cy69HShX10QDBUI3pZ10dJJEFww0w0=;
-        b=etkvOkviycP5W9YRoWDYS7IPCVwBwtQqbAXFgO3ZLnGTflPcrZDs6b0lIZCh2HoHuK
-         n6WEfIsyJdTv93L0r1R0aN556cyl1puexhqLj8Xdg6Oplo7bO15Tvw3WS997I+Tc5VAy
-         yMKRTWZBQjADlGJGZklPOEbn88/NS9mYsiGZ/vwNPEjd5ml71moRdAGegoK+az4R2cWN
-         mSme1kH1ixXgFV/gwrX38heCNQMiEP/yPsnznbn02k+PVzf8CTNTQVjoCcnuAN7iC7pc
-         GJ9tuVlKikLqQmpSKz+sA/hZYQhMNTNvmUXs0OzxP2bJwxDviol97eG1cLjAKCaHlXQN
-         iD6A==
-X-Gm-Message-State: ANhLgQ12qtatRCxu2aZyjbrqMaGh0HULFKsbhMKsZHX/Fb9pRgtH5SES
-        CsNv+hmnPVqIwH4YrSD+mG8o7Q==
-X-Google-Smtp-Source: ADFU+vsFavBEEHWaALBc47/QBq+Dj2M4I3VgKyOvxiOsNDKQtm5eMDv7C2jx7pMvs5JMtWKjf5ARxw==
-X-Received: by 2002:ac8:6781:: with SMTP id b1mr20277346qtp.355.1583862062042;
-        Tue, 10 Mar 2020 10:41:02 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id x74sm5484104qkb.40.2020.03.10.10.41.01
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 10 Mar 2020 10:41:01 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jBisH-0007K6-6s; Tue, 10 Mar 2020 14:41:01 -0300
-Date:   Tue, 10 Mar 2020 14:41:01 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Erez Shitrit <erezsh@mellanox.com>,
-        Alex Vesker <valex@mellanox.com>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        linux-rdma@vger.kernel.org,
-        Yevgeny Kliteynik <kliteyn@mellanox.com>
-Subject: Re: [PATCH rdma-next] RDMA/mlx5: Remove duplicate definitions of
- SW_ICM macros
-Message-ID: <20200310174101.GA28121@ziepe.ca>
-References: <20200310075706.238592-1-leon@kernel.org>
+        id S1726605AbgCJRxn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Mar 2020 13:53:43 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:42538 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726283AbgCJRxm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Mar 2020 13:53:42 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02AHqRnG095113;
+        Tue, 10 Mar 2020 17:53:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=qT1ECbPEhETHAAouiX0phMVMFqQ41hr92DHNcuh9QlY=;
+ b=DMlL9bXK5QNvJuQyurGwVCxQwS1F3WfINTNq3lcuPQ6AQCp2twEWTmRn8p8s1l4hTjfF
+ 8NN5jbCcpbZwPsVqeROKZ6PfywfcN/Ybj90wHebZ0a4vKGnxxc6RJdcguNHt82QYkQW6
+ tae9pM6tUA7M18vs5W4wXw2SHzN9au8Jmiwqa3fgsD2KTMHkACCtD9VajhmFx+caSbv5
+ 2+dONbL7xUr01gsiOeVvlJtmVgViRgVYUL9OC3LUjyvAnQp5Ds2Ks9+l5XzlLbLDbDWW
+ gpsa30khpykbQeqMZwC6nZ+7PmIQ9TAwq2XP4hHFSwp1JXyApbOZwNF9FGp/4mi7ip+G rg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2yp9v6273v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Mar 2020 17:53:40 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02AHqH7o139423;
+        Tue, 10 Mar 2020 17:53:40 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2yp8psvvgh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Mar 2020 17:53:39 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 02AHrdAh013898;
+        Tue, 10 Mar 2020 17:53:39 GMT
+Received: from [10.209.227.41] (/10.209.227.41)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 10 Mar 2020 10:53:39 -0700
+Subject: Re: Maybe a race condition in net/rds/rdma.c?
+To:     zerons <sironhide0null@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        haakon.bugge@oracle.com
+References: <afd9225d-5c43-8cc7-0eed-455837b53e10@gmail.com>
+ <D8EB4A77-77D7-41EB-9021-EA7BB8C3FA5B@oracle.com>
+ <94b20d30-1d7d-7a66-b943-d75a05bcb46e@oracle.com>
+ <e525ec74-b62f-6e7c-e6bc-aad93d349f65@gmail.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <54d1140d-3347-a2b1-1b20-9a3959d3b451@oracle.com>
+Date:   Tue, 10 Mar 2020 10:53:38 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200310075706.238592-1-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <e525ec74-b62f-6e7c-e6bc-aad93d349f65@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9556 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 bulkscore=0 suspectscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003100108
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9556 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 bulkscore=0 mlxlogscore=999
+ phishscore=0 adultscore=0 clxscore=1015 impostorscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003100108
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 10, 2020 at 09:57:06AM +0200, Leon Romanovsky wrote:
-> From: Erez Shitrit <erezsh@mellanox.com>
+On 3/6/20 4:11 AM, zerons wrote:
 > 
-> Those macros are already defined in include/linux/mlx5/driver.h,
-> so delete their duplicate variants.
 > 
-> Signed-off-by: Ariel Levkovich <lariel@mellanox.com>
-> Signed-off-by: Yevgeny Kliteynik <kliteyn@mellanox.com>
-> Signed-off-by: Erez Shitrit <erezsh@mellanox.com>
-> Reviewed-by: Alex Vesker <valex@mellanox.com>
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-> ---
->  drivers/infiniband/hw/mlx5/mlx5_ib.h | 4 ----
->  1 file changed, 4 deletions(-)
+> On 2/28/20 02:10, santosh.shilimkar@oracle.com wrote:
+>>
+>>>> On 18 Feb 2020, at 14:13, zerons <sironhide0null@gmail.com> wrote:
+>>>>
+>>>> Hi, all
+>>>>
+>>>> In net/rds/rdma.c
+>>>> (https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/net/rds/rdma.c?h=v5.5.3*n419__;Iw!!GqivPVa7Brio!OwwQCLtjDsKmhaIz0sfaOVSuC4ai5t5_FgB7yqNExGOCBtACtIGLF61NNJyqSDtIAcGoPg$ ),
+>>>> there may be a race condition between rds_rdma_unuse() and rds_free_mr().
+>>>>
+>> Hmmm.. I didn't see email before in my inbox. Please post questions/patches on netdev in future which is the correct mailing list.
+>>
+>>>> It seems that this one need some specific devices to run test,
+>>>> unfortunately, I don't have any of these.
+>>>> I've already sent two emails to the maintainer for help, no response yet,
+>>>> (the email address may not be in use).
+>>>>
+>>>> 0) in rds_recv_incoming_exthdrs(), it calls rds_rdma_unuse() when receive an
+>>>> extension header with force=0, if the victim mr does not have RDS_RDMA_USE_ONCE
+>>>> flag set, then the mr would stay in the rbtree. Without any lock, it tries to
+>>>> call mr->r_trans->sync_mr().
+>>>>
+MR won't stay in the rbtree with force flag. If the MR is used or
+use_once is set in both cases its removed from the tree.
+See "if (mr->r_use_once || force)"
 
-That is a long list of signed off by's for a two line patch..
+>>>> 1) in rds_free_mr(), the same mr is found, and then freed. The mr->r_refcount
+>>>> doesn't change while rds_mr_tree_walk().
+>>>>
+>>>> 0) back in rds_rdma_unuse(), the victim mr get used again, call
+>>>> mr->r_trans->sync_mr().
+>>>>
+>>>> Could this race condition actually happen?
+So from what I see, this race doesn't exist but let me know
+if am missing something.
 
-Applied to for-next
-
-Jason
+regards,
+Santosh
