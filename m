@@ -2,34 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46AB317F331
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2020 10:15:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC1A17F32D
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Mar 2020 10:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgCJJO7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Mar 2020 05:14:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45304 "EHLO mail.kernel.org"
+        id S1726423AbgCJJOr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Mar 2020 05:14:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726293AbgCJJO7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Mar 2020 05:14:59 -0400
+        id S1726195AbgCJJOr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Mar 2020 05:14:47 -0400
 Received: from localhost (unknown [193.47.165.251])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3CEA820674;
-        Tue, 10 Mar 2020 09:14:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E2E4A2467F;
+        Tue, 10 Mar 2020 09:14:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583831698;
-        bh=UWWhB/waMYLnKYor21p48X3DWhjNNkbsdS9KMJC3dv4=;
+        s=default; t=1583831686;
+        bh=TG5y+3SaRpDm7JwiPv4RCU56PrAv/yhSJZVf3wLmP7U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WVj78IlN6xktkuZP+Sc5ZSSiuTO87/FKzPJdWUJoTgM+RJK2iJ+pgbiYet17yaQIm
-         GaOgGZJ2zG6UKrL888RCEQZ2snFP4xy2AaPFB2oNz0IqBIRlzGzwtqBzqA/Mukl88E
-         Hou0A1YFU42ZE7rKnG/v0QmTeFyMEhoQxxCDxCmI=
+        b=DNKLh09HlJqYVdGChXr7gpX2jlKEzznJNBPRyiZzrsuhFFzN0mJPhuIWuI+kVv8yy
+         SMYzIUyWgtfI+Lnj5VsIBQ5ca+LtNk3hq0BfJtEdR3CSHnHiXWM8irAZ2QQGGoU6O9
+         ktc86EPsZkYlFmP06mT4PrCfQDrUEtbpuP9gvAbQ=
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v1 01/11] RDMA/cm: Add Enhanced Connection Establishment (ECE) bits
-Date:   Tue, 10 Mar 2020 11:14:28 +0200
-Message-Id: <20200310091438.248429-2-leon@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: [PATCH rdma-next v1 02/11] RDMA/mlx4: Delete duplicated offsetofend implementation
+Date:   Tue, 10 Mar 2020 11:14:29 +0200
+Message-Id: <20200310091438.248429-3-leon@kernel.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200310091438.248429-1-leon@kernel.org>
 References: <20200310091438.248429-1-leon@kernel.org>
@@ -42,50 +43,55 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@mellanox.com>
 
-Extend REQ (request for communications), REP (reply to request
-for communication), rejected reason and SIDR_REP (service ID
-resolution response) structures with hardware vendor ID bits
-according to approved IBA Comment #9434.
+Convert mlx4 to use in-kernel offsetofend() instead
+of its duplicated implementation.
 
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 ---
- include/rdma/ibta_vol1_c12.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/infiniband/hw/mlx4/main.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/include/rdma/ibta_vol1_c12.h b/include/rdma/ibta_vol1_c12.h
-index 269904425d3f..960c86bec76c 100644
---- a/include/rdma/ibta_vol1_c12.h
-+++ b/include/rdma/ibta_vol1_c12.h
-@@ -38,6 +38,7 @@
+diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+index 2f5d9b181848..a66518a5c938 100644
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -434,9 +434,6 @@ int mlx4_ib_gid_index_to_real_index(struct mlx4_ib_dev *ibdev,
+ 	return real_index;
+ }
  
- /* Table 106 REQ Message Contents */
- #define CM_REQ_LOCAL_COMM_ID CM_FIELD32_LOC(struct cm_req_msg, 0, 32)
-+#define CM_REQ_VENDOR_ID CM_FIELD32_LOC(struct cm_req_msg, 5, 24)
- #define CM_REQ_SERVICE_ID CM_FIELD64_LOC(struct cm_req_msg, 8)
- #define CM_REQ_LOCAL_CA_GUID CM_FIELD64_LOC(struct cm_req_msg, 16)
- #define CM_REQ_LOCAL_Q_KEY CM_FIELD32_LOC(struct cm_req_msg, 28, 32)
-@@ -119,8 +120,11 @@ CM_STRUCT(struct cm_rej_msg, 84 * 8 + 1184);
- #define CM_REP_REMOTE_COMM_ID CM_FIELD32_LOC(struct cm_rep_msg, 4, 32)
- #define CM_REP_LOCAL_Q_KEY CM_FIELD32_LOC(struct cm_rep_msg, 8, 32)
- #define CM_REP_LOCAL_QPN CM_FIELD32_LOC(struct cm_rep_msg, 12, 24)
-+#define CM_REP_VENDOR_ID_H CM_FIELD8_LOC(struct cm_rep_msg, 15, 8)
- #define CM_REP_LOCAL_EE_CONTEXT_NUMBER CM_FIELD32_LOC(struct cm_rep_msg, 16, 24)
-+#define CM_REP_VENDOR_ID_M CM_FIELD8_LOC(struct cm_rep_msg, 19, 8)
- #define CM_REP_STARTING_PSN CM_FIELD32_LOC(struct cm_rep_msg, 20, 24)
-+#define CM_REP_VENDOR_ID_L CM_FIELD8_LOC(struct cm_rep_msg, 23, 8)
- #define CM_REP_RESPONDER_RESOURCES CM_FIELD8_LOC(struct cm_rep_msg, 24, 8)
- #define CM_REP_INITIATOR_DEPTH CM_FIELD8_LOC(struct cm_rep_msg, 25, 8)
- #define CM_REP_TARGET_ACK_DELAY CM_FIELD8_LOC(struct cm_rep_msg, 26, 5)
-@@ -201,7 +205,9 @@ CM_STRUCT(struct cm_sidr_req_msg, 16 * 8 + 1728);
- #define CM_SIDR_REP_STATUS CM_FIELD8_LOC(struct cm_sidr_rep_msg, 4, 8)
- #define CM_SIDR_REP_ADDITIONAL_INFORMATION_LENGTH                              \
- 	CM_FIELD8_LOC(struct cm_sidr_rep_msg, 5, 8)
-+#define CM_SIDR_REP_VENDOR_ID_H CM_FIELD16_LOC(struct cm_sidr_rep_msg, 6, 16)
- #define CM_SIDR_REP_QPN CM_FIELD32_LOC(struct cm_sidr_rep_msg, 8, 24)
-+#define CM_SIDR_REP_VENDOR_ID_L CM_FIELD8_LOC(struct cm_sidr_rep_msg, 11, 8)
- #define CM_SIDR_REP_SERVICEID CM_FIELD64_LOC(struct cm_sidr_rep_msg, 12)
- #define CM_SIDR_REP_Q_KEY CM_FIELD32_LOC(struct cm_sidr_rep_msg, 20, 32)
- #define CM_SIDR_REP_ADDITIONAL_INFORMATION                                     \
+-#define field_avail(type, fld, sz) (offsetof(type, fld) + \
+-				    sizeof(((type *)0)->fld) <= (sz))
+-
+ static int mlx4_ib_query_device(struct ib_device *ibdev,
+ 				struct ib_device_attr *props,
+ 				struct ib_udata *uhw)
+@@ -447,7 +444,7 @@ static int mlx4_ib_query_device(struct ib_device *ibdev,
+ 	int err;
+ 	int have_ib_ports;
+ 	struct mlx4_uverbs_ex_query_device cmd;
+-	struct mlx4_uverbs_ex_query_device_resp resp = {.comp_mask = 0};
++	struct mlx4_uverbs_ex_query_device_resp resp = {};
+ 	struct mlx4_clock_params clock_params;
+ 
+ 	if (uhw->inlen) {
+@@ -602,7 +599,7 @@ static int mlx4_ib_query_device(struct ib_device *ibdev,
+ 			sizeof(struct mlx4_wqe_data_seg);
+ 	}
+ 
+-	if (field_avail(typeof(resp), rss_caps, uhw->outlen)) {
++	if (offsetofend(typeof(resp), rss_caps) <= uhw->outlen) {
+ 		if (props->rss_caps.supported_qpts) {
+ 			resp.rss_caps.rx_hash_function =
+ 				MLX4_IB_RX_HASH_FUNC_TOEPLITZ;
+@@ -626,7 +623,7 @@ static int mlx4_ib_query_device(struct ib_device *ibdev,
+ 				       sizeof(resp.rss_caps);
+ 	}
+ 
+-	if (field_avail(typeof(resp), tso_caps, uhw->outlen)) {
++	if (offsetofend(typeof(resp), tso_caps) <= uhw->outlen) {
+ 		if (dev->dev->caps.max_gso_sz &&
+ 		    ((mlx4_ib_port_link_layer(ibdev, 1) ==
+ 		    IB_LINK_LAYER_ETHERNET) ||
 -- 
 2.24.1
 
