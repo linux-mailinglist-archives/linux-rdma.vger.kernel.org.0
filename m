@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD76181D87
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2020 17:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5087C181D88
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2020 17:15:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730085AbgCKQP0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Mar 2020 12:15:26 -0400
-Received: from mga11.intel.com ([192.55.52.93]:48150 "EHLO mga11.intel.com"
+        id S1730119AbgCKQPc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Mar 2020 12:15:32 -0400
+Received: from mga17.intel.com ([192.55.52.151]:31962 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729704AbgCKQP0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 11 Mar 2020 12:15:26 -0400
+        id S1729704AbgCKQPc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 11 Mar 2020 12:15:32 -0400
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Mar 2020 09:15:25 -0700
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Mar 2020 09:15:32 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.70,541,1574150400"; 
-   d="scan'208";a="242728042"
+   d="scan'208";a="353917283"
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 11 Mar 2020 09:15:23 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 11 Mar 2020 09:15:30 -0700
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
         (envelope-from <lkp@intel.com>)
-        id 1jC40w-000Ch7-Lu; Thu, 12 Mar 2020 00:15:22 +0800
-Date:   Thu, 12 Mar 2020 00:14:50 +0800
+        id 1jC413-000Ctv-UT; Thu, 12 Mar 2020 00:15:29 +0800
+Date:   Thu, 12 Mar 2020 00:15:10 +0800
 From:   kbuild test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@mellanox.com>
 Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- ec16b6bbdab1ce2b03f46271460efc7f450658cd
-Message-ID: <5e690e7a.CjSI+2iqx5hqLuLZ%lkp@intel.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 41e684ef3f37ce6e5eac3fb5b9c7c1853f4b0447
+Message-ID: <5e690e8e.x8eoDvjMnjalEW55%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,12 +39,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-rc
-branch HEAD: ec16b6bbdab1ce2b03f46271460efc7f450658cd  RDMA/mlx5: Fix the number of hwcounters of a dynamic counter
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git  wip/jgg-for-next
+branch HEAD: 41e684ef3f37ce6e5eac3fb5b9c7c1853f4b0447  IB/mlx5: Replace tunnel mpls capability bits for tunnel_offloads
 
-elapsed time: 1045m
+elapsed time: 1046m
 
-configs tested: 163
+configs tested: 170
 configs skipped: 0
 
 The following configs have been built successfully.
@@ -85,12 +85,12 @@ ia64                             allmodconfig
 ia64                              allnoconfig
 ia64                             allyesconfig
 ia64                                defconfig
-nios2                         3c120_defconfig
 c6x                        evmc6678_defconfig
-xtensa                          iss_defconfig
-xtensa                       common_defconfig
-openrisc                 simple_smp_defconfig
+nios2                         3c120_defconfig
 openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
 alpha                               defconfig
 csky                                defconfig
 nds32                             allnoconfig
@@ -100,6 +100,12 @@ m68k                       m5475evb_defconfig
 m68k                             allmodconfig
 h8300                    h8300h-sim_defconfig
 m68k                           sun3_defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+powerpc                           allnoconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
 mips                           32r2_defconfig
 mips                         64r6el_defconfig
 mips                             allmodconfig
@@ -186,9 +192,10 @@ arm64                randconfig-a001-20200311
 ia64                 randconfig-a001-20200311
 powerpc              randconfig-a001-20200311
 sparc                randconfig-a001-20200311
+riscv                            allmodconfig
 riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
 riscv                               defconfig
+riscv                    nommu_virt_defconfig
 riscv                          rv32_defconfig
 s390                             alldefconfig
 s390                             allmodconfig
