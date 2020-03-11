@@ -2,127 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD30181B71
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2020 15:36:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60EC6181C47
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2020 16:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729874AbgCKOgC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Mar 2020 10:36:02 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:45706 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729309AbgCKOgB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Mar 2020 10:36:01 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02BEWq5E162890;
-        Wed, 11 Mar 2020 14:36:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=7oDmjhNiC55YU6iZrb3bKn3r9UG+93Yy3XlSaDUipFE=;
- b=nc5j35BudsPbeI64DiBG+CYnaTzjY+8A/JXN6aStyZ+vb3udFhYyT52i9b44tZxBw6lg
- cKLhz4YBKXqWOfVCD1WVNs/UQvfS+3Ku5Y7v3RbJvb5pt4bvHFtXWdxFqECjCZUf4zqN
- F8fqgkHg7eW8TfX14XLFtQkUTudsAjeKomn6bcZJraAedMvpE/gS9/Q19yGopZ3MkRqz
- 8wrs9b6lfLJbqM4W4s72omqI3k2KKwmJzLMY8lzKWvnMfCdqt0sHT3XUOc3WQh+UeMYL
- SBGYDJO4jWJ21vZZjRFjE30FLDiwwiecs0aBA2BGB6tzDQpqJupvbf4Z82+NNbYQwbal JQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2yp9v6749s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Mar 2020 14:35:59 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02BEWp0J140078;
-        Wed, 11 Mar 2020 14:35:59 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2yp8p3cbh1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Mar 2020 14:35:58 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 02BEZv3E006453;
-        Wed, 11 Mar 2020 14:35:57 GMT
-Received: from [10.11.0.40] (/10.11.0.40)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 11 Mar 2020 07:35:57 -0700
-Subject: Re: Maybe a race condition in net/rds/rdma.c?
-To:     zerons <sironhide0null@gmail.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        haakon.bugge@oracle.com
-References: <afd9225d-5c43-8cc7-0eed-455837b53e10@gmail.com>
- <D8EB4A77-77D7-41EB-9021-EA7BB8C3FA5B@oracle.com>
- <94b20d30-1d7d-7a66-b943-d75a05bcb46e@oracle.com>
- <e525ec74-b62f-6e7c-e6bc-aad93d349f65@gmail.com>
- <54d1140d-3347-a2b1-1b20-9a3959d3b451@oracle.com>
- <603ec723-842c-f6e1-01ee-6889c3925a63@gmail.com>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <d9004325-2a97-c711-3abc-eb2550e047b1@oracle.com>
-Date:   Wed, 11 Mar 2020 07:35:56 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <603ec723-842c-f6e1-01ee-6889c3925a63@gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9556 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 phishscore=0
- spamscore=0 malwarescore=0 adultscore=0 suspectscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2003110093
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9556 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 mlxlogscore=999
- phishscore=0 adultscore=0 clxscore=1015 impostorscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2003110093
+        id S1729646AbgCKP1w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Mar 2020 11:27:52 -0400
+Received: from mail-yw1-f66.google.com ([209.85.161.66]:33040 "EHLO
+        mail-yw1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729100AbgCKP1w (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Mar 2020 11:27:52 -0400
+Received: by mail-yw1-f66.google.com with SMTP id g66so169733ywf.0;
+        Wed, 11 Mar 2020 08:27:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=fBKope3FHRNnKg4RO8W9qi6yilUi38nzcxkXbybG/AA=;
+        b=a5G/3ZUvZbsRhaQhddS9QjMhgNOExtJn1wNu74I9SedEGXhRm3EHxmWgzxk6WiVdTF
+         vFojXbkFHh7n6x4NKxROO/+AFbFlGVH65Qjdp4sKkW7DRrEz7JU3S8mw9/TY2ns1Al8L
+         XoqDg8+0IdeYrodSdEVCX8RGF56HzL0JvzFv8sURUqL9cNUb2o9c8gPSBT09DKiaYlw/
+         YDbKJ0IiIpyLha8euLQaVLneoH+9nyQ/0Xf/q+pDOvIMH61jUSn5k3dlRbxWGX7EqghY
+         QGu9YX2DhSnbZtoLJstds3C+0BRBFDXzD1Hh+5jIqKw/AUvvNfqHru6ZR3rxAHTnahgh
+         SUlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=fBKope3FHRNnKg4RO8W9qi6yilUi38nzcxkXbybG/AA=;
+        b=c6eCt0ChaGSyKQKdQugihz+Cdjq3khq6Nb5yz9RwN5720ePWK0Ks2qglPJlVLyKMSM
+         kLNDj1/BOHI1jwcwBPUSOKl65HK7Fhurr4qLabb96gXjoKwsmMDwM6wo44oTXqKpNWwf
+         41nUbQX5l8OQ0dAdUvXrScmunN1c4iOr8Jsn3+P69GX0ChcY2rLnIxorK25DuH5lfTnv
+         UUMtsbfARX7tHF7iC6lbYbHwMgjuFdAkxgj0Q/5cDeSK0/lSYzS3/S3g3nvCchfnth4p
+         qRIkd9yNtW2hkODOjocuPt6rZX5EzEsjVSlHgq4xjMFySVUiB53ncX9XH8EWUaUAOOYC
+         bA5w==
+X-Gm-Message-State: ANhLgQ1ijDfZnS9OZ0+G7vVP0frgfiy3K7rHBvoSrlaaY+Rh5g0hIWxN
+        7E6J8I3fCehnhR2jaHrmi20kcEPAk8A=
+X-Google-Smtp-Source: ADFU+vuwtDvK0ElmeygvV+0h2cBkN/QfT+fz2iYkRAxPjgYlZINM0Tl4TwnnB6Ime/y11K8OdLTlfA==
+X-Received: by 2002:a25:83c8:: with SMTP id v8mr3427977ybm.201.1583940471200;
+        Wed, 11 Mar 2020 08:27:51 -0700 (PDT)
+Received: from anon-dhcp-153.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id p2sm21546553ywd.58.2020.03.11.08.27.50
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 11 Mar 2020 08:27:50 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v1 00/11] NFS/RDMA client side connection overhaul
+From:   Chuck Lever <chucklever@gmail.com>
+In-Reply-To: <20200221214906.2072.32572.stgit@manet.1015granger.net>
+Date:   Wed, 11 Mar 2020 11:27:49 -0400
+Cc:     linux-rdma@vger.kernel.org,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <AA5039EB-DDA0-44CA-B382-61BD544A330A@gmail.com>
+References: <20200221214906.2072.32572.stgit@manet.1015granger.net>
+To:     Anna Schumaker <anna.schumaker@netapp.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/10/20 9:48 PM, zerons wrote:
-> 
-> 
-> On 3/11/20 01:53, santosh.shilimkar@oracle.com wrote:
->> On 3/6/20 4:11 AM, zerons wrote:
->>>
->>>
->>> On 2/28/20 02:10, santosh.shilimkar@oracle.com wrote:
->>>>
->>>>>> On 18 Feb 2020, at 14:13, zerons <sironhide0null@gmail.com> wrote:
->>>>>>
->>>>>> Hi, all
->>>>>>
->>>>>> In net/rds/rdma.c
->>>>>> (https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/net/rds/rdma.c?h=v5.5.3*n419__;Iw!!GqivPVa7Brio!OwwQCLtjDsKmhaIz0sfaOVSuC4ai5t5_FgB7yqNExGOCBtACtIGLF61NNJyqSDtIAcGoPg$ ),
->>>>>> there may be a race condition between rds_rdma_unuse() and rds_free_mr().
->>>>>>
->>>> Hmmm.. I didn't see email before in my inbox. Please post questions/patches on netdev in future which is the correct mailing list.
->>>>
->>>>>> It seems that this one need some specific devices to run test,
->>>>>> unfortunately, I don't have any of these.
->>>>>> I've already sent two emails to the maintainer for help, no response yet,
->>>>>> (the email address may not be in use).
->>>>>>
->>>>>> 0) in rds_recv_incoming_exthdrs(), it calls rds_rdma_unuse() when receive an
->>>>>> extension header with force=0, if the victim mr does not have RDS_RDMA_USE_ONCE
->>>>>> flag set, then the mr would stay in the rbtree. Without any lock, it tries to
->>>>>> call mr->r_trans->sync_mr().
->>>>>>
->> MR won't stay in the rbtree with force flag. If the MR is used or
->> use_once is set in both cases its removed from the tree.
->> See "if (mr->r_use_once || force)"
->>
-> 
-> Sorry, I may misunderstand. Did you mean that if the MR is *used*,
-> it is removed from the tree with or without the force flag in
-> rds_rdma_unuse(), even when r_use_once is not set?
-> 
-Once the MR is being used with use_once semantics it gets removed with 
-or without remote side indicating it via extended header. use_once
-optimization was added later. The base behavior is once the MR is
-used by remote and same information is sent via extended header,
-it gets cleaned up with force flag. Force flag ignores whether
-its marked as used_once or not.
+Hi Anna, I don't recall receiving any comments that require modifying
+this series. Do you want me to resend it for the next merge window?
 
-Regards,
-Santosh
+
+> On Feb 21, 2020, at 5:00 PM, Chuck Lever <chuck.lever@oracle.com> =
+wrote:
+>=20
+> Howdy.
+>=20
+> I've had reports (and personal experience) where the Linux NFS/RDMA
+> client waits for a very long time after a disruption of the network
+> or NFS server.
+>=20
+> There is a disconnect time wait in the Connection Manager which
+> blocks the RPC/RDMA transport from tearing down a connection for a
+> few minutes when the remote cannot respond to DREQ messages.
+>=20
+> An RPC/RDMA transport has only one slot for connection state, so the
+> transport is prevented from establishing a fresh connection until
+> the time wait completes.
+>=20
+> This patch series refactors the connection end point data structures
+> to enable one active and multiple zombie connections. Now, while a
+> defunct connection is waiting to die, it is separated from the
+> transport, clearing the way for the immediate creation of a new
+> connection. Clean-up of the old connection's data structures and
+> resources then completes in the background.
+>=20
+> Well, that's the idea, anyway. Review and comments welcome. Hoping
+> this can be merged in v5.7.
+>=20
+> ---
+>=20
+> Chuck Lever (11):
+>      xprtrdma: Invoke rpcrdma_ep_create() in the connect worker
+>      xprtrdma: Refactor frwr_init_mr()
+>      xprtrdma: Clean up the post_send path
+>      xprtrdma: Refactor rpcrdma_ep_connect() and =
+rpcrdma_ep_disconnect()
+>      xprtrdma: Allocate Protection Domain in rpcrdma_ep_create()
+>      xprtrdma: Invoke rpcrdma_ia_open in the connect worker
+>      xprtrdma: Remove rpcrdma_ia::ri_flags
+>      xprtrdma: Disconnect on flushed completion
+>      xprtrdma: Merge struct rpcrdma_ia into struct rpcrdma_ep
+>      xprtrdma: Extract sockaddr from struct rdma_cm_id
+>      xprtrdma: kmalloc rpcrdma_ep separate from rpcrdma_xprt
+>=20
+>=20
+> include/trace/events/rpcrdma.h    |   97 ++---
+> net/sunrpc/xprtrdma/backchannel.c |    8=20
+> net/sunrpc/xprtrdma/frwr_ops.c    |  152 ++++----
+> net/sunrpc/xprtrdma/rpc_rdma.c    |   32 +-
+> net/sunrpc/xprtrdma/transport.c   |   72 +---
+> net/sunrpc/xprtrdma/verbs.c       |  681 =
+++++++++++++++-----------------------
+> net/sunrpc/xprtrdma/xprt_rdma.h   |   89 ++---
+> 7 files changed, 445 insertions(+), 686 deletions(-)
+>=20
+> --
+> Chuck Lever
 
