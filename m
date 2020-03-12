@@ -2,81 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5766F183767
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2020 18:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 803B3183802
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2020 18:51:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgCLR1E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Mar 2020 13:27:04 -0400
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:47103 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726254AbgCLR1D (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Mar 2020 13:27:03 -0400
-Received: by mail-qv1-f65.google.com with SMTP id m2so3008811qvu.13
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2020 10:27:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0D4uHAoTyKuSKkWwJQkQnpqRzgNDmqlKK/FwmHIQlfg=;
-        b=V+mhRWsjKwrqR1equPrd66kersn+EMOExy7NpXlo1b+s+BosvQYYDsVJtuVYLzw1Jj
-         QD9Dsp/3WziiKLoMMBtf7yiUOAcQVz31HvBQOE6J0qru/K2rQBxzU31usU+imj3vH9rt
-         a/uot0f3WfABEWGCjTH44FvawsWWM23WFQCwocERlt620JmYdW5VRbuVuSc9fdRrcaru
-         DLWoBtChXz22o3Wu03ApX4dDxCZ/dvzY8FhaRbL+cgZw5rsyXI43ZB7dJPuZnL99VOQY
-         lOBzEPnUkeMIpRgQC+vctZh4U87QjXNVjNC6U9ST1q8BHkJVPmtyDxM2hkv5QlBcNA9C
-         AwSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0D4uHAoTyKuSKkWwJQkQnpqRzgNDmqlKK/FwmHIQlfg=;
-        b=LOxwUYHTXVkKfgN5oexhlUG1PFGd7DpkWC/5EPfaXcazrQ2JPLIgVFTI1l9h+KWOm0
-         paPP/m9jF46nRp6aq9Mrf+X/VpukUgLJQFlAiWeDUFcXjyeMFAl6iwWxkZYZM2E3+w5R
-         7m0CrXvQ53F6awY8ulqB+KCrfNBBGGEtXdjM/2tAOmEi3SKhbP1Vm+IP0nkLsICrHnja
-         aESAgEjDgPUJU+YgsLcpCzBColwPCCuCqHxJFAV6pSxk6tStSICOzWNYyKDIX1XlGtyQ
-         IWr3E8GodaD+0/sK1BGnhv1nacNg681oqT8jhJthoXS8HnIgvz6pKyDvXpp7Om5p5yAG
-         wgJA==
-X-Gm-Message-State: ANhLgQ1gsAVuKKDZFbTLQhujSmwZwZYPd/ZZYVq2n1eEwdyt9iYnPVBm
-        ZD3iNQhuFbOBuuLzixV0oudziw==
-X-Google-Smtp-Source: ADFU+vs8AYzgPky6jnniZjqoX0CdIFKU1MD08EqgiQSsn3EIwq4DadN99QhWMpuFPF5o/I6DNpeQpQ==
-X-Received: by 2002:ad4:4e73:: with SMTP id ec19mr8089472qvb.78.1584034022705;
-        Thu, 12 Mar 2020 10:27:02 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id 65sm27842005qtf.95.2020.03.12.10.27.02
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 12 Mar 2020 10:27:02 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jCRbp-00014P-RW; Thu, 12 Mar 2020 14:27:01 -0300
-Date:   Thu, 12 Mar 2020 14:27:01 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Andrew Boyer <aboyer@pensando.io>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Weihang Li <liweihang@huawei.com>, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, linuxarm@huawei.com
-Subject: Re: [PATCH for-next] RDMA/hns: Add interface to support lock free
-Message-ID: <20200312172701.GV31668@ziepe.ca>
-References: <1583999290-20514-1-git-send-email-liweihang@huawei.com>
- <20200312092640.GA31504@unreal>
- <20200312170237.GS31668@ziepe.ca>
- <42CC9743-9112-4954-807D-2A7A856BC78E@pensando.io>
+        id S1726477AbgCLRvy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Mar 2020 13:51:54 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:38300 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726127AbgCLRvy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Mar 2020 13:51:54 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02CHnM8l101124;
+        Thu, 12 Mar 2020 17:51:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=nMJD+EqG4C08alZ/aPPp3eN9qOh9sPZa/hKMnF88LxI=;
+ b=nBrkDmHTEKBBpThW/Hc0tvsClAV7f5ZoIkoaBLHRRBRaYGxr7a1EgggKBKP7vjLNrWji
+ oC4bcAc1LiBT+hYLOEowaxw2cYcOPZPEaMzEWY0XirJ5HOTrY6Mc6k90pNfHh545JFyu
+ YXkbeZjOPUiG0s8NbTqkzZIrsBtFLTydYFtvcIt6x89WLrDmtnTBuAQw8mBGQ52SJ8am
+ EZN+U/LfrmVv0v9Mw3aLupSCAAKCtnspwmGxTTiYSqnlvVRshLG4S9qA1Q1xhF/ymf4t
+ sxhMan2j9Uvqp/06pKdBfHr9unS280N3sG8KbwPkz5FXEfs+0mOD6vU4+GqSxW38j8j0 fg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2yqkg8a9es-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Mar 2020 17:51:51 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02CHnNte163174;
+        Thu, 12 Mar 2020 17:49:51 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2yp8p84m6d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Mar 2020 17:49:51 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 02CHno3f021967;
+        Thu, 12 Mar 2020 17:49:50 GMT
+Received: from [10.159.227.222] (/10.159.227.222)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 12 Mar 2020 10:49:50 -0700
+Subject: Re: Maybe a race condition in net/rds/rdma.c?
+To:     zerons <sironhide0null@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        haakon.bugge@oracle.com
+References: <afd9225d-5c43-8cc7-0eed-455837b53e10@gmail.com>
+ <D8EB4A77-77D7-41EB-9021-EA7BB8C3FA5B@oracle.com>
+ <94b20d30-1d7d-7a66-b943-d75a05bcb46e@oracle.com>
+ <e525ec74-b62f-6e7c-e6bc-aad93d349f65@gmail.com>
+ <54d1140d-3347-a2b1-1b20-9a3959d3b451@oracle.com>
+ <603ec723-842c-f6e1-01ee-6889c3925a63@gmail.com>
+ <d9004325-2a97-c711-3abc-eb2550e047b1@oracle.com>
+ <a5990ab2-7d6b-8d5a-d461-8ad4bec104a4@gmail.com>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <2079e907-56b9-c665-bdfc-bda6daaca1d1@oracle.com>
+Date:   Thu, 12 Mar 2020 10:49:49 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <42CC9743-9112-4954-807D-2A7A856BC78E@pensando.io>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <a5990ab2-7d6b-8d5a-d461-8ad4bec104a4@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9558 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 phishscore=0
+ spamscore=0 malwarescore=0 adultscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003120091
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9558 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 lowpriorityscore=0
+ mlxlogscore=999 spamscore=0 phishscore=0 adultscore=0 impostorscore=0
+ malwarescore=0 priorityscore=1501 suspectscore=0 bulkscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003120091
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 01:04:05PM -0400, Andrew Boyer wrote:
->    What would you say to a per-process env variable to disable locking in
->    a userspace provider?
+On 3/12/20 1:58 AM, zerons wrote:
+> 
+[...]
+>>>> MR won't stay in the rbtree with force flag. If the MR is used or
+>>>> use_once is set in both cases its removed from the tree.
+>>>> See "if (mr->r_use_once || force)"
+>>>>
+>>>
+>>> Sorry, I may misunderstand. Did you mean that if the MR is *used*,
+>>> it is removed from the tree with or without the force flag in
+>>> rds_rdma_unuse(), even when r_use_once is not set?
+>>>
+>> Once the MR is being used with use_once semantics it gets removed with or without remote side indicating it via extended header. use_once
+>> optimization was added later. The base behavior is once the MR is
+>> used by remote and same information is sent via extended header,
+>> it gets cleaned up with force flag. Force flag ignores whether
+>> its marked as used_once or not.
+>>
+> 
+> Sorry, I am still confused.
+> 
+> I check the code again. The rds_rdma_unuse() is called in two functions,
+> rds_recv_incoming_exthdrs() and rds_sendmsg().
+> 
+> In rds_sendmsg(), it calls rds_rdma_unuse() *with* force flag only when
+> the user included a RDMA_MAP cmsg *and* sendmsg() is failed.
+>
+correct.
 
-That is also a no. verbs now has 'thread domain' who's purpose is to
-allow data plane locks to be skipped.
+> In rds_recv_incoming_exthdrs(), the force is *false*. So we can consider
+> the rds_rdma_unuse() called *without* force flag.
+> Then I go check where r_use_once can be set.
+> 
+> __rds_rdma_map()
+> 	rds_get_mr()
+> 		rds_setsockopt()
+> 
+> 	rds_get_mr_for_dest()
+> 		rds_setsockopt()
+> 
+> 	rds_cmsg_rdma_map()
+> 		rds_cmsg_send()
+> 			rds_sendmsg()
+> 
+> It seems to me that r_use_once is controlled by user applications.
+>
+yes it is and its being set in the application using this in
+production. But You do have point that if application don't set it
+then even after MR being used and remote node indicated it being
+used, the MR still remains in the RB tree.
 
-Generally new env vars in verbs are going to face opposition from
-me.
 
-Jason
+> Sorry to keep bothering you with my questions. I wish I had such a device
+> that I can test it on.
+> 
+Not at all. You mostly found a race condition when use_once is not used
+but need to verify it. We will look into it more. Thanks for your
+patience.
+
+Regards,
+Santosh
+
