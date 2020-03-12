@@ -2,145 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 771E0182931
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2020 07:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEDF182934
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2020 07:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387932AbgCLGgY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Mar 2020 02:36:24 -0400
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:46052 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387978AbgCLGgY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Mar 2020 02:36:24 -0400
-Received: by mail-qv1-f66.google.com with SMTP id du17so2063695qvb.12
-        for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2020 23:36:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OmYhfalyPE2n7mUASlF7MytGTjb9PigptAh2TuJXUpE=;
-        b=F/tU8uxWlaEQwmS15OIZ8t9f/bwi+O0RYAClH6Ya3V9ThM9Fj7t0kPUQkf2DeIl79K
-         5sTtCv85iaJZjF3C/gxxrDXU3PePY92Yd4v0piau45HmHGxBxQD0/OqkMcHregAXs3Gq
-         74qgsVqO2G5zPcFbdbeqEKr5ujFRJaC/iWLXF4mcrcUK6iJT27uPVb5Ay+VRQG6Y0EOL
-         WjNGE4prK/b5mfm7bPHHF1oZv3ZJyNwrPkJpwFrYxENTIYDCB5+G7iiHZ6VfZCW/+gRL
-         RJhy2kHe9kP7C5QHffVntMz4To84/SsOpqGp/QpcFOmHn+12K2wmvlKIrUlyFNGJtqSe
-         n9eA==
+        id S2387920AbgCLGhO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Mar 2020 02:37:14 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:42967 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387889AbgCLGhO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Mar 2020 02:37:14 -0400
+Received: by mail-il1-f199.google.com with SMTP id j88so3212649ilg.9
+        for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2020 23:37:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OmYhfalyPE2n7mUASlF7MytGTjb9PigptAh2TuJXUpE=;
-        b=qF0xzfoVJr/B7r0va8sbLbk5RosTf9oinrNDL2vGpXc7DAMEG0jcJ/9lKNxzqLoh55
-         WhDY2K2InPlcKeeVJHULwmwA27K6Q6uVZ1WYPuFPvPd+ZKwVBXJrX4hqavKHdI8VBQrA
-         BjUOLywO1vqwc7CpYxjlz7onLqT5PV3jbQAcahouK5v5DMMPDo0KkQHKlk1uOjLGL/ZU
-         HnqpbdFcpeUszftWb/AiRlr1rDIVNqCdlbkaB5lPh0qqhaDhT5JgnFMU4ug3KifrTh27
-         DV1Prjym4xPYy8MjoBwmOXT9yRJAk7jwOmTDuFxdRwqB2WIE4BvYdmFpct9yhLWK/0bk
-         oqgQ==
-X-Gm-Message-State: ANhLgQ2Ow3kNyT8bGTcEP5y9gcB3W9Y6Yz46pIyng2t/uR5kc1mVi6QV
-        C6kDLMJDGkmdV8tMI4HzSFWnjiXpObbFnWuBhkkwbKiMhlA=
-X-Google-Smtp-Source: ADFU+vsiQ62PSVs7mnY7zbIq11G9sXjPw2OuaTBdc/4A/m4kB/gNXR64wwn9XGYT7pXUFc+eGf70egHroht4FWcQTuU=
-X-Received: by 2002:a05:6214:11e6:: with SMTP id e6mr5755991qvu.22.1583994982157;
- Wed, 11 Mar 2020 23:36:22 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=FuH0nsCbwe86/j2RoJ1s3qJai4VV2bvq/TdtvNazlJE=;
+        b=GQMr7i36+P7sFWEVrwCqQNjpVjXRnSxs43onVz9xiCNFoVb8woSStKmUfFKUyisQHG
+         TsD4SIvWR2SICxzJIf10Lr6shDB2KXmOTHucXpDTXKklUwKIyIXavXlNEJkQYH7Fv9qH
+         NchoUAAPPNGSMqlcyn+toJOvaeQx4qiZTSgiCzi4qSL3j8YCdjOBqDa9HbTCVJmjemzm
+         ITdeLQmyr3QZgg8bjRRp7w/J7MBGFdpXhcFRzvKgrjMZbnq64cyh4LaVeb+Sx3BbIncR
+         Layb9N/CEbYtCSrttPIXy6k/3AEHMUjT1Ne0l1B71CQkRb9NH2RrzY/bi/qpQJplqEBM
+         YK5w==
+X-Gm-Message-State: ANhLgQ0I+CnXwSfe6r6gNU+spXg8UzXCxouCV205QWyKSwVxWLxczeIX
+        /Dveh4puH3te++0yDpCXKFmx66CvarYko0kIbeJJN/nJGceZ
+X-Google-Smtp-Source: ADFU+vvZFSVb32AaAPGQNJt0QTHRGIRHmGWOfnZ9CqGWioVTITgpF3zUSoTuKs+f9tVy8KMCaJEqIWr57Fyf8zqGAot/tm+pq3Nn
 MIME-Version: 1.0
-References: <000000000000e8001905a07be9de@google.com> <20200311200400.a383230a33722d4c3a6886dd@linux-foundation.org>
-In-Reply-To: <20200311200400.a383230a33722d4c3a6886dd@linux-foundation.org>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 12 Mar 2020 07:36:10 +0100
-Message-ID: <CACT4Y+aSGNcnkW+zu5Fexe7j7E3GnM81YH_+mC_Hp_ToC0+RhA@mail.gmail.com>
-Subject: Re: general protection fault in list_lru_del
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Cc:     syzbot <syzbot+34c3a8c021ca80c808b0@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        netdev <netdev@vger.kernel.org>
+X-Received: by 2002:a6b:8ec2:: with SMTP id q185mr6112676iod.180.1583995032813;
+ Wed, 11 Mar 2020 23:37:12 -0700 (PDT)
+Date:   Wed, 11 Mar 2020 23:37:12 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000041c6a905a0a295ef@google.com>
+Subject: WARNING: ODEBUG bug in remove_client_context
+From:   syzbot <syzbot+c3b8c2a85d37162cc6ab@syzkaller.appspotmail.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, kamalheib1@gmail.com,
+        leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, parav@mellanox.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 4:04 AM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Tue, 10 Mar 2020 01:29:09 -0700 syzbot <syzbot+34c3a8c021ca80c808b0@syzkaller.appspotmail.com> wrote:
->
-> > Hello,
-> >
-> > syzbot found the following crash on:
->
-> Might be vfs, more likely networking, might be something else.  Cc's
-> added.
+Hello,
 
-My bet would be on RDS, +RDS maintainers as well.
+syzbot found the following crash on:
 
-> > HEAD commit:    63623fd4 Merge tag 'for-linus' of git://git.kernel.org/pub..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=1492da55e00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=9833e26bab355358
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=34c3a8c021ca80c808b0
-> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> >
-> > Unfortunately, I don't have any reproducer for this crash yet.
-> >
-> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > Reported-by: syzbot+34c3a8c021ca80c808b0@syzkaller.appspotmail.com
-> >
-> > general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-> > KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-> > CPU: 1 PID: 11205 Comm: kworker/u4:4 Not tainted 5.6.0-rc3-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Workqueue: krdsd rds_tcp_accept_worker
-> > RIP: 0010:__list_del_entry_valid+0x85/0xf5 lib/list_debug.c:51
-> > Code: 0f 84 e1 00 00 00 48 b8 22 01 00 00 00 00 ad de 49 39 c4 0f 84 e2 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 75 53 49 8b 14 24 4c 39 f2 0f 85 99 00 00 00 49 8d 7d
-> > RSP: 0018:ffffc90001b27af0 EFLAGS: 00010246
-> > RAX: dffffc0000000000 RBX: ffff888020040c60 RCX: ffffffff81a1dda6
-> > RDX: 0000000000000000 RSI: ffffffff81a1dba1 RDI: ffff888020040c68
-> > RBP: ffffc90001b27b08 R08: ffff88809f18e280 R09: fffff52000364f51
-> > R10: fffff52000364f50 R11: 0000000000000003 R12: 0000000000000000
-> > R13: 0000000000000000 R14: ffff888020040c60 R15: ffff888020040c68
-> > FS:  0000000000000000(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007f78a44de000 CR3: 000000008c993000 CR4: 00000000001426e0
-> > DR0: 0000000000000000 DR1: 0000000000006920 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  __list_del_entry include/linux/list.h:132 [inline]
-> >  list_del_init include/linux/list.h:204 [inline]
-> >  list_lru_del+0x11d/0x620 mm/list_lru.c:158
-> >  inode_lru_list_del fs/inode.c:450 [inline]
-> >  iput_final fs/inode.c:1568 [inline]
-> >  iput+0x52c/0x900 fs/inode.c:1597
-> >  __sock_release+0x20e/0x280 net/socket.c:617
-> >  sock_release+0x18/0x20 net/socket.c:625
-> >  rds_tcp_accept_one+0x5a9/0xc00 net/rds/tcp_listen.c:251
-> >  rds_tcp_accept_worker+0x56/0x80 net/rds/tcp.c:525
-> >  process_one_work+0xa05/0x17a0 kernel/workqueue.c:2264
-> >  worker_thread+0x98/0xe40 kernel/workqueue.c:2410
-> >  kthread+0x361/0x430 kernel/kthread.c:255
-> >  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-> > Modules linked in:
-> > ---[ end trace 424f0561ef9bfe17 ]---
-> > RIP: 0010:__list_del_entry_valid+0x85/0xf5 lib/list_debug.c:51
-> > Code: 0f 84 e1 00 00 00 48 b8 22 01 00 00 00 00 ad de 49 39 c4 0f 84 e2 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 75 53 49 8b 14 24 4c 39 f2 0f 85 99 00 00 00 49 8d 7d
-> > RSP: 0018:ffffc90001b27af0 EFLAGS: 00010246
-> > RAX: dffffc0000000000 RBX: ffff888020040c60 RCX: ffffffff81a1dda6
-> > RDX: 0000000000000000 RSI: ffffffff81a1dba1 RDI: ffff888020040c68
-> > RBP: ffffc90001b27b08 R08: ffff88809f18e280 R09: fffff52000364f51
-> > R10: fffff52000364f50 R11: 0000000000000003 R12: 0000000000000000
-> > R13: 0000000000000000 R14: ffff888020040c60 R15: ffff888020040c68
-> > FS:  0000000000000000(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007f78a44de000 CR3: 000000008c993000 CR4: 00000000001426e0
-> > DR0: 0000000000000000 DR1: 0000000000006920 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> >
-> >
-> > ---
-> > This bug is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this bug report. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+HEAD commit:    61a09258 Merge tag 'for-linus' of git://git.kernel.org/pub..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10a6d70de00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7aef917d2e37d731
+dashboard link: https://syzkaller.appspot.com/bug?extid=c3b8c2a85d37162cc6ab
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+c3b8c2a85d37162cc6ab@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+ODEBUG: free active (active state 0) object type: work_struct hint: smc_ib_port_event_work+0x0/0x340 net/smc/smc_ib.c:523
+WARNING: CPU: 0 PID: 298 at lib/debugobjects.c:488 debug_print_object lib/debugobjects.c:485 [inline]
+WARNING: CPU: 0 PID: 298 at lib/debugobjects.c:488 __debug_check_no_obj_freed lib/debugobjects.c:967 [inline]
+WARNING: CPU: 0 PID: 298 at lib/debugobjects.c:488 debug_check_no_obj_freed+0x45c/0x640 lib/debugobjects.c:998
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 298 Comm: kworker/u4:5 Not tainted 5.6.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events_unbound ib_unregister_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1e9/0x30e lib/dump_stack.c:118
+ panic+0x264/0x7a0 kernel/panic.c:221
+ __warn+0x209/0x210 kernel/panic.c:582
+ report_bug+0x1ac/0x2d0 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:174 [inline]
+ do_error_trap+0xca/0x1c0 arch/x86/kernel/traps.c:267
+ do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:debug_print_object lib/debugobjects.c:485 [inline]
+RIP: 0010:__debug_check_no_obj_freed lib/debugobjects.c:967 [inline]
+RIP: 0010:debug_check_no_obj_freed+0x45c/0x640 lib/debugobjects.c:998
+Code: 74 08 4c 89 f7 e8 64 26 18 fe 4d 8b 06 48 c7 c7 13 08 d1 88 48 c7 c6 cf f8 ce 88 48 89 da 89 e9 4d 89 f9 31 c0 e8 14 c0 ae fd <0f> 0b 48 ba 00 00 00 00 00 fc ff df ff 05 56 28 b1 05 48 8b 5c 24
+RSP: 0018:ffffc90001e07b78 EFLAGS: 00010046
+RAX: 4ee5a22e59a59c00 RBX: ffffffff88d4e56a RCX: ffff8880a8a14440
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff815e16e6 R09: ffffed1015d04592
+R10: ffffed1015d04592 R11: 0000000000000000 R12: ffff88809325f864
+R13: ffffffff8b558e00 R14: ffffffff890d13a0 R15: ffffffff87bf6590
+ kfree+0xfc/0x220 mm/slab.c:3756
+ remove_client_context+0xb3/0x1e0 drivers/infiniband/core/device.c:724
+ disable_device+0xec/0x2e0 drivers/infiniband/core/device.c:1268
+ __ib_unregister_device+0x6c/0x160 drivers/infiniband/core/device.c:1435
+ ib_unregister_work+0x15/0x30 drivers/infiniband/core/device.c:1545
+ process_one_work+0x76e/0xfd0 kernel/workqueue.c:2264
+ worker_thread+0xa7f/0x1450 kernel/workqueue.c:2410
+ kthread+0x317/0x340 kernel/kthread.c:255
+ ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
