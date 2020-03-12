@@ -2,89 +2,201 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0E418217D
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Mar 2020 20:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E93D818277E
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2020 04:46:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730705AbgCKTDQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Mar 2020 15:03:16 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:33244 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730805AbgCKTDQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 Mar 2020 15:03:16 -0400
-Received: by mail-qt1-f194.google.com with SMTP id d22so2451348qtn.0
-        for <linux-rdma@vger.kernel.org>; Wed, 11 Mar 2020 12:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vPEXaVzZ83ctsAcbnGyir6CbgBRHZk7g043rsBdHS7A=;
-        b=UT46SWQURx3Jox3NieovHdHKn1S/dJt42j0ej3amOv24/IYkMP4E7ImEe8LHZL8ib3
-         qgukaPorVF+fAF3Eh/1eWul7pf5fDMb1fMY74r0N2nSLBeWGD+YeYbkvy1swMmh5cYPu
-         zvhSzSEbXaOTIv4C+QvGsD8/+4DBnoweKHDAEEMktY3mk8kNgPdoZZCPMbWuXuhaoZWX
-         t60cICXzvoz4xFAfHwFrBFTYV27+fxJ5WjzO9RzjrFeUXyfO6B0hdQV2C5877snrwuqH
-         cN00+ygB1DN5YsHND14hOWG31WlD4svEEFV55ixVmhjpniVRPb9Fae2lNVQZ6N1jY2Lq
-         ZOjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vPEXaVzZ83ctsAcbnGyir6CbgBRHZk7g043rsBdHS7A=;
-        b=oDceqGjnYtrADYkDKkpJPzhEOmccbTC103UqL6UAPBTyZ2syjy8R257OGvPnRfwkq8
-         aHVUGBgr8ZHHbAxLsj5BDL73QvcqlWEEN0SyQv/y9GX008aU9b6SlIpQ5+xZbYp1DB/p
-         M+9p27oSXlBcL3e6VzV4H8zSNhlG11342I8wx1Bt/QhpLTmiGQm4IjJ/VxVV39WaBUld
-         1LiK62IllkPyEzqUW7Zd+MJ+QFgzKX5tU6u5Z9ciJqYmehpqGUdf4eI2aEXowfsSg8Oh
-         r0jh5NZRXTNCOSvQSGAI9NEwf2LxPwSheigp6AAK+Aks4sHQ+NmMeYh7MHO9ibMJ0Hzx
-         TowA==
-X-Gm-Message-State: ANhLgQ27NWljK/ER9KiFK8XJS6FTgSgLuLCWzApURL+6vbDxM/Nrvl9J
-        43IuF+9OPywJ5O8iU2eu6PMM2w==
-X-Google-Smtp-Source: ADFU+vu5sssFtROMrydzHyogrnks202IHFdOtGSlESGnx7j483omqNKOGCOJiKW9YhoVfjVOy9zT8g==
-X-Received: by 2002:ac8:5448:: with SMTP id d8mr3912011qtq.205.1583953394809;
-        Wed, 11 Mar 2020 12:03:14 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id w2sm26029985qto.73.2020.03.11.12.03.14
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 11 Mar 2020 12:03:14 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jC6dN-0001Ox-Ur; Wed, 11 Mar 2020 16:03:13 -0300
-Date:   Wed, 11 Mar 2020 16:03:13 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        axboe@kernel.dk, hch@infradead.org, sagi@grimberg.me,
-        bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
-        danil.kipnis@cloud.ionos.com, rpenyaev@suse.de,
-        pankaj.gupta@cloud.ionos.com
-Subject: Re: [PATCH v10 13/26] RDMA/rtrs: include client and server modules
- into kernel compilation
-Message-ID: <20200311190313.GI31668@ziepe.ca>
-References: <20200311161240.30190-1-jinpu.wang@cloud.ionos.com>
- <20200311161240.30190-14-jinpu.wang@cloud.ionos.com>
+        id S2387708AbgCLDqH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Mar 2020 23:46:07 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11630 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387657AbgCLDqH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 11 Mar 2020 23:46:07 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 97D6FD3605F2D43331B9;
+        Thu, 12 Mar 2020 11:46:03 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 12 Mar 2020 11:45:55 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH v2 for-next] RDMA/hns: Support to set mininum depth of qp to 0
+Date:   Thu, 12 Mar 2020 11:42:16 +0800
+Message-ID: <1583984536-19200-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200311161240.30190-14-jinpu.wang@cloud.ionos.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 11, 2020 at 05:12:27PM +0100, Jack Wang wrote:
-> Add rtrs Makefile, Kconfig and also corresponding lines into upper
-> layer infiniband/ulp files.
-> 
-> Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> ---
->  drivers/infiniband/Kconfig           |  1 +
->  drivers/infiniband/ulp/Makefile      |  1 +
->  drivers/infiniband/ulp/rtrs/Kconfig  | 27 +++++++++++++++++++++++++++
->  drivers/infiniband/ulp/rtrs/Makefile | 15 +++++++++++++++
->  4 files changed, 44 insertions(+)
->  create mode 100644 drivers/infiniband/ulp/rtrs/Kconfig
->  create mode 100644 drivers/infiniband/ulp/rtrs/Makefile
+From: Lang Cheng <chenglang@huawei.com>
 
-How is this using ib_devices without having a struct ib_client ?
+Minimum depth of qp should be allowed to be set to 0 according to the
+firmware configuration. And when qp is changed from reset to reset, the
+capability of minimum qp depth was used to identify hardware of hip06,
+it should be changed into a more readable form.
 
-Jason
+Signed-off-by: Lang Cheng <chenglang@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
+---
+Previous discussions can be found at:
+https://patchwork.kernel.org/patch/11415067/
+
+Changes since v1:
+- Fix comments from Leon about calculation of max_cnt, check for qp's depth
+  and modification of the prints.
+- Optimize logic of codes to make them more readable.
+- Replace dev_err() with ibdev_err().
+
+ drivers/infiniband/hw/hns/hns_roce_qp.c | 77 ++++++++++++++-------------------
+ 1 file changed, 33 insertions(+), 44 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 5a28d62..22d438b 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -359,52 +359,44 @@ static int set_rq_size(struct hns_roce_dev *hr_dev,
+ 				struct ib_qp_cap *cap, bool is_user, int has_rq,
+ 				struct hns_roce_qp *hr_qp)
+ {
+-	struct ib_device *ibdev = &hr_dev->ib_dev;
+ 	u32 max_cnt;
+ 
+-	/* Check the validity of QP support capacity */
+-	if (cap->max_recv_wr > hr_dev->caps.max_wqes ||
+-	    cap->max_recv_sge > hr_dev->caps.max_rq_sg) {
+-		ibdev_err(ibdev, "Failed to check max recv WR %d and SGE %d\n",
+-			  cap->max_recv_wr, cap->max_recv_sge);
+-		return -EINVAL;
+-	}
+-
+ 	/* If srq exist, set zero for relative number of rq */
+ 	if (!has_rq) {
+ 		hr_qp->rq.wqe_cnt = 0;
+ 		hr_qp->rq.max_gs = 0;
+ 		cap->max_recv_wr = 0;
+ 		cap->max_recv_sge = 0;
+-	} else {
+-		if (is_user && (!cap->max_recv_wr || !cap->max_recv_sge)) {
+-			ibdev_err(ibdev, "Failed to check user max recv WR and SGE\n");
+-			return -EINVAL;
+-		}
+ 
+-		if (hr_dev->caps.min_wqes)
+-			max_cnt = max(cap->max_recv_wr, hr_dev->caps.min_wqes);
+-		else
+-			max_cnt = cap->max_recv_wr;
++		return 0;
++	}
+ 
+-		hr_qp->rq.wqe_cnt = roundup_pow_of_two(max_cnt);
++	/* Check the validity of QP support capacity */
++	if (!cap->max_recv_wr || cap->max_recv_wr > hr_dev->caps.max_wqes ||
++	    cap->max_recv_sge > hr_dev->caps.max_rq_sg) {
++		ibdev_err(&hr_dev->ib_dev, "RQ config error, depth=%u, sge=%d\n",
++			  cap->max_recv_wr, cap->max_recv_sge);
++		return -EINVAL;
++	}
+ 
+-		if ((u32)hr_qp->rq.wqe_cnt > hr_dev->caps.max_wqes) {
+-			ibdev_err(ibdev, "Failed to check RQ WQE count limit\n");
+-			return -EINVAL;
+-		}
++	max_cnt = max(cap->max_recv_wr, hr_dev->caps.min_wqes);
+ 
+-		max_cnt = max(1U, cap->max_recv_sge);
+-		hr_qp->rq.max_gs = roundup_pow_of_two(max_cnt);
+-		if (hr_dev->caps.max_rq_sg <= HNS_ROCE_SGE_IN_WQE)
+-			hr_qp->rq.wqe_shift =
+-					ilog2(hr_dev->caps.max_rq_desc_sz);
+-		else
+-			hr_qp->rq.wqe_shift =
+-					ilog2(hr_dev->caps.max_rq_desc_sz
+-					      * hr_qp->rq.max_gs);
++	hr_qp->rq.wqe_cnt = roundup_pow_of_two(max_cnt);
++	if ((u32)hr_qp->rq.wqe_cnt > hr_dev->caps.max_wqes) {
++		ibdev_err(&hr_dev->ib_dev, "rq depth %u too large\n",
++			  cap->max_recv_wr);
++		return -EINVAL;
+ 	}
+ 
++	max_cnt = max(1U, cap->max_recv_sge);
++	hr_qp->rq.max_gs = roundup_pow_of_two(max_cnt);
++
++	if (hr_dev->caps.max_rq_sg <= HNS_ROCE_SGE_IN_WQE)
++		hr_qp->rq.wqe_shift = ilog2(hr_dev->caps.max_rq_desc_sz);
++	else
++		hr_qp->rq.wqe_shift = ilog2(hr_dev->caps.max_rq_desc_sz *
++					    hr_qp->rq.max_gs);
++
+ 	cap->max_recv_wr = hr_qp->rq.wqe_cnt;
+ 	cap->max_recv_sge = hr_qp->rq.max_gs;
+ 
+@@ -637,29 +629,27 @@ static int set_extend_sge_param(struct hns_roce_dev *hr_dev,
+ static int set_kernel_sq_size(struct hns_roce_dev *hr_dev,
+ 			      struct ib_qp_cap *cap, struct hns_roce_qp *hr_qp)
+ {
+-	struct device *dev = hr_dev->dev;
+ 	u32 page_size;
+ 	u32 max_cnt;
+ 	int size;
+ 	int ret;
+ 
+-	if (cap->max_send_wr  > hr_dev->caps.max_wqes  ||
++	if (!cap->max_send_wr || cap->max_send_wr > hr_dev->caps.max_wqes ||
+ 	    cap->max_send_sge > hr_dev->caps.max_sq_sg ||
+ 	    cap->max_inline_data > hr_dev->caps.max_sq_inline) {
+-		dev_err(dev, "SQ WR or sge or inline data error!\n");
++		ibdev_err(&hr_dev->ib_dev,
++			  "SQ WR or sge or inline data error!\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	hr_qp->sq.wqe_shift = ilog2(hr_dev->caps.max_sq_desc_sz);
+ 
+-	if (hr_dev->caps.min_wqes)
+-		max_cnt = max(cap->max_send_wr, hr_dev->caps.min_wqes);
+-	else
+-		max_cnt = cap->max_send_wr;
++	max_cnt = max(cap->max_send_wr, hr_dev->caps.min_wqes);
+ 
+ 	hr_qp->sq.wqe_cnt = roundup_pow_of_two(max_cnt);
+ 	if ((u32)hr_qp->sq.wqe_cnt > hr_dev->caps.max_wqes) {
+-		dev_err(dev, "while setting kernel sq size, sq.wqe_cnt too large\n");
++		ibdev_err(&hr_dev->ib_dev,
++			  "while setting kernel sq size, sq.wqe_cnt too large\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -672,7 +662,7 @@ static int set_kernel_sq_size(struct hns_roce_dev *hr_dev,
+ 
+ 	ret = set_extend_sge_param(hr_dev, hr_qp);
+ 	if (ret) {
+-		dev_err(dev, "set extend sge parameters fail\n");
++		ibdev_err(&hr_dev->ib_dev, "set extend sge parameters fail\n");
+ 		return ret;
+ 	}
+ 
+@@ -1394,11 +1384,10 @@ int hns_roce_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 		goto out;
+ 
+ 	if (cur_state == new_state && cur_state == IB_QPS_RESET) {
+-		if (hr_dev->caps.min_wqes) {
++		if (hr_dev->hw_rev == HNS_ROCE_HW_VER1) {
+ 			ret = -EPERM;
+ 			ibdev_err(&hr_dev->ib_dev,
+-				"cur_state=%d new_state=%d\n", cur_state,
+-				new_state);
++				  "RST2RST state is not supported\n");
+ 		} else {
+ 			ret = 0;
+ 		}
+-- 
+2.8.1
+
