@@ -2,83 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C174518368E
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2020 17:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F33C1836CA
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2020 18:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726254AbgCLQuj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Mar 2020 12:50:39 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:36439 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726194AbgCLQuj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Mar 2020 12:50:39 -0400
-Received: by mail-pj1-f67.google.com with SMTP id l41so2897224pjb.1
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2020 09:50:39 -0700 (PDT)
+        id S1726127AbgCLRCj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Mar 2020 13:02:39 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:46046 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725268AbgCLRCj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Mar 2020 13:02:39 -0400
+Received: by mail-qk1-f193.google.com with SMTP id c145so7382416qke.12
+        for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2020 10:02:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=qKBVWVsugFU04YAVuhXGLDVKQxdaMcjJGlVs1Nts+OQ=;
-        b=NSfBzKS7ag5ICxadRqW6xj/YtoSOMCabC6chFnU7XZMQLTiY2U/kegxt0CH0Us5TGt
-         1foz2exZz0nVoPugUyAC92Cuc7M/oAo9SvgMFVQxGHM8Z01oJI3Ul0eEeWrldYrwOSpi
-         N/OS7BlGZgPkIpCzpy6aqPOZIctf0VUxgLXZQYrUoev6e9Cq6Spvxw+kwL6N+Hrz/Bnv
-         fMtqlnoWnEfHBX4wC5Chci8Wau1Em4i0HRtS8Qno6rCABaGnAS4YGmko9dh274ChBiV/
-         SMc9L2CTSbHXiXKMAH8NsFvWjEz4svOKAOO1G71tz4mRJqSofM8YtJR5KIETW+4NCAnT
-         HTxw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Xi7vnBGyUQ5Xv4v0XvNzbA+dP/GGqC/hSFwLO7EJg0Q=;
+        b=dXd/cahcOWLE4lQgb3IunguCqmbL1n4N/5xy1HFVHfXUL4VejuPmTNxvQ/h6kbaBE1
+         BLDDm551I+E08T4tTJj8Io4/kvAa5ljM4NpqSjHSXjg/4f6RhLO1EUQBk57ZudSS4NvK
+         PICCIAjGCBHpEgt3ZXOMy6zzuqAdtlpXW1G2L0KS87GhG7XMgmzPVoun2U58L+jkbvUU
+         IUDCrchNCrf0WjaY2EoKHftXafb1Xf8BWmxVVTFH62twXrwtV0QLKfoPyF+ooWOCzAcP
+         Ul24CqIo2D+0/nGfUPZUbT8hEIAFHzUtc2GQ4+p4egprcuCOeidlWQzyNNTLlCJvV+ki
+         0Tkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=qKBVWVsugFU04YAVuhXGLDVKQxdaMcjJGlVs1Nts+OQ=;
-        b=HMPHbNFNu2LN7WKVxzm+zsS6CITpDUTdcpSAlG53DE8FTH9yPCKzTRneWw6P8IY+BH
-         RM3ITF8Vh1u3JkhnWJ3lQS5Wn5Ry5c4iIjIgFFEt38n6qJp/HjRu1cxUQzgnt590Rz4+
-         N/fjp9xUoF0mmVlgH1qCGrvcA4EggNCPRptsZQEHgzp4ZijhDXr6RnXrDqdyrVCAP1cx
-         wLsQtnIdT9LWL16RY0Ln5VmV0Dm8en2Mi1mXZBfq2u9t3GgcsAbgXIaMxFMozCY6hcGg
-         ejpsmhlpjwA0gJ+oNQAzkz9uL05JK+NS5xzh3rYKRv44LqB1ZTN0INhkFMryp5/O39Q/
-         l4lw==
-X-Gm-Message-State: ANhLgQ2PnLzyIsTSsPUkBhG+Mfhbk+XwJRFMe8aGg00Dpvr6F5Cx7oAA
-        14HZVX8up4JhmCxvHOclMdQ=
-X-Google-Smtp-Source: ADFU+vu7yrii9DQflNygew8QhevMsz95MmfqlE440B/9X+Bfj5GOcxCZtte4afKusRam3LHU76+9yw==
-X-Received: by 2002:a17:902:8c94:: with SMTP id t20mr8784280plo.170.1584031838695;
-        Thu, 12 Mar 2020 09:50:38 -0700 (PDT)
-Received: from R04710.localdomain ([121.207.209.132])
-        by smtp.googlemail.com with ESMTPSA id y1sm51388737pgs.74.2020.03.12.09.50.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Mar 2020 09:50:38 -0700 (PDT)
-From:   huangqingxin <tigerinxm@gmail.com>
-To:     monis@mellanox.com
-Cc:     dledford@redhat.com, jgg@ziepe.ca, zyjzyj2000@gmail.com,
-        linux-rdma@vger.kernel.org,
-        huangqingxin <huangqingxin@ruijie.com.cn>
-Subject: [PATCH] RDMA/rxe: Advance req.wqe_index when rxe_requester meets error
-Date:   Fri, 13 Mar 2020 00:50:32 +0800
-Message-Id: <20200312165032.11644-1-tigerinxm@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Xi7vnBGyUQ5Xv4v0XvNzbA+dP/GGqC/hSFwLO7EJg0Q=;
+        b=sDMz9ZYp2Z3NXqxO3+P5+4EeNYV5nv858oiuEuYOY7ydVZgeGyTXQoqm5G8enJgUH5
+         3RgEPOrhpNdnug1agsWJuEnVpPHAo3LV1tGsuzqTK0fwvYUgxAr9BUgU+VB63tE7ib6J
+         YYG6wTeozN8BkK9PJaWPk1S3CMPjt+7bZEJRFgIa+l6vNjCbh/55OXLY1GRSMNxA0JXy
+         smaEmCaczLnDXXn5bQFwvfLTI9mhxftIl5dUDjSR47KBOWkd5Yoi4Igof2+ooix7c9k8
+         422zVOCCTGZzfrP92l4Hgiw3kpYTBu/11clo5anORdUGawrKeIQWp4SeQIYosf7zm5EG
+         8c0A==
+X-Gm-Message-State: ANhLgQ226NvO1r5Fq+4XkhX+uXQFSDjpb05tBEusaf2Rc+pomS+lm5tv
+        kGG+cJ7W6LnkRFSXFknNv4qjVQ==
+X-Google-Smtp-Source: ADFU+vvPT7M/In+SAcTBW/pYi5tierhOwB3h4cyPGqfdquLoS0MdGjVRHhLJMjabo/rhJpvm52aVIA==
+X-Received: by 2002:a37:85c2:: with SMTP id h185mr8683953qkd.446.1584032558138;
+        Thu, 12 Mar 2020 10:02:38 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id w11sm23770281qti.54.2020.03.12.10.02.37
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 12 Mar 2020 10:02:37 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jCRED-0000et-4S; Thu, 12 Mar 2020 14:02:37 -0300
+Date:   Thu, 12 Mar 2020 14:02:37 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Weihang Li <liweihang@huawei.com>, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, linuxarm@huawei.com
+Subject: Re: [PATCH for-next] RDMA/hns: Add interface to support lock free
+Message-ID: <20200312170237.GS31668@ziepe.ca>
+References: <1583999290-20514-1-git-send-email-liweihang@huawei.com>
+ <20200312092640.GA31504@unreal>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200312092640.GA31504@unreal>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: huangqingxin <huangqingxin@ruijie.com.cn>
+On Thu, Mar 12, 2020 at 11:26:40AM +0200, Leon Romanovsky wrote:
+> On Thu, Mar 12, 2020 at 03:48:10PM +0800, Weihang Li wrote:
+> > From: Jiaran Zhang <zhangjiaran@huawei.com>
+> >
+> > In some scenarios, ULP can ensure that there is no concurrency when
+> > processing io, thus lock free can be used to improve performance.
+> >
+> > Signed-off-by: Jiaran Zhang <zhangjiaran@huawei.com>
+> > Signed-off-by: Yixian Liu <liuyixian@huawei.com>
+> > Signed-off-by: Weihang Li <liweihang@huawei.com>
+> >  drivers/infiniband/hw/hns/hns_roce_device.h |   1 +
+> >  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 112 ++++++++++++++++++++--------
+> >  drivers/infiniband/hw/hns/hns_roce_qp.c     |   1 +
+> >  3 files changed, 84 insertions(+), 30 deletions(-)
+> >
+> 
+> NAK, everything in this patch is wrong, starting from exposure,
+> implementation and description.
 
-In the rxe_requester, we may fail to xmit packet for missing GID entry.
-We should also advance req.wqe_index too.Otherwise, we won't be able
-to get the new next wqe, and completer would consume the wrong wqe.
+Yes, complete no on a module parameter to disable locking.
 
-Signed-off-by: huangqingxin <huangqingxin@ruijie.com.cn>
----
- drivers/infiniband/sw/rxe/rxe_req.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index e5031172c..08f4bea06 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -756,6 +756,7 @@ int rxe_requester(void *arg)
- err:
- 	wqe->status = IB_WC_LOC_PROT_ERR;
- 	wqe->state = wqe_state_error;
-+	qp->req.wqe_index = next_index(qp->sq.queue, qp->req.wqe_index);
- 	__rxe_do_task(&qp->comp.task);
- 
- exit:
--- 
-2.17.1
-
+Jason
