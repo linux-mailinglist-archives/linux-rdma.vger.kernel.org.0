@@ -2,111 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B060182FC7
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2020 13:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED25518344D
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Mar 2020 16:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726632AbgCLMDG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Mar 2020 08:03:06 -0400
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:43846 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgCLMDF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Mar 2020 08:03:05 -0400
-Received: by mail-qv1-f66.google.com with SMTP id c28so2422774qvb.10
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2020 05:03:03 -0700 (PDT)
+        id S1727693AbgCLPRv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Mar 2020 11:17:51 -0400
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:37978 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727455AbgCLPRv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Mar 2020 11:17:51 -0400
+Received: by mail-qv1-f67.google.com with SMTP id p60so2785195qva.5
+        for <linux-rdma@vger.kernel.org>; Thu, 12 Mar 2020 08:17:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=g1Wdzvpjgq0rmXr47VZEoreiXSWsPwwFS/Fg+1mqi9I=;
-        b=f6V4M7Hj/YKRgFvnQ0ip1pwXT/78X97E4YMfS3/VrzK3Dc9eizGIcR05Sb+2NADqtC
-         j/ZGjHCtaX/0DSsBpUED0TJCcyC3MjcD/3wuKE/qrEiQ1roSL7/LFdD4HqGNG8CORa7u
-         wJHJp6PcbrXDdqjM6PGcCeoy40bnT52dACFfAGtHnMWLDiAfAXgCsbzQmzRQAdrvzXEG
-         CYKssZ+zrnfq6xM0TGQ5KhgU+rNcqPoUq5etc6Gb/HpoPEThuzHg2LbYr5PgS5IL7wK8
-         AA3Mi7oUwJCp2UB7a00mC6qImnG6RV1wFF0P8IIxs1HsFz0srIM4/UAn+Pk27Wqdsel6
-         DYIA==
+        bh=ucB0jSYs7otvL+Roe4QFbncbHLIRwSx5DdcgmtIHpGI=;
+        b=DZqs4TO/YQ1WXVFv4NNXH/1f3ChovaXoOleqUsNYg1faonPhV3acnKgRE9fakNAfQ+
+         ojunQdZ18rtTzshYz8pc69vmqnTIrLJ/nAqGlbFAZAXa0oFo402XVNje7hc3PK9vBw6P
+         bIGSwaNxXi/Xq5+7Ish4Ljnw1JIJlvJkO/jt+NGa3eAkA5CPprRXfXJZQ5b4JJL5ciw5
+         XIuOGnQjX5HVPZ+v8/CuyttFyl6Z804UvSd1RwehT1BeFDPehqwsJAf5ydsT7CCqK9cz
+         rKh/yd9Kogy7wrxs3oe8oi+Qxg+qjvwJ0O1wpIUXJ3davcOEOvvGHer0Nd2COT8NfLXb
+         gPFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=g1Wdzvpjgq0rmXr47VZEoreiXSWsPwwFS/Fg+1mqi9I=;
-        b=XnTnttkgkKCp5BqnOe9vLPN0wufxdU8ei0Xr6nzdR5pAN/Os5I+B7C/oCT0+jG5iz5
-         Ub83QhaV27eL/BW7zzFlNYTBE4tiIZJE51cTFeiwGbhRqFK2GIKwzLMOwiN0zrdSxwUE
-         8KsWiJ6pT7Rfw87x0/EAOPl/1GkUJMrGClkGERsOKVCrkm9l1Ia1TyW+2nDsRGGtW7Wt
-         aE1F+XDTM209vhUvAmZS+cVCG1H5bAjxEENPJgvbuXOxy+P5BGy6cvmXxmhAp6Hj0AI5
-         +hzZMLQ1AuTBsd0HzNPEtpQuF+T9IsjXRQqtPQWt9vIS0Es8Q1utR+d7jKvv1rAcMWFl
-         n7oA==
-X-Gm-Message-State: ANhLgQ2dPHJZ59ZZ+yptlzuQLQGdyqAl96UFI/cKvE6oMPq/wizfiCTE
-        NjZ3uTt5rPZBLRGDxC/SR6iaGw==
-X-Google-Smtp-Source: ADFU+vtcfzf9wRVww1Ak9MPTXQ7fpkzfVrarAblgpse0DpS7sRPucb1fwZUXlmxYkAKCsOzJdNKfCA==
-X-Received: by 2002:a0c:ffd3:: with SMTP id h19mr6933623qvv.166.1584014582927;
-        Thu, 12 Mar 2020 05:03:02 -0700 (PDT)
+        bh=ucB0jSYs7otvL+Roe4QFbncbHLIRwSx5DdcgmtIHpGI=;
+        b=iiwwcy2QMIs59T8mf6FBlv948acJhBgsd0Vd7yjfQ6ePlUC2s2XqxAQtzZ/m9qQdp5
+         bbvn+JQaJTPW6XnhAnrBPSYdU+dAEba0Q7Y8Gj+W+ObYDn+8xGMbd46kCvN0k+84fLdu
+         1KEyH3gyk06Bj9TwNUb8GNT5Nf7bK/+jY73Jo1hjwbh5zDc08oTdthmTSAP9Wno5aMVl
+         V57mGVaI5hUAvc4Eo8CF25Jyrj82Vm1LYtdGtStLqLYbKwYZ9Zc1x7Wmq8Kkv9FgjPE7
+         9+5ZVXTo1+gGtpoHfteVQVT/cLswUvnnRa1+4cZfks2roUZ3odTge4VqDkGDRon68pNW
+         H6jw==
+X-Gm-Message-State: ANhLgQ3CznqfIUxsRfCPV0Z103j09kGfESCqHqc0l4hd9YDDBTyojCnh
+        wMAe/KchbiM+5fYWT+J84KOp7Q==
+X-Google-Smtp-Source: ADFU+vsie6w+TM81UO1bRct3BslZgyNzyOBijs1IZJ0N9tNY/N449Z2WBPij8ldirt/oZ1ctWF5yaA==
+X-Received: by 2002:a05:6214:1351:: with SMTP id b17mr7980984qvw.251.1584026269849;
+        Thu, 12 Mar 2020 08:17:49 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id w204sm14610945qkb.133.2020.03.12.05.03.00
+        by smtp.gmail.com with ESMTPSA id x188sm18344452qka.53.2020.03.12.08.17.49
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 12 Mar 2020 05:03:01 -0700 (PDT)
+        Thu, 12 Mar 2020 08:17:49 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jCMYG-0004u9-4k; Thu, 12 Mar 2020 09:03:00 -0300
-Date:   Thu, 12 Mar 2020 09:03:00 -0300
+        id 1jCPam-0007eN-LV; Thu, 12 Mar 2020 12:17:48 -0300
+Date:   Thu, 12 Mar 2020 12:17:48 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Danil Kipnis <danil.kipnis@cloud.ionos.com>
-Cc:     Jack Wang <jinpu.wang@cloud.ionos.com>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Roman Penyaev <rpenyaev@suse.de>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Subject: Re: [PATCH v10 13/26] RDMA/rtrs: include client and server modules
- into kernel compilation
-Message-ID: <20200312120300.GJ31668@ziepe.ca>
-References: <20200311161240.30190-1-jinpu.wang@cloud.ionos.com>
- <20200311161240.30190-14-jinpu.wang@cloud.ionos.com>
- <20200311190313.GI31668@ziepe.ca>
- <CAHg0HuxHq7_hEkYjpT7-o9w3_T5WVvot2cGLnDp1_mB62Xd40Q@mail.gmail.com>
+To:     syzbot <syzbot+c3b8c2a85d37162cc6ab@syzkaller.appspotmail.com>
+Cc:     dledford@redhat.com, kamalheib1@gmail.com, leon@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        parav@mellanox.com, syzkaller-bugs@googlegroups.com
+Subject: Re: WARNING: ODEBUG bug in remove_client_context
+Message-ID: <20200312151748.GP31668@ziepe.ca>
+References: <00000000000041c6a905a0a295ef@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHg0HuxHq7_hEkYjpT7-o9w3_T5WVvot2cGLnDp1_mB62Xd40Q@mail.gmail.com>
+In-Reply-To: <00000000000041c6a905a0a295ef@google.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 11:50:59AM +0100, Danil Kipnis wrote:
-> On Wed, Mar 11, 2020 at 8:03 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Wed, Mar 11, 2020 at 05:12:27PM +0100, Jack Wang wrote:
-> > > Add rtrs Makefile, Kconfig and also corresponding lines into upper
-> > > layer infiniband/ulp files.
-> > >
-> > > Signed-off-by: Danil Kipnis <danil.kipnis@cloud.ionos.com>
-> > > Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-> > >  drivers/infiniband/Kconfig           |  1 +
-> > >  drivers/infiniband/ulp/Makefile      |  1 +
-> > >  drivers/infiniband/ulp/rtrs/Kconfig  | 27 +++++++++++++++++++++++++++
-> > >  drivers/infiniband/ulp/rtrs/Makefile | 15 +++++++++++++++
-> > >  4 files changed, 44 insertions(+)
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/Kconfig
-> > >  create mode 100644 drivers/infiniband/ulp/rtrs/Makefile
-> >
-> > How is this using ib_devices without having a struct ib_client ?
-> Hi Jason,
+On Wed, Mar 11, 2020 at 11:37:12PM -0700, syzbot wrote:
+> Hello,
 > 
-> After we resolved address using rdma_resolve_add() we access the
-> ib_device from rdma_cm_id. The ib_device has been registered on
-> rdma_cm module load in cma_init(). The handle device removal through
-> RDMA_CM_EVENT_DEVICE_REMOVAL.
+> syzbot found the following crash on:
+> 
+> HEAD commit:    61a09258 Merge tag 'for-linus' of git://git.kernel.org/pub..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10a6d70de00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7aef917d2e37d731
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c3b8c2a85d37162cc6ab
+> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> 
+> Unfortunately, I don't have any reproducer for this crash yet.
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+c3b8c2a85d37162cc6ab@syzkaller.appspotmail.com
 
-Hmm.. I actually don't know if this flow works OK in rdma cm or not..
-
-Actually I expect if I look at rdma cm, I'll find it is broken..
-
-However, it does sound like a reasonable approach, so nothing to do
-here.
+#syz dup: WARNING: ODEBUG bug in smc_ib_remove_dev
 
 Jason
