@@ -2,76 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AB218482B
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2020 14:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B9818482C
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2020 14:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgCMNbS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 Mar 2020 09:31:18 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:40327 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726554AbgCMNbS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Mar 2020 09:31:18 -0400
-Received: by mail-qt1-f195.google.com with SMTP id n5so7441707qtv.7
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Mar 2020 06:31:16 -0700 (PDT)
+        id S1726526AbgCMNba (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Mar 2020 09:31:30 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:42115 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726554AbgCMNba (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Mar 2020 09:31:30 -0400
+Received: by mail-qk1-f196.google.com with SMTP id e11so12396654qkg.9
+        for <linux-rdma@vger.kernel.org>; Fri, 13 Mar 2020 06:31:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=MT+D/yVil05s8jviALGlx07Y45/4YVEvBXc1yp1EOvg=;
-        b=co+1nn5udgzewl8OpLr3oGgDWJxzDqx74xwjzh93W3J7XojrMwBjlCqrG7xp+3F0wX
-         sT+S4+lrLURu6C+F1m05NJ13NHiI4DBvADrlbdnrwNiQAyfu5PYVwHvUKQzkxCJwJvdQ
-         P30GNH/QLQhC/5IYabeyljd3HH+0ZCyEuPsxOr4JeT8ByMN9A++izUtVZyZhNavuTRnh
-         jG4nx+HdeTaVPMiXtOKjEEFOT5Ve6pyAn7dYx4mT4lsQ56hB2+JAa6Q+3ddxDfG4GL85
-         yfItfsKbD4hp9D8tZoKtUA1tQUtM+5SHkxWQoqDsu8OnexKiWE8Px6UH/EKF5o83ymcL
-         /JcQ==
+        bh=F+DLY2+0HScyM8f6GeGB72MNJIQEOCLyyI+rWsPjjl4=;
+        b=HdpkarQ7GxgEqqiPY5SQ3t39X1j01QG8LHuXimNd4LZ4eDucQpTbqpazj16TUkXbpN
+         kCPYkx4GQInBPvyX3jxje5WjkbMWIOHlo+3vb/pEfNpd8TLHE/9G1Dl4vFzkDmcowZCD
+         SMULk539gSw8fbf38oRB7i9/frKt1rAhOxeEdsKyi8iUYbtD8AGblDH7KSDOkMkw6Mkq
+         5uO85UnuXZ0Bgf9HsPbitdkq0WInsJN67QPd5sonZXvaFmC9lbh3RlziWgE1mu1k71kP
+         onWdDqtwYP+GgXyc88bgdvFgMA1gPmmehC7JbeaAsKAJg7a7CB/mfX3HSkW7rPU3jX8r
+         29XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MT+D/yVil05s8jviALGlx07Y45/4YVEvBXc1yp1EOvg=;
-        b=GePbIGvuO20TgZ00CPe1mCvT0L6qh2BTaHSY5MfirLnLvaBnu8RHnEBKAdiJm3qQUr
-         keQvOCOzVrazREorNfbWef7ElOUvuMwjMIC6ztxon2Nm6DeNsbsJCW8V+NYYa15NQ/0K
-         9lkdz/R2wzweqwf4tzZUSayaV/o/GJmUTG6fwhcheI+OqOl0+esQa2HMzWyY51q5T2nd
-         dL4DrzftH/RDfCOzymKp/nJ+L8p5IzRmGi+pXFnniBVLAEGgwhL9DD5T1ligrjxw/7ph
-         orAy343iGTOKZ39aq5fRfh4DGPLu7I3fqp66RSwy4ZU84yf8Jo+29AZk0oxe2i0Yn69v
-         NSQQ==
-X-Gm-Message-State: ANhLgQ1BSxGIklS7gGaAKmR7nZSKwB8DPsLO0TWvQo6DYDd5ZMCzzLkI
-        PmfCN6ylEaxlMj8lr5vkTjdUOKy7uxA=
-X-Google-Smtp-Source: ADFU+vvVhvWEW1Ez/hKT6TmAQqf8TaX6x+Zrd2ANr4TmW6ViLg6y578XeimBwgrs9fFcEp3MmGAIQw==
-X-Received: by 2002:ac8:310b:: with SMTP id g11mr2332441qtb.128.1584106276162;
-        Fri, 13 Mar 2020 06:31:16 -0700 (PDT)
+        bh=F+DLY2+0HScyM8f6GeGB72MNJIQEOCLyyI+rWsPjjl4=;
+        b=id0IMZMrikKt01al8JCJ8+BvCsZzIk0vSf7VmyCWM/b3+Ynz2WMEzdicQq92hqXqjU
+         s+DoCjKTp40sAwrOlir3XTklWVpIk2VbIQRm+RwxZU04ZFl6z/AB7kRqthqVx6geTKsc
+         vQ0qIy5VBtCAnYcvF3w5AEjYnO8GzFutGZrV0Ud/+KFpo7BY2Uql3P7NqneXmrn+8X4o
+         4i/ERhwtBmz22YQ+KjnB72KwwYXnBoaBp1lKuB3MKdgDaw6GNz/c12PBdewM/PbySEb1
+         K7AvAF5AZEtcaRJzk0CBQxCX5QO81eUQ9GxUNYtDk62L0LN9VPmxvlMpyQv4V8TqGeKL
+         Khvg==
+X-Gm-Message-State: ANhLgQ2oGiugyiyJlk0c45maSD1+FtmUGEUDo5yLx4J8SlSBptJzPfyD
+        Po/Oq2x6O07EXRVCifo76VaPK+6Ynvw=
+X-Google-Smtp-Source: ADFU+vvNXw43gbn1/T2lJr3zCNeBB/Xp8//mf5zqj7r8aKgcdrCAvcw4Y+ALgsyHMrSY78mR3ecZgw==
+X-Received: by 2002:a37:404d:: with SMTP id n74mr12916072qka.73.1584106288773;
+        Fri, 13 Mar 2020 06:31:28 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id v80sm29186459qka.15.2020.03.13.06.31.14
+        by smtp.gmail.com with ESMTPSA id d141sm9054605qke.68.2020.03.13.06.31.28
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 13 Mar 2020 06:31:15 -0700 (PDT)
+        Fri, 13 Mar 2020 06:31:28 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1jCkPC-0004l4-HK; Fri, 13 Mar 2020 10:31:14 -0300
-Date:   Fri, 13 Mar 2020 10:31:14 -0300
+        id 1jCkPP-0004lH-Oc; Fri, 13 Mar 2020 10:31:27 -0300
+Date:   Fri, 13 Mar 2020 10:31:27 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     linux-rdma@vger.kernel.org
-Cc:     syzbot+da615ac67d4dbea32cbc@syzkaller.appspotmail.com
-Subject: Re: [PATCH rc] RDMA/nl: Do not permit empty devices names during
- RDMA_NLDEV_CMD_NEWLINK/SET
-Message-ID: <20200313133114.GA18232@ziepe.ca>
-References: <20200309191648.GA30852@ziepe.ca>
+To:     linux-rdma@vger.kernel.org, Parav Pandit <parav@mellanox.com>
+Cc:     syzbot+ab4dae63f7d310641ded@syzkaller.appspotmail.com
+Subject: Re: [PATCH rc] RDMA/core: Fix missing error check on dev_set_name()
+Message-ID: <20200313133127.GB18232@ziepe.ca>
+References: <20200309193200.GA10633@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200309191648.GA30852@ziepe.ca>
+In-Reply-To: <20200309193200.GA10633@ziepe.ca>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 09, 2020 at 04:16:48PM -0300, Jason Gunthorpe wrote:
-> Empty device names cannot be added to sysfs and crash with:
+On Mon, Mar 09, 2020 at 04:32:00PM -0300, Jason Gunthorpe wrote:
+> If name memory allocation fails the name will be left empty and
+> device_add_one() will crash:
 > 
->   kobject: (00000000f9de3792): attempted to be registered with empty name!
->   WARNING: CPU: 1 PID: 10856 at lib/kobject.c:234 kobject_add_internal+0x7ac/0x9a0 lib/kobject.c:234
+>   kobject: (0000000004952746): attempted to be registered with empty name!
+>   WARNING: CPU: 0 PID: 329 at lib/kobject.c:234 kobject_add_internal+0x7ac/0x9a0 lib/kobject.c:234
 >   Kernel panic - not syncing: panic_on_warn set ...
->   CPU: 1 PID: 10856 Comm: syz-executor459 Not tainted 5.6.0-rc3-syzkaller #0
+>   CPU: 0 PID: 329 Comm: syz-executor.5 Not tainted 5.6.0-rc2-syzkaller #0
 >   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 >   Call Trace:
 >    __dump_stack lib/dump_stack.c:77 [inline]
@@ -85,51 +85,38 @@ On Mon, Mar 09, 2020 at 04:16:48PM -0300, Jason Gunthorpe wrote:
 >    do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:286
 >    invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
 >   RIP: 0010:kobject_add_internal+0x7ac/0x9a0 lib/kobject.c:234
->   Code: 7a ca ca f9 e9 f0 f8 ff ff 4c 89 f7 e8 cd ca ca f9 e9 95 f9 ff ff e8 13 25 8c f9 4c 89 e6 48 c7 c7 a0 08 1a 89 e8 a3 76 5c f9 <0f> 0b 41 bd ea ff ff ff e9 52 ff ff ff e8 f2 24 8c f9 0f 0b e8 eb
->   RSP: 0018:ffffc90002006eb0 EFLAGS: 00010286
+>   Code: 1a 98 ca f9 e9 f0 f8 ff ff 4c 89 f7 e8 6d 98 ca f9 e9 95 f9 ff ff e8 c3 f0 8b f9 4c 89 e6 48 c7 c7 a0 0e 1a 89 e8 e3 41 5c f9 <0f> 0b 41 bd ea ff ff ff e9 52 ff ff ff e8 a2 f0 8b f9 0f 0b e8 9b
+>   RSP: 0018:ffffc90005b27908 EFLAGS: 00010286
 >   RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
->   RDX: 0000000000000000 RSI: ffffffff815eae46 RDI: fffff52000400dc8
->   RBP: ffffc90002006f08 R08: ffff8880972ac500 R09: ffffed1015d26659
->   R10: ffffed1015d26658 R11: ffff8880ae9332c7 R12: ffff888093034668
->   R13: 0000000000000000 R14: ffff8880a69d7600 R15: 0000000000000001
+>   RDX: 0000000000040000 RSI: ffffffff815eae46 RDI: fffff52000b64f13
+>   RBP: ffffc90005b27960 R08: ffff88805aeba480 R09: ffffed1015d06659
+>   R10: ffffed1015d06658 R11: ffff8880ae8332c7 R12: ffff8880a37fd000
+>   R13: 0000000000000000 R14: ffff888096691780 R15: 0000000000000001
 >    kobject_add_varg lib/kobject.c:390 [inline]
 >    kobject_add+0x150/0x1c0 lib/kobject.c:442
 >    device_add+0x3be/0x1d00 drivers/base/core.c:2412
->    ib_register_device drivers/infiniband/core/device.c:1371 [inline]
->    ib_register_device+0x93e/0xe40 drivers/infiniband/core/device.c:1343
->    rxe_register_device+0x52e/0x655 drivers/infiniband/sw/rxe/rxe_verbs.c:1231
->    rxe_add+0x122b/0x1661 drivers/infiniband/sw/rxe/rxe.c:302
->    rxe_net_add+0x91/0xf0 drivers/infiniband/sw/rxe/rxe_net.c:539
->    rxe_newlink+0x39/0x90 drivers/infiniband/sw/rxe/rxe.c:318
->    nldev_newlink+0x28a/0x430 drivers/infiniband/core/nldev.c:1538
->    rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:195 [inline]
->    rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
->    rdma_nl_rcv+0x5d9/0x980 drivers/infiniband/core/netlink.c:259
->    netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
->    netlink_unicast+0x59e/0x7e0 net/netlink/af_netlink.c:1329
->    netlink_sendmsg+0x91c/0xea0 net/netlink/af_netlink.c:1918
->    sock_sendmsg_nosec net/socket.c:652 [inline]
->    sock_sendmsg+0xd7/0x130 net/socket.c:672
->    ____sys_sendmsg+0x753/0x880 net/socket.c:2343
->    ___sys_sendmsg+0x100/0x170 net/socket.c:2397
->    __sys_sendmsg+0x105/0x1d0 net/socket.c:2430
->    __do_sys_sendmsg net/socket.c:2439 [inline]
->    __se_sys_sendmsg net/socket.c:2437 [inline]
->    __x64_sys_sendmsg+0x78/0xb0 net/socket.c:2437
+>    add_one_compat_dev drivers/infiniband/core/device.c:901 [inline]
+>    add_one_compat_dev+0x46a/0x7e0 drivers/infiniband/core/device.c:857
+>    rdma_dev_init_net+0x2eb/0x490 drivers/infiniband/core/device.c:1120
+>    ops_init+0xb3/0x420 net/core/net_namespace.c:137
+>    setup_net+0x2d5/0x8b0 net/core/net_namespace.c:327
+>    copy_net_ns+0x29e/0x5a0 net/core/net_namespace.c:468
+>    create_new_namespaces+0x403/0xb50 kernel/nsproxy.c:108
+>    unshare_nsproxy_namespaces+0xc2/0x200 kernel/nsproxy.c:229
+>    ksys_unshare+0x444/0x980 kernel/fork.c:2955
+>    __do_sys_unshare kernel/fork.c:3023 [inline]
+>    __se_sys_unshare kernel/fork.c:3021 [inline]
+>    __x64_sys_unshare+0x31/0x40 kernel/fork.c:3021
 >    do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
 >    entry_SYSCALL_64_after_hwframe+0x49/0xbe
 > 
-> Prevent empty names when checking the name provided from userspace during
-> newlink and rename.
-> 
 > Cc: stable@kernel.org
-> Fixes: 3856ec4b93c9 ("RDMA/core: Add RDMA_NLDEV_CMD_NEWLINK/DELLINK support")
-> Fixes: 05d940d3a3ec ("RDMA/nldev: Allow IB device rename through RDMA netlink")
-> Reported-by: syzbot+da615ac67d4dbea32cbc@syzkaller.appspotmail.com
+> Fixes: 4e0f7b907072 ("RDMA/core: Implement compat device/sysfs tree in net namespace")
+> Reported-by: syzbot+ab4dae63f7d310641ded@syzkaller.appspotmail.com
 > Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 > ---
->  drivers/infiniband/core/nldev.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/infiniband/core/device.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
 Applied to for-rc
 
