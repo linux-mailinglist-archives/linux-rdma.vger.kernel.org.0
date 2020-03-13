@@ -2,107 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DE418472C
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2020 13:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D61184780
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2020 14:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbgCMMrK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 Mar 2020 08:47:10 -0400
-Received: from mga12.intel.com ([192.55.52.136]:46773 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726795AbgCMMrJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 13 Mar 2020 08:47:09 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Mar 2020 05:47:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,548,1574150400"; 
-   d="scan'208";a="444293444"
-Received: from sedona.ch.intel.com ([10.2.136.157])
-  by fmsmga006.fm.intel.com with ESMTP; 13 Mar 2020 05:47:08 -0700
-Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 02DCl7UE045180;
-        Fri, 13 Mar 2020 05:47:07 -0700
-Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 02DCl5fZ015004;
-        Fri, 13 Mar 2020 08:47:05 -0400
-Subject: [PATCH] RDMA/core: Insure security pkey modify is not lost
-To:     jgg@ziepe.ca, dledford@redhat.com
-From:   Mike Marciniszyn <mike.marciniszyn@intel.com>
-Cc:     linux-rdma@vger.kernel.org
-Date:   Fri, 13 Mar 2020 08:47:05 -0400
-Message-ID: <20200313124704.14982.55907.stgit@awfm-01.aw.intel.com>
-User-Agent: StGit/0.16
+        id S1726533AbgCMNMc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Mar 2020 09:12:32 -0400
+Received: from mail-am6eur05on2043.outbound.protection.outlook.com ([40.107.22.43]:6154
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726216AbgCMNMc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 13 Mar 2020 09:12:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XqiS+R/n8o8kY8NJLjEl5Xb92rTZg3RkRcy1XwWJyzT1Jc8RUWgzIdgOJtDVHQbjMrJ4j6LrSlgR8sCw5WCrK9Qb67yKqU+Z+g+4hLho8l66Nr0SOL9shxntva63C41HvF7TDxTRDFSjd7ZxTAyQ23XtdzBhgNV6R3zz+VxsQd2upH5xPENDM1gg3kGzFaqOWl7UcyY9S6qDTBZyktQfox1MXTqPyy6+y199vKAFurpSoZ6vm59/IGwwG50GiZqzOahHJ9N7Tyv2R1inHSgo9BuUZhLIBw416ygkR26o7PfHbQHCJWwTyH+s2FZgnvL1c2CLij1pRWvGKgB/wC7vBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TOFdfJlZjB5wiaMuxFz29Aw1Ss+edPn/EPkHWtvLiuU=;
+ b=jnDK32i7T8kVbDYJuehPgl2/F6/HiXVgK7s5lM6ldVR1IbPCnHfnc468tQkDi5AX9IFY7H37RvlXazEiYFNDwXLEsCfmpGEaBi5myMQblY282Hx6tWt/wqVWnHmqNbDfXTIcZbh8VqsFCjmWV9X4C7tnKEHFGc57vAAIYqIWge8AaSTxBnFMhv7le1Cbm3wHLqy4qSXU/vQEKSy2Ycf56CkqSHC5RCaeCYzRr4mDtkubVcjR8eVvBVV+yw2ODbI6eR50UazYLxaorwnba25IGf4k99ofVmvMOn7MKdPU+mlfj3d81CtWSQeckEZPnVBrpsL2MOPEerKRDP2RTXu1IA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TOFdfJlZjB5wiaMuxFz29Aw1Ss+edPn/EPkHWtvLiuU=;
+ b=kd+PD3XrSgPufc0JXBu+Anrk/qPFHU02J/q+SxjcA4PIXZ19O85ApEa/fQ5BqvdTTJJ5bjyks6MtTIrTlvaktT5cwGgetnIvevHUtx5Sh/p73cf8J+LPDN/r1ncm6vwpxnlIRdFeLoMOpDUqf5pNN7CHEmOTPNWbofI+uG1skTA=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=jgg@mellanox.com; 
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
+ VI1SPR01MB0382.eurprd05.prod.outlook.com (20.178.81.160) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2814.14; Fri, 13 Mar 2020 13:12:28 +0000
+Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::ed46:4337:c1cd:1887]) by VI1PR05MB4141.eurprd05.prod.outlook.com
+ ([fe80::ed46:4337:c1cd:1887%7]) with mapi id 15.20.2793.018; Fri, 13 Mar 2020
+ 13:12:28 +0000
+Date:   Fri, 13 Mar 2020 10:12:23 -0300
+From:   Jason Gunthorpe <jgg@mellanox.com>
+To:     Selvin Xavier <selvin.xavier@broadcom.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next 1/3] RDMA/bnxt_re: Use ib_device_try_get()
+Message-ID: <20200313131223.GI13183@mellanox.com>
+References: <1584102694-32544-1-git-send-email-selvin.xavier@broadcom.com>
+ <1584102694-32544-2-git-send-email-selvin.xavier@broadcom.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1584102694-32544-2-git-send-email-selvin.xavier@broadcom.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: MN2PR01CA0045.prod.exchangelabs.com (2603:10b6:208:23f::14)
+ To VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR01CA0045.prod.exchangelabs.com (2603:10b6:208:23f::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.16 via Frontend Transport; Fri, 13 Mar 2020 13:12:27 +0000
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jCk6x-0002x2-Vo; Fri, 13 Mar 2020 10:12:23 -0300
+X-Originating-IP: [142.68.57.212]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e7acb7bd-24d4-43d5-e73e-08d7c7502de6
+X-MS-TrafficTypeDiagnostic: VI1SPR01MB0382:
+X-Microsoft-Antispam-PRVS: <VI1SPR01MB0382DB1D8D87F0FA6AD001DDCFFA0@VI1SPR01MB0382.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-Forefront-PRVS: 034119E4F6
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(396003)(376002)(39860400002)(366004)(136003)(199004)(5660300002)(4326008)(66556008)(66946007)(66476007)(316002)(26005)(4744005)(478600001)(81166006)(2616005)(81156014)(8676002)(8936002)(33656002)(9746002)(186003)(2906002)(1076003)(86362001)(52116002)(9786002)(6916009)(36756003)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1SPR01MB0382;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ANhygKVkRnp6TEoBqfqWd3W/+W6qHxiTTWWEqAq5xMyFMJ+hNTW1VjYkSYhwr1o+YY5slJpv86QtMHQoHN1CneN7jqVHeNQzidMEfqzOQgxnL03M7Nir0MZLhJZjvms1FFNf+VHpRYdusjPJyFjSJQPTUoLOCl1OVK3/tD3hBAq8qx4fIPDcuPjRkACGGI6ddMUcInCbEgnQRRsMtA+CoG0dt/xtG9MkHebC+KTPncxAdigC7DLi6ekxpoAvFW5Y+qtU6478GrPR/sYWHo4MSckpH9QH0O1wyAfW3StNdSWpAQMG4sDCLadMJVX8ERZBfl6dm24getYZ25mlWepDMrRB6kSCh3CHT6tTQ9WtepfOBzUbqhW6GeWlPVMLX2LncxpcWiF4bEFrtJSHUIKE2jN77wLakcvg9caH9mN1MdCEjasde8+/4e3dnw5DSHqsZ2146UFUh4bTtXX8YKuIYuwYp3PWYO4K3uOOetVk2ECbEtX416wP6c8FaKJT83ey
+X-MS-Exchange-AntiSpam-MessageData: dHEy+3rEJQzVmhblg0g/3oySJCc7er7xxKdPmVcqgmDlrQa9nCMwvdPhGazyoI2X5BlehVGxF9hBwgiFLqQHgkURhx/ADh4nI80nu+/dck4VYCrn4xHynccREkXexrFwuReVcKv0qInQ0UV/9773lA==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e7acb7bd-24d4-43d5-e73e-08d7c7502de6
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2020 13:12:28.0011
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1wKbxFLMkzJ3TO/vbSplt6Zs9AVHhBLPaQhun3fJiphs1sd2F/rMHxWZxcV6jXi6FkW32O/SGSFD0sv4DcTw7Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1SPR01MB0382
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The following modify sequence (loosely based on ipoib) will
-lose a pkey modifcation:
+On Fri, Mar 13, 2020 at 05:31:32AM -0700, Selvin Xavier wrote:
+> From: Jason Gunthorpe <jgg@mellanox.com>
+> 
+> There are a couple places in this driver running from a work queue that
+> need the ib_device to be registered. Instead of using a broken internal
+> bit rely on the new core code to guarantee device registration.
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+> ---
+>  drivers/infiniband/hw/bnxt_re/main.c | 25 ++++++++++++++-----------
+>  1 file changed, 14 insertions(+), 11 deletions(-)
 
-- Modify (pkey index, port)
-- Modify (new pkey index, NO port)
+All readers of BNXT_RE_FLAG_IBDEV_REGISTERED are deleted now, the bit
+and the writers should be deleted too in this patch
 
-After the first modify, the qp_pps list will have saved the pkey and the
-unit on the main list.
-
-During the second modify, get_new_pps() will fetch the port from qp_pps
-and read the new pkey index from qp_attr->pkey_index.  The state will
-still be zero, or IB_PORT_PKEY_NOT_VALID. Because of the invalid state,
-the new values will never replace the one in the qp pps list, losing
-the new pkey.
-
-This happens because the following if statements will never correct the
-state because the first term will be false. If the code had been executed,
-it would incorrectly overwrite valid values.
-
-if ((qp_attr_mask & IB_QP_PKEY_INDEX) && (qp_attr_mask & IB_QP_PORT))
-	new_pps->main.state = IB_PORT_PKEY_VALID;
-
-
-if (!(qp_attr_mask & (IB_QP_PKEY_INDEX | IB_QP_PORT)) && qp_pps) {
-	new_pps->main.port_num = qp_pps->main.port_num;
-	new_pps->main.pkey_index = qp_pps->main.pkey_index;
-	if (qp_pps->main.state != IB_PORT_PKEY_NOT_VALID)
-		new_pps->main.state = IB_PORT_PKEY_VALID;
-}
-
-Fix by joining the two if statements with an or test to see if qp_pps
-is non-NULL and in the correct state.
-
-Fixes: 1dd017882e01 ("RDMA/core: Fix protection fault in get_pkey_idx_qp_list")
-Reviewed-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
----
- drivers/infiniband/core/security.c |   11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/infiniband/core/security.c b/drivers/infiniband/core/security.c
-index 2d56083..75e7ec0 100644
---- a/drivers/infiniband/core/security.c
-+++ b/drivers/infiniband/core/security.c
-@@ -349,16 +349,11 @@ static struct ib_ports_pkeys *get_new_pps(const struct ib_qp *qp,
- 	else if (qp_pps)
- 		new_pps->main.pkey_index = qp_pps->main.pkey_index;
- 
--	if ((qp_attr_mask & IB_QP_PKEY_INDEX) && (qp_attr_mask & IB_QP_PORT))
-+	if (((qp_attr_mask & IB_QP_PKEY_INDEX) &&
-+	     (qp_attr_mask & IB_QP_PORT)) ||
-+	    (qp_pps && qp_pps->main.state != IB_PORT_PKEY_NOT_VALID))
- 		new_pps->main.state = IB_PORT_PKEY_VALID;
- 
--	if (!(qp_attr_mask & (IB_QP_PKEY_INDEX | IB_QP_PORT)) && qp_pps) {
--		new_pps->main.port_num = qp_pps->main.port_num;
--		new_pps->main.pkey_index = qp_pps->main.pkey_index;
--		if (qp_pps->main.state != IB_PORT_PKEY_NOT_VALID)
--			new_pps->main.state = IB_PORT_PKEY_VALID;
--	}
--
- 	if (qp_attr_mask & IB_QP_ALT_PATH) {
- 		new_pps->alt.port_num = qp_attr->alt_port_num;
- 		new_pps->alt.pkey_index = qp_attr->alt_pkey_index;
-
+Jason
