@@ -2,119 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADAE184789
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2020 14:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AB218482B
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2020 14:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgCMNM5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 Mar 2020 09:12:57 -0400
-Received: from mail-db8eur05on2040.outbound.protection.outlook.com ([40.107.20.40]:36159
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726594AbgCMNM5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 13 Mar 2020 09:12:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XB/Bmx0aYxbEXlYXtiishLrstgrsJLND4b0nCSerulyyppZYNuNXD6N9/W8GrIDfw3ixscNPRE9bB5/yLGQR+K+U6yK7ex1HuvZ514Gl547wbEZMsTgfvX0lSCICCohUBxgF+kng83acp7x1jb04iUTssn+fN66O6R0NUyrH+r/MT7OuyDD+GlhasrZsBA1FeW+Zk3VPKUQ0hEGMm84sfaxqPaSHeCkS+DbP5dq18llI5fLEyNOc+I1gz9pkJOZXGcntjyZ0S85tI/w4RBFeFExcPMWjhgY/vm1shzZxUvXer/6Vb+gD8bZZjDAJy2xv0+ZsbUxwaEQ7iX+B+0+sgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fqIFVtocozUAwqu1KEcJsxKyxSwCD5bz158TEpXHAXc=;
- b=JoXWseCCtjqdjMoW/hctjx0NTzZZiVQITHKMX3I06lU6O8OSQBWxeG5ruqt0zsgjD6+fxog5vFcWEGBL6JGPRmNU4D2ATWQPL5m9EfiuF5CqSOAYHPM7q8mEqS4mXRxkxPkiG1vB4XzM5j0cxhCmZpWOiFc54miYnhpjmXo40HxKSMXXQq/U73VDB2zp40aO5Ac+vN3r650qVH7v9xPjDKYqMLPNBbrAiDU8cfNWMadb2yqaEF8HhzZ5ImpcqQD0aEtJpRTT9KlieBpehmjMMTTGE/6uGvsXlTEC+6oQTKK06zMFeckkwy1/xJ3GcST9wWYjjhi4itlhE4SNQ4wQcA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fqIFVtocozUAwqu1KEcJsxKyxSwCD5bz158TEpXHAXc=;
- b=RKD4YTlcypqiTD3vrRy3+hJtb/1MpFpxW3L5aJ6nIod6BxE1oKvJtM6zNxtmdaDXbPRYe+i0lO+0xa5ov1d6JYDHTL69yadVXK+Jk0pusxOFvaGF7Tp9uheLCAJtdlTXgfuKAhKSQ7+jkbOz1HcNlUrsT4F3jLqHsgEVGyi8N5w=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (52.133.14.15) by
- VI1SPR01MB0382.eurprd05.prod.outlook.com (20.178.81.160) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2814.14; Fri, 13 Mar 2020 13:12:54 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::ed46:4337:c1cd:1887]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::ed46:4337:c1cd:1887%7]) with mapi id 15.20.2793.018; Fri, 13 Mar 2020
- 13:12:54 +0000
-Date:   Fri, 13 Mar 2020 10:12:44 -0300
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next 3/3] RDMA/bnxt_re: Remove unnecessary sched count
-Message-ID: <20200313131244.GJ13183@mellanox.com>
-References: <1584102694-32544-1-git-send-email-selvin.xavier@broadcom.com>
- <1584102694-32544-4-git-send-email-selvin.xavier@broadcom.com>
+        id S1726571AbgCMNbS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Mar 2020 09:31:18 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:40327 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726554AbgCMNbS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Mar 2020 09:31:18 -0400
+Received: by mail-qt1-f195.google.com with SMTP id n5so7441707qtv.7
+        for <linux-rdma@vger.kernel.org>; Fri, 13 Mar 2020 06:31:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MT+D/yVil05s8jviALGlx07Y45/4YVEvBXc1yp1EOvg=;
+        b=co+1nn5udgzewl8OpLr3oGgDWJxzDqx74xwjzh93W3J7XojrMwBjlCqrG7xp+3F0wX
+         sT+S4+lrLURu6C+F1m05NJ13NHiI4DBvADrlbdnrwNiQAyfu5PYVwHvUKQzkxCJwJvdQ
+         P30GNH/QLQhC/5IYabeyljd3HH+0ZCyEuPsxOr4JeT8ByMN9A++izUtVZyZhNavuTRnh
+         jG4nx+HdeTaVPMiXtOKjEEFOT5Ve6pyAn7dYx4mT4lsQ56hB2+JAa6Q+3ddxDfG4GL85
+         yfItfsKbD4hp9D8tZoKtUA1tQUtM+5SHkxWQoqDsu8OnexKiWE8Px6UH/EKF5o83ymcL
+         /JcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MT+D/yVil05s8jviALGlx07Y45/4YVEvBXc1yp1EOvg=;
+        b=GePbIGvuO20TgZ00CPe1mCvT0L6qh2BTaHSY5MfirLnLvaBnu8RHnEBKAdiJm3qQUr
+         keQvOCOzVrazREorNfbWef7ElOUvuMwjMIC6ztxon2Nm6DeNsbsJCW8V+NYYa15NQ/0K
+         9lkdz/R2wzweqwf4tzZUSayaV/o/GJmUTG6fwhcheI+OqOl0+esQa2HMzWyY51q5T2nd
+         dL4DrzftH/RDfCOzymKp/nJ+L8p5IzRmGi+pXFnniBVLAEGgwhL9DD5T1ligrjxw/7ph
+         orAy343iGTOKZ39aq5fRfh4DGPLu7I3fqp66RSwy4ZU84yf8Jo+29AZk0oxe2i0Yn69v
+         NSQQ==
+X-Gm-Message-State: ANhLgQ1BSxGIklS7gGaAKmR7nZSKwB8DPsLO0TWvQo6DYDd5ZMCzzLkI
+        PmfCN6ylEaxlMj8lr5vkTjdUOKy7uxA=
+X-Google-Smtp-Source: ADFU+vvVhvWEW1Ez/hKT6TmAQqf8TaX6x+Zrd2ANr4TmW6ViLg6y578XeimBwgrs9fFcEp3MmGAIQw==
+X-Received: by 2002:ac8:310b:: with SMTP id g11mr2332441qtb.128.1584106276162;
+        Fri, 13 Mar 2020 06:31:16 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id v80sm29186459qka.15.2020.03.13.06.31.14
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 13 Mar 2020 06:31:15 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jCkPC-0004l4-HK; Fri, 13 Mar 2020 10:31:14 -0300
+Date:   Fri, 13 Mar 2020 10:31:14 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     linux-rdma@vger.kernel.org
+Cc:     syzbot+da615ac67d4dbea32cbc@syzkaller.appspotmail.com
+Subject: Re: [PATCH rc] RDMA/nl: Do not permit empty devices names during
+ RDMA_NLDEV_CMD_NEWLINK/SET
+Message-ID: <20200313133114.GA18232@ziepe.ca>
+References: <20200309191648.GA30852@ziepe.ca>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1584102694-32544-4-git-send-email-selvin.xavier@broadcom.com>
+In-Reply-To: <20200309191648.GA30852@ziepe.ca>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: MN2PR16CA0041.namprd16.prod.outlook.com
- (2603:10b6:208:234::10) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.68.57.212) by MN2PR16CA0041.namprd16.prod.outlook.com (2603:10b6:208:234::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.14 via Frontend Transport; Fri, 13 Mar 2020 13:12:54 +0000
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jCk7I-0002xY-CF; Fri, 13 Mar 2020 10:12:44 -0300
-X-Originating-IP: [142.68.57.212]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: b0999cc5-d968-4139-3093-08d7c7503dd7
-X-MS-TrafficTypeDiagnostic: VI1SPR01MB0382:
-X-Microsoft-Antispam-PRVS: <VI1SPR01MB03824265617BC6612365A786CFFA0@VI1SPR01MB0382.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:873;
-X-Forefront-PRVS: 034119E4F6
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(396003)(376002)(39860400002)(366004)(136003)(199004)(5660300002)(4326008)(66556008)(66946007)(66476007)(316002)(26005)(478600001)(81166006)(2616005)(81156014)(8676002)(8936002)(33656002)(9746002)(186003)(2906002)(1076003)(86362001)(52116002)(9786002)(6916009)(36756003)(24400500001);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1SPR01MB0382;H:VI1PR05MB4141.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
-Received-SPF: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oYLUro0vSEJMldAUsTpzzWyr4jMUjrHJxKOgKYkEOQdv/V993iwj/Lh1G2RTTCIOcjxZLYnLexUPYbuU9CWBEhsNTslGa8k+t/FHMMFGzJcRczRzKnbP8ld8T21PhmlPhRZ3HlniKmk7ZX/QrzoD/zVmeQhrGxIcXPvNjHZG46DUocXaLMO+Q5luil9e8nrcHUE77iD6GraKv5/RX6LA6jhe9TbYZfTs9fTO5rfuqUEF73WStoZM185U3Q9zb4fmObmVsRKh79oSaTFT7de2O3gO4cqE+CtZeOa9TUmsHp/BqH8Bxy3zhn1YROP2EUNQYq1gJs9XdF8E1POFQhsVekGKVgPOvGtTifW26DoNj2BgHWuNsIOpNSoQLVJviG4N0ihO+Fu1Cqy7rD7feMu+jDm1JubpV67JsLvfu+ZtlUNr5+fMnW1VFbNuT+enZUkn06s9GsqzbeFpXK1IgHWrNMpvihaC5RDWf25O0oYYTPcTTrchnjoZQNqclwIWiFT0
-X-MS-Exchange-AntiSpam-MessageData: 4yCIw5r5zze9+BiWkHKWsLUUgKtNFwyf2HHe7683CofqhdCM5yuhonvruafUdVLNCftwowrfy2V50m3nsYvFuSgNoj1xDTdQg/5lxM+2hFdLemC/TRhaRP/6Ba6DABpAh4PutPBYbEfbtwGJ4HVkQA==
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0999cc5-d968-4139-3093-08d7c7503dd7
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2020 13:12:54.8306
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ue3KCw6htHhdkTJOEB/qVm5OY0AmdILvrbdbwR8w3/RlfQ2sZ0oSlMdf8Fb6g+eUwDYqusAA6k6EU47pSPNtAQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1SPR01MB0382
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 13, 2020 at 05:31:34AM -0700, Selvin Xavier wrote:
-> Since the lifetime of bnxt_re_task is controlled by
-> the kref of device, sched_count is no longer required.
-> Remove it.
+On Mon, Mar 09, 2020 at 04:16:48PM -0300, Jason Gunthorpe wrote:
+> Empty device names cannot be added to sysfs and crash with:
 > 
-> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
->  drivers/infiniband/hw/bnxt_re/bnxt_re.h | 1 -
->  drivers/infiniband/hw/bnxt_re/main.c    | 7 -------
->  2 files changed, 8 deletions(-)
+>   kobject: (00000000f9de3792): attempted to be registered with empty name!
+>   WARNING: CPU: 1 PID: 10856 at lib/kobject.c:234 kobject_add_internal+0x7ac/0x9a0 lib/kobject.c:234
+>   Kernel panic - not syncing: panic_on_warn set ...
+>   CPU: 1 PID: 10856 Comm: syz-executor459 Not tainted 5.6.0-rc3-syzkaller #0
+>   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>   Call Trace:
+>    __dump_stack lib/dump_stack.c:77 [inline]
+>    dump_stack+0x197/0x210 lib/dump_stack.c:118
+>    panic+0x2e3/0x75c kernel/panic.c:221
+>    __warn.cold+0x2f/0x3e kernel/panic.c:582
+>    report_bug+0x289/0x300 lib/bug.c:195
+>    fixup_bug arch/x86/kernel/traps.c:174 [inline]
+>    fixup_bug arch/x86/kernel/traps.c:169 [inline]
+>    do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:267
+>    do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:286
+>    invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+>   RIP: 0010:kobject_add_internal+0x7ac/0x9a0 lib/kobject.c:234
+>   Code: 7a ca ca f9 e9 f0 f8 ff ff 4c 89 f7 e8 cd ca ca f9 e9 95 f9 ff ff e8 13 25 8c f9 4c 89 e6 48 c7 c7 a0 08 1a 89 e8 a3 76 5c f9 <0f> 0b 41 bd ea ff ff ff e9 52 ff ff ff e8 f2 24 8c f9 0f 0b e8 eb
+>   RSP: 0018:ffffc90002006eb0 EFLAGS: 00010286
+>   RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+>   RDX: 0000000000000000 RSI: ffffffff815eae46 RDI: fffff52000400dc8
+>   RBP: ffffc90002006f08 R08: ffff8880972ac500 R09: ffffed1015d26659
+>   R10: ffffed1015d26658 R11: ffff8880ae9332c7 R12: ffff888093034668
+>   R13: 0000000000000000 R14: ffff8880a69d7600 R15: 0000000000000001
+>    kobject_add_varg lib/kobject.c:390 [inline]
+>    kobject_add+0x150/0x1c0 lib/kobject.c:442
+>    device_add+0x3be/0x1d00 drivers/base/core.c:2412
+>    ib_register_device drivers/infiniband/core/device.c:1371 [inline]
+>    ib_register_device+0x93e/0xe40 drivers/infiniband/core/device.c:1343
+>    rxe_register_device+0x52e/0x655 drivers/infiniband/sw/rxe/rxe_verbs.c:1231
+>    rxe_add+0x122b/0x1661 drivers/infiniband/sw/rxe/rxe.c:302
+>    rxe_net_add+0x91/0xf0 drivers/infiniband/sw/rxe/rxe_net.c:539
+>    rxe_newlink+0x39/0x90 drivers/infiniband/sw/rxe/rxe.c:318
+>    nldev_newlink+0x28a/0x430 drivers/infiniband/core/nldev.c:1538
+>    rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:195 [inline]
+>    rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+>    rdma_nl_rcv+0x5d9/0x980 drivers/infiniband/core/netlink.c:259
+>    netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+>    netlink_unicast+0x59e/0x7e0 net/netlink/af_netlink.c:1329
+>    netlink_sendmsg+0x91c/0xea0 net/netlink/af_netlink.c:1918
+>    sock_sendmsg_nosec net/socket.c:652 [inline]
+>    sock_sendmsg+0xd7/0x130 net/socket.c:672
+>    ____sys_sendmsg+0x753/0x880 net/socket.c:2343
+>    ___sys_sendmsg+0x100/0x170 net/socket.c:2397
+>    __sys_sendmsg+0x105/0x1d0 net/socket.c:2430
+>    __do_sys_sendmsg net/socket.c:2439 [inline]
+>    __se_sys_sendmsg net/socket.c:2437 [inline]
+>    __x64_sys_sendmsg+0x78/0xb0 net/socket.c:2437
+>    do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+>    entry_SYSCALL_64_after_hwframe+0x49/0xbe
 > 
-> diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-> index c736e82..e35cc6c 100644
-> +++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-> @@ -177,7 +177,6 @@ struct bnxt_re_dev {
->  	atomic_t			srq_count;
->  	atomic_t			mr_count;
->  	atomic_t			mw_count;
-> -	atomic_t			sched_count;
->  	/* Max of 2 lossless traffic class supported per port */
->  	u16				cosq[2];
->  
-> diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-> index 82062d8..4df0f8e 100644
-> +++ b/drivers/infiniband/hw/bnxt_re/main.c
-> @@ -1670,7 +1670,6 @@ static void bnxt_re_task(struct work_struct *work)
->  	}
->  	ib_device_put(&rdev->ibdev);
->  	smp_mb__before_atomic();
-> -	atomic_dec(&rdev->sched_count);
+> Prevent empty names when checking the name provided from userspace during
+> newlink and rename.
+> 
+> Cc: stable@kernel.org
+> Fixes: 3856ec4b93c9 ("RDMA/core: Add RDMA_NLDEV_CMD_NEWLINK/DELLINK support")
+> Fixes: 05d940d3a3ec ("RDMA/nldev: Allow IB device rename through RDMA netlink")
+> Reported-by: syzbot+da615ac67d4dbea32cbc@syzkaller.appspotmail.com
+> Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+> ---
+>  drivers/infiniband/core/nldev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-All these smp_mb's need to be deleted too
+Applied to for-rc
 
 Jason
