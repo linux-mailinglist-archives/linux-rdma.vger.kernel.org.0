@@ -2,102 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CE0184889
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2020 14:54:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 479DB18489A
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2020 14:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgCMNyc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 Mar 2020 09:54:32 -0400
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:44847 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726642AbgCMNyc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Mar 2020 09:54:32 -0400
-Received: by mail-qv1-f65.google.com with SMTP id w5so4575385qvp.11
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Mar 2020 06:54:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lyL96NnOtb0YVVwZoDlRpfxuVAC3JQzho6kDpuYDL0k=;
-        b=iLC5DeEFJNGT0lCnhiU+n87lLmZBn8OxLOGcGD8vFaIdSF3hWjJKX4wrjKFIEI3M2u
-         6m5E8RXzJIk+miR3CRcrvrJJebtvWghd/J5pxltuqehb2b8eZmSk/+yeHzy4CqrnUnZg
-         RinI0/jjhZ79Zccm65Dy+Vm9qkd8WVkk2R/UoaKzZ8RpvJcKQUIrsC9uP5jkIyQQHSdg
-         Grc9cFbSAehTtxHJ65t5lbong3AL6RVGp1A5pD3N9eGsmgSQZLwoigWCa/y4HPg90OQg
-         o+mCKPlV6bckCz+4bNJBHcDU5oUQjBoSdeFymiUUzjaXi5L25d2qRKCVP1e7w8NQ9pV9
-         P6Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lyL96NnOtb0YVVwZoDlRpfxuVAC3JQzho6kDpuYDL0k=;
-        b=Xg8nq8lAMz2WW3TQ5ua5YWOKChFtXMGWvOxZl3gKDHt1GuvyX/Lsx3PxACBe95VorI
-         vo+nxMLWjxg3jt2GBO+NIxrSIRYA3bd63PFO66W3vdYWQwlgKclVLBAUbzPlwpHZjkMd
-         Yt3aQ6X3AeSQeVD28eJRiOZ6UmFw6ZBmqkK9IZLjrFdt3QKGlbWmIq6pVD5ALHGtu/KJ
-         6lgXY4x3hPGHxLe90RWypOU6WSP/leeEZ8YGLb77QP0CXUbiMEUEvu6vSP+KiCC5btUP
-         r7D0sifPtxWV0uWKHMSzFpNKkackiGkG5u51tOeVsZZEY6/TKBEh0K+anfEyr+fJWaSJ
-         V6Yw==
-X-Gm-Message-State: ANhLgQ2iUOZV1P9cm3bGiKJESiOd1hD1xffvrD5tAfsBOxNAXrrEgY9b
-        B4MIMBCAWr/MurYm5NWbks5N3g==
-X-Google-Smtp-Source: ADFU+vsFHVJ90TzoBAScMYFmks7Bj41s6KmIgsimDahh4CSlwLWdb2yb2rxhN5OoB2U/4Fy7r2hljw==
-X-Received: by 2002:a0c:e912:: with SMTP id a18mr12643391qvo.101.1584107671335;
-        Fri, 13 Mar 2020 06:54:31 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id 10sm9039686qtt.65.2020.03.13.06.54.30
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 13 Mar 2020 06:54:30 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jCkli-0006eW-ER; Fri, 13 Mar 2020 10:54:30 -0300
-Date:   Fri, 13 Mar 2020 10:54:30 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
+        id S1726738AbgCMN5U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Mar 2020 09:57:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726691AbgCMN5U (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 13 Mar 2020 09:57:20 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4725420724;
+        Fri, 13 Mar 2020 13:57:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584107840;
+        bh=A3h3LHgga/D3s82H/SIWB+T0FvqhTmanbzNZvNU84ww=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cKDP5CEuPUsjTYGHwmD0CUKye4J1tO6DMoJLTeDQUakLXqSC+KFiwcYS2+es5Ohac
+         +qJxFJmBuC/SSgh22lg6mjnecA2Q02GmQcwpZMhqaX+M4lLTCHuN2CzRaGJY0wF0hV
+         ydTXqCvdH3N8ROrwfWtV7lLiMrXyx4uLaR9PTNqE=
+Date:   Fri, 13 Mar 2020 15:57:14 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next v1 11/11] RDMA/cma: Provide ECE reject reason
-Message-ID: <20200313135430.GA25517@ziepe.ca>
+        Gal Pressman <galpress@amazon.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next v1 03/11] RDMA/efa: Use in-kernel offsetofend()
+ to check field availability
+Message-ID: <20200313135714.GH31504@unreal>
 References: <20200310091438.248429-1-leon@kernel.org>
- <20200310091438.248429-12-leon@kernel.org>
+ <20200310091438.248429-4-leon@kernel.org>
+ <20200313134456.GA24733@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200310091438.248429-12-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200313134456.GA24733@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 10, 2020 at 11:14:38AM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
-> 
-> IBTA declares "vendor option not supported" reject reason in REJ
-> messages if passive side doesn't want to accept proposed ECE options.
-> 
-> Due to the fact that ECE is managed by userspace, there is a need to let
-> users to provide such rejected reason.
-> 
-> Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->  drivers/infiniband/core/cma.c    | 14 ++++++++------
->  drivers/infiniband/core/ucma.c   |  7 ++++++-
->  include/rdma/ib_cm.h             |  3 ++-
->  include/rdma/rdma_cm.h           | 13 ++++++++++---
->  include/uapi/rdma/rdma_user_cm.h |  7 ++++++-
->  5 files changed, 32 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-> index f1f0d51667b7..0b57c15139cf 100644
-> +++ b/drivers/infiniband/core/cma.c
-> @@ -4191,8 +4191,8 @@ int rdma_notify(struct rdma_cm_id *id, enum ib_event_type event)
->  }
->  EXPORT_SYMBOL(rdma_notify);
->  
-> -int rdma_reject(struct rdma_cm_id *id, const void *private_data,
-> -		u8 private_data_len)
-> +int rdma_reject_ece(struct rdma_cm_id *id, const void *private_data,
-> +		    u8 private_data_len, enum rdma_ucm_reject_reason reason)
->  {
+On Fri, Mar 13, 2020 at 10:44:56AM -0300, Jason Gunthorpe wrote:
+> On Tue, Mar 10, 2020 at 11:14:30AM +0200, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@mellanox.com>
+> >
+> > Remove custom and duplicated variant of offsetofend().
+> >
+> > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> >  drivers/infiniband/hw/efa/efa_verbs.c | 7 ++-----
+> >  1 file changed, 2 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+> > index bf3120f140f7..5c57098a4aee 100644
+> > +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+> > @@ -144,9 +144,6 @@ static inline bool is_rdma_read_cap(struct efa_dev *dev)
+> >  	return dev->dev_attr.device_caps & EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_RDMA_READ_MASK;
+> >  }
+> >
+> > -#define field_avail(x, fld, sz) (offsetof(typeof(x), fld) + \
+> > -				 sizeof_field(typeof(x), fld) <= (sz))
+> > -
+> >  #define is_reserved_cleared(reserved) \
+> >  	!memchr_inv(reserved, 0, sizeof(reserved))
+> >
+> > @@ -609,7 +606,7 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
+> >  	if (err)
+> >  		goto err_out;
+> >
+> > -	if (!field_avail(cmd, driver_qp_type, udata->inlen)) {
+> > +	if (offsetofend(typeof(cmd), driver_qp_type) > udata->inlen) {
+>
+> The > needs to be >=, and generally we write compares as
+>    'variable XX constant'
 
-Let not call something like this rdma_reject_ece, pass in the
-ib_cm_rej_reason directly and update callers
+Why ">="
+The original code is
+if (!field_avail(cmd, driver_qp_type, udata->inlen))
+==>
+if (!(offsetof(typeof(cmd), driver_qp_type) + sizeof_field(typeof(cmd), driver_qp_type,) <= (udata->inlen))
+===>
+if (!(offsetofend(typeof(cmd), driver_qp_type) <= (udata->inlen))
+===>
+if (offsetofend(typeof(cmd), driver_qp_type) > (udata->inlen)
 
-Jason
+like I wrote.
+
+>
+
+
+>
+> > @@ -896,7 +893,7 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+> >  		goto err_out;
+> >  	}
+> >
+> > -	if (!field_avail(cmd, num_sub_cqs, udata->inlen)) {
+> > +	if (offsetofend(typeof(cmd), num_sub_cqs) > udata->inlen) {
+>
+> Same
+>
+> Jason
