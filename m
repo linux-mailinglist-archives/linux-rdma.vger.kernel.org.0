@@ -2,113 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 062D21846EB
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2020 13:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C9E18470A
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2020 13:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbgCMMcB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 Mar 2020 08:32:01 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:50792 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726674AbgCMMcB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Mar 2020 08:32:01 -0400
-Received: by mail-wm1-f66.google.com with SMTP id a5so9738873wmb.0
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Mar 2020 05:31:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=CX0R/ZzCkv41Xb0fuIeFH0zC/H0pc2ea5hZtg9No/Xo=;
-        b=YQdEiVQCkjqN4qAnFmyzgtZVSdJuwxbZOMFDy6KowreYmy2PaWAx0uFpFo5ue6GzUv
-         ElfRlvgbRRhCj47n6mv6Mzq72scIxND+fb87Xy/fjRkyMTeTWzyCASyLYg0vEbnr6PRd
-         wAFCGddgAljtmQEdpUTge6PEI4YCt8hheobNY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=CX0R/ZzCkv41Xb0fuIeFH0zC/H0pc2ea5hZtg9No/Xo=;
-        b=TuSiAnMo4sXdZWGGU/HkKh3yD19njI4ry6HpXhPkOqbgMsV1t6kGWifr8IUn953QEZ
-         DYPefTBeJP9DJrMF+w2sYVSWATTEVnSMX+FoknPAu/ZiLczyUOcLE2mKP1NDxFFlyfkw
-         ySbPtvqtNIZMFunpBYgljMWT+blAfc/ufCMjfkb8mhP32g/eE3EsXzZs4gBK9C8hT1ve
-         gKUakFe/9aKkpp2DYiZp4ygoXSVIx/SooP4GY7zeHcQ8uvZR1jrw5qe0N56ZrwtTxY1N
-         GNJN9Adj0vxn3vWVm5SlX7/zPg3aXx3ml3axZzKB0aabqMz4Eu30B1j+ajVsO4zacLPm
-         RqNA==
-X-Gm-Message-State: ANhLgQ3hArFLmoGYTykIRrI3yKj0rRlLLDi/P6sKDBYd0b0HDwxfjUu5
-        YVXpUOfbsUGHeJrkBM1jALemQQ==
-X-Google-Smtp-Source: ADFU+vvp/Dgjh/qXMXr21k+7thtyhI4uNClrGd5TgC/uI3hrxAR1h9gCsUvuEtv+iAihWuwLLpKWxw==
-X-Received: by 2002:a1c:a50d:: with SMTP id o13mr10435210wme.128.1584102719196;
-        Fri, 13 Mar 2020 05:31:59 -0700 (PDT)
-Received: from dhcp-10-192-206-197.iig.avagotech.net.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id g129sm18015910wmg.12.2020.03.13.05.31.56
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 13 Mar 2020 05:31:58 -0700 (PDT)
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-To:     dledford@redhat.com, jgg@mellanox.com
-Cc:     linux-rdma@vger.kernel.org,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 3/3] RDMA/bnxt_re: Remove unnecessary sched count
-Date:   Fri, 13 Mar 2020 05:31:34 -0700
-Message-Id: <1584102694-32544-4-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1584102694-32544-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1584102694-32544-1-git-send-email-selvin.xavier@broadcom.com>
+        id S1726610AbgCMMkC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Mar 2020 08:40:02 -0400
+Received: from mga09.intel.com ([134.134.136.24]:59702 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726216AbgCMMkC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 13 Mar 2020 08:40:02 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Mar 2020 05:40:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,548,1574150400"; 
+   d="scan'208";a="290015208"
+Received: from sedona.ch.intel.com ([10.2.136.157])
+  by FMSMGA003.fm.intel.com with ESMTP; 13 Mar 2020 05:40:01 -0700
+Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
+        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 02DCdxXQ044718;
+        Fri, 13 Mar 2020 05:40:00 -0700
+Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
+        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 02DCdvgx014365;
+        Fri, 13 Mar 2020 08:39:57 -0400
+Subject: [PATCH for-rc] IB/rdmavt: Free kernel completion queue when done
+To:     jgg@ziepe.ca, dledford@redhat.com
+From:   Mike Marciniszyn <mike.marciniszyn@intel.com>
+Cc:     linux-rdma@vger.kernel.org
+Date:   Fri, 13 Mar 2020 08:39:57 -0400
+Message-ID: <20200313123957.14343.43879.stgit@awfm-01.aw.intel.com>
+User-Agent: StGit/0.16
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Since the lifetime of bnxt_re_task is controlled by
-the kref of device, sched_count is no longer required.
-Remove it.
+From: Kaike Wan <kaike.wan@intel.com>
 
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+When a kernel ULP requests the rdmavt to create a completion queue, it
+allocated the queue and set cq->kqueue to point to it. However, when
+the completion queue is destroyed, cq->queue is freed instead, leading
+to memory leak:
+
+https://marc.info/?l=linux-rdma&m=158344182614924&w=2
+
+unreferenced object 0xffffc90006639000 (size 12288):
+comm "kworker/u128:0", pid 8, jiffies 4295777598 (age 589.085s)
+    hex dump (first 32 bytes):
+      4d 00 00 00 4d 00 00 00 00 c0 08 ac 8b 88 ff ff  M...M...........
+      00 00 00 00 80 00 00 00 00 00 00 00 10 00 00 00  ................
+    backtrace:
+      [<0000000035a3d625>] __vmalloc_node_range+0x361/0x720
+      [<000000002942ce4f>] __vmalloc_node.constprop.30+0x63/0xb0
+      [<00000000f228f784>] rvt_create_cq+0x98a/0xd80 [rdmavt]
+      [<00000000b84aec66>] __ib_alloc_cq_user+0x281/0x1260 [ib_core]
+      [<00000000ef3764be>] nvme_rdma_cm_handler+0xdb7/0x1b80 [nvme_rdma]
+      [<00000000936b401c>] cma_cm_event_handler+0xb7/0x550 [rdma_cm]
+      [<00000000d9c40b7b>] addr_handler+0x195/0x310 [rdma_cm]
+      [<00000000c7398a03>] process_one_req+0xdd/0x600 [ib_core]
+      [<000000004d29675b>] process_one_work+0x920/0x1740
+      [<00000000efedcdb5>] worker_thread+0x87/0xb40
+      [<000000005688b340>] kthread+0x327/0x3f0
+      [<0000000043a168d6>] ret_from_fork+0x3a/0x50
+
+This patch fixes the issue by freeing cq->kqueue instead.
+
+Fixes: 239b0e52d8aa ("IB/hfi1: Move rvt_cq_wc struct into uapi directory")
+Cc: <stable@vger.kernel.org> # 5.4.x
+Reported-by: Yi Zhang <yi.zhang@redhat.com>
+Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Signed-off-by: Kaike Wan <kaike.wan@intel.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
 ---
- drivers/infiniband/hw/bnxt_re/bnxt_re.h | 1 -
- drivers/infiniband/hw/bnxt_re/main.c    | 7 -------
- 2 files changed, 8 deletions(-)
+ drivers/infiniband/sw/rdmavt/cq.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-index c736e82..e35cc6c 100644
---- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-+++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-@@ -177,7 +177,6 @@ struct bnxt_re_dev {
- 	atomic_t			srq_count;
- 	atomic_t			mr_count;
- 	atomic_t			mw_count;
--	atomic_t			sched_count;
- 	/* Max of 2 lossless traffic class supported per port */
- 	u16				cosq[2];
+diff --git a/drivers/infiniband/sw/rdmavt/cq.c b/drivers/infiniband/sw/rdmavt/cq.c
+index 13d7f66..5724cbb 100644
+--- a/drivers/infiniband/sw/rdmavt/cq.c
++++ b/drivers/infiniband/sw/rdmavt/cq.c
+@@ -327,7 +327,7 @@ void rvt_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ 	if (cq->ip)
+ 		kref_put(&cq->ip->ref, rvt_release_mmap_info);
+ 	else
+-		vfree(cq->queue);
++		vfree(cq->kqueue);
+ }
  
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 82062d8..4df0f8e 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -1670,7 +1670,6 @@ static void bnxt_re_task(struct work_struct *work)
- 	}
- 	ib_device_put(&rdev->ibdev);
- 	smp_mb__before_atomic();
--	atomic_dec(&rdev->sched_count);
- exit:
- 	put_device(&rdev->ibdev.dev);
- 	kfree(re_work);
-@@ -1722,11 +1721,6 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
- 		break;
- 
- 	case NETDEV_UNREGISTER:
--		/* netdev notifier will call NETDEV_UNREGISTER again later since
--		 * we are still holding the reference to the netdev
--		 */
--		if (atomic_read(&rdev->sched_count) > 0)
--			goto exit;
- 		ib_unregister_device_queued(&rdev->ibdev);
- 		break;
- 
-@@ -1744,7 +1738,6 @@ static int bnxt_re_netdev_event(struct notifier_block *notifier,
- 			re_work->vlan_dev = (real_dev == netdev ?
- 					     NULL : netdev);
- 			INIT_WORK(&re_work->work, bnxt_re_task);
--			atomic_inc(&rdev->sched_count);
- 			queue_work(bnxt_re_wq, &re_work->work);
- 		}
- 	}
--- 
-2.5.5
+ /**
 
