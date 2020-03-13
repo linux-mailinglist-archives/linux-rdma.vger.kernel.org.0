@@ -2,84 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4314F184994
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2020 15:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 345F6184995
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Mar 2020 15:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgCMOiV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 Mar 2020 10:38:21 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:40778 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726613AbgCMOiV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Mar 2020 10:38:21 -0400
-Received: by mail-qk1-f196.google.com with SMTP id m2so12807665qka.7
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Mar 2020 07:38:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=M/Mr9CJjBvdUOO/vTTyUVY8JHXKjFrWh/IcDvQEE71U=;
-        b=AWi/VUu6+s71AShzXtMwRVu4YnByM0bbvCTaVhdGYYo7cJvwMx4k5kb67q5UjGm5v2
-         bInOJz5ihLCPHDsRRLEVfzeRmLNGZa01HyW8H7ZEatrvUnJ2dLXvNY4bsA+RhOOLJzmN
-         qRtu1R8RjI4z/zlHE4DpefFGAY+q4h4/JDKGuVidqL8Q4AMKHJ0oWYWHtPFcm6V+P7wq
-         Ea3NbGswe0WJG75B5g2a31J0R+UGqBJkY83TYQrmDXC0xsI4KGxVFY6WVIqD/6rlTnF0
-         cxX35Nh9Cs6OKQM3KC/lDlTaXDDgS8/rXX7AWo7sk/8N3rWOtFc6osx0ZAwpRIdc1HLQ
-         ToQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=M/Mr9CJjBvdUOO/vTTyUVY8JHXKjFrWh/IcDvQEE71U=;
-        b=RDQJwflUS5BCaX2uXesyy/1rhlCzQZFRPJUI4Az0jt28KvIBZyhj6LjeZjVq6/5Op8
-         z0ZwOwRlPRgO3hGG/IZtvNRv/DeDTAzOW7ylwXGbJMMfiC3pjrbSVAWGXtg41lXco7kB
-         Ga+WJwhVLElQOWAoLJCZxTKQuqGy6tiZI6gSlYbWL5DqY9HiSeiO9cp3chP/9YeQlH2W
-         nAlyooJNzBxQX1IkQGVZbxyDCblH5OJNemmsWI8rieydqKmPBHrqC/j+RzVabk1T4e/u
-         vSLSJ784roUp85cxBlZ1G5fb1DfqDgojwtm9NLEND8FG2e+girRHoIbUpsqQmF60In9N
-         dfdw==
-X-Gm-Message-State: ANhLgQ13El5yGLy7QgXdNSTeoHN8LPmnIDQ+quHIF9/KFgGniF3QXhBz
-        ICyPHHOdPJ5y0Ry+Xrbz6EA+3Q==
-X-Google-Smtp-Source: ADFU+vvJEy7VHC0/p8MXYg/BSAgvQyaCRfeIhl5aQPZcg89DzJejulD7Hl55UmzKYMPQ2+sSypsOgw==
-X-Received: by 2002:a37:4dc4:: with SMTP id a187mr13566946qkb.436.1584110300336;
-        Fri, 13 Mar 2020 07:38:20 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id c190sm8096972qkb.80.2020.03.13.07.38.18
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 13 Mar 2020 07:38:19 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jClS5-0002ut-RP; Fri, 13 Mar 2020 11:38:17 -0300
-Date:   Fri, 13 Mar 2020 11:38:17 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-next] RDMA/hns: Fix wrong judgments of udata->outlen
-Message-ID: <20200313143817.GA11180@ziepe.ca>
-References: <1583845569-47257-1-git-send-email-liweihang@huawei.com>
+        id S1726826AbgCMOiZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Mar 2020 10:38:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726613AbgCMOiZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 13 Mar 2020 10:38:25 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 292BF206B7;
+        Fri, 13 Mar 2020 14:38:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584110305;
+        bh=LAROUZH0ZdI47kfsza59B3j5jmqIhlWji0PKLZQ6sDY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aM66vj1XybH6I7LOViYTlnJ3aUIh/jiOSEcmwMqLNgUWKpW6huYgw1iJSkUOlKW40
+         Qn2VFCsYg8bTAOH68gOkAx0iP7+Z9NXtj1bKfxxecuZ9Nx2M+Rqs3g1NxwtB8qUoDn
+         59y/UK8GU1ClIAj043wjn3Dx7T8fAhq+obgns1+c=
+Date:   Fri, 13 Mar 2020 16:38:19 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Gal Pressman <galpress@amazon.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next v1 03/11] RDMA/efa: Use in-kernel offsetofend()
+ to check field availability
+Message-ID: <20200313143819.GK31504@unreal>
+References: <20200310091438.248429-1-leon@kernel.org>
+ <20200310091438.248429-4-leon@kernel.org>
+ <20200313134456.GA24733@ziepe.ca>
+ <20200313135714.GH31504@unreal>
+ <20200313142602.GE31668@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1583845569-47257-1-git-send-email-liweihang@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200313142602.GE31668@ziepe.ca>
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 10, 2020 at 09:06:09PM +0800, Weihang Li wrote:
-> These judgments were used to keep the compatibility with older versions of
-> userspace that don't have the field named "cap_flags" in structure
-> hns_roce_ib_create_cq_resp. But it will be wrong to compare outlen with
-> the size of resp if another new field were added in resp. oulen should be
-> compared with the end offset of cap_flags in resp.
-> 
-> Fixes: 4f8f0d5e33dd ("RDMA/hns: Package the flow of creating cq")
-> Signed-off-by: Weihang Li <liweihang@huawei.com>
-> ---
-> Related discussions can be found at:
-> https://patchwork.kernel.org/patch/11372851/ 
->  drivers/infiniband/hw/hns/hns_roce_cq.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+On Fri, Mar 13, 2020 at 11:26:02AM -0300, Jason Gunthorpe wrote:
+> On Fri, Mar 13, 2020 at 03:57:14PM +0200, Leon Romanovsky wrote:
+> > On Fri, Mar 13, 2020 at 10:44:56AM -0300, Jason Gunthorpe wrote:
+> > > On Tue, Mar 10, 2020 at 11:14:30AM +0200, Leon Romanovsky wrote:
+> > > > From: Leon Romanovsky <leonro@mellanox.com>
+> > > >
+> > > > Remove custom and duplicated variant of offsetofend().
+> > > >
+> > > > Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+> > > >  drivers/infiniband/hw/efa/efa_verbs.c | 7 ++-----
+> > > >  1 file changed, 2 insertions(+), 5 deletions(-)
+> > > >
+> > > > diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+> > > > index bf3120f140f7..5c57098a4aee 100644
+> > > > +++ b/drivers/infiniband/hw/efa/efa_verbs.c
+> > > > @@ -144,9 +144,6 @@ static inline bool is_rdma_read_cap(struct efa_dev *dev)
+> > > >  	return dev->dev_attr.device_caps & EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_RDMA_READ_MASK;
+> > > >  }
+> > > >
+> > > > -#define field_avail(x, fld, sz) (offsetof(typeof(x), fld) + \
+> > > > -				 sizeof_field(typeof(x), fld) <= (sz))
+> > > > -
+> > > >  #define is_reserved_cleared(reserved) \
+> > > >  	!memchr_inv(reserved, 0, sizeof(reserved))
+> > > >
+> > > > @@ -609,7 +606,7 @@ struct ib_qp *efa_create_qp(struct ib_pd *ibpd,
+> > > >  	if (err)
+> > > >  		goto err_out;
+> > > >
+> > > > -	if (!field_avail(cmd, driver_qp_type, udata->inlen)) {
+> > > > +	if (offsetofend(typeof(cmd), driver_qp_type) > udata->inlen) {
+> > >
+> > > The > needs to be >=, and generally we write compares as
+> > >    'variable XX constant'
+> >
+> > Why ">="
+> > The original code is
+> > if (!field_avail(cmd, driver_qp_type, udata->inlen))
+> > ==>
+> > if (!(offsetof(typeof(cmd), driver_qp_type) + sizeof_field(typeof(cmd), driver_qp_type,) <= (udata->inlen))
+> > ===>
+> > if (!(offsetofend(typeof(cmd), driver_qp_type) <= (udata->inlen))
+> > ===>
+> > if (offsetofend(typeof(cmd), driver_qp_type) > (udata->inlen)
+> >
+> > like I wrote.
+>
+> Oh ok, I missed the !
 
-Applied to for-next, thanks
+So can you apply this patch too?
 
-Jason
+Thanks
+
+>
+> Jason
