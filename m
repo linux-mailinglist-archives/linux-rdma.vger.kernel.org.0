@@ -2,230 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13ECA187473
-	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2020 22:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCB61874A3
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Mar 2020 22:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732619AbgCPVFL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 Mar 2020 17:05:11 -0400
-Received: from mga01.intel.com ([192.55.52.88]:40805 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732607AbgCPVFL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 16 Mar 2020 17:05:11 -0400
-IronPort-SDR: IUdYb8hEfonnBb2L2Qx9UoPsHMw9CywTXWDW0tUY2UB1PCrvCw5ogqDZU8c+ZFHvkfm8ilOjFs
- BJJhKc1a3iNA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2020 14:05:10 -0700
-IronPort-SDR: 11lPcZN7MYtySgBwW2SIFHqsOs7uVnKAtRHHlLeLx3TqhniT6xCsVgwJP0dad6opF6gUkV3LYI
- d1A2hFVSMaIg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,561,1574150400"; 
-   d="scan'208";a="417300615"
-Received: from sedona.ch.intel.com ([10.2.136.157])
-  by orsmga005.jf.intel.com with ESMTP; 16 Mar 2020 14:05:10 -0700
-Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 02GL59Ox017762;
-        Mon, 16 Mar 2020 14:05:09 -0700
-Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 02GL57mx007953;
-        Mon, 16 Mar 2020 17:05:08 -0400
-Subject: [PATCH for-next 3/3] IB/hfi1: Use the ibdev in hfi1_devdata as the
- parent of cdev
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>
-Date:   Mon, 16 Mar 2020 17:05:07 -0400
-Message-ID: <20200316210507.7753.42347.stgit@awfm-01.aw.intel.com>
-In-Reply-To: <20200316210246.7753.40221.stgit@awfm-01.aw.intel.com>
-References: <20200316210246.7753.40221.stgit@awfm-01.aw.intel.com>
-User-Agent: StGit/0.17.1-dirty
-MIME-Version: 1.0
+        id S1732597AbgCPVTJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 Mar 2020 17:19:09 -0400
+Received: from mail-eopbgr70051.outbound.protection.outlook.com ([40.107.7.51]:21138
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732567AbgCPVTJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 16 Mar 2020 17:19:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DC++W2T3HnG2jOAGEf8aYzuSjtE6ruz0KoJhw/GK7zVCCB++onwSYH2DXjfnHqfK314W24GxNVWFE3Mx/hW2zTs3XGRISdP8W0T2sfaf8UmnoVYDiA9uVOP1B7QoR2lmef8ziRDieAEMum4Hog0l7N9r8c8omNtljankGfPSB9GI45F/muTzkJwgIQugzCLINaETLqpgutNMsGtmqOYA4jY7XApBWJZddJD6j4DipiI1AtEbOSDTfbjbtC/K8IPnepT4lJT3shSGVpCm1cC2cvciFxy997Q2mtYVZcDEOfiZGSdcAxtB57boi8txsKZqisCInFJ1UCNaf2OMG8ykOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1mHpFbhKjLPCe2gTl73mXkphR6XLMS7I7gQxSFBVRRg=;
+ b=VqoqmCA4bnYtnrbCpoyuN3+r7xDbjNHciSC7t9AY1T6TsYU8bBDixxzprQK/PVS0n03JcGjWpajRgWjPW+9Bu/S+PMmClFT57peqkjQyhkyUkb4jAzrPRRG9LDngVgKBCrov2h0v5j0y33nU/CwkqVQPZcwKC1RVkNV7YQP0XqLr5KHiL7iVrEbR3QK4yjnaIAdFL06SIqRF6h+m87hSY/7kRHwqLUknHNi+KDUVhp/xWgSUEGSgdYFGZnyUcRViXhXR0kawFqXcg9J0zdlclEjahAgA19OMJv6CuHjHumCnpu+B/VXSwrp0hBS9sz9s24qFVISgLofH51sOoq85qA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1mHpFbhKjLPCe2gTl73mXkphR6XLMS7I7gQxSFBVRRg=;
+ b=W3QBmfns9h/NDx/pJrNS4JPqEya1+iuAg/557sD+ll8LVv5dUtsgOy/74Gg733uO0CdYu4Q8fOQMFyXzh2w8kQE0WZRAfuOLd6P6Bp2VHyHgLs/SphHTKZO8A2J1JM+efcS7iWaa63kk5ZhmEKSjvvQrPhuMfJymF0hQdpPz+7w=
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (20.177.51.151) by
+ VI1PR05MB4926.eurprd05.prod.outlook.com (20.177.52.16) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2814.22; Mon, 16 Mar 2020 21:19:05 +0000
+Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::8cea:6c66:19fe:fbc2]) by VI1PR05MB5102.eurprd05.prod.outlook.com
+ ([fe80::8cea:6c66:19fe:fbc2%7]) with mapi id 15.20.2793.023; Mon, 16 Mar 2020
+ 21:19:05 +0000
+From:   Saeed Mahameed <saeedm@mellanox.com>
+To:     "yuehaibing@huawei.com" <yuehaibing@huawei.com>,
+        Jiri Pirko <jiri@mellanox.com>, Roi Dayan <roid@mellanox.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Oz Shlomo <ozsh@mellanox.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Paul Blakey <paulb@mellanox.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net/mlx5e: CT: remove set but not used variable
+ 'unnew'
+Thread-Topic: [PATCH net-next] net/mlx5e: CT: remove set but not used variable
+ 'unnew'
+Thread-Index: AQHV+e4JaUSaLigfdEmB/1IwmiaykKhLvRgA
+Date:   Mon, 16 Mar 2020 21:19:05 +0000
+Message-ID: <d5acf4f27a5438d40ba5f53ec9cb498742202576.camel@mellanox.com>
+References: <20200314104446.54364-1-yuehaibing@huawei.com>
+In-Reply-To: <20200314104446.54364-1-yuehaibing@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=saeedm@mellanox.com; 
+x-originating-ip: [73.15.39.150]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 0ab72745-7533-417e-16a6-08d7c9efa88a
+x-ms-traffictypediagnostic: VI1PR05MB4926:|VI1PR05MB4926:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR05MB49264AA2279B5DD71D3E5FA6BEF90@VI1PR05MB4926.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1148;
+x-forefront-prvs: 03449D5DD1
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(39860400002)(346002)(376002)(136003)(366004)(199004)(76116006)(110136005)(6486002)(2906002)(4744005)(5660300002)(54906003)(8676002)(81156014)(81166006)(6636002)(478600001)(8936002)(91956017)(316002)(36756003)(66946007)(186003)(66476007)(86362001)(26005)(71200400001)(6506007)(66446008)(4326008)(64756008)(66556008)(6512007)(2616005);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB4926;H:VI1PR05MB5102.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: +OjH6zUnz4hmohebetZWjAGrr5snuq2HExLnfh4ttFdIUiOhlv/G6WWdoRjzxnmKNmXGBQiD591twyEmoyibpKBNy6qMJOHQ6sE6PnnGtahxd0asrvj8GOe8JW7CiADGAYWJGszvqmEqeGwJZiZ5De1zcP5npKzJrcaNRz54as2EAvPtr6RP0c8nFH53urFX9PYL6dg1lvyNXgx+eB2mMCdyigSIWyk+NVI+1zVzdfchvRaSmq3r9EggmQPQ05WRKolIWWfnNqFt9b/SN6Vs66JMLNKHjffYCrybauGOB5DrXpv+TsQ8leiGngPYmHuUuqmclcfOk/8oevyu3XjX0MYnnrbf2Iy+LK4MhmVl7WYCLWMMrTHNf+P0XNIJ1xWnaNiy7j59SdiY8iS9W8gRgs8mvSBJrqtHkjEEdPa4ewoH38c2k78hEYySqknjhvsX
+x-ms-exchange-antispam-messagedata: MHfDNXeXdb51WkXBYHUIPwxqvzMwNAwIVctr0npTM0FFdGx9xNjwLCB2A9kPbujJGaIxaewABe958asXctH0G0clbBrS8vdqhw18K1gLfF4UKd+scj81KInyQiL7/IpvShEv1w0l1EI0Jn6m8SSWPQ==
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-ID: <512337F70B95A048AD76561F50EDE3B7@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ab72745-7533-417e-16a6-08d7c9efa88a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2020 21:19:05.6894
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: M9T4tHtCuvy8PeWURs2eWFlhfZZ7GGo613t43Wu7Iw23gwU1/j1PXKWY96q5pQxVU2tkjRr7kEbZZbxNf6vSFg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4926
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Kaike Wan <kaike.wan@intel.com>
-
-This patch is implemented to address the concerns raised in:
-  https://marc.info/?l=linux-rdma&m=158101337614772&w=2
-
-The hfi1 driver dynammically allocates a struct device to represent the
-cdev in sysfs and devtmpfs (/dev/hfi1_x). On the other hand, the
-hfi1_devdata already contains a struct device in its ibdev field
-(hfi1_devdata.verbs_dev.rdi.ibdev.dev), and it is therefore possible to
-eliminate the dynamical allocation when creating the cdev. Since each
-device could be added to the sysfs only once and the function
-device_add() is already called for the ibdev in ib_register_device(),
-the function cdev_device_add() could not be used to create the cdev,
-even though the hfi1_devdata contains both cdev and ibdev in the same
-structure.
-
-This patch eliminates the dynamic allocation by creating the cdev
-first, setting up the ibdev, and then calling the ib_register_device()
-to add the device to sysfs and devtmpfs.
-
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Reviewed-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Signed-off-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
----
- drivers/infiniband/hw/hfi1/device.c   |   23 ++++++++++++++++-------
- drivers/infiniband/hw/hfi1/file_ops.c |    5 ++---
- drivers/infiniband/hw/hfi1/hfi.h      |    1 -
- drivers/infiniband/hw/hfi1/init.c     |   18 +++++++++---------
- 4 files changed, 27 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hfi1/device.c b/drivers/infiniband/hw/hfi1/device.c
-index bbb6069..4e1ad5f 100644
---- a/drivers/infiniband/hw/hfi1/device.c
-+++ b/drivers/infiniband/hw/hfi1/device.c
-@@ -79,10 +79,12 @@ int hfi1_cdev_init(int minor, const char *name,
- 		goto done;
- 	}
- 
--	if (user_accessible)
--		device = device_create(user_class, NULL, dev, NULL, "%s", name);
--	else
-+	if (user_accessible) {
-+		device = kobj_to_dev(parent);
-+		device->devt = dev;
-+	} else {
- 		device = device_create(class, NULL, dev, NULL, "%s", name);
-+	}
- 
- 	if (IS_ERR(device)) {
- 		ret = PTR_ERR(device);
-@@ -92,20 +94,27 @@ int hfi1_cdev_init(int minor, const char *name,
- 		cdev_del(cdev);
- 	}
- done:
--	*devp = device;
-+	if (devp)
-+		*devp = device;
- 	return ret;
- }
- 
-+/*
-+ * The pointer devp will be provided only if *devp is allocated
-+ * dynamically, as shown in device_create().
-+ */
- void hfi1_cdev_cleanup(struct cdev *cdev, struct device **devp)
- {
--	struct device *device = *devp;
-+	struct device *device = NULL;
- 
-+	if (devp)
-+		device = *devp;
- 	if (device) {
- 		device_unregister(device);
- 		*devp = NULL;
--
--		cdev_del(cdev);
- 	}
-+	/* This will also decrement its parent's refcount */
-+	cdev_del(cdev);
- }
- 
- static const char *hfi1_class_name = "hfi1";
-diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
-index e7fdd70..38827e4 100644
---- a/drivers/infiniband/hw/hfi1/file_ops.c
-+++ b/drivers/infiniband/hw/hfi1/file_ops.c
-@@ -1682,8 +1682,7 @@ static int ctxt_reset(struct hfi1_ctxtdata *uctxt)
- 
- static void user_remove(struct hfi1_devdata *dd)
- {
--
--	hfi1_cdev_cleanup(&dd->user_cdev, &dd->user_device);
-+	hfi1_cdev_cleanup(&dd->user_cdev, NULL);
- }
- 
- static int user_add(struct hfi1_devdata *dd)
-@@ -1693,7 +1692,7 @@ static int user_add(struct hfi1_devdata *dd)
- 
- 	snprintf(name, sizeof(name), "%s_%d", class_name(), dd->unit);
- 	ret = hfi1_cdev_init(dd->unit, name, &hfi1_file_ops,
--			     &dd->user_cdev, &dd->user_device,
-+			     &dd->user_cdev, NULL,
- 			     true, &dd->verbs_dev.rdi.ibdev.dev.kobj);
- 	if (ret)
- 		user_remove(dd);
-diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
-index b06c259..8e63b11 100644
---- a/drivers/infiniband/hw/hfi1/hfi.h
-+++ b/drivers/infiniband/hw/hfi1/hfi.h
-@@ -1084,7 +1084,6 @@ struct hfi1_devdata {
- 	struct cdev user_cdev;
- 	struct cdev diag_cdev;
- 	struct cdev ui_cdev;
--	struct device *user_device;
- 	struct device *diag_device;
- 	struct device *ui_device;
- 
-diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
-index 3759d92..3c605dd 100644
---- a/drivers/infiniband/hw/hfi1/init.c
-+++ b/drivers/infiniband/hw/hfi1/init.c
-@@ -1665,6 +1665,10 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	/* setup vnic */
- 	hfi1_vnic_setup(dd);
-+	
-+	j = hfi1_device_create(dd);
-+	if (j)
-+		dd_dev_err(dd, "Failed to create /dev devices: %d\n", -j);
- 
- 	ret = hfi1_register_ib_device(dd);
- 
-@@ -1680,10 +1684,6 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		hfi1_dbg_ibdev_init(&dd->verbs_dev);
- 	}
- 
--	j = hfi1_device_create(dd);
--	if (j)
--		dd_dev_err(dd, "Failed to create /dev devices: %d\n", -j);
--
- 	if (initfail || ret) {
- 		msix_clean_up_interrupts(dd);
- 		stop_timers(dd);
-@@ -1700,11 +1700,11 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 				ppd->link_wq = NULL;
- 			}
- 		}
--		if (!j)
--			hfi1_device_remove(dd);
- 		if (!ret)
- 			hfi1_unregister_ib_device(dd);
- 		hfi1_vnic_cleanup(dd);
-+		if (!j)
-+			hfi1_device_remove(dd);
- 		postinit_cleanup(dd);
- 		if (initfail)
- 			ret = initfail;
-@@ -1740,9 +1740,6 @@ static void remove_one(struct pci_dev *pdev)
- 	/* close debugfs files before ib unregister */
- 	hfi1_dbg_ibdev_exit(&dd->verbs_dev);
- 
--	/* remove the /dev hfi1 interface */
--	hfi1_device_remove(dd);
--
- 	/* wait for existing user space clients to finish */
- 	wait_for_clients(dd);
- 
-@@ -1751,6 +1748,9 @@ static void remove_one(struct pci_dev *pdev)
- 
- 	/* cleanup vnic */
- 	hfi1_vnic_cleanup(dd);
-+	
-+	/* remove the /dev hfi1 interface */
-+	hfi1_device_remove(dd);
- 
- 	/*
- 	 * Disable the IB link, disable interrupts on the device,
-
+T24gU2F0LCAyMDIwLTAzLTE0IGF0IDE4OjQ0ICswODAwLCBZdWVIYWliaW5nIHdyb3RlOg0KPiBk
+cml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW4vdGNfY3QuYzoNCj4gIElu
+IGZ1bmN0aW9uIG1seDVfdGNfY3RfcGFyc2VfbWF0Y2g6DQo+IGRyaXZlcnMvbmV0L2V0aGVybmV0
+L21lbGxhbm94L21seDUvY29yZS9lbi90Y19jdC5jOjY5OTozNjogd2FybmluZzoNCj4gIHZhcmlh
+YmxlIHVubmV3IHNldCBidXQgbm90IHVzZWQgWy1XdW51c2VkLWJ1dC1zZXQtdmFyaWFibGVdDQo+
+IA0KPiBjb21taXQgNGMzODQ0ZDllOTdlICgibmV0L21seDVlOiBDVDogSW50cm9kdWNlIGNvbm5l
+Y3Rpb24gdHJhY2tpbmciKQ0KPiBpbnZvbGVkIHRoaXMgdW51c2VkIHZhcmlhYmxlLCByZW1vdmUg
+aXQuDQo+IA0KDQpJIHRvb2sgdGhlIGxpYmVydHkgdG8gZml4IHRoaXMgdG8gYSBwcm9wZXIgIkZp
+eGVzOiIgdGFnLg0KDQpBcHBsaWVkIHRvIG5ldC1uZXh0LW1seDUNCg0KVGhhbmtzLA0KU2FlZWQu
+DQoNCg==
