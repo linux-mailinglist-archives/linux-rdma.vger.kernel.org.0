@@ -2,74 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9801887F0
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 15:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 764F6188832
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 15:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgCQOpN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Mar 2020 10:45:13 -0400
-Received: from mail-pf1-f181.google.com ([209.85.210.181]:42470 "EHLO
-        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726847AbgCQOpM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Mar 2020 10:45:12 -0400
-Received: by mail-pf1-f181.google.com with SMTP id x2so11704733pfn.9
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Mar 2020 07:45:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=from:content-transfer-encoding:mime-version:subject:message-id:date
-         :cc:to;
-        bh=+B6CwXbPwKoW/xJraPPI40aM+0Q6AilFXqPUfAECWL4=;
-        b=vF7fDdD8G1+Lp59cBARJvmvbs0Nz8AzBinbV4PdsXovJF3kJa0sxUIlYjJ+C/FYW89
-         D2NlTU45Re4RGGsEJt1Y/3AAeYCdUn1YR9bUeyLOEMkiloqlJkP0SJFaS87HkdE5ePVZ
-         UfB5dOl88BTpKf/AFGxcl7tf09+TFuM41At1MbyYTSe8QvwYSzyNC+nZjjEsobTC1ghe
-         PAtMMtpQ37wqnsIL2FiOFv2Cxkosd5cdNz/qRsbpaaO6OHTw19zbLDAGTGIxMFc7d+pA
-         Nf49NoiNEoK3qGnKLarKscqELl64zXpvZhX54zobeJMSxezVI03V52LzUwXEq6FaXsKU
-         MvCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:message-id:date:cc:to;
-        bh=+B6CwXbPwKoW/xJraPPI40aM+0Q6AilFXqPUfAECWL4=;
-        b=kd+1efHNHQ2oYTpOqG21hMeB/kkXZ6T2Ar4anra//FLJ8d2OF9B847LENfMMMjMqi1
-         /Ly+8YW7JvNuOZCQUJ9SKfltupijUnHDMEBPf0nPGkbZQOCTBWn1+jAKp12BNOEZ+l9c
-         vC/lYeZJ2+9GDSj2+JaiiLi2eUF4INx5ST8iR/oxHle91g+gNghSwd1A/i1afOlN6Xck
-         ozsyGJlA4XRO2koxQJ7XA+jYwNU1LpUPO8sKArwswQKPnwvfgbpsuArS0aCPiCsGeQLc
-         1Sjsesex0vwVAR2nCifZyecO+6A8oSrJeZnwOD6dbxLjrf5wNrWqykuO4MEqLU0i3Owe
-         Smng==
-X-Gm-Message-State: ANhLgQ0rTUyPIuTRejaIj39f9EJ+AM3hJfyd73k3uwD+y4Dvr0J9X7SM
-        P1gySh4w/idio8Ld3t0q9uY5KIFu1cI=
-X-Google-Smtp-Source: ADFU+vusXXldSMaOfgHoy6RN7N8nczLhgRc9XwegPJnU1eg7uZyd3+h8Z13c7wDNrcVi9zIWrU+fdQ==
-X-Received: by 2002:a62:e917:: with SMTP id j23mr5833109pfh.154.1584456311547;
-        Tue, 17 Mar 2020 07:45:11 -0700 (PDT)
-Received: from [192.168.4.4] ([107.13.143.123])
-        by smtp.gmail.com with ESMTPSA id d1sm3405229pfc.3.2020.03.17.07.45.10
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 17 Mar 2020 07:45:11 -0700 (PDT)
-From:   Andrew Boyer <aboyer@pensando.io>
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Lockless behavior for CQs in userspace
-Message-Id: <6C1A3349-65B0-4F22-8E82-1BBC22BF8CA2@pensando.io>
-Date:   Tue, 17 Mar 2020 10:45:08 -0400
-Cc:     linux-rdma@vger.kernel.org
-To:     Leon Romanovsky <leonro@mellanox.com>
-X-Mailer: Apple Mail (2.3445.104.11)
+        id S1726998AbgCQOyc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Mar 2020 10:54:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726971AbgCQOyc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 17 Mar 2020 10:54:32 -0400
+Received: from mail.kernel.org (ip5f5ad4e9.dynamic.kabel-deutschland.de [95.90.212.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D12D520777;
+        Tue, 17 Mar 2020 14:54:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584456871;
+        bh=ngm8KfEWZ1w1B8xThy9DYpYXuh5kAXswdWClIoD/HIs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IcOYly3Lf5sMWTt1SHqcQCOJ2be+l+7v1x0lR+oNLOJZnoULSXxqC+d66FN1D4ruH
+         78PPoWLcuYlSFhXtouM3t1+NbSltrOM0gVu0GRxGxNhfQcLJVW9Zf3qZelH8QFjXDL
+         0xe9Zj3ptq5C4DCqEQjZXx3Prb9vnUaWp95ZTNE8=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jEDbw-000ANF-T2; Tue, 17 Mar 2020 15:54:28 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Niranjana Vishwanathapura <niranjana.vishwanathapura@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [PATCH 14/17] infiniband: pa_vnic_encap.h: get rid of a warning
+Date:   Tue, 17 Mar 2020 15:54:23 +0100
+Message-Id: <9dce702510505556d75a13d9641e09218a4b4a65.1584456635.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <cover.1584456635.git.mchehab+huawei@kernel.org>
+References: <cover.1584456635.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Leon,
-I understand that we are not to create new providers that use =
-environment variables to control locking behavior. The =E2=80=98new=E2=80=99=
- way to do it is to use thread domains and parent domains.
+The right markup for a variable is @foo, and not @foo[].
 
-However, even mlx5 still uses the env var exclusively to control =
-lockless behavior for CQs. Do you have anything in mind for how to =
-extend thread_domains or some other part of the API to cover the CQ =
-case?
+Using a wrong markup caused this warning:
 
-Thank you,
-Andrew
+	./drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h:243: WARNING: Inline strong start-string without end-string.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h b/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h
+index 0b3570dc606d..d324312a373c 100644
+--- a/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h
++++ b/drivers/infiniband/ulp/opa_vnic/opa_vnic_encap.h
+@@ -239,7 +239,7 @@ struct opa_veswport_mactable_entry {
+  * @offset: mac table starting offset
+  * @num_entries: Number of entries to get or set
+  * @mac_tbl_digest: mac table digest
+- * @tbl_entries[]: Array of table entries
++ * @tbl_entries: Array of table entries
+  *
+  * The EM sends down this structure in a MAD indicating
+  * the starting offset in the forwarding table that this
+-- 
+2.24.1
 
