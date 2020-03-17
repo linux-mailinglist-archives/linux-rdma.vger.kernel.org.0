@@ -2,42 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CE9188676
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 14:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DCA1886A0
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 14:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726148AbgCQNz0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Mar 2020 09:55:26 -0400
-Received: from mail-eopbgr50077.outbound.protection.outlook.com ([40.107.5.77]:33166
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        id S1726556AbgCQN6U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Mar 2020 09:58:20 -0400
+Received: from mail-eopbgr80048.outbound.protection.outlook.com ([40.107.8.48]:45889
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726799AbgCQNz0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 17 Mar 2020 09:55:26 -0400
+        id S1726278AbgCQN6T (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 17 Mar 2020 09:58:19 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R9yFu9isIg/6W3leIeSV14Uxsl/rNAwVuTSM5B1A6z9URxg3oK86n0hJ4+2bTEbsDhW8SP1SSprIgKx7du+EThN5YA8LjVaBLHkpukaKffLCzwtmoaBsCnnxpNBKVTmRVnCuK4b/JhxLae8mJqJfOSsnf5d7NcDMOkuXnChrnRFZep9jZ9OKOsINL9CH+aTNCAwNrQlciYt9CPOz16QggckrQhOL6sMlEW5CB9UCRaPgmPH302FciZgsmFY2V6sSvTeselIUpF8CkLSl+Aa0DcoYjYsaIPefAg0Xv4fNs6Zly6Zh4D3cWXPkHascvSQ3u9BJ5k6VZFq6abhvLO0AdA==
+ b=G4QI2S9tgA5Z4HpyVSAO4I4HLZnb4d6FBqD8jS03snsW+Qdi7C24PK5C03b7J5xWfI2uvrMG6safHKcISCmQ0gMTG3XAwbG68o5aSDvVcY9rQj+1wfs6Oy0yZffV7mqAsFvYra1R7++slszLM5bO7MxhnqxAdFHqzMeymE2/9+2dRnbeb7Y/egQkrimhAa4YQ2amxMWX1zRH6QIze67elm2RsCxp2aeIDuhGIrGScZKSy7cs6tkAhBmNGcnzc3HYYmrCrXG9LGSEcM7ZcVQo9BChYPKDsN9A/h82OATLLky+hrDypR1fRuqND3JbVzPE7ayS+JiL2beAduX5DMyLNQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rFT6+HHXVEoYukrvO8Wm2VfJe1B7JBgxggF4zzHWQ30=;
- b=Tv/M692yGVGe93myWNOHiIuzrtK8XjWZ1UHMhAqLPw3jV9QIU++jTs7XbLhWME4MVdfp1Qz+fkKD6Uahfi2udShDAdwWpdgC+bot9XM4Cx+5Uy5E2joaMFrfHxqTZXRJdwf8Uz4b/kOzBGTbgiNTVtxvQcd3gX4fLgdoSSz+O7nX0/VhrfrP37NVkFKG+jNlZyvJ93+ilFbHdz6IEVsXL3q/bEur+x1n8jaksAa1WSJSZ/YaSbNvCPD55S2z9NOsFEJwmriXbtjtBBbJOHrqSEy7pWwOE4YalaCcnR6r8ckZL4FXbx3O8SmDCMDH7AK2vqDnXGNf1gAbCmh0mHBKwg==
+ bh=5pXMpg5aLo4S4rGgCG/wBcbHbn2jy0ycZgYhkK/7pYA=;
+ b=WM/VwyOlek+sBYL7agvjtxWZF+fHJnSfxJNcDBC5h+XeUvzGxyi0EoFlWafDqyS84/0tfFJ+/ZTEy1YmcZtyXb7XtPQQoadm6HPKKSVoEAEqtjUhySWVzpmCHZ1uGroE5PrCezFswnxo1ei7EjnTGu4AFUq9uhohbcWffBMJf64Z0zkMkF/tvd4Cdrn1pU2Cjt6Jz6VosvRAdeEmjpSvzpJT9SPFvxBPydu1TaZBUuocoXs0vn8qtWvNcbPl/SmjX3FaBmgBx94uFydSWZ7YQL9Xabz3Isyz65hSGvzdNIrzRf+8xkPDPnPuNUOQhtbNFOG6S31O+FSD1iHjcZns/w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
  dkim=pass header.d=mellanox.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rFT6+HHXVEoYukrvO8Wm2VfJe1B7JBgxggF4zzHWQ30=;
- b=np1tc7Tc3FTmkBex8R7JU8eCbVDwhUerwOvnozEVyyfb9SHJX9GHbf60QzCKT2cX8gE11qPv6MgPk/kiOAYNf0CqU/YhSr2seqefDgfIU8W0tSx1gHZALZI8Ee9HB2nnCLn7azFxqJHNBc5UPMzvVXvxg7dpECGh9hgvQJM6vyE=
+ bh=5pXMpg5aLo4S4rGgCG/wBcbHbn2jy0ycZgYhkK/7pYA=;
+ b=JXn4fX0x3q9K+/xVZ2is8uTi13zZLO4aLz3LyyYwlatAsEcvQTT06b8teiak0ocJ1GKh0BoRxxpsZagEJ0hmXMqgBdmbpDlQakQbH+aDGC0nIluTa1S3EHKudvKALw51y6QLXOzSQxyo+TnEkKqPgJnANPCbJtZZ/Bpx0/CquXQ=
 Authentication-Results: spf=none (sender IP is )
  smtp.mailfrom=leonro@mellanox.com; 
 Received: from AM6PR05MB6408.eurprd05.prod.outlook.com (20.179.5.215) by
- AM6PR05MB5638.eurprd05.prod.outlook.com (20.178.93.208) with Microsoft SMTP
+ AM6PR05MB6118.eurprd05.prod.outlook.com (20.179.2.159) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2814.22; Tue, 17 Mar 2020 13:55:20 +0000
+ 15.20.2814.16; Tue, 17 Mar 2020 13:58:15 +0000
 Received: from AM6PR05MB6408.eurprd05.prod.outlook.com
  ([fe80::c99f:9130:561f:dea0]) by AM6PR05MB6408.eurprd05.prod.outlook.com
  ([fe80::c99f:9130:561f:dea0%3]) with mapi id 15.20.2814.021; Tue, 17 Mar 2020
- 13:55:20 +0000
-Date:   Tue, 17 Mar 2020 15:55:18 +0200
+ 13:58:15 +0000
+Date:   Tue, 17 Mar 2020 15:58:12 +0200
 From:   Leon Romanovsky <leonro@mellanox.com>
 To:     Max Gurtovoy <maxg@mellanox.com>
 Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
@@ -45,250 +45,195 @@ Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
         linux-rdma@vger.kernel.org, kbusch@kernel.org, jgg@mellanox.com,
         dledford@redhat.com, idanb@mellanox.com, shlomin@mellanox.com,
         oren@mellanox.com, vladimirk@mellanox.com
-Subject: Re: [PATCH 1/5] IB/core: add a simple SRQ set per PD
-Message-ID: <20200317135518.GG3351@unreal>
+Subject: Re: [PATCH 5/5] RDMA/srpt: use SRQ per completion vector
+Message-ID: <20200317135812.GH3351@unreal>
 References: <20200317134030.152833-1-maxg@mellanox.com>
- <20200317134030.152833-2-maxg@mellanox.com>
+ <20200317134030.152833-6-maxg@mellanox.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200317134030.152833-2-maxg@mellanox.com>
-X-ClientProxiedBy: AM4PR0101CA0051.eurprd01.prod.exchangelabs.com
- (2603:10a6:200:41::19) To AM6PR05MB6408.eurprd05.prod.outlook.com
+In-Reply-To: <20200317134030.152833-6-maxg@mellanox.com>
+X-ClientProxiedBy: AM0PR01CA0056.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:e6::33) To AM6PR05MB6408.eurprd05.prod.outlook.com
  (2603:10a6:20b:b8::23)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (2a00:a040:183:2d::393) by AM4PR0101CA0051.eurprd01.prod.exchangelabs.com (2603:10a6:200:41::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.18 via Frontend Transport; Tue, 17 Mar 2020 13:55:20 +0000
+Received: from localhost (2a00:a040:183:2d::393) by AM0PR01CA0056.eurprd01.prod.exchangelabs.com (2603:10a6:208:e6::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.16 via Frontend Transport; Tue, 17 Mar 2020 13:58:14 +0000
 X-Originating-IP: [2a00:a040:183:2d::393]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9cefc1f7-f6ee-4bba-9052-08d7ca7ad4e3
-X-MS-TrafficTypeDiagnostic: AM6PR05MB5638:|AM6PR05MB5638:
+X-MS-Office365-Filtering-Correlation-Id: 61fee6e1-f438-46bb-efca-08d7ca7b3cc8
+X-MS-TrafficTypeDiagnostic: AM6PR05MB6118:|AM6PR05MB6118:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM6PR05MB56383B11679CA8C0C199DAA0B0F60@AM6PR05MB5638.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
+X-Microsoft-Antispam-PRVS: <AM6PR05MB61189688E4101A173FF9AD69B0F60@AM6PR05MB6118.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
 X-Forefront-PRVS: 0345CFD558
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(7916004)(4636009)(39860400002)(366004)(136003)(396003)(346002)(376002)(199004)(6636002)(1076003)(33716001)(316002)(33656002)(52116002)(6496006)(478600001)(66556008)(66946007)(81156014)(8676002)(6486002)(9686003)(2906002)(6862004)(5660300002)(186003)(16526019)(81166006)(4326008)(86362001)(8936002)(107886003)(66476007);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB5638;H:AM6PR05MB6408.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(7916004)(4636009)(366004)(199004)(81156014)(81166006)(86362001)(8676002)(6636002)(33656002)(8936002)(6486002)(33716001)(6496006)(186003)(1076003)(52116002)(16526019)(9686003)(66946007)(107886003)(4326008)(66476007)(2906002)(66556008)(6862004)(5660300002)(498600001);DIR:OUT;SFP:1101;SCL:1;SRVR:AM6PR05MB6118;H:AM6PR05MB6408.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
 Received-SPF: None (protection.outlook.com: mellanox.com does not designate
  permitted sender hosts)
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: u2bRZb7nRpoWsEHtvAjV6WLtmOksUtst3AtmP9lZcQpogLeOp+9IMTK6OqJWL0w5WZ3zimDsRqGqtUd5+VgW7pqVVuJN9xi8TXuWyM1wGd+cH/QotF93F5Eim+Er2d7ZxziiwR5AjAKV/AcZUl52HaX9FxmkkzCqOykvVHCBHHK1dfJM7to+s22aCCKv9cpTtCUxrT26q6zM9wV5pyR4Z4GePrKGMJEfANhb7D5TqIiO83K5mReWeL9T7gZDImA56VZs5L7Yj0PT9Vtr+3kexiv+tO9iuKUibMiGIqVgA/ihP/YDueZTGKGm/QFOIwRzRUagw6DAotMEGJTFaf3Rc+/HEl0+t+asc2ZsHdQoybOQ14T0SVceWT3sQZbetuUzE/+ktjZpj17grIGu1SsvpD0IlXB/Epfg3hfIhNFGVF5S742OJq/yfj+MIWY+IaJF
-X-MS-Exchange-AntiSpam-MessageData: A+GaHkPSxnTCkeRLMcZqCPfGRVjMR7qNMvZAQ2RGlPRTUvu73e9yUxQ2Hj9qQx5qlSK60akDz2VfnctmoIDUmfHRhGlq27VcthtnTD01bPB53PCHQ7DL2a6Zj1RJwLEtBE9swIyLhdPG3Txpo3qbkqjH/pcDXZXvEMk9RPhkkxo=
+X-Microsoft-Antispam-Message-Info: mgoqkPUbcguPs6BQT7tbXIEbb0dfFQCecgVuLOfK3diV9HcxTg+EwgNdqMy2BP6Nr8WtG0Kvc530++iYz/kuPZ5Clnd8PNKuGrfP8RrO2uBuC8PvCwxrG/cvbNpie8AZ8rPeczxuesHP4iq2IQEbNxMZsrunmkyDRogMivv0a0hpjDY4TDziz+PKt0vC33f7V+C7/oybI1GaGz/2d/VxuZLzPKh7L9bMj96CZUEad12l3F6crVVCURVqi8el/uS8WG/DQVXS9Ah2zbNdYwtWZdpDcUqZN4pSrEA6nYqSVwIpkxHotKuwg9c2+JbFOBYF6ZEKncb8Y3XVf89FN/YaJoeXNT0gfbKpJwtxN5rPsdgnY4zxN8U7xloafy5VgRbG+yvsmkezYwSt2w8tqSqb1HyA/nE/fIr4frmAB5B9EdQXi6KE3hxjR/ZN5FrLEYhF
+X-MS-Exchange-AntiSpam-MessageData: lZtQ1N9bI7/iZnp3C8v7ygm3WrcTb9KrM0xt6kQMtSxys41ifE5RYjqvEXk4GxM07gew4prChVURqtIvUmsnIuCfhSnno+3Awx1MqpzowjZv21NqfDOqFRynbqh43Zbqf/UHEL1f8R6kiUpDtVKo4jq6vpyqG1Zq1FQZJaVdOxY=
 X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9cefc1f7-f6ee-4bba-9052-08d7ca7ad4e3
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2020 13:55:20.4887
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61fee6e1-f438-46bb-efca-08d7ca7b3cc8
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2020 13:58:14.8192
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EMAZ0kd7ROuPBQs1g8agkSUHmV1Z8wH84g+lDhJt5g1bGrgiif0SCtjjt3eRY12AzPTrbXT4X9vzzhFu+pKgNQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB5638
+X-MS-Exchange-CrossTenant-UserPrincipalName: PHChtXJat5XSkYkjSe50I/4l3J3OybJz34e/sbRO1EIt+tniSbQCktvsDTLEbnEwf08gDYe9QnnqEkIDsi4REw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB6118
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 17, 2020 at 03:40:26PM +0200, Max Gurtovoy wrote:
-> ULP's can use this API to create/destroy SRQ's with the same
-> characteristics for implementing a logic that aimed to save resources
-> without significant performance penalty (e.g. create SRQ per completion
-> vector and use shared receive buffers for multiple controllers of the
-> ULP).
+On Tue, Mar 17, 2020 at 03:40:30PM +0200, Max Gurtovoy wrote:
+> In order to save resource allocation and utilize the completion
+> locality in a better way (compared to SRQ per device that exist
+> today), allocate Shared Receive Queues (SRQs) per completion vector.
+> Associate each created channel with an appropriate SRQ according to the
+> completion vector index. This association will reduce the lock
+> contention in the fast path (compared to SRQ per device solution) and
+> increase the locality in memory buffers.
 >
 > Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
 > ---
->  drivers/infiniband/core/Makefile  |  2 +-
->  drivers/infiniband/core/srq_set.c | 78 +++++++++++++++++++++++++++++++++++++++
->  drivers/infiniband/core/verbs.c   |  4 ++
->  include/rdma/ib_verbs.h           |  5 +++
->  include/rdma/srq_set.h            | 18 +++++++++
->  5 files changed, 106 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/infiniband/core/srq_set.c
->  create mode 100644 include/rdma/srq_set.h
+>  drivers/infiniband/ulp/srpt/ib_srpt.c | 169 +++++++++++++++++++++++++---------
+>  drivers/infiniband/ulp/srpt/ib_srpt.h |  26 +++++-
+>  2 files changed, 148 insertions(+), 47 deletions(-)
 >
-> diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
-> index d1b14887..1d3eaec 100644
-> --- a/drivers/infiniband/core/Makefile
-> +++ b/drivers/infiniband/core/Makefile
-> @@ -12,7 +12,7 @@ ib_core-y :=			packer.o ud_header.o verbs.o cq.o rw.o sysfs.o \
->  				roce_gid_mgmt.o mr_pool.o addr.o sa_query.o \
->  				multicast.o mad.o smi.o agent.o mad_rmpp.o \
->  				nldev.o restrack.o counters.o ib_core_uverbs.o \
-> -				trace.o
-> +				trace.o srq_set.o
-
-Why did you call it "srq_set.c" and not "srq.c"?
-
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> index 9855274..34869b7 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.c
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
+> @@ -811,6 +811,31 @@ static bool srpt_test_and_set_cmd_state(struct srpt_send_ioctx *ioctx,
+>  }
 >
->  ib_core-$(CONFIG_SECURITY_INFINIBAND) += security.o
->  ib_core-$(CONFIG_CGROUP_RDMA) += cgroup.o
-> diff --git a/drivers/infiniband/core/srq_set.c b/drivers/infiniband/core/srq_set.c
-> new file mode 100644
-> index 0000000..d143561
-> --- /dev/null
-> +++ b/drivers/infiniband/core/srq_set.c
-> @@ -0,0 +1,78 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-> +/*
-> + * Copyright (c) 2020 Mellanox Technologies. All rights reserved.
+>  /**
+> + * srpt_srq_post_recv - post an initial IB receive request for SRQ
+> + * @srq: SRPT SRQ context.
+> + * @ioctx: Receive I/O context pointer.
 > + */
-> +
-> +#include <rdma/srq_set.h>
-> +
-> +struct ib_srq *rdma_srq_get(struct ib_pd *pd)
+> +static int srpt_srq_post_recv(struct srpt_srq *srq, struct srpt_recv_ioctx *ioctx)
 > +{
-> +	struct ib_srq *srq;
-> +	unsigned long flags;
+> +	struct srpt_device *sdev = srq->sdev;
+> +	struct ib_sge list;
+> +	struct ib_recv_wr wr;
 > +
-> +	spin_lock_irqsave(&pd->srq_lock, flags);
-> +	srq = list_first_entry_or_null(&pd->srqs, struct ib_srq, pd_entry);
-> +	if (srq) {
-> +		list_del(&srq->pd_entry);
-> +		pd->srqs_used++;
+> +	BUG_ON(!srq);
+> +	list.addr = ioctx->ioctx.dma + ioctx->ioctx.offset;
+> +	list.length = srp_max_req_size;
+> +	list.lkey = sdev->lkey;
+> +
+> +	ioctx->ioctx.cqe.done = srpt_recv_done;
+> +	wr.wr_cqe = &ioctx->ioctx.cqe;
+> +	wr.next = NULL;
+> +	wr.sg_list = &list;
+> +	wr.num_sge = 1;
+> +
+> +	return ib_post_srq_recv(srq->ibsrq, &wr, NULL);
+> +}
+> +
+> +/**
+>   * srpt_post_recv - post an IB receive request
+>   * @sdev: SRPT HCA pointer.
+>   * @ch: SRPT RDMA channel.
+> @@ -823,6 +848,7 @@ static int srpt_post_recv(struct srpt_device *sdev, struct srpt_rdma_ch *ch,
+>  	struct ib_recv_wr wr;
+>
+>  	BUG_ON(!sdev);
+> +	BUG_ON(!ch);
+>  	list.addr = ioctx->ioctx.dma + ioctx->ioctx.offset;
+>  	list.length = srp_max_req_size;
+>  	list.lkey = sdev->lkey;
+> @@ -834,7 +860,7 @@ static int srpt_post_recv(struct srpt_device *sdev, struct srpt_rdma_ch *ch,
+>  	wr.num_sge = 1;
+>
+>  	if (sdev->use_srq)
+> -		return ib_post_srq_recv(sdev->srq, &wr, NULL);
+> +		return ib_post_srq_recv(ch->srq->ibsrq, &wr, NULL);
+>  	else
+>  		return ib_post_recv(ch->qp, &wr, NULL);
+>  }
+> @@ -1820,7 +1846,8 @@ static int srpt_create_ch_ib(struct srpt_rdma_ch *ch)
+>  					SRPT_MAX_SG_PER_WQE);
+>  	qp_init->port_num = ch->sport->port;
+>  	if (sdev->use_srq) {
+> -		qp_init->srq = sdev->srq;
+> +		ch->srq = sdev->srqs[ch->cq->comp_vector % sdev->srq_count];
+> +		qp_init->srq = ch->srq->ibsrq;
+>  	} else {
+>  		qp_init->cap.max_recv_wr = ch->rq_size;
+>  		qp_init->cap.max_recv_sge = min(attrs->max_recv_sge,
+> @@ -1878,6 +1905,8 @@ static int srpt_create_ch_ib(struct srpt_rdma_ch *ch)
+>
+>  static void srpt_destroy_ch_ib(struct srpt_rdma_ch *ch)
+>  {
+> +	if (ch->srq)
+> +		ch->srq = NULL;
+>  	ib_destroy_qp(ch->qp);
+>  	ib_free_cq(ch->cq);
+>  }
+> @@ -3018,20 +3047,75 @@ static struct se_wwn *srpt_lookup_wwn(const char *name)
+>  	return wwn;
+>  }
+>
+> -static void srpt_free_srq(struct srpt_device *sdev)
+> +static void srpt_free_srq(struct srpt_srq *srq)
+>  {
+> -	if (!sdev->srq)
+> -		return;
+>
+> -	ib_destroy_srq(sdev->srq);
+> -	srpt_free_ioctx_ring((struct srpt_ioctx **)sdev->ioctx_ring, sdev,
+> -			     sdev->srq_size, sdev->req_buf_cache,
+> +	srpt_free_ioctx_ring((struct srpt_ioctx **)srq->ioctx_ring, srq->sdev,
+> +			     srq->sdev->srq_size, srq->sdev->req_buf_cache,
+>  			     DMA_FROM_DEVICE);
+> +	rdma_srq_put(srq->sdev->pd, srq->ibsrq);
+> +	kfree(srq);
+> +
+> +}
+> +
+> +static void srpt_free_srqs(struct srpt_device *sdev)
+> +{
+> +	int i;
+> +
+> +	if (!sdev->srqs)
+> +		return;
+> +
+> +	for (i = 0; i < sdev->srq_count; i++)
+> +		srpt_free_srq(sdev->srqs[i]);
+>  	kmem_cache_destroy(sdev->req_buf_cache);
+> -	sdev->srq = NULL;
+> +	rdma_srq_set_destroy(sdev->pd);
+> +	kfree(sdev->srqs);
+> +	sdev->srqs = NULL;
+>  }
+>
+> -static int srpt_alloc_srq(struct srpt_device *sdev)
+> +static struct srpt_srq *srpt_alloc_srq(struct srpt_device *sdev)
+> +{
+> +	struct srpt_srq	*srq;
+> +	int i, ret;
+> +
+> +	srq = kzalloc(sizeof(*srq), GFP_KERNEL);
+> +	if (!srq) {
+> +		pr_debug("failed to allocate SRQ context\n");
 
-I don't see any real usage of srqs_used.
+Please no to kzalloc prints and no to pr_* prints.
 
+> +		return ERR_PTR(-ENOMEM);
 > +	}
-> +	spin_unlock_irqrestore(&pd->srq_lock, flags);
 > +
-> +	return srq;
-> +}
-> +EXPORT_SYMBOL(rdma_srq_get);
-> +
-> +void rdma_srq_put(struct ib_pd *pd, struct ib_srq *srq)
-> +{
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&pd->srq_lock, flags);
-> +	list_add(&srq->pd_entry, &pd->srqs);
-> +	pd->srqs_used--;
-> +	spin_unlock_irqrestore(&pd->srq_lock, flags);
-> +}
-> +EXPORT_SYMBOL(rdma_srq_put);
-> +
-> +int rdma_srq_set_init(struct ib_pd *pd, int nr,
-> +		struct ib_srq_init_attr *srq_attr)
-> +{
-> +	struct ib_srq *srq;
-> +	unsigned long flags;
-> +	int ret, i;
-> +
-> +	for (i = 0; i < nr; i++) {
-> +		srq = ib_create_srq(pd, srq_attr);
-> +		if (IS_ERR(srq)) {
-> +			ret = PTR_ERR(srq);
-> +			goto out;
-> +		}
-> +
-> +		spin_lock_irqsave(&pd->srq_lock, flags);
-> +		list_add_tail(&srq->pd_entry, &pd->srqs);
-> +		spin_unlock_irqrestore(&pd->srq_lock, flags);
+> +	srq->ibsrq = rdma_srq_get(sdev->pd);
+> +	if (!srq) {
+
+!srq->ibsrq ????
+
+> +		ret = -EAGAIN;
+> +		goto free_srq;
 > +	}
-> +
-> +	return 0;
-> +out:
-> +	rdma_srq_set_destroy(pd);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(rdma_srq_set_init);
-> +
-> +void rdma_srq_set_destroy(struct ib_pd *pd)
-> +{
-> +	struct ib_srq *srq;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&pd->srq_lock, flags);
-> +	while (!list_empty(&pd->srqs)) {
-> +		srq = list_first_entry(&pd->srqs, struct ib_srq, pd_entry);
-> +		list_del(&srq->pd_entry);
-> +
-> +		spin_unlock_irqrestore(&pd->srq_lock, flags);
-> +		ib_destroy_srq(srq);
-> +		spin_lock_irqsave(&pd->srq_lock, flags);
-> +	}
-> +	spin_unlock_irqrestore(&pd->srq_lock, flags);
-> +}
-> +EXPORT_SYMBOL(rdma_srq_set_destroy);
-> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-> index e62c9df..6950abf 100644
-> --- a/drivers/infiniband/core/verbs.c
-> +++ b/drivers/infiniband/core/verbs.c
-> @@ -272,6 +272,9 @@ struct ib_pd *__ib_alloc_pd(struct ib_device *device, unsigned int flags,
->  	pd->__internal_mr = NULL;
->  	atomic_set(&pd->usecnt, 0);
->  	pd->flags = flags;
-> +	pd->srqs_used = 0;
-> +	spin_lock_init(&pd->srq_lock);
-> +	INIT_LIST_HEAD(&pd->srqs);
->
->  	pd->res.type = RDMA_RESTRACK_PD;
->  	rdma_restrack_set_task(&pd->res, caller);
-> @@ -340,6 +343,7 @@ void ib_dealloc_pd_user(struct ib_pd *pd, struct ib_udata *udata)
->  		pd->__internal_mr = NULL;
->  	}
->
-> +	WARN_ON_ONCE(pd->srqs_used > 0);
-
-It can be achieved by WARN_ON_ONCE(!list_empty(&pd->srqs))
-
->  	/* uverbs manipulates usecnt with proper locking, while the kabi
->  	   requires the caller to guarantee we can't race here. */
->  	WARN_ON(atomic_read(&pd->usecnt));
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index 1f779fa..fc8207d 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -1517,6 +1517,10 @@ struct ib_pd {
->
->  	u32			unsafe_global_rkey;
->
-> +	spinlock_t		srq_lock;
-> +	int			srqs_used;
-> +	struct list_head	srqs;
-> +
->  	/*
->  	 * Implementation details of the RDMA core, don't use in drivers:
->  	 */
-> @@ -1585,6 +1589,7 @@ struct ib_srq {
->  	void		       *srq_context;
->  	enum ib_srq_type	srq_type;
->  	atomic_t		usecnt;
-> +	struct list_head	pd_entry; /* srq set entry */
->
->  	struct {
->  		struct ib_cq   *cq;
-> diff --git a/include/rdma/srq_set.h b/include/rdma/srq_set.h
-> new file mode 100644
-> index 0000000..834c4c6
-> --- /dev/null
-> +++ b/include/rdma/srq_set.h
-> @@ -0,0 +1,18 @@
-> +/* SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB) */
-> +/*
-> + * Copyright (c) 2020 Mellanox Technologies. All rights reserved.
-> + */
-> +
-> +#ifndef _RDMA_SRQ_SET_H
-> +#define _RDMA_SRQ_SET_H 1
-
-"1" is not needed.
-
-> +
-> +#include <rdma/ib_verbs.h>
-> +
-> +struct ib_srq *rdma_srq_get(struct ib_pd *pd);
-> +void rdma_srq_put(struct ib_pd *pd, struct ib_srq *srq);
-
-At the end, it is not get/put semantics but more add/remove.
 
 Thanks
-
-> +
-> +int rdma_srq_set_init(struct ib_pd *pd, int nr,
-> +		struct ib_srq_init_attr *srq_attr);
-> +void rdma_srq_set_destroy(struct ib_pd *pd);
-> +
-> +#endif /* _RDMA_SRQ_SET_H */
-> --
-> 1.8.3.1
->
