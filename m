@@ -2,135 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 15144188EC9
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 21:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AD9188EFF
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 21:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbgCQUP2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Mar 2020 16:15:28 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:35722 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgCQUP0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Mar 2020 16:15:26 -0400
-Received: by mail-qk1-f193.google.com with SMTP id d8so34876456qka.2
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Mar 2020 13:15:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RcQJB7Wv962sHHetSf7hshBSrNKNeDkBlfxsZ1vpNAQ=;
-        b=H+Zrpb6UUFLTVGuaCO9shavuaBpy9fRH43KpXyKlr5OXdSg9H1w16puFUjvChYoJG9
-         arBboQbS17s9m6xViJ6DtPqCDyhZvLqQbha+Dby2Qs8EV27NiCOMbR5v0XirC8Om6Bn4
-         F92d27t8rV3N3v6igdLX/nQctMIkuDUCZFV6WLVhzEWWstlgFDwHuoN9H1GAJS7KIPwO
-         kwwm7DZyolGj4QLa2nT0W7uAZ9wvjOpRvnoUh7j6hLQXV4bDPi4S5sUlNXU3LagmS3BU
-         JC+evzW7kC+tMMLQIjgX56i21gexoc+XPUSs9Cy98DkR8Mj6uxB6o7QQX82uL1gTjUaX
-         GgRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RcQJB7Wv962sHHetSf7hshBSrNKNeDkBlfxsZ1vpNAQ=;
-        b=ttpLkxAPmlz9aD8Bz1naDYCYcV+agHnRrDZl8Y8764BJ1fzPHdamRJYj3X3kvziIlq
-         rJVpW5vYMxWE77HX2HmgM8ODlcR0CewIAFBzn9rZQHApPgsP/UVh8joBv9yFWr4xAcPM
-         cJ/RabrOEzOf1gTO4ec4VbGDBeIUlLGo4ZQWpyRIOo4esY+rqisjrawO2GkK7RsrRkO2
-         /hDiW+e/a7RbyM4IrVR1efZvjXCgUQeQeXQXaPlFsCi+DPehGEVjaU6Gu3z+Jesa4s+G
-         q9RnFqxO7LOAJ3r+UQOnEdXXlsKC9hRTxJlC9v66KH0O/Yym2JVe8dlnh6v9Y51nPXso
-         p6ug==
-X-Gm-Message-State: ANhLgQ2mhKkgegDuwaazlEGfTaVQumUBObXwtiuOVtSYDVcdmvefFTWy
-        b4A9y+KcqllgOT4ShNc1owcOiw==
-X-Google-Smtp-Source: ADFU+vtL85ZtLUqcFFFOB/lV2/hNJyHX2knPLqCstgkmwBYunmQ5HDwcBwxhf0dbiC+XeS4Mku1kxg==
-X-Received: by 2002:ae9:e892:: with SMTP id a140mr654387qkg.274.1584476124127;
-        Tue, 17 Mar 2020 13:15:24 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id w134sm2553134qka.127.2020.03.17.13.15.23
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 17 Mar 2020 13:15:23 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jEIcU-0005IL-VY; Tue, 17 Mar 2020 17:15:22 -0300
-Date:   Tue, 17 Mar 2020 17:15:22 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Daniel Jurgens <danielj@mellanox.com>,
-        Haggai Eran <haggaie@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Sean Hefty <sean.hefty@intel.com>
-Subject: Re: [PATCH rdma-next 00/15] Fix locking around cm_id.state in the
- ib_cm
-Message-ID: <20200317201522.GA20284@ziepe.ca>
-References: <20200310092545.251365-1-leon@kernel.org>
+        id S1726476AbgCQUcV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Mar 2020 16:32:21 -0400
+Received: from stargate.chelsio.com ([12.32.117.8]:14596 "EHLO
+        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726388AbgCQUcV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Mar 2020 16:32:21 -0400
+Received: from localhost (pvp1.blr.asicdesigners.com [10.193.80.26])
+        by stargate.chelsio.com (8.13.8/8.13.8) with ESMTP id 02HKVvAw008625;
+        Tue, 17 Mar 2020 13:31:58 -0700
+Date:   Wed, 18 Mar 2020 02:01:57 +0530
+From:   Krishnamraju Eraparaju <krishna2@chelsio.com>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     Bernard Metzler <BMT@zurich.ibm.com>,
+        Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org,
+        Nirranjan Kirubaharan <nirranjan@chelsio.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>
+Subject: Re: broken CRCs at NVMeF target with SIW & NVMe/TCP transports
+Message-ID: <20200317203152.GA14946@chelsio.com>
+References: <a8e7b61a-b238-2cc3-d3c8-743ad1f8c8ee@grimberg.me>
+ <20200316162008.GA7001@chelsio.com>
+ <20200317124533.GB12316@lst.de>
+ <OFB2589549.AD31F8B8-ON0025852E.005A969A-0025852E.005A96A3@notes.na.collabserv.com>
+ <70b13212-faa6-d634-8beb-55ba39891d7f@grimberg.me>
+ <20200317191743.GA22065@chelsio.com>
+ <38f79fb7-841a-9faa-e1f8-2de4b9f21118@grimberg.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200310092545.251365-1-leon@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <38f79fb7-841a-9faa-e1f8-2de4b9f21118@grimberg.me>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 10, 2020 at 11:25:30AM +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@mellanox.com>
+On Tuesday, March 03/17/20, 2020 at 12:33:44 -0700, Sagi Grimberg wrote:
 > 
-> >From Jason:
+> >>>>>For TCP we can set BDI_CAP_STABLE_WRITES.  For RDMA I don't think
+> >>>>that
+> >>>>>is a good idea as pretty much all RDMA block drivers rely on the
+> >>>>>DMA behavior above.  The answer is to bounce buffer the data in
+> >>>>>SoftiWARP / SoftRoCE.
+> >>>>
+> >>>>We already do, see nvme_alloc_ns.
+> >>>>
+> >>>>
+> >>>
+> >>>Krishna was getting the issue when testing TCP/NVMeF with -G
+> >>>during connect. That enables data digest and STABLE_WRITES
+> >>>I think. So to me it seems we don't get stable pages, but
+> >>>pages which are touched after handover to the provider.
+> >>
+> >>Non of the transports modifies the data at any point, both will
+> >>scan it to compute crc. So surely this is coming from the fs,
+> >>Krishna does this happen with xfs as well?
+> >Yes, but rare(took ~15min to recreate), whereas with ext3/4
+> >its almost immediate. Here is the error log for NVMe/TCP with xfs.
 > 
-> cm_id.state is a non-atomic value that must always be read and written
-> under lock, or while the thread has the only pointer to the cm_id.
+> Thanks Krishna,
 > 
-> Critically, during MAD handling the cm_id.state is used to control when
-> MAD handlers can run, and in turn what data they can touch. Without
-> locking, an assignment to state can immediately allow concurrent MAD
-> handlers to execute, potentially creating a mess.
+> I assume that this makes the issue go away?
+> --
+> diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+> index 11e10fe1760f..cc93e1949b2c 100644
+> --- a/drivers/nvme/host/tcp.c
+> +++ b/drivers/nvme/host/tcp.c
+> @@ -889,7 +889,7 @@ static int nvme_tcp_try_send_data(struct
+> nvme_tcp_request *req)
+>                         flags |= MSG_MORE;
 > 
-> Several of these cases only risk load/store tearing, but create very
-> confusing code. For instance changing the state from IB_CM_IDLE to
-> IB_CM_LISTEN doesn't allow any MAD handlers to run in either state, but a
-> superficial audit would suggest that it is not locked properly.
-> 
-> This loose methodology has allowed two bugs to creep in. After creating an
-> ID the code did not lock the state transition, apparently mistakenly
-> assuming that the new ID could not be used concurrently. However, the ID
-> is immediately placed in the xarray and so a carefully crafted network
-> sequence could trigger races with the unlocked stores.
-> 
-> The main solution to many of these problems is to use the xarray to create
-> a two stage add - the first reserves the ID and the second publishes the
-> pointer. The second stage is either omitted entirely or moved after the
-> newly created ID is setup.
-> 
-> Where it is trivial to do so other places directly put the state
-> manipulation under lock, or add an assertion that it is, in fact, under
-> lock.
-> 
-> This also removes a number of places where the state is being read under
-> lock, then the lock dropped, reacquired and state tested again.
-> 
-> There remain other issues related to missing locking on cm_id data.
-> 
-> Thanks
-> 
-> It is based on rdma-next + rdma-rc patch c14dfddbd869
-> ("RMDA/cm: Fix missing ib_cm_destroy_id() in ib_cm_insert_listen()")
-> 
-> Jason Gunthorpe (15):
->   RDMA/cm: Fix ordering of xa_alloc_cyclic() in ib_create_cm_id()
->   RDMA/cm: Fix checking for allowed duplicate listens
->   RDMA/cm: Remove a race freeing timewait_info
->   RDMA/cm: Make the destroy_id flow more robust
->   RDMA/cm: Simplify establishing a listen cm_id
->   RDMA/cm: Read id.state under lock when doing pr_debug()
->   RDMA/cm: Make it clear that there is no concurrency in
->     cm_sidr_req_handler()
->   RDMA/cm: Make it clearer how concurrency works in cm_req_handler()
->   RDMA/cm: Add missing locking around id.state in cm_dup_req_handler
->   RDMA/cm: Add some lockdep assertions for cm_id_priv->lock
->   RDMA/cm: Allow ib_send_cm_dreq() to be done under lock
->   RDMA/cm: Allow ib_send_cm_drep() to be done under lock
->   RDMA/cm: Allow ib_send_cm_rej() to be done under lock
->   RDMA/cm: Allow ib_send_cm_sidr_rep() to be done under lock
->   RDMA/cm: Make sure the cm_id is in the IB_CM_IDLE state in destroy
+>                 /* can't zcopy slab pages */
+> -               if (unlikely(PageSlab(page))) {
+> +               if (unlikely(PageSlab(page)) || queue->data_digest) {
+>                         ret = sock_no_sendpage(queue->sock, page,
+> offset, len,
+>                                         flags);
+>                 } else {
+> --
 
-Applied to for-next. 
+Unfortunately, issue is still occuring with this patch also.
 
-Jason
+Looks like the integrity of the data buffer right after the CRC
+computation(data digest) is what causing this issue, despite the
+buffer being sent via sendpage or no_sendpage.
+
+Thanks,
+Krishna.
