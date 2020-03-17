@@ -2,106 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 421AD1888B3
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 16:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4181888FD
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 16:19:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726713AbgCQPKU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Mar 2020 11:10:20 -0400
-Received: from mail-pf1-f172.google.com ([209.85.210.172]:44258 "EHLO
-        mail-pf1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbgCQPKU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Mar 2020 11:10:20 -0400
-Received: by mail-pf1-f172.google.com with SMTP id b72so12091381pfb.11
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Mar 2020 08:10:19 -0700 (PDT)
+        id S1726553AbgCQPTI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Mar 2020 11:19:08 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:43148 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726478AbgCQPTI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 Mar 2020 11:19:08 -0400
+Received: by mail-qt1-f193.google.com with SMTP id l13so17695791qtv.10
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Mar 2020 08:19:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:subject:from:in-reply-to:date:cc
          :content-transfer-encoding:message-id:references:to;
-        bh=YaaimwD7jmw92Pz/tkejuGphRpIdExzMj05Ty28L9B0=;
-        b=PDnbwLHW2Yun3+pc91O5MpzKRkaGHYUOcE5PsOs3gztE1+bhGxAeCDtmbHGnwAu+5P
-         kYjutef8en94Smk9WhRawlJ/0el/x+kMAESXgtWSdqQHhMksqT/mJ0oB8zsApwCg9w28
-         4I/gY5kRFs6URqdJ33z8ejkB7CuA4GDySYbzMh+Cikm1t2alu9dw567RlVPSOmB6tLnD
-         yO0RO6J3pJTTjCvKsgVsDv7T7HOCNjVundI4dpuMAl65pnAXRLIlw7MMB/whWX96y13+
-         mhHUOLfsaQkpgWhY4Rc5/7WjXge4HroJrl5++GReBvsX5inkU2Ih+eME3i6AoBCE3MLf
-         uvxA==
+        bh=BfzrF8b/EZdcIf7G+sSC1rUzeCq62k9NwB0quV5cf20=;
+        b=Ia5J0N6jv9suXu2ShNnZ1etHlWkhm2x1YzrzD770kh/pZPf3iyQOefOENVRilPQUSo
+         OlyIIuMi5zt18YcHqQgo48szEciCsL0wRyhigq72Gfv9v0c+zjPdkOHlNbhaa+aFqZry
+         02XmtZVk9k5WrwSmom+f5INjfeUjLZZ14NiBa3GnVjMFji57GRSrg/hmx9bSFUysg8DK
+         c6Bdl/0ZrigFrE0iuSAjIZ0oYjPVYudaMWjXjIv913cEuhxGk/FeNQ6GgoQBS2d550hW
+         cl7VxM9XDFFzA6eQdDdP0C4MqWtFmdJRdQLdSnQAXUTag9V1Lcc1FpBKdikCSzlmav1I
+         Bt0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
          :content-transfer-encoding:message-id:references:to;
-        bh=YaaimwD7jmw92Pz/tkejuGphRpIdExzMj05Ty28L9B0=;
-        b=DzUlgQGNhIGGzlH8lrhQpI0KeXu78qrxFSKQV3P2OyhVPuCLqEERca+Kff/4iAnSHn
-         lwTnf4bWW7XTitgMmt/lvXI4BpZ9Fmbeb7QDhF1ZgsM/3CE0cBtc2Iyv8cKOo/iLM7LY
-         17WrEOYMcLmRl+ypqGK+EGzURo+RjurbheCzfDijexsL0Rmoo/72dzwgfAaO7k6QcmXs
-         GmTUKfP3/+VXsk2KSWg01RjF7tXSoxYg++C21V562QMuzAv0q4Ki1NPEl3NETQYPjEYf
-         2VTVpiUmmc+6D1ZSgE1oRozNoUoxBWEXL1/HbiagoFGR0sJ8LAeegVUagepQwDnPDHRU
-         kfdA==
-X-Gm-Message-State: ANhLgQ11vpuxsR/ChFcbH1sO2w+Dsrf0cHUXY/dHKyYDL1apwmNnVJHj
-        8CCGnCxVUEaK3zbMorQWu73Q6g==
-X-Google-Smtp-Source: ADFU+vsaozV+ufRqCHP+aIcvUD7cltcXJcpNBt2U1m14PA7SU7I0joKD95zIY7CLwYSe6+c/Mhm0Mw==
-X-Received: by 2002:a63:350:: with SMTP id 77mr5809126pgd.215.1584457818481;
-        Tue, 17 Mar 2020 08:10:18 -0700 (PDT)
-Received: from [192.168.4.4] ([107.13.143.123])
-        by smtp.gmail.com with ESMTPSA id c201sm3599430pfc.73.2020.03.17.08.10.17
+        bh=BfzrF8b/EZdcIf7G+sSC1rUzeCq62k9NwB0quV5cf20=;
+        b=hghD258CSuSPmoOK+IIl77SbqHuwc2ll9S1nX2GEk1R0r+xkGUVKBN+q70cNgePNRA
+         SjNYbe4qe+wIfIwjr6XIIQJhzIW7RzHPGhpt37JDWrSkwJehsl3NCHxo33PKZzoEiaC6
+         ItUc0LYN632Xk1Z6D0JlDcPXHsmhZNyqruOsWua6Opv70p88lz3ZyLMI1chkaF46d3or
+         +VPXU4Bv8HOz9LqMuwL9XIqmB0DTscRpCmyJTztnfW6Yf1TNY+n5xDC1dl7FGl2xJWmY
+         fUGaNy+Vb0La4YOgJRsM51FA3742U7l1j9UBljMr4qx0oF6pz64thCzJtG7zrdBQFpQG
+         d+cA==
+X-Gm-Message-State: ANhLgQ2gkPVu1l0t3AtIZ5MdXUTykNgR35XpbAbUmC+lsvUEGBdAd2gv
+        rcCh42U4ugAkKEJZaBVg+go=
+X-Google-Smtp-Source: ADFU+vtL/mvFInxC3k5sdjwKUeJqbhTW+2Vb5R6HTklqOejkfyHSGWpjkx7EIZ/vIn1EkWfIy/qzwg==
+X-Received: by 2002:aed:34e6:: with SMTP id x93mr5892427qtd.194.1584458346844;
+        Tue, 17 Mar 2020 08:19:06 -0700 (PDT)
+Received: from anon-dhcp-153.1015granger.net (c-68-61-232-219.hsd1.mi.comcast.net. [68.61.232.219])
+        by smtp.gmail.com with ESMTPSA id 128sm2080034qki.103.2020.03.17.08.19.04
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 17 Mar 2020 08:10:17 -0700 (PDT)
+        Tue, 17 Mar 2020 08:19:05 -0700 (PDT)
 Content-Type: text/plain;
-        charset=utf-8
+        charset=us-ascii
 Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: Lockless behavior for CQs in userspace
-From:   Andrew Boyer <aboyer@pensando.io>
-In-Reply-To: <20200317150057.GJ3351@unreal>
-Date:   Tue, 17 Mar 2020 11:10:15 -0400
-Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 4/5] IB/core: cache the CQ completion vector
+From:   Chuck Lever <chucklever@gmail.com>
+In-Reply-To: <20200317134030.152833-5-maxg@mellanox.com>
+Date:   Tue, 17 Mar 2020 11:19:03 -0400
+Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
+        loberman@redhat.com, bvanassche@acm.org,
+        linux-rdma@vger.kernel.org, kbusch@kernel.org, leonro@mellanox.com,
+        jgg@mellanox.com, dledford@redhat.com, idanb@mellanox.com,
+        shlomin@mellanox.com, Oren Duer <oren@mellanox.com>,
+        vladimirk@mellanox.com
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <F97A8269-872F-4B94-8F03-7A8E26AE0952@pensando.io>
-References: <6C1A3349-65B0-4F22-8E82-1BBC22BF8CA2@pensando.io>
- <20200317150057.GJ3351@unreal>
-To:     Leon Romanovsky <leonro@mellanox.com>
+Message-Id: <448195E1-CE26-4658-8106-91BAFF115853@gmail.com>
+References: <20200317134030.152833-1-maxg@mellanox.com>
+ <20200317134030.152833-5-maxg@mellanox.com>
+To:     Max Gurtovoy <maxg@mellanox.com>
 X-Mailer: Apple Mail (2.3445.104.11)
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Hi Max-
 
-> On Mar 17, 2020, at 11:00 AM, Leon Romanovsky <leonro@mellanox.com> =
-wrote:
+> On Mar 17, 2020, at 9:40 AM, Max Gurtovoy <maxg@mellanox.com> wrote:
 >=20
-> On Tue, Mar 17, 2020 at 10:45:08AM -0400, Andrew Boyer wrote:
->> Hello Leon,
->> I understand that we are not to create new providers that use =
-environment variables to control locking behavior. The =E2=80=98new=E2=80=99=
- way to do it is to use thread domains and parent domains.
->>=20
->> However, even mlx5 still uses the env var exclusively to control =
-lockless behavior for CQs. Do you have anything in mind for how to =
-extend thread_domains or some other part of the API to cover the CQ =
-case?
->=20
-> Which parameter did you have in mind?
-> I would say that all those parameters are coming from pre-rdma-core =
-era.
->=20
-> Doesn't this commit do what you are asking?
-> =
-https://github.com/linux-rdma/rdma-core/commit/0dbde57c59d2983e848c3dbd9ae=
-93eaf8e7b9405
->=20
-> Thanks
->=20
->>=20
->> Thank you,
->> Andrew
->>=20
+> In some cases, e.g. when using ib_alloc_cq_any, one would like to know
+> the completion vector that eventually assigned to the CQ. Cache this
+> value during CQ creation.
 
-You are right - I got thrown off by this:
+I'm confused by the mention of the ib_alloc_cq_any() API here.
 
-> 	if (mlx5_spinlock_init(&cq->lock, !mlx5_single_threaded))
->                 goto err;
+Is your design somehow dependent on the way the current =
+ib_alloc_cq_any()
+selects comp_vectors? The contract for _any() is that it is an API for
+callers that simply do not care about what comp_vector is chosen. =
+There's
+no guarantee that the _any() comp_vector allocator will continue to use
+round-robin in the future, for instance.
 
-If IBV_CREATE_CQ_ATTR_SINGLE_THREADED is set, it passes an argument to =
-the polling function to skip the lock calls entirely. So it doesn=E2=80=99=
-t matter that they are still enabled internally.
+If you want to guarantee that there is an SRQ for each comp_vector and a
+comp_vector for each SRQ, stick with a CQ allocation API that enables
+explicit selection of the comp_vector value, and cache that value in the
+caller, not in the core data structures.
 
--Andrew
+
+> Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+> ---
+> drivers/infiniband/core/cq.c | 1 +
+> include/rdma/ib_verbs.h      | 1 +
+> 2 files changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/infiniband/core/cq.c =
+b/drivers/infiniband/core/cq.c
+> index 4f25b24..a7cbf52 100644
+> --- a/drivers/infiniband/core/cq.c
+> +++ b/drivers/infiniband/core/cq.c
+> @@ -217,6 +217,7 @@ struct ib_cq *__ib_alloc_cq_user(struct ib_device =
+*dev, void *private,
+> 	cq->device =3D dev;
+> 	cq->cq_context =3D private;
+> 	cq->poll_ctx =3D poll_ctx;
+> +	cq->comp_vector =3D comp_vector;
+> 	atomic_set(&cq->usecnt, 0);
+>=20
+> 	cq->wc =3D kmalloc_array(IB_POLL_BATCH, sizeof(*cq->wc), =
+GFP_KERNEL);
+> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> index fc8207d..0d61772 100644
+> --- a/include/rdma/ib_verbs.h
+> +++ b/include/rdma/ib_verbs.h
+> @@ -1558,6 +1558,7 @@ struct ib_cq {
+> 	struct ib_device       *device;
+> 	struct ib_ucq_object   *uobject;
+> 	ib_comp_handler   	comp_handler;
+> +	u32			comp_vector;
+> 	void                  (*event_handler)(struct ib_event *, void =
+*);
+> 	void                   *cq_context;
+> 	int               	cqe;
+> --=20
+> 1.8.3.1
+>=20
+
+--
+Chuck Lever
+chucklever@gmail.com
+
+
 
