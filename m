@@ -2,173 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 639841889C1
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 17:05:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4AF5188A41
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 17:29:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbgCQQFS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Mar 2020 12:05:18 -0400
-Received: from mga18.intel.com ([134.134.136.126]:15217 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726019AbgCQQFS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 17 Mar 2020 12:05:18 -0400
-IronPort-SDR: R2jMwj7eTrI9KCyNqReh8ReV8QgmVl6puKCJZgwiqdL26s07T0vN0i2oBiLQj+sKhrHUyMXsYE
- /2Qkh0QmYsCA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2020 09:05:17 -0700
-IronPort-SDR: mEeMfjFwevhEvS39umjAVuInoZqKiHd6qKoG20yWO2sSS75c0tib+i7UzP4rREda60oSwJt/Ws
- y96p7Q2a5Qvg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,564,1574150400"; 
-   d="scan'208";a="236371219"
-Received: from sedona.ch.intel.com ([10.2.136.157])
-  by fmsmga007.fm.intel.com with ESMTP; 17 Mar 2020 09:05:14 -0700
-Received: from awfm-01.aw.intel.com (awfm-01.aw.intel.com [10.228.212.213])
-        by sedona.ch.intel.com (8.14.3/8.14.3/Standard MailSET/Hub) with ESMTP id 02HG5DMF038616;
-        Tue, 17 Mar 2020 09:05:13 -0700
-Received: from awfm-01.aw.intel.com (localhost [127.0.0.1])
-        by awfm-01.aw.intel.com (8.14.7/8.14.7) with ESMTP id 02HG5Av7085936;
-        Tue, 17 Mar 2020 12:05:10 -0400
-Subject: [PATCH for-rc] IB/hfi1: Insure pq is not left on waitlist
-From:   Dennis Dalessandro <dennis.dalessandro@intel.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>
-Date:   Tue, 17 Mar 2020 12:05:10 -0400
-Message-ID: <20200317160510.85914.22202.stgit@awfm-01.aw.intel.com>
-User-Agent: StGit/0.17.1-dirty
+        id S1726329AbgCQQ3h convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 17 Mar 2020 12:29:37 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:65288 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726082AbgCQQ3h (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 17 Mar 2020 12:29:37 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02HGMJQx116816
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Mar 2020 12:29:36 -0400
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.66])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2yrsdshmgm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Mar 2020 12:29:36 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Tue, 17 Mar 2020 16:29:35 -0000
+Received: from us1a3-smtp03.a3.dal06.isc4sb.com (10.106.154.98)
+        by smtp.notes.na.collabserv.com (10.106.227.127) with smtp.notes.na.collabserv.com ESMTP;
+        Tue, 17 Mar 2020 16:29:28 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp03.a3.dal06.isc4sb.com
+          with ESMTP id 2020031716292879-851182 ;
+          Tue, 17 Mar 2020 16:29:28 +0000 
+In-Reply-To: <a8e7b61a-b238-2cc3-d3c8-743ad1f8c8ee@grimberg.me>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Sagi Grimberg" <sagi@grimberg.me>
+Cc:     "Christoph Hellwig" <hch@lst.de>,
+        "Krishnamraju Eraparaju" <krishna2@chelsio.com>,
+        linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+        "Nirranjan Kirubaharan" <nirranjan@chelsio.com>,
+        "Potnuri Bharat Teja" <bharat@chelsio.com>
+Date:   Tue, 17 Mar 2020 16:29:28 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <a8e7b61a-b238-2cc3-d3c8-743ad1f8c8ee@grimberg.me>,<20200316162008.GA7001@chelsio.com>
+ <20200317124533.GB12316@lst.de>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP62 November 04, 2019 at 09:47
+X-LLNOutbound: False
+X-Disclaimed: 32371
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 20031716-4409-0000-0000-000002410316
+X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.000002
+X-IBM-SpamModules-Versions: BY=3.00012765; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000293; SDB=6.01349039; UDB=6.00719492; IPR=6.01131448;
+ MB=3.00031266; MTD=3.00000008; XFM=3.00000015; UTC=2020-03-17 16:29:34
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2020-03-17 09:56:09 - 6.00011129
+x-cbparentid: 20031716-4410-0000-0000-000057BC6368
+Message-Id: <OFB2589549.AD31F8B8-ON0025852E.005A969A-0025852E.005A96A3@notes.na.collabserv.com>
+Subject: RE: broken CRCs at NVMeF target with SIW & NVMe/TCP transports
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
+ definitions=2020-03-17_06:2020-03-17,2020-03-17 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mike Marciniszyn <mike.marciniszyn@intel.com>
+-----"Sagi Grimberg" <sagi@grimberg.me> wrote: -----
 
-The following warning can occur when a pq is left on the
-dmawait list and the pq is then freed:
+>To: "Christoph Hellwig" <hch@lst.de>, "Krishnamraju Eraparaju"
+><krishna2@chelsio.com>
+>From: "Sagi Grimberg" <sagi@grimberg.me>
+>Date: 03/17/2020 05:04PM
+>Cc: "Bernard Metzler" <BMT@zurich.ibm.com>,
+>linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+>"Nirranjan Kirubaharan" <nirranjan@chelsio.com>, "Potnuri Bharat
+>Teja" <bharat@chelsio.com>
+>Subject: [EXTERNAL] Re: broken CRCs at NVMeF target with SIW &
+>NVMe/TCP transports
+>
+>> On Mon, Mar 16, 2020 at 09:50:10PM +0530, Krishnamraju Eraparaju
+>wrote:
+>>>
+>>> I'm seeing broken CRCs at NVMeF target while running the below
+>program
+>>> at host. Here RDMA transport is SoftiWARP, but I'm also seeing the
+>>> same issue with NVMe/TCP aswell.
+>>>
+>>> It appears to me that the same buffer is being rewritten by the
+>>> application/ULP before getting the completion for the previous
+>requests.
+>>> getting the completion for the previous requests. HW based
+>>> HW based trasports(like iw_cxgb4) are not showing this issue
+>because
+>>> they copy/DMA and then compute the CRC on copied buffer.
+>> 
+>> For TCP we can set BDI_CAP_STABLE_WRITES.  For RDMA I don't think
+>that
+>> is a good idea as pretty much all RDMA block drivers rely on the
+>> DMA behavior above.  The answer is to bounce buffer the data in
+>> SoftiWARP / SoftRoCE.
+>
+>We already do, see nvme_alloc_ns.
+>
+>
 
-[3218804.385525] WARNING: CPU: 47 PID: 3546 at lib/list_debug.c:29 __list_add+0x65/0xc0
-[3218804.385527] list_add corruption. next->prev should be prev (ffff939228da1880), but was ffff939cabb52230. (next=ffff939cabb52230).
-[3218804.385528] Modules linked in: mmfs26(OE) mmfslinux(OE) tracedev(OE) 8021q garp mrp ib_isert iscsi_target_mod target_core_mod crc_t10dif crct10dif_generic opa_vnic rpcrdma ib_iser libiscsi scsi_transport_iscsi ib_ipoib(OE) bridge stp llc iTCO_wdt iTCO_vendor_support intel_powerclamp coretemp intel_rapl iosf_mbi kvm_intel kvm irqbypass crct10dif_pclmul crct10dif_common crc32_pclmul ghash_clmulni_intel aesni_intel lrw gf128mul glue_helper ablk_helper cryptd ast ttm drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops drm pcspkr joydev drm_panel_orientation_quirks i2c_i801 mei_me lpc_ich mei wmi ipmi_si ipmi_devintf ipmi_msghandler nfit libnvdimm acpi_power_meter acpi_pad hfi1(OE) rdmavt(OE) rdma_ucm ib_ucm ib_uverbs ib_umad rdma_cm ib_cm iw_cm ib_core binfmt_misc numatools(OE) xpmem(OE) ip_tables
-[3218804.385576] nfsv3 nfs_acl nfs lockd grace sunrpc fscache igb ahci libahci i2c_algo_bit dca libata ptp pps_core crc32c_intel [last unloaded: i2c_algo_bit]
-[3218804.385589] CPU: 47 PID: 3546 Comm: wrf.exe Kdump: loaded Tainted: G W OE ------------ 3.10.0-957.41.1.el7.x86_64 #1
-[3218804.385590] Hardware name: HPE.COM HPE SGI 8600-XA730i Gen10/X11DPT-SB-SG007, BIOS SBED1229 01/22/2019
-[3218804.385592] Call Trace:
-[3218804.385602] [<ffffffff91f65ac0>] dump_stack+0x19/0x1b
-[3218804.385607] [<ffffffff91898b78>] __warn+0xd8/0x100
-[3218804.385609] [<ffffffff91898bff>] warn_slowpath_fmt+0x5f/0x80
-[3218804.385616] [<ffffffff91a1dabe>] ? ___slab_alloc+0x24e/0x4f0
-[3218804.385618] [<ffffffff91b97025>] __list_add+0x65/0xc0
-[3218804.385642] [<ffffffffc03926a5>] defer_packet_queue+0x145/0x1a0 [hfi1]
-[3218804.385658] [<ffffffffc0372987>] sdma_check_progress+0x67/0xa0 [hfi1]
-[3218804.385673] [<ffffffffc03779d2>] sdma_send_txlist+0x432/0x550 [hfi1]
-[3218804.385676] [<ffffffff91a20009>] ? kmem_cache_alloc+0x179/0x1f0
-[3218804.385691] [<ffffffffc0392973>] ? user_sdma_send_pkts+0xc3/0x1990 [hfi1]
-[3218804.385704] [<ffffffffc0393e3a>] user_sdma_send_pkts+0x158a/0x1990 [hfi1]
-[3218804.385707] [<ffffffff918ab65e>] ? try_to_del_timer_sync+0x5e/0x90
-[3218804.385710] [<ffffffff91a3fe1a>] ? __check_object_size+0x1ca/0x250
-[3218804.385723] [<ffffffffc0395546>] hfi1_user_sdma_process_request+0xd66/0x1280 [hfi1]
-[3218804.385737] [<ffffffffc034e0da>] hfi1_aio_write+0xca/0x120 [hfi1]
-[3218804.385739] [<ffffffff91a4245b>] do_sync_readv_writev+0x7b/0xd0
-[3218804.385742] [<ffffffff91a4409e>] do_readv_writev+0xce/0x260
-[3218804.385746] [<ffffffff918df69f>] ? pick_next_task_fair+0x5f/0x1b0
-[3218804.385748] [<ffffffff918db535>] ? sched_clock_cpu+0x85/0xc0
-[3218804.385751] [<ffffffff91f6b16a>] ? __schedule+0x13a/0x860
-[3218804.385752] [<ffffffff91a442c5>] vfs_writev+0x35/0x60
-[3218804.385754] [<ffffffff91a4447f>] SyS_writev+0x7f/0x110
-[3218804.385757] [<ffffffff91f78ddb>] system_call_fastpath+0x22/0x27
+Krishna was getting the issue when testing TCP/NVMeF with -G
+during connect. That enables data digest and STABLE_WRITES
+I think. So to me it seems we don't get stable pages, but
+pages which are touched after handover to the provider.
 
-The issue happens when wait_event_interruptible_timeout() returns a
-value <= 0.
-
-In that case, the pq is left on the list.   The code continues sending
-packets and potentially can complete the current request with the pq
-still on the dmawait list provided no descriptor shortage is seen.
-
-If the pq is torn down in that state, the sdma interrupt handler could
-find the now freed pq on the list with list corruption or memory
-corruption resulting.
-
-Fix by adding a flush routine to insure that the pq is never on a list
-after processing a request.
-
-Fixes: a0d406934a46 ("staging/rdma/hfi1: Add page lock limit check for SDMA requests")
-Reviewed-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
----
- drivers/infiniband/hw/hfi1/user_sdma.c |   25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hfi1/user_sdma.c b/drivers/infiniband/hw/hfi1/user_sdma.c
-index c2f0d9b..13e4203 100644
---- a/drivers/infiniband/hw/hfi1/user_sdma.c
-+++ b/drivers/infiniband/hw/hfi1/user_sdma.c
-@@ -141,6 +141,7 @@ static int defer_packet_queue(
- 	 */
- 	xchg(&pq->state, SDMA_PKT_Q_DEFERRED);
- 	if (list_empty(&pq->busy.list)) {
-+		pq->busy.lock = &sde->waitlock;
- 		iowait_get_priority(&pq->busy);
- 		iowait_queue(pkts_sent, &pq->busy, &sde->dmawait);
- 	}
-@@ -155,6 +156,7 @@ static void activate_packet_queue(struct iowait *wait, int reason)
- {
- 	struct hfi1_user_sdma_pkt_q *pq =
- 		container_of(wait, struct hfi1_user_sdma_pkt_q, busy);
-+	pq->busy.lock = NULL;
- 	xchg(&pq->state, SDMA_PKT_Q_ACTIVE);
- 	wake_up(&wait->wait_dma);
- };
-@@ -256,6 +258,21 @@ int hfi1_user_sdma_alloc_queues(struct hfi1_ctxtdata *uctxt,
- 	return ret;
- }
- 
-+static void flush_pq_iowait(struct hfi1_user_sdma_pkt_q *pq)
-+{
-+	unsigned long flags;
-+	seqlock_t *lock = pq->busy.lock;
-+
-+	if (!lock)
-+		return;
-+	write_seqlock_irqsave(lock, flags);
-+	if (!list_empty(&pq->busy.list)) {
-+		list_del_init(&pq->busy.list);
-+		pq->busy.lock = NULL;
-+	}
-+	write_sequnlock_irqrestore(lock, flags);
-+}
-+
- int hfi1_user_sdma_free_queues(struct hfi1_filedata *fd,
- 			       struct hfi1_ctxtdata *uctxt)
- {
-@@ -281,6 +298,7 @@ int hfi1_user_sdma_free_queues(struct hfi1_filedata *fd,
- 		kfree(pq->reqs);
- 		kfree(pq->req_in_use);
- 		kmem_cache_destroy(pq->txreq_cache);
-+		flush_pq_iowait(pq);
- 		kfree(pq);
- 	} else {
- 		spin_unlock(&fd->pq_rcu_lock);
-@@ -587,11 +605,12 @@ int hfi1_user_sdma_process_request(struct hfi1_filedata *fd,
- 		if (ret < 0) {
- 			if (ret != -EBUSY)
- 				goto free_req;
--			wait_event_interruptible_timeout(
-+			if (wait_event_interruptible_timeout(
- 				pq->busy.wait_dma,
--				(pq->state == SDMA_PKT_Q_ACTIVE),
-+				pq->state == SDMA_PKT_Q_ACTIVE,
- 				msecs_to_jiffies(
--					SDMA_IOWAIT_TIMEOUT));
-+					SDMA_IOWAIT_TIMEOUT)) <= 0)
-+				flush_pq_iowait(pq);
- 		}
- 	}
- 	*count += idx;
 
