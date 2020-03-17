@@ -2,143 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2281890BE
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 22:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B8F1890E7
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Mar 2020 22:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbgCQVrs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 Mar 2020 17:47:48 -0400
-Received: from mail-dm6nam10on2137.outbound.protection.outlook.com ([40.107.93.137]:22874
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        id S1726881AbgCQV46 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 Mar 2020 17:56:58 -0400
+Received: from mail-eopbgr120045.outbound.protection.outlook.com ([40.107.12.45]:3632
+        "EHLO FRA01-PR2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726388AbgCQVrs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 17 Mar 2020 17:47:48 -0400
+        id S1726530AbgCQV46 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 17 Mar 2020 17:56:58 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hYDwdkdKSMkq6D9WeUgcm/kQz+RahGmox/sJHNxibQo04JJZpN5VKWCA9usOMWekUzWz6uUQpL7MiDEDiwVwYhStzrfNdwxkqUWwC5OxE/s1oJcKjRm4ru5qjSEKdCHiDgrepHMR+5NwimtoL7SJ8wEJQELMBLyK26gPBAX0juyk58U+b39K3mbIaAAaSj9Gs07x3ZOBZArmVr2k1eQYRrAAInbfZd+PgUF7OPscGOA1zWjZZXH1IgA7GNWEUyCHs0RXfbMPO0xNwUj7Rgud4MVnUd4Q8qxrzVx4dH97rFtY+MBE8c06SWrMNdc+Ya3tXCkx/mI1hC7EShNClGtcMQ==
+ b=dO+ABR8atUPp71iBhU6SGbTK5bf7NvI9ibbFMt+U2zNeQ32pfxmzpqyks0UfkoiGKbHHsuEP/YFczPMzkn563b/luVAj/kVNh3cZwzQg+XA2FB/jyO74FxhN/CyH+2Q/eACaiGorbxAekBRapZtaAKgWBFZEGHgtFfj1VpCwp9JGa2LOIZbstaJm7ePqQ5Pxv0CwGZ0yxH4UR6cQwWkowJwxWbkxkCf3lOZ3BnF61UxJP9mpCkIP2+JlxRMMmJnDUXENuLE97Gshj4os6rtIjNyE+xzjMweeNzvOtyOIZQ2kRg1pDhcRtUq4Xlx4O+43euOAMsjCqpB0XcXNX/tQsw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CwVOhu3pAPOVrQlzNqNgb2e7Y+JAQ+18ssauC/5cvG4=;
- b=Z0DI45fsfRjBZuoOYDJdADFJyODqz7ayEqZSZLNU7vQ5RsPxI4+KgX/wlbr+ir0j8aTpqJtI5GUSAiQBHfettPr0EZPeQzuvHpF+algNy+FA9Jwx4sMH442SsodOSKWnC0EY0prF/V7ntyheJ5T7nwvVcsBk+NudtlKk7EdtGdBPAoRTD1thHh0+sBrATb46yKJyafnDpaWsxQbXKCh7KrTZkuI7N4rukOFiuRSam/2dSl9A9mGdkE7wzC2zl/KU33HMokhj1mEBSRcj9a1wwvz0EaGDsm32KWMp1G3VFQDDdBgrMtI1QYR68socf/kXCUiL5Kc04t/IRBAwMd9cxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
+ bh=LCOV0b9sx1SlfGSKVGBSA+gLRUuwd3Z017RAawaOGSE=;
+ b=Yh6QkEezrT2BKuAPrD3gH7dpzKQP73ETDUqXUjeM8DhD7mMPK17ArQqNKUzcC3Fz87ueoDIyQMV9SEgagPwSKxR0p3QdGhfg+66ldzk1fGh/XPg8BPphYqkTfW6d8825GORiFRc/DZIDuSh9Vkt7ideJnkblkLfxJHYocc64eqxstyo45T8NoME9gC7uaq+BPvO2YjaxJ2PHAR7PGMOEf9Pyw2imjaUrY2TxkqgnFyEVTm92BNTi38tMxxzCg7ZmMbgcEX/v/00okD7ydxxm1cAkgbULWX6au+9Eq6qLpxcgXzkLZjBh4qf9C7ieP30Pv0kca02+n71ffWHS2QCpZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 193.47.165.251) smtp.rcpttodomain=redhat.com smtp.mailfrom=mellanox.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=mellanox.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CwVOhu3pAPOVrQlzNqNgb2e7Y+JAQ+18ssauC/5cvG4=;
- b=RoP0BlQo+1ulwIUgygGLbY7jkE89dsnj6DN9+BOYXH37E5NbU6fN5Q56XktNPYE1A2dKeVy2N3NzM5ZuGSgp5U8UTz9h969yYiDOWEJ9jcSLzhK/A79YSTQfQOga9tqTmW1pSIwflgzqMxLJwFgcyB01XT6y705+PNXqE0yGni0=
-Received: from BYAPR21MB1223.namprd21.prod.outlook.com (2603:10b6:a03:107::14)
- by BYAPR21MB1639.namprd21.prod.outlook.com (2603:10b6:a02:cb::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.2; Tue, 17 Mar
- 2020 21:47:44 +0000
-Received: from BYAPR21MB1223.namprd21.prod.outlook.com
- ([fe80::8d1f:f622:2bc1:a518]) by BYAPR21MB1223.namprd21.prod.outlook.com
- ([fe80::8d1f:f622:2bc1:a518%8]) with mapi id 15.20.2856.001; Tue, 17 Mar 2020
- 21:47:44 +0000
-From:   Ju-Hyoung Lee <juhlee@microsoft.com>
-To:     Mark Bloch <markb@mellanox.com>, Jason Gunthorpe <jgg@ziepe.ca>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Ju-Hyoung Lee <juhlee@microsoft.com>
-Subject: RE: [EXTERNAL] Re: Find rdma-core version
-Thread-Topic: [EXTERNAL] Re: Find rdma-core version
-Thread-Index: AdX8G/w1CIvOVTxSRQyfs/GZbAPOgwAeKZaAAAOjc5AAAEtsAAAATO6Q
-Date:   Tue, 17 Mar 2020 21:47:44 +0000
-Message-ID: <BYAPR21MB12234A2E5A2C7199518EF360DAF60@BYAPR21MB1223.namprd21.prod.outlook.com>
-References: <BYAPR21MB1223A416AA7FE380D8DDFFC9DAF60@BYAPR21MB1223.namprd21.prod.outlook.com>
- <20200317194539.GW20941@ziepe.ca>
- <BYAPR21MB1223AC2B4C82BC7287D3665FDAF60@BYAPR21MB1223.namprd21.prod.outlook.com>
- <f6b69016-c578-2720-6976-89d588cff768@mellanox.com>
-In-Reply-To: <f6b69016-c578-2720-6976-89d588cff768@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=juhlee@microsoft.com; 
-x-originating-ip: [2601:1c2:4b00:8ff0:9b9:5798:e241:7820]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8de9f5fe-5d1e-4644-0a3a-08d7cabcd35f
-x-ms-traffictypediagnostic: BYAPR21MB1639:|BYAPR21MB1639:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR21MB16391B24D07E351DCD953999DAF60@BYAPR21MB1639.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 0345CFD558
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(39860400002)(376002)(396003)(346002)(366004)(136003)(199004)(4326008)(107886003)(33656002)(5660300002)(186003)(52536014)(55016002)(9686003)(6506007)(2906002)(53546011)(71200400001)(54906003)(10290500003)(81166006)(81156014)(8676002)(478600001)(110136005)(7696005)(8936002)(76116006)(8990500004)(66476007)(66556008)(66946007)(316002)(66446008)(86362001)(64756008);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR21MB1639;H:BYAPR21MB1223.namprd21.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
-received-spf: None (protection.outlook.com: microsoft.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UoBNkOOmdq2P97s5Otan4ZWslhZMo6hHDgCn/Apr3HmiP8G2GIN0iVeg90tWhgDUoPjCZ/VydTBB0tnHSYGR/ABnRFWyXUfzfXdpCvx8nJetKa4nOjRNd6v5zFr8Vq3MOwXWhmAU6QPVe7qLTkmDnHXIZ1KyGHcz8E/L5IxJz9bTtwl8IklY4P+K11pv3I2LhnTFk3T6OPxkC0qa11A+Nv6DIxr06F1cteU9fLc4APz1Ujj5KwUpt6AXogDNWSNdacN1QnWKRpcqi/7j/mErur7RoR+uKqcuxMjtbxSm50wCSy6PP90BApvE8XGdkoChmtvpQ/KSP+8UpW+u7lcEYBB4sTSzLdiicz2V5GEdr7rgqjtZNQXvjMA8jRUcWibpKNm29stdl+NKEF69VvhKzulNfuzoiTpscKaY6NuTYxeN2aXfKO2bBG0B5zrPtRkc
-x-ms-exchange-antispam-messagedata: VJyEwJVjFcZROOg3SdtDDzFo47RXsARFCH6CS4gPcGMy9aHfYTNjSl2zE/G69tcodjmHMOzS7NefdRsFV7O6NKuiIKUl9jB8CSQIBkkV6hKI5eD1+MUAxr5rwDGUp1iGmgdkX6Bcaq9Owrs8oU5yzfhw9wbp3jZSy59U5g1L+idYqiRKwbQyccFp7Fdazj8/MjS0fxsLbi86AH3MHOw/4w==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ bh=LCOV0b9sx1SlfGSKVGBSA+gLRUuwd3Z017RAawaOGSE=;
+ b=hAdL4K/3o49qFaJmcEtDHVLknudBVidL5dFjaW6q7i5yoZuF8fOvTJnhcN+GfQAxNc8HW7/QmbxqvorD8FVVe7sMPCJzxjStdJcUBt9P1PJH7TBWu2WpSZTFFfevzIrxBle64Aw3y3OQ2SUdQwqwQxSAMoZvh1pUhOeK4qZydmA=
+Received: from VI1PR0701CA0068.eurprd07.prod.outlook.com
+ (2603:10a6:800:5f::30) by PR1PR05MB5483.eurprd05.prod.outlook.com
+ (2603:10a6:102:c::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.13; Tue, 17 Mar
+ 2020 21:56:40 +0000
+Received: from VE1EUR03FT022.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:800:5f:cafe::1b) by VI1PR0701CA0068.outlook.office365.com
+ (2603:10a6:800:5f::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2835.12 via Frontend
+ Transport; Tue, 17 Mar 2020 21:56:40 +0000
+Authentication-Results: spf=pass (sender IP is 193.47.165.251)
+ smtp.mailfrom=mellanox.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=mellanox.com;
+Received-SPF: Pass (protection.outlook.com: domain of mellanox.com designates
+ 193.47.165.251 as permitted sender) receiver=protection.outlook.com;
+ client-ip=193.47.165.251; helo=mtlcas13.mtl.com;
+Received: from mtlcas13.mtl.com (193.47.165.251) by
+ VE1EUR03FT022.mail.protection.outlook.com (10.152.18.64) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.2814.13 via Frontend Transport; Tue, 17 Mar 2020 21:56:38 +0000
+Received: from MTLCAS13.mtl.com (10.0.8.78) by mtlcas13.mtl.com (10.0.8.78)
+ with Microsoft SMTP Server (TLS) id 15.0.1178.4; Tue, 17 Mar 2020 23:56:37
+ +0200
+Received: from MTLCAS01.mtl.com (10.0.8.71) by MTLCAS13.mtl.com (10.0.8.78)
+ with Microsoft SMTP Server (TLS) id 15.0.1178.4 via Frontend Transport; Tue,
+ 17 Mar 2020 23:56:36 +0200
+Received: from [172.27.14.181] (172.27.14.181) by MTLCAS01.mtl.com (10.0.8.71)
+ with Microsoft SMTP Server (TLS) id 14.3.468.0; Tue, 17 Mar 2020 23:56:17
+ +0200
+Subject: Re: [PATCH 1/5] IB/core: add a simple SRQ set per PD
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     Leon Romanovsky <leonro@mellanox.com>,
+        <linux-nvme@lists.infradead.org>, <sagi@grimberg.me>, <hch@lst.de>,
+        <loberman@redhat.com>, <bvanassche@acm.org>,
+        <linux-rdma@vger.kernel.org>, <kbusch@kernel.org>,
+        <dledford@redhat.com>, <idanb@mellanox.com>,
+        <shlomin@mellanox.com>, <oren@mellanox.com>,
+        <vladimirk@mellanox.com>
+References: <20200317134030.152833-1-maxg@mellanox.com>
+ <20200317134030.152833-2-maxg@mellanox.com> <20200317135518.GG3351@unreal>
+ <46bb23ed-2941-2eaa-511a-3d0f3b09a9ed@mellanox.com>
+ <20200317181036.GX13183@mellanox.com>
+ <290500dc-7a89-2326-2abf-1ab9f613162e@mellanox.com>
+ <20200317184338.GY13183@mellanox.com>
+From:   Max Gurtovoy <maxg@mellanox.com>
+Message-ID: <d2e06706-4671-aeab-1c7e-c5bf0f3c65a4@mellanox.com>
+Date:   Tue, 17 Mar 2020 23:56:16 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8de9f5fe-5d1e-4644-0a3a-08d7cabcd35f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Mar 2020 21:47:44.3399
+In-Reply-To: <20200317184338.GY13183@mellanox.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [172.27.14.181]
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:193.47.165.251;IPV:;CTRY:IL;EFV:NLI;SFV:NSPM;SFS:(10009020)(4636009)(376002)(136003)(39860400002)(396003)(346002)(199004)(46966005)(336012)(16526019)(81156014)(26005)(186003)(31696002)(8676002)(86362001)(2616005)(81166006)(107886003)(37006003)(6862004)(2906002)(6636002)(54906003)(16576012)(4326008)(70586007)(356004)(53546011)(478600001)(31686004)(8936002)(316002)(36906005)(36756003)(70206006)(47076004)(5660300002)(3940600001);DIR:OUT;SFP:1101;SCL:1;SRVR:PR1PR05MB5483;H:mtlcas13.mtl.com;FPR:;SPF:Pass;LANG:en;PTR:InfoDomainNonexistent;A:1;
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6ef0a246-ff5d-445e-6d43-08d7cabe11dd
+X-MS-TrafficTypeDiagnostic: PR1PR05MB5483:
+X-Microsoft-Antispam-PRVS: <PR1PR05MB548323DD6E59370B79C54844B6F60@PR1PR05MB5483.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 0345CFD558
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +/7+PfaPqTV4zAGoqp22Qi0rr1SpV1JVlxRgCFml/LBC8VYPwvShtgs27NGCsms/Q0WbCOCw/lga1/mxGZz3q3hUFI2lqdGI2sOwPvDG9NeeyYAIjSkEMLK3HKsix/zFt37+kiOCGtFI9uWD5txnbZoQ1Q/+6TXFffucr/cTUTVM+Ah0OQowH4v8R7tyYwh027jiEVL+OOARJdSMaudqRt68O0d99oR/g56r/Syqi4La4JWpLij5/aiiu5VRK7KhrqPUwqGghSFqM8WF3+ui6MV8yM60ZH9Lz3rHNjynljtkJVQZtoYmi/t1ywF/NvVaz9PKJdwLiP8VFnNdEvd1G6CFnHMH4cca8+5MX+9NkbYQ9gEdaqgwglOZZylsZB6INJsmqpdNQr+magWNm7OeaJq2SXjCMsBgfQotViu5/AuSu4sp4HYYJ4gKdghrqKBNPfdP0Huo2cDHenHLOOiFPg16S41TuO3Fhm6Fp35A/+RXABL3QpvUDqfgqW8EhHtfea9962KIEs/xIf9WNuKRhnHinKTTl1cg5jdpwaWXby0=
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2020 21:56:38.6373
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: i15ONFTA6dBPEW94PUdIP+0LOTZLP887/BFbpwlavcqQkJUkUt+KdBvbcLnjNWHqpkfkn+hcv0ZcOmRacSBGIw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1639
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ef0a246-ff5d-445e-6d43-08d7cabe11dd
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a652971c-7d2e-4d9b-a6a4-d149256f461b;Ip=[193.47.165.251];Helo=[mtlcas13.mtl.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1PR05MB5483
 Sender: linux-rdma-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-QXdlc29tZSwgTWFyay4gVGhhbmsgeW91LiANCkl0IG1ha2VzIHNlbnNlIHRoZW4sIEkgc2hvdWxk
-IHJlcGxhY2UgYSBuZXcgbGluayB0byB0aGUgZmlyc3QgcGxhY2Ugd2l0aCBuZXcgdmVyc2lvbi4N
-Cg0KZGVwZW5kZW5jeS12bTp+L3JkbWEtY29yZS0yOC4wICMgbHMgLWFsIC9yb290L3JkbWEtY29y
-ZS0yOC4wL2J1aWxkL2xpYi9saWJpYnZlcmJzLnNvLjENCmxyd3hyd3hyd3ggMSByb290IHJvb3Qg
-MjIgTWFyIDE3IDIwOjU5IC9yb290L3JkbWEtY29yZS0yOC4wL2J1aWxkL2xpYi9saWJpYnZlcmJz
-LnNvLjEgLT4gbGliaWJ2ZXJicy5zby4xLjguMjguMA0KDQpKdQ0KLS0tLS1PcmlnaW5hbCBNZXNz
-YWdlLS0tLS0NCkZyb206IE1hcmsgQmxvY2ggPG1hcmtiQG1lbGxhbm94LmNvbT4gDQpTZW50OiBU
-dWVzZGF5LCBNYXJjaCAxNywgMjAyMCAyOjM4IFBNDQpUbzogSnUtSHlvdW5nIExlZSA8anVobGVl
-QG1pY3Jvc29mdC5jb20+OyBKYXNvbiBHdW50aG9ycGUgPGpnZ0B6aWVwZS5jYT4NCkNjOiBsaW51
-eC1yZG1hQHZnZXIua2VybmVsLm9yZw0KU3ViamVjdDogUmU6IFtFWFRFUk5BTF0gUmU6IEZpbmQg
-cmRtYS1jb3JlIHZlcnNpb24NCg0KSGV5IEp1LA0KDQpPbiAzLzE3LzIwIDI6MzIgUE0sIEp1LUh5
-b3VuZyBMZWUgd3JvdGU6DQo+IE15IG9yaWdpbmFsICByZG1hLWNvcmUgdmVyc2lvbiB3YXMgMjIg
-dGhlbiBidXQgaXQgc3RpbGwgc2hvd3MgYWZ0ZXIgaW5zdGFsbGVkIHJkbWEtY29yZS0yOC4NCj4g
-DQo+IFRoaXMgaXMgbXkgbG9nIG9mIHRoZSBvcmlnaW5hbCBzdGF0ZS4NCj4gZGVwZW5kZW5jeS12
-bTp+ICMgbGRkIGB3aGljaCBpYnZfZGV2aWNlc2ANCj4gICAgICAgICBsaW51eC12ZHNvLnNvLjEg
-KDB4MDAwMDdmZmRlYjdlYzAwMCkNCj4gICAgICAgICBsaWJpYnZlcmJzLnNvLjEgPT4gL3Vzci9s
-aWI2NC9saWJpYnZlcmJzLnNvLjEgKDB4MDAwMDdmNjhjN2VjZDAwMCkNCj4gICAgICAgICBsaWJj
-LnNvLjYgPT4gL2xpYjY0L2xpYmMuc28uNiAoMHgwMDAwN2Y2OGM3YjEyMDAwKQ0KPiAgICAgICAg
-IGxpYm5sLXJvdXRlLTMuc28uMjAwID0+IC91c3IvbGliNjQvbGlibmwtcm91dGUtMy5zby4yMDAg
-KDB4MDAwMDdmNjhjNzg5YzAwMCkNCj4gICAgICAgICBsaWJubC0zLnNvLjIwMCA9PiAvdXNyL2xp
-YjY0L2xpYm5sLTMuc28uMjAwICgweDAwMDA3ZjY4Yzc2N2EwMDApDQo+ICAgICAgICAgbGlicHRo
-cmVhZC5zby4wID0+IC9saWI2NC9saWJwdGhyZWFkLnNvLjAgKDB4MDAwMDdmNjhjNzQ1YjAwMCkN
-Cj4gICAgICAgICBsaWJkbC5zby4yID0+IC9saWI2NC9saWJkbC5zby4yICgweDAwMDA3ZjY4Yzcy
-NTcwMDApDQo+ICAgICAgICAgL2xpYjY0L2xkLWxpbnV4LXg4Ni02NC5zby4yICgweDAwMDA3ZjY4
-YzgyZTkwMDApIA0KPiBkZXBlbmRlbmN5LXZtOn4gIyBscyAtYWwgL3Vzci9saWI2NC9saWJpYnZl
-cmJzLnNvLjEgbHJ3eHJ3eHJ3eCAxIHJvb3QgDQo+IHJvb3QgMjIgRGVjICA5IDEyOjMxIC91c3Iv
-bGliNjQvbGliaWJ2ZXJicy5zby4xIC0+IA0KPiBsaWJpYnZlcmJzLnNvLjEuNS4yMi41IGRlcGVu
-ZGVuY3ktdm06fiAjDQo+IA0KPiBBZnRlciBidWlsZC5zaCBpbiByZG1hLWNvcmUtMjguMCwNCg0K
-YnVpbGQuc2ggYnVpbGRzIHJkbWEtY29yZSBsb2NhbGx5IGFuZCBkb2Vzbid0IGluc3RhbGwgaXQg
-aW4gdGhlIHN5c3RlbS4NCg0KeW91IGNhbiBkbzogbHMgLWFsIGJ1aWxkL2xpYi9saWJpYnZlcmJz
-LnNvLjEgbm90ZSB5b3UgY2FuIGFsc28gcnVuIHRoZSBiaW5hcmllcyB0aGlzIHdheSwgZm9yIGV4
-YW1wbGUgZnJvbSB0aGUgcm9vdCByZG1hLWNvcmUgZGlyOg0KLi9idWlsZC9iaW4vaWJ2X2Rldmlu
-Zm8NCg0KTWFyaw0KDQo+IA0KPiBkZXBlbmRlbmN5LXZtOn4vcmRtYS1jb3JlLTI4LjAgIyBscyAt
-YWwgL3Vzci9saWI2NC9saWJpYnZlcmJzLnNvLjEgDQo+IGxyd3hyd3hyd3ggMSByb290IHJvb3Qg
-MjIgRGVjICA5IDEyOjMxIC91c3IvbGliNjQvbGliaWJ2ZXJicy5zby4xIC0+IA0KPiBsaWJpYnZl
-cmJzLnNvLjEuNS4yMi41DQo+IA0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9t
-OiBKYXNvbiBHdW50aG9ycGUgPGpnZ0B6aWVwZS5jYT4NCj4gU2VudDogVHVlc2RheSwgTWFyY2gg
-MTcsIDIwMjAgMTI6NDYgUE0NCj4gVG86IEp1LUh5b3VuZyBMZWUgPGp1aGxlZUBtaWNyb3NvZnQu
-Y29tPg0KPiBDYzogbGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogW0VYVEVS
-TkFMXSBSZTogRmluZCByZG1hLWNvcmUgdmVyc2lvbg0KPiANCj4gT24gVHVlLCBNYXIgMTcsIDIw
-MjAgYXQgMDU6MjM6MjhBTSArMDAwMCwgSnUtSHlvdW5nIExlZSB3cm90ZToNCj4+IEhpLA0KPj4N
-Cj4+IENhbiBhbnlvbmUgaGVscCBtZSBmaW5kIHdoYXQgcmRtYS1jb3JlIHZlcnNpb24gSSBpbnN0
-YWxsZWQgaW4gdGhlIA0KPj4gc3lzdGVtPyBJdCdzIGEgc2V0IG9mIGxpYiBhbmQgdXRpbGl0aWVz
-LCBidXQgdGhlcmUgbWlnaHQgYmUgYSB3YXkgSSANCj4+IGNhbiB2ZXJpZnkgdGhlIHZlcnNpb24g
-YWZ0ZXIgdGhlIG9mZmljaWFsIHJlbGVhc2UgaW5zdGFsbGF0aW9uLiAgQW55IA0KPj4gaGVscD8N
-Cj4gDQo+ICQgbGRkIGB3aGljaCBpYnZfZGV2aW5mb2ANCj4gCWxpbnV4LXZkc28uc28uMSAoMHgw
-MDAwN2ZmYzYzYmQ2MDAwKQ0KPiAJbGliaWJ2ZXJicy5zby4xID0+IC9saWI2NC9saWJpYnZlcmJz
-LnNvLjEgKDB4MDAwMDdmM2RlNjdjNDAwMCkgWy4uXQ0KPiANCj4gJCBscyAtbCAvbGliNjQvbGli
-aWJ2ZXJicy5zby4xDQo+IGxyd3hyd3hyd3ggMSByb290IHJvb3QgMjIgTWFyICA2IDE5OjQzIC9s
-aWI2NC9saWJpYnZlcmJzLnNvLjEgLT4gbGliaWJ2ZXJicy5zby4xLjcuMjcuMCoNCj4gICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIA0KPiBeXl5eDQo+IA0KPiByZG1hLWNvcmUgdmVyc2lvbiBpcyAy
-Nw0KPiANCj4gSmFzb24NCj4gDQo=
+
+On 3/17/2020 8:43 PM, Jason Gunthorpe wrote:
+> On Tue, Mar 17, 2020 at 08:24:30PM +0200, Max Gurtovoy wrote:
+>> On 3/17/2020 8:10 PM, Jason Gunthorpe wrote:
+>>> On Tue, Mar 17, 2020 at 06:37:57PM +0200, Max Gurtovoy wrote:
+>>>
+>>>>>> +#include <rdma/ib_verbs.h>
+>>>>>> +
+>>>>>> +struct ib_srq *rdma_srq_get(struct ib_pd *pd);
+>>>>>> +void rdma_srq_put(struct ib_pd *pd, struct ib_srq *srq);
+>>>>> At the end, it is not get/put semantics but more add/remove.
+>>>> srq = rdma_srq_add ?
+>>>>
+>>>> rdma_srq_remove(pd, srq) ?
+>>>>
+>>>> Doesn't seems right to me.
+>>>>
+>>>> Lets make it simple. For asking a SRQ from the PD set lets use rdma_srq_get
+>>>> and returning to we'll use rdma_srq_put.
+>>> Is there reference couting here? get/put should be restricted to
+>>> refcounting APIs, IMHO.
+>> I've added a counter (pd->srqs_used) that Leon asked to remove .
+>>
+>> There is no call to kref get/put here.
+> I didn't look closely, any kind of refcount scheme is reasonable, but
+> if add is supposed to create a new srq then that isn't 'get'..
+
+No, we don't create new srq during the "get". We create a set using 
+"rdma_srq_set_init".
+
+"get" will simple pull some srq from the set and "put" will push it back.
+
+>
+>> Do you prefer that I'll change it to be array in PD: "struct
+>> ib_srq           **srqs;" ?
+> Not particularly..
+>
+> It actually feels a bit weird, should there be some numa-ness involved
+> here so that the SRQ with memory on the node that is going to be
+> polling it is returned?
+
+Maybe this will be the next improvement. But for now the receive buffers 
+are allocated by the ULP.
+
+The idea is to spread the SRQs as much as possible as we do for QP/CQ to 
+reach almost the same performance.
+
+In case of 1 SRQ we can't reach good performance since many resources 
+and cores are racing for 1 resources.
+
+In case of regular RQ we allocate many buffers that most of the time are 
+idle.
+
+If we'll spread SRQs for all cores/vectors we have we'll get great perf 
+with saving resources that might be critical in MQ ULPs as NVMf/SRP 
+targets that might serve hundreds initiators with hundreds of queues each.
+
+
+>
+>> And update ib_alloc_pd API to get pd_attrs and allocate the array during PD
+>> allocation ?
+> The API is a bit more composable if things can can be done as
+> following function calls are done that way.. I don't like the giant
+> multiplexor structs in general
+>
+> Jason
